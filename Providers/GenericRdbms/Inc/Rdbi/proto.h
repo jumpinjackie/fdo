@@ -499,6 +499,7 @@ int rdbi_run_sqlW (rdbi_context_def *context, const wchar_t *sql, int isDDL, int
 int rdbi_autocommit_on (rdbi_context_def *context);
 int rdbi_autocommit_off (rdbi_context_def *context);
 int rdbi_autocommit_mode (rdbi_context_def *context);
+int rdbi_free_all(rdbi_context_def *context);
 
 #endif /* INC_RDBI_PROTO_H */
 

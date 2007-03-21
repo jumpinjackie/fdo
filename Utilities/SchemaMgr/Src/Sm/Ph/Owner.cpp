@@ -960,6 +960,7 @@ void FdoSmPhOwner::LoadSpatialContexts()
 				scName = FdoStringP::Format(L"%ls_%ld", scReader->GetName(), currSC);
 
             // Generate physical spatial context from current SpatialContextGeom
+            FdoPtr<FdoByteArray> scExtent = scReader->GetExtent();
 			FdoSmPhSpatialContextP sc = new FdoSmPhSpatialContext(
                 GetManager(),
                 scReader->GetSrid(),
@@ -968,7 +969,7 @@ void FdoSmPhOwner::LoadSpatialContexts()
                 scReader->GetCoordinateSystem(),
                 scReader->GetCoordinateSystemWkt(),
                 scReader->GetExtentType(),
-                scReader->GetExtent(),
+                scExtent,
                 scReader->GetXYTolerance(),
                 scReader->GetZTolerance()
             );

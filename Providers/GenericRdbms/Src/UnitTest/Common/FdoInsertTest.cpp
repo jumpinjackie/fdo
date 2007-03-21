@@ -847,66 +847,58 @@ void FdoInsertTest::insertBoundaryCleanup( FdoIConnection* connection )
 
 void FdoInsertTest::insertDate (FdoIConnection *connection, FdoDateTime dateTime, FdoString*colorIndex)
 {
+    double                    coordsBuffer[400];
+    FdoPtr<FdoPropertyValue>  propertyValue;
+    bool supportsZ = (FdoPtr<FdoIGeometryCapabilities>(connection->GetGeometryCapabilities())->GetDimensionalities() & FdoDimensionality_Z);
 
-    try
-    {
-        double                    coordsBuffer[400];
-        FdoPtr<FdoPropertyValue>  propertyValue;
-        bool supportsZ = (FdoPtr<FdoIGeometryCapabilities>(connection->GetGeometryCapabilities())->GetDimensionalities() & FdoDimensionality_Z);
+    FdoPtr<FdoITransaction> featureTransaction = connection->BeginTransaction();
+    FdoPtr<FdoIInsert> insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
+    insertCommand->SetFeatureClassName(L"Acad:AcDb3dPolyline");
+    FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
 
-        FdoPtr<FdoITransaction> featureTransaction = connection->BeginTransaction();
-        FdoPtr<FdoIInsert> insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
-        insertCommand->SetFeatureClassName(L"Acad:AcDb3dPolyline");
-        FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
+    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+	FdoPtr<FdoILineString> line1;
+	if ( supportsZ ) 
+	{
+		coordsBuffer[0] = 1.1;
+		coordsBuffer[1] = 2.2;
+		coordsBuffer[2] = 0.0;
+		coordsBuffer[3] = 1.1;
+		coordsBuffer[4] = 3.3;
+		coordsBuffer[5] = 0.0;
+		line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, 2*3, coordsBuffer);
+	}
+	else
+	{
+		coordsBuffer[0] = 1.1;
+		coordsBuffer[1] = 2.2;
+		coordsBuffer[2] = 1.1;
+		coordsBuffer[3] = 3.3;
+		line1 = gf->CreateLineString(FdoDimensionality_XY, 2*2, coordsBuffer);
+	}
+    propertyValue = AddNewProperty( propertyValues, L"Geometry");
+    FdoPtr<FdoByteArray> byteArray = gf->GetFgf(line1);
+    FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
+    propertyValue->SetValue(geometryValue);
 
-        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-		FdoPtr<FdoILineString> line1;
-		if ( supportsZ ) 
-		{
-			coordsBuffer[0] = 1.1;
-			coordsBuffer[1] = 2.2;
-			coordsBuffer[2] = 0.0;
-			coordsBuffer[3] = 1.1;
-			coordsBuffer[4] = 3.3;
-			coordsBuffer[5] = 0.0;
-			line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, 2*3, coordsBuffer);
-		}
-		else
-		{
-			coordsBuffer[0] = 1.1;
-			coordsBuffer[1] = 2.2;
-			coordsBuffer[2] = 1.1;
-			coordsBuffer[3] = 3.3;
-			line1 = gf->CreateLineString(FdoDimensionality_XY, 2*2, coordsBuffer);
-		}
-        propertyValue = AddNewProperty( propertyValues, L"Geometry");
-        FdoPtr<FdoByteArray> byteArray = gf->GetFgf(line1);
-        FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
-        propertyValue->SetValue(geometryValue);
+    FdoPtr<FdoDataValue> dataValue;
+    dataValue = FdoDataValue::Create(colorIndex);
+    propertyValue = AddNewProperty( propertyValues, L"color");
+    propertyValue->SetValue(dataValue);
 
-        FdoPtr<FdoDataValue> dataValue;
-        dataValue = FdoDataValue::Create(colorIndex);
-        propertyValue = AddNewProperty( propertyValues, L"color");
-        propertyValue->SetValue(dataValue);
+    dataValue = FdoDataValue::Create(dateTime);
+    propertyValue = AddNewProperty( propertyValues, L"datetime");
+    propertyValue->SetValue(dataValue);
 
-        dataValue = FdoDataValue::Create(dateTime);
-        propertyValue = AddNewProperty( propertyValues, L"datetime");
-        propertyValue->SetValue(dataValue);
+    FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
 
-        FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
+    int numberInsertedObjects = 0;
 
-        int numberInsertedObjects = 0;
+    while (reader->ReadNext())
+        numberInsertedObjects++;
+    wprintf(L"    Number of rows entered: %d \n", numberInsertedObjects);
 
-        while (reader->ReadNext())
-            numberInsertedObjects++;
-        wprintf(L"    Number of rows entered: %d \n", numberInsertedObjects);
-
-        featureTransaction->Commit();
-    }
-    catch ( ... )
-    {
-        throw;
-    }
+    featureTransaction->Commit();
 }
 
 void FdoInsertTest::insertDateVerification (FdoIConnection *connection, int numOfSuccess)
@@ -1165,7 +1157,7 @@ void FdoInsertTest::insertEmptyProps()
         FdoPtr<FdoIInsert>insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
         insertCommand->SetFeatureClassName(L"Acad:AcDb3dPolyline");
         //FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
-        insertCommand->Execute();
+        FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
     }
     catch (FdoCommandException *ex)
     {
@@ -1548,63 +1540,65 @@ FdoDouble FdoInsertTest::GetSmallestDoubleValue()
 {
     return (FdoDouble) 2.225073858507202e-308;
 }
+
 void FdoInsertTest::insertAutoGen()
 {
-	FdoIConnection* connection = UnitTestUtil::GetConnection(mSuffix, true);
-        try
-        {
-			FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
-			FdoFeatureSchemasP pSchemas = pDescCmd->Execute();
-			if (pSchemas)
-			{
-				FdoFeatureSchemaP pSchema = pSchemas->FindItem( L"TestEmpty" );
-				if (!pSchema)
-				{
-					FdoIApplySchema*  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
-					//FdoPtr<FdoFeatureSchemaCollection> pSchemas = FdoFeatureSchemaCollection::Create(NULL);
+    FdoPtr<FdoIConnection> connection = UnitTestUtil::GetConnection(mSuffix, true);
+    try
+    {
+	    FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
+	    FdoFeatureSchemasP pSchemas = pDescCmd->Execute();
+	    if (pSchemas)
+	    {
+		    FdoFeatureSchemaP pSchema = pSchemas->FindItem( L"TestEmpty" );
+		    if (!pSchema)
+		    {
+			    FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
+			    //FdoPtr<FdoFeatureSchemaCollection> pSchemas = FdoFeatureSchemaCollection::Create(NULL);
 
-					FdoFeatureSchema* pNewSchema = FdoFeatureSchema::Create( L"TestEmpty", L"Test schema" );
-					//pSchemas->Add( pSchema );
-					FdoClass* pNewClass = FdoClass::Create( L"Empty", L"Test class" );
-					pNewClass->SetIsAbstract(false);
-					FdoDataPropertyDefinition* pProp = FdoDataPropertyDefinition::Create( L"AttrId", L"id" );
-					pProp->SetDataType( FdoDataType_Int64 );
-					pProp->SetNullable(false);
-					pProp->SetIsAutoGenerated(true);
-					pNewClass->GetProperties()->Add( pProp );
-					pNewClass->GetIdentityProperties()->Add( pProp );
+			    FdoPtr<FdoFeatureSchema> pNewSchema = FdoFeatureSchema::Create( L"TestEmpty", L"Test schema" );
+			    //pSchemas->Add( pSchema );
+			    FdoPtr<FdoClass> pNewClass = FdoClass::Create( L"Empty", L"Test class" );
+			    pNewClass->SetIsAbstract(false);
+			    FdoPtr<FdoDataPropertyDefinition> pProp = FdoDataPropertyDefinition::Create( L"AttrId", L"id" );
+			    pProp->SetDataType( FdoDataType_Int64 );
+			    pProp->SetNullable(false);
+			    pProp->SetIsAutoGenerated(true);
+                FdoPtr<FdoPropertyDefinitionCollection> pProps = pNewClass->GetProperties();
+			    pProps->Add( pProp );
+                FdoPtr<FdoDataPropertyDefinitionCollection> pIdProps = pNewClass->GetIdentityProperties();
+			    pIdProps->Add( pProp );
 
-					pProp = FdoDataPropertyDefinition::Create( L"AttrName", L"Name" );
-					pProp->SetDataType( FdoDataType_String );
-					pProp->SetLength(64);
-					pProp->SetNullable(true);
-					pNewClass->GetProperties()->Add( pProp );
+			    pProp = FdoDataPropertyDefinition::Create( L"AttrName", L"Name" );
+			    pProp->SetDataType( FdoDataType_String );
+			    pProp->SetLength(64);
+			    pProp->SetNullable(true);
+			    pProps->Add( pProp );
 
-					FDO_SAFE_RELEASE(pProp);
+                FdoPtr<FdoClassCollection> pClassColl = pNewSchema->GetClasses();
+			    pClassColl->Add( pNewClass );
+			    pCmd->SetFeatureSchema( pNewSchema );
+			    pCmd->Execute();
+		    }
+	    }
 
-					pNewSchema->GetClasses()->Add( pNewClass );
-					pCmd->SetFeatureSchema( pNewSchema );
-					pCmd->Execute();
-				}
-			}
-
-			FdoIInsert *insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
-			insertCommand->SetFeatureClassName(L"TestEmpty:Empty");
-			FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
-			FdoIFeatureReader *myReader = insertCommand->Execute();
-			CPPUNIT_ASSERT(myReader != NULL);
-			
-			while (myReader->ReadNext())
-			{ 
-				CPPUNIT_ASSERT(!myReader->IsNull(L"AttrId"));
-			}
-			myReader->Release();
-			connection->Close();
-		}
-		catch (...)
+	    FdoPtr<FdoIInsert> insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
+	    insertCommand->SetFeatureClassName(L"TestEmpty:Empty");
+	    FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
+	    FdoPtr<FdoIFeatureReader> myReader = insertCommand->Execute();
+	    CPPUNIT_ASSERT(myReader != NULL);
+		
+	    while (myReader->ReadNext())
+	    { 
+		    CPPUNIT_ASSERT(!myReader->IsNull(L"AttrId"));
+	    }
+	    myReader->Close();
+	    connection->Close();
+    }
+    catch (FdoException* e)
     {
         connection->Close ();
-        throw;
+        TestCommonFail(e);
     }
 }
 

@@ -51,6 +51,7 @@
 #include    <Inc/Nls/rdbi_msg.h>
 #include <Inc/debugext.h>
 #include <Inc/ut.h>         /* ut_vm_free()             */
+#include <Inc/Rdbi/proto.h>
 #include <Inc/Rdbi/context.h>
 
 #include "global.h"         /* rdbi global area         */
@@ -74,6 +75,7 @@ int rdbi_disconnect(rdbi_context_def *context)
         }
     }
 
+    rdbi_free_all(context);
     context->rdbi_last_status = (*(context->dispatch.disconnect))(context->drvr, &context->rdbi_cnct->vendor_data);
 
     context->rdbi_cnct->in_use = FALSE;              /* mark as available    */

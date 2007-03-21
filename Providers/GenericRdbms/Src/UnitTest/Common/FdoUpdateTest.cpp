@@ -1860,7 +1860,6 @@ void FdoUpdateTest::UpdateNoMeta()
             );
 
         // Select and verify all data (post-update state).
-
         SelectNoMetaAll( connection, phMgr, table_id_geom, m_hasGeom, m_hasAssoc );
         SelectNoMetaAll( connection, phMgr, L"VIEW_ID_GEOM", m_hasGeom, false );
         SelectNoMetaAll( connection, phMgr, L"TABLE_NOID_GEOM", m_hasGeom, false );
@@ -1871,16 +1870,16 @@ void FdoUpdateTest::UpdateNoMeta()
         SelectNoMetaFilter( connection, phMgr, L"TABLE_NOID_GEOM", m_hasGeom, false );
         SelectNoMetaFilter( connection, phMgr, table_noid_nogeom, false, false );
 
-        SelectNoMetaProps( connection, phMgr, table_id_geom, m_hasGeom );
-        SelectNoMetaProps( connection, phMgr, L"VIEW_ID_GEOM", m_hasGeom );
-        SelectNoMetaProps( connection, phMgr, L"TABLE_NOID_GEOM", m_hasGeom );
-        SelectNoMetaProps( connection, phMgr, table_noid_nogeom, false );
-
 #ifndef RDBI_DEF_SSQL
 		SelectNoMetaSpatial( connection, phMgr, table_id_geom, m_hasAssoc );
 		SelectNoMetaSpatial( connection, phMgr, L"VIEW_ID_GEOM", false );
 		SelectNoMetaSpatial( connection, phMgr, L"TABLE_NOID_GEOM", false );
 #endif
+
+        SelectNoMetaProps( connection, phMgr, table_id_geom, m_hasGeom );
+        SelectNoMetaProps( connection, phMgr, L"VIEW_ID_GEOM", m_hasGeom );
+        SelectNoMetaProps( connection, phMgr, L"TABLE_NOID_GEOM", m_hasGeom );
+        SelectNoMetaProps( connection, phMgr, table_noid_nogeom, false );
 
         connection->Close ();
 
@@ -1888,13 +1887,17 @@ void FdoUpdateTest::UpdateNoMeta()
         mgr = NULL;
         conn->disconnect();
         delete conn;
+        conn = NULL;
     }
     catch (FdoException *ex)
     {
         try {
             if( connection )
-            {
                 connection->Close ();
+            if (conn != NULL)
+            {
+                conn->disconnect();
+                delete conn;
             }
         }
         catch ( ... )
@@ -1906,8 +1909,11 @@ void FdoUpdateTest::UpdateNoMeta()
     {
         try {
             if( connection )
-            {
                 connection->Close ();
+            if (conn != NULL)
+            {
+                conn->disconnect();
+                delete conn;
             }
         }
         catch ( ... )
