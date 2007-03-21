@@ -64,11 +64,6 @@ FdoRdbmsOvClassDefinition* MySqlFdoApplySchemaTest::CreateOvClassDefinition(FdoS
     }
 }
 
-void MySqlFdoApplySchemaTest::ClassesOvAdd(FdoRdbmsOvPhysicalSchemaMapping* pSchema, FdoRdbmsOvClassDefinition* pClass)
-{
-    FdoMySQLOvClassesP(((FdoMySQLOvPhysicalSchemaMapping*)pSchema)->GetClasses())->Add((FdoMySQLOvClassDefinition*)pClass);
-}
-
 FdoRdbmsOvTable* MySqlFdoApplySchemaTest::CreateOvTable(FdoString* name)
 {
     FdoMySQLOvTable* table = FdoMySQLOvTable::Create(name);
@@ -101,82 +96,6 @@ FdoRdbmsOvTable* MySqlFdoApplySchemaTest::CreateOvTable(FdoString* name)
     }
 
     return table;
-}
-
-FdoRdbmsOvColumn* MySqlFdoApplySchemaTest::CreateOvColumn(FdoString* name)
-{
-    return FdoMySQLOvColumn::Create(name);
-}
-
-FdoRdbmsOvGeometricColumn* MySqlFdoApplySchemaTest::CreateOvGeometricColumn(FdoString* name)
-{
-    return FdoMySQLOvGeometricColumn::Create(name);
-}
-
-FdoRdbmsOvDataPropertyDefinition* MySqlFdoApplySchemaTest::CreateOvDataPropertyDefinition(FdoString *name)
-{
-    return FdoMySQLOvDataPropertyDefinition::Create(name);
-}
-
-FdoRdbmsOvGeometricPropertyDefinition* MySqlFdoApplySchemaTest::CreateOvGeometricPropertyDefinition(FdoString *name)
-{
-    return FdoMySQLOvGeometricPropertyDefinition::Create(name);
-}
-
-void MySqlFdoApplySchemaTest::PropertiesOvAdd(FdoRdbmsOvClassDefinition* pClass, FdoRdbmsOvPropertyDefinition *pProp)
-{
-    FdoMySQLOvPropertiesP(((FdoMySQLOvClassDefinition*)pClass)->GetProperties())->Add(dynamic_cast<FdoMySQLOvPropertyDefinition*>(pProp));
-}
-
-void MySqlFdoApplySchemaTest::ClassOvSetTable(FdoRdbmsOvClassDefinition* pClass, FdoRdbmsOvTable* pTable)
-{
-    ((FdoMySQLOvClassDefinition*)pClass)->SetTable((FdoMySQLOvTable*)pTable);
-}
-
-void MySqlFdoApplySchemaTest::TableOvSetTablespace(FdoRdbmsOvTable* pTable, FdoString *tablespace)
-{
-    // do nothing (MySQL doesn't support tablespace per se)
-}
-
-void MySqlFdoApplySchemaTest::DataPropOvSetColumn(FdoRdbmsOvDataPropertyDefinition* pDataProp, FdoRdbmsOvColumn* pDataColumn)
-{
-    ((FdoMySQLOvDataPropertyDefinition*)pDataProp)->SetColumn((FdoMySQLOvColumn*)pDataColumn);
-}
-
-void MySqlFdoApplySchemaTest::GeometricPropOvSetColumn(FdoRdbmsOvGeometricPropertyDefinition* pGeomProp, FdoRdbmsOvGeometricColumn* pGeometricColumn)
-{
-    ((FdoMySQLOvGeometricPropertyDefinition*)pGeomProp)->SetColumn((FdoMySQLOvGeometricColumn*)pGeometricColumn);
-}
-
-FdoRdbmsOvObjectPropertyDefinition* MySqlFdoApplySchemaTest::CreateOvObjectPropertyDefinition(FdoString *name)
-{
-    return FdoMySQLOvObjectPropertyDefinition::Create(name);
-}
-
-FdoRdbmsOvPropertyMappingSingle* MySqlFdoApplySchemaTest::CreateOvPropertyMappingSingle()
-{
-    return FdoMySQLOvPropertyMappingSingle::Create();
-}
-
-FdoRdbmsOvPropertyMappingConcrete* MySqlFdoApplySchemaTest::CreateOvPropertyMappingConcrete()
-{
-    return FdoMySQLOvPropertyMappingConcrete::Create();
-}
-
-void MySqlFdoApplySchemaTest::ObjectPropertyOvSetMappingDefinition(FdoRdbmsOvObjectPropertyDefinition* pObProp, FdoRdbmsOvPropertyMappingDefinition* mapping)
-{
-    ((FdoMySQLOvObjectPropertyDefinition*)pObProp)->SetMappingDefinition(dynamic_cast<FdoMySQLOvPropertyMappingDefinition*>(mapping));
-}
-
-void MySqlFdoApplySchemaTest::PropertyMappingOvSetInternalClass(FdoRdbmsOvPropertyMappingRelation* pMapping, FdoRdbmsOvClassDefinition* pClass)
-{
-    (dynamic_cast<FdoMySQLOvPropertyMappingRelation*>(pMapping))->SetInternalClass((FdoMySQLOvClassDefinition*)pClass);
-}
-
-void MySqlFdoApplySchemaTest::ShemaOvSetOwner(FdoRdbmsOvPhysicalSchemaMapping *mapping, FdoString* owner)
-{
-    //FDO owner corresponds to a MySQL database.
-    ((FdoMySQLOvPhysicalSchemaMapping*)mapping)->SetDatabase( owner );
 }
 
 void MySqlFdoApplySchemaTest::VldClassCapabilities( int ltMode, int lckMode, FdoClassDefinition* pClass )

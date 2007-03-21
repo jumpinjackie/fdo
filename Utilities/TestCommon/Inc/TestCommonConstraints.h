@@ -32,10 +32,19 @@ class TestCommonConstraints : public CppUnit::TestCase
     CPPUNIT_TEST( TestRestrictCheckConstraints );
 	CPPUNIT_TEST( TestDateTimeConstraints );
     CPPUNIT_TEST( TestBaseReferences );
+    CPPUNIT_TEST( TestCreateLTConstraints );
+    CPPUNIT_TEST( TestDescribeLTConstraints );
+    CPPUNIT_TEST( TestUpdateLTUniqueConstraints );
+    CPPUNIT_TEST( TestUpdateLTCheckConstraints );
+    CPPUNIT_TEST( TestDescribeLTUpdatedConstraints );
 
 	CPPUNIT_TEST_SUITE_END();
 
 public:
+	TestCommonConstraints(void);
+    virtual ~TestCommonConstraints(void);
+    virtual void setUp ();
+
     virtual void TestCreateConstraints(void);
 	virtual void TestDescribeConstraints(void);
 	virtual void TestUpdateUniqueConstraints(void);
@@ -43,27 +52,45 @@ public:
 	virtual void TestDescribeUpdatedConstraints(void);
 	virtual void TestRestrictCheckConstraints(void);
 	virtual void TestDateTimeConstraints(void);
+    virtual void TestCreateLTConstraints(void);
+	virtual void TestDescribeLTConstraints(void);
+	virtual void TestUpdateLTUniqueConstraints(void);
+	virtual void TestUpdateLTCheckConstraints(void);
+	virtual void TestDescribeLTUpdatedConstraints(void);
+
+protected:
+
+    class Context 
+    {
+    public:
+        Context( FdoInt32 ltMethodIn = 0 );
+        virtual ~Context();
+
+        FdoPtr<FdoIConnection> connection;
+        FdoInt32 ltMethod;
+    };
+
+    void DoTestCreateConstraints(Context& context);
+	void DoTestDescribeConstraints(Context& context);
+	void DoTestUpdateUniqueConstraints(Context& context);
+	void DoTestUpdateCheckConstraints(Context& context);
+	void DoTestDescribeUpdatedConstraints(Context& context);
 
     // Tests unique constraints that reference base properties.
 	virtual void TestBaseReferences(void);
 
-    void CreateConstraintsSchema(FdoIConnection * connection);
-	void DescribeConstraintsSchema(FdoIConnection * connection, FdoString *className, int numUkeys, int numCkeys, bool afterUpdate);
-	void UpdateCheckConstraints(FdoIConnection * connection);
-	void UpdateUniqueConstraints(FdoIConnection * connection);
-	void RestrictCheckConstraints(FdoIConnection * connection);
-	void DateTimeConstraints(FdoIConnection * connection);
+    void CreateConstraintsSchema(Context& context);
+	void DescribeConstraintsSchema(Context& context, FdoString *className, int numUkeys, int numCkeys, bool afterUpdate);
+	void UpdateCheckConstraints(Context& context);
+	void UpdateUniqueConstraints(Context& context);
+	void RestrictCheckConstraints(Context& context);
+	void DateTimeConstraints(Context& context);
 
-	TestCommonConstraints(void);
-    virtual ~TestCommonConstraints(void);
-    virtual void setUp ();
-
-protected:
-
-    virtual FdoIConnection* CreateConnection( FdoBoolean recreateDb = false );
+    virtual void CreateConnection( Context& context, FdoBoolean recreateDb = false );
     virtual FdoBoolean CanRestrictCheckConstraint();
     virtual FdoDouble GetDoubleRounding(FdoDataType dataType);
     virtual FdoFloat GetSecondsIncrement();
+    virtual FdoInt32 GetLtMethod();
 
     virtual FdoInt32 GetExpectedCheckConstraintCount( FdoIConnection* connection );
 
@@ -142,6 +169,8 @@ protected:
         bool expectedSuccess
     );
 
+    FdoStringP	FixDatetimeFormat( FdoDataValue*  val );
+    
     template< class T> void CheckListConstraint(FdoString* pPropName, FdoPtr<FdoDataValueCollection> pList, T* pMaster, FdoInt32 masterCount )
     {
         CPPUNIT_ASSERT_MESSAGE( 
@@ -207,7 +236,7 @@ protected:
                 CPPUNIT_ASSERT_MESSAGE( "Wrong type for datetime constraint returned", false);
 
             for ( int k = 0; k < masterCount && !valMatched; k++ ) {
-		        valMatched = ( wcscmp(val->ToString(), pMaster[k]) == 0 );
+		        valMatched = ( FixDatetimeFormat(val) == pMaster[k] );
 	        }	
 
             CPPUNIT_ASSERT_MESSAGE( 

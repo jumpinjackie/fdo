@@ -21,6 +21,7 @@
 
 // Various utility functions to help with unit testing.
 #include <Sm/SchemaManager.h>
+#include "SchemaOverrideUtil.h"
 
 enum StringConnTypeRequest {
     Connection_WithDatastore,
@@ -147,8 +148,9 @@ public:
     //      false - otherwise.
     static bool DatastoreExists(FdoString *suffix = L"");
     
-	static FdoIConnection* GetConnection(FdoString *suffix = L"", bool bCreate = false, StringConnTypeRequest pTypeReq = Connection_WithDatastore, int lt_method = 0, bool lt_method_fixed = false );
+	static FdoIConnection* GetConnection(FdoString *suffix = L"", bool bCreate = false, bool bRecreateData = false, StringConnTypeRequest pTypeReq = Connection_WithDatastore, int lt_method = 0, bool lt_method_fixed = false );
     static StaticConnection* NewStaticConnection();
+    static SchemaOverrideUtilP NewSchemaOverrideUtil();
 
 	// compares two doubles for *approximate* equality:
     static bool fuzzyEqual (const double d1, const double d2);

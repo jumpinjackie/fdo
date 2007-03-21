@@ -37,23 +37,7 @@ public:
    	virtual FdoRdbmsOvPhysicalSchemaMapping* CreateOverrideDefaults( FdoIConnection* connection, int passNum );
     virtual void CreateRdbmsSpecificElements(FdoIConnection* connection, FdoString* wDatastore);
     virtual FdoRdbmsOvClassDefinition* CreateOvClassDefinition(FdoString *name = NULL);
-    virtual void ClassesOvAdd(FdoRdbmsOvPhysicalSchemaMapping* pSchema, FdoRdbmsOvClassDefinition* pClass);
     virtual FdoRdbmsOvTable* CreateOvTable(FdoString* name);
-    virtual FdoRdbmsOvColumn* CreateOvColumn(FdoString* name);
-    virtual FdoRdbmsOvGeometricColumn* CreateOvGeometricColumn(FdoString* name);
-    virtual FdoRdbmsOvDataPropertyDefinition* CreateOvDataPropertyDefinition(FdoString *name);
-    virtual FdoRdbmsOvGeometricPropertyDefinition* CreateOvGeometricPropertyDefinition(FdoString *name);
-    virtual void PropertiesOvAdd(FdoRdbmsOvClassDefinition* pClass, FdoRdbmsOvPropertyDefinition *pProp);
-    virtual void ClassOvSetTable(FdoRdbmsOvClassDefinition* pClass, FdoRdbmsOvTable* pTable);
-    virtual void TableOvSetTablespace(FdoRdbmsOvTable* pTable, FdoString *tablespace);
-    virtual void DataPropOvSetColumn(FdoRdbmsOvDataPropertyDefinition* pDataProp, FdoRdbmsOvColumn* pDataColumn);
-    virtual void GeometricPropOvSetColumn(FdoRdbmsOvGeometricPropertyDefinition* pGeomProp, FdoRdbmsOvGeometricColumn* pGeometricColumn);
-    virtual FdoRdbmsOvObjectPropertyDefinition* CreateOvObjectPropertyDefinition(FdoString *name);
-    virtual FdoRdbmsOvPropertyMappingSingle* CreateOvPropertyMappingSingle();
-    virtual FdoRdbmsOvPropertyMappingConcrete* CreateOvPropertyMappingConcrete();
-    virtual void ObjectPropertyOvSetMappingDefinition(FdoRdbmsOvObjectPropertyDefinition* pObProp, FdoRdbmsOvPropertyMappingDefinition* mapping);
-    virtual void PropertyMappingOvSetInternalClass(FdoRdbmsOvPropertyMappingRelation* pMapping, FdoRdbmsOvClassDefinition* pClass);
-    virtual void ShemaOvSetOwner(FdoRdbmsOvPhysicalSchemaMapping *mapping, FdoString* owner);
 
     virtual void VldClassCapabilities( int ltMode, int lckMode, FdoClassDefinition* pClass );
 

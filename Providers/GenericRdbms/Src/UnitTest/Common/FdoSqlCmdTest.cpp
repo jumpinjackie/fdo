@@ -18,11 +18,6 @@
 #include "Pch.h"
 #include "FdoSqlCmdTest.h"
 #include "UnitTestUtil.h"
-#include "FdoRdbmsGetSpatialContexts.h"
-#include "FdoRdbmsCreateSpatialContext.h"
-#include "FdoRdbmsDestroySpatialContext.h"
-#include "FdoRdbmsActivateSpatialContext.h"
-#include "FdoRdbmsConnection.h"
 
 #ifdef _DEBUG
 #define  DBG(X)    X
@@ -187,13 +182,13 @@ void FdoSqlCmdTest::doGetSC()
     {
         try
         {
-            FdoPtr<FdoRdbmsGetSpatialContexts> gscCmd;
+            FdoPtr<FdoIGetSpatialContexts> gscCmd;
             FdoPtr<FdoISpatialContextReader> reader;
             DBG(printf("\n.Getting Spatial Contexts (active_only=%s)\n", active_only? "true":"false" ));
 
             ///////////////////////////////////////////////////////////////////////////////////////////
             // This will initialize for fetching the SC
-            gscCmd = (FdoRdbmsGetSpatialContexts *)mConnection->CreateCommand( FdoCommandType_GetSpatialContexts );
+            gscCmd = (FdoIGetSpatialContexts *)mConnection->CreateCommand( FdoCommandType_GetSpatialContexts );
 
             gscCmd->SetActiveOnly(active_only);
         
@@ -218,16 +213,16 @@ void FdoSqlCmdTest::doGetSC()
 
 void FdoSqlCmdTest::CreateActivateDestroySC()
 {
-    FdoPtr<FdoRdbmsCreateSpatialContext>   cscCmd;
-    FdoPtr<FdoRdbmsDestroySpatialContext>  dscCmd;
-    FdoPtr<FdoRdbmsActivateSpatialContext> ascCmd;
+    FdoPtr<FdoICreateSpatialContext>   cscCmd;
+    FdoPtr<FdoIDestroySpatialContext>  dscCmd;
+    FdoPtr<FdoIActivateSpatialContext> ascCmd;
 
     DBG(printf("\n.Creating/Activating/Destroying Spatial Context\n"));
     if( mConnection != NULL )
     {
         try
         {
-            cscCmd = (FdoRdbmsCreateSpatialContext *)mConnection->CreateCommand( FdoCommandType_CreateSpatialContext );
+            cscCmd = (FdoICreateSpatialContext *)mConnection->CreateCommand( FdoCommandType_CreateSpatialContext );
 
     #pragma message ("ToDo: investigate trancation failure with longer SC names on MySQL.")
             cscCmd->SetName(L"SC_X"); 
@@ -261,7 +256,7 @@ void FdoSqlCmdTest::CreateActivateDestroySC()
         {
             FdoPtr<FdoIConnection> mConn = UnitTestUtil::GetConnection(L"", false);
 
-            ascCmd = (FdoRdbmsActivateSpatialContext *)mConn->CreateCommand( FdoCommandType_ActivateSpatialContext );
+            ascCmd = (FdoIActivateSpatialContext *)mConn->CreateCommand( FdoCommandType_ActivateSpatialContext );
 
             ascCmd->SetName(L"SC_X");
       
@@ -279,7 +274,7 @@ void FdoSqlCmdTest::CreateActivateDestroySC()
         {
             FdoPtr<FdoIConnection> mConn = UnitTestUtil::GetConnection(L"", false);
 
-            ascCmd = (FdoRdbmsActivateSpatialContext *)mConn->CreateCommand( FdoCommandType_ActivateSpatialContext );
+            ascCmd = (FdoIActivateSpatialContext *)mConn->CreateCommand( FdoCommandType_ActivateSpatialContext );
 
             ascCmd->SetName(L"SC_X");
       
@@ -297,7 +292,7 @@ void FdoSqlCmdTest::CreateActivateDestroySC()
         {
             FdoPtr<FdoIConnection> mConn = UnitTestUtil::GetConnection(L"", false);
 
-            dscCmd = (FdoRdbmsDestroySpatialContext *)mConn->CreateCommand( FdoCommandType_DestroySpatialContext );
+            dscCmd = (FdoIDestroySpatialContext *)mConn->CreateCommand( FdoCommandType_DestroySpatialContext );
 
             dscCmd->SetName(L"SC_X");
       

@@ -25,7 +25,12 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( MySqlDescribeSchemaTest, "DescribeSchemaT
 
 void MySqlDescribeSchemaTest::set_provider()
 {
-    mInputSchema = mSchema;
     mInputData = mData;
     UnitTestUtil::SetProvider( "MySql" );
 }
+
+FdoInt32 MySqlDescribeSchemaTest::GetLockTypeCount()
+{
+    return 0;
+}
+

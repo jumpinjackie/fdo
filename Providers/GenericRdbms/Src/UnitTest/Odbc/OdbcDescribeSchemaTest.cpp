@@ -48,7 +48,7 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessDescribeSchemaTest, "OdbcAccess
 
 void OdbcDescribeSchemaTest::LoadTestData(FdoIConnection* connection)
 {
-	UnitTestUtil::Sql2Db( (const wchar_t**) mInputSchema, connection );
+	UnitTestUtil::Sql2Db( GetSchema(), connection );
 }
 void OdbcDescribeSchemaTest::describe()
 {
@@ -106,7 +106,6 @@ void OdbcDescribeSchemaTest::describe()
 
 void OdbcMySqlDescribeSchemaTest::set_provider()
 {
-    mInputSchema = mSchema;
     mInputData = NULL;
     UnitTestUtil::SetProvider( "OdbcMySql" );
 }
@@ -114,7 +113,6 @@ void OdbcMySqlDescribeSchemaTest::set_provider()
 #ifdef _WIN32
 void OdbcSqlServerDescribeSchemaTest::set_provider()
 {
-    mInputSchema = mSchema;
     mInputData = NULL;
     UnitTestUtil::SetProvider( "OdbcSqlServer" );
 }

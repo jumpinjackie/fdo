@@ -41,6 +41,9 @@ public:
     virtual void feature_subset_query2() {};
     virtual void feature_select_obj_distinct() {};
     virtual void feature_geom_query () {};
+    virtual void spatial_query_defect792377() {};
+    virtual void spatial_query_defect813611() {};
+    virtual void spatial_query_defect880310() {};
 
     virtual FdoString * GetClassName()          { return mSetup.LikesUC() ? L"TESTCLASS" : L"testClass"; };
 

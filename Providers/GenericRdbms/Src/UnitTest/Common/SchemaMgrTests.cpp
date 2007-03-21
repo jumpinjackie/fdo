@@ -1260,6 +1260,156 @@ void SchemaMgrTests::testFKeys ()
     }
 }
 
+void SchemaMgrTests::testViews ()
+{
+    StaticConnection* conn = CreateStaticConnection();
+    FdoPtr<FdoIConnection> fdoConn;
+
+    try
+    {
+        char prvenv[100];
+        sprintf( prvenv, "provider=%s", conn->GetServiceName() );
+#ifdef _WIN32
+        _putenv( prvenv );
+#else
+        putenv( prvenv );
+#endif
+        FdoStringP provider = conn->GetServiceName();
+
+        // Sets the other env.
+        UnitTestUtil::SetProvider( conn->GetServiceName() ); 
+
+        printf( "Creating original schema ...\n" );
+
+        conn->connect();
+
+        FdoSchemaManagerP mgr = conn->CreateSchemaManager();
+
+        FdoSmPhGrdMgrP phMgr = mgr->GetPhysicalSchema()->SmartCast<FdoSmPhGrdMgr>();
+
+        FdoSmPhDatabaseP database = phMgr->GetDatabase();
+
+        GdbiConnection* gdbiConn = phMgr->GetGdbiConnection();
+        GdbiCommands* gdbiCommands = gdbiConn->GetCommands();
+
+        FdoStringP datastore = phMgr->GetDcOwnerName(
+            UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX)
+        );
+
+        FdoStringP fdatastore = phMgr->GetDcOwnerName(
+            UnitTestUtil::GetEnviron("datastore", DB_NAME_FOREIGN_SUFFIX)
+        );
+
+        FdoSmPhOwnerP owner = phMgr->FindOwner( datastore, L"", false );
+        if ( owner ) {
+            owner->SetElementState( FdoSchemaElementState_Deleted );
+            owner->Commit();
+        }
+
+        owner = database->CreateOwner(
+            datastore, 
+            false
+        );
+        owner->SetPassword( L"test" );
+    
+        FdoSmPhOwnerP fowner = phMgr->FindOwner( fdatastore, L"", false );
+        if ( fowner ) {
+            fowner->SetElementState( FdoSchemaElementState_Deleted );
+            fowner->Commit();
+        }
+
+        fowner = database->CreateOwner(
+            fdatastore, 
+            false
+        );
+        fowner->SetPassword( L"test" );
+    
+        FdoSmPhTableP tableA = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE1") );
+        FdoSmPhColumnP column = tableA->CreateColumnInt32( phMgr->GetDcColumnName(L"ID"), false );
+        tableA->AddPkeyCol( column->GetName() );
+        column = tableA->CreateColumnInt32( phMgr->GetDcColumnName(L"PARENT_ID"), false );
+        column = tableA->CreateColumnInt16( phMgr->GetDcColumnName(L"INT16_COL1"), false );
+
+        FdoSmPhTableP tableB = fowner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE1") );
+        column = tableB->CreateColumnInt32( phMgr->GetDcColumnName(L"ID"), false );
+        tableB->AddPkeyCol( column->GetName() );
+        column = tableB->CreateColumnInt32( phMgr->GetDcColumnName(L"PARENT_ID"), false );
+        column = tableB->CreateColumnInt16( phMgr->GetDcColumnName(L"INT16_COL1"), false );
+
+        database->Commit();
+
+        FdoSmPhGrdOwnerP grdOwner = fowner->SmartCast<FdoSmPhGrdOwner>();
+#ifdef RDBI_DEF_ORA
+        grdOwner->ActivateAndExecute( L"grant select on table1 to public" );
+#endif
+
+        FdoStringP createViewSql = FdoStringP::Format( 
+            L"create view view1 ( id, int16_col1, int16_col2b ) as select a.id, a.int16_col1, b.int16_col1 from %ls a, %ls b where a.id = b.parent_id", 
+            (FdoString*)(tableA->GetDbQName()),
+            (FdoString*)(tableA->GetDbQName())
+        );
+        grdOwner = owner->SmartCast<FdoSmPhGrdOwner>();
+        grdOwner->ActivateAndExecute( (FdoString*) createViewSql );
+
+        createViewSql = FdoStringP::Format( 
+            L"create view view2 ( id, int16_col1, int16_col2b ) as select a.id, a.int16_col1, b.int16_col1 from %ls a, %ls b where a.id = b.parent_id", 
+            (FdoString*)(tableA->GetDbQName()),
+            (FdoString*)(tableB->GetDbQName())
+        );
+        grdOwner->ActivateAndExecute( (FdoString*) createViewSql );
+
+        mgr = NULL;
+        phMgr = NULL;
+        conn->disconnect();
+        delete conn;
+        conn = CreateStaticConnection();
+        conn->connect();
+        mgr = conn->CreateSchemaManager();
+        phMgr = mgr->GetPhysicalSchema()->SmartCast<FdoSmPhGrdMgr>();
+
+        printf( "Autogenerating schema from datastore ...\n" );
+
+        fdoConn = UnitTestUtil::CreateConnection(
+            false,
+            false,
+            DB_NAME_SUFFIX
+        );
+
+        FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) fdoConn->CreateCommand(FdoCommandType_DescribeSchema);
+        FdoFeatureSchemasP schemas = pDescCmd->Execute();
+        FdoFeatureSchemaP schema = schemas->GetItem(0);
+        FdoClassesP classes = schema->GetClasses();
+
+        CPPUNIT_ASSERT( classes->GetCount() == 3 );
+
+        FdoClassDefinitionP classDef = classes->GetItem( table2class(phMgr, L"VIEW1") );
+        FdoDataPropertiesP idProps = classDef->GetIdentityProperties();
+        CPPUNIT_ASSERT( idProps->GetCount() == (SupportsBaseObjects() ? 1 : 0) );
+
+        classDef = classes->GetItem( table2class(phMgr, L"VIEW2") );
+        idProps = classDef->GetIdentityProperties();
+#ifndef RDBI_DEF_SSQL
+        CPPUNIT_ASSERT( idProps->GetCount() == 0 );
+#endif
+
+        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_SUFFIX );
+
+        printf( "Done\n" );
+    }
+    catch (FdoException* e ) 
+    {
+        UnitTestUtil::FailOnException(e);
+    }
+    catch (CppUnit::Exception exception)
+    {
+        throw exception;
+    }
+    catch (...)
+    {
+        CPPUNIT_FAIL ("unexpected exception encountered");
+    }
+}
+
 void SchemaMgrTests::testConfigError ()
 {
     FdoPtr<FdoIConnection> fdoConn;

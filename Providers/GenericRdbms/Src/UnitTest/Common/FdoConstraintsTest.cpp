@@ -36,28 +36,26 @@ void FdoConstraintsTest::setUp ()
 	set_provider();
 }
 
-FdoIConnection* FdoConstraintsTest::CreateConnection( FdoBoolean recreateDb )
+void FdoConstraintsTest::CreateConnection( Context& context, FdoBoolean recreateDb )
 {
-	FdoIConnection* connection;
-
     FdoBoolean lRecreateDb = recreateDb && RECREATE_CONSTRAINTS_DB;
     FdoBoolean destroySchema = recreateDb && !RECREATE_CONSTRAINTS_DB;
 
     // delete, re-create and open the datastore
-	connection = UnitTestUtil::CreateConnection(
+	context.connection = UnitTestUtil::CreateConnection(
 		lRecreateDb,
 		lRecreateDb,
         DB_NAME_CONSTRAINTS_SUFFIX,
         NULL,
         NULL,
-        0
+        context.ltMethod
     );
 
     if ( destroySchema )	{
 		try {
 			// Drop the schema
-			FdoPtr<FdoIDestroySchema>  pCmd = (FdoIDestroySchema*) connection->CreateCommand(FdoCommandType_DestroySchema);
-			FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
+			FdoPtr<FdoIDestroySchema>  pCmd = (FdoIDestroySchema*) context.connection->CreateCommand(FdoCommandType_DestroySchema);
+			FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) context.connection->CreateCommand(FdoCommandType_DescribeSchema);
             FdoFeatureSchemasP schemas = pDescCmd->Execute();
             FdoInt32 idx;
             for ( idx = 0; idx < schemas->GetCount(); idx++ ) {
@@ -68,8 +66,6 @@ FdoIConnection* FdoConstraintsTest::CreateConnection( FdoBoolean recreateDb )
 			// ignore
 		}
 	}
-    
-    return connection;
 }
 
 void FdoConstraintsTest::TestParser()
@@ -86,7 +82,7 @@ void FdoConstraintsTest::TestParser()
 	success &= TestParser(L"(INTRANGE >= 10 and INTRANGE < 20))");
 	success &= TestParser(L"(STRINGLIST = 'close' or STRINGLIST = 'open')");
 
-	success &= TestParser(L"INTLIST = 30 or INTLIST = 20 or INTLIST = 10)");
+	success &= TestParser(L"INTLIST = 30 or INTLIST = 20 or INTLIST = 10");
 	success &= TestParser(L"INTRANGE >= 10 and INTRANGE < 20");
 	success &= TestParser(L"STRINGLIST = 'close' or STRINGLIST = 'open'");
 

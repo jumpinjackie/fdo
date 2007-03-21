@@ -186,3 +186,18 @@ void FdoConnectTest::connectWithInvalidString()
 		CPPUNIT_FAIL("Unknown exception");
 	}
 }
+
+void FdoConnectTest::connectWithExtraneousSpaces()
+{
+    wchar_t *wConnection = UnitTestUtil::GetConnectionString(Connection_WithDatastore, L"", true);
+
+    FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
+    connection->SetConnectionString (wConnection);
+    FdoPtr<FdoIConnectionInfo> connInfo = connection->GetConnectionInfo();
+    FdoPtr<FdoIConnectionPropertyDictionary> connDict = connInfo->GetConnectionProperties();
+	if( connection->Open() != FdoConnectionState_Open )
+    {
+        connection->Close();
+        throw "connectWithExtraneousSpaces failed";
+    }
+}

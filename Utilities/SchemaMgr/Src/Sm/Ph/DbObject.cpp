@@ -169,7 +169,8 @@ FdoSmPhDbObjectP FdoSmPhDbObject::GetRootObject()
 
     if ( baseObjects->GetCount() == 1 ) {
         FdoSmPhBaseObjectP baseObject = baseObjects->GetItem(0);
-        rootObject = baseObject->GetDbObject();
+        if ( baseObject->GetBaseRefCount() < 2 ) 
+            rootObject = baseObject->GetDbObject();
     }
 
     return rootObject;
@@ -195,7 +196,8 @@ FdoStringP FdoSmPhDbObject::GetRootObjectName() const
 
     if ( baseObjects->GetCount() == 1 ) {
         const FdoSmPhBaseObject* baseObject = baseObjects->RefItem(0);
-        rootObjectName = baseObject->GetName();
+        if ( baseObject->GetBaseRefCount() < 2 ) 
+            rootObjectName = baseObject->GetObjectName();
     }
 
     return rootObjectName;
@@ -209,7 +211,8 @@ FdoStringP FdoSmPhDbObject::GetRootOwner() const
 
     if ( baseObjects->GetCount() == 1 ) {
         const FdoSmPhBaseObject* baseObject = baseObjects->RefItem(0);
-        rootOwnerName = baseObject->GetOwnerName();
+        if ( baseObject->GetBaseRefCount() < 2 ) 
+            rootOwnerName = baseObject->GetOwnerName();
     }
 
     return rootOwnerName;
@@ -223,7 +226,8 @@ FdoStringP FdoSmPhDbObject::GetRootDatabase() const
 
     if ( baseObjects->GetCount() == 1 ) {
         const FdoSmPhBaseObject* baseObject = baseObjects->RefItem(0);
-        rootDatabaseName = baseObject->GetDatabaseName();
+        if ( baseObject->GetBaseRefCount() < 2 ) 
+            rootDatabaseName = baseObject->GetDatabaseName();
     }
 
     return rootDatabaseName;
@@ -1101,8 +1105,16 @@ void FdoSmPhDbObject::LoadBaseObjects( FdoPtr<FdoSmPhTableComponentReader> baseO
 {
     while ( baseObjRdr->ReadNext() ) {
         FdoSmPhBaseObjectP newBaseObject = NewBaseObject( baseObjRdr );
-        if ( newBaseObject ) 
-            mBaseObjects->Add( newBaseObject );
+
+        if ( newBaseObject ) {
+            FdoSmPhBaseObjectP currBaseObject = mBaseObjects->FindItem( newBaseObject->GetName() );
+            if ( currBaseObject ) 
+                // Base object already in collection, just add a base reference.
+                currBaseObject->AddBaseRef();
+            else
+                // Not in collection, add it.
+                mBaseObjects->Add( newBaseObject );
+        }
     }
 }
 

@@ -588,6 +588,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Common\SchemaOverrideUtil.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\SchemaOverrideUtil.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Common\StringPropertiesDictionary.h"
 				>
 			</File>

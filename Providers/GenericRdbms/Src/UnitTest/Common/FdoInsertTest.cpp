@@ -36,7 +36,7 @@ FdoInsertTest::FdoInsertTest(void)
     mSuffix[0] = '\0';
 }
 
-FdoInsertTest::FdoInsertTest(wchar_t *suffix)
+FdoInsertTest::FdoInsertTest(FdoString *suffix)
 {
     m_DisableFailures = false;
     wcsncpy(mSuffix, suffix, 11 );
@@ -310,24 +310,30 @@ void FdoInsertTest::MainInsertTest (FdoIConnection *conn)
                         dataValue = FdoDataValue::Create(L"Ontario");
                         propertyValue = AddNewProperty( propertyValues3, L"Pr\x00f6vince");
                         propertyValue->SetValue(dataValue);
-                        char id[16];
-                        sprintf(id,"P%d_%d",feat,count1);
-                        FdoStringP str( id );
-                        dataValue = FdoDataValue::Create((FdoString*)str);
+                        FdoStringP id = FdoStringP::Format(L"P%d_%d",feat,count1);
+                        dataValue = FdoDataValue::Create((FdoString*) id);
                         propertyValue = AddNewProperty( propertyValues3, L"PIN");
                         propertyValue->SetValue(dataValue);
 
                         propertyValue = AddNewProperty( propertyValues3, L"Geometry");
                         propertyValue->SetValue(geometryValue);
 
-                        if( count1 > 7 )
+//                        if( count1 > 7 )
 						{
 							FdoPtr<FdoIFeatureReader> reader4 = insertCommand3->Execute();
 							while( reader4->ReadNext() ) {
+//Remove this ifdef when defect 918057 fixed
+#ifdef RDBI_DEF_SA_ORA
+								if( !reader4->IsNull( L"PIN" ) )	{
+									FdoString* pin = reader4->GetString(L"PIN");
+									DBG(printf("inserted pin=%ls\n", pin));
+								}
+#else
 								if( !reader4->IsNull( L"FeatId" ) )	{
 									FdoInt64 featid = reader4->GetInt64(L"FeatId");
 									DBG(printf("inserted featid=%ld\n", featid));
 								}
+#endif
 							}
 						}
 
@@ -496,6 +502,7 @@ void FdoInsertTest::insert3 ()
         {
             double       coordsBuffer[400];
             int                 segCount = 2;
+            bool supportsZ = (FdoPtr<FdoIGeometryCapabilities>(connection->GetGeometryCapabilities())->GetDimensionalities() & FdoDimensionality_Z);
 
             FdoPtr<FdoPropertyValue> propertyValue;
 
@@ -506,14 +513,22 @@ void FdoInsertTest::insert3 ()
 
             FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
 
-			// Use 2D points to accomodate MySql 
-            coordsBuffer[0] = 1.1;
-            coordsBuffer[1] = 2.2;
-            coordsBuffer[2] = 1.1;
-            coordsBuffer[3] = 3.3;
+            int ord = 0;
+            coordsBuffer[ord++] = 1.1;
+            coordsBuffer[ord++] = 2.2;
+            if ( supportsZ ) 
+                coordsBuffer[ord++] = 0.0;
+            coordsBuffer[ord++] = 1.1;
+            coordsBuffer[ord++] = 3.3;
+            if ( supportsZ ) 
+                coordsBuffer[ord++] = 0.0;
 
             propertyValue = AddNewProperty( propertyValues, L"Geometry");
-            FdoPtr<FdoILineString> line1 = gf->CreateLineString(FdoDimensionality_XY, 2*2, coordsBuffer);
+            FdoPtr<FdoILineString> line1 = gf->CreateLineString(
+                supportsZ ? FdoDimensionality_XY|FdoDimensionality_Z : FdoDimensionality_XY, 
+                ord, 
+                coordsBuffer
+             );
             FdoPtr<FdoByteArray> byteArray = gf->GetFgf(line1);
 
             FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
@@ -789,8 +804,12 @@ void FdoInsertTest::insertBoundary()
 
 			featureReader = selectCmd->Execute();
 			CPPUNIT_ASSERT(featureReader->ReadNext());
+
+// Reinstate when defect 917085 is fixed.
+#ifndef RDBI_DEF_ORA
             CPPUNIT_ASSERT ( featureReader->GetInt64(L"int64") == (GetMaxInt64Value() - 1) );
             CPPUNIT_ASSERT ( featureReader->GetSingle(L"single") == GetSmallestSingleValue() );
+#endif
 //            CPPUNIT_ASSERT ( featureReader->GetDouble(L"double") == GetSmallestDoubleValue() );
 
             insertBoundaryCleanup( connection );
@@ -1294,7 +1313,7 @@ try
             L"aaaaaaaaaabbbbiiiii", 
             L"3333"};
 
-        connection = UnitTestUtil::GetConnection(L"LT", true, Connection_WithDatastore, 1, true );
+        connection = UnitTestUtil::GetConnection(L"LT", true, true, Connection_WithDatastore, 1, true );
 
         // Setup the long transaction environment required for this test.
         // NOTE: The long transaction names are prefixed with the current user
@@ -1588,4 +1607,543 @@ void FdoInsertTest::insertAutoGen()
         throw;
     }
 }
+
+void FdoInsertTest::insertLongString()
+{
+	try
+    {
+
+        FdoPtr<FdoIConnection> connection = UnitTestUtil::GetConnection(mSuffix, true);
+
+        try
+        {
+			//delete row
+			FdoPtr<FdoISQLCommand> delCmd = (FdoISQLCommand*)connection->CreateCommand( FdoCommandType_SQLCommand );
+            delCmd->SetSQLStatement(L"delete from ACDBENTITY_ACXDATA_ACXOBJ where intdata=200");
+			delCmd->ExecuteNonQuery();
+
+			FdoIInsert *insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
+            insertCommand->SetFeatureClassName(L"Acad:AcDb3dPolyline");
+	        FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
+
+			FdoPtr<FdoDataValue> dataValue;
+	        FdoPtr<FdoPropertyValue> propertyValue;
+
+			dataValue = FdoDataValue::Create(L"256");
+	        propertyValue = AddNewProperty( propertyValues,L"color"); 
+	        propertyValue->SetValue(dataValue);
+
+	        dataValue = FdoDataValue::Create(0);
+	        propertyValue = AddNewProperty( propertyValues, L"segcount");
+	        propertyValue->SetValue(dataValue);
+		
+	        dataValue = FdoDataValue::Create(200);
+	        propertyValue = AddNewProperty( propertyValues, L"layer");
+	        propertyValue->SetValue(dataValue);
+
+	        dataValue = FdoDataValue::Create(1);
+	        propertyValue = AddNewProperty( propertyValues, L"xdata.seq");
+	        propertyValue->SetValue(dataValue);
+
+	        dataValue = FdoDataValue::Create(L"xyz");
+	        propertyValue = AddNewProperty( propertyValues, L"xdata.DataValue");
+	        propertyValue->SetValue(dataValue);
+                            
+            dataValue = FdoDataValue::Create(200);
+	        propertyValue = AddNewProperty( propertyValues, L"xdata.AcXObj.intdata");
+	        propertyValue->SetValue(dataValue);
+			// Generate very long string
+			FdoStringP strData = L"abcdefghi";
+			for (int i=1; i<400; i++)
+				strData += L"abcdefghij";
+			strData += L"X";
+            dataValue = FdoDataValue::Create(strData);
+	        propertyValue = AddNewProperty( propertyValues, L"xdata.AcXObj.strdata");
+	        propertyValue->SetValue(dataValue);
+
+			FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
+			CPPUNIT_ASSERT(reader != NULL);
+			reader->Close();
+			FdoISelect *selCmd;
+			selCmd = (FdoISelect*)connection->CreateCommand( FdoCommandType_Select );
+            selCmd->SetFeatureClassName(L"Acad:AcDb3dPolyline.xdata.AcXObj");
+            FdoComparisonCondition* filterPtr = FdoComparisonCondition::Create(
+						FdoPtr<FdoIdentifier> (FdoIdentifier::Create(L"intdata")), 
+						FdoComparisonOperations_EqualTo, 
+						FdoPtr<FdoDataValue>(FdoDataValue::Create((int)200)));
+			selCmd->SetFilter(filterPtr);
+            filterPtr->Release();
+            reader = selCmd->Execute();
+			CPPUNIT_ASSERT(reader != NULL);
+			while (reader->ReadNext())
+			{
+				if (!reader->IsNull(L"strdata"))
+				{
+					FdoStringP strSel = reader->GetString(L"strdata");
+					CPPUNIT_ASSERT(strSel.ICompare(strData) == 0);
+				}
+			}
+			reader->Close();
+			connection->Close();
+		}
+		catch (...)
+        {
+            if (connection)
+                connection->Close ();
+            throw;
+        }
+    }
+    catch (FdoCommandException *ex)
+    {
+        UnitTestUtil::FailOnException(ex);
+    }
+    catch (FdoException *ex)
+    {
+        UnitTestUtil::FailOnException(ex);
+    }
+}
+
+void FdoInsertTest::featureReaderTest()
+{
+
+    bool                                featureReaderError  = false;
+    FdoIConnection                      *connection         = NULL;
+	FdoIApplySchema                     *applySchemaCmd     = NULL;
+    FdoPtr<FdoFeatureSchemaCollection>  schemas;
+	FdoFeatureSchema                    *schema             = NULL;
+    FdoClass                            *schemaClass        = NULL;
+    FdoFeatureClass                     *schemaFeatureClass = NULL;
+    FdoClassCollection                  *classes            = NULL;
+    FdoIFeatureReader                   *featureReader      = NULL;
+
+    try
+    {
+        printf(" >>> Feature Reader Test \n");
+
+        // Create the data store used for the test. Note that none of the
+        // standard schemas is created.
+        printf(" >>> ... creating test database \n");
+        if (UnitTestUtil::DatastoreExists(L"_frc"))
+            UnitTestUtil::DropDb(L"_frc");
+        UnitTestUtil::CreateDB(false, false, L"_frc");
+
+        // Connect and create the test schema.
+        connection = UnitTestUtil::GetConnection(L"_frc");
+
+        printf(" >>> ... creating test schema FeatureReaderCheck \n");
+        applySchemaCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
+        schemas = FdoFeatureSchemaCollection::Create(NULL);
+	    schema  = FdoFeatureSchema::Create(L"FeatureReaderCheck", L"Feature Reader Check Schema");
+        classes = schema->GetClasses();
+
+        // Add a class with the feature id property as its sole identity property. In this case
+        // use the identifier FeatId for the feature id property.
+        printf(" >>> ...... adding class FRC_SSFIDC \n");
+        schemaFeatureClass = CreateFdoFeatureClass(L"FRC_SSFIDC", L"FeatId", NULL, 1);
+        classes->Add(schemaFeatureClass);
+        FDO_SAFE_RELEASE(schemaFeatureClass);
+
+        // Add a class with the feature id property as its sole identity property. In this case
+        // use the identifier FeatureId for the feature id property.
+        printf(" >>> ...... adding class FRC_SCFIDC \n");
+        schemaFeatureClass = CreateFdoFeatureClass(L"FRC_SCFIDC", L"FeatureId", NULL, 1);
+        classes->Add(schemaFeatureClass);
+        FDO_SAFE_RELEASE(schemaFeatureClass);
+
+        // Add a class with two identity properties. The identity properties do not
+        // include the feature id property.
+        printf(" >>> ...... adding class FRC_MIDC \n");
+        schemaFeatureClass = CreateFdoFeatureClass(L"FRC_MIDC", L"Id1", L"Id2", 2);
+        classes->Add(schemaFeatureClass);
+        FDO_SAFE_RELEASE(schemaFeatureClass);
+
+        // Add a class with two identity properties. The identity properties do include
+        // the feature id property.
+        printf(" >>> ...... adding class FRC_MIDWFIDC \n");
+        schemaFeatureClass =  CreateFdoFeatureClass(L"FRC_MIDWFIDC", L"Id1", L"FeatureId", 3);
+        classes->Add(schemaFeatureClass);
+        FDO_SAFE_RELEASE(schemaFeatureClass);
+
+        // Add a non-feature class.
+        printf(" >>> ...... adding class FRC_NFC \n");
+        schemaClass = CreateFdoClass(L"FRC_NFC");
+        classes->Add(schemaClass);
+        FDO_SAFE_RELEASE(schemaClass);
+
+        schemas->Add(schema);
+        applySchemaCmd->SetFeatureSchema(schema);
+        printf(" >>> ...... applying schema \n");
+        applySchemaCmd->Execute();
+
+        FDO_SAFE_RELEASE(classes);
+        FDO_SAFE_RELEASE(schema);
+        FDO_SAFE_RELEASE(applySchemaCmd);
+
+
+        printf(" >>> ... insert data and check the returned feature reader \n");
+        printf(" >>> ...... processing class FRC_SSFIDC \n");
+        featureReader = AddFeature(connection, L"FRC_SSFIDC", true, 1);
+        featureReader->ReadNext();
+        try
+        {
+            FdoInt64 fid = featureReader->GetInt64(L"FeatId");
+        }
+        catch (...)
+        {
+            printf(" >>> ......... Feature Reader Error for class FRC_SSFIDC \n");
+            featureReaderError = true;
+        }
+        FDO_SAFE_RELEASE(featureReader);
+
+        printf(" >>> ...... processing class FRC_SCFIDC \n");
+        featureReader = AddFeature(connection, L"FRC_SCFIDC", true, 1);
+        featureReader->ReadNext();
+        try
+        {
+            FdoInt64 fid = featureReader->GetInt64(L"FeatureId");
+        }
+        catch (...)
+        {
+            printf(" >>> ......... Feature Reader Error for class FRC_SCFIDC \n");
+            featureReaderError = true;
+        }
+        FDO_SAFE_RELEASE(featureReader);
+
+        printf(" >>> ...... processing class FRC_MIDC \n");
+        featureReader = AddFeature(connection, L"FRC_MIDC", true, 2);
+        featureReader->ReadNext();
+//Remove this ifdef when defect 918057 fixed
+#ifdef RDBI_DEF_SA_ORA
+        try
+        {
+            FdoStringP id1str = featureReader->GetString(L"Id1");
+            FdoStringP id2str = featureReader->GetString(L"Id2");
+        }
+        catch (...)
+        {
+            printf(" >>> ......... Feature Reader Error for class FRC_MIDC \n");
+            featureReaderError = true;
+        }
+#endif
+        FDO_SAFE_RELEASE(featureReader);
+
+        printf(" >>> ...... processing class FRC_MIDWFIDC \n");
+        featureReader = AddFeature(connection, L"FRC_MIDWFIDC", true, 3);
+        featureReader->ReadNext();
+//Remove this ifdef when defect 918057 fixed
+#ifdef RDBI_DEF_SA_ORA
+        try
+        {
+            FdoStringP id1str = featureReader->GetString(L"Id1");
+            FdoInt64 fid      = featureReader->GetInt64(L"FeatureId");
+        }
+        catch (...)
+        {
+            printf(" >>> ......... Feature Reader Error for class FRC_MIDWFIDC \n");
+            featureReaderError = true;
+        }
+#endif
+        FDO_SAFE_RELEASE(featureReader);
+
+        printf(" >>> ...... processing class FRC_NFC \n");
+        featureReader = AddFeature(connection, L"FRC_NFC", false, 0);
+        featureReader->ReadNext();
+//Remove this ifdef when defect 918057 fixed
+#ifdef RDBI_DEF_SA_ORA
+        try
+        {
+            FdoInt32 fid = featureReader->GetInt32(L"xid");
+        }
+        catch (...)
+        {
+            printf(" >>> ......... Feature Reader Error for class FRC_NFC \n");
+            featureReaderError = true;
+        }
+#endif
+        FDO_SAFE_RELEASE(featureReader);
+
+		connection->Close();
+        if (featureReaderError)
+            throw FdoException::Create(L"Feature Reader Test Failed");
+        printf(" >>> Feature Reader Test Succeeded\n");
+	}
+
+    catch (FdoException *exp)
+    {
+        printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+        connection->Close ();
+        FDO_SAFE_RELEASE(classes);
+        FDO_SAFE_RELEASE(schema);
+        FDO_SAFE_RELEASE(applySchemaCmd);
+        TestCommonFail(exp);
+    }
+
+	catch (...)
+    {
+        if ( connection ) connection->Close ();
+        FDO_SAFE_RELEASE(classes);
+        FDO_SAFE_RELEASE(schema);
+        FDO_SAFE_RELEASE(applySchemaCmd);
+        throw;
+    }
+}
+
+FdoIFeatureReader *FdoInsertTest::AddFeature (FdoIConnection *connection, FdoString *className, bool isSpatial, int idScenario)
+{
+    double                     coordinateBuffer[5];
+    FdoIInsert                 *insertCommand      = NULL;
+	FdoDataValue               *dataValue          = NULL;
+    FdoByteArray               *byteArray          = NULL;
+    FdoILineString             *lineStr            = NULL;
+    FdoGeometryValue           *geometryValue      = NULL;
+	FdoPropertyValue           *propertyValue      = NULL;
+    FdoIFeatureReader          *featureReader      = NULL;
+    FdoFgfGeometryFactory      *geometryFactory    = NULL;
+    FdoPropertyValueCollection *propertyValues     = NULL;
+
+    try
+    {
+        insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
+        insertCommand->SetFeatureClassName(className);
+	    propertyValues = insertCommand->GetPropertyValues();
+
+        if (isSpatial)
+        {
+            coordinateBuffer[0] = 100.0;
+            coordinateBuffer[1] = 100.0;
+            coordinateBuffer[2] = 101.0;
+            coordinateBuffer[3] = 101.0;
+
+            geometryFactory = FdoFgfGeometryFactory::GetInstance();
+            lineStr         = geometryFactory->CreateLineString(
+                                    FdoDimensionality_XY,
+                                    4, 
+                                    coordinateBuffer);
+            byteArray       = geometryFactory->GetFgf(lineStr);
+            geometryValue   = FdoGeometryValue::Create(byteArray);
+
+            propertyValue = AddNewProperty(propertyValues, L"RDBMS_GEOM");
+            propertyValue->SetValue(geometryValue);
+            FDO_SAFE_RELEASE(geometryValue);
+            FDO_SAFE_RELEASE(lineStr);
+            FDO_SAFE_RELEASE(byteArray);
+            FDO_SAFE_RELEASE(geometryValue);
+            FDO_SAFE_RELEASE(propertyValue);
+        }
+        else
+        {
+            dataValue     = FdoDataValue::Create(L"1001");
+            propertyValue = AddNewProperty(propertyValues, L"xid");
+            propertyValue->SetValue(dataValue);
+            FDO_SAFE_RELEASE(propertyValue);
+            FDO_SAFE_RELEASE(dataValue);
+        }
+
+        switch (idScenario)
+        {
+            case 1:  // Single identity property representing the feature id property.
+                //Nothing to do.
+                break;
+
+            case 2: // Multiple identity properties; no feature id property included.
+                dataValue     = FdoDataValue::Create(L"1001");
+                propertyValue = AddNewProperty(propertyValues, L"Id1");
+                propertyValue->SetValue(dataValue);
+                FDO_SAFE_RELEASE(dataValue);
+                FDO_SAFE_RELEASE(propertyValue);
+
+                dataValue     = FdoDataValue::Create(L"1001");
+                propertyValue = AddNewProperty(propertyValues, L"Id2");
+                propertyValue->SetValue(dataValue);
+                FDO_SAFE_RELEASE(dataValue);
+                FDO_SAFE_RELEASE(propertyValue);
+                break;
+
+            case 3: // Multiple identity properties; feature id property included.
+                dataValue     = FdoDataValue::Create(L"1001");
+                propertyValue = AddNewProperty(propertyValues, L"Id1");
+                propertyValue->SetValue(dataValue);
+                FDO_SAFE_RELEASE(dataValue);
+                FDO_SAFE_RELEASE(propertyValue);
+                break;
+        }
+
+        dataValue     = FdoDataValue::Create(L"Blue");
+        propertyValue = AddNewProperty(propertyValues, L"color");
+        propertyValue->SetValue(dataValue);
+        FDO_SAFE_RELEASE(dataValue);
+        FDO_SAFE_RELEASE(propertyValue);
+
+        featureReader = insertCommand->Execute();
+
+        FDO_SAFE_RELEASE(propertyValues);
+        FDO_SAFE_RELEASE(insertCommand);
+
+        return featureReader;
+    
+    }  //  try ...
+
+    catch ( ... )
+    {
+        FDO_SAFE_RELEASE(propertyValue);
+        FDO_SAFE_RELEASE(geometryValue);
+        FDO_SAFE_RELEASE(lineStr);
+        FDO_SAFE_RELEASE(byteArray);
+        FDO_SAFE_RELEASE(geometryValue);
+        FDO_SAFE_RELEASE(dataValue);
+        FDO_SAFE_RELEASE(propertyValues);
+        FDO_SAFE_RELEASE(insertCommand);
+        throw;
+    }
+}
+
+FdoDataPropertyDefinition *FdoInsertTest::CreateDataProperty (FdoString   *propertyName,
+                                                           FdoDataType dataType,
+                                                           FdoInt32    dataSize,
+                                                           bool        isNullable)
+{
+    FdoDataPropertyDefinition *dataPropertyDefinition = NULL;
+
+	dataPropertyDefinition = FdoDataPropertyDefinition::Create(propertyName, propertyName);
+	dataPropertyDefinition->SetDataType(dataType);
+    if (dataType == FdoDataType_String)
+        dataPropertyDefinition->SetLength(dataSize);
+	dataPropertyDefinition->SetNullable(isNullable);
+    return dataPropertyDefinition;
+}
+
+FdoClass *FdoInsertTest::CreateFdoClass (FdoString *className)
+{
+    FdoClass                            *theClass                = NULL;
+    FdoDataPropertyDefinition           *dataPropertyDefinition  = NULL;
+    FdoPropertyDefinitionCollection     *dataPropertyDefinitions = NULL;
+    FdoDataPropertyDefinitionCollection *idPropertyDefinitions   = NULL;
+
+    try
+    {
+        theClass = FdoClass::Create(className, className);
+	    theClass->SetIsAbstract(false);
+        dataPropertyDefinitions = theClass->GetProperties();
+        idPropertyDefinitions   = theClass->GetIdentityProperties();
+
+        dataPropertyDefinition  = CreateDataProperty(L"xid", FdoDataType_Int32, 0, false);
+	    dataPropertyDefinitions->Add(dataPropertyDefinition);
+        idPropertyDefinitions->Add(dataPropertyDefinition);
+	    FDO_SAFE_RELEASE(dataPropertyDefinition);
+
+        dataPropertyDefinition = CreateDataProperty(L"color", FdoDataType_String, 30, false);
+	    dataPropertyDefinitions->Add(dataPropertyDefinition);
+	    FDO_SAFE_RELEASE(dataPropertyDefinition);
+
+        FDO_SAFE_RELEASE(idPropertyDefinitions);
+        FDO_SAFE_RELEASE(dataPropertyDefinitions);
+
+        return theClass;
+    }
+
+    catch ( ... )
+    {
+	    FDO_SAFE_RELEASE(dataPropertyDefinition);
+        FDO_SAFE_RELEASE(idPropertyDefinitions);
+        FDO_SAFE_RELEASE(dataPropertyDefinitions);
+
+        throw;
+    }
+}
+
+FdoFeatureClass *FdoInsertTest::CreateFdoFeatureClass (FdoString *className,
+                                                    FdoString *idColName1,
+                                                    FdoString *idColName2,
+                                                    int       idScenario)
+{
+    FdoFeatureClass                     *theClass                    = NULL;
+    FdoDataPropertyDefinition           *dataPropertyDefinition      = NULL;
+    FdoGeometricPropertyDefinition      *geometricPropertyDefinition = NULL;
+    FdoPropertyDefinitionCollection     *dataPropertyDefinitions     = NULL;
+    FdoDataPropertyDefinitionCollection *idPropertyDefinitions       = NULL;
+
+    try
+    {
+        theClass = FdoFeatureClass::Create(className, className);
+	    theClass->SetIsAbstract(false);
+        dataPropertyDefinitions = theClass->GetProperties();
+        idPropertyDefinitions   = theClass->GetIdentityProperties();
+
+        switch (idScenario)
+        {
+            case 1: // Single identity property representing the feature id property.
+                dataPropertyDefinition = CreateDataProperty(idColName1, FdoDataType_Int64, 0, false);
+                dataPropertyDefinition->SetIsAutoGenerated(true);
+                dataPropertyDefinitions->Add(dataPropertyDefinition);
+                idPropertyDefinitions->Add(dataPropertyDefinition);
+                FDO_SAFE_RELEASE(dataPropertyDefinition);
+                break;
+
+            case 2: // Multiple identity properties; no feature id property included.
+                dataPropertyDefinition = CreateDataProperty(idColName1, FdoDataType_String, 50, false);
+                dataPropertyDefinitions->Add(dataPropertyDefinition);
+                idPropertyDefinitions->Add(dataPropertyDefinition);
+                FDO_SAFE_RELEASE(dataPropertyDefinition);
+
+                dataPropertyDefinition = CreateDataProperty(idColName2, FdoDataType_String, 50, false);
+                dataPropertyDefinitions->Add(dataPropertyDefinition);
+                idPropertyDefinitions->Add(dataPropertyDefinition);
+                FDO_SAFE_RELEASE(dataPropertyDefinition);
+                break;
+
+            case 3: // Multiple identity properties; feature id property included.
+                dataPropertyDefinition = CreateDataProperty(idColName1, FdoDataType_String, 50, false);
+                dataPropertyDefinitions->Add(dataPropertyDefinition);
+                idPropertyDefinitions->Add(dataPropertyDefinition);
+                FDO_SAFE_RELEASE(dataPropertyDefinition);
+
+                dataPropertyDefinition = CreateDataProperty(idColName2, FdoDataType_Int64, 0, false);
+                dataPropertyDefinition->SetIsAutoGenerated(true);
+                dataPropertyDefinitions->Add(dataPropertyDefinition);
+                idPropertyDefinitions->Add(dataPropertyDefinition);
+                FDO_SAFE_RELEASE(dataPropertyDefinition);
+                break;
+        }
+
+        dataPropertyDefinition = CreateDataProperty(L"color", FdoDataType_String, 30, false);
+	    dataPropertyDefinitions->Add(dataPropertyDefinition);
+	    FDO_SAFE_RELEASE(dataPropertyDefinition);
+
+        geometricPropertyDefinition = CreateGeometricProperty(L"RDBMS_GEOM");
+	    dataPropertyDefinitions->Add(geometricPropertyDefinition);
+        theClass->SetGeometryProperty(geometricPropertyDefinition);
+	    FDO_SAFE_RELEASE(geometricPropertyDefinition);
+
+        FDO_SAFE_RELEASE(idPropertyDefinitions);
+        FDO_SAFE_RELEASE(dataPropertyDefinitions);
+
+        theClass->SetBaseClass(NULL);
+        return theClass;
+
+    }  //  try ...
+
+    catch ( ... )
+    {
+	    FDO_SAFE_RELEASE(geometricPropertyDefinition);
+	    FDO_SAFE_RELEASE(dataPropertyDefinition);
+        FDO_SAFE_RELEASE(idPropertyDefinitions);
+        FDO_SAFE_RELEASE(dataPropertyDefinitions);
+
+        throw;
+    }
+}
+
+FdoGeometricPropertyDefinition *FdoInsertTest::CreateGeometricProperty (FdoString *propertyName)
+{
+    FdoGeometricPropertyDefinition *geometricPropertyDefinition = NULL;
+	geometricPropertyDefinition = FdoGeometricPropertyDefinition::Create(propertyName, propertyName);
+    geometricPropertyDefinition->SetGeometryTypes(FdoGeometricType_Point   | 
+                                                  FdoGeometricType_Curve   | 
+                                                  FdoGeometricType_Surface | 
+                                                  FdoGeometricType_Solid     );
+    geometricPropertyDefinition->SetHasElevation(false);
+    return geometricPropertyDefinition;
+}
+
+
 

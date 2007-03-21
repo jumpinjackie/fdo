@@ -47,7 +47,9 @@ protected:
     virtual void dropDb();
     virtual void describe ();
     void describe2 ();
+    virtual FdoInt32 GetLockTypeCount();
     virtual void LoadTestData(FdoIConnection* connection/*, FdoSchemaManagerP sm*/);
+    virtual FdoString** GetSchema();
     // Checks if a property is in a readonly property collection.
     // Returns true if present.
     bool Find_ROP( FdoReadOnlyPropertyDefinitionCollection* props, FdoString* propName );
@@ -55,7 +57,6 @@ protected:
     const wchar_t** mInputSchema;
     const wchar_t** mInputData;
 	
-	static const wchar_t* mSchema[];
     static const wchar_t* mData[];
 };
 #endif //CPP_UNIT_DESCRIBESCHEMATEST_H

@@ -30,10 +30,13 @@ class FdoSelectTest : public CppUnit::TestCase
   CPPUNIT_TEST( feature_subset_query );
   CPPUNIT_TEST( feature_query );
   CPPUNIT_TEST( non_feature_query );
- // CPPUNIT_TEST( distance_query );
+  CPPUNIT_TEST( distance_query );
   CPPUNIT_TEST( spatial_query );
- // CPPUNIT_TEST(feature_object_query);
-//  CPPUNIT_TEST(feature_select_obj_distinct);
+  CPPUNIT_TEST( spatial_query_defect792377 );
+  CPPUNIT_TEST( spatial_query_defect813611 );
+  CPPUNIT_TEST( spatial_query_defect880310 );
+  CPPUNIT_TEST(feature_object_query);
+  CPPUNIT_TEST(feature_select_obj_distinct);
   CPPUNIT_TEST(feature_geom_query);
   CPPUNIT_TEST(concurrent_select);
   CPPUNIT_TEST(_duplicateComputedIdTest);
@@ -52,6 +55,9 @@ public:
     virtual void non_feature_query ();
     virtual void distance_query ();
     virtual void spatial_query ();
+    virtual void spatial_query_defect792377();
+    virtual void spatial_query_defect813611();
+    virtual void spatial_query_defect880310();
     virtual void feature_object_query();
 
     virtual void feature_subset_query ();

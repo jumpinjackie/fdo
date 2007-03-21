@@ -60,6 +60,7 @@ protected:
 
     void AddFileNameToList (FdoStringP fileName);
     void ClearFileNameList ();
+    void CheckProviderInfo ();
     void CheckDatabaseBasedProviderInfo ();
     void CheckFileBasedProviderInfo ();
     void CheckList (FdoStringP dependentFileName);

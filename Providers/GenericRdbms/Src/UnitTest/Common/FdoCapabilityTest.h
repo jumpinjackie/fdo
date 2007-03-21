@@ -264,6 +264,11 @@ class FdoCapabilityTest : public CppUnit::TestCase
                                                       bool      expected_value,
                                                       bool      actualValue);
 
+        //  GetLockTypeCount:
+        //      The function returns the number of lock types supported by the current provider.
+
+        virtual FdoInt32 GetLockTypeCount();
+
         //  InitArgument:
         //      The function creates a new object of type "ArgObject", 
         //      initializes it using the provided data and returns it back

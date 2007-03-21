@@ -137,25 +137,25 @@ protected:
 
     // Helper methods for overrides tests; need to be overriden for each provider:
     virtual void CreateRdbmsSpecificElements(FdoIConnection* connection, FdoString* wDatastore) { };
-    virtual FdoRdbmsOvClassDefinition* CreateOvClassDefinition(FdoString *name = NULL) { return NULL; };
-    virtual void ClassesOvAdd(FdoRdbmsOvPhysicalSchemaMapping* pSchema, FdoRdbmsOvClassDefinition* pClass) {};
-    virtual FdoRdbmsOvTable* CreateOvTable(FdoString* name) { return NULL; };
-    virtual FdoRdbmsOvColumn* CreateOvColumn(FdoString* name) { return NULL; };
-    virtual FdoRdbmsOvGeometricColumn* CreateOvGeometricColumn(FdoString* name) { return NULL; };
-    virtual FdoRdbmsOvDataPropertyDefinition* CreateOvDataPropertyDefinition(FdoString *name) { return NULL; };
-    virtual FdoRdbmsOvGeometricPropertyDefinition* CreateOvGeometricPropertyDefinition(FdoString *name) { return NULL; };
-    virtual void PropertiesOvAdd(FdoRdbmsOvClassDefinition* pClass, FdoRdbmsOvPropertyDefinition *pProp) {};
-    virtual void ClassOvSetTable(FdoRdbmsOvClassDefinition* pClass, FdoRdbmsOvTable* pTable) {};
-    virtual void TableOvSetTablespace(FdoRdbmsOvTable* pTable, FdoString *tablespace) {};
-    virtual void DataPropOvSetColumn(FdoRdbmsOvDataPropertyDefinition* pDataProp, FdoRdbmsOvColumn* pDataColumn) {};
-    virtual void GeometricPropOvSetColumn(FdoRdbmsOvGeometricPropertyDefinition* pGeomProp, FdoRdbmsOvGeometricColumn* pGeometricColumn) {};
-    virtual void ColumnOvSetSequence(FdoRdbmsOvColumn* pColumn, FdoString *sequence) {};
-    virtual FdoRdbmsOvObjectPropertyDefinition* CreateOvObjectPropertyDefinition(FdoString *name) { return NULL; };
-    virtual FdoRdbmsOvPropertyMappingSingle* CreateOvPropertyMappingSingle() { return NULL; };
-    virtual FdoRdbmsOvPropertyMappingConcrete* CreateOvPropertyMappingConcrete() { return NULL; };
-    virtual void ObjectPropertyOvSetMappingDefinition(FdoRdbmsOvObjectPropertyDefinition* pObProp, FdoRdbmsOvPropertyMappingDefinition* mapping) {};
-    virtual void PropertyMappingOvSetInternalClass(FdoRdbmsOvPropertyMappingRelation* pMapping, FdoRdbmsOvClassDefinition* pClass) {};
-    virtual void ShemaOvSetOwner(FdoRdbmsOvPhysicalSchemaMapping *mapping, FdoString* owner) {};
+    virtual FdoRdbmsOvClassDefinition* CreateOvClassDefinition(FdoString *name = NULL);
+    virtual void ClassesOvAdd(FdoRdbmsOvPhysicalSchemaMapping* pSchema, FdoRdbmsOvClassDefinition* pClass);
+    virtual FdoRdbmsOvTable* CreateOvTable(FdoString* name);
+    virtual FdoRdbmsOvColumn* CreateOvColumn(FdoString* name);
+    virtual FdoRdbmsOvGeometricColumn* CreateOvGeometricColumn(FdoString* name);
+    virtual FdoRdbmsOvDataPropertyDefinition* CreateOvDataPropertyDefinition(FdoString *name);
+    virtual FdoRdbmsOvGeometricPropertyDefinition* CreateOvGeometricPropertyDefinition(FdoString *name);
+    virtual void PropertiesOvAdd(FdoRdbmsOvClassDefinition* pClass, FdoRdbmsOvPropertyDefinition *pProp);
+    virtual void ClassOvSetTable(FdoRdbmsOvClassDefinition* pClass, FdoRdbmsOvTable* pTable);
+    virtual void TableOvSetTablespace(FdoRdbmsOvTable* pTable, FdoString *tablespace);
+    virtual void DataPropOvSetColumn(FdoRdbmsOvDataPropertyDefinition* pDataProp, FdoRdbmsOvColumn* pDataColumn);
+    virtual void GeometricPropOvSetColumn(FdoRdbmsOvGeometricPropertyDefinition* pGeomProp, FdoRdbmsOvGeometricColumn* pGeometricColumn);
+    virtual void ColumnOvSetSequence(FdoRdbmsOvColumn* pColumn, FdoString *sequence);
+    virtual FdoRdbmsOvObjectPropertyDefinition* CreateOvObjectPropertyDefinition(FdoString *name);
+    virtual FdoRdbmsOvPropertyMappingSingle* CreateOvPropertyMappingSingle();
+    virtual FdoRdbmsOvPropertyMappingConcrete* CreateOvPropertyMappingConcrete();
+    virtual void ObjectPropertyOvSetMappingDefinition(FdoRdbmsOvObjectPropertyDefinition* pObProp, FdoRdbmsOvPropertyMappingDefinition* mapping);
+    virtual void PropertyMappingOvSetInternalClass(FdoRdbmsOvPropertyMappingRelation* pMapping, FdoRdbmsOvClassDefinition* pClass);
+    virtual void SchemaOvSetOwner(FdoRdbmsOvPhysicalSchemaMapping *mapping, FdoString* owner);
 
     virtual void VldClassCapabilities( int ltMode, int lckMode, FdoClassDefinition* pClass );
 

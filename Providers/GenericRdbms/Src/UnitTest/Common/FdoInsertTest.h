@@ -36,11 +36,13 @@ class FdoInsertTest : public CppUnit::TestCase
   CPPUNIT_TEST( insertFlushTest );
   //CPPUNIT_TEST( conditionalInsert );
   CPPUNIT_TEST( insertAutoGen );
+  //CPPUNIT_TEST( insertLongString );
+  CPPUNIT_TEST( featureReaderTest );
   CPPUNIT_TEST_SUITE_END();
 
 public:
     FdoInsertTest(void);
-    FdoInsertTest(wchar_t *suffix);
+    FdoInsertTest(FdoString *suffix);
     virtual ~FdoInsertTest(void);
     void setUp ();
 
@@ -57,6 +59,8 @@ public:
 	virtual void conditionalInsert();
     virtual void DisableFailures(){m_DisableFailures=true;};
 	virtual void insertAutoGen(); //Insert empty non-feature
+	virtual void insertLongString();
+    virtual void featureReaderTest();
 
 protected:
     virtual void  set_provider() {};   
@@ -65,6 +69,22 @@ protected:
     void insertDateCleanUp (FdoIConnection *connection);
 	static FdoPropertyValue* AddNewProperty( FdoPropertyValueCollection* propertyValues, const wchar_t *name );
     void insertBoundaryCleanup( FdoIConnection* connection );
+
+    // Functions used to setup the test environment for the unit test
+    // featureReaderTest and execute it.
+    FdoIFeatureReader *AddFeature (FdoIConnection *connection, FdoString *className, bool isSpatial, int idScenario);
+
+    FdoDataPropertyDefinition *CreateDataProperty (FdoString   *propertyName,
+                                                   FdoDataType dataType,
+                                                   FdoInt32    dataSize,
+                                                   bool        isNullable);
+    FdoClass *CreateFdoClass (FdoString *className);
+    FdoFeatureClass *CreateFdoFeatureClass (FdoString *className,
+                                            FdoString *idColName1,
+                                            FdoString *idColName2,
+                                            int       idScenario);
+    FdoGeometricPropertyDefinition *CreateGeometricProperty (FdoString *propertyName);
+
 
     //Various Max/Min values for various numeric types.
     //Used by insertBoundary test.

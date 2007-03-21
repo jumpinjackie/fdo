@@ -27,6 +27,7 @@ class MySqlDescribeSchemaTest : public DescribeSchemaTest
     CPPUNIT_TEST_SUITE_END ();
 
     void  set_provider();
+    virtual FdoInt32 GetLockTypeCount();
 };
 
 #endif // MYSQL_DESCRIBESCHEMA_H

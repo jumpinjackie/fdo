@@ -44,6 +44,7 @@ public:
 
 	virtual void SetProvider( const char *providerName );
 	virtual StaticConnection* NewStaticConnection ();
+    virtual SchemaOverrideUtilP NewSchemaOverrideUtil();
 	virtual FdoInsertTest* GetInsertTest ();
 	virtual FdoStringP GetOutputFileName (FdoString* pBaseFileName);
 };

@@ -52,6 +52,7 @@ FdoUpdateTest.cpp \
 GeometryTests.cpp \
 MessageTest.cpp \
 SchemaMgrTests.cpp \
+SchemaOverrideUtil.cpp \
 SelectTests.cpp \
 XmlFormatter.cpp \
 UnitTestUtil.cpp
@@ -85,6 +86,7 @@ FdoUpdateTest.h \
 GeometryTests.h \
 MessageTest.h \
 SchemaMgrTests.h \
+SchemaOverrideUtil.h \
 SelectTests.h \
 StringPropertiesDictionary.h \
 UnitTestUtil.h \

@@ -41,7 +41,7 @@ class FdoSmSchemaElement : public FdoSmDisposable, public FdoSmBase
     const FdoSmSchemaElement* GetParent() const;
 
     /// Returns the name of the schema object.
-    FdoString* GetName() const;
+    virtual FdoString* GetName() const;
 
     /// Get the fully qualified name for this element.
     /// This varies between element type so some types override this
