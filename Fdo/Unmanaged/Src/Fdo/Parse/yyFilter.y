@@ -136,10 +136,10 @@ Expression :
 	;
 	
 BinaryExpression :
-	Expression FdoToken_Add Expression			{$$=Node_Add(L"Add", FdoBinaryExpression::Create((FdoExpression*)$1, FdoBinaryOperations_Add, (FdoExpression*)$3));FDO_SAFE_RELEASE($1); FDO_SAFE_RELEASE($3);}
-	| Expression FdoToken_Subtract Expression	{$$=Node_Add(L"Subtract", FdoBinaryExpression::Create((FdoExpression*)$1, FdoBinaryOperations_Subtract, (FdoExpression*)$3));FDO_SAFE_RELEASE($1); FDO_SAFE_RELEASE($3);}
-	| Expression FdoToken_Multiply Expression	{$$=Node_Add(L"Multiply", FdoBinaryExpression::Create((FdoExpression*)$1, FdoBinaryOperations_Multiply, (FdoExpression*)$3));FDO_SAFE_RELEASE($1); FDO_SAFE_RELEASE($3);}
-	| Expression FdoToken_Divide Expression		{$$=Node_Add(L"Divide", FdoBinaryExpression::Create((FdoExpression*)$1, FdoBinaryOperations_Divide, (FdoExpression*)$3));FDO_SAFE_RELEASE($1); FDO_SAFE_RELEASE($3);}
+	Expression FdoToken_Add Expression			{$$=Node_Add(L"Add", FdoBinaryExpression::Create((FdoExpression*)$1, FdoBinaryOperations_Add, (FdoExpression*)$3));}
+	| Expression FdoToken_Subtract Expression	{$$=Node_Add(L"Subtract", FdoBinaryExpression::Create((FdoExpression*)$1, FdoBinaryOperations_Subtract, (FdoExpression*)$3));}
+	| Expression FdoToken_Multiply Expression	{$$=Node_Add(L"Multiply", FdoBinaryExpression::Create((FdoExpression*)$1, FdoBinaryOperations_Multiply, (FdoExpression*)$3));}
+	| Expression FdoToken_Divide Expression		{$$=Node_Add(L"Divide", FdoBinaryExpression::Create((FdoExpression*)$1, FdoBinaryOperations_Divide, (FdoExpression*)$3));}
 	;
  
 DataValue :
@@ -186,12 +186,12 @@ datetime :
 	
 Function :
 	Identifier '(' ExpressionCollection ')'
-					{$$=Node_Add(L"ExpressionCollection", FdoFunction::Create(((FdoIdentifier*)$1)->GetName(), (FdoExpressionCollection*)$3));FDO_SAFE_RELEASE($1); FDO_SAFE_RELEASE($3);}
+					{$$=Node_Add(L"ExpressionCollection", FdoFunction::Create(((FdoIdentifier*)$1)->GetName(), (FdoExpressionCollection*)$3));}
 	;
 
 ExpressionCollection :							{$$=pParse->AddNodeToDelete(FdoExpressionCollection::Create());}
-	| Expression								{$$=pParse->AddNodeToDelete(FdoExpressionCollection::Create()); ((FdoExpressionCollection*)$$)->Add((FdoExpression*)$1); Node_Trace(L"Expression Arg 1,");FDO_SAFE_RELEASE($1); }
-	| ExpressionCollection ',' Expression		{((FdoExpressionCollection*)$$)->Add((FdoExpression*)$3); Node_Trace(L"Expression Arg N,");FDO_SAFE_RELEASE($3); }
+	| Expression								{$$=pParse->AddNodeToDelete(FdoExpressionCollection::Create()); ((FdoExpressionCollection*)$$)->Add((FdoExpression*)$1); Node_Trace(L"Expression Arg 1,");}
+	| ExpressionCollection ',' Expression		{((FdoExpressionCollection*)$$)->Add((FdoExpression*)$3); Node_Trace(L"Expression Arg N,");}
 	;
 
 GeometryValue :
@@ -201,13 +201,13 @@ GeometryValue :
 	
 Identifier :			// e.g. "Address.City", "Street", "City", and "Zip Code" or can be an alias of a computed identifier
 	FdoToken_IDENTIFIER
-						{
-						    FdoComputedIdentifier* id = pParse->FindComputedIdentifier( $1 );
-						    if( id == NULL )
-						        $$ = Node_Add(L"IDENTIFIER", FdoIdentifier::Create($1));
-						    else
-						        $$ = id;
-						}
+		{
+		    FdoComputedIdentifier* id = pParse->FindComputedIdentifier( $1 );
+		    if( id == NULL )
+		        $$ = Node_Add(L"IDENTIFIER", FdoIdentifier::Create($1));
+		    else
+		        $$ = id;
+		}
  	;
  	
 ComputedIdentifier:
@@ -217,12 +217,17 @@ ComputedIdentifier:
     
 ComputedIdentifier2 :
      '(' Expression ')' FdoToken_AS Identifier
-                    {
-                        FdoComputedIdentifier* id = FdoComputedIdentifier::Create(((FdoIdentifier*)$5)->GetName(), (FdoExpression*)$2);
-                        Node_Add(L"ComputedIdentifier", id);
-                        pParse->AddCompIdentifier(id);FDO_SAFE_RELEASE($2); FDO_SAFE_RELEASE($5);
-                        id->Release();
-                    }
+        {
+            FdoComputedIdentifier* id = FdoComputedIdentifier::Create(((FdoIdentifier*)$5)->GetName(), (FdoExpression*)$2);
+            Node_Add(L"ComputedIdentifier", id);
+            pParse->AddCompIdentifier(id);
+        }
+     | Expression FdoToken_AS Identifier
+        {
+            FdoComputedIdentifier* id = FdoComputedIdentifier::Create(((FdoIdentifier*)$3)->GetName(), (FdoExpression*)$1);
+            Node_Add(L"ComputedIdentifier", id);
+            pParse->AddCompIdentifier(id);
+        }
      ;    
  	
 ValueExpression :
@@ -243,7 +248,7 @@ Parameter :
 	;
 	
 UnaryExpression :
-	FdoToken_Negate Expression	{$$ = Node_Add(L"UnaryExpression", FdoUnaryExpression::Create(FdoUnaryOperations_Negate, (FdoExpression*)$2));FDO_SAFE_RELEASE($2);}
+	FdoToken_Negate Expression	{$$ = Node_Add(L"UnaryExpression", FdoUnaryExpression::Create(FdoUnaryOperations_Negate, (FdoExpression*)$2));}
 	
 // </yyExpression.y>
 
@@ -264,18 +269,18 @@ GeometricCondition :
 	;
 	
 ValueExpressionCollection :
-	ValueExpression					{$$=pParse->AddNodeToDelete(FdoValueExpressionCollection::Create()); ((FdoValueExpressionCollection*)$$)->Add((FdoValueExpression*)$1); Node_Trace(L"ValueExpression 1");FDO_SAFE_RELEASE($1); }
+	ValueExpression					{$$=pParse->AddNodeToDelete(FdoValueExpressionCollection::Create()); ((FdoValueExpressionCollection*)$$)->Add((FdoValueExpression*)$1); Node_Trace(L"ValueExpression 1");}
 	| ValueExpressionCollection ',' ValueExpression
-										{((FdoValueExpressionCollection*)$$)->Add((FdoValueExpression*)$3); Node_Trace(L"ValueExpression n");FDO_SAFE_RELEASE($3); }
+										{((FdoValueExpressionCollection*)$$)->Add((FdoValueExpression*)$3); Node_Trace(L"ValueExpression n");}
 	;
 	
 InCondition :
 	Identifier FdoToken_IN '(' ValueExpressionCollection ')'
-				{$$=Node_Add(L"ValueExpressionCollection", FdoInCondition::Create((FdoIdentifier*)$1, (FdoValueExpressionCollection*)$4));FDO_SAFE_RELEASE($1); FDO_SAFE_RELEASE($4);}
+				{$$=Node_Add(L"ValueExpressionCollection", FdoInCondition::Create((FdoIdentifier*)$1, (FdoValueExpressionCollection*)$4));}
 	;
 	
 NullCondition :
-	Identifier FdoToken_NULL	{$$=Node_Add(L"NULL", FdoNullCondition::Create((FdoIdentifier*)$1));FDO_SAFE_RELEASE($1);}
+	Identifier FdoToken_NULL	{$$=Node_Add(L"NULL", FdoNullCondition::Create((FdoIdentifier*)$1));}
 	;
 	
 SearchCondition :
@@ -287,25 +292,25 @@ SearchCondition :
 
 SpatialCondition :
 	Identifier SpatialOperations Expression	
-		{$$=Node_Add(L"Id-SpatialOp-Expression", FdoSpatialCondition::Create((FdoIdentifier*)$1, (FdoSpatialOperations)$2, (FdoExpression*)$3));FDO_SAFE_RELEASE($1); FDO_SAFE_RELEASE($3);}
+		{$$=Node_Add(L"Id-SpatialOp-Expression", FdoSpatialCondition::Create((FdoIdentifier*)$1, (FdoSpatialOperations)$2, (FdoExpression*)$3));}
 	;
 
 UnaryLogicalOperator :
-	FdoToken_NOT Filter		{$$=Node_Add(L"NOT", FdoUnaryLogicalOperator::Create((FdoFilter*)$2, FdoUnaryLogicalOperations_Not));FDO_SAFE_RELEASE($2);}
+	FdoToken_NOT Filter		{$$=Node_Add(L"NOT", FdoUnaryLogicalOperator::Create((FdoFilter*)$2, FdoUnaryLogicalOperations_Not));}
 	;
 
 BinaryLogicalOperator :
-	Filter FdoToken_AND Filter	{$$=Node_Add(L"AND", FdoBinaryLogicalOperator::Create((FdoFilter*)$1, FdoBinaryLogicalOperations_And, (FdoFilter*)$3));FDO_SAFE_RELEASE($1); FDO_SAFE_RELEASE($3);}
-	| Filter FdoToken_OR Filter	{$$=Node_Add(L"OR", FdoBinaryLogicalOperator::Create((FdoFilter*)$1, FdoBinaryLogicalOperations_Or, (FdoFilter*)$3));FDO_SAFE_RELEASE($1); FDO_SAFE_RELEASE($3);}
+	Filter FdoToken_AND Filter	{$$=Node_Add(L"AND", FdoBinaryLogicalOperator::Create((FdoFilter*)$1, FdoBinaryLogicalOperations_And, (FdoFilter*)$3));}
+	| Filter FdoToken_OR Filter	{$$=Node_Add(L"OR", FdoBinaryLogicalOperator::Create((FdoFilter*)$1, FdoBinaryLogicalOperations_Or, (FdoFilter*)$3));}
 	;
 
 ComparisonCondition :
-	Expression ComparisonOperations Expression	{$$=Node_Add(L"ComparisonOperations", FdoComparisonCondition::Create((FdoExpression*)$1, (FdoComparisonOperations)$2, (FdoExpression*)$3));FDO_SAFE_RELEASE($1); FDO_SAFE_RELEASE($3);}
+	Expression ComparisonOperations Expression	{$$=Node_Add(L"ComparisonOperations", FdoComparisonCondition::Create((FdoExpression*)$1, (FdoComparisonOperations)$2, (FdoExpression*)$3));}
 	;
 
 DistanceCondition :
 	Identifier DistanceOperations Expression distance	
-		{$$=Node_Add(L"Indentifier-DistanceOp-Expression", FdoDistanceCondition::Create((FdoIdentifier*)$1, (FdoDistanceOperations)$2, (FdoExpression*)$3, ((FdoDoubleValue*)$4)->GetDouble()));FDO_SAFE_RELEASE($1); FDO_SAFE_RELEASE($3);FDO_SAFE_RELEASE($4);}
+		{$$=Node_Add(L"Indentifier-DistanceOp-Expression", FdoDistanceCondition::Create((FdoIdentifier*)$1, (FdoDistanceOperations)$2, (FdoExpression*)$3, ((FdoDoubleValue*)$4)->GetDouble()));}
 	;
 	
 ComparisonOperations :
