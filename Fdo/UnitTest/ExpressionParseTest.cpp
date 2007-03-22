@@ -187,6 +187,20 @@ void ExpressionParseTest::testExpressions()
         L"sqrt(144)+12-32/12");
 
     ParseExpression(L"( Width*Height ) AS Area");
+    
+    FdoPtr<FdoExpression> exprTest = (FdoExpression*)FdoExpression::Parse(L"Lower(layer) AS testFld");
+    if (dynamic_cast<FdoComputedIdentifier*>(exprTest.p) == NULL)
+        UnitTestUtil::FailOnException( FdoException::Create(L"Parsing \"Lower(layer) AS testFld\" failed!") );
+    try
+    {
+        exprTest = (FdoExpression*)FdoExpression::Parse(L"Lower(layer) * - AS testFld");
+        UnitTestUtil::FailOnException( FdoException::Create(L"Parsing \"Lower(layer) * - AS testFld\" should fail!"));
+    }
+    catch(FdoException* ex)
+    {
+        printf("Expected exception: %ls\n", ex->GetExceptionMessage());
+        ex->Release();
+    }
 }
 
 void ExpressionParseTest::testFGFT()

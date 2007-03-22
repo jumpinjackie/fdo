@@ -79,35 +79,42 @@ FdoParse::~FdoParse()
 FdoIDisposable* FdoParse::AddNode(FdoIDisposable* pNode)
 {
 	if (pNode != NULL)
+    {
+        // The parse is not releasing any object (only creates them).
+        // So, don't 'addref' the object because is already done at the creation time
 		m_nodes->Add(pNode);
+        pNode->Release();
+    }
 	return pNode;
 }
 
 FdoIDisposable* FdoParse::AddNodeToDelete(FdoIDisposable* pNode)
 {
 	if (pNode != NULL)
+    {
+        // The parse is not releasing any object (only creates them).
+        // So, don't 'addref' the object because is already done at the creation time
 		m_nodesToDelete->Add(pNode);
+        pNode->Release();
+    }
 	return pNode;
 }
 
 void FdoParse::AddCompIdentifier(FdoComputedIdentifier* pNode)
 {
+    // We need to addref the object because the object is added also to m_nodes
     if (pNode != NULL)
-    {
-        if( m_ComputedIdentifiers != NULL )
-            m_ComputedIdentifiers->Add( pNode );
-    }
+        m_ComputedIdentifiers->Add( pNode );
 }
 
 FdoComputedIdentifier* FdoParse::FindComputedIdentifier( FdoString* name )
 {
+    // don't addref the object found because the parser is not releasing any object
     for(int i=0; i<m_ComputedIdentifiers->GetCount(); i++ )
     {
-        FdoComputedIdentifier *id = (FdoComputedIdentifier*)m_ComputedIdentifiers->GetItem(i);
+        FdoPtr<FdoComputedIdentifier> id = (FdoComputedIdentifier*)m_ComputedIdentifiers->GetItem(i);
         if( wcscmp( id->GetName(), name ) == 0 )
-            return id;
-        else
-            id->Release();
+            return id.p;
     }
     return NULL;
 }
@@ -134,17 +141,9 @@ void FdoParse::Trace(FdoString* pDebug)
 #endif
 }
 
-// release all the allocated nodes and then Clean
 void FdoParse::Abort(void)
 {
-	// go through collection and release nodes
-	for (FdoInt32 i=0; i<m_nodes->GetCount(); i++)
-	{
-		FdoIDisposable* pItem = m_nodes->GetItem(i);
-		pItem->Release();
-		pItem->Release();
-	}
-	m_nodes->Clear();
+    // do nothing... the objects will be released by Clean
 }
 
 // clean up deleted always list
@@ -329,6 +328,8 @@ FdoExpression* FdoParse::ParseExpression(FdoString* pwzExpression)
         exception->Release();
 		throw exceptionOuter;
 	}
+    // addref resulted object to keep it, otherwise Clean will delete it
+    FDO_SAFE_ADDREF(m_root);
 	Clean();
 	return (FdoExpression*) m_root;
 }
@@ -361,6 +362,8 @@ FdoFilter* FdoParse::ParseFilter(FdoString* pwzFilter)
         exception->Release();
 		throw exceptionOuter;
 	}
+    // addref resulted object to keep it, otherwise Clean will delete it
+    FDO_SAFE_ADDREF(m_root);
 	Clean();
 	return (FdoFilter*) m_root;
 }
