@@ -1309,8 +1309,10 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
 
         for (int i=0; i<identColArray[j]->GetCount(); i++)
         {
-            FdoPtr<FdoIdentifier> property = identColArray[j]->GetItem(i);
-            PrependProperty( property, true );
+            FdoPtr<FdoExpression> pExpr = identColArray[j]->GetItem(i);
+            if (dynamic_cast<FdoIdentifier*>(pExpr.p) == NULL )
+                throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_30, "Unknown expression"));
+            PrependProperty( (FdoIdentifier*)pExpr.p, true );
         }
     }
 
