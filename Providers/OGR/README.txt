@@ -23,17 +23,15 @@ to be linked in, you will need to add these to the list under
 
 Linux:
 
-Assuming you have GDAL 1.3.2 and FDO 3.x.x propertly installed, 
-use the following command line call:
+Assuming you have GDAL 1.4.0 and FDO 3.x.x propertly installed, 
+use the provided compile.sh script to compile the provider.
+You may need to update the script to point to the correct location
+of the FDO headers and library.
 
-g++ -O2 -shared -Wall -fPIC -I/usr/local/fdo-3.x.x/include OgrProvider.cpp -L/usr/local/fdo-3.x.x/lib/ -lFDO -lgdal -o libOGRProvider.so
+The script  assumes that GDAL is installed in a global location like 
+/usr/include and /usr/lib.
 
-
-Make sure to replace /usr/local/fdo-3.x.x by the actual FDO location on your system.
-This assumes that GDAL is installed in a global location like /usr/include and /usr/lib.
-
-The output of this command will be the OGR provider library.
-
+The output of this script will be the OGR provider library.
 
 
 ----------------------------------------------------------
@@ -57,13 +55,12 @@ For both Windows and Linux, do the following:
             <Description>Access to OGR data sources</Description> 
             <IsManaged>False</IsManaged> 
             <Version>0.1.0.0</Version> 
-            <FeatureDataObjectsVersion>3.1.0.0</FeatureDataObjectsVersion> 
+            <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion> 
             <LibraryPath>OGRProvider.dll</LibraryPath> 
        </FeatureProvider>
 
       Make sure you match the FDO version to whatever the other entries in the
-      provider.xml are using (in this example it is 3.1.0.0, but the provider
-      will work with 3.0.0.0 also).
+      provider.xml are using (in this example it is 3.3.0.0).
 
 
 ----------------------------------------------------------
@@ -79,13 +76,15 @@ at http://www.remotesensing.org/gdal/ogr/ogr_formats.html for more
 information.
 
 The ReadOnly property indicates if the connection should be opened
-for reading only. Set that to TRUE as the provider is currently read only.
+for read only. Set that to TRUE unless you are sure the underlying
+OGR driver supports write and you are going to use it to do inserts
+and updates.
 
 
 ----------------------------------------------------------
 4. Release Notes
 
-So far the OGR provider has been tested with:
+So far the OGR provider has been (successfully) tested with:
     * SHP files
     * MapInfo files (.TAB)
     * Oracle Spatial
@@ -93,9 +92,10 @@ So far the OGR provider has been tested with:
     * PostGIS (on PostgreSQL 8.1.4)
 
 Linux platforms tested:
-    * Gentoo x64, gcc 3.4
+    * Gentoo x86-64, g++ 3.4, g++ 4.1
 
 
 ==========================================================
 
-June 20, 2006 Traian Stanev
+Last update:
+March 22, 2007 Traian Stanev
