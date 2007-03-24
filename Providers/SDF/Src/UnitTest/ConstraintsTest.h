@@ -19,6 +19,7 @@
 
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <Fdo/Expression/DataValueCollection.h>
 #include <Fdo.h>
 #include <TestCommonConstraints.h>
 
