@@ -26,8 +26,10 @@
 #define  DBG(X)
 #endif
 
-#ifndef _WIN32
+#ifndef _LLONG_MAX
 #   define LLONG_MAX    9223372036854775807LL
+#endif
+#ifndef LLONG_MIN
 #   define LLONG_MIN    (-LLONG_MAX - 1LL)
 #endif
 
@@ -1651,7 +1653,7 @@ void FdoInsertTest::insertLongString()
 			for (int i=1; i<400; i++)
 				strData += L"abcdefghij";
 			strData += L"X";
-            dataValue = FdoDataValue::Create(strData);
+            dataValue = FdoDataValue::Create((FdoString *) strData);
 	        propertyValue = AddNewProperty( propertyValues, L"xdata.AcXObj.strdata");
 	        propertyValue->SetValue(dataValue);
 

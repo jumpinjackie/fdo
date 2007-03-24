@@ -21,7 +21,6 @@
 #include "UnitTestUtil.h"
 
 FdoConnectionInfoTest::FdoConnectionInfoTest ()
-: mConnection(NULL)
 {
 
 }  //  FdoConnectionInfoTest ()
