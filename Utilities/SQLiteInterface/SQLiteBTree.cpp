@@ -31,11 +31,17 @@ SQLiteBTree::SQLiteBTree(void): m_pBt( NULL )
 {
     m_bOwner = true;
 }
-
+#ifdef SQLITE_3_1
 SQLiteBTree::SQLiteBTree( Btree *bt ) : m_pBt( bt )
 { 
     m_bOwner = false;
 }
+#else
+SQLiteBTree::SQLiteBTree( Btree *bt, sqlite3 *db ) : m_pBt( bt ), m_pDB( db )
+{ 
+    m_bOwner = false;
+}
+#endif
 
 SQLiteBTree::~SQLiteBTree(void)
 {
@@ -49,8 +55,11 @@ SQLiteBTree::~SQLiteBTree(void)
 int SQLiteBTree::open( const char* fileName, int nCache, int   flags )
 {
   int rc;
-  
+#ifdef SQLITE_3_1
   rc = sqlite3BtreeOpen(fileName, &m_pBt, flags);
+#else
+  rc = sqlite3BtreeOpen(fileName, m_pDB, &m_pBt, flags);
+#endif
   if( rc!=SQLITE_OK ){
     return rc;
   }

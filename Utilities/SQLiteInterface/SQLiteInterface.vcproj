@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(FDOTHIRDPARTY)\Sqlite3.1.5\Src"
+				AdditionalIncludeDirectories="$(FDOTHIRDPARTY)\Sqlite3.3.13\Src"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -110,7 +110,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="$(FDOTHIRDPARTY)\Sqlite3.1.5\Src"
+				AdditionalIncludeDirectories="$(FDOTHIRDPARTY)\Sqlite3.3.13\Src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				RuntimeLibrary="2"
