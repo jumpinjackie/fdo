@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WSfacf1429558a55de8821c21057fbebc2b-904.htm','51'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ;
-                            Url = WSfacf1429558a55de8821c21057fbebc2b-904.htm-->
+   <body onLoad="javascript:initFrame('WSfacf1429558a55de8821c21057fbebc2b-904.htm','51'); javascript:initPage('Creating and Editing a GML Schema File','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -44,498 +40,165 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-904"></a></span>
-               
-               
-      <!--Body-->
-                  
-      <p>
-                        
-                        The
-         sample in this section illustrates the creation of a GML schema
-         file containing the definition of an FDO feature schema that contains
-         one feature. The name of this file will have the standard XML schema
-         extension name, <em class="mild">.xsd</em>.
+      <!--Body--><p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79ba"></a></span>The sample in this section illustrates
+         the creation of a GML schema file containing the definition of an
+         FDO feature schema that contains one feature. The name of this file
+         will have the standard XML schema extension name, <em class="mild">.xsd</em>.
          This means that it contains only one schema and that the root element
          is xs:schema. The ReadXml() method will take a filename argument
-         whose extension is either <em class="mild">.xsd</em> or<em class="mild"> .xml</em>.
-         In the latter case, the file could contain many schema definitions.
-         If it does, each schema is contained in an xs:schema element, and
-         all xs:schema elements are contained in the fdo:DataStore element.
-         If there is only one schema in the<em class="mild"> .xml </em>file, then the fdo:DataStore
+         whose extension is either <em class="mild">.xsd</em> or<em class="mild"> .xml</em>. In the latter
+         case, the file could contain many schema definitions. If it does,
+         each schema is contained in an xs:schema element, and all xs:schema
+         elements are contained in the fdo:DataStore element. If there is
+         only one schema in the<em class="mild"> .xml </em>file, then the fdo:DataStore
          element is not used, and the root element is xs:schema.
       </p>
-                  
-      <p>You may want to validate
-         the schema that you create. To do so, you must include the optional
-         xs:import line specified in the GML schema fragment for FeatureSchema.
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79b9"></a></span>You may want to validate the schema that you
+         create. To do so, you must include the optional xs:import line specified
+         in the GML schema fragment for FeatureSchema.
       </p>
-                  
-      <p>The sample feature
-         implements a table definition for the Buildings feature in the Open
-         GIS Consortium document 98-046r1. This table definition is expressed
-         in an XML format on page 14 of the document and is reproduced as
-         follows:
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79b8"></a></span>The sample feature implements a table definition
+         for the Buildings feature in the Open GIS Consortium document 98-046r1.
+         This table definition is expressed in an XML format on page 14 of
+         the document and is reproduced as follows:
       </p>
-                  
-      <div class="codeBlock">
-                        <pre class="codeLine">&lt;ogc-sfsql-table&gt;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&lt;table-definition&gt;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;name&gt;buildings&lt;/name&gt;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;column-definition&gt;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;name&gt;fid&lt;/name&gt;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;type&gt;INTEGER&lt;/type&gt;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;constraint&gt;NOT NULL&lt;/constraint&gt;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;constraint&gt;PRIMARY KEY&lt;/constraint&gt;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/column-definition&gt;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;column-definition&gt;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;name&gt;address&lt;/name&gt;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;type&gt;VARCHAR(64)&lt;/type&gt;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/column-definition&gt;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;column-definition&gt;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;name&gt;position&lt;/name&gt;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;type&gt;POINT&lt;/type&gt;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/column-definition&gt;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;column-definition&gt;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;name&gt;footprint&lt;/name&gt;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;type&gt;POLYGON&lt;/type&gt;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;column-definition&gt;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&lt;/table-definition&gt;</pre>
-                     </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-87c"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e5730"></a>Add GML for the FDO Feature
-            Schema
+      <div class="codeBlock"><pre class="codeLine">&lt;ogc-sfsql-table&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&lt;table-definition&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;name&gt;buildings&lt;/name&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;column-definition&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;name&gt;fid&lt;/name&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;type&gt;INTEGER&lt;/type&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;constraint&gt;NOT NULL&lt;/constraint&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;constraint&gt;PRIMARY KEY&lt;/constraint&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/column-definition&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;column-definition&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;name&gt;address&lt;/name&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;type&gt;VARCHAR(64)&lt;/type&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/column-definition&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;column-definition&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;name&gt;position&lt;/name&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;type&gt;POINT&lt;/type&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/column-definition&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;column-definition&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;name&gt;footprint&lt;/name&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;type&gt;POLYGON&lt;/type&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;column-definition&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&lt;/table-definition&gt;</pre></div>
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-87c"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e3442"></a>Add GML for the FDO Feature Schema
          </p>
-                        
-         <p>Start with the skeleton
-            GML for an FDO Feature Schema with the &lt;MetaData&gt; reference
-            replaced by the valid pattern:
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79b7"></a></span>Start with the skeleton GML for an FDO Feature
+            Schema with the &lt;MetaData&gt; reference replaced by the valid
+            pattern:
          </p>
-                        
-         <div class="codeBlock">
-                              <pre class="codeLine">&lt;xs:schema xmlns:xs=”http://www.w3.org/2001/XMLSchema”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;targetNamespace=”http://&lt;customer_url&gt;/&lt;FeatureSchemaName&gt;”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;xmlns:fdo=”http://fdo.osgeo.org/schema”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;xmlns:gml=”http://www.opengis.net/gml”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;xmlns:&lt;FeatureSchemaName&gt;=”http://&lt;customer_url&gt;/&lt;FeatureSchemaName&gt;”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;elementFormDefault=”qualified”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;attributeFormDefault=”unqualified”</pre>
-                              <pre class="codeLine">&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&lt;xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{description arg to static FdoFeatureSchema::Create()}</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:documentation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;{ &lt;one xs:element and/or xs:complexType per class&gt; }</pre>
-                              <pre class="codeLine">&lt;/xs:schema&gt;</pre>
-                           </div>
-                        
-         <p>For &lt;customer_url&gt;
-            substitute “fdo_customer”. For &lt;FeatureSchemaName&gt; substitute
-            “OGC980461FS”, and for {description arg ... } substitute “OGC Simple
-            Features Specification for SQL.”
+         <div class="codeBlock"><pre class="codeLine">&lt;xs:schema xmlns:xs=”http://www.w3.org/2001/XMLSchema”</pre><pre class="codeLine">&nbsp;&nbsp;targetNamespace=”http://&lt;customer_url&gt;/&lt;FeatureSchemaName&gt;”</pre><pre class="codeLine">&nbsp;&nbsp;xmlns:fdo=”http://fdo.osgeo.org/schema”</pre><pre class="codeLine">&nbsp;&nbsp;xmlns:gml=”http://www.opengis.net/gml”</pre><pre class="codeLine">&nbsp;&nbsp;xmlns:&lt;FeatureSchemaName&gt;=”http://&lt;customer_url&gt;/&lt;FeatureSchemaName&gt;”</pre><pre class="codeLine">&nbsp;&nbsp;elementFormDefault=”qualified”</pre><pre class="codeLine">&nbsp;&nbsp;attributeFormDefault=”unqualified”</pre><pre class="codeLine">&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&lt;xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{description arg to static FdoFeatureSchema::Create()}</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:documentation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;{ &lt;one xs:element and/or xs:complexType per class&gt; }</pre><pre class="codeLine">&lt;/xs:schema&gt;</pre></div>
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79b6"></a></span>For &lt;customer_url&gt; substitute “fdo_customer”.
+            For &lt;FeatureSchemaName&gt; substitute “OGC980461FS”, and for
+            {description arg ... } substitute “OGC Simple Features Specification
+            for SQL.”
          </p>
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-87b"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e5790"></a>Add GML for an FDO Feature
-            Class
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-87b"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e3480"></a>Add GML for an FDO Feature Class
          </p>
-                        
-         <p>Start with the GML
-            that is already written and add the skeleton for an FDO Feature
-            Class, which includes the skeleton for a class definition with identity
-            properties. The &lt;MetaData&gt; is replaced with the valid pattern.
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79b5"></a></span>Start with the GML that is already written and
+            add the skeleton for an FDO Feature Class, which includes the skeleton
+            for a class definition with identity properties. The &lt;MetaData&gt;
+            is replaced with the valid pattern.
          </p>
-                        
-         <div class="codeBlock">
-                              <pre class="codeLine">&lt;xs:schema xmlns:xs=”http://www.w3.org/2001/XMLSchema”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;targetNamespace=”http://fdo_customer/OGC980461FS”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;xmlns:fdo=”http://fdo.osgeo.org/schema”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;xmlns:gml=”http://www.opengis.net/gml”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;xmlns:OGC980461FS=”http://fdo_customer/OGC980461FS”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;elementFormDefault=”qualified”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;attributeFormDefault=”unqualified”</pre>
-                              <pre class="codeLine">&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&lt;xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;OGC Simple Features Specification for</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SQL&lt;/xs:documentation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&lt;xs:element name=”&lt;className&gt;”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;type=”&lt;className&gt;Type”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;abstract=”&lt;true | false&gt;”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;substitutionGroup=”gml:_Feature”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:key name=”&lt;className&gt;Key”&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:selector xpath=”.//&lt;className&gt;”/&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:field xpath=”&lt;identityProperty1Name&gt;”/&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:key&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&lt;/xs:element&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&lt;xs:complexType name=”&lt;className&gt;Type”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;abstract=”&lt;true | false&gt;”/&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometryName=”&lt;geometryPropertyName&gt;”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometricTypes=”&lt;list of FdoGeometricTypes&gt;”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometryReadOnly=”&lt;true | false&gt;”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:hasMeasure=”&lt;true | false&gt;”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:hasElevation=”&lt;true | false&gt;”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:srsName=”&lt;spatialContextName&gt;”/&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;{description arg to static</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FdoFeatureClass::Create()}&lt;/xs:documentation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:appinfo source=”&lt;uri&gt;”/&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;{description arg to static</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FdoGeometricPropertyDefinition::Create()}</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:documentation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:complexContent&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:extension base=”{baseClass} ?</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{baseClass.schema.name}:{baseClass.name} :</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;‘gml:AbstractFeatureType’ “</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:sequence&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ list of properties; see DataProperty, GeometricProperty }</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:sequence&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:extension&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:complexContent&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&lt;/xs:complexType&gt;</pre>
-                              <pre class="codeLine">&lt;/xs:schema&gt;</pre>
-                           </div>
-                        
-         <!--UList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-866"></a></span>
-                           
-         <p class="list-intro"><span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7e71"></a></span>You can make the following
-            changes:
+         <div class="codeBlock"><pre class="codeLine">&lt;xs:schema xmlns:xs=”http://www.w3.org/2001/XMLSchema”</pre><pre class="codeLine">&nbsp;&nbsp;targetNamespace=”http://fdo_customer/OGC980461FS”</pre><pre class="codeLine">&nbsp;&nbsp;xmlns:fdo=”http://fdo.osgeo.org/schema”</pre><pre class="codeLine">&nbsp;&nbsp;xmlns:gml=”http://www.opengis.net/gml”</pre><pre class="codeLine">&nbsp;&nbsp;xmlns:OGC980461FS=”http://fdo_customer/OGC980461FS”</pre><pre class="codeLine">&nbsp;&nbsp;elementFormDefault=”qualified”</pre><pre class="codeLine">&nbsp;&nbsp;attributeFormDefault=”unqualified”</pre><pre class="codeLine">&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&lt;xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;OGC Simple Features Specification for</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SQL&lt;/xs:documentation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&lt;xs:element name=”&lt;className&gt;”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;type=”&lt;className&gt;Type”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;abstract=”&lt;true | false&gt;”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;substitutionGroup=”gml:_Feature”</pre><pre class="codeLine">&nbsp;&nbsp;&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:key name=”&lt;className&gt;Key”&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:selector xpath=”.//&lt;className&gt;”/&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:field xpath=”&lt;identityProperty1Name&gt;”/&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:key&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&lt;/xs:element&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&lt;xs:complexType name=”&lt;className&gt;Type”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;abstract=”&lt;true | false&gt;”/&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometryName=”&lt;geometryPropertyName&gt;”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometricTypes=”&lt;list of FdoGeometricTypes&gt;”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometryReadOnly=”&lt;true | false&gt;”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:hasMeasure=”&lt;true | false&gt;”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:hasElevation=”&lt;true | false&gt;”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:srsName=”&lt;spatialContextName&gt;”/&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;{description arg to static</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FdoFeatureClass::Create()}&lt;/xs:documentation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:appinfo source=”&lt;uri&gt;”/&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;{description arg to static</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FdoGeometricPropertyDefinition::Create()}</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:documentation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:complexContent&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:extension base=”{baseClass} ?</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{baseClass.schema.name}:{baseClass.name} :</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;‘gml:AbstractFeatureType’ “</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:sequence&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ list of properties; see DataProperty, GeometricProperty }</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:sequence&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:extension&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:complexContent&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&lt;/xs:complexType&gt;</pre><pre class="codeLine">&lt;/xs:schema&gt;</pre></div><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-866"></a></span><p class="list-intro"><span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7e71"></a></span>You
+            can make the following changes:
          </p>
-                           
          <ul>
-            <li>For &lt;className&gt; substitute “buildings”.</li>
-            <li>Set the value of the xs:element abstract
-               attribute to false.
+            <li>For
+               &lt;className&gt; substitute “buildings”.
             </li>
-            <li>For &lt;identityPropertyName&gt; substitute
-               “fid”. A data property whose name is “fid” will be added.
+            <li>Set
+               the value of the xs:element abstract attribute to false.
             </li>
-            <li>Set the value of the xs:complexType abstract
-               attribute to false.
+            <li>For
+               &lt;identityPropertyName&gt; substitute “fid”. A data property whose
+               name is “fid” will be added.
             </li>
-            <li>For &lt;geometryPropertyName&gt; substitute
-               “footprint”. 
+            <li>Set
+               the value of the xs:complexType abstract attribute to false.
             </li>
-            <li>For &lt;list of FdoGeometricTypes&gt; substitute
-               “surface”.
+            <li>For
+               &lt;geometryPropertyName&gt; substitute “footprint”. 
             </li>
-            <li>Set the values of fdo:geometryReadOnly, fdo:hasMeasure,
-               and fdo:hasElevation to false.
+            <li>For
+               &lt;list of FdoGeometricTypes&gt; substitute “surface”.
             </li>
-            <li>For &lt;spatialContextName&gt; substitute
-               “SC_0”.
-            </li>
-            <li>For {description arg to FdoFeatureClass::Create()}
-               substitute “OGC 98-046r1 buildings”.
-            </li>
-            <li>For &lt;uri&gt; substitute “http://fdo.osgeo.org/schema”.</li>
-            <li>For {description arg to FdoGeometricPropertyDefinition::Create()}
-               substitute “a polygon defines a building perimeter”.
-            </li>
-            <li>This class has no base class so set the value
-               of the xs:extension base attribute to ‘gml:AbstractFeatureType’.
-            </li>
-         </ul>
-                           
-                           
-                           
-                           
-                           
-                           
-                           
-                           
-                           
-                           
-                           
-                        
-                     
-      </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-87a"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e5997"></a>Add GML for Property Definitions
-         </p>
-                        
-         <p>
-                              An integer data property whose name is
-            “fid” will be added. This property is already identified as an identity
-            property in the xs:key element. A string data property whose name
-            is “name” and a geometry property whose name is “position” will
-            also be added.
-         </p>
-                        
-         <div class="codeBlock">
-                              <pre class="codeLine">&lt;xs:schema xmlns:xs=”http://www.w3.org/2001/XMLSchema”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;targetNamespace=”http://fdo_customer/OGC980461FS”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;xmlns:fdo=”http://fdo.osgeo.org/schema”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;xmlns:gml=”http://www.opengis.net/gml”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;xmlns:OGC980461FS=”http://fdo_customer/OGC980461FS”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;elementFormDefault=”qualified”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;attributeFormDefault=”unqualified”</pre>
-                              <pre class="codeLine">&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&lt;xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;OGC Simple Features Specification for</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;SQL&lt;/xs:documentation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&lt;xs:element name=”buildings”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;type=”buildingsType”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;abstract=”false”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;substitutionGroup=”gml:_Feature”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:key name=”buildingsKey”&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:selector xpath=”.//buildings”/&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:field xpath=”fid”/&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:key&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&lt;/xs:element&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&lt;xs:complexType name=”buildingsType”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;abstract=”false”/&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometryName=”footprint”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometricTypes=”surface”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometryReadOnly=”false”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:hasMeasure=”false”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:hasElevation=”alse”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:srsName=”SC_0”/&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;OGC 98-046r1 buildings</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:documentation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:appinfo source=”http://fdo.osgeo.org/schema”/&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;a polygon defines the perimeter of a</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;building&lt;/xs:documentation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:complexContent&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:extension base=”gml:AbstractFeatureType“</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:sequence&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:element name=”&lt;propertyName&gt;”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type=”&lt;datatype&gt;”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;minOccurs=”{isNullable ? 0 : 1}”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default=”&lt;defaultValue&gt;”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:readOnly=”&lt;true | false&gt;”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;{description arg to static</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FdoDataPropertyDefinition::Create()}</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:documentation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:element&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:element name=”&lt;propertyName&gt;”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;minOccurs=”{isNullable ? 0 : 1}”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default=”&lt;defaultValue&gt;”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:readOnly=”&lt;true | false&gt;”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;{description arg to static</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FdoDataPropertyDefinition::Create()}</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:documentation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:simpleType&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:restriction base=”xs:string”&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:maxLength value=”&lt;length&gt;”/&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:restriction&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:simpleType&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:element&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:element name=”&lt;propertyName&gt;”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ref=”gml:_Geometry”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometryName=”&lt;propertyName&gt;”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometricTypes=”&lt;list of FdoGeometricTypes&gt;”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometryReadOnly=”&lt;true | false&gt;”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:hasMeasure=”&lt;true | false&gt;”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:hasElevation=”&lt;true | false&gt;”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:srsName=”&lt;spatialContextName&gt;”/&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;{description arg to static</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FdoGeometricPropertyDefinition::Create()}</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:documentation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:element&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:sequence&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:extension&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:complexContent&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&lt;/xs:complexType&gt;</pre>
-                              <pre class="codeLine">&lt;/xs:schema&gt;</pre>
-                           </div>
-                        
-         <!--UList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-865"></a></span>
-                           
-         <p class="list-intro"><span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7c91"></a></span>You can make the following
-            changes:
-         </p>
-                           
-         <ul>
-            <li>For the first data property &lt;propertyName&gt;
-               substitute “fid”.
-            </li>
-            <li>For the first data property &lt;dataType&gt;
-               substitute “fdo:int32”.
-            </li>
-            <li>Do not include the minOccurs or default attributes
-               because the value of minOccurs is 0, which is the default, and there
-               is no &lt;defaultValue&gt;.
-            </li>
-            <li>Set the fdo:readOnly attribute for “fid”
+            <li>Set
+               the values of fdo:geometryReadOnly, fdo:hasMeasure, and fdo:hasElevation
                to false.
             </li>
-            <li>Set the content for xs:documentation for
-               “fid” to “feature id”.
+            <li>For
+               &lt;spatialContextName&gt; substitute “SC_0”.
             </li>
-            <li>For the second data property &lt;propertyName&gt;
-               substitute “address”.
+            <li>For
+               {description arg to FdoFeatureClass::Create()} substitute “OGC 98-046r1
+               buildings”.
             </li>
-            <li>Do not include the minOccurs or default attributes
-               because the value of minOccurs is 0, which is the default, and there
-               is no &lt;defaultValue&gt;.
+            <li>For
+               &lt;uri&gt; substitute “http://fdo.osgeo.org/schema”.
             </li>
-            <li>Set the fdo:readOnly attribute for “name”
-               to false.
+            <li>For
+               {description arg to FdoGeometricPropertyDefinition::Create()} substitute
+               “a polygon defines a building perimeter”.
             </li>
-            <li>Set the content for xs:documentation for
-               “address” to “address of the building”.
-            </li>
-            <li>For &lt;length&gt; substitute “64”.</li>
-            <li>For the geometry property &lt;propertyName&gt;
-               substitute “position”.
-            </li>
-            <li>For &lt;list of FdoGeometricTypes&gt; substitute
-               “point”.
-            </li>
-            <li>Set the values of fdo:geometryReadOnly, fdo:hasMeasure,
-               and fdo:hasElevation to false.
-            </li>
-            <li>For &lt;spatialContextName&gt; substitute
-               “SC_0”.
-            </li>
-            <li>For {description arg to FdoGeometricPropertyDefinition::Create()}
-               substitute “position of the building”.
+            <li>This
+               class has no base class so set the value of the xs:extension base
+               attribute to ‘gml:AbstractFeatureType’.
             </li>
          </ul>
-                           
-                           
-                           
-                           
-                           
-                           
-                           
-                           
-                           
-                           
-                           
-                           
-                           
-                           
-                        
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-879"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e6335"></a>The Final Result
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-87a"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e3615"></a>Add GML for Property Definitions
          </p>
-                        
-         <p>After all the required
-            substitutions, the GML for the schema containing the Buildings feature
-            is as follows:
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79b4"></a></span>An
+            integer data property whose name is “fid” will be added. This property
+            is already identified as an identity property in the xs:key element.
+            A string data property whose name is “name” and a geometry property
+            whose name is “position” will also be added.
          </p>
-                        
-         <div class="codeBlock">
-                              <pre class="codeLine">&lt;xs:schema xmlns:xs=”http://www.w3.org/2001/XMLSchema”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;targetNamespace=”http://fdo_customer/OGC980461FS”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;xmlns:fdo=”http://fdo.osgeo.org/schema”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;xmlns:gml=”http://www.opengis.net/gml”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;xmlns:OGC980461FS=”http://fdo_customer/OGC980461FS”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;elementFormDefault=”qualified”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;attributeFormDefault=”unqualified”</pre>
-                              <pre class="codeLine">&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&lt;xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;OGC Simple Features Specification for</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SQL&lt;/xs:documentation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&lt;xs:element name=”buildings”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;type=”buildingsType”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;abstract=”false”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;substitutionGroup=”gml:_Feature”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:key name=”buildingsKey”&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:selector xpath=”.//buildings”/&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:field xpath=”fid”/&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:key&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&lt;/xs:element&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&lt;xs:complexType name=”buildingsType”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;abstract=”false”/&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometryName=”footprint”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometricTypes=”surface”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometryReadOnly=”false”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:hasMeasure=”false”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:hasElevation=”false”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:srsName=”SC_0”/&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;OGC 98-046r1 buildings</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:documentation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:appinfo source=”http://fdo.osgeo.org/schema”/&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;a polygon defines the perimeter of a</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;building&lt;/xs:documentation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:complexContent&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:extension base=”gml:AbstractFeatureType“</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:sequence&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:element name=”fid”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type=”fdo:int32”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:readOnly=”false”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;feature id</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:documentation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:element&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:element name=”address”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:readOnly=”false”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;address of the building</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:documentation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:simpleType&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:restriction base=”xs:string”&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:maxLength value=”64”/&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:restriction&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:simpleType&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:element&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:element name=”position”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ref=”gml:_Geometry”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometryName=”position”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometricTypes=”point”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometryReadOnly=”false”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:hasMeasure=”false”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:hasElevation=”false”</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:srsName=”SC_0”/&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;position of the building&lt;/xs:documentation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:element&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:sequence&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:extension&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:complexContent&gt;</pre>
-                              <pre class="codeLine">&nbsp;&nbsp;&lt;/xs:complexType&gt;</pre>
-                              <pre class="codeLine">&lt;/xs:schema&gt;</pre>
-                           </div>
-                     
+         <div class="codeBlock"><pre class="codeLine">&lt;xs:schema xmlns:xs=”http://www.w3.org/2001/XMLSchema”</pre><pre class="codeLine">&nbsp;&nbsp;targetNamespace=”http://fdo_customer/OGC980461FS”</pre><pre class="codeLine">&nbsp;&nbsp;xmlns:fdo=”http://fdo.osgeo.org/schema”</pre><pre class="codeLine">&nbsp;&nbsp;xmlns:gml=”http://www.opengis.net/gml”</pre><pre class="codeLine">&nbsp;&nbsp;xmlns:OGC980461FS=”http://fdo_customer/OGC980461FS”</pre><pre class="codeLine">&nbsp;&nbsp;elementFormDefault=”qualified”</pre><pre class="codeLine">&nbsp;&nbsp;attributeFormDefault=”unqualified”</pre><pre class="codeLine">&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&lt;xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;OGC Simple Features Specification for</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;SQL&lt;/xs:documentation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&lt;xs:element name=”buildings”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;type=”buildingsType”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;abstract=”false”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;substitutionGroup=”gml:_Feature”</pre><pre class="codeLine">&nbsp;&nbsp;&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:key name=”buildingsKey”&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:selector xpath=”.//buildings”/&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:field xpath=”fid”/&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:key&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&lt;/xs:element&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&lt;xs:complexType name=”buildingsType”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;abstract=”false”/&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometryName=”footprint”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometricTypes=”surface”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometryReadOnly=”false”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:hasMeasure=”false”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:hasElevation=”alse”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:srsName=”SC_0”/&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;OGC 98-046r1 buildings</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:documentation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:appinfo source=”http://fdo.osgeo.org/schema”/&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;a polygon defines the perimeter of a</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;building&lt;/xs:documentation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:complexContent&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:extension base=”gml:AbstractFeatureType“</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:sequence&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:element name=”&lt;propertyName&gt;”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type=”&lt;datatype&gt;”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;minOccurs=”{isNullable ? 0 : 1}”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default=”&lt;defaultValue&gt;”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:readOnly=”&lt;true | false&gt;”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;{description arg to static</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FdoDataPropertyDefinition::Create()}</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:documentation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:element&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:element name=”&lt;propertyName&gt;”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;minOccurs=”{isNullable ? 0 : 1}”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default=”&lt;defaultValue&gt;”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:readOnly=”&lt;true | false&gt;”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;{description arg to static</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FdoDataPropertyDefinition::Create()}</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:documentation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:simpleType&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:restriction base=”xs:string”&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:maxLength value=”&lt;length&gt;”/&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:restriction&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:simpleType&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:element&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:element name=”&lt;propertyName&gt;”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ref=”gml:_Geometry”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometryName=”&lt;propertyName&gt;”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometricTypes=”&lt;list of FdoGeometricTypes&gt;”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometryReadOnly=”&lt;true | false&gt;”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:hasMeasure=”&lt;true | false&gt;”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:hasElevation=”&lt;true | false&gt;”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:srsName=”&lt;spatialContextName&gt;”/&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;{description arg to static</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FdoGeometricPropertyDefinition::Create()}</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:documentation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:element&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:sequence&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:extension&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:complexContent&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&lt;/xs:complexType&gt;</pre><pre class="codeLine">&lt;/xs:schema&gt;</pre></div><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-865"></a></span><p class="list-intro"><span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7c91"></a></span>You
+            can make the following changes:
+         </p>
+         <ul>
+            <li>For
+               the first data property &lt;propertyName&gt; substitute “fid”.
+            </li>
+            <li>For
+               the first data property &lt;dataType&gt; substitute “fdo:int32”.
+            </li>
+            <li>Do
+               not include the minOccurs or default attributes because the value
+               of minOccurs is 0, which is the default, and there is no &lt;defaultValue&gt;.
+            </li>
+            <li>Set
+               the fdo:readOnly attribute for “fid” to false.
+            </li>
+            <li>Set
+               the content for xs:documentation for “fid” to “feature id”.
+            </li>
+            <li>For
+               the second data property &lt;propertyName&gt; substitute “address”.
+            </li>
+            <li>Do
+               not include the minOccurs or default attributes because the value
+               of minOccurs is 0, which is the default, and there is no &lt;defaultValue&gt;.
+            </li>
+            <li>Set
+               the fdo:readOnly attribute for “name” to false.
+            </li>
+            <li>Set
+               the content for xs:documentation for “address” to “address of the
+               building”.
+            </li>
+            <li>For
+               &lt;length&gt; substitute “64”.
+            </li>
+            <li>For
+               the geometry property &lt;propertyName&gt; substitute “position”.
+            </li>
+            <li>For
+               &lt;list of FdoGeometricTypes&gt; substitute “point”.
+            </li>
+            <li>Set
+               the values of fdo:geometryReadOnly, fdo:hasMeasure, and fdo:hasElevation
+               to false.
+            </li>
+            <li>For
+               &lt;spatialContextName&gt; substitute “SC_0”.
+            </li>
+            <li>For
+               {description arg to FdoGeometricPropertyDefinition::Create()} substitute
+               “position of the building”.
+            </li>
+         </ul>
       </div>
-               
-            
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-879"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e3838"></a>The Final Result
+         </p>
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79b3"></a></span>After all the required substitutions, the GML
+            for the schema containing the Buildings feature is as follows:
+         </p>
+         <div class="codeBlock"><pre class="codeLine">&lt;xs:schema xmlns:xs=”http://www.w3.org/2001/XMLSchema”</pre><pre class="codeLine">&nbsp;&nbsp;targetNamespace=”http://fdo_customer/OGC980461FS”</pre><pre class="codeLine">&nbsp;&nbsp;xmlns:fdo=”http://fdo.osgeo.org/schema”</pre><pre class="codeLine">&nbsp;&nbsp;xmlns:gml=”http://www.opengis.net/gml”</pre><pre class="codeLine">&nbsp;&nbsp;xmlns:OGC980461FS=”http://fdo_customer/OGC980461FS”</pre><pre class="codeLine">&nbsp;&nbsp;elementFormDefault=”qualified”</pre><pre class="codeLine">&nbsp;&nbsp;attributeFormDefault=”unqualified”</pre><pre class="codeLine">&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&lt;xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;OGC Simple Features Specification for</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SQL&lt;/xs:documentation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&lt;xs:element name=”buildings”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;type=”buildingsType”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;abstract=”false”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;substitutionGroup=”gml:_Feature”</pre><pre class="codeLine">&nbsp;&nbsp;&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:key name=”buildingsKey”&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:selector xpath=”.//buildings”/&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:field xpath=”fid”/&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:key&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&lt;/xs:element&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&lt;xs:complexType name=”buildingsType”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;abstract=”false”/&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometryName=”footprint”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometricTypes=”surface”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometryReadOnly=”false”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:hasMeasure=”false”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:hasElevation=”false”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;fdo:srsName=”SC_0”/&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;OGC 98-046r1 buildings</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:documentation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:appinfo source=”http://fdo.osgeo.org/schema”/&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;a polygon defines the perimeter of a</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;building&lt;/xs:documentation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:complexContent&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:extension base=”gml:AbstractFeatureType“</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:sequence&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:element name=”fid”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type=”fdo:int32”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:readOnly=”false”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;feature id</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:documentation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:element&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:element name=”address”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:readOnly=”false”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;address of the building</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:documentation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:simpleType&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:restriction base=”xs:string”&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:maxLength value=”64”/&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:restriction&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:simpleType&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:element&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:element name=”position”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ref=”gml:_Geometry”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometryName=”position”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometricTypes=”point”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:geometryReadOnly=”false”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:hasMeasure=”false”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:hasElevation=”false”</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fdo:srsName=”SC_0”/&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xs:documentation&gt;position of the building&lt;/xs:documentation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:annotation&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:element&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:sequence&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:extension&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xs:complexContent&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&lt;/xs:complexType&gt;</pre><pre class="codeLine">&lt;/xs:schema&gt;</pre></div>
+      </div><br></body>
 </html>

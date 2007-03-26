@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS73099cc142f487555e01641096cb1c9da-7c04.htm','83'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ISD-Topic ;
-                            Url = WS73099cc142f487555e01641096cb1c9da-7c04.htm-->
+   <body onLoad="javascript:initFrame('WS73099cc142f487555e01641096cb1c9da-7c04.htm','83'); javascript:initPage('Geometry Value','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -44,278 +40,175 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7c04"></a></span>
-                  
-                  
-      <!--Body-->
-                     
-      <p>
-                           Geometry
-         values are handled using a function call GeomFromText('AGF Text
+      <!--Body--><p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a54"></a></span>Geometry
+         values are handled using a function call GeomFromText('FGF Text
          string'), as is typical in an SQL query. 
       </p>
-                     
-      <p>The Autodesk extension
-         to WKT, referred to as AGF Text, is a superset of WKT (that is,
-         you can enter WKT as valid AGF Text strings). Dimensionality is
-         optional. It can be XY, XYM, XYZ, or XYZM. If it is not specified, it
-         is assumed to be XY. For more information about AGF, see <span class="char_link"><a href="WSfacf1429558a55de8821c21057fbebc2b-787.htm">
-               <!--Reference = WSfacf1429558a55de8821c21057fbebc2b-787; Target topic = WSfacf1429558a55de8821c21057fbebc2b-787.htm-->GisAgfGeometryFactory</a></span>.
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a53"></a></span>The Autodesk extension to WKT, referred to as
+         FGF Text, is a superset of WKT (that is, you can enter WKT as valid
+         FGF Text strings). Dimensionality is optional. It can be XY, XYM,
+         XYZ, or XYZM. If it is not specified, it is assumed to be XY. For
+         more information about FGF Text, see <span class="hypertext"><span class="char_link"><a href="WS1a9193826455f5ffd30557110ffe778f8-7e2f.htm">FGF Text</a></span></span>.
       </p>
-                     
       <div>
-         <div class="note-note"><span class="label">Note</span>Extra
-            ordinates are ignored, rather than generating an error during AGF
-            text parsing. For example, in the string “POINT (10 11 12)”, the
-            ‘12’ is ignored because the dimensionality is assumed to be XY.
+         <div class="note-note"><span class="label">Note</span>Extra ordinates are ignored,
+            rather than generating an error during FGF text parsing. For example,
+            in the string “POINT (10 11 12)”, the ‘12’ is ignored because the
+            dimensionality is assumed to be XY.
          </div>
       </div>
-                     
-      <p>The following is the
-         grammar definition for AGF Text:
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a52"></a></span>The following is the grammar definition for
+         FGF Text:
       </p>
-                     
-      <p>&lt;AGF Text&gt; ::=
-         POINT &lt;Dimensionality&gt; &lt;PointEntity&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a51"></a></span>&lt;FGF Text&gt; ::= POINT &lt;Dimensionality&gt;
+         &lt;PointEntity&gt; 
       </p>
-                     
-      <p>| LINESTRING &lt;Dimensionality&gt;
-         &lt;LineString&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a50"></a></span>| LINESTRING &lt;Dimensionality&gt; &lt;LineString&gt; 
       </p>
-                     
-      <p>| POLYGON &lt;Dimensionality&gt;
-         &lt;Polygon&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a4f"></a></span>| POLYGON &lt;Dimensionality&gt; &lt;Polygon&gt; 
       </p>
-                     
-      <p>| CURVESTRING &lt;Dimensionality&gt;
-         &lt;CurveString&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a4e"></a></span>| CURVESTRING &lt;Dimensionality&gt; &lt;CurveString&gt; 
       </p>
-                     
-      <p>| CURVEPOLYGON &lt;Dimensionality&gt;
-         &lt;CurvePolygon&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a4d"></a></span>| CURVEPOLYGON &lt;Dimensionality&gt; &lt;CurvePolygon&gt; 
       </p>
-                     
-      <p>| MULTIPOINT &lt;Dimensionality&gt;
-         &lt;MultiPoint&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a4c"></a></span>| MULTIPOINT &lt;Dimensionality&gt; &lt;MultiPoint&gt; 
       </p>
-                     
-      <p>| MULTILINESTRING
-         &lt;Dimensionality&gt; &lt;MultiLineString&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a4b"></a></span>| MULTILINESTRING &lt;Dimensionality&gt; &lt;MultiLineString&gt; 
       </p>
-                     
-      <p>| MULTIPOLYGON &lt;Dimensionality&gt;
-         &lt;MultiPolygon&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a4a"></a></span>| MULTIPOLYGON &lt;Dimensionality&gt; &lt;MultiPolygon&gt; 
       </p>
-                     
-      <p>| MULTICURVESTRING
-         &lt;Dimensionality&gt; &lt;MultiCurveString&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a49"></a></span>| MULTICURVESTRING &lt;Dimensionality&gt; &lt;MultiCurveString&gt; 
       </p>
-                     
-      <p>| MULTICURVEPOLYGON
-         &lt;Dimensionality&gt; &lt;MultiCurvePolygon&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a48"></a></span>| MULTICURVEPOLYGON &lt;Dimensionality&gt; &lt;MultiCurvePolygon&gt; 
       </p>
-                     
-      <p>| GEOMETRYCOLLECTION
-         &lt;GeometryCollection&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a47"></a></span>| GEOMETRYCOLLECTION &lt;GeometryCollection&gt; 
       </p>
-                     
-      <p>&lt;PointEntity&gt;
-         ::= '(' &lt;Point&gt; ')' 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a46"></a></span>&lt;PointEntity&gt; ::= '(' &lt;Point&gt; ')' 
       </p>
-                     
-      <p>&lt;LineString&gt;
-         ::= '(' &lt;PointCollection&gt; ')' 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a45"></a></span>&lt;LineString&gt; ::= '(' &lt;PointCollection&gt;
+         ')' 
       </p>
-                     
-      <p>&lt;Polygon&gt; ::=
-         '(' &lt;LineStringCollection&gt; ')' 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a44"></a></span>&lt;Polygon&gt; ::= '(' &lt;LineStringCollection&gt;
+         ')' 
       </p>
-                     
-      <p>&lt;MultiPoint&gt;
-         ::= '(' &lt;PointCollection&gt; ')' 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a43"></a></span>&lt;MultiPoint&gt; ::= '(' &lt;PointCollection&gt;
+         ')' 
       </p>
-                     
-      <p>&lt;MultiLineString&gt;
-         ::= '(' &lt;LineStringCollection&gt; ')' 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a42"></a></span>&lt;MultiLineString&gt; ::= '(' &lt;LineStringCollection&gt;
+         ')' 
       </p>
-                     
-      <p>&lt;MultiPolygon&gt;
-         ::= '(' &lt;PolygonCollection&gt; ')' 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a41"></a></span>&lt;MultiPolygon&gt; ::= '(' &lt;PolygonCollection&gt;
+         ')' 
       </p>
-                     
-      <p>&lt;GeometryCollection
-         : '(' &lt;AGF Collection Text&gt; ')' 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a40"></a></span>&lt;GeometryCollection : '(' &lt;FGF Collection
+         Text&gt; ')' 
       </p>
-                     
-      <p>&lt;CurveString&gt;
-         ::= '(' &lt;Point&gt; '(' &lt;CurveSegmentCollection&gt; ')' ')' 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a3f"></a></span>&lt;CurveString&gt; ::= '(' &lt;Point&gt; '('
+         &lt;CurveSegmentCollection&gt; ')' ')' 
       </p>
-                     
-      <p>&lt;CurvePolygon&gt;
-         ::= '(' &lt;CurveStringCollection&gt; ')' 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a3e"></a></span>&lt;CurvePolygon&gt; ::= '(' &lt;CurveStringCollection&gt;
+         ')' 
       </p>
-                     
-      <p>&lt;MultiCurveString&gt;
-         ::= '(' &lt;CurveStringCollection&gt; ')' 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a3d"></a></span>&lt;MultiCurveString&gt; ::= '(' &lt;CurveStringCollection&gt;
+         ')' 
       </p>
-                     
-      <p>&lt;MultiCurvePolygon&gt;
-         ::= '(' &lt;CurvePolygonCollection&gt; ')' 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a3c"></a></span>&lt;MultiCurvePolygon&gt; ::= '(' &lt;CurvePolygonCollection&gt;
+         ')' 
       </p>
-                     
-      <p>&lt;Dimensionality&gt;
-         ::= // default to XY 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a3b"></a></span>&lt;Dimensionality&gt; ::= // default to XY 
       </p>
-                     
-      <p>| XY </p>
-                     
-      <p>| XYZ </p>
-                     
-      <p>| XYM </p>
-                     
-      <p>| XYZM </p>
-                     
-      <p>&lt;Point&gt; ::=
-         DOUBLE DOUBLE 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a3a"></a></span>| XY 
       </p>
-                     
-      <p>| DOUBLE DOUBLE DOUBLE </p>
-                     
-      <p>| DOUBLE DOUBLE DOUBLE
-         DOUBLE 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a39"></a></span>| XYZ 
       </p>
-                     
-      <p>&lt;PointCollection&gt;
-         ::= &lt;Point&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a38"></a></span>| XYM 
       </p>
-                     
-      <p>| &lt;PointCollection
-         ',' &lt;Point&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a37"></a></span>| XYZM 
       </p>
-                     
-      <p>&lt;LineStringCollection&gt;
-         ::= &lt;LineString&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a36"></a></span>&lt;Point&gt; ::= DOUBLE DOUBLE 
       </p>
-                     
-      <p>| &lt;LineStringCollection&gt;
-         ',' &lt;LineString&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a35"></a></span>| DOUBLE DOUBLE DOUBLE 
       </p>
-                     
-      <p>&lt;PolygonCollection&gt;
-         ::= &lt;Polygon&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a34"></a></span>| DOUBLE DOUBLE DOUBLE DOUBLE 
       </p>
-                     
-      <p>| &lt;PolygonCollection&gt;
-         ',' &lt;Polygon&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a33"></a></span>&lt;PointCollection&gt; ::= &lt;Point&gt; 
       </p>
-                     
-      <p>&lt;AGF Collection
-         Text&gt; ::= &lt;AGF Text&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a32"></a></span>| &lt;PointCollection ',' &lt;Point&gt; 
       </p>
-                     
-      <p>| &lt;AGF Collection
-         Text&gt; ',' &lt;AGF Text&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a31"></a></span>&lt;LineStringCollection&gt; ::= &lt;LineString&gt; 
       </p>
-                     
-      <p>&lt;CurveSegment&gt;
-         ::= CIRCULARARCSEGMENT '(' &lt;Point&gt; ',' &lt;Point&gt; ')' 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a30"></a></span>| &lt;LineStringCollection&gt; ',' &lt;LineString&gt; 
       </p>
-                     
-      <p>| LINESTRINGSEGMENT
-         '(' &lt;PointCollection&gt; ')' 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a2f"></a></span>&lt;PolygonCollection&gt; ::= &lt;Polygon&gt; 
       </p>
-                     
-      <p>&lt;CurveSegmentCollection&gt;
-         ::= &lt;CurveSegment&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a2e"></a></span>| &lt;PolygonCollection&gt; ',' &lt;Polygon&gt; 
       </p>
-                     
-      <p>| &lt;CurveSegmentCollection&gt;
-         ',' &lt;CurveSegment&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a2d"></a></span>&lt;FGF Collection Text&gt; ::= &lt;FGF Text&gt; 
       </p>
-                     
-      <p>&lt;CurveStringCollection&gt;
-         ::= &lt;CurveString&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a2c"></a></span>| &lt;FGF Collection Text&gt; ',' &lt;FGF Text&gt; 
       </p>
-                     
-      <p>| &lt;CurveStringCollection&gt;
-         ',' &lt;CurveString&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a2b"></a></span>&lt;CurveSegment&gt; ::= CIRCULARARCSEGMENT
+         '(' &lt;Point&gt; ',' &lt;Point&gt; ')' 
       </p>
-                     
-      <p>&lt;CurvePolygonCollection&gt;
-         ::= &lt;CurvePolygon&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a2a"></a></span>| LINESTRINGSEGMENT '(' &lt;PointCollection&gt;
+         ')' 
       </p>
-                     
-      <p>| &lt;CurvePolygonCollection&gt;
-         ',' &lt;CurvePolygon&gt; 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a29"></a></span>&lt;CurveSegmentCollection&gt; ::= &lt;CurveSegment&gt; 
       </p>
-                     
-      <p></p>
-                     
-      <p>The only other token
-         type is DOUBLE, representing a double precision floating point values.
-         Integer (non-decimal point) input is converted to DOUBLE in the
-         lexical analyzer. 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a28"></a></span>| &lt;CurveSegmentCollection&gt; ',' &lt;CurveSegment&gt; 
       </p>
-                     
-      <p>Examples of the Autodesk
-         extensions include: 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a27"></a></span>&lt;CurveStringCollection&gt; ::= &lt;CurveString&gt; 
       </p>
-                     
-      <p>POINT XY (10 11) //
-         equivalent to POINT (10 11) 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a26"></a></span>| &lt;CurveStringCollection&gt; ',' &lt;CurveString&gt; 
       </p>
-                     
-      <p>POINT XYZ (10 11 12) </p>
-                     
-      <p>POINT XYM (10 11 1.2) </p>
-                     
-      <p>POINT XYZM (10 11
-         12 1.2) 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a25"></a></span>&lt;CurvePolygonCollection&gt; ::= &lt;CurvePolygon&gt; 
       </p>
-                     
-      <p>GEOMETRYCOLLECTION
-         (POINT xyz (10 11 12),POINT XYM (30 20 1.8), LINESTRING XYZM(1 2
-         3 4, 3 5 15, 3 20 20)) 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a24"></a></span>| &lt;CurvePolygonCollection&gt; ',' &lt;CurvePolygon&gt; 
       </p>
-                     
-      <p>CURVESTRING (0 0 (LINESTRINGSEGMENT
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a23"></a></span></p>
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a22"></a></span>The only other token type is DOUBLE, representing
+         a double precision floating point values. Integer (non-decimal point)
+         input is converted to DOUBLE in the lexical analyzer. 
+      </p>
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a21"></a></span>Examples of the Autodesk extensions include: 
+      </p>
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a20"></a></span>POINT XY (10 11) // equivalent to POINT (10
+         11) 
+      </p>
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a1f"></a></span>POINT XYZ (10 11 12) 
+      </p>
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a1e"></a></span>POINT XYM (10 11 1.2) 
+      </p>
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a1d"></a></span>POINT XYZM (10 11 12 1.2) 
+      </p>
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a1c"></a></span>GEOMETRYCOLLECTION (POINT xyz (10 11 12),POINT
+         XYM (30 20 1.8), LINESTRING XYZM(1 2 3 4, 3 5 15, 3 20 20)) 
+      </p>
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a1b"></a></span>CURVESTRING (0 0 (LINESTRINGSEGMENT (10 10,
+         20 20, 30 40)))) 
+      </p>
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a1a"></a></span>CURVESTRING (0 0 (CIRCULARARCSEGMENT (11 11,
+         12 12), LINESTRINGSEGMENT (10 10, 20 20, 30 40))) 
+      </p>
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a19"></a></span>CURVESTRING (0 0 (ARC (11 11, 12 12), LINESTRINGSEGMENT
+         (10 10, 20 20, 30 40))) 
+      </p>
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a18"></a></span>CURVESTRING XYZ (0 0 0 (LINESTRINGSEGMENT (10
+         10 1, 20 20 1, 30 40 1))) 
+      </p>
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a17"></a></span>MULTICURVESTRING ((0 0 (LINESTRINGSEGMENT (10
+         10, 20 20, 30 40))),(0 0 (ARC (11 11, 12 12), LINESTRINGSEGMENT
          (10 10, 20 20, 30 40)))) 
       </p>
-                     
-      <p>CURVESTRING (0 0 (CIRCULARARCSEGMENT
-         (11 11, 12 12), LINESTRINGSEGMENT (10 10, 20 20, 30 40))) 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a16"></a></span>CURVEPOLYGON ((0 0 (LINESTRINGSEGMENT (10 10,
+         10 20, 20 20), ARC (20 15, 10 10))), (0 0 (ARC (11 11, 12 12), LINESTRINGSEGMENT (10
+         10, 20 20, 40 40, 90 90)))) 
       </p>
-                     
-      <p>CURVESTRING (0 0 (ARC
-         (11 11, 12 12), LINESTRINGSEGMENT (10 10, 20 20, 30 40))) 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a15"></a></span>MULTICURVEPOLYGON (((0 0 (LINESTRINGSEGMENT
+         (10 10, 10 20, 20 20), ARC (20 15, 10 10))), (0 0 (ARC (11 11, 12
+         12), LINESTRINGSEGMENT (10 10, 20 20, 40 40, 90 90)))),((0 0 (LINESTRINGSEGMENT
+         (10 10, 10 20, 20 20), ARC (20 15, 10 10))), (0 0 (ARC (11 11, 12
+         12), LINESTRINGSEGMENT (10 10, 20 20, 40 40, 90 90))))) 
       </p>
-                     
-      <p>CURVESTRING XYZ (0
-         0 0 (LINESTRINGSEGMENT (10 10 1, 20 20 1, 30 40 1))) 
-      </p>
-                     
-      <p>MULTICURVESTRING ((0
-         0 (LINESTRINGSEGMENT (10 10, 20 20, 30 40))),(0 0 (ARC (11 11, 12
-         12), LINESTRINGSEGMENT (10 10, 20 20, 30 40)))) 
-      </p>
-                     
-      <p>CURVEPOLYGON ((0 0
-         (LINESTRINGSEGMENT (10 10, 10 20, 20 20), ARC (20 15, 10 10))),
-         (0 0 (ARC (11 11, 12 12), LINESTRINGSEGMENT (10 10, 20 20, 40 40,
-         90 90)))) 
-      </p>
-                     
-      <p>MULTICURVEPOLYGON
-         (((0 0 (LINESTRINGSEGMENT (10 10, 10 20, 20 20), ARC (20 15, 10
-         10))), (0 0 (ARC (11 11, 12 12), LINESTRINGSEGMENT (10 10, 20 20,
-         40 40, 90 90)))),((0 0 (LINESTRINGSEGMENT (10 10, 10 20, 20 20),
-         ARC (20 15, 10 10))), (0 0 (ARC (11 11, 12 12), LINESTRINGSEGMENT
-         (10 10, 20 20, 40 40, 90 90))))) 
-      </p>
-                     
-      <p></p>
-                  
-               
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a14"></a></span></p><br></body>
 </html>

@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS7106c181349dd8d0fd54d6105df83d127-7ffe.htm','64'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ;
-                            Url = WS7106c181349dd8d0fd54d6105df83d127-7ffe.htm-->
+   <body onLoad="javascript:initFrame('WS7106c181349dd8d0fd54d6105df83d127-7ffe.htm','64'); javascript:initPage('Supported Interfaces','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -44,18 +40,9 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS7106c181349dd8d0fd54d6105df83d127-7ffe"></a></span>
-               
-               
-      <!--Body-->
-                  
-      <p>
-                        In the current release of FDO, the following long
+      <!--Body--><p><span style="display:none"><a name="WS73099cc142f487556f505e1110019cfd2-7de2"></a></span>In the current release of FDO, the following long
          transaction interfaces are supported:
-      </p>
-                  
-      <!--UList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-6a3"></a></span>
-                     
-      <ul>
+      </p><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-6a3"></a></span><ul>
          <li>FDOIActivateLongTransaction </li>
          <li>FDOIDeactivateLongTransaction</li>
          <li>FDOIRollbackLongTransaction</li>
@@ -63,70 +50,44 @@
          <li>FDOICreateLongTransaction</li>
          <li>FDOIGetLongTransaction</li>
       </ul>
-                     
-                     
-                     
-                     
-                     
-                  
-                  
-      <p>These interfaces are
+      <p><span style="display:none"><a name="WS73099cc142f487556f505e1110019cfd2-7de1"></a></span>These interfaces are
          summarized below. For more information about their usage, supported
          methods, associated enumerations and readers, see the <span class="bookTitle">FDO API
             Reference Help</span>.
       </p>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-6a9"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e8739"></a>FDOIActivateLongTransaction
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-6a9"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e5428"></a>FDOIActivateLongTransaction
          </p>
-                        
-         <p>
-                              The
+         <p><span style="display:none"><a name="WS73099cc142f487556f505e1110019cfd2-7de0"></a></span>The
             FdoIActivateLongTransaction interface defines the ActivateLongTransaction
             command, which activates a long transaction where feature manipulation
             and locking commands operate on it. Input to the activate long transaction
             command is the long transaction name. The Execute operation activates
             the identified long transaction.
          </p>
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-6a8"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e8753"></a>FDOIDeactivateLongTransaction
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-6a8"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e5437"></a>FDOIDeactivateLongTransaction
          </p>
-                        
-         <p>
-                              The
+         <p><span style="display:none"><a name="WS73099cc142f487556f505e1110019cfd2-7ddf"></a></span>The
             FdoIDeactivateLongTransaction interface defines the DeactivateLongTransaction
             command, which deactivates the active long transaction where feature
             manipulation and locking commands operate on it. If the active long
             transaction is the root
             long transaction, then no long transaction will be deactivated.
          </p>
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-6a7"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e8776"></a>FDOIRollbackLongTransaction
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-6a7"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e5455"></a>FDOIRollbackLongTransaction
          </p>
-                        
-         <p>
-                              The
+         <p><span style="display:none"><a name="WS73099cc142f487556f505e1110019cfd2-7dde"></a></span>The
             FdoIRollbackLongTransaction interface defines the RollbackLongTransaction
             command, which allows a user to execute rollback operations on a
             long transaction. Two different rollback operations are available:
             Full and Partial.
          </p>
-                        
-         <p>The operation is executed
+         <p><span style="display:none"><a name="WS73099cc142f487556f505e1110019cfd2-7ddd"></a></span>The operation is executed
             on all data within a long transaction and on all its descendents.
             The data is removed from the database and all versions involved
             in the process deleted.
          </p>
-                        
          <div>
             <div class="note-note"><span class="label">Note</span>If
                the currently active long transaction is the same as the one being
@@ -138,58 +99,38 @@
                it is not affected.
             </div>
          </div>
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-6a6"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e8796"></a>FDOICommitLongTransaction
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-6a6"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e5468"></a>FDOICommitLongTransaction
          </p>
-                        
-         <p>
-                              The
+         <p><span style="display:none"><a name="WS73099cc142f487556f505e1110019cfd2-7ddc"></a></span>The
             FdoICommitLongTransaction interface defines the CommitLongTransaction
             command, which allows a user to execute commit operations on a long
             transaction. Two different commit operations are available: Full
             and Partial. 
          </p>
-                        
-         <p>The commit operation
+         <p><span style="display:none"><a name="WS73099cc142f487556f505e1110019cfd2-7ddb"></a></span>The commit operation
             can be performed on a leaf long transaction only. A long transaction
             is a leaf long transaction if it does not have descendents.
          </p>
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-6a5"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e8813"></a>FDOICreateLongTransaction
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-6a5"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e5479"></a>FDOICreateLongTransaction
          </p>
-                        
-         <p>
-                              The
+         <p><span style="display:none"><a name="WS73099cc142f487556f505e1110019cfd2-7dda"></a></span>The
             FdoICreateLongTransaction interface defines the CreateLongTransaction
             command, which creates a long transaction that is based on the currently
             active long transaction. There is always an active long transaction.
             If the user has not activated a user-defined long transaction, then
             the root long transaction is active. 
          </p>
-                        
-         <p>Input to the CreateLongTransaction
+         <p><span style="display:none"><a name="WS73099cc142f487556f505e1110019cfd2-7dd9"></a></span>Input to the CreateLongTransaction
             command includes a name and description for the new long transaction.
             The long transaction name submitted to the command has to be unique.
             If it is not unique, an exception is thrown.
          </p>
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-6a4"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e8830"></a>FDOIGetLongTransactions
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-6a4"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e5490"></a>FDOIGetLongTransactions
          </p>
-                        
-         <p>
-                              The
+         <p><span style="display:none"><a name="WS73099cc142f487556f505e1110019cfd2-7dd8"></a></span>The
             FdoIGetLongTransactions interface defines the GetLongTransactions
             command, which allows the user to retrieve long transaction information.
             If a long transaction name is submitted, the command returns the
@@ -197,16 +138,9 @@
             name is given, the command retrieves the names of all available long
             transactions.
          </p>
-                        
-         <p>For each returned
+         <p><span style="display:none"><a name="WS73099cc142f487556f505e1110019cfd2-7dd7"></a></span>For each returned
             long transaction, the user has the option to retrieve a list of
             descendents and/or ancestors. 
          </p>
-                     
-      </div>
-               
-            
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+      </div><br></body>
 </html>

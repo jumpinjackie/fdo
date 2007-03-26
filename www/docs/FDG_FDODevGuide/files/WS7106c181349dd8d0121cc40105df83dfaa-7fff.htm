@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS7106c181349dd8d0121cc40105df83dfaa-7fff.htm','61'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ;
-                            Url = WS7106c181349dd8d0121cc40105df83dfaa-7fff.htm-->
+   <body onLoad="javascript:initFrame('WS7106c181349dd8d0121cc40105df83dfaa-7fff.htm','61'); javascript:initPage('Query Example','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -44,213 +40,42 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS7106c181349dd8d0121cc40105df83dfaa-7fff"></a></span>
-               
-               
-      <!--Body-->
-                  
-      <p>
-                        
-                        In the <span class="char_link"><a href="javascript:hhctrl_d0e8142.Click()">
-               <!--Cannot find direct link-->
-               						No label
-               					</a></span> chapter,
+      <!--Body--><p><span style="display:none"><a name="WS73099cc142f4875594cc7110e6b3fa66-7c00"></a></span>In
+         the <span class="hypertext">Data Maintenance</span> chapter,
          we created an instance of the FdoFeatureClass SampleFeatureClass
          and assigned values to its integer, string, and geometry properties
-         (see <span class="char_link"><a href="WS7106c181349dd8d0121cc40105df83c97c-8000.htm#WS7106c181349dd8d0121cc40105df83c97c-7ffd">
-               <!--Reference = WS7106c181349dd8d0121cc40105df83c97c-7ffd; Target topic = WS7106c181349dd8d0121cc40105df83c97c-8000.htm-->Example: Inserting an Integer,
-               a String, and a Geometry Value</a></span>). The sample code in the
-         following query example selects this instance and retrieves the
-         values of its properties. Specifically, the sample code does the
-         following:
+         (see <span class="hypertext"><span class="char_link"><a href="WS7106c181349dd8d0121cc40105df83c97c-8000.htm#WS7106c181349dd8d0121cc40105df83c97c-7ffd">Example: Inserting an Integer, a String, and a Geometry
+                  Value</a></span></span>).
+         The sample code in the following query example selects this instance
+         and retrieves the values of its properties. Specifically, the sample
+         code does the following:
       </p>
-                  
-      <!--OList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-90c"></a></span>
-                     
-      <ol type="1" start="1">
-         <li>Creates the select command, and</li>
-         <li>Points the select command at the target FdoFeatureClass
-            SampleFeatureClass, and
+      <!--OList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-90c"></a></span><ol type="1" start="1">
+         <li>Creates
+            the select command, and
          </li>
-         <li>Creates a filter to identify which instance
-            of SampleFeatureClass to select, and 
-         </li>
-         <li>Points the select command at the filter,
-            and 
-         </li>
-         <li>Executes the command, which returns an FdoIFeatureReader object,
+         <li>Points
+            the select command at the target FdoFeatureClass SampleFeatureClass,
             and
          </li>
-         <li>Loops through the feature reader object,
-            which contains one or more query results depending on the filter
-            arguments. In the sample code provided, there is only one result.
+         <li>Creates
+            a filter to identify which instance of SampleFeatureClass to select,
+            and 
          </li>
-         <li>Finally, the code extracts the property values
-            from each query result.
+         <li>Points
+            the select command at the filter, and 
+         </li>
+         <li>Executes
+            the command, which returns an FdoIFeatureReader object, and
+         </li>
+         <li>Loops
+            through the feature reader object, which contains one or more query
+            results depending on the filter arguments. In the sample code provided,
+            there is only one result.
+         </li>
+         <li>Finally,
+            the code extracts the property values from each query result.
          </li>
       </ol>
-                     
-                     
-                     
-                     
-                     
-                     
-                  
-                  
-      <div class="codeBlock">
-                        <pre class="codeLine">// we have one FdoFeatureClass object in the DataStore</pre>
-                        <pre class="codeLine">// create a query that returns this object</pre>
-                        <pre class="codeLine">// create the select command</pre>
-                        <pre class="codeLine">GisPtr&lt;FdoISelect&gt; sampleSelect;</pre>
-                        <pre class="codeLine">sampleSelect = (FdoISelect *)</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;connection-&gt;CreateCommand(FdoCommandType_Select);</pre>
-                        <pre class="codeLine">// point the select command at the target FdoFeatureClass</pre>
-                        <pre class="codeLine">// SampleFeatureClass</pre>
-                        <pre class="codeLine">sampleSelect-&gt;SetFeatureClassName(L"SampleFeatureClass");</pre>
-                        <pre class="codeLine">// create the filter by</pre>
-                        <pre class="codeLine">// 1. creating an FdoIdentifier object containing the name of </pre>
-                        <pre class="codeLine">//&nbsp;&nbsp; the identity property</pre>
-                        <pre class="codeLine">GisPtr&lt;FdoIdentifier&gt; queryPropertyName;</pre>
-                        <pre class="codeLine">queryPropertyName =</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;FdoIdentifier::Create(L"SampleIdentityDataProperty");</pre>
-                        <pre class="codeLine">// 2. creating an FdoDataValue object containing the value of the</pre>
-                        <pre class="codeLine">//&nbsp;&nbsp; identity property</pre>
-                        <pre class="codeLine">GisPtr&lt;FdoDataValue&gt; queryPropertyValue;</pre>
-                        <pre class="codeLine">queryPropertyValue = FdoDataValue::Create(101);</pre>
-                        <pre class="codeLine">// 3. calling FdoComparisonCondition::Create() passing in the</pre>
-                        <pre class="codeLine">//&nbsp;&nbsp; the queryPropertyName, an enumeration constant signifying an</pre>
-                        <pre class="codeLine">//&nbsp;&nbsp; equals comparison operation, and the queryPropertyValue</pre>
-                        <pre class="codeLine">GisPtr&lt;FdoFilter&gt; filter;</pre>
-                        <pre class="codeLine">filter = FdoComparisonCondition::Create(queryPropertyName,</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;FdoComparisonOperations_EqualTo, queryPropertyValue);</pre>
-                        <pre class="codeLine">// point the select command at the filter</pre>
-                        <pre class="codeLine">sampleSelect-&gt;SetFilter(filter);</pre>
-                        <pre class="codeLine">// execute the select command</pre>
-                        <pre class="codeLine">GisPtr&lt;FdoIFeatureReader&gt; queryResults;</pre>
-                        <pre class="codeLine">queryResults = sampleSelect-&gt;Execute();</pre>
-                        <pre class="codeLine">// declare variables needed to capture query results</pre>
-                        <pre class="codeLine">GisPtr&lt;FdoClassDefinition&gt; classDef;</pre>
-                        <pre class="codeLine">GisPtr&lt;FdoPropertyDefinitionCollection&gt; properties;</pre>
-                        <pre class="codeLine">GisInt32 numProperties = 0;</pre>
-                        <pre class="codeLine">FdoPropertyDefinition * propertyDef;</pre>
-                        <pre class="codeLine">FdoPropertyType propertyType;</pre>
-                        <pre class="codeLine">FdoDataType dataType;</pre>
-                        <pre class="codeLine">FdoDataPropertyDefinition * dataPropertyDef;</pre>
-                        <pre class="codeLine">GisString * propertyName = NULL;</pre>
-                        <pre class="codeLine">GisPtr&lt;GisByteArray&gt; byteArray;</pre>
-                        <pre class="codeLine">GisIGeometry * geometry = NULL;</pre>
-                        <pre class="codeLine">GisGeometryType geometryType = GisGeometryType_None;</pre>
-                        <pre class="codeLine">GisIPolygon * polygon = NULL;</pre>
-                        <pre class="codeLine">GisILinearRing * exteriorRing = NULL;</pre>
-                        <pre class="codeLine">GisILinearRing * interiorRing = NULL;</pre>
-                        <pre class="codeLine">GisIDirectPosition * position = NULL;</pre>
-                        <pre class="codeLine">GisInt32 dimensionality = GisDimensionality_XY;</pre>
-                        <pre class="codeLine">GisInt32 numPositions = 0;</pre>
-                        <pre class="codeLine">GisInt32 numInteriorRings = 0;</pre>
-                        <pre class="codeLine">// loop through the query results</pre>
-                        <pre class="codeLine">while (queryResults-&gt;ReadNext()) {</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;// get the feature class object and its properties</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;classDef = queryResults-&gt;GetClassDefinition();</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;properties = classDef-&gt;GetProperties();</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;// loop through the properties</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;numProperties = properties-&gt;GetCount();</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;for(int i = 0; i &lt; numProperties; i++) {</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;propertyDef = properties-&gt;GetItem(i);</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;// get the property name and property type</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;propertyName = propertyDef-&gt;GetName();</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;propertyType = propertyDef-&gt;GetPropertyType();</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;switch (propertyType) {</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// it’s a data property</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case FdoPropertyType_DataProperty:</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataPropertyDef =</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dynamic_cast&lt;FdoDataPropertyDefinition *&gt;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(propertyDef);</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataType = dataPropertyDef-&gt;GetDataType();</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;switch (dataType) {</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case FdoDataType_Boolean:</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case FdoDataType_Int32:</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case FdoDataType_String:</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default:</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// it’s a geometric property</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// convert the byte array to a geometry</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// and determine the derived type of the geometry</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case FdoPropertyType_GeometricProperty:</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;byteArray = queryResults-&gt;GetGeometry(propertyName);</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;geometry =</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sampleGeometryFactory-&gt;CreateGeometryFromAgf </pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(byteArray);</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;geometryType = geometry-&gt;GetDerivedType();</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// resolve the derived type into a list of ordinates</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;switch (geometryType) {</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case GisGeometryType_None:</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case GisGeometryType_Point:</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case GisGeometryType_LineString:</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case GisGeometryType_Polygon:</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;polygon = dynamic_cast&lt;GisIPolygon *&gt;(geometry);</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exteriorRing = polygon-&gt;GetExteriorRing();</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dimensionality = exteriorRing-</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;GetDimensionality();</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;numPositions = exteriorRing-&gt;GetCount();</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double X, Y, Z, M;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for(int i=0; i&lt;numPositions; i++) {</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;position = exteriorRing-&gt;GetItem(i);</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (dimensionality &amp; GisDimensionality_Z &amp;&amp; </pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dimensionality &amp; GisDimensionality_M) {</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;X = position-&gt;GetX();</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y = position-&gt;GetY();</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Z = position-&gt;GetZ();</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;M = position-&gt;GetM();</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else if (dimensionality &amp; GisDimensionality_Z </pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&amp;&amp; !(dimensionality &amp; GisDimensionality_M)) {</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;X = position-&gt;GetX();</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y = position-&gt;GetY();</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Z = position-&gt;GetZ();</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else {</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;X = position-&gt;GetX();</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y = position-&gt;GetY();</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;numInteriorRings = polygon-</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;GetInteriorRingCount();</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for(int i=0; i&lt;numInteriorRings; i++) {</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;interiorRing = polygon-&gt;GetInteriorRing(i);</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// do same for interior ring as exterior ring</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case GisGeometryType_MultiPoint:</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case GisGeometryType_MultiLineString:</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case GisGeometryType_MultiPolygon:</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case GisGeometryType_MultiGeometry:</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case GisGeometryType_CurveString:</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case GisGeometryType_CurvePolygon:</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case GisGeometryType_MultiCurveString:</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case GisGeometryType_MultiCurvePolygon:</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default:</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default:</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;}</pre>
-                        <pre class="codeLine">}</pre>
-                     </div>
-               
-            
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+      <div class="codeBlock"><pre class="codeLine">// we have one FdoFeatureClass object in the DataStore</pre><pre class="codeLine">// create a query that returns this object</pre><pre class="codeLine">// create the select command</pre><pre class="codeLine">FdoPtr&lt;FdoISelect&gt; sampleSelect;</pre><pre class="codeLine">sampleSelect = (FdoISelect *)</pre><pre class="codeLine">&nbsp;&nbsp;connection-&gt;CreateCommand(FdoCommandType_Select);</pre><pre class="codeLine">// point the select command at the target FdoFeatureClass</pre><pre class="codeLine">// SampleFeatureClass</pre><pre class="codeLine">sampleSelect-&gt;SetFeatureClassName(L"SampleFeatureClass");</pre><pre class="codeLine">// create the filter by</pre><pre class="codeLine">// 1. creating an FdoIdentifier object containing the name of </pre><pre class="codeLine">//&nbsp;&nbsp; the identity property</pre><pre class="codeLine">FdoPtr&lt;FdoIdentifier&gt; queryPropertyName;</pre><pre class="codeLine">queryPropertyName =</pre><pre class="codeLine">&nbsp;&nbsp;FdoIdentifier::Create(L"SampleIdentityDataProperty");</pre><pre class="codeLine">// 2. creating an FdoDataValue object containing the value of the</pre><pre class="codeLine">//&nbsp;&nbsp; identity property</pre><pre class="codeLine">FdoPtr&lt;FdoDataValue&gt; queryPropertyValue;</pre><pre class="codeLine">queryPropertyValue = FdoDataValue::Create(101);</pre><pre class="codeLine">// 3. calling FdoComparisonCondition::Create() passing in the</pre><pre class="codeLine">//&nbsp;&nbsp; the queryPropertyName, an enumeration constant signifying an</pre><pre class="codeLine">//&nbsp;&nbsp; equals comparison operation, and the queryPropertyValue</pre><pre class="codeLine">FdoPtr&lt;FdoFilter&gt; filter;</pre><pre class="codeLine">filter = FdoComparisonCondition::Create(queryPropertyName,</pre><pre class="codeLine">&nbsp;&nbsp;FdoComparisonOperations_EqualTo, queryPropertyValue);</pre><pre class="codeLine">// point the select command at the filter</pre><pre class="codeLine">sampleSelect-&gt;SetFilter(filter);</pre><pre class="codeLine">// execute the select command</pre><pre class="codeLine">FdoPtr&lt;FdoIFeatureReader&gt; queryResults;</pre><pre class="codeLine">queryResults = sampleSelect-&gt;Execute();</pre><pre class="codeLine">// declare variables needed to capture query results</pre><pre class="codeLine">FdoPtr&lt;FdoClassDefinition&gt; classDef;</pre><pre class="codeLine">FdoPtr&lt;FdoPropertyDefinitionCollection&gt; properties;</pre><pre class="codeLine">FdoInt32 numProperties = 0;</pre><pre class="codeLine">FdoPropertyDefinition * propertyDef;</pre><pre class="codeLine">FdoPropertyType propertyType;</pre><pre class="codeLine">FdoDataType dataType;</pre><pre class="codeLine">FdoDataPropertyDefinition * dataPropertyDef;</pre><pre class="codeLine">FdoString * propertyName = NULL;</pre><pre class="codeLine">FdoPtr&lt;FdoByteArray&gt; byteArray;</pre><pre class="codeLine">FdoIGeometry * geometry = NULL;</pre><pre class="codeLine">FdoGeometryType geometryType = FdoGeometryType_None;</pre><pre class="codeLine">FdoIPolygon * polygon = NULL;</pre><pre class="codeLine">FdoILinearRing * exteriorRing = NULL;</pre><pre class="codeLine">FdoILinearRing * interiorRing = NULL;</pre><pre class="codeLine">FdoIDirectPosition * position = NULL;</pre><pre class="codeLine">FdoInt32 dimensionality = FdoDimensionality_XY;</pre><pre class="codeLine">FdoInt32 numPositions = 0;</pre><pre class="codeLine">FdoInt32 numInteriorRings = 0;</pre><pre class="codeLine">// loop through the query results</pre><pre class="codeLine">while (queryResults-&gt;ReadNext()) {</pre><pre class="codeLine">&nbsp;&nbsp;// get the feature class object and its properties</pre><pre class="codeLine">&nbsp;&nbsp;classDef = queryResults-&gt;GetClassDefinition();</pre><pre class="codeLine">&nbsp;&nbsp;properties = classDef-&gt;GetProperties();</pre><pre class="codeLine">&nbsp;&nbsp;// loop through the properties</pre><pre class="codeLine">&nbsp;&nbsp;numProperties = properties-&gt;GetCount();</pre><pre class="codeLine">&nbsp;&nbsp;for(int i = 0; i &lt; numProperties; i++) {</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;propertyDef = properties-&gt;GetItem(i);</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;// get the property name and property type</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;propertyName = propertyDef-&gt;GetName();</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;propertyType = propertyDef-&gt;GetPropertyType();</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;switch (propertyType) {</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// it’s a data property</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case FdoPropertyType_DataProperty:</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataPropertyDef =</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dynamic_cast&lt;FdoDataPropertyDefinition *&gt;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(propertyDef);</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataType = dataPropertyDef-&gt;GetDataType();</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;switch (dataType) {</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case FdoDataType_Boolean:</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case FdoDataType_Int32:</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case FdoDataType_String:</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default:</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// it’s a geometric property</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// convert the byte array to a geometry</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// and determine the derived type of the geometry</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case FdoPropertyType_GeometricProperty:</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;byteArray = queryResults-&gt;GetGeometry(propertyName);</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;geometry =</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sampleGeometryFactory-&gt;CreateGeometryFromAgf </pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(byteArray);</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;geometryType = geometry-&gt;GetDerivedType();</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// resolve the derived type into a list of ordinates</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;switch (geometryType) {</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case FdoGeometryType_None:</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case FdoGeometryType_Point:</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case FdoGeometryType_LineString:</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case FdoGeometryType_Polygon:</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;polygon = dynamic_cast&lt;FdoIPolygon *&gt;(geometry);</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exteriorRing = polygon-&gt;GetExteriorRing();</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dimensionality = exteriorRing-</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;GetDimensionality();</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;numPositions = exteriorRing-&gt;GetCount();</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double X, Y, Z, M;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for(int i=0; i&lt;numPositions; i++) {</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;position = exteriorRing-&gt;GetItem(i);</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (dimensionality &amp; FdoDimensionality_Z &amp;&amp; </pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dimensionality &amp; FdoDimensionality_M) {</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;X = position-&gt;GetX();</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y = position-&gt;GetY();</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Z = position-&gt;GetZ();</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;M = position-&gt;GetM();</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else if (dimensionality &amp; FdoDimensionality_Z </pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&amp;&amp; !(dimensionality &amp; FdoDimensionality_M)) {</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;X = position-&gt;GetX();</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y = position-&gt;GetY();</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Z = position-&gt;GetZ();</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else {</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;X = position-&gt;GetX();</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y = position-&gt;GetY();</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;numInteriorRings = polygon-</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;GetInteriorRingCount();</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for(int i=0; i&lt;numInteriorRings; i++) {</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;interiorRing = polygon-&gt;GetInteriorRing(i);</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// do same for interior ring as exterior ring</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case FdoGeometryType_MultiPoint:</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case FdoGeometryType_MultiLineString:</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case FdoGeometryType_MultiPolygon:</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case FdoGeometryType_MultiGeometry:</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case FdoGeometryType_CurveString:</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case FdoGeometryType_CurvePolygon:</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case FdoGeometryType_MultiCurveString:</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case FdoGeometryType_MultiCurvePolygon:</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default:</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default:</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;}</pre><pre class="codeLine">&nbsp;&nbsp;}</pre><pre class="codeLine">}</pre></div><br></body>
 </html>

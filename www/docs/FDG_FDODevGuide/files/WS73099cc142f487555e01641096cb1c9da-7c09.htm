@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS73099cc142f487555e01641096cb1c9da-7c09.htm','71'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ISD-Topic ;
-                            Url = WS73099cc142f487555e01641096cb1c9da-7c09.htm-->
+   <body onLoad="javascript:initFrame('WS73099cc142f487555e01641096cb1c9da-7c09.htm','71'); javascript:initPage('Filter Grammar','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -44,63 +40,13 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7c09"></a></span>
-                  
-                  
-      <!--Body-->
-                     
-      <p>
-                           The rules
-         for entering filter expressions are described in the following sections
-         using BNF notation. For more information about BNF notation, see
-         http://cui.unige.ch/db-research/Enseignement/analyseinfo/AboutBNF.html. 
+      <!--Body--><p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a7f"></a></span>The
+         rules for entering filter expressions are described in the following
+         sections using BNF notation. For more information about BNF notation,
+         see http://cui.unige.ch/db-research/Enseignement/analyseinfo/AboutBNF.html. 
       </p>
-                     
-      <p>The FdoFilter::Parse()
-         method supports the following filter grammar:
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a7e"></a></span>The FdoFilter::Parse() method supports the following
+         filter grammar:
       </p>
-                     
-      <div class="codeBlock">
-                           <pre class="codeLine">&lt;Filter&gt; ::= '(' Filter ')'</pre>
-                           <pre class="codeLine">| &lt;LogicalOperator&gt;</pre>
-                           <pre class="codeLine">| &lt;SearchCondition&gt;</pre>
-                           <pre class="codeLine">&lt;LogicalOperator&gt; ::= &lt;BinaryLogicalOperator&gt;</pre>
-                           <pre class="codeLine">| &lt;UnaryLogicalOperator&gt;</pre>
-                           <pre class="codeLine">&lt;BinaryLogicalOperator&gt; ::=</pre>
-                           <pre class="codeLine">&lt;Filter&gt; &lt;BinaryLogicalOperations&gt; &lt;Filter&gt;</pre>
-                           <pre class="codeLine">&lt;SearchCondition&gt; ::= &lt;InCondition&gt;</pre>
-                           <pre class="codeLine">| &lt;ComparisonCondition&gt;</pre>
-                           <pre class="codeLine">| &lt;GeometricCondition&gt;</pre>
-                           <pre class="codeLine">| &lt;NullCondition&gt;</pre>
-                           <pre class="codeLine">&lt;InCondition&gt; ::= &lt;Identifier&gt; IN '(' ValueExpressionCollection ')'</pre>
-                           <pre class="codeLine">&lt;ValueExpressionCollection&gt; ::= &lt;ValueExpression&gt;</pre>
-                           <pre class="codeLine">| &lt;ValueExpressionCollection&gt; ',' &lt;ValueExpression&gt;</pre>
-                           <pre class="codeLine">&lt;ComparisonCondition&gt; ::=</pre>
-                           <pre class="codeLine">&lt;Expression&gt; &lt;ComparisonOperations&gt; &lt;Expression&gt;</pre>
-                           <pre class="codeLine">&lt;GeometricCondition&gt; ::= &lt;DistanceCondition&gt;</pre>
-                           <pre class="codeLine">| &lt;SpatialCondition&gt;</pre>
-                           <pre class="codeLine">&lt;DistanceCondition&gt; ::=</pre>
-                           <pre class="codeLine">&lt;Identifier&gt; &lt;DistanceOperations&gt; &lt;Expression&gt; &lt;distance&gt;</pre>
-                           <pre class="codeLine">&lt;NullCondition&gt; ::= &lt;Identifier&gt; NULL</pre>
-                           <pre class="codeLine">&lt;SpatialCondition&gt; ::=</pre>
-                           <pre class="codeLine">&lt;Identifier&gt; &lt;SpatialOperations&gt; &lt;Expression&gt;</pre>
-                           <pre class="codeLine">&lt;UnaryLogicalOperator&gt; ::= NOT &lt;Filter&gt;</pre>
-                           <pre class="codeLine">&lt;BinaryLogicalOperations&gt; ::= AND | OR</pre>
-                           <pre class="codeLine">&lt;ComparisionOperations&gt; ::=</pre>
-                           <pre class="codeLine">= // EqualTo (EQ)</pre>
-                           <pre class="codeLine">&lt;&gt; // NotEqualTo (NE)</pre>
-                           <pre class="codeLine">&gt; // GreaterThan (GT)</pre>
-                           <pre class="codeLine">&gt;= // GreaterThanOrEqualTo (GE)</pre>
-                           <pre class="codeLine">&lt; // LessThan (LT)</pre>
-                           <pre class="codeLine">&lt;= // LessThanOrEqualTo (LE)</pre>
-                           <pre class="codeLine">LIKE // Like</pre>
-                           <pre class="codeLine">&lt;DistanceOperations&gt; ::= BEYOND | WITHINDISTANCE</pre>
-                           <pre class="codeLine">&lt;distance&gt; ::= DOUBLE | INTEGER</pre>
-                           <pre class="codeLine">&lt;SpatialOperations&gt; ::= CONTAINS | CROSSES | DISJOINT</pre>
-                           <pre class="codeLine">| EQUALS | INTERSECTS | OVERLAPS | TOUCHES | WITHIN | COVEREDBY | INSIDE</pre>
-                        </div>
-                  
-               
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+      <div class="codeBlock"><pre class="codeLine">&lt;Filter&gt; ::= '(' Filter ')'</pre><pre class="codeLine">| &lt;LogicalOperator&gt;</pre><pre class="codeLine">| &lt;SearchCondition&gt;</pre><pre class="codeLine">&lt;LogicalOperator&gt; ::= &lt;BinaryLogicalOperator&gt;</pre><pre class="codeLine">| &lt;UnaryLogicalOperator&gt;</pre><pre class="codeLine">&lt;BinaryLogicalOperator&gt; ::=</pre><pre class="codeLine">&lt;Filter&gt; &lt;BinaryLogicalOperations&gt; &lt;Filter&gt;</pre><pre class="codeLine">&lt;SearchCondition&gt; ::= &lt;InCondition&gt;</pre><pre class="codeLine">| &lt;ComparisonCondition&gt;</pre><pre class="codeLine">| &lt;GeometricCondition&gt;</pre><pre class="codeLine">| &lt;NullCondition&gt;</pre><pre class="codeLine">&lt;InCondition&gt; ::= &lt;Identifier&gt; IN '(' ValueExpressionCollection ')'</pre><pre class="codeLine">&lt;ValueExpressionCollection&gt; ::= &lt;ValueExpression&gt;</pre><pre class="codeLine">| &lt;ValueExpressionCollection&gt; ',' &lt;ValueExpression&gt;</pre><pre class="codeLine">&lt;ComparisonCondition&gt; ::=</pre><pre class="codeLine">&lt;Expression&gt; &lt;ComparisonOperations&gt; &lt;Expression&gt;</pre><pre class="codeLine">&lt;GeometricCondition&gt; ::= &lt;DistanceCondition&gt;</pre><pre class="codeLine">| &lt;SpatialCondition&gt;</pre><pre class="codeLine">&lt;DistanceCondition&gt; ::=</pre><pre class="codeLine">&lt;Identifier&gt; &lt;DistanceOperations&gt; &lt;Expression&gt; &lt;distance&gt;</pre><pre class="codeLine">&lt;NullCondition&gt; ::= &lt;Identifier&gt; NULL</pre><pre class="codeLine">&lt;SpatialCondition&gt; ::=</pre><pre class="codeLine">&lt;Identifier&gt; &lt;SpatialOperations&gt; &lt;Expression&gt;</pre><pre class="codeLine">&lt;UnaryLogicalOperator&gt; ::= NOT &lt;Filter&gt;</pre><pre class="codeLine">&lt;BinaryLogicalOperations&gt; ::= AND | OR</pre><pre class="codeLine">&lt;ComparisionOperations&gt; ::=</pre><pre class="codeLine">= // EqualTo (EQ)</pre><pre class="codeLine">&lt;&gt; // NotEqualTo (NE)</pre><pre class="codeLine">&gt; // GreaterThan (GT)</pre><pre class="codeLine">&gt;= // GreaterThanOrEqualTo (GE)</pre><pre class="codeLine">&lt; // LessThan (LT)</pre><pre class="codeLine">&lt;= // LessThanOrEqualTo (LE)</pre><pre class="codeLine">LIKE // Like</pre><pre class="codeLine">&lt;DistanceOperations&gt; ::= BEYOND | WITHINDISTANCE</pre><pre class="codeLine">&lt;distance&gt; ::= DOUBLE | INTEGER</pre><pre class="codeLine">&lt;SpatialOperations&gt; ::= CONTAINS | CROSSES | DISJOINT</pre><pre class="codeLine">| EQUALS | INTERSECTS | OVERLAPS | TOUCHES | WITHIN | COVEREDBY | INSIDE</pre></div><br></body>
 </html>

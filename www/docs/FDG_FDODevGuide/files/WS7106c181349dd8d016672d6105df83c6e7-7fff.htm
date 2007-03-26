@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS7106c181349dd8d016672d6105df83c6e7-7fff.htm','13'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ISD-Topic ;
-                            Url = WS7106c181349dd8d016672d6105df83c6e7-7fff.htm-->
+   <body onLoad="javascript:initFrame('WS7106c181349dd8d016672d6105df83c6e7-7fff.htm','13'); javascript:initPage('Data Concepts','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -44,233 +40,142 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS7106c181349dd8d016672d6105df83c6e7-7fff"></a></span>
-               
-               
-      <!--Body-->
-                  
-      <p>All concepts that are defined in this section
+      <!--Body--><p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7aca"></a></span>All concepts that are defined in this section
          relate to the data that FDO is designed to manage and manipulate.
-                     
       </p>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b21"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e801"></a>What Is a Feature?
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b21"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e464"></a>What Is a Feature?
          </p>
-                        
-         <p>A feature is an abstraction of a natural or
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ac9"></a></span>A feature is an abstraction of a natural or
             man-made real world object. It is related directly or indirectly
             to geographic locations. A spatial feature has one or more geometric
             properties. For example, a road feature might be represented by
             a line, and a hydrant might be represented by a point. A non-spatial
-            feature does not have geometry, but can be related to a spatial
-            feature which does. For example, a road feature may contain a sidewalk
-            feature that is defined as not containing a geometry.
+            feature does not have geometry, but can be related to a spatial feature
+            which does. For example, a road feature may contain a sidewalk feature
+            that is defined as not containing a geometry.
          </p>
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b20"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e810"></a>What Is a Schema?
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b20"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e469"></a>What Is a Schema?
          </p>
-                        
-         <p>
-                              A
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ac8"></a></span>A
             schema is a logical description of the data types used to model
-            real-world objects. A schema is not the actual data instances (that
-            is, not a particular road or land parcel), rather it is metadata.
-            A schema is a model of the types of data that would be found in
-            a data store. For example, a schema which models the layout of city
+            real-world objects. A schema is not the actual data instances (that is,
+            not a particular road or land parcel), rather it is metadata. A
+            schema is a model of the types of data that would be found in a
+            data store. For example, a schema which models the layout of city
             streets has a class called Road, and this class has a property called
             Name. The definition of Road and its associated classes constitute
             the schema. 
          </p>
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b1f"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e828"></a>What Is a Schema Override?
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b1f"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e482"></a>What Is a Schema Override?
          </p>
-                        
-         <p>
-                              A
-            schema override comprises instructions to override the default schema mappings.
-            For example, an RDBMS-type FDO provider could map a feature class
-            to a table of the same name by default. A schema override might
-            map the class to a differently named table, for example, by mapping
-            the "pole" class to the "telco_pole" table.
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ac7"></a></span>A schema override comprises instructions to
+            override the default schema mappings. For example, an RDBMS-type
+            FDO provider could map a feature class to a table of the same name
+            by default. A schema override might map the class to a differently
+            named table, for example, by mapping the "pole" class to the "telco_pole"
+            table.
          </p>
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b1e"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e842"></a>What is a Schema Mapping
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b1e"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e491"></a>What is a Schema Mapping
          </p>
-                        
-         <p>
-                              A
-            Schema Mapping is a correspondence between a Schema Element and
-            a physical object in a data store. For example, OSGeo FDO Provider
-            for MySQL maps each Feature Class onto a table in the MySQL database
-            where the data store resides. The physical structure of data stores
-            for each FDO provider can vary greatly, so the types of Schema Mappings
-            can also vary between providers. Each provider defines a set of
-            default schema mappings. For example, OSGeo FDO Provider for MySQL
-            maps a class to a table of the same name by default. These defaults
-            can be overridden by specifying Schema Overrides.
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ac6"></a></span>A Schema Mapping is a correspondence
+            between a Schema Element and a physical object in a data store.
+            For example, OSGeo FDO Provider for MySQL maps each Feature Class
+            onto a table in the MySQL database where the data store resides.
+            The physical structure of data stores for each FDO provider can
+            vary greatly, so the types of Schema Mappings can also vary between
+            providers. Each provider defines a set of default schema mappings.
+            For example, OSGeo FDO Provider for MySQL maps a class to a table
+            of the same name by default. These defaults can be overridden by
+            specifying Schema Overrides.
          </p>
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b1d"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e856"></a>What Are Elements of a Schema?
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b1d"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e500"></a>What Are Elements of a Schema?
          </p>
-                        
-         <p>
-                              
-                              A
-            schema consists of a collection of schema elements. In the FDO API, schema
-            elements are related to one another by derivation and by aggregation.
-            An element of a schema defines a particular type of data, such as
-            a feature class or a property, or an association. For example, a
-            feature class definition for a road includes the class name (for
-            example, Road), and the class properties (for example, Name, NumberLanes,
-            PavementType, and Geometry).
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ac5"></a></span>A schema consists of a collection of schema
+            elements. In the FDO API, schema elements are related to one another
+            by derivation and by aggregation. An element of a schema defines
+            a particular type of data, such as a feature class or a property,
+            or an association. For example, a feature class definition for a
+            road includes the class name (for example, Road), and the class
+            properties (for example, Name, NumberLanes, PavementType, and Geometry).
          </p>
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b1c"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e879"></a>What Is a Class Type?
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b1c"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e517"></a>What Is a Class Type?
          </p>
-                        
-         <p>
-                              A
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ac4"></a></span>A
             class type is a specialization of the base FDO class definition
             (FdoClassDefinition). It is used to represent the complex properties
             of spatial and non-spatial features.
          </p>
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b1b"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e893"></a>What is a Feature Class?
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b1b"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e526"></a>What is a Feature Class?
          </p>
-                        
-         <p>
-                              
-                              
-                              A
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ac3"></a></span>A
             feature class is a schema element that describes a type of real-world
             object. It includes a class name and property definitions, including
             zero or more geometric properties. It describes the type of data
             that would be included in object instances of that type.
          </p>
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b1a"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e925"></a>What Is a Property?
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b1a"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e551"></a>What Is a Property?
          </p>
-                        
-         <p>
-                              
-                              A
-            property is a single attribute of a class and a class is defined
-            by one or more property definitions. For example, a Road feature
-            class may have properties called Name, NumberLanes, or Location.
-            A property has a particular type, which can be a simple type, such
-            as a string or number, or a complex type defined by a class, such
-            as an Address type, which itself is defined by a set of properties,
-            such as StreetNumber, StreetName, or StreetType.
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ac2"></a></span>A property is a single attribute of
+            a class and a class is defined by one or more property definitions.
+            For example, a Road feature class may have properties called Name,
+            NumberLanes, or Location. A property has a particular type, which
+            can be a simple type, such as a string or number, or a complex type
+            defined by a class, such as an Address type, which itself is defined
+            by a set of properties, such as StreetNumber, StreetName, or StreetType.
          </p>
-                        
-         <p>There are five kinds of properties: association
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ac1"></a></span>There are five kinds of properties: association
             properties, data properties, geometric properties, object properties,
             and raster properties.
-         </p>
-                        
-         <!--UList--><span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7bff"></a></span>
-                           
-         <p class="list-intro"><span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7bfe"></a></span>Individual
+         </p><span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7bff"></a></span><p class="list-intro"><span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7bfe"></a></span>Individual
             properties are defined in the following sections. 
          </p>
-                        
-                        
-         <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b19"></a></span>
-                              
-            <p class="section_title_h2"><a name="TOC_ENTRY__d0e960"></a>What Is an Association Property?
+         <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b19"></a></span><p class="section_title_h2"><a name="TOC_ENTRY__d0e577"></a>What Is an Association Property?
             </p>
-                              
-            <p>
-                                    
-                                    The
-               FdoAssociationPropertyDefinition class is used to model a peer-to-peer relationship
-               between two classes. This relationship is defined at schema creation
-               time and instantiated at object creation time. The association property supports
-               various cardinality settings, cascading locks, and differing delete rules.
-               An FDO filter can be based on association properties and FdoIFeatureReader
-               can handle associated objects through the GetObject() method.
+            <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ac0"></a></span>The
+               FdoAssociationPropertyDefinition class is used to model a peer-to-peer
+               relationship between two classes. This relationship is defined at
+               schema creation time and instantiated at object creation time. The
+               association property supports various cardinality settings, cascading
+               locks, and differing delete rules. An FDO filter can be based on association
+               properties and FdoIFeatureReader can handle associated objects through
+               the GetObject() method.
             </p>
-                           
          </div>
-                        
-         <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b18"></a></span>
-                              
-            <p class="section_title_h2"><a name="TOC_ENTRY__d0e983"></a>What Is a Data Property?
+         <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b18"></a></span><p class="section_title_h2"><a name="TOC_ENTRY__d0e594"></a>What Is a Data Property?
             </p>
-                              
-            <p>
-                                    
-                                    A
+            <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7abf"></a></span>A
                data property is a non-spatial property. An instance of a data property
                contains a value whose type is either boolean, byte, date/time,
                decimal, single, double, Int16, Int32, Int64, string, binary large
                object, or character large object.
             </p>
-                           
          </div>
-                        
-         <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b17"></a></span>
-                              
-            <p class="section_title_h2"><a name="TOC_ENTRY__d0e1010"></a>What Is Dimensionality?
+         <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b17"></a></span><p class="section_title_h2"><a name="TOC_ENTRY__d0e615"></a>What Is Dimensionality?
             </p>
-                              
-            <p>
-                                    Dimensionality,
-               and the concept of dimension, has two different meanings in the
-               discussion of geometry and geometric property.
+            <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7abe"></a></span>Dimensionality, and the concept of dimension,
+               has two different meanings in the discussion of geometry and geometric
+               property.
             </p>
-                              
-            <p>The first is called shape dimensionality, and
+            <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7abd"></a></span>The first is called shape dimensionality, and
                it is defined by the FdoGeometricType enumeration. The four shapes
                are point (0 dimensions), curve (1 dimensions), surface (2 dimensions),
                and solid (3 dimensions).
             </p>
-                              
-            <p>The other is called ordinate dimensionality,
-               and it is defined by the GisDimensionality enumeration. There are
+            <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7abc"></a></span>The other is called ordinate dimensionality,
+               and it is defined by the FdoDimensionality enumeration. There are
                four ordinate dimensions: XY, XYZ, XYM, and XYZM. M stands for measure.
             </p>
-                           
          </div>
-                        
-         <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b16"></a></span>
-                              
-            <p class="section_title_h2"><a name="TOC_ENTRY__d0e1030"></a>What Is a Geometric Property?
+         <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b16"></a></span><p class="section_title_h2"><a name="TOC_ENTRY__d0e628"></a>What Is a Geometric Property?
             </p>
-                              
-            <p>
-                                    
-                                    
-                                    An
+            <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7abb"></a></span>An
                instance of a geometric property contains an object that represents
                a geometry value. The definition of the geometric property may restrict
                an object to represent a geometry that always has the same shape,
@@ -282,40 +187,27 @@
                default geometric property specifies that an object could represent
                a geometry that is any one of the four shapes.
             </p>
-                              
-            <p>With respect to ordinate dimensionality, all
+            <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7aba"></a></span>With respect to ordinate dimensionality, all
                instances of a geometric property must have the same ordinate dimension.
                The default is XY.
             </p>
-                              
-            <p>Geometric property definitions have two attributes
+            <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ab9"></a></span>Geometric property definitions have two attributes
                regarding ordinate dimensionality: HasElevation for Z and HasMeasure
                for M.
             </p>
-                           
          </div>
-                        
-         <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b15"></a></span>
-                              
-            <p class="section_title_h2"><a name="TOC_ENTRY__d0e1072"></a>What is a Geometry?
+         <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b15"></a></span><p class="section_title_h2"><a name="TOC_ENTRY__d0e661"></a>What is a Geometry?
             </p>
-                              
-            <p>
-                                    A
+            <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ab8"></a></span>A
                geometry is represented using geometric constructs either defined
                as lists of one or more XY or XYZ points or defined parametrically,
                for example, as a circular arc. While geometry typically is two-
                or three-dimensional, it may also contain the measurement dimension
                (M) to provide the basis for dynamic segments.
             </p>
-                              
-            <p>The geometry types are denoted by the GisGeometryType
+            <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ab7"></a></span>The geometry types are denoted by the FdoGeometryType
                enumeration and describe the following:
-            </p>
-                              
-            <!--UList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b0a"></a></span>
-                                 
-            <ul>
+            </p><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b0a"></a></span><ul>
                <li>Point</li>
                <li>LineString
                   (one or more connected line segments, defined by positions at the
@@ -326,8 +218,8 @@
                </li>
                <li>Polygon
                   (a surface bound by one outer ring and zero or more interior rings;
-                  the rings are closed, connected line segments, defined by positions at
-                  the vertices)
+                  the rings are closed, connected line segments, defined by positions
+                  at the vertices)
                </li>
                <li>CurvePolygon
                   (a surface bound by one outer ring and zero or more interior rings;
@@ -352,27 +244,11 @@
                   (a heterogenous collection of geometries, which may be disjoint)
                </li>
             </ul>
-                                 
-                                 
-                                 
-                                 
-                                 
-                                 
-                                 
-                                 
-                                 
-                                 
-                              
-                              
-            <p>Most geometry types are defined using either
+            <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ab6"></a></span>Most geometry types are defined using either
                curve segments or a series of connected line segments. Curve segments
                are used where non-linear curves may appear. The following curve
                segment types are supported:
-            </p>
-                              
-            <!--UList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b09"></a></span>
-                                 
-            <ul>
+            </p><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b09"></a></span><ul>
                <li>CircularArcSegment
                   (circular arc defined by three positions on the arc)
                </li>
@@ -381,81 +257,50 @@
                   the vertices)
                </li>
             </ul>
-                                 
-                              
-                              
-            <p>There are currently no geometries of type “solid”
+            <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ab5"></a></span>There are currently no geometries of type “solid”
                (3D shape dimensionality) supported.
             </p>
-                              
-            <p>The FdoIConnection::GetGeometryCapabilities()
+            <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ab4"></a></span>The FdoIConnection::GetGeometryCapabilities()
                method can be used to query which geometry types and ordinate dimensionalities
                are supported by a particular provider.
             </p>
-                           
          </div>
-                        
-         <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b14"></a></span>
-                              
-            <p class="section_title_h2"><a name="TOC_ENTRY__d0e1143"></a>What Is an Object Property?
+         <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b14"></a></span><p class="section_title_h2"><a name="TOC_ENTRY__d0e706"></a>What Is an Object Property?
             </p>
-                              
-            <p>
-                                    
-                                    
-                                    An
+            <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ab3"></a></span>An
                object property is a complex property type that can be used within
                a class, and an object property, itself, is defined by a class definition.
                For example, the Address type example described previously in the
                Property definition. An object property may define a single instance
                for each class object instance (for example, an address property
-               of a land parcel), or may represent a list of instances of that
-               class type per instance of the owning class (for example, inspection
-               records as a complex property of an electrical device feature class).
+               of a land parcel), or may represent a list of instances of that class
+               type per instance of the owning class (for example, inspection records as
+               a complex property of an electrical device feature class).
             </p>
-                           
          </div>
-                        
-         <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b13"></a></span>
-                              
-            <p class="section_title_h2"><a name="TOC_ENTRY__d0e1179"></a>What is a Raster Property?
+         <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b13"></a></span><p class="section_title_h2"><a name="TOC_ENTRY__d0e735"></a>What is a Raster Property?
             </p>
-                              
-            <p>
-                                    
-                                    A
+            <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ab2"></a></span>A
                raster property defines the information needed to process a raster
                image, for example, the number of bits of information per pixel,
                the size in pixels of the X dimension, and the size in pixels of
                the Y dimension, needed to process a raster image.
             </p>
-                           
          </div>
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b12"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e1207"></a>What Is a Spatial Context?
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b12"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e756"></a>What Is a Spatial Context?
          </p>
-                        
-         <p>
-                              
-                              
-                              A
-            spatial context describes the general metadata or parameters within
-            which geometry for a collection of features resides. In particular,
-            the spatial context includes the definition of the coordinate system,
-            spheroid parameters, units, spatial extents, and so on for a collection
-            of geometries owned by features.
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ab1"></a></span>A spatial context describes the general metadata
+            or parameters within which geometry for a collection of features
+            resides. In particular, the spatial context includes the definition
+            of the coordinate system, spheroid parameters, units, spatial extents,
+            and so on for a collection of geometries owned by features.
          </p>
-                        
-         <p>Spatial context can be described as the “coordinate
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ab0"></a></span>Spatial context can be described as the “coordinate
             system plus identity.” Any geometries that are to be spatially related
             must be in a common spatial context.
          </p>
-                        
-         <p>The identity component is required in order
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7aaf"></a></span>The identity component is required in order
             to support separate workspaces, such as schematic diagrams, which
             are non-georeferenced. Also, it supports georeferenced cases. For
             example, two users might create drawings using some default spatial
@@ -465,36 +310,19 @@
             spatial parameters, but also the container aspect of their data,
             using spatial context.
          </p>
-                        
-         <p>For more information about spatial context,
-            see <span class="char_link"><a href="WS7106c181349dd8d07bd9f2105df83cd65-7ffc.htm">
-                  <!--Reference = WS7106c181349dd8d07bd9f2105df83cd65-7ffc; Target topic = WS7106c181349dd8d07bd9f2105df83cd65-7ffc.htm-->Spatial Context</a></span>.
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7aae"></a></span>For more information about spatial context,
+            see <span class="hypertext"><span class="char_link"><a href="WS7106c181349dd8d07bd9f2105df83cd65-7ffc.htm">Spatial Context</a></span></span>.
          </p>
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b11"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e1249"></a>What is a Data Store?
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-b11"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e786"></a>What is a Data Store?
          </p>
-                        
-         <p>
-                              
-                              
-                              A
-            data store is a repository of an integrated set of objects. The
-            objects in a data store are modeled either by classes or feature
-            classes defined within one or more schemas. For example, a data
-            store may contain data for both a LandUse schema and a TelcoOutsidePlant
-            schema. Some data stores can represent data in only one schema,
-            while other data stores can represent data in many schemas (for
-            example, RDBMS-based data stores, such as MySQL).
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7aad"></a></span>A data store is a repository of an integrated
+            set of objects. The objects in a data store are modeled either by
+            classes or feature classes defined within one or more schemas. For
+            example, a data store may contain data for both a LandUse schema
+            and a TelcoOutsidePlant schema. Some data stores can represent data
+            in only one schema, while other data stores can represent data in
+            many schemas (for example, RDBMS-based data stores, such as MySQL).
          </p>
-                     
-      </div>
-               
-            
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+      </div><br></body>
 </html>

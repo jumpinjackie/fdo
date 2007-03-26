@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS7106c181349dd8d0913fe2105df83c358-7ffd.htm','3'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ISD-Topic ;
-                            Url = WS7106c181349dd8d0913fe2105df83c358-7ffd.htm-->
+   <body onLoad="javascript:initFrame('WS7106c181349dd8d0913fe2105df83c358-7ffd.htm','3'); javascript:initPage('What’s New','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -44,26 +40,14 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS7106c181349dd8d0913fe2105df83c358-7ffd"></a></span>
-               
-               
-      <!--Body-->
-                  
-      <p>This section summarizes the changes and enhancements
+      <!--Body--><p><span style="display:none"><a name="WS73099cc142f487556f505e1110019cfd2-7e03"></a></span>This section summarizes the changes and enhancements
          you will find in this version of FDO.
       </p>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-85b"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e312"></a>Support for Additional FDO Providers
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-85b"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e152"></a>Support for Additional FDO Providers
          </p>
-                        
-         <p>The following Autodesk and OSGeo providers are
+         <p><span style="display:none"><a name="WS73099cc142f487556f505e1110019cfd2-7e02"></a></span>The following Autodesk and OSGeo providers are
             now supported:
-         </p>
-                        
-         <!--UList--><span style="display:none"><a name="WS73099cc142f487551e5a0cb10850d4cd7c-4f69"></a></span>
-                           
-         <ul>
+         </p><span style="display:none"><a name="WS73099cc142f487551e5a0cb10850d4cd7c-4f69"></a></span><ul>
             <li>OSGeo
                FDO Provider for ArcSDE
             </li>
@@ -86,90 +70,48 @@
                FDO Provider for WMS
             </li>
          </ul>
-                           
-                           
-                           
-                           
-                           
-                           
-                        
-                        
          <div>
             <div class="note-note"><span class="label">Note</span>For more information about the Open Source
                Geospatial Foundation (OSGeo), see www.OSGeo.org.
             </div>
          </div>
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WS1a9193826455f5ff9110c71085341391d-2e75"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e348"></a>Physical Schema Overrides and XML File Format
+      <div class="section"><span style="display:none"><a name="WS1a9193826455f5ff9110c71085341391d-2e75"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e174"></a>Physical Schema Overrides and XML File Format
          </p>
-                        
-         <p>A large number of FDO interface changes are
+         <p><span style="display:none"><a name="WS73099cc142f487556f505e1110019cfd2-7e01"></a></span>A large number of FDO interface changes are
             introduced for physical schema overrides, or mappings, due to the
             new providers. The new providers also require updates to the FDO
             Schema XML file format.
          </p>
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WS1a9193826455f5ff9110c71085341391d-2e74"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e357"></a>Non-Physical Mapping FDO Interface Changes
+      <div class="section"><span style="display:none"><a name="WS1a9193826455f5ff9110c71085341391d-2e74"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e179"></a>Non-Physical Mapping FDO Interface Changes
          </p>
-                        
-         <p>The non-physical mapping FDO interface changes
+         <p><span style="display:none"><a name="WS73099cc142f487556f505e1110019cfd2-7e00"></a></span>The non-physical mapping FDO interface changes
             are in the following areas:
-         </p>
-                        
-         <!--UList--><span style="display:none"><a name="WS1a9193826455f5ff9110c71085341391d-2e73"></a></span>
-                           
-         <ul>
-            <li>
-                                    <em class="strong">Property
+         </p><span style="display:none"><a name="WS1a9193826455f5ff9110c71085341391d-2e73"></a></span><ul>
+            <li><em class="strong">Property
                   Contraints. </em>Constraints now affect the schema-related
                classes.
             </li>
-            <li>
-                                    <em class="strong">XML
+            <li><em class="strong">XML
                   Serialization. </em>Support FDO <em class="mild">data</em> in GML format, as opposed
                to only the previously supported <em class="mild">schema</em> in GML format, using a
                number of enhancements. Specifically, the Web Feature Service (WFS)
                capabilities for the FDO Provider for WFS is now supported.
             </li>
-            <li>
-                                    <em class="strong">Long
+            <li><em class="strong">Long
                   Transactions and Locking. </em>Now supports the ability to
                return lock conflicts from long transaction commit and rollback
                commands and also supports class-level settings to determine whether
                the class is long transaction version-enabled and persistent locking-enabled.
             </li>
          </ul>
-                           
-                           
-                        
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WS1a9193826455f5ff9110c71085341391d-2e72"></a></span>
-                        
-         <div class="section"><span style="display:none"><a name="WS1a9193826455f5ff9110c71085341391d-2e6f"></a></span>
-                              
-            <p class="section_title_h2"><a name="TOC_ENTRY__d0e395"></a>RDBMS Provider Common Architecture
+      <div class="section"><span style="display:none"><a name="WS1a9193826455f5ff9110c71085341391d-2e72"></a></span><div class="section"><span style="display:none"><a name="WS1a9193826455f5ff9110c71085341391d-2e6f"></a></span><p class="section_title_h2"><a name="TOC_ENTRY__d0e204"></a>RDBMS Provider Common Architecture
             </p>
-                              
-            <p>All API changes are internal. No FDO interface
+            <p><span style="display:none"><a name="WS73099cc142f487556f505e1110019cfd2-7dff"></a></span>All API changes are internal. No FDO interface
                changes are required.
             </p>
-                           
          </div>
-                     
-      </div>
-               
-            
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+      </div><br></body>
 </html>

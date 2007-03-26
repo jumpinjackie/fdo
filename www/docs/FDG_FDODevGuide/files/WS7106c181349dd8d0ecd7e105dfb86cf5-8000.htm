@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS7106c181349dd8d0ecd7e105dfb86cf5-8000.htm','41'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ;
-                            Url = WS7106c181349dd8d0ecd7e105dfb86cf5-8000.htm-->
+   <body onLoad="javascript:initFrame('WS7106c181349dd8d0ecd7e105dfb86cf5-8000.htm','41'); javascript:initPage('Schema Package','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -44,158 +40,87 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS7106c181349dd8d0ecd7e105dfb86cf5-8000"></a></span>
-               
-               
-      <!--Body-->
-                  
-      <p>
-                        The FDO
-         feature schema provides a logical mechanism for specifying how to
-         represent geospatial features. FDO providers are responsible for
-         mapping the feature schema to some underlying physical data store. The FDO feature schema is based
-         somewhat on a subset of the OpenGIS and ISO feature models. It supports
-         both non-spatial features and spatial features.
+      <!--Body--><p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a0e"></a></span>The
+         FDO feature schema provides a logical mechanism for specifying how
+         to represent geospatial features. FDO providers are responsible
+         for mapping the feature schema to some underlying physical data
+         store. The FDO feature schema is based somewhat on a subset of the
+         OpenGIS and ISO feature models. It supports both non-spatial features
+         and spatial features.
       </p>
-                  
-      <p>The Schema package
-         contains a collection of classes that define the logical feature
-         schema. These classes can be used to set up a feature schema and
-         to interrogate the metadata from a provider using an object-oriented structure.
-         The logical feature schema provides a logical view of geospatial
-         feature data that is fully independent from the underlying storage
-         schema. All data operations in FDO are performed against the classes
-         and relationships defined by the logical feature schema. For example,
-         different class types in the feature schema are used to describe
-         different types of geospatial objects and spatial features. 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a0d"></a></span>The Schema package contains a collection of
+         classes that define the logical feature schema. These classes can
+         be used to set up a feature schema and to interrogate the metadata
+         from a provider using an object-oriented structure. The logical
+         feature schema provides a logical view of geospatial feature data
+         that is fully independent from the underlying storage schema. All data
+         operations in FDO are performed against the classes and relationships defined
+         by the logical feature schema. For example, different class types
+         in the feature schema are used to describe different types of geospatial
+         objects and spatial features. 
       </p>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-887"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e4181"></a>Base Properties
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-887"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e2506"></a>Base Properties
          </p>
-                        
-         <p>
-                              All classes
-            in the feature schema support the concept of base properties, which
-            are properties that are pre-defined either by the FDO API or by
-            a specific FDO feature provider. For example, all classes in the schema
-            have two base properties: ClassName and SchemaName. These properties
-            can be used to query across an inheritance hierarchy or to process
-            the results of heterogeneous queries. FDO feature providers can
-            also predefine base properties. The following base properties are
-            predefined by the FDO API:
-         </p>
-                        <span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-871"></a></span><table cellpadding="0" cellspacing="0" class="ruled">
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a0c"></a></span>All
+            classes in the feature schema support the concept of base properties,
+            which are properties that are pre-defined either by the FDO API
+            or by a specific FDO feature provider. For example, all classes
+            in the schema have two base properties: ClassName and SchemaName.
+            These properties can be used to query across an inheritance hierarchy
+            or to process the results of heterogeneous queries. FDO feature
+            providers can also predefine base properties. The following base
+            properties are predefined by the FDO API:
+         </p><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-871"></a></span><table cellpadding="0" cellspacing="0" class="ruled">
             <colgroup>
                <col style="width:1.167in">
                <col style="width:0.625in">
                <col style="width:2.625in">
-                                    
                <tr class="RuledHeading">
-                                          
-                  <th class="table-heading">Property
-                     Name
-                  </th>
-                                          
+                  <th class="table-heading">Property Name</th>
                   <th class="table-heading">Required</th>
-                                          
                   <th class="table-heading">Description</th>
-                                       
                </tr>
-                                 
-                                    
                <tr class="RuledOddRow">
-                                          
-                  <td class="table-body">
-                                                
-                     <p class="table-body">SchemaName</p>
-                                             
+                  <td class="table-body"><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a0b"></a></span><p class="table-body">SchemaName</p>
                   </td>
-                                          
-                  <td class="table-body">
-                                                
-                     <p class="table-body">Y</p>
-                                             
+                  <td class="table-body"><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a0a"></a></span><p class="table-body">Y</p>
                   </td>
-                                          
-                  <td class="table-body">
-                                                
-                     <p class="table-body">Name of the schema
-                        to which objects of the class belong; read-only string.
+                  <td class="table-body"><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a09"></a></span><p class="table-body">Name of the schema to which
+                        objects of the class belong; read-only string.
                      </p>
-                                             
                   </td>
-                                       
                </tr>
-                                    
                <tr class="RuledEvenRow">
-                                          
-                  <td class="table-body">
-                                                
-                     <p class="table-body">ClassName</p>
-                                             
+                  <td class="table-body"><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a08"></a></span><p class="table-body">ClassName</p>
                   </td>
-                                          
-                  <td class="table-body">
-                                                
-                     <p class="table-body">Y</p>
-                                             
+                  <td class="table-body"><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a07"></a></span><p class="table-body">Y</p>
                   </td>
-                                          
-                  <td class="table-body">
-                                                
-                     <p class="table-body">Name of the class
-                        that defines the object; read-only string.
+                  <td class="table-body"><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a06"></a></span><p class="table-body">Name of the class that defines
+                        the object; read-only string.
                      </p>
-                                             
                   </td>
-                                       
                </tr>
-                                    
                <tr class="RuledOddRow">
-                                          
-                  <td class="table-body">
-                                                
-                     <p class="table-body">RevisionNumber</p>
-                                             
+                  <td class="table-body"><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a05"></a></span><p class="table-body">RevisionNumber</p>
                   </td>
-                                          
-                  <td class="table-body">
-                                                
-                     <p class="table-body">N</p>
-                                             
+                  <td class="table-body"><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a04"></a></span><p class="table-body">N</p>
                   </td>
-                                          
-                  <td class="table-body">
-                                                
-                     <p class="table-body">Revision number of
-                        the object; read-only 64-bit integer. 
-                     </p>
-                                                
-                     <p class="table-body"></p>
-                                                
+                  <td class="table-body"><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a03"></a></span><p class="table-body">Revision number of the object;
+                        read-only 64-bit integer. 
+                     </p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a02"></a></span><p class="table-body"></p>
                      <div>
-                        <div class="note-note"><span class="label">Note</span>Some providers may use this property to
-                           support optimistic locking.
+                        <div class="note-note"><span class="label">Note</span>Some providers may use
+                           this property to support optimistic locking.
                         </div>
                      </div>
-                                             
                   </td>
-                                       
                </tr>
-                                 
             </colgroup>
          </table>
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-886"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e4288"></a>Cross-Schema References
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-886"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e2562"></a>Cross-Schema References
          </p>
-                        
-         <p>
-                              Some
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a01"></a></span>Some
             FDO feature providers may support multiple schemas. For these providers,
             the feature schema supports the concept of cross-schema references
             for classes. This means that a class in one schema may derive from
@@ -203,41 +128,27 @@
             or contain an object property definition that is based on a class
             in another schema.
          </p>
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-885"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e4302"></a>Parenting in the Schema Classes
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-885"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e2571"></a>Parenting in the Schema Classes
          </p>
-                        
-         <p>
-                              The feature schema object model defined
-            in the FDO API supports full navigation through parenting. That
-            is, once a schema element is added to an FdoFeatureSchema class,
-            it can navigate the object hierarchy upward to the root FdoFeatureSchema
-            and, from there, to any other element in the feature schema. This
-            parenting support is fully defined in the FdoSchemaElement abstract
-            base class.
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a00"></a></span>The
+            feature schema object model defined in the FDO API supports full
+            navigation through parenting. That is, once a schema element is
+            added to an FdoFeatureSchema class, it can navigate the object hierarchy
+            upward to the root FdoFeatureSchema and, from there, to any other element
+            in the feature schema. This parenting support is fully defined in
+            the FdoSchemaElement abstract base class.
          </p>
-                        
-         <p>When inserting features
-            that have object collections, the parent object instance must be
-            identified when inserting the child objects (for example, a parent
-            class “Road” has an object property called “sidewalks” of type “Sidewalk”).
-            For more information, see <span class="char_link"><a href="WSfacf1429558a55de8821c21057fbebc2b275.htm">
-                  <!--Reference = WSfacf1429558a55de8821c21057fbebc2b275; Target topic = WSfacf1429558a55de8821c21057fbebc2b275.htm-->Data Maintenance</a></span>.
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79ff"></a></span>When inserting features that have object collections,
+            the parent object instance must be identified when inserting the
+            child objects (for example, a parent class “Road” has an object
+            property called “sidewalks” of type “Sidewalk”). For more information,
+            see <span class="hypertext"><span class="char_link"><a href="WSfacf1429558a55de8821c21057fbebc2b275.htm">Data Maintenance</a></span></span>.
          </p>
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-884"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e4324"></a>Physical Mappings
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-884"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e2585"></a>Physical Mappings
          </p>
-                        
-         <p>
-                              Each
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79fe"></a></span>Each
             feature provider maps the logical feature schema to an underlying
             physical data store. Some feature providers may provide some level
             of control over how the logical schema gets mapped to the underlying
@@ -250,11 +161,5 @@
             The implementation of these abstract classes is up to each feature
             provider. 
          </p>
-                     
-      </div>
-               
-            
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+      </div><br></body>
 </html>

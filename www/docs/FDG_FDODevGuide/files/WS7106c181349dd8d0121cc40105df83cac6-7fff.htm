@@ -20,18 +20,14 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS7106c181349dd8d0121cc40105df83cac6-7fff.htm','17'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ISD-Topic ;
-                            Url = WS7106c181349dd8d0121cc40105df83cac6-7fff.htm-->
+   <body onLoad="javascript:initFrame('WS7106c181349dd8d0121cc40105df83cac6-7fff.htm','18'); javascript:initPage('Exception Handling','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
                <!--browse buttons-->
                <div class="browse">
                   <nobr>
-                     <div id="homeTitle" style="display:none">Home: FDO Developer's Guide</div><a href="WS73099cc142f487551d92abb10dc573c45d-7fdf.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Memory Management</div><a href="WS7106c181349dd8d0121cc40105df83cac6-8000.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Development Practices</div><a href="WSfacf1429558a55de8821c21057fbebc2b-82c.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Exception Messages</div><a href="WS73099cc142f4875540c8010ee636d6bb-7ee8.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+                     <div id="homeTitle" style="display:none">Home: FDO Developer's Guide</div><a href="WS73099cc142f487551d92abb10dc573c45d-7fdf.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Collections</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5324.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Development Practices</div><a href="WSfacf1429558a55de8821c21057fbebc2b-82c.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Exception Messages</div><a href="WS73099cc142f4875540c8010ee636d6bb-7ee8.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
                </div>
                <!--end browse buttons-->
             </div>
@@ -44,84 +40,33 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS7106c181349dd8d0121cc40105df83cac6-7fff"></a></span>
-               
-               
-      <!--Body-->
-                  
-      <p><span style="display:none"><a name="WS73099cc142f4875540c8010ee636d6bb-7eed"></a></span>
-                        In the FDO API, FdoCommandException class
+      <!--Body--><p><span style="display:none"><a name="WS73099cc142f4875540c8010ee636d6bb-7eed"></a></span>In the FDO API, FdoCommandException class
          is the exception type thrown from classes in the Commands package,
          and FdoConnectionException class is the exception type thrown from
-         classes in the Connections package. Both of these exception types
-         derive from a language-level exception class that is environment-specific.
+         classes in the Connections package. Both of these exception types derive
+         from a language-level exception class that is environment-specific.
       </p>
-                  
-      <p><span style="display:none"><a name="WS73099cc142f4875540c8010ee636d6bb-7eec"></a></span>All exceptions are derived from the GisException
+      <p><span style="display:none"><a name="WS73099cc142f4875540c8010ee636d6bb-7eec"></a></span>All exceptions are derived from the FdoException
          class. To catch and process specific exception types, nest catch
          statements as in the following example:
       </p>
-                  
-      <div class="codeBlock">
-                        <pre class="codeLine">try {</pre>
-                        <pre class="codeLine">... code</pre>
-                        <pre class="codeLine">}</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;catch (FdoCommandException *ex){</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;.. process message</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;catch (GisException *ex){</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;.. process message</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
-                     </div>
-                  
+      <div class="codeBlock"><pre class="codeLine">try {</pre><pre class="codeLine">... code</pre><pre class="codeLine">}</pre><pre class="codeLine">&nbsp;&nbsp;catch (FdoCommandException *ex){</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;.. process message</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;}</pre><pre class="codeLine">&nbsp;&nbsp;catch (FdoException *ex){</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;.. process message</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;}</pre></div>
       <p><span style="display:none"><a name="WS73099cc142f4875540c8010ee636d6bb-7eeb"></a></span>In some cases, underneath an FDO command, the
-         GIS level throws a GisException. The FDO command then traps the
-         GisException and wraps it in an FdoCommandException (or FdoSchemaException
+         FDO level throws an FdoException. The FDO command then traps the
+         FdoException and wraps it in an FdoCommandException (or FdoSchemaException
          for a schema command). In this case, several messages are returned
          by one exception. The following example shows how to process multiple
          messages from one exception: 
       </p>
-                  
-      <div class="codeBlock">
-                        <pre class="codeLine">catch ( FdoSchemaException* ex )&nbsp;&nbsp;{</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;// Loop through all the schema messages</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;GisException* currE = ex;</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;while ( currE ) {</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;CW2A msg(currE-&gt;GetExceptionMessage());</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;acutPrintf ("FdoConnectionException: %s\n", msg);</pre>
-                        <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;currE = currE-&gt;GetCause();</pre>
-                     </div>
-                  
+      <div class="codeBlock"><pre class="codeLine">catch ( FdoSchemaException* ex )&nbsp;&nbsp;{</pre><pre class="codeLine">&nbsp;&nbsp;// Loop through all the schema messages</pre><pre class="codeLine">&nbsp;&nbsp;FdoException* currE = ex;</pre><pre class="codeLine">&nbsp;&nbsp;while ( currE ) {</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;CW2A msg(currE-&gt;GetExceptionMessage());</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;acutPrintf ("FdoConnectionException: %s\n", msg);</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;currE = currE-&gt;GetCause();</pre></div>
       <p><span style="display:none"><a name="WS73099cc142f4875540c8010ee636d6bb-7eea"></a></span>An application function may need to catch and
          then re-throw exceptions in order to clean up memory. However, the
-         need to do this can be eliminated by using GisPtr. The following
+         need to do this can be eliminated by using FdoPtr. The following
          example cleans up memory on error: 
       </p>
-                  
-      <div class="codeBlock">
-                        <pre class="codeLine">FdoFeatureClass* pBase = NULL; </pre>
-                        <pre class="codeLine">try { </pre>
-                        <pre class="codeLine">pBase = myClass-&gt;GetBaseClass(); </pre>
-                        <pre class="codeLine">... </pre>
-                        <pre class="codeLine">} </pre>
-                        <pre class="codeLine">catch (...) { </pre>
-                        <pre class="codeLine">GIS_SAFE_RELEASE(pBase); </pre>
-                        <pre class="codeLine">throw; </pre>
-                        <pre class="codeLine">} </pre>
-                        <pre class="codeLine">// Must release reference added by GetBaseClass when done. </pre>
-                        <pre class="codeLine">GIS_SAFE_RELEASE(pBase); </pre>
-                     </div>
-                  
-      <p><span style="display:none"><a name="WS73099cc142f4875540c8010ee636d6bb-7ee9"></a></span>The catch and rethrow is unnecessary when GisPtr
+      <div class="codeBlock"><pre class="codeLine">FdoFeatureClass* pBase = NULL; </pre><pre class="codeLine">try { </pre><pre class="codeLine">pBase = myClass-&gt;GetBaseClass(); </pre><pre class="codeLine">... </pre><pre class="codeLine">} </pre><pre class="codeLine">catch (...) { </pre><pre class="codeLine">FDO_SAFE_RELEASE(pBase); </pre><pre class="codeLine">throw; </pre><pre class="codeLine">} </pre><pre class="codeLine">// Must release reference added by GetBaseClass when done. </pre><pre class="codeLine">FDO_SAFE_RELEASE(pBase); </pre></div>
+      <p><span style="display:none"><a name="WS73099cc142f4875540c8010ee636d6bb-7ee9"></a></span>The catch and rethrow is unnecessary when FdoPtr
          is used: 
       </p>
-                  
-      <div class="codeBlock">
-                        <pre class="codeLine">GisPtr&lt;FdoFeatureClass&gt; pBase = myClass-&gt;GetBaseClass(); </pre>
-                        <pre class="codeLine">...</pre>
-                     </div>
-               
-            
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+      <div class="codeBlock"><pre class="codeLine">FdoPtr&lt;FdoFeatureClass&gt; pBase = myClass-&gt;GetBaseClass(); </pre><pre class="codeLine">...</pre></div><br></body>
 </html>

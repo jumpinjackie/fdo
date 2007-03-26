@@ -20,18 +20,14 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS7106c181349dd8d07bd9f2105df83cd65-7ffe.htm','90'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ;
-                            Url = WS7106c181349dd8d07bd9f2105df83cd65-7ffe.htm-->
+   <body onLoad="javascript:initFrame('WS7106c181349dd8d07bd9f2105df83cd65-7ffe.htm','90'); javascript:initPage('Geometry Types','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
                <!--browse buttons-->
                <div class="browse">
                   <nobr>
-                     <div id="homeTitle" style="display:none">Home: FDO Developer's Guide</div><a href="WS73099cc142f487551d92abb10dc573c45d-7fdf.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">GisAgfGeometryFactory</div><a href="WSfacf1429558a55de8821c21057fbebc2b-787.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">The Geometry API</div><a href="WSfacf1429558a55de8821c21057fbebc2b-78b.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Mapping Between Geometry and Geometric Types</div><a href="WS7106c181349dd8d07bd9f2105df83cd65-7ffd.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+                     <div id="homeTitle" style="display:none">Home: FDO Developer's Guide</div><a href="WS73099cc142f487551d92abb10dc573c45d-7fdf.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Abstract and Concrete Classes</div><a href="WSfacf1429558a55de8821c21057fbebc2b-787.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">The Geometry API</div><a href="WSfacf1429558a55de8821c21057fbebc2b-78b.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Mapping Between Geometry and Geometric Types</div><a href="WS7106c181349dd8d07bd9f2105df83cd65-7ffd.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
                </div>
                <!--end browse buttons-->
             </div>
@@ -44,81 +40,53 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS7106c181349dd8d07bd9f2105df83cd65-7ffe"></a></span>
-               
-               
-      <!--Body-->
-                  
-      <p>
-                        
-                        The Geometry
-         types comprise the Global Enum GisGeometryType. The following are
-         Geometry types:
-      </p>
-                  
-      <!--UList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-743"></a></span>
-                     
-      <ul>
-         <li>0x00 GisGeometryType_None Indicates no specific type;
-            used for “unknown”, “do not care” or an incompletely constructed Geometry
-            object. 
+      <!--Body--><p><span style="display:none"><a name="WS73099cc142f4875594cc7110e6b3fa66-7c16"></a></span>The
+         Geometry types comprise the Global Enum FdoGeometryType. The following
+         are Geometry types:
+      </p><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-743"></a></span><ul>
+         <li>0 FdoGeometryType_None
+            Indicates no specific type; used for “unknown”, “do not care” or
+            an incompletely constructed Geometry object. 
          </li>
       </ul>
-                  
-                  
       <div>
-         <div class="note-note"><span class="label">Note</span>GisGeometryType_
-            None does not represent an instantiable type. An FDO client should
-            not expect an FDO provider to list support for it in its capabilities.
+         <div class="note-note"><span class="label">Note</span>FdoGeometryType_ None
+            does not represent an instantiable type. An FDO client should not
+            expect an FDO provider to list support for it in its capabilities.
          </div>
-      </div>
-                  
-      <!--UList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-742"></a></span>
-                     
-      <ul>
-         <li>01 GisGeometryType_Point Point type (GisIPoint). </li>
-         <li>02 GisGeometryType_LineString LineString
-            type (GisILineString). 
+      </div><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-742"></a></span><ul>
+         <li>1 FdoGeometryType_Point
+            Point type (FdoIPoint). 
          </li>
-         <li>03 GisGeometryType_Polygon Polygon type (GisIPolygon). </li>
-         <li>04 GisGeometryType_MultiPoint MultiPoint
-            type (GisIMultiPoint). 
+         <li>2 FdoGeometryType_LineString
+            LineString type (FdoILineString). 
          </li>
-         <li>05 GisGeometryType_MultiLineString MultiLineString
-            type (GisIMultiLineString). 
+         <li>3 FdoGeometryType_Polygon
+            Polygon type (FdoIPolygon). 
          </li>
-         <li>06 GisGeometryType_MultiPolygon MultiPolygon
-            type (GisIMultiPolygon). 
+         <li>4 FdoGeometryType_MultiPoint
+            MultiPoint type (FdoIMultiPoint). 
          </li>
-         <li>07 GisGeometryType_MultiGeometry MultiGeometry
-            type (GisIMultiGeometry). 
+         <li>5 FdoGeometryType_MultiLineString
+            MultiLineString type (FdoIMultiLineString). 
          </li>
-         <li>10 GisGeometryType_CurveString CurveString
-            type (GisICurveString). 
+         <li>6 FdoGeometryType_MultiPolygon
+            MultiPolygon type (FdoIMultiPolygon). 
          </li>
-         <li>11 GisGeometryType_CurvePolygon CurvePolygon
-            type (GisICurvePolygon). 
+         <li>7 FdoGeometryType_MultiGeometry
+            MultiGeometry type (FdoIMultiGeometry). 
          </li>
-         <li>12 GisGeometryType_MultiCurveString MultiCurveString
-            type (GisIMultiCurveString). 
+         <li>10
+            FdoGeometryType_CurveString CurveString type (FdoICurveString). 
          </li>
-         <li>13 GisGeometryType_MultiCurvePolygon MultiCurvePolygon type
-            (GisIMultiCurvePolygon 
+         <li>11
+            FdoGeometryType_CurvePolygon CurvePolygon type (FdoICurvePolygon). 
          </li>
-      </ul>
-                     
-                     
-                     
-                     
-                     
-                     
-                     
-                     
-                     
-                     
-                  
-               
-            
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+         <li>12
+            FdoGeometryType_MultiCurveString MultiCurveString type (FdoIMultiCurveString). 
+         </li>
+         <li>13
+            FdoGeometryType_MultiCurvePolygon MultiCurvePolygon type (FdoIMultiCurvePolygon 
+         </li>
+      </ul><br></body>
 </html>

@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WSfacf1429558a55de8821c21057fbebc2b-906.htm','48'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ;
-                            Url = WSfacf1429558a55de8821c21057fbebc2b-906.htm-->
+   <body onLoad="javascript:initFrame('WSfacf1429558a55de8821c21057fbebc2b-906.htm','48'); javascript:initPage('Schema Element States','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -44,76 +40,46 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-906"></a></span>
-               
-               
-      <!--Body-->
-                  
-      <p>
-                        
-                        
-                        All
-         elements within the model maintain a state flag. This flag can be
-         retrieved by calling FdoSchemaElement::GetElementState(), but it
-         cannot be directly set. Instead, its state changes in reaction to
-         the changes made to the model:
-      </p>
-                  
-      <!--UList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-867"></a></span>
-                     
-      <ul>
-         <li>
-                              <em class="strong">Unchanged. </em>When
+      <!--Body--><p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79e3"></a></span>All elements within the model maintain
+         a state flag. This flag can be retrieved by calling FdoSchemaElement::GetElementState(),
+         but it cannot be directly set. Instead, its state changes in reaction
+         to the changes made to the model:
+      </p><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-867"></a></span><ul>
+         <li><em class="strong">Unchanged. </em>When
             a schema model is retrieved via FdoIDescribeSchema, all elements
             are initially marked Unchanged. 
          </li>
-         <li>
-                              <em class="strong">Detached. </em>Removing
+         <li><em class="strong">Detached. </em>Removing
             an element from an owning collection sets its state to Detached. 
          </li>
-         <li>
-                              <em class="strong">Deleted. </em>Calling
+         <li><em class="strong">Deleted. </em>Calling
             the Delete() method on an element sets its state to Deleted. 
          </li>
-         <li>
-                              <em class="strong">Added. </em>Placing
+         <li><em class="strong">Added. </em>Placing
             an element within a collection marks the element as Added. 
          </li>
-         <li>
-                              <em class="strong">Modified. </em>When
+         <li><em class="strong">Modified. </em>When
             adding or removing a sub-element, such as a property element from
             a class, the class element state will be changed to Modified. 
          </li>
       </ul>
-                     
-                     
-                     
-                     
-                  
-                  
-      <p>Additionally, when
-         an element that is contained by another element is changed in any
-         way, the containing element is also marked as Modified. So, for
-         example, if a new value is added to the SchemaAttributeDictionary
-         of the “Class3” element in our model, both the “Class3” FdoClass
-         object and the FdoFeatureSchema object would be marked as Modified.
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79e2"></a></span>Additionally, when an element that is contained
+         by another element is changed in any way, the containing element
+         is also marked as Modified. So, for example, if a new value is added
+         to the SchemaAttributeDictionary of the “Class3” element in our
+         model, both the “Class3” FdoClass object and the FdoFeatureSchema
+         object would be marked as Modified.
       </p>
-                  
-      <p>The state flags are
-         maintained until the changes are accepted, that is, when IApplySchema
-         is executed. At that time, all elements marked Deleted are released
-         and all other elements are set to Unchanged.
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79e1"></a></span>The state flags are maintained until the changes
+         are accepted, that is, when IApplySchema is executed. At that time,
+         all elements marked Deleted are released and all other elements
+         are set to Unchanged.
       </p>
-                  
       <div>
-         <div class="note-note"><span class="label">Note</span>When
-            you remove an element from an owning collection, its state is marked
-            as Detached. All collections currently in FDO are owning collections,
-            except for one, the collections FdoClassDefinition::GetIdentityProperties().
+         <div class="note-note"><span class="label">Note</span>When you remove an element
+            from an owning collection, its state is marked as Detached. All
+            collections currently in FDO are owning collections, except for
+            one, the collections FdoClassDefinition::GetIdentityProperties().
          </div>
-      </div>
-               
-            
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+      </div><br></body>
 </html>

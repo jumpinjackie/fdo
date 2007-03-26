@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WSfacf1429558a55de8821c21057fbebc2b-abb.htm','37'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ISD-Topic ;
-                            Url = WSfacf1429558a55de8821c21057fbebc2b-abb.htm-->
+   <body onLoad="javascript:initFrame('WSfacf1429558a55de8821c21057fbebc2b-abb.htm','37'); javascript:initPage('Code','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -44,69 +40,18 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-abb"></a></span>
-                  
-                  
-      <!--Body-->
-                     
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a82"></a></span>
-                           
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e3907"></a>Declarations
+      <!--Body--><div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a82"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e2321"></a>Declarations
          </p>
-                           
-         <p>
-                                 
-                                 The
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7acf"></a></span>The
             object and variable declarations are the following:
          </p>
-                           
-         <div class="codeBlock">
-                                 <pre class="codeLine">FdoIGeometryCapabilities * geometryCapabilities;</pre>
-                                 <pre class="codeLine">GisInt32 numGeometryTypes = 0;</pre>
-                                 <pre class="codeLine">GisGeometryType * geometryTypes;</pre>
-                                 <pre class="codeLine">GisInt32 numGeometryComponnentTypes = 0;</pre>
-                                 <pre class="codeLine">GisGeometryComponentType * geometryComponentTypes;</pre>
-                                 <pre class="codeLine">GisInt32 dimensionalities = 0;</pre>
-                              </div>
-                        
+         <div class="codeBlock"><pre class="codeLine">FdoIGeometryCapabilities * geometryCapabilities;</pre><pre class="codeLine">FdoInt32 numGeometryTypes = 0;</pre><pre class="codeLine">FdoGeometryType * geometryTypes;</pre><pre class="codeLine">FdoInt32 numGeometryComponnentTypes = 0;</pre><pre class="codeLine">FdoGeometryComponentType * geometryComponentTypes;</pre><pre class="codeLine">FdoInt32 dimensionalities = 0;</pre></div>
       </div>
-                     
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a81"></a></span>
-                           
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e3955"></a>Method calls
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a81"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e2355"></a>Method calls
          </p>
-                           
-         <p>The method calls are the following:</p>
-                           
-         <div class="codeBlock">
-                                 <pre class="codeLine">geometryCapabilities = connection-&gt;GetGeometryCapabilities();</pre>
-                                 <pre class="codeLine">geometryTypes = geometryCapabilities-&gt;</pre>
-                                 <pre class="codeLine">&nbsp;&nbsp;GetGeometryTypes(numGeometryTypes);</pre>
-                                 <p class="codeComment">//
-               loop through geometryTypes
-            </p>
-                                 <pre class="codeLine">geometryComponentTypes = geometryCapabilities-&gt;</pre>
-                                 <pre class="codeLine">&nbsp;&nbsp;GetGeometryComponentTypes(numGeometryComponentTypes);</pre>
-                                 <p class="codeComment">//
-               loop through geometryComponentTypes
-            </p>
-                                 <pre class="codeLine">dimensionalities = geometryCapabilities-&gt;GetDimensionalities();</pre>
-                                 <p class="codeComment">//
-               GisDimensinality_XY is 0 and so is always a given
-            </p>
-                                 <pre class="codeLine">if (dimensionalities &amp; GisDimensionality_Z) {</pre>
-                                 <p class="codeComment">&nbsp;&nbsp;// do whatever</p>
-                                 <pre class="codeLine">}</pre>
-                                 <pre class="codeLine">if (dimensionalities &amp; GisDimensionality_M) {</pre>
-                                 <p class="codeComment">&nbsp;&nbsp;//
-               do whatever
-            </p>
-                                 <pre class="codeLine">}</pre>
-                              </div>
-                        
-      </div>
-                  
-               
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ace"></a></span>The method calls are the following:
+         </p>
+         <div class="codeBlock"><pre class="codeLine">geometryCapabilities = connection-&gt;GetGeometryCapabilities();</pre><pre class="codeLine">geometryTypes = geometryCapabilities-&gt;</pre><pre class="codeLine">&nbsp;&nbsp;GetGeometryTypes(numGeometryTypes);</pre><pre class="codeLine"><span class="codeComment">// loop through geometryTypes</span></pre><pre class="codeLine">geometryComponentTypes = geometryCapabilities-&gt;</pre><pre class="codeLine">&nbsp;&nbsp;GetGeometryComponentTypes(numGeometryComponentTypes);</pre><pre class="codeLine"><span class="codeComment">// loop through geometryComponentTypes</span></pre><pre class="codeLine">dimensionalities = geometryCapabilities-&gt;GetDimensionalities();</pre><pre class="codeLine"><span class="codeComment">// FdoDimensinality_XY is 0 and so is always
+a given</span></pre><pre class="codeLine">if (dimensionalities &amp; FdoDimensionality_Z) {</pre><pre class="codeLine"><span class="codeComment">&nbsp;&nbsp;// do whatever</span></pre><pre class="codeLine">}</pre><pre class="codeLine">if (dimensionalities &amp; FdoDimensionality_M) {</pre><pre class="codeLine"><span class="codeComment">&nbsp;&nbsp;// do whatever</span></pre><pre class="codeLine">}</pre></div>
+      </div><br></body>
 </html>

@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WSfacf1429558a55de8821c21057fbebc2b-905.htm','49'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ;
-                            Url = WSfacf1429558a55de8821c21057fbebc2b-905.htm-->
+   <body onLoad="javascript:initFrame('WSfacf1429558a55de8821c21057fbebc2b-905.htm','49'); javascript:initPage('Rollback Mechanism','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -44,30 +40,18 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-905"></a></span>
-               
-               
-      <!--Body-->
-                  
-      <p>
-                        
-                        The FdoFeatureSchema contains a mechanism that
-         allows you to “roll back” model changes to the last accepted state.
-         For example, a model retrieved via FdoIDescribeSchema can have classes
-         added, attributes deleted, or names and default values changed. All
-         of these changes are thrown out and the model returned to its unmodified
-         state by calling FdoFeatureSchema::RejectChanges().
+      <!--Body--><p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79e0"></a></span>The
+         FdoFeatureSchema contains a mechanism that allows you to “roll back”
+         model changes to the last accepted state. For example, a model retrieved
+         via FdoIDescribeSchema can have classes added, attributes deleted,
+         or names and default values changed. All of these changes are thrown
+         out and the model returned to its unmodified state by calling FdoFeatureSchema::RejectChanges().
       </p>
-                  
-      <p>The converse of this
-         operation is the FdoFeatureSchema::AcceptChanges() method, which
-         removes all of the elements with a status of Deleted and sets the
-         state flag of all other elements to Unchanged. Generally, this method
-         is only invoked by FDO provider code after it has processed an FdoIApplySchema::Execute()
-         command. Normal FDO clients should not call this method directly.
-      </p>
-               
-            
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79df"></a></span>The converse of this operation is the FdoFeatureSchema::AcceptChanges()
+         method, which removes all of the elements with a status of Deleted
+         and sets the state flag of all other elements to Unchanged. Generally,
+         this method is only invoked by FDO provider code after it has processed
+         an FdoIApplySchema::Execute() command. Normal FDO clients should
+         not call this method directly.
+      </p><br></body>
 </html>

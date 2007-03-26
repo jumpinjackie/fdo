@@ -41,11 +41,11 @@ function showSection(buttonID)
 
 }
 
-                    </script><title>header frame</title>
+                    </script><title>The Essential FDO</title>
    </head>
    <body topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0" scroll="no" onLoad="top.checkURLParams(); javascript: selectTab(0);">
       <table cellspacing="0" cellpadding="0" class="contentTable">
-         <tr>
+         <tr class="book-title__row">
             <td id="book-title">
                <div class="book-title"><span>The Essential FDO</span></div>
             </td>
@@ -59,7 +59,7 @@ function showSection(buttonID)
                            <tr>
                               <td align="center" class="tab_active" onClick="javascript: selectTab(0);" id="Contents"><a class="tabLink">Contents</a></td>
                               <td align="center" class="tab_inactive" onClick="javascript: selectTab(1);" id="Index"><a class="tabLink">Index</a></td>
-                              <td align="center" class="tab_inactive" onClick="javascript: selectTab(2);" id="Search"><a class="tabLink">Search</a></td>
+                              <td align="center" class="tab_inactive" onClick="javascript: selectTab(2);  javascript: top.highlightingShow = true;" id="Search"><a class="tabLink">Search</a></td>
                               <td align="center" class="tab_inactive" onClick="javascript: selectTab(3);" id="Favorites"><a class="tabLink">Favorites</a></td>
                            </tr>
                         </table>
@@ -72,10 +72,10 @@ function showSection(buttonID)
          </tr>
          <tr>
             <td class="tdTOC" height="94%">
-               <div class="hidennFrame" id="iframeIndex"><iframe id="iframeIndexFrame" frameborder="no" scrolling="no" name="iframeIndex" src="indexes.html" class="iframeTOC"></iframe></div>
-               <div class="hidennFrame" id="iframeSearch"><iframe id="iframeSearchFrame" frameborder="no" scrolling="no" name="iframeSearch" src="search.html" class="iframeTOC"></iframe></div>
-               <div class="hidennFrame" id="iframeToc"><iframe id="iframeTocFrame" frameborder="no" scrolling="no" name="iframeToc" src="contents.html" class="iframeTOC"></iframe></div>
-               <div class="hidennFrame" id="iframeFavorites"><iframe id="iframeFavoritesFrame" frameborder="no" scrolling="no" name="iframeFavorites" src="favorites.html" class="iframeTOC"></iframe></div>
+               <div class="hidennFrame" id="iframeToc" style="visibility: visible; zIndex: 3; position: realtive; top: 10%;"><iframe id="iframeTocFrame" frameborder="no" scrolling="no" name="iframeToc" src="contents.html" class="iframeTOC"></iframe></div>
+               <div class="hidennFrame" id="iframeIndex" style="visibility: hidden; zIndex: 1; position: absolute; top: 0%;"><iframe id="iframeIndexFrame" frameborder="no" scrolling="no" name="iframeIndex" src="indexes.html" class="iframeTOC"></iframe></div>
+               <div class="hidennFrame" id="iframeSearch" style="visibility: hidden; zIndex: 1; position: absolute; top: 0%;"><iframe id="iframeSearchFrame" frameborder="no" scrolling="no" name="iframeSearch" src="search.html" class="iframeTOC"></iframe></div>
+               <div class="hidennFrame" id="iframeFavorites" style="visibility: hidden; zIndex: 1; position: absolute; top: 0%;"><iframe id="iframeFavoritesFrame" frameborder="no" scrolling="no" name="iframeFavorites" src="favorites.html" class="iframeTOC"></iframe></div>
             </td>
          </tr>
       </table>

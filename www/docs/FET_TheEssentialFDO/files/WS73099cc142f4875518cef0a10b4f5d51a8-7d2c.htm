@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS73099cc142f4875518cef0a10b4f5d51a8-7d2c.htm','65'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ISD-Topic ;
-                            Url = WS73099cc142f4875518cef0a10b4f5d51a8-7d2c.htm-->
+   <body onLoad="javascript:initFrame('WS73099cc142f4875518cef0a10b4f5d51a8-7d2c.htm','78'); javascript:initPage('Configuration','The Essential FDO'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -36,9 +32,9 @@
                <!--end browse buttons-->
             </div>
             <div class="button-info"><span id="infoline">&nbsp;</span></div>
-            <div class="ancestry"><a href="WS1a9193826455f5ff1eae43410b4d164b91-7764.htm">Installing RDBMS Clients
-                  Used By The Open Source Providers</a>&nbsp;&gt;&nbsp;<a href="WS73099cc142f4875518cef0a10b4f5d51a8-7d2f.htm">Installing and Configuring
-                  an ArcSDE Client on Windows</a>&nbsp;&gt;&nbsp;
+            <div class="ancestry"><a href="WS1a9193826455f5ff1eae43410b4d164b91-7764.htm">Installing RDBMS Clients Used By The Open Source
+                  Providers</a>&nbsp;&gt;&nbsp;<a href="WS73099cc142f4875518cef0a10b4f5d51a8-7d2f.htm">Installing and Configuring an ArcSDE Client on
+                  Windows</a>&nbsp;&gt;&nbsp;
             </div>
             <div class="head-text"><span>Configuration</span></div>
          </div>
@@ -46,73 +42,51 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS73099cc142f4875518cef0a10b4f5d51a8-7d2c"></a></span>
-                  
-                  
-      <!--Body-->
-                     
-      <p>
-                           Before
-         you can complete the configuration of the client on the local machine,
-         you must install and configure the ArcSDE server to which the client
-         will connect. An ArcSDE client does not have to be the same version
-         as the ArcSDE server. Connecting an ArcSDE 9.0 or 9.1 client to
-         an ArcSDE 8.3 server has been tested. Not all possible configurations
-         are known.
+      <!--Body--><p><span style="display:none"><a name="WS1a9193826455f5ff164958d1107793a39f-3f78"></a></span>Before you can complete the configuration of
+         the client on the local machine, you must install and configure
+         the ArcSDE server to which the client will connect. An ArcSDE client
+         does not have to be the same version as the ArcSDE server. Connecting
+         an ArcSDE 9.0 or 9.1 client to an ArcSDE 8.3 server has been tested.
+         Not all possible configurations are known.
       </p>
-                     
-      <p>It is possible for
-         an ArcSDE client to connect directly to an Oracle or SQL Server
-         database provided the required drivers are installed. This type
-         of ‘direct’ connection has not been tested with the ArcSDE Provider,
-         and so is not supported.
+      <p><span style="display:none"><a name="WS1a9193826455f5ff164958d1107793a39f-3f77"></a></span>It is possible for an ArcSDE client to connect
+         directly to an Oracle or SQL Server database provided the required
+         drivers are installed. This type of ‘direct’ connection has not
+         been tested with the ArcSDE Provider, and so is not supported.
       </p>
-                     
-      <p>An ArcSDE server connects
-         to only one kind of RDBMS. The ArcSDE Server for Oracle can connect
-         to an Oracle database and the ArcSDE Server for SQL Server can connect
-         to a Sql Server database. There are post-installations actions that
-         you must take to create ArcSDE-specific tables in the target RDBMS
-         before you can connect to the “ArcSDE-aware” database.
+      <p><span style="display:none"><a name="WS1a9193826455f5ff164958d1107793a39f-3f76"></a></span>An ArcSDE server connects to only one kind of
+         RDBMS. The ArcSDE Server for Oracle can connect to an Oracle database
+         and the ArcSDE Server for SQL Server can connect to a Sql Server
+         database. There are post-installations actions that you must take
+         to create ArcSDE-specific tables in the target RDBMS before you
+         can connect to the “ArcSDE-aware” database.
       </p>
-                     
-      <p>When you install an
-         ArcSDE server, you configure it to listen on a port for database
-         connect requests. Each ArcSDE server listens on its own dedicated listener
-         port.
+      <p><span style="display:none"><a name="WS1a9193826455f5ff164958d1107793a39f-3f75"></a></span>When you install an ArcSDE server, you configure
+         it to listen on a port for database connect requests. Each ArcSDE
+         server listens on its own dedicated listener port.
       </p>
-                     
-      <p>The ArcSDE client
-         needs to know the number of the server’s listener port and the protocol
-         to use for sending requests to that port. The listener port and protocol
-         is what the ArcSDE client needs to get from the ArcSDE provider
-         in order to connect to the ArcSDE server. The ArcSDE provider API
-         requires that the user put this information in the Instance connection
-         property. The user can provide the information either directly or
-         indirectly.
+      <p><span style="display:none"><a name="WS1a9193826455f5ff164958d1107793a39f-3f74"></a></span>The ArcSDE client needs to know the number of
+         the server’s listener port and the protocol to use for sending requests
+         to that port. The listener port and protocol is what the ArcSDE
+         client needs to get from the ArcSDE provider in order to connect
+         to the ArcSDE server. The ArcSDE provider API requires that the
+         user put this information in the Instance connection property. The
+         user can provide the information either directly or indirectly.
       </p>
-                     
-      <p>The direct way is
-         simply the listener port and protocol. The syntax is “&lt;port&gt;/&lt;protocol&gt;”,
-         for example, “5151/tcp”.
+      <p><span style="display:none"><a name="WS1a9193826455f5ff164958d1107793a39f-3f73"></a></span>The direct way is simply the listener port and
+         protocol. The syntax is “&lt;port&gt;/&lt;protocol&gt;”, for example,
+         “5151/tcp”.
       </p>
-                     
-      <p>The indirect way is
-         a symbolic name, for example, “esri_sde_oracle.” The ArcSDE provider
-         translates the symbolic name into a port and protocol by looking
-         the symbolic name up in the <span class="filePath">C:\WINDOWS\System32\drivers\etc\services</span> file.
-         An example of an entry in the <span class="filePath">services</span> file is <span class="code">esri_sde_oracle 5151/tcp</span>.
+      <p><span style="display:none"><a name="WS1a9193826455f5ff164958d1107793a39f-3f72"></a></span>The indirect way is a symbolic name, for example,
+         “esri_sde_oracle.” The ArcSDE provider translates the symbolic name
+         into a port and protocol by looking the symbolic name up in the <span class="filePath">C:\WINDOWS\System32\drivers\etc\services</span> file.
+         An example of an entry in the <span class="filePath">services</span> file
+         is <span class="code">esri_sde_oracle 5151/tcp</span>.
       </p>
-                     
-      <p>You must also create
-         usernames and passwords in each of the databases that you plan to
-         connect to. You or your database administrator must connect to the
-         database using an account with sufficient privileges to create a
-         new user account and to grant the appropriate privileges to the
-         new user.
-      </p>
-                  
-               
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+      <p><span style="display:none"><a name="WS1a9193826455f5ff164958d1107793a39f-3f71"></a></span>You must also create usernames and passwords
+         in each of the databases that you plan to connect to. You or your
+         database administrator must connect to the database using an account
+         with sufficient privileges to create a new user account and to grant
+         the appropriate privileges to the new user.
+      </p><br></body>
 </html>

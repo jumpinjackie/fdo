@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS7106c181349dd8d07bd9f2105df83cd65-7ffd.htm','91'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ;
-                            Url = WS7106c181349dd8d07bd9f2105df83cd65-7ffd.htm-->
+   <body onLoad="javascript:initFrame('WS7106c181349dd8d07bd9f2105df83cd65-7ffd.htm','91'); javascript:initPage('Mapping Between Geometry and Geometric Types','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -44,66 +40,45 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS7106c181349dd8d07bd9f2105df83cd65-7ffd"></a></span>
-               
-               
-      <!--Body-->
-                  
-      <p>
-                        
-                        The FDO API GeometricType enumeration
+      <!--Body--><p><span style="display:none"><a name="WS73099cc142f4875594cc7110e6b3fa66-7c15"></a></span>The FDO API GeometricType enumeration
          of GeometricProperty gives the client application some knowledge
          of which geometry types comprise the geometric property so that
          it can present the user with an intelligent editor for selecting
          styles for rendering the geometry. In particular, GeometricType
          relates to shape dimensionality of geometries allowed in FDO geometric
          properties. The nearest analogues in the Geometry API are:
-      </p>
-                  
-      <!--UList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-741"></a></span>
-                     
-      <ul>
-         <li>GisDimensionality, which pertains to ordinate
-            (not shape) dimensionality of geometry values.
+      </p><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-741"></a></span><ul>
+         <li>FdoDimensionality,
+            which pertains to ordinate (not shape) dimensionality of geometry
+            values.
          </li>
-         <li>GisGeometryType, which has types whose abstract
-            base types map to Geometric Type
+         <li>FdoGeometryType,
+            which has types whose abstract base types map to Geometric Type
          </li>
       </ul>
-                     
-                  
-                  
-      <p>The GeometricType
-         enumeration is as follows:
-      </p>
-                  
-      <!--UList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-740"></a></span>
-                     
-      <ul>
-         <li>Point = 0x01, // Point Type Geometry </li>
-         <li>Curve = 0x02, // Line and Curve Type Geometry </li>
-         <li>Surface = 0x04, // Surface (or Area) Type
-            Geometry 
+      <p><span style="display:none"><a name="WS73099cc142f4875594cc7110e6b3fa66-7c14"></a></span>The GeometricType enumeration is as follows:
+      </p><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-740"></a></span><ul>
+         <li>Point
+            = 0x01, // Point Type Geometry 
          </li>
-         <li>Solid = 0x08, // Solid Type Geometry </li>
+         <li>Curve
+            = 0x02, // Line and Curve Type Geometry 
+         </li>
+         <li>Surface
+            = 0x04, // Surface (or Area) Type Geometry 
+         </li>
+         <li>Solid
+            = 0x08, // Solid Type Geometry 
+         </li>
       </ul>
-                     
-                     
-                     
-                  
-                  
       <div>
-         <div class="note-note"><span class="label">Note</span>The
-            enumeration defines a bit mask and the GetGeometricTypes and SetGeometricTypes
-            methods take and return an integer. This is to allow a geometry
-            property to be of more than one type. For example, the call: <span class="code">&nbsp;&nbsp;geometricProperty.SetGeometricTypes(Point
+         <div class="note-note"><span class="label">Note</span>The enumeration defines
+            a bit mask and the GetGeometricTypes and SetGeometricTypes methods
+            take and return an integer. This is to allow a geometry property
+            to be of more than one type. For example, the call: <span class="code">&nbsp;&nbsp;geometricProperty.SetGeometricTypes(Point
                | Surface);</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; would allow the geometric
             property to represent either point type  geometry or surface type
             geometry (polygons).
          </div>
-      </div>
-               
-            
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+      </div><br></body>
 </html>

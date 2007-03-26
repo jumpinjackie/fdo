@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WSfacf1429558a55de8821c21057fbebc2b-abe.htm','31'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ISD-Topic ;
-                            Url = WSfacf1429558a55de8821c21057fbebc2b-abe.htm-->
+   <body onLoad="javascript:initFrame('WSfacf1429558a55de8821c21057fbebc2b-abe.htm','31'); javascript:initPage('Code','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -38,96 +34,31 @@
             <div class="button-info"><span id="infoline">&nbsp;</span></div>
             <div class="ancestry"><a href="WSfacf1429558a55de8821c21057fbebc2b-ac2.htm">Capabilities</a>&nbsp;&gt;&nbsp;<a href="WS1a9193826455f5ff9110c71085341391d-3d57.htm">Command Capabilities</a>&nbsp;&gt;&nbsp;
             </div>
-            <div class="head-text"><span>Code</span></div>
+            <div class="head-text"><span>Code </span></div>
          </div>
       </div>
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-abe"></a></span>
-                  
-                  
-      <!--Body-->
-                     
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a89"></a></span>
-                           
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e3457"></a>Declarations
+      <!--Body--><div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a89"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e2020"></a>Declarations
          </p>
-                           
-         <p>
-                                 
-                                 The
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ad6"></a></span>The
             object and variable declarations are the following:
          </p>
-                           
-         <div class="codeBlock">
-                                 <pre class="codeLine">FdoICommandCapabilities * commandCapabilities;</pre>
-                                 <p class="codeComment">// this will contain
-               values of type FdoCommandType and
-            </p>
-                                 
-            <p class="codeComment">//
-               possibly values of type FdoRdbmsCommandType, which are
-            </p>
-                                 
-            <p class="codeComment">//
-               provider-specific commands
-            </p>
-                                 <pre class="codeLine">GisInt32 * commandTypes;</pre>
-                                 <pre class="codeLine">bool supportsParameters;</pre>
-                                 <pre class="codeLine">bool supportsTimeout;</pre>
-                                 <pre class="codeLine">bool supportsSelectExpressions;</pre>
-                                 <pre class="codeLine">bool supportsSelectFunctions;</pre>
-                                 <pre class="codeLine">bool supportsSelectDistinct;</pre>
-                                 <pre class="codeLine">bool supportsSelectOrdering;</pre>
-                                 <pre class="codeLine">bool supportsSelectGrouping;</pre>
-                              </div>
-                        
+         <div class="codeBlock"><pre class="codeLine">FdoICommandCapabilities * commandCapabilities;</pre><pre class="codeLine"><span class="codeComment">// this will contain values of type FdoCommandType
+and</span></pre><pre class="codeLine"><span class="codeComment">// possibly values of type FdoRdbmsCommandType,
+which are</span></pre><pre class="codeLine"><span class="codeComment">// provider-specific commands</span></pre><pre class="codeLine">FdoInt32 * commandTypes;</pre><pre class="codeLine">bool supportsParameters;</pre><pre class="codeLine">bool supportsTimeout;</pre><pre class="codeLine">bool supportsSelectExpressions;</pre><pre class="codeLine">bool supportsSelectFunctions;</pre><pre class="codeLine">bool supportsSelectDistinct;</pre><pre class="codeLine">bool supportsSelectOrdering;</pre><pre class="codeLine">bool supportsSelectGrouping;</pre></div>
       </div>
-                     
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a88"></a></span>
-                           
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e3523"></a>Method Calls
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a88"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e2069"></a>Method Calls
          </p>
-                           
-         <p>The method calls are the following:</p>
-                           
-         <div class="codeBlock">
-                                 <pre class="codeLine">commandCapabilities = connection-&gt;GetCommandCapabilities();</pre>
-                                 <p class="codeComment">//
-               this returns a list of command types
-            </p>
-                                 <pre class="codeLine">commandTypes = commandCapabilities-&gt;GetCommands();</pre>
-                                 <p class="codeComment">//
-               loop through the commandTypes
-            </p>
-                                 <pre class="codeLine">supportsParameters = commandCapabilities-&gt;SupportsParameters();</pre>
-                                 <pre class="codeLine">supportsTimeout = commandCapabilities-&gt;SupportsTimeout();</pre>
-                                 <pre class="codeLine">supportsSelectExpressions = commandCapabilities-&gt;</pre>
-                                 <pre class="codeLine">&nbsp;&nbsp;SupportsSelectExpressions();</pre>
-                                 <pre class="codeLine">supportsSelectFunctions = commandCapabilities-&gt;</pre>
-                                 <pre class="codeLine">&nbsp;&nbsp;SupportsSelectFunctions();</pre>
-                                 <pre class="codeLine">supportsSelectDistinct = commandCapabilities-&gt;</pre>
-                                 <pre class="codeLine">&nbsp;&nbsp;SupportsSelectDistinct();</pre>
-                                 <pre class="codeLine">supportsSelectOrdering = commandCapabilities-&gt;</pre>
-                                 <pre class="codeLine">&nbsp;&nbsp;SupportsSelectOrdering();</pre>
-                                 <pre class="codeLine">supportsSelectGrouping = commandCapabilities-&gt;</pre>
-                                 <pre class="codeLine">&nbsp;&nbsp;SupportsSelectGrouping();</pre>
-                              </div>
-                        
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ad5"></a></span>The method calls are the following:
+         </p>
+         <div class="codeBlock"><pre class="codeLine">commandCapabilities = connection-&gt;GetCommandCapabilities();</pre><pre class="codeLine"><span class="codeComment">// this returns a list of command types</span></pre><pre class="codeLine">commandTypes = commandCapabilities-&gt;GetCommands();</pre><pre class="codeLine"><span class="codeComment">// loop through the commandTypes</span></pre><pre class="codeLine">supportsParameters = commandCapabilities-&gt;SupportsParameters();</pre><pre class="codeLine">supportsTimeout = commandCapabilities-&gt;SupportsTimeout();</pre><pre class="codeLine">supportsSelectExpressions = commandCapabilities-&gt;</pre><pre class="codeLine">&nbsp;&nbsp;SupportsSelectExpressions();</pre><pre class="codeLine">supportsSelectFunctions = commandCapabilities-&gt;</pre><pre class="codeLine">&nbsp;&nbsp;SupportsSelectFunctions();</pre><pre class="codeLine">supportsSelectDistinct = commandCapabilities-&gt;</pre><pre class="codeLine">&nbsp;&nbsp;SupportsSelectDistinct();</pre><pre class="codeLine">supportsSelectOrdering = commandCapabilities-&gt;</pre><pre class="codeLine">&nbsp;&nbsp;SupportsSelectOrdering();</pre><pre class="codeLine">supportsSelectGrouping = commandCapabilities-&gt;</pre><pre class="codeLine">&nbsp;&nbsp;SupportsSelectGrouping();</pre></div>
       </div>
-                     
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a87"></a></span>
-                           
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e3583"></a>References
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a87"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e2109"></a>References
          </p>
-                           
-         <p>For more information, see these <span class="bookTitle">FDO
-               API Reference Help</span> topics:
-         </p>
-                           
-         <!--UList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a79"></a></span>
-                              
-         <ul>
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ad4"></a></span>For more information, see these <span class="bookTitle">FDO API Reference Help</span> topics:
+         </p><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a79"></a></span><ul>
             <li>class
                FdoICommandCapabilities
             </li>
@@ -138,14 +69,5 @@
                FdoRdbmsCommandType
             </li>
          </ul>
-                              
-                              
-                           
-                        
-      </div>
-                  
-               
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+      </div><br></body>
 </html>

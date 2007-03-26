@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS7106c181349dd8d0121cc40105df83c97c-7ffc.htm','56'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ;
-                            Url = WS7106c181349dd8d0121cc40105df83c97c-7ffc.htm-->
+   <body onLoad="javascript:initFrame('WS7106c181349dd8d0121cc40105df83c97c-7ffc.htm','56'); javascript:initPage('Updating Values','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -44,88 +40,38 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS7106c181349dd8d0121cc40105df83c97c-7ffc"></a></span>
-                  
-                  
-      <!--Body-->
-                     
-      <p>
-                           After
-         inserting (see <span class="char_link"><a href="WS7106c181349dd8d0121cc40105df83c97c-8000.htm">
-               <!--Reference = WS7106c181349dd8d0121cc40105df83c97c-8000; Target topic = WS7106c181349dd8d0121cc40105df83c97c-8000.htm-->Inserting Values</a></span>), you can update the values.
-         The update operation involves identifying a feature class (“table”),
-         a feature class object (“row”), and an object property (“column
-         in a row”) to be changed, and supplying a new value for the object
-         property to replace the old.
+      <!--Body--><p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a94"></a></span>After
+         inserting (see <span class="hypertext"><span class="char_link"><a href="WS7106c181349dd8d0121cc40105df83c97c-8000.htm">Inserting Values</a></span></span>),
+         you can update the values. The update operation involves identifying
+         a feature class (“table”), a feature class object (“row”), and an
+         object property (“column in a row”) to be changed, and supplying
+         a new value for the object property to replace the old.
       </p>
-                     
-      <p>First, create an FdoIUpdate
-         command object and use the command object’s SetFeatureClassName()
-         method to identify the feature class. Then, create a filter to identity
-         the feature class object whose properties we want to update, and
-         use the command object’s SetFilter() method to attach the command
-         to it. Filters are discussed in <span class="char_link"><a href="WSfacf1429558a55de8821c21057fbebc2b-7ff.htm">
-               <!--Reference = WSfacf1429558a55de8821c21057fbebc2b-7ff; Target topic = WSfacf1429558a55de8821c21057fbebc2b-7ff.htm-->Filter and Expression Languages</a></span>.
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a93"></a></span>First, create an FdoIUpdate command object and
+         use the command object’s SetFeatureClassName() method to identify
+         the feature class. Then, create a filter to identity the feature
+         class object whose properties we want to update, and use the command
+         object’s SetFilter() method to attach the command to it. Filters
+         are discussed in <span class="hypertext"><span class="char_link"><a href="WSfacf1429558a55de8821c21057fbebc2b-7ff.htm">Filter and Expression Languages</a></span></span>.
       </p>
-                     
-      <p>One of the data properties
-         in the example SampleFeatureClass class definition is an identity
-         property, whose name is “SampleIdentityDataProperty” and whose type
-         is fdo:Int32. This means that its value uniquely identifies the
-         feature class object, that is, the “row”. Use the name of the identity property
-         in the filter. In the Insert operation, the value of the identity
-         property was set to be ‘101’. The value of the filter that is needed
-         is “( SampleIdentityDataProperty = 101 )”.
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a92"></a></span>One of the data properties in the example SampleFeatureClass
+         class definition is an identity property, whose name is “SampleIdentityDataProperty”
+         and whose type is fdo:Int32. This means that its value uniquely
+         identifies the feature class object, that is, the “row”. Use the
+         name of the identity property in the filter. In the Insert operation,
+         the value of the identity property was set to be ‘101’. The value
+         of the filter that is needed is “( SampleIdentityDataProperty =
+         101 )”.
       </p>
-                     
-      <p>Finally, create a
-         property value, which contains the new value, attach it to the command
-         object, and then execute the command.
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a91"></a></span>Finally, create a property value, which contains
+         the new value, attach it to the command object, and then execute
+         the command.
       </p>
-                     
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b299"></a></span>
-                           
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e7826"></a><span style="display:none"><a name="WS7106c181349dd8d0121cc40105df83c97c-7ffb"></a></span>Example: Updating Property
-            Values
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b299"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e4821"></a><span style="display:none"><a name="WS7106c181349dd8d0121cc40105df83c97c-7ffb"></a></span>Example: Updating Property Values
          </p>
-                           
-         <p>
-                                 The following is an example of updating
-            property values:
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a90"></a></span>The
+            following is an example of updating property values:
          </p>
-                           
-         <div class="codeBlock">
-                                 <pre class="codeLine">GisPtr&lt;FdoIUpdate&gt; sampleUpdate;</pre>
-                                 <pre class="codeLine">sampleUpdate =</pre>
-                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;(FdoIUpdate *)connection-&gt;CreateCommand(FdoCommandType_Update);</pre>
-                                 <pre class="codeLine">GisInt32 numUpdated = 0;</pre>
-                                 <pre class="codeLine">// point the Update command at the target feature class</pre>
-                                 <pre class="codeLine">// use a fully qualified class name</pre>
-                                 <pre class="codeLine">// whose format is &lt;schemaName&gt;:&lt;className&gt;</pre>
-                                 <pre class="codeLine">sampleUpdate-&gt; SetFeatureClassName(L"SampleFeatureSchema:SampleFeatureClass");</pre>
-                                 <pre class="codeLine">// set the filter to identify which set of properties to update</pre>
-                                 <pre class="codeLine">sampleUpdate-&gt;SetFilter(L"( SampleIdentityDataProperty = 101 )");</pre>
-                                 <pre class="codeLine">// get the pointer to the value collection used to add properties</pre>
-                                 <pre class="codeLine">// to the Update command</pre>
-                                 <pre class="codeLine">// we are reusing the samplePropertyValues object that we used</pre>
-                                 <pre class="codeLine">// for the insert operation</pre>
-                                 <pre class="codeLine">samplePropertyValues = sampleUpdate-&gt;GetPropertyValues();</pre>
-                                 <pre class="codeLine">// create an FdoDataValue for the name property value</pre>
-                                 <pre class="codeLine">GisPtr&lt;FdoDataValue&gt; sampleNameDataValue;</pre>
-                                 <pre class="codeLine">sampleNameDataValue = FdoDataValue::Create(L"Green Lake");</pre>
-                                 <pre class="codeLine">// set the name and value of the property value</pre>
-                                 <pre class="codeLine">sampleNamePropertyValue-&gt;SetName(L"SampleNameDataProperty");</pre>
-                                 <pre class="codeLine">sampleNamePropertyValue-&gt;SetValue(sampleNameDataValue);</pre>
-                                 <pre class="codeLine">// add the name property value to the property value collection</pre>
-                                 <pre class="codeLine">// owned by the Update command</pre>
-                                 <pre class="codeLine">samplePropertyValues-&gt;Add(sampleNamePropertyValue);</pre>
-                                 <pre class="codeLine">// execute the command</pre>
-                                 <pre class="codeLine">numUpdated = sampleUpdate-&gt;Execute();</pre>
-                              </div>
-                        
-      </div>
-                  
-               
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+         <div class="codeBlock"><pre class="codeLine">FdoPtr&lt;FdoIUpdate&gt; sampleUpdate;</pre><pre class="codeLine">sampleUpdate =</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;(FdoIUpdate *)connection-&gt;CreateCommand(FdoCommandType_Update);</pre><pre class="codeLine">FdoInt32 numUpdated = 0;</pre><pre class="codeLine">// point the Update command at the target feature class</pre><pre class="codeLine">// use a fully qualified class name</pre><pre class="codeLine">// whose format is &lt;schemaName&gt;:&lt;className&gt;</pre><pre class="codeLine">sampleUpdate-&gt; SetFeatureClassName(L"SampleFeatureSchema:SampleFeatureClass");</pre><pre class="codeLine">// set the filter to identify which set of properties to update</pre><pre class="codeLine">sampleUpdate-&gt;SetFilter(L"( SampleIdentityDataProperty = 101 )");</pre><pre class="codeLine">// get the pointer to the value collection used to add properties</pre><pre class="codeLine">// to the Update command</pre><pre class="codeLine">// we are reusing the samplePropertyValues object that we used</pre><pre class="codeLine">// for the insert operation</pre><pre class="codeLine">samplePropertyValues = sampleUpdate-&gt;GetPropertyValues();</pre><pre class="codeLine">// create an FdoDataValue for the name property value</pre><pre class="codeLine">FdoPtr&lt;FdoDataValue&gt; sampleNameDataValue;</pre><pre class="codeLine">sampleNameDataValue = FdoDataValue::Create(L"Green Lake");</pre><pre class="codeLine">// set the name and value of the property value</pre><pre class="codeLine">sampleNamePropertyValue-&gt;SetName(L"SampleNameDataProperty");</pre><pre class="codeLine">sampleNamePropertyValue-&gt;SetValue(sampleNameDataValue);</pre><pre class="codeLine">// add the name property value to the property value collection</pre><pre class="codeLine">// owned by the Update command</pre><pre class="codeLine">samplePropertyValues-&gt;Add(sampleNamePropertyValue);</pre><pre class="codeLine">// execute the command</pre><pre class="codeLine">numUpdated = sampleUpdate-&gt;Execute();</pre></div>
+      </div><br></body>
 </html>

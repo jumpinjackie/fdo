@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WSfacf1429558a55de8821c21057fbebc2b-908.htm','46'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ;
-                            Url = WSfacf1429558a55de8821c21057fbebc2b-908.htm-->
+   <body onLoad="javascript:initFrame('WSfacf1429558a55de8821c21057fbebc2b-908.htm','46'); javascript:initPage('Non-Feature Class Issues','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -44,27 +40,16 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-908"></a></span>
-               
-               
-      <!--Body-->
-                  
-      <p>
-                        A non-feature class in FDO can be created as
-         a stand-alone class, a contained class, or both. As a contained
-         class, it defines a property of another class or feature class (see
-         FdoFeatureClass and FdoClassType Global Enum). How this non-feature
-         class is created affects the way the data is inserted, queried,
-         and updated.
+      <!--Body--><p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79ef"></a></span>A non-feature
+         class in FDO can be created as a stand-alone class, a contained
+         class, or both. As a contained class, it defines a property of another
+         class or feature class (see FdoFeatureClass and FdoClassType Global
+         Enum). How this non-feature class is created affects the way the
+         data is inserted, queried, and updated.
       </p>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-881"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e4576"></a>Stand-alone Class
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-881"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e2748"></a>Stand-alone Class
          </p>
-                        
-         <p>
-                              
-                              This
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79ee"></a></span>This
             type of class stores non-feature data (for example, manufacturers).
             The FdoClassType_Class must be created with one or more identity
             properties (see FdoObjectPropertyDefinition), which is required
@@ -73,17 +58,10 @@
             specifying an IdentityProperty, only the definition is stored in
             the metadata, which prevents any direct data inserts.
          </p>
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-880"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e4599"></a>Contained Class
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-880"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e2765"></a>Contained Class
          </p>
-                        
-         <p>
-                              
-                              This
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79ed"></a></span>This
             type of class stores non-feature data that defines a property of
             another class or feature class (for example, Sidewalk could be a
             property of a Road feature class; the Sidewalk class defines the
@@ -91,85 +69,57 @@
             not need to be created with one or more identity properties, although it
             can be.
          </p>
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-87f"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e4622"></a>Class With IdentityProperty
-            Used as ObjectProperty
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-87f"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e2782"></a>Class With IdentityProperty Used as ObjectProperty
          </p>
-                        
-         <p>
-                              This type of class reacts like a
-            stand-alone class; however, with this type, it is possible to do
-            direct data inserts. It can also be populated through a container
-            class (for example, Road.Sidewalk) since it defines an object property
-            (see FdoObjectPropertyDefinition). If this class is queried directly,
-            only the data inserted into the class as a stand-alone is returned.
-            The data associated with the ObjectProperty can only be queried
-            through the container class (for example, Road.Sidewalk).
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79ec"></a></span>This
+            type of class reacts like a stand-alone class; however, with this
+            type, it is possible to do direct data inserts. It can also be populated
+            through a container class (for example, Road.Sidewalk) since it
+            defines an object property (see FdoObjectPropertyDefinition). If
+            this class is queried directly, only the data inserted into the
+            class as a stand-alone is returned. The data associated with the
+            ObjectProperty can only be queried through the container class (for
+            example, Road.Sidewalk).
          </p>
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-87e"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e4640"></a>Class Without a Defined IdentityProperty Used
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-87e"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e2795"></a>Class Without a Defined IdentityProperty Used
             as ObjectProperty
          </p>
-                        
-         <p>
-                              Because this class has no defined
-            IdentityProperty, it can only be populated through the container
-            class (for example, Road.Sidewalk) since it defines ObjectProperty.
-            This class cannot be queried directly. The data associated with
-            the object property can only be queried through the container class
-            (for example, Road.Sidewalk). As an object property, it is defined
-            as one of the following:
-         </p>
-                        
-         <!--UList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-86a"></a></span>
-                           
-         <ul>
-            <li>
-                                    <em class="strong">Value type
-                  property. </em>Does not need any identifier since it has a
-               one-to-one relationship with the container class.
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79eb"></a></span>Because
+            this class has no defined IdentityProperty, it can only be populated
+            through the container class (for example, Road.Sidewalk) since it
+            defines ObjectProperty. This class cannot be queried directly. The
+            data associated with the object property can only be queried through
+            the container class (for example, Road.Sidewalk). As an object property,
+            it is defined as one of the following:
+         </p><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-86a"></a></span><ul>
+            <li><em class="strong">Value
+                  type property. </em>Does not need any identifier since it
+               has a one-to-one relationship with the container class.
             </li>
-            <li>
-                                    <em class="strong">Collection
+            <li><em class="strong">Collection
                   type property. </em>Requires a local identifier, which is
                an identifier defined when creating the ObjectProperty object.
             </li>
-            <li>
-                                    <em class="strong">Ordered
+            <li><em class="strong">Ordered
                   Collection type property. </em>Requires a local identifier,
                which is an identifier defined when creating the ObjectProperty
                object.
             </li>
          </ul>
-                           
-                           
-                        
-                        
-         <p>When defining either
-            a Collection or Ordered Collection type ObjectProperty, you must
-            set an IdentityProperty attribute for that object property. This
-            ObjectClass.IdentityProperty acts only as a local identifier compared
-            to the IdentityProperty set at the class level. As a local identifier,
-            it acts to uniquely identify each item within each collection (for
-            example, if the local identifier for Road.Sidewalk is Side, there
-            can be multiple sidewalks with Side=”Left” but only one per Road).
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79ea"></a></span>When defining either a Collection or Ordered
+            Collection type ObjectProperty, you must set an IdentityProperty
+            attribute for that object property. This ObjectClass.IdentityProperty
+            acts only as a local identifier compared to the IdentityProperty
+            set at the class level. As a local identifier, it acts to uniquely
+            identify each item within each collection (for example, if the local
+            identifier for Road.Sidewalk is Side, there can be multiple sidewalks with
+            Side=”Left” but only one per Road).
          </p>
-                        
-         <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-87d"></a></span>
-                              
-            <p class="section_title_h2"><a name="TOC_ENTRY__d0e4681"></a>Describing a Schema
+         <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-87d"></a></span><p class="section_title_h2"><a name="TOC_ENTRY__d0e2823"></a>Describing a Schema
             </p>
-                              
-            <p>
-                                    Use
+            <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79e9"></a></span>Use
                the FdoIDescribeSchema::Execute function to retrieve an FdoFeatureSchemaCollection
                in order to obtain any information about existing schema(s). The
                FdoFeatureSchemaCollection consists of all FdoFeatureSchemas in
@@ -177,73 +127,48 @@
                object, including FdoFeatureSchema, FdoClass, FdoFeatureClass, and
                their respective properties. The following functions return the main
                collections required to obtain information about all schema objects:
-            </p>
-                              
-            <!--UList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-869"></a></span>
-                                 
-            <ul>
-               <li>FdoFeatureSchema::GetClasses method obtains FdoClass
-                  and FdoFeatureClasses.
+            </p><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-869"></a></span><ul>
+               <li>FdoFeatureSchema::GetClasses
+                  method obtains FdoClass and FdoFeatureClasses.
                </li>
-               <li>FdoClassDefinition::GetProperties method
-                  obtains a FdoPropertyDefinitionCollection.
+               <li>FdoClassDefinition::GetProperties
+                  method obtains a FdoPropertyDefinitionCollection.
                </li>
-               <li>FdoClassDefinition::GetBaseProperties method
-                  obtains a FdoPropertyDefinitionCollection of the properties inherited
-                  from the base classes. 
+               <li>FdoClassDefinition::GetBaseProperties
+                  method obtains a FdoPropertyDefinitionCollection of the properties
+                  inherited from the base classes. 
                </li>
             </ul>
-                                 
-                                 
-                              
-                              
             <div>
-               <div class="note-note"><span class="label">Note</span>Even
-                  if your schema has no base classes (inheritance), all classes will
-                  inherit some properties from system classes.
+               <div class="note-note"><span class="label">Note</span>Even if your schema has
+                  no base classes (inheritance), all classes will inherit some properties
+                  from system classes.
                </div>
             </div>
-                              
-            <p>Use these functions
-               throughout the application to obtain any information about schema
-               objects. For example, in order to insert data into a class, you
-               must use these functions to determine what data type is required. Description
-               of the data is separate from actions.
+            <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79e8"></a></span>Use these functions throughout the application
+               to obtain any information about schema objects. For example, in
+               order to insert data into a class, you must use these functions
+               to determine what data type is required. Description of the data
+               is separate from actions.
             </p>
-                              
-            <p>The example in the
-               following link is a simple function that shows how to use FdoIDescribeSchema
-               and loop through the schema and class containers to search for duplicate
-               class names. It searches all schemas to ensure that the class name
-               does not exist in any schema in the data store. Class names must
-               be unique across the entire FDO database.
+            <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79e7"></a></span>The example in the following link is a simple
+               function that shows how to use FdoIDescribeSchema and loop through
+               the schema and class containers to search for duplicate class names.
+               It searches all schemas to ensure that the class name does not exist
+               in any schema in the data store. Class names must be unique across
+               the entire FDO database.
             </p>
-                              
-            <p>For a schema description
-               example, see <span class="char_link"><a href="WS7106c181349dd8d0ecd7e105dfb86cf5-7ffa.htm#WSfacf1429558a55de8821c21057fbebc2b-876">
-                     <!--Reference = WSfacf1429558a55de8821c21057fbebc2b-876; Target topic = WS7106c181349dd8d0ecd7e105dfb86cf5-7ffa.htm-->Example: Describing a Schema
-                     and Writing It to an XML File</a></span>
-                                    <span class="char_link"><a href="javascript:hhctrl_d0e4724.Click()">
-                     <!--Cannot find direct link-->
-                     						No label
-                     					</a></span>.
-                                    
-                                 
-            </p>
-                              <span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-872"></a></span><div class="figure-anchor">
-                                    
+            <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-79e6"></a></span>For a schema description example, see <span class="hypertext"><span class="char_link"><a href="WS7106c181349dd8d0ecd7e105dfb86cf5-7ffa.htm#WSfacf1429558a55de8821c21057fbebc2b-876">Example: Describing a Schema and Writing It to
+                        an XML File</a></span></span><span class="hypertext"><span class="char_link"><a href="javascript:hhctrl_d0e2853.Click()">
+                        <!--Cannot find direct link-->
+                        No label
+                        </a></span></span>.
+            </p><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-872"></a></span><div class="figure-anchor">
                <p><img src="../images/FDO_schema_element.ai"></p>
-                                    
-               <p class="figure-title">FDO Schema Element Class Diagram</p>
-                                 
+               <p class="figure-title">FDO
+                  Schema Element Class Diagram
+               </p>
             </div>
-                           
          </div>
-                     
-      </div>
-               
-            
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+      </div><br></body>
 </html>
