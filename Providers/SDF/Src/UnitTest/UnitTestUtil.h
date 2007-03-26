@@ -25,6 +25,7 @@
 #include <Fdo.h>
 #include <TestCommonMiscUtil.h>
 #include <TestCommonFileUtil.h>
+#define DESTINATION_FILE L"..\\..\\TestData\\PARCELS.SDF"
 
 /* 
  * A test case for ApplySchemaCommand.
@@ -36,7 +37,9 @@ class UnitTestUtil
 {
 
 public:
-    static FdoIConnection* OpenConnection( FdoString* fileName, bool re_create );
+	static FdoIConnection* CreateConnection();
+
+    static FdoIConnection* OpenConnection( FdoString* fileName, bool re_create, FdoIConnection  *inConn = NULL );
 
     static void ExportDb( 
         FdoIConnection* connection, 
@@ -50,6 +53,8 @@ public:
 
     // Print an exception, and all it's cause exceptions to the given file.
     static void PrintException( FdoException* e, const char* fileName, FdoBoolean stripLineNo = false );
+
+	static void CreateData( bool create,FdoIConnection  *inConn = NULL/* open a new connection*/, int featCount = -1/* all */, FdoString* className=NULL, int threadId = -1 );
 };
 
 #endif
