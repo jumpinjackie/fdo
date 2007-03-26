@@ -19,12 +19,12 @@
 
 ##########################################
 ## build third party libraries for SDF: ##
-## Sqlite3.1.5                          ##
+## Sqlite3.3.13                         ##
 ##########################################
 
 pushd . >& /dev/null
-cd Sqlite3.1.5
-echo Building Sqlite3.1.5
+cd Sqlite3.3.13
+echo Building Sqlite3.3.13
 cd Src
 make
 popd >& /dev/null
