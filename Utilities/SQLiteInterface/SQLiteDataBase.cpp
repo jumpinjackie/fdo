@@ -43,7 +43,11 @@ SQLiteDataBase::~SQLiteDataBase()
 SQLiteBTree* SQLiteDataBase::BTree()
 {
     if( m_pBtree == NULL )
+#ifdef SQLITE_3_1
         m_pBtree = new SQLiteBTree( mpDB->aDb[0].pBt );
+#else   
+		m_pBtree = new SQLiteBTree( mpDB->aDb[0].pBt, mpDB );
+#endif
     return m_pBtree; 
 }
 
@@ -60,9 +64,13 @@ int SQLiteDataBase::openDB( const char *fullPath )
 
     if( sqlite3_open(fullPath, &mpDB) == SQLITE_OK )
     {
-        ExecuteNonQuery("create table fdo_master(name text, rootpage integer);"); // May fail is the table was already created
+        ExecuteNonQuery("create table fdo_master(name text, rootpage integer);"); // expected to fail if the table was already created
         sqlite3BtreeSetPageSize( mpDB->aDb[0].pBt, SQLiteDB_PAGESIZE, -1 );
-        sqlite3BtreeSetSafetyLevel( mpDB->aDb[0].pBt, 1);
+#ifdef SQLITE_3_1
+		sqlite3BtreeSetSafetyLevel( mpDB->aDb[0].pBt, 1);
+#else
+		sqlite3BtreeSetSafetyLevel( mpDB->aDb[0].pBt, 1, 1);
+#endif
         sqlite3BtreeSetAutoVacuum( mpDB->aDb[0].pBt, 0 );
 		sqlite3_busy_timeout(mpDB, 1000*60); // 60 seconds
 

@@ -32,14 +32,19 @@ class SQLiteBTree
 {
 private:
     Btree       *m_pBt;
+#ifndef SQLITE_3_1
+	sqlite3     *m_pDB;
+#endif
     bool        m_bOwner;
 
 
 public:
     SQLiteBTree(void);
-
-    SQLiteBTree( Btree *bt );
-
+#ifdef SQLITE_3_1
+	SQLiteBTree( Btree *bt );
+#else
+	SQLiteBTree( Btree *bt, sqlite3 *db );
+#endif
     ~SQLiteBTree(void);
 
     /*
