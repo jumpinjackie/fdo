@@ -1,5 +1,7 @@
 
 #include "FdoMultiThreadTest.h"
+#include "UnitTestUtil.h"
+#include "FdoCommonOSUtil.h"
 #include <stdio.h>
 
 #ifndef _WIN32
@@ -10,11 +12,21 @@
 
 #define   NUMBER_OF_THREADS     10
 static    bool   use_threads = true;
+static    bool   supports_multiple_writers = false;
+static    int    select_loop_count = 10;
+static    int    insert_loop_count = 20;
 
-#ifndef  IGNORE_THREAD_TEST
 CPPUNIT_TEST_SUITE_REGISTRATION( FdoMultiThreadTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( FdoMultiThreadTest, "FdoMultiThreadTest");
+
+void wait_a_bit(int ms)
+{
+#ifdef _WIN32
+        Sleep(ms);
+#else
+        sleep((ms+999)/1000);
 #endif
+}
 
 #ifdef _WIN32
 DWORD WINAPI StartQuery(LPVOID lpParameter)
@@ -23,45 +35,61 @@ void* StartQuery( void *lpParameter)
 #endif
 {
     ConnectInfo  *cnInfo = (ConnectInfo*)lpParameter;
-	char tmp[1024];
+	char buffer[1024];
+	int  *counts = (int*)alloca( select_loop_count*sizeof(int) );
     try
 	{
+		wait_a_bit(200); // Give the insert thread a head start
+		printf("Start query Thread(%d)\n",cnInfo->connectionId );
 
 		FdoPtr<FdoISelect> select = (FdoISelect*)cnInfo->mConn->CreateCommand(FdoCommandType_Select); 
 
-		select->SetFeatureClassName(L"DaKlass");
+		select->SetFeatureClassName(L"Parcel");
 
-		FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"Key LIKE 'DI%' or Key = 'LN0316' or Key = 'DI0022'");
+		//FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"Key LIKE 'DI%'");
 
+		FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+		double coords[] = { 7.2068, 43.7556, 
+							7.2088, 43.7556, 
+							7.2088, 43.7574, 
+							7.2068, 43.7574, 
+							7.2068, 43.7556 }; 
+		FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
+		FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
+		FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
+		FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
+		FdoPtr<FdoSpatialCondition> filter = FdoSpatialCondition::Create(L"Data", FdoSpatialOperations_EnvelopeIntersects, gv);
 
 		select->SetFilter(filter);
-	    
-		FdoPtr<FdoIFeatureReader> rdr = select->Execute();
-
-		int count2 = 0;
-
-		FdoPtr<FdoByteArray> geom;
-	    	    
-	    
-		while (rdr->ReadNext())
+	    int count2 = 0;
+		for( int i=0; i<select_loop_count; i++ )
 		{
-			const wchar_t* something = rdr->GetString(L"Name");
-			//wcstombs(tmp, something, 1024);
-			//printf("Thread(%d):%s\n",cnInfo->connectionId, tmp);
-			count2++;
+			FdoPtr<FdoIFeatureReader> rdr = select->Execute();
+			while (rdr->ReadNext())
+			{
+				const wchar_t* something = rdr->GetString(L"Name");
+				count2++;
+			}
+			counts[i] = count2;
+			rdr->Close();
+			wait_a_bit(100);
 		}
-#ifdef _WIN32
-		CPPUNIT_ASSERT_MESSAGE("Unexpected number of objects", count2==153 );
-#else
-		printf("Thread(%d) returned %d objects\n",cnInfo->connectionId,count2);
-#endif
-		rdr->Close();
+		char tmp[12];
+		buffer[0]=0;
+		for( int i=0; i<select_loop_count; i++ )
+		{
+			strcat( buffer, FdoCommonOSUtil::itoa(counts[i],tmp) );
+			strcat( buffer, " ");
+		}
 
+		printf("Thread(%d) is done Counts: %s \n",cnInfo->connectionId, buffer );
+		
 	}
 	catch (FdoException *ex )
 	{
-		sprintf(tmp,"FDO error: %ls\n", ex->GetExceptionMessage());
-		CPPUNIT_FAIL(tmp);
+		sprintf(buffer,"Query: FDO error: %ls\n", ex->GetExceptionMessage());
+		ex->Release();
+		CPPUNIT_FAIL(buffer);
 	}
 
     return 0;
@@ -73,6 +101,21 @@ DWORD WINAPI StartInsert(LPVOID lpParameter)
 void* StartInsert( void *lpParameter) 
 #endif
 {
+	try
+	{
+		ConnectInfo  *cnInfo = (ConnectInfo*)lpParameter;
+		printf("Start insert Thread(%d)\n",cnInfo->connectionId );
+		for(int i=0; i<insert_loop_count; i++ )
+			UnitTestUtil::CreateData(false, cnInfo->mConn ,100, NULL, cnInfo->connectionId);
+		printf("Thread(%d) done insert\n",cnInfo->connectionId );
+	}
+	catch (FdoException *ex )
+	{
+		char buffer[1024];
+		sprintf(buffer,"Insert: FDO error: %ls\n", ex->GetExceptionMessage());
+		ex->Release();
+		CPPUNIT_FAIL(buffer);
+	}
     return 0;
 }
 
@@ -87,6 +130,7 @@ FdoMultiThreadTest::~FdoMultiThreadTest(void)
 
 void FdoMultiThreadTest::setUp ()
 {
+	UnitTestUtil::CreateData( true, NULL ,10000);
 }
 
 void FdoMultiThreadTest::OpenConnection(FdoIConnection* conn, const wchar_t* path )
@@ -104,7 +148,7 @@ void FdoMultiThreadTest::OpenConnection(FdoIConnection* conn, const wchar_t* pat
 #endif
 
     std::wstring connStr = std::wstring(L"File=") + std::wstring(fullpath);
-    connStr += std::wstring(L";ReadOnly=TRUE");
+    connStr += std::wstring(L";ReadOnly=FALSE");
 
     conn->SetConnectionString(connStr.c_str());
     conn->Open();
@@ -129,7 +173,7 @@ void FdoMultiThreadTest::StartTest ( FunctionInfo *funInfo )
 	    {
             info[i].connectionId = i;
             info[i].mConn = manager->CreateConnection (L"OSGeo.SDF.3.3");
-			OpenConnection(info[i].mConn,SDF_FILE);
+			OpenConnection(info[i].mConn,DESTINATION_FILE);
 	    } 
     }
     catch (FdoException *ex )
@@ -139,7 +183,18 @@ void FdoMultiThreadTest::StartTest ( FunctionInfo *funInfo )
 	}
 
     bool  toggle = true;
-    for ( i = 0; i < NUMBER_OF_THREADS; i++)
+	
+	if( ! supports_multiple_writers && use_threads )
+	{
+#ifdef _WIN32
+		phThreads[0] = CreateThread(NULL, 0, funInfo->Function2, &info[0], 0, &dwThreadId);
+#else
+		pthread_create( &phThreads[0], NULL, funInfo->Function2, (void*) &info[0]);
+#endif
+	}
+
+	i = ( supports_multiple_writers )?0:1;
+    for ( ; i < NUMBER_OF_THREADS; i++)
 	{
         if( use_threads )
 #ifdef _WIN32
@@ -150,9 +205,12 @@ void FdoMultiThreadTest::StartTest ( FunctionInfo *funInfo )
         else
             StartQuery( &info[i] );
 
-        toggle = !toggle;
+		if( supports_multiple_writers )
+			toggle = !toggle;
 	} 
-    
+
+	
+
 #ifdef _WIN32
     if( use_threads )
 	    WaitForMultipleObjects(NUMBER_OF_THREADS, phThreads, TRUE, INFINITE);
@@ -180,17 +238,8 @@ void FdoMultiThreadTest::QueryTest()
     StartTest( &funcInfo );
 }
 
-void FdoMultiThreadTest::InsertTest()
-{
-    FunctionInfo funcInfo;
-    
-    InitInsertFunction(funcInfo.Function1);
-    InitInsertFunction(funcInfo.Function2);
 
-    StartTest( &funcInfo );
-}
-
-void FdoMultiThreadTest::CombinationTest()
+void FdoMultiThreadTest::InsertQueryTest()
 {
     FunctionInfo funcInfo;
 

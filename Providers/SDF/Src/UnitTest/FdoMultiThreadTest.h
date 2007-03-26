@@ -13,13 +13,9 @@
 #include <Windows.h>
 #endif // _WIN32
 
-#ifdef _WIN32
-#define SDF_FILE  L"..\\..\\TestData\\PARCEL.SDX"
-#define SDF_FILE_S  "..\\..\\TestData\\PARCEL.SDX"
-#else
-#define SDF_FILE  L"../../data/PARCEL_linuxtest.SDX"
-#define SDF_FILE_S  "../../data/PARCEL_linuxtest.SDX"
-#endif
+#define SDF_FILE  L"..\\..\\TestData\\PARCELS.SDF"
+#define SDF_FILE_S  "..\\..\\TestData\\PARCELS.SDF"
+
 
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -45,10 +41,7 @@ class FdoMultiThreadTest : public CppUnit::TestCase
 {
   CPPUNIT_TEST_SUITE( FdoMultiThreadTest );
   CPPUNIT_TEST( QueryTest );
-#ifdef _WIN32
-  CPPUNIT_TEST( InsertTest );
-  CPPUNIT_TEST( CombinationTest );
-#endif
+  CPPUNIT_TEST( InsertQueryTest );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -60,8 +53,7 @@ protected:
 	void StartTest (FunctionInfo *funcInfo );
 	void OpenConnection(FdoIConnection* conn, const wchar_t* path );
     void QueryTest();
-    void InsertTest();
-    void CombinationTest();
+    void InsertQueryTest();
 #ifdef _WIN32
 	virtual void InitInsertFunction( LPTHREAD_START_ROUTINE & Funct );
 #else
