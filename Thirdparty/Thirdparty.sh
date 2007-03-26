@@ -19,7 +19,7 @@
 
 ###########################################
 ## build third party libraries:          ##
-## apache, linux/cppunit, Sqlite3.1.5,   ##
+## apache, linux/cppunit, Sqlite3.3.13,   ##
 ## boost_1_32_0, libcurl, openssl        ##
 ###########################################
 
@@ -39,8 +39,8 @@ popd >& /dev/null
 
 ## Thirdparty_SDF
 pushd . >& /dev/null
-cd Sqlite3.1.5
-echo Building Sqlite3.1.5
+cd Sqlite3.3.13
+echo Building Sqlite3.3.13
 cd Src
 make
 popd >& /dev/null
