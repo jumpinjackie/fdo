@@ -1,12 +1,10 @@
 /* Modified by non-chm-output-bipane.pl, a post-process  */
-/* script for HTML output.                Nov 29, 2006.  */
+/* script for HTML output.                Mar 21, 2007.  */
 
-/* 08/13/2006 Bill Crawford */
+/* 01/12/2007 Bill Crawford - Implemented gray banners */
 
 /* head tabs */
 div.head-tabs {
-position: relative;
-top: 5px;
 }
 
 /* head-tab table */
@@ -17,6 +15,8 @@ margin-top: 0pt;
 margin-bottom: 0pt;
 background: transparent;
 border: none;
+position: relative;
+top: 1px;
 }
 
 /* head-tab row */
@@ -53,7 +53,7 @@ padding-right: 1em;
 padding-top: 0px;
 padding-bottom: 0px;
 background-image: url(../images/tab-bkg.gif);
-cursor: pointer;
+cursor: hand;
 vertical-align: middle;
 }
 
@@ -101,9 +101,7 @@ vertical-align: middle;
 td.tab span {
 color: white;
 width: 100%;
-/* filter: glow(color=#006699, strength=4); */
 padding: 0px;
-filter: dropshadow(color=#333333, offx=1, offy=1, positive=1);
 }
 
 @media print {
@@ -116,15 +114,19 @@ filter: dropshadow(color=#333333, offx=1, offy=1, positive=1);
 
 /* head-tab text, selected */
 td.tab-active span {
-	color: #338;
+	color: #569;
 	font-weight: bold;
 	padding: 0px;
+	position: relative;
+	top: 0px;
 }
 
 /* head-tab text, dimmed */
 td.tab-disabled span {
 	width: 100%;
 	color: #666;
+	position: relative;
+	top: 0px;
 	visibility: hidden;
 }
 
@@ -303,7 +305,7 @@ margin-bottom: 5pt;
 }
 
 img.collapsible {
-cursor: pointer;
+cursor: hand;
 }
 
 div.collapsible-section {
@@ -315,7 +317,7 @@ font-family: Verdana;
 font-size: 10pt;
 font-weight: bold;
 padding-left: 5;
-cursor: pointer;
+cursor: hand;
 }
 
 /*******************************************************************************/
@@ -381,6 +383,8 @@ margin-top: 4pt;
 /* definition links (glossary links) */
 span.term a {
 color: green;    /* 'green' = #070 */
+text-decoration: none;
+border-bottom: 1px dotted green;
 }
 
 /* definition links */
@@ -404,28 +408,28 @@ color: #338;
 table.ruled { 
 font-size: 1em; 
 line-height: 1.3em; 
-/* width: 0; */
+width: 100%; 
 margin-top: 1.4em; 
 margin-bottom: 1.4em; 
-border-bottom: 3px solid #48b; 
-border-top: 4px solid #48b; 
-background-color: #ddd; 
+border-bottom: 3px solid #78b; 
+border-top: 4px solid #78b; 
+background-color: #e8e8f0; 
 }
 
 table.ruled-wide { 
 font-size: 1em; 
 line-height: 1.3em; 
-/* width: 0; */
+width: 100%; 
 margin-top: 1.4em; 
 margin-bottom: 1.4em; 
-border-bottom: 3px solid #48b; 
-border-top: 4px solid #48b; 
-background-color: #ddd; 
+border-bottom: 3px solid #78b; 
+border-top: 4px solid #78b; 
+background-color: #e8e8f0; 
 }
 
 table.ruled th { 
 color: white; 
-background-color: #48b; 
+background-color: #78b; 
 padding-left: 10pt; 
 padding-right: 10pt;
 padding-top: 3px; 
@@ -435,7 +439,7 @@ vertical-align: center;
 
 table.ruled-wide th { 
 color: white; 
-background-color: #48b; 
+background-color: #78b; 
 padding-left: 10pt; 
 padding-right: 10pt;
 padding-top: 3px; 
@@ -448,7 +452,7 @@ padding-left: 10pt;
 padding-right: 10pt;
 padding-top: 4pt; 
 padding-bottom: 5pt; 
-border-bottom: 1px solid #48b;
+border-bottom: 1px solid #78b;
 vertical-align: baseline;
 }
 
@@ -457,7 +461,7 @@ padding-left: 10pt;
 padding-right: 10pt;
 padding-top: 4pt; 
 padding-bottom: 5pt; 
-border-bottom: 1px solid #48b; 
+border-bottom: 1px solid #78b; 
 vertical-align: baseline;
 }
 
@@ -466,7 +470,7 @@ vertical-align: baseline;
 table.not-ruled, table.not-ruled-wide { 
 font-size: 1em; 
 line-height: 1.3em; 
-/* width: 0; */
+width: 0; 
 margin-top: 1em; 
 margin-bottom: 1em; 
 }
@@ -528,14 +532,11 @@ margin-bottom: 2pt;
 @media print {
 
     table.ruled-wide th.table-heading {
-    color: #48b;
+    color: #78b;
     background-color: transparent;
     padding-top: 4pt;
-    border-bottom: 4 solid #48b;
+    border-bottom: 4 solid #78b;
     }
 
 } /* @media print */
 
-span.charspan-special {
-            display:none;
-}

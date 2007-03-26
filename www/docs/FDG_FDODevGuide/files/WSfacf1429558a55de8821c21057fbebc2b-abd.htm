@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WSfacf1429558a55de8821c21057fbebc2b-abd.htm','33'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ISD-Topic ;
-                            Url = WSfacf1429558a55de8821c21057fbebc2b-abd.htm-->
+   <body onLoad="javascript:initFrame('WSfacf1429558a55de8821c21057fbebc2b-abd.htm','33'); javascript:initPage('Code','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -44,80 +40,17 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-abd"></a></span>
-                  
-                  
-      <!--Body-->
-                     
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a86"></a></span>
-                           
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e3622"></a>Declarations
+      <!--Body--><div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a86"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e2131"></a>Declarations
          </p>
-                           
-         <p>
-                                 
-                                 The
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ad3"></a></span>The
             object and variable declarations are the following:
          </p>
-                           
-         <div class="codeBlock">
-                                 <pre class="codeLine">FdoIExpressionCapabilities * expressionCapabilities;</pre>
-                                 <pre class="codeLine">GisInt32 numExpressionTypes = 0;</pre>
-                                 <p class="codeComment">// this is an enumerated
-               type
-            </p>
-                                 <pre class="codeLine">FdoExpressionType * expressionTypes;</pre>
-                                 <pre class="codeLine">GisInt32 numFunctionDefinitions = 0;</pre>
-                                 <pre class="codeLine">FdoFunctionDefinitionCollection * functions;</pre>
-                                 <pre class="codeLine">FdoFunctionDefinition * functionDefinition;</pre>
-                                 <pre class="codeLine">GisString * functionName;</pre>
-                                 <pre class="codeLine">GisString * functionDescription;</pre>
-                                 <pre class="codeLine">GisInt32 numArgumentDefinitions = 0;</pre>
-                                 <pre class="codeLine">FdoReadOnlyArgumentDefinitionCollection * arguments;</pre>
-                                 <pre class="codeLine">FdoArgumentDefinition * argumentDefinition;</pre>
-                                 <pre class="codeLine">GisString * argumentName;</pre>
-                                 <pre class="codeLine">GisString * argumentDescription;</pre>
-                                 <pre class="codeLine">FdoDataType argumentType;</pre>
-                              </div>
-                        
+         <div class="codeBlock"><pre class="codeLine">FdoIExpressionCapabilities * expressionCapabilities;</pre><pre class="codeLine">FdoInt32 numExpressionTypes = 0;</pre><pre class="codeLine"><span class="codeComment">// this is an enumerated type</span></pre><pre class="codeLine">FdoExpressionType * expressionTypes;</pre><pre class="codeLine">FdoInt32 numFunctionDefinitions = 0;</pre><pre class="codeLine">FdoFunctionDefinitionCollection * functions;</pre><pre class="codeLine">FdoFunctionDefinition * functionDefinition;</pre><pre class="codeLine">FdoString * functionName;</pre><pre class="codeLine">FdoString * functionDescription;</pre><pre class="codeLine">FdoInt32 numArgumentDefinitions = 0;</pre><pre class="codeLine">FdoReadOnlyArgumentDefinitionCollection * arguments;</pre><pre class="codeLine">FdoArgumentDefinition * argumentDefinition;</pre><pre class="codeLine">FdoString * argumentName;</pre><pre class="codeLine">FdoString * argumentDescription;</pre><pre class="codeLine">FdoDataType argumentType;</pre></div>
       </div>
-                     
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a85"></a></span>
-                           
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e3697"></a>Method Calls
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a85"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e2184"></a>Method Calls
          </p>
-                           
-         <p>The method calls are the following:</p>
-                           
-         <div class="codeBlock">
-                                 <pre class="codeLine">expressionCapabilities = connection-&gt;GetExpressionCapabilities();</pre>
-                                 <p class="codeComment">//
-               this returns a list of expression types
-            </p>
-                                 <pre class="codeLine">expressionTypes = expressionCapabilities-&gt;GetExpressionTypes();</pre>
-                                 <p class="codeComment">//
-               loop through the expression Types
-            </p>
-                                 <pre class="codeLine">functions = expressionCapabilities-&gt;GetFunctions();</pre>
-                                 <pre class="codeLine">numFunctionDefinitions = functions-&gt;GetCount();</pre>
-                                 <pre class="codeLine">for (int i = 0; i &lt; numFunctionDefinitions; i++) {</pre>
-                                 <pre class="codeLine">&nbsp;&nbsp;functionDefinition = functions-&gt;GetItem(i);</pre>
-                                 <pre class="codeLine">&nbsp;&nbsp;functionName = functionDefinition-&gt;GetName();</pre>
-                                 <pre class="codeLine">&nbsp;&nbsp;functionDescription = functionDefinition-&gt;GetDescription();</pre>
-                                 <pre class="codeLine">&nbsp;&nbsp;arguments = functionDefinition-&gt;GetArguments();</pre>
-                                 <pre class="codeLine">&nbsp;&nbsp;numArgumentDefinitions = arguments-&gt;GetCount();</pre>
-                                 <pre class="codeLine">&nbsp;&nbsp;for ( int j = 0; j &lt; numArgumentDefinitions; j++) {</pre>
-                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;argumentDefinition = arguments-&gt;GetItem(j);</pre>
-                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;argumentName = argumentDefinition-&gt;GetName();</pre>
-                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;argumentDescription = argumentDefinition-&gt;GetDescription();</pre>
-                                 <pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;argumentType = argumentDefinition-&gt;GetDataType();</pre>
-                                 <pre class="codeLine">&nbsp;&nbsp;}</pre>
-                                 <pre class="codeLine">}</pre>
-                              </div>
-                        
-      </div>
-                  
-               
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ad2"></a></span>The method calls are the following:
+         </p>
+         <div class="codeBlock"><pre class="codeLine">expressionCapabilities = connection-&gt;GetExpressionCapabilities();</pre><pre class="codeLine"><span class="codeComment">// this returns a list of expression types</span></pre><pre class="codeLine">expressionTypes = expressionCapabilities-&gt;GetExpressionTypes();</pre><pre class="codeLine"><span class="codeComment">// loop through the expression Types</span></pre><pre class="codeLine">functions = expressionCapabilities-&gt;GetFunctions();</pre><pre class="codeLine">numFunctionDefinitions = functions-&gt;GetCount();</pre><pre class="codeLine">for (int i = 0; i &lt; numFunctionDefinitions; i++) {</pre><pre class="codeLine">&nbsp;&nbsp;functionDefinition = functions-&gt;GetItem(i);</pre><pre class="codeLine">&nbsp;&nbsp;functionName = functionDefinition-&gt;GetName();</pre><pre class="codeLine">&nbsp;&nbsp;functionDescription = functionDefinition-&gt;GetDescription();</pre><pre class="codeLine">&nbsp;&nbsp;arguments = functionDefinition-&gt;GetArguments();</pre><pre class="codeLine">&nbsp;&nbsp;numArgumentDefinitions = arguments-&gt;GetCount();</pre><pre class="codeLine">&nbsp;&nbsp;for ( int j = 0; j &lt; numArgumentDefinitions; j++) {</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;argumentDefinition = arguments-&gt;GetItem(j);</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;argumentName = argumentDefinition-&gt;GetName();</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;argumentDescription = argumentDefinition-&gt;GetDescription();</pre><pre class="codeLine">&nbsp;&nbsp;&nbsp;&nbsp;argumentType = argumentDefinition-&gt;GetDataType();</pre><pre class="codeLine">&nbsp;&nbsp;}</pre><pre class="codeLine">}</pre></div>
+      </div><br></body>
 </html>

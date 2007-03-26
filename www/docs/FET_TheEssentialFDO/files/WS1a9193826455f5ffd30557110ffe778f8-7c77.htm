@@ -1,0 +1,106 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>Create an ODBC DSN for a SQL Server Database</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="Create an ODBC DSN for a SQL Server Database">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WS1a9193826455f5ffd30557110ffe778f8-7c77.htm','65'); javascript:initPage('Create an ODBC DSN for a SQL Server Database','The Essential FDO'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: The Essential FDO</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5344.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Create an ODBC DSN for a MySQL Database</div><a href="WS1a9193826455f5ffd30557110ffe778f8-7c7c.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Connecting to the ODBC Provider</div><a href="WS1a9193826455f5ffd30557110ffe778f8-7c83.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Command Capabilities</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-531d.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WS73099cc142f4875513fb5cd10c4aa30d6b-6ba8.htm">The Open Source Providers</a>&nbsp;&gt;&nbsp;<a href="WS73099cc142f487551e5a0cb10850d4cd7c-5321.htm">Connection API</a>&nbsp;&gt;&nbsp;<a href="WS1a9193826455f5ffd30557110ffe778f8-7c83.htm">Connecting to the ODBC Provider</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>Create an ODBC DSN for a SQL Server Database</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS1a9193826455f5ffd30557110ffe778f8-7c77"></a></span>
+      <!--Body--><p><span style="display:none"><a name="WS1a9193826455f5ffd30557110ffe778f8-7c76"></a></span>Do the following:
+      </p>
+      <!--OList--><span style="display:none"><a name="WS1a9193826455f5ffd30557110ffe778f8-7c75"></a></span><ol type="1" start="1">
+         <li>On the Windows <span class="uis-unspecified">Start</span> menu,
+            click <span class="uis-unspecified">Settings</span>, click <span class="uis-unspecified">Control
+               Panel</span>, click <span class="uis-unspecified">Administrative Tools</span>,
+            click <span class="uis-unspecified">Data Sources (ODBC)</span>. The <span class="uis-unspecified">ODBC
+               Data Source Administrator</span> dialog box is displayed.
+         </li>
+         <li>In
+            the <span class="uis-unspecified">ODBC Data Source Administrator</span> dialog
+            box, click the <span class="uis-unspecified"> User DNS </span> tab if you want the
+            data source to be visible only to you on this machine, or click
+            the <span class="uis-unspecified">System DSN</span> tab if you want
+            the data source to be visible to others on this machine and on the
+            network. Click <span class="uis-unspecified">Add. </span>The <span class="uis-unspecified">Create
+               New Data Source</span> dialog box is displayed.
+            <div>
+               <div class="note-note"><span class="label">Note</span>You may not use the <span class="uis-unspecified">File
+                     DSN</span> tab, because Fdo does not support its use.
+               </div>
+            </div>
+         </li>
+         <li>In
+            the <span class="uis-unspecified">Create New Data Source</span> dialog box,
+            click <span class="uis-unspecified">SQL Server</span>, click <span class="uis-unspecified">Finish.</span> The <span class="uis-unspecified">Create
+               a New Data Source to SQL Server</span> dialog box is displayed.
+         </li>
+         <li>In this dialog box, in the text entry box labeled <span class="uis-unspecified">Name </span>,
+            type the <em class="mild">name</em> that you want to use as the
+            value of the DataSourceName connection property.
+         </li>
+         <li> In
+            this dialog in the text entry box labeled <span class="uis-unspecified">Server</span>, type
+            the <em class="strong">name</em> of the SQL Server that you
+            want to connect to.
+         </li>
+         <li>Click <span class="uis-unspecified">Next</span> to
+            go to the next screen where you see the network login Id is used
+            to verify the user’s identity. 
+         </li>
+         <li>Click <span class="uis-unspecified">Next</span> to
+            go to the next screen where you can change the default database.
+         </li>
+         <li>Click <span class="uis-unspecified">Next</span> to
+            go to the next screen where you can change other parameters.
+         </li>
+         <li>Click <span class="uis-unspecified">Finish</span>.
+            The <span class="uis-unspecified">ODBC Microsoft SQL Server Setup</span> dialog
+            appears showing the configuration parameter settings. 
+         </li>
+         <li>In
+            this dialog click <span class="uis-unspecified">Test Data Source...</span>. The <span class="uis-unspecified">SQL
+               Server ODBC Data Source Test</span> dialog appears giving you
+            test results. Click <span class="uis-unspecified">OK</span> to close this dialog.
+         </li>
+         <li>Click <span class="uis-unspecified">OK</span> to
+            close the <span class="uis-unspecified">ODBC Microsoft SQL Server Setup</span> dialog .
+         </li>
+         <li>In
+            the <span class="uis-unspecified">ODBC Data Source Administrator</span> dialog
+            box, you see the DSN that you just added listed. Click <span class="uis-unspecified">OK.</span></li>
+      </ol><br></body>
+</html>

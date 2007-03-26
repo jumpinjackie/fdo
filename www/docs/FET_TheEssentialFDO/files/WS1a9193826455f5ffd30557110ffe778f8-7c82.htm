@@ -1,0 +1,81 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+      <title>Overview of the Connection Properties</title>
+      <link rel="stylesheet" type="text/css" href="../style/cpm.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd.css">
+      <link rel="stylesheet" type="text/css" href="../style/isd_html_standard.css"><script type="text/javascript" src="../scripts/ac_common.js"></script><script type="text/javascript" src="../scripts/ac.strings.js"></script><script type="text/javascript" src="../scripts/acmap.js"></script><script type="text/javascript" src="../scripts/ac.acad_ak.js"></script><script language="javascript">
+            function hideInfo() {
+                info = document.getElementById('infoline');
+                info.innerHTML = ' ';
+                info.style.visibility = 'hidden';
+            }
+            function showInfo(title) {
+                info = document.getElementById('infoline');
+                info.innerHTML = title;
+                info.style.visibility='visible';
+            }
+        </script><meta type="description" content="Overview of the Connection Properties">
+      <meta type="keywords" content="">
+      <meta type="topic-type" content="concept">
+   </head>
+   <body onLoad="javascript:initFrame('WS1a9193826455f5ffd30557110ffe778f8-7c82.htm','60'); javascript:initPage('Overview of the Connection Properties','The Essential FDO'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+      <div class="head">
+         <div class="head-block">
+            <div class="nav-group">
+               <!--browse buttons-->
+               <div class="browse">
+                  <nobr>
+                     <div id="homeTitle" style="display:none">Home: The Essential FDO</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5344.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Connecting to the ODBC Provider</div><a href="WS1a9193826455f5ffd30557110ffe778f8-7c83.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Connecting to the ODBC Provider</div><a href="WS1a9193826455f5ffd30557110ffe778f8-7c83.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Create an ODBC DSN for an MS Access File</div><a href="WS73099cc142f48755145a361110d534fb0d-7cb4.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+               </div>
+               <!--end browse buttons-->
+            </div>
+            <div class="button-info"><span id="infoline">&nbsp;</span></div>
+            <div class="ancestry"><a href="WS73099cc142f4875513fb5cd10c4aa30d6b-6ba8.htm">The Open Source Providers</a>&nbsp;&gt;&nbsp;<a href="WS73099cc142f487551e5a0cb10850d4cd7c-5321.htm">Connection API</a>&nbsp;&gt;&nbsp;<a href="WS1a9193826455f5ffd30557110ffe778f8-7c83.htm">Connecting to the ODBC Provider</a>&nbsp;&gt;&nbsp;
+            </div>
+            <div class="head-text"><span>Overview of the Connection Properties</span></div>
+         </div>
+      </div>
+      <div class="head-margin">&nbsp;</div>
+      <div style="line-height: 0pt">&nbsp;</div>
+      <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS1a9193826455f5ffd30557110ffe778f8-7c82"></a></span>
+      <!--Body--><p><span style="display:none"><a name="WS1a9193826455f5ffd30557110ffe778f8-7c81"></a></span>The simplest case is connecting to a file-based data
+         store. You create a DSN for the file as described in the following
+         topics for MS Access and Excel, set the DataSourceName connection
+         property to that DSN and then connect. Alternatively, you can just
+         set the DSN parameter in the ConnectionString connection property,
+         for example, <span class="code">DSN=ExcelDSN;Uid=;Pwd;</span>.
+      </p>
+      <p><span style="display:none"><a name="WS1a9193826455f5ffd30557110ffe778f8-7c80"></a></span>The more complicated cases concern connection
+         to an RDBMS-based provider.
+      </p>
+      <p><span style="display:none"><a name="WS1a9193826455f5ffd30557110ffe778f8-7c7f"></a></span>When you use the Windows administrative tool
+         to configure the DSN for an Oracle connection, you must define a
+         Data Source Name and a TNS Service Name. You can optionally define
+         a User ID. In the event that you do not define a User ID when configuring
+         the DSN, you can connect by either setting the DataSourceName, UserId,
+         and Password connection properties or by setting the DSN, Uid, and
+         Pwd parameters in the ConnectionString connection property. In the
+         event that you did define a User ID as part of the DSN, can connect
+         by either setting the DataSourceName and Password connection properties
+         or by setting the DSN and Pwd parameters in the ConnectionString
+         connection property. The User ID defined in the DSN or the user
+         name value defined in the connection property is used as the default schema
+         for the session; that is, you will see tables from that schema.
+      </p>
+      <p><span style="display:none"><a name="WS1a9193826455f5ffd30557110ffe778f8-7c7e"></a></span>When you use the Windows administrative tool
+         to configure the DSN for a MySQL connection, you must define the
+         Data Source Name, the Server, and the Database. Before connecting
+         you must define the DataSourceName, the UserId, and Password connection
+         properties. Alternatively, you must define the DSN, Uid, and Pwd
+         parameters in the ConnectionString connection property.
+      </p>
+      <p><span style="display:none"><a name="WS1a9193826455f5ffd30557110ffe778f8-7c7d"></a></span>When you use the Windows administrative tool
+         to configure the DSN for a SQL Server connection, you must define
+         the Name and Server. The default authentication is to use the Windows
+         account name and password. You can change the default database from
+         master to one of your own. Before connecting you must define the
+         DataSourceName connection property.
+      </p><br></body>
+</html>

@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS7106c181349dd8d0ecd7e105dfb859b5-7ffa.htm','109'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ISD-Topic ;
-                            Url = WS7106c181349dd8d0ecd7e105dfb859b5-7ffa.htm-->
+   <body onLoad="javascript:initFrame('WS7106c181349dd8d0ecd7e105dfb859b5-7ffa.htm','110'); javascript:initPage('Creating a Feature Schema','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -44,22 +40,12 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS7106c181349dd8d0ecd7e105dfb859b5-7ffa"></a></span>
-               
-               
-      <!--Body-->
-                  
-      <p><span style="display:none"><a name="WS1a9193826455f5ff161a95310f097a35c3-7642"></a></span>
-                        
-                        This
+      <!--Body--><p><span style="display:none"><a name="WS1a9193826455f5ff161a95310f097a35c3-7642"></a></span>This
          section describes the creation of the SampleFeatureSchema, which
-         is the example feature schema described in the <span class="char_link"><a href="javascript:hhctrl_d0e11770.Click()">
-               <!--Cannot find direct link-->
-               						No label
-               					</a></span> chapter. It
+         is the example feature schema described in the <span class="hypertext">Schema Management</span> chapter. It
          also describes the creation of the OGC980461FS schema, which is the
          schema defined in the OpenGIS project document 98-046r1.
       </p>
-                  
       <p><span style="display:none"><a name="WS1a9193826455f5ff161a95310f097a35c3-7641"></a></span>FDO Provider for ArcSDE does not support the
          creation or destruction of feature schema (that is, does not support
          the FdoIApplySchema and FdoIDestroySchema commands.) However, it
@@ -68,7 +54,6 @@
          schemas. FDO Provider for ArcSDE supports inserting, selecting,
          updating, and deleting data in existing schemas.
       </p>
-                  
       <p><span style="display:none"><a name="WS1a9193826455f5ff161a95310f097a35c3-7640"></a></span>You can use FDO Provider for ArcSDE to operate
          on a new feature schema. However, you must create the schema using
          ArcSDE tools. In particular you use the <span class="uis-unspecified">sdetable</span> and <span class="uis-unspecified">sdelayer</span> commands,
@@ -78,7 +63,6 @@
          Oracle is the data store technology and Windows XP is the operating
          system for this exercise.
       </p>
-                  
       <p><span style="display:none"><a name="WS1a9193826455f5ff161a95310f097a35c3-763f"></a></span>First, you must create an Oracle username for
          the feature schema (that is, the name of the Oracle user is the
          name of the feature schema.) To do this, you connect as system administrator
@@ -86,16 +70,11 @@
          command creates the user and grants to that user the privileges
          necessary for the ArcSDE tool commands to succeed:
       </p>
-                  
-      <div class="codeBlock">
-                        <pre class="codeLine">grant connect,resource to &lt;schemaName&gt; identified by &lt;password&gt;</pre>
-                     </div>
-                  
+      <div class="codeBlock"><pre class="codeLine">grant connect,resource to &lt;schemaName&gt; identified by &lt;password&gt;</pre></div>
       <p><span style="display:none"><a name="WS1a9193826455f5ff161a95310f097a35c3-763e"></a></span>Secondly, you must log in to the host where
          the ArcSDE server is running. ArcSDE tools are on the host machine
          where the ArcSDE server resides.
       </p>
-                  
       <div>
          <div class="note-tip"><span class="label">Tip</span>NetMeeting can be used
             to remotely login to where the ArcSDE Server is running and launch
@@ -106,7 +85,6 @@
             command strings.
          </div>
       </div>
-                  
       <p><span style="display:none"><a name="WS1a9193826455f5ff161a95310f097a35c3-763d"></a></span>Finally, execute the <span class="uis-unspecified">sdetable</span> and <span class="uis-unspecified">sdelayer</span> commands
          in a command window to create each of the classes. Since you are
          executing these commands on the host where the ArcSDE server is
@@ -115,20 +93,12 @@
          For more information about all of the ArcSDE commands, consult the
          ArcSDE Developer Help Guide.
       </p>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-666"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e11812"></a>SampleFeatureSchema
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-666"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e7402"></a>SampleFeatureSchema
          </p>
-                        
          <p><span style="display:none"><a name="WS1a9193826455f5ff161a95310f097a35c3-763c"></a></span>In this sample a feature schema called SampleFeatureSchema
             is created, which contains one feature class called SampleFeatureClass.
             This feature class has the following three properties: 
-         </p>
-                        
-         <!--UList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-64f"></a></span>
-                           
-         <ul>
+         </p><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-64f"></a></span><ul>
             <li>An
                Int32 called SampleIdentityDataProperty.
             </li>
@@ -139,10 +109,6 @@
                geometry called SampleGeometricProperty.
             </li>
          </ul>
-                           
-                           
-                        
-                        
          <p><span style="display:none"><a name="WS1a9193826455f5ff161a95310f097a35c3-763b"></a></span>First, use the <span class="uis-unspecified">sdetable -o</span> create
             command to add the integer and string properties to SampleFeatureClass.
             Then, use the <span class="uis-unspecified">sdetable -o alter_reg </span>command
@@ -153,15 +119,10 @@
             is optional. The <span class="uis-unspecified">-i </span>option takes a service
             name as an argument.
          </p>
-                        
          <p><span style="display:none"><a name="WS1a9193826455f5ff161a95310f097a35c3-763a"></a></span>The <span class="uis-unspecified">sdetable -o create</span> command
             can be invoked as follows:
          </p>
-                        
-         <div class="codeBlock">
-                              <pre class="codeLine">sdetable -o create -t SampleFeatureClass -d “SampleIdentityDataProperty INTEGER(10), SampleNameDataProperty STRING(64)” -u SampleFeatureSchema -p test.</pre>
-                           </div>
-                        
+         <div class="codeBlock"><pre class="codeLine">sdetable -o create -t SampleFeatureClass -d “SampleIdentityDataProperty INTEGER(10), SampleNameDataProperty STRING(64)” -u SampleFeatureSchema -p test.</pre></div>
          <p><span style="display:none"><a name="WS1a9193826455f5ff161a95310f097a35c3-7639"></a></span>The <span class="uis-unspecified">-o</span> option
             takes the command option name. The <span class="uis-unspecified">-d</span> option
             takes the column definitions, which is a quoted list of column name/column
@@ -169,30 +130,20 @@
             takes an Oracle database user name, which becomes the feature schema
             name. The <span class="uis-unspecified">-p</span> option takes a password.
          </p>
-                        
          <p><span style="display:none"><a name="WS1a9193826455f5ff161a95310f097a35c3-7638"></a></span>The <span class="uis-unspecified">sdetable -o alter_reg</span> command
             is invoked as follows:
          </p>
-                        
-         <div class="codeBlock">
-                              <pre class="codeLine">sdetable -o alter_reg -t SampleFeatureClass -c SampleIdentityDataProperty -C USER -u SampleFeatureSchema -p test</pre>
-                           </div>
-                        
+         <div class="codeBlock"><pre class="codeLine">sdetable -o alter_reg -t SampleFeatureClass -c SampleIdentityDataProperty -C USER -u SampleFeatureSchema -p test</pre></div>
          <p><span style="display:none"><a name="WS1a9193826455f5ff161a95310f097a35c3-7637"></a></span>The <span class="uis-unspecified">-c</span> option
             identifies the column name that will be the identity property. The <span class="uis-unspecified">-C</span> option indicates
             whether SDE is supposed to generate the value or obtain it from
             the user. You will be prompted to confirm that you want to alter
             the registration of the table.
          </p>
-                        
          <p><span style="display:none"><a name="WS1a9193826455f5ff161a95310f097a35c3-7636"></a></span>The <span class="uis-unspecified">sdelayer</span> command
             is invoked as follows:
          </p>
-                        
-         <div class="codeBlock">
-                              <pre class="codeLine">sdelayer -o add -l SampleFeatureClass,SampleGeometricProperty -E 0,0,100,50 -e a -u SampleFeatureSchema -p test</pre>
-                           </div>
-                        
+         <div class="codeBlock"><pre class="codeLine">sdelayer -o add -l SampleFeatureClass,SampleGeometricProperty -E 0,0,100,50 -e a -u SampleFeatureSchema -p test</pre></div>
          <p><span style="display:none"><a name="WS1a9193826455f5ff161a95310f097a35c3-7635"></a></span>The <span class="uis-unspecified">-o</span> option
             takes the command option name. The <span class="uis-unspecified">-l</span> option
             identifies the table and column. The <span class="uis-unspecified">-E</span> option
@@ -200,12 +151,8 @@
             The <span class="uis-unspecified">-e</span> option identifies the geometry
             type with ‘a’ indicating an area shape.
          </p>
-                        
-         <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-665"></a></span>
-                              
-            <p class="section_title_h2"><a name="TOC_ENTRY__d0e11928"></a>OGC980461FS
+         <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-665"></a></span><p class="section_title_h2"><a name="TOC_ENTRY__d0e7494"></a>OGC980461FS
             </p>
-                              
             <p><span style="display:none"><a name="WS1a9193826455f5ff161a95310f097a35c3-7634"></a></span>This schema contains the ten classes defined
                in the OpenGIS Project Document <span class="bookTitle">980946r1</span>.
                The types of the properties belonging to the classes is similar
@@ -218,7 +165,6 @@
                geometry is indicated by “-e a+”, and a MULTILINESTRING geometry
                is indicated by “-e l+”.
             </p>
-                              
             <p><span style="display:none"><a name="WS1a9193826455f5ff161a95310f097a35c3-7633"></a></span>An ArcSDE table cannot have two geometries.
                This restriction impacts the definition of the buildings class,
                which has a POLYGON and a POINT geometry. We have chosen to add
@@ -226,7 +172,6 @@
                that references building objects, and the POINT geometry supports
                this query.
             </p>
-                              
             <div>
                <div class="note-note"><span class="label">Note</span>The use of <span class="uis-unspecified">-E</span> option
                   in the sdelayer command defines the extents. The arguments are <span class="uis-unspecified">&lt;xmin,ymin,xmax,ymax&gt;</span>.
@@ -234,53 +179,10 @@
                   out of bounds” errors when inserting the 98046r1 data.
                </div>
             </div>
-                              
-            <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-664"></a></span>
-                                    
-               <p class="section_title_h3"><a name="TOC_ENTRY__d0e11957"></a>ArcSDE Commands That Define the OGC980461FS Classes
+            <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-664"></a></span><p class="section_title_h3"><a name="TOC_ENTRY__d0e7518"></a>ArcSDE Commands That Define the OGC980461FS Classes
                </p>
-                                    
-               <div class="codeBlock">
-                                          <pre class="codeLine">sdetable -o create -t lakes -d "fid integer(10), name string(64)" -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdetable -o alter_reg -t lakes -c fid -C user -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdelayer -o add -l lakes,shore -E 0,0,100,50 -e a -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdetable -o create -t road_segments -d "fid integer(10), name string(64), aliases string(64), num_lanes integer(10)" -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdetable -o alter_reg -t road_segments -c fid -C user -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdelayer -o add -l road_segments,centerline -E 0,0,100,50 -e l -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdetable -o create -t divided_routes -d "fid integer(10), name string(64), num_lanes integer(10)" -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdetable -o alter_reg -t divided_routes -c fid -C user -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdelayer -o add -l divided_routes,centerlines -E 0,0,100,50 -e l+ -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdetable -o create -t forests -d "fid integer(10), name string(64)" -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdetable -o alter_reg -t forests -c fid -C user -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdelayer -o add -l forests,boundary -E 0,0,100,50 -e a+ -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdetable -o create -t bridges -d "fid integer(10), name string(64)" -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdetable -o alter_reg -t bridges -c fid -C user -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdelayer -o add -l bridges,position -E 0,0,100,50 -e p -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdetable -o create -t streams -d "fid integer(10), name string(64)" -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdetable -o alter_reg -t streams -c fid -C user -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdelayer -o add -l streams,centerline -E 0,0,100,50 -e l -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdetable -o create -t buildings -d "fid integer(10), address string(64)" -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdetable -o alter_reg -t buildings -c fid -C user -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdelayer -o add -l buildings,position -E 0,0,100,50 -e p -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdetable -o create -t ponds -d "fid integer(10), name string(64), type string(64)" -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdetable -o alter_reg -t ponds -c fid -C user -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdelayer -o add -l ponds,shores -E 0,0,100,50 -e a+ -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdetable -o create -t named_places -d "fid integer(10), name string(64)" -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdetable -o alter_reg -t named_places -c fid -C user -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdelayer -o add -l named_places,boundary -E 0,0,100,50 -e a -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdetable -o create -t map_neatlines -d "fid integer(10)" -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdetable -o alter_reg -t map_neatlines -c fid -C user -u OGC980461FS -p test</pre>
-                                          <pre class="codeLine">sdelayer -o add -l map_neatlines,neatline -E 0,0,100,50 -e a -u OGC980461FS -p test</pre>
-                                       </div>
-                                 
+               <div class="codeBlock"><pre class="codeLine">sdetable -o create -t lakes -d "fid integer(10), name string(64)" -u OGC980461FS -p test</pre><pre class="codeLine">sdetable -o alter_reg -t lakes -c fid -C user -u OGC980461FS -p test</pre><pre class="codeLine">sdelayer -o add -l lakes,shore -E 0,0,100,50 -e a -u OGC980461FS -p test</pre><pre class="codeLine">sdetable -o create -t road_segments -d "fid integer(10), name string(64), aliases string(64), num_lanes integer(10)" -u OGC980461FS -p test</pre><pre class="codeLine">sdetable -o alter_reg -t road_segments -c fid -C user -u OGC980461FS -p test</pre><pre class="codeLine">sdelayer -o add -l road_segments,centerline -E 0,0,100,50 -e l -u OGC980461FS -p test</pre><pre class="codeLine">sdetable -o create -t divided_routes -d "fid integer(10), name string(64), num_lanes integer(10)" -u OGC980461FS -p test</pre><pre class="codeLine">sdetable -o alter_reg -t divided_routes -c fid -C user -u OGC980461FS -p test</pre><pre class="codeLine">sdelayer -o add -l divided_routes,centerlines -E 0,0,100,50 -e l+ -u OGC980461FS -p test</pre><pre class="codeLine">sdetable -o create -t forests -d "fid integer(10), name string(64)" -u OGC980461FS -p test</pre><pre class="codeLine">sdetable -o alter_reg -t forests -c fid -C user -u OGC980461FS -p test</pre><pre class="codeLine">sdelayer -o add -l forests,boundary -E 0,0,100,50 -e a+ -u OGC980461FS -p test</pre><pre class="codeLine">sdetable -o create -t bridges -d "fid integer(10), name string(64)" -u OGC980461FS -p test</pre><pre class="codeLine">sdetable -o alter_reg -t bridges -c fid -C user -u OGC980461FS -p test</pre><pre class="codeLine">sdelayer -o add -l bridges,position -E 0,0,100,50 -e p -u OGC980461FS -p test</pre><pre class="codeLine">sdetable -o create -t streams -d "fid integer(10), name string(64)" -u OGC980461FS -p test</pre><pre class="codeLine">sdetable -o alter_reg -t streams -c fid -C user -u OGC980461FS -p test</pre><pre class="codeLine">sdelayer -o add -l streams,centerline -E 0,0,100,50 -e l -u OGC980461FS -p test</pre><pre class="codeLine">sdetable -o create -t buildings -d "fid integer(10), address string(64)" -u OGC980461FS -p test</pre><pre class="codeLine">sdetable -o alter_reg -t buildings -c fid -C user -u OGC980461FS -p test</pre><pre class="codeLine">sdelayer -o add -l buildings,position -E 0,0,100,50 -e p -u OGC980461FS -p test</pre><pre class="codeLine">sdetable -o create -t ponds -d "fid integer(10), name string(64), type string(64)" -u OGC980461FS -p test</pre><pre class="codeLine">sdetable -o alter_reg -t ponds -c fid -C user -u OGC980461FS -p test</pre><pre class="codeLine">sdelayer -o add -l ponds,shores -E 0,0,100,50 -e a+ -u OGC980461FS -p test</pre><pre class="codeLine">sdetable -o create -t named_places -d "fid integer(10), name string(64)" -u OGC980461FS -p test</pre><pre class="codeLine">sdetable -o alter_reg -t named_places -c fid -C user -u OGC980461FS -p test</pre><pre class="codeLine">sdelayer -o add -l named_places,boundary -E 0,0,100,50 -e a -u OGC980461FS -p test</pre><pre class="codeLine">sdetable -o create -t map_neatlines -d "fid integer(10)" -u OGC980461FS -p test</pre><pre class="codeLine">sdetable -o alter_reg -t map_neatlines -c fid -C user -u OGC980461FS -p test</pre><pre class="codeLine">sdelayer -o add -l map_neatlines,neatline -E 0,0,100,50 -e a -u OGC980461FS -p test</pre></div>
             </div>
-                           
          </div>
-                     
-      </div>
-               
-            
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+      </div><br></body>
 </html>

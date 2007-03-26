@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WSfacf1429558a55de8821c21057fbebc2b-abc.htm','35'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ISD-Topic ;
-                            Url = WSfacf1429558a55de8821c21057fbebc2b-abc.htm-->
+   <body onLoad="javascript:initFrame('WSfacf1429558a55de8821c21057fbebc2b-abc.htm','35'); javascript:initPage('Code','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -44,69 +40,17 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-abc"></a></span>
-                  
-                  
-      <!--Body-->
-                     
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a84"></a></span>
-                           
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e3781"></a>Declarations
+      <!--Body--><div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a84"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e2237"></a>Declarations
          </p>
-                           
-         <p>
-                                 
-                                 The
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ad1"></a></span>The
             object and variable declarations are the following:
          </p>
-                           
-         <div class="codeBlock">
-                                 <pre class="codeLine">FdoIFilterCapabilities * filterCapabilities;</pre>
-                                 <pre class="codeLine">GisInt32 numConditionTypes = 0;</pre>
-                                 <pre class="codeLine">FdoConditionType * conditionTypes;</pre>
-                                 <pre class="codeLine">GisInt32 numSpatialOperations = 0;</pre>
-                                 <pre class="codeLine">FdoSpatialOperations * spatialOperations;</pre>
-                                 <pre class="codeLine">GisInt32 numDistanceOperations = 0;</pre>
-                                 <pre class="codeLine">FdoDistanceOperations * distanceOperations;</pre>
-                                 <pre class="codeLine">bool supportsGeodesicDistance;</pre>
-                                 <pre class="codeLine">bool supportsNonLiteralGeometricOperations;</pre>
-                              </div>
-                        
+         <div class="codeBlock"><pre class="codeLine">FdoIFilterCapabilities * filterCapabilities;</pre><pre class="codeLine">FdoInt32 numConditionTypes = 0;</pre><pre class="codeLine">FdoConditionType * conditionTypes;</pre><pre class="codeLine">FdoInt32 numSpatialOperations = 0;</pre><pre class="codeLine">FdoSpatialOperations * spatialOperations;</pre><pre class="codeLine">FdoInt32 numDistanceOperations = 0;</pre><pre class="codeLine">FdoDistanceOperations * distanceOperations;</pre><pre class="codeLine">bool supportsGeodesicDistance;</pre><pre class="codeLine">bool supportsNonLiteralGeometricOperations;</pre></div>
       </div>
-                     
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a83"></a></span>
-                           
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e3838"></a>Method Calls
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-a83"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e2277"></a>Method Calls
          </p>
-                           
-         <p>The method calls are the following:</p>
-                           
-         <div class="codeBlock">
-                                 <pre class="codeLine">filterCapabilities = connection-&gt;GetFilterCapabilities();</pre>
-                                 <pre class="codeLine">conditionTypes = filterCapabilities-&gt;</pre>
-                                 <pre class="codeLine">&nbsp;&nbsp;GetConditionTypes(numConditionTypes);</pre>
-                                 <p class="codeComment">//
-               loop through conditionTypes
-            </p>
-                                 <pre class="codeLine">spatialOperations = filterCapabilities-&gt;</pre>
-                                 <pre class="codeLine">&nbsp;&nbsp;GetSpatialOperations(numSpatialOperations);</pre>
-                                 <p class="codeComment">//
-               loop through spatialOperations
-            </p>
-                                 <pre class="codeLine">distanceOperations = filterCapabilities-&gt;</pre>
-                                 <pre class="codeLine">&nbsp;&nbsp;GetDistanceOperations(numSpatialOperations);</pre>
-                                 <p class="codeComment">//
-               loop through distanceOperations
-            </p>
-                                 <pre class="codeLine">supportsGeodesicDistance = filterCapabilities-&gt;</pre>
-                                 <pre class="codeLine">&nbsp;&nbsp;SupportsGeodesicDistance();</pre>
-                                 <pre class="codeLine">supportsNonLiteralGeometricOperations = filterCapabilities-&gt;</pre>
-                                 <pre class="codeLine">&nbsp;&nbsp;SupportsNonLiteralGeometricOperations();</pre>
-                              </div>
-                        
-      </div>
-                  
-               
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+         <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7ad0"></a></span>The method calls are the following:
+         </p>
+         <div class="codeBlock"><pre class="codeLine">filterCapabilities = connection-&gt;GetFilterCapabilities();</pre><pre class="codeLine">conditionTypes = filterCapabilities-&gt;</pre><pre class="codeLine">&nbsp;&nbsp;GetConditionTypes(numConditionTypes);</pre><pre class="codeLine"><span class="codeComment">// loop through conditionTypes</span></pre><pre class="codeLine">spatialOperations = filterCapabilities-&gt;</pre><pre class="codeLine">&nbsp;&nbsp;GetSpatialOperations(numSpatialOperations);</pre><pre class="codeLine"><span class="codeComment">// loop through spatialOperations</span></pre><pre class="codeLine">distanceOperations = filterCapabilities-&gt;</pre><pre class="codeLine">&nbsp;&nbsp;GetDistanceOperations(numSpatialOperations);</pre><pre class="codeLine"><span class="codeComment">// loop through distanceOperations</span></pre><pre class="codeLine">supportsGeodesicDistance = filterCapabilities-&gt;</pre><pre class="codeLine">&nbsp;&nbsp;SupportsGeodesicDistance();</pre><pre class="codeLine">supportsNonLiteralGeometricOperations = filterCapabilities-&gt;</pre><pre class="codeLine">&nbsp;&nbsp;SupportsNonLiteralGeometricOperations();</pre></div>
+      </div><br></body>
 </html>

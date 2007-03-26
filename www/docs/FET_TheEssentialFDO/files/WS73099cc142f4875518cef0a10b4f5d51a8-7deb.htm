@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS73099cc142f4875518cef0a10b4f5d51a8-7deb.htm','76'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ISD-Topic ;
-                            Url = WS73099cc142f4875518cef0a10b4f5d51a8-7deb.htm-->
+   <body onLoad="javascript:initFrame('WS73099cc142f4875518cef0a10b4f5d51a8-7deb.htm','89'); javascript:initPage('Installation of the Driver Manager','The Essential FDO'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -36,9 +32,8 @@
                <!--end browse buttons-->
             </div>
             <div class="button-info"><span id="infoline">&nbsp;</span></div>
-            <div class="ancestry"><a href="WS1a9193826455f5ff1eae43410b4d164b91-7764.htm">Installing RDBMS Clients
-                  Used By The Open Source Providers</a>&nbsp;&gt;&nbsp;<a href="WS73099cc142f4875518cef0a10b4f5d51a8-7dec.htm">Installing and Configuring
-                  ODBC on Linux</a>&nbsp;&gt;&nbsp;
+            <div class="ancestry"><a href="WS1a9193826455f5ff1eae43410b4d164b91-7764.htm">Installing RDBMS Clients Used By The Open Source
+                  Providers</a>&nbsp;&gt;&nbsp;<a href="WS73099cc142f4875518cef0a10b4f5d51a8-7dec.htm">Installing and Configuring ODBC on Linux</a>&nbsp;&gt;&nbsp;
             </div>
             <div class="head-text"><span>Installation of the Driver Manager</span></div>
          </div>
@@ -46,40 +41,17 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS73099cc142f4875518cef0a10b4f5d51a8-7deb"></a></span>
-                  
-                  
-      <!--Body-->
-                     
-      <p>Download the latest
-         version of the driver manager from <a class="webLink" href="http://www.unixODBC.org">http://www.unixODBC.org</a>.
+      <!--Body--><p><span style="display:none"><a name="WS1a9193826455f5ff164958d1107793a39f-3f5b"></a></span>Download the latest version of the driver manager from <a href="http://www.unixODBC.org">http://www.unixODBC.org</a>.
          It is packaged as a gzipped tarfile. The file used for this exercise
          is <span class="filePath">unixODBC-2.2.11.tar.gz</span>.
-         It gunzips to a directory called <span class="filePath">unixODBC-2.2.11</span>. Change
-         directories to <span class="filePath">unixODBC-2.2.11</span>,
+         It gunzips to a directory called <span class="filePath">unixODBC-2.2.11</span>.
+         Change directories to <span class="filePath">unixODBC-2.2.11</span>,
          untar the file and run the following commands.
       </p>
-                     
-      <!--OList--><span style="display:none"><a name="WS73099cc142f4875518cef0a10b4f5d51a8-7b8f"></a></span>
-                        
-      <ol type="1" start="1">
-         <li>
-                                 <span class="code">./configure --prefix=/usr/local/unixODBC</span>
-                              
+      <!--OList--><span style="display:none"><a name="WS73099cc142f4875518cef0a10b4f5d51a8-7b8f"></a></span><ol type="1" start="1">
+         <li><span class="code">./configure --prefix=/usr/local/unixODBC</span></li>
+         <li><span class="code">make</span></li>
+         <li><span class="code">make install</span> as root
          </li>
-         <li>
-                                 <span class="code">make</span>
-                              
-         </li>
-         <li>
-                                 <span class="code">make install</span> as root
-         </li>
-      </ol>
-                        
-                        
-                     
-                  
-               
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+      </ol><br></body>
 </html>

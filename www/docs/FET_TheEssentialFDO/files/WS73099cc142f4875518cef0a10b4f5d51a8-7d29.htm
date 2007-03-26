@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS73099cc142f4875518cef0a10b4f5d51a8-7d29.htm','71'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ISD-Topic ;
-                            Url = WS73099cc142f4875518cef0a10b4f5d51a8-7d29.htm-->
+   <body onLoad="javascript:initFrame('WS73099cc142f4875518cef0a10b4f5d51a8-7d29.htm','84'); javascript:initPage('Configuration','The Essential FDO'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -36,9 +32,9 @@
                <!--end browse buttons-->
             </div>
             <div class="button-info"><span id="infoline">&nbsp;</span></div>
-            <div class="ancestry"><a href="WS1a9193826455f5ff1eae43410b4d164b91-7764.htm">Installing RDBMS Clients
-                  Used By The Open Source Providers</a>&nbsp;&gt;&nbsp;<a href="WS73099cc142f4875518cef0a10b4f5d51a8-7d2b.htm">Installing and Configuring
-                  the MySQL Client on Windows</a>&nbsp;&gt;&nbsp;
+            <div class="ancestry"><a href="WS1a9193826455f5ff1eae43410b4d164b91-7764.htm">Installing RDBMS Clients Used By The Open Source
+                  Providers</a>&nbsp;&gt;&nbsp;<a href="WS73099cc142f4875518cef0a10b4f5d51a8-7d2b.htm">Installing and Configuring the MySQL Client on
+                  Windows</a>&nbsp;&gt;&nbsp;
             </div>
             <div class="head-text"><span>Configuration</span></div>
          </div>
@@ -46,17 +42,10 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS73099cc142f4875518cef0a10b4f5d51a8-7d29"></a></span>
-                  
-                  
-      <!--Body-->
-                     
-      <p>The configuration
-         wizard presents you with the following configuration defaults.
+      <!--Body--><p><span style="display:none"><a name="WS1a9193826455f5ff164958d1107793a39f-3f6a"></a></span>The configuration wizard presents you with the following
+         configuration defaults. Go with the defaults except where noted otherwise.
       </p>
-                     
-      <!--OList--><span style="display:none"><a name="WS73099cc142f4875518cef0a10b4f5d51a8-7d28"></a></span>
-                        
-      <ol type="1" start="1">
+      <!--OList--><span style="display:none"><a name="WS73099cc142f4875518cef0a10b4f5d51a8-7d28"></a></span><ol type="1" start="1">
          <li>Detailed
             Configuration
          </li>
@@ -75,8 +64,8 @@
          <li>Enable
             Strict Mode
          </li>
-         <li>Standard
-            Character Set
+         <li>Use
+            UTF-8 instead of the Standard Character Set
          </li>
          <li>Install
             As Windows Service (Service Name = MySQL with the service started
@@ -88,54 +77,38 @@
             a current password)
          </li>
       </ol>
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                     
-                     
-      <p>You may optionally
-         request that the <span class="filePath">bin</span> directory be
-         added the the Windows PATH environment variable. Do so. The wizard
-         will add that directory to the end of %PATH%. The <span class="filePath">bin</span> folder contains
-         the <span class="filePath">libmysql.dll</span> used
+      <p><span style="display:none"><a name="WS1a9193826455f5ff164958d1107793a39f-3f69"></a></span>You may optionally request that the <span class="filePath">bin</span> directory be added the the
+         Windows PATH environment variable. Do so. The wizard will add that
+         directory to the end of %PATH%. The <span class="filePath">bin</span> folder
+         contains the <span class="filePath">libmysql.dll</span> used
          by the MySQL provider.
       </p>
-                     
       <div>
          <div class="note-note"><span class="label">Note</span>If you have PHP installed
-            on your machine, make sure that <span class="filePath">C:\Program Files\MySQL\MySQL
-               Server 5.0\bin</span> precedes the PHP path in the PATH environment
-            variable. The PHP installation contains a copy of the <span class="filePath">libmysql.dll</span> and
+            on your machine, make sure that <span class="filePath">C:\Program
+               Files\MySQL\MySQL Server 5.0\bin</span> precedes the PHP path
+            in the PATH environment variable. The PHP installation contains
+            a copy of the <span class="filePath">libmysql.dll</span> and
             it is important for the operation of the MySQL provider that the
             correct DLL is used.
          </div>
       </div>
-                     
-      <p>The configuration
-         wizard creates a configuration file (<span class="filePath">C:\Program Files\MySQL\MySQL
-            Server 5.0\my.ini</span>). It starts the MySQL service (mysqld) using
-         options specified in <span class="filePath">my.ini</span>. 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff164958d1107793a39f-3f68"></a></span>The configuration wizard creates a configuration
+         file (<span class="filePath">C:\Program Files\MySQL\MySQL
+            Server 5.0\my.ini</span>). It starts the MySQL service (mysqld)
+         using options specified in <span class="filePath">my.ini</span>. 
       </p>
-                     
-      <p>You can use the Fdo
-         User Manager API to create a user account with the usage privilege
-         if you are using the enterprise version of FDO. Otherwise you can use
-         the 2 SQL commands, <span class="code">create user &lt;user&gt; identified
-            by ‘&lt;password&gt;’</span> and <span class="code">grant select, insert, update,
-            delete, create, create view, drop, index, alter on *.* to ‘&lt;user&gt;’@’%’
-            identified by ‘&lt;password&gt;’</span>. In either case you must
-         be connected as a user, for example, root, with the grant privilege.
-         The value &lt;user&gt; can be ‘&lt;username&gt;’@’localhost’ if
-         the connection local, or it must be ‘&lt;username&gt;’@’,hostname.’
-         if the connection is remote. The value of &lt;hostname&gt; is &lt;host
-         label&gt;.&lt;domain name&gt;, for example, <em class="mild">someComputer.someCompany.com</em>.
+      <p><span style="display:none"><a name="WS1a9193826455f5ff164958d1107793a39f-3f67"></a></span>You can use the Fdo User Manager API to create
+         a user account with the usage privilege if you are using the enterprise
+         version of FDO. Otherwise you can use the 2 SQL commands, <span class="code">create user &lt;user&gt; identified by ‘&lt;password&gt;’</span> and <span class="code">grant select, insert, update, delete, create,
+            create view, drop, index, alter on *.* to ‘&lt;user&gt;’@’%’ identified
+            by ‘&lt;password&gt;’</span>. In either case you must be connected
+         as a user, for example, root, with the grant privilege. The value
+         &lt;user&gt; can be ‘&lt;username&gt;’@’localhost’ if the connection
+         local, or it must be ‘&lt;username&gt;’@’,hostname.’ if the connection
+         is remote. The value of &lt;hostname&gt; is &lt;host label&gt;.&lt;domain
+         name&gt;, for example, <em class="mild">someComputer.someCompany.com</em>.
       </p>
-                     
       <div>
          <div class="note-note"><span class="label">Note</span>If you enabled remote
             root access when you installed MySQL, you can create user accounts
@@ -143,13 +116,7 @@
             locally in order to create a user account. 
          </div>
       </div>
-                     
-      <p>You can use the Fdo
-         Data Store Management API to create a data store.
-      </p>
-                  
-               
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+      <p><span style="display:none"><a name="WS1a9193826455f5ff164958d1107793a39f-3f66"></a></span>You can use the Fdo Data Store Management API
+         to create a data store.
+      </p><br></body>
 </html>

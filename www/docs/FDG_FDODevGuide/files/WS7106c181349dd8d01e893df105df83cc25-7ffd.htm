@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS7106c181349dd8d01e893df105df83cc25-7ffd.htm','68'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ;
-                            Url = WS7106c181349dd8d01e893df105df83cc25-7ffd.htm-->
+   <body onLoad="javascript:initFrame('WS7106c181349dd8d01e893df105df83cc25-7ffd.htm','68'); javascript:initPage('Filter and Expression Text','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -44,59 +40,28 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS7106c181349dd8d01e893df105df83cc25-7ffd"></a></span>
-               
-               
-      <!--Body-->
-                  
-      <p>
-                        
-                        
-                        
-                        In general, commands
-         in FDO do not support the SQL command language (the one exception
-         is the optional SQLCommand). However, to facilitate ease of use for
-         application developers, expressions and filters in FDO can be specified using
-         a textual notation that is based syntactically on expressions and
-         SQL WHERE clauses. The biggest difference between this approach
-         and SQL is that these clauses are not intended to work against tables
-         and columns, but against feature classes, properties, and relationships.
-         For example, a filter to select roads with four or more lanes might
-         look like:
+      <!--Body--><p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a85"></a></span>In general, commands in FDO do not support the
+         SQL command language (the one exception is the optional SQLCommand).
+         However, to facilitate ease of use for application developers, expressions
+         and filters in FDO can be specified using a textual notation that
+         is based syntactically on expressions and SQL WHERE clauses. The
+         biggest difference between this approach and SQL is that these clauses
+         are not intended to work against tables and columns, but against
+         feature classes, properties, and relationships. For example, a filter
+         to select roads with four or more lanes might look like:
       </p>
-                  
-      <div class="codeBlock">
-                        <pre class="codeLine">Lanes &gt;= 4</pre>
-                     </div>
-                  
-      <p>Similarly, a filter
-         to select all PipeNetworks that have at least one Pipe in the proposed
-         state might look like:
+      <div class="codeBlock"><pre class="codeLine">Lanes &gt;= 4</pre></div>
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a84"></a></span>Similarly, a filter to select all PipeNetworks
+         that have at least one Pipe in the proposed state might look like:
       </p>
-                  
-      <div class="codeBlock">
-                        <pre class="codeLine">Pipes.state = "proposed"</pre>
-                     </div>
-                  
-      <p>Furthermore, a filter
-         to select all existing parcels whose owner contains the text “Smith”
-         might look like:
+      <div class="codeBlock"><pre class="codeLine">Pipes.state = "proposed"</pre></div>
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a83"></a></span>Furthermore, a filter to select all existing
+         parcels whose owner contains the text “Smith” might look like:
       </p>
-                  
-      <div class="codeBlock">
-                        <pre class="codeLine">state = "existing" and owner like "%Smith%"</pre>
-                     </div>
-                  
-      <p>Finally, a filter
-         to select all parcels that are either affected or encroached upon
-         by some change might look like:
+      <div class="codeBlock"><pre class="codeLine">state = "existing" and owner like "%Smith%"</pre></div>
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a82"></a></span>Finally, a filter to select all parcels that
+         are either affected or encroached upon by some change might look
+         like:
       </p>
-                  
-      <div class="codeBlock">
-                        <pre class="codeLine">state in ("affected", "encroached")</pre>
-                     </div>
-               
-            
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+      <div class="codeBlock"><pre class="codeLine">state in ("affected", "encroached")</pre></div><br></body>
 </html>

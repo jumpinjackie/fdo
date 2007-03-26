@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS73099cc142f487551e5a0cb10850d4cd7c-5302.htm','43'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ISD-Topic ;
-                            Url = WS73099cc142f487551e5a0cb10850d4cd7c-5302.htm-->
+   <body onLoad="javascript:initFrame('WS73099cc142f487551e5a0cb10850d4cd7c-5302.htm','46'); javascript:initPage('Spatial Context API','The Essential FDO'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -36,7 +32,7 @@
                <!--end browse buttons-->
             </div>
             <div class="button-info"><span id="infoline">&nbsp;</span></div>
-            <div class="ancestry"><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5344.htm">The Essential FDO</a>&nbsp;&gt;&nbsp;<a href="WS73099cc142f4875513fb5cd10c4aa30d6b-6ba8.htm">The Open Source Providers</a>&nbsp;&gt;&nbsp;
+            <div class="ancestry"><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5344.htm">The Essential FDO</a>&nbsp;&gt;&nbsp;
             </div>
             <div class="head-text"><span>Spatial Context API</span></div>
          </div>
@@ -44,234 +40,16 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS73099cc142f487551e5a0cb10850d4cd7c-5302"></a></span>
-               
-               
-      <!--Body-->
-                  
-      <p>
-                        The
-         following table defines default values for the spatial context properties
-         for the providers (MySQL and SDF) that support the creation of a
-         data store and example sets of spatial context properties extracted
-         from ODBC, WFS, and WMS sources created by a non-FDO process.
+      <!--Body--><p><span style="display:none"><a name="WS73099cc142f4875520a47a10f192cc9dc-6ed9"></a></span>A spatial context defines properties required
+         for the storage and manipulation of geometric data. You use this
+         API to manage the spatial context of a data store.
       </p>
-                  <span style="display:none"><a name="WS1a9193826455f5ffa23ce210c4a30acaf-499"></a></span><table cellpadding="0" cellspacing="0" class="ruled-wide">
-         <colgroup>
-            <col style="width:1.333in">
-            <col style="width:0.698in">
-            <col style="width:0.635in">
-            <col style="width:0.656in">
-            <col style="width:0.656in">
-            <col style="width:0.656in">
-            <col style="width:0.469in">
-                              
-            <tr class="RuledWideHeading">
-                                    
-               <th class="table-heading">Properties/Provider</th>
-                                    
-               <th class="table-heading">MySQL</th>
-                                    
-               <th class="table-heading">ODBC</th>
-                                    
-               <th class="table-heading">SDF</th>
-                                    
-               <th class="table-heading">WFS</th>
-                                    
-               <th class="table-heading">WMS</th>
-                                    
-               <th class="table-heading">Notes</th>
-                                 
-            </tr>
-                           
-                              
-            <tr class="RuledWideOddRow">
-                                    
-               <td class="table-body">Coordinate system</td>
-                                    
-               <td class="table-body">Cartesian</td>
-                                    
-               <td class="table-body">Cartesian</td>
-                                    
-               <td class="table-body">Cartesian</td>
-                                    
-               <td class="table-body">EPSG:4326</td>
-                                    
-               <td class="table-body">EPSG:4326</td>
-                                    
-               <td class="table-body">1</td>
-                                 
-            </tr>
-                              
-            <tr class="RuledWideEvenRow">
-                                    
-               <td class="table-body">Extent type</td>
-                                    
-               <td class="table-body">Static</td>
-                                    
-               <td class="table-body">Static</td>
-                                    
-               <td class="table-body">Dynamic</td>
-                                    
-               <td class="table-body">Static</td>
-                                    
-               <td class="table-body">Static</td>
-                                    
-               <td class="table-body">2</td>
-                                 
-            </tr>
-                              
-            <tr class="RuledWideOddRow">
-                                    
-               <td class="table-body">Extent</td>
-                                    
-               <td class="table-body">Not NULL</td>
-                                    
-               <td class="table-body">Not NULL</td>
-                                    
-               <td class="table-body">NULL</td>
-                                    
-               <td class="table-body">Not NULL</td>
-                                    
-               <td class="table-body">Not NULL</td>
-                                    
-               <td class="table-body">3</td>
-                                 
-            </tr>
-                              
-            <tr class="RuledWideEvenRow">
-                                    
-               <td class="table-body">Unit dimension</td>
-                                    
-               <td class="table-body">XY</td>
-                                    
-               <td class="table-body">XY</td>
-                                    
-               <td class="table-body">Undefined</td>
-                                    
-               <td class="table-body">XY</td>
-                                    
-               <td class="table-body">XY</td>
-                                    
-               <td class="table-body">4</td>
-                                 
-            </tr>
-                              
-            <tr class="RuledWideOddRow">
-                                    
-               <td class="table-body">XY tolerance</td>
-                                    
-               <td class="table-body">.001</td>
-                                    
-               <td class="table-body">.001</td>
-                                    
-               <td class="table-body">0</td>
-                                    
-               <td class="table-body">.01</td>
-                                    
-               <td class="table-body">.001</td>
-                                    
-               <td class="table-body">5</td>
-                                 
-            </tr>
-                              
-            <tr class="RuledWideEvenRow">
-                                    
-               <td class="table-body">Z tolerance</td>
-                                    
-               <td class="table-body">.001</td>
-                                    
-               <td class="table-body">.001</td>
-                                    
-               <td class="table-body">0</td>
-                                    
-               <td class="table-body">.01</td>
-                                    
-               <td class="table-body">.001</td>
-                                    
-               <td class="table-body">5</td>
-                                 
-            </tr>
-                              
-            <tr class="RuledWideOddRow">
-                                    
-               <td class="table-body">Active</td>
-                                    
-               <td class="table-body">False</td>
-                                    
-               <td class="table-body">F</td>
-                                    
-               <td class="table-body">True</td>
-                                    
-               <td class="table-body">F</td>
-                                    
-               <td class="table-body">F</td>
-                                    
-               <td class="table-body">6</td>
-                                 
-            </tr>
-                           
-         </colgroup>
-      </table>
-                  
-      <div>
-         <div class="note-note"><span class="label">Note</span>
-                           
-                           
-            <!--OList--><span style="display:none"><a name="WS1a9193826455f5ff9110c71085341391d-2f26"></a></span>
-                              
-            <ol type="1" start="1">
-               <li>
-                                       EPSG:4326 is a Layer Coordinate Reference
-                  System (CRS) as defined in the OpenGIS Web Map Service (WMS) Implementation
-                  Specification, OGC 04-024, version 1.3, dated August 2, 2004.
-               </li>
-               <li>A
-                  static extent type means that the extent is defined at the time of
-                  the creation of the spatial context using the <span class="code">FdoICreateSpatialContext</span> command.
-                  A dynamic extent type means that the extent may change as features
-                  are added so that it always encloses all of the features.
-               </li>
-               <li>The
-                  default extents expressed in AGF text format for the various providers
-                  are as follows: 
-                  <!--UList--><span style="display:none"><a name="WS1a9193826455f5ff9110c71085341391d-2f25"></a></span>
-                                          
-                  <ul>
-                     <li>
-                                                   MySQL, : POLYGON ((-2000000 -2000000,
-                        2000000 -2000000, 2000000 2000000, -2000000 2000000, -2000000 -2000000))
-                     </li>
-                  </ul>
-                                       
-                                    
-               </li>
-               <li>The
-                  dimensionality is that of the extent. It is not set directly.
-               </li>
-               <li>See <span class="char_link"><a href="WS73099cc142f487551e5a0cb10850d4cd7c-52f6.htm">
-                        <!--Reference = WS73099cc142f487551e5a0cb10850d4cd7c-52f6; Target topic = WS73099cc142f487551e5a0cb10850d4cd7c-52f6.htm-->Tolerance</a></span>.
-               </li>
-               <li>
-                                       
-                                       ArcSDE and MySQL providers can have
-                  multiple spatial contexts defined and can, therefore, show contexts in
-                  the reader that are not active.
-               </li>
-            </ol>
-                              
-                              
-                              
-                              
-                              
-                           
-                        
-         </div>
-      </div>
-                  
-      <p></p>
-               
-            
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+      <p><span style="display:none"><a name="WS73099cc142f4875520a47a10f192cc9dc-6ed8"></a></span>Use the connection object to create
+         the desired spatial context command (<span class="code">FdoIActivateSpatialContext</span>, <span class="code">FdoICreateSpatialContext</span>, <span class="code">FdoIDestroySpatialContext</span>, or <span class="code">FdoIGetSpatialContexts</span>). The connection
+         must be in the open state to execute these commands. All of the providers
+         support the <span class="code">FdoIGetSpatialContexts</span> command.
+         The ArcSDE, MySQL, Oracle, and SQL Server providers support the <span class="code">FdoICreateSpatialContext</span> and <span class="code">FdoIDestroySpatialContext</span> commands.
+         The SDF provider supports the <span class="code">FdoICreateSpatialContext</span> command
+         but not the <span class="code">FdoIDestroySpatialContext</span> command. 
+      </p><br></body>
 </html>

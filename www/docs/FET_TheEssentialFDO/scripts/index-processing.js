@@ -1,6 +1,6 @@
-function SearchForCompleteMatchMosilla(searchKey)
+function SearchForCompleteMatch(indexesDocument,searchKey)
 {
-    links = document.getElementById("indexes").contentDocument.links;
+    links = indexesDocument.links;
 
 	top.highlightedIndexesNum = 0;
     for(i = 0; i < links.length; i++)
@@ -16,85 +16,41 @@ function SearchForCompleteMatchMosilla(searchKey)
     return false;
 }
 
-function SearchForCompleteMatchIE(searchKey)
+function SearchForPartialMatch(indexesDocument,searchKey)
 {
-    links = document.frames("indexes").document.links;
-
-	top.highlightedIndexesNum = 0;
-    for(i = 0; i < links.length; i++)
-    {
-        if(links[i].innerHTML == searchKey)
-        {
-        	top.highlightedIndexes[top.highlightedIndexesNum] = links[i].id;
-        	top.highlightedIndexesNum++;
-            links[i].focus();
-            return true;
-        }
-    }
-    return false;
-}
-
-function SearchForPartialMatchMosilla(searchKey)
-{
-    links = document.getElementById("indexes").contentDocument.links;
+    var links = indexesDocument.links;
+    var link;
     regexpr = new RegExp("^" + searchKey, "i");
-    var str;
 
 	top.highlightedIndexesNum = 0;
     for(i = 0; i < links.length; i++)
     {
-        if(links[i].innerHTML.match(regexpr) && searchKey)
+        link = links[i]
+        if(searchKey && link.innerHTML.match(regexpr) )
         {
-        	top.highlightedIndexes[top.highlightedIndexesNum] = links[i].id;
+        	top.highlightedIndexes[top.highlightedIndexesNum] = link.id;
         	top.highlightedIndexesNum++;
-            links[i].focus();
-            break;
+            link.className='highlighted';
         }
     }
 }
 
-function SearchForPartialMatchIE(searchKey)
-{
-    links = document.frames("indexes").document.links;
-    regexpr = new RegExp("^" + searchKey, "i");
-    var str;
-	top.highlightedIndexesNum = 0;
-
-    for(i = 0; i < links.length; i++)
-    {
-        if(links[i].innerHTML.match(regexpr) && searchKey)
-        {
-        	top.highlightedIndexes[top.highlightedIndexesNum] = links[i].id;
-        	top.highlightedIndexesNum++;
-            links[i].focus();
-            break;
-        }
-    }
-}
-
-function UnhighLightAllMosilla(document)
+function UnhighLightAll(document)
 {
     for(i = 0; i < top.highlightedIndexesNum; i++)
     {
         document.getElementById(top.highlightedIndexes[i]).blur();
         document.getElementById(top.highlightedIndexes[i]).className="unhighlighted";
     }
-}
-
-function UnhighLightAllIE(document)
-{
-    for(i = 0; i < top.highlightedIndexesNum; i++)
-    {
-        document.getElementById(top.highlightedIndexes[i]).blur();
-        document.getElementById(top.highlightedIndexes[i]).className="unhighlighted";
-    }
+    top.highlightedIndexesNum=0;
+    top.highlightedIndex=-1;
 }
 
 function mouseEvent(event,selectedIndexId)
 {
 //    alert(top.highlightedIndexes);
     if (event.button !=0) {
-        UnhighLightAllMosilla(document);
+        UnhighLightAll(document);
         document.getElementById(selectedIndexId).className="highlighted";
         top.highlightedIndexes[top.highlightedIndexesNum] = selectedIndexId;
         top.highlightedIndexesNum++;
@@ -103,52 +59,50 @@ function mouseEvent(event,selectedIndexId)
 
 function highlightCurrent(selectedIndexId)
 {
-    if(navigator.appName == "Netscape")
-    {
-        UnhighLightAllMosilla(document);
+        UnhighLightAll(document);
     	top.highlightedIndexesNum = 0;
         top.highlightedIndexes[top.highlightedIndexesNum] = selectedIndexId;
         top.highlightedIndexesNum++;
-    }
-    else if(navigator.appName == "Microsoft Internet Explorer")
-    {
-        UnhighLightAllIE(document);
-    	top.highlightedIndexesNum = 0;
-        top.highlightedIndexes[top.highlightedIndexesNum] = selectedIndexId;
-        top.highlightedIndexesNum++;
-    }
-    else alert("Unsupported browser !");
 }
 
 function highlightIndex(searchKey)
 {
+    var indexesDocument = getIndexesDocument();
+    UnhighLightAll(indexesDocument);
+    SearchForPartialMatch(indexesDocument,searchKey);
+    showNext(indexesDocument);
+}
+
+function OpenHighlightedIndex(indexesDocument,indexNumber)
+{
+	if(indexNumber > -1 && indexNumber < top.highlightedIndexesNum)
+	{
+        window.open(indexesDocument.getElementById(top.highlightedIndexes[indexNumber]).href, "content");
+	}
+}
+
+function showNext(theIndexesDocument) {
+    var indexesDocument = theIndexesDocument !=null ? theIndexesDocument : getIndexesDocument();
+    if (top.highlightedIndexesNum > 0) {
+        if (top.highlightedIndex < top.highlightedIndexesNum-1) {
+            top.highlightedIndex++;
+        } else {
+            top.highlightedIndex=0;
+        }
+        indexesDocument.getElementById(top.highlightedIndexes[top.highlightedIndex]).focus();
+        OpenHighlightedIndex(indexesDocument,top.highlightedIndex);
+    }
+}
+
+function getIndexesDocument() {
     if(navigator.appName == "Netscape")
     {
-        UnhighLightAllMosilla(document.getElementById("indexes").contentDocument);
-        if(!SearchForCompleteMatchMosilla(searchKey))
-            SearchForPartialMatchMosilla(searchKey);
+        return document.getElementById("indexes").contentDocument;
     }
     else if(navigator.appName == "Microsoft Internet Explorer")
     {
-        UnhighLightAllIE(document.frames("indexes").document);
-        if(!SearchForCompleteMatchIE(searchKey))
-            SearchForPartialMatchIE(searchKey);
+        return document.frames("indexes").document;
     }
     else alert("Unsupported browser !");
-}
 
-function OpenHighlightedIndex()
-{
-	if(top.highlightedIndexesNum > 0)
-	{
-	    if(navigator.appName == "Netscape")
-    	{
-			window.open(document.getElementById("indexes").contentDocument.links[top.highlightedIndexes[0]].href, "content");
-		}
-	    else if(navigator.appName == "Microsoft Internet Explorer")
-		{
-        	window.open(document.frames("indexes").document.getElementById(top.highlightedIndexes[0]).href, "content");
-		}
-	    else alert("Unsupported browser !");
-	}
 }

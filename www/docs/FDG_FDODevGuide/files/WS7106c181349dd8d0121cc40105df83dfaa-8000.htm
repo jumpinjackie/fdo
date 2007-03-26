@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS7106c181349dd8d0121cc40105df83dfaa-8000.htm','60'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ;
-                            Url = WS7106c181349dd8d0121cc40105df83dfaa-8000.htm-->
+   <body onLoad="javascript:initFrame('WS7106c181349dd8d0121cc40105df83dfaa-8000.htm','60'); javascript:initPage('Creating a Query','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -44,46 +40,31 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS7106c181349dd8d0121cc40105df83dfaa-8000"></a></span>
-               
-               
-      <!--Body-->
-                  
-      <p>
-                        
-                        You create
-         and perform queries using the FdoISelect class, which is a member
-         of the Feature sub-package of the Commands package. Queries are
-         used to retrieve features from the data store, and are executed
+      <!--Body--><p><span style="display:none"><a name="WS73099cc142f4875594cc7110e6b3fa66-7c04"></a></span>You
+         create and perform queries using the FdoISelect class, which is
+         a member of the Feature sub-package of the Commands package. Queries
+         are used to retrieve features from the data store, and are executed
          against one class at a time. The class is specified using the SetFeatureClassName()
          method in FdoIFeatureCommand. The SetFeatureClassName can be used
          with feature and non-feature classes.
       </p>
-                  
-      <p>FdoISelect supports
-         the use of filters to limit the scope of features returned by the
-         command. This is done through one of the SetFilter methods available
-         in the FdoIFeatureCommand class. The filter is similar to the SQL WHERE
-         clause, which specifies the search conditions that are applied to
-         one or more class properties.
+      <p><span style="display:none"><a name="WS73099cc142f4875594cc7110e6b3fa66-7c03"></a></span>FdoISelect supports the use of filters to limit
+         the scope of features returned by the command. This is done through
+         one of the SetFilter methods available in the FdoIFeatureCommand
+         class. The filter is similar to the SQL WHERE clause, which specifies
+         the search conditions that are applied to one or more class properties.
       </p>
-                  
-      <p>Search conditions
-         include spatial and non-spatial conditions. Non-spatial queries
-         create a condition against a data property, such as an integer or
-         string. Basic comparisons (=, &lt;, &gt;, &gt;=, &lt;=, !=), pattern
-         matching (like), and ‘In’ comparisons can be specified. Spatial
-         queries create a spatial condition against a geometry property.
-         Spatial conditions are enumerated in FdoSpatialCondition and FdoDistanceCondition.
+      <p><span style="display:none"><a name="WS73099cc142f4875594cc7110e6b3fa66-7c02"></a></span>Search conditions include spatial and non-spatial
+         conditions. Non-spatial queries create a condition against a data
+         property, such as an integer or string. Basic comparisons (=, &lt;,
+         &gt;, &gt;=, &lt;=, !=), pattern matching (like), and ‘In’ comparisons
+         can be specified. Spatial queries create a spatial condition against
+         a geometry property. Spatial conditions are enumerated in FdoSpatialCondition
+         and FdoDistanceCondition.
       </p>
-                  
-      <p>The feature reader
-         (FdoIFeatureReader) is used to retrieve the results of a query for
-         feature and non-feature classes. To retrieve the features from the
-         reader, iterate through the reader using the FdoIFeatureReader.ReadNext method(). 
-      </p>
-               
-            
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+      <p><span style="display:none"><a name="WS73099cc142f4875594cc7110e6b3fa66-7c01"></a></span>The feature reader (FdoIFeatureReader) is used
+         to retrieve the results of a query for feature and non-feature classes.
+         To retrieve the features from the reader, iterate through the reader
+         using the FdoIFeatureReader.ReadNext method(). 
+      </p><br></body>
 </html>

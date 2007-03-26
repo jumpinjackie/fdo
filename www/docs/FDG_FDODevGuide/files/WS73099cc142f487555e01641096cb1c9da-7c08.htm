@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS73099cc142f487555e01641096cb1c9da-7c08.htm','72'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ISD-Topic ;
-                            Url = WS73099cc142f487555e01641096cb1c9da-7c08.htm-->
+   <body onLoad="javascript:initFrame('WS73099cc142f487555e01641096cb1c9da-7c08.htm','72'); javascript:initPage('Expression Grammar','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -44,69 +40,14 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7c08"></a></span>
-                  
-                  
-      <!--Body-->
-                     
-      <p>
-                           The
-         FdoExpression::Parse() method supports the following expression
-         grammar:
+      <!--Body--><p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a7d"></a></span>The FdoExpression::Parse() method supports the
+         following expression grammar:
       </p>
-                     
-      <div class="codeBlock">
-                           <pre class="codeLine">&lt;Expression&gt; ::= '(' Expression ')'</pre>
-                           <pre class="codeLine">| &lt;UnaryExpression&gt;</pre>
-                           <pre class="codeLine">| &lt;BinaryExpression&gt;</pre>
-                           <pre class="codeLine">| &lt;Function&gt;</pre>
-                           <pre class="codeLine">| &lt;Identifier&gt;</pre>
-                           <pre class="codeLine">| &lt;ValueExpression&gt;</pre>
-                           <pre class="codeLine">&lt;BinaryExpression&gt; ::=</pre>
-                           <pre class="codeLine">&lt;Expression&gt; '+' &lt;Expression&gt;</pre>
-                           <pre class="codeLine">| &lt;Expression&gt; '-' &lt;Expression&gt;</pre>
-                           <pre class="codeLine">| &lt;Expression&gt; '*' &lt;Expression&gt;</pre>
-                           <pre class="codeLine">| &lt;Expression&gt; '/' &lt;Expression&gt;</pre>
-                           <pre class="codeLine">&lt;DataValue&gt; ::=</pre>
-                           <pre class="codeLine">TRUE</pre>
-                           <pre class="codeLine">| FALSE</pre>
-                           <pre class="codeLine">| DATETIME</pre>
-                           <pre class="codeLine">| DOUBLE</pre>
-                           <pre class="codeLine">| INTEGER</pre>
-                           <pre class="codeLine">| STRING</pre>
-                           <pre class="codeLine">| BLOB </pre>
-                           <pre class="codeLine">| CLOB</pre>
-                           <pre class="codeLine">| NULL</pre>
-                           <pre class="codeLine">&lt;Function&gt; ::= &lt;Identifier&gt; '(' &lt;ExpressionCollection&gt; ')'</pre>
-                           <pre class="codeLine">&lt;ExpressionCollection&gt; ::= </pre>
-                           <pre class="codeLine">| &lt;Expression&gt; </pre>
-                           <pre class="codeLine">| &lt;ExpressionCollection&gt; ',' &lt;Expression&gt;</pre>
-                           <pre class="codeLine">&lt;GeometryValue&gt; ::= GEOMFROMTEXT '(' STRING ')'</pre>
-                           <pre class="codeLine">&lt;Identifier&gt; ::= IDENTIFIER</pre>
-                           <pre class="codeLine">&lt;ValueExpression&gt; ::= &lt;LiteralValue&gt; | &lt;Parameter&gt;;</pre>
-                           <pre class="codeLine">&lt;LiteralValue&gt; ::= &lt;GeometryValue&gt; | &lt;DataValue&gt;</pre>
-                           <pre class="codeLine">&lt;Parameter&gt; ::= PARAMETER | ':'STRING</pre>
-                           <pre class="codeLine">&lt;UnaryExpression&gt; ::= '-' &lt;Expression&gt;</pre>
-                        </div>
-                     
-      <!--UList--><span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7c07"></a></span>
-                        
-      <p class="list-intro"><span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7c06"></a></span>Expression Operator Precedence
+      <div class="codeBlock"><pre class="codeLine">&lt;Expression&gt; ::= '(' Expression ')'</pre><pre class="codeLine">| &lt;UnaryExpression&gt;</pre><pre class="codeLine">| &lt;BinaryExpression&gt;</pre><pre class="codeLine">| &lt;Function&gt;</pre><pre class="codeLine">| &lt;Identifier&gt;</pre><pre class="codeLine">| &lt;ValueExpression&gt;</pre><pre class="codeLine">&lt;BinaryExpression&gt; ::=</pre><pre class="codeLine">&lt;Expression&gt; '+' &lt;Expression&gt;</pre><pre class="codeLine">| &lt;Expression&gt; '-' &lt;Expression&gt;</pre><pre class="codeLine">| &lt;Expression&gt; '*' &lt;Expression&gt;</pre><pre class="codeLine">| &lt;Expression&gt; '/' &lt;Expression&gt;</pre><pre class="codeLine">&lt;DataValue&gt; ::=</pre><pre class="codeLine">TRUE</pre><pre class="codeLine">| FALSE</pre><pre class="codeLine">| DATETIME</pre><pre class="codeLine">| DOUBLE</pre><pre class="codeLine">| INTEGER</pre><pre class="codeLine">| STRING</pre><pre class="codeLine">| BLOB </pre><pre class="codeLine">| CLOB</pre><pre class="codeLine">| NULL</pre><pre class="codeLine">&lt;Function&gt; ::= &lt;Identifier&gt; '(' &lt;ExpressionCollection&gt; ')'</pre><pre class="codeLine">&lt;ExpressionCollection&gt; ::= </pre><pre class="codeLine">| &lt;Expression&gt; </pre><pre class="codeLine">| &lt;ExpressionCollection&gt; ',' &lt;Expression&gt;</pre><pre class="codeLine">&lt;GeometryValue&gt; ::= GEOMFROMTEXT '(' STRING ')'</pre><pre class="codeLine">&lt;Identifier&gt; ::= IDENTIFIER</pre><pre class="codeLine">&lt;ValueExpression&gt; ::= &lt;LiteralValue&gt; | &lt;Parameter&gt;;</pre><pre class="codeLine">&lt;LiteralValue&gt; ::= &lt;GeometryValue&gt; | &lt;DataValue&gt;</pre><pre class="codeLine">&lt;Parameter&gt; ::= PARAMETER | ':'STRING</pre><pre class="codeLine">&lt;UnaryExpression&gt; ::= '-' &lt;Expression&gt;</pre></div><span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7c07"></a></span><p class="list-intro"><span style="display:none"><a name="WS73099cc142f487555e01641096cb1c9da-7c06"></a></span>Expression
+         Operator Precedence
       </p>
-                     
-                     
-      <p>The precedence is
-         shown in YACC notation, that is, the highest precedence operators
-         are at the bottom. 
+      <p><span style="display:none"><a name="WS1a9193826455f5ff1e973db110e6c76659-7a7c"></a></span>The precedence is shown in YACC notation, that
+         is, the highest precedence operators are at the bottom. 
       </p>
-                     
-      <div class="codeBlock">
-                           <pre class="codeLine">%left Add Subtract</pre>
-                           <pre class="codeLine">%left Multiply Divide</pre>
-                           <pre class="codeLine">%left Negate</pre>
-                        </div>
-                  
-               
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+      <div class="codeBlock"><pre class="codeLine">%left Add Subtract</pre><pre class="codeLine">%left Multiply Divide</pre><pre class="codeLine">%left Negate</pre></div><br></body>
 </html>

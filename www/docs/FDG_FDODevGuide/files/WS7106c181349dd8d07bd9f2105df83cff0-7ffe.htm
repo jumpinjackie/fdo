@@ -20,11 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS7106c181349dd8d07bd9f2105df83cff0-7ffe.htm','9'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ISD-Topic ;
-                            Url = WS7106c181349dd8d07bd9f2105df83cff0-7ffe.htm-->
+   <body onLoad="javascript:initFrame('WS7106c181349dd8d07bd9f2105df83cff0-7ffe.htm','9'); javascript:initPage('FDO Architecture and Providers','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
@@ -44,60 +40,37 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS7106c181349dd8d07bd9f2105df83cff0-7ffe"></a></span>
-               
-               
-      <!--Body-->
-                  
-      <p>The following diagram shows the high-level overview
+      <!--Body--><p><span style="display:none"><a name="WS73099cc142f487556f505e1110019cfd2-7df5"></a></span>The following diagram shows the high-level overview
          architecture of the FDO API and included FDO providers. For clarity,
          only the underlying data source details for the OSGeo FDO Provider
          for MySQL, OSGeo FDO Provider for ArcSDE, and OSGeo FDO Provider
          for SDF are shown as examples. Similar data store, schema, and data
          connection information is available for the other providers.
-      </p>
-                  <span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-6bd"></a></span><div class="figure-anchor">
-                        
+      </p><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-6bd"></a></span><div class="figure-anchor">
          <p><img src="../images/FDO_relationships.ai"></p>
-                        
          <p class="figure-title">FDO
             Architecture and Providers—Oracle, ArcSDE, and SDF Examples
-                              
-                              
-                           
          </p>
-                     
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WS7106c181349dd8d07bd9f2105df83cff0-7ffd"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e543"></a>FDO Packages
+      <div class="section"><span style="display:none"><a name="WS7106c181349dd8d07bd9f2105df83cff0-7ffd"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e299"></a>FDO Packages
          </p>
-                        
-         <p>
-                              FDO
+         <p><span style="display:none"><a name="WS73099cc142f487556f505e1110019cfd2-7df4"></a></span>FDO
             is assembled in conceptual packages of similar functionality. This
             conceptual packaging is reflected in the substructure of the FDO
             SDK “includes” folder. For more information about the structure,
             see <span class="bookTitle">The Essential FDO</span>.
          </p>
-                        
-         <p>FDO commands, provider-specific commands, and
+         <p><span style="display:none"><a name="WS73099cc142f487556f505e1110019cfd2-7df3"></a></span>FDO commands, provider-specific commands, and
             connections and capabilities provide access to native data stores
             through each different FDO provider. Schema management (through
             XML), client services, and filters and expressions are provider-independent
             packages that tie into the FDO API. Each of these are explained
             in more detail in subsequent sections.
          </p>
-                        
-         <p>The FDO API consists of classes grouped within
+         <p><span style="display:none"><a name="WS73099cc142f487556f505e1110019cfd2-7df2"></a></span>The FDO API consists of classes grouped within
             the following packages:
-         </p>
-                        
-         <!--UList--><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-6bb"></a></span>
-                           
-         <ul>
-            <li>
-                                    <em class="strong">Commands
+         </p><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-6bb"></a></span><ul>
+            <li><em class="strong">Commands
                   package. </em>Contains a collection of classes that provide
                the commands allowing the application to select and update features,
                define new types of feature classes, lock features, and perform
@@ -105,8 +78,7 @@
                of command against the underlying data store. In addition, FDO providers
                expose one or more Command objects.
             </li>
-            <li>
-                                    <em class="strong">Connections/Capabilities. </em>Contains
+            <li><em class="strong">Connections/Capabilities. </em>Contains
                a collection of classes that establish and manage the connection
                to the underlying data store. Connection objects implement the FdoIConnection
                interface. Capabilities API provides the code for retrieving the
@@ -114,20 +86,17 @@
                schema capabilities. You can use this this API to determine the
                capabilities of a particular provider.
             </li>
-            <li>
-                                    <em class="strong">Filters
+            <li><em class="strong">Filters
                   and Expression package. </em>Contains a collection of classes
                that define filters and expression in FDO, which are used to identify
                a subset of objects of an FDO data store.
             </li>
-            <li>
-                                    <em class="strong">Client
+            <li><em class="strong">Client
                   Services package. </em>Contains a collection of classes that
                define the client services in FDO that, for example, enable support
                for dynamic creation of connection objects given a provider name.
             </li>
-            <li>
-                                    <em class="strong">Schema
+            <li><em class="strong">Schema
                   package and FDO XML. </em>Contains a collection of classes
                that provides a logical mechanism for specifying how to represent
                geospatial features. The FDO feature schema is based somewhat on
@@ -136,30 +105,16 @@
                support the FdoXmlSerializable interface.
             </li>
          </ul>
-                           
-                           
-                           
-                           
-                        
-                        
-         <p>In addition, FDO is integrated with the Geometry
+         <p><span style="display:none"><a name="WS73099cc142f487556f505e1110019cfd2-7df1"></a></span>In addition, FDO is integrated with the Geometry
             API, which includes the classes that support specific Autodesk applications
             and APIs, including FDO. 
          </p>
-                        
-         <p>For more information about each of the FDO packages,
+         <p><span style="display:none"><a name="WS73099cc142f487556f505e1110019cfd2-7df0"></a></span>For more information about each of the FDO packages,
             see<em class="mild"> FDO
                API Reference Help</em> and subsequent chapters in this guide.
          </p>
-                        
-         <p>Provider API(s) complete the FDO API configuration.
+         <p><span style="display:none"><a name="WS73099cc142f487556f505e1110019cfd2-7def"></a></span>Provider API(s) complete the FDO API configuration.
             Each provider has a separate API reference Help. 
          </p>
-                     
-      </div>
-               
-            
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+      </div><br></body>
 </html>

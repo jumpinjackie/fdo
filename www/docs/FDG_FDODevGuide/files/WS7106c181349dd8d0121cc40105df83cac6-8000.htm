@@ -20,18 +20,14 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS7106c181349dd8d0121cc40105df83cac6-8000.htm','16'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
-      <!--
-                            Name = Topic;
-                            Class =  CPM-Topic ISD-Topic ;
-                            Url = WS7106c181349dd8d0121cc40105df83cac6-8000.htm-->
+   <body onLoad="javascript:initFrame('WS7106c181349dd8d0121cc40105df83cac6-8000.htm','16'); javascript:initPage('Memory Management','FDO Developer\'s Guide'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <div class="head">
          <div class="head-block">
             <div class="nav-group">
                <!--browse buttons-->
                <div class="browse">
                   <nobr>
-                     <div id="homeTitle" style="display:none">Home: FDO Developer's Guide</div><a href="WS73099cc142f487551d92abb10dc573c45d-7fdf.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Development Practices</div><a href="WSfacf1429558a55de8821c21057fbebc2b-82c.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Development Practices</div><a href="WSfacf1429558a55de8821c21057fbebc2b-82c.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Exception Handling</div><a href="WS7106c181349dd8d0121cc40105df83cac6-7fff.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+                     <div id="homeTitle" style="display:none">Home: FDO Developer's Guide</div><a href="WS73099cc142f487551d92abb10dc573c45d-7fdf.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Development Practices</div><a href="WSfacf1429558a55de8821c21057fbebc2b-82c.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Development Practices</div><a href="WSfacf1429558a55de8821c21057fbebc2b-82c.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Collections</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-5324.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
                </div>
                <!--end browse buttons-->
             </div>
@@ -44,71 +40,74 @@
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS7106c181349dd8d0121cc40105df83cac6-8000"></a></span>
-               
-               
-      <!--Body-->
-                  
-      <p><span style="display:none"><a name="WS73099cc142f4875540c8010ee636d6bb-7ef1"></a></span>
-                        Some FDO functions (for example, the Create
+      <!--Body--><p><span style="display:none"><a name="WS73099cc142f4875540c8010ee636d6bb-7ef1"></a></span>Some FDO functions (for example, the Create
          methods) allocate memory when they are called. This memory needs
          to be freed to prevent memory leaks. All destructors on FDO classes
          are protected, so you must call a Release() function to destroy
          them (thus freeing their allocated memory). Each class inherits
-         from the GisIDisposable class, which defines the AddRef() and Release()
-         functions. 
+         from the <span class="code">FdoIDisposable</span> class,
+         which defines the Release() method and the AddRef() method. 
       </p>
-                  
       <p><span style="display:none"><a name="WS73099cc142f4875540c8010ee636d6bb-7ef0"></a></span>In addition, these classes are reference counted,
-         and the count is increased when you retrieve them through a Get
-         function. After finishing with the object, you need to release it
-         (just as with COM objects). The object is destroyed only when the
-         reference count hits 0. For example: 
+         and the count is increased (by AddRef()) when you retrieve them
+         through a Get function. After finishing with the object, you need
+         to release it (just as with COM objects). The object is destroyed
+         only when the reference count hits 0. Two macros are defined to
+         help in the use of the Release() and AddRef() methods.
       </p>
-                  
-      <div class="codeBlock">
-                        <pre class="codeLine">FdoFeatureClass* pBase = myClass-&gt;GetBaseClass(); </pre>
-                        <pre class="codeLine">... </pre>
-                        <pre class="codeLine">// Must release reference added by GetBaseClass when done. </pre>
-                        <pre class="codeLine">GIS_SAFE_RELEASE(pBase); </pre>
-                     </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-803"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e1586"></a>GIS_SAFE_RELEASE (*ptr)
+      <div class="section"><span style="display:none"><a name="WS1a9193826455f5ff14f6e3f110bc356094-7ffa"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e1021"></a>FDO_SAFE_RELEASE (*ptr)
          </p>
-                        
-         <p><span style="display:none"><a name="WS73099cc142f4875540c8010ee636d6bb-7eef"></a></span>
-                              If the “*ptr” argument is not null, GIS_SAFE_RELEASE
+         <p><span style="display:none"><a name="WS1a9193826455f5ff14f6e3f110bc356094-7ff9"></a></span>If the “*ptr” argument is not null, FDO_SAFE_RELEASE
             calls the release() method of the object pointed to by the “*ptr”
-            argument.
+            argument and then sets the local pointer to the object to NULL. The
+            macro definition is <span class="code">#define FDO_SAFE_RELEASE(x)
+               {if (x) (x)-&gt;Release(); (x) = NULL;}</span>.
          </p>
-                     
+         <div class="codeBlock"><pre class="codeLine">FdoFeatureClass* pBase = myClass-&gt;GetBaseClass(); </pre><pre class="codeLine">... </pre><pre class="codeLine">// Must release reference added by GetBaseClass when done. </pre><pre class="codeLine">FDO_SAFE_RELEASE(pBase); </pre></div>
       </div>
-                  
-      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-802"></a></span>
-                        
-         <p class="section_title_h1"><a name="TOC_ENTRY__d0e1600"></a>GisPtr
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-803"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e1042"></a>FDO_SAFE_ADDREF (*ptr)
          </p>
-                        
-         <p><span style="display:none"><a name="WS73099cc142f4875540c8010ee636d6bb-7eee"></a></span>
-                              A GisPtr
-            smart pointer is provided to help manage memory. You wrap an FDO
-            object in a GisPtr. The object is then released automatically when
-            the GisPtr goes out of scope. The following code illustrates how
-            to use GisPtr: 
-         </p>
-                        
-         <div class="codeBlock">
-                              <pre class="codeLine">GisPtr&lt;FdoFeatureClass&gt; pBase = myClass-&gt;GetBaseClass(); </pre>
-                              <pre class="codeLine">... </pre>
-                              <pre class="codeLine">// No need to release. Automatically happens when pBase </pre>
-                              <pre class="codeLine">// is destroyed. </pre>
-                           </div>
-                     
+         <p><span style="display:none"><a name="WS73099cc142f4875540c8010ee636d6bb-7eef"></a></span>If the “*ptr” argument is not null, FDO_SAFE_ADDREF
+            calls the AddRef() method of the object pointed to by the “*ptr”
+            argument. The macro definition is <span class="code">#define FDO_SAFE_ADDREF(x)
+               ((x != NULL) ? (x)-&gt;AddRef(), (x): (NULL))</span>.
+         </p><span style="display:none"><a name="WS1a9193826455f5ff14f6e3f110bc356094-7ff7"></a></span><ul>
+            <li><span class="code">return FDO_SAFE_ADDREF(value)</span>returns
+               NULL if value equals NULL or increments the reference count of the
+               object that value points to and returns value.
+            </li>
+            <li><span class="code">m_list[index] = FDO_SAFE_ADDREF(value)</span> assigns
+               NULL to the array entry if value is NULL or increments the reference
+               count of the object that value points to and assigns value to the
+               array entry.
+            </li>
+         </ul>
       </div>
-               
-            
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Comments?</span></a></div><br></body>
+      <div class="section"><span style="display:none"><a name="WSfacf1429558a55de8821c21057fbebc2b-802"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e1063"></a>FdoPtr
+         </p>
+         <p><span style="display:none"><a name="WS73099cc142f4875540c8010ee636d6bb-7eee"></a></span>An <span class="code">FdoPtr</span> smart pointer is provided to
+            help manage memory. You wrap an FDO object in a <span class="code">FdoPtr</span>. The requirement is that the
+            object’s type must inherit from <span class="code">FdoIDisposable</span>.
+            The object is then released automatically when the <span class="code">FdoPtr</span> goes out of scope. The following
+            code illustrates how to use <span class="code">FdoPtr</span>: 
+         </p>
+         <div class="codeBlock"><pre class="codeLine">FdoPtr&lt;FdoFeatureClass&gt; pBase = myClass-&gt;GetBaseClass(); </pre><pre class="codeLine">... </pre><pre class="codeLine">// No need to call FDO_SAFE_RELEASE.</pre><pre class="codeLine">// Before it is destroyed, pBase calls Release() on the FdoFeatureClass object</pre></div>
+         <div>
+            <div class="note-note"><span class="label">Note</span>If, for some reason, you
+               wanted to use FDO_SAFE_RELEASE on an FdoPtr, you would have to use
+               an FdoPtr method to get a pointer to the object that FdoPtr wraps
+               and pass that pointer to FDO_SAFE_RELEASE.
+            </div>
+         </div>
+         <p><span style="display:none"><a name="WS1a9193826455f5ff14f6e3f110bc356094-7ff6"></a></span>You can use <span class="code">FdoPtr</span> for
+            your own classes by inheriting from the abstract class <span class="code">FdoIDisposable</span> and providing an implementation
+            for the <span class="code">Dispose()</span> method (typically <span class="code">delete this;</span>).
+         </p>
+      </div>
+      <div class="section"><span style="display:none"><a name="WS1a9193826455f5ff14f6e3f110bc356094-7ff5"></a></span><p class="section_title_h1"><a name="TOC_ENTRY__d0e1112"></a>FdoPtr Typedefs
+         </p>
+         <p><span style="display:none"><a name="WS1a9193826455f5ff14f6e3f110bc356094-7ff4"></a></span>Typedefs are provided that define identifiers
+            representing Fdo classes wrapped byFdoPtr. An example is <span class="code">typedef FdoPtr&lt;FdoClass&gt; FdoClassP</span>.
+         </p>
+      </div><br></body>
 </html>
