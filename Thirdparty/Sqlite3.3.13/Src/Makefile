@@ -27,6 +27,7 @@ legacy.c \
 loadext.c \
 main.c \
 opcodes.c \
+os.c \
 os_unix.c \
 pager.c \
 parse.c \
