@@ -52,7 +52,7 @@ noinst_HEADERS = $(libSQLiteInterface_la_SOURCES) \
 
 
 INCLUDES = \
-  -I$(FDOTHIRDPARTY)/Sqlite3.1.5/Src \
+  -I$(FDOTHIRDPARTY)/Sqlite3.3.13/Src \
   -I$(FDOTHIRDPARTY)/ZLib/src
 
 libSQLiteInterface_la_LDFLAGS = 
