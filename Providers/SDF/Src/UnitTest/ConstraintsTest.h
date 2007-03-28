@@ -37,7 +37,7 @@ public:
 //    void setUp ();
 
 protected:
-    virtual FdoIConnection* CreateConnection( FdoBoolean recreateDb = false );
+    virtual void CreateConnection( Context& context, FdoBoolean recreateDb = false );
     virtual FdoBoolean CanRestrictCheckConstraint();
 };
 

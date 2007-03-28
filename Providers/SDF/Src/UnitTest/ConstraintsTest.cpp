@@ -41,11 +41,9 @@ void ConstraintsTest::setUp ()
 }
 #endif
 
-FdoIConnection* ConstraintsTest::CreateConnection( FdoBoolean recreateDb )
+void ConstraintsTest::CreateConnection( Context& context, FdoBoolean recreateDb )
 {
-    FdoIConnection *connection = UnitTestUtil::OpenConnection( CONSTRAINTS_TEST_FILE, recreateDb );
-
-    return connection;
+    context.connection = UnitTestUtil::OpenConnection( CONSTRAINTS_TEST_FILE, recreateDb );
 }
 
 FdoBoolean ConstraintsTest::CanRestrictCheckConstraint()
