@@ -25,7 +25,7 @@
 #include <Fdo.h>
 #include <TestCommonMiscUtil.h>
 #include <TestCommonFileUtil.h>
-#define DESTINATION_FILE L"..\\..\\TestData\\PARCELS.SDF"
+#define DESTINATION_FILE L"../../TestData/PARCELS.SDF"
 
 /* 
  * A test case for ApplySchemaCommand.

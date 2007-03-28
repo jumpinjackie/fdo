@@ -21,7 +21,7 @@
 #include <unistd.h>
 #endif
 
-const wchar_t* SOURCE_FILE = L"..\\..\\TestData\\PARCEL_linuxtest.SDX";
+const wchar_t* SOURCE_FILE = L"../../TestData/PARCEL_linuxtest.SDX";
 
 FdoFeatureSchema* CreateSDFSchema()
 {

@@ -67,11 +67,11 @@ CPPUNIT_ASSERT_ASSERTION_PASS(assertion)   CPPUNIT_ASSERT_NO_THROW( assertion )
 #include "FdoCommonFilterExecutor.h"
 #include "FdoCommonOSUtil.h"
 #include "FdoCommonMiscUtil.h"
-const wchar_t* CONSTRAINS_FILE = L"..\\..\\TestData\\Constrains.sdf";
+const wchar_t* CONSTRAINS_FILE = L"../../TestData/Constrains.sdf";
 const wchar_t* SHP_PATH = L"../../TestData/World_Countries.sdf";
 const wchar_t* SHP_PATH2 = L"../../TestData/province.sdf";
 const wchar_t* AGGR_PATH = L"../../TestData/TestAggregates.sdf";
-const wchar_t* DEST_PATH2 = L"..\\..\\TestData\\TestSdf.sdf";
+const wchar_t* DEST_PATH2 = L"../../TestData/TestSdf.sdf";
 
 // Replace the text "TestExample" with your own class name
 CPPUNIT_TEST_SUITE_REGISTRATION(MasterTest);
@@ -1486,12 +1486,22 @@ void MasterTest::CreateEmptyShpFileWithConstraints(FdoIConnection* conn)
     FdoPtr<FdoDataPropertyDefinition> dpd;
 
     //first delete the destination file if it exists already -- cleanup that is
+#ifdef _WIN32
     SetFileAttributesW(CONSTRAINS_FILE, FILE_ATTRIBUTE_NORMAL);
 	DeleteFileW( CONSTRAINS_FILE );
 
     wchar_t fullpath[1024];
     _wfullpath(fullpath, CONSTRAINS_FILE, 1024);
 
+#else
+    char cpath[1024];
+    char cfullpath[1024];
+    wcstombs(cpath, CONSTRAINS_FILE, 1024);
+    unlink(cpath);
+    realpath(cpath, cfullpath);
+    wchar_t fullpath[1024];
+    mbstowcs(fullpath, cfullpath, 1024);
+#endif
 	FdoPtr<FdoICreateDataStore>	pCreateCmd = (FdoICreateDataStore*) conn->CreateCommand(FdoCommandType_CreateDataStore);
 
 	FdoPtr<FdoIDataStorePropertyDictionary> dictionary = pCreateCmd->GetDataStoreProperties();
