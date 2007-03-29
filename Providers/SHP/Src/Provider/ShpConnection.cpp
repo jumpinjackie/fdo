@@ -1266,8 +1266,10 @@ double ShpConnection::GetToleranceXY( FdoGeometricPropertyDefinition* geomProp )
 		ShpSpatialContextCollectionP	scs = GetSpatialContexts();
 		ShpSpatialContextP				sc = scs->FindItem(scName);
 		FdoStringP						wkt = sc->GetCoordinateSystemWkt();
-		if ( wkt.Contains( L"GEOGCS" ) )
-			xyTol = SPATIALCONTEXT_DEFAULT_XY_TOLERANCE_LL;
+		FdoStringP						csType = wkt.Left(L"[");
+
+		if ( csType.ICompare( L"GEOGCS" ) == 0 )
+			xyTol = SPATIALCONTEXT_DEFAULT_XY_TOLERANCE_LL ;
 	}
 	return xyTol;
 }
