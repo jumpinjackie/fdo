@@ -458,14 +458,49 @@ Can't delete schema '%1$ls' because class '%2$ls' contains data.
 ;//************************************************************************************
 
 MessageId=6001
-SymbolicName=M_KGORA_EXPRESSION_NULL_PARAMETER
+SymbolicName=MSG_POSTGIS_EXPRESSION_NULL_PARAMETER
 Language=English
 Null parameter.
 .
 MessageId=6002
-SymbolicName=M_KGORA_EXPRESSION_INVALID_PARAMETER_TYPE
+SymbolicName=MSG_POSTGIS_EXPRESSION_INVALID_PARAMETER_TYPE
 Language=English
 Invalid parameter type.
+.
+MessageId=6003
+SymbolicName=MSG_POSTGIS_EXPRESSION_MISSING_LEFT
+Language=English
+Missing left expression of comparison condition.
+.
+MessageId=6004
+SymbolicName=MSG_POSTGIS_EXPRESSION_MISSING_RIGHT
+Language=English
+Missing right expression of comparison condition.
+.
+MessageId=6005
+SymbolicName=MSG_POSTGIS_FILTER_UNKNOWN_COMPARISON
+Language=English
+Unknown comparison operation.
+.
+MessageId=6006
+SymbolicName=MSG_POSTGIS_FILTER_MISSING_LEFT_OPERAND
+Language=English
+Missing left operand in binary logical expression.
+.
+MessageId=6007
+SymbolicName=MSG_POSTGIS_FILTER_MISSING_RIGHT_OPERAND
+Language=English
+Missing right operand in binary logical expression.
+.
+MessageId=6008
+SymbolicName=MSG_POSTGIS_FILTER_UNKNOWN_LOGICAL_OP
+Language=English
+Unknown logical operation.
+.
+MessageId=6009
+SymbolicName=MSG_POSTGIS_FILTER_MISSING_UNARY_OPERAND
+Language=English
+Missing operand in unary logical expression.
 .
 
 ;//************************************************************************************
