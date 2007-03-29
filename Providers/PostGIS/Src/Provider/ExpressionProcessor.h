@@ -17,6 +17,9 @@
 #ifndef FDOPOSTGIS_EXPRESSIONPROCESSOR_H_INCLUDED
 #define FDOPOSTGIS_EXPRESSIONPROCESSOR_H_INCLUDED
 
+#include <string>
+#include <boost/lexical_cast.hpp>
+
 namespace fdo { namespace postgis {
 
 /// Definition of processor for expression tree nodes.
@@ -31,6 +34,7 @@ public:
     typedef FdoPtr<ExpressionProcessor> Ptr;
     
     /// Constructor.
+    //ExpressionProcessor(std::wstring& buffer);
     ExpressionProcessor();
     
     //
@@ -100,6 +104,22 @@ public:
     /// Process node of geometry data type passed in as an argument. 
     void ProcessGeometryValue(FdoGeometryValue& expr);
 
+    //
+    // ExpressionProcessor interface
+    //
+
+    /// Get textual representation of parsed expression.
+    /// The function releases currently stored expression text,
+    /// and leaves internal buffer empty, and ready for next expression to process.
+    /// That's also the reason the function is non-const.
+    ///
+    /// \param
+    /// exprText [out] - buffer that will be filled with expression text.
+    ///
+    void ReleaseExpressionText(std::string& exprText);
+
+    std::string ReleaseBuffer();
+
 protected:
     
     /// Destructor.
@@ -113,7 +133,44 @@ protected:
     
 private:
 
+    //
+    // Private data members
+    //
+
+    // Textual representation of the expresion.
+    std::string mBuffer;
+
+    //
+    // Private operations
+    //
+
+    template <typename T>
+    std::string GetValueAsString(T const& value);
+
 };
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Private operations
+///////////////////////////////////////////////////////////////////////////////
+
+template <typename T>
+std::string ExpressionProcessor::GetValueAsString(T const& value)
+{
+    try
+    {
+        std::string str(boost::lexical_cast<std::string>(value));
+        return str;
+    }
+    catch (boost::bad_lexical_cast& e)
+    {
+        FDOLOG_WRITE(L"ExpressionProcessor can not fetch expression value");
+        FDOLOG_WRITE("ERROR: %s", e.what());
+
+        throw FdoExpressionException::Create(
+            L"Conversion of expression value to string failed.");
+    }
+}
 
 }} // namespace fdo::postgis
 
