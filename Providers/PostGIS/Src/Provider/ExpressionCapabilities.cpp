@@ -44,6 +44,8 @@ void ExpressionCapabilities::Dispose()
 
 FdoExpressionType* ExpressionCapabilities::GetExpressionTypes(FdoInt32& size)
 {
+    // TODO: Verify this list together with ExpressionProcessor definition.
+
     static FdoExpressionType types[] =
     {
         FdoExpressionType_Basic,
