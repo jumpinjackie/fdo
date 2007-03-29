@@ -330,6 +330,34 @@ void ShpFeatIdQueryEvaluator::ProcessSpatialCondition(FdoSpatialCondition& filte
 	BoundingBox             searchArea;
     FdoSpatialUtility::GetExtents( geomRightFgf, searchArea.xMin, searchArea.yMin, searchArea.xMax, searchArea.yMax);
 
+	// Use a tolerance to compensate the bounding box storage as floats while the ordinates are doubles. 
+	double	xyRes = m_Connection->GetToleranceXY( gpd )/2.0;
+
+	// For very large numbers (say greater than 8 significant digits) or very high accuracy (like in LL datasets,
+	// where 6 digits accuracy is common) the tolerance xyRes is not enough. That is, the difference between 
+	// the extents stored in SHP (as doubles) and the extents stored in IDX (as floats) can be practically in any 
+	// range. below compute this offset and compensate the bounding box accordingly.
+    FdoPtr<ShpLpClassDefinition> shpLpClassDef = ShpSchemaUtilities::GetLpClassDefinition(m_Connection, m_Class->GetName());
+
+	ShpFileSet*			fileSet = shpLpClassDef->GetPhysicalFileSet();
+	ShapeFile*			shpFile = fileSet->GetShapeFile();
+	ShpSpatialIndex*	idxFile = fileSet->GetSpatialIndex();
+	BoundingBoxEx		box;
+
+	idxFile->GetSSIExtent(box);
+
+	// Compute the loss of accuracy.
+	double dxm = fabs(shpFile->GetBoundingBoxMinX() - box.xMin);
+	double dym = fabs(shpFile->GetBoundingBoxMinY() - box.yMin);
+	double dxM = fabs(shpFile->GetBoundingBoxMaxX() - box.xMax);
+	double dyM = fabs(shpFile->GetBoundingBoxMaxY() - box.yMax);
+
+	// Enlarge the search area.
+    searchArea.xMin = searchArea.xMin - xyRes - dxm;
+    searchArea.yMin = searchArea.yMin - xyRes - dym;
+    searchArea.xMax = searchArea.xMax + xyRes + dxM;
+    searchArea.yMax = searchArea.yMax + xyRes + dyM;
+
     if (m_RTree)
     {
         // For each bounding box build a sorted list of candidates (primary filter) and save it.
@@ -355,13 +383,7 @@ void ShpFeatIdQueryEvaluator::ProcessSpatialCondition(FdoSpatialCondition& filte
 
         recno_list*  retFeatNum = &results->queryResults;
 
-		// Use a tolerance to compensate the bounding box storage as floats while the ordinates are doubles. 
-		double	xyRes = m_Connection->GetToleranceXY( gpd )/2.0;
-
-        results->searchArea.xMin = searchArea.xMin - xyRes;
-        results->searchArea.yMin = searchArea.yMin - xyRes;
-        results->searchArea.xMax = searchArea.xMax + xyRes;
-        results->searchArea.yMax = searchArea.yMax + xyRes;
+		results->searchArea = searchArea;
 
         bool            done = false;
         BoundingBoxEx   extents;
@@ -407,10 +429,6 @@ void ShpFeatIdQueryEvaluator::ProcessSpatialCondition(FdoSpatialCondition& filte
 			results->depth = m_level - 1;
 
             recno_list*  secFilterList = &results->queryResults;
-
-            FdoPtr<ShpLpClassDefinition> shpLpClassDef = ShpSchemaUtilities::GetLpClassDefinition(m_Connection, m_Class->GetName());
-
-            ShpFileSet*  fileSet = shpLpClassDef->GetPhysicalFileSet();
 
             for ( size_t i = 0; i < featidPrimarySel->size(); i++ )
             {
@@ -915,7 +933,7 @@ FdoIGeometry *ShpFeatIdQueryEvaluator::ReconstructPolygon( FdoIGeometry *geometr
 		if ( poly->GetInteriorRingCount() != 0 )
 		{
 			FdoPtr<FdoLinearRingCollection> rings = FdoLinearRingCollection::Create ();
-
+	
 			FdoPtr<FdoILinearRing>	ring = poly->GetExteriorRing();
 			rings->Add(ring);
 
