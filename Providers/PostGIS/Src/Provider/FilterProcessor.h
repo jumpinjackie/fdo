@@ -17,6 +17,7 @@
 #ifndef FDOPOSTGIS_FILTERPROCESSOR_H_INCLUDED
 #define FDOPOSTGIS_FILTERPROCESSOR_H_INCLUDED
 
+#include "ExpressionProcessor.h"
 #include <string>
 
 namespace fdo { namespace postgis {
@@ -52,13 +53,13 @@ public:
 
  	/// Process the FdoComparisonCondition passed in as an argument.
  	/// \param
- 	/// op [in] -
+ 	/// cond [in] -
  	///
-    void ProcessComparisonCondition(FdoComparisonCondition& op);
+    void ProcessComparisonCondition(FdoComparisonCondition& cond);
  	
  	/// Processe the FdoInCondition passed in as an argument.
  	/// \param
- 	/// op [in] -
+ 	/// cond [in] -
  	///
     void ProcessInCondition(FdoInCondition& cond);
  	
@@ -93,8 +94,20 @@ protected:
     
 private:
 
-    std::string mSql;
+    //
+    // Private data members
+    //
 
+    ExpressionProcessor::Ptr mExprProc;
+
+    std::string mStatement;
+
+    //
+    // Private operations
+    //
+
+    void ValidateBinaryOperator(FdoBinaryLogicalOperator& op);
+    void ValidateUnaryOperator(FdoUnaryLogicalOperator& op);
 };
 
 }} // namespace fdo::postgis
