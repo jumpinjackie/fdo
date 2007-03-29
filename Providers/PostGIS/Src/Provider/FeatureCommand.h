@@ -82,8 +82,6 @@ protected:
     ///// Return collection of command parameters and its values.
     //virtual FdoParameterValueCollection* GetParameterValues();
 
-private:
-
     // Identifier of the class to be operated upon.
     FdoPtr<FdoIdentifier> mClassIdentifier;
 
@@ -178,9 +176,8 @@ template <typename T>
 FdoFilter* FeatureCommand<T>::GetFilter()
 {
     FDOLOG_MARKER("FeatureCommand::GetFilter");
-    //FDO_SAFE_ADDREF(mFilter.p);
-    //return mFilter.p;
-    return NULL;
+    FDO_SAFE_ADDREF(mFilter.p);
+    return mFilter.p;
 }
 
 template <typename T>
