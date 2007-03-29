@@ -19,6 +19,7 @@
 #include "DeleteCommand.h"
 #include "FeatureCommand.h"
 #include "Connection.h"
+#include "FilterProcessor.h"
 
 #include <cassert>
 
@@ -38,7 +39,14 @@ DeleteCommand::~DeleteCommand()
 
 FdoInt32 DeleteCommand::Execute()
 {
-    assert(!"NOT IMPLEMENTED");
+    ///////////////////////////////////////////////////
+    // TODO: This is temporary test of filter processor
+    //       It is not an impl. of Delete command.
+    ///////////////////////////////////////////////////
+
+    FilterProcessor::Ptr proc(new FilterProcessor());
+    mFilter->Process(proc);
+
     return 0;
 }
 
