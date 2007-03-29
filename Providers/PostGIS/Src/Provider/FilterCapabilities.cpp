@@ -62,6 +62,7 @@ FdoConditionType* FilterCapabilities::GetConditionTypes(FdoInt32& size)
 FdoSpatialOperations* FilterCapabilities::GetSpatialOperations(FdoInt32& size)
 {
     // TODO: Verify types of supported operations
+    // TODO: Check also the FilterProcessor class.
 
     static FdoSpatialOperations operations[] =
     {
@@ -73,9 +74,9 @@ FdoSpatialOperations* FilterCapabilities::GetSpatialOperations(FdoInt32& size)
         FdoSpatialOperations_Overlaps,
         FdoSpatialOperations_Touches,
         FdoSpatialOperations_Within,
-        //FdoSpatialOperations_CoveredBy,
-        //FdoSpatialOperations_Inside,
-        //FdoSpatialOperations_EnvelopeIntersects
+        FdoSpatialOperations_CoveredBy,
+        FdoSpatialOperations_Inside,
+        FdoSpatialOperations_EnvelopeIntersects
     };
 
     size = (sizeof(operations) / sizeof(FdoConditionType));
