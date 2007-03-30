@@ -116,7 +116,8 @@ ShapeDBF::ShapeDBF (const WCHAR* name, FdoString* codepageCPG) :
 #ifdef _WIN32
 		ULONG codePage = RowData::ConvertCodePageWin((WCHAR*)(FdoString *)codepageESRI);
 #else
-		const char* codePage = RowData::ConvertCodePageLinux((WCHAR*)(FdoString *)codepageESRI));
+//		const char* codePage = RowData::ConvertCodePageLinux((WCHAR*)(FdoString *)codepageESRI);
+		const char* codePage = "";
 #endif
 
         // Loop through the columns
