@@ -80,7 +80,7 @@ static wchar_t* trim (wchar_t *str)
  * Notes        : N/A
  *
  *****************************************************************************/
-ShapeDBF::ShapeDBF (const WCHAR* name) :
+ShapeDBF::ShapeDBF (const WCHAR* name, FdoString* codepageCPG) :
     m_pColumnInfo (&NoColumns),
     m_nRecordStart (0),
     mHeaderDirty (false),
@@ -109,6 +109,17 @@ ShapeDBF::ShapeDBF (const WCHAR* name) :
         TableFieldDescriptor* pTableFieldDescriptorArray = new TableFieldDescriptor[nNumColumns];
         if (!ReadFile (pTableFieldDescriptorArray, sizeof(TableFieldDescriptor) * nNumColumns))
             throw FdoCommonFile::LastErrorToException (L"ShapeDBF::ShapeDBF(ReadTableFieldDescriptorArray)");
+
+		// Get the OEM code page either from the header or CPG
+		FdoStringP	codepageESRI = (mCodePageESRI == L"") ? codepageCPG : mCodePageESRI;
+
+		ULONG	codePage;
+#ifdef _WIN32
+		codePage = RowData::ConvertCodePageWin((WCHAR*)(FdoString *)codepageESRI);
+#else
+		codePage = RowData::ConvertCodePageLinux((WCHAR*)(FdoString *)codepageESRI));
+#endif
+
         // Loop through the columns
         coloff = 1;
         for(int i = 0; i < nNumColumns; i++)
@@ -119,7 +130,7 @@ ShapeDBF::ShapeDBF (const WCHAR* name) :
             WCHAR* wszColumnName;
             strncpy (name, (char*)pTableFieldDescriptorArray[i].cFieldName, nDBF_COLNAME_LENGTH);
             name[nDBF_COLNAME_LENGTH] = '\0';
-            multibyte_to_wide (wszColumnName, name);
+			multibyte_to_wide_cpg (wszColumnName, name, codePage);
 
             // Trim trailing and leading spaces and tabs
             trim (wszColumnName);
