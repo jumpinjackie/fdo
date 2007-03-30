@@ -150,7 +150,7 @@ private:
 	FdoStringP  mCodePageESRI;
 
 public:
-    ShapeDBF (const WCHAR* wszFilename);
+    ShapeDBF (const WCHAR* wszFilename, FdoString* codepageCPG = L"");
     ShapeDBF (const WCHAR* wszFilename, ColumnInfo* info, BYTE ldid = 0);
 
 	void Reopen(OpenFlags openFlags);

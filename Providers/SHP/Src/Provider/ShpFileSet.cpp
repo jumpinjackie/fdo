@@ -173,9 +173,14 @@ ShpFileSet::ShpFileSet (FdoString* base_name, FdoString* tmp_dir) :
             }
         }
 
+        if (NULL != cpg_file)
+            mCpg = new ShapeCPG (cpg_file, status);
+
         if (NULL != dbf_file)
         {
-            mDbf = new ShapeDBF (dbf_file);
+			FdoStringP	codepage = mCpg? mCpg->GetCodePage() : L"";
+			mDbf = new ShapeDBF (dbf_file, codepage);
+
             if (NULL != GetShapeIndexFile ())
                 // check that the number of features matches
                 if (GetDbfFile ()->GetNumRecords () != GetShapeIndexFile ()->GetNumObjects ())
@@ -315,9 +320,6 @@ ShpFileSet::ShpFileSet (FdoString* base_name, FdoString* tmp_dir) :
             mPrj = new ShapePRJ (prj_file, status);
         // else
         //     it's not an error if it doesn't exist
-
-        if (NULL != cpg_file)
-            mCpg = new ShapeCPG (cpg_file, status);
 
 	}
     catch (FdoException* ge)

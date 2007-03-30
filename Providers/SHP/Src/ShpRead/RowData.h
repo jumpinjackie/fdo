@@ -60,7 +60,7 @@ protected:
 
 #ifdef _WIN32
 	// Convert the .CPG file codepage to Windows codepage
-	ULONG	ConvertCodePageWin(WCHAR *codepageESRI);
+	static ULONG	ConvertCodePageWin(WCHAR *codepageESRI);
 #else
 	// Convert the .CPG file codepage to system codepage
 	const char* ConvertCodePageLinux(WCHAR *codepageESRI);
