@@ -111,13 +111,12 @@ ShapeDBF::ShapeDBF (const WCHAR* name, FdoString* codepageCPG) :
             throw FdoCommonFile::LastErrorToException (L"ShapeDBF::ShapeDBF(ReadTableFieldDescriptorArray)");
 
 		// Get the OEM code page either from the header or CPG
-		FdoStringP	codepageESRI = (mCodePageESRI == L"") ? codepageCPG : mCodePageESRI;
+		FdoStringP	codepageESRI = (mCodePageESRI == L"") ? codepageCPG : (FdoString *)mCodePageESRI;
 
-		ULONG	codePage;
 #ifdef _WIN32
-		codePage = RowData::ConvertCodePageWin((WCHAR*)(FdoString *)codepageESRI);
+		ULONG codePage = RowData::ConvertCodePageWin((WCHAR*)(FdoString *)codepageESRI);
 #else
-		codePage = RowData::ConvertCodePageLinux((WCHAR*)(FdoString *)codepageESRI));
+		const char* codePage = RowData::ConvertCodePageLinux((WCHAR*)(FdoString *)codepageESRI));
 #endif
 
         // Loop through the columns
