@@ -343,10 +343,11 @@ SpatialContext* SchemaDescription::CreateSpatialContext(Connection* conn,
     // Query for SRS details
     //
 
-    std::string sridText("4326");
+    FdoInt32 srid = -1;
+    std::string sridText;
     try
     {
-        FdoInt32 srid = geomColumn->GetSRID();
+        srid = geomColumn->GetSRID();
         if (srid <= 0)
         {
             // Use WGS 84 if SRS not specified
@@ -375,6 +376,7 @@ SpatialContext* SchemaDescription::CreateSpatialContext(Connection* conn,
     // 
 
     SpatialContext::Ptr spContext(new SpatialContext());
+    spContext->SetSRID(srid);
     spContext->SetName(spContextName);
     spContext->SetDescription(L"");    
 
