@@ -206,11 +206,15 @@ void FilterProcessor::ProcessInCondition(FdoInCondition& cond)
 
 void FilterProcessor::ProcessNullCondition(FdoNullCondition& cond)
 {
-     FdoPtr<FdoIdentifier> propId(cond.GetPropertyName());
-     propId->Process(mExprProc);
+    FdoPtr<FdoIdentifier> propId(cond.GetPropertyName());
+    propId->Process(mExprProc);
+    std::string tmp;
+    mExprProc->ReleaseExpressionText(tmp);
 
-     std::string tmp;
-     mExprProc->ReleaseExpressionText(tmp);
+    mStatement.append(sql::sepLeftTerm);
+    mStatement.append(tmp);
+    mStatement.append(sql::opIsNull);
+    mStatement.append(sql::sepRightTerm);
 }
 
 void FilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& cond)
