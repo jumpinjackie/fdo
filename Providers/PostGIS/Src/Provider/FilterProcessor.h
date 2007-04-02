@@ -81,6 +81,12 @@ public:
  	///
     void ProcessDistanceCondition(FdoDistanceCondition& cond);
     
+    //
+    // FilterProcessor interface
+    //
+
+    std::string const& GetFilterStatement() const { return mStatement; }
+
 protected:
     
     /// Destructor.

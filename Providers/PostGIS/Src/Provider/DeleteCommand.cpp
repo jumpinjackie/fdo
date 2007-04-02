@@ -44,8 +44,20 @@ FdoInt32 DeleteCommand::Execute()
     //       It is not an impl. of Delete command.
     ///////////////////////////////////////////////////
 
+    // TODO: We need to find class definition and get SRID of spatial
+    // context to which a geometric property belongs.
+    SpatialContextCollection::Ptr scc = mConn->GetSpatialContexts();
+
     FilterProcessor::Ptr proc(new FilterProcessor());
     mFilter->Process(proc);
+
+    std::string sql("SELECT tracknum FROM test.myline WHERE ");
+    sql.append(proc->GetFilterStatement());
+
+    PGresult* res = mConn->PgExecuteQuery(sql.c_str());
+
+    int tuples = PQntuples(res);
+
 
     return 0;
 }
