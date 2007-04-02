@@ -157,7 +157,7 @@ FdoInt32 FdoDimensionTypeFromPgType(FdoInt32 const& pgDim, std::string const& pg
     default:
         assert(!"SHOULD NEVER GET HERE");
     }
-    
+
     return fdoDim;
 }
 

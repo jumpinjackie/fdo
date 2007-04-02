@@ -234,10 +234,30 @@ void ExpressionProcessor::ProcessCLOBValue(FdoCLOBValue& expr)
 
 void ExpressionProcessor::ProcessGeometryValue(FdoGeometryValue& expr)
 {
+    FDOLOG_MARKER("ExpressionProcessor::ProcessGeometryValue");
+
     // TODO: Verify interpretation of NULL geometries
     if (expr.IsNull())
     {
         mBuffer.append("NULL");
+    }
+    else
+    {
+        //
+        // Convert FGF geometry to OGC WKB stream
+        //
+        FdoPtr<FdoFgfGeometryFactory> factory(FdoFgfGeometryFactory::GetInstance());
+        assert(NULL != factory);
+
+        FdoPtr<FdoByteArray> fgfBytes(expr.GetGeometry());
+        assert(NULL != fgfBytes);
+
+        FdoPtr<FdoIGeometry> fdoGeom = factory->CreateGeometryFromFgf(fgfBytes);
+        assert(NULL != fdoGeom);
+        
+        FDOLOG_WRITE(L"Geometry: %s", fdoGeom->GetText());
+
+        FdoPtr<FdoByteArray> wkbBytes(factory->GetWkb(fdoGeom));
     }
 }
 
