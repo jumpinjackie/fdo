@@ -38,7 +38,7 @@ void hex_to_bytes(std::string const& hexstr, std::vector<boost::uint8_t>& bytes)
     std::vector<boost::uint8_t>().swap(bytes);
     bytes.reserve(bytesSize);
 
-    for(size_type i = 0; i < bytesSize; ++i)
+    for (size_type i = 0; i < bytesSize; ++i)
     {                   
         std::istringstream iss(hexstr.substr(i * charsPerByte, charsPerByte));
         boost::uint32_t n;
@@ -54,11 +54,18 @@ void bytes_to_hex(std::vector<boost::uint8_t> const& bytes, std::string& hexstr)
     typedef std::vector<boost::uint8_t>::size_type size_type;
     size_type const bytesSize = bytes.size();
 
+    const char hexChars[] = "0123456789ABCDEF";
+    char hexByte[3] = { 0 };
+
     std::ostringstream oss;
-    oss << std::setfill('0');
-    for(size_type i = 0; i < bytesSize; ++i)
+    for (size_type i = 0; i < bytesSize; ++i)
     {
-        oss << std::setw(2) << std::hex << static_cast<boost::uint8_t>(bytes[i]);
+        boost::uint8_t byte = static_cast<boost::uint8_t>(bytes[i]);
+        hexByte[0] = hexChars[(byte >> 4) & 0xf]; 
+        hexByte[1] = hexChars[byte & 0xf];
+        hexByte[2] = '\0';
+
+        oss << std::setw(2) << hexByte;
     }
     hexstr = oss.str();
 
