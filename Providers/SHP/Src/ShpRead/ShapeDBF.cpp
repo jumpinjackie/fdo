@@ -116,6 +116,7 @@ ShapeDBF::ShapeDBF (const WCHAR* name, FdoString* codepageCPG) :
 #ifdef _WIN32
 		ULONG codePage = RowData::ConvertCodePageWin((WCHAR*)(FdoString *)codepageESRI);
 #else
+		// This doesn't compile because ConvertCodePageLinux() is static. TO BE FIXED.
 //		const char* codePage = RowData::ConvertCodePageLinux((WCHAR*)(FdoString *)codepageESRI);
 		const char* codePage = "";
 #endif
@@ -130,8 +131,13 @@ ShapeDBF::ShapeDBF (const WCHAR* name, FdoString* codepageCPG) :
             WCHAR* wszColumnName;
             strncpy (name, (char*)pTableFieldDescriptorArray[i].cFieldName, nDBF_COLNAME_LENGTH);
             name[nDBF_COLNAME_LENGTH] = '\0';
-			multibyte_to_wide_cpg (wszColumnName, name, codePage);
 
+#ifdef _WIN32
+			multibyte_to_wide_cpg (wszColumnName, name, codePage);
+#else
+			// TO BE REMOVED when ConvertCodePageLinux() is fixed.
+			multibyte_to_wide(wszColumnName, name);
+#endif
             // Trim trailing and leading spaces and tabs
             trim (wszColumnName);
 
