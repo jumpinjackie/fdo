@@ -36,6 +36,12 @@ public:
     /// Destructor.
     virtual ~SpatialContext();
     
+    /// Get SRID number associated with the spatial context.
+    FdoInt32 GetSRID() const;
+
+    /// Set SRID value identifying definition of spatial context.
+    void SetSRID(FdoInt32 srid);
+
     /// Get name of the spatial context.
     /// The PostGIS provider composes spatial context name by concatenating
     /// "PostGIS" string with SRID number separated by underscore.
@@ -125,6 +131,7 @@ public:
 
 private:
 	
+    FdoInt32 mSRID;
 	FdoStringP mName;
 	FdoStringP mDescription;
 	FdoStringP mCoordSysName;
@@ -137,6 +144,7 @@ private:
 	double mXYTolerance;
 	double mZTolerance;
 	double mMTolerance;
+
 };
 
 

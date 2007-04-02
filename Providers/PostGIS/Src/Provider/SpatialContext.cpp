@@ -23,6 +23,7 @@
 namespace fdo { namespace postgis {
 
 SpatialContext::SpatialContext() :
+    mSRID(-1),
     mName(SpatialContextDefaultName),
     mDescription(SpatialContextDefaultDesc),
     mCoordSysName(SpatialContextDefaultCoordSysName),
@@ -45,6 +46,16 @@ SpatialContext::SpatialContext() :
 
 SpatialContext::~SpatialContext()
 {
+}
+
+FdoInt32 SpatialContext::GetSRID() const
+{
+    return mSRID;
+}
+void SpatialContext::SetSRID(FdoInt32 srid)
+{
+    assert(-1 == srid || srid > 0);
+    mSRID = srid;
 }
 
 FdoString* SpatialContext::GetName() const
