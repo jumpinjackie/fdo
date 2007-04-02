@@ -55,7 +55,6 @@ char const* opLike = " LIKE ";
 FilterProcessor::FilterProcessor() :
     mExprProc(new ExpressionProcessor())
 {
-    
 }
 
 FilterProcessor::~FilterProcessor()
@@ -219,55 +218,142 @@ void FilterProcessor::ProcessNullCondition(FdoNullCondition& cond)
 
 void FilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& cond)
 {
+    FDOLOG_MARKER("FilterProcessor::ProcessSpatialCondition");
+
     // TODO: Fill with spatial SQL composition
     FdoPtr<FdoExpression> geomExpr(cond.GetGeometry());
     FdoPtr<FdoIdentifier> geomProp(cond.GetPropertyName());
 
-    switch (cond.GetOperation())
+    // Right-hand operand - name of geometry column
+    geomProp->Process(mExprProc);
+    std::string columnName;
+    mExprProc->ReleaseExpressionText(columnName);
+
+    // Left-hand operand - geometry being tested
+    geomExpr->Process(mExprProc);
+    std::string geomHex;
+    mExprProc->ReleaseExpressionText(geomHex);
+
+    // Spatial predicate
+    std::string spatialOp;
+
+    if (FdoSpatialOperations_EnvelopeIntersects == cond.GetOperation())
+    { 
+        // TODO: The value 32767 is a dummy SRID used for testing
+        // It will be replaced with SRID of spatial context
+        mStatement.append(sql::sepLeftTerm);
+        mStatement.append(columnName + " && ");
+        mStatement.append("GeomFromWKB(decode(\'" + geomHex + "\', \'hex\'), 32767)");
+        mStatement.append(sql::sepRightTerm);
+    }
+    else
     {
-    case FdoSpatialOperations_Contains:
-        break;
-    case FdoSpatialOperations_Crosses:
-        break;
-    case FdoSpatialOperations_Disjoint:
-        break;
-    case FdoSpatialOperations_Equals:
-        break;
-    case FdoSpatialOperations_Intersects:
-        break;
-    case FdoSpatialOperations_Overlaps:
-        break;
-    case FdoSpatialOperations_Touches:
-        break;
-    case FdoSpatialOperations_Within:
-        break;
-    case FdoSpatialOperations_CoveredBy:
-        break;
-    case FdoSpatialOperations_Inside:
-        break;
-    case FdoSpatialOperations_EnvelopeIntersects:
-        break;
-    default:
-        throw FdoFilterException::Create(L"Unsupported Spatial operation given in the filter");
+        switch (cond.GetOperation())
+        {
+        case FdoSpatialOperations_EnvelopeIntersects:
+            {
+            }
+            break;
+        case FdoSpatialOperations_Contains:
+            // TODO: Add BBOX intersection test with &&
+            // The only problem is how to construct a geometry once,
+            // with GeomFromWKB and avoid calling it twice?
+            // It also applies to Within below
+
+            spatialOp = "Within";
+            break;
+        case FdoSpatialOperations_Crosses:
+            spatialOp = "Crosses";
+            break;
+        case FdoSpatialOperations_Disjoint:
+            spatialOp = "Disjoint";
+            break;
+        case FdoSpatialOperations_Equals:
+            spatialOp = "Equals";
+            break;
+        case FdoSpatialOperations_Intersects:
+            spatialOp = "Intersects";
+            break;
+        case FdoSpatialOperations_Overlaps:
+            spatialOp = "Overlaps";
+            break;
+        case FdoSpatialOperations_Touches:
+            spatialOp = "Touches";
+            break;
+        case FdoSpatialOperations_Within:
+            // TODO: Add BBOX intersection test with &&
+            spatialOp = "Within";
+            break;
+        case FdoSpatialOperations_CoveredBy:
+            // TODO: What is the semantic of this op?
+            assert("NOT YET IMPLEMENTED");
+            break;
+        case FdoSpatialOperations_Inside:
+            // TODO: What is the semantic of this op?
+            assert("NOT YET IMPLEMENTED");
+            break;
+        default:
+            throw FdoFilterException::Create(L"Unsupported Spatial operation given in the filter");
+        }
+
+        mStatement.append(sql::sepLeftTerm);
+        mStatement.append(spatialOp + "(" + columnName + ",");
+        mStatement.append("GeomFromWKB(");
+        mStatement.append("decode(\'" + geomHex + "\', \'hex\')");
+        mStatement.append("), 32767)");
+        mStatement.append(sql::sepRightTerm);
     }
 }
 
 void FilterProcessor::ProcessDistanceCondition(FdoDistanceCondition& cond)
 {
+    FDOLOG_MARKER("FilterProcessor::ProcessDistanceCondition");
     // TODO: Fill with spatial SQL composition
     FdoPtr<FdoExpression> geomExpr(cond.GetGeometry());
     FdoPtr<FdoIdentifier> geomProp(cond.GetPropertyName());
 
-    FdoDouble distance = cond.GetDistance();
+    // Right-hand operand - name of geometry column
+    geomProp->Process(mExprProc);
+    std::string columnName;
+    mExprProc->ReleaseExpressionText(columnName);
 
+    // Left-hand operand - geometry being tested
+    geomExpr->Process(mExprProc);
+    std::string geomHex;
+    mExprProc->ReleaseExpressionText(geomHex);
+
+    // Prepare distance in textual form
+    FdoDouble distance = cond.GetDistance();
+    std::string distTxt;
+    try
+    {
+        distTxt = boost::lexical_cast<std::string>(distance);
+    }
+    catch (boost::bad_lexical_cast& e)
+    {   
+        FDOLOG_WRITE("Types conversion failed: %s", e.what());
+        distTxt = "0"; 
+    }
+
+    // Prepare geometry literal value
+    // TODO: Add SRID from spatial context support 
+    std::string sqlGeometry("GeomFromWKB(decode(\'" + geomHex + "\', \'hex\'), 32767)");
+
+    // Prepare distance-based predicate
     switch(cond.GetOperation())
     {
     case FdoDistanceOperations_Within:
         {
+            mStatement.append(sql::sepLeftTerm);
+            mStatement.append(columnName + " && Expand(" + sqlGeometry + "), " + distTxt);
+            mStatement.append("AND distance(" + columnName + "," + sqlGeometry + ") < " + distTxt);
+            mStatement.append(sql::sepRightTerm);
         }
         break;
     case FdoDistanceOperations_Beyond:
         {
+            // TODO: Is behond distance semantic equal to "distance > N"
+            //       IOW, opposite comparison to within distance?
         }
         break;
     default:
