@@ -17,6 +17,7 @@
 #include "stdafx.h"
 #include "PostGisProvider.h"
 #include "ExpressionProcessor.h"
+#include "PgGeometry.h"
 #include <cassert>
 #include <string>
 #include <boost/lexical_cast.hpp>
@@ -258,6 +259,13 @@ void ExpressionProcessor::ProcessGeometryValue(FdoGeometryValue& expr)
         FDOLOG_WRITE(L"Geometry: %s", fdoGeom->GetText());
 
         FdoPtr<FdoByteArray> wkbBytes(factory->GetWkb(fdoGeom));
+        FdoByte* const bytes = wkbBytes->GetData();
+
+        // Convert raw bytes to hex string
+        std::string hexWkb;
+        ewkb::ewkb_t wkb(bytes, bytes + wkbBytes->GetCount());
+        ewkb::bytes_to_hex(wkb, hexWkb);
+        mBuffer.append(hexWkb);
     }
 }
 
