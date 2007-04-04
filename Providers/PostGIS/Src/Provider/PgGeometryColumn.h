@@ -39,8 +39,13 @@ public:
     /// Type of FDO smart pointer for the class.
     typedef FdoPtr<PgGeometryColumn> Ptr;
 
-    /// Constructor creates new reader instance associated with given connection.
+    /// Constructor creates object representing PostGIS geometry column.
     PgGeometryColumn(FdoString* name, FdoGeometryType type, FdoInt32 dim, FdoInt32 srid);
+    
+    /// Constructor creates object representing PostGIS geometry column with
+    /// estimated spatial extent.
+    PgGeometryColumn(FdoString* name, FdoGeometryType type, FdoInt32 dim, FdoInt32 srid,
+        FdoPtr<FdoEnvelopeImpl> bbox);
 
     /// Get name of geometry column.
     /// \return String with name of the geometry column.
@@ -68,6 +73,8 @@ public:
     /// \return Number representing SRID identifiers.
     FdoInt32 GetSRID() const;
 
+    FdoPtr<FdoEnvelopeImpl> GetEnvelope() const;
+
 protected:
 
     /// Destructor.
@@ -90,6 +97,7 @@ private:
     FdoGeometryType mType;
     FdoInt32 mDim;
     FdoInt32 mSRID;
+    FdoPtr<FdoEnvelopeImpl> mEnvelope;
 
     //
     // Private operations
