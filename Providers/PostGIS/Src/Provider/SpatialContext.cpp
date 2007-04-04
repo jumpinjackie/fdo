@@ -141,6 +141,12 @@ void SpatialContext::SetExtent(FdoByteArray* extent)
     FDOLOG_WRITE("NOT IMPLEMENTED");
 }
 
+void SpatialContext::SetExtent(FdoEnvelopeImpl* extent)
+{
+    mExtent = extent;
+    FDO_SAFE_ADDREF(mExtent.p);
+}
+
 double SpatialContext::GetXYTolerance() const
 {
     return mXYTolerance;
