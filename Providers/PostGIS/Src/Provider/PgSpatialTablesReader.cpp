@@ -21,10 +21,27 @@
 #include "Connection.h"
 // std
 #include <cassert>
+#include <cstring>
 #include <string>
 // boost
 #include <boost/shared_ptr.hpp>
 #include <boost/lexical_cast.hpp>
+
+// Private utilities
+namespace {
+
+template <typename T>
+T StringConv(char const* value)
+{
+    T ret = T();
+    if (NULL != value && std::strlen(value) > 0)
+    {
+        ret = boost::lexical_cast<T>(value);
+    }
+    return ret;
+}
+
+} // anonymous namespace 
 
 namespace fdo { namespace postgis {
 
@@ -248,16 +265,16 @@ FdoPtr<FdoEnvelopeImpl> PgSpatialTablesReader::EstimateColumnExtent(
         
         // X MIN
         cval = PQgetvalue(pgRes.get(), 0, 0);
-        double xmin = boost::lexical_cast<double>(cval);
+        double xmin = StringConv<double>(cval);
         // Y MIN
         cval = PQgetvalue(pgRes.get(), 0, 1);
-        double ymin = boost::lexical_cast<double>(cval);
+        double ymin = StringConv<double>(cval);
         // X MAX
         cval = PQgetvalue(pgRes.get(), 0, 2);
-        double xmax = boost::lexical_cast<double>(cval);
+        double xmax = StringConv<double>(cval);
         // Y MAX
         cval = PQgetvalue(pgRes.get(), 0, 3);
-        double ymax = boost::lexical_cast<double>(cval);
+        double ymax = StringConv<double>(cval);
 
         // Build spatial envelope object
         FdoPtr<FdoEnvelopeImpl> extent = NULL;
