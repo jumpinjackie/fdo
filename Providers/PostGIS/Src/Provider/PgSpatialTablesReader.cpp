@@ -141,13 +141,12 @@ PgSpatialTablesReader::columns_t PgSpatialTablesReader::GetGeometryColumns() con
             char const* csrid = PQgetvalue(pgRes.get(), ntuple, 3);
             srid = boost::lexical_cast<FdoInt32>(csrid);
 
-
             // Estimate bounding box of geometries in given column
             FdoPtr<FdoEnvelopeImpl> bbox = NULL;
             bbox = EstimateColumnExtent(static_cast<char const*>(name));
 
             // Describe geometry column and add to the collection
-            PgGeometryColumn::Ptr col(new PgGeometryColumn(name, type, dim, srid));
+            PgGeometryColumn::Ptr col(new PgGeometryColumn(name, type, dim, srid, bbox));
             columns.push_back(col);
         }
     }
