@@ -334,10 +334,10 @@ SpatialContext* SchemaDescription::CreateSpatialContext(Connection* conn,
                                                         PgGeometryColumn* column)
 {
     FDOLOG_MARKER("SchemaDescription::-CreateSpatialContext");
-    
+
     Connection::Ptr mConn(conn);
     FDO_SAFE_ADDREF(mConn.p);
-    
+
     PgGeometryColumn::Ptr geomColumn(column);
     FDO_SAFE_ADDREF(geomColumn.p);
 
@@ -380,7 +380,8 @@ SpatialContext* SchemaDescription::CreateSpatialContext(Connection* conn,
     SpatialContext::Ptr spContext(new SpatialContext());
     spContext->SetSRID(srid);
     spContext->SetName(spContextName);
-    spContext->SetDescription(L"");    
+    spContext->SetDescription(L""); 
+    spContext->SetExtent(geomColumn->GetEnvelope());
 
     // TODO: Replace this hacks with new function like:
     // CoordinateSystemNameFromWKT
@@ -403,7 +404,7 @@ SpatialContext* SchemaDescription::CreateSpatialContext(Connection* conn,
 
     FdoStringP csWkt(wkt.c_str());
     spContext->SetCoordinateSystemWkt(csWkt);
-    
+
     FDOLOG_WRITE(L"CRS: %s", static_cast<FdoString*>(csName));
     FDOLOG_WRITE(L"WKT: %s", static_cast<FdoString*>(csWkt));
 
