@@ -241,6 +241,8 @@ void ExpressionProcessor::ProcessGeometryValue(FdoGeometryValue& expr)
     if (expr.IsNull())
     {
         mBuffer.append("NULL");
+
+        FDOLOG_WRITE("Geometry is NULL");
     }
     else
     {
@@ -266,6 +268,8 @@ void ExpressionProcessor::ProcessGeometryValue(FdoGeometryValue& expr)
         ewkb::ewkb_t wkb(bytes, bytes + wkbBytes->GetCount());
         ewkb::bytes_to_hex(wkb, hexWkb);
         mBuffer.append(hexWkb);
+
+        FDOLOG_WRITE("Geometry WKB as hex string:\n\t%s", hexWkb.c_str());
     }
 }
 

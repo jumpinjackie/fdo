@@ -237,8 +237,12 @@ void FilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& cond)
     // Spatial predicate
     std::string spatialOp;
 
+    FDOLOG_WRITE("Spatial operation id: %d", cond.GetOperation());
+
     if (FdoSpatialOperations_EnvelopeIntersects == cond.GetOperation())
     { 
+        FDOLOG_WRITE("Spatial operation: EnvelopeIntersects");
+
         // TODO: The value 32767 is a dummy SRID used for testing
         // It will be replaced with SRID of spatial context
         mStatement.append(sql::sepLeftTerm);
@@ -250,10 +254,6 @@ void FilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& cond)
     {
         switch (cond.GetOperation())
         {
-        case FdoSpatialOperations_EnvelopeIntersects:
-            {
-            }
-            break;
         case FdoSpatialOperations_Contains:
             // TODO: Add BBOX intersection test with &&
             // The only problem is how to construct a geometry once,
@@ -287,10 +287,12 @@ void FilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& cond)
         case FdoSpatialOperations_CoveredBy:
             // TODO: What is the semantic of this op?
             assert("NOT YET IMPLEMENTED");
+            FDOLOG_WRITE("CoveredBy - NOT YET IMPLEMENTED");
             break;
         case FdoSpatialOperations_Inside:
             // TODO: What is the semantic of this op?
             assert("NOT YET IMPLEMENTED");
+            FDOLOG_WRITE("Inside - NOT YET IMPLEMENTED");
             break;
         default:
             throw FdoFilterException::Create(L"Unsupported Spatial operation given in the filter");
@@ -361,6 +363,18 @@ void FilterProcessor::ProcessDistanceCondition(FdoDistanceCondition& cond)
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// FilterProcessor interface
+///////////////////////////////////////////////////////////////////////////////
+
+std::string const& FilterProcessor::GetFilterStatement() const
+{
+    FDOLOG_MARKER("FilterProcessor::GetFilterStatement");
+
+    FDOLOG_WRITE("Filter:\n\t%s", mStatement.c_str());
+
+    return mStatement;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Private operations
