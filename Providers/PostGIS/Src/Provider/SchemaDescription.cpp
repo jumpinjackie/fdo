@@ -145,6 +145,10 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
     
     mIsDescribed = false;
     
+    //
+    // Prepare schema components
+    //
+
     // Collection of Logical / Physical Schemas
     FdoPtr<FdoFeatureSchemaCollection> logicalSchemas = NULL;
     logicalSchemas = FdoFeatureSchemaCollection::Create(NULL);
@@ -152,21 +156,19 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
     ov::PhysicalSchemaMapping::Ptr schemaMapping = NULL;
     schemaMapping = ov::PhysicalSchemaMapping::Create();
 
-    // Create collection of Spatial Contexts with default context included
-    SpatialContextCollection::Ptr spContexts = NULL;
-    spContexts = new SpatialContextCollection();
-    //SpatialContext::Ptr spContextDefault(new SpatialContext());
-    //spContexts->Insert(0, spContextDefault);
-
     // TODO: How does the schema name work?
-    //       There may be problems with feature commands,
-    //       because class ID is formatted as FdoPostGIS:mydatastore~mytable.
-
+    //       There may be problems with feature commands, because
+    //       class ID is formatted as FdoPostGIS:mydatastore~mytable.
+    //       Is it a user's responsibility to provide valid class full name?
     FdoPtr<FdoFeatureSchema> featSchema(FdoFeatureSchema::Create(L"FdoPostGIS", L""));
     logicalSchemas->Add(featSchema.p);
 
     FdoPtr<FdoClassCollection> featClasses(featSchema->GetClasses());
     ov::ClassCollection::Ptr phClasses(schemaMapping->GetClasses());
+
+    // Create collection of Spatial Contexts with default context included
+    SpatialContextCollection::Ptr spContexts = NULL;
+    spContexts = new SpatialContextCollection();
 
     //
     // Process every table to FDO class
