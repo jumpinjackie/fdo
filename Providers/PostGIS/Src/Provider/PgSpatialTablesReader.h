@@ -119,6 +119,9 @@ private:
     //
     
     void ValidateConnectionState() const;
+
+    FdoPtr<FdoEnvelopeImpl> EstimateColumnExtent(
+        std::string const& column) const;
 };
 
 }} // namespace fdo::postgis

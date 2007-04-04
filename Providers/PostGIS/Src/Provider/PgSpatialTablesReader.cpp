@@ -113,39 +113,48 @@ PgSpatialTablesReader::columns_t PgSpatialTablesReader::GetGeometryColumns() con
     columns_t columns;
     columns.reserve(ntuples);
     
+    //
+    // Read properties of geometry columns in given table
+    //
     FdoStringP name;
     FdoGeometryType type = FdoGeometryType_None;
     FdoInt32 dim = 0;
     FdoInt32 srid = 0;
 
-    for (int ntuple = 0; ntuple < ntuples; ++ntuple)
+    try
     {
-        // 0 - geometry.columns.f_geometry_name
-        name = PQgetvalue(pgRes.get(), ntuple, 0);
-        
-        try
+        for (int ntuple = 0; ntuple < ntuples; ++ntuple)
         {
-            // 1 - geometry.columns.type
+            // 0 - geometry_columns.f_geometry_name
+            name = PQgetvalue(pgRes.get(), ntuple, 0);
+
+            // 1 - geometry_columns.type
             std::string stype(PQgetvalue(pgRes.get(), ntuple, 1));
             type = ewkb::FdoGeometryTypeFromPgType(stype);
-            
-            // 2 - geometry.columns.coord_dimension
+
+            // 2 - geometry_columns.coord_dimension
             char const* cdim = PQgetvalue(pgRes.get(), ntuple, 2);
             FdoInt32 tmp = boost::lexical_cast<FdoInt32>(cdim);
             dim = ewkb::FdoDimensionTypeFromPgType(tmp, stype);
-            
-            // 3 - geometry.columns.srid
+
+            // 3 - geometry_columns.srid
             char const* csrid = PQgetvalue(pgRes.get(), ntuple, 3);
             srid = boost::lexical_cast<FdoInt32>(csrid);
-            
+
+
+            // Estimate bounding box of geometries in given column
+            FdoPtr<FdoEnvelopeImpl> bbox = NULL;
+            bbox = EstimateColumnExtent(static_cast<char const*>(name));
+
             // Describe geometry column and add to the collection
             PgGeometryColumn::Ptr col(new PgGeometryColumn(name, type, dim, srid));
             columns.push_back(col);
         }
-        catch (boost::bad_lexical_cast& e)
-        {
-            FDOLOG_WRITE("Field value conversion failed: %s", e.what());
-        }
+    }
+    catch (boost::bad_lexical_cast& e)
+    {
+        FDOLOG_WRITE("Field value conversion failed: %s", e.what());
+        throw FdoException::Create(L"Error occured while reading schema of geometry column");
     }
 
     assert(ntuples == columns.size());
@@ -209,6 +218,59 @@ void PgSpatialTablesReader::ValidateConnectionState() const
 
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CONNECTION_INVALID,
             "Connection is closed or invalid."));
+    }
+}
+
+FdoPtr<FdoEnvelopeImpl> PgSpatialTablesReader::EstimateColumnExtent(
+    std::string const& column) const
+{
+    FDOLOG_MARKER("PgSpatialTablesReader::-EstimateColumnExtent");
+
+    FDOLOG_WRITE("Geometry column: %s.%s.%s", mCurrentSchema.c_str(), 
+        mTableCached.c_str(), column.c_str());
+
+    // Query estimating spatial extent for given geometry column using table statistics.
+    // For PostgreSQL>=8.0.0 statistics are gathered by VACUUM ANALYZE and resulting
+    // extent will be about 95% of the real one.
+
+    std::string sql("SELECT xmin(env), ymin(env), xmax(env), ymax(env) FROM ("
+                     " SELECT estimated_extent('"
+                     + mCurrentSchema + "', '"
+                     + mTableCached + "', '"
+                     + column + "') AS env) AS extentsub");
+
+    boost::shared_ptr<PGresult> pgRes(mConn->PgExecuteQuery(sql.c_str()), PQclear);
+    assert(PGRES_TUPLES_OK == PQresultStatus(pgRes.get()));
+    assert(1 == PQntuples(pgRes.get()));
+
+    try
+    {
+        char const* cval = NULL;
+        
+        // X MIN
+        cval = PQgetvalue(pgRes.get(), 0, 0);
+        double xmin = boost::lexical_cast<double>(cval);
+        // Y MIN
+        cval = PQgetvalue(pgRes.get(), 0, 1);
+        double ymin = boost::lexical_cast<double>(cval);
+        // X MAX
+        cval = PQgetvalue(pgRes.get(), 0, 2);
+        double xmax = boost::lexical_cast<double>(cval);
+        // Y MAX
+        cval = PQgetvalue(pgRes.get(), 0, 3);
+        double ymax = boost::lexical_cast<double>(cval);
+
+        // Build spatial envelope object
+        FdoPtr<FdoEnvelopeImpl> extent = NULL;
+        extent = FdoEnvelopeImpl::Create(xmin, ymin, xmax, ymax);
+
+        FDO_SAFE_ADDREF(extent.p);
+        return extent.p;
+    }
+    catch (boost::bad_lexical_cast& e)
+    {
+        FDOLOG_WRITE("Extent coordinate value conversion failed: %s", e.what());
+        throw FdoException::Create(L"Error occured while reading coordinate of estimated extent");
     }
 }
 
