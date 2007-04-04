@@ -23,14 +23,25 @@
 
 namespace fdo { namespace postgis {
 
-PgGeometryColumn::PgGeometryColumn(FdoString* name, FdoGeometryType type, FdoInt32 dim, FdoInt32 srid)
-    : mName(name), mType(type), mDim(dim), mSRID(srid)
+PgGeometryColumn::PgGeometryColumn(FdoString* name, FdoGeometryType type, FdoInt32 dim,
+                                   FdoInt32 srid) :
+    mName(name), mType(type), mDim(dim), mSRID(srid), mEnvelope(NULL)
 {
     FDOLOG_WRITE("PgGeometryColumn: %s", static_cast<char const*>(mName));
 }
 
+PgGeometryColumn::PgGeometryColumn(FdoString* name, FdoGeometryType type, FdoInt32 dim,
+                                   FdoInt32 srid, FdoPtr<FdoEnvelopeImpl> bbox) :
+    mName(name), mType(type), mDim(dim), mSRID(srid), mEnvelope(bbox)
+{
+    FDOLOG_WRITE("PgGeometryColumn: %s", static_cast<char const*>(mName));
+
+    FDO_SAFE_ADDREF(mEnvelope.p);
+}
+
 PgGeometryColumn::~PgGeometryColumn()
 {
+    // idle
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -73,5 +84,12 @@ FdoInt32 PgGeometryColumn::GetSRID() const
 {
     return mSRID;
 }
+
+FdoPtr<FdoEnvelopeImpl> PgGeometryColumn::GetEnvelope() const
+{
+    FDO_SAFE_ADDREF(mEnvelope.p);
+    return mEnvelope.p;
+}
+
 
 }} // namespace fdo::postgis
