@@ -260,7 +260,7 @@ void FilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& cond)
             // with GeomFromWKB and avoid calling it twice?
             // It also applies to Within below
 
-            spatialOp = "Within";
+            spatialOp = "Contains";
             break;
         case FdoSpatialOperations_Crosses:
             spatialOp = "Crosses";
