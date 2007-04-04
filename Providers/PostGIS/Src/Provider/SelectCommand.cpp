@@ -19,6 +19,7 @@
 #include "PostGisProvider.h"
 #include "SelectCommand.h"
 #include "FeatureReader.h"
+#include "FilterProcessor.h"
 #include "Connection.h"
 #include "PgCursor.h"
 #include "PostGIS/FdoPostGisOverrides.h"
@@ -223,6 +224,14 @@ FdoIFeatureReader* SelectCommand::Execute()
         }
 
         //
+        // Process filter conditions
+        //
+        FilterProcessor::Ptr proc(new FilterProcessor());
+        mFilter->Process(proc);
+
+        std::string sqlWhere(proc->GetFilterStatement());
+
+        //
         // Declare cursor and create feature reader
         //
         std::string sql("SELECT ");
@@ -230,7 +239,12 @@ FdoIFeatureReader* SelectCommand::Execute()
         sql += " FROM ";
         sql += tablePath;
 
-        FDOLOG_WRITE("sQL:\n\t%s", sql.c_str());
+        if (!sqlWhere.empty())
+        {
+            sql.append(" WHERE " + sqlWhere);
+        }
+
+        FDOLOG_WRITE("SQL:\n\t%s", sql.c_str());
 
         // Create a cursor associated with query results reader
         PgCursor::Ptr cursor(NULL);
