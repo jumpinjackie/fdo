@@ -93,6 +93,7 @@ public:
 
     /// \todo To be documented
     virtual void SetExtent(FdoByteArray* extent);
+    virtual void SetExtent(FdoEnvelopeImpl* extent);
 
     /// \todo To be documented
     virtual double GetXYTolerance() const;
