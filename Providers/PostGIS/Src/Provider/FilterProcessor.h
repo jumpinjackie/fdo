@@ -85,7 +85,7 @@ public:
     // FilterProcessor interface
     //
 
-    std::string const& GetFilterStatement() const { return mStatement; }
+    std::string const& GetFilterStatement() const;
 
 protected:
     

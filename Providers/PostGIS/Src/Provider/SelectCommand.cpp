@@ -149,8 +149,8 @@ FdoIFeatureReader* SelectCommand::Execute()
         FdoPtr<FdoClassDefinition> classDef = NULL;
         FdoPtr<FdoIdentifier> classIdentifier = GetFeatureClassName();
         assert(NULL != classIdentifier);
-
         FdoStringP classId = classIdentifier->GetText();
+
         FDOLOG_WRITE(L"Logical schema name: %s",
             static_cast<FdoString*>(classIdentifier->GetSchemaName()));
         FDOLOG_WRITE(L"Class name: %s",
@@ -165,6 +165,7 @@ FdoIFeatureReader* SelectCommand::Execute()
                 static_cast<FdoString*>(classId));
             return NULL;
         }
+
         FDOLOG_WRITE(L"Number of feature schemas: %d", featureClasses->GetCount());
 
         if (featureClasses->GetCount() <= 0)
@@ -175,8 +176,8 @@ FdoIFeatureReader* SelectCommand::Execute()
         }
         classDef = static_cast<FdoClassDefinition*>(featureClasses->GetItem(0));
         assert(NULL != classDef);
-
         FdoStringP className = classDef->GetName();
+
         FDOLOG_WRITE(L"Class definition for: %s", static_cast<FdoString*>(className));
 
         //
@@ -184,6 +185,7 @@ FdoIFeatureReader* SelectCommand::Execute()
         //
         ov::PhysicalSchemaMapping::Ptr schemaMapping;
         schemaMapping = mConn->GetPhysicalSchemaMapping();
+
         FDOLOG_WRITE(L"Schema mapping for: %", schemaMapping->GetName());
 
         ov::ClassDefinition::Ptr phClassDef;
@@ -196,6 +198,7 @@ FdoIFeatureReader* SelectCommand::Execute()
         }
 
         std::string tablePath(static_cast<char const*>(phClassDef->GetTablePath()));
+
         FDOLOG_WRITE("Table: %s", tablePath.c_str());
 
         //
@@ -203,6 +206,8 @@ FdoIFeatureReader* SelectCommand::Execute()
         //
         std::string sqlColumns("");
         FdoPtr<FdoPropertyDefinitionCollection> props = classDef->GetProperties();
+        
+        FDOLOG_WRITE("Number of properties: %d", props->GetCount());
 
         int const propsCount = props->GetCount();
         for (int propIdx = 0; propIdx < propsCount; propIdx++)
@@ -226,10 +231,16 @@ FdoIFeatureReader* SelectCommand::Execute()
         //
         // Process filter conditions
         //
-        FilterProcessor::Ptr proc(new FilterProcessor());
-        mFilter->Process(proc);
+        std::string sqlWhere("");
 
-        std::string sqlWhere(proc->GetFilterStatement());
+        FDOLOG_WRITE("XXX - Processing filter - Start");
+        if (NULL != mFilter)
+        {
+            FilterProcessor::Ptr proc(new FilterProcessor());
+            mFilter->Process(proc);
+            sqlWhere = proc->GetFilterStatement();
+        }
+        FDOLOG_WRITE("XXX - Processing filter - End");
 
         //
         // Declare cursor and create feature reader
@@ -241,6 +252,8 @@ FdoIFeatureReader* SelectCommand::Execute()
 
         if (!sqlWhere.empty())
         {
+            FDOLOG_WRITE("Filter statement is not empty");
+
             sql.append(" WHERE " + sqlWhere);
         }
 
