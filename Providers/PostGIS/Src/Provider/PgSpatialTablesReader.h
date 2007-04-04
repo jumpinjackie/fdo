@@ -118,8 +118,12 @@ private:
     // Private operations
     //
     
+    // Validates basic state of the reader instance.
     void ValidateConnectionState() const;
 
+    // Executes query to estimate spatial extent of features
+    // in given geometry column in a table.
+    // Table is used with full path: schema.table.
     FdoPtr<FdoEnvelopeImpl> EstimateColumnExtent(
         std::string const& column) const;
 };

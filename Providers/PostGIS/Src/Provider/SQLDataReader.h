@@ -169,6 +169,11 @@ T SQLDataReader::GetValue(FdoString* columnName)
 
     try
     {
+        // TODO: There is also a bit safer strategy possible:
+        // - if cval is an empty string
+        // - return val with default constructed value: T()
+        // Do we like it or we want to leave it as is?
+         
         T val = T();
         char const* const cval = PQgetvalue(pgRes, static_cast<int>(mCurrentTuple), fnumber);
         val = boost::lexical_cast<T>(cval);
