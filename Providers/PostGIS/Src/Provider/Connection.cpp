@@ -763,8 +763,12 @@ SchemaDescription* Connection::DescribeSchema()
     if (NULL == mSchemaDesc)
     {
         // TODO: Add support of describing selected schema instead of all
-        // FdoStringP schemaName(GetPgCurrentSchema());
+        
+        // TODO: Should we rename default schema name FdoPostGIS to 
+        //       name of current PostgreSQL schema?
+        //       What is best convention for naming FDO schema name in PostGIS provider?
 
+        // FdoStringP schemaName(GetPgCurrentSchema());
         FdoStringP schemaName(L"FdoPostGIS");
 
         mSchemaDesc = SchemaDescription::Create();
