@@ -347,8 +347,8 @@ void FilterProcessor::ProcessDistanceCondition(FdoDistanceCondition& cond)
     case FdoDistanceOperations_Within:
         {
             mStatement.append(sql::sepLeftTerm);
-            mStatement.append(columnName + " && Expand(" + sqlGeometry + "), " + distTxt);
-            mStatement.append("AND distance(" + columnName + "," + sqlGeometry + ") < " + distTxt);
+            mStatement.append(columnName + " && Expand(" + sqlGeometry + ", " + distTxt + ")");
+            mStatement.append("AND distance(" + columnName + "," + sqlGeometry + ") <= " + distTxt);
             mStatement.append(sql::sepRightTerm);
         }
         break;
