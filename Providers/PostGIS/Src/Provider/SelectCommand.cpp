@@ -233,33 +233,55 @@ FdoIFeatureReader* SelectCommand::Execute()
         //
         std::string sqlWhere("");
 
-        FDOLOG_WRITE("XXX - Processing filter - Start");
         if (NULL != mFilter)
         {
             FilterProcessor::Ptr proc(new FilterProcessor());
             mFilter->Process(proc);
             sqlWhere = proc->GetFilterStatement();
         }
-        FDOLOG_WRITE("XXX - Processing filter - End");
 
         //
-        // Declare cursor and create feature reader
+        // Compose SQL query with filters and ordering clauses if available
         //
-        std::string sql("SELECT ");
-        sql += sqlColumns;
-        sql += " FROM ";
-        sql += tablePath;
 
+        // 1 - Basic query
+        std::string sql("SELECT " + sqlColumns + " FROM " + tablePath);
+
+        // 2 - WHERE clause
         if (!sqlWhere.empty())
         {
-            FDOLOG_WRITE("Filter statement is not empty");
-
             sql.append(" WHERE " + sqlWhere);
+        }
+
+        // 3 - ORDER BY clause
+        FdoPtr<FdoIdentifierCollection> orderingColumns = GetOrdering();
+        FdoInt32 const orderingCount = orderingColumns->GetCount();
+        if (orderingCount > 0)
+        {
+            std::string sep("");
+            sql.append(" ORDER BY ");
+
+            for (FdoInt32 i = 0; i < orderingCount; ++i)
+            {
+                FdoPtr<FdoIdentifier> id(orderingColumns->GetItem(i));
+                FdoStringP name(id->GetName());
+
+                sql.append(sep + static_cast<char const*>(name));
+
+                if (FdoOrderingOption_Ascending == GetOrderingOption())
+                    sql.append(" ASC ");
+                else
+                    sql.append(" DESC ");
+
+                sep = ",";
+            }
         }
 
         FDOLOG_WRITE("SQL:\n\t%s", sql.c_str());
 
-        // Create a cursor associated with query results reader
+        //
+        // Declare cursor and create feature reader
+        //
         PgCursor::Ptr cursor(NULL);
         cursor = mConn->PgCreateCursor("crsFdoSelectCommand");
 
