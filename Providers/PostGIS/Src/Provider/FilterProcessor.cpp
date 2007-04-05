@@ -130,7 +130,6 @@ void FilterProcessor::ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& op)
             NlsMsgGet(MSG_POSTGIS_FILTER_UNKNOWN_COMPARISON,
             "Unknown comparison operation."));
     }
-
 }
 
 void FilterProcessor::ProcessComparisonCondition(FdoComparisonCondition& cond)
@@ -310,6 +309,7 @@ void FilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& cond)
 void FilterProcessor::ProcessDistanceCondition(FdoDistanceCondition& cond)
 {
     FDOLOG_MARKER("FilterProcessor::ProcessDistanceCondition");
+
     // TODO: Fill with spatial SQL composition
     FdoPtr<FdoExpression> geomExpr(cond.GetGeometry());
     FdoPtr<FdoIdentifier> geomProp(cond.GetPropertyName());
@@ -347,8 +347,11 @@ void FilterProcessor::ProcessDistanceCondition(FdoDistanceCondition& cond)
     case FdoDistanceOperations_Within:
         {
             mStatement.append(sql::sepLeftTerm);
-            mStatement.append(columnName + " && Expand(" + sqlGeometry + ", " + distTxt + ")");
-            mStatement.append("AND distance(" + columnName + "," + sqlGeometry + ") <= " + distTxt);
+            mStatement.append(columnName + " && Expand(" + sqlGeometry + ", " + distTxt + ") ");
+            mStatement.append(sql::opAnd);
+            mStatement.append("distance(" + columnName + "," + sqlGeometry + ")");
+            mStatement.append(sql::opLessThanEqual);
+            mStatement.append(distTxt);
             mStatement.append(sql::sepRightTerm);
         }
         break;
