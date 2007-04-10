@@ -154,6 +154,20 @@ bool PgTableColumnsReader::GetColumnNullability() const
     return isNullable;
 }
 
+bool PgTableColumnsReader::IsPrimaryKey() const
+{
+    bool isKey = false;
+
+    // Check if a column is part of PRIMARY KEY or not
+    FdoStringP const notNull(mReader->GetString(L"isprimarykey"));
+    if (notNull == L"t")
+    {   
+        isKey = true;
+    }
+
+    return isKey;
+}
+
 void PgTableColumnsReader::Open()
 {
     FDOLOG_MARKER("PgTableColumnsReader::+Open");
@@ -166,10 +180,13 @@ void PgTableColumnsReader::Open()
     std::string sql(
         "SELECT a.attnum AS ordinal_position,a.attname AS column_name,"
         "t.typname AS data_type,a.attlen AS character_maximum_length,"
-        "a.atttypmod AS modifier,a.attnotnull AS notnull,a.atthasdef AS hasdefault "
-        "FROM pg_class c, pg_attribute a, pg_type t, pg_namespace n "
+        "a.atttypmod AS modifier,a.attnotnull AS notnull,a.atthasdef AS hasdefault, "
+        "(CASE WHEN i.indkey @> ARRAY[a.attnum] THEN True ELSE False END) As isprimarykey "
+        "FROM pg_class c,pg_attribute a,pg_type t,pg_namespace n,pg_index i "
         "WHERE a.attnum > 0 AND a.attrelid = c.oid "
-        "AND a.atttypid = t.oid AND c.relnamespace = n.oid AND t.typname !~ '^geom' "
+        "AND a.atttypid = t.oid AND c.relnamespace = n.oid "
+        "AND c.oid = i.indrelid AND i.indisprimary = 't' "
+        "AND t.typname !~ '^geom' "
         "AND c.relname = '" + table + "' AND n.nspname = '" + schema + "' ORDER BY a.attnum;");
         
     // Query schema details of given table and attach results to the SQL data reader

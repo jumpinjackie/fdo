@@ -57,18 +57,22 @@ public:
     /// Get name of a table being described.
     FdoStringP GetTableName() const;
     
+    /// Get name of column currently pointed by the reader.
     FdoStringP GetColumnName() const;
     
     /// \todo TODO - Implement using COMMENT feature.
     FdoStringP GetColumnDescription() const;
     
-    /// \todo to be documented
+    /// Get ordinal position of current column.
     FdoInt32 GetColumnPosition() const;
     
-    /// \todo to be documented
+    /// Get type of current column.
+    /// \return FDO enumerator describing column type.
     FdoDataType GetColumnType() const;
     
-    /// \todo to be documented
+    /// Get size of current column.
+    /// \return Size of column as number of bytes, characters,
+    /// or digits depending on column type.
     FdoInt32 GetColumnSize() const;
     
     /// \todo to be documented
@@ -80,6 +84,9 @@ public:
     /// \todo to be documented
     bool GetColumnNullability() const;
     
+    ///
+    bool IsPrimaryKey() const;
+
     /// Open table reader.
     /// This operation mimics FDO command usually creating instance of a reader.
     /// There is no command dedicated for PgTableColumnsReader instantiation,
