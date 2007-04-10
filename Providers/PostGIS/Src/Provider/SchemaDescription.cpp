@@ -271,6 +271,8 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
 
         ////////////////// CREATE DATA PROPERTIES //////////////////
 
+
+
         PgTableColumnsReader::Ptr tcReader =
             new PgTableColumnsReader(
                 mConn, stReader->GetSchemaName(), stReader->GetTableName());
@@ -295,6 +297,19 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
             datPropDef->SetScale(scale);
             bool const isNullable = tcReader->GetColumnNullability();
             datPropDef->SetNullable(isNullable);
+
+            // Retrieve definition of PRIMARY KEY constraint
+            if (tcReader->IsPrimaryKey())
+            {
+                FDOLOG_WRITE(" - PRIMARY KEY");
+
+                FdoPtr<FdoDataPropertyDefinitionCollection> featIds = NULL;
+                featIds = featClass->GetIdentityProperties();
+                assert(NULL != featIds);
+
+                datPropDef->SetNullable(false);
+                featIds->Add(datPropDef);
+            }
 
             pdc->Add(datPropDef);
         }
