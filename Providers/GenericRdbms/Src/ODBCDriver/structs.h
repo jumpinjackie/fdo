@@ -134,6 +134,7 @@ typedef struct connData_def {			/* Logon Data Area Definition	*/
 	SQLLEN				identity_ni;		/* null indicator				*/
 	odbcdr_cursor_def	*identity;			/* for get_gen_id()        		*/
     odbcdr_DriverType   driver_type;    /* What kind of database        */
+    int                 skip_sybase_autogen_id_workaround; /* Defect workaround. */
 
 } odbcdr_connData_def;
 

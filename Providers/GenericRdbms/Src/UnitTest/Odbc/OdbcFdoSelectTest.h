@@ -60,8 +60,14 @@ class OdbcOracleFdoSelectTest : public OdbcFdoSelectTest
     CPPUNIT_TEST_SUITE_END ();
 
 public:
-    OdbcOracleFdoSelectTest(void)   { this->mSetup.SetTypeDB(DataBaseType_Oracle); }
-    virtual void set_provider()     { UnitTestUtil::SetProvider( "OdbcOracle" ); }
+    OdbcOracleFdoSelectTest(void)
+    {
+        this->mSetup.SetTypeDB(DataBaseType_Oracle);
+    }
+    virtual void set_provider()
+    {
+        UnitTestUtil::SetProvider( "OdbcOracle" );
+    }
     virtual int numPropertiesInPolylineClass() { return 17; }
 
     virtual void _duplicateComputedIdTest() {
@@ -119,6 +125,33 @@ public:
     }
 
     virtual void View1Test();
+};
+
+class OdbcSybaseFdoSelectTest : public OdbcFdoSelectTest
+{
+    CPPUNIT_TEST_SUB_SUITE (OdbcSybaseFdoSelectTest, OdbcFdoSelectTest);
+    CPPUNIT_TEST_SUITE_END ();
+
+public:
+    OdbcSybaseFdoSelectTest(void)
+    {
+        this->mSetup.SetTypeDB(DataBaseType_Sybase);
+    }
+    virtual void set_provider()     { UnitTestUtil::SetProvider( "OdbcSybase" ); }
+
+    virtual void concurrent_select() {};    // Need to set up "testClass" class to run this.
+
+    virtual FdoString * GetClassName()          { return L"testclass"; }
+
+    virtual void _duplicateComputedIdTest() {
+        TestCommonFeatureCommands::duplicateComputedIdTest(mConnection, L"acdb3dpolyline", L"featid");
+    }
+
+    virtual void _secondComputedIdTest() {
+        TestCommonFeatureCommands::secondComputedIdTest(mConnection, L"acdb3dpolyline", L"featid");
+    }
+
+    virtual int numPropertiesInPolylineClass() { return 16; };
 };
 
 #ifdef _WIN32

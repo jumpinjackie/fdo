@@ -23,6 +23,7 @@ enum DataBaseType {
     DataBaseType_None,
     DataBaseType_MySQL,
     DataBaseType_SqlServer,
+    DataBaseType_Sybase,
     DataBaseType_Oracle
 };
 
@@ -39,14 +40,22 @@ public:
 	OdbcBaseSetup(DataBaseType typeDB)
         : m_typeDB(typeDB), m_ReverseEngineersToUppercase(true)
 	{
-        if (DataBaseType_MySQL==m_typeDB || DataBaseType_SqlServer==m_typeDB)
+        if (DataBaseType_MySQL==m_typeDB ||
+            DataBaseType_SqlServer==m_typeDB ||
+            DataBaseType_Sybase==m_typeDB)
+        {
             m_ReverseEngineersToUppercase = false;
+        }
 	}
 	void SetTypeDB(DataBaseType typeDB)
 	{
 		m_typeDB = typeDB;
-        if (DataBaseType_MySQL==m_typeDB || DataBaseType_SqlServer==m_typeDB)
+        if (DataBaseType_MySQL==m_typeDB ||
+            DataBaseType_SqlServer==m_typeDB ||
+            DataBaseType_Sybase==m_typeDB)
+        {
             m_ReverseEngineersToUppercase = false;
+        }
 	}
 	DataBaseType GetTypeDB()
 	{
@@ -79,6 +88,7 @@ public:
 	virtual void CreateNonAcadSchema(FdoIConnection* pConnection);
 
 	static const wchar_t* mSqlServerAcadTest[];
+	static const wchar_t* mSybaseAcadTest[];
     static const wchar_t* mSqlServerNonAcadTest[];
 	static const wchar_t* mMySqlAcadTest[];
 	static const wchar_t* mMySqlNonAcadTest[];

@@ -541,13 +541,18 @@ get_drivertype(
     if (ret != SQL_SUCCESS)
         goto the_exit;
 
-    if (0==_stricmp((const char *) szDriverName, ODBCDR_DRIVER_ORACLE_DRIVERNAME_MB))
+    if ( (0==_stricmp((const char *) szDriverName, ODBCDR_DRIVER_ORACLE_DRIVERNAME_WINDOWS_MB))
+      || (0==_strnicmp((const char*) szDriverName, ODBCDR_DRIVER_ORACLE_DRIVERNAME_LINUX_MB, strlen(ODBCDR_DRIVER_ORACLE_DRIVERNAME_LINUX_MB))) )
     {
         *driver_type = ODBCDriverType_OracleNative;
     }
     else if (0==_stricmp((const char*)szDriverName, ODBCDR_DRIVER_SQLSERVER_DRIVERNAME_MB))
     {
         *driver_type = ODBCDriverType_SQLServer;
+    }
+    else if (0==_stricmp((const char*)szDriverName, ODBCDR_DRIVER_SYBASE_DRIVERNAME_MB))
+    {
+        *driver_type = ODBCDriverType_Sybase;
     }
     else if (0==_stricmp((const char*)szDriverName, ODBCDR_DRIVER_ACCESS_DRIVERNAME_MB))
     {

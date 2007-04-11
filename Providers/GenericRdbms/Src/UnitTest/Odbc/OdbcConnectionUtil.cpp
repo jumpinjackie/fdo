@@ -352,6 +352,8 @@ void OdbcConnectionUtil::SetProvider( const char *providerName )
 #ifdef _WIN32
 		if (!m_SetupOracleDSNdone)
 		    SetupOracleDSN();
+#else
+        strcpy(theOracleDriverName, "Oracle 10g ODBC Driver");
 #endif
 		pValue = m_SetupValues->GetPropertyValue( L"serviceOracle" );
         FdoCommonOSUtil::setenv( "service", pValue);
@@ -363,6 +365,21 @@ void OdbcConnectionUtil::SetProvider( const char *providerName )
         FdoCommonOSUtil::setenv( "password", pValue);
 
 		pValue = m_SetupValues->GetPropertyValue( L"DSNOracle" );
+        FdoCommonOSUtil::setenv( "dsnname", pValue);
+	}
+    else if (strcmp(providerName, "OdbcSybase") == 0 )
+    {
+		m_ProviderActive = L"OdbcSybase";
+		pValue = m_SetupValues->GetPropertyValue( L"serviceSybase" );
+        FdoCommonOSUtil::setenv( "service", pValue);
+
+		pValue = m_SetupValues->GetPropertyValue( L"usernameSybase" );
+        FdoCommonOSUtil::setenv( "username", pValue);
+		
+		pValue = m_SetupValues->GetPropertyValue( L"passwordSybase" );
+        FdoCommonOSUtil::setenv( "password", pValue);
+
+		pValue = m_SetupValues->GetPropertyValue( L"DSNSybase" );
         FdoCommonOSUtil::setenv( "dsnname", pValue);
 	}
     else if (strcmp(providerName, "OdbcAccess") == 0 )
@@ -448,9 +465,18 @@ wchar_t *OdbcConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq,
                     (FdoString*) username, 
                     (FdoString*) password
                 );
+			else if (m_ProviderActive == L"OdbcSybase")
+				swprintf( 
+                    connectString, 
+                    sizeof(connectString)/sizeof(wchar_t), 
+                    L"ConnectionString=\"DRIVER={Adaptive Server Enterprise};SERVER=%ls;PORT=5000;DATABASE=%ls;UID=%ls;PWD=%ls;\"", 
+                    (FdoString*) service, 
+                    (FdoString*) datastore, 
+                    (FdoString*) username, 
+                    (FdoString*) password
+                );
 			else if (m_ProviderActive == L"OdbcOracle")
 			{
-#ifdef _WIN32
 				FdoStringP pDatastore = datastore;
 				pDatastore = pDatastore.Upper();
 				swprintf( 
@@ -462,17 +488,6 @@ wchar_t *OdbcConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq,
                     (FdoString*)password, 
                     (FdoString*)service, 
                     (FdoString*)pDatastore);
-#else
-				// We do not support extracting a schema from a DSN on Linux, so connect straight to the needed one.
-				swprintf( 
-                    connectString, 
-                    sizeof(connectString)/sizeof(wchar_t), 
-                    L"DataSourceName=%ls;UserId=%ls;Password=%ls;", 
-                    (FdoString*)dsnname, 
-                    (FdoString*)datastore, 
-                    (FdoString*)password
-                );
-#endif
 			}
 			else if (m_ProviderActive == L"OdbcAccess")
 				swprintf( 
@@ -516,9 +531,17 @@ wchar_t *OdbcConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq,
                     (FdoString*)username, 
                     (FdoString*)password
                 );
+			else if (m_ProviderActive == L"OdbcSybase")
+				swprintf( 
+                    connectString, 
+                    sizeof(connectString)/sizeof(wchar_t), 
+                    L"ConnectionString=\"DRIVER={Adaptive Server Enterprise};SERVER=%ls;PORT=5000;UID=%ls;PWD=%ls;\"", 
+                    (FdoString*)service, 
+                    (FdoString*)username, 
+                    (FdoString*)password
+                );
 			else if (m_ProviderActive == L"OdbcOracle")
 			{
-#ifdef _WIN32
 				FdoStringP pDatastore = datastore;
 				pDatastore = pDatastore.Upper();
 				swprintf( 
@@ -530,17 +553,6 @@ wchar_t *OdbcConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq,
                     (FdoString*)password, 
                     (FdoString*)service
                 );
-#else
-				// We do not support extracting a schema from a DSN on Linux, so connect straight to the needed one.
-				swprintf( 
-                    connectString, 
-                    sizeof(connectString)/sizeof(wchar_t), 
-                    L"DataSourceName=%ls;UserId=%ls;Password=%ls;", 
-                    (FdoString*)dsnname, 
-                    (FdoString*)datastore, 
-                    (FdoString*)password
-                );
-#endif
 			}
 			else if (m_ProviderActive == L"OdbcAccess")
 				swprintf( 
@@ -586,7 +598,6 @@ wchar_t *OdbcConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq,
                 );
 			else if (m_ProviderActive == L"OdbcOracle")
 			{
-#ifdef _WIN32
 			FdoStringP pDatastore = datastore;
 			pDatastore = pDatastore.Upper();
             swprintf( 
@@ -597,17 +608,17 @@ wchar_t *OdbcConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq,
                 (FdoString*)pDatastore, 
                 (FdoString*)password
             );
-#else
-			// We do not support extracting a schema from a DSN on Linux, so connect straight to the needed one.
-			swprintf( 
-                connectString, 
-                sizeof(connectString)/sizeof(wchar_t), 
-                L"DataSourceName=%ls;UserId=%ls;Password=%ls;", 
-                (FdoString*)dsnname, 
-                (FdoString*)datastore, 
-                (FdoString*)password
-            );
-#endif
+			}
+			else if (m_ProviderActive == L"OdbcSybase")
+			{
+                swprintf( 
+                    connectString, 
+                    sizeof(connectString)/sizeof(wchar_t), 
+                    L"DataSourceName=%ls;UserId=%ls;Password=%ls;", 
+                    (FdoString*)dsnname, 
+                    (FdoString*)username, 
+                    (FdoString*)password
+                );
 			}
 			else if (m_ProviderActive == L"OdbcAccess")
 				swprintf( 
@@ -639,7 +650,6 @@ wchar_t *OdbcConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq,
                 );
 		break;
 		case Connection_OraSetup:
-#ifdef _WIN32
 			swprintf( 
                 connectString, 
                 sizeof(connectString)/sizeof(wchar_t), 
@@ -649,17 +659,6 @@ wchar_t *OdbcConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq,
                 (FdoString*)password, 
                 (FdoString*)service
             );
-#else
-			// We do not support extracting a schema from a DSN on Linux, so connect straight to the needed one.
-			swprintf( 
-                connectString, 
-                sizeof(connectString)/sizeof(wchar_t), 
-                L"DataSourceName=%ls;UserId=%ls;Password=%ls;", 
-                (FdoString*)dsnname, 
-                (FdoString*)username, 
-                (FdoString*)password
-            );
-#endif
 		break;
 	}
 	return connectString;

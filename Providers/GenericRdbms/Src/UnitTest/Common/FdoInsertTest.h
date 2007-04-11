@@ -62,12 +62,13 @@ public:
 	virtual void insertLongString();
     virtual void featureReaderTest();
 
+	static FdoPropertyValue* AddNewProperty( FdoPropertyValueCollection* propertyValues, const wchar_t *name );
+
 protected:
     virtual void  set_provider() {};   
     void insertDate (FdoIConnection *connection, FdoDateTime dateTime, FdoString *colorIndex);
     void insertDateVerification (FdoIConnection *connection, int numOfSuccess);
     void insertDateCleanUp (FdoIConnection *connection);
-	static FdoPropertyValue* AddNewProperty( FdoPropertyValueCollection* propertyValues, const wchar_t *name );
     void insertBoundaryCleanup( FdoIConnection* connection );
 
     // Functions used to setup the test environment for the unit test

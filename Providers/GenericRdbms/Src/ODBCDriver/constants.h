@@ -102,14 +102,17 @@ typedef enum
     ODBCDriverType_OracleNative,
     ODBCDriverType_OracleNonNative,
     ODBCDriverType_SQLServer,
+    ODBCDriverType_Sybase,
     ODBCDriverType_Access,
     ODBCDriverType_MySQL,
     ODBCDriverType_Other  // determined, but not an ODBC driver we distinguish specifically
 } odbcdr_DriverType;
 
 // Driver-specific constants:
-#define ODBCDR_DRIVER_ORACLE_DRIVERNAME_MB        "SQORA32.DLL"
+#define ODBCDR_DRIVER_ORACLE_DRIVERNAME_WINDOWS_MB        "SQORA32.DLL"
+#define ODBCDR_DRIVER_ORACLE_DRIVERNAME_LINUX_MB          "libsqora.so"
 #define ODBCDR_DRIVER_SQLSERVER_DRIVERNAME_MB     "SQLSRV32.DLL"
+#define ODBCDR_DRIVER_SYBASE_DRIVERNAME_MB        "Adaptive Server Enterprise (ANSI)"
 #define ODBCDR_DRIVER_ACCESS_DRIVERNAME_MB        "ODBCJT32.DLL"
 #define ODBCDR_DRIVER_MYSQL_DRIVERNAME_LINUX_MB   "LIBMYODBC3.SO"
 #define ODBCDR_DRIVER_MYSQL_DRIVERNAME_WINDOWS_MB "MYODBC3.DLL"
@@ -126,6 +129,9 @@ typedef enum
 #define ODBCDR_DRIVER_ORACLE_OWM_COLUMN_DELSTATUSW L"DELSTATUS"
 #define ODBCDR_DRIVER_ORACLE_OWM_COLUMN_LTLOCKW    L"LTLOCK"
 #define ODBCDR_DRIVER_ORACLE_ROWID_NAMEW           L"ROWID"
+
+#define ODBCDR_DRIVER_SYBASE_DEFAULT_SCHEMA_NAME    "dbo"
+#define ODBCDR_DRIVER_SYBASE_DEFAULT_SCHEMA_NAMEW  L"dbo"
 
  /**************************************************************************
  * Macros to use as wrappers around many function calls.

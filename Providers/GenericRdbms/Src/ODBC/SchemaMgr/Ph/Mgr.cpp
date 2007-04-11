@@ -187,6 +187,19 @@ FdoBoolean FdoSmPhOdbcMgr::IsGeometryFromOrdinatesWanted()
     return mIsGeometryFromOrdinatesWanted;
 }
 
+bool FdoSmPhOdbcMgr::SupportsAnsiQuotes()
+{
+    bool supportsAnsiQuotes = true;
+
+    rdbi_vndr_info_def vndr_info;
+    rdbi_vndr_info( GetRdbiContext(), &vndr_info );
+
+    if (RDBI_DBVERSION_ODBC_SYBASE == vndr_info.dbversion)
+        supportsAnsiQuotes = false;
+
+    return supportsAnsiQuotes;
+}
+
 FdoSmPhOdbcMgr::OdbcStringMap::OdbcStringMap()
 {
     // The following are reserved words specific to Odbc.

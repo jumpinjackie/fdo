@@ -211,6 +211,15 @@ bool FdoSmPhRdOraOdbcColumnReader::ReadNext()
         length = precision;
     }
 
+    // Work around an obscure result on Linux, where columns in
+    // some system views are reported as zero-sized.
+    // E.g. OLAPSYS.ALL$OLAP2_AW_CUBE_AGG_OP contains a zero-sized
+    // column 'AW_MEASURE_NAME'.
+    if (FdoSmPhColType_String == mColType && 0 == length)
+    {
+        length = 255;
+    }
+
     // Re-map NULL scale to zero, now that we are done using this difference.
     if (scale == -1)
         scale = 0;

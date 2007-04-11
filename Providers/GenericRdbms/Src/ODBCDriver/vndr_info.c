@@ -86,6 +86,10 @@ int odbcdr_vndr_info(
                 vndr_info->dbversion = RDBI_DBVERSION_ODBC_SQLSERVER;
                 break;
 
+            case ODBCDriverType_Sybase:
+                vndr_info->dbversion = RDBI_DBVERSION_ODBC_SYBASE;
+                break;
+
             case ODBCDriverType_Access:
                 vndr_info->dbversion = RDBI_DBVERSION_ODBC_ACCESS;
                 break;

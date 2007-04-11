@@ -24,11 +24,7 @@
 #include <tchar.h>
 #include<odbcinst.h>
 #else
-// remove #if 0 when FdoRdbmsOdbcConnection::GetSchemaNameFromDsn is active on Linux
-#if 0
 #include<odbcinst.h>
-#endif
-
 #endif
 
 #include <Inc/ut.h>
@@ -464,18 +460,15 @@ FdoStringP FdoRdbmsOdbcConnection::GetSchemaNameFromDsn()
 FdoStringP FdoRdbmsOdbcConnection::GetSchemaNameFromDsn()
 {
     FdoStringP schemaName;
-#if 0
-    // this code is intended for Linux but is untested. 
-    // not sure if SQLGetPrivateProfileString is implemented on Linux
     DbiConnection* pConn = GetDbiConnection();
     FdoStringP dsn = pConn->GetDataSource();
     char buffValue[ODBCDR_CONNECTION_SIZE];
-    if (pConn->GetDbVersion() == RDBI_DBVERSION_ODBC_ORACLE)
+    if (pConn->GetDbVersion() == RDBI_DBVERSION_ODBC_ORACLE &&
+        dsn.GetLength() > 0)
     {
         if(0 != ::SQLGetPrivateProfileString( dsn, "UserID", "", buffValue, ODBCDR_CONNECTION_SIZE, ODBC_FODBC_INI ))
 	        schemaName = buffValue;
     }
-#endif
     return schemaName;
 }
 #endif

@@ -26,6 +26,11 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcOracleFdoSelectTest, "FdoSelectTest")
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcOracleFdoSelectTest, "OdbcOracleFdoSelectTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcOracleFdoSelectTest, "OdbcOracleTests");
 
+CPPUNIT_TEST_SUITE_REGISTRATION( OdbcSybaseFdoSelectTest );
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSybaseFdoSelectTest, "FdoSelectTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSybaseFdoSelectTest, "OdbcSybaseFdoSelectTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSybaseFdoSelectTest, "OdbcSybaseTests");
+
 CPPUNIT_TEST_SUITE_REGISTRATION( OdbcMySqlFdoSelectTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlFdoSelectTest, "FdoSelectTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlFdoSelectTest, "OdbcMySqlFdoSelectTest");
@@ -171,13 +176,7 @@ void OdbcOracleFdoSelectTest::View1Test()
                     CPPUNIT_ASSERT_MESSAGE("Expected identity property named FEATID1", 0==wcscmp(L"FEATID1", idPropDef->GetName()));
                 }
                 printf("  Found total %d identity properties.\n", numIdProps);
-#ifdef _WIN32
                 CPPUNIT_ASSERT_MESSAGE("Expected 1 identity property", 1==numIdProps);
-#else
-                // Cannot currently use Oracle metadata views from Easysoft driver.
-                // TODO: revisit with Oracle native driver on Linux.
-                CPPUNIT_ASSERT_MESSAGE("Expected 0 identity properties", 0==numIdProps);
-#endif
             }
 
             // read through all the features
@@ -199,6 +198,7 @@ void OdbcOracleFdoSelectTest::View1Test()
         }
     }
 }
+
 
 void OdbcMySqlFdoSelectTest::ConfigFileTest()
 {

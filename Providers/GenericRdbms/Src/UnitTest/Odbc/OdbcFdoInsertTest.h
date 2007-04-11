@@ -144,6 +144,19 @@ class OdbcExcelFdoInsertTest : public OdbcBaseFdoInsertTest
     FdoString * GetConfigFile() {return L"MsTestXlsConfig.xml";}
 };
 
+#else
+
+class OdbcSybaseFdoInsertTest : public OdbcBaseFdoInsertTest
+{
+    CPPUNIT_TEST_SUB_SUITE (OdbcSybaseFdoInsertTest, FdoInsertTest);
+    CPPUNIT_TEST( insertCities );
+    CPPUNIT_TEST( insertTable1 );
+    CPPUNIT_TEST_SUITE_END ();
+
+    OdbcSybaseFdoInsertTest(void) { this->mSetup.SetTypeDB(DataBaseType_Sybase); }
+    virtual void set_provider()      { UnitTestUtil::SetProvider( "OdbcSybase" ); }
+};
+
 #endif
 
 #endif // ODBC_INSERTTESTS_H
