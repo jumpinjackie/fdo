@@ -21,8 +21,11 @@
 #include "PgUtility.h"
 // std
 #include <cassert>
+#include <sstream>
 #include <string>
 #include <utility>
+// boost
+#include <boost/format.hpp>
 
 namespace fdo { namespace postgis {
 
@@ -286,8 +289,24 @@ void Command<T>::PgGenerateExecParams(details::pgexec_params_t& pgParams)
                     }
                     break;
                 case FdoDataType_DateTime:
-                    // TODO: Add conversion of DateTime to string.
-                    assert(!"TO BE IMPLEMENTED");
+                    {
+                        FdoDateTimeValue* pval = static_cast<FdoDateTimeValue*>(dataValue);
+                        FdoDateTime dt(pval->GetDateTime());
+
+                        if (dt.IsDate())
+                        {
+                            // ISO 8601 extended format: 1999-01-08 (recommended format)
+
+                            value = (boost::format("%d-%d-%d") 
+                                % dt.year 
+                                % static_cast<int>(dt.month)
+                                % static_cast<int>(dt.day)).str();
+                                
+                        }
+                        else if (dt.IsDateTime())
+                        {
+                        }
+                    }
                     break;
                 case FdoDataType_BLOB:
                     assert(!"TO BE IMPLEMENTED");
