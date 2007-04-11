@@ -90,7 +90,7 @@ int odbcdr_execute(						/* execute an SQL statement		  */
 	int 					rdbi_status = RDBI_GENERIC_ERROR;
 
 //	SQLUSMALLINT			*status_array;
-	SQLUSMALLINT			params_processed;
+	SQLUSMALLINT			params_processed = 1234;
 	SQLUSMALLINT			*operation_array; // used to emulate OCI's execute offset
 	int						i;  
 	short					num_cols; //used to determine if the statement was a SELECT
@@ -125,16 +125,19 @@ int odbcdr_execute(						/* execute an SQL statement		  */
     if (context->odbcdr_UseUnicode)
     {
 	     // set the size of the bind parameter arrays
-	     SQLSetStmtAttrW(c->hStmt, SQL_ATTR_PARAMSET_SIZE, (PTR)count, SQL_IS_INTEGER);
+        if (count > 0)
+	        SQLSetStmtAttrW(c->hStmt, SQL_ATTR_PARAMSET_SIZE, (PTR)count, SQL_IS_INTEGER);
 	    // retreive the number of params processed
-	     SQLSetStmtAttrW(c->hStmt, SQL_ATTR_PARAMS_PROCESSED_PTR, &params_processed, SQL_IS_POINTER);
+	    // SQLSetStmtAttrW(c->hStmt, SQL_ATTR_PARAMS_PROCESSED_PTR, &params_processed, SQL_IS_POINTER);
     }
     else
     {
 	     // set the size of the bind parameter arrays
-	     SQLSetStmtAttr(c->hStmt, SQL_ATTR_PARAMSET_SIZE, (PTR)count, SQL_IS_INTEGER);
+        if (count > 0)
+	        SQLSetStmtAttr(c->hStmt, SQL_ATTR_PARAMSET_SIZE, (PTR)count, SQL_IS_INTEGER);
+
 	    // retreive the number of params processed
-	     SQLSetStmtAttr(c->hStmt, SQL_ATTR_PARAMS_PROCESSED_PTR, &params_processed, SQL_IS_POINTER);
+	    // SQLSetStmtAttr(c->hStmt, SQL_ATTR_PARAMS_PROCESSED_PTR, &params_processed, SQL_IS_POINTER);
     }
 	//array insert/update/delete is not implemented yet
 	//array to retreive the result codes
@@ -159,7 +162,9 @@ int odbcdr_execute(						/* execute an SQL statement		  */
 		if (context->odbcdr_UseUnicode)
             SQLSetStmtAttrW(c->hStmt, SQL_ATTR_PARAM_OPERATION_PTR, operation_array, SQL_IS_POINTER);
         else
+        {
             SQLSetStmtAttr(c->hStmt, SQL_ATTR_PARAM_OPERATION_PTR, operation_array, SQL_IS_POINTER);
+        }
 	} // if offset
 
 

@@ -46,6 +46,14 @@ CPPUNIT_TEST_SUITE_REGISTRATION( OdbcExcelFdoInsertTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcExcelFdoInsertTest, "FdoInsertTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcExcelFdoInsertTest, "OdbcExcelFdoInsertTest");
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcExcelFdoInsertTest, "OdbcExcelTests");
+
+#else
+
+CPPUNIT_TEST_SUITE_REGISTRATION( OdbcSybaseFdoInsertTest );
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSybaseFdoInsertTest, "FdoInsertTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSybaseFdoInsertTest, "OdbcSybaseFdoInsertTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSybaseFdoInsertTest, "OdbcSybaseTests");
+
 #endif
 
 void OdbcBaseFdoInsertTest::setUp ()

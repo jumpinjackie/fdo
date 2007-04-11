@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2007  Autodesk, Inc.
+ * Copyright (C) 2004-2006  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -123,11 +123,15 @@ void OdbcBaseSetup::CreateAcadSchema(FdoIConnection* pConnection)
 		UnitTestUtil::Sql2Db( (const wchar_t**) mMySqlAcadTest, pConnection );
 	else if (DataBaseType_SqlServer == m_typeDB)
 		UnitTestUtil::Sql2Db( (const wchar_t**) mSqlServerAcadTest, pConnection );
+	else if (DataBaseType_Sybase == m_typeDB)
+		UnitTestUtil::Sql2Db( (const wchar_t**) mSybaseAcadTest, pConnection );
 }
 
 void OdbcBaseSetup::CreateNonAcadSchema(FdoIConnection* pConnection)
 {
 	if (DataBaseType_SqlServer == m_typeDB)
+		UnitTestUtil::Sql2Db( (const wchar_t**) mSqlServerNonAcadTest, pConnection );
+	else if (DataBaseType_Sybase == m_typeDB) // Sybase uses same syntax as SQL Server.
 		UnitTestUtil::Sql2Db( (const wchar_t**) mSqlServerNonAcadTest, pConnection );
 	else if (DataBaseType_MySQL == m_typeDB)
 		UnitTestUtil::Sql2Db( (const wchar_t**) mMySqlNonAcadTest, pConnection );
@@ -238,6 +242,48 @@ const wchar_t* OdbcBaseSetup::mSqlServerAcadTest[] = {
     NULL
 };
 
+const wchar_t* OdbcBaseSetup::mSybaseAcadTest[] = {
+	L"create table acdb3dpolyline (",
+	L"layer varchar(10) NULL,",
+	L"color varchar(32) NULL,",
+	L"segcount int NULL,",
+    /* Sybase BIT type must be non-NULL. */
+    /* ODBC Provider cannot populate it though, due to string conversion. */
+	// L"boolean bit NOT NULL,", 
+	L"byte tinyint NULL,",
+	L"datetime1 datetime NULL,",
+	L"decimal1 decimal NULL,",
+	L"double1 real NULL,",
+	L"int16 smallint NULL,",
+    /* Sybase 15.0 can use bigint, but Sybase 12.5.4 cannot. */
+	L"int32 int NULL,",
+	//L"int64 bigint NULL,",
+	L"int64 int NULL,",
+	L"single1 real NULL,",
+    /* Sybase 15.0 can use bigint, but Sybase 12.5.4 cannot. */
+	//L"classid bigint NOT NULL,",
+	L"classid int NOT NULL,",
+	L"revisionnumber real NOT NULL,",
+	L"geometry image NULL,",
+	L"GEOMETRY_SI_1 varchar (255) NULL,",
+	L"GEOMETRY_SI_2 varchar (255) NULL,",
+    /* Sybase 15.0 can use bigint, but Sybase 12.5.4 cannot. */
+	//L"featid bigint IDENTITY NOT NULL,",
+	L"featid int IDENTITY NOT NULL,",
+    /* As a variation, one can substitute IDENTITY (implying an
+     * auto-generated primary key) with an explicit a primary key
+     * constraint (no auto-generation).
+     */
+    //L"constraint pk_acdb3dpolyline primary key (featid)",
+	L");",
+    L"",
+    L"insert into acdb3dpolyline (layer, color, double1, single1, segcount, classid, revisionnumber ) values ('TestLayer1', '256', 0, 2, 7, 11, 0);",
+    L"",
+    L"insert into acdb3dpolyline (layer, color, double1, single1, segcount, classid, revisionnumber ) values ('TestLayer2', '156', 3, 4, 10, 12, 1);",
+    L"",
+    NULL
+};
+
 const wchar_t* OdbcBaseSetup::mSqlServerNonAcadTest[] = {
 	L"create table cities (",
 	L"cityid int NOT NULL,",
@@ -272,7 +318,7 @@ const wchar_t* OdbcBaseSetup::mSqlServerNonAcadTest[] = {
 	L"( featid1, name, x, y )",
 	L" values ",
 	L"( 2, 'His''Name', 20, 25 );",
-    L""
+    L"",
     L"create view view1 ( featid1, name, x, y ) as select featid1, name, x, y from table1", 
     L"",
     NULL
@@ -314,7 +360,7 @@ const wchar_t* OdbcBaseSetup::mMySqlNonAcadTest[] = {
 	L"( featid1, name, x, y )",
 	L" values ",
 	L"( 2, 'His''Name', 20, 25 );",
-    L""
+    L"",
     L"create view view1 ( featid1, name, x, y ) as select featid1, name, x, y from table1", 
     L"",
     NULL
@@ -356,7 +402,6 @@ const wchar_t* OdbcBaseSetup::mOracleNonAcadTest[] = {
 	L"( 2, 'His''Name', 20, 25 );",
     L"",
 	L"create view VIEW1 as select FEATID1, NAME, X, Y from TABLE1;",
-#ifdef _WIN32
     L"",
 	L"create table ALLDBTYPES (",
 	L"DBTYPE_VARCHAR2 VARCHAR2(10),",
@@ -391,7 +436,6 @@ const wchar_t* OdbcBaseSetup::mOracleNonAcadTest[] = {
 	L"DBTYPE_VARCHAR2 VARCHAR2(10),",
     L"DBTYPE_LONGVARCHAR LONG VARCHAR",
 	L");",
-#endif
     L"",
     NULL
 };

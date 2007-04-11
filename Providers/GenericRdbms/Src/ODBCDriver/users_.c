@@ -106,6 +106,13 @@ int local_odbcdr_users_act(
     if (_odbcValue != ODBCDR_SUCCESS)
         schemaUsagesSupported = FALSE;
 
+    /* Sybase (observed with version 15.0) reports that it supports schemas, but does not
+     * actually return any from SQLTables().  We'll bypass the schema query here, and hard-code
+     * a schema name of the default creator name, "dbo", in the following block.
+     */
+    if (ODBCDriverType_Sybase == connData->driver_type)
+        schemaUsagesSupported = FALSE;
+
     if (schemaUsagesSupported && (schemaUsages & SQL_SU_DML_STATEMENTS))
     {
 	    c = connData->users;
@@ -172,6 +179,18 @@ int local_odbcdr_users_act(
                 }
             }
         } /* end while (ret != SQL_NO_DATA) */
+    }
+    else if (ODBCDriverType_Sybase == connData->driver_type)
+    {
+        odbcdr_NameListEntry_user_def newNle;
+
+        /* Make a single, default name of "dbo", which is the default "creator" in Sybase. */
+        ODBCDRV_STRING_COPY_CST(newNle.name, ODBCDR_DRIVER_SYBASE_DEFAULT_SCHEMA_NAME);
+        if (NULL == ut_da_append( &context->odbcdr_nameList_users, 1L, (void *) &newNle ))
+        {
+            rdbi_status = RDBI_MALLOC_FAILED;
+            goto the_exit;
+        }
     }
     else /* The data store did not support the right DML statement. */
     {

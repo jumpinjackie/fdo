@@ -28,7 +28,9 @@
 #define _wcsnicmp wcsncasecmp
 #endif
 #define TABLE_TYPES   "TABLE,VIEW"
+#define TABLE_TYPES2   "TABLE"
 #define TABLE_TYPESW  L"TABLE,VIEW"
+#define TABLE_TYPES2W  L"TABLE"
 #define TABLE_STRING  "TABLE"
 #define TABLE_STRINGW L"TABLE"
 #define VIEW_STRING   "VIEW"
@@ -126,14 +128,24 @@ int local_odbcdr_objects_act(
 
     if (context->odbcdr_UseUnicode)
     {
+        SQLWCHAR * table_typesw = (SQLWCHAR *)TABLE_TYPESW;
+        if (ODBCDriverType_Sybase == connData->driver_type)
+            table_typesw = (SQLWCHAR *)TABLE_TYPES2W;
+
         charType = SQL_C_WCHAR;
+
         ODBCDR_ODBC_ERR( SQLTablesW(c->hStmt, NULL, 0, (SQLWCHAR *) (owner_set ? owner->cwString : NULL), 
-            SQL_NTS, NULL, 0, (SQLWCHAR*)TABLE_TYPESW,  SQL_NTS), 
+            SQL_NTS, NULL, 0, table_typesw,  SQL_NTS), 
             SQL_HANDLE_STMT, c->hStmt, "SQLTables", "Fetching tables and views");
     }else{
+        SQLCHAR * table_types = (SQLCHAR *)TABLE_TYPES;
+        if (ODBCDriverType_Sybase == connData->driver_type)
+            table_types = (SQLCHAR *)TABLE_TYPES2;
+
         charType = SQL_C_CHAR;
+
         ODBCDR_ODBC_ERR( SQLTables(c->hStmt, NULL, 0, (SQLCHAR *) (owner_set ? owner->ccString : NULL), 
-            SQL_NTS, NULL, 0, (SQLCHAR*)TABLE_TYPES,  SQL_NTS), 
+            SQL_NTS, NULL, 0, table_types,  SQL_NTS), 
             SQL_HANDLE_STMT, c->hStmt, "SQLTables", "Fetching tables and views");
     }
 

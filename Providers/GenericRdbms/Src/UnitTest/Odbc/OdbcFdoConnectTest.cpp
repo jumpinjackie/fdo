@@ -320,7 +320,6 @@ void OdbcOracleFdoConnectTest::ConfigFileTest()
 
 void OdbcOracleFdoConnectTest::AllDatabaseTypesTest()
 {
-#ifdef _WIN32
 	OdbcBaseSetup pOdbcSetup(DataBaseType_Oracle);
 	try
 	{
@@ -435,9 +434,6 @@ void OdbcOracleFdoConnectTest::AllDatabaseTypesTest()
     {
 		TestCommonFail (ex);
     }
-#else
-     CPPUNIT_FAIL("OdbcOracleFdoConnectTest::AllDatabaseTypesTest disable");
-#endif
 }
 
 struct OdbcOracleAllDatabaseTypesMapEntry

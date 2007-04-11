@@ -113,6 +113,8 @@ public:
 
     virtual FdoBoolean IsGeometryFromOrdinatesWanted();
 
+    virtual bool SupportsAnsiQuotes();
+
 protected:
 
     virtual FdoSmPhDatabaseP CreateDatabase(FdoStringP database);
