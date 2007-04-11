@@ -311,6 +311,8 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
                 featIds->Add(datPropDef);
             }
 
+            // TODO: Do we need to handle sequences for single-serial PK in any way?
+
             pdc->Add(datPropDef);
         }
         tcReader->Close();
