@@ -25,6 +25,8 @@
 #include <string>
 // boost
 #include <boost/lexical_cast.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 namespace fdo { namespace postgis {
 
@@ -225,19 +227,52 @@ FdoString* SQLDataReader::GetString(FdoString* columnName)
 
 FdoDateTime SQLDataReader::GetDateTime(FdoString* columnName)
 {
-    // TODO: Add translating date/time
-    assert(!"NOT IMPLEMENTED");
-    return FdoDateTime();
+    FDOLOG_MARKER("SQLDataReader::GetDateTime");
+
+    try
+    {
+        PgCursor::ResultPtr pgRes = mCursor->GetFetchResult();
+        FdoInt32 const fnumber = static_cast<int>(mCursor->GetFieldNumber(columnName));
+        std::string sval(PQgetvalue(pgRes, static_cast<int>(mCurrentTuple), fnumber));
+
+        try
+        {
+            // The default output format of date is ISO.
+            // The SQL standard requires the use of the ISO 8601 format
+
+            boost::posix_time::ptime t(boost::posix_time::time_from_string(sval));
+            boost::gregorian::date d(t.date());
+            boost::posix_time::time_duration td(t.time_of_day());
+
+            FdoDateTime dt(FdoInt16(d.year()), d.month(), d.day(),
+                           td.hours(), td.minutes(), td.seconds());
+            return dt;
+        }
+        catch (std::exception& e)
+        {
+            FDOLOG_WRITE("Date '%' conversion failed: %s", sval.c_str(), e.what());
+            throw FdoCommandException::Create(L"Date conversion failed");
+        }
+    }
+    catch (FdoException* e)
+    {
+        FdoCommandException* ne = NULL;
+        ne = FdoCommandException::Create(L"DateTime", e);
+        e->Release();
+        throw ne;
+    }
 }
 
 FdoLOBValue* SQLDataReader::GetLOB(FdoString* columnName)
 {
+    FDOLOG_WRITE("SQLDataReader::GetLOB() - NOT IMPLEMENTED");
     assert(!"NOT IMPLEMENTED");
     return 0;
 }
 
 FdoIStreamReader* SQLDataReader::GetLOBStreamReader(FdoString* columnName)
 {
+    FDOLOG_WRITE("SQLDataReader::GetLOBStreamReader() - NOT IMPLEMENTED");
     assert(!"NOT IMPLEMENTED");
     return 0;
 }
