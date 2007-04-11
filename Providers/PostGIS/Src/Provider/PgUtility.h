@@ -58,6 +58,9 @@ pgexec_params_t;
 /// \param typeName [in] - name of PostgreSQL data type.
 /// \return FDO type enumerator mapped from PostgreSQL type.
 ///
+/// \note Some types like BLOB, CLOB are not supported yet (TODO)
+/// and they also are not returned in SchemaCapabilities::GetDataTypes()
+///
 FdoDataType FdoTypeFromPgTypeName(std::string const& typeName);
 
 /// Get value of type size from PQfmod mask.
