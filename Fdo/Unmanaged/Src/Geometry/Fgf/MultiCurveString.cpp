@@ -179,7 +179,7 @@ FdoIEnvelope* FdoFgfMultiCurveString::ComputeEnvelope() const
 	for (FdoInt32 i=0; i<numCurveStrings; i++)
 	{
 		FdoPtr<FdoICurveString> curveString = this->GetItem(i);
-		FdoIEnvelope* envl = curveString->GetEnvelope();
+		FdoPtr<FdoIEnvelope> envl = curveString->GetEnvelope();
 		envlImpl->Expand(envl);
 	}
 
