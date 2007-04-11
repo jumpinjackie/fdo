@@ -240,12 +240,15 @@ FdoDateTime SQLDataReader::GetDateTime(FdoString* columnName)
             // The default output format of date is ISO.
             // The SQL standard requires the use of the ISO 8601 format
 
-            boost::posix_time::ptime t(boost::posix_time::time_from_string(sval));
-            boost::gregorian::date d(t.date());
-            boost::posix_time::time_duration td(t.time_of_day());
+            //boost::posix_time::ptime t(boost::posix_time::time_from_string(sval));
+            //boost::gregorian::date d(t.date());
+            //boost::posix_time::time_duration td(t.time_of_day());
 
-            FdoDateTime dt(FdoInt16(d.year()), d.month(), d.day(),
-                           td.hours(), td.minutes(), td.seconds());
+            boost::gregorian::date d(boost::gregorian::from_simple_string(sval));
+
+            FdoDateTime dt(FdoInt16(d.year()), d.month(), d.day());
+
+                           //td.hours(), td.minutes(), td.seconds());
             return dt;
         }
         catch (std::exception& e)
