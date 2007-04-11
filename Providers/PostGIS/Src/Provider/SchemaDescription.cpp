@@ -271,8 +271,6 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
 
         ////////////////// CREATE DATA PROPERTIES //////////////////
 
-
-
         PgTableColumnsReader::Ptr tcReader =
             new PgTableColumnsReader(
                 mConn, stReader->GetSchemaName(), stReader->GetTableName());
@@ -298,6 +296,11 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
             bool const isNullable = tcReader->GetColumnNullability();
             datPropDef->SetNullable(isNullable);
 
+            // First, it's required to add property to the base collection.
+            // So, it can be add to the identity properties in next step,
+            // if required.
+            pdc->Add(datPropDef);
+
             // Retrieve definition of PRIMARY KEY constraint
             if (tcReader->IsPrimaryKey())
             {
@@ -313,7 +316,6 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
 
             // TODO: Do we need to handle sequences for single-serial PK in any way?
 
-            pdc->Add(datPropDef);
         }
         tcReader->Close();
 
