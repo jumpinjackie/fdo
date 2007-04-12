@@ -166,10 +166,14 @@ void FdoSmLpSchema::TableToClasses(
     FdoSmLpQClassesP& classes,
     FdoStringP tableName, 
     FdoStringP ownerName ,
-    FdoStringP databaseName
+    FdoStringP databaseName,
+    bool cacheOnly
 ) const
 {
     FdoInt32 idx;
+
+    if (!cacheOnly)
+        RefClasses();
 
     for ( idx = 0; idx < mClasses->GetCount(); idx++ ) {
         const FdoSmLpClassDefinition* pClass = mClasses->RefItem(idx);

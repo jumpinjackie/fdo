@@ -199,14 +199,15 @@ FdoSmLpJoinTreeNode* FdoSmLpSchemaCollection::GetJoinTree( FdoStringP schemaName
 FdoSmLpQClassesP FdoSmLpSchemaCollection::TableToClasses( 
     FdoStringP tableName, 
     FdoStringP ownerName,
-    FdoStringP databaseName
+    FdoStringP databaseName,
+    bool cacheOnly
 ) const
 {
     FdoInt32            idx;
     FdoSmLpQClassesP    classes = new FdoSmLpQClassCollection();
 
     for ( idx = 0; idx < GetCount(); idx++ ) {
-        RefItem(idx)->TableToClasses( classes, tableName, ownerName, databaseName );
+        RefItem(idx)->TableToClasses( classes, tableName, ownerName, databaseName, cacheOnly );
     }
 
     return classes;
