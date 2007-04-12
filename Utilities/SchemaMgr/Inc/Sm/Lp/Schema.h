@@ -116,7 +116,8 @@ public:
         FdoSmLpQClassesP& classes,
         FdoStringP tableName, 
         FdoStringP ownerName = L"",
-        FdoStringP databaseName = L""
+        FdoStringP databaseName = L"",
+        bool cacheOnly = true
     ) const;    
 
     /// Copy updates from corresponding FDO feature schema. 
