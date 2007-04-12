@@ -492,7 +492,7 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnDecimal(
 {
     FdoSmPhColumnP column = NewColumnDecimal( 
         columnName, 
-        FdoSchemaElementState_Unchanged, 
+        FdoSchemaElementState_Added, 
         bNullable, 
         length,
         scale,
@@ -689,7 +689,7 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnUnknown(
     FdoSmPhColumnP column = NewColumnUnknown( 
         columnName, 
         typeName,
-        FdoSchemaElementState_Unchanged, 
+        FdoSchemaElementState_Added, 
         bNullable, 
         length,
         scale,
