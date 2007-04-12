@@ -94,7 +94,8 @@ public:
     FdoSmLpQClassesP TableToClasses( 
         FdoStringP tableName, 
         FdoStringP ownerName = L"",
-        FdoStringP databaseName = L""
+        FdoStringP databaseName = L"",
+        bool cacheOnly = true
     ) const;    
 /*
     /// Given a class and list of data properties. This function returns a Join Tree of all
