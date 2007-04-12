@@ -1135,7 +1135,7 @@ void UnitTestUtil::CreateDB( FdoIConnection* connection, FdoString *datastore, F
 			if ( local_lt_method == 0 )
 				dictionary->SetProperty( name, L"NONE" );
 			else if ( local_lt_method == 1 || local_lt_method == 2)
-                dictionary->SetProperty( name, (local_lt_method == 2) ? L"OWM" : L"NONE" );
+                dictionary->SetProperty( name, (local_lt_method == 2) ? L"OWM" : L"FDO" );
 		}
 		else if ( wcscmp( name, L"TableSpace" ) == 0 )
 		{
@@ -1397,7 +1397,7 @@ void UnitTestUtil::DropDb(FdoString *suffix)
     FdoStringP username = UnitTestUtil::GetEnviron("username");
     FdoStringP password = UnitTestUtil::GetEnviron("password");
     FdoStringP datastore = UnitTestUtil::GetEnviron("datastore", suffix);
-    bool bExists = DatastoreExists();
+    bool bExists = DatastoreExists(suffix);
 
     if (bExists)
     {
