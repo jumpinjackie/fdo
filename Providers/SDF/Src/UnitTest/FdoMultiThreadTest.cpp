@@ -244,7 +244,7 @@ void FdoMultiThreadTest::InsertQueryTest()
     FunctionInfo funcInfo;
 
     funcInfo.Function1 = StartQuery;
-    InitInsertFunction(funcInfo.Function2);
+    funcInfo.Function2 = StartInsert;
 
     StartTest( &funcInfo );
 }

@@ -423,6 +423,7 @@ void UnitTestUtil::CreateData( bool create, FdoIConnection  *inConn, int featCou
 	int count = 1;
 	int numbProp = 100;
 	char tmp[32];
+	tmp[0] = '\0';
 	while( shpReader->ReadNext() )
 	{
 		if( ! shpReader->IsNull(L"Data") )

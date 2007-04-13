@@ -36,6 +36,7 @@ UnitTest_SOURCES = \
   ConnectionInfoTest.cpp \
   ConstraintsTest.cpp \
   ExtendedSelectTest.cpp \
+  FdoMultiThreadTest.cpp \
   NlsTest.cpp \
   SelectTest.cpp \
   SchemaTest.cpp \
