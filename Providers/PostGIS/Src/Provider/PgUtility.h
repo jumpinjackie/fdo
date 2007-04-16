@@ -54,6 +54,12 @@ typedef std::vector
     >
 pgexec_params_t;
 
+template <typename T>
+inline T QuoteSqlName(T const& name)
+{
+    return ("\"" + name + "\"");
+}
+
 /// Convert PostgreSQL type of given name to FDO type enumerator.
 /// \param typeName [in] - name of PostgreSQL data type.
 /// \return FDO type enumerator mapped from PostgreSQL type.
