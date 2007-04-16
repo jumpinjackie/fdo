@@ -101,21 +101,18 @@ public:
     /// Execute the ApplySchema command that creates metadata and
     /// physical storage for the schema.
     ///
-
-///////////// TODO
-/// Executes the ApplySchema command that creates metadata and physical
-/// storage for the schema. An exception is thrown if the schema already
-/// exists or if a schema already exists and the feature provider only
-/// supports a single schema. If schema changes include deletion of classes
-/// or the schema itself, then those classes (or the schema, if it is marked
-/// as deleted) must not contain any instance data. If they do, an exception
-/// will be thrown.
-/// Implementors must call FdoFeatureSchema::AcceptChanges() when Execute() succeeds.
-/// It must be called after the schema has been successfully applied, in
-/// order to synchronize the states of the schema elements.
-
+    /// Implementors must call FdoFeatureSchema::AcceptChanges() when Execute()
+    /// succeeds. It must be called after the schema has been successfully applied,
+    /// in order to synchronize the states of the schema elements.
+    ///
     /// \exception
-    /// TO BE WRITTEN
+    /// FdoException - if the schema already exists or if it exists and the feature
+    /// provider only supports a single schema.
+    /// \exception -  if schema changes including deletion of classes or the schema
+    /// changes itself, but those classes (or the schema, if it is marked as deleted)
+    /// still contain any instance data.
+    /// \exception
+    /// FdoCommandException - if database operation or SQL executeion failed.
     ///
     virtual FDOPOSTGIS_API void Execute();
 
