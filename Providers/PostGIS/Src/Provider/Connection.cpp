@@ -629,7 +629,7 @@ fdo::postgis::PgCursor* Connection::PgCreateCursor(char const* name)
     //
     // Generate random suffix for cursor name to make name more unique
     //
-    std::string suffix("1979"); // Just the year of birth, why not?
+    std::string suffix("1979"); // My year of birth, why not?
     try
     {
         int rn = std::rand() % (500 - 0 + 1) + 0;

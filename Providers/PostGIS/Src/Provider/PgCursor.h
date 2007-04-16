@@ -32,6 +32,15 @@ namespace fdo { namespace postgis {
 /// This class declares cursor in frame of a transaction,
 /// also provides interface to fetch and access data.
 ///
+/// \note It's possible to instaniate the class only if state of
+/// passed connection is not closed.
+///
+/// There are possible three state of the cursor instance:
+/// instaniated, declared, fetched. Every operation requires particular state.
+/// For example, Describe() can be executed just after the cursor is instantiated
+/// and the connection is open; Fetch() requires cursor in declared state, etc.
+/// If minimal state of cursor instance is not met, an exception is thrown.
+/// 
 /// \todo Add function/constructor to pass of FETCH page size and cache generated FETCH command.
 ///
 class PgCursor :
@@ -58,6 +67,14 @@ public:
 
     /// Constructor creates a named cursor associated with given connection.
     /// It throws an exception if connection is invalid.
+    ///
+    /// \param
+    /// conn [in] - instance of connection with which cursor will be associated.
+    /// \param
+    /// name [in] - name of cursor, later used in DECLARE command creating
+    /// PostgreSQL cursor.
+    /// \exception FdoException - if given connection is closed.
+    ///
     PgCursor(Connection* conn, std::string const& name);
 
     /// Get name of a cursor.
@@ -97,6 +114,11 @@ public:
     /// DECLARE <name> CURSOR FOR SELECT <columns> FROM <table>;
     /// \endcode
     ///
+    /// \param
+    /// query [in] - string with SQL query to associate with cursor.
+    /// \exception FdoException - if given connection is invalid or
+    /// an error occured while executing database operation.
+    ///
     void Declare(char const* query);
 
     /// Declare a cursor using given SELECT query and specified input parameters.
@@ -107,6 +129,14 @@ public:
     /// DECLARE <name> CURSOR FOR SELECT <columns> FROM <table>
     /// WHERE <column> = $1 AND <column> = $2;
     /// \endcode
+    ///
+    /// \param
+    /// query [in] - string with SQL query to associate with cursor.
+    /// \param
+    /// params [in] - collection of input parameters to bind with placeholders.
+    /// It works the same way as parameters passed to PQexecParams() function.
+    /// \exception FdoException - if associated connection is invalid or
+    /// an error occured while executing database operation.
     ///
     void Declare(char const* query, details::pgexec_params_t const& params);
 
@@ -121,11 +151,25 @@ public:
     void Close();
 
     /// Fetch next tuple.
+    ///
+    /// \return 
+    /// Pointer to query result instance.
+    /// \exception
+    /// FdoException - if connection is invalid or cursor is not in declared state,
+    /// or an error occured while executing database operation.
+    ///
     ResultPtr FetchNext();
 
     /// Fetch N number of tuples from cursor.
+    ///
     /// \param
     /// count [in] - number of tuples to fetch from the cursor.
+    /// \return 
+    /// Pointer to query result instance.
+    /// \exception
+    /// FdoException - if connection is invalid or cursor is not in declared state,
+    /// or an error occured while executing database operation.
+    ///
     ResultPtr Fetch(std::size_t count);
 
 protected:
