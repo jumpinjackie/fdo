@@ -52,6 +52,12 @@ public:
     virtual FdoString* GetSQLStatement();
 
     /// Set new SQL statement to be executed by the command.
+    ///
+    /// \param
+    /// sql [in] - string with SQL statement.
+    /// \exception
+    /// FdoCommandException - if NULL pointer is passed instead of statement string.
+    ///
     virtual void SetSQLStatement(FdoString* sql);
     
     /// Execute assigned SQL statement against current connection.
@@ -66,6 +72,9 @@ public:
     /// 
     /// \return
     /// Returns the data reader.
+    /// \exception
+    /// FdoCommandException - if reader construction, cursor operation
+    /// or database operation fails.
     /// 
     virtual FdoISQLDataReader* ExecuteReader();
 
