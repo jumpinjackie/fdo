@@ -22,6 +22,7 @@
 #include "FilterProcessor.h"
 #include "Connection.h"
 #include "PgCursor.h"
+#include "PgUtility.h"
 #include "PostGIS/FdoPostGisOverrides.h"
 
 #include <cassert>
@@ -197,6 +198,7 @@ FdoIFeatureReader* SelectCommand::Execute()
             return NULL;
         }
 
+        // NOTE: Schema and table names are wrapped with double quotes
         std::string tablePath(static_cast<char const*>(phClassDef->GetTablePath()));
 
         FDOLOG_WRITE("Table: %s", tablePath.c_str());
