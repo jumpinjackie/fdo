@@ -101,6 +101,11 @@ SymbolicName=MSG_POSTGIS_COMMAND_SELECT_FAILED
 Language=English
 The execution of Select command failed.
 .
+MessageId=1016
+SymbolicName=MSG_POSTGIS_OPEN_TABLE_READER_FAILED
+Language=English
+The open operation on table columns reader failed.
+.
 
 ;//************************************************************************************
 ;//************************************************************************************
