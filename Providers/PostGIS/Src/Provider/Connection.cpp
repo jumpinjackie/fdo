@@ -364,6 +364,8 @@ FdoITransaction* Connection::BeginTransaction()
 
 FdoICommand* Connection::CreateCommand(FdoInt32 type)
 {
+    FDOLOG_MARKER("Connection::+CreateCommand");
+
     // NOTE: A minimum required connection state for a datastore command is pending.
     // A minimum required state for feature command is open.
     // More details available in following discussion:
@@ -373,8 +375,10 @@ FdoICommand* Connection::CreateCommand(FdoInt32 type)
     //        || FdoConnectionState_Pending == GetConnectionState())
     if (FdoConnectionState_Closed == GetConnectionState())
     {
-        throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CONNECTION_INVALID,
-                                   "Connection is closed or invalid."));
+        FDOLOG_WRITE("Connection is closed or invalid");
+        throw FdoConnectionException::Create(
+            NlsMsgGet(MSG_POSTGIS_CONNECTION_INVALID,
+            "Connection is closed or invalid."));
     }
 
     FdoPtr<FdoICommand> cmd;
@@ -414,6 +418,8 @@ FdoICommand* Connection::CreateCommand(FdoInt32 type)
         break;
     default:
         {
+            FDOLOG_WRITE("Unsupported command requested.");
+
             FdoStringP cmdString(FdoCommonMiscUtil::FdoCommandTypeToString(type));
             throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_COMMAND_NOT_SUPPORTED,
                 "The command %1$ls is not supported.",
@@ -436,12 +442,16 @@ FdoPhysicalSchemaMapping* Connection::CreateSchemaMapping()
 
 void Connection::SetConfiguration(FdoIoStream* configStream)
 {
-    assert(!"NOT IMPLEMENTED");
+    FDOLOG_MARKER("Connection::+SetConfiguration");
+    FDOLOG_WRITE("NOT IMPLEMENTED");
+    //assert(!"NOT IMPLEMENTED");
 }
 
 void Connection::Flush()
 {
-    assert(!"NOT IMPLEMENTED");
+    FDOLOG_MARKER("Connection::+Flush");
+    FDOLOG_WRITE("NOT IMPLEMENTED");
+    //assert(!"NOT IMPLEMENTED");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
