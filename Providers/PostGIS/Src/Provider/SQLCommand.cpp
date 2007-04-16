@@ -53,7 +53,7 @@ void SQLCommand::SetSQLStatement(FdoString* sql)
 
     if (NULL == sql)
     {
-        throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_COMMAND_SQL_INVALID,
+        throw FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_COMMAND_SQL_INVALID,
             "The passed SQL statement is invalid or empty: '%1$ls'.",
             L""));
     }
