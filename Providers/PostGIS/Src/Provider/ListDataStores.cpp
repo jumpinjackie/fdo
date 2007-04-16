@@ -51,8 +51,6 @@ FdoIDataStoreReader* ListDataStores::Execute()
 {
     FDOLOG_MARKER("ListDataStores::+Execute");
 
-    // TODO: Should we catch-and-throw more specific exception here
-
     std::string cursorName("curFdoListDataStores");
     std::string sql("SELECT ns.nspname AS schemaname, r.rolname AS ownername, "
                     "pg_catalog.obj_description(ns.oid, 'pg_namespace') AS description "
@@ -62,9 +60,13 @@ FdoIDataStoreReader* ListDataStores::Execute()
                     "AND ns.nspname != \'information_schema\' "
                     "ORDER BY 1");
     
+    // NOTE: Following may throw
+
     // Create a cursor associated with query fetching data stores 
     PgCursor::Ptr cursor = mConn->PgCreateCursor(cursorName.c_str());
     cursor->Declare(sql.c_str());
+
+    // NOTE: The DataStoreReader constructor doesn't throw.
 
     // Cursor ownership is transfered to the reader
     return (new DataStoreReader(cursor));

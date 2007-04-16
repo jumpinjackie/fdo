@@ -33,6 +33,10 @@ public:
 
     /// Constructor creates a reader associated with given cursor.
     /// Cursor is required to be declared and usable.
+    ///
+    /// \exception
+    /// Does not throw.
+    ///
     DataStoreReader(PgCursor* cursor);
 
     /// Destructor.
