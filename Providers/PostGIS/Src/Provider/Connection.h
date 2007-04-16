@@ -124,6 +124,13 @@ public:
 
     /// Create command object of specified type and return pointer to interface realizing
     /// command capabilities associated with the connection.
+    ///
+    /// \param
+    /// type [in] - enumerator indicating type of requested command.
+    /// \exception
+    /// FdoConnectionException - if connection is closed or of invalid state.
+    /// FdoException - if unsupported command is requested.
+    ///
     FDOPOSTGIS_API FdoICommand* CreateCommand(FdoInt32 type);
 
     /// Factory function that creates an empty Schema Override mapping specific
