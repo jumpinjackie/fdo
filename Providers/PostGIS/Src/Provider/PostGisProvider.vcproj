@@ -404,6 +404,14 @@
 			Name="Schema"
 			>
 			<File
+				RelativePath=".\ApplySchemaCommand.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ApplySchemaCommand.h"
+				>
+			</File>
+			<File
 				RelativePath=".\DescribeSchemaCommand.cpp"
 				>
 			</File>
