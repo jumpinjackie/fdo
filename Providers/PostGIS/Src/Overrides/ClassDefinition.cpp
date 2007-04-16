@@ -116,8 +116,13 @@ FdoStringP ClassDefinition::GetTableName() const
 
 FdoStringP ClassDefinition::GetTablePath() const
 {
-    FdoStringP path(const_cast<ClassDefinition*>(this)->GetName());
-    return path.Replace(L"~", L".");
+    FdoStringP schema(const_cast<ClassDefinition*>(this)->GetSchemaName());
+    FdoStringP table(const_cast<ClassDefinition*>(this)->GetTableName());
+
+    FdoStringP path = FdoStringP::Format(L"\"%s\".\"%s\"",
+        static_cast<FdoString*>(schema), static_cast<FdoString*>(table));
+
+    return path;
 }
 
 }}} // namespace fdo::postgis::ov

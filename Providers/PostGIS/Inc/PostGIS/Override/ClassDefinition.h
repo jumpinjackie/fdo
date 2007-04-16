@@ -66,8 +66,25 @@ public:
     //
     // ClassDefinition custom interface
     //
+
+    /// Get name of schema (FDO datastore).
+    /// The name is NOT wrapped with quotes here.
     FDOPOSTGIS_API FdoStringP GetSchemaName() const;
+
+    /// Get name of table.
+    /// The name is NOT wrapped with quotes here.
     FDOPOSTGIS_API FdoStringP GetTableName() const;
+
+    /// Get fully qualified table path in following format "schema"."table" .
+    /// Both names are wrapped with double quotes automatically
+    /// according to the <strong>always quote</strong> strategy.
+    /// 
+    /// \return String with full path of table.
+    ///
+    /// For more details about quoting SQL identifiers in PostgreSQL database,
+    /// see following chapter from the manual:
+    /// <a href="http://www.postgresql.org/docs/8.2/interactive/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS">4.1.1. Identifiers and Key Words</a>.
+    ///
     FDOPOSTGIS_API FdoStringP GetTablePath() const;
 
 protected:
