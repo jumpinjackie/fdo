@@ -171,7 +171,7 @@ bool PgTableColumnsReader::IsPrimaryKey() const
 void PgTableColumnsReader::Open()
 {
     FDOLOG_MARKER("PgTableColumnsReader::+Open");
-
+    
     assert(mSchema.GetLength() > 0);
     assert(mTable.GetLength() > 0);
 
@@ -188,16 +188,32 @@ void PgTableColumnsReader::Open()
         "AND c.oid = i.indrelid AND i.indisprimary = 't' "
         "AND t.typname !~ '^geom' "
         "AND c.relname = '" + table + "' AND n.nspname = '" + schema + "' ORDER BY a.attnum;");
-        
-    // Query schema details of given table and attach results to the SQL data reader
-    mCmd = static_cast<FdoISQLCommand*>(mConn->CreateCommand(FdoCommandType_SQLCommand));
-    assert(NULL != mCmd);
 
-    FdoStringP tmp(sql.c_str());
-    mCmd->SetSQLStatement(tmp);
+    try
+    {
+        // NOTE: Command creation or execution may throw
 
-    mReader = mCmd->ExecuteReader();
-    assert(NULL != mReader);
+        // Query schema details of given table and attach results to the SQL data reader
+        mCmd = static_cast<FdoISQLCommand*>(mConn->CreateCommand(FdoCommandType_SQLCommand));
+        assert(NULL != mCmd);
+
+        FdoStringP tmp(sql.c_str());
+        mCmd->SetSQLStatement(tmp);
+
+        mReader = mCmd->ExecuteReader();
+        assert(NULL != mReader);
+    }
+    catch (FdoException* e)
+    {
+        FDOLOG_WRITE("The open operation on table columns reader failed");
+
+        FdoCommandException* ne = NULL;
+        ne = FdoCommandException::Create(
+            NlsMsgGet(MSG_POSTGIS_OPEN_TABLE_READER_FAILED,
+                "The open operation on table columns reader failed.", e));
+        e->Release();
+        throw ne;
+    }
 }
 
 bool PgTableColumnsReader::ReadNext()
