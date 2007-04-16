@@ -39,6 +39,12 @@ class SpatialContextCollection;
 /// Implementation of connection interface for PostGIS provider.
 /// It represents a unique session with FDO datastore.
 ///
+/// For every instance of the Connection class, there two states of actual
+/// connection possible: closed or not closed.
+/// Every function declared in public interface checks if connection is 
+/// at minimum in state required for particular operation,
+/// otherwise an exception is thrown.
+/// 
 /// \todo Make it noncopyable
 ///
 class Connection : public FdoIConnection
@@ -155,7 +161,16 @@ public:
     /// \todo To be documented.
     PGresult* PgExecuteQuery(char const* sql);
 
-    /// \todo To be documented.
+    /// Create control object for PostgreSQL database cursor with given name.
+    /// The PgCursor instance is used to define cursor using DECLARE command
+    /// and can be used to retrieve a small number of rows at a time
+    /// out of a larger query executed against PostGIS FDO datastore.
+    /// \note All PostgreSQL cursors are read only.
+    ///
+    /// \param name [in] - name used to declare cursor.
+    /// \return Pointer to cursor control object.
+    /// \exception FdoException - state of connection instance is closed or invalid. 
+    ///
     PgCursor* PgCreateCursor(char const* name);
 
     /// \todo To be documented.
