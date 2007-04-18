@@ -528,14 +528,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\NlsTest.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\NlsTest.h"
-			>
-		</File>
-		<File
 			RelativePath=".\resource.h"
 			>
 		</File>
