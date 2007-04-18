@@ -37,7 +37,6 @@ UnitTest_SOURCES = \
   ConstraintsTest.cpp \
   ExtendedSelectTest.cpp \
   FdoMultiThreadTest.cpp \
-  NlsTest.cpp \
   SelectTest.cpp \
   SchemaTest.cpp \
   SpatialContextTest.cpp \
@@ -56,7 +55,6 @@ noinst_HEADERS = $(UnitTest_SOURCES) \
   FdoMultiThreadTest.h \
   FgfStreamWriter.h \
   MasterTest.h \
-  NlsTest.h \
   SelectTest.h \
   SchemaTest.h \
   SpatialContextTest.h \
