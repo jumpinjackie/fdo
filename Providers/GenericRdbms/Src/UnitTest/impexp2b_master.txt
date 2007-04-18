@@ -218,8 +218,8 @@ Feature id number (uniquely identifies a feature)</xs:documentation>
 </xs:complexContent>
 </xs:complexType>
 </xs:schema>
-<SchemaMapping xmlns="http://fdomysql.osgeo.org/schemas" xmlns:rdb="http://fdordbms.osgeo.org/schemas" tableMapping="Base" provider="OSGeo.MySQL.3.2" name="Schema1"/>
-<SchemaMapping xmlns="http://fdomysql.osgeo.org/schemas" xmlns:rdb="http://fdordbms.osgeo.org/schemas" tableMapping="Base" provider="OSGeo.MySQL.3.2" name="Schema2"/>
+<SchemaMapping xmlns="http://fdomysql.osgeo.org/schemas" xmlns:rdb="http://fdordbms.osgeo.org/schemas" tableMapping="Base" provider="OSGeo.MySQL.3.3" name="Schema1"/>
+<SchemaMapping xmlns="http://fdomysql.osgeo.org/schemas" xmlns:rdb="http://fdordbms.osgeo.org/schemas" tableMapping="Base" provider="OSGeo.MySQL.3.3" name="Schema2"/>
 <gml:FeatureCollection>
 <gml:featureMember>
 <ClassB1>
