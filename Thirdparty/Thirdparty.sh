@@ -19,7 +19,7 @@
 
 ###########################################
 ## build third party libraries:          ##
-## apache, linux/cppunit, Sqlite3.3.13,   ##
+## apache, linux/cppunit, Sqlite3.3.13,  ##
 ## boost_1_32_0, libcurl, openssl        ##
 ###########################################
 
@@ -107,7 +107,6 @@ if test "$FDOGDAL" == "$FDOTHIRDPARTY/gdal"; then
     ./configure --with-gif=internal --with-jpeg=internal --with-png=internal --with-libtiff=internal --with-geotiff=internal --without-ogr --with-pg=no --with-python=no --with-libz=internal
     make
     cp -f .libs/libgdal.a lib/
-    cp -f .libs/libgdal.la lib/
     cp -f .libs/libgdal.so lib/
     cp -f .libs/libgdal.so.1 lib/
     cp -f .libs/libgdal.so.1.11.0 lib/
