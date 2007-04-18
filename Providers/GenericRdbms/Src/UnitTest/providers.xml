@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <FeatureProviderRegistry>
   <FeatureProvider>
-    <Name>Autodesk.Oracle.3.2</Name>
+    <Name>Autodesk.Oracle.3.3</Name>
     <DisplayName>Oracle FDO Provider</DisplayName>
     <Description>FDO Provider for Oracle RDBMS</Description>
     <IsManaged>False</IsManaged>
-    <Version>3.2.0.0</Version>
-    <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
+    <Version>3.3.0.0</Version>
+    <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
     <LibraryPath>.\OracleProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
@@ -19,12 +19,12 @@
     <LibraryPath>.\MySQLProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
-    <Name>Autodesk.SqlServer.3.2</Name>
+    <Name>Autodesk.SqlServer.3.3</Name>
     <DisplayName>SQL Server FDO Provider</DisplayName>
     <Description>FDO Provider for SQL Server</Description>
     <IsManaged>False</IsManaged>
-    <Version>3.2.0.0</Version>
-    <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>
+    <Version>3.3.0.0</Version>
+    <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
     <LibraryPath>.\SqlServerProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
