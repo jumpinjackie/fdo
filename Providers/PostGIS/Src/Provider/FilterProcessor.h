@@ -34,6 +34,8 @@ public:
     
     /// Constructor.
     FilterProcessor();
+
+    FilterProcessor(int srid);
     
     //
     // FdoIFilterProcessor
@@ -106,6 +108,7 @@ private:
 
     ExpressionProcessor::Ptr mExprProc;
 
+    std::string mSRID;
     std::string mStatement;
 
     //
