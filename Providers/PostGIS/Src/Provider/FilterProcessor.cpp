@@ -263,8 +263,6 @@ void FilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& cond)
     { 
         FDOLOG_WRITE("Spatial operation: EnvelopeIntersects");
 
-        // TODO: The value 32767 is a dummy SRID used for testing
-        // It will be replaced with SRID of spatial context
         mStatement.append(sql::sepLeftTerm);
         mStatement.append(columnName + " && ");
         mStatement.append("GeomFromWKB(decode(\'" + geomHex + "\', \'hex\')," + mSRID + ")");
