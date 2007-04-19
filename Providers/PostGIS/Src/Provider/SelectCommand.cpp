@@ -134,6 +134,10 @@ FdoIFeatureReader* SelectCommand::Execute()
 {
     FDOLOG_MARKER("SelectCommand::+Execute");
     
+    //////////////////////////////////////////////////////////////
+    // TODO: Refactor this big function into smaller procedures
+    //////////////////////////////////////////////////////////////
+
     try
     {
         //
@@ -175,6 +179,8 @@ FdoIFeatureReader* SelectCommand::Execute()
                 static_cast<FdoString*>(classId));
             return NULL;
         }
+
+        // We have a single-element collection here
         classDef = static_cast<FdoClassDefinition*>(featureClasses->GetItem(0));
         assert(NULL != classDef);
         FdoStringP className = classDef->GetName();
@@ -206,6 +212,7 @@ FdoIFeatureReader* SelectCommand::Execute()
         //
         // Read properties definition to SQL columns
         //
+        FdoInt32 currentSrid = 0;
         std::string sqlColumns("");
         FdoPtr<FdoPropertyDefinitionCollection> props = classDef->GetProperties();
         
@@ -219,6 +226,23 @@ FdoIFeatureReader* SelectCommand::Execute()
             assert(FdoPropertyType_DataProperty == propDef->GetPropertyType()
                 || FdoPropertyType_GeometricProperty == propDef->GetPropertyType());
 
+            // Find SRID of geometric property
+            if (FdoPropertyType_GeometricProperty == propDef->GetPropertyType())
+            {
+                // TODO: It won't work with multiple-geometric properties
+                FdoGeometricPropertyDefinition* geom = NULL;
+                geom = static_cast<FdoGeometricPropertyDefinition*>(propDef.p);
+
+                FdoString* csName = geom->GetSpatialContextAssociation();
+                SpatialContextCollection::Ptr spContexts(mConn->GetSpatialContexts());
+                SpatialContext::Ptr spc(spContexts->FindItem(csName));
+                if (NULL != spc)
+                {
+                    currentSrid = spc->GetSRID();
+                }
+            }
+
+            // Add property to columns list
             FdoStringP propName(propDef->GetName());
 
             if (propIdx > 0)
@@ -228,6 +252,8 @@ FdoIFeatureReader* SelectCommand::Execute()
             sqlColumns += tablePath;
             sqlColumns += '.';
             sqlColumns += static_cast<char const*>(propName);
+
+            FDOLOG_WRITE("\t%s (SRID=%d)", static_cast<char const*>(propName), currentSrid);
         }
 
         //
@@ -237,7 +263,7 @@ FdoIFeatureReader* SelectCommand::Execute()
 
         if (NULL != mFilter)
         {
-            FilterProcessor::Ptr proc(new FilterProcessor());
+            FilterProcessor::Ptr proc(new FilterProcessor(currentSrid));
             mFilter->Process(proc);
             sqlWhere = proc->GetFilterStatement();
         }
