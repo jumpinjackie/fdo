@@ -18,8 +18,10 @@
 #include "PostGisProvider.h"
 #include "FilterProcessor.h"
 #include "ExpressionProcessor.h"
-
+// std
 #include <cassert>
+// boost
+#include <boost/lexical_cast.hpp>
 
 namespace fdo { namespace postgis {
 
@@ -53,8 +55,27 @@ char const* opLike = " LIKE ";
 
 
 FilterProcessor::FilterProcessor() :
+    mExprProc(new ExpressionProcessor()), mSRID("-1")
+{
+}
+
+FilterProcessor::FilterProcessor(FdoInt32 srid) :
     mExprProc(new ExpressionProcessor())
 {
+    FDOLOG_MARKER("FilterProcessor::FilterProcessor");
+    try
+    {
+        FDOLOG_WRITE("SRID = %d", srid);
+
+        mSRID = boost::lexical_cast<std::string>(srid);
+    }
+    catch (boost::bad_lexical_cast const& e)
+    {
+        // TODO: Re-throw as FDO exception
+
+        FDOLOG_WRITE("Convertion SRID to string failed: %s", e.what());
+        mSRID = "-1"; // Indicate unknown SRID
+    }
 }
 
 FilterProcessor::~FilterProcessor()
@@ -246,7 +267,7 @@ void FilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& cond)
         // It will be replaced with SRID of spatial context
         mStatement.append(sql::sepLeftTerm);
         mStatement.append(columnName + " && ");
-        mStatement.append("GeomFromWKB(decode(\'" + geomHex + "\', \'hex\'), 32767)");
+        mStatement.append("GeomFromWKB(decode(\'" + geomHex + "\', \'hex\')," + mSRID + ")");
         mStatement.append(sql::sepRightTerm);
     }
     else
@@ -301,7 +322,8 @@ void FilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& cond)
         mStatement.append(spatialOp + "(" + columnName + ",");
         mStatement.append("GeomFromWKB(");
         mStatement.append("decode(\'" + geomHex + "\', \'hex\')");
-        mStatement.append("), 32767)");
+        mStatement.append("," + mSRID + ")");
+        mStatement.append(")");
         mStatement.append(sql::sepRightTerm);
     }
 }
