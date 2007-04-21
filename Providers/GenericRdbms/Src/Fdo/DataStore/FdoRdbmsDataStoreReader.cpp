@@ -106,7 +106,7 @@ bool FdoRdbmsDataStoreReader::ReadNext()
 
 					FdoPtr<FdoISQLCommand>	selCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
 					
-					FdoStringP	sqlString = FdoStringP::Format(L"select name, value from %ls.F_OPTIONS", (FdoString *)mDatastoreName);
+					FdoStringP	sqlString = FdoStringP::Format(L"select name, value from %ls.f_options", (FdoString *)mDatastoreName);
 
 					selCmd->SetSQLStatement( sqlString );
 
