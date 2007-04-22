@@ -80,6 +80,11 @@ public:
     /// Get geometry value of the specified property as a byte array in FGF format.
     FDOPOSTGIS_API virtual FdoByteArray* GetGeometry(FdoString* propertyName);
 
+    /// Get geometry value of the specified property as a byte array in FGF format.
+    /// This method is a language-specific performance optimization that returns
+    /// pointer to the array data, rather than to an object that encapsulates the array.
+    FDOPOSTGIS_API const FdoByte* GetGeometry(FdoString* propertyName, FdoInt32* count);
+
     /// Get raster object of the specified property.
     FDOPOSTGIS_API virtual FdoIRaster* GetRaster(FdoString* propertyName);
 
@@ -115,17 +120,23 @@ private:
 
     SQLDataReader::Ptr mSQLReader;
 
+    // Internal cache for FGF stream.
+    // The array is only guaranteed to be valid until next call of ReadNext() or Close(),
+    // or the disposal of this reader object.
+    FdoPtr<FdoByteArray> mFgfGeometry;
+
 }; // class Reader
 
 template <typename T>
 Reader<T>::Reader(Connection* conn, PgCursor* cursor) :
-    mConn(conn), mCursor(cursor), mSQLReader(new SQLDataReader(mCursor))
+    mConn(conn), mCursor(cursor), mSQLReader(new SQLDataReader(mCursor)), mFgfGeometry(NULL)
 {
-    FDOLOG_MARKER("Reader created");
+    FDOLOG_MARKER("Created reader instance");
 
     assert(NULL != mConn);
     assert(NULL != mCursor);
     assert(NULL != mSQLReader);
+    assert(NULL == mFgfGeometry);
 
     FDO_SAFE_ADDREF(mConn.p);
     FDO_SAFE_ADDREF(mCursor.p);
@@ -134,6 +145,7 @@ Reader<T>::Reader(Connection* conn, PgCursor* cursor) :
 template <typename T>
 Reader<T>::~Reader()
 {
+    // idle
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -166,6 +178,8 @@ FdoByte Reader<T>::GetByte(FdoString* propertyName)
 template <typename T>
 FdoDateTime Reader<T>::GetDateTime(FdoString* propertyName)
 {
+    FDOLOG_MARKER("Reader::GetDateTime");
+    FDOLOG_WRITE("Get-NOT IMPLEMENTED");
     assert(!"NOT IMPLEMENTED");
     return FdoDateTime();
 }
@@ -209,6 +223,7 @@ FdoString* Reader<T>::GetString(FdoString* propertyName)
 template <typename T>
 FdoLOBValue* Reader<T>::GetLOB(FdoString* propertyName)
 {
+    FDOLOG_MARKER("Reader::GetLOB");
     assert(!"NOT IMPLEMENTED");
     return 0;
 }
@@ -216,6 +231,7 @@ FdoLOBValue* Reader<T>::GetLOB(FdoString* propertyName)
 template <typename T>
 FdoIStreamReader* Reader<T>::GetLOBStreamReader(wchar_t const* propertyName)
 {
+    FDOLOG_MARKER("Reader::GetLOBStreamReader");
     assert(!"NOT IMPLEMENTED");
     return 0;
 }
@@ -223,13 +239,30 @@ FdoIStreamReader* Reader<T>::GetLOBStreamReader(wchar_t const* propertyName)
 template <typename T>
 bool Reader<T>::IsNull(FdoString* propertyName)
 {
+    FDOLOG_MARKER("Reader::IsNull");
     return mSQLReader->IsNull(propertyName);
 }
 
 template <typename T>
 FdoByteArray* Reader<T>::GetGeometry(FdoString* propertyName)
 {
+    FDOLOG_MARKER("Reader::GetGeometry");
+    FDOLOG_WRITE(L"Property: %s", propertyName);
+
     return mSQLReader->GetGeometry(propertyName);
+}
+
+template <typename T>
+const FdoByte* Reader<T>::GetGeometry(FdoString* propertyName, FdoInt32* count)
+{
+    FDOLOG_MARKER("Reader::GetGeometry(propertyName, count)");
+    FDOLOG_WRITE(L"Property: %s", propertyName);
+
+    mFgfGeometry = GetGeometry(propertyName);
+
+    *count = mFgfGeometry->GetCount();
+    
+    return mFgfGeometry->GetData();
 }
 
 template <typename T>
