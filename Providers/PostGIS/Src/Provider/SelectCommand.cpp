@@ -80,6 +80,9 @@ FdoIdentifierCollection* SelectCommand::GetOrdering()
 
 void SelectCommand::SetOrderingOption(FdoOrderingOption option)
 {
+    FDOLOG_MARKER("SelectCommand::+SetOrderingOption");
+    FDOLOG_WRITE("Ordering: %d", option);
+
     mOrderingOption = option;
 }
 
@@ -94,6 +97,8 @@ FdoOrderingOption SelectCommand::GetOrderingOption()
 
 FdoLockType SelectCommand::GetLockType()
 {
+    FDOLOG_MARKER("SelectCommand::+GetLockType");
+
     throw FdoCommandException::Create(
         NlsMsgGet(MSG_POSTGIS_LOCKING_NOT_SUPPORTED,
         "The PostGIS provider does not support locking (%1$ls).", L"GetLockType"));
@@ -103,6 +108,8 @@ FdoLockType SelectCommand::GetLockType()
 
 void SelectCommand::SetLockType(FdoLockType value)
 {
+    FDOLOG_MARKER("SelectCommand::+SetLockType");
+
     FdoStringP msg(FdoStringP::Format(L"SetLockType($ls)", value));
 
     throw FdoCommandException::Create(
@@ -113,6 +120,8 @@ void SelectCommand::SetLockType(FdoLockType value)
 
 FdoLockStrategy SelectCommand::GetLockStrategy()
 {
+    FDOLOG_MARKER("SelectCommand::+GetLockStrategy");
+
     throw FdoCommandException::Create(
         NlsMsgGet(MSG_POSTGIS_LOCKING_NOT_SUPPORTED,
         "The PostGIS provider does not support locking (%1$ls).", L"GetLockStrategy"));
@@ -122,6 +131,8 @@ FdoLockStrategy SelectCommand::GetLockStrategy()
 
 void SelectCommand::SetLockStrategy(FdoLockStrategy value)
 {
+    FDOLOG_MARKER("SelectCommand::+SetLockStrategy");
+
     FdoStringP msg(FdoStringP::Format(L"SetLockStrategy($ls)", value));
 
     throw FdoCommandException::Create(
@@ -263,6 +274,8 @@ FdoIFeatureReader* SelectCommand::Execute()
 
         if (NULL != mFilter)
         {
+            FDOLOG_WRITE("Configuring filter");
+
             FilterProcessor::Ptr proc(new FilterProcessor(currentSrid));
             mFilter->Process(proc);
             sqlWhere = proc->GetFilterStatement();
@@ -310,17 +323,21 @@ FdoIFeatureReader* SelectCommand::Execute()
         //
         // Declare cursor and create feature reader
         //
+        FDOLOG_WRITE("Creating cursor");
+
         PgCursor::Ptr cursor(NULL);
         cursor = mConn->PgCreateCursor("crsFdoSelectCommand");
+        assert(NULL != cursor);
 
         // Collect bind parameters
         details::pgexec_params_t params;
         Base::PgGenerateExecParams(params);
 
         // Open new cursor
+        FDOLOG_WRITE("Declaring cursor");
         cursor->Declare(sql.c_str(), params);
-
-        assert(NULL != cursor);
+        
+        FDOLOG_WRITE("Constructing feature reader");
         FeatureReader::Ptr reader(new FeatureReader(mConn, cursor, classDef));
     
         FDO_SAFE_ADDREF(reader.p);
