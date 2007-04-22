@@ -257,8 +257,8 @@ void ExpressionProcessor::ProcessGeometryValue(FdoGeometryValue& expr)
 
         FdoPtr<FdoIGeometry> fdoGeom = factory->CreateGeometryFromFgf(fgfBytes);
         assert(NULL != fdoGeom);
-        
-        FDOLOG_WRITE(L"Geometry: %s", fdoGeom->GetText());
+
+        FDOLOG_WRITE(L"Geometry: %s\n\t", fdoGeom->GetText());
 
         FdoPtr<FdoByteArray> wkbBytes(factory->GetWkb(fdoGeom));
         FdoByte* const bytes = wkbBytes->GetData();
