@@ -496,12 +496,11 @@ void Connection::PgExecuteCommand(char const* sql, FdoSize& affected)
     ExecStatusType pgStatus = PQresultStatus(pgRes.get());
     if (PGRES_COMMAND_OK != pgStatus && PGRES_TUPLES_OK != pgStatus)
     {
-        // TODO: What about automatically logging exception?
-        // FDOLOG_WRITE("PostgreSQL failed executing SQL command:\n\tCODE: %s\n\t%s\n\tSQL: %s",
-        //    PQresStatus(pgStatus), PQresultErrorMessage(pgRes.get()), sql);
-
         FdoStringP errCode(PQresStatus(pgStatus));
         FdoStringP errMsg(PQresultErrorMessage(pgRes.get()));
+
+        FDOLOG_WRITE("SQL command failed: [%s] %s",
+            static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg));
 
         // TODO: Consider translation of PostgreSQL status to FDO exception (new types?)
         throw FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_SQL_STATEMENT_EXECUTION_FAILED,
@@ -577,6 +576,9 @@ void Connection::PgExecuteCommand(char const* sql,
         FdoStringP errCode(PQresStatus(pgStatus));
         FdoStringP errMsg(PQresultErrorMessage(pgRes.get()));
 
+        FDOLOG_WRITE("SQL command failed: [%s] %s",
+            static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg));
+
         // TODO: Consider translation of PostgreSQL status to FDO exception (new types?)
         throw FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_SQL_STATEMENT_EXECUTION_FAILED,
             "The execution of SQL statement failed with PostgreSQL error code: %1$ls, %2$ls.",
@@ -621,9 +623,19 @@ PGresult* Connection::PgExecuteQuery(char const* sql)
     
     if (PGRES_TUPLES_OK != pgStatus)
     {
+        PQclear(pgRes);
+
+        FdoStringP errCode(PQresStatus(pgStatus));
+        FdoStringP errMsg(PQresultErrorMessage(pgRes));
+
         // TODO: Consider throwing an exception
-        FDOLOG_WRITE("SQL execution failed: [%s] %s",
-            PQresStatus(pgStatus), PQresultErrorMessage(pgRes));
+        FDOLOG_WRITE("SQL query failed: [%s] %s",
+            static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg));
+
+        // TODO: Consider translation of PostgreSQL status to FDO exception (new types?)
+        throw FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_SQL_STATEMENT_EXECUTION_FAILED,
+            "The execution of SQL statement failed with PostgreSQL error code: %1$ls, %2$ls.",
+            static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg)));
     }
 
     assert(NULL != pgRes);
@@ -658,6 +670,8 @@ fdo::postgis::PgCursor* Connection::PgCreateCursor(char const* name)
     //
     // Create new instance of cursor
     //
+
+    // NOTE: This operation may throw
     PgCursor::Ptr cursor = new PgCursor(this, cursorName);
 
     FDO_SAFE_ADDREF(cursor.p);
@@ -679,6 +693,8 @@ PGresult* Connection::PgDescribeCursor(char const* name)
 
     if (PGRES_COMMAND_OK != pgStatus)
     {
+        PQclear(pgRes);
+
         // TODO: Consider throwing an exception
         FDOLOG_WRITE("Describe portal command failed: [%s] %s",
             PQresStatus(pgStatus), PQresultErrorMessage(pgRes));
