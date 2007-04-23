@@ -179,7 +179,7 @@ template <typename T>
 FdoDateTime Reader<T>::GetDateTime(FdoString* propertyName)
 {
     FDOLOG_MARKER("Reader::GetDateTime");
-    FDOLOG_WRITE("Get-NOT IMPLEMENTED");
+    FDOLOG_WRITE("NOT IMPLEMENTED");
     assert(!"NOT IMPLEMENTED");
     return FdoDateTime();
 }
@@ -224,42 +224,36 @@ template <typename T>
 FdoLOBValue* Reader<T>::GetLOB(FdoString* propertyName)
 {
     FDOLOG_MARKER("Reader::GetLOB");
+    FDOLOG_WRITE("NOT IMPLEMENTED");
     assert(!"NOT IMPLEMENTED");
-    return 0;
+    return NULL;
 }
 
 template <typename T>
 FdoIStreamReader* Reader<T>::GetLOBStreamReader(wchar_t const* propertyName)
 {
     FDOLOG_MARKER("Reader::GetLOBStreamReader");
+    FDOLOG_WRITE("NOT IMPLEMENTED");
     assert(!"NOT IMPLEMENTED");
-    return 0;
+    return NULL;
 }
 
 template <typename T>
 bool Reader<T>::IsNull(FdoString* propertyName)
 {
-    FDOLOG_MARKER("Reader::IsNull");
     return mSQLReader->IsNull(propertyName);
 }
 
 template <typename T>
 FdoByteArray* Reader<T>::GetGeometry(FdoString* propertyName)
 {
-    FDOLOG_MARKER("Reader::GetGeometry");
-    FDOLOG_WRITE(L"Property: %s", propertyName);
-
     return mSQLReader->GetGeometry(propertyName);
 }
 
 template <typename T>
 const FdoByte* Reader<T>::GetGeometry(FdoString* propertyName, FdoInt32* count)
 {
-    FDOLOG_MARKER("Reader::GetGeometry(propertyName, count)");
-    FDOLOG_WRITE(L"Property: %s", propertyName);
-
     mFgfGeometry = GetGeometry(propertyName);
-
     *count = mFgfGeometry->GetCount();
     
     return mFgfGeometry->GetData();
