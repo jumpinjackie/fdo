@@ -70,9 +70,9 @@ FdoInt32 FdoSmPhSpatialContextCollection::FindExistingSC( FdoSmPhSpatialContextP
 		{
 			FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
 
-			FdoPtr<FdoIGeometry>          geom = gf->CreateGeometryFromFgf( sc->GetExtent() );
+			FdoPtr<FdoIGeometry>          geom = gf->CreateGeometryFromFgf( FdoPtr<FdoByteArray>(sc->GetExtent()) );
 			FdoPtr<FdoIEnvelope>		  env = geom->GetEnvelope();
-			FdoPtr<FdoIGeometry>          geom1= gf->CreateGeometryFromFgf( sc1->GetExtent() );
+			FdoPtr<FdoIGeometry>          geom1= gf->CreateGeometryFromFgf( FdoPtr<FdoByteArray>(sc1->GetExtent()) );
 			FdoPtr<FdoIEnvelope>		  env1 = geom1->GetEnvelope();
 
 			bool found = ( env1->GetMinX() == env->GetMinX() &&
