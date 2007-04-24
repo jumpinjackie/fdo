@@ -18,6 +18,7 @@
 #include "PostGisProvider.h"
 #include "PgSpatialTablesReader.h"
 #include "PgGeometry.h"
+#include "PgUtility.h"
 #include "Connection.h"
 // std
 #include <cassert>
@@ -119,6 +120,8 @@ PgSpatialTablesReader::columns_t PgSpatialTablesReader::GetGeometryColumns() con
 
     // Here, we intentionally DO NOT use FdoISQLCommand to eliminate
     // unnecessary overhead. It's faster to work as close to libpq API as possible.
+
+    // TODO: Add additional level of try-catch here
 
     boost::shared_ptr<PGresult> pgRes(mConn->PgExecuteQuery(sql.c_str()), PQclear);
     assert(PGRES_TUPLES_OK == PQresultStatus(pgRes.get()));
@@ -251,9 +254,12 @@ FdoPtr<FdoEnvelopeImpl> PgSpatialTablesReader::EstimateColumnExtent(
 
     std::string sql("SELECT xmin(env), ymin(env), xmax(env), ymax(env) FROM ("
                      " SELECT estimated_extent('"
-                     + mCurrentSchema + "', '"
-                     + mTableCached + "', '"
-                     + column + "') AS env) AS extentsub");
+                     + details::QuoteSqlName(mCurrentSchema) + "', '"
+                     + details::QuoteSqlName(mTableCached) + "', '"
+                     + details::QuoteSqlName(column) + "') AS env) AS extentsub");
+
+    // NOTE: The PgExecuteQuery throws on error, but if no exception occurs,
+    //       valid query result is assumed.
 
     boost::shared_ptr<PGresult> pgRes(mConn->PgExecuteQuery(sql.c_str()), PQclear);
     assert(PGRES_TUPLES_OK == PQresultStatus(pgRes.get()));
