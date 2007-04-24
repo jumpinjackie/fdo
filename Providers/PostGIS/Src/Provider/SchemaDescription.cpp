@@ -186,14 +186,20 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
 
         ////////////////// GENERATE SPATIAL CONTEXT //////////////////
 
+        FdoStringP spContextName;
         FdoInt32 srid = geomColumn->GetSRID();
         if (srid <= 0)
         {
-            // Use WGS 84 if SRS not specified
-            srid = 4326;
+            // Set default spatial context
+            srid = -1;
+            spContextName = L"PostGIS_Default";
+
             FDOLOG_WRITE("Use default spatial context with SRID = %d", srid);
         }
-        FdoStringP spContextName = FdoStringP::Format(L"PostGIS_%d", srid);
+        else
+        {
+            spContextName = FdoStringP::Format(L"PostGIS_%d", srid);
+        }
         
         SpatialContext::Ptr spContext = NULL;
         spContext = spContexts->FindItem(spContextName);
