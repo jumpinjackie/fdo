@@ -54,9 +54,7 @@ PgCursor::~PgCursor()
 
 void PgCursor::Dispose()
 {
-    //FDOLOG_MARKER("PgCursor::#Dispose");
-    
-    // May throw, do not call from the destructor!
+    // WARNING! This may throw, do NOT call from the destructor!
     Close();
 
     delete this;
@@ -145,15 +143,15 @@ FdoDataType PgCursor::GetFieldType(FdoSize number) const
     ValidateDeclaredState();
     assert(NULL != mDescRes);
     
-    Oid const ftype = PQftype(mDescRes, static_cast<int>(number));
-
     // TODO: Currently it's a simple mapping of hardcoded OIDs to FDO data types.
     //       In future, consider replacing it with SELECT * FROM pg_type; solution
 
     // NOTE: The following list of OIDs was taken from the pg_type table.
     //       We do not claim that this list is exhaustive, correct or even up to date.
 
-    FdoDataType fdoType;
+    Oid const ftype = PQftype(mDescRes, static_cast<int>(number));
+
+    FdoDataType fdoType = FdoDataType_String; // dummy initialization
 
     switch (ftype)
     {
@@ -195,20 +193,27 @@ FdoDataType PgCursor::GetFieldType(FdoSize number) const
         fdoType = FdoDataType_DateTime;
         break;
     case 17:   // bytea
-        assert(!"TYPE MAPPING TO BE REVIEWED");
+        FDOLOG_WRITE(" PgCursor::GetFieldType - BYTEA TYPE NOT SUPPORTED");
+        assert(!"BYTEA TYPE NOT SUPPORTED");
         fdoType = FdoDataType_BLOB;
         break;
     case 26:   // oid
-        assert(!"TYPE MAPPING TO BE REVIEWED");
+        FDOLOG_WRITE(" PgCursor::GetFieldType - OID TYPE IS NOT WELL TESTED");
         fdoType = FdoDataType_Int32;
         break;
     default:
-        // TODO: What about mapping of FdoDataType_Byte and FdoDataType_CLOB
+        {
+            // TODO: What about mapping of FdoDataType_Byte and FdoDataType_CLOB
 
-        FdoStringP unknown(PQfname(mDescRes, static_cast<int>(number)));
-        throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_COLUMN_TYPE_UNKNOWN,
-            "The type of column '%1$s' of number %2$d is unknown.",
-            static_cast<FdoString*>(unknown), number));
+            FdoStringP unknown(PQfname(mDescRes, static_cast<int>(number)));
+
+            FDOLOG_WRITE("The column '%' (%d) is of unknown type",
+                static_cast<FdoString*>(unknown), number);
+
+            throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_COLUMN_TYPE_UNKNOWN,
+                "The type of column '%1$s' of number %2$d is unknown.",
+                static_cast<FdoString*>(unknown), number));
+        }
     }
 
     return fdoType;
@@ -225,14 +230,19 @@ bool PgCursor::IsFieldGeometryType(FdoSize number) const
     ValidateDeclaredState();
     assert(NULL != mDescRes);
 
-    bool isGeometry = false;
-
     char const* sql = "SELECT oid FROM pg_type WHERE typname = 'geometry'";
     boost::shared_ptr<PGresult> pgRes(mConn->PgExecuteQuery(sql), PQclear);
     
+    if (PGRES_TUPLES_OK != PQresultStatus(pgRes.get()))
+    {
+        FDOLOG_WRITE(" *** EMERGENCY *** PostGIS data types are not installed! Run Forest, run!");
+        throw FdoException::Create(L"Can not find 'geometry' type. Check if PostGIS engine is available.");
+    }
+
     // TODO: If caught, it likely means the PostGIS support is not installed!
     assert(PGRES_TUPLES_OK == PQresultStatus(pgRes.get()) && 1 == PQntuples(pgRes.get()));
     
+    bool isGeometry = false;
     Oid geometryType = 0;
     try
     {
@@ -242,7 +252,7 @@ bool PgCursor::IsFieldGeometryType(FdoSize number) const
     catch (boost::bad_lexical_cast& e)
     {
         geometryType = 0;
-        e; // Anti-warning hack
+        FDOLOG_WRITE("OID type conversion failed: %s", e.what());
     }
     
     Oid const ftype = PQftype(mDescRes, static_cast<int>(number));
@@ -414,10 +424,10 @@ void PgCursor::ValidateDeclaredState() const
 
     if (mIsClosed || NULL == mDescRes)
     {
-        FDOLOG_WRITE("Cursor is not defined.");
+        FDOLOG_WRITE("The PostgreSQL database cursor is not defined.");
 
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CURSOR_NOT_DEFINED,
-            "Cursor is not defined."));
+            "The PostgreSQL database cursor is not defined."));
     }
 }
 
