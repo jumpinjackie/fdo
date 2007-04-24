@@ -45,7 +45,7 @@
 				AdditionalIncludeDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\include\&quot;;&quot;$(FDO)\Unmanaged\Inc&quot;;..\..\Inc;&quot;$(FDOUTILITIES)\TestCommon\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;IGNORE_THREAD_TEST;__CPPUNIT_MFC_APP"
 				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
+				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="true"
 				RuntimeTypeInfo="true"
@@ -65,6 +65,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/fixed:no"
 				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib ProvidersCommon.lib"
 				OutputFile="$(OutDir)/UnitTest.exe"
 				LinkIncremental="1"

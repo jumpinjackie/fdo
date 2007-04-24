@@ -46,7 +46,7 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;FDORDBMS_EXPORTS;_LIB;FULLPROTO;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE"
 				IgnoreStandardIncludePath="false"
 				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
+				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="true"
 				RuntimeTypeInfo="true"

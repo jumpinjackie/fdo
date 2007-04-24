@@ -44,7 +44,7 @@
 				AdditionalIncludeDirectories="$(FDO)\Unmanaged\inc;..\Utils\;$(FDO)\Unmanaged\src\NLS;..\..\Inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\SQLiteInterface"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SDF_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
+				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
 				StructMemberAlignment="4"
 				TreatWChar_tAsBuiltInType="true"
@@ -67,6 +67,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/fixed:no"
 				AdditionalDependencies="FDOUtils.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib SQLiteInterface.lib Sqlite3.lib Advapi32.lib"
 				OutputFile="$(OutDir)/SDFProvider.dll"
 				LinkIncremental="1"

@@ -45,14 +45,14 @@
 				AdditionalIncludeDirectories=".\;..\LongTransactionManager;..\GenericLongTransactionManager;..\..\inc\fdo;../../inc/rdbi;../;../../;../../inc;../Fdo/Connection;../Fdo/Other;../Fdo/FeatureCommands;../Fdo/Custom;../Fdo/Schema;..\Fdo\Capability;../Fdo/Lt;../Fdo/Lock;..\Fdo\FeatureCommands;../Fdo/SpatialContext;$(FDO)\Unmanaged;$(FDO)\Unmanaged\inc;$(FDOUTILITIES)/SchemaMgr/inc;$(FDOUTILITIES)\Common\inc;../../../Oracle\inc\Fdo\fdo;../../../Oracle;..\Gdbi;..\LockManager"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ODBC_EXPORTS;FDORDBMS_EXPORTS;_LIB;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
+				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="true"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 				DisableSpecificWarnings="4250"
 			/>
 			<Tool
@@ -67,9 +67,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/fixed:no"
 				AdditionalDependencies="FdoGeneric.lib Rdbi.lib odbcDriver.lib OdbcSchemaMgr.lib odbc32.lib FDO.lib FDOGeometry.lib FDOCommon.lib FDOSpatial.lib SchemaMgr_OVNew.lib Advapi32.lib"
 				OutputFile="$(OutDir)/ODBCProvider.dll"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Lib\Win32\Debug;$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Debug"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/OdbcProvider.pdb"

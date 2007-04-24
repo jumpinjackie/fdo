@@ -150,6 +150,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
+				AdditionalOptions="/fixed:no"
 				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="$(OutDir)/SDFMessage.dll"
 				LinkIncremental="1"

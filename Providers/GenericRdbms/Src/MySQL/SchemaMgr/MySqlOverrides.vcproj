@@ -44,7 +44,7 @@
 				AdditionalIncludeDirectories="$(FDO)\Unmanaged\Inc;$(FDO)\Unmanaged;..\..\..\inc;$(FDOUTILITIES)\SchemaMgr\Inc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FDOMYSQL_OV_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
+				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="true"
 				RuntimeTypeInfo="true"
@@ -52,7 +52,7 @@
 				ProgramDataBaseFileName="$(IntDir)/vc70.pdb"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 				DisableSpecificWarnings="4250"
 				ShowIncludes="false"
 			/>
@@ -68,9 +68,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/fixed:no"
 				AdditionalDependencies="$(FDO)\Unmanaged\Lib\Win32\Debug\FDO.lib FDOGeometry.lib FDOSpatial.lib FDOCommon.lib"
 				OutputFile="$(OutDir)\MySQLOverrides.dll"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Debug"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
