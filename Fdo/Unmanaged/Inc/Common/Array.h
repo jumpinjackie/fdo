@@ -112,7 +112,19 @@ public:
     /// \return
     /// Returns the new reference count. For debugging use only.
     /// 
-    inline FdoInt32 Release() { if (0 != --((FdoArrayHelper::GenericArray*)this)->m_metadata.refCount ) return ((FdoArrayHelper::GenericArray*)this)->m_metadata.refCount; Dispose(); return 0; }
+    inline FdoInt32 Release()
+    {
+#ifdef _DEBUG
+        if (((FdoArrayHelper::GenericArray*)this)->m_metadata.refCount <= 0)
+            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_MEMORY_DEALLOCATION_ERROR), 
+                                                               L"FdoArray::Release",
+                                                               L"FDO Array"));
+#endif
+        if (0 != --((FdoArrayHelper::GenericArray*)this)->m_metadata.refCount )
+            return ((FdoArrayHelper::GenericArray*)this)->m_metadata.refCount;
+        Dispose();
+        return 0;
+    }
 
     /// \brief
     /// Retrieves the reference count.

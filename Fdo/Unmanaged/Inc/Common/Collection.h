@@ -73,6 +73,12 @@ public:
     {
         if (index >= m_size || index < 0)
             throw EXC::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_5_INDEXOUTOFBOUNDS)));
+#ifdef _DEBUG
+        if (NULL != m_list[index] && m_list[index]->GetRefCount() <= 0)
+            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_MEMORY_DEALLOCATION_ERROR), 
+                                                               L"FdoCollection::GetItem",
+                                                               L"FDO Object"));
+#endif
         return FDO_SAFE_ADDREF(m_list[index]);
     }
 
