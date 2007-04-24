@@ -114,7 +114,7 @@ FdoISQLDataReader* SQLCommand::ExecuteReader()
         std::string sql(static_cast<char const*>(mSql));
         cursor->Declare(sql.c_str(), params);
 
-        assert(NULL != cursor);
+        assert(NULL != cursor && "Cursor is NULL");
         return (new SQLDataReader(cursor));
     }
     catch (FdoException* e)

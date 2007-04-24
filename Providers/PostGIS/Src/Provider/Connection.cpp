@@ -623,12 +623,13 @@ PGresult* Connection::PgExecuteQuery(char const* sql)
     
     if (PGRES_TUPLES_OK != pgStatus)
     {
-        PQclear(pgRes);
-
         FdoStringP errCode(PQresStatus(pgStatus));
         FdoStringP errMsg(PQresultErrorMessage(pgRes));
 
-        // TODO: Consider throwing an exception
+        // Free query result
+        PQclear(pgRes);
+        pgRes = NULL;
+
         FDOLOG_WRITE("SQL query failed: [%s] %s",
             static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg));
 
@@ -973,6 +974,9 @@ void Connection::SetPgCurrentSchema(FdoStringP schema)
     // SET search_path TO <new_schema_name>
 
     // NOTE: 'public' schema is used as a common place where PostGIS metadata live.
+
+    // TODO: Check if schema == 'public' and remove double: public,public.
+    // TODO: Quote schema name!
 
     std::string sql("SET search_path TO ");
     sql += static_cast<const char*>(schema);
