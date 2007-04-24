@@ -89,7 +89,7 @@ The creation of PostgreSQL cursor '%1$ls' failed.
 MessageId=1013
 SymbolicName=MSG_POSTGIS_CURSOR_NOT_DEFINED
 Language=English
-Cursor is not defined.
+The PostgreSQL database cursor is not defined.
 .
 MessageId=1014
 SymbolicName=MSG_POSTGIS_CURSOR_NOT_FETCHED
@@ -97,11 +97,16 @@ Language=English
 The fetch command was not issued yet.
 .
 MessageId=1015
+SymbolicName=MSG_POSTGIS_CURSOR_DESCRIBE_FAILED
+Language=English
+The describe portal command on PostgreSQL cursor failed: %1$ls, %2$ls.
+.
+MessageId=1016
 SymbolicName=MSG_POSTGIS_COMMAND_SELECT_FAILED
 Language=English
 The execution of Select command failed.
 .
-MessageId=1016
+MessageId=1017
 SymbolicName=MSG_POSTGIS_OPEN_TABLE_READER_FAILED
 Language=English
 The open operation on table columns reader failed.
@@ -273,7 +278,7 @@ Description
 ;//************************************************************************************
 
 MessageId=4001
-SymbolicName=MSG_POSTGISOBJECT_PROPERTIES_NOT_SUPPORTED
+SymbolicName=MSG_POSTGIS_OBJECT_PROPERTIES_NOT_SUPPORTED
 Language=English
 Object properties are not supported.
 .
@@ -288,7 +293,7 @@ Language=English
 The type of column '%1$s' of number %2$d is unknown.
 .
 MessageId=4004
-SymbolicName=M_KGORA_UNKNOWN_SHAPE_TYPE
+SymbolicName=MSG_POSTGIS_UNKNOWN_SHAPE_TYPE
 Language=English
 The shape type number '%1$d' is unknown.
 .
@@ -416,7 +421,6 @@ MessageId=4031
 SymbolicName=M_KGORA_NOT_FOUND
 Language=English
 King.Oracle file '%1$ls' was not found.
-
 .
 MessageId=4033
 SymbolicName=M_KGORA_INVALID_PHYSICAL_SCHEMA_PROVIDER_NAME
@@ -639,6 +643,12 @@ SymbolicName=MSG_POSTGIS_COLUMN_NAME_NOT_FOUND
 Language=English
 The column with given name '%1$ls' is not available in query result.
 .
+MessageId=7027
+SymbolicName=MSG_POSTGIS_DESCRIBE_SCHEMA_COMMAND_FAILED
+Language=English
+The describe schema command failed for '%1$ls' schema.
+.
+
 ;//************************************************************************************
 ;//************************************************************************************
 ;//** LOCK-RELATED MESSAGES
