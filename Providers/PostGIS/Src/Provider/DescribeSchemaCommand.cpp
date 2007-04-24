@@ -60,40 +60,49 @@ FdoIConnection* DescribeSchemaCommand::GetConnection()
 
 FdoITransaction* DescribeSchemaCommand::GetTransaction()
 {
-    assert(!"NOT IMPLEMENTED");
+    FDOLOG_MARKER("DescribeSchemaCommand::+GetTransaction");
+    FDOLOG_WRITE("NOT SUPPORTED");
     return NULL;
 }
 
 void DescribeSchemaCommand::SetTransaction(FdoITransaction* value)
 {
-    assert(!"NOT IMPLEMENTED");
+    FDOLOG_MARKER("DescribeSchemaCommand::+SetTransaction");
+    FDOLOG_WRITE("NOT SUPPORTED");
 }
 
 FdoInt32 DescribeSchemaCommand::GetCommandTimeout()
 {
-    assert(!"NOT IMPLEMENTED");
+    FDOLOG_MARKER("DescribeSchemaCommand::+GetCommandTimeout");
+    FDOLOG_WRITE("NOT SUPPORTED");
+
     return 0;
 }
 
 void DescribeSchemaCommand::SetCommandTimeout(FdoInt32 value)
 {
-    assert(!"NOT IMPLEMENTED");
+    FDOLOG_MARKER("DescribeSchemaCommand::+SetCommandTimeout");
+    FDOLOG_WRITE("NOT SUPPORTED");
 }
 
 FdoParameterValueCollection* DescribeSchemaCommand::GetParameterValues()
 {
-    assert(!"NOT IMPLEMENTED");
+    FDOLOG_MARKER("DescribeSchemaCommand::+GetParameterValues");
+    FDOLOG_WRITE("NOT SUPPORTED");
+
     return NULL;
 }
 
 void DescribeSchemaCommand::Prepare()
 {
-    assert(!"NOT IMPLEMENTED");
+    FDOLOG_MARKER("DescribeSchemaCommand::+Prepare");
+    FDOLOG_WRITE("NOT SUPPORTED");
 }
 
 void DescribeSchemaCommand::Cancel()
 {
-    assert(!"NOT IMPLEMENTED");
+    FDOLOG_MARKER("DescribeSchemaCommand::+Cancel");
+    FDOLOG_WRITE("NOT SUPPORTED");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -129,12 +138,14 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
         FDOLOG_WRITE("The execution of DescribeSchema command failed.");
 
         FdoCommandException* ne = NULL;
-        ne = FdoCommandException::Create(L"The execution of DescribeSchema command failed.", e);
+        ne = FdoCommandException::Create(
+            NlsMsgGet(MSG_POSTGIS_DESCRIBE_SCHEMA_COMMAND_FAILED,
+                "The describe schema command failed for '%1$ls' schema.",
+                GetSchemaName()),
+                e);
         e->Release();
         throw ne;
     }
-
-    return NULL;
 }
 
 }} // namespace fdo::postgis
