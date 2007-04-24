@@ -56,7 +56,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
+				AdditionalOptions="/fixed:no"
 				OutputFile="$(OutDir)\SHPMessage.dll"
+				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/SHPMessage.pdb"
 				ResourceOnlyDLL="true"

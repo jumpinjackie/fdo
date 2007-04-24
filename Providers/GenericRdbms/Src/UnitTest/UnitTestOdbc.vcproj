@@ -43,7 +43,7 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\inc&quot;;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi;..\Fdo\Lt;..\Fdo\Other;..\Fdo\Connection;..\Fdo\FeatureCommands;..\Fdo\SpatialContext;..\LongTransactionManager;..\..;..\..\inc;..\..\inc\fdo;../;..\LockManager;Common;$(FDOUTILITIES)\TestCommon\inc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE"
-				BasicRuntimeChecks="3"
+				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="true"
 				RuntimeTypeInfo="true"
@@ -51,7 +51,7 @@
 				PrecompiledHeaderThrough="Pch.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 				DisableSpecificWarnings="4250"
 			/>
 			<Tool
@@ -65,8 +65,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/fixed:no"
 				AdditionalDependencies="odbc32.lib ODBCCP32.Lib FDONLS.lib Rdbi.lib ODBCDriver.lib cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib gdbi.lib geometry_fgf.lib ProvidersCommon.lib grdschemamgr.lib rdbmsoverrides.lib schemamgr_lpnew.lib schemamgr_phnew.lib schemamgrnew.lib FDOSpatial.lib SchemaMgr_OVNew.lib OdbcSchemaMgr.lib ODBCOverrides.lib util.lib FdoGeneric.lib Advapi32.lib User32.lib TestCommon.lib"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Lib\Win32\Debug;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win32\Debug&quot;"
 				IgnoreDefaultLibraryNames="libcmtd.lib"
 				GenerateDebugInformation="true"

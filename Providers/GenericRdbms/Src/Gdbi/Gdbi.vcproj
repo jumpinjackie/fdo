@@ -44,7 +44,7 @@
 				AdditionalIncludeDirectories="../../;$(FDO)/Unmanaged;$(FDO)/Unmanaged/inc;$(FDOUTILITIES)/Common/inc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
+				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="true"
 				RuntimeTypeInfo="true"

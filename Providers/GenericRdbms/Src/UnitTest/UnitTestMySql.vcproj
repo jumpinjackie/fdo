@@ -43,7 +43,7 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\LockManager;..\LongTransactionManager;..\Gdbi;..\..\inc;..\..;..\Fdo\Connection;..\Fdo\SpatialContext;..\Fdo\Other;..\Fdo\FeatureCommands;../;Common;$(FDOUTILITIES)\TestCommon\inc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE"
-				BasicRuntimeChecks="3"
+				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="true"
 				RuntimeTypeInfo="true"
@@ -51,7 +51,7 @@
 				PrecompiledHeaderThrough="Pch.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 				DisableSpecificWarnings="4250"
 			/>
 			<Tool
@@ -65,8 +65,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/fixed:no"
 				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FdoGeneric.lib libmySQL.lib Rdbi.lib gdbi.lib schemamgrnew.lib MySQLDriver.lib mysqloverrides.lib mysqlschemamgr.lib ProvidersCommon.lib rdbmsoverrides.lib mysql.lib schemamgr_lpnew.lib schemamgr_phnew.lib SchemaMgr_OVNew.lib grdschemamgr.lib util.lib Advapi32.lib TestCommon.lib"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Lib\Win32\Debug;$(FDO)\Unmanaged\Lib\Win32\Debug;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;$(FDOTHIRDPARTY)\cppunit\lib;$(FDOMYSQL)\lib\Debug;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Debug;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win32\Debug&quot;"
 				IgnoreDefaultLibraryNames="libcmtd.lib"
 				GenerateDebugInformation="true"
