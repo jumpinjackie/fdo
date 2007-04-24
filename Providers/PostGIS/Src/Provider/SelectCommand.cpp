@@ -323,23 +323,28 @@ FdoIFeatureReader* SelectCommand::Execute()
         //
         // Declare cursor and create feature reader
         //
-        FDOLOG_WRITE("Creating cursor");
+        FDOLOG_WRITE("Creating cursor: crsFdoSelectCommand");
+        FDOLOG_PROFILE_BLOCK;
 
         PgCursor::Ptr cursor(NULL);
         cursor = mConn->PgCreateCursor("crsFdoSelectCommand");
         assert(NULL != cursor);
+
+        FDOLOG_PROFILE_CHECKPOINT;
 
         // Collect bind parameters
         details::pgexec_params_t params;
         Base::PgGenerateExecParams(params);
 
         // Open new cursor
-        FDOLOG_WRITE("Declaring cursor");
         cursor->Declare(sql.c_str(), params);
+
+        FDOLOG_PROFILE_CHECKPOINT;
         
-        FDOLOG_WRITE("Constructing feature reader");
         FeatureReader::Ptr reader(new FeatureReader(mConn, cursor, classDef));
     
+        FDOLOG_PROFILE_CHECKPOINT;
+
         FDO_SAFE_ADDREF(reader.p);
         return reader.p;
     }
