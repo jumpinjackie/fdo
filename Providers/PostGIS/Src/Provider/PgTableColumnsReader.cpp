@@ -177,11 +177,17 @@ void PgTableColumnsReader::Open()
 
     std::string schema(static_cast<char const*>(mSchema));
     std::string table(static_cast<char const*>(mTable));
+
+    // NOTE: This construction works only in PostgreSQL >= 8.2:
+    //       CASE WHEN i.indkey @> ARRAY[a.attnum] THEN True ELSE False END
+    // so it's more portable to use:
+    //       a.attnum = ANY (i.indkey)
+
     std::string sql(
         "SELECT a.attnum AS ordinal_position,a.attname AS column_name,"
         "t.typname AS data_type,a.attlen AS character_maximum_length,"
         "a.atttypmod AS modifier,a.attnotnull AS notnull,a.atthasdef AS hasdefault, "
-        "(CASE WHEN i.indkey @> ARRAY[a.attnum] THEN True ELSE False END) As isprimarykey "
+        "a.attnum = ANY (i.indkey) AS isprimarykey "
         "FROM pg_class c,pg_attribute a,pg_type t,pg_namespace n,pg_index i "
         "WHERE a.attnum > 0 AND a.attrelid = c.oid "
         "AND a.atttypid = t.oid AND c.relnamespace = n.oid "
