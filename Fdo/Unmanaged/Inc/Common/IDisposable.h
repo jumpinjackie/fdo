@@ -68,7 +68,7 @@ public:
     /// \return
     /// Returns the new reference count (value for debugging use only).
     /// 
-    FDO_API_COMMON virtual FdoInt32 Release() { if (0 != --m_refCount ) return m_refCount; Dispose(); return 0; }
+    FDO_API_COMMON virtual FdoInt32 Release();
 
     /// \brief
     /// Retrieves the reference count.
@@ -81,6 +81,24 @@ public:
 private:
     FdoInt32    m_refCount;
 };
+
+#include <Common/Exception.h>
+
+inline
+FdoInt32 FdoIDisposable::Release()
+{
+#ifdef _DEBUG
+    if (m_refCount <= 0)
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_MEMORY_DEALLOCATION_ERROR), 
+                                                           L"FdoIDisposable::Release",
+                                                           L"FdoIDisposable"));
+#endif
+    if (0 != --m_refCount )
+        return m_refCount;
+    Dispose();
+    return 0;
+}
+
 
 #define FDO_SAFE_RELEASE(x) {if (x) (x)->Release(); (x) = NULL;}
 #define FDO_SAFE_ADDREF(x)  ((x != NULL) ? (x)->AddRef(), (x) : (NULL))
