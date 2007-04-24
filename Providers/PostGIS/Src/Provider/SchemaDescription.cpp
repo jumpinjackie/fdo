@@ -110,13 +110,18 @@ SpatialContextCollection* SchemaDescription::GetSpatialContexts() const
 
 FdoClassDefinition* SchemaDescription::FindClassDefinition(FdoIdentifier* id)
 {
-    assert(NULL != id);
-    
+    if (NULL == id)
+    {
+        throw FdoException::Create(L"The class identifier is NULL.");
+    }
+
     FdoPtr<FdoFeatureSchemaCollection> logicalSchemas(GetLogicalSchemas());
     FdoPtr<FdoClassDefinition> classDef;
 
     if (NULL != logicalSchemas && logicalSchemas->GetCount() > 0)
     {
+        assert(NULL != id);
+
         FdoStringP name(id->GetText());
         FdoPtr<FdoIDisposableCollection> featClasses(logicalSchemas->FindClass(name));
         if (NULL != featClasses)
@@ -140,6 +145,11 @@ ov::ClassDefinition* SchemaDescription::FindClassMapping(FdoIdentifier* id)
 
 void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
 {
+    if (NULL == conn)
+    {
+        throw FdoException::Create(L"The connection is NULL.");
+    }
+
     Connection::Ptr mConn(conn);
     FDO_SAFE_ADDREF(mConn.p);
     
@@ -375,17 +385,12 @@ SpatialContext* SchemaDescription::CreateSpatialContext(Connection* conn,
     try
     {
         srid = geomColumn->GetSRID();
-        if (srid <= 0)
-        {
-            // Use WGS 84 if SRS not specified
-            srid = 4326;
-        }
         sridText = boost::lexical_cast<std::string>(srid);
     }
     catch (boost::bad_lexical_cast& e)
     {
         FDOLOG_WRITE("Type conversion failed: %s", e.what());
-        assert(!"FIX HANDLING INVALID SRID");
+        //assert(!"FIX HANDLING INVALID SRID");
     }
 
     std::string sql("SELECT srtext FROM spatial_ref_sys WHERE srid = " + sridText);
@@ -401,7 +406,6 @@ SpatialContext* SchemaDescription::CreateSpatialContext(Connection* conn,
     //
     // Generate spatial context details
     // 
-
     SpatialContext::Ptr spContext(new SpatialContext());
     spContext->SetSRID(srid);
     spContext->SetName(spContextName);
