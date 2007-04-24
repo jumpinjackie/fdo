@@ -93,7 +93,6 @@ Connection::~Connection()
 
 void Connection::Dispose()
 {
-    //FDOLOG_MARKER("Connection::#Dispose");
     Close();
     delete this;
 }
@@ -153,7 +152,6 @@ FdoString* Connection::GetConnectionString()
 void Connection::SetConnectionString(FdoString* value)
 {
     FDOLOG_MARKER("Connection::+SetConnectionString");
-    
     FDOLOG_WRITE(L"Passed value = %s", value);
 
     // TODO: Replace with connection string parsing utils recommended by Romica
@@ -230,28 +228,26 @@ FdoConnectionState Connection::Open()
     //
     // Validate connection properties
     //
+    FDOLOG_WRITE(L"- Start validation of connection properties");
 
     ValidateConnectionString();
     ValidateRequiredProperties();
     
-    FDOLOG_WRITE(L"Connection properties are valid");
+    FDOLOG_WRITE(L"- OK");
 
     //
     // Attempt to establish connection
     //
-
     FdoPtr<FdoIConnectionInfo> info = GetConnectionInfo();
-    //FdoPtr<FdoIConnectionPropertyDictionary> dict = info->GetConnectionProperties();
     FdoPtr<FdoCommonConnPropDictionary> dict = 
         static_cast<FdoCommonConnPropDictionary*>(info->GetConnectionProperties());
 
     //
     // Step 1 - Connect to PostgreSQL server
     //
-
     if (FdoConnectionState_Closed == GetConnectionState())
     {
-        FDOLOG_WRITE(L"Step 1 - connecting to PostgreSQL server");
+        FDOLOG_WRITE(L"Step 1 - start - connecting to PostgreSQL server");
         
         assert(FdoConnectionState_Open != GetConnectionState());
         assert(FdoConnectionState_Pending != GetConnectionState());
@@ -271,17 +267,18 @@ FdoConnectionState Connection::Open()
         {
             // Ask for failure reason
             FdoStringP msg(PQerrorMessage(mPgConn));
-
+            
             // Release server-side resources
             Close();
             assert(NULL == mPgConn);
 
+            FDOLOG_WRITE(L"Connection error: %s", static_cast<FdoString*>(msg));
             throw FdoConnectionException::Create(msg);
         }
 
         mConnState = FdoConnectionState_Pending;
         
-        FDOLOG_WRITE(L"Step 1 - connection is pending");
+        FDOLOG_WRITE(L"Step 1 - finish - connection is pending");
     }
 
     //
@@ -290,7 +287,7 @@ FdoConnectionState Connection::Open()
     
     if (FdoConnectionState_Pending == GetConnectionState())
     {
-        FDOLOG_WRITE(L"Step 2 - opening FDO datastore");
+        FDOLOG_WRITE(L"Step 2 - start - opening FDO datastore");
         
         FdoStringP datastore;
         FdoPtr<ConnectionProperty> prop(dict->FindProperty(PropertyDatastore));
@@ -316,6 +313,8 @@ FdoConnectionState Connection::Open()
 
                 assert(FdoConnectionState_Pending == GetConnectionState());
             }
+
+            FDOLOG_WRITE(L"Step 2 - finish");
         }
     }
 
@@ -328,9 +327,7 @@ void Connection::Close()
 
     if (FdoConnectionState_Closed != GetConnectionState())
     {
-
         // Kill all active transactions
-        //PgFlushSoftTransaction();
         PgCommitSoftTransaction();
 
         // Close connection to the server
@@ -365,6 +362,7 @@ FdoITransaction* Connection::BeginTransaction()
 FdoICommand* Connection::CreateCommand(FdoInt32 type)
 {
     FDOLOG_MARKER("Connection::+CreateCommand");
+    FDOLOG_WRITE("Command type enumerator: %d", type);
 
     // NOTE: A minimum required connection state for a datastore command is pending.
     // A minimum required state for feature command is open.
@@ -378,7 +376,7 @@ FdoICommand* Connection::CreateCommand(FdoInt32 type)
         FDOLOG_WRITE("Connection is closed or invalid");
         throw FdoConnectionException::Create(
             NlsMsgGet(MSG_POSTGIS_CONNECTION_INVALID,
-            "Connection is closed or invalid."));
+                "Connection is closed or invalid."));
     }
 
     FdoPtr<FdoICommand> cmd;
@@ -444,14 +442,12 @@ void Connection::SetConfiguration(FdoIoStream* configStream)
 {
     FDOLOG_MARKER("Connection::+SetConfiguration");
     FDOLOG_WRITE("NOT IMPLEMENTED");
-    //assert(!"NOT IMPLEMENTED");
 }
 
 void Connection::Flush()
 {
     FDOLOG_MARKER("Connection::+Flush");
     FDOLOG_WRITE("NOT IMPLEMENTED");
-    //assert(!"NOT IMPLEMENTED");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -460,18 +456,27 @@ void Connection::Flush()
 
 FdoFeatureSchemaCollection* Connection::GetLogicalSchema()
 {
+    FDOLOG_MARKER("Connection::+GetLogicalSchema");
+    FDOLOG_PROFILE_BLOCK;
+
     SchemaDescription::Ptr sc(DescribeSchema());
     return sc->GetLogicalSchemas();
 }
 
 ov::PhysicalSchemaMapping* Connection::GetPhysicalSchemaMapping()
 {
+    FDOLOG_MARKER("Connection::+GetLogicalSchema");
+    FDOLOG_PROFILE_BLOCK;
+
     SchemaDescription::Ptr sc(DescribeSchema());
     return sc->GetSchemaMapping();
 }
 
 SpatialContextCollection* Connection::GetSpatialContexts()
 {
+    FDOLOG_MARKER("Connection::+GetLogicalSchema");
+    FDOLOG_PROFILE_BLOCK;
+
     SchemaDescription::Ptr sc(DescribeSchema());
     return sc->GetSpatialContexts();
 }
@@ -488,10 +493,14 @@ void Connection::PgExecuteCommand(char const* sql, FdoSize& affected)
     FDOLOG_WRITE("SQL:\n\t%s", sql);
 
     ValidateConnectionState();
-    
+
     affected = 0;
 
+    FDOLOG_PROFILE_BLOCK;
+
     boost::shared_ptr<PGresult> pgRes(PQexec(mPgConn, sql), PQclear);
+
+    FDOLOG_PROFILE_CHECKPOINT;
 
     ExecStatusType pgStatus = PQresultStatus(pgRes.get());
     if (PGRES_COMMAND_OK != pgStatus && PGRES_TUPLES_OK != pgStatus)
@@ -519,7 +528,7 @@ void Connection::PgExecuteCommand(char const* sql, FdoSize& affected)
     catch (boost::bad_lexical_cast& e)
     {
         affected = 0;
-        FDOLOG_WRITE("Types conversion failed: %s", e.what());
+        FDOLOG_WRITE("Type conversion failed: %s", e.what());
     }
 
     FDOLOG_WRITE("Affected tuples: %u", affected);
@@ -559,6 +568,8 @@ void Connection::PgExecuteCommand(char const* sql,
     //
     // Execute the SQL statement and wrap the results with smart pointer
     //
+    FDOLOG_PROFILE_BLOCK;
+
     params_ptr_t paramsPtr = (true == pgParams.empty() ? NULL : &pgParams[0]);
 
     boost::shared_ptr<PGresult> pgRes(
@@ -567,8 +578,10 @@ void Connection::PgExecuteCommand(char const* sql,
 
     paramsPtr = NULL; // Assure it won't be used
 
+    FDOLOG_PROFILE_CHECKPOINT;
+
     //
-    // Do some diagnostics
+    // Check status of command execution
     //
     ExecStatusType pgStatus = PQresultStatus(pgRes.get());
     if (PGRES_COMMAND_OK != pgStatus && PGRES_TUPLES_OK != pgStatus)
@@ -599,7 +612,7 @@ void Connection::PgExecuteCommand(char const* sql,
     catch (boost::bad_lexical_cast& e)
     {
         affected = 0;
-        FDOLOG_WRITE("Types conversion failed: %s", e.what());
+        FDOLOG_WRITE("Type conversion failed: %s", e.what());
     }
 
     FDOLOG_WRITE("Affected tuples: %u", affected);
@@ -614,12 +627,16 @@ PGresult* Connection::PgExecuteQuery(char const* sql)
 
     PGresult* pgRes = NULL;
     ExecStatusType pgStatus = PGRES_FATAL_ERROR;
-    
+
+    FDOLOG_PROFILE_BLOCK;
+
     pgRes = PQexec(mPgConn, sql);
     if (NULL != pgRes)
     {
         pgStatus = PQresultStatus(pgRes);
     }
+
+    FDOLOG_PROFILE_CHECKPOINT;
     
     if (PGRES_TUPLES_OK != pgStatus)
     {
@@ -660,19 +677,18 @@ fdo::postgis::PgCursor* Connection::PgCreateCursor(char const* name)
     }
     catch (boost::bad_lexical_cast& e)
     {
-        FDOLOG_WRITE("Types conversion failed: %s", e.what());
-        assert(!"CONVERSION FAILED");
+        FDOLOG_WRITE("Type conversion failed: %s", e.what());
     }
 
     std::string cursorName(name);
     cursorName += "_" + suffix;
+    
     FDOLOG_WRITE("Cursor name: %s", cursorName.c_str());
     
     //
     // Create new instance of cursor
-    //
-
     // NOTE: This operation may throw
+    //    
     PgCursor::Ptr cursor = new PgCursor(this, cursorName);
 
     FDO_SAFE_ADDREF(cursor.p);
@@ -694,13 +710,19 @@ PGresult* Connection::PgDescribeCursor(char const* name)
 
     if (PGRES_COMMAND_OK != pgStatus)
     {
+        FdoStringP errCode(PQresStatus(pgStatus));
+        FdoStringP errMsg(PQresultErrorMessage(pgRes));
+
+        // Free query result
         PQclear(pgRes);
+        pgRes = NULL;
 
-        // TODO: Consider throwing an exception
         FDOLOG_WRITE("Describe portal command failed: [%s] %s",
-            PQresStatus(pgStatus), PQresultErrorMessage(pgRes));
+            static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg));
 
-        throw FdoException::Create(L"Describe portal command failed.");
+        throw FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_CURSOR_DESCRIBE_FAILED,
+            "The describe portal command on PostgreSQL cursor failed: %1$ls, %2$ls.",
+            static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg)));
     }
 
     assert(NULL != pgRes);
@@ -743,6 +765,8 @@ void Connection::PgCommitSoftTransaction()
             boost::shared_ptr<PGresult> pgRes(PQexec(mPgConn, "COMMIT"), PQclear);
             if (PGRES_COMMAND_OK != PQresultStatus(pgRes.get()))
             {
+                // TODO: Throw an exception on error
+
                 FDOLOG_WRITE("COMMIT Transaction failed: %s", PQerrorMessage(mPgConn));
                 assert(!"COMMIT FAILED - TO BE REPLACED WITH EXCEPTION");
             }        
@@ -764,6 +788,8 @@ void Connection::PgRollbackSoftTransaction()
         boost::shared_ptr<PGresult> pgRes(PQexec(mPgConn, "ROLLBACK"), PQclear);
         if (PGRES_COMMAND_OK != PQresultStatus(pgRes.get()))
         {
+            // TODO: Throw an exception on error
+
             FDOLOG_WRITE("COMMIT Transaction failed: %s", PQerrorMessage(mPgConn));
             assert(!"ROLLBACK FAILED - TO BE REPLACED WITH EXCEPTION");
         } 
@@ -787,6 +813,8 @@ void Connection::PgFlushSoftTransaction()
 
 SchemaDescription* Connection::DescribeSchema()
 {
+    FDOLOG_MARKER("Connection::-DescribeSchema");
+
     if (NULL == mSchemaDesc)
     {
         // TODO: Add support of describing selected schema instead of all
@@ -798,9 +826,23 @@ SchemaDescription* Connection::DescribeSchema()
         // FdoStringP schemaName(GetPgCurrentSchema());
         FdoStringP schemaName(L"FdoPostGIS");
 
-        mSchemaDesc = SchemaDescription::Create();
-        mSchemaDesc->DescribeSchema(this, static_cast<FdoString*>(schemaName));
+        try
+        {
+            mSchemaDesc = SchemaDescription::Create();
+            mSchemaDesc->DescribeSchema(this, static_cast<FdoString*>(schemaName));
+        }
+        catch (FdoException* e)
+        {
+            FDOLOG_WRITE("Describe operation for '%s' failed",
+                static_cast<FdoString*>(schemaName));
+
+            FdoCommandException* ne = NULL;
+            ne = FdoCommandException::Create(L"The execution of describe schema operation failed.", e);
+            e->Release();
+            throw ne;
+        }
     }
+
     assert(mSchemaDesc->IsDescribed());
 
     FDO_SAFE_ADDREF(mSchemaDesc.p);
