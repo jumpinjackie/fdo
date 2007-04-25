@@ -457,12 +457,8 @@ void Connection::Flush()
 FdoFeatureSchemaCollection* Connection::GetLogicalSchema()
 {
     FDOLOG_MARKER("Connection::+GetLogicalSchema");
-    FDOLOG_PROFILE_BLOCK;
-    FDOLOG_PROFILE_CHECKPOINT;
     
     SchemaDescription::Ptr sc(DescribeSchema());
-    
-    FDOLOG_PROFILE_CHECKPOINT;
 
     return sc->GetLogicalSchemas();
 }
@@ -470,12 +466,8 @@ FdoFeatureSchemaCollection* Connection::GetLogicalSchema()
 ov::PhysicalSchemaMapping* Connection::GetPhysicalSchemaMapping()
 {
     FDOLOG_MARKER("Connection::+GetLogicalSchema");
-    FDOLOG_PROFILE_BLOCK;
-    FDOLOG_PROFILE_CHECKPOINT;
 
     SchemaDescription::Ptr sc(DescribeSchema());
-    
-    FDOLOG_PROFILE_CHECKPOINT;
 
     return sc->GetSchemaMapping();
 }
@@ -483,12 +475,8 @@ ov::PhysicalSchemaMapping* Connection::GetPhysicalSchemaMapping()
 SpatialContextCollection* Connection::GetSpatialContexts()
 {
     FDOLOG_MARKER("Connection::+GetLogicalSchema");
-    FDOLOG_PROFILE_BLOCK;
-    FDOLOG_PROFILE_CHECKPOINT;
 
     SchemaDescription::Ptr sc(DescribeSchema());
-
-    FDOLOG_PROFILE_CHECKPOINT;
 
     return sc->GetSpatialContexts();
 }
@@ -508,12 +496,7 @@ void Connection::PgExecuteCommand(char const* sql, FdoSize& affected)
 
     affected = 0;
 
-    FDOLOG_PROFILE_BLOCK;
-    FDOLOG_PROFILE_CHECKPOINT;
-
     boost::shared_ptr<PGresult> pgRes(PQexec(mPgConn, sql), PQclear);
-
-    FDOLOG_PROFILE_CHECKPOINT;
 
     ExecStatusType pgStatus = PQresultStatus(pgRes.get());
     if (PGRES_COMMAND_OK != pgStatus && PGRES_TUPLES_OK != pgStatus)
@@ -581,9 +564,6 @@ void Connection::PgExecuteCommand(char const* sql,
     //
     // Execute the SQL statement and wrap the results with smart pointer
     //
-    FDOLOG_PROFILE_BLOCK;
-    FDOLOG_PROFILE_CHECKPOINT;
-
     params_ptr_t paramsPtr = (true == pgParams.empty() ? NULL : &pgParams[0]);
 
     boost::shared_ptr<PGresult> pgRes(
@@ -591,8 +571,6 @@ void Connection::PgExecuteCommand(char const* sql,
             static_cast<int>(pgParams.size()), NULL, paramsPtr, NULL, NULL, 0), PQclear);
 
     paramsPtr = NULL; // Assure it won't be used
-
-    FDOLOG_PROFILE_CHECKPOINT;
 
     //
     // Check status of command execution
@@ -642,16 +620,11 @@ PGresult* Connection::PgExecuteQuery(char const* sql)
     PGresult* pgRes = NULL;
     ExecStatusType pgStatus = PGRES_FATAL_ERROR;
 
-    FDOLOG_PROFILE_BLOCK;
-    FDOLOG_PROFILE_CHECKPOINT;
-
     pgRes = PQexec(mPgConn, sql);
     if (NULL != pgRes)
     {
         pgStatus = PQresultStatus(pgRes);
     }
-
-    FDOLOG_PROFILE_CHECKPOINT;
     
     if (PGRES_TUPLES_OK != pgStatus)
     {

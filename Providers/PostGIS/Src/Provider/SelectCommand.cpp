@@ -251,6 +251,8 @@ FdoIFeatureReader* SelectCommand::Execute()
                 {
                     currentSrid = spc->GetSRID();
                 }
+
+                FDOLOG_WRITE(L"\t+ %s (SRID=%d)", propDef->GetName(), currentSrid);
             }
 
             // Add property to columns list
@@ -264,7 +266,7 @@ FdoIFeatureReader* SelectCommand::Execute()
             sqlColumns += '.';
             sqlColumns += static_cast<char const*>(propName);
 
-            FDOLOG_WRITE("\t%s (SRID=%d)", static_cast<char const*>(propName), currentSrid);
+            FDOLOG_WRITE("\t- %s", static_cast<char const*>(propName));
         }
 
         //

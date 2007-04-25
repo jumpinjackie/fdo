@@ -66,9 +66,6 @@ FdoInt32 FeatureReader::GetDepth()
 
 const FdoByte* FeatureReader::GetGeometry(FdoString* propertyName, FdoInt32* count)
 {
-    FDOLOG_MARKER("FeatureReader::GetGeometry");
-    FDOLOG_WRITE(L"Property: %s", propertyName);
-
     return Base::GetGeometry(propertyName, count);
 }
 
