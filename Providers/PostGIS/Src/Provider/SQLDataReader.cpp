@@ -324,7 +324,7 @@ FdoByteArray* SQLDataReader::GetGeometry(FdoString* columnName)
     catch (FdoException* e)
     {
         FdoCommandException* ne = NULL;
-        ne = FdoCommandException::Create(L"Int32", e);
+        ne = FdoCommandException::Create(L"Geometry", e);
         e->Release();
         throw ne;
     }

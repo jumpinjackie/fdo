@@ -286,6 +286,9 @@ FdoPtr<FdoEnvelopeImpl> PgSpatialTablesReader::EstimateColumnExtent(
         FdoPtr<FdoEnvelopeImpl> extent = NULL;
         extent = FdoEnvelopeImpl::Create(xmin, ymin, xmax, ymax);
 
+        FDOLOG_WRITE("Extent:\n\txmin = %.8f\n\tymin = %.8f\n\txmax = %.8f\n\tymax = %.8f",
+            xmin, ymin, xmax, ymax);
+
         FDO_SAFE_ADDREF(extent.p);
         return extent.p;
     }
