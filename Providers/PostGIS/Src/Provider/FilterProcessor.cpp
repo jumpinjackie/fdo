@@ -221,6 +221,10 @@ void FilterProcessor::ProcessComparisonCondition(FdoComparisonCondition& cond)
 
 void FilterProcessor::ProcessInCondition(FdoInCondition& cond)
 {
+    FDOLOG_MARKER("FilterProcessor::+ProcessInCondition");
+
+    // TODO: To be implemented
+    FDOLOG_WRITE("NOT IMPLEMENTED");
 }
 
 void FilterProcessor::ProcessNullCondition(FdoNullCondition& cond)
@@ -304,12 +308,12 @@ void FilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& cond)
             break;
         case FdoSpatialOperations_CoveredBy:
             // TODO: What is the semantic of this op?
-            assert("NOT YET IMPLEMENTED");
+            //assert("NOT YET IMPLEMENTED");
             FDOLOG_WRITE("CoveredBy - NOT YET IMPLEMENTED");
             break;
         case FdoSpatialOperations_Inside:
             // TODO: What is the semantic of this op?
-            assert("NOT YET IMPLEMENTED");
+            //assert("NOT YET IMPLEMENTED");
             FDOLOG_WRITE("Inside - NOT YET IMPLEMENTED");
             break;
         default:
