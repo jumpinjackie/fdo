@@ -521,7 +521,7 @@ void Connection::PgExecuteCommand(char const* sql, FdoSize& affected)
         FdoStringP errCode(PQresStatus(pgStatus));
         FdoStringP errMsg(PQresultErrorMessage(pgRes.get()));
 
-        FDOLOG_WRITE("SQL command failed: [%s] %s",
+        FDOLOG_WRITE(L"SQL command failed: [%s] %s",
             static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg));
 
         // TODO: Consider translation of PostgreSQL status to FDO exception (new types?)
@@ -603,7 +603,7 @@ void Connection::PgExecuteCommand(char const* sql,
         FdoStringP errCode(PQresStatus(pgStatus));
         FdoStringP errMsg(PQresultErrorMessage(pgRes.get()));
 
-        FDOLOG_WRITE("SQL command failed: [%s] %s",
+        FDOLOG_WRITE(L"SQL command failed: [%s] %s",
             static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg));
 
         // TODO: Consider translation of PostgreSQL status to FDO exception (new types?)
@@ -662,7 +662,7 @@ PGresult* Connection::PgExecuteQuery(char const* sql)
         PQclear(pgRes);
         pgRes = NULL;
 
-        FDOLOG_WRITE("SQL query failed: [%s] %s",
+        FDOLOG_WRITE(L"SQL query failed: [%s] %s",
             static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg));
 
         // TODO: Consider translation of PostgreSQL status to FDO exception (new types?)
@@ -732,7 +732,7 @@ PGresult* Connection::PgDescribeCursor(char const* name)
         PQclear(pgRes);
         pgRes = NULL;
 
-        FDOLOG_WRITE("Describe portal command failed: [%s] %s",
+        FDOLOG_WRITE(L"Describe portal command failed: [%s] %s",
             static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg));
 
         throw FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_CURSOR_DESCRIBE_FAILED,
@@ -945,7 +945,7 @@ void Connection::ValidateRequiredProperties()
             FdoStringP propValue(dict->GetProperty(propNames[i]));
             if (propValue.GetLength() <= 0)
             {
-                FDOLOG_WRITE("The connection property '%s' required but not set.",
+                FDOLOG_WRITE(L"The connection property '%s' required but not set.",
                     propNames[i]);
                     
                 throw FdoException::Create(

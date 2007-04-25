@@ -207,7 +207,7 @@ FdoDataType PgCursor::GetFieldType(FdoSize number) const
 
             FdoStringP unknown(PQfname(mDescRes, static_cast<int>(number)));
 
-            FDOLOG_WRITE("The column '%' (%d) is of unknown type",
+            FDOLOG_WRITE(L"The column '%' (%d) is of unknown type",
                 static_cast<FdoString*>(unknown), number);
 
             throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_COLUMN_TYPE_UNKNOWN,
