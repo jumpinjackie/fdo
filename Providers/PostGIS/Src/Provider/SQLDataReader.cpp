@@ -295,6 +295,9 @@ FdoBoolean SQLDataReader::IsNull(FdoString* columnName)
 
 FdoByteArray* SQLDataReader::GetGeometry(FdoString* columnName)
 {
+    FDOLOG_MARKER("SQLDataReader::GetGeometry");
+    FDOLOG_WRITE(L"Column: %s", columnName);
+
     // TODO: Consider best strategy to handle NULL geometries
     //       It will also require some minor changes in EWKB parser.
 
@@ -318,11 +321,15 @@ FdoByteArray* SQLDataReader::GetGeometry(FdoString* columnName)
         FdoPtr<FdoByteArray> fgfBytes = factory->GetFgf(fdoGeom);
         assert(NULL != fgfBytes);
         
+        FDOLOG_WRITE(L"Geometry WKT:\n%s", fdoGeom->GetText());
+
         FDO_SAFE_ADDREF(fgfBytes.p);
         return fgfBytes.p;
     }
     catch (FdoException* e)
     {
+        FDOLOG_WRITE("Geometry retrival failed");
+
         FdoCommandException* ne = NULL;
         ne = FdoCommandException::Create(L"Geometry", e);
         e->Release();
