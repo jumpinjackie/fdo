@@ -318,13 +318,14 @@ FdoIFeatureReader* SelectCommand::Execute()
             }
         }
 
-        FDOLOG_WRITE("SQL:\n\t%s", sql.c_str());
+        FDOLOG_WRITE("SQL statement:\n\t%s", sql.c_str());
 
         //
         // Declare cursor and create feature reader
         //
         FDOLOG_WRITE("Creating cursor: crsFdoSelectCommand");
         FDOLOG_PROFILE_BLOCK;
+        FDOLOG_PROFILE_CHECKPOINT;
 
         PgCursor::Ptr cursor(NULL);
         cursor = mConn->PgCreateCursor("crsFdoSelectCommand");
