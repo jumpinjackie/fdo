@@ -100,11 +100,11 @@ FdoInt32 PgTableColumnsReader::GetColumnSize() const
         maxSize = 65536;
         
         int const fmod = mReader->GetInt32(L"modifier");
-        if (-1 != fmod)
+        if (eTypeSizeUnknown != fmod)
         {
             maxSize = details::GetTypeMaxSize(fmod);
         }
-        assert(-1 != maxSize && "MAX LENGHT NOT SPECIFIED");
+        assert(eTypeSizeUnknown != maxSize && "MAX LENGHT NOT SPECIFIED");
     }
     else if (FdoDataType_Decimal == GetColumnType())
     {
@@ -124,7 +124,11 @@ FdoInt32 PgTableColumnsReader::GetColumnPrecision() const
     if (FdoDataType_Decimal == GetColumnType())
     {
         int const fmod = mReader->GetInt32(L"modifier");
-        return details::GetTypePrecision(fmod);
+        precision = details::GetTypePrecision(fmod);
+        if (eTypeSizeUnknown == precision)
+        {
+            precision = eNumericMaxPrecision;
+        }
     }    
     return precision;
 }

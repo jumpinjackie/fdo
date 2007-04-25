@@ -135,6 +135,12 @@ private:
     
     // Name of a table for which given reader has been created.
     FdoStringP mTable;
+
+    enum TypeLimits
+    {
+        eTypeSizeUnknown = -1,
+        eNumericMaxPrecision = 1000
+    };
     
     //
     // Private operations
