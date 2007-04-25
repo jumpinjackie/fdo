@@ -458,8 +458,12 @@ FdoFeatureSchemaCollection* Connection::GetLogicalSchema()
 {
     FDOLOG_MARKER("Connection::+GetLogicalSchema");
     FDOLOG_PROFILE_BLOCK;
-
+    FDOLOG_PROFILE_CHECKPOINT;
+    
     SchemaDescription::Ptr sc(DescribeSchema());
+    
+    FDOLOG_PROFILE_CHECKPOINT;
+
     return sc->GetLogicalSchemas();
 }
 
@@ -467,8 +471,12 @@ ov::PhysicalSchemaMapping* Connection::GetPhysicalSchemaMapping()
 {
     FDOLOG_MARKER("Connection::+GetLogicalSchema");
     FDOLOG_PROFILE_BLOCK;
+    FDOLOG_PROFILE_CHECKPOINT;
 
     SchemaDescription::Ptr sc(DescribeSchema());
+    
+    FDOLOG_PROFILE_CHECKPOINT;
+
     return sc->GetSchemaMapping();
 }
 
@@ -476,8 +484,12 @@ SpatialContextCollection* Connection::GetSpatialContexts()
 {
     FDOLOG_MARKER("Connection::+GetLogicalSchema");
     FDOLOG_PROFILE_BLOCK;
+    FDOLOG_PROFILE_CHECKPOINT;
 
     SchemaDescription::Ptr sc(DescribeSchema());
+
+    FDOLOG_PROFILE_CHECKPOINT;
+
     return sc->GetSpatialContexts();
 }
 
@@ -497,6 +509,7 @@ void Connection::PgExecuteCommand(char const* sql, FdoSize& affected)
     affected = 0;
 
     FDOLOG_PROFILE_BLOCK;
+    FDOLOG_PROFILE_CHECKPOINT;
 
     boost::shared_ptr<PGresult> pgRes(PQexec(mPgConn, sql), PQclear);
 
@@ -569,6 +582,7 @@ void Connection::PgExecuteCommand(char const* sql,
     // Execute the SQL statement and wrap the results with smart pointer
     //
     FDOLOG_PROFILE_BLOCK;
+    FDOLOG_PROFILE_CHECKPOINT;
 
     params_ptr_t paramsPtr = (true == pgParams.empty() ? NULL : &pgParams[0]);
 
@@ -629,6 +643,7 @@ PGresult* Connection::PgExecuteQuery(char const* sql)
     ExecStatusType pgStatus = PGRES_FATAL_ERROR;
 
     FDOLOG_PROFILE_BLOCK;
+    FDOLOG_PROFILE_CHECKPOINT;
 
     pgRes = PQexec(mPgConn, sql);
     if (NULL != pgRes)
@@ -833,7 +848,7 @@ SchemaDescription* Connection::DescribeSchema()
         }
         catch (FdoException* e)
         {
-            FDOLOG_WRITE("Describe operation for '%s' failed",
+            FDOLOG_WRITE(L"Describe operation for '%s' failed",
                 static_cast<FdoString*>(schemaName));
 
             FdoCommandException* ne = NULL;
