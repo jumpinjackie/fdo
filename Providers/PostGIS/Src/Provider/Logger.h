@@ -508,7 +508,7 @@ how to create it and others.
 			{
 				m_nCounterIndex = ___g_nCounterIndex___++;
 				::InitializeCriticalSection(&m_crit);
-				CSTLogFile::GetLogFile()->Write("***Counter %d at %s,%d initialized", m_nCounterIndex, szFile, nLine);
+				CSTLogFile::GetLogFile()->Write("***Counter %d initialized at %s,%d", m_nCounterIndex, szFile, nLine);
 				m_TotalTime.QuadPart = 0;
 			}
 
@@ -534,7 +534,7 @@ how to create it and others.
 				::EnterCriticalSection(&m_crit);
 				LARGE_INTEGER liCurrentTime;
 				::QueryPerformanceCounter(&liCurrentTime);
-				CSTLogFile::GetLogFile()->Write("Counter %d stopped %I64dms from start, %I64dms from last checkpoint", m_nCounterIndex,  liCurrentTime.QuadPart - m_StartTime.QuadPart, liCurrentTime.QuadPart - m_LastCheckPoint.QuadPart); 
+                CSTLogFile::GetLogFile()->Write("Counter %d stopped\r\n\tFrom start: %I64d ms\r\n\tFrom last checkpoint: %I64d ms", m_nCounterIndex,  liCurrentTime.QuadPart - m_StartTime.QuadPart, liCurrentTime.QuadPart - m_LastCheckPoint.QuadPart); 
 				liCurrentTime.QuadPart -= m_StartTime.QuadPart;
 				if (m_nCounter == 1 || m_MinTime.QuadPart > liCurrentTime.QuadPart) m_MinTime.QuadPart = liCurrentTime.QuadPart;
 				if (m_nCounter == 1 || m_MaxTime.QuadPart < liCurrentTime.QuadPart) m_MaxTime.QuadPart = liCurrentTime.QuadPart;
@@ -546,7 +546,7 @@ how to create it and others.
 			{
 				::EnterCriticalSection(&m_crit);
 				LARGE_INTEGER liCheckPoint; ::QueryPerformanceCounter(&liCheckPoint);
-				CSTLogFile::GetLogFile()->Write("Counter %d check point at line %d: %I64d ms from start, %I64dms from last checkpoint", m_nCounterIndex,  nLine, liCheckPoint.QuadPart - m_StartTime.QuadPart, liCheckPoint.QuadPart - m_LastCheckPoint.QuadPart); 
+                CSTLogFile::GetLogFile()->Write("Counter %d check point at line %d\r\n\tFrom start: %I64d ms\r\n\tFrom last checkpoint: %I64d ms", m_nCounterIndex,  nLine, liCheckPoint.QuadPart - m_StartTime.QuadPart, liCheckPoint.QuadPart - m_LastCheckPoint.QuadPart); 
 				m_LastCheckPoint.QuadPart = liCheckPoint.QuadPart;
 				::LeaveCriticalSection(&m_crit);
 			}
@@ -590,7 +590,7 @@ how to create it and others.
 			CSTLogFile* pLogFile = GetLogFile();
 			if (pLogFile->nLastCounter == FDOLOG_MAXCOUNTERS)
 			{
-				pLogFile->Write("*****Max counters (%d) reached, the counter at %s, %d will not be created", FDOLOG_MAXCOUNTERS, szFile, nLine);
+				pLogFile->Write("*****Max counters (%d) reached\r\n\tCounter at %s, %d will not be created", FDOLOG_MAXCOUNTERS, szFile, nLine);
 				return 0;
 			}
 
