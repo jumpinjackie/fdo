@@ -1,7 +1,7 @@
 #ifndef FDOSMNAMEDCOLLECTION_H
 #define FDOSMNAMEDCOLLECTION_H		1
 //
-// Copyright (C) 2004-2006  Autodesk, Inc.
+// Copyright (C) 2004-2007  Autodesk, Inc.
 // 
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of version 2.1 of the GNU Lesser
@@ -22,7 +22,7 @@
 
 #include <Sm/SchemaElement.h>
 
-template <class OBJ> class FdoSmNamedCollection : private FdoNamedCollection<OBJ, FdoException>
+template <class OBJ> class FdoSmNamedCollection : public FdoNamedCollection<OBJ, FdoException>
 {
 public:
     /// Get constant pointer to item by index
@@ -169,6 +169,25 @@ protected:
 
 private:
     const FdoSmSchemaElement* mpParent;
+
+    // In order to make sure that a caller cannot get a non-const object
+    // from a const collection, privately override the base class' methods
+    // that allow this.  We cannot just privately inherit from the base
+    // class because FdiIDisposable::Release calls GetRefCount.
+
+    OBJ* GetItem(FdoInt32 index) const
+	{
+		return FdoNamedCollection<OBJ,FdoException>::GetItem(index);
+	}
+	OBJ* GetItem(const wchar_t* name) const
+	{
+		return FdoNamedCollection<OBJ,FdoException>::GetItem(name);
+	}
+	OBJ* FindItem(const wchar_t* name) const
+	{
+		return FdoNamedCollection<OBJ,FdoException>::FindItem(name);
+	}
+
 };
 
 #endif
