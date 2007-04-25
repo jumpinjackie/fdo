@@ -136,12 +136,15 @@ FdoClassDefinition* SchemaDescription::FindClassDefinition(FdoIdentifier* id)
 
 ov::ClassDefinition* SchemaDescription::FindClassMapping(FdoIdentifier* id)
 {
-    assert(NULL != id);
-    
+    if (NULL == id)
+    {
+        throw FdoException::Create(L"The class identifier is NULL.");
+    }
+
     // TODO: What to do if none class found?
+    assert(NULL != id);
     return mSchemaMapping->FindByClassName(id->GetName());
 }
-
 
 void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
 {
