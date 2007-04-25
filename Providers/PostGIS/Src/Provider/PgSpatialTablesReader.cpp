@@ -254,9 +254,9 @@ FdoPtr<FdoEnvelopeImpl> PgSpatialTablesReader::EstimateColumnExtent(
 
     std::string sql("SELECT xmin(env), ymin(env), xmax(env), ymax(env) FROM ("
                      " SELECT estimated_extent('"
-                     + details::QuoteSqlName(mCurrentSchema) + "', '"
-                     + details::QuoteSqlName(mTableCached) + "', '"
-                     + details::QuoteSqlName(column) + "') AS env) AS extentsub");
+                     + mCurrentSchema + "', '"
+                     + mTableCached + "', '"
+                     + column + "') AS env) AS extentsub");
 
     // NOTE: The PgExecuteQuery throws on error, but if no exception occurs,
     //       valid query result is assumed.
