@@ -27,6 +27,7 @@ SET FDOLIBPATHARCSDE=\Fdo\Lib
 SET FDODOCPATHARCSDE=\Fdo\Docs
 SET DOCENABLEARCSDE=skip
 SET FDOERROR=0
+SET ARCSDEVERSIONACTIVE=9
 
 :study_params
 if (%1)==() goto start_build
@@ -104,6 +105,16 @@ if not exist "%FDOLIBPATHARCSDE%" mkdir "%FDOLIBPATHARCSDE%"
 if not exist "%FDODOCPATHARCSDE%" mkdir "%FDODOCPATHARCSDE%"
 
 :start_exbuild
+if not ("%SDEVER_ARCUNITTEST%")==("") goto start_setbuild
+if exist "%SDEHOME%\bin\sde.dll" SET SDEVER_ARCUNITTEST=92
+if exist "%SDEHOME%\bin\sde91.dll" SET SDEVER_ARCUNITTEST=91
+:start_setbuild
+if exist "%FDOTHIRDPARTY%\ESRI\ArcSDEClient91\Windows\bin\sde91.dll" SET ARCSDEVERSIONACTIVE=%ARCSDEVERSIONACTIVE%1
+if exist "%FDOTHIRDPARTY%\ESRI\ArcSDEClient92\Windows\bin\sde.dll" SET ARCSDEVERSIONACTIVE=%ARCSDEVERSIONACTIVE%2
+if "%ARCSDEVERSIONACTIVE%"=="912" SET ARCSDEVERSIONACTIVE=%TYPEBUILDARCSDE%
+if "%ARCSDEVERSIONACTIVE%"=="91" SET ARCSDEVERSIONACTIVE=%TYPEBUILDARCSDE%91Only
+if "%ARCSDEVERSIONACTIVE%"=="92" SET ARCSDEVERSIONACTIVE=%TYPEBUILDARCSDE%92Only
+
 if "%TYPEACTIONARCSDE%"=="clean" SET MSACTIONARCSDE=Clean
 if "%TYPEACTIONARCSDE%"=="install" goto install_files_ArcSDE
 
@@ -111,7 +122,9 @@ echo %MSACTIONARCSDE% %TYPEBUILDARCSDE% ArcSDE provider dlls
 SET FDOACTIVEBUILD=%cd%\Src\ArcSDE
 cscript //Nologo //job:prepare preparebuilds.wsf
 pushd Src
-msbuild ArcSDE_temp.sln /t:%MSACTIONARCSDE% /p:Configuration=%TYPEBUILDARCSDE% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+
+msbuild ArcSDE_temp.sln /t:%MSACTIONARCSDE% /p:Configuration=%ARCSDEVERSIONACTIVE% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+
 SET FDOERROR=%errorlevel%
 if exist ArcSDE_temp.sln del /Q /F ArcSDE_temp.sln
 popd
@@ -123,6 +136,8 @@ if "%TYPEACTIONARCSDE%"=="build" goto generate_docs
 echo copy %TYPEBUILDARCSDE% ArcSDE provider output files
 copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEMessage.dll" "%FDOBINPATHARCSDE%"
 copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider.dll" "%FDOBINPATHARCSDE%"
+if exist "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider91.dll" copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider91.dll" "%FDOBINPATHARCSDE%"
+if exist "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider92.dll" copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider92.dll" "%FDOBINPATHARCSDE%"
 
 echo copy header files
 rem none

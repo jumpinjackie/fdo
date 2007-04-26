@@ -508,6 +508,9 @@ void ArcSDEDescribeSchemaCommand::addTable (
         // Get (possibly qualified) table name:
         result = SE_reginfo_get_table_name (registration, qualified_table_name);
         handle_sde_err<FdoSchemaException> (connection->GetConnection(), result, __FILE__, __LINE__, ARCSDE_REGISTRATION_INFO_ITEM, "Table registration info item '%1$ls' could not be retrieved.", L"qualified_table_name");
+        database_name[0] = '\0';
+        owner[0] = '\0';
+        table_name[0] = '\0';
         result = SE_table_parse_qualified_name(connection->GetConnection(), qualified_table_name, database_name, owner, table_name, NULL, FALSE);
         handle_sde_err<FdoSchemaException> (connection->GetConnection(), result, __FILE__, __LINE__, ARCSDE_REGISTRATION_INFO_ITEM, "Table registration info item '%1$ls' could not be retrieved.", L"qualified_table_name");
 

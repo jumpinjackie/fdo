@@ -17,11 +17,18 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = ArcSDEProvider.vcproj ArcSDEProvider.rc resource.h
+EXTRA_DIST =  \
+  resource.h \
+  ArcSDEProvider.vcproj \
+  ArcSDEProvider.rc \
+  ArcSDEProvider91.vcproj \
+  ArcSDEProvider91.rc \
+  ArcSDEProvider92.vcproj \
+  ArcSDEProvider92.rc
 
-noinst_LTLIBRARIES = libArcSDEProviderSrc.la
+lib_LTLIBRARIES = libArcSDEProvider91.la
 
-libArcSDEProviderSrc_la_SOURCES = \
+libArcSDEProvider91_la_SOURCES = \
   ArcSDEAcquireLockCommand.cpp \
   ArcSDELockConflictReader.cpp \
   ArcSDELockUtility.cpp \
@@ -82,7 +89,7 @@ libArcSDEProviderSrc_la_SOURCES = \
   ArcSDEListDataStores.cpp \
   stdafx.cpp
 
-noinst_HEADERS = $(libArcSDEProviderSrc_la_SOURCES) \
+noinst_HEADERS = $(libArcSDEProvider91_la_SOURCES) \
    ArcSDEAcquireLockCommand.h \
    ArcSDEActivateLongTransactionCommand.h \
    ArcSDEActivateSpatialContext.h \
@@ -143,13 +150,25 @@ noinst_HEADERS = $(libArcSDEProviderSrc_la_SOURCES) \
    resource.h \
    stdafx.h
 
-libArcSDEProviderSrc_la_LDFLAGS =
-
 INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \
+  -I$(FDOTHIRDPARTY)/ESRI/ArcSDEClient91/Linux/include \
   -I$(SDEHOME)/include \
   -I$(FDOUTILITIES)/Common/Inc \
   -I../../Inc
+
+libArcSDEProvider91_la_LIBADD =  \
+  $(FDO)/Unmanaged/Src/libFDO.la \
+  $(FDOUTILITIES)/Common/libProvidersCommon.la \
+  -lpe91 \
+  -lsde91 \
+  -lsg91
+
+libArcSDEProvider91_la_LDFLAGS = \
+  -shared \
+  -release $(VERSION) \
+  -L$(FDOTHIRDPARTY)/ESRI/ArcSDEClient91/Linux/lib \
+  -L$(SDEHOME)/lib
 
 CXXFLAGS = @CXXFLAGS@ -D__USE_GNU -DLINUX -DLINUX_IA32
 

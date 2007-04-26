@@ -127,6 +127,13 @@ else
   fi
 fi
 
+AM_CONDITIONAL([SDEVER_ARCUNITTEST91], [test -f $SDEHOME/lib/libsde91.so])
+AM_CONDITIONAL([SDEVER_ARCUNITTEST92], [test -f $SDEHOME/lib/libsde.so])
+
+AM_CONDITIONAL([SDEBUILDPROV91], [test -f $FDOTHIRDPARTY/ESRI/ArcSDEClient91/Linux/lib/libsde91.so || test -f $SDEHOME/lib/libsde91.so])
+AM_CONDITIONAL([SDEBUILDPROV92], [test -f $FDOTHIRDPARTY/ESRI/ArcSDEClient92/Linux/lib/libsde.so || test -f $SDEHOME/lib/libsde.so])
+
+
 AC_SUBST(FDO)
 AC_SUBST(FDOUTILITIES)
 AC_SUBST(FDOTHIRDPARTY)
@@ -157,7 +164,9 @@ AC_CONFIG_FILES(Makefile)
 AC_CONFIG_FILES([Src/Makefile \
                  Inc/Makefile \
                  Src/Message/Makefile \
+                 Src/Loader/Makefile \
                  Src/Provider/Makefile \
+                 Src/Provider92/Makefile \
                  Src/UnitTest/Makefile])
 
 AC_CONFIG_FILES([Docs/Makefile \

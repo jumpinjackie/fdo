@@ -54,3 +54,18 @@
 	    #endif
     #endif
 #endif
+
+// NOTE: Define SDEVER_ARCUNITTEST in order to use ArcSDE 9.1/9.2 client 
+#ifdef WIN32
+    #if _SDEVER_ARCUNITTEST == 91
+	    #pragma comment(lib, "pe91.lib")
+	    #pragma comment(lib, "sde91.lib")
+    #else
+        #if _SDEVER_ARCUNITTEST == 92
+            #pragma comment(lib, "pe.lib")
+            #pragma comment(lib, "sde.lib")
+        #else
+            #pragma message("Please define the environment variable %SDEVER_ARCUNITTEST% having 91 or 92 as value")
+        #endif
+    #endif
+#endif

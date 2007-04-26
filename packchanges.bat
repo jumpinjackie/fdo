@@ -31,7 +31,7 @@ if exist FileListChanges.txt del /F /Q FileListChanges.txt
 if exist Read_Me_FilesChanges.txt del /F /Q Read_Me_FilesChanges.txt
 
 echo $(.)>> FilesChanges.log
-svn status -q >> FilesChanges.log
+svn status -q -N >> FilesChanges.log
 
 pushd Thirdparty
 echo $(Thirdparty)>> ..\FilesChanges.log

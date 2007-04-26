@@ -22,6 +22,14 @@ EXTRA_DIST = \
   Pch.cpp \
   providers.xml
 
+if SDEVER_ARCUNITTEST92
+   BUILD_USING_SDE92= -lpe -lsde -lsg
+endif
+
+if SDEVER_ARCUNITTEST91
+   BUILD_USING_SDE91= -lpe91 -lsde91 -lsg91
+endif
+
 noinst_PROGRAMS = UnitTest
 
 UnitTest_SOURCES = \
@@ -71,7 +79,6 @@ INCLUDES = \
   -I../Provider \
   -I. \
   -I$(FDO)/Unmanaged/Inc \
-  -I$(FDOTHIRDPARTY)/ESRI/ArcSDEClient91/Linux/include \
   -I$(SDEHOME)/include \
   -I$(FDOTHIRDPARTY)/linux/cppunit/include \
   -I$(FDOUTILITIES)/Common/Inc \
@@ -79,18 +86,16 @@ INCLUDES = \
 
 
 UnitTest_LDADD = \
-  ../Provider/libArcSDEProviderSrc.la \
+  ../Loader/libArcSDEProviderSrc.la \
   $(FDOTHIRDPARTY)/linux/cppunit/lib/libcppunit.a \
   $(FDO)/Unmanaged/Src/libFDO.la \
+  $(BUILD_USING_SDE91) \
+  $(BUILD_USING_SDE92) \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
-  -lpe91 \
-  -lsde91 \
-  -lsg91  \
   -lpthread_nonshared \
   -lpthread
 
 UnitTest_LDFLAGS = \
-  -L$(FDOTHIRDPARTY)/ESRI/ArcSDEClient91/Linux/lib \
   -L$(SDEHOME)/lib
 
 CXXFLAGS = @CXXFLAGS@ -D__USE_GNU -DLINUX -DLINUX_IA32 -D__STDC_LIMIT_MACROS

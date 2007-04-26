@@ -148,6 +148,10 @@ void ArcSDELockUtility::LockTableName (CHAR* locktable, ArcSDEConnection* connec
     handle_sde_err<FdoCommandException>(conn, result, __FILE__, __LINE__, ARCSDE_REGISTRATION_INFO_ITEM, "Table registration info item '%1$ls' could not be retrieved.", L"id");
     SE_reginfo_free (registration);
     sprintf (lname, "L%d", id);
+    db[0] = '\0';
+    owner[0] = '\0';
+    name[0] = '\0';
+    col[0] = '\0';
     result = SE_table_parse_qualified_name (conn, table, db, owner, name, col, FALSE);
     wchar_t* wTable = NULL;
     multibyte_to_wide(wTable, table);

@@ -17,9 +17,17 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = Message Provider UnitTest
+if SDEBUILDPROV91
+   BUILD_PROV_91 = Provider
+endif
 
-DIST_SUBDIRS = Message Provider UnitTest
+if SDEBUILDPROV92
+   BUILD_PROV_92 = Provider92
+endif
+
+SUBDIRS = Message Loader $(BUILD_PROV_91) $(BUILD_PROV_92) UnitTest
+
+DIST_SUBDIRS = Message Loader $(BUILD_PROV_91) $(BUILD_PROV_92) UnitTest
 
 EXTRA_DIST = ArcSDE.sln
 
@@ -32,15 +40,11 @@ libArcSDEProvider_la_SOURCES =
 nodist_EXTRA_libArcSDEProvider_la_SOURCES = dummy.cpp
 
 libArcSDEProvider_la_LIBADD =  \
-  Provider/libArcSDEProviderSrc.la \
+  Loader/libArcSDEProviderSrc.la \
   $(FDO)/Unmanaged/Src/libFDO.la \
-  $(FDOUTILITIES)/Common/libProvidersCommon.la \
-  -lpe91 \
-  -lsde91 \
-  -lsg91
+  $(FDOUTILITIES)/Common/libProvidersCommon.la
 
 libArcSDEProvider_la_LDFLAGS = \
   -shared \
-  -release $(VERSION) \
-  -L$(SDEHOME)/lib
+  -release $(VERSION)
 

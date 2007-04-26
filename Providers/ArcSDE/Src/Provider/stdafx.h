@@ -35,9 +35,23 @@
 #include <string.h>
 #include <typeinfo>
 
-#include <sdeerno.h>
+#ifndef ARCSDE_LOADER
 
+#include <sdeerno.h>
 #include <FdoSde.h>
+
+#else
+
+// Base FDO headers
+#include <Fdo.h>
+#include <FdoCommonSchemaUtil.h>
+#include <FdoCommonOSUtil.h>
+#include <FdoCommonStringUtil.h>
+#include <FdoCommonMiscUtil.h>
+#include <FdoCommonConnPropDictionary.h>
+
+#endif
+
 #include <FdoCommon.h>
 
 #define _CRTDBG_MAP_ALLOC
