@@ -73,13 +73,14 @@ FilterProcessor::FilterProcessor(FdoInt32 srid) :
     {
         // TODO: Re-throw as FDO exception
 
-        FDOLOG_WRITE("Convertion SRID to string failed: %s", e.what());
+        FDOLOG_WRITE("ERROR: Convertion SRID to string failed: %s", e.what());
         mSRID = "-1"; // Indicate unknown SRID
     }
 }
 
 FilterProcessor::~FilterProcessor()
 {
+    // idle
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -97,6 +98,8 @@ void FilterProcessor::Dispose()
 
 void FilterProcessor::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& op)
 {
+    FDOLOG_MARKER("FilterProcessor::+ProcessBinaryLogicalOperator");
+
     ValidateBinaryOperator(op);
 
     FdoPtr<FdoFilter> operandLeft(op.GetLeftOperand());
@@ -116,23 +119,25 @@ void FilterProcessor::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& op)
     std::string right;
     mExprProc->ReleaseExpressionText(right);
 
-    mStatement.append(sql::sepLeftTerm);
+    //mStatement.append(sql::sepLeftTerm);
     mStatement.append(left);
     mStatement.append(binaryOp);
     mStatement.append(right);
-    mStatement.append(sql::sepRightTerm);
+    //mStatement.append(sql::sepRightTerm);
+
+    FDOLOG_WRITE("Filter:\n\tleft: %s\n\toperator: %s\n\tright: %s",
+        left.c_str(), binaryOp.c_str(), right.c_str());
+    FDOLOG_WRITE("Filter statement:\n\t%s", mStatement.c_str());
 }
 
 void FilterProcessor::ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& op)
 {
-    FdoPtr<FdoFilter> operand(op.GetOperand());
+    FDOLOG_MARKER("FilterProcessor::+ProcessUnaryLogicalOperator");
 
-    if (NULL == operand)
-    {
-        throw FdoFilterException::Create(
-            NlsMsgGet(MSG_POSTGIS_FILTER_MISSING_UNARY_OPERAND,
-            "Missing operand in unary logical expression."));
-    }
+    // Validates operation type and unary operand
+    ValidateUnaryOperator(op);
+
+    FdoPtr<FdoFilter> operand(op.GetOperand());
 
     if (FdoUnaryLogicalOperations_Not == op.GetOperation())
     {
@@ -144,63 +149,55 @@ void FilterProcessor::ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& op)
         mStatement.append(sql::opNot);
         mStatement.append(operandText);
         mStatement.append(sql::sepRightTerm);
-    }
-    else
-    {
-        throw FdoFilterException::Create(
-            NlsMsgGet(MSG_POSTGIS_FILTER_UNKNOWN_COMPARISON,
-            "Unknown comparison operation."));
+     
+        FDOLOG_WRITE("Filter:%s\n\toperator: %s\n\toperand: %s",
+            sql::opNot, operandText.c_str());
+        FDOLOG_WRITE("Filter statement:\n\t%s", mStatement.c_str());
     }
 }
 
 void FilterProcessor::ProcessComparisonCondition(FdoComparisonCondition& cond)
 {
+    FDOLOG_MARKER("FilterProcessor::+ProcessComparisonCondition");
+
+    ValidateComparisonCondition(cond);
+
     FdoPtr<FdoExpression> expLeft(cond.GetLeftExpression());
     FdoPtr<FdoExpression> expRight(cond.GetRightExpression());
 
-    if (NULL == expLeft)
-    {
-        throw FdoFilterException::Create(
-            NlsMsgGet(MSG_POSTGIS_EXPRESSION_MISSING_LEFT,
-            "Missing left expression of comparison condition."));
-    }
-
-    if (NULL == expRight)
-    {
-        throw FdoFilterException::Create(
-            NlsMsgGet(MSG_POSTGIS_EXPRESSION_MISSING_RIGHT,
-            "Missing right expression of comparison condition."));
-    }
-
-    std::string op;
+    std::string compOp;
 
     switch (cond.GetOperation())
     {
     case FdoComparisonOperations_EqualTo: 
-        op = sql::opEqual;
+        compOp = sql::opEqual;
         break;
     case FdoComparisonOperations_NotEqualTo: 
-        op = sql::opNotEqual;
+        compOp = sql::opNotEqual;
         break;
     case FdoComparisonOperations_GreaterThan: 
-        op = sql::opGreaterThan;
+        compOp = sql::opGreaterThan;
         break;
     case FdoComparisonOperations_GreaterThanOrEqualTo: 
-        op = sql::opGreaterThanEqual;
+        compOp = sql::opGreaterThanEqual;
         break;
     case FdoComparisonOperations_LessThan: 
-        op = sql::opLessThan;
+        compOp = sql::opLessThan;
         break;
     case FdoComparisonOperations_LessThanOrEqualTo: 
-        op = sql::opLessThanEqual;
+        compOp = sql::opLessThanEqual;
         break;
     case FdoComparisonOperations_Like: 
-        op = sql::opLike;
+        compOp = sql::opLike;
         break;
     default:
-        throw FdoFilterException::Create(
-            NlsMsgGet(MSG_POSTGIS_FILTER_UNKNOWN_COMPARISON,
-            "Unknown comparison operation."));
+        {
+            FDOLOG_WRITE("ERROR: Unknown comparison operation");
+
+            throw FdoFilterException::Create(
+                NlsMsgGet(MSG_POSTGIS_FILTER_UNKNOWN_COMPARISON,
+                "Unknown comparison operation."));
+        }
     }
 
     expLeft->Process(mExprProc);
@@ -214,9 +211,13 @@ void FilterProcessor::ProcessComparisonCondition(FdoComparisonCondition& cond)
     // Build text representation of the condition
     mStatement.append(sql::sepLeftTerm);
     mStatement.append(left);
-    mStatement.append(op);
+    mStatement.append(compOp);
     mStatement.append(right);
     mStatement.append(sql::sepRightTerm);
+
+    FDOLOG_WRITE("Filter:\n\tleft: %s\n\toperator: %s\n\tright: %s",
+        left.c_str(), compOp.c_str(), right.c_str());
+    FDOLOG_WRITE("Filter statement:\n\t%s", mStatement.c_str());
 }
 
 void FilterProcessor::ProcessInCondition(FdoInCondition& cond)
@@ -224,25 +225,31 @@ void FilterProcessor::ProcessInCondition(FdoInCondition& cond)
     FDOLOG_MARKER("FilterProcessor::+ProcessInCondition");
 
     // TODO: To be implemented
-    FDOLOG_WRITE("NOT IMPLEMENTED");
+    FDOLOG_WRITE("ERROR: NOT IMPLEMENTED");
 }
 
 void FilterProcessor::ProcessNullCondition(FdoNullCondition& cond)
 {
+    FDOLOG_MARKER("FilterProcessor::+ProcessNullCondition");
+
     FdoPtr<FdoIdentifier> propId(cond.GetPropertyName());
     propId->Process(mExprProc);
-    std::string tmp;
-    mExprProc->ReleaseExpressionText(tmp);
+    std::string operand;
+    mExprProc->ReleaseExpressionText(operand);
 
     mStatement.append(sql::sepLeftTerm);
-    mStatement.append(tmp);
+    mStatement.append(operand);
     mStatement.append(sql::opIsNull);
     mStatement.append(sql::sepRightTerm);
+
+    FDOLOG_WRITE("Filter:%s\n\toperand: %s\n\toperator: %s",
+        operand.c_str(), sql::opIsNull);
+    FDOLOG_WRITE("Filter statement:\n\t%s", mStatement.c_str());
 }
 
 void FilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& cond)
 {
-    FDOLOG_MARKER("FilterProcessor::ProcessSpatialCondition");
+    FDOLOG_MARKER("FilterProcessor::+ProcessSpatialCondition");
 
     // TODO: Fill with spatial SQL composition
     FdoPtr<FdoExpression> geomExpr(cond.GetGeometry());
@@ -317,7 +324,10 @@ void FilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& cond)
             FDOLOG_WRITE("Inside - NOT YET IMPLEMENTED");
             break;
         default:
-            throw FdoFilterException::Create(L"Unsupported Spatial operation given in the filter");
+            {
+                FDOLOG_WRITE("ERROR: Unsupported Spatial operation given in the filter");
+                throw FdoFilterException::Create(L"Unsupported Spatial operation given in the filter");
+            }
         }
 
         mStatement.append(sql::sepLeftTerm);
@@ -328,11 +338,13 @@ void FilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& cond)
         mStatement.append(")");
         mStatement.append(sql::sepRightTerm);
     }
+
+    FDOLOG_WRITE("Filter statement:\n\t%s", mStatement.c_str());
 }
 
 void FilterProcessor::ProcessDistanceCondition(FdoDistanceCondition& cond)
 {
-    FDOLOG_MARKER("FilterProcessor::ProcessDistanceCondition");
+    FDOLOG_MARKER("FilterProcessor::+ProcessDistanceCondition");
 
     // TODO: Fill with spatial SQL composition
     FdoPtr<FdoExpression> geomExpr(cond.GetGeometry());
@@ -357,13 +369,12 @@ void FilterProcessor::ProcessDistanceCondition(FdoDistanceCondition& cond)
     }
     catch (boost::bad_lexical_cast& e)
     {   
-        FDOLOG_WRITE("Types conversion failed: %s", e.what());
+        FDOLOG_WRITE("ERROR: Types conversion failed: %s", e.what());
         distTxt = "0"; 
     }
 
     // Prepare geometry literal value
-    // TODO: Add SRID from spatial context support 
-    std::string sqlGeometry("GeomFromWKB(decode(\'" + geomHex + "\', \'hex\'), 32767)");
+    std::string sqlGeometry("GeomFromWKB(decode(\'" + geomHex + "\', \'hex\'), " + mSRID +")");
 
     // Prepare distance-based predicate
     switch(cond.GetOperation())
@@ -383,11 +394,18 @@ void FilterProcessor::ProcessDistanceCondition(FdoDistanceCondition& cond)
         {
             // TODO: Is behond distance semantic equal to "distance > N"
             //       IOW, opposite comparison to within distance?
+
+            FDOLOG_WRITE("ERROR: NOT IMPLEMENTED");
         }
         break;
     default:
-        throw FdoFilterException::Create(L"Unsupported Distance operation given in the filter");
+        {
+            FDOLOG_WRITE("ERROR: Unsupported Distance operation given in the filter");
+            throw FdoFilterException::Create(L"Unsupported Distance operation given in the filter");
+        }
     }
+
+    FDOLOG_WRITE("Filter statement:\n\t%s", mStatement.c_str());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -396,7 +414,7 @@ void FilterProcessor::ProcessDistanceCondition(FdoDistanceCondition& cond)
 
 std::string const& FilterProcessor::GetFilterStatement() const
 {
-    FDOLOG_MARKER("FilterProcessor::GetFilterStatement");
+    FDOLOG_MARKER("FilterProcessor::+GetFilterStatement");
 
     FDOLOG_WRITE("Filter:\n\t%s", mStatement.c_str());
 
@@ -414,6 +432,8 @@ void FilterProcessor::ValidateBinaryOperator(FdoBinaryLogicalOperator& op)
 
     if (NULL == left)
     {
+        FDOLOG_WRITE("ERROR: Missing left operand in binary logical expression");
+
         throw FdoFilterException::Create(
             NlsMsgGet(MSG_POSTGIS_FILTER_MISSING_LEFT_OPERAND,
             "Missing left operand in binary logical expression."));
@@ -421,6 +441,8 @@ void FilterProcessor::ValidateBinaryOperator(FdoBinaryLogicalOperator& op)
 
     if (NULL == right)
     {
+        FDOLOG_WRITE("ERROR: Missing right operand in binary logical expression");
+
         throw FdoFilterException::Create(
             NlsMsgGet(MSG_POSTGIS_FILTER_MISSING_RIGHT_OPERAND,
             "Missing right operand in binary logical expression."));
@@ -429,14 +451,59 @@ void FilterProcessor::ValidateBinaryOperator(FdoBinaryLogicalOperator& op)
     if (FdoBinaryLogicalOperations_And != op.GetOperation()
         && FdoBinaryLogicalOperations_Or != op.GetOperation())
     {
+        FDOLOG_WRITE("ERROR: Unknown binary logical operation");
+        
         throw FdoFilterException::Create(
-            NlsMsgGet(MSG_POSTGIS_FILTER_UNKNOWN_LOGICAL_OP,
-            "Unknown logical operation."));
+            NlsMsgGet(MSG_POSTGIS_FILTER_UNKNOWN_BINARY_PREDICATE,
+            "Unknown binary logical operation."));
     }
 }
 
 void FilterProcessor::ValidateUnaryOperator(FdoUnaryLogicalOperator& op)
 {
+    FdoPtr<FdoFilter> operand(op.GetOperand());
+
+    if (NULL == operand)
+    {
+        FDOLOG_WRITE("ERROR: Missing operand in unary logical expression");
+
+        throw FdoFilterException::Create(
+            NlsMsgGet(MSG_POSTGIS_FILTER_MISSING_UNARY_OPERAND,
+            "Missing operand in unary logical expression."));
+    }
+
+    if (FdoUnaryLogicalOperations_Not != op.GetOperation())
+    {
+        FDOLOG_WRITE("ERROR: Unknown unary operation");
+
+        throw FdoFilterException::Create(
+            NlsMsgGet(MSG_POSTGIS_FILTER_UNKNOWN_UNARY_PREDICATE,
+            "Unknown unary operation."));
+    }
+}
+
+void FilterProcessor::ValidateComparisonCondition(FdoComparisonCondition& cond)
+{
+    FdoPtr<FdoExpression> expLeft(cond.GetLeftExpression());
+    FdoPtr<FdoExpression> expRight(cond.GetRightExpression());
+
+    if (NULL == expLeft)
+    {
+        FDOLOG_WRITE("ERROR: Missing left expression of comparison condition");
+
+        throw FdoFilterException::Create(
+            NlsMsgGet(MSG_POSTGIS_EXPRESSION_MISSING_LEFT,
+            "Missing left expression of comparison condition."));
+    }
+
+    if (NULL == expRight)
+    {
+        FDOLOG_WRITE("ERROR: Missing right expression of comparison condition");
+
+        throw FdoFilterException::Create(
+            NlsMsgGet(MSG_POSTGIS_EXPRESSION_MISSING_RIGHT,
+            "Missing right expression of comparison condition."));
+    }
 }
 
 }} // namespace fdo::postgis
