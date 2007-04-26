@@ -38,6 +38,7 @@ SET NLSDIR=%FDOTHIRDPARTY%\apache\xml-xalan\c\Src\xalanc\NLS
 
 if not exist "%SDEHOME%" SET SDEHOME=%FDOTHIRDPARTY%\ESRI\ArcSDEClient91\Windows
 if not exist "%SDEHOME%" echo Optional FDO environment variable SDEHOME is not set
+set SDEVER_ARCUNITTEST=91
 
 if not exist "%FDOMYSQL%" SET FDOMYSQL=C:\Program Files\MySQL\MySQL Server 5.0
 if not exist "%FDOMYSQL%" echo Optional FDO environment variable FDOMYSQL is not set

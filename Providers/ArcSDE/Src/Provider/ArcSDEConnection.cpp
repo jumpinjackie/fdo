@@ -827,6 +827,9 @@ FdoClassDefinition* ArcSDEConnection::TableToClass (FdoString* wQualifiedTableNa
 
     // Parse given wQualifiedTableName into wSchemaName and wTableName:
     wide_to_multibyte(mbQualifiedTableName, wQualifiedTableName);
+    mbDatabaseName[0] = '\0';
+    mbOwnerName[0] = '\0';
+    mbTableName[0] = '\0';
     result = SE_table_parse_qualified_name(mConnection, mbQualifiedTableName, mbDatabaseName, mbOwnerName, mbTableName, NULL, FALSE);
     handle_sde_err<FdoException>(mConnection, result, __FILE__, __LINE__, ARCSDE_PARSE_TABLE_NAME_FAILED, "Failed to parse the qualified name '%1$ls'.", wQualifiedTableName);
     multibyte_to_wide(wOwnerName, mbOwnerName);
