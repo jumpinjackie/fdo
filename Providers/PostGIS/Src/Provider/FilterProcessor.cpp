@@ -111,22 +111,12 @@ void FilterProcessor::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& op)
     else
         binaryOp = sql::opOr;
 
+    mStatement.append(sql::sepLeftTerm);
     operandLeft->Process(this);
-    std::string left;
-    mExprProc->ReleaseExpressionText(left);
-
-    operandRight->Process(this);
-    std::string right;
-    mExprProc->ReleaseExpressionText(right);
-
-    //mStatement.append(sql::sepLeftTerm);
-    mStatement.append(left);
     mStatement.append(binaryOp);
-    mStatement.append(right);
-    //mStatement.append(sql::sepRightTerm);
+    operandRight->Process(this);
+    mStatement.append(sql::sepRightTerm);
 
-    FDOLOG_WRITE("Filter:\n\tleft: %s\n\toperator: %s\n\tright: %s",
-        left.c_str(), binaryOp.c_str(), right.c_str());
     FDOLOG_WRITE("Filter statement:\n\t%s", mStatement.c_str());
 }
 
@@ -139,21 +129,20 @@ void FilterProcessor::ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& op)
 
     FdoPtr<FdoFilter> operand(op.GetOperand());
 
+    std::string unaryOp;
     if (FdoUnaryLogicalOperations_Not == op.GetOperation())
     {
-        operand->Process(this);
-        std::string operandText;
-        mExprProc->ReleaseExpressionText(operandText);
+        FDOLOG_WRITE("Unary operation: NOT");
 
-        mStatement.append(sql::sepLeftTerm);
-        mStatement.append(sql::opNot);
-        mStatement.append(operandText);
-        mStatement.append(sql::sepRightTerm);
-     
-        FDOLOG_WRITE("Filter:%s\n\toperator: %s\n\toperand: %s",
-            sql::opNot, operandText.c_str());
-        FDOLOG_WRITE("Filter statement:\n\t%s", mStatement.c_str());
+        unaryOp = sql::opNot;
     }
+
+    mStatement.append(sql::sepLeftTerm);
+    mStatement.append(unaryOp);
+    operand->Process(this);
+    mStatement.append(sql::sepRightTerm);
+
+    FDOLOG_WRITE("Filter statement:\n\t%s", mStatement.c_str());
 }
 
 void FilterProcessor::ProcessComparisonCondition(FdoComparisonCondition& cond)
@@ -200,23 +189,13 @@ void FilterProcessor::ProcessComparisonCondition(FdoComparisonCondition& cond)
         }
     }
 
-    expLeft->Process(mExprProc);
-    std::string left;
-    mExprProc->ReleaseExpressionText(left);
-
-    expRight->Process(mExprProc);
-    std::string right;
-    mExprProc->ReleaseExpressionText(right);
-
     // Build text representation of the condition
     mStatement.append(sql::sepLeftTerm);
-    mStatement.append(left);
+    expLeft->Process(mExprProc);
     mStatement.append(compOp);
-    mStatement.append(right);
+    expRight->Process(mExprProc);
     mStatement.append(sql::sepRightTerm);
 
-    FDOLOG_WRITE("Filter:\n\tleft: %s\n\toperator: %s\n\tright: %s",
-        left.c_str(), compOp.c_str(), right.c_str());
     FDOLOG_WRITE("Filter statement:\n\t%s", mStatement.c_str());
 }
 
@@ -224,8 +203,41 @@ void FilterProcessor::ProcessInCondition(FdoInCondition& cond)
 {
     FDOLOG_MARKER("FilterProcessor::+ProcessInCondition");
 
-    // TODO: To be implemented
-    FDOLOG_WRITE("ERROR: NOT IMPLEMENTED");
+    FdoPtr<FdoIdentifier> propName(cond.GetPropertyName());
+    if (NULL == propName)
+    {
+        FDOLOG_WRITE("ERROR: Property name in the FdoInCondition is missing");
+        throw FdoFilterException::Create(L"Property name in the FdoInCondition is missing");
+    }
+
+    FdoPtr<FdoValueExpressionCollection> exprCol(cond.GetValues());
+
+    if (NULL == exprCol || exprCol->GetCount() <= 0)
+    {
+        throw FdoFilterException::Create(L"FdoInCondition has an empty value list");
+    }
+
+    mStatement.append(sql::sepLeftTerm);
+    propName->Process(mExprProc);
+    mStatement.append(sql::opIn);
+    mStatement.append(sql::sepLeftTerm);
+
+    FdoPtr<FdoExpression> expr;
+    FdoInt32 const count = exprCol->GetCount() - 1;
+    FdoInt32 i = 0;
+    for (i = 0; i < count; i++)
+    {
+        expr = exprCol->GetItem(i);
+        expr->Process(mExprProc);
+        mStatement.append(sql::sepComma);
+    }
+    expr = exprCol->GetItem(i);
+    expr->Process(mExprProc);
+
+    mStatement.append(sql::sepRightTerm);
+    mStatement.append(sql::sepRightTerm);
+
+    FDOLOG_WRITE("Filter statement:\n\t%s", mStatement.c_str());
 }
 
 void FilterProcessor::ProcessNullCondition(FdoNullCondition& cond)
@@ -233,17 +245,12 @@ void FilterProcessor::ProcessNullCondition(FdoNullCondition& cond)
     FDOLOG_MARKER("FilterProcessor::+ProcessNullCondition");
 
     FdoPtr<FdoIdentifier> propId(cond.GetPropertyName());
-    propId->Process(mExprProc);
-    std::string operand;
-    mExprProc->ReleaseExpressionText(operand);
 
     mStatement.append(sql::sepLeftTerm);
-    mStatement.append(operand);
+    propId->Process(mExprProc);
     mStatement.append(sql::opIsNull);
     mStatement.append(sql::sepRightTerm);
 
-    FDOLOG_WRITE("Filter:%s\n\toperand: %s\n\toperator: %s",
-        operand.c_str(), sql::opIsNull);
     FDOLOG_WRITE("Filter statement:\n\t%s", mStatement.c_str());
 }
 
