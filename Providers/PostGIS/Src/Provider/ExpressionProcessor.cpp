@@ -30,14 +30,21 @@ namespace
 {
     char const* sepLeftTerm  = " ( ";
     char const* sepRightTerm = " ) ";
+
+    char const* opPlus  = " + ";
+    char const* opMinus = " - ";
+    char const* opMult  = " * ";
+    char const* opDiv   = " / ";
 }
 
 ExpressionProcessor::ExpressionProcessor()
 {
+    // idle
 }
 
 ExpressionProcessor::~ExpressionProcessor()
 {
+    // idle
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -56,6 +63,50 @@ void ExpressionProcessor::Dispose()
 void ExpressionProcessor::ProcessBinaryExpression(FdoBinaryExpression& expr)
 {
     FDOLOG_MARKER("ExpressionProcessor::+ProcessBinaryExpression");
+
+    FdoPtr<FdoExpression> operandLeft(expr.GetLeftExpression());
+    FdoPtr<FdoExpression> operandRight(expr.GetRightExpression());
+
+    if (NULL == operandLeft)
+    {
+        FDOLOG_WRITE("ERROR: Left operand of FdoBinaryExpression is missing");
+        throw FdoFilterException::Create(L"Left operand of FdoBinaryExpression is missing");
+    }
+
+    if (NULL == operandRight)
+    {
+        FDOLOG_WRITE("ERROR: Right operand of FdoBinaryExpression is missing");
+        throw FdoFilterException::Create(L"Right operand of FdoBinaryExpression is missing");
+    }
+
+    std::string binaryOp;
+
+    switch (expr.GetOperation())
+    {
+    case FdoBinaryOperations_Add:
+        binaryOp = opPlus;
+        break;
+    case FdoBinaryOperations_Subtract:
+        binaryOp = opMinus;
+        break;
+    case FdoBinaryOperations_Multiply:
+        binaryOp = opMult;
+        break;
+    case FdoBinaryOperations_Divide:
+        binaryOp = opDiv;
+        break;
+    default:
+        {
+            FDOLOG_WRITE("ERROR: Unsupported type of ProcessBinaryExpression expression");
+            throw FdoFilterException::Create(L"Unsupported type of ProcessBinaryExpression expression");
+        }
+    }
+
+    mBuffer.append(sepLeftTerm);
+    operandLeft ->Process(this);
+    mBuffer.append(binaryOp);
+    operandRight->Process(this);
+    mBuffer.append(sepRightTerm);
 
     FDOLOG_WRITE("Expression text: %s", mBuffer.c_str());
 }
@@ -94,6 +145,8 @@ void ExpressionProcessor::ProcessUnaryExpression(FdoUnaryExpression& expr)
 void ExpressionProcessor::ProcessFunction(FdoFunction& expr)
 {
     FDOLOG_MARKER("ExpressionProcessor::+ProcessFunction");
+
+    // TODO: To be implemented
 
     FDOLOG_WRITE("Expression text: %s", mBuffer.c_str());
 }
