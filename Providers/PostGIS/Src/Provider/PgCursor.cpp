@@ -304,6 +304,8 @@ void PgCursor::Declare(char const* query, details::pgexec_params_t const& params
     }
     catch (FdoException* e)
     {
+        FDOLOG_WRITE("ERROR: The creation of PostgreSQL cursor failed");
+
         FdoException* ne = NULL;
         ne = FdoException::Create(NlsMsgGet(MSG_POSTGIS_CURSOR_CREATION_FAILED,
                 "The creation of PostgreSQL cursor '%1$ls' failed.",
@@ -411,7 +413,7 @@ void PgCursor::ValidateConnectionState() const
 {
     if (FdoConnectionState_Closed == mConn->GetConnectionState())
     {
-        FDOLOG_WRITE("Connection is closed or invalid.");
+        FDOLOG_WRITE("ERROR: Connection is closed or invalid.");
 
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CONNECTION_INVALID,
             "Connection is closed or invalid."));
@@ -424,7 +426,7 @@ void PgCursor::ValidateDeclaredState() const
 
     if (mIsClosed || NULL == mDescRes)
     {
-        FDOLOG_WRITE("The PostgreSQL database cursor is not defined.");
+        FDOLOG_WRITE("ERROR: The PostgreSQL database cursor is not defined.");
 
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CURSOR_NOT_DEFINED,
             "The PostgreSQL database cursor is not defined."));
@@ -437,7 +439,7 @@ void PgCursor::ValidateFetchedState() const
 
     if (mIsClosed || NULL == mFetchRes)
     {
-        FDOLOG_WRITE("The fetch command was not issued yet.");
+        FDOLOG_WRITE("ERROR: The fetch command was not issued yet.");
 
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CURSOR_NOT_FETCHED,
             "The fetch command was not issued yet."));

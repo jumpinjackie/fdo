@@ -138,6 +138,7 @@ ov::ClassDefinition* SchemaDescription::FindClassMapping(FdoIdentifier* id)
 {
     if (NULL == id)
     {
+        FDOLOG_WRITE("ERROR: The class identifier is NULL")
         throw FdoException::Create(L"The class identifier is NULL.");
     }
 
@@ -148,8 +149,11 @@ ov::ClassDefinition* SchemaDescription::FindClassMapping(FdoIdentifier* id)
 
 void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
 {
+    FDOLOG_MARKER("SchemaDescription::+DescribeSchema");
+
     if (NULL == conn)
     {
+        FDOLOG_WRITE("ERROR: Connection is NULL")
         throw FdoException::Create(L"The connection is NULL.");
     }
 
@@ -392,8 +396,7 @@ SpatialContext* SchemaDescription::CreateSpatialContext(Connection* conn,
     }
     catch (boost::bad_lexical_cast& e)
     {
-        FDOLOG_WRITE("Type conversion failed: %s", e.what());
-        //assert(!"FIX HANDLING INVALID SRID");
+        FDOLOG_WRITE("ERROR: Type conversion failed: %s", e.what());
     }
 
     std::string sql("SELECT srtext FROM spatial_ref_sys WHERE srid = " + sridText);
@@ -401,6 +404,9 @@ SpatialContext* SchemaDescription::CreateSpatialContext(Connection* conn,
     boost::shared_ptr<PGresult> pgRes(mConn->PgExecuteQuery(sql.c_str()), PQclear);    
     if (PGRES_TUPLES_OK != PQresultStatus(pgRes.get()) || PQntuples(pgRes.get()) < 1)
     {
+        FDOLOG_WRITE("ERROR: The Spatial Reference System for SRID=%s not found", 
+            sridText.c_str());
+
         FdoStringP msg = FdoStringP::Format(L"The Spatial Reference System for SRID=%s not found.",
             sridText.c_str());
         throw FdoException::Create(static_cast<FdoString*>(msg));
