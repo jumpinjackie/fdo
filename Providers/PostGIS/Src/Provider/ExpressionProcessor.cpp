@@ -55,33 +55,66 @@ void ExpressionProcessor::Dispose()
 
 void ExpressionProcessor::ProcessBinaryExpression(FdoBinaryExpression& expr)
 {
+    FDOLOG_MARKER("ExpressionProcessor::+ProcessBinaryExpression");
 }
 
 void ExpressionProcessor::ProcessUnaryExpression(FdoUnaryExpression& expr)
 {
+    FDOLOG_MARKER("ExpressionProcessor::+ProcessUnaryExpression");
+
+    FdoPtr<FdoExpression> exprPtr(expr.GetExpression());
+
+    if (NULL == exprPtr)
+    {
+        FDOLOG_WRITE("ERROR: Missing FdoUnaryExpression expression");
+        throw FdoFilterException::Create(L"Missing FdoUnaryExpression expression");
+    }
+
+    if (FdoUnaryOperations_Negate == expr.GetOperation())
+    {
+        mBuffer.append(sepLeftTerm + " - " + sepLeftTerm);
+        exprPtr->Process(this);
+        mBuffer.append(sepRightTerm + " " + sepRightTerm);
+    }
+    else
+    {
+        FDOLOG_WRITE("ERROR: Unknown operation of unary expression.");
+        throw FdoFilterException::Create(L"Unknown operation of unary expression");
+    }
 }
 
 void ExpressionProcessor::ProcessFunction(FdoFunction& expr)
 {
+    FDOLOG_MARKER("ExpressionProcessor::+ProcessFunction");
 }
 
 void ExpressionProcessor::ProcessIdentifier(FdoIdentifier& expr)
 {
+    FDOLOG_MARKER("ExpressionProcessor::+ProcessIdentifier");
+
     FdoStringP name(expr.GetName());
     mBuffer.append(static_cast<char const*>(name));
+
+    FDOLOG_WRITE("Identifier name: %s", static_cast<char const*>(name));
+    FDOLOG_WRITE("Expression text: %s", mBuffer.c_str());
 }
- 	
+
 void ExpressionProcessor::ProcessComputedIdentifier(FdoComputedIdentifier& expr)
 {
+    FDOLOG_MARKER("ExpressionProcessor::+ProcessComputedIdentifier");
+
     FdoPtr<FdoExpression> exprPtr(expr.GetExpression());
     if (NULL == exprPtr)
     {
+        FDOLOG_WRITE("ERROR: FdoComputedIdentifier is missing");
         throw FdoFilterException::Create(L"FdoComputedIdentifier is missing");
     }
 
     mBuffer.append(sepLeftTerm);
     exprPtr->Process(this);
     mBuffer.append(sepRightTerm);
+
+    FDOLOG_WRITE("Expression text: %s", mBuffer.c_str());
 }
 
 void ExpressionProcessor::ProcessParameter(FdoParameter& expr)
@@ -91,6 +124,8 @@ void ExpressionProcessor::ProcessParameter(FdoParameter& expr)
     //       is a DBMS specific name, so for PostgreSQL we have:
     //       $1, $2, $3,...
     //       What about value?
+
+    FDOLOG_WRITE("ERROR: PROCESSING PARAMETERS NOT IMPLEMENTED");
     throw FdoFilterException::Create(L"TODO: PARAMETERS NOT IMPLEMENTED");
 }
 
@@ -129,7 +164,9 @@ void ExpressionProcessor::ProcessByteValue(FdoByteValue& expr)
 void ExpressionProcessor::ProcessDateTimeValue(FdoDateTimeValue& expr)
 {
     // TODO: Add datetime support
-    throw FdoFilterException::Create(L"TODO: DATETYPE NOT IMPLEMENTED");
+
+    FDOLOG_WRITE("ERROR: DATETIME TYPE  NOT IMPLEMENTED");
+    throw FdoFilterException::Create(L"TODO: DATETIME TYPE NOT IMPLEMENTED");
 }
 
 void ExpressionProcessor::ProcessDecimalValue(FdoDecimalValue& expr)
@@ -225,11 +262,13 @@ void ExpressionProcessor::ProcessStringValue(FdoStringValue& expr)
 
 void ExpressionProcessor::ProcessBLOBValue(FdoBLOBValue& expr)
 {
+    FDOLOG_WRITE("ERROR: BLOB value in expression is not supported");
     throw FdoFilterException::Create(L"BLOB value in expression is not supported");
 }
 
 void ExpressionProcessor::ProcessCLOBValue(FdoCLOBValue& expr)
 {
+    FDOLOG_WRITE("ERROR: CLOB value in expression is not supported");
     throw FdoFilterException::Create(L"CLOB value in expression is not supported");
 }
 
@@ -269,7 +308,7 @@ void ExpressionProcessor::ProcessGeometryValue(FdoGeometryValue& expr)
         ewkb::bytes_to_hex(wkb, hexWkb);
         mBuffer.append(hexWkb);
 
-        FDOLOG_WRITE("Geometry WKB as hex string:\n\t%s", hexWkb.c_str());
+        FDOLOG_WRITE("Geometry WKB HEX:\n\t%s", hexWkb.c_str());
     }
 }
 
@@ -279,12 +318,18 @@ void ExpressionProcessor::ProcessGeometryValue(FdoGeometryValue& expr)
 
 void ExpressionProcessor::ReleaseExpressionText(std::string& exprText)
 {
+    FDOLOG_MARKER("ExpressionProcessor::-ReleaseExpressionText");
+    FDOLOG_WRITE("Expression text: %s", mBuffer.c_str());
+
     exprText.assign(mBuffer);
     mBuffer.clear();
 }
-    
+
 std::string ExpressionProcessor::ReleaseBuffer()
 {
+    FDOLOG_MARKER("ExpressionProcessor::-ReleaseBuffer");
+    FDOLOG_WRITE("Buffer content: %s", mBuffer.c_str());
+
     std::string tmp(mBuffer);
     mBuffer.clear();
     return tmp;
