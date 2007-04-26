@@ -295,8 +295,8 @@ FdoBoolean SQLDataReader::IsNull(FdoString* columnName)
 
 FdoByteArray* SQLDataReader::GetGeometry(FdoString* columnName)
 {
-    FDOLOG_MARKER("SQLDataReader::GetGeometry");
-    FDOLOG_WRITE(L"Column: %s", columnName);
+    //FDOLOG_MARKER("SQLDataReader::GetGeometry");
+    //FDOLOG_WRITE(L"Column: %s", columnName);
 
     // TODO: Consider best strategy to handle NULL geometries
     //       It will also require some minor changes in EWKB parser.
