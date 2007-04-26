@@ -138,7 +138,7 @@ ov::ClassDefinition* SchemaDescription::FindClassMapping(FdoIdentifier* id)
 {
     if (NULL == id)
     {
-        FDOLOG_WRITE("ERROR: The class identifier is NULL")
+        FDOLOG_WRITE("ERROR: The class identifier is NULL");
         throw FdoException::Create(L"The class identifier is NULL.");
     }
 
@@ -153,7 +153,7 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
 
     if (NULL == conn)
     {
-        FDOLOG_WRITE("ERROR: Connection is NULL")
+        FDOLOG_WRITE("ERROR: Connection is NULL");
         throw FdoException::Create(L"The connection is NULL.");
     }
 
