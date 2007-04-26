@@ -189,13 +189,30 @@ void FilterProcessor::ProcessComparisonCondition(FdoComparisonCondition& cond)
         }
     }
 
+    expLeft->Process(mExprProc);
+    std::string left;
+    mExprProc->ReleaseExpressionText(left);
+
+    expRight->Process(mExprProc);
+    std::string right;
+    mExprProc->ReleaseExpressionText(right);
+
     // Build text representation of the condition
     mStatement.append(sql::sepLeftTerm);
-    expLeft->Process(mExprProc);
+    mStatement.append(left);
     mStatement.append(compOp);
-    expRight->Process(mExprProc);
+    mStatement.append(right);
     mStatement.append(sql::sepRightTerm);
 
+    // Build text representation of the condition
+    //mStatement.append(sql::sepLeftTerm);
+    //expLeft->Process(mExprProc);
+    //mStatement.append(compOp);
+    //expRight->Process(mExprProc);
+    //mStatement.append(sql::sepRightTerm);
+
+    FDOLOG_WRITE("Filter:\n\tleft: %s\n\toperator: %s\n\tright: %s",
+        left.c_str(), compOp.c_str(), right.c_str());
     FDOLOG_WRITE("Filter statement:\n\t%s", mStatement.c_str());
 }
 
