@@ -502,11 +502,16 @@ Language=English
 Missing right operand in binary logical expression.
 .
 MessageId=6008
-SymbolicName=MSG_POSTGIS_FILTER_UNKNOWN_LOGICAL_OP
+SymbolicName=MSG_POSTGIS_FILTER_UNKNOWN_BINARY_PREDICATE
 Language=English
-Unknown logical operation.
+Unknown binary logical operation.
 .
 MessageId=6009
+SymbolicName=MSG_POSTGIS_FILTER_UNKNOWN_UNARY_PREDICATE
+Language=English
+Unknown unary logical operation.
+.
+MessageId=6010
 SymbolicName=MSG_POSTGIS_FILTER_MISSING_UNARY_OPERAND
 Language=English
 Missing operand in unary logical expression.
