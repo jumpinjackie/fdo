@@ -56,6 +56,8 @@ void ExpressionProcessor::Dispose()
 void ExpressionProcessor::ProcessBinaryExpression(FdoBinaryExpression& expr)
 {
     FDOLOG_MARKER("ExpressionProcessor::+ProcessBinaryExpression");
+
+    FDOLOG_WRITE("Expression text: %s", mBuffer.c_str());
 }
 
 void ExpressionProcessor::ProcessUnaryExpression(FdoUnaryExpression& expr)
@@ -72,20 +74,28 @@ void ExpressionProcessor::ProcessUnaryExpression(FdoUnaryExpression& expr)
 
     if (FdoUnaryOperations_Negate == expr.GetOperation())
     {
-        mBuffer.append(sepLeftTerm + " - " + sepLeftTerm);
+        mBuffer.append(sepLeftTerm);
+        mBuffer.append(" - ");
+        mBuffer.append(sepLeftTerm);
         exprPtr->Process(this);
-        mBuffer.append(sepRightTerm + " " + sepRightTerm);
+        mBuffer.append(sepRightTerm);
+        mBuffer.append(" ");
+        mBuffer.append(sepRightTerm);
     }
     else
     {
         FDOLOG_WRITE("ERROR: Unknown operation of unary expression.");
         throw FdoFilterException::Create(L"Unknown operation of unary expression");
     }
+
+    FDOLOG_WRITE("Expression text: %s", mBuffer.c_str());
 }
 
 void ExpressionProcessor::ProcessFunction(FdoFunction& expr)
 {
     FDOLOG_MARKER("ExpressionProcessor::+ProcessFunction");
+
+    FDOLOG_WRITE("Expression text: %s", mBuffer.c_str());
 }
 
 void ExpressionProcessor::ProcessIdentifier(FdoIdentifier& expr)
