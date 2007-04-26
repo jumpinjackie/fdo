@@ -253,7 +253,7 @@ FdoDateTime SQLDataReader::GetDateTime(FdoString* columnName)
         }
         catch (std::exception& e)
         {
-            FDOLOG_WRITE("Date '%' conversion failed: %s", sval.c_str(), e.what());
+            FDOLOG_WRITE("ERROR: Date '%' conversion failed: %s", sval.c_str(), e.what());
             throw FdoCommandException::Create(L"Date conversion failed");
         }
     }
@@ -321,14 +321,14 @@ FdoByteArray* SQLDataReader::GetGeometry(FdoString* columnName)
         FdoPtr<FdoByteArray> fgfBytes = factory->GetFgf(fdoGeom);
         assert(NULL != fgfBytes);
         
-        FDOLOG_WRITE(L"Geometry WKT:\n%s", fdoGeom->GetText());
+        //FDOLOG_WRITE(L"Geometry WKT:\n%s", fdoGeom->GetText());
 
         FDO_SAFE_ADDREF(fgfBytes.p);
         return fgfBytes.p;
     }
     catch (FdoException* e)
     {
-        FDOLOG_WRITE("Geometry retrival failed");
+        FDOLOG_WRITE("ERROR: Geometry retrival failed");
 
         FdoCommandException* ne = NULL;
         ne = FdoCommandException::Create(L"Geometry", e);

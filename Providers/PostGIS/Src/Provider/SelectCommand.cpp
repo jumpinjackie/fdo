@@ -177,7 +177,7 @@ FdoIFeatureReader* SelectCommand::Execute()
         featureClasses = logicalSchemas->FindClass(classId);
         if (NULL == featureClasses)
         {
-            FDOLOG_WRITE(L"Logical schema for '%s' not found",
+            FDOLOG_WRITE(L"ERROR: Logical schema for '%s' not found",
                 static_cast<FdoString*>(classId));
             return NULL;
         }
@@ -186,7 +186,7 @@ FdoIFeatureReader* SelectCommand::Execute()
 
         if (featureClasses->GetCount() <= 0)
         {
-            FDOLOG_WRITE(L"No class definition found for schema '%s'",
+            FDOLOG_WRITE(L"ERROR: No class definition found for schema '%s'",
                 static_cast<FdoString*>(classId));
             return NULL;
         }
@@ -210,7 +210,7 @@ FdoIFeatureReader* SelectCommand::Execute()
         phClassDef = schemaMapping->FindByClassName(className);
         if (NULL == phClassDef)
         {
-            FDOLOG_WRITE(L"Physical schema for '%s' not found",
+            FDOLOG_WRITE(L"ERROR: Physical schema for '%s' not found",
                 static_cast<FdoString*>(className));
             return NULL;
         }
@@ -345,7 +345,7 @@ FdoIFeatureReader* SelectCommand::Execute()
     }
     catch (FdoException* e)
     {
-        FDOLOG_WRITE("The execution of Select command failed.");
+        FDOLOG_WRITE("ERROR: The execution of Select command failed.");
 
         FdoCommandException* ne = NULL;
         ne = FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_COMMAND_SELECT_FAILED,
@@ -357,6 +357,8 @@ FdoIFeatureReader* SelectCommand::Execute()
     
 FdoIFeatureReader* SelectCommand::ExecuteWithLock()
 {
+    FDOLOG_WRITE("ERROR: Execute with lock unsupported");
+
     throw FdoCommandException::Create(
         NlsMsgGet(MSG_POSTGIS_LOCKING_NOT_SUPPORTED,
         "The PostGIS provider does not support locking (%1$ls).", L"ExecuteWithLock"));

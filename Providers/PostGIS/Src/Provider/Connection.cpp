@@ -158,7 +158,7 @@ void Connection::SetConnectionString(FdoString* value)
     
     if (FdoStringP(value).GetLength() <= 0)
     {
-        FDOLOG_WRITE(L"Connection string is empty");
+        FDOLOG_WRITE("ERROR: Connection string is empty");
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_EMPTY_CONNECTION_STRING,
                                    "Connection string is empty."));
     }
@@ -178,7 +178,7 @@ void Connection::SetConnectionString(FdoString* value)
     }
     else
     {
-        FDOLOG_WRITE(L"Connection is already open.");
+        FDOLOG_WRITE("ERROR: Connection is already open.");
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CONNECTION_ALREADY_OPEN,
                                    "Connection is already open."));
     }
@@ -219,7 +219,7 @@ FdoConnectionState Connection::Open()
 
     if (FdoConnectionState_Open == GetConnectionState())
     {
-        FDOLOG_WRITE(L"The connection is already open.");
+        FDOLOG_WRITE("ERROR: The connection is already open.");
         throw FdoConnectionException::Create(
             NlsMsgGet(MSG_POSTGIS_CONNECTION_ALREADY_OPEN,
                 "The connection is already open."));
@@ -272,7 +272,7 @@ FdoConnectionState Connection::Open()
             Close();
             assert(NULL == mPgConn);
 
-            FDOLOG_WRITE(L"Connection error: %s", static_cast<FdoString*>(msg));
+            FDOLOG_WRITE(L"ERROR: Connection open failed: %s", static_cast<FdoString*>(msg));
             throw FdoConnectionException::Create(msg);
         }
 
@@ -373,7 +373,7 @@ FdoICommand* Connection::CreateCommand(FdoInt32 type)
     //        || FdoConnectionState_Pending == GetConnectionState())
     if (FdoConnectionState_Closed == GetConnectionState())
     {
-        FDOLOG_WRITE("Connection is closed or invalid");
+        FDOLOG_WRITE("ERROR: Connection is closed or invalid");
         throw FdoConnectionException::Create(
             NlsMsgGet(MSG_POSTGIS_CONNECTION_INVALID,
                 "Connection is closed or invalid."));
@@ -416,7 +416,7 @@ FdoICommand* Connection::CreateCommand(FdoInt32 type)
         break;
     default:
         {
-            FDOLOG_WRITE("Unsupported command requested.");
+            FDOLOG_WRITE("ERROR: Unsupported command requested.");
 
             FdoStringP cmdString(FdoCommonMiscUtil::FdoCommandTypeToString(type));
             throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_COMMAND_NOT_SUPPORTED,
@@ -524,7 +524,7 @@ void Connection::PgExecuteCommand(char const* sql, FdoSize& affected)
     catch (boost::bad_lexical_cast& e)
     {
         affected = 0;
-        FDOLOG_WRITE("Type conversion failed: %s", e.what());
+        FDOLOG_WRITE("ERROR: Type conversion failed: %s", e.what());
     }
 
     FDOLOG_WRITE("Affected tuples: %u", affected);
@@ -581,7 +581,7 @@ void Connection::PgExecuteCommand(char const* sql,
         FdoStringP errCode(PQresStatus(pgStatus));
         FdoStringP errMsg(PQresultErrorMessage(pgRes.get()));
 
-        FDOLOG_WRITE(L"SQL command failed: [%s] %s",
+        FDOLOG_WRITE(L"ERROR: SQL command failed: [%s] %s",
             static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg));
 
         // TODO: Consider translation of PostgreSQL status to FDO exception (new types?)
@@ -604,7 +604,7 @@ void Connection::PgExecuteCommand(char const* sql,
     catch (boost::bad_lexical_cast& e)
     {
         affected = 0;
-        FDOLOG_WRITE("Type conversion failed: %s", e.what());
+        FDOLOG_WRITE("ERROR: Type conversion failed: %s", e.what());
     }
 
     FDOLOG_WRITE("Affected tuples: %u", affected);
@@ -635,7 +635,7 @@ PGresult* Connection::PgExecuteQuery(char const* sql)
         PQclear(pgRes);
         pgRes = NULL;
 
-        FDOLOG_WRITE(L"SQL query failed: [%s] %s",
+        FDOLOG_WRITE(L"ERROR: SQL query failed: [%s] %s",
             static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg));
 
         // TODO: Consider translation of PostgreSQL status to FDO exception (new types?)
@@ -665,7 +665,7 @@ fdo::postgis::PgCursor* Connection::PgCreateCursor(char const* name)
     }
     catch (boost::bad_lexical_cast& e)
     {
-        FDOLOG_WRITE("Type conversion failed: %s", e.what());
+        FDOLOG_WRITE("ERROR: Type conversion failed: %s", e.what());
     }
 
     std::string cursorName(name);
@@ -705,7 +705,7 @@ PGresult* Connection::PgDescribeCursor(char const* name)
         PQclear(pgRes);
         pgRes = NULL;
 
-        FDOLOG_WRITE(L"Describe portal command failed: [%s] %s",
+        FDOLOG_WRITE(L"ERROR: Describe portal command failed: [%s] %s",
             static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg));
 
         throw FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_CURSOR_DESCRIBE_FAILED,
@@ -730,7 +730,7 @@ void Connection::PgBeginSoftTransaction()
         boost::shared_ptr<PGresult> pgRes(PQexec(mPgConn, "BEGIN"), PQclear);
         if (PGRES_COMMAND_OK != PQresultStatus(pgRes.get()))
         {
-            FDOLOG_WRITE("BEGIN Transaction failed: %s", PQerrorMessage(mPgConn));
+            FDOLOG_WRITE("ERROR: BEGIN command failed: %s", PQerrorMessage(mPgConn));
             assert(!"BEGIN FAILED - TO BE REPLACED WITH EXCEPTION");
         }
     }
@@ -755,7 +755,7 @@ void Connection::PgCommitSoftTransaction()
             {
                 // TODO: Throw an exception on error
 
-                FDOLOG_WRITE("COMMIT Transaction failed: %s", PQerrorMessage(mPgConn));
+                FDOLOG_WRITE("ERROR: COMMIT command failed: %s", PQerrorMessage(mPgConn));
                 assert(!"COMMIT FAILED - TO BE REPLACED WITH EXCEPTION");
             }        
         }
@@ -778,7 +778,7 @@ void Connection::PgRollbackSoftTransaction()
         {
             // TODO: Throw an exception on error
 
-            FDOLOG_WRITE("COMMIT Transaction failed: %s", PQerrorMessage(mPgConn));
+            FDOLOG_WRITE("ERROR: COMMIT command failed: %s", PQerrorMessage(mPgConn));
             assert(!"ROLLBACK FAILED - TO BE REPLACED WITH EXCEPTION");
         } 
     }
@@ -821,7 +821,7 @@ SchemaDescription* Connection::DescribeSchema()
         }
         catch (FdoException* e)
         {
-            FDOLOG_WRITE(L"Describe operation for '%s' failed",
+            FDOLOG_WRITE(L"ERROR: Describe operation for '%s' failed",
                 static_cast<FdoString*>(schemaName));
 
             FdoCommandException* ne = NULL;
@@ -860,7 +860,7 @@ void Connection::ValidateConnectionState()
 
     if (!valid)
     {
-        FDOLOG_WRITE(L"Invalid state of PostgreSQL connection.");
+        FDOLOG_WRITE("ERROR: Invalid state of PostgreSQL connection.");
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_INVALID_PGSQL_CONNECTION_STATE,
             "Invalid state of PostgreSQL connection."));
     }
@@ -871,7 +871,7 @@ void Connection::ValidateConnectionString()
     FdoStringP connStr(GetConnectionString());
     if (connStr.GetLength() <= 0)
     {
-        FDOLOG_WRITE(L"Connection string is empty.");
+        FDOLOG_WRITE("ERROR: Connection string is empty.");
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_EMPTY_CONNECTION_STRING,
             "Connection string is empty."));
     }
@@ -879,7 +879,7 @@ void Connection::ValidateConnectionString()
     FdoCommonConnStringParser parser(NULL, connStr);
     if (!parser.IsConnStringValid())
     {
-        FDOLOG_WRITE(L"Invalid connection string: %s",
+        FDOLOG_WRITE(L"ERROR: Invalid connection string: %s",
             static_cast<FdoString*>(connStr));
         
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_INVALID_CONNECTION_STRING,
@@ -892,7 +892,7 @@ void Connection::ValidateConnectionString()
 
     if (parser.HasInvalidProperties(dict))
     {
-        FDOLOG_WRITE(L"Invalid connection property name: %s",
+        FDOLOG_WRITE(L"ERROR: Invalid connection property name: %s",
             parser.GetFirstInvalidPropertyName(dict));
         
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_INVALID_CONNECTION_PROPERTY,
@@ -918,7 +918,7 @@ void Connection::ValidateRequiredProperties()
             FdoStringP propValue(dict->GetProperty(propNames[i]));
             if (propValue.GetLength() <= 0)
             {
-                FDOLOG_WRITE(L"The connection property '%s' required but not set.",
+                FDOLOG_WRITE(L"ERROR: The connection property '%s' required but not set.",
                     propNames[i]);
                     
                 throw FdoException::Create(
@@ -1020,6 +1020,8 @@ void Connection::SetPgCurrentSchema(FdoStringP schema)
     {
         FdoStringP errStatus(PQresStatus(pgResStatus));
         FdoStringP errMsg(PQresultErrorMessage(pgRes.get()));
+
+        FDOLOG_WRITE("ERROR: SET search_path TO ... failed");
 
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_SQL_STATEMENT_EXECUTION_FAILED,
             "SQL command failed with PostgreSQL error code: %1$ls. %2$ls.",

@@ -53,6 +53,8 @@ void SQLCommand::SetSQLStatement(FdoString* sql)
 
     if (NULL == sql)
     {
+        FDOLOG_WRITE("ERROR: The passed SQL statement is NULL");
+
         throw FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_COMMAND_SQL_INVALID,
             "The passed SQL statement is invalid or empty: '%1$ls'.",
             L""));
@@ -85,6 +87,8 @@ FdoInt32 SQLCommand::ExecuteNonQuery()
     }
     catch (FdoException* e)
     {
+        FDOLOG_WRITE("ERROR: The execution of SQL command failed");
+
         FdoCommandException* ne = NULL;
         ne = FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_COMMAND_SQL_FAILED,
             "The execution of SQL command failed."), e);
@@ -119,6 +123,8 @@ FdoISQLDataReader* SQLCommand::ExecuteReader()
     }
     catch (FdoException* e)
     {
+        FDOLOG_WRITE("ERROR: The execution of SQL command failed");
+
         FdoCommandException* ne = NULL;
         ne = FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_COMMAND_SQL_FAILED,
                 "The execution of SQL command failed."), e);
