@@ -108,15 +108,24 @@ private:
 
     ExpressionProcessor::Ptr mExprProc;
 
+    // Used as argument of GeomFromWKB, during construction of geometries.
     std::string mSRID;
+
+    // Internal buffer of filtering statement.
     std::string mStatement;
 
     //
     // Private operations
     //
 
+    // NOTE: Due to the fact the const-correctness is broken,
+    // it's not possible to use const references for input
+    // parameters of validation functions.
+
     void ValidateBinaryOperator(FdoBinaryLogicalOperator& op);
     void ValidateUnaryOperator(FdoUnaryLogicalOperator& op);
+    void ValidateComparisonCondition(FdoComparisonCondition& cond);
+  
 };
 
 }} // namespace fdo::postgis
