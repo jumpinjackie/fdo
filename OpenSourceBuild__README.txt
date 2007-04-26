@@ -92,11 +92,27 @@ II. Build Notes
         set PATH=%PATH%;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
  
   5. In order to build the ArcSDE Provider, you will need to have the
-     ArcSDE 9.1 Client SDK installed and the following environment variable 
-     set that points to the installation location:
+     ArcSDE 9.1 Client SDK and/or ArcSDE 9.2 Client SDK installed 
+     and the following environment variable set that points to the installation location:
 
-        set SDEHOME=[ArcSDE developer components path] 
+        set SDEHOME=[ArcSDE developer components path]  - used by unit test 
+        set SDEVER_ARCUNITTEST=[91]/[92] 
 
+     SDEVER_ARCUNITTEST=91   -will build unit test using ArcSDE 9.1 Client
+     SDEVER_ARCUNITTEST=92   -will build unit test using ArcSDE 9.2 Client
+     
+     In case user has ArcSDE 9.1 Client SDK and ArcSDE 9.2 Client SDK installed:
+     Copy the "bin", "include" and "lib" directory from the ArcSDE 9.1 Client SDK into:
+     %FDOTHIRDPARTY%\ESRI\ArcSDEClient91\Windows
+     
+     Copy the "bin", "include" and "lib" directory from the ArcSDE 9.2 Client SDK into:
+     %FDOTHIRDPARTY%\ESRI\ArcSDEClient92\Windows
+     
+     The script will build the support for both ArcSDE clients.
+     In case user has only one version of the ArcSDE client installed, the location must be
+     specified using %SDEHOME%
+     
+     The ArcSDE unit test project will only search for include and lib files in %SDEHOME%
      Note that ArcSDE is licensed software and must be obtained from an ESRI vendor.
 
   6. In order to build the MySQL Provider, you will need to download 
@@ -481,13 +497,24 @@ II. Build Notes
        FDOTHIRDPARTY = [FDO OpenSource]/ThirdParty
  
   3. In order to build the ArcSDE Provider, you will need to have the
-     ArcSDE 9.1 Client SDK installed and the following environment variable set
-     that points to the installation location:
+     ArcSDE 9.1 Client SDK installed, ArcSDE 9.2 Client SDK installed
+     and the following environment variable set that points to the installation location:
 
-       SDEHOME=[ArcSDE developer components path] 
+       SDEHOME=[ArcSDE 9.2 developer components path] - used by unit test 
 
-     Note that ArcSDE is licensed software and must be obtained from an ESRI 
-     vendor.
+     In case user has ArcSDE 9.1 Client SDK and ArcSDE 9.2 Client SDK installed: 
+     Copy the "include" and "lib" directory from the ArcSDE 9.1 Client SDK into: 
+     $FDOTHIRDPARTY\ESRI\ArcSDEClient91\Linux
+      
+     Copy the "include" and "lib" directory from the ArcSDE 9.2 Client SDK into: 
+     $FDOTHIRDPARTY\ESRI\ArcSDEClient92\Linux 
+     
+     The script will build the support for both ArcSDE clients. 
+     In case user has only one version of the ArcSDE client installed, the location must be 
+     specified using $SDEHOME 
+     
+     The ArcSDE unit test project will only search for include and lib files in $SDEHOME
+     Note that ArcSDE is licensed software and must be obtained from an ESRI vendor.
 
   4. In order to build the MySQL Provider, you will need to download and 
      extract the MySQL client and MySQL 5.0 devloper components from MySQL. 
