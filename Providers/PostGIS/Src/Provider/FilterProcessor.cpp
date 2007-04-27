@@ -51,6 +51,19 @@ char const* opLessThanEqual    = " <= ";
 // Pattern matching
 char const* opLike = " LIKE ";
 
+// Spatial operators
+
+namespace spatial
+{
+
+char const* opBBoxIntersect = " && ";
+char const* opBBoxContained = " @ ";
+char const* opBBoxContains  = " ~ ";
+char const* opBBoxEqual = " = ";
+char const* opGeomEqual = " ~= ";
+
+} // namespace spatial
+
 } // namespace sql
 
 
@@ -275,7 +288,6 @@ void FilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& cond)
 {
     FDOLOG_MARKER("FilterProcessor::+ProcessSpatialCondition");
 
-    // TODO: Fill with spatial SQL composition
     FdoPtr<FdoExpression> geomExpr(cond.GetGeometry());
     FdoPtr<FdoIdentifier> geomProp(cond.GetPropertyName());
 
@@ -289,53 +301,73 @@ void FilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& cond)
     std::string geomHex;
     mExprProc->ReleaseExpressionText(geomHex);
 
-    // Spatial predicate
-    std::string spatialOp;
+    // Cache the constructor of tested geometry
+    std::string geomFromText("GeomFromWKB(decode(\'" + geomHex + "\', \'hex\')," + mSRID + ")");
 
+    // Spatial predicate
+    std::string spatialPred;
+    
     FDOLOG_WRITE("Spatial operation id: %d", cond.GetOperation());
+
+    //
+    // Build node of WHERE clause of SQL SELECT query
+    //
+
+    // TODO: FUTURE NOTE
+    // It may be a good idea to consider following extensions:
+    // Contains() => A ~ B AND Contains(A,B)
+    // Within() => A @ B AND Within(A,B)
+    // etc.
+
+    mStatement.append(sql::sepLeftTerm);
 
     if (FdoSpatialOperations_EnvelopeIntersects == cond.GetOperation())
     { 
-        FDOLOG_WRITE("Spatial operation: EnvelopeIntersects");
-
-        mStatement.append(sql::sepLeftTerm);
-        mStatement.append(columnName + " && ");
-        mStatement.append("GeomFromWKB(decode(\'" + geomHex + "\', \'hex\')," + mSRID + ")");
-        mStatement.append(sql::sepRightTerm);
+        mStatement.append(columnName);
+        mStatement.append(sql::spatial::opBBoxIntersect);
+        mStatement.append(geomFromText);
     }
     else
-    {
+    {        
+        // Apply && operator to all predicates but Disjoint()
+        //
+        // PostGIS manual says:
+        // This operator tells whether the bounding box of one
+        // geometry intersects the bounding box of another.
+
+        if (FdoSpatialOperations_Disjoint != cond.GetOperation())
+        {
+            mStatement.append(columnName);
+            mStatement.append(sql::spatial::opBBoxIntersect);
+            mStatement.append(geomFromText);
+            mStatement.append(sql::opAnd);
+        }
+
         switch (cond.GetOperation())
         {
         case FdoSpatialOperations_Contains:
-            // TODO: Add BBOX intersection test with &&
-            // The only problem is how to construct a geometry once,
-            // with GeomFromWKB and avoid calling it twice?
-            // It also applies to Within below
-
-            spatialOp = "Contains";
+                spatialPred = "Contains";
             break;
         case FdoSpatialOperations_Crosses:
-            spatialOp = "Crosses";
+                spatialPred = "Crosses";
             break;
         case FdoSpatialOperations_Disjoint:
-            spatialOp = "Disjoint";
+                spatialPred = "Disjoint";
             break;
         case FdoSpatialOperations_Equals:
-            spatialOp = "Equals";
+                spatialPred = "Equals";
             break;
         case FdoSpatialOperations_Intersects:
-            spatialOp = "Intersects";
+                spatialPred = "Intersects";
             break;
         case FdoSpatialOperations_Overlaps:
-            spatialOp = "Overlaps";
+                spatialPred = "Overlaps";
             break;
         case FdoSpatialOperations_Touches:
-            spatialOp = "Touches";
+                spatialPred = "Touches";
             break;
         case FdoSpatialOperations_Within:
-            // TODO: Add BBOX intersection test with &&
-            spatialOp = "Within";
+                spatialPred = "Within";
             break;
         case FdoSpatialOperations_CoveredBy:
             // TODO: What is the semantic of this op?
@@ -349,19 +381,17 @@ void FilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& cond)
             break;
         default:
             {
+                mStatement.clear();
+
                 FDOLOG_WRITE("ERROR: Unsupported Spatial operation given in the filter");
                 throw FdoFilterException::Create(L"Unsupported Spatial operation given in the filter");
             }
         }
 
-        mStatement.append(sql::sepLeftTerm);
-        mStatement.append(spatialOp + "(" + columnName + ",");
-        mStatement.append("GeomFromWKB(");
-        mStatement.append("decode(\'" + geomHex + "\', \'hex\')");
-        mStatement.append("," + mSRID + ")");
-        mStatement.append(")");
-        mStatement.append(sql::sepRightTerm);
+        mStatement.append(spatialPred + "(" + columnName + "," + geomFromText + ")");        
     }
+
+    mStatement.append(sql::sepRightTerm);
 
     FDOLOG_WRITE("Filter statement:\n\t%s", mStatement.c_str());
 }
@@ -398,7 +428,7 @@ void FilterProcessor::ProcessDistanceCondition(FdoDistanceCondition& cond)
     }
 
     // Prepare geometry literal value
-    std::string sqlGeometry("GeomFromWKB(decode(\'" + geomHex + "\', \'hex\'), " + mSRID +")");
+    std::string geomFromText("GeomFromWKB(decode(\'" + geomHex + "\', \'hex\'), " + mSRID +")");
 
     // Prepare distance-based predicate
     switch(cond.GetOperation())
@@ -406,9 +436,9 @@ void FilterProcessor::ProcessDistanceCondition(FdoDistanceCondition& cond)
     case FdoDistanceOperations_Within:
         {
             mStatement.append(sql::sepLeftTerm);
-            mStatement.append(columnName + " && Expand(" + sqlGeometry + ", " + distTxt + ") ");
+            mStatement.append(columnName + " && Expand(" + geomFromText + ", " + distTxt + ") ");
             mStatement.append(sql::opAnd);
-            mStatement.append("distance(" + columnName + "," + sqlGeometry + ")");
+            mStatement.append("distance(" + columnName + "," + geomFromText + ")");
             mStatement.append(sql::opLessThanEqual);
             mStatement.append(distTxt);
             mStatement.append(sql::sepRightTerm);
