@@ -381,18 +381,12 @@ void ExpressionProcessor::ProcessGeometryValue(FdoGeometryValue& expr)
 
 void ExpressionProcessor::ReleaseExpressionText(std::string& exprText)
 {
-    FDOLOG_MARKER("ExpressionProcessor::-ReleaseExpressionText");
-    FDOLOG_WRITE("Expression text: %s", mBuffer.c_str());
-
     exprText.assign(mBuffer);
     mBuffer.clear();
 }
 
 std::string ExpressionProcessor::ReleaseBuffer()
 {
-    FDOLOG_MARKER("ExpressionProcessor::-ReleaseBuffer");
-    FDOLOG_WRITE("Buffer content: %s", mBuffer.c_str());
-
     std::string tmp(mBuffer);
     mBuffer.clear();
     return tmp;
