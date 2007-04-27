@@ -142,17 +142,13 @@ FdoIGeometryCapabilities* Connection::GetGeometryCapabilities()
 }
 
 FdoString* Connection::GetConnectionString()
-{
-    FDOLOG_MARKER("Connection::+GetConnectionString");
-    FDOLOG_WRITE(L"Current value = %s", static_cast<FdoString*>(mConnString));
-    
+{    
     return mConnString;
 }
 
 void Connection::SetConnectionString(FdoString* value)
 {
     FDOLOG_MARKER("Connection::+SetConnectionString");
-    FDOLOG_WRITE(L"Passed value = %s", value);
 
     // TODO: Replace with connection string parsing utils recommended by Romica
     
@@ -182,6 +178,8 @@ void Connection::SetConnectionString(FdoString* value)
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_CONNECTION_ALREADY_OPEN,
                                    "Connection is already open."));
     }
+
+    FDOLOG_WRITE("Connection string is valid");
 }
 
 FdoIConnectionInfo* Connection::GetConnectionInfo()
