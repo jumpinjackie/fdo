@@ -20,7 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS1a9193826455f5ff85ce5a10defe5d82a-7f0d.htm','29'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+   <body onLoad="javascript:initFrame('WS1a9193826455f5ff85ce5a10defe5d82a-7f0d.htm','32'); javascript:initPage('Configure the ODBC Unit Tests','Building FDO Open Source'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <!--
                             Name = Topic;
                             Class =  CPM-Topic ISD-Topic ;
@@ -36,51 +36,36 @@
                <!--end browse buttons-->
             </div>
             <div class="button-info"><span id="infoline">&nbsp;</span></div>
-            <div class="ancestry"><a href="WS73099cc142f487551e5a0cb10850d4cd7c-596c.htm">Building FDO on Windows</a>&nbsp;&gt;&nbsp;<a href="WS1a9193826455f5ff36b67310b29445ec2-7fb0.htm">Unit Tests</a>&nbsp;&gt;&nbsp;
-            </div>
             <div class="head-text"><span>Configure the ODBC Unit Tests</span></div>
          </div>
       </div>
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS1a9193826455f5ff85ce5a10defe5d82a-7f0d"></a></span>
-                  
-                  
-      <!--Body-->
-                     
-      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-734c"></a></span>Before running the tests you must do the following:
+      <!--Body--><p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-734c"></a></span>Before running the tests you must do the following:
       </p>
-                     
-      <!--UList--><span style="display:none"><a name="WS1a9193826455f5ff85ce5a10defe5d82a-7f0c"></a></span>
-                        
-      <ul>
+      <!--UList--><span style="display:none"><a name="WS1a9193826455f5ff85ce5a10defe5d82a-7f0c"></a></span><ul>
          <li>Connect
-            to the Oracle database that you will use for the Oracle tests using
-            the sys as sysdba user, create a user and grant the user two roles:
+            to the Oracle database that you will use for the Oracle tests using the
+            sys as sysdba user, create a user and grant the user two roles:
             dba and wm_admin_role.
          </li>
          <li>Install
-            a MySql ODBC driver. Go to <a class="webLink" href="http://dev.mysql.com/downloads/connector/odbc/3.51.html">http://dev.mysql.com/downloads/connector/odbc/3.51.html</a>,
+            a MySql ODBC driver. Go to <a class="webLink" href="http://dev.mysql.com/downloads/connector/odbc/3.51.html" target="_blank">http://dev.mysql.com/downloads/connector/odbc/3.51.html</a>,
             download the Windows driver installer (MSI), and run the installer.
             For this exercise a file named mysql-connector-odbc-3.51.12-win32.msi
             was downloaded.
          </li>
          <li>Open
-            Sql Server 2000 Enterprise Manager. Create a new login for the target
-            Sql Server. Use SQL Server authentication and grant the new user
-            the “Database Creators” role.
+            Sql Server 2000 Enterprise Manager. Create a new login for the target Sql
+            Server. Use SQL Server authentication and grant the new user the “Database
+            Creators” role.
          </li>
-         <li>
-                                 <span class="code">cmd&gt; cd C:\OpenSource\Providers\GenericRdbms\Src\UnitTest</span>
-                              
-         </li>
-         <li>
-                                 <span class="code">cmd&gt; copy /A OdbcInit.txt OdbcInitEx.txt</span>
-                              
-         </li>
+         <li><span class="code">cmd&gt; cd C:\OpenSource\Providers\GenericRdbms\Src\UnitTest</span></li>
+         <li><span class="code">cmd&gt; copy /A OdbcInit.txt OdbcInitEx.txt</span></li>
          <li>Edit
-            OdbcInitEx.txt. Replace the serviceMySql and passwordMySql values
-            in “serviceMySql=mysqlserver;usernameMySql=root;passwordMySql=xxxx;”
+            OdbcInitEx.txt. Replace the serviceMySql and passwordMySql values in
+            “serviceMySql=mysqlserver;usernameMySql=root;passwordMySql=xxxx;”
             with valid values. The usernameMySql value must remain as root.
          </li>
          <li>Edit
@@ -91,22 +76,9 @@
          </li>
          <li>Edit
             OdbcInitEx.txt. Replace the serviceSqlServer, usernameSqlServer
-            and passwordSqlServer values in “serviceSqlServer=sqlserver;usernameSqlServer=xxxx;passwordSqlServer=xxxx;” with
-            the actual service name, the name of the user that you created and the
-            password that you assigned to that user.
+            and passwordSqlServer values in “serviceSqlServer=sqlserver;usernameSqlServer=xxxx;passwordSqlServer=xxxx;”
+            with the actual service name, the name of the user that you created
+            and the password that you assigned to that user.
          </li>
-      </ul>
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                     
-                  
-               
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Please send us your comment about this page</span></a></div><br></body>
+      </ul><br></body>
 </html>

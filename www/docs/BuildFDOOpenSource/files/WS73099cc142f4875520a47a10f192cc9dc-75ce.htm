@@ -20,7 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS73099cc142f4875520a47a10f192cc9dc-75ce.htm','37'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+   <body onLoad="javascript:initFrame('WS73099cc142f4875520a47a10f192cc9dc-75ce.htm','40'); javascript:initPage('Install the Repository Tool','Building FDO Open Source'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <!--
                             Name = Topic;
                             Class =  CPM-Topic ISD-Topic ;
@@ -31,25 +31,19 @@
                <!--browse buttons-->
                <div class="browse">
                   <nobr>
-                     <div id="homeTitle" style="display:none">Home: Building FDO Open Source</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-596c.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Disk Space</div><a href="WS73099cc142f4875520a47a10f192cc9dc-75cf.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Building FDO on Linux</div><a href="WS1a9193826455f5ff1955f1510a86ab16de-56a1.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Get the Source</div><a href="WS73099cc142f4875520a47a10f192cc9dc-75cd.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
+                     <div id="homeTitle" style="display:none">Home: Building FDO Open Source</div><a href="WS73099cc142f487551e5a0cb10850d4cd7c-596c.htm" target="content" class="headNavLink" onmouseover="showInfo(document.getElementById('homeTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-home-xp.gif" border="0"></a><span class="home-button-separator">&nbsp;</span><div id="prevTitle" style="display:none">Disk Space</div><a href="WS73099cc142f4875520a47a10f192cc9dc-75cf.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('prevTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-prev-xp.gif" border="0"></a><div id="parentTitle" style="display:none">Building FDO on Linux</div><a href="WS1a9193826455f5ff1955f1510a86ab16de-56a1.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('parentTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-up-xp.gif" border="0"></a><div id="nextTitle" style="display:none">Get the Source</div><a href="WS73099cc142f4875520a47a10f192cc9dc-75cc.htm" class="headNavLink" onmouseover="showInfo(document.getElementById('nextTitle').innerHTML);" onmouseout="hideInfo();"><img src="../images/nav-next-xp.gif" border="0"></a></nobr>
                </div>
                <!--end browse buttons-->
             </div>
             <div class="button-info"><span id="infoline">&nbsp;</span></div>
-            <div class="ancestry"><a href="WS1a9193826455f5ff1955f1510a86ab16de-56a1.htm">Building FDO on Linux</a>&nbsp;&gt;&nbsp;
-            </div>
             <div class="head-text"><span>Install the Repository Tool</span></div>
          </div>
       </div>
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS73099cc142f4875520a47a10f192cc9dc-75ce"></a></span>
-               
-               
-      <!--Body-->
-                  
-      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-73c5"></a></span>The FDO code is stored in Subversion repositories on
-         the Open Source Geospatial Foundation website. Use a Subversion
+      <!--Body--><p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-73c5"></a></span>The FDO code is stored in Subversion repositories
+         on the Open Source Geospatial Foundation website. Use a Subversion
          client to obtain the FDO source from these repositories.To browse
          the list of available clients, click the <span class="uis-unspecified">Get help?</span> link
          at the left-hand sideof the <a href="https://www.osgeo.org">https://www.osgeo.org</a> page.
@@ -58,39 +52,22 @@
          the instructions there to obtain and install a client. The instructions
          in this document are based on the use of the SVN command-line client.
       </p>
-                  
       <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-73c4"></a></span>For the purpose of this document, the following
-         RPMs from <a href="http://the.earth.li/pub/subversion/summersoft.fay.ar.us/pub/subversion/latest/rhel-3/bin/">http://the.earth.li/pub/subversion/summersoft.fay.ar.us/pub/subversion/latest/rhel-3/bin/</a> were
-         installed.
+         RPMs from <a href="http://the.earth.li/pub/subversion/summersoft.fay.ar.us/pub/subversion/latest/rhel-3/bin/">http://the.earth.li/pub/subversion/summersoft.fay.ar.us/pub/subversion/latest/rhel-3/bin/</a> were installed.
       </p>
-                  
-      <!--UList--><span style="display:none"><a name="WS1a9193826455f5ff1b17d1110e119dca16-7fe9"></a></span>
-                     
-      <ul>
+      <!--UList--><span style="display:none"><a name="WS1a9193826455f5ff1b17d1110e119dca16-7fe9"></a></span><ul>
          <li>subversion-1.3.1-1.rhel3.i386.rpm</li>
          <li>neon-0.24.7-1.i386.rpm</li>
          <li>mod_dav_svn-1.3.1-1.rhel3.i386.rpm</li>
       </ul>
-                     
-                     
-                  
-                  
       <div>
          <div class="note-note"><span class="label">Note</span>mod_dav_svn-1.3.1-1 requires
             a version of httpd &gt;= 2.0.46. The required version of httpd was
             already present on the test machine.
          </div>
       </div>
-                  
       <div>
          <div class="note-note"><span class="label">Note</span>The rpm install puts the
-            svn binary in <span class="filePath">/usr/bin</span>
-                        
-         </div>
-      </div>
-               
-            
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Please send us your comment about this page</span></a></div><br></body>
+            svn binary in <span class="filePath">/usr/bin</span></div>
+      </div><br></body>
 </html>

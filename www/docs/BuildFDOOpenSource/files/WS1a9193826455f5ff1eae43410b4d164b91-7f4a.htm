@@ -20,7 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS1a9193826455f5ff1eae43410b4d164b91-7f4a.htm','49'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+   <body onLoad="javascript:initFrame('WS1a9193826455f5ff1eae43410b4d164b91-7f4a.htm','54'); javascript:initPage('ODBC Oracle Driver','Building FDO Open Source'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <!--
                             Name = Topic;
                             Class =  CPM-Topic ISD-Topic ;
@@ -36,29 +36,20 @@
                <!--end browse buttons-->
             </div>
             <div class="button-info"><span id="infoline">&nbsp;</span></div>
-            <div class="ancestry"><a href="WS1a9193826455f5ff1955f1510a86ab16de-56a1.htm">Building FDO on Linux</a>&nbsp;&gt;&nbsp;<a href="WS73099cc142f4875520a47a10f192cc9dc-75c7.htm">Install RDBMS Clients</a>&nbsp;&gt;&nbsp;
-            </div>
             <div class="head-text"><span>ODBC Oracle Driver</span></div>
          </div>
       </div>
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS1a9193826455f5ff1eae43410b4d164b91-7f4a"></a></span>
-                  
-                  
-      <!--Body-->
-                     
-      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-73b3"></a></span>Download version 3.0 of the Easysoft ODBC Oracle
+      <!--Body--><p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-73b3"></a></span>Download version 3.0 of the Easysoft ODBC Oracle
          driver. This driver works with both the 10gR1 database client or
          instant client. The install package includes a version of the Unix
          ODBC Driver Manager. For more information about the driver manager
          software, browse <a href="http://www.unixodbc.org">http://www.unixodbc.org</a>.
       </p>
-                     
-      <!--OList--><span style="display:none"><a name="WS1a9193826455f5ff91edbc10e17b18b75-7fae"></a></span>
-                        
-      <ol type="1" start="1">
-         <li>Browse <a class="webLink" href="http://www.easysoft.com">http://www.easysoft.com</a>.
+      <!--OList--><span style="display:none"><a name="WS1a9193826455f5ff91edbc10e17b18b75-7fae"></a></span><ol type="1" start="1">
+         <li>Browse <a class="webLink" href="http://www.easysoft.com" target="_blank">http://www.easysoft.com</a>.
          </li>
          <li>Click <span class="uis-unspecified">Products</span>.
          </li>
@@ -73,28 +64,19 @@
             This action initiates the download of odbc-oracle-3.0.0-linux-x86-glibc.tar.
          </li>
       </ol>
-                        
-                        
-                        
-                        
-                        
-                     
-                     
-      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-73b2"></a></span>Untar the download file. Untarring odbc-oracle-3.0.0-linux-x86-glibc.tar
-         causes the contents of the tar file to be written to a directory
-         called odbc-oracle-3.0.0-linux-x86-glibc. <span class="filePath">Read
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-73b2"></a></span>Untar the download file. Untarring odbc-oracle-3.0.0-linux-x86-glibc.tar causes
+         the contents of the tar file to be written to a directory called
+         odbc-oracle-3.0.0-linux-x86-glibc. <span class="filePath">Read
             the INSTALL.txt file</span>. This document recommends that you
          do the installation as root so that you can install to /usr/local.
-         It also recommends that you install the version of the unixODBC
-         driver manager that comes bundled with the Easysoft ODBC-Oracle
-         driver installation package. The document explains what options
-         were used to build this version of the driver manager and thus how
-         it differs in behavior from what you will get if you install a version
-         from <a class="webLink" href="http://www.unixODBC.org">http://www.unixODBC.org</a>.
+         It also recommends that you install the version of the unixODBC driver
+         manager that comes bundled with the Easysoft ODBC-Oracle driver installation
+         package. The document explains what options were used to build this
+         version of the driver manager and thus how it differs in behavior
+         from what you will get if you install a version from <a class="webLink" href="http://www.unixODBC.org" target="_blank">http://www.unixODBC.org</a>.
          The document explains how to install the licensed version of the
          driver.
       </p>
-                     
       <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-73b1"></a></span>The installation described here followed the
          recommendations to install as root to /usr/local and to use the
          bundled unixODBC driver manager. It also installed a licensed version
@@ -102,30 +84,21 @@
          optional. You have the option of leaving the step of acquiring a
          license to a later time.
       </p>
-                     
       <div>
          <div class="note-note"><span class="label">Note</span>The unlicensed version
             does not work with Oracle 10g databases.
          </div>
       </div>
-                     
       <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-73b0"></a></span>In a terminal window do the following:
       </p>
-                     
       <p><span style="display:none"><a name="WS73099cc142f48755a7ac2210e8824eb48-7050"></a></span>Before you begin, verify that there is no previous
          easysoft installation. Check /etc for the odbc.ini and odbcinst.ini
          files. Check the <span class="filePath">/etc/ld.so.conf</span> file
          for easysoft paths. Check for an easysoft directory in <span class="filePath">/usr/local</span>. The latter is the default
          install location.
       </p>
-                     
-      <!--OList--><span style="display:none"><a name="WS1a9193826455f5ff91edbc10e17b18b75-7fad"></a></span>
-                        
-      <ol type="1" start="1">
-         <li>
-                                 <span class="code">su - root</span>
-                              
-         </li>
+      <!--OList--><span style="display:none"><a name="WS1a9193826455f5ff91edbc10e17b18b75-7fad"></a></span><ol type="1" start="1">
+         <li><span class="code">su - root</span></li>
          <li>export
             ORACLE_HOME=&lt;pathToOracleClient&gt;
             <div>
@@ -135,16 +108,9 @@
                      NOT</em> use the Oracle instant client.
                </div>
             </div>
-                              
          </li>
-         <li>
-                                 <span class="code">cd &lt;path&gt;/odbc-oracle-3.0.0-linux-x86-glibc</span>
-                              
-         </li>
-         <li>
-                                 <span class="code">./install</span>
-                              
-         </li>
+         <li><span class="code">cd &lt;path&gt;/odbc-oracle-3.0.0-linux-x86-glibc</span></li>
+         <li><span class="code">./install</span></li>
          <li>Read
             the license and type yes to accept it.
          </li>
@@ -152,8 +118,8 @@
             enter to accept the default location (/urs/local).
          </li>
          <li>Press
-            enter to accept the default no answer to the question about there
-            being a unixODBC driver manager already installed.
+            enter to accept the default no answer to the question about there being
+            a unixODBC driver manager already installed.
          </li>
          <li>Press
             enter to accept the yes answer to the question about requesting
@@ -164,28 +130,27 @@
             2 to initiate the acquisition of a license for the driver.
          </li>
          <li>Supply
-            values for your name, company, email address, phone number, fax
-            number, and license authorization number.
+            values for your name, company, email address, phone number, fax number,
+            and license authorization number.
          </li>
          <li>Select
-            the option to obtain the license automatically from the Easysoft
-            license daemon.
+            the option to obtain the license automatically from the Easysoft license
+            daemon.
          </li>
          <li>Select
-            the option to exit from licensing script and return to the installer
-            script. The installer script tells you that it will create a data
-            source called ‘ORACLE.’
+            the option to exit from licensing script and return to the installer script.
+            The installer script tells you that it will create a data source
+            called ‘ORACLE.’
          </li>
          <li>Enter
-            the Oracle Database Name. Since we connect to the database by way
-            of a client, we specify the Net Service Name. This is one of the names
-            found in the $ORACLE_HOME/network/admin/tnsnames.ora file. This
-            name indexes a structure containing the hostname, port, and database
-            service name of the instance to connect to.
+            the Oracle Database Name. Since we connect to the database by way of
+            a client, we specify the Net Service Name. This is one of the names found
+            in the $ORACLE_HOME/network/admin/tnsnames.ora file. This name indexes
+            a structure containing the hostname, port, and database service
+            name of the instance to connect to.
          </li>
          <li>Enter
-            an Oracle user name. This name must be a valid user in the Oracle
-            instance.
+            an Oracle user name. This name must be a valid user in the Oracle instance.
          </li>
          <li>Enter
             the Oracle password for &lt;user&gt; where &lt;user&gt; is value
@@ -195,59 +160,29 @@
             enter to answer yes to the question about installing the driver
             data source. This completes the installation.
          </li>
-         <li>
-                                 <span class="code">cd /usr/local/easysoft/unixODBC/bin</span>
-                              
-         </li>
-         <li>
-                                 <span class="code">./isql -v ORACLE</span> You should get a message saying
-            ‘Connected’ and the SQL prompt.
+         <li><span class="code">cd /usr/local/easysoft/unixODBC/bin</span></li>
+         <li><span class="code">./isql -v ORACLE</span> You should get a message
+            saying ‘Connected’ and the SQL prompt.
             <div>
-               <div class="note-note"><span class="label">Note</span>‘ORACLE’
-                  is the name of the data source created by the installer. The information
-                  about the data source is in the <span class="filePath">/etc/odbc.ini</span> file.
+               <div class="note-note"><span class="label">Note</span>‘ORACLE’ is the name of the data source
+                  created by the installer. The information about the data source
+                  is in the <span class="filePath">/etc/odbc.ini</span> file.
                </div>
             </div>
-                              
          </li>
       </ol>
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                     
-                     
       <div>
          <div class="note-note"><span class="label">Note</span>The build script uses
             the FDOODBC environment variable to locate the ODBC libraries. The
             script expects to find a lib directory in the path value contained
-            in FDOODBC. The FDOODBC variable is set by the setenvironment.sh
-            script; for more information, read the section entitled “Environment Variables.”
+            in FDOODBC. The FDOODBC variable is set by the setenvironment.sh script;
+            for more information, read the section entitled “Environment Variables.”
          </div>
       </div>
-                     
       <p><span style="display:none"><a name="WS1a9193826455f5ff15dea8810ea7e19512-7adc"></a></span>As a result of the installation the odbc.ini
          and odbcinst.ini files are written to <span class="filePath">/etc</span>.
          The odbcinst.ini identifies the shared object files for the driver,
          and the odbc.ini contains mapping of the Data Source Name (DSN)
          to the Oracle database. You will need this DSN to run the unit tests.
-      </p>
-                  
-               
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Please send us your comment about this page</span></a></div><br></body>
+      </p><br></body>
 </html>

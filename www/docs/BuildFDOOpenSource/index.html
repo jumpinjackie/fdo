@@ -12,8 +12,10 @@
                         var isContentEnable = 0;
                         var highlightedIndexes = new Array();
                         var highlightedIndexesNum = 0;
+                        var highlightedIndex = -1;
                         var searchWordList = new Array();
                         var highlightingEnabled = true;
+                        var highlightingShow = false;
                         var searchMethod = 'or';
                         var favoritesList = new Array();
                         var selectedFavoriteItem = 0;
@@ -135,11 +137,22 @@
                                 contentTree.expandTOCNode(args.topicNumber);
                                 window.open('./files/'+args.url, "content");
                             }
+                            if (args.contextId != null) {
+                                resolveContextId(args.contextId);
+                            }
                         }
 
+                        function resolveContextId(contextId) {
+                            for (var i=0; i < contextIds.length; i++) {
+                                if (contextIds[i][0] == contextId) {
+                                    window.open('./files/'+contextIds[i][1], "content");
+                                    break;
+                                }
+                            };
+                        }
                     </script><script type="text/JavaScript" src="scripts/favorites.js"></script>
 <title>Building FDO Open Source</title>
-   </head><script type="text/JavaScript" src="scripts/toc-treedata.js"></script><FRAMESET cols="300px, 100%">
+   </head><script type="text/JavaScript" src="scripts/toc-treedata.js"></script><script type="text/JavaScript" src="scripts/contextid-data.js"></script><FRAMESET cols="300px, 100%">
       <FRAME src="left_tab.html" name="left_tab" id="left_tab" class="iframeToc" scrolling="no">
       <FRAME src="./files/WS73099cc142f487551e5a0cb10850d4cd7c-596c.htm" name="content" id="content" class="iframeContent" scrolling="yes">
       <NOFRAMES>

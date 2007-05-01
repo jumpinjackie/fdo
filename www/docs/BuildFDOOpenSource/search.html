@@ -4,11 +4,7 @@
    
       <link rel="stylesheet" type="text/css" href="style/search.css">
       <link rel="stylesheet" type="text/css" href="style/commons.css">
-      <title>
-         [SEARCH]
-         
-         
-      </title><script type="text/JavaScript">
+      <title>Building FDO Open Source</title><script type="text/JavaScript">
                         top.isContentEnable = 0;
                     </script></head>
    <body class="search_htmlbody"><script type="text/JavaScript" src="scripts/search-entries.js"></script><script type="text/JavaScript" src="scripts/search-data.js"></script><script type="text/JavaScript" src="scripts/stop-words.js"></script><script type="text/JavaScript" src="scripts/search-processing.js"></script><form name="searchForm" class="searchForm" onSubmit="javascript:SearchString(document.forms['searchForm'].searchData.value);return false" action="#">
@@ -29,9 +25,7 @@
                <td class="tdSeacrchButton"><a href="#" class="button" onclick="javascript:SearchString(document.forms['searchForm'].searchData.value);return false" onmouseout="window.status='';" onmouseover="window.status='Search'; return true;">Search</a></td>
             </tr>
             <tr>
-               <td colspan="2" class="tdSearchList"><script type="text/JavaScript">
-                                        document.write('<select multiple id="searchList" name="searchList" onchange="javascript:ViewDocument();" class="searchResultList"/>');
-                                    </script></td>
+               <td colspan="2" class="tdSearchList"><select multiple id="searchList" name="searchList" onchange="javascript:ViewDocument(); javascript: top.highlightingShow = true;" onfocus="javascript:ViewDocument(); javascript: top.highlightingShow = true;" class="searchResultList"></select></td>
             </tr>
          </table><iframe name="hiddenFrame" id="hiddenFrame"></iframe></form>
    </body>
