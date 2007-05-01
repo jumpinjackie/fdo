@@ -20,7 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS1a9193826455f5ff85ce5a10defe5d82a-7ffe.htm','25'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+   <body onLoad="javascript:initFrame('WS1a9193826455f5ff85ce5a10defe5d82a-7ffe.htm','28'); javascript:initPage('Configure the ArcSDE Server','Building FDO Open Source'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <!--
                             Name = Topic;
                             Class =  CPM-Topic ISD-Topic ;
@@ -36,19 +36,13 @@
                <!--end browse buttons-->
             </div>
             <div class="button-info"><span id="infoline">&nbsp;</span></div>
-            <div class="ancestry"><a href="WS73099cc142f487551e5a0cb10850d4cd7c-596c.htm">Building FDO on Windows</a>&nbsp;&gt;&nbsp;<a href="WS1a9193826455f5ff36b67310b29445ec2-7fb0.htm">Unit Tests</a>&nbsp;&gt;&nbsp;
-            </div>
             <div class="head-text"><span>Configure the ArcSDE Server</span></div>
          </div>
       </div>
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS1a9193826455f5ff85ce5a10defe5d82a-7ffe"></a></span>
-                  
-                  
-      <!--Body-->
-                     
-      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-735d"></a></span>You must configure the ArcSDE Server before
+      <!--Body--><p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-735d"></a></span>You must configure the ArcSDE Server before
          you can execute the unit tests. The tests are actually run on the
          server. The unit tests can be run against an Oracle database or
          a Sql Server 2000 database. You must configure the ArcSDE server
@@ -59,38 +53,31 @@
          variable. Configuring the server to run tests in the Sql Server
          2000 database requires some additional manual steps.
       </p>
-                     
-      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-735c"></a></span>The first step is to copy the <span class="filePath">C:\OpenSource\Providers\ArcSDE\TestData</span> folder
-         to the machine hosting the ArcSDE server. This folder contains the
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-735c"></a></span>The first step is to copy the <span class="filePath">C:\OpenSource\Providers\ArcSDE\TestData</span> folder to
+         the machine hosting the ArcSDE server. This folder contains the
          test data and the SetupTestData.perl script. Alternatively, you
          can use subversion to checkout the fdoarcsde.osgeo.org repository
          on the server.
       </p>
-                     
       <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-735b"></a></span>The second step is to install ActiveState perl
-         on the server. This is available from <a class="webLink" href="http://www.activestate.com/ActivePerl">http://www.activestate.com/ActivePerl</a>.
+         on the server. This is available from <a class="webLink" href="http://www.activestate.com/ActivePerl" target="_blank">http://www.activestate.com/ActivePerl</a>.
       </p>
-                     
       <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-735a"></a></span>The third step is to create two Sql Server databases.
          If you want to run the tests in Sql Server 2000, you must create
          a database called ‘testmultidb’ using the SQL Server Enterprise
          Manager tool and create a database called ‘testsingledb’ using the
          ArcSDE server post installation tool.
       </p>
-                     
       <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7359"></a></span>To create the ‘testmultidb’ database, do the
          following:
       </p>
-                     
-      <!--OList--><span style="display:none"><a name="WS1a9193826455f5ff85ce5a10defe5d82a-7ffd"></a></span>
-                        
-      <ol type="1" start="1">
+      <!--OList--><span style="display:none"><a name="WS1a9193826455f5ff85ce5a10defe5d82a-7ffd"></a></span><ol type="1" start="1">
          <li>Invoke
             the Enterprise Manager tool.
          </li>
          <li>In
-            the explorer pane right-click <span class="filePath">Console Root\Microsoft
-               SQL Servers\SQL Server Group\&lt;SQL Server Name&gt;\Databases</span> and
+            the explorer pane right-click <span class="filePath">Console
+               Root\Microsoft SQL Servers\SQL Server Group\&lt;SQL Server Name&gt;\Databases</span> and
             select <span class="uis-unspecified">New Database...</span> from the pop-up
             menu.
          </li>
@@ -99,37 +86,22 @@
             labeled <span class="uis-unspecified">Database Properties</span> and click <span class="uis-unspecified">OK</span>.
          </li>
       </ol>
-                        
-                        
-                     
-                     
       <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7358"></a></span>To create the ‘testsingledb’ database, do the
          following:
       </p>
-                     
-      <!--OList--><span style="display:none"><a name="WS1a9193826455f5ff85ce5a10defe5d82a-7ffc"></a></span>
-                        
-      <ol type="1" start="1">
+      <!--OList--><span style="display:none"><a name="WS1a9193826455f5ff85ce5a10defe5d82a-7ffc"></a></span><ol type="1" start="1">
          <li>Set
-            the SDEHOME environment variable. The value is such that running
-            the command <span class="code">dir %SDEHOME%\etc</span> in
-            a cmd.exe window results in a list including giomgr.defs and dbinit.sde. The
-            value should be something like <span class="filePath">C:\ArcGIS\ArcSDE\sqlexe</span>.
+            the SDEHOME environment variable. The value is such that running the
+            command <span class="code">dir %SDEHOME%\etc</span> in
+            a cmd.exe window results in a list including giomgr.defs and dbinit.sde.
+            The value should be something like <span class="filePath">C:\ArcGIS\ArcSDE\sqlexe</span>.
             You can set this variable permanently by using the Control Panel,
             or you can set it temporarily in a cmd.exe window. In the latter
             case you must then run the post installation tool from the command-line.
          </li>
          <li>Invoke
-            the post installation tool. The menu path for this tool will be
-            something like <span class="uis-unspecified">Start</span> 
-                                 <span class="glyphArrow"><img src="../images/ac.menuaro.gif"></span> 
-                                 <span class="uis-unspecified">Programs</span> 
-                                 <span class="glyphArrow"><img src="../images/ac.menuaro.gif"></span> 
-                                 <span class="uis-unspecified">ArcGIS</span> 
-                                 <span class="glyphArrow"><img src="../images/ac.menuaro.gif"></span> 
-                                 <span class="uis-unspecified">ArcSDE</span> 
-                                 <span class="glyphArrow"><img src="../images/ac.menuaro.gif"></span> 
-                                 <span class="uis-unspecified">ArcSDE
+            the post installation tool. The menu path for this tool will be something
+            like <span class="uis-unspecified">Start</span> <span class="glyphArrow"><img src="../images/ac.menuaro.gif"></span> <span class="uis-unspecified">Programs</span> <span class="glyphArrow"><img src="../images/ac.menuaro.gif"></span> <span class="uis-unspecified">ArcGIS</span> <span class="glyphArrow"><img src="../images/ac.menuaro.gif"></span> <span class="uis-unspecified">ArcSDE</span> <span class="glyphArrow"><img src="../images/ac.menuaro.gif"></span> <span class="uis-unspecified">ArcSDE
                for Microsoft SQL Server Post Installation</span>. The equivalent
             filesystem path is something like <span class="filePath">C:\ArcGIS\ArcSDE\sqlexe\tools\ArcSdeSetupSql.exe</span>.
          </li>
@@ -142,7 +114,6 @@
                   to disable the authorization step.
                </div>
             </div>
-                              
          </li>
          <li>In
             the window labeled <span class="uis-unspecified">Select ArcSDE Setup Wizard Option</span> uncheck <span class="uis-unspecified">Authorize
@@ -153,8 +124,8 @@
          <li>In
             the window labeled <span class="uis-unspecified">User Information</span> click the
             radio button labeled <span class="uis-unspecified">SQL Server Authentication</span>.
-            Fill in the text boxes labeled <span class="uis-unspecified">sysadmin user name</span> and <span class="uis-unspecified">sysadmin user
-               password</span>. Click <span class="uis-unspecified">Next</span>.
+            Fill in the text boxes labeled <span class="uis-unspecified">sysadmin user name</span> and <span class="uis-unspecified">sysadmin
+               user password</span>. Click <span class="uis-unspecified">Next</span>.
          </li>
          <li>In
             the window labeled <span class="uis-unspecified">Create Spatial Database</span> fill
@@ -194,17 +165,6 @@
             this has been known to correct the problem.
          </li>
       </ol>
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                     
-                     
       <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7357"></a></span>The fourth step is to edit the “HARDCODED SETTINGS”
          section within the SetupTestData.perl script. If you wish to install
          test data in an oracle instance, set <span class="code">$INSTALLORACLE=”Y”</span>.
@@ -212,46 +172,35 @@
          values of all of the settings; each setting is described within
          the script.
       </p>
-                     
       <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7356"></a></span>The fifth step is to run the SetupTestData.perl
          script from the command-line on the machine hosting the ArcSDE server.
          This requires that Oracle’s sqlplus.exe and Sql Server’s osql.exe
          must be in the PATH environment variable so that the script can
          find them.
       </p>
-                     
       <div>
          <div class="note-note"><span class="label">Note</span>You can install test data
             against both Oracle and Sql Server simultaneously.
          </div>
       </div>
-                     
       <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7355"></a></span>The script will ask you to specify whether you
          want to install or uninstall test data. The test data in question
          is contained in the <span class="filePath">C:\OpenSource\Providers\ArcSDE\TestData</span> folder.
       </p>
-                     
       <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7354"></a></span>The script will ask you to specify a test dataset
          name. This name is used to create RDBMS test users with names in
          the form “FDO_&lt;datasetName&gt;_&lt;suffix&gt;.” The test users
          will own the test data.
       </p>
-                     
       <div>
          <div class="note-note"><span class="label">Note</span>Dataset names may be no
             longer than five characters.
          </div>
       </div>
-                     
       <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-7353"></a></span>If you encounter any problems installing test
          users or test data, you can run the script again and type ‘U’ for
          Uninstall, when prompted, to undo all of the changes. After you
          have identified and solved the problem, you can try the install
          again.
-      </p>
-                  
-               
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Please send us your comment about this page</span></a></div><br></body>
+      </p><br></body>
 </html>

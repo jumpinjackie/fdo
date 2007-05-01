@@ -20,7 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS1a9193826455f5ff36b67310b29445ec2-7f44.htm','42'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+   <body onLoad="javascript:initFrame('WS1a9193826455f5ff36b67310b29445ec2-7f44.htm','47'); javascript:initPage('Updating the Source','Building FDO Open Source'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <!--
                             Name = Topic;
                             Class =  CPM-Topic ISD-Topic ;
@@ -36,29 +36,19 @@
                <!--end browse buttons-->
             </div>
             <div class="button-info"><span id="infoline">&nbsp;</span></div>
-            <div class="ancestry"><a href="WS1a9193826455f5ff1955f1510a86ab16de-56a1.htm">Building FDO on Linux</a>&nbsp;&gt;&nbsp;
-            </div>
             <div class="head-text"><span>Updating the Source</span></div>
          </div>
       </div>
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS1a9193826455f5ff36b67310b29445ec2-7f44"></a></span>
-               
-               
-      <!--Body-->
-                  
-      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-73bf"></a></span>You can update the source by running the <span class="filePath">checkoutsvn.sh</span> script.
+      <!--Body--><p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-73bf"></a></span>You can update the source by running the <span class="filePath">checkoutsvn.sh</span> script.
       </p>
-                  
-      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-73be"></a></span>In a terminal window where the current directory
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-73be"></a></span>In a terminal window where the current folder
          is the build directory, enter checkoutsvn -h. The help text displayed
          is as follows:
       </p>
-                  
-      <!--UList--><span style="display:none"><a name="WS1a9193826455f5ff1b17d1110e119dca16-7fe7"></a></span>
-                     
-      <ul>
+      <!--UList--><span style="display:none"><a name="WS1a9193826455f5ff1b17d1110e119dca16-7fe7"></a></span><ul>
          <li>checkoutsvn.sh
             [--h]
          </li>
@@ -88,19 +78,18 @@
                   possible arguments are <span class="code">--s
                      trunk</span>, <span class="code">--s &lt;tagIdentifier&gt;</span>,
                   and <span class="code">--s &lt;branchIdentifier&gt;</span>.
-                  Get the tag or branch identifier by browsing <a class="webLink" href="http://fdo.osgeo.org">http://fdo.osgeo.org</a>,
+                  Get the tag or branch identifier by browsing <a class="webLink" href="http://fdo.osgeo.org" target="_blank">http://fdo.osgeo.org</a>,
                   clicking the Subversion link and then clicking the tag or branches
                   link.
                </div>
             </div>
-                           
          </li>
          <li>OutFolder:
                  --o[utpath]=destination folder for files
          </li>
          <li>WithModule:
-                --w[ith]=all(default) fdo thirdparty providers utilities shp
-            sdf wfs wms arcsde rdbms gdal
+                --w[ith]=all(default) fdo thirdparty providers utilities shp sdf
+            wfs wms arcsde rdbms gdal
          </li>
          <li>User:
                       --u[ser]=user id
@@ -109,95 +98,57 @@
                   --p[assword]=user password
          </li>
       </ul>
-                     
-                     
-                     
-                     
-                     
-                     
-                     
-                     
-                     
-                     
-                     
-                  
-                  
       <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-73bd"></a></span>You can update all of the source by running
          the <span class="filePath">checkoutsvn.sh</span> script
          in the build directory. The syntax is <span class="code">./checkoutsvn.sh
             --o /home/OpenSource --s &lt;source&gt; --u yourusername --p yourpassword</span>. 
       </p>
-                  
       <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-73bc"></a></span>You can update the source for specified components
          by using the with option. The syntax is <span class="code">./checkoutsvn.sh
             --o /home/OpenSource --s &lt;source&gt;--u yourusername --p yourpassword
             --w desiredComponent</span>. 
       </p>
-                  
-      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-73bb"></a></span>The possible arguments for the with option are:
+      <p><span style="display:none"><a name="WS73099cc142f48755eb38b510e83e3eee9-73bb"></a></span>The possible arguments for the <span class="uis-unspecified">with</span> option
+         are:
       </p>
-                  
-      <!--UList--><span style="display:none"><a name="WS73099cc142f48755f1b4fd10b3ae696ba-7f4d"></a></span>
-                     
-      <ul>
-         <li>
-                              <span class="code">all</span> - updates all directories
+      <!--UList--><span style="display:none"><a name="WS73099cc142f48755f1b4fd10b3ae696ba-7f48"></a></span><ul>
+         <li><span class="code">all</span> - checkout all source from the
+            fdocore, fdoshp, fdosdf, fdowfs, fdowms, fdoarcsde, and fdordbms
+            subversions
          </li>
-         <li>
-                              <span class="code">providers</span> - updates the <span class="filePath">ArcSDE</span>, <span class="filePath">GDAL</span>, <span class="filePath">GenericRdbms</span>, <span class="filePath">SDF</span>, <span class="filePath">SHP</span>, <span class="filePath">WFS</span>, and <span class="filePath">WMS</span> directories 
+         <li><span class="code">fdo</span> - checkout all source from the
+            Fdo folder in the fdocore subversion
          </li>
-         <li>
-                              <span class="code">fdocore</span> - updates the <span class="filePath">Fdo</span>, <span class="filePath">Thirdparty</span>,
-            and <span class="filePath">Utilities</span> directories 
+         <li><span class="code">fdocore</span> - checkout all source from
+            the fdocore subversion
          </li>
-         <li>
-                              <span class="code">thirdparty</span> - updates the <span class="filePath">Thirdparty</span> directory
+         <li><span class="code">thirdparty</span> - checkout all source from
+            the Thirdparty folder in the fdocore subversion
          </li>
-         <li>
-                              <span class="code">fdo</span> - updates the <span class="filePath">Fdo</span> directory
+         <li><span class="code">providers</span> - checkout all source from
+            the fdoshp, fdosdf, fdowms, fdowfs, fdoarcsde, fdordbms and gdal
+            subversions
          </li>
-         <li>
-                              <span class="code">utilities</span> - updates the <span class="filePath">Utilities</span> directory
+         <li><span class="code">utilities</span> - checkout all source from
+            the Utilities folder in the fdocore subversion
          </li>
-         <li>
-                              <span class="code">arcsde</span> - updates the <span class="filePath">ArcSDE</span> directory
+         <li><span class="code">shp</span> - checkout all source from the
+            fdoshp subversion
          </li>
-         <li>
-                              <span class="code">gdal</span> - updates the <span class="filePath">GDAL</span> directory
+         <li><span class="code">sdf</span> - checkout all source from the
+            fdosdf subversion
          </li>
-         <li>
-                              <span class="code">rdbms</span> - updates the <span class="filePath">GenericRdbms</span> directory, which contains
-            the MySQL and ODBC components
+         <li><span class="code">wfs</span> - checkout all source from the
+            fdowfs subversion
          </li>
-         <li>
-                              <span class="code">sdf</span> - updates the <span class="filePath">SDF</span> directory
+         <li><span class="code">wms</span> - checkout all source from the
+            fdowms subversion
          </li>
-         <li>
-                              <span class="code">shp</span> - updates the <span class="filePath">SHP</span> directory
+         <li><span class="code">arcsde</span> - checkout all source from the
+            fdoarcsde subversion
          </li>
-         <li>
-                              <span class="code">wfs</span> - updates the <span class="filePath">WFS</span> directory
+         <li><span class="code">rdbms</span> - checkout all source from the
+            fdordbms subversion
          </li>
-         <li>
-                              <span class="code">wms</span> - updates the <span class="filePath">WMS</span> directory
-         </li>
-      </ul>
-                     
-                     
-                     
-                     
-                     
-                     
-                     
-                     
-                     
-                     
-                     
-                     
-                  
-               
-            
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Please send us your comment about this page</span></a></div><br></body>
+      </ul><br></body>
 </html>

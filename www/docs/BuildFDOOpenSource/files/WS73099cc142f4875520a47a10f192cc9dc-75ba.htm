@@ -20,7 +20,7 @@
       <meta type="keywords" content="">
       <meta type="topic-type" content="concept">
    </head>
-   <body onLoad="javascript:initFrame('WS73099cc142f4875520a47a10f192cc9dc-75ba.htm','63'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
+   <body onLoad="javascript:initFrame('WS73099cc142f4875520a47a10f192cc9dc-75ba.htm','68'); javascript:initPage('Run the ODBC Unit Tests','Building FDO Open Source'); javascript:highlightSearchResults(); top.setPageLoaded(1);" height="100%">
       <!--
                             Name = Topic;
                             Class =  CPM-Topic ISD-Topic ;
@@ -36,48 +36,25 @@
                <!--end browse buttons-->
             </div>
             <div class="button-info"><span id="infoline">&nbsp;</span></div>
-            <div class="ancestry"><a href="WS1a9193826455f5ff1955f1510a86ab16de-56a1.htm">Building FDO on Linux</a>&nbsp;&gt;&nbsp;<a href="WS1a9193826455f5ff12ae99810b26fdce1b-7ff3.htm">Unit Tests</a>&nbsp;&gt;&nbsp;
-            </div>
             <div class="head-text"><span>Run the ODBC Unit Tests</span></div>
          </div>
       </div>
       <div class="head-margin">&nbsp;</div>
       <div style="line-height: 0pt">&nbsp;</div>
       <div class="head-margin">&nbsp;</div><span style="display:none"><a name="WS73099cc142f4875520a47a10f192cc9dc-75ba"></a></span>
-                  
-                  
-      <!--Body-->
-                     
-      <p><span style="display:none"><a name="WS1a9193826455f5ff15dea8810ea7e19512-7ad8"></a></span>There are two sets of tests. One set for Oracle,
+      <!--Body--><p><span style="display:none"><a name="WS1a9193826455f5ff15dea8810ea7e19512-7ad8"></a></span>There are two sets of tests. One set for Oracle,
          and one set for MySql. Do the following in a terminal window:
       </p>
-                     
-      <!--OList--><span style="display:none"><a name="WS1a9193826455f5ff15dea8810ea7e19512-7ad7"></a></span>
-                        
-      <ol type="1" start="1">
+      <!--OList--><span style="display:none"><a name="WS1a9193826455f5ff15dea8810ea7e19512-7ad7"></a></span><ol type="1" start="1">
+         <li><span class="code">cd /home/OpenSource/Providers/GenericRdbms/Src/UnitTest</span></li>
+         <li><span class="code">cp OdbcInit.txt OdbcInitEx.txt</span></li>
          <li>
-                                 <span class="code">cd /home/OpenSource/Providers/GenericRdbms/Src/UnitTest</span>
-                              
-         </li>
-         <li>
-                                 <span class="code">cp OdbcInit.txt OdbcInitEx.txt</span>
-                              
-         </li>
-         <li>
-                                 
             <div>
                <div class="note-note"><span class="label">Note</span>The contents of this file
                   is
-                  <div class="codeBlock">
-                                                <pre class="codeLine">provider=Odbc;clean=false;</pre>
-                                                <pre class="codeLine">serviceOracle=oraserver;usernameOracle=xxxx;passwordOracle=xxxx;DSNOracle=xxxx;enableOracleSetup=false;</pre>
-                                                <pre class="codeLine">serviceMySql=mysqlserver;usernameMySql=root;password=xxxx;DSNMySql=xxxx;</pre>
-                                                <pre class="codeLine">serviceSqlServer=sqlserver;usernameSqlServer=xxxx;passwordSqlServer=xxxx;DSNSqlServer=xxxx;</pre>
-                                             </div>
-                                       
+                  <div class="codeBlock"><pre class="codeLine">provider=Odbc;clean=false;</pre><pre class="codeLine">serviceOracle=oraserver;usernameOracle=xxxx;passwordOracle=xxxx;DSNOracle=xxxx;enableOracleSetup=false;</pre><pre class="codeLine">serviceMySql=mysqlserver;usernameMySql=root;password=xxxx;DSNMySql=xxxx;</pre><pre class="codeLine">serviceSqlServer=sqlserver;usernameSqlServer=xxxx;passwordSqlServer=xxxx;DSNSqlServer=xxxx;</pre></div>
                </div>
             </div>
-                              
          </li>
          <li>Edit
             OdbcInitEx.txt. Replace “serviceOracle=oraserver” with “service=&lt;netServiceName&gt;”
@@ -87,23 +64,10 @@
             F_USER_ROLE role. Replace “password=xxxx” with “password=&lt;userPassword&gt;”.
             Replace the “xxxx” in “DSNOracle=xxxx” with the Data Source Name
             in the <span class="filePath">/etc/odbc.ini</span> file
-            created during the install of the Easysoft ODBC Oracle driver. By default,
-            that value is <span class="code">ORACLE</span>.
+            created during the install of the Easysoft ODBC Oracle driver. By
+            default, that value is <span class="code">ORACLE</span>.
          </li>
-         <li>
-                                 <span class="code">unix&gt; ./UnitTestOdbc initfiletest=OdbcInitEx.txt
-               OdbcOracleTests</span>
-                              
-         </li>
-      </ol>
-                        
-                        
-                        
-                        
-                     
-                  
-               
-      <!---->
-      <!--See also-->
-      <div class="footer-block"><a href="javascript:doComments('../html/ac.cmtdialog.htm');"><span class="comments-link">Please send us your comment about this page</span></a></div><br></body>
+         <li><span class="code">unix&gt; ./UnitTestOdbc initfiletest=OdbcInitEx.txt
+               OdbcOracleTests</span></li>
+      </ol><br></body>
 </html>

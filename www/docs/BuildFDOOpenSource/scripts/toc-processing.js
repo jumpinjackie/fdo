@@ -140,7 +140,7 @@ function ViewNode(onoffPrevious)
     }
     var bookImage = document.getElementById('bookImage' + this.nodeId);
     if(bookImage) bookImage.src = this.NodeImage();
-    document.getElementById('nodeAhchor' + this.nodeId).style.fontWeight = onoffPrevious ? 'normal' : 'bold';
+    document.getElementById('nodeAhchor' + this.nodeId).className = onoffPrevious ? 'toc_normal' : 'toc_selected';
     return Boolean(this.items[1]);
 }
 
