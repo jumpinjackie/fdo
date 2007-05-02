@@ -34,7 +34,7 @@ class FdoFgfGeometryPools;   // Forward declaration
     /* const FdoByte * */  streamEnd, \
     /* FdoInt32 */         count ) \
 { \
-	if ((*(streamPtr)) + sizeof(FdoInt32) > streamEnd) \
+	if ((*(streamPtr)) + count > streamEnd) \
 		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_5_INDEXOUTOFBOUNDS))); \
 }
 

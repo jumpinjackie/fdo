@@ -3107,7 +3107,40 @@ FdoIGeometry* FdoSpatialUtility::TesselateCurve(FdoIGeometry* curve)
 
 #define SIGN_BIT(d) *((int*)&d+1) & 0x80000000;
 
-static bool MightHave3dArcs(unsigned char * fgf)
+static inline void PositionStreamCheckAndAdvance(
+    FdoInt32 positionCount,
+    FdoInt32 ordinatesPerPosition,
+    FdoInt32 &byteCount)
+{
+    FdoInt32 bytesForPositions = positionCount * ordinatesPerPosition * sizeof(double);
+    if (byteCount < bytesForPositions)
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_15_UNSUPPORTEDGEOMETRYDATA)));
+    byteCount -= bytesForPositions;
+}
+
+static inline void IntegerStreamSizeCheck(
+    FdoInt32 *&ireader,
+    FdoInt32 byteCount)
+{
+    // Note:  force signed comparison, in case byteCount becomes negative.
+    if (byteCount < (FdoInt32) sizeof(FdoInt32))
+    {
+        FdoException * ex = FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_15_UNSUPPORTEDGEOMETRYDATA)));
+        throw ex;
+    }
+}
+
+static inline FdoInt32 IntegerFromStream(
+    FdoInt32 *&ireader,
+    FdoInt32 &byteCount)
+{
+    IntegerStreamSizeCheck(ireader, byteCount);
+    FdoInt32 value = *ireader++;
+    byteCount -= sizeof(FdoInt32);
+    return value;
+}
+
+static bool MightHave3dArcs(unsigned char * fgf, FdoInt32 byteCount)
 {
     // Decide whether the FGF geometry should be redirected to newer
     // (but possibly slower) code that computes arc extents in 3D.
@@ -3120,7 +3153,8 @@ static bool MightHave3dArcs(unsigned char * fgf)
 
     int* ireader = (int*)fgf;
 
-    int geom_type = (FdoGeometryType)*ireader++;
+    int geom_type = IntegerFromStream(ireader, byteCount);
+
     FdoDimensionality dim;
 
     switch (geom_type)
@@ -3137,16 +3171,21 @@ static bool MightHave3dArcs(unsigned char * fgf)
 
 	case FdoGeometryType_CurveString:
 	case FdoGeometryType_CurvePolygon:
+        IntegerStreamSizeCheck(ireader, byteCount);
         dim = (FdoDimensionality) *ireader++;   // Check dimensionality.
+        // Don't bother updating byteCount -- we are done!
         if (dim == FdoDimensionality_XY)
             mightHave3dArcs = false;            // No 3D in these types.
         break;
 
 	case FdoGeometryType_MultiCurveString:
 	case FdoGeometryType_MultiCurvePolygon:
-        *ireader++;                             // Skip subgeometry counter.
-        *ireader++;                             // Skip subgeometry type.
+        if (byteCount < ((FdoInt32)(3*sizeof(*ireader))))  // About to read 3 integers.
+            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_15_UNSUPPORTEDGEOMETRYDATA)));
+        ireader++;                              // Skip subgeometry counter.
+        ireader++;                              // Skip subgeometry type.
         dim = (FdoDimensionality) *ireader++;   // Check dimensionality of first subgeometry.
+        // Don't bother updating byteCount -- we are done!
         if (dim == FdoDimensionality_XY)
             mightHave3dArcs = false;            // No 3D in these types.
         break;
@@ -3158,7 +3197,7 @@ static bool MightHave3dArcs(unsigned char * fgf)
     return mightHave3dArcs;
 }
 
-static bool Is2d(unsigned char * fgf)
+static bool Is2d(unsigned char * fgf, FdoInt32 byteCount)
 {
     // Test whether the geometry is two-dimensional.
     // It is specifically to decide whether the FGF geometry should be
@@ -3173,7 +3212,8 @@ static bool Is2d(unsigned char * fgf)
 
     int* ireader = (int*)fgf;
 
-    int geom_type = (FdoGeometryType)*ireader++;
+    int geom_type = (FdoGeometryType) IntegerFromStream(ireader, byteCount);
+
     FdoDimensionality dim;
 
     switch (geom_type)
@@ -3188,7 +3228,9 @@ static bool Is2d(unsigned char * fgf)
     case FdoGeometryType_Point :
 	case FdoGeometryType_CurveString:
 	case FdoGeometryType_CurvePolygon:
+        IntegerStreamSizeCheck(ireader, byteCount);
         dim = (FdoDimensionality) *ireader++;
+        // Don't bother updating fgfByteSize -- we are done!
         if (dim != FdoDimensionality_XY)
             is2D = false;
         break;
@@ -3198,9 +3240,12 @@ static bool Is2d(unsigned char * fgf)
     case FdoGeometryType_MultiPoint :
 	case FdoGeometryType_MultiCurveString:
 	case FdoGeometryType_MultiCurvePolygon:
-        *ireader++;                             // Skip subgeometry counter.
-        *ireader++;                             // Skip subgeometry type.
+        if (byteCount < ((FdoInt32)(3*sizeof(*ireader))))  // About to read 3 integers.
+            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_15_UNSUPPORTEDGEOMETRYDATA)));
+        ireader++;                              // Skip subgeometry counter.
+        ireader++;                              // Skip subgeometry type.
         dim = (FdoDimensionality) *ireader++;   // Check dimensionality of first subgeometry.
+        // Don't bother updating byteCount -- we are done!
         if (dim != FdoDimensionality_XY)
             is2D = false;
         break;
@@ -3215,10 +3260,11 @@ static bool Is2d(unsigned char * fgf)
 void FdoSpatialUtility::GetExtents(FdoByteArray* fgfArray, double& outMinX, double& outMinY, double& outMaxX, double& outMaxY)
 {  
     unsigned char* fgf = fgfArray->GetData();
+    FdoInt32 byteCount = fgfArray->GetCount();
 
     int* ireader = (int*)fgf;
 
-    if (MightHave3dArcs(fgf))
+    if (MightHave3dArcs(fgf, byteCount))
     {
         double dummyMinz, dummyMaxz;
         FdoSpatialUtilityGeometryExtents::GetExtents(fgfArray, outMinX, outMinY, dummyMinz, outMaxX, outMaxY, dummyMaxz);
@@ -3226,7 +3272,7 @@ void FdoSpatialUtility::GetExtents(FdoByteArray* fgfArray, double& outMinX, doub
     }
 
     // the geometry type
-    int geom_type = (FdoGeometryType)*ireader++;
+    int geom_type = (FdoGeometryType) IntegerFromStream(ireader, byteCount);
 
     switch (geom_type)
     {
@@ -3268,16 +3314,23 @@ void FdoSpatialUtility::GetExtents(FdoByteArray* fgfArray, double& outMinX, doub
 
             //in case of multipolygon or multilinestring or multipoint, 
             //read poly or linestring count
-            if (is_multi) num_geoms = *ireader++;
+            if (is_multi)
+            {
+                num_geoms = IntegerFromStream(ireader, byteCount);
+            }
 
             for (int q=0; q<num_geoms; q++)
             {
                 //skip past geometry type of subgeometry
                 //we know it is LineString or Polygon or Point respectively
-                if (is_multi) *ireader++; 
+                if (is_multi)
+                {
+                    ireader++;
+                    byteCount -= sizeof(*ireader);
+                }
 
                 //read cordinate typeB
-                dim = (FdoDimensionality)*ireader++;
+                dim = (FdoDimensionality) IntegerFromStream(ireader, byteCount);
 
                 skip_vals = 0;
                 if (dim & FdoDimensionality_Z) skip_vals++;
@@ -3290,7 +3343,7 @@ void FdoSpatialUtility::GetExtents(FdoByteArray* fgfArray, double& outMinX, doub
                 {
                 case FdoGeometryType_Polygon:
                 case FdoGeometryType_MultiPolygon:
-                    contour_count = *ireader++;
+                    contour_count = IntegerFromStream(ireader, byteCount);
                 default: break;
                 }
 
@@ -3302,7 +3355,13 @@ void FdoSpatialUtility::GetExtents(FdoByteArray* fgfArray, double& outMinX, doub
                     //each piece is just one point each
                     if ((geom_type != FdoGeometryType_MultiPoint) 
                         && (geom_type != FdoGeometryType_Point))
-                        point_count = *ireader++;
+                    {
+                        point_count = IntegerFromStream(ireader, byteCount);
+                    }
+
+                    int ords_per_position = 2 /*X,Y*/ + skip_vals /*Z,M*/;
+                    PositionStreamCheckAndAdvance(
+                        point_count, ords_per_position, byteCount);
 
                     //*** ireader not valid from here down
                     dreader = (double*) ireader;
@@ -3317,8 +3376,8 @@ void FdoSpatialUtility::GetExtents(FdoByteArray* fgfArray, double& outMinX, doub
                         //skip past z and m
                         switch (skip_vals)
                         {
-                        case 2: *dreader++;
-                        case 1: *dreader++;
+                        case 2: dreader++;
+                        case 1: dreader++;
                         default:break;
                         }
 
@@ -3528,10 +3587,11 @@ void FdoSpatialUtility::GetExtents(FdoByteArray* fgfArray, double& minx, double&
     // allow for Z or M at all.
 
     unsigned char* fgf = fgfArray->GetData();
+    FdoInt32 byteCount = fgfArray->GetCount();
 
     int* ireader = (int*)fgf;
 
-    if ( Is2d(fgf) )
+    if ( Is2d(fgf, byteCount) )
     {
         // Use 2D routine.
         minz = 0.0;
