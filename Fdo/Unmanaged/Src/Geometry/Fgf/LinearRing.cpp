@@ -48,7 +48,7 @@ FdoFgfLinearRing::FdoFgfLinearRing(
 
 #ifdef EXTRA_DEBUG
     {
-        FILE * FdoDebugFile = fopen("D:\\temp\\FdoDebugFile_FdoFgfLinearRing_alloc.log", "a+");
+        FILE * FdoDebugFile = fopen("C:\\FdoDebugFile_FdoFgfLinearRing_alloc.log", "a+");
         fprintf(FdoDebugFile, "    FdoFgfLinearRing allocated at 0x%lx.\n", (long)this);
         fclose(FdoDebugFile);
     }
@@ -71,7 +71,7 @@ void FdoFgfLinearRing::Reset(FdoInt32 dimensionType, FdoInt32 numOrdinates, doub
 
 #ifdef EXTRA_DEBUG
     {
-        FILE * FdoDebugFile = fopen("D:\\temp\\FdoDebugFile_FdoFgfLinearRing_reset.log", "a+");
+        FILE * FdoDebugFile = fopen("C:\\FdoDebugFile_FdoFgfLinearRing_reset.log", "a+");
         fprintf(FdoDebugFile, "    FdoFgfLinearRing reset at 0x%lx.\n", (long)this);
         fclose(FdoDebugFile);
     }
@@ -97,7 +97,7 @@ FdoFgfLinearRing::FdoFgfLinearRing(
 
 #ifdef EXTRA_DEBUG
     {
-        FILE * FdoDebugFile = fopen("D:\\temp\\FdoDebugFile_FdoFgfLinearRing_alloc.log", "a+");
+        FILE * FdoDebugFile = fopen("C:\\FdoDebugFile_FdoFgfLinearRing_alloc.log", "a+");
         fprintf(FdoDebugFile, "    FdoFgfLinearRing allocated at 0x%lx.\n", (long)this);
         fclose(FdoDebugFile);
     }
@@ -116,7 +116,7 @@ void FdoFgfLinearRing::Reset(FdoDirectPositionCollection* positions)
 
 #ifdef EXTRA_DEBUG
     {
-        FILE * FdoDebugFile = fopen("D:\\temp\\FdoDebugFile_FdoFgfLinearRing_Reset.log", "a+");
+        FILE * FdoDebugFile = fopen("C:\\FdoDebugFile_FdoFgfLinearRing_Reset.log", "a+");
         fprintf(FdoDebugFile, "    FdoFgfLinearRing reset at 0x%lx.\n", (long)this);
         fclose(FdoDebugFile);
     }
@@ -132,7 +132,7 @@ FdoFgfLinearRing::~FdoFgfLinearRing()
 
 #ifdef EXTRA_DEBUG
     {
-        FILE * FdoDebugFile = fopen("D:\\temp\\FdoDebugFile_FdoFgfLinearRing_free.log", "a+");
+        FILE * FdoDebugFile = fopen("C:\\FdoDebugFile_FdoFgfLinearRing_free.log", "a+");
         fprintf(FdoDebugFile, "    FdoFgfLinearRing freed at 0x%lx.\n", (long)this);
         fclose(FdoDebugFile);
     }

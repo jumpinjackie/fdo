@@ -525,15 +525,46 @@ void FdoSpatialUtilityGeometryExtents::readPoint(double** dreader, double& x, do
     *dreader += skip_vals;
 }
 
+static inline void PositionStreamCheckAndAdvance(
+    FdoInt32 positionCount,
+    FdoInt32 ordinatesPerPosition,
+    FdoInt32 &byteCount)
+{
+    FdoInt32 bytesForPositions = positionCount * ordinatesPerPosition * sizeof(double);
+    if (byteCount < bytesForPositions)
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_15_UNSUPPORTEDGEOMETRYDATA)));
+    byteCount -= bytesForPositions;
+}
+
+static inline void IntegerStreamSizeCheck(
+    FdoInt32 *&ireader,
+    FdoInt32 byteCount)
+{
+    // Note:  force signed comparison, in case byteCount becomes negative.
+    if (byteCount < (FdoInt32) sizeof(FdoInt32))
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_15_UNSUPPORTEDGEOMETRYDATA)));
+}
+
+static inline FdoInt32 IntegerFromStream(
+    FdoInt32 *&ireader,
+    FdoInt32 &byteCount)
+{
+    IntegerStreamSizeCheck(ireader, byteCount);
+    FdoInt32 value = *ireader++;
+    byteCount -= sizeof(FdoInt32);
+    return value;
+}
+
 void FdoSpatialUtilityGeometryExtents::getExtentsWithoutCurve(FdoByteArray* fgfArray, 
                                                             double& minX, double& minY, double& minZ,
                                                             double& maxX, double& maxY, double& maxZ)
 {
     unsigned char* fgf = fgfArray->GetData();
+    FdoInt32 byteCount = fgfArray->GetCount();
     int* ireader = (int*)fgf;
     
     // the geometry type
-    int geom_type = (FdoGeometryType)*ireader++;
+    int geom_type = (FdoGeometryType) IntegerFromStream(ireader, byteCount);
 
     FdoSpatialEnvelope bound;
 
@@ -555,16 +586,20 @@ void FdoSpatialUtilityGeometryExtents::getExtentsWithoutCurve(FdoByteArray* fgfA
 
     //in case of multipolygon or multilinestring or multipoint, 
     //read poly or linestring count
-    if (is_multi) num_geoms = *ireader++;
+    if (is_multi) num_geoms = IntegerFromStream(ireader, byteCount);
 
     for (int q = 0; q < num_geoms; q++)
     {
         //skip past geometry type of subgeometry
         //we know it is LineString or Polygon or Point respectively
-        if (is_multi) *ireader++; 
+        if (is_multi)
+        {
+            ireader++; 
+            byteCount -= sizeof(*ireader);
+        }
 
         //read cordinate typeB
-        FdoDimensionality sub_geom_dim = (FdoDimensionality)*ireader++;
+        FdoDimensionality sub_geom_dim = (FdoDimensionality) IntegerFromStream(ireader, byteCount);
 
         // ensure that all dimensionalities of each geometry are the same
         // _ASSERT(q==0 ? true : geom_dim == sub_geom_dim);
@@ -582,7 +617,7 @@ void FdoSpatialUtilityGeometryExtents::getExtentsWithoutCurve(FdoByteArray* fgfA
         {
             case FdoGeometryType_Polygon:
             case FdoGeometryType_MultiPolygon:
-                contour_count = *ireader++;
+                contour_count = IntegerFromStream(ireader, byteCount);
             default: break;
         }
 
@@ -594,7 +629,13 @@ void FdoSpatialUtilityGeometryExtents::getExtentsWithoutCurve(FdoByteArray* fgfA
             //each piece is just one point each
             if ((geom_type != FdoGeometryType_MultiPoint) 
                 && (geom_type != FdoGeometryType_Point))
-                point_count = *ireader++;
+            {
+                point_count = IntegerFromStream(ireader, byteCount);
+            }
+
+            int ords_per_position = 2 /*X,Y*/ + (processZ?1:0) + skip_vals /*M*/;
+            PositionStreamCheckAndAdvance(
+                point_count, ords_per_position, byteCount);
 
             //*** ireader not valid from here down
             dreader = (double*) ireader;
@@ -611,8 +652,8 @@ void FdoSpatialUtilityGeometryExtents::getExtentsWithoutCurve(FdoByteArray* fgfA
                 //skip past z and m
                 switch (skip_vals)
                 {
-                    case 2: *dreader++;
-                    case 1: *dreader++;
+                    case 2: dreader++;
+                    case 1: dreader++;
                     default:break;
                 }
 
@@ -651,10 +692,11 @@ void FdoSpatialUtilityGeometryExtents::getExtentsWithCurve(FdoByteArray* fgfArra
                                                          double& maxX, double& maxY, double& maxZ)
 {
     unsigned char* fgf = fgfArray->GetData();
+    FdoInt32 byteCount = fgfArray->GetCount();
     int* ireader = (int*)fgf;
 
     // the geometry type
-    int geom_type = (FdoGeometryType)*ireader++;
+    int geom_type = IntegerFromStream(ireader, byteCount);
     
     FdoSpatialEnvelope bound;
 
@@ -671,16 +713,20 @@ void FdoSpatialUtilityGeometryExtents::getExtentsWithCurve(FdoByteArray* fgfArra
 
     //in case of multicurvepolygon or multicurvestring 
     //read poly or linestring count
-    if (is_multi) num_geoms = *ireader++;
+    if (is_multi) num_geoms = IntegerFromStream(ireader, byteCount);
 
     for (int q = 0; q < num_geoms; q++)
     {
         //skip past geometry type of subgeometry
         //we know it is CurveString or CurvePolygon respectively
-        if (is_multi) *ireader++; 
+        if (is_multi)
+        {
+            ireader++;
+            byteCount -= sizeof(*ireader);
+        }
 
         //read cordinate type
-        FdoDimensionality sub_geom_dim = (FdoDimensionality)*ireader++;
+        FdoDimensionality sub_geom_dim = (FdoDimensionality) IntegerFromStream(ireader, byteCount);
 
         // ensure that all dimensionalities of each geometry are the same
         // _ASSERT(q==0 ? true : geom_dim == sub_geom_dim);
@@ -691,33 +737,37 @@ void FdoSpatialUtilityGeometryExtents::getExtentsWithCurve(FdoByteArray* fgfArra
         skip_vals = 0;
         if (geom_dim & FdoDimensionality_M) skip_vals++;
 
+        int ords_per_position = 2 /*X,Y*/ + (processZ?1:0) + skip_vals /*M*/;
+
         // the number of contours in current polygon/linestring
         int contour_count = 1; //for linestrings, no rings, just one
 
         if ((geom_type == FdoGeometryType_CurvePolygon) 
             || (geom_type == FdoGeometryType_MultiCurvePolygon))
-            contour_count = *ireader++; //#rings for polygons
+            contour_count = IntegerFromStream(ireader, byteCount); //#rings for polygons
 
         for (int i = 0; i < contour_count; i++)
         {
             //*** ireader not valid from here down
             double *dreader = (double*) ireader;
 
+            PositionStreamCheckAndAdvance(1, ords_per_position, byteCount);
             readPoint(&dreader, x, y, z, processZ, skip_vals);
 
             // ireader valid again
             ireader = (int*)dreader;
-            int seg_count = *ireader++; //# curve segments
+            int seg_count = IntegerFromStream(ireader, byteCount); //# curve segments
 
             for (int j = 0; j < seg_count; j++)
             {
-                int seg_type = *ireader++;
+                int seg_type = IntegerFromStream(ireader, byteCount);
 
                 switch (seg_type)
                 {
                 case FdoGeometryComponentType_CircularArcSegment:
                     {
                         dreader = (double*)ireader;
+                        PositionStreamCheckAndAdvance(2, ords_per_position, byteCount);
 
                         //circular arc : read midpont and endpoint
                         //first point was either the start point or
@@ -767,9 +817,10 @@ void FdoSpatialUtilityGeometryExtents::getExtentsWithCurve(FdoByteArray* fgfArra
                         //line string segment -- just read the points
                         //and do LineTos
                         
-                        int num_pts = *ireader++;
+                        int num_pts = IntegerFromStream(ireader, byteCount);
 
                         dreader = (double*)ireader;
+                        PositionStreamCheckAndAdvance(num_pts, ords_per_position, byteCount);
 
                         for (int k = 0; k < num_pts; k++)
                         {
@@ -799,10 +850,12 @@ void FdoSpatialUtilityGeometryExtents::getExtentsWithCurve(FdoByteArray* fgfArra
 void FdoSpatialUtilityGeometryExtents::GetExtents(FdoByteArray* fgfArray, double& minX, double& minY, double& minZ, double& maxX, double& maxY, double& maxZ)
 {
    unsigned char* fgf = fgfArray->GetData();
+    FdoInt32 byteCount = fgfArray->GetCount();
 
     int* ireader = (int*)fgf;
 
     // the geometry type
+    IntegerStreamSizeCheck(ireader, byteCount);
     int geom_type = (FdoGeometryType)*ireader++;
 
     switch (geom_type)

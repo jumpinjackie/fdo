@@ -503,7 +503,7 @@ FdoICurveSegmentAbstract* FgfUtil::ReadCurveSegment(
 
 			// Now add remaining positions
             numOrds -= numOrdsPerPos;   // Adjust for already having start position.
-    	    FGFUTIL_STREAM_CHECK(inputStream, streamEnd, numOrds);
+    	    FGFUTIL_STREAM_CHECK(inputStream, streamEnd, numOrds * sizeof(double));
             positionOrdinates = (const double *) *inputStream;
             for (FdoInt32 i=0;  i < numOrds;  i++)
                 *currentOrdinates++ = *positionOrdinates++;

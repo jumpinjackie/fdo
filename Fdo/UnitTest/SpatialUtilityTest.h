@@ -63,6 +63,7 @@ class SpatialUtilityTest : public CppUnit::TestCase
 
     // Test FdoSpatialUtility::GetExtents
     FDO_CPPUNIT_DEFINE(testGetExtents);
+    FDO_CPPUNIT_DEFINE(testGetExtentsMalformed);
 
     CPPUNIT_TEST_SUITE(SpatialUtilityTest);
 	CPPUNIT_TEST(testValidateGeometryByType);
@@ -79,6 +80,7 @@ class SpatialUtilityTest : public CppUnit::TestCase
 	CPPUNIT_TEST(testLinearizeMultiCurvePolygon);
 	CPPUNIT_TEST(testGridTransform);
 	CPPUNIT_TEST(testGetExtents);
+	CPPUNIT_TEST(testGetExtentsMalformed);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -101,6 +103,9 @@ protected:
 	void testLinearizeMultiGeometry();
 	void testGridTransform();
 	void testGetExtents();
+	void testGetExtentsMalformed();
+
+	FdoInt32 testGetExtentsMalformedSubsets(FdoByteArray * ba);
 };
 
 #endif

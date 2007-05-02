@@ -91,7 +91,7 @@ FdoFgfGeometryFactory::FdoFgfGeometryFactory()
     }
 #ifdef EXTRA_DEBUG
     char fileName[1000];
-    sprintf(fileName, "D:\\temp\\FdoDebugFile0x%lx.log", (long)(this));
+    sprintf(fileName, "C:\\FdoDebugFile0x%lx.log", (long)(this));
     m_private->m_geometryPools->m_fdoDebugFile = fopen(fileName, "w+");
 #endif
 }
@@ -117,7 +117,7 @@ FdoFgfGeometryFactory::FdoFgfGeometryFactory(
     }
 #ifdef EXTRA_DEBUG
     char fileName[1000];
-    sprintf(fileName, "D:\\temp\\FdoDebugFile0x%lx.log", (long)(this));
+    sprintf(fileName, "C:\\FdoDebugFile0x%lx.log", (long)(this));
     m_private->m_geometryPools->m_fdoDebugFile = fopen(fileName, "w+");
 #endif
 }
@@ -179,9 +179,9 @@ void FdoFgfGeometryPools::PrintStats(FILE * fileHandle)
         int debugFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
         fprintf(fileHandle, "    memory debug flag = 0x%lx.\n", debugFlag);
         fprintf(fileHandle, "    %d ByteArrays created.\n", m_numByteArraysCreated);
-        if (m_byteArrayPool != NULL)
+        if (m_PoolByteArray != NULL)
         {
-            m_byteArrayPool->GetStats(&ehits, &rhits, &misses);
+            m_PoolByteArray->GetStats(&ehits, &rhits, &misses);
             fprintf(fileHandle,
                 "      ByteArray Pool stats: %d empty hits, %d reusable hits, %d misses\n",
                 ehits, rhits, misses);

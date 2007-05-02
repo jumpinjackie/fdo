@@ -15,6 +15,7 @@
 
 #include "Pch.h"
 #include "SpatialUtilityTest.h"
+#include "UnitTestUtil.h"
 #include <FdoGeometry.h>
 #include <FdoSpatial.h>
 #include <math.h>
@@ -2238,6 +2239,7 @@ void SpatialUtilityTest::testGetExtents()
     FdoPtr<FdoIGeometry> mcpg = gf->CreateGeometry(L"MULTICURVEPOLYGON (((200 200 (CIRCULARARCSEGMENT (200 201, 201 202), LINESTRINGSEGMENT (200 200))), (300 300 (CIRCULARARCSEGMENT (300 301, 301 302), LINESTRINGSEGMENT (300 300))), (400 400 (CIRCULARARCSEGMENT (400 401, 401 402), LINESTRINGSEGMENT (400 400)))), ((201 201 (CIRCULARARCSEGMENT (201 202, 202 203), LINESTRINGSEGMENT (201 201))), (301 301 (CIRCULARARCSEGMENT (301 302, 302 303), LINESTRINGSEGMENT (301 301))), (401 401 (CIRCULARARCSEGMENT (401 402, 402 403), LINESTRINGSEGMENT (401 401)))), ((202 202 (CIRCULARARCSEGMENT (202 203, 203 204), LINESTRINGSEGMENT (202 202))), (302 302 (CIRCULARARCSEGMENT (302 303, 303 304), LINESTRINGSEGMENT (302 302))), (402 402 (CIRCULARARCSEGMENT (402 403, 403 404), LINESTRINGSEGMENT (402 402)))))");
 
     double minX=0.0, minY=0.0, maxX=0.0, maxY=0.0, minZ=0.0, maxZ=0.0;
+    FdoInt32 numExceptions = 0;
 
     // Note:  It is invalid for a client to use Z at all for a geometry that lacks it.
     // However, we always check it here anyway, just to make sure that it is not junk.
@@ -2250,6 +2252,8 @@ void SpatialUtilityTest::testGetExtents()
 	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(minY, 3.0));
 	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxX, 5.0));
 	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxY, 3.0));
+    numExceptions = testGetExtentsMalformedSubsets(ba);
+    CPPUNIT_ASSERT_MESSAGE("Wrong # of exceptions from malformed FGF test", 552==numExceptions);
 
     // Test LineString
     ba = gf->GetFgf(ls);
@@ -2258,6 +2262,8 @@ void SpatialUtilityTest::testGetExtents()
 	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(minY, 1.0));
 	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxX, 4.0));
 	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxY, 5.0));
+    numExceptions = testGetExtentsMalformedSubsets(ba);
+    CPPUNIT_ASSERT_MESSAGE("Wrong # of exceptions from malformed FGF test", 3460==numExceptions);
 
     // Test Polygon
     ba = gf->GetFgf(pg);
@@ -2266,6 +2272,8 @@ void SpatialUtilityTest::testGetExtents()
 	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(minY, 0.0));
 	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxX, 5.0));
 	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxY, 5.0));
+    numExceptions = testGetExtentsMalformedSubsets(ba);
+    CPPUNIT_ASSERT_MESSAGE("Wrong # of exceptions from malformed FGF test", 52392==numExceptions);
 
     // Test MultiPoint
     ba = gf->GetFgf(mpt);
@@ -2281,6 +2289,8 @@ void SpatialUtilityTest::testGetExtents()
 	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxX, 7.0));
 	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxY, 8.0));
 	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxZ, 9.0));
+    numExceptions = testGetExtentsMalformedSubsets(ba);
+    CPPUNIT_ASSERT_MESSAGE("Wrong # of exceptions from malformed FGF test", 10136==numExceptions);
 
     // Test MultiLineString
     ba = gf->GetFgf(mls);
@@ -2289,6 +2299,8 @@ void SpatialUtilityTest::testGetExtents()
 	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(minY, 1.0));
 	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxX, 15.0));
 	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxY, 16.0));
+    numExceptions = testGetExtentsMalformedSubsets(ba);
+    CPPUNIT_ASSERT_MESSAGE("Wrong # of exceptions from malformed FGF test", 29736==numExceptions);
 
     // Test MultiPolygon
     ba = gf->GetFgf(mpg);
@@ -2405,6 +2417,8 @@ void SpatialUtilityTest::testGetExtents()
 	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(minY, 200.0));
 	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxX, 401.0));
 	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxY, 402.0));
+    numExceptions = testGetExtentsMalformedSubsets(ba);
+    CPPUNIT_ASSERT_MESSAGE("Wrong # of exceptions from malformed FGF test", 61508==numExceptions);
 
     // Test MultiCurveString
     ba = gf->GetFgf(mcs);
@@ -2423,4 +2437,165 @@ void SpatialUtilityTest::testGetExtents()
 	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxY, 404.0));
 }
 
+FdoInt32 SpatialUtilityTest::testGetExtentsMalformedSubsets(FdoByteArray * ba)
+{
+    // This method puts GetExtents through some challenging tests with bad
+    // input data.  GetExtents is the first FGF-interpreting function that
+    // several FDO clients and providers use when reading FGF binary data,
+    // so it is the most important place to check for malformed FGF.
 
+    // We check the given byte array and all subsets of it, under the assumption
+    // that most subsets will be invalid and generate an exception.  The number of
+    // exceptions generated is returned.
+
+    // Callers should check the returned value against a known outcome that was
+    // computed while running under a memory-checking tool, such as Purify --
+    // buffer overrun prevention is one error type that is likely to be triggered
+    // here, so the attempts to cause it need verification by an external tool.
+
+    // GetExtents is expected to throw an exception due to bad data.  The expected
+    // exceptions are caught and checked here.  A unit test failure will result
+    // if anything other than expected exceptions are thrown.
+
+    FdoInt32 numExceptions = 0;
+
+    unsigned char* bytes = ba->GetData();
+    FdoInt32 byteCount = ba->GetCount();
+
+    double minX=0.0, minY=0.0, maxX=0.0, maxY=0.0, minZ=0.0, maxZ=0.0;
+
+    FdoStringP expected1 = FdoException::NLSGetMessage(FDO_15_UNSUPPORTEDGEOMETRYDATA, "Invalid Geometry.");
+    FdoStringP expected2 = FdoException::NLSGetMessage(FDO_10_UNSUPPORTEDGEOMETRYTYPE, "Unsupported geometry type.");
+
+    for (FdoInt32 startIndex=0;  startIndex < byteCount;  startIndex++)
+    {
+        for (FdoInt32 endIndex=startIndex+1;  endIndex < byteCount;  endIndex++)
+        {
+            FdoInt32 subsetByteCount = endIndex-startIndex;
+            FdoPtr<FdoByteArray> ba = FdoByteArray::Create(bytes+startIndex, subsetByteCount);
+
+            // Test the GetExtents with XY results.
+            try
+            {
+                FdoSpatialUtility::GetExtents(ba, minX, minY, maxX, maxY);
+            }
+            catch(FdoException* ex)
+            {
+                FdoStringP message = ex->GetExceptionMessage();
+                if (message.Contains(expected1) || message.Contains(expected2))
+                    numExceptions++;
+                ex->Release();
+            }
+
+            // Test the GetExtents with XYZ results.
+            try
+            {
+                FdoSpatialUtility::GetExtents(ba, minX, minY, maxZ, maxX, maxY, maxZ);
+            }
+            catch(FdoException* ex)
+            {
+                FdoStringP message = ex->GetExceptionMessage();
+                if (message.Contains(expected1) || message.Contains(expected2))
+                    numExceptions++;
+                ex->Release();
+            }
+        }
+    }
+    return numExceptions;
+}
+
+void SpatialUtilityTest::testGetExtentsMalformed()
+{
+	FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+
+    double minX=0.0, minY=0.0, maxX=0.0, maxY=0.0, minZ=0.0, maxZ=0.0;
+
+    // Test some hand-crafted FGF byte arrays that are malformed.
+
+    // The following cases have incomplete metadata (e.g. array ends in middle
+    // of a 32-bit integer).
+    FdoByte bytes_1a [] = 
+    {
+        2, 0            // GeometryType == LineString, but incomplete integer
+    };
+    FdoByte bytes_1b [] = 
+    {
+        2, 0, 0, 0,     // GeometryType == LineString.
+        0, 0            // Dimensionality == XY, but incomplete integer.
+    };
+    FdoByte bytes_1c [] = 
+    {
+        2, 0, 0, 0,     // GeometryType == LineString.
+        0, 0, 0, 0,     // Dimensionality == XY.
+        0, 0            // Partial integer for # of positions.
+    };
+
+    // The following cases have internal array sizes that are too big.
+    FdoByte bytes_2a [] = 
+    {
+        2, 0, 0, 0,     // GeometryType == LineString.
+        0, 0, 0, 0,     // Dimensionality == XY.
+        0, 0, 0, 50     // Huge ordinate array (followed by no ordinates).
+    };
+    FdoByte bytes_2b [] = 
+    {
+        2, 0, 0, 0,     // GeometryType == LineString.
+        0, 0, 0, 0,     // Dimensionality == XY.
+        0, 0, 0, 50,    // Huge ordinate array (followed by insufficient ordinate data).
+        0               // Incomplete ordinate.
+    };
+    FdoByte bytes_2c [] = 
+    {
+        2, 0, 0, 0,     // GeometryType == LineString.
+        0, 0, 0, 0,     // Dimensionality == XY.
+        0, 0, 0, 50,    // Huge ordinate array (followed by insufficient ordinate data).
+        0,0,0,0,0,0,0,0 // Complete ordinate (8 bytes), but incomplete array.
+    };
+
+    FdoInt32 sizes [] =
+    {
+        sizeof(bytes_1a),
+        sizeof(bytes_1b),
+        sizeof(bytes_1c),
+        sizeof(bytes_2a),
+        sizeof(bytes_2b),
+        sizeof(bytes_2c)
+    };
+
+    FdoByte * bytes [] =
+    {
+        bytes_1a,
+        bytes_1b,
+        bytes_1c,
+        bytes_2a,
+        bytes_2b,
+        bytes_2c
+    };
+
+    FdoInt32 numArrays = sizeof(sizes) / sizeof(sizes[0]);
+
+    for (FdoInt32 i=0;  i < numArrays;  i++)
+    {
+        try
+        {
+            FdoPtr<FdoByteArray> ba = FdoByteArray::Create(bytes[i], sizes[i]);
+            FdoSpatialUtility::GetExtents(ba, minX, minY, maxX, maxY);
+            UnitTestUtil::FailOnException( FdoException::Create(L"GetExtents should fail with 'Invalid Geometry.'"));
+        }
+        catch(FdoException* ex)
+        {
+            FdoStringP message = ex->GetExceptionMessage();
+            FdoString * expected = FdoException::NLSGetMessage(FDO_15_UNSUPPORTEDGEOMETRYDATA, "Invalid Geometry.");
+            if (message.Contains(expected))
+            {
+                printf("Expected exception: %ls\n", ex->GetExceptionMessage());
+                ex->Release();
+            }
+            else
+            {
+                ex->Release();
+                UnitTestUtil::FailOnException( FdoException::Create(L"GetExtents should fail with 'Invalid Geometry.'"));
+            }
+        }
+    }
+}
