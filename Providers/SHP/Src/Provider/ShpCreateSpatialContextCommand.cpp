@@ -151,6 +151,8 @@ void ShpCreateSpatialContextCommand::Execute()
 		right = mCoordSysWkt.Right( L"PROJCS" );
 	else if ( mCoordSysWkt.Contains( L"GEOGCS" ) )
 		right = mCoordSysWkt.Right( L"GEOGCS" );
+	else if ( mCoordSysWkt.Contains( L"LOCAL_CS" ) )
+		right = mCoordSysWkt.Right( L"LOCAL_CS" );
 
 	if ( right != L"" )
 	{

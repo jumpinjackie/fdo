@@ -103,6 +103,8 @@ FdoStringP ShapePRJ::GetCoordSysName()
 		right = mWKT.Right( L"PROJCS" );
 	else if ( mWKT.Contains( L"GEOGCS" ) )
 		right = mWKT.Right( L"GEOGCS" );
+	else if ( mWKT.Contains( L"LOCAL_CS" ) )
+		right = mWKT.Right( L"LOCAL_CS" );
 
 	if ( right != L"" )
 	{
