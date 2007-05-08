@@ -96,19 +96,18 @@ SET FDOACTENVSTUDY="SDEHOME"
 if ("%SDEHOME%")==("") goto env_error
 if not exist "%SDEHOME%" goto env_path_error
 
-if "%TYPEACTIONARCSDE%"=="build" goto start_exbuild
-if "%TYPEACTIONARCSDE%"=="clean" goto start_exbuild
+if "%TYPEACTIONARCSDE%"=="build" goto start_setbuild
+if "%TYPEACTIONARCSDE%"=="clean" goto start_setbuild
 if not exist "%FDOINSPATHARCSDE%" mkdir "%FDOINSPATHARCSDE%"
 if not exist "%FDOBINPATHARCSDE%" mkdir "%FDOBINPATHARCSDE%"
 if not exist "%FDOINCPATHARCSDE%" mkdir "%FDOINCPATHARCSDE%"
 if not exist "%FDOLIBPATHARCSDE%" mkdir "%FDOLIBPATHARCSDE%"
 if not exist "%FDODOCPATHARCSDE%" mkdir "%FDODOCPATHARCSDE%"
 
-:start_exbuild
-if not ("%SDEVER_ARCUNITTEST%")==("") goto start_setbuild
+:start_setbuild
 if exist "%SDEHOME%\bin\sde.dll" SET SDEVER_ARCUNITTEST=92
 if exist "%SDEHOME%\bin\sde91.dll" SET SDEVER_ARCUNITTEST=91
-:start_setbuild
+
 if exist "%FDOTHIRDPARTY%\ESRI\ArcSDEClient91\Windows\bin\sde91.dll" SET ARCSDEVERSIONACTIVE=%ARCSDEVERSIONACTIVE%1
 if exist "%FDOTHIRDPARTY%\ESRI\ArcSDEClient92\Windows\bin\sde.dll" SET ARCSDEVERSIONACTIVE=%ARCSDEVERSIONACTIVE%2
 if "%ARCSDEVERSIONACTIVE%"=="9" SET ARCSDEVERSIONACTIVE=%TYPEBUILDARCSDE%%SDEVER_ARCUNITTEST%Only
