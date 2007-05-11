@@ -32,15 +32,15 @@
 #include "FdoRfpConnection.h"
 
 FdoRfpGeoBandRaster::FdoRfpGeoBandRaster(FdoRfpConnection *conn, FdoString* imagePath) 
-	: m_connection(conn), m_imagePath(imagePath), m_frameNumber(0)
+    : m_connection(conn), m_imagePath(imagePath), m_frameNumber(0)
 {
-    FDO_SAFE_ADDREF( conn );
+    // !!!NOTE!!! conn is an Internal Soft-Reference -- Do not increment Ref-Count
 }
 
 FdoRfpGeoBandRaster::FdoRfpGeoBandRaster(FdoRfpConnection *conn, FdoString* imagePath, FdoInt32 frameNumber) 
-	: m_connection(conn), m_imagePath(imagePath), m_frameNumber(frameNumber)
+    : m_connection(conn), m_imagePath(imagePath), m_frameNumber(frameNumber)
 {
-    FDO_SAFE_ADDREF( conn );
+    // !!!NOTE!!! conn is an Internal Soft-Reference -- Do not increment Ref-Count
 }
 
 FdoRfpGeoBandRaster::~FdoRfpGeoBandRaster()
@@ -66,7 +66,7 @@ FdoRfpImage* FdoRfpGeoBandRaster::GetImage()
 
 bool FdoRfpGeoBandRaster::GetKeyColor(FdoPtr<FdoRfpKeyColorCollection>& keyColorColl)
 {
-	return FdoRfpRasterUtil::GetKeyColor(m_imagePath, keyColorColl);
+    return FdoRfpRasterUtil::GetKeyColor(m_imagePath, keyColorColl);
 }
 
 FdoRfpGeoBandRasterCollection* FdoRfpGeoBandRasterCollection::Create()

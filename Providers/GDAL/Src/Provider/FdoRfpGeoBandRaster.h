@@ -44,8 +44,7 @@ class FdoRfpGeoBandRaster : public FdoDisposable
 // data members
 //
 protected:
-    FdoPtr<FdoRfpConnection> m_connection;
-
+    FdoRfpConnection*       m_connection; // !!!NOTE!!! Internal Soft-Reference -- Do not increment Ref-Count
     FdoPtr<FdoRfpImage>     m_image;
     FdoStringP              m_imagePath;
     int                     m_frameNumber;
@@ -96,11 +95,11 @@ class FdoRfpGeoBandRasterCollection : public FdoCollection<FdoRfpGeoBandRaster, 
 // Constructor(s), desctrucotr, factory function(s)
 //
 protected:
-	FdoRfpGeoBandRasterCollection() {}
-	virtual ~FdoRfpGeoBandRasterCollection() {}
-	void Dispose() { delete this; }
+    FdoRfpGeoBandRasterCollection() {}
+    virtual ~FdoRfpGeoBandRasterCollection() {}
+    void Dispose() { delete this; }
 public:
-	static FdoRfpGeoBandRasterCollection* Create();
+    static FdoRfpGeoBandRasterCollection* Create();
 };
 
 typedef FdoPtr<FdoRfpGeoBandRasterCollection> FdoRfpGeoBandRastersP;

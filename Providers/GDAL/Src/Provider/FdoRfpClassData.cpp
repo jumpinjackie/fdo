@@ -99,7 +99,7 @@ void FdoRfpClassData::_buildUp(FdoRfpConnection *conn,
         else
             _buildUpGeoRastersFromCatalogue(conn, featureCatalogue, coordSystems);
     }
-	
+    
     // Retrieve the spatial context association from the Raster Property
     FdoStringP m_coord = propraster->GetSpatialContextAssociation();
 
@@ -126,7 +126,7 @@ void FdoRfpClassData::_buildUp(FdoRfpConnection *conn,
 
     // Retrieve the context, so we can merge in our extents.
     FdoPtr<FdoRfpSpatialContext> context = contexts->GetItem(contexts->IndexOf(m_coord));
-    		
+            
     // Calculate the new extent of the existing spatial context
     try {
         FdoPtr<FdoByteArray> extentArr = context->GetExtent();
@@ -146,15 +146,15 @@ void FdoRfpClassData::_buildUpGeoRastersFromLocation(FdoRfpConnection *conn,
                                                      FdoString* location, 
                                                      FdoStringCollection* coordSystems)
 {
-	FdoRfpGeoRasterExtractor extractor;
-	extractor.ExtractRasters(conn, location, m_geoRasters, m_coord, m_extent, m_bFirstRaster, coordSystems);
+    FdoRfpGeoRasterExtractor extractor;
+    extractor.ExtractRasters(conn, location, m_geoRasters, m_coord, m_extent, m_bFirstRaster, coordSystems);
 }
-	
+    
 // Extract all rasters from image catalogue, return value is the associated coordinate system name
 void FdoRfpClassData::_buildUpGeoRastersFromCatalogue(FdoRfpConnection *conn,
                                                       const FdoPtr<FdoGrfpRasterFeatureCollection>& featureCatalogue, 
                                                       FdoStringCollection* coordSystems)
-{	
+{    
     VALIDATE_ARGUMENT(coordSystems);
     FdoPtr<FdoRfpDatasetCache>  datasetCache = conn->GetDatasetCache();
     
@@ -181,7 +181,7 @@ void FdoRfpClassData::_buildUpGeoRastersFromCatalogue(FdoRfpConnection *conn,
             FdoGrfpRasterImageDefinitionP imageDef = bandDef->GetImage();
             GDALDatasetH hDS;
 
-							
+                            
             FdoStringP path = location->GetName();
             path += FdoStringP(FILE_PATH_DELIMITER);
             path += imageDef->GetName();
@@ -197,7 +197,7 @@ void FdoRfpClassData::_buildUpGeoRastersFromCatalogue(FdoRfpConnection *conn,
 
             if (imageDef->GetFrameNumber() > frameNumber)
                 throw FdoException::Create(NlsMsgGet(GRFP_96_FRAME_NUMBER_OUT_OF_RANGE, "Frame number is out of range."));
-			
+            
             FdoRfpGeoreferenceP geoRef = new FdoRfpGeoreference();
             bool bHasGeoInfo = FdoRfpRasterUtil::GetGeoReferenceInfo(hDS, geoRef);
 
@@ -222,13 +222,13 @@ void FdoRfpClassData::_buildUpGeoRastersFromCatalogue(FdoRfpConnection *conn,
             if (coord != L"" && coordSystems->IndexOf(coord, false) == -1) {
                 coordSystems->Add(coord);
             }
-			
+            
             // geo-reference handling
             //
             // if the config file has geo-reference info, it will be taken for preference
             // or geo-ref will be taken from the raster image itself
             FdoGrfpRasterGeoreferenceLocationP imageGeoRef = imageDef->GetGeoreferencedLocation();
-            if (imageGeoRef != NULL) // get the geo-ref from configuation file		
+            if (imageGeoRef != NULL) // get the geo-ref from configuation file        
             {
                 insX = imageGeoRef->GetXInsertionPoint();
                 insY = imageGeoRef->GetYInsertionPoint();
@@ -248,9 +248,9 @@ void FdoRfpClassData::_buildUpGeoRastersFromCatalogue(FdoRfpConnection *conn,
                     rotX = geoRef->GetXRotation();
                     rotY = geoRef->GetYRotation();
                 }
-                else // there is no any geo-reference infomation associated with the raster image 		
-                {	                
-                    throw FdoException::Create(NlsMsgGet(GRFP_100_NO_GEOREFERENCE, "Raster image has no geo-reference."));					
+                else // there is no any geo-reference infomation associated with the raster image         
+                {                    
+                    throw FdoException::Create(NlsMsgGet(GRFP_100_NO_GEOREFERENCE, "Raster image has no geo-reference."));                    
                 }
             }
 
@@ -281,16 +281,15 @@ void FdoRfpClassData::_buildUpGeoRastersFromCatalogue(FdoRfpConnection *conn,
 
 FdoRfpClassData* FdoRfpClassData::Create(FdoRfpConnection *conn, const FdoClassDefinitionP& classDefinition, const FdoPtr<FdoGrfpClassDefinition>& classMapping)
 {
-	FdoRfpClassData* classData = new FdoRfpClassData();
+    FdoRfpClassData* classData = new FdoRfpClassData();
 
-        classData->m_connection = conn;
-        FDO_SAFE_ADDREF( classData->m_connection.p );
+    classData->m_connection = conn; // !!!NOTE!!! Internal Soft-Reference -- Do not increment Ref-Count
 
-	classData->_buildUp(conn, classDefinition, classMapping);
-	return classData;
+    classData->_buildUp(conn, classDefinition, classMapping);
+    return classData;
 }
 
 FdoRfpClassDataCollection* FdoRfpClassDataCollection::Create()
 {
-	return new FdoRfpClassDataCollection();
+    return new FdoRfpClassDataCollection();
 }
