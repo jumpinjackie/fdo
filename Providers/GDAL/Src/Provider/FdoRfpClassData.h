@@ -36,51 +36,51 @@ class FdoRfpSpatialContext;
 class FdoRfpSpatialContextCollection;
 
 class FdoRfpClassData :
-	public FdoDisposable
+    public FdoDisposable
 {
 //
 // Data members
 //
 private:
-        FdoPtr<FdoRfpGeoRasterCollection> m_geoRasters;
-        FdoClassDefinitionP m_classDefinition;
-        FdoPtr<FdoRfpConnection> m_connection;
+    FdoPtr<FdoRfpGeoRasterCollection> m_geoRasters;
+    FdoClassDefinitionP m_classDefinition;
+    FdoRfpConnection* m_connection; // !!!NOTE!!! Internal Soft-Reference -- Do not increment Ref-Count
     
-	// these two are used to form spatial context for this feature class
-	FdoRfpRect			m_extent; // extent
-	FdoStringP			m_coord;  // coordinate system name
-	bool				m_bFirstRaster; // to mark whether it's the first raster contained in the feature class
+    // these two are used to form spatial context for this feature class
+    FdoRfpRect          m_extent; // extent
+    FdoStringP          m_coord;  // coordinate system name
+    bool                m_bFirstRaster; // to mark whether it's the first raster contained in the feature class
 
-	//
+//
 // Constructor(s), desctrucotr, factory function(s)
 //
 protected:
-	FdoRfpClassData(void);
-	virtual ~FdoRfpClassData(void);
+    FdoRfpClassData(void);
+    virtual ~FdoRfpClassData(void);
 public:
-	static FdoRfpClassData* Create(FdoRfpConnection *conn, const FdoClassDefinitionP& classDefinition, const FdoPtr<FdoGrfpClassDefinition>& classMapping);
+    static FdoRfpClassData* Create(FdoRfpConnection *conn, const FdoClassDefinitionP& classDefinition, const FdoPtr<FdoGrfpClassDefinition>& classMapping);
 
 //
 // Exposed functions
 //
 public:
-	FdoString* GetName() { return m_classDefinition->GetName(); }
-	FdoBoolean CanSetName() { return false; }
-	FdoClassDefinitionP GetClass() { return m_classDefinition; }
-	FdoPtr<FdoRfpGeoRasterCollection> GetGeoRasters() { return m_geoRasters; }
+    FdoString* GetName() { return m_classDefinition->GetName(); }
+    FdoBoolean CanSetName() { return false; }
+    FdoClassDefinitionP GetClass() { return m_classDefinition; }
+    FdoPtr<FdoRfpGeoRasterCollection> GetGeoRasters() { return m_geoRasters; }
 
 //
 // Internally used helper functions
 //
 private:
-	// called by the static create
-	void _buildUp(FdoRfpConnection *conn, const FdoClassDefinitionP& classDefinition, const FdoPtr<FdoGrfpClassDefinition>& classMapping);
+    // called by the static create
+    void _buildUp(FdoRfpConnection *conn, const FdoClassDefinitionP& classDefinition, const FdoPtr<FdoGrfpClassDefinition>& classMapping);
 
-	// Extract all rasters from specified location
-	void _buildUpGeoRastersFromLocation(FdoRfpConnection *conn, FdoString* location, FdoStringCollection* coordSystems);
+    // Extract all rasters from specified location
+    void _buildUpGeoRastersFromLocation(FdoRfpConnection *conn, FdoString* location, FdoStringCollection* coordSystems);
 
-	// Extract all rasters from image catalogue
-	void _buildUpGeoRastersFromCatalogue(FdoRfpConnection *conn, const FdoPtr<FdoGrfpRasterFeatureCollection>& featureCatalogue, FdoStringCollection* coordSystems);
+    // Extract all rasters from image catalogue
+    void _buildUpGeoRastersFromCatalogue(FdoRfpConnection *conn, const FdoPtr<FdoGrfpRasterFeatureCollection>& featureCatalogue, FdoStringCollection* coordSystems);
 
 };
 
@@ -92,11 +92,11 @@ class FdoRfpClassDataCollection : public FdoNamedCollection<FdoRfpClassData, Fdo
 // Constructor(s), desctrucotr, factory function(s)
 //
 protected:
-	FdoRfpClassDataCollection() {}
-	virtual ~FdoRfpClassDataCollection() {}
-	void Dispose() { delete this; }
+    FdoRfpClassDataCollection() {}
+    virtual ~FdoRfpClassDataCollection() {}
+    void Dispose() { delete this; }
 public:
-	static FdoRfpClassDataCollection* Create();
+    static FdoRfpClassDataCollection* Create();
 };
 
 typedef FdoPtr<FdoRfpClassDataCollection> FdoRfpClassDatasP;
