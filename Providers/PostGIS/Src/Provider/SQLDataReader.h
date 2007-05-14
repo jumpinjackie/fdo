@@ -20,6 +20,10 @@
 #include "PgCursor.h"
 #include "Connection.h"
 #include <Fdo/Commands/Sql/ISQLDataReader.h>
+// std
+#include <string>
+// boost
+#include <boost/lexical_cast.hpp>
 
 //
 // Forward declarations
@@ -169,14 +173,14 @@ T SQLDataReader::GetValue(FdoString* columnName)
 
     try
     {
-        // TODO: There is also a bit safer strategy possible:
-        // - if cval is an empty string
-        // - return val with default constructed value: T()
-        // Do we like it or we want to leave it as is?
-         
+        // Empty cval indicates NULL value
+
         T val = T();
-        char const* const cval = PQgetvalue(pgRes, static_cast<int>(mCurrentTuple), fnumber);
-        val = boost::lexical_cast<T>(cval);
+        std::string cval(PQgetvalue(pgRes, static_cast<int>(mCurrentTuple), fnumber));
+        if (!cval.empty())
+        {
+            val = boost::lexical_cast<T>(cval);
+        }
         return val;
     }
     catch (boost::bad_lexical_cast& e)
