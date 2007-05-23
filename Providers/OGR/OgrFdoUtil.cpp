@@ -120,7 +120,7 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OGRLayer* layer, FdoIdentifierColle
 
         switch (gt)
         {
-        case wkbNone: gpd = NULL;
+        case wkbNone: gpd = NULL; break;
         case wkbPolygon:
         case wkbMultiPolygon: gpd->SetGeometryTypes(FdoGeometricType_Surface); break;
         case wkbPoint:
@@ -130,10 +130,12 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OGRLayer* layer, FdoIdentifierColle
         default: gpd->SetGeometryTypes(7); break;
         }
 
-        gpd->SetSpatialContextAssociation(wname);
-
-        pdc->Add(gpd);
-        fc->SetGeometryProperty(gpd);
+        if (gpd)
+        {
+            gpd->SetSpatialContextAssociation(wname);
+            pdc->Add(gpd);
+            fc->SetGeometryProperty(gpd);
+        }
 
     }
 
