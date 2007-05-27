@@ -168,6 +168,41 @@ FdoInt32 FdoDimensionTypeFromPgType(FdoInt32 const& pgDim, std::string const& pg
     return fdoDim;
 }
 
+std::string PgGeometryTypeFromFdoType(FdoInt32 const& fdoType)
+{
+    std::string pgType;
+
+    switch (fdoType)
+    {
+    case FdoGeometryType_Point:
+        pgType = "POINT";
+        break;
+    case FdoGeometryType_LineString:
+        pgType = "LINESTRING";
+        break;
+    case FdoGeometryType_Polygon:
+        pgType = "POLYGON";
+        break;
+    case FdoGeometryType_MultiPoint:
+        pgType = "MULTIPOINT";
+        break;
+    case FdoGeometryType_MultiLineString:
+        pgType = "MULTILINESTRING";
+        break;
+    case FdoGeometryType_MultiPolygon:
+        pgType = "MULTIPOLYGON";
+        break;
+    case FdoGeometryType_MultiGeometry:
+        pgType = "GEOMETRYCOLLECTION";
+        break;
+    default:
+        // Also handles FdoGeometryType_None
+        pgType = "GEOMETRY";
+    }
+
+    return pgType;
+}
+
 boost::uint32_t GetOrdinatesFromDimension(boost::uint32_t const& dim)
 {
     boost::uint32_t value = 0;
