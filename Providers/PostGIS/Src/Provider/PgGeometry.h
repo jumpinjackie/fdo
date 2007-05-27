@@ -99,11 +99,15 @@ void hex_to_bytes(std::string const& hexstr, std::vector<boost::uint8_t>& bytes)
 ///
 void bytes_to_hex(std::vector<boost::uint8_t> const& bytes, std::string& hexstr);
 
+// Translate name of PostGIS geometry type to FDO geometry type enumerator.
 FdoGeometryType FdoGeometryTypeFromPgType(std::string const& pgType);
 
 /// Generate FDO coordinates dimension mask from PostGIS dimension value
 /// and geometry type.
 FdoInt32 FdoDimensionTypeFromPgType(FdoInt32 const& pgDim, std::string const& pgType);
+
+// Translate FDO geometry type enumerato to name of PostGIS geometry type.
+std::string PgGeometryTypeFromFdoType(FdoInt32 const& fdoType);
 
 /// Calculate number of ordinates based on given dimensionality.
 ///
