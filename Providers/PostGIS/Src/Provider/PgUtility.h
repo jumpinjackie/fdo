@@ -54,10 +54,22 @@ typedef std::vector
     >
 pgexec_params_t;
 
+
+enum PgTypeProperties
+{
+    ePgTypeTextMaxSize = 65536
+};
+
 template <typename T>
 inline T QuoteSqlName(T const& name)
 {
     return ("\"" + name + "\"");
+}
+
+template <typename T>
+inline T QuoteSqlValue(T const& value)
+{
+    return ("\'" + value + "\'");
 }
 
 /// Convert PostgreSQL type of given name to FDO type enumerator.
@@ -84,6 +96,9 @@ int GetTypePrecision(int const& modifier);
 /// This function does only work for NUMERIC (DECIMAL) type.
 /// Caller is supposed to check type and decide about calling this function or not.
 int GetTypeScale(int const& modifier);
+
+
+std::string PgTypeFromFdoProperty(FdoPtr<FdoPropertyDefinition> prop);
 
 }}} // namespace fdo::postgis::details
 
