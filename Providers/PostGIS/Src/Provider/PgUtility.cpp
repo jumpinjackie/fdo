@@ -21,6 +21,7 @@
 #include <cassert>
 #include <string>
 // boost
+#include <boost/format.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
 namespace
@@ -144,6 +145,66 @@ int GetTypePrecision(int const& modifier)
 int GetTypeScale(int const& modifier)
 {
     return ((modifier - PgVarHeaderSize) & 0xffff);
+}
+
+std::string PgTypeFromFdoProperty(FdoPtr<FdoPropertyDefinition> prop)
+{
+    std::string sqlType;
+
+    if (FdoPropertyType_DataProperty == prop->GetPropertyType())
+    {
+        //FdoPtr<FdoDataPropertyDefinition> dataDef(static_cast<FdoDataPropertyDefinition*>(prop.p));
+        FdoDataPropertyDefinition* dataDef = static_cast<FdoDataPropertyDefinition*>(prop.p);
+        switch (dataDef->GetDataType())
+        {
+        case FdoDataType_String:
+            {
+                FdoInt32 length = dataDef->GetLength();
+                if (length <= 0)
+                {
+                    length = ePgTypeTextMaxSize;
+                }
+                sqlType = str(boost::format("%s(%d)") % "character varying" % length);
+            }
+            break;
+        case FdoDataType_Decimal:
+            {
+                FdoInt32 const precision = dataDef->GetPrecision();
+                FdoInt32 const scale = dataDef->GetScale();
+                sqlType = str(boost::format("%s(%d,%d)") % "numeric" % precision % scale);
+            }
+            break;
+        case FdoDataType_Byte:
+            sqlType = "character(1)";
+            break;
+        case FdoDataType_Single:
+            sqlType = "real";
+            break;
+        case FdoDataType_Double:
+            sqlType = "double precision";
+            break;
+        case FdoDataType_DateTime:
+            sqlType = "timestamp";
+            break;
+        case FdoDataType_Boolean:
+            sqlType = "boolean";
+            break;
+        case FdoDataType_Int16:
+            sqlType = "smallint";
+            break;
+        case FdoDataType_Int32:
+            sqlType = "integer";
+            break;
+        case FdoDataType_Int64:
+            sqlType = "bigint";
+            break;
+        }
+    }
+    else if (FdoPropertyType_GeometricProperty == prop->GetPropertyType())
+    {
+    }
+
+    return sqlType;
 }
 
 }}} // namespace fdo::postgis::details
