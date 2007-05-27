@@ -132,6 +132,9 @@ private:
     //
     // Private operations
     //
+
+    void AddGeometryColumn(std::string table, FdoPtr<FdoGeometricPropertyDefinition> column) const;
+
 };
 
 }} // namespace fdo::postgis
