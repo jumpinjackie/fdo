@@ -29,6 +29,7 @@
 #include "ListDataStores.h"
 #include "CreateDataStore.h"
 #include "DestroyDataStore.h"
+#include "ApplySchemaCommand.h"
 #include "DescribeSchemaCommand.h"
 #include "GetSpatialContextsCommand.h"
 #include "DeleteCommand.h"
@@ -396,6 +397,9 @@ FdoICommand* Connection::CreateCommand(FdoInt32 type)
         break;
     case FdoCommandType_Delete:
         cmd = new DeleteCommand(this);
+        break;
+    case FdoCommandType_ApplySchema:
+        cmd = new ApplySchemaCommand(this);
         break;
     case FdoCommandType_DescribeSchema:
         cmd = new DescribeSchemaCommand(this);

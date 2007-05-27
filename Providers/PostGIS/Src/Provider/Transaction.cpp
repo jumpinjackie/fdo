@@ -50,13 +50,13 @@ FdoIConnection* Transaction::GetConnection()
 
 void Transaction::Commit()
 {
-    // TODO: Test is carefully
+    // TODO: Test it carefully
     mConn->PgCommitSoftTransaction();
 }
 
 void Transaction::Rollback()
 {
-    // TODO: Test is carefully
+    // TODO: Test it carefully
     mConn->PgRollbackSoftTransaction();
 }
 
