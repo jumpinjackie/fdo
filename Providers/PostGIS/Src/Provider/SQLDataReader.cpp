@@ -297,6 +297,8 @@ FdoByteArray* SQLDataReader::GetGeometry(FdoString* columnName)
     //FDOLOG_MARKER("SQLDataReader::GetGeometry");
     //FDOLOG_WRITE(L"Column: %s", columnName);
 
+    // TODO: These 3 exceptions are here temporarily
+
     // TODO: Consider best strategy to handle NULL geometries
     //       It will also require some minor changes in EWKB parser.
 
@@ -312,13 +314,25 @@ FdoByteArray* SQLDataReader::GetGeometry(FdoString* columnName)
         ewkb::hex_to_bytes(hexstring, ewkbData);
 
         FdoPtr<FdoIGeometry> fdoGeom = ewkb::CreateGeometryFromExtendedWkb(ewkbData);
-        assert(NULL != fdoGeom);
+        if (NULL == fdoGeom)
+        {
+            FDOLOG_WRITE("ERROR - FDO PostGIS - ewkb::CreateGeometryFromExtendedWkb returned NULL");
+            throw FdoCommandException::Create(L"ERROR - FDO PostGIS - ewkb::CreateGeometryFromExtendedWkb returned NULL");
+        }
 
         FdoPtr<FdoFgfGeometryFactory> factory(FdoFgfGeometryFactory::GetInstance());
-        assert(NULL != factory);
+        if (NULL == factory)
+        {
+            FDOLOG_WRITE("ERROR - FDO PostGIS - Geometry factory is NULL");
+            throw FdoCommandException::Create(L"ERROR - FDO PostGIS - Geometry factory is NULL");
+        }
 
         FdoPtr<FdoByteArray> fgfBytes = factory->GetFgf(fdoGeom);
-        assert(NULL != fgfBytes);
+        if (NULL == fgfBytes)
+        {
+            FDOLOG_WRITE("ERROR - FDO PostGIS - Geometry to FGF conversion failed!");
+            throw FdoCommandException::Create(L"ERROR - FDO PostGIS - Geometry to FGF conversion failed");
+        }
         
         //FDOLOG_WRITE(L"Geometry WKT:\n%s", fdoGeom->GetText());
 
