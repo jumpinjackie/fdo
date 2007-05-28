@@ -57,7 +57,11 @@ pgexec_params_t;
 
 enum PgTypeProperties
 {
-    ePgTypeTextMaxSize = 65536
+    ePgTypeTextMaxSize = 65536,
+    ePgTypeSmallintMax = 32767,
+    ePgTypeIntegerMax  = 2147483647
+    // Out of range:
+    // ePgTypeBigintMax = 9223372036854775807
 };
 
 template <typename T>
