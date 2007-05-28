@@ -133,7 +133,24 @@ private:
     // Private operations
     //
 
-    void AddGeometryColumn(std::string table, FdoPtr<FdoGeometricPropertyDefinition> column) const;
+    // This function registers geometry column in PostGIS meta-schema.
+    // It is a simple proxy around SQL command:
+    // AddGeometryColumn(<schema_name>,<table_name>,<column_name>,<srid>,<type>,<dimension>)
+    // \param
+    // table - name of table mapped from feature class name.
+    // \param
+    // prop - property defining geometry column being registered in PostGIS schema.
+    //
+    void AddGeometryColumn(std::string const& table, FdoPtr<FdoGeometricPropertyDefinition> prop) const;
+
+    // Create GiST index for given table and geometry column in PostGIS meta-schema.
+    //
+    // \param
+    // table - name of table mapped from feature class name.
+    // \param
+    // prop - property defining geometry column for which GiST index is created.
+    //
+    void CreateSpatialIndex(std::string const& table, FdoPtr<FdoGeometricPropertyDefinition> prop) const;
 
 };
 

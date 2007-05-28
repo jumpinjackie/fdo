@@ -138,6 +138,8 @@ void ApplySchemaCommand::Execute()
             std::string sqlCreate("CREATE TABLE ");
             sqlCreate += tableName + " ( " + sqlColumns + " ) ";
 
+            FDOLOG_WRITE("SQL:\n\t%s", sqlCreate.c_str());
+
             mConn->PgExecuteCommand(sqlCreate.c_str());
 
             //
@@ -146,7 +148,11 @@ void ApplySchemaCommand::Execute()
             if (FdoClassType_FeatureClass == classDef->GetClassType())
             {
                 FdoFeatureClass* featClass = static_cast<FdoFeatureClass*>(classDef.p);
+
                 AddGeometryColumn(tableName, featClass->GetGeometryProperty());
+
+                // Create GiST index for table-column pair.
+                CreateSpatialIndex(tableName, featClass->GetGeometryProperty());
             }
         }
     }
@@ -156,18 +162,20 @@ void ApplySchemaCommand::Execute()
 // Private operations
 ///////////////////////////////////////////////////////////////////////////////
 
-void ApplySchemaCommand::AddGeometryColumn(std::string table,
-                                           FdoPtr<FdoGeometricPropertyDefinition> column) const
+void ApplySchemaCommand::AddGeometryColumn(std::string const& table,
+                                           FdoPtr<FdoGeometricPropertyDefinition> prop) const
 {
-    assert(!table.empty());
-    assert(NULL != column);
+    FDOLOG_MARKER("ApplySchemaCommand::-AddGeometryColumn");
 
-    std::string colName(static_cast<char const*>(FdoStringP(column->GetName()).Lower()));
-    std::string type(ewkb::PgGeometryTypeFromFdoType(column->GetGeometryTypes()));
+    assert(!table.empty());
+    assert(NULL != prop);
+
+    std::string colName(static_cast<char const*>(FdoStringP(prop->GetName()).Lower()));
+    std::string type(ewkb::PgGeometryTypeFromFdoType(prop->GetGeometryTypes()));
 
     // Use undefined SRID value of -1 by default (see PostGIS manual, 4.2.3.)
     FdoInt32 srid = -1;
-    FdoStringP scName = column->GetSpatialContextAssociation();
+    FdoStringP scName = prop->GetSpatialContextAssociation();
     SpatialContextCollection::Ptr spContexts = mConn->GetSpatialContexts();
     SpatialContext::Ptr spContext = spContexts->FindItem(scName);
     if (NULL != spContext)
@@ -190,6 +198,26 @@ void ApplySchemaCommand::AddGeometryColumn(std::string table,
     sql += "," + details::QuoteSqlValue(type) + ",";
     sql += str(boost::format("%d") % dimension);
     sql += ")";
+
+    FDOLOG_WRITE("SQL:\n\t%s", sql.c_str());
+
+    mConn->PgExecuteCommand(sql.c_str());
+}
+
+void ApplySchemaCommand::CreateSpatialIndex(std::string const& table,
+                                            FdoPtr<FdoGeometricPropertyDefinition> prop) const
+{
+    FDOLOG_MARKER("ApplySchemaCommand::-CreateSpatialIndex");
+
+    assert(!table.empty());
+    assert(NULL != prop);
+
+    // PostGIS Documentation, 4.5.1. GiST Indexes
+    // CREATE INDEX <indexname> ON <tablename> USING GIST (<geometryfield> GIST_GEOMETRY_OPS);
+    std::string column(static_cast<char const*>(FdoStringP(prop->GetName()).Lower()));
+    std::string sql("CREATE INDEX " + table + "_gist ON " + table + " USING GIST (" + column + " GIST_GEOMETRY_OPS)");
+
+    FDOLOG_WRITE("SQL:\n\t%s", sql.c_str());
 
     mConn->PgExecuteCommand(sql.c_str());
 }
