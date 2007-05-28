@@ -133,6 +133,7 @@ private:
     // Private operations
     //
 
+
     // This function registers geometry column in PostGIS meta-schema.
     // It is a simple proxy around SQL command:
     // AddGeometryColumn(<schema_name>,<table_name>,<column_name>,<srid>,<type>,<dimension>)
@@ -152,6 +153,7 @@ private:
     //
     void CreateSpatialIndex(std::string const& table, FdoPtr<FdoGeometricPropertyDefinition> prop) const;
 
+    void CreateSequence(std::string const& table, FdoPtr<FdoDataPropertyDefinition> prop) const;
 };
 
 }} // namespace fdo::postgis
