@@ -48,6 +48,10 @@ public:
     static SchemaDescription* Create();
     
     // \todo TODO: Add support of describing selected schema instead of all
+    //
+    // schemaName [in] - PARAMETER NOT USED. The PostGIS provider uses one hardcoded
+    // default schema name: FdoPostGIS.
+    //
     void DescribeSchema(Connection* conn, FdoString* schemaName);
     
     /// Get flag indicating if schema has been successfully described.
