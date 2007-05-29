@@ -35,13 +35,11 @@ SpatialContext::SpatialContext() :
     mZTolerance(SpatialContextDefaultZTolerance),
     mMTolerance(SpatialContextDefaultMTolerance)
 {
+    // Initialize spatial extent of default spatial context
     FdoPtr<FdoFgfGeometryFactory> factory(FdoFgfGeometryFactory::GetInstance());
-    mExtent = FdoEnvelopeImpl::Create();
-    
-    // No need to initialize the enxtend on construction
-    // SpatialContextDefaultMinX, SpatialContextDefaultMinY, SpatialContextDefaultMinZ,
-    // SpatialContextDefaultMaxX, SpatialContextDefaultMaxY, SpatialContextDefaultMaxZ
-    
+    mExtent = FdoEnvelopeImpl::Create(
+        SpatialContextDefaultMinX, SpatialContextDefaultMinY, SpatialContextDefaultMinZ,
+        SpatialContextDefaultMaxX, SpatialContextDefaultMaxY, SpatialContextDefaultMaxZ);
 }
 
 SpatialContext::~SpatialContext()
