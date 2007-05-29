@@ -124,7 +124,7 @@ FdoClassDefinition* SchemaDescription::FindClassDefinition(FdoIdentifier* id)
 
         FdoStringP name(id->GetText());
         FdoPtr<FdoIDisposableCollection> featClasses(logicalSchemas->FindClass(name));
-        if (NULL != featClasses)
+        if (NULL != featClasses.p)
         {
             classDef = static_cast<FdoClassDefinition*>(featClasses->GetItem(0));
         }
@@ -177,7 +177,7 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
     //       There may be problems with feature commands, because
     //       class ID is formatted as FdoPostGIS:mydatastore~mytable.
     //       Is it a user's responsibility to provide valid class full name?
-    FdoPtr<FdoFeatureSchema> featSchema(FdoFeatureSchema::Create(L"FdoPostGIS", L""));
+    FdoPtr<FdoFeatureSchema> featSchema(FdoFeatureSchema::Create(L"FdoPostGIS", L"Default PostGIS Feature Schema"));
     logicalSchemas->Add(featSchema.p);
 
     FdoPtr<FdoClassCollection> featClasses(featSchema->GetClasses());
@@ -210,6 +210,9 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
             // Set default spatial context
             srid = -1;
             spContextName = L"PostGIS_Default";
+            SpatialContext::Ptr spDefaultContext(new SpatialContext());
+            spDefaultContext->SetName(spContextName);
+            spContexts->Insert(0, spDefaultContext);
 
             FDOLOG_WRITE("Use default spatial context with SRID = %d", srid);
         }
@@ -226,7 +229,7 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
                 static_cast<FdoString*>(spContextName));
 
             spContext = CreateSpatialContext(mConn, spContextName, geomColumn);
-            spContexts->Insert(0, spContext);
+            spContexts->Add(spContext);
         }
 
         ////////////////// CALCULATE SPATIAL EXTENT //////////////////
@@ -336,11 +339,11 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
                 datPropDef->SetNullable(false);
                 featIds->Add(datPropDef);
             }
-
-            // TODO: Do we need to handle sequences for single-serial PK in any way?
-
         }
         tcReader->Close();
+
+        // TODO: Do we need to handle sequences for single-serial PK in any way?
+
 
         //
         // Add Feature Class and Class Definition to collections
@@ -407,8 +410,9 @@ SpatialContext* SchemaDescription::CreateSpatialContext(Connection* conn,
         FDOLOG_WRITE("ERROR: The Spatial Reference System for SRID=%s not found", 
             sridText.c_str());
 
+        FdoStringP tmp = sridText.c_str();
         FdoStringP msg = FdoStringP::Format(L"The Spatial Reference System for SRID=%s not found.",
-            sridText.c_str());
+            static_cast<FdoString const*>(tmp));
         throw FdoException::Create(static_cast<FdoString*>(msg));
     }
 
