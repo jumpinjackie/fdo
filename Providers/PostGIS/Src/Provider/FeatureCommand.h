@@ -144,9 +144,9 @@ void FeatureCommand<T>::SetFeatureClassName(FdoIdentifier* classIdentifier)
     FDOLOG_MARKER("FeatureCommand::SetFeatureClassName(classIdentifier)");
     if (NULL != classIdentifier)
     {
-        FDOLOG_WRITE(L"Full name: %s", classIdentifier->GetText());
-        FDOLOG_WRITE(L"Name: %s", classIdentifier->GetName());
+        FDOLOG_WRITE(L"Feature class identifier: %s", classIdentifier->GetText());
         FDOLOG_WRITE(L"Schema name: %s", classIdentifier->GetSchemaName());
+        FDOLOG_WRITE(L"Class name: %s", classIdentifier->GetName());
         
         mClassIdentifier = classIdentifier;
         FDO_SAFE_ADDREF(mClassIdentifier.p);

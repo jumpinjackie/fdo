@@ -18,8 +18,10 @@
 
 #include "InsertCommand.h"
 #include "Connection.h"
-
+#include "ExpressionProcessor.h"
+// std
 #include <cassert>
+#include <string>
 
 namespace fdo { namespace postgis {
 
@@ -49,7 +51,23 @@ FdoIdentifier* InsertCommand::GetFeatureClassName()
     
 void InsertCommand::SetFeatureClassName(FdoIdentifier* classIdentifier)
 {
-    mClassIdentifier = classIdentifier;
+    // TODO: Currently, when we use common schema for all feature classes - FdoPostGIS
+    // it's safe to make FdoPostGIS lower-case because the PostGIS provider
+    // does not use it in comparison, searching for classes, etc. operations.
+
+    FdoPtr<FdoIdentifier> newIdentifier;
+    if (NULL != classIdentifier)
+    {
+        FdoStringP schema(classIdentifier->GetSchemaName());
+        FdoStringP name(classIdentifier->GetName());
+        FdoStringP tmp(schema);
+        tmp += L":";
+        tmp += name.Lower();
+
+        newIdentifier = FdoIdentifier::Create(tmp);
+    }
+
+    mClassIdentifier = newIdentifier;
     FDO_SAFE_ADDREF(mClassIdentifier.p);
 }
     
@@ -83,7 +101,50 @@ FdoBatchParameterValueCollection* InsertCommand::GetBatchParameterValues()
     
 FdoIFeatureReader* InsertCommand::Execute()
 {
-    assert(!"NOT IMPLEMENTED");
+    SchemaDescription::Ptr schemaDesc(SchemaDescription::Create());
+    schemaDesc->DescribeSchema(mConn, NULL);
+
+    FdoPtr<FdoClassDefinition> classDef(schemaDesc->FindClassDefinition(mClassIdentifier));
+    if (!classDef) 
+    {
+        throw FdoCommandException::Create(L"[PostGIS] InsertCommand can not find class definition");
+    }
+
+    ov::ClassDefinition::Ptr phClass(schemaDesc->FindClassMapping(mClassIdentifier));
+
+    if (NULL != mProperties)
+    {
+        std::string sep;
+        std::string columns;
+        std::string values;
+
+        ExpressionProcessor::Ptr expProc(new ExpressionProcessor());
+
+        FdoInt32 const propsSize = mProperties->GetCount();
+        for (FdoInt32 i = 0; i < propsSize; i++)
+        {
+            FdoPtr<FdoPropertyValue> propVal(mProperties->GetItem(i));
+            FdoPtr<FdoIdentifier> propId(propVal->GetName());
+
+            columns += sep + static_cast<char const*>(FdoStringP(propId->GetName()));
+
+            FdoPtr<FdoValueExpression> expr(propVal->GetValue());
+
+            expr->Process(expProc);
+            values += sep + expProc->ReleaseBuffer();
+
+            sep = ",";
+        }
+
+        std::string tablePath(static_cast<char const*>(phClass->GetTablePath()));
+        std::string sql("INSERT INTO " + tablePath + " (" + columns + ") VALUES (" + values + ")");
+
+        FdoSize affected = 0;
+        details::pgexec_params_t params;
+        mConn->PgExecuteCommand(sql.c_str(), affected); //, params, affected);
+
+    }
+
     return 0;
 }
 

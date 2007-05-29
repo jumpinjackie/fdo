@@ -88,7 +88,7 @@ void ApplySchemaCommand::Execute()
 
     if (!mIgnoreStates)
     {
-        throw FdoCommandException::Create(L"PostGIS - ApplySchemaCommand requires ignore states parameter as TRUE");
+        throw FdoCommandException::Create(L"[PostGIS] ApplySchemaCommand requires ignore states parameter as TRUE");
     }
 
     //
@@ -102,7 +102,7 @@ void ApplySchemaCommand::Execute()
         FdoPtr<FdoClassDefinition> classDef(featureClasses->GetItem(i));
         FdoPtr<FdoPropertyDefinitionCollection> props(classDef->GetProperties());
 
-        if (NULL != props && props->GetCount())
+        if (NULL != props && props->GetCount() > 0)
         {
             std::string sep;
             std::string sqlColumns;
@@ -206,8 +206,10 @@ void ApplySchemaCommand::Execute()
                 }
             }
 
+            // TODO: Add class description as a COMMENT
 
-        }
+
+        } // if (NULL != props && props->GetCount() > 0)
     }
 }
 
