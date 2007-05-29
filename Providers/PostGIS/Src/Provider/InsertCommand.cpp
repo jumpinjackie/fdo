@@ -19,6 +19,7 @@
 #include "InsertCommand.h"
 #include "Connection.h"
 #include "ExpressionProcessor.h"
+#include "PgUtility.h"
 // std
 #include <cassert>
 #include <string>
@@ -134,11 +135,11 @@ FdoIFeatureReader* InsertCommand::Execute()
                 || FdoDataType_Int32 == prop->GetDataType()
                 || FdoDataType_Int64 == prop->GetDataType()))
             {
-                std::string table(static_cast<char const*>(phClass->GetTableName()));
                 pkColumn = prop->GetName();
-                pkColumn = pkColumn.Lower();
+
+                std::string table(static_cast<char const*>(phClass->GetTableName()));
                 std::string column(static_cast<char const*>(pkColumn));
-                sequence = table + "_" + column + "_seq";
+                sequence = details::MakeSequenceName(table, column);
             }
         }
 
@@ -171,8 +172,7 @@ FdoIFeatureReader* InsertCommand::Execute()
         std::string sql("INSERT INTO " + tablePath + " (" + columns + ") VALUES (" + values + ")");
 
         FdoSize affected = 0;
-        details::pgexec_params_t params;
-        mConn->PgExecuteCommand(sql.c_str(), affected); //, params, affected);
+        mConn->PgExecuteCommand(sql.c_str(), affected);
 
     }
 

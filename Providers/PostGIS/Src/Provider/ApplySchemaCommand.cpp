@@ -295,7 +295,7 @@ void ApplySchemaCommand::CreateSequence(std::string const& table,
         maxValue = 9223372036854775807;
 
     std::string column(static_cast<char const*>(FdoStringP(prop->GetName()).Lower()));
-    std::string sequence(table + "_" + column + "_seq");
+    std::string sequence = details::MakeSequenceName(table, column);
 
     std::string sql("CREATE SEQUENCE " + sequence);
     sql += str(
