@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -23,6 +23,11 @@
 #define _check_status  if (rdbi_status != RDBI_SUCCESS) goto the_exit;
 #define TABLESTYPES  "TABLE,VIEW"
 #define TABLESTYPESW L"TABLE,VIEW"
+
+#define SQLSERVER_SYS_SCHEMA_NAME "sys"
+#define SQLSERVER_SYS_SCHEMA_NAMEW L"sys"
+#define SQLSERVER_INFO_SCHEMA_NAME "INFORMATION_SCHEMA"
+#define SQLSERVER_INFO_SCHEMA_NAMEW L"INFORMATION_SCHEMA"
 
 /************************************************************************
 *																		*
@@ -155,6 +160,11 @@ int local_odbcdr_users_act(
 
             if (ret == SQL_NO_DATA)
                 break;
+
+            if (ODBCDriverType_SQLServer == connData->driver_type &&
+                (ODBCDRV_STRING_COMPARE_LST(&szSchema, SQLSERVER_SYS_SCHEMA_NAME) == 0 ||
+                 ODBCDRV_STRING_COMPARE_LST(&szSchema, SQLSERVER_INFO_SCHEMA_NAME) == 0))
+                continue;
 
             if (target_set && ODBCDRV_STRING_COMPARE(target, &szSchema) != 0)
                 continue;
