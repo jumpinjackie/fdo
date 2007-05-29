@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -75,6 +75,28 @@ void OdbcDescribeSchemaTest::describe()
 
         fsc->WriteXml( UnitTestUtil::GetOutputFileName( L"describeSchemas.xml" ) );
 
+        FdoInt32 numSchemas = fsc->GetCount();
+        CPPUNIT_ASSERT( numSchemas == 1 );
+
+        for (int i=0; i<numSchemas; i++) {
+            FdoPtr<FdoFeatureSchema> schema = fsc->GetItem(i);
+
+            FdoString* schemaName = schema->GetName();
+            printf("Schema='%ls'\n", schemaName);
+
+            FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+
+            FdoInt32 numClasses = classes->GetCount();
+            //CPPUNIT_ASSERT( numClasses == 1 );
+
+            for (int j=0; j<numClasses; j++) {
+                FdoPtr<FdoFeatureClass> featureClass = (FdoFeatureClass*)classes->GetItem(j);
+
+                // analyze the feature class
+                FdoString* className = featureClass->GetName();
+                printf("Class='%ls'\n", className);
+            }
+        }
         printf( "Closing Connection ... \n" );
 		
 		// close and open again to be able to erase the table.
@@ -205,6 +227,7 @@ void OdbcTextDescribeSchemaTest::describe()
         throw;
     }
 }
+
 
 void OdbcAccessDescribeSchemaTest::set_provider()
 {
