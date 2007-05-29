@@ -87,6 +87,8 @@ FdoInt32 PgTableColumnsReader::GetColumnPosition() const
 
 FdoDataType PgTableColumnsReader::GetColumnType() const
 {
+    // TODO: How to handle serial numeric types?
+
     FdoStringP pgTypeName(mReader->GetString(L"data_type"));
     return details::FdoTypeFromPgTypeName(static_cast<char const*>(pgTypeName));
 }
