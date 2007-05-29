@@ -22,6 +22,7 @@
 #include <string>
 // boost
 #include <boost/format.hpp>
+#include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
 namespace
@@ -205,6 +206,22 @@ std::string PgTypeFromFdoProperty(FdoPtr<FdoPropertyDefinition> prop)
     }
 
     return sqlType;
+}
+
+std::string MakeSequenceName(std::string const& table, std::string const& column)
+{
+    assert(!table.empty());
+    assert(!column.empty());
+
+    using boost::algorithm::to_lower_copy;
+    using boost::algorithm::trim_copy;
+
+    std::string sequence(to_lower_copy(trim_copy(table)));
+    sequence += "_";
+    sequence += to_lower_copy(trim_copy(column));
+    sequence += "_seq";
+
+    return sequence;
 }
 
 }}} // namespace fdo::postgis::details
