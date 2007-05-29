@@ -101,8 +101,28 @@ int GetTypePrecision(int const& modifier);
 /// Caller is supposed to check type and decide about calling this function or not.
 int GetTypeScale(int const& modifier);
 
-
+/// Get textual form of PostgreSQL/PostGIS type from FDO property type.
+/// \param
+/// prop [in] - pointer to FDO property.
+/// \return 
+/// Text representing name of PostgreSQL type, ie. character varying, integer, etc.
+///
 std::string PgTypeFromFdoProperty(FdoPtr<FdoPropertyDefinition> prop);
+
+/// Simple function generating name of sequence associated with given table and column.
+/// The association means that particular sequence can be easily detected as working
+/// for particular column.
+/// The sequence name is formatted in unified way for PostGIS provider:
+/// <tablename>_<columnname>_seq
+///
+/// \param
+/// table [in] - name of table.
+/// \param
+/// column [in] - name of column.
+/// \return
+/// Name of sequence.
+///
+std::string MakeSequenceName(std::string const& table, std::string const& column);
 
 }}} // namespace fdo::postgis::details
 
