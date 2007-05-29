@@ -18,6 +18,7 @@
 #include "PostGisProvider.h"
 #include "ExpressionProcessor.h"
 #include "PgGeometry.h"
+#include "PgUtility.h"
 #include <cassert>
 #include <string>
 #include <boost/lexical_cast.hpp>
@@ -228,6 +229,8 @@ void ExpressionProcessor::ProcessDateTimeValue(FdoDateTimeValue& expr)
 {
     // TODO: Add datetime support
 
+    assert(false);
+
     FDOLOG_WRITE("ERROR: DATETIME TYPE  NOT IMPLEMENTED");
     throw FdoFilterException::Create(L"TODO: DATETIME TYPE NOT IMPLEMENTED");
 }
@@ -318,8 +321,13 @@ void ExpressionProcessor::ProcessStringValue(FdoStringValue& expr)
     }
     else
     {
-        FdoStringP value(expr.GetString());
+        FdoStringP value(expr.ToString());
         mBuffer.append(static_cast<char const*>(value));
+
+        //FdoStringP value(expr.GetString());
+        //mBuffer.append("'");
+        //mBuffer.append(static_cast<char const*>(value));
+        //mBuffer.append("'");
     }
 }
 
@@ -391,5 +399,10 @@ std::string ExpressionProcessor::ReleaseBuffer()
     mBuffer.clear();
     return tmp;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// Private opertaions
+///////////////////////////////////////////////////////////////////////////////
+
 
 }} // namespace fdo::postgis
