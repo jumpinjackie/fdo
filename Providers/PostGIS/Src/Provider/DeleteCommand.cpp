@@ -20,13 +20,15 @@
 #include "FeatureCommand.h"
 #include "Connection.h"
 #include "FilterProcessor.h"
-
+// std
 #include <cassert>
+#include <string>
 
 namespace fdo { namespace postgis {
 
 DeleteCommand::DeleteCommand(Connection* conn) : FeatureCommand(conn)
 {
+    assert(NULL != mConn);
 }
 
 DeleteCommand::~DeleteCommand()
@@ -39,32 +41,48 @@ DeleteCommand::~DeleteCommand()
 
 FdoInt32 DeleteCommand::Execute()
 {
-    ///////////////////////////////////////////////////
-    // TODO: This is temporary test of filter processor
-    //       It is not an impl. of Delete command.
-    ///////////////////////////////////////////////////
+    FDOLOG_MARKER("DeleteCommand::+Execute");
 
-    // TODO: We need to find class definition and get SRID of spatial
-    // context to which a geometric property belongs.
-    SpatialContextCollection::Ptr scc = mConn->GetSpatialContexts();
+    SchemaDescription::Ptr schemaDesc(SchemaDescription::Create());
+    schemaDesc->DescribeSchema(mConn, NULL);
 
-    FilterProcessor::Ptr proc(new FilterProcessor());
-    mFilter->Process(proc);
+    FdoPtr<FdoIdentifier> classIdentifier(GetFeatureClassName());
+    FdoPtr<FdoClassDefinition> classDef(schemaDesc->FindClassDefinition(mClassIdentifier));    
+    if (!classDef) 
+    {
+        throw FdoCommandException::Create(L"[PostGIS] DeleteCommand can not find class definition");
+    }
 
-    std::string sql("SELECT tracknum FROM test.myline WHERE ");
-    sql.append(proc->GetFilterStatement());
+    ov::ClassDefinition::Ptr phClass(schemaDesc->FindClassMapping(mClassIdentifier));
+    FdoStringP tablePath(phClass->GetTablePath());
 
-    PGresult* res = mConn->PgExecuteQuery(sql.c_str());
+    FilterProcessor::Ptr filterProc(new FilterProcessor());
 
-    int tuples = PQntuples(res);
+    std::string sqlWhere;
+    if (NULL != mFilter)
+    {
+        mFilter->Process(filterProc);
 
+        std::string sqlFilter(filterProc->GetFilterStatement());
+        if (!sqlFilter.empty())
+        {
+            sqlWhere = " WHERE " + sqlFilter;
+        }
+    }
 
-    return 0;
+    std::string sql("DELETE FROM ");
+    sql += static_cast<char const*>(tablePath);
+    sql += sqlWhere;
+    
+    FdoSize affected = 0;
+    mConn->PgExecuteCommand(sql.c_str(), affected);
+
+    return static_cast<FdoInt32>(affected);
 }
 
 FdoILockConflictReader* DeleteCommand::GetLockConflicts()
 {
-    return 0;
+    return NULL;
 }
 
 }} // namespace fdo::postgis
