@@ -243,10 +243,9 @@ FdoDateTime SQLDataReader::GetDateTime(FdoString* columnName)
             //boost::gregorian::date d(t.date());
             //boost::posix_time::time_duration td(t.time_of_day());
 
+            // TODO: Under construction
             boost::gregorian::date d(boost::gregorian::from_simple_string(sval));
-
             FdoDateTime dt(FdoInt16(d.year()), d.month(), d.day());
-
                            //td.hours(), td.minutes(), td.seconds());
             return dt;
         }

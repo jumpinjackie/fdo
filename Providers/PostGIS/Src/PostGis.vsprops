@@ -15,25 +15,6 @@
 		ManifestFile="$(IntDir)\$(TargetFileName).intermediate.manifest"
 	/>
 	<UserMacro
-		Name="FDOCORE"
-		Value="D:\dev\fdopostgis\_svn\fdo-3.2.2-beta1"
-	/>
-	<UserMacro
-		Name="FDO"
-		Value="$(FDOCORE)\Fdo"
-		PerformEnvironmentSet="true"
-	/>
-	<UserMacro
-		Name="FDOUTILITIES"
-		Value="$(FDOCORE)\Utilities"
-		PerformEnvironmentSet="true"
-	/>
-	<UserMacro
-		Name="FDOTHIRDPARTY"
-		Value="$(FDOCORE)\Thirdparty"
-		PerformEnvironmentSet="true"
-	/>
-	<UserMacro
 		Name="FDOPOSTGRESQL"
 		Value="C:\Program Files\PostgreSQL\8.2"
 		PerformEnvironmentSet="true"
