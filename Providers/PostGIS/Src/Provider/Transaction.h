@@ -26,6 +26,8 @@ namespace fdo { namespace postgis {
 /// so the PostGIS provider implements with idea of Soft Transactions
 /// The connection manager tracks transaction scope levels, and only outermost scope
 /// is a real (hard) transaction.
+/// Here is longer discussion about transactions support in the PostgreSQL and PostGIS:
+//  http://lists.osgeo.org/pipermail/fdo-internals/2007-May/001053.html
 ///
 class Transaction : public FdoITransaction
 {

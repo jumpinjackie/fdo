@@ -18,11 +18,14 @@
 #include "PostGisProvider.h"
 #include "Transaction.h"
 #include "Connection.h"
+// std
+#include <cassert>
 
 namespace fdo { namespace postgis {
 
 Transaction::Transaction(Connection* conn) : mConn(conn)
 {
+    assert(NULL != mConn);
 }
 
 Transaction::~Transaction()
@@ -50,12 +53,19 @@ FdoIConnection* Transaction::GetConnection()
 
 void Transaction::Commit()
 {
+    FDOLOG_MARKER("Transaction::+Commit");
+    assert(NULL != mConn);
+
+
     // TODO: Test it carefully
     mConn->PgCommitSoftTransaction();
 }
 
 void Transaction::Rollback()
 {
+    FDOLOG_MARKER("Transaction::+Rollback");
+    assert(NULL != mConn);
+
     // TODO: Test it carefully
     mConn->PgRollbackSoftTransaction();
 }
