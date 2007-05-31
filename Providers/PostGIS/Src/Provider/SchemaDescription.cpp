@@ -124,7 +124,7 @@ FdoClassDefinition* SchemaDescription::FindClassDefinition(FdoIdentifier* id)
 
         FdoStringP name(id->GetText());
         FdoPtr<FdoIDisposableCollection> featClasses(logicalSchemas->FindClass(name));
-        if (NULL != featClasses.p)
+        if (NULL != featClasses)
         {
             classDef = static_cast<FdoClassDefinition*>(featClasses->GetItem(0));
         }
