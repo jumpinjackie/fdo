@@ -142,13 +142,26 @@ template <typename T>
 void FeatureCommand<T>::SetFeatureClassName(FdoIdentifier* classIdentifier)
 {
     FDOLOG_MARKER("FeatureCommand::SetFeatureClassName(classIdentifier)");
+
+    FdoPtr<FdoIdentifier> newIdentifier;
     if (NULL != classIdentifier)
     {
         FDOLOG_WRITE(L"Feature class identifier: %s", classIdentifier->GetText());
         FDOLOG_WRITE(L"Schema name: %s", classIdentifier->GetSchemaName());
         FDOLOG_WRITE(L"Class name: %s", classIdentifier->GetName());
-        
-        mClassIdentifier = classIdentifier;
+
+        // TODO: See comments inside InsertCommand::SetFeatureClassName()
+        //       explaining this hacks
+        FdoStringP schema(classIdentifier->GetSchemaName());
+        FdoStringP name(classIdentifier->GetName());
+        FdoStringP tmp(schema);
+        if (tmp.GetLength() > 0)
+            tmp += L":";
+        tmp += name.Lower();
+
+        newIdentifier = FdoIdentifier::Create(tmp);
+
+        mClassIdentifier = newIdentifier;
         FDO_SAFE_ADDREF(mClassIdentifier.p);
     }
     else
