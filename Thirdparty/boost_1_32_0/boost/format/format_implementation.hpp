@@ -190,7 +190,7 @@ namespace boost {
             res += item.res_;
             if( item.argN_ == format_item_t::argN_tabulation) { 
                 BOOST_ASSERT( item.pad_scheme_ & format_item_t::tabulation);
-                std::streamsize  n = item.fmtstate_.width_ - res.size();
+                std::streamsize n = static_cast<std::streamsize>(item.fmtstate_.width_ - res.size());
                 if( n > 0 )
                     res.append( n, item.fmtstate_.fill_ );
             }
@@ -203,13 +203,14 @@ namespace boost {
     typename basic_format<Ch, Tr, Alloc>::size_type  basic_format<Ch,Tr, Alloc>:: 
     size () const {
         BOOST_USING_STD_MAX();
-        std::streamsize sz = prefix_.size();
+        size_type sz = prefix_.size();
         unsigned long i;
         for(i=0; i < items_.size(); ++i) {
             const format_item_t& item = items_[i];
             sz += item.res_.size();
             if( item.argN_ == format_item_t::argN_tabulation)
-                sz = max BOOST_PREVENT_MACRO_SUBSTITUTION (sz, item.fmtstate_.width_);
+                sz = max BOOST_PREVENT_MACRO_SUBSTITUTION (sz,
+                                        static_cast<size_type>(item.fmtstate_.width_));
             sz +=  + item.appendix_.size();
         }
         return static_cast<typename string_type::size_type> (sz);
