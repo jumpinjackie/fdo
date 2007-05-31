@@ -62,7 +62,8 @@ void InsertCommand::SetFeatureClassName(FdoIdentifier* classIdentifier)
         FdoStringP schema(classIdentifier->GetSchemaName());
         FdoStringP name(classIdentifier->GetName());
         FdoStringP tmp(schema);
-        tmp += L":";
+        if (tmp.GetLength() > 0)
+            tmp += L":";
         tmp += name.Lower();
 
         newIdentifier = FdoIdentifier::Create(tmp);
@@ -173,10 +174,12 @@ FdoIFeatureReader* InsertCommand::Execute()
 
         FdoSize affected = 0;
         mConn->PgExecuteCommand(sql.c_str(), affected);
-
     }
 
-    return 0;
+    // TODO: What are we supposed to send out from here?
+
+    // Success
+    return NULL;
 }
 
 }} // namespace fdo::postgis
