@@ -97,9 +97,9 @@ namespace boost {
             if(which & ::std::ios_base::in && gptr() != NULL) {
                 // get area
                 if(way == ::std::ios_base::end)
-                    off += putend_ - eback();
+                    off += static_cast<off_type>(putend_ - eback());
                 else if(way == ::std::ios_base::cur && (which & ::std::ios_base::out) == 0)
-                    off += gptr() - eback();
+                    off += static_cast<off_type>(gptr() - eback());
                 else if(way != ::std::ios_base::beg)
                     off = off_type(-1);
                 if(0 <= off && off <= putend_ - eback()) {
@@ -107,7 +107,7 @@ namespace boost {
                     streambuf_t::gbump(off + (eback() - gptr()));
                     if(which & ::std::ios_base::out && pptr() != NULL)
                         // update pptr to match gptr
-                        streambuf_t::pbump(gptr()-pptr());
+                        streambuf_t::pbump(static_cast<int>(gptr()-pptr()));
                 }
                 else
                     off = off_type(-1);
@@ -115,9 +115,9 @@ namespace boost {
             else if(which & ::std::ios_base::out && pptr() != NULL) {
                 // put area
                 if(way == ::std::ios_base::end)
-                    off += putend_ - eback();
+                    off += static_cast<off_type>(putend_ - eback());
                 else if(way == ::std::ios_base::cur)
-                    off += pptr() - eback();
+                    off += static_cast<off_type>(pptr() - eback());
                 else if(way != ::std::ios_base::beg)
                     off = off_type(-1);
 
@@ -145,10 +145,10 @@ namespace boost {
                 if(which & ::std::ios_base::in && gptr() != NULL) {
                     // get area
                     if(0 <= off && off <= putend_ - eback()) {
-                        streambuf_t::gbump((int)(eback() - gptr() + off));
+                        streambuf_t::gbump(static_cast<int>((eback() - gptr() + off)));
                         if(which & ::std::ios_base::out && pptr() != NULL) {
                             // update pptr to match gptr
-                            streambuf_t::pbump(gptr()-pptr());
+                            streambuf_t::pbump(static_cast<int>(gptr()-pptr()));
                         }
                     }
                     else
@@ -157,7 +157,7 @@ namespace boost {
                 else if(which & ::std::ios_base::out && pptr() != NULL) {
                     // put area
                     if(0 <= off && off <= putend_ - eback())
-                        streambuf_t::pbump(eback() - pptr() + off);
+                        streambuf_t::pbump(static_cast<int>(eback() - pptr() + off));
                     else
                         off = off_type(-1);
                 }
@@ -262,8 +262,8 @@ namespace boost {
                 }
                 else { // update pointers
                     putend_ = putend_ - oldptr + newptr;
-                    int pptr_count = pptr()-pbase();
-                    int gptr_count = gptr()-eback();
+                    int pptr_count = static_cast<int>(pptr()-pbase());
+                    int gptr_count = static_cast<int>(gptr()-eback());
                     streambuf_t::setp(pbase() - oldptr + newptr, newptr + new_size);
                     streambuf_t::pbump(pptr_count);
                     if(mode_ & ::std::ios_base::in)
