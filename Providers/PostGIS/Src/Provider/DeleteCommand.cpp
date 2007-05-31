@@ -43,6 +43,9 @@ FdoInt32 DeleteCommand::Execute()
 {
     FDOLOG_MARKER("DeleteCommand::+Execute");
 
+    //
+    // Collect schema details required to build SQL command
+    //
     SchemaDescription::Ptr schemaDesc(SchemaDescription::Create());
     schemaDesc->DescribeSchema(mConn, NULL);
 
@@ -56,6 +59,9 @@ FdoInt32 DeleteCommand::Execute()
     ov::ClassDefinition::Ptr phClass(schemaDesc->FindClassMapping(mClassIdentifier));
     FdoStringP tablePath(phClass->GetTablePath());
 
+    //
+    // Build WHERE clause if only subset of rows is selected
+    //
     FilterProcessor::Ptr filterProc(new FilterProcessor());
 
     std::string sqlWhere;
@@ -70,6 +76,9 @@ FdoInt32 DeleteCommand::Execute()
         }
     }
 
+    //
+    // Build DELETE command and execute it
+    //
     std::string sql("DELETE FROM ");
     sql += static_cast<char const*>(tablePath);
     sql += sqlWhere;
@@ -82,6 +91,9 @@ FdoInt32 DeleteCommand::Execute()
 
 FdoILockConflictReader* DeleteCommand::GetLockConflicts()
 {
+    FDOLOG_MARKER("DeleteCommand::+GetLockConflicts");
+    FDOLOG_WRITE("*** NOT IMPLEMENTED ***");
+
     return NULL;
 }
 

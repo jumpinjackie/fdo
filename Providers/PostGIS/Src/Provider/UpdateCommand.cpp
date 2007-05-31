@@ -18,14 +18,18 @@
 
 #include "PostGisProvider.h"
 #include "UpdateCommand.h"
+#include "FeatureCommand.h"
 #include "Connection.h"
-
+#include "FilterProcessor.h"
+// std
 #include <cassert>
+#include <string>
 
 namespace fdo { namespace postgis {
 
 UpdateCommand::UpdateCommand(Connection* conn) : Base(conn)
 {
+    assert(NULL != mConn);
 }
 
 UpdateCommand::~UpdateCommand()
@@ -38,20 +42,57 @@ UpdateCommand::~UpdateCommand()
 
 FdoPropertyValueCollection* UpdateCommand::GetPropertyValues()
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    if (NULL == mPropertyValues)
+    {
+        mPropertyValues = FdoPropertyValueCollection::Create();
+    }
+
+    FDO_SAFE_ADDREF(mPropertyValues.p);
+    return mPropertyValues.p;
 }
  	
 FdoInt32 UpdateCommand::Execute()
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    FDOLOG_MARKER("DeleteCommand::+Execute");
+
+    //
+    // Collect schema details required to build SQL command
+    //
+    SchemaDescription::Ptr schemaDesc(SchemaDescription::Create());
+    schemaDesc->DescribeSchema(mConn, NULL);
+
+    FdoPtr<FdoIdentifier> classIdentifier(GetFeatureClassName());
+    FdoPtr<FdoClassDefinition> classDef(schemaDesc->FindClassDefinition(mClassIdentifier));    
+    if (!classDef) 
+    {
+        throw FdoCommandException::Create(L"[PostGIS] DeleteCommand can not find class definition");
+    }
+
+    ov::ClassDefinition::Ptr phClass(schemaDesc->FindClassMapping(mClassIdentifier));
+    FdoStringP tablePath(phClass->GetTablePath());
+
+    //
+    // Build SQL command
+    //
+    FilterProcessor::Ptr filterProc(new FilterProcessor());
+
+    std::string sql;
+
+    //
+    // Execute SQL
+    //
+    FdoSize affected = 0;
+    mConn->PgExecuteCommand(sql.c_str(), affected);
+
+    return static_cast<FdoInt32>(affected);
 }
  	
 FdoILockConflictReader* UpdateCommand::GetLockConflicts()
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    FDOLOG_MARKER("DeleteCommand::+GetLockConflicts");
+    FDOLOG_WRITE("*** NOT IMPLEMENTED ***");
+
+    return NULL;
 }
 
 }} // namespace fdo::postgis
