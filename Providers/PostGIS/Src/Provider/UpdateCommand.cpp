@@ -54,6 +54,12 @@ FdoPropertyValueCollection* UpdateCommand::GetPropertyValues()
 FdoInt32 UpdateCommand::Execute()
 {
     FDOLOG_MARKER("DeleteCommand::+Execute");
+    assert(NULL != mConn);
+
+    if (NULL == mPropertyValues)
+    {
+        return 0;
+    }
 
     //
     // Collect schema details required to build SQL command
@@ -65,22 +71,62 @@ FdoInt32 UpdateCommand::Execute()
     FdoPtr<FdoClassDefinition> classDef(schemaDesc->FindClassDefinition(mClassIdentifier));    
     if (!classDef) 
     {
-        throw FdoCommandException::Create(L"[PostGIS] DeleteCommand can not find class definition");
+        throw FdoCommandException::Create(L"[PostGIS] UpdateCommand can not find class definition");
     }
 
     ov::ClassDefinition::Ptr phClass(schemaDesc->FindClassMapping(mClassIdentifier));
     FdoStringP tablePath(phClass->GetTablePath());
 
     //
-    // Build SQL command
+    // Collect column & value paris
+    //
+    std::string sep;
+    std::string sqlValues;
+
+    ExpressionProcessor::Ptr expProc(new ExpressionProcessor());
+
+    FdoInt32 const propsSize = mPropertyValues->GetCount();
+    for (FdoInt32 i = 0; i < propsSize; i++)
+    {
+        FdoPtr<FdoPropertyValue> propValue(mPropertyValues->GetItem(i));
+        FdoPtr<FdoIdentifier> propId(propValue->GetName());
+
+        FdoPtr<FdoValueExpression> expr(propValue->GetValue());
+        expr->Process(expProc);
+
+        sqlValues += sep + static_cast<char const*>(FdoStringP(propId->GetName()));
+        sqlValues += " = ";
+        sqlValues += expProc->ReleaseBuffer();
+
+        sep = ",";
+    }
+
+    //
+    // Build WHERE clause
     //
     FilterProcessor::Ptr filterProc(new FilterProcessor());
+    std::string sqlWhere;
 
-    std::string sql;
+    if (NULL != mFilter)
+    {
+        mFilter->Process(filterProc);
+
+        std::string sqlFilter(filterProc->GetFilterStatement());
+        if (!sqlFilter.empty())
+        {
+            sqlWhere = " WHERE " + sqlFilter;
+        }
+    }
 
     //
-    // Execute SQL
+    // Build and execute SQL command
     //
+    std::string sql("UPDATE ");
+    sql += static_cast<char const*>(tablePath);
+    sql += " SET ";
+    sql += sqlValues;
+    sql += sqlWhere;
+
     FdoSize affected = 0;
     mConn->PgExecuteCommand(sql.c_str(), affected);
 
