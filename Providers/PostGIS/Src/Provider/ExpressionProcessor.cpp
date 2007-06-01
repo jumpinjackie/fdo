@@ -109,7 +109,7 @@ void ExpressionProcessor::ProcessBinaryExpression(FdoBinaryExpression& expr)
     }
 
     mBuffer.append(sepLeftTerm);
-    operandLeft ->Process(this);
+    operandLeft->Process(this);
     mBuffer.append(binaryOp);
     operandRight->Process(this);
     mBuffer.append(sepRightTerm);
@@ -152,7 +152,20 @@ void ExpressionProcessor::ProcessFunction(FdoFunction& expr)
 {
     FDOLOG_MARKER("ExpressionProcessor::+ProcessFunction");
 
-    // TODO: To be implemented
+    std::string sep;
+
+    mBuffer.append(static_cast<char const*>(FdoStringP(expr.GetName())));
+    mBuffer.append(sepLeftTerm);
+
+    FdoPtr<FdoExpressionCollection> args(expr.GetArguments());
+    for (FdoInt32 i = 0; i < args->GetCount(); i++)
+    {
+        mBuffer.append(sep);
+        FdoPtr<FdoExpression> subExpr(args->GetItem(i));
+        subExpr->Process(this);
+        sep = sepComma;
+    }
+    mBuffer.append(sepRightTerm);
 
     FDOLOG_WRITE("Expression text: %s", mBuffer.c_str());
 }
