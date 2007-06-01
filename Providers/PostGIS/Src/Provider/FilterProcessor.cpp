@@ -145,9 +145,14 @@ void FilterProcessor::ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& op)
     std::string unaryOp;
     if (FdoUnaryLogicalOperations_Not == op.GetOperation())
     {
-        FDOLOG_WRITE("Unary operation: NOT");
+        FDOLOG_WRITE("- unary operation: NOT");
 
         unaryOp = sql::opNot;
+    }
+    else
+    {
+        FDOLOG_WRITE("ERROR: Unknown unary operation");
+        throw FdoFilterException::Create(L"PostGIS - Unknown unary operation");
     }
 
     mStatement.append(sql::sepLeftTerm);
@@ -217,7 +222,7 @@ void FilterProcessor::ProcessComparisonCondition(FdoComparisonCondition& cond)
     mStatement.append(right);
     mStatement.append(sql::sepRightTerm);
 
-    // Build text representation of the condition
+    // TODO: To be removed
     //mStatement.append(sql::sepLeftTerm);
     //expLeft->Process(mExprProc);
     //mStatement.append(compOp);
@@ -287,6 +292,7 @@ void FilterProcessor::ProcessNullCondition(FdoNullCondition& cond)
 void FilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& cond)
 {
     FDOLOG_MARKER("FilterProcessor::+ProcessSpatialCondition");
+    FDOLOG_WRITE("Spatial operation id: %d", cond.GetOperation());
 
     FdoPtr<FdoExpression> geomExpr(cond.GetGeometry());
     FdoPtr<FdoIdentifier> geomProp(cond.GetPropertyName());
@@ -306,8 +312,6 @@ void FilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& cond)
 
     // Spatial predicate
     std::string spatialPred;
-    
-    FDOLOG_WRITE("Spatial operation id: %d", cond.GetOperation());
 
     //
     // Build node of WHERE clause of SQL SELECT query
@@ -346,28 +350,28 @@ void FilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& cond)
         switch (cond.GetOperation())
         {
         case FdoSpatialOperations_Contains:
-                spatialPred = "Contains";
+            spatialPred = "Contains";
             break;
         case FdoSpatialOperations_Crosses:
-                spatialPred = "Crosses";
+            spatialPred = "Crosses";
             break;
         case FdoSpatialOperations_Disjoint:
-                spatialPred = "Disjoint";
+            spatialPred = "Disjoint";
             break;
         case FdoSpatialOperations_Equals:
-                spatialPred = "Equals";
+            spatialPred = "Equals";
             break;
         case FdoSpatialOperations_Intersects:
-                spatialPred = "Intersects";
+            spatialPred = "Intersects";
             break;
         case FdoSpatialOperations_Overlaps:
-                spatialPred = "Overlaps";
+            spatialPred = "Overlaps";
             break;
         case FdoSpatialOperations_Touches:
-                spatialPred = "Touches";
+            spatialPred = "Touches";
             break;
         case FdoSpatialOperations_Within:
-                spatialPred = "Within";
+            spatialPred = "Within";
             break;
         case FdoSpatialOperations_CoveredBy:
             // TODO: What is the semantic of this op?
@@ -469,7 +473,6 @@ void FilterProcessor::ProcessDistanceCondition(FdoDistanceCondition& cond)
 std::string const& FilterProcessor::GetFilterStatement() const
 {
     FDOLOG_MARKER("FilterProcessor::+GetFilterStatement");
-
     FDOLOG_WRITE("Filter:\n\t%s", mStatement.c_str());
 
     return mStatement;
