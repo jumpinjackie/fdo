@@ -328,15 +328,15 @@ void Connection::Close()
     {
         // Kill all active transactions
         PgCommitSoftTransaction();
-
-        // Close connection to the server
-        PQfinish(mPgConn);
-
-        mPgConn = NULL;
-        mConnState = FdoConnectionState_Closed;
-        
-        FDOLOG_WRITE("Connection is closed.");
     }
+
+    // Close connection to the server
+    PQfinish(mPgConn);
+
+    mPgConn = NULL;
+    mConnState = FdoConnectionState_Closed;
+
+    FDOLOG_WRITE("Connection is closed.");
 }
 
 FdoITransaction* Connection::BeginTransaction()
