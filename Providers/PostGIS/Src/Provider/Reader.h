@@ -178,9 +178,7 @@ FdoByte Reader<T>::GetByte(FdoString* propertyName)
 template <typename T>
 FdoDateTime Reader<T>::GetDateTime(FdoString* propertyName)
 {
-    FDOLOG_MARKER("Reader::GetDateTime");
-    FDOLOG_WRITE("NOT IMPLEMENTED");
-    assert(!"NOT IMPLEMENTED");
+    return mSQLReader->GetDateTime(propertyName);
     return FdoDateTime();
 }
 
