@@ -53,7 +53,7 @@ FdoPropertyValueCollection* UpdateCommand::GetPropertyValues()
  	
 FdoInt32 UpdateCommand::Execute()
 {
-    FDOLOG_MARKER("DeleteCommand::+Execute");
+    FDOLOG_MARKER("UpdateCommand::+Execute");
     assert(NULL != mConn);
 
     if (NULL == mPropertyValues)

@@ -19,8 +19,11 @@
 #include "ExpressionProcessor.h"
 #include "PgGeometry.h"
 #include "PgUtility.h"
+// std
 #include <cassert>
 #include <string>
+// boost
+#include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 
 namespace fdo { namespace postgis {
@@ -31,11 +34,13 @@ namespace
 {
     char const* sepLeftTerm  = " ( ";
     char const* sepRightTerm = " ) ";
+    char const* sepComma     = " , ";
 
     char const* opPlus  = " + ";
     char const* opMinus = " - ";
     char const* opMult  = " * ";
     char const* opDiv   = " / ";
+
 }
 
 ExpressionProcessor::ExpressionProcessor()
@@ -227,12 +232,45 @@ void ExpressionProcessor::ProcessByteValue(FdoByteValue& expr)
 
 void ExpressionProcessor::ProcessDateTimeValue(FdoDateTimeValue& expr)
 {
-    // TODO: Add datetime support
+    if (expr.IsNull())
+    {
+        mBuffer.append("NULL");
+    }
+    else
+    {
+        std::string value;
+        std::string format;
 
-    assert(false);
+        FdoDateTime dt(expr.GetDateTime());
+        
+        if (dt.IsTime())
+        {
+            value = str(boost::format("'%d:%d:%d'") % dt.hour % dt.minute % dt.seconds);
+            format = "'HH24:MI:SS'";
+        }
+        else if (dt.IsDate())
+        {
+            value = str(boost::format("'%d-%d-%d'") % dt.month % dt.day % dt.year);
+            format = "'MM-DD-YYYY'";
+        }
+        else if (dt.IsDateTime())
+        {
+            value = str(boost::format("'%d-%d-%d %d:%d:%d'") % dt.month % dt.day % dt.year % dt.month % dt.day % dt.year);
+            format = "'MM-DD-YYYY HH24:MI:SS'";
+        }
+        else
+        {
+            FDOLOG_WRITE("ERROR: Inconsistent specification of FdoDateTime value");
+            assert(!"SHOULD NEVER GET HERE");
+        }
 
-    FDOLOG_WRITE("ERROR: DATETIME TYPE  NOT IMPLEMENTED");
-    throw FdoFilterException::Create(L"TODO: DATETIME TYPE NOT IMPLEMENTED");
+        mBuffer.append("to_date");
+        mBuffer.append(sepLeftTerm);
+        mBuffer.append(value);
+        mBuffer.append(sepComma);
+        mBuffer.append(format);
+        mBuffer.append(sepRightTerm);
+    }
 }
 
 void ExpressionProcessor::ProcessDecimalValue(FdoDecimalValue& expr)
@@ -324,6 +362,7 @@ void ExpressionProcessor::ProcessStringValue(FdoStringValue& expr)
         FdoStringP value(expr.ToString());
         mBuffer.append(static_cast<char const*>(value));
 
+        // TODO: Remove after new version is tested
         //FdoStringP value(expr.GetString());
         //mBuffer.append("'");
         //mBuffer.append(static_cast<char const*>(value));
