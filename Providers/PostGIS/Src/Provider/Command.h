@@ -212,6 +212,8 @@ void Command<T>::PgGenerateExecParams(details::pgexec_params_t& pgParams)
 {
     FDOLOG_MARKER("Command::-PgGenerateExecParams");
 
+    // TODO: Replace manual FDO values decoding with ExpressionProcessor calls.
+
     // Make sure the params container is empty
     details::pgexec_params_t().swap(pgParams);
 
@@ -293,18 +295,21 @@ void Command<T>::PgGenerateExecParams(details::pgexec_params_t& pgParams)
                         FdoDateTimeValue* pval = static_cast<FdoDateTimeValue*>(dataValue);
                         FdoDateTime dt(pval->GetDateTime());
 
-                        if (dt.IsDate())
+                        if (dt.IsTime())
+                        {
+                            value = str(boost::format("'%d:%d:%d'")
+                                        % dt.hour % dt.minute % dt.seconds);
+                        }
+                        else if (dt.IsDate())
                         {
                             // ISO 8601 extended format: 1999-01-08 (recommended format)
-
-                            value = (boost::format("%d-%d-%d") 
-                                % dt.year 
-                                % static_cast<int>(dt.month)
-                                % static_cast<int>(dt.day)).str();
-                                
+                            value = str(boost::format("'%d-%d-%d'")
+                                        % dt.month % dt.day % dt.year);
                         }
                         else if (dt.IsDateTime())
                         {
+                            value = str(boost::format("'%d-%d-%d %d:%d:%d'")
+                                        % dt.month % dt.day % dt.year % dt.month % dt.day % dt.year);
                         }
                     }
                     break;
