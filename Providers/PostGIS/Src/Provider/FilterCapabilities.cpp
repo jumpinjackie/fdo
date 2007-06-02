@@ -44,8 +44,6 @@ void FilterCapabilities::Dispose()
 
 FdoConditionType* FilterCapabilities::GetConditionTypes(FdoInt32& size)
 {
-    // TODO: Verify types of supported conditions
-
     static FdoConditionType types[] =
     {
         FdoConditionType_Comparison,
@@ -53,6 +51,7 @@ FdoConditionType* FilterCapabilities::GetConditionTypes(FdoInt32& size)
         FdoConditionType_In,
         FdoConditionType_Null,
         FdoConditionType_Spatial,
+        FdoConditionType_Distance
     };
 
     size = (sizeof(types) / sizeof(FdoConditionType));
@@ -61,9 +60,6 @@ FdoConditionType* FilterCapabilities::GetConditionTypes(FdoInt32& size)
 
 FdoSpatialOperations* FilterCapabilities::GetSpatialOperations(FdoInt32& size)
 {
-    // TODO: Verify types of supported operations
-    // TODO: Check also the FilterProcessor class.
-
     static FdoSpatialOperations operations[] =
     {
         FdoSpatialOperations_Contains,
@@ -85,20 +81,25 @@ FdoSpatialOperations* FilterCapabilities::GetSpatialOperations(FdoInt32& size)
 
 FdoDistanceOperations* FilterCapabilities::GetDistanceOperations(FdoInt32& size)
 {
-    // TODO: Check this
-    size = 0;
-    return NULL;
+    static FdoDistanceOperations operations[] =
+    {
+        FdoDistanceOperations_Beyond,
+        FdoDistanceOperations_Within
+    };
+
+    size = (sizeof(operations) / sizeof(FdoConditionType));
+    return operations;
 }
 
 bool FilterCapabilities::SupportsGeodesicDistance()
 {
-    // TODO: Check this
+    // TODO: Check this value
     return false;
 }
 
 bool FilterCapabilities::SupportsNonLiteralGeometricOperations()
 {
-    // TODO: Check this
+    // TODO: Check this value
     return false;
 }
 

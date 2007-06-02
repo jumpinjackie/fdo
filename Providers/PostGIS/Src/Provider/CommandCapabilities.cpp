@@ -44,22 +44,25 @@ void CommandCapabilities::Dispose()
 
 FdoInt32* CommandCapabilities::GetCommands(FdoInt32& size)
 {
-    // TODO: Verify list of commands
-
     static FdoCommandType commands[] =
     {
-        FdoCommandType_Select,
-        //FdoCommandType_Insert,
-        //FdoCommandType_Update,
-        //FdoCommandType_Delete,
-        FdoCommandType_SQLCommand,
-        //FdoCommandType_ApplySchema
-        //FdoCommandType_DestroySchema
-        FdoCommandType_DescribeSchema,
-        //FdoCommandType_DescribeSchemaMapping,
+        // Datastore commands
         FdoCommandType_CreateDataStore,
         FdoCommandType_DestroyDataStore,
         FdoCommandType_ListDataStores,
+
+        // Schema commands
+        FdoCommandType_ApplySchema,
+        FdoCommandType_DescribeSchema,
+
+        // Feature commands
+        FdoCommandType_Select,
+        FdoCommandType_Insert,
+        FdoCommandType_Update,
+        FdoCommandType_Delete,
+
+        // Other commands
+        FdoCommandType_SQLCommand,
         FdoCommandType_GetSpatialContexts
     };
 
@@ -100,7 +103,7 @@ bool CommandCapabilities::SupportsSelectOrdering()
 
 bool CommandCapabilities::SupportsSelectGrouping()
 {
-    // TODO: Verify grouping
+    // TODO: SelectAggregate commands is under construction
     return false;
 }
 
