@@ -44,7 +44,7 @@ void ExpressionCapabilities::Dispose()
 
 FdoExpressionType* ExpressionCapabilities::GetExpressionTypes(FdoInt32& size)
 {
-    // TODO: Verify this list together with ExpressionProcessor definition.
+    // TODO: Update the list when parameters expression are implemented.
 
     static FdoExpressionType types[] =
     {
@@ -68,8 +68,8 @@ FdoFunctionDefinitionCollection* ExpressionCapabilities::GetFunctions()
     
     FdoPtr<FdoFunctionDefinition> wkFunction;
     
-    // TODO: Add supported functions. 
-    
+    // TODO: Build collection of supported functions. 
+
     FDO_SAFE_ADDREF(supported.p);
     return supported.p;
 }

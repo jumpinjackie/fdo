@@ -89,7 +89,7 @@ bool ConnectionCapabilities::SupportsTimeout()
 
 bool ConnectionCapabilities::SupportsTransactions()
 {
-    return false;
+    return true;
 }
 
 bool ConnectionCapabilities::SupportsLongTransactions()

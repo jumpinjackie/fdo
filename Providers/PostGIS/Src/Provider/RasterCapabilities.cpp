@@ -22,7 +22,6 @@ namespace fdo { namespace postgis {
 
 RasterCapabilities::RasterCapabilities()
 {
-    FDOLOG_WRITE("RasterCapabilities created");
 }
 
 RasterCapabilities::~RasterCapabilities()
@@ -57,7 +56,7 @@ bool RasterCapabilities::SupportsSubsampling()
     return false;
 }
 
-bool RasterCapabilities::SupportsDataModel(FdoRasterDataModel *model)
+bool RasterCapabilities::SupportsDataModel(FdoRasterDataModel* model)
 {
     return false;
 }

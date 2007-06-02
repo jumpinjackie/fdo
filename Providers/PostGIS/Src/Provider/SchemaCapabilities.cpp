@@ -25,7 +25,6 @@ namespace fdo { namespace postgis {
 
 SchemaCapabilities::SchemaCapabilities()
 {
-    FDOLOG_WRITE("SchemaCapabilities created");
 }
 
 SchemaCapabilities::~SchemaCapabilities()
@@ -83,18 +82,78 @@ FdoDataType* SchemaCapabilities::GetDataTypes(FdoInt32& size)
 
 FdoInt64 SchemaCapabilities::GetMaximumDataValueLength(FdoDataType type)
 {
-    assert(!"NOT IMPLEMENTED");
-    return 0;
+    // Maximum data length is interpreted as maximum storage size of
+    // particular data type.
+
+    FdoInt64 length = -1;
+
+    switch(type)
+    {
+    case FdoDataType_String:
+        // The longest possible character string that can be stored is about 1 GB
+        length = -1;
+        break;
+    case FdoDataType_BLOB:
+    case FdoDataType_CLOB:
+        // Variable length
+        length = -1;
+        break;
+    case FdoDataType_Decimal:
+        // Variable length
+        length = GetMaximumDecimalPrecision();
+        break;
+    case FdoDataType_Boolean:
+        length = sizeof(FdoBoolean);
+        break;
+    case FdoDataType_Byte:
+        length = sizeof(FdoByte);
+        break;
+    case FdoDataType_Int16:
+        length = sizeof(FdoInt16);
+        break;
+    case FdoDataType_Int32:
+        length = sizeof(FdoInt32);
+        break;
+    case FdoDataType_Int64:
+        length = sizeof(FdoInt64);
+        break;
+    case FdoDataType_Single:
+        // 4 bytes
+        length = sizeof(FdoFloat);
+        break;
+    case FdoDataType_Double:
+        // 8 bytes
+        length = sizeof(FdoDouble);
+        break;
+    case FdoDataType_DateTime:
+        length = sizeof(FdoDateTime);
+        break;
+    }
+
+    return length;
 }
 
 FdoInt32 SchemaCapabilities::GetMaximumDecimalPrecision()
 {
-    return 0;
+    // From PostgreSQL documentation, 8.1.2. Arbitrary Precision Numbers:
+    // The type numeric can store numbers with up to 1000 digits of precision and perform calculations exactly
+    // NOTE: If left unspecified, the precision will default to 30 digits, and scale to 6 digits. 
+
+    return 1000;
 }
 
 FdoInt32 SchemaCapabilities::GetMaximumDecimalScale()
 {
-    return 0;
+    // There is no maximum scale defiend in PostgreSQL.
+    // Possible scale value to insert depends on precision.
+    // An overflow error will be issued if you attempt to insert a number
+    // that is larger than the allotted precision range.
+
+    // PostgreSQL defines both max precision and scale equal to 1000
+    // File: pgsql/src/interfaces/ecpg/include/pgtypes_numeric.h
+
+    // TODO: Does value -1 fit the required semantic better?
+    return 1000;
 }
 
 FdoInt32 SchemaCapabilities::GetNameSizeLimit(FdoSchemaElementNameType name)
@@ -127,7 +186,6 @@ FdoInt32 SchemaCapabilities::GetNameSizeLimit(FdoSchemaElementNameType name)
 
 FdoString* SchemaCapabilities::GetReservedCharactersForName()
 {
-    assert(!"NOT IMPLEMENTED");
     return NULL;
 }
 
@@ -175,18 +233,15 @@ bool SchemaCapabilities::SupportsAutoIdGeneration()
 
 bool SchemaCapabilities::SupportsCompositeId()
 {
-    // TODO: If composite ID means multiple column PRIMARY KEY
-    //       then PostgreSQL does suppor it, and we can turn it on.
+    // NOTE: We assume that composite ID means multiple column PRIMARY KEY
+    //       PostgreSQL does support it, so we can turn it on.
 
-    return false;
+    return true;
 }
 
 bool SchemaCapabilities::SupportsCompositeUniqueValueConstraints()
 {
-    // TODO: Unique constraint refering to a group of columns 
-    //       is supported by PostgreSQL.
-
-    return false;
+    return true;
 }
 
 bool SchemaCapabilities::SupportsDataStoreScopeUniqueIdGeneration()
@@ -196,7 +251,7 @@ bool SchemaCapabilities::SupportsDataStoreScopeUniqueIdGeneration()
 
 bool SchemaCapabilities::SupportsDefaultValue()
 {
-    return false;
+    return true;
 }
 
 bool SchemaCapabilities::SupportsExclusiveValueRangeConstraints()
@@ -216,7 +271,12 @@ bool SchemaCapabilities::SupportsInheritance()
 
 bool SchemaCapabilities::SupportsMultipleSchemas()
 {
-    return true;
+    // NOTE: Currently, PostGIS provider supports single feature schema per datastore.
+    //       Default name of schema is FdoPostGIS with class names formed
+    //       according to following schema: datastore~tablename,
+    //       ie. public~cities
+
+    return false;
 }
 
 bool SchemaCapabilities::SupportsNetworkModel()
@@ -248,7 +308,7 @@ bool SchemaCapabilities::SupportsSchemaOverrides()
 
 bool SchemaCapabilities::SupportsUniqueValueConstraints()
 {
-    return false;
+    return true;
 }
 
 bool SchemaCapabilities::SupportsValueConstraintsList()
