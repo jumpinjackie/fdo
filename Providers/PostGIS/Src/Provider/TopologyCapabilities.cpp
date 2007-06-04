@@ -22,7 +22,6 @@ namespace fdo { namespace postgis {
 
 TopologyCapabilities::TopologyCapabilities()
 {
-    FDOLOG_WRITE("TopologyCapabilities created");
 }
 
 TopologyCapabilities::~TopologyCapabilities()

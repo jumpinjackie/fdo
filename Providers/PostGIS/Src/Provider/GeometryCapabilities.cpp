@@ -25,7 +25,6 @@ namespace fdo { namespace postgis {
 
 GeometryCapabilities::GeometryCapabilities()
 {
-    FDOLOG_WRITE("GeometryCapabilities created");
 }
 
 GeometryCapabilities::~GeometryCapabilities()

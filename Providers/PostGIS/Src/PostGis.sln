@@ -3,8 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PostGisProvider", "Provider\PostGisProvider.vcproj", "{81A1E411-2952-42B5-8430-B588A89D9BE2}"
 	ProjectSection(ProjectDependencies) = postProject
-		{04CC6BCD-179D-4627-A183-4E628580B4FB} = {04CC6BCD-179D-4627-A183-4E628580B4FB}
 		{A250F14F-E1A9-4F17-9E35-2D2CA8013AA4} = {A250F14F-E1A9-4F17-9E35-2D2CA8013AA4}
+		{04CC6BCD-179D-4627-A183-4E628580B4FB} = {04CC6BCD-179D-4627-A183-4E628580B4FB}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PostGisOverrides", "Overrides\PostGisOverrides.vcproj", "{A250F14F-E1A9-4F17-9E35-2D2CA8013AA4}"
@@ -22,11 +22,22 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PostGisMessage", "Message\P
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "UnitTest\UnitTest.vcproj", "{7F2484C6-7E04-494F-AC89-87AD765CC311}"
 	ProjectSection(ProjectDependencies) = postProject
-		{A250F14F-E1A9-4F17-9E35-2D2CA8013AA4} = {A250F14F-E1A9-4F17-9E35-2D2CA8013AA4}
 		{81A1E411-2952-42B5-8430-B588A89D9BE2} = {81A1E411-2952-42B5-8430-B588A89D9BE2}
+		{A250F14F-E1A9-4F17-9E35-2D2CA8013AA4} = {A250F14F-E1A9-4F17-9E35-2D2CA8013AA4}
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{6F922396-7A7B-48E3-9F14-29FAFBE41301}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "insert_command", "..\..\..\..\Samples\insert_command\insert_command.vcproj", "{6B0EC69E-59AE-40F9-A461-CE4AD58D5A23}"
+	ProjectSection(ProjectDependencies) = postProject
+		{81A1E411-2952-42B5-8430-B588A89D9BE2} = {81A1E411-2952-42B5-8430-B588A89D9BE2}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "delete_command", "..\..\..\..\Samples\delete_command\delete_command.vcproj", "{EE34EA06-6D3A-4C03-9D4A-78EC3721B426}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "update_command", "..\..\..\..\Samples\update_command\update_command.vcproj", "{4E113639-93F8-4158-9D3F-028E31209882}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sql_command", "..\..\..\..\Samples\sql_command\sql_command.vcproj", "{74B94AFF-BBC1-445E-8362-DC5D21A4D67B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,8 +61,30 @@ Global
 		{7F2484C6-7E04-494F-AC89-87AD765CC311}.Debug|Win32.Build.0 = Debug|Win32
 		{7F2484C6-7E04-494F-AC89-87AD765CC311}.Release|Win32.ActiveCfg = Release|Win32
 		{7F2484C6-7E04-494F-AC89-87AD765CC311}.Release|Win32.Build.0 = Release|Win32
+		{6B0EC69E-59AE-40F9-A461-CE4AD58D5A23}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6B0EC69E-59AE-40F9-A461-CE4AD58D5A23}.Debug|Win32.Build.0 = Debug|Win32
+		{6B0EC69E-59AE-40F9-A461-CE4AD58D5A23}.Release|Win32.ActiveCfg = Release|Win32
+		{6B0EC69E-59AE-40F9-A461-CE4AD58D5A23}.Release|Win32.Build.0 = Release|Win32
+		{EE34EA06-6D3A-4C03-9D4A-78EC3721B426}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EE34EA06-6D3A-4C03-9D4A-78EC3721B426}.Debug|Win32.Build.0 = Debug|Win32
+		{EE34EA06-6D3A-4C03-9D4A-78EC3721B426}.Release|Win32.ActiveCfg = Release|Win32
+		{EE34EA06-6D3A-4C03-9D4A-78EC3721B426}.Release|Win32.Build.0 = Release|Win32
+		{4E113639-93F8-4158-9D3F-028E31209882}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4E113639-93F8-4158-9D3F-028E31209882}.Debug|Win32.Build.0 = Debug|Win32
+		{4E113639-93F8-4158-9D3F-028E31209882}.Release|Win32.ActiveCfg = Release|Win32
+		{4E113639-93F8-4158-9D3F-028E31209882}.Release|Win32.Build.0 = Release|Win32
+		{74B94AFF-BBC1-445E-8362-DC5D21A4D67B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{74B94AFF-BBC1-445E-8362-DC5D21A4D67B}.Debug|Win32.Build.0 = Debug|Win32
+		{74B94AFF-BBC1-445E-8362-DC5D21A4D67B}.Release|Win32.ActiveCfg = Release|Win32
+		{74B94AFF-BBC1-445E-8362-DC5D21A4D67B}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6B0EC69E-59AE-40F9-A461-CE4AD58D5A23} = {6F922396-7A7B-48E3-9F14-29FAFBE41301}
+		{EE34EA06-6D3A-4C03-9D4A-78EC3721B426} = {6F922396-7A7B-48E3-9F14-29FAFBE41301}
+		{4E113639-93F8-4158-9D3F-028E31209882} = {6F922396-7A7B-48E3-9F14-29FAFBE41301}
+		{74B94AFF-BBC1-445E-8362-DC5D21A4D67B} = {6F922396-7A7B-48E3-9F14-29FAFBE41301}
 	EndGlobalSection
 EndGlobal

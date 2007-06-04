@@ -22,7 +22,6 @@ namespace fdo { namespace postgis {
 
 CommandCapabilities::CommandCapabilities()
 {
-    FDOLOG_WRITE("CommandCapabilities created");
 }
 
 CommandCapabilities::~CommandCapabilities()
