@@ -30,7 +30,7 @@ void RfpNoConfigTest::_setUp()
 {
 	m_connection = CreateConnection();
 	FDO_CPPUNIT_ASSERT(m_connection != NULL);
-	m_connection->SetConnectionString(L"DefaultRasterFileLocation=../../TestData/pci_eg");
+	m_connection->SetConnectionString(L"DefaultRasterFileLocation=../../TestData/pci_eg/acea.tif");
 	m_connection->Open();
 }
 void RfpNoConfigTest::_tearDown()
@@ -65,7 +65,7 @@ void RfpNoConfigTest::testSchemaOverrides()
 
 	FdoPtr<FdoGrfpRasterLocation> location = locations->GetItem(0);
 	FDO_CPPUNIT_ASSERT(location != NULL);
-	FDO_CPPUNIT_ASSERT(STRCASEEQ(location->GetName(), L"../../TestData/pci_eg"));
+	FDO_CPPUNIT_ASSERT(STRCASEEQ(location->GetName(), L"../../TestData/pci_eg/acea.tif"));
 
 	FdoPtr<FdoGrfpRasterFeatureCollection> catalogue = location->GetFeatureCatalogue();
 	FDO_CPPUNIT_ASSERT(catalogue != NULL && catalogue->GetCount() == 0);
@@ -104,7 +104,7 @@ void RfpNoConfigTest::testSelect()
 		count++;
 
 	}
-	CPPUNIT_ASSERT(count == 18);
+	CPPUNIT_ASSERT(count == 1);
 	featureReader->Close();
 }
 
@@ -148,29 +148,29 @@ void RfpNoConfigTest::testDescribeSchema()
 
 void RfpNoConfigTest::testSpatialContext()
 {
-	//Get Spatial Context
-	FdoPtr<FdoIGetSpatialContexts> getSC = static_cast<FdoIGetSpatialContexts*>(m_connection->CreateCommand(FdoCommandType_GetSpatialContexts));
+    //Get Spatial Context
+    FdoPtr<FdoIGetSpatialContexts> getSC = static_cast<FdoIGetSpatialContexts*>(m_connection->CreateCommand(FdoCommandType_GetSpatialContexts));
     getSC->SetActiveOnly(false);
-	FdoPtr<FdoISpatialContextReader> reader = getSC->Execute();
-	FDO_CPPUNIT_ASSERT(reader->ReadNext() == true);
+    FdoPtr<FdoISpatialContextReader> reader = getSC->Execute();
+    FDO_CPPUNIT_ASSERT(reader->ReadNext() == true);
 
-	FDO_CPPUNIT_ASSERT(reader->GetExtentType() == FdoSpatialContextExtentType_Static);
-	FDO_CPPUNIT_ASSERT(reader->IsActive() == true);
+    FDO_CPPUNIT_ASSERT(reader->GetExtentType() == FdoSpatialContextExtentType_Dynamic);
+    FDO_CPPUNIT_ASSERT(reader->IsActive() == true);
 	
     //Only one spatial context
-	//FDO_CPPUNIT_ASSERT(reader->ReadNext() == false);
+    //FDO_CPPUNIT_ASSERT(reader->ReadNext() == false);
 
-	//Get Spatial Context
-	FdoPtr<FdoIGetSpatialContexts> getSC2 = static_cast<FdoIGetSpatialContexts*>(m_connection->CreateCommand(FdoCommandType_GetSpatialContexts));
+    //Get Spatial Context
+    FdoPtr<FdoIGetSpatialContexts> getSC2 = static_cast<FdoIGetSpatialContexts*>(m_connection->CreateCommand(FdoCommandType_GetSpatialContexts));
     getSC2->SetActiveOnly(true);
-	FdoPtr<FdoISpatialContextReader> reader2 = getSC2->Execute();
-	FDO_CPPUNIT_ASSERT(reader2->ReadNext() == true);
+    FdoPtr<FdoISpatialContextReader> reader2 = getSC2->Execute();
+    FDO_CPPUNIT_ASSERT(reader2->ReadNext() == true);
 
-	FDO_CPPUNIT_ASSERT(reader2->GetExtentType() == FdoSpatialContextExtentType_Static);
-	FDO_CPPUNIT_ASSERT(reader2->IsActive() == true);
+    FDO_CPPUNIT_ASSERT(reader2->GetExtentType() == FdoSpatialContextExtentType_Dynamic);
+    FDO_CPPUNIT_ASSERT(reader2->IsActive() == true);
 	
     //Only one spatial context
-	//FDO_CPPUNIT_ASSERT(reader2->ReadNext() == false);
+    //FDO_CPPUNIT_ASSERT(reader2->ReadNext() == false);
 }
 
 
