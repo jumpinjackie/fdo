@@ -28,6 +28,7 @@ SET WFSENABLE=no
 SET WMSENABLE=no
 SET GDALENABLE=no
 SET FDOENABLE=no
+SET POSTGISENABLE=no
 SET FDOERROR=0
 
 :study_params
@@ -60,6 +61,7 @@ if "%DEFMODIFY%"=="yes" goto stp1_get_with
 	SET WFSENABLE=no
 	SET WMSENABLE=no
 	SET GDALENABLE=no
+	SET POSTGISENABLE=no
 	SET FDOENABLE=no
 :stp1_get_with
 if not "%2"=="sdf" goto stp2_get_with
@@ -74,27 +76,33 @@ if not "%2"=="wms" goto stp4_get_with
 	SET WMSENABLE=yes
 	goto next_param
 :stp4_get_with
-if not "%2"=="gdal" goto stp5_get_with
-	SET GDALENABLE=yes
+if not "%2"=="postgis" goto stp5_get_with
+	SET POSTGISENABLE=yes
 	goto next_param
 :stp5_get_with
-if not "%2"=="fdo" goto stp6_get_with
-	SET FDOENABLE=yes
+if not "%2"=="gdal" goto stp6_get_with
+	SET GDALENABLE=yes
 	goto next_param
 :stp6_get_with
-if not "%2"=="providers" goto stp7_get_with
+if not "%2"=="fdo" goto stp7_get_with
+	SET FDOENABLE=yes
+	goto next_param
+:stp7_get_with
+if not "%2"=="providers" goto stp8_get_with
 	SET SDFENABLE=yes
 	SET WFSENABLE=yes
 	SET WMSENABLE=yes
 	SET GDALENABLE=yes
+	SET POSTGISENABLE=yes
 	goto next_param
-:stp7_get_with
+:stp8_get_with
 if not "%2"=="all" goto custom_error
 	SET ALLENABLE=yes
 	SET SDFENABLE=no
 	SET WFSENABLE=no
 	SET WMSENABLE=no
 	SET GDALENABLE=no
+	SET POSTGISENABLE=no
 	SET FDOENABLE=no
     goto next_param
 
@@ -159,8 +167,12 @@ if "%GDALENABLE%"=="no" goto study_rebuild_wms
 SET PROVCALLCMD=%PROVCALLCMD% -w=gdal
 
 :study_rebuild_wms
-if "%WMSENABLE%"=="no" goto study_rebuild_fdo
+if "%WMSENABLE%"=="no" goto study_rebuild_postgis
 SET PROVCALLCMD=%PROVCALLCMD% -w=wms
+
+:study_rebuild_postgis
+if "%POSTGISENABLE%"=="no" goto study_rebuild_fdo
+SET PROVCALLCMD=%PROVCALLCMD% -w=postgis
 
 :study_rebuild_fdo
 SET PROVCALLCMDEX=%PROVCALLCMDEX%%PROVCALLCMD%
@@ -193,6 +205,6 @@ echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
 echo Action:         -a[ction]=build(default), buildinstall, install, clean
-echo WithModule:     -w[ith]=all(default), fdo, providers, sdf, wfs, wms
+echo WithModule:     -w[ith]=all(default), fdo, providers, sdf, wfs, wms, postgis
 echo **************************************************************************
 exit /B 0
