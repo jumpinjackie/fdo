@@ -18,7 +18,7 @@
 #define FDOPOSTGIS_SELECTAGGREGATESCOMMAND_H_INCLUDED
 
 #include "FeatureCommand.h"
-#include <Fdo/Commands/Feature/ISelect.h>
+#include <Fdo/Commands/Feature/ISelectAggregates.h>
 
 namespace fdo { namespace postgis {
 
@@ -121,4 +121,4 @@ private:
 
 }} // namespace fdo::postgis
 
-#endif // FDOPOSTGIS_SELECTCOMMAND_H_INCLUDED
+#endif // FDOPOSTGIS_SELECTAGGREGATESCOMMAND_H_INCLUDED
