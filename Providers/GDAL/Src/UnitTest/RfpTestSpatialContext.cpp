@@ -98,7 +98,7 @@ void RfpTestSpatialContext::testSpatialContext2()
 	CPPUNIT_ASSERT(STREQUAL(propraster->GetName(), L"Image"));
 
 	FdoStringP scName = propraster->GetSpatialContextAssociation();
-	CPPUNIT_ASSERT(STREQUAL(propraster->GetSpatialContextAssociation(), L"NAD83 California 6"));
+	CPPUNIT_ASSERT(STREQUAL(propraster->GetSpatialContextAssociation(), L"unnamed"));
 
 	connection->Close();
 }
@@ -223,7 +223,8 @@ void RfpTestSpatialContext::testSpatialContext6()
 	FdoRfpRect rect = CreateRectFromGeometryAgf(byteArray) ;
 	CPPUNIT_ASSERT(rect.m_minX == 200000.00000000000) ;
 	CPPUNIT_ASSERT(rect.m_minY == 1000000.0000000000) ;
-	CPPUNIT_ASSERT(rect.m_maxX == 300513) ;
+	CPPUNIT_ASSERT(rect.m_maxX == 300000) ;
+//	CPPUNIT_ASSERT(rect.m_maxX == 300513) ;
 	CPPUNIT_ASSERT(rect.m_maxY == 1100000) ;
 
 	//test the second spatial context
@@ -237,9 +238,10 @@ void RfpTestSpatialContext::testSpatialContext6()
 	byteArray = spatialContextsReader->GetExtent() ;
 	rect = CreateRectFromGeometryAgf(byteArray) ;
 
-	CPPUNIT_ASSERT(STREQUAL(spatialContextsReader->GetName(), L"NAD83 California 6"));
+	CPPUNIT_ASSERT(STREQUAL(spatialContextsReader->GetName(), L"unnamed"));
 	CPPUNIT_ASSERT(STREQUAL(spatialContextsReader->GetDescription(), L""));
-	CPPUNIT_ASSERT(STREQUAL(spatialContextsReader->GetCoordinateSystem(), L"NAD83 California 6"));
+        printf( "cs=%ls\n", (const char *) spatialContextsReader->GetCoordinateSystem() );
+	CPPUNIT_ASSERT(STREQUAL(spatialContextsReader->GetCoordinateSystem(), L"PROJCS[\"unnamed\",GEOGCS[\"NAD83\",DATUM[\"North_American_Datum_1983\",SPHEROID[\"GRS 1980\",6378137,298.2572221010002,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6269\"]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433],AUTHORITY[\"EPSG\",\"4269\"]],UNIT[\"unknown\",1],AUTHORITY[\"EPSG\",\"26946\"]]"));
 	CPPUNIT_ASSERT(fabs(rect.m_minX - 100000.00000000000) < 0.0001) ;
 	CPPUNIT_ASSERT(fabs(rect.m_minY - 100000.00000000000) < 0.0001) ;
 	CPPUNIT_ASSERT(fabs(rect.m_maxX - 110519) < 0.0001) ;
