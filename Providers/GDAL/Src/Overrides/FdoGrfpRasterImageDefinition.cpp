@@ -30,7 +30,7 @@
 #include <GdalFile/Override/FdoGrfpRasterGeoreferenceLocation.h>
 
 FdoGrfpRasterImageDefinition::FdoGrfpRasterImageDefinition(void) : 
-    m_state(0), m_frameNumber(-1)
+        m_state(0), m_frameNumber(-1)
 {
 }
 
@@ -40,33 +40,33 @@ FdoGrfpRasterImageDefinition::~FdoGrfpRasterImageDefinition(void)
 
 void FdoGrfpRasterImageDefinition::Dispose()
 {
-	delete this;
+    delete this;
 }
 
 FdoGrfpRasterImageDefinition* FdoGrfpRasterImageDefinition::Create()
 {
-	return new FdoGrfpRasterImageDefinition();
+    return new FdoGrfpRasterImageDefinition();
 }
 
 FdoInt32 FdoGrfpRasterImageDefinition::GetFrameNumber()
 {
-	return m_frameNumber;
+    return m_frameNumber;
 }
 
 void FdoGrfpRasterImageDefinition::SetFrameNumber(FdoInt32 frameNumber)
 {
-	m_frameNumber = frameNumber;
+    m_frameNumber = frameNumber;
 }
 
 // Initialize the object using the objects XML attributes
 void FdoGrfpRasterImageDefinition::InitFromXml(FdoXmlSaxContext* pContext, FdoXmlAttributeCollection* attrs)
 {
-	try
-	{
+    try
+    {
         if (attrs == NULL || pContext == NULL) 
             throw FdoCommandException::Create(NlsMsgGet(GRFP_3_NULL_ARGUMENT, "A required argument was set to NULL"));
 
-		BaseType::InitFromXml(pContext, attrs);
+        BaseType::InitFromXml(pContext, attrs);
 
         FdoInt32 frameNumber = 1;
         FdoXmlAttributeP att = attrs->FindItem(FdoGrfpXmlGlobals::FrameNumber);
@@ -78,18 +78,18 @@ void FdoGrfpRasterImageDefinition::InitFromXml(FdoXmlSaxContext* pContext, FdoXm
                     NlsMsgGet2(GRFP_99_INVALID_XML_ATTRIBUTE, 
                                "Raster Configuration file contains an invalid value '%1$ls' for XML attribute: '%1$ls'.",
                                (FdoString*)attrValue, FdoGrfpXmlGlobals::FrameNumber
-                    )
-                );
+                               )
+                    );
             }
         }
 
         SetFrameNumber(frameNumber);
-	}
-	catch (FdoException* ex)
-	{
-		pContext->AddError(ex);
-		ex->Release();
-	}
+    }
+    catch (FdoException* ex)
+    {
+        pContext->AddError(ex);
+        ex->Release();
+    }
 }
 
 // Handle the start of a sub-element
@@ -102,63 +102,63 @@ FdoXmlSaxHandler* FdoGrfpRasterImageDefinition::XmlStartElement(
 {
     FdoXmlSaxHandler* pRet = NULL;
 
-	try
-	{
+    try
+    {
         if (context == NULL || name == NULL)
             throw FdoCommandException::Create(NlsMsgGet(GRFP_3_NULL_ARGUMENT, "A required argument was set to NULL"));
 
-		pRet = BaseType::XmlStartElement(context, uri, name, qname, atts);
-		if (pRet == NULL)
-		{
-			bool bOK = true;
+        pRet = BaseType::XmlStartElement(context, uri, name, qname, atts);
+        if (pRet == NULL)
+        {
+            bool bOK = true;
 
-			if (STREQUAL(name, FdoGrfpXmlGlobals::Georeference))
-			{
-				m_geoReference = FdoGrfpRasterGeoreferenceLocation::Create();
-				if (m_state != 0)
-					bOK = false;
-				m_state = 1;
-			}
-			else if (STREQUAL(name, FdoGrfpXmlGlobals::InsertionPointX))
-			{
-				m_state = 2;
-			}
-			else if (STREQUAL(name, FdoGrfpXmlGlobals::InsertionPointY))
-			{
-				m_state = 3;
-			}
-			else if (STREQUAL(name, FdoGrfpXmlGlobals::ResolutionX))
-			{
-				m_state = 4;
-			}
-			else if (STREQUAL(name, FdoGrfpXmlGlobals::ResolutionY))
-			{
-				m_state = 5;
-			}
-			else if (STREQUAL(name, FdoGrfpXmlGlobals::RotationX))
-			{
-				m_state = 6;
-			}
-			else if (STREQUAL(name, FdoGrfpXmlGlobals::RotationY))
-			{
-				m_state = 7;
-			}
-			else
-			{
-				bOK = false;
-			}
+            if (STREQUAL(name, FdoGrfpXmlGlobals::Georeference))
+            {
+                m_geoReference = FdoGrfpRasterGeoreferenceLocation::Create();
+                if (m_state != 0)
+                    bOK = false;
+                m_state = 1;
+            }
+            else if (STREQUAL(name, FdoGrfpXmlGlobals::InsertionPointX))
+            {
+                m_state = 2;
+            }
+            else if (STREQUAL(name, FdoGrfpXmlGlobals::InsertionPointY))
+            {
+                m_state = 3;
+            }
+            else if (STREQUAL(name, FdoGrfpXmlGlobals::ResolutionX))
+            {
+                m_state = 4;
+            }
+            else if (STREQUAL(name, FdoGrfpXmlGlobals::ResolutionY))
+            {
+                m_state = 5;
+            }
+            else if (STREQUAL(name, FdoGrfpXmlGlobals::RotationX))
+            {
+                m_state = 6;
+            }
+            else if (STREQUAL(name, FdoGrfpXmlGlobals::RotationY))
+            {
+                m_state = 7;
+            }
+            else
+            {
+                bOK = false;
+            }
 
-			if (!bOK)
-				throw FdoCommandException::Create(NlsMsgGet(GRFP_94_INVALID_GEOREFERENCE_DEF, "Invalid georeference definition."));
-		}
-	}
+            if (!bOK)
+                throw FdoCommandException::Create(NlsMsgGet(GRFP_94_INVALID_GEOREFERENCE_DEF, "Invalid georeference definition."));
+        }
+    }
     catch (FdoException* ex) 
     {
         context->AddError(ex);
         ex->Release();
     }
 	
-	return pRet; 
+    return pRet; 
 }
 
 // Handle the end of a sub-element
@@ -168,123 +168,123 @@ FdoBoolean FdoGrfpRasterImageDefinition::XmlEndElement(
    FdoString* name, 
    FdoString* qname)
 {
-	try
-	{
+    try
+    {
         if (context == NULL || name == NULL)
             throw FdoCommandException::Create(NlsMsgGet(GRFP_3_NULL_ARGUMENT, "A required argument was set to NULL"));
 
-		if (BaseType::XmlEndElement(context, uri, name, qname))
-			return true;
+        if (BaseType::XmlEndElement(context, uri, name, qname))
+            return true;
 
-		bool bOK = true;
-		switch (m_state)
-		{
-		case 1:
-			{
-				if (!STREQUAL(name, FdoGrfpXmlGlobals::Georeference))
-					bOK = false;
-				break;
-			}
-		case 2:
-			{
-				if (!STREQUAL(name, FdoGrfpXmlGlobals::InsertionPointX))
-					bOK = false;
-				break;
-			}
-		case 3:
-			{
-				if (!STREQUAL(name, FdoGrfpXmlGlobals::InsertionPointY))
-					bOK = false;
-				break;
-			}
-		case 4:
-			{
-				if (!STREQUAL(name, FdoGrfpXmlGlobals::ResolutionX) != 0)
-					bOK = false;
-				break;
-			}
-		case 5:
-			{
-				if (!STREQUAL(name, FdoGrfpXmlGlobals::ResolutionY) != 0)
-					bOK = false;
-				break;
-			}
-		case 6:
-			{
-				if (!STREQUAL(name, FdoGrfpXmlGlobals::RotationX) != 0)
-					bOK = false;
-				break;
-			}
-		case 7:
-			{
-				if (!STREQUAL(name, FdoGrfpXmlGlobals::RotationY) != 0)
-					bOK = false;
-				break;
-			}
-		default:
-			bOK = false;
-			break;
-		}
-		if (m_state >= 2 && m_state <=7)
-			m_state = 1;
+        bool bOK = true;
+        switch (m_state)
+        {
+          case 1:
+          {
+              if (!STREQUAL(name, FdoGrfpXmlGlobals::Georeference))
+                  bOK = false;
+              break;
+          }
+          case 2:
+          {
+              if (!STREQUAL(name, FdoGrfpXmlGlobals::InsertionPointX))
+                  bOK = false;
+              break;
+          }
+          case 3:
+          {
+              if (!STREQUAL(name, FdoGrfpXmlGlobals::InsertionPointY))
+                  bOK = false;
+              break;
+          }
+          case 4:
+          {
+              if (!STREQUAL(name, FdoGrfpXmlGlobals::ResolutionX) != 0)
+                  bOK = false;
+              break;
+          }
+          case 5:
+          {
+              if (!STREQUAL(name, FdoGrfpXmlGlobals::ResolutionY) != 0)
+                  bOK = false;
+              break;
+          }
+          case 6:
+          {
+              if (!STREQUAL(name, FdoGrfpXmlGlobals::RotationX) != 0)
+                  bOK = false;
+              break;
+          }
+          case 7:
+          {
+              if (!STREQUAL(name, FdoGrfpXmlGlobals::RotationY) != 0)
+                  bOK = false;
+              break;
+          }
+          default:
+            bOK = false;
+            break;
+        }
+        if (m_state >= 2 && m_state <=7)
+            m_state = 1;
 
-		if (!bOK)
-			throw FdoCommandException::Create(NlsMsgGet(GRFP_94_INVALID_GEOREFERENCE_DEF, "Invalid georeference definition."));
-	}
+        if (!bOK)
+            throw FdoCommandException::Create(NlsMsgGet(GRFP_94_INVALID_GEOREFERENCE_DEF, "Invalid georeference definition."));
+    }
     catch (FdoException* ex) 
     {
         context->AddError(ex);
         ex->Release();
-		return true;
+        return true;
     }
 
-	return false;
+    return false;
 }
 
 // Copy the character strings in the XML stream 
 void FdoGrfpRasterImageDefinition::XmlCharacters(FdoXmlSaxContext* context, FdoString* chars)
 {
-	try
-	{
+    try
+    {
         if (context == NULL || chars == NULL)
             throw FdoCommandException::Create(NlsMsgGet(GRFP_3_NULL_ARGUMENT, "A required argument was set to NULL"));
 
-		BaseType::XmlCharacters(context, chars);
+        BaseType::XmlCharacters(context, chars);
 
-		if (m_state >= 2 && m_state <=7)
-		{
-    		double temp = 0.0;
+        if (m_state >= 2 && m_state <=7)
+        {
+            double temp = 0.0;
             if (EOF == swscanf(chars, L"%lf", &temp)) {
-				throw FdoCommandException::Create(NlsMsgGet(GRFP_94_INVALID_GEOREFERENCE_DEF, "Invalid georeference definition."));
+                throw FdoCommandException::Create(NlsMsgGet(GRFP_94_INVALID_GEOREFERENCE_DEF, "Invalid georeference definition."));
             }
             else 
             {
- 		        switch (m_state)
-		        {
-		        case 2:
-			        m_geoReference->SetXInsertionPoint(temp);
-			        break;
-		        case 3:
-			        m_geoReference->SetYInsertionPoint(temp);
-			        break;
-		        case 4:
-			        m_geoReference->SetXResolution(temp);
-			        break;
-		        case 5:
-			        m_geoReference->SetYResolution(temp);
-			        break;
-		        case 6:
-			        m_geoReference->SetXRotation(temp);
-			        break;
-		        case 7:
-			        m_geoReference->SetYRotation(temp);
-			        break;
-		        default:
-			        break;
+                switch (m_state)
+                {
+                  case 2:
+                    m_geoReference->SetXInsertionPoint(temp);
+                    break;
+                  case 3:
+                    m_geoReference->SetYInsertionPoint(temp);
+                    break;
+                  case 4:
+                    m_geoReference->SetXResolution(temp);
+                    break;
+                  case 5:
+                    m_geoReference->SetYResolution(temp);
+                    break;
+                  case 6:
+                    m_geoReference->SetXRotation(temp);
+                    break;
+                  case 7:
+                    m_geoReference->SetYRotation(temp);
+                    break;
+                  default:
+                    break;
                 }
             }
         }
-	}
+    }
     catch (FdoException* ex) 
     {
         context->AddError(ex);
@@ -298,10 +298,10 @@ void FdoGrfpRasterImageDefinition::_writeXml( FdoXmlWriter* xmlWriter, const Fdo
     if (xmlWriter == NULL || flags == NULL) 
         throw FdoCommandException::Create(NlsMsgGet(GRFP_3_NULL_ARGUMENT, "A required argument was set to NULL"));
 
-	xmlWriter->WriteStartElement(FdoGrfpXmlGlobals::Image);
-	BaseType::_writeXml(xmlWriter, flags);
+    xmlWriter->WriteStartElement(FdoGrfpXmlGlobals::Image);
+    BaseType::_writeXml(xmlWriter, flags);
 
-	// write 'frameNumber' Attribute
+    // write 'frameNumber' Attribute
     FdoInt32 frameNumber = GetFrameNumber();
     if (frameNumber > 0) {
         char buff[20];
@@ -309,40 +309,40 @@ void FdoGrfpRasterImageDefinition::_writeXml( FdoXmlWriter* xmlWriter, const Fdo
         xmlWriter->WriteAttribute(FdoGrfpXmlGlobals::FrameNumber, FdoStringP(buff));
     }
 
-	// <Georeference>
-	xmlWriter->WriteStartElement(FdoGrfpXmlGlobals::Georeference);
+    // <Georeference>
+    xmlWriter->WriteStartElement(FdoGrfpXmlGlobals::Georeference);
 	
-	// <InsertionPointX>
-	xmlWriter->WriteStartElement(FdoGrfpXmlGlobals::InsertionPointX);
-	xmlWriter->WriteCharacters(FdoStringP::Format(L"%f", m_geoReference->GetXInsertionPoint()));
-	xmlWriter->WriteEndElement(); 
+    // <InsertionPointX>
+    xmlWriter->WriteStartElement(FdoGrfpXmlGlobals::InsertionPointX);
+    xmlWriter->WriteCharacters(FdoStringP::Format(L"%f", m_geoReference->GetXInsertionPoint()));
+    xmlWriter->WriteEndElement(); 
 
-	// <InsertionPointY>
-	xmlWriter->WriteStartElement(FdoGrfpXmlGlobals::InsertionPointY);
-	xmlWriter->WriteCharacters(FdoStringP::Format(L"%f", m_geoReference->GetYInsertionPoint()));
-	xmlWriter->WriteEndElement(); 
+    // <InsertionPointY>
+    xmlWriter->WriteStartElement(FdoGrfpXmlGlobals::InsertionPointY);
+    xmlWriter->WriteCharacters(FdoStringP::Format(L"%f", m_geoReference->GetYInsertionPoint()));
+    xmlWriter->WriteEndElement(); 
 
-	// <ResolutionX>
-	xmlWriter->WriteStartElement(FdoGrfpXmlGlobals::ResolutionX);
-	xmlWriter->WriteCharacters(FdoStringP::Format(L"%f", m_geoReference->GetXResolution()));
-	xmlWriter->WriteEndElement(); 
+    // <ResolutionX>
+    xmlWriter->WriteStartElement(FdoGrfpXmlGlobals::ResolutionX);
+    xmlWriter->WriteCharacters(FdoStringP::Format(L"%f", m_geoReference->GetXResolution()));
+    xmlWriter->WriteEndElement(); 
 
-	// <ResolutionY>
-	xmlWriter->WriteStartElement(FdoGrfpXmlGlobals::ResolutionY);
-	xmlWriter->WriteCharacters(FdoStringP::Format(L"%f", m_geoReference->GetYResolution()));
-	xmlWriter->WriteEndElement();
+    // <ResolutionY>
+    xmlWriter->WriteStartElement(FdoGrfpXmlGlobals::ResolutionY);
+    xmlWriter->WriteCharacters(FdoStringP::Format(L"%f", m_geoReference->GetYResolution()));
+    xmlWriter->WriteEndElement();
 
-	// <RotationX>
-	xmlWriter->WriteStartElement(FdoGrfpXmlGlobals::RotationX);
-	xmlWriter->WriteCharacters(FdoStringP::Format(L"%f", m_geoReference->GetXRotation()));
-	xmlWriter->WriteEndElement(); 
+    // <RotationX>
+    xmlWriter->WriteStartElement(FdoGrfpXmlGlobals::RotationX);
+    xmlWriter->WriteCharacters(FdoStringP::Format(L"%f", m_geoReference->GetXRotation()));
+    xmlWriter->WriteEndElement(); 
 	
     // <RotationY>
-	xmlWriter->WriteStartElement(FdoGrfpXmlGlobals::RotationY);
-	xmlWriter->WriteCharacters(FdoStringP::Format(L"%f", m_geoReference->GetYRotation()));
-	xmlWriter->WriteEndElement();
+    xmlWriter->WriteStartElement(FdoGrfpXmlGlobals::RotationY);
+    xmlWriter->WriteCharacters(FdoStringP::Format(L"%f", m_geoReference->GetYRotation()));
+    xmlWriter->WriteEndElement();
 
-	xmlWriter->WriteEndElement(); //end of Georeference definition
+    xmlWriter->WriteEndElement(); //end of Georeference definition
 
     xmlWriter->WriteEndElement(); //end of Image definition
 }
