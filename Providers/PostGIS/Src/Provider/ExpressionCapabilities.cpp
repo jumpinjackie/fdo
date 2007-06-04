@@ -22,7 +22,6 @@ namespace fdo { namespace postgis {
 
 ExpressionCapabilities::ExpressionCapabilities()
 {
-    FDOLOG_WRITE("ExpressionCapabilities created");
 }
 
 ExpressionCapabilities::~ExpressionCapabilities()

@@ -488,6 +488,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SelectAggregatesCommand.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SelectAggregatesCommand.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SelectCommand.cpp"
 				>
 			</File>
