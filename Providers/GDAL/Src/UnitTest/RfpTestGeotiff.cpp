@@ -71,7 +71,7 @@ void RfpTestGeotiff::testGeotiff()
             count++;
 
 	}
-	CPPUNIT_ASSERT(count == 18);
+	CPPUNIT_ASSERT(count == 1);
 	featureReader->Close();
 	connection->Close();
     } catch( FdoException * ge) {

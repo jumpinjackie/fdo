@@ -74,7 +74,7 @@
 		<complexType name="PhotoType">
 			<!-- Soundings kept in SNDG table and geometry columns are overridden -->
 			<RasterDefinition name="photos">
-				<Location name="../../TestData/pci_eg"></Location>
+				<Location name="../../TestData/pci_eg/acea.tif"></Location>
 			</RasterDefinition>
 		</complexType>
 	</SchemaMapping>
