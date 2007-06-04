@@ -35,6 +35,7 @@ SET SDFENABLETHR=no
 SET WFSENABLETHR=no
 SET WMSENABLETHR=no
 SET GDALENABLETHR=no
+SET POSTGISENABLETHR=no
 SET FDOERROR=0
 
 :study_params
@@ -66,6 +67,7 @@ if "%DEFMODIFYTHR%"=="yes" goto stp0_get_with
 	SET WFSENABLETHR=no
 	SET WMSENABLETHR=no
 	SET GDALENABLETHR=no
+	SET POSTGISENABLETHR=no
 	SET FDOENABLETHR=no
 :stp0_get_with
 if not "%2"=="providers" goto stp1_get_with
@@ -73,6 +75,7 @@ if not "%2"=="providers" goto stp1_get_with
 	SET WFSENABLETHR=yes
 	SET WMSENABLETHR=yes
 	SET GDALENABLETHR=yes
+	SET POSTGISENABLETHR=yes
 	goto next_param
 :stp1_get_with
 if not "%2"=="sdf" goto stp2_get_with
@@ -87,20 +90,25 @@ if not "%2"=="wms" goto stp4_get_with
 	SET WMSENABLETHR=yes	
 	goto next_param
 :stp4_get_with
-if not "%2"=="fdo" goto stp5_get_with
-	SET FDOENABLETHR=yes
+if not "%2"=="postgis" goto stp5_get_with
+	SET POSTGISENABLETHR=yes	
 	goto next_param
 :stp5_get_with
-if not "%2"=="gdal" goto stp6_get_with
+if not "%2"=="fdo" goto stp67_get_with
+	SET FDOENABLETHR=yes
+	goto next_param
+:stp7_get_with
+if not "%2"=="gdal" goto stp8_get_with
 	SET GDALENABLETHR=yes	
 	goto next_param
-:stp6_get_with
+:stp8_get_with
 if not "%2"=="all" goto custom_error
 	SET ALLENABLETHR=yes
 	SET SDFENABLETHR=no
 	SET WFSENABLETHR=no
 	SET WMSENABLETHR=no
 	SET GDALENABLETHR=no
+	SET POSTGISENABLETHR=no
 	SET FDOENABLETHR=no
 goto next_param
 
@@ -272,7 +280,7 @@ rem # End WMS part #
 
 rem # Build GDAL Provider Thirdparty Files
 :rebuild_gdal
-if "%GDALENABLETHR%"=="no" goto end
+if "%GDALENABLETHR%"=="no" goto rebuild_postgis
 if "%TYPEACTIONTHR%"=="install" goto install_gdal_files
 
 echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty GDAL files
@@ -287,6 +295,30 @@ rem # Install GDAL Provider Thirdparty Files
 echo copy %TYPEBUILDTHR% Thirdparty GDAL files
 copy /y "gdal\bin\win32\%TYPEBUILDTHR%\gdal14.dll" "%FDOBINPATHTHR%"
 rem # End GDAL part #
+rem ################## FDO PostGiS - Under Development ###################
+
+rem # Build PostGIS Provider Thirdparty Files
+:rebuild_postgis
+if "%POSTGISENABLETHR%"=="no" goto end
+if "%TYPEACTIONTHR%"=="install" goto install_postgis_files
+
+echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty PostGIS dlls
+msbuild boost_1_32_0\boost_1_32_0.vcproj /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+SET FDOERROR=%errorlevel%
+if "%FDOERROR%"=="1" goto error
+if "%TYPEACTIONTHR%"=="build" goto end
+if "%TYPEACTIONTHR%"=="clean" goto end
+
+rem # Install PostGIS Provider Thirdparty Files
+:install_postgis_files
+
+echo copy %TYPEBUILDTHR% Thirdparty PostGIS dlls
+copy /y "boost_1_32_0\bin\boost\libs\program_options\build\boost_program_options.dll\vc-8_0\%TYPEBUILDTHR%\threading-multi\boost_program_options-vc80-mt%TYPEBUILDTHRPATH%-1_32.dll "%FDOBINPATHTHR%"
+rem # End PostGIS part 
+
+rem ####################################################################
+
+
 
 :end
 echo End Thirdparty %MSACTIONTHR%
