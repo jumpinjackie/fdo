@@ -52,7 +52,7 @@ static void Usage()
     printf( "\n"
             "Usage: fdorastutil [-schema] [-sc] [-dump] [-nofeatures]\n"
             "                   [-p <provider>] [-fc <featureclass>]\n"
-            "                   [-config <file>] [<target>]\n"
+            "                   [-config <file>] [-ot <file>] [<target>]\n"
             "\n"
             "  -schema: Report schema\n"
             "  -sc: Report spatial contexts.\n"
@@ -62,6 +62,7 @@ static void Usage()
             "  -fc <featureclass>: feature class to report/dump (default is first)\n"
             "  -e xmin ymin xmax ymax: query extent\n" 
             "  -config <file>: Use XML configuration file for connection.\n"
+            "  -oc <file>: Write XML configuration file representing connection.\n"
             "  <target>: Use file or directory as DefaultRasterFileLocation for\n"
             "            connection.\n" );
     exit( 1 );
@@ -83,6 +84,7 @@ int main( int argc, char ** argv )
     FdoStringP  provider = "OSGeo.Gdal.3.3";
     FdoStringP  FeatureClassName;
     FdoPtr<FdoGeometryValue> spatialEnvelope;
+    const char  *outConfigFile = NULL;
 
 /* -------------------------------------------------------------------- */
 /*      Process arguments.                                              */
@@ -103,6 +105,8 @@ int main( int argc, char ** argv )
             FeatureClassName = argv[++iArg];
         else if( iArg < argc-1 && EQUAL(argv[iArg],"-config") )
             targetConfig = argv[++iArg];
+        else if( iArg < argc-1 && EQUAL(argv[iArg],"-oc") )
+            outConfigFile = argv[++iArg];
         else if( iArg < argc-4 && EQUAL(argv[iArg],"-e") )
         {
             FdoPtr<FdoFgfGeometryFactory> agfFactory = FdoFgfGeometryFactory::GetInstance();
@@ -207,6 +211,26 @@ int main( int argc, char ** argv )
     {
         printf( "Trapped exception: %ls\n", ge->GetExceptionMessage() );
         exit( 1 );
+    }
+
+/* -------------------------------------------------------------------- */
+/*      Do we have a request to save a config file?                     */
+/* -------------------------------------------------------------------- */
+    if( outConfigFile )
+    {
+        FdoPtr<FdoIDescribeSchemaMapping> describeMapping = 
+            static_cast<FdoIDescribeSchemaMapping*>(
+                conn->CreateCommand(FdoCommandType_DescribeSchemaMapping));
+        FdoPtr<FdoPhysicalSchemaMappingCollection> mappings = 
+            describeMapping->Execute();
+        FdoPtr<FdoPhysicalSchemaMapping> mapping = 
+            static_cast<FdoPhysicalSchemaMapping*>(mappings->GetItem(0));
+
+        FdoStringP wideOutConfigFile = outConfigFile;
+
+        FdoPtr<FdoIoStream> output = 
+            FdoIoFileStream::Create(wideOutConfigFile, L"w");
+        mapping->WriteXml(output);
     }
 
 /* -------------------------------------------------------------------- */
