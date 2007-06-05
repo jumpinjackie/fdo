@@ -39,13 +39,13 @@ class FdoRfpGeoRaster : public FdoDisposable
 // data members
 //
 protected:
-	FdoRasterType                m_rasterType;
-    FdoRfpGeoBandRastersP		 m_images;
-	// identifier for this raster
-	FdoStringP                   m_id;
+    FdoRasterType                m_rasterType;
+    FdoRfpGeoBandRastersP	 m_images;
+    // identifier for this raster
+    FdoStringP                   m_id;
 
 public:
-	static FdoRfpGeoRaster* Create();
+    static FdoRfpGeoRaster* Create();
 
 //
 // ctor and dtor
@@ -58,15 +58,15 @@ protected:
 // exposed functions
 //
 public:
-	FdoRasterType   GetRasterType();
-	void            SetRasterType(FdoRasterType rasterType);
+    FdoRasterType   GetRasterType();
+    void            SetRasterType(FdoRasterType rasterType);
 
-	FdoInt32        GetNumberOfBands();
-	void			AddBand(FdoRfpGeoBandRasterP bandRaster);
-	FdoRfpGeoBandRaster* GetBand(FdoInt32 bandNumber);
+    FdoInt32        GetNumberOfBands();
+    void	    AddBand(FdoRfpGeoBandRasterP bandRaster);
+    FdoRfpGeoBandRaster* GetBand(FdoInt32 bandNumber);
 
     FdoString*      GetId();
-	void			SetId(FdoStringP value);
+    void	    SetId(FdoStringP value);
 };
 
 typedef FdoPtr<FdoRfpGeoRaster> FdoRfpGeoRasterP;
@@ -78,11 +78,11 @@ class FdoRfpGeoRasterCollection : public FdoCollection<FdoRfpGeoRaster, FdoExcep
 // Constructor(s), desctrucotr, factory function(s)
 //
 protected:
-	FdoRfpGeoRasterCollection() {}
-	virtual ~FdoRfpGeoRasterCollection() {}
-	void Dispose() { delete this; }
+    FdoRfpGeoRasterCollection() {}
+    virtual ~FdoRfpGeoRasterCollection() {}
+    void Dispose() { delete this; }
 public:
-	static FdoRfpGeoRasterCollection* Create();
+    static FdoRfpGeoRasterCollection* Create();
 };
 
 typedef FdoPtr<FdoRfpGeoRasterCollection> FdoRfpGeoRastersP;
@@ -94,11 +94,11 @@ class FdoRfpGeoRasterCollectionCollection : public FdoCollection<FdoRfpGeoRaster
 // Constructor(s), desctrucotr, factory function(s)
 //
 protected:
-	FdoRfpGeoRasterCollectionCollection() {}
-	virtual ~FdoRfpGeoRasterCollectionCollection() {}
-	void Dispose() { delete this; }
+    FdoRfpGeoRasterCollectionCollection() {}
+    virtual ~FdoRfpGeoRasterCollectionCollection() {}
+    void Dispose() { delete this; }
 public:
-	static FdoRfpGeoRasterCollectionCollection* Create();
+    static FdoRfpGeoRasterCollectionCollection* Create();
 };
 
 typedef FdoPtr<FdoRfpGeoRasterCollectionCollection> FdoRfpGeoRasterCollectionsP;

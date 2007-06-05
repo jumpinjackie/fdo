@@ -54,6 +54,11 @@ namespace FdoGrfpXmlGlobals
     static FdoString* Pos			    = L"Pos";
     static FdoString* PosQualified		    = L"gml:Pos";
     static FdoString* XMLNS_Value	            = L"http://fdogrfp.osgeo.org/schemas";
+    static FdoString* Bounds                        = L"Bounds";
+    static FdoString* MinX                          = L"MinX";
+    static FdoString* MinY                          = L"MinY";
+    static FdoString* MaxX                          = L"MaxX";
+    static FdoString* MaxY                          = L"MaxY";
 };
 
 
