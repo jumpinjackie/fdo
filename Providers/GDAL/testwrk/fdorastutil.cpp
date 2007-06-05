@@ -60,6 +60,7 @@ static void Usage()
             "  -nofeatures: Don't report feature records.\n"
             "  -p <provider>: Provider.  ie. OSGeo.Gdal.3.3\n"
             "  -fc <featureclass>: feature class to report/dump (default is first)\n"
+            "  -e xmin ymin xmax ymax: query extent\n" 
             "  -config <file>: Use XML configuration file for connection.\n"
             "  <target>: Use file or directory as DefaultRasterFileLocation for\n"
             "            connection.\n" );
@@ -81,6 +82,7 @@ int main( int argc, char ** argv )
     int         iArg;
     FdoStringP  provider = "OSGeo.Gdal.3.3";
     FdoStringP  FeatureClassName;
+    FdoPtr<FdoGeometryValue> spatialEnvelope;
 
 /* -------------------------------------------------------------------- */
 /*      Process arguments.                                              */
@@ -101,6 +103,16 @@ int main( int argc, char ** argv )
             FeatureClassName = argv[++iArg];
         else if( iArg < argc-1 && EQUAL(argv[iArg],"-config") )
             targetConfig = argv[++iArg];
+        else if( iArg < argc-4 && EQUAL(argv[iArg],"-e") )
+        {
+            FdoPtr<FdoFgfGeometryFactory> agfFactory = FdoFgfGeometryFactory::GetInstance();
+            FdoPtr<FdoIEnvelope> envelope = 
+                agfFactory->CreateEnvelopeXY(atof(argv[iArg+1]),atof(argv[iArg+2]),
+                                             atof(argv[iArg+3]),atof(argv[iArg+4]));
+            FdoPtr<FdoIGeometry> geometry = agfFactory->CreateGeometry(envelope);
+            spatialEnvelope = FdoGeometryValue::Create(agfFactory->GetFgf(geometry));
+            iArg += 4;
+        }
         else if( argv[iArg][0] == '-' )
             Usage();
         else if( targetFileDir == NULL )
@@ -218,7 +230,18 @@ int main( int argc, char ** argv )
     try
     {
         FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand (FdoCommandType_Select);
+
         select->SetFeatureClassName (FeatureClassName);
+
+        // Do we need a spatial bounds on our query?
+        if( spatialEnvelope != NULL )
+        {
+            FdoPtr<FdoFilter> filter = 
+                FdoSpatialCondition::Create(
+                    RasterName, FdoSpatialOperations_Intersects, spatialEnvelope );
+            select->SetFilter(filter);
+        }
+
         FdoPtr<FdoIFeatureReader> reader = select->Execute ();
         int iCounter = 0;
     
