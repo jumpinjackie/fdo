@@ -42,13 +42,13 @@
 #include "RfpTestAAIGrid.h"
 #include "RfpTestPng.h"
 #include "RfpTestJpg.h"
+#include "RfpTestSpatialQuery.h"
 
 #include <iostream>
 
 // The following macros are used as switches to determine
 // which Test Cases will be excuted.
 
-#ifndef notdef
 #define TEST_NO_CONFIG
 #define TEST_EXAMPLE1
 #define TEST_OVERRIDES_SERIALIZE
@@ -62,8 +62,9 @@
 #define TEST_AAIGrid
 #define TEST_PNG
 #define TEST_JPG
-#endif
 #define TEST_SPATIAL_CONTEXT
+#define TEST_SPATIAL_QUERY
+
 
 //#define TEST_ECW
 //#define TEST_JP2
@@ -146,6 +147,10 @@ void UnitTestMainProc()
 
 #ifdef TEST_SPATIAL_CONTEXT
 	runner.addTest(RfpTestSpatialContext::suite());
+#endif
+
+#ifdef TEST_SPATIAL_QUERY
+	runner.addTest(RfpTestSpatialQuery::suite());
 #endif
 
 #ifndef LOG_TESTS_RESULT
