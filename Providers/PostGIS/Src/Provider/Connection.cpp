@@ -32,10 +32,11 @@
 #include "ApplySchemaCommand.h"
 #include "DescribeSchemaCommand.h"
 #include "GetSpatialContextsCommand.h"
-#include "DeleteCommand.h"
 #include "InsertCommand.h"
-#include "SelectCommand.h"
 #include "UpdateCommand.h"
+#include "DeleteCommand.h"
+#include "SelectCommand.h"
+#include "SelectAggregatesCommand.h"
 #include "SQLCommand.h"
 #include "Transaction.h"
 #include "PgCursor.h"
@@ -388,6 +389,9 @@ FdoICommand* Connection::CreateCommand(FdoInt32 type)
         break;
     case FdoCommandType_Select:
         cmd = new SelectCommand(this);
+        break;
+    case FdoCommandType_SelectAggregates:
+        cmd = new SelectAggregatesCommand(this);
         break;
     case FdoCommandType_Insert:
         cmd = new InsertCommand(this);
