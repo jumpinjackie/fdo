@@ -48,22 +48,22 @@ const wchar_t* FdoRfpDescribeSchemaCommand::GetSchemaName()
 
 FdoFeatureSchemaCollection* FdoRfpDescribeSchemaCommand::Execute()
 {
-	FdoRfpConnectionP connection = static_cast<FdoRfpConnection*>(GetConnection());
-	FdoFeatureSchemaCollection* ret = FdoFeatureSchemaCollection::Create(NULL);
-	FdoPtr<FdoFeatureSchemaCollection> cachedSchemas = connection->GetFeatureSchemas();
-	FdoInt32 count = cachedSchemas->GetCount();
-	if (m_schemaName.GetLength() == 0)
-	{
-		for (int i = 0; i < count; i++)
-		{
-			FdoPtr<FdoFeatureSchema> schema = cachedSchemas->GetItem(i);
-			schema = _cloneSchema(schema);
-			ret->Add(schema);
-			schema->AcceptChanges();
-		}
-	}
-	else
-	{
+    FdoRfpConnectionP connection = static_cast<FdoRfpConnection*>(GetConnection());
+    FdoFeatureSchemaCollection* ret = FdoFeatureSchemaCollection::Create(NULL);
+    FdoPtr<FdoFeatureSchemaCollection> cachedSchemas = connection->GetFeatureSchemas();
+    FdoInt32 count = cachedSchemas->GetCount();
+    if (m_schemaName.GetLength() == 0)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            FdoPtr<FdoFeatureSchema> schema = cachedSchemas->GetItem(i);
+            schema = _cloneSchema(schema);
+            ret->Add(schema);
+            schema->AcceptChanges();
+        }
+    }
+    else
+    {
         for (int i = 0; i < count; i++)
         {
             FdoPtr<FdoFeatureSchema> schema = cachedSchemas->GetItem (i);
@@ -75,10 +75,10 @@ FdoFeatureSchemaCollection* FdoRfpDescribeSchemaCommand::Execute()
                 break;
             }
         }
-		if (ret->GetCount() == 0)
-			throw FdoCommandException::Create(NlsMsgGet1(GRFP_48_FEATURE_SCHEMA_NOT_FOUND, "Feature schema '%1$ls' not found.", (const wchar_t*)m_schemaName));
-	}
-	return ret;
+        if (ret->GetCount() == 0)
+            throw FdoCommandException::Create(NlsMsgGet1(GRFP_48_FEATURE_SCHEMA_NOT_FOUND, "Feature schema '%1$ls' not found.", (const wchar_t*)m_schemaName));
+    }
+    return ret;
 }
 
 FdoClassDefinitionP FdoRfpDescribeSchemaCommand::_cloneClass(const FdoPtr<FdoClassDefinition>& definition)
@@ -98,37 +98,37 @@ FdoClassDefinitionP FdoRfpDescribeSchemaCommand::_cloneClass(const FdoPtr<FdoCla
         FdoPtr<FdoPropertyDefinition> x;
         switch (property->GetPropertyType ())
         {
-            case FdoPropertyType_DataProperty:
-                {
-                    FdoDataPropertyDefinition* data_property = (FdoDataPropertyDefinition*)property.p;
-                    FdoDataPropertyDefinition* data_definition = FdoDataPropertyDefinition::Create (data_property->GetName (), data_property->GetDescription ());
-                    data_definition->SetDataType (data_property->GetDataType ());
-                    data_definition->SetLength (data_property->GetLength ());
-                    data_definition->SetPrecision (data_property->GetPrecision ());
-                    data_definition->SetScale (data_property->GetScale ());
-                    data_definition->SetNullable (data_property->GetNullable ());
-                    data_definition->SetReadOnly (data_property->GetReadOnly ());
-                    data_definition->SetDefaultValue (data_property->GetDefaultValue ());
-                    x = data_definition;
-                }
-                break;
-			case FdoPropertyType_RasterProperty:
-				{
-					FdoRasterPropertyDefinition* rasterProperty = (FdoRasterPropertyDefinition*)property.p;
-					FdoRasterPropertyDefinition* rasterDef = FdoRasterPropertyDefinition::Create(rasterProperty->GetName(), rasterProperty->GetDescription());
-					FdoPtr<FdoRasterDataModel> dataModel = rasterProperty->GetDefaultDataModel();
-					rasterDef->SetDefaultDataModel(dataModel);
-					rasterDef->SetDefaultImageXSize(rasterProperty->GetDefaultImageXSize());
-					rasterDef->SetDefaultImageYSize(rasterProperty->GetDefaultImageYSize());
-					rasterDef->SetNullable(rasterProperty->GetNullable());
-					rasterDef->SetReadOnly(rasterProperty->GetReadOnly());
-					rasterDef->SetSpatialContextAssociation(rasterProperty->GetSpatialContextAssociation());
-					x = rasterDef;
-				}
-				break;
-			default:
-				throw FdoException::Create(L"Unreachable exception.");
-                break;
+          case FdoPropertyType_DataProperty:
+          {
+              FdoDataPropertyDefinition* data_property = (FdoDataPropertyDefinition*)property.p;
+              FdoDataPropertyDefinition* data_definition = FdoDataPropertyDefinition::Create (data_property->GetName (), data_property->GetDescription ());
+              data_definition->SetDataType (data_property->GetDataType ());
+              data_definition->SetLength (data_property->GetLength ());
+              data_definition->SetPrecision (data_property->GetPrecision ());
+              data_definition->SetScale (data_property->GetScale ());
+              data_definition->SetNullable (data_property->GetNullable ());
+              data_definition->SetReadOnly (data_property->GetReadOnly ());
+              data_definition->SetDefaultValue (data_property->GetDefaultValue ());
+              x = data_definition;
+          }
+          break;
+          case FdoPropertyType_RasterProperty:
+          {
+              FdoRasterPropertyDefinition* rasterProperty = (FdoRasterPropertyDefinition*)property.p;
+              FdoRasterPropertyDefinition* rasterDef = FdoRasterPropertyDefinition::Create(rasterProperty->GetName(), rasterProperty->GetDescription());
+              FdoPtr<FdoRasterDataModel> dataModel = rasterProperty->GetDefaultDataModel();
+              rasterDef->SetDefaultDataModel(dataModel);
+              rasterDef->SetDefaultImageXSize(rasterProperty->GetDefaultImageXSize());
+              rasterDef->SetDefaultImageYSize(rasterProperty->GetDefaultImageYSize());
+              rasterDef->SetNullable(rasterProperty->GetNullable());
+              rasterDef->SetReadOnly(rasterProperty->GetReadOnly());
+              rasterDef->SetSpatialContextAssociation(rasterProperty->GetSpatialContextAssociation());
+              x = rasterDef;
+          }
+          break;
+          default:
+            throw FdoException::Create(L"Unreachable exception.");
+            break;
         }
         // copy the attributes
         FdoPtr<FdoSchemaAttributeDictionary> attributes = property->GetAttributes ();
