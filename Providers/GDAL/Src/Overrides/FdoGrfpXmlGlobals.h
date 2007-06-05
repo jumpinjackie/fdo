@@ -29,32 +29,31 @@
 #pragma once
 #endif //_WIN32
 
-
 namespace FdoGrfpXmlGlobals
 {
-	static FdoString* Georeference                  = L"Georeference";
-	static FdoString* InsertionPointX               = L"InsertionPointX";
-	static FdoString* InsertionPointY               = L"InsertionPointY";
-	static FdoString* ResolutionX                   = L"ResolutionX";
-	static FdoString* ResolutionY                   = L"ResolutionY";
-	static FdoString* RotationX                     = L"RotationX";
-	static FdoString* RotationY                     = L"RotationY";
-	static FdoString* FrameNumber                   = L"frame";
-	static FdoString* BandNumber                    = L"number";
-	static FdoString* Feature                       = L"Feature";
-	static FdoString* Band                          = L"Band";
-	static FdoString* SchemaMapping					= L"SchemaMapping";
+    static FdoString* Georeference                  = L"Georeference";
+    static FdoString* InsertionPointX               = L"InsertionPointX";
+    static FdoString* InsertionPointY               = L"InsertionPointY";
+    static FdoString* ResolutionX                   = L"ResolutionX";
+    static FdoString* ResolutionY                   = L"ResolutionY";
+    static FdoString* RotationX                     = L"RotationX";
+    static FdoString* RotationY                     = L"RotationY";
+    static FdoString* FrameNumber                   = L"frame";
+    static FdoString* BandNumber                    = L"number";
+    static FdoString* Feature                       = L"Feature";
+    static FdoString* Band                          = L"Band";
+    static FdoString* SchemaMapping		    = L"SchemaMapping";
     static FdoString* NameAttribute                 = L"name";
-	static FdoString* ProviderAttribute				= L"provider";
-	static FdoString* ClassDefinitionElement		= L"complexType";
-	static FdoString* RasterDefinition				= L"RasterDefinition";
-	static FdoString* Location						= L"Location";
-	static FdoString* Image							= L"Image";
-	static FdoString* BoundingBox					= L"BoundingBox";
-	static FdoString* BoundingBoxQualified			= L"gml:BoundingBox";
-	static FdoString* Pos							= L"Pos";
-	static FdoString* PosQualified					= L"gml:Pos";
-    static FdoString* XMLNS_Value	                = L"http://fdogrfp.osgeo.org/schemas";
+    static FdoString* ProviderAttribute		    = L"provider";
+    static FdoString* ClassDefinitionElement	    = L"complexType";
+    static FdoString* RasterDefinition		    = L"RasterDefinition";
+    static FdoString* Location			    = L"Location";
+    static FdoString* Image			    = L"Image";
+    static FdoString* BoundingBox		    = L"BoundingBox";
+    static FdoString* BoundingBoxQualified	    = L"gml:BoundingBox";
+    static FdoString* Pos			    = L"Pos";
+    static FdoString* PosQualified		    = L"gml:Pos";
+    static FdoString* XMLNS_Value	            = L"http://fdogrfp.osgeo.org/schemas";
 };
 
 
