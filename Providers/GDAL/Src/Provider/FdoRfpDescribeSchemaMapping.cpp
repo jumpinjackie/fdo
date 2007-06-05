@@ -80,136 +80,136 @@ void FdoRfpDescribeSchemaMapping::SetIncludeDefaults( FdoBoolean includeDefaults
 /// <returns>Returns the schema mapping collection for the requested feature schemas.</returns> 
 FdoPhysicalSchemaMappingCollection* FdoRfpDescribeSchemaMapping::Execute()
 {
-	FdoRfpConnectionP connection = static_cast<FdoRfpConnection*>(GetConnection());
-	FdoPtr<FdoPhysicalSchemaMappingCollection> schemaMappings = connection->GetSchemaMappings();
-	FdoPtr<FdoPhysicalSchemaMappingCollection> ret = FdoPhysicalSchemaMappingCollection::Create();
-	FdoInt32 count = schemaMappings->GetCount();
-	if (m_schemaName.GetLength() == 0) // return all schema mappings
-	{
-		for (int i = 0; i < count; i++)
-		{
-			FdoPtr<FdoPhysicalSchemaMapping> schemaMapping = schemaMappings->GetItem(i);
-			schemaMapping = _cloneSchemaMapping(schemaMapping);
-			ret->Add(schemaMapping);
-		}
-	}
-	else	// only return the schema mapping specified by the name	
-	{
-		for (int i = 0; i < count; i++)
-		{
-			FdoPtr<FdoPhysicalSchemaMapping> schemaMapping = schemaMappings->GetItem(i);
-			if (STRCASEEQ(m_schemaName, schemaMapping->GetName()))
-			{
-				schemaMapping = _cloneSchemaMapping(schemaMapping);
-				ret->Add(schemaMapping);
-			}
-		}
-		if (ret->GetCount() == 0)
-			throw FdoCommandException::Create(NlsMsgGet1(GRFP_75_SCHEMA_MAPPING_NOT_FOUND, "Feature schema mapping '%1$ls' not found.", (const wchar_t*)m_schemaName));
-	}
+    FdoRfpConnectionP connection = static_cast<FdoRfpConnection*>(GetConnection());
+    FdoPtr<FdoPhysicalSchemaMappingCollection> schemaMappings = connection->GetSchemaMappings();
+    FdoPtr<FdoPhysicalSchemaMappingCollection> ret = FdoPhysicalSchemaMappingCollection::Create();
+    FdoInt32 count = schemaMappings->GetCount();
+    if (m_schemaName.GetLength() == 0) // return all schema mappings
+    {
+        for (int i = 0; i < count; i++)
+        {
+            FdoPtr<FdoPhysicalSchemaMapping> schemaMapping = schemaMappings->GetItem(i);
+            schemaMapping = _cloneSchemaMapping(schemaMapping);
+            ret->Add(schemaMapping);
+        }
+    }
+    else	// only return the schema mapping specified by the name	
+    {
+        for (int i = 0; i < count; i++)
+        {
+            FdoPtr<FdoPhysicalSchemaMapping> schemaMapping = schemaMappings->GetItem(i);
+            if (STRCASEEQ(m_schemaName, schemaMapping->GetName()))
+            {
+                schemaMapping = _cloneSchemaMapping(schemaMapping);
+                ret->Add(schemaMapping);
+            }
+        }
+        if (ret->GetCount() == 0)
+            throw FdoCommandException::Create(NlsMsgGet1(GRFP_75_SCHEMA_MAPPING_NOT_FOUND, "Feature schema mapping '%1$ls' not found.", (const wchar_t*)m_schemaName));
+    }
 
-	return FDO_SAFE_ADDREF(ret.p);
+    return FDO_SAFE_ADDREF(ret.p);
 }
 
 FdoPtr<FdoGrfpClassDefinition> FdoRfpDescribeSchemaMapping::_cloneClass(const FdoPtr<FdoGrfpClassDefinition>& classDef)
 {
-	// suffix "l" means left, suffix "r" means right
-	FdoPtr<FdoGrfpClassDefinition> ret = FdoGrfpClassDefinition::Create();
-	// name
-	ret->SetName(classDef->GetName());
-	// copy raster definition
-	FdoPtr<FdoGrfpRasterDefinition> rasterDefl = FdoGrfpRasterDefinition::Create();
-	ret->SetRasterDefinition(rasterDefl);
-	FdoPtr<FdoGrfpRasterDefinition> rasterDefr = classDef->GetRasterDefinition();
-	// name
-	rasterDefl->SetName(rasterDefr->GetName());
-	// locations
-	FdoPtr<FdoGrfpRasterLocationCollection> locationsl = rasterDefl->GetLocations();
-	FdoPtr<FdoGrfpRasterLocationCollection> locationsr = rasterDefr->GetLocations();
-	FdoInt32 count = locationsr->GetCount();
+    // suffix "l" means left, suffix "r" means right
+    FdoPtr<FdoGrfpClassDefinition> ret = FdoGrfpClassDefinition::Create();
+    // name
+    ret->SetName(classDef->GetName());
+    // copy raster definition
+    FdoPtr<FdoGrfpRasterDefinition> rasterDefl = FdoGrfpRasterDefinition::Create();
+    ret->SetRasterDefinition(rasterDefl);
+    FdoPtr<FdoGrfpRasterDefinition> rasterDefr = classDef->GetRasterDefinition();
+    // name
+    rasterDefl->SetName(rasterDefr->GetName());
+    // locations
+    FdoPtr<FdoGrfpRasterLocationCollection> locationsl = rasterDefl->GetLocations();
+    FdoPtr<FdoGrfpRasterLocationCollection> locationsr = rasterDefr->GetLocations();
+    FdoInt32 count = locationsr->GetCount();
 
-	int i, j, k;
-	// clone location one by one
-	for (i = 0; i < count; i++)
-	{
-		FdoPtr<FdoGrfpRasterLocation> locationl = FdoGrfpRasterLocation::Create();
-		locationsl->Add(locationl);
-		FdoPtr<FdoGrfpRasterLocation> locationr = locationsr->GetItem(i);
-		// copy location name
-		locationl->SetName(locationr->GetName());
+    int i, j, k;
+    // clone location one by one
+    for (i = 0; i < count; i++)
+    {
+        FdoPtr<FdoGrfpRasterLocation> locationl = FdoGrfpRasterLocation::Create();
+        locationsl->Add(locationl);
+        FdoPtr<FdoGrfpRasterLocation> locationr = locationsr->GetItem(i);
+        // copy location name
+        locationl->SetName(locationr->GetName());
 
-		// raster features;
-		FdoPtr<FdoGrfpRasterFeatureCollection> rasterFeaturesl = locationl->GetFeatureCatalogue();
-		FdoPtr<FdoGrfpRasterFeatureCollection> rasterFeaturesr = locationr->GetFeatureCatalogue();		
-		FdoInt32 countFeatures = rasterFeaturesr->GetCount();
-		for (k = 0; k < countFeatures; k++)
-		{
-			// copy feature one by one
-			FdoGrfpRasterFeatureDefinitionP rasterFeaturel = FdoGrfpRasterFeatureDefinition::Create();
-			rasterFeaturesl->Add(rasterFeaturel);
-			FdoGrfpRasterFeatureDefinitionP rasterFeaturer = rasterFeaturesr->GetItem(k);
-			// copy feature name
-			rasterFeaturel->SetName(rasterFeaturer->GetName());
+        // raster features;
+        FdoPtr<FdoGrfpRasterFeatureCollection> rasterFeaturesl = locationl->GetFeatureCatalogue();
+        FdoPtr<FdoGrfpRasterFeatureCollection> rasterFeaturesr = locationr->GetFeatureCatalogue();		
+        FdoInt32 countFeatures = rasterFeaturesr->GetCount();
+        for (k = 0; k < countFeatures; k++)
+        {
+            // copy feature one by one
+            FdoGrfpRasterFeatureDefinitionP rasterFeaturel = FdoGrfpRasterFeatureDefinition::Create();
+            rasterFeaturesl->Add(rasterFeaturel);
+            FdoGrfpRasterFeatureDefinitionP rasterFeaturer = rasterFeaturesr->GetItem(k);
+            // copy feature name
+            rasterFeaturel->SetName(rasterFeaturer->GetName());
 
-			// raster bands
-			FdoPtr<FdoGrfpRasterBandCollection> rasterBandsl = rasterFeaturel->GetBands();
-			FdoPtr<FdoGrfpRasterBandCollection> rasterBandsr = rasterFeaturer->GetBands();			
-			FdoInt32 countBands = rasterBandsr->GetCount();
+            // raster bands
+            FdoPtr<FdoGrfpRasterBandCollection> rasterBandsl = rasterFeaturel->GetBands();
+            FdoPtr<FdoGrfpRasterBandCollection> rasterBandsr = rasterFeaturer->GetBands();			
+            FdoInt32 countBands = rasterBandsr->GetCount();
 			
-			// clone raster band one by one
-			for (j = 0; j < countBands; j++)
-			{
-				// raster image
-				FdoPtr<FdoGrfpRasterBandDefinition> rasterBandl = FdoGrfpRasterBandDefinition::Create();
-				rasterBandsl->Add(rasterBandl);
-				FdoPtr<FdoGrfpRasterBandDefinition> rasterBandr = rasterBandsr->GetItem(j);
-				rasterBandl->SetName(rasterBandr->GetName());
-				rasterBandl->SetBandNumber(rasterBandr->GetBandNumber());
+            // clone raster band one by one
+            for (j = 0; j < countBands; j++)
+            {
+                // raster image
+                FdoPtr<FdoGrfpRasterBandDefinition> rasterBandl = FdoGrfpRasterBandDefinition::Create();
+                rasterBandsl->Add(rasterBandl);
+                FdoPtr<FdoGrfpRasterBandDefinition> rasterBandr = rasterBandsr->GetItem(j);
+                rasterBandl->SetName(rasterBandr->GetName());
+                rasterBandl->SetBandNumber(rasterBandr->GetBandNumber());
 
-				FdoPtr<FdoGrfpRasterImageDefinition> rasterImagel = FdoGrfpRasterImageDefinition::Create();
-				rasterBandl->SetImage(rasterImagel);
-				FdoPtr<FdoGrfpRasterImageDefinition> rasterImager = rasterBandr->GetImage();
+                FdoPtr<FdoGrfpRasterImageDefinition> rasterImagel = FdoGrfpRasterImageDefinition::Create();
+                rasterBandl->SetImage(rasterImagel);
+                FdoPtr<FdoGrfpRasterImageDefinition> rasterImager = rasterBandr->GetImage();
                 FdoGrfpRasterGeoreferenceLocationP geoReference_r = rasterImager->GetGeoreferencedLocation();
 
-				FdoGrfpRasterGeoreferenceLocationP geoReference1 = FdoGrfpRasterGeoreferenceLocation::Create();
-				rasterImagel->SetGeoreferencedLocation(geoReference1);
+                FdoGrfpRasterGeoreferenceLocationP geoReference1 = FdoGrfpRasterGeoreferenceLocation::Create();
+                rasterImagel->SetGeoreferencedLocation(geoReference1);
 
-				// copy raster image name
-				rasterImagel->SetName(rasterImager->GetName());
-				rasterImagel->SetFrameNumber(rasterImager->GetFrameNumber());
+                // copy raster image name
+                rasterImagel->SetName(rasterImager->GetName());
+                rasterImagel->SetFrameNumber(rasterImager->GetFrameNumber());
 
-				// extents
-				geoReference1->SetXInsertionPoint(geoReference_r->GetXInsertionPoint());
-				geoReference1->SetYInsertionPoint(geoReference_r->GetYInsertionPoint());
-				geoReference1->SetXResolution(geoReference_r->GetXResolution());
-				geoReference1->SetYResolution(geoReference_r->GetYResolution());
-				geoReference1->SetXRotation(geoReference_r->GetXRotation());
-				geoReference1->SetYRotation(geoReference_r->GetYRotation());
-			}
-		}
-	}
+                // extents
+                geoReference1->SetXInsertionPoint(geoReference_r->GetXInsertionPoint());
+                geoReference1->SetYInsertionPoint(geoReference_r->GetYInsertionPoint());
+                geoReference1->SetXResolution(geoReference_r->GetXResolution());
+                geoReference1->SetYResolution(geoReference_r->GetYResolution());
+                geoReference1->SetXRotation(geoReference_r->GetXRotation());
+                geoReference1->SetYRotation(geoReference_r->GetYRotation());
+            }
+        }
+    }
 
-	return ret;
+    return ret;
 
 }
 
 FdoPtr<FdoPhysicalSchemaMapping> FdoRfpDescribeSchemaMapping::_cloneSchemaMapping(const FdoPtr<FdoPhysicalSchemaMapping>& schemaMapping)
 {
-	FdoPtr<FdoGrfpPhysicalSchemaMapping> schemaMappingl = FdoGrfpPhysicalSchemaMapping::Create();
-	FdoPtr<FdoGrfpPhysicalSchemaMapping> schemaMappingr = SP_STATIC_CAST(FdoGrfpPhysicalSchemaMapping, schemaMapping);
-	// name
-	schemaMappingl->SetName(schemaMapping->GetName());
-	// classes
-	FdoPtr<FdoGrfpClassCollection> classesl = schemaMappingl->GetClasses();
-	FdoPtr<FdoGrfpClassCollection> classesr = schemaMappingr->GetClasses();
-	FdoInt32 count = classesr->GetCount();
-	for (int i = 0; i < count; i++)
-	{
-		FdoPtr<FdoGrfpClassDefinition> classr = classesr->GetItem(i);
-		FdoPtr<FdoGrfpClassDefinition> classl = _cloneClass(classr);
-		classesl->Add(classl);
-	}
-	return FDO_SAFE_ADDREF(schemaMappingl.p);
+    FdoPtr<FdoGrfpPhysicalSchemaMapping> schemaMappingl = FdoGrfpPhysicalSchemaMapping::Create();
+    FdoPtr<FdoGrfpPhysicalSchemaMapping> schemaMappingr = SP_STATIC_CAST(FdoGrfpPhysicalSchemaMapping, schemaMapping);
+    // name
+    schemaMappingl->SetName(schemaMapping->GetName());
+    // classes
+    FdoPtr<FdoGrfpClassCollection> classesl = schemaMappingl->GetClasses();
+    FdoPtr<FdoGrfpClassCollection> classesr = schemaMappingr->GetClasses();
+    FdoInt32 count = classesr->GetCount();
+    for (int i = 0; i < count; i++)
+    {
+        FdoPtr<FdoGrfpClassDefinition> classr = classesr->GetItem(i);
+        FdoPtr<FdoGrfpClassDefinition> classl = _cloneClass(classr);
+        classesl->Add(classl);
+    }
+    return FDO_SAFE_ADDREF(schemaMappingl.p);
 }
 
 
