@@ -199,6 +199,14 @@ bool FdoRfpGeoBandRasterRot::loadImageInfo()
         m_rotationY = geoRef->GetYRotation();
         m_haveGeotransform = true;
     }
+    else if( !m_haveGeotransform )
+    {
+        // We require files to either have georeferencing information specified
+        // in the config file, or in the underlying file.
+
+        throw FdoException::Create(NlsMsgGet(GRFP_100_NO_GEOREFERENCE, 
+                                             "Raster image has no geo-reference."));                   
+    }
 
     datasetCache->UnlockDataset( hDS );
     hDS = NULL;
