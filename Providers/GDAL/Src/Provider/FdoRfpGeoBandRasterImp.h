@@ -37,11 +37,18 @@ class FdoRfpGeoBandRasterRot : public FdoRfpGeoBandRaster
 // data members
 //
 private:
+    bool        m_haveGeotransform;
     double      m_insertionX, m_insertionY;
     double      m_resX, m_resY;
-    int         m_width, m_height;
     double      m_rotationX, m_rotationY ;
 
+    int         m_width, m_height;
+
+    bool        m_haveBounds;
+    double      m_minX;
+    double      m_minY;
+    double      m_maxX;
+    double      m_maxY;
 //
 // ctor and dtor
 //
@@ -58,10 +65,14 @@ public:
                            double resX, double resY,
                            int width, int height,
                            double rotationX, double rotationY);
+    FdoRfpGeoBandRasterRot(FdoRfpConnection* conn,
+                           FdoString* imagePath, int frameNumber);
 protected:
     virtual ~FdoRfpGeoBandRasterRot();
 private:
     FdoRfpGeoBandRasterRot();
+    
+    bool loadImageInfo();
                             
 //
 // exposed and virtual functions
@@ -73,7 +84,10 @@ public:
     virtual FdoIGeometry* GetGeometry();
     virtual FdoRfpRect GetBounds();
 
-
+    void            SetBounds( double minX, double minY, double maxX, double maxY );
+    void            SetGeotransform( double insertionX, double insertionY, 
+                                     double resX, double resY,
+                                     double rotationX, double rotationY );
 //
 // protected virtual functions
 //

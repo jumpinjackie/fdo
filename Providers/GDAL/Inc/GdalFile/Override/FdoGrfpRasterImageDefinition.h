@@ -59,6 +59,9 @@ public:
     /// <returns>Returns nothing</returns> 
     FDOGRFP_API void SetGeoreferencedLocation (FdoGrfpRasterGeoreferenceLocation * location);
 
+    FDOGRFP_API bool GetBounds( double &minX, double &minY, double &maxX, double &maxY );
+    FDOGRFP_API void SetBounds( double minX, double minY, double maxX, double maxY );
+
 //DOM-IGNORE-BEGIN
 
     // XML Serialization functions, not part of supported API.
@@ -86,8 +89,14 @@ protected:
 
 private:
     FdoInt32 m_state;
-	FdoInt32 m_frameNumber;
-	FdoPtr<FdoGrfpRasterGeoreferenceLocation> m_geoReference;
+    FdoInt32 m_frameNumber;
+    FdoPtr<FdoGrfpRasterGeoreferenceLocation> m_geoReference;
+
+    bool     m_haveBounds;
+    double   m_minX;
+    double   m_minY;
+    double   m_maxX;
+    double   m_maxY;
 
 //DOM-IGNORE-END
 };

@@ -179,88 +179,43 @@ void FdoRfpClassData::_buildUpGeoRastersFromCatalogue(FdoRfpConnection *conn,
         {
             FdoGrfpRasterBandDefinitionP  bandDef = bands->GetItem(j);
             FdoGrfpRasterImageDefinitionP imageDef = bandDef->GetImage();
-            GDALDatasetH hDS;
 
-                            
+            // Work out the composed path.
+
             FdoStringP path = location->GetName();
             path += FdoStringP(FILE_PATH_DELIMITER);
             path += imageDef->GetName();
 
-            hDS = datasetCache->LockDataset( path, false );
+            // Create the image file object (GeoBandRaster)
 
-            if( hDS == NULL )
-                throw FdoException::Create(NlsMsgGet(GRFP_95_CANNOT_GET_IMAGE_INFO, 
-                                                     "Fail to get image information."));
-            width = GDALGetRasterXSize( hDS );
-            height = GDALGetRasterYSize( hDS );
-            frameNumber = 1;
+            FdoPtr<FdoRfpGeoBandRasterRot> geoBandRaster = 
+                new FdoRfpGeoBandRasterRot(m_connection, path, 
+                                           imageDef->GetFrameNumber()-1 );
 
-            if (imageDef->GetFrameNumber() > frameNumber)
-                throw FdoException::Create(NlsMsgGet(GRFP_96_FRAME_NUMBER_OUT_OF_RANGE, "Frame number is out of range."));
-            
-            FdoRfpGeoreferenceP geoRef = new FdoRfpGeoreference();
-            bool bHasGeoInfo = FdoRfpRasterUtil::GetGeoReferenceInfo(hDS, geoRef);
+            // Attach geotransform if it is in the config file.
 
-            datasetCache->UnlockDataset( hDS );
-            hDS = NULL;
-
-            // coordinate system handling
-            //
-            // first, get the coordinate system names associated to the rasters in the catalogue
-            FdoStringP coord;
-            if (bHasGeoInfo && geoRef->HasCoordSystem() 
-                && FdoRfpRasterUtil::IsCoordinateSystemValid(geoRef->GetCoorSystem())) 
-            { 
-                FdoPtr<FdoRfpSpatialContext> context = 
-                    conn->GetSpatialContextByWkt( geoRef->GetCoorSystem() );
-                coord = context->GetName();
-            }
-
-            // Add the coordinate system names to the collection of Spatial Contexts to be returned to the caller
-            // It is the callers responsibility to determine what constitutes an error if more than one spatial context
-            // exists for a class definition
-            if (coord != L"" && coordSystems->IndexOf(coord, false) == -1) {
-                coordSystems->Add(coord);
-            }
-            
-            // geo-reference handling
-            //
-            // if the config file has geo-reference info, it will be taken for preference
-            // or geo-ref will be taken from the raster image itself
             FdoGrfpRasterGeoreferenceLocationP imageGeoRef = imageDef->GetGeoreferencedLocation();
             if (imageGeoRef != NULL) // get the geo-ref from configuation file        
             {
-                insX = imageGeoRef->GetXInsertionPoint();
-                insY = imageGeoRef->GetYInsertionPoint();
-                resX = imageGeoRef->GetXResolution();
-                resY = imageGeoRef->GetYResolution();
-                rotX  = imageGeoRef->GetXRotation();
-                rotY  = imageGeoRef->GetYRotation();
-            }
-            else 
-            {
-                if (bHasGeoInfo) // the band image is associated with geo-ref info
-                {
-                    insX = geoRef->GetXInsertion();
-                    insY = geoRef->GetYInsertion();
-                    resX = geoRef->GetXResolution();
-                    resY = geoRef->GetYResolution();
-                    rotX = geoRef->GetXRotation();
-                    rotY = geoRef->GetYRotation();
-                }
-                else // there is no any geo-reference infomation associated with the raster image         
-                {                    
-                    throw FdoException::Create(NlsMsgGet(GRFP_100_NO_GEOREFERENCE, "Raster image has no geo-reference."));                    
-                }
+                geoBandRaster->SetGeotransform( 
+                    imageGeoRef->GetXInsertionPoint(),
+                    imageGeoRef->GetYInsertionPoint(),
+                    imageGeoRef->GetXResolution(),
+                    imageGeoRef->GetYResolution(),
+                    imageGeoRef->GetXRotation(),
+                    imageGeoRef->GetYRotation() );
             }
 
-            FdoRfpGeoBandRasterP geoBandRaster = new FdoRfpGeoBandRasterRot(m_connection, path, 
-                                                                            imageDef->GetFrameNumber()-1,
-                                                                            insX, insY,
-                                                                            resX, resY,
-                                                                            width,height,
-                                                                            rotX, rotY);
-            geoRaster->AddBand(geoBandRaster);
+            // Attach bounds if it is in the config file.
+
+            double minX, minY, maxX, maxY;
+            if( imageDef->GetBounds( minX, minY, maxX, maxY ) )
+            {
+                geoBandRaster->SetBounds( minX, minY, maxX, maxY );
+            }
+
+            FdoRfpGeoBandRasterP gbr = FDO_SAFE_ADDREF(geoBandRaster.p);
+            geoRaster->AddBand(gbr);
 
             // for the extent in spatial context, 
             // it's calculated by union of all of the bounds appearing in this feature class

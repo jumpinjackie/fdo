@@ -30,7 +30,9 @@
 #include <GdalFile/Override/FdoGrfpRasterGeoreferenceLocation.h>
 
 FdoGrfpRasterImageDefinition::FdoGrfpRasterImageDefinition(void) : 
-        m_state(0), m_frameNumber(-1)
+        m_state(0), m_frameNumber(-1), 
+        m_haveBounds(false), 
+        m_minX(-12300000), m_minY(-12300000), m_maxX(-12300000), m_maxY(-12300000)
 {
 }
 
@@ -56,6 +58,29 @@ FdoInt32 FdoGrfpRasterImageDefinition::GetFrameNumber()
 void FdoGrfpRasterImageDefinition::SetFrameNumber(FdoInt32 frameNumber)
 {
     m_frameNumber = frameNumber;
+}
+
+bool FdoGrfpRasterImageDefinition::GetBounds( 
+    double &minX, double &minY, double &maxX, double &maxY )
+
+{
+    minX = m_minX;
+    minY = m_minY;
+    maxX = m_maxX;
+    maxY = m_maxY;
+    
+    return m_haveBounds;
+}
+
+void FdoGrfpRasterImageDefinition::SetBounds( 
+    double minX, double minY, double maxX, double maxY )
+
+{
+    m_haveBounds = true;
+    m_minX = minX;
+    m_minY = minY;
+    m_maxX = maxX;
+    m_maxY = maxY;
 }
 
 // Initialize the object using the objects XML attributes
@@ -143,6 +168,28 @@ FdoXmlSaxHandler* FdoGrfpRasterImageDefinition::XmlStartElement(
             {
                 m_state = 7;
             }
+            else if (STREQUAL(name, FdoGrfpXmlGlobals::Bounds))
+            {
+                if (m_state != 0)
+                    bOK = false;
+                m_state = 8;
+            }
+            else if (STREQUAL(name, FdoGrfpXmlGlobals::MinX))
+            {
+                m_state = 9;
+            }
+            else if (STREQUAL(name, FdoGrfpXmlGlobals::MinY))
+            {
+                m_state = 10;
+            }
+            else if (STREQUAL(name, FdoGrfpXmlGlobals::MaxX))
+            {
+                m_state = 11;
+            }
+            else if (STREQUAL(name, FdoGrfpXmlGlobals::MaxY))
+            {
+                m_state = 12;
+            }
             else
             {
                 bOK = false;
@@ -221,12 +268,46 @@ FdoBoolean FdoGrfpRasterImageDefinition::XmlEndElement(
                   bOK = false;
               break;
           }
+          case 8:
+          {
+              if (!STREQUAL(name, FdoGrfpXmlGlobals::Bounds) != 0)
+                  bOK = false;
+              break;
+          }
+          case 9:
+          {
+              if (!STREQUAL(name, FdoGrfpXmlGlobals::MinX) != 0)
+                  bOK = false;
+              break;
+          }
+          case 10:
+          {
+              if (!STREQUAL(name, FdoGrfpXmlGlobals::MinY) != 0)
+                  bOK = false;
+              break;
+          }
+          case 11:
+          {
+              if (!STREQUAL(name, FdoGrfpXmlGlobals::MaxX) != 0)
+                  bOK = false;
+              break;
+          }
+          case 12:
+          {
+              if (!STREQUAL(name, FdoGrfpXmlGlobals::MaxY) != 0)
+                  bOK = false;
+              break;
+          }
           default:
             bOK = false;
             break;
         }
         if (m_state >= 2 && m_state <=7)
             m_state = 1;
+        else if (m_state >= 9 && m_state <=12)
+            m_state = 8;
+        else
+            m_state = 0;
 
         if (!bOK)
             throw FdoCommandException::Create(NlsMsgGet(GRFP_94_INVALID_GEOREFERENCE_DEF, "Invalid georeference definition."));
@@ -251,7 +332,8 @@ void FdoGrfpRasterImageDefinition::XmlCharacters(FdoXmlSaxContext* context, FdoS
 
         BaseType::XmlCharacters(context, chars);
 
-        if (m_state >= 2 && m_state <=7)
+        if( (m_state >= 2 && m_state <= 7) 
+            || (m_state >= 9 && m_state <= 12) )
         {
             double temp = 0.0;
             if (EOF == swscanf(chars, L"%lf", &temp)) {
@@ -279,6 +361,24 @@ void FdoGrfpRasterImageDefinition::XmlCharacters(FdoXmlSaxContext* context, FdoS
                   case 7:
                     m_geoReference->SetYRotation(temp);
                     break;
+
+                  case 9:
+                    m_minX = temp;
+                    m_haveBounds = true;
+                    break;
+                  case 10:
+                    m_minY = temp;
+                    m_haveBounds = true;
+                    break;
+                  case 11:
+                    m_maxX = temp;
+                    m_haveBounds = true;
+                    break;
+                  case 12:
+                    m_maxY = temp;
+                    m_haveBounds = true;
+                    break;
+
                   default:
                     break;
                 }
@@ -343,6 +443,33 @@ void FdoGrfpRasterImageDefinition::_writeXml( FdoXmlWriter* xmlWriter, const Fdo
     xmlWriter->WriteEndElement();
 
     xmlWriter->WriteEndElement(); //end of Georeference definition
+
+    if( m_haveBounds )
+    {
+        xmlWriter->WriteStartElement(FdoGrfpXmlGlobals::Bounds);
+
+        // <MinX>
+        xmlWriter->WriteStartElement(FdoGrfpXmlGlobals::MinX);
+        xmlWriter->WriteCharacters(FdoStringP::Format(L"%f", m_minX));
+        xmlWriter->WriteEndElement(); 
+
+        // <MinY>
+        xmlWriter->WriteStartElement(FdoGrfpXmlGlobals::MinY);
+        xmlWriter->WriteCharacters(FdoStringP::Format(L"%f", m_minY));
+        xmlWriter->WriteEndElement(); 
+	
+        // <MaxX>
+        xmlWriter->WriteStartElement(FdoGrfpXmlGlobals::MaxX);
+        xmlWriter->WriteCharacters(FdoStringP::Format(L"%f", m_maxX));
+        xmlWriter->WriteEndElement(); 
+	
+        // <MaxY>
+        xmlWriter->WriteStartElement(FdoGrfpXmlGlobals::MaxY);
+        xmlWriter->WriteCharacters(FdoStringP::Format(L"%f", m_maxY));
+        xmlWriter->WriteEndElement(); 
+
+        xmlWriter->WriteEndElement(); 
+    }
 
     xmlWriter->WriteEndElement(); //end of Image definition
 }
