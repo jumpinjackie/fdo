@@ -105,7 +105,7 @@ void SelectAggregatesCommand::SetDistinct(bool value)
 
 bool SelectAggregatesCommand::GetDistinct()
 {
-    return mDistinct    ;
+    return mDistinct;
 }
 
 FdoIdentifierCollection* SelectAggregatesCommand::GetGrouping()
@@ -134,6 +134,23 @@ FdoFilter* SelectAggregatesCommand::GetGroupingFilter()
 FdoIDataReader* SelectAggregatesCommand::Execute()
 {
     FDOLOG_MARKER("SelectAggregatesCommand::+Execute");
+
+    FdoInt32 const propsSize = mProperties->GetCount();
+    for (FdoInt32 i = 0; i < propsSize; i++)
+    {
+        FdoPtr<FdoIdentifier> ident(mProperties->GetItem(i));
+        FdoComputedIdentifier* cident = dynamic_cast<FdoComputedIdentifier*>(ident.p);
+        if (NULL != cident)
+        {
+            FdoPtr<FdoExpression> expr(cident->GetExpression());
+            FdoFunction* func = dynamic_cast<FdoFunction*>(expr.p);
+            if (NULL != func)
+            {
+                FdoStringP funcName = func->GetName();
+            }
+        }
+    }
+
 
     return NULL;
 }
