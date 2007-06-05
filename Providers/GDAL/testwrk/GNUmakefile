@@ -30,7 +30,7 @@ FDOGDAL = ${FDOCORE}/Providers/GDAL
 FDOCOREPREFIX = /usr/local/fdo-3.3.0
 #
 # - GDAL installation prefix
-GDALPREFIX = ${FDOCORE}/Thirdparty/GDAL1.3/linux
+GDALPREFIX = ${FDOCORE}/Thirdparty/gdal
 #
 ###### END OF CONFIGURATION ######
 
