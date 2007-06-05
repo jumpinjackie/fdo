@@ -213,6 +213,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RfpTestSpatialQuery.cpp"
+				>
+			</File>
+			<File
 				RelativePath="RfpTestBand.cpp"
 				>
 			</File>
@@ -355,6 +359,10 @@
 			</File>
 			<File
 				RelativePath=".\RfpTestAAIGrid.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RfpTestSpatialQuery.h"
 				>
 			</File>
 			<File

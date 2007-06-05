@@ -54,7 +54,8 @@ UnitTest_SOURCES = \
   RfpTestBandConfig.cpp \
   RfpTestPng.cpp \
   RfpTestJpg.cpp \
-  RfpTestAAIGrid.cpp
+  RfpTestAAIGrid.cpp \
+  RfpTestSpatialQuery.cpp
 
 noinst_HEADERS = $(UnitTest_SOURCES) \
   RfpNoConfigTest.h \
@@ -80,7 +81,8 @@ noinst_HEADERS = $(UnitTest_SOURCES) \
   XmlFormatter.h \
   RfpTestPng.h \
   RfpTestJpg.h \
-  RfpTestAAIGrid.h
+  RfpTestAAIGrid.h \
+  RfpTestSpatialQuery.h
 
 INCLUDES = \
   -I.. \
