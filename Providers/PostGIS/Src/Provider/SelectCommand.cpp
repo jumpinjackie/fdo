@@ -177,18 +177,22 @@ FdoIFeatureReader* SelectCommand::Execute()
         featureClasses = logicalSchemas->FindClass(classId);
         if (NULL == featureClasses)
         {
-            FDOLOG_WRITE(L"ERROR: Logical schema for '%s' not found",
-                static_cast<FdoString*>(classId));
-            return NULL;
+            FdoStringP msg =
+                FdoStringP::Format(L"Logical schema for '%s' not found", 
+                                   static_cast<FdoString*>(classId));
+            FDOLOG_WRITE("ERROR: %s", static_cast<char const*>(msg));
+            throw FdoCommandException::Create(msg);
         }
 
         FDOLOG_WRITE(L"Number of feature schemas: %d", featureClasses->GetCount());
 
         if (featureClasses->GetCount() <= 0)
         {
-            FDOLOG_WRITE(L"ERROR: No class definition found for schema '%s'",
-                static_cast<FdoString*>(classId));
-            return NULL;
+            FdoStringP msg =
+                FdoStringP::Format(L"No class definition found for schema '%s'", 
+                                   static_cast<FdoString*>(classId));
+            FDOLOG_WRITE("ERROR: %s", static_cast<char const*>(msg));
+            throw FdoCommandException::Create(msg);
         }
 
         // We have a single-element collection here
@@ -210,15 +214,15 @@ FdoIFeatureReader* SelectCommand::Execute()
         phClassDef = schemaMapping->FindByClassName(className);
         if (NULL == phClassDef)
         {
-            FDOLOG_WRITE(L"ERROR: Physical schema for '%s' not found",
-                static_cast<FdoString*>(className));
-            return NULL;
+            FdoStringP msg =
+                FdoStringP::Format(L"Physical schema for '%s' not found", 
+                                   static_cast<FdoString*>(className));
+            FDOLOG_WRITE("ERROR: %s", static_cast<char const*>(msg));
+            throw FdoCommandException::Create(msg);
         }
 
         // NOTE: Schema and table names are wrapped with double quotes
         std::string tablePath(static_cast<char const*>(phClassDef->GetTablePath()));
-
-        FDOLOG_WRITE("Table: %s", tablePath.c_str());
 
         //
         // Read properties definition to SQL columns
@@ -229,8 +233,8 @@ FdoIFeatureReader* SelectCommand::Execute()
         
         FDOLOG_WRITE("Number of properties: %d", props->GetCount());
 
-        int const propsCount = props->GetCount();
-        for (int propIdx = 0; propIdx < propsCount; propIdx++)
+        FdoInt32 const propsCount = props->GetCount();
+        for (FdoInt32 propIdx = 0; propIdx < propsCount; propIdx++)
         {
             FdoPtr<FdoPropertyDefinition> propDef(props->GetItem(propIdx));
 
