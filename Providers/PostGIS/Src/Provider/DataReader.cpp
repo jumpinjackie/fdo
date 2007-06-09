@@ -50,22 +50,22 @@ void DataReader::Dispose()
 
 FdoInt32 DataReader::GetPropertyCount()
 {
-    return 0;
+    return Base::GetPropertyCount();
 }
 
 FdoString* DataReader::GetPropertyName(FdoInt32 index)
 {
-    return NULL;
+    return Base::GetPropertyName(index);
 }
 
 FdoDataType DataReader::GetDataType(FdoString* propertyName)
 {
-    return FdoDataType_Int32;
+    return Base::GetDataType(propertyName);
 }
 
 FdoPropertyType DataReader::GetPropertyType(FdoString* propertyName)
 {
-    return FdoPropertyType_DataProperty;
+    return Base::GetPropertyType(propertyName);
 }
 
 }} // namespace fdo::postgis

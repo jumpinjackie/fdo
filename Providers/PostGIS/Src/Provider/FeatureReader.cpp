@@ -46,7 +46,6 @@ void FeatureReader::Dispose()
     delete this;
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////
 // FdoIFeatureReader interface
 ///////////////////////////////////////////////////////////////////////////////
@@ -60,6 +59,7 @@ FdoClassDefinition* FeatureReader::GetClassDefinition()
 FdoInt32 FeatureReader::GetDepth()
 {
     FDOLOG_MARKER("FeatureReader::GetDepth");
+    
     // TODO: Verify this value.
     return 0;
 }
