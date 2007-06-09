@@ -94,14 +94,14 @@ if not "%2"=="postgis" goto stp5_get_with
 	SET POSTGISENABLETHR=yes	
 	goto next_param
 :stp5_get_with
-if not "%2"=="fdo" goto stp67_get_with
+if not "%2"=="fdo" goto stp6_get_with
 	SET FDOENABLETHR=yes
 	goto next_param
-:stp7_get_with
-if not "%2"=="gdal" goto stp8_get_with
+:stp6_get_with
+if not "%2"=="gdal" goto stp7_get_with
 	SET GDALENABLETHR=yes	
 	goto next_param
-:stp8_get_with
+:stp7_get_with
 if not "%2"=="all" goto custom_error
 	SET ALLENABLETHR=yes
 	SET SDFENABLETHR=no
@@ -339,6 +339,6 @@ echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
 echo Action:         -a[ction]=build(default), buildinstall, install, clean
-echo WithModule:     -w[ith]=all(default), fdo, providers, sdf, wfs, wms, gdal
+echo WithModule:     -w[ith]=all(default), fdo, providers, sdf, wfs, wms, gdal, postgis
 echo **************************************************************************
 exit /B 0
