@@ -230,14 +230,18 @@ FdoIDataReader* SelectAggregatesCommand::Execute()
 
         if (NULL != dynamic_cast<FdoComputedIdentifier*>(id.p))
         {
+            // Parse complex computed expression and identifier
+
             FdoComputedIdentifier* compId = NULL;
             compId = dynamic_cast<FdoComputedIdentifier*>(id.p);
             
             FdoStringP name(compId->GetName());
-            FdoPtr<FdoExpression> expr(compId->GetExpression());
 
+            FdoPtr<FdoExpression> expr(compId->GetExpression());
             if (NULL != dynamic_cast<FdoFunction*>(expr.p))
             {
+                // Parse function: FOO( argument ) AS alias
+                
                 FdoFunction* func = dynamic_cast<FdoFunction*>(expr.p);               
                 func->Process(exprProc);
                 sqlSelect.append(sep + exprProc->ReleaseBuffer() + " AS ");
@@ -245,11 +249,17 @@ FdoIDataReader* SelectAggregatesCommand::Execute()
             }
             else
             {
-                ;
+                // Parse other types like arithmetic expressions, etc.
+
+                expr->Process(exprProc);
+                sqlSelect.append(sep + exprProc->ReleaseBuffer() + " AS ");
+                sqlSelect.append(static_cast<char const*>(name));
             }
         }
         else
         {
+            // Parse simple name identifier
+
             FdoStringP name(id->GetName());
             sqlSelect.append(sep + static_cast<char const*>(name));
         }
