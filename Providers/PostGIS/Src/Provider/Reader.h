@@ -95,6 +95,23 @@ public:
     /// Close the reader object and release any of its resources.
     FDOPOSTGIS_API virtual void Close();
 
+    //
+    // FdoIDataReader interface
+    //
+
+    /// Get number of properties in the result set.
+    virtual FdoInt32 GetPropertyCount();
+
+    /// Get name of property at given ordinal position.
+    virtual FdoString* GetPropertyName(FdoInt32 index);
+
+    /// Get data type of property with the specified name.
+    virtual FdoDataType GetDataType(FdoString* propertyName);
+
+    /// Get FDO property type of a given property.
+    virtual FdoPropertyType GetPropertyType(FdoString* propertyName);
+
+
 protected:
 
     /// Destructor.
@@ -251,6 +268,8 @@ FdoByteArray* Reader<T>::GetGeometry(FdoString* propertyName)
 template <typename T>
 const FdoByte* Reader<T>::GetGeometry(FdoString* propertyName, FdoInt32* count)
 {
+    assert(NULL != count);
+
     mFgfGeometry = GetGeometry(propertyName);
     *count = mFgfGeometry->GetCount();
     
@@ -281,6 +300,34 @@ void Reader<T>::Close()
 
     if (NULL != mCursor)
         mCursor->Close();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// FdoIDataReader interface
+///////////////////////////////////////////////////////////////////////////////
+
+template <typename T>
+FdoInt32 Reader<T>::GetPropertyCount()
+{
+    return mSQLReader->GetColumnCount();
+}
+
+template <typename T>
+FdoString* Reader<T>::GetPropertyName(FdoInt32 index)
+{
+    return mSQLReader->GetColumnName(index);
+}
+
+template <typename T>
+FdoDataType Reader<T>::GetDataType(FdoString* propertyName)
+{
+    return mSQLReader->GetColumnType(propertyName);
+}
+
+template <typename T>
+FdoPropertyType Reader<T>::GetPropertyType(FdoString* propertyName)
+{
+    return mSQLReader->GetPropertyType(propertyName);
 }
 
 }} // namespace fdo::postgis
