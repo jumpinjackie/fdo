@@ -324,14 +324,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\DataReader.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\DataReader.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\Inc\PostGIS\FdoPostGisProvider.h"
 				>
 			</File>
@@ -467,6 +459,14 @@
 		<Filter
 			Name="Feature"
 			>
+			<File
+				RelativePath=".\DataReader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DataReader.h"
+				>
+			</File>
 			<File
 				RelativePath=".\DeleteCommand.cpp"
 				>
