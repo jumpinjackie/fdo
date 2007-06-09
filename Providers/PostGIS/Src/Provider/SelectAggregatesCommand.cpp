@@ -218,6 +218,9 @@ FdoIDataReader* SelectAggregatesCommand::Execute()
     std::string sep;
     std::string sqlSelect;
 
+    FilterProcessor::Ptr filterProc(new FilterProcessor());
+    ExpressionProcessor::Ptr exprProc(new ExpressionProcessor());
+
     // TODO: What should we do if mProperties is NULL?
     FdoInt32 const propsSize = mProperties->GetCount();
 
@@ -229,26 +232,25 @@ FdoIDataReader* SelectAggregatesCommand::Execute()
         {
             FdoComputedIdentifier* compId = NULL;
             compId = dynamic_cast<FdoComputedIdentifier*>(id.p);
-
+            
+            FdoStringP name(compId->GetName());
             FdoPtr<FdoExpression> expr(compId->GetExpression());
 
             if (NULL != dynamic_cast<FdoFunction*>(expr.p))
             {
-                FdoFunction* func = dynamic_cast<FdoFunction*>(expr.p);
-                FdoStringP funcName = func->GetName();
-
-                FDOLOG_WRITE("[SelectAggregatesCommand] Computed and a function");
+                FdoFunction* func = dynamic_cast<FdoFunction*>(expr.p);               
+                func->Process(exprProc);
+                sqlSelect.append(sep + exprProc->ReleaseBuffer() + " AS ");
+                sqlSelect.append(static_cast<char const*>(name));
             }
             else
             {
-                FDOLOG_WRITE("[SelectAggregatesCommand] Computed but NOT a function");
+                ;
             }
         }
         else
         {
-            FDOLOG_WRITE("[SelectAggregatesCommand] Simple identifier");
-
-            FdoStringP name = id->GetName();
+            FdoStringP name(id->GetName());
             sqlSelect.append(sep + static_cast<char const*>(name));
         }
 
