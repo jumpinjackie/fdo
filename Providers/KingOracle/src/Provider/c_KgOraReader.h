@@ -17,7 +17,7 @@
 
 #ifndef _c_KgOraReader_h
 #define _c_KgOraReader_h
-
+#include "c_logApi.h"
 #include "c_SdoGeomToAGF.h"
 #include <time.h>
 
@@ -103,6 +103,13 @@ template <class FDO_READER> class c_KgOraReader : public FDO_READER
    
 
     private:
+        #ifdef _DEBUG
+        bool m_FirstRead;
+        FdoPtr<FdoByteArray> m_Barray;
+        //FdoCommonThreadMutex m_Mutex;
+        #endif
+        
+        
         oracle::occi::Statement* m_OcciStatement;
         oracle::occi::ResultSet* m_OcciResultSet;
         
@@ -131,6 +138,9 @@ template <class FDO_READER> c_KgOraReader<FDO_READER>::c_KgOraReader(c_KgOraConn
                                         )
  
 {
+#ifdef _DEBUG
+  m_FirstRead = true;
+#endif  
   m_Connection = Connection;
   FDO_SAFE_ADDREF(m_Connection);
   
@@ -155,13 +165,15 @@ template <class FDO_READER> c_KgOraReader<FDO_READER>::c_KgOraReader(c_KgOraConn
 
 template <class FDO_READER> c_KgOraReader<FDO_READER>::~c_KgOraReader()
 {
-    Close();
     
+    Close();
+  
     FDO_SAFE_RELEASE(m_Connection);
 }
 
 template <class FDO_READER> void c_KgOraReader<FDO_READER>::Dispose()
 {
+    D_KGORA_ELOG_WRITE("c_KgOraReader<FDO_READER>::Dispose");
     delete this;
 }
 
@@ -299,8 +311,24 @@ template <class FDO_READER> FdoInt32 c_KgOraReader<FDO_READER>::GetInt32(FdoStri
   }
   int oraind = iter->second;
   if( m_OcciResultSet && (oraind >= 1) )
-  {
-    oracle::occi::Number num = m_OcciResultSet->getNumber(oraind);    
+  { 
+    oracle::occi::Number num;
+    try
+    {
+      num = m_OcciResultSet->getNumber(oraind);    
+    }
+    catch(oracle::occi::SQLException& ea)
+    {
+      printf("\n----------------------c_KgOraReader::GetInt32: occi::SQLException Exception ---------------------- ");
+      
+      return 0;
+    }
+    catch(...)
+    {
+      printf("\n----------------------c_KgOraReader::GetInt32: Uknown Exception ---------------------- ");
+     
+      return 0;
+    }
     long val = (long)num; //m_OcciResultSet->getInt(oraind);    
     return val;
   }
@@ -412,7 +440,7 @@ template <class FDO_READER> FdoByteArray* c_KgOraReader<FDO_READER>::GetGeometry
     if( len > 0 )
       return FdoByteArray::Create((const FdoByte*)ptr, len);
     else
-      return NULL;
+      throw FdoException::Create(L"c_KgOraReader::GetGeometry Invalid Geometry !");
 }
 
 
@@ -423,26 +451,39 @@ template <class FDO_READER> const FdoByte* c_KgOraReader<FDO_READER>::GetGeometr
 
   if( m_OcciResultSet )
   {
-    #ifdef _KGORA_EXTENDED_LOG
-      clock_t t1 = clock();
+    SDO_GEOMETRY *geom=NULL;
+    try
+    {
+      if( !m_OcciResultSet->isNull(m_GeomPropSqlIndex+1) )
+        geom = (SDO_GEOMETRY*)m_OcciResultSet->getObject(m_GeomPropSqlIndex+1); // oracle is 1 based - our index is 0 based
+    }
+    catch(oracle::occi::SQLException& ea)
+    {
+      //printf("\n----------------------c_KgOraReader::GetGeometry: occi::SQLException Exception ---------------------- ");
+      *len=0;
       
-    #endif
-    
-    SDO_GEOMETRY *geom = (SDO_GEOMETRY*)m_OcciResultSet->getObject(m_GeomPropSqlIndex+1); // oracle is 1 based - our index is 0 based
+      throw FdoException::Create(L"c_KgOraReader::GetGeometry SQLException !");
+    }
+    catch(...)
+    {
+      //printf("\n----------------------c_KgOraReader::GetGeometry: Uknown Exception ---------------------- ");
+      *len=0;
+      throw FdoException::Create(L"c_KgOraReader::GetGeometry Uknown Exception !");
+    }
+  
     *len=0;
     if( geom )
     {
       m_SdoAgfConv.SetGeometry(geom);
       *len = m_SdoAgfConv.ToAGF();
-      m_SdoAgfConv.GetBuff();
        
       delete geom;
     }
-    
-    #ifdef _KGORA_EXTENDED_LOG
-      clock_t t2 = clock();
-      m_FetchTime += t2-t1;
-    #endif
+    else
+    {
+      throw FdoException::Create(L"c_KgOraReader::GetGeometry NULL SDO_GEOMETRY!");
+    }
+   
     
     return (const unsigned char*)m_SdoAgfConv.GetBuff();
   }
@@ -451,6 +492,50 @@ template <class FDO_READER> const FdoByte* c_KgOraReader<FDO_READER>::GetGeometr
   return (const unsigned char*)m_SdoAgfConv.GetBuff();
 }
 
+/*
+template <class FDO_READER> const FdoByte* c_KgOraReader<FDO_READER>::GetGeometry(FdoString* propertyName, FdoInt32* len)
+{
+  *len=0;
+  if( m_OcciResultSet )
+  {
+ 
+    
+    //m_Mutex.Enter();
+    SDO_GEOMETRY *geom;
+    if( !m_OcciResultSet->isNull(m_GeomPropSqlIndex+1) )
+    {
+      geom = (SDO_GEOMETRY*)m_OcciResultSet->getObject(m_GeomPropSqlIndex+1); // oracle is 1 based - our index is 0 based
+      if( geom ) delete geom;
+    }
+    //m_Mutex.Leave();
+    
+    double*		ordsXY = new double[10];
+	  ordsXY[0] = 1921500.0; ordsXY[1] = 423300.0; 
+	  ordsXY[2] = 1921600.0; ordsXY[3] = 423300.0; 
+	  ordsXY[4] = 1921600.0; ordsXY[5] = 423400.0; 
+	  ordsXY[6] = 1921500.0; ordsXY[7] = 423400.0; 
+	  ordsXY[8] = 1921500.0; ordsXY[9] = 423300.0; 
+	
+    FdoPtr<FdoFgfGeometryFactory>	gf = FdoFgfGeometryFactory::GetInstance();
+	  FdoPtr<FdoILinearRing>			ring = gf->CreateLinearRing(FdoDimensionality_XY, 10, ordsXY);
+	  
+	    
+	                FdoPtr<FdoIPolygon> geometry = gf->CreatePolygon(ring, NULL);
+	                
+	  m_Barray = gf->GetFgf(geometry);
+    
+    *len=m_Barray->GetCount();
+    
+ 
+    
+    return (const unsigned char*)m_Barray->GetData();
+  }
+  
+  
+  return (const unsigned char*)m_Barray->GetData();
+}
+*/
+
 template <class FDO_READER> FdoIRaster* c_KgOraReader<FDO_READER>::GetRaster(FdoString* propertyName)
 {
     return NULL;
@@ -458,21 +543,51 @@ template <class FDO_READER> FdoIRaster* c_KgOraReader<FDO_READER>::GetRaster(Fdo
 
 template <class FDO_READER> bool c_KgOraReader<FDO_READER>::ReadNext()
 {    
-    #ifdef _KGORA_EXTENDED_LOG
-      clock_t t1 = clock();
+  
+    
+    #ifdef _DEBUG
+      if( m_FirstRead )
+      {
+        char buff[1024]; 
+        sprintf(buff,"\nReader ReadNext=%p OcciresultSet=%p Statement=%p c_KgOraConnection=%p OcciConnection=%p",(void*)this,(void*)m_OcciResultSet,(void*)m_OcciStatement,(void*)m_Connection),(void*)m_Connection->GetOcciConnection();
+        D_KGORA_ELOG_WRITE(buff);                
+        printf("\nReader ReadNext START=%p OcciresultSet=%p Statement=%p c_KgOraConnection=%p OcciConnection=%p",(void*)this,(void*)m_OcciResultSet,(void*)m_OcciStatement,(void*)m_Connection),(void*)m_Connection->GetOcciConnection();
+        printf("\n****************************************************");
+        m_FirstRead=false;
+      }
     #endif
+    
+    try
+    {
     if( m_OcciResultSet->next() == oracle::occi::ResultSet::END_OF_FETCH )
     {
-      #ifdef _KGORA_EXTENDED_LOG        
-        D_KGORA_ELOG_WRITE1("c_KgOraReader Fetch time: %ld",m_FetchTime*CLOCKS_PER_SEC/1000);                
-      #endif
+     
+      #ifdef _DEBUG
       
+      {
+        char buff[1024]; 
+        sprintf(buff,"\nReader ReadNext END=%p OcciresultSet=%p Statement=%p c_KgOraConnection=%p OcciConnection=%p",(void*)this,(void*)m_OcciResultSet,(void*)m_OcciStatement,(void*)m_Connection),(void*)m_Connection->GetOcciConnection();
+        D_KGORA_ELOG_WRITE(buff);                
+        printf("\nReader ReadNext END=%p OcciresultSet=%p Statement=%p c_KgOraConnection=%p OcciConnection=%p",(void*)this,(void*)m_OcciResultSet,(void*)m_OcciStatement,(void*)m_Connection),(void*)m_Connection->GetOcciConnection();
+        printf("\n****************************************************");
+        m_FirstRead=false;
+      }
+    #endif
       return false;
     }
-    #ifdef _KGORA_EXTENDED_LOG
-      clock_t t2 = clock();
-      m_FetchTime += (long)(t2-t1);
-    #endif
+    
+    }
+    catch(oracle::occi::SQLException& ea)
+    {
+      printf("\n----------------------c_KgOraReader::ReadNext: occi::SQLException Exception ---------------------- ");
+      return false;
+    }
+    catch(...)
+    {
+      printf("\n----------------------c_KgOraReader::ReadNext: Uknown Exception ---------------------- ");
+      return false;
+    }
+    
     return true;
   
 }//end of template <class FDO_READER> c_KgOraReader<FDO_READER>::ReadNext
@@ -481,23 +596,35 @@ template <class FDO_READER> void c_KgOraReader<FDO_READER>::Close()
 {
 try
 {
+  D_KGORA_ELOG_WRITE("\nc_KgOraReader<FDO_READER>::Close()");
   if (m_OcciStatement && m_OcciResultSet)
   {
+    D_KGORA_ELOG_WRITE("\nc_KgOraReader<FDO_READER>::Close closeResultSet");
     m_OcciStatement->closeResultSet(m_OcciResultSet);        
     m_OcciResultSet = NULL;
   }
   
   if (m_OcciStatement)
   {
+    D_KGORA_ELOG_WRITE("\nc_KgOraReader<FDO_READER>::Close OCCI_TerminateStatement");
     m_Connection->OCCI_TerminateStatement(m_OcciStatement);
     m_OcciStatement=NULL;
   }
+  D_KGORA_ELOG_WRITE("\nc_KgOraReader<FDO_READER>::Close().. OK");
 }
 catch(oracle::occi::SQLException& ea)
 {
+  D_KGORA_ELOG_WRITE("\nc_KgOraReader<FDO_READER>::Close()... ERROR!");
+  printf("\n----------------------c_KgOraReader::Close: occi::SQLException Exception ---------------------- ");
   m_OcciResultSet = NULL;
+  m_OcciStatement=NULL;
   FdoStringP gstr = ea.getMessage().c_str();
   throw FdoConnectionException::Create( gstr );  
+}
+catch(...)
+{
+  D_KGORA_ELOG_WRITE("\nc_KgOraReader<FDO_READER>::Close()... ERROR!");
+  printf("\n----------------------c_KgOraReader::Close: Uknown Exception ---------------------- ");
 }
 
 }//end of template <class FDO_READER> c_KgOraReader<FDO_READER>::Close

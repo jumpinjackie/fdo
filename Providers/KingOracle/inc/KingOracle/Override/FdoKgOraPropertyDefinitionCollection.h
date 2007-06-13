@@ -36,7 +36,7 @@ protected:
     virtual void Dispose();
 };
 
-typedef GisPtr<FdoKgOraPropertyDefinitionCollection> FdoKgOraPropertyDefinitionCollectionP;
+typedef FdoPtr<FdoKgOraPropertyDefinitionCollection> FdoKgOraPropertyDefinitionCollectionP;
 
 
 #endif // FdoKgOraPropertyDefinitionCollection_H

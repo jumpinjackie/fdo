@@ -187,6 +187,39 @@ long c_Ora_API::GetSrid(oracle::occi::Connection*Conn,const char* CoordSysName)
   
 }//end of c_Ora_API::GetSrid
 
+bool c_Ora_API::GetCoordinateSystemWkt(oracle::occi::Connection*Conn,long Srid,string& Wkt)
+{
+  oracle::occi::Statement* occi_stm=NULL;
+  oracle::occi::ResultSet* occi_rset=NULL;
+  long srid = 0;
+
+  occi_stm = Conn->createStatement();  
+  
+  string sqlstr;
+  sqlstr = " select WKTEXT,CS_NAME,SRID from MDSYS.cs_srs where SRID = :1";
+  
+  occi_stm->setSQL(sqlstr);
+  occi_stm->setInt(1,Srid);
+  
+  occi_rset = occi_stm->executeQuery();
+  
+  bool found=false;
+  if( occi_rset->next() != oracle::occi::ResultSet::END_OF_FETCH )
+  {
+    if( !occi_rset->isNull(1) )
+    {
+      Wkt = occi_rset->getString(1);
+      found=true;
+    }      
+  }
+  
+  occi_stm->closeResultSet(occi_rset);
+  Conn->terminateStatement (occi_stm);
+  
+  return found;
+  
+}//end of c_Ora_API::GetCoordinateSystemWkt
+
 long c_Ora_API::GetSequenceNextVal(oracle::occi::Connection*Conn,const char* SequenceName)
 {
   oracle::occi::Statement* occi_stm=NULL;

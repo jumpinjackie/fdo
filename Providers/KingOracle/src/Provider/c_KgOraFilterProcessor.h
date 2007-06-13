@@ -41,6 +41,8 @@ public:
 protected:
   FdoPtr<c_KgOraSchemaDesc> m_KgOraSchemaDesc;
   FdoPtr<FdoIdentifier> m_ClassId;  
+  
+  FdoPtr<FdoKgOraClassDefinition> m_ClassDef;  
   c_KgOraSridDesc m_OraSridDesc;
 public:
     /// \brief

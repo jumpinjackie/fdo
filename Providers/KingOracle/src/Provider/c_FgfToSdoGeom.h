@@ -53,7 +53,7 @@ public:
 protected:  
   void OraDim(int FGF_CoordDim);
   void AddOrdinates(const int*& FgfBuff,size_t NumPoints,int Etype,int Interp);
-  void AddPoint(const int *& FgfBuff);
+  void PushPoint(const int *& FgfBuff);
   void AddElemInfo(int Offset,int Etype,int Interp);
   
  
@@ -65,6 +65,8 @@ protected:
   unsigned int m_NextOrdOffset; // in process of ading ordinates to array it shows the next index where ordinates will be added
                        // it is SDO_ORDINATE_OFFSET field when adding new ordinates
                        // basucally in process of adding ordinates it is size of ordinates in m_SdoGeom
+                       
+  unsigned int m_LastOrdOffset; // it remebers last offset on which AddElemInfo was called                       
 
 };
 

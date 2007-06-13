@@ -84,7 +84,7 @@ FdoInt32 c_KgOraSQLCommand::ExecuteNonQuery()
         FdoDataValue* dataval = dynamic_cast<FdoDataValue*>(lval.p);
         if( dataval )
         {    
-          c_FdoOra_API::SetOracleStatementData(occi_stm,ind+1, dataval);
+          c_FdoOra_API::SetOracleStatementData(m_Connection->GetOcciEnvironment(),occi_stm,ind+1, dataval);
         }
       }
     }
@@ -135,7 +135,7 @@ FdoISQLDataReader* c_KgOraSQLCommand::ExecuteReader()
         FdoDataValue* dataval = dynamic_cast<FdoDataValue*>(lval.p);
         if( dataval )
         {    
-          c_FdoOra_API::SetOracleStatementData(occi_stm,ind+1, dataval);
+          c_FdoOra_API::SetOracleStatementData(m_Connection->GetOcciEnvironment(),occi_stm,ind+1, dataval);
         }
       }
     }

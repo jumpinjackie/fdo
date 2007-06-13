@@ -46,30 +46,8 @@ void c_KgOraFeatureReaderInsert::Dispose()
 
 FdoClassDefinition* c_KgOraFeatureReaderInsert::GetClassDefinition()
 {
-    
-  FdoPtr<FdoDataPropertyDefinition> propdef;
-  FdoPtr<FdoPropertyDefinitionCollection> propcol;
-  FdoFeatureClass *fclass = FdoFeatureClass::Create(m_ClassDef->GetName(), m_ClassDef->GetDescription());
+  return FDO_SAFE_ADDREF(m_ClassDef.p);
 
-  fclass->SetIsAbstract(false);
-  propcol = fclass->GetProperties();
-
-  unsigned int count = m_FeatureValues->GetCount();
-  for (int i=0; i < count ; i++)
-  {
-    FdoPtr<FdoPropertyValue> propertyValue = m_FeatureValues->GetItem(i);
-    FdoValueExpression *value = propertyValue->GetValue();
-    FdoPtr<FdoDataValue> dataval = (static_cast<FdoDataValue*>(value));
-    
-    FdoPtr<FdoIdentifier> id = propertyValue->GetName();
-    propdef = FdoDataPropertyDefinition::Create();
-    propdef->SetName(id->GetName());
-    propdef->SetDataType(dataval->GetDataType());
-
-    propcol->Add(propdef);
-  }
-
-  return fclass;
 }
 
 int c_KgOraFeatureReaderInsert::GetDepth()
@@ -105,7 +83,33 @@ FdoByte c_KgOraFeatureReaderInsert::GetByte( const wchar_t *PropName )
 
 FdoDateTime c_KgOraFeatureReaderInsert::GetDateTime( const wchar_t *PropName )
 {
-  throw FdoCommandException::Create(L"c_KgOraFeatureReaderInsert::GetDateTime unsupported!");
+     FdoPtr<FdoPropertyValue> propvalue = NULL;
+
+  if( m_IsFirstReadNext || m_FeatureValues == NULL )
+      throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetDateTime End of recordset!" );
+
+  try
+  {
+      propvalue =  m_FeatureValues->GetItem( PropName );
+      if( propvalue == NULL )
+          throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetDouble Property not found!" );
+  }
+  catch ( FdoException * e)
+  {
+    FDO_SAFE_RELEASE(e);
+    throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetDouble Property not found!" );
+  }
+  FdoPtr<FdoValueExpression> val = propvalue->GetValue();
+  
+  FdoDataValue* dataval = (dynamic_cast<FdoDataValue*>(val.p));
+  
+  if( !dataval && dataval->GetDataType() != FdoDataType_DateTime)
+    throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetDouble DataType not FdoDataType_Int64!" );
+
+  FdoDateTimeValue *dval = (static_cast<FdoDateTimeValue*>(dataval));
+  
+  
+  return dval->GetDateTime();
 }
 
 
@@ -129,9 +133,9 @@ double c_KgOraFeatureReaderInsert::GetDouble( const wchar_t *PropName )
   }
   FdoPtr<FdoValueExpression> val = propvalue->GetValue();
   
-  FdoDataValue* dataval = (static_cast<FdoDataValue*>(val.p));
+  FdoDataValue* dataval = (dynamic_cast<FdoDataValue*>(val.p));
   
-  if( dataval->GetDataType() != FdoDataType_Double )
+  if( !dataval || dataval->GetDataType() != FdoDataType_Double )
     throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetDouble DataType not FdoDataType_Int64!" );
 
   FdoDoubleValue  *dval = (static_cast<FdoDoubleValue*>(dataval));
@@ -160,9 +164,9 @@ const wchar_t* c_KgOraFeatureReaderInsert::GetString( const wchar_t * PropName)
   }
   FdoPtr<FdoValueExpression> val = propvalue->GetValue();
   
-  FdoDataValue* dataval = (static_cast<FdoDataValue*>(val.p));
+  FdoDataValue* dataval = (dynamic_cast<FdoDataValue*>(val.p));
   
-  if( dataval->GetDataType() != FdoDataType_String )
+  if( !dataval || dataval->GetDataType() != FdoDataType_String )
     throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetString DataType not FdoDataType_Int64!" );
 
   FdoStringValue  *str = (static_cast<FdoStringValue*>(dataval));
@@ -191,9 +195,9 @@ short c_KgOraFeatureReaderInsert::GetInt16( const wchar_t *PropName )
   }
   FdoPtr<FdoValueExpression> val = propvalue->GetValue();
   
-  FdoDataValue* dataval = (static_cast<FdoDataValue*>(val.p));
+  FdoDataValue* dataval = (dynamic_cast<FdoDataValue*>(val.p));
   
-  if( dataval->GetDataType() != FdoDataType_Int16 )
+  if( !dataval || dataval->GetDataType() != FdoDataType_Int16 )
     throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetInt16 DataType not FdoDataType_Int64!" );
 
   FdoInt16Value  *int16Value = (static_cast<FdoInt16Value*>(dataval));
@@ -222,9 +226,9 @@ int c_KgOraFeatureReaderInsert::GetInt32( const wchar_t *PropName )
   }
   FdoPtr<FdoValueExpression> val = propvalue->GetValue();
   
-  FdoDataValue* dataval = (static_cast<FdoDataValue*>(val.p));
+  FdoDataValue* dataval = (dynamic_cast<FdoDataValue*>(val.p));
   
-  if( dataval->GetDataType() != FdoDataType_Int32 )
+  if( !dataval || dataval->GetDataType() != FdoDataType_Int32 )
     throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetInt32 DataType not FdoDataType_Int64!" );
 
   FdoInt32Value  *int32Value = (static_cast<FdoInt32Value*>(dataval));
@@ -253,9 +257,9 @@ FdoInt64 c_KgOraFeatureReaderInsert::GetInt64( const wchar_t *PropName )
   }
   FdoPtr<FdoValueExpression> val = propvalue->GetValue();
   
-  FdoDataValue* dataval = (static_cast<FdoDataValue*>(val.p));
+  FdoDataValue* dataval = (dynamic_cast<FdoDataValue*>(val.p));
   
-  if( dataval->GetDataType() != FdoDataType_Int64 )
+  if( !dataval || dataval->GetDataType() != FdoDataType_Int64 )
     throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetInt64 DataType not FdoDataType_Int64!" );
 
   FdoInt64Value  *int64Value = (static_cast<FdoInt64Value*>(dataval));
@@ -291,7 +295,7 @@ bool c_KgOraFeatureReaderInsert::IsNull( const wchar_t *PropName )
 
     FdoPtr<FdoValueExpression> val = propval->GetValue();
     
-    if( val == NULL )
+    if( val.p == NULL )
         return true;
 
     

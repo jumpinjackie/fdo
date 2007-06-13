@@ -138,9 +138,9 @@ FdoInt32 c_KgOraUpdate::Execute()
       D_KGORA_ELOG_WRITE1("Execute Update: '%s",sqlstr.GetString());
       
       // fist apply binds from update values
-      expproc.ApplySqlParameters(occi_stm);
+      expproc.ApplySqlParameters(m_Connection->GetOcciEnvironment(),occi_stm);
       // then apply sql binds from filter expresion
-      fproc.GetExpressionProcessor().ApplySqlParameters(occi_stm,expproc.GetSqlParametersCount());
+      fproc.GetExpressionProcessor().ApplySqlParameters(m_Connection->GetOcciEnvironment(),occi_stm,expproc.GetSqlParametersCount());
       
       
       update_num = occi_stm->executeUpdate();

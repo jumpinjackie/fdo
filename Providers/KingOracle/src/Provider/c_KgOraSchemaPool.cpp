@@ -17,38 +17,64 @@
 #include "StdAfx.h"
 #include "c_KgOraSchemaPool.h"
 
+  
 #include "c_FdoOra_API.h"
+
+vector<t_SchemaPoolDesc> c_KgOraSchemaPool::g_SchemaPoolDesc;
 
 c_KgOraSchemaPool::c_KgOraSchemaPool(void)
 {
 }
-
+ 
 c_KgOraSchemaPool::~c_KgOraSchemaPool(void)
 {
 }
 
 FdoCommonThreadMutex c_KgOraSchemaPool::m_Mutex;
 
-/*
-c_KgOraSchemaData* c_KgOraSchemaPool::GetSchemaData(c_KgOraConnection* Connection)
+
+c_KgOraSchemaDesc* c_KgOraSchemaPool::GetSchemaData(c_KgOraConnection* Connection)
 {
   vector< t_SchemaPoolDesc>::iterator iter;
   
   FdoStringP connstr = Connection->GetConnectionString();
-  m_Mutex.Enter();
+  //m_Mutex.Enter();
   for(iter =  g_SchemaPoolDesc.begin();iter != g_SchemaPoolDesc.end(); iter++  )
   {
     if( (iter->m_ConnectionString.compare(connstr) == 0)  )
     {
-      c_KgOraSchemaData* retschema = iter->m_SchemaData.p;
-      m_Mutex.Leave();
+      c_KgOraSchemaDesc* retschema = iter->m_SchemaData.p;
+      //m_Mutex.Leave();
       return FDO_SAFE_ADDREF( retschema );
     }
     
   }
-  m_Mutex.Leave();
-  
-// there is no feature schema data for this connection    
-  FdoPtr<c_KgOraSchemaData> schemadata = c_FdoOra_API::DescribeSchema(Connection->GetOcciConnection());
+  //m_Mutex.Leave();
+ return NULL;
 }//end of   
-*/
+
+void c_KgOraSchemaPool::AddSchemaData(c_KgOraConnection* Connection,c_KgOraSchemaDesc* SchemaDesc)
+{
+      vector< t_SchemaPoolDesc>::iterator iter;
+      
+  FdoStringP connstr = Connection->GetConnectionString();
+  //m_Mutex.Enter();
+  for(iter =  g_SchemaPoolDesc.begin();iter != g_SchemaPoolDesc.end(); iter++  )
+  {
+    if( (iter->m_ConnectionString.compare(connstr) == 0)  )
+    {
+      iter->m_SchemaData = SchemaDesc;
+      FDO_SAFE_ADDREF( SchemaDesc );
+      //m_Mutex.Leave();
+      return ;
+    }
+    
+  }
+  // add new one
+  t_SchemaPoolDesc spool;
+  spool.m_ConnectionString = connstr;
+  spool.m_SchemaData = SchemaDesc;
+  FDO_SAFE_ADDREF(SchemaDesc);
+  g_SchemaPoolDesc.push_back(spool);
+  //m_Mutex.Leave();
+}

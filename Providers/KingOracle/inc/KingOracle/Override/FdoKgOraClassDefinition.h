@@ -42,12 +42,31 @@ public:
     FDOKGORA_API void SetOraTableAliasNum(int AliasNum) { char tbuff[16]; sprintf(tbuff,"a%d",AliasNum);  m_OraTableAlias=tbuff; };
     FDOKGORA_API const char* GetOraTableAlias() { return  m_OraTableAlias; };
 	
-	
 
-    FDOKGORA_API virtual void InitFromXml(GisXmlSaxContext* Context, GisXmlAttributeCollection* Attrs);
-    FDOKGORA_API virtual GisXmlSaxHandler* XmlStartElement(GisXmlSaxContext* Context,FdoString* Uri, FdoString* Name, FdoString* QName, GisXmlAttributeCollection* Attrs);
-    FDOKGORA_API virtual GisBoolean XmlEndElement(GisXmlSaxContext* Context, FdoString* Uri, FdoString* Name, FdoString* QName);
-    FDOKGORA_API virtual void _writeXml(GisXmlWriter* Writer, const FdoXmlFlags* Flags);
+    FDOKGORA_API void SetPointGeometry(FdoString *GeomPropertyName, FdoString *X_OraColumn, FdoString *Y_OraColumn, FdoString *Z_OraColumn )
+    {
+      m_IsPointGeometry = true;  
+      m_PoinGeometry_PropertyName = GeomPropertyName;
+      m_PoinGeometry_X_OraColumn = X_OraColumn;
+      m_PoinGeometry_Y_OraColumn = Y_OraColumn;
+      m_PoinGeometry_Z_OraColumn = Z_OraColumn;
+    }
+    FDOKGORA_API void SetIsPointGeometry(bool IsPointGeometry)
+    {
+      m_IsPointGeometry = IsPointGeometry;  
+    }
+    FDOKGORA_API bool GetIsPointGeometry() { return m_IsPointGeometry; }
+    FDOKGORA_API FdoString* GetPoinGeometryPropertyName() { return m_PoinGeometry_PropertyName; };
+    FDOKGORA_API FdoString* GetPointXOraColumn() { return m_PoinGeometry_X_OraColumn; };
+    FDOKGORA_API FdoString* GetPointYOraColumn() { return m_PoinGeometry_Y_OraColumn; };
+    FDOKGORA_API FdoString* GetPointZOraColumn() { return m_PoinGeometry_Z_OraColumn; };
+    
+    	
+
+    FDOKGORA_API virtual void InitFromXml(FdoXmlSaxContext* Context, FdoXmlAttributeCollection* Attrs);
+    FDOKGORA_API virtual FdoXmlSaxHandler* XmlStartElement(FdoXmlSaxContext* Context,FdoString* Uri, FdoString* Name, FdoString* QName, FdoXmlAttributeCollection* Attrs);
+    FDOKGORA_API virtual FdoBoolean XmlEndElement(FdoXmlSaxContext* Context, FdoString* Uri, FdoString* Name, FdoString* QName);
+    FDOKGORA_API virtual void _writeXml(FdoXmlWriter* Writer, const FdoXmlFlags* Flags);
 
     /// find property with column name
     FDOKGORA_API FdoKgOraPropertyDefinition* FindByColumnName(FdoString* ColumnName);
@@ -62,10 +81,18 @@ private:
 	  FdoStringP m_OraTableAlias; // table allias used for in SQL (generated in describe schema)
 	  FdoStringP m_UseSequenceForIdentity; // if this
 	  
+	  // Class can have geometry property defined not in standard way as column in oracle table (SDO_GEOMETRY)
+	  // but as point which is created from numeric colimns X,Y and/or Z
+	  bool m_IsPointGeometry; // true if geometry property is created
+	  FdoStringP m_PoinGeometry_PropertyName; // name of geometry property in fdo class- must be same as
+	  FdoStringP m_PoinGeometry_X_OraColumn;  // name of oracle column (number) which is used for X coordinate of point
+	  FdoStringP m_PoinGeometry_Y_OraColumn;  // name of oracle column (number) which is used for Y coordinate of point
+	  FdoStringP m_PoinGeometry_Z_OraColumn;  // name of oracle column (number) which is used for Z coordinate of point - can be empty for 2D points
+	  
     FdoKgOraPropertyDefinitionCollectionP m_Properties;
 };
 
-typedef GisPtr<FdoKgOraClassDefinition> FdoKgOraClassDefinitionP;
+typedef FdoPtr<FdoKgOraClassDefinition> FdoKgOraClassDefinitionP;
 
 #endif // FdoKgOraClassDefinition_H
 

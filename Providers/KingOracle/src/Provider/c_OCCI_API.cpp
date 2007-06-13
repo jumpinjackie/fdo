@@ -16,12 +16,18 @@
 */
 
 #include "StdAfx.h"
-#include "c_OCCI_API.h"
+
+# include <occi.h>
+using namespace oracle::occi;
 #include "RegisterMappings.h"
+#include "c_OCCI_API.h"
+
 
 #include "c_LogAPI.h"
-using namespace oracle::occi;
 
+
+
+//#define USE_OCII_CONNECTION_POOLING
 
 
 c_OCCI_API::c_OCCI_API(void)
@@ -32,9 +38,10 @@ c_OCCI_API::~c_OCCI_API(void)
 {
 }
 
-FdoCommonThreadMutex c_OCCI_API::m_Mutex;
+//FdoCommonThreadMutex c_OCCI_API::m_Mutex;
 
-static oracle::occi::Environment *g_Env = NULL;
+//static oracle::occi::Environment *g_Env = NULL;
+
 //static oracle::occi::StatelessConnectionPool* g_ConnPool= NULL;
 
 typedef struct t_ConnPoolDesc
@@ -62,10 +69,12 @@ static vector<t_ConnToPool> g_ConnToPool;
 void c_OCCI_API::OcciInit()
 {
 try {
-  printf("\nOCCI Init");
-	g_Env = oracle::occi::Environment::createEnvironment( (Environment::Mode)(oracle::occi::Environment::OBJECT  | oracle::occi::Environment::THREADED_MUTEXED) );
-
-  RegisterClasses(g_Env);    
+  //m_Mutex.Enter();
+  //printf("\nOCCI Init");
+	//g_Env = oracle::occi::Environment::createEnvironment( (Environment::Mode)(oracle::occi::Environment::OBJECT  | oracle::occi::Environment::THREADED_MUTEXED) );
+	
+  //RegisterClasses(g_Env);    
+  //m_Mutex.Leave();
 }
 catch(oracle::occi::SQLException& ea)
 {
@@ -81,27 +90,35 @@ catch(...)
 
 }//end of c_OCCI_API::OcciInit
 
-bool c_OCCI_API::IsInit() { return g_Env != NULL; }
+bool c_OCCI_API::IsInit() 
+{ 
+  //return g_Env != NULL; 
+  return true;
+}
 
-oracle::occi::Environment* c_OCCI_API::GetEnvironment() { return g_Env; }
+//oracle::occi::Environment* c_OCCI_API::GetEnvironment() { return g_Env; }
 
+/*
 StatelessConnectionPool* c_OCCI_API::GetConnPool(const char*User,const char*Password,const char* DbLink,int& IndCpDesc)
 {
   vector< t_ConnPoolDesc>::iterator iter;
   IndCpDesc = 0;
-  m_Mutex.Enter();
+  
   for(iter =  g_ConnPoolDesc.begin();iter != g_ConnPoolDesc.end(); iter++  )
   {
     if( (iter->m_UserName.compare(User) == 0) && (iter->m_Password.compare(Password) == 0) && (iter->m_DbLink.compare(DbLink) == 0) )
     {
       StatelessConnectionPool* retconn = iter->m_ConnPool;
-      m_Mutex.Leave();
+      
       return retconn;
     }
     IndCpDesc++;
   }
-  m_Mutex.Leave();
   
+
+  #ifdef _DEBUG
+    printf("\Creating new connection pool!");
+  #endif  
   t_ConnPoolDesc newdesc;
   StatelessConnectionPool *newpool = g_Env->createStatelessConnectionPool(User, Password, DbLink, 10, 2, 2,StatelessConnectionPool::HOMOGENEOUS);
   
@@ -113,33 +130,35 @@ StatelessConnectionPool* c_OCCI_API::GetConnPool(const char*User,const char*Pass
   //D_KGORA_ELOG_WRITE1("Created new Connection Pool '%s'",newpool->getPoolName().c_str());  
   
   
-  m_Mutex.Enter();
+  
   g_ConnPoolDesc.push_back(newdesc);
   
   IndCpDesc = g_ConnPoolDesc.size()-1;
-  m_Mutex.Leave();
+  
 
   return newpool;  
   
 }//end of c_OCCI_API::GetConnPool
+*/
 
-
-oracle::occi::Connection * c_OCCI_API::CreateConnection(const char*User,const char*Password,const char* DbLink)
+ void c_OCCI_API::CreateConnection(const char*User,const char*Password,const char* DbLink,oracle::occi::Connection*& Conn,oracle::occi::Environment*& Env)
 {
 
+#ifdef USE_OCII_CONNECTION_POOLING
   int ind_cpdesc=0;
-  
+
+  //m_Mutex.Enter();
+    
   StatelessConnectionPool *connpool = GetConnPool(User,Password,DbLink,ind_cpdesc);
   
     
   #ifdef _DEBUG    
-    printf("\n Pool '%s' Create Conn: ope:%ld busy:%ld",connpool->getPoolName().c_str(),(long)connpool->getOpenConnections(),(long)connpool->getBusyConnections());    
+    printf("\n Pool '%s' Create Conn: open:%ld busy:%ld ",connpool->getPoolName().c_str(),(long)connpool->getOpenConnections(),(long)connpool->getBusyConnections());    
   #endif
 
 
   //D_KGORA_ELOG_WRITE3("Pool  '%s' Create Conn: open:%ld busy:%ld",connpool->getPoolName().c_str(),(long)connpool->getOpenConnections(),(long)connpool->getBusyConnections());
-  
-  
+
   oracle::occi::Connection * newconn = connpool->getConnection();
   
   t_ConnToPool contopool;
@@ -148,21 +167,26 @@ oracle::occi::Connection * c_OCCI_API::CreateConnection(const char*User,const ch
   contopool.m_IndCPDesc = ind_cpdesc;
       
   // remember this connection in list
-  m_Mutex.Enter();
+  
   g_ConnToPool.push_back(contopool);
-  m_Mutex.Leave();
+  //m_Mutex.Leave();
   
   return newconn;
-  
-  //return g_Env->createConnection(User, Password, DbLink);
+
+#else  
+  Env = oracle::occi::Environment::createEnvironment( (Environment::Mode)(oracle::occi::Environment::OBJECT  | oracle::occi::Environment::THREADED_MUTEXED) );
+	
+  RegisterClasses(Env);    
+  Conn= Env->createConnection(User, Password, DbLink);
+#endif    
 }//end of c_OCCI_API::CreateConnection
 
-void c_OCCI_API::CloseConnection(oracle::occi::Connection * Conn)
+void c_OCCI_API::CloseConnection(oracle::occi::Connection *& Conn,oracle::occi::Environment*& Env)
 {
  
-  
+ #ifdef USE_OCII_CONNECTION_POOLING 
   // 
-  m_Mutex.Enter();
+  //m_Mutex.Enter();
   
   // remove connection from list
   for( vector<t_ConnToPool>::iterator iter = g_ConnToPool.begin(); iter != g_ConnToPool.end();iter++ )
@@ -171,20 +195,24 @@ void c_OCCI_API::CloseConnection(oracle::occi::Connection * Conn)
     {
       StatelessConnectionPool *connpool = g_ConnPoolDesc[iter->m_IndCPDesc].m_ConnPool;
       #ifdef _DEBUG    
-        printf("\n Pool '%s' Close Conn: ope:%ld busy:%ld",connpool->getPoolName().c_str(),(long)connpool->getOpenConnections(),(long)connpool->getBusyConnections());    
+        printf("\n Pool '%s' Close Conn: open:%ld busy:%ld",connpool->getPoolName().c_str(),(long)connpool->getOpenConnections(),(long)connpool->getBusyConnections());    
       #endif
 
       //D_KGORA_ELOG_WRITE3("Pool '%s' Close Conn: ope:%ld busy:%ld",connpool->getPoolName().c_str(),(long)connpool->getOpenConnections(),(long)connpool->getBusyConnections());
       
   
-      g_ConnPoolDesc[iter->m_IndCPDesc].m_ConnPool->releaseConnection(Conn);    
+      g_ConnPoolDesc[iter->m_IndCPDesc].m_ConnPool->releaseConnection(Conn);          
       g_ConnToPool.erase(iter);
+      //m_Mutex.Leave();
       break;
     }
   }
   
-  m_Mutex.Leave();
-  
+  //m_Mutex.Leave();
+#else
+  Env->terminateConnection(Conn);
+  oracle::occi::Environment::terminateEnvironment(Env);
+#endif  
 }//end of c_OCCI_API::CloseConnection
 
 /*

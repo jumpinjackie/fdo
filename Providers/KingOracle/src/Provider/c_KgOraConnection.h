@@ -63,6 +63,7 @@ protected:
     FdoPtr<FdoIConnectionInfo> m_ConnectionInfo;
 
     oracle::occi::Connection * m_OcciConnection;
+    oracle::occi::Environment *m_OcciEnvironment;
 public:    
     string m_OraConnectionUserName; // username used to open connection to oracle
     string m_OraConnectionPassword; // passwor
@@ -74,9 +75,12 @@ public:
                                   
     int m_OracleMainVersion;
 	  int m_OracleSubVersion;
+	  
+	  
+	  
 protected:   
 
-
+  int m_ConnNo;
 	FdoPtr<c_KgOraSchemaDesc> m_SchemaDesc;
 	//FdoPtr<FdoFeatureSchemaCollection> m_FdoSchemas;
 	//FdoPtr<FdoKgOraPhysicalSchemaMapping> m_PhSchemaMapping;
@@ -224,6 +228,7 @@ public:
 	  void c_KgOraConnection::OCCI_Commit();
 	  void OCCI_TerminateStatement(oracle::occi::Statement* Statement);
     oracle::occi::Connection * GetOcciConnection() { return m_OcciConnection; }  ;	
+    oracle::occi::Environment * GetOcciEnvironment() { return m_OcciEnvironment; }  ;	
     
     bool GetOracleSridDesc(FdoGeometricPropertyDefinition* GeomProp,c_KgOraSridDesc& OraSridDesc);
     bool GetOracleSridDesc(FdoClassDefinition* ClassDef,c_KgOraSridDesc& OraSrid);

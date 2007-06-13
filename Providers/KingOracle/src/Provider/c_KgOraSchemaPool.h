@@ -46,6 +46,7 @@ protected:
   
 public:  
   static c_KgOraSchemaDesc* GetSchemaData(c_KgOraConnection* Connection);
+  static void AddSchemaData(c_KgOraConnection* Connection,c_KgOraSchemaDesc*);
   
 };
 

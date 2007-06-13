@@ -86,7 +86,7 @@ BEGIN
             VALUE "FileDescription", "King FDO Provider for Oracle Spatial Component"
             VALUE "FileVersion", "3.1.0.R000"
             VALUE "InternalName", "KingOracleprovider"
-            VALUE "LegalCopyright", "Copyright © 2006"
+            VALUE "LegalCopyright", "Copyright SL-King© 2006"
             VALUE "OriginalFilename", "KingOracleProvider.dll"
             VALUE "ProductName", "Feature Data Objects"
             VALUE "ProductVersion", "0.1.1.0"

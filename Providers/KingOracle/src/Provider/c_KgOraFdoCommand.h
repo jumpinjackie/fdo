@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+* Copyright (C) 2006  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -13,14 +13,7 @@
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- * Revision Control Modification History
- *
- *         $Id: //providers_reliant_sp2/FdoCommon/inc/c_KgOraFdoCommand.h#1 $
- *     $Author: lee $
- *   $DateTime: 2006/06/02 11:06:52 $
- *     $Change: 13046 $
- *
- */
+*/
 
 #ifndef _c_KgOraFdoCommand_h
 #define _c_KgOraFdoCommand_h

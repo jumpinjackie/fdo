@@ -23,6 +23,7 @@
 #include "c_Ora_API.h"
 #include "c_FdoOra_API.h"
 #include "c_KgOraSchemaDesc.h"
+#include "c_KgOraSchemaPool.h"
 #include "c_LogApi.h"
 
 #include <time.h>
@@ -99,11 +100,18 @@ c_KgOraConnection::c_KgOraConnection (void) :
     
 {
   m_OcciConnection=NULL;
+  m_SchemaDesc = NULL;
 	// Create the default SC
 	
+
 	g_Mutex.Enter();
 	g_GlobalRefCount++;
+	m_ConnNo = g_GlobalRefCount;
+	D_KGORA_ELOG_WRITE2("c_KgOraConnection%d::NEW %d ",m_ConnNo,m_ConnNo);
 	g_Mutex.Leave();
+	
+	
+
 	
 	// this wil be read from db in open connection command
 	m_OracleMainVersion = D_ORACLE_DEFAULT_MAIN_VER;
@@ -112,11 +120,16 @@ c_KgOraConnection::c_KgOraConnection (void) :
 
 c_KgOraConnection::~c_KgOraConnection (void)
 {
+  #ifdef _DEBUG
+  printf("\nFDO c_KgOraConnection::Destructor... %p",this);
+  #endif
+  D_KGORA_ELOG_WRITE2("c_KgOraConnection%d::Delete %d ",m_ConnNo,m_ConnNo);
   Close ();
 
-	g_Mutex.Enter();
-	g_GlobalRefCount--;
-	g_Mutex.Leave();
+	//g_Mutex.Enter();
+	//g_GlobalRefCount--;
+	//g_Mutex.Leave();
+	
 }
 
 // <summary>Dispose this object.</summary>
@@ -131,7 +144,7 @@ void c_KgOraConnection::Dispose ()
 /// <returns>Returns the connection capabilities</returns> 
 FdoIConnectionCapabilities* c_KgOraConnection::GetConnectionCapabilities ()
 {
-  D_KGORA_ELOG_WRITE("c_KgOraConnection::GetConnectionCapabilities");
+  D_KGORA_ELOG_WRITE1("c_KgOraConnection%d::GetConnectionCapabilities",m_ConnNo);
     return (new c_KgOraConnectionCapabilities ());
 }
 
@@ -139,7 +152,8 @@ FdoIConnectionCapabilities* c_KgOraConnection::GetConnectionCapabilities ()
 /// <returns>Returns schema capabilities</returns> 
 FdoISchemaCapabilities* c_KgOraConnection::GetSchemaCapabilities ()
 {
-  D_KGORA_ELOG_WRITE("c_KgOraConnection::GetSchemaCapabilities");
+  //D_KGORA_ELOG_WRITE("c_KgOraConnection::GetSchemaCapabilities");
+  D_KGORA_ELOG_WRITE1("c_KgOraConnection%d::GetSchemaCapabilities",m_ConnNo);
     return (new c_KgOraSchemaCapabilities ());
 }
 
@@ -195,7 +209,8 @@ FdoIGeometryCapabilities* c_KgOraConnection::GetGeometryCapabilities()
 /// <returns>Returns the connection string</returns> 
 FdoString* c_KgOraConnection::GetConnectionString ()
 {
-  D_KGORA_ELOG_WRITE("c_KgOraConnection::GetConnectionString");
+  //D_KGORA_ELOG_WRITE("c_KgOraConnection::GetConnectionString");
+  D_KGORA_ELOG_WRITE1("c_KgOraConnection%d::GetConnectionString",m_ConnNo);
     return (m_ConnectionString);
 }
 
@@ -205,7 +220,8 @@ FdoString* c_KgOraConnection::GetConnectionString ()
 /// <returns>Returns nothing</returns> 
 void c_KgOraConnection::SetConnectionString (FdoString* value)
 {
-  D_KGORA_ELOG_WRITE("c_KgOraConnection::SetConnectionString ");
+  //D_KGORA_ELOG_WRITE("c_KgOraConnection::SetConnectionString ");
+  D_KGORA_ELOG_WRITE1("c_KgOraConnection%d::SetConnectionString",m_ConnNo);
     if ((GetConnectionState() == FdoConnectionState_Closed) || (GetConnectionState() == FdoConnectionState_Pending))
     {
         // Update the connection string:
@@ -224,7 +240,8 @@ void c_KgOraConnection::SetConnectionString (FdoString* value)
 /// <returns>Returns the connection info</returns> 
 FdoIConnectionInfo* c_KgOraConnection::GetConnectionInfo ()
 {
-  D_KGORA_ELOG_WRITE("c_KgOraConnection::GetConnectionInfo ");
+  //D_KGORA_ELOG_WRITE("c_KgOraConnection::GetConnectionInfo ");
+  D_KGORA_ELOG_WRITE1("c_KgOraConnection%d::GetConnectionInfo",m_ConnNo);
     if( m_ConnectionInfo == NULL )
         m_ConnectionInfo = new c_KgOraConnectionInfo ( this );
     return FDO_SAFE_ADDREF(m_ConnectionInfo.p);
@@ -234,7 +251,8 @@ FdoIConnectionInfo* c_KgOraConnection::GetConnectionInfo ()
 /// <returns>Returns the current state of the connection</returns> 
 FdoConnectionState c_KgOraConnection::GetConnectionState ()
 {
-  D_KGORA_ELOG_WRITE("c_KgOraConnection::GetConnectionState ");
+  //D_KGORA_ELOG_WRITE("c_KgOraConnection::GetConnectionState ");
+  D_KGORA_ELOG_WRITE1("c_KgOraConnection%d::GetConnectionState",m_ConnNo);
     return (m_ConnectionState);
 }
 
@@ -268,6 +286,8 @@ void c_KgOraConnection::SetConnectionTimeout (FdoInt32 value)
 /// <returns>Returns nothing</returns> 
 FdoConnectionState c_KgOraConnection::Open ()
 {
+
+g_Mutex.Enter();
   #ifdef _DEBUG
     printf("\nOpen...");
   #endif
@@ -286,6 +306,10 @@ FdoConnectionState c_KgOraConnection::Open ()
 
   if( !c_OCCI_API::IsInit() )
   {
+    #ifdef _DEBUG
+      printf("\nOpen...OcciInit...");
+    #endif
+    D_KGORA_ELOG_WRITE("c_KgOraConnection::Open c_OCCI_API::OcciInit");
     c_OCCI_API::OcciInit();
   }
 
@@ -305,9 +329,9 @@ FdoConnectionState c_KgOraConnection::Open ()
     //FdoStringP password = dictionary->GetProperty (L"Password");
     //FdoStringP service = dictionary->GetProperty (L"Service");
 		
-		D_KGORA_ELOG_WRITE3("c_KgOraConnection::Open '%s' '%s' '%s'",(const char*)username,(const char*)password,(const char*)service);
+		D_KGORA_ELOG_WRITE5("c_KgOraConnection%d::Open %d '%s' '%s' '%s'",m_ConnNo,m_ConnNo,(const char*)username,(const char*)password,(const char*)service);
 		
-	  m_OcciConnection = c_OCCI_API::CreateConnection((const char*)username, (const char*)password, (const char*)service);
+	  c_OCCI_API::CreateConnection((const char*)username, (const char*)password, (const char*)service,m_OcciConnection,m_OcciEnvironment);
 	  
 	  
 	  
@@ -324,13 +348,31 @@ FdoConnectionState c_KgOraConnection::Open ()
 	    m_OracleSubVersion = D_ORACLE_DEFAULT_SUB_VER;
 	  }
 
+
+     // Connection is now open:
+    m_ConnectionState = FdoConnectionState_Open;
+    
+     #ifdef _DEBUG
+    printf(" <Open OK> ");
+  #endif
+  
+    D_KGORA_ELOG_WRITE1("c_KgOraConnection%d::Open OK",m_ConnNo);
+
+    g_Mutex.Leave();
+    
+    return (GetConnectionState ());
 	}
 	catch(oracle::occi::SQLException& ea)
   {
     const char* what = ea.what();
     
-    D_KGORA_ELOG_WRITE1("c_KgOraConnection::Open Exception '%s'",what);
+    #ifdef _DEBUG
+      printf(" <Open SQL Exception> ");
+    #endif
     
+    D_KGORA_ELOG_WRITE2("c_KgOraConnection%d::Open Exception '%s'",m_ConnNo,what);
+    
+    g_Mutex.Leave();
     
     //wchar_t *cstr = ustr.;
     FdoStringP gstr = what;
@@ -338,49 +380,72 @@ FdoConnectionState c_KgOraConnection::Open ()
     //throw FdoConnectionException::Create(L"Connect failed");
   }
 
-
-
-    // Connection is now open:
-    m_ConnectionState = FdoConnectionState_Open;
+  catch(...)
+  {
+    //const char* what = ea.what();
+     #ifdef _DEBUG
+      printf(" <Open Unspecified Exception> ");
+    #endif
+    D_KGORA_ELOG_WRITE("c_KgOraConnection::Open Exception Unknown exception!");
     
-    D_KGORA_ELOG_WRITE("c_KgOraConnection::Open OK");
+    g_Mutex.Leave();
+    throw FdoConnectionException::Create( L"c_KgOraConnection::Open Exception Unknown exception!" );
+    //throw FdoConnectionException::Create(L"Connect failed");
+  }
 
-  #ifdef _DEBUG
-    printf("OK");
-  #endif
-    
-  return (GetConnectionState ());
+   
 }
 
 /// <summary>Closes the connection to the DataStore</summary>
 /// <returns>Returns nothing</returns> 
 void c_KgOraConnection::Close ()
 {
-  D_KGORA_ELOG_WRITE("c_KgOraConnection::Close");
+  D_KGORA_ELOG_WRITE3("c_KgOraConnection%d::Close %d State=%d",m_ConnNo,m_ConnNo,(int)m_ConnectionState);
+  
   
   #ifdef _DEBUG
-  printf("\nFDO Close Connection...");
+  printf("\nFDO c_KgOraConnection::Close Connection... %p",this);
   #endif
 
   // reset schema
-  FDO_SAFE_RELEASE(m_SchemaDesc.p);
+  m_SchemaDesc = NULL;
   
 	// Reset the Spatial Contexts collection. Create the default SC.
 
-
+g_Mutex.Enter();
   try
   {
     if( m_OcciConnection )
     {
-      c_OCCI_API::CloseConnection(m_OcciConnection);    
+      c_OCCI_API::CloseConnection(m_OcciConnection,m_OcciEnvironment);    
       
       m_OcciConnection=NULL;    
     }
+    g_Mutex.Leave();  
   }
   catch(oracle::occi::SQLException& ea)
   {
+    g_Mutex.Leave();  
+    const char* what = ea.what();
+    
+    #ifdef _DEBUG
+      printf(" <Close Exception> ");
+    #endif
+    
+    D_KGORA_ELOG_WRITE2("c_KgOraConnection%d::Open Exception '%s'",m_ConnNo,what);
+    
     FdoStringP gstr = ea.getMessage().c_str();
     throw FdoException::Create( gstr );
+  }
+  catch(...)
+  {
+    #ifdef _DEBUG
+      printf(" <Close Exception Unspecified> ");
+    #endif
+    
+    D_KGORA_ELOG_WRITE1("c_KgOraConnection%d::Close Exception Unspecified exception",m_ConnNo);
+    
+    g_Mutex.Leave();  
   }
     // Connection is now closed:
     m_ConnectionState = FdoConnectionState_Closed;
@@ -555,11 +620,45 @@ bool c_KgOraConnection::GetOracleSridDesc(FdoClassDefinition* ClassDef,c_KgOraSr
   FdoString *csname = geomprop->GetSpatialContextAssociation();
   FdoPtr<c_KgOraSpatialContextCollection> sccol = GetSpatialContexts();
   
+  
+  
+    
   FdoPtr<c_KgOraSpatialContext> sc = sccol->FindItem(csname);
   
-  if( !sc.p ) return false;
-  
-  OraSrid = sc->GetOraSridDesc();
+  if( !sc.p ) 
+  {
+    // Now test if
+    FdoStringP name = csname;
+    FdoStringP temp = name.Mid(0,10);
+    if( (temp.ICompare("OracleSrid") == 0) )
+    {
+      FdoStringP temp = name.Mid(10,name.GetLength()-10);
+      OraSrid.m_OraSrid = temp.ToLong();
+      
+         
+      FdoStringP wkt =  sc->GetCoordinateSystemWkt();        
+      OraSrid.m_IsGeodetic = c_Ora_API::IsGeodeticCoordSystem(wkt); // TODO: it should return real value
+    }
+    else
+    {
+      FdoStringP name = sc->GetCoordinateSystem();
+      FdoStringP temp = name.Mid(0,10);
+      if( (temp.ICompare("OracleSrid") == 0) )
+      {
+        FdoStringP temp = name.Mid(10,name.GetLength()-10);
+        OraSrid.m_OraSrid = temp.ToLong();
+           
+        FdoStringP wkt =  sc->GetCoordinateSystemWkt();                   
+        OraSrid.m_IsGeodetic = c_Ora_API::IsGeodeticCoordSystem(wkt); // TODO: it should return real value
+      }
+      else
+      {
+        return false;
+      }
+    }
+  }
+  else
+    OraSrid = sc->GetOraSridDesc();
   return true;
   
 }//end of c_KgOraConnection::GetOracleSrid
@@ -577,7 +676,7 @@ void c_KgOraConnection::OCCI_Commit()
 void c_KgOraConnection::OCCI_TerminateStatement(oracle::occi::Statement* Statement)
 {
   
-  if( m_OcciConnection ) m_OcciConnection->terminateStatement (Statement);
+  if( m_OcciConnection && Statement ) m_OcciConnection->terminateStatement (Statement);
   
 }//end of c_KgOraConnection::OCCI_CreateStatement
 
@@ -586,7 +685,21 @@ c_KgOraSchemaDesc* c_KgOraConnection::GetSchemaDesc()
 {
   if( m_SchemaDesc.p == NULL )
   {
+  // Now check into schema pool
+  #ifdef D_ENABLE_SCHEMA_POOL
+    m_SchemaDesc = c_KgOraSchemaPool::GetSchemaData(this);
+    if( !m_SchemaDesc.p )
+    {
+      m_SchemaDesc = c_FdoOra_API::DescribeSchema(this,m_OraSchemaName.c_str(),m_FdoViewsTable.c_str());
+      if( m_SchemaDesc.p )
+      {
+        c_KgOraSchemaPool::AddSchemaData(this,m_SchemaDesc.p);
+      }
+    }
+  
+  #else
     m_SchemaDesc = c_FdoOra_API::DescribeSchema(this,m_OraSchemaName.c_str(),m_FdoViewsTable.c_str());
+  #endif
   }
   return FDO_SAFE_ADDREF(m_SchemaDesc.p);
 }//end of c_KgOraConnection::GetSchemaDesc
@@ -594,7 +707,7 @@ c_KgOraSchemaDesc* c_KgOraConnection::GetSchemaDesc()
 
 
 
-#ifdef _DEBUG
+#ifdef NODEFINE
 bool checkError(OCIError* errhp_, int status) 
 {
 	char errbuf[512];
@@ -673,7 +786,7 @@ SDO_GEOMETRY_ind*		global_geom_ind_[10];	//!< buffer to store spatial object ind
 
 char reserver[1024];
 
-#ifdef NODEFINE
+
 
 void c_KgOraConnection::TestArrayFetch(FdoIdentifier* ClassId, FdoFilter* Filter, FdoIdentifierCollection* Props)
 {
@@ -876,7 +989,7 @@ void c_KgOraConnection::TestArrayFetch(FdoIdentifier* ClassId, FdoFilter* Filter
     
     
 }//end of c_KgOraConnection::TestArrayFetc
-#endif
+
 
 #endif
 

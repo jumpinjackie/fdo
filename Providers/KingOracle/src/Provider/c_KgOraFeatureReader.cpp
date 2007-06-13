@@ -37,23 +37,13 @@ c_KgOraFeatureReader::c_KgOraFeatureReader(c_KgOraConnection * Connection
                                         ,FdoClassDefinition* ClassDef
                                         ,int GeomPropSqlIndex, FdoStringCollection* SqlColumns
                                         ,FdoIdentifierCollection* Props)
- : c_KgOraReader(Connection,OcciStatement ,OcciResultSet,GeomPropSqlIndex, SqlColumns), m_ClassDef(ClassDef)
+ : c_KgOraReader(Connection,OcciStatement ,OcciResultSet,GeomPropSqlIndex, SqlColumns)
 {
-  
+
+  m_ClassDef = ClassDef;
   FDO_SAFE_ADDREF (m_ClassDef.p);
-  
-  if( Props )
-  {
-    FdoString *name;
-    FdoInt32 count = Props->GetCount();
-    for(FdoInt32 ind=0;ind<count;ind++)
-    {
-      FdoIdentifier * ident = Props->GetItem(ind);
-      
-      name = ident->GetName();
-    }
-  }
-  
+
+
 
   m_Props = Props;
   if (m_Props) m_Props->AddRef();
@@ -63,7 +53,7 @@ c_KgOraFeatureReader::c_KgOraFeatureReader(c_KgOraConnection * Connection
 
 c_KgOraFeatureReader::~c_KgOraFeatureReader()
 {
-    Close();
+    //Close();
     FDO_SAFE_RELEASE(m_Props);
     
 }

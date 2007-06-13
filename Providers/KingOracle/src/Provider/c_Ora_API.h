@@ -45,6 +45,8 @@ public:
   static bool GetOracleVersion(oracle::occi::Connection*Conn,int& MainVersion,int& SubVersion);
   
   static bool IsGeodeticCoordSystem(const char* CoordSysWkt);
+  
+  static bool c_Ora_API::GetCoordinateSystemWkt(oracle::occi::Connection*Conn,long Srid,string& Wkt);
 };
 
 #endif

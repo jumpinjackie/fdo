@@ -96,7 +96,7 @@ FdoIFeatureReader* c_KgOraSelectCommand::Execute ()
     
     FdoPtr<c_KgOraSchemaDesc> schemadesc = m_Connection->GetSchemaDesc();
     
-    D_KGORA_ELOG_WRITE1("c_KgOraSelectCommand::Execute class_name = '%s'",(const char*)FdoStringP(class_name));
+    D_KGORA_ELOG_WRITE2("c_KgOraSelectCommand%d::Execute class_name = '%s'",m_Connection->m_ConnNo,(const char*)FdoStringP(class_name));
     
     FdoPtr<FdoFeatureSchemaCollection> fschemas = schemadesc->GetFeatureSchema();
     FdoPtr<FdoKgOraPhysicalSchemaMapping> phschemamapping = schemadesc->GetPhysicalSchemaMapping();
@@ -128,30 +128,43 @@ FdoIFeatureReader* c_KgOraSelectCommand::Execute ()
       }
     }
     
+    D_KGORA_ELOG_WRITE2("c_KgOraSelectCommand%d::Execute class_name = '%s' Step 2",m_Connection->m_ConnNo,(const char*)FdoStringP(class_name));
+    
     c_KgOraFilterProcessor fproc(schemadesc,classid,orasrid);
     string sqlstr = CreateSqlString(fproc,geom_sqlcol_index,sqlcols);
+    
+    D_KGORA_ELOG_WRITE2("c_KgOraSelectCommand%d::Execute class_name = '%s' Step 3",m_Connection->m_ConnNo,(const char*)FdoStringP(class_name));
     
     oracle::occi::Statement* occi_stm=NULL;
     oracle::occi::ResultSet* occi_rset=NULL;
     try
     {
-      occi_stm = m_Connection->OCCI_CreateStatement();
       
       #ifdef _DEBUG
         const char* c1 = sqlstr.c_str();
       #endif
       D_KGORA_ELOG_WRITE1("Execute select: '%s",sqlstr.c_str());
       
+      occi_stm = m_Connection->OCCI_CreateStatement();
+      
       occi_stm->setSQL(sqlstr);
       occi_stm->setPrefetchRowCount(200);
       
-      fproc.GetExpressionProcessor().ApplySqlParameters(occi_stm);
+      fproc.GetExpressionProcessor().ApplySqlParameters(m_Connection->GetOcciEnvironment(), occi_stm);
       
       occi_rset = occi_stm->executeQuery();
       //m_Connection->OCCI_TerminateStatement(occi_stm);
     }
     catch(oracle::occi::SQLException& ea)
     {
+       const char* what = ea.what();
+    
+        #ifdef _DEBUG
+          printf(" <c_KgOraSelectCommand::Execute Exception> ");
+        #endif
+        
+        D_KGORA_ELOG_WRITE2("c_KgOraSelectCommand::Execute%d Exception '%s'",m_Connection->m_ConnNo,what);
+    
       if (occi_stm && occi_rset)
       {
         occi_stm->closeResultSet(occi_rset);        

@@ -49,9 +49,6 @@ c_KgOraExpressionProcessor::c_KgOraExpressionProcessor(c_FilterStringBuffer* Str
 
 c_KgOraExpressionProcessor::~c_KgOraExpressionProcessor(void)
 {
-  FDO_SAFE_RELEASE(m_KgOraSchemaDesc.p);
-  FDO_SAFE_RELEASE(m_ClassId.p);
-  
   long size = m_ParamList.size();
   for(long ind=0;ind<size;ind++)
   {
@@ -170,7 +167,7 @@ void c_KgOraExpressionProcessor::ProcessIdentifier( FdoIdentifier& Expr)
     FdoPtr<FdoKgOraPhysicalSchemaMapping> phschemamapping = m_KgOraSchemaDesc->GetPhysicalSchemaMapping();
     FdoPtr<FdoKgOraClassDefinition> phys_class = phschemamapping->FindByClassName( m_ClassId->GetName() );
     
-    if( phys_class )
+    if( phys_class && !phys_class->GetIsPointGeometry() )
     {      
       AppendString( phys_class->GetOraTableAlias() );
       AppendString( "." );
@@ -548,14 +545,14 @@ int c_KgOraExpressionProcessor::GetSqlParametersCount()
       
 }//end of c_KgOraExpressionProcessor::GetSqlParametersCount
 
-void c_KgOraExpressionProcessor::ApplySqlParameters(oracle::occi::Statement* OraStm,int ParamOffest/*=0*/)
+void c_KgOraExpressionProcessor::ApplySqlParameters(oracle::occi::Environment*Env,oracle::occi::Statement* OraStm,int ParamOffest/*=0*/)
 {
   if( m_ParamList.size() > 0 )
   {
     long psize = m_ParamList.size();
     for(long pind=0;pind<psize;pind++)
     {
-      m_ParamList[pind]->ApplySqlParameter(OraStm,pind+1+ParamOffest);      
+      m_ParamList[pind]->ApplySqlParameter(Env,OraStm,pind+1+ParamOffest);      
     }
   }
       

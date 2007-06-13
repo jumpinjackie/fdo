@@ -330,6 +330,11 @@ void c_KgOraCreateSpatialContext::Execute()
 
 // spatial context doesnt exist - create one
   
+  FdoStringP orig_name,orig_csname,orig_wkt;
+  orig_name = GetName();
+  orig_csname = GetCoordinateSystem();
+  orig_wkt = GetCoordinateSystemWkt();
+  
   c_KgOraSridDesc orasrid;
   FdoStringP name = GetName();
   FdoStringP temp = name.Mid(0,10);
@@ -338,44 +343,71 @@ void c_KgOraCreateSpatialContext::Execute()
     FdoStringP temp = name.Mid(10,name.GetLength()-10);
     orasrid.m_OraSrid = temp.ToLong();
     
-    FdoStringP tempname = GetCoordinateSystemWkt();
-    string wkt = tempname;
+    string wkt;
+    if( c_Ora_API::GetCoordinateSystemWkt(m_Connection->GetOcciConnection(),orasrid.m_OraSrid,wkt) )
+    {
+      orig_wkt = wkt.c_str();
+    }
     
-    orasrid.m_IsGeodetic = c_Ora_API::IsGeodeticCoordSystem(wkt.c_str());
+        
+    orasrid.m_IsGeodetic = c_Ora_API::IsGeodeticCoordSystem(orig_wkt);
   }
   else
-  {
-  
+  {  
   // find this coordinate system in oracle
    
-    FdoStringP tempname = GetCoordinateSystem();
-    string csname = tempname;
-    
-    tempname = GetCoordinateSystemWkt();
-    string wkt = tempname;
-    try
+    FdoStringP tempname = GetCoordinateSystem();    
+    FdoStringP temp = tempname.Mid(0,10);
+    if( temp.ICompare("OracleSrid") == 0)
     {
-      orasrid.m_OraSrid = c_Ora_API::GetSrid(m_Connection->GetOcciConnection(),csname.c_str());
-      orasrid.m_IsGeodetic = c_Ora_API::IsGeodeticCoordSystem(wkt.c_str());
+      FdoStringP temp = tempname.Mid(10,tempname.GetLength()-10);
+      orasrid.m_OraSrid = temp.ToLong();
+      orasrid.m_IsGeodetic = false;
+      try
+      {
+        string wkt;
+        if( c_Ora_API::GetCoordinateSystemWkt(m_Connection->GetOcciConnection(),orasrid.m_OraSrid,wkt) )
+        {
+          orig_wkt = wkt.c_str();
+        }
+        orasrid.m_IsGeodetic = c_Ora_API::IsGeodeticCoordSystem(wkt.c_str());
+      }
+      catch(oracle::occi::SQLException& ea)
+      {
+        FdoStringP gstr = ea.what();
+        //throw FdoCommandException::Create( gstr );    
+      }    
     }
-    catch(oracle::occi::SQLException& ea)
+    else
     {
-      FdoStringP gstr = ea.what();
-      throw FdoCommandException::Create( gstr );    
-    }
-    
-    if( !orasrid.m_OraSrid )
-    {
-      throw FdoCommandException::Create( L"c_KgOraCreateSpatialContext::Execute: Could not find match for coordinate system in Oracle!" );    
+      // find from WKT
+      tempname = GetCoordinateSystemWkt();      
+      try
+      {
+        string csname = tempname;
+        string wkt = tempname;
+        orasrid.m_OraSrid = c_Ora_API::GetSrid(m_Connection->GetOcciConnection(),csname.c_str());
+        orasrid.m_IsGeodetic = c_Ora_API::IsGeodeticCoordSystem(wkt.c_str());
+      }
+      catch(oracle::occi::SQLException& ea)
+      {
+        FdoStringP gstr = ea.what();
+        throw FdoCommandException::Create( gstr );    
+      }
+      
+      if( !orasrid.m_OraSrid )
+      {
+        throw FdoCommandException::Create( L"c_KgOraCreateSpatialContext::Execute: Could not find match for coordinate system in Oracle!" );    
+      }
     }
   }
   
   FdoPtr<c_KgOraSpatialContext> newsc = new c_KgOraSpatialContext();
   
-  newsc->SetName( GetName() );
+  newsc->SetName( orig_name );
   newsc->SetDescription( GetDescription() );
-  newsc->SetCoordSysName(GetCoordinateSystem());
-  newsc->SetCoordinateSystemWkt(GetCoordinateSystemWkt());
+  newsc->SetCoordSysName(orig_csname);
+  newsc->SetCoordinateSystemWkt(orig_wkt);
   
   newsc->SetXYTolerance( GetXYTolerance() );
   newsc->SetZTolerance( GetZTolerance() );
