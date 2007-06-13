@@ -200,7 +200,10 @@ try
         
         try
         {
-          InsertSdoGeomMetadata(tablename,geomprop);
+          if( geomprop.p )
+          {
+            InsertSdoGeomMetadata(tablename,geomprop);
+          }
         }
         catch(oracle::occi::SQLException& ea) // ignore this error, suspect many time will metada left and doesn't want to bother user
         {        
@@ -213,7 +216,10 @@ try
         // Create Spatial Index
         try
         {
-          CreateIndex(tablename,geomprop);
+          if( geomprop.p )
+          {
+            CreateIndex(tablename,geomprop);
+          }
         }
         catch(oracle::occi::SQLException& ea) // ignore this error, suspect many time will metada left and doesn't want to bother user
         {        
@@ -281,6 +287,7 @@ catch(oracle::occi::SQLException& ea)
     
 }//endof c_KgOraApplySchema::Execute
 
+/*
 void c_KgOraApplySchema::InsertSdoGeomMetadata(FdoString* TableName,FdoGeometricPropertyDefinition* GeomProp)
 {
   FdoString* scname = GeomProp->GetSpatialContextAssociation();
@@ -323,20 +330,7 @@ void c_KgOraApplySchema::InsertSdoGeomMetadata(FdoString* TableName,FdoGeometric
       yup = 90.0;
       isgeogcs = true;
     }
-    /*
-    if( wkt.GetLength() > 6 )
-    {
-      FdoStringP gc = wkt.Mid(0,6);
-      if( gc.ICompare("GEOGCS")==0 )
-      {
-        xlow = -180.0;
-        xup = 180.0;
-        ylow = -90.0;
-        yup = 90.0;
-        isgeogcs = true;
-      }
-    }
-    */
+
   }
   else
   {
@@ -361,28 +355,48 @@ void c_KgOraApplySchema::InsertSdoGeomMetadata(FdoString* TableName,FdoGeometric
   sqlstr = sqlstr + tabname.Upper() + "' , '" + geomname.Upper() + "'";
   sqlstr = sqlstr + ",MDSYS.SDO_DIM_ARRAY(";
   
+  wchar_t tempbuff[1024];
+  
   if( isgeogcs )
-    xdim = FdoStringP::Format(L"MDSYS.SDO_DIM_ELEMENT('LAT', %lf, %lf, %lf)",xlow,xup,xytol);
+  {
+    
+    //xdim = FdoStringP::Format(L"MDSYS.SDO_DIM_ELEMENT('LAT', %lf, %lf, %lf)",xlow,xup,xytol);
+    swprintf(tempbuff,1000,L"MDSYS.SDO_DIM_ELEMENT('LAT', %lf, %lf, %lf)",xlow,xup,xytol);
+    xdim =  tempbuff;
+  }
   else
-    xdim = FdoStringP::Format(L"MDSYS.SDO_DIM_ELEMENT('X', %lf, %lf, %lf)",xlow,xup,xytol);
+  {
+    //xdim = FdoStringP::Format(L"MDSYS.SDO_DIM_ELEMENT('X', %lf, %lf, %lf)",xlow,xup,xytol);
+    swprintf(tempbuff,1000,L"MDSYS.SDO_DIM_ELEMENT('X', %lf, %lf, %lf)",xlow,xup,xytol);
+    xdim =  tempbuff;
+  }
     
   sqlstr = sqlstr + xdim;
     
   if( isgeogcs )
-    ydim = FdoStringP::Format(L"MDSYS.SDO_DIM_ELEMENT('LON', %lf, %lf, %lf)",ylow,yup,xytol);
+  {
+    //ydim = FdoStringP::Format(L"MDSYS.SDO_DIM_ELEMENT('LON', %lf, %lf, %lf)",ylow,yup,xytol);
+    swprintf(tempbuff,1000,L"MDSYS.SDO_DIM_ELEMENT('LON', %lf, %lf, %lf)",ylow,yup,xytol);
+    ydim = tempbuff;
+  }
   else
-    ydim = FdoStringP::Format(L"MDSYS.SDO_DIM_ELEMENT('Y', %lf, %lf, %lf)",ylow,yup,xytol);    
+  {
+    swprintf(tempbuff,1000,L"MDSYS.SDO_DIM_ELEMENT('Y', %lf, %lf, %lf)",ylow,yup,xytol);    
+    ydim = tempbuff;
+  }
     
   sqlstr = sqlstr + "," + ydim;    
   
   if( GeomProp->GetHasElevation() )
   {
-    zdim = FdoStringP::Format(L"MDSYS.SDO_DIM_ELEMENT('Z', %lf, %lf, %lf)",zlow,zup,ztol);
+    swprintf(tempbuff,1000,L"MDSYS.SDO_DIM_ELEMENT('Z', %lf, %lf, %lf)",zlow,zup,ztol);
+    zdim = tempbuff;
     sqlstr = sqlstr + "," + zdim;    
   }
   if( GeomProp->GetHasMeasure() )
   {
-    mdim = FdoStringP::Format(L"MDSYS.SDO_DIM_ELEMENT('M', %lf, %lf, %lf)",mlow,mup,mtol);
+    swprintf(tempbuff,1000,L"MDSYS.SDO_DIM_ELEMENT('M', %lf, %lf, %lf)",mlow,mup,mtol);
+    mdim = tempbuff;
     sqlstr = sqlstr + "," + mdim;    
   }
   sqlstr = sqlstr + ")";
@@ -414,9 +428,220 @@ catch(oracle::occi::SQLException& ea)
 }    
 
 }//end of c_KgOraApplySchema::InsertSdoGeomMetadata
+*/
+
+
+void c_KgOraApplySchema::InsertSdoGeomMetadata(FdoString* TableName,FdoGeometricPropertyDefinition* GeomProp)
+{
+  if( !GeomProp ) return;
+  FdoString* scname = GeomProp->GetSpatialContextAssociation();
+        
+  FdoPtr<c_KgOraSpatialContextCollection> sccol = m_Connection->GetSpatialContexts();
+  FdoPtr<c_KgOraSpatialContext> spcontext;
+   if( sccol && scname ) spcontext = sccol->FindItem(scname);
+  
+  bool isgeogcs=false;
+  
+  c_KgOraSridDesc orasrid;
+  if( spcontext.p ) orasrid = spcontext->GetOraSridDesc();
+  
+  
+  
+  double xlow = D_SPATIALCONTEXT_DEFAULT_MINX;
+  double xup = D_SPATIALCONTEXT_DEFAULT_MAXX;
+  double ylow = D_SPATIALCONTEXT_DEFAULT_MINY;
+  double yup = D_SPATIALCONTEXT_DEFAULT_MAXY;
+  double zlow = D_SPATIALCONTEXT_DEFAULT_MINZ;
+  double zup = D_SPATIALCONTEXT_DEFAULT_MAXZ;
+  double mlow = D_SPATIALCONTEXT_DEFAULT_MINM;
+  double mup = D_SPATIALCONTEXT_DEFAULT_MAXM;
+  
+  double xytol = D_SPATIALCONTEXT_DEFAULT_XY_TOLERANCE;
+  double ztol = D_SPATIALCONTEXT_DEFAULT_Z_TOLERANCE;
+  double mtol = D_SPATIALCONTEXT_DEFAULT_M_TOLERANCE;
+  
+  if( spcontext.p )
+  {
+    xytol = spcontext->GetXYTolerance();
+    ztol = spcontext->GetZTolerance();
+    
+    FdoStringP wkt = spcontext->GetCoordinateSystemWkt();
+    
+    if( c_Ora_API::IsGeodeticCoordSystem(wkt) )
+    {
+      xlow = -180.0;
+      xup = 180.0;
+      ylow = -90.0;
+      yup = 90.0;
+      isgeogcs = true;
+    }
+
+  }
+  else
+  {
+    isgeogcs = false;
+    xytol = D_SPATIALCONTEXT_DEFAULT_XY_TOLERANCE;
+    ztol = D_SPATIALCONTEXT_DEFAULT_Z_TOLERANCE;
+    orasrid.m_OraSrid = 0;
+    orasrid.m_IsGeodetic = false;
+  }
+  
+  if( ztol <= 0.0 ) ztol = D_SPATIALCONTEXT_DEFAULT_Z_TOLERANCE;
+  if( xytol <= 0.0 ) xytol = D_SPATIALCONTEXT_DEFAULT_XY_TOLERANCE;
+  
+  FdoStringP sqlstr,xdim,ydim,zdim,mdim;
+  
+  FdoStringP geomname = GeomProp->GetName();
+  
+  
+  FdoStringP tabname = TableName;
+  
+  sqlstr = "INSERT INTO USER_SDO_GEOM_METADATA VALUES ( '";
+  sqlstr = sqlstr + tabname.Upper() + "' , '" + geomname.Upper() + "'";
+  sqlstr = sqlstr + ",MDSYS.SDO_DIM_ARRAY(";
+  
+  //wchar_t tempbuff[1024];
+  
+  SDO_DIM_ELEMENT *xdim_sdoelem = new SDO_DIM_ELEMENT;
+  if( isgeogcs )
+    xdim_sdoelem->setSdo_dimname("LAT");
+  else
+    xdim_sdoelem->setSdo_dimname("X");
+  xdim_sdoelem->setSdo_lb(xlow);
+  xdim_sdoelem->setSdo_ub(xup);
+  xdim_sdoelem->setSdo_tolerance(xytol);
+  
+  /*
+  if( isgeogcs )
+  {
+    
+    //xdim = FdoStringP::Format(L"MDSYS.SDO_DIM_ELEMENT('LAT', %lf, %lf, %lf)",xlow,xup,xytol);
+    swprintf(tempbuff,1000,L"MDSYS.SDO_DIM_ELEMENT('LAT', %lf, %lf, %lf)",xlow,xup,xytol);
+    xdim =  tempbuff;
+  }
+  else
+  {
+    //xdim = FdoStringP::Format(L"MDSYS.SDO_DIM_ELEMENT('X', %lf, %lf, %lf)",xlow,xup,xytol);
+    swprintf(tempbuff,1000,L"MDSYS.SDO_DIM_ELEMENT('X', %lf, %lf, %lf)",xlow,xup,xytol);
+    xdim =  tempbuff;
+  }
+  */
+  xdim = L":1";
+    
+  sqlstr = sqlstr + xdim;
+    
+  SDO_DIM_ELEMENT *ydim_sdoelem = new SDO_DIM_ELEMENT;
+  if( isgeogcs )
+    ydim_sdoelem->setSdo_dimname("LON");
+  else
+    ydim_sdoelem->setSdo_dimname("Y");
+  ydim_sdoelem->setSdo_lb(xlow);
+  ydim_sdoelem->setSdo_ub(xup);
+  ydim_sdoelem->setSdo_tolerance(xytol);
+  /*  
+  if( isgeogcs )
+  {
+    //ydim = FdoStringP::Format(L"MDSYS.SDO_DIM_ELEMENT('LON', %lf, %lf, %lf)",ylow,yup,xytol);
+    swprintf(tempbuff,1000,L"MDSYS.SDO_DIM_ELEMENT('LON', %lf, %lf, %lf)",ylow,yup,xytol);
+    ydim = tempbuff;
+  }
+  else
+  {
+    swprintf(tempbuff,1000,L"MDSYS.SDO_DIM_ELEMENT('Y', %lf, %lf, %lf)",ylow,yup,xytol);    
+    ydim = tempbuff;
+  }
+  */
+  ydim = L":2";
+    
+  sqlstr = sqlstr + "," + ydim;    
+  
+  SDO_DIM_ELEMENT *zdim_sdoelem=NULL;
+  if( GeomProp->GetHasElevation() )
+  {
+    /*
+    swprintf(tempbuff,1000,L"MDSYS.SDO_DIM_ELEMENT('Z', %lf, %lf, %lf)",zlow,zup,ztol);
+    zdim = tempbuff;
+    */
+    zdim_sdoelem = new SDO_DIM_ELEMENT;
+    zdim_sdoelem->setSdo_dimname("Z");
+    zdim_sdoelem->setSdo_lb(zlow);
+    zdim_sdoelem->setSdo_ub(zup);
+    zdim_sdoelem->setSdo_tolerance(ztol);
+    
+    sqlstr = sqlstr + "," + ":3";    
+  }
+  
+  SDO_DIM_ELEMENT *mdim_sdoelem=NULL;
+  if( GeomProp->GetHasMeasure() )
+  {
+    //swprintf(tempbuff,1000,L"MDSYS.SDO_DIM_ELEMENT('M', %lf, %lf, %lf)",mlow,mup,mtol);
+    //mdim = tempbuff;
+    
+    mdim_sdoelem = new SDO_DIM_ELEMENT;
+    mdim_sdoelem->setSdo_dimname("M");
+    mdim_sdoelem->setSdo_lb(mlow);
+    mdim_sdoelem->setSdo_ub(mup);
+    mdim_sdoelem->setSdo_tolerance(mtol);
+    
+    if( zdim_sdoelem )
+      sqlstr = sqlstr + "," + ":4";    
+    else
+      sqlstr = sqlstr + "," + ":3";    
+    
+  }
+  sqlstr = sqlstr + ")";
+  
+  FdoStringP sridstr;
+  if( orasrid.m_OraSrid > 0 )
+    sridstr = FdoStringP::Format(L"%ld",orasrid);
+  else
+    sridstr = "NULL";
+    
+  sqlstr = sqlstr + "," + sridstr + ")";
+  
+  oracle::occi::Statement* occi_stm=NULL;
+try
+{
+  occi_stm = m_Connection->OCCI_CreateStatement();
+  string sstr = sqlstr;
+  occi_stm->setSQL(sstr);
+  occi_stm->setObject(1,xdim_sdoelem);
+  occi_stm->setObject(2,ydim_sdoelem);
+  if( zdim_sdoelem && mdim_sdoelem )
+  {
+    occi_stm->setObject(3,zdim_sdoelem);
+    occi_stm->setObject(4,mdim_sdoelem);
+  }
+  else
+  {
+    if( zdim_sdoelem ) occi_stm->setObject(3,zdim_sdoelem);
+    if( mdim_sdoelem ) occi_stm->setObject(3,zdim_sdoelem);    
+  }
+  
+  occi_stm->executeUpdate();
+  
+  if( xdim_sdoelem ) delete xdim_sdoelem;
+  if( ydim_sdoelem ) delete ydim_sdoelem;
+  if( zdim_sdoelem ) delete zdim_sdoelem;
+  if( mdim_sdoelem ) delete mdim_sdoelem;
+  
+  m_Connection->OCCI_TerminateStatement(occi_stm);
+}
+catch(oracle::occi::SQLException& ea)
+{
+  if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);
+  
+  FdoStringP gstr = ea.what();
+  throw FdoCommandException::Create( gstr );    
+}    
+
+}//end of c_KgOraApplySchema::InsertSdoGeomMetadata
+
 
 void c_KgOraApplySchema::CreateIndex(FdoString* TableName,FdoGeometricPropertyDefinition* GeomProp)
 {
+
+  if( !GeomProp || !TableName ) return;
 
   FdoStringP sqlstr;
   

@@ -19,7 +19,7 @@
 #include "c_SdoGeomToAGF.h"
 
 
-#define D_BUFF_SIZE_INC 100 * 3 * 8 // thousand 3 dim points
+#define D_BUFF_SIZE_INC 300 * 3 * 8 // three hundred 3 dim points
 #define D_BUFF_SIZE_RESERVE 512
 
 
@@ -53,6 +53,7 @@ int c_SdoGeomToAGF::ToAGF()
   m_ElemInfoSize = m_SdoGeom->getSdo_elem_info().size();
   m_OrdinatesSize = m_SdoGeom->getSdo_ordinates().size();
   
+  if( m_SdoGeom->getSdo_gtype().isNull() ) return 0;
   
   int ora_gtype = ((int)m_SdoGeom->getSdo_gtype()) % 100;
   
@@ -1086,7 +1087,9 @@ bool c_SdoGeomToAGF::AGF_Get_CurveString(int& ElemInfo_Index)
   AGF_WritePointsFromOrdinates(ord,1);
   
   // add number of subelements
-  AGF_WriteInt(num_subs);
+  int num_string_elem_buffpos = m_BuffLen;
+  int num_string_elem = 0;
+  AGF_WriteInt(num_string_elem);
   
   int subelem_ind=0;
   while(  subelem_ind < num_subs )
@@ -1105,6 +1108,10 @@ bool c_SdoGeomToAGF::AGF_Get_CurveString(int& ElemInfo_Index)
       next_offset = m_SdoGeom->getSdo_elem_info()[ElemInfo_Index];
       
       numpoints = (next_offset - eleminfo_offset) / m_PointSize;
+      
+      // if last sub element that I need to reduce number of points by one beacuse
+      // reading is shifted for one beacuse of AFG takes first point into previous element
+      if( subelem_ind == (num_subs-1) ) { numpoints--; numpoints=numpoints<0 ? 0 : numpoints; }
     }
     else
     {
@@ -1124,20 +1131,32 @@ bool c_SdoGeomToAGF::AGF_Get_CurveString(int& ElemInfo_Index)
       
       
       AGF_WritePointsFromOrdinates(ord,numpoints);
+      
+      num_string_elem++;
     }
     else
     {
       AGF_WriteInt(FdoGeometryComponentType_CircularArcSegment); // arc CurveElmentType
-      
-      
       AGF_WritePointsFromOrdinates(ord,2); // za arc sta dve tocki
+      num_string_elem++;
+      
+      int numarcs = (numpoints + 2) / 3;
+      
+      numpoints-=2;
+      while( numpoints>=2 )
+      {
+        AGF_WriteInt(FdoGeometryComponentType_CircularArcSegment); // arc CurveElmentType
+        AGF_WritePointsFromOrdinates(ord,2); // za arc sta dve tocki
+        num_string_elem++;
+        numpoints-=2;
+      }
     }
 
     
     subelem_ind++;
   }
-    
-        
+   
+  AGF_UpdateInt(num_string_elem_buffpos,num_string_elem);
   return true;
 }//end of c_SdoGeomToAGF::AGF_Get_CurveString
 
@@ -1236,7 +1255,7 @@ bool c_SdoGeomToAGF::AGF_Get_GType3_PolygonOrCurvePolygon(int& ElemInfo_Index,bo
         break;
         case 2:  // arc string
         {
-          if( AGF_Get_CurveArcString(ElemInfo_Index) ) 
+          if( !AGF_Get_CurveArcString(ElemInfo_Index) ) 
           {
             RestoreBuff(akb_tempbuff_buffpos);
             return false;

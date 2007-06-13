@@ -49,10 +49,12 @@ FdoClassDefinition* c_KgOraSchemaDesc::FindClassDefinition(FdoIdentifier* ClassI
     
     //classdef = classes->FindItem( ClassId->GetName() );
     
-    classdef = (FdoClassDefinition*)classes->GetItem( 0 );
+    if( classes->GetCount() > 0 )
+    {
+      classdef = (FdoClassDefinition*)classes->GetItem( 0 );
     
-    //if( !classdef.p ) return NULL;
-    return FDO_SAFE_ADDREF(classdef.p);    
+      return FDO_SAFE_ADDREF(classdef.p);    
+    }
   }
   
   return NULL;

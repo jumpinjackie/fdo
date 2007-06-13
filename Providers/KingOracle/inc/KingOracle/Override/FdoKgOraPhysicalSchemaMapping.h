@@ -33,10 +33,10 @@ public:
     FDOKGORA_API virtual FdoString* GetProvider();
     FDOKGORA_API FdoKgOraClassCollection* GetClasses() const; 
 
-    FDOKGORA_API virtual void InitFromXml(GisXmlSaxContext* Context, GisXmlAttributeCollection* Attrs);
-    FDOKGORA_API virtual GisXmlSaxHandler* XmlStartElement(GisXmlSaxContext* Context,FdoString* Uri, FdoString* Name, FdoString* QName, GisXmlAttributeCollection* Attrs);
-    FDOKGORA_API virtual GisBoolean XmlEndElement(GisXmlSaxContext* Context, FdoString* Uri, FdoString* Name, FdoString* QName);
-    FDOKGORA_API virtual void _writeXml(GisXmlWriter* Writer, const FdoXmlFlags* Flags);
+    FDOKGORA_API virtual void InitFromXml(FdoXmlSaxContext* Context, FdoXmlAttributeCollection* Attrs);
+    FDOKGORA_API virtual FdoXmlSaxHandler* XmlStartElement(FdoXmlSaxContext* Context,FdoString* Uri, FdoString* Name, FdoString* QName, FdoXmlAttributeCollection* Attrs);
+    FDOKGORA_API virtual FdoBoolean XmlEndElement(FdoXmlSaxContext* Context, FdoString* Uri, FdoString* Name, FdoString* QName);
+    FDOKGORA_API virtual void _writeXml(FdoXmlWriter* Writer, const FdoXmlFlags* Flags);
 
     /// find using classname:
     FDOKGORA_API FdoKgOraClassDefinition* FindByClassName(FdoString *ClassName);
@@ -50,7 +50,7 @@ private:
     FdoKgOraClassCollectionP m_Classes;
 };
 
-typedef GisPtr<FdoKgOraPhysicalSchemaMapping> FdoKgOraPhysicalSchemaMappingP;
+typedef FdoPtr<FdoKgOraPhysicalSchemaMapping> FdoKgOraPhysicalSchemaMappingP;
 
 #endif // FdoKgOraPhysicalSchemaMapping_H
 

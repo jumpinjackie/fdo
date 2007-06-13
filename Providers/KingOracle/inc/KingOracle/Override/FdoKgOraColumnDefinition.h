@@ -29,10 +29,10 @@ public:
     FDOKGORA_API static FdoKgOraColumnDefinition* Create();
 
 public:
-    FDOKGORA_API virtual void InitFromXml(GisXmlSaxContext* Context, GisXmlAttributeCollection* Attrs);
-    FDOKGORA_API virtual GisXmlSaxHandler* XmlStartElement(GisXmlSaxContext* Context,FdoString* Uri, FdoString* Name, FdoString* QName, GisXmlAttributeCollection* Attrs);
-    FDOKGORA_API virtual GisBoolean XmlEndElement(GisXmlSaxContext* Context, FdoString* Uri, FdoString* Name, FdoString* QName);
-    FDOKGORA_API virtual void _writeXml(GisXmlWriter* Writer, const FdoXmlFlags* Flags);
+    FDOKGORA_API virtual void InitFromXml(FdoXmlSaxContext* Context, FdoXmlAttributeCollection* Attrs);
+    FDOKGORA_API virtual FdoXmlSaxHandler* XmlStartElement(FdoXmlSaxContext* Context,FdoString* Uri, FdoString* Name, FdoString* QName, FdoXmlAttributeCollection* Attrs);
+    FDOKGORA_API virtual FdoBoolean XmlEndElement(FdoXmlSaxContext* Context, FdoString* Uri, FdoString* Name, FdoString* QName);
+    FDOKGORA_API virtual void _writeXml(FdoXmlWriter* Writer, const FdoXmlFlags* Flags);
 
 protected:
     FdoKgOraColumnDefinition(void);
@@ -40,7 +40,7 @@ protected:
     virtual void Dispose(void);
 };
 
-typedef GisPtr<FdoKgOraColumnDefinition> FdoKgOraColumnDefinitionP;
+typedef FdoPtr<FdoKgOraColumnDefinition> FdoKgOraColumnDefinitionP;
 
 #endif // FdoKgOraColumnDefinition_H
 

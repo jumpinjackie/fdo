@@ -23,6 +23,8 @@
 
 extern wchar_t g_LogFileName[MAX_PATH];
 
+FdoCommonThreadMutex c_LogAPI::m_Mutex;
+
 c_LogAPI::c_LogAPI(void)
 {
 }
@@ -35,7 +37,7 @@ void c_LogAPI::WriteLog0(const char* Text)
 {
   
     
-    
+    m_Mutex.Enter();
     
     FILE * GisDebugFile = _wfopen(g_LogFileName, L"a+");
     if( GisDebugFile )
@@ -56,7 +58,7 @@ void c_LogAPI::WriteLog0(const char* Text)
       
     }
 
-    
+    m_Mutex.Leave();
     
 }//end of c_LogAPI::WriteLog
 
@@ -80,7 +82,7 @@ void c_LogAPI::WriteLog(const char* text,...)
     
     va_start(args,text);
 
-    
+     m_Mutex.Enter();
     FILE * GisDebugFile = _wfopen(g_LogFileName, L"a+");
     if( GisDebugFile )
     {
@@ -103,6 +105,7 @@ void c_LogAPI::WriteLog(const char* text,...)
       
       delete cbuff;
     }
+     m_Mutex.Leave();
 
     va_end(args);
     

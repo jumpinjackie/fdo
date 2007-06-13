@@ -36,7 +36,7 @@ protected:
     virtual void Dispose();
 };
 
-typedef GisPtr<FdoKgOraClassCollection> FdoKgOraClassCollectionP;
+typedef FdoPtr<FdoKgOraClassCollection> FdoKgOraClassCollectionP;
 
 #endif // FDOKGORACLASSCOLLECTION_H
 

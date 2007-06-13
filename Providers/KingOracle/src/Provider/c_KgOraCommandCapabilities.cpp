@@ -46,7 +46,7 @@ FdoInt32* c_KgOraCommandCapabilities::GetCommands (FdoInt32& Size)
     {
         FdoCommandType_Select,
         FdoCommandType_SQLCommand,
-        //FdoCommandType_SelectAggregates,
+        FdoCommandType_SelectAggregates,
         FdoCommandType_DescribeSchema,
         //FdoCommandType_DescribeSchemaMapping,
         
@@ -149,6 +149,6 @@ bool c_KgOraCommandCapabilities::SupportsSelectOrdering()
 /// (but not vice versa).
 bool c_KgOraCommandCapabilities::SupportsSelectGrouping()
 {
-    return (false);
+    return (true);
 }
 

@@ -91,7 +91,7 @@ FdoInt32 c_KgOraDelete::Execute()
     
     occi_stm->setSQL(sqlstr.GetString());
     
-    fproc.GetExpressionProcessor().ApplySqlParameters(occi_stm);
+    fproc.GetExpressionProcessor().ApplySqlParameters(m_Connection->GetOcciEnvironment(),occi_stm);
     
 
     delete_num = occi_stm->executeUpdate();

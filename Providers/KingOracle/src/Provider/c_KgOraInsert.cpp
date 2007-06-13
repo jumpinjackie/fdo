@@ -132,8 +132,6 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
     throw FdoException::Create(L"c_KgOraInsert::Execute: Unable to find class definition!");
     
   }
-  
-  
 
   FdoPtr<FdoKgOraClassDefinition> phys_class = schemadesc->FindClassMapping(m_ClassId);
   FdoStringP fultablename = phys_class->GetOracleFullTableName();
@@ -176,6 +174,40 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
         num_batch_columns++;
       }
     }
+    
+    // Check if this class is using oracle sequence and if it is
+    // check if bach parameter is set for it
+    // if not than add that parameter
+    int index_of_sequence_batch_parameter=-1;
+    bool added_new_batch_parameter_for_sequence_identity = false;
+    if( use_seq_for_identity )
+    {
+      unsigned int prop_count = batch_propvalcol->GetCount();
+      bool found_identity = false;
+      for(unsigned int ind=0;ind<prop_count;ind++)
+      { 
+        FdoPtr<FdoPropertyValue> propval = batch_propvalcol->GetItem(ind);
+        FdoPtr<FdoIdentifier> propid = propval->GetName();
+        if( wcscmp(propid->GetName(),ident_for_seq->GetName()) == 0 )
+        {
+          index_of_sequence_batch_parameter = ind;
+          found_identity = true;
+          break;
+        }
+      }
+      
+      if( !found_identity )
+      {
+        FdoPtr<FdoParameter> param = FdoParameter::Create(ident_for_seq->GetName());
+        FdoPtr<FdoPropertyValue> propval = FdoPropertyValue::Create(ident_for_seq->GetName(),param);
+        batch_propvalcol->Insert(0,propval);
+        index_of_sequence_batch_parameter = 0;
+        added_new_batch_parameter_for_sequence_identity = true;
+      }
+    }
+    
+    num_batch_columns = batch_propvalcol->GetCount();
+    
     // add non-parameters
     count = m_PropertyValues->GetCount();
     for(unsigned int ind=0;ind<count;ind++)
@@ -187,6 +219,11 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
         batch_propvalcol->Add(propval);
       }
     }
+    
+    
+   
+    
+    
     
   // then process thos values which    
     c_FilterStringBuffer strbuff;
@@ -242,11 +279,23 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
       {
         // do aply of literal values
         // this apply witll skip parameter values
-        expproc.ApplySqlParameters(occi_stm);
+        expproc.ApplySqlParameters(m_Connection->GetOcciEnvironment(),occi_stm);
         
         // now i need to aply batch values
+        int ora_batch_parameter = 1; // number of parameter in oracle sql statament 
+        if( added_new_batch_parameter_for_sequence_identity )
+        {
+          long seqval = c_Ora_API::GetSequenceNextVal(m_Connection->GetOcciConnection(),seqname);
+          FdoPtr<FdoDataValue> dataval = FdoDataValue::Create((FdoInt32)seqval);
+          c_FdoOra_API::SetOracleStatementData(m_Connection->GetOcciEnvironment(), occi_stm,ora_batch_parameter,dataval);
+          ora_batch_parameter++;
+        }
+        
         FdoPtr<FdoParameterValueCollection> bparamcol = m_BatchParameterValues->GetItem(browind);
-        if( bparamcol->GetCount() == num_batch_columns )
+        if( (bparamcol->GetCount() == num_batch_columns) 
+            || 
+            (added_new_batch_parameter_for_sequence_identity && ( (bparamcol->GetCount()+1) == num_batch_columns) )
+          )
         {
           unsigned long bcount = bparamcol->GetCount();
           for(long bind=0;bind<bcount;bind++)
@@ -256,7 +305,26 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
             FdoDataValue* dataval = dynamic_cast<FdoDataValue*>(lval.p);
             if( dataval )
             {
-              c_FdoOra_API::SetOracleStatementData(occi_stm,bind+1,dataval);
+            // if there is identity in batch parameters
+            // check if it is a null; then change null to sequence value
+              
+              if( use_seq_for_identity && !added_new_batch_parameter_for_sequence_identity && (index_of_sequence_batch_parameter==bind) )
+              {
+                if( dataval->IsNull() )
+                {                
+                  long seqval = c_Ora_API::GetSequenceNextVal(m_Connection->GetOcciConnection(),seqname);
+                  FdoPtr<FdoDataValue> dataval = FdoDataValue::Create((FdoInt32)seqval);
+                  c_FdoOra_API::SetOracleStatementData(m_Connection->GetOcciEnvironment(),occi_stm,ora_batch_parameter,dataval);
+                }
+                else
+                {
+                  c_FdoOra_API::SetOracleStatementData(m_Connection->GetOcciEnvironment(),occi_stm,ora_batch_parameter,dataval);
+                }
+              }
+              else
+              {
+                c_FdoOra_API::SetOracleStatementData(m_Connection->GetOcciEnvironment(),occi_stm,ora_batch_parameter,dataval);
+              }
             }
             else
             {
@@ -270,7 +338,12 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
                 
                 if( fgftosdo.ToSdoGeom((int*)fgf->GetData(),orasrid.m_OraSrid,sdogeom) == c_FgfToSdoGeom::e_Ok )
                 {
-                  occi_stm->setObject(bind+1,sdogeom);
+                  occi_stm->setObject(ora_batch_parameter,sdogeom);
+                }
+                else
+                {
+                  geomval->ToString();
+                  throw FdoCommandException::Create( L"Unknown Geometry Type. Unable to convert FGF to SDO geometry!" );    
                 }
                 
                 delete sdogeom;
@@ -281,7 +354,8 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
                 throw FdoCommandException::Create( L"Unknown parameter batch value type. No data value no geometry value." );    
               }
             }
-            
+          
+            ora_batch_parameter++;  
           }
           
           int update_num = occi_stm->executeUpdate();
@@ -427,7 +501,7 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
         
         occi_stm->setSQL(sqlstr.GetString());
         
-        expproc.ApplySqlParameters(occi_stm);
+        expproc.ApplySqlParameters(m_Connection->GetOcciEnvironment(),occi_stm);
         
 
         int update_num = occi_stm->executeUpdate();

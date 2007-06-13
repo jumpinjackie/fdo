@@ -113,7 +113,7 @@ void c_KgOraSqlParamDesc::SetUserParamName(FdoString* Name)
   m_UserParamName =  Name; 
 }
 
-void c_KgOraSqlParamDesc::ApplySqlParameter(oracle::occi::Statement* OraStm,int SqlParamNum) 
+void c_KgOraSqlParamDesc::ApplySqlParameter(oracle::occi::Environment*Env,oracle::occi::Statement* OraStm,int SqlParamNum) 
 { 
   switch( m_ParamType )
   {
@@ -132,7 +132,7 @@ void c_KgOraSqlParamDesc::ApplySqlParameter(oracle::occi::Statement* OraStm,int 
     case e_DataValue:
     {
       oracle::occi::Type oratype;
-      if( c_FdoOra_API::SetOracleStatementData(OraStm,SqlParamNum,m_ParamDataValue) )
+      if( c_FdoOra_API::SetOracleStatementData(Env,OraStm,SqlParamNum,m_ParamDataValue) )
       {
       }
     }

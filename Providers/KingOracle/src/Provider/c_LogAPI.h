@@ -19,6 +19,8 @@
 #ifndef _c_LogAPI_h
 #define _c_LogAPI_h
 
+//#define _KGORA_EXTENDED_LOG
+
 #ifdef _DEBUG
   #define _KGORA_EXTENDED_LOG
 #endif
@@ -33,6 +35,7 @@
   #define D_KGORA_ELOG_WRITE2(Text,p1,p2) c_LogAPI::WriteLog(Text,p1,p2);
   #define D_KGORA_ELOG_WRITE3(Text,p1,p2,p3) c_LogAPI::WriteLog(Text,p1,p2,p3);
   #define D_KGORA_ELOG_WRITE4(Text,p1,p2,p3,p4) c_LogAPI::WriteLog(Text,p1,p2,p3,p4);
+  #define D_KGORA_ELOG_WRITE5(Text,p1,p2,p3,p4,p5) c_LogAPI::WriteLog(Text,p1,p2,p3,p4,p5);
 #else
   #define D_KGORA_ELOG_START_FUNC_TIME
 
@@ -42,7 +45,8 @@
   #define D_KGORA_ELOG_WRITE1(Text,p1)
   #define D_KGORA_ELOG_WRITE2(Text,p1,p2)
   #define D_KGORA_ELOG_WRITE3(Text,p1,p2,p3)
-  #define D_KGORA_ELOG_WRITE4(Text,p1,p2,p3,p4)
+  #define D_KGORA_ELOG_WRITE4(Text,p1,p2,p3,p4,p5)
+  #define D_KGORA_ELOG_WRITE5(Text,p1,p2,p3,p4,p5) 
 #endif
 
 
@@ -56,6 +60,8 @@ public:
   static void WriteLog0(const char* text);
   static void WriteLog(const char* text , ...);
   
+protected:
+  static	FdoCommonThreadMutex m_Mutex;  
 };
 
 

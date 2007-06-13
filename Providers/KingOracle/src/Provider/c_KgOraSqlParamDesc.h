@@ -55,7 +55,7 @@ public:
   FdoString* GetUserParamName() const;
   void SetUserParamName(FdoString* Name);
    
-  void ApplySqlParameter(oracle::occi::Statement* OraStm,int SqlParamNum);
+  void ApplySqlParameter(oracle::occi::Environment*Env,oracle::occi::Statement* OraStm,int SqlParamNum);
   
 protected:
   void SetNull();  

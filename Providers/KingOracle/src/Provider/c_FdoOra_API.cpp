@@ -157,7 +157,7 @@ bool c_FdoOra_API::FdoDataTypeToOraDataType(FdoDataType DataType,oracle::occi::T
 
 
 
-bool c_FdoOra_API::SetOracleStatementData(oracle::occi::Statement* Statement,int SqlParamNum,FdoDataValue* DataValue)
+bool c_FdoOra_API::SetOracleStatementData(oracle::occi::Environment* Environment, oracle::occi::Statement* Statement,int SqlParamNum,FdoDataValue* DataValue)
 {
   
   switch( DataValue->GetDataType() )
@@ -210,7 +210,7 @@ bool c_FdoOra_API::SetOracleStatementData(oracle::occi::Statement* Statement,int
         FdoDateTimeValue * dateval = (FdoDateTimeValue*)DataValue;
         
         FdoDateTime date = dateval->GetDateTime();
-        oracle::occi::Date val(c_OCCI_API::GetEnvironment(),date.year,date.month,date.day,date.hour,date.minute,date.seconds);
+        oracle::occi::Date val(Environment,date.year,date.month,date.day,date.hour,date.minute,date.seconds);
         //val.setDate(date.year,date.month,date.day,date.hour,date.minute,date.seconds);
         Statement->setDate(SqlParamNum,val);
       }
@@ -460,7 +460,7 @@ bool c_FdoOra_API::DescribeTableProperties(oracle::occi::Connection * OcciConnec
         }
         else 
         {
-          scale = -1;
+          scale = -1; // not null because if 0 then it wil become integer but should be decimal withundefined scale
         }
           
         if( !occi_rs->isNull(2) )
@@ -558,7 +558,7 @@ c_KgOraSchemaDesc* c_FdoOra_API::DescribeSchema(c_KgOraConnection* KgOraConn,con
       " order by a.owner, a.table_name "
     );
     */
-    
+    bool isoracle9=false;
     // this is for prior 10.2 version (works also with 10.2)
     if( !OraSchema || (*OraSchema == 0) )
     {
@@ -609,6 +609,7 @@ c_KgOraSchemaDesc* c_FdoOra_API::DescribeSchema(c_KgOraConnection* KgOraConn,con
         " where t.owner = a.owner and t.table_name=a.table_name and t.column_name = a.column_name "
         " order by a.owner, a.table_name "
         );
+        isoracle9=true;
       }
       
       // SELECT SDO_AGGR_MBR(geom) FROM curvepolygon
@@ -661,6 +662,7 @@ c_KgOraSchemaDesc* c_FdoOra_API::DescribeSchema(c_KgOraConnection* KgOraConn,con
         " where t.owner = a.owner and t.table_name=a.table_name and t.column_name = a.column_name and t.owner = :1 "
         " order by a.owner, a.table_name "
         );
+        isoracle9=true;
       }
       occi_stm->setString(1,OraSchema);
       
@@ -668,7 +670,7 @@ c_KgOraSchemaDesc* c_FdoOra_API::DescribeSchema(c_KgOraConnection* KgOraConn,con
 
   
     
-    c_FdoOra_API::DescribeSchemaSQL(occi_conn,occi_stm,classes,phys_classes,sc_collection,aliasnum);
+    c_FdoOra_API::DescribeSchemaSQL(occi_conn,occi_stm,classes,phys_classes,sc_collection,aliasnum,isoracle9);
     
     
   }
@@ -700,9 +702,18 @@ c_KgOraSchemaDesc* c_FdoOra_API::DescribeSchema(c_KgOraConnection* KgOraConn,con
 }
 // Create FDO classes from tables in KingFDOViews table
 if( KingFdoViews && *KingFdoViews )
-{  
-  FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create(L"KingFdoClass", L"");          
-  fschema->Add(schema.p);
+{ 
+  // FdoPtr<FdoFeatureSchema> schema = fschema->FindItem(L"KingFdoClass"); 
+  // If I set different schema than when selecting feature in MG, it will not select one feature
+  // but it will render all features blue. Workarround was to have one just one schema
+  
+  FdoPtr<FdoFeatureSchema> schema = fschema->FindItem(L"KingOra"); 
+  
+  if( schema.p == NULL )
+  {
+    schema = FdoFeatureSchema::Create(L"KingOra", L"");          
+    fschema->Add(schema.p);
+  }
   
   FdoPtr<FdoClassCollection> classes = schema->GetClasses();
   
@@ -731,7 +742,7 @@ if( KingFdoViews && *KingFdoViews )
         char sqlfrom[512];
         sprintf(sqlfrom," FROM %s k ", KingFdoViews );
         
-        sqljoin = " LEFT JOIN all_sdo_geom_metadata a ON  k.fdo_spatialtable_owner = a.owner and k.fdo_spatialtable_name = a.table_name and k.fdo_spatialtable_geomcolumn = a.column_name "
+        sqljoin = " LEFT JOIN all_sdo_geom_metadata a ON  UPPER(k.FDO_SPATIALTABLE_OWNER) = a.owner and UPPER(k.FDO_SPATIALTABLE_NAME) = a.table_name and UPPER(k.FDO_SPATIALTABLE_GEOMCOLUMN) = a.column_name "
             " LEFT JOIN MDSYS.CS_SRS b ON  a.srid = b.srid "
             " LEFT JOIN ALL_SDO_INDEX_INFO c ON  a.owner = c.table_owner and a.table_name = c.table_name "
             " LEFT JOIN ALL_SDO_INDEX_METADATA d ON c.sdo_index_owner = d.sdo_index_owner and c.index_name = d.sdo_index_name "
@@ -768,7 +779,7 @@ if( KingFdoViews && *KingFdoViews )
         char sqlfrom[512];
         sprintf(sqlfrom," FROM %s k ", KingFdoViews );
         
-        sqljoin =  " LEFT JOIN all_sdo_geom_metadata a ON  k.fdo_spatialtable_owner = a.owner and k.fdo_spatialtable_name = a.table_name and k.fdo_spatialtable_geomcolumn = a.column_name "
+        sqljoin =  " LEFT JOIN all_sdo_geom_metadata a ON  UPPER(k.FDO_SPATIALTABLE_OWNER) = a.owner and UPPER(k.FDO_SPATIALTABLE_NAME) = a.table_name and UPPER(k.FDO_SPATIALTABLE_GEOMCOLUMN) = a.column_name "
             " LEFT JOIN MDSYS.CS_SRS b ON  a.srid = b.srid "
             " LEFT JOIN ALL_SDO_INDEX_INFO c ON a.table_name = c.table_name "
             " LEFT JOIN ALL_SDO_INDEX_METADATA d ON c.sdo_index_owner = d.sdo_index_owner and c.index_name = d.sdo_index_name "
@@ -929,7 +940,7 @@ if( KingFdoViews && *KingFdoViews )
 
 void c_FdoOra_API::DescribeSchemaSQL(oracle::occi::Connection * OraConn,oracle::occi::Statement* OcciStm
             ,FdoClassCollection* FdoClasses,FdoKgOraClassCollection* PhysClasses
-            ,c_KgOraSpatialContextCollection* SC_Collection,long& AliasNum      )
+            ,c_KgOraSpatialContextCollection* SC_Collection,long& AliasNum,bool IsOracle9      )
 {
   
   oracle::occi::ResultSet* occi_rs = NULL;
@@ -957,6 +968,10 @@ void c_FdoOra_API::DescribeSchemaSQL(oracle::occi::Connection * OraConn,oracle::
     string override_coord_sys_name,override_coord_sys_wktext,override_layer_gtype;
     string override_point_x_col,override_point_y_col,override_point_z_col;
      
+    if( IsOracle9 )
+    {
+      occi_rs->setMaxColumnSize(11,512);
+    }      
     occi_rs->setMaxColumnSize(12,512); 
     occi_rs->setMaxColumnSize(13,512);
     occi_rs->setMaxColumnSize(14,512);
@@ -1355,11 +1370,18 @@ void c_FdoOra_API::DescribeSchemaSQL(oracle::occi::Connection * OraConn,oracle::
             }  
           }
           
+       ////////////////////////////////////////////////////////////////////////////////////////////
+       //  Set Oracle Sequence
+       ////////////////////////////////////////////////////////////////////////////////////////////  
          // If primary ky is one int column and if there is sequence TableName_FDOSEQ
          // then this sequence will be use to populuate identity id during inserts
-          if( (pcols.size() == 1) && (isidentity_int = true) && (ora_sequence_name.length()>0) )
+          string comb_sequence_name;        
+          comb_sequence_name = ora_sequence_name;
+          if( override_sequence_name.length() > 0 ) comb_sequence_name = override_sequence_name;
+          
+          if( (pcols.size() == 1) && (isidentity_int = true) && (comb_sequence_name.length()>0) )
           {
-            FdoStringP fdostr = ora_sequence_name.c_str();
+            FdoStringP fdostr = comb_sequence_name.c_str();
             phys_class->SetUseSequenceForIdentity(fdostr);
           }          
         }
@@ -1388,6 +1410,7 @@ void c_FdoOra_API::DescribeSchemaSQL(oracle::occi::Connection * OraConn,oracle::
   }
   catch(oracle::occi::SQLException& ea)
   {
+    FdoStringP gstr = ea.getMessage().c_str();
     if( OcciStm )
     {
       if( occi_rs )
@@ -1397,7 +1420,7 @@ void c_FdoOra_API::DescribeSchemaSQL(oracle::occi::Connection * OraConn,oracle::
       }
       
     }
-    FdoStringP gstr = ea.what();
+    
     throw FdoException::Create( gstr );
   }
 }//end of c_FdoOra_API::DescribeSchemaSQL
@@ -1427,7 +1450,28 @@ bool c_FdoOra_API::FdoPropertyToOraDataType(FdoPropertyDefinition* Property,FdoS
         {
           FdoInt32 prec = propdata->GetPrecision();
           FdoInt32 scale = propdata->GetScale();
-          OraType = FdoStringP::Format(L"%s(%ld,%ld)",L"NUMBER",prec,scale);
+          if( (prec>=1) && (prec<=38) )
+          {
+            if( (scale>=0) && (scale<=127) ) // Oracle supposrt from -84 but I thing that in FDO -1 means not defined
+            {
+              OraType = FdoStringP::Format(L"%s(%ld,%ld)",L"NUMBER",prec,scale);
+            }
+            else
+            {
+              OraType = FdoStringP::Format(L"%s(%ld,*)",L"NUMBER",prec);
+            }
+          }
+          else
+          {
+            if( (scale>=0) && (scale<=127) )
+            {
+              OraType = FdoStringP::Format(L"%s(*,%ld)",L"NUMBER",scale);
+            }
+            else
+            {
+              OraType = FdoStringP::Format(L"%s",L"NUMBER");
+            }
+          }
         }
         break;
         case FdoDataType_Byte:
