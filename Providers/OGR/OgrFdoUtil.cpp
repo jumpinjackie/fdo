@@ -19,19 +19,6 @@
 #include "stdafx.h"
 #include "OgrFdoUtil.h"
 
-//an FGF 5 point polygon
-#pragma pack(push, 1) //not strictly needed in this case
-struct AgfGeom
-{
-    FdoGeometryType type;
-    FdoDimensionality dim;
-    int nrings;
-    int np;
-    double p[10];//reserve 5 points since this is all we need
-};
-#pragma pack(pop)
-
-
 void tilde2dot(char* mbfc)
 {
     //TODO HACK remove . from feature class names -- this is a workaround for Oracle
@@ -390,16 +377,6 @@ void OgrFdoUtil::ApplyFilter(OGRLayer* layer, FdoFilter* filter)
             if (geomval)
             {
                 FdoPtr<FdoByteArray> fgf = geomval->GetGeometry();
-
-                //TODO: 
-                //This is a hack workaround to force OGR to do an intersects query.
-                //If the input polygon is an axis aligned rectangle, OGR assumes that
-                //we mean to do a bounding box query rather than intersects. We really want
-                //real intersection for selection, so we need to make OGR think that the input is
-                //not a BBOX. To do this, just warp one of the points by a tiny bit.
-                AgfGeom* poly = (AgfGeom*)fgf->GetData();
-                poly->p[2] += 1e-10;
-                poly->p[3] += 1e-10;
 
                 unsigned char* wkb = (unsigned char*) alloca(fgf->GetCount());
 

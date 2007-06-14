@@ -179,7 +179,11 @@ FdoConnectionState OgrConnection::Open()
     m_poDS = OGRSFDriverRegistrar::Open(mbdsw, !readonly);
     if( m_poDS == NULL )
     {
-        throw FdoConnectionException::Create(L"Connect failed");
+        std::string str = "Connect failed: "; 
+        str.append(CPLGetLastErrorMsg());
+        const char* x = str.c_str();
+        A2W(x);
+        throw FdoConnectionException::Create(wx);
     }
     
     m_connState = FdoConnectionState_Open;
@@ -874,7 +878,16 @@ bool OgrFeatureReader::ReadNext()
         OGRFeature::DestroyFeature(m_poFeature);
     
     m_poFeature = m_poLayer->GetNextFeature();
-    
+
+    //Ugly hack to fix broken providers, with BBOX only testing
+    OGRGeometry* spfilter = m_poLayer->GetSpatialFilter();
+    if (spfilter != NULL)
+        while (m_poFeature != NULL && m_poFeature->GetGeometryRef() != NULL && !spfilter->Intersects(m_poFeature->GetGeometryRef()))
+        {
+            OGRFeature::DestroyFeature(m_poFeature);
+            m_poFeature = m_poLayer->GetNextFeature();
+        }
+
     return (m_poFeature != NULL);
 }
 
