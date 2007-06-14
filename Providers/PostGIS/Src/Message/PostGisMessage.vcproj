@@ -141,7 +141,7 @@
 				Name="VCLinkerTool"
 				OutputFile="$(OutDir)\PostGISMessage.dll"
 				LinkIncremental="1"
-				GenerateDebugInformation="true"
+				GenerateDebugInformation="false"
 				SubSystem="2"
 				OptimizeReferences="0"
 				EnableCOMDATFolding="0"
