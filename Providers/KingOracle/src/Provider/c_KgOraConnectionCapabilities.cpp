@@ -36,9 +36,9 @@ FdoThreadCapability c_KgOraConnectionCapabilities::GetThreadCapability ()
 {
     //return (FdoThreadCapability_PerConnectionThreaded);
     
-    //return  FdoThreadCapability_PerCommandThreaded;
+    return  FdoThreadCapability_PerCommandThreaded;
     
-    return  FdoThreadCapability_MultiThreaded;
+    //return  FdoThreadCapability_MultiThreaded;
 }
 
 /// <summary>Gets the spatial context extent types supported by the feature provider.</summary>

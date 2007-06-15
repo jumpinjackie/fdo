@@ -273,19 +273,6 @@ switch( Filter.GetOperation() )
         double maxx = envelope->GetMaxX();
         double maxy = envelope->GetMaxY();
 
-        if( m_OraSridDesc.m_IsGeodetic )
-        {
-        // if it is geodetic data I need to check boundaries
-        // that will not go over 180 and 90
-        // MapGuide will send bigger and than oracle wan't return geometries
-        // so this is workarround for it
-          if( minx < - 180 ) minx = -180.0;
-          if( maxx > 180 ) maxx = 180.0;
-          
-          if( miny < -90.0 ) miny = -90.0;
-          if( maxy > 90.0 ) maxy = 90;
-        }
-
         char buff[512];
         
         AppendString(D_FILTER_OPEN_PARENTH);
@@ -321,7 +308,28 @@ switch( Filter.GetOperation() )
     }
     else
     {
+     
+      AppendString(D_FILTER_OPEN_PARENTH);
+      AppendString("SDO_FILTER(");
+      ProcessExpresion( geomprop );
+      AppendString(",");
       
+      FdoGeometryValue* geomval = dynamic_cast<FdoGeometryValue*>(geomexp.p);
+      if (geomval)
+      {
+        GetExpressionProcessor().ProcessGeometryValueRect(*geomval);
+      }
+      else
+      {
+        ProcessExpresion( geomexp,true );
+      }
+         
+      
+      AppendString(")='TRUE'");
+      AppendString(D_FILTER_CLOSE_PARENTH);
+    
+    
+    /*
       AppendString(D_FILTER_OPEN_PARENTH);
       AppendString("SDO_FILTER(");
       ProcessExpresion( geomprop );
@@ -375,7 +383,6 @@ switch( Filter.GetOperation() )
         }
         
         delete sdorect;
-        
       }
       else
       {
@@ -385,7 +392,9 @@ switch( Filter.GetOperation() )
       
       AppendString(")='TRUE'");
       AppendString(D_FILTER_CLOSE_PARENTH);
-    }
+    
+    */
+    }    
   }
   break;
   case FdoSpatialOperations_Intersects:
@@ -407,20 +416,7 @@ switch( Filter.GetOperation() )
         double miny = envelope->GetMinY();
         
         double maxx = envelope->GetMaxX();
-        double maxy = envelope->GetMaxY();
-
-        if( m_OraSridDesc.m_IsGeodetic )
-        {
-        // if it is geodetic data I need to check boundaries
-        // that will not go over 180 and 90
-        // MapGuide will send bigger and than oracle wan't return geometries
-        // so this is workarround for it
-          if( minx < - 180 ) minx = -180.0;
-          if( maxx > 180 ) maxx = 180.0;
-          
-          if( miny < -90.0 ) miny = -90.0;
-          if( maxy > 90.0 ) maxy = 90;
-        }
+        double maxy = envelope->GetMaxY();    
 
         char buff[512];
         
@@ -452,12 +448,8 @@ switch( Filter.GetOperation() )
         sprintf(buff,"%.8lf",maxy);
         AppendString(buff);
         
-        AppendString(D_FILTER_CLOSE_PARENTH);
-        
+        AppendString(D_FILTER_CLOSE_PARENTH);        
       }
-     
-      
-      
     }
     else
     {    
