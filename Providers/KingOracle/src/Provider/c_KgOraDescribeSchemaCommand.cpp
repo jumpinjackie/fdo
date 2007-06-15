@@ -74,7 +74,10 @@ FdoFeatureSchemaCollection* c_KgOraDescribeSchemaCommand::Execute ()
     
     FdoPtr<c_KgOraSchemaDesc> schemadesc = m_KgOraConnection->GetSchemaDesc();
     
-    FdoFeatureSchemaCollection* ret = schemadesc->GetFeatureSchema();
+    FdoPtr<FdoFeatureSchemaCollection> ret = schemadesc->GetFeatureSchema();
+    
+    //FdoCommonSchemaUtil::DeepCopyFdoFeatureSchemas
+    FdoFeatureSchemaCollection* ret2 = FdoCommonSchemaUtil::DeepCopyFdoFeatureSchemas(ret);
     
     //FdoFeatureSchemaCollection* ret = m_KgOraConnection->DescribeSchema();
     
@@ -82,7 +85,7 @@ FdoFeatureSchemaCollection* c_KgOraDescribeSchemaCommand::Execute ()
       D_KGORA_ELOG_WRITE_FUNC_TIME("DescribeSchemaCommand")
     #endif
     
-    return ret;
+    return ret2;
 }
 
 

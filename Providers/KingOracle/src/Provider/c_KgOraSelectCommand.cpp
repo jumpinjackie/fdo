@@ -91,6 +91,10 @@ void c_KgOraSelectCommand::SetLockStrategy (FdoLockStrategy value)
 FdoIFeatureReader* c_KgOraSelectCommand::Execute ()
 {
  
+ int propcount = -1; 
+ if( m_PropertyNames.p )
+   propcount = m_PropertyNames->GetCount();
+  
     FdoPtr<FdoIdentifier> classid = GetFeatureClassName ();
     FdoString* class_name = classid->GetText ();
     
@@ -148,7 +152,8 @@ FdoIFeatureReader* c_KgOraSelectCommand::Execute ()
       occi_stm = m_Connection->OCCI_CreateStatement();
       
       occi_stm->setSQL(sqlstr);
-      occi_stm->setPrefetchRowCount(200);
+      occi_stm->setPrefetchRowCount(400);
+      occi_stm->setPrefetchMemorySize(64*1024);
       
       fproc.GetExpressionProcessor().ApplySqlParameters(m_Connection->GetOcciEnvironment(), occi_stm);
       

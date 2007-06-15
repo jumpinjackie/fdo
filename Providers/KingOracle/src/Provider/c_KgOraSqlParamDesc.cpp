@@ -122,20 +122,45 @@ void c_KgOraSqlParamDesc::ApplySqlParameter(oracle::occi::Environment*Env,oracle
       if( m_ParamGeometry )
       {
         OraStm->setObject(SqlParamNum,m_ParamGeometry);
+        
+        #ifdef _DEBUG
+        {
+        char* buff = c_Ora_API::SdoGeomToString(m_ParamGeometry);
+        D_KGORA_ELOG_WRITE2("SQL Geometry Param %d = '%s'",SqlParamNum,buff);
+        delete buff;
+        }
+        #endif
+        
       }
       else
       {
         OraStm->setNull( SqlParamNum,oracle::occi::OCCIPOBJECT );
+        #ifdef _DEBUG
+        {
+        D_KGORA_ELOG_WRITE1("SQL Geometry Param %d = NULL",SqlParamNum);
+        
+        }
+        #endif
       }
     }
     break;
     case e_DataValue:
     {
       oracle::occi::Type oratype;
+      
       if( c_FdoOra_API::SetOracleStatementData(Env,OraStm,SqlParamNum,m_ParamDataValue) )
       {
       }
+      
+      #ifdef _DEBUG
+      {
+      FdoStringP fdostr = m_ParamDataValue->ToString();
+      D_KGORA_ELOG_WRITE2("SQL Data Param %d = %s",SqlParamNum,(const char*)fdostr);
+      
+      }
+      #endif
     }
     break;  
   }
 }//end of  c_KgOraSqlParamDesc::ApplySqlParameters
+

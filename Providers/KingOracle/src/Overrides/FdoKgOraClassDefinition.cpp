@@ -27,8 +27,8 @@ FdoKgOraClassDefinition* FdoKgOraClassDefinition::Create()
 
 FdoKgOraClassDefinition::FdoKgOraClassDefinition(void)
 {
-    m_Properties = FdoKgOraPropertyDefinitionCollection::Create(this);
-
+  m_Properties = FdoKgOraPropertyDefinitionCollection::Create(this);
+  m_IsPointGeometry = false;
 }
 
 FdoKgOraClassDefinition::~FdoKgOraClassDefinition(void)

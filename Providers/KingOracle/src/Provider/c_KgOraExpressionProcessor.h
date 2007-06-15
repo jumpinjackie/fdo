@@ -260,6 +260,8 @@ protected:
     /// Returns nothing
     /// 
     virtual void ProcessGeometryValue(FdoGeometryValue& expr);
+    
+    virtual void ProcessGeometryValueRect(FdoGeometryValue& expr);
   
 public:
   //const std::vector<c_KgOraSqlParamDesc*> GetParamList() const { return m_ParamList; }

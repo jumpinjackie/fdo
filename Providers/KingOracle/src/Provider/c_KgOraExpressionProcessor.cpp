@@ -538,6 +538,68 @@ void c_KgOraExpressionProcessor::ProcessGeometryValue(FdoGeometryValue& Expr)
   
 }//end of c_KgOraExpressionProcessor::ProcessGeometryValue
 
+// c_KgOraExpressionProcessor::ProcessGeometryValueRect function is King.Oracle specific.
+// It is created to be used by spatial filter with EnvelopeIntersect.
+// I needed this special case to creaet optimised rectangle from geometry ( not polygon )
+// beacuse Oracle will not return features if polygon is to huge for geodetic systems.
+// If geometry used in spatial filter is Rectangle then query will return correct features
+void c_KgOraExpressionProcessor::ProcessGeometryValueRect(FdoGeometryValue& Expr)
+{
+  if( Expr.IsNull() )
+  {  
+    c_KgOraSqlParamDesc* pdesc = new c_KgOraSqlParamDesc();
+    pdesc->SetGeometry(NULL);
+    m_ParamList.push_back( pdesc );  
+    
+    return; 
+  }
+ 
+  FdoPtr<FdoByteArray> fgf = Expr.GetGeometry();
+  FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+  FdoPtr<FdoIGeometry> fgfgeom = gf->CreateGeometryFromFgf(fgf);
+  FdoPtr<FdoIEnvelope> envelope = fgfgeom->GetEnvelope();
+
+  double minx = envelope->GetMinX();
+  double miny = envelope->GetMinY();
+
+  double maxx = envelope->GetMaxX();
+  double maxy = envelope->GetMaxY();
+
+  if( m_OraSridDesc.m_IsGeodetic )
+  {
+  // if it is geodetic data I need to check boundaries
+  // that will not go over 180 and 90
+  // MapGuide will send bigger and than oracle wan't return geometries
+  // so this is workarround for it
+    if( minx < - 180 ) minx = -180.0;
+    if( maxx > 180 ) maxx = 180.0;
+    
+    if( maxx < minx ) { minx=-180; maxx=180; }
+    
+    if( miny < -90.0 ) miny = -90.0;
+    if( maxy > 90.0 ) maxy = 90;
+    
+    if( maxy < miny ) { miny=-90; maxy=90; }
+    if( maxx < minx ) { minx=-180; maxx=180; }
+
+  }
+
+  // create optimize rect
+  SDO_GEOMETRY *sdorect = c_Ora_API::CreateOptimizedRect(m_OraSridDesc.m_OraSrid,minx,miny,maxx,maxy);
+        
+         
+    long size = m_ParamList.size();
+    size++;
+    char chbuff[16];
+    sprintf(chbuff,"%ld",size);
+    AppendString( ":" );
+    AppendString( chbuff );
+      
+      
+   m_ParamList.push_back( new c_KgOraSqlParamDesc(sdorect) );  
+  
+  
+}//end of c_KgOraExpressionProcessor::ProcessGeometryValueRect
 
 int c_KgOraExpressionProcessor::GetSqlParametersCount()
 {
