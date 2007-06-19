@@ -272,11 +272,50 @@ void FdoRfpFilterEvaluator::ProcessSpatialCondition(FdoSpatialCondition& filter)
         if (geoBandRaster == NULL)
             continue;
 
-        if (geoBandRaster->IsRotated())
+        FdoRfpRect lhs = geoBandRaster->GetBounds();
+        FdoRfpRect rhs = FdoRfpUtil::CreateRectFromGeometryAgf(geometryData);
+
+        // -------------------------------------------------------------
+        // First do a quick boundary evaluation.
+        // -------------------------------------------------------------
+        switch (opr)
+        {
+          case FdoSpatialOperations_Intersects:
+          case FdoSpatialOperations_EnvelopeIntersects:
+          {
+              _getResult()->SetBoolean(lhs.IsIntersecting(rhs));
+              break;
+          }
+          case FdoSpatialOperations_Within:
+          {
+              _getResult()->SetBoolean(lhs.IsWithin(rhs));
+              break;
+          }
+          case FdoSpatialOperations_Inside:
+          {
+              _getResult()->SetBoolean(lhs.IsInside(rhs));
+              break;
+          }
+          default:
+            _throwInvalidException();
+            break;
+        };
+
+        // -------------------------------------------------------------
+        // If the bounds is a hit, and we have been asked for an exact
+        // sort of operation, do it now.  But this can be expensive 
+        // if the config file has only bounds as we will end up opening
+        // the file to compute the exact boundary.
+        // -------------------------------------------------------------
+
+        if ( opr != FdoSpatialOperations_EnvelopeIntersects
+             && _getResult()->GetBoolean()
+             && geoBandRaster->IsRotated())
         {
             FdoPtr<FdoFgfGeometryFactory> agfFactory = FdoFgfGeometryFactory::GetInstance();
             FdoPtr<FdoIGeometry> lhs = agfFactory->CreateGeometryFromFgf(geometryData);
             FdoPtr<FdoIGeometry> rhs = geoBandRaster->GetGeometry();
+
             switch (opr)
             {
               case FdoSpatialOperations_Intersects:
@@ -285,51 +324,9 @@ void FdoRfpFilterEvaluator::ProcessSpatialCondition(FdoSpatialCondition& filter)
                   _getResult()->SetBoolean(FdoSpatialUtility::Evaluate(lhs, opr, rhs));
                   break;
               }
-              case FdoSpatialOperations_EnvelopeIntersects:
-              {
-                  // get the bounding box of the two geometries
-                  FdoPtr<FdoIEnvelope> envelopeL = lhs->GetEnvelope();
-                  FdoPtr<FdoIEnvelope> envelopeR = rhs->GetEnvelope();
-
-                  FdoRfpRect lhs1 = FdoRfpRect(envelopeL->GetMinX(), envelopeL->GetMinY(), 
-                                               envelopeL->GetMaxX(), envelopeL->GetMaxY());
-                  FdoRfpRect rhs1 = FdoRfpRect(envelopeR->GetMinX(), envelopeR->GetMinY(), 
-                                               envelopeR->GetMaxX(), envelopeR->GetMaxY());
-
-                  _getResult()->SetBoolean(lhs1.IsIntersecting(rhs1));
-                  break;
-              }
               case FdoSpatialOperations_Inside:
               {
                   _getResult()->SetBoolean(FdoSpatialUtility::Evaluate(lhs, FdoSpatialOperations_Within, rhs));
-                  break;
-              }
-              default:
-                _throwInvalidException();
-                break;
-            };
-        }
-        else // axis aligned
-        {
-            FdoRfpRect lhs = geoBandRaster->GetBounds();
-            FdoRfpRect rhs = FdoRfpUtil::CreateRectFromGeometryAgf(geometryData);
-	    	
-            switch (opr)
-            {
-              case FdoSpatialOperations_Intersects:
-              case FdoSpatialOperations_EnvelopeIntersects:
-              {
-                  _getResult()->SetBoolean(lhs.IsIntersecting(rhs));
-                  break;
-              }
-              case FdoSpatialOperations_Within:
-              {
-                  _getResult()->SetBoolean(lhs.IsWithin(rhs));
-                  break;
-              }
-              case FdoSpatialOperations_Inside:
-              {
-                  _getResult()->SetBoolean(lhs.IsInside(rhs));
                   break;
               }
               default:
