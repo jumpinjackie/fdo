@@ -58,16 +58,27 @@ FdoExpressionType* ExpressionCapabilities::GetExpressionTypes(FdoInt32& size)
 
 FdoFunctionDefinitionCollection* ExpressionCapabilities::GetFunctions()
 {    
-    // Collect supported functions from the Well-Known-Functions collection
-    FdoPtr<FdoFunctionDefinitionCollection> wkFunctions;
-    wkFunctions = GetWellKnownFunctions();
-
     FdoPtr<FdoFunctionDefinitionCollection> supported;
     supported = FdoFunctionDefinitionCollection::Create();
+
+    // Collect supported functions from the Well-Known-Functions collection
+    FdoPtr<FdoFunctionDefinitionCollection> wkfuncs;
+    wkfuncs = GetWellKnownFunctions();
     
-    FdoPtr<FdoFunctionDefinition> wkFunction;
+    FdoPtr<FdoFunctionDefinition> wkf;
     
-    // TODO: Build collection of supported functions. 
+    wkf = wkfuncs->GetItem(FDO_FUNCTION_COUNT);
+    supported->Add(wkf);
+    wkf = wkfuncs->GetItem(FDO_FUNCTION_MIN);
+    supported->Add(wkf);
+    wkf = wkfuncs->GetItem(FDO_FUNCTION_MAX);
+    supported->Add(wkf);
+    wkf = wkfuncs->GetItem(FDO_FUNCTION_AVG);
+    supported->Add(wkf);
+    wkf = wkfuncs->GetItem(FDO_FUNCTION_SUM);
+    supported->Add(wkf);
+    wkf = wkfuncs->GetItem(FDO_FUNCTION_CONCAT);
+    supported->Add(wkf);
 
     FDO_SAFE_ADDREF(supported.p);
     return supported.p;

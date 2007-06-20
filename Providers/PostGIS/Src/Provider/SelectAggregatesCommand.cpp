@@ -273,16 +273,19 @@ FdoIDataReader* SelectAggregatesCommand::Execute()
     sep.clear();
     std::string sqlGroupBy;
 
-    FdoInt32 const groupingSize = mGroupingProperties->GetCount();
-
-    for (FdoInt32 i = 0; i < groupingSize; i++)
+    if (NULL != mGroupingProperties)
     {
-        FdoPtr<FdoIdentifier> id(mGroupingProperties->GetItem(i));
+        FdoInt32 const groupingSize = mGroupingProperties->GetCount();
 
-        FdoStringP name = id->GetName();
-        sqlGroupBy.append(sep + static_cast<char const*>(name));
+        for (FdoInt32 i = 0; i < groupingSize; i++)
+        {
+            FdoPtr<FdoIdentifier> id(mGroupingProperties->GetItem(i));
 
-        sep = ",";
+            FdoStringP name = id->GetName();
+            sqlGroupBy.append(sep + static_cast<char const*>(name));
+
+            sep = ",";
+        }
     }
 
     //
