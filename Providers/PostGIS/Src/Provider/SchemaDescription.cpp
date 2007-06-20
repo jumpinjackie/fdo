@@ -203,20 +203,9 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
 
         ////////////////// GENERATE SPATIAL CONTEXT //////////////////
 
-        FdoStringP spContextName;
+        FdoStringP spContextName(SpatialContextDefaultName);
         FdoInt32 srid = geomColumn->GetSRID();
-        if (srid <= 0)
-        {
-            // Set default spatial context
-            srid = -1;
-            spContextName = L"PostGIS_Default";
-            SpatialContext::Ptr spDefaultContext(new SpatialContext());
-            spDefaultContext->SetName(spContextName);
-            spContexts->Insert(0, spDefaultContext);
-
-            FDOLOG_WRITE("Use default spatial context with SRID = %d", srid);
-        }
-        else
+        if (srid >= 0)
         {
             spContextName = FdoStringP::Format(L"PostGIS_%d", srid);
         }
@@ -225,11 +214,11 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
         spContext = spContexts->FindItem(spContextName);
         if (NULL == spContext)
         {
-            FDOLOG_WRITE(L"Created spatial context: %s",
-                static_cast<FdoString*>(spContextName));
-
             spContext = CreateSpatialContext(mConn, spContextName, geomColumn);
             spContexts->Add(spContext);
+
+            FDOLOG_WRITE(L"Created spatial context: %s",
+                static_cast<FdoString*>(spContextName));
         }
 
         ////////////////// CALCULATE SPATIAL EXTENT //////////////////
@@ -403,6 +392,18 @@ SpatialContext* SchemaDescription::CreateSpatialContext(Connection* conn,
 {
     FDOLOG_MARKER("SchemaDescription::-CreateSpatialContext");
 
+    //
+    // Determine type of context
+    //
+    if (0 == spContextName.ICompare(SpatialContextDefaultName))
+    {
+        SpatialContext::Ptr spDefaultContext(new SpatialContext());
+        spDefaultContext->SetName(spContextName);
+
+        FDO_SAFE_ADDREF(spDefaultContext.p);
+        return spDefaultContext.p;
+    }
+
     Connection::Ptr mConn(conn);
     FDO_SAFE_ADDREF(mConn.p);
 
@@ -412,7 +413,6 @@ SpatialContext* SchemaDescription::CreateSpatialContext(Connection* conn,
     //
     // Query for SRS details
     //
-
     FdoInt32 srid = -1;
     std::string sridText;
     try

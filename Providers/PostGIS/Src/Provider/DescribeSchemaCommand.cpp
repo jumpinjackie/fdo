@@ -28,7 +28,7 @@
 namespace fdo { namespace postgis {
 
 DescribeSchemaCommand::DescribeSchemaCommand(Connection* conn)
-    : mConn(conn)
+    : mConn(conn), mSchemaName(L"FdoPostGIS")
 {
     FDO_SAFE_ADDREF(mConn.p);
 }
@@ -111,6 +111,10 @@ void DescribeSchemaCommand::Cancel()
 
 FdoString* DescribeSchemaCommand::GetSchemaName()
 {
+    // TODO: The FdoPostGIS is always returned for now.
+    // This is name of default feature schema.
+    // Currently, the provider allows to work with single-schema datastores.
+
     return mSchemaName;
 }
 
@@ -136,6 +140,7 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
     catch (FdoException* e)
     {
         FDOLOG_WRITE("The execution of DescribeSchema command failed.");
+        FDOLOG_WRITE(L" - schema name: %s", GetSchemaName());
 
         FdoCommandException* ne = NULL;
         ne = FdoCommandException::Create(
