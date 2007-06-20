@@ -169,6 +169,8 @@ PgSpatialTablesReader::columns_t PgSpatialTablesReader::GetGeometryColumns() con
             PgGeometryColumn::Ptr col(new PgGeometryColumn(name, type, dim, srid, bbox));
             columns.push_back(col);
         }
+
+        FDOLOG_WRITE(" - Number of described columns: %d", columns.size());
     }
     catch (boost::bad_lexical_cast& e)
     {
