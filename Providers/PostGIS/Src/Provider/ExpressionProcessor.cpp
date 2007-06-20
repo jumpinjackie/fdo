@@ -152,9 +152,21 @@ void ExpressionProcessor::ProcessFunction(FdoFunction& expr)
 {
     FDOLOG_MARKER("ExpressionProcessor::+ProcessFunction");
 
+    FdoStringP name(expr.GetName());
     std::string sep;
+    std::string argSep;
 
-    mBuffer.append(static_cast<char const*>(FdoStringP(expr.GetName())));
+    if (0 == name.ICompare(FDO_FUNCTION_CONCAT))
+    {
+        argSep = " || ";
+    }
+    else
+    {
+        mBuffer.append(static_cast<char const*>(name));
+        argSep = sepComma;
+    }
+
+
     mBuffer.append(sepLeftTerm);
 
     FdoPtr<FdoExpressionCollection> args(expr.GetArguments());
@@ -163,7 +175,7 @@ void ExpressionProcessor::ProcessFunction(FdoFunction& expr)
         mBuffer.append(sep);
         FdoPtr<FdoExpression> subExpr(args->GetItem(i));
         subExpr->Process(this);
-        sep = sepComma;
+        sep = argSep;
     }
     mBuffer.append(sepRightTerm);
 
@@ -175,7 +187,17 @@ void ExpressionProcessor::ProcessIdentifier(FdoIdentifier& expr)
     FDOLOG_MARKER("ExpressionProcessor::+ProcessIdentifier");
 
     FdoStringP name(expr.GetName());
-    mBuffer.append(static_cast<char const*>(name));
+
+    if (name.Contains(L" "))
+    {
+        mBuffer.append("'");
+        mBuffer.append(static_cast<char const*>(name));
+        mBuffer.append("'");
+    }
+    else
+    {
+        mBuffer.append(static_cast<char const*>(name));
+    }
 
     FDOLOG_WRITE("Identifier name: %s", static_cast<char const*>(name));
     FDOLOG_WRITE("Expression text: %s", mBuffer.c_str());

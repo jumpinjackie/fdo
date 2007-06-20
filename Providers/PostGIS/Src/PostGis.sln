@@ -32,6 +32,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "select_aggregates_command",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "list_datastores", "..\..\..\..\Samples\list_datastores\list_datastores.vcproj", "{5E43AD6D-7A5F-4A65-B04E-07033EA24340}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "select_concat", "..\..\..\..\Samples\select_concat\select_concat.vcproj", "{21A69657-C7E5-4816-846A-11AF3CCC672F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -62,6 +64,10 @@ Global
 		{5E43AD6D-7A5F-4A65-B04E-07033EA24340}.Debug|Win32.Build.0 = Debug|Win32
 		{5E43AD6D-7A5F-4A65-B04E-07033EA24340}.Release|Win32.ActiveCfg = Release|Win32
 		{5E43AD6D-7A5F-4A65-B04E-07033EA24340}.Release|Win32.Build.0 = Release|Win32
+		{21A69657-C7E5-4816-846A-11AF3CCC672F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{21A69657-C7E5-4816-846A-11AF3CCC672F}.Debug|Win32.Build.0 = Debug|Win32
+		{21A69657-C7E5-4816-846A-11AF3CCC672F}.Release|Win32.ActiveCfg = Release|Win32
+		{21A69657-C7E5-4816-846A-11AF3CCC672F}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -69,5 +75,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{6B0EC69E-59AE-40F9-A461-CE4AD58D5A23} = {6F922396-7A7B-48E3-9F14-29FAFBE41301}
 		{5E43AD6D-7A5F-4A65-B04E-07033EA24340} = {6F922396-7A7B-48E3-9F14-29FAFBE41301}
+		{21A69657-C7E5-4816-846A-11AF3CCC672F} = {6F922396-7A7B-48E3-9F14-29FAFBE41301}
 	EndGlobalSection
 EndGlobal
