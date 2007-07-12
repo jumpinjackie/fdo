@@ -71,6 +71,19 @@ protected:
     /// reader. There is one field per database object attribute.
     FdoSmPhRowsP MakeRows( FdoSmPhMgrP mgr );
 
+    // Get the database from which owners are being read
+    FdoSmPhDatabaseP GetDatabase()
+    {
+        return mDatabase;
+    }
+
+    // Get the name of the owner being read. If L"" then all owners in the 
+    // current database are being read.
+    FdoStringP GetOwnerName()
+    {
+        return mOwnerName;
+    }
+
     FdoSmPhDatabaseP mDatabase;
     FdoStringP mOwnerName;
 };

@@ -123,32 +123,34 @@ FdoStringP FdoSmPhField::GetSelect()
     FdoStringP          selectSyntax;
     FdoSmPhColumnP   pColumn = GetColumn();
 
-    if ( pColumn->GetExists() ) {
-        // Column exists
+    if ( pColumn ) {
+        if ( pColumn->GetExists() ) {
+            // Column exists
 
-        if ( mDefaultValue.GetLength() == 0 ) {
-            // no default value, just select by qualified name. 
+            if ( mDefaultValue.GetLength() == 0 ) {
+                // no default value, just select by qualified name. 
 
-            selectSyntax = GetQName();
+                selectSyntax = GetQName();
+            }
+            else { 
+                // default value, generate syntax for a function that
+                // returns the default value when underlying column
+                // value is null
+                selectSyntax = GetManager()->FormatDefaultedField( 
+                    GetName(), 
+                    pColumn->GetName(), 
+                    mDefaultValue, 
+                    pColumn->GetType() 
+                );
+            }
         }
-        else { 
-            // default value, generate syntax for a function that
-            // returns the default value when underlying column
-            // value is null
-            selectSyntax = GetManager()->FormatDefaultedField( 
-                GetName(), 
-                pColumn->GetName(), 
-                mDefaultValue, 
-                pColumn->GetType() 
-            );
-        }
-    }
-    else {
-        // column does not exist.
-        // return the default value as a literal plus an alias (the field name).
+        else {
+            // column does not exist.
+            // return the default value as a literal plus an alias (the field name).
 
-        selectSyntax = FdoStringP(L"(") + 
-            GetManager()->FormatSQLVal(mDefaultValue, pColumn->GetType()) + L") as \"" + GetName() + L"\"";
+            selectSyntax = FdoStringP(L"(") + 
+                GetManager()->FormatSQLVal(mDefaultValue, pColumn->GetType()) + L") as \"" + GetName() + L"\"";
+        }
     }
 
     return selectSyntax;

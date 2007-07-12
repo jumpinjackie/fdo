@@ -26,6 +26,7 @@
 
 class FdoSmPhMgr;
 class FdoSmPhOwner;
+class FdoSmPhRdViewReader;
 
 // Table represents a table object which describes a 
 // table in the schema that stores class properties.
@@ -33,6 +34,9 @@ class FdoSmPhView : virtual public FdoSmPhDbObject
 {
 public:
     void SetRootObject( FdoSmPhDbObjectP rootObject );
+
+    // Load specific information for this view.
+    virtual void CacheView( FdoPtr<FdoSmPhRdViewReader> rdr );
 
     /// Serialize the table to an XML file.
     /// Mainly for unit testing.
@@ -80,6 +84,13 @@ protected:
     virtual FdoStringP GetRootNameSql() = 0;
 
 private:
+    /// Load View-specific information if not already loaded.
+//    void LoadView();
+    void LoadView( FdoPtr<FdoSmPhTableComponentReader> viewRdr, bool isSkipAdd );
+    FdoPtr<FdoSmPhTableComponentReader> NewViewReader( FdoPtr<FdoSmPhRdViewReader> rdr );
+	
+    FdoBoolean mViewLoaded;
+    FdoStringP mSql;
 };
 
 typedef FdoPtr<FdoSmPhView> FdoSmPhViewP;

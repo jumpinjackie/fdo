@@ -33,6 +33,7 @@ static const FdoStringP FDOSYS_OWNER = L"FDOSYS";
 
 class FdoSmPhDatabase;
 class FdoSmPhRdDbObjectReader;
+class FdoSmPhRdViewReader;
 class FdoSmPhRdCoordSysReader;
 class FdoSmPhRdConstraintReader;
 class FdoSmPhRdColumnReader;
@@ -145,6 +146,9 @@ public:
 
     /// Create a reader to get all database objects for this join.
     virtual FdoPtr<FdoSmPhRdDbObjectReader> CreateDbObjectReader( FdoPtr<FdoSmPhRdTableJoin> join ) const;
+
+    /// Create a reader to get all views for this owner.
+    virtual FdoPtr<FdoSmPhRdViewReader> CreateViewReader() const;
 
     /// Create a reader to get one or more coordinate system(s) for this owner.
     virtual FdoPtr<FdoSmPhRdCoordSysReader> CreateCoordSysReader( FdoStringP csysName = L"") const;
