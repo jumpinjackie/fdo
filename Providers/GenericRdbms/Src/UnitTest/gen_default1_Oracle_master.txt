@@ -464,6 +464,26 @@ geographic</gml:derivedCRSType>
 <xs:complexContent>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
+<xs:element name="BINARY_DOUBLE_COLUMN" minOccurs="0">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="8"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="BINARY_FLOAT_COLUMN" minOccurs="0">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="4"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
 <xs:element name="BLOB_COLUMN" minOccurs="0">
 <xs:simpleType>
 <xs:restriction base="xs:hexBinary"/>
@@ -583,10 +603,50 @@ geographic</gml:derivedCRSType>
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
+<xs:element name="INTERVAL_DAY_COLUMN" minOccurs="0">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="11"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="INTERVAL_YEAR_COLUMN" minOccurs="0">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="5"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="NCHAR_COLUMN" minOccurs="0">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="2"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
 <xs:element name="NEW_GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
+</xs:element>
+<xs:element name="NVARCHAR_COLUMN" minOccurs="0">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="10"/>
+</xs:restriction>
+</xs:simpleType>
 </xs:element>
 <xs:element name="OBJECT_NAME" minOccurs="0">
 <xs:annotation>
@@ -595,6 +655,16 @@ geographic</gml:derivedCRSType>
 <xs:simpleType>
 <xs:restriction base="xs:string">
 <xs:maxLength value="30"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="SINGLE_CHAR_COLUMN" minOccurs="0">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="1"/>
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
@@ -613,6 +683,16 @@ geographic</gml:derivedCRSType>
 <xs:simpleType>
 <xs:restriction base="xs:string">
 <xs:maxLength value="50"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="TIMESTAMP_COLUMN" minOccurs="0">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="11"/>
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
