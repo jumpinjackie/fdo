@@ -346,7 +346,7 @@ const char* FdoRdbmsFeatureReader::Property2ColNameChar( const wchar_t *propName
             if( column == NULL )
                 return NULL;
 			
-			colName = FdoStringP(column->GetName()).Upper();
+			colName = FdoStringP(column->GetName());
             string = mConnection->GetUtility()->UnicodeToUtf8((const wchar_t *)colName);
 
             // Cache

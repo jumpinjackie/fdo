@@ -25,6 +25,7 @@
 #include <Sm/Ph/Rd/ColumnReader.h>
 #include <Sm/Ph/Rd/BaseObjectReader.h>
 #include <Sm/Ph/Rd/DbObjectReader.h>
+#include <Sm/Ph/Rd/ViewReader.h>
 #include <Sm/Ph/Rd/CoordSysReader.h>
 #include <Sm/Ph/Rd/ConstraintReader.h>
 #include <Sm/Ph/Rd/FkeyReader.h>
@@ -323,6 +324,11 @@ FdoPtr<FdoSmPhRdDbObjectReader> FdoSmPhOwner::CreateDbObjectReader( FdoSmPhRdTab
     return (FdoSmPhRdDbObjectReader*) NULL;
 }
 
+FdoPtr<FdoSmPhRdViewReader> FdoSmPhOwner::CreateViewReader() const
+{
+    return (FdoSmPhRdViewReader*) NULL;
+}
+
 FdoPtr<FdoSmPhRdConstraintReader> FdoSmPhOwner::CreateConstraintReader( FdoStringsP ownerNames, FdoStringP constraintType ) const
 {
     return (FdoSmPhRdConstraintReader*) NULL;
@@ -444,6 +450,7 @@ FdoSmPhDbObjectsP FdoSmPhOwner::CacheDbObjects( bool cacheComponents )
         mCandDbObjects->Clear();
 
         FdoSmPhRdDbObjectReaderP objReader;
+        FdoSmPhRdViewReaderP viewReader;
         FdoSmPhRdColumnReaderP columnReader;
         FdoSmPhRdBaseObjectReaderP baseObjectReader;
         FdoSmPhRdConstraintReaderP ukeyReader;
@@ -462,6 +469,7 @@ FdoSmPhDbObjectsP FdoSmPhOwner::CacheDbObjects( bool cacheComponents )
             //
             // Doing a single query per owner for each component is more efficient than
             // a query per dbObject.
+            viewReader = CreateViewReader();
             columnReader = CreateColumnReader();
             baseObjectReader = CreateBaseObjectReader();
             ukeyReader = CreateConstraintReader( L"", L"U" );
@@ -501,6 +509,15 @@ FdoSmPhDbObjectsP FdoSmPhOwner::CacheDbObjects( bool cacheComponents )
 
                     if ( indexReader ) 
                         table->CacheIndexes( indexReader );
+
+                }
+
+                // Load the components into the db object.
+                FdoSmPhViewP view = dbObject->SmartCast<FdoSmPhView>();
+
+                if ( view ) {
+                    if ( viewReader ) 
+                        view->CacheView( viewReader );
                 }
             }
         }
@@ -955,13 +972,13 @@ void FdoSmPhOwner::LoadSpatialContexts()
         while (scReader->ReadNext())
         {
 			FdoStringP	scName = L"Default";
-				
-			if ( currSC != 0 )
+
+            if ( currSC != 0 )
 				scName = FdoStringP::Format(L"%ls_%ld", scReader->GetName(), currSC);
 
             // Generate physical spatial context from current SpatialContextGeom
             FdoPtr<FdoByteArray> scExtent = scReader->GetExtent();
-			FdoSmPhSpatialContextP sc = new FdoSmPhSpatialContext(
+            FdoSmPhSpatialContextP sc = new FdoSmPhSpatialContext(
                 GetManager(),
                 scReader->GetSrid(),
                 scName,
@@ -1000,7 +1017,7 @@ void FdoSmPhOwner::LoadSpatialContexts()
             if (NULL == scgeom.p)
 				throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
-            mSpatialContextGeoms->Add( scgeom );												
+            mSpatialContextGeoms->Add( scgeom );	
         }
     }
 }

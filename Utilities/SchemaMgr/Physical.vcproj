@@ -667,6 +667,10 @@
 					RelativePath=".\src\Sm\Ph\Rd\TableJoin.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\Src\Sm\Ph\Rd\ViewReader.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Config"
@@ -1447,6 +1451,10 @@
 				</File>
 				<File
 					RelativePath=".\inc\Sm\Ph\Rd\TableJoin.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Inc\Sm\Ph\Rd\ViewReader.h"
 					>
 				</File>
 			</Filter>

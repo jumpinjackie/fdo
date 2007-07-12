@@ -19,6 +19,8 @@
 #include "stdafx.h"
 #include <Sm/Ph/View.h>
 #include <Sm/Ph/Mgr.h>
+#include <Sm/Ph/TableComponentReader.h>
+#include <Sm/Ph/Rd/ViewReader.h>
 
 FdoSmPhView::FdoSmPhView(
     FdoStringP viewName, 
@@ -28,7 +30,8 @@ FdoSmPhView::FdoSmPhView(
     const FdoSmPhOwner* pOwner,
     FdoSchemaElementState elementState
 ) : 
-    FdoSmPhDbObject(viewName, pOwner, elementState )
+    FdoSmPhDbObject(viewName, pOwner, elementState ),
+    mViewLoaded(false)
 {
     if ( rootObjectName != L"" ) {
         FdoSmPhBaseObjectP baseObject = NewBaseObject( rootObjectName, rootOwner, rootDatabase );
@@ -43,6 +46,18 @@ FdoSmPhView::~FdoSmPhView(void)
 void FdoSmPhView::SetRootObject( FdoSmPhDbObjectP rootObject )
 {
     FdoSmPhDbObject::SetRootObject( rootObject );
+}
+
+void FdoSmPhView::CacheView( FdoSmPhRdViewReaderP rdr )
+{
+    // Do nothing if view already loaded
+	if ( !mViewLoaded ) {
+        LoadView( NewViewReader(rdr), false );
+        mViewLoaded = true;
+    }
+    else
+        LoadView( NewViewReader(rdr), true );
+
 }
 
 void FdoSmPhView::XMLSerialize( FILE* xmlFp, int ref ) const
@@ -142,5 +157,32 @@ FdoStringP FdoSmPhView::GetAddRootSql()
     );
 
     return selClause;
+}
+/*
+void FdoSmPhDbObject::LoadView()
+{
+    if ( !mViewLoaded ) {
+        TODO: implement.
+    }
+}
+*/
+void FdoSmPhView::LoadView( FdoPtr<FdoSmPhTableComponentReader> viewRdr, bool isSkipAdd )
+{
+    if ( viewRdr->ReadNext() ) {
+        if ( !isSkipAdd ) 
+            mSql = viewRdr->GetString( L"", L"sql" );
+    }
+}
+
+
+
+FdoPtr<FdoSmPhTableComponentReader> FdoSmPhView::NewViewReader( FdoSmPhRdViewReaderP rdr )
+{
+    return new FdoSmPhTableComponentReader(
+        GetName(),
+        L"",
+        L"name",
+        rdr->SmartCast<FdoSmPhReader>()
+    );
 }
 

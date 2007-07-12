@@ -126,7 +126,7 @@ FdoStringP FdoSmPhPropertyReader::GetGeometryType()
 
 int FdoSmPhPropertyReader::GetIdPosition()
 {
-	return((int) GetDouble(L"", L"idposition"));
+	return(GetInteger(L"", L"idposition"));
 }
 
 bool FdoSmPhPropertyReader::GetIsNullable()
@@ -151,12 +151,12 @@ bool FdoSmPhPropertyReader::GetIsSystem()
 
 int FdoSmPhPropertyReader::GetLength()
 {
-	return((int) GetDouble(L"", L"columnsize"));
+	return(GetInteger(L"", L"columnsize"));
 }
 
 int FdoSmPhPropertyReader::GetScale()
 {
-	return((int) GetDouble(L"", L"columnscale"));
+	return(GetInteger(L"", L"columnscale"));
 }
 
 FdoStringP FdoSmPhPropertyReader::GetDefaultValue()
