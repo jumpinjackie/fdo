@@ -38,9 +38,7 @@ PolygonShape::PolygonShape (int nRecordNumber, void* pMemory, bool bOverlay, int
             DoublePoint none (fNO_DATA, fNO_DATA);
             mRecord->boundingBox = BoundingBox (&none);
         }
-        _ASSERT(nParts >= 1);
         mRecord->nNumParts = nParts;
-        _ASSERT(nPoints >= 1);
         mRecord->nNumPoints = nPoints;
         int* parts = GetParts ();
         for (int i = 0; i < nParts; i++)
@@ -52,13 +50,8 @@ PolygonShape::PolygonShape (int nRecordNumber, void* pMemory, bool bOverlay, int
             points[i].y = 0.0;
         }
     }
-    else
-    {
-        _ASSERT(GetNumParts () >= 1);
-        _ASSERT(GetNumPoints () >= 1);
-    }
 }
-
+	
 PolygonShape* PolygonShape::NewPolygonShape (int nRecordNumber, int nParts, int nPoints, BoundingBoxEx *box)
 {
     void* p;

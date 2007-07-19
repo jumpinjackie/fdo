@@ -26,7 +26,7 @@ Shape::Shape (int nRecordNumber, void* pMemory, bool bOverlay, DoublePoint* pPoi
     mOverlay (bOverlay),
     mPoints (pPoints)
 {
-    _ASSERT(NULL != pMemory);
+	// _ASSERT(NULL != pMemory); Corrupted geometries will be ignored (turned into NullShape)
     // _ASSERT(NULL != pPoints); NullShape does this
 }
 
