@@ -188,7 +188,7 @@ Shape* ShapeFile::GetObjectAt (ULONG nOffset, eShapeTypes& nShapeType)
     }
 
     // peek at the shape type to decide what type of shape to construct
-    nShapeType = (eShapeTypes)(*((int*)p));
+	nShapeType = p? (eShapeTypes)(*((int*)p)) : eNullShape;
 
     // overlay the appropriate shape object
     switch (nShapeType)
@@ -239,6 +239,22 @@ Shape* ShapeFile::GetObjectAt (ULONG nOffset, eShapeTypes& nShapeType)
             throw FdoException::Create (NlsMsgGet(SHP_UNKNOWN_SHAPE_TYPE, "The shape type number '%1$d' is unknown.", nShapeType));
             break;
     }
+
+	// Turn the geometries with no extents (i.e. with no points) into null shapes.
+	if ( nShapeType != eNullShape )
+	{
+		BoundingBoxEx box;
+		ret->GetBoundingBoxEx (box);
+
+		if ( FdoCommonOSUtil::_isnan(box.xMin) || FdoCommonOSUtil::_isnan(box.yMin) ||
+			 FdoCommonOSUtil::_isnan(box.xMax) || FdoCommonOSUtil::_isnan(box.yMax) )
+		{
+			delete ret;
+
+			nShapeType = eNullShape;
+			ret = new NullShape (nRecordNumber, p, true);
+		}
+	}
 
     return (ret);
 }

@@ -79,7 +79,7 @@ inline void Shape::SetRecordNum (int num)
 
 inline eShapeTypes Shape::GetShapeType ()
 {
-    return ((eShapeTypes)(*((int*)mMemory)));
+	return ( ( mMemory && mPoints ) ? ((eShapeTypes)(*((int*)mMemory))) : eNullShape );
 }
 
 inline void Shape::SetShapeType (eShapeTypes type)
