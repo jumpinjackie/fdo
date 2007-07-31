@@ -21,6 +21,7 @@
 #include "UnitTestUtil.h"
 #include "ConnectionUtil.h"
 #include "../SchemaMgr/Ph/Mgr.h"
+#include "../SchemaMgr/Ph/Owner.h"
 
 #ifndef _WIN32
 #include <stdint.h>
@@ -1812,6 +1813,21 @@ void FdoUpdateTest::UpdateNoMeta()
 
         owner->Commit();
 
+        FdoSmPhGrdOwnerP grdOwner = owner->SmartCast<FdoSmPhGrdOwner>();
+
+//TODO: investigate why creating this view causes the SqlServer provider to hang when reading
+// feature schemas.
+#ifndef RDBI_DEF_SSQL
+        grdOwner->ActivateAndExecute(
+            FdoStringP::Format(
+                L"create view view_w_nullcol as select \"%ls\", \"%ls\", \"%ls\", null as nullcol from \"%ls\"",
+                (FdoString*) phMgr->GetDcColumnName(L"key1"),
+                (FdoString*) phMgr->GetDcColumnName(ValueColName()),
+                (FdoString*) phMgr->GetDcColumnName(Key2ColName()),
+                (FdoString*) phMgr->GetDcDbObjectName(table_id_geom)
+            )
+        );
+#endif
         connection = UnitTestUtil::CreateConnection(
             false,
             false,
@@ -1845,6 +1861,7 @@ void FdoUpdateTest::UpdateNoMeta()
             ),
             connection 
         );
+
 #endif
         UnitTestUtil::Sql2Db( 
                 FdoStringP::Format(
@@ -1862,6 +1879,9 @@ void FdoUpdateTest::UpdateNoMeta()
         // Select and verify all data (post-update state).
         SelectNoMetaAll( connection, phMgr, table_id_geom, m_hasGeom, m_hasAssoc );
         SelectNoMetaAll( connection, phMgr, L"VIEW_ID_GEOM", m_hasGeom, false );
+#ifndef RDBI_DEF_SSQL
+        SelectNoMetaAll( connection, phMgr, L"VIEW_W_NULLCOL", false, false, true );
+#endif
         SelectNoMetaAll( connection, phMgr, L"TABLE_NOID_GEOM", m_hasGeom, false );
         SelectNoMetaAll( connection, phMgr, table_noid_nogeom, false, false );
 
@@ -2215,7 +2235,7 @@ void FdoUpdateTest::UpdSpatialMetadata( FdoPtr<FdoIConnection> connection )
 {
 }
 
-void FdoUpdateTest::SelectNoMetaAll( FdoPtr<FdoIConnection> connection, FdoSmPhMgrP phMgr, FdoStringP tableName, bool hasGeom, bool hasAssoc )
+void FdoUpdateTest::SelectNoMetaAll( FdoPtr<FdoIConnection> connection, FdoSmPhMgrP phMgr, FdoStringP tableName, bool hasGeom, bool hasAssoc, bool hasNullcol )
 {
     FdoPtr<FdoISelect> selectCommand = (FdoISelect *) connection->CreateCommand(FdoCommandType_Select);
 
@@ -2231,7 +2251,7 @@ void FdoUpdateTest::SelectNoMetaAll( FdoPtr<FdoIConnection> connection, FdoSmPhM
 
     {
         rowCount++;
-        VldNoMetaRow( phMgr, rdr, props, hasGeom, false, hasAssoc );
+        VldNoMetaRow( phMgr, rdr, props, hasGeom, false, hasAssoc, hasNullcol );
     }
 
     CPPUNIT_ASSERT( rowCount == 2 );
@@ -2368,7 +2388,8 @@ void FdoUpdateTest::VldNoMetaRow(
     FdoPtr<FdoIdentifierCollection> props, 
     bool hasGeom, 
     bool propsPruned,
-    bool hasAssoc
+    bool hasAssoc,
+    bool hasNullcol
 )
 {
     FdoPtr<FdoIFeatureReader> objRdr;
@@ -2410,6 +2431,16 @@ void FdoUpdateTest::VldNoMetaRow(
 
         if ( hasGeom && !propsPruned ) 
             CheckGeometry( rdr, phMgr->GetDcColumnName(L"GEOMETRY"), 5, 10, 0 );
+    }
+
+    if ( hasNullcol ) {
+        CPPUNIT_ASSERT( rdr->IsNull(phMgr->GetDcColumnName(L"NULLCOL")) );
+
+        FdoClassDefinitionP classDef = rdr->GetClassDefinition();
+        FdoPropertiesP props = classDef->GetProperties();
+        FdoDataPropertyP prop = (FdoDataPropertyDefinition*)(props->FindItem(phMgr->GetDcColumnName(L"NULLCOL")));
+        CPPUNIT_ASSERT( prop != NULL );
+        CPPUNIT_ASSERT( prop->GetLength() == 0 );
     }
 }
 

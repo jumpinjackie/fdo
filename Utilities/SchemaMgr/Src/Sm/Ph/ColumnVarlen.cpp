@@ -25,7 +25,8 @@ FdoSmPhColumnVarlen::FdoSmPhColumnVarlen(
 ) :
 	mLength(length)
 {
-	if ( mLength <= 0 ) 
+
+	if ( mLength < 0 ) 
 		throw FdoSchemaException::Create(
             FdoSmError::NLSGetMessage(
                 FDO_NLSID(FDOSM_207), 
@@ -33,6 +34,7 @@ FdoSmPhColumnVarlen::FdoSmPhColumnVarlen(
 				(FdoString*) GetTypeName()
             )
 		);
+
 }
 
 int FdoSmPhColumnVarlen::GetMinLength() const

@@ -19,8 +19,8 @@
  Error in Property Error:Base Missing.Clob Prop:  Cannot create property Error:Base Missing.Clob Prop, CLOB type not yet supported  
  Cannot autogenerate values for property 'Error:Base Missing.type not autogen supported'; 'string' data type not supported for autogeneration. 
  Data Property Error:Base Missing.has default has a default value; default values are not supported by this provider 
- Error in Property Error:Base Missing.precision too low:  Invalid length 0 for column type DECIMAL, must be > 0  
- Error in Property Error:Base Missing.neg length:  Invalid length 0 for column type VARCHAR, must be > 0  
+ Error in Column {USER_DS}_apply_schema.dbo.base_missing.neg_length: length or precision 0 is less than minimum allowed (1) 
+ Error in Column {USER_DS}_apply_schema.dbo.base_missing.precision_too_low: length or precision 0 is less than minimum allowed (1) 
  Error in Column {USER_DS}_apply_schema.dbo.base_missing.precision_too_high: length or precision 66 is greater than maximum allowed (38) 
  Error in Column {USER_DS}_apply_schema.dbo.base_missing.scale_too_low: scale -85 is less than minimum allowed (0) 
  Error in Column {USER_DS}_apply_schema.dbo.base_missing.scale_too_high: scale 128 is greater than maximum allowed (38) 
