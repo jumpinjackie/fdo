@@ -81,7 +81,7 @@ bool FdoRdbmsDataStoreReader::ReadNext()
 {
 	bool found = false;
 
-	while ( mPhOwnerReader->ReadNext() )
+	while ( mPhOwnerReader && mPhOwnerReader->ReadNext() )
 	{
 		// We need to know if FDO in order to get the description or not
 		mIsFdoEnabled = mPhOwnerReader->GetHasMetaSchema();
@@ -155,7 +155,7 @@ bool FdoRdbmsDataStoreReader::ReadNext()
 
 void FdoRdbmsDataStoreReader::Close()
 {
-	//Should close PhOwnerReader? how?
+	mPhOwnerReader = NULL;
 }
 
 void FdoRdbmsDataStoreReader::Dispose()
