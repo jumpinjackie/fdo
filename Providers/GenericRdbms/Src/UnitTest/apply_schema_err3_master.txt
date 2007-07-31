@@ -19,9 +19,9 @@
  Error in Property Error:Base Missing.Clob Prop:  Cannot create property Error:Base Missing.Clob Prop, CLOB type not yet supported  
  Cannot autogenerate values for property 'Error:Base Missing.type not autogen supported'; 'string' data type not supported for autogeneration. 
  Data Property Error:Base Missing.has default has a default value; default values are not supported by this provider 
- Error in Property Error:Base Missing.precision too low:  Invalid length 0 for column type NUMBER, must be > 0  
- Error in Property Error:Base Missing.neg length:  Invalid length 0 for column type VARCHAR2, must be > 0  
+ Error in Column {USER_DS}_APPLY_SCHEMA.BASE_MISSING.NEG_LENGTH: length or precision 0 is less than minimum allowed (1) 
  Error in Column {USER_DS}_APPLY_SCHEMA.BASE_MISSING.LENGTH_TOO_LONG: length or precision 15000 is greater than maximum allowed (4000) 
+ Error in Column {USER_DS}_APPLY_SCHEMA.BASE_MISSING.PRECISION_TOO_LOW: length or precision 0 is less than minimum allowed (1) 
  Error in Column {USER_DS}_APPLY_SCHEMA.BASE_MISSING.PRECISION_TOO_HIGH: length or precision 66 is greater than maximum allowed (38) 
  Error in Column {USER_DS}_APPLY_SCHEMA.BASE_MISSING.SCALE_TOO_LOW: scale -85 is less than minimum allowed (-84) 
  Error in Column {USER_DS}_APPLY_SCHEMA.BASE_MISSING.SCALE_TOO_HIGH: scale 128 is greater than maximum allowed (127) 

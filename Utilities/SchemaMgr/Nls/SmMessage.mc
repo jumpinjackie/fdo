@@ -554,7 +554,7 @@ Add Schema Attribute Dictionary for %1$ls failed (%2$ls)
 MessageId=2412
 SymbolicName=FDOSM_207
 Language=English
-Invalid length %1$d for column type %2$ls, must be > 0
+Invalid length %1$d for column type %2$ls, must be >= 0
 .
 MessageId=2414
 SymbolicName=FDOSM_209
