@@ -162,6 +162,22 @@ int FdoDatastoreTest::ListDatastores( bool include )
 			
 			DBG_MAX(printf("%ls  ['%ls'] [fdo: %s]\n", string, string2, bVal? "yes" : "no"));
 		}
+
+        // test Close() function for one invokation, test not calling Close() for the other.
+        if ( include ) 
+        {
+            pReader->Close();
+            CPPUNIT_ASSERT_MESSAGE("Reader should be closed", !pReader->ReadNext() );
+        }
+
+        if ( countDb > 2 ) 
+        {
+    		pReader = pListDataStoresCmd->Execute();
+            CPPUNIT_ASSERT_MESSAGE("Expected at least one datastore", pReader->ReadNext() );
+            pReader->Close();
+            CPPUNIT_ASSERT_MESSAGE("Reader should be closed", !pReader->ReadNext() );
+        }
+
         pListDataStoresCmd = NULL;
         pReader = NULL;
 		connection->Close ();
