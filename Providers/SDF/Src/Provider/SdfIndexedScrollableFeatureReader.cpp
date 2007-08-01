@@ -84,11 +84,10 @@ void SdfIndexedScrollableFeatureReader::InitCurrentKey()
 
 bool SdfIndexedScrollableFeatureReader::ReadNext()
 {
-  	m_CurrentIndex++;
-	
-    if( m_CurrentIndex >= m_TableSize )
+	m_CurrentIndex++;
+	if( m_CurrentIndex >= m_TableSize )
 	{
-        m_CurrentIndex = m_TableSize;
+		m_CurrentIndex = -1;
 		return false;
 	}
 
