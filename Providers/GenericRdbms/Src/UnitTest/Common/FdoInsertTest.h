@@ -38,6 +38,7 @@ class FdoInsertTest : public CppUnit::TestCase
   CPPUNIT_TEST( insertAutoGen );
   //CPPUNIT_TEST( insertLongString );
   CPPUNIT_TEST( featureReaderTest );
+  CPPUNIT_TEST( insertNonExistProp );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -61,6 +62,7 @@ public:
 	virtual void insertAutoGen(); //Insert empty non-feature
 	virtual void insertLongString();
     virtual void featureReaderTest();
+    virtual void insertNonExistProp();
 
 	static FdoPropertyValue* AddNewProperty( FdoPropertyValueCollection* propertyValues, const wchar_t *name );
 
