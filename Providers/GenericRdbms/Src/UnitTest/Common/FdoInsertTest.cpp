@@ -1884,6 +1884,96 @@ void FdoInsertTest::featureReaderTest()
     }
 }
 
+void FdoInsertTest::insertNonExistProp()
+{
+    FdoPtr<FdoIConnection> connection;
+    bool         succeeded = false;
+
+    try
+    {
+        connection = UnitTestUtil::GetConnection(mSuffix, true);
+
+        try
+        {
+            int          segCount = 2;
+            double       coordsBuffer[6];
+
+            bool supportsZ = (FdoPtr<FdoIGeometryCapabilities>(connection->GetGeometryCapabilities())->GetDimensionalities() & FdoDimensionality_Z);
+
+            FdoPtr<FdoIInsert> insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
+            insertCommand->SetFeatureClassName(L"Acad:AcDb3dPolyline");
+            FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
+
+			printf("start insert feature class\n");
+            FdoPtr<FdoDataValue> dataValue;
+            FdoPtr<FdoPropertyValue> propertyValue;
+            FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+
+            propertyValue = AddNewProperty( propertyValues, L"GEOMETRY" );
+            FdoPtr<FdoILineString> line1;
+
+            coordsBuffer[0] = 0;
+            coordsBuffer[1] = 0;
+            coordsBuffer[2] = 0;
+            coordsBuffer[3] = 1;
+            coordsBuffer[4] = 1;
+            coordsBuffer[5] = 0;
+
+            if( supportsZ )
+                line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, segCount * 3, coordsBuffer);
+            else
+                line1 = gf->CreateLineString(FdoDimensionality_XY, segCount * 2, coordsBuffer);
+
+            FdoPtr<FdoByteArray> byteArray = gf->GetFgf(line1);
+
+            FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
+            propertyValue->SetValue(geometryValue);
+
+            dataValue = FdoDataValue::Create(L"256");
+            propertyValue = AddNewProperty( propertyValues,L"color"); //AddNewProperty( propertyValues, L"color");
+            propertyValue->SetValue(dataValue);
+
+            dataValue = FdoDataValue::Create(segCount);
+            propertyValue = AddNewProperty( propertyValues, L"segcount");
+            propertyValue->SetValue(dataValue);
+
+            dataValue = FdoDataValue::Create(L"10");
+            propertyValue = AddNewProperty( propertyValues, L"layer");
+            propertyValue->SetValue(dataValue);
+
+            dataValue = FdoDataValue::Create(1);
+ 
+            FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
+
+            succeeded = true;
+        }
+        catch (FdoException *ex)
+        {
+            // Use wcsncpy to ignore trailing blank on message when originates from message
+            // catalogue.
+            CPPUNIT_ASSERT( wcsncmp(ex->GetExceptionMessage(), L"Property 'GEOMETRY' not found", 29) == 0 );
+            ex->Release();
+        }
+        catch (...)
+        {
+            if (connection)
+                connection->Close ();
+            throw;
+        }
+        if (connection)
+            connection->Close();
+    }
+    catch (FdoException *ex)
+    {
+        if (m_DisableFailures)
+            throw ex;
+        else
+            TestCommonFail(ex);
+    }
+
+    CPPUNIT_ASSERT_MESSAGE("insert should have failed", !succeeded);
+}
+
 FdoIFeatureReader *FdoInsertTest::AddFeature (FdoIConnection *connection, FdoString *className, bool isSpatial, int idScenario)
 {
     double                     coordinateBuffer[5];
