@@ -45,7 +45,7 @@
 				AdditionalOptions="/AI&quot;$(FDO)\Managed\output&quot;"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDO)\Managed\Src&quot;;&quot;$(FDO)\Managed\Src\OSGeo&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Inc&quot;;..\..\Inc;..\..\Inc\Rdbms\Override;..\Src;..\Src\Autodesk\Gis"
-				AdditionalUsingDirectories="$(FDO)\Managed\Bin\Debug"
+				AdditionalUsingDirectories="$(FDO)\Managed\Bin\Win32\Debug"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
@@ -130,7 +130,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDO)\Managed\Src&quot;;&quot;$(FDO)\Managed\Src\OSGeo&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Inc&quot;;..\..\Inc;..\..\Inc\Rdbms\Override;..\Src;..\Src\Autodesk\Gis"
-				AdditionalUsingDirectories="$(FDO)\Managed\Bin\Release"
+				AdditionalUsingDirectories="$(FDO)\Managed\Bin\Win32\Release"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
