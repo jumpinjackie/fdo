@@ -109,7 +109,7 @@ void SdfCreateSDFFile::Execute()
         throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_30_CONNECTION_OPEN)));
 
     //check if the specified filename exists
-    int len = wcstombs(NULL, (FdoString*)m_filename, 0);
+    size_t len = wcstombs(NULL, (FdoString*)m_filename, 0);
     char* mbsName = new char[len + 1];
     wcstombs(mbsName, (FdoString*)m_filename, len+1);
     

@@ -68,7 +68,7 @@ BinaryReader::~BinaryReader()
 {
     if( m_wcsStringCache != NULL )
     {
-        for(int i=0; i<wcsCacheLen; i++ )
+        for(unsigned int i=0; i<wcsCacheLen; i++ )
         {
             if( m_wcsStringCache[i].wcsString != NULL )
                 delete[] m_wcsStringCache[i].wcsString;
@@ -88,7 +88,7 @@ void BinaryReader::Reset(unsigned char* data, int len)
     m_pos = 0;
     m_wcsCacheCurrent = 0;
 
-    for(int i=0; i<wcsCacheLen; i++ )
+    for(unsigned int i=0; i<wcsCacheLen; i++ )
     {
         if( m_wcsStringCache[i].wcsString != NULL )
             m_wcsStringCache[i].wcsString[0] = '\0';

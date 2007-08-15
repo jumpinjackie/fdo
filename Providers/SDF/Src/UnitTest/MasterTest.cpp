@@ -1,4 +1,4 @@
-// Copyright (C) 2004-2006  Autodesk, Inc.
+// Copyright (C) 2004-2007  Autodesk, Inc.
 // 
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of version 2.1 of the GNU Lesser
@@ -56,6 +56,7 @@ CPPUNIT_ASSERT_ASSERTION_PASS(assertion)   CPPUNIT_ASSERT_NO_THROW( assertion )
   Asserts that an assertion pass. 
 */
 
+#include "stdafx.h"
 #include <ctime>
 #include <math.h>
 #include "MasterTest.h"
