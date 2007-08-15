@@ -58,7 +58,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MT /W3 /EHsc /Zi /O2 /I $(XERCESCROOT)\src /I "..\..\..\..\..\src" /I ".\..\..\..\..\..\Build\Win32\VC8\Release.symbols\Nls\Include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "XALANMSGLIB_EXPORTS" /D "XALAN_XALANMSGLIB_BUILD_DLL" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MT /W3 /EHsc /Zi /O2 /I $(XERCESCROOT)\src /I "..\..\..\..\..\src" /I ".\..\..\..\..\..\Build\Win32\VC8\Release.symbols\Nls\Include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "XALANMSGLIB_EXPORTS" /D "_CRT_SECURE_NO_WARNINGS" /D "XALAN_XALANMSGLIB_BUILD_DLL" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\$(DLLNAME).bsc" 
@@ -91,7 +91,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MT /W3 /EHsc /O2 /I $(XERCESCROOT)\src /I "..\..\..\..\..\src" /I ".\..\..\..\..\..\Build\Win32\VC8\Release\Nls\Include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "XALANMSGLIB_EXPORTS" /D "XALAN_XALANMSGLIB_BUILD_DLL" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MT /W3 /EHsc /O2 /I $(XERCESCROOT)\src /I "..\..\..\..\..\src" /I ".\..\..\..\..\..\Build\Win32\VC8\Release\Nls\Include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "XALANMSGLIB_EXPORTS" /D "_CRT_SECURE_NO_WARNINGS" /D "XALAN_XALANMSGLIB_BUILD_DLL" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\$(DLLNAME).bsc" 
@@ -161,11 +161,11 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MT /W3 /EHsc /O2 /I /I $(XERCESCROOT)\src "..\..\..\..\..\src" /I ".\..\..\..\..\..\Build\Win64\VC8\Release\Nls\Include" /D "WIN64" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "XALANMSGLIB_EXPORTS" /D "XALAN_XALANMSGLIB_BUILD_DLL" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MT /W3 /EHsc /O2 /I $(XERCESCROOT)\src /I "..\..\..\..\..\src" /I ".\..\..\..\..\..\Build\Win64\VC8\Release\Nls\Include" /D "_WIN64" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "XALANMSGLIB_EXPORTS" /D "XALAN_XALANMSGLIB_BUILD_DLL" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
 	
 LINK32=link.exe
-LINK32_FLAGS=/nologo /dll /incremental:no /pdb:none /machine:IX86 /out:"..\..\..\..\..\Build\Win64\VC8\Release\$(DLLNAME).dll" /implib:"..\..\..\..\..\Build\Win64\VC8\Release\$(DLLNAME).lib" /machine:IA64
+LINK32_FLAGS=/nologo /dll /incremental:no /pdb:none /machine:X64 /out:"..\..\..\..\..\Build\Win64\VC8\Release\$(DLLNAME).dll" /implib:"..\..\..\..\..\Build\Win64\VC8\Release\$(DLLNAME).lib" /machine:X64
 LINK32_OBJS= \
 	"$(INTDIR)\XalanMsgLib.obj"
 
@@ -196,11 +196,11 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MTd /W3 /Gm /EHsc /ZI /Od /I $(XERCESCROOT)\src /I "..\..\..\..\..\src" /I ".\..\..\..\..\..\Build\Win64\VC8\Debug\Nls\Include" /D "WIN64" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "XALANMSGLIB_EXPORTS" /D "XALAN_XALANMSGLIB_BUILD_DLL" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /RTC1 /c 
+CPP_PROJ=/nologo /MTd /W3 /Gm /EHsc /ZI /Od /I $(XERCESCROOT)\src /I "..\..\..\..\..\src" /I ".\..\..\..\..\..\Build\Win64\VC8\Debug\Nls\Include" /D "_WIN64" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "XALANMSGLIB_EXPORTS" /D "XALAN_XALANMSGLIB_BUILD_DLL" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /RTC1 /c 
 MTL_PROJ=/D "_DEBUG" /win32 
 
 LINK32=link.exe
-LINK32_FLAGS= /nologo /dll /pdb:none /debug /machine:IX86 /out:"..\..\..\..\..\Build\Win64\VC8\Debug\$(DLLNAME).dll" /implib:"..\..\..\..\..\Build\Win64\VC8\Debug\$(DLLNAME).lib" /machine:IA64
+LINK32_FLAGS= /nologo /dll /pdb:none /debug /machine:X64 /out:"..\..\..\..\..\Build\Win64\VC8\Debug\$(DLLNAME).dll" /implib:"..\..\..\..\..\Build\Win64\VC8\Debug\$(DLLNAME).lib" /machine:X64
 LINK32_OBJS= \
 	"$(INTDIR)\XalanMsgLib.obj"
 

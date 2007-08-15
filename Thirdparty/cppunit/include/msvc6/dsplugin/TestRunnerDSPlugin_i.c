@@ -18,7 +18,7 @@
 */
 //@@MIDL_FILE_HEADING(  )
 
-#if !defined(_M_IA64) && !defined(_M_AMD64)
+//#if !defined(_M_IA64) && !defined(_M_AMD64)
 
 
 #pragma warning( disable: 4049 )  /* more than 64k source lines */
@@ -86,5 +86,5 @@ MIDL_DEFINE_GUID(CLSID, CLSID_DSAddIn,0xF193CE54,0x716C,0x41CB,0x80,0xB2,0xFA,0x
 
 
 
-#endif /* !defined(_M_IA64) && !defined(_M_AMD64)*/
+//#endif /* !defined(_M_IA64) && !defined(_M_AMD64)*/
 
