@@ -13,11 +13,12 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#include <Fdo.h>
-
 #ifdef _WIN32
 #define VC_EXTRALEAN        // Exclude rarely-used stuff from Windows headers
+#include <windows.h>
 #endif
+
+#include <Fdo.h>
 
 // NOTE: Define __CPPUNIT_MFC_APP in order to have the CPPUNIT UI appear... 
 #ifdef __CPPUNIT_MFC_APP

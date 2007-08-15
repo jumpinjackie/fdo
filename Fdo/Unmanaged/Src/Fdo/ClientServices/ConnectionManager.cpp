@@ -16,18 +16,18 @@
 * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 * 
  ***************************************************************************/
+#ifndef _WIN32
+#include <dlfcn.h>
+#include <unistd.h>
+#else
+#define WIN32_LEAN_AND_MEAN	// Exclude rarely-used stuff from Windows headers
+#include <windows.h>
+#endif
 
 #include "ProviderDef.h"
 #include "RegistryUtility.h"
 #include <Fdo/ClientServices/ConnectionManager.h>
 #include <Fdo/ClientServices/ClientServiceException.h>
-
-#ifndef _WIN32
-#include <dlfcn.h>
-#include <unistd.h>
-#else
-#include <windows.h>
-#endif
 
 extern wchar_t module[];
 

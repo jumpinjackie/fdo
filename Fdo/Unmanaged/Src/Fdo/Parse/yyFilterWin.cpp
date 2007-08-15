@@ -960,7 +960,7 @@ fdo_filter_yydestruct (fdo_filter_yytype, fdo_filter_yyvaluep)
 
   switch (fdo_filter_yytype)
     {
-
+      case 0:
       default:
         break;
     }

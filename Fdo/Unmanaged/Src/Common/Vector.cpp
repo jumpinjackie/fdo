@@ -120,10 +120,10 @@ const FdoVectorP FdoVectorP::operator+( const FdoVectorP vec2 ) const
 {
     // Output vector length is maximum of input vector lengths.
     // Null vectors are considered to be 0 length.
-    FdoSize len1 = p ? p->GetCount() : 0;
-    FdoSize len2 = vec2 ? vec2->GetCount() : 0;
-    FdoSize destLen = len1 > len2 ? len1 : len2;
-    FdoSize i;
+    FdoInt32 len1 = p ? p->GetCount() : 0;
+    FdoInt32 len2 = vec2 ? vec2->GetCount() : 0;
+    FdoInt32 destLen = len1 > len2 ? len1 : len2;
+    FdoInt32 i;
 
 
     FdoVectorP dest = FdoVector::Create();
@@ -144,10 +144,10 @@ const FdoVectorP FdoVectorP::operator-( const FdoVectorP vec2 ) const
 {
     // Output vector length is maximum of input vector lengths.
     // Null vectors are considered to be 0 length.
-    FdoSize len1 = p ? p->GetCount() : 0;
-    FdoSize len2 = vec2 ? vec2->GetCount() : 0;
-    FdoSize destLen = len1 > len2 ? len1 : len2;
-    FdoSize i;
+    FdoInt32 len1 = p ? p->GetCount() : 0;
+    FdoInt32 len2 = vec2 ? vec2->GetCount() : 0;
+    FdoInt32 destLen = len1 > len2 ? len1 : len2;
+    FdoInt32 i;
 
 
     FdoVectorP dest = FdoVector::Create();
@@ -207,10 +207,10 @@ FdoBoolean FdoVectorP::operator>=( const FdoVectorP vec2 ) const
 FdoBoolean FdoVectorP::Compare( const FdoVectorP vec2, FdoBoolean lt, FdoBoolean eq, FdoBoolean gt ) const
 {
     // Determine vector lengths and maximum
-    FdoSize len1 = p ? p->GetCount() : 0;
-    FdoSize len2 = vec2 ? vec2->GetCount() : 0;
-    FdoSize destLen = len1 > len2 ? len1 : len2;
-    FdoSize i;
+    FdoInt32 len1 = p ? p->GetCount() : 0;
+    FdoInt32 len2 = vec2 ? vec2->GetCount() : 0;
+    FdoInt32 destLen = len1 > len2 ? len1 : len2;
+    FdoInt32 i;
     FdoBoolean itemLt;
     FdoBoolean itemEq;
     FdoBoolean itemGt;
