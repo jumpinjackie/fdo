@@ -11,6 +11,9 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -18,7 +21,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="..\Unmanaged\Bin\Win32\Debug"
-			IntermediateDirectory=".\Debug"
+			IntermediateDirectory=".\Win32\Debug"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -68,7 +71,7 @@
 				AdditionalOptions="/fixed:no"
 				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib"
 				LinkIncremental="0"
-				AdditionalLibraryDirectories="$(FDOTHIRDPARTY)\cppunit\lib;..\Unmanaged\Lib\Win32\Debug"
+				AdditionalLibraryDirectories="$(FDOTHIRDPARTY)\cppunit\lib\Win32;..\Unmanaged\Lib\Win32\Debug"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
@@ -96,13 +99,98 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy gml_*.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1a.xml $(OutDir)&#x0D;&#x0A;copy *_master.txt $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy schema_all_v2.xml $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy sc_v2.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1b.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1b.xml $(OutDir)&#x0D;&#x0A;copy schema_unsupported.xsd $(OutDir)&#x0D;&#x0A;copy sc_error.xml $(OutDir)&#x0D;&#x0A;copy g_coords.txt $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\testrunnerd.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\cppunitd_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Debug\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;"
+				CommandLine="copy gml_*.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1a.xml $(OutDir)&#x0D;&#x0A;copy *_master.txt $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy schema_all_v2.xml $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy sc_v2.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1b.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1b.xml $(OutDir)&#x0D;&#x0A;copy schema_unsupported.xsd $(OutDir)&#x0D;&#x0A;copy sc_error.xml $(OutDir)&#x0D;&#x0A;copy g_coords.txt $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win32\testrunnerd.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win32\cppunitd_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Debug\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="..\Unmanaged\Bin\Win64\Debug"
+			IntermediateDirectory=".\Win64\Debug"
+			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			CharacterSet="0"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="$(FDOTHIRDPARTY)\cppunit\include;..\Unmanaged\Inc;"
+				PreprocessorDefinitions="_DEBUG;WIN32;_WIN64;_CONSOLE;_CRT_SECURE_NO_DEPRECATE"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="0"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="Pch.h"
+				PrecompiledHeaderFile="$(IntDir)/Pch.pch"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/fixed:no"
+				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib"
+				LinkIncremental="0"
+				AdditionalLibraryDirectories="$(FDOTHIRDPARTY)\cppunit\lib\Win64;..\Unmanaged\Lib\Win64\Debug"
+				GenerateDebugInformation="true"
+				SubSystem="1"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="copy gml_*.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1a.xml $(OutDir)&#x0D;&#x0A;copy *_master.txt $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy schema_all_v2.xml $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy sc_v2.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1b.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1b.xml $(OutDir)&#x0D;&#x0A;copy schema_unsupported.xsd $(OutDir)&#x0D;&#x0A;copy sc_error.xml $(OutDir)&#x0D;&#x0A;copy g_coords.txt $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win64\testrunnerd.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win64\cppunitd_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC8\Debug\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC8\Debug\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC8\Debug\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="..\Unmanaged\Bin\Win32\Release"
-			IntermediateDirectory=".\Release"
+			IntermediateDirectory=".\Win32\Release"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -149,7 +237,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(FDOTHIRDPARTY)\cppunit\lib;..\Unmanaged\Lib\Win32\Release"
+				AdditionalLibraryDirectories="$(FDOTHIRDPARTY)\cppunit\lib\Win32;..\Unmanaged\Lib\Win32\Release"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -181,7 +269,93 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy gml_*.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1a.xml $(OutDir)&#x0D;&#x0A;copy *_master.txt $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy schema_all_v2.xml $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy sc_v2.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1b.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1b.xml $(OutDir)&#x0D;&#x0A;copy schema_unsupported.xsd $(OutDir)&#x0D;&#x0A;copy sc_error.xml $(OutDir)&#x0D;&#x0A;copy g_coords.txt $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;"
+				CommandLine="copy gml_*.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1a.xml $(OutDir)&#x0D;&#x0A;copy *_master.txt $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy schema_all_v2.xml $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy sc_v2.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1b.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1b.xml $(OutDir)&#x0D;&#x0A;copy schema_unsupported.xsd $(OutDir)&#x0D;&#x0A;copy sc_error.xml $(OutDir)&#x0D;&#x0A;copy g_coords.txt $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win32\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win32\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="..\Unmanaged\Bin\Win64\Release"
+			IntermediateDirectory=".\Win64\Release"
+			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			CharacterSet="0"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="$(FDOTHIRDPARTY)\cppunit\include;..\Unmanaged\Inc;"
+				PreprocessorDefinitions="NDEBUG;WIN32;_WIN64;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;__CPPUNIT_MFC_APP"
+				RuntimeLibrary="2"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="Pch.h"
+				PrecompiledHeaderFile="$(IntDir)/Pch.pch"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="$(FDOTHIRDPARTY)\cppunit\lib\Win64;..\Unmanaged\Lib\Win64\Release"
+				IgnoreDefaultLibraryNames=""
+				GenerateDebugInformation="true"
+				SubSystem="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				EntryPointSymbol=""
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="copy gml_*.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1a.xml $(OutDir)&#x0D;&#x0A;copy *_master.txt $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy schema_all_v2.xml $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy sc_v2.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1b.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1b.xml $(OutDir)&#x0D;&#x0A;copy schema_unsupported.xsd $(OutDir)&#x0D;&#x0A;copy sc_error.xml $(OutDir)&#x0D;&#x0A;copy g_coords.txt $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win64\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win64\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC8\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC8\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC8\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -256,7 +430,23 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -398,7 +588,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PrecompiledHeaderThrough="stdafx.h"
+						PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PrecompiledHeaderThrough="Stdafx.h"
+						PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -428,7 +636,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PrecompiledHeaderThrough="stdafx.h"
+						PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PrecompiledHeaderThrough="Stdafx.h"
+						PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -454,7 +680,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PrecompiledHeaderThrough="stdafx.h"
+						PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PrecompiledHeaderThrough="Stdafx.h"
+						PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -480,7 +724,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PrecompiledHeaderThrough="stdafx.h"
+						PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PrecompiledHeaderThrough="Stdafx.h"
+						PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -511,7 +773,27 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+						PrecompiledHeaderThrough="stdafx.h"
+						PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+						PrecompiledHeaderThrough="Stdafx.h"
+						PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -538,7 +820,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PrecompiledHeaderThrough="stdafx.h"
+						PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PrecompiledHeaderThrough="Stdafx.h"
+						PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -775,7 +1075,23 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCXMLDataGeneratorTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCXMLDataGeneratorTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					ExcludedFromBuild="true"
 					>
 					<Tool

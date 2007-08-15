@@ -13,9 +13,13 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#include "AssociationProperty.h"
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN	// Exclude rarely-used stuff from Windows headers
+#include <windows.h>
+#endif
 
 #include <Fdo.h>
+#include "AssociationProperty.h"
 #include "FeaturePropertyReaderImpl.h"
 #include "FeatureReaderImpl.h"
 #include "GeometryHandler.h"

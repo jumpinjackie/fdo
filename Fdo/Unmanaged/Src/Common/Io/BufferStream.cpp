@@ -93,7 +93,8 @@ void FdoIoBufferStream::Write( FdoIoStream* stream, FdoSize count )
     FdoInt64 lCount = (count > streamLen || count == 0) ? streamLen : count;
 
     // This simple buffer stream does not dynamically grow.
-    if ( (mPos + lCount - 1) >= mSize )
+    FdoInt64 calcSize = mPos + lCount - 1;
+	if ( calcSize >= (FdoInt64)mSize )
         throw FdoException::Create(
             FdoException::NLSGetMessage(
                 FDO_NLSID(FDO_26_BUFFEROVERWRITEERROR),

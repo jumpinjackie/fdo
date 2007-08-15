@@ -48,7 +48,7 @@ public:
         {
             // We don't own the array data, so we must copy it to get it into
             // a FdoByteArray.
-            ba = FdoByteArray::Create(m_data, m_streamEnd-m_data);
+            ba = FdoByteArray::Create(m_data, (FdoInt32)(m_streamEnd-m_data));
         }
         else
         {

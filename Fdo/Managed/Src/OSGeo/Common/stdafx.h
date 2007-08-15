@@ -18,8 +18,6 @@
 
 #pragma once
 
-#define _CRT_SECURE_NO_DEPRECATE
-
 #include <vcclr.h>
 #include <Common\FdoTypes.h>
 

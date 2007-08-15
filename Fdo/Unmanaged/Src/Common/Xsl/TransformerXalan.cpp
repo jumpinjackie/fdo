@@ -235,7 +235,7 @@ unsigned long FdoXslTransformerXalan::HandleOutput(const void* data, unsigned lo
 
 CallbackSizeType FdoXslTransformerXalan::outputHandler(const void* data, CallbackSizeType length, const void *handle)
 {
-    return ( ((FdoXslTransformerXalan*) handle)->HandleOutput(data, length ) );
+    return ( ((FdoXslTransformerXalan*) handle)->HandleOutput(data, (unsigned long)length ) );
 }
 
 void FdoXslTransformerXalan::flushHandler(const void* /* handle */)
@@ -271,7 +271,7 @@ unsigned int FdoXslTransformerXalan::InputSource::InputStream::readBytes(
     const unsigned int  maxToRead 
 )
 {
-    return( FdoIoStreamP(mReader->GetStream())->Read( toFill, maxToRead ) );
+    return (unsigned int)(( FdoIoStreamP(mReader->GetStream())->Read( toFill, maxToRead ) ));
 }
 
 

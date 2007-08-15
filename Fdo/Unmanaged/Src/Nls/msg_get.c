@@ -298,7 +298,7 @@ wchar_t * nls_msg_get_W2(wchar_t *msg_string,
 	else
 	{
 		length = MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, default_msg,
-                                strlen(default_msg), &tmp_buf[0], NLS_BUFFSZ);
+                                (int)strlen(default_msg), &tmp_buf[0], NLS_BUFFSZ);
 		if( length )    
 		{
 			tmp_buf[length] = 0;

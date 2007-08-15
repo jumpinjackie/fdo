@@ -399,7 +399,7 @@ unsigned int FdoXmlReaderXrcs::InputStream::readBytes(
     const unsigned int  maxToRead 
 )
 {
-    return( mStream->Read( toFill, maxToRead ) );
+    return (unsigned int)(( mStream->Read( toFill, maxToRead ) ));
 }
 
 

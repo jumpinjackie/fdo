@@ -123,7 +123,7 @@ FdoStringP FdoXmlWriterXrcs::EncodeName( FdoStringP name )
 FdoBoolean FdoXmlWriterXrcs::IsValidName( FdoStringP name )
 {
     XMLCh* xName = FdoXmlUtilXrcs::Unicode2Xrcs( name );
-    FdoBoolean isValid = XERCES_CPP_NAMESPACE::XMLChar1_0::isValidQName( xName, name.GetLength() );
+    FdoBoolean isValid = XERCES_CPP_NAMESPACE::XMLChar1_0::isValidQName( xName, (const unsigned int)name.GetLength() );
     XERCES_CPP_NAMESPACE::XMLString::release( &xName );
     
     return isValid;

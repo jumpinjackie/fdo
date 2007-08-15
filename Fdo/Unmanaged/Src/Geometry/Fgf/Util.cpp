@@ -336,7 +336,7 @@ FdoIGeometry * FgfUtil::ReadGeometry(FdoFgfGeometryFactory * factory, FdoGeometr
     const FdoByte * streamStartOfGeometry = *inputStream;
     FgfUtil::SkipGeometry(inputStream, streamEnd);
     const FdoByte * streamEndOfGeometry = *inputStream;
-    FdoInt32 streamSizeOfGeometry = streamEndOfGeometry - streamStartOfGeometry;
+    FdoInt32 streamSizeOfGeometry = (FdoInt32)(streamEndOfGeometry - streamStartOfGeometry);
 
     // Copy the FGF data to a new (possibly pooled) byte array.
     // Don't use "FdoPtr" smart pointer while the array is being updated.

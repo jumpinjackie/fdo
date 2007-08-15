@@ -840,7 +840,7 @@ fdo_fgft_yydestruct (fdo_fgft_yytype, fdo_fgft_yyvaluep)
 
   switch (fdo_fgft_yytype)
     {
-
+      case 0:
       default:
         break;
     }

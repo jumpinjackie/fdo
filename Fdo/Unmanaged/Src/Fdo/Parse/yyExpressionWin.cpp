@@ -861,7 +861,7 @@ fdo_expression_yydestruct (fdo_expression_yytype, fdo_expression_yyvaluep)
 
   switch (fdo_expression_yytype)
     {
-
+      case 0:
       default:
         break;
     }
