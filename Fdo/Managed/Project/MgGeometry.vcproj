@@ -31,7 +31,6 @@
 				Name="VCPreBuildEventTool"
 				Description="Updating Assembly Version Information for $(OutDir)\OSGeo.FDO.Geometry.dll"
 				CommandLine="$(FDOTHIRDPARTY)\util\UpdateVersion\bin\UpdateVersion.exe -b BuildDay -r Fixed -i ..\Src\OSGeo\Geometry\AssemblyVersion.cpp -o ..\Src\OSGeo\Geometry\AssemblyVersion.cpp"
-				ExcludedFromBuild="true"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -119,7 +118,6 @@
 				Name="VCPreBuildEventTool"
 				Description="Updating Assembly Version Information for $(OutDir)\OSGeo.FDO.Geometry.dll"
 				CommandLine="$(FDOTHIRDPARTY)\util\UpdateVersion\bin\UpdateVersion.exe -b BuildDay -r Fixed -i ..\Src\OSGeo\Geometry\AssemblyVersion.cpp -o ..\Src\OSGeo\Geometry\AssemblyVersion.cpp"
-				ExcludedFromBuild="true"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -210,7 +208,6 @@
 				Name="VCPreBuildEventTool"
 				Description="Updating Assembly Version Information for $(OutDir)\OSGeo.FDO.Geometry.dll"
 				CommandLine="$(FDOTHIRDPARTY)\util\UpdateVersion\bin\UpdateVersion.exe -b BuildDay -r Fixed -i ..\Src\OSGeo\Geometry\AssemblyVersion.cpp -o ..\Src\OSGeo\Geometry\AssemblyVersion.cpp"
-				ExcludedFromBuild="true"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -293,7 +290,6 @@
 				Name="VCPreBuildEventTool"
 				Description="Updating Assembly Version Information for $(OutDir)\OSGeo.FDO.Geometry.dll"
 				CommandLine="$(FDOTHIRDPARTY)\util\UpdateVersion\bin\UpdateVersion.exe -b BuildDay -r Fixed -i ..\Src\OSGeo\Geometry\AssemblyVersion.cpp -o ..\Src\OSGeo\Geometry\AssemblyVersion.cpp"
-				ExcludedFromBuild="true"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"

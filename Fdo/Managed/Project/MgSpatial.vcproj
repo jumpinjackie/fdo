@@ -31,7 +31,6 @@
 				Name="VCPreBuildEventTool"
 				Description="Updating Assembly Version Information for $(OutDir)\OSGeo.FDO.Spatial.dll"
 				CommandLine="$(FDOTHIRDPARTY)\util\UpdateVersion\bin\UpdateVersion.exe -b BuildDay -r Fixed -i ..\Src\OSGeo\Spatial\AssemblyVersion.cpp -o ..\Src\OSGeo\Spatial\AssemblyVersion.cpp"
-				ExcludedFromBuild="true"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -119,7 +118,6 @@
 				Name="VCPreBuildEventTool"
 				Description="Updating Assembly Version Information for $(OutDir)\OSGeo.FDO.Spatial.dll"
 				CommandLine="$(FDOTHIRDPARTY)\util\UpdateVersion\bin\UpdateVersion.exe -b BuildDay -r Fixed -i ..\Src\OSGeo\Spatial\AssemblyVersion.cpp -o ..\Src\OSGeo\Spatial\AssemblyVersion.cpp"
-				ExcludedFromBuild="true"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -210,7 +208,6 @@
 				Name="VCPreBuildEventTool"
 				Description="Updating Assembly Version Information for $(OutDir)\OSGeo.FDO.Spatial.dll"
 				CommandLine="$(FDOTHIRDPARTY)\util\UpdateVersion\bin\UpdateVersion.exe -b BuildDay -r Fixed -i ..\Src\OSGeo\Spatial\AssemblyVersion.cpp -o ..\Src\OSGeo\Spatial\AssemblyVersion.cpp"
-				ExcludedFromBuild="true"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -294,7 +291,6 @@
 				Name="VCPreBuildEventTool"
 				Description="Updating Assembly Version Information for $(OutDir)\OSGeo.FDO.Spatial.dll"
 				CommandLine="$(FDOTHIRDPARTY)\util\UpdateVersion\bin\UpdateVersion.exe -b BuildDay -r Fixed -i ..\Src\OSGeo\Spatial\AssemblyVersion.cpp -o ..\Src\OSGeo\Spatial\AssemblyVersion.cpp"
-				ExcludedFromBuild="true"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
