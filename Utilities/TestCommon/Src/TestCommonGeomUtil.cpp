@@ -49,8 +49,6 @@ bool TestCommonGeomUtil::GeometriesEquivalent(FdoIGeometry *geom1, FdoIGeometry 
     // Make sure contents are the same:
     FdoPtr<FdoIDirectPosition> pos1;
     FdoPtr<FdoIDirectPosition> pos2;
-    bool bHasZ = (dim1 & FdoDimensionality_Z) > 0;
-    bool bHasM = (dim1 & FdoDimensionality_M) > 0;
     switch (type1)
     {
         case FdoGeometryType_Point:
