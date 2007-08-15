@@ -17,6 +17,24 @@ rem License along with this library; if not, write to the Free Software
 rem Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 rem 
 
+if not "%2" == "" goto usage
+
+if "%1" == ""          goto setvcvarsall
+if "%1" == "x86"       goto setvcvarsall
+if "%1" == "amd64"     goto setvcvarsall
+if "%1" == "x64"       goto setvcvarsall
+if "%1" == "ia64"      goto setvcvarsall
+if "%1" == "x86_amd64" goto setvcvarsall
+if "%1" == "x86_ia64"  goto setvcvarsall
+goto usage
+
+:setvcvarsall
+SET ACTIVENAMECHECK="Microsoft Visual Studio 8"
+SET ACTIVEPATHCHECK="C:\Program Files\Microsoft Visual Studio 8\VC"
+if not exist %ACTIVEPATHCHECK% goto error
+call %ACTIVEPATHCHECK%\vcvarsall.bat %1
+
+:setfdovars
 SET FDO=%cd%\Fdo
 SET ACTIVEPATHCHECK=%FDO%
 SET ACTIVENAMECHECK="FDO"
@@ -37,25 +55,16 @@ SET XERCESCROOT=%FDOTHIRDPARTY%\apache\xml-xerces\c
 SET NLSDIR=%FDOTHIRDPARTY%\apache\xml-xalan\c\Src\xalanc\NLS
 
 if not exist "%SDEHOME%" SET SDEHOME=%FDOTHIRDPARTY%\ESRI\ArcSDEClient91\Windows
-if not exist "%SDEHOME%" echo Optional FDO environment variable SDEHOME is not set
+if not exist "%SDEHOME%" echo OPTIONAL FDO environment variable SDEHOME is not set
 
 if exist "%SDEHOME%\bin\sde.dll" SET SDEVER_ARCUNITTEST=92
 if exist "%SDEHOME%\bin\sde91.dll" SET SDEVER_ARCUNITTEST=91
 
 if not exist "%FDOMYSQL%" SET FDOMYSQL=C:\Program Files\MySQL\MySQL Server 5.0
-if not exist "%FDOMYSQL%" echo Optional FDO environment variable FDOMYSQL is not set
+if not exist "%FDOMYSQL%" echo OPTIONAL FDO environment variable FDOMYSQL is not set
 
 if not exist "%FDOGDAL%" SET FDOGDAL=%FDOTHIRDPARTY%\gdal
-if not exist "%FDOGDAL%" echo Optional FDO environment variable FDOGDAL is not set
-
-SET ACTIVENAMECHECK="Microsoft .Net Framework"
-SET ACTIVEPATHCHECK="C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727"
-if not exist %ACTIVEPATHCHECK% goto error
-set PATH=%PATH%;%ACTIVEPATHCHECK%
-
-SET ACTIVENAMECHECK="Microsoft Visual Studio 8 IDE"
-SET ACTIVEPATHCHECK="C:\Program Files\Microsoft Visual Studio 8\Common7\IDE"
-if exist %ACTIVEPATHCHECK% set PATH=%PATH%;%ACTIVEPATHCHECK%
+if not exist "%FDOGDAL%" echo OPTIONAL FDO environment variable FDOGDAL is not set
 
 SET ACTIVENAMECHECK="7-Zip"
 SET ACTIVEPATHCHECK="C:\Program Files\7-Zip"
@@ -64,29 +73,40 @@ if exist %ACTIVEPATHCHECK% set PATH=%PATH%;%ACTIVEPATHCHECK%
 SET ACTIVENAMECHECK="Graphviz"
 SET ACTIVEPATHCHECK="C:\Program Files\ATT\Graphviz\bin"
 if exist %ACTIVEPATHCHECK% set PATH=%PATH%;%ACTIVEPATHCHECK%
-if not exist %ACTIVEPATHCHECK% echo Optional %ACTIVENAMECHECK% documentation package not recognized in the Windows PATH. Update the setenvironment.bat script file with the correct path
+if not exist %ACTIVEPATHCHECK% echo OPTIONAL %ACTIVENAMECHECK% documentation package not recognized in the Windows PATH. Update the setenvironment.bat script file with the correct path
 
 SET ACTIVENAMECHECK="Doxygen"
 SET ACTIVEPATHCHECK="C:\Program Files\doxygen\bin"
 if exist %ACTIVEPATHCHECK% set PATH=%PATH%;%ACTIVEPATHCHECK%
-if not exist %ACTIVEPATHCHECK% echo Optional %ACTIVENAMECHECK% documentation package not recognized in the Windows PATH. Update the setenvironment.bat script file with the correct path
+if not exist %ACTIVEPATHCHECK% echo OPTIONAL %ACTIVENAMECHECK% documentation package not recognized in the Windows PATH. Update the setenvironment.bat script file with the correct path
 
 SET ACTIVENAMECHECK="GnuWin32 Bison/Sed"
 SET ACTIVEPATHCHECK="c:\Program Files\GnuWin32\bin"
 if exist %ACTIVEPATHCHECK% set PATH=%PATH%;%ACTIVEPATHCHECK%
-if not exist %ACTIVEPATHCHECK% echo Optional %ACTIVENAMECHECK% package not recognized in the Windows PATH. Update the setenvironment.bat script file with the correct path
+if not exist %ACTIVEPATHCHECK% echo OPTIONAL %ACTIVENAMECHECK% package not recognized in the Windows PATH. Update the setenvironment.bat script file with the correct path
 
 SET ACTIVENAMECHECK="Python 2.4"
 SET ACTIVEPATHCHECK=C:\progra~1\Python24
 if exist %ACTIVEPATHCHECK% SET PYTHON_HOME=C:\progra~1\Python24
 if exist %ACTIVEPATHCHECK% set PATH=%PATH%;%ACTIVEPATHCHECK%
-if not exist %ACTIVEPATHCHECK% echo Optional %ACTIVENAMECHECK% package not found. Update the setenvironment.bat script file with the correct path
+if not exist %ACTIVEPATHCHECK% echo OPTIONAL %ACTIVENAMECHECK% package not found. Update the setenvironment.bat script file with the correct path
 
 SET ACTIVENAMECHECK="SWIG 1.3.31"
 SET ACTIVEPATHCHECK=C:\progra~1\swigwin-1.3.31
 if exist %ACTIVEPATHCHECK% SET SWIG_HOME=C:\progra~1\swigwin-1.3.31
 if exist %ACTIVEPATHCHECK% set PATH=%PATH%;%ACTIVEPATHCHECK%
-if not exist %ACTIVEPATHCHECK% echo Optional %ACTIVENAMECHECK% package not found. Update the setenvironment.bat script file with the correct path
+if not exist %ACTIVEPATHCHECK% echo OPTIONAL %ACTIVENAMECHECK% package not found. Update the setenvironment.bat script file with the correct path
+
+goto end
+
+:usage
+echo Error in script usage. The correct usage is:
+echo     %0 [option]
+echo where [option] is: x86 ^| ia64 ^| amd64 ^| x86_amd64 ^| x86_ia64
+echo:
+echo For example:
+echo     %0 x86_ia64
+exit /B 1
 
 :end
 exit /B 0

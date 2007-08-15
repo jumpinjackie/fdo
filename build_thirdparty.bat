@@ -19,6 +19,7 @@ rem
 
 SET TYPEACTION=build
 SET TYPEBUILD=release
+SET TYPEPLATFORM=Win32
 SET FDOORGPATH=
 
 SET DEFMODIFY=no
@@ -42,6 +43,9 @@ if "%1"=="-outpath" goto get_path
 
 if "%1"=="-c"       goto get_conf
 if "%1"=="-config"  goto get_conf
+
+if "%1"=="-p"       	goto get_platform
+if "%1"=="-platform"    goto get_platform
 
 if "%1"=="-a"       goto get_action
 if "%1"=="-action"  goto get_action
@@ -120,6 +124,12 @@ if "%2"=="release" goto next_param
 if "%2"=="debug" goto next_param
 goto custom_error
 
+:get_platform
+SET TYPEPLATFORM=%2
+if "%2"=="Win32" goto next_param
+if "%2"=="x64" goto next_param
+goto custom_error
+
 :get_path
 if (%2)==() goto custom_error
 if not exist "%~2" mkdir "%~2"
@@ -148,7 +158,7 @@ if not exist "%FDOORGPATH%" mkdir "%FDOORGPATH%"
 
 :start_exbuild
 SET PROVCALLCMD=
-SET PROVCALLCMDEX=-o="%FDOORGPATH%" -c=%TYPEBUILD% -a=%TYPEACTION% -d=%DOCENABLE%
+SET PROVCALLCMDEX=-o="%FDOORGPATH%" -c=%TYPEBUILD% -p=%TYPEPLATFORM% -a=%TYPEACTION% -d=%DOCENABLE%
 
 :study_rebuild_all
 if "%ALLENABLE%"=="no" goto study_rebuild_sdf
@@ -181,7 +191,7 @@ SET PROVCALLCMD=%PROVCALLCMD% -w=fdo
 
 :rebuild_thp
 pushd %FDOTHIRDPARTY%
-call build.bat -o="%FDOORGPATH%" -c=%TYPEBUILD% -a=%TYPEACTION% %PROVCALLCMD%
+call build.bat -o="%FDOORGPATH%" -c=%TYPEBUILD% -p=%TYPEPLATFORM% -a=%TYPEACTION% %PROVCALLCMD%
 popd
 if "%FDOERROR%"=="1" goto error
 rem # End thirdparty part #
@@ -199,11 +209,17 @@ echo The command is not recognized.
 echo Please use the format:
 :help_show
 echo **************************************************************************
-echo build_thirdparty.bat [-h] [-o=OutFolder] [-c=BuildType] [-a=Action] [-w=WithModule]
+echo build_thirdparty.bat [-h]
+echo                      [-o=OutFolder] 
+echo                      [-c=BuildType] 
+echo                      [-p=PlatformType] 
+echo                      [-a=Action] 
+echo                      [-w=WithModule]
 echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
+echo PlatformType:   -p[latform]=Win32(default), x64
 echo Action:         -a[ction]=build(default), buildinstall, install, clean
 echo WithModule:     -w[ith]=all(default), fdo, providers, sdf, wfs, wms, postgis
 echo **************************************************************************

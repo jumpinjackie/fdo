@@ -19,6 +19,7 @@ rem
 
 SET TYPEACTION=build
 SET TYPEBUILD=release
+SET TYPEPLATFORM=Win32
 SET FDOORGPATH=
 
 SET DEFMODIFY=no
@@ -47,6 +48,9 @@ if "%1"=="-outpath" goto get_path
 if "%1"=="-c"       goto get_conf
 if "%1"=="-config"  goto get_conf
 
+if "%1"=="-p"       	goto get_platform
+if "%1"=="-platform"    goto get_platform
+
 if "%1"=="-a"       goto get_action
 if "%1"=="-action"  goto get_action
 
@@ -56,7 +60,7 @@ if "%1"=="-with"    goto get_with
 if "%1"=="-d"       goto get_docs
 if "%1"=="-docs"    goto get_docs
 
-if "%1"=="-p"       goto get_python
+if "%1"=="-py"      goto get_python
 if "%1"=="-python"  goto get_python
 
 goto custom_error
@@ -161,6 +165,12 @@ if "%2"=="release" goto next_param
 if "%2"=="debug" goto next_param
 goto custom_error
 
+:get_platform
+SET TYPEPLATFORM=%2
+if "%2"=="Win32" goto next_param
+if "%2"=="x64" goto next_param
+goto custom_error
+
 :get_path
 if (%2)==() goto custom_error
 if not exist "%~2" mkdir "%~2"
@@ -188,7 +198,8 @@ exit /B 1
 if not exist "%FDOORGPATH%" mkdir "%FDOORGPATH%"
 
 :start_exbuild
-SET PROVCALLCMDEXFDO=-o="%FDOORGPATH%" -c=%TYPEBUILD% -a=%TYPEACTION% -d=%DOCENABLE% -p=%PYTHONENABLE%
+SET PROVCALLCMDEXFDO=-o="%FDOORGPATH%" -c=%TYPEBUILD% -p=%TYPEPLATFORM% -a=%TYPEACTION% -d=%DOCENABLE% -py=%PYTHONENABLE%
+SET PROVCALLCMDEXSDF=-o="%FDOORGPATH%" -c=%TYPEBUILD% -p=%TYPEPLATFORM% -a=%TYPEACTION% -d=%DOCENABLE%
 SET PROVCALLCMDEX=-o="%FDOORGPATH%" -c=%TYPEBUILD% -a=%TYPEACTION% -d=%DOCENABLE%
 
 :rebuild_fdo
@@ -210,7 +221,7 @@ if "%FDOERROR%"=="1" goto error
 if "%SDFENABLE%"=="no" goto rebuild_wfs
 if not exist Providers\SDF\build.bat goto rebuild_wfs
 pushd Providers\SDF
-call build.bat %PROVCALLCMDEX%
+call build.bat %PROVCALLCMDEXSDF%
 popd
 if "%FDOERROR%"=="1" goto error
 
@@ -278,20 +289,22 @@ echo ***************************************************************************
 echo build.bat [-h]
 echo           [-o=OutFolder]
 echo           [-c=BuildType]
+echo           [-p=PlatformType]
 echo           [-a=Action]
 echo           [-w=WithModule]
 echo           [-d=BuildDocs]
-echo           [-p=BuildPythonWrappers]
+echo           [-py=BuildPythonWrappers]
 echo *
 echo Help:                  -h[elp]
 echo OutFolder:             -o[utpath]=destination folder for binaries
 echo BuildType:             -c[onfig]=release(default), debug
+echo PlatformType:          -p[latform]=Win32(default), x64
 echo Action:                -a[ction]=build(default), 
 echo                                  buildinstall, 
 echo                                  install, 
 echo                                  clean
 echo BuildDocs:             -d[ocs]=skip(default), build
-echo BuildPythonWrappers:   -p[ython]=skip(default), build
+echo BuildPythonWrappers:   -py[thon]=skip(default), build
 SET MROVBYPROVP=
 SET MPROVECAPABP=WithModule:            -w[ith]=all(default), fdo
 :shp_check
