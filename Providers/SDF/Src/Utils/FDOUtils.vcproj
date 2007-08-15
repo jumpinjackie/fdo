@@ -11,6 +11,9 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -18,7 +21,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="..\..\Lib\Win32\Debug"
-			IntermediateDirectory="Debug"
+			IntermediateDirectory="..\..\Obj\Utils\Win32\Debug"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -85,9 +88,79 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="..\..\Lib\Win64\Debug"
+			IntermediateDirectory="..\..\Obj\Utils\Win64\Debug"
+			ConfigurationType="4"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDO)\Unmanaged\Src\NLS&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;"
+				PreprocessorDefinitions="WIN32;_WIN64;_DEBUG;_WINDOWS;_USRDLL;FDOUTILS_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="0"
+				RuntimeLibrary="3"
+				TreatWChar_tAsBuiltInType="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile="$(IntDir)/FDOUtils.pch"
+				ProgramDataBaseFileName="$(IntDir)/FDOUtils.pdb"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/FDOUtils.lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="..\..\Lib\Win32\Release"
-			IntermediateDirectory="Release"
+			IntermediateDirectory="..\..\Obj\Utils\Win32\Release"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -116,6 +189,78 @@
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDO)\Unmanaged\Src\NLS&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOUTILS_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE"
+				RuntimeLibrary="2"
+				TreatWChar_tAsBuiltInType="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile="$(IntDir)/FDOUtils.pch"
+				ProgramDataBaseFileName="$(IntDir)/FDOUtils.pdb"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/FDOUtils.lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="..\..\Lib\Win64\Release"
+			IntermediateDirectory="..\..\Obj\Utils\Win64\Release"
+			ConfigurationType="4"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="true"
+				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDO)\Unmanaged\Src\NLS&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;"
+				PreprocessorDefinitions="WIN32;_WIN64;NDEBUG;_WINDOWS;_USRDLL;FDOUTILS_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="true"
 				RuntimeTypeInfo="true"

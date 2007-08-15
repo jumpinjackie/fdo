@@ -11,6 +11,9 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -18,7 +21,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="..\..\Bin\Win32\Debug"
-			IntermediateDirectory="Debug"
+			IntermediateDirectory="..\..\Obj\Provider\Win32\Debug"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -71,7 +74,7 @@
 				AdditionalDependencies="FDOUtils.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib SQLiteInterface.lib Sqlite3.lib Advapi32.lib"
 				OutputFile="$(OutDir)/SDFProvider.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\Debug\&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;..\..\Lib\Win32\Debug;&quot;$(FDOTHIRDPARTY)\Sqlite3.3.13\Debug&quot;;&quot;$(FDOUTILITIES)\SQLiteInterface\Lib\Win32\Debug&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;..\..\Lib\Win32\Debug;&quot;$(FDOTHIRDPARTY)\Sqlite3.3.13\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\SQLiteInterface\Lib\Win32\Debug&quot;"
 				IgnoreDefaultLibraryNames="libcmtd.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/SDFProvider.pdb"
@@ -107,9 +110,102 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="..\..\Bin\Win64\Debug"
+			IntermediateDirectory="..\..\Obj\Provider\Win64\Debug"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="$(FDO)\Unmanaged\inc;..\Utils\;$(FDO)\Unmanaged\src\NLS;..\..\Inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\SQLiteInterface"
+				PreprocessorDefinitions="WIN32;_WIN64;_DEBUG;_WINDOWS;_USRDLL;SDF_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="0"
+				RuntimeLibrary="3"
+				StructMemberAlignment="4"
+				TreatWChar_tAsBuiltInType="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="1"
+				ProgramDataBaseFileName="$(IntDir)/SDFProvider.pdb"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+				CommandLine="if not exist ..\..\Lib\Win32\Debug mkdir ..\..\Lib\Win32\Debug"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/fixed:no"
+				AdditionalDependencies="FDOUtils.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib SQLiteInterface.lib Sqlite3.lib Advapi32.lib"
+				OutputFile="$(OutDir)/SDFProvider.dll"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win64\Debug\&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Debug&quot;;..\..\Lib\Win64\Debug;&quot;$(FDOTHIRDPARTY)\Sqlite3.3.13\Win64\Debug&quot;;&quot;$(FDOUTILITIES)\SQLiteInterface\Lib\Win64\Debug&quot;"
+				IgnoreDefaultLibraryNames="libcmtd.lib"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/SDFProvider.pdb"
+				SubSystem="2"
+				ImportLibrary="..\..\Lib\Win32\Debug\SDFProvider.lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Versioning SDFProvider.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\SubDoc\Providers.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SDFProvider.dll"
+				ExcludedFromBuild="true"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="..\..\Bin\Win32\Release"
-			IntermediateDirectory="Release"
+			IntermediateDirectory="..\..\Obj\Provider\Win32\Release"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -165,7 +261,7 @@
 				AdditionalDependencies="FDOUtils.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib SQLiteInterface.lib Sqlite3.lib Advapi32.lib"
 				OutputFile="$(OutDir)/SDFProvider.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\Release\&quot;;&quot;$(FDOTHIRDPARTY)\db-4.3.27.NC\build_win32\Release_static&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;..\..\Lib\Win32\Release;&quot;$(FDOTHIRDPARTY)\Sqlite3.3.13\Release&quot;;&quot;$(FDOUTILITIES)\SQLiteInterface\Lib\Win32\Release&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;..\..\Lib\Win32\Release;&quot;$(FDOTHIRDPARTY)\Sqlite3.3.13\Win32\Release&quot;;&quot;$(FDOUTILITIES)\SQLiteInterface\Lib\Win32\Release&quot;"
 				IgnoreDefaultLibraryNames="libcmt.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/SDFProvider.pdb"
@@ -203,10 +299,10 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="TestExeDebug|Win32"
-			OutputDirectory="TestExe"
-			IntermediateDirectory="TestExe"
-			ConfigurationType="1"
+			Name="Release|x64"
+			OutputDirectory="..\..\Bin\Win64\Release"
+			IntermediateDirectory="..\..\Obj\Provider\Win64\Release"
+			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
 			>
@@ -224,91 +320,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="$(FDO)\Unmanaged\inc;..\Utils\;$(FDO)\Unmanaged\src\NLS;..\..\Inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\SQLiteInterface"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;SDF_EXPORTS;SDFTK_AVAILABLE;_CRT_SECURE_NO_DEPRECATE"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="1"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="FDOUtils.lib sdf.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib libdb42sd.lib ProvidersCommon.lib"
-				OutputFile="$(OutDir)/SDF.exe"
-				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Debug\;$(FDOTHIRDPARTY)\BerkeleyDb\build_win32\Debug_static;$(FDOTHIRDPARTY)\sdftk\lib\Debug;..\..\Utils\Debug"
-				IgnoreDefaultLibraryNames=""
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/SDF.pdb"
-				SubSystem="1"
-				ImportLibrary="$(OutDir)/SDF.lib"
-				TargetMachine="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="TestExeRelease|Win32"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
+				TargetEnvironment="3"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
@@ -316,17 +328,20 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
+				OmitFramePointers="true"
 				AdditionalIncludeDirectories="$(FDO)\Unmanaged\inc;..\Utils\;$(FDO)\Unmanaged\src\NLS;..\..\Inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\SQLiteInterface"
-				PreprocessorDefinitions="WIN32;_CONSOLE;SDF_EXPORTS;SDFTK_AVAILABLE;_CRT_SECURE_NO_DEPRECATE"
-				MinimalRebuild="false"
-				BasicRuntimeChecks="0"
-				RuntimeLibrary="0"
+				PreprocessorDefinitions="WIN32;_WIN64;NDEBUG;_WINDOWS;_USRDLL;SDF_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				StructMemberAlignment="4"
+				EnableFunctionLevelLinking="true"
 				TreatWChar_tAsBuiltInType="true"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="1"
+				ProgramDataBaseFileName="$(IntDir)/SDFProvider.pdb"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="0"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -336,19 +351,22 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
+				CommandLine="if not exist ..\..\Lib\Win32\Release mkdir ..\..\Lib\Win32\Release"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDOUtils.lib sdf.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib libdb42s.lib ProvidersCommon.lib"
-				OutputFile="$(OutDir)/SDF.exe"
-				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Release\;..\..\Utils\Release"
-				IgnoreDefaultLibraryNames=""
+				AdditionalDependencies="FDOUtils.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib SQLiteInterface.lib Sqlite3.lib Advapi32.lib"
+				OutputFile="$(OutDir)/SDFProvider.dll"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win64\Release\&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Release&quot;;..\..\Lib\Win64\Release;&quot;$(FDOTHIRDPARTY)\Sqlite3.3.13\Win64\Release&quot;;&quot;$(FDOUTILITIES)\SQLiteInterface\Lib\Win64\Release&quot;"
+				IgnoreDefaultLibraryNames="libcmt.lib"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/SDF.pdb"
-				SubSystem="1"
-				ImportLibrary="$(OutDir)/SDF.lib"
-				TargetMachine="1"
+				ProgramDatabaseFile="$(OutDir)/SDFProvider.pdb"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				ImportLibrary="..\..\Lib\Win32\Release\SDFProvider.lib"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -373,6 +391,9 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Versioning SDFProvider.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\SubDoc\Providers.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SDFProvider.dll"
+				ExcludedFromBuild="true"
 			/>
 		</Configuration>
 	</Configurations>

@@ -11,6 +11,9 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -18,7 +21,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="..\..\Bin\Win32\Debug"
-			IntermediateDirectory="Debug"
+			IntermediateDirectory="..\..\Obj\Win32\Debug"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -69,7 +72,7 @@
 				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib ProvidersCommon.lib"
 				OutputFile="$(OutDir)/UnitTest.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\lib\&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\Lib\Win32&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;"
 				IgnoreDefaultLibraryNames="libcmtd.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/UnitTest.pdb"
@@ -102,9 +105,96 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="..\..\Bin\Win64\Debug"
+			IntermediateDirectory="..\..\Obj\Win64\Debug"
+			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\include\&quot;;&quot;$(FDO)\Unmanaged\Inc&quot;;..\..\Inc;&quot;$(FDOUTILITIES)\TestCommon\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;"
+				PreprocessorDefinitions="WIN32;_WIN64;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;IGNORE_THREAD_TEST;__CPPUNIT_MFC_APP"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="0"
+				RuntimeLibrary="3"
+				TreatWChar_tAsBuiltInType="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/fixed:no"
+				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib ProvidersCommon.lib"
+				OutputFile="$(OutDir)/UnitTest.exe"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\Lib\Win64&quot;;&quot;$(FDO)\Unmanaged\Lib\Win64\Debug&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win64\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Debug&quot;"
+				IgnoreDefaultLibraryNames="libcmtd.lib"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/UnitTest.pdb"
+				SubSystem="1"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="..\..\Bin\Win32\Release"
-			IntermediateDirectory="Release"
+			IntermediateDirectory="..\..\Obj\Win32\Release"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -148,16 +238,100 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib ProvidersCommon.lib"
+				AdditionalDependencies="cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib ProvidersCommon.lib"
 				OutputFile="$(OutDir)/UnitTest.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\lib\&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\Lib\Win32&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="..\..\Bin\Win64\Release"
+			IntermediateDirectory="..\..\Obj\Win64\Release"
+			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\include\&quot;;&quot;$(FDO)\Unmanaged\Inc&quot;;..\..\Inc;&quot;$(FDOUTILITIES)\TestCommon\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;"
+				PreprocessorDefinitions="WIN32;_WIN64;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;IGNORE_THREAD_TEST"
+				RuntimeLibrary="2"
+				TreatWChar_tAsBuiltInType="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib ProvidersCommon.lib"
+				OutputFile="$(OutDir)/UnitTest.exe"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\Lib\Win64&quot;;&quot;$(FDO)\Unmanaged\Lib\Win64\Release&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win64\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Release&quot;"
+				IgnoreDefaultLibraryNames=""
+				GenerateDebugInformation="true"
+				SubSystem="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -204,7 +378,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -230,7 +422,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -256,7 +466,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -282,7 +510,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -313,7 +559,27 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -340,7 +606,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -368,6 +652,17 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying FDO files"
+						CommandLine="copy $(FDO)\unmanaged\Bin\Win64\Debug\FDO.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win64\Debug\FDOMessage.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win64\Debug\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win64\Debug\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win64\Debug\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win64\Debug\FDO.pdb $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win64\Debug\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win64\Debug\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win64\Debug\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDO)\unmanaged\Bin\Win64\Debug\FDO.dll;$(FDO)\unmanaged\Bin\Win64\Debug\FDOCommon.dll;$(FDO)\unmanaged\Bin\Win64\Debug\FDOGeometry.dll;$(FDO)\unmanaged\Bin\Win64\Debug\FDOSpatial.dll;$(FDO)\unmanaged\Bin\Win64\Debug\FDO.pdb;$(FDO)\unmanaged\Bin\Win64\Debug\FDOCommon.pdb;$(FDO)\unmanaged\Bin\Win64\Debug\FDOGeometry.pdb;$(FDO)\unmanaged\Bin\Win64\Debug\FDOSpatial.pdb"
+						Outputs="$(OutDir)\CopyFdo.ilk"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -375,6 +670,17 @@
 						Description="Copying FDO files"
 						CommandLine="copy $(FDO)\unmanaged\Bin\Win32\Release\FDO.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win32\Release\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win32\Release\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win32\Release\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win32\Release\FDO.pdb $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win32\Release\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win32\Release\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win32\Release\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
 						AdditionalDependencies="$(FDO)\unmanaged\Bin\Win32\Release\FDO.dll;$(FDO)\unmanaged\Bin\Win32\Release\FDOCommon.dll;$(FDO)\unmanaged\Bin\Win32\Release\FDOGeometry.dll;$(FDO)\unmanaged\Bin\Win32\Release\FDOSpatial.dll;$(FDO)\unmanaged\Bin\Win32\Release\FDO.pdb;$(FDO)\unmanaged\Bin\Win32\Release\FDOCommon.pdb;$(FDO)\unmanaged\Bin\Win32\Release\FDOGeometry.pdb;$(FDO)\unmanaged\Bin\Win32\Release\FDOSpatial.pdb"
+						Outputs="$(OutDir)\CopyFdo.ilk"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying FDO files"
+						CommandLine="copy $(FDO)\unmanaged\Bin\Win64\Release\FDO.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win64\Release\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win64\Release\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win64\Release\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win64\Release\FDO.pdb $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win64\Release\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win64\Release\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy $(FDO)\unmanaged\Bin\Win64\Release\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDO)\unmanaged\Bin\Win64\Release\FDO.dll;$(FDO)\unmanaged\Bin\Win64\Release\FDOCommon.dll;$(FDO)\unmanaged\Bin\Win64\Release\FDOGeometry.dll;$(FDO)\unmanaged\Bin\Win64\Release\FDOSpatial.dll;$(FDO)\unmanaged\Bin\Win64\Release\FDO.pdb;$(FDO)\unmanaged\Bin\Win64\Release\FDOCommon.pdb;$(FDO)\unmanaged\Bin\Win64\Release\FDOGeometry.pdb;$(FDO)\unmanaged\Bin\Win64\Release\FDOSpatial.pdb"
 						Outputs="$(OutDir)\CopyFdo.ilk"
 					/>
 				</FileConfiguration>
@@ -388,8 +694,19 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying thirdparty dlls"
-						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\lib\testrunnerd.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\cppunitd_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Debug\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\lib\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\lib\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC7\Debug\Xalan-C_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC7\Debug\XalanMessages_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC7\Debug\xerces-c_2_5_0D.dll"
+						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Debug\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC7\Debug\Xalan-C_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC7\Debug\XalanMessages_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC7\Debug\xerces-c_2_5_0D.dll"
+						Outputs="$(OutDir)\CopyThirdparty.ilk"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying thirdparty dlls"
+						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC8\Debug\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC8\Debug\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC8\Debug\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win64testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC7\Debug\Xalan-C_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC7\Debug\XalanMessages_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC7\Debug\xerces-c_2_5_0D.dll"
 						Outputs="$(OutDir)\CopyThirdparty.ilk"
 					/>
 				</FileConfiguration>
@@ -399,8 +716,19 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying thirdparty dlls"
-						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\lib\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\lib\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\lib\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC7\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC7\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC7\Release\xerces-c_2_5_0.dll"
+						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC7\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC7\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC7\Release\xerces-c_2_5_0.dll"
+						Outputs="$(OutDir)\CopyThirdparty.ilk"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying thirdparty dlls"
+						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC8\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC8\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC8\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC7\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC7\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC7\Release\xerces-c_2_5_0.dll"
 						Outputs="$(OutDir)\CopyThirdparty.ilk"
 					/>
 				</FileConfiguration>
@@ -420,7 +748,29 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing fake install"
+						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;"
+						AdditionalDependencies="providers.xml"
+						Outputs="$(OutDir)\providers.xml"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing fake install"
+						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;"
+						AdditionalDependencies="providers.xml"
+						Outputs="$(OutDir)\providers.xml"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -435,6 +785,42 @@
 		<File
 			RelativePath=".\ApplySchemaTest.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\ApplySchemaTest.h"
@@ -443,6 +829,42 @@
 		<File
 			RelativePath=".\AssociationDeleteTest.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\AssociationDeleteTest.h"
@@ -451,6 +873,42 @@
 		<File
 			RelativePath=".\AssociationInsertTest.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\AssociationInsertTest.h"
@@ -459,6 +917,42 @@
 		<File
 			RelativePath=".\AssociationSchemaTest.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\AssociationSchemaTest.h"
@@ -467,6 +961,42 @@
 		<File
 			RelativePath=".\AssociationSelectTest.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\AssociationSelectTest.h"
@@ -475,6 +1005,42 @@
 		<File
 			RelativePath=".\AssociationUpdateTest.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\AssociationUpdateTest.h"
@@ -483,6 +1049,42 @@
 		<File
 			RelativePath=".\ConnectionInfoTest.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\ConnectionInfoTest.h"
@@ -491,6 +1093,42 @@
 		<File
 			RelativePath=".\ConstraintsTest.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\ConstraintsTest.h"
@@ -499,6 +1137,42 @@
 		<File
 			RelativePath=".\ExtendedSelectTest.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\ExtendedSelectTest.h"
@@ -507,6 +1181,42 @@
 		<File
 			RelativePath=".\FdoMultiThreadTest.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\FdoMultiThreadTest.h"
@@ -515,6 +1225,42 @@
 		<File
 			RelativePath=".\FgfStreamWriter.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\FgfStreamWriter.h"
@@ -523,6 +1269,42 @@
 		<File
 			RelativePath=".\MasterTest.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\MasterTest.h"
@@ -535,6 +1317,42 @@
 		<File
 			RelativePath=".\SchemaTest.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\SchemaTest.h"
@@ -543,14 +1361,138 @@
 		<File
 			RelativePath=".\SpatialContextTest.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\SpatialContextTest.h"
 			>
 		</File>
 		<File
+			RelativePath=".\stdafx.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="1"
+					PrecompiledHeaderThrough="stdafx.h"
+					ObjectFile="$(IntDir)\$(InputName)1.obj"
+					XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="1"
+					PrecompiledHeaderThrough="stdafx.h"
+					ObjectFile="$(IntDir)\$(InputName)1.obj"
+					XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="1"
+					PrecompiledHeaderThrough="stdafx.h"
+					ObjectFile="$(IntDir)\$(InputName)1.obj"
+					XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="1"
+					PrecompiledHeaderThrough="stdafx.h"
+					ObjectFile="$(IntDir)\$(InputName)1.obj"
+					XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\stdafx.h"
+			>
+		</File>
+		<File
 			RelativePath=".\UnitTestUtil.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="2"
+					PrecompiledHeaderThrough="stdafx.h"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\UnitTestUtil.h"
