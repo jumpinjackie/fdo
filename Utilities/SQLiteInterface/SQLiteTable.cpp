@@ -219,13 +219,13 @@ int SQLiteTable::open( SQLiteTransaction *txnid,
     char *szSQL = NULL;
 
     useNoIntKey = bNoIntKey;
-	int sizeForAlloc = strlen( utf8Name );
+	size_t sizeForAlloc = strlen( utf8Name );
 	if( useMbcsName )
 	{
 		mbcsNewTabName = new char[strlen(mbcsName)+1];
 		strcpy(mbcsNewTabName,mbcsName);
 		make_valid_name( mbcsNewTabName );
-		int size = strlen( mbcsNewTabName );
+		size_t size = strlen( mbcsNewTabName );
 		if( size > sizeForAlloc )
 			sizeForAlloc = size;
 	}
