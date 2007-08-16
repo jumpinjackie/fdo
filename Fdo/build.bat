@@ -154,20 +154,19 @@ copy /y "Unmanaged\Bin\Win32\%TYPEBUILDFDO%\FDOMessage.dll" "%FDOBINPATHFDO%"
 copy /y "Unmanaged\Bin\Win32\%TYPEBUILDFDO%\FDOCommon.dll" "%FDOBINPATHFDO%"
 copy /y "Unmanaged\Bin\Win32\%TYPEBUILDFDO%\FDOGeometry.dll" "%FDOBINPATHFDO%"
 copy /y "Unmanaged\Bin\Win32\%TYPEBUILDFDO%\FDOSpatial.dll" "%FDOBINPATHFDO%"
-copy /y "Managed\bin\%TYPEBUILDFDO%\OSGeo.FDO.dll" "%FDOBINPATHFDO%"
-copy /y "Managed\bin\%TYPEBUILDFDO%\OSGeo.FDO.Common.dll" "%FDOBINPATHFDO%"
-copy /y "Managed\bin\%TYPEBUILDFDO%\OSGeo.FDO.Geometry.dll" "%FDOBINPATHFDO%"
-copy /y "Managed\bin\%TYPEBUILDFDO%\OSGeo.FDO.Spatial.dll" "%FDOBINPATHFDO%"
+copy /y "Managed\Bin\Win32\%TYPEBUILDFDO%\OSGeo.FDO.dll" "%FDOBINPATHFDO%"
+copy /y "Managed\Bin\Win32\%TYPEBUILDFDO%\OSGeo.FDO.Common.dll" "%FDOBINPATHFDO%"
+copy /y "Managed\Bin\Win32\%TYPEBUILDFDO%\OSGeo.FDO.Geometry.dll" "%FDOBINPATHFDO%"
+copy /y "Managed\Bin\Win32\%TYPEBUILDFDO%\OSGeo.FDO.Spatial.dll" "%FDOBINPATHFDO%"
 copy /y "Unmanaged\Lib\Win32\%TYPEBUILDFDO%\FDO.lib" "%FDOLIBPATHFDO%"
 copy /y "Unmanaged\Lib\Win32\%TYPEBUILDFDO%\FDOCommon.lib" "%FDOLIBPATHFDO%"
 copy /y "Unmanaged\Lib\Win32\%TYPEBUILDFDO%\FDOGeometry.lib" "%FDOLIBPATHFDO%"
+copy /y "Unmanaged\Lib\Win32\%TYPEBUILDFDO%\FDOSpatial.lib" "%FDOLIBPATHFDO%"
 copy /y "Python\Lib\Win32\FDO.py" "%FDOLIBPATHFDO%"
 cscript //Nologo //job:install ../preparebuilds.wsf
 
 echo copy FDO header files
 xcopy /S /C /Q /R /Y Unmanaged\Inc\*.h "%FDOINCPATHFDO%\"
-del /F /Q "%FDOINCPATHFDO%\FdoSpatial.h"
-rmdir /S /Q "%FDOINCPATHFDO%\Spatial"
 
 :generate_docs
 if not "%DOCENABLEFDO%"=="build" goto install_docs
