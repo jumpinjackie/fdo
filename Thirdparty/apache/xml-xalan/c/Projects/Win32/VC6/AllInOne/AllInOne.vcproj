@@ -83,6 +83,8 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;..\..\..\..\..\..\xml-xerces\c\Build\Win32\VC8\$(ConfigurationName)&quot;;..\..\..\..\Build\Win32\VC8\$(ConfigurationName)"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)\Xalan-C_1_7_0.pdb"
 				ImportLibrary="$(OutDir)\Xalan-C_1.lib"
 			/>
 			<Tool
@@ -176,6 +178,8 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;..\..\..\..\..\..\xml-xerces\c\Build\Win64\VC8\$(ConfigurationName)&quot;;..\..\..\..\Build\Win64\VC8\$(ConfigurationName)"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)\Xalan-C_1_7_0.pdb"
 				ImportLibrary="$(OutDir)\Xalan-C_1.lib"
 				TargetMachine="17"
 			/>
