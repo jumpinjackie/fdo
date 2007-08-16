@@ -243,6 +243,7 @@ if "%FDOERROR%"=="1" goto error
 
 :rebuild_arc
 if "%ARCENABLE%"=="no" goto rebuild_odbc
+if not exist "%SDEHOME%" goto rebuild_odbc
 if not exist Providers\ArcSDE\build.bat goto rebuild_odbc
 pushd Providers\ArcSDE
 call build.bat %PROVCALLCMDEX%
