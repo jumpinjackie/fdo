@@ -83,7 +83,8 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				ModuleDefinitionFile=".\TestRunner.def"
-				ProgramDatabaseFile="$(OutDir)\testrunner.pdb"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="..\..\..\lib\Win32\testrunner.pdb"
 				SubSystem="2"
 				ImportLibrary="..\..\..\lib\Win32\testrunner.lib"
 				TargetMachine="1"
@@ -181,7 +182,8 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				ModuleDefinitionFile=".\TestRunner.def"
-				ProgramDatabaseFile="$(OutDir)\testrunner.pdb"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="..\..\..\lib\Win64\testrunner.pdb"
 				SubSystem="2"
 				ImportLibrary="..\..\..\lib\Win64\testrunner.lib"
 				TargetMachine="17"
@@ -278,7 +280,7 @@
 				SuppressStartupBanner="true"
 				ModuleDefinitionFile=".\TestRunner.def"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)\testrunnerd.pdb"
+				ProgramDatabaseFile="..\..\..\lib\Win32\testrunnerd.pdb"
 				SubSystem="2"
 				ImportLibrary="..\..\..\lib\Win32\testrunnerd.lib"
 				TargetMachine="1"
@@ -376,7 +378,7 @@
 				SuppressStartupBanner="true"
 				ModuleDefinitionFile=".\TestRunner.def"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)\testrunnerd.pdb"
+				ProgramDatabaseFile="..\..\..\lib\Win64\testrunnerd.pdb"
 				SubSystem="2"
 				ImportLibrary="..\..\..\lib\Win64\testrunnerd.lib"
 				TargetMachine="17"
@@ -1497,11 +1499,11 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\include\msvc6\testrunner\TestRunner.h"
+				RelativePath="..\..\..\include\cppunitui\mfc\TestRunner.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\include\cppunitui\mfc\TestRunner.h"
+				RelativePath="..\..\..\include\msvc6\testrunner\TestRunner.h"
 				>
 			</File>
 			<File

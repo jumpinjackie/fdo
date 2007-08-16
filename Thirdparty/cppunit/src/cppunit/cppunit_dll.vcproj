@@ -78,6 +78,7 @@
 				OutputFile="..\..\lib\Win32\cppunit_dll.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile="..\..\lib\Win32\cppunit_dll.pdb"
 				ImportLibrary="..\..\lib\Win32\cppunit_dll.lib"
 				TargetMachine="1"
@@ -171,6 +172,7 @@
 				OutputFile="..\..\lib\Win64\cppunit_dll.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile="..\..\lib\Win64\cppunit_dll.pdb"
 				ImportLibrary="..\..\lib\Win64\cppunit_dll.lib"
 				TargetMachine="17"
@@ -1492,11 +1494,11 @@
 			>
 		</File>
 		<File
-			RelativePath="Makefile.am"
+			RelativePath="..\..\include\cppunit\Makefile.am"
 			>
 		</File>
 		<File
-			RelativePath="..\..\include\cppunit\Makefile.am"
+			RelativePath="Makefile.am"
 			>
 		</File>
 		<File
