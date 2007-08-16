@@ -20,6 +20,7 @@ rem
 SET TYPEACTIONSDF=build
 SET MSACTIONSDF=Build
 SET TYPEBUILDSDF=release
+SET TYPEPLATFORMSDF=Win32
 SET FDOORGPATHSDF=%cd%
 SET FDOINSPATHSDF=%cd%\Fdo
 SET FDOBINPATHSDF=%cd%\Fdo\Bin
@@ -40,6 +41,9 @@ if "%1"=="-outpath" goto get_path
 
 if "%1"=="-c"       goto get_conf
 if "%1"=="-config"  goto get_conf
+
+if "%1"=="-p"       	goto get_platform
+if "%1"=="-platform"    goto get_platform
 
 if "%1"=="-a"       goto get_action
 if "%1"=="-action"  goto get_action
@@ -68,6 +72,12 @@ if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
 if "%2"=="clean" goto next_param
 goto custom_error 
+
+:get_platform
+SET TYPEPLATFORMSDF=%2
+if "%2"=="Win32" goto next_param
+if "%2"=="x64" goto next_param
+goto custom_error
 
 :get_path
 if (%2)==() goto custom_error
@@ -110,7 +120,7 @@ echo %MSACTIONSDF% %TYPEBUILDSDF% SDF provider dlls
 SET FDOACTIVEBUILD=%cd%\Src\SDFOS
 cscript //Nologo //job:prepare preparebuilds.wsf
 pushd Src
-msbuild SDFOS_temp.sln /t:%MSACTIONSDF% /p:Configuration=%TYPEBUILDSDF% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+msbuild SDFOS_temp.sln /t:%MSACTIONSDF% /p:Configuration=%TYPEBUILDSDF% /p:Platform=%TYPEPLATFORMSDF% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if exist SDFOS_temp.sln del /Q /F SDFOS_temp.sln
 popd
@@ -170,11 +180,17 @@ echo The command is not recognized.
 echo Please use the format:
 :help_show
 echo **************************************************************************
-echo build.bat [-h] [-o=OutFolder] [-c=BuildType] [-a=Action] [-d=BuildDocs]
+echo build.bat [-h] 
+echo           [-o=OutFolder] 
+echo           [-c=BuildType]
+echo           [-a=Action] 
+echo           [-p=PlatformType]
+echo           [-d=BuildDocs]
 echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
+echo PlatformType:   -p[latform]=Win32(default), x64
 echo Action:         -a[ction]=build(default), buildinstall, install, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
