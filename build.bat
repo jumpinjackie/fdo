@@ -260,6 +260,7 @@ if "%FDOERROR%"=="1" goto error
 
 :rebuild_mysql
 if "%MYSQLENABLE%"=="no" goto rebuild_gdal
+if not exist "%FDOMYSQL%" goto rebuild_gdal
 if not exist Providers\GenericRdbms\Src\MySQL\build.bat goto rebuild_gdal
 pushd Providers\GenericRdbms\Src\MySQL
 call build.bat %PROVCALLCMDEX%
