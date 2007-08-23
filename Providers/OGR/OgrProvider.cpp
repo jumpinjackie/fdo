@@ -729,8 +729,6 @@ void OgrFeatureReader::Dispose()
 FdoClassDefinition* OgrFeatureReader::GetClassDefinition()
 {
     //TODO: cache the result of this
-    //also this always returns all properties regardless
-    //of what was given in the select command
     return OgrFdoUtil::ConvertClass(m_poLayer, m_props);
 }
 
