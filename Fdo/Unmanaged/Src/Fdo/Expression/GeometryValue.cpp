@@ -122,3 +122,4 @@ FdoLiteralValueType FdoGeometryValue::GetLiteralValueType() const
 {
     return FdoLiteralValueType_Geometry;
 }
+
