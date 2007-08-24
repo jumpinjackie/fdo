@@ -27,6 +27,7 @@ struct FdoCommonPropertyStub
     wchar_t* m_name;
     int m_recordIndex;
     FdoDataType m_dataType;
+	FdoPropertyType m_propertyType;
     bool m_isAutoGen;
 };
 
