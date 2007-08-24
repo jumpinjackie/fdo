@@ -3,7 +3,7 @@
 // 
 
 //
-// Copyright (C) 2004-2006  Autodesk, Inc.
+// Copyright (C) 2004-2007  Autodesk, Inc.
 // 
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of version 2.1 of the GNU Lesser
@@ -218,6 +218,14 @@ public:
     /// 
     FDO_API virtual void SetNull();
 
+    /// \brief
+    /// Gets the literal value type of the FdoDataValue.
+    /// 
+    /// \return
+    /// Returns an FdoLiteralValueType
+    /// 
+   	FDO_API virtual FdoLiteralValueType GetLiteralValueType () const;
+
 	static FdoDataValue* Create(FdoString* value, FdoDataType dataType);
 
     // Get the value as an XML format string.
@@ -273,6 +281,7 @@ protected:
     bool        m_isNull;
     FdoStringP  m_XmlValue; // Manages GetXmlValue return string when datatype is datetime.
 /// \endcond
+
 };
 
 /// \ingroup (typedefs)

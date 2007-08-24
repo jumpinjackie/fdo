@@ -3,7 +3,7 @@
 // 
 
 //
-// Copyright (C) 2004-2006  Autodesk, Inc.
+// Copyright (C) 2004-2007  Autodesk, Inc.
 // 
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of version 2.1 of the GNU Lesser
@@ -25,12 +25,22 @@
 
 #include <FdoStd.h>
 #include <Fdo/Expression/ValueExpression.h>
+#include <Fdo/Expression/LiteralValueType.h>
 
 /// \brief
 /// FdoLiteralValue is an abstract base class that derives from FdoValueExpression to
 /// form the root for all literal value types.
 class FdoLiteralValue : public FdoValueExpression
 {
+public:
+
+    /// \brief
+    /// Gets the literal value type of the FdoLiteralValue.
+    /// 
+    /// \return
+    /// Returns an FdoLiteralValueType
+    /// 
+	FDO_API virtual FdoLiteralValueType GetLiteralValueType() const = 0;
 };
 #endif
 

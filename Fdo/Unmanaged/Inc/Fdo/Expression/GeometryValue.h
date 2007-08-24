@@ -3,7 +3,7 @@
 // 
 
 //
-// Copyright (C) 2004-2006  Autodesk, Inc.
+// Copyright (C) 2004-2007  Autodesk, Inc.
 // 
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of version 2.1 of the GNU Lesser
@@ -121,6 +121,14 @@ public:
     /// Returns the well defined text string
     /// 
     FDO_API FdoString* ToString();
+
+    /// \brief
+    /// Gets the literal value type of the FdoGeometryValue.
+    /// 
+    /// \return
+    /// Returns an FdoLiteralValueType
+    /// 
+    FDO_API virtual FdoLiteralValueType GetLiteralValueType() const;
 
 /// \cond DOXYGEN-IGNORE
 protected:

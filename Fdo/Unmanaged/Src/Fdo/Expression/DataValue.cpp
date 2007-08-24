@@ -371,3 +371,8 @@ FdoCompareType FdoDataValue::DoCompare( FdoDataValue* other )
 {
     return FdoCompareType_Undefined;
 }
+
+FdoLiteralValueType FdoDataValue::GetLiteralValueType() const
+{
+    return FdoLiteralValueType_Data;
+}
