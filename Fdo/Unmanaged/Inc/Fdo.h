@@ -182,6 +182,8 @@
 #include <Fdo/Expression/Int64Value.h>
 #include <Fdo/Expression/IExpressionProcessor.h>
 #include <Fdo/Expression/LiteralValue.h>
+#include <Fdo/Expression/LiteralValueCollection.h>
+#include <Fdo/Expression/LiteralValueType.h>
 #include <Fdo/Expression/Parameter.h>
 #include <Fdo/Expression/SingleValue.h>
 #include <Fdo/Expression/StringValue.h>

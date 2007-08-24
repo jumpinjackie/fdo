@@ -118,3 +118,7 @@ FdoString* FdoGeometryValue::ToString ()
     return m_toString;
 }
 
+FdoLiteralValueType FdoGeometryValue::GetLiteralValueType() const
+{
+    return FdoLiteralValueType_Geometry;
+}

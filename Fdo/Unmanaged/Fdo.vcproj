@@ -523,6 +523,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Src\Fdo\Expression\LiteralValueCollection.cpp"
+					>
+				</File>
+				<File
 					RelativePath="Src\Fdo\Expression\Parameter.cpp"
 					>
 				</File>
@@ -1733,6 +1737,14 @@
 				</File>
 				<File
 					RelativePath="Inc\Fdo\Expression\LiteralValue.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Inc\Fdo\Expression\LiteralValueCollection.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Inc\Fdo\Expression\LiteralValueType.h"
 					>
 				</File>
 				<File

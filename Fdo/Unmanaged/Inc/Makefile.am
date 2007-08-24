@@ -223,6 +223,8 @@ EXTRA_DIST = \
     Fdo/Expression/Int32Value.h \
     Fdo/Expression/Int64Value.h \
     Fdo/Expression/LiteralValue.h \
+    Fdo/Expression/LiteralValueCollection.h \
+    Fdo/Expression/LiteralValueType.h \
     Fdo/Expression/LOBValue.h \
     Fdo/Expression/Parameter.h \
     Fdo/Expression/SingleValue.h \
