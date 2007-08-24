@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\include\&quot;;&quot;$(FDO)\Unmanaged\Inc&quot;;..\..\Inc;&quot;$(FDOUTILITIES)\TestCommon\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;"
+				AdditionalIncludeDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\include\&quot;;&quot;$(FDO)\Unmanaged\Inc&quot;;..\..\Inc;&quot;$(FDOUTILITIES)\TestCommon\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;IGNORE_THREAD_TEST;__CPPUNIT_MFC_APP"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="0"
@@ -69,10 +69,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/fixed:no"
-				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib ProvidersCommon.lib"
+				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib ProvidersCommon.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)/UnitTest.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\Lib\Win32&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\Lib\Win32&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Debug&quot;"
 				IgnoreDefaultLibraryNames="libcmtd.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/UnitTest.pdb"
@@ -238,10 +238,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib ProvidersCommon.lib"
+				AdditionalDependencies="cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib ProvidersCommon.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)/UnitTest.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\Lib\Win32&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\Lib\Win32&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Release&quot;"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="1"
