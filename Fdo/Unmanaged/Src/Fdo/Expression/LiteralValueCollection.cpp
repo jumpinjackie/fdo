@@ -26,3 +26,4 @@ FdoLiteralValueCollection* FdoLiteralValueCollection::Create()
 {
 	return new FdoLiteralValueCollection();
 }
+
