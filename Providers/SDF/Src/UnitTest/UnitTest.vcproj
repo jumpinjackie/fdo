@@ -1498,6 +1498,14 @@
 			RelativePath=".\UnitTestUtil.h"
 			>
 		</File>
+		<File
+			RelativePath=".\UserFunctions.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\UserFunctions.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
