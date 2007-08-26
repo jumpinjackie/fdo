@@ -4298,7 +4298,7 @@ FdoFunctionDefinitionCollection *FdoExpressionEngineImp::GetAllFunctions()
 FdoPropertyValueCollection* FdoExpressionEngineImp::RunQuery()
 {
 	FdoCommonExpressionType exprType;
-	FdoPtr<FdoArray<FdoFunction*>> aggrIdents = FdoCommonDataReader::GetAggregateFunctions(m_compIdents, exprType);
+	FdoPtr< FdoArray<FdoFunction*> > aggrIdents = FdoCommonDataReader::GetAggregateFunctions(m_compIdents, exprType);
 
     if (aggrIdents)
     {
