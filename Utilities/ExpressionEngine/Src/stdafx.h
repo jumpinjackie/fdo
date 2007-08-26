@@ -10,14 +10,14 @@
 #define _WIN32_WINNT 0x0501	// Change this to the appropriate value to target other versions of Windows.
 #endif		
 
-#endif
-
 
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
 
 #include <windows.h>
 #include <float.h>
 #include <crtdbg.h>
+
+#endif
 
 #ifdef _DEBUG
     #ifdef _WIN32
