@@ -40,7 +40,8 @@ UnitTest_SOURCES = \
   SelectTest.cpp \
   SchemaTest.cpp \
   SpatialContextTest.cpp \
-  UnitTestUtil.cpp
+  UnitTestUtil.cpp \
+  UserFunctionsTest.cpp 
 
 noinst_HEADERS = $(UnitTest_SOURCES) \
   ApplySchemaTest.h \
@@ -59,17 +60,20 @@ noinst_HEADERS = $(UnitTest_SOURCES) \
   SchemaTest.h \
   SpatialContextTest.h \
   UnitTestUtil.h \
+  UserFunctionsTest.h \
   tester-linux.h
 
 INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDOUTILITIES)/TestCommon/Inc \
   -I$(FDOUTILITIES)/Common/Inc \
+  -I$(FDOUTILITIES)/ExpressionEngine/Inc \
   -I$(FDOTHIRDPARTY)/linux/cppunit/include/ \
   -I../../Inc
 
 UnitTest_LDADD = \
   $(FDOUTILITIES)/TestCommon/libTestCommon.la \
+  $(FDOUTILITIES)/ExpressionEngine/Src/libExpressionEngine.la \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
   $(FDO)/Unmanaged/Src/libFDO.la \
   $(FDOTHIRDPARTY)/linux/cppunit/lib/libcppunit.a \

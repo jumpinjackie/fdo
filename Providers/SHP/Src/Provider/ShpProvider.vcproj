@@ -64,10 +64,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/fixed:no"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONLS.lib ProvidersCommon.lib SHPRead.lib SHPOverrides.lib SHPSpatialIndex.lib Advapi32.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONLS.lib ProvidersCommon.lib SHPRead.lib SHPOverrides.lib SHPSpatialIndex.lib Advapi32.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\SHPProvider.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;..\..\Lib\Win32\Debug"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;..\..\Lib\Win32\Debug;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Debug&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/SHPProvider.pdb"
 				ImportLibrary="..\..\Lib\Win32\Debug\SHPProvider.lib"
@@ -144,9 +144,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONLS.lib ProvidersCommon.lib SHPRead.lib SHPOverrides.lib SHPSpatialIndex.lib Advapi32.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONLS.lib ProvidersCommon.lib SHPRead.lib SHPOverrides.lib SHPSpatialIndex.lib Advapi32.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\SHPProvider.dll"
-				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;..\..\Lib\Win32\Release"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;..\..\Lib\Win32\Release;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Release&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/SHPProvider.pdb"
 				ImportLibrary="..\..\Lib\Win32\Release\SHPProvider.lib"

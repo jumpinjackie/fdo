@@ -1499,11 +1499,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\UserFunctions.cpp"
+			RelativePath=".\UserFunctionsTest.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\UserFunctions.h"
+			RelativePath=".\UserFunctionsTest.h"
 			>
 		</File>
 	</Files>

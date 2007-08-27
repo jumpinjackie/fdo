@@ -80,6 +80,7 @@ class UserFunctionsTest : public CppUnit::TestFixture
 {
     CPPUNIT_TEST_SUITE(UserFunctionsTest);
     CPPUNIT_TEST(selectUserDefinedNonAggregatesTest);
+    CPPUNIT_TEST(selectUserDefinedAggregatesTest);
     CPPUNIT_TEST_SUITE_END();
 
     // You may define any private variables that are used in your test
@@ -94,6 +95,7 @@ public:
     void setUp();
     void tearDown();
     void selectUserDefinedNonAggregatesTest();
+    void selectUserDefinedAggregatesTest();
 };
 
 #endif
