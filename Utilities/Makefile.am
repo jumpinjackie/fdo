@@ -17,7 +17,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = Common TestCommon OWS SchemaMgr SQLiteInterface
+SUBDIRS = Common TestCommon ExpressionEngine OWS SchemaMgr SQLiteInterface
 
-DIST_SUBDIRS = Common TestCommon OWS SchemaMgr SQLiteInterface
+DIST_SUBDIRS = Common TestCommon ExpressionEngine OWS SchemaMgr SQLiteInterface
 

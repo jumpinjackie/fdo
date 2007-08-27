@@ -17,6 +17,7 @@
 //  
 #include "stdafx.h"
 #include <FdoCommonDataReader.h>
+#include <../../ExpressionEngine/Inc/FdoExpressionEngine.h>
 #include <FdoCommonBinaryReader.h>
 #include <FdoCommonBinaryWriter.h>
 #include <FdoCommonPropertyIndex.h>
@@ -409,7 +410,7 @@ FdoCommonPropertyIndex* FdoCommonDataReader::GetPropertyIndex()
 }
 
 
-FdoArray<FdoFunction*>* FdoCommonDataReader::GetAggregateFunctions(FdoIdentifierCollection* selectedIds, FdoCommonExpressionType &exprType)
+FdoArray<FdoFunction*>* FdoCommonDataReader::GetAggregateFunctions(FdoIdentifierCollection* selectedIds, FdoCommonExpressionType &exprType, FdoFunctionDefinitionCollection *funcDefs)
 {
     FdoArray<FdoFunction*>* aggrIdents = NULL;
 
@@ -425,7 +426,7 @@ FdoArray<FdoFunction*>* FdoCommonDataReader::GetAggregateFunctions(FdoIdentifier
     for (FdoInt32 i=0; i<selectedIds->GetCount(); i++)
     {
         FdoPtr<FdoIdentifier> selectedId = selectedIds->GetItem(i);
-        FdoArray<FdoFunction*>* aggregates = GetAggregateFunctions(selectedId, exprType);
+        FdoArray<FdoFunction*>* aggregates = GetAggregateFunctions(selectedId, exprType, funcDefs);
         if ((exprType == FdoCommonExpressionType_Aggregate) && (NULL!=aggregates))
         {
             bContainsAggregateExpressions = true;
@@ -454,7 +455,7 @@ FdoArray<FdoFunction*>* FdoCommonDataReader::GetAggregateFunctions(FdoIdentifier
 }
 
 
-FdoArray<FdoFunction*>* FdoCommonDataReader::GetAggregateFunctions(FdoExpression* expr, FdoCommonExpressionType &exprType)
+FdoArray<FdoFunction*>* FdoCommonDataReader::GetAggregateFunctions(FdoExpression* expr, FdoCommonExpressionType &exprType, FdoFunctionDefinitionCollection *funcDefs)
 {
     VALIDATE_ARGUMENT(expr);
 
@@ -467,15 +468,15 @@ FdoArray<FdoFunction*>* FdoCommonDataReader::GetAggregateFunctions(FdoExpression
 
     FdoUnaryExpression* unaryExpr = dynamic_cast<FdoUnaryExpression*>(expr);
     if (NULL != unaryExpr)
-        return GetAggregateFunctions(FdoPtr<FdoExpression>(unaryExpr->GetExpression()), exprType);
+        return GetAggregateFunctions(FdoPtr<FdoExpression>(unaryExpr->GetExpression()), exprType, funcDefs);
 
     FdoBinaryExpression* binaryExpr = dynamic_cast<FdoBinaryExpression*>(expr);
     if (NULL != binaryExpr)
     {
         FdoCommonExpressionType leftExprType;
-        FdoArray<FdoFunction*>* leftAggrs = GetAggregateFunctions(FdoPtr<FdoExpression>(binaryExpr->GetLeftExpression()), leftExprType);
+        FdoArray<FdoFunction*>* leftAggrs = GetAggregateFunctions(FdoPtr<FdoExpression>(binaryExpr->GetLeftExpression()), leftExprType, funcDefs);
         FdoCommonExpressionType rightExprType;
-        FdoArray<FdoFunction*>* rightAggrs = GetAggregateFunctions(FdoPtr<FdoExpression>(binaryExpr->GetRightExpression()), rightExprType);
+        FdoArray<FdoFunction*>* rightAggrs = GetAggregateFunctions(FdoPtr<FdoExpression>(binaryExpr->GetRightExpression()), rightExprType, funcDefs);
 
         // Check for invalid combination of expression types:
         if (   ((leftExprType == FdoCommonExpressionType_Aggregate) && (rightExprType == FdoCommonExpressionType_PerRow))
@@ -506,7 +507,7 @@ FdoArray<FdoFunction*>* FdoCommonDataReader::GetAggregateFunctions(FdoExpression
 
     FdoComputedIdentifier* computedId = dynamic_cast<FdoComputedIdentifier*>(expr);
     if (NULL != computedId)
-        return GetAggregateFunctions(FdoPtr<FdoExpression>(computedId->GetExpression()), exprType);
+        return GetAggregateFunctions(FdoPtr<FdoExpression>(computedId->GetExpression()), exprType, funcDefs);
 
     FdoIdentifier* noncomputedId = dynamic_cast<FdoIdentifier*>(expr);
     if (NULL != noncomputedId)
@@ -525,7 +526,12 @@ FdoArray<FdoFunction*>* FdoCommonDataReader::GetAggregateFunctions(FdoExpression
     FdoFunction* function = dynamic_cast<FdoFunction*>(expr);
     if (NULL != function)
     {
-        if (FdoCommonQueryAggregator::IsAggregateFunction(function->GetName()))
+		// Call to FdoCommonQueryAggregator::IsAggregateFunction is temporary until the standard functions
+		// is implemented in the expression engine
+		bool bAggregateFunction = FdoCommonQueryAggregator::IsAggregateFunction(function->GetName());
+		if (!bAggregateFunction && funcDefs)
+			bAggregateFunction = FdoExpressionEngine::IsAggregateFunction(funcDefs, function->GetName());
+        if (bAggregateFunction)
         {
             // Validate that each argument to the aggregate function is NOT an aggregate expression:
             FdoPtr<FdoExpressionCollection> funcArgs = function->GetArguments();
@@ -533,7 +539,7 @@ FdoArray<FdoFunction*>* FdoCommonDataReader::GetAggregateFunctions(FdoExpression
             {
                 FdoPtr<FdoExpression> funcArg = funcArgs->GetItem(i);
                 FdoCommonExpressionType funcArgExprType;
-                FdoArray<FdoFunction*>* funcArgAggregates = GetAggregateFunctions(funcArg, funcArgExprType);
+                FdoArray<FdoFunction*>* funcArgAggregates = GetAggregateFunctions(funcArg, funcArgExprType, funcDefs);
                 FDO_SAFE_RELEASE(funcArgAggregates);
                 if (funcArgExprType == FdoCommonExpressionType_Aggregate)
                     throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_78_AGGREGATE_IN_AGGREGATE_FUNCTION)));
@@ -559,7 +565,7 @@ FdoArray<FdoFunction*>* FdoCommonDataReader::GetAggregateFunctions(FdoExpression
             {
                 FdoPtr<FdoExpression> funcArg = funcArgs->GetItem(i);
                 FdoCommonExpressionType funcArgExprType;
-                FdoArray<FdoFunction*>* aggrIds = GetAggregateFunctions(funcArg, funcArgExprType);
+                FdoArray<FdoFunction*>* aggrIds = GetAggregateFunctions(funcArg, funcArgExprType, funcDefs);
                 if ((funcArgExprType == FdoCommonExpressionType_Aggregate) && (NULL!=aggrIds))
                 {
                     bContainsAggregateExpressions = true;

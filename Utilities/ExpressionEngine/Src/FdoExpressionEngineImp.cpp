@@ -1241,7 +1241,7 @@ void FdoExpressionEngineImp::ProcessFunction (FdoFunction& expr)
 }
 
 
-FdoPropertyDefinition* GetProperty(FdoClassDefinition* cls, FdoString* propName )
+FdoPropertyDefinition* FdoExpressionEngineImp::GetProperty(FdoClassDefinition* cls, FdoString* propName )
 {
 	FdoPropertyDefinition* prop = FdoPtr<FdoPropertyDefinitionCollection>(cls->GetProperties())->FindItem( propName );
 	if( prop == NULL )
@@ -4252,12 +4252,17 @@ FdoFilter* FdoExpressionEngineImp::OptimizeFilter( FdoFilter *filter )
 
 FdoLiteralValue* FdoExpressionEngineImp::Evaluate(FdoExpression *expression)
 {
-	expression->Process (this);
+    FdoCommonExpressionType exprType;
+    mAggrIdents = FdoCommonDataReader::GetAggregateFunctions(expression, exprType, m_AllFunctions);
+    if ((mAggrIdents != NULL) && (mAggrIdents->GetCount() > 0))
+    {
+        EvaluateAggregateExpression();
+    }
 
+	expression->Process (this);
     FdoLiteralValue* result = (FdoLiteralValue*)m_retvals.back ();
 	m_retvals.pop_back ();
-
-	return result;
+    return result;
 };
 
 FdoLiteralValue *FdoExpressionEngineImp::Evaluate(FdoIdentifier& expr)
@@ -4295,64 +4300,79 @@ FdoFunctionDefinitionCollection *FdoExpressionEngineImp::GetAllFunctions()
     return FDO_SAFE_ADDREF(m_AllFunctions.p);
 }
 
+
+void FdoExpressionEngineImp::ProcessAggregateFunctions()
+{
+    m_processingAggregate = true;
+	FdoCommonExpressionType exprType;
+
+    for (FdoInt32 i=0; i<mAggrIdents->GetCount(); i++)
+    {
+	    FdoFunction* func = (*mAggrIdents)[i];
+	    int j;
+
+	    if (m_UserDefinedFunctions)
+	    {
+		    for (j=0; j<m_UserDefinedFunctions->GetCount(); j++)
+		    {
+			    FdoPtr<FdoExpressionEngineIFunction> functionExtension = m_UserDefinedFunctions->GetItem(j);
+			    FdoPtr<FdoFunctionDefinition> function = functionExtension->GetFunctionDefinition();
+			    if (wcscmp(function->GetName(), func->GetName()) == 0)
+			    {
+				    FdoExpressionEngineIAggregateFunction *aggregateFunction = static_cast<FdoExpressionEngineIAggregateFunction *>(functionExtension.p->CreateObject());
+				    m_AggregateFunctions.push_back(aggregateFunction);
+				    break;
+			    }
+		    }
+	    }
+
+        if (m_UserDefinedFunctions == NULL || i == m_UserDefinedFunctions->GetCount())
+        {
+	        FdoExpressionEngineIFunction** standardFunctions = init.GetStandardFunctions();
+	        for (j=0; standardFunctions[j] != NULL; j++)
+	        {
+		        FdoPtr<FdoFunctionDefinition> functions = standardFunctions[j]->GetFunctionDefinition();
+		        if (functions->IsAggregate())
+		        {
+			        if (wcscmp(functions->GetName(), func->GetName()) == 0)
+			        {
+				        FdoExpressionEngineIAggregateFunction *aggregateFunction = static_cast<FdoExpressionEngineIAggregateFunction *>(standardFunctions[j]->CreateObject());
+				        m_AggregateFunctions.push_back(aggregateFunction);
+				        break;
+			        }
+		        }
+	        }
+	        if (standardFunctions[j] == NULL)
+                throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_89_UNSUPPORTED_FUNCTION), func->GetName()));
+        }
+    }
+    while (m_reader->ReadNext())
+    {
+	    for (FdoInt32 i=0; i<mAggrIdents->GetCount(); i++)
+	    {
+		    m_CurrentIndex = i;
+		    FdoFunction* func = (*mAggrIdents)[i];
+		    func->Process(this);
+	    }
+    }
+}
+
+
+
+void FdoExpressionEngineImp::EvaluateAggregateExpression()
+{
+    ProcessAggregateFunctions();
+	m_processingAggregate = false;
+}
+
 FdoPropertyValueCollection* FdoExpressionEngineImp::RunQuery()
 {
 	FdoCommonExpressionType exprType;
-	FdoPtr< FdoArray<FdoFunction*> > aggrIdents = FdoCommonDataReader::GetAggregateFunctions(m_compIdents, exprType);
+	mAggrIdents = FdoCommonDataReader::GetAggregateFunctions(m_compIdents, exprType, m_AllFunctions);
 
-    if (aggrIdents)
+    if (mAggrIdents)
     {
-	    m_processingAggregate = true;
-
-	    for (FdoInt32 i=0; i<aggrIdents->GetCount(); i++)
-	    {
-		    FdoFunction* func = (*aggrIdents)[i];
-		    int j;
-
-		    if (m_UserDefinedFunctions)
-		    {
-			    for (j=0; j<m_UserDefinedFunctions->GetCount(); j++)
-			    {
-				    FdoPtr<FdoExpressionEngineIFunction> functionExtension = m_UserDefinedFunctions->GetItem(j);
-				    FdoPtr<FdoFunctionDefinition> function = functionExtension->GetFunctionDefinition();
-				    if (wcscmp(function->GetName(), func->GetName()) == 0)
-				    {
-					    FdoExpressionEngineIAggregateFunction *aggregateFunction = static_cast<FdoExpressionEngineIAggregateFunction *>(functionExtension.p->CreateObject());
-					    m_AggregateFunctions.push_back(aggregateFunction);
-					    break;
-				    }
-			    }
-		    }
-
-            if (m_UserDefinedFunctions == NULL || i == m_UserDefinedFunctions->GetCount())
-            {
-		        FdoExpressionEngineIFunction** standardFunctions = init.GetStandardFunctions();
-		        for (j=0; standardFunctions[j] != NULL; j++)
-		        {
-			        FdoPtr<FdoFunctionDefinition> functions = standardFunctions[j]->GetFunctionDefinition();
-			        if (functions->IsAggregate())
-			        {
-				        if (wcscmp(functions->GetName(), func->GetName()) == 0)
-				        {
-					        FdoExpressionEngineIAggregateFunction *aggregateFunction = static_cast<FdoExpressionEngineIAggregateFunction *>(standardFunctions[j]->CreateObject());
-					        m_AggregateFunctions.push_back(aggregateFunction);
-					        break;
-				        }
-			        }
-		        }
-		        if (standardFunctions[j] == NULL)
-                    throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_89_UNSUPPORTED_FUNCTION), func->GetName()));
-            }
-	    }
-	while (m_reader->ReadNext())
-    {
-		for (FdoInt32 i=0; i<aggrIdents->GetCount(); i++)
-		{
-			m_CurrentIndex = i;
-			FdoFunction* func = (*aggrIdents)[i];
-			func->Process(this);
-		}
-    }
+        ProcessAggregateFunctions();
     }
 
 	m_processingAggregate = false;
