@@ -37,6 +37,7 @@ libSDFProvider_la_LIBADD =  \
   $(FDO)/Unmanaged/Src/libFDO.la \
   $(FDOUTILITIES)/SQLiteInterface/libSQLiteInterface.la \
   $(FDOTHIRDPARTY)/Sqlite3.3.13/linux/lib/sqlite3.a \
+  $(FDOUTILITIES)/ExpressionEngine/Src/libExpressionEngine.la \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
   -lxalan-c \
   -lxalanMsg \
