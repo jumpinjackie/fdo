@@ -25,6 +25,7 @@ noinst_LTLIBRARIES = libExpressionEngine.la
 
 libExpressionEngine_la_SOURCES = \
   FdoExpressionEngine.cpp \
+  FdoExpressionEngineFunctionCollection.cpp \
   FdoExpressionEngineImp.cpp \
   stdafx.cpp
 

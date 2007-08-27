@@ -170,6 +170,11 @@ protected:
     virtual void RelinquishDataValue (FdoLiteralValue* data);
 
 private:
+    void EvaluateAggregateExpression();
+    void ProcessAggregateFunctions();
+	FdoPropertyDefinition* GetProperty(FdoClassDefinition* cls, FdoString* propName );
+
+
 	FdoCommonPropertyStub* GetPropInfo(FdoString* name);
 
     //
@@ -199,6 +204,7 @@ protected:
     retval_stack m_retvals;
 
 private:
+    FdoPtr< FdoArray<FdoFunction*> > mAggrIdents;
 
     /// list of computed identifiers
     FdoPtr<FdoIdentifierCollection> m_compIdents;
