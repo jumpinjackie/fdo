@@ -186,6 +186,12 @@ AC_CONFIG_FILES([Utilities/SQLiteInterface/Makefile])
 AC_CONFIG_FILES([Utilities/OWS/Makefile \
                  Utilities/OWS/Src/Makefile])
 
+#ExpressionEngine
+AC_CONFIG_FILES([Utilities/ExpressionEngine/Makefile \
+                 Utilities/ExpressionEngine/Src/Makefile \
+                 Utilities/ExpressionEngine/Inc/Makefile])
+
+
 #SchemaMgr
 AC_CONFIG_FILES([Utilities/SchemaMgr/Makefile \
                  Utilities/SchemaMgr/Inc/Makefile \
