@@ -4304,7 +4304,6 @@ FdoFunctionDefinitionCollection *FdoExpressionEngineImp::GetAllFunctions()
 void FdoExpressionEngineImp::ProcessAggregateFunctions()
 {
     m_processingAggregate = true;
-	FdoCommonExpressionType exprType;
 
     for (FdoInt32 i=0; i<mAggrIdents->GetCount(); i++)
     {
