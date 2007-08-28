@@ -42,6 +42,7 @@ nodist_EXTRA_libArcSDEProvider_la_SOURCES = dummy.cpp
 libArcSDEProvider_la_LIBADD =  \
   Loader/libArcSDEProviderSrc.la \
   $(FDO)/Unmanaged/Src/libFDO.la \
+  $(FDOUTILITIES)/ExpressionEngine/Src/libExpressionEngine.la \
   $(FDOUTILITIES)/Common/libProvidersCommon.la
 
 libArcSDEProvider_la_LDFLAGS = \
