@@ -33,6 +33,7 @@ nodist_EXTRA_libGRFPOverrides_la_SOURCES = dummy.cpp
 
 libGRFPOverrides_la_LIBADD =  \
   Overrides/libGRFPOverridesSrc.la \
+  $(FDOUTILITIES)/ExpressionEngine/Src/libExpressionEngine.la \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
   $(FDO)/Unmanaged/Src/libFDO.la
 
@@ -49,6 +50,7 @@ nodist_EXTRA_libGRFPProvider_la_SOURCES = dummy.cpp
 libGRFPProvider_la_LIBADD =  \
   Provider/libGRFPProviderSrc.la \
   libGRFPOverrides.la \
+  $(FDOUTILITIES)/ExpressionEngine/Src/libExpressionEngine.la \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
   $(FDO)/Unmanaged/Src/libFDO.la \
   -lgdal
