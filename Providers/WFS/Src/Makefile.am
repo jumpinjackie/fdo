@@ -34,6 +34,7 @@ nodist_EXTRA_libWFSProvider_la_SOURCES = dummy.cpp
 libWFSProvider_la_LIBADD =  \
   Provider/libWFSProviderSrc.la \
   $(FDO)/Unmanaged/Src/libFDO.la \
+  $(FDOUTILITIES)/ExpressionEngine/Src/libExpressionEngine.la \
   $(FDO)/Unmanaged/Src/Common/libFDOCommon.la  \
   $(FDO)/Unmanaged/Src/Geometry/libFDOGeometry.la  \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
