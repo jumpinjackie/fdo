@@ -55,6 +55,7 @@ libFdoMySQL_la_LIBADD =  \
   SchemaMgr/Ph/libSmPhGrd.la   \
   SchemaMgr/Ph/Rd/libSmPhRdGrd.la  \
   $(FDO)/Unmanaged/Src/libFDO.la   \
+  $(FDOUTILITIES)/ExpressionEngine/Src/libExpressionEngine.la \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/libSchemaMgr.la \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Lp/libSmLogicalPhysical.la  \
@@ -101,6 +102,7 @@ libFdoODBC_la_LIBADD =  \
   SchemaMgr/Ph/libSmPhGrd.la   \
   SchemaMgr/Ph/Rd/libSmPhRdGrd.la  \
   $(FDO)/Unmanaged/Src/libFDO.la   \
+  $(FDOUTILITIES)/ExpressionEngine/Src/libExpressionEngine.la \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/libSchemaMgr.la \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Lp/libSmLogicalPhysical.la  \
