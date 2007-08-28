@@ -33,6 +33,7 @@ nodist_EXTRA_libWMSOverrides_la_SOURCES = dummy.cpp
 
 libWMSOverrides_la_LIBADD =  \
   Overrides/libWMSOverridesSrc.la \
+  $(FDOUTILITIES)/ExpressionEngine/Src/libExpressionEngine.la \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
   $(FDO)/Unmanaged/Src/libFDO.la
 
