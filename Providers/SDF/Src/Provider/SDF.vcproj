@@ -163,10 +163,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/fixed:no"
-				AdditionalDependencies="FDOUtils.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib SQLiteInterface.lib Sqlite3.lib Advapi32.lib"
+				AdditionalDependencies="FDOUtils.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib SQLiteInterface.lib Sqlite3.lib Advapi32.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)/SDFProvider.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win64\Debug\&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Debug&quot;;..\..\Lib\Win64\Debug;&quot;$(FDOTHIRDPARTY)\Sqlite3.3.13\Win64\Debug&quot;;&quot;$(FDOUTILITIES)\SQLiteInterface\Lib\Win64\Debug&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win64\Debug\&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Debug&quot;;..\..\Lib\Win64\Debug;&quot;$(FDOTHIRDPARTY)\Sqlite3.3.13\Win64\Debug&quot;;&quot;$(FDOUTILITIES)\SQLiteInterface\Lib\Win64\Debug&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win64\Debug&quot;"
 				IgnoreDefaultLibraryNames="libcmtd.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/SDFProvider.pdb"
@@ -355,10 +355,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDOUtils.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib SQLiteInterface.lib Sqlite3.lib Advapi32.lib"
+				AdditionalDependencies="FDOUtils.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib SQLiteInterface.lib Sqlite3.lib Advapi32.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)/SDFProvider.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win64\Release\&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Release&quot;;..\..\Lib\Win64\Release;&quot;$(FDOTHIRDPARTY)\Sqlite3.3.13\Win64\Release&quot;;&quot;$(FDOUTILITIES)\SQLiteInterface\Lib\Win64\Release&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win64\Release\&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Release&quot;;..\..\Lib\Win64\Release;&quot;$(FDOTHIRDPARTY)\Sqlite3.3.13\Win64\Release&quot;;&quot;$(FDOUTILITIES)\SQLiteInterface\Lib\Win64\Release&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win64\Release&quot;"
 				IgnoreDefaultLibraryNames="libcmt.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/SDFProvider.pdb"
