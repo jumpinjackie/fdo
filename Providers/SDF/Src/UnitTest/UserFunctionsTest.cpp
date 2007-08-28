@@ -56,12 +56,11 @@ CPPUNIT_ASSERT_ASSERTION_PASS(assertion)   CPPUNIT_ASSERT_NO_THROW( assertion )
   Asserts that an assertion pass. 
 */
 
+#include "stdafx.h"
 #include <ctime>
 #include <math.h>
 #include "UserFunctionsTest.h"
 #include "FdoCommonFile.h"
-#include "SDF/SdfCommandType.h"
-#include "SDF/ICreateSDFFile.h"
 #include "UnitTestUtil.h"
 #include <cppunit/extensions/HelperMacros.h>
 #include "FdoExpressionEngine.h"
