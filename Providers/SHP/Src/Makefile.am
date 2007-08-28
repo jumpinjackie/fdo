@@ -33,6 +33,7 @@ nodist_EXTRA_libSHPOverrides_la_SOURCES = dummy.cpp
 
 libSHPOverrides_la_LIBADD =  \
   Overrides/libSHPOverridesSrc.la \
+  $(FDOUTILITIES)/ExpressionEngine/Src/libExpressionEngine.la \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
   $(FDO)/Unmanaged/Src/libFDO.la
 
@@ -52,6 +53,7 @@ libSHPProvider_la_LIBADD =  \
   ShpRead/libSHPRead.la \
   ShpSpatialIndex/libSHPSpatialIndex.la \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
+  $(FDOUTILITIES)/ExpressionEngine/Src/libExpressionEngine.la \
   Overrides/libSHPOverridesSrc.la \
   $(FDO)/Unmanaged/Src/libFDO.la
 
