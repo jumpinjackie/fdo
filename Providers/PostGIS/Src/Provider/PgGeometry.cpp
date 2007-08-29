@@ -203,6 +203,17 @@ std::string PgGeometryTypeFromFdoType(FdoInt32 const& fdoType)
     return pgType;
 }
 
+std::string PgGeometryTypeFromFdoType(FdoInt32 const& fdoType, bool isXYM)
+{
+    std::string name(PgGeometryTypeFromFdoType(fdoType));
+    if (isXYM && name != "GEOMETRY")
+    {
+        name.push_back('M');
+    }
+
+    return name;
+}
+
 boost::uint32_t GetOrdinatesFromDimension(boost::uint32_t const& dim)
 {
     boost::uint32_t value = 0;
