@@ -18,7 +18,7 @@
 
 #include "stdafx.h"
 #include "FdoWmsCommandCapabilities.h"
-
+#include "Wms/FdoWmsCommandType.h"
 
 FdoWmsCommandCapabilities::FdoWmsCommandCapabilities ()
 {
@@ -38,13 +38,16 @@ void FdoWmsCommandCapabilities::Dispose()
 /// <returns>Returns the list of commands</returns> 
 FdoInt32* FdoWmsCommandCapabilities::GetCommands (FdoInt32& size)
 {
-    static const FdoCommandType commands[] =
+    static const FdoInt32 commands[] =
     {
         FdoCommandType_Select,
         FdoCommandType_DescribeSchema,
 		FdoCommandType_DescribeSchemaMapping,
         FdoCommandType_GetSpatialContexts,
-        FdoCommandType_SelectAggregates
+        FdoCommandType_SelectAggregates,
+		FdoWmsCommandType_GetImageFormats,
+		FdoWmsCommandType_GetFeatureClassStyles,
+		FdoWmsCommandType_GetFeatureClassCRSNames
     //  FdoCommandType_ActivateSpatialContext
     };
 

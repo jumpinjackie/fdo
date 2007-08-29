@@ -45,6 +45,18 @@ protected:
     void Dispose (void);
 
 public:
+    /// <summary>Gets all the supported Styles for sepcific layer.</summary>
+    /// <returns>Returns string collection of all supported style names.</returns> 
+    FdoStringCollection* GetSupportedStyles(FdoString* layerName);
+ 
+    /// <summary>Gets all the supported CRS names for sepcific layer.</summary>
+    /// <returns>Returns string collection of all supported CRS names.</returns> 
+    FdoStringCollection* GetSupportedCRSNames(FdoString* layerName);
+
+    /// <summary>Gets all the supported image formats from WMS server.</summary>
+    /// <returns>Returns string collection of all supported image formats.</returns> 
+    FdoStringCollection* GetSupportedImageFormats();
+
     /// <summary>Gets an FdoIConnectionCapabilities interface describing the capabilities
     /// of the connection.</summary>
     /// <returns>Returns the connection capabilities</returns> 
@@ -257,6 +269,10 @@ protected:
 	FdoDictionaryP mLayerMappings;
 
 private:
+    // test
+    void _processLayerStyles(FdoWmsLayer* layers, FdoStringCollection* styleNames);
+    void _processLayerCRSNames(FdoWmsLayer* layer, FdoStringCollection* crsNames);
+
     // build up the class/layer name mapping
     void _buildUpClassLayerMappings (FdoWmsLayerCollection* layers);
     void _buildUpClassLayerMapping (FdoWmsLayer* layer);

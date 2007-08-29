@@ -87,7 +87,7 @@ void WmsTestDescribeSchema::testServer4 ()
 {
     try 
     {
-	    TestServer(L"http://fbinter.stadt-berlin.de/fb/wms/oma_ogc_capabilitiesrequest.jsp", 395);
+	    TestServer(L"http://fbinter.stadt-berlin.de/fb/wms/oma_ogc_capabilitiesrequest.jsp", 386);
     }
     catch (FdoException* e)
     {
@@ -113,7 +113,7 @@ void WmsTestDescribeSchema::testKortPlandk ()
 {
     try 
     {
-	    TestServer(L"http://kort.plandk.dk/scripts/mapserv.pl?service=wms", 12);
+	    TestServer(L"http://kort.plandk.dk/scripts/mapserv.pl?service=wms", 57);
     }
     catch (FdoException* e)
     {

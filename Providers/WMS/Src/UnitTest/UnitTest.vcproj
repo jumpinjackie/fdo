@@ -940,6 +940,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\WmsTestCustomCommands.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\WmsTestCustomCommands.h"
+				>
+			</File>
+			<File
 				RelativePath=".\WmsTestDescribeSchema.cpp"
 				>
 			</File>

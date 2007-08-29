@@ -41,9 +41,13 @@
 #include "FdoWmsGetSpatialContextsCommand.h"
 #include "FdoWmsActivateSpatialContextCommand.h"
 #include "FdoWmsSelectAggregatesCommand.h"
+#include "FdoWmsGetImageFormats.h"
+#include "FdoWmsGetFeatureClassStyles.h"
+#include "FdoWmsGetFeatureClassCRSNames.h"
 #include "FdoWmsUtils.h"
 #include "FdoWmsXmlGlobals.h"
 #include "FdoWmsRequestMetadata.h"
+#include "WMS/FdoWmsCommandType.h"
 
 #include <Fdo/Schema/FeatureClass.h>
 #include <FdoCommonConnStringParser.h>
@@ -220,6 +224,120 @@ void FdoWmsConnection::SetConnectionTimeout (FdoInt32 value)
     throw FdoCommandException::Create (NlsMsgGet(FDOWMS_CONNECTION_TIMEOUT_UNSUPPORTED, "Connection timeout is not supported."));
 }
 
+// should call after open
+// TODO: should the child return the style supportted by its parents
+FdoStringCollection* FdoWmsConnection::GetSupportedStyles(FdoString* layerName)
+{
+    //test for getting all styles: Maggie
+    FdoPtr<FdoWmsServiceMetadata> metadata = this->GetWmsServiceMetadata ();
+    FdoPtr<FdoWmsCapabilities> capa = static_cast<FdoWmsCapabilities *> (metadata->GetCapabilities ());
+    FdoWmsLayerCollectionP layers = capa->GetLayers();
+    // Resolve FdoWmsCapabiites exposing multiple Root layers. According the WMS specification, only one root layer is allowed.
+    // If there are layers retrievable from the WMS Server
+    FdoStringsP styleNames = FdoStringCollection::Create();
+    if (layers->GetCount() > 0) 
+    {
+        FdoPtr<FdoWmsLayer> rootLayer = layers->GetItem (0);
+        FdoPtr<FdoWmsLayer> currentLayer = FindLayer(rootLayer->GetLayers(), layerName);
+        _processLayerStyles(currentLayer, styleNames);
+    }
+    return FDO_SAFE_ADDREF(styleNames.p);
+}
+
+void FdoWmsConnection::_processLayerStyles(FdoWmsLayer* layer, FdoStringCollection* styleNames)
+{
+    FdoWmsStyleCollectionP styles = layer->GetStyles();
+    for (int i = 0; i < styles->GetCount(); i++)
+    {
+        FdoWmsStyleP style = styles->GetItem(i);
+        if (styleNames->IndexOf (style->GetName()) == -1)
+		{
+			styleNames->Add(style->GetName());
+        }
+    }
+
+    // get the heritage style from parents
+    FdoPtr<FdoWmsLayer> parentLayer = layer->GetParent();
+    if (parentLayer != NULL)
+    {
+        _processLayerStyles(parentLayer, styleNames);
+    }
+
+}
+
+// should call after open
+// TODO: should the child return the CRS supportted by its parents
+FdoStringCollection* FdoWmsConnection::GetSupportedCRSNames(FdoString* layerName)
+{
+    //test for getting all styles: Maggie
+    FdoPtr<FdoWmsServiceMetadata> metadata = this->GetWmsServiceMetadata ();
+    FdoPtr<FdoWmsCapabilities> capa = static_cast<FdoWmsCapabilities *> (metadata->GetCapabilities ());
+    FdoWmsLayerCollectionP layers = capa->GetLayers();
+    
+    // Resolve FdoWmsCapabiites exposing multiple Root layers. According the WMS specification, only one root layer is allowed.
+    // If there are layers retrievable from the WMS Server
+    FdoStringsP crsNames = FdoStringCollection::Create();
+    if (layers->GetCount() > 0) 
+    {
+        FdoPtr<FdoWmsLayer> rootLayer = layers->GetItem (0);
+        FdoPtr<FdoWmsLayer> currentLayer = FindLayer(rootLayer->GetLayers(), layerName);
+        _processLayerCRSNames(currentLayer, crsNames);
+
+    }
+    return FDO_SAFE_ADDREF(crsNames.p);
+}
+
+void FdoWmsConnection::_processLayerCRSNames(FdoWmsLayer* layer, FdoStringCollection* crsNames)
+{
+    FdoStringsP tempNames = layer->GetCoordinateReferenceSystems();
+    for (int i = 0; i < tempNames->GetCount(); i++)
+    {
+        FdoStringP crs = tempNames->GetString(i);
+        if (crsNames->IndexOf (crs) == -1)
+		{
+			crsNames->Add(crs);
+        }
+    }
+    
+    // get the heritage CRS from parent
+    FdoPtr<FdoWmsLayer> parentLayer = layer->GetParent();
+    if (parentLayer != NULL)
+    {
+        _processLayerCRSNames(parentLayer, crsNames);
+    }
+
+}
+
+FdoStringCollection* FdoWmsConnection::GetSupportedImageFormats()
+{
+	// get all supported format
+    FdoWmsServiceMetadataP metadata = GetWmsServiceMetadata ();
+	FdoPtr<FdoWmsCapabilities> capa = static_cast<FdoWmsCapabilities *> (metadata->GetCapabilities ());
+    FdoPtr<FdoOwsRequestMetadataCollection> reqMetadatas = capa->GetRequestMetadatas ();
+
+    FdoPtr<FdoOwsRequestMetadata> reqMetadata = reqMetadatas->FindItem (FdoWmsXmlGlobals::WmsGetMapRequest);
+    if (reqMetadata == NULL) {
+        reqMetadata = reqMetadatas->FindItem (FdoWmsXmlGlobals::WmsGetMapRequest2);
+    }
+    if (reqMetadata == NULL) {
+		throw FdoCommandException::Create (NlsMsgGet (FDOWMS_12005_GETMAP_NOT_SUPPORTED, "The WMS GetMap request is not supported."));
+    }
+
+    FdoWmsRequestMetadata* getMapMetadata = static_cast<FdoWmsRequestMetadata*>(reqMetadata.p);   
+    FdoStringsP formats = getMapMetadata->GetFormats ();
+
+    // retrive the image format only
+    FdoStringsP imageFormats = FdoStringCollection::Create();
+    for (int i = 0; i < formats->GetCount(); i++)
+    {
+        FdoStringP name = formats->GetString(i);
+        if (name.Contains(FdoWmsGlobals::ImageFormatPrefix))
+        {
+            imageFormats->Add(name);
+        }
+    }
+    return FDO_SAFE_ADDREF(imageFormats.p);
+}
 /// <summary>Opens a feature connection with the settings specified by the
 /// ConnectionString attribute of the provider-specific feature connection
 /// object.</summary>
@@ -339,17 +457,26 @@ FdoICommand* FdoWmsConnection::CreateCommand (FdoInt32 commandType)
         case FdoCommandType_DescribeSchema:
             ret = new FdoWmsDescribeSchemaCommand (this);
             break;
-        case FdoCommandType_DescribeSchemaMapping:
-            ret = new FdoWmsDescribeSchemaMappingCommand (this);
-            break;
-        case FdoCommandType_GetSpatialContexts:
-            ret = new FdoWmsGetSpatialContextsCommand (this);
-            break;
-        case FdoCommandType_ActivateSpatialContext:
-            ret = new FdoWmsActivateSpatialContextCommand (this);
-            break;
+		case FdoCommandType_DescribeSchemaMapping:
+			ret = new FdoWmsDescribeSchemaMappingCommand (this);
+			break;
+		case FdoCommandType_GetSpatialContexts:
+			ret = new FdoWmsGetSpatialContextsCommand (this);
+			break;
+		case FdoCommandType_ActivateSpatialContext:
+			ret = new FdoWmsActivateSpatialContextCommand (this);
+			break;
         case FdoCommandType_SelectAggregates:
             ret = new FdoWmsSelectAggregatesCommand(this);
+            break;
+        case FdoWmsCommandType_GetImageFormats:
+            ret = new FdoWmsGetImageFormats(this);
+            break;
+        case FdoWmsCommandType_GetFeatureClassStyles:
+            ret = new FdoWmsGetFeatureClassStyles(this);
+            break;
+        case FdoWmsCommandType_GetFeatureClassCRSNames:
+            ret = new FdoWmsGetFeatureClassCRSNames(this);
             break;
         default:
             throw FdoCommandException::Create (NlsMsgGet(FDOWMS_CONNECTION_COMMAND_NOT_SUPPORTED, "The command %1$d is not supported.", (int)commandType));
