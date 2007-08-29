@@ -55,7 +55,9 @@ WMSENABLECHK=no
 ARCENABLECHK=no
 RDBMSENABLECHK=no
 GDALENABLECHK=no
-KINGENABLECHK=no
+KINGORACLEENABLECHK=no
+KINGSPATIALENABLECHK=no
+POSTGISENABLECHK=no
 OGRENABLECHK=no
 SHOWHELP=no
 
@@ -132,7 +134,9 @@ do
         RDBMSENABLECHK=no
         UTILENABLECHK=no
         GDALENABLECHK=no
-        KINGENABLECHK=no
+		KINGORACLEENABLECHK=no
+		KINGSPATIALENABLECHK=no
+		POSTGISENABLECHK=no
         OGRENABLECHK=no
      fi
      if test -z "$1"; then
@@ -154,7 +158,9 @@ do
         ARCENABLECHK=no
         RDBMSENABLECHK=no
         GDALENABLECHK=no
-        KINGENABLECHK=no
+		KINGORACLEENABLECHK=no
+		KINGSPATIALENABLECHK=no
+		POSTGISENABLECHK=no
         OGRENABLECHK=no
      elif test "$1" == fdocore; then
         FDOCOREENABLECHK=yes
@@ -181,8 +187,12 @@ do
         RDBMSENABLECHK=yes
      elif test "$1" == gdal; then
         GDALENABLECHK=yes
-     elif test "$1" == king; then
-        KINGENABLECHK=yes
+     elif test "$1" == kingoracle; then
+        KINGORACLEENABLECHK=yes
+     elif test "$1" == kingspatial; then
+        KINGSPATIALENABLECHK=yes
+     elif test "$1" == postgis; then
+        POSTGISENABLECHK=yes
      elif test "$1" == ogr; then
         OGRENABLECHK=yes
      else
@@ -243,7 +253,9 @@ if test "$SHOWHELP" == yes; then
    echo "                         arcsde"
    echo "                         rdbms"
    echo "                         gdal"
-   echo "                         king"
+   echo "                         kingoracle"
+   echo "                         kingspatial"
+   echo "                         postgis"
    echo "                         ogr"
    echo "User:           --u[ser]=user id"
    echo "Password:       --p[assword]=user password"
@@ -325,9 +337,19 @@ if test "$GDALENABLECHK" == yes; then
    svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/GDAL "$FDO_SVN_DESTDIR/Providers/GDAL" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
 fi
 # Check out King Oracle Provider source files
-if test "$KINGENABLECHK" == yes; then
+if test "$KINGORACLEENABLECHK" == yes; then
    echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/KingOracle"
    svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/KingOracle "$FDO_SVN_DESTDIR/Providers/KingOracle" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
+fi
+# Check out King MsSpatial  Provider source files
+if test "$KINGSPATIALENABLECHK" == yes; then
+   echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/KingMsSqlSpatial"
+   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/KingMsSqlSpatial "$FDO_SVN_DESTDIR/Providers/KingMsSqlSpatial" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
+fi
+# Check out PostGIS  Provider source files
+if test "$POSTGISENABLECHK" == yes; then
+   echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/PostGIS"
+   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/PostGIS "$FDO_SVN_DESTDIR/Providers/PostGIS" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
 fi
 # Check out OGR Provider source files
 if test "$OGRENABLECHK" == yes; then

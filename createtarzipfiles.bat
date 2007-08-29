@@ -26,11 +26,14 @@ SET WMSENABLE=yes
 SET ARCSDEENABLE=yes
 SET RDBMSENABLE=yes
 SET GDALENABLE=yes
-SET KINGENABLE=yes
+SET KINGORACLEENABLE=yes
+SET KINGSPATILENABLE=yes
 SET OGRENABLE=yes
+SET POSTGISENABLE=yes
+SET ZIPTESTDATA=yes
 SET SHOWHELP=no
 SET FDOTARZIPFOLDER=OpenSource_FDO
-SET FDOBUILDNUMBER=GXXX
+SET FDOBUILDNUMBER=SXXX
 SET FDOSVNROOT=%cd%
 
 :study_params
@@ -66,8 +69,11 @@ if "%DEFMODIFY%"=="yes" goto stp1_get_with
     SET ARCSDEENABLE=no
     SET RDBMSENABLE=no
     SET GDALENABLE=no
-    SET KINGENABLE=no
+    SET KINGORACLEENABLE=no
+    SET KINGSPATILENABLE=no
     SET OGRENABLE=no
+    SET POSTGISENABLE=no
+	SET ZIPTESTDATA=no
 :stp1_get_with
 if not "%2"=="sdf" goto stp2_get_with
 	SET SDFENABLE=yes
@@ -97,15 +103,23 @@ if not "%2"=="gdal" goto stp8_get_with
 	SET GDALENABLE=yes
 	goto next_param
 :stp8_get_with
-if not "%2"=="king" goto stp9_get_with
-	SET KINGENABLE=yes
+if not "%2"=="kingoracle" goto stp9_get_with
+	SET KINGORACLEENABLE=yes
 	goto next_param
 :stp9_get_with
 if not "%2"=="ogr" goto stp10_get_with
 	SET OGRENABLE=yes
 	goto next_param
 :stp10_get_with
-if not "%2"=="providers" goto stp11_get_with
+if not "%2"=="postgis" goto stp11_get_with
+	SET POSTGISENABLE=yes
+	goto next_param
+:stp11_get_with
+if not "%2"=="kingspatial" goto stp12_get_with
+	SET KINGSPATILENABLE=yes
+	goto next_param
+:stp12_get_with
+if not "%2"=="providers" goto stp13_get_with
     SET FDOCOREENABLE=no
     SET SHPENABLE=yes
     SET SDFENABLE=yes
@@ -114,10 +128,16 @@ if not "%2"=="providers" goto stp11_get_with
     SET ARCSDEENABLE=yes
     SET RDBMSENABLE=yes
     SET GDALENABLE=yes
-    SET KINGENABLE=yes
+    SET KINGORACLEENABLE=yes
+    SET KINGSPATILENABLE=yes
     SET OGRENABLE=yes
+    SET POSTGISENABLE=yes
     goto next_param
-:stp11_get_with
+:stp13_get_with
+if not "%2"=="testdata" goto stp14_get_with
+	set ZIPTESTDATA=yes
+    goto next_param
+:stp14_get_with
 if not "%2"=="all" goto custom_error
     SET FDOCOREENABLE=yes
     SET SHPENABLE=yes
@@ -127,8 +147,11 @@ if not "%2"=="all" goto custom_error
     SET ARCSDEENABLE=yes
     SET RDBMSENABLE=yes
     SET GDALENABLE=yes
-    SET KINGENABLE=yes
+    SET KINGORACLEENABLE=yes
+    SET KINGSPATILENABLE=yes
     SET OGRENABLE=yes
+    SET POSTGISENABLE=yes
+	set ZIPTESTDATA=yes
     goto next_param
 
 :get_build
@@ -166,6 +189,7 @@ if "%FDOCOREENABLE%"=="no" goto start_zip_shp
 if "%SHPENABLE%"=="no" goto start_zip_sdf
    mkdir "%FDOTARZIPFOLDER%\Providers\SHP"
    svn export "%FDOSVNROOT%\Providers\SHP" "%FDOTARZIPFOLDER%\Providers\SHP" --force
+   deltree /Y "%FDOTARZIPFOLDER%\Providers\SHP\TestData"
    pushd "%FDOTARZIPFOLDER%"
    if exist .svn del /q /f /s .svn
    popd
@@ -176,6 +200,7 @@ if "%SHPENABLE%"=="no" goto start_zip_sdf
 if "%SDFENABLE%"=="no" goto start_zip_wfs
    mkdir "%FDOTARZIPFOLDER%\Providers\SDF"
    svn export "%FDOSVNROOT%\Providers\SDF" "%FDOTARZIPFOLDER%\Providers\SDF" --force
+   deltree /Y "%FDOTARZIPFOLDER%\Providers\SDF\TestData"
    pushd "%FDOTARZIPFOLDER%"
    if exist .svn del /q /f /s .svn
    popd
@@ -206,6 +231,7 @@ if "%WMSENABLE%"=="no" goto start_zip_arcsde
 if "%ARCSDEENABLE%"=="no" goto start_zip_rdbms
    mkdir "%FDOTARZIPFOLDER%\Providers\ArcSDE"
    svn export "%FDOSVNROOT%\Providers\ArcSDE" "%FDOTARZIPFOLDER%\Providers\ArcSDE" --force
+   deltree /Y "%FDOTARZIPFOLDER%\Providers\ArcSDE\TestData"
    pushd "%FDOTARZIPFOLDER%"
    if exist .svn del /q /f /s .svn
    popd
@@ -223,27 +249,48 @@ if "%RDBMSENABLE%"=="no" goto start_zip_gdal
    7z a -airy -bd -tzip "fdordbms-3.3.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_gdal
-if "%GDALENABLE%"=="no" goto start_zip_king
+if "%GDALENABLE%"=="no" goto start_zip_king_oracle
    mkdir "%FDOTARZIPFOLDER%\Providers\GDAL"
    svn export "%FDOSVNROOT%\Providers\GDAL" "%FDOTARZIPFOLDER%\Providers\GDAL" --force
+   deltree /Y "%FDOTARZIPFOLDER%\Providers\GDAL\TestData"
    pushd "%FDOTARZIPFOLDER%"
    if exist .svn del /q /f /s .svn
    popd
    if exist "fdogdal-3.3.0_%FDOBUILDNUMBER%.zip" del /q /f "fdogdal-3.3.0_%FDOBUILDNUMBER%.zip"
    7z a -airy -bd -tzip "fdogdal-3.3.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
-:start_zip_king
-if "%KINGENABLE%"=="no" goto start_zip_ogr
+:start_zip_king_oracle
+if "%KINGORACLEENABLE%"=="no" goto start_zip_king_spatial
    mkdir "%FDOTARZIPFOLDER%\Providers\KingOracle"
    svn export "%FDOSVNROOT%\Providers\KingOracle" "%FDOTARZIPFOLDER%\Providers\KingOracle" --force
    pushd "%FDOTARZIPFOLDER%"
    if exist .svn del /q /f /s .svn
    popd
-   if exist "fdoking-3.3.0_%FDOBUILDNUMBER%.zip" del /q /f "fdoking-3.3.0_%FDOBUILDNUMBER%.zip"
-   7z a -airy -bd -tzip "fdoking-3.3.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   if exist "fdokingoracle-3.3.0_%FDOBUILDNUMBER%.zip" del /q /f "fdokingoracle-3.3.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdokingoracle-3.3.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   deltree /Y "%FDOTARZIPFOLDER%"
+:start_zip_king_spatial
+if "%KINGSPATILENABLE%"=="no" goto start_zip_postgis
+   mkdir "%FDOTARZIPFOLDER%\Providers\KingMsSqlSpatial"
+   svn export "%FDOSVNROOT%\Providers\KingMsSqlSpatial" "%FDOTARZIPFOLDER%\Providers\KingMsSqlSpatial" --force
+   pushd "%FDOTARZIPFOLDER%"
+   if exist .svn del /q /f /s .svn
+   popd
+   if exist "fdokingspatial-3.3.0_%FDOBUILDNUMBER%.zip" del /q /f "fdokingspatial-3.3.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdokingspatial-3.3.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   deltree /Y "%FDOTARZIPFOLDER%"
+:start_zip_postgis
+if "%POSTGISENABLE%"=="no" goto start_zip_ogr
+   mkdir "%FDOTARZIPFOLDER%\Providers\PostGIS"
+   svn export "%FDOSVNROOT%\Providers\PostGIS" "%FDOTARZIPFOLDER%\Providers\PostGIS" --force
+   pushd "%FDOTARZIPFOLDER%"
+   if exist .svn del /q /f /s .svn
+   popd
+   if exist "fdopostgis-3.3.0_%FDOBUILDNUMBER%.zip" del /q /f "fdopostgis-3.3.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdopostgis-3.3.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_ogr
-if "%OGRENABLE%"=="no" goto end
+if "%OGRENABLE%"=="no" goto start_zip_testdata
    mkdir "%FDOTARZIPFOLDER%\Providers\OGR"
    svn export "%FDOSVNROOT%\Providers\OGR" "%FDOTARZIPFOLDER%\Providers\OGR" --force
    pushd "%FDOTARZIPFOLDER%"
@@ -251,6 +298,47 @@ if "%OGRENABLE%"=="no" goto end
    popd
    if exist "fdoogr-3.3.0_%FDOBUILDNUMBER%.zip" del /q /f "fdoogr-3.3.0_%FDOBUILDNUMBER%.zip"
    7z a -airy -bd -tzip "fdoogr-3.3.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   deltree /Y "%FDOTARZIPFOLDER%"
+:start_zip_testdata
+if "%ZIPTESTDATA%"=="no" goto end
+   mkdir "%FDOTARZIPFOLDER%\Providers\ArcSDE\TestData"
+   svn export "%FDOSVNROOT%\Providers\ArcSDE\TestData" "%FDOTARZIPFOLDER%\Providers\ArcSDE\TestData" --force
+
+   pushd "%FDOTARZIPFOLDER%"
+   if exist .svn del /q /f /s .svn
+   popd
+   if exist "fdoarcsde-testdata-3.3.0_%FDOBUILDNUMBER%.zip" del /q /f fdoarcsde-testdata-3.3.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdoarcsde-testdata-3.3.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   deltree /Y "%FDOTARZIPFOLDER%"
+
+   mkdir "%FDOTARZIPFOLDER%\Providers\GDAL\TestData"
+   svn export "%FDOSVNROOT%\Providers\GDAL\TestData" "%FDOTARZIPFOLDER%\Providers\GDAL\TestData" --force
+
+   pushd "%FDOTARZIPFOLDER%"
+   if exist .svn del /q /f /s .svn
+   popd
+   if exist "fdogdal-testdata-3.3.0_%FDOBUILDNUMBER%.zip" del /q /f fdogdal-testdata-3.3.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdogdal-testdata-3.3.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   deltree /Y "%FDOTARZIPFOLDER%"
+
+   mkdir "%FDOTARZIPFOLDER%\Providers\SDF\TestData"
+   svn export "%FDOSVNROOT%\Providers\SDF\TestData" "%FDOTARZIPFOLDER%\Providers\SDF\TestData" --force
+
+   pushd "%FDOTARZIPFOLDER%"
+   if exist .svn del /q /f /s .svn
+   popd
+   if exist "fdosdf-testdata-3.3.0_%FDOBUILDNUMBER%.zip" del /q /f fdosdf-testdata-3.3.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdosdf-testdata-3.3.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   deltree /Y "%FDOTARZIPFOLDER%"
+
+   mkdir "%FDOTARZIPFOLDER%\Providers\SHP\TestData"
+   svn export "%FDOSVNROOT%\Providers\SHP\TestData" "%FDOTARZIPFOLDER%\Providers\SHP\TestData" --force
+
+   pushd "%FDOTARZIPFOLDER%"
+   if exist .svn del /q /f /s .svn
+   popd
+   if exist "fdoshp-testdata-3.3.0_%FDOBUILDNUMBER%.zip" del /q /f fdoshp-testdata-3.3.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdoshp-testdata-3.3.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 
 :end
@@ -276,7 +364,21 @@ echo *
 echo Help:           -h[elp]
 echo InFolder:       -i[npath]=input source svn checkout folder
 echo OutFolder:      -o[utpath]=destination folder for exported svn files
-echo WithModule:     -w[ith]=all(default), fdo, providers, shp, sdf, wfs, wms, arcsde, rdbms, gdal, king, ogr
+echo WithModule:     -w[ith]=all(default), 
+echo                         fdo, 
+echo                         providers, 
+echo                         shp, 
+echo                         sdf, 
+echo                         wfs, 
+echo                         wms, 
+echo                         arcsde, 
+echo                         rdbms, 
+echo                         gdal, 
+echo                         kingoracle, 
+echo                         kingspatial, 
+echo                         ogr,
+echo                         postgis,
+echo                         testdata
 echo BuildNumber:    -b[uild]=User-Defined build number appended to the end of the tar.gz files
 echo **************************************************************************
 

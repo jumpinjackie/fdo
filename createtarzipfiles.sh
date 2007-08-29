@@ -50,13 +50,16 @@ WMSENABLECHK=yes
 ARCENABLECHK=yes
 RDBMSENABLECHK=yes
 GDALENABLECHK=yes
-KINGENABLECHK=yes
-OGRENABLECHK=yes
+KINGORACLEENABLECHK=no
+KINGSPATIALENABLECHK=no
+OGRENABLECHK=no
+POSTGISENABLECHK=no
+TESTDATAENABLECHK=no
 
 SHOWHELP=no
 
 FDOTARZIPFOLDER=/OpenSource_FDO
-FDOBUILDNUMBER=GXXX
+FDOBUILDNUMBER=SXXX
 
 if test -z "$FDOSVNROOT"; then
    FDOSVNROOT=$PWD
@@ -109,8 +112,11 @@ do
 	    ARCENABLECHK=no
 	    RDBMSENABLECHK=no
 	    GDALENABLECHK=no
-	    KINGENABLECHK=no
+	    KINGORACLEENABLECHK=no
+	    KINGSPATIALENABLECHK=no
 	    OGRENABLECHK=no
+	    POSTGISENABLECHK=no
+	    TESTDATAENABLECHK=no
      fi
      if test -z "$1"; then
         echo "Invalid parameter"
@@ -123,8 +129,10 @@ do
 	    ARCENABLECHK=yes
 	    RDBMSENABLECHK=yes
 	    GDALENABLECHK=yes
-	    KINGENABLECHK=yes
+	    KINGORACLEENABLECHK=yes
+	    KINGSPATIALENABLECHK=yes
 	    OGRENABLECHK=yes
+	    POSTGISENABLECHK=yes
      elif test "$1" == all; then
 	    FDOCOREENABLECHK=yes
 	    SHPENABLECHK=yes
@@ -134,8 +142,11 @@ do
 	    ARCENABLECHK=yes
 	    RDBMSENABLECHK=yes
 	    GDALENABLECHK=yes
-	    KINGENABLECHK=yes
+	    KINGORACLEENABLECHK=yes
+	    KINGSPATIALENABLECHK=yes
 	    OGRENABLECHK=yes
+	    POSTGISENABLECHK=yes
+	    TESTDATAENABLECHK=yes
      elif test "$1" == fdo; then
 	    FDOCOREENABLECHK=yes
 	    THRPENABLECHK=no
@@ -155,10 +166,16 @@ do
         RDBMSENABLECHK=yes
      elif test "$1" == gdal; then
         GDALENABLECHK=yes
-     elif test "$1" == king; then
-        KINGENABLECHK=yes
+     elif test "$1" == kingoracle; then
+        KINGORACLEENABLECHK=yes
+     elif test "$1" == kingspatial; then
+        KINGSPATIALENABLECHK=yes
      elif test "$1" == ogr; then
         OGRENABLECHK=yes
+     elif test "$1" == postgis; then
+        POSTGISENABLECHK=yes
+     elif test "$1" == testdata; then
+        TESTDATAENABLECHK=yes
      else
         echo "Invalid parameter"
 	exit 1
@@ -203,8 +220,11 @@ if test "$SHOWHELP" == yes; then
    echo "                         arcsde"
    echo "                         rdbms"
    echo "                         gdal"
-   echo "                         king"
+   echo "                         kingoracle"
+   echo "                         kingspatial"
    echo "                         ogr"
+   echo "                         postgis"
+   echo "                         testdata"
    echo "BuildNumber:    --b[uild]=User-Defined build number appended"
    echo "                          to the end of the tar.gz files"
    echo "**************************************************************************"
@@ -228,6 +248,7 @@ if test "$SHPENABLECHK" == yes; then
    mkdir -p "$FDOTARZIPFOLDER"/Providers/SHP
    svn export "$FDOSVNROOT"/Providers/SHP "$FDOTARZIPFOLDER"/Providers/SHP --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
+   rm -f "$FDOTARZIPFOLDER"/Providers/SHP/TestData
    rm -f fdoshp-3.3.0_"$FDOBUILDNUMBER".tar
    tar -cf fdoshp-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
    rm -f fdoshp-3.3.0_"$FDOBUILDNUMBER".tar.gz
@@ -238,6 +259,7 @@ if test "$SDFENABLECHK" == yes; then
    mkdir -p "$FDOTARZIPFOLDER"/Providers/SDF
    svn export "$FDOSVNROOT"/Providers/SDF "$FDOTARZIPFOLDER"/Providers/SDF --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
+   rm -f "$FDOTARZIPFOLDER"/Providers/SDF/TestData
    rm -f fdosdf-3.3.0_"$FDOBUILDNUMBER".tar
    tar -cf fdosdf-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
    rm -f fdosdf-3.3.0_"$FDOBUILDNUMBER".tar.gz
@@ -268,6 +290,7 @@ if test "$ARCENABLECHK" == yes; then
    mkdir -p "$FDOTARZIPFOLDER"/Providers/ArcSDE
    svn export "$FDOSVNROOT"/Providers/ArcSDE "$FDOTARZIPFOLDER"/Providers/ArcSDE --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
+   rm -f "$FDOTARZIPFOLDER"/Providers/ArcSDE/TestData
    rm -f fdoarcsde-3.3.0_"$FDOBUILDNUMBER".tar
    tar -cf fdoarcsde-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
    rm -f fdoarcsde-3.3.0_"$FDOBUILDNUMBER".tar.gz
@@ -288,20 +311,31 @@ if test "$GDALENABLECHK" == yes; then
    mkdir -p "$FDOTARZIPFOLDER"/Providers/GDAL
    svn export "$FDOSVNROOT"/Providers/GDAL "$FDOTARZIPFOLDER"/Providers/GDAL --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
+   rm -f "$FDOTARZIPFOLDER"/Providers/GDAL/TestData
    rm -f fdogdal-3.3.0_"$FDOBUILDNUMBER".tar
    tar -cf fdogdal-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
    rm -f fdogdal-3.3.0_"$FDOBUILDNUMBER".tar.gz
    gzip -9 fdogdal-3.3.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
 fi
-if test "$KINGENABLECHK" == yes; then
+if test "$KINGORACLEENABLECHK" == yes; then
    mkdir -p "$FDOTARZIPFOLDER"/Providers/KingOracle
    svn export "$FDOSVNROOT"/Providers/KingOracle "$FDOTARZIPFOLDER"/Providers/KingOracle --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
-   rm -f fdoking-3.3.0_"$FDOBUILDNUMBER".tar
-   tar -cf fdoking-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
-   rm -f fdoking-3.3.0_"$FDOBUILDNUMBER".tar.gz
-   gzip -9 fdoking-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -f fdokingoracle-3.3.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdokingoracle-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdokingoracle-3.3.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdokingoracle-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -rf "$FDOTARZIPFOLDER"
+fi
+if test "$KINGSPATIALENABLECHK" == yes; then
+   mkdir -p "$FDOTARZIPFOLDER"/Providers/KingMsSqlSpatial
+   svn export "$FDOSVNROOT"/Providers/KingMsSqlSpatial "$FDOTARZIPFOLDER"/Providers/KingMsSqlSpatial --force
+   find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
+   rm -f fdokingspatial-3.3.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdokingspatial-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdokingspatial-3.3.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdokingspatial-3.3.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
 fi
 if test "$OGRENABLECHK" == yes; then
@@ -312,6 +346,57 @@ if test "$OGRENABLECHK" == yes; then
    tar -cf fdoogr-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
    rm -f fdoogr-3.3.0_"$FDOBUILDNUMBER".tar.gz
    gzip -9 fdoogr-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -rf "$FDOTARZIPFOLDER"
+fi
+if test "$POSTGISENABLECHK" == yes; then
+   mkdir -p "$FDOTARZIPFOLDER"/Providers/PostGIS
+   svn export "$FDOSVNROOT"/Providers/PostGIS "$FDOTARZIPFOLDER"/Providers/PostGIS --force
+   find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
+   rm -f fdopostgis-3.3.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdopostgis-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdopostgis-3.3.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdopostgis-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -rf "$FDOTARZIPFOLDER"
+fi
+if test "$TESTDATAENABLECHK" == yes; then
+   mkdir -p "$FDOTARZIPFOLDER"/Providers/ArcSDE/TestData
+   svn export "$FDOSVNROOT"/Providers/ArcSDE/TestData "$FDOTARZIPFOLDER"/Providers/ArcSDE/TestData --force
+
+   find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
+   rm -f fdoarcsde-testdata-3.3.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdoarcsde-testdata-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdoarcsde-testdata-3.3.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdoarcsde-testdata-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -rf "$FDOTARZIPFOLDER"
+   
+   mkdir -p "$FDOTARZIPFOLDER"/Providers/GDAL/TestData
+   svn export "$FDOSVNROOT"/Providers/GDAL/TestData "$FDOTARZIPFOLDER"/Providers/GDAL/TestData --force
+   
+   find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
+   rm -f fdogdal-testdata-3.3.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdogdal-testdata-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdogdal-testdata-3.3.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdogdal-testdata-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -rf "$FDOTARZIPFOLDER"
+
+   mkdir -p "$FDOTARZIPFOLDER"/Providers/SDF/TestData
+   svn export "$FDOSVNROOT"/Providers/SDF/TestData "$FDOTARZIPFOLDER"/Providers/SDF/TestData --force
+   
+   find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
+   rm -f fdosdf-testdata-3.3.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdosdf-testdata-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdosdf-testdata-3.3.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdosdf-testdata-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -rf "$FDOTARZIPFOLDER"
+
+   mkdir -p "$FDOTARZIPFOLDER"/Providers/SHP/TestData
+   svn export "$FDOSVNROOT"/Providers/SHP/TestData "$FDOTARZIPFOLDER"/Providers/SHP/TestData --force
+   
+   find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
+   rm -f fdoshp-testdata-3.3.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdoshp-testdata-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdoshp-testdata-3.3.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdoshp-testdata-3.3.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
 fi
 
