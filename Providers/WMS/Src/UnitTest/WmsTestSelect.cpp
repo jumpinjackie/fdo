@@ -1792,3 +1792,61 @@ void WmsTestSelect::testLinuxgurrl ()
         fail(e);
     }
 }
+
+//http://openmaps.gov.bc.ca/images/base.xml
+void WmsTestSelect::testOpenmaps ()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
+
+        FdoStringP sServer = L"FeatureServer=http://openmaps.gov.bc.ca/images/base.xml";
+        connection->SetConnectionString((FdoString*)sServer);
+        FdoConnectionState state = connection->Open ();
+
+        FdoPtr<FdoIDescribeSchema> cmdDS = static_cast<FdoIDescribeSchema *> (connection->CreateCommand (FdoCommandType_DescribeSchema));
+        FdoPtr<FdoFeatureSchemaCollection> schemas = cmdDS->Execute ();
+        FdoInt32 cntSchemas = schemas->GetCount ();
+        CPPUNIT_ASSERT (cntSchemas == 1);
+
+        FdoPtr<FdoFeatureSchema> schema = schemas->GetItem (0);
+        FdoPtr<FdoClassCollection> classes = schema->GetClasses ();
+        FdoPtr<FdoClassDefinition> clsDef = classes->GetItem (L"BC_BC_BC_XC100M_BCALB_20070115");
+        FdoFeatureClass* featClsDef = static_cast<FdoFeatureClass *> (clsDef.p);
+        FdoPtr<FdoReadOnlyPropertyDefinitionCollection> props = clsDef->GetBaseProperties ();
+        FdoPtr<FdoPropertyDefinition> prop = props->GetItem (L"Raster");
+        FdoRasterPropertyDefinition* rasterProp = (FdoRasterPropertyDefinition*)(prop.p);
+        FdoStringP rasterAssoc = rasterProp->GetSpatialContextAssociation();
+        CPPUNIT_ASSERT (rasterAssoc == L"EPSG:4326");
+
+        FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
+        cmdSelect->SetFeatureClassName (L"BC_BC_BC_XC100M_BCALB_20070115");
+        FdoPtr<FdoIFeatureReader> featReader = cmdSelect->Execute ();
+        CPPUNIT_ASSERT (featReader->ReadNext ());	    
+        FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Raster");
+
+        raster->SetImageXSize(1024);
+        raster->SetImageYSize(1024);
+
+        FdoPtr<FdoIStreamReaderTmpl<FdoByte> > byteStreamReader = static_cast<FdoIStreamReaderTmpl<FdoByte>*> (raster->GetStreamReader ());
+
+        FdoByte buff[4096];
+        FdoInt64 cntTotal = 0;
+        FdoInt32 cntRead = 0;
+        do
+        {
+            cntRead = byteStreamReader->ReadNext (buff, 0 , 4096);
+            cntTotal += cntRead;
+        }
+        while (cntRead);
+
+        CPPUNIT_ASSERT (cntTotal > 0);
+        CPPUNIT_ASSERT (!featReader->ReadNext ());
+
+        connection->Close ();
+    }
+    catch (FdoException* e)
+    {
+        fail(e);
+    }
+}

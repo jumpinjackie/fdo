@@ -64,9 +64,9 @@ FdoStringP FdoWfsGetFeature::EncodeKVP()
     ret += FdoWfsGlobals::TYPENAME;
     ret += FdoWfsGlobals::Equal;
     if (m_schemaName.GetLength() != 0)
-        ret += m_schemaName + L":" + m_from;
+        ret += UrlEscape(m_schemaName + L":" + m_from);
     else
-        ret += m_from;
+        ret += UrlEscape(m_from);
     // PROPERTYNAME, optional
     FdoInt32 numProps = 0;
     if (m_propertiesToSelect != NULL)
@@ -76,20 +76,20 @@ FdoStringP FdoWfsGetFeature::EncodeKVP()
         ret += FdoWfsGlobals::And;
         ret += FdoWfsGlobals::PROPERTYNAME;
         ret += FdoWfsGlobals::Equal;
-        FdoStringP prop = m_propertiesToSelect->GetString(0);
+        FdoStringP prop = UrlEscape(m_propertiesToSelect->GetString(0));
         if (m_encodeWithClassName && !prop.Contains(L"/"))
         {
-            ret += m_from;
+            ret += UrlEscape(m_from); // can we skip escaping this?
             ret += L"/";
         }
         ret += prop;
         for (int i = 1; i < numProps; i++)
         {
-            prop = m_propertiesToSelect->GetString(i);
+            prop = UrlEscape(m_propertiesToSelect->GetString(i));
             ret += FdoWfsGlobals::Comma;
             if (m_encodeWithClassName && !prop.Contains(L"/"))
             {
-                ret += m_from;
+                ret += UrlEscape(m_from); // can we skip escaping this?
                 ret += L"/";
             }
             ret += prop;
@@ -133,7 +133,7 @@ FdoStringP FdoWfsGetFeature::EncodeKVP()
         ret += FdoWfsGlobals::And;
         ret += FdoWfsGlobals::Filter;
         ret += FdoWfsGlobals::Equal;
-        ret += filter;
+        ret += UrlEscape(filter);
 
     }
 
@@ -145,6 +145,7 @@ FdoStringP FdoWfsGetFeature::EncodeXml()
 {
     return L"";
 }
+
 
 
 

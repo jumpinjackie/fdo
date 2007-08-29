@@ -106,11 +106,11 @@ FdoStringP FdoWmsGetMap::EncodeKVP()
 	ret += FdoWmsXmlGlobals::WmsRequestLayers;
 	ret += FdoOwsGlobals::Equal;
 	
-	ret += mLayerNames->GetString (0);
+	ret += UrlEscape(mLayerNames->GetString (0));
 	for (FdoInt32 i=1; i<mLayerNames->GetCount (); i++)
 	{
 		ret += FdoWmsXmlGlobals::WmsRequestComma;
-		ret += mLayerNames->GetString (i);			
+		ret += UrlEscape(mLayerNames->GetString (i));			
 	}
 		
 	// Add "STYLES" parameters in the request
@@ -119,11 +119,11 @@ FdoStringP FdoWmsGetMap::EncodeKVP()
 		ret += FdoOwsGlobals::And;
 		ret += FdoWmsXmlGlobals::WmsRequestStyles;
 		ret += FdoOwsGlobals::Equal;
-		ret += mStyleNames->GetString (0);
+		ret += UrlEscape(mStyleNames->GetString (0));
 		for (FdoInt32 i=1; i<mStyleNames->GetCount (); i++)
 		{
 			ret += FdoWmsXmlGlobals::WmsRequestComma;
-			ret += mStyleNames->GetString (i);
+			ret += UrlEscape(mStyleNames->GetString (i));
 		}
 	}
 	else // Use "default" styles to please non-strict servers
@@ -145,12 +145,12 @@ FdoStringP FdoWmsGetMap::EncodeKVP()
 	ret += FdoOwsGlobals::And;
 	ret += FdoWmsXmlGlobals::WmsRequestCRS;
 	ret += FdoOwsGlobals::Equal;
-	ret += mSrsName;
+	ret += mSrsName; // Don't escape, even though there is a ":", ErMapper services don't like this
 
 	ret += FdoOwsGlobals::And;
 	ret += FdoWmsXmlGlobals::WmsRequestSRS;
 	ret += FdoOwsGlobals::Equal;
-	ret += mSrsName;
+	ret += mSrsName; // Don't escape, even though there is a ":", ErMapper services don't like this
 
 	// Here the commented is another approach which first checkes the WMS version, then
 	// selects "CRS" or "SRS" according to the version to construct the request. 
@@ -169,7 +169,7 @@ FdoStringP FdoWmsGetMap::EncodeKVP()
 	ret += FdoOwsGlobals::And;
 	ret += FdoWmsXmlGlobals::WmsRequestFormat;
 	ret += FdoOwsGlobals::Equal;
-	ret += mFormat;
+	ret += mFormat; // Don't escape, even though there is a "/", ErMapper services don't like this
 
 	// Add the "BBOX" in the request
 	double areaSize = (mMaxX - mMinX) * (mMaxY - mMinY);
