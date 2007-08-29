@@ -210,6 +210,46 @@
 					<Filter
 						Name="WMS"
 						>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Providers\WMS\mgCommandType.h"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Providers\WMS\mgIGetFeatureClassCRSNames.h"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Providers\WMS\mgIGetFeatureClassCRSNamesImp.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Providers\WMS\mgIGetFeatureClassCRSNamesImp.h"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Providers\WMS\mgIGetFeatureClassStyles.h"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Providers\WMS\mgIGetFeatureClassStylesImp.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Providers\WMS\mgIGetFeatureClassStylesImp.h"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Providers\WMS\mgIGetImageFormats.h"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Providers\WMS\mgIGetImageFormatsImp.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Providers\WMS\mgIGetImageFormatsImp.h"
+							>
+						</File>
 						<Filter
 							Name="Override"
 							>
