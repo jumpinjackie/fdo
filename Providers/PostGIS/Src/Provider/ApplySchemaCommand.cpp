@@ -226,7 +226,6 @@ void ApplySchemaCommand::AddGeometryColumn(std::string const& table,
     assert(NULL != prop);
 
     std::string column(static_cast<char const*>(FdoStringP(prop->GetName()).Lower()));
-    std::string type(ewkb::PgGeometryTypeFromFdoType(prop->GetGeometryTypes()));
 
     // Use undefined SRID value of -1 by default (see PostGIS manual, 4.2.3.)
     FdoInt32 srid = -1;
@@ -238,14 +237,18 @@ void ApplySchemaCommand::AddGeometryColumn(std::string const& table,
         srid = spContext->GetSRID();
     }
 
-    // TODO: Add selection of geometry dimension
-    // PostGIS Manual:
-    // Strictly compliant OGC geometries cannot have Z or M values.
-    // The IsValid() function won't consider higher dimensioned geometries invalid!
-    // Invocations of AddGeometryColumn() will add a constraint checking geometry dimensions,
-    // so it is enough to specify 2 there.
-    int const dimension = 2;
+    // Find spatial dimension and geometry type name
+    int dimension = 2;
+    bool isXYM = (prop->GetHasMeasure() && !prop->GetHasElevation());
 
+    if (isXYM)
+        dimension = 3;
+    else if (prop->GetHasElevation() && prop->GetHasMeasure())
+        dimension = 4;
+
+    std::string type(ewkb::PgGeometryTypeFromFdoType(prop->GetGeometryTypes(), isXYM));
+
+    // Execute SQL
     std::string sql("SELECT AddGeometryColumn(current_schema()::text,");
     sql += details::QuoteSqlValue(table) + ",";
     sql += details::QuoteSqlValue(column) + ",";

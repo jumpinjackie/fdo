@@ -106,8 +106,12 @@ FdoGeometryType FdoGeometryTypeFromPgType(std::string const& pgType);
 /// and geometry type.
 FdoInt32 FdoDimensionTypeFromPgType(FdoInt32 const& pgDim, std::string const& pgType);
 
-// Translate FDO geometry type enumerato to name of PostGIS geometry type.
+// Translate FDO geometry type enumeration to name of PostGIS geometry type.
 std::string PgGeometryTypeFromFdoType(FdoInt32 const& fdoType);
+
+// Translate FDO geometry type enumeration to name of PostGIS geometry type.
+// This version accepts flag indicating if XYM dimension is requested.
+std::string PgGeometryTypeFromFdoType(FdoInt32 const& fdoType, bool isXYM);
 
 /// Calculate number of ordinates based on given dimensionality.
 ///
