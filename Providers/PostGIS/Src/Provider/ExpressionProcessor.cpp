@@ -451,7 +451,10 @@ void ExpressionProcessor::ProcessGeometryValue(FdoGeometryValue& expr)
         std::string hexWkb;
         ewkb::ewkb_t wkb(bytes, bytes + wkbBytes->GetCount());
         ewkb::bytes_to_hex(wkb, hexWkb);
-        mBuffer.append(hexWkb);
+
+        // FIX: Chuck's fix proposed in Ticket #104
+        //mBuffer.append(hexWkb);
+        mBuffer.append("\'" + hexWkb + "\'");
 
         FDOLOG_WRITE("Geometry WKB HEX:\n\t%s", hexWkb.c_str());
     }
