@@ -347,6 +347,7 @@ void FdoOwsHttpHandler::Perform()
     }
 }
 
+
 void FdoOwsHttpHandler::Proc()
 {
     {
@@ -397,23 +398,7 @@ void FdoOwsHttpHandler::Proc()
 				if (url[url.size() - 1] != '&')
 					url += '&';
 			}
-
-			std::string encoded;
-			std::vector<std::string> pairs;
-			boost::split (pairs, m_parameters, boost::is_any_of("&"));
-			for ( std::vector<std::string>::iterator it = pairs.begin(); 
-				it != pairs.end(); 
-				++it )
-			{				
-				size_t pos = it->find ("=");
-				char* temp = curl_escape (it->substr(pos + 1).c_str(), 0);			
-				if (temp == NULL) break;
-				encoded += it->substr (0, pos + 1) + temp;
-				encoded += "&";
-				curl_free (temp);				
-			}
-			encoded = encoded.substr(0, encoded.rfind("&"));
-			url += encoded;
+            url += m_parameters;
         }
 		
         rv = curl_easy_setopt(curlHandle, CURLOPT_URL, url.c_str());

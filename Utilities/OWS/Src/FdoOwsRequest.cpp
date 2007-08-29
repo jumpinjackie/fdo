@@ -19,6 +19,7 @@
 #include <stdafx.h>
 #include <OWS/FdoOwsRequest.h>
 #include <OWS/FdoOwsGlobals.h>
+#include <curl/curl.h>
 
 FdoOwsRequest::FdoOwsRequest()
 {
@@ -76,4 +77,15 @@ FdoStringP FdoOwsRequest::EncodeKVP()
     return ret;
 }
 
+FdoStringP FdoOwsRequest::UrlEscape(FdoString * urlPart)
+{
+    FdoStringP result(urlPart);
+    char * temp = curl_escape(result, 0);
+    if (temp != NULL)
+    {
+        result = temp;
+        curl_free(temp);
+    }
+    return result;
+}
 

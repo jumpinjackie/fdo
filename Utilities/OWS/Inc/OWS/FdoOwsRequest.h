@@ -42,11 +42,16 @@ public:
     FDOOWS_API virtual FdoStringP EncodeKVP();
     FDOOWS_API void SetRequest (FdoString* request);
     FDOOWS_API FdoString* GetRequest ();
+
+protected:
+    FDOOWS_API static FdoStringP UrlEscape(FdoString* urlPart);
+
 };
 
 typedef FdoPtr<FdoOwsRequest> FdoOwsRequestP;
 
 
 #endif
+
 
 
