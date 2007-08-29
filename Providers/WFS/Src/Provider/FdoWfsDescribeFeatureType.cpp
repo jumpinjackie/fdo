@@ -57,11 +57,11 @@ FdoStringP FdoWfsDescribeFeatureType::EncodeKVP()
         ret += FdoWfsGlobals::TYPENAME;
         ret += FdoWfsGlobals::Equal;
         int it = 0;
-        ret += m_typeNames->GetString(it);
+        ret += UrlEscape(m_typeNames->GetString(it));
         for (it++; it < numTypes; it++)
         {
             ret += FdoWfsGlobals::Comma;
-            ret += m_typeNames->GetString(it);
+            ret += UrlEscape(m_typeNames->GetString(it));
         }
     }
 
@@ -72,6 +72,7 @@ FdoStringP FdoWfsDescribeFeatureType::EncodeXml()
 {
     return L"";
 }
+
 
 
 

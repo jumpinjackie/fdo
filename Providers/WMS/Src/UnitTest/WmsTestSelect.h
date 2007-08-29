@@ -64,6 +64,7 @@ class WmsTestSelect : public WmsTests
     CPPUNIT_TEST (testLibcwms);
     CPPUNIT_TEST (testStoboWms);
     CPPUNIT_TEST (testLinuxgurrl);
+    CPPUNIT_TEST (testOpenmaps);
 
 	CPPUNIT_TEST_SUITE_END ();
 
@@ -107,6 +108,8 @@ public:
     void testLibcwms ();
     void testStoboWms ();
     void testLinuxgurrl ();
+	void testOpenmaps ();
+
 };
 
 #endif//FDOWMSTESTSELECT_H
