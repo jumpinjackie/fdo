@@ -19,6 +19,10 @@ AUTOMAKE_OPTIONS = foreign
 
 EXTRA_DIST = \
    WMS/FdoWmsOvProvider.h \
+   WMS/FdoWmsCommandType.h \
+   WMS/IGetFeatureClassCRSNames.h \
+   WMS/IGetFeatureClassStyles.h \
+   WMS/IGetImageFormats.h \
    WMS/Override/FdoWmsOvClassCollection.h \
    WMS/Override/FdoWmsOvClassDefinition.h \
    WMS/Override/FdoWmsOvFormatType.h \
