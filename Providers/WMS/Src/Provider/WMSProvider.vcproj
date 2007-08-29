@@ -192,6 +192,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\Inc\WMS\FdoWmsCommandType.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FdoWmsEnvelope.h"
 				>
 			</File>
@@ -399,6 +403,30 @@
 				RelativePath=".\FdoWmsDescribeSchemaMappingCommand.h"
 				>
 			</File>
+			<File
+				RelativePath=".\FdoWmsGetFeatureClassCRSNames.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FdoWmsGetFeatureClassCRSNames.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FdoWmsGetFeatureClassStyles.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FdoWmsGetFeatureClassStyles.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FdoWmsGetImageFormats.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FdoWmsGetImageFormats.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resources"
@@ -601,6 +629,22 @@
 			</File>
 			<File
 				RelativePath=".\FdoWmsXmlGlobals.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Interface"
+			>
+			<File
+				RelativePath="..\..\Inc\WMS\IGetFeatureClassCRSNames.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\Inc\WMS\IGetFeatureClassStyles.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\Inc\WMS\IGetImageFormats.h"
 				>
 			</File>
 		</Filter>

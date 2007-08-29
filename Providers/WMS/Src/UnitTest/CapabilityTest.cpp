@@ -19,6 +19,7 @@
 
 #include "Pch.h"
 #include "CapabilityTest.h"
+#include "WMS\FdoWmsCommandType.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION( CapabilityTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( CapabilityTest, "CapabilityTest");
@@ -76,13 +77,16 @@ void CapabilityTest::TestCapabilities ()
         FdoPtr<FdoICommandCapabilities> commandCapabilities = connection->GetCommandCapabilities();
 
         FdoInt32 *commands = commandCapabilities->GetCommands(size);
-        CPPUNIT_ASSERT(size == 5);
+        CPPUNIT_ASSERT(size == 8);
         CPPUNIT_ASSERT(commands != NULL);
         CPPUNIT_ASSERT(commands[0] == FdoCommandType_Select);
         CPPUNIT_ASSERT(commands[1] == FdoCommandType_DescribeSchema);
 		CPPUNIT_ASSERT(commands[2] == FdoCommandType_DescribeSchemaMapping);
         CPPUNIT_ASSERT(commands[3] == FdoCommandType_GetSpatialContexts);
         CPPUNIT_ASSERT(commands[4] == FdoCommandType_SelectAggregates);
+        CPPUNIT_ASSERT(commands[5] == FdoWmsCommandType_GetImageFormats);
+        CPPUNIT_ASSERT(commands[6] == FdoWmsCommandType_GetFeatureClassStyles);
+        CPPUNIT_ASSERT(commands[7] == FdoWmsCommandType_GetFeatureClassCRSNames);
 
         bool supportsParameters = commandCapabilities->SupportsParameters();
         CPPUNIT_ASSERT(supportsParameters == false);
