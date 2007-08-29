@@ -227,9 +227,9 @@ II. Build Notes
      ** NOTE: These variables are maintained in the setenvironment.bat script. 
 
  9. Use the [FDO OpenSource]\setenvironment.bat script to assist in setting and
-     maintaing the correct environment settings for the FDO build process. 
-     This script can be modifed and used to set the correct environment variables 
-     and PATH settings.
+    maintaing the correct environment settings for the FDO build process. 
+    This script can be modifed and used to set the correct environment variables 
+    and PATH settings.
 
  10. The build_thirdparty.bat file is used to build the FDO Thirdparty binaries. The following 
      is a general guideline on how to use the build_thirdparty.bat build script.
