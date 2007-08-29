@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONLS.lib ProvidersCommon.lib libcurl.lib OWS.lib Advapi32.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONLS.lib ProvidersCommon.lib OWS.lib Advapi32.lib"
 				OutputFile="$(OutDir)/WFSProvider.dll"
 				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;&quot;$(FDOTHIRDPARTY)\boost_1_32_0\bin\boost\libs\thread\build\boost_thread.dll\vc-8_0\debug\threading-multi\&quot;;$(FDOTHIRDPARTY)\libcurl\lib\Debug;$(FDOUTILITIES)\OWS\Lib\Win32\Debug"
 				GenerateDebugInformation="true"
@@ -140,7 +140,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib libcurl.lib OWS.lib FDOSpatial.lib Advapi32.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib OWS.lib FDOSpatial.lib Advapi32.lib"
 				OutputFile="$(OutDir)/WFSProvider.dll"
 				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;&quot;$(FDOTHIRDPARTY)\boost_1_32_0\bin\boost\libs\thread\build\boost_thread.dll\vc-8_0\release\threading-multi\&quot;;$(FDOTHIRDPARTY)\libcurl\lib\Release;$(FDOUTILITIES)\OWS\Lib\Win32\Release"
 				GenerateDebugInformation="true"
