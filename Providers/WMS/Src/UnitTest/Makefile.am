@@ -43,7 +43,8 @@ UnitTest_SOURCES = \
   UnitTestUtil.cpp \
   WmsTestSelect.cpp \
   WmsTestDescribeSchema.cpp \
-  WmsTestSpatialContexts.cpp
+  WmsTestSpatialContexts.cpp \
+  WmsTestCustomCommands.cpp 
 
 noinst_HEADERS = $(UnitTest_SOURCES) \
   CapabilityTest.h \
@@ -55,7 +56,8 @@ noinst_HEADERS = $(UnitTest_SOURCES) \
   WmsTests.h \
   WmsTestSelect.h \
   WmsTestSpatialContexts.h \
-  XmlFormatter.h
+  XmlFormatter.h \
+  WmsTestCustomCommands.h 
 
 INCLUDES = \
   -I./ \
