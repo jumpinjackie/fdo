@@ -19,7 +19,7 @@
 
 #include "Pch.h"
 #include "CapabilityTest.h"
-#include "WMS\FdoWmsCommandType.h"
+#include "WMS/FdoWmsCommandType.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION( CapabilityTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( CapabilityTest, "CapabilityTest");

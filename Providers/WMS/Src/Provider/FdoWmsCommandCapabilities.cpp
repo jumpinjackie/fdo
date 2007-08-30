@@ -18,7 +18,7 @@
 
 #include "stdafx.h"
 #include "FdoWmsCommandCapabilities.h"
-#include "Wms/FdoWmsCommandType.h"
+#include "WMS/FdoWmsCommandType.h"
 
 FdoWmsCommandCapabilities::FdoWmsCommandCapabilities ()
 {
