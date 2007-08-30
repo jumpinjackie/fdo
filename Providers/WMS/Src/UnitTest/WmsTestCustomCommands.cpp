@@ -18,9 +18,9 @@
 
 #include "Pch.h"
 #include "WmsTestCustomCommands.h"
-#include "Wms/FdoWmsCommandType.h"
-#include "Wms/IGetImageFormats.h"
-#include "Wms/IGetFeatureClassStyles.h"
+#include "WMS/FdoWmsCommandType.h"
+#include "WMS/IGetImageFormats.h"
+#include "WMS/IGetFeatureClassStyles.h"
 #include "WMS/IGetFeatureClassCRSNames.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION( WmsTestCustomCommands );
