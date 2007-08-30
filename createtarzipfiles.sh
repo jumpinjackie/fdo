@@ -50,11 +50,11 @@ WMSENABLECHK=yes
 ARCENABLECHK=yes
 RDBMSENABLECHK=yes
 GDALENABLECHK=yes
-KINGORACLEENABLECHK=no
-KINGSPATIALENABLECHK=no
-OGRENABLECHK=no
-POSTGISENABLECHK=no
-TESTDATAENABLECHK=no
+KINGORACLEENABLECHK=yes
+KINGSPATIALENABLECHK=yes
+OGRENABLECHK=yes
+POSTGISENABLECHK=yes
+TESTDATAENABLECHK=yes
 
 SHOWHELP=no
 
@@ -248,7 +248,7 @@ if test "$SHPENABLECHK" == yes; then
    mkdir -p "$FDOTARZIPFOLDER"/Providers/SHP
    svn export "$FDOSVNROOT"/Providers/SHP "$FDOTARZIPFOLDER"/Providers/SHP --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
-   rm -f "$FDOTARZIPFOLDER"/Providers/SHP/TestData
+   rm -rf "$FDOTARZIPFOLDER"/Providers/SHP/TestData
    rm -f fdoshp-3.3.0_"$FDOBUILDNUMBER".tar
    tar -cf fdoshp-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
    rm -f fdoshp-3.3.0_"$FDOBUILDNUMBER".tar.gz
@@ -259,7 +259,7 @@ if test "$SDFENABLECHK" == yes; then
    mkdir -p "$FDOTARZIPFOLDER"/Providers/SDF
    svn export "$FDOSVNROOT"/Providers/SDF "$FDOTARZIPFOLDER"/Providers/SDF --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
-   rm -f "$FDOTARZIPFOLDER"/Providers/SDF/TestData
+   rm -rf "$FDOTARZIPFOLDER"/Providers/SDF/TestData
    rm -f fdosdf-3.3.0_"$FDOBUILDNUMBER".tar
    tar -cf fdosdf-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
    rm -f fdosdf-3.3.0_"$FDOBUILDNUMBER".tar.gz
@@ -290,7 +290,7 @@ if test "$ARCENABLECHK" == yes; then
    mkdir -p "$FDOTARZIPFOLDER"/Providers/ArcSDE
    svn export "$FDOSVNROOT"/Providers/ArcSDE "$FDOTARZIPFOLDER"/Providers/ArcSDE --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
-   rm -f "$FDOTARZIPFOLDER"/Providers/ArcSDE/TestData
+   rm -rf "$FDOTARZIPFOLDER"/Providers/ArcSDE/TestData
    rm -f fdoarcsde-3.3.0_"$FDOBUILDNUMBER".tar
    tar -cf fdoarcsde-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
    rm -f fdoarcsde-3.3.0_"$FDOBUILDNUMBER".tar.gz
@@ -311,7 +311,7 @@ if test "$GDALENABLECHK" == yes; then
    mkdir -p "$FDOTARZIPFOLDER"/Providers/GDAL
    svn export "$FDOSVNROOT"/Providers/GDAL "$FDOTARZIPFOLDER"/Providers/GDAL --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
-   rm -f "$FDOTARZIPFOLDER"/Providers/GDAL/TestData
+   rm -rf "$FDOTARZIPFOLDER"/Providers/GDAL/TestData
    rm -f fdogdal-3.3.0_"$FDOBUILDNUMBER".tar
    tar -cf fdogdal-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
    rm -f fdogdal-3.3.0_"$FDOBUILDNUMBER".tar.gz
