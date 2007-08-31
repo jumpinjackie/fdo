@@ -50,7 +50,7 @@ void FdoAssociationUpdateTest::masterTestNoObj( AssociationUpdateType type, cons
 
         // Modify the meta data
         FdoPtr<FdoISQLCommand> sqlCmd = (FdoISQLCommand*)connection->CreateCommand( FdoCommandType_SQLCommand );
-        sqlCmd->SetSQLStatement(L"update f_associationdefinition set REVERSEMULTIPLICITY = '0_1' where REVERSEMULTIPLICITY = '1'");
+        sqlCmd->SetSQLStatement(L"update f_associationdefinition set reversemultiplicity = '0_1' where reversemultiplicity = '1'");
 		sqlCmd->ExecuteNonQuery();
 
         
@@ -253,7 +253,7 @@ void FdoAssociationUpdateTest::masterTestWithObj(AssociationUpdateType type, con
 
         // Modify the meta data
         FdoPtr<FdoISQLCommand> sqlCmd = (FdoISQLCommand*)connection->CreateCommand( FdoCommandType_SQLCommand );
-        sqlCmd->SetSQLStatement(L"update f_associationdefinition set REVERSEMULTIPLICITY = '0_1' where REVERSEMULTIPLICITY = '1'");
+        sqlCmd->SetSQLStatement(L"update f_associationdefinition set reversemultiplicity = '0_1' where reversemultiplicity = '1'");
 		sqlCmd->ExecuteNonQuery();
 
         

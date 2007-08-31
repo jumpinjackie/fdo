@@ -62,14 +62,14 @@
 #define ADB_USERSEQ                         "F_USERSEQ"
 
 #define ADB_SN_ALLOC_INCREMENT              20
-#define ADB_SEQUENCE_TABLE                  "F_SEQUENCE"
+#define ADB_SEQUENCE_TABLE                  "f_sequence"
 #define ADB_SQL_LEN                         1024
 #define ADB_SEQID_COLUMN                    "seqid"
 #define ADB_USERSEQ                         "F_USERSEQ"
 
-#define ADB_CLASSDEF_TAB					"F_CLASSDEFINITION"
-#define ADB_SPATIAL_CONTEXT_TABLE   		"F_SPATIALCONTEXT"
-#define ADB_SPATIAL_CONTEXT_GROUP_TABLE		"F_SPATIALCONTEXTGROUP"
+#define ADB_CLASSDEF_TAB					"f_classdefinition"
+#define ADB_SPATIAL_CONTEXT_TABLE   		"f_spatialcontext"
+#define ADB_SPATIAL_CONTEXT_GROUP_TABLE		"f_spatialcontextgroup"
 
 #define ADB_FEATURESEQW                      L"F_FEATURESEQ"
 #define ADB_LOCKSEQW                         L"F_LOCKSEQ"
@@ -80,13 +80,13 @@
 #define ADB_GENERATIONSEQW                   L"F_GENERATIONSEQ"
 #define ADB_USERSEQW                         L"F_USERSEQ"
 
-#define ADB_SEQUENCE_TABLEW                  L"F_SEQUENCE"
+#define ADB_SEQUENCE_TABLEW                  L"f_sequence"
 #define ADB_SEQID_COLUMNW                    L"seqid"
 #define ADB_USERSEQW                         L"F_USERSEQ"
 
-#define ADB_CLASSDEF_TABW					L"F_CLASSDEFINITION"
-#define ADB_SPATIAL_CONTEXT_TABLEW   		L"F_SPATIALCONTEXT"
-#define ADB_SPATIAL_CONTEXT_GROUP_TABLEW	L"F_SPATIALCONTEXTGROUP"
+#define ADB_CLASSDEF_TABW					L"f_classdefinition"
+#define ADB_SPATIAL_CONTEXT_TABLEW   		L"f_spatialcontext"
+#define ADB_SPATIAL_CONTEXT_GROUP_TABLEW	L"f_spatialcontextgroup"
 
 #ifndef _WIN32
 #define _stricmp strcasecmp

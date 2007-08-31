@@ -125,13 +125,13 @@ void SchemaMgrTests::testGenDefault ()
         column = table->CreateColumnDbObject( L"OBJECT_NAME", true );
         column = table->CreateColumnGeom( L"GEOM_COLUMN", (FdoSmPhScInfo*) NULL, true, false );
         AddProviderColumns( table );
-        FdoSmPhCheckConstraintP constraint = new FdoSmPhCheckConstraint( L"int16_check", L"INT16_COLUMN", L"int16_column < 20000" );
+        FdoSmPhCheckConstraintP constraint = new FdoSmPhCheckConstraint( L"int16_check", L"INT16_COLUMN", L"INT16_COLUMN < 20000" );
         table->AddCkeyCol( constraint );
-		constraint = new FdoSmPhCheckConstraint( L"decimal_check", L"DECIMAL_COLUMN", L"decimal_column > byte_column" );
+		constraint = new FdoSmPhCheckConstraint( L"decimal_check", L"DECIMAL_COLUMN", L"DECIMAL_COLUMN > BYTE_COLUMN" );
 		table->AddCkeyCol( constraint );
-        constraint = new FdoSmPhCheckConstraint( L"int32_check", L"INT32_COLUMN", L"int32_column = 45 or int32_column > 100" );
+        constraint = new FdoSmPhCheckConstraint( L"int32_check", L"INT32_COLUMN", L"INT32_COLUMN = 45 or INT32_COLUMN > 100" );
         table->AddCkeyCol( constraint );
-        constraint = new FdoSmPhCheckConstraint( L"single_check", L"SINGLE_COLUMN", L"single_column = 45 or double_column > 100" );
+        constraint = new FdoSmPhCheckConstraint( L"single_check", L"SINGLE_COLUMN", L"SINGLE_COLUMN = 45 or DOUBLE_COLUMN > 100" );
         table->AddCkeyCol( constraint );
 
         FdoSmPhTableP table2 = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE2" ));
@@ -1491,7 +1491,7 @@ void SchemaMgrTests::CreateTableGroup( FdoSmPhOwnerP owner, FdoStringP prefix, F
         column = table->CreateColumnDouble( L"DOUBLE_COLUMN", true );
 
         if ( (prefix.ICompare(L"gh_") == 0) && (i == 5) ) {
-            FdoSmPhCheckConstraintP constraint = new FdoSmPhCheckConstraint( L"double_check", L"DOUBLE_COLUMN", L"double_column < 100.35" );
+            FdoSmPhCheckConstraintP constraint = new FdoSmPhCheckConstraint( L"double_check", L"DOUBLE_COLUMN", L"DOUBLE_COLUMN < 100.35" );
             table->AddCkeyCol( constraint );
 
         	FdoSmPhBatchColumnsP ukeys = table->GetUkeyColumns(); 

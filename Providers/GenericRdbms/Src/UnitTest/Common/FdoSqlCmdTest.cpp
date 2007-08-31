@@ -452,9 +452,9 @@ void FdoSqlCmdTest::QueryGeometry()
             selCmd->SetSQLStatement(L"select * from acdb3dpolyline");
             myReader = selCmd->ExecuteReader();
 
-            FdoStringP  geomColName = L"Geometry";
+            FdoStringP  geomColName = L"geometry";
 
-            selCmd->SetSQLStatement(L"select Geometry from acdb3dpolyline");
+            selCmd->SetSQLStatement(L"select geometry from acdb3dpolyline");
 
             myReader = selCmd->ExecuteReader();
             if( myReader != NULL  )

@@ -1840,7 +1840,7 @@ void FdoUpdateTest::UpdateNoMeta()
 #ifdef RDBI_DEF_SSQL
         UnitTestUtil::Sql2Db( 
             FdoStringP::Format(
-                L"insert into table_noid_geom ( KEY1, \"%ls\", \"%ls\" ) select KEY1, \"%ls\", \"%ls\" from \"%ls\"", 
+                L"insert into table_noid_geom ( key1, \"%ls\", \"%ls\" ) select key1, \"%ls\", \"%ls\" from \"%ls\"", 
                 (FdoString*) phMgr->GetDcColumnName( Key2ColName() ),
                 (FdoString*) phMgr->GetDcColumnName( ValueColName() ),
                 (FdoString*) phMgr->GetDcColumnName( Key2ColName() ),
@@ -1852,7 +1852,7 @@ void FdoUpdateTest::UpdateNoMeta()
 #else
         UnitTestUtil::Sql2Db( 
             FdoStringP::Format(
-                L"insert into table_noid_geom ( KEY1, \"%ls\", GEOMETRY, \"%ls\" ) select KEY1, \"%ls\", GEOMETRY, \"%ls\" from \"%ls\"",
+                L"insert into table_noid_geom ( key1, \"%ls\", geometry, \"%ls\" ) select key1, \"%ls\", geometry, \"%ls\" from \"%ls\"",
                 (FdoString*) phMgr->GetDcColumnName( Key2ColName() ),
                 (FdoString*) phMgr->GetDcColumnName( ValueColName() ),
                 (FdoString*) phMgr->GetDcColumnName( Key2ColName() ),
@@ -1865,7 +1865,7 @@ void FdoUpdateTest::UpdateNoMeta()
 #endif
         UnitTestUtil::Sql2Db( 
                 FdoStringP::Format(
-                    L"insert into \"%ls\" ( KEY1, \"%ls\", \"%ls\" ) select KEY1, \"%ls\", \"%ls\" from \"%ls\"",
+                    L"insert into \"%ls\" ( key1, \"%ls\", \"%ls\" ) select key1, \"%ls\", \"%ls\" from \"%ls\"",
                     (FdoString*) phMgr->GetDcDbObjectName( table_noid_nogeom ).Replace(L".",L"\".\""),
                     (FdoString*) phMgr->GetDcColumnName( Key2ColName() ),
                     (FdoString*) phMgr->GetDcColumnName( ValueColName() ),
