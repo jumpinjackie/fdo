@@ -3,7 +3,7 @@
 // Modifications : Mateusz Loskot (mateusz@loskot.net)
 // Created       : March 2001
 // Modified      : February 2007
-// Original ver. : 3.71
+// Original ver. : 4.00-mloskot
 // Description   : Logging and debug tracing to file 
 //
 //
