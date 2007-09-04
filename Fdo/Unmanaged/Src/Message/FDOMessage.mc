@@ -1233,7 +1233,7 @@ Error writing to registry file '%1$ls', %2$s
 MessageId=8001
 SymbolicName=FUNCTION_CEIL
 Language=English
-Returns the smallest integer greater than or equal to the expression value
+Determines the smallest integer greater than or equal to the expression value
 .
 MessageId=8002
 SymbolicName=FUNCTION_FLOOR
@@ -1243,17 +1243,17 @@ Returns the largest integer equal to or less than the expression value
 MessageId=8003
 SymbolicName=FUNCTION_AVG
 Language=English
-Returns the average value of an expression
+Determines the average value of an expression
 .
 MessageId=8004
 SymbolicName=FUNCTION_COUNT
 Language=English
-Returns the number of objects in the query
+Determines the number of objects in the query
 .
 MessageId=8005
 SymbolicName=FUNCTION_MAX
 Language=English
-Returns the maximum value of an expression
+Determines the maximum value of an expression
 .
 MessageId=8006
 SymbolicName=FUNCTION_MIN
@@ -1268,12 +1268,12 @@ Returns the sum of values of an expression
 MessageId=8008
 SymbolicName=FUNCTION_LOWER
 Language=English
-Returns strings with all lowercase letters
+Converts all uppercase letters in a string expression into lowercase letters
 .
 MessageId=8009
 SymbolicName=FUNCTION_UPPER
 Language=English
-Returns strings with all letters uppercase
+Converts all lowercase letters in a string expression into uppercase letters
 .
 MessageId=8010
 SymbolicName=FUNCTION_CONCAT
@@ -2285,4 +2285,219 @@ MessageId=9183
 SymbolicName=FDO_183_INVALID_FUNCTION_ARG
 Language=English
 One or more arguments for function '%1$ls' did not match the expected argument types.
+.
+MessageId=9184
+SymbolicName=FUNCTION_GENERAL_ARG
+Language=English
+Argument to be processed
+.
+MessageId=9185
+SymbolicName=FUNCTION_OPERATOR_ARG
+Language=English
+Operation indicator (ALL or DISTINCT)
+.
+MessageId=9186
+SymbolicName=FUNCTION_OPERATOR_ARG_LIT
+Language=English
+Operation Indicator
+.
+MessageId=9187
+SymbolicName=FUNCTION_BYTE_ARG_LIT
+Language=English
+byte
+.
+MessageId=9188
+SymbolicName=FUNCTION_DATE_ARG_LIT
+Language=English
+date/time
+.
+MessageId=9189
+SymbolicName=FUNCTION_NUMBER_ARG_LIT
+Language=English
+number
+.
+MessageId=9190
+SymbolicName=FUNCTION_STRING_ARG_LIT
+Language=English
+string
+.
+MessageId=9191
+SymbolicName=FUNCTION_PARAMETER_NUMBER_ERROR
+Language=English
+Expression Engine: Invalid number of parameters for function '%1$ls'
+.
+MessageId=9192
+SymbolicName=FUNCTION_PARAMETER_ERROR
+Language=English
+Expression Engine: Invalid parameters for function '%1$ls'
+.
+MessageId=9193
+SymbolicName=FUNCTION_PARAMETER_DATA_TYPE_ERROR
+Language=English
+Expression Engine: Invalid parameter data type for function '%1$ls'
+.
+MessageId=9194
+SymbolicName=FUNCTION_RESULT_DATA_TYPE_ERROR
+Language=English
+Expression Engine: Invalid data type for return value for function '%1$ls'
+.
+MessageId=9195
+SymbolicName=FUNCTION_OPERATOR_ERROR
+Language=English
+Expression Engine: Invalid first parameter value for function '%1$ls'
+.
+MessageId=9196
+SymbolicName=FUNCTION_BOOL_ARG_LIT
+Language=English
+boolean
+.
+MessageId=9197
+SymbolicName=FUNCTION_BLOB_ARG_LIT
+Language=English
+blob
+.
+MessageId=9198
+SymbolicName=FUNCTION_CLOB_ARG_LIT
+Language=English
+clob
+.
+MessageId=9199
+SymbolicName=FUNCTION_PARAMETER_DISTINCT_ERROR
+Language=English
+Expression Engine: DISTINCT not allowed for BLOB/CLOB for function '%1$ls'
+.
+MessageId=9200
+SymbolicName=FUNCTION_SIGN
+Language=English
+Returns -1, 0, 1 depending on whether the value is > 0, == 0 or < 0
+.
+MessageId=9201
+SymbolicName=FUNCTION_CONCAT_STRING1_ARG
+Language=English
+First string to concatenate
+.
+MessageId=9202
+SymbolicName=FUNCTION_CONCAT_STRING2_ARG
+Language=English
+Second string to concatenate
+.
+MessageId=9203
+SymbolicName=FUNCTION_UPPER_STRING_ARG
+Language=English
+String to be converted into uppercase
+.
+MessageId=9204
+SymbolicName=FUNCTION_LOWER_STRING_ARG
+Language=English
+String to be converted into lowercase
+.
+MessageId=9205
+SymbolicName=FUNCTION_GEOM_ARG_LIT
+Language=English
+geometry property
+.
+MessageId=9206
+SymbolicName=FUNCTION_ABS
+Language=English
+Determines the absolute value of a numeric expression
+.
+MessageId=9207
+SymbolicName=FUNCTION_ACOS
+Language=English
+Determines the arc cosine of a numeric expression
+.
+MessageId=9208
+SymbolicName=FUNCTION_ASIN
+Language=English
+Determines the arc sine of a numeric expression
+.
+MessageId=9209
+SymbolicName=FUNCTION_ATAN
+Language=English
+Determines the arc tangent of a numeric expression
+.
+MessageId=9210
+SymbolicName=FUNCTION_COS
+Language=English
+Determines the cosine of a numeric expression
+.
+MessageId=9211
+SymbolicName=FUNCTION_EXP
+Language=English
+Determines e raised to the power of a numeric expression value
+.
+MessageId=9212
+SymbolicName=FUNCTION_LN
+Language=English
+Determines the natural logarithm of a numeric expression
+.
+MessageId=9213
+SymbolicName=FUNCTION_SIN
+Language=English
+Determines the sine of a numeric expression
+.
+MessageId=9214
+SymbolicName=FUNCTION_SQRT
+Language=English
+Determines the square root of a numeric expression
+.
+MessageId=9215
+SymbolicName=FUNCTION_TAN
+Language=English
+Determines the tangent of a numeric expression
+.
+MessageId=9216
+SymbolicName=FUNCTION_ATAN2
+Language=English
+Determines the arc tangent of two numeric expressions
+.
+MessageId=9217
+SymbolicName=FUNCTION_LOG_BASE_ARG
+Language=English
+Logarithm base value
+.
+MessageId=9218
+SymbolicName=FUNCTION_BASE_ARG_LIT
+Language=English
+base
+.
+MessageId=9219
+SymbolicName=FUNCTION_DIV_BY_0_ERROR
+Language=English
+Expression Engine: Attempt to divide by 0 ('%1$ls')
+.
+MessageId=9220
+SymbolicName=FUNCTION_DIVISOR_ARG
+Language=English
+The divisor
+.
+MessageId=9221
+SymbolicName=FUNCTION_DIV_ARG_LIT
+Language=English
+divisor
+.
+MessageId=9222
+SymbolicName=FUNCTION_MOD
+Language=English
+Determines the remainder of the division of two numeric expressions
+.
+MessageId=9223
+SymbolicName=FUNCTION_LOG
+Language=English
+Determines the logarithm of two numeric expressions
+.
+MessageId=9224
+SymbolicName=FUNCTION_REMAINDER
+Language=English
+Determines the remainder of the division of two numeric expressions
+.
+MessageId=9225
+SymbolicName=FUNCTION_POWER_ARG
+Language=English
+Represents the power value a number should be raised to
+.
+MessageId=9226
+SymbolicName=FUNCTION_POWER
+Language=English
+Raises a numeric expression to the power of another numeric expression
 .
