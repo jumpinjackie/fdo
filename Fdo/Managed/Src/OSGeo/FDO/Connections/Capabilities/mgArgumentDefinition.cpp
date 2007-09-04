@@ -21,6 +21,7 @@
 #include <Fdo\Connections\Capabilities\ArgumentDefinition.h>
 #include <Fdo\Schema\DataType.h>
 #include <Fdo\Schema\PropertyType.h>
+#include <Fdo\Commands\CommandType.h>
 
 #include "FDO\Connections\Capabilities\mgArgumentDefinition.h"
 
@@ -80,3 +81,14 @@ System::String* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinition
 	return unstr;
 }
 
+NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList *NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinition::get_ArgumentValueList ()
+{
+    FdoPropertyValueConstraintList *result;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetArgumentValueList());
+    return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList *> (NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePropertyValueConstraint(result, true));
+}
+
+System::Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinition::set_ArgumentValueList (NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList *argumentValueList)
+{
+	EXCEPTION_HANDLER(GetImpObj()->SetArgumentValueList(argumentValueList == NULL ? NULL : argumentValueList->GetImpObj()));
+}

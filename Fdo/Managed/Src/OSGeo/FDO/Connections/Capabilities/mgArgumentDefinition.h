@@ -20,6 +20,9 @@
 
 #include "FDO\Schema\mgDataType.h"
 #include "FDO\Schema\mgPropertyType.h"
+#include "FDO\Schema\mgPropertyValueConstraint.h"
+#include "FDO\Schema\mgPropertyValueConstraintList.h"
+#include "FDO\mgObjectFactory.h"
 
 class FdoArgumentDefinition;
 
@@ -31,7 +34,9 @@ BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 /// The ArgumentDefinition class contains metadata that describes an argument to a function.
 public __gc class ArgumentDefinition : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
+
 public:
+
     /// \brief
     /// Constructs an instance of an ArgumentDefinition using the specified arguments.
     /// 
@@ -79,15 +84,31 @@ public:
     /// 
 	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
 
+    /// \brief
+    /// Returns the argument value list for the current argument
+    /// 
+    /// \return
+    /// Returns the argument value list for the current argument
+    __property NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList *get_ArgumentValueList ();
+
+    /// \brief
+    /// Sets the argument value list for the current argument
+    __property System::Void set_ArgumentValueList (NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList *argumentValueList);
+
 /// \cond DOXYGEN-IGNORE
+
 protected:
+
 	System::Void ReleaseUnmanagedObject();
+
 /// \endcond
 
 public private:
+
 	ArgumentDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoArgumentDefinition* GetImpObj();
+
 };
 
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES

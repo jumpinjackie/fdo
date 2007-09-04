@@ -62,6 +62,50 @@ NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::FunctionDefini
 NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::FunctionDefinition(
                                     System::String *name,
                                     System::String *description,
+                                    NAMESPACE_OSGEO_FDO_SCHEMA::DataType returnType,
+                                    NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinitionCollection *arguments,
+                                    NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionCategoryType functionCategoryType) : Disposable(IntPtr::Zero, false)
+{
+	EXCEPTION_HANDLER(Attach(FdoFunctionDefinition::Create(StringToUni(name),
+                                                           StringToUni(description),
+                                                           static_cast<FdoDataType>(returnType),
+                                                           arguments->GetImpObj(),
+                                                           static_cast<FdoFunctionCategoryType>(functionCategoryType)), true))
+}
+
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::FunctionDefinition (
+                                    System::String *name,
+                                    System::String *description,
+                                    NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType returnPropertyType,
+                                    NAMESPACE_OSGEO_FDO_SCHEMA::DataType returnType,
+                                    NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinitionCollection *arguments) : Disposable(IntPtr::Zero, false)
+{
+	EXCEPTION_HANDLER(Attach(FdoFunctionDefinition::Create(StringToUni(name),
+                                                           StringToUni(description),
+                                                           static_cast<FdoPropertyType>(returnPropertyType),
+                                                           static_cast<FdoDataType>(returnType),
+                                                           arguments->GetImpObj()), true))
+}
+
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::FunctionDefinition (
+                                    System::String *name,
+                                    System::String *description,
+                                    NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType returnPropertyType,
+                                    NAMESPACE_OSGEO_FDO_SCHEMA::DataType returnType,
+                                    NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinitionCollection *arguments,
+                                    NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionCategoryType functionCategoryType) : Disposable(IntPtr::Zero, false)
+{
+	EXCEPTION_HANDLER(Attach(FdoFunctionDefinition::Create(StringToUni(name),
+                                                           StringToUni(description),
+                                                           static_cast<FdoPropertyType>(returnPropertyType),
+                                                           static_cast<FdoDataType>(returnType),
+                                                           arguments->GetImpObj(),
+                                                           static_cast<FdoFunctionCategoryType>(functionCategoryType)), true))
+}
+
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::FunctionDefinition(
+                                    System::String *name,
+                                    System::String *description,
                                     System::Boolean isAggregate,
                                     NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinitionCollection *signatures) : Disposable(IntPtr::Zero, false)
 {
@@ -71,11 +115,19 @@ NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::FunctionDefini
                                                            signatures->GetImpObj()), true))
 }
 
-// For next release
-//NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::FunctionDefinition(System::String* name, System::String* description, NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType returnPropertyType, NAMESPACE_OSGEO_FDO_SCHEMA::DataType returnType, NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinitionCollection* arguments) : Disposable(IntPtr::Zero, false)
-//{
-//	EXCEPTION_HANDLER(Attach(FdoFunctionDefinition::Create(StringToUni(name), StringToUni(description), static_cast<FdoPropertyType>(returnPropertyType), static_cast<FdoDataType>(returnType), arguments->GetImpObj()), true))
-//}
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::FunctionDefinition(
+                                    System::String *name,
+                                    System::String *description,
+                                    System::Boolean isAggregate,
+                                    NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinitionCollection *signatures,
+                                    NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionCategoryType functionCategoryType) : Disposable(IntPtr::Zero, false)
+{
+	EXCEPTION_HANDLER(Attach(FdoFunctionDefinition::Create(StringToUni(name),
+                                                           StringToUni(description),
+                                                           isAggregate,
+                                                           signatures->GetImpObj(),
+                                                           static_cast<FdoFunctionCategoryType>(functionCategoryType)), true))
+}
 
 System::String *NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::get_Name()
 {
@@ -131,4 +183,11 @@ NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlySignatureDefinitionCollect
     FdoReadOnlySignatureDefinitionCollection *col;
     EXCEPTION_HANDLER(col = GetImpObj()->GetSignatures());
     return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateReadOnlySignatureDefinitionCollection(col, true);
+}
+
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionCategoryType NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::get_FunctionCategoryType()
+{
+	FdoFunctionCategoryType unType;
+	EXCEPTION_HANDLER(unType = GetImpObj()->GetFunctionCategoryType())
+	return static_cast<NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionCategoryType>(unType);
 }
