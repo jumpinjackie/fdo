@@ -26,18 +26,27 @@
 #include <FdoStd.h>
 #include <Fdo/Schema/PropertyType.h>
 #include <Fdo/Schema/DataType.h>
+#include <Fdo/Schema/PropertyValueConstraintList.h>
 
 /// \brief
 /// The FdoArgumentDefinition class contains metadata that describes an argument to a function.
 class FdoArgumentDefinition : public FdoIDisposable
 {
+
 /// \cond DOXYGEN-IGNORE
+
 protected:
-    /// Constructs an instance of an FdoArgumentDefinition using the specified arguments.
-    FdoArgumentDefinition(FdoString* name, FdoString* description, FdoDataType dataType);
 
     /// Constructs an instance of an FdoArgumentDefinition using the specified arguments.
-    FdoArgumentDefinition(FdoString* name, FdoString* description, FdoPropertyType propertyType, FdoDataType dataType);
+    FdoArgumentDefinition(FdoString   *name,
+                          FdoString   *description,
+                          FdoDataType dataType);
+
+    /// Constructs an instance of an FdoArgumentDefinition using the specified arguments.
+    FdoArgumentDefinition(FdoString       *name,
+                          FdoString       *description,
+                          FdoPropertyType propertyType,
+                          FdoDataType     dataType);
 
     /// Constructs an instance of an FdoArgumentDefinition with default properties.
     FdoArgumentDefinition();
@@ -45,9 +54,11 @@ protected:
     virtual ~FdoArgumentDefinition();
 
     virtual void Dispose();
+
 /// \endcond
 
 public:
+
     /// \brief
     /// Constructs an instance of an FdoArgumentDefinition using the specified arguments.
     /// 
@@ -61,7 +72,9 @@ public:
     /// \return
     /// Returns FdoArgumentDefinition
     /// 
-    FDO_API static FdoArgumentDefinition* Create(FdoString* name, FdoString* description, FdoDataType dataType);
+    FDO_API static FdoArgumentDefinition *Create(FdoString   *name,
+                                                 FdoString   *description,
+                                                 FdoDataType dataType);
 
     /// \brief
     /// Constructs an instance of an FdoArgumentDefinition using the specified arguments.
@@ -79,7 +92,10 @@ public:
     /// \return
     /// Returns FdoArgumentDefinition
     /// 
-    FDO_API static FdoArgumentDefinition* Create(FdoString* name, FdoString* description, FdoPropertyType propertyType, FdoDataType dataType);
+    FDO_API static FdoArgumentDefinition *Create(FdoString       *name,
+                                                 FdoString       *description,
+                                                 FdoPropertyType propertyType,
+                                                 FdoDataType     dataType);
 
     /// \brief
     /// Gets the name of the argument.
@@ -87,7 +103,7 @@ public:
     /// \return
     /// Returns the argument name
     /// 
-    FDO_API FdoString* GetName();
+    FDO_API FdoString *GetName();
 
     /// \brief
     /// Gets a brief description of the argument.
@@ -95,7 +111,7 @@ public:
     /// \return
     /// Returns the argument description
     /// 
-    FDO_API FdoString* GetDescription();
+    FDO_API FdoString *GetDescription();
 
     /// \brief
     /// Gets the FdoDataType of the argument.
@@ -114,12 +130,27 @@ public:
     /// 
     FDO_API FdoDataType GetDataType();
 
+    /// \brief
+    /// Returns the argument value list for the current argument
+    /// 
+    /// \return
+    /// Returns the argument value list for the current argument
+    FDO_API FdoPropertyValueConstraintList *GetArgumentValueList ();
+
+    /// \brief
+    /// Sets the argument value list for the current argument
+    FDO_API void SetArgumentValueList (FdoPropertyValueConstraintList *argumentValueList);
+
 protected:
-    wchar_t*        m_name;
-    wchar_t*        m_description;
-    FdoPropertyType m_propertyType;
-    FdoDataType     m_dataType;
+
+    wchar_t                        *m_name;
+    wchar_t                        *m_description;
+    FdoPropertyType                m_propertyType;
+    FdoDataType                    m_dataType;
+    FdoPropertyValueConstraintList *m_argumentValueList;
+
 };
+
 #endif
 
 
