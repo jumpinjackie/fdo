@@ -28,32 +28,38 @@
 #include <Fdo/Connections/Capabilities/ArgumentDefinition.h>
 #include <Fdo/Connections/Capabilities/ReadOnlyArgumentDefinitionCollection.h>
 #include <Fdo/Connections/Capabilities/SignatureDefinition.h>
+#include <Fdo/Connections/Capabilities/FunctionCategoryType.h>
 
 /// \brief
-///  The FdoFunctionDefinition class contains metadata that describes a function and its arguments.
+/// The FdoFunctionDefinition class contains metadata that describes a function and its arguments.
 class FdoFunctionDefinition : public FdoIDisposable
 {
+
 /// \cond DOXYGEN-IGNORE
+
 protected:
+
     /// Constructs an instance of an FdoFunctionDefinition using the specified arguments.
     FdoFunctionDefinition (FdoString                       *name,
                            FdoString                       *description,
                            FdoDataType                     returnType,
-                           FdoArgumentDefinitionCollection *arguments);
+                           FdoArgumentDefinitionCollection *arguments,
+                           FdoFunctionCategoryType         functionCategoryType);
 
     /// Constructs an instance of an FdoFunctionDefinition using the specified arguments.
     FdoFunctionDefinition (FdoString                       *name,
                            FdoString                       *description,
                            FdoPropertyType                 returnPropertyType,
                            FdoDataType                     returnType,
-                           FdoArgumentDefinitionCollection *arguments);
+                           FdoArgumentDefinitionCollection *arguments,
+                           FdoFunctionCategoryType         functionCategoryType);
 
     /// Constructs an instance of an FdoFunctionDefinition using the specified arguments.
-    // FdoFunctionDefinition (FdoSignatureDefinitionCollection *signatures);
     FdoFunctionDefinition (FdoString                        *name,
                            FdoString                        *description,
                            bool                             isAggregate,
-                           FdoSignatureDefinitionCollection *signatures);
+                           FdoSignatureDefinitionCollection *signatures,
+                           FdoFunctionCategoryType          functionCategoryType);
 
     /// Constructs an instance of an FdoFunctionDefinition using default values.
     FdoFunctionDefinition();
@@ -61,11 +67,13 @@ protected:
     virtual ~FdoFunctionDefinition();
 
     virtual void Dispose();
+
 /// \endcond
 
 public:
+
     /// \brief
-    ///  Constructs an instance of an FdoFunctionDefinition using the specified arguments.
+    /// Constructs an instance of an FdoFunctionDefinition using the specified arguments.
     /// 
     /// \param name 
     /// Input the name of the function.
@@ -75,6 +83,10 @@ public:
     /// Input the function return type
     /// \param arguments 
     /// Input the argument definition list
+    /// \param functionCategoryType
+    /// Input the category the function belongs to. If not specified the function is
+    /// categorized as unspecified. Valid values for this parameter are defined in the
+    /// enumeration FdoFunctionCategoryType.
     /// 
     /// \return
     /// Returns FdoFunctionDefinition
@@ -82,10 +94,11 @@ public:
     FDO_API static FdoFunctionDefinition *Create (FdoString                       *name,
                                                   FdoString                       *description,
                                                   FdoDataType                     returnType,
-                                                  FdoArgumentDefinitionCollection *arguments);
+                                                  FdoArgumentDefinitionCollection *arguments,
+                                                  FdoFunctionCategoryType         functionCategoryType = FdoFunctionCategoryType_Unspecified);
 
     /// \brief
-    ///  Constructs an instance of an FdoFunctionDefinition using the specified arguments.
+    /// Constructs an instance of an FdoFunctionDefinition using the specified arguments.
     /// 
     /// \param name 
     /// Input the name of the function.
@@ -97,6 +110,10 @@ public:
     /// Input the function return data type (ignore it property type is not data)
     /// \param arguments 
     /// Input the argument definition list
+    /// \param functionCategoryType
+    /// Input the category the function belongs to. If not specified the function is
+    /// categorized as unspecified. Valid values for this parameter are defined in the
+    /// enumeration FdoFunctionCategoryType.
     /// 
     /// \return
     /// Returns FdoFunctionDefinition
@@ -105,10 +122,11 @@ public:
                                                   FdoString                       *description,
                                                   FdoPropertyType                 returnPropertyType,
                                                   FdoDataType                     returnType,
-                                                  FdoArgumentDefinitionCollection *arguments);
+                                                  FdoArgumentDefinitionCollection *arguments,
+                                                  FdoFunctionCategoryType         functionCategoryType = FdoFunctionCategoryType_Unspecified);
 
     /// \brief
-    ///  Constructs an instance of an FdoFunctionDefinition using the specified arguments.
+    /// Constructs an instance of an FdoFunctionDefinition using the specified arguments.
     /// 
     /// \param name 
     /// Input the name of the function.
@@ -118,6 +136,10 @@ public:
     /// Input a flag indicating whether or not this is an aggregate function.
     /// \param signatures 
     /// Input the list of possible function signatures
+    /// \param functionCategoryType
+    /// Input the category the function belongs to. If not specified the function is
+    /// categorized as unspecified. Valid values for this parameter are defined in the
+    /// enumeration FdoFunctionCategoryType.
     /// 
     /// \return
     /// Returns FdoFunctionDefinition
@@ -125,46 +147,52 @@ public:
     FDO_API static FdoFunctionDefinition *Create (FdoString                        *name,
                                                   FdoString                        *description,
                                                   bool                             isAggregate,
-                                                  FdoSignatureDefinitionCollection *signatures);
+                                                  FdoSignatureDefinitionCollection *signatures,
+                                                  FdoFunctionCategoryType          functionCategoryType = FdoFunctionCategoryType_Unspecified);
 
     /// \brief
-    ///  Gets the name of the function.
+    /// Gets the name of the function.
     /// 
     /// \return
     /// Returns the name of the function
     /// 
     FDO_API FdoString *GetName();
+
     /// \brief
-    ///  Gets a brief description of the function.
+    /// Gets a brief description of the function.
     /// 
     /// \return
     /// Returns the description of the function
     /// 
     FDO_API FdoString *GetDescription();
+
     /// \brief
-    ///  Gets an array of FdoArgumentDefinition objects required for the function.
+    /// Gets an array of FdoArgumentDefinition objects required for the function.
     /// 
     /// \return
     /// Returns the list of argument definitions
     /// 
     FDO_API FdoReadOnlyArgumentDefinitionCollection *GetArguments();
+
     /// \brief
-    ///  Gets the FdoPropertyType of the function return value.
+    /// Gets the FdoPropertyType of the function return value.
     /// 
     /// \return
     /// Returns the function return property type
     /// 
     FDO_API FdoPropertyType GetReturnPropertyType();
+
     /// \brief
-    ///  Gets the FdoDataType of the function return value.
-    ///  This is only valid if the function return property type is FdoPropertyType_DataProperty.
+    /// Gets the FdoDataType of the function return value. This is only valid if
+    /// the function return property type is FdoPropertyType_DataProperty.
     /// 
     /// \return
     /// Returns the function return data type
     /// 
     FDO_API FdoDataType GetReturnType();
+
     /// \brief
-    ///  Indicates that this object allows its name
+    /// Indicates that this object allows its name
     /// to change. This function is defined so that this class can 
     /// be a FdoNamedCollection element.
     /// 
@@ -175,25 +203,40 @@ public:
     {
         return false;
     }
+
     ///
     /// \brief
 	/// Gets an array of FdoSignatureDefinition objects that describe the different signatures
     /// supported by the function.
     ///
     FDO_API FdoReadOnlySignatureDefinitionCollection *GetSignatures();
+
     ///
     /// \brief
 	/// Returns true if the function is an aggregate function and false if it is a simple function.
     FDO_API bool IsAggregate();
-    ///
+
+    /// \brief
+    /// Returns the category for the function described in the current function
+    /// definition.
+    /// 
+    /// \return
+    /// Returns the category for the function described in the current function
+    /// 
+    FDO_API virtual FdoFunctionCategoryType GetFunctionCategoryType ()
+    {
+        return m_functionCategoryType;
+    }
 
 protected:
     bool                                     m_isAggregate;
     wchar_t                                  *m_name;
     wchar_t                                  *m_description;
     FdoReadOnlySignatureDefinitionCollection *m_signatures;
+    FdoFunctionCategoryType                  m_functionCategoryType;
 
 };
+
 #endif
 
 
