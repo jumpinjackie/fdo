@@ -176,6 +176,7 @@ EXTRA_DIST = \
     Fdo/Commands/UnitOfMeasure/IMeasureUnitReader.h \
     Fdo/Connections/Capabilities/ArgumentDefinition.h \
     Fdo/Connections/Capabilities/ArgumentDefinitionCollection.h \
+    Fdo/Connections/Capabilities/FunctionCategoryType.h \
     Fdo/Connections/Capabilities/FunctionDefinition.h \
     Fdo/Connections/Capabilities/FunctionDefinitionCollection.h \
     Fdo/Connections/Capabilities/ICommandCapabilities.h \
