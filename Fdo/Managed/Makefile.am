@@ -336,6 +336,7 @@ EXTRA_DIST = \
     Src/OSGeo/FDO/Connections/Capabilities/mgArgumentDefinition.h \
     Src/OSGeo/FDO/Connections/Capabilities/mgArgumentDefinitionCollection.cpp \
     Src/OSGeo/FDO/Connections/Capabilities/mgArgumentDefinitionCollection.h \
+    Src/OSGeo/FDO/Connections/Capabilities/mgFunctionCategoryType.h \
     Src/OSGeo/FDO/Connections/Capabilities/mgFunctionDefinition.cpp \
     Src/OSGeo/FDO/Connections/Capabilities/mgFunctionDefinition.h \
     Src/OSGeo/FDO/Connections/Capabilities/mgFunctionDefinitionCollection.cpp \
