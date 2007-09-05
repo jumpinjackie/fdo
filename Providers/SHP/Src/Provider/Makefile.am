@@ -34,7 +34,6 @@ libSHPProviderSrc_la_SOURCES = \
   ShpDestroySchemaCommand.cpp \
   ShpExpressionCapabilities.cpp \
   ShpFeatureReader.cpp \
-  ShpFilterExecutor.cpp \
   ShpFileSet.cpp \
   ShpFilterCapabilities.cpp \
   ShpGeometryCapabilities.cpp \
@@ -112,7 +111,8 @@ INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDOUTILITIES)/Common/Inc  \
   -I../../Inc  \
-  -I$(FDO)/Unmanaged/Inc/Fdo/Expression
+  -I$(FDO)/Unmanaged/Inc/Fdo/Expression \
+  -I$(FDOUTILITIES)/ExpressionEngine/Inc
 
 CXXFLAGS = @CXXFLAGS@ -D__USE_GNU -DLINUX -DLINUX_IA32
 
