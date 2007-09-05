@@ -82,12 +82,11 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="Lib/Win32/Release"
-			IntermediateDirectory="Obj/Win32/Release"
+			Name="Debug|x64"
+			OutputDirectory="Lib/Win64/Debug"
+			IntermediateDirectory="Obj/Win64/Debug"
 			ConfigurationType="4"
 			CharacterSet="1"
-			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -103,12 +102,16 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
+				TargetEnvironment="3"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="0"
 				AdditionalIncludeDirectories="inc;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDO)\Unmanaged\Src\common&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
-				RuntimeLibrary="2"
+				PreprocessorDefinitions="WIN32;_WIN64_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -143,11 +146,12 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug|x64"
-			OutputDirectory="Lib/Win64/Debug"
-			IntermediateDirectory="Obj/Win64/Debug"
+			Name="Release|Win32"
+			OutputDirectory="Lib/Win32/Release"
+			IntermediateDirectory="Obj/Win32/Release"
 			ConfigurationType="4"
 			CharacterSet="1"
+			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -163,16 +167,12 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TargetEnvironment="3"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="0"
 				AdditionalIncludeDirectories="inc;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDO)\Unmanaged\Src\common&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;"
-				PreprocessorDefinitions="WIN32;_WIN64_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
+				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -301,7 +301,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
+					Name="Debug|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -309,7 +309,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -329,6 +329,142 @@
 				RelativePath=".\Src\stdafx.h"
 				>
 			</File>
+			<Filter
+				Name="Functions"
+				>
+				<Filter
+					Name="Aggregate"
+					>
+					<File
+						RelativePath=".\Src\Functions\Aggregate\CacheValue.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Aggregate\CacheValueCollection.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Aggregate\FdoFunctionAvg.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Aggregate\FdoFunctionCount.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Aggregate\FdoFunctionMax.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Aggregate\FdoFunctionMin.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Aggregate\FdoFunctionSpatialExtents.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Aggregate\FdoFunctionSum.cpp"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Numeric"
+					>
+					<File
+						RelativePath=".\Src\Functions\Numeric\FdoFunctionCeil.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Numeric\FdoFunctionFloor.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Numeric\FdoFunctionSign.cpp"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="String"
+					>
+					<File
+						RelativePath=".\Src\Functions\String\FdoFunctionConcat.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\String\FdoFunctionLower.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\String\FdoFunctionUpper.cpp"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Math"
+					>
+					<File
+						RelativePath=".\Src\Functions\Math\FdoFunctionAbs.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Math\FdoFunctionAcos.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Math\FdoFunctionAsin.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Math\FdoFunctionAtan.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Math\FdoFunctionAtan2.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Math\FdoFunctionCos.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Math\FdoFunctionExp.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Math\FdoFunctionLn.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Math\FdoFunctionLog.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Math\FdoFunctionMod.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Math\FdoFunctionPower.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Math\FdoFunctionRemainder.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Math\FdoFunctionSin.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Math\FdoFunctionSqrt.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Math\FdoFunctionTan.cpp"
+						>
+					</File>
+				</Filter>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -359,6 +495,142 @@
 				RelativePath=".\inc\FdoExpressionEngineINonAggregateFunction.h"
 				>
 			</File>
+			<Filter
+				Name="Functions"
+				>
+				<Filter
+					Name="Aggregate"
+					>
+					<File
+						RelativePath=".\Inc\Functions\Aggregate\CacheValue.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Aggregate\CacheValueCollection.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Aggregate\FdoFunctionAvg.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Aggregate\FdoFunctionCount.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Aggregate\FdoFunctionMax.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Aggregate\FdoFunctionMin.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Aggregate\FdoFunctionSpatialExtents.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Aggregate\FdoFunctionSum.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Numeric"
+					>
+					<File
+						RelativePath=".\Inc\Functions\Numeric\FdoFunctionCeil.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Numeric\FdoFunctionFloor.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Numeric\FdoFunctionSign.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="String"
+					>
+					<File
+						RelativePath=".\Inc\Functions\String\FdoFunctionConcat.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\String\FdoFunctionLower.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\String\FdoFunctionUpper.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Math"
+					>
+					<File
+						RelativePath=".\Inc\Functions\Math\FdoFunctionAbs.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Math\FdoFunctionAcos.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Math\FdoFunctionAsin.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Math\FdoFunctionAtan.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Math\FdoFunctionAtan2.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Math\FdoFunctionCos.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Math\FdoFunctionExp.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Math\FdoFunctionLn.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Math\FdoFunctionLog.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Math\FdoFunctionMod.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Math\FdoFunctionPower.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Math\FdoFunctionRemainder.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Math\FdoFunctionSin.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Math\FdoFunctionSqrt.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Math\FdoFunctionTan.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"

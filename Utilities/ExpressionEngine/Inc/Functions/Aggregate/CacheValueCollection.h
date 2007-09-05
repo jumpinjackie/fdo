@@ -1,7 +1,3 @@
-#ifndef _FUNCTIONNONAGGREGATEEXTENSION_H_
-#define _FUNCTIONNONAGGREGATEEXTENSION_H_
-// 
-
 //
 // Copyright (C) 2004-2007  Autodesk, Inc.
 // 
@@ -18,19 +14,29 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
+#ifndef _CACHEVALUECOLLECTION_H_
+#define _CACHEVALUECOLLECTION_H_
 
 #ifdef _WIN32
 #pragma once
 #endif
 
 #include <FdoStd.h>
-#include <Fdo/Expression/LiteralValueCollection.h>
-#include <FdoExpressionEngineIFunction.h>
+#include <Functions/Aggregate/CacheValue.h>
 
-class FdoExpressionEngineINonAggregateFunction : public FdoExpressionEngineIFunction
+class CacheValueCollection : public FdoCollection<CacheValue, FdoException>
 {
-public:
-	virtual FdoLiteralValue* Evaluate(FdoLiteralValueCollection *literalValues) = 0;
-};
+
+    protected:
+        virtual void Dispose ();
+
+    public:
+
+        static CacheValueCollection *Create ();
+        static CacheValueCollection *Create (CacheValue** arguments, FdoInt32 length);
+
+};  //  class CacheValueCollection
 
 #endif
+
+
