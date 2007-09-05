@@ -139,7 +139,8 @@ INCLUDES = \
   -I../Message/Inc \
   -I../Utils \
   -I$(FDOUTILITIES)/Common/Inc \
-  -I$(FDOUTILITIES)/SQLiteInterface
+  -I$(FDOUTILITIES)/SQLiteInterface \
+  -I$(FDOUTILITIES)/ExpressionEngine/Inc
 
 CXXFLAGS = @CXXFLAGS_SDF@ -DSQLITE -D_FILE_OFFSET_BITS=64 
 
