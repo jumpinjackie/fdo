@@ -234,6 +234,7 @@ private:
 	int m_CurrentIndex; // specifies which item of the aggregate object
  
 	bool m_processingAggregate; // true if processing an aggregate function, false if retrieving the results of an aggregate function
+    bool m_dataRead; // true if a row was read, otherwise false
 
     // Cache of the functions 
     // If selecting the following, func1(property1), func2(property3), func1(property1), eventually the cache

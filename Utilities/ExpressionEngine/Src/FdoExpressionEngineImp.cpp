@@ -32,38 +32,9 @@
 
 #include <FdoExpressionEngineIAggregateFunction.h>
 #include <FdoCommonDataReader.h>
+#include "Functions.h"
 
-// None of the functions are yet implemented
-const int NUMBER_FUNCTIONS = 0;
-
-class InitializeClass
-{
-
-public:
-	FdoExpressionEngineIFunction *m_Functions[NUMBER_FUNCTIONS+1];
-	InitializeClass()
-	{
-		int i=0;
-		//m_Functions[i++] = FdoFunctionMax::Create();
-		//m_Functions[i++] = FdoFunctionConcat::Create();
-		m_Functions[i++] = NULL;
-	}
-
-	~InitializeClass()
-	{
-		for (int i=0; m_Functions[i] != NULL; i++)
-		{
-			m_Functions[i]->Release();
-		};
-	};
-
-	FdoExpressionEngineIFunction** GetStandardFunctions()
-	{
-		return m_Functions;
-	}
-};
-
-InitializeClass init;
+ExpressionEngineInitializeClass initFunction;
 
 FdoExpressionEngineImp* FdoExpressionEngineImp::Create(FdoIReader* reader, FdoClassDefinition* classDef, FdoIdentifierCollection* identifiers,
 		FdoExpressionEngineFunctionCollection *userDefinedFunctions)
@@ -95,7 +66,7 @@ FdoExpressionEngineImp::FdoExpressionEngineImp(FdoIReader* reader, FdoClassDefin
         }
     }
 
-    FdoExpressionEngineIFunction** functions = init.GetStandardFunctions();
+    FdoExpressionEngineIFunction** functions = initFunction.GetStandardFunctions();
     for (int i=0; functions[i] != NULL; i++)
     {
         FdoPtr<FdoFunctionDefinition> function = functions[i]->GetFunctionDefinition();
@@ -1157,7 +1128,7 @@ void FdoExpressionEngineImp::ProcessFunction (FdoFunction& expr)
 		}
 		if (m_UserDefinedFunctions == NULL || i == m_UserDefinedFunctions->GetCount())
 		{
-			FdoExpressionEngineIFunction** standardFunctions = init.GetStandardFunctions();
+			FdoExpressionEngineIFunction** standardFunctions = initFunction.GetStandardFunctions();
 			for (i=0; standardFunctions[i] != NULL; i++)
 			{
                 bool bAdded = AddToCache(name, standardFunctions[i], expr, &isAggregate); 
@@ -1204,9 +1175,94 @@ void FdoExpressionEngineImp::ProcessFunction (FdoFunction& expr)
 		}
 		else
 		{
-			FdoExpressionEngineIAggregateFunction *func = m_AggregateFunctions.at(m_CurrentIndex);
-			FdoLiteralValue* value = func->GetResult();
-			m_retvals.push_back(value);
+            for (int i=0; i<mAggrIdents->GetCount(); i++)
+            {
+                FdoFunction* aggrFunc = (*mAggrIdents)[i]; 
+                if (aggrFunc == &expr)
+                {
+			        FdoExpressionEngineIAggregateFunction *func = m_AggregateFunctions.at(i);
+   			        FdoPtr<FdoLiteralValue> value;
+                    
+                    if (m_dataRead)
+                         value = func->GetResult();
+                    else
+                    {
+
+                        FdoPropertyType propType;
+                        FdoDataType dataType;
+                        
+                        GetExpressionType(m_AllFunctions, m_classDefinition,  aggrFunc, propType, dataType);
+
+                        switch (propType)
+                        {
+                            case FdoPropertyType_DataProperty:
+                                switch (dataType)
+                                {
+                                    case FdoDataType_Boolean:
+                                        value = FdoBooleanValue::Create(); 
+                                        break;
+
+                                    case FdoDataType_Byte:
+                                        value = FdoByteValue::Create(); 
+                                        break;
+
+                                    case FdoDataType_DateTime:
+                                        value = FdoDateTimeValue::Create();
+                                        break;
+
+                                    case FdoDataType_Decimal:
+                                        value = FdoDecimalValue::Create();
+                                        break;
+
+                                    case FdoDataType_Double:
+                                        value = FdoDoubleValue::Create();
+                                        break;
+
+                                    case FdoDataType_Int16:
+                                        value = FdoInt16Value::Create();
+                                        break;
+
+                                    case FdoDataType_Int32:
+                                        value = FdoInt32Value::Create();
+                                        break;
+
+                                    case FdoDataType_Int64:
+                                        value = FdoInt64Value::Create();
+                                        break;
+
+                                    case FdoDataType_Single:
+                                        value = FdoSingleValue::Create();
+                                        break;
+
+                                    case FdoDataType_String:
+                                        value = FdoStringValue::Create();
+                                        break;
+
+                                    case FdoDataType_BLOB:
+                                        value = FdoBLOBValue::Create();
+                                        break;
+
+                                    case FdoDataType_CLOB:
+                                        value = FdoCLOBValue::Create();
+                                        break;
+
+                                    default:
+                                        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_57_UNEXPECTEDERROR)));
+                                }
+                                break;
+
+                            case FdoPropertyType_GeometricProperty:
+                                value = FdoGeometryValue::Create();
+                            break;
+
+                        default:
+                            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_57_UNEXPECTEDERROR)));
+                        }
+                    }
+                    PushLiteralValue(value);
+                    break;
+                }
+            }
 		}
 	}
 	else
@@ -4253,7 +4309,7 @@ FdoFilter* FdoExpressionEngineImp::OptimizeFilter( FdoFilter *filter )
 FdoLiteralValue* FdoExpressionEngineImp::Evaluate(FdoExpression *expression)
 {
     FdoCommonExpressionType exprType;
-    mAggrIdents = FdoCommonDataReader::GetAggregateFunctions(expression, exprType, m_AllFunctions);
+    mAggrIdents = FdoCommonDataReader::GetAggregateFunctions(m_AllFunctions, expression, exprType);
     if ((mAggrIdents != NULL) && (mAggrIdents->GetCount() > 0))
     {
         EvaluateAggregateExpression();
@@ -4284,7 +4340,7 @@ FdoLiteralValue *FdoExpressionEngineImp::Evaluate(FdoString* name)
 FdoFunctionDefinitionCollection* FdoExpressionEngineImp::GetStandardFunctions()
 {
 	FdoFunctionDefinitionCollection* functionDefinitions = FdoFunctionDefinitionCollection::Create();
-	FdoExpressionEngineIFunction** standardFunctions = init.GetStandardFunctions();
+	FdoExpressionEngineIFunction** standardFunctions = initFunction.GetStandardFunctions();
 	for (int i=0; standardFunctions[i] != NULL; i++)
 	{
 		FdoPtr<FdoFunctionDefinition> function = standardFunctions[i]->GetFunctionDefinition();
@@ -4327,7 +4383,7 @@ void FdoExpressionEngineImp::ProcessAggregateFunctions()
 
         if (m_UserDefinedFunctions == NULL || i == m_UserDefinedFunctions->GetCount())
         {
-	        FdoExpressionEngineIFunction** standardFunctions = init.GetStandardFunctions();
+	        FdoExpressionEngineIFunction** standardFunctions = initFunction.GetStandardFunctions();
 	        for (j=0; standardFunctions[j] != NULL; j++)
 	        {
 		        FdoPtr<FdoFunctionDefinition> functions = standardFunctions[j]->GetFunctionDefinition();
@@ -4345,8 +4401,10 @@ void FdoExpressionEngineImp::ProcessAggregateFunctions()
                 throw FdoException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_89_UNSUPPORTED_FUNCTION), func->GetName()));
         }
     }
+    m_dataRead = false;
     while (m_reader->ReadNext())
     {
+        m_dataRead = true;
 	    for (FdoInt32 i=0; i<mAggrIdents->GetCount(); i++)
 	    {
 		    m_CurrentIndex = i;
@@ -4367,7 +4425,7 @@ void FdoExpressionEngineImp::EvaluateAggregateExpression()
 FdoPropertyValueCollection* FdoExpressionEngineImp::RunQuery()
 {
 	FdoCommonExpressionType exprType;
-	mAggrIdents = FdoCommonDataReader::GetAggregateFunctions(m_compIdents, exprType, m_AllFunctions);
+	mAggrIdents = FdoCommonDataReader::GetAggregateFunctions(m_AllFunctions, m_compIdents, exprType);
 
     if (mAggrIdents)
     {
@@ -4441,6 +4499,16 @@ FdoPropertyValueCollection* FdoExpressionEngineImp::RunQuery()
                             dv = FdoDoubleValue::Create();  // defaults to NULL
                         else
                             dv = FdoDoubleValue::Create(dvalue);
+                    }
+                    break;
+                    case FdoDataType_Decimal:  
+                    {
+                        bool bIsNull;
+                        double dvalue = GetDecimalResult(bIsNull);
+                        if (bIsNull)
+                            dv = FdoDecimalValue::Create();  // defaults to NULL
+                        else
+                            dv = FdoDecimalValue::Create(dvalue);
                     }
                     break;
                     case FdoDataType_String:  

@@ -290,6 +290,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Src\Functions.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\stdafx.cpp"
 				>
 				<FileConfiguration
