@@ -40,14 +40,14 @@ libProvidersCommon_la_SOURCES = \
   Src/FdoCommonStringUtil.cpp \
   Src/FdoCommonMiscUtil.cpp \
   Src/FdoCommonFile.cpp \
-  Src/FdoCommonFilterExecutor.cpp \
   Src/FdoCommonGeometryUtil.cpp \
+  Src/FdoCommonExpressionEngine.cpp \
+  Src/FdoCommonExpressionEngineImp.cpp \
   Src/FdoCommonConnPropDictionary.cpp \
   Src/FdoCommonConnStringParser.cpp \
   Src/FdoCommonBinaryReader.cpp \
   Src/FdoCommonBinaryWriter.cpp \
   Src/FdoCommonPropertyIndex.cpp \
-  Src/FdoCommonQueryAggregator.cpp \
   Src/FdoCommonDataReader.cpp \
   Src/FdoCommonSelectAggregatesCommand.cpp \
   Src/FdoCommonThreadMutex.cpp \
@@ -64,15 +64,15 @@ noinst_HEADERS = $(libProvidersCommon_la_SOURCES) \
   Inc/FdoCommonConnPropDictionary.h \
   Inc/FdoCommonConnStringParser.h \
   Inc/FdoCommonDataReader.h \
+  Inc/FdoCommonExpressionEngine.h \
+  Inc/FdoCommonExpressionEngineImp.h \
   Inc/FdoCommonFeatureCommand.h \
   Inc/FdoCommonFile.h \
-  Inc/FdoCommonFilterExecutor.h \
   Inc/FdoCommonGeometryUtil.h \
   Inc/FdoCommonMiscUtil.h \
   Inc/FdoCommonNlsUtil.h \
   Inc/FdoCommonOSUtil.h \
   Inc/FdoCommonPropertyIndex.h \
-  Inc/FdoCommonQueryAggregator.h \
   Inc/FdoCommonReader.h \
   Inc/FdoCommonSchemaUtil.h \
   Inc/FdoCommonSelectAggregatesCommand.h \
