@@ -104,6 +104,7 @@ class CacheValue : public FdoIDisposable
         // CacheValue:
         //  Those functions represent the class constructors.
 
+        CacheValue ();
         CacheValue (FdoByte     value);
         CacheValue (FdoDateTime value);
         CacheValue (FdoDouble   value);
