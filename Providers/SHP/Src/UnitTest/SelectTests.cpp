@@ -1344,6 +1344,8 @@ void SelectTests::ceil_floor ()
         datareader->Close();
         datareader = NULL;
 
+/*
+//      The following is now supported
         //////////////////////////////////////////////////////////////////////
         // Try Floor() on an Int32:  (should fail)
         //////////////////////////////////////////////////////////////////////
@@ -1365,12 +1367,13 @@ void SelectTests::ceil_floor ()
 
 		CPPUNIT_ASSERT_MESSAGE("Floor succeeded with wrong datatype Int32", error == true );
         datareader = NULL;
+*/
 
         //////////////////////////////////////////////////////////////////////
         // Try Ceil() on a string (should fail):
         //////////////////////////////////////////////////////////////////////
 
-		error = false;
+		bool error = false;
 		selectedIds->Clear();
 		cid = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Ceil(Street)) AS TestCeil");
 		selectedIds->Add(cid);

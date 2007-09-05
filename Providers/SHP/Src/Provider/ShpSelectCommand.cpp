@@ -22,6 +22,7 @@
 #include "ShpFeatureReader.h"
 #include <algorithm>
 #include "FdoCommonDataReader.h"
+#include "FdoExpressionEngineImp.h"
 
 
 ShpSelectCommand::ShpSelectCommand (ShpConnection* connection) :
@@ -93,13 +94,17 @@ FdoIFeatureReader* ShpSelectCommand::Execute ()
     FdoString* class_name;
     FdoPtr<ShpFeatureReader> ret;
 
+    FdoPtr<ShpConnection> shpConn = (ShpConnection*)GetConnection ();
+
     // Validate that there are no aggregate functions:
     FdoCommonExpressionType exprType;
-    FdoPtr< FdoArray<FdoFunction*> > functions = FdoCommonDataReader::GetAggregateFunctions(mPropertiesToSelect, exprType);
+
+	FdoPtr<FdoIExpressionCapabilities> expressCaps = shpConn->GetExpressionCapabilities();
+	FdoPtr<FdoFunctionDefinitionCollection> funcDefs = expressCaps->GetFunctions();
+    FdoPtr< FdoArray<FdoFunction*> > functions = FdoCommonDataReader::GetAggregateFunctions(funcDefs, mPropertiesToSelect, exprType);
     if (exprType == FdoCommonExpressionType_Aggregate)
         throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_182_AGGREGATE_IN_SELECT, "Aggregate functions are not supported by the Select command; use the SelectAggregates command instead."));
 
-    FdoPtr<ShpConnection> shpConn = (ShpConnection*)GetConnection ();
     id = GetFeatureClassName ();
     class_name = id->GetText ();
 
@@ -110,7 +115,9 @@ FdoIFeatureReader* ShpSelectCommand::Execute ()
     for (int i=0; mPropertiesToSelect && i<mPropertiesToSelect->GetCount(); i++)
     {
         FdoPtr<FdoIdentifier> id = mPropertiesToSelect->GetItem(i);
-        FdoCommonFilterExecutor::GetExpressionType(shpConn, fdoClass, id, propType, dataType);
+        FdoPtr<FdoIExpressionCapabilities> expressionCaps = shpConn->GetExpressionCapabilities();
+        FdoPtr<FdoFunctionDefinitionCollection> functions = expressionCaps->GetFunctions();
+        FdoExpressionEngineImp::GetExpressionType(functions, fdoClass, id, propType, dataType);
     }
 
     // Create the reader:
@@ -121,9 +128,9 @@ FdoIFeatureReader* ShpSelectCommand::Execute ()
 	{
 		FdoPtr<FdoClassDefinition> classDef = ShpSchemaUtilities::GetLogicalClassDefinition (shpConn, class_name, NULL);
 		FdoPtr<FdoIFilterCapabilities> filterCaps = shpConn->GetFilterCapabilities();
-        FdoCommonFilterExecutor::ValidateFilter( classDef, mFilter, mPropertiesToSelect, filterCaps );
+        FdoExpressionEngineImp::ValidateFilter( classDef, mFilter, mPropertiesToSelect, filterCaps );
 
-		mFilter = FdoCommonFilterExecutor::OptimizeFilter( mFilter );
+		mFilter = FdoExpressionEngineImp::OptimizeFilter( mFilter );
 	}
 
     ret = new ShpFeatureReader (shpConn, class_name, mFilter, mPropertiesToSelect);

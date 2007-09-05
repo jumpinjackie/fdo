@@ -21,7 +21,7 @@
 #include "ShpFilterExecutor.h"
 
 ShpFilterExecutor::ShpFilterExecutor (FdoIReader* reader, FdoIdentifierCollection* compIdents) :
-    FdoCommonFilterExecutor (reader, compIdents)
+    FdoCommonExpressionEngine (reader, compIdents, NULL, NULL)
 {
     ShpFeatureReader* my_reader;
     FdoPtr<ShpConnection> connection;
@@ -41,10 +41,4 @@ ShpFilterExecutor* ShpFilterExecutor::Create (FdoIReader* reader, FdoIdentifierC
 {    
     return new ShpFilterExecutor (reader, selected);
 }
-
-FdoPropertyDefinition* ShpFilterExecutor::GetPropInfo (FdoString* name)
-{
-    return (mProperties->FindItem (name));
-}
-
 

@@ -32,6 +32,8 @@
 #include <StringValue.h>
 #include <BooleanValue.h>
 
+#include <FdoExpressionEngineImp.h>
+
 // Used to determine if two double precision numbers are about equal
 #define SHP_GLOBAL_TOLERANCE 1.0e-10 
 
@@ -54,8 +56,8 @@ ShpQueryOptimizer* ShpQueryOptimizer::Create(FdoIReader* reader, FdoIdentifierCo
     return new ShpQueryOptimizer(reader, classDef, selected, ssi); 
 }
 
-ShpQueryOptimizer::ShpQueryOptimizer(FdoIReader* reader, FdoClassDefinition* classDef, FdoIdentifierCollection* selected, ShpSpatialIndex* rtree ):
-    FdoCommonFilterExecutor (reader, selected)
+ShpQueryOptimizer::ShpQueryOptimizer(FdoIReader* reader, FdoClassDefinition* classDef, FdoIdentifierCollection* selected, ShpSpatialIndex* rtree):
+    FdoExpressionEngineImp (reader, classDef, selected, NULL)
 {
     ShpFeatureReader* my_reader = (ShpFeatureReader *)reader;
     m_Connection = my_reader->GetConnection();

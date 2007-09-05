@@ -69,10 +69,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/fixed:no"
-				AdditionalDependencies="SHPRead.lib SHPSpatialIndex.lib cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib ProvidersCommon.lib SHPOverrides.lib Advapi32.lib"
+				AdditionalDependencies="SHPRead.lib SHPSpatialIndex.lib cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib ProvidersCommon.lib SHPOverrides.lib Advapi32.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)/UnitTest.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(FDOTHIRDPARTY)\cppunit\lib\Win32;$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;..\..\Lib\Win32\Debug"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win32&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;..\..\Lib\Win32\Debug;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Debug&quot;"
 				IgnoreDefaultLibraryNames="mfc80.lib;mfcs80.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/UnitTest.pdb"
@@ -159,10 +159,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SHPRead.lib SHPSpatialIndex.lib cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib ProvidersCommon.lib SHPOverrides.lib Advapi32.lib"
+				AdditionalDependencies="SHPRead.lib SHPSpatialIndex.lib cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib ProvidersCommon.lib SHPOverrides.lib Advapi32.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)/UnitTest.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(FDOTHIRDPARTY)\cppunit\lib\Win32;$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;..\..\Lib\Win32\Release"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win32&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;..\..\Lib\Win32\Release;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Release&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"

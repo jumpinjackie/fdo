@@ -520,7 +520,11 @@ SymbolicName=SHP_READ_ONLY_DELETE
 Language=English
 Cannot delete from read-only file '%1$ls'.
 .
-
+MessageId=7018
+SymbolicName=SHP_INVALID_LITERAL_TYPE
+Language=English
+Invalid literal type '%1$d'.
+.
 
 ;//************************************************************************************
 ;//************************************************************************************

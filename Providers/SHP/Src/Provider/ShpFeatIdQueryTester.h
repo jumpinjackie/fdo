@@ -20,7 +20,7 @@
 #endif // _WIN32
 
 #include "stdafx.h"
-#include <FdoCommonFilterExecutor.h>
+#include <FdoExpressionEngineImp.h>
 
 class ShpFeatureReader;
 
@@ -29,7 +29,7 @@ class ShpFeatureReader;
 /// 
 ///</summary>
 
-class ShpFeatIdQueryTester : public FdoCommonFilterExecutor
+class ShpFeatIdQueryTester : public FdoExpressionEngineImp
 {
     friend class ShpFeatureReader;
 
