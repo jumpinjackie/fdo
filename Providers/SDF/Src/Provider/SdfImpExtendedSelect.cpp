@@ -25,7 +25,6 @@
 #include "SdfIndexedScrollableFeatureReader.h"
 #include "DataDb.h"
 #include "BinaryReader.h"
-#include "FilterExecutor.h"
 #include "FdoCommonSchemaUtil.h"
 #include "SdfImpScrollableFeatureReader.h"
 

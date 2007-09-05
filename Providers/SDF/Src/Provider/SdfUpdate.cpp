@@ -21,7 +21,7 @@
 #include "SdfUpdatingFeatureReader.h"
 #include "SdfQueryOptimizer.h"
 #include "DataDb.h"
-#include "FdoCommonFilterExecutor.h"
+#include "FdoExpressionEngine.h"
 
 //-------------------------------------------------------
 // Constructor / destructor
@@ -87,7 +87,7 @@ FdoInt32 SdfUpdate::Execute()
     if( m_filter != NULL )
 	{
 		FdoPtr<FdoIFilterCapabilities> filterCaps = m_connection->GetFilterCapabilities();
-        FdoCommonFilterExecutor::ValidateFilter( clas, m_filter, NULL, filterCaps );
+        FdoExpressionEngine::ValidateFilter( clas, m_filter, NULL, filterCaps );
 	}
 	m_connection->FlushAll( clas, true );
 

@@ -20,8 +20,7 @@
 #include "SdfConnection.h"
 #include "SdfQueryOptimizer.h"
 #include "SdfSimpleFeatureReader.h"
-#include "FilterExecutor.h"
-#include "FdoCommonFilterExecutor.h"
+#include "FdoExpressionEngine.h"
 //-------------------------------------------------------
 // Constructor / destructor
 //-------------------------------------------------------
@@ -120,9 +119,9 @@ FdoIFeatureReader* SdfSelect::Execute()
 	{
 		FdoPtr<FdoIFilterCapabilities> filterCaps = m_connection->GetFilterCapabilities();
 
-        FdoCommonFilterExecutor::ValidateFilter( clas, m_filter, m_properties, filterCaps );
+        FdoExpressionEngine::ValidateFilter( clas, m_filter, m_properties, filterCaps );
 		
-		FdoFilter* newFilter = FdoCommonFilterExecutor::OptimizeFilter( m_filter );
+		FdoFilter* newFilter = FdoExpressionEngine::OptimizeFilter( m_filter );
 		FDO_SAFE_RELEASE(m_filter);
 		m_filter = newFilter;
 	}
@@ -202,7 +201,7 @@ FdoPropertyDefinitionCollection* SdfSelect::ProcessComputedIdentifiers(PropertyI
                 FdoClassDefinition* clas, FdoFilter* rdrFilter, recno_list* &features)
 {
     SdfSimpleFeatureReader* temprdr = NULL; //can't use FdoPtr because of Linux build
-    FilterExecutor* tempfe = NULL;
+    FdoExpressionEngine* tempfe = NULL;
     FdoPropertyDefinitionCollection* pdc = NULL;
 
     //check for any computed properties
@@ -262,45 +261,19 @@ FdoPropertyDefinitionCollection* SdfSelect::ProcessComputedIdentifiers(PropertyI
             }
 
             if (!tempfe)
-                tempfe = new FilterExecutor(temprdr, pi, m_properties, clas);
-
+				tempfe = FdoExpressionEngine::Create(temprdr, clas, m_properties, NULL);
+                
             if (!pdc)
                 pdc = FdoPropertyDefinitionCollection::Create(NULL);
 
             FdoPtr<FdoExpression> expr = cident->GetExpression();
 
-            expr->Process(tempfe);
+            // results should not be release
+			FdoPtr<FdoLiteralValue> results = tempfe->Evaluate(expr);
 
             FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(cident->GetName(), NULL);
-
-            switch(tempfe->GetResultType())
-            {
-            case Dvt_Int64:
-                tempfe->Reset();
-                dpd->SetDataType(FdoDataType_Int64);
-                break;
-            case Dvt_String:
-                tempfe->Reset();
-                dpd->SetDataType(FdoDataType_String);
-                break;
-            case Dvt_Boolean:
-                tempfe->Reset();
-                dpd->SetDataType(FdoDataType_Boolean);
-                break;
-            case Dvt_Double:
-                tempfe->Reset();
-                dpd->SetDataType(FdoDataType_Double);
-                break;
-            case Dvt_DateTime:
-                tempfe->Reset();
-                dpd->SetDataType(FdoDataType_DateTime);
-                break;
-            default:
-                tempfe->Reset();
-                dpd->SetDataType(FdoDataType_String);
-                break;
-            }
-
+			FdoDataValue *dataValue = static_cast<FdoDataValue *>(results.p);
+			dpd->SetDataType(dataValue->GetDataType());
             pdc->Add(dpd);
         }
     }

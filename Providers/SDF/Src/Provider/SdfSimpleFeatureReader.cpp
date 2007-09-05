@@ -17,15 +17,18 @@
 //  
 #include "stdafx.h"
 #include "SdfSimpleFeatureReader.h"
+#include <FdoExpressionEngine.h>
+#include <Fdo/Expression/LiteralValue.h>
 
 #include "SdfConnection.h"
 #include "PropertyIndex.h"
 #include "BinaryReader.h"
 #include "DataDb.h"
-#include "FilterExecutor.h"
 #include "FdoCommonSchemaUtil.h"
 #include "KeyDb.h"
 #include "SchemaDb.h"
+
+
 
 //-------------------------------------------------------
 // Constructor / destructor
@@ -78,7 +81,7 @@ SdfSimpleFeatureReader::SdfSimpleFeatureReader(SdfConnection* connection, FdoCla
 
     if (m_filter)
     {
-        m_filterExec = FilterExecutor::Create(this, m_propIndex, selectIdents, m_class);
+        m_filterExec = FdoExpressionEngine::Create(this, m_class, selectIdents, NULL);
     }
     else
     {
@@ -90,7 +93,7 @@ SdfSimpleFeatureReader::SdfSimpleFeatureReader(SdfConnection* connection, FdoCla
     //is no filter, in case there are computed properties
     if (!m_filterExec && computedProps && (computedProps->GetCount() > 0))
     {
-        m_filterExec = FilterExecutor::Create(this, m_propIndex, selectIdents, m_class);
+		m_filterExec = FdoExpressionEngine::Create(this, m_class, selectIdents, NULL);
     }
 
     m_features = features;
@@ -127,7 +130,8 @@ SdfSimpleFeatureReader::SdfSimpleFeatureReader( SdfSimpleFeatureReader& reader )
 	 //this prop index stays fixed
     m_basePropIndex = m_propIndex;
 
-	m_filterExec = FilterExecutor::Create(this, m_propIndex, NULL, m_class);
+    m_filterExec = FdoExpressionEngine::Create(this, m_class, NULL, NULL);
+
 
     m_dataReader = new BinaryReader(NULL, 0, m_propIndex->GetNumProps() );
 
@@ -244,10 +248,17 @@ bool SdfSimpleFeatureReader::GetBoolean(FdoString* propertyName)
     {
         CheckIfPropExists(propertyName);
 
-        m_filterExec->ProcessIdentifier(propertyName);
-        bool ret = m_filterExec->GetBooleanResult();
-        m_filterExec->Reset();
-        return ret;
+		FdoPtr<FdoLiteralValue> results = m_filterExec->Evaluate(propertyName);
+		if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
+		{
+			FdoDataValue *dataValue = static_cast<FdoDataValue *> (results.p);
+			if (dataValue->GetDataType() == FdoDataType_Boolean)
+			{
+				FdoBooleanValue *booleanValue = static_cast<FdoBooleanValue *>(dataValue);
+				return booleanValue->GetBoolean();
+			}
+		}
+        throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_57_UNEXPECTEDERROR)));
     }
 
     if (ps->m_dataType != FdoDataType_Boolean)
@@ -301,10 +312,17 @@ FdoDateTime SdfSimpleFeatureReader::GetDateTime(FdoString* propertyName)
     {
         CheckIfPropExists(propertyName);
 
-        m_filterExec->ProcessIdentifier(propertyName);
-        FdoDateTime ret = m_filterExec->GetDateTimeResult();
-        m_filterExec->Reset();
-        return ret;
+        FdoPtr<FdoLiteralValue> results = m_filterExec->Evaluate(propertyName);
+		if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
+		{
+			FdoDataValue *dataValue = static_cast<FdoDataValue *> (results.p);
+			if (dataValue->GetDataType() == FdoDataType_DateTime)
+			{
+				FdoDateTimeValue *dateTimeValue = static_cast<FdoDateTimeValue *>(dataValue);
+				return dateTimeValue->GetDateTime();
+			}
+		}
+        throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_57_UNEXPECTEDERROR)));
     }
 
     if (ps->m_dataType != FdoDataType_DateTime)
@@ -332,10 +350,17 @@ double SdfSimpleFeatureReader::GetDouble(FdoString* propertyName)
     {
         CheckIfPropExists(propertyName);
 
-        m_filterExec->ProcessIdentifier(propertyName);
-        double ret = m_filterExec->GetDoubleResult();
-        m_filterExec->Reset();
-        return ret;
+		FdoPtr<FdoLiteralValue> results = m_filterExec->Evaluate(propertyName);
+		if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
+		{
+			FdoDataValue *dataValue = static_cast<FdoDataValue *> (results.p);
+			if (dataValue->GetDataType() == FdoDataType_Double)
+			{
+				FdoDoubleValue *doubleValue = static_cast<FdoDoubleValue *>(dataValue);
+				return doubleValue->GetDouble();
+			}
+		}
+        throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_57_UNEXPECTEDERROR)));
     }
 
     if (ps->m_dataType != FdoDataType_Double && ps->m_dataType != FdoDataType_Decimal)
@@ -381,8 +406,23 @@ FdoInt32 SdfSimpleFeatureReader::GetInt32(FdoString* propertyName)
 	RefreshData();
     PropertyStub* ps = m_propIndex->GetPropInfo(propertyName);
 
+    //check for computed property
     if (!ps)
-        throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_38_INVALID_PROPERTY_NAME)));
+    {
+        CheckIfPropExists(propertyName);
+
+		FdoPtr<FdoLiteralValue> results = m_filterExec->Evaluate(propertyName);
+		if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
+		{
+			FdoDataValue *dataValue = static_cast<FdoDataValue *> (results.p);
+			if (dataValue->GetDataType() == FdoDataType_Int32)
+			{
+				FdoInt32Value *int32Value = static_cast<FdoInt32Value *>(dataValue);
+				return int32Value->GetInt32();
+			}
+		}
+        throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_57_UNEXPECTEDERROR)));
+    }
 
     if (ps->m_dataType != FdoDataType_Int32)
         throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_36_INCORRECT_PROPERTY_TYPE)));
@@ -413,10 +453,18 @@ FdoInt64 SdfSimpleFeatureReader::GetInt64(FdoString* propertyName)
     {
         CheckIfPropExists(propertyName);
 
-        m_filterExec->ProcessIdentifier(propertyName);
-        FdoInt64 ret = m_filterExec->GetInt64Result();
-        m_filterExec->Reset();
-        return ret;
+		FdoPtr<FdoLiteralValue> results = m_filterExec->Evaluate(propertyName);
+		if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
+		{
+			FdoDataValue *dataValue = static_cast<FdoDataValue *> (results.p);
+			if (dataValue->GetDataType() == FdoDataType_Int64)
+			{
+				FdoInt64Value *int64Value = static_cast<FdoInt64Value *>(dataValue);
+				return int64Value->GetInt64();
+			}
+		}
+        
+        throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_57_UNEXPECTEDERROR)));
     }
 
     if (ps->m_dataType != FdoDataType_Int64)
@@ -439,8 +487,24 @@ float SdfSimpleFeatureReader::GetSingle(FdoString* propertyName)
 	RefreshData();
     PropertyStub* ps = m_propIndex->GetPropInfo(propertyName);
 
+    //check for computed property
     if (!ps)
-        throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_38_INVALID_PROPERTY_NAME)));
+    {
+        CheckIfPropExists(propertyName);
+
+		FdoPtr<FdoLiteralValue> results = m_filterExec->Evaluate(propertyName);
+		if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
+		{
+			FdoSingleValue *dataValue = static_cast<FdoSingleValue *> (results.p);
+			if (dataValue->GetDataType() == FdoDataType_Single)
+			{
+				FdoSingleValue *singleValue = static_cast<FdoSingleValue *>(dataValue);
+				return singleValue->GetSingle();
+			}
+		}
+        
+        throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_57_UNEXPECTEDERROR)));
+    }
 
     if (ps->m_dataType != FdoDataType_Single)
         throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_36_INCORRECT_PROPERTY_TYPE)));
@@ -516,11 +580,23 @@ FdoString* SdfSimpleFeatureReader::GetString(FdoString* propertyName)
         if (m_stringPropsCache[propertyName])
             return m_stringPropsCache[propertyName];
 
-        m_filterExec->ProcessIdentifier(propertyName);
-        wchar_t* ret = m_filterExec->GetStringResult();
-        m_filterExec->Reset();
-        m_stringPropsCache[propertyName] = ret;
-        return ret;
+		FdoPtr<FdoLiteralValue> results = m_filterExec->Evaluate(propertyName);
+
+		if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
+		{
+			FdoStringValue *dataValue = static_cast<FdoStringValue *> (results.p);
+			if (dataValue->GetDataType() == FdoDataType_String)
+			{
+				FdoStringValue *stringValue = static_cast<FdoStringValue *>(dataValue);
+				wchar_t* ret = new wchar_t[wcslen(stringValue->GetString())+1];
+				wcscpy(ret, stringValue->GetString());
+				m_stringPropsCache[propertyName] = (wchar_t *) ret;
+				return ret;
+			}
+		}
+
+        throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_57_UNEXPECTEDERROR)));
+        
     }
 
     if (ps->m_dataType != FdoDataType_String)
@@ -563,11 +639,26 @@ bool SdfSimpleFeatureReader::IsNull(FdoString* propertyName)
     {
         CheckIfPropExists(propertyName);
 
-        m_filterExec->ProcessIdentifier(propertyName);
-        DataValueType type = m_filterExec->GetResultType();
-        m_filterExec->Reset();
+		FdoPtr<FdoLiteralValue> results = m_filterExec->Evaluate(propertyName);
+		if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
+		{
+			FdoDataValue *dataValue = static_cast<FdoDataValue *> (results.p);
+			return dataValue->IsNull();
+			{
+				FdoBooleanValue *booleanValue = static_cast<FdoBooleanValue *>(dataValue);
+				return booleanValue->GetBoolean();
+			}
 
-        return type == Dvt_Null;
+		}
+        else if (results->GetLiteralValueType() == FdoLiteralValueType_Geometry)
+        {
+            FdoGeometryValue *geometryValue = static_cast<FdoGeometryValue *> (results.p);
+            return geometryValue->IsNull();
+        }
+        else
+            throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_57_UNEXPECTEDERROR)));
+
+		return 0;
         
     }
 
@@ -923,10 +1014,7 @@ bool SdfSimpleFeatureReader::ReadNext()
             
             if (m_filter)
             {
-                m_filterExec->Reset();                
-                m_filter->Process(m_filterExec);
-                passedFilter = m_filterExec->GetBooleanResult();
-                m_filterExec->Reset();
+                passedFilter = m_filterExec->ProcessFilter(m_filter);
             }
             
         }

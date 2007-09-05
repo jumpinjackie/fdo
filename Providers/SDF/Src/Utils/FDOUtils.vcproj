@@ -345,14 +345,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\FilterExecutor.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\FilterExecutor.h"
-			>
-		</File>
-		<File
 			RelativePath=".\Int64Value.cpp"
 			>
 		</File>

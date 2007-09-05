@@ -23,7 +23,8 @@
 #include "SdfDeletingFeatureReader.h"
 #include "DataDb.h"
 #include "PropertyIndex.h"
-#include "FdoCommonFilterExecutor.h"
+#include "FdoExpressionEngine.h"
+
 
 //-------------------------------------------------------
 // Constructor / destructor
@@ -77,7 +78,7 @@ FdoInt32 SdfDelete::Execute()
     if( m_filter != NULL )
 	{
 		FdoPtr<FdoIFilterCapabilities> filterCaps = m_connection->GetFilterCapabilities();
-        FdoCommonFilterExecutor::ValidateFilter( clas, m_filter, NULL, filterCaps );
+        FdoExpressionEngine::ValidateFilter( clas, m_filter, NULL, filterCaps );
 	}
 
 	m_connection->FlushAll( clas, true );
