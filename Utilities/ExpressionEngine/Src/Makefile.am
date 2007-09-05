@@ -24,6 +24,35 @@ EXTRA_DIST =
 noinst_LTLIBRARIES = libExpressionEngine.la
 
 libExpressionEngine_la_SOURCES = \
+  Functions\Aggregate\CacheValue.cpp \
+  Functions\Aggregate\CacheValueCollection.cpp \
+  Functions\Aggregate\FdoFunctionAvg.cpp \
+  Functions\Aggregate\FdoFunctionCount.cpp \
+  Functions\Aggregate\FdoFunctionMax.cpp \
+  Functions\Aggregate\FdoFunctionMin.cpp \
+  Functions\Aggregate\FdoFunctionSpatialExtents.cpp \
+  Functions\Aggregate\FdoFunctionSum.cpp \
+  Functions\Math\FdoFunctionAbs.cpp \
+  Functions\Math\FdoFunctionAcos.cpp \
+  Functions\Math\FdoFunctionAsin.cpp \
+  Functions\Math\FdoFunctionAtan2.cpp \
+  Functions\Math\FdoFunctionAtan.cpp \
+  Functions\Math\FdoFunctionCos.cpp \
+  Functions\Math\FdoFunctionExp.cpp \
+  Functions\Math\FdoFunctionLn.cpp \
+  Functions\Math\FdoFunctionLog.cpp \
+  Functions\Math\FdoFunctionMod.cpp \
+  Functions\Math\FdoFunctionPower.cpp \
+  Functions\Math\FdoFunctionRemainder.cpp \
+  Functions\Math\FdoFunctionSin.cpp \
+  Functions\Math\FdoFunctionSqrt.cpp \
+  Functions\Math\FdoFunctionTan.cpp \
+  Functions\Numeric\FdoFunctionCeil.cpp \
+  Functions\Numeric\FdoFunctionFloor.cpp \
+  Functions\Numeric\FdoFunctionSign.cpp \
+  Functions\String\FdoFunctionConcat.cpp \
+  Functions\String\FdoFunctionLower.cpp \
+  Functions\String\FdoFunctionUpper.cpp \
   FdoExpressionEngine.cpp \
   FdoExpressionEngineFunctionCollection.cpp \
   FdoExpressionEngineImp.cpp \
