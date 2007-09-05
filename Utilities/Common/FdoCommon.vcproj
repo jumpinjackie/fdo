@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="inc;$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged\Src\common"
+				AdditionalIncludeDirectories="inc;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDO)\Unmanaged\Src\common&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;GISPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;HAVE_GEOM_INFO_TYPE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="0"
@@ -187,7 +187,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="inc;$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged\Src\common"
+				AdditionalIncludeDirectories="inc;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDO)\Unmanaged\Src\common&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;HAVE_GEOM_INFO_TYPE"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -335,10 +335,6 @@
 				>
 			</File>
 			<File
-				RelativePath="Src\FdoCommonFilterExecutor.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Src\FdoCommonGeometryUtil.cpp"
 				>
 			</File>
@@ -356,10 +352,6 @@
 			</File>
 			<File
 				RelativePath="Src\FdoCommonPropertyIndex.cpp"
-				>
-			</File>
-			<File
-				RelativePath="Src\FdoCommonQueryAggregator.cpp"
 				>
 			</File>
 			<File
@@ -572,10 +564,6 @@
 				>
 			</File>
 			<File
-				RelativePath="Inc\FdoCommonFilterExecutor.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Inc\FdoCommonGeometryUtil.h"
 				>
 			</File>
@@ -593,10 +581,6 @@
 			</File>
 			<File
 				RelativePath="Inc\FdoCommonPropertyIndex.h"
-				>
-			</File>
-			<File
-				RelativePath="Inc\FdoCommonQueryAggregator.h"
 				>
 			</File>
 			<File

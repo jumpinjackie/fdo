@@ -360,8 +360,8 @@ public:
     virtual FdoCommonBinaryReader* GetBinaryReader();
     FdoCommonPropertyIndex* GetPropertyIndex();
 
-    static FdoArray<FdoFunction*>* GetAggregateFunctions(FdoIdentifierCollection* selectedIds, FdoCommonExpressionType &exprType, FdoFunctionDefinitionCollection *funcDefs=NULL);
-    static FdoArray<FdoFunction*>* GetAggregateFunctions(FdoExpression* expr, FdoCommonExpressionType &exprType, FdoFunctionDefinitionCollection *funcDefs=NULL);
+    static FdoArray<FdoFunction*>* GetAggregateFunctions(FdoFunctionDefinitionCollection *funcDefs, FdoIdentifierCollection* selectedIds, FdoCommonExpressionType &exprType);
+    static FdoArray<FdoFunction*>* GetAggregateFunctions(FdoFunctionDefinitionCollection *funcDefs, FdoExpression* expr, FdoCommonExpressionType &exprType);
 
     FdoClassDefinition* GetAggregateClassDef(FdoClassDefinition* originalClassDef, FdoIdentifierCollection* selectedIds);
     void RunAggregateQuery(FdoISelect* selectCmd, FdoClassDefinition* originalClassDef, FdoIdentifierCollection* selectedIds, FdoClassDefinition* aggrClassDef, FdoArray<FdoFunction*>* aggrFunctions);

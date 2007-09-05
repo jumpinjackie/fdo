@@ -21,7 +21,7 @@
 #include "FdoCommonMiscUtil.h"
 #include "FdoCommonSchemaUtil.h"
 #include "FdoCommonOSUtil.h"
-#include "FdoCommonFilterExecutor.h"
+#include "FdoExpressionEngine.h"
 #include "FdoCommonStringUtil.h"
 
 
@@ -480,9 +480,9 @@ int FdoCommonMiscUtil::CompareDataValues(FdoDataValue *d1, FdoDataValue *d2)
     if ((d1 == NULL) || (d2 == NULL))
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_60_NULL_POINTER)));
 
-    if (FdoCommonFilterExecutor::IsLessThan(d1, d2))
+	if (FdoExpressionEngine::IsLessThan(d1, d2))
         return -1;
-    else if (FdoCommonFilterExecutor::IsEqualTo(d1,d2))
+    else if (FdoExpressionEngine::IsEqualTo(d1,d2))
         return 0;
     else
         return 1;
