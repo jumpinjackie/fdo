@@ -2501,3 +2501,8 @@ SymbolicName=FUNCTION_POWER
 Language=English
 Raises a numeric expression to the power of another numeric expression
 .
+MessageId=9227
+SymbolicName=FUNCTION_DATA_VALUE_ERROR
+Language=English
+Expression Engine: Invalid value for execution of function '%1$ls'
+.
