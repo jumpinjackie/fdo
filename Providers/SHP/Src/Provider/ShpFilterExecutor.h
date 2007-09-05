@@ -22,7 +22,7 @@
 #pragma once
 #endif // _WIN32
 
-#include <FdoCommonFilterExecutor.h>
+#include <FdoExpressionEngineImp.h>
 
 #include "ShpSpatialIndex.h"
 
@@ -57,23 +57,6 @@ enum eShapeQueryOptimizerOp
 typedef std::vector<int>  logical_op_list;   // FdoBinaryLogicalOperations + ShpLogicalOperation_None
 
 typedef std::vector<int>  left_right_op_list; // 0 (left) or 1 (right)
-
-class ShpFilterExecutor :
-    public FdoCommonFilterExecutor
-{
-protected:
-	ShpFilterExecutor() {};
-    ShpFilterExecutor (FdoIReader* reader, FdoIdentifierCollection* compIdents);
-
-    FdoPtr<FdoPropertyDefinitionCollection> mProperties;
-
-public:
-    virtual ~ShpFilterExecutor (void);
-
-    static ShpFilterExecutor* Create (FdoIReader* featureReader, FdoIdentifierCollection* compIdents);
-
-    virtual FdoPropertyDefinition* GetPropInfo (FdoString* name);
-};
 
 #endif // SHPFILTEREXECUTOR_H
 

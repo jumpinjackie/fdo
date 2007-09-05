@@ -20,7 +20,7 @@
 #endif // _WIN32
 
 #include "stdafx.h"
-#include <FdoCommonFilterExecutor.h>
+#include <FdoExpressionEngineImp.h>
 
 
 class ShpFeatureReader;
@@ -29,7 +29,7 @@ class ShpFeatureReader;
 ///<summary>
 ///</summary>
 
-class ShpQueryOptimizer : public FdoCommonFilterExecutor
+class ShpQueryOptimizer : public FdoExpressionEngineImp
 {
     friend class ShpFeatureReader;
 
@@ -42,7 +42,7 @@ public:
     virtual FdoPropertyDefinition* GetPropInfo (FdoString* name);
 
 protected:
-    ShpQueryOptimizer(FdoIReader* reader, FdoClassDefinition* classDef, FdoIdentifierCollection* compIdents, ShpSpatialIndex* rtree );
+    ShpQueryOptimizer(FdoIReader* reader, FdoClassDefinition* classDef, FdoIdentifierCollection* compIdents, ShpSpatialIndex* rtree);
     
     FdoPtr<FdoPropertyDefinitionCollection> mProperties;
 

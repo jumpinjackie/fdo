@@ -31,6 +31,7 @@
 #include <DoubleValue.h>
 #include <StringValue.h>
 #include <BooleanValue.h>
+#include <FdoExpressionEngineImp.h>
 
 // Used to determine if two double precision numbers are about equal
 #define SHP_GLOBAL_TOLERANCE 1.0e-10 
@@ -61,7 +62,7 @@ ShpFeatIdQueryEvaluator* ShpFeatIdQueryEvaluator::Create(FdoIReader* reader, Fdo
 }
 
 ShpFeatIdQueryEvaluator::ShpFeatIdQueryEvaluator(FdoIReader* reader, FdoClassDefinition* classDef, FdoIdentifierCollection* selected, ShpSpatialIndex* rtree ):
-    FdoCommonFilterExecutor (reader, selected)
+    FdoExpressionEngineImp (reader, classDef, selected, NULL)
 {
     ShpFeatureReader* my_reader = (ShpFeatureReader *)reader;
     m_Connection = my_reader->GetConnection();
@@ -151,7 +152,7 @@ void ShpFeatIdQueryEvaluator::ProcessBinaryLogicalOperator(FdoBinaryLogicalOpera
 		printf("L:level=%d  op=%d  | %ls \n", m_level, (int)filter.GetOperation(), left->ToString());
 
 	m_level++;
-
+ 
     left->Process (this);
 
 	if (SHP_DEBUG_PARSE_TREE)
@@ -240,7 +241,7 @@ void ShpFeatIdQueryEvaluator::ProcessNullCondition (FdoNullCondition& filter)
 void ShpFeatIdQueryEvaluator::ProcessDistanceCondition (FdoDistanceCondition& filter)
 {
     // Until it is implentented, let it throw a base class exception
-    FdoCommonFilterExecutor::ProcessDistanceCondition( filter );
+    FdoExpressionEngineImp::ProcessDistanceCondition( filter );
 }
 
 void ShpFeatIdQueryEvaluator::DoSecondaryFilter(FdoIGeometry *filterGeom, FdoSpatialOperations spatialOp )

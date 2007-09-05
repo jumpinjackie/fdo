@@ -17,6 +17,7 @@
 //  
 #include "stdafx.h"
 #include "ShpFeatIdQueryTester.h"
+#include <FdoExpressionEngineImp.h>
 
 
 ShpFeatIdQueryTester::ShpFeatIdQueryTester()
@@ -33,7 +34,7 @@ ShpFeatIdQueryTester* ShpFeatIdQueryTester::Create( FdoIReader* reader )
 }
 
 ShpFeatIdQueryTester::ShpFeatIdQueryTester( FdoIReader* reader, FdoClassDefinition* classDef ):
-    FdoCommonFilterExecutor (reader, NULL)
+    FdoExpressionEngineImp (reader, classDef, NULL, NULL)
 {
     ShpFeatureReader* my_reader = (ShpFeatureReader *)reader;
     m_Connection = my_reader->GetConnection();

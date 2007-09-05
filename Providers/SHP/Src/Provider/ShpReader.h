@@ -25,7 +25,6 @@
 #include <algorithm>
 
 #include <RowData.h>
-#include <ShpFilterExecutor.h>
 #include <ShpSchemaUtilities.h>
 
 // Maximum allowed size for the merged list of FeatIds 
@@ -34,7 +33,6 @@
 
 #define SHP_CACHED_GEOMETRY_INITIAL_SIZE    100 // bytes
 
-class ShpFilterExecutor;
 class ShpQueryOptimizer;
 class ShpFeatIdQueryTester;
 class ShpFeatIdQueryEvaluator;
@@ -42,7 +40,6 @@ class ShpFeatIdQueryEvaluator;
 template <class FDO_READER> class ShpReader :
     public FDO_READER
 {
-    friend class ShpFilterExecutor;
     friend class ShpQueryOptimizer;
     friend class ShpFeatIdQueryTester;
     friend class ShpFeatIdQueryEvaluator;
@@ -76,6 +73,7 @@ protected:
 
 	bool			mFetchGeometry;		// ExtendedSelect doesn't need geometries for indexing data.
 	bool			mFetchDeletes;		// ExtendedSelect needs fetching the deleted rows to use the featid as index.
+    std::map<std::wstring, wchar_t*> m_stringPropsCache; 
 
 protected:
     ShpReader () {}; // to satisfy _NoAddRefReleaseOnFdoPtr 
@@ -211,12 +209,19 @@ public:
         computed = (id == NULL) ? NULL : dynamic_cast<FdoComputedIdentifier*>(id.p);
         if (NULL != computed)
         {
-            ProcessComputedIdentifier (computed);
-            bool bIsNull;
-            ret = mFilterExecutor->GetBooleanResult (bIsNull);
-            mFilterExecutor->Reset ();
-            if (bIsNull)
-                throw FdoException::Create(NlsMsgGet(SHP_READER_PROPERTY_NULL, "The property '%1$ls' is NULL.", identifier));
+            FdoPtr<FdoLiteralValue> results = ProcessComputedIdentifier (computed);
+			if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
+			{
+				FdoDataValue *dataValue = static_cast<FdoDataValue *> (results.p);
+				if (dataValue->GetDataType() == FdoDataType_Boolean)
+				{
+					FdoBooleanValue *booleanValue = static_cast<FdoBooleanValue *>(dataValue);
+					if (booleanValue->IsNull())
+		                throw FdoException::Create(NlsMsgGet(SHP_READER_PROPERTY_NULL, "The property '%1$ls' is NULL.", identifier));
+					return booleanValue->GetBoolean();
+				}
+			}
+            throw FdoException::Create (NlsMsgGet(SHP_INVALID_LITERAL_TYPE, "Invalid literal type '%1$d'.", results->GetLiteralValueType()));
         }
         else
         {
@@ -256,13 +261,20 @@ public:
         computed = (id == NULL) ? NULL : dynamic_cast<FdoComputedIdentifier*>(id.p);
         if (NULL != computed)
         {
-            ProcessComputedIdentifier (computed);
-            bool bIsNull;
-            ret = mFilterExecutor->GetDateTimeResult (bIsNull);
-            mFilterExecutor->Reset ();
-            if (bIsNull)
-                throw FdoException::Create(NlsMsgGet(SHP_READER_PROPERTY_NULL, "The property '%1$ls' is NULL.", identifier));
-        }
+            FdoPtr<FdoLiteralValue> results = ProcessComputedIdentifier (computed);
+			if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
+			{
+				FdoDataValue *dataValue = static_cast<FdoDataValue *> (results.p);
+				if (dataValue->GetDataType() == FdoDataType_DateTime)
+				{
+					FdoDateTimeValue *dateTimeValue = static_cast<FdoDateTimeValue *>(dataValue);
+					if (dateTimeValue->IsNull())
+		                throw FdoException::Create(NlsMsgGet(SHP_READER_PROPERTY_NULL, "The property '%1$ls' is NULL.", identifier));
+					return dateTimeValue->GetDateTime();
+				}
+			}
+            throw FdoException::Create (NlsMsgGet(SHP_INVALID_LITERAL_TYPE, "Invalid literal type '%1$d'.", results->GetLiteralValueType()));
+		}
         else
         {
             ColumnData coldata;
@@ -297,18 +309,25 @@ public:
         computed = (id == NULL) ? NULL : dynamic_cast<FdoComputedIdentifier*>(id.p);
         if (NULL != computed)
         {
-            ProcessComputedIdentifier (computed);
-            bool bIsNull;
-            if (mFilterExecutor->GetResultDataType() == FdoDataType_Double)
-                ret = mFilterExecutor->GetDoubleResult (bIsNull);
-            else if (mFilterExecutor->GetResultDataType() == FdoDataType_Decimal)
-                ret = mFilterExecutor->GetDecimalResult (bIsNull);
-            else
-                throw FdoException::Create (NlsMsgGet(SHP_VALUE_TYPE_MISMATCH, "Value type (%1$ls) to insert, update or retrieve doesn't match the type (%2$ls) of property '%3$ls'.",
-                    FdoCommonMiscUtil::FdoDataTypeToString(FdoDataType_Double), FdoCommonMiscUtil::FdoDataTypeToString(mFilterExecutor->GetResultDataType()), identifier));
-            mFilterExecutor->Reset ();
-            if (bIsNull)
-                throw FdoException::Create(NlsMsgGet(SHP_READER_PROPERTY_NULL, "The property '%1$ls' is NULL.", identifier));
+			FdoPtr<FdoLiteralValue> results = ProcessComputedIdentifier (computed);
+			if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
+			{
+				FdoDataValue *dataValue = static_cast<FdoDataValue *> (results.p);
+				if (dataValue->GetDataType() == FdoDataType_Double)
+				{
+					FdoDoubleValue *doubleValue = static_cast<FdoDoubleValue *>(dataValue);
+					return doubleValue->GetDouble();
+				}
+				else
+					if (dataValue->GetDataType() == FdoDataType_Decimal)
+					{
+						FdoDecimalValue *decimalValue = static_cast<FdoDecimalValue *>(dataValue);
+						if (decimalValue->IsNull())
+							throw FdoException::Create(NlsMsgGet(SHP_READER_PROPERTY_NULL, "The property '%1$ls' is NULL.", identifier));
+						return decimalValue->GetDecimal();
+					}
+			}
+            throw FdoException::Create (NlsMsgGet(SHP_INVALID_LITERAL_TYPE, "Invalid literal type '%1$d'.", results->GetLiteralValueType()));
         }
         else
         {
@@ -348,12 +367,20 @@ public:
         computed = (id == NULL) ? NULL : dynamic_cast<FdoComputedIdentifier*>(id.p);
         if (NULL != computed)
         {
-            ProcessComputedIdentifier (computed);
-            bool bIsNull;
-            ret = mFilterExecutor->GetInt32Result (bIsNull);
-            mFilterExecutor->Reset ();
-            if (bIsNull)
-                throw FdoException::Create(NlsMsgGet(SHP_READER_PROPERTY_NULL, "The property '%1$ls' is NULL.", identifier));
+            FdoPtr<FdoLiteralValue> results = ProcessComputedIdentifier (computed);
+			if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
+			{
+				FdoDataValue *dataValue = static_cast<FdoDataValue *> (results.p);
+				if (dataValue->GetDataType() == FdoDataType_Int32)
+				{
+					FdoInt32Value *int32Value = static_cast<FdoInt32Value *>(dataValue);
+					if (int32Value->IsNull())
+		                throw FdoException::Create(NlsMsgGet(SHP_READER_PROPERTY_NULL, "The property '%1$ls' is NULL.", identifier));
+
+					return int32Value->GetInt32();
+				}
+			}
+            throw FdoException::Create (NlsMsgGet(SHP_INVALID_LITERAL_TYPE, "Invalid literal type '%1$d'.", results->GetLiteralValueType()));
         }
         else 
         {
@@ -387,23 +414,28 @@ public:
     {
         FdoPtr<FdoIdentifier> id;
         FdoComputedIdentifier* computed;
-        FdoInt64 ret;
 
         id = validate (identifier);
         computed = (id == NULL) ? NULL : dynamic_cast<FdoComputedIdentifier*>(id.p);
         if (NULL != computed)
         {
-            ProcessComputedIdentifier (computed);
-            bool bIsNull;
-            ret = mFilterExecutor->GetInt64Result (bIsNull);
-            mFilterExecutor->Reset ();
-            if (bIsNull)
-                throw FdoException::Create(NlsMsgGet(SHP_READER_PROPERTY_NULL, "The property '%1$ls' is NULL.", identifier));
+            FdoPtr<FdoLiteralValue> results = ProcessComputedIdentifier (computed);
+			if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
+			{
+				FdoDataValue *dataValue = static_cast<FdoDataValue *> (results.p);
+				if (dataValue->GetDataType() == FdoDataType_Int64)
+				{
+					FdoInt64Value *int64Value = static_cast<FdoInt64Value *>(dataValue);
+					if (int64Value->IsNull())
+		                throw FdoException::Create(NlsMsgGet(SHP_READER_PROPERTY_NULL, "The property '%1$ls' is NULL.", identifier));
+					return int64Value->GetInt64();
+				}
+			}
+            throw FdoException::Create (NlsMsgGet(SHP_INVALID_LITERAL_TYPE, "Invalid literal type '%1$d'.", results->GetLiteralValueType()));
         }
         else
             throw FdoException::Create (NlsMsgGet(SHP_UNSUPPORTED_DATATYPE, "The '%1$ls' data type is not supported by Shp.", L"Int64"));
 
-        return (ret);
     }
 
     /// <summary>Gets the Single floating point value of the specified property. No
@@ -431,12 +463,25 @@ public:
         computed = (id == NULL) ? NULL : dynamic_cast<FdoComputedIdentifier*>(id.p);
         if (NULL != computed)
         {
-            ProcessComputedIdentifier (computed);
-            bool bIsNull;
-            ret = mFilterExecutor->GetStringResult (bIsNull);
-            mFilterExecutor->Reset ();
-            if (bIsNull)
-                throw FdoException::Create(NlsMsgGet(SHP_READER_PROPERTY_NULL, "The property '%1$ls' is NULL.", identifier));
+            if (m_stringPropsCache[identifier])
+                return m_stringPropsCache[identifier];
+
+            FdoPtr<FdoLiteralValue> results = ProcessComputedIdentifier (computed);
+			if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
+			{
+				FdoStringValue *dataValue = static_cast<FdoStringValue *> (results.p);
+				if (dataValue->GetDataType() == FdoDataType_String)
+				{
+					FdoStringValue *stringValue = static_cast<FdoStringValue *>(dataValue);
+					if (stringValue->IsNull())
+						throw FdoException::Create(NlsMsgGet(SHP_READER_PROPERTY_NULL, "The property '%1$ls' is NULL.", identifier));
+				    wchar_t* ret = new wchar_t[wcslen(stringValue->GetString())+1];
+				    wcscpy(ret, stringValue->GetString());
+                    m_stringPropsCache[identifier] = ret;
+					return ret;
+				}
+			}
+            throw FdoException::Create (NlsMsgGet(SHP_INVALID_LITERAL_TYPE, "Invalid literal type '%1$d'.", results->GetLiteralValueType()));
         }
         else
         {
@@ -489,9 +534,23 @@ public:
         computed = (id == NULL) ? NULL : dynamic_cast<FdoComputedIdentifier*>(id.p);
         if (NULL != computed)
         {
-            ProcessComputedIdentifier (computed);
-            ret = mFilterExecutor->IsResultNull();
-            mFilterExecutor->Reset ();
+            FdoPtr<FdoLiteralValue> results = ProcessComputedIdentifier (computed);
+			if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
+			{
+				FdoDataValue *dataValue = static_cast<FdoDataValue *> (results.p);
+				return dataValue->IsNull();
+
+			}
+			else
+			{
+				if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
+				{
+					FdoGeometryValue *geometryValue = static_cast<FdoGeometryValue *> (results.p);
+					return geometryValue->IsNull();
+					
+				}
+                throw FdoException::Create (NlsMsgGet(SHP_INVALID_LITERAL_TYPE, "Invalid literal type '%1$d'.", results->GetLiteralValueType()));
+			}
         }
         else
         {
@@ -625,8 +684,8 @@ public:
 
             if ( mIsFeatIdQuery )
             {
-                mFeatIdFilterExecutor = ShpFeatIdQueryEvaluator::Create (this, mSelected );
-                mFilter->Process (mFeatIdFilterExecutor);
+                mFeatIdFilterExecutor = ShpFeatIdQueryEvaluator::Create (this, mSelected);
+				mFilter->Process (mFeatIdFilterExecutor);
             }
         }
 
@@ -636,6 +695,22 @@ public:
             ret = ReadNextNonFeatidQuery();
 
         mFirstRead = false;
+
+
+        //strings returned for string property values need to be 
+        //available until the following call to ReadNext()
+        //This means we store them in a map which we now have to clean up
+        //if needed. Note that this is only used for computed properties,
+        //attribute properties have their own handling in BinaryReader.
+        if (!m_stringPropsCache.empty())
+        {
+            std::map<std::wstring, wchar_t*>::iterator iter = m_stringPropsCache.begin();
+
+            for (; iter != m_stringPropsCache.end(); iter++)
+                delete [] iter->second;
+
+            m_stringPropsCache.clear();
+        }
 
         return (ret);
     }
@@ -710,12 +785,13 @@ protected:
         return mClassName;
     }
 
-    void ProcessComputedIdentifier (FdoComputedIdentifier* computed)
+    FdoLiteralValue *ProcessComputedIdentifier (FdoComputedIdentifier* computed)
     {
         try
         {
             mCheckSelected = false;
-            mFilterExecutor->ProcessIdentifier (*computed);
+            FdoLiteralValue *results = mFilterExecutor->Evaluate(*computed);
+            return (FdoLiteralValue *) results;
         }
         catch (...)
         {

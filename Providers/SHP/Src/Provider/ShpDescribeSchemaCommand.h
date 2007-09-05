@@ -26,7 +26,6 @@ class ShpDescribeSchemaCommand :
 {
     friend class ShpConnection;
     friend class ShpFeatureReader; // friends rather than make a SchemaUtilities class just for that
-    friend class ShpFilterExecutor;
     friend class ShpQueryOptimizer;
 
     FdoStringP mSchemaName;

@@ -20,14 +20,14 @@
 #endif // _WIN32
 
 #include "stdafx.h"
-#include <FdoCommonFilterExecutor.h>
+#include <FdoExpressionEngineImp.h>
 
 class ShpFeatureReader;
 
 ///<summary>
 ///</summary>
 
-class ShpFeatIdQueryEvaluator : public FdoCommonFilterExecutor
+class ShpFeatIdQueryEvaluator : public FdoExpressionEngineImp
 {
     friend class ShpFeatureReader;
 
@@ -40,7 +40,7 @@ public:
     virtual FdoPropertyDefinition* GetPropInfo (FdoString* name);
 
 protected:
-    ShpFeatIdQueryEvaluator(FdoIReader* reader, FdoClassDefinition* classDef, FdoIdentifierCollection* compIdents, ShpSpatialIndex* rtree );
+    ShpFeatIdQueryEvaluator(FdoIReader* reader, FdoClassDefinition* classDef, FdoIdentifierCollection* compIdents, ShpSpatialIndex* rtree);
     
     FdoPtr<FdoPropertyDefinitionCollection> mProperties;
 
