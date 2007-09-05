@@ -409,9 +409,9 @@ FdoLiteralValue *FdoFunctionMod::Evaluate (
          (para2_data_type == FdoDataType_Double )    )    ) {
 
          f_dbl_result =
-                p1_sign * (abs(p1_dbl_value) -
-                           (abs(p2_dbl_value) * 
-                            floor(abs(p1_dbl_value) / abs(p2_dbl_value))));
+                p1_sign * (fabs(p1_dbl_value) -
+                           (fabs(p2_dbl_value) * 
+                            floor(fabs(p1_dbl_value) / fabs(p2_dbl_value))));
 
          return FdoDoubleValue::Create(f_dbl_result);
 
@@ -426,9 +426,9 @@ FdoLiteralValue *FdoFunctionMod::Evaluate (
                         ? p2_int64_value
                         : -1 * p2_int64_value; 
          f_dbl_result =
-                    p1_sign * (abs(p1_dbl_value) -
+                    p1_sign * (fabs(p1_dbl_value) -
                                (abs_int64_p2 *
-                                floor(abs(p1_dbl_value) / abs_int64_p2)));
+                                floor(fabs(p1_dbl_value) / abs_int64_p2)));
 
          return FdoDoubleValue::Create(f_dbl_result);
 
@@ -438,9 +438,9 @@ FdoLiteralValue *FdoFunctionMod::Evaluate (
         (para2_data_type == FdoDataType_Single )    ) {
 
          f_dbl_result =
-                 p1_sign * (abs(p1_dbl_value) -
-                            (abs(p2_flt_value) *
-                             floor(abs(p1_dbl_value) / abs(p2_flt_value))));
+                 p1_sign * (fabs(p1_dbl_value) -
+                            (fabs(p2_flt_value) *
+                             floor(fabs(p1_dbl_value) / fabs(p2_flt_value))));
 
          return FdoDoubleValue::Create(f_dbl_result);
 
@@ -455,9 +455,9 @@ FdoLiteralValue *FdoFunctionMod::Evaluate (
                         ? p2_int64_value
                         : -1 * p2_int64_value; 
          f_dbl_result =
-                     p1_sign * (abs(p1_dbl_value) -
+                     p1_sign * (fabs(p1_dbl_value) -
                                 (abs_int64_p2 *
-                                 floor(abs(p1_dbl_value) / abs_int64_p2)));
+                                 floor(fabs(p1_dbl_value) / abs_int64_p2)));
 
          return FdoDoubleValue::Create(f_dbl_result);
 
@@ -467,9 +467,9 @@ FdoLiteralValue *FdoFunctionMod::Evaluate (
         (para2_data_type == FdoDataType_Single )    ) {
 
          f_dbl_result =
-                 p1_sign * (abs(p1_dbl_value) -
-                            (abs(p2_flt_value) *
-                             floor(abs(p1_dbl_value) / abs(p2_flt_value))));
+                 p1_sign * (fabs(p1_dbl_value) -
+                            (fabs(p2_flt_value) *
+                             floor(fabs(p1_dbl_value) / fabs(p2_flt_value))));
 
          return FdoDoubleValue::Create(f_dbl_result);
 
@@ -486,8 +486,8 @@ FdoLiteralValue *FdoFunctionMod::Evaluate (
                         : -1 * p1_int64_value; 
          f_dbl_result =
                     p1_sign * (abs_int64_p1 -
-                               (abs(p2_dbl_value) *
-                                floor(abs_int64_p1 / abs(p2_dbl_value))));
+                               (fabs(p2_dbl_value) *
+                                floor(abs_int64_p1 / fabs(p2_dbl_value))));
 
          return FdoDoubleValue::Create(f_dbl_result);
 
@@ -526,8 +526,8 @@ FdoLiteralValue *FdoFunctionMod::Evaluate (
 
          f_flt_result =
             p1_sign * (abs_int64_p1 -
-                       (abs(p2_flt_value) *
-                        floor((double)(abs_int64_p1 / abs(p2_flt_value)))));
+                       (fabs(p2_flt_value) *
+                        floor((double)(abs_int64_p1 / fabs(p2_flt_value)))));
 
          return FdoSingleValue::Create(f_flt_result);
 
@@ -600,9 +600,9 @@ FdoLiteralValue *FdoFunctionMod::Evaluate (
          (para2_data_type == FdoDataType_Double )    )    ) {
 
          f_dbl_result =
-                p1_sign * (abs(p1_flt_value) -
-                           (abs(p2_dbl_value) *
-                            floor(abs(p1_flt_value) / abs(p2_dbl_value))));
+                p1_sign * (fabs(p1_flt_value) -
+                           (fabs(p2_dbl_value) *
+                            floor(fabs(p1_flt_value) / fabs(p2_dbl_value))));
 
          return FdoDoubleValue::Create(f_dbl_result);
 
@@ -618,9 +618,9 @@ FdoLiteralValue *FdoFunctionMod::Evaluate (
                         : -1 * p2_int64_value; 
 
          f_flt_result =
-                    p1_sign * (abs(p1_flt_value) -
+                    p1_sign * (fabs(p1_flt_value) -
                                (abs_int64_p2 *
-                                floor(abs(p1_flt_value) / abs_int64_p2)));
+                                floor(fabs(p1_flt_value) / abs_int64_p2)));
 
          return FdoSingleValue::Create(f_flt_result);
 
@@ -630,9 +630,9 @@ FdoLiteralValue *FdoFunctionMod::Evaluate (
         (para2_data_type == FdoDataType_Single)    ) {
 
          f_flt_result =
-                p1_sign * (abs(p1_flt_value) -
-                           (abs(p2_flt_value) *
-                            floor(abs(p1_flt_value) / abs(p2_flt_value))));
+                p1_sign * (fabs(p1_flt_value) -
+                           (fabs(p2_flt_value) *
+                            floor(fabs(p1_flt_value) / fabs(p2_flt_value))));
 
          return FdoSingleValue::Create(f_flt_result);
 

@@ -135,7 +135,7 @@ FdoLiteralValue *FdoFunctionAbs::Evaluate (
       case FdoDataType_Decimal:
         decimal_value =(FdoDecimalValue *) literal_values->GetItem(0);
         if (!decimal_value->IsNull())
-            return FdoDecimalValue::Create(abs(decimal_value->GetDecimal()));
+            return FdoDecimalValue::Create(fabs(decimal_value->GetDecimal()));
         else
           return FdoDecimalValue::Create();
         break;
@@ -143,7 +143,7 @@ FdoLiteralValue *FdoFunctionAbs::Evaluate (
       case FdoDataType_Double:
         double_value = (FdoDoubleValue *) literal_values->GetItem(0);
         if (!double_value->IsNull())
-            return FdoDoubleValue::Create(abs(double_value->GetDouble()));
+            return FdoDoubleValue::Create(fabs(double_value->GetDouble()));
         else
           return FdoDoubleValue::Create();
         break;
@@ -181,7 +181,7 @@ FdoLiteralValue *FdoFunctionAbs::Evaluate (
       case FdoDataType_Single:
         single_value = (FdoSingleValue *) literal_values->GetItem(0);
         if (!single_value->IsNull())
-            return FdoSingleValue::Create(abs(single_value->GetSingle()));
+            return FdoSingleValue::Create(fabs(single_value->GetSingle()));
         else
           return FdoSingleValue::Create();
         break;
