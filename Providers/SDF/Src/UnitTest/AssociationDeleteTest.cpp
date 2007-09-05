@@ -63,7 +63,7 @@ void AssociationDeleteTest::masterTestNoObj( AssociationDeleteType type, FdoDele
             pFilter = FdoComparisonCondition::Create(
 		                FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Association Prop1.Id") ), 
 		                FdoComparisonOperations_EqualTo, 
-		                FdoPtr<FdoDataValue>(FdoDataValue::Create(L"10") ) ); 
+		                FdoPtr<FdoDataValue>(FdoDataValue::Create(10) ) ); 
             //deleteCmd->SetFilter(L"Association Prop1.Id=10");
         else
             pFilter = FdoComparisonCondition::Create(

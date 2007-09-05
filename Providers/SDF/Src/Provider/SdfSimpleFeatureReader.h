@@ -20,8 +20,8 @@
 //forward declare
 class SdfConnection;
 class PropertyIndex;
+class FdoExpressionEngine;
 class BinaryReader;
-class FilterExecutor;
 class DataDb;
 struct PropertyStub;
 
@@ -195,7 +195,7 @@ protected:
     DataDb* m_dbData;
 
     FdoFilter* m_filter;
-    FilterExecutor* m_filterExec;
+	FdoExpressionEngine *m_filterExec;
 
     REC_NO m_currentFeatureRecno;
 
