@@ -17,7 +17,6 @@
 #define FDOCOMMONBINARYREADER_H
 
 #include <FdoCommonPropertyIndex.h>
-#include <hash_map>
 
 #ifndef _WIN32
 #include <list>
