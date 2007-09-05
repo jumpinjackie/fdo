@@ -41,8 +41,6 @@ libProvidersCommon_la_SOURCES = \
   Src/FdoCommonMiscUtil.cpp \
   Src/FdoCommonFile.cpp \
   Src/FdoCommonGeometryUtil.cpp \
-  Src/FdoCommonExpressionEngine.cpp \
-  Src/FdoCommonExpressionEngineImp.cpp \
   Src/FdoCommonConnPropDictionary.cpp \
   Src/FdoCommonConnStringParser.cpp \
   Src/FdoCommonBinaryReader.cpp \
@@ -64,8 +62,6 @@ noinst_HEADERS = $(libProvidersCommon_la_SOURCES) \
   Inc/FdoCommonConnPropDictionary.h \
   Inc/FdoCommonConnStringParser.h \
   Inc/FdoCommonDataReader.h \
-  Inc/FdoCommonExpressionEngine.h \
-  Inc/FdoCommonExpressionEngineImp.h \
   Inc/FdoCommonFeatureCommand.h \
   Inc/FdoCommonFile.h \
   Inc/FdoCommonGeometryUtil.h \
@@ -88,7 +84,8 @@ noinst_HEADERS = $(libProvidersCommon_la_SOURCES) \
 INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \
   -I./Inc \
-  -I$(FDO)/Unmanaged/Src/Common
+  -I$(FDO)/Unmanaged/Src/Common \
+  -I$(FDOUTILITIES)/ExpressionEngine/Inc
 
 libProvidersCommon_la_LDFLAGS = 
 
