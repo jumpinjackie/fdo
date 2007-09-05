@@ -19,6 +19,7 @@
 
 #include <stdafx.h>
 #include <Functions/Aggregate/FdoFunctionAvg.h>
+#include <FdoCommonStringUtil.h>
 
 
 // ----------------------------------------------------------------------------
@@ -769,8 +770,8 @@ void FdoFunctionAvg::Validate (FdoLiteralValueCollection *literal_values)
 
         str_value   = static_cast<FdoStringValue *>(literal_value.p);
         param_value = str_value->GetString();
-        if ((_wcsicmp(param_value, L"ALL"     ) != 0) &&
-            (_wcsicmp(param_value, L"DISTINCT") != 0)    )
+        if ((FdoCommonStringUtil::StringCompareNoCase(param_value, L"ALL"     ) != 0) &&
+            (FdoCommonStringUtil::StringCompareNoCase(param_value, L"DISTINCT") != 0)    )
             throw FdoCommandException::Create(
               FdoException::NLSGetMessage(
                   FUNCTION_OPERATOR_ERROR, 
@@ -784,7 +785,7 @@ void FdoFunctionAvg::Validate (FdoLiteralValueCollection *literal_values)
     // result.
 
     if (count == 2)
-        is_distinct_request = (_wcsicmp(param_value, L"DISTINCT") == 0);
+        is_distinct_request = (FdoCommonStringUtil::StringCompareNoCase(param_value, L"DISTINCT") == 0);
 
     // If two parameters are provided, the value to be processed is provided
     // with the second parameter, otherwise (only one parameter is given) with
