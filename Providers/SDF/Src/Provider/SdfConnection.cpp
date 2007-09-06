@@ -28,7 +28,7 @@
 #include "SdfExtHashMap.h"
 #include "SdfConnection.h"
 
-#include <FdoCommonSelectAggregatesCommand.h>
+#include "SdfSelectAggregatesCommand.h"
 #include <FdoCommonConnStringParser.h>
 
 #include "utf8_.h"

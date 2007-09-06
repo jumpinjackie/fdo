@@ -21,7 +21,7 @@
 #include "SdfSpatialExtentsAggregateReader.h"
 
 SdfSelectAggregates::SdfSelectAggregates(SdfConnection* connection)
-    : FdoCommonSelectAggregatesCommand(connection)
+    : SdfSelectAggregatesCommand(connection)
 {
 }
 
@@ -107,6 +107,6 @@ FdoIDataReader* SdfSelectAggregates::Execute()
     }
     else
     {
-        return FdoCommonSelectAggregatesCommand::Execute();
+        return SdfSelectAggregatesCommand::Execute();
     }
 }
