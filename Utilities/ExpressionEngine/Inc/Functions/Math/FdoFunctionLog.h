@@ -29,10 +29,8 @@
 #include <wctype.h>
 #include <malloc.h>
 #include <math.h>
-#include <limits.h>
 
 #include <FdoExpressionEngineINonAggregateFunction.h>
-#include <FdoCommonDataReader.h>
 
 
 // ============================================================================
