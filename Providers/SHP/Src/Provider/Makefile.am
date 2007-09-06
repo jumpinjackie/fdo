@@ -44,6 +44,7 @@ libSHPProviderSrc_la_SOURCES = \
   ShpSchemaCapabilities.cpp \
   ShpSelectCommand.cpp \
   ShpSelectAggregates.cpp \
+  ShpSelectAggregatesCommand.cpp \
   ShpOptimizedAggregateReader.cpp \
   ShpInsertCommand.cpp \
   ShpUpdateCommand.cpp \
@@ -77,6 +78,7 @@ noinst_HEADERS = $(libSHPProviderSrc_la_SOURCES) \
    ShpConnection.h \
    ShpGeometryCapabilities.h \
    ShpSelectAggregates.h \
+   ShpSelectAggregatesCommand.h \
    ShpConnectionInfo.h \
    ShpGetSpatialContextsCommand.h \
    ShpCreateSpatialContextCommand.h \

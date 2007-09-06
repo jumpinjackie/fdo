@@ -21,7 +21,7 @@
 #include "ShpOptimizedAggregateReader.h"
 
 ShpSelectAggregates::ShpSelectAggregates(ShpConnection* connection)
-    : FdoCommonSelectAggregatesCommand(connection)
+    : ShpSelectAggregatesCommand(connection)
 {
 }
 
@@ -112,6 +112,6 @@ FdoIDataReader* ShpSelectAggregates::Execute()
     }
     else			
     {
-        return FdoCommonSelectAggregatesCommand::Execute();
+        return ShpSelectAggregatesCommand::Execute();
     }
 }

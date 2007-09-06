@@ -94,7 +94,6 @@ DWORD dwHighDateTime;
 #include <FdoCommonStringUtil.h>
 #include <FdoCommonCommand.h>
 #include <FdoCommonFeatureCommand.h>
-#include <FdoCommonSelectAggregatesCommand.h>
 
 // Shp Override headers
 #include <SHP/FdoShpOverrides.h>
@@ -130,6 +129,8 @@ DWORD dwHighDateTime;
 #include <ShpDestroySchemaCommand.h>
 #include <ShpSchemaUtilities.h>
 #include <../../Inc/SHP/ShpCommandType.h>
+#include <ShpSelectAggregatesCommand.h>
+
 
 #endif
 
