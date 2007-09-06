@@ -20,7 +20,6 @@
 #include "stdafx.h"
 #include <FdoCommonSchemaUtil.h>
 #include <FdoCommonMiscUtil.h>
-#include <FdoExpressionEngine.h>
 
 
 /////////////////////////////
@@ -1437,7 +1436,7 @@ void FdoCommonSchemaUtil::AddComputedIdentifiersAsProperties(FdoIConnection* con
             FdoPtr<FdoExpression> expr = computedId->GetExpression();
             FdoPtr<FdoIExpressionCapabilities> expressionCaps = connection->GetExpressionCapabilities();
             FdoPtr<FdoFunctionDefinitionCollection> functions = expressionCaps->GetFunctions();
-            FdoExpressionEngine::GetExpressionType(functions, originalClass, expr, propType, dataType);
+			FdoCommonMiscUtil::GetExpressionType(functions, originalClass, expr, propType, dataType);
             if (propType == FdoPropertyType_DataProperty)
             {
                 FdoPtr<FdoDataPropertyDefinition> dataProp = FdoDataPropertyDefinition::Create(computedId->GetName(), genericDescription);

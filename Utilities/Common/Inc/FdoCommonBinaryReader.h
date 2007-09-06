@@ -18,7 +18,10 @@
 
 #include <FdoCommonPropertyIndex.h>
 
-#ifndef _WIN32
+#ifdef _WIN32
+#include <hash_map>
+#include <functional>
+#else
 #include <list>
 #define max(a,b) (((a) > (b)) ? (a) : (b))
 #define min(a,b) (((a) < (b)) ? (a) : (b))

@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="inc;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDO)\Unmanaged\Src\common&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
+				AdditionalIncludeDirectories="inc;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDO)\Unmanaged\Src\common&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;GISPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;HAVE_GEOM_INFO_TYPE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="0"
@@ -187,7 +187,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="inc;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDO)\Unmanaged\Src\common&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
+				AdditionalIncludeDirectories="inc;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDO)\Unmanaged\Src\common&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;HAVE_GEOM_INFO_TYPE"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -327,10 +327,6 @@
 				>
 			</File>
 			<File
-				RelativePath="Src\FdoCommonDataReader.cpp"
-				>
-			</File>
-			<File
 				RelativePath="Src\FdoCommonFile.cpp"
 				>
 			</File>
@@ -356,10 +352,6 @@
 			</File>
 			<File
 				RelativePath="Src\FdoCommonSchemaUtil.cpp"
-				>
-			</File>
-			<File
-				RelativePath="Src\FdoCommonSelectAggregatesCommand.cpp"
 				>
 			</File>
 			<File
@@ -548,10 +540,6 @@
 				>
 			</File>
 			<File
-				RelativePath="Inc\FdoCommonDataReader.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Inc\FdoCommonExpressionExecutor.h"
 				>
 			</File>
@@ -589,10 +577,6 @@
 			</File>
 			<File
 				RelativePath="Inc\FdoCommonSchemaUtil.h"
-				>
-			</File>
-			<File
-				RelativePath="Inc\FdoCommonSelectAggregatesCommand.h"
 				>
 			</File>
 			<File
