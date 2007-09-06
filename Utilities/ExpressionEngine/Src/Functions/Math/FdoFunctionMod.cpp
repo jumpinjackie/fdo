@@ -357,7 +357,7 @@ FdoLiteralValue *FdoFunctionMod::Evaluate (
     // If the divisor is 0, issue an exception.
 
     if (is_zero_divisor)
-        throw FdoCommandException::Create(
+        throw FdoException::Create(
                     FdoException::NLSGetMessage(
                         FUNCTION_DIV_BY_0_ERROR, 
                         "Expression Engine: Attempt to divide by 0 ('%1$ls')",
@@ -507,9 +507,10 @@ FdoLiteralValue *FdoFunctionMod::Evaluate (
                         : -1 * p2_int64_value; 
 
          f_int16_result =
-                p1_sign * (abs_int64_p1 -
-                           (abs_int64_p2 *
-                            floor((double)(abs_int64_p1 / abs_int64_p2))));
+            (FdoInt16) (p1_sign *
+                            (abs_int64_p1 -
+                             (abs_int64_p2 *
+                             floor((double)(abs_int64_p1 / abs_int64_p2)))));
 
          return FdoInt16Value::Create(f_int16_result);
 
@@ -525,9 +526,10 @@ FdoLiteralValue *FdoFunctionMod::Evaluate (
                         : -1 * p1_int64_value; 
 
          f_flt_result =
-            p1_sign * (abs_int64_p1 -
-                       (fabs(p2_flt_value) *
-                        floor((double)(abs_int64_p1 / fabs(p2_flt_value)))));
+           (FdoFloat) (p1_sign *
+                        (abs_int64_p1 -
+                         (fabs(p2_flt_value) *
+                         floor((double)(abs_int64_p1 / fabs(p2_flt_value))))));
 
          return FdoSingleValue::Create(f_flt_result);
 
@@ -546,9 +548,10 @@ FdoLiteralValue *FdoFunctionMod::Evaluate (
                         : -1 * p2_int64_value; 
 
          f_int16_result =
-                p1_sign * (abs_int64_p1 -
-                           (abs_int64_p2 *
-                            floor((double)(abs_int64_p1 / abs_int64_p2))));
+            (FdoInt16) (p1_sign *
+                         (abs_int64_p1 -
+                          (abs_int64_p2 *
+                           floor((double)(abs_int64_p1 / abs_int64_p2)))));
 
          return FdoInt16Value::Create(f_int16_result);
 
@@ -567,9 +570,10 @@ FdoLiteralValue *FdoFunctionMod::Evaluate (
                         : -1 * p2_int64_value; 
 
          f_int32_result =
-                p1_sign * (abs_int64_p1 -
+            (FdoInt32) (p1_sign *
+                          (abs_int64_p1 -
                            (abs_int64_p2 *
-                            floor((double)(abs_int64_p1 / abs_int64_p2))));
+                            floor((double)(abs_int64_p1 / abs_int64_p2)))));
 
          return FdoInt32Value::Create(f_int32_result);
 
@@ -587,9 +591,9 @@ FdoLiteralValue *FdoFunctionMod::Evaluate (
                         : -1 * p2_int64_value; 
 
          f_int64_result =
-                p1_sign * (abs_int64_p1 -
+            (FdoInt64) (p1_sign * (abs_int64_p1 -
                            (abs_int64_p2 *
-                            floor((double)(abs_int64_p1 / abs_int64_p2))));
+                            floor((double)(abs_int64_p1 / abs_int64_p2)))));
 
          return FdoInt64Value::Create(f_int64_result);
 
@@ -637,6 +641,18 @@ FdoLiteralValue *FdoFunctionMod::Evaluate (
          return FdoSingleValue::Create(f_flt_result);
 
     }  //  if (((para1_data_type == FdoDataType_Single) ...
+
+    // The validation at the top of the function ensures that any invalid call
+    // is handled correctly. Therefore, the above statements should have pro-
+    // cessed the request correctly and the function result should have been
+    // returned. Just in case there is an issue, the following exception is
+    // thrown if this part of the function implementation is reached.
+
+    throw FdoException::Create(
+            FdoException::NLSGetMessage(
+              FUNCTION_UNEXPECTED_RESULT_ERROR, 
+              "Expression Engine: Unexpected result for function '%1$ls'",
+              FDO_FUNCTION_MOD));
 
 }  //  Evaluate ()
 
@@ -1091,7 +1107,7 @@ void FdoFunctionMod::Validate (FdoLiteralValueCollection *literal_values)
     // If the number of parameters is not correct issue an exception.
 
     if (count != 2) 
-        throw FdoCommandException::Create(
+        throw FdoException::Create(
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_NUMBER_ERROR, 
                   "Expression Engine: Invalid number of parameters for function '%1$ls'",
@@ -1105,7 +1121,7 @@ void FdoFunctionMod::Validate (FdoLiteralValueCollection *literal_values)
 
       literal_value = literal_values->GetItem(i);
       if (literal_value->GetLiteralValueType() != FdoLiteralValueType_Data)
-          throw FdoCommandException::Create(
+          throw FdoException::Create(
                   FdoException::NLSGetMessage(
                       FUNCTION_PARAMETER_ERROR, 
                       "Expression Engine: Invalid parameters for function '%1$ls'",
@@ -1131,7 +1147,7 @@ void FdoFunctionMod::Validate (FdoLiteralValueCollection *literal_values)
          (para2_data_type != FdoDataType_Int32  ) &&
          (para2_data_type != FdoDataType_Int64  ) &&
          (para2_data_type != FdoDataType_Single )    )    )
-        throw FdoCommandException::Create(
+        throw FdoException::Create(
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
                   "Expression Engine: Invalid parameter data type for function '%1$ls'",

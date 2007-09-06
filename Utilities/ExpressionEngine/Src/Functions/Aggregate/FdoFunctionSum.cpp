@@ -718,7 +718,7 @@ void FdoFunctionSum::Validate (FdoLiteralValueCollection *literal_values)
     // meters. If the number of parameters is not correct issue an exception.
 
     if ((count < 1) || (count > 2)) 
-        throw FdoCommandException::Create(
+        throw FdoException::Create(
                FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_NUMBER_ERROR, 
                   "Expression Engine: Invalid number of parameters for function '%1$ls'",
@@ -731,7 +731,7 @@ void FdoFunctionSum::Validate (FdoLiteralValueCollection *literal_values)
    
         literal_value = literal_values->GetItem(0);
         if (literal_value->GetLiteralValueType() != FdoLiteralValueType_Data)
-            throw FdoCommandException::Create(
+            throw FdoException::Create(
                     FdoException::NLSGetMessage(
                         FUNCTION_PARAMETER_ERROR, 
                         "Expression Engine: Invalid parameters for function '%1$ls'",
@@ -739,7 +739,7 @@ void FdoFunctionSum::Validate (FdoLiteralValueCollection *literal_values)
 
         data_value = static_cast<FdoDataValue *>(literal_value.p);
         if (data_value->GetDataType() != FdoDataType_String)
-            throw FdoCommandException::Create(
+            throw FdoException::Create(
                     FdoException::NLSGetMessage(
                         FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
                         "Expression Engine: Invalid parameter data type for function '%1$ls'",
@@ -751,7 +751,7 @@ void FdoFunctionSum::Validate (FdoLiteralValueCollection *literal_values)
                                         param_value, L"ALL"     ) != 0) &&
             (FdoCommonStringUtil::StringCompareNoCase(
                                         param_value, L"DISTINCT") != 0)    )
-            throw FdoCommandException::Create(
+            throw FdoException::Create(
               FdoException::NLSGetMessage(
                 FUNCTION_OPERATOR_ERROR, 
                 "Expression Engine: Invalid first parameter value for function '%1$ls'",
@@ -780,7 +780,7 @@ void FdoFunctionSum::Validate (FdoLiteralValueCollection *literal_values)
 
     literal_value = literal_values->GetItem(process_value);
     if (literal_value->GetLiteralValueType() != FdoLiteralValueType_Data)
-        throw FdoCommandException::Create(
+        throw FdoException::Create(
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_ERROR, 
                   "Expression Engine: Invalid parameters for function '%1$ls'",
@@ -794,7 +794,7 @@ void FdoFunctionSum::Validate (FdoLiteralValueCollection *literal_values)
         (incoming_data_type == FdoDataType_String  ) ||
         (incoming_data_type == FdoDataType_BLOB    ) ||
         (incoming_data_type == FdoDataType_CLOB    )    )
-        throw FdoCommandException::Create(
+        throw FdoException::Create(
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
                   "Expression Engine: Invalid parameter data type for function '%1$ls'",
