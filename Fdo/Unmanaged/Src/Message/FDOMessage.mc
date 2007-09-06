@@ -2506,3 +2506,13 @@ SymbolicName=FUNCTION_DATA_VALUE_ERROR
 Language=English
 Expression Engine: Invalid value for execution of function '%1$ls'
 .
+MessageId=9228
+SymbolicName=FUNCTION_ROUND
+Language=English
+Rounds a numeric expressions to the specified degree
+.
+MessageId=9229
+SymbolicName=FUNCTION_UNEXPECTED_RESULT_ERROR
+Language=English
+Expression Engine: Unexpected result for function '%1$ls'
+.
