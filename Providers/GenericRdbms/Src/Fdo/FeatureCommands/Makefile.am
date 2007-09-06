@@ -47,6 +47,7 @@ INCLUDES = \
   -I$(FDO)/Unmanaged \
   -I../../../../GenericRdbms/Inc \
   -I$(FDOUTILITIES)/Common/Inc \
+  -I$(FDOUTILITIES)/ExpressionEngine/Inc \
   -I$(FDOUTILITIES)/SchemaMgr/Inc/Sm/Lp \
   -I$(FDOUTILITIES)/SchemaMgr/Inc \
   -I../../../Inc \
