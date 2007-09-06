@@ -57,6 +57,7 @@ libSDFProviderSrc_la_SOURCES = \
   SdfScrollableFeatureReader.cpp \
   SdfSelect.cpp \
   SdfSelectAggregates.cpp \
+  SdfSelectAggregatesCommand.cpp \
   SdfSimpleFeatureReader.cpp \
   SdfIndexedScrollableFeatureReader.cpp \
   SdfSpatialContextReader.cpp \
@@ -119,6 +120,7 @@ noinst_HEADERS = $(libSDFProviderSrc_la_SOURCES) \
    SdfScrollableFeatureReader.h \
    SdfSelect.h \
    SdfSelectAggregates.h \
+   SdfSelectAggregatesCommand.h \
    SdfSimpleFeatureReader.h \
    SdfIndexedScrollableFeatureReader.h \
    SdfSpatialContextReader.h \
