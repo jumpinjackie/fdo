@@ -30,7 +30,7 @@
 #include "Inc/ut.h"
 
 #include "FdoCommonOSUtil.h"
-#include "FdoCommonFilterExecutor.h"
+#include "FdoExpressionEngine.h"
 
 #include <limits>       // For quiet_NaN()
 using namespace std;
@@ -449,7 +449,9 @@ void FdoRdbmsFeatureReader::GetExpressionType(FdoIConnection* connection, FdoCla
 {
     try
     {
-        FdoCommonFilterExecutor::GetExpressionType(connection, classDef, expr, propType, dataType);
+        FdoPtr<FdoIExpressionCapabilities> expressionCaps = connection->GetExpressionCapabilities();
+        FdoPtr<FdoFunctionDefinitionCollection> functions = expressionCaps->GetFunctions();
+        FdoExpressionEngine::GetExpressionType(functions, classDef, expr, propType, dataType);
     }
     catch (FdoException *e)
     {

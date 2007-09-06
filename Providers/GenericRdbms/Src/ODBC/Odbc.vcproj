@@ -68,10 +68,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/fixed:no"
-				AdditionalDependencies="FdoGeneric.lib Rdbi.lib odbcDriver.lib OdbcSchemaMgr.lib odbc32.lib FDO.lib FDOGeometry.lib FDOCommon.lib FDOSpatial.lib SchemaMgr_OVNew.lib Advapi32.lib"
+				AdditionalDependencies="FdoGeneric.lib Rdbi.lib odbcDriver.lib OdbcSchemaMgr.lib odbc32.lib FDO.lib FDOGeometry.lib FDOCommon.lib FDOSpatial.lib SchemaMgr_OVNew.lib Advapi32.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)/ODBCProvider.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\Lib\Win32\Debug;$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Debug"
+				AdditionalLibraryDirectories="..\..\Lib\Win32\Debug;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Debug&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/OdbcProvider.pdb"
 				SubSystem="2"
@@ -154,10 +154,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FdoGeneric.lib Rdbi.lib odbcDriver.lib OdbcSchemaMgr.lib odbc32.lib FDO.lib FDOGeometry.lib FDOCommon.lib FDOSpatial.lib SchemaMgr_OVNew.lib Advapi32.lib"
+				AdditionalDependencies="FdoGeneric.lib Rdbi.lib odbcDriver.lib OdbcSchemaMgr.lib odbc32.lib FDO.lib FDOGeometry.lib FDOCommon.lib FDOSpatial.lib SchemaMgr_OVNew.lib Advapi32.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)/ODBCProvider.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\Lib\Win32\Release;$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Release"
+				AdditionalLibraryDirectories="..\..\Lib\Win32\Release;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Release&quot;"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames="libcmt.lib"
 				GenerateDebugInformation="true"

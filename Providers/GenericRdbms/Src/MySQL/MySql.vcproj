@@ -69,10 +69,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/fixed:no"
-				AdditionalDependencies="FdoGeneric.lib Rdbi.lib MySqlDriver.lib libmySQL.lib FDO.lib FDOGeometry.lib FDOCommon.lib FDOSpatial.lib Gdbi.lib util.lib SchemaMgr_OVNew.lib Advapi32.lib"
+				AdditionalDependencies="FdoGeneric.lib Rdbi.lib MySqlDriver.lib libmySQL.lib FDO.lib FDOGeometry.lib FDOCommon.lib FDOSpatial.lib Gdbi.lib util.lib SchemaMgr_OVNew.lib Advapi32.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)/MySQLProvider.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\Lib\Win32\Debug;$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOMYSQL)\lib\Debug;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Debug"
+				AdditionalLibraryDirectories="..\..\Lib\Win32\Debug;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOMYSQL)\lib\Debug&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Debug&quot;"
 				IgnoreDefaultLibraryNames="LIBCMTD"
 				DelayLoadDLLs=""
 				GenerateDebugInformation="true"
@@ -161,10 +161,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FdoGeneric.lib Rdbi.lib MySqlDriver.lib libmySQL.lib FDO.lib geometry_fgf.lib FDOGeometry.lib FDOCommon.lib FDOSpatial.lib Gdbi.lib LongTransactionManager.lib SchemaMgr_OVNew.lib Advapi32.lib"
+				AdditionalDependencies="FdoGeneric.lib Rdbi.lib MySqlDriver.lib libmySQL.lib FDO.lib geometry_fgf.lib FDOGeometry.lib FDOCommon.lib FDOSpatial.lib Gdbi.lib LongTransactionManager.lib SchemaMgr_OVNew.lib Advapi32.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)/MySQLProvider.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\Lib\Win32\Release;$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOMYSQL)\lib\opt;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Release"
+				AdditionalLibraryDirectories="..\..\Lib\Win32\Release;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOMYSQL)\lib\opt&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Release&quot;"
 				DelayLoadDLLs="LIBMYSQL.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MySqlProvider.pdb"

@@ -29,9 +29,9 @@
 #include "FdoRdbmsFeatureSubsetReader.h"
 #include "LockUtility.h"
 #include "FdoRdbmsFilterProcessor.h"
-#include <FdoCommonFilterExecutor.h>
-#include <FdoCommonSchemaUtil.h>
 #include <FdoCommonExpressionExecutor.h>
+#include <FdoCommonSchemaUtil.h>
+#include <FdoExpressionEngine.h>
 
 #define SELECT_CLEANUP \
         if ( qid != -1) {\
@@ -108,7 +108,7 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
 		{
 			FdoPtr<FdoIFilterCapabilities> filterCaps = mFdoConnection->GetFilterCapabilities();
 	
-			FdoCommonFilterExecutor::ValidateFilter( NULL, this->GetFilterRef(), NULL, filterCaps);
+			FdoExpressionEngine::ValidateFilter( NULL, this->GetFilterRef(), NULL, filterCaps);
 		}
 
         // Call FilterToSql just to populate the filter's list of geometric conditions;
