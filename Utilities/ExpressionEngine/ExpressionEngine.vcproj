@@ -469,6 +469,14 @@
 					</File>
 				</Filter>
 			</Filter>
+			<Filter
+				Name="Util"
+				>
+				<File
+					RelativePath=".\Src\Util\FdoExpressionEngineUtilDataReader.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -634,6 +642,14 @@
 						>
 					</File>
 				</Filter>
+			</Filter>
+			<Filter
+				Name="Util"
+				>
+				<File
+					RelativePath=".\Inc\Util\FdoExpressionEngineUtilDataReader.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter

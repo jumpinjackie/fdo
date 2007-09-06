@@ -32,7 +32,6 @@
 #include <limits.h>
 
 #include <FdoExpressionEngineINonAggregateFunction.h>
-#include <FdoCommonDataReader.h>
 
 
 // ============================================================================

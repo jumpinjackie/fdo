@@ -33,7 +33,6 @@
 #include <limits.h>
 
 #include <FdoExpressionEngineIAggregateFunction.h>
-#include <FdoCommonDataReader.h>
 
 
 FdoExpressionEngine* FdoExpressionEngine::Create(FdoIReader* reader, 
@@ -117,25 +116,4 @@ FdoFilter* FdoExpressionEngine::OptimizeFilter( FdoFilter *filter )
 bool FdoExpressionEngine::IsAggregateFunction(FdoFunctionDefinitionCollection *funcDefs, FdoString *name)
 {
     return FdoExpressionEngineImp::IsAggregateFunction(funcDefs, name);
-}
-
-void FdoExpressionEngine::GetExpressionType(FdoFunctionDefinitionCollection *functionDefinitions, FdoClassDefinition* originalClassDef, FdoExpression *expr, FdoPropertyType &retPropType, FdoDataType &retDataType)
-{
-    FdoExpressionEngineImp::GetExpressionType(functionDefinitions, originalClassDef, expr, retPropType, retDataType);
-	return;
-}
-
-bool FdoExpressionEngine::IsEqualTo (FdoDataValue* argLeft, FdoDataValue* argRight)
-{
-    return FdoExpressionEngineImp::IsEqualTo (argLeft, argRight);
-}
-
-bool FdoExpressionEngine::IsLessThan (FdoDataValue* argLeft, FdoDataValue* argRight)
-{
-    return FdoExpressionEngineImp::IsLessThan (argLeft, argRight);
-}
-
-bool FdoExpressionEngine::IsGreaterThan (FdoDataValue* argLeft, FdoDataValue* argRight)
-{
-    return FdoExpressionEngineImp::IsGreaterThan(argLeft, argRight);
 }

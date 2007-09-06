@@ -34,7 +34,6 @@
 
 #include <FdoExpressionEngineIAggregateFunction.h>
 #include <Functions/Aggregate/CacheValueCollection.h>
-#include <FdoCommonDataReader.h>
 
 
 // ============================================================================

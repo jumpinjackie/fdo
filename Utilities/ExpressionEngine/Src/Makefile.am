@@ -53,6 +53,7 @@ libExpressionEngine_la_SOURCES = \
   Functions/String/FdoFunctionConcat.cpp \
   Functions/String/FdoFunctionLower.cpp \
   Functions/String/FdoFunctionUpper.cpp \
+  Util/FdoExpressionEngineUtilDataReader.cpp \
   FdoExpressionEngine.cpp \
   FdoExpressionEngineFunctionCollection.cpp \
   FdoExpressionEngineImp.cpp \

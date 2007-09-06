@@ -55,11 +55,6 @@ public:
 	static void ValidateFilter( FdoClassDefinition *cls, FdoFilter *filter, FdoIdentifierCollection *selIds = NULL, FdoIFilterCapabilities *filterCapabilities = NULL);
 	static FdoFilter* OptimizeFilter( FdoFilter *filter );
    	static bool IsAggregateFunction(FdoFunctionDefinitionCollection *funcDefs, FdoString *name);
-    static void GetExpressionType(FdoFunctionDefinitionCollection *functions, FdoClassDefinition* originalClassDef, FdoExpression *expr, FdoPropertyType &propType, FdoDataType &dataType);
-
-    static bool IsEqualTo (FdoDataValue* argLeft, FdoDataValue* argRight);
-    static bool IsLessThan (FdoDataValue* argLeft, FdoDataValue* argRight);
-    static bool IsGreaterThan (FdoDataValue* argLeft, FdoDataValue* argRight);
 
 public:
     FdoPropertyType GetResultPropertyType ();
