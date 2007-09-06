@@ -46,8 +46,6 @@ libProvidersCommon_la_SOURCES = \
   Src/FdoCommonBinaryReader.cpp \
   Src/FdoCommonBinaryWriter.cpp \
   Src/FdoCommonPropertyIndex.cpp \
-  Src/FdoCommonDataReader.cpp \
-  Src/FdoCommonSelectAggregatesCommand.cpp \
   Src/FdoCommonThreadMutex.cpp \
   Src/FdoCommonThreadUtil.cpp \
   Src/stdafx.cpp \
@@ -61,7 +59,6 @@ noinst_HEADERS = $(libProvidersCommon_la_SOURCES) \
   Inc/FdoCommonCommand.h \
   Inc/FdoCommonConnPropDictionary.h \
   Inc/FdoCommonConnStringParser.h \
-  Inc/FdoCommonDataReader.h \
   Inc/FdoCommonFeatureCommand.h \
   Inc/FdoCommonFile.h \
   Inc/FdoCommonGeometryUtil.h \
@@ -71,7 +68,6 @@ noinst_HEADERS = $(libProvidersCommon_la_SOURCES) \
   Inc/FdoCommonPropertyIndex.h \
   Inc/FdoCommonReader.h \
   Inc/FdoCommonSchemaUtil.h \
-  Inc/FdoCommonSelectAggregatesCommand.h \
   Inc/FdoCommonStringUtil.h \
   Inc/FdoCommonThreadMutex.h \
   Inc/FdoCommonThreadUtil.h \
