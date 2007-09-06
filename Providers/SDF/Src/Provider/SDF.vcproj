@@ -736,6 +736,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SdfSelectAggregatesCommand.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SdfSimpleFeatureReader.cpp"
 				>
 			</File>

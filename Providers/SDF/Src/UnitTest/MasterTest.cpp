@@ -1624,8 +1624,8 @@ void MasterTest::testConstraints()
     FdoPtr<FdoPropertyValueConstraintRange> rangeValCons = FDO_SAFE_ADDREF(static_cast<FdoPropertyValueConstraintRange*>(valCons.p));
     CPPUNIT_ASSERT_MESSAGE("Wrong max inclusive type", rangeValCons->GetMaxInclusive() == false);
     CPPUNIT_ASSERT_MESSAGE("Wrong min inclusive type", rangeValCons->GetMinInclusive() == true);
-    FdoExpressionEngine::IsEqualTo(FdoPtr<FdoDataValue>(rangeValCons->GetMaxValue()), FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Rich")));
-    FdoExpressionEngine::IsEqualTo(FdoPtr<FdoDataValue>(rangeValCons->GetMinValue()), FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Poor")));
+    FdoCommonMiscUtil::IsEqualTo(FdoPtr<FdoDataValue>(rangeValCons->GetMaxValue()), FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Rich")));
+    FdoCommonMiscUtil::IsEqualTo(FdoPtr<FdoDataValue>(rangeValCons->GetMinValue()), FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Poor")));
 
     pd = pdc->GetItem(L"Int32Range");
     CPPUNIT_ASSERT_MESSAGE("Wrong property type", pd->GetPropertyType() == FdoPropertyType_DataProperty);
@@ -1635,7 +1635,7 @@ void MasterTest::testConstraints()
     rangeValCons = FDO_SAFE_ADDREF(static_cast<FdoPropertyValueConstraintRange*>(valCons.p));
     CPPUNIT_ASSERT_MESSAGE("Wrong max inclusive type", rangeValCons->GetMaxInclusive() == true);
     CPPUNIT_ASSERT_MESSAGE("Wrong min inclusive type", rangeValCons->GetMinInclusive() == true);
-    FdoExpressionEngine::IsEqualTo(FdoPtr<FdoDataValue>(rangeValCons->GetMaxValue()), FdoPtr<FdoDataValue>(FdoDataValue::Create(10000)));
+    FdoCommonMiscUtil::IsEqualTo(FdoPtr<FdoDataValue>(rangeValCons->GetMaxValue()), FdoPtr<FdoDataValue>(FdoDataValue::Create(10000)));
     CPPUNIT_ASSERT_MESSAGE("Wrong min inclusive", rangeValCons->GetMinValue() == NULL);
     // FdoExpressionEngine::IsEqualTo(FdoPtr<FdoDataValue>(rangeValCons->GetMinValue()), FdoPtr<FdoDataValue>(FdoDataValue::Create(0)));
 
@@ -1646,10 +1646,10 @@ void MasterTest::testConstraints()
     CPPUNIT_ASSERT_MESSAGE("Wrong constraint type", valCons->GetConstraintType() == FdoPropertyValueConstraintType_List);
     FdoPtr<FdoPropertyValueConstraintList> listValCons = FDO_SAFE_ADDREF(static_cast<FdoPropertyValueConstraintList*>(valCons.p));
     FdoPtr<FdoDataValueCollection> dataValues = listValCons->GetConstraintList();
-    FdoExpressionEngine::IsEqualTo(FdoPtr<FdoDataValue>(dataValues->GetItem(0)), FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Up")));
-    FdoExpressionEngine::IsEqualTo(FdoPtr<FdoDataValue>(dataValues->GetItem(1)), FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Down")));
-    FdoExpressionEngine::IsEqualTo(FdoPtr<FdoDataValue>(dataValues->GetItem(2)), FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Left")));
-    FdoExpressionEngine::IsEqualTo(FdoPtr<FdoDataValue>(dataValues->GetItem(3)), FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Right")));
+    FdoCommonMiscUtil::IsEqualTo(FdoPtr<FdoDataValue>(dataValues->GetItem(0)), FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Up")));
+    FdoCommonMiscUtil::IsEqualTo(FdoPtr<FdoDataValue>(dataValues->GetItem(1)), FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Down")));
+    FdoCommonMiscUtil::IsEqualTo(FdoPtr<FdoDataValue>(dataValues->GetItem(2)), FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Left")));
+    FdoCommonMiscUtil::IsEqualTo(FdoPtr<FdoDataValue>(dataValues->GetItem(3)), FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Right")));
 
     pd = pdc->GetItem(L"Int32Enum");
     CPPUNIT_ASSERT_MESSAGE("Wrong property type", pd->GetPropertyType() == FdoPropertyType_DataProperty);
@@ -1658,12 +1658,12 @@ void MasterTest::testConstraints()
     CPPUNIT_ASSERT_MESSAGE("Wrong constraint type", valCons->GetConstraintType() == FdoPropertyValueConstraintType_List);
     listValCons = FDO_SAFE_ADDREF(static_cast<FdoPropertyValueConstraintList*>(valCons.p));
     dataValues = listValCons->GetConstraintList();
-    FdoExpressionEngine::IsEqualTo(FdoPtr<FdoDataValue>(dataValues->GetItem(0)), FdoPtr<FdoDataValue>(FdoDataValue::Create(1)));
-    FdoExpressionEngine::IsEqualTo(FdoPtr<FdoDataValue>(dataValues->GetItem(1)), FdoPtr<FdoDataValue>(FdoDataValue::Create(2)));
-    FdoExpressionEngine::IsEqualTo(FdoPtr<FdoDataValue>(dataValues->GetItem(2)), FdoPtr<FdoDataValue>(FdoDataValue::Create(3)));
-    FdoExpressionEngine::IsEqualTo(FdoPtr<FdoDataValue>(dataValues->GetItem(3)), FdoPtr<FdoDataValue>(FdoDataValue::Create(5)));
-    FdoExpressionEngine::IsEqualTo(FdoPtr<FdoDataValue>(dataValues->GetItem(3)), FdoPtr<FdoDataValue>(FdoDataValue::Create(7)));
-    FdoExpressionEngine::IsEqualTo(FdoPtr<FdoDataValue>(dataValues->GetItem(3)), FdoPtr<FdoDataValue>(FdoDataValue::Create(9)));
+    FdoCommonMiscUtil::IsEqualTo(FdoPtr<FdoDataValue>(dataValues->GetItem(0)), FdoPtr<FdoDataValue>(FdoDataValue::Create(1)));
+    FdoCommonMiscUtil::IsEqualTo(FdoPtr<FdoDataValue>(dataValues->GetItem(1)), FdoPtr<FdoDataValue>(FdoDataValue::Create(2)));
+    FdoCommonMiscUtil::IsEqualTo(FdoPtr<FdoDataValue>(dataValues->GetItem(2)), FdoPtr<FdoDataValue>(FdoDataValue::Create(3)));
+    FdoCommonMiscUtil::IsEqualTo(FdoPtr<FdoDataValue>(dataValues->GetItem(3)), FdoPtr<FdoDataValue>(FdoDataValue::Create(5)));
+    FdoCommonMiscUtil::IsEqualTo(FdoPtr<FdoDataValue>(dataValues->GetItem(3)), FdoPtr<FdoDataValue>(FdoDataValue::Create(7)));
+    FdoCommonMiscUtil::IsEqualTo(FdoPtr<FdoDataValue>(dataValues->GetItem(3)), FdoPtr<FdoDataValue>(FdoDataValue::Create(9)));
 
 
     //set up the insert command
