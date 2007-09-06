@@ -69,10 +69,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FdoSpatial.lib ProvidersCommon.lib Advapi32.lib"
+				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FdoSpatial.lib ProvidersCommon.lib Advapi32.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)/UnitTest.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(SDEHOME)\lib&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win32&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;"
+				AdditionalLibraryDirectories="&quot;$(SDEHOME)\lib&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win32&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Debug&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/UnitTest.pdb"
 				SubSystem="1"
@@ -159,10 +159,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/fixed:no"
-				AdditionalDependencies="cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FdoSpatial.lib ProvidersCommon.lib Advapi32.lib"
+				AdditionalDependencies="cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FdoSpatial.lib ProvidersCommon.lib Advapi32.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)/UnitTest.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SDEHOME)\lib&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win32&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;"
+				AdditionalLibraryDirectories="&quot;$(SDEHOME)\lib&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win32&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Release&quot;"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -249,10 +249,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FdoSpatial.lib ProvidersCommon.lib Advapi32.lib"
+				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FdoSpatial.lib ProvidersCommon.lib Advapi32.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)/UnitTest.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(SDEHOME)\lib&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win32&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;"
+				AdditionalLibraryDirectories="&quot;$(SDEHOME)\lib&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win32&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Debug&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/UnitTest.pdb"
 				SubSystem="1"
@@ -339,10 +339,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/fixed:no"
-				AdditionalDependencies="cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FdoSpatial.lib ProvidersCommon.lib Advapi32.lib"
+				AdditionalDependencies="cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FdoSpatial.lib ProvidersCommon.lib Advapi32.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)/UnitTest.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SDEHOME)\lib&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win32&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;"
+				AdditionalLibraryDirectories="&quot;$(SDEHOME)\lib&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win32&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Release&quot;"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -429,10 +429,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FdoSpatial.lib ProvidersCommon.lib Advapi32.lib"
+				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FdoSpatial.lib ProvidersCommon.lib Advapi32.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)/UnitTest.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(SDEHOME)\lib&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win32&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;"
+				AdditionalLibraryDirectories="&quot;$(SDEHOME)\lib&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win32&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Debug&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/UnitTest.pdb"
 				SubSystem="1"
@@ -519,10 +519,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/fixed:no"
-				AdditionalDependencies="cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FdoSpatial.lib ProvidersCommon.lib Advapi32.lib"
+				AdditionalDependencies="cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FdoSpatial.lib ProvidersCommon.lib Advapi32.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)/UnitTest.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SDEHOME)\lib&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win32&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;"
+				AdditionalLibraryDirectories="&quot;$(SDEHOME)\lib&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win32&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Release&quot;"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="1"

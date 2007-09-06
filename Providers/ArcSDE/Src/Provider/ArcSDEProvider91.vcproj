@@ -66,10 +66,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sde91.lib pe91.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib Advapi32.lib"
+				AdditionalDependencies="sde91.lib pe91.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib Advapi32.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)/ArcSDEProvider91.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\lib&quot;;&quot;$(SDEHOME)\lib&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\lib&quot;;&quot;$(SDEHOME)\lib&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Debug&quot;"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames="libcmtd.lib"
 				ModuleDefinitionFile="ArcSDEProvider91.def"
@@ -160,10 +160,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/fixed:no"
-				AdditionalDependencies="sde91.lib pe91.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib Advapi32.lib"
+				AdditionalDependencies="sde91.lib pe91.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib Advapi32.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)/ArcSDEProvider91.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\lib&quot;;&quot;$(SDEHOME)\lib&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\lib&quot;;&quot;$(SDEHOME)\lib&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Release&quot;"
 				IgnoreDefaultLibraryNames="libcmt.lib"
 				ModuleDefinitionFile="ArcSDEProvider91.def"
 				DelayLoadDLLs="sde91.dll"
@@ -253,10 +253,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sde91.lib pe91.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib Advapi32.lib"
+				AdditionalDependencies="sde91.lib pe91.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib Advapi32.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)/ArcSDEProvider91.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\lib&quot;;&quot;$(SDEHOME)\lib&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\lib&quot;;&quot;$(SDEHOME)\lib&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Debug&quot;"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames="libcmtd.lib"
 				ModuleDefinitionFile="ArcSDEProvider91.def"
@@ -347,10 +347,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/fixed:no"
-				AdditionalDependencies="sde91.lib pe91.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib Advapi32.lib"
+				AdditionalDependencies="sde91.lib pe91.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib Advapi32.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)/ArcSDEProvider91.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\lib&quot;;&quot;$(SDEHOME)\lib&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\lib&quot;;&quot;$(SDEHOME)\lib&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Release&quot;"
 				IgnoreDefaultLibraryNames="libcmt.lib"
 				ModuleDefinitionFile="ArcSDEProvider91.def"
 				DelayLoadDLLs="sde91.dll"
@@ -440,10 +440,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sde91.lib pe91.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib Advapi32.lib"
+				AdditionalDependencies="sde91.lib pe91.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib Advapi32.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)/ArcSDEProvider91.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\lib&quot;;&quot;$(SDEHOME)\lib&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\lib&quot;;&quot;$(SDEHOME)\lib&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Debug&quot;"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames="libcmtd.lib"
 				ModuleDefinitionFile="ArcSDEProvider91.def"
@@ -534,10 +534,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/fixed:no"
-				AdditionalDependencies="sde91.lib pe91.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib Advapi32.lib"
+				AdditionalDependencies="sde91.lib pe91.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib Advapi32.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)/ArcSDEProvider91.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\lib&quot;;&quot;$(SDEHOME)\lib&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\lib&quot;;&quot;$(SDEHOME)\lib&quot;;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Release&quot;"
 				IgnoreDefaultLibraryNames="libcmt.lib"
 				ModuleDefinitionFile="ArcSDEProvider91.def"
 				DelayLoadDLLs="sde91.dll"
