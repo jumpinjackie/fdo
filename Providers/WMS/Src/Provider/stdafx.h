@@ -59,7 +59,6 @@
 #include <FdoCommonStringUtil.h>
 #include <FdoCommonCommand.h>
 #include <FdoCommonFeatureCommand.h>
-#include <FdoCommonSelectAggregatesCommand.h>
 #include <FdoCommonFile.h>
 #include <FdoCommonStringUtil.h>
 
