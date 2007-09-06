@@ -124,6 +124,7 @@ UnitTestMySql_LDADD =  \
   ../SchemaMgr/Ph/Rd/libSmPhRdGrd.la  \
   $(FDO)/Unmanaged/Src/libFDO.la   \
   $(FDOTHIRDPARTY)/linux/cppunit/lib/libcppunit.a \
+  $(FDOUTILITIES)/ExpressionEngine/Src/libExpressionEngine.la \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
   $(FDOUTILITIES)/TestCommon/libTestCommon.la \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/libSchemaMgr.la \
@@ -182,6 +183,7 @@ UnitTestOdbc_LDADD =  \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/Rb/libSmPhRb.la  \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/Rd/libSmPhRd.la \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ov/libSmOverrides.la \
+  $(FDOUTILITIES)/ExpressionEngine/Src/libExpressionEngine.la \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
   ../Rdbi/librdbi.la \
   ../Util/libutil.la \
