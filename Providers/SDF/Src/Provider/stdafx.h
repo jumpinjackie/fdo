@@ -32,6 +32,11 @@
 #include <string.h>
 #define _wcsnicmp wcsncasecmp
 
+#include <ext/hash_map>
+#include <ext/functional>
+namespace stdext = ::__gnu_cxx;
+using namespace std;
+
 #ifndef FALSE
 #define FALSE 0
 #endif
