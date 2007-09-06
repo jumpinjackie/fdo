@@ -147,6 +147,74 @@ public:
     /// 
     static FdoFunctionDefinition* CreateFunctionDefinition(
         FdoString* functionName, FdoString* functionDesc, bool isAggregate, int numSignatures, ...);
+
+
+    // Returns the type of the expression
+
+    /// \brief
+    /// Returns the type of expression
+    /// 
+    /// \param functions
+    /// Input the list of functions
+    ///
+    /// \param originalClassDef
+    /// Input the class definition
+    ///
+    /// \param propType
+    /// Output the property type
+    ///
+    /// \param dataType
+    /// Output the data type
+    ///
+    /// \return
+    /// Returns nothing
+    /// 
+
+	static void GetExpressionType(FdoFunctionDefinitionCollection *functionDefinitions, FdoClassDefinition* originalClassDef, FdoExpression *expr, FdoPropertyType &retPropType, FdoDataType &retDataType);
+
+    /// \brief
+    /// Check if the data values are equal
+    /// 
+    /// \param argLeft
+    /// Input first value
+    ///
+    /// \param argRight
+    /// Input second value
+    ///
+    /// \return
+    /// Returns true if the data values are equal
+    /// 
+	static bool IsEqualTo (FdoDataValue* argLeft, FdoDataValue* argRight);
+
+    /// \brief
+    /// Check if the first argument is less than the second argument
+    /// 
+    /// \param argLeft
+    /// Input first value
+    ///
+    /// \param argRight
+    /// Input second value
+    ///
+    /// \return
+    /// Returns true if first argument is less than the second argument
+    /// 
+	static bool IsLessThan (FdoDataValue* argLeft, FdoDataValue* argRight);
+
+    /// \brief
+    /// Check if the first argument is greater than the second argument
+    /// 
+    /// \param argLeft
+    /// Input first value
+    ///
+    /// \param argRight
+    /// Input second value
+    ///
+    /// \return
+    /// Returns true if first argument is greater than the second argument
+    /// 
+
+    static bool IsGreaterThan (FdoDataValue* argLeft, FdoDataValue* argRight);
+
 };
 
 

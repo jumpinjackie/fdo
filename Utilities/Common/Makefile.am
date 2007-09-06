@@ -84,8 +84,7 @@ noinst_HEADERS = $(libProvidersCommon_la_SOURCES) \
 INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \
   -I./Inc \
-  -I$(FDO)/Unmanaged/Src/Common \
-  -I$(FDOUTILITIES)/ExpressionEngine/Inc
+  -I$(FDO)/Unmanaged/Src/Common
 
 libProvidersCommon_la_LDFLAGS = 
 
