@@ -634,6 +634,17 @@ FdoDouble FdoFunctionPower::GetParameterValue (
 
     }  //  switch ...
 
+    // The switch statement should handle all valid scenarios. Therefore, the
+    // above statements should have returned valid information to the calling
+    // routine. Just in case there is an issue, the following exception is
+    // thrown if this part of the function implementation is reached.
+
+    throw FdoException::Create(
+            FdoException::NLSGetMessage(
+              FUNCTION_UNEXPECTED_RESULT_ERROR, 
+              "Expression Engine: Unexpected result for function '%1$ls'",
+              FDO_FUNCTION_POWER));
+
 }  //  GetParameterValue ()
 
 void FdoFunctionPower::Validate (FdoLiteralValueCollection *literal_values)
@@ -659,7 +670,7 @@ void FdoFunctionPower::Validate (FdoLiteralValueCollection *literal_values)
     // If the number of parameters is not correct issue an exception.
 
     if (count != 2) 
-        throw FdoCommandException::Create(
+        throw FdoException::Create(
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_NUMBER_ERROR, 
                   "Expression Engine: Invalid number of parameters for function '%1$ls'",
@@ -673,7 +684,7 @@ void FdoFunctionPower::Validate (FdoLiteralValueCollection *literal_values)
 
       literal_value = literal_values->GetItem(i);
       if (literal_value->GetLiteralValueType() != FdoLiteralValueType_Data)
-          throw FdoCommandException::Create(
+          throw FdoException::Create(
                   FdoException::NLSGetMessage(
                       FUNCTION_PARAMETER_ERROR, 
                       "Expression Engine: Invalid parameters for function '%1$ls'",
@@ -699,7 +710,7 @@ void FdoFunctionPower::Validate (FdoLiteralValueCollection *literal_values)
          (para2_data_type != FdoDataType_Int32  ) &&
          (para2_data_type != FdoDataType_Int64  ) &&
          (para2_data_type != FdoDataType_Single )    )    )
-        throw FdoCommandException::Create(
+        throw FdoException::Create(
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
                   "Expression Engine: Invalid parameter data type for function '%1$ls'",

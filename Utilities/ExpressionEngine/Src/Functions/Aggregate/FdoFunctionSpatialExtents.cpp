@@ -404,7 +404,7 @@ void FdoFunctionSpatialExtents::Validate (
     // only. If the number of parameters is not correct issue an exception.
 
     if (count != 1) 
-        throw FdoCommandException::Create(
+        throw FdoException::Create(
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_NUMBER_ERROR, 
                   "Expression Engine: Invalid number of parameters for function '%1$ls'",
@@ -416,7 +416,7 @@ void FdoFunctionSpatialExtents::Validate (
 
     literal_value = literal_values->GetItem(0);
     if (literal_value->GetLiteralValueType() != FdoLiteralValueType_Geometry)
-        throw FdoCommandException::Create(
+        throw FdoException::Create(
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_ERROR, 
                   "Expression Engine: Invalid parameters for function '%1$ls'",

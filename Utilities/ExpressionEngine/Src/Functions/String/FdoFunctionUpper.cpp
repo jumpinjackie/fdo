@@ -228,7 +228,7 @@ void FdoFunctionUpper::Validate (FdoLiteralValueCollection *literal_values)
     // the number of parameters is not correct issue an exception.
 
     if (count != 1) 
-        throw FdoCommandException::Create(
+        throw FdoException::Create(
                FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_NUMBER_ERROR, 
                   "Expression Engine: Invalid number of parameters for function '%1$ls'",
@@ -240,7 +240,7 @@ void FdoFunctionUpper::Validate (FdoLiteralValueCollection *literal_values)
 
     literal_value = literal_values->GetItem(0);
     if (literal_value->GetLiteralValueType() != FdoLiteralValueType_Data)
-        throw FdoCommandException::Create(
+        throw FdoException::Create(
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_ERROR, 
                   "Expression Engine: Invalid parameters for function '%1$ls'",
@@ -249,7 +249,7 @@ void FdoFunctionUpper::Validate (FdoLiteralValueCollection *literal_values)
     data_value = static_cast<FdoDataValue *>(literal_value.p);
     data_type = data_value->GetDataType();
     if (data_type != FdoDataType_String)
-        throw FdoCommandException::Create(
+        throw FdoException::Create(
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
                   "Expression Engine: Invalid parameter data type for function '%1$ls'",

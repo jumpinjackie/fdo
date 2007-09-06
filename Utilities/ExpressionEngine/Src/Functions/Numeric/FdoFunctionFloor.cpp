@@ -180,6 +180,18 @@ FdoLiteralValue *FdoFunctionFloor::Evaluate (
 
     }  //  switch ...
 
+    // The validation at the top of the function ensures that any invalid call
+    // is handled correctly. Therefore, the above statements should have pro-
+    // cessed the request correctly and the function result should have been
+    // returned. Just in case there is an issue, the following exception is
+    // thrown if this part of the function implementation is reached.
+
+    throw FdoException::Create(
+            FdoException::NLSGetMessage(
+              FUNCTION_UNEXPECTED_RESULT_ERROR, 
+              "Expression Engine: Unexpected result for function '%1$ls'",
+              FDO_FUNCTION_FLOOR));
+
 }  //  Evaluate ()
 
 
@@ -327,7 +339,7 @@ void FdoFunctionFloor::Validate (FdoLiteralValueCollection *literal_values)
     // the number of parameters is not correct issue an exception.
 
     if (count != 1) 
-        throw FdoCommandException::Create(
+        throw FdoException::Create(
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_NUMBER_ERROR, 
                   "Expression Engine: Invalid number of parameters for function '%1$ls'",
@@ -339,7 +351,7 @@ void FdoFunctionFloor::Validate (FdoLiteralValueCollection *literal_values)
 
     literal_value = literal_values->GetItem(0);
     if (literal_value->GetLiteralValueType() != FdoLiteralValueType_Data)
-        throw FdoCommandException::Create(
+        throw FdoException::Create(
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_ERROR, 
                   "Expression Engine: Invalid parameters for function '%1$ls'",
@@ -353,7 +365,7 @@ void FdoFunctionFloor::Validate (FdoLiteralValueCollection *literal_values)
         (incoming_data_type == FdoDataType_String  ) ||
         (incoming_data_type == FdoDataType_BLOB    ) ||
         (incoming_data_type == FdoDataType_CLOB    )    )
-        throw FdoCommandException::Create(
+        throw FdoException::Create(
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
                   "Expression Engine: Invalid parameter data type for function '%1$ls'",
