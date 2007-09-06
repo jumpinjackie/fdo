@@ -315,44 +315,60 @@ void FdoFunctionSpatialExtents::ProcessRequest (
       linear_ring         = aggregate_extents->GetExteriorRing();
       aggregate_ordinates = linear_ring->GetOrdinates();
 
-      ordinates[i++] =
-                    FdoCommonMin(envelope->GetMinX(), aggregate_ordinates[i]);
-      ordinates[i++] =
-                    FdoCommonMin(envelope->GetMinY(), aggregate_ordinates[i]);
-      if (geometry->GetDimensionality() & FdoDimensionality_Z)
-          ordinates[i++] =
+      ordinates[i] = FdoCommonMin(envelope->GetMinX(), aggregate_ordinates[i]);
+      i++;
+      ordinates[i] = FdoCommonMin(envelope->GetMinY(), aggregate_ordinates[i]);
+      i++;
+      if (geometry->GetDimensionality() & FdoDimensionality_Z) {
+
+          ordinates[i] =
                     FdoCommonMin(envelope->GetMinZ(), aggregate_ordinates[i]);
+          i++;
 
-      ordinates[i++] =
-                    FdoCommonMin(envelope->GetMaxX(), aggregate_ordinates[i]);
-      ordinates[i++] =
-                    FdoCommonMin(envelope->GetMinY(), aggregate_ordinates[i]);
-      if (geometry->GetDimensionality() & FdoDimensionality_Z)
-          ordinates[i++] =
+      }  //  if (geometry->GetDimensionality() & FdoDimensionality_Z) ...
+
+      ordinates[i] = FdoCommonMin(envelope->GetMaxX(), aggregate_ordinates[i]);
+      i++;
+      ordinates[i] = FdoCommonMin(envelope->GetMinY(), aggregate_ordinates[i]);
+      i++;
+      if (geometry->GetDimensionality() & FdoDimensionality_Z) {
+
+          ordinates[i] =
                     FdoCommonMax(envelope->GetMaxZ(), aggregate_ordinates[i]);
+          i++;
 
-      ordinates[i++] =
-                    FdoCommonMax(envelope->GetMaxX(), aggregate_ordinates[i]);
-      ordinates[i++] =
-                    FdoCommonMax(envelope->GetMaxY(), aggregate_ordinates[i]);
-      if (geometry->GetDimensionality() & FdoDimensionality_Z)
-          ordinates[i++] =
+      }  //  if (geometry->GetDimensionality() & FdoDimensionality_Z) ...
+
+      ordinates[i] = FdoCommonMax(envelope->GetMaxX(), aggregate_ordinates[i]);
+      i++;
+      ordinates[i] = FdoCommonMax(envelope->GetMaxY(), aggregate_ordinates[i]);
+      i++;
+      if (geometry->GetDimensionality() & FdoDimensionality_Z) {
+
+          ordinates[i] =
                     FdoCommonMax(envelope->GetMaxZ(), aggregate_ordinates[i]);
+          i++;
 
-      ordinates[i++] =
-                    FdoCommonMax(envelope->GetMinX(), aggregate_ordinates[i]);
-      ordinates[i++] =
-                    FdoCommonMax(envelope->GetMaxY(), aggregate_ordinates[i]);
-      if (geometry->GetDimensionality() & FdoDimensionality_Z)
-          ordinates[i++] =
+      }  //  if (geometry->GetDimensionality() & FdoDimensionality_Z) ...
+
+      ordinates[i] = FdoCommonMax(envelope->GetMinX(), aggregate_ordinates[i]);
+      i++;
+      ordinates[i] = FdoCommonMax(envelope->GetMaxY(), aggregate_ordinates[i]);
+      i++;
+      if (geometry->GetDimensionality() & FdoDimensionality_Z) {
+
+          ordinates[i] =
                     FdoCommonMin(envelope->GetMinZ(), aggregate_ordinates[i]);
+          i++;
 
-      ordinates[i++] =
-                    FdoCommonMin(envelope->GetMinX(), aggregate_ordinates[i]);
-      ordinates[i++] =
-                    FdoCommonMin(envelope->GetMinY(), aggregate_ordinates[i]);
+      }  //  if (geometry->GetDimensionality() & FdoDimensionality_Z) ...
+
+      ordinates[i] = FdoCommonMin(envelope->GetMinX(), aggregate_ordinates[i]);
+      i++;
+      ordinates[i] = FdoCommonMin(envelope->GetMinY(), aggregate_ordinates[i]);
+      i++;
       if (geometry->GetDimensionality() & FdoDimensionality_Z)
-          ordinates[i++] =
+          ordinates[i] =
                     FdoCommonMin(envelope->GetMinZ(), aggregate_ordinates[i]);
 
     }  //  else ...
