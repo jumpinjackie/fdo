@@ -14,9 +14,9 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#include <FdoCommonSelectAggregatesCommand.h>
+#include <ShpSelectAggregatesCommand.h>
 
-class ShpSelectAggregates : public FdoCommonSelectAggregatesCommand
+class ShpSelectAggregates : public ShpSelectAggregatesCommand
 {
 public:
     // constructs a SelectAggregates command using the specified connection

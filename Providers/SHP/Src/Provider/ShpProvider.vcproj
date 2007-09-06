@@ -419,6 +419,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ShpSelectAggregatesCommand.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ShpSelectAggregatesCommand.h"
+				>
+			</File>
+			<File
 				RelativePath="ShpSelectCommand.cpp"
 				>
 			</File>

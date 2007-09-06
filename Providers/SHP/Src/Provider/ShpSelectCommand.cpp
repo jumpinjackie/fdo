@@ -21,7 +21,7 @@
 #include "ShpSelectCommand.h"
 #include "ShpFeatureReader.h"
 #include <algorithm>
-#include "FdoCommonDataReader.h"
+#include "Util/FdoExpressionEngineUtilDataReader.h"
 #include "FdoExpressionEngineImp.h"
 
 
@@ -101,7 +101,7 @@ FdoIFeatureReader* ShpSelectCommand::Execute ()
 
 	FdoPtr<FdoIExpressionCapabilities> expressCaps = shpConn->GetExpressionCapabilities();
 	FdoPtr<FdoFunctionDefinitionCollection> funcDefs = expressCaps->GetFunctions();
-    FdoPtr< FdoArray<FdoFunction*> > functions = FdoCommonDataReader::GetAggregateFunctions(funcDefs, mPropertiesToSelect, exprType);
+    FdoPtr< FdoArray<FdoFunction*> > functions = FdoExpressionEngineUtilDataReader::GetAggregateFunctions(funcDefs, mPropertiesToSelect, exprType);
     if (exprType == FdoCommonExpressionType_Aggregate)
         throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_182_AGGREGATE_IN_SELECT, "Aggregate functions are not supported by the Select command; use the SelectAggregates command instead."));
 
@@ -117,7 +117,7 @@ FdoIFeatureReader* ShpSelectCommand::Execute ()
         FdoPtr<FdoIdentifier> id = mPropertiesToSelect->GetItem(i);
         FdoPtr<FdoIExpressionCapabilities> expressionCaps = shpConn->GetExpressionCapabilities();
         FdoPtr<FdoFunctionDefinitionCollection> functions = expressionCaps->GetFunctions();
-        FdoExpressionEngineImp::GetExpressionType(functions, fdoClass, id, propType, dataType);
+        FdoCommonMiscUtil::GetExpressionType(functions, fdoClass, id, propType, dataType);
     }
 
     // Create the reader:
