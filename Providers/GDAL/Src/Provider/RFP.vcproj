@@ -67,10 +67,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib gdal_i.lib ExpressionEngine.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib gdal_i.lib"
 				OutputFile="$(OutDir)/GRFPProvider.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\debug&quot;;&quot;$(FDOGDAL)\lib\win32\debug&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Debug&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\debug&quot;;&quot;$(FDOGDAL)\lib\win32\debug&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/GRFPProvider.pdb"
 				SubSystem="2"
@@ -157,10 +157,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib gdal_i.lib ExpressionEngine.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib gdal_i.lib"
 				OutputFile="$(OutDir)/GRFPProvider.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;&quot;$(FDOGDAL)\lib\win32\release&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Release&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;&quot;$(FDOGDAL)\lib\win32\release&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/GRFPProvider.pdb"
 				SubSystem="2"
