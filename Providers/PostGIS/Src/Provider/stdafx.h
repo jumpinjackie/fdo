@@ -44,7 +44,7 @@
 
 // Build-in support of Visual Leak Detector
 #ifdef FDOPOSTGIS_USE_VLD
-#include <vld.h>
+//#include <vld.h>
 #endif // FDOPOSTGIS_USE_VLD
 
 // Windows Header Files

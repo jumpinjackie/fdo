@@ -29,6 +29,8 @@
 #include <FdoGeometry.h>
 #include <Geometry/EnvelopeImpl.h>
 
+#include <FdoCommonSchemaUtil.h>
+
 // PostGIS Messages
 #include "../Message/inc/PostGisMessage.h"
 

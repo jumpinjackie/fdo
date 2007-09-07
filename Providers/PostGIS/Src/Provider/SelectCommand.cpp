@@ -342,7 +342,7 @@ FdoIFeatureReader* SelectCommand::Execute()
         // Open new cursor
         cursor->Declare(sql.c_str(), params);
         
-        FeatureReader::Ptr reader(new FeatureReader(mConn, cursor, classDef));
+        FeatureReader::Ptr reader(new FeatureReader(mConn, cursor, classDef,mProperties));
     
         FDO_SAFE_ADDREF(reader.p);
         return reader.p;
