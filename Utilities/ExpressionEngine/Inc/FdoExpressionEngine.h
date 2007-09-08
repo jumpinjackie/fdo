@@ -179,7 +179,7 @@ public:
    	static bool IsAggregateFunction(FdoFunctionDefinitionCollection *funcDefs, FdoString *name);
 
 public:
-    void FdoExpressionEngine::Dispose ();
+    void Dispose ();
 
 protected:
 	FdoExpressionEngine(FdoIReader* reader, FdoClassDefinition* classDef, FdoIdentifierCollection* identifiers,
