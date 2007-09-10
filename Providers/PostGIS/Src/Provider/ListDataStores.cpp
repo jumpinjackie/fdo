@@ -51,7 +51,7 @@ FdoIDataStoreReader* ListDataStores::Execute()
 {
     FDOLOG_MARKER("ListDataStores::+Execute");
 
-    std::string cursorName("curFdoListDataStores");
+    std::string cursorName("crsListDSCmd");
     std::string sql("SELECT ns.nspname AS schemaname, r.rolname AS ownername, "
                     "pg_catalog.obj_description(ns.oid, 'pg_namespace') AS description "
                     "FROM pg_catalog.pg_namespace ns "

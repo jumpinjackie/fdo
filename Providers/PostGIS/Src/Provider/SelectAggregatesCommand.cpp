@@ -322,10 +322,10 @@ FdoIDataReader* SelectAggregatesCommand::Execute()
     //
     // Declare cursor and create feature reader
     //
-    FDOLOG_WRITE("Creating cursor: crsFdoSelectAggregatesCommand");
+    FDOLOG_WRITE("Creating cursor: crsSelAggCmd");
 
     PgCursor::Ptr cursor(NULL);
-    cursor = mConn->PgCreateCursor("crsFdoSelectAggregatesCommand");
+    cursor = mConn->PgCreateCursor("crsSelAggCmd");
     assert(NULL != cursor);
 
     // Collect bind parameters

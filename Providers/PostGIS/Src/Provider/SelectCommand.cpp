@@ -329,10 +329,10 @@ FdoIFeatureReader* SelectCommand::Execute()
         //
         // Declare cursor and create feature reader
         //
-        FDOLOG_WRITE("Creating cursor: crsFdoSelectCommand");
+        FDOLOG_WRITE("Creating cursor: crsSelCmd");
 
         PgCursor::Ptr cursor(NULL);
-        cursor = mConn->PgCreateCursor("crsFdoSelectCommand");
+        cursor = mConn->PgCreateCursor("crsSelCmd");
         assert(NULL != cursor);
 
         // Collect bind parameters

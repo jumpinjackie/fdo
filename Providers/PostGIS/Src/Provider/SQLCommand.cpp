@@ -108,7 +108,7 @@ FdoISQLDataReader* SQLCommand::ExecuteReader()
     try
     {
         // Create a cursor associated with query results reader
-        cursor = mConn->PgCreateCursor("crsFdoISQLCommand");
+        cursor = mConn->PgCreateCursor("crsSQLCmd");
 
         // Collect bind parameters
         details::pgexec_params_t params;

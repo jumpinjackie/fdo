@@ -332,6 +332,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\md5.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\md5.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\PostGisProvider.cpp"
 				>
 			</File>
