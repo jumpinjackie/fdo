@@ -23,6 +23,7 @@
     and/or software.
 */
 
+#include "stdafx.h"
 #include "md5.hpp"
 #include <cstdio>  // sprintf, sscanf
 #include <cassert>
