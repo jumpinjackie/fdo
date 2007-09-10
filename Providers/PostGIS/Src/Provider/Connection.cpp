@@ -54,7 +54,6 @@
 #include <string>
 #include <vector>
 // boost
-#include <boost/md5.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/split.hpp>
