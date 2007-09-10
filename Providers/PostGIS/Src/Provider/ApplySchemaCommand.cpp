@@ -124,7 +124,11 @@ void ApplySchemaCommand::Execute()
                     }
 
                     sqlColumns += sep;
-                    sqlColumns += static_cast<char const*>(propName.Lower());
+                    
+                    // Ticket #115
+                    //sqlColumns += static_cast<char const*>(propName.Lower());
+                    sqlColumns += details::QuoteSqlName<std::string>(static_cast<char const*>(propName.Lower()));
+                    
                     sqlColumns += " " + sqlType;
                     sep = ",";
                 }
@@ -148,6 +152,8 @@ void ApplySchemaCommand::Execute()
                 }
 
                 sqlPrimaryKey += sep;
+
+                // Ticket #115: do we need to quote PK names?
                 sqlPrimaryKey += static_cast<char const*>(propName.Lower());
                 sep = ",";
             }
@@ -163,7 +169,7 @@ void ApplySchemaCommand::Execute()
             std::string tableName(static_cast<char const*>(FdoStringP(classDef->GetName()).Lower()));
 
             std::string sqlCreate("CREATE TABLE ");
-            sqlCreate += tableName;
+            sqlCreate += details::QuoteSqlName(tableName);
             sqlCreate += " ( ";
             sqlCreate += sqlColumns;
             if (!sqlPrimaryKey.empty())
