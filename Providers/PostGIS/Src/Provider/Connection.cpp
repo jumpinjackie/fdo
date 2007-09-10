@@ -41,6 +41,7 @@
 #include "Transaction.h"
 #include "PgCursor.h"
 #include "PgUtility.h"
+#include "md5.hpp"
 // Message
 #define FDOPOSTGIS_MESSAGE_DEFINE
 #include "../Message/inc/PostGisMessage.h"
@@ -53,6 +54,7 @@
 #include <string>
 #include <vector>
 // boost
+#include <boost/md5.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/split.hpp>
@@ -663,20 +665,16 @@ fdo::postgis::PgCursor* Connection::PgCreateCursor(char const* name)
     //
     // Generate random suffix for cursor name to make name more unique
     //
-    std::string suffix("1979"); // My year of birth, why not?
-    try
-    {
-        int rn = std::rand() % (500 - 0 + 1) + 0;
-        suffix = boost::lexical_cast<std::string>(rn);
-    }
-    catch (boost::bad_lexical_cast& e)
-    {
-        FDOLOG_WRITE("ERROR: Type conversion failed: %s", e.what());
-    }
-
+    std::time_t t;
+    std::time(&t);
+    std::string tstr(str(boost::format("%d") % t));
+    fdo::postgis::md5 md5sum(tstr.c_str());
+    std::string suffix(md5sum.digest().hex_str_value());
+   
     std::string cursorName(name);
     cursorName += "_" + suffix;
-    
+   
+    //assert(cursorName.size() < 64);    
     FDOLOG_WRITE("Cursor name: %s", cursorName.c_str());
     
     //
