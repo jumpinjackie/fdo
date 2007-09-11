@@ -511,12 +511,9 @@ void Connection::PgExecuteCommand(char const* sql, FdoSize& affected)
         FDOLOG_WRITE(L"SQL command failed: [%s] %s",
             static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg));
 
-        FdoStringP msg("PgExecuteCommand failed");
-        throw FdoConnectionException::Create(msg);
-
-        //throw FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_SQL_STATEMENT_EXECUTION_FAILED,
-        //    "The execution of SQL statement failed with PostgreSQL error code: %1$ls, %2$ls.",
-        //    static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg)));
+        throw FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_SQL_STATEMENT_EXECUTION_FAILED,
+            "The execution of SQL statement failed with PostgreSQL error code: %1$ls, %2$ls.",
+            static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg)));
     }
 
     try

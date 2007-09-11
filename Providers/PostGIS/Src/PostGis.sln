@@ -40,6 +40,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "insert_command", "..\..\..\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "apply_schema_command", "..\..\..\..\Samples\apply_schema_command\apply_schema_command.vcproj", "{C6A6D644-C4BB-4132-902A-C91BCCE7C793}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "update_command", "..\..\..\..\Samples\update_command\update_command.vcproj", "{4E113639-93F8-4158-9D3F-028E31209882}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -86,6 +88,10 @@ Global
 		{C6A6D644-C4BB-4132-902A-C91BCCE7C793}.Debug|Win32.Build.0 = Debug|Win32
 		{C6A6D644-C4BB-4132-902A-C91BCCE7C793}.Release|Win32.ActiveCfg = Release|Win32
 		{C6A6D644-C4BB-4132-902A-C91BCCE7C793}.Release|Win32.Build.0 = Release|Win32
+		{4E113639-93F8-4158-9D3F-028E31209882}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4E113639-93F8-4158-9D3F-028E31209882}.Debug|Win32.Build.0 = Debug|Win32
+		{4E113639-93F8-4158-9D3F-028E31209882}.Release|Win32.ActiveCfg = Release|Win32
+		{4E113639-93F8-4158-9D3F-028E31209882}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,5 +103,6 @@ Global
 		{74B94AFF-BBC1-445E-8362-DC5D21A4D67B} = {6F922396-7A7B-48E3-9F14-29FAFBE41301}
 		{22E5F6AA-DDE6-4EB1-A371-CE1B98045B02} = {6F922396-7A7B-48E3-9F14-29FAFBE41301}
 		{C6A6D644-C4BB-4132-902A-C91BCCE7C793} = {6F922396-7A7B-48E3-9F14-29FAFBE41301}
+		{4E113639-93F8-4158-9D3F-028E31209882} = {6F922396-7A7B-48E3-9F14-29FAFBE41301}
 	EndGlobalSection
 EndGlobal
