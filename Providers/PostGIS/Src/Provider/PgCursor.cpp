@@ -43,9 +43,9 @@ PgCursor::PgCursor(Connection* conn, std::string const& name)
 
 PgCursor::~PgCursor()
 {
-    assert(mIsClosed);
-    assert(NULL == mDescRes);
-    assert(NULL == mFetchRes);
+    //assert(mIsClosed);
+    //assert(NULL == mDescRes);
+    //assert(NULL == mFetchRes);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -301,9 +301,13 @@ void PgCursor::Declare(char const* query, details::pgexec_params_t const& params
 
         // Call for describe cursor results
         Describe();
+
+        // Successfully declared
+        mIsClosed = false;
     }
     catch (FdoException* e)
     {
+        mIsClosed = true;
         mConn->PgRollbackSoftTransaction();
 
         FDOLOG_WRITE("ERROR: The creation of PostgreSQL cursor failed");
@@ -315,9 +319,6 @@ void PgCursor::Declare(char const* query, details::pgexec_params_t const& params
         e->Release();
         throw ne;
     }
-
-    // Successfully declared
-    mIsClosed = false;
 }
 
 void PgCursor::Close()
@@ -342,6 +343,7 @@ void PgCursor::Close()
         
         // Mark cursor as released
         mIsClosed = true;
+        mName = FdoStringP();
     }
 }
 
