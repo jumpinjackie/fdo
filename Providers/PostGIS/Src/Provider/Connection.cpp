@@ -58,16 +58,13 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+
 
 // External access to connection for client services
 extern "C" FDOPOSTGIS_API FdoIConnection* CreateConnection()
 {
     FDOLOG_MARKER("fdo::postgis::CreateConnection");
-
-    // Initialize random numbers generator
-    std::time_t secs;
-    std::time(&secs);
-    std::srand(static_cast<unsigned int>(secs));
 
     return (new fdo::postgis::Connection());
 }
@@ -514,10 +511,12 @@ void Connection::PgExecuteCommand(char const* sql, FdoSize& affected)
         FDOLOG_WRITE(L"SQL command failed: [%s] %s",
             static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg));
 
-        // TODO: Consider translation of PostgreSQL status to FDO exception (new types?)
-        throw FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_SQL_STATEMENT_EXECUTION_FAILED,
-            "The execution of SQL statement failed with PostgreSQL error code: %1$ls, %2$ls.",
-            static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg)));
+        FdoStringP msg("PgExecuteCommand failed");
+        throw FdoConnectionException::Create(msg);
+
+        //throw FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_SQL_STATEMENT_EXECUTION_FAILED,
+        //    "The execution of SQL statement failed with PostgreSQL error code: %1$ls, %2$ls.",
+        //    static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg)));
     }
 
     try
@@ -664,17 +663,18 @@ fdo::postgis::PgCursor* Connection::PgCreateCursor(char const* name)
     //
     // Generate random suffix for cursor name to make name more unique
     //
-    std::time_t t;
-    std::time(&t);
-    std::string tstr(str(boost::format("%d") % t));
-    fdo::postgis::md5 md5sum(tstr.c_str());
+    using boost::posix_time::ptime;
+    ptime pt = boost::date_time::microsec_clock<ptime::time_type>::local_time();
+    std::string ptstr(boost::posix_time::to_iso_string(pt));
+    fdo::postgis::md5 md5sum(ptstr.c_str());
     std::string suffix(md5sum.digest().hex_str_value());
    
     std::string cursorName(name);
     cursorName += "_" + suffix;
    
     //assert(cursorName.size() < 64);    
-    FDOLOG_WRITE("Cursor name: %s", cursorName.c_str());
+    FDOLOG_WRITE("Cursor name (based on time: %s): %s",
+        ptstr.c_str(), cursorName.c_str());
     
     //
     // Create new instance of cursor
@@ -723,7 +723,6 @@ PGresult* Connection::PgDescribeCursor(char const* name)
 void Connection::PgBeginSoftTransaction()
 {
     FDOLOG_MARKER("Connection::+PgBeginSoftTransaction");
-    assert(FdoConnectionState_Closed != GetConnectionState());
     
     mSoftTransactionLevel++;
     if (1 == mSoftTransactionLevel)
@@ -734,7 +733,9 @@ void Connection::PgBeginSoftTransaction()
         if (PGRES_COMMAND_OK != PQresultStatus(pgRes.get()))
         {
             FDOLOG_WRITE("ERROR: BEGIN command failed: %s", PQerrorMessage(mPgConn));
-            assert(!"BEGIN FAILED - TO BE REPLACED WITH EXCEPTION");
+
+            FdoStringP msg(PQerrorMessage(mPgConn));
+            throw FdoConnectionException::Create(msg);
         }
     }
 }
@@ -742,7 +743,6 @@ void Connection::PgBeginSoftTransaction()
 void Connection::PgCommitSoftTransaction()
 {
     FDOLOG_MARKER("Connection::+PgCommitSoftTransaction");
-    assert(FdoConnectionState_Closed != GetConnectionState());
     
     if (0 >= mSoftTransactionLevel)
     {
@@ -753,13 +753,15 @@ void Connection::PgCommitSoftTransaction()
         mSoftTransactionLevel--;
         if (0 == mSoftTransactionLevel)
         {
+            FDOLOG_WRITE("COMMIT TRANSACTION");
+
             boost::shared_ptr<PGresult> pgRes(PQexec(mPgConn, "COMMIT"), PQclear);
             if (PGRES_COMMAND_OK != PQresultStatus(pgRes.get()))
             {
-                // TODO: Throw an exception on error
-
                 FDOLOG_WRITE("ERROR: COMMIT command failed: %s", PQerrorMessage(mPgConn));
-                assert(!"COMMIT FAILED - TO BE REPLACED WITH EXCEPTION");
+
+                FdoStringP msg(PQerrorMessage(mPgConn));
+                throw FdoConnectionException::Create(msg);
             }        
         }
     }
@@ -767,7 +769,6 @@ void Connection::PgCommitSoftTransaction()
 void Connection::PgRollbackSoftTransaction()
 {
     FDOLOG_MARKER("Connection::+PgRollbackSoftTransaction");
-    assert(FdoConnectionState_Closed != GetConnectionState());
     
     if (0 >= mSoftTransactionLevel)
     {
@@ -775,27 +776,30 @@ void Connection::PgRollbackSoftTransaction()
     }
     else
     {
+        FDOLOG_WRITE("ROLLBACK TRANSACTION");
+
         mSoftTransactionLevel = 0;
         boost::shared_ptr<PGresult> pgRes(PQexec(mPgConn, "ROLLBACK"), PQclear);
         if (PGRES_COMMAND_OK != PQresultStatus(pgRes.get()))
         {
-            // TODO: Throw an exception on error
-
             FDOLOG_WRITE("ERROR: COMMIT command failed: %s", PQerrorMessage(mPgConn));
-            assert(!"ROLLBACK FAILED - TO BE REPLACED WITH EXCEPTION");
+         
+            FdoStringP msg(PQerrorMessage(mPgConn));
+            throw FdoConnectionException::Create(msg);
         } 
     }
 }
 void Connection::PgFlushSoftTransaction()
 {
     FDOLOG_MARKER("Connection::+PgFlushSoftTransaction");
-    assert(FdoConnectionState_Closed != GetConnectionState());
     
     // Force unwinding and commit of any active transaction
-    //if (mSoftTransactionLevel > 1)
+    if (0 < mSoftTransactionLevel)
+    {
+        FDOLOG_WRITE("FLUSH TRANSACTION");
         mSoftTransactionLevel = 1;
-        
-    PgCommitSoftTransaction();
+        PgCommitSoftTransaction();
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
