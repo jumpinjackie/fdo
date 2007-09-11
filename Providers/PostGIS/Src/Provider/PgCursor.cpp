@@ -304,6 +304,8 @@ void PgCursor::Declare(char const* query, details::pgexec_params_t const& params
     }
     catch (FdoException* e)
     {
+        mConn->PgRollbackSoftTransaction();
+
         FDOLOG_WRITE("ERROR: The creation of PostgreSQL cursor failed");
 
         FdoException* ne = NULL;
@@ -314,6 +316,7 @@ void PgCursor::Declare(char const* query, details::pgexec_params_t const& params
         throw ne;
     }
 
+    // Successfully declared
     mIsClosed = false;
 }
 
