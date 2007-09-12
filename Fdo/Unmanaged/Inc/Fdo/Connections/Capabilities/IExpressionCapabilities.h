@@ -92,6 +92,7 @@
 #define  FDO_FUNCTION_RPAD       L"Rpad"       // Pads a string expression to the right to defined length
 #define  FDO_FUNCTION_RTRIM      L"Rtrim"      // Removes trailing blanks from a string expression
 #define  FDO_FUNCTION_SOUNDEX    L"Soundex"    // Returns the phonetic representation of a string expression
+#define  FDO_FUNCTION_SUBSTR     L"Substr"     // Extracts a substring from a string expression
 #define  FDO_FUNCTION_TRANSLATE  L"Translate"  // Replaces a set of letters in a string expression
 #define  FDO_FUNCTION_TRIM       L"Trim"       // Removes leading and/or trailing blanks from a string expression
 #define  FDO_FUNCTION_UPPER      L"Upper"      // Returns strings with all letters uppercase
