@@ -360,11 +360,19 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Src\Functions\Aggregate\FdoFunctionMedian.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Src\Functions\Aggregate\FdoFunctionMin.cpp"
 						>
 					</File>
 					<File
 						RelativePath=".\Src\Functions\Aggregate\FdoFunctionSpatialExtents.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Aggregate\FdoFunctionStddev.cpp"
 						>
 					</File>
 					<File
@@ -384,7 +392,15 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Src\Functions\Numeric\FdoFunctionRound.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Src\Functions\Numeric\FdoFunctionSign.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Numeric\FdoFunctionTrunc.cpp"
 						>
 					</File>
 				</Filter>
@@ -396,7 +412,47 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Src\Functions\String\FdoFunctionInstr.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\String\FdoFunctionLength.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Src\Functions\String\FdoFunctionLower.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\String\FdoFunctionLpad.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\String\FdoFunctionLtrim.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\String\FdoFunctionRpad.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\String\FdoFunctionRtrim.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\String\FdoFunctionSoundex.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\String\FdoFunctionSubstr.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\String\FdoFunctionTranslate.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\String\FdoFunctionTrim.cpp"
 						>
 					</File>
 					<File
@@ -468,6 +524,58 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="Date"
+					>
+					<File
+						RelativePath=".\Src\Functions\Date\FdoFunctionAddMonths.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Date\FdoFunctionCurrentDate.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Date\FdoFunctionExtract.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Date\FdoFunctionMonthsBetween.cpp"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Conversion"
+					>
+					<File
+						RelativePath=".\Src\Functions\Conversion\FdoFunctionNullValue.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Conversion\FdoFunctionToDate.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Conversion\FdoFunctionToDouble.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Conversion\FdoFunctionToFloat.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Conversion\FdoFunctionToInt32.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Conversion\FdoFunctionToInt64.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Conversion\FdoFunctionToString.cpp"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Util"
@@ -534,11 +642,19 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Inc\Functions\Aggregate\FdoFunctionMedian.h"
+						>
+					</File>
+					<File
 						RelativePath=".\Inc\Functions\Aggregate\FdoFunctionMin.h"
 						>
 					</File>
 					<File
 						RelativePath=".\Inc\Functions\Aggregate\FdoFunctionSpatialExtents.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Aggregate\FdoFunctionStddev.h"
 						>
 					</File>
 					<File
@@ -558,7 +674,15 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Inc\Functions\Numeric\FdoFunctionRound.h"
+						>
+					</File>
+					<File
 						RelativePath=".\Inc\Functions\Numeric\FdoFunctionSign.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Numeric\FdoFunctionTrunc.h"
 						>
 					</File>
 				</Filter>
@@ -570,7 +694,47 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Inc\Functions\String\FdoFunctionInstr.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\String\FdoFunctionLength.h"
+						>
+					</File>
+					<File
 						RelativePath=".\Inc\Functions\String\FdoFunctionLower.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\String\FdoFunctionLpad.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\String\FdoFunctionLtrim.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\String\FdoFunctionRpad.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\String\FdoFunctionRtrim.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\String\FdoFunctionSoundex.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\String\FdoFunctionSubstr.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\String\FdoFunctionTranslate.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\String\FdoFunctionTrim.h"
 						>
 					</File>
 					<File
@@ -639,6 +803,58 @@
 					</File>
 					<File
 						RelativePath=".\Inc\Functions\Math\FdoFunctionTan.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Date"
+					>
+					<File
+						RelativePath=".\Inc\Functions\Date\FdoFunctionAddMonths.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Date\FdoFunctionCurrentDate.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Date\FdoFunctionExtract.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Date\FdoFunctionMonthsBetween.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Conversion"
+					>
+					<File
+						RelativePath=".\Inc\Functions\Conversion\FdoFunctionNullValue.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Conversion\FdoFunctionToDate.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Conversion\FdoFunctionToDouble.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Conversion\FdoFunctionToFloat.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Conversion\FdoFunctionToInt32.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Conversion\FdoFunctionToInt64.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Conversion\FdoFunctionToString.h"
 						>
 					</File>
 				</Filter>
