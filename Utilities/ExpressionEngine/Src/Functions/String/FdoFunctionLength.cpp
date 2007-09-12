@@ -18,14 +18,14 @@
 //
 
 #include <stdafx.h>
-#include <Functions/String/FdoFunctionLower.h>
+#include <Functions/String/FdoFunctionLength.h>
 
 
 // ----------------------------------------------------------------------------
 // --                         Constructors/Destructors                       --
 // ----------------------------------------------------------------------------
 
-FdoFunctionLower::FdoFunctionLower ()
+FdoFunctionLength::FdoFunctionLength ()
 
 // +---------------------------------------------------------------------------
 // | The class constructor.
@@ -37,10 +37,10 @@ FdoFunctionLower::FdoFunctionLower ()
 
     function_definition = NULL;
 
-}  //  FdoFunctionLower ()
+}  //  FdoFunctionLength ()
 
 
-FdoFunctionLower::~FdoFunctionLower ()
+FdoFunctionLength::~FdoFunctionLength ()
 
 // +---------------------------------------------------------------------------
 // | The class destructor.
@@ -52,14 +52,14 @@ FdoFunctionLower::~FdoFunctionLower ()
 
     FDO_SAFE_RELEASE(function_definition);
 
-}  //  ~FdoFunctionLower ()
+}  //  ~FdoFunctionLength ()
 
 
 // ----------------------------------------------------------------------------
 // --                            Public Class APIs                           --
 // ----------------------------------------------------------------------------
 
-FdoFunctionLower *FdoFunctionLower::Create ()
+FdoFunctionLength *FdoFunctionLength::Create ()
 
 // +---------------------------------------------------------------------------
 // | The function creates a new instance of the class.
@@ -67,11 +67,11 @@ FdoFunctionLower *FdoFunctionLower::Create ()
 
 {
 
-    return new FdoFunctionLower();
+    return new FdoFunctionLength();
 
 }  //  Create ()
 
-FdoFunctionLower *FdoFunctionLower::CreateObject ()
+FdoFunctionLength *FdoFunctionLength::CreateObject ()
 
 // +---------------------------------------------------------------------------
 // | The function creates a new instance of the class.
@@ -79,14 +79,14 @@ FdoFunctionLower *FdoFunctionLower::CreateObject ()
 
 {
 
-    return new FdoFunctionLower();
+    return new FdoFunctionLength();
 
 }  //  CreateObject ()
 
-FdoFunctionDefinition *FdoFunctionLower::GetFunctionDefinition ()
+FdoFunctionDefinition *FdoFunctionLength::GetFunctionDefinition ()
 
 // +---------------------------------------------------------------------------
-// | The function creates the supported signature list for the function LOWER.
+// | The function creates the supported signature list for the function LENGTH.
 // +---------------------------------------------------------------------------
 
 {
@@ -98,11 +98,11 @@ FdoFunctionDefinition *FdoFunctionLower::GetFunctionDefinition ()
 
 }  //  GetFunctionDefinition ()
 
-FdoLiteralValue *FdoFunctionLower::Evaluate (
+FdoLiteralValue *FdoFunctionLength::Evaluate (
                                     FdoLiteralValueCollection *literal_values)
 
 // +---------------------------------------------------------------------------
-// | The function processes a call to the function LOWER.
+// | The function processes a call to the function LENGTH.
 // +---------------------------------------------------------------------------
 
 {
@@ -120,14 +120,15 @@ FdoLiteralValue *FdoFunctionLower::Evaluate (
     // Process the request and return the result back to the calling routine.
 
     string_value = (FdoStringValue *) literal_values->GetItem(0);
-    if (!string_value->IsNull()) {
+    if (!string_value->IsNull())
+        result = string_value->GetString();
+    else
+      return FdoInt64Value::Create();
 
-        result = result + string_value->GetString();
-        result = result.Lower();
-
-    }  //  if (!string_value->IsNull()) ...
-
-    return FdoStringValue::Create(result);
+    if (result == NULL)
+        return FdoInt64Value::Create();
+    else
+      return FdoInt64Value::Create(result.GetLength());
 
 }  //  Evaluate ()
 
@@ -136,16 +137,16 @@ FdoLiteralValue *FdoFunctionLower::Evaluate (
 // --                          Supporting functions                          --
 // ----------------------------------------------------------------------------
 
-void FdoFunctionLower::CreateFunctionDefinition ()
+void FdoFunctionLength::CreateFunctionDefinition ()
 
 // +---------------------------------------------------------------------------
-// | The procedure creates the function definition for the function LOWER. The
+// | The procedure creates the function definition for the function LENGTH. The
 // | function definition includes the list of supported signatures. The follow-
 // | ing signatures are supported:
 // |
-// |    LOWER (string)
+// |    LENGTH (string)
 // |
-// | The function always returns a STRING.
+// | The function always returns a INT64.
 // +---------------------------------------------------------------------------
 
 {
@@ -161,14 +162,15 @@ void FdoFunctionLower::CreateFunctionDefinition ()
 
     FdoPtr<FdoArgumentDefinitionCollection> str_args;
 
-    FdoPtr<FdoSignatureDefinition>          signature;
-    FdoSignatureDefinitionCollection        *signatures;
+    FdoPtr<FdoSignatureDefinition>   signature;
+    FdoSignatureDefinitionCollection *signatures;
 
     // Get the general descriptions for the arguments.
 
-    arg1_description = FdoException::NLSGetMessage(
-                                    FUNCTION_LOWER_STRING_ARG,
-                                    "String to be converted into lowercase");
+    arg1_description =
+        FdoException::NLSGetMessage(
+                                FUNCTION_LENGTH_STRING_ARG,
+                                "String for which to calculate the length");
 
     // The following defines the different argument definition collections.
 
@@ -185,18 +187,18 @@ void FdoFunctionLower::CreateFunctionDefinition ()
 
     signatures = FdoSignatureDefinitionCollection::Create();
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_String, str_args);
+    signature = FdoSignatureDefinition::Create(FdoDataType_Int64, str_args);
     signatures->Add(signature);
 
     // Create the function definition.
 
     desc =
          FdoException::NLSGetMessage(
-                FUNCTION_LOWER,
-                "Converts all uppercase letters in a string expression into lowercase letters");
+                FUNCTION_LENGTH,
+                "Determines the length of a string expression");
     function_definition =
                 FdoFunctionDefinition::Create(
-                                        FDO_FUNCTION_LOWER,
+                                        FDO_FUNCTION_LENGTH,
                                         desc,
                                         false,
                                         signatures,
@@ -204,7 +206,7 @@ void FdoFunctionLower::CreateFunctionDefinition ()
 
 }  //  CreateFunctionDefinition ()
 
-void FdoFunctionLower::Validate (FdoLiteralValueCollection *literal_values)
+void FdoFunctionLength::Validate (FdoLiteralValueCollection *literal_values)
 
 // +---------------------------------------------------------------------------
 // | The function validates the argument list that was passed in.
@@ -222,7 +224,7 @@ void FdoFunctionLower::Validate (FdoLiteralValueCollection *literal_values)
 
     FdoPtr<FdoLiteralValue> literal_value;
 
-    // Check the number of arguments. LOWER accepts exactly one parameter. If
+    // Check the number of arguments. LENGTH accepts exactly one parameter. If
     // the number of parameters is not correct issue an exception.
 
     if (count != 1) 
@@ -230,7 +232,7 @@ void FdoFunctionLower::Validate (FdoLiteralValueCollection *literal_values)
                FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_NUMBER_ERROR, 
                   "Expression Engine: Invalid number of parameters for function '%1$ls'",
-                  FDO_FUNCTION_LOWER));
+                  FDO_FUNCTION_LENGTH));
 
     // Next, identify the data type associated with the value to be processed.
     // An exception is issued if the data type does not match any of the ones
@@ -242,7 +244,7 @@ void FdoFunctionLower::Validate (FdoLiteralValueCollection *literal_values)
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_ERROR, 
                   "Expression Engine: Invalid parameters for function '%1$ls'",
-                  FDO_FUNCTION_LOWER));
+                  FDO_FUNCTION_LENGTH));
 
     data_value = static_cast<FdoDataValue *>(literal_value.p);
     data_type = data_value->GetDataType();
@@ -251,7 +253,7 @@ void FdoFunctionLower::Validate (FdoLiteralValueCollection *literal_values)
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
                   "Expression Engine: Invalid parameter data type for function '%1$ls'",
-                  FDO_FUNCTION_LOWER));
+                  FDO_FUNCTION_LENGTH));
 
 }  //  Validate ()
 

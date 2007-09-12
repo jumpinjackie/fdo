@@ -120,12 +120,12 @@ FdoLiteralValue *FdoFunctionUpper::Evaluate (
     // Process the request and return the result back to the calling routine.
 
     string_value = (FdoStringValue *) literal_values->GetItem(0);
-    if (string_value->GetString() != NULL) {
+    if (!string_value->IsNull()) {
 
         result = result + string_value->GetString();
         result = result.Upper();
 
-    }  //  if (string_value->GetString() != NULL) ...
+    }  //  if (!string_value->IsNull()) ...
 
     return FdoStringValue::Create(result);
 
@@ -219,8 +219,6 @@ void FdoFunctionUpper::Validate (FdoLiteralValueCollection *literal_values)
     FdoDataType             data_type;
 
     FdoDataValue            *data_value     = NULL;
-
-    FdoPtr<FdoStringValue>  str_value;
 
     FdoPtr<FdoLiteralValue> literal_value;
 

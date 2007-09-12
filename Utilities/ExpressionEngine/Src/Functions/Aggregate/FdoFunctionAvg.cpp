@@ -229,7 +229,7 @@ void FdoFunctionAvg::CreateFunctionDefinition ()
 // |         {decimal, double, int16, int32, int64, single})
 // |
 // | If the optional first parameter is used, then the parameter value must be
-// | ALL or DISTINCT. The function allways returns a DOUBLE.
+// | ALL or DISTINCT. The function always returns a DOUBLE.
 // +---------------------------------------------------------------------------
 
 {
@@ -769,6 +769,13 @@ void FdoFunctionAvg::Validate (FdoLiteralValueCollection *literal_values)
                           FDO_FUNCTION_AVG));
 
         str_value   = static_cast<FdoStringValue *>(literal_value.p);
+        if (str_value->IsNull())
+            throw FdoException::Create(
+              FdoException::NLSGetMessage(
+                  FUNCTION_OPERATOR_ERROR, 
+                  "Expression Engine: Invalid operator parameter value for function '%1$ls'",
+                  FDO_FUNCTION_AVG));
+
         param_value = str_value->GetString();
         if ((FdoCommonStringUtil::StringCompareNoCase(
                                         param_value, L"ALL"     ) != 0) &&
@@ -777,7 +784,7 @@ void FdoFunctionAvg::Validate (FdoLiteralValueCollection *literal_values)
             throw FdoException::Create(
               FdoException::NLSGetMessage(
                   FUNCTION_OPERATOR_ERROR, 
-                  "Expression Engine: Invalid first parameter value for function '%1$ls'",
+                  "Expression Engine: Invalid operator parameter value for function '%1$ls'",
                   FDO_FUNCTION_AVG));
 
     }  //  if (count == 2) ...
@@ -811,12 +818,12 @@ void FdoFunctionAvg::Validate (FdoLiteralValueCollection *literal_values)
 
     data_value = static_cast<FdoDataValue *>(literal_value.p);
     incoming_data_type = data_value->GetDataType();
-    if ((incoming_data_type == FdoDataType_Boolean ) ||
-        (incoming_data_type == FdoDataType_Byte    ) ||
-        (incoming_data_type == FdoDataType_DateTime) ||
-        (incoming_data_type == FdoDataType_String  ) ||
-        (incoming_data_type == FdoDataType_BLOB    ) ||
-        (incoming_data_type == FdoDataType_CLOB    )    )
+    if ((incoming_data_type != FdoDataType_Decimal) &&
+        (incoming_data_type != FdoDataType_Double ) &&
+        (incoming_data_type != FdoDataType_Int16  ) &&
+        (incoming_data_type != FdoDataType_Int32  ) &&
+        (incoming_data_type != FdoDataType_Int64  ) &&
+        (incoming_data_type != FdoDataType_Single )    )
        throw FdoException::Create(
                FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_DATA_TYPE_ERROR, 

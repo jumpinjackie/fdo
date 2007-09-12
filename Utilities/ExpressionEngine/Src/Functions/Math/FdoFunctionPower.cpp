@@ -662,8 +662,6 @@ void FdoFunctionPower::Validate (FdoLiteralValueCollection *literal_values)
 
     FdoDataValue            *data_value     = NULL;
 
-    FdoPtr<FdoStringValue>  str_value;
-
     FdoPtr<FdoLiteralValue> literal_value;
 
     // Check the number of arguments. POWER accepts two numeric parameters.
@@ -680,7 +678,7 @@ void FdoFunctionPower::Validate (FdoLiteralValueCollection *literal_values)
     // An exception is issued if the data type does not match any of the ones
     // the function supports
 
-    for (i = 0; i < 2; i++) {
+    for (i = 0; i < count; i++) {
 
       literal_value = literal_values->GetItem(i);
       if (literal_value->GetLiteralValueType() != FdoLiteralValueType_Data)
@@ -696,7 +694,7 @@ void FdoFunctionPower::Validate (FdoLiteralValueCollection *literal_values)
       else
         para2_data_type = data_value->GetDataType();
 
-    }  //  for (i = 0; i < 2; i++) ...
+    }  //  for (i = 0; i < count; i++) ...
 
     if (((para1_data_type != FdoDataType_Decimal) &&
          (para1_data_type != FdoDataType_Double ) &&

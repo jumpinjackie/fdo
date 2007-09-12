@@ -18,14 +18,14 @@
 //
 
 #include <stdafx.h>
-#include <Functions/String/FdoFunctionConcat.h>
+#include <Functions/String/FdoFunctionTranslate.h>
 
 
 // ----------------------------------------------------------------------------
 // --                         Constructors/Destructors                       --
 // ----------------------------------------------------------------------------
 
-FdoFunctionConcat::FdoFunctionConcat ()
+FdoFunctionTranslate::FdoFunctionTranslate ()
 
 // +---------------------------------------------------------------------------
 // | The class constructor.
@@ -37,10 +37,10 @@ FdoFunctionConcat::FdoFunctionConcat ()
 
     function_definition = NULL;
 
-}  //  FdoFunctionConcat ()
+}  //  FdoFunctionTranslate ()
 
 
-FdoFunctionConcat::~FdoFunctionConcat ()
+FdoFunctionTranslate::~FdoFunctionTranslate ()
 
 // +---------------------------------------------------------------------------
 // | The class destructor.
@@ -52,14 +52,14 @@ FdoFunctionConcat::~FdoFunctionConcat ()
 
     FDO_SAFE_RELEASE(function_definition);
 
-}  //  ~FdoFunctionConcat ()
+}  //  ~FdoFunctionTranslate ()
 
 
 // ----------------------------------------------------------------------------
 // --                            Public Class APIs                           --
 // ----------------------------------------------------------------------------
 
-FdoFunctionConcat *FdoFunctionConcat::Create ()
+FdoFunctionTranslate *FdoFunctionTranslate::Create ()
 
 // +---------------------------------------------------------------------------
 // | The function creates a new instance of the class.
@@ -67,11 +67,11 @@ FdoFunctionConcat *FdoFunctionConcat::Create ()
 
 {
 
-    return new FdoFunctionConcat();
+    return new FdoFunctionTranslate();
 
 }  //  Create ()
 
-FdoFunctionConcat *FdoFunctionConcat::CreateObject ()
+FdoFunctionTranslate *FdoFunctionTranslate::CreateObject ()
 
 // +---------------------------------------------------------------------------
 // | The function creates a new instance of the class.
@@ -79,14 +79,15 @@ FdoFunctionConcat *FdoFunctionConcat::CreateObject ()
 
 {
 
-    return new FdoFunctionConcat();
+    return new FdoFunctionTranslate();
 
 }  //  CreateObject ()
 
-FdoFunctionDefinition *FdoFunctionConcat::GetFunctionDefinition ()
+FdoFunctionDefinition *FdoFunctionTranslate::GetFunctionDefinition ()
 
 // +---------------------------------------------------------------------------
-// | The function creates the supported signature list for the function CONCAT.
+// | The function creates the supported signature list for the function TRANS-
+// | LATE.
 // +---------------------------------------------------------------------------
 
 {
@@ -98,20 +99,28 @@ FdoFunctionDefinition *FdoFunctionConcat::GetFunctionDefinition ()
 
 }  //  GetFunctionDefinition ()
 
-FdoLiteralValue *FdoFunctionConcat::Evaluate (
+FdoLiteralValue *FdoFunctionTranslate::Evaluate (
                                     FdoLiteralValueCollection *literal_values)
 
 // +---------------------------------------------------------------------------
-// | The function processes a call to the function CONCAT.
+// | The function processes a call to the function TRANSLATE.
 // +---------------------------------------------------------------------------
 
 {
 
     // Declare and initialize all necessary local variables.
 
-    FdoInt32               i;
+    FdoInt32               i,
+                           pos,
+                           to_set_length,
+                           from_set_length,
+                           source_string_length;
 
-    FdoStringP             result;
+    FdoStringP             result,
+                           curr_char,
+                           to_char_set,
+                           source_string,
+                           from_char_set;
 
     FdoPtr<FdoStringValue> string_value;
 
@@ -119,15 +128,71 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
 
     Validate(literal_values);
 
-    // Process the request and return the result back to the calling routine.
+    // Get the source string and the two character sets involved in the opera-
+    // tion. If any of the provided strings is empty, return an empty string
+    // as the function result.
 
-    for (i = 0; i < 2; i++) {
+    for (i = 0; i < 3; i++) {
 
       string_value = (FdoStringValue *) literal_values->GetItem(i);
-      if (!string_value->IsNull())
-          result = result + string_value->GetString();
+      if (string_value->IsNull())
+          return FdoStringValue::Create();
+      else
+        switch (i) {
 
-    }  //  for (i = 0; i < 2; i++) ...
+          case 0:
+            source_string = source_string + string_value->GetString();
+            break;
+
+          case 1:
+            from_char_set = from_char_set + string_value->GetString();
+            break;
+
+          case 2:
+            to_char_set = to_char_set + string_value->GetString();
+            break;
+
+        }  //  switch ...
+
+    }  //  for (i = 0; i < 3; i++) ...
+
+    // Get the length of the character sets involved.
+
+    to_set_length        = (FdoInt32) to_char_set.GetLength();
+    from_set_length      = (FdoInt32) from_char_set.GetLength();
+    source_string_length = (FdoInt32) source_string.GetLength();
+
+    // Navigate through the source string and execute the replacement. The
+    // following rules apply:
+    //
+    //  - any character in the from-set is replaced with the character in
+    //    the to-set at the same position.
+    //  - if the character in the from-set does not have a replacement
+    //    character in the to-set at the same position, the character is
+    //    deleted.
+    //
+    // NOTE: It is not possible to use the function REPLACE offered with the
+    //       class FdoStringP because this may result in incorrect results.
+    //       For example, if the call is TRANSLATE('abcd', 'ae', 'eS'), the
+    //       result should be 'ebcd', not 'Sbcd' which would be the case if
+    //       the mentioned function is used to do the job.
+
+    for (i = 0; i < source_string_length; i++) {
+
+      curr_char = source_string.Mid(i, 1);
+      if (from_char_set.Contains(curr_char)) {
+
+          pos = GetFromSetPosition(from_char_set, from_set_length, curr_char);
+          if (pos <= to_set_length)
+              result = result + to_char_set.Mid(pos, 1);
+
+      }  //  if (from_char_set.Contains( ...
+      else
+        result = result + curr_char;
+
+    }  //  for (i = 0; ...
+
+    // Return the resulting string back to the calling routine.
 
     return FdoStringValue::Create(result);
 
@@ -138,14 +203,14 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
 // --                          Supporting functions                          --
 // ----------------------------------------------------------------------------
 
-void FdoFunctionConcat::CreateFunctionDefinition ()
+void FdoFunctionTranslate::CreateFunctionDefinition ()
 
 // +---------------------------------------------------------------------------
-// | The procedure creates the function definition for the function CONCAT. The
-// | function definition includes the list of supported signatures. The follow-
-// | ing signatures are supported:
+// | The procedure creates the function definition for the function TRANSLATE.
+// | The function definition includes the list of supported signatures. The
+// | following signatures are supported:
 // |
-// |    CONCAT (string, string)
+// |    TRANSLATE (string, string)
 // |
 // | The function always returns a STRING.
 // +---------------------------------------------------------------------------
@@ -158,10 +223,14 @@ void FdoFunctionConcat::CreateFunctionDefinition ()
 
     FdoStringP arg1_description;
     FdoStringP arg2_description;
-    FdoStringP str_arg_literal;
+    FdoStringP arg3_description;
+    FdoStringP arg1_literal;
+    FdoStringP arg2_literal;
+    FdoStringP arg3_literal;
 
     FdoPtr<FdoArgumentDefinition> str1_arg;
     FdoPtr<FdoArgumentDefinition> str2_arg;
+    FdoPtr<FdoArgumentDefinition> str3_arg;
 
     FdoPtr<FdoArgumentDefinitionCollection> str_args;
 
@@ -171,26 +240,41 @@ void FdoFunctionConcat::CreateFunctionDefinition ()
     // Get the general descriptions for the arguments.
 
     arg1_description = FdoException::NLSGetMessage(
-                                        FUNCTION_CONCAT_STRING1_ARG,
-                                        "First string to concatenate");
+                            FUNCTION_TRANSLATE_STRING1_ARG,
+                            "String where character replacement is executed");
 
-    arg2_description = FdoException::NLSGetMessage(
-                                        FUNCTION_CONCAT_STRING2_ARG,
-                                        "Second string to concatenate");
+    arg2_description =
+        FdoException::NLSGetMessage(
+                FUNCTION_TRANSLATE_STRING2_ARG,
+                "String identifying individual characters to be replaced");
+
+    arg3_description =
+        FdoException::NLSGetMessage(
+                    FUNCTION_TRANSLATE_STRING3_ARG,
+                    "String identifying individual replacement characters");
 
     // The following defines the different argument definition collections.
 
-    str_arg_literal = FdoException::NLSGetMessage(FUNCTION_STRING_ARG_LIT,
-                                                  "text property");
+    arg1_literal = FdoException::NLSGetMessage(FUNCTION_STRING_ARG_LIT,
+                                               "text property");
+
+    arg2_literal = FdoException::NLSGetMessage(FUNCTION_TRANSLATE_FROM_ARG_LIT,
+                                               "from-characterset");
+
+    arg3_literal = FdoException::NLSGetMessage(FUNCTION_TRANSLATE_TO_ARG_LIT,
+                                               "to-characterset");
 
     str1_arg = FdoArgumentDefinition::Create(
-                    str_arg_literal, arg1_description, FdoDataType_String);
+                    arg1_literal, arg1_description, FdoDataType_String);
     str2_arg = FdoArgumentDefinition::Create(
-                    str_arg_literal, arg2_description, FdoDataType_String);
+                    arg2_literal, arg2_description, FdoDataType_String);
+    str3_arg = FdoArgumentDefinition::Create(
+                    arg3_literal, arg3_description, FdoDataType_String);
 
     str_args = FdoArgumentDefinitionCollection::Create();
     str_args->Add(str1_arg);
     str_args->Add(str2_arg);
+    str_args->Add(str3_arg);
 
     // Create the signature collection.
 
@@ -202,11 +286,11 @@ void FdoFunctionConcat::CreateFunctionDefinition ()
     // Create the function definition.
 
     desc = FdoException::NLSGetMessage(
-                        FUNCTION_CONCAT,
-                        "Returns the string concatenation of 2 expressions");
+                FUNCTION_TRANSLATE,
+                "Replaces a set of individual characters in a string with replacements");
     function_definition =
                 FdoFunctionDefinition::Create(
-                                        FDO_FUNCTION_CONCAT,
+                                        FDO_FUNCTION_TRANSLATE,
                                         desc,
                                         false,
                                         signatures,
@@ -214,7 +298,41 @@ void FdoFunctionConcat::CreateFunctionDefinition ()
 
 }  //  CreateFunctionDefinition ()
 
-void FdoFunctionConcat::Validate (FdoLiteralValueCollection *literal_values)
+FdoInt32 FdoFunctionTranslate::GetFromSetPosition (FdoStringP char_set,
+                                                   FdoInt32   set_length,
+                                                   FdoStringP curr_char)
+
+// +---------------------------------------------------------------------------
+// | The function returns the position of the provided character in the set of
+// | characters that need to be replaced.
+// +---------------------------------------------------------------------------
+
+{
+
+
+    // Declare and initialize all necessary local variables.
+
+    FdoInt32   pos = 0;
+
+    FdoStringP tmp_char;
+
+    // Navigate the given string from the left, find the position of the pro-
+    // vided character and return the position back to the calling routine.
+
+    while (pos < set_length) {
+
+      tmp_char = char_set.Mid(pos, 1);
+      if (tmp_char == curr_char)
+          break;
+      pos++;
+
+    }  //  while (pos < string_length) ...
+
+    return pos;
+
+}  //  GetFromSetPosition ()
+
+void FdoFunctionTranslate::Validate (FdoLiteralValueCollection *literal_values)
 
 // +---------------------------------------------------------------------------
 // | The function validates the argument list that was passed in.
@@ -233,19 +351,19 @@ void FdoFunctionConcat::Validate (FdoLiteralValueCollection *literal_values)
 
     FdoPtr<FdoLiteralValue> literal_value;
 
-    // Check the number of arguments. CONCAT accepts two parameters. If the
+    // Check the number of arguments. TRANSLATE accepts three parameters. If the
     // number of parameters is not correct issue an exception.
 
-    if (count != 2) 
+    if (count != 3) 
         throw FdoException::Create(
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_NUMBER_ERROR, 
                   "Expression Engine: Invalid number of parameters for function '%1$ls'",
-                  FDO_FUNCTION_CONCAT));
+                  FDO_FUNCTION_TRANSLATE));
 
-    // Next, identify the data type associated with the value to be processed.
-    // An exception is issued if the data type does not match any of the ones
-    // the function supports
+    // Next query the list of arguments and verify that the provided types
+    //  match those defined in the signatures. If there is an error issue an
+    // exception.
 
     for (i = 0; i < count; i++) {
 
@@ -255,7 +373,7 @@ void FdoFunctionConcat::Validate (FdoLiteralValueCollection *literal_values)
                  FdoException::NLSGetMessage(
                     FUNCTION_PARAMETER_ERROR, 
                     "Expression Engine: Invalid parameters for function '%1$ls'",
-                    FDO_FUNCTION_CONCAT));
+                    FDO_FUNCTION_TRANSLATE));
 
       data_value = static_cast<FdoDataValue *>(literal_value.p);
       data_type = data_value->GetDataType();
@@ -264,7 +382,7 @@ void FdoFunctionConcat::Validate (FdoLiteralValueCollection *literal_values)
                  FdoException::NLSGetMessage(
                    FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
                    "Expression Engine: Invalid parameter data type for function '%1$ls'",
-                   FDO_FUNCTION_CONCAT));
+                   FDO_FUNCTION_TRANSLATE));
 
     }  //  for (i = 0; i < count; i++) ...
 
