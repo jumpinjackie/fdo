@@ -1369,6 +1369,552 @@ MessageId=8028
 SymbolicName=FUNCTION_RASTER_ARG
 Language=English
 Argument that represents a raster
+
+.
+MessageId=8029
+SymbolicName=FUNCTION_GENERAL_ARG
+Language=English
+Argument to be processed
+.
+MessageId=8030
+SymbolicName=FUNCTION_OPERATOR_ARG
+Language=English
+Operation indicator (ALL or DISTINCT)
+.
+MessageId=8031
+SymbolicName=FUNCTION_OPERATOR_ARG_LIT
+Language=English
+Operation Indicator
+.
+MessageId=8032
+SymbolicName=FUNCTION_BYTE_ARG_LIT
+Language=English
+byte
+.
+MessageId=8033
+SymbolicName=FUNCTION_DATE_ARG_LIT
+Language=English
+date/time
+.
+MessageId=8034
+SymbolicName=FUNCTION_NUMBER_ARG_LIT
+Language=English
+number
+.
+MessageId=8035
+SymbolicName=FUNCTION_STRING_ARG_LIT
+Language=English
+text property
+.
+MessageId=8036
+SymbolicName=FUNCTION_PARAMETER_NUMBER_ERROR
+Language=English
+Expression Engine: Invalid number of parameters for function '%1$ls'
+.
+MessageId=8037
+SymbolicName=FUNCTION_PARAMETER_ERROR
+Language=English
+Expression Engine: Invalid parameters for function '%1$ls'
+.
+MessageId=8038
+SymbolicName=FUNCTION_PARAMETER_DATA_TYPE_ERROR
+Language=English
+Expression Engine: Invalid parameter data type for function '%1$ls'
+.
+MessageId=8039
+SymbolicName=FUNCTION_RESULT_DATA_TYPE_ERROR
+Language=English
+Expression Engine: Invalid data type for return value for function '%1$ls'
+.
+MessageId=8040
+SymbolicName=FUNCTION_OPERATOR_ERROR
+Language=English
+Expression Engine: Invalid operator parameter value for function '%1$ls'
+.
+MessageId=8041
+SymbolicName=FUNCTION_BOOL_ARG_LIT
+Language=English
+boolean
+.
+MessageId=8042
+SymbolicName=FUNCTION_BLOB_ARG_LIT
+Language=English
+blob
+.
+MessageId=8043
+SymbolicName=FUNCTION_CLOB_ARG_LIT
+Language=English
+clob
+.
+MessageId=8044
+SymbolicName=FUNCTION_PARAMETER_DISTINCT_ERROR
+Language=English
+Expression Engine: DISTINCT not allowed for BLOB/CLOB for function '%1$ls'
+.
+MessageId=8045
+SymbolicName=FUNCTION_SIGN
+Language=English
+Returns -1, 0, 1 depending on whether the value is > 0, == 0 or < 0
+.
+MessageId=8046
+SymbolicName=FUNCTION_CONCAT_STRING1_ARG
+Language=English
+First string to concatenate
+.
+MessageId=8047
+SymbolicName=FUNCTION_CONCAT_STRING2_ARG
+Language=English
+Second string to concatenate
+.
+MessageId=8048
+SymbolicName=FUNCTION_UPPER_STRING_ARG
+Language=English
+String to be converted into uppercase
+.
+MessageId=8049
+SymbolicName=FUNCTION_LOWER_STRING_ARG
+Language=English
+String to be converted into lowercase
+.
+MessageId=8050
+SymbolicName=FUNCTION_GEOM_ARG_LIT
+Language=English
+geometry property
+.
+MessageId=8051
+SymbolicName=FUNCTION_ABS
+Language=English
+Determines the absolute value of a numeric expression
+.
+MessageId=8052
+SymbolicName=FUNCTION_ACOS
+Language=English
+Determines the arc cosine of a numeric expression
+.
+MessageId=8053
+SymbolicName=FUNCTION_ASIN
+Language=English
+Determines the arc sine of a numeric expression
+.
+MessageId=8054
+SymbolicName=FUNCTION_ATAN
+Language=English
+Determines the arc tangent of a numeric expression
+.
+MessageId=8055
+SymbolicName=FUNCTION_COS
+Language=English
+Determines the cosine of a numeric expression
+.
+MessageId=8056
+SymbolicName=FUNCTION_EXP
+Language=English
+Determines e raised to the power of a numeric expression value
+.
+MessageId=8057
+SymbolicName=FUNCTION_LN
+Language=English
+Determines the natural logarithm of a numeric expression
+.
+MessageId=8058
+SymbolicName=FUNCTION_SIN
+Language=English
+Determines the sine of a numeric expression
+.
+MessageId=8059
+SymbolicName=FUNCTION_SQRT
+Language=English
+Determines the square root of a numeric expression
+.
+MessageId=8060
+SymbolicName=FUNCTION_TAN
+Language=English
+Determines the tangent of a numeric expression
+.
+MessageId=8061
+SymbolicName=FUNCTION_ATAN2
+Language=English
+Determines the arc tangent of two numeric expressions
+.
+MessageId=8062
+SymbolicName=FUNCTION_LOG_BASE_ARG
+Language=English
+Logarithm base value
+.
+MessageId=8063
+SymbolicName=FUNCTION_BASE_ARG_LIT
+Language=English
+base
+.
+MessageId=8064
+SymbolicName=FUNCTION_DIV_BY_0_ERROR
+Language=English
+Expression Engine: Attempt to divide by 0 ('%1$ls')
+.
+MessageId=8065
+SymbolicName=FUNCTION_DIVISOR_ARG
+Language=English
+The divisor
+.
+MessageId=8066
+SymbolicName=FUNCTION_DIV_ARG_LIT
+Language=English
+divisor
+.
+MessageId=8067
+SymbolicName=FUNCTION_MOD
+Language=English
+Determines the remainder of the division of two numeric expressions
+.
+MessageId=8068
+SymbolicName=FUNCTION_LOG
+Language=English
+Determines the logarithm of two numeric expressions
+.
+MessageId=8069
+SymbolicName=FUNCTION_REMAINDER
+Language=English
+Determines the remainder of the division of two numeric expressions
+.
+MessageId=8070
+SymbolicName=FUNCTION_POWER_ARG
+Language=English
+Represents the power value a number should be raised to
+.
+MessageId=8071
+SymbolicName=FUNCTION_POWER
+Language=English
+Raises a numeric expression to the power of another numeric expression
+.
+MessageId=8072
+SymbolicName=FUNCTION_DATA_VALUE_ERROR
+Language=English
+Expression Engine: Invalid value for execution of function '%1$ls'
+.
+MessageId=8073
+SymbolicName=FUNCTION_ROUND
+Language=English
+Rounds a numeric expressions to the specified degree
+.
+MessageId=8074
+SymbolicName=FUNCTION_UNEXPECTED_RESULT_ERROR
+Language=English
+Expression Engine: Unexpected result for function '%1$ls'
+.
+MessageId=8075
+SymbolicName=FUNCTION_ROUND_OPT_DECIMAL_ARG
+Language=English
+Represents an optional number of decimals to round to
+.
+MessageId=8076
+SymbolicName=FUNCTION_OPT_DECIMAL_ARG_LIT
+Language=English
+optional number of decimals
+.
+MessageId=8077
+SymbolicName=FUNCTION_TRUNC
+Language=English
+Truncates a numeric or date expression as specified
+.
+MessageId=8078
+SymbolicName=FUNCTION_TRUNC_OPT_DECIMAL_ARG
+Language=English
+Represents an optional number of decimals to truncate to
+.
+MessageId=8079
+SymbolicName=FUNCTION_TRUNC_OPT_DATE_ARG
+Language=English
+Represents an indicator to what the date to truncate to
+.
+MessageId=8080
+SymbolicName=FUNCTION_TRUNC_DATE_OP_ARG
+Language=English
+Truncation indicator (YEAR, MONTH, DAY, HOUR, MINUTE)
+.
+MessageId=8081
+SymbolicName=FUNCTION_LENGTH_STRING_ARG
+Language=English
+String for which to calculate the length
+.
+MessageId=8082
+SymbolicName=FUNCTION_LENGTH
+Language=English
+Determines the length of a string expression
+.
+MessageId=8083
+SymbolicName=FUNCTION_LPAD_STRING_ARG
+Language=English
+String to pad to the left
+.
+MessageId=8084
+SymbolicName=FUNCTION_PAD_LENGTH_ARG
+Language=English
+The length the string should be padded to
+.
+MessageId=8085
+SymbolicName=FUNCTION_PAD_STRING_ARG
+Language=English
+The string to be used to pad
+.
+MessageId=8086
+SymbolicName=FUNCTION_PAD_LENGTH_ARG_LIT
+Language=English
+number of characters
+.
+MessageId=8087
+SymbolicName=FUNCTION_PAD_STRING_ARG_LIT
+Language=English
+pad string
+.
+MessageId=8088
+SymbolicName=FUNCTION_LPAD
+Language=English
+Pads a string expression as directed to the left
+.
+MessageId=8089
+SymbolicName=FUNCTION_RPAD_STRING_ARG
+Language=English
+String to pad to the right
+.
+MessageId=8090
+SymbolicName=FUNCTION_RPAD
+Language=English
+Pads a string expression as directed to the right
+.
+MessageId=8091
+SymbolicName=FUNCTION_LTRIM_STRING_ARG
+Language=English
+String to trim on the left
+.
+MessageId=8092
+SymbolicName=FUNCTION_LTRIM
+Language=English
+Trims a string expression on the left
+.
+MessageId=8093
+SymbolicName=FUNCTION_RTRIM_STRING_ARG
+Language=English
+String to trim on the right
+.
+MessageId=8094
+SymbolicName=FUNCTION_RTRIM
+Language=English
+Trims a string expression on the right
+.
+MessageId=8095
+SymbolicName=FUNCTION_INSTR_STRING1_ARG
+Language=English
+String to search in
+.
+MessageId=8096
+SymbolicName=FUNCTION_INSTR_STRING2_ARG
+Language=English
+String to look for
+.
+MessageId=8097
+SymbolicName=FUNCTION_STRING_SEARCH_ARG_LIT
+Language=English
+search text
+.
+MessageId=8098
+SymbolicName=FUNCTION_INSTR
+Language=English
+Returns the position of a string within a base string
+.
+MessageId=8099
+SymbolicName=FUNCTION_SUBSTR_STRING_ARG
+Language=English
+String from which to extract
+.
+MessageId=8100
+SymbolicName=FUNCTION_SUBSTR_START_POS_ARG
+Language=English
+Position from which to extract a substring
+.
+MessageId=8101
+SymbolicName=FUNCTION_SUBSTR_LENGTH_ARG
+Language=English
+The length of the substring to extract
+.
+MessageId=8102
+SymbolicName=FUNCTION_SUBSTR_START_POS_ARG_LIT
+Language=English
+position to start
+.
+MessageId=8103
+SymbolicName=FUNCTION_SUBSTR_LENGTH_ARG_LIT
+Language=English
+optional length of substring
+.
+MessageId=8104
+SymbolicName=FUNCTION_SUBSTR
+Language=English
+Returns a substring from a provided string as defined
+.
+MessageId=8105
+SymbolicName=FUNCTION_TRIM_STRING_ARG
+Language=English
+String to trim
+.
+MessageId=8106
+SymbolicName=FUNCTION_TRIM_OP_ARG
+Language=English
+Trim indicator (BOTH, LEADING, TRAILING)
+.
+MessageId=8107
+SymbolicName=FUNCTION_TRIM
+Language=English
+Trims a string expression
+.
+MessageId=8108
+SymbolicName=FUNCTION_SOUNDEX_STRING_ARG
+Language=English
+String for which to identify phonetic representation
+.
+MessageId=8109
+SymbolicName=FUNCTION_SOUNDEX
+Language=English
+Returns the phonetic representation of a string expression
+.
+MessageId=8110
+SymbolicName=FUNCTION_TRANSLATE_STRING1_ARG
+Language=English
+String where character replacement is executed
+.
+MessageId=8111
+SymbolicName=FUNCTION_TRANSLATE_STRING2_ARG
+Language=English
+String identifying individual characters to be replaced
+.
+MessageId=8112
+SymbolicName=FUNCTION_TRANSLATE_STRING3_ARG
+Language=English
+String identifying individual replacement characters
+.
+MessageId=8113
+SymbolicName=FUNCTION_TRANSLATE_FROM_ARG_LIT
+Language=English
+from-characterset
+.
+MessageId=8114
+SymbolicName=FUNCTION_TRANSLATE_TO_ARG_LIT
+Language=English
+to-characterset
+.
+MessageId=8115
+SymbolicName=FUNCTION_TRANSLATE
+Language=English
+Replaces a set of individual characters in a string with replacements
+.
+MessageId=8116
+SymbolicName=FUNCTION_MEDIAN
+Language=English
+Represents an inverse distribution function with a continuous distribution model
+.
+MessageId=8117
+SymbolicName=FUNCTION_STDDEV
+Language=English
+Returns the sample standard deviation of a numeric expression
+.
+MessageId=8118
+SymbolicName=FUNCTION_ADDMONTHS_MONTH_ARG
+Language=English
+Number of months to be added
+.
+MessageId=8119
+SymbolicName=FUNCTION_ADDMONTHS
+Language=English
+Adds a specified number of months to a date
+.
+MessageId=8120
+SymbolicName=FUNCTION_CURRENTDATE
+Language=English
+Returns the current date
+.
+MessageId=8121
+SymbolicName=FUNCTION_EXTRACT_OP_ARG
+Language=English
+Indicates the portion of the date/time to be extracted
+.
+MessageId=8122
+SymbolicName=FUNCTION_EXTRACT_DATE_ARG
+Language=English
+The date/time from which to extract a portion from
+.
+MessageId=8123
+SymbolicName=FUNCTION_EXTRACT_OP_ARG_LIT
+Language=English
+part of the date
+.
+MessageId=8124
+SymbolicName=FUNCTION_EXTRACT_DT_ARG_LIT
+Language=English
+from date
+.
+MessageId=8125
+SymbolicName=FUNCTION_EXTRACT
+Language=English
+Extracts a portion of a date/time
+.
+MessageId=8126
+SymbolicName=FUNCTION_DATE1_ARG_LIT
+Language=English
+date1
+.
+MessageId=8127
+SymbolicName=FUNCTION_DATE2_ARG_LIT
+Language=English
+date2
+.
+MessageId=8128
+SymbolicName=FUNCTION_MONTHSBETWEEN
+Language=English
+Returns the number of months between two dates
+.
+MessageId=8129
+SymbolicName=FUNCTION_NULLVALUE
+Language=English
+Returns the first argument if not NULL, the second otherwise
+.
+MessageId=8130
+SymbolicName=FUNCTION_GENERAL_FORMAT_ARG
+Language=English
+Format specification
+.
+MessageId=8131
+SymbolicName=FUNCTION_FORMAT_ARG_LIT
+Language=English
+optional format
+.
+MessageId=8132
+SymbolicName=FUNCTION_TODATE
+Language=English
+Converts a string to a date
+.
+MessageId=8133
+SymbolicName=FUNCTION_TODOUBLE
+Language=English
+Converts a string or number to a double
+.
+MessageId=8134
+SymbolicName=FUNCTION_TOFLOAT
+Language=English
+Converts a string or number to a float
+.
+MessageId=8135
+SymbolicName=FUNCTION_TOINT32
+Language=English
+Converts a string or number to an int32
+.
+MessageId=8136
+SymbolicName=FUNCTION_TOINT64
+Language=English
+Converts a string or number to an int64
+.
+MessageId=8137
+SymbolicName=FUNCTION_TOSTRING
+Language=English
+Converts a number or date to a string
 .
 
 MessageId=9001
@@ -2285,234 +2831,4 @@ MessageId=9183
 SymbolicName=FDO_183_INVALID_FUNCTION_ARG
 Language=English
 One or more arguments for function '%1$ls' did not match the expected argument types.
-.
-MessageId=9184
-SymbolicName=FUNCTION_GENERAL_ARG
-Language=English
-Argument to be processed
-.
-MessageId=9185
-SymbolicName=FUNCTION_OPERATOR_ARG
-Language=English
-Operation indicator (ALL or DISTINCT)
-.
-MessageId=9186
-SymbolicName=FUNCTION_OPERATOR_ARG_LIT
-Language=English
-Operation Indicator
-.
-MessageId=9187
-SymbolicName=FUNCTION_BYTE_ARG_LIT
-Language=English
-byte
-.
-MessageId=9188
-SymbolicName=FUNCTION_DATE_ARG_LIT
-Language=English
-date/time
-.
-MessageId=9189
-SymbolicName=FUNCTION_NUMBER_ARG_LIT
-Language=English
-number
-.
-MessageId=9190
-SymbolicName=FUNCTION_STRING_ARG_LIT
-Language=English
-string
-.
-MessageId=9191
-SymbolicName=FUNCTION_PARAMETER_NUMBER_ERROR
-Language=English
-Expression Engine: Invalid number of parameters for function '%1$ls'
-.
-MessageId=9192
-SymbolicName=FUNCTION_PARAMETER_ERROR
-Language=English
-Expression Engine: Invalid parameters for function '%1$ls'
-.
-MessageId=9193
-SymbolicName=FUNCTION_PARAMETER_DATA_TYPE_ERROR
-Language=English
-Expression Engine: Invalid parameter data type for function '%1$ls'
-.
-MessageId=9194
-SymbolicName=FUNCTION_RESULT_DATA_TYPE_ERROR
-Language=English
-Expression Engine: Invalid data type for return value for function '%1$ls'
-.
-MessageId=9195
-SymbolicName=FUNCTION_OPERATOR_ERROR
-Language=English
-Expression Engine: Invalid first parameter value for function '%1$ls'
-.
-MessageId=9196
-SymbolicName=FUNCTION_BOOL_ARG_LIT
-Language=English
-boolean
-.
-MessageId=9197
-SymbolicName=FUNCTION_BLOB_ARG_LIT
-Language=English
-blob
-.
-MessageId=9198
-SymbolicName=FUNCTION_CLOB_ARG_LIT
-Language=English
-clob
-.
-MessageId=9199
-SymbolicName=FUNCTION_PARAMETER_DISTINCT_ERROR
-Language=English
-Expression Engine: DISTINCT not allowed for BLOB/CLOB for function '%1$ls'
-.
-MessageId=9200
-SymbolicName=FUNCTION_SIGN
-Language=English
-Returns -1, 0, 1 depending on whether the value is > 0, == 0 or < 0
-.
-MessageId=9201
-SymbolicName=FUNCTION_CONCAT_STRING1_ARG
-Language=English
-First string to concatenate
-.
-MessageId=9202
-SymbolicName=FUNCTION_CONCAT_STRING2_ARG
-Language=English
-Second string to concatenate
-.
-MessageId=9203
-SymbolicName=FUNCTION_UPPER_STRING_ARG
-Language=English
-String to be converted into uppercase
-.
-MessageId=9204
-SymbolicName=FUNCTION_LOWER_STRING_ARG
-Language=English
-String to be converted into lowercase
-.
-MessageId=9205
-SymbolicName=FUNCTION_GEOM_ARG_LIT
-Language=English
-geometry property
-.
-MessageId=9206
-SymbolicName=FUNCTION_ABS
-Language=English
-Determines the absolute value of a numeric expression
-.
-MessageId=9207
-SymbolicName=FUNCTION_ACOS
-Language=English
-Determines the arc cosine of a numeric expression
-.
-MessageId=9208
-SymbolicName=FUNCTION_ASIN
-Language=English
-Determines the arc sine of a numeric expression
-.
-MessageId=9209
-SymbolicName=FUNCTION_ATAN
-Language=English
-Determines the arc tangent of a numeric expression
-.
-MessageId=9210
-SymbolicName=FUNCTION_COS
-Language=English
-Determines the cosine of a numeric expression
-.
-MessageId=9211
-SymbolicName=FUNCTION_EXP
-Language=English
-Determines e raised to the power of a numeric expression value
-.
-MessageId=9212
-SymbolicName=FUNCTION_LN
-Language=English
-Determines the natural logarithm of a numeric expression
-.
-MessageId=9213
-SymbolicName=FUNCTION_SIN
-Language=English
-Determines the sine of a numeric expression
-.
-MessageId=9214
-SymbolicName=FUNCTION_SQRT
-Language=English
-Determines the square root of a numeric expression
-.
-MessageId=9215
-SymbolicName=FUNCTION_TAN
-Language=English
-Determines the tangent of a numeric expression
-.
-MessageId=9216
-SymbolicName=FUNCTION_ATAN2
-Language=English
-Determines the arc tangent of two numeric expressions
-.
-MessageId=9217
-SymbolicName=FUNCTION_LOG_BASE_ARG
-Language=English
-Logarithm base value
-.
-MessageId=9218
-SymbolicName=FUNCTION_BASE_ARG_LIT
-Language=English
-base
-.
-MessageId=9219
-SymbolicName=FUNCTION_DIV_BY_0_ERROR
-Language=English
-Expression Engine: Attempt to divide by 0 ('%1$ls')
-.
-MessageId=9220
-SymbolicName=FUNCTION_DIVISOR_ARG
-Language=English
-The divisor
-.
-MessageId=9221
-SymbolicName=FUNCTION_DIV_ARG_LIT
-Language=English
-divisor
-.
-MessageId=9222
-SymbolicName=FUNCTION_MOD
-Language=English
-Determines the remainder of the division of two numeric expressions
-.
-MessageId=9223
-SymbolicName=FUNCTION_LOG
-Language=English
-Determines the logarithm of two numeric expressions
-.
-MessageId=9224
-SymbolicName=FUNCTION_REMAINDER
-Language=English
-Determines the remainder of the division of two numeric expressions
-.
-MessageId=9225
-SymbolicName=FUNCTION_POWER_ARG
-Language=English
-Represents the power value a number should be raised to
-.
-MessageId=9226
-SymbolicName=FUNCTION_POWER
-Language=English
-Raises a numeric expression to the power of another numeric expression
-.
-MessageId=9227
-SymbolicName=FUNCTION_DATA_VALUE_ERROR
-Language=English
-Expression Engine: Invalid value for execution of function '%1$ls'
-.
-MessageId=9228
-SymbolicName=FUNCTION_ROUND
-Language=English
-Rounds a numeric expressions to the specified degree
-.
-MessageId=9229
-SymbolicName=FUNCTION_UNEXPECTED_RESULT_ERROR
-Language=English
-Expression Engine: Unexpected result for function '%1$ls'
 .
