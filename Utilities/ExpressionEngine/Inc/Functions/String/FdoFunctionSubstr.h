@@ -16,8 +16,8 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // 
 //
-#ifndef FDOFUNCTIONAVG_H
-#define FDOFUNCTIONAVG_H
+#ifndef FDOFUNCTIONSUBSTR_H
+#define FDOFUNCTIONSUBSTR_H
 
 #include <FdoExpressionEngine.h>
 #include <FdoCommonOSUtil.h>
@@ -30,17 +30,16 @@
 #include <malloc.h>
 #include <math.h>
 #include <limits.h>
-#include <vector>
 
-#include <FdoExpressionEngineIAggregateFunction.h>
-#include <Functions/Aggregate/CacheValueCollection.h>
+#include <FdoExpressionEngineINonAggregateFunction.h>
 
 
 // ============================================================================
-// The class FdoFunctionAvg implements the Expression Engine function AVG.
+// The class FdoFunctionSubstr implements the Expression Engine function
+// SUBSTR.
 // ============================================================================
 
-class FdoFunctionAvg : public FdoExpressionEngineIAggregateFunction
+class FdoFunctionSubstr : public FdoExpressionEngineINonAggregateFunction
 {
 
     public:
@@ -52,30 +51,26 @@ class FdoFunctionAvg : public FdoExpressionEngineIAggregateFunction
         // Create:
         //  Function to create an instance of this class.
 
-        static FdoFunctionAvg *Create ();
+        static FdoFunctionSubstr *Create ();
 
         // CreateObject:
         //  Function to create an instance of this class.
 
-        virtual FdoFunctionAvg *CreateObject ();
+        virtual FdoFunctionSubstr *CreateObject ();
 
         // GetFunctionDefinition:
-        //  The function returns the function definition for the function AVG.
-        //  The definition includes the list of supported signatures for the
-        //  function.
+        //  The function returns the function definition for the function
+        //  SUBSTR. The definition includes the list of supported signatures
+        //  for the function.
 
         virtual FdoFunctionDefinition *GetFunctionDefinition ();
 
-        // Process:
-        //  The function executes the call of the function AVG on an expression
-        //  value.
+        // Evaluate:
+        //  The function determines the function result and returns it back to
+        //  the calling routine.
 
-        virtual void Process (FdoLiteralValueCollection *literal_values);
-
-        // GetResult:
-        //  The function returns the result of the function AVG.
-
-        virtual FdoLiteralValue *GetResult ();
+        virtual FdoLiteralValue *Evaluate (
+                                    FdoLiteralValueCollection *literal_values);
 
 
     private:
@@ -84,18 +79,19 @@ class FdoFunctionAvg : public FdoExpressionEngineIAggregateFunction
         // *                        Private Interfaces                        *
         // ********************************************************************
 
-        // FdoFunctionAvg:
+        // FdoFunctionSubstr:
         //  The function represents the class constructor.
 
-        FdoFunctionAvg ();
+        FdoFunctionSubstr ();
 
-        // ~FdoFunctionAvg:
+        // ~FdoFunctionSubstr:
         //  The function represents the class destructor.
 
-        ~FdoFunctionAvg ();
+        ~FdoFunctionSubstr ();
 
         // CreateFunctionDefinition:
-        //  The routine creates the function definition for the function AVG.
+        //  The routine creates the function definition for the function
+        //  SUBSTR.
 
         void CreateFunctionDefinition ();
 
@@ -104,18 +100,17 @@ class FdoFunctionAvg : public FdoExpressionEngineIAggregateFunction
 
         virtual void Dispose () { delete this; };
 
-        // ProcessRequest:
-        //  The function processes a call to the Expression Engine function AVG.
+        // GetNumericValue:
+        //  The function retrieves the value of a numeric argument.
 
-        void ProcessRequest (FdoDouble   value);
-        void ProcessRequest (FdoFloat    value);
-        void ProcessRequest (FdoInt16    value);
-        void ProcessRequest (FdoInt32    value);
-        void ProcessRequest (FdoInt64    value);
+        FdoInt64 GetNumericValue (FdoLiteralValueCollection *literal_values,
+                                  FdoInt32                  pos,
+                                  FdoDataType               data_type,
+                                  bool                      *is_NULL_value);
 
         // Validate:
         //  The function validates the provided parameters for the function
-        //  AVG.
+        //  SUBSTR.
 
         void Validate (FdoLiteralValueCollection *literal_values);
 
@@ -124,54 +119,36 @@ class FdoFunctionAvg : public FdoExpressionEngineIAggregateFunction
         // *                      Private Member Variables                    *
         // ********************************************************************
 
-        // function_count:
-        //  The variable represents the counter for the number of processed
-        //  values.
-
-        FdoDouble function_count;
-
         // function_definition:
         //  The variable references the function definition for the function
-        //  AVG.
+        //  SUBSTR.
 
         FdoFunctionDefinition *function_definition;
 
-        // function_sum:
-        // The variable keeps the sum of all processed values.
+        // number_of_parameters:
+        //  The variable holds the number of parameters provided to the func-
+        //  tion.
 
-        FdoDouble function_sum;
+        FdoInt32 number_of_parameters;
 
-        // incoming_data_type:
-        //  References the data type associated with the provided parameter.
+        // para1_data_type:
+        //  References the data type associated with the first function para-
+        //  meter.
 
-        FdoDataType incoming_data_type;
+        FdoDataType para1_data_type;
 
-        // is_distinct_request:
-        //  The flag indicates whether or not this is a request to determine
-        //  the average expression value on a distinct set of data.
+        // para2_data_type:
+        //  References the data type associated with the second function para-
+        //  meter.
 
-        bool is_distinct_request;
+        FdoDataType para2_data_type;
 
-        // is_validated:
-        //  For performance reasons the arguments passed to the procedure
-        //  processing the request is done once only for the time of its
-        //  execution. This variable stores whether or not the validation
-        //  has been performed.
+        // para3_data_type:
+        //  References the data type associated with the third function para-
+        //  meter.
 
-        bool is_validated;
+        FdoDataType para3_data_type;
 
-        // process_value:
-        //  The variable indicates which of the provided parameter values
-        //  needs to be processed.
-
-        FdoInt32 process_value;
-
-        // value_cache:
-        //  The variable serves as the cache for the average value to be re-
-        //  turned.
-
-        CacheValueCollection *value_cache;
-
-};  //  class FdoFunctionAvg
+};  //  class FdoFunctionSubstr
 
 #endif
