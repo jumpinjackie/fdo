@@ -29,9 +29,22 @@ libExpressionEngine_la_SOURCES = \
   Functions/Aggregate/FdoFunctionAvg.cpp \
   Functions/Aggregate/FdoFunctionCount.cpp \
   Functions/Aggregate/FdoFunctionMax.cpp \
+  Functions/Aggregate/FdoFunctionMedian.cpp \
   Functions/Aggregate/FdoFunctionMin.cpp \
   Functions/Aggregate/FdoFunctionSpatialExtents.cpp \
+  Functions/Aggregate/FdoFunctionStddev.cpp \
   Functions/Aggregate/FdoFunctionSum.cpp \
+  Functions/Conversion/FdoFunctionNullValue.cpp \
+  Functions/Conversion/FdoFunctionToDate.cpp \
+  Functions/Conversion/FdoFunctionToDouble.cpp \
+  Functions/Conversion/FdoFunctionToFloat.cpp \
+  Functions/Conversion/FdoFunctionToInt32.cpp \
+  Functions/Conversion/FdoFunctionToInt64.cpp \
+  Functions/Conversion/FdoFunctionToString.cpp \
+  Functions/Date/FdoFunctionAddMonths.cpp \
+  Functions/Date/FdoFunctionCurrentDate.cpp \
+  Functions/Date/FdoFunctionExtract.cpp \
+  Functions/Date/FdoFunctionMonthsBetween.cpp \
   Functions/Math/FdoFunctionAbs.cpp \
   Functions/Math/FdoFunctionAcos.cpp \
   Functions/Math/FdoFunctionAsin.cpp \
@@ -49,9 +62,21 @@ libExpressionEngine_la_SOURCES = \
   Functions/Math/FdoFunctionTan.cpp \
   Functions/Numeric/FdoFunctionCeil.cpp \
   Functions/Numeric/FdoFunctionFloor.cpp \
+  Functions/Numeric/FdoFunctionRound.cpp \
   Functions/Numeric/FdoFunctionSign.cpp \
+  Functions/Numeric/FdoFunctionTrunc.cpp \
   Functions/String/FdoFunctionConcat.cpp \
+  Functions/String/FdoFunctionInstr.cpp \
+  Functions/String/FdoFunctionLength.cpp \
   Functions/String/FdoFunctionLower.cpp \
+  Functions/String/FdoFunctionLpad.cpp \
+  Functions/String/FdoFunctionLtrim.cpp \
+  Functions/String/FdoFunctionRpad.cpp \
+  Functions/String/FdoFunctionRtrim.cpp \
+  Functions/String/FdoFunctionSoundex.cpp \
+  Functions/String/FdoFunctionSubstr.cpp \
+  Functions/String/FdoFunctionTranslate.cpp \
+  Functions/String/FdoFunctionTrim.cpp \
   Functions/String/FdoFunctionUpper.cpp \
   Util/FdoExpressionEngineUtilDataReader.cpp \
   FdoExpressionEngine.cpp \
