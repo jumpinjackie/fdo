@@ -24,9 +24,24 @@
 #include <Functions/Aggregate/FdoFunctionAvg.h>
 #include <Functions/Aggregate/FdoFunctionCount.h>
 #include <Functions/Aggregate/FdoFunctionMax.h>
+#include <Functions/Aggregate/FdoFunctionMedian.h>
 #include <Functions/Aggregate/FdoFunctionMin.h>
 #include <Functions/Aggregate/FdoFunctionSpatialExtents.h>
+#include <Functions/Aggregate/FdoFunctionStddev.h>
 #include <Functions/Aggregate/FdoFunctionSum.h>
+
+#include <Functions/Conversion/FdoFunctionNullValue.h>
+#include <Functions/Conversion/FdoFunctionToDate.h>
+#include <Functions/Conversion/FdoFunctionToDouble.h>
+#include <Functions/Conversion/FdoFunctionToFloat.h>
+#include <Functions/Conversion/FdoFunctionToInt32.h>
+#include <Functions/Conversion/FdoFunctionToInt64.h>
+#include <Functions/Conversion/FdoFunctionToString.h>
+
+#include <Functions/Date/FdoFunctionAddMonths.h>
+#include <Functions/Date/FdoFunctionCurrentDate.h>
+#include <Functions/Date/FdoFunctionExtract.h>
+#include <Functions/Date/FdoFunctionMonthsBetween.h>
 
 #include <Functions/Math/FdoFunctionAbs.h>
 #include <Functions/Math/FdoFunctionAcos.h>
@@ -46,14 +61,26 @@
 
 #include <Functions/Numeric/FdoFunctionCeil.h>
 #include <Functions/Numeric/FdoFunctionFloor.h>
+#include <Functions/Numeric/FdoFunctionRound.h>
 #include <Functions/Numeric/FdoFunctionSign.h>
+#include <Functions/Numeric/FdoFunctionTrunc.h>
 
 #include <Functions/String/FdoFunctionConcat.h>
+#include <Functions/String/FdoFunctionInstr.h>
+#include <Functions/String/FdoFunctionLength.h>
 #include <Functions/String/FdoFunctionLower.h>
+#include <Functions/String/FdoFunctionLpad.h>
+#include <Functions/String/FdoFunctionLtrim.h>
+#include <Functions/String/FdoFunctionRpad.h>
+#include <Functions/String/FdoFunctionRtrim.h>
+#include <Functions/String/FdoFunctionSoundex.h>
+#include <Functions/String/FdoFunctionSubstr.h>
+#include <Functions/String/FdoFunctionTranslate.h>
+#include <Functions/String/FdoFunctionTrim.h>
 #include <Functions/String/FdoFunctionUpper.h>
 
 
-const int NUMBER_FUNCTIONS = 27;
+const int NUMBER_FUNCTIONS = 52;
 
 class ExpressionEngineInitializeClass
 {
@@ -66,9 +93,24 @@ public:
         m_Functions[i++] = FdoFunctionAvg::Create();
         m_Functions[i++] = FdoFunctionCount::Create();
         m_Functions[i++] = FdoFunctionMax::Create();
+        m_Functions[i++] = FdoFunctionMedian::Create();
         m_Functions[i++] = FdoFunctionMin::Create();
         m_Functions[i++] = FdoFunctionSpatialExtents::Create();
+        m_Functions[i++] = FdoFunctionStddev::Create();
         m_Functions[i++] = FdoFunctionSum::Create();
+
+        m_Functions[i++] = FdoFunctionNullValue::Create();
+        m_Functions[i++] = FdoFunctionToDate::Create();
+        m_Functions[i++] = FdoFunctionToDouble::Create();
+        m_Functions[i++] = FdoFunctionToFloat::Create();
+        m_Functions[i++] = FdoFunctionToInt32::Create();
+        m_Functions[i++] = FdoFunctionToInt64::Create();
+        m_Functions[i++] = FdoFunctionToString::Create();
+
+        m_Functions[i++] = FdoFunctionAddMonths::Create();
+        m_Functions[i++] = FdoFunctionCurrentDate::Create();
+        m_Functions[i++] = FdoFunctionExtract::Create();
+        m_Functions[i++] = FdoFunctionMonthsBetween::Create();
 
         m_Functions[i++] = FdoFunctionAbs::Create();
         m_Functions[i++] = FdoFunctionAcos::Create();
@@ -88,10 +130,22 @@ public:
 
         m_Functions[i++] = FdoFunctionCeil::Create();
 		m_Functions[i++] = FdoFunctionFloor::Create();
+		m_Functions[i++] = FdoFunctionRound::Create();
 		m_Functions[i++] = FdoFunctionSign::Create();
+		m_Functions[i++] = FdoFunctionTrunc::Create();
 
 		m_Functions[i++] = FdoFunctionConcat::Create();
+		m_Functions[i++] = FdoFunctionInstr::Create();
+		m_Functions[i++] = FdoFunctionLength::Create();
 		m_Functions[i++] = FdoFunctionLower::Create();
+		m_Functions[i++] = FdoFunctionLpad::Create();
+		m_Functions[i++] = FdoFunctionLtrim::Create();
+		m_Functions[i++] = FdoFunctionRpad::Create();
+		m_Functions[i++] = FdoFunctionRtrim::Create();
+		m_Functions[i++] = FdoFunctionSoundex::Create();
+		m_Functions[i++] = FdoFunctionSubstr::Create();
+		m_Functions[i++] = FdoFunctionTranslate::Create();
+		m_Functions[i++] = FdoFunctionTrim::Create();
 		m_Functions[i++] = FdoFunctionUpper::Create();
 
 		m_Functions[i++] = NULL;
