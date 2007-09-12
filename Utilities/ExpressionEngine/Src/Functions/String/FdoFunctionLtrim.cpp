@@ -152,7 +152,8 @@ FdoLiteralValue *FdoFunctionLtrim::Evaluate (
     if (pos == string_length)
         return FdoStringValue::Create(base_string);
     else
-      return FdoStringValue::Create(base_string.Mid((size_t) pos, -1));
+      return FdoStringValue::Create(
+                                base_string.Mid((size_t) pos, string_length));
 
 }  //  Evaluate ()
 

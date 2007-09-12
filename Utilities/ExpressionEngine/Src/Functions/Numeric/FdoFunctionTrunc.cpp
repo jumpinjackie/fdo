@@ -334,22 +334,22 @@ void FdoFunctionTrunc::CreateFunctionDefinition ()
     date_args->Add(date_op_arg);
 
     dcl_args = FdoArgumentDefinitionCollection::Create();
-    dcl_dcl_args->Add(dcl_arg);
+    dcl_args->Add(dcl_arg);
 
     dbl_args = FdoArgumentDefinitionCollection::Create();
-    dcl_dbl_args->Add(dbl_arg);
+    dbl_args->Add(dbl_arg);
 
     int16_args = FdoArgumentDefinitionCollection::Create();
-    dcl_int16_args->Add(int16_arg);
+    int16_args->Add(int16_arg);
 
     int32_args = FdoArgumentDefinitionCollection::Create();
-    dcl_int32_args->Add(int32_arg);
+    int32_args->Add(int32_arg);
 
     int64_args = FdoArgumentDefinitionCollection::Create();
-    dcl_int64_args->Add(int64_arg);
+    int64_args->Add(int64_arg);
 
     sgl_args = FdoArgumentDefinitionCollection::Create();
-    dcl_sgl_args->Add(sgl_arg);
+    sgl_args->Add(sgl_arg);
 
     dcl_dcl_args = FdoArgumentDefinitionCollection::Create();
     dcl_dcl_args->Add(dcl_arg);

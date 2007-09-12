@@ -110,6 +110,12 @@ FdoLiteralValue *FdoFunctionToDouble::Evaluate (
 
     // NOT YET IMPLEMEMTED.
 
+    throw FdoException::Create(
+                FdoException::NLSGetMessage(
+                  FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
+                  "Expression Engine: Invalid parameter data type for function '%1$ls'",
+                  FDO_FUNCTION_TODOUBLE));
+
     return FdoDoubleValue::Create();
 
 }  //  Evaluate ()

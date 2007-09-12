@@ -109,6 +109,12 @@ FdoLiteralValue *FdoFunctionSoundex::Evaluate (
 {
     // NOT IMPLEMENTED YET.
 
+    throw FdoException::Create(
+                FdoException::NLSGetMessage(
+                  FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
+                  "Expression Engine: Invalid parameter data type for function '%1$ls'",
+                  FDO_FUNCTION_SOUNDEX));
+
     return FdoStringValue::Create();
 
 }  //  Evaluate ()
