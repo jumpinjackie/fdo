@@ -18,14 +18,14 @@
 //
 
 #include <stdafx.h>
-#include <Functions/String/FdoFunctionLower.h>
+#include <Functions/Conversion/FdoFunctionToDate.h>
 
 
 // ----------------------------------------------------------------------------
 // --                         Constructors/Destructors                       --
 // ----------------------------------------------------------------------------
 
-FdoFunctionLower::FdoFunctionLower ()
+FdoFunctionToDate::FdoFunctionToDate ()
 
 // +---------------------------------------------------------------------------
 // | The class constructor.
@@ -37,10 +37,10 @@ FdoFunctionLower::FdoFunctionLower ()
 
     function_definition = NULL;
 
-}  //  FdoFunctionLower ()
+}  //  FdoFunctionToDate ()
 
 
-FdoFunctionLower::~FdoFunctionLower ()
+FdoFunctionToDate::~FdoFunctionToDate ()
 
 // +---------------------------------------------------------------------------
 // | The class destructor.
@@ -52,14 +52,14 @@ FdoFunctionLower::~FdoFunctionLower ()
 
     FDO_SAFE_RELEASE(function_definition);
 
-}  //  ~FdoFunctionLower ()
+}  //  ~FdoFunctionToDate ()
 
 
 // ----------------------------------------------------------------------------
 // --                            Public Class APIs                           --
 // ----------------------------------------------------------------------------
 
-FdoFunctionLower *FdoFunctionLower::Create ()
+FdoFunctionToDate *FdoFunctionToDate::Create ()
 
 // +---------------------------------------------------------------------------
 // | The function creates a new instance of the class.
@@ -67,11 +67,11 @@ FdoFunctionLower *FdoFunctionLower::Create ()
 
 {
 
-    return new FdoFunctionLower();
+    return new FdoFunctionToDate();
 
 }  //  Create ()
 
-FdoFunctionLower *FdoFunctionLower::CreateObject ()
+FdoFunctionToDate *FdoFunctionToDate::CreateObject ()
 
 // +---------------------------------------------------------------------------
 // | The function creates a new instance of the class.
@@ -79,14 +79,14 @@ FdoFunctionLower *FdoFunctionLower::CreateObject ()
 
 {
 
-    return new FdoFunctionLower();
+    return new FdoFunctionToDate();
 
 }  //  CreateObject ()
 
-FdoFunctionDefinition *FdoFunctionLower::GetFunctionDefinition ()
+FdoFunctionDefinition *FdoFunctionToDate::GetFunctionDefinition ()
 
 // +---------------------------------------------------------------------------
-// | The function creates the supported signature list for the function LOWER.
+// | The function creates the supported signature list for the function TODATE.
 // +---------------------------------------------------------------------------
 
 {
@@ -98,36 +98,18 @@ FdoFunctionDefinition *FdoFunctionLower::GetFunctionDefinition ()
 
 }  //  GetFunctionDefinition ()
 
-FdoLiteralValue *FdoFunctionLower::Evaluate (
+FdoLiteralValue *FdoFunctionToDate::Evaluate (
                                     FdoLiteralValueCollection *literal_values)
 
 // +---------------------------------------------------------------------------
-// | The function processes a call to the function LOWER.
+// | The function processes a call to the function TODATE.
 // +---------------------------------------------------------------------------
 
 {
 
-    // Declare and initialize all necessary local variables.
+    // NOT YET IMPLEMEMTED.
 
-    FdoStringP             result;
-
-    FdoPtr<FdoStringValue> string_value;
-
-    // Validate the function call.
-
-    Validate(literal_values);
-
-    // Process the request and return the result back to the calling routine.
-
-    string_value = (FdoStringValue *) literal_values->GetItem(0);
-    if (!string_value->IsNull()) {
-
-        result = result + string_value->GetString();
-        result = result.Lower();
-
-    }  //  if (!string_value->IsNull()) ...
-
-    return FdoStringValue::Create(result);
+    return FdoDateTimeValue::Create();
 
 }  //  Evaluate ()
 
@@ -136,30 +118,34 @@ FdoLiteralValue *FdoFunctionLower::Evaluate (
 // --                          Supporting functions                          --
 // ----------------------------------------------------------------------------
 
-void FdoFunctionLower::CreateFunctionDefinition ()
+void FdoFunctionToDate::CreateFunctionDefinition ()
 
 // +---------------------------------------------------------------------------
-// | The procedure creates the function definition for the function LOWER. The
+// | The procedure creates the function definition for the function TODATE. The
 // | function definition includes the list of supported signatures. The follow-
 // | ing signatures are supported:
 // |
-// |    LOWER (string)
+// |    TODATE (string [, string])
 // |
-// | The function always returns a STRING.
+// | The function always returns a DATETIME.
 // +---------------------------------------------------------------------------
 
 {
 
     // Declare and initialize all necessary local variables.
 
-    FdoString *desc = NULL;
+    FdoString                               *desc               = NULL;
 
-    FdoStringP arg1_description;
-    FdoStringP str_arg_literal;
+    FdoStringP                              arg1_description;
+    FdoStringP                              arg2_description;
+    FdoStringP                              str_arg_literal;
+    FdoStringP                              form_arg_literal;
 
-    FdoPtr<FdoArgumentDefinition> str_arg;
+    FdoPtr<FdoArgumentDefinition>           form_arg;
+    FdoPtr<FdoArgumentDefinition>           str_arg;
 
     FdoPtr<FdoArgumentDefinitionCollection> str_args;
+    FdoPtr<FdoArgumentDefinitionCollection> str_form_args;
 
     FdoPtr<FdoSignatureDefinition>          signature;
     FdoSignatureDefinitionCollection        *signatures;
@@ -167,44 +153,61 @@ void FdoFunctionLower::CreateFunctionDefinition ()
     // Get the general descriptions for the arguments.
 
     arg1_description = FdoException::NLSGetMessage(
-                                    FUNCTION_LOWER_STRING_ARG,
-                                    "String to be converted into lowercase");
+                                                FUNCTION_GENERAL_ARG,
+                                                "Argument to be processed");
+
+    arg2_description = FdoException::NLSGetMessage(
+                                                FUNCTION_GENERAL_FORMAT_ARG,
+                                                "Format specification");
+
+    form_arg_literal = FdoException::NLSGetMessage(FUNCTION_FORMAT_ARG_LIT,
+                                                   "optional format");
+
+    str_arg_literal  = FdoException::NLSGetMessage(
+                                    FUNCTION_STRING_ARG_LIT, "text property");
 
     // The following defines the different argument definition collections.
 
-    str_arg_literal = FdoException::NLSGetMessage(FUNCTION_STRING_ARG_LIT,
-                                                  "text property");
-
-    str_arg = FdoArgumentDefinition::Create(
+    str_arg  = FdoArgumentDefinition::Create(
                     str_arg_literal, arg1_description, FdoDataType_String);
+
+    form_arg = FdoArgumentDefinition::Create(
+                    form_arg_literal, arg2_description, FdoDataType_String);
 
     str_args = FdoArgumentDefinitionCollection::Create();
     str_args->Add(str_arg);
+
+    str_form_args = FdoArgumentDefinitionCollection::Create();
+    str_form_args->Add(str_arg);
+    str_form_args->Add(form_arg);
 
     // Create the signature collection.
 
     signatures = FdoSignatureDefinitionCollection::Create();
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_String, str_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_DateTime, str_args);
+    signatures->Add(signature);
+
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_DateTime, str_form_args);
     signatures->Add(signature);
 
     // Create the function definition.
 
-    desc =
-         FdoException::NLSGetMessage(
-                FUNCTION_LOWER,
-                "Converts all uppercase letters in a string expression into lowercase letters");
+    desc = FdoException::NLSGetMessage(FUNCTION_TODATE,
+                                       "Converts a string to a date");
     function_definition =
                 FdoFunctionDefinition::Create(
-                                        FDO_FUNCTION_LOWER,
+                                        FDO_FUNCTION_TODATE,
                                         desc,
                                         false,
                                         signatures,
-                                        FdoFunctionCategoryType_String);
+                                        FdoFunctionCategoryType_Conversion);
 
 }  //  CreateFunctionDefinition ()
 
-void FdoFunctionLower::Validate (FdoLiteralValueCollection *literal_values)
+void FdoFunctionToDate::Validate (FdoLiteralValueCollection *literal_values)
 
 // +---------------------------------------------------------------------------
 // | The function validates the argument list that was passed in.
@@ -214,7 +217,8 @@ void FdoFunctionLower::Validate (FdoLiteralValueCollection *literal_values)
 
     // Declare and initialize all necessary local variables.
 
-    FdoInt32                count           = literal_values->GetCount();
+    FdoInt32                i,
+                            count           = literal_values->GetCount();
 
     FdoDataType             data_type;
 
@@ -222,36 +226,40 @@ void FdoFunctionLower::Validate (FdoLiteralValueCollection *literal_values)
 
     FdoPtr<FdoLiteralValue> literal_value;
 
-    // Check the number of arguments. LOWER accepts exactly one parameter. If
-    // the number of parameters is not correct issue an exception.
+    // Check the number of arguments. TODATE accepts either one or two para-
+    // meters. If the number of parameters is not correct issue an exception.
 
-    if (count != 1) 
+    if ((count < 1) || (count > 2)) 
         throw FdoException::Create(
-               FdoException::NLSGetMessage(
+                FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_NUMBER_ERROR, 
                   "Expression Engine: Invalid number of parameters for function '%1$ls'",
-                  FDO_FUNCTION_LOWER));
+                  FDO_FUNCTION_TODATE));
 
-    // Next, identify the data type associated with the value to be processed.
-    // An exception is issued if the data type does not match any of the ones
-    // the function supports
+    // Next navigate through the argument list and ensure that the provided
+    // data types match the ones defined in the list of supported signatures.
+    // If this is not the case issue an exception.
 
-    literal_value = literal_values->GetItem(0);
-    if (literal_value->GetLiteralValueType() != FdoLiteralValueType_Data)
-        throw FdoException::Create(
-                FdoException::NLSGetMessage(
-                  FUNCTION_PARAMETER_ERROR, 
-                  "Expression Engine: Invalid parameters for function '%1$ls'",
-                  FDO_FUNCTION_LOWER));
+    for (i = 0; i < count; i++) {
 
-    data_value = static_cast<FdoDataValue *>(literal_value.p);
-    data_type = data_value->GetDataType();
-    if (data_type != FdoDataType_String)
-        throw FdoException::Create(
-                FdoException::NLSGetMessage(
-                  FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
-                  "Expression Engine: Invalid parameter data type for function '%1$ls'",
-                  FDO_FUNCTION_LOWER));
+      literal_value = literal_values->GetItem(i);
+      if (literal_value->GetLiteralValueType() != FdoLiteralValueType_Data)
+          throw FdoException::Create(
+                  FdoException::NLSGetMessage(
+                    FUNCTION_PARAMETER_ERROR, 
+                    "Expression Engine: Invalid parameters for function '%1$ls'",
+                    FDO_FUNCTION_TODATE));
+
+      data_value = static_cast<FdoDataValue *>(literal_value.p);
+      data_type  = data_value->GetDataType();
+      if (data_type != FdoDataType_String)
+          throw FdoException::Create(
+                  FdoException::NLSGetMessage(
+                    FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
+                    "Expression Engine: Invalid parameter data type for function '%1$ls'",
+                    FDO_FUNCTION_TODATE));
+
+    }  //  for (i = 0; i < count; i++) ...
 
 }  //  Validate ()
 

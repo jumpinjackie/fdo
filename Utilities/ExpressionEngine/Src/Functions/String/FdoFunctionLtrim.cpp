@@ -18,14 +18,14 @@
 //
 
 #include <stdafx.h>
-#include <Functions/String/FdoFunctionLower.h>
+#include <Functions/String/FdoFunctionLtrim.h>
 
 
 // ----------------------------------------------------------------------------
 // --                         Constructors/Destructors                       --
 // ----------------------------------------------------------------------------
 
-FdoFunctionLower::FdoFunctionLower ()
+FdoFunctionLtrim::FdoFunctionLtrim ()
 
 // +---------------------------------------------------------------------------
 // | The class constructor.
@@ -37,10 +37,10 @@ FdoFunctionLower::FdoFunctionLower ()
 
     function_definition = NULL;
 
-}  //  FdoFunctionLower ()
+}  //  FdoFunctionLtrim ()
 
 
-FdoFunctionLower::~FdoFunctionLower ()
+FdoFunctionLtrim::~FdoFunctionLtrim ()
 
 // +---------------------------------------------------------------------------
 // | The class destructor.
@@ -52,14 +52,14 @@ FdoFunctionLower::~FdoFunctionLower ()
 
     FDO_SAFE_RELEASE(function_definition);
 
-}  //  ~FdoFunctionLower ()
+}  //  ~FdoFunctionLtrim ()
 
 
 // ----------------------------------------------------------------------------
 // --                            Public Class APIs                           --
 // ----------------------------------------------------------------------------
 
-FdoFunctionLower *FdoFunctionLower::Create ()
+FdoFunctionLtrim *FdoFunctionLtrim::Create ()
 
 // +---------------------------------------------------------------------------
 // | The function creates a new instance of the class.
@@ -67,11 +67,11 @@ FdoFunctionLower *FdoFunctionLower::Create ()
 
 {
 
-    return new FdoFunctionLower();
+    return new FdoFunctionLtrim();
 
 }  //  Create ()
 
-FdoFunctionLower *FdoFunctionLower::CreateObject ()
+FdoFunctionLtrim *FdoFunctionLtrim::CreateObject ()
 
 // +---------------------------------------------------------------------------
 // | The function creates a new instance of the class.
@@ -79,14 +79,14 @@ FdoFunctionLower *FdoFunctionLower::CreateObject ()
 
 {
 
-    return new FdoFunctionLower();
+    return new FdoFunctionLtrim();
 
 }  //  CreateObject ()
 
-FdoFunctionDefinition *FdoFunctionLower::GetFunctionDefinition ()
+FdoFunctionDefinition *FdoFunctionLtrim::GetFunctionDefinition ()
 
 // +---------------------------------------------------------------------------
-// | The function creates the supported signature list for the function LOWER.
+// | The function creates the supported signature list for the function LTRIM.
 // +---------------------------------------------------------------------------
 
 {
@@ -98,18 +98,23 @@ FdoFunctionDefinition *FdoFunctionLower::GetFunctionDefinition ()
 
 }  //  GetFunctionDefinition ()
 
-FdoLiteralValue *FdoFunctionLower::Evaluate (
+FdoLiteralValue *FdoFunctionLtrim::Evaluate (
                                     FdoLiteralValueCollection *literal_values)
 
 // +---------------------------------------------------------------------------
-// | The function processes a call to the function LOWER.
+// | The function processes a call to the function LTRIM.
 // +---------------------------------------------------------------------------
 
 {
 
     // Declare and initialize all necessary local variables.
 
-    FdoStringP             result;
+    FdoString              *curr_char       = NULL;
+
+    FdoInt64               pos              = 0,
+                           string_length;
+
+    FdoStringP             base_string;
 
     FdoPtr<FdoStringValue> string_value;
 
@@ -117,17 +122,37 @@ FdoLiteralValue *FdoFunctionLower::Evaluate (
 
     Validate(literal_values);
 
-    // Process the request and return the result back to the calling routine.
+    // Get the string that needs to be trimmed. If no value is provided, termi-
+    // nate the function.
 
     string_value = (FdoStringValue *) literal_values->GetItem(0);
-    if (!string_value->IsNull()) {
+    if (string_value->IsNull())
+        return FdoStringValue::Create();
+    else
+      base_string = string_value->GetString();
+    string_length = base_string.GetLength();
 
-        result = result + string_value->GetString();
-        result = result.Lower();
+    // Navigate the given string from the left and find the first character
+    // different from a blank. 
 
-    }  //  if (!string_value->IsNull()) ...
+    curr_char = (FdoString *)base_string;
 
-    return FdoStringValue::Create(result);
+    while (pos < string_length) {
+
+      if (curr_char[pos] != ' ')
+          break;
+      pos++;
+
+    }  //  while (pos < string_length) ...
+
+    // If no character other than blanks were found return an empty string.
+    // Otherwise return the substring of the provided string starting from
+    // the first position that identifies a character other than a blank.
+
+    if (pos == string_length)
+        return FdoStringValue::Create(base_string);
+    else
+      return FdoStringValue::Create(base_string.Mid((size_t) pos, -1));
 
 }  //  Evaluate ()
 
@@ -136,14 +161,14 @@ FdoLiteralValue *FdoFunctionLower::Evaluate (
 // --                          Supporting functions                          --
 // ----------------------------------------------------------------------------
 
-void FdoFunctionLower::CreateFunctionDefinition ()
+void FdoFunctionLtrim::CreateFunctionDefinition ()
 
 // +---------------------------------------------------------------------------
-// | The procedure creates the function definition for the function LOWER. The
+// | The procedure creates the function definition for the function LTRIM. The
 // | function definition includes the list of supported signatures. The follow-
 // | ing signatures are supported:
 // |
-// |    LOWER (string)
+// |    LTRIM (string)
 // |
 // | The function always returns a STRING.
 // +---------------------------------------------------------------------------
@@ -161,21 +186,21 @@ void FdoFunctionLower::CreateFunctionDefinition ()
 
     FdoPtr<FdoArgumentDefinitionCollection> str_args;
 
-    FdoPtr<FdoSignatureDefinition>          signature;
-    FdoSignatureDefinitionCollection        *signatures;
+    FdoPtr<FdoSignatureDefinition>   signature;
+    FdoSignatureDefinitionCollection *signatures;
 
     // Get the general descriptions for the arguments.
 
-    arg1_description = FdoException::NLSGetMessage(
-                                    FUNCTION_LOWER_STRING_ARG,
-                                    "String to be converted into lowercase");
+    arg1_description =
+                   FdoException::NLSGetMessage(FUNCTION_LTRIM_STRING_ARG,
+                                               "String to trim on the left");
 
     // The following defines the different argument definition collections.
 
     str_arg_literal = FdoException::NLSGetMessage(FUNCTION_STRING_ARG_LIT,
                                                   "text property");
 
-    str_arg = FdoArgumentDefinition::Create(
+    str_arg   = FdoArgumentDefinition::Create(
                     str_arg_literal, arg1_description, FdoDataType_String);
 
     str_args = FdoArgumentDefinitionCollection::Create();
@@ -190,13 +215,12 @@ void FdoFunctionLower::CreateFunctionDefinition ()
 
     // Create the function definition.
 
-    desc =
-         FdoException::NLSGetMessage(
-                FUNCTION_LOWER,
-                "Converts all uppercase letters in a string expression into lowercase letters");
+    desc = FdoException::NLSGetMessage(
+                                    FUNCTION_LTRIM,
+                                    "Trims a string expression on the left");
     function_definition =
                 FdoFunctionDefinition::Create(
-                                        FDO_FUNCTION_LOWER,
+                                        FDO_FUNCTION_LTRIM,
                                         desc,
                                         false,
                                         signatures,
@@ -204,7 +228,7 @@ void FdoFunctionLower::CreateFunctionDefinition ()
 
 }  //  CreateFunctionDefinition ()
 
-void FdoFunctionLower::Validate (FdoLiteralValueCollection *literal_values)
+void FdoFunctionLtrim::Validate (FdoLiteralValueCollection *literal_values)
 
 // +---------------------------------------------------------------------------
 // | The function validates the argument list that was passed in.
@@ -222,15 +246,17 @@ void FdoFunctionLower::Validate (FdoLiteralValueCollection *literal_values)
 
     FdoPtr<FdoLiteralValue> literal_value;
 
-    // Check the number of arguments. LOWER accepts exactly one parameter. If
-    // the number of parameters is not correct issue an exception.
+    // Check the number of arguments. LTRIM accepts one parameter only. If the
+    // number of parameters is not correct issue an exception.
+
+    count = literal_values->GetCount();
 
     if (count != 1) 
         throw FdoException::Create(
                FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_NUMBER_ERROR, 
                   "Expression Engine: Invalid number of parameters for function '%1$ls'",
-                  FDO_FUNCTION_LOWER));
+                  FDO_FUNCTION_LTRIM));
 
     // Next, identify the data type associated with the value to be processed.
     // An exception is issued if the data type does not match any of the ones
@@ -242,7 +268,7 @@ void FdoFunctionLower::Validate (FdoLiteralValueCollection *literal_values)
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_ERROR, 
                   "Expression Engine: Invalid parameters for function '%1$ls'",
-                  FDO_FUNCTION_LOWER));
+                  FDO_FUNCTION_LTRIM));
 
     data_value = static_cast<FdoDataValue *>(literal_value.p);
     data_type = data_value->GetDataType();
@@ -251,7 +277,7 @@ void FdoFunctionLower::Validate (FdoLiteralValueCollection *literal_values)
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
                   "Expression Engine: Invalid parameter data type for function '%1$ls'",
-                  FDO_FUNCTION_LOWER));
+                  FDO_FUNCTION_LTRIM));
 
 }  //  Validate ()
 

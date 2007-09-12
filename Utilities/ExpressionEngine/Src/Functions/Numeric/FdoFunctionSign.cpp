@@ -340,8 +340,6 @@ void FdoFunctionSign::Validate (FdoLiteralValueCollection *literal_values)
 
     FdoDataValue            *data_value     = NULL;
 
-    FdoPtr<FdoStringValue>  str_value;
-
     FdoPtr<FdoLiteralValue> literal_value;
 
     // Check the number of arguments. SIGN can accept only one parameter. If

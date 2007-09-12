@@ -18,14 +18,14 @@
 //
 
 #include <stdafx.h>
-#include <Functions/Math/FdoFunctionAbs.h>
+#include <Functions/Conversion/FdoFunctionToInt64.h>
 
 
 // ----------------------------------------------------------------------------
 // --                         Constructors/Destructors                       --
 // ----------------------------------------------------------------------------
 
-FdoFunctionAbs::FdoFunctionAbs ()
+FdoFunctionToInt64::FdoFunctionToInt64 ()
 
 // +---------------------------------------------------------------------------
 // | The class constructor.
@@ -34,19 +34,13 @@ FdoFunctionAbs::FdoFunctionAbs ()
 {
 
     // Initialize all class variables.
-    // NOTE: Due to the fact that data type enumeration misses an entry to
-    //       indicate a not-set value, the variable "incoming_data_type" is
-    //       set to "FdoDataType_CLOB" to indicate an invalid data type be-
-    //       cause this function does not support this type. 
 
     function_definition = NULL;
 
-    incoming_data_type  = FdoDataType_CLOB;
-
-}  //  FdoFunctionAbs ()
+}  //  FdoFunctionToInt64 ()
 
 
-FdoFunctionAbs::~FdoFunctionAbs ()
+FdoFunctionToInt64::~FdoFunctionToInt64 ()
 
 // +---------------------------------------------------------------------------
 // | The class destructor.
@@ -58,14 +52,14 @@ FdoFunctionAbs::~FdoFunctionAbs ()
 
     FDO_SAFE_RELEASE(function_definition);
 
-}  //  ~FdoFunctionAbs ()
+}  //  ~FdoFunctionToInt64 ()
 
 
 // ----------------------------------------------------------------------------
 // --                            Public Class APIs                           --
 // ----------------------------------------------------------------------------
 
-FdoFunctionAbs *FdoFunctionAbs::Create ()
+FdoFunctionToInt64 *FdoFunctionToInt64::Create ()
 
 // +---------------------------------------------------------------------------
 // | The function creates a new instance of the class.
@@ -73,11 +67,11 @@ FdoFunctionAbs *FdoFunctionAbs::Create ()
 
 {
 
-    return new FdoFunctionAbs();
+    return new FdoFunctionToInt64();
 
 }  //  Create ()
 
-FdoFunctionAbs *FdoFunctionAbs::CreateObject ()
+FdoFunctionToInt64 *FdoFunctionToInt64::CreateObject ()
 
 // +---------------------------------------------------------------------------
 // | The function creates a new instance of the class.
@@ -85,14 +79,14 @@ FdoFunctionAbs *FdoFunctionAbs::CreateObject ()
 
 {
 
-    return new FdoFunctionAbs();
+    return new FdoFunctionToInt64();
 
 }  //  CreateObject ()
 
-FdoFunctionDefinition *FdoFunctionAbs::GetFunctionDefinition ()
+FdoFunctionDefinition *FdoFunctionToInt64::GetFunctionDefinition ()
 
 // +---------------------------------------------------------------------------
-// | The function creates the supported signature list for the function ABS.
+// | The function creates the supported signature list for the function TOINT64
 // +---------------------------------------------------------------------------
 
 {
@@ -104,101 +98,18 @@ FdoFunctionDefinition *FdoFunctionAbs::GetFunctionDefinition ()
 
 }  //  GetFunctionDefinition ()
 
-FdoLiteralValue *FdoFunctionAbs::Evaluate (
+FdoLiteralValue *FdoFunctionToInt64::Evaluate (
                                     FdoLiteralValueCollection *literal_values)
 
 // +---------------------------------------------------------------------------
-// | The function processes a call to the function ABS.
+// | The function processes a call to the function TOINT64.
 // +---------------------------------------------------------------------------
 
 {
 
-    // Declare and initialize all necessary local variables.
+    // NOT YET IMPLEMEMTED.
 
-    FdoInt64                int64_val;
-
-    FdoPtr<FdoDecimalValue> decimal_value;
-    FdoPtr<FdoDoubleValue>  double_value;
-    FdoPtr<FdoInt16Value>   int16_value;
-    FdoPtr<FdoInt32Value>   int32_value;
-    FdoPtr<FdoInt64Value>   int64_value;
-    FdoPtr<FdoSingleValue>  single_value;
-
-    // Validate the function call.
-
-    Validate(literal_values);
-
-    // Process the request and return the result back to the calling routine.
-
-    switch (incoming_data_type) {
-
-      case FdoDataType_Decimal:
-        decimal_value =(FdoDecimalValue *) literal_values->GetItem(0);
-        if (!decimal_value->IsNull())
-            return FdoDecimalValue::Create(fabs(decimal_value->GetDecimal()));
-        else
-          return FdoDecimalValue::Create();
-        break;
-
-      case FdoDataType_Double:
-        double_value = (FdoDoubleValue *) literal_values->GetItem(0);
-        if (!double_value->IsNull())
-            return FdoDoubleValue::Create(fabs(double_value->GetDouble()));
-        else
-          return FdoDoubleValue::Create();
-        break;
-
-      case FdoDataType_Int16:
-        int16_value = (FdoInt16Value *) literal_values->GetItem(0);
-        if (!int16_value->IsNull())
-            return FdoInt16Value::Create(abs(int16_value->GetInt16()));
-        else
-          return FdoInt16Value::Create();
-        break;
-
-      case FdoDataType_Int32:
-        int32_value = (FdoInt32Value *) literal_values->GetItem(0);
-        if (!int32_value->IsNull())
-            return FdoInt32Value::Create(abs(int32_value->GetInt32()));
-        else
-          return FdoInt32Value::Create();
-        break;
-
-      case FdoDataType_Int64:
-        int64_value = (FdoInt64Value *) literal_values->GetItem(0);
-        if (!int64_value->IsNull()) {
-
-            int64_val = (int64_value->GetInt64() < 0)
-                        ? -1 * int64_value->GetInt64()
-                        : int64_value->GetInt64();
-            return FdoInt64Value::Create(int64_val);
-
-        }  //  if (!int64_value->IsNull()) ...
-        else
-          return FdoInt64Value::Create();
-        break;
-
-      case FdoDataType_Single:
-        single_value = (FdoSingleValue *) literal_values->GetItem(0);
-        if (!single_value->IsNull())
-            return FdoSingleValue::Create(fabs(single_value->GetSingle()));
-        else
-          return FdoSingleValue::Create();
-        break;
-
-    }  //  switch ...
-
-    // The validation at the top of the function ensures that any invalid call
-    // is handled correctly. Therefore, the above statements should have pro-
-    // cessed the request correctly and the function result should have been
-    // returned. Just in case there is an issue, the following exception is
-    // thrown if this part of the function implementation is reached.
-
-    throw FdoException::Create(
-            FdoException::NLSGetMessage(
-              FUNCTION_UNEXPECTED_RESULT_ERROR, 
-              "Expression Engine: Unexpected result for function '%1$ls'",
-              FDO_FUNCTION_ABS));
+    return FdoInt64Value::Create();
 
 }  //  Evaluate ()
 
@@ -207,33 +118,35 @@ FdoLiteralValue *FdoFunctionAbs::Evaluate (
 // --                          Supporting functions                          --
 // ----------------------------------------------------------------------------
 
-void FdoFunctionAbs::CreateFunctionDefinition ()
+void FdoFunctionToInt64::CreateFunctionDefinition ()
 
 // +---------------------------------------------------------------------------
-// | The procedure creates the function definition for the function ABS. The
-// | function definition includes the list of supported signatures. The follow-
-// | ing signatures are supported:
+// | The procedure creates the function definition for the function TOINT64.
+// | The function definition includes the list of supported signatures. The
+// | following signatures are supported:
 // |
-// |    ABS ({decimal, double, int16, int32, int64, single})
+// |    TOINT64 ({decimal, double, int16, int32, int64, single, string})
 // |
-// | The function returns the same data type as the input parameter.
+// | The function always returns an INT64.
 // +---------------------------------------------------------------------------
 
 {
 
     // Declare and initialize all necessary local variables.
 
-    FdoString *desc = NULL;
+    FdoString                               *desc               = NULL;
 
-    FdoStringP arg1_description;
-    FdoStringP num_arg_literal;
+    FdoStringP                              arg1_description;
+    FdoStringP                              str_arg_literal;
+    FdoStringP                              num_arg_literal;
 
-    FdoPtr<FdoArgumentDefinition> dcl_arg;
-    FdoPtr<FdoArgumentDefinition> dbl_arg;
-    FdoPtr<FdoArgumentDefinition> int16_arg;
-    FdoPtr<FdoArgumentDefinition> int32_arg;
-    FdoPtr<FdoArgumentDefinition> int64_arg;
-    FdoPtr<FdoArgumentDefinition> sgl_arg;
+    FdoPtr<FdoArgumentDefinition>           dcl_arg;
+    FdoPtr<FdoArgumentDefinition>           dbl_arg;
+    FdoPtr<FdoArgumentDefinition>           int16_arg;
+    FdoPtr<FdoArgumentDefinition>           int32_arg;
+    FdoPtr<FdoArgumentDefinition>           int64_arg;
+    FdoPtr<FdoArgumentDefinition>           sgl_arg;
+    FdoPtr<FdoArgumentDefinition>           str_arg;
 
     FdoPtr<FdoArgumentDefinitionCollection> dcl_args;
     FdoPtr<FdoArgumentDefinitionCollection> dbl_args;
@@ -241,6 +154,7 @@ void FdoFunctionAbs::CreateFunctionDefinition ()
     FdoPtr<FdoArgumentDefinitionCollection> int32_args;
     FdoPtr<FdoArgumentDefinitionCollection> int64_args;
     FdoPtr<FdoArgumentDefinitionCollection> sgl_args;
+    FdoPtr<FdoArgumentDefinitionCollection> str_args;
 
     FdoPtr<FdoSignatureDefinition>          signature;
     FdoSignatureDefinitionCollection        *signatures;
@@ -248,26 +162,37 @@ void FdoFunctionAbs::CreateFunctionDefinition ()
     // Get the general descriptions for the arguments.
 
     arg1_description = FdoException::NLSGetMessage(
-                                        FUNCTION_GENERAL_ARG,
-                                        "Argument to be processed");
+                                                FUNCTION_GENERAL_ARG,
+                                                "Argument to be processed");
+
+    num_arg_literal  = FdoException::NLSGetMessage(FUNCTION_NUMBER_ARG_LIT,
+                                                   "number");
+
+    str_arg_literal  = FdoException::NLSGetMessage(
+                                    FUNCTION_STRING_ARG_LIT, "text property");
 
     // The following defines the different argument definition collections.
 
-    num_arg_literal =
-            FdoException::NLSGetMessage(FUNCTION_NUMBER_ARG_LIT, "number");
-
     dcl_arg   = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Decimal);
+
     dbl_arg   = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Double);
+
     int16_arg = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Int16);
+
     int32_arg = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Int32);
+
     int64_arg = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Int64);
+
     sgl_arg   = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Single);
+
+    str_arg  = FdoArgumentDefinition::Create(
+                    str_arg_literal, arg1_description, FdoDataType_String);
 
     dcl_args = FdoArgumentDefinitionCollection::Create();
     dcl_args->Add(dcl_arg);
@@ -287,45 +212,50 @@ void FdoFunctionAbs::CreateFunctionDefinition ()
     sgl_args = FdoArgumentDefinitionCollection::Create();
     sgl_args->Add(sgl_arg);
 
+    str_args = FdoArgumentDefinitionCollection::Create();
+    str_args->Add(str_arg);
+
     // Create the signature collection.
 
     signatures = FdoSignatureDefinitionCollection::Create();
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_Decimal, dcl_args);
+    signature = FdoSignatureDefinition::Create(FdoDataType_Int64, dcl_args);
     signatures->Add(signature);
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_Double, dbl_args);
+    signature = FdoSignatureDefinition::Create(FdoDataType_Int64, dbl_args);
     signatures->Add(signature);
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_Int16, int16_args);
+    signature = FdoSignatureDefinition::Create(FdoDataType_Int64, int16_args);
     signatures->Add(signature);
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_Int32, int32_args);
+    signature = FdoSignatureDefinition::Create(FdoDataType_Int64, int32_args);
     signatures->Add(signature);
 
     signature = FdoSignatureDefinition::Create(FdoDataType_Int64, int64_args);
     signatures->Add(signature);
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_Single, sgl_args);
+    signature = FdoSignatureDefinition::Create(FdoDataType_Int64, sgl_args);
+    signatures->Add(signature);
+
+    signature = FdoSignatureDefinition::Create(FdoDataType_Int64, str_args);
     signatures->Add(signature);
 
     // Create the function definition.
 
     desc =
-        FdoException::NLSGetMessage(
-                    FUNCTION_ABS,
-                    "Determines the absolute value of a numeric expression");
+        FdoException::NLSGetMessage(FUNCTION_TOINT64,
+                                    "Converts a string or number to an int64");
     function_definition =
                 FdoFunctionDefinition::Create(
-                                        FDO_FUNCTION_ABS,
+                                        FDO_FUNCTION_TOINT64,
                                         desc,
                                         false,
                                         signatures,
-                                        FdoFunctionCategoryType_Math);
+                                        FdoFunctionCategoryType_Conversion);
 
 }  //  CreateFunctionDefinition ()
 
-void FdoFunctionAbs::Validate (FdoLiteralValueCollection *literal_values)
+void FdoFunctionToInt64::Validate (FdoLiteralValueCollection *literal_values)
 
 // +---------------------------------------------------------------------------
 // | The function validates the argument list that was passed in.
@@ -337,23 +267,24 @@ void FdoFunctionAbs::Validate (FdoLiteralValueCollection *literal_values)
 
     FdoInt32                count           = literal_values->GetCount();
 
+    FdoDataType             data_type;
+
     FdoDataValue            *data_value     = NULL;
 
     FdoPtr<FdoLiteralValue> literal_value;
 
-    // Check the number of arguments. ABS accepts one parameter only. If the
-    // number of parameters is not correct issue an exception.
+    // Check the number of arguments. TOINT64 accepts one parameter only. If
+    // the number of parameters is not correct issue an exception.
 
     if (count != 1) 
         throw FdoException::Create(
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_NUMBER_ERROR, 
                   "Expression Engine: Invalid number of parameters for function '%1$ls'",
-                  FDO_FUNCTION_ABS));
+                  FDO_FUNCTION_TOINT64));
 
-    // Next, identify the data type associated with the value to be processed.
-    // An exception is issued if the data type does not match any of the ones
-    // the function supports
+    // Next, check whether or not the parameter has a valid data type. If this
+    // is not the case issue an exception.
 
     literal_value = literal_values->GetItem(0);
     if (literal_value->GetLiteralValueType() != FdoLiteralValueType_Data)
@@ -361,21 +292,22 @@ void FdoFunctionAbs::Validate (FdoLiteralValueCollection *literal_values)
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_ERROR, 
                   "Expression Engine: Invalid parameters for function '%1$ls'",
-                  FDO_FUNCTION_ABS));
+                  FDO_FUNCTION_TOINT64));
 
     data_value = static_cast<FdoDataValue *>(literal_value.p);
-    incoming_data_type = data_value->GetDataType();
-    if ((incoming_data_type != FdoDataType_Decimal) &&
-        (incoming_data_type != FdoDataType_Double ) &&
-        (incoming_data_type != FdoDataType_Int16  ) &&
-        (incoming_data_type != FdoDataType_Int32  ) &&
-        (incoming_data_type != FdoDataType_Int64  ) &&
-        (incoming_data_type != FdoDataType_Single )    )
+    data_type  = data_value->GetDataType();
+    if ((data_type != FdoDataType_Decimal) &&
+        (data_type != FdoDataType_Double ) &&
+        (data_type != FdoDataType_Int16  ) &&
+        (data_type != FdoDataType_Int32  ) &&
+        (data_type != FdoDataType_Int64  ) &&
+        (data_type != FdoDataType_Single ) &&
+        (data_type != FdoDataType_String )    )
         throw FdoException::Create(
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
                   "Expression Engine: Invalid parameter data type for function '%1$ls'",
-                  FDO_FUNCTION_ABS));
+                  FDO_FUNCTION_TOINT64));
 
 }  //  Validate ()
 

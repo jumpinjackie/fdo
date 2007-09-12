@@ -334,8 +334,6 @@ void FdoFunctionCos::Validate (FdoLiteralValueCollection *literal_values)
 
     FdoDataValue            *data_value     = NULL;
 
-    FdoPtr<FdoStringValue>  str_value;
-
     FdoPtr<FdoLiteralValue> literal_value;
 
     // Check the number of arguments. COS accepts one parameter only. If the

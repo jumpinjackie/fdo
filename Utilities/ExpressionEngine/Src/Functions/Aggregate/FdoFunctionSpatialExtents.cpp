@@ -176,7 +176,7 @@ void FdoFunctionSpatialExtents::CreateFunctionDefinition ()
 // |
 // |    SPATIALEXTENTS (geometry)
 // |
-// | The function allways returns a GEOMETRY.
+// | The function always returns a GEOMETRY.
 // +---------------------------------------------------------------------------
 
 {

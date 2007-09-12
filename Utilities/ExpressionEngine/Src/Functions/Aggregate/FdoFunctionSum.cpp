@@ -226,7 +226,7 @@ void FdoFunctionSum::CreateFunctionDefinition ()
 // |         {decimal, double, int16, int32, int64, single})
 // |
 // | If the optional first parameter is used, then the parameter value must be
-// | ALL or DISTINCT. The function allways returns a DOUBLE.
+// | ALL or DISTINCT. The function always returns a DOUBLE.
 // +---------------------------------------------------------------------------
 
 {
@@ -746,6 +746,13 @@ void FdoFunctionSum::Validate (FdoLiteralValueCollection *literal_values)
                         FDO_FUNCTION_SUM));
 
         str_value   = static_cast<FdoStringValue *>(literal_value.p);
+        if (str_value->IsNull())
+            throw FdoException::Create(
+              FdoException::NLSGetMessage(
+                FUNCTION_OPERATOR_ERROR, 
+                "Expression Engine: Invalid operator parameter value for function '%1$ls'",
+                FDO_FUNCTION_SUM));
+
         param_value = str_value->GetString();
         if ((FdoCommonStringUtil::StringCompareNoCase(
                                         param_value, L"ALL"     ) != 0) &&
@@ -754,7 +761,7 @@ void FdoFunctionSum::Validate (FdoLiteralValueCollection *literal_values)
             throw FdoException::Create(
               FdoException::NLSGetMessage(
                 FUNCTION_OPERATOR_ERROR, 
-                "Expression Engine: Invalid first parameter value for function '%1$ls'",
+                "Expression Engine: Invalid operator parameter value for function '%1$ls'",
                 FDO_FUNCTION_SUM));
 
     }  //  if (count == 2) ...

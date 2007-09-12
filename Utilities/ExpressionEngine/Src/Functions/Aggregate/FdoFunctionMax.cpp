@@ -488,7 +488,8 @@ void FdoFunctionMax::CreateFunctionDefinition ()
     sgl_opt_args->Add(sgl_arg);
 
     str_arg_literal =
-            FdoException::NLSGetMessage(FUNCTION_STRING_ARG_LIT, "string");
+            FdoException::NLSGetMessage(
+                                    FUNCTION_STRING_ARG_LIT, "text property");
     str_arg =
         FdoArgumentDefinition::Create(
                         str_arg_literal, arg1_description, FdoDataType_String);
@@ -761,6 +762,13 @@ void FdoFunctionMax::Validate (FdoLiteralValueCollection *literal_values)
                         FDO_FUNCTION_MAX));
 
         str_value   = static_cast<FdoStringValue *>(literal_value.p);
+        if (str_value->IsNull())
+            throw FdoException::Create(
+                   FdoException::NLSGetMessage(
+                      FUNCTION_OPERATOR_ERROR, 
+                      "Expression Engine: Invalid operator parameter value for function '%1$ls'",
+                      FDO_FUNCTION_MAX));
+
         param_value = str_value->GetString();
         if ((FdoCommonStringUtil::StringCompareNoCase(
                                         param_value, L"ALL"     ) != 0) &&
@@ -769,7 +777,7 @@ void FdoFunctionMax::Validate (FdoLiteralValueCollection *literal_values)
             throw FdoException::Create(
                    FdoException::NLSGetMessage(
                       FUNCTION_OPERATOR_ERROR, 
-                      "Expression Engine: Invalid first parameter value for function '%1$ls'",
+                      "Expression Engine: Invalid operator parameter value for function '%1$ls'",
                       FDO_FUNCTION_MAX));
 
     }  //  if (count == 2) ...
