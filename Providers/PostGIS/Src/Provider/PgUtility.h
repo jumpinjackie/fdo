@@ -64,16 +64,32 @@ enum PgTypeProperties
     // ePgTypeBigintMax = 9223372036854775807
 };
 
+// Add double quotes to PostgreSQL database object name.
+// For more details, refer to PostgreSQL manual, 4.1.1. Identifiers and Key Words.
+// Example output for given input string content:
+// abc   -> "abc"
+// "abc" -> "abc"
+// ""    -> ""
+// <empty> -> <empty>
 template <typename T>
 inline T QuoteSqlName(T const& name)
 {
-    return ("\"" + name + "\"");
+    if (!name.empty()
+        && name[0] != '\"' && name[name.size() - 1]  != '\"')
+        return ("\"" + name + "\"");
+    else
+        return name;
 }
 
+// Add single quotes with SQL value of string type.
 template <typename T>
 inline T QuoteSqlValue(T const& value)
 {
-    return ("\'" + value + "\'");
+    if (!value.empty()
+        && value[0] != '\'' && value[value.size() - 1]  != '\'')
+        return ("\'" + value + "\'");
+    else
+        return value;
 }
 
 /// Convert PostgreSQL type of given name to FDO type enumerator.
