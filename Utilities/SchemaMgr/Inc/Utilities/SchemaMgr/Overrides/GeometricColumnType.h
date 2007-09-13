@@ -23,7 +23,7 @@
 ///<summary>FdoSmOvGeometricColumnType is an enumeration of the possible column types
 /// for geometric properties.  It is expressed in terms of FDO logical types.</summary>
 /// <param name="FdoSmOvGeometricColumnType_Default"> Provider's default. </param>
-/// <param name="FdoSmOvGeometricColumnType_BuiltIn"> Datastore’s built-in type (if available)
+/// <param name="FdoSmOvGeometricColumnType_BuiltIn"> Datastore's built-in type (if available)
 /// </param>
 /// <param name="FdoSmOvGeometricColumnType_Blob"> FDO "BLOB" (Binary Large OBject)
 /// </param>

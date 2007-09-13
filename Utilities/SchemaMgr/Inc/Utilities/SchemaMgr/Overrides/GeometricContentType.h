@@ -25,7 +25,7 @@
 /// Values of this enumeration must be 
 /// compatible with the corresponding FdoSmOvGeometricColumnType value..</summary>
 /// <param name="FdoSmOvGeometricContentType_Default"> Provider's default. </param>
-/// <param name="FdoSmOvGeometricContentType_BuiltIn"> Datastore’s built-in type (if available)
+/// <param name="FdoSmOvGeometricContentType_BuiltIn"> Datastore's built-in type (if available)
 /// </param>
 /// <param name="FdoSmOvGeometricContentType_Fgf"> FGF (binary)
 /// </param>
@@ -35,7 +35,7 @@
 /// </param>
 /// <param name="FdoSmOvGeometricContentType_Wkt"> OpenGis WKT
 /// </param>
-/// <param name="FdoSmOvGeometricContentType_Ordinates"> Ordinate columns (default names "X", "Y" and optionally "Z") – column type must be FdoRdbmsOvGeometryColumnType_Double
+/// <param name="FdoSmOvGeometricContentType_Ordinates"> Ordinate columns (default names "X", "Y" and optionally "Z") - column type must be FdoRdbmsOvGeometryColumnType_Double
 /// </param>
 enum FdoSmOvGeometricContentType
 {
