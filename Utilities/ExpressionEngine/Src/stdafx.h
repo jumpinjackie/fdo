@@ -19,6 +19,12 @@
 
 #endif
 
+#ifndef _WIN32
+#   define LLONG_MAX    9223372036854775807LL
+#   define LLONG_MIN    (-LLONG_MAX - 1LL)
+#endif
+
+
 #ifdef _DEBUG
     #ifdef _WIN32
 #ifndef ASSERT
