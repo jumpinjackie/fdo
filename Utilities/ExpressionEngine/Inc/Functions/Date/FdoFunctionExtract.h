@@ -79,11 +79,12 @@ class FdoFunctionExtract : public FdoExpressionEngineINonAggregateFunction
         // *                       Private Enumerations                       *
         // ********************************************************************
 
-        // ExtractOperationTokes:
+        // ExtractOperationTokens:
         //  The enumeration contains tokens used when handling the request.
 
         enum ExtractOperationTokens
         {
+
             ExtractOperationTokens_Year,
             ExtractOperationTokens_Month,
             ExtractOperationTokens_Day,

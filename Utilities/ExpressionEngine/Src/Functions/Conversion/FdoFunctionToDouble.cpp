@@ -34,11 +34,16 @@ FdoFunctionToDouble::FdoFunctionToDouble ()
 {
 
     // Initialize all class variables.
+    // NOTE: Due to the fact that data type enumeration misses an entry to
+    //       indicate a not-set value, the variable "incoming_data_type" is
+    //       set to "FdoDataType_CLOB" to indicate an invalid data type be-
+    //       cause this function does not support this type. 
 
     function_definition = NULL;
 
-}  //  FdoFunctionToDouble ()
+    incoming_data_type  = FdoDataType_CLOB;
 
+}  //  FdoFunctionToDouble ()
 
 FdoFunctionToDouble::~FdoFunctionToDouble ()
 
@@ -108,15 +113,104 @@ FdoLiteralValue *FdoFunctionToDouble::Evaluate (
 
 {
 
-    // NOT YET IMPLEMEMTED.
+    // Declare and initialize all necessary local variables.
 
-    throw FdoException::Create(
+    bool                    is_NULL         = false;
+
+    FdoDouble               dbl_value       = 0;
+
+    FdoStringP              str_value;
+
+    FdoPtr<FdoDecimalValue> decimal_value;
+    FdoPtr<FdoDoubleValue>  double_value;
+    FdoPtr<FdoInt16Value>   int16_value;
+    FdoPtr<FdoInt32Value>   int32_value;
+    FdoPtr<FdoInt64Value>   int64_value;
+    FdoPtr<FdoSingleValue>  single_value;
+    FdoPtr<FdoStringValue>  string_value;
+
+    // Validate the function call.
+
+    Validate(literal_values);
+
+    // Get the parameter and process it.
+
+    switch (incoming_data_type) {
+
+      case FdoDataType_Decimal:
+        decimal_value = (FdoDecimalValue *) literal_values->GetItem(0);
+        is_NULL       = decimal_value->IsNull();
+        if (!is_NULL)
+            dbl_value = decimal_value->GetDecimal();
+        break;
+
+      case FdoDataType_Double:
+        double_value = (FdoDoubleValue *) literal_values->GetItem(0);
+        is_NULL      = double_value->IsNull();
+        if (!is_NULL)
+            dbl_value = double_value->GetDouble();
+        break;
+
+      case FdoDataType_Int16:
+        int16_value = (FdoInt16Value *) literal_values->GetItem(0);
+        is_NULL     = int16_value->IsNull();
+        if (!is_NULL)
+            dbl_value = (FdoDouble) int16_value->GetInt16();
+        break;
+
+      case FdoDataType_Int32:
+        int32_value = (FdoInt32Value *) literal_values->GetItem(0);
+        is_NULL     = int32_value->IsNull();
+        if (!is_NULL)
+            dbl_value = (FdoDouble) int32_value->GetInt32();
+        break;
+
+      case FdoDataType_Int64:
+        int64_value = (FdoInt64Value *) literal_values->GetItem(0);
+        is_NULL     = int64_value->IsNull();
+        if (!is_NULL)
+            dbl_value = (FdoDouble) int64_value->GetInt64();
+        break;
+
+      case FdoDataType_Single:
+        single_value = (FdoSingleValue *) literal_values->GetItem(0);
+        is_NULL      = single_value->IsNull();
+        if (!is_NULL)
+            dbl_value = single_value->GetSingle();
+        break;
+
+      case FdoDataType_String:
+        string_value = (FdoStringValue *) literal_values->GetItem(0);
+        is_NULL      = string_value->IsNull();
+        if (!is_NULL) {
+
+            str_value = string_value->GetString();
+            if (str_value.IsNumber())
+                dbl_value = str_value.ToDouble();
+            else
+              throw FdoException::Create(
+                      FdoException::NLSGetMessage(
+                      FUNCTION_DATA_VALUE_ERROR, 
+                      "Expression Engine: Invalid value for execution of function '%1$ls'",
+                      FDO_FUNCTION_TODOUBLE));
+
+        }  //  if (!is_NULL) ...
+        break;
+
+      default:
+        throw FdoException::Create(
                 FdoException::NLSGetMessage(
-                  FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
-                  "Expression Engine: Invalid parameter data type for function '%1$ls'",
-                  FDO_FUNCTION_TODOUBLE));
+                FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
+                "Expression Engine: Invalid parameter data type for function '%1$ls'",
+                FDO_FUNCTION_TODOUBLE));
+        break;
 
-    return FdoDoubleValue::Create();
+    }  //  switch ...
+
+    if (is_NULL)
+        return FdoDoubleValue::Create();
+    else
+      return FdoDoubleValue::Create(dbl_value);
 
 }  //  Evaluate ()
 
@@ -274,8 +368,6 @@ void FdoFunctionToDouble::Validate (FdoLiteralValueCollection *literal_values)
 
     FdoInt32                count           = literal_values->GetCount();
 
-    FdoDataType             data_type;
-
     FdoDataValue            *data_value     = NULL;
 
     FdoPtr<FdoLiteralValue> literal_value;
@@ -301,15 +393,15 @@ void FdoFunctionToDouble::Validate (FdoLiteralValueCollection *literal_values)
                   "Expression Engine: Invalid parameters for function '%1$ls'",
                   FDO_FUNCTION_TODOUBLE));
 
-    data_value = static_cast<FdoDataValue *>(literal_value.p);
-    data_type  = data_value->GetDataType();
-    if ((data_type != FdoDataType_Decimal) &&
-        (data_type != FdoDataType_Double ) &&
-        (data_type != FdoDataType_Int16  ) &&
-        (data_type != FdoDataType_Int32  ) &&
-        (data_type != FdoDataType_Int64  ) &&
-        (data_type != FdoDataType_Single ) &&
-        (data_type != FdoDataType_String )    )
+    data_value         = static_cast<FdoDataValue *>(literal_value.p);
+    incoming_data_type = data_value->GetDataType();
+    if ((incoming_data_type != FdoDataType_Decimal) &&
+        (incoming_data_type != FdoDataType_Double ) &&
+        (incoming_data_type != FdoDataType_Int16  ) &&
+        (incoming_data_type != FdoDataType_Int32  ) &&
+        (incoming_data_type != FdoDataType_Int64  ) &&
+        (incoming_data_type != FdoDataType_Single ) &&
+        (incoming_data_type != FdoDataType_String )    )
         throw FdoException::Create(
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_DATA_TYPE_ERROR, 

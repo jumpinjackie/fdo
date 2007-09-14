@@ -160,7 +160,7 @@ FdoLiteralValue *FdoFunctionTrim::Evaluate (
         if (pos == string_length)
             return FdoStringValue::Create();
         else
-          base_string = base_string.Mid((size_t) pos, string_length);
+          base_string = base_string.Mid((size_t) pos, (size_t) string_length);
 
     }  //  if ((FdoCommonStringUtil::StringCompareNoCase( ...
 

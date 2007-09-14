@@ -117,6 +117,11 @@ class FdoFunctionToDouble : public FdoExpressionEngineINonAggregateFunction
 
         FdoFunctionDefinition *function_definition;
 
+        // incoming_data_type:
+        //  References the data type associated with the provided parameter.
+
+        FdoDataType incoming_data_type;
+
 };  //  class FdoFunctionToDouble
 
 #endif

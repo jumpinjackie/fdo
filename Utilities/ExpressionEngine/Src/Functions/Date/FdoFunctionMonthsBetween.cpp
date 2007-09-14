@@ -117,10 +117,10 @@ FdoLiteralValue *FdoFunctionMonthsBetween::Evaluate (
     // NOT YET IMPLEMENTED
 
     throw FdoException::Create(
-                FdoException::NLSGetMessage(
-                  FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
-                  "Expression Engine: Invalid parameter data type for function '%1$ls'",
-                  FDO_FUNCTION_MONTHSBETWEEN));
+            FdoException::NLSGetMessage(
+                FUNCTION_UNEXPECTED_RESULT_ERROR, 
+                "Expression Engine: Unexpected result for function '%1$ls'",
+                FDO_FUNCTION_MONTHSBETWEEN));
 
     return FdoDateTimeValue::Create();
 

@@ -47,7 +47,6 @@ FdoFunctionNullValue::FdoFunctionNullValue ()
 
 }  //  FdoFunctionNullValue ()
 
-
 FdoFunctionNullValue::~FdoFunctionNullValue ()
 
 // +---------------------------------------------------------------------------
@@ -116,15 +115,66 @@ FdoLiteralValue *FdoFunctionNullValue::Evaluate (
 
 {
 
-    // NOT YET IMPLEMEMTED.
+    // Validate the function call.
 
+    Validate(literal_values);
+
+    // The processing of this request depends on the data type of the first
+    // parameter.
+
+    switch (para1_data_type) {
+
+      case FdoDataType_Boolean:
+        return ProcessBooleanRequest(literal_values);
+        break;
+
+      case FdoDataType_Byte:
+        return ProcessByteRequest(literal_values);
+        break;
+
+      case FdoDataType_DateTime:
+        return ProcessDateTimeRequest(literal_values);
+        break;
+
+      case FdoDataType_Decimal:
+        return ProcessDecimalRequest(literal_values);
+        break;
+
+      case FdoDataType_Double:
+        return ProcessDoubleRequest(literal_values);
+        break;
+
+      case FdoDataType_Int16:
+        return ProcessInt16Request(literal_values);
+        break;
+
+      case FdoDataType_Int32:
+        return ProcessInt32Request(literal_values);
+        break;
+
+      case FdoDataType_Int64:
+        return ProcessInt64Request(literal_values);
+        break;
+
+      case FdoDataType_Single:
+        return ProcessSingleRequest(literal_values);
+        break;
+
+      case FdoDataType_String:
+        return ProcessStringRequest(literal_values);
+        break;
+
+    }  //  switch ...
+
+    // The switch statement should have processed all valid cases and hence the
+    // following code should never be reached. But just in case issue an excep-
+    // tion if it does.
+    
     throw FdoException::Create(
-                FdoException::NLSGetMessage(
-                  FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
-                  "Expression Engine: Invalid parameter data type for function '%1$ls'",
-                  FDO_FUNCTION_NULLVALUE));
-
-    return FdoInt64Value::Create();
+            FdoException::NLSGetMessage(
+              FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
+              "Expression Engine: Invalid parameter data type for function '%1$ls'",
+              FDO_FUNCTION_NULLVALUE));
 
 }  //  Evaluate ()
 
@@ -668,6 +718,993 @@ void FdoFunctionNullValue::CreateFunctionDefinition ()
                                         FdoFunctionCategoryType_Conversion);
 
 }  //  CreateFunctionDefinition ()
+
+FdoLiteralValue *FdoFunctionNullValue::ProcessBooleanRequest (
+                                    FdoLiteralValueCollection *literal_values)
+
+// +---------------------------------------------------------------------------
+// | The function executes the request in case the provided parameters are of
+// | type BOOLEAN and returns the result back to the calling routine.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local variables.
+
+    FdoPtr<FdoBooleanValue> boolean_value;
+
+    // Get the first parameter. If this is not NULL, use it as the function re-
+    // turn value. Otherwise, get the second parameter and return this one.
+
+    boolean_value = (FdoBooleanValue *) literal_values->GetItem(0);
+    if (!boolean_value->IsNull())
+        return FdoBooleanValue::Create(boolean_value->GetBoolean());
+
+    boolean_value = (FdoBooleanValue *) literal_values->GetItem(1);
+    if (!boolean_value->IsNull())
+        return FdoBooleanValue::Create(boolean_value->GetBoolean());
+
+    return FdoBooleanValue::Create();
+    
+}  //  ProcessBooleanRequest ()
+
+FdoLiteralValue *FdoFunctionNullValue::ProcessByteRequest (
+                                    FdoLiteralValueCollection *literal_values)
+
+// +---------------------------------------------------------------------------
+// | The function executes the request in case the provided parameters are of
+// | type BYTE and returns the result back to the calling procedure.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local variables.
+
+    FdoPtr<FdoByteValue> byte_value;
+
+    // Get the first parameter. If this is not NULL, use it as the function re-
+    // turn value. Otherwise, get the second parameter and return this one.
+
+    byte_value = (FdoByteValue *) literal_values->GetItem(0);
+    if (!byte_value->IsNull())
+        return FdoByteValue::Create(byte_value->GetByte());
+
+    byte_value = (FdoByteValue *) literal_values->GetItem(1);
+    if (!byte_value->IsNull())
+        return FdoByteValue::Create(byte_value->GetByte());
+
+    return FdoByteValue::Create();
+    
+}  //  ProcessByteRequest ()
+
+FdoLiteralValue *FdoFunctionNullValue::ProcessDateTimeRequest (
+                                    FdoLiteralValueCollection *literal_values)
+
+// +---------------------------------------------------------------------------
+// | The function executes the request in case the provided parameters are of
+// | type DATETIME and returns the result back to the calling routine.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local variables.
+
+    FdoPtr<FdoDateTimeValue> dt_value;
+
+    // Get the first parameter. If this is not NULL, use it as the function re-
+    // turn value. Otherwise, get the second parameter and return this one.
+
+    dt_value = (FdoDateTimeValue *) literal_values->GetItem(0);
+    if (!dt_value->IsNull())
+        return FdoDateTimeValue::Create(dt_value->GetDateTime());
+
+    dt_value = (FdoDateTimeValue *) literal_values->GetItem(1);
+    if (!dt_value->IsNull())
+        return FdoDateTimeValue::Create(dt_value->GetDateTime());
+
+    return FdoDateTimeValue::Create();
+    
+}  //  ProcessDateTimeRequest ()
+
+FdoLiteralValue *FdoFunctionNullValue::ProcessDecimalRequest (
+                                    FdoLiteralValueCollection *literal_values)
+
+// +---------------------------------------------------------------------------
+// | The function executes the request in case the provided first parameter is
+// | of type DECIMAL and returns the result back to the calling routine.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local variables.
+
+    FdoPtr<FdoDecimalValue> decimal_value;
+    FdoPtr<FdoDoubleValue>  double_value;
+    FdoPtr<FdoInt16Value>   int16_value;
+    FdoPtr<FdoInt32Value>   int32_value;
+    FdoPtr<FdoInt64Value>   int64_value;
+    FdoPtr<FdoSingleValue>  single_value;
+
+    // Get the first parameter. If it is not NULL, the value is used for the
+    // return parameter. The type of the return parameter, however, depends
+    // on the data type of the second parameter.
+
+    decimal_value = (FdoDecimalValue *) literal_values->GetItem(0);
+    switch (para2_data_type) {
+
+      case FdoDataType_Decimal:
+      case FdoDataType_Int16:
+      case FdoDataType_Int32:
+        if (!decimal_value->IsNull())
+            return FdoDecimalValue::Create(decimal_value->GetDecimal());
+        break;
+
+      case FdoDataType_Double:
+      case FdoDataType_Int64:
+      case FdoDataType_Single:
+        if (!decimal_value->IsNull())
+            return FdoDoubleValue::Create(decimal_value->GetDecimal());
+        break;
+
+      default:
+        throw FdoException::Create(
+                FdoException::NLSGetMessage(
+                FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
+                "Expression Engine: Invalid parameter data type for function '%1$ls'",
+                FDO_FUNCTION_NULLVALUE));
+        break;
+
+    }  //  switch ...
+
+    // At this point, the first parameter is NULL and hence the second para-
+    // meter has to be retrieved and analysed. It serves as the value for the
+    // return parameter. The return parameter's type depends on the type of
+    // the second parameter.
+
+    switch (para2_data_type) {
+
+      case FdoDataType_Decimal:
+        decimal_value = (FdoDecimalValue *) literal_values->GetItem(1);
+        if (!decimal_value->IsNull())
+            return FdoDecimalValue::Create(decimal_value->GetDecimal());
+        else
+          return FdoDecimalValue::Create();
+        break;
+
+      case FdoDataType_Double:
+        double_value = (FdoDoubleValue *) literal_values->GetItem(1);
+        if (!double_value->IsNull())
+            return FdoDoubleValue::Create(double_value->GetDouble());
+        else
+          return FdoDoubleValue::Create();
+        break;
+
+      case FdoDataType_Int16:
+        int16_value = (FdoInt16Value *) literal_values->GetItem(1);
+        if (!int16_value->IsNull())
+            return FdoDecimalValue::Create(int16_value->GetInt16());
+        else
+          return FdoDecimalValue::Create();
+        break;
+
+      case FdoDataType_Int32:
+        int32_value = (FdoInt32Value *) literal_values->GetItem(1);
+        if (!int32_value->IsNull())
+            return FdoDecimalValue::Create(int32_value->GetInt32());
+        else
+          return FdoDecimalValue::Create();
+        break;
+
+      case FdoDataType_Int64:
+        int64_value = (FdoInt64Value *) literal_values->GetItem(1);
+        if (!int64_value->IsNull())
+            return FdoDoubleValue::Create((double) int64_value->GetInt64());
+        else
+          return FdoDoubleValue::Create();
+        break;
+
+      case FdoDataType_Single:
+        single_value = (FdoSingleValue *) literal_values->GetItem(1);
+        if (!single_value->IsNull())
+            return FdoDoubleValue::Create(single_value->GetSingle());
+        else
+          return FdoDoubleValue::Create();
+        break;
+
+      default:
+        throw FdoException::Create(
+                FdoException::NLSGetMessage(
+                FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
+                "Expression Engine: Invalid parameter data type for function '%1$ls'",
+                FDO_FUNCTION_NULLVALUE));
+        break;
+
+    }  //  switch ...
+
+    // The previous switch statement should have processed all valid cases
+    // and hence the following part of the code should not be reached. If
+    // it is reached issue an exception.
+
+    throw FdoException::Create(
+            FdoException::NLSGetMessage(
+                FUNCTION_UNEXPECTED_RESULT_ERROR, 
+                "Expression Engine: Unexpected result for function '%1$ls'",
+                FDO_FUNCTION_NULLVALUE));
+    
+}  //  ProcessDecimalRequest ()
+
+FdoLiteralValue *FdoFunctionNullValue::ProcessDoubleRequest (
+                                    FdoLiteralValueCollection *literal_values)
+
+// +---------------------------------------------------------------------------
+// | The function executes the request in case the provided first parameter is
+// | of type DOUBLE and returns the result back to the calling routine.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local variables.
+
+    bool                    is_NULL         = false,
+                            is_processed    = false;
+
+    FdoDouble               curr_value;
+
+    FdoPtr<FdoDecimalValue> decimal_value;
+    FdoPtr<FdoDoubleValue>  double_value;
+    FdoPtr<FdoInt16Value>   int16_value;
+    FdoPtr<FdoInt32Value>   int32_value;
+    FdoPtr<FdoInt64Value>   int64_value;
+    FdoPtr<FdoSingleValue>  single_value;
+
+    // Get the first parameter. If it is not NULL, the value is used for the
+    // return parameter. The type of the return parameter is independent of
+    // the type of the second parameter always a DOUBLE.
+
+    double_value = (FdoDoubleValue *) literal_values->GetItem(0);
+    if (!double_value->IsNull())
+        return FdoDoubleValue::Create(double_value->GetDouble());
+
+    // At this point, the first parameter is NULL and hence the second para-
+    // meter has to be retrieved and analysed. It serves as the value for the
+    // return parameter. Again the return parameter is independent of the
+    // data type of the second parameter and is always a double.
+
+    switch (para2_data_type) {
+
+      case FdoDataType_Decimal:
+        is_processed  = true;
+        decimal_value = (FdoDecimalValue *) literal_values->GetItem(1);
+        is_NULL       = decimal_value->IsNull();
+        if (!is_NULL)
+            curr_value = decimal_value->GetDecimal();
+        break;
+
+      case FdoDataType_Double:
+        is_processed = true;
+        double_value = (FdoDoubleValue *) literal_values->GetItem(1);
+        is_NULL      = double_value->IsNull();
+        if (!is_NULL)
+            curr_value = double_value->GetDouble();
+        break;
+
+      case FdoDataType_Int16:
+        is_processed = true;
+        int16_value  = (FdoInt16Value *) literal_values->GetItem(1);
+        is_NULL      = int16_value->IsNull();
+        if (!is_NULL)
+            curr_value = (FdoDouble) int16_value->GetInt16();
+        break;
+
+      case FdoDataType_Int32:
+        is_processed = true;
+        int32_value  = (FdoInt32Value *) literal_values->GetItem(1);
+        is_NULL      = int32_value->IsNull();
+        if (!is_NULL)
+            curr_value = (FdoDouble) int32_value->GetInt32();
+        break;
+
+      case FdoDataType_Int64:
+        is_processed = true;
+        int64_value  = (FdoInt64Value *) literal_values->GetItem(1);
+        is_NULL      = int64_value->IsNull();
+        if (!is_NULL)
+            curr_value = (FdoDouble) int64_value->GetInt64();
+        break;
+
+      case FdoDataType_Single:
+        is_processed  = true;
+        single_value  = (FdoSingleValue *) literal_values->GetItem(1);
+        is_NULL       = single_value->IsNull();
+        if (!is_NULL)
+            curr_value = (FdoDouble) single_value->GetSingle();
+        break;
+
+      default:
+        throw FdoException::Create(
+                FdoException::NLSGetMessage(
+                FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
+                "Expression Engine: Invalid parameter data type for function '%1$ls'",
+                FDO_FUNCTION_NULLVALUE));
+        break;
+
+    }  //  switch ...
+
+    if (is_processed) {
+
+        if (!is_NULL)
+            return FdoDoubleValue::Create(curr_value);
+        else
+          return FdoDoubleValue::Create();
+
+    }  //  if (is_processed) ...
+
+    // The previous switch statement should have processed all valid cases
+    // and hence the following part of the code should not be reached. If
+    // it is reached issue an exception.
+
+    throw FdoException::Create(
+            FdoException::NLSGetMessage(
+                FUNCTION_UNEXPECTED_RESULT_ERROR, 
+                "Expression Engine: Unexpected result for function '%1$ls'",
+                FDO_FUNCTION_NULLVALUE));
+    
+}  //  ProcessDoubleRequest ()
+
+FdoLiteralValue *FdoFunctionNullValue::ProcessInt16Request (
+                                    FdoLiteralValueCollection *literal_values)
+
+// +---------------------------------------------------------------------------
+// | The function executes the request in case the provided first parameter is
+// | of type INT16 and returns the result back to the calling routine.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local variables.
+
+    FdoPtr<FdoDecimalValue> decimal_value;
+    FdoPtr<FdoDoubleValue>  double_value;
+    FdoPtr<FdoInt16Value>   int16_value;
+    FdoPtr<FdoInt32Value>   int32_value;
+    FdoPtr<FdoInt64Value>   int64_value;
+    FdoPtr<FdoSingleValue>  single_value;
+
+    // Get the first parameter. If it is not NULL, the value is used for the
+    // return parameter. The type of the return parameter, however, depends
+    // on the data type of the second parameter.
+
+    int16_value = (FdoInt16Value *) literal_values->GetItem(0);
+    switch (para2_data_type) {
+
+      case FdoDataType_Decimal:
+      case FdoDataType_Double:
+        if (!int16_value->IsNull())
+            return FdoDoubleValue::Create(int16_value->GetInt16());
+        break;
+
+      case FdoDataType_Int16:
+        if (!int16_value->IsNull())
+            return FdoInt16Value::Create(int16_value->GetInt16());
+        break;
+
+      case FdoDataType_Int32:
+        if (!int16_value->IsNull())
+            return FdoInt32Value::Create(int16_value->GetInt16());
+        break;
+
+      case FdoDataType_Int64:
+        if (!int16_value->IsNull())
+            return FdoInt64Value::Create(int16_value->GetInt16());
+        break;
+
+      case FdoDataType_Single:
+        if (!int16_value->IsNull())
+            return FdoSingleValue::Create(int16_value->GetInt16());
+        break;
+
+      default:
+        throw FdoException::Create(
+                FdoException::NLSGetMessage(
+                FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
+                "Expression Engine: Invalid parameter data type for function '%1$ls'",
+                FDO_FUNCTION_NULLVALUE));
+        break;
+
+    }  //  switch ...
+
+    // At this point, the first parameter is NULL and hence the second para-
+    // meter has to be retrieved and analysed. It serves as the value for the
+    // return parameter. The return parameter's type depends on the type of
+    // the second parameter.
+
+    switch (para2_data_type) {
+
+      case FdoDataType_Decimal:
+        decimal_value = (FdoDecimalValue *) literal_values->GetItem(1);
+        if (!decimal_value->IsNull())
+            return FdoDoubleValue::Create(decimal_value->GetDecimal());
+        else
+          return FdoDoubleValue::Create();
+        break;
+
+      case FdoDataType_Double:
+        double_value = (FdoDoubleValue *) literal_values->GetItem(1);
+        if (!double_value->IsNull())
+            return FdoDoubleValue::Create(double_value->GetDouble());
+        else
+          return FdoDoubleValue::Create();
+        break;
+
+      case FdoDataType_Int16:
+        int16_value = (FdoInt16Value *) literal_values->GetItem(1);
+        if (!int16_value->IsNull())
+            return FdoInt16Value::Create(int16_value->GetInt16());
+        else
+          return FdoInt16Value::Create();
+        break;
+
+      case FdoDataType_Int32:
+        int32_value = (FdoInt32Value *) literal_values->GetItem(1);
+        if (!int32_value->IsNull())
+            return FdoInt32Value::Create(int32_value->GetInt32());
+        else
+          return FdoInt32Value::Create();
+        break;
+
+      case FdoDataType_Int64:
+        int64_value = (FdoInt64Value *) literal_values->GetItem(1);
+        if (!int64_value->IsNull())
+            return FdoInt64Value::Create(int64_value->GetInt64());
+        else
+          return FdoInt64Value::Create();
+        break;
+
+      case FdoDataType_Single:
+        single_value = (FdoSingleValue *) literal_values->GetItem(1);
+        if (!single_value->IsNull())
+            return FdoSingleValue::Create(single_value->GetSingle());
+        else
+          return FdoSingleValue::Create();
+        break;
+
+      default:
+        throw FdoException::Create(
+                FdoException::NLSGetMessage(
+                FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
+                "Expression Engine: Invalid parameter data type for function '%1$ls'",
+                FDO_FUNCTION_NULLVALUE));
+        break;
+
+    }  //  switch ...
+
+    // The previous switch statement should have processed all valid cases
+    // and hence the following part of the code should not be reached. If
+    // it is reached issue an exception.
+
+    throw FdoException::Create(
+            FdoException::NLSGetMessage(
+                FUNCTION_UNEXPECTED_RESULT_ERROR, 
+                "Expression Engine: Unexpected result for function '%1$ls'",
+                FDO_FUNCTION_NULLVALUE));
+    
+}  //  ProcessInt16Request ()
+
+FdoLiteralValue *FdoFunctionNullValue::ProcessInt32Request (
+                                    FdoLiteralValueCollection *literal_values)
+
+// +---------------------------------------------------------------------------
+// | The function executes the request in case the provided first parameter is
+// | of type INT32 and returns the result back to the calling routine.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local variables.
+
+    FdoPtr<FdoDecimalValue> decimal_value;
+    FdoPtr<FdoDoubleValue>  double_value;
+    FdoPtr<FdoInt16Value>   int16_value;
+    FdoPtr<FdoInt32Value>   int32_value;
+    FdoPtr<FdoInt64Value>   int64_value;
+    FdoPtr<FdoSingleValue>  single_value;
+
+    // Get the first parameter. If it is not NULL, the value is used for the
+    // return parameter. The type of the return parameter, however, depends
+    // on the data type of the second parameter.
+
+    int32_value = (FdoInt32Value *) literal_values->GetItem(0);
+    switch (para2_data_type) {
+
+      case FdoDataType_Decimal:
+      case FdoDataType_Double:
+      case FdoDataType_Single:
+        if (!int32_value->IsNull())
+            return FdoDoubleValue::Create(int32_value->GetInt32());
+        break;
+
+      case FdoDataType_Int16:
+      case FdoDataType_Int32:
+        if (!int32_value->IsNull())
+            return FdoInt32Value::Create(int32_value->GetInt32());
+        break;
+
+      case FdoDataType_Int64:
+        if (!int32_value->IsNull())
+            return FdoInt64Value::Create(int32_value->GetInt32());
+        break;
+
+      default:
+        throw FdoException::Create(
+                FdoException::NLSGetMessage(
+                FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
+                "Expression Engine: Invalid parameter data type for function '%1$ls'",
+                FDO_FUNCTION_NULLVALUE));
+        break;
+
+    }  //  switch ...
+
+    // At this point, the first parameter is NULL and hence the second para-
+    // meter has to be retrieved and analysed. It serves as the value for the
+    // return parameter. The return parameter's type depends on the type of
+    // the second parameter.
+
+    switch (para2_data_type) {
+
+      case FdoDataType_Decimal:
+        decimal_value = (FdoDecimalValue *) literal_values->GetItem(1);
+        if (!decimal_value->IsNull())
+            return FdoDoubleValue::Create(decimal_value->GetDecimal());
+        else
+          return FdoDoubleValue::Create();
+        break;
+
+      case FdoDataType_Double:
+        double_value = (FdoDoubleValue *) literal_values->GetItem(1);
+        if (!double_value->IsNull())
+            return FdoDoubleValue::Create(double_value->GetDouble());
+        else
+          return FdoDoubleValue::Create();
+        break;
+
+      case FdoDataType_Int16:
+        int16_value = (FdoInt16Value *) literal_values->GetItem(1);
+        if (!int16_value->IsNull())
+            return FdoInt32Value::Create(int16_value->GetInt16());
+        else
+          return FdoInt32Value::Create();
+        break;
+
+      case FdoDataType_Int32:
+        int32_value = (FdoInt32Value *) literal_values->GetItem(1);
+        if (!int32_value->IsNull())
+            return FdoInt32Value::Create(int32_value->GetInt32());
+        else
+          return FdoInt32Value::Create();
+        break;
+
+      case FdoDataType_Int64:
+        int64_value = (FdoInt64Value *) literal_values->GetItem(1);
+        if (!int64_value->IsNull())
+            return FdoInt64Value::Create(int64_value->GetInt64());
+        else
+          return FdoInt64Value::Create();
+        break;
+
+      case FdoDataType_Single:
+        single_value = (FdoSingleValue *) literal_values->GetItem(1);
+        if (!single_value->IsNull())
+            return FdoDoubleValue::Create(single_value->GetSingle());
+        else
+          return FdoDoubleValue::Create();
+        break;
+
+      default:
+        throw FdoException::Create(
+                FdoException::NLSGetMessage(
+                FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
+                "Expression Engine: Invalid parameter data type for function '%1$ls'",
+                FDO_FUNCTION_NULLVALUE));
+        break;
+
+    }  //  switch ...
+
+    // The previous switch statement should have processed all valid cases
+    // and hence the following part of the code should not be reached. If
+    // it is reached issue an exception.
+
+    throw FdoException::Create(
+            FdoException::NLSGetMessage(
+                FUNCTION_UNEXPECTED_RESULT_ERROR, 
+                "Expression Engine: Unexpected result for function '%1$ls'",
+                FDO_FUNCTION_NULLVALUE));
+    
+}  //  ProcessInt32Request ()
+
+FdoLiteralValue *FdoFunctionNullValue::ProcessInt64Request (
+                                    FdoLiteralValueCollection *literal_values)
+
+// +---------------------------------------------------------------------------
+// | The function executes the request in case the provided first parameter is
+// | of type INT64 and returns the result back to the calling routine.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local variables.
+
+    FdoPtr<FdoDecimalValue> decimal_value;
+    FdoPtr<FdoDoubleValue>  double_value;
+    FdoPtr<FdoInt16Value>   int16_value;
+    FdoPtr<FdoInt32Value>   int32_value;
+    FdoPtr<FdoInt64Value>   int64_value;
+    FdoPtr<FdoSingleValue>  single_value;
+
+    // Get the first parameter. If it is not NULL, the value is used for the
+    // return parameter. The type of the return parameter, however, depends
+    // on the data type of the second parameter.
+
+    int64_value = (FdoInt64Value *) literal_values->GetItem(0);
+    switch (para2_data_type) {
+
+      case FdoDataType_Decimal:
+      case FdoDataType_Double:
+      case FdoDataType_Single:
+        if (!int64_value->IsNull())
+            return FdoDoubleValue::Create((FdoDouble) int64_value->GetInt64());
+        break;
+
+      case FdoDataType_Int16:
+      case FdoDataType_Int32:
+      case FdoDataType_Int64:
+        if (!int64_value->IsNull())
+            return FdoInt64Value::Create(int64_value->GetInt64());
+        break;
+
+      default:
+        throw FdoException::Create(
+                FdoException::NLSGetMessage(
+                FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
+                "Expression Engine: Invalid parameter data type for function '%1$ls'",
+                FDO_FUNCTION_NULLVALUE));
+        break;
+
+    }  //  switch ...
+
+    // At this point, the first parameter is NULL and hence the second para-
+    // meter has to be retrieved and analysed. It serves as the value for the
+    // return parameter. The return parameter's type depends on the type of
+    // the second parameter.
+
+    switch (para2_data_type) {
+
+      case FdoDataType_Decimal:
+        decimal_value = (FdoDecimalValue *) literal_values->GetItem(1);
+        if (!decimal_value->IsNull())
+            return FdoDoubleValue::Create(decimal_value->GetDecimal());
+        else
+          return FdoDoubleValue::Create();
+        break;
+
+      case FdoDataType_Double:
+        double_value = (FdoDoubleValue *) literal_values->GetItem(1);
+        if (!double_value->IsNull())
+            return FdoDoubleValue::Create(double_value->GetDouble());
+        else
+          return FdoDoubleValue::Create();
+        break;
+
+      case FdoDataType_Int16:
+        int16_value = (FdoInt16Value *) literal_values->GetItem(1);
+        if (!int16_value->IsNull())
+            return FdoInt64Value::Create(int16_value->GetInt16());
+        else
+          return FdoInt64Value::Create();
+        break;
+
+      case FdoDataType_Int32:
+        int32_value = (FdoInt32Value *) literal_values->GetItem(1);
+        if (!int32_value->IsNull())
+            return FdoInt64Value::Create(int32_value->GetInt32());
+        else
+          return FdoInt64Value::Create();
+        break;
+
+      case FdoDataType_Int64:
+        int64_value = (FdoInt64Value *) literal_values->GetItem(1);
+        if (!int64_value->IsNull())
+            return FdoInt64Value::Create(int64_value->GetInt64());
+        else
+          return FdoInt64Value::Create();
+        break;
+
+      case FdoDataType_Single:
+        single_value = (FdoSingleValue *) literal_values->GetItem(1);
+        if (!single_value->IsNull())
+            return FdoDoubleValue::Create(single_value->GetSingle());
+        else
+          return FdoDoubleValue::Create();
+        break;
+
+      default:
+        throw FdoException::Create(
+                FdoException::NLSGetMessage(
+                FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
+                "Expression Engine: Invalid parameter data type for function '%1$ls'",
+                FDO_FUNCTION_NULLVALUE));
+        break;
+
+    }  //  switch ...
+
+    // The previous switch statement should have processed all valid cases
+    // and hence the following part of the code should not be reached. If
+    // it is reached issue an exception.
+
+    throw FdoException::Create(
+            FdoException::NLSGetMessage(
+                FUNCTION_UNEXPECTED_RESULT_ERROR, 
+                "Expression Engine: Unexpected result for function '%1$ls'",
+                FDO_FUNCTION_NULLVALUE));
+    
+}  //  ProcessInt64Request ()
+
+FdoLiteralValue *FdoFunctionNullValue::ProcessSingleRequest (
+                                    FdoLiteralValueCollection *literal_values)
+
+// +---------------------------------------------------------------------------
+// | The function executes the request in case the provided first parameter is
+// | of type SINGLE and returns the result back to the calling routine.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local variables.
+
+    FdoPtr<FdoDecimalValue> decimal_value;
+    FdoPtr<FdoDoubleValue>  double_value;
+    FdoPtr<FdoInt16Value>   int16_value;
+    FdoPtr<FdoInt32Value>   int32_value;
+    FdoPtr<FdoInt64Value>   int64_value;
+    FdoPtr<FdoSingleValue>  single_value;
+
+    // Get the first parameter. If it is not NULL, the value is used for the
+    // return parameter. The type of the return parameter, however, depends
+    // on the data type of the second parameter.
+
+    single_value = (FdoSingleValue *) literal_values->GetItem(0);
+    switch (para2_data_type) {
+
+      case FdoDataType_Decimal:
+      case FdoDataType_Double:
+      case FdoDataType_Int32:
+      case FdoDataType_Int64:
+        if (!single_value->IsNull())
+            return FdoDoubleValue::Create(single_value->GetSingle());
+        break;
+
+      case FdoDataType_Int16:
+      case FdoDataType_Single:
+        if (!single_value->IsNull())
+            return FdoSingleValue::Create(single_value->GetSingle());
+        break;
+
+      default:
+        throw FdoException::Create(
+                FdoException::NLSGetMessage(
+                FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
+                "Expression Engine: Invalid parameter data type for function '%1$ls'",
+                FDO_FUNCTION_NULLVALUE));
+        break;
+
+    }  //  switch ...
+
+    // At this point, the first parameter is NULL and hence the second para-
+    // meter has to be retrieved and analysed. It serves as the value for the
+    // return parameter. The return parameter's type depends on the type of
+    // the second parameter.
+
+    switch (para2_data_type) {
+
+      case FdoDataType_Decimal:
+        decimal_value = (FdoDecimalValue *) literal_values->GetItem(1);
+        if (!decimal_value->IsNull())
+            return FdoDoubleValue::Create(decimal_value->GetDecimal());
+        else
+          return FdoDoubleValue::Create();
+        break;
+
+      case FdoDataType_Double:
+        double_value = (FdoDoubleValue *) literal_values->GetItem(1);
+        if (!double_value->IsNull())
+            return FdoDoubleValue::Create(double_value->GetDouble());
+        else
+          return FdoDoubleValue::Create();
+        break;
+
+      case FdoDataType_Int16:
+        int16_value = (FdoInt16Value *) literal_values->GetItem(1);
+        if (!int16_value->IsNull())
+            return FdoSingleValue::Create(int16_value->GetInt16());
+        else
+          return FdoSingleValue::Create();
+        break;
+
+      case FdoDataType_Int32:
+        int32_value = (FdoInt32Value *) literal_values->GetItem(1);
+        if (!int32_value->IsNull())
+            return FdoDoubleValue::Create(int32_value->GetInt32());
+        else
+          return FdoDoubleValue::Create();
+        break;
+
+      case FdoDataType_Int64:
+        int64_value = (FdoInt64Value *) literal_values->GetItem(1);
+        if (!int64_value->IsNull())
+            return FdoDoubleValue::Create((FdoDouble) int64_value->GetInt64());
+        else
+          return FdoDoubleValue::Create();
+        break;
+
+      case FdoDataType_Single:
+        single_value = (FdoSingleValue *) literal_values->GetItem(1);
+        if (!single_value->IsNull())
+            return FdoSingleValue::Create(single_value->GetSingle());
+        else
+          return FdoSingleValue::Create();
+        break;
+
+      default:
+        throw FdoException::Create(
+                FdoException::NLSGetMessage(
+                FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
+                "Expression Engine: Invalid parameter data type for function '%1$ls'",
+                FDO_FUNCTION_NULLVALUE));
+        break;
+
+    }  //  switch ...
+
+    // The previous switch statement should have processed all valid cases
+    // and hence the following part of the code should not be reached. If
+    // it is reached issue an exception.
+
+    throw FdoException::Create(
+            FdoException::NLSGetMessage(
+                FUNCTION_UNEXPECTED_RESULT_ERROR, 
+                "Expression Engine: Unexpected result for function '%1$ls'",
+                FDO_FUNCTION_NULLVALUE));
+    
+}  //  ProcessSingleRequest ()
+
+FdoLiteralValue *FdoFunctionNullValue::ProcessStringRequest (
+                                    FdoLiteralValueCollection *literal_values)
+
+// +---------------------------------------------------------------------------
+// | The function executes the request in case the provided first parameter is
+// | of type STRING and returns the result back to the calling routine.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local variables.
+
+    bool                    is_NULL         = false,
+                            is_processed    = false;
+
+    FdoStringP              curr_value;
+
+    FdoPtr<FdoDecimalValue> decimal_value;
+    FdoPtr<FdoDoubleValue>  double_value;
+    FdoPtr<FdoInt16Value>   int16_value;
+    FdoPtr<FdoInt32Value>   int32_value;
+    FdoPtr<FdoInt64Value>   int64_value;
+    FdoPtr<FdoSingleValue>  single_value;
+    FdoPtr<FdoStringValue>  string_value;
+
+    // Get the first parameter. If it is not NULL, the value is used for the
+    // return parameter. The type of the return parameter is - independent of
+    // the type of the second parameter - always a STRING.
+
+    string_value = (FdoStringValue *) literal_values->GetItem(0);
+    if (!string_value->IsNull())
+        return FdoStringValue::Create(string_value->GetString());
+
+    // At this point, the first parameter is NULL and hence the second para-
+    // meter has to be retrieved and analysed. It serves as the value for the
+    // return parameter. Again the return parameter is independent of the
+    // data type of the second parameter and is always a STRING.
+
+    switch (para2_data_type) {
+
+      case FdoDataType_Decimal:
+        is_processed  = true;
+        decimal_value = (FdoDecimalValue *) literal_values->GetItem(1);
+        is_NULL       = decimal_value->IsNull();
+        if (!is_NULL)
+            curr_value = FdoStringP::Format(L"%f", decimal_value->GetDecimal());
+        break;
+
+      case FdoDataType_Double:
+        is_processed = true;
+        double_value = (FdoDoubleValue *) literal_values->GetItem(1);
+        is_NULL      = double_value->IsNull();
+        if (!is_NULL)
+            curr_value = FdoStringP::Format(L"%f", double_value->GetDouble());
+        break;
+
+      case FdoDataType_Int16:
+        is_processed = true;
+        int16_value  = (FdoInt16Value *) literal_values->GetItem(1);
+        is_NULL      = int16_value->IsNull();
+        if (!is_NULL)
+            curr_value = FdoStringP::Format(L"%d", int16_value->GetInt16());
+        break;
+
+      case FdoDataType_Int32:
+        is_processed = true;
+        int32_value  = (FdoInt32Value *) literal_values->GetItem(1);
+        is_NULL      = int32_value->IsNull();
+        if (!is_NULL)
+            curr_value = FdoStringP::Format(L"%d", int32_value->GetInt32());
+        break;
+
+      case FdoDataType_Int64:
+        is_processed = true;
+        int64_value  = (FdoInt64Value *) literal_values->GetItem(1);
+        is_NULL      = int64_value->IsNull();
+        if (!is_NULL)
+#ifdef _WIN32
+            curr_value = FdoStringP::Format(L"%I64d", int64_value->GetInt64());
+#else
+            curr_value = FdoStringP::Format(L"%lld", int64_value->GetInt64());
+#endif
+        break;
+
+      case FdoDataType_Single:
+        is_processed  = true;
+        single_value  = (FdoSingleValue *) literal_values->GetItem(1);
+        is_NULL       = single_value->IsNull();
+        if (!is_NULL)
+            curr_value = FdoStringP::Format(L"%f", single_value->GetSingle());
+        break;
+
+      case FdoDataType_String:
+        is_processed  = true;
+        string_value  = (FdoStringValue *) literal_values->GetItem(1);
+        is_NULL       = string_value->IsNull();
+        if (!is_NULL)
+            curr_value = string_value->GetString();
+        break;
+
+      default:
+        throw FdoException::Create(
+                FdoException::NLSGetMessage(
+                FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
+                "Expression Engine: Invalid parameter data type for function '%1$ls'",
+                FDO_FUNCTION_NULLVALUE));
+        break;
+
+    }  //  switch ...
+
+    if (is_processed) {
+
+        if (!is_NULL)
+            return FdoStringValue::Create(curr_value);
+        else
+          return FdoStringValue::Create();
+
+    }  //  if (is_processed) ...
+
+    // The previous switch statement should have processed all valid cases
+    // and hence the following part of the code should not be reached. If
+    // it is reached issue an exception.
+
+    throw FdoException::Create(
+            FdoException::NLSGetMessage(
+                FUNCTION_UNEXPECTED_RESULT_ERROR, 
+                "Expression Engine: Unexpected result for function '%1$ls'",
+                FDO_FUNCTION_NULLVALUE));
+    
+}  //  ProcessStringRequest ()
 
 void FdoFunctionNullValue::Validate (FdoLiteralValueCollection *literal_values)
 
