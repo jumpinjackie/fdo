@@ -338,6 +338,12 @@ void FdoFunctionMedian::ProcessRequest (FdoDouble value)
 
     // NOT YET IMPLEMENTED
 
+    throw FdoException::Create(
+            FdoException::NLSGetMessage(
+                FUNCTION_UNEXPECTED_RESULT_ERROR, 
+                "Expression Engine: Unexpected result for function '%1$ls'",
+                FDO_FUNCTION_MEDIAN));
+
 }  //  ProcessRequest ()
 
 void FdoFunctionMedian::ProcessRequest (FdoFloat value)
@@ -350,6 +356,12 @@ void FdoFunctionMedian::ProcessRequest (FdoFloat value)
 {
 
     // NOT YET IMPLEMENTED
+
+    throw FdoException::Create(
+            FdoException::NLSGetMessage(
+                FUNCTION_UNEXPECTED_RESULT_ERROR, 
+                "Expression Engine: Unexpected result for function '%1$ls'",
+                FDO_FUNCTION_MEDIAN));
 
 }  //  ProcessRequest ()
 
@@ -364,6 +376,12 @@ void FdoFunctionMedian::ProcessRequest (FdoInt16 value)
 
     // NOT YET IMPLEMENTED
 
+    throw FdoException::Create(
+            FdoException::NLSGetMessage(
+                FUNCTION_UNEXPECTED_RESULT_ERROR, 
+                "Expression Engine: Unexpected result for function '%1$ls'",
+                FDO_FUNCTION_MEDIAN));
+
 }  //  ProcessRequest ()
 
 void FdoFunctionMedian::ProcessRequest (FdoInt32 value)
@@ -377,6 +395,12 @@ void FdoFunctionMedian::ProcessRequest (FdoInt32 value)
 
     // NOT YET IMPLEMENTED
 
+    throw FdoException::Create(
+            FdoException::NLSGetMessage(
+                FUNCTION_UNEXPECTED_RESULT_ERROR, 
+                "Expression Engine: Unexpected result for function '%1$ls'",
+                FDO_FUNCTION_MEDIAN));
+
 }  //  ProcessRequest ()
 
 void FdoFunctionMedian::ProcessRequest (FdoInt64 value)
@@ -389,6 +413,12 @@ void FdoFunctionMedian::ProcessRequest (FdoInt64 value)
 {
 
     // NOT YET IMPLEMENTED
+
+    throw FdoException::Create(
+            FdoException::NLSGetMessage(
+                FUNCTION_UNEXPECTED_RESULT_ERROR, 
+                "Expression Engine: Unexpected result for function '%1$ls'",
+                FDO_FUNCTION_MEDIAN));
 
 }  //  ProcessRequest ()
 

@@ -117,10 +117,10 @@ FdoLiteralValue *FdoFunctionCurrentDate::Evaluate (
     // NOT YET IMPLEMENTED
 
     throw FdoException::Create(
-                FdoException::NLSGetMessage(
-                  FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
-                  "Expression Engine: Invalid parameter data type for function '%1$ls'",
-                  FDO_FUNCTION_CURRENTDATE));
+            FdoException::NLSGetMessage(
+                FUNCTION_UNEXPECTED_RESULT_ERROR, 
+                "Expression Engine: Unexpected result for function '%1$ls'",
+                FDO_FUNCTION_CURRENTDATE));
 
     return FdoDateTimeValue::Create();
 
@@ -147,7 +147,17 @@ void FdoFunctionCurrentDate::CreateFunctionDefinition ()
 
     // Declare and initialize all necessary local variables.
 
-    FdoString *desc = NULL;
+    FdoString                        *desc          = NULL;
+
+    FdoPtr<FdoSignatureDefinition>   signature;
+    FdoSignatureDefinitionCollection *signatures;
+
+    // Create the signature collection.
+
+    signatures = FdoSignatureDefinitionCollection::Create();
+
+    signature = FdoSignatureDefinition::Create(FdoDataType_DateTime, NULL);
+    signatures->Add(signature);
 
     // Create the function definition.
 
@@ -158,7 +168,7 @@ void FdoFunctionCurrentDate::CreateFunctionDefinition ()
                                         FDO_FUNCTION_CURRENTDATE,
                                         desc,
                                         false,
-                                        NULL,
+                                        signatures,
                                         FdoFunctionCategoryType_Date);
 
 }  //  CreateFunctionDefinition ()

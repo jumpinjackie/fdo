@@ -84,6 +84,7 @@ class FdoFunctionTrunc : public FdoExpressionEngineINonAggregateFunction
 
         enum DateTimeOperationTokens
         {
+
             DateTimeOperationTokens_Year,
             DateTimeOperationTokens_Month,
             DateTimeOperationTokens_Day,

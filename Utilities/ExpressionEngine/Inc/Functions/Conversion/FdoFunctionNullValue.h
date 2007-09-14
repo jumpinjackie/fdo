@@ -95,6 +95,86 @@ class FdoFunctionNullValue : public FdoExpressionEngineINonAggregateFunction
 
         void CreateFunctionDefinition ();
 
+        // ProcessBooleanRequest:
+        //  The function executes the request in case the provided parameters
+        //  are of type BOOLEAN and returns the result back to the calling
+        //  routine. 
+
+        FdoLiteralValue *ProcessBooleanRequest (
+                                FdoLiteralValueCollection *literal_values);
+
+        // ProcessByteRequest:
+        //  The function executes the request in case the provided parameters
+        //  are of type BYTE and returns the result back to the calling pro-
+        //  cedure. 
+
+        FdoLiteralValue *ProcessByteRequest (
+                                FdoLiteralValueCollection *literal_values);
+
+        // ProcessDateTimeRequest:
+        //  The function executes the request in case the provided parameters
+        //  are of type DATETIME and returns the result back to the calling
+        //  routine. 
+
+        FdoLiteralValue *ProcessDateTimeRequest (
+                                FdoLiteralValueCollection *literal_values);
+
+        // ProcessDecimalRequest:
+        //  The function executes the request in case the provided first para-
+        //  meter is of type DECIMAL and returns the result back to the calling
+        //  routine. 
+
+        FdoLiteralValue *ProcessDecimalRequest (
+                                FdoLiteralValueCollection *literal_values);
+
+        // ProcessDoubleRequest:
+        //  The function executes the request in case the provided first para-
+        //  meter is of type DOUBLE and returns the result back to the calling
+        //  routine. 
+
+        FdoLiteralValue *ProcessDoubleRequest (
+                                FdoLiteralValueCollection *literal_values);
+
+        // ProcessInt16Request:
+        //  The function executes the request in case the provided first para-
+        //  meter is of type INT16 and returns the result back to the calling
+        //  routine. 
+
+        FdoLiteralValue *ProcessInt16Request (
+                                FdoLiteralValueCollection *literal_values);
+
+        // ProcessInt32Request:
+        //  The function executes the request in case the provided first para-
+        //  meter is of type INT32 and returns the result back to the calling
+        //  routine. 
+
+        FdoLiteralValue *ProcessInt32Request (
+                                FdoLiteralValueCollection *literal_values);
+
+        // ProcessInt64Request:
+        //  The function executes the request in case the provided first para-
+        //  meter is of type INT64 and returns the result back to the calling
+        //  routine. 
+
+        FdoLiteralValue *ProcessInt64Request (
+                                FdoLiteralValueCollection *literal_values);
+
+        // ProcessSingleRequest:
+        //  The function executes the request in case the provided first para-
+        //  meter is of type SINGLE and returns the result back to the calling
+        //  routine. 
+
+        FdoLiteralValue *ProcessSingleRequest (
+                                FdoLiteralValueCollection *literal_values);
+
+        // ProcessStringRequest:
+        //  The function executes the request in case the provided first para-
+        //  meter is of type STRING and returns the result back to the calling
+        //  routine. 
+
+        FdoLiteralValue *ProcessStringRequest (
+                                FdoLiteralValueCollection *literal_values);
+
         // Dispose:
         //  The function disposes the current object.
 

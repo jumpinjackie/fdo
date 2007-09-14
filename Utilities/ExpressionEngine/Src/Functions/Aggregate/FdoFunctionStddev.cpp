@@ -338,6 +338,12 @@ void FdoFunctionStddev::ProcessRequest (FdoDouble value)
 
     // NOT YET IMPLEMENTED
 
+    throw FdoException::Create(
+            FdoException::NLSGetMessage(
+                FUNCTION_UNEXPECTED_RESULT_ERROR, 
+                "Expression Engine: Unexpected result for function '%1$ls'",
+                FDO_FUNCTION_STDDEV));
+
 }  //  ProcessRequest ()
 
 void FdoFunctionStddev::ProcessRequest (FdoFloat value)
@@ -350,6 +356,12 @@ void FdoFunctionStddev::ProcessRequest (FdoFloat value)
 {
 
     // NOT YET IMPLEMENTED
+
+    throw FdoException::Create(
+            FdoException::NLSGetMessage(
+                FUNCTION_UNEXPECTED_RESULT_ERROR, 
+                "Expression Engine: Unexpected result for function '%1$ls'",
+                FDO_FUNCTION_STDDEV));
 
 }  //  ProcessRequest ()
 
@@ -364,6 +376,12 @@ void FdoFunctionStddev::ProcessRequest (FdoInt16 value)
 
     // NOT YET IMPLEMENTED
 
+    throw FdoException::Create(
+            FdoException::NLSGetMessage(
+                FUNCTION_UNEXPECTED_RESULT_ERROR, 
+                "Expression Engine: Unexpected result for function '%1$ls'",
+                FDO_FUNCTION_STDDEV));
+
 }  //  ProcessRequest ()
 
 void FdoFunctionStddev::ProcessRequest (FdoInt32 value)
@@ -377,6 +395,12 @@ void FdoFunctionStddev::ProcessRequest (FdoInt32 value)
 
     // NOT YET IMPLEMENTED
 
+    throw FdoException::Create(
+            FdoException::NLSGetMessage(
+                FUNCTION_UNEXPECTED_RESULT_ERROR, 
+                "Expression Engine: Unexpected result for function '%1$ls'",
+                FDO_FUNCTION_STDDEV));
+
 }  //  ProcessRequest ()
 
 void FdoFunctionStddev::ProcessRequest (FdoInt64 value)
@@ -389,6 +413,12 @@ void FdoFunctionStddev::ProcessRequest (FdoInt64 value)
 {
 
     // NOT YET IMPLEMENTED
+
+    throw FdoException::Create(
+            FdoException::NLSGetMessage(
+                FUNCTION_UNEXPECTED_RESULT_ERROR, 
+                "Expression Engine: Unexpected result for function '%1$ls'",
+                FDO_FUNCTION_STDDEV));
 
 }  //  ProcessRequest ()
 
