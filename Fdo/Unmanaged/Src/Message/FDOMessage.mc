@@ -2106,6 +2106,16 @@ SymbolicName=DAY_ABB_SATURDAY
 Language=English
 Sat
 .
+MessageId=8176
+SymbolicName=FUNCTION_G_AREA
+Language=English
+G_Area
+.
+MessageId=8177
+SymbolicName=FUNCTION_G_LENGTH
+Language=English
+G_Length
+.
 
 MessageId=9001
 SymbolicName=FDO_1_BADALLOC
