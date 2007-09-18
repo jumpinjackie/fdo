@@ -43,6 +43,9 @@
 #include <Functions/Date/FdoFunctionExtract.h>
 #include <Functions/Date/FdoFunctionMonthsBetween.h>
 
+#include <Functions/Geometry/FdoFunctionArea.h>
+#include <Functions/Geometry/FdoFunctionGLength.h>
+
 #include <Functions/Math/FdoFunctionAbs.h>
 #include <Functions/Math/FdoFunctionAcos.h>
 #include <Functions/Math/FdoFunctionAsin.h>
@@ -80,7 +83,7 @@
 #include <Functions/String/FdoFunctionUpper.h>
 
 
-const int NUMBER_FUNCTIONS = 52;
+const int NUMBER_FUNCTIONS = 54;
 
 class ExpressionEngineInitializeClass
 {
@@ -111,6 +114,9 @@ public:
         m_Functions[i++] = FdoFunctionCurrentDate::Create();
         m_Functions[i++] = FdoFunctionExtract::Create();
         m_Functions[i++] = FdoFunctionMonthsBetween::Create();
+
+        m_Functions[i++] = FdoFunctionArea::Create();
+        m_Functions[i++] = FdoFunctionGLength::Create();
 
         m_Functions[i++] = FdoFunctionAbs::Create();
         m_Functions[i++] = FdoFunctionAcos::Create();

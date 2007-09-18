@@ -576,6 +576,18 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="Geometry"
+					>
+					<File
+						RelativePath=".\Src\Functions\Geometry\FdoFunctionArea.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Geometry\FdoFunctionGLength.cpp"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Util"
@@ -855,6 +867,18 @@
 					</File>
 					<File
 						RelativePath=".\Inc\Functions\Conversion\FdoFunctionToString.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Geometry"
+					>
+					<File
+						RelativePath=".\Inc\Functions\Geometry\FdoFunctionArea.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Geometry\FdoFunctionGLength.h"
 						>
 					</File>
 				</Filter>
