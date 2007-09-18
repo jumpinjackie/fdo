@@ -29,14 +29,17 @@
 
 // Expression Function Name Specifications
 //  - Aggregates Function Names
-#define  FDO_FUNCTION_AVG     L"Avg"     // Returns the average value of an expression
-#define  FDO_FUNCTION_COUNT   L"Count"   // Returns the number of objects in the query
-#define  FDO_FUNCTION_MAX     L"Max"     // Returns the maximum value of an expression
-#define  FDO_FUNCTION_MEDIAN  L"Median"  // Returns the middle value or an interpolated value that would be the middle
-                                         // value once the values are sorted of an expression
-#define  FDO_FUNCTION_MIN     L"Min"     // Returns the minimum value of an expression
-#define  FDO_FUNCTION_STDDEV  L"Stddev"  // Returns the standard deviation of an expression
-#define  FDO_FUNCTION_SUM     L"Sum"     // Returns the sum of values of an expression
+#define  FDO_FUNCTION_AVG             L"Avg"             // Returns the average value of an expression
+#define  FDO_FUNCTION_COUNT           L"Count"           // Returns the number of objects in the query
+#define  FDO_FUNCTION_MAX             L"Max"             // Returns the maximum value of an expression
+#define  FDO_FUNCTION_MEDIAN          L"Median"          // Returns the middle value or an interpolated value that
+                                                         // would be the middle value once the values are sorted of
+                                                         // an expression
+#define  FDO_FUNCTION_MIN             L"Min"             // Returns the minimum value of an expression
+#define  FDO_FUNCTION_SPATIALEXTENTS  L"SpatialExtents"  // Returns the minimum bounding rectangle of a geometry
+                                                         // expression
+#define  FDO_FUNCTION_STDDEV          L"Stddev"          // Returns the standard deviation of an expression
+#define  FDO_FUNCTION_SUM             L"Sum"             // Returns the sum of values of an expression
 
 //  - Conversion Function Names
 #define  FDO_FUNCTION_NULLVALUE  L"NullValue"  // Evaluates two expressions and returns the first one if it does not
@@ -98,7 +101,8 @@
 #define  FDO_FUNCTION_UPPER      L"Upper"      // Returns strings with all letters uppercase
 
 //  - Geometry function names
-#define  FDO_FUNCTION_SPATIALEXTENTS  L"SpatialExtents"  // Returns the minimum bounding rectangle of a Geometry expression
+#define  FDO_FUNCTION_G_AREA    L"G_Area"    // Returns the area of a geometry expression
+#define  FDO_FUNCTION_G_LENGTH  L"G_Length"  // Returns the length of a geometry expression
 
 
 /// \brief
