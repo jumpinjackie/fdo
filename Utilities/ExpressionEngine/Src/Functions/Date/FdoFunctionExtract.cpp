@@ -126,6 +126,10 @@ FdoLiteralValue *FdoFunctionExtract::Evaluate (
 
     FdoPtr<FdoLiteralValue>  literal_value;
 
+    // Validate the function call.
+
+    Validate(literal_values);
+
     // Get the date-time value to be processed. If the value is not provided
     // return an empty. Otherwise extract the requested data, create the
     // function result and return it back to the calling routine.
@@ -220,10 +224,10 @@ void FdoFunctionExtract::CreateFunctionDefinition ()
 
     // The following defines the different argument definition collections.
 
-    dt_arg_literal = FdoException::NLSGetMessage(FUNCTION_EXTRACT_OP_ARG_LIT,
+    op_arg_literal = FdoException::NLSGetMessage(FUNCTION_EXTRACT_OP_ARG_LIT,
                                                  "part of the date");
 
-    op_arg_literal = FdoException::NLSGetMessage(FUNCTION_EXTRACT_DT_ARG_LIT,
+    dt_arg_literal = FdoException::NLSGetMessage(FUNCTION_EXTRACT_DT_ARG_LIT,
                                                  "from date");
 
     op_arg   = FdoArgumentDefinition::Create(
