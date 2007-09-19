@@ -187,7 +187,7 @@ FdoLiteralValue *FdoFunctionToString::Evaluate (
                     FdoStringP::Format(L"%I64d", int64_value->GetInt64()));
 #else
           return FdoStringValue::Create(
-                    FdoStringP::Format(L"%lld", int64_value->GetInt64());
+                    FdoStringP::Format(L"%lld", int64_value->GetInt64()));
 #endif
         break;
 
