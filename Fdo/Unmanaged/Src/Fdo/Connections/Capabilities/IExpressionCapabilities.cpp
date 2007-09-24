@@ -18,7 +18,7 @@
 #include <Fdo/Connections/Capabilities/IExpressionCapabilities.h>
 
 
-FdoFunctionDefinitionCollection* FdoIExpressionCapabilities::GetWellKnownFunctions( )
+FdoFunctionDefinitionCollection *FdoIExpressionCapabilities::GetWellKnownFunctions ()
 {
     // Create the basic argument collections being referenced in different places.
     FdoString *desc = FdoException::NLSGetMessage(FUNCTION_DBL_ARG,"Argument that represents a double");
@@ -141,5 +141,6 @@ FdoFunctionDefinitionCollection* FdoIExpressionCapabilities::GetWellKnownFunctio
 
     // Return the function collection.
     return functions;
-}
+
+}  //  GetWellKnownFunctions ()
 
