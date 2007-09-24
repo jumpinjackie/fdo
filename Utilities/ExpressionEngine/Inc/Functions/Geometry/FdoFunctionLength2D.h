@@ -16,8 +16,8 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // 
 //
-#ifndef FDOFUNCTIONGLENGTH_H
-#define FDOFUNCTIONGLENGTH_H
+#ifndef FDOFUNCTIONLENGTH2D_H
+#define FDOFUNCTIONLENGTH2D_H
 
 #include <FdoExpressionEngine.h>
 #include <FdoCommonOSUtil.h>
@@ -35,11 +35,11 @@
 
 
 // ============================================================================
-// The class FdoFunctionGLength implements the Expression Engine geometry func-
-// tion LENGTH.
+// The class FdoFunctionLength2D implements the Expression Engine geometry
+// function LENGTH.
 // ============================================================================
 
-class FdoFunctionGLength : public FdoExpressionEngineINonAggregateFunction
+class FdoFunctionLength2D : public FdoExpressionEngineINonAggregateFunction
 {
 
     public:
@@ -51,12 +51,12 @@ class FdoFunctionGLength : public FdoExpressionEngineINonAggregateFunction
         // Create:
         //  Function to create an instance of this class.
 
-        static FdoFunctionGLength *Create ();
+        static FdoFunctionLength2D *Create ();
 
         // CreateObject:
         //  Function to create an instance of this class.
 
-        virtual FdoFunctionGLength *CreateObject ();
+        virtual FdoFunctionLength2D *CreateObject ();
 
         // GetFunctionDefinition:
         //  The function returns the function definition for the geometry
@@ -79,15 +79,15 @@ class FdoFunctionGLength : public FdoExpressionEngineINonAggregateFunction
         // *                        Private Interfaces                        *
         // ********************************************************************
 
-        // FdoFunctionGLength:
+        // FdoFunctionLength2D:
         //  The function represents the class constructor.
 
-        FdoFunctionGLength ();
+        FdoFunctionLength2D ();
 
-        // ~FdoFunctionGLength:
+        // ~FdoFunctionLength2D:
         //  The function represents the class destructor.
 
-        ~FdoFunctionGLength ();
+        ~FdoFunctionLength2D ();
 
         // CreateFunctionDefinition:
         //  The routine creates the function definition for the geometry func-
@@ -117,6 +117,6 @@ class FdoFunctionGLength : public FdoExpressionEngineINonAggregateFunction
 
         FdoFunctionDefinition *function_definition;
 
-};  //  class FdoFunctionGLength
+};  //  class FdoFunctionLength2D
 
 #endif

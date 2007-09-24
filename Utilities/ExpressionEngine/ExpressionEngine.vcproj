@@ -278,6 +278,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\Src\ExpressionEngineInitializeClass.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\FdoExpressionEngine.cpp"
 				>
 			</File>
@@ -287,10 +291,6 @@
 			</File>
 			<File
 				RelativePath=".\src\FdoExpressionEngineImp.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Src\Functions.h"
 				>
 			</File>
 			<File
@@ -580,11 +580,11 @@
 					Name="Geometry"
 					>
 					<File
-						RelativePath=".\Src\Functions\Geometry\FdoFunctionArea.cpp"
+						RelativePath=".\Src\Functions\Geometry\FdoFunctionArea2D.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\Src\Functions\Geometry\FdoFunctionGLength.cpp"
+						RelativePath=".\Src\Functions\Geometry\FdoFunctionLength2D.cpp"
 						>
 					</File>
 				</Filter>
@@ -874,11 +874,11 @@
 					Name="Geometry"
 					>
 					<File
-						RelativePath=".\Inc\Functions\Geometry\FdoFunctionArea.h"
+						RelativePath=".\Inc\Functions\Geometry\FdoFunctionArea2D.h"
 						>
 					</File>
 					<File
-						RelativePath=".\Inc\Functions\Geometry\FdoFunctionGLength.h"
+						RelativePath=".\Inc\Functions\Geometry\FdoFunctionLength2D.h"
 						>
 					</File>
 				</Filter>

@@ -16,8 +16,8 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // 
 //
-#ifndef FDOFUNCTIONAREA_H
-#define FDOFUNCTIONAREA_H
+#ifndef FDOFUNCTIONAREA2D_H
+#define FDOFUNCTIONAREA2D_H
 
 #include <FdoExpressionEngine.h>
 #include <FdoCommonOSUtil.h>
@@ -35,10 +35,10 @@
 
 
 // ============================================================================
-// The class FdoFunctionArea implements the Expression Engine function AREA.
+// The class FdoFunctionArea2D implements the Expression Engine function AREA.
 // ============================================================================
 
-class FdoFunctionArea : public FdoExpressionEngineINonAggregateFunction
+class FdoFunctionArea2D : public FdoExpressionEngineINonAggregateFunction
 {
 
     public:
@@ -50,12 +50,12 @@ class FdoFunctionArea : public FdoExpressionEngineINonAggregateFunction
         // Create:
         //  Function to create an instance of this class.
 
-        static FdoFunctionArea *Create ();
+        static FdoFunctionArea2D *Create ();
 
         // CreateObject:
         //  Function to create an instance of this class.
 
-        virtual FdoFunctionArea *CreateObject ();
+        virtual FdoFunctionArea2D *CreateObject ();
 
         // GetFunctionDefinition:
         //  The function returns the function definition for the function AREA.
@@ -78,15 +78,15 @@ class FdoFunctionArea : public FdoExpressionEngineINonAggregateFunction
         // *                        Private Interfaces                        *
         // ********************************************************************
 
-        // FdoFunctionArea:
+        // FdoFunctionArea2D:
         //  The function represents the class constructor.
 
-        FdoFunctionArea ();
+        FdoFunctionArea2D ();
 
-        // ~FdoFunctionArea:
+        // ~FdoFunctionArea2D:
         //  The function represents the class destructor.
 
-        ~FdoFunctionArea ();
+        ~FdoFunctionArea2D ();
 
         // CreateFunctionDefinition:
         //  The routine creates the function definition for the function AREA.
@@ -115,6 +115,6 @@ class FdoFunctionArea : public FdoExpressionEngineINonAggregateFunction
 
         FdoFunctionDefinition *function_definition;
 
-};  //  class FdoFunctionArea
+};  //  class FdoFunctionArea2D
 
 #endif

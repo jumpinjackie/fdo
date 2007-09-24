@@ -18,14 +18,14 @@
 //
 
 #include <stdafx.h>
-#include <Functions/Geometry/FdoFunctionArea.h>
+#include <Functions/Geometry/FdoFunctionLength2D.h>
 
 
 // ----------------------------------------------------------------------------
 // --                         Constructors/Destructors                       --
 // ----------------------------------------------------------------------------
 
-FdoFunctionArea::FdoFunctionArea ()
+FdoFunctionLength2D::FdoFunctionLength2D ()
 
 // +---------------------------------------------------------------------------
 // | The class constructor.
@@ -37,9 +37,9 @@ FdoFunctionArea::FdoFunctionArea ()
 
     function_definition = NULL;
 
-}  //  FdoFunctionArea ()
+}  //  FdoFunctionLength2D ()
 
-FdoFunctionArea::~FdoFunctionArea ()
+FdoFunctionLength2D::~FdoFunctionLength2D ()
 
 // +---------------------------------------------------------------------------
 // | The class destructor.
@@ -51,14 +51,14 @@ FdoFunctionArea::~FdoFunctionArea ()
 
     FDO_SAFE_RELEASE(function_definition);
 
-}  //  ~FdoFunctionArea ()
+}  //  ~FdoFunctionLength2D ()
 
 
 // ----------------------------------------------------------------------------
 // --                            Public Class APIs                           --
 // ----------------------------------------------------------------------------
 
-FdoFunctionArea *FdoFunctionArea::Create ()
+FdoFunctionLength2D *FdoFunctionLength2D::Create ()
 
 // +---------------------------------------------------------------------------
 // | The function creates a new instance of the class.
@@ -66,11 +66,11 @@ FdoFunctionArea *FdoFunctionArea::Create ()
 
 {
 
-    return new FdoFunctionArea();
+    return new FdoFunctionLength2D();
 
 }  //  Create ()
 
-FdoFunctionArea *FdoFunctionArea::CreateObject ()
+FdoFunctionLength2D *FdoFunctionLength2D::CreateObject ()
 
 // +---------------------------------------------------------------------------
 // | The function creates a new instance of the class.
@@ -78,14 +78,15 @@ FdoFunctionArea *FdoFunctionArea::CreateObject ()
 
 {
 
-    return new FdoFunctionArea();
+    return new FdoFunctionLength2D();
 
 }  //  CreateObject ()
 
-FdoFunctionDefinition *FdoFunctionArea::GetFunctionDefinition ()
+FdoFunctionDefinition *FdoFunctionLength2D::GetFunctionDefinition ()
 
 // +---------------------------------------------------------------------------
-// | The function creates the supported signature list for the function AREA.
+// | The function creates the supported signature list for the geometry func-
+// | tion LENGTH.
 // +---------------------------------------------------------------------------
 
 {
@@ -97,11 +98,11 @@ FdoFunctionDefinition *FdoFunctionArea::GetFunctionDefinition ()
 
 }  //  GetFunctionDefinition ()
 
-FdoLiteralValue *FdoFunctionArea::Evaluate (
+FdoLiteralValue *FdoFunctionLength2D::Evaluate (
                                     FdoLiteralValueCollection *literal_values)
 
 // +---------------------------------------------------------------------------
-// | The function processes a call to the function AREA.
+// | The function processes a call to the geometry function LENGTH.
 // +---------------------------------------------------------------------------
 
 {
@@ -112,7 +113,7 @@ FdoLiteralValue *FdoFunctionArea::Evaluate (
             FdoException::NLSGetMessage(
               FUNCTION_UNEXPECTED_RESULT_ERROR, 
               "Expression Engine: Unexpected result for function '%1$ls'",
-              FDO_FUNCTION_G_AREA));
+              FDO_FUNCTION_LENGTH2D));
 
 }  //  Evaluate ()
 
@@ -121,14 +122,14 @@ FdoLiteralValue *FdoFunctionArea::Evaluate (
 // --                          Supporting functions                          --
 // ----------------------------------------------------------------------------
 
-void FdoFunctionArea::CreateFunctionDefinition ()
+void FdoFunctionLength2D::CreateFunctionDefinition ()
 
 // +---------------------------------------------------------------------------
-// | The procedure creates the function definition for the function AREA. The
-// | function definition includes the list of supported signatures. The follow-
-// | ing signatures are supported:
+// | The procedure creates the function definition for the geometry function
+// | LENGTH. The function definition includes the list of supported signatures.
+// | The following signatures are supported:
 // |
-// |    AREA (geometry)
+// |    LENGTH (geometry)
 // |
 // | The function always returns a DOUBLE.
 // +---------------------------------------------------------------------------
@@ -180,11 +181,11 @@ void FdoFunctionArea::CreateFunctionDefinition ()
     // Create the function definition.
 
     desc = FdoException::NLSGetMessage(
-                                FUNCTION_G_AREA,
-                                "Determines the area of a given geometry");
+                                FUNCTION_LENGTH2D,
+                                "Determines the length of a given geometry");
     function_definition =
                 FdoFunctionDefinition::Create(
-                                        FDO_FUNCTION_G_AREA,
+                                        FDO_FUNCTION_LENGTH2D,
                                         desc,
                                         false,
                                         signatures,
@@ -192,7 +193,7 @@ void FdoFunctionArea::CreateFunctionDefinition ()
 
 }  //  CreateFunctionDefinition ()
 
-void FdoFunctionArea::Validate (FdoLiteralValueCollection *literal_values)
+void FdoFunctionLength2D::Validate (FdoLiteralValueCollection *literal_values)
 
 // +---------------------------------------------------------------------------
 // | The function validates the argument list that was passed in.
@@ -206,7 +207,7 @@ void FdoFunctionArea::Validate (FdoLiteralValueCollection *literal_values)
 
     FdoPtr<FdoLiteralValue> literal_value;
 
-    // Check the number of arguments. AREA accepts one parameter only. If the
+    // Check the number of arguments. LENGTH accepts one parameter only. If the
     // number of parameters is not correct issue an exception.
 
     if (count != 1) 
@@ -214,7 +215,7 @@ void FdoFunctionArea::Validate (FdoLiteralValueCollection *literal_values)
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_NUMBER_ERROR, 
                   "Expression Engine: Invalid number of parameters for function '%1$ls'",
-                  FDO_FUNCTION_G_AREA));
+                  FDO_FUNCTION_LENGTH2D));
 
     // Next, identify the data type associated with the value to be processed.
     // An exception is issued if the data type does not match any of the ones
@@ -226,7 +227,7 @@ void FdoFunctionArea::Validate (FdoLiteralValueCollection *literal_values)
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_ERROR, 
                   "Expression Engine: Invalid parameters for function '%1$ls'",
-                  FDO_FUNCTION_G_AREA));
+                  FDO_FUNCTION_LENGTH2D));
 
 }  //  Validate ()
 
