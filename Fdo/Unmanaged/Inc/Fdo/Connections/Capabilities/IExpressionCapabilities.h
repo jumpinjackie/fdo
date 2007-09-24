@@ -101,8 +101,8 @@
 #define  FDO_FUNCTION_UPPER      L"Upper"      // Returns strings with all letters uppercase
 
 //  - Geometry function names
-#define  FDO_FUNCTION_G_AREA    L"G_Area"    // Returns the area of a geometry expression
-#define  FDO_FUNCTION_G_LENGTH  L"G_Length"  // Returns the length of a geometry expression
+#define  FDO_FUNCTION_AREA2D    L"Area2D"    // Returns the area of a geometry expression
+#define  FDO_FUNCTION_LENGTH2D  L"Length2D"  // Returns the length of a geometry expression
 
 
 /// \brief
@@ -113,14 +113,14 @@ class FdoIExpressionCapabilities : public FdoIDisposable
 protected:
 
     /// \brief
-    /// Constructs and return an FdoFunctionDefinitionCollection that contains a common list of
+    /// Constructs and returns an FdoFunctionDefinitionCollection that contains a common list of
     /// function definition. Providers can pick the function they support and add them to their supported
     /// functions list. This method is internal to providers implementations.
     /// 
     /// \return
     /// Returns FdoFunctionDefinitionCollection
     /// 
-    FDO_API static FdoFunctionDefinitionCollection* GetWellKnownFunctions();
+    FDO_API static FdoFunctionDefinitionCollection *GetWellKnownFunctions ();
 
 public:
     /// \brief
@@ -132,7 +132,7 @@ public:
     /// \return
     /// Returns the list of expression types
     /// 
-    FDO_API virtual FdoExpressionType* GetExpressionTypes(FdoInt32& length) = 0;
+    FDO_API virtual FdoExpressionType *GetExpressionTypes (FdoInt32& length) = 0;
 
     /// \brief
     /// Returns a collection of FdoFunctionDefinition objects the feature provider supports within expressions.
@@ -140,7 +140,8 @@ public:
     /// \return
     /// Returns the collection of function definitions
     /// 
-    FDO_API virtual FdoFunctionDefinitionCollection* GetFunctions() = 0;
+    FDO_API virtual FdoFunctionDefinitionCollection *GetFunctions () = 0;
+
 };
 #endif
 

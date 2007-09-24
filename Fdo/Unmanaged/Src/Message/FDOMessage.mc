@@ -2107,14 +2107,14 @@ Language=English
 Sat
 .
 MessageId=8176
-SymbolicName=FUNCTION_G_AREA
+SymbolicName=FUNCTION_AREA2D
 Language=English
-G_Area
+Determines the area of a given geometry
 .
 MessageId=8177
-SymbolicName=FUNCTION_G_LENGTH
+SymbolicName=FUNCTION_LENGTH2D
 Language=English
-G_Length
+Determines the length of a given geometry
 .
 
 MessageId=9001
