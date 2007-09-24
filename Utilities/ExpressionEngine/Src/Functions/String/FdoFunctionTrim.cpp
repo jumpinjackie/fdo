@@ -126,7 +126,9 @@ FdoLiteralValue *FdoFunctionTrim::Evaluate (
     // Get the string that needs to be trimmed. If no value is provided, termi-
     // nate the function.
 
-    string_value = (FdoStringValue *) literal_values->GetItem(0);
+    string_value = (literal_values->GetCount() == 2)
+                 ? (FdoStringValue *) literal_values->GetItem(1)
+                 : (FdoStringValue *) literal_values->GetItem(0);
     if (string_value->IsNull())
         return FdoStringValue::Create();
     else
@@ -216,7 +218,7 @@ void FdoFunctionTrim::CreateFunctionDefinition ()
 // | function definition includes the list of supported signatures. The follow-
 // | ing signatures are supported:
 // |
-// |    TRIM (string [, {BOTH | LEADING | TRAILING})
+// |    TRIM ([{BOTH | LEADING | TRAILING}, ] string)
 // |
 // | The function always returns a STRING.
 // +---------------------------------------------------------------------------
@@ -284,8 +286,8 @@ void FdoFunctionTrim::CreateFunctionDefinition ()
     str_args->Add(str_arg);
 
     str_opt_args = FdoArgumentDefinitionCollection::Create();
-    str_opt_args->Add(str_arg);
     str_opt_args->Add(opt_arg);
+    str_opt_args->Add(str_arg);
 
     // Create the signature collection.
 
@@ -365,11 +367,12 @@ void FdoFunctionTrim::Validate (FdoLiteralValueCollection *literal_values)
                   "Expression Engine: Invalid parameter data type for function '%1$ls'",
                   FDO_FUNCTION_TRIM));
 
-      // If this is the second argument, check whether or not the value is one
-      // of BOTH, LEADING or TRAILING. If this is not the case issue an excep-
-      // tion. Otherwise remember it for the processing of the request.
+      // If this is the first argument and the number of arguments is 2, check
+      // whether or not the value is one of BOTH, LEADING or TRAILING. If this
+      // is not the case issue an exception. Otherwise remember it for the
+      // processing of the request.
 
-      if (i == 1) {
+      if ((i == 0) && (count == 2)) {
 
           str_value = static_cast<FdoStringValue *>(literal_value.p);
           if (str_value->IsNull())
@@ -392,7 +395,7 @@ void FdoFunctionTrim::Validate (FdoLiteralValueCollection *literal_values)
                       "Expression Engine: Invalid operator parameter value for function '%1$ls'",
                       FDO_FUNCTION_TRIM));
 
-      }  //  if (i == 1) ...
+      }  //  if ((i == 0) && ...
 
     }  //  for (i = 0; ...
 

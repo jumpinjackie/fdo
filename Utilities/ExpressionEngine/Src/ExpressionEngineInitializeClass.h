@@ -43,8 +43,8 @@
 #include <Functions/Date/FdoFunctionExtract.h>
 #include <Functions/Date/FdoFunctionMonthsBetween.h>
 
-#include <Functions/Geometry/FdoFunctionArea.h>
-#include <Functions/Geometry/FdoFunctionGLength.h>
+#include <Functions/Geometry/FdoFunctionArea2D.h>
+#include <Functions/Geometry/FdoFunctionLength2D.h>
 
 #include <Functions/Math/FdoFunctionAbs.h>
 #include <Functions/Math/FdoFunctionAcos.h>
@@ -115,8 +115,8 @@ public:
         m_Functions[i++] = FdoFunctionExtract::Create();
         m_Functions[i++] = FdoFunctionMonthsBetween::Create();
 
-        m_Functions[i++] = FdoFunctionArea::Create();
-        m_Functions[i++] = FdoFunctionGLength::Create();
+        m_Functions[i++] = FdoFunctionArea2D::Create();
+        m_Functions[i++] = FdoFunctionLength2D::Create();
 
         m_Functions[i++] = FdoFunctionAbs::Create();
         m_Functions[i++] = FdoFunctionAcos::Create();

@@ -32,7 +32,7 @@
 
 #include <FdoExpressionEngineIAggregateFunction.h>
 #include <Util/FdoExpressionEngineUtilDataReader.h>
-#include "Functions.h"
+#include "ExpressionEngineInitializeClass.h"
 
 ExpressionEngineInitializeClass initFunction;
 
