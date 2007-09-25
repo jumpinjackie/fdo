@@ -47,11 +47,11 @@ NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinition::ArgumentDefini
 	EXCEPTION_HANDLER(Attach(FdoArgumentDefinition::Create(StringToUni(name), StringToUni(description), static_cast<FdoDataType>(dataType)), true))
 }
 
-// For next release
-//NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinition::ArgumentDefinition(System::String* name, System::String* description, NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType propertyType, NAMESPACE_OSGEO_FDO_SCHEMA::DataType dataType)  : Disposable(IntPtr::Zero, false)
-//{
-//	EXCEPTION_HANDLER(Attach(FdoArgumentDefinition::Create(StringToUni(name), StringToUni(description), static_cast<FdoPropertyType>(propertyType), static_cast<FdoDataType>(dataType)), true))
-//}
+
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinition::ArgumentDefinition(System::String* name, System::String* description, NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType propertyType, NAMESPACE_OSGEO_FDO_SCHEMA::DataType dataType)  : Disposable(IntPtr::Zero, false)
+{
+	EXCEPTION_HANDLER(Attach(FdoArgumentDefinition::Create(StringToUni(name), StringToUni(description), static_cast<FdoPropertyType>(propertyType), static_cast<FdoDataType>(dataType)), true))
+}
 
 System::String* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinition::get_Name()
 {

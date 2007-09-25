@@ -53,6 +53,24 @@ public:
 	ArgumentDefinition(System::String* name, System::String* description, NAMESPACE_OSGEO_FDO_SCHEMA::DataType dataType);
 
     /// \brief
+    /// Constructs an instance of an ArgumentDefinition using the specified arguments.
+    /// 
+    /// \param name 
+    /// Input the name of the argument.
+    /// \param description 
+    /// Input a brief description of the argument.
+    /// \param propertyType 
+    /// Input the proeprty of argument.
+    /// \param dataType 
+    /// Input the type of argument.
+    /// 
+    /// \return
+    /// Returns ArgumentDefinition
+    /// 
+	ArgumentDefinition(System::String* name, System::String* description, NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType propertyType, NAMESPACE_OSGEO_FDO_SCHEMA::DataType dataType);
+
+
+    /// \brief
     /// Gets the name of the argument.
     /// 
     /// \return
