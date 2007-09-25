@@ -178,6 +178,50 @@ public:
     /// 
    	static bool IsAggregateFunction(FdoFunctionDefinitionCollection *funcDefs, FdoString *name);
 
+
+    // Returns the type of the expression
+
+    /// \brief
+    /// Returns the type of expression
+    /// 
+    /// \param functions
+    /// Input the list of functions
+    ///
+    /// \param originalClassDef
+    /// Input the class definition
+    ///
+    /// \param propType
+    /// Output the property type
+    ///
+    /// \param dataType
+    /// Output the data type
+    ///
+    /// \return
+    /// Returns nothing
+    /// 
+
+	static void GetExpressionType(FdoFunctionDefinitionCollection *functionDefinitions, FdoClassDefinition* originalClassDef, FdoExpression *expr, FdoPropertyType &retPropType, FdoDataType &retDataType);
+
+    // Returns the type of the expression
+
+    /// \brief
+    /// Returns the type of expression
+    /// \param originalClassDef
+    /// Input the class definition
+    ///
+    /// \param propType
+    /// Output the property type
+    ///
+    /// \param dataType
+    /// Output the data type
+    ///
+    /// \return
+    /// Returns nothing
+    /// 
+
+	static void GetExpressionType(FdoClassDefinition* originalClassDef, FdoExpression *expr, FdoPropertyType &retPropType, FdoDataType &retDataType);
+
+
 public:
     void Dispose ();
 
