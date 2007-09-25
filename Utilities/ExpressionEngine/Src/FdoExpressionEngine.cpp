@@ -117,3 +117,15 @@ bool FdoExpressionEngine::IsAggregateFunction(FdoFunctionDefinitionCollection *f
 {
     return FdoExpressionEngineImp::IsAggregateFunction(funcDefs, name);
 }
+
+
+void FdoExpressionEngine::GetExpressionType(FdoFunctionDefinitionCollection *functionDefinitions, FdoClassDefinition* originalClassDef, FdoExpression *expr, FdoPropertyType &retPropType, FdoDataType &retDataType)
+{
+    FdoExpressionEngineImp::GetExpressionType(functionDefinitions, originalClassDef, expr, retPropType, retDataType);
+}
+
+void FdoExpressionEngine::GetExpressionType(FdoClassDefinition* originalClassDef, FdoExpression *expr, FdoPropertyType &retPropType, FdoDataType &retDataType)
+{
+    FdoExpressionEngineImp::GetExpressionType(originalClassDef, expr, retPropType, retDataType);
+}
+

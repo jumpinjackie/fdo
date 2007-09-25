@@ -3506,3 +3506,15 @@ void FdoExpressionEngineImp::PushLiteralValue(FdoLiteralValue *literalValue )
             throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_57_UNEXPECTEDERROR)));
     }
 }
+
+
+void FdoExpressionEngineImp::GetExpressionType(FdoFunctionDefinitionCollection *functionDefinitions, FdoClassDefinition* originalClassDef, FdoExpression *expr, FdoPropertyType &retPropType, FdoDataType &retDataType)
+{
+    FdoCommonMiscUtil::GetExpressionType(functionDefinitions, originalClassDef, expr, retPropType, retDataType);
+}
+
+void FdoExpressionEngineImp::GetExpressionType(FdoClassDefinition* originalClassDef, FdoExpression *expr, FdoPropertyType &retPropType, FdoDataType &retDataType)
+{
+    FdoPtr<FdoFunctionDefinitionCollection> functionDefinitions = FdoExpressionEngineImp::GetStandardFunctions();
+    FdoCommonMiscUtil::GetExpressionType(functionDefinitions, originalClassDef, expr, retPropType, retDataType);
+}
