@@ -286,6 +286,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Src\FdoExpressionEngineCopyFilter.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\FdoExpressionEngineFunctionCollection.cpp"
 				>
 			</File>
@@ -605,6 +609,14 @@
 			>
 			<File
 				RelativePath=".\inc\FdoExpressionEngine.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\FdoExpressionEngineCopyFilter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\FdoExpressionEngineFilterProcessor.h"
 				>
 			</File>
 			<File
