@@ -84,6 +84,7 @@ libExpressionEngine_la_SOURCES = \
   FdoExpressionEngine.cpp \
   FdoExpressionEngineFunctionCollection.cpp \
   FdoExpressionEngineImp.cpp \
+  FdoExpressionEngineCopyFilter.cpp \
   stdafx.cpp
 
 
