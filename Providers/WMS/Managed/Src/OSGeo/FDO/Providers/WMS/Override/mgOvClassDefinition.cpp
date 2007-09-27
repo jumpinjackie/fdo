@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -21,7 +21,6 @@
 #include "Fdo.h"
 #include "FdoWmsOvClassDefinition.h"
 
-#include "FDO\Providers\WMS\Override\mgOvFormatType.h"
 #include "FDO\Providers\WMS\Override\mgOvClassDefinition.h"
 #include "FDO\Providers\WMS\Override\mgObjectFactory.h"
 #include "FDO\Providers\WMS\Override\mgOvRasterDefinition.h"

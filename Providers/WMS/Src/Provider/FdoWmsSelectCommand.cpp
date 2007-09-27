@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -231,8 +231,9 @@ FdoIFeatureReader* FdoWmsSelectCommand::Execute ()
 				spatialContextName = rasterDefinition->GetSpatialContextName ();
 
 				// Get the prefered image format from the overrides
-				imageFormat = mConnection->GetImageFormat (rasterDefinition->GetFormatType ());
-
+                // Format should be: "image/tiff" or "image/tiff; PhotometricInterpretation=PaletteColor"
+                imageFormat = rasterDefinition->GetImageFormat (); 
+                
 				// Get the "Transparent" value
 				bTransparent = rasterDefinition->GetTransparent ();
 

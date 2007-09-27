@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -237,8 +237,14 @@ FdoStringCollection* FdoWmsConnection::GetSupportedStyles(FdoString* layerName)
     FdoStringsP styleNames = FdoStringCollection::Create();
     if (layers->GetCount() > 0) 
     {
-        FdoPtr<FdoWmsLayer> rootLayer = layers->GetItem (0);
-        FdoPtr<FdoWmsLayer> currentLayer = FindLayer(rootLayer->GetLayers(), layerName);
+    	// Fix a defect: Find in all layers, including the ROOT
+        FdoPtr<FdoWmsLayer> currentLayer = FindLayer(layers, layerName);
+        if (currentLayer == NULL)
+        {
+            throw FdoException::Create (NlsMsgGet(FDOWMS_12001_LAYER_NOT_EXIST, 
+            "The WMS layer '%1$ls' does not exist.", 
+            layerName));
+        }
         _processLayerStyles(currentLayer, styleNames);
     }
     return FDO_SAFE_ADDREF(styleNames.p);
@@ -279,8 +285,14 @@ FdoStringCollection* FdoWmsConnection::GetSupportedCRSNames(FdoString* layerName
     FdoStringsP crsNames = FdoStringCollection::Create();
     if (layers->GetCount() > 0) 
     {
-        FdoPtr<FdoWmsLayer> rootLayer = layers->GetItem (0);
-        FdoPtr<FdoWmsLayer> currentLayer = FindLayer(rootLayer->GetLayers(), layerName);
+    	// Fix a defect: Find in all layers, including the ROOT
+        FdoPtr<FdoWmsLayer> currentLayer = FindLayer(layers, layerName);
+        if (currentLayer == NULL)
+        {
+            throw FdoException::Create (NlsMsgGet(FDOWMS_12001_LAYER_NOT_EXIST, 
+            "The WMS layer '%1$ls' does not exist.", 
+            layerName));
+        }
         _processLayerCRSNames(currentLayer, crsNames);
 
     }
@@ -721,7 +733,9 @@ void FdoWmsConnection::_buildUpDefaultPhysicalSchemaMappings()
                 FdoRasterPropertyP featureRasterDefn = FindRasterProperty(featureClassDefn);
 
                 configRasterDefn->SetName(featureRasterDefn->GetName());
-                configRasterDefn->SetFormatType(GetImageFormatType(GetDefaultImageFormat())); 
+
+                configRasterDefn->SetImageFormat(GetDefaultImageFormat()); 
+
                 configRasterDefn->SetBackgroundColor(L"0xFFFFFF");
 
                 FdoString* scName = featureRasterDefn->GetSpatialContextAssociation();
@@ -744,36 +758,6 @@ void FdoWmsConnection::_buildUpDefaultPhysicalSchemaMappings()
 
         mConfigSchemaMappings->Add(configMapping);
     }
-}
-
-/// <summary>Get the default image format. The prefered image format can be specified in configuration XML file</summary>
-FdoString* FdoWmsConnection::GetImageFormat (FdoWmsOvFormatType formatType)
-{
-    switch (formatType)
-    {
-    case FdoWmsOvFormatType_Tif:
-        return FdoWmsGlobals::RasterMIMEFormat_TIFF;
-    case FdoWmsOvFormatType_Jpg:
-        return FdoWmsGlobals::RasterMIMEFormat_JPEG;
-    case FdoWmsOvFormatType_Gif:
-        return FdoWmsGlobals::RasterMIMEFormat_GIF;    
-    case FdoWmsOvFormatType_Png:
-    default:
-        return FdoWmsGlobals::RasterMIMEFormat_PNG;
-    }
-}
-
-/// <summary>Get the default image format type that is used in the FDO WMS Configuration file. </summary>
-FdoWmsOvFormatType FdoWmsConnection::GetImageFormatType (FdoString* imageFormat)
-{
-    if (imageFormat == FdoWmsGlobals::RasterMIMEFormat_TIFF)
-        return FdoWmsOvFormatType_Tif;
-    else if (imageFormat == FdoWmsGlobals::RasterMIMEFormat_JPEG)
-        return FdoWmsOvFormatType_Jpg;
-    else if (imageFormat == FdoWmsGlobals::RasterMIMEFormat_GIF)
-        return FdoWmsOvFormatType_Gif;
-    else
-        return FdoWmsOvFormatType_Png;
 }
 
 /// <summary>If the user hasn't specified the image format using the configuration file, then the format 

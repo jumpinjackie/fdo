@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -20,10 +20,11 @@
 #include "FdoWmsOverrides.h"
 #include "FdoWmsXmlGlobals.h"
 #include <WMS/Override/FdoWmsOvRasterDefinition.h>
+#include "../Provider/FdoWmsGlobals.h"
 
 FdoWmsOvRasterDefinition::FdoWmsOvRasterDefinition(void) :
     m_pXmlContentHandler(NULL),
-    m_formmatType(FdoWmsOvFormatType_Png),
+    m_formatType(FdoWmsGlobals::RasterMIMEFormat_PNG),
     m_transparent(false)
 {
 	m_layers = FdoWmsOvLayerCollection::Create(this);
@@ -44,14 +45,59 @@ FdoWmsOvRasterDefinition* FdoWmsOvRasterDefinition::Create()
 	return new FdoWmsOvRasterDefinition();
 }
 
-FdoWmsOvFormatType FdoWmsOvRasterDefinition::GetFormatType(void) const
+FdoString* FdoWmsOvRasterDefinition::GetImageFormat(void) const
 {
-    return m_formmatType;
+    return m_formatType;
 }
 
-void FdoWmsOvRasterDefinition::SetFormatType(FdoWmsOvFormatType value)
+void FdoWmsOvRasterDefinition::SetImageFormat(FdoString* value)
 {
-    m_formmatType = value;
+    FdoStringP format(value);
+    bool bMatch = false;
+
+    // Handle the new xml image format, like <Format>image/png; PhotometricInterpretation=RGB</Format>
+    if (format.Lower().Contains(FdoWmsGlobals::ImageFormatPrefix)) 
+    {
+        // Format contains extra parameter
+        if (format.Contains(L";"))
+            format = format.Left(L";");
+
+        for (int i = 0; FdoWmsXmlGlobals::g_NewMIMEImageFormats[i] != NULL; i++)
+        {
+            if (FdoCommonStringUtil::StringCompareNoCase((FdoString*)format, FdoWmsXmlGlobals::g_NewMIMEImageFormats[i]) == 0)
+            {
+                bMatch = true;
+                m_formatType = value;
+                break;
+            }
+        }
+    }
+    else // Handle the old xml image formats,  before version 3.3.0 WMS only allows 4 types: PNG, TIF, GIF and JPG.
+    {
+        if (FdoCommonStringUtil::StringCompareNoCase(value, FdoWmsXmlGlobals::g_WmsImageFormatPng) == 0)
+        {
+            bMatch = true;
+            m_formatType = FdoWmsGlobals::RasterMIMEFormat_PNG;
+        }
+        else if (FdoCommonStringUtil::StringCompareNoCase(value, FdoWmsXmlGlobals::g_WmsImageFormatGif) == 0)
+        {
+            bMatch = true;
+            m_formatType = FdoWmsGlobals::RasterMIMEFormat_GIF;
+        }
+        else if (FdoCommonStringUtil::StringCompareNoCase(value, FdoWmsXmlGlobals::g_WmsImageFormatTif) == 0)
+        {
+            bMatch = true;
+            m_formatType = FdoWmsGlobals::RasterMIMEFormat_TIFF;
+        }
+        else if (FdoCommonStringUtil::StringCompareNoCase(value, FdoWmsXmlGlobals::g_WmsImageFormatJpg) == 0)
+        {
+            bMatch = true;
+            m_formatType = FdoWmsGlobals::RasterMIMEFormat_JPEG;
+        }
+
+    }
+    if (!bMatch)
+        throw FdoSchemaException::Create (NlsMsgGet (FDOWMS_INVALID_XMLSCHEMA_RASTERFORMATTYPE, "'%1$ls' is not a valid XML Raster Format Type.", value));
 }
 
 FdoBoolean FdoWmsOvRasterDefinition::GetTransparent(void) const
@@ -169,7 +215,7 @@ FdoBoolean FdoWmsOvRasterDefinition::XmlEndElement(FdoXmlSaxContext* context, Fd
         BaseType::XmlEndElement(context, uri, name, qname);
 
         if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::g_WmsImageFormat) == 0) {
-            _SetFormatType(m_pXmlContentHandler->GetString());
+            SetImageFormat(m_pXmlContentHandler->GetString());
         }
         else if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::g_WmsTransparent) == 0) {
             _SetTransparent(m_pXmlContentHandler->GetString());
@@ -208,7 +254,7 @@ void FdoWmsOvRasterDefinition::_writeXml( FdoXmlWriter* xmlWriter, const FdoXmlF
 	BaseType::_writeXml(xmlWriter, flags);
 
     xmlWriter->WriteStartElement(FdoWmsXmlGlobals::g_WmsImageFormat);
-    xmlWriter->WriteCharacters(_GetFormatType());
+    xmlWriter->WriteCharacters(GetImageFormat());
     xmlWriter->WriteEndElement();
 
     xmlWriter->WriteStartElement(FdoWmsXmlGlobals::g_WmsTransparent);
@@ -239,56 +285,6 @@ void FdoWmsOvRasterDefinition::_writeXml( FdoXmlWriter* xmlWriter, const FdoXmlF
 	}
 
 	xmlWriter->WriteEndElement();
-}
-
-FdoStringP FdoWmsOvRasterDefinition::_GetFormatType(void) const
-{
-    FdoStringP type;
-
-    switch(GetFormatType()) 
-    {
-    case FdoWmsOvFormatType_Png:
-        type = FdoWmsXmlGlobals::g_WmsImageFormatPng;
-        break;
-    case FdoWmsOvFormatType_Tif:
-        type = FdoWmsXmlGlobals::g_WmsImageFormatTif;
-        break;
-    case FdoWmsOvFormatType_Jpg:
-        type = FdoWmsXmlGlobals::g_WmsImageFormatJpg;
-        break;
-    case FdoWmsOvFormatType_Gif:
-        type = FdoWmsXmlGlobals::g_WmsImageFormatGif;
-        break;
-    default:
-        throw FdoException::Create (NlsMsgGet (FDOWMS_UNHANDLED_EXCEPTION, "Unhandled FDO WMS Provider Internal Exception in '%1$ls'", L"FdoWmsOvRasterDefinition::_GetFormatType"));
-        break;
-    };
-
-    return type;
-}
-
-void FdoWmsOvRasterDefinition::_SetFormatType(FdoString* value)
-{
-    VALIDATE_ARGUMENT(value);
-
-    FdoWmsOvFormatType type = FdoWmsOvFormatType_Png;
-    if (FdoCommonStringUtil::StringCompareNoCase(value, FdoWmsXmlGlobals::g_WmsImageFormatPng) == 0) {
-        type = FdoWmsOvFormatType_Png;
-    }
-    else if (FdoCommonStringUtil::StringCompareNoCase(value, FdoWmsXmlGlobals::g_WmsImageFormatTif) == 0) {
-        type = FdoWmsOvFormatType_Tif;
-    }
-    else if (FdoCommonStringUtil::StringCompareNoCase(value, FdoWmsXmlGlobals::g_WmsImageFormatJpg) == 0) {
-        type = FdoWmsOvFormatType_Jpg;
-    }
-    else if (FdoCommonStringUtil::StringCompareNoCase(value, FdoWmsXmlGlobals::g_WmsImageFormatGif) == 0) {
-        type = FdoWmsOvFormatType_Gif;
-    }
-    else {
-        throw FdoSchemaException::Create (NlsMsgGet (FDOWMS_INVALID_XMLSCHEMA_RASTERFORMATTYPE, "'%1$ls' is not a valid XML Raster Format Type.", value));
-    }
-
-    SetFormatType(type);
 }
 
 FdoStringP FdoWmsOvRasterDefinition::_GetTransparent(void) const

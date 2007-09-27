@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -24,7 +24,6 @@
 #endif
 
 #include <WMS/FdoWmsOvProvider.h>
-#include <WMS/Override/FdoWmsOvFormatType.h>
 #include <WMS/Override/FdoWmsOvStyleDefinition.h>
 #include <WMS/Override/FdoWmsOvLayerDefinition.h>
 #include <WMS/Override/FdoWmsOvLayerCollection.h>

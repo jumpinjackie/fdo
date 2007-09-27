@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -202,12 +202,6 @@ public:
 	/// <summary>Search the class and it's parents for its raster property definition.</summary>
 	/// <returns>Return the raster definition for the specified class. If not found, return NULL.</returns>
 	FdoRasterPropertyDefinition* FindRasterProperty (FdoClassDefinition* featClass);
-
-	/// <summary>Get the default image format. The prefered image format can be specified in configuration XML file</summary>
-    FdoString* GetImageFormat (FdoWmsOvFormatType formatType);
-
-	/// <summary>Get the default image format type that is used in the FDO WMS Configuration file. </summary>
-    FdoWmsOvFormatType GetImageFormatType(FdoString* imageFormat);
 
     /// <summary>If the user hasn't specified the image format using the configuration file, then the format 
     /// will be determined in the following order if the server supports: PNG, JPEG, TIFF and GIF. </summary>
