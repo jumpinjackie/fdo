@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -35,6 +35,8 @@ class OverridesTest : public WmsTests
   CPPUNIT_TEST( TestSetConfiguration2); 
 #endif
   CPPUNIT_TEST( TestSetConfiguration3); 
+  CPPUNIT_TEST( TestRequestSpcialImageFormat);
+  CPPUNIT_TEST( TestRequestUnsupportedImage);
   CPPUNIT_TEST( TestNoDefaultDataModel ); 
   CPPUNIT_TEST( TestQualifiedName );
   CPPUNIT_TEST_SUITE_END();
@@ -49,6 +51,8 @@ protected:
     void TestSetConfiguration();
 	void TestSetConfiguration2();
     void TestSetConfiguration3();
+    void TestRequestSpcialImageFormat();
+    void TestRequestUnsupportedImage();
     void TestNoDefaultDataModel();
     void TestQualifiedName();
 

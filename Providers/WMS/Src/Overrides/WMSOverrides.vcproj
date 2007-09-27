@@ -244,10 +244,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\inc\Wms\Override\FdoWmsOvFormatType.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\inc\Wms\Override\FdoWmsOvLayerCollection.h"
 				>
 			</File>

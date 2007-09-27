@@ -278,10 +278,6 @@
 								>
 							</File>
 							<File
-								RelativePath="..\Src\OSGeo\FDO\Providers\WMS\Override\mgOvFormatType.h"
-								>
-							</File>
-							<File
 								RelativePath="..\Src\OSGeo\FDO\Providers\WMS\Override\mgOvLayerCollection.cpp"
 								>
 							</File>

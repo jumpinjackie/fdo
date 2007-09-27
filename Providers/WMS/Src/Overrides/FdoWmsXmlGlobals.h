@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -32,10 +32,7 @@ namespace FdoWmsXmlGlobals
     static FdoString* g_WmsLayerDefinition                  = L"Layer";
     static FdoString* g_WmsStyleDefinition                  = L"Style";
     static FdoString* g_WmsImageFormat                      = L"Format";
-    static FdoString* g_WmsImageFormatPng                   = L"PNG";
-    static FdoString* g_WmsImageFormatTif                   = L"TIF";
-    static FdoString* g_WmsImageFormatJpg                   = L"JPG";
-    static FdoString* g_WmsImageFormatGif                   = L"GIF";
+
     static FdoString* g_WmsTransparent                      = L"Transparent";
     static FdoString* g_WmsBackgroundColor                  = L"BackgroundColor";
     static FdoString* g_WmsTimeDimension                    = L"Time";
@@ -44,6 +41,21 @@ namespace FdoWmsXmlGlobals
     static FdoString* g_WmsTrue                             = L"true";
     static FdoString* g_WmsFalse                            = L"false";
     static FdoString* g_WmsXmlnsValue                       = L"http://fdowms.osgeo.org/schemas";
+
+    // These are the WMS supported image format, before version 3.3.0. Not extend in future.    
+    static FdoString* g_WmsImageFormatPng                   = L"PNG";
+    static FdoString* g_WmsImageFormatTif                   = L"TIF";
+    static FdoString* g_WmsImageFormatJpg                   = L"JPG";
+    static FdoString* g_WmsImageFormatGif                   = L"GIF";
+
+    // For extend the WMS supported image format in the future
+    static FdoString* g_NewMIMEImageFormats[]               = {
+                                                                L"image/png",
+                                                                L"image/tiff",
+                                                                L"image/jpeg",
+                                                                L"image/gif",
+                                                                NULL
+                                                            };
 };
 
 

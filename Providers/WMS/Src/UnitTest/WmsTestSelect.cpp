@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -625,7 +625,7 @@ void WmsTestSelect::testNASAServerDefaultOverrides ()
             CPPUNIT_ASSERT (FdoStringP(ovRasterDef->GetName()) == L"Raster");
 
             CPPUNIT_ASSERT (FdoStringP(ovRasterDef->GetBackgroundColor()) == L"0xFFFFFF");
-            CPPUNIT_ASSERT (ovRasterDef->GetFormatType() == FdoWmsOvFormatType_Png);
+            CPPUNIT_ASSERT (FdoStringP(ovRasterDef->GetImageFormat()) == L"image/png");
             CPPUNIT_ASSERT (FdoStringP(ovRasterDef->GetSpatialContextName()) == L"EPSG:4326");
             CPPUNIT_ASSERT (FdoStringP(ovRasterDef->GetTimeDimension()) == L"");
             CPPUNIT_ASSERT (FdoStringP(ovRasterDef->GetElevationDimension()) == L"");
@@ -645,7 +645,7 @@ void WmsTestSelect::testNASAServerDefaultOverrides ()
             CPPUNIT_ASSERT (FdoStringP(ovRasterDef->GetName()) == L"Raster");
 
             CPPUNIT_ASSERT (FdoStringP(ovRasterDef->GetBackgroundColor()) == L"0xFFFFFF");
-            CPPUNIT_ASSERT (ovRasterDef->GetFormatType() == FdoWmsOvFormatType_Png);
+            CPPUNIT_ASSERT (FdoStringP(ovRasterDef->GetImageFormat()) == L"image/png");
             CPPUNIT_ASSERT (FdoStringP(ovRasterDef->GetSpatialContextName()) == L"EPSG:4326");
             CPPUNIT_ASSERT (FdoStringP(ovRasterDef->GetTimeDimension()) == L"");
             CPPUNIT_ASSERT (FdoStringP(ovRasterDef->GetElevationDimension()) == L"");

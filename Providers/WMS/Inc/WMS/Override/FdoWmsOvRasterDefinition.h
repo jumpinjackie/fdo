@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -23,7 +23,6 @@
 #endif //_WIN32
 
 #include <WMS/FdoWmsOvProvider.h>
-#include <WMS/Override/FdoWmsOvFormatType.h>
 #include <WMS/Override/FdoWmsOvLayerCollection.h>
 
 /// \brief
@@ -53,9 +52,9 @@ public:
     /// and file types such as Tagged Image File Format (TIFF).
     /// 
     /// \return
-    /// Returns the WMS format type.
+    /// Returns the WMS image format.
     /// 
-    FDOWMS_API FdoWmsOvFormatType GetFormatType(void) const;
+    FDOWMS_API FdoString* GetImageFormat(void) const;
 
     /// \brief
     /// Sets the format type in which the WMS image will be generated.
@@ -69,7 +68,8 @@ public:
     /// \return
     /// Returns nothing.
     /// 
-    FDOWMS_API void SetFormatType(FdoWmsOvFormatType value);
+    FDOWMS_API void SetImageFormat(FdoString* value);
+
 
     /// \brief
     /// Gets the transparency state.
@@ -270,8 +270,6 @@ protected:
 	FDOWMS_API virtual ~FdoWmsOvRasterDefinition(void);
 
 protected:
-    void _SetFormatType(FdoString* value);
-    FdoStringP _GetFormatType(void) const;
     void _SetTransparent(FdoString* value);
     FdoStringP _GetTransparent(void) const;
 	void Dispose(void);
@@ -282,7 +280,7 @@ private:
     FdoStringP m_elevationDimension;
     FdoStringP m_spatialContext;
     FdoBoolean m_transparent;
-    FdoWmsOvFormatType m_formmatType;
+    FdoStringP m_formatType;
 	FdoWmsOvLayersP m_layers;
     FdoXmlCharDataHandler *m_pXmlContentHandler;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -32,7 +32,6 @@
 
 #include "FdoWmsDataReader.h"
 #include "FdoWmsFeatureCommand.h"
-#include "WMS/Override/FdoWmsOvFormatType.h"
 
 class FdoWmsSelectAggregatesCommand: public FdoWmsFeatureCommand<FdoISelectAggregates>
 {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -39,7 +39,7 @@ public:
     /// a rectangular pixel array of fixed size. Picture formats include file types such 
     /// as Portable Network Graphics (PNG), Joint Photographics Expert Group (JPEG) 
     /// and file types such as Tagged Image File Format (TIFF).</remarks> 
-    __property NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvFormatType get_FormatType();
+    __property System::String* get_ImageFormat();
 
     /// <summary>Sets the format type in which the WMS image will be generated.</summary>
     /// <returns>Returns nothing.</returns> 
@@ -47,7 +47,7 @@ public:
     /// a rectangular pixel array of fixed size. Picture formats include file types such 
     /// as Portable Network Graphics (PNG), Joint Photographics Expert Group (JPEG) 
     /// and file types such as Tagged Image File Format (TIFF).</remarks> 
-    __property System::Void set_FormatType(NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvFormatType value);
+    __property System::Void set_ImageFormat(System::String* value);
 
     /// <summary>Gets the transparency state.</summary>
     /// <returns>Returns a FdoBoolean indicating the state of the transparency flag.</returns> 

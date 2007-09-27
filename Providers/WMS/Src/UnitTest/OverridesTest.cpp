@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2007  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -144,8 +144,7 @@ void OverridesTest::TestCreateSchemaOverrides()
 
                 FdoWmsOvRasterDefinitionP rasterDefn = FdoWmsOvRasterDefinition::Create();
                 rasterDefn->SetName(rasterPropertyNames->GetString(j));
-
-                rasterDefn->SetFormatType(FdoWmsOvFormatType_Tif);
+                rasterDefn->SetImageFormat(L"image/tiff");
                 rasterDefn->SetTransparent(true);
                 rasterDefn->SetBackgroundColor(L"0xFFFFFF");
                 rasterDefn->SetTimeDimension(L"TIME=current");
@@ -201,35 +200,35 @@ void OverridesTest::TestNewConfiguration(FdoWmsOvPhysicalSchemaMapping* schemaMa
             if (rasterPropName != rasterPropertyNames->GetString(j)) {
                 CPPUNIT_FAIL("FAILED - FdoWmsOvRasterDefinition::GetName()");
             }
-
-            FdoWmsOvFormatType eFormat = rasterDefinition->GetFormatType();
-            if (eFormat != FdoWmsOvFormatType_Tif) {
-                CPPUNIT_FAIL("FAILED - FdoWmsOvRasterDefinition::GetFormatType()");
+            FdoStringP format = rasterDefinition->GetImageFormat();
+            if (format != L"image/tiff")
+            {
+                CPPUNIT_FAIL("FAILED - FdoWmsOvRasterDefinition::GetImageFormat()");
             }
 
             FdoBoolean bTransparent = rasterDefinition->GetTransparent();
             if (bTransparent != true) {
-                CPPUNIT_FAIL("FAILED - FdoWmsOvRasterDefinition::GetFormatType()");
+                CPPUNIT_FAIL("FAILED - FdoWmsOvRasterDefinition::GetImageFormat()");
             }
 
             FdoStringP bgcolor = rasterDefinition->GetBackgroundColor();
             if (bgcolor != L"0xFFFFFF") {
-                CPPUNIT_FAIL("FAILED - FdoWmsOvRasterDefinition::GetFormatType()");
+                CPPUNIT_FAIL("FAILED - FdoWmsOvRasterDefinition::GetImageFormat()");
             }
 
             FdoStringP timeDimension = rasterDefinition->GetTimeDimension();
             if (timeDimension != L"TIME=current") {
-                CPPUNIT_FAIL("FAILED - FdoWmsOvRasterDefinition::GetFormatType()");
+                CPPUNIT_FAIL("FAILED - FdoWmsOvRasterDefinition::GetImageFormat()");
             }
 
             FdoStringP elevationDimension = rasterDefinition->GetElevationDimension();
             if (elevationDimension != L"ELEVATION=0") {
-                CPPUNIT_FAIL("FAILED - FdoWmsOvRasterDefinition::GetFormatType()");
+                CPPUNIT_FAIL("FAILED - FdoWmsOvRasterDefinition::GetImageFormat()");
             }
 
             FdoStringP sc = rasterDefinition->GetSpatialContextName();
             if (sc != L"EPSG:4326") {
-                CPPUNIT_FAIL("FAILED - FdoWmsOvRasterDefinition::GetFormatType()");
+                CPPUNIT_FAIL("FAILED - FdoWmsOvRasterDefinition::GetImageFormat()");
             }
 
             FdoWmsOvLayersP layers = rasterDefinition->GetLayers();
@@ -319,8 +318,8 @@ void OverridesTest::TestConfiguration(FdoWmsOvPhysicalSchemaMapping* schemaMappi
             
             FdoWmsOvRasterDefinitionP rasterDefn = classDefn->GetRasterDefinition();
             TestBaseProperties(rasterDefn);
+            FdoStringP format = rasterDefn->GetImageFormat();
 
-            FdoWmsOvFormatType eFormat = rasterDefn->GetFormatType();
             FdoBoolean bTransparent = rasterDefn->GetTransparent();
             FdoStringP bgcolor = rasterDefn->GetBackgroundColor();
             FdoStringP timeDimension = rasterDefn->GetTimeDimension();
@@ -499,7 +498,96 @@ void OverridesTest::TestSetConfiguration3()
         fail (e);
 	}
 }
+// Test configuration, which contains the new xml image format, like "image/tiff; PhotometricInterpretation=RGB"
+void OverridesTest::TestRequestSpcialImageFormat()
+{
+    try
+    {   
+        FdoPtr<FdoIConnection> connection = WmsTests::GetConnection();
+        if (connection == NULL) {
+            CPPUNIT_FAIL("FAILED - CreateConnection returned NULL\n");
+        }
+ 
+        connection->SetConnectionString(L"FeatureServer=http://demo.cubewerx.com/demo/cubeserv/cubeserv.cgi?version=1.1.0"); 
+        FdoIoFileStreamP fileStream = FdoIoFileStream::Create(L"newconfig1.xml", L"r");
+  
+        connection->SetConfiguration(fileStream);
+        connection->Open();
+      
+	    FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
+        cmdSelect->SetFeatureClassName (L"WMSLayers:BARRIERL_1M Foundation");
+        FdoPtr<FdoIFeatureReader> featReader = cmdSelect->Execute ();
+        CPPUNIT_ASSERT (featReader->ReadNext ());	    
+        FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Image");
+        FdoPtr<FdoIStreamReaderTmpl<FdoByte> > byteStreamReader = static_cast<FdoIStreamReaderTmpl<FdoByte>*> (raster->GetStreamReader ());
 
+        FdoByte buff[4096];
+        FdoInt64 cntTotal = 0;
+        FdoInt32 cntRead = 0;
+        do
+        {
+            cntRead = byteStreamReader->ReadNext (buff, 0 , 4096);
+            cntTotal += cntRead;
+        }
+        while (cntRead);
+
+        CPPUNIT_ASSERT (cntTotal > 0);
+        CPPUNIT_ASSERT (!featReader->ReadNext ());
+
+        connection->Close();
+        
+    }
+	catch (FdoException* e) 
+    {
+        fail (e);
+	}
+}
+
+// Test configuration, which contains the new xml image format, like "image/tiff; PhotometricInterpretation=RGB"
+void OverridesTest::TestRequestUnsupportedImage()
+{
+    try
+    {   
+        FdoPtr<FdoIConnection> connection = WmsTests::GetConnection();
+        if (connection == NULL) {
+            CPPUNIT_FAIL("FAILED - CreateConnection returned NULL\n");
+        }
+
+        connection->SetConnectionString(L"FeatureServer=http://www2.dmsolutions.ca/cgi-bin/mswms_gmap?version=1.3.0"); 
+        FdoIoFileStreamP fileStream = FdoIoFileStream::Create(L"newconfig.xml", L"r");
+        connection->SetConfiguration(fileStream);
+        connection->Open();
+      
+	    FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
+        cmdSelect->SetFeatureClassName (L"WMSLayers:rail"); 
+        FdoPtr<FdoIFeatureReader> featReader = cmdSelect->Execute ();
+        CPPUNIT_ASSERT (featReader->ReadNext ());	    
+        FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Image");
+        FdoPtr<FdoIStreamReaderTmpl<FdoByte> > byteStreamReader = static_cast<FdoIStreamReaderTmpl<FdoByte>*> (raster->GetStreamReader ());
+
+        FdoByte buff[4096];
+        FdoInt64 cntTotal = 0;
+        FdoInt32 cntRead = 0;
+        do
+        {
+            cntRead = byteStreamReader->ReadNext (buff, 0 , 4096);
+            cntTotal += cntRead;
+        }
+        while (cntRead);
+
+        CPPUNIT_ASSERT (cntTotal > 0);
+        CPPUNIT_ASSERT (!featReader->ReadNext ());
+
+        connection->Close();
+
+        fail("<Unsupported Image Format> Exception is not thrown out.");
+    }
+	catch (FdoException* e) 
+    {
+        e->Release();
+	}
+
+}
 void OverridesTest::TestNoDefaultDataModel()
 {
     try
@@ -554,8 +642,7 @@ void OverridesTest::TestNoDefaultDataModel()
 
         FdoWmsOvRasterDefinitionP rasterDefn = FdoWmsOvRasterDefinition::Create();
         rasterDefn->SetName(L"Picture");
-
-        rasterDefn->SetFormatType(FdoWmsOvFormatType_Png);
+        rasterDefn->SetImageFormat(L"image/png");
 
         FdoWmsOvLayersP layers = rasterDefn->GetLayers();
         FdoWmsOvLayerDefinitionP layerDefn = FdoWmsOvLayerDefinition::Create();

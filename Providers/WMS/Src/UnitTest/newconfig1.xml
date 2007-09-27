@@ -1,0 +1,968 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
+<gml:DerivedCRS gml:id="EPSG:4326">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:4326</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>-180.000000 -90.000000</gml:pos> 
+<gml:pos>180.000000 90.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:4326" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26907">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26907</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>-24000000.000000 -7000000.000000</gml:pos> 
+<gml:pos>24000000.000000 12000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26907" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26908">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26908</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>-24000000.000000 -8000000.000000</gml:pos> 
+<gml:pos>24000000.000000 12000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26908" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26909">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26909</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>-24000000.000000 -9000000.000000</gml:pos> 
+<gml:pos>24000000.000000 12000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26909" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26910">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26910</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>0.000000 0.000000</gml:pos> 
+<gml:pos>12000000.000000 6000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26910" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26911">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26911</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>-24000000.000000 -11000000.000000</gml:pos> 
+<gml:pos>24000000.000000 12000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26911" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26912">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26912</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>0.000000 0.000000</gml:pos> 
+<gml:pos>12000000.000000 9000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26912" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26913">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26913</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>0.000000 0.000000</gml:pos> 
+<gml:pos>12000000.000000 9000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26913" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26914">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26914</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>0.000000 0.000000</gml:pos> 
+<gml:pos>12000000.000000 9000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26914" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26915">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26915</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>0.000000 0.000000</gml:pos> 
+<gml:pos>12000000.000000 12000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26915" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26916">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26916</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>0.000000 0.000000</gml:pos> 
+<gml:pos>12000000.000000 12000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26916" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26917">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26917</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>0.000000 0.000000</gml:pos> 
+<gml:pos>12000000.000000 12000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26917" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26918">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26918</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>543824.000000 4993900.000000</gml:pos> 
+<gml:pos>767204.000000 5206000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26918" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26919">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26919</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>0.000000 0.000000</gml:pos> 
+<gml:pos>12000000.000000 12000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26919" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26920">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26920</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>0.000000 0.000000</gml:pos> 
+<gml:pos>12000000.000000 12000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26920" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26921">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26921</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>0.000000 0.000000</gml:pos> 
+<gml:pos>12000000.000000 12000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26921" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:41001">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:41001</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>891001.190000 -1080905.000000</gml:pos> 
+<gml:pos>4000001.190000 1079595.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:41001" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:42104">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:42104</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>291514.000000 5036296.000000</gml:pos> 
+<gml:pos>306596.000000 5054181.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:42104" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:42304">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:42304</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>-2903300.000000 -789912.000000</gml:pos> 
+<gml:pos>3431060.000000 4654180.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:42304" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:42306">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:42306</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>-594587.500000 90287.500000</gml:pos> 
+<gml:pos>-270887.500000 253287.500000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:42306" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:42309">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:42309</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>-2536122.198308 5699874.993416</gml:pos> 
+<gml:pos>3032122.022857 10436121.672869</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:42309" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fdo.osgeo.org/schemas/feature/WMSLayers" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:WMSLayers="http://fdo.osgeo.org/schemas/feature/WMSLayers" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:element name="BARRIERL_1M-x20-Foundation" type="WMSLayers:BARRIERL_1M-x20-FoundationType" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="BARRIERL_1M-x20-FoundationKey">
+<xs:selector xpath=".//BARRIERL_1M-x20-Foundation" /> 
+<xs:field xpath="Id" /> 
+</xs:key>
+</xs:element>
+<xs:complexType name="BARRIERL_1M-x20-FoundationType" abstract="false" fdo:hasGeometry="false">
+<xs:annotation>
+<xs:documentation>Barrier Line Features</xs:documentation> 
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="Id">
+<xs:annotation>
+<xs:documentation /> 
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="256" /> 
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="Image" type="fdo:RasterPropertyType" fdo:defaultImageXSize="1024" fdo:defaultImageYSize="1024" fdo:srsName="EPSG:4326" /> 
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="COASTL_1M-x20-Foundation" type="WMSLayers:COASTL_1M-x20-FoundationType" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="COASTL_1M-x20-FoundationKey">
+<xs:selector xpath=".//COASTL_1M-x20-Foundation" /> 
+<xs:field xpath="Id" /> 
+</xs:key>
+</xs:element>
+<xs:complexType name="COASTL_1M-x20-FoundationType" abstract="false" fdo:hasGeometry="false">
+<xs:annotation>
+<xs:documentation>Coastlines</xs:documentation> 
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="Id">
+<xs:annotation>
+<xs:documentation /> 
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="256" /> 
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="Image" type="fdo:RasterPropertyType" fdo:defaultImageXSize="1024" fdo:defaultImageYSize="1024" fdo:srsName="EPSG:4326" /> 
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+</xs:schema>
+<SchemaMapping provider="OSGeo.WMS.3" name="WMSLayers" xmlns="http://fdowms.osgeo.org/schemas">
+<complexType name="BARRIERL_1M-x20-FoundationType">
+<RasterDefinition name="Image">
+<Format>image/png; PhotometricInterpretation=PaletteColor</Format> 
+<Transparent>true</Transparent> 
+<BackgroundColor /> 
+<Time /> 
+<Elevation /> 
+<SpatialContext>EPSG:4326</SpatialContext> 
+<Layer name="WMS_Schema:BARRIERL_1M Foundation" /> 
+</RasterDefinition>
+</complexType>
+<complexType name="COASTL_1M-x20-FoundationType">
+<RasterDefinition name="Image">
+<Format>image/tiff; PhotometricInterpretation=RGB</Format> 
+<Transparent>true</Transparent> 
+<BackgroundColor /> 
+<Time /> 
+<Elevation /> 
+<SpatialContext>EPSG:4326</SpatialContext> 
+<Layer name="WMS_Schema:COASTL_1M Foundation" /> 
+</RasterDefinition>
+</complexType>
+</SchemaMapping>
+</fdo:DataStore>
+<?xml version="1.0" encoding="UTF-8" ?> 
+<fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
+<gml:DerivedCRS gml:id="EPSG:4326">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:4326</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>-180.000000 -90.000000</gml:pos> 
+<gml:pos>180.000000 90.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:4326" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26907">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26907</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>-24000000.000000 -7000000.000000</gml:pos> 
+<gml:pos>24000000.000000 12000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26907" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26908">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26908</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>-24000000.000000 -8000000.000000</gml:pos> 
+<gml:pos>24000000.000000 12000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26908" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26909">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26909</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>-24000000.000000 -9000000.000000</gml:pos> 
+<gml:pos>24000000.000000 12000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26909" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26910">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26910</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>0.000000 0.000000</gml:pos> 
+<gml:pos>12000000.000000 6000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26910" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26911">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26911</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>-24000000.000000 -11000000.000000</gml:pos> 
+<gml:pos>24000000.000000 12000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26911" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26912">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26912</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>0.000000 0.000000</gml:pos> 
+<gml:pos>12000000.000000 9000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26912" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26913">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26913</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>0.000000 0.000000</gml:pos> 
+<gml:pos>12000000.000000 9000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26913" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26914">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26914</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>0.000000 0.000000</gml:pos> 
+<gml:pos>12000000.000000 9000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26914" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26915">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26915</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>0.000000 0.000000</gml:pos> 
+<gml:pos>12000000.000000 12000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26915" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26916">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26916</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>0.000000 0.000000</gml:pos> 
+<gml:pos>12000000.000000 12000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26916" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26917">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26917</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>0.000000 0.000000</gml:pos> 
+<gml:pos>12000000.000000 12000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26917" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26918">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26918</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>543824.000000 4993900.000000</gml:pos> 
+<gml:pos>767204.000000 5206000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26918" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26919">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26919</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>0.000000 0.000000</gml:pos> 
+<gml:pos>12000000.000000 12000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26919" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26920">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26920</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>0.000000 0.000000</gml:pos> 
+<gml:pos>12000000.000000 12000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26920" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:26921">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:26921</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>0.000000 0.000000</gml:pos> 
+<gml:pos>12000000.000000 12000000.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26921" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:41001">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:41001</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>891001.190000 -1080905.000000</gml:pos> 
+<gml:pos>4000001.190000 1079595.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:41001" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:42104">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:42104</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>291514.000000 5036296.000000</gml:pos> 
+<gml:pos>306596.000000 5054181.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:42104" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:42304">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:42304</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>-2903300.000000 -789912.000000</gml:pos> 
+<gml:pos>3431060.000000 4654180.000000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:42304" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:42306">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:42306</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>-594587.500000 90287.500000</gml:pos> 
+<gml:pos>-270887.500000 253287.500000</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:42306" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="EPSG:42309">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>0.001000</fdo:XYTolerance> 
+<fdo:ZTolerance>0.001000</fdo:ZTolerance> 
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:srsName>EPSG:42309</gml:srsName> 
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>-2536122.198308 5699874.993416</gml:pos> 
+<gml:pos>3032122.022857 10436121.672869</gml:pos> 
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:42309" /> 
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" /> 
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType> 
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" /> 
+</gml:DerivedCRS>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fdo.osgeo.org/schemas/feature/WMSLayers" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:WMSLayers="http://fdo.osgeo.org/schemas/feature/WMSLayers" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:element name="BARRIERL_1M-x20-Foundation" type="WMSLayers:BARRIERL_1M-x20-FoundationType" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="BARRIERL_1M-x20-FoundationKey">
+<xs:selector xpath=".//BARRIERL_1M-x20-Foundation" /> 
+<xs:field xpath="Id" /> 
+</xs:key>
+</xs:element>
+<xs:complexType name="BARRIERL_1M-x20-FoundationType" abstract="false" fdo:hasGeometry="false">
+<xs:annotation>
+<xs:documentation>Barrier Line Features</xs:documentation> 
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="Id">
+<xs:annotation>
+<xs:documentation /> 
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="256" /> 
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="Image" type="fdo:RasterPropertyType" fdo:defaultImageXSize="1024" fdo:defaultImageYSize="1024" fdo:srsName="EPSG:4326" /> 
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="COASTL_1M-x20-Foundation" type="WMSLayers:COASTL_1M-x20-FoundationType" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="COASTL_1M-x20-FoundationKey">
+<xs:selector xpath=".//COASTL_1M-x20-Foundation" /> 
+<xs:field xpath="Id" /> 
+</xs:key>
+</xs:element>
+<xs:complexType name="COASTL_1M-x20-FoundationType" abstract="false" fdo:hasGeometry="false">
+<xs:annotation>
+<xs:documentation>Coastlines</xs:documentation> 
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="Id">
+<xs:annotation>
+<xs:documentation /> 
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="256" /> 
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="Image" type="fdo:RasterPropertyType" fdo:defaultImageXSize="1024" fdo:defaultImageYSize="1024" fdo:srsName="EPSG:4326" /> 
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+</xs:schema>
+<SchemaMapping provider="OSGeo.WMS.3" name="WMSLayers" xmlns="http://fdowms.osgeo.org/schemas">
+<complexType name="BARRIERL_1M-x20-FoundationType">
+<RasterDefinition name="Image">
+<Format>image/png; PhotometricInterpretation=PaletteColor</Format> 
+<Transparent>true</Transparent> 
+<BackgroundColor /> 
+<Time /> 
+<Elevation /> 
+<SpatialContext>EPSG:4326</SpatialContext> 
+<Layer name="WMS_Schema:BARRIERL_1M Foundation" /> 
+</RasterDefinition>
+</complexType>
+<complexType name="COASTL_1M-x20-FoundationType">
+<RasterDefinition name="Image">
+<Format>image/tiff; PhotometricInterpretation=RGB</Format> 
+<Transparent>true</Transparent> 
+<BackgroundColor /> 
+<Time /> 
+<Elevation /> 
+<SpatialContext>EPSG:4326</SpatialContext> 
+<Layer name="WMS_Schema:COASTL_1M Foundation" /> 
+</RasterDefinition>
+</complexType>
+</SchemaMapping>
+</fdo:DataStore>
