@@ -1027,6 +1027,7 @@ void FdoExpressionFunctionTest::TestStddevFunction ()
 
     FdoStringP             func_call;
 
+    FdoPtr<FdoFilter>      filter;
     FdoPtr<FdoIDataReader> data_reader;
 
     printf("\n");
@@ -1034,10 +1035,6 @@ void FdoExpressionFunctionTest::TestStddevFunction ()
     printf(" Current Unit Test Suite: STDDEV Function Testing          \n");
     printf("========================================================== \n");
     printf("\n");
-
-    printf(">>> NOT SUPPORTED YET \n");
-    printf("\n");
-    return;
 
     // 1. Test Case:
     // The test executes a select-aggregate command to select the value of a
@@ -1057,12 +1054,105 @@ void FdoExpressionFunctionTest::TestStddevFunction ()
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row with the value of the computed property being
-      // 12.9744572. 
+      // 13.0968318. 
 
       func_call   = L"(Stddev(dcl_val) as cmp_id)";
       data_reader = ExecuteSelAggrCommand(
                                         L"exfct_c1", NULL, false, func_call);
-      CheckReader(data_reader, false, 0, 12.9744572);
+      CheckReader(data_reader, false, 0, 13.0968318);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-aggregate command to select the value of a
+    // computed property that is defined by using the function STDDEV on the
+    // value of a different property of type DECIMAL. This test requests the
+    // standard deviation being calculated on the distinct set of data. No
+    // exceptions are expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
+    printf("  The test executes a select-aggregate command to select   \n");
+    printf("  the value of a computed property that is defined by us-  \n");
+    printf("  ing the function STDDEV on the value of a different pro- \n");
+    printf("  perty of type DECIMAL. This test requests the standard   \n");
+    printf("  deviation being calculated on the distinct set of data.  \n");
+    printf("  No exceptions are expected.                              \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property being
+      // 13.0968318. 
+
+      func_call   = L"(Stddev('distinct', dcl_val) as cmp_id)";
+      data_reader = ExecuteSelAggrCommand(
+                                        L"exfct_c1", NULL, false, func_call);
+      CheckReader(data_reader, false, 0, 13.0968318);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 3. Test Case:
+    // The test executes a select-aggregate command to select the value of a
+    // computed property that is defined by using the function STDDEV on the
+    // value of a different property of type DECIMAL. This test requests the
+    // standard deviation on a single row. In this case the result is expected
+    // to be 0. No exceptions are expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("3. Test Case:                                              \n");
+    printf("  The test executes a select-aggregate command to select   \n");
+    printf("  the value of a computed property that is defined by us-  \n");
+    printf("  ing the function STDDEV on the value of a different pro- \n");
+    printf("  perty of type DECIMAL. This test requests the standard   \n");
+    printf("  deviation on a single row. In this case, the result is   \n");
+    printf("  expected to be 0. No exceptions are expected.            \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property being
+      // 0. 
+
+      filter      = FdoFilter::Parse(L"id = 9");
+      func_call   = L"(Stddev(dcl_val) as cmp_id)";
+      data_reader = ExecuteSelAggrCommand(
+                                        L"exfct_c1", filter, false, func_call);
+      CheckReader(data_reader, false, 0, 0);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
