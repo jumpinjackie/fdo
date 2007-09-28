@@ -359,6 +359,12 @@ double SdfSimpleFeatureReader::GetDouble(FdoString* propertyName)
 				FdoDoubleValue *doubleValue = static_cast<FdoDoubleValue *>(dataValue);
 				return doubleValue->GetDouble();
 			}
+            else
+                if (dataValue->GetDataType() == FdoDataType_Decimal)
+                {
+                    FdoDecimalValue *decimalValue = static_cast<FdoDecimalValue *>(dataValue);
+                    return decimalValue->GetDecimal();
+            }
 		}
         throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_57_UNEXPECTEDERROR)));
     }
@@ -383,8 +389,25 @@ FdoInt16 SdfSimpleFeatureReader::GetInt16(FdoString* propertyName)
 	RefreshData();
     PropertyStub* ps = m_propIndex->GetPropInfo(propertyName);
 
+    //check for computed property
     if (!ps)
-        throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_38_INVALID_PROPERTY_NAME)));
+    {
+        CheckIfPropExists(propertyName);
+
+		FdoPtr<FdoLiteralValue> results = m_filterExec->Evaluate(propertyName);
+		if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
+		{
+			FdoDataValue *dataValue = static_cast<FdoDataValue *> (results.p);
+			if (dataValue->GetDataType() == FdoDataType_Int16)
+			{
+				FdoInt16Value *int16Value = static_cast<FdoInt16Value *>(dataValue);
+				return int16Value->GetInt16();
+			}
+		}
+        throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_57_UNEXPECTEDERROR)));
+    }
+
+// throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_38_INVALID_PROPERTY_NAME)));
 
     if (ps->m_dataType != FdoDataType_Int16)
         throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_36_INCORRECT_PROPERTY_TYPE)));
