@@ -94,6 +94,12 @@ class FdoFunctionStddev : public FdoExpressionEngineIAggregateFunction
 
         ~FdoFunctionStddev ();
 
+        // CalculateVariance:
+        //  The function calculates the required variance to determine the
+        //  standard deviation.
+
+        FdoDouble CalculateVariance (FdoDouble average);
+
         // CreateFunctionDefinition:
         //  The routine creates the function definition for the function
         //  STDDEV.
@@ -105,21 +111,17 @@ class FdoFunctionStddev : public FdoExpressionEngineIAggregateFunction
 
         virtual void Dispose () { delete this; };
 
-        // ProcessRequest:
-        //  The function processes a call to the Expression Engine function
-        //  STDDEV.
-
-        void ProcessRequest (FdoDouble   value);
-        void ProcessRequest (FdoFloat    value);
-        void ProcessRequest (FdoInt16    value);
-        void ProcessRequest (FdoInt32    value);
-        void ProcessRequest (FdoInt64    value);
-
         // Validate:
         //  The function validates the provided parameters for the function
         //  STDDEV.
 
         void Validate (FdoLiteralValueCollection *literal_values);
+
+        // ValueIsInCache:
+        //  The function checks if the provided value is already stored in the
+        //  cache and returns TRUE if this is the case, FALSE otherwise.
+
+        bool ValueIsInCache (FdoDouble value);
 
 
         // ********************************************************************
@@ -137,6 +139,12 @@ class FdoFunctionStddev : public FdoExpressionEngineIAggregateFunction
 
         FdoDataType incoming_data_type;
 
+        // is_distinct_request:
+        //  The flag indicates whether or not this is a request to determine
+        //  the average expression value on a distinct set of data.
+
+        bool is_distinct_request;
+
         // is_validated:
         //  For performance reasons the arguments passed to the procedure
         //  processing the request is done once only for the time of its
@@ -145,11 +153,27 @@ class FdoFunctionStddev : public FdoExpressionEngineIAggregateFunction
 
         bool is_validated;
 
+        // process_value:
+        //  The variable indicates which of the provided parameter values
+        //  needs to be processed.
+
+        FdoInt32 process_value;
+
         // value_cache:
         //  The variable serves as the cache for the average value to be re-
         //  turned.
 
         CacheValueCollection *value_cache;
+
+        // value_count:
+        //  The variable is used to count the number of processed values.
+
+        FdoDouble value_count;
+
+        // value_sum:
+        //  The variable is used to sum-up the processed values.
+
+        FdoDouble value_sum;
 
 };  //  class FdoFunctionStddev
 
