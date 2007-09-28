@@ -100,6 +100,13 @@ class FdoFunctionToInt32 : public FdoExpressionEngineINonAggregateFunction
 
         virtual void Dispose () { delete this; };
 
+        // RemoveBlanks:
+        //  The function removes leading and/or trailing blanks from the pro-
+        //  vided string and returns the resulting string back to the calling
+        //  routine.
+
+        FdoStringP RemoveBlanks (FdoStringP value);
+
         // Validate:
         //  The function validates the provided parameters for the function
         //  TOINT32.

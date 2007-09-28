@@ -725,7 +725,7 @@ void FdoFunctionMax::Validate (FdoLiteralValueCollection *literal_values)
 
     FdoDataValue            *data_value     = NULL;
 
-    FdoPtr<FdoStringValue>  str_value;
+    FdoStringValue          *str_value      = NULL;
 
     FdoPtr<FdoLiteralValue> literal_value;
 

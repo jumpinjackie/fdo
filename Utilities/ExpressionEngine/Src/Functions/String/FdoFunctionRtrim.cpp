@@ -109,12 +109,13 @@ FdoLiteralValue *FdoFunctionRtrim::Evaluate (
 
     // Declare and initialize all necessary local variables.
 
-    FdoString              *curr_char       = NULL;
+    bool                   endloop          = false;
 
     FdoInt64               pos              = 0,
                            string_length;
 
-    FdoStringP             base_string;
+    FdoStringP             tmp_str,
+                           base_string;
 
     FdoPtr<FdoStringValue> string_value;
 
@@ -131,20 +132,23 @@ FdoLiteralValue *FdoFunctionRtrim::Evaluate (
     else
       base_string = base_string + string_value->GetString();
     string_length = base_string.GetLength();
+    if (string_length == 0)
+        return FdoStringValue::Create();
 
     // Navigate the given string from the right and find the first character
     // different from a blank. 
 
-    pos       = string_length - 1;
-    curr_char = (FdoString *)base_string + pos;
+    pos = string_length - 1;
 
-    while (pos > -1) {
+    while (!endloop) {
 
-      if (curr_char[pos] != ' ')
+      tmp_str = base_string.Mid((size_t)pos, 1);
+      if (tmp_str != L" ")
           break;
-      pos--;
+       pos--;
+       endloop = (pos == -1);
 
-    }  //  while (pos > -1) ...
+    }  //  while ...
 
     // If no character other than blanks were found return an empty string.
     // Otherwise return the substring of the provided string starting from
@@ -154,7 +158,7 @@ FdoLiteralValue *FdoFunctionRtrim::Evaluate (
     if (pos == -1)
         return FdoStringValue::Create(base_string);
     else
-      return FdoStringValue::Create(base_string.Mid(0, (size_t) pos));
+      return FdoStringValue::Create(base_string.Mid(0, (size_t) (pos+1)));
 
 }  //  Evaluate ()
 

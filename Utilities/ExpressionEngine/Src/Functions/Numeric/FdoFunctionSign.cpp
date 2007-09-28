@@ -292,22 +292,22 @@ void FdoFunctionSign::CreateFunctionDefinition ()
 
     signatures = FdoSignatureDefinitionCollection::Create();
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_Decimal, dcl_args);
+    signature = FdoSignatureDefinition::Create(FdoDataType_Int16, dcl_args);
     signatures->Add(signature);
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_Double, dbl_args);
+    signature = FdoSignatureDefinition::Create(FdoDataType_Int16, dbl_args);
     signatures->Add(signature);
 
     signature = FdoSignatureDefinition::Create(FdoDataType_Int16, int16_args);
     signatures->Add(signature);
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_Int32, int32_args);
+    signature = FdoSignatureDefinition::Create(FdoDataType_Int16, int32_args);
     signatures->Add(signature);
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_Int64, int64_args);
+    signature = FdoSignatureDefinition::Create(FdoDataType_Int16, int64_args);
     signatures->Add(signature);
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_Single, sgl_args);
+    signature = FdoSignatureDefinition::Create(FdoDataType_Int16, sgl_args);
     signatures->Add(signature);
 
     // Create the function definition.
@@ -320,9 +320,9 @@ void FdoFunctionSign::CreateFunctionDefinition ()
                 FdoFunctionDefinition::Create(
                                         FDO_FUNCTION_SIGN,
                                         desc,
-                                        true,
+                                        false,
                                         signatures,
-                                        FdoFunctionCategoryType_Aggregate);
+                                        FdoFunctionCategoryType_Numeric);
 
 }  //  CreateFunctionDefinition ()
 

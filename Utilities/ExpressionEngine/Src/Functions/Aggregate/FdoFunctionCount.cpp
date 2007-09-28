@@ -280,7 +280,7 @@ FdoLiteralValue *FdoFunctionCount::GetResult ()
 
     return (NULL_value_count == process_call_count)
             ? FdoInt64Value::Create()
-            :FdoInt64Value::Create(function_result);
+            : FdoInt64Value::Create(function_result);
 
 }  //  GetResult ()
 
@@ -734,7 +734,7 @@ void FdoFunctionCount::ProcessRequest (FdoDateTime value)
           curr_cache_value = value_cache->GetItem(loop_count);
           if ((FdoCommonMiscUtil::CompareDateTimes(
                                 curr_cache_value->GetDateTimeValue(),
-                                value                                ) > 0)) {
+                                value                                ) == 0)) {
 
               data_processed = true;
               break;
@@ -1107,7 +1107,7 @@ void FdoFunctionCount::Validate (FdoLiteralValueCollection *literal_values)
 
     FdoDataValue            *data_value     = NULL;
 
-    FdoPtr<FdoStringValue>  str_value;
+    FdoStringValue          *str_value      = NULL;
 
     FdoPtr<FdoLiteralValue> literal_value;
 

@@ -749,6 +749,8 @@ FdoLiteralValue *FdoFunctionToDate::Process (FdoStringP dt_string)
 
     if (start_pos_set) {
 
+        dt_value = dt_string.Mid(start_pos, (pos - start_pos));
+
         if (curr_token_pos >= format_token_count)
             throw FdoException::Create(
                      FdoException::NLSGetMessage(

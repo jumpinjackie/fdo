@@ -191,7 +191,8 @@ FdoLiteralValue *FdoFunctionRound::Evaluate (
 
     if (p2 == 0) {
 
-        if (para1_data_type == FdoDataType_Double) {
+        if ((para1_data_type == FdoDataType_Decimal) ||
+            (para1_data_type == FdoDataType_Double )    ) {
 
             d_result = ((p1 - floor(p1)) < 0.5)
                     ? floor(p1)
@@ -200,7 +201,7 @@ FdoLiteralValue *FdoFunctionRound::Evaluate (
             return CreateReturnValue(
                                 para1_data_type, d_result, 0, 0, 0, 0, false);
 
-        }  //  if (para1_data_type == FdoDataType_Double) ...
+        }  //  if ((para1_data_type == FdoDataType_Decimal) ...
         else {
 
           f_result = (FdoFloat) (((p1 - floor(p1)) < 0.5)
@@ -226,13 +227,14 @@ FdoLiteralValue *FdoFunctionRound::Evaluate (
                     ? floor(p_tmp)
                     : ceil(p_tmp); 
 
-    if (para1_data_type == FdoDataType_Double) {
+    if ((para1_data_type == FdoDataType_Decimal) ||
+        (para1_data_type == FdoDataType_Double )    ) {
 
         d_result = tmp_result / multiplier; 
         return CreateReturnValue(
                                 para1_data_type, d_result, 0, 0, 0, 0, false);
 
-    }  //  if (para1_data_type == FdoDataType_Double) ...
+    }  //  if ((para1_data_type == FdoDataType_Decimal) ...
     else {
 
       f_result = (FdoFloat) (tmp_result / multiplier); 

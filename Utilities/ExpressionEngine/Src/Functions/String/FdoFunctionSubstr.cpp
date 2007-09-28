@@ -164,10 +164,19 @@ FdoLiteralValue *FdoFunctionSubstr::Evaluate (
     // empty string is returned back to the calling routine. A negativ number
     // is valid as it indicates to extract to the end of the original string.
 
-    substring_length = 
-        GetNumericValue(literal_values, 2, para3_data_type, &is_NULL_value);
-    if (is_NULL_value)
-        return FdoStringValue::Create();
+    if (literal_values->GetCount() == 3) {
+
+        substring_length = 
+            GetNumericValue(
+                        literal_values, 2, para3_data_type, &is_NULL_value);
+        if (is_NULL_value)
+            return FdoStringValue::Create();
+        if (substring_length < 0)
+            return FdoStringValue::Create();
+
+    } //  if (literal_values->GetCount() == 3) ...
+    else
+      substring_length = string_length;
 
     // Create the resulting string and return it back to the calling routine.
 

@@ -131,6 +131,8 @@ FdoLiteralValue *FdoFunctionLtrim::Evaluate (
     else
       base_string = string_value->GetString();
     string_length = base_string.GetLength();
+    if (string_length == 0)
+        return FdoStringValue::Create();
 
     // Navigate the given string from the left and find the first character
     // different from a blank. 

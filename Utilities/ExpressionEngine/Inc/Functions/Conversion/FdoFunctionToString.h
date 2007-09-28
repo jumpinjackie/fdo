@@ -228,6 +228,12 @@ class FdoFunctionToString : public FdoExpressionEngineINonAggregateFunction
         FdoStringP ProcessYear (FdoInt16 year,
                                 bool     year2_representation);
 
+        // ResetFormatStructures:
+        //  The function resets the format structures (format token and sepa-
+        //  rator list).
+
+        void ResetFormatStructures ();
+
         // UpdateHour:
         //  If the hour model to be used is HH12, this function adjusts the
         //  value stored with the hour property to reflect the model. This

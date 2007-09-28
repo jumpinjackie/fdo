@@ -228,12 +228,24 @@ FdoLiteralValue *FdoFunctionToInt32::Evaluate (
             str_value = string_value->GetString();
             if (str_value.IsNumber())
                 dbl_value = str_value.ToDouble();
-            else
-              throw FdoException::Create(
-                      FdoException::NLSGetMessage(
-                      FUNCTION_DATA_VALUE_ERROR, 
-                      "Expression Engine: Invalid value for execution of function '%1$ls'",
-                      FDO_FUNCTION_TODOUBLE));
+            else {
+
+              // The current string does not represent a number. This may be
+              // the case because of leading and/or trailing blanks. If those
+              // are present remove them and try again. If that string still
+              // does not represent a number issue an exception.
+
+              str_value = RemoveBlanks(str_value);
+              if (str_value.IsNumber())
+                  dbl_value = str_value.ToDouble();
+              else
+                throw FdoException::Create(
+                        FdoException::NLSGetMessage(
+                        FUNCTION_DATA_VALUE_ERROR, 
+                        "Expression Engine: Invalid value for execution of function '%1$ls'",
+                        FDO_FUNCTION_TODOUBLE));
+
+            }  //  else ...
 
             if ((dbl_value < INT_MIN) || (dbl_value > INT_MAX))
                 throw FdoException::Create(
@@ -405,6 +417,74 @@ void FdoFunctionToInt32::CreateFunctionDefinition ()
                                         FdoFunctionCategoryType_Conversion);
 
 }  //  CreateFunctionDefinition ()
+
+FdoStringP FdoFunctionToInt32::RemoveBlanks (FdoStringP value)
+
+// +---------------------------------------------------------------------------
+// | The function removes leading and/or trailing blanks from the provided
+// | string and returns the resulting string back to the calling routine.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local variables.
+
+    bool       endloop          = false;
+
+    FdoString  *curr_char       = NULL;
+
+    FdoInt64   pos              = 0,
+               string_length;
+
+    FdoStringP tmp_str,
+               base_string;
+
+    // Set the work-string.
+
+    base_string   = base_string + value;
+    string_length = base_string.GetLength();
+
+    // Process the string and remove any leading blanks.
+
+    curr_char = (FdoString *)base_string;
+
+    while (pos < string_length) {
+
+      if (curr_char[pos] != ' ')
+          break;
+      pos++;
+
+    }  //  while (pos < string_length) ...
+
+    // If no characters other than blanks were found, return the provided
+    // string. Otherwise, get the part of the original string without the
+    // leading blanks.
+
+    if (pos == string_length)
+        return value;
+    else
+      base_string = base_string.Mid((size_t) pos, (size_t) string_length);
+
+    // Next, process any trailing blanks.
+
+    string_length = base_string.GetLength();
+    pos           = string_length - 1;
+
+    while (!endloop) {
+
+      tmp_str = base_string.Mid((size_t)pos, 1);
+      if (tmp_str != L" ")
+          break;
+      pos--;
+      endloop = (pos == -1);
+
+    }  //  while ...
+
+    base_string = base_string.Mid(0, (size_t) (pos+1));
+
+    return base_string;
+
+}  //  RemoveBlanks ()
 
 void FdoFunctionToInt32::Validate (FdoLiteralValueCollection *literal_values)
 
