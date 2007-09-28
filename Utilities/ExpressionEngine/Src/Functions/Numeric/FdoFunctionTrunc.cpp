@@ -931,7 +931,9 @@ FdoLiteralValue *FdoFunctionTrunc::ProcessDateTruncationRequest (
 
       case DateTimeOperationTokens_Year:
 
-        if (date_time.IsDate()) {
+        if ((date_time.year  != -1) &&
+            (date_time.month != -1) &&
+            (date_time.day   != -1)    ) {
 
             year            = date_time.year;
             month           = 1;
@@ -939,13 +941,15 @@ FdoLiteralValue *FdoFunctionTrunc::ProcessDateTruncationRequest (
 
             truncation_done = true;
             
-        }  //  if (date_time.IsDate()) ...
+        }  //  if ((date_time.year  != -1) ...
 
         break;
 
       case DateTimeOperationTokens_Month:
 
-        if (date_time.IsDate()) {
+        if ((date_time.year  != -1) &&
+            (date_time.month != -1) &&
+            (date_time.day   != -1)    ) {
 
             year            = date_time.year;
             month           = date_time.month;
@@ -953,7 +957,7 @@ FdoLiteralValue *FdoFunctionTrunc::ProcessDateTruncationRequest (
 
             truncation_done = true;
             
-        }  //  if (date_time.IsDate()) ...
+        }  //  if ((date_time.year  != -1) ...
 
         break;
 
@@ -965,40 +969,46 @@ FdoLiteralValue *FdoFunctionTrunc::ProcessDateTruncationRequest (
 
       case DateTimeOperationTokens_Hour:
 
-        if (date_time.IsTime()) {
+        if ((date_time.hour != -1  ) &&
+            (date_time.minute != -1)    ) {
 
             hour            = date_time.hour;
             truncation_done = true;
 
-            if (date_time.IsDate()) {
+            if ((date_time.year  != -1) &&
+                (date_time.month != -1) &&
+                (date_time.day   != -1)    ) {
 
                 year  = date_time.year;
                 month = date_time.month;
                 day   = date_time.day;
             
-            }  //  if (date_time.IsDate()) ...
+            }  //  if ((date_time.year  != -1) ...
             
-        }  //  if (date_time.IsTime()) ...
+        }  //  if ((date_time.hour != -1  ) ...
 
         break;
 
       case DateTimeOperationTokens_Minute:
 
-        if (date_time.IsTime()) {
+        if ((date_time.hour != -1  ) &&
+            (date_time.minute != -1)    ) {
 
             hour            = date_time.hour;
             minute          = date_time.minute;
             truncation_done = true;
 
-            if (date_time.IsDate()) {
+            if ((date_time.year  != -1) &&
+                (date_time.month != -1) &&
+                (date_time.day   != -1)    ) {
 
                 year  = date_time.year;
                 month = date_time.month;
                 day   = date_time.day;
             
-            }  //  if (date_time.IsDate()) ...
+            }  //  if ((date_time.year  != -1) ...
             
-        }  //  if (date_time.IsTime()) ...
+        }  //  if if ((date_time.hour != -1  ) ...
 
         break;
 
@@ -1098,7 +1108,7 @@ FdoLiteralValue *FdoFunctionTrunc::ProcessNumericTruncationRequest (
             return CreateReturnValue(
                                 para1_data_type, d_result, 0, 0, 0, 0, false);
 
-        }  //  if ((para1_data_type == FdoDataType_Double) ...
+        }  //  if ((para1_data_type == FdoDataType_Decimal) ...
         else {
 
           f_result = (FdoFloat) (floor(p1)); 
@@ -1126,7 +1136,7 @@ FdoLiteralValue *FdoFunctionTrunc::ProcessNumericTruncationRequest (
         return CreateReturnValue(
                                 para1_data_type, d_result, 0, 0, 0, 0, false);
 
-    }  //  if ((para1_data_type == FdoDataType_Double) ...
+    }  //  if ((para1_data_type == FdoDataType_Decimal) ...
     else {
 
       f_result = (FdoFloat) (tmp_result / multiplier); 
@@ -1159,11 +1169,9 @@ void FdoFunctionTrunc::Validate (FdoLiteralValueCollection *literal_values)
 
     FdoInt32                i               = 0;
 
-    FdoStringP              param_value;
-
     FdoDataValue            *data_value     = NULL;
 
-    FdoPtr<FdoStringValue>  str_value;
+    FdoStringValue          *str_value      = NULL;
 
     FdoPtr<FdoLiteralValue> literal_value;
 
@@ -1238,15 +1246,15 @@ void FdoFunctionTrunc::Validate (FdoLiteralValueCollection *literal_values)
 
         date_operator = str_value->GetString();
         if ((FdoCommonStringUtil::StringCompareNoCase(
-                                        param_value, L"YEAR"  ) != 0) &&
+                                        date_operator, L"YEAR"  ) != 0) &&
             (FdoCommonStringUtil::StringCompareNoCase(
-                                        param_value, L"MONTH" ) != 0) &&
+                                        date_operator, L"MONTH" ) != 0) &&
             (FdoCommonStringUtil::StringCompareNoCase(
-                                        param_value, L"DAY"   ) != 0) &&
+                                        date_operator, L"DAY"   ) != 0) &&
             (FdoCommonStringUtil::StringCompareNoCase(
-                                        param_value, L"HOUR"  ) != 0) &&
+                                        date_operator, L"HOUR"  ) != 0) &&
             (FdoCommonStringUtil::StringCompareNoCase(
-                                        param_value, L"MINUTE") != 0)    )
+                                        date_operator, L"MINUTE") != 0)    )
             throw FdoException::Create(
               FdoException::NLSGetMessage(
                 FUNCTION_OPERATOR_ERROR, 

@@ -682,6 +682,13 @@ FdoLiteralValue *FdoFunctionToString::ProcessDateTime (
     FdoPtr<FdoDateTimeValue> dt_value;
     FdoPtr<FdoStringValue>   format_specs;
 
+    // Re-initialize some class variables.
+    // NOTE: Apparently, the expression handling steps into the function twice.
+    //       If the following re-initialization is not done the correct result
+    //       from the first pass will be invalidated in the second pass. 
+
+    ResetFormatStructures();
+
     // Get the date/time information. If the provided value is NULL, return a
     // NULL string value back to the calling routine.
 
@@ -693,12 +700,6 @@ FdoLiteralValue *FdoFunctionToString::ProcessDateTime (
     // representa a valid date or time issue an exception.
 
     dt_object = dt_value->GetDateTime();
-    //if ((!dt_object.IsDate()) && (!dt_object.IsTime()))
-    //    throw FdoException::Create(
-    //             FdoException::NLSGetMessage(
-    //                 FUNCTION_DATA_VALUE_ERROR, 
-    //                 "Expression Engine: Invalid value for execution of function '%1$ls'",
-    //                 FDO_FUNCTION_TOSTRING));
 
     // Next check whether or not format instructions were provided. If this is
     // the case get the format instructions. If it is a NULL pointer or if no
@@ -871,7 +872,8 @@ FdoStringP FdoFunctionToString::ProcessDay (FdoInt8 day)
     // to the calling routine.
 
     ValidateDay(day);
-    return (FdoStringP::Format(L"%d", day));
+    return ((day < 10) ? FdoStringP::Format(L"0%d", day)
+                       : FdoStringP::Format(L"%d", day ));
 
 }  //  ProcessDay ()
 
@@ -1023,7 +1025,8 @@ FdoStringP FdoFunctionToString::ProcessMonth (FdoInt8 month)
     // to the calling routine.
 
     ValidateMonth(month);
-    return (FdoStringP::Format(L"%d", month));
+    return ((month < 10) ? FdoStringP::Format(L"0%d", month)
+                         : FdoStringP::Format(L"%d", month ));
 
 }  //  ProcessMonth ()
 
@@ -1153,6 +1156,33 @@ FdoStringP FdoFunctionToString::ProcessYear (FdoInt16 year,
     return ret_value;
 
 }  //  ProcessYear ()
+
+void FdoFunctionToString::ResetFormatStructures ()
+
+// +---------------------------------------------------------------------------
+// | The function resets the format structures (the format token and separator
+// | list).
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local variables.
+
+    FdoInt16 index = 0;
+
+    // Clear the format token list by resetting the token counter.
+
+    format_token_count = 0;
+
+    // Clear the separator list. In this case, each of the stored separators
+    // must be removed.
+
+    for (index = 0; index < separators_list_count; index++)
+      separators_list[index] = "";
+
+    separators_list_count = 0;
+
+}  //  ResetFormatStructures ()
 
 FdoInt8 FdoFunctionToString::UpdateHour (FdoInt8 hour)
 

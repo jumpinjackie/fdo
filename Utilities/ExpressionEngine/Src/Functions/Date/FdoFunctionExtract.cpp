@@ -122,7 +122,7 @@ FdoLiteralValue *FdoFunctionExtract::Evaluate (
 
     FdoDateTime              dt;
 
-    FdoPtr<FdoDateTimeValue> dt_value;
+    FdoDateTimeValue         *dt_value      = NULL;
 
     FdoPtr<FdoLiteralValue>  literal_value;
 
@@ -319,7 +319,7 @@ void FdoFunctionExtract::Validate (FdoLiteralValueCollection *literal_values)
 
     FdoDataValue            *data_value         = NULL;
 
-    FdoPtr<FdoStringValue>  str_value;
+    FdoStringValue          *str_value          = NULL;
 
     FdoPtr<FdoLiteralValue> literal_value;
 
