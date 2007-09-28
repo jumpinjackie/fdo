@@ -36,6 +36,7 @@ UnitTest_SOURCES = \
   ConnectionInfoTest.cpp \
   ConstraintsTest.cpp \
   ExtendedSelectTest.cpp \
+  FdoExpressionFunctionTest.cpp \
   FdoMultiThreadTest.cpp \
   SelectTest.cpp \
   SchemaTest.cpp \
@@ -53,6 +54,7 @@ noinst_HEADERS = $(UnitTest_SOURCES) \
   ConnectionInfoTest.h \
   ConstraintsTest.h \
   ExtendedSelectTest.h \
+  FdoExpressionFunctionTest.h \
   FdoMultiThreadTest.h \
   FgfStreamWriter.h \
   MasterTest.h \
