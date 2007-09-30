@@ -44,6 +44,9 @@ FdoFunctionMedian::FdoFunctionMedian ()
 
     function_definition = NULL;
 
+    first_value         = 0;
+    value_count         = 0;
+
     incoming_data_type  = FdoDataType_CLOB;
 
     // Setup the result cache.
@@ -122,12 +125,19 @@ void FdoFunctionMedian::Process (FdoLiteralValueCollection *literal_values)
 
     // Declare and initialize all necessary local variables.
 
+    bool                    is_NULL_value     = false;
+
+    FdoInt32                insert_index      = 0;
+
+    FdoDouble               curr_value        = 0;
+
     FdoPtr<FdoDecimalValue> decimal_value;
     FdoPtr<FdoDoubleValue>  double_value;
     FdoPtr<FdoInt16Value>   int16_value;
     FdoPtr<FdoInt32Value>   int32_value;
     FdoPtr<FdoInt64Value>   int64_value;
     FdoPtr<FdoSingleValue>  single_value;
+    FdoPtr<CacheValue>      new_cache_value;
 
     // If the argument list has not been validated, execute the check next.
     // NOTE: the validation is executed only the first time the procedure is
@@ -147,41 +157,68 @@ void FdoFunctionMedian::Process (FdoLiteralValueCollection *literal_values)
 
       case FdoDataType_Decimal:
         decimal_value = (FdoDecimalValue *) literal_values->GetItem(0);
-        if (!decimal_value->IsNull())
-            ProcessRequest(decimal_value->GetDecimal());
+        is_NULL_value = decimal_value->IsNull();
+        if (!is_NULL_value)
+            curr_value = decimal_value->GetDecimal();
         break;
 
       case FdoDataType_Double:
         double_value = (FdoDoubleValue *) literal_values->GetItem(0);
-        if (!double_value->IsNull())
-            ProcessRequest(double_value->GetDouble());
+        is_NULL_value = double_value->IsNull();
+        if (!is_NULL_value)
+            curr_value = double_value->GetDouble();
         break;
 
       case FdoDataType_Int16:
         int16_value = (FdoInt16Value *) literal_values->GetItem(0);
-        if (!int16_value->IsNull())
-            ProcessRequest(int16_value->GetInt16());
+        is_NULL_value = int16_value->IsNull();
+        if (!is_NULL_value)
+            curr_value = (FdoDouble) int16_value->GetInt16();
         break;
 
       case FdoDataType_Int32:
         int32_value = (FdoInt32Value *) literal_values->GetItem(0);
-        if (!int32_value->IsNull())
-            ProcessRequest(int32_value->GetInt32());
+        is_NULL_value = int32_value->IsNull();
+        if (!is_NULL_value)
+            curr_value = (FdoDouble) int32_value->GetInt32();
         break;
 
       case FdoDataType_Int64:
         int64_value = (FdoInt64Value *) literal_values->GetItem(0);
-        if (!int64_value->IsNull())
-            ProcessRequest(int64_value->GetInt64());
+        is_NULL_value = int64_value->IsNull();
+        if (!is_NULL_value)
+            curr_value = (FdoDouble) int64_value->GetInt64();
         break;
 
       case FdoDataType_Single:
         single_value = (FdoSingleValue *) literal_values->GetItem(0);
-        if (!single_value->IsNull())
-            ProcessRequest(single_value->GetSingle());
+        is_NULL_value = single_value->IsNull();
+        if (!is_NULL_value)
+            curr_value = (FdoDouble) single_value->GetSingle();
+        break;
+
+      default:
+        throw FdoException::Create(
+               FdoException::NLSGetMessage(
+                  FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
+                  "Expression Engine: Invalid parameter data type for function '%1$ls'",
+                  FDO_FUNCTION_MEDIAN));
         break;
 
     }  //  switch ...
+
+    // If a valid value is provided, add it to the cache and increase the value
+    // count. Note that the values in the cache must be sorted ascending.
+
+    if (!is_NULL_value) {
+
+        insert_index = GetInsertIndex(curr_value);
+        new_cache_value = CacheValue::Create(curr_value);
+        value_cache->Insert(insert_index, new_cache_value);
+        value_count++;
+        first_value = curr_value;
+
+    }  //  if (!is_NULL_value) ...
 
 }  //  Process ()
 
@@ -193,13 +230,57 @@ FdoLiteralValue *FdoFunctionMedian::GetResult ()
 
 {
 
+    // Declare and initialize all necessary local variables.
+
+    FdoDouble roi      = 0,
+              c_roi    = 0,
+              f_roi    = 0,
+              result   = 0,
+              tmp_val1 = 0,
+              tmp_val2 = 0;
+    
     // Invalidate the flag indicating that the validation has been done.
 
     is_validated = false;
 
-    // Return the result.
+    // If no values have been processed terminate the function.
 
-    return FdoDoubleValue::Create();
+    if (value_count == 0)
+        return FdoDoubleValue::Create();
+
+    // If there was just one value processed return that value as the function
+    // result.
+
+    if (value_count == 1)
+        return FdoDoubleValue::Create(first_value);
+
+    // Multiple rows have been processed. Next, determine the rows of interest.
+    // The main Row Of Interest is determined with the following formula:
+    //
+    //      roi = (1 + ((<number_of_processed_values> - 1)/2)
+    //
+    // If this is not an even number, the rows of interest are the ones that
+    // represents c_roi = Ceil(roi) and f_roi = Floor(roi). In the first case
+    // (the row of interest is even) return the value stored at that position
+    // in the cache. Otherwise add up the values stored at the positions iden-
+    // tified by the c_roi and f_roi, divide it by 2 and return that result
+    // back to the calling routine.
+
+    roi = (1 + ((value_count - 1)/2));
+    c_roi = ceil(roi);
+    f_roi = floor(roi);
+
+    if ((roi == c_roi) && (c_roi == f_roi))
+        result = GetValueAtIndex((FdoInt32) (roi - 1));
+    else {
+
+      tmp_val1 = GetValueAtIndex((FdoInt32) (c_roi - 1));
+      tmp_val2 = GetValueAtIndex((FdoInt32) (f_roi - 1));
+      result   = (tmp_val1 + tmp_val2) / 2;
+
+    }  //  else ...
+
+    return FdoDoubleValue::Create(result);
 
 }  //  GetResult ()
 
@@ -327,100 +408,78 @@ void FdoFunctionMedian::CreateFunctionDefinition ()
 
 }  //  CreateFunctionDefinition ()
 
-void FdoFunctionMedian::ProcessRequest (FdoDouble value)
+FdoInt32 FdoFunctionMedian::GetInsertIndex (FdoDouble value)
 
 // +---------------------------------------------------------------------------
-// | The function processes a request to the Expression Engine function MEDIAN
-// | when applied to values of type DOUBLE.
-// +---------------------------------------------------------------------------
-
-{
-
-    // NOT YET IMPLEMENTED
-
-    throw FdoException::Create(
-            FdoException::NLSGetMessage(
-                FUNCTION_UNEXPECTED_RESULT_ERROR, 
-                "Expression Engine: Unexpected result for function '%1$ls'",
-                FDO_FUNCTION_MEDIAN));
-
-}  //  ProcessRequest ()
-
-void FdoFunctionMedian::ProcessRequest (FdoFloat value)
-
-// +---------------------------------------------------------------------------
-// | The function processes a request to the Expression Engine function MEDIAN
-// | when applied to values of type FLOAT.
+// | The function determines the position in the cache where a new entry must
+// | be entered. This is to ensure that the values in the cache remain sorted
+// | in an ascending order.
 // +---------------------------------------------------------------------------
 
 {
 
-    // NOT YET IMPLEMENTED
+    // Declare and initialize all necessary local variables.
 
-    throw FdoException::Create(
-            FdoException::NLSGetMessage(
-                FUNCTION_UNEXPECTED_RESULT_ERROR, 
-                "Expression Engine: Unexpected result for function '%1$ls'",
-                FDO_FUNCTION_MEDIAN));
+    FdoInt32 loop_count,
+             cache_count                 = 0;
 
-}  //  ProcessRequest ()
+    FdoPtr<CacheValue> curr_cache_value;
 
-void FdoFunctionMedian::ProcessRequest (FdoInt16 value)
+    // Loop through the cache and check if the given value is greater than
+    // the one at the current position in the cache. If this is the case then
+    // the new value has to be inserted at this position. If the provided
+    // value is bigger than all of the values currently stored, the value
+    // must be added at the end.
 
-// +---------------------------------------------------------------------------
-// | The function processes a request to the Expression Engine function MEDIAN
-// | when applied to values of type INT16.
-// +---------------------------------------------------------------------------
+    cache_count = value_cache->GetCount();
+    if (cache_count == 0)
+        return 0;
 
-{
+    for (loop_count = 0; loop_count < cache_count; loop_count++) {
 
-    // NOT YET IMPLEMENTED
+        curr_cache_value = value_cache->GetItem(loop_count);
+        if (curr_cache_value->GetDoubleValue() > value)
+            return loop_count;
 
-    throw FdoException::Create(
-            FdoException::NLSGetMessage(
-                FUNCTION_UNEXPECTED_RESULT_ERROR, 
-                "Expression Engine: Unexpected result for function '%1$ls'",
-                FDO_FUNCTION_MEDIAN));
+    }  //  for ...
 
-}  //  ProcessRequest ()
+    return loop_count;
 
-void FdoFunctionMedian::ProcessRequest (FdoInt32 value)
+}  //  GetInsertIndex ()
 
-// +---------------------------------------------------------------------------
-// | The function processes a request to the Expression Engine function MEDIAN
-// | when applied to values of type INT32.
-// +---------------------------------------------------------------------------
-
-{
-
-    // NOT YET IMPLEMENTED
-
-    throw FdoException::Create(
-            FdoException::NLSGetMessage(
-                FUNCTION_UNEXPECTED_RESULT_ERROR, 
-                "Expression Engine: Unexpected result for function '%1$ls'",
-                FDO_FUNCTION_MEDIAN));
-
-}  //  ProcessRequest ()
-
-void FdoFunctionMedian::ProcessRequest (FdoInt64 value)
+FdoDouble FdoFunctionMedian::GetValueAtIndex (FdoInt32 index)
 
 // +---------------------------------------------------------------------------
-// | The function processes a request to the Expression Engine function MEDIAN
-// | when applied to values of type INT64.
+// | The function returns the value stored in the cache at the specified
+// | location
 // +---------------------------------------------------------------------------
 
 {
 
-    // NOT YET IMPLEMENTED
+    // Declare and initialize all necessary local variables.
 
-    throw FdoException::Create(
-            FdoException::NLSGetMessage(
-                FUNCTION_UNEXPECTED_RESULT_ERROR, 
-                "Expression Engine: Unexpected result for function '%1$ls'",
-                FDO_FUNCTION_MEDIAN));
+    FdoInt32 cache_count                 = 0;
 
-}  //  ProcessRequest ()
+    FdoPtr<CacheValue> curr_cache_value;
+
+    // Ensure the indexes are within the range for the cache. If this is not
+    // the case issue an exception.
+
+    cache_count = value_cache->GetCount();
+    if ((index < 0) || (index > cache_count))
+        throw FdoException::Create(
+                FdoException::NLSGetMessage(
+                    FUNCTION_UNEXPECTED_RESULT_ERROR, 
+                    "Expression Engine: Unexpected result for function '%1$ls'",
+                    FDO_FUNCTION_MEDIAN));
+
+    // Get the value at the specified location and return it back to the call-
+    // ing routine.
+
+    curr_cache_value = value_cache->GetItem(index);
+    return (curr_cache_value->GetDoubleValue());
+
+}  //  GetValueAtIndex ()
 
 void FdoFunctionMedian::Validate (FdoLiteralValueCollection *literal_values)
 

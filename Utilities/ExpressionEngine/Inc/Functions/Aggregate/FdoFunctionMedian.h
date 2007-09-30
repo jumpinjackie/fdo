@@ -105,15 +105,18 @@ class FdoFunctionMedian : public FdoExpressionEngineIAggregateFunction
 
         virtual void Dispose () { delete this; };
 
-        // ProcessRequest:
-        //  The function processes a call to the Expression Engine function
-        //  MEDIAN.
+        // GetInsertIndex:
+        //  The function determines the position in the cache where a new
+        //  entry must be entered. This is to ensure that the values in the
+        //  cache remain sorted in an ascending order.
 
-        void ProcessRequest (FdoDouble   value);
-        void ProcessRequest (FdoFloat    value);
-        void ProcessRequest (FdoInt16    value);
-        void ProcessRequest (FdoInt32    value);
-        void ProcessRequest (FdoInt64    value);
+        FdoInt32 GetInsertIndex (FdoDouble value);
+
+        // GetValueAtIndex:
+        //  The function returns the value stored in the cache at the speci-
+        //  fied location.
+
+        FdoDouble GetValueAtIndex (FdoInt32 index);
 
         // Validate:
         //  The function validates the provided parameters for the function
@@ -125,6 +128,11 @@ class FdoFunctionMedian : public FdoExpressionEngineIAggregateFunction
         // ********************************************************************
         // *                      Private Member Variables                    *
         // ********************************************************************
+
+        // first_value:
+        //  The variable is used to remember the first processed value.
+
+        FdoDouble first_value;
 
         // function_definition:
         //  The variable references the function definition for the function
@@ -150,6 +158,11 @@ class FdoFunctionMedian : public FdoExpressionEngineIAggregateFunction
         //  turned.
 
         CacheValueCollection *value_cache;
+
+        // value_count:
+        //  The variable is used to count the number of processed values.
+
+        FdoDouble value_count;
 
 };  //  class FdoFunctionMedian
 
