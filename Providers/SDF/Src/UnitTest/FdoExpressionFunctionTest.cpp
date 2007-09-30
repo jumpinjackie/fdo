@@ -838,6 +838,7 @@ void FdoExpressionFunctionTest::TestMedianFunction ()
 
     FdoStringP             func_call;
 
+    FdoPtr<FdoFilter>      filter;
     FdoPtr<FdoIDataReader> data_reader;
 
     printf("\n");
@@ -845,10 +846,6 @@ void FdoExpressionFunctionTest::TestMedianFunction ()
     printf(" Current Unit Test Suite: MEDIAN Function Testing          \n");
     printf("========================================================== \n");
     printf("\n");
-
-    printf(">>> NOT SUPPORTED YET \n");
-    printf("\n");
-    return;
 
     // 1. Test Case:
     // The test executes a select-aggregate command to select the value of a
@@ -868,12 +865,60 @@ void FdoExpressionFunctionTest::TestMedianFunction ()
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row with the value of the computed property being
-      // 21.4. 
+      // 20.69. 
 
       func_call   = L"(Median(dcl_val) as cmp_id)";
       data_reader = ExecuteSelAggrCommand(
                                         L"exfct_c1", NULL, false, func_call);
-      CheckReader(data_reader, false, 0, 21.4);
+      CheckReader(data_reader, false, 0, 20.69);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-aggregate command to select the value of a
+    // computed property that is defined by using the function MEDIAN on the
+    // value of a different property of type DECIMAL. This test requests the
+    // calculation of the median on a single row. In this case the result is
+    // expected to be the value of that row. No exceptions are expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
+    printf("  The test executes a select-aggregate command to select   \n");
+    printf("  the value of a computed property that is defined by us-  \n");
+    printf("  ing the function MEDIAN on the value of a different pro- \n");
+    printf("  perty of type DECIMAL. This test requests the calcula-   \n");
+    printf("  tion if the median on a single row. In this case, the    \n");
+    printf("  result is expected to be the value of the row. No excep- \n");
+    printf("  tions are expected.                                      \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property being
+      // 12.84. 
+
+      filter      = FdoFilter::Parse(L"id = 9");
+      func_call   = L"(Median(dcl_val) as cmp_id)";
+      data_reader = ExecuteSelAggrCommand(
+                                        L"exfct_c1", filter, false, func_call);
+      CheckReader(data_reader, false, 0, 12.84);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
