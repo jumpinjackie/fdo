@@ -1507,12 +1507,12 @@ LONG FdoType2SDEType (FdoDataType type)
 // these aren't really supported:
 //
         case FdoDataType_Decimal:
+        case FdoDataType_Byte:
             ret = SE_DOUBLE_TYPE;
             break;
         case FdoDataType_Boolean:
             ret = SE_SMALLINT_TYPE;        /* 2-byte integer */
             break;
-        case FdoDataType_Byte:
         case FdoDataType_CLOB:
         default:
             throw FdoException::Create (NlsMsgGet1(ARCSDE_DATATYPE_UNHANDLED, "The FDO DataType %1$d is unsupported.", (int)type));
