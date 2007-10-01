@@ -85,7 +85,8 @@ public:
 protected:
 	ArcSDEFeatureReader() {};
     void PrepareStream ();
-    ColumnDefinition* createColumnDef(int column, SE_COLUMN_DEF* definition, wchar_t* property);
+	bool ContainsSDEValidExpressionsOnly (bool& filterValid, bool& selectListValid);
+    ColumnDefinition* createColumnDef(int column, SE_COLUMN_DEF* definition, wchar_t* propertyName, wchar_t* funcName = NULL);
     ColumnDefinition* getColumnDef (const wchar_t* identifier);
     void getColumnDefs ();
     void SetLockConflictReader (ArcSDELockConflictReader* conflicts);

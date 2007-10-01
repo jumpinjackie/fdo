@@ -86,6 +86,20 @@ public:
     wchar_t* GetSql ();
     SHORT GetSpatialFilters(SE_FILTER *&pSpatialFilters);
 
+	/// <summary>Checks FdoFunction passed in as an argument.</summary>
+	/// <param name="expr">Input expresion</param> 
+	/// <returns>Returns the SDE function id or -1 if not found </returns> 
+	int GetSDEFunctionIndex (FdoFunction& expr);
+
+	/// <summary>Checks the expression passed in as an argument for validity wrt the natively supported functions</summary>
+	/// <param name="expr">Input expresion</param> 
+	/// <returns>Nothing. Throws an exception if the expression is not valid</returns> 
+	void IsSDEValidExpression (FdoExpression* expr);
+
+	/// <summary>Validate the computed identifiers wrt the natively supported functions</summary>
+	/// <returns> True if all expresions are supported, false otherwise. In addition, 2 output flags. </returns>
+	bool ArcSDEFilterToSql::ContainsSDEValidExpressionsOnly(FdoFilter *filter, FdoIdentifierCollection* selectIds, bool& filterValid, bool& selectListValid);
+
     //
     // FdoIExpressionProcessor
     //

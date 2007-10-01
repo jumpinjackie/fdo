@@ -928,7 +928,11 @@ SymbolicName=ARCSDE_SELECT_DISTINCT_TOO_MANY_RESULTS
 Language=English
 The number of distinct results exceeds the maximum imposed by ArcSDE Server; please update the value of MAXDISTINCT in the ArcSDE Server's GioMgr.defs file accordingly.
 .
-
+MessageId=6038
+SymbolicName=ARCSDE_SELECT_DISTINCT_NOT_SUPPORTED_AS_OPTION
+Language=English
+ArcSDE does not support 'distinct' function option.
+.
 
 ;//************************************************************************************
 ;//************************************************************************************

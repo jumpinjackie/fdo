@@ -205,6 +205,84 @@ void SelectAggregatesTests::test_aggregate_functions ()
         reader->Close();
         CPPUNIT_ASSERT_MESSAGE("Got wrong number of rows for select aggregate", lCount==1);
 
+        ////////////////////////////////////////////////////////////////////////////
+        // test COUNT aggregate function with 'distinct':
+        ////////////////////////////////////////////////////////////////////////////
+
+        selectAggregates = (FdoISelectAggregates*)mConnection->CreateCommand (FdoCommandType_SelectAggregates);
+        selectAggregates->SetFeatureClassName (ArcSDETestConfig::QClassNameOntarioRoads());
+        idColl = selectAggregates->GetPropertyNames();
+
+        // Add aggregate function:
+        computedId = (FdoComputedIdentifier*)FdoExpression::Parse(L"Count('distinct', LENGTH) as MyCount");
+        computedId = (FdoComputedIdentifier*)FdoExpression::Parse(L"Count('all', LENGTH) as MyCount");
+
+        idColl->Add(computedId);
+
+        // Add filter:
+        selectAggregates->SetFilter(L"LENGTH < 12000");
+
+        // perform query:
+        reader = selectAggregates->Execute ();
+
+        // Test accessing DataReader's metadata BEFORE calling ReadNext():
+        IterateDataReaderProperties(reader);
+
+        // Iterate and verify results:
+        lCount=0;
+        while (reader->ReadNext ())
+        {
+            FdoInt64 val = reader->GetInt64(L"MyCount");
+            CPPUNIT_ASSERT_MESSAGE("Didn't get correct count", val==440);
+
+            try
+            {
+                double dValTest = reader->GetDouble(L"MyCount");
+                CPPUNIT_FAIL("Didn't receive expected exception when accessing incorrect reader property type");
+            }
+            catch (FdoException *e)
+            {
+                // We expect to get an exception here
+                e->Release();
+            }
+
+            lCount ++;
+        }
+        reader->Close();
+        CPPUNIT_ASSERT_MESSAGE("Got wrong number of rows for select aggregate", lCount==1);
+
+        ////////////////////////////////////////////////////////////////////////////
+        // test MEDIAN aggregate function (with filter):
+        ////////////////////////////////////////////////////////////////////////////
+
+        selectAggregates = (FdoISelectAggregates*)mConnection->CreateCommand (FdoCommandType_SelectAggregates);
+        selectAggregates->SetFeatureClassName (ArcSDETestConfig::QClassNameOntarioRoads());
+        idColl = selectAggregates->GetPropertyNames();
+
+        // Add aggregate function:
+        computedId = (FdoComputedIdentifier*)FdoExpression::Parse(L"Median(LENGTH) as MyMedian");
+        idColl->Add(computedId);
+
+        // Add filter:
+        selectAggregates->SetFilter(L"LENGTH < 12000");
+
+        // perform query:
+        reader = selectAggregates->Execute ();
+
+        // Test accessing DataReader's metadata BEFORE calling ReadNext():
+        IterateDataReaderProperties(reader);
+
+        // Iterate and verify results:
+        lCount=0;
+        while (reader->ReadNext ())
+        {
+            FdoDouble val = reader->GetDouble(L"MyMedian");
+            CPPUNIT_ASSERT_MESSAGE("Didn't get correct count", fuzzyEqual(val, 5948.6535));
+
+            lCount ++;
+        }
+        reader->Close();
+        CPPUNIT_ASSERT_MESSAGE("Got wrong number of rows for select aggregate", lCount==1);
 
         ////////////////////////////////////////////////////////////////////////////
         // test COUNT aggregate function (with filter):
@@ -329,7 +407,7 @@ void SelectAggregatesTests::test_aggregate_functions ()
         functionArgs = FdoExpressionCollection::Create();
         arg1 = FdoIdentifier::Create(L"LENGTH");
         functionArgs->Add(arg1);
-        computedExpr = FdoFunction::Create(L"StdDev", functionArgs);
+        computedExpr = FdoFunction::Create(L"Stddev", functionArgs);
         computedId = FdoComputedIdentifier::Create(L"MyStdDev", computedExpr);
         idColl->Add(computedId);
 
@@ -356,6 +434,38 @@ void SelectAggregatesTests::test_aggregate_functions ()
         }
         reader->Close();
         CPPUNIT_ASSERT_MESSAGE("Got wrong number of rows for select aggregate", lCount==1);
+
+
+        ////////////////////////////////////////////////////////////////////////////
+        // test SPATIALEXTENTS aggregate function:
+        ////////////////////////////////////////////////////////////////////////////
+
+        selectAggregates = (FdoISelectAggregates*)mConnection->CreateCommand (FdoCommandType_SelectAggregates);
+        selectAggregates->SetFeatureClassName (ArcSDETestConfig::QClassNameSoils());
+        idColl = selectAggregates->GetPropertyNames();
+
+        // Add aggregate function:
+        computedId = (FdoComputedIdentifier*)FdoExpression::Parse(L"SpatialExtents(SHAPE) as MySpatialExtents");
+        idColl->Add(computedId);
+
+        // perform query:
+        reader = selectAggregates->Execute ();
+
+        // Test accessing DataReader's metadata BEFORE calling ReadNext():
+        //IterateDataReaderProperties(reader);
+
+        // Iterate and verify results:
+        lCount=0;
+        while (reader->ReadNext ())
+        {
+            FdoPtr<FdoByteArray> ba = reader->GetGeometry(L"MySpatialExtents");
+ //           CPPUNIT_ASSERT_MESSAGE("Didn't get correct count", fuzzyEqual(val, 5948.6535));
+
+            lCount ++;
+        }
+        reader->Close();
+        CPPUNIT_ASSERT_MESSAGE("Got wrong number of rows for select aggregate", lCount==1);
+
     }
     catch (FdoException *e)
     {

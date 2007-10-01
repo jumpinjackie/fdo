@@ -36,7 +36,6 @@ const wchar_t CONNECTIONPROPERTY_USERNAME[] = L"Username";
 const wchar_t CONNECTIONPROPERTY_PASSWORD[] = L"Password";
 
 // Non-"well-known" function/argument names:
-#define ARCSDE_FUNCTION_STDDEV L"StdDev"
 #define ARCSDE_FUNCTION_DOUBLE_ARGUMENT_NAME L"dblValue"
 
 

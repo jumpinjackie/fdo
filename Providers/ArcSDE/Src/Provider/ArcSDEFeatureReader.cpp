@@ -19,7 +19,7 @@
 
 #include "stdafx.h"
 #include "ArcSDEUtils.h"
-
+#include "ArcSDEFilterToSql.h"
 
 ArcSDEFeatureReader::ArcSDEFeatureReader (ArcSDEConnection* connection, FdoClassDefinition* fdoClassDef, FdoFilter* filter, FdoIdentifierCollection* propertiesToSelect) :
     ArcSDEReader(connection, fdoClassDef, propertiesToSelect),
@@ -32,18 +32,15 @@ ArcSDEFeatureReader::ArcSDEFeatureReader (ArcSDEConnection* connection, FdoClass
 {
     FDO_SAFE_ADDREF (mFilter.p);
 
-    // Validate that mSelectIds contains valid entries:
+    // Validate that mSelectIds contains valid entries. Computed identifiers are supported.
     for (FdoInt32 i=0; i<mSelectIds->GetCount(); i++)
     {
-        // Validate this property:
         FdoPtr<FdoIdentifier> pPropertyId = mSelectIds->GetItem(i);
+		FdoComputedIdentifier* pComputedId = dynamic_cast<FdoComputedIdentifier*>(pPropertyId.p);
 
-        if (NULL != dynamic_cast<FdoComputedIdentifier*>(pPropertyId.p))
-            throw FdoCommandException::Create(NlsMsgGet(ARCSDE_SELECT_COMPUTEDIDENTIFIERS_NOT_SUPPORTED, "The ArcSDE Provider does not support computed identifiers in the select command."));
-
-        if (!ClassContainsProperty(mClassDef, pPropertyId))
+        if ((pComputedId == NULL ) && !ClassContainsProperty(mClassDef, pPropertyId))
             throw FdoCommandException::Create(NlsMsgGet(ARCSDE_INVALID_PROPERTY_NAME, "The given property name was invalid."));
-    }
+	}
 
     // Clone the given class definition & prune off the properties the user isn't querying:
     mClassDefPruned = ArcSDESchemaManager::CloneAndPruneClass(fdoClassDef, mSelectIds);
@@ -111,6 +108,16 @@ bool ArcSDEFeatureReader::ReadNext ()
     return (superclass::ReadNext());
 }
 
+/// <summary>Validate the computed identifiers wrt the natively supported functions</summary>
+bool ArcSDEFeatureReader::ContainsSDEValidExpressionsOnly (bool& filterValid, bool& selectListValid)
+{
+	// Validate the filter
+	FdoPtr<ArcSDEFilterToSql> f2s = new ArcSDEFilterToSql (mConnection, mClassDef);
+
+	return f2s->ContainsSDEValidExpressionsOnly( mFilter, mSelectIds, filterValid, selectListValid );
+}
+
+
 /// <summary>Sets up the stream ready for a ReadNext</summary>
 void ArcSDEFeatureReader::PrepareStream ()
 {
@@ -146,25 +153,52 @@ void ArcSDEFeatureReader::PrepareStream ()
             properties = mClassDef->GetProperties ();
             FdoInt32 numProperties = mSelectIds->GetCount();
             columnNames = (CHAR **)alloca (numProperties * sizeof (CHAR *));
+
             for (int i=0; i<numProperties; i++)
             {
                 // Get the property definition of interest:
                 propertyId = mSelectIds->GetItem(i);
-                fdoPropertyDef = properties->GetItem (propertyId->GetName());
 
-                // Store the column name that corresponds to the property name:
-                FdoPtr<ArcSDEPropertyMapping> propertyMapping = mConnection->GetPropertyMapping(mClassDef, fdoPropertyDef->GetName());
-                CHAR *columnName = NULL;
-                if (wcslen(propertyMapping->GetColumnName()) > 0)
-                {
-                    wide_to_multibyte(columnName, propertyMapping->GetColumnName());
-                    columnNames[i] = columnName;
-                }
-                else
-                {
-                    wide_to_multibyte(columnName, fdoPropertyDef->GetName());
-                    columnNames[i] = columnName;
-                }
+				FdoComputedIdentifier* pComputedId = dynamic_cast<FdoComputedIdentifier*>(propertyId.p);
+            
+				// Special handling for computed identifiers in the select list. 
+				// The entire function(expresion) stands for the column name.
+				if (pComputedId)
+				{
+					FdoPtr<FdoExpression> computedExpr = pComputedId->GetExpression();
+					FdoFunction* fdoFunction = dynamic_cast<FdoFunction*>(computedExpr.p);
+
+					// Get the SQL
+					FdoPtr<ArcSDEFilterToSql> f2s = new ArcSDEFilterToSql (mConnection, mClassDef);
+					f2s->ProcessFunction (*fdoFunction);
+
+					FdoStringP	func = f2s->GetSql (); // volatile, since memory is on stack
+					FdoStringP	func2 = func.Right(L"WHERE "); // trim
+
+					CHAR *mbName = NULL;
+					wide_to_multibyte (mbName, (FdoString *) func2);  
+					
+					columnNames[i] = mbName;				
+
+				}
+				else
+				{
+					fdoPropertyDef = properties->GetItem (propertyId->GetName());
+
+					// Store the column name that corresponds to the property name:
+					FdoPtr<ArcSDEPropertyMapping> propertyMapping = mConnection->GetPropertyMapping(mClassDef, fdoPropertyDef->GetName());
+					CHAR *columnName = NULL;
+					if (wcslen(propertyMapping->GetColumnName()) > 0)
+					{
+						wide_to_multibyte(columnName, propertyMapping->GetColumnName());
+						columnNames[i] = columnName;
+					}
+					else
+					{
+						wide_to_multibyte(columnName, fdoPropertyDef->GetName());
+						columnNames[i] = columnName;
+					}
+				}
             }
 
             // Initialize the stream query:
@@ -362,7 +396,7 @@ void ArcSDEFeatureReader::Close ()
     superclass::Close ();
 }
 
-ArcSDEFeatureReader::ColumnDefinition* ArcSDEFeatureReader::createColumnDef (int columnIndex, SE_COLUMN_DEF* columnDef, wchar_t* propertyName)
+ArcSDEFeatureReader::ColumnDefinition* ArcSDEFeatureReader::createColumnDef (int columnIndex, SE_COLUMN_DEF* columnDef, wchar_t* propertyName, wchar_t* functionName)
 {
     ColumnDefinition *retColumnDef = new ColumnDefinition();
 
@@ -375,20 +409,45 @@ ArcSDEFeatureReader::ColumnDefinition* ArcSDEFeatureReader::createColumnDef (int
 
     // Set FDO property name, type & length:
     wcscpy (retColumnDef->mPropertyName, propertyName);
-    FdoPtr<FdoPropertyDefinition> propDef = mConnection->GetProperty(mClassDef, propertyName);
-    if (propDef->GetPropertyType() == FdoPropertyType_GeometricProperty)
-    {
-        retColumnDef->mPropertyType = (FdoDataType)-1;
-        retColumnDef->mDataLength = 0;
-    }
-    else if (propDef->GetPropertyType() == FdoPropertyType_DataProperty)
-    {
-        FdoDataPropertyDefinition* dataPropDef = dynamic_cast<FdoDataPropertyDefinition*>(propDef.p);  // No AddRef on purpose
-        retColumnDef->mPropertyType = dataPropDef->GetDataType();
-        retColumnDef->mDataLength = dataPropDef->GetLength();
-    }
-    else
-        throw FdoCommandException::Create(NlsMsgGet1(ARCSDE_UNHANDLED_PROPERTY_TYPE, "The property type '%1$d' is not supported.", (int)propDef->GetPropertyType()));
+
+	if ( functionName )
+	{
+		FdoPtr<FdoIExpressionCapabilities> expressCaps = mConnection->GetExpressionCapabilities();
+		FdoPtr<FdoFunctionDefinitionCollection> funcDefs = expressCaps->GetFunctions();
+
+		FdoPtr<FdoFunctionDefinition>	funcDef = funcDefs->FindItem(functionName);
+		FdoFunctionCategoryType category = funcDef->GetFunctionCategoryType();
+
+		retColumnDef->mDataLength = 0;
+		if ( category == FdoFunctionCategoryType_Geometry )
+			retColumnDef->mPropertyType = (FdoDataType)-1;
+		else if ( category == FdoFunctionCategoryType_String )
+			retColumnDef->mPropertyType = FdoDataType_String;
+		else if ( category == FdoFunctionCategoryType_Date )
+			retColumnDef->mPropertyType = FdoDataType_DateTime;
+		else
+		{
+			retColumnDef->mPropertyType = FdoDataType_Double;
+			retColumnDef->mDataLength = sizeof(double);
+		}
+	}
+	else
+	{
+		FdoPtr<FdoPropertyDefinition> propDef = mConnection->GetProperty(mClassDef, propertyName);
+		if (propDef->GetPropertyType() == FdoPropertyType_GeometricProperty)
+		{
+			retColumnDef->mPropertyType = (FdoDataType)-1;
+			retColumnDef->mDataLength = 0;
+		}
+		else if (propDef->GetPropertyType() == FdoPropertyType_DataProperty)
+		{
+			FdoDataPropertyDefinition* dataPropDef = dynamic_cast<FdoDataPropertyDefinition*>(propDef.p);  // No AddRef on purpose
+			retColumnDef->mPropertyType = dataPropDef->GetDataType();
+			retColumnDef->mDataLength = dataPropDef->GetLength();
+		}
+		else
+			throw FdoCommandException::Create(NlsMsgGet1(ARCSDE_UNHANDLED_PROPERTY_TYPE, "The property type '%1$d' is not supported.", (int)propDef->GetPropertyType()));
+	}
 
     // Set remaining items:
     retColumnDef->mBindIsNull = SE_IS_NULL_VALUE;
@@ -450,14 +509,31 @@ void ArcSDEFeatureReader::getColumnDefs ()
         {
             // Get the property definition of interest:
             propertyId = mSelectIds->GetItem(i);
-            fdoPropertyDef = properties->GetItem (propertyId->GetName());
+			
+			FdoComputedIdentifier* pComputedId = dynamic_cast<FdoComputedIdentifier*>(propertyId.p);
+            
+			// Get the name of the selected id. Special handling for computed identifiers.
+			FdoString*	propName = NULL;
+			FdoString*	funcName = NULL;
+			if (pComputedId)
+			{
+				propName = propertyId->GetName();
+				FdoPtr<FdoExpression> computedExpr = pComputedId->GetExpression();
+				FdoFunction* fdoFunction = dynamic_cast<FdoFunction*>(computedExpr.p);
+				funcName = fdoFunction->GetName();
+			}
+			else
+			{
+				fdoPropertyDef = properties->GetItem (propertyId->GetName());
+				propName = fdoPropertyDef->GetName();
+			}
 
             // Get the corresponding column definition of interest:
             result = SE_stream_describe_column (mStream, i + 1, &column);
             handle_sde_err<FdoCommandException>(result, __FILE__, __LINE__, ARCSDE_STREAM_GET_COLUMN_FAILED, "Failed to retrieve column information from the stream.");
 
             // Add a new ColumnDefinition to the array:
-            mColumnDefs[i] = createColumnDef (i + 1, &column , (wchar_t*)fdoPropertyDef->GetName () );
+            mColumnDefs[i] = createColumnDef (i + 1, &column , (wchar_t *)propName, (wchar_t *)funcName );
         }
         mColumnCount = numColumns;
     }

@@ -152,9 +152,11 @@ noinst_HEADERS = $(libArcSDEProvider91_la_SOURCES) \
 
 INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \
+  -I$(FDO)/Unmanaged/inc/Fdo/Expression \
   -I$(FDOTHIRDPARTY)/ESRI/ArcSDEClient91/Linux/include \
   -I$(SDEHOME)/include \
   -I$(FDOUTILITIES)/Common/Inc \
+  -I$(FDOUTILITIES)/ExpressionEngine/inc \
   -I../../Inc
 
 libArcSDEProvider91_la_LIBADD =  \

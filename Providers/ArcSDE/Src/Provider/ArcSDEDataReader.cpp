@@ -146,6 +146,15 @@ bool ArcSDEDataReader::ReadNext ()
     return (superclass::ReadNext());
 }
 
+/// <summary>Validate the computed identifiers wrt the natively supported functions</summary>
+bool ArcSDEDataReader::ContainsSDEValidExpressionsOnly (bool& filterValid, bool& selectListValid)
+{
+	// Validate the filter
+	FdoPtr<ArcSDEFilterToSql> f2s = new ArcSDEFilterToSql (mConnection, mClassDef);
+
+	return f2s->ContainsSDEValidExpressionsOnly( mFilter, mSelectIds, filterValid, selectListValid );
+}
+
 /// <summary>Sets up the stream ready for a ReadNext</summary>
 void ArcSDEDataReader::PrepareStream ()
 {
@@ -187,12 +196,12 @@ void ArcSDEDataReader::PrepareStream ()
                 columnNames[i] = (CHAR*)alloca (SE_MAX_TABLE_LEN * sizeof(CHAR));
                 if (mSelectingAggregates)
                 {
-                FdoComputedIdentifier* computedId = dynamic_cast<FdoComputedIdentifier*>(propertyId.p);
-                FdoPtr<FdoExpression> fdoExpr = computedId->GetExpression();
-                FdoFunction *fdoFunction = dynamic_cast<FdoFunction*>(fdoExpr.p);
-                CHAR *mbName = NULL;
-                wide_to_multibyte(mbName, GetAggregateFunctionPropertyName(fdoFunction));
-                strcpy(columnNames[i], mbName);
+					FdoComputedIdentifier* computedId = dynamic_cast<FdoComputedIdentifier*>(propertyId.p);
+					FdoPtr<FdoExpression> fdoExpr = computedId->GetExpression();
+					FdoFunction *fdoFunction = dynamic_cast<FdoFunction*>(fdoExpr.p);
+					CHAR *mbName = NULL;
+					wide_to_multibyte(mbName, GetAggregateFunctionPropertyName(fdoFunction));
+					strcpy(columnNames[i], mbName);
                 }
                 else
                     mConnection->PropertyToColumn(columnNames[i], mClassDef, FdoPtr<FdoIdentifier>(FdoIdentifier::Create(fdoPropertyDef->GetName())));
@@ -378,6 +387,7 @@ void ArcSDEDataReader::getColumnDefs ()
     FdoInt32 numProperties = 0;
     SHORT numColumns = 0;
     SE_COLUMN_DEF column;
+
     FdoPtr<FdoPropertyDefinitionCollection> properties = mClassDef->GetProperties ();
 
     if (NULL == mColumnDefs)
@@ -423,7 +433,7 @@ void ArcSDEDataReader::getColumnDefs ()
                 FdoFunction* fdoFunction = dynamic_cast<FdoFunction*>( fdoExpr.p);
                 if (fdoFunction == NULL)
                     throw FdoCommandException::Create(NlsMsgGet(ARCSDE_UNEXPECTED_ERROR, "Unexpected error encountered in ArcSDE Provider."));
-                FdoString* propName = GetAggregateFunctionPropertyName(fdoFunction);
+				FdoString* propName = GetAggregateFunctionPropertyName(fdoFunction);
                 FdoPtr<FdoPropertyDefinition> propDef = properties->GetItem(propName);
                 FdoDataPropertyDefinition* prop = dynamic_cast<FdoDataPropertyDefinition*>(propDef.p);
                 if (prop == NULL) // arcsde aggregates operator only on data properties

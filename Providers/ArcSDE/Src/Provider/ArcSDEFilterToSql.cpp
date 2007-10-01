@@ -19,7 +19,84 @@
 
 #include "stdafx.h"
 #include "ArcSDEUtils.h"
+#include <sdetype.h>
 
+typedef struct _FunctionNameMapping_ {
+	FdoStringP		fdoName;
+	long			sdeId;
+} _FunctionNameMapping_; 
+
+// Mapping table between FDO function names and ArcSDE function ids (platform independent).
+static _FunctionNameMapping_ ArcSDEFunctionsMappings [] = {
+
+//  - Aggregate Functions
+	{FDO_FUNCTION_AVG,				SE_DBMS_FUNCTION_AVG},
+	{FDO_FUNCTION_COUNT,			SE_DBMS_FUNCTION_COUNT}, 
+	{FDO_FUNCTION_MAX,				SE_DBMS_FUNCTION_MAX},
+	{FDO_FUNCTION_MEDIAN			-1},
+	{FDO_FUNCTION_MIN,				SE_DBMS_FUNCTION_MIN},
+	{FDO_FUNCTION_SPATIALEXTENTS,	-1},
+	{FDO_FUNCTION_STDDEV,			SE_DBMS_FUNCTION_STDDEV},
+	{FDO_FUNCTION_SUM,				SE_DBMS_FUNCTION_SUM},
+
+//  - Conversion Functions
+	{FDO_FUNCTION_NULLVALUE,		SE_DBMS_FUNCTION_COALSCE},                                              
+	{FDO_FUNCTION_TODATE,			-1},
+	{FDO_FUNCTION_TODOUBLE,			-1}, 
+	{FDO_FUNCTION_TOFLOAT,			-1},
+	{FDO_FUNCTION_TOINT32,			-1}, 
+	{FDO_FUNCTION_TOINT64,			-1}, 
+	{FDO_FUNCTION_TOSTRING,			SE_DBMS_FUNCTION_CHR},
+
+//  - Date Function Names
+	{FDO_FUNCTION_ADDMONTHS,		-1}, 
+	{FDO_FUNCTION_CURRENTDATE,		-1}, 
+	{FDO_FUNCTION_EXTRACT,			-1},
+	{FDO_FUNCTION_MONTHSBETWEEN,	-1},
+
+//  - Mathematical Function Names
+	{FDO_FUNCTION_ABS,				SE_DBMS_FUNCTION_ABS},
+	{FDO_FUNCTION_ACOS,				SE_DBMS_FUNCTION_ACOS},
+	{FDO_FUNCTION_ASIN,				SE_DBMS_FUNCTION_ASIN},
+	{FDO_FUNCTION_ATAN,				SE_DBMS_FUNCTION_ATAN},
+	{FDO_FUNCTION_ATAN2,			-1},
+	{FDO_FUNCTION_COS,				SE_DBMS_FUNCTION_COS},
+	{FDO_FUNCTION_EXP,				SE_DBMS_FUNCTION_POWER},
+	{FDO_FUNCTION_LN,				SE_DBMS_FUNCTION_LN},
+	{FDO_FUNCTION_LOG,				SE_DBMS_FUNCTION_LOG},
+	{FDO_FUNCTION_MOD,				SE_DBMS_FUNCTION_MOD},
+	{FDO_FUNCTION_POWER,			SE_DBMS_FUNCTION_POWER},
+	{FDO_FUNCTION_REMAINDER,		-1}, 
+	{FDO_FUNCTION_SIN,				SE_DBMS_FUNCTION_SIN},
+	{FDO_FUNCTION_SQRT,				-1},    
+	{FDO_FUNCTION_TAN,				SE_DBMS_FUNCTION_TAN},
+
+//  - Numeric function names
+	{FDO_FUNCTION_CEIL,				SE_DBMS_FUNCTION_CEIL},
+	{FDO_FUNCTION_FLOOR,			SE_DBMS_FUNCTION_FLOOR},
+	{FDO_FUNCTION_ROUND,			SE_DBMS_FUNCTION_ROUND},
+	{FDO_FUNCTION_SIGN,				SE_DBMS_FUNCTION_SIGN},
+	{FDO_FUNCTION_TRUNC,			SE_DBMS_FUNCTION_TRUNC},
+
+//  - Strings function names
+	{FDO_FUNCTION_CONCAT,			SE_DBMS_FUNCTION_CONCAT},
+	{FDO_FUNCTION_INSTR,			SE_DBMS_FUNCTION_POSITION},
+	{FDO_FUNCTION_LENGTH,			SE_DBMS_FUNCTION_LENGTH},
+	{FDO_FUNCTION_LOWER,			SE_DBMS_FUNCTION_LOWERCASE},
+	{FDO_FUNCTION_LPAD,				-1},       
+	{FDO_FUNCTION_LTRIM,			SE_DBMS_FUNCTION_LTRIM},
+	{FDO_FUNCTION_RPAD,				-1},
+	{FDO_FUNCTION_RTRIM,			SE_DBMS_FUNCTION_RTRIM},
+	{FDO_FUNCTION_SOUNDEX,			SE_DBMS_FUNCTION_SOUNDEX},
+	{FDO_FUNCTION_SUBSTR,			SE_DBMS_FUNCTION_SUBSTR},
+	{FDO_FUNCTION_TRANSLATE,		SE_DBMS_FUNCTION_TRANSLATE},
+	{FDO_FUNCTION_TRIM,				SE_DBMS_FUNCTION_TRIM},
+	{FDO_FUNCTION_UPPER,			SE_DBMS_FUNCTION_UPPERCASE},
+
+//  - Geometry function names
+	{FDO_FUNCTION_AREA2D,			-1},
+	{FDO_FUNCTION_LENGTH2D,			-1},
+};
 
 ArcSDEFilterToSql::ArcSDEFilterToSql (ArcSDEConnection *conn, FdoClassDefinition* definition)
 {
@@ -108,14 +185,134 @@ void ArcSDEFilterToSql::ProcessUnaryExpression (FdoUnaryExpression& expr)
         throw FdoFilterException::Create (NlsMsgGet(ARCSDE_UNSUPPORTED_UNARY_EXPRESSION, "The given unary expression is not supported."));
 }
 
+/// <summary>Checks FdoFunction passed in as an argument.</summary>
+/// <param name="expr">Input expresion</param> 
+/// <returns>Returns the index in the mapping table. -1 if not found</returns> 
+int ArcSDEFilterToSql::GetSDEFunctionIndex (FdoFunction& expr)
+{
+	int			sdeId = -1;
+	FdoString*	fdoName = expr.GetName ();
+	
+	// Look up for the matching ArcASE function id
+	int		nFuncs = sizeof(ArcSDEFunctionsMappings)/sizeof(_FunctionNameMapping_);
+	int		index = -1;
+
+	for ( int i = 0; i < nFuncs && ( index == -1 ); i++ )
+	{
+		if (wcscmp( ArcSDEFunctionsMappings[i].fdoName, fdoName) == 0 )
+			index = i;
+	}
+	if ( index != -1 )
+		sdeId = ArcSDEFunctionsMappings[index].sdeId;
+
+	return sdeId;
+}
+
+/// <summary>Checks the expression passed in as an argument for validity, wrt the natively supported functions.</summary>
+/// <param name="expr">Input expresion</param> 
+/// <returns>Nothing. Throws an exception if the expression is not valid</returns> 
+void ArcSDEFilterToSql::IsSDEValidExpression (FdoExpression *expr)
+{
+	FdoFunction* fdoFunction = dynamic_cast<FdoFunction*>(expr);
+	
+	if ( fdoFunction )
+	{
+		int index = GetSDEFunctionIndex( *fdoFunction );
+
+		if ( -1 == GetSDEFunctionIndex( *fdoFunction ) )
+			throw FdoException::Create(NlsMsgGet1(ARCSDE_FUNCTION_NOT_FOUND_OR_WRONG_TYPE, "The given function '%1$ls' was not found or is of the wrong type.", fdoFunction->GetName()));
+
+		// Recurse...
+		FdoPtr<FdoExpressionCollection> exprCol = fdoFunction->GetArguments();
+		for ( int i = 0; i < exprCol->GetCount(); i++ )
+		{
+			FdoPtr<FdoExpression>	exp = exprCol->GetItem( i );
+			IsSDEValidExpression( exp );
+		}
+	}
+	else if ( FdoCommonOSUtil::wcsicmp(expr->ToString(), L"'distinct'") == 0 )
+	{
+		// ArcSDE doesn't support grouping, therefore doesn't support 'distinct' option on the functions.
+		throw FdoCommandException::Create(NlsMsgGet(ARCSDE_SELECT_DISTINCT_NOT_SUPPORTED_AS_OPTION, "ArcSDE does not support 'distinct' function option."));
+	}
+}
+
+/// <summary>Validate the computed identifiers wrt the natively supported functions</summary>
+/// <returns> True if all expresions are supported, false otherwise. In addition, 2 output flags. </returns>
+bool ArcSDEFilterToSql::ContainsSDEValidExpressionsOnly(FdoFilter *filter, FdoIdentifierCollection* selectIds, bool& filterValid, bool& selectListValid)
+{
+	bool bIsValid = true;
+
+	filterValid = true;
+	selectListValid = true;
+
+	try
+	{
+		if ( filter )
+			HandleFilter (filter);
+	}
+	catch (FdoException* ex)
+	{
+		ex->Release();
+		filterValid = false;
+	}
+
+    // Validate that mSelectIds contains valid entries. Computed identifiers are supported.
+	int	nProps = selectIds ? selectIds->GetCount() : 0;
+    for ( FdoInt32 i = 0; i < nProps; i++ )
+    {
+        FdoPtr<FdoIdentifier> pPropertyId = selectIds->GetItem(i);
+		FdoComputedIdentifier* pComputedId = dynamic_cast<FdoComputedIdentifier*>(pPropertyId.p);
+		
+		// Validate
+        if ( pComputedId )
+		{
+			try
+			{
+				FdoPtr<FdoExpression> computedExpr = pComputedId->GetExpression();
+				IsSDEValidExpression (computedExpr);
+			}
+			catch (FdoException* ex)
+			{
+				ex->Release();
+				selectListValid = false;
+			}
+		}
+	}
+	return (filterValid) && (selectListValid);
+}
+
 /// <summary>Processes the FdoFunction passed in as an argument.</summary>
 /// <param name="expr">Input function</param> 
 /// <returns>Returns nothing</returns> 
-void ArcSDEFilterToSql::ProcessFunction (FdoFunction& expr)
+void ArcSDEFilterToSql::ProcessFunction (FdoFunction& func)
 {
-    AppendString (expr.GetName ());
+	// The expression has been checked up front for supported functions. 
+	int sdeFuncId = GetSDEFunctionIndex ( func );
+
+	if ( -1 == sdeFuncId )
+		throw FdoException::Create(NlsMsgGet1(ARCSDE_FUNCTION_NOT_FOUND_OR_WRONG_TYPE, "The given function '%1$ls' was not found or is of the wrong type.", func.GetName()));
+
+	// Get the function name. This depends on the underlying rdbms.
+	char sdeFuncName[SE_MAX_FUNCTION_LEN];
+	long result = SE_connection_get_sql_info(m_Connection->GetConnection (), sdeFuncId, sdeFuncName);
+	handle_sde_err<FdoCommandException> (m_Connection->GetConnection (), result, __FILE__, __LINE__, ARCSDE_STREAM_ALLOC, "Cannot find function.");
+
+	FdoStringP	sdeName = FdoStringP(sdeFuncName);
+
+    AppendString (sdeName);
     AppendString (OPEN_PAREN);
-    expr.Process (this);
+
+    FdoPtr<FdoExpressionCollection> exprCol = func.GetArguments();
+    for(int i=0; i<exprCol->GetCount(); i++ )
+    {
+        if( i!= 0 )
+            AppendString(COMMA);
+
+        FdoPtr<FdoExpression>exp = exprCol->GetItem( i );
+        HandleExpr( exp );
+    }
+
     AppendString (CLOSE_PAREN);
 }
 
@@ -137,7 +334,12 @@ void ArcSDEFilterToSql::ProcessIdentifier (FdoIdentifier& expr)
         AppendString (L".");
     }
 
-    AppendString (expr.GetName ());
+	// Get the column name
+	CHAR column[SE_QUALIFIED_COLUMN_LEN];
+	m_Connection->PropertyToColumn(column, mDefinition, &expr);
+	
+	FdoStringP	colName = FdoStringP(column);
+    AppendString (colName);
 }
 
 /// <summary>Processes the FdoParameter passed in as an argument.</summary>
