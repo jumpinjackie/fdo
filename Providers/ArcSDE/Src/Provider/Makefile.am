@@ -156,7 +156,7 @@ INCLUDES = \
   -I$(FDOTHIRDPARTY)/ESRI/ArcSDEClient91/Linux/include \
   -I$(SDEHOME)/include \
   -I$(FDOUTILITIES)/Common/Inc \
-  -I$(FDOUTILITIES)/ExpressionEngine/inc \
+  -I$(FDOUTILITIES)/ExpressionEngine/Inc \
   -I../../Inc
 
 libArcSDEProvider91_la_LIBADD =  \
