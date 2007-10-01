@@ -16,7 +16,6 @@
 #ifndef FdoExpressionEngineUtilFeatureReader_H
 #define FdoExpressionEngineUtilFeatureReader_H
 
-#include <Util/FdoExpressionEngineUtilDataReader.h>
 #include <FdoExpressionEngine.h>
 
 
