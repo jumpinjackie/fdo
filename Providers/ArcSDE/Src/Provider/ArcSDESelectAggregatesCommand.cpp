@@ -20,7 +20,7 @@
 #include "stdafx.h"
 #include "ArcSDESelectAggregatesCommand.h"
 #include "ArcSDEDataReader.h"
-#include "Util/FdoExpressionEngineUtilFeatureReader.h"
+#include "Util/FdoExpressionEngineUtilDataReader.h"
 #include "FdoExpressionEngine.h"
 
 
