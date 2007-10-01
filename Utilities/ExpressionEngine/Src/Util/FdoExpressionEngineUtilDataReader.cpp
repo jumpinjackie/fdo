@@ -220,6 +220,9 @@ FdoCommonBinaryReader* FdoExpressionEngineUtilDataReader::perform_checks (
 
     ok = false;
     ps = m_propIndex->GetPropInfo (property_name);
+	if (ps == NULL )
+		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_74_PROPERTY_NAME_NOT_FOUND), property_name));
+
     for (int i = 0; i < type_count && !ok; i++)
         if (ps->m_dataType == types[i])
             ok = true;
