@@ -82,11 +82,12 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug|x64"
-			OutputDirectory="Lib/Win64/Debug"
-			IntermediateDirectory="Obj/Win64/Debug"
+			Name="Release|Win32"
+			OutputDirectory="Lib/Win32/Release"
+			IntermediateDirectory="Obj/Win32/Release"
 			ConfigurationType="4"
 			CharacterSet="1"
+			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -102,16 +103,12 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TargetEnvironment="3"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="0"
 				AdditionalIncludeDirectories="inc;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDO)\Unmanaged\Src\common&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;"
-				PreprocessorDefinitions="WIN32;_WIN64_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
+				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -146,12 +143,11 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="Lib/Win32/Release"
-			IntermediateDirectory="Obj/Win32/Release"
+			Name="Debug|x64"
+			OutputDirectory="Lib/Win64/Debug"
+			IntermediateDirectory="Obj/Win64/Debug"
 			ConfigurationType="4"
 			CharacterSet="1"
-			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -167,12 +163,16 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
+				TargetEnvironment="3"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="0"
 				AdditionalIncludeDirectories="inc;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDO)\Unmanaged\Src\common&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
-				RuntimeLibrary="2"
+				PreprocessorDefinitions="WIN32;_WIN64_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -309,7 +309,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -317,7 +317,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
+					Name="Debug|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -596,6 +596,10 @@
 			<Filter
 				Name="Util"
 				>
+				<File
+					RelativePath=".\Src\Util\FdoExpressionEngineUtiFeatureReader.cpp"
+					>
+				</File>
 				<File
 					RelativePath=".\Src\Util\FdoExpressionEngineUtilDataReader.cpp"
 					>
@@ -900,6 +904,10 @@
 				>
 				<File
 					RelativePath=".\Inc\Util\FdoExpressionEngineUtilDataReader.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Inc\Util\FdoExpressionEngineUtilFeatureReader.h"
 					>
 				</File>
 			</Filter>
