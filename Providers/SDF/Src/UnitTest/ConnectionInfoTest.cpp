@@ -17,8 +17,8 @@
 #include "ConnectionInfoTest.h"
 #include "SDF/SdfCommandType.h"
 #include "SDF/ICreateSDFFile.h"
-#include "e:/slate/Utilities/ExpressionEngine/inc/Functions/Conversion/FdoFunctionToString.h"
-#include "e:/slate/Utilities/ExpressionEngine/inc/Functions/Conversion/FdoFunctionToDate.h"
+#include "Functions/Conversion/FdoFunctionToString.h"
+#include "Functions/Conversion/FdoFunctionToDate.h"
 
 #ifdef _WIN32
 const wchar_t* CI_TEST_FILE = L"..\\..\\TestData\\SelectTest.SDX";
