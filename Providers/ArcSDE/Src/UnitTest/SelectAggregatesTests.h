@@ -28,9 +28,9 @@ class SelectAggregatesTests :
     public ArcSDETests
 {
     CPPUNIT_TEST_SUITE (SelectAggregatesTests);
-    CPPUNIT_TEST (test_distinct);
+ //   CPPUNIT_TEST (test_distinct);
     CPPUNIT_TEST (test_aggregate_functions);
-    CPPUNIT_TEST (test_orderby);
+ //   CPPUNIT_TEST (test_orderby);
     CPPUNIT_TEST_SUITE_END ();
 
     static FdoPtr<FdoIConnection> mConnection;

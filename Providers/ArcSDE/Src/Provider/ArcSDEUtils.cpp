@@ -1866,8 +1866,10 @@ bool IsAggregateFunction(const wchar_t* functionName)
         || (0==wcscmp(functionName, FDO_FUNCTION_MIN))
         || (0==wcscmp(functionName, FDO_FUNCTION_AVG))
         || (0==wcscmp(functionName, FDO_FUNCTION_MAX))
-        || (0==wcscmp(functionName, ARCSDE_FUNCTION_STDDEV))
-        || (0==wcscmp(functionName, FDO_FUNCTION_SUM));
+        || (0==wcscmp(functionName, FDO_FUNCTION_STDDEV))
+        || (0==wcscmp(functionName, FDO_FUNCTION_SUM))
+		|| (0==wcscmp(functionName, FDO_FUNCTION_MEDIAN))
+		|| (0==wcscmp(functionName, FDO_FUNCTION_SPATIALEXTENTS)); // Not supported natively
 }
 
 
@@ -1889,7 +1891,7 @@ LONG GetAggregateSdeStatsMask(FdoString* aggrFunctionName)
         return SE_AVERAGE_STATS;
     else if (0==wcscmp(aggrFunctionName, FDO_FUNCTION_MAX))
         return SE_MAX_STATS;
-    else if (0==wcscmp(aggrFunctionName, ARCSDE_FUNCTION_STDDEV))
+    else if (0==wcscmp(aggrFunctionName, FDO_FUNCTION_STDDEV))
         return SE_STD_DEV_STATS;
     else if (0==wcscmp(aggrFunctionName, FDO_FUNCTION_SUM))
         return SE_AVERAGE_STATS | SE_COUNT_STATS; // need both since sum = avg * count
@@ -1910,7 +1912,7 @@ double GetAggregateValueDouble(SE_STATS* stats, FdoString* aggrFunctionName)
         return stats->average;
     else if (0==wcscmp(aggrFunctionName, FDO_FUNCTION_MAX))
         return stats->max;
-    else if (0==wcscmp(aggrFunctionName, ARCSDE_FUNCTION_STDDEV))
+    else if (0==wcscmp(aggrFunctionName, FDO_FUNCTION_STDDEV))
         return stats->std_dev;
     else if (0==wcscmp(aggrFunctionName, FDO_FUNCTION_SUM))
         return stats->average * stats->count;
@@ -1945,10 +1947,29 @@ FdoString* GetAggregateFunctionName(FdoIdentifier *id)
 // Get the property name the given aggregate function operates on:
 FdoString* GetAggregateFunctionPropertyName(FdoFunction *fdoFunction)
 {
+	FdoPtr<FdoExpression> fdoFunctionExpr;
+
     FdoPtr<FdoExpressionCollection> fdoFunctionArgs = fdoFunction->GetArguments();
     if (fdoFunctionArgs->GetCount() != 1)  // arcsde aggregates only operate on one column at a time
-        throw FdoCommandException::Create(NlsMsgGet1(ARCSDE_FUNCTION_WRONG_NUM_ARGUMENTS, "Wrong number of arguments passed to function '%1$ls'.", fdoFunction->GetName()));
-    FdoPtr<FdoExpression> fdoFunctionExpr = fdoFunctionArgs->GetItem(0);
+	{
+		if ( fdoFunctionArgs->GetCount() == 2 )
+		{
+			// 'distinct' argument?
+			fdoFunctionExpr = fdoFunctionArgs->GetItem(0);
+			if (FdoCommonOSUtil::wcsicmp(fdoFunctionExpr->ToString(), L"'distinct'") == 0 )
+				throw FdoCommandException::Create(NlsMsgGet(ARCSDE_SELECT_DISTINCT_NOT_SUPPORTED_AS_OPTION, "ArcSDE does not support 'distinct' function option."));
+			else if ( FdoCommonOSUtil::wcsicmp(fdoFunctionExpr->ToString(), L"'all'") != 0 )
+				throw FdoCommandException::Create(NlsMsgGet1(ARCSDE_FUNCTION_WRONG_NUM_ARGUMENTS, "Wrong number of arguments passed to function '%1$ls'.", fdoFunction->GetName()));		
+			else
+				fdoFunctionExpr = fdoFunctionArgs->GetItem(1); // pick the 2nd argument
+		}
+		else
+			throw FdoCommandException::Create(NlsMsgGet1(ARCSDE_FUNCTION_WRONG_NUM_ARGUMENTS, "Wrong number of arguments passed to function '%1$ls'.", fdoFunction->GetName()));
+	}
+	else
+	{
+		fdoFunctionExpr = fdoFunctionArgs->GetItem(0);
+	}
     FdoIdentifier* fdoFunctionArg = dynamic_cast<FdoIdentifier*>(fdoFunctionExpr.p);
     if (fdoFunctionArg == NULL)  // arcsde aggregates only operate on property names (identifiers)
         throw FdoCommandException::Create(NlsMsgGet1(ARCSDE_FUNCTION_WRONG_ARG_TYPE, "Aggregate function argument was not of expected type '%1$ls'.", L"FdoIdentifier"));

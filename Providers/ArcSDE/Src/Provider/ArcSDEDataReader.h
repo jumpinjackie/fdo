@@ -76,7 +76,10 @@ public:
     /// <returns>Returns true if there is a next item.</returns> 
     virtual bool ReadNext ();
 
-    
+    /// <summary>Validate the computed identifiers wrt the natively supported functions</summary>
+	/// <returns>Returns TRUE if the query contains only valid functions and excpressions, FALSE otherwise.</returns> 
+	bool ContainsSDEValidExpressionsOnly (bool& filterValid, bool& selectListValid);
+
 protected:
 	ArcSDEDataReader() {};
     virtual void PrepareStream ();

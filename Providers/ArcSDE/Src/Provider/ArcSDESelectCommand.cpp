@@ -20,7 +20,8 @@
 #include "stdafx.h"
 #include "ArcSDESelectCommand.h"
 #include "ArcSDEFeatureReader.h"
-
+#include "Util/FdoExpressionEngineUtilFeatureReader.h"
+#include "FdoExpressionEngine.h"
 
 ArcSDESelectCommand::ArcSDESelectCommand (FdoIConnection *connection) :
     ArcSDEFeatureCommand<FdoISelect> (connection),
@@ -146,15 +147,52 @@ FdoIFeatureReader* ArcSDESelectCommand::Execute ()
     // get any filtering
     filter = GetFilter ();
 
-    // create the feature reader
-    ret = new ArcSDEFeatureReader (connection, definition, filter, mPropertiesToSelect);
-#ifdef MIMIC_OTHER_PROVIDER
-    // SPR 612054 SelectCommand error reporting inconsistency with the Oracle Provider when using invalid property name in filter.
-    // we call prepare stream to discover errors now, rather than at ReadNext() time
-    ret->PrepareStream ();
-#endif // MIMIC_RDBMS
+    // Validate that there are no aggregate functions:
+    FdoCommonExpressionType exprType;
 
-    return (FDO_SAFE_ADDREF (ret.p));
+	FdoPtr<FdoIExpressionCapabilities> expressCaps = connection->GetExpressionCapabilities();
+	FdoPtr<FdoFunctionDefinitionCollection> funcDefs = expressCaps->GetFunctions();
+    FdoPtr< FdoArray<FdoFunction*> > functions = FdoExpressionEngineUtilDataReader::GetAggregateFunctions(funcDefs, mPropertiesToSelect, exprType);
+    if (exprType == FdoCommonExpressionType_Aggregate)
+        throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_182_AGGREGATE_IN_SELECT, "Aggregate functions are not supported by the Select command; use the SelectAggregates command instead."));
+
+
+	// Create the feature reader
+	ret = new ArcSDEFeatureReader (connection, definition, filter, mPropertiesToSelect); 
+
+	bool filterValid, selectListValid;
+	if ( ret->ContainsSDEValidExpressionsOnly (filterValid, selectListValid) )
+	{
+#ifdef MIMIC_OTHER_PROVIDER
+		// SPR 612054 SelectCommand error reporting inconsistency with the Oracle Provider when using invalid property name in filter.
+		// we call prepare stream to discover errors now, rather than at ReadNext() time
+		ret->PrepareStream ();
+		return (FDO_SAFE_ADDREF (ret.p));
+
+#endif // MIMIC_OTHER_PROVIDER
+	}
+	else
+	{
+		FdoPtr<ArcSDEFeatureReader> sub_reader;
+		FdoPtr<FdoIFeatureReader>	reader;
+
+		// Delegate processing to the Expression engine.
+		// TODO: add userDefinedFunctions for AREA2D() and LENGTH2D()
+		if ( filterValid )
+		{
+			// CASE 1: the filter is supported. Create a new sub-reader over all properties with the filter.
+			sub_reader = new ArcSDEFeatureReader (connection, definition, filter, NULL); 
+			reader = new FdoExpressionEngineUtilFeatureReader (definition, sub_reader, NULL, mPropertiesToSelect, NULL /* user defined funcs*/);
+		}
+		else
+		{
+			// CASE 2: the filter is not supported. Create a new sub-reader with no filtering over all properties.
+			sub_reader = new ArcSDEFeatureReader (connection, definition, NULL, NULL); 
+			reader = new FdoExpressionEngineUtilFeatureReader (definition, sub_reader, filter, mPropertiesToSelect, NULL /* user defined funcs*/);
+		}
+
+		return FDO_SAFE_ADDREF(reader.p);	
+	}
 }
 
 /// <summary>Executes the select command and returns a reference to an

@@ -550,6 +550,7 @@ static FdoStringP ClassSchema##CLASSMETHODNAME() { return FdoStringP::Format(L"%
 static FdoStringP ClassName##CLASSMETHODNAME()  { return AdjustRdbmsName(REALCLASSNAME); } \
 static FdoStringP QClassName##CLASSMETHODNAME() { return FdoStringP::Format(L"%ls:%ls", (FdoString*)ClassSchema##CLASSMETHODNAME(), (FdoString*)ClassName##CLASSMETHODNAME()); }
 
+    DECLARE_CLASS(Sde, Metadcov, TestClassFunctions, L"");
     DECLARE_CLASS(Sde, Metadcov, TestClassSimple, L"TESTA");
     DECLARE_CLASS(Sde, Metadcov, Trees, L"TREES");
     DECLARE_CLASS(Sde, Metadcov, TestClassNew, L"TestClassNew");

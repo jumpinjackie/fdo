@@ -20,6 +20,8 @@
 #include "stdafx.h"
 #include "ArcSDESelectAggregatesCommand.h"
 #include "ArcSDEDataReader.h"
+#include "Util/FdoExpressionEngineUtilFeatureReader.h"
+#include "FdoExpressionEngine.h"
 
 
 ArcSDESelectAggregatesCommand::ArcSDESelectAggregatesCommand (FdoIConnection *connection) :
@@ -75,18 +77,64 @@ FdoIDataReader* ArcSDESelectAggregatesCommand::Execute ()
     filter = GetFilter ();
 
     // create the feature reader
-    ret = new ArcSDEDataReader (connection, definition, filter, mPropertiesToSelect,
-        m_bDistinct, m_eOrderingOption, m_OrderingIds, m_GroupingFilter, m_GroupingIds);
+	bool filterValid, selectListValid;
+
+	ret = new ArcSDEDataReader (connection, definition, filter, mPropertiesToSelect,
+			m_bDistinct, m_eOrderingOption, m_OrderingIds, m_GroupingFilter, m_GroupingIds);
+
+	if ( ret->ContainsSDEValidExpressionsOnly (filterValid, selectListValid) )
+	{
 #ifdef MIMIC_OTHER_PROVIDER
-    // SPR 612054 SelectCommand error reporting inconsistency with the Oracle Provider when using invalid property name in filter.
-    // we call prepare stream to discover errors now, rather than at ReadNext() time
-    ret->PrepareStream ();
+		// SPR 612054 SelectCommand error reporting inconsistency with the Oracle Provider when using invalid property name in filter.
+		// we call prepare stream to discover errors now, rather than at ReadNext() time
+		ret->PrepareStream ();
+		return (FDO_SAFE_ADDREF (ret.p));
 #endif // MIMIC_RDBMS
+	}
+	else
+	{
+		// transfer over the identifiers to the basic select command:
+		FdoPtr<FdoIdentifierCollection> propertiesToSelect = FdoIdentifierCollection::Create();
+		FdoPtr<FdoPropertyDefinitionCollection> propDefs = definition->GetProperties();
+		for (int i=0; i<propDefs->GetCount(); i++)
+		{
+			FdoPtr<FdoPropertyDefinition> propDef = propDefs->GetItem(i);
+			FdoPtr<FdoIdentifier> localId = FdoIdentifier::Create(propDef->GetName());
+			propertiesToSelect->Add(localId);
+		}
+		FdoPtr<FdoReadOnlyPropertyDefinitionCollection> basePropDefs = definition->GetBaseProperties();
+		for (int i=0; i<basePropDefs->GetCount(); i++)
+		{
+			FdoPtr<FdoPropertyDefinition> basePropDef = basePropDefs->GetItem(i);
+			FdoPtr<FdoIdentifier> localId = FdoIdentifier::Create(basePropDef->GetName());
+			propertiesToSelect->Add(localId);
+		}
 
-    return (FDO_SAFE_ADDREF (ret.p));
+		FdoPtr<ArcSDEDataReader> sub_reader;
+		FdoPtr<FdoIDataReader>	 reader;
+
+		FdoCommonExpressionType exprType;
+		FdoPtr<FdoIExpressionCapabilities> expressionCaps = connection->GetExpressionCapabilities();
+		FdoPtr<FdoFunctionDefinitionCollection> functions = expressionCaps->GetFunctions();
+		FdoPtr< FdoArray<FdoFunction*> > aggrIdents = FdoExpressionEngineUtilDataReader::GetAggregateFunctions(functions, mPropertiesToSelect, exprType);
+
+		// Delegate processing to the Expression engine.
+		if ( filterValid )
+		{
+			// CASE 1: the filter is supported. Create a new sub-reader over all properties with the filter.
+			sub_reader = new ArcSDEDataReader (connection, definition, filter, NULL, false, m_eOrderingOption, NULL, NULL, NULL);
+			reader = new FdoExpressionEngineUtilDataReader(functions, sub_reader, definition, mPropertiesToSelect/*propertiesToSelect*/, m_bDistinct, m_OrderingIds, m_eOrderingOption, mPropertiesToSelect, aggrIdents);
+		}
+		else
+		{
+			// CASE 2: the filter is not supported. Create a new sub-reader with no filtering over all properties.
+			sub_reader = new ArcSDEDataReader (connection, definition, NULL, NULL, false, m_eOrderingOption, NULL, NULL, NULL);
+			reader = new FdoExpressionEngineUtilDataReader(functions, sub_reader, definition, mPropertiesToSelect, m_bDistinct, m_OrderingIds, m_eOrderingOption, NULL/*ids*/, aggrIdents);
+		}
+
+		return FDO_SAFE_ADDREF(reader.p);
+	}
 }
-
-
 
 /// <summary>Set the distinct option of the selection. Note that grouping criteria is not supported with Distinct. 
 /// Non-simple properties such as object properties, geometry properties, raster properties, association properties, etc. will not be supported with Distinct.</summary>
