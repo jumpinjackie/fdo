@@ -136,7 +136,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories=".\;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient92\Windows\include&quot;;&quot;$(SDEHOME)\include&quot;;..\..\inc;&quot;$(FDOUTILITIES)\Common\inc&quot;"
+				AdditionalIncludeDirectories=".\;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient92\Windows\include&quot;;&quot;$(SDEHOME)\include&quot;;..\..\inc;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;ARCSDEPROVIDER_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				RuntimeLibrary="2"
