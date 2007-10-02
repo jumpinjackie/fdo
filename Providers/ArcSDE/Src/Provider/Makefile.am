@@ -161,6 +161,7 @@ INCLUDES = \
 
 libArcSDEProvider91_la_LIBADD =  \
   $(FDO)/Unmanaged/Src/libFDO.la \
+  $(FDOUTILITIES)/ExpressionEngine/Src/libExpressionEngine.la \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
   -lpe91 \
   -lsde91 \
