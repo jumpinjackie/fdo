@@ -61,3 +61,13 @@
 #include <crtdbg.h>  // for _crtSetDbgFlag() and _CrtCheckMemory() and _ASSERTE
 #endif
 
+#ifdef WIN32
+#include <hash_map>
+#include <functional>
+#else
+#include <ext/hash_map>
+#include <ext/functional>
+namespace stdext = ::__gnu_cxx;
+using namespace std;
+#endif
+
