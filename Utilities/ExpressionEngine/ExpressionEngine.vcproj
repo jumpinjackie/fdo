@@ -597,11 +597,11 @@
 				Name="Util"
 				>
 				<File
-					RelativePath=".\Src\Util\FdoExpressionEngineUtiFeatureReader.cpp"
+					RelativePath=".\Src\Util\FdoExpressionEngineUtilDataReader.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\Src\Util\FdoExpressionEngineUtilDataReader.cpp"
+					RelativePath=".\Src\Util\FdoExpressionEngineUtilFeatureReader.cpp"
 					>
 				</File>
 			</Filter>
