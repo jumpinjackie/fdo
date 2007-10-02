@@ -27,8 +27,10 @@
 
 #include "SdfDataValidator.h"
 
-SdfIndexedScrollableFeatureReader::SdfIndexedScrollableFeatureReader(SdfConnection* srcConnection, FdoClassDefinition* srcClass, REC_NO *table, int tableSize  )
-: SdfSimpleFeatureReader(srcConnection, srcClass, NULL, NULL, NULL, NULL)
+SdfIndexedScrollableFeatureReader::SdfIndexedScrollableFeatureReader(SdfConnection* srcConnection, FdoClassDefinition* srcClass, 
+										FdoIdentifierCollection* selectIdents, FdoPropertyDefinitionCollection* computedProps, 
+										REC_NO *table, int tableSize  )
+: SdfSimpleFeatureReader(srcConnection, srcClass, NULL, NULL, selectIdents, computedProps)
 {
     m_IndexTable = table;  // Transfer the ownership of this array; need to be freed by this class
 	m_TableSize = tableSize;

@@ -381,7 +381,7 @@ SdfIScrollableFeatureReader* SdfImpExtendedSelect::ExecuteFastScrollable( )
 	}
 	maxsize = i;
 	return new SdfImpScrollableFeatureReader<SdfIndexedScrollableFeatureReader>(new SdfIndexedScrollableFeatureReader( 
-                        m_connection,cls,indexTable, maxsize) );
+                        m_connection,cls,NULL,NULL,indexTable, maxsize) );
 }
 
 SdfIScrollableFeatureReader* SdfImpExtendedSelect::ExecuteScrollable()
@@ -389,7 +389,7 @@ SdfIScrollableFeatureReader* SdfImpExtendedSelect::ExecuteScrollable()
 	const wchar_t*	tmpStr;
 	BinaryReader	rdr1;
 	FdoPtr<SdfSimpleFeatureReader> reader;
-
+	FdoPtr<FdoIdentifierCollection> selectList;
 	SQLiteData		key;
     SQLiteData		data;
 
@@ -400,9 +400,11 @@ SdfIScrollableFeatureReader* SdfImpExtendedSelect::ExecuteScrollable()
    m_connection->FlushAll( cls );
 
 
+    selectList = GetPropertyNames();
     FdoPtr<FdoClassDefinition> base = cls->GetBaseClass();
     SdfIScrollableFeatureReader *fastScrollable = NULL;
-    if( this->m_filter == NULL && m_orderingProperties->GetCount() == 0 && base == NULL )
+    if( this->m_filter == NULL && m_orderingProperties->GetCount() == 0 && base == NULL && 
+								selectList->GetCount() == 0 )
         fastScrollable = ExecuteFastScrollable();
 
     if( NULL != fastScrollable )
@@ -415,7 +417,7 @@ SdfIScrollableFeatureReader* SdfImpExtendedSelect::ExecuteScrollable()
 
 	int maxsize = *((int*)key.get_data());
 
-	bool getAll = ( this->m_filter == NULL );
+	bool getAll = ( this->m_filter == NULL && selectList->GetCount() == 0 );
 
 	if( ! getAll )
 	{
@@ -511,6 +513,60 @@ SdfIScrollableFeatureReader* SdfImpExtendedSelect::ExecuteScrollable()
 		        for(int j=0; j<ctx.propCount; j++ )
 		        {
 			        PropertyStub  *ps = propStubs[j];
+					if( ps == NULL )
+					{
+						// It's a computed identifier; need to call the reader to get the value and type.
+						FdoPtr<FdoLiteralValue> results = reader->GetComputedIdentifierValue( ctx.names[j] );
+						if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
+						{
+							FdoDataValue *dataValue = static_cast<FdoDataValue *> (results.p);
+							ctx.propCache[i][j].type = dataValue->GetDataType();
+							switch ( dataValue->GetDataType() )
+							{
+								  case FdoDataType_Boolean : 
+									  ctx.propCache[i][j].value.intVal = (static_cast<FdoBooleanValue *>(dataValue))->GetBoolean();
+									  break;
+
+								  case FdoDataType_DateTime :
+									  ctx.propCache[i][j].value.dateVal = new FdoDateTime();
+									  *ctx.propCache[i][j].value.dateVal = (static_cast<FdoDateTimeValue *>(dataValue))->GetDateTime();
+									  break;
+
+								  case FdoDataType_Decimal :	
+									  ctx.propCache[i][j].value.dblVal = (static_cast<FdoSingleValue *>(dataValue))->GetSingle();
+									  break;
+
+								  case FdoDataType_Double :
+									  ctx.propCache[i][j].value.dblVal = (static_cast<FdoDoubleValue *>(dataValue))->GetDouble();
+									  break;
+
+								  case FdoDataType_Int32 : 
+									  ctx.propCache[i][j].value.intVal = (static_cast<FdoInt32Value *>(dataValue))->GetInt32();
+									  break;
+
+								  case FdoDataType_Int64 : 
+									  ctx.propCache[i][j].value.int64Val = (static_cast<FdoInt64Value *>(dataValue))->GetInt64();
+									  break;
+
+								  case FdoDataType_Single :
+									  ctx.propCache[i][j].value.dblVal = (static_cast<FdoSingleValue *>(dataValue))->GetSingle();
+									  break;
+
+								  case FdoDataType_String : 
+									  {
+									  FdoStringValue *stringValue = static_cast<FdoStringValue *>(dataValue);
+									  ctx.propCache[i][j].value.strVal = new wchar_t[wcslen(stringValue->GetString())+1];
+									  wcscpy( ctx.propCache[i][j].value.strVal , stringValue->GetString() );
+									  }
+									  break;
+
+								  default:
+									  throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_14_UNKNOWN_DATA_TYPE)));
+									  break;
+							}
+						}
+						continue;
+					}
 			        int len1 = PositionReader( ps->m_recordIndex, &rdr1, pi, pdata->get_size() );
 			        if( len1 == 0 )
 			        {
@@ -639,7 +695,29 @@ SdfIScrollableFeatureReader* SdfImpExtendedSelect::ExecuteScrollable()
 	}
     if( ctx.propCache != NULL )
 	    delete[] ctx.propCache;
-	return new SdfImpScrollableFeatureReader<SdfIndexedScrollableFeatureReader>(new SdfIndexedScrollableFeatureReader( m_connection,cls,sortedTable, maxsize) );
+
+	FdoPtr<FdoPropertyDefinitionCollection> computedProps;
+	if( selectList->GetCount() != 0 )
+	{
+		FdoPtr<FdoClassDefinition>prunedClass = reader->GetClassDefinition();
+		FdoPtr<FdoPropertyDefinitionCollection>props = prunedClass->GetProperties();
+		computedProps = FdoPropertyDefinitionCollection::Create(NULL);
+		for( int i=0; i<selectList->GetCount(); i++ )
+		{
+			FdoPtr<FdoComputedIdentifier>id = dynamic_cast<FdoComputedIdentifier*>(selectList->GetItem( i ) );
+			if( id != NULL )
+			{
+				FdoPtr<FdoDataPropertyDefinition>prop = dynamic_cast<FdoDataPropertyDefinition*>(props->FindItem( id->GetName() ) );
+				if( prop != NULL )
+				{
+					FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(id->GetName(), NULL);
+					dpd->SetDataType(prop->GetDataType());
+					computedProps->Add( dpd );
+				}
+			}
+		}
+	}
+	return new SdfImpScrollableFeatureReader<SdfIndexedScrollableFeatureReader>(new SdfIndexedScrollableFeatureReader( m_connection, cls,selectList, computedProps, sortedTable, maxsize) );
 }
 
 // Executes the select command and returns a reference to an SdfIScrollableFeatureReader.

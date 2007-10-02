@@ -179,6 +179,8 @@ public:
 	// Internal getter for the binary key
 	virtual SQLiteData* GetRawKey();
 
+	FdoLiteralValue *GetComputedIdentifierValue( FdoString* propertyName );
+
 protected:
 
     FdoClassDefinition* m_classDefPruned; 

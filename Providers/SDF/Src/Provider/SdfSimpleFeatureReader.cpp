@@ -232,6 +232,15 @@ FdoDataType SdfSimpleFeatureReader::GetDataType( FdoString* propertyName )
 	if( ps )
 		return ps->m_dataType;
 
+	// Computed identifier?
+	CheckIfPropExists(propertyName);
+
+	FdoPtr<FdoLiteralValue> results = m_filterExec->Evaluate(propertyName);
+	if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
+	{
+		FdoDataValue *dataValue = static_cast<FdoDataValue *> (results.p);
+		return dataValue->GetDataType();
+	}
 	return (FdoDataType)-1;
 }
 
@@ -337,6 +346,7 @@ FdoDateTime SdfSimpleFeatureReader::GetDateTime(FdoString* propertyName)
     return m_dataReader->ReadDateTime();
 }
 
+
 // Gets the Double floating point value of the specified property.
 // No conversion is performed, therefore the property must be of
 // type Double or an exception is thrown.
@@ -359,12 +369,11 @@ double SdfSimpleFeatureReader::GetDouble(FdoString* propertyName)
 				FdoDoubleValue *doubleValue = static_cast<FdoDoubleValue *>(dataValue);
 				return doubleValue->GetDouble();
 			}
-            else
-                if (dataValue->GetDataType() == FdoDataType_Decimal)
-                {
-                    FdoDecimalValue *decimalValue = static_cast<FdoDecimalValue *>(dataValue);
-                    return decimalValue->GetDecimal();
-            }
+			else if( dataValue->GetDataType() == FdoDataType_Decimal )
+			{
+				FdoDecimalValue *decimalValue = static_cast<FdoDecimalValue *>(dataValue);
+				return decimalValue->GetDecimal();
+			}
 		}
         throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_57_UNEXPECTEDERROR)));
     }
@@ -1285,3 +1294,18 @@ SQLiteData* SdfSimpleFeatureReader::GetRawKey()
 	return m_currentKey;
 }
 
+FdoLiteralValue* SdfSimpleFeatureReader::GetComputedIdentifierValue( FdoString* propertyName )
+{
+	RefreshData();
+    PropertyStub* ps = m_propIndex->GetPropInfo(propertyName);
+
+    //must be a computed property
+    if (!ps)
+    {
+        CheckIfPropExists(propertyName);
+
+        return m_filterExec->Evaluate(propertyName);
+    }
+
+	throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_57_UNEXPECTEDERROR)));
+}

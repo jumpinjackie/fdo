@@ -25,7 +25,7 @@
 #include "ShpScrollableFeatureReader.h"
 #include "FdoCommonSchemaUtil.h"
 #include "ShpImpScrollableFeatureReader.h"
-
+#include "FdoExpressionEngine.h"
 
 //-------------------------------------------------------
 // Constructor / destructor
@@ -154,7 +154,7 @@ ShpIScrollableFeatureReader* ShpImpExtendedSelect::ExecuteScrollable()
 				// Need the property type. Get it from the reader.
 				propStubs[i].m_name = new wchar_t[wcslen(id->GetName())+1];
 				wcscpy( (wchar_t*)propStubs[i].m_name, id->GetName() );
-
+				propStubs[i].m_dataType = (FdoDataType)-1;
 				if ( wcscmp( id->GetName(), reader->mLogicalIdentityPropertyName ) == 0 )
 				{
 					propStubs[i].m_dataType = FdoDataType_Int32;
@@ -170,7 +170,27 @@ ShpIScrollableFeatureReader* ShpImpExtendedSelect::ExecuteScrollable()
 						}
 					}
 				}
-
+				if( propStubs[i].m_dataType == -1  )
+				{
+					// This may be a computed identifier
+					FdoPtr<FdoIdentifierCollection>slectList = GetPropertyNames();
+					if( slectList != NULL )
+					{
+						FdoPtr<FdoIdentifier>ident = slectList->FindItem( id->GetName() );
+						if( ident != NULL )
+						{
+							FdoComputedIdentifier* cid = dynamic_cast<FdoComputedIdentifier*>(ident.p);
+							if( cid != NULL )
+							{
+								FdoPropertyType propType;
+								FdoDataType dataType;
+								FdoExpressionEngine::GetExpressionType( FdoPtr<FdoClassDefinition>(reader->GetClassDefinition()), FdoPtr<FdoExpression>(cid->GetExpression()), propType, dataType );
+								if( propType == FdoPropertyType_DataProperty )
+									propStubs[i].m_dataType = dataType;
+							}
+						}
+					}
+				}
 				ctx->options[i] = GetOrderingOption( id->GetName() );
 				ctx->names[i] = new wchar_t[wcslen(id->GetName())+1];
 				wcscpy( (wchar_t*)ctx->names[i], id->GetName() );
@@ -209,6 +229,7 @@ ShpIScrollableFeatureReader* ShpImpExtendedSelect::ExecuteScrollable()
 		// The sorting context will be freed by the reader
 		return new ShpImpScrollableFeatureReader<ShpScrollableFeatureReader>(new ShpScrollableFeatureReader( 
 																				mConnection, mClassName->GetText(), GetFilter(),
+																				FdoPtr<FdoIdentifierCollection>(GetPropertyNames()),
 																				ctx, NULL, false, maxsize, 0 ) );
 	}
 
@@ -218,6 +239,7 @@ ShpIScrollableFeatureReader* ShpImpExtendedSelect::ExecuteScrollable()
 		// The sorting context will be freed by the reader
 		return new ShpImpScrollableFeatureReader<ShpScrollableFeatureReader>(new ShpScrollableFeatureReader( 
 																				mConnection, mClassName->GetText(), GetFilter(),
+																				FdoPtr<FdoIdentifierCollection>(GetPropertyNames()),
 																				ctx, NULL, true, maxsize, 0 ) );
 	}
 
@@ -327,6 +349,7 @@ ShpIScrollableFeatureReader* ShpImpExtendedSelect::ExecuteScrollable()
 	// The sorted table and sorting context will be freed by the reader
 	return new ShpImpScrollableFeatureReader<ShpScrollableFeatureReader>(new ShpScrollableFeatureReader( 
 																				mConnection, mClassName->GetText(), GetFilter(),
+																				FdoPtr<FdoIdentifierCollection>(GetPropertyNames()),
 																				ctx, sortedTable, 
 																				useTableIndex, 
 																				maxsize,

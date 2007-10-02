@@ -24,7 +24,8 @@ class SdfIndexedScrollableFeatureReader : public SdfSimpleFeatureReader
 public:
     // constructs an SdfFeatureReader using the specified
     // connection, class definition, and Sdf reader
-    SDF_API SdfIndexedScrollableFeatureReader( SdfConnection* connection, FdoClassDefinition* classDef, REC_NO *table, int tableSize  );
+    SDF_API SdfIndexedScrollableFeatureReader( SdfConnection* connection, FdoClassDefinition* classDef, 
+					FdoIdentifierCollection* selectIdents, FdoPropertyDefinitionCollection* computedProps, REC_NO *table, int tableSize  );
 
 protected:
     // default destructor
