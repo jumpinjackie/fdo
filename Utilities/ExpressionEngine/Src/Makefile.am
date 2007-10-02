@@ -81,6 +81,7 @@ libExpressionEngine_la_SOURCES = \
   Functions/String/FdoFunctionTrim.cpp \
   Functions/String/FdoFunctionUpper.cpp \
   Util/FdoExpressionEngineUtilDataReader.cpp \
+  Util/FdoExpressionEngineUtilFeatureReader.cpp \
   FdoExpressionEngine.cpp \
   FdoExpressionEngineFunctionCollection.cpp \
   FdoExpressionEngineImp.cpp \
