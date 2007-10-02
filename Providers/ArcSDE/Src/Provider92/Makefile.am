@@ -147,10 +147,12 @@ INCLUDES = \
   -I$(SDEHOME)/include \
   -I$(FDOUTILITIES)/Common/Inc \
   -I../../Inc \
+  -I$(FDOUTILITIES)/ExpressionEngine/Inc \
   -I../Provider
 
 libArcSDEProvider92_la_LIBADD =  \
   $(FDO)/Unmanaged/Src/libFDO.la \
+  $(FDOUTILITIES)/ExpressionEngine/Src/libExpressionEngine.la \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
   -lpe \
   -lsde \
