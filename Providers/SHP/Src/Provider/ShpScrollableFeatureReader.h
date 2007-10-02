@@ -59,8 +59,8 @@ class ShpScrollableFeatureReader : public ShpFeatureReader
 public:
     // constructs an ShpFeatureReader using the specified
     // connection, class definition, and Shp reader
-    FDOSHP_API ShpScrollableFeatureReader( ShpConnection* connection, FdoString* className, FdoFilter* filter, SortContextDef *ctx, 
-											SortElementDef  *sortedTable, bool useTableIndex, unsigned int tableSize, int numProps );
+    FDOSHP_API ShpScrollableFeatureReader( ShpConnection* connection, FdoString* className, FdoFilter* filter, FdoIdentifierCollection* selected,
+											SortContextDef *ctx, SortElementDef  *sortedTable, bool useTableIndex, unsigned int tableSize, int numProps );
 
 public:
 

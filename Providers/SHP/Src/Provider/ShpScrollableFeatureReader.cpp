@@ -20,9 +20,9 @@
 #include "ShpConnection.h"
 
 
-ShpScrollableFeatureReader::ShpScrollableFeatureReader(ShpConnection* connection, FdoString* className, FdoFilter* filter, SortContextDef *ctx, 
-													   SortElementDef *sortedTable, bool useTableIndex, unsigned int tableSize, int numProps  )
-: ShpFeatureReader(connection, className, NULL, NULL)
+ShpScrollableFeatureReader::ShpScrollableFeatureReader(ShpConnection* connection, FdoString* className, FdoFilter* filter, FdoIdentifierCollection* selected, 
+													   SortContextDef *ctx, SortElementDef *sortedTable, bool useTableIndex, unsigned int tableSize, int numProps  )
+: ShpFeatureReader(connection, className, NULL, selected)
 {
 	m_Filter = filter;
     m_SortedTable = sortedTable;  // Transfer the ownership of this array; need to be freed by this class
