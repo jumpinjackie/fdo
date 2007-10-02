@@ -21,6 +21,7 @@
 #include "ArcSDESelectCommand.h"
 #include "ArcSDEFeatureReader.h"
 #include "Util/FdoExpressionEngineUtilFeatureReader.h"
+#include "Util/FdoExpressionEngineUtilDataReader.h"
 #include "FdoExpressionEngine.h"
 
 ArcSDESelectCommand::ArcSDESelectCommand (FdoIConnection *connection) :
