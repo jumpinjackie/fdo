@@ -48,8 +48,9 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OGRLayer* layer, FdoIdentifierColle
 
     dot2tilde(wname);
 
+#if DEBUG
     printf ("Feature class name: %s\n", name);
-
+#endif
     FdoPtr<FdoFeatureClass> fc = FdoFeatureClass::Create(wname, L"");
 
     FdoPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
@@ -62,9 +63,9 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OGRLayer* layer, FdoIdentifierColle
         OGRFieldDefn* field = fdefn->GetFieldDefn(j);
         const char* name = field->GetNameRef();
         A2W(name);
-
+#if DEBUG
         printf("Attribute : %s\n", name);
-
+#endif
         FdoDataType dt;
         OGRFieldType etype = field->GetType();
         bool add = true;
@@ -111,7 +112,9 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OGRLayer* layer, FdoIdentifierColle
     //if it's on the list or there was no list at all, then add the property
     if (!requestedProps || requestedProps->GetCount() == 0 || (requestedProps && found.p))
     {
+#if DEBUG
         printf ("Geometry column : %s\n", geomname);
+#endif
 
         FdoPtr<FdoGeometricPropertyDefinition> gpd = FdoGeometricPropertyDefinition::Create(wgeomname, L"");
 
@@ -142,9 +145,9 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OGRLayer* layer, FdoIdentifierColle
     const char* idname = layer->GetFIDColumn();
     if (*idname == 0) idname = "FID";
     A2W(idname);
-
+#if DEBUG
     printf ("Identity column : %s\n", idname);
-
+#endif
     //check if property is on the optional requested property list
     found = (requestedProps) ? requestedProps->FindItem(widname) : NULL;
 
@@ -302,10 +305,13 @@ void OgrFdoUtil::ConvertFeature(FdoPropertyValueCollection* src, OGRFeature* dst
 //This function assumes MapGuide style queries -- either 
 //an attribute filter or a simple spatial filter or a binary
 //combination of the two
-void OgrFdoUtil::ApplyFilter(OGRLayer* layer, FdoFilter* filter)
+void OgrFdoUtil::ApplyFilter(OGRLayer* layer, FdoFilter* filter, bool* isbbox)
 {
     FdoFilter* spatial = NULL;
     FdoFilter* attr = NULL;
+
+    if (isbbox != NULL)
+        (*isbbox) = false;
 
     //zero out the filters
     layer->SetAttributeFilter(NULL);
@@ -344,11 +350,12 @@ void OgrFdoUtil::ApplyFilter(OGRLayer* layer, FdoFilter* filter)
         layer->SetAttributeFilter(mbattrsql);
     }
 
-    //set spatial query -- assumes EnvelopeIntersects
+    //set spatial query
     if (spatial)
     {
         FdoSpatialCondition* sc = (FdoSpatialCondition*)spatial;
 
+        //Simple envelope can be handled faster, ad is used by map renders
         if (sc->GetOperation() == FdoSpatialOperations_EnvelopeIntersects)
         {
             FdoPtr<FdoExpression> expr = sc->GetGeometry();
@@ -365,6 +372,7 @@ void OgrFdoUtil::ApplyFilter(OGRLayer* layer, FdoFilter* filter)
                     envelope->GetMinY(),
                     envelope->GetMaxX(),
                     envelope->GetMaxY());
+                (*isbbox) = true;
             }
         }
         else if (sc->GetOperation() == FdoSpatialOperations_Intersects)
@@ -387,8 +395,10 @@ void OgrFdoUtil::ApplyFilter(OGRLayer* layer, FdoFilter* filter)
 
                 if (geom)
                     layer->SetSpatialFilter(geom);
+#if DEBUG
                 else
                     printf ("failed to convert intersects spatial filter geometry value");
+#endif
 
                 OGRFree(geom);
             }
@@ -601,4 +611,5 @@ int OgrFdoUtil::Fgf2Wkb(const unsigned char* fgf, unsigned char* wkb)
 
     return dst.GetLength();
 }
+
 
