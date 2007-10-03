@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="OGRProvider"
 	ProjectGUID="{967D184A-B00F-4C80-9382-58AEC6CBA16A}"
 	RootNamespace="OGRProvider"
@@ -139,9 +139,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="fdo.lib fdocommon.lib fdogeometry.lib ogr.lib cpl.lib ogrsf_frmts.lib ogrsf_frmts_sup.lib proj.lib geos.lib libpq.lib wsock32.lib oci.lib geos_c.obj"
+				AdditionalDependencies="fdo.lib fdocommon.lib fdogeometry.lib ogr.lib cpl.lib ogrsf_frmts.lib ogrsf_frmts_sup.lib proj.lib geos.lib libpq.lib wsock32.lib oci.lib geos_c.obj xerces-c_2.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;gdal\gdal-1.4.0\ogr\&quot;;&quot;gdal\gdal-1.4.0\port&quot;;&quot;gdal\gdal-1.4.0\ogr\ogrsf_frmts&quot;;e:\oracle\oci\lib\msvc;&quot;gdal\proj-4.5.0\src&quot;;&quot;gdal\geos-2.2.3\source\&quot;;&quot;gdal\postgresql-8.2.1\src\interfaces\libpq\Release&quot;;..\..\\Fdo\Unmanaged\lib\win32\release;&quot;gdal\geos-2.2.3\source\capi&quot;"
+				AdditionalLibraryDirectories="&quot;gdal\gdal-1.4.0\ogr\&quot;;&quot;gdal\gdal-1.4.0\port&quot;;&quot;gdal\gdal-1.4.0\ogr\ogrsf_frmts&quot;;e:\oracle\oci\lib\msvc;&quot;gdal\proj-4.5.0\src&quot;;&quot;gdal\geos-2.2.3\source\&quot;;&quot;gdal\postgresql-8.2.1\src\interfaces\libpq\Release&quot;;..\..\\Fdo\Unmanaged\lib\win32\release;&quot;gdal\geos-2.2.3\source\capi&quot;;&quot;..\..\Thirdparty\apache\xml-xerces\c\Build\Win32\VC8\Release&quot;"
+				GenerateManifest="false"
+				IgnoreDefaultLibraryNames=""
 				DelayLoadDLLs="oci.dll;fdo.dll;fdogeometry.dll;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -154,6 +156,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				EmbedManifest="false"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -192,6 +195,14 @@
 		</File>
 		<File
 			RelativePath=".\OgrProvider.h"
+			>
+		</File>
+		<File
+			RelativePath=".\ProjConverter.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ProjConverter.h"
 			>
 		</File>
 		<File

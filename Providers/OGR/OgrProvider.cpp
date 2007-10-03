@@ -24,6 +24,7 @@
 #include "stdafx.h"
 #include "OgrProvider.h"
 #include "OgrFdoUtil.h"
+#include "ProjConverter.h"
 
 
 #define PROP_NAME_DATASOURCE L"DataSource"
@@ -60,6 +61,7 @@ class StaticInit
         StaticInit()
         {
             OGRRegisterAll(); 
+            ProjConverter::ProjectionConverter = new ProjConverter();
         }
 };
 StaticInit si;
@@ -69,7 +71,6 @@ OgrConnection::OgrConnection()
 {
     m_poDS = NULL;
     m_pSchema = NULL;
-    
     m_mProps = new std::map<std::wstring, std::wstring>();
     m_connState = FdoConnectionState_Closed;
 }
@@ -88,11 +89,15 @@ void OgrConnection::Dispose()
     //we inherit in the OgrConnection object
     if (((FdoIConnection*)this)->GetRefCount() == 0)
     {
+#if DEBUG
         printf("destroying connection\n");
+#endif
         delete this;
     }
+#if DEBUG
     else
         printf("Dispose() called by multiply inherited object\n");
+#endif
 }
 
 //----------------------------------------------------------------
@@ -173,8 +178,10 @@ FdoConnectionState OgrConnection::Open()
     
     W2A(dsw);
     
+#if DEBUG
     printf ("Attempt OGR connect to %s \n", mbdsw);
     printf ("ReadOnly %d\n", (int)readonly);
+#endif
     
     m_poDS = OGRSFDriverRegistrar::Open(mbdsw, !readonly);
     if( m_poDS == NULL )
@@ -185,7 +192,6 @@ FdoConnectionState OgrConnection::Open()
         A2W(x);
         throw FdoConnectionException::Create(wx);
     }
-    
     m_connState = FdoConnectionState_Open;
     
     return m_connState;
@@ -193,8 +199,10 @@ FdoConnectionState OgrConnection::Open()
 
 void OgrConnection::Close()
 {
+#if DEBUG
     printf ("Close OGR connection\n");
-    
+#endif
+
     if (m_poDS)
     {
         OGRDataSource::DestroyDataSource(m_poDS);
@@ -386,6 +394,7 @@ FdoISpatialContextReader* OgrConnection::GetSpatialContexts()
 
 FdoIFeatureReader* OgrConnection::Select(FdoIdentifier* fcname, FdoFilter* filter, FdoIdentifierCollection* props)
 {
+    bool bbox = false;
     FdoString* fc = fcname->GetName();
     W2A(fc);
 
@@ -393,9 +402,9 @@ FdoIFeatureReader* OgrConnection::Select(FdoIdentifier* fcname, FdoFilter* filte
     
     OGRLayer* layer = m_poDS->GetLayerByName(mbfc);
 
-    OgrFdoUtil::ApplyFilter(layer, filter);
+    OgrFdoUtil::ApplyFilter(layer, filter, &bbox);
 
-    return new OgrFeatureReader(this, layer, props);
+    return new OgrFeatureReader(this, layer, props, bbox);
 }
 
 FdoIDataReader* OgrConnection::SelectAggregates(FdoIdentifier* fcname, 
@@ -420,8 +429,9 @@ FdoIDataReader* OgrConnection::SelectAggregates(FdoIdentifier* fcname,
         W2A(pname);
         
         sprintf(sql, "SELECT DISTINCT %s FROM %s", mbpname, mbfc);
+#if DEBUG
         printf (" select distinct: %s\n", sql);
-        
+#endif
         OGRLayer* lr = m_poDS->ExecuteSQL(sql, NULL, NULL);
         
         return new OgrDataReader(this, lr, NULL); 
@@ -438,8 +448,9 @@ FdoIDataReader* OgrConnection::SelectAggregates(FdoIdentifier* fcname,
         char sql[512];
         
         sprintf(sql, "SELECT %s FROM %s", mbexprs, mbfc);
+#if DEBUG
         printf (" select distinct: %s\n", sql);
- 
+#endif
         OGRLayer* lr = m_poDS->ExecuteSQL(sql, NULL, NULL);
 
         return new OgrDataReader(this, lr, properties); 
@@ -464,7 +475,7 @@ FdoInt32 OgrConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
     if (!canDo)
         throw FdoCommandException::Create(L"Current OGR connection does not support update of existing features.");
     
-    OgrFdoUtil::ApplyFilter(layer, filter);
+    OgrFdoUtil::ApplyFilter(layer, filter, NULL);
 
     OGRFeature* feature = NULL;
     
@@ -498,7 +509,7 @@ FdoInt32 OgrConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
     if (!canDo)
         throw FdoCommandException::Create(L"Current OGR connection does not support delete.");
 
-    OgrFdoUtil::ApplyFilter(layer, filter);
+    OgrFdoUtil::ApplyFilter(layer, filter, NULL);
 
     std::vector<long> ids; //list of FIDs of features to delete
     
@@ -557,7 +568,7 @@ FdoIFeatureReader* OgrConnection::Insert(FdoIdentifier* fcname, FdoPropertyValue
         char filter[32];
         snprintf(filter, 32, "FID=%d", fid);
         layer->SetAttributeFilter(filter);
-        return new OgrFeatureReader(this, layer, NULL);
+        return new OgrFeatureReader(this, layer, NULL, false);
     }
 
     throw FdoCommandException::Create(L"Insert of feature failed.");
@@ -621,7 +632,7 @@ FdoString* OgrSpatialContextReader::GetCoordinateSystemWkt()
     m_wkt = wwkt;
     
     OGRFree (wkt);
-    return m_wkt.c_str();
+    return ProjConverter::ProjectionConverter->TranslateProjection(m_wkt.c_str());
 }
 
 FdoSpatialContextExtentType OgrSpatialContextReader::GetExtentType()
@@ -695,7 +706,7 @@ bool OgrSpatialContextReader::ReadNext()
 //
 //---------------------------------------------------------------------
 
-OgrFeatureReader::OgrFeatureReader(OgrConnection* connection, OGRLayer* layer, FdoIdentifierCollection* props)
+OgrFeatureReader::OgrFeatureReader(OgrConnection* connection, OGRLayer* layer, FdoIdentifierCollection* props, bool bboxquery)
 {
     m_connection = connection;
     ((FdoIConnection*)m_connection)->AddRef();
@@ -710,6 +721,7 @@ OgrFeatureReader::OgrFeatureReader(OgrConnection* connection, OGRLayer* layer, F
     m_fgflen = 64;
     m_fgf = new unsigned char[m_fgflen*2];
     m_wkb = new unsigned char[m_fgflen];
+    m_bboxquery = bboxquery;
 }
 
 OgrFeatureReader::~OgrFeatureReader()
@@ -729,6 +741,8 @@ void OgrFeatureReader::Dispose()
 FdoClassDefinition* OgrFeatureReader::GetClassDefinition()
 {
     //TODO: cache the result of this
+    //also this always returns all properties regardless
+    //of what was given in the select command
     return OgrFdoUtil::ConvertClass(m_poLayer, m_props);
 }
 
@@ -870,23 +884,33 @@ FdoIRaster* OgrFeatureReader::GetRaster(FdoString* propertyName)
 
 bool OgrFeatureReader::ReadNext()
 {    
-    m_sprops.clear();
-    
-    if (m_poFeature)
-        OGRFeature::DestroyFeature(m_poFeature);
-    
-    m_poFeature = m_poLayer->GetNextFeature();
-
-    //Ugly hack to fix broken providers, with BBOX only testing
-    OGRGeometry* spfilter = m_poLayer->GetSpatialFilter();
-    if (spfilter != NULL)
-        while (m_poFeature != NULL && m_poFeature->GetGeometryRef() != NULL && !spfilter->Intersects(m_poFeature->GetGeometryRef()))
-        {
+    try
+    {
+        m_sprops.clear();
+        
+        if (m_poFeature)
             OGRFeature::DestroyFeature(m_poFeature);
-            m_poFeature = m_poLayer->GetNextFeature();
+        
+        m_poFeature = m_poLayer->GetNextFeature();
+
+        //Ugly hack to fix broken providers, with BBOX only testing
+        if (!m_bboxquery)
+        {
+            OGRGeometry* spfilter = m_poLayer->GetSpatialFilter();
+            if (spfilter != NULL)
+                while (m_poFeature != NULL && m_poFeature->GetGeometryRef() != NULL && !spfilter->Intersects(m_poFeature->GetGeometryRef()))
+                {
+                    OGRFeature::DestroyFeature(m_poFeature);
+                    m_poFeature = m_poLayer->GetNextFeature();
+                }
         }
 
-    return (m_poFeature != NULL);
+        return (m_poFeature != NULL);
+    }
+    catch(...)
+    {
+        return false;
+    }
 }
 
 void OgrFeatureReader::Close()
@@ -1176,7 +1200,14 @@ void OgrDataReader::Close()
 //
 //---------------------------------------------------------------------
 
-int main(void){}
+int main(void)
+{
+    OGRDataSource* ds = OGRSFDriverRegistrar::Open("C:\\Documents and Settings\\Kenneth\\Skrivebord\\bo", TRUE);
+    /*FdoIConnection* con = CreateConnection();
+    con->SetConnectionString(new FdoString(_L"
+    con->Open(*/
+    return 0;
+}
 
 ////HACK This function has a lot of refcount leaks in order
 ////to make the code more concise !!!
