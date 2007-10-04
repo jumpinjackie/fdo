@@ -21,7 +21,7 @@
 #include <Functions/Geometry/Util.h>
 #include <Spatial/SpatialStd.h>
 #include <Spatial/SpatialUtility.h>		// for TesselateCurve()
-#include <Math.h>
+#include <math.h>
 
 /************************************************************************/
 /* ComputeGeometryLength												*/
@@ -363,7 +363,9 @@ FdoDouble FdoExpressionEngineGeometryUtil::ComputeGeodeticDistance2D(FdoDouble l
 		FdoDouble	sinDlon = sin(deltaLon/2);
 
 		FdoDouble a = sinDlat*sinDlat + cos1*cos2*sinDlon*sinDlon;
-		d = 2 * asin(min(1,sqrt(a)));
+                FdoDouble aSqrt =  sqrt(a);
+                FdoDouble minValue = (1 < aSqrt) ? 1 : aSqrt; 
+		d = 2 * asin(minValue);
 	}
 
 	return (ERADM * acos(d));
