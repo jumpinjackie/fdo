@@ -50,7 +50,7 @@ class FdoFunctionArea2D : public FdoExpressionEngineINonAggregateFunction
         // Create:
         //  Function to create an instance of this class.
 
-        static FdoFunctionArea2D *Create ();
+        static FdoFunctionArea2D *Create (FdoBoolean computeGeodetic = false);
 
         // CreateObject:
         //  Function to create an instance of this class.
@@ -72,21 +72,22 @@ class FdoFunctionArea2D : public FdoExpressionEngineINonAggregateFunction
                                     FdoLiteralValueCollection *literal_values);
 
 
-    private:
-
-        // ********************************************************************
-        // *                        Private Interfaces                        *
-        // ********************************************************************
-
+	protected:
         // FdoFunctionArea2D:
         //  The function represents the class constructor.
 
-        FdoFunctionArea2D ();
+        FdoFunctionArea2D (FdoBoolean computeGeodetic = false);
 
         // ~FdoFunctionArea2D:
         //  The function represents the class destructor.
 
         ~FdoFunctionArea2D ();
+
+    private:
+
+        // ********************************************************************
+        // *                        Private Interfaces                        *
+        // ********************************************************************
 
         // CreateFunctionDefinition:
         //  The routine creates the function definition for the function AREA.
@@ -114,6 +115,17 @@ class FdoFunctionArea2D : public FdoExpressionEngineINonAggregateFunction
         //  AREA.
 
         FdoFunctionDefinition *function_definition;
+
+        // is_validated:
+        //  For performance reasons the arguments passed to the procedure
+        //  processing the request is done once only for the time of its
+        //  execution. This variable stores whether or not the validation
+        //  has been performed.
+
+        FdoBoolean is_validated;
+
+		// Compute geodetic/euclidian distances.
+		FdoBoolean			compute_geodetic;
 
 };  //  class FdoFunctionArea2D
 

@@ -19,23 +19,23 @@
 
 #include <stdafx.h>
 #include <Functions/Geometry/FdoFunctionLength2D.h>
-
+#include <Functions/Geometry/Util.h>
 
 // ----------------------------------------------------------------------------
 // --                         Constructors/Destructors                       --
 // ----------------------------------------------------------------------------
 
-FdoFunctionLength2D::FdoFunctionLength2D ()
+FdoFunctionLength2D::FdoFunctionLength2D (FdoBoolean computeGeodetic)
 
 // +---------------------------------------------------------------------------
 // | The class constructor.
 // +---------------------------------------------------------------------------
 
 {
-
     // Initialize all class variables.
-
+	is_validated = false;
     function_definition = NULL;
+	compute_geodetic = computeGeodetic;
 
 }  //  FdoFunctionLength2D ()
 
@@ -58,7 +58,7 @@ FdoFunctionLength2D::~FdoFunctionLength2D ()
 // --                            Public Class APIs                           --
 // ----------------------------------------------------------------------------
 
-FdoFunctionLength2D *FdoFunctionLength2D::Create ()
+FdoFunctionLength2D *FdoFunctionLength2D::Create (FdoBoolean computeGeodetic)
 
 // +---------------------------------------------------------------------------
 // | The function creates a new instance of the class.
@@ -66,7 +66,7 @@ FdoFunctionLength2D *FdoFunctionLength2D::Create ()
 
 {
 
-    return new FdoFunctionLength2D();
+    return new FdoFunctionLength2D(computeGeodetic);
 
 }  //  Create ()
 
@@ -78,7 +78,7 @@ FdoFunctionLength2D *FdoFunctionLength2D::CreateObject ()
 
 {
 
-    return new FdoFunctionLength2D();
+    return new FdoFunctionLength2D(compute_geodetic);
 
 }  //  CreateObject ()
 
@@ -106,14 +106,34 @@ FdoLiteralValue *FdoFunctionLength2D::Evaluate (
 // +---------------------------------------------------------------------------
 
 {
+    FdoPtr<FdoGeometryValue> geom_value;
 
-    // NOT YET IMPLEMENTED.
+    // If the argument list has not been validated, execute the check next.
+    // NOTE: the validation is executed only the first time the procedure is
+    //       invoked and assumes that it remains the same until the function
+    //       result is retrieved.
 
-    throw FdoException::Create(
-            FdoException::NLSGetMessage(
-              FUNCTION_UNEXPECTED_RESULT_ERROR, 
-              "Expression Engine: Unexpected result for function '%1$ls'",
-              FDO_FUNCTION_LENGTH2D));
+    if (!is_validated) {
+
+        Validate(literal_values);
+        is_validated = true;
+
+    }  //  if (!is_validated) ...
+
+    geom_value = (FdoGeometryValue *) literal_values->GetItem(0);
+    if (geom_value->IsNull())
+		FdoDoubleValue::Create(0.0);
+
+	// Create a geometry object
+    FdoPtr<FdoFgfGeometryFactory>	gf = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoIGeometry>			geom = gf->CreateGeometryFromFgf( FdoPtr<FdoByteArray>(geom_value->GetGeometry()));
+
+	FdoDouble length = 0.0;
+
+	// Compute
+	FdoExpressionEngineGeometryUtil::ComputeGeometryLength( compute_geodetic, false /*3D*/, geom, &length );
+	
+	return FdoDoubleValue::Create(length);
 
 }  //  Evaluate ()
 
