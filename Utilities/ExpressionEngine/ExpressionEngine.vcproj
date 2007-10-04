@@ -591,6 +591,10 @@
 						RelativePath=".\Src\Functions\Geometry\FdoFunctionLength2D.cpp"
 						>
 					</File>
+					<File
+						RelativePath=".\Src\Functions\Geometry\Util.cpp"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
@@ -895,6 +899,10 @@
 					</File>
 					<File
 						RelativePath=".\Inc\Functions\Geometry\FdoFunctionLength2D.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Geometry\Util.h"
 						>
 					</File>
 				</Filter>

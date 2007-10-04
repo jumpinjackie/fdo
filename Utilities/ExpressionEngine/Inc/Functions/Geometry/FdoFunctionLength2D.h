@@ -51,7 +51,7 @@ class FdoFunctionLength2D : public FdoExpressionEngineINonAggregateFunction
         // Create:
         //  Function to create an instance of this class.
 
-        static FdoFunctionLength2D *Create ();
+        static FdoFunctionLength2D *Create (FdoBoolean computeGeodetic = false);
 
         // CreateObject:
         //  Function to create an instance of this class.
@@ -73,16 +73,11 @@ class FdoFunctionLength2D : public FdoExpressionEngineINonAggregateFunction
                                     FdoLiteralValueCollection *literal_values);
 
 
-    private:
-
-        // ********************************************************************
-        // *                        Private Interfaces                        *
-        // ********************************************************************
-
+	protected:
         // FdoFunctionLength2D:
         //  The function represents the class constructor.
 
-        FdoFunctionLength2D ();
+        FdoFunctionLength2D (FdoBoolean computeGeodetic = false);
 
         // ~FdoFunctionLength2D:
         //  The function represents the class destructor.
@@ -92,6 +87,12 @@ class FdoFunctionLength2D : public FdoExpressionEngineINonAggregateFunction
         // CreateFunctionDefinition:
         //  The routine creates the function definition for the geometry func-
         //  tion LENGTH.
+
+    private:
+
+        // ********************************************************************
+        // *                        Private Interfaces                        *
+        // ********************************************************************
 
         void CreateFunctionDefinition ();
 
@@ -116,6 +117,17 @@ class FdoFunctionLength2D : public FdoExpressionEngineINonAggregateFunction
         //  function LENGTH.
 
         FdoFunctionDefinition *function_definition;
+
+        // is_validated:
+        //  For performance reasons the arguments passed to the procedure
+        //  processing the request is done once only for the time of its
+        //  execution. This variable stores whether or not the validation
+        //  has been performed.
+
+        bool is_validated;
+
+		// Compute geodetic/euclidian distances.
+		FdoBoolean compute_geodetic;
 
 };  //  class FdoFunctionLength2D
 

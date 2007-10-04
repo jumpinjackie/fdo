@@ -47,6 +47,7 @@ libExpressionEngine_la_SOURCES = \
   Functions/Date/FdoFunctionMonthsBetween.cpp \
   Functions/Geometry/FdoFunctionArea2D.cpp \
   Functions/Geometry/FdoFunctionLength2D.cpp \
+  Functions/Geometry/Util.cpp \
   Functions/Math/FdoFunctionAbs.cpp \
   Functions/Math/FdoFunctionAcos.cpp \
   Functions/Math/FdoFunctionAsin.cpp \

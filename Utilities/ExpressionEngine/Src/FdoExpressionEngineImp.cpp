@@ -70,7 +70,10 @@ FdoExpressionEngineImp::FdoExpressionEngineImp(FdoIReader* reader, FdoClassDefin
     for (int i=0; functions[i] != NULL; i++)
     {
         FdoPtr<FdoFunctionDefinition> function = functions[i]->GetFunctionDefinition();
-        m_AllFunctions->Add(function);
+
+		// Add it only if not user defined
+		if ( !m_AllFunctions->FindItem(function->GetName()) )
+			m_AllFunctions->Add(function);
     }
 
 	m_UserDefinedFunctions = FDO_SAFE_ADDREF(userDefinedFunctions);
