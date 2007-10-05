@@ -845,7 +845,10 @@ void SelectTests::select_length_area2 (bool GEODETIC)
 			mConnection->SetConnectionString (L"DefaultFileLocation=..\\..\\TestData\\Florida");
 
         #else
-        mConnection->SetConnectionString (L"DefaultFileLocation=../../TestData/Sheboygan");
+		if (GEODETIC)
+	       mConnection->SetConnectionString (L"DefaultFileLocation=../../TestData/Sheboygan");
+		else
+        mConnection->SetConnectionString (L"DefaultFileLocation=../../TestData/Florida");
         #endif
         CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->Open ());
 
