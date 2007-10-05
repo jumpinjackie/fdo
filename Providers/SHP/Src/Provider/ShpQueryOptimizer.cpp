@@ -263,18 +263,22 @@ FdoExpressionEngineFunctionCollection* ShpQueryOptimizer::GetUserDefinedFunction
 	if ( gpd )
 	{
 		FdoStringP	scname = gpd->GetSpatialContextAssociation();
-		FdoPtr<ShpSpatialContextCollection>	scs = connection->GetSpatialContexts ();
 
-		FdoPtr<ShpSpatialContext>  sc = scs->FindItem( scname );
-		FdoStringP	wkt = sc->GetCoordinateSystemWkt();
-		
-		if ( wkt.Contains( L"PROJCS" ) )
-			; // do nothing
-		else if ( wkt.Contains( L"GEOGCS" ) )
+		if ( scname.GetLength() != 0 )
 		{
-			userDefinedFunctions = FdoExpressionEngineFunctionCollection::Create();
-			userDefinedFunctions->Add( FdoFunctionLength2D::Create(true));
-			userDefinedFunctions->Add( FdoFunctionArea2D::Create(true));
+			FdoPtr<ShpSpatialContextCollection>	scs = connection->GetSpatialContexts ();
+
+			FdoPtr<ShpSpatialContext>  sc = scs->FindItem( scname );
+			FdoStringP	wkt = sc->GetCoordinateSystemWkt();
+			
+			if ( wkt.Contains( L"PROJCS" ) )
+				; // do nothing
+			else if ( wkt.Contains( L"GEOGCS" ) )
+			{
+				userDefinedFunctions = FdoExpressionEngineFunctionCollection::Create();
+				userDefinedFunctions->Add( FdoFunctionLength2D::Create(true));
+				userDefinedFunctions->Add( FdoFunctionArea2D::Create(true));
+			}
 		}
 	}
 	return FDO_SAFE_ADDREF(userDefinedFunctions.p);
