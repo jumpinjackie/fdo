@@ -49,6 +49,7 @@ class SelectTests :
     CPPUNIT_TEST (select_with_aggregates_should_fail);
     CPPUNIT_TEST (upper_lower);
     CPPUNIT_TEST (ceil_floor);
+	CPPUNIT_TEST (select_length_area );
     CPPUNIT_TEST_SUITE_END ();
 
     static FdoPtr<FdoIConnection> mConnection;
@@ -77,11 +78,13 @@ protected:
     void select_with_aggregates_should_fail();
     void upper_lower();
     void ceil_floor();
+	void select_length_area();
 
 private:
     // utility methods:
     void get_spatial_context (FdoIConnection* connection, FdoString* cs_name, int expected_num_sc);
     void create_schema (FdoString *schemaName, FdoString* className, FdoGeometricType type, bool elevation, bool measure, bool bInsertTestData, bool bUseDoubleType);
+	void select_length_area2(bool GEODETIC);
 };
 
 #endif // SELECTTESTS_H

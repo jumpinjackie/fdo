@@ -42,7 +42,7 @@ public:
     virtual FdoPropertyDefinition* GetPropInfo (FdoString* name);
 
 protected:
-    ShpQueryOptimizer(FdoIReader* reader, FdoClassDefinition* classDef, FdoIdentifierCollection* compIdents, ShpSpatialIndex* rtree);
+    ShpQueryOptimizer(FdoIReader* reader, FdoClassDefinition* classDef, FdoIdentifierCollection* compIdents, ShpSpatialIndex* rtree, FdoExpressionEngineFunctionCollection *userDefinedFunctions);
     
     FdoPtr<FdoPropertyDefinitionCollection> mProperties;
 
@@ -116,7 +116,8 @@ private:
     //helper functions
     bool                    AreEqual( double d1, double d2 );
 
-    FdoGeometricPropertyDefinition* FindGeomProp(FdoClassDefinition* classDef);
+    static FdoGeometricPropertyDefinition* FindGeomProp(FdoClassDefinition* classDef);
+	static FdoExpressionEngineFunctionCollection* GetUserDefinedFunctions( ShpConnection *connection, FdoClassDefinition *classDef );
 
     FdoPtr<ShpConnection>   m_Connection;
     FdoPtr<FdoClassDefinition> m_Class;

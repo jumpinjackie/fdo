@@ -33,6 +33,8 @@
 #include <BooleanValue.h>
 
 #include <FdoExpressionEngineImp.h>
+#include <Functions/Geometry/FdoFunctionLength2D.h>
+#include <Functions/Geometry/FdoFunctionArea2D.h>
 
 // Used to determine if two double precision numbers are about equal
 #define SHP_GLOBAL_TOLERANCE 1.0e-10 
@@ -41,7 +43,7 @@ ShpQueryOptimizer::ShpQueryOptimizer()
 {    
 }
 
-ShpQueryOptimizer* ShpQueryOptimizer::Create(FdoIReader* reader, FdoIdentifierCollection* selected )
+ShpQueryOptimizer* ShpQueryOptimizer::Create(FdoIReader* reader, FdoIdentifierCollection* selected)
 {
     ShpFeatureReader* my_reader = (ShpFeatureReader *)reader;
     FdoPtr<ShpConnection>  connection = my_reader->GetConnection();
@@ -53,11 +55,14 @@ ShpQueryOptimizer* ShpQueryOptimizer::Create(FdoIReader* reader, FdoIdentifierCo
     FdoPtr<ShpLpClassDefinition> lpClass = ShpSchemaUtilities::GetLpClassDefinition(connection, classDef->GetName());
     ShpSpatialIndex* ssi = lpClass->GetPhysicalFileSet()->GetSpatialIndex();
 
-    return new ShpQueryOptimizer(reader, classDef, selected, ssi); 
+	// Create the collection of custom functions.
+	FdoPtr<FdoExpressionEngineFunctionCollection> userDefinedFunctions = GetUserDefinedFunctions( connection, classDef );
+
+    return new ShpQueryOptimizer(reader, classDef, selected, ssi, FDO_SAFE_ADDREF(userDefinedFunctions.p)); 
 }
 
-ShpQueryOptimizer::ShpQueryOptimizer(FdoIReader* reader, FdoClassDefinition* classDef, FdoIdentifierCollection* selected, ShpSpatialIndex* rtree):
-    FdoExpressionEngineImp (reader, classDef, selected, NULL)
+ShpQueryOptimizer::ShpQueryOptimizer(FdoIReader* reader, FdoClassDefinition* classDef, FdoIdentifierCollection* selected, ShpSpatialIndex* rtree, FdoExpressionEngineFunctionCollection *userDefinedFunctions):
+    FdoExpressionEngineImp (reader, classDef, selected, userDefinedFunctions)
 {
     ShpFeatureReader* my_reader = (ShpFeatureReader *)reader;
     m_Connection = my_reader->GetConnection();
@@ -247,3 +252,30 @@ bool ShpQueryOptimizer::AreEqual(double/*&*/ d1, double/*&*/ d2)
     return false;
 }
 
+FdoExpressionEngineFunctionCollection* ShpQueryOptimizer::GetUserDefinedFunctions( ShpConnection *connection, FdoClassDefinition *classDef )
+{
+	// Length2D and Area2D require to pass in the 'geodetic' flag.
+	// Check the associated coordinate system. In case it is geodetic, create a custom function.
+	
+	FdoPtr<FdoExpressionEngineFunctionCollection> userDefinedFunctions;
+	FdoPtr<FdoGeometricPropertyDefinition> gpd = FindGeomProp(classDef);
+
+	if ( gpd )
+	{
+		FdoStringP	scname = gpd->GetSpatialContextAssociation();
+		FdoPtr<ShpSpatialContextCollection>	scs = connection->GetSpatialContexts ();
+
+		FdoPtr<ShpSpatialContext>  sc = scs->FindItem( scname );
+		FdoStringP	wkt = sc->GetCoordinateSystemWkt();
+		
+		if ( wkt.Contains( L"PROJCS" ) )
+			; // do nothing
+		else if ( wkt.Contains( L"GEOGCS" ) )
+		{
+			userDefinedFunctions = FdoExpressionEngineFunctionCollection::Create();
+			userDefinedFunctions->Add( FdoFunctionLength2D::Create(true));
+			userDefinedFunctions->Add( FdoFunctionArea2D::Create(true));
+		}
+	}
+	return FDO_SAFE_ADDREF(userDefinedFunctions.p);
+}
