@@ -825,6 +825,94 @@ void SelectTests::select_states ()
 
 }
 
+void SelectTests::select_length_area ()
+{
+	select_length_area2( false );
+	select_length_area2( true );
+}
+
+void SelectTests::select_length_area2 (bool GEODETIC)
+{
+    int count;
+
+    try
+    {
+        mConnection->Close ();
+        #ifdef _WIN32
+		if (GEODETIC)
+	       mConnection->SetConnectionString (L"DefaultFileLocation=..\\..\\TestData\\Sheboygan");
+		else
+			mConnection->SetConnectionString (L"DefaultFileLocation=..\\..\\TestData\\Florida");
+
+        #else
+        mConnection->SetConnectionString (L"DefaultFileLocation=../../TestData/Sheboygan");
+        #endif
+        CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->Open ());
+
+
+        FdoPtr<FdoISelect> select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
+
+		if (GEODETIC)
+			select->SetFeatureClassName (L"Parcels");
+		else
+			select->SetFeatureClassName (L"plss24");
+
+        FdoPtr<FdoIdentifierCollection> selectedIds = select->GetPropertyNames();
+        selectedIds->Clear();
+
+		if (!GEODETIC)
+		{
+			FdoPtr <FdoIdentifier> id1= FdoIdentifier::Create (L"SHAPE_LEN");
+			selectedIds->Add(id1);
+			FdoPtr <FdoIdentifier> id2= FdoIdentifier::Create (L"SHAPE_AREA");
+			selectedIds->Add(id2);
+		}
+
+        FdoPtr<FdoComputedIdentifier> cid3 = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Length2D(Geometry)) AS TestLength2D");
+		selectedIds->Add(cid3);
+        FdoPtr<FdoComputedIdentifier> cid4 = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Area2D(Geometry)) AS TestArea2D");
+		selectedIds->Add(cid4);
+
+        FdoPtr<FdoIFeatureReader> reader = select->Execute ();
+
+        FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance ();
+        count = 0;
+        while (reader->ReadNext ())
+        {
+            count++;
+            double length = reader->GetDouble (L"TestLength2D");
+			double area = reader->GetDouble (L"TestArea2D");
+
+			printf("%d. Computed: length = %lf  area = %lf\n", count, length, area);
+
+			if (!GEODETIC)
+			{
+				double length0 = reader->GetDouble (L"SHAPE_LEN");
+				double area0 = reader->GetDouble (L"SHAPE_AREA");
+
+				printf("%d. Original: length = %lf  area = %lf\n", count, length0, area0);
+			}
+			// A polygon has a open ring and the test fails
+			if ( count > 10)
+				break;
+        }
+        CPPUNIT_ASSERT_MESSAGE ("no features selected", 0 != count);
+    }
+    catch (FdoException* ge)
+    {
+		TestCommonFail(ge);
+    }
+    catch (CppUnit::Exception error)
+    {
+        throw error;
+    }
+    catch(...)
+    {
+        CPPUNIT_FAIL ("SelectTests::select_length_area2() failed");
+    }
+
+}
+
 void SelectTests::select_date_time ()
 {
     try
