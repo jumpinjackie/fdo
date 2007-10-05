@@ -65,7 +65,8 @@ void FdoExpressionEngineGeometryUtil::ComputeGeometryLength(FdoBoolean computeGe
 		break;
 
 	case FdoGeometryType_Point:
-		*length += 0.0;
+	case FdoGeometryType_MultiPoint:
+		// Do nothing
 		break;
 
 	case FdoGeometryType_Polygon:
@@ -79,10 +80,6 @@ void FdoExpressionEngineGeometryUtil::ComputeGeometryLength(FdoBoolean computeGe
 		    lRing = poly->GetInteriorRing(i);
 		    FdoExpressionEngineGeometryUtil::ComputeLinearRingLength(computeGeodetic, compute3D, lRing, length);
 	    }
-		break;
-
-	case FdoGeometryType_MultiPoint:
-		*length += 0.0; 
 		break;
 
 	case FdoGeometryType_MultiLineString:
@@ -363,8 +360,8 @@ FdoDouble FdoExpressionEngineGeometryUtil::ComputeGeodeticDistance2D(FdoDouble l
 		FdoDouble	sinDlon = sin(deltaLon/2);
 
 		FdoDouble a = sinDlat*sinDlat + cos1*cos2*sinDlon*sinDlon;
-                FdoDouble aSqrt =  sqrt(a);
-                FdoDouble minValue = (1 < aSqrt) ? 1 : aSqrt; 
+        FdoDouble aSqrt =  sqrt(a);
+        FdoDouble minValue = (1 < aSqrt) ? 1 : aSqrt; 
 		d = 2 * asin(minValue);
 	}
 
@@ -401,11 +398,10 @@ void FdoExpressionEngineGeometryUtil::ComputeGeometryArea(FdoBoolean computeGeod
     switch (geometryType)
     {
 	case FdoGeometryType_LineString:
-		*area += 0.0;
-		break;
-
+	case FdoGeometryType_MultiLineString:
 	case FdoGeometryType_Point:
-		*area += 0.0;
+	case FdoGeometryType_MultiPoint:
+		// Do nothing
 		break;
 
 	case FdoGeometryType_Polygon:
@@ -419,14 +415,6 @@ void FdoExpressionEngineGeometryUtil::ComputeGeometryArea(FdoBoolean computeGeod
 		    lRing = poly->GetInteriorRing(i);
 		    FdoExpressionEngineGeometryUtil::ComputeLinearRingArea(computeGeodetic, compute3D, false, lRing, area);
 	    }
-		break;
-
-	case FdoGeometryType_MultiPoint:
-		*area += 0.0; 
-		break;
-
-	case FdoGeometryType_MultiLineString:
-		*area += 0.0; 
 		break;
 
 	case FdoGeometryType_MultiPolygon:

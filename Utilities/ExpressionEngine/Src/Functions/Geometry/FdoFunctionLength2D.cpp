@@ -122,13 +122,12 @@ FdoLiteralValue *FdoFunctionLength2D::Evaluate (
 
     geom_value = (FdoGeometryValue *) literal_values->GetItem(0);
     if (geom_value->IsNull())
-		FdoDoubleValue::Create(0.0);
+		return FdoDoubleValue::Create();
 
 	// Create a geometry object
     FdoPtr<FdoFgfGeometryFactory>	gf = FdoFgfGeometryFactory::GetInstance();
     FdoPtr<FdoIGeometry>			geom = gf->CreateGeometryFromFgf( FdoPtr<FdoByteArray>(geom_value->GetGeometry()));
-
-	FdoDouble length = 0.0;
+	FdoDouble						length = 0.0;
 
 	// Compute
 	FdoExpressionEngineGeometryUtil::ComputeGeometryLength( compute_geodetic, false /*3D*/, geom, &length );
@@ -195,7 +194,7 @@ void FdoFunctionLength2D::CreateFunctionDefinition ()
 
     signatures = FdoSignatureDefinitionCollection::Create();
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_Double, geom_args);
+    signature = FdoSignatureDefinition::Create(FdoDataType_Int32, geom_args);
     signatures->Add(signature);
 
     // Create the function definition.

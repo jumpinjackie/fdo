@@ -123,13 +123,12 @@ FdoLiteralValue *FdoFunctionArea2D::Evaluate (
 
     geom_value = (FdoGeometryValue *) literal_values->GetItem(0);
     if (geom_value->IsNull())
-		FdoDoubleValue::Create(0.0);
+		return FdoDoubleValue::Create();
 
 	// Create a geometry object
     FdoPtr<FdoFgfGeometryFactory>	gf = FdoFgfGeometryFactory::GetInstance();
     FdoPtr<FdoIGeometry>			geom = gf->CreateGeometryFromFgf( FdoPtr<FdoByteArray>(geom_value->GetGeometry()));
-
-	FdoDouble area = 0.0;
+	FdoDouble						area = 0.0;
 
 	// Compute
 	FdoExpressionEngineGeometryUtil::ComputeGeometryArea( compute_geodetic, false /*3D*/, geom, &area );
