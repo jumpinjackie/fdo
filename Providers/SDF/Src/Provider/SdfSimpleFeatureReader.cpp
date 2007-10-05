@@ -19,6 +19,9 @@
 #include "SdfSimpleFeatureReader.h"
 #include <FdoExpressionEngine.h>
 #include <Fdo/Expression/LiteralValue.h>
+#include <FdoExpressionEngineImp.h>
+#include <Functions/Geometry/FdoFunctionLength2D.h>
+#include <Functions/Geometry/FdoFunctionArea2D.h>
 
 #include "SdfConnection.h"
 #include "PropertyIndex.h"
@@ -93,7 +96,10 @@ SdfSimpleFeatureReader::SdfSimpleFeatureReader(SdfConnection* connection, FdoCla
     //is no filter, in case there are computed properties
     if (!m_filterExec && computedProps && (computedProps->GetCount() > 0))
     {
-		m_filterExec = FdoExpressionEngine::Create(this, m_class, selectIdents, NULL);
+		// Create the collection of custom functions.
+		FdoPtr<FdoExpressionEngineFunctionCollection> userDefinedFunctions = GetUserDefinedFunctions( connection, classDef );
+
+		m_filterExec = FdoExpressionEngine::Create(this, m_class, selectIdents, userDefinedFunctions);
     }
 
     m_features = features;
@@ -1308,4 +1314,45 @@ FdoLiteralValue* SdfSimpleFeatureReader::GetComputedIdentifierValue( FdoString* 
     }
 
 	throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_57_UNEXPECTEDERROR)));
+}
+
+FdoExpressionEngineFunctionCollection* SdfSimpleFeatureReader::GetUserDefinedFunctions( FdoIConnection *connection, FdoClassDefinition *classDef )
+{
+	FdoPtr<FdoExpressionEngineFunctionCollection> userDefinedFunctions;
+
+	// Length2D and Area2D require to pass in the 'geodetic' flag.
+	// Check the associated coordinate system. In case it is geodetic, create a custom function.
+	
+	if (classDef->GetClassType() == FdoClassType_FeatureClass)
+	{
+        FdoPtr<FdoGeometricPropertyDefinition> gpd = ((FdoFeatureClass*)classDef)->GetGeometryProperty();
+
+		if ( gpd )
+		{
+			FdoStringP	scname = gpd->GetSpatialContextAssociation();
+
+			if ( scname.GetLength() != 0 )
+			{
+				FdoPtr<FdoIGetSpatialContexts> gsc = (FdoIGetSpatialContexts*)connection->CreateCommand(FdoCommandType_GetSpatialContexts);
+	        
+				FdoPtr<FdoISpatialContextReader> rdr = gsc->Execute();
+
+				if ( rdr->ReadNext() )
+				{
+					FdoStringP	wkt = rdr->GetCoordinateSystemWkt();
+					FdoStringP	csysName = rdr->GetCoordinateSystem();
+				
+					if ( wkt.Contains( L"PROJCS" ) )
+						; // do nothing
+					else if ( wkt.Contains( L"GEOGCS" ) || csysName.Contains( L"[LL84]" ))
+					{
+						userDefinedFunctions = FdoExpressionEngineFunctionCollection::Create();
+						userDefinedFunctions->Add( FdoFunctionLength2D::Create(true));
+						userDefinedFunctions->Add( FdoFunctionArea2D::Create(true));
+					}
+				}
+			}
+		}
+	}
+	return FDO_SAFE_ADDREF(userDefinedFunctions.p);
 }
