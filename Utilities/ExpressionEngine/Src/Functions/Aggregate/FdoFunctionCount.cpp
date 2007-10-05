@@ -137,6 +137,7 @@ void FdoFunctionCount::Process (FdoLiteralValueCollection *literal_values)
     FdoPtr<FdoInt64Value>    int64_value;
     FdoPtr<FdoSingleValue>   single_value;
     FdoPtr<FdoStringValue>   string_value;
+	FdoPtr<FdoGeometryValue> geom_value;
 
     // If the argument list has not been validated, execute the check next.
     // NOTE: the validation is executed only the first time the procedure is
@@ -260,6 +261,13 @@ void FdoFunctionCount::Process (FdoLiteralValueCollection *literal_values)
           NULL_value_count++;
         break;
 
+	  case -1:	// Geometry
+		geom_value = (FdoGeometryValue *) literal_values->GetItem(process_value);
+        if (!geom_value->IsNull())
+			function_result++;
+        else
+			NULL_value_count++;
+		break;
     }  //  switch ...
 
 }  //  Process ()
@@ -321,6 +329,7 @@ void FdoFunctionCount::CreateFunctionDefinition ()
     FdoStringP num_arg_literal;
     FdoStringP opt_arg_literal;
     FdoStringP str_arg_literal;
+    FdoStringP geom_arg_literal;
 
     FdoPtr<FdoArgumentDefinition> bool_arg;
     FdoPtr<FdoArgumentDefinition> blob_arg;
@@ -335,6 +344,7 @@ void FdoFunctionCount::CreateFunctionDefinition ()
     FdoPtr<FdoArgumentDefinition> opt_arg;
     FdoPtr<FdoArgumentDefinition> sgl_arg;
     FdoPtr<FdoArgumentDefinition> str_arg;
+    FdoPtr<FdoArgumentDefinition> geom_arg;
 
     FdoPtr<FdoArgumentDefinitionCollection> bool_args;
     FdoPtr<FdoArgumentDefinitionCollection> blob_args;
@@ -348,6 +358,7 @@ void FdoFunctionCount::CreateFunctionDefinition ()
     FdoPtr<FdoArgumentDefinitionCollection> int64_args;
     FdoPtr<FdoArgumentDefinitionCollection> sgl_args;
     FdoPtr<FdoArgumentDefinitionCollection> str_args;
+    FdoPtr<FdoArgumentDefinitionCollection> geom_args;
 
     FdoPtr<FdoArgumentDefinitionCollection> bool_opt_args;
     FdoPtr<FdoArgumentDefinitionCollection> byte_opt_args;
@@ -522,6 +533,25 @@ void FdoFunctionCount::CreateFunctionDefinition ()
     str_opt_args->Add(opt_arg);
     str_opt_args->Add(str_arg);
 
+	// Geometry
+    arg1_description = FdoException::NLSGetMessage(
+                                        FUNCTION_GENERAL_ARG,
+                                        "Argument to be processed");
+
+    geom_arg_literal =
+            FdoException::NLSGetMessage(FUNCTION_GEOM_ARG_LIT,
+                                        "geometry property");
+
+    geom_arg =
+            FdoArgumentDefinition::Create(geom_arg_literal,
+                                          arg1_description,
+                                          FdoPropertyType_GeometricProperty,
+                                          (FdoDataType)-1);
+
+    geom_args = FdoArgumentDefinitionCollection::Create();
+    geom_args->Add(geom_arg);
+
+
     // Create the signature collection.
 
     signatures = FdoSignatureDefinitionCollection::Create();
@@ -601,6 +631,9 @@ void FdoFunctionCount::CreateFunctionDefinition ()
 
     signature = FdoSignatureDefinition::Create(
                                             FdoDataType_String, str_opt_args);
+    signatures->Add(signature);
+
+    signature = FdoSignatureDefinition::Create(FdoDataType_Double, geom_args);
     signatures->Add(signature);
 
     // Create the function definition.
@@ -1181,26 +1214,24 @@ void FdoFunctionCount::Validate (FdoLiteralValueCollection *literal_values)
     // The function works on all supported data types. Ensure this is the case.
 
     literal_value = literal_values->GetItem(process_value);
-    if (literal_value->GetLiteralValueType() != FdoLiteralValueType_Data)
-        throw FdoException::Create(
-                FdoException::NLSGetMessage(
-                  FUNCTION_PARAMETER_ERROR, 
-                  "Expression Engine: Invalid parameters for function '%1$ls'",
-                  FDO_FUNCTION_COUNT));
-
+    if (literal_value->GetLiteralValueType() == FdoLiteralValueType_Geometry) {
+		incoming_data_type = (FdoDataType) -1;
+	}
     // If the data type is BLOB or CLOB, the caller cannot use DISTINCT as the
     // first parameter value if there are two parameters provided.
-
-    data_value = static_cast<FdoDataValue *>(literal_value.p);
-    incoming_data_type = data_value->GetDataType();
-    if (((incoming_data_type == FdoDataType_BLOB ) ||
-         (incoming_data_type == FdoDataType_CLOB )    ) &&
-        (is_distinct_request)                               )
-        throw FdoException::Create(
-                FdoException::NLSGetMessage(
-                  FUNCTION_PARAMETER_DISTINCT_ERROR, 
-                  "Expression Engine: DISTINCT not allowed for BLOB/CLOB for function '%1$ls'",
-                  FDO_FUNCTION_COUNT));
+	else
+	{
+		data_value = static_cast<FdoDataValue *>(literal_value.p);
+		incoming_data_type = data_value->GetDataType();
+		if (((incoming_data_type == FdoDataType_BLOB ) ||
+			 (incoming_data_type == FdoDataType_CLOB )    ) &&
+			(is_distinct_request)                               )
+			throw FdoException::Create(
+					FdoException::NLSGetMessage(
+					  FUNCTION_PARAMETER_DISTINCT_ERROR, 
+					  "Expression Engine: DISTINCT not allowed for BLOB/CLOB for function '%1$ls'",
+					  FDO_FUNCTION_COUNT));
+	}
 
 }  //  Validate ()
 
