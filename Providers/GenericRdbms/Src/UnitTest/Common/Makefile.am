@@ -40,6 +40,7 @@ FdoConnectTest.cpp \
 FdoConstraintsTest.cpp \
 FdoDatastoreTest.cpp \
 FdoDeleteTest.cpp \
+FdoExpressionFunctionTest.cpp \
 FdoForeignSchemaTest.cpp \
 FdoImportExportTest.cpp \
 FdoInsertTest.cpp \
@@ -74,6 +75,7 @@ FdoConnectTest.h \
 FdoConstraintsTest.h \
 FdoDatastoreTest.h \
 FdoDeleteTest.h \
+FdoExpressionFunctionTest.h \
 FdoForeignSchemaTest.h \
 FdoImportExportTest.h \
 FdoInsertTest.h \

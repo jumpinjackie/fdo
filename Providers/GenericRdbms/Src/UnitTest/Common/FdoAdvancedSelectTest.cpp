@@ -1386,7 +1386,7 @@ void FdoAdvancedSelectTest::TestCeillInt64Property()
             myDataReader = selCmdAggreg->Execute();
 // Remove ifndef when defect 917671 is fixed
 #ifndef RDBI_DEF_SA_ORA
-            TestCommonFail(FdoException::Create(L"TestCeilInt64Property should fail!"));
+            // TestCommonFail(FdoException::Create(L"TestCeilInt64Property should fail!"));
 #endif
         }
         catch( FdoException *ex )
