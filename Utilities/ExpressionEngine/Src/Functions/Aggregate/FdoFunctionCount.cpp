@@ -261,13 +261,14 @@ void FdoFunctionCount::Process (FdoLiteralValueCollection *literal_values)
           NULL_value_count++;
         break;
 
-	  case -1:	// Geometry
-		geom_value = (FdoGeometryValue *) literal_values->GetItem(process_value);
+      case -1:  // Geometry
+        geom_value = (FdoGeometryValue *) literal_values->GetItem(process_value);
         if (!geom_value->IsNull())
-			function_result++;
+            function_result++;
         else
-			NULL_value_count++;
-		break;
+          NULL_value_count++;
+        break;
+
     }  //  switch ...
 
 }  //  Process ()
@@ -307,6 +308,7 @@ void FdoFunctionCount::CreateFunctionDefinition ()
 // |    COUNT ([string, ]
 // |         {boolean, blob, byte, clob, date/time, decimal, double, int16,
 // |          int32, int64, single, string})
+// |    COUNT (geometry);
 // |
 // | If the optional first parameter is used, then the parameter value must be
 // | ALL or DISTINCT. The paranmeter is invalid if the second parameter is of
@@ -398,6 +400,9 @@ void FdoFunctionCount::CreateFunctionDefinition ()
 
     opt_arg_literal = FdoException::NLSGetMessage(FUNCTION_OPERATOR_ARG_LIT,
                                                   "Operation Indicator");
+
+    geom_arg_literal = FdoException::NLSGetMessage(FUNCTION_GEOM_ARG_LIT,
+                                                   "geometry property");
 
     // The supported signatures allow an optional first parameter. The follow-
     // ing defines the argument definition for this parameter.
@@ -533,15 +538,6 @@ void FdoFunctionCount::CreateFunctionDefinition ()
     str_opt_args->Add(opt_arg);
     str_opt_args->Add(str_arg);
 
-	// Geometry
-    arg1_description = FdoException::NLSGetMessage(
-                                        FUNCTION_GENERAL_ARG,
-                                        "Argument to be processed");
-
-    geom_arg_literal =
-            FdoException::NLSGetMessage(FUNCTION_GEOM_ARG_LIT,
-                                        "geometry property");
-
     geom_arg =
             FdoArgumentDefinition::Create(geom_arg_literal,
                                           arg1_description,
@@ -550,7 +546,6 @@ void FdoFunctionCount::CreateFunctionDefinition ()
 
     geom_args = FdoArgumentDefinitionCollection::Create();
     geom_args->Add(geom_arg);
-
 
     // Create the signature collection.
 
@@ -1212,26 +1207,26 @@ void FdoFunctionCount::Validate (FdoLiteralValueCollection *literal_values)
     process_value = (count - 1);
 
     // The function works on all supported data types. Ensure this is the case.
-
-    literal_value = literal_values->GetItem(process_value);
-    if (literal_value->GetLiteralValueType() == FdoLiteralValueType_Geometry) {
-		incoming_data_type = (FdoDataType) -1;
-	}
     // If the data type is BLOB or CLOB, the caller cannot use DISTINCT as the
     // first parameter value if there are two parameters provided.
-	else
-	{
-		data_value = static_cast<FdoDataValue *>(literal_value.p);
-		incoming_data_type = data_value->GetDataType();
-		if (((incoming_data_type == FdoDataType_BLOB ) ||
-			 (incoming_data_type == FdoDataType_CLOB )    ) &&
-			(is_distinct_request)                               )
-			throw FdoException::Create(
-					FdoException::NLSGetMessage(
-					  FUNCTION_PARAMETER_DISTINCT_ERROR, 
-					  "Expression Engine: DISTINCT not allowed for BLOB/CLOB for function '%1$ls'",
-					  FDO_FUNCTION_COUNT));
-	}
+
+    literal_value = literal_values->GetItem(process_value);
+    if (literal_value->GetLiteralValueType() == FdoLiteralValueType_Geometry)
+        incoming_data_type = (FdoDataType) -1;
+	else {
+
+      data_value = static_cast<FdoDataValue *>(literal_value.p);
+      incoming_data_type = data_value->GetDataType();
+      if (((incoming_data_type == FdoDataType_BLOB ) ||
+           (incoming_data_type == FdoDataType_CLOB )    ) &&
+          (is_distinct_request)                               )
+        throw FdoException::Create(
+                FdoException::NLSGetMessage(
+                    FUNCTION_PARAMETER_DISTINCT_ERROR, 
+                    "Expression Engine: DISTINCT not allowed for BLOB/CLOB for function '%1$ls'",
+                    FDO_FUNCTION_COUNT));
+
+    }  //  else ...
 
 }  //  Validate ()
 
