@@ -194,7 +194,7 @@ void FdoFunctionLength2D::CreateFunctionDefinition ()
 
     signatures = FdoSignatureDefinitionCollection::Create();
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_Int32, geom_args);
+    signature = FdoSignatureDefinition::Create(FdoDataType_Double, geom_args);
     signatures->Add(signature);
 
     // Create the function definition.
