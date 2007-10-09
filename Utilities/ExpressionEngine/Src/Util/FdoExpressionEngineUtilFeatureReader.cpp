@@ -24,10 +24,10 @@
 	RESULT_TYPE	ret; \
 	if ( IsComputedProperty( propertyName ) ) \
 	{ \
-		FdoPtr<FdoLiteralValue> results = m_filterExec->Evaluate(propertyName); \
+		FdoLiteralValue *results = m_filterExec->Evaluate(propertyName); \
 		if (results->GetLiteralValueType() == FdoLiteralValueType_Data) \
 		{ \
-			FdoDataValue *dataValue = static_cast<FdoDataValue *> (results.p); \
+			FdoDataValue *dataValue = static_cast<FdoDataValue *> (results); \
 			if (dataValue->GetDataType() == FdoDataType_##OBJECT_TYPE) \
 			{ \
 				Fdo##OBJECT_TYPE##Value *value = static_cast<Fdo##OBJECT_TYPE##Value *>(dataValue); \
@@ -101,7 +101,26 @@ FdoDateTime FdoExpressionEngineUtilFeatureReader::GetDateTime (FdoString* proper
 
 double FdoExpressionEngineUtilFeatureReader::GetDouble (FdoString* propertyName)
 {
-	EXPRESSIONENGINE_GET_RESULT_DEFINE( double, Double );
+	double	ret = 0;
+	if ( IsComputedProperty( propertyName ) )
+	{
+		FdoPtr<FdoLiteralValue> results = m_filterExec->Evaluate(propertyName);
+		if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
+		{
+			FdoDataValue *dataValue = static_cast<FdoDataValue *> (results.p);
+			if ((dataValue->GetDataType() == FdoDataType_Double) ||
+			    (dataValue->GetDataType() == FdoDataType_Decimal)   )
+			{
+				FdoDoubleValue *value = static_cast<FdoDoubleValue *>(dataValue);
+				ret = value->GetDouble();
+			}
+		}
+	}
+	else
+	{
+		ret = m_reader->GetDouble(propertyName);
+	}
+	return ret;
 }
 
 FdoInt16 FdoExpressionEngineUtilFeatureReader::GetInt16 (FdoString* propertyName)
