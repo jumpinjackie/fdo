@@ -32,6 +32,8 @@
 #include <FdoCommonExpressionExecutor.h>
 #include <FdoCommonSchemaUtil.h>
 #include <FdoExpressionEngine.h>
+#include "Util/FdoExpressionEngineUtilDataReader.h"
+#include "Util/FdoExpressionEngineUtilFeatureReader.h"
 
 #define SELECT_CLEANUP \
         if ( qid != -1) {\
@@ -102,6 +104,60 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
         filterConstrain.selectedProperties = mIdentifiers;
         filterConstrain.groupByProperties = mGroupingCol;
         filterConstrain.orderByProperties = mOrderingIdentifiers;
+
+        // FDO supports expression functions that may not have native support in the
+        // underlying system. If this is the case then the request has to be handled
+        // by the Expression Engine.
+
+        bool isValidFilter = true,
+             isValidSelectList = true;
+
+        if ( this->GetFilterRef() != NULL )
+            isValidFilter = flterProcessor->IsValidExpression( this->GetFilterRef() );
+        isValidSelectList = flterProcessor->IsValidExpression( mIdentifiers );
+
+        if ( ( !isValidFilter ) || ( !isValidSelectList ) )
+        {
+            // Either the selected property list of the the filter is invalid. In any case
+            // create a SQL statement that selects all properties for the current class.
+            // If the filter is valid it is used to narrow the selected amount of data.
+
+            FdoString *sqlStatement =
+                    flterProcessor->FilterToSql( ((isValidFilter)
+                                                        ? this->GetFilterRef()
+                                                        : NULL),
+                                                 this->GetClassNameRef()->GetText() );
+
+            GdbiQueryResult *queryRslt = mConnection->GetGdbiConnection()->ExecuteQuery( sqlStatement );
+            FdoPtr<FdoIFeatureReader> featureReader = new FdoRdbmsFeatureReader( FdoPtr<FdoIConnection>(GetConnection()),
+                                                                                 queryRslt,
+                                                                                 isFeatureClass,
+                                                                                 classDefinition,
+                                                                                 NULL,
+                                                                                 NULL,
+                                                                                 0,
+                                                                                 NULL );
+
+            // The Expression Engine cannot work with the class definition of type
+            // "FdoSmLpClassDefinition". Instead it is necessary to get the corresponding
+            // definition of type "FdoClassDefinition". This is done next.
+
+            const FdoSmLpSchema* schema = mConnection->GetSchema( this->GetClassNameRef()->GetText() );
+            FdoFeatureSchemasP fdoFeatureSchemas = mFdoConnection->GetSchemaManager()->GetFdoSchemas( schema->GetName() );
+            FdoClassCollection *classCol = (FdoClassCollection *)fdoFeatureSchemas->FindClass( this->GetClassNameRef()->GetText() );
+            FdoClassDefinition *classDef = classCol->GetItem(0);
+
+			return new FdoExpressionEngineUtilFeatureReader(
+                                                        classDef,
+                                                        featureReader, 
+                                                        ((isValidFilter)
+                                                            ? this->GetFilterRef()
+                                                            : NULL),
+                                                        mIdentifiers,
+                                                        NULL /* user defined funcs*/);
+		}
+
+        // The selected properties and the filter are both valid. Do the normal processing.
 
 		// Validate the filter
 		if ( this->GetFilterRef() != NULL )

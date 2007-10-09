@@ -29,6 +29,7 @@
 #include "FdoRdbmsConnection.h"
 #include "FdoRdbmsFeatureCommand.h"
 #include "FdoRdbmsDataReader.h"
+#include "FdoRdbmsSelectCommand.h"
 
 // the macro EXECUTE_METHOD is defined in FdoRdbmsDataReader. To re-use that macro pReader need to be replaced by the pSelect
 #define pReader  pSelect
@@ -41,6 +42,7 @@
 class FdoRdbmsSelectAggregates : public FdoISelectAggregates
 {
     friend class FdoRdbmsConnection;
+
 protected:
      //
       // Prevent the use of the copy constructor by definning it and not implemeting it.
@@ -48,17 +50,12 @@ protected:
       FdoRdbmsSelectAggregates(const FdoRdbmsSelectAggregates &right);
 
       //    Constructs a default instance of a FdoRdbmsSelectAggregates.
-      FdoRdbmsSelectAggregates (): mbDistinct(false)
-      {
-            pSelect = new FdoRdbmsSelectCommand();
-      }
+      // FdoRdbmsSelectAggregates (): mbDistinct(false), mIConnection(NULL);
+      FdoRdbmsSelectAggregates ();
 
-      //    Constructs an instance of a FdoRdbmsSelectAggregates using the
-      //    specified arguments.
-      FdoRdbmsSelectAggregates (FdoIConnection *connection):mbDistinct(false)
-      {
-           pSelect = new FdoRdbmsSelectCommand( connection );
-      }
+      ////    Constructs an instance of a FdoRdbmsSelectAggregates using the
+      ////    specified arguments.
+      FdoRdbmsSelectAggregates (FdoIConnection *connection);
 
       virtual ~FdoRdbmsSelectAggregates() { }
 
@@ -76,13 +73,7 @@ public:
 
     /// <summary>Executes the select command and returns a reference to an FdoIDataReader.</summary>
     /// <returns>Returns the data reader.</returns>
-    virtual FdoIDataReader* Execute()
-    {
-        if( NULL == pSelect.p )
-            throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, errorMsg ));
-
-        return new FdoRdbmsDataReader( FdoPtr<FdoRdbmsFeatureReader>((FdoRdbmsFeatureReader*)pSelect->Execute( mbDistinct, FdoCommandType_SelectAggregates ) ) );
-    }
+    virtual FdoIDataReader* Execute();
 
     /// <summary>Set the distinct option of the selection. Note that grouping criteria is not supported with Distinct.
     /// Non-simple properties such as object properties, geometry properties, raster properties, association properties, etc. will not be supported with Distinct.</summary>
@@ -221,7 +212,7 @@ public:
 private:
 
     FdoPtr<FdoRdbmsSelectCommand>  pSelect;
-
+    FdoIConnection                 *mIConnection;
     bool                           mbDistinct;
 };
 #endif

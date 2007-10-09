@@ -130,6 +130,7 @@ class FdoRdbmsFeatureReader: public FdoIFeatureReader
 {
   friend class FdoRdbmsSelectCommand;
   friend class FdoRdbmsDataReader;
+  friend class FdoRdbmsSelectAggregates;
 
   protected:
       FdoRdbmsFeatureReader()
