@@ -22,7 +22,9 @@
 #include "ArcSDEFeatureReader.h"
 #include "Util/FdoExpressionEngineUtilFeatureReader.h"
 #include "Util/FdoExpressionEngineUtilDataReader.h"
-#include "FdoExpressionEngine.h"
+#include <FdoExpressionEngine.h>
+#include "ArcSDEFunctionArea2D.h"
+#include "ArcSDEFunctionLength2D.h"
 
 ArcSDESelectCommand::ArcSDESelectCommand (FdoIConnection *connection) :
     ArcSDEFeatureCommand<FdoISelect> (connection),
@@ -174,6 +176,9 @@ FdoIFeatureReader* ArcSDESelectCommand::Execute ()
 	}
 	else
 	{
+		// Create the collection of custom functions.
+		FdoPtr<FdoExpressionEngineFunctionCollection> userDefinedFunctions = GetUserDefinedFunctions( connection, definition );
+
 		FdoPtr<ArcSDEFeatureReader> sub_reader;
 		FdoPtr<FdoIFeatureReader>	reader;
 
@@ -183,13 +188,13 @@ FdoIFeatureReader* ArcSDESelectCommand::Execute ()
 		{
 			// CASE 1: the filter is supported. Create a new sub-reader over all properties with the filter.
 			sub_reader = new ArcSDEFeatureReader (connection, definition, filter, NULL); 
-			reader = new FdoExpressionEngineUtilFeatureReader (definition, sub_reader, NULL, mPropertiesToSelect, NULL /* user defined funcs*/);
+			reader = new FdoExpressionEngineUtilFeatureReader (definition, sub_reader, NULL, mPropertiesToSelect, userDefinedFunctions);
 		}
 		else
 		{
 			// CASE 2: the filter is not supported. Create a new sub-reader with no filtering over all properties.
 			sub_reader = new ArcSDEFeatureReader (connection, definition, NULL, NULL); 
-			reader = new FdoExpressionEngineUtilFeatureReader (definition, sub_reader, filter, mPropertiesToSelect, NULL /* user defined funcs*/);
+			reader = new FdoExpressionEngineUtilFeatureReader (definition, sub_reader, filter, mPropertiesToSelect, userDefinedFunctions);
 		}
 
 		return FDO_SAFE_ADDREF(reader.p);	
@@ -310,5 +315,40 @@ void ArcSDESelectCommand::Dispose ()
         // because we're the only one referencing him,
         // but at that time the conflict reader will be NULL
         GetLockConflictReader ()->Release ();
+}
+
+FdoExpressionEngineFunctionCollection* ArcSDESelectCommand::GetUserDefinedFunctions( FdoIConnection *fdoConnection, FdoClassDefinition *classDef )
+{
+     if (classDef->GetClassType() != FdoClassType_FeatureClass)
+        return NULL;
+
+	// Get the coordinated reference of for this class
+    FdoPtr<FdoGeometricPropertyDefinition> geomProp = ((FdoFeatureClass*)classDef)->GetGeometryProperty();
+    FdoPtr<FdoPropertyDefinitionCollection> fdoProperties = classDef->GetProperties();
+    FdoPtr<FdoPropertyDefinition> fdoProperty = fdoProperties->GetItem(geomProp->GetName());
+
+  	ArcSDEConnection* connection = static_cast<ArcSDEConnection*>(GetConnection ());
+
+	// Get sde column name:
+    CHAR column[SE_QUALIFIED_COLUMN_LEN];
+    connection->PropertyToColumn (column, classDef, FdoPtr<FdoIdentifier>(FdoIdentifier::Create(fdoProperty->GetName())));
+
+    // Get sde table name:
+	CHAR table[SE_QUALIFIED_TABLE_NAME];
+    connection->ClassToTable(table, classDef);
+
+    // Get the sde coordref for the column the spatial filter applies to:
+    SE_COORDREF coordRef;
+    LONG lResult = GetCoordRefFromColumn(connection, table, column, coordRef);
+    handle_sde_err<FdoCommandException>(connection->GetConnection(), lResult, __FILE__, __LINE__, ARCSDE_FAILED_PROCESSING_SPATIAL_CONDITION, "Failed to process the given spatial condition.");
+
+	// Create the custom functions
+	FdoPtr<FdoExpressionEngineFunctionCollection> userDefinedFunctions;
+
+	userDefinedFunctions = FdoExpressionEngineFunctionCollection::Create();
+	userDefinedFunctions->Add( ArcSDEFunctionLength2D::Create(connection, coordRef));
+	userDefinedFunctions->Add( ArcSDEFunctionArea2D::Create (connection, coordRef));
+
+	return FDO_SAFE_ADDREF(userDefinedFunctions.p);
 }
 

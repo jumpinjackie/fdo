@@ -888,6 +888,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ArcSDEFunctionArea2D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ArcSDEFunctionArea2D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ArcSDEFunctionLength2D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ArcSDEFunctionLength2D.h"
+				>
+			</File>
+			<File
 				RelativePath="ArcSDEInsertCommand.cpp"
 				>
 			</File>
@@ -979,66 +995,66 @@
 				RelativePath="ArcSDESchemaManager.h"
 				>
 			</File>
-		</Filter>
-		<Filter
-			Name="CommandsSpatialContext"
-			>
-			<File
-				RelativePath="ArcSDEActivateSpatialContext.cpp"
+			<Filter
+				Name="CommandsSpatialContext"
 				>
-			</File>
-			<File
-				RelativePath="ArcSDEActivateSpatialContext.h"
-				>
-			</File>
-			<File
-				RelativePath="ArcSDECreateSpatialContext.cpp"
-				>
-			</File>
-			<File
-				RelativePath="ArcSDECreateSpatialContext.h"
-				>
-			</File>
-			<File
-				RelativePath="ArcSDEDestroySpatialContext.cpp"
-				>
-			</File>
-			<File
-				RelativePath="ArcSDEDestroySpatialContext.h"
-				>
-			</File>
-			<File
-				RelativePath="ArcSDEGetSpatialContexts.cpp"
-				>
-			</File>
-			<File
-				RelativePath="ArcSDEGetSpatialContexts.h"
-				>
-			</File>
-			<File
-				RelativePath="ArcSDESpatialContextReader.cpp"
-				>
-			</File>
-			<File
-				RelativePath="ArcSDESpatialContextReader.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ArcSDESpatialContextSQLReader.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ArcSDESpatialContextSQLReader.h"
-				>
-			</File>
-			<File
-				RelativePath="ArcSDESpatialContextUtility.cpp"
-				>
-			</File>
-			<File
-				RelativePath="ArcSDESpatialContextUtility.h"
-				>
-			</File>
+				<File
+					RelativePath="ArcSDEActivateSpatialContext.cpp"
+					>
+				</File>
+				<File
+					RelativePath="ArcSDEActivateSpatialContext.h"
+					>
+				</File>
+				<File
+					RelativePath="ArcSDECreateSpatialContext.cpp"
+					>
+				</File>
+				<File
+					RelativePath="ArcSDECreateSpatialContext.h"
+					>
+				</File>
+				<File
+					RelativePath="ArcSDEDestroySpatialContext.cpp"
+					>
+				</File>
+				<File
+					RelativePath="ArcSDEDestroySpatialContext.h"
+					>
+				</File>
+				<File
+					RelativePath="ArcSDEGetSpatialContexts.cpp"
+					>
+				</File>
+				<File
+					RelativePath="ArcSDEGetSpatialContexts.h"
+					>
+				</File>
+				<File
+					RelativePath="ArcSDESpatialContextReader.cpp"
+					>
+				</File>
+				<File
+					RelativePath="ArcSDESpatialContextReader.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ArcSDESpatialContextSQLReader.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ArcSDESpatialContextSQLReader.h"
+					>
+				</File>
+				<File
+					RelativePath="ArcSDESpatialContextUtility.cpp"
+					>
+				</File>
+				<File
+					RelativePath="ArcSDESpatialContextUtility.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="CommandsLongTransaction"

@@ -21,7 +21,7 @@
 #include "ArcSDESelectAggregatesCommand.h"
 #include "ArcSDEDataReader.h"
 #include "Util/FdoExpressionEngineUtilDataReader.h"
-#include "FdoExpressionEngine.h"
+#include <FdoExpressionEngine.h>
 
 
 ArcSDESelectAggregatesCommand::ArcSDESelectAggregatesCommand (FdoIConnection *connection) :
