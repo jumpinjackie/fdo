@@ -73,6 +73,7 @@ class FdoRdbmsSpatialSecondaryFilter;
 #define             ARITHMETIC_MINUS                L" - "
 #define             ARITHMETIC_MULT                 L" * "
 #define             ARITHMETIC_DIV                  L" / "
+#define             ARITHMETIC_MOD                  L" % "
 
 #define     MEM_BLOCK_ALLOC_SIZE    128
 
@@ -277,10 +278,14 @@ protected:
     virtual void ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& filter);
 
     virtual bool IsAggregateFunctionName(FdoString* wFunctionName) const = 0;
+    virtual bool IsNotNativeSupportedFunction(FdoString* wFunctionName) const = 0;
+    virtual bool HasNativeSupportedFunctionArguments(FdoFunction& expr) const = 0;
 
 public:
 	virtual void GetLtTableExpression( const FdoSmLpClassDefinition *classDefinition, FdoStringP &ltJoin, FdoStringP &ltTableExp, FdoCommandType callerFdoCommand );
 	virtual void GetLtQualificationClause( const FdoSmLpClassDefinition *classDefinition, FdoStringP &ltQualificationClause );
+    bool IsValidExpression( FdoFilter *filter );
+    bool IsValidExpression( FdoIdentifierCollection *identifiers );
 
 	void  SetUseTableAlias( bool useFlag ) { mUseTableAliases = useFlag; };
 
@@ -288,7 +293,15 @@ public:
 
     bool CanOptimizeRelationQuery( const FdoSmLpClassDefinition* pClass, const FdoSmLpPropertyDefinition* propertyDefinition );
 
-    virtual const wchar_t* FilterToSql( FdoFilter  *filter, const wchar_t *className, SqlCommandType cmdType, FdoCommandType callerFdoCommand, FdoRdbmsFilterUtilConstrainDef *filterConstrain = NULL, bool forUpdate = false, FdoInt16 callerId = FdoCommandType_Select );
+    virtual const wchar_t* FilterToSql( FdoFilter *filter,
+                                        const wchar_t *className,
+                                        SqlCommandType cmdType,
+                                        FdoCommandType callerFdoCommand,
+                                        FdoRdbmsFilterUtilConstrainDef *filterConstrain = NULL,
+                                        bool forUpdate = false,
+                                        FdoInt16 callerId = FdoCommandType_Select );
+    virtual const wchar_t* FilterToSql( FdoFilter *filter,
+                                        const wchar_t *className );
 
     FdoRdbmsSecondarySpatialFilterCollection * GetGeometricConditions() { return FDO_SAFE_ADDREF(mSecondarySpatialFilters.p); }
 };

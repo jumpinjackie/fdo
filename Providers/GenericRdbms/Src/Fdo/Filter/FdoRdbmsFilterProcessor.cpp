@@ -1188,6 +1188,116 @@ void FdoRdbmsFilterProcessor::GetLtQualificationClause( const FdoSmLpClassDefini
 }
 
 //
+// The function checks if the filter contains expression functions that have
+// native support only.
+bool FdoRdbmsFilterProcessor::IsValidExpression( FdoFilter *filter )
+{
+    class UsesNativeExpressionFunctions : public FdoRdbmsBaseFilterProcessor
+    {
+    public:
+        bool                            foundNotNativeSupportedFunction;
+        const FdoRdbmsFilterProcessor*  mParentFilterProcessor;
+
+        UsesNativeExpressionFunctions(const FdoRdbmsFilterProcessor* parentFilterProcessor)
+        {
+            mParentFilterProcessor = parentFilterProcessor;
+            foundNotNativeSupportedFunction = false;
+        }
+        virtual void ProcessFunction(FdoFunction& expr)
+        {
+            if( foundNotNativeSupportedFunction )
+                return;
+            if (mParentFilterProcessor->IsNotNativeSupportedFunction(expr.GetName()))
+                foundNotNativeSupportedFunction = true;
+            // Next check whether or not the argument list requires a redirection
+            // to the Expression Engine.
+            if ( !mParentFilterProcessor->HasNativeSupportedFunctionArguments(expr) )
+                foundNotNativeSupportedFunction = true;
+
+            if( !foundNotNativeSupportedFunction )
+            {
+                FdoPtr<FdoExpressionCollection>expCol =  expr.GetArguments();
+                if( expCol != NULL )
+                {
+                    for(int j=0;j<expCol->GetCount() && !foundNotNativeSupportedFunction; j++ )
+                    {
+                        FdoPtr<FdoExpression>exp = expCol->GetItem(j);
+                        exp->Process( this );
+                    }
+                }
+            }
+        }
+    };
+
+    if( filter == NULL )
+        return true;
+
+    UsesNativeExpressionFunctions finder(this);
+    filter->Process(&finder);
+    if (finder.foundNotNativeSupportedFunction)
+        return false;
+    else 
+        return true;
+}
+
+//
+// The function checks if the properties contain expression functions that have
+// native support.
+bool FdoRdbmsFilterProcessor::IsValidExpression( FdoIdentifierCollection *identifiers )
+{
+    class UsesNativeExpressionFunctions : public FdoRdbmsBaseFilterProcessor
+    {
+    public:
+        bool                            foundNotNativeSupportedFunction;
+        const FdoRdbmsFilterProcessor*  mParentFilterProcessor;
+
+        UsesNativeExpressionFunctions(const FdoRdbmsFilterProcessor* parentFilterProcessor)
+        {
+            mParentFilterProcessor = parentFilterProcessor;
+            foundNotNativeSupportedFunction = false;
+        }
+        virtual void ProcessFunction(FdoFunction& expr)
+        {
+            if( foundNotNativeSupportedFunction )
+                return;
+            if (mParentFilterProcessor->IsNotNativeSupportedFunction(expr.GetName()))
+                foundNotNativeSupportedFunction = true;
+            // Next check whether or not the argument list requires a redirection
+            // to the Expression Engine.
+            if ( !mParentFilterProcessor->HasNativeSupportedFunctionArguments(expr) )
+                foundNotNativeSupportedFunction = true;
+
+            if( !foundNotNativeSupportedFunction )
+            {
+                FdoPtr<FdoExpressionCollection>expCol =  expr.GetArguments();
+                if( expCol != NULL )
+                {
+                    for(int j=0;j<expCol->GetCount() && !foundNotNativeSupportedFunction; j++ )
+                    {
+                        FdoPtr<FdoExpression>exp = expCol->GetItem(j);
+                        exp->Process( this );
+                    }
+                }
+            }
+        }
+    };
+
+    if( identifiers == NULL )
+        return true;
+
+    UsesNativeExpressionFunctions finder(this);
+    for( int i=0; i<identifiers->GetCount(); i++ )
+    {
+        FdoPtr<FdoIdentifier>property = identifiers->GetItem(i);
+        property->Process( &finder );
+        if( finder.foundNotNativeSupportedFunction )
+            return false;
+    }
+
+    return true;
+}
+
+//
 // The implementation of the public method that converts FDO filter to dbi SQL strings.
 const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                      *filter,
                                                      const wchar_t                  *className,
@@ -1745,3 +1855,49 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
     return &mSqlFilterText[mFirstTxtIndex];
 }
 
+
+//
+// This is a simplified version of the original FilterToSql implementation and used
+// if the request has to be passed on to the Expression Engine. It generates a simplified
+// SQL statement that is used to get the data to be handed over to the Expression Engine.
+const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter     *filter,
+                                                     const wchar_t *className )
+
+{
+    // Reset the buffer.
+    ResetBuffer( SqlCommandType_Select );
+
+    // Get the class definition for the identified class.
+    DbiConnection *mDbiConnection = mFdoConnection->GetDbiConnection();
+    const FdoSmLpClassDefinition *classDefinition = mDbiConnection->GetSchemaUtil()->GetClass(className);
+
+    // Generate the select-statement that selects the data to be used to create the
+    // reader handed over to the Expression Engine.
+    AppendString( L"SELECT " );
+
+    FdoInt32 i;
+    FdoStringsP all = FdoStringCollection::Create();
+    const FdoSmLpPropertyDefinitionCollection *pCol = classDefinition->RefProperties();
+    for( i = 0; i < pCol->GetCount(); i++ )
+    {
+        const FdoSmLpDataPropertyDefinition *dataPropertyDef = 
+                                FdoSmLpDataPropertyDefinition::Cast(classDefinition->RefProperties()->RefItem(i));
+        if( dataPropertyDef != NULL )
+        {
+            if(( FdoCommonOSUtil::wcsicmp( dataPropertyDef->GetColumnName(), L"classname" )  != 0 ) &&
+               ( FdoCommonOSUtil::wcsicmp( dataPropertyDef->GetColumnName(), L"schemaname" ) != 0 )     )
+                all->Add( dataPropertyDef->GetColumnName() );
+        }
+    }
+
+    if (all->GetCount() > 0)
+        AppendString( (FdoString *)all->ToString() );
+    else
+        AppendString( L" * ");
+
+    FdoStringP tableName = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(classDefinition);
+    AppendString( L" FROM " );
+    AppendString( (FdoString *)tableName );
+
+    return &mSqlFilterText[mFirstTxtIndex];
+}
