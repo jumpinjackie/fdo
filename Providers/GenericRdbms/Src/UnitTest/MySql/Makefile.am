@@ -39,6 +39,7 @@ MySqlFdoConnectTest.cpp \
 MySqlFdoConstraintsTest.cpp \
 MySqlFdoDatastoreTest.cpp \
 MySqlFdoDeleteTest.cpp \
+MySqlFdoExpressionFunctionTest.cpp \
 MySqlFdoForeignSchemaTest.cpp \
 MySqlFdoImportExportTest.cpp \
 MySqlFdoInsertTest.cpp \
