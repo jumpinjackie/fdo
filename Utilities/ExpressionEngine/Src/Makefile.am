@@ -21,7 +21,7 @@ SUBDIRS =
 
 EXTRA_DIST = 
 
-noinst_LTLIBRARIES = libExpressionEngine.la
+lib_LTLIBRARIES = libExpressionEngine.la
 
 libExpressionEngine_la_SOURCES = \
   Functions/Aggregate/CacheValue.cpp \
@@ -89,6 +89,8 @@ libExpressionEngine_la_SOURCES = \
   FdoExpressionEngineCopyFilter.cpp \
   stdafx.cpp
 
+nodist_EXTRA_libExpressionEngine_la_SOURCES =  dummy.cpp
+
 
 INCLUDES = \
   -I$(FDOUTILITIES)/ExpressionEngine/Inc \
@@ -96,20 +98,15 @@ INCLUDES = \
   -I$(FDO)/Unmanaged/Src/Common \
   -I$(FDOUTILITIES)/Common/Inc
 
-libExpressionEngine_la_LDFLAGS = 
+libExpressionEngine_la_LIBADD = \
+  $(FDO)/Unmanaged/Src/libFDO.la \
+  $(FDOUTILITIES)/Common/libProvidersCommon.la
+
+libExpressionEngine_la_LDFLAGS = \
+  -shared \
+  -release $(VERSION) \
+  -Wl,-Bsymbolic
 
 CXXFLAGS = @CXXFLAGS@ -D__USE_GNU -DLINUX -DLINUX_IA32
 
 INSTALL_DIR  = $(libdir)
-
-#install lib files
-
-install :
-	@if [ ! -d $(INSTALL_DIR) ]; then mkdir -p $(INSTALL_DIR); fi
-	@cp -u -f libExpressionEngine.la $(INSTALL_DIR)
-	@cp -u -f .libs/libExpressionEngine.a $(INSTALL_DIR)
-
-uninstall :
-	@rm -drf $(INSTALL_DIR)/libExpressionEngine.a
-	@rm -drf $(INSTALL_DIR)/libExpressionEngine.la
-
