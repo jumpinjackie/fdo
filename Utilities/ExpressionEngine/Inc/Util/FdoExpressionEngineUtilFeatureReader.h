@@ -25,12 +25,12 @@ class FdoExpressionEngineUtilFeatureReader : public FdoIFeatureReader
 {
 public:
 
-    FdoExpressionEngineUtilFeatureReader (FdoClassDefinition* classDef, FdoIFeatureReader* reader, FdoFilter *filter, FdoIdentifierCollection* selectedIds, FdoExpressionEngineFunctionCollection *userDefinedFunctions);
+    EXPRESSIONENGINE_API FdoExpressionEngineUtilFeatureReader (FdoClassDefinition* classDef, FdoIFeatureReader* reader, FdoFilter *filter, FdoIdentifierCollection* selectedIds, FdoExpressionEngineFunctionCollection *userDefinedFunctions);
 
 protected:
-	virtual void Dispose();
-    FdoExpressionEngineUtilFeatureReader() {};  // dummy 0-arg constructor to please FdoPtr::operator->
-    virtual ~FdoExpressionEngineUtilFeatureReader();
+	EXPRESSIONENGINE_API virtual void Dispose();
+    EXPRESSIONENGINE_API FdoExpressionEngineUtilFeatureReader() {};  // dummy 0-arg constructor to please FdoPtr::operator->
+    EXPRESSIONENGINE_API virtual ~FdoExpressionEngineUtilFeatureReader();
 
 public:
 
@@ -49,7 +49,7 @@ public:
     /// \return
     /// Returns the Boolean value
     /// 
-    virtual bool GetBoolean(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual bool GetBoolean(FdoString* propertyName);
 
     /// \brief
     /// Gets the byte value of the specified property. No conversion is
@@ -63,7 +63,7 @@ public:
     /// Returns the byte value.
     /// 
 
-    virtual FdoByte GetByte(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual FdoByte GetByte(FdoString* propertyName);
 
     /// \brief
     /// Gets the date time value of the specified property. No conversion
@@ -76,7 +76,7 @@ public:
     /// \return
     /// Returns the date and time value.
     /// 
-    virtual FdoDateTime GetDateTime(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual FdoDateTime GetDateTime(FdoString* propertyName);
 
     /// \brief
     /// Gets the double-precision floating point value of the specified property.
@@ -89,7 +89,7 @@ public:
     /// \return
     /// Returns the double value.
     /// 
-    virtual double GetDouble(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual double GetDouble(FdoString* propertyName);
 
     /// \brief
     /// Gets the signed 16-bit integer value of the specified property. No conversion is
@@ -102,7 +102,7 @@ public:
     /// \return
     /// Returns the FdoInt16 value.
     /// 
-    virtual FdoInt16 GetInt16(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual FdoInt16 GetInt16(FdoString* propertyName);
 
     /// \brief
     /// Gets the signed 32-bit integer value of the specified property. No conversion is
@@ -115,7 +115,7 @@ public:
     /// \return
     /// Returns the FdoInt32 value.
     /// 
-    virtual FdoInt32 GetInt32(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual FdoInt32 GetInt32(FdoString* propertyName);
 
     /// \brief
     /// Gets the signed 64-bit integer value of the specified property. No conversion
@@ -128,7 +128,7 @@ public:
     /// \return
     /// Returns the FdoInt64 value.
     /// 
-    virtual FdoInt64 GetInt64(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual FdoInt64 GetInt64(FdoString* propertyName);
 
     /// \brief
     /// Gets the single-precision floating point value of the specified property.
@@ -141,7 +141,7 @@ public:
     /// \return
     /// Returns the single value
     /// 
-    virtual float GetSingle(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual float GetSingle(FdoString* propertyName);
 
     /// \brief
     /// Gets the string value of the specified property. No conversion is
@@ -154,7 +154,7 @@ public:
     /// \return
     /// Returns the string value.
     /// 
-    virtual FdoString* GetString(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual FdoString* GetString(FdoString* propertyName);
 
     /// \brief
     /// Gets a LOBValue reference. The LOB is fully read in and data available.
@@ -167,7 +167,7 @@ public:
     /// \return
     /// Returns the reference to LOBValue
     /// 
-    virtual FdoLOBValue* GetLOB(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual FdoLOBValue* GetLOB(FdoString* propertyName);
 
     /// \brief
     /// Gets a reference of the specified LOB property as a FdoBLOBStreamReader or
@@ -182,7 +182,7 @@ public:
     /// \return
     /// Returns a reference to a LOB stream reader
     /// 
-    virtual FdoIStreamReader* GetLOBStreamReader(const wchar_t* propertyName );
+    EXPRESSIONENGINE_API virtual FdoIStreamReader* GetLOBStreamReader(const wchar_t* propertyName );
 
     /// \brief
     /// Returns true if the value of the specified property is null.
@@ -193,7 +193,7 @@ public:
     /// \return
     /// Returns true if the value is null.
     /// 
-    virtual bool IsNull(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual bool IsNull(FdoString* propertyName);
 
     /// \brief
     /// Gets the geometry value of the specified property as a byte array
@@ -206,7 +206,7 @@ public:
     /// \return
     /// Returns the FGF byte array value.
     /// 
-    virtual FdoByteArray* GetGeometry(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual FdoByteArray* GetGeometry(FdoString* propertyName);
 
     /// \brief
     /// Gets the raster object of the specified property.
@@ -219,7 +219,7 @@ public:
     /// \return
     /// Returns the raster object.
     /// 
-    virtual FdoIRaster* GetRaster(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual FdoIRaster* GetRaster(FdoString* propertyName);
 
     /// \brief
     /// Advances the reader to the next item. The default position of the
@@ -229,7 +229,7 @@ public:
     /// \return
     /// Returns true if there is a next item.
     /// 
-    virtual bool ReadNext();
+    EXPRESSIONENGINE_API virtual bool ReadNext();
 
     /// \brief
     /// Closes the FdoIDataReader object, freeing any resources it may be holding.
@@ -237,7 +237,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-    virtual void Close();
+    EXPRESSIONENGINE_API virtual void Close();
 
     //------------------------------------------------------------
     /// FdoIFeatureReader implementation
@@ -252,7 +252,7 @@ public:
     /// \return
     /// Returns the class definition object.
     /// 
-    virtual FdoClassDefinition* GetClassDefinition();
+    EXPRESSIONENGINE_API virtual FdoClassDefinition* GetClassDefinition();
 
     /// \brief
     /// Gets a value indicating the depth of nesting for the current reader.
@@ -262,7 +262,7 @@ public:
     /// \return
     /// Returns the depth
     /// 
-    virtual FdoInt32 GetDepth();
+    EXPRESSIONENGINE_API virtual FdoInt32 GetDepth();
 
     /// \brief
     /// Gets the geometry value of the specified property as a byte array in 
@@ -282,7 +282,7 @@ public:
     /// \return
     /// Returns a pointer to the byte array in FGF format.
     /// 
-    virtual const FdoByte * GetGeometry(FdoString* propertyName, FdoInt32 * count);
+    EXPRESSIONENGINE_API virtual const FdoByte * GetGeometry(FdoString* propertyName, FdoInt32 * count);
 
 
     /// \brief
@@ -296,7 +296,7 @@ public:
     /// \return
     /// Returns the nested feature reader
     /// 
-    virtual FdoIFeatureReader* GetFeatureObject(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual FdoIFeatureReader* GetFeatureObject(FdoString* propertyName);
 
 private:
 	bool IsComputedProperty(FdoString* name);

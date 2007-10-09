@@ -20,6 +20,8 @@
 #include <FdoCommonPropertyIndex.h>
 #include <FdoCommonBinaryReader.h>
 
+#include <ExpressionEngine.h>
+
 
 
 typedef enum FdoCommonExpressionType
@@ -94,7 +96,7 @@ class FdoExpressionEngineUtilDataReader : public FdoIDataReader
 {
 public:
 
-    FdoExpressionEngineUtilDataReader(FdoFunctionDefinitionCollection *functions, FdoIFeatureReader* reader, FdoClassDefinition* originalClassDef, FdoIdentifierCollection* selectedIds, bool bDistinct, FdoIdentifierCollection* orderingIds, FdoOrderingOption eOrderingOption, FdoIdentifierCollection* ids, FdoPtr <FdoArray<FdoFunction*> > aggrIdents );
+    EXPRESSIONENGINE_API FdoExpressionEngineUtilDataReader(FdoFunctionDefinitionCollection *functions, FdoIFeatureReader* reader, FdoClassDefinition* originalClassDef, FdoIdentifierCollection* selectedIds, bool bDistinct, FdoIdentifierCollection* orderingIds, FdoOrderingOption eOrderingOption, FdoIdentifierCollection* ids, FdoPtr <FdoArray<FdoFunction*> > aggrIdents );
 
 protected:
 
@@ -116,7 +118,7 @@ public:
     /// \return
     /// Returns the number of propertys.
     /// 
-    virtual FdoInt32 GetPropertyCount();
+    EXPRESSIONENGINE_API virtual FdoInt32 GetPropertyCount();
 
     /// \brief
     /// Gets the name of the property at the given ordinal position.
@@ -127,7 +129,7 @@ public:
     /// \return
     /// Returns the property name
     /// 
-    virtual FdoString* GetPropertyName(FdoInt32 index);
+    EXPRESSIONENGINE_API virtual FdoString* GetPropertyName(FdoInt32 index);
 
     /// \brief
     /// Gets the data type of the property with the specified name.
@@ -138,7 +140,7 @@ public:
     /// \return
     /// Returns the type of the property.
     /// 
-    virtual FdoDataType GetDataType(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual FdoDataType GetDataType(FdoString* propertyName);
 
     /// \brief
     /// Gets the FDO property type of a given property. This is used
@@ -151,7 +153,7 @@ public:
     /// \return
     /// Returns the FDO property type.
     /// 
-    virtual FdoPropertyType GetPropertyType(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual FdoPropertyType GetPropertyType(FdoString* propertyName);
 
     /// \brief
     /// Gets the Boolean value of the specified property. No conversion is
@@ -164,7 +166,7 @@ public:
     /// \return
     /// Returns the Boolean value
     /// 
-    virtual bool GetBoolean(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual bool GetBoolean(FdoString* propertyName);
 
     /// \brief
     /// Gets the byte value of the specified property. No conversion is
@@ -177,7 +179,7 @@ public:
     /// \return
     /// Returns the byte value.
     /// 
-    virtual FdoByte GetByte(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual FdoByte GetByte(FdoString* propertyName);
 
     /// \brief
     /// Gets the date time value of the specified property. No conversion
@@ -190,7 +192,7 @@ public:
     /// \return
     /// Returns the date and time value.
     /// 
-    virtual FdoDateTime GetDateTime(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual FdoDateTime GetDateTime(FdoString* propertyName);
 
     /// \brief
     /// Gets the double-precision floating point value of the specified property.
@@ -203,7 +205,7 @@ public:
     /// \return
     /// Returns the double value.
     /// 
-    virtual double GetDouble(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual double GetDouble(FdoString* propertyName);
 
     /// \brief
     /// Gets the signed 16-bit integer value of the specified property. No conversion is
@@ -216,7 +218,7 @@ public:
     /// \return
     /// Returns the FdoInt16 value.
     /// 
-    virtual FdoInt16 GetInt16(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual FdoInt16 GetInt16(FdoString* propertyName);
 
     /// \brief
     /// Gets the signed 32-bit integer value of the specified property. No conversion is
@@ -229,7 +231,7 @@ public:
     /// \return
     /// Returns the FdoInt32 value.
     /// 
-    virtual FdoInt32 GetInt32(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual FdoInt32 GetInt32(FdoString* propertyName);
 
     /// \brief
     /// Gets the signed 64-bit integer value of the specified property. No conversion
@@ -242,7 +244,7 @@ public:
     /// \return
     /// Returns the FdoInt64 value.
     /// 
-    virtual FdoInt64 GetInt64(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual FdoInt64 GetInt64(FdoString* propertyName);
 
     /// \brief
     /// Gets the single-precision floating point value of the specified property.
@@ -255,7 +257,7 @@ public:
     /// \return
     /// Returns the single value
     /// 
-    virtual float GetSingle(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual float GetSingle(FdoString* propertyName);
 
     /// \brief
     /// Gets the string value of the specified property. No conversion is
@@ -268,7 +270,7 @@ public:
     /// \return
     /// Returns the string value.
     /// 
-    virtual FdoString* GetString(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual FdoString* GetString(FdoString* propertyName);
 
     /// \brief
     /// Gets a LOBValue reference. The LOB is fully read in and data available.
@@ -281,7 +283,7 @@ public:
     /// \return
     /// Returns the reference to LOBValue
     /// 
-    virtual FdoLOBValue* GetLOB(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual FdoLOBValue* GetLOB(FdoString* propertyName);
 
     /// \brief
     /// Gets a reference of the specified LOB property as a FdoBLOBStreamReader or
@@ -296,7 +298,7 @@ public:
     /// \return
     /// Returns a reference to a LOB stream reader
     /// 
-    virtual FdoIStreamReader* GetLOBStreamReader(const wchar_t* propertyName );
+    EXPRESSIONENGINE_API virtual FdoIStreamReader* GetLOBStreamReader(const wchar_t* propertyName );
 
     /// \brief
     /// Returns true if the value of the specified property is null.
@@ -307,7 +309,7 @@ public:
     /// \return
     /// Returns true if the value is null.
     /// 
-    virtual bool IsNull(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual bool IsNull(FdoString* propertyName);
 
     /// \brief
     /// Gets the geometry value of the specified property as a byte array
@@ -320,7 +322,7 @@ public:
     /// \return
     /// Returns the FGF byte array value.
     /// 
-    virtual FdoByteArray* GetGeometry(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual FdoByteArray* GetGeometry(FdoString* propertyName);
 
     /// \brief
     /// Gets the raster object of the specified property.
@@ -333,7 +335,7 @@ public:
     /// \return
     /// Returns the raster object.
     /// 
-    virtual FdoIRaster* GetRaster(FdoString* propertyName);
+    EXPRESSIONENGINE_API virtual FdoIRaster* GetRaster(FdoString* propertyName);
 
     /// \brief
     /// Advances the reader to the next item. The default position of the
@@ -343,7 +345,7 @@ public:
     /// \return
     /// Returns true if there is a next item.
     /// 
-    virtual bool ReadNext();
+    EXPRESSIONENGINE_API virtual bool ReadNext();
 
     /// \brief
     /// Closes the FdoIDataReader object, freeing any resources it may be holding.
@@ -351,28 +353,28 @@ public:
     /// \return
     /// Returns nothing
     /// 
-    virtual void Close();
+    EXPRESSIONENGINE_API virtual void Close();
 
     //------------------------------------------------------------
     /// FdoExpressionEngineUtilDataReader
     //------------------------------------------------------------
 
-    virtual FdoCommonBinaryReader* GetBinaryReader();
-    FdoCommonPropertyIndex* GetPropertyIndex();
+    EXPRESSIONENGINE_API virtual FdoCommonBinaryReader* GetBinaryReader();
+    EXPRESSIONENGINE_API FdoCommonPropertyIndex* GetPropertyIndex();
 
-    static FdoArray<FdoFunction*>* GetAggregateFunctions(FdoFunctionDefinitionCollection *funcDefs, FdoIdentifierCollection* selectedIds, FdoCommonExpressionType &exprType);
-    static FdoArray<FdoFunction*>* GetAggregateFunctions(FdoFunctionDefinitionCollection *funcDefs, FdoExpression* expr, FdoCommonExpressionType &exprType);
+    EXPRESSIONENGINE_API static FdoArray<FdoFunction*>* GetAggregateFunctions(FdoFunctionDefinitionCollection *funcDefs, FdoIdentifierCollection* selectedIds, FdoCommonExpressionType &exprType);
+    EXPRESSIONENGINE_API static FdoArray<FdoFunction*>* GetAggregateFunctions(FdoFunctionDefinitionCollection *funcDefs, FdoExpression* expr, FdoCommonExpressionType &exprType);
 
-    FdoClassDefinition* GetAggregateClassDef(FdoClassDefinition* originalClassDef, FdoIdentifierCollection* selectedIds);
-    void RunAggregateQuery(FdoIFeatureReader* reader, FdoClassDefinition* originalClassDef, FdoIdentifierCollection* selectedIds, FdoClassDefinition* aggrClassDef, FdoArray<FdoFunction*>* aggrFunctions);
-    void PerformDistinct();
-    void PerformOrderBy();
+    EXPRESSIONENGINE_API FdoClassDefinition* GetAggregateClassDef(FdoClassDefinition* originalClassDef, FdoIdentifierCollection* selectedIds);
+    EXPRESSIONENGINE_API void RunAggregateQuery(FdoIFeatureReader* reader, FdoClassDefinition* originalClassDef, FdoIdentifierCollection* selectedIds, FdoClassDefinition* aggrClassDef, FdoArray<FdoFunction*>* aggrFunctions);
+    EXPRESSIONENGINE_API void PerformDistinct();
+    EXPRESSIONENGINE_API void PerformOrderBy();
 
     /// Retrieve ordering information:
-    virtual FdoIdentifierCollection* GetOrdering();
-    virtual FdoOrderingOption GetOrderingOption();
-    FdoCommonBinaryReader* GetOrderingBinReader1();
-    FdoCommonBinaryReader* GetOrderingBinReader2();
+    EXPRESSIONENGINE_API virtual FdoIdentifierCollection* GetOrdering();
+    EXPRESSIONENGINE_API virtual FdoOrderingOption GetOrderingOption();
+    EXPRESSIONENGINE_API FdoCommonBinaryReader* GetOrderingBinReader1();
+    EXPRESSIONENGINE_API FdoCommonBinaryReader* GetOrderingBinReader2();
 
 
 protected:
