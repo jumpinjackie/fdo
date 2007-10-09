@@ -17,8 +17,6 @@
 #include "ConnectionInfoTest.h"
 #include "SDF/SdfCommandType.h"
 #include "SDF/ICreateSDFFile.h"
-#include "Functions/Conversion/FdoFunctionToString.h"
-#include "Functions/Conversion/FdoFunctionToDate.h"
 
 #ifdef _WIN32
 const wchar_t* CI_TEST_FILE = L"..\\..\\TestData\\SelectTest.SDX";
@@ -74,43 +72,6 @@ void ConnectionInfoTest::TestProviderInfo ()
                 break;
 
         }
-
-
-        printf("Checking Function ToString for date/time data \n");
-        FdoPtr<FdoStringValue> str_value;
-        FdoPtr<FdoStringValue> res_value;
-        FdoPtr<FdoDateTimeValue> dt_value;
-        FdoLiteralValueCollection *literal_values = FdoLiteralValueCollection::Create();
-        FdoDateTime dt;
-        dt.year = 2007;
-        dt.month = 11;
-        dt.day = 21;
-        dt.hour = 21;
-        dt.minute = 0;
-        dt.seconds = 0;
-
-        dt_value  = FdoDateTimeValue::Create(dt);
-        // str_value = FdoStringValue::Create(L"DD-Month-YYYY");
-        str_value = FdoStringValue::Create(L"DD-Month-YYYY AM hh12:mm:ss");
-        // str_value = FdoStringValue::Create(L"DD-MON-YYYY AM hh12:mm:ss");
-        //str_value = FdoStringValue::Create(L"Day, DD-MON-YYYY AM hh12:mm:ss");
-        literal_values->Add(dt_value);
-        literal_values->Add(str_value);
-
-        FdoPtr<FdoFunctionToString> f_ts = FdoFunctionToString::Create();
-        res_value = (FdoStringValue *) f_ts->Evaluate(literal_values);
-        FdoStringP x = res_value->GetString();
-
-
-        printf("Checking Function ToDate \n");
-        FdoStringP dt_str = L"21-SEP-2007 21:00:00";
-        str_value = FdoStringValue::Create(L"DD-Month-YYYY");
-        literal_values = FdoLiteralValueCollection::Create();
-        literal_values->Add(FdoStringValue::Create(dt_str));
-        // literal_values->Add(str_value);
-        FdoPtr<FdoFunctionToDate> f_td = FdoFunctionToDate::Create();
-        dt_value = (FdoDateTimeValue *) f_td->Evaluate(literal_values);
-        dt = dt_value->GetDateTime();
 
 
 

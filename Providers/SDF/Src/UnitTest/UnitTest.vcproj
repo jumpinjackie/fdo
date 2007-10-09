@@ -46,7 +46,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\include\&quot;;&quot;$(FDO)\Unmanaged\Inc&quot;;..\..\Inc;&quot;$(FDOUTILITIES)\TestCommon\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;IGNORE_THREAD_TEST;__CPPUNIT_MFC_APP"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;IGNORE_THREAD_TEST"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
@@ -133,7 +133,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\include\&quot;;&quot;$(FDO)\Unmanaged\Inc&quot;;..\..\Inc;&quot;$(FDOUTILITIES)\TestCommon\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
-				PreprocessorDefinitions="WIN32;_WIN64;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;IGNORE_THREAD_TEST;__CPPUNIT_MFC_APP"
+				PreprocessorDefinitions="WIN32;_WIN64;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;IGNORE_THREAD_TEST"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
@@ -742,7 +742,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
-						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;"
+						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\lib\win32\debug\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;"
 						AdditionalDependencies="providers.xml"
 						Outputs="$(OutDir)\providers.xml"
 					/>
@@ -753,7 +753,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
-						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;"
+						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\lib\win64\debug\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;"
 						AdditionalDependencies="providers.xml"
 						Outputs="$(OutDir)\providers.xml"
 					/>
@@ -764,7 +764,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
-						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;"
+						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\lib\win32\release\ExpressionEngine.dll $(OutDir)"
 						AdditionalDependencies="providers.xml"
 						Outputs="$(OutDir)\providers.xml"
 					/>
@@ -775,7 +775,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
-						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;"
+						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\lib\win64\release\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;"
 						AdditionalDependencies="providers.xml"
 						Outputs="$(OutDir)\providers.xml"
 					/>
@@ -1364,6 +1364,10 @@
 		</File>
 		<File
 			RelativePath=".\SchemaTest.h"
+			>
+		</File>
+		<File
+			RelativePath=".\SelectTest.cpp"
 			>
 		</File>
 		<File
