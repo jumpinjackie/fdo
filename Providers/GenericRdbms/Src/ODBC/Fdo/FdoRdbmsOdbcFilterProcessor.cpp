@@ -173,6 +173,26 @@ bool FdoRdbmsOdbcFilterProcessor::IsAggregateFunctionName(FdoString* wFunctionNa
     return false;
 }
 
+bool FdoRdbmsOdbcFilterProcessor::IsNotNativeSupportedFunction(FdoString *wFunctionName) const
+{
+    //for (int i=0; mySqlUnsupportedFdoFunctions[i]; i++)
+    //    if (FdoCommonOSUtil::wcsicmp(mySqlUnsupportedFdoFunctions[i], wFunctionName) == 0)
+    //        return true;
+
+    return false;
+}
+
+//
+// The function checks whether or not the function has a correct set of arguments.
+bool FdoRdbmsOdbcFilterProcessor::HasNativeSupportedFunctionArguments(FdoFunction& expr) const
+{
+    // If the function needs argument checking, execute the verification and return
+    // the result back to the calling routine. Otherwise, the arguments are always 
+    // deemed valid and the corresponding indication is returned.
+
+    return true;;
+}
+
 void FdoRdbmsOdbcFilterProcessor::ProcessDateTimeValue(FdoDateTimeValue& expr)
 {
     // NOTE: we don't place single quotes around the time/date/timestamp, contrary to the parent class' behavior:
