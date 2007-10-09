@@ -8425,7 +8425,7 @@ void FdoExpressionFunctionTest::AddFeature (
       FDO_SAFE_RELEASE(property_value);
 
       id_str         = FdoStringP::Format(L"  %d  ", index);
-      data_value     = FdoDataValue::Create(id_str);
+      data_value     = FdoDataValue::Create((FdoString *)id_str);
       property_value = AddNewProperty(property_values, L"str_val");
       property_value->SetValue(data_value);
       FDO_SAFE_RELEASE(data_value);
