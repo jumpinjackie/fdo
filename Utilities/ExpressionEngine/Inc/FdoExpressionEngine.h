@@ -16,6 +16,7 @@
 #ifndef FDOEXPRESSIONENGINE_H
 #define FDOEXPRESSIONENGINE_H
 
+#include <ExpressionEngine.h>
 
 class FdoExpressionEngineFunctionCollection;
 class FdoExpressionEngineImp;
@@ -39,7 +40,7 @@ public:
     /// \return
     /// Returns FdoExpressionEngine
     /// 
-    static FdoExpressionEngine* Create(FdoIReader* reader, FdoClassDefinition* classDef, FdoExpressionEngineFunctionCollection *userDefinedFunctions);
+    EXPRESSIONENGINE_API static FdoExpressionEngine* Create(FdoIReader* reader, FdoClassDefinition* classDef, FdoExpressionEngineFunctionCollection *userDefinedFunctions);
 
     /// \brief
     /// Constructs an instance of an FdoExpressionException using the specified arguments.
@@ -59,7 +60,7 @@ public:
     /// \return
     /// Returns FdoExpressionEngine
     /// 
-	static FdoExpressionEngine* Create(FdoIReader* reader, FdoClassDefinition* classDef, FdoIdentifierCollection* identifiers,
+	EXPRESSIONENGINE_API static FdoExpressionEngine* Create(FdoIReader* reader, FdoClassDefinition* classDef, FdoIdentifierCollection* identifiers,
 		FdoExpressionEngineFunctionCollection *userDefinedFunctions);
 
     /// \brief
@@ -71,7 +72,7 @@ public:
     /// \return
     /// Returns a literal value. This value is valid until the next Evaluate call
     /// 
-	virtual FdoLiteralValue* Evaluate(FdoExpression *expression);
+	EXPRESSIONENGINE_API virtual FdoLiteralValue* Evaluate(FdoExpression *expression);
 
     /// \brief
     /// Evaluates a name
@@ -82,7 +83,7 @@ public:
     /// \return
     /// Returns a literal value. This value is valid until the next Evaluate call
     /// 
-    virtual FdoLiteralValue* Evaluate(FdoString* name);
+    EXPRESSIONENGINE_API virtual FdoLiteralValue* Evaluate(FdoString* name);
 
     /// \brief
     /// Evaluates an identifier
@@ -93,7 +94,7 @@ public:
     /// \return
     /// Returns a literal value. This value is valid until the next Evaluate call
     /// 
-    virtual FdoLiteralValue* Evaluate(FdoIdentifier& expr);
+    EXPRESSIONENGINE_API virtual FdoLiteralValue* Evaluate(FdoIdentifier& expr);
 
 
     /// \brief
@@ -102,7 +103,7 @@ public:
     /// \return
     /// Returns the aggragate results
     /// 
-	FdoPropertyValueCollection* RunQuery();
+	EXPRESSIONENGINE_API FdoPropertyValueCollection* RunQuery();
 
     /// \brief
     /// Checks if passes the filter
@@ -113,7 +114,7 @@ public:
     /// \return
     /// Returns true id passes the filter, otherwise false
     /// 
-    bool ProcessFilter(FdoFilter *filter);
+    EXPRESSIONENGINE_API bool ProcessFilter(FdoFilter *filter);
 
 
     /// \brief
@@ -122,7 +123,7 @@ public:
     /// \return
     /// Returns the functions
     /// 
-	FdoFunctionDefinitionCollection *GetAllFunctions();
+	EXPRESSIONENGINE_API FdoFunctionDefinitionCollection *GetAllFunctions();
 
 
     /// \brief
@@ -131,7 +132,7 @@ public:
     /// \return
     /// Returns the functions
     /// 
-	static FdoFunctionDefinitionCollection *GetStandardFunctions();
+	EXPRESSIONENGINE_API static FdoFunctionDefinitionCollection *GetStandardFunctions();
 
     /// \brief
     /// Checks if the filter is valid
@@ -151,7 +152,7 @@ public:
     /// \return
     /// Throws an exception is filter is not valid
     /// 
-	static void ValidateFilter( FdoClassDefinition *cls, FdoFilter *filter, FdoIdentifierCollection *selIds = NULL, FdoIFilterCapabilities *filterCapabilities = NULL);
+	EXPRESSIONENGINE_API static void ValidateFilter( FdoClassDefinition *cls, FdoFilter *filter, FdoIdentifierCollection *selIds = NULL, FdoIFilterCapabilities *filterCapabilities = NULL);
 
     /// \brief
     /// Optimizes the filter
@@ -162,7 +163,7 @@ public:
     /// \return
     /// The optimized filter
     /// 
-	static FdoFilter* OptimizeFilter( FdoFilter *filter );
+	EXPRESSIONENGINE_API static FdoFilter* OptimizeFilter( FdoFilter *filter );
 
     /// \brief
     /// Checks if the function name is a aggregate function
@@ -176,7 +177,7 @@ public:
     /// \return
     /// True if the function is an aggregate function otherwise false
     /// 
-   	static bool IsAggregateFunction(FdoFunctionDefinitionCollection *funcDefs, FdoString *name);
+   	EXPRESSIONENGINE_API static bool IsAggregateFunction(FdoFunctionDefinitionCollection *funcDefs, FdoString *name);
 
 
     // Returns the type of the expression
@@ -200,7 +201,7 @@ public:
     /// Returns nothing
     /// 
 
-	static void GetExpressionType(FdoFunctionDefinitionCollection *functionDefinitions, FdoClassDefinition* originalClassDef, FdoExpression *expr, FdoPropertyType &retPropType, FdoDataType &retDataType);
+	EXPRESSIONENGINE_API static void GetExpressionType(FdoFunctionDefinitionCollection *functionDefinitions, FdoClassDefinition* originalClassDef, FdoExpression *expr, FdoPropertyType &retPropType, FdoDataType &retDataType);
 
     // Returns the type of the expression
 
@@ -219,17 +220,17 @@ public:
     /// Returns nothing
     /// 
 
-	static void GetExpressionType(FdoClassDefinition* originalClassDef, FdoExpression *expr, FdoPropertyType &retPropType, FdoDataType &retDataType);
+	EXPRESSIONENGINE_API static void GetExpressionType(FdoClassDefinition* originalClassDef, FdoExpression *expr, FdoPropertyType &retPropType, FdoDataType &retDataType);
 
 
 public:
-    void Dispose ();
+    EXPRESSIONENGINE_API void Dispose ();
 
 protected:
-	FdoExpressionEngine(FdoIReader* reader, FdoClassDefinition* classDef, FdoIdentifierCollection* identifiers,
+	EXPRESSIONENGINE_API FdoExpressionEngine(FdoIReader* reader, FdoClassDefinition* classDef, FdoIdentifierCollection* identifiers,
 		FdoExpressionEngineFunctionCollection *userDefinedFunctions);
-	FdoExpressionEngine();
-	~FdoExpressionEngine();
+	EXPRESSIONENGINE_API FdoExpressionEngine();
+	EXPRESSIONENGINE_API ~FdoExpressionEngine();
 
 private:
     FdoExpressionEngineImp *mEngine;

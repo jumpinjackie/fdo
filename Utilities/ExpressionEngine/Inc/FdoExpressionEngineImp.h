@@ -16,6 +16,7 @@
 #ifndef FDOEXPRESSIONENGINEIMP_H
 #define FDOEXPRESSIONENGINEIMP_H
 
+#include <ExpressionEngine.h>
 #include <vector>
 #include <FdoExpressionEngineFunctionCollection.h>
 #include <Fdo/Connections/Capabilities/FunctionDefinition.h>
@@ -36,48 +37,48 @@ class FdoExpressionEngineImp : public FdoIFilterProcessor, public FdoIExpression
 {
 
 public:
-	static FdoExpressionEngineImp* Create(FdoIReader* reader, FdoClassDefinition* classDef, FdoIdentifierCollection* identifiers,
+	EXPRESSIONENGINE_API static FdoExpressionEngineImp* Create(FdoIReader* reader, FdoClassDefinition* classDef, FdoIdentifierCollection* identifiers,
 		FdoExpressionEngineFunctionCollection *userDefinedFunctions);
 
-	virtual FdoLiteralValue* Evaluate(FdoExpression *expression);
-    virtual FdoLiteralValue* Evaluate(FdoString* name);
-    virtual FdoLiteralValue* Evaluate(FdoIdentifier& expr);
+	EXPRESSIONENGINE_API virtual FdoLiteralValue* Evaluate(FdoExpression *expression);
+    EXPRESSIONENGINE_API virtual FdoLiteralValue* Evaluate(FdoString* name);
+    EXPRESSIONENGINE_API virtual FdoLiteralValue* Evaluate(FdoIdentifier& expr);
 
-	FdoPropertyValueCollection* RunQuery();
-    bool ProcessFilter(FdoFilter *filter);
+	EXPRESSIONENGINE_API FdoPropertyValueCollection* RunQuery();
+    EXPRESSIONENGINE_API bool ProcessFilter(FdoFilter *filter);
 
-    FdoFunctionDefinitionCollection *GetAllFunctions();
+    EXPRESSIONENGINE_API FdoFunctionDefinitionCollection *GetAllFunctions();
 
 	// This is the default collection of functions that the expression engine supports
-	static FdoFunctionDefinitionCollection *GetStandardFunctions();
+	EXPRESSIONENGINE_API static FdoFunctionDefinitionCollection *GetStandardFunctions();
 
 	// The following are some utility functions
-	static void ValidateFilter( FdoClassDefinition *cls, FdoFilter *filter, FdoIdentifierCollection *selIds = NULL, FdoIFilterCapabilities *filterCapabilities = NULL);
-	static FdoFilter* OptimizeFilter( FdoFilter *filter );
-   	static bool IsAggregateFunction(FdoFunctionDefinitionCollection *funcDefs, FdoString *name);
-	static void GetExpressionType(FdoFunctionDefinitionCollection *functionDefinitions, FdoClassDefinition* originalClassDef, FdoExpression *expr, FdoPropertyType &retPropType, FdoDataType &retDataType);
-	static void GetExpressionType(FdoClassDefinition* originalClassDef, FdoExpression *expr, FdoPropertyType &retPropType, FdoDataType &retDataType);
+	EXPRESSIONENGINE_API static void ValidateFilter( FdoClassDefinition *cls, FdoFilter *filter, FdoIdentifierCollection *selIds = NULL, FdoIFilterCapabilities *filterCapabilities = NULL);
+	EXPRESSIONENGINE_API static FdoFilter* OptimizeFilter( FdoFilter *filter );
+   	EXPRESSIONENGINE_API static bool IsAggregateFunction(FdoFunctionDefinitionCollection *funcDefs, FdoString *name);
+	EXPRESSIONENGINE_API static void GetExpressionType(FdoFunctionDefinitionCollection *functionDefinitions, FdoClassDefinition* originalClassDef, FdoExpression *expr, FdoPropertyType &retPropType, FdoDataType &retDataType);
+	EXPRESSIONENGINE_API static void GetExpressionType(FdoClassDefinition* originalClassDef, FdoExpression *expr, FdoPropertyType &retPropType, FdoDataType &retDataType);
 
 public:
-    FdoPropertyType GetResultPropertyType ();
-    FdoDataType GetResultDataType ();
-    bool IsResultNull ();
-    bool GetBooleanResult (bool &bIsNull);
-    double GetDoubleResult (bool &bIsNull);
-    float GetSingleResult (bool &bIsNull);
-    double GetDecimalResult (bool &bIsNull);
-    FdoByte GetByteResult (bool &bIsNull);
-    FdoInt16 GetInt16Result (bool &bIsNull);
-    FdoInt32 GetInt32Result (bool &bIsNull);
-    FdoInt64 GetInt64Result (bool &bIsNull);
-    const wchar_t* GetStringResult (bool &bIsNull);
-    FdoDateTime GetDateTimeResult (bool &bIsNull);
-    FdoGeometryValue* GetGeometricResult (bool &bIsNull);
+    EXPRESSIONENGINE_API FdoPropertyType GetResultPropertyType ();
+    EXPRESSIONENGINE_API FdoDataType GetResultDataType ();
+    EXPRESSIONENGINE_API bool IsResultNull ();
+    EXPRESSIONENGINE_API bool GetBooleanResult (bool &bIsNull);
+    EXPRESSIONENGINE_API double GetDoubleResult (bool &bIsNull);
+    EXPRESSIONENGINE_API float GetSingleResult (bool &bIsNull);
+    EXPRESSIONENGINE_API double GetDecimalResult (bool &bIsNull);
+    EXPRESSIONENGINE_API FdoByte GetByteResult (bool &bIsNull);
+    EXPRESSIONENGINE_API FdoInt16 GetInt16Result (bool &bIsNull);
+    EXPRESSIONENGINE_API FdoInt32 GetInt32Result (bool &bIsNull);
+    EXPRESSIONENGINE_API FdoInt64 GetInt64Result (bool &bIsNull);
+    EXPRESSIONENGINE_API const wchar_t* GetStringResult (bool &bIsNull);
+    EXPRESSIONENGINE_API FdoDateTime GetDateTimeResult (bool &bIsNull);
+    EXPRESSIONENGINE_API FdoGeometryValue* GetGeometricResult (bool &bIsNull);
 
-	void Reset();
+	EXPRESSIONENGINE_API void Reset();
 
 
-	virtual FdoInt32 AddRef ()
+	EXPRESSIONENGINE_API virtual FdoInt32 AddRef ()
     {
     /// NOTE: due to multiple inheritance, there is an ambiguity in which AddRef() method to call.
     ///  Calling BOTH AddRef() methods leads to instances of this class being prematurely released.
@@ -90,7 +91,7 @@ public:
     /// \return
     /// Returns the new reference count (value for debugging use only).
     /// 
-    virtual FdoInt32 Release ()
+    EXPRESSIONENGINE_API virtual FdoInt32 Release ()
     {
     /// NOTE: due to multiple inheritance, there is an ambiguity in which Release() method to call.
     ///  Calling BOTH Release() methods leads to instances of this class being prematurely released.
@@ -102,69 +103,69 @@ public:
     /// FdoIFilterProcessor interface
     //
 
-    void ProcessBinaryLogicalOperator (FdoBinaryLogicalOperator& filter);
-    void ProcessUnaryLogicalOperator (FdoUnaryLogicalOperator& filter);
-    void ProcessComparisonCondition (FdoComparisonCondition& filter);
-    void ProcessInCondition (FdoInCondition& filter);
-    void ProcessNullCondition (FdoNullCondition& filter);
-    void ProcessSpatialCondition (FdoSpatialCondition& filter);
-    void ProcessDistanceCondition (FdoDistanceCondition& filter);
+    EXPRESSIONENGINE_API void ProcessBinaryLogicalOperator (FdoBinaryLogicalOperator& filter);
+    EXPRESSIONENGINE_API void ProcessUnaryLogicalOperator (FdoUnaryLogicalOperator& filter);
+    EXPRESSIONENGINE_API void ProcessComparisonCondition (FdoComparisonCondition& filter);
+    EXPRESSIONENGINE_API void ProcessInCondition (FdoInCondition& filter);
+    EXPRESSIONENGINE_API void ProcessNullCondition (FdoNullCondition& filter);
+    EXPRESSIONENGINE_API void ProcessSpatialCondition (FdoSpatialCondition& filter);
+    EXPRESSIONENGINE_API void ProcessDistanceCondition (FdoDistanceCondition& filter);
 
 
     //
     /// FdoIExpressionProcessor interface
     //
 
-    void ProcessBinaryExpression (FdoBinaryExpression& expr);
-    void ProcessUnaryExpression (FdoUnaryExpression& expr);
-    void ProcessFunction (FdoFunction& expr);
-    void ProcessIdentifier (FdoIdentifier& expr);
-	void ProcessComputedIdentifier (FdoComputedIdentifier& expr);
-    void ProcessParameter (FdoParameter& expr);
-    void ProcessBooleanValue (FdoBooleanValue& expr);
-    void ProcessByteValue (FdoByteValue& expr);
-    void ProcessDateTimeValue (FdoDateTimeValue& expr);
-    void ProcessDecimalValue (FdoDecimalValue& expr);
-    void ProcessDoubleValue (FdoDoubleValue& expr);
-    void ProcessInt16Value (FdoInt16Value& expr);
-    void ProcessInt32Value (FdoInt32Value& expr);
-    void ProcessInt64Value (FdoInt64Value& expr);
-    void ProcessSingleValue (FdoSingleValue& expr);
-    void ProcessStringValue (FdoStringValue& expr);
-    void ProcessBLOBValue (FdoBLOBValue& expr);
-    void ProcessCLOBValue (FdoCLOBValue& expr);
-    void ProcessGeometryValue (FdoGeometryValue& expr);
+    EXPRESSIONENGINE_API void ProcessBinaryExpression (FdoBinaryExpression& expr);
+    EXPRESSIONENGINE_API void ProcessUnaryExpression (FdoUnaryExpression& expr);
+    EXPRESSIONENGINE_API void ProcessFunction (FdoFunction& expr);
+    EXPRESSIONENGINE_API void ProcessIdentifier (FdoIdentifier& expr);
+	EXPRESSIONENGINE_API void ProcessComputedIdentifier (FdoComputedIdentifier& expr);
+    EXPRESSIONENGINE_API void ProcessParameter (FdoParameter& expr);
+    EXPRESSIONENGINE_API void ProcessBooleanValue (FdoBooleanValue& expr);
+    EXPRESSIONENGINE_API void ProcessByteValue (FdoByteValue& expr);
+    EXPRESSIONENGINE_API void ProcessDateTimeValue (FdoDateTimeValue& expr);
+    EXPRESSIONENGINE_API void ProcessDecimalValue (FdoDecimalValue& expr);
+    EXPRESSIONENGINE_API void ProcessDoubleValue (FdoDoubleValue& expr);
+    EXPRESSIONENGINE_API void ProcessInt16Value (FdoInt16Value& expr);
+    EXPRESSIONENGINE_API void ProcessInt32Value (FdoInt32Value& expr);
+    EXPRESSIONENGINE_API void ProcessInt64Value (FdoInt64Value& expr);
+    EXPRESSIONENGINE_API void ProcessSingleValue (FdoSingleValue& expr);
+    EXPRESSIONENGINE_API void ProcessStringValue (FdoStringValue& expr);
+    EXPRESSIONENGINE_API void ProcessBLOBValue (FdoBLOBValue& expr);
+    EXPRESSIONENGINE_API void ProcessCLOBValue (FdoCLOBValue& expr);
+    EXPRESSIONENGINE_API void ProcessGeometryValue (FdoGeometryValue& expr);
 
 protected:
 	
-	FdoExpressionEngineImp(FdoIReader* Reader, FdoClassDefinition* classDef, FdoIdentifierCollection* compIdents,
+	EXPRESSIONENGINE_API FdoExpressionEngineImp(FdoIReader* Reader, FdoClassDefinition* classDef, FdoIdentifierCollection* compIdents,
 		FdoExpressionEngineFunctionCollection *userDefinedFunctions);
-    FdoExpressionEngineImp();
-	~FdoExpressionEngineImp();
-	virtual void Dispose ();
+    EXPRESSIONENGINE_API FdoExpressionEngineImp();
+	EXPRESSIONENGINE_API ~FdoExpressionEngineImp();
+	EXPRESSIONENGINE_API virtual void Dispose ();
 
     //generic identifier processing, including computed and non-computed
     //identifiers
-	virtual void ProcessIdentifier (FdoString* name);
+	EXPRESSIONENGINE_API virtual void ProcessIdentifier (FdoString* name);
 
     //
     /// allocating and pooling data values
     //
 
-    virtual FdoBooleanValue* ObtainBooleanValue (bool bIsNull, bool value); 
-    virtual FdoByteValue* ObtainByteValue (bool bIsNull, FdoByte value); 
-    virtual FdoDateTimeValue* ObtainDateTimeValue (bool bIsNull, FdoDateTime value); 
-    virtual FdoDecimalValue* ObtainDecimalValue (bool bIsNull, double value); 
-    virtual FdoDoubleValue* ObtainDoubleValue (bool bIsNull, double value); 
-    virtual FdoInt16Value* ObtainInt16Value (bool bIsNull, FdoInt16 value); 
-    virtual FdoInt32Value* ObtainInt32Value (bool bIsNull, FdoInt32 value); 
-    virtual FdoInt64Value* ObtainInt64Value (bool bIsNull, FdoInt64 value); 
-    virtual FdoSingleValue* ObtainSingleValue (bool bIsNull, float value); 
-    virtual FdoStringValue* ObtainStringValue (bool bIsNull, FdoString* value); 
-    virtual FdoBLOBValue* ObtainBLOBValue (bool bIsNull, FdoByteArray* value); 
-    virtual FdoCLOBValue* ObtainCLOBValue (bool bIsNull, FdoByteArray* value);
-    virtual FdoGeometryValue* ObtainGeometryValue (bool bIsNull, FdoByteArray* value);
-    virtual void RelinquishDataValue (FdoLiteralValue* data);
+    EXPRESSIONENGINE_API virtual FdoBooleanValue* ObtainBooleanValue (bool bIsNull, bool value); 
+    EXPRESSIONENGINE_API virtual FdoByteValue* ObtainByteValue (bool bIsNull, FdoByte value); 
+    EXPRESSIONENGINE_API virtual FdoDateTimeValue* ObtainDateTimeValue (bool bIsNull, FdoDateTime value); 
+    EXPRESSIONENGINE_API virtual FdoDecimalValue* ObtainDecimalValue (bool bIsNull, double value); 
+    EXPRESSIONENGINE_API virtual FdoDoubleValue* ObtainDoubleValue (bool bIsNull, double value); 
+    EXPRESSIONENGINE_API virtual FdoInt16Value* ObtainInt16Value (bool bIsNull, FdoInt16 value); 
+    EXPRESSIONENGINE_API virtual FdoInt32Value* ObtainInt32Value (bool bIsNull, FdoInt32 value); 
+    EXPRESSIONENGINE_API virtual FdoInt64Value* ObtainInt64Value (bool bIsNull, FdoInt64 value); 
+    EXPRESSIONENGINE_API virtual FdoSingleValue* ObtainSingleValue (bool bIsNull, float value); 
+    EXPRESSIONENGINE_API virtual FdoStringValue* ObtainStringValue (bool bIsNull, FdoString* value); 
+    EXPRESSIONENGINE_API virtual FdoBLOBValue* ObtainBLOBValue (bool bIsNull, FdoByteArray* value); 
+    EXPRESSIONENGINE_API virtual FdoCLOBValue* ObtainCLOBValue (bool bIsNull, FdoByteArray* value);
+    EXPRESSIONENGINE_API virtual FdoGeometryValue* ObtainGeometryValue (bool bIsNull, FdoByteArray* value);
+    EXPRESSIONENGINE_API virtual void RelinquishDataValue (FdoLiteralValue* data);
 
 private:
     void EvaluateAggregateExpression();
@@ -177,12 +178,12 @@ private:
     //
     /// processing
     //
-    virtual bool Like (FdoDataValue* argLeft, FdoDataValue* argRight);
-    virtual FdoDataValue* Add (FdoDataValue* argLeft, FdoDataValue* argRight);
-    virtual FdoDataValue* Subtract (FdoDataValue* argLeft, FdoDataValue* argRight);
-    virtual FdoDataValue* Multiply (FdoDataValue* argLeft, FdoDataValue* argRight);
-    virtual FdoDataValue* Divide (FdoDataValue* argLeft, FdoDataValue* argRight);
-    virtual FdoDataValue* Negate (FdoDataValue* argLeft);
+    bool Like (FdoDataValue* argLeft, FdoDataValue* argRight);
+    FdoDataValue* Add (FdoDataValue* argLeft, FdoDataValue* argRight);
+    FdoDataValue* Subtract (FdoDataValue* argLeft, FdoDataValue* argRight);
+    FdoDataValue* Multiply (FdoDataValue* argLeft, FdoDataValue* argRight);
+    FdoDataValue* Divide (FdoDataValue* argLeft, FdoDataValue* argRight);
+    FdoDataValue* Negate (FdoDataValue* argLeft);
 
     /// pattern matching
     bool MatchesHere (const wchar_t* pattern, const wchar_t* src);

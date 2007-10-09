@@ -26,11 +26,12 @@
 #include <FdoStd.h>
 #include <Fdo/Expression/LiteralValueCollection.h>
 #include <FdoExpressionEngineIFunction.h>
+#include <ExpressionEngine.h>
 
 class FdoExpressionEngineINonAggregateFunction : public FdoExpressionEngineIFunction
 {
 public:
-	virtual FdoLiteralValue* Evaluate(FdoLiteralValueCollection *literalValues) = 0;
+	EXPRESSIONENGINE_API  virtual FdoLiteralValue* Evaluate(FdoLiteralValueCollection *literalValues) = 0;
 };
 
 #endif

@@ -51,25 +51,25 @@ class FdoFunctionLength2D : public FdoExpressionEngineINonAggregateFunction
         // Create:
         //  Function to create an instance of this class.
 
-        static FdoFunctionLength2D *Create (FdoBoolean computeGeodetic = false);
+        EXPRESSIONENGINE_API static FdoFunctionLength2D *Create (FdoBoolean computeGeodetic = false);
 
         // CreateObject:
         //  Function to create an instance of this class.
 
-        virtual FdoFunctionLength2D *CreateObject ();
+        EXPRESSIONENGINE_API virtual FdoFunctionLength2D *CreateObject ();
 
         // GetFunctionDefinition:
         //  The function returns the function definition for the geometry
         //  function LENGTH. The definition includes the list of supported
         //  signatures for the function.
 
-        virtual FdoFunctionDefinition *GetFunctionDefinition ();
+        EXPRESSIONENGINE_API virtual FdoFunctionDefinition *GetFunctionDefinition ();
 
         // Evaluate:
         //  The function determines the function result and returns it back to
         //  the calling routine.
 
-        virtual FdoLiteralValue *Evaluate (
+        EXPRESSIONENGINE_API virtual FdoLiteralValue *Evaluate (
                                     FdoLiteralValueCollection *literal_values);
 
 
@@ -77,12 +77,12 @@ class FdoFunctionLength2D : public FdoExpressionEngineINonAggregateFunction
         // FdoFunctionLength2D:
         //  The function represents the class constructor.
 
-        FdoFunctionLength2D (FdoBoolean computeGeodetic = false);
+        EXPRESSIONENGINE_API FdoFunctionLength2D (FdoBoolean computeGeodetic = false);
 
         // ~FdoFunctionLength2D:
         //  The function represents the class destructor.
 
-        ~FdoFunctionLength2D ();
+        EXPRESSIONENGINE_API ~FdoFunctionLength2D ();
 
         // CreateFunctionDefinition:
         //  The routine creates the function definition for the geometry func-

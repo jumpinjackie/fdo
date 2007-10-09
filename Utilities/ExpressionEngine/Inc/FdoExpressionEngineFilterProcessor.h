@@ -20,6 +20,9 @@
 #ifdef _WIN32
 #pragma once
 #endif
+
+#include <ExpressionEngine.h>
+
 //
 // This helper class traverse the filter object. It does no usufull work.
 // Other utility classes can subclass from this class and override the specific methods that they need to handle.
@@ -43,30 +46,30 @@ class FdoExpressionEngineFilterProcessor : public virtual FdoIExpressionProcesso
 {
 protected:
 
-	FdoExpressionEngineFilterProcessor() {}
+	EXPRESSIONENGINE_API FdoExpressionEngineFilterProcessor() {}
 
-	virtual ~FdoExpressionEngineFilterProcessor() {}
+	EXPRESSIONENGINE_API virtual ~FdoExpressionEngineFilterProcessor() {}
 
-    void HandleExpr( FdoExpression *exp )
+    EXPRESSIONENGINE_API void HandleExpr( FdoExpression *exp )
     {
         exp->Process( this );
     }
-    void HandleFilter( FdoFilter *filter )
+    EXPRESSIONENGINE_API void HandleFilter( FdoFilter *filter )
     {
         filter->Process( this );
     }
 public:
 
-	static FdoExpressionEngineFilterProcessor* Create()
+	EXPRESSIONENGINE_API static FdoExpressionEngineFilterProcessor* Create()
 	{
 		return new FdoExpressionEngineFilterProcessor();
 	}
 
-    virtual void Dispose() { delete this; }
+    EXPRESSIONENGINE_API virtual void Dispose() { delete this; }
 
      /// <summary>Increase the reference count.</summary>
     /// <returns>Returns the new reference count (value for debugging use only).</returns>
-    FdoInt32 AddRef()
+    EXPRESSIONENGINE_API FdoInt32 AddRef()
     {
         // NOTE: due to multiple inheritance, there is an ambiguity in which AddRef() method to call.
         //  Calling BOTH AddRef() methods leads to instances of this class being prematurely released.
@@ -75,74 +78,74 @@ public:
 
     /// <summary>Decrease the reference count.</summary>
     /// <returns>Returns the new reference count (value for debugging use only).</returns>
-    FdoInt32 Release ()
+    EXPRESSIONENGINE_API FdoInt32 Release ()
     {
         // NOTE: due to multiple inheritance, there is an ambiguity in which Release() method to call.
         //  Calling BOTH Release() methods leads to instances of this class being prematurely released.
         return FdoIFilterProcessor::Release();
     }
 
-    virtual void ProcessBinaryExpression(FdoBinaryExpression& expr)
+    EXPRESSIONENGINE_API virtual void ProcessBinaryExpression(FdoBinaryExpression& expr)
     {
         HandleExpr( FdoPtr<FdoExpression>(expr.GetLeftExpression()) );
         HandleExpr( FdoPtr<FdoExpression>(expr.GetRightExpression()) );
     }
-    virtual void ProcessBooleanValue(FdoBooleanValue& ) {  }
-    virtual void ProcessByteValue(FdoByteValue& ){   }
-    virtual void ProcessDateTimeValue(FdoDateTimeValue& ){   }
-    virtual void ProcessDoubleValue(FdoDoubleValue& ){   }
-    virtual void ProcessDecimalValue(FdoDecimalValue& ){   }
-    virtual void ProcessInt16Value(FdoInt16Value& ){  }
-    virtual void ProcessInt32Value(FdoInt32Value& ){  }
-    virtual void ProcessInt64Value(FdoInt64Value& ){  }
-    virtual void ProcessSingleValue(FdoSingleValue& ){  }
-    virtual void ProcessStringValue(FdoStringValue& ){  }
-    virtual void ProcessBLOBValue(FdoBLOBValue& ){   }
-    virtual void ProcessCLOBValue(FdoCLOBValue& ){  }
-    virtual void ProcessFunction(FdoFunction& expr)
+    EXPRESSIONENGINE_API virtual void ProcessBooleanValue(FdoBooleanValue& ) {  }
+    EXPRESSIONENGINE_API virtual void ProcessByteValue(FdoByteValue& ){   }
+    EXPRESSIONENGINE_API virtual void ProcessDateTimeValue(FdoDateTimeValue& ){   }
+    EXPRESSIONENGINE_API virtual void ProcessDoubleValue(FdoDoubleValue& ){   }
+    EXPRESSIONENGINE_API virtual void ProcessDecimalValue(FdoDecimalValue& ){   }
+    EXPRESSIONENGINE_API virtual void ProcessInt16Value(FdoInt16Value& ){  }
+    EXPRESSIONENGINE_API virtual void ProcessInt32Value(FdoInt32Value& ){  }
+    EXPRESSIONENGINE_API virtual void ProcessInt64Value(FdoInt64Value& ){  }
+    EXPRESSIONENGINE_API virtual void ProcessSingleValue(FdoSingleValue& ){  }
+    EXPRESSIONENGINE_API virtual void ProcessStringValue(FdoStringValue& ){  }
+    EXPRESSIONENGINE_API virtual void ProcessBLOBValue(FdoBLOBValue& ){   }
+    EXPRESSIONENGINE_API virtual void ProcessCLOBValue(FdoCLOBValue& ){  }
+    EXPRESSIONENGINE_API virtual void ProcessFunction(FdoFunction& expr)
     {
         FdoPtr<FdoExpressionCollection>col = expr.GetArguments();
         for(int i=0; i<col->GetCount(); i++)
             HandleExpr( FdoPtr<FdoExpression>(col->GetItem( i ) ) );
     }
-    virtual void ProcessGeometryValue(FdoGeometryValue& ){  }
-    virtual void ProcessParameter(FdoParameter& ){  }
-    virtual void ProcessUnaryExpression(FdoUnaryExpression& expr)
+    EXPRESSIONENGINE_API virtual void ProcessGeometryValue(FdoGeometryValue& ){  }
+    EXPRESSIONENGINE_API virtual void ProcessParameter(FdoParameter& ){  }
+    EXPRESSIONENGINE_API virtual void ProcessUnaryExpression(FdoUnaryExpression& expr)
     {
         HandleExpr( FdoPtr<FdoExpression>(expr.GetExpression()) );
     }
-    virtual void ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& filter)
+    EXPRESSIONENGINE_API virtual void ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& filter)
     {
         HandleFilter( FdoPtr<FdoFilter>(filter.GetLeftOperand()) );
         HandleFilter( FdoPtr<FdoFilter>(filter.GetRightOperand()) );
     }
-    virtual void ProcessComparisonCondition(FdoComparisonCondition& filter)
+    EXPRESSIONENGINE_API virtual void ProcessComparisonCondition(FdoComparisonCondition& filter)
     {
         HandleExpr( FdoPtr<FdoExpression>(filter.GetLeftExpression()) );
         HandleExpr( FdoPtr<FdoExpression>(filter.GetRightExpression()) );
     }
-    virtual void ProcessDistanceCondition(FdoDistanceCondition& ){  }
+    EXPRESSIONENGINE_API virtual void ProcessDistanceCondition(FdoDistanceCondition& ){  }
 
-    virtual void ProcessInCondition(FdoInCondition& filter)
+    EXPRESSIONENGINE_API virtual void ProcessInCondition(FdoInCondition& filter)
     {
         ProcessIdentifier( *(FdoPtr<FdoIdentifier>(filter.GetPropertyName())) );
     }
-    virtual void ProcessNullCondition(FdoNullCondition& filter)
+    EXPRESSIONENGINE_API virtual void ProcessNullCondition(FdoNullCondition& filter)
     {
         ProcessIdentifier( *(FdoPtr<FdoIdentifier>(filter.GetPropertyName())) );
     }
-    virtual void ProcessSpatialCondition(FdoSpatialCondition& ){  }
+    EXPRESSIONENGINE_API virtual void ProcessSpatialCondition(FdoSpatialCondition& ){  }
 
-    virtual void ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& filter)
+    EXPRESSIONENGINE_API virtual void ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& filter)
     {
         HandleFilter( FdoPtr<FdoFilter>(filter.GetOperand()) );
     }
 
-    virtual void ProcessIdentifier(FdoIdentifier& )
+    EXPRESSIONENGINE_API virtual void ProcessIdentifier(FdoIdentifier& )
     {
     }
 
-    virtual void ProcessComputedIdentifier(FdoComputedIdentifier& expr)
+    EXPRESSIONENGINE_API virtual void ProcessComputedIdentifier(FdoComputedIdentifier& expr)
     {
         HandleExpr( FdoPtr<FdoExpression>(expr.GetExpression()) );
     }

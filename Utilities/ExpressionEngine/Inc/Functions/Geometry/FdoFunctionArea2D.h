@@ -50,25 +50,25 @@ class FdoFunctionArea2D : public FdoExpressionEngineINonAggregateFunction
         // Create:
         //  Function to create an instance of this class.
 
-        static FdoFunctionArea2D *Create (FdoBoolean computeGeodetic = false);
+        EXPRESSIONENGINE_API static FdoFunctionArea2D *Create (FdoBoolean computeGeodetic = false);
 
         // CreateObject:
         //  Function to create an instance of this class.
 
-        virtual FdoFunctionArea2D *CreateObject ();
+        EXPRESSIONENGINE_API virtual FdoFunctionArea2D *CreateObject ();
 
         // GetFunctionDefinition:
         //  The function returns the function definition for the function AREA.
         //  The definition includes the list of supported signatures for the
         //  function.
 
-        virtual FdoFunctionDefinition *GetFunctionDefinition ();
+        EXPRESSIONENGINE_API virtual FdoFunctionDefinition *GetFunctionDefinition ();
 
         // Evaluate:
         //  The function determines the function result and returns it back to
         //  the calling routine.
 
-        virtual FdoLiteralValue *Evaluate (
+        EXPRESSIONENGINE_API virtual FdoLiteralValue *Evaluate (
                                     FdoLiteralValueCollection *literal_values);
 
 
@@ -76,12 +76,12 @@ class FdoFunctionArea2D : public FdoExpressionEngineINonAggregateFunction
         // FdoFunctionArea2D:
         //  The function represents the class constructor.
 
-        FdoFunctionArea2D (FdoBoolean computeGeodetic = false);
+        EXPRESSIONENGINE_API FdoFunctionArea2D (FdoBoolean computeGeodetic = false);
 
         // ~FdoFunctionArea2D:
         //  The function represents the class destructor.
 
-        ~FdoFunctionArea2D ();
+        EXPRESSIONENGINE_API ~FdoFunctionArea2D ();
 
     private:
 

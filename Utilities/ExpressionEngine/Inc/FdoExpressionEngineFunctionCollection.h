@@ -24,13 +24,15 @@
 
 #include <FdoStd.h>
 #include <FdoExpressionEngineIFunction.h>
+#include <ExpressionEngine.h>
+
 
 /// \brief
 /// The FdoExpressionEngineFunctionCollection class represents a collection of FdoExpressionEngineIFunction objects.
 class FdoExpressionEngineFunctionCollection : public FdoCollection<FdoExpressionEngineIFunction, FdoException>
 {
 protected:
-    virtual void Dispose();
+    EXPRESSIONENGINE_API  virtual void Dispose();
 
 public:
     /// \brief
@@ -39,7 +41,7 @@ public:
     /// \return
     /// Returns FdoIFunctionExtensionCollection
     /// 
-    static FdoExpressionEngineFunctionCollection* Create();
+    EXPRESSIONENGINE_API static FdoExpressionEngineFunctionCollection* Create();
 
     /// \brief
     /// Constructs an instance of an FdoExpressionEngineFunctionCollection from an array of 
@@ -53,6 +55,6 @@ public:
     /// \return
     /// Returns FdoExpressionEngineFunctionCollection
     /// 
-    static FdoExpressionEngineFunctionCollection* Create(FdoExpressionEngineIFunction** arguments, FdoInt32 length);
+    EXPRESSIONENGINE_API static FdoExpressionEngineFunctionCollection* Create(FdoExpressionEngineIFunction** arguments, FdoInt32 length);
 };
 #endif

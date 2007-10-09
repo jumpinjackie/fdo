@@ -25,13 +25,13 @@
 
 #include <FdoStd.h>
 #include <Fdo/Connections/Capabilities/FunctionDefinition.h>
-
+#include <ExpressionEngine.h>
 
 class FdoExpressionEngineIFunction : public FdoIDisposable
 {
 public:
-	virtual FdoFunctionDefinition* GetFunctionDefinition() = 0;
-	virtual FdoExpressionEngineIFunction* CreateObject() = 0;
+	EXPRESSIONENGINE_API  virtual FdoFunctionDefinition* GetFunctionDefinition() = 0;
+	EXPRESSIONENGINE_API  virtual FdoExpressionEngineIFunction* CreateObject() = 0;
 };
 
 #endif
