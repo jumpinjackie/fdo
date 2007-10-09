@@ -26,6 +26,7 @@
 class FdoRdbmsExpressionCapabilities :  public FdoIExpressionCapabilities
 {
 public:
+
     FdoRdbmsExpressionCapabilities(void);
 
      // Returns an array of the ExpressionTypes the feature provider supports.
@@ -35,8 +36,15 @@ public:
     virtual FdoFunctionDefinitionCollection* GetFunctions();
 
 protected:
+
     ~FdoRdbmsExpressionCapabilities(void);
     virtual void Dispose();
+
+private:
+
+    // Stores the list of supported functions.
+    FdoPtr<FdoFunctionDefinitionCollection> m_supportedFunctions;
+
 };
 #endif
 
