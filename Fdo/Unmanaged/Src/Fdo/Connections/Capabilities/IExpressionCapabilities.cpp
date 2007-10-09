@@ -50,7 +50,8 @@ FdoFunctionDefinitionCollection *FdoIExpressionCapabilities::GetWellKnownFunctio
     FdoPtr<FdoSignatureDefinition> ceilSignatureDef = FdoSignatureDefinition::Create(FdoDataType_Int64, int64Parms);
     FdoPtr<FdoSignatureDefinitionCollection> ceilSignatureDefCol = FdoSignatureDefinitionCollection::Create();
     ceilSignatureDefCol->Add(ceilSignatureDef);
-	FdoPtr<FdoFunctionDefinition> func = FdoFunctionDefinition::Create(FDO_FUNCTION_CEIL, desc, false, ceilSignatureDefCol);
+	FdoPtr<FdoFunctionDefinition> func =
+        FdoFunctionDefinition::Create(FDO_FUNCTION_CEIL, desc, false, ceilSignatureDefCol, FdoFunctionCategoryType_Numeric);
     functions->Add(func);
 
     //  ---- FLOOR ----
@@ -58,7 +59,7 @@ FdoFunctionDefinitionCollection *FdoIExpressionCapabilities::GetWellKnownFunctio
     FdoPtr<FdoSignatureDefinition> floorSignatureDef = FdoSignatureDefinition::Create(FdoDataType_Int64, int64Parms);
     FdoPtr<FdoSignatureDefinitionCollection> floorSignatureDefCol = FdoSignatureDefinitionCollection::Create();
     floorSignatureDefCol->Add(floorSignatureDef);
-    func = FdoFunctionDefinition::Create(FDO_FUNCTION_FLOOR, desc, false, floorSignatureDefCol);
+    func = FdoFunctionDefinition::Create(FDO_FUNCTION_FLOOR, desc, false, floorSignatureDefCol, FdoFunctionCategoryType_Numeric);
     functions->Add(func);
 
     // Add the aggregate functions AVG, COUNT, MAX, MIN and SUM.
@@ -67,7 +68,7 @@ FdoFunctionDefinitionCollection *FdoIExpressionCapabilities::GetWellKnownFunctio
     FdoPtr<FdoSignatureDefinition> avgSignatureDef = FdoSignatureDefinition::Create(FdoDataType_Double, doubleParms);
     FdoPtr<FdoSignatureDefinitionCollection> avgSignatureDefCol = FdoSignatureDefinitionCollection::Create();
     avgSignatureDefCol->Add(avgSignatureDef);
-    func = FdoFunctionDefinition::Create(FDO_FUNCTION_AVG, desc, true, avgSignatureDefCol);
+    func = FdoFunctionDefinition::Create(FDO_FUNCTION_AVG, desc, true, avgSignatureDefCol, FdoFunctionCategoryType_Aggregate);
     functions->Add(func);
 
     //  ---- COUNT ----
@@ -75,7 +76,7 @@ FdoFunctionDefinitionCollection *FdoIExpressionCapabilities::GetWellKnownFunctio
     FdoPtr<FdoSignatureDefinition> countSignatureDef = FdoSignatureDefinition::Create(FdoDataType_Int64, int64Parms);
     FdoPtr<FdoSignatureDefinitionCollection> countSignatureDefCol = FdoSignatureDefinitionCollection::Create();
     countSignatureDefCol->Add(countSignatureDef);
-    func = FdoFunctionDefinition::Create(FDO_FUNCTION_COUNT, desc, true, countSignatureDefCol);
+    func = FdoFunctionDefinition::Create(FDO_FUNCTION_COUNT, desc, true, countSignatureDefCol, FdoFunctionCategoryType_Aggregate);
     functions->Add(func);
 
     //  ---- MAX ----
@@ -83,7 +84,7 @@ FdoFunctionDefinitionCollection *FdoIExpressionCapabilities::GetWellKnownFunctio
     FdoPtr<FdoSignatureDefinition> maxSignatureDef = FdoSignatureDefinition::Create(FdoDataType_Double, doubleParms);
     FdoPtr<FdoSignatureDefinitionCollection> maxSignatureDefCol = FdoSignatureDefinitionCollection::Create();
     maxSignatureDefCol->Add(maxSignatureDef);
-    func = FdoFunctionDefinition::Create(FDO_FUNCTION_MAX, desc, true, maxSignatureDefCol);
+    func = FdoFunctionDefinition::Create(FDO_FUNCTION_MAX, desc, true, maxSignatureDefCol, FdoFunctionCategoryType_Aggregate);
     functions->Add(func);
 
     //  ---- MIN ----
@@ -91,7 +92,7 @@ FdoFunctionDefinitionCollection *FdoIExpressionCapabilities::GetWellKnownFunctio
     FdoPtr<FdoSignatureDefinition> minSignatureDef = FdoSignatureDefinition::Create(FdoDataType_Double, doubleParms);
     FdoPtr<FdoSignatureDefinitionCollection> minSignatureDefCol = FdoSignatureDefinitionCollection::Create();
     minSignatureDefCol->Add(minSignatureDef);
-    func = FdoFunctionDefinition::Create(FDO_FUNCTION_MIN, desc, true, minSignatureDefCol);
+    func = FdoFunctionDefinition::Create(FDO_FUNCTION_MIN, desc, true, minSignatureDefCol, FdoFunctionCategoryType_Aggregate);
     functions->Add(func);
 
     //  ---- SUM ----
@@ -99,7 +100,7 @@ FdoFunctionDefinitionCollection *FdoIExpressionCapabilities::GetWellKnownFunctio
     FdoPtr<FdoSignatureDefinition> sumSignatureDef = FdoSignatureDefinition::Create(FdoDataType_Double, doubleParms);
     FdoPtr<FdoSignatureDefinitionCollection> sumSignatureDefCol = FdoSignatureDefinitionCollection::Create();
     sumSignatureDefCol->Add(sumSignatureDef);
-    func = FdoFunctionDefinition::Create(FDO_FUNCTION_SUM, desc, true, sumSignatureDefCol);
+    func = FdoFunctionDefinition::Create(FDO_FUNCTION_SUM, desc, true, sumSignatureDefCol, FdoFunctionCategoryType_Aggregate);
     functions->Add(func);
 
     // Add the string functions LOWER and UPPER.
@@ -107,14 +108,14 @@ FdoFunctionDefinitionCollection *FdoIExpressionCapabilities::GetWellKnownFunctio
     FdoPtr<FdoSignatureDefinition> lowerSignatureDef = FdoSignatureDefinition::Create(FdoDataType_String, strParms);
     FdoPtr<FdoSignatureDefinitionCollection> lowerSignatureDefCol = FdoSignatureDefinitionCollection::Create();
     lowerSignatureDefCol->Add(lowerSignatureDef);
-    func = FdoFunctionDefinition::Create(FDO_FUNCTION_LOWER, desc, false, lowerSignatureDefCol);
+    func = FdoFunctionDefinition::Create(FDO_FUNCTION_LOWER, desc, false, lowerSignatureDefCol, FdoFunctionCategoryType_String);
     functions->Add(func);
 
     desc = FdoException::NLSGetMessage(FUNCTION_UPPER, "Returns strings with all letters uppercase");
     FdoPtr<FdoSignatureDefinition> upperSignatureDef = FdoSignatureDefinition::Create(FdoDataType_String, strParms);
     FdoPtr<FdoSignatureDefinitionCollection> upperSignatureDefCol = FdoSignatureDefinitionCollection::Create();
     upperSignatureDefCol->Add(upperSignatureDef);
-    func = FdoFunctionDefinition::Create(FDO_FUNCTION_UPPER, desc, false, upperSignatureDefCol);
+    func = FdoFunctionDefinition::Create(FDO_FUNCTION_UPPER, desc, false, upperSignatureDefCol, FdoFunctionCategoryType_String);
     functions->Add(func);
 
     // Add the geometry function SPATIALEXTENTS.
@@ -122,7 +123,7 @@ FdoFunctionDefinitionCollection *FdoIExpressionCapabilities::GetWellKnownFunctio
     FdoPtr<FdoSignatureDefinition> spatextSignatureDef = FdoSignatureDefinition::Create(FdoPropertyType_GeometricProperty, (FdoDataType)-1, geomParms);
     FdoPtr<FdoSignatureDefinitionCollection> spatextSignatureDefCol = FdoSignatureDefinitionCollection::Create();
     spatextSignatureDefCol->Add(spatextSignatureDef);
-    func = FdoFunctionDefinition::Create(FDO_FUNCTION_SPATIALEXTENTS, desc, true, spatextSignatureDefCol);
+    func = FdoFunctionDefinition::Create(FDO_FUNCTION_SPATIALEXTENTS, desc, true, spatextSignatureDefCol, FdoFunctionCategoryType_Aggregate);
     functions->Add(func);
 
     // Add the function CONCAT.
@@ -136,7 +137,7 @@ FdoFunctionDefinitionCollection *FdoIExpressionCapabilities::GetWellKnownFunctio
     FdoPtr<FdoSignatureDefinition> concatSignatureDef = FdoSignatureDefinition::Create(FdoDataType_String, strParms);
     FdoPtr<FdoSignatureDefinitionCollection> concatSignatureDefCol = FdoSignatureDefinitionCollection::Create();
     concatSignatureDefCol->Add(concatSignatureDef);
-    func = FdoFunctionDefinition::Create(FDO_FUNCTION_CONCAT, desc, false, concatSignatureDefCol);
+    func = FdoFunctionDefinition::Create(FDO_FUNCTION_CONCAT, desc, false, concatSignatureDefCol, FdoFunctionCategoryType_String);
     functions->Add(func);
 
     // Return the function collection.
