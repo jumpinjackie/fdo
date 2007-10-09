@@ -45,6 +45,8 @@ protected:
     FdoStringP GetGeometryColumnNameForProperty( const FdoSmLpGeometricPropertyDefinition *pGeomProp, bool bChangeFilter = false);
 
     virtual bool IsAggregateFunctionName(FdoString* wFunctionName) const;
+    virtual bool IsNotNativeSupportedFunction(FdoString* wFunctionName) const;
+    virtual bool HasNativeSupportedFunctionArguments(FdoFunction& expr) const;
 
     virtual void ProcessDateTimeValue(FdoDateTimeValue& expr);
     
