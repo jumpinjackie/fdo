@@ -647,7 +647,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
-						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;"
+						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\lib\win32\debug\ExpressionEngine.dll $(OutDir)"
 						AdditionalDependencies="providers.xml"
 						Outputs="$(OutDir)\providers.xml"
 					/>
@@ -658,7 +658,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
-						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;"
+						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\lib\win32\release\ExpressionEngine.dll"
 						AdditionalDependencies="providers.xml "
 						Outputs="$(OutDir)\providers.xml"
 					/>
