@@ -362,6 +362,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\FeatureCommands\FdoRdbmsSelectAggregates.cpp"
+					>
+				</File>
+				<File
 					RelativePath="FeatureCommands\FdoRdbmsSelectCommand.cpp"
 					>
 				</File>
