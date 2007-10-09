@@ -93,7 +93,9 @@ static _FunctionNameMapping_ ArcSDEFunctionsMappings [] = {
 	{FDO_FUNCTION_TRIM,				SE_DBMS_FUNCTION_TRIM},
 	{FDO_FUNCTION_UPPER,			SE_DBMS_FUNCTION_UPPERCASE},
 
-//  - Geometry function names
+//  - Geometry function names.
+// TODO: use SE_shape_get_length() and SE_shape_get_area() in custom functions 
+// to be passed to the expression engine.
 	{FDO_FUNCTION_AREA2D,			-1},
 	{FDO_FUNCTION_LENGTH2D,			-1},
 };
