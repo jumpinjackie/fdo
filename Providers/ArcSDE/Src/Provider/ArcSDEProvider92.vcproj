@@ -888,6 +888,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ArcSDEFunctionArea2D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ArcSDEFunctionArea2D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ArcSDEFunctionLength2D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ArcSDEFunctionLength2D.h"
+				>
+			</File>
+			<File
 				RelativePath="ArcSDEInsertCommand.cpp"
 				>
 			</File>

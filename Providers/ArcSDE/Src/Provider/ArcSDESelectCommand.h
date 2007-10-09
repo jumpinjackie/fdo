@@ -24,6 +24,7 @@
 
 #include "ArcSDEFeatureCommand.h"
 #include "ArcSDELockConflictReader.h"
+#include <FdoExpressionEngineFunctionCollection.h>
 
 class ArcSDESelectCommand :
     public ArcSDEFeatureCommand<FdoISelect>
@@ -46,6 +47,7 @@ protected:
     virtual ~ArcSDESelectCommand (void);
     virtual void SetLockConflictReader (ArcSDELockConflictReader* conflicts);
     virtual ArcSDELockConflictReader* GetLockConflictReader ();
+	virtual FdoExpressionEngineFunctionCollection* GetUserDefinedFunctions( FdoIConnection *connection, FdoClassDefinition *classDef );
 
 public:
     //
