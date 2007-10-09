@@ -54,7 +54,7 @@ public __value enum FunctionCategoryType
     FunctionCategoryType_String = FdoFunctionCategoryType_String,
 
     /// Represents the identifier used to categorize unspecified functions.
-    FunctionCategoryType_Unspcified = FdoFunctionCategoryType_Unspecified,
+    FunctionCategoryType_Unspecified = FdoFunctionCategoryType_Unspecified,
 
 };  //  FunctionCategoryType
 
