@@ -23,6 +23,7 @@ libFdoRdbms_FeatureCommands_la_SOURCES = \
   FdoRdbmsDeleteCommand.cpp        \
   FdoRdbmsInsertCommand.cpp  \
   FdoRdbmsFeatureInfoReader.cpp    \
+  FdoRdbmsSelectAggregates.cpp \
   FdoRdbmsSelectCommand.cpp \
   FdoRdbmsFeatureReader.cpp        \
   FdoRdbmsUpdateCommand.cpp  \
