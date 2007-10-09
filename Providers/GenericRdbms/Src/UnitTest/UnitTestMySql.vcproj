@@ -581,6 +581,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Common\FdoExpressionFunctionTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\FdoExpressionFunctionTest.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Common\FdoForeignSchemaTest.cpp"
 				>
 			</File>
@@ -866,6 +874,14 @@
 			</File>
 			<File
 				RelativePath=".\MySQL\MySqlFdoDeleteTest.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MySql\MySqlFdoExpressionFunctionTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MySql\MySqlFdoExpressionFunctionTest.h"
 				>
 			</File>
 			<File
