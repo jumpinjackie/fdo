@@ -65,7 +65,6 @@ static FdoPropertyValue *AddNewProperty (
 // ----------------------------------------------------------------------------
 
 FdoExpressionFunctionTest::FdoExpressionFunctionTest ()
-     : m_connection(NULL)
 
 // +---------------------------------------------------------------------------
 // | The function represents the class constructor.
@@ -7523,7 +7522,8 @@ void FdoExpressionFunctionTest::CheckReader (FdoIDataReader *data_reader,
     FdoInt32  data_count      = 0,
               id_prop_val;
 
-    FdoDouble cmp_id_val;
+    FdoDouble tolerance,
+              cmp_id_val;
 
     // Navigate through the reader and perform the necessary checks.
 
@@ -7537,10 +7537,13 @@ void FdoExpressionFunctionTest::CheckReader (FdoIDataReader *data_reader,
           id_prop_val = data_reader->GetInt32(L"id");
       cmp_id_val = data_reader->GetDouble(L"cmp_id");
 
+      tolerance = (cmp_id_val - expected_value);
+      if (tolerance < 0)
+          tolerance = tolerance * -1;
+
       is_valid_result = (include_id_check)
-            ? ((abs((cmp_id_val - expected_value)) < 1) &&
-               (id_prop_val == expected_id_value)          )
-            : (abs((cmp_id_val - expected_value)) < 1);
+            ? ((tolerance < 1) && (id_prop_val == expected_id_value))
+            : (tolerance < 1);
 
       if (!is_valid_result)
           break;
@@ -7581,7 +7584,8 @@ void FdoExpressionFunctionTest::CheckReader (
     FdoInt32  data_count      = 0,
               id_prop_val;
 
-    FdoDouble cmp_id_val;
+    FdoDouble tolerance,
+              cmp_id_val;
 
     // Navigate through the reader and perform the necessary checks.
 
@@ -7595,10 +7599,13 @@ void FdoExpressionFunctionTest::CheckReader (
           id_prop_val = data_reader->GetInt32(L"id");
       cmp_id_val = data_reader->GetDouble(L"cmp_id");
 
+      tolerance = (cmp_id_val - expected_value);
+      if (tolerance < 0)
+          tolerance = tolerance * -1;
+
       is_valid_result = (include_id_check)
-            ? ((abs((cmp_id_val - expected_value)) < 1) &&
-               (id_prop_val == expected_id_value)          )
-            : (abs((cmp_id_val - expected_value)) < 1);
+            ? ((tolerance < 1) && (id_prop_val == expected_id_value))
+            : (tolerance < 1);
 
       if (!is_valid_result)
           break;
@@ -7636,7 +7643,8 @@ void FdoExpressionFunctionTest::CheckReader32 (
 
     bool     is_valid_result = false;
 
-    FdoInt32 data_count      = 0,
+    FdoInt32 tolerance,
+             data_count      = 0,
              cmp_id_val,
              id_prop_val;
 
@@ -7652,10 +7660,13 @@ void FdoExpressionFunctionTest::CheckReader32 (
           id_prop_val = data_reader->GetInt32(L"id");
       cmp_id_val = data_reader->GetInt32(L"cmp_id");
 
+      tolerance = (cmp_id_val - expected_value);
+      if (tolerance < 0)
+          tolerance = tolerance * -1;
+
       is_valid_result = (include_id_check)
-            ? ((abs((FdoDouble)(cmp_id_val - expected_value)) < 1) &&
-               (id_prop_val == expected_id_value)          )
-            : (abs((FdoDouble)(cmp_id_val - expected_value)) < 1);
+            ? ((tolerance < 1) && (id_prop_val == expected_id_value))
+            : (tolerance < 1);
 
       if (!is_valid_result)
           break;
@@ -7693,7 +7704,8 @@ void FdoExpressionFunctionTest::CheckReader32 (
 
     bool     is_valid_result = false;
 
-    FdoInt32 data_count      = 0,
+    FdoInt32 tolerance,
+             data_count      = 0,
              cmp_id_val,
              id_prop_val;
 
@@ -7709,10 +7721,13 @@ void FdoExpressionFunctionTest::CheckReader32 (
           id_prop_val = data_reader->GetInt32(L"id");
       cmp_id_val = data_reader->GetInt32(L"cmp_id");
 
+      tolerance = (cmp_id_val - expected_value);
+      if (tolerance < 0)
+          tolerance = tolerance * -1;
+
       is_valid_result = (include_id_check)
-            ? ((abs((FdoDouble)(cmp_id_val - expected_value)) < 1) &&
-               (id_prop_val == expected_id_value)          )
-            : (abs((FdoDouble)(cmp_id_val - expected_value)) < 1);
+            ? ((tolerance < 1) && (id_prop_val == expected_id_value))
+            : (tolerance < 1);
 
       if (!is_valid_result)
           break;
@@ -7753,7 +7768,8 @@ void FdoExpressionFunctionTest::CheckReader64 (
     FdoInt32 data_count      = 0,
              id_prop_val;
 
-    FdoInt64 cmp_id_val;
+    FdoInt64 tolerance,
+             cmp_id_val;
 
     // Navigate through the reader and perform the necessary checks.
 
@@ -7767,10 +7783,13 @@ void FdoExpressionFunctionTest::CheckReader64 (
           id_prop_val = data_reader->GetInt32(L"id");
       cmp_id_val = data_reader->GetInt64(L"cmp_id");
 
+      tolerance = (cmp_id_val - expected_value);
+      if (tolerance < 0)
+          tolerance = tolerance * -1;
+
       is_valid_result = (include_id_check)
-            ? ((abs((FdoDouble)(cmp_id_val - expected_value)) < 1) &&
-               (id_prop_val == expected_id_value)          )
-            : (abs((FdoDouble)(cmp_id_val - expected_value)) < 1);
+            ? ((tolerance < 1) && (id_prop_val == expected_id_value))
+            : (tolerance < 1);
 
       if (!is_valid_result)
           break;
@@ -7811,7 +7830,8 @@ void FdoExpressionFunctionTest::CheckReader64 (
     FdoInt32 data_count      = 0,
              id_prop_val;
 
-    FdoInt64 cmp_id_val;
+    FdoInt64 tolerance,
+             cmp_id_val;
 
     // Navigate through the reader and perform the necessary checks.
 
@@ -7825,10 +7845,13 @@ void FdoExpressionFunctionTest::CheckReader64 (
           id_prop_val = data_reader->GetInt32(L"id");
       cmp_id_val = data_reader->GetInt64(L"cmp_id");
 
+      tolerance = (cmp_id_val - expected_value);
+      if (tolerance < 0)
+          tolerance = tolerance * -1;
+
       is_valid_result = (include_id_check)
-            ? ((abs((FdoDouble)(cmp_id_val - expected_value)) < 1) &&
-               (id_prop_val == expected_id_value)          )
-            : (abs((FdoDouble)(cmp_id_val - expected_value)) < 1);
+            ? ((tolerance < 1) && (id_prop_val == expected_id_value))
+            : (tolerance < 1);
 
       if (!is_valid_result)
           break;
@@ -7869,7 +7892,8 @@ void FdoExpressionFunctionTest::CheckReaderSgl (
     FdoInt32 data_count      = 0,
              id_prop_val;
 
-    FdoFloat cmp_id_val;
+    FdoFloat tolerance,
+             cmp_id_val;
 
     // Navigate through the reader and perform the necessary checks.
 
@@ -7883,10 +7907,13 @@ void FdoExpressionFunctionTest::CheckReaderSgl (
           id_prop_val = data_reader->GetInt32(L"id");
       cmp_id_val = data_reader->GetSingle(L"cmp_id");
 
+      tolerance = (cmp_id_val - expected_value);
+      if (tolerance < 0)
+          tolerance = tolerance * -1;
+
       is_valid_result = (include_id_check)
-            ? ((abs((cmp_id_val - expected_value)) < 1) &&
-               (id_prop_val == expected_id_value)          )
-            : (abs((cmp_id_val - expected_value)) < 1);
+            ? ((tolerance < 1) && (id_prop_val == expected_id_value))
+            : (tolerance < 1);
 
       if (!is_valid_result)
           break;
@@ -7927,7 +7954,8 @@ void FdoExpressionFunctionTest::CheckReaderSgl (
     FdoInt32 data_count      = 0,
              id_prop_val;
 
-    FdoFloat cmp_id_val;
+    FdoFloat tolerance,
+             cmp_id_val;
 
     // Navigate through the reader and perform the necessary checks.
 
@@ -7941,10 +7969,13 @@ void FdoExpressionFunctionTest::CheckReaderSgl (
           id_prop_val = data_reader->GetInt32(L"id");
       cmp_id_val = data_reader->GetSingle(L"cmp_id");
 
+      tolerance = (cmp_id_val - expected_value);
+      if (tolerance < 0)
+          tolerance = tolerance * -1;
+
       is_valid_result = (include_id_check)
-            ? ((abs((cmp_id_val - expected_value)) < 1) &&
-               (id_prop_val == expected_id_value)          )
-            : (abs((cmp_id_val - expected_value)) < 1);
+            ? ((tolerance < 1) && (id_prop_val == expected_id_value))
+            : (tolerance < 1);
 
       if (!is_valid_result)
           break;
@@ -8401,7 +8432,7 @@ void FdoExpressionFunctionTest::AddFeature (
       FDO_SAFE_RELEASE(property_value);
 
       id_str         = FdoStringP::Format(L"The Color is: %d", (index + 2109));
-      data_value     = FdoDataValue::Create(id_str);
+      data_value     = FdoDataValue::Create((FdoString *)id_str);
       property_value = AddNewProperty(property_values, L"str2_val");
       property_value->SetValue(data_value);
       FDO_SAFE_RELEASE(data_value);
