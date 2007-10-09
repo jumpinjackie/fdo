@@ -142,7 +142,7 @@ FdoIDataReader *FdoRdbmsSelectAggregates::Execute ()
                                     mIConnection->GetExpressionCapabilities();
 		FdoPtr<FdoFunctionDefinitionCollection> functions =
                                                 expressionCaps->GetFunctions();
-		FdoPtr<FdoArray<FdoFunction*>> aggrIdents =
+		FdoPtr< FdoArray<FdoFunction*> > aggrIdents =
             FdoExpressionEngineUtilDataReader::GetAggregateFunctions(
                                                                     functions,
                                                                     idCol,
