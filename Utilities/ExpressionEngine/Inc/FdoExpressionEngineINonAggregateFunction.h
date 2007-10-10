@@ -26,7 +26,7 @@
 #include <FdoStd.h>
 #include <Fdo/Expression/LiteralValueCollection.h>
 #include <FdoExpressionEngineIFunction.h>
-#include <ExpressionEngine.h>
+#include "ExpressionEngine.h"
 
 class FdoExpressionEngineINonAggregateFunction : public FdoExpressionEngineIFunction
 {

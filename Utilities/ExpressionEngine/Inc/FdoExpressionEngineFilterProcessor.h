@@ -21,7 +21,7 @@
 #pragma once
 #endif
 
-#include <ExpressionEngine.h>
+#include "ExpressionEngine.h"
 
 //
 // This helper class traverse the filter object. It does no usufull work.

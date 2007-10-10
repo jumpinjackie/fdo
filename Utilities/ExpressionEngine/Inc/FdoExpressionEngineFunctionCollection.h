@@ -24,7 +24,7 @@
 
 #include <FdoStd.h>
 #include <FdoExpressionEngineIFunction.h>
-#include <ExpressionEngine.h>
+#include "ExpressionEngine.h"
 
 
 /// \brief
