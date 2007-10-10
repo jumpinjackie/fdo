@@ -132,6 +132,7 @@ if "%TYPEACTIONSDF%"=="build" goto generate_docs
 echo copy %TYPEBUILDSDF% SDF provider output files
 copy /y "Bin\Win32\%TYPEBUILDSDF%\SDFMessage.dll" "%FDOBINPATHSDF%"
 copy /y "Bin\Win32\%TYPEBUILDSDF%\SDFProvider.dll" "%FDOBINPATHSDF%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\lib\win32\%TYPEBUILDSDF%\ExpressionEngine.dll" "%FDOBINPATHSDF%"
 
 echo copy header files
 xcopy /S /C /Q /R /Y Inc\SDF\*.h "%FDOINCPATHSDF%\SDF\"
