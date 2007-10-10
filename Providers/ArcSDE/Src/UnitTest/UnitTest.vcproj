@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\Provider;&quot;$(SDEHOME)\include&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;..\..\inc;&quot;$(FDOUTILITIES)\Common\inc&quot;"
+				AdditionalIncludeDirectories="..\Provider;&quot;$(SDEHOME)\include&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;..\..\inc;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_SDEVER_ARCUNITTEST=$(SDEVER_ARCUNITTEST)"
 				GeneratePreprocessedFile="0"
 				KeepComments="false"
@@ -133,7 +133,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\Provider;&quot;$(SDEHOME)\include&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;..\..\inc;&quot;$(FDOUTILITIES)\Common\inc&quot;"
+				AdditionalIncludeDirectories="..\Provider;&quot;$(SDEHOME)\include&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;..\..\inc;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SDEVER_ARCUNITTEST=$(SDEVER_ARCUNITTEST)"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -223,7 +223,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\Provider;&quot;$(SDEHOME)\include&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;..\..\inc;&quot;$(FDOUTILITIES)\Common\inc&quot;"
+				AdditionalIncludeDirectories="..\Provider;&quot;$(SDEHOME)\include&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;..\..\inc;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_SDEVER_ARCUNITTEST=$(SDEVER_ARCUNITTEST)"
 				GeneratePreprocessedFile="0"
 				KeepComments="false"
@@ -313,7 +313,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\Provider;&quot;$(SDEHOME)\include&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;..\..\inc;&quot;$(FDOUTILITIES)\Common\inc&quot;"
+				AdditionalIncludeDirectories="..\Provider;&quot;$(SDEHOME)\include&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;..\..\inc;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SDEVER_ARCUNITTEST=$(SDEVER_ARCUNITTEST)"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -403,7 +403,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\Provider;&quot;$(SDEHOME)\include&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;..\..\inc;&quot;$(FDOUTILITIES)\Common\inc&quot;"
+				AdditionalIncludeDirectories="..\Provider;&quot;$(SDEHOME)\include&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;..\..\inc;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_SDEVER_ARCUNITTEST=$(SDEVER_ARCUNITTEST)"
 				GeneratePreprocessedFile="0"
 				KeepComments="false"
@@ -493,7 +493,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\Provider;&quot;$(SDEHOME)\include&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;..\..\inc;&quot;$(FDOUTILITIES)\Common\inc&quot;"
+				AdditionalIncludeDirectories="..\Provider;&quot;$(SDEHOME)\include&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;..\..\inc;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SDEVER_ARCUNITTEST=$(SDEVER_ARCUNITTEST)"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -1382,7 +1382,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
-						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\lib\win32\debug\ExpressionEngine.dll $(OutDir)"
+						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\lib\win32\debug\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;"
 						AdditionalDependencies="providers.xml"
 						Outputs="$(OutDir)\providers.xml"
 					/>
@@ -1393,7 +1393,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
-						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\lib\win32\release\ExpressionEngine.dll $(OutDir)"
+						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\lib\win32\release\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;"
 						AdditionalDependencies="providers.xml"
 						Outputs="$(OutDir)\providers.xml"
 					/>
@@ -1404,7 +1404,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
-						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\lib\win32\debug\ExpressionEngine.dll $(OutDir)"
+						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\lib\win32\debug\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;"
 						AdditionalDependencies="providers.xml"
 						Outputs="$(OutDir)\providers.xml"
 					/>
@@ -1415,7 +1415,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
-						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\lib\win32\release\ExpressionEngine.dll $(OutDir)"
+						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\lib\win32\release\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;"
 						AdditionalDependencies="providers.xml"
 						Outputs="$(OutDir)\providers.xml"
 					/>
@@ -1426,7 +1426,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
-						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\lib\win32\debug\ExpressionEngine.dll $(OutDir)"
+						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\lib\win32\debug\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;"
 						AdditionalDependencies="providers.xml"
 						Outputs="$(OutDir)\providers.xml"
 					/>
@@ -1437,7 +1437,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
-						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\lib\win32\release\ExpressionEngine.dll $(OutDir)"
+						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\lib\win32\release\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;"
 						AdditionalDependencies="providers.xml"
 						Outputs="$(OutDir)\providers.xml"
 					/>
