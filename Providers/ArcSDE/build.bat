@@ -136,6 +136,7 @@ if "%TYPEACTIONARCSDE%"=="build" goto generate_docs
 echo copy %TYPEBUILDARCSDE% ArcSDE provider output files
 copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEMessage.dll" "%FDOBINPATHARCSDE%"
 copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider.dll" "%FDOBINPATHARCSDE%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\lib\win32\%TYPEBUILDARCSDE%\ExpressionEngine.dll" "%FDOBINPATHARCSDE%"
 if exist "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider91.dll" copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider91.dll" "%FDOBINPATHARCSDE%"
 if exist "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider92.dll" copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider92.dll" "%FDOBINPATHARCSDE%"
 
