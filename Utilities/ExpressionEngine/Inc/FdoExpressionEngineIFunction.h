@@ -25,7 +25,7 @@
 
 #include <FdoStd.h>
 #include <Fdo/Connections/Capabilities/FunctionDefinition.h>
-#include <ExpressionEngine.h>
+#include "ExpressionEngine.h"
 
 class FdoExpressionEngineIFunction : public FdoIDisposable
 {

@@ -16,7 +16,7 @@
 #ifndef FDOEXPRESSIONENGINE_H
 #define FDOEXPRESSIONENGINE_H
 
-#include <ExpressionEngine.h>
+#include "ExpressionEngine.h"
 
 class FdoExpressionEngineFunctionCollection;
 class FdoExpressionEngineImp;
