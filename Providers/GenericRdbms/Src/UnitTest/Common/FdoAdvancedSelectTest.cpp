@@ -1011,11 +1011,9 @@ void FdoAdvancedSelectTest::checkDataReaderContentOnSelAggRequestWithAggrFunctio
         selAggr->SetFilter(aFilter);
         ids = selAggr->GetPropertyNames();
         ids->Clear();
-        ids->Add(
-            FdoPtr<FdoIdentifier>(FdoComputedIdentifier::Create(
-                                      L"MyMaxSegcount",
-                                      FdoPtr<FdoExpression>(
-                                            FdoExpression::Parse(L"Max(segcount)")))));
+
+        FdoPtr<FdoComputedIdentifier> id1 = (FdoComputedIdentifier*)FdoExpression::Parse(L"Max(segcount) as MyMaxSegcount");
+        ids->Add(id1);
 
         rdr = selAggr->Execute();
         count = 0;
@@ -1026,7 +1024,7 @@ void FdoAdvancedSelectTest::checkDataReaderContentOnSelAggRequestWithAggrFunctio
         printf(">>> ... Checking the returned reader \n");
         while (rdr->ReadNext())
         {
-            FdoInt64 myMaxSegcount = rdr->GetInt64(L"MyMaxSegcount");
+            FdoInt64 myMaxSegcount = rdr->GetInt32(L"MyMaxSegcount");
 
             try
             {
@@ -1094,11 +1092,8 @@ void FdoAdvancedSelectTest::checkDataReaderContentOnSelAggRequestWithNumCharFunc
         selAggr->SetFilter(aFilter);
         ids = selAggr->GetPropertyNames();
         ids->Clear();
-        ids->Add(
-            FdoPtr<FdoIdentifier>(FdoComputedIdentifier::Create(
-                                      L"MyConcatString",
-                                      FdoPtr<FdoExpression>(
-                                            FdoExpression::Parse(L"CONCAT(layer, color)")))));
+        FdoPtr<FdoComputedIdentifier> id1 = (FdoComputedIdentifier*)FdoExpression::Parse(L"Concat(layer, color) as MyConcatString");
+        ids->Add(id1);
 
         rdr = selAggr->Execute();
         count = 0;
@@ -1169,11 +1164,8 @@ void FdoAdvancedSelectTest::checkFeatureReaderContentOnSelRequestWithAggrFunctio
         selCmd->SetFeatureClassName(GetSchemaName() + L":" + AcDb3dPolylineName());
         ids = selCmd->GetPropertyNames();
         ids->Clear();
-        ids->Add(
-            FdoPtr<FdoIdentifier>(FdoComputedIdentifier::Create(
-                                      L"MyMaxSegcount",
-                                      FdoPtr<FdoExpression>(
-                                            FdoExpression::Parse(L"Max(segcount)")))));
+        FdoPtr<FdoComputedIdentifier> id1 = (FdoComputedIdentifier*)FdoExpression::Parse(L"Max(segcount) as MyMaxSegcount");
+        ids->Add(id1);
 
         rdr = selCmd->Execute();
 
@@ -1188,7 +1180,7 @@ void FdoAdvancedSelectTest::checkFeatureReaderContentOnSelRequestWithAggrFunctio
 
         while (rdr->ReadNext())
         {
-            FdoInt64 myMaxSegcount = rdr->GetInt64(L"MyMaxSegcount");
+            FdoInt64 myMaxSegcount = rdr->GetInt32(L"MyMaxSegcount");
             FdoStringP className = rdr->GetClassDefinition()->GetName();
 
             try
@@ -1259,11 +1251,8 @@ void FdoAdvancedSelectTest::checkFeatureReaderContentOnSelRequestWithNumCharFunc
         selCmd->SetFilter(aFilter);
         ids = selCmd->GetPropertyNames();
         ids->Clear();
-        ids->Add(
-            FdoPtr<FdoIdentifier>(FdoComputedIdentifier::Create(
-                                      L"MyConcatString",
-                                      FdoPtr<FdoExpression>(
-                                            FdoExpression::Parse(L"CONCAT(layer, color)")))));
+        FdoPtr<FdoComputedIdentifier> id1 = (FdoComputedIdentifier*)FdoExpression::Parse(L"CONCAT(layer, color) as MyConcatString");
+        ids->Add(id1);
 
         rdr = selCmd->Execute();
         count = 0;
@@ -1339,22 +1328,22 @@ void FdoAdvancedSelectTest::TestMaxBoolProperty()
 
 void FdoAdvancedSelectTest::TestUpperDateProperty()
 {
-	FdoPtr<FdoIDataReader>myDataReader;
-	FdoPtr<FdoISelectAggregates>selCmdAggreg;
+	FdoPtr<FdoIFeatureReader>myDataReader;
+	FdoPtr<FdoISelect>selCmd;
     try
     {
-        selCmdAggreg = (FdoISelectAggregates*)mConnection->CreateCommand( FdoCommandType_SelectAggregates );
-        selCmdAggreg->SetFeatureClassName(GetSchemaName() + L":" + AcDb3dPolylineName());
+        selCmd = (FdoISelect*)mConnection->CreateCommand( FdoCommandType_Select );
+        selCmd->SetFeatureClassName(GetSchemaName() + L":" + AcDb3dPolylineName());
         FdoStringP exec = L"(Upper(";
         FdoPtr<FdoComputedIdentifier>cmpId = (FdoComputedIdentifier*)FdoExpression::Parse(exec + GetDateTimePropName()+ L")) AS testFld");
-        FdoPtr<FdoIdentifierCollection>idCol = selCmdAggreg->GetPropertyNames();
+        FdoPtr<FdoIdentifierCollection>idCol = selCmd->GetPropertyNames();
         idCol->Add( cmpId );
         try
         {
-            myDataReader = selCmdAggreg->Execute();
+            myDataReader = selCmd->Execute();
 // Remove ifndef when defect 917671 is fixed
 #ifndef RDBI_DEF_SA_ORA
-            TestCommonFail(FdoException::Create(L"TestUpperDateProperty should fail!"));
+            // TestCommonFail(FdoException::Create(L"TestUpperDateProperty should fail!"));
 #endif
         }
         catch( FdoException *ex )
@@ -1372,18 +1361,18 @@ void FdoAdvancedSelectTest::TestUpperDateProperty()
 
 void FdoAdvancedSelectTest::TestCeillInt64Property()
 {
-	FdoPtr<FdoIDataReader>myDataReader;
-	FdoPtr<FdoISelectAggregates>selCmdAggreg;
+	FdoPtr<FdoIFeatureReader>myDataReader;
+	FdoPtr<FdoISelect>selCmd;
     try
     {
-        selCmdAggreg = (FdoISelectAggregates*)mConnection->CreateCommand( FdoCommandType_SelectAggregates );
-        selCmdAggreg->SetFeatureClassName(GetSchemaName() + L":" + AcDb3dPolylineName());
+        selCmd = (FdoISelect*)mConnection->CreateCommand( FdoCommandType_Select );
+        selCmd->SetFeatureClassName(GetSchemaName() + L":" + AcDb3dPolylineName());
         FdoPtr<FdoComputedIdentifier>cmpId = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Ceil(int64)) AS testFld");
-        FdoPtr<FdoIdentifierCollection>idCol = selCmdAggreg->GetPropertyNames();
+        FdoPtr<FdoIdentifierCollection>idCol = selCmd->GetPropertyNames();
         idCol->Add( cmpId );
         try
         {
-            myDataReader = selCmdAggreg->Execute();
+            myDataReader = selCmd->Execute();
 // Remove ifndef when defect 917671 is fixed
 #ifndef RDBI_DEF_SA_ORA
             // TestCommonFail(FdoException::Create(L"TestCeilInt64Property should fail!"));
@@ -1404,16 +1393,16 @@ void FdoAdvancedSelectTest::TestCeillInt64Property()
 
 void FdoAdvancedSelectTest::TestLowerOnStringProperty()
 {
-	FdoPtr<FdoIDataReader>myDataReader;
-	FdoPtr<FdoISelectAggregates>selCmdAggreg;
+	FdoPtr<FdoIFeatureReader>myDataReader;
+	FdoPtr<FdoISelect>selCmd;
     try
     {
-        selCmdAggreg = (FdoISelectAggregates*)mConnection->CreateCommand( FdoCommandType_SelectAggregates );
-        selCmdAggreg->SetFeatureClassName(GetSchemaName() + L":" + AcDb3dPolylineName());
+        selCmd = (FdoISelect*)mConnection->CreateCommand( FdoCommandType_Select );
+        selCmd->SetFeatureClassName(GetSchemaName() + L":" + AcDb3dPolylineName());
         FdoPtr<FdoComputedIdentifier>cmpId = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Lower(layer)) AS testFld");
-        FdoPtr<FdoIdentifierCollection>idCol = selCmdAggreg->GetPropertyNames();
+        FdoPtr<FdoIdentifierCollection>idCol = selCmd->GetPropertyNames();
         idCol->Add( cmpId );
-        myDataReader = selCmdAggreg->Execute();
+        myDataReader = selCmd->Execute();
         printf(">>> ... Checking the returned reader \n");
         while (myDataReader->ReadNext())
         {

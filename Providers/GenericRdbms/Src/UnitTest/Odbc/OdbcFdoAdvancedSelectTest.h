@@ -110,6 +110,9 @@ class OdbcMySqlFdoAdvancedSelectTest : public FdoAdvancedSelectTest
     virtual void TestDefect779194() {};
     virtual void TestDefect785616() {};
 	virtual void groupByorderByTest();
+    virtual void checkDataReaderContentOnSelAggRequestWithNumCharFunction();
+    virtual void checkFeatureReaderContentOnSelRequestWithAggrFunction();
+    virtual void checkFeatureReaderContentOnSelRequestWithNumCharFunction();
 
 protected:
     FdoStringP GetSchemaName() {return L"Fdo";}
@@ -145,6 +148,9 @@ class OdbcSqlServerFdoAdvancedSelectTest : public FdoAdvancedSelectTest
     virtual void TestDefect785616() {};
 	virtual void groupByorderByTest();
     //virtual void TestMaxBoolProperty(){}
+    virtual void checkDataReaderContentOnSelAggRequestWithNumCharFunction();
+    virtual void checkFeatureReaderContentOnSelRequestWithAggrFunction();
+    virtual void checkFeatureReaderContentOnSelRequestWithNumCharFunction();
 
 protected:
     FdoStringP GetSchemaName() {return L"dbo";}
