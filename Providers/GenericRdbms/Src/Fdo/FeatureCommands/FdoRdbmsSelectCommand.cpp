@@ -34,6 +34,8 @@
 #include <FdoExpressionEngine.h>
 #include "Util/FdoExpressionEngineUtilDataReader.h"
 #include "Util/FdoExpressionEngineUtilFeatureReader.h"
+#include <Functions/Geometry/FdoFunctionLength2D.h>
+#include <Functions/Geometry/FdoFunctionArea2D.h>
 
 #define SELECT_CLEANUP \
         if ( qid != -1) {\
@@ -147,6 +149,11 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
             FdoClassCollection *classCol = (FdoClassCollection *)fdoFeatureSchemas->FindClass( this->GetClassNameRef()->GetText() );
             FdoClassDefinition *classDef = classCol->GetItem(0);
 
+			// Create the collection of custom functions.
+			FdoSmLpSchemasP	schemas = ((FdoSmLpSchema *) schema)->GetSchemas();
+
+			FdoExpressionEngineFunctionCollection *userDefinedFunctions = GetUserDefinedFunctions( schemas->GetSpatialContexts(), classDef );
+
 			return new FdoExpressionEngineUtilFeatureReader(
                                                         classDef,
                                                         featureReader, 
@@ -154,7 +161,7 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
                                                             ? this->GetFilterRef()
                                                             : NULL),
                                                         mIdentifiers,
-                                                        NULL /* user defined funcs*/);
+                                                        userDefinedFunctions);
 		}
 
         // The selected properties and the filter are both valid. Do the normal processing.
@@ -450,4 +457,38 @@ bool FdoRdbmsSelectCommand::HasLobProperty( const FdoSmLpClassDefinition *classD
         }
     }
     return forUpdate;
+}
+
+FdoExpressionEngineFunctionCollection* FdoRdbmsSelectCommand::GetUserDefinedFunctions( FdoSmLpSpatialContextCollection *scColl, FdoClassDefinition *classDef )
+{
+	// Length2D and Area2D require to pass in the 'geodetic' flag.
+	// Check the associated coordinate system. In case it is geodetic, create a custom function.
+	
+	FdoPtr<FdoExpressionEngineFunctionCollection> userDefinedFunctions;
+
+	if (classDef->GetClassType() == FdoClassType_FeatureClass)
+	{
+        FdoPtr<FdoGeometricPropertyDefinition> gpd = ((FdoFeatureClass*)classDef)->GetGeometryProperty();
+
+		if ( gpd )
+		{
+			FdoStringP	scname = gpd->GetSpatialContextAssociation();
+
+			if ( scname.GetLength() != 0 )
+			{
+				FdoSmLpSpatialContextP  sc = scColl->FindItem( scname );
+				FdoStringP	wkt = sc->GetCoordinateSystemWkt();
+				
+				if ( wkt.Contains( L"PROJCS" ) )
+					; // do nothing
+				else if ( wkt.Contains( L"GEOGCS" ) )
+				{
+					userDefinedFunctions = FdoExpressionEngineFunctionCollection::Create();
+					userDefinedFunctions->Add( FdoFunctionLength2D::Create(true));
+					userDefinedFunctions->Add( FdoFunctionArea2D::Create(true));
+				}
+			}
+		}
+	}
+	return FDO_SAFE_ADDREF(userDefinedFunctions.p);
 }

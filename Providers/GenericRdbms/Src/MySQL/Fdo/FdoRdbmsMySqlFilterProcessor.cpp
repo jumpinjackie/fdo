@@ -118,6 +118,8 @@ static wchar_t* mySqlUnsupportedFdoFunctions[] = {
     L"RPAD",
     L"SUBSTR",
     L"TRANSLATE",
+	L"LENGTH2D",
+    L"AREA2D",
     NULL
 };
 

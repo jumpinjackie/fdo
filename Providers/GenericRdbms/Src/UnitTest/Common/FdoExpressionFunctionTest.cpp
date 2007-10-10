@@ -361,6 +361,15 @@ void FdoExpressionFunctionTest::RunAllExpFctTests ()
     TestTrimFunction();
     TestUpperFunction();
 
+    // Testing the geometry functions.
+
+    printf("\n");
+    printf("\n");
+    printf(" >>> ... Testing Geometry Functions \n");
+    printf("\n");
+    TestLength2DFunction();
+	TestArea2DFunction();
+
 }  //  RunAllExpFctTests ()
 
 // ===========================================================================
@@ -7306,6 +7315,154 @@ void FdoExpressionFunctionTest::TestUpperFunction ()
 
 }  //  TestUpperFunction ()
 
+
+void FdoExpressionFunctionTest::TestLength2DFunction ()
+
+// +---------------------------------------------------------------------------
+// | The function executes the test for the expression engine function LENGTH2D
+// | when used as a select-parameter.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    FdoStringP                func_call;
+
+    FdoPtr<FdoFilter>         filter;
+    FdoPtr<FdoIFeatureReader> data_reader;
+
+    printf("\n");
+    printf("========================================================== \n");
+    printf(" Current Unit Test Suite: LENGTH2D Function Testing          \n");
+    printf("========================================================== \n");
+    printf("\n");
+
+    // Define the filter for all tests in this test suite.
+
+    filter = (FdoComparisonCondition::Create(
+               FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"id")),
+               FdoComparisonOperations_EqualTo, 
+               FdoPtr<FdoDataValue>(FdoDataValue::Create(9))));
+
+    // 1. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function LENGTH on a value of
+    // a different property of type STRING. No exceptions are expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function LENGTH2D on a value of a different property of  \n");
+    printf("  type GEOMETRY. No exceptions are expected.               \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed pro-
+      // perty is expected to be 18 (length of the value "The Color is: 2118"
+      // for the selected property).
+
+      func_call   = L"(Length2D(RDBMS_GEOM) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 110);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+}  //  TestLengthFunction ()
+
+void FdoExpressionFunctionTest::TestArea2DFunction ()
+
+// +---------------------------------------------------------------------------
+// | The function executes the test for the expression engine function LENGTH2D
+// | when used as a select-parameter.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    FdoStringP                func_call;
+
+    FdoPtr<FdoFilter>         filter;
+    FdoPtr<FdoIFeatureReader> data_reader;
+
+    printf("\n");
+    printf("========================================================== \n");
+    printf(" Current Unit Test Suite: Area2D Function Testing          \n");
+    printf("========================================================== \n");
+    printf("\n");
+
+    // Define the filter for all tests in this test suite.
+
+    filter = (FdoComparisonCondition::Create(
+               FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"id")),
+               FdoComparisonOperations_EqualTo, 
+               FdoPtr<FdoDataValue>(FdoDataValue::Create(9))));
+
+    // 1. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function AREA2D on a value of
+    // a different property of type GEOMETRY. No exceptions are expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function AREA2D on a value of a different property of  \n");
+    printf("  type GEOMETRY. No exceptions are expected.               \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed pro-
+      // perty is expected to be 18 (length of the value "The Color is: 2118"
+      // for the selected property).
+
+      func_call   = L"(Area2D(RDBMS_GEOM) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 0.0);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+}  //  TestLengthFunction ()
 
 // ----------------------------------------------------------------------------
 // --                      General Supporting Functions                      --
