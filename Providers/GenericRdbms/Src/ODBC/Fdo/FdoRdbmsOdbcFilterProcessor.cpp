@@ -35,7 +35,76 @@ static wchar_t* odbcAggregateFunctions[] = {
     L"SUM",   // supported
     NULL};
 
-    
+// The ODBC provider may connect to multiple data sources. Depending on the
+// data source a sub-set of the FDO expression functions may have native support
+// whereas the rest does not and would need to be handled by the Expression 
+// Engine. A explicit decision on this cannot be made because there are no
+// data source related capabilities. As the result, the ODBC Provider always
+// indicates to support all expression functions although - depending on the
+// data source - this may not be the case.
+// Witb the availability of the Expression Engine, the ODBC Provider can be
+// modified to live up to the claim by redirecting all expression functions
+// to the Expression Engine for validation. Because of this the following
+// enumeration lists all expression functions FDO supports and hence declares
+// them as not natively supported.
+
+static wchar_t* odbcUnsupportedFdoFunctions[] = {
+
+    L"AVG",
+    L"COUNT",
+    L"MAX",
+    L"MEDIAN",
+    L"MIN",
+    L"STDDEV",
+    L"SUM",
+    L"NULLVALUE",
+    L"TODATE",
+    L"TODOUBLE",
+    L"TOFLOAT",
+    L"TOINT32",
+    L"TOINT64",
+    L"TOSTRING",
+    L"ADDMONTHS",
+    L"CURRENTDATE",
+    L"EXTRACT",
+    L"MONTHSBETWEEN",
+    L"ABS",
+    L"ACOS",
+    L"ASIN",
+    L"ATAN",
+    L"ATAN2",
+    L"COS",
+    L"EXP",
+    L"LN",
+    L"LOG",
+    L"MOD",
+    L"POWER",
+    L"REMAINDER",
+    L"SIN",
+    L"SQRT",
+    L"TAN",
+    L"CEIL",
+    L"FLOOR",
+    L"ROUND",
+    L"SIGN",
+    L"TRUNC",
+    L"CONCAT",
+    L"INSTR",
+    L"LENGTH",
+    L"LOWER",
+    L"LPAD",
+    L"LTRIM",
+    L"RPAD",
+    L"RTRIM",
+    L"SOUNDEX",
+    L"SUBSTR",
+    L"TRANSLATE",
+    L"TRIM",
+    L"UPPER",
+    NULL
+};
+
+
 FdoRdbmsOdbcFilterProcessor::FdoRdbmsOdbcFilterProcessor(FdoRdbmsConnection *connection):
 FdoRdbmsFilterProcessor( connection )
 {
@@ -175,9 +244,9 @@ bool FdoRdbmsOdbcFilterProcessor::IsAggregateFunctionName(FdoString* wFunctionNa
 
 bool FdoRdbmsOdbcFilterProcessor::IsNotNativeSupportedFunction(FdoString *wFunctionName) const
 {
-    //for (int i=0; mySqlUnsupportedFdoFunctions[i]; i++)
-    //    if (FdoCommonOSUtil::wcsicmp(mySqlUnsupportedFdoFunctions[i], wFunctionName) == 0)
-    //        return true;
+    for (int i=0; odbcUnsupportedFdoFunctions[i]; i++)
+        if (FdoCommonOSUtil::wcsicmp(odbcUnsupportedFdoFunctions[i], wFunctionName) == 0)
+            return true;
 
     return false;
 }
