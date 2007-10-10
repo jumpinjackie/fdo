@@ -82,6 +82,7 @@ INCLUDES = \
   -I$(SDEHOME)/include \
   -I$(FDOTHIRDPARTY)/linux/cppunit/include \
   -I$(FDOUTILITIES)/Common/Inc \
+  -I$(FDOUTILITIES)/ExpressionEngine/Inc \
   -I../../Inc
 
 
