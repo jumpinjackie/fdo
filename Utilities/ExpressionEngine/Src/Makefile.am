@@ -104,8 +104,7 @@ libExpressionEngine_la_LIBADD = \
 
 libExpressionEngine_la_LDFLAGS = \
   -shared \
-  -release $(VERSION) \
-  -Wl,-Bsymbolic
+  -release $(VERSION)
 
 CXXFLAGS = @CXXFLAGS@ -D__USE_GNU -DLINUX -DLINUX_IA32
 
