@@ -24,6 +24,7 @@
 #include "FdoRdbmsConnection.h"
 #include "FdoRdbmsFeatureCommand.h"
 #include "FdoRdbmsLockConflictReader.h"
+#include <FdoExpressionEngineFunctionCollection.h>
 
 class FeatureSet;
 
@@ -87,6 +88,9 @@ class FdoRdbmsSelectCommand : public FdoRdbmsFeatureCommand<FdoISelect>
 
       // Internal method added in support for the select aggregates command
       FdoIdentifierCollection* GetGrouping();
+
+	  // Internal method added in support for the expression engine 
+	  FdoExpressionEngineFunctionCollection* GetUserDefinedFunctions( FdoSmLpSpatialContextCollection *scColl, FdoClassDefinition *classDef );
 
   public:
 

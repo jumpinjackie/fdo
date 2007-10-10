@@ -1888,6 +1888,16 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter     *filter,
                ( FdoCommonOSUtil::wcsicmp( dataPropertyDef->GetColumnName(), L"schemaname" ) != 0 )     )
                 all->Add( dataPropertyDef->GetColumnName() );
         }
+		else
+		{
+			const FdoSmLpGeometricPropertyDefinition *geomPropertyDef = 
+								FdoSmLpGeometricPropertyDefinition::Cast(classDefinition->RefProperties()->RefItem(i));
+			if ( geomPropertyDef != NULL )
+			{
+				if ( FdoCommonOSUtil::wcsicmp( geomPropertyDef->GetColumnName(), L"n/a" )  != 0 )
+					all->Add( geomPropertyDef->GetColumnName() );
+			}
+		}
     }
 
     if (all->GetCount() > 0)
