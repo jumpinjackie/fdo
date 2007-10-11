@@ -209,7 +209,7 @@ void FdoExpressionEngineCopyFilter::ProcessIdentifier(FdoIdentifier& expr)
 			FdoComputedIdentifier* cid = dynamic_cast<FdoComputedIdentifier*>(id.p);
 			if( cid != NULL )
 			{
-				m_pExpression = cid->GetExpression();
+				ProcessComputedIdentifier( *cid );
 				return;
 			}
 		}
