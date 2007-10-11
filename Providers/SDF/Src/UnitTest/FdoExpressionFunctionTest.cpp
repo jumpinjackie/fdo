@@ -6668,10 +6668,6 @@ void FdoExpressionFunctionTest::TestSoundexFunction ()
     printf("========================================================== \n");
     printf("\n");
 
-    printf(">>> NOT SUPPORTED YET \n");
-    printf("\n");
-    return;
-
     // Define the filter for all tests in this test suite.
 
     filter = FdoFilter::Parse(L"id = 9");
