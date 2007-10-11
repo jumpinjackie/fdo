@@ -7368,7 +7368,7 @@ void FdoExpressionFunctionTest::TestLength2DFunction ()
       func_call   = L"(Length2D(RDBMS_GEOM) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 110);
+      CheckReader(data_reader, true, 9, 1.4142); 
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -8458,7 +8458,7 @@ void FdoExpressionFunctionTest::AddFeature (
 
       dimensionality = GetDimensionality();
 
-      coordinate_buffer[i] = 100.0 + index;
+      coordinate_buffer[i++] = 100.0 + index;
       coordinate_buffer[i++] = 100.0 + index;
       if (dimensionality == 3)
           coordinate_buffer[i++] = 0;
