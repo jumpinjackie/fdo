@@ -104,18 +104,140 @@ FdoLiteralValue *FdoFunctionSoundex::Evaluate (
 
 // +---------------------------------------------------------------------------
 // | The function processes a call to the function SOUNDEX.
+// | NOTE:
+// | The implementation of the function utilizes the following algorithm:
+// |
+// |   Step 1: Capitalize all letters in the word and remove all punctation
+// |           marks and digits.
+// |   Step 2: Retain the first letter of the word.
+// |   Step 3: Replace any letter from the set {A, E, I, O, U, H, W, Y} with
+// |           a 0 (zero).
+// |   Step 4: Replace any letter from the set {B, F, P, V} with a 1.
+// |           Replace any letter from the set {C, G, J, K, Q, S, X, Z) with
+// |           a 2
+// |           Replace any letter from the set {D, T) with a 3
+// |           Replace any letter from the set {L) with a 4
+// |           Replace any letter from the set {M, N) with a 5
+// |           Replace any letter from the set {R) with a 6
+// |   Step 5: Remove all pairs of digits which occur beside each other from
+// |           the that resulted from step 4.
+// |   Step 6: Remove all the zeros from the string that resulted from step 5.
+// |   Step 7: Pad the string resulting from step 6 with trailing zeros and
+// |           return the first 4 positions (resulting in a string of the 
+// |           structure <letter><number><number><number>).
 // +---------------------------------------------------------------------------
 
 {
-    // NOT IMPLEMENTED YET.
 
-    throw FdoException::Create(
-            FdoException::NLSGetMessage(
-                FUNCTION_UNEXPECTED_RESULT_ERROR, 
-                "Expression Engine: Unexpected result for function '%1$ls'",
-                FDO_FUNCTION_SOUNDEX));
+    // Declare and initialize all necessary local variables.
 
-    return FdoStringValue::Create();
+    FdoInt64               str_length;
+
+    FdoStringP             base_string,
+                           work_string;
+
+    FdoPtr<FdoStringValue> string_value;
+
+    // Validate the function call.
+
+    Validate(literal_values);
+
+    // Get the string that needs to be processed. If no value is provided,
+    // terminate the function.
+
+    string_value = (FdoStringValue *) literal_values->GetItem(0);
+    if (string_value->IsNull())
+        return FdoStringValue::Create();
+
+    // Make a work-copy of the provided string.
+
+    work_string = string_value->GetString();
+
+    // Get the length of the provided string. If it is 0, then there is nothing
+    // to do and the functin can terminate.
+
+    str_length = (FdoInt64)work_string.GetLength();
+    if (str_length == 0)
+        return FdoStringValue::Create();
+
+    // Check if the string contains numbers only. If this is the case, nothing
+    // else needs to be done and the function can terminate.
+
+    if (work_string.IsNumber())
+        return FdoStringValue::Create();
+
+    // Execute the first step of the algorithm and remove all punctation marks
+    // and numbers. For the resulting string, check the length. If it is 0,
+    // nothing else needs to be done and the function can terminate.
+
+    work_string = EliminateNonAlphaChars(work_string, str_length);
+    str_length  = (FdoInt64)work_string.GetLength();
+    if (str_length == 0)
+        return FdoStringValue::Create();
+
+    // If there is just one letter left, add three trailing zeros to the string
+    // and return it back to the calling routine.
+
+    if (str_length == 1) {
+
+        base_string = work_string.Mid(0, 1);
+        base_string = base_string.Upper();
+        base_string = base_string + L"000";
+        return FdoStringValue::Create((FdoString *)base_string);
+
+    }  //  if (str_length == 1) ...
+
+    // Capitalize the remaining string. Retain the first letter (step 2) and
+    // substitute letters with numbers as outlined in the algorithm (step 3,
+    // 4) for the remaining string.
+
+    work_string = work_string.Upper();
+    base_string = work_string.Mid(0, 1);
+
+    work_string = work_string.Mid(1, (size_t)str_length+1);
+    work_string = work_string.Replace(L"A", L"0");
+    work_string = work_string.Replace(L"E", L"0");
+    work_string = work_string.Replace(L"I", L"0");
+    work_string = work_string.Replace(L"O", L"0");
+    work_string = work_string.Replace(L"U", L"0");
+    work_string = work_string.Replace(L"H", L"0");
+    work_string = work_string.Replace(L"W", L"0");
+    work_string = work_string.Replace(L"Z", L"0");
+    work_string = work_string.Replace(L"B", L"1");
+    work_string = work_string.Replace(L"F", L"1");
+    work_string = work_string.Replace(L"P", L"1");
+    work_string = work_string.Replace(L"V", L"1");
+    work_string = work_string.Replace(L"C", L"2");
+    work_string = work_string.Replace(L"G", L"2");
+    work_string = work_string.Replace(L"J", L"2");
+    work_string = work_string.Replace(L"K", L"2");
+    work_string = work_string.Replace(L"Q", L"2");
+    work_string = work_string.Replace(L"S", L"2");
+    work_string = work_string.Replace(L"X", L"2");
+    work_string = work_string.Replace(L"Z", L"2");
+    work_string = work_string.Replace(L"D", L"3");
+    work_string = work_string.Replace(L"T", L"3");
+    work_string = work_string.Replace(L"L", L"4");
+    work_string = work_string.Replace(L"M", L"5");
+    work_string = work_string.Replace(L"N", L"5");
+    work_string = work_string.Replace(L"R", L"6");
+
+    // Eliminate all duplicate numbers if they are besides each other (step 6).
+
+    work_string = EliminateDuplicateNumbers(work_string, str_length);
+
+    // Eliminate all zeros.
+
+    work_string = EliminateZeros (work_string, str_length);
+
+    // Construct the resulting string and return the value back to the calling
+    // routine.
+
+    base_string = base_string + work_string.Mid(0, 3);
+    while (base_string.GetLength() < 4)
+      base_string = base_string + L"0";
+
+    return FdoStringValue::Create((FdoString *)base_string);
 
 }  //  Evaluate ()
 
@@ -192,6 +314,115 @@ void FdoFunctionSoundex::CreateFunctionDefinition ()
                                         FdoFunctionCategoryType_String);
 
 }  //  CreateFunctionDefinition ()
+
+FdoStringP FdoFunctionSoundex::EliminateDuplicateNumbers (FdoStringP value,
+                                                          FdoInt64   length)
+
+// +---------------------------------------------------------------------------
+// | The function executes the sixth step as outlined in the algorithm for the
+// | function SOUNDEX and eliminates all duplicate numbers.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local variables.
+
+    FdoInt64   loop_count         = 0;
+
+    FdoStringP curr_char,
+               comp_char,
+               resulting_string;
+
+    // Loop through each of the characters in the given string and remove any
+    // duplicate numbers that are adjacent to each other (the first occurance
+    // of the number is kept.
+
+    comp_char        = value.Mid(0, 1);
+    resulting_string = resulting_string + comp_char;
+
+    for (loop_count = 1; loop_count < length; loop_count++) {
+
+      curr_char = value.Mid((size_t)loop_count, 1);
+      if (curr_char != comp_char) {
+
+          resulting_string = resulting_string + curr_char;
+          comp_char        = value.Mid((size_t)loop_count, 1);
+
+      }  //  if (curr_char != comp_char) ...
+
+    }  //  for (loop_count = 0; loop_count < length; loop_count++) ...
+
+    return resulting_string;
+
+}  //  EliminateDuplicateNumbers ()
+
+FdoStringP FdoFunctionSoundex::EliminateNonAlphaChars (FdoStringP value,
+                                                       FdoInt64   length)
+
+// +---------------------------------------------------------------------------
+// | The function executes the first step as outlined in the algorithm for the
+// | function SOUNDEX and eliminates all characters that are not letters.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local variables.
+
+    FdoInt64      loop_count         = 0;
+
+    FdoStringP    curr_char,
+                  resulting_string;
+
+    unsigned char *work_char         = NULL;
+
+    // Loop through each of the characters in the given string and remove any
+    // characters that is not a letter.
+
+    for (loop_count = 0; loop_count < length; loop_count++) {
+
+      curr_char = value.Mid((size_t)loop_count, 1);
+      work_char = (unsigned char*)((const char *)curr_char);
+
+      if (isalpha(work_char[0]))
+          resulting_string = resulting_string + curr_char;
+
+    }  //  for (loop_count = 0; loop_count < length; loop_count++) ...
+
+    return resulting_string;
+
+}  //  EliminateNonAlphaChars ()
+
+FdoStringP FdoFunctionSoundex::EliminateZeros (FdoStringP value,
+                                               FdoInt64   length)
+
+// +---------------------------------------------------------------------------
+// | The function executes the sixth step as outlined in the algorithm for the
+// | function SOUNDEX and eliminates all zeros.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local variables.
+
+    FdoInt64   loop_count         = 0;
+
+    FdoStringP curr_char,
+               resulting_string;
+
+    // Loop through each of the characters in the given string and remove any
+    // zeros.
+
+    for (loop_count = 0; loop_count < length; loop_count++) {
+
+      curr_char = value.Mid((size_t)loop_count, 1);
+      if (curr_char != L"0")
+          resulting_string = resulting_string + curr_char;
+
+    }  //  for (loop_count = 0; loop_count < length; loop_count++) ...
+
+    return resulting_string;
+
+}  //  EliminateZeros ()
 
 void FdoFunctionSoundex::Validate (FdoLiteralValueCollection *literal_values)
 

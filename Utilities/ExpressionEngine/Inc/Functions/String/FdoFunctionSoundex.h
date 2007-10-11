@@ -100,6 +100,28 @@ class FdoFunctionSoundex : public FdoExpressionEngineINonAggregateFunction
 
         virtual void Dispose () { delete this; };
 
+        // EliminateDuplicateNumbers:
+        //  The function executes the fifth step as outlined in the algorithm
+        //  for the function SOUNDEX and eliminates all duplicate numbers.
+
+        FdoStringP EliminateDuplicateNumbers (FdoStringP value,
+                                              FdoInt64   length);
+
+        // EliminateNonAlphaChars:
+        //  The function executes the first step as outlined in the algorithm
+        //  for the function SOUNDEX and eliminates all characters that are
+        //  not letters.
+
+        FdoStringP EliminateNonAlphaChars (FdoStringP value,
+                                           FdoInt64   length);
+
+        // EliminateZeros:
+        //  The function executes the sixth step as outlined in the algorithm
+        //  for the function SOUNDEX and eliminates all zeros.
+
+        FdoStringP EliminateZeros (FdoStringP value,
+                                   FdoInt64   length);
+
         // Validate:
         //  The function validates the provided parameters for the function
         //  SOUNDEX.
