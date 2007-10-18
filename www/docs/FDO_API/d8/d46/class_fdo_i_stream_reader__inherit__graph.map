@@ -1,8 +1,0 @@
-base referer
-rect $df/deb/class_fdo_i_stream_reader_tmpl.htm 313,343 511,503
-rect $df/deb/class_fdo_i_stream_reader_tmpl.htm 543,343 815,503
-rect $d7/da5/class_fdo_i_disposable.htm 469,7 613,167
-rect $d7/dee/class_fdo_b_l_o_b_stream_reader.htm 7,599 281,679
-rect $da/d45/class_fdo_io_object_stream_reader.htm 305,551 519,727
-rect $d1/db5/class_fdo_io_byte_stream_reader.htm 273,775 551,887
-rect $da/d45/class_fdo_io_object_stream_reader.htm 543,551 831,727

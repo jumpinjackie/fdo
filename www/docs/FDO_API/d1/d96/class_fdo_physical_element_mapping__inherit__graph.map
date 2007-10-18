@@ -1,7 +1,0 @@
-base referer
-rect $d6/df9/class_fdo_physical_class_mapping.htm 7,663 215,807
-rect $d3/dbd/class_fdo_physical_property_mapping.htm 239,663 463,807
-rect $d7/d94/class_fdo_physical_schema_mapping.htm 487,679 681,791
-rect $d8/d0f/class_fdo_xml_element_mapping.htm 705,535 873,935
-rect $d7/da5/class_fdo_i_disposable.htm 308,7 452,167
-rect $d8/df6/class_fdo_xml_sax_handler.htm 476,15 631,159

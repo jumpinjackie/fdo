@@ -1,7 +1,0 @@
-base referer
-rect $d4/df6/_i_feature_command_8h.htm 311,7 455,33
-rect $d8/d82/_fdo_8h.htm 513,133 569,160
-rect $d0/d84/_binary_logical_operator_8h.htm 300,108 465,135
-rect $d4/d73/_logical_operator_8h.htm 121,159 249,185
-rect $d5/de2/_unary_logical_operator_8h.htm 301,209 464,236
-rect $d5/d0e/_search_condition_8h.htm 120,260 251,287
