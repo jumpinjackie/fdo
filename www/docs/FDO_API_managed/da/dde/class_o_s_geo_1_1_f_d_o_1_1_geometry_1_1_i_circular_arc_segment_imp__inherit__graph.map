@@ -1,7 +1,0 @@
-base referer
-rect $d8/d5f/interface_o_s_geo_1_1_f_d_o_1_1_geometry_1_1_i_circular_arc_segment.htm 7,663 305,743
-rect $d5/db8/class_o_s_geo_1_1_f_d_o_1_1_geometry_1_1_i_arc_segment_abstract_imp.htm 329,647 655,759
-rect $d3/dbf/interface_o_s_geo_1_1_f_d_o_1_1_geometry_1_1_i_arc_segment_abstract.htm 167,463 471,543
-rect $d7/d02/class_o_s_geo_1_1_f_d_o_1_1_geometry_1_1_i_curve_segment_abstract_imp.htm 495,407 836,599
-rect $dc/d56/interface_o_s_geo_1_1_f_d_o_1_1_geometry_1_1_i_curve_segment_abstract.htm 355,143 675,223
-rect $d1/dcb/class_o_s_geo_1_1_f_d_o_1_1_runtime_1_1_disposable.htm 699,7 931,359

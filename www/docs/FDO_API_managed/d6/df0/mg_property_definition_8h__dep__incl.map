@@ -1,8 +1,0 @@
-base referer
-rect $d0/d1b/mg_association_property_definition_8h.htm 216,7 443,33
-rect $db/de2/mg_data_property_definition_8h.htm 236,57 423,84
-rect $de/dee/mg_geometric_property_definition_8h.htm 220,108 439,135
-rect $dc/da6/mg_object_property_definition_8h.htm 232,159 427,185
-rect $df/db7/mg_raster_property_definition_8h.htm 231,209 428,236
-rect $de/d7f/mg_topo_feature_property_definition_8h.htm 212,260 447,287
-rect $db/d7c/mg_topo_geometry_property_definition_8h.htm 496,108 741,135
