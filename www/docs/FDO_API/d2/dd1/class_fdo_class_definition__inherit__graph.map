@@ -1,7 +1,0 @@
-base referer
-rect $d9/d49/class_fdo_class.htm 7,759 135,871
-rect $d9/d27/class_fdo_feature_class.htm 159,743 332,887
-rect $d7/d74/class_fdo_network_class.htm 356,743 487,887
-rect $d3/d00/class_fdo_network_layer_class.htm 511,759 671,871
-rect $d0/dc8/class_fdo_topology.htm 695,663 881,967
-rect $d8/da6/class_fdo_schema_element.htm 341,7 501,247

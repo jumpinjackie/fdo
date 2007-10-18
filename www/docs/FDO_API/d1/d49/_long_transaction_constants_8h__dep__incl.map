@@ -1,9 +1,0 @@
-base referer
-rect $d0/deb/_i_activate_long_transaction_8h.htm 559,7 743,34
-rect $d8/d82/_fdo_8h.htm 820,184 876,211
-rect $dd/d0e/_i_create_long_transaction_checkpoint_8h.htm 530,108 772,135
-rect $da/dff/_i_get_long_transaction_checkpoints_8h.htm 250,159 482,186
-rect $d9/d7f/_i_long_transaction_reader_8h.htm 276,210 455,236
-rect $dc/d9a/_i_long_transaction_set_reader_8h.htm 266,311 466,338
-rect $d9/dd0/_i_get_long_transactions_8h.htm 568,260 734,287
-rect $d2/d22/_i_get_long_transactions_in_set_8h.htm 554,362 748,388

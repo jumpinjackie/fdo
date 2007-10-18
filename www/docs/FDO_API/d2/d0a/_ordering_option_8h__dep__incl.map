@@ -1,7 +1,0 @@
-base referer
-rect $d0/ded/_i_base_select_8h.htm 181,57 285,84
-rect $d2/d52/_i_select_8h.htm 369,7 444,33
-rect $d8/d82/_fdo_8h.htm 527,83 583,109
-rect $df/dcb/_i_select_aggregates_8h.htm 336,108 477,135
-rect $d1/db7/_i_connection_manager_8h.htm 631,57 788,84
-rect $dd/d47/_connection_manager_8h.htm 837,83 989,109

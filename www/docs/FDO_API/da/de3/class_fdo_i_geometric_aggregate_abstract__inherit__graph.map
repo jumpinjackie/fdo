@@ -1,8 +1,0 @@
-base referer
-rect $d0/d6f/class_fdo_i_multi_curve_polygon.htm 7,367 196,479
-rect $de/d2b/class_fdo_i_multi_curve_string.htm 220,367 396,479
-rect $d6/d9c/class_fdo_i_multi_geometry.htm 420,367 585,479
-rect $d2/d5e/class_fdo_i_multi_line_string.htm 609,367 775,479
-rect $dd/d98/class_fdo_i_multi_point.htm 799,359 935,487
-rect $d2/d9e/class_fdo_i_multi_polygon.htm 959,367 1113,479
-rect $da/da2/class_fdo_i_geometry.htm 523,7 672,167
