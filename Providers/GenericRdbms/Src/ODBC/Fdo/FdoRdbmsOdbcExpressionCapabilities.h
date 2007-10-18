@@ -38,6 +38,11 @@ public:
 protected:
     ~FdoRdbmsOdbcExpressionCapabilities(void);
     virtual void Dispose();
+
+private:
+
+    // Stores the list of supported functions.
+    FdoPtr<FdoFunctionDefinitionCollection> m_supportedFunctions;
 };
 
 #endif // FDORDBMSODBCDEXPRESSIONCAPABILITIES_H_

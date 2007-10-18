@@ -1004,7 +1004,7 @@ void OdbcAccessFdoConnectTest::CapabilitiesTest()
             expressionTypes[1] == FdoExpressionType_Function);
         FdoPtr<FdoFunctionDefinitionCollection> functions = capExpression->GetFunctions();
         CPPUNIT_ASSERT_MESSAGE("NULL function list.", functions != NULL);
-        CPPUNIT_ASSERT_MESSAGE("Wrong function list size.", functions->GetCount() == 10);
+        CPPUNIT_ASSERT_MESSAGE("Wrong function list size.", functions->GetCount() == 54);
         FdoPtr<FdoFunctionDefinition> function;
         function = functions->FindItem(FDO_FUNCTION_CEIL);
         CPPUNIT_ASSERT_MESSAGE("Missing function Ceil", function != NULL);
