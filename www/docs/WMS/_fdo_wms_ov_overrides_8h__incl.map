@@ -1,9 +1,0 @@
-base referer
-rect $_fdo_wms_ov_format_type_8h.html 1651,360 1920,387
-rect $_fdo_wms_ov_style_definition_8h.html 2319,107 2604,134
-rect $_fdo_wms_ov_layer_definition_8h.html 1981,158 2269,184
-rect $_fdo_wms_ov_layer_collection_8h.html 1640,208 1931,235
-rect $_fdo_wms_ov_class_definition_8h.html 957,310 1245,336
-rect $_fdo_wms_ov_raster_definition_8h.html 1296,259 1589,286
-rect $_fdo_wms_ov_class_collection_8h.html 617,411 908,438
-rect $_fdo_wms_ov_physical_schema_mapping_8h.html 220,462 569,488
