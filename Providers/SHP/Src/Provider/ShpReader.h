@@ -697,7 +697,14 @@ public:
         mFirstRead = false;
 
 
-        //strings returned for string property values need to be 
+        ClearCidStringCache();
+
+        return (ret);
+    }
+
+	void ClearCidStringCache()
+	{
+		//strings returned for string property values need to be 
         //available until the following call to ReadNext()
         //This means we store them in a map which we now have to clean up
         //if needed. Note that this is only used for computed properties,
@@ -711,9 +718,7 @@ public:
 
             m_stringPropsCache.clear();
         }
-
-        return (ret);
-    }
+	}
 
     /// <summary>Closes the Reader object, freeing any resources it may be holding.</summary>
     /// <returns>Returns nothing</returns> 

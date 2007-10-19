@@ -520,6 +520,11 @@ SdfIScrollableFeatureReader* SdfImpExtendedSelect::ExecuteScrollable()
 						if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
 						{
 							FdoDataValue *dataValue = static_cast<FdoDataValue *> (results.p);
+							if( dataValue->IsNull() )
+							{
+								ctx.propCache[i][j].type = (FdoDataType)-1;
+								continue;
+							}
 							ctx.propCache[i][j].type = dataValue->GetDataType();
 							switch ( dataValue->GetDataType() )
 							{

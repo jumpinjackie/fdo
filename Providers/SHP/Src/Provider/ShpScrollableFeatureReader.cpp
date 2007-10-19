@@ -101,6 +101,8 @@ bool ShpScrollableFeatureReader::GetData()
 	mData = NULL;
 	mShape = NULL;
 
+	ClearCidStringCache();
+
     mFileSet->GetObjectAt (&mData, mType, &mShape, mFeatureNumber);
 
 	return !mData->IsDeleted();
