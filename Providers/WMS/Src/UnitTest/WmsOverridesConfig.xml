@@ -2,7 +2,7 @@
 <SchemaMapping provider="OSGeo.WMS.3.3" name="JPL_World_Map" xmlns="http://fdowms.osgeo.org/schemas">
 	<complexType name="worldwindType">
 		<RasterDefinition name="Raster">
-			<Format>PNG</Format>
+			<Format>image/png</Format>
 			<Transparent>true</Transparent>
 			<BackgroundColor>0xFFFFFF</BackgroundColor>
 			<Time>TIME=current</Time>
