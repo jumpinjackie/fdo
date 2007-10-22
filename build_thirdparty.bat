@@ -30,6 +30,7 @@ SET WMSENABLE=no
 SET GDALENABLE=no
 SET FDOENABLE=no
 SET POSTGISENABLE=no
+SET OGRENABLE=no
 SET FDOERROR=0
 
 :study_params
@@ -67,6 +68,7 @@ if "%DEFMODIFY%"=="yes" goto stp1_get_with
 	SET GDALENABLE=no
 	SET POSTGISENABLE=no
 	SET FDOENABLE=no
+	SET OGRENABLE=no
 :stp1_get_with
 if not "%2"=="sdf" goto stp2_get_with
 	SET SDFENABLE=yes
@@ -98,9 +100,10 @@ if not "%2"=="providers" goto stp8_get_with
 	SET WMSENABLE=yes
 	SET GDALENABLE=yes
 	SET POSTGISENABLE=yes
+	SET OGRENABLE=yes
 	goto next_param
 :stp8_get_with
-if not "%2"=="all" goto custom_error
+if not "%2"=="all" goto stp9_get_with
 	SET ALLENABLE=yes
 	SET SDFENABLE=no
 	SET WFSENABLE=no
@@ -108,7 +111,12 @@ if not "%2"=="all" goto custom_error
 	SET GDALENABLE=no
 	SET POSTGISENABLE=no
 	SET FDOENABLE=no
+	SET OGRENABLE=no
     goto next_param
+:stp9_get_with
+if not "%2"=="ogr" goto custom_error
+	SET OGRENABLE=yes
+	goto next_param
 
 :get_action
 SET TYPEACTION=%2
@@ -181,8 +189,12 @@ if "%WMSENABLE%"=="no" goto study_rebuild_postgis
 SET PROVCALLCMD=%PROVCALLCMD% -w=wms
 
 :study_rebuild_postgis
-if "%POSTGISENABLE%"=="no" goto study_rebuild_fdo
+if "%POSTGISENABLE%"=="no" goto study_rebuild_ogr
 SET PROVCALLCMD=%PROVCALLCMD% -w=postgis
+
+:study_rebuild_ogr
+if "%OGRENABLE%"=="no" goto study_rebuild_fdo
+SET PROVCALLCMD=%PROVCALLCMD% -w=ogr
 
 :study_rebuild_fdo
 SET PROVCALLCMDEX=%PROVCALLCMDEX%%PROVCALLCMD%
@@ -221,6 +233,6 @@ echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
 echo PlatformType:   -p[latform]=Win32(default), x64
 echo Action:         -a[ction]=build(default), buildinstall, install, clean
-echo WithModule:     -w[ith]=all(default), fdo, providers, sdf, wfs, wms, postgis
+echo WithModule:     -w[ith]=all(default), fdo, providers, sdf, wfs, wms, postgis, ogr
 echo **************************************************************************
 exit /B 0

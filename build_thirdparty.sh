@@ -27,6 +27,7 @@ SDFENABLE=no
 WFSENABLE=no
 WMSENABLE=no
 GDALENABLE=no
+OGRENABLE=no
 
 ### study parameters ###
 while test $# -gt 0
@@ -75,6 +76,7 @@ do
        WFSENABLE=no
        WMSENABLE=no
        GDALENABLE=no
+       OGRENABLE=no
     fi
     if test -z "$1"; then
        echo "$arg Invalid parameter $1"
@@ -86,6 +88,7 @@ do
        WFSENABLE=no
        WMSENABLE=no
        GDALENABLE=no
+       OGRENABLE=no
     elif test "$1" == fdo; then
         FDOENABLE=yes
     elif test "$1" == sdf; then
@@ -96,6 +99,8 @@ do
         WMSENABLE=yes
     elif test "$1" == gdal; then
         GDALENABLE=yes
+    elif test "$1" == ogr; then
+        OGRENABLE=yes
     else
         echo "$arg Invalid parameter $1"
         exit 1
@@ -139,6 +144,7 @@ if test "$SHOWHELP" == yes; then
    echo "                          wms,"
    echo "                          wfs,"
    echo "                          gdal"
+   echo "                          ogr"
    echo "ConfigMakefiles: --m[akefile] configure(default), noconfigure"
    echo "*******************************************************************"
 
@@ -177,6 +183,8 @@ if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
       ./Thirdparty_wfs.sh
     elif test "$GDALENABLE" == yes ; then
       ./Thirdparty_gdal.sh
+    elif test "$OGRENABLE" == yes ; then
+      ./Thirdparty_ogr.sh
     fi
 fi
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then

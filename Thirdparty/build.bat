@@ -73,6 +73,7 @@ if "%DEFMODIFYTHR%"=="yes" goto stp0_get_with
 	SET WMSENABLETHR=no
 	SET GDALENABLETHR=no
 	SET POSTGISENABLETHR=no
+	SET OGRENABLETHR=no
 	SET FDOENABLETHR=no
 :stp0_get_with
 if not "%2"=="providers" goto stp1_get_with
@@ -81,6 +82,7 @@ if not "%2"=="providers" goto stp1_get_with
 	SET WMSENABLETHR=yes
 	SET GDALENABLETHR=yes
 	SET POSTGISENABLETHR=yes
+	SET OGRENABLETHR=yes
 	goto next_param
 :stp1_get_with
 if not "%2"=="sdf" goto stp2_get_with
@@ -107,7 +109,7 @@ if not "%2"=="gdal" goto stp7_get_with
 	SET GDALENABLETHR=yes	
 	goto next_param
 :stp7_get_with
-if not "%2"=="all" goto custom_error
+if not "%2"=="all" goto stp8_get_with
 	SET ALLENABLETHR=yes
 	SET SDFENABLETHR=no
 	SET WFSENABLETHR=no
@@ -115,7 +117,11 @@ if not "%2"=="all" goto custom_error
 	SET GDALENABLETHR=no
 	SET POSTGISENABLETHR=no
 	SET FDOENABLETHR=no
-goto next_param
+	goto next_param
+:stp8_get_with
+if not "%2"=="ogr" goto custom_error
+	SET GDALENABLETHR=yes	
+	goto next_param
 
 :get_action
 SET TYPEACTIONTHR=%2
