@@ -365,6 +365,10 @@ FdoDouble FdoExpressionEngineGeometryUtil::ComputeGeodeticDistance2D(FdoDouble l
 		d = 2 * asin(minValue);
 	}
 
+    // Adjust the value to [0, 1] interval.
+    if ( d > 1 )
+        d = 1;
+
 	return (ERADM * acos(d));
 }
 
