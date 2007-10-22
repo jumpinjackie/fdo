@@ -31,6 +31,7 @@ SET ARCENABLE=yes
 SET ODBCENABLE=yes
 SET MYSQLENABLE=yes
 SET GDALENABLE=yes
+SET OGRENABLE=yes
 SET FDOENABLE=yes
 SET DOCENABLE=skip
 SET PYTHONENABLE=skip
@@ -79,6 +80,7 @@ if "%DEFMODIFY%"=="yes" goto stp1_get_with
 	SET MYSQLENABLE=no
 	SET FDOENABLE=no
 	SET GDALENABLE=no
+	SET OGRENABLE=no
 :stp1_get_with
 if not "%2"=="shp" goto stp2_get_with
 	SET SHPENABLE=yes
@@ -112,11 +114,15 @@ if not "%2"=="gdal" goto stp9_get_with
 	SET GDALENABLE=yes
 	goto next_param
 :stp9_get_with
-if not "%2"=="fdo" goto stp10_get_with
-	SET FDOENABLE=yes
+if not "%2"=="ogr" goto stp10_get_with
+	SET OGRENABLE=yes
 	goto next_param
 :stp10_get_with
-if not "%2"=="providers" goto stp11_get_with
+if not "%2"=="fdo" goto stp11_get_with
+	SET FDOENABLE=yes
+	goto next_param
+:stp11_get_with
+if not "%2"=="providers" goto stp12_get_with
 	SET SHPENABLE=yes
 	SET SDFENABLE=yes
 	SET WFSENABLE=yes
@@ -125,8 +131,9 @@ if not "%2"=="providers" goto stp11_get_with
 	SET ODBCENABLE=yes
 	SET MYSQLENABLE=yes
 	SET GDALENABLE=yes
-	goto next_param
-:stp11_get_with
+	SET OGRENABLE=yes
+goto next_param
+:stp12_get_with
 if not "%2"=="all" goto custom_error
 	SET SHPENABLE=yes
 	SET SDFENABLE=yes
@@ -137,6 +144,7 @@ if not "%2"=="all" goto custom_error
 	SET MYSQLENABLE=yes
 	SET FDOENABLE=yes
 	SET GDALENABLE=yes
+	SET OGRENABLE=yes
 	goto next_param
 
 :get_docs
@@ -268,9 +276,17 @@ popd
 if "%FDOERROR%"=="1" goto error
 
 :rebuild_gdal
-if "%GDALENABLE%"=="no" goto end
-if not exist Providers\GDAL\build.bat goto end
+if "%GDALENABLE%"=="no" goto rebuild_ogr
+if not exist Providers\GDAL\build.bat goto rebuild_ogr
 pushd Providers\GDAL
+call build.bat %PROVCALLCMDEX%
+popd
+if "%FDOERROR%"=="1" goto error
+
+:rebuild_ogr
+if "%OGRENABLE%"=="no" goto end
+if not exist Providers\OGR\build.bat goto end
+pushd Providers\OGR
 call build.bat %PROVCALLCMDEX%
 popd
 if "%FDOERROR%"=="1" goto error
@@ -287,7 +303,7 @@ exit /B 1
 echo The command is not recognized.
 echo Please use the format:
 :help_show
-echo ********************************************************************************
+echo ************************************************************************
 echo build.bat [-h]
 echo           [-o=OutFolder]
 echo           [-c=BuildType]
@@ -331,12 +347,15 @@ if not exist Providers\GenericRdbms\Src\ODBC\build.bat goto mysql_check
 if not exist Providers\GenericRdbms\Src\MySQL\build.bat goto gdal_check
 	SET MROVBYPROVP=%MROVBYPROVP%, mysql
 :gdal_check
-if not exist Providers\GDAL\build.bat goto providers_show
+if not exist Providers\GDAL\build.bat goto ogr_check
 	SET MROVBYPROVP=%MROVBYPROVP%, gdal
+:ogr_check
+if not exist Providers\OGR\build.bat goto providers_show
+	SET MROVBYPROVP=%MROVBYPROVP%, ogr
 :providers_show
 if ("%MROVBYPROVP%")==("") goto show_capabilities
 	SET MPROVECAPABP=%MPROVECAPABP%, providers%MROVBYPROVP%
 :show_capabilities
 echo %MPROVECAPABP%
-echo ********************************************************************************
+echo ************************************************************************
 exit /B 0
