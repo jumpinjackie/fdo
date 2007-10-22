@@ -75,6 +75,7 @@ INCLUDES = \
   -I$(FDO)/Unmanaged/Src/Geometry \
   -I$(FDOUTILITIES)/SchemaMgr/Inc \
   -I$(FDOUTILITIES)/Common/Inc \
+  -I$(FDOUTILITIES)/ExpressionEngine/Inc \
   -I../../Gdbi \
   -I../../LongTransactionManager \
   -I../../LockManager \
