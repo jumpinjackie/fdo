@@ -37,14 +37,19 @@
 #pragma warning(disable:4311)
 #pragma warning(disable:4312)
 
+#ifdef _WIN32
 #include <tchar.h>
 #include <wtypes.h>
+#include <objbase.h> // StringFromGUID2, 
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
-#include <objbase.h> // StringFromGUID2, 
 
 //  Comment the line below if you don't want logging
+#ifdef _WIN32
 #define FDOLOG_DEBUG 1
+#endif
 
 //  If FDOLOG_CREATE_NEW is defined then every time your program starts it will create 
 //  a new log file named <Executable>_log00.txt, <Executable>_log01.txt, etc. Otherwise it will 
