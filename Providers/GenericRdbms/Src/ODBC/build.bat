@@ -122,6 +122,7 @@ copy /y "..\..\Bin\Win32\%TYPEBUILDODBC%\ODBCOverrides.dll" "%FDOBINPATHODBC%"
 copy /y "..\..\Bin\Win32\%TYPEBUILDODBC%\RdbmsOverrides.dll" "%FDOBINPATHODBC%"
 copy /y "%FDOUTILITIES%\SchemaMgr\Bin\Win32\%TYPEBUILDODBC%\SmMessage.dll" "%FDOBINPATHODBC%"
 copy /y "%FDOUTILITIES%\ExpressionEngine\lib\win32\%TYPEBUILDODBC%\ExpressionEngine.dll" "%FDOBINPATHODBC%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\lib\win32\%TYPEBUILDODBC%\ExpressionEngine.lib" "%FDOLIBPATHODBC%"
 copy /y "..\..\Lib\Win32\%TYPEBUILDODBC%\RdbmsOverrides.lib" "%FDOLIBPATHODBC%"
 copy /y "..\..\Lib\Win32\%TYPEBUILDODBC%\ODBCOverrides.lib" "%FDOLIBPATHODBC%"
 copy /y "..\..\Managed\bin\%TYPEBUILDODBC%\OSGeo.FDO.Providers.ODBC.Overrides.dll" "%FDOBINPATHODBC%"
@@ -136,6 +137,10 @@ if exist "%FDOINCPATHODBC%\Rdbms\Override\Oracle" rmdir /S /Q "%FDOINCPATHODBC%\
 if exist "%FDOINCPATHODBC%\Rdbms\Override\SqlServer" rmdir /S /Q "%FDOINCPATHODBC%\Rdbms\Override\SqlServer"
 if exist "%FDOINCPATHODBC%\Rdbms\FdoSqlServer.h" del /Q /F "%FDOINCPATHODBC%\Rdbms\FdoSqlServer.h"
 if exist "%FDOINCPATHODBC%\Rdbms\FdoOracle.h" del /Q /F "%FDOINCPATHODBC%\Rdbms\FdoOracle.h"
+xcopy /C /Q /R /Y /I "%FDOUTILITIES%\ExpressionEngine\Inc\*.h" "%FDOINCPATHODBC%\ExpressionEngine"
+del /Q/F "%FDOINCPATHODBC%\ExpressionEngine\FdoExpressionEngineImp.h"
+xcopy /C /Q /R /Y /I "%FDOUTILITIES%\ExpressionEngine\Inc\Util\*.h" "%FDOINCPATHODBC%\ExpressionEngine\Util"
+
 
 :generate_docs
 if "%DOCENABLEODBC%"=="skip" goto install_docs

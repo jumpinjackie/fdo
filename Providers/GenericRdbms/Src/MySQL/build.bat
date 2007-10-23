@@ -126,6 +126,7 @@ copy /y "..\..\Bin\Win32\%TYPEBUILDMYSQL%\MySQLOverrides.dll" "%FDOBINPATHMYSQL%
 copy /y "..\..\Bin\Win32\%TYPEBUILDMYSQL%\RdbmsOverrides.dll" "%FDOBINPATHMYSQL%"
 copy /y "%FDOUTILITIES%\SchemaMgr\Bin\Win32\%TYPEBUILDMYSQL%\SmMessage.dll" "%FDOBINPATHMYSQL%"
 copy /y "%FDOUTILITIES%\ExpressionEngine\lib\win32\%TYPEBUILDMYSQL%\ExpressionEngine.dll" "%FDOBINPATHMYSQL%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\lib\win32\%TYPEBUILDMYSQL%\ExpressionEngine.lib" "%FDOLIBPATHMYSQL%"
 copy /y "..\..\Lib\Win32\%TYPEBUILDMYSQL%\RdbmsOverrides.lib" "%FDOLIBPATHMYSQL%"
 copy /y "..\..\Lib\Win32\%TYPEBUILDMYSQL%\MySQLOverrides.lib" "%FDOLIBPATHMYSQL%"
 copy /y "..\..\com\fdosys_sys.sql" "%FDOBINPATHMYSQL%\com"
@@ -142,6 +143,9 @@ if exist "%FDOINCPATHODBC%\Rdbms\Override\Oracle" rmdir /S /Q "%FDOINCPATHODBC%\
 if exist "%FDOINCPATHODBC%\Rdbms\Override\SqlServer" rmdir /S /Q "%FDOINCPATHODBC%\Rdbms\Override\SqlServer"
 if exist "%FDOINCPATHODBC%\Rdbms\FdoSqlServer.h" del /Q /F "%FDOINCPATHODBC%\Rdbms\FdoSqlServer.h"
 if exist "%FDOINCPATHODBC%\Rdbms\FdoOracle.h" del /Q /F "%FDOINCPATHODBC%\Rdbms\FdoOracle.h"
+xcopy /C /Q /R /Y /I "%FDOUTILITIES%\ExpressionEngine\Inc\*.h" "%FDOLIBPATHMYSQL%\Inc\ExpressionEngine"
+del /Q/F "%FDOLIBPATHMYSQL%\Inc\ExpressionEngine\Inc\FdoExpressionEngineImp.h"
+xcopy /C /Q /R /Y /I "%FDOUTILITIES%\ExpressionEngine\Inc\Util\*.h" "%FDOLIBPATHMYSQL%\Inc\ExpressionEngine\Util"
 
 :generate_docs
 if "%DOCENABLEMYSQL%"=="skip" goto install_docs
