@@ -227,7 +227,7 @@ FdoLiteralValue *FdoFunctionRemainder::Evaluate (
               }  //  if (i == 0) ...
               else {
 
-                p2_int64_value = int16_value->GetInt16();
+                p2_int64_value  = int16_value->GetInt16();
                 is_zero_divisor = (p2_int64_value == 0);
 
               }  //  else ...
@@ -251,8 +251,8 @@ FdoLiteralValue *FdoFunctionRemainder::Evaluate (
               }  //  if (i == 0) ...
               else {
 
-                p1_int64_value = int32_value->GetInt32();
-                is_zero_divisor = (p1_int64_value == 0);
+                p2_int64_value  = int32_value->GetInt32();
+                is_zero_divisor = (p2_int64_value == 0);
 
               }  //  else ...
 
@@ -275,7 +275,7 @@ FdoLiteralValue *FdoFunctionRemainder::Evaluate (
               }  //  if (i == 0) ...
               else {
 
-                p2_int64_value = int64_value->GetInt64();
+                p2_int64_value  = int64_value->GetInt64();
                 is_zero_divisor = (p2_int64_value == 0);
 
               }  //  else ...
@@ -299,7 +299,7 @@ FdoLiteralValue *FdoFunctionRemainder::Evaluate (
               }  //  if (i == 0) ...
               else {
 
-                p2_flt_value = single_value->GetSingle();
+                p2_flt_value    = single_value->GetSingle();
                 is_zero_divisor = (p2_flt_value == 0);
 
               }  //  else ...
