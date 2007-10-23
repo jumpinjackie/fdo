@@ -160,7 +160,7 @@ FdoIFeatureReader* SelectCommand::Execute()
         //
         // Get Feature Class definition
         //
-        FdoPtr<FdoClassDefinition> classDef = NULL;
+        FdoPtr<FdoClassDefinition> classDef;
         FdoPtr<FdoIdentifier> classIdentifier = GetFeatureClassName();
         assert(NULL != classIdentifier);
         FdoStringP classId = classIdentifier->GetText();
@@ -171,7 +171,7 @@ FdoIFeatureReader* SelectCommand::Execute()
             static_cast<FdoString*>(classIdentifier->GetName()));
 
         // Find definition of the feature class
-        FdoPtr<FdoIDisposableCollection> featureClasses = NULL;
+        FdoPtr<FdoIDisposableCollection> featureClasses;
         featureClasses = logicalSchemas->FindClass(classId);
         if (NULL == featureClasses)
         {

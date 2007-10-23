@@ -287,7 +287,7 @@ FdoIGeometry* CreateGeometryFromExtendedWkb(ewkb_t const& ewkb)
     assert(5 == currentByte);
 
     boost::uint32_t bytesReadSize = 0;
-    FdoPtr<FdoByteArray> fgfBytes = NULL;
+    FdoPtr<FdoByteArray> fgfBytes;
     fgfBytes = CreateFgfFromExtendedWkb(ewkb, currentByte,
                                         geomType, geomDim,
                                         isSrid, isBbox, bytesReadSize);

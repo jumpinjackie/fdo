@@ -162,7 +162,7 @@ PgSpatialTablesReader::columns_t PgSpatialTablesReader::GetGeometryColumns() con
             srid = boost::lexical_cast<FdoInt32>(csrid);
 
             // Estimate bounding box of geometries in given column
-            FdoPtr<FdoEnvelopeImpl> bbox = NULL;
+            FdoPtr<FdoEnvelopeImpl> bbox;
             bbox = EstimateColumnExtent(static_cast<char const*>(name));
 
             // Describe geometry column and add to the collection
@@ -285,7 +285,7 @@ FdoPtr<FdoEnvelopeImpl> PgSpatialTablesReader::EstimateColumnExtent(
         double ymax = StringConv<double>(cval);
 
         // Build spatial envelope object
-        FdoPtr<FdoEnvelopeImpl> extent = NULL;
+        FdoPtr<FdoEnvelopeImpl> extent;
         extent = FdoEnvelopeImpl::Create(xmin, ymin, xmax, ymax);
 
         FDOLOG_WRITE("Extent:\n\txmin = %.8f\n\tymin = %.8f\n\txmax = %.8f\n\tymax = %.8f",
