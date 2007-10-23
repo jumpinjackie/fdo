@@ -17,14 +17,15 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="..\..\Bin\Win32\Debug"
+			IntermediateDirectory="..\..\Obj\Win32\Debug\Overrides"
 			ConfigurationType="2"
 			InheritedPropertySheets="..\PostGis.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine=""
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -59,6 +60,7 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
+				CommandLine="if not exist ..\..\Lib\Win32\Debug mkdir ..\..\Lib\Win32\Debug&#x0D;&#x0A;if not exist ..\..\Bin\Win32\Debug mkdir ..\..\Bin\Win32\Debug"
 			/>
 			<Tool
 				Name="VCLinkerTool"
@@ -68,6 +70,7 @@
 				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Debug"
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				ImportLibrary="..\..\Lib\Win32\Debug\PostGISOverrides.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -93,12 +96,14 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Versioning PostGISOverrides.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\PostGISOverrides.dll"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="..\..\Bin\Win32\Release"
+			IntermediateDirectory="..\..\Obj\Win32\Release\Overrides"
 			ConfigurationType="2"
 			InheritedPropertySheets="..\PostGis.vsprops"
 			CharacterSet="1"
@@ -137,6 +142,7 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
+				CommandLine="if not exist ..\..\Lib\Win32\Release mkdir ..\..\Lib\Win32\Release&#x0D;&#x0A;if not exist ..\..\Bin\Win32\Release mkdir ..\..\Bin\Win32\Release"
 			/>
 			<Tool
 				Name="VCLinkerTool"
@@ -148,6 +154,7 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				ImportLibrary="..\..\Lib\Win32\Release/PostGISOverrides.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -173,6 +180,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Versioning PostGISOverrides.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\PostGISOverrides.dll"
 			/>
 		</Configuration>
 	</Configurations>

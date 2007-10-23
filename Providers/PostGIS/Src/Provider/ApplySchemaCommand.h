@@ -52,7 +52,7 @@ public:
     /// \exception
     /// TO BE WRITTEN
     ///
-    virtual FDOPOSTGIS_API FdoFeatureSchema* GetFeatureSchema();
+    virtual FdoFeatureSchema* GetFeatureSchema();
 
     /// Set name of the schema to create.
     /// \param
@@ -60,7 +60,7 @@ public:
     /// \exception
     /// TO BE WRITTEN
     ///
-    virtual FDOPOSTGIS_API void SetFeatureSchema(FdoFeatureSchema* schema);
+    virtual void SetFeatureSchema(FdoFeatureSchema* schema);
 
     /// Get FdoPhysicalSchemaMapping used to specify how the schema definition
     /// gets mapped into physical storage.
@@ -70,7 +70,7 @@ public:
     /// \exception
     /// TO BE WRITTEN
     ///
-    virtual FDOPOSTGIS_API FdoPhysicalSchemaMapping* GetPhysicalMapping();
+    virtual FdoPhysicalSchemaMapping* GetPhysicalMapping();
 
     /// Set the FdoPhysicalSchemaMapping used to specify how the schema definition
     /// gets mapped into physical storage.
@@ -80,7 +80,7 @@ public:
     /// \exception
     /// TO BE WRITTEN
     ///
-    virtual FDOPOSTGIS_API void SetPhysicalMapping(FdoPhysicalSchemaMapping* sm);
+    virtual void SetPhysicalMapping(FdoPhysicalSchemaMapping* sm);
 
     /// Get flag indicating whether Execute() will ignore element states when
     /// applying feature schema.
@@ -88,7 +88,7 @@ public:
     /// \return true if actual state of schema element should be ignored,
     /// false otherwise.
     ///
-    virtual FDOPOSTGIS_API FdoBoolean GetIgnoreStates();
+    virtual FdoBoolean GetIgnoreStates();
 
     /// Set Changes the handling of element states by Execute().
     ///
@@ -96,7 +96,7 @@ public:
     /// ignoreStates [in] - flag indicating if schema element state
     /// should be ignored during command execution,
     ///
-    virtual FDOPOSTGIS_API void SetIgnoreStates(FdoBoolean ignoreStates);
+    virtual void SetIgnoreStates(FdoBoolean ignoreStates);
 
     /// Execute the ApplySchema command that creates metadata and
     /// physical storage for the schema.
@@ -114,7 +114,7 @@ public:
     /// \exception
     /// FdoCommandException - if database operation or SQL executeion failed.
     ///
-    virtual FDOPOSTGIS_API void Execute();
+    virtual void Execute();
 
 private:
 

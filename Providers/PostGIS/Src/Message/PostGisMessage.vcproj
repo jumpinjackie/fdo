@@ -17,8 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="..\..\Bin\Win32\Debug"
+			IntermediateDirectory="..\..\Obj\Win32\Debug\Message"
 			ConfigurationType="2"
 			InheritedPropertySheets="..\PostGis.vsprops"
 			CharacterSet="1"
@@ -58,6 +58,7 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
+				CommandLine="if not exist ..\..\Bin\Win32\Debug mkdir ..\..\Bin\Win32\Debug"
 			/>
 			<Tool
 				Name="VCLinkerTool"
@@ -93,12 +94,14 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Versioning PostGISMessage.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\PostGISMessage.dll"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="..\..\Bin\Win32\Release"
+			IntermediateDirectory="..\..\Obj\Win32\Release\Message"
 			ConfigurationType="2"
 			InheritedPropertySheets="..\PostGis.vsprops"
 			CharacterSet="1"
@@ -136,6 +139,7 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
+				CommandLine="if not exist ..\..\Bin\Win32\Release mkdir ..\..\Bin\Win32\Release"
 			/>
 			<Tool
 				Name="VCLinkerTool"
@@ -173,6 +177,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Versioning PostGISMessage.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\PostGISMessage.dll"
 			/>
 		</Configuration>
 	</Configurations>

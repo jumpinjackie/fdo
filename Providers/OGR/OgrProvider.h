@@ -491,13 +491,13 @@ public:
     //-------------------------------------------------------
 
     OGR_API virtual FdoString* GetProviderName()
-        { return L"OSGeo.OGR.0.1"; }
+        { return L"OSGeo.OGR.3.3"; }
     OGR_API virtual FdoString* GetProviderDisplayName()
-        { return L"FDO provider for OGR"; }
+        { return L"OSGeo FDO Provider for OGR"; }
     OGR_API virtual FdoString* GetProviderDescription()
-        { return L"I'm the FDO provider for OGR, dude."; }
+        { return L"FDO Access to OGR Data Sources"; }
     OGR_API virtual FdoString* GetProviderVersion()
-        { return L"0.1.0.0"; }
+        { return L"3.3.0.0"; }
     OGR_API virtual FdoString* GetFeatureDataObjectsVersion()
         { return L"3.3.0.0"; }
     OGR_API virtual FdoIConnectionPropertyDictionary* GetConnectionProperties()
