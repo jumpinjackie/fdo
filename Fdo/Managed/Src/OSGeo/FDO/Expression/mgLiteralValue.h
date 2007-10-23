@@ -19,6 +19,7 @@
 #pragma once
 
 #include "FDO\Expression\mgValueExpression.h"
+#include "FDO\Expression\mgLiteralValueType.h"
 
 class FdoLiteralValue;
 
@@ -42,6 +43,14 @@ public:
     /// once it no longer referenced.
     /// 
 	LiteralValue(System::IntPtr unmanaged, System::Boolean autoDelete);
+
+    /// \brief
+    /// Gets the literal value type of the LiteralValue.
+    /// 
+    /// \return
+    /// Returns an LiteralValueType
+    /// 
+    __property NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValueType get_LiteralValueType ();
 
 public private:
 	inline FdoLiteralValue* GetImpObj();
