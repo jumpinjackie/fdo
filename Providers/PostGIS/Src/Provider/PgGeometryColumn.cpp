@@ -25,7 +25,7 @@ namespace fdo { namespace postgis {
 
 PgGeometryColumn::PgGeometryColumn(FdoString* name, FdoGeometryType type, FdoInt32 dim,
                                    FdoInt32 srid) :
-    mName(name), mType(type), mDim(dim), mSRID(srid), mEnvelope(NULL)
+    mName(name), mType(type), mDim(dim), mSRID(srid)
 {
     FDOLOG_WRITE("PgGeometryColumn: %s", static_cast<char const*>(mName));
 }

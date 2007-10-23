@@ -77,7 +77,6 @@ extern "C" FDOPOSTGIS_API FdoIConnection* CreateConnection()
 namespace fdo { namespace postgis {
 
 Connection::Connection() :
-    mConnInfo(NULL),
     mConnState(FdoConnectionState_Closed),
     mPgConn(NULL),
     mPgResult(NULL),

@@ -29,7 +29,6 @@ SpatialContext::SpatialContext() :
     mCoordSysName(SpatialContextDefaultCoordSysName),
     mCoordSysWkt(SpatialContextDefaulWkt),
     mExtentType(FdoSpatialContextExtentType_Static),
-    mExtent(NULL),
     mIsExtentUpdated(true),
     mXYTolerance(SpatialContextDefaultXYTolerance),
     mZTolerance(SpatialContextDefaultZTolerance),

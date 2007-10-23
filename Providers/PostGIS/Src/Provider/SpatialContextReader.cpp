@@ -20,7 +20,7 @@
 namespace fdo { namespace postgis {
 
 SpatialContextReader::SpatialContextReader(SpatialContextCollection*  scc)
-    :   mSpatialContexts(scc), mCurrentContext(NULL), mCurrentIndex(0)
+    :   mSpatialContexts(scc), mCurrentIndex(0)
 {
     FDO_SAFE_ADDREF(mSpatialContexts.p);
 }

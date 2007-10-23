@@ -27,10 +27,7 @@
 namespace fdo { namespace postgis {
 
 InsertCommand::InsertCommand(Connection* conn) :
-    Base(conn),
-    mClassIdentifier(NULL),
-    mProperties(NULL),
-    mBatchParameters(NULL)
+    Base(conn)
 {
     // idle
 }

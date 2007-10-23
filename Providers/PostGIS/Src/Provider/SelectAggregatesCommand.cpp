@@ -32,11 +32,7 @@ namespace fdo { namespace postgis {
 
 SelectAggregatesCommand::SelectAggregatesCommand(Connection* conn) :
     Base(conn),
-    mProperties(NULL),
-    mOrderingProperties(NULL),
     mOrderingOption(FdoOrderingOption_Ascending),
-    mGroupingProperties(NULL),
-    mGroupingFilter(NULL),
     mDistinct(false)
 {
     // idle

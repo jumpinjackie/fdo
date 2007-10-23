@@ -31,7 +31,7 @@ namespace fdo { namespace postgis {
 PgTableColumnsReader::PgTableColumnsReader(Connection* conn,
                                            FdoStringP schemaName,
                                            FdoStringP tableName)
-    : mConn(conn), mReader(NULL), mCmd(NULL), mSchema(schemaName), mTable(tableName)
+    : mConn(conn), mSchema(schemaName), mTable(tableName)
 {
     FDO_SAFE_ADDREF(mConn.p);
 
