@@ -130,6 +130,8 @@ void FdoFunctionMin::Process (FdoLiteralValueCollection *literal_values)
 
     // Declare and initialize all necessary local variables.
 
+    bool                     is_NULL_value      = false;
+
     FdoPtr<FdoByteValue>     byte_value;
     FdoPtr<FdoDateTimeValue> date_time_value;
     FdoPtr<FdoDecimalValue>  decimal_value;
@@ -158,66 +160,76 @@ void FdoFunctionMin::Process (FdoLiteralValueCollection *literal_values)
 
       case FdoDataType_Byte:
         byte_value = (FdoByteValue *) literal_values->GetItem(process_value);
-        if (!byte_value->IsNull())
+        is_NULL_value = byte_value->IsNull();
+        if (!is_NULL_value)
             ProcessRequest(byte_value->GetByte());
         break;
 
       case FdoDataType_DateTime:
         date_time_value =
                 (FdoDateTimeValue *) literal_values->GetItem(process_value);
-        if (!date_time_value->IsNull())
+        is_NULL_value = date_time_value->IsNull();
+        if (!is_NULL_value)
             ProcessRequest(date_time_value->GetDateTime());
         break;
 
       case FdoDataType_Decimal:
         decimal_value =
                     (FdoDecimalValue *) literal_values->GetItem(process_value);
-        if (!decimal_value->IsNull())
+        is_NULL_value = decimal_value->IsNull();
+        if (!is_NULL_value)
             ProcessRequest(decimal_value->GetDecimal());
         break;
 
       case FdoDataType_Double:
         double_value =
                     (FdoDoubleValue *) literal_values->GetItem(process_value);
-        if (!double_value->IsNull())
+        is_NULL_value = double_value->IsNull();
+        if (!is_NULL_value)
             ProcessRequest(double_value->GetDouble());
         break;
 
       case FdoDataType_Int16:
         int16_value = (FdoInt16Value *) literal_values->GetItem(process_value);
-        if (!int16_value->IsNull())
+        is_NULL_value = int16_value->IsNull();
+        if (!is_NULL_value)
             ProcessRequest(int16_value->GetInt16());
         break;
 
       case FdoDataType_Int32:
         int32_value = (FdoInt32Value *) literal_values->GetItem(process_value);
-        if (!int32_value->IsNull())
+        is_NULL_value = int32_value->IsNull();
+        if (!is_NULL_value)
             ProcessRequest(int32_value->GetInt32());
         break;
 
       case FdoDataType_Int64:
         int64_value = (FdoInt64Value *) literal_values->GetItem(process_value);
-        if (!int64_value->IsNull())
+        is_NULL_value = int64_value->IsNull();
+        if (!is_NULL_value)
             ProcessRequest(int64_value->GetInt64());
         break;
 
       case FdoDataType_Single:
         single_value =
                     (FdoSingleValue *) literal_values->GetItem(process_value);
-        if (!single_value->IsNull())
+        is_NULL_value = single_value->IsNull();
+        if (!is_NULL_value)
             ProcessRequest(single_value->GetSingle());
         break;
 
       case FdoDataType_String:
         string_value =
                     (FdoStringValue *) literal_values->GetItem(process_value);
-        if (!string_value->IsNull())
+        is_NULL_value = string_value->IsNull();
+        if (!is_NULL_value)
             ProcessRequest(string_value->GetString());
         break;
 
     }  //  switch ...
 
-    value_cache->value_set = true;
+    if (!is_NULL_value)
+        value_cache->value_set = true;
 
 }  //  Process ()
 

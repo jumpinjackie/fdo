@@ -621,14 +621,14 @@ void FdoFunctionCount::CreateFunctionDefinition ()
                                             FdoDataType_Int64, sgl_opt_args);
     signatures->Add(signature);
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_String, str_args);
+    signature = FdoSignatureDefinition::Create(FdoDataType_Int64, str_args);
     signatures->Add(signature);
 
     signature = FdoSignatureDefinition::Create(
-                                            FdoDataType_String, str_opt_args);
+                                            FdoDataType_Int64, str_opt_args);
     signatures->Add(signature);
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_Double, geom_args);
+    signature = FdoSignatureDefinition::Create(FdoDataType_Int64, geom_args);
     signatures->Add(signature);
 
     // Create the function definition.
