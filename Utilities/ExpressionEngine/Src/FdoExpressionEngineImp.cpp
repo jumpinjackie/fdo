@@ -72,7 +72,8 @@ FdoExpressionEngineImp::FdoExpressionEngineImp(FdoIReader* reader, FdoClassDefin
         FdoPtr<FdoFunctionDefinition> function = functions[i]->GetFunctionDefinition();
 
 		// Add it only if not user defined
-		if ( !m_AllFunctions->FindItem(function->GetName()) )
+        FdoPtr<FdoFunctionDefinition> func = m_AllFunctions->FindItem(function->GetName());
+		if ( func == NULL)
 			m_AllFunctions->Add(function);
     }
 
@@ -140,6 +141,8 @@ FdoExpressionEngineImp::~FdoExpressionEngineImp()
     for (std::vector<FdoBLOBValue*>::iterator i = mBLOBPool.begin (); i != mBLOBPool.end (); i++)
         (*i)->Release ();
     for (std::vector<FdoCLOBValue*>::iterator i = mCLOBPool.begin (); i != mCLOBPool.end (); i++)
+        (*i)->Release ();
+    for (std::vector<FdoLiteralValueCollection*>::iterator i = mLiteralValueCollectionPool.begin (); i != mLiteralValueCollectionPool.end (); i++)
         (*i)->Release ();
 }
 
@@ -738,6 +741,25 @@ FdoCLOBValue* FdoExpressionEngineImp::ObtainCLOBValue (bool bIsNull, FdoByteArra
     return (ret);
 }
 
+FdoLiteralValueCollection* FdoExpressionEngineImp::ObtainLiteralValueCollection ()
+{
+    FdoLiteralValueCollection* ret;
+
+    if (0 == mLiteralValueCollectionPool.size ())
+    {
+        // if the pool is empty, create new
+        ret = FdoLiteralValueCollection::Create();
+    }
+    else
+    {  // otherwise get an object from the pool and initialize it
+        ret = mLiteralValueCollectionPool.back ();
+        mLiteralValueCollectionPool.pop_back ();
+    }
+
+    return (ret);
+}
+
+
 FdoGeometryValue* FdoExpressionEngineImp::ObtainGeometryValue (bool bIsNull, FdoByteArray* value)
 {
     FdoGeometryValue* ret;
@@ -803,6 +825,11 @@ void FdoExpressionEngineImp::RelinquishDataValue (FdoLiteralValue* data)
     }
     else
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_57_UNEXPECTEDERROR)));
+}
+
+void FdoExpressionEngineImp::RelinquishLiteralValueCollection(FdoLiteralValueCollection* literals)
+{
+     mLiteralValueCollectionPool.push_back(literals);
 }
 
 void FdoExpressionEngineImp::ProcessBinaryLogicalOperator (FdoBinaryLogicalOperator& filter)
@@ -1271,7 +1298,7 @@ void FdoExpressionEngineImp::ProcessFunction (FdoFunction& expr)
 	else
 	{
 
-	    FdoPtr<FdoLiteralValueCollection> functionParameters = FdoLiteralValueCollection::Create();
+	    FdoLiteralValueCollection* functionParameters = ObtainLiteralValueCollection();
 		FdoPtr<FdoExpressionCollection> args = expr.GetArguments ();
 		for (int i=0; i<args->GetCount(); i++)
 		{
@@ -1287,7 +1314,6 @@ void FdoExpressionEngineImp::ProcessFunction (FdoFunction& expr)
         }
 
 		FdoPtr<FdoLiteralValue> result = func->Evaluate(functionParameters);
-
         PushLiteralValue(result);
 		for (int i=0; i<functionParameters->GetCount(); i++)
 		{
@@ -1295,6 +1321,7 @@ void FdoExpressionEngineImp::ProcessFunction (FdoFunction& expr)
 			RelinquishDataValue(literalValue);
 		}
         functionParameters->Clear();
+        RelinquishLiteralValueCollection(functionParameters);
 		return;
 	}
 }
