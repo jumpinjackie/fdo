@@ -164,8 +164,11 @@ protected:
     EXPRESSIONENGINE_API virtual FdoStringValue* ObtainStringValue (bool bIsNull, FdoString* value); 
     EXPRESSIONENGINE_API virtual FdoBLOBValue* ObtainBLOBValue (bool bIsNull, FdoByteArray* value); 
     EXPRESSIONENGINE_API virtual FdoCLOBValue* ObtainCLOBValue (bool bIsNull, FdoByteArray* value);
+    EXPRESSIONENGINE_API virtual FdoLiteralValueCollection* ObtainLiteralValueCollection();
     EXPRESSIONENGINE_API virtual FdoGeometryValue* ObtainGeometryValue (bool bIsNull, FdoByteArray* value);
     EXPRESSIONENGINE_API virtual void RelinquishDataValue (FdoLiteralValue* data);
+    EXPRESSIONENGINE_API virtual void RelinquishLiteralValueCollection(FdoLiteralValueCollection* literals);
+
 
 private:
     void EvaluateAggregateExpression();
@@ -220,6 +223,7 @@ private:
     std::vector<FdoStringValue*> mStringPool;
     std::vector<FdoBLOBValue*> mBLOBPool;
     std::vector<FdoCLOBValue*> mCLOBPool;
+    std::vector<FdoLiteralValueCollection*> mLiteralValueCollectionPool;
 
 	FdoPtr<FdoClassDefinition> m_classDefinition;
 
