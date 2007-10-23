@@ -1,6 +1,6 @@
 /*
 * 
-* Copyright (C) 2004-2006  Autodesk, Inc.
+* Copyright (C) 2004-2007  Autodesk, Inc.
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -109,3 +109,11 @@ System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue::SetNull()
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetNull())
 }
+
+NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValueType NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue::get_LiteralValueType()
+{
+	FdoLiteralValueType unobj;
+	EXCEPTION_HANDLER(unobj = GetImpObj()->GetLiteralValueType())
+	return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValueType>(unobj);
+}
+

@@ -18,6 +18,7 @@
 */
 
 #include "stdafx.h"
+#include "FDO\Expression\LiteralValue.h"
 #include "FDO\Expression\mgLiteralValue.h"
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue::LiteralValue(IntPtr unmanaged, Boolean autoDelete) : ValueExpression(unmanaged, autoDelete)
@@ -28,4 +29,13 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue::LiteralValue(IntPtr unmanaged, Boo
 FdoLiteralValue* NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue::GetImpObj()
 {
 	return static_cast<FdoLiteralValue*>(__super::UnmanagedObject.ToPointer());
+}
+
+NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValueType NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue::get_LiteralValueType()
+{
+	FdoLiteralValueType result;
+    
+	EXCEPTION_HANDLER(result = GetImpObj()->GetLiteralValueType())
+
+	return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValueType>(result);
 }
