@@ -22,7 +22,7 @@
 
 namespace fdo { namespace postgis { namespace ov {
 
-PhysicalSchemaMapping::PhysicalSchemaMapping() : mClasses(NULL)
+PhysicalSchemaMapping::PhysicalSchemaMapping()
 {
     mClasses = ClassCollection::Create(this);
 }
