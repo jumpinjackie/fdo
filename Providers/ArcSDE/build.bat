@@ -100,6 +100,7 @@ if "%TYPEACTIONARCSDE%"=="build" goto start_setbuild
 if "%TYPEACTIONARCSDE%"=="clean" goto start_setbuild
 if not exist "%FDOINSPATHARCSDE%" mkdir "%FDOINSPATHARCSDE%"
 if not exist "%FDOBINPATHARCSDE%" mkdir "%FDOBINPATHARCSDE%"
+if not exist "%FDOLIBPATHARCSDE%" mkdir "%FDOLIBPATHARCSDE%"
 if not exist "%FDOINCPATHARCSDE%" mkdir "%FDOINCPATHARCSDE%"
 if not exist "%FDOLIBPATHARCSDE%" mkdir "%FDOLIBPATHARCSDE%"
 if not exist "%FDODOCPATHARCSDE%" mkdir "%FDODOCPATHARCSDE%"
@@ -137,11 +138,14 @@ echo copy %TYPEBUILDARCSDE% ArcSDE provider output files
 copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEMessage.dll" "%FDOBINPATHARCSDE%"
 copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider.dll" "%FDOBINPATHARCSDE%"
 copy /y "%FDOUTILITIES%\ExpressionEngine\lib\win32\%TYPEBUILDARCSDE%\ExpressionEngine.dll" "%FDOBINPATHARCSDE%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\lib\win32\%TYPEBUILDARCSDE%\ExpressionEngine.lib" "%FDOLIBPATHARCSDE%"
 if exist "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider91.dll" copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider91.dll" "%FDOBINPATHARCSDE%"
 if exist "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider92.dll" copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider92.dll" "%FDOBINPATHARCSDE%"
 
 echo copy header files
-rem none
+xcopy /C /Q /R /Y /I "%FDOUTILITIES%\ExpressionEngine\Inc\*.h" "%FDOINCPATHARCSDE%\ExpressionEngine"
+del /Q/F "%FDOINCPATHARCSDE%\ExpressionEngine\FdoExpressionEngineImp.h"
+xcopy /C /Q /R /Y /I "%FDOUTILITIES%\ExpressionEngine\Inc\Util\*.h" "%FDOINCPATHARCSDE%\ExpressionEngine\Util"
 
 :generate_docs
 if "%DOCENABLEARCSDE%"=="skip" goto install_docs
