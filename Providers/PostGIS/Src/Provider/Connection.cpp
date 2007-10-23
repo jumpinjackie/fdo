@@ -15,7 +15,12 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 //
 #include "stdafx.h"
+
+// Message
+#define FDOPOSTGIS_MESSAGE_DEFINE
 #include "PostGisProvider.h"
+
+// Provider
 #include "Connection.h"
 #include "ConnectionInfo.h"
 #include "CommandCapabilities.h"
@@ -42,17 +47,17 @@
 #include "PgCursor.h"
 #include "PgUtility.h"
 #include "md5.hpp"
-// Message
-#define FDOPOSTGIS_MESSAGE_DEFINE
-#include "../Message/inc/PostGisMessage.h"
+
 // Overrides
 #include <PostGIS/Override/PhysicalSchemaMapping.h>
+
 // std
 #include <cassert>
 #include <cstdlib>
 #include <ctime>
 #include <string>
 #include <vector>
+
 // boost
 #include <boost/shared_ptr.hpp>
 #include <boost/lexical_cast.hpp>

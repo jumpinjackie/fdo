@@ -35,6 +35,7 @@
 #ifdef _WIN32
 #include "../Message/inc/PostGisMessage.h"
 #else
+#include "../Message/PostGisMessageStatic.h"
 #include "../../Inc/PostGisMessage.h"
 #endif
 
