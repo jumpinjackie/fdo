@@ -32,8 +32,6 @@ namespace fdo { namespace postgis {
 
 SelectCommand::SelectCommand(Connection* conn) :
     Base(conn),
-    mProperties(NULL),
-    mOrderingProperties(NULL),
     mOrderingOption(FdoOrderingOption_Ascending)
 {
     // idle

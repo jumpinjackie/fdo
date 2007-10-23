@@ -92,9 +92,7 @@ protected:
 
 template <typename T>
 FeatureCommand<T>::FeatureCommand(Connection* conn) :
-    Command<T>(conn),
-    mClassIdentifier(NULL),
-    mFilter(NULL)
+    Command<T>(conn)
 {
     // idle
 }

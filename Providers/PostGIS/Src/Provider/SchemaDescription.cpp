@@ -33,10 +33,7 @@
 namespace fdo { namespace postgis {
 
 SchemaDescription::SchemaDescription()
-    : mLogicalSchemas(NULL),
-      mSchemaMapping(NULL),
-      mSpatialContexts(NULL),
-      mIsDescribed(false)
+    : mIsDescribed(false)
 {
 }
 

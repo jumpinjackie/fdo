@@ -22,7 +22,7 @@ using namespace fdo::postgis::test;
 CPPUNIT_TEST_SUITE_REGISTRATION(ConnectionTest);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(ConnectionTest, "ConnectionTest");
 
-ConnectionTest::ConnectionTest() : mConn(NULL)
+ConnectionTest::ConnectionTest()
 {
 }
 

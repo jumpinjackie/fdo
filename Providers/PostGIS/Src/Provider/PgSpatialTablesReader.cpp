@@ -47,7 +47,7 @@ T StringConv(char const* value)
 namespace fdo { namespace postgis {
 
 PgSpatialTablesReader::PgSpatialTablesReader(Connection* conn)
-    : mConn(conn), mReader(NULL), mCmd(NULL)
+    : mConn(conn)
 {
     FDO_SAFE_ADDREF(mConn.p);
 

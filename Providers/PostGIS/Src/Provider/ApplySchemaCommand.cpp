@@ -31,8 +31,6 @@ namespace fdo { namespace postgis {
 
 ApplySchemaCommand::ApplySchemaCommand(Connection* conn) :
     Base(conn),
-    mFeatureSchema(NULL),
-    mSchemaMapping(NULL),
     mIgnoreStates(true)
 {
     FDOLOG_WRITE("ApplySchemaCommand command created");

@@ -112,7 +112,7 @@ protected:
 }; // class Command
 
 template <typename T>
-Command<T>::Command(Connection* conn) : mConn(conn), mParams(NULL)
+Command<T>::Command(Connection* conn) : mConn(conn)
 {
     FDO_SAFE_ADDREF(mConn.p);
 }

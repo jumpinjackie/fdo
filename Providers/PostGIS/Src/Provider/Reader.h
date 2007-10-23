@@ -146,7 +146,7 @@ private:
 
 template <typename T>
 Reader<T>::Reader(Connection* conn, PgCursor* cursor) :
-    mConn(conn), mCursor(cursor), mSQLReader(new SQLDataReader(mCursor)), mFgfGeometry(NULL)
+    mConn(conn), mCursor(cursor), mSQLReader(new SQLDataReader(mCursor))
 {
     FDOLOG_MARKER("Created reader instance");
 
