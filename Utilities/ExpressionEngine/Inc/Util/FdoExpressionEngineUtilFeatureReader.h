@@ -16,7 +16,7 @@
 #ifndef FdoExpressionEngineUtilFeatureReader_H
 #define FdoExpressionEngineUtilFeatureReader_H
 
-#include <FdoExpressionEngine.h>
+#include "../FdoExpressionEngine.h"
 
 
 //A generic feature reader. The underlying feature reader and the ExpressionEngine

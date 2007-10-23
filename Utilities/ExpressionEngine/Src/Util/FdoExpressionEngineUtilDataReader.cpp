@@ -102,6 +102,9 @@ FdoExpressionEngineUtilDataReader::FdoExpressionEngineUtilDataReader(FdoFunction
     m_orderbyOption = eOrderingOption;
     m_binReader = new FdoCommonBinaryReader(NULL, 0);
     m_functions = FDO_SAFE_ADDREF(functions);
+    m_propIndex = NULL;
+    m_orderbyBinReader1 = NULL;
+    m_orderbyBinReader2 = NULL;
 
     if ((aggrIdents != NULL) && (aggrIdents->GetCount() > 0))
     {
@@ -174,6 +177,10 @@ FdoExpressionEngineUtilDataReader::FdoExpressionEngineUtilDataReader(FdoFunction
 
 FdoExpressionEngineUtilDataReader::~FdoExpressionEngineUtilDataReader()
 {
+    FDO_SAFE_RELEASE(m_propIndex);
+    FDO_SAFE_RELEASE(m_binReader);
+    FDO_SAFE_RELEASE(m_orderbyBinReader1);
+    FDO_SAFE_RELEASE(m_orderbyBinReader2);
     Close();
 }
 
@@ -367,7 +374,7 @@ void FdoExpressionEngineUtilDataReader::Close()
 
 FdoCommonPropertyIndex* FdoExpressionEngineUtilDataReader::GetPropertyIndex()
 {
-    return FDO_SAFE_ADDREF(m_propIndex.p);
+    return FDO_SAFE_ADDREF(m_propIndex);
 }
 
 
@@ -787,14 +794,14 @@ FdoCommonBinaryReader* FdoExpressionEngineUtilDataReader::GetOrderingBinReader1(
 {
     if (m_orderbyBinReader1==NULL)
         m_orderbyBinReader1 = new FdoCommonBinaryReader(NULL, 0);
-    return FDO_SAFE_ADDREF(m_orderbyBinReader1.p);
+    return FDO_SAFE_ADDREF(m_orderbyBinReader1);
 }
 
 FdoCommonBinaryReader* FdoExpressionEngineUtilDataReader::GetOrderingBinReader2()
 {
     if (m_orderbyBinReader2==NULL)
         m_orderbyBinReader2 = new FdoCommonBinaryReader(NULL, 0);
-    return FDO_SAFE_ADDREF(m_orderbyBinReader2.p);
+    return FDO_SAFE_ADDREF(m_orderbyBinReader2);
 }
 
 
@@ -842,7 +849,7 @@ bool FdoExpressionEngineUtilDataReader::ReadNext()
 
 FdoCommonBinaryReader* FdoExpressionEngineUtilDataReader::GetBinaryReader()
 {
-    return FDO_SAFE_ADDREF(m_binReader.p);
+    return FDO_SAFE_ADDREF(m_binReader);
 }
 
 

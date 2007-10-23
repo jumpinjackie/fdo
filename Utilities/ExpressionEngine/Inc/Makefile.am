@@ -30,11 +30,17 @@ INSTALL_DIR  = $(includedir)
 install :
 	@if [ ! -d $(INSTALL_DIR) ]; then mkdir -p $(INSTALL_DIR); fi
 	@if [ ! -d $(INSTALL_DIR)/ExpressionEngine ]; then mkdir -p $(INSTALL_DIR)/ExpressionEngine; fi
+	@if [ ! -d $(INSTALL_DIR)/ExpressionEngine/Util ]; then mkdir -p $(INSTALL_DIR)/ExpressionEngine/Util; fi
+	@cp -u -f ExpressionEngine.h $(INSTALL_DIR)/ExpressionEngine
+	@cp -u -f FdoExpressionEngineCopyFilter.h $(INSTALL_DIR)/ExpressionEngine
+	@cp -u -f FdoExpressionEngineFilterProcessor.h $(INSTALL_DIR)/ExpressionEngine
 	@cp -u -f FdoExpressionEngineFunctionCollection.h $(INSTALL_DIR)/ExpressionEngine
 	@cp -u -f FdoExpressionEngine.h $(INSTALL_DIR)/ExpressionEngine
 	@cp -u -f FdoExpressionEngineIAggregateFunction.h $(INSTALL_DIR)/ExpressionEngine
 	@cp -u -f FdoExpressionEngineIFunction.h $(INSTALL_DIR)/ExpressionEngine
 	@cp -u -f FdoExpressionEngineINonAggregateFunction.h $(INSTALL_DIR)/ExpressionEngine
+	@cp -u -f Util/FdoExpressionEngineUtilDataReader.h $(INSTALL_DIR)/ExpressionEngine/Util
+	@cp -u -f Util/FdoExpressionEngineUtilFeatureReader.h $(INSTALL_DIR)/ExpressionEngine/Util
 
 uninstall :
 	@rm -drf $(INSTALL_DIR)/ExpressionEngine
