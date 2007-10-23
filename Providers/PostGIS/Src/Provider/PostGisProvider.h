@@ -32,7 +32,11 @@
 #include <FdoCommonSchemaUtil.h>
 
 // PostGIS Messages
+#ifdef _WIN32
 #include "../Message/inc/PostGisMessage.h"
+#else
+#include "../../Inc/PostGisMessage.h"
+#endif
 
 // PostgreSQL client library imported to dedicated namespace
 #include <libpq-fe.h>
