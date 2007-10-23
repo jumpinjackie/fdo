@@ -47,24 +47,24 @@ public:
     //
 
     /// Get name of the feature provider - PostGIS Provider.
-    FDOPOSTGIS_API FdoString* GetProviderName();
+    FdoString* GetProviderName();
 
     /// Get display name of the feature provider.
-    FDOPOSTGIS_API FdoString* GetProviderDisplayName();
+    FdoString* GetProviderDisplayName();
 
     /// Get description of the feature provider.
-    FDOPOSTGIS_API FdoString* GetProviderDescription();
+    FdoString* GetProviderDescription();
  	
     /// Get version of the feature provider.
-    FDOPOSTGIS_API FdoString* GetProviderVersion();
+    FdoString* GetProviderVersion();
  	
     /// Get version of the Feature Data Objects specification with which 
     /// this PostGIS provider is compatible.
-    FDOPOSTGIS_API FdoString* GetFeatureDataObjectsVersion();
+    FdoString* GetFeatureDataObjectsVersion();
  	
     /// Get pointer to FdoIConnectionPropertyDictionary interface that can be used to
     /// dynamically query and set properties required to establish a connection.
-    FDOPOSTGIS_API FdoIConnectionPropertyDictionary* GetConnectionProperties();
+    FdoIConnectionPropertyDictionary* GetConnectionProperties();
  	
     /// Returns the provider type.
     /// \return Value of FdoProviderDatastoreType_DatabaseServer enumerator.

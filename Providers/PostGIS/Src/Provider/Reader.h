@@ -78,22 +78,22 @@ public:
     virtual bool IsNull(FdoString* propertyName);
 
     /// Get geometry value of the specified property as a byte array in FGF format.
-    FDOPOSTGIS_API virtual FdoByteArray* GetGeometry(FdoString* propertyName);
+    virtual FdoByteArray* GetGeometry(FdoString* propertyName);
 
     /// Get geometry value of the specified property as a byte array in FGF format.
     /// This method is a language-specific performance optimization that returns
     /// pointer to the array data, rather than to an object that encapsulates the array.
-    FDOPOSTGIS_API const FdoByte* GetGeometry(FdoString* propertyName, FdoInt32* count);
+    const FdoByte* GetGeometry(FdoString* propertyName, FdoInt32* count);
 
     /// Get raster object of the specified property.
-    FDOPOSTGIS_API virtual FdoIRaster* GetRaster(FdoString* propertyName);
+    virtual FdoIRaster* GetRaster(FdoString* propertyName);
 
     /// Advance the reader iterator to next item.
     /// \return true if there is another object to read, false if reading is complete.
-    FDOPOSTGIS_API virtual bool ReadNext();
+    virtual bool ReadNext();
 
     /// Close the reader object and release any of its resources.
-    FDOPOSTGIS_API virtual void Close();
+    virtual void Close();
 
     //
     // FdoIDataReader interface

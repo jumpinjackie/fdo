@@ -17,8 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="..\..\Bin\Win32\Debug"
+			IntermediateDirectory="..\..\Obj\Win32\Debug\Provider"
 			ConfigurationType="2"
 			InheritedPropertySheets="..\PostGis.vsprops"
 			CharacterSet="1"
@@ -59,6 +59,7 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
+				CommandLine="if not exist ..\..\Bin\Win32\Debug mkdir ..\..\Bin\Win32\Debug"
 			/>
 			<Tool
 				Name="VCLinkerTool"
@@ -68,6 +69,7 @@
 				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;&quot;$(FDOTHIRDPARTY)\boost_1_32_0\bin\boost\libs\date_time\build\libboost_date_time.lib\vc-8_0\debug\threading-multi&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="0"
+				ImportLibrary="..\..\Lib\Win32\Debug\PostGISProvider.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -93,12 +95,14 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Versioning PostGISProvider.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\PostGISProvider.dll"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="..\..\Bin\Win32\Release"
+			IntermediateDirectory="..\..\Obj\Win32\Release\Provider"
 			ConfigurationType="2"
 			InheritedPropertySheets="..\PostGis.vsprops"
 			CharacterSet="1"
@@ -136,6 +140,7 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
+				CommandLine="if not exist ..\..\Bin\Win32\Release mkdir ..\..\Bin\Win32\Release"
 			/>
 			<Tool
 				Name="VCLinkerTool"
@@ -147,6 +152,7 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				ImportLibrary="..\..\Lib\Win32\Release\PostGISProvider.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -172,6 +178,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Versioning PostGISProvider.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\PostGISProvider.dll"
 			/>
 		</Configuration>
 	</Configurations>

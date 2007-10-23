@@ -63,64 +63,64 @@ public:
 
     /// Get pointer to FdoIConnectionCapabilities interface describing
     /// capabilities of the connection.
-    FDOPOSTGIS_API FdoIConnectionCapabilities* GetConnectionCapabilities();
+    FdoIConnectionCapabilities* GetConnectionCapabilities();
 
     /// Get pointer to FdoISchemaCapabilities interface describing
     /// support for the feature schema provided by PostGIS Provider.
-    FDOPOSTGIS_API FdoISchemaCapabilities* GetSchemaCapabilities();
+    FdoISchemaCapabilities* GetSchemaCapabilities();
  	
     /// Get pointer to FdoICommandCapabilities interface describing supported commands.
-    FDOPOSTGIS_API FdoICommandCapabilities* GetCommandCapabilities();
+    FdoICommandCapabilities* GetCommandCapabilities();
 
     /// Get pointer to FdoIFilterCapabilities interface describing 
     /// support for filters.
-    FDOPOSTGIS_API FdoIFilterCapabilities* GetFilterCapabilities();
+    FdoIFilterCapabilities* GetFilterCapabilities();
 
     /// Get pointer to FdoIExpressionCapabilities interface describing
     /// support for expressions.
-    FDOPOSTGIS_API FdoIExpressionCapabilities* GetExpressionCapabilities();
+    FdoIExpressionCapabilities* GetExpressionCapabilities();
 
     /// Get pointer to FdoIRasterCapabilities interface describing
     /// support for raster images.
-    FDOPOSTGIS_API FdoIRasterCapabilities* GetRasterCapabilities();
+    FdoIRasterCapabilities* GetRasterCapabilities();
 
     /// Get pointer to FdoITopologyCapabilities interface describing support for topology.
-    FDOPOSTGIS_API FdoITopologyCapabilities* GetTopologyCapabilities();
+    FdoITopologyCapabilities* GetTopologyCapabilities();
 
     /// Get pointer to FdoIGeometryCapabilities interface describing support for geometry.
-    FDOPOSTGIS_API FdoIGeometryCapabilities* GetGeometryCapabilities();
+    FdoIGeometryCapabilities* GetGeometryCapabilities();
 
     /// Get connection string used to establish connection with a datastore.
-    FDOPOSTGIS_API FdoString* GetConnectionString();
+    FdoString* GetConnectionString();
 
     /// Set connection string used to establish connection with a datastore.
-    FDOPOSTGIS_API void SetConnectionString(FdoString* value);
+    void SetConnectionString(FdoString* value);
 
     /// Get pointer to FdoIConnectionInfo interface that can be used to interrogate
     /// and set connection properties.
-    FDOPOSTGIS_API FdoIConnectionInfo* GetConnectionInfo();
+    FdoIConnectionInfo* GetConnectionInfo();
 
     /// Get state of current connection.
-    FDOPOSTGIS_API FdoConnectionState GetConnectionState();
+    FdoConnectionState GetConnectionState();
 
     /// Get number of milliseconds to wait while trying to establish a connection
     /// before terminating the attempt and generating an error.
-    FDOPOSTGIS_API FdoInt32 GetConnectionTimeout();
+    FdoInt32 GetConnectionTimeout();
 
     /// Set number of milliseconds to wait while trying to establish a connection
     /// before terminating the attempt and generating an error.
-    FDOPOSTGIS_API void SetConnectionTimeout(FdoInt32 value);
+    void SetConnectionTimeout(FdoInt32 value);
 
     /// Establish connection with a datastore using settings
     /// specified by ConnectionString attribute.
-    FDOPOSTGIS_API FdoConnectionState Open();
+    FdoConnectionState Open();
 
     /// Close current connection.
-    FDOPOSTGIS_API void Close();
+    void Close();
 
     /// Begin transaction and return pointer to FdoITransaction interface realizing
     /// transaction operations support.
-    FDOPOSTGIS_API FdoITransaction* BeginTransaction();
+    FdoITransaction* BeginTransaction();
 
     /// Create command object of specified type and return pointer to interface realizing
     /// command capabilities associated with the connection.
@@ -131,17 +131,17 @@ public:
     /// FdoConnectionException - if connection is closed or of invalid state.
     /// FdoException - if unsupported command is requested.
     ///
-    FDOPOSTGIS_API FdoICommand* CreateCommand(FdoInt32 type);
+    FdoICommand* CreateCommand(FdoInt32 type);
 
     /// Factory function that creates an empty Schema Override mapping specific
     /// for PostGIS Provider.
-    FDOPOSTGIS_API FdoPhysicalSchemaMapping* CreateSchemaMapping();
+    FdoPhysicalSchemaMapping* CreateSchemaMapping();
 
     /// Set XML configuration stream used to configure connected datastore.
-    FDOPOSTGIS_API void SetConfiguration(FdoIoStream* configStream);
+    void SetConfiguration(FdoIoStream* configStream);
 
     /// Force to write any cached data to currently connected datastore
-    FDOPOSTGIS_API void Flush();
+    void Flush();
 
     //
     // Connection custom interface used internally by the provider
