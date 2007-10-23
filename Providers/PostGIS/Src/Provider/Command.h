@@ -19,6 +19,7 @@
 
 #include "Connection.h"
 #include "PgUtility.h"
+#include "PostGisProvider.h"
 // std
 #include <cassert>
 #include <sstream>
