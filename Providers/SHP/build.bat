@@ -125,10 +125,14 @@ copy /y "Bin\Win32\%TYPEBUILDSHP%\SHPProvider.dll" "%FDOBINPATHSHP%"
 copy /y "Bin\Win32\%TYPEBUILDSHP%\SHPOverrides.dll" "%FDOBINPATHSHP%"
 copy /y "Bin\Win32\%TYPEBUILDSHP%\SHPMessage.dll" "%FDOBINPATHSHP%"
 copy /y "Lib\Win32\%TYPEBUILDSHP%\SHPOverrides.lib" "%FDOLIBPATHSHP%"
-copy /y "%FDOUTILITIES%\ExpressionEngine\lib\win32\%TYPEBUILDSHP%\ExpressionEngine.dll" "%FDOLIBPATHSHP%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\lib\win32\%TYPEBUILDSHP%\ExpressionEngine.dll" "%FDOBINPATHSHP%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\lib\win32\%TYPEBUILDSHP%\ExpressionEngine.lib" "%FDOLIBPATHSHP%"
 
 echo copy header files
 xcopy /S /C /Q /R /Y Inc\SHP\*.h "%FDOINCPATHSHP%\SHP\"
+xcopy /C /Q /R /Y /I "%FDOUTILITIES%\ExpressionEngine\Inc\*.h" "%FDOINCPATHSHP%\ExpressionEngine"
+del /Q/F "%FDOINCPATHSHP%\ExpressionEngine\FdoExpressionEngineImp.h"
+xcopy /C /Q /R /Y /I "%FDOUTILITIES%\ExpressionEngine\Inc\Util\*.h" "%FDOINCPATHSHP%\ExpressionEngine\Util"
 
 :generate_docs
 if "%DOCENABLESHP%"=="skip" goto install_docs
