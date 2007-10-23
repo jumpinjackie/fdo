@@ -133,9 +133,13 @@ echo copy %TYPEBUILDSDF% SDF provider output files
 copy /y "Bin\Win32\%TYPEBUILDSDF%\SDFMessage.dll" "%FDOBINPATHSDF%"
 copy /y "Bin\Win32\%TYPEBUILDSDF%\SDFProvider.dll" "%FDOBINPATHSDF%"
 copy /y "%FDOUTILITIES%\ExpressionEngine\lib\win32\%TYPEBUILDSDF%\ExpressionEngine.dll" "%FDOBINPATHSDF%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\lib\win32\%TYPEBUILDSDF%\ExpressionEngine.lib" "%FDOLIBPATHSDF%"
 
 echo copy header files
 xcopy /S /C /Q /R /Y Inc\SDF\*.h "%FDOINCPATHSDF%\SDF\"
+xcopy /C /Q /R /Y /I "%FDOUTILITIES%\ExpressionEngine\Inc\*.h" "%FDOINCPATHSDF%\ExpressionEngine"
+del /Q/F "%FDOINCPATHSDF%\ExpressionEngine\FdoExpressionEngineImp.h"
+xcopy /C /Q /R /Y /I "%FDOUTILITIES%\ExpressionEngine\Inc\Util\*.h" "%FDOINCPATHSDF%\ExpressionEngine\Util"
 
 :generate_docs
 if "%DOCENABLESDF%"=="skip" goto install_docs
