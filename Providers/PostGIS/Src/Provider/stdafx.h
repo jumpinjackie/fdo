@@ -48,7 +48,9 @@
 #endif // FDOPOSTGIS_USE_VLD
 
 // Windows Header Files
+#ifdef _WIN32
 #include <windows.h>
+#endif
 
 // FDO PostGIS Logger
 #include "Logger.h"
