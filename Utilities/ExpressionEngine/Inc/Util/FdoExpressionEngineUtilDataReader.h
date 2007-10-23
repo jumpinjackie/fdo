@@ -16,12 +16,14 @@
 #ifndef FdoExpressionEngineUtilDataReader_H
 #define FdoExpressionEngineUtilDataReader_H
 
+class FdoCommonPropertyIndex;
+class FdoCommonBinaryReader;
+
 #include <utility>
-#include <FdoCommonPropertyIndex.h>
-#include <FdoCommonBinaryReader.h>
-
-#include <ExpressionEngine.h>
-
+#ifdef _WIN32
+#include <hash_map>
+#endif
+#include "../ExpressionEngine.h"
 
 
 typedef enum FdoCommonExpressionType
@@ -379,17 +381,17 @@ public:
 
 protected:
 
-    FdoPtr<FdoCommonPropertyIndex> m_propIndex;
+    FdoCommonPropertyIndex*        m_propIndex;
     std::vector<void*>             m_results;
     FdoInt32                       m_resultsIndex;
-    FdoPtr<FdoCommonBinaryReader>  m_binReader;
+    FdoCommonBinaryReader*         m_binReader;
     FdoPtr<FdoFunctionDefinitionCollection>         m_functions;
 
     /// Orderby information:
     FdoPtr<FdoIdentifierCollection> m_orderbyIds;
     FdoOrderingOption               m_orderbyOption;
-    FdoPtr<FdoCommonBinaryReader>   m_orderbyBinReader1;
-    FdoPtr<FdoCommonBinaryReader>   m_orderbyBinReader2;
+    FdoCommonBinaryReader*          m_orderbyBinReader1;
+    FdoCommonBinaryReader*          m_orderbyBinReader2;
 
 };
 
