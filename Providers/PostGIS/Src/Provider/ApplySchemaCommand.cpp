@@ -299,7 +299,7 @@ void ApplySchemaCommand::CreateSequence(std::string const& table,
     else if (FdoDataType_Int32 == prop->GetDataType())
         maxValue = details::ePgTypeIntegerMax;
     else // FdoDataType_Int64
-        maxValue = 9223372036854775807;
+        maxValue = 9223372036854775807LL;
 
     std::string column(static_cast<char const*>(FdoStringP(prop->GetName()).Lower()));
     std::string sequence = details::MakeSequenceName(table, column);
