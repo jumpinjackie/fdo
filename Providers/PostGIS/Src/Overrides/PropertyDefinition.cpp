@@ -96,7 +96,7 @@ FdoBoolean PropertyDefinition::XmlEndElement(FdoXmlSaxContext* saxContext,
                                              FdoString* qname)
 {
     FDOLOG_MARKER("PropertyDefinition::+XmlEndElement");
-    return NULL;
+    return true;
 }
 
 }}} // namespace fdo::postgis::ov

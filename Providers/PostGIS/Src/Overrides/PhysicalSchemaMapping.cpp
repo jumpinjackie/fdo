@@ -118,7 +118,7 @@ FdoBoolean PhysicalSchemaMapping::XmlEndElement(FdoXmlSaxContext* saxContext,
                                                 FdoString* qname)
 {
     FDOLOG_MARKER("PhysicalSchemaMapping::+XmlEndElement");
-    return NULL;
+    return true;
 }
 
 }}} // namespace fdo::postgis::ov

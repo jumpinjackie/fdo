@@ -91,7 +91,7 @@ FdoBoolean ClassDefinition::XmlEndElement(FdoXmlSaxContext* saxContext,
                                           FdoString* qname)
 {
     FDOLOG_MARKER("ClassDefinition::+XmlEndElement");
-    return NULL;
+    return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
