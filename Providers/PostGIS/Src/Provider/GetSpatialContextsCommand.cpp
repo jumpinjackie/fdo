@@ -56,7 +56,7 @@ FdoISpatialContextReader* GetSpatialContextsCommand::Execute()
 
     try
     {
-        SpatialContextCollection::Ptr spContexts = NULL;
+        SpatialContextCollection::Ptr spContexts;
         spContexts = mConn->GetSpatialContexts();
 
         FDOLOG_WRITE("Number of contexts: %d", spContexts->GetCount());

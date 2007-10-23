@@ -164,10 +164,10 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
     //
 
     // Collection of Logical / Physical Schemas
-    FdoPtr<FdoFeatureSchemaCollection> logicalSchemas = NULL;
+    FdoPtr<FdoFeatureSchemaCollection> logicalSchemas;
     logicalSchemas = FdoFeatureSchemaCollection::Create(NULL);
 
-    ov::PhysicalSchemaMapping::Ptr schemaMapping = NULL;
+    ov::PhysicalSchemaMapping::Ptr schemaMapping;
     schemaMapping = ov::PhysicalSchemaMapping::Create();
 
     // TODO: How does the schema name work?
@@ -181,7 +181,7 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
     ov::ClassCollection::Ptr phClasses(schemaMapping->GetClasses());
 
     // Create collection of Spatial Contexts with default context included
-    SpatialContextCollection::Ptr spContexts = NULL;
+    SpatialContextCollection::Ptr spContexts;
     spContexts = new SpatialContextCollection();
 
     //
@@ -207,7 +207,7 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
             spContextName = FdoStringP::Format(L"PostGIS_%d", srid);
         }
         
-        SpatialContext::Ptr spContext = NULL;
+        SpatialContext::Ptr spContext;
         spContext = spContexts->FindItem(spContextName);
         if (NULL == spContext)
         {
@@ -245,7 +245,7 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
 
         FdoGeometryType geomType = geomColumn->GetGeometryType();
 
-        FdoPtr<FdoGeometricPropertyDefinition> geomPropDef = NULL;
+        FdoPtr<FdoGeometricPropertyDefinition> geomPropDef;
         geomPropDef = FdoGeometricPropertyDefinition::Create(
             geomColumn->GetName(), geomColumn->GetDescription());                        
 
@@ -290,7 +290,7 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
         
         while(tcReader->ReadNext())
         {
-            FdoPtr<FdoDataPropertyDefinition> datPropDef = NULL;
+            FdoPtr<FdoDataPropertyDefinition> datPropDef;
             datPropDef = FdoDataPropertyDefinition::Create(
                 tcReader->GetColumnName(), tcReader->GetColumnDescription());
 
@@ -318,7 +318,7 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
             {
                 FDOLOG_WRITE(" - PRIMARY KEY");
 
-                FdoPtr<FdoDataPropertyDefinitionCollection> propsIdentity = NULL;
+                FdoPtr<FdoDataPropertyDefinitionCollection> propsIdentity;
                 propsIdentity = featClass->GetIdentityProperties();
                 assert(NULL != propsIdentity);
 
@@ -339,7 +339,7 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
         // TODO: In future, it would be a good idea to automatically
         // replace PK of integral type with serial data type, in ApplySchema command.
 
-        FdoPtr<FdoDataPropertyDefinitionCollection> propsIdentity = NULL;
+        FdoPtr<FdoDataPropertyDefinitionCollection> propsIdentity;
         propsIdentity = featClass->GetIdentityProperties();
         if (1 == propsIdentity->GetCount())
         {

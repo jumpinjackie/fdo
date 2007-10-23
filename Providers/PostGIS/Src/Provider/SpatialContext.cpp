@@ -113,7 +113,7 @@ FdoByteArray* SpatialContext::GetExtent() const
     {
         // Build extent based on properties of default Spatial Context
 
-        FdoPtr<FdoIEnvelope> envelope = NULL;
+        FdoPtr<FdoIEnvelope> envelope;
         envelope = factory->CreateEnvelopeXYZ(
             SpatialContextDefaultMinX,
             SpatialContextDefaultMinY,
