@@ -20,8 +20,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="Lib/Win32/Debug"
-			IntermediateDirectory="Obj/Win32/Debug"
+			OutputDirectory="Bin\Win32\Debug"
+			IntermediateDirectory="Obj\Win32\Debug"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -62,6 +62,7 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
+				CommandLine="if not exist Lib\Win32\Debug mkdir Lib\Win32\Debug&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCLinkerTool"
@@ -69,7 +70,7 @@
 				OutputFile="$(OutDir)\ExpressionEngine.dll"
 				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;"
 				GenerateDebugInformation="true"
-				ImportLibrary="$(OutDir)\ExpressionEngine.lib"
+				ImportLibrary="Lib\Win32\Debug\ExpressionEngine.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -98,7 +99,7 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="Lib/Win64/Debug"
+			OutputDirectory="Bin/Win64/Debug"
 			IntermediateDirectory="Obj/Win64/Debug"
 			ConfigurationType="2"
 			CharacterSet="1"
@@ -141,11 +142,13 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
+				CommandLine="if not exist Lib\Win64\Debug mkdir Lib\Win64\Debug&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib"
 				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win64\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Debug&quot;"
+				ImportLibrary="Lib\Win64\Debug\ExpressionEngine.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -174,7 +177,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="Lib/Win32/Release"
+			OutputDirectory="Bin/Win32/Release"
 			IntermediateDirectory="Obj/Win32/Release"
 			ConfigurationType="2"
 			CharacterSet="1"
@@ -214,6 +217,7 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
+				CommandLine="if not exist Lib\Win32\Release mkdir Lib\Win32\Release&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCLinkerTool"
@@ -221,6 +225,7 @@
 				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\release&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
+				ImportLibrary="Lib\Win32\Release\ExpressionEngine.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -249,7 +254,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="Lib/Win64/Release"
+			OutputDirectory="Bin/Win64/Release"
 			IntermediateDirectory="Obj/Win64/Release"
 			ConfigurationType="2"
 			CharacterSet="1"
@@ -290,11 +295,13 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
+				CommandLine="if not exist Lib\Win64\Release mkdir Lib\Win64\Release&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib"
 				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\release&quot;"
+				ImportLibrary="Lib\Win64\Release\ExpressionEngine.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
