@@ -114,7 +114,10 @@ public:
 
 protected:
 
-    /// Destructor.
+	/// Default constructor (DO NOT USE -- Only defined to make Linux Build Happy).
+    virtual Reader();
+
+	/// Destructor.
     virtual ~Reader();
 
     //
@@ -143,6 +146,12 @@ private:
     FdoPtr<FdoByteArray> mFgfGeometry;
 
 }; // class Reader
+
+template <typename T>
+Reader<T>::Reader()
+{
+	assert(false);
+}
 
 template <typename T>
 Reader<T>::Reader(Connection* conn, PgCursor* cursor) :

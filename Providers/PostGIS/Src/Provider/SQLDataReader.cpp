@@ -31,6 +31,12 @@
 
 namespace fdo { namespace postgis {
 
+SQLDataReader::SQLDataReader()
+    : mCurrentTuple(0)
+{
+	assert(false);
+}
+
 SQLDataReader::SQLDataReader(PgCursor* cursor)
     : mCursor(cursor), mCurrentTuple(0)
 {
