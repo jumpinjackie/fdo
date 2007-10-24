@@ -80,8 +80,7 @@ Connection::Connection() :
     mConnState(FdoConnectionState_Closed),
     mPgConn(NULL),
     mPgResult(NULL),
-    mSoftTransactionLevel(0),
-    mSchemaDesc(NULL)
+    mSoftTransactionLevel(0)
 {
     FDOLOG_WRITE("Connection instance ready.");
 }
@@ -891,7 +890,7 @@ void Connection::ValidateConnectionString()
             static_cast<FdoString*>(connStr));
         
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_INVALID_CONNECTION_STRING,
-            "Invalid connection string '%1$ls'", connStr));
+            "Invalid connection string '%1$ls'", static_cast<FdoString*>(connStr)));
     }
 
     FdoPtr<FdoIConnectionInfo> info = GetConnectionInfo();

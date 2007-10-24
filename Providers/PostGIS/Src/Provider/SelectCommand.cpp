@@ -329,7 +329,7 @@ FdoIFeatureReader* SelectCommand::Execute()
         //
         FDOLOG_WRITE("Creating cursor: crsSelCmd");
 
-        PgCursor::Ptr cursor(NULL);
+        PgCursor::Ptr cursor;
         cursor = mConn->PgCreateCursor("crsSelCmd");
         assert(NULL != cursor);
 

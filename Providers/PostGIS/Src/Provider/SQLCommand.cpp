@@ -103,7 +103,7 @@ FdoISQLDataReader* SQLCommand::ExecuteReader()
 {
     FDOLOG_MARKER("SQLCommand::+ExecuteReader");
 
-    PgCursor::Ptr cursor(NULL);
+    PgCursor::Ptr cursor;
 
     try
     {
