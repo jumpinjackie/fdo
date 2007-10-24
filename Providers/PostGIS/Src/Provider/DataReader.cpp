@@ -25,6 +25,11 @@
 
 namespace fdo { namespace postgis {
 
+DataReader::DataReader() : Base()
+{
+	assert(false);
+}
+
 DataReader::DataReader(Connection* conn, PgCursor* cursor) : Base(conn, cursor)
 {
     FDOLOG_MARKER("DataReader::DataReader");

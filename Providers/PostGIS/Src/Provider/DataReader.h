@@ -62,7 +62,10 @@ public:
 
 protected:
 
-    /// Destructor
+	/// Default constructor (DO NOT USE -- Only defined to make Linux Build Happy).
+    DataReader();
+
+	/// Destructor
     virtual ~DataReader();
 
     //
