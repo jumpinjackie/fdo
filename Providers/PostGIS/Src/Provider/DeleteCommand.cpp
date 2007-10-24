@@ -26,7 +26,7 @@
 
 namespace fdo { namespace postgis {
 
-DeleteCommand::DeleteCommand(Connection* conn) : FeatureCommand(conn)
+DeleteCommand::DeleteCommand(Connection* conn) : FeatureCommand<FdoIDelete>(conn)
 {
     assert(NULL != mConn);
 }

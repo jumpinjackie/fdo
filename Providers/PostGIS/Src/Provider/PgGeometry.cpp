@@ -23,6 +23,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <stdexcept>
 // boost
 #include <boost/cstdint.hpp>
 
