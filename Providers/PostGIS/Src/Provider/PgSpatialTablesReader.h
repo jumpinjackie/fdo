@@ -81,7 +81,10 @@ public:
     
 protected:
 
-    /// Destructor closes reader on destroy.
+	/// Default constructor (DO NOT USE -- Only defined to make Linux Build Happy).
+    PgSpatialTablesReader();
+
+	/// Destructor closes reader on destroy.
     virtual ~PgSpatialTablesReader();
 
     //

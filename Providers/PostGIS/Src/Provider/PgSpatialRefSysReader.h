@@ -45,7 +45,10 @@ public:
     
 protected:
 
-    /// Destructor closes reader on destroy.
+	/// Default constructor (DO NOT USE -- Only defined to make Linux Build Happy).
+    PgSpatialRefSysReader();
+
+	/// Destructor closes reader on destroy.
     virtual ~PgSpatialRefSysReader();
 
     //

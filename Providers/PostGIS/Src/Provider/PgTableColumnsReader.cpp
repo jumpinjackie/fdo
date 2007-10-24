@@ -28,6 +28,11 @@
 
 namespace fdo { namespace postgis {
 
+PgTableColumnsReader::PgTableColumnsReader()
+{
+	assert(false);
+}
+
 PgTableColumnsReader::PgTableColumnsReader(Connection* conn,
                                            FdoStringP schemaName,
                                            FdoStringP tableName)

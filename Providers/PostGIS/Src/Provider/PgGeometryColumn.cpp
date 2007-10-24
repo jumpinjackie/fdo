@@ -23,6 +23,12 @@
 
 namespace fdo { namespace postgis {
 
+PgGeometryColumn::PgGeometryColumn() :
+    mType(FdoGeometryType_None), mDim(0), mSRID(0)
+{
+	assert(false);
+}
+
 PgGeometryColumn::PgGeometryColumn(FdoString* name, FdoGeometryType type, FdoInt32 dim,
                                    FdoInt32 srid) :
     mName(name), mType(type), mDim(dim), mSRID(srid)

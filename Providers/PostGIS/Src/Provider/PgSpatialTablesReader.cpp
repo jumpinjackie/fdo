@@ -46,6 +46,11 @@ T StringConv(char const* value)
 
 namespace fdo { namespace postgis {
 
+PgSpatialTablesReader::PgSpatialTablesReader()
+{
+	assert(false);
+}
+
 PgSpatialTablesReader::PgSpatialTablesReader(Connection* conn)
     : mConn(conn)
 {
