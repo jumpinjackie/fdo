@@ -320,7 +320,7 @@ FdoIDataReader* SelectAggregatesCommand::Execute()
     //
     FDOLOG_WRITE("Creating cursor: crsSelAggCmd");
 
-    PgCursor::Ptr cursor(NULL);
+    PgCursor::Ptr cursor;
     cursor = mConn->PgCreateCursor("crsSelAggCmd");
     assert(NULL != cursor);
 
