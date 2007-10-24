@@ -17,8 +17,14 @@
 #include "stdafx.h"
 #include "PostGisProvider.h"
 #include "PgSpatialRefSysReader.h"
+#include <cassert>
 
 namespace fdo { namespace postgis {
+
+PgSpatialRefSysReader::PgSpatialRefSysReader()
+{
+	assert(false);
+}
 
 PgSpatialRefSysReader::PgSpatialRefSysReader(Connection* conn) : mConn(conn)
 {
