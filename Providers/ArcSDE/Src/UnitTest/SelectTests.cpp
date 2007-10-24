@@ -1208,16 +1208,22 @@ void SelectTests::spatial_filter_within_inside_coveredby()
                 case 2:  sQueryType = L"COVEREDBY";  break;
                 }
 
+                // Compensate for the fact the spatial query is using 6 digits precision 
+                // through conversion to string (%f, %f, ...) while data have over 10 digits precision.
+                // Otherwise the geometries on the boundary will be not found.
+                double tol = 0.0000005;
+
                 // Determine the spatial query polygon dimensions, based on dScaleFactor:
-                double dQueryMinX = dGlobalMinX - ((dScaleFactor-1.0) * (dGlobalMaxX-dGlobalMinX));
-                double dQueryMaxX = dGlobalMaxX + ((dScaleFactor-1.0) * (dGlobalMaxX-dGlobalMinX));
-                double dQueryMinY = dGlobalMinY - ((dScaleFactor-1.0) * (dGlobalMaxY-dGlobalMinY));
-                double dQueryMaxY = dGlobalMaxY + ((dScaleFactor-1.0) * (dGlobalMaxY-dGlobalMinY));
+                double dQueryMinX = dGlobalMinX - ((dScaleFactor-1.0) * (dGlobalMaxX-dGlobalMinX)) - tol;
+                double dQueryMaxX = dGlobalMaxX + ((dScaleFactor-1.0) * (dGlobalMaxX-dGlobalMinX)) + tol;
+                double dQueryMinY = dGlobalMinY - ((dScaleFactor-1.0) * (dGlobalMaxY-dGlobalMinY)) - tol;
+                double dQueryMaxY = dGlobalMaxY + ((dScaleFactor-1.0) * (dGlobalMaxY-dGlobalMinY)) + tol;
 
                 // Perform the spatial query:
                 select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
                 select->SetFeatureClassName (ArcSDETestConfig::QClassNameSoils());
                 wchar_t filter[200];
+
                 FdoCommonOSUtil::swprintf(filter, ELEMENTS(filter), L"SHAPE %ls GEOMFROMTEXT('POLYGON XY ((%f %f, %f %f, %f %f, %f %f, %f %f))')",
                     sQueryType,
                     dQueryMinX, dQueryMinY,
