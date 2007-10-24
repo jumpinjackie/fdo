@@ -174,7 +174,10 @@ public:
 
 protected:
 
-    /// Destructor closes a cursor on destroy.
+	/// Default constructor (DO NOT USE -- Only defined to make Linux Build Happy).
+    PgCursor();
+
+	/// Destructor closes a cursor on destroy.
     virtual ~PgCursor();
 
     //

@@ -27,6 +27,12 @@
 
 namespace fdo { namespace postgis {
 
+PgCursor::PgCursor()
+    : mDescRes(NULL), mFetchRes(NULL), mIsClosed(true)
+{
+	assert(false);
+}
+
 PgCursor::PgCursor(Connection* conn, std::string const& name)
     : mConn(conn), mName(name.c_str()), mDescRes(NULL), mFetchRes(NULL), mIsClosed(true)
 {
