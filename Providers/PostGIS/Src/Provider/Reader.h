@@ -115,7 +115,7 @@ public:
 protected:
 
 	/// Default constructor (DO NOT USE -- Only defined to make Linux Build Happy).
-    virtual Reader();
+    Reader();
 
 	/// Destructor.
     virtual ~Reader();
