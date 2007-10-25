@@ -161,7 +161,14 @@ int FdoSmPhPropertyReader::GetScale()
 
 FdoStringP FdoSmPhPropertyReader::GetDefaultValue()
 {
-	// default values are not supported
+	FdoSmPhDbObjectP dbObject = GetManager()->FindDbObject( GetTableName() );
+    if ( dbObject) {
+        const FdoSmPhColumn* column = dbObject->RefColumns()->RefItem(GetColumnName());
+		if (column)
+			return column->GetDefaultValue();
+		else
+			return(L"");
+	}
 	return(L"");
 }
 

@@ -141,6 +141,9 @@ public:
     /// 		false: don't set it if it has a column.
 	void SetDefaultValue(bool bOverrideColumn = false );
 
+	/// Set the property default value
+	void SetDefaultValue(FdoStringP value);
+
     /// Set the 1-based position of this property within the identity properties of its class.
     /// If position is 0 then this is not an identity property.
 	void SetIdPosition(int idPosition);

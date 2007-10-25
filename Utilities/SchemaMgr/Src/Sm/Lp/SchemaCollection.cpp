@@ -910,7 +910,7 @@ void FdoSmLpSchemaCollection::ConvertConstraints(const FdoSmLpClassDefinition* p
 				}
 
 				// Attach the constraint to property
-    			pDataFdoProp->SetValueConstraint( pConstr );
+    			pDataFdoProp->SetValueConstraint( pConstr);
 			}
 			delete parser;
 		}

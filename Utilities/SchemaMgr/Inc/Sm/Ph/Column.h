@@ -56,6 +56,9 @@ public:
     /// for a NUMBER column.
     virtual int GetLength() const;
 
+	/// Gets the default column value
+	virtual FdoStringP GetDefaultValue() const;
+
     /// The following Min/Max length functions can be overridden to provide RDBMS-specific
     /// settings.
 
@@ -182,6 +185,8 @@ public:
 
     virtual FdoStringP GetValueSql( FdoStringP val );
 
+	virtual	FdoStringP GetDefaultValueSql();
+
     /// Returns true if this column has any not null values.
     virtual bool GetHasValues();
 
@@ -216,7 +221,8 @@ protected:
 		FdoSchemaElementState elementState,
 		FdoSmPhDbObject* parentObject,
 		bool bNullable,
-        FdoStringP rootColumnName = L""
+        FdoStringP rootColumnName = L"",
+		FdoStringP defaultValue = L""
 	);
 
     /// NOTE: The following constructor is to satisfy the compiler, and should never actually be called:
@@ -254,6 +260,8 @@ private:
 	bool mbAutoIncrement;
 
     int miDimensionality;
+
+	FdoStringP mDefaultValue;
 };
 
 typedef FdoPtr<FdoSmPhColumn> FdoSmPhColumnP;
