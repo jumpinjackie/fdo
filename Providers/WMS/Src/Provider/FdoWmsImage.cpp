@@ -278,6 +278,10 @@ void FdoWmsImage::_getDataModel()
 					dataType = FdoRasterDataType_Integer;
 				else if (band->GetRasterDataType() == GDT_Float32)
 					dataType = FdoRasterDataType_Float;
+				//marked GDT_Byte as FdoRasterDataType_Unknown for multiple bands tiff file which include elevation data as second band
+				//so the first band such as RGBA can be displayed correctly
+				else if (band->GetRasterDataType() == GDT_Byte) 
+					dataType = FdoRasterDataType_Unknown;
 				else 
 					throw FdoCommandException::Create(NlsMsgGet(FDOWMS_11002_DATAMODEL_NOT_SUPPORTED, "Raster data model not supported."));
 
