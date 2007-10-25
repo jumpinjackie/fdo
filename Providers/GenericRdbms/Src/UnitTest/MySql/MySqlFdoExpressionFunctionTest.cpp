@@ -74,7 +74,7 @@ FdoDouble MySqlFdoExpressionFunctionTest::GetExpectedCountValue (
     switch (test_case_id) {
 
       case 1: return 30; break;
-      case 2: return 28; break; // SHOULD BE 30. CHECK WHAT IS WRONG IN EXECUTION.
+      case 2: return 28; break;
 
     }  //  switch ...
 

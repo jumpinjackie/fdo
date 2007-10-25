@@ -307,6 +307,15 @@ void FdoExpressionFunctionTest::RunAllExpFctTests ()
     TestExtractFunction();
     TestMonthsBetweenFunction();
 
+    // Testing the geometry functions.
+
+    printf("\n");
+    printf("\n");
+    printf(" >>> ... Testing Geometry Functions \n");
+    printf("\n");
+    TestLength2DFunction();
+	TestArea2DFunction();
+
     // Testing the mathematical functions.
 
     printf("\n");
@@ -361,15 +370,6 @@ void FdoExpressionFunctionTest::RunAllExpFctTests ()
     TestTrimFunction();
     TestUpperFunction();
 
-    // Testing the geometry functions.
-
-    printf("\n");
-    printf("\n");
-    printf(" >>> ... Testing Geometry Functions \n");
-    printf("\n");
-    TestLength2DFunction();
-	TestArea2DFunction();
-
 }  //  RunAllExpFctTests ()
 
 // ===========================================================================
@@ -400,11 +400,97 @@ void FdoExpressionFunctionTest::TestAvgFunction ()
     // 1. Test Case:
     // The test executes a select-aggregate command to select the value of a
     // computed property that is defined by using the function AVG on the
+    // value of a different property of type BYTE. No exceptions are expec-
+    // ted.
+
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-aggregate command to select   \n");
+    printf("  the value of a computed property that is defined by us-  \n");
+    printf("  ing the function AVG on the value of a different pro-    \n");
+    printf("  perty of type BYTE. No exceptions are expected.          \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property being
+      // 69.354838709677423. 
+
+      func_call   = L"(Avg(byte_val) as cmp_id)";
+      data_reader = ExecuteSelAggrCommand(
+                                        L"exfct_c1", NULL, false, func_call);
+      CheckReader(data_reader, false, 0, 69.354838709677423);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-aggregate command to select the value of a
+    // computed property that is defined by using the function AVG on the
+    // distinct values of a different property of type BYTE. No exceptions
+    // are expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
+    printf("  The test executes a select-aggregate command to select   \n");
+    printf("  the value of a computed property that is defined by us-  \n");
+    printf("  ing the function AVG on the distinct values of a differ- \n");
+    printf("  ent property of type BYTE. No exceptions are expected.   \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property being
+      // 69.5. 
+
+      func_call   = L"(Avg('distinct', byte_val) as cmp_id)";
+      data_reader = ExecuteSelAggrCommand(
+                                        L"exfct_c1", NULL, false, func_call);
+      CheckReader(data_reader, false, 0, 69.5);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 3. Test Case:
+    // The test executes a select-aggregate command to select the value of a
+    // computed property that is defined by using the function AVG on the
     // value of a different property of type DECIMAL. No exceptions are ex-
     // pected.
 
     printf("---------------------------------------------------------- \n");
-    printf("1. Test Case:                                              \n");
+    printf("3. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
     printf("  the value of a computed property that is defined by us-  \n");
     printf("  ing the function AVG on the value of a different pro-    \n");
@@ -440,7 +526,7 @@ void FdoExpressionFunctionTest::TestAvgFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
+    // 4. Test Case:
     // The test executes a select-aggregate command to select the value of a
     // computed property that is defined by using the function AVG on the
     // value of a different property of type DOUBLE. No exceptions are ex-
@@ -448,7 +534,7 @@ void FdoExpressionFunctionTest::TestAvgFunction ()
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("2. Test Case:                                              \n");
+    printf("4. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
     printf("  the value of a computed property that is defined by us-  \n");
     printf("  ing the function AVG on the value of a different pro-    \n");
@@ -484,7 +570,7 @@ void FdoExpressionFunctionTest::TestAvgFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 3. Test Case:
+    // 5. Test Case:
     // The test executes a select-aggregate command to select the value of a
     // computed property that is defined by using the function AVG on the
     // value of a different property of type INT16. No exceptions are ex-
@@ -492,7 +578,7 @@ void FdoExpressionFunctionTest::TestAvgFunction ()
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("3. Test Case:                                              \n");
+    printf("5. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
     printf("  the value of a computed property that is defined by us-  \n");
     printf("  ing the function AVG on the value of a different pro-    \n");
@@ -528,7 +614,7 @@ void FdoExpressionFunctionTest::TestAvgFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 4. Test Case:
+    // 6. Test Case:
     // The test executes a select-aggregate command to select the value of a
     // computed property that is defined by using the function AVG on the
     // value of a different property of type SINGLE. No exceptions are ex-
@@ -536,7 +622,7 @@ void FdoExpressionFunctionTest::TestAvgFunction ()
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("4. Test Case:                                              \n");
+    printf("6. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
     printf("  the value of a computed property that is defined by us-  \n");
     printf("  ing the function AVG on the value of a different pro-    \n");
@@ -572,7 +658,7 @@ void FdoExpressionFunctionTest::TestAvgFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 5. Test Case:
+    // 7. Test Case:
     // The test executes a select-aggregate command to select the value of a
     // computed property that is defined by using the function AVG on the
     // value of a different property of type SINGLE. This time, the test re-
@@ -581,7 +667,7 @@ void FdoExpressionFunctionTest::TestAvgFunction ()
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("5. Test Case:                                              \n");
+    printf("7. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
     printf("  the value of a computed property that is defined by us-  \n");
     printf("  ing the function AVG on the value of a different pro-    \n");
@@ -647,11 +733,96 @@ void FdoExpressionFunctionTest::TestCountFunction ()
     // 1. Test Case:
     // The test executes a select-aggregate command to select the value of a
     // computed property that is defined by using the function COUNT on the
+    // value of a different property of type BYTE. No exceptions are expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-aggregate command to select   \n");
+    printf("  the value of a computed property that is defined by us-  \n");
+    printf("  ing the function COUNT on the value of a different pro-  \n");
+    printf("  perty of type BYTE. No exceptions are expected.          \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property being
+      // 31. 
+
+      func_call   = L"(Count(byte_val) as cmp_id)";
+      data_reader = ExecuteSelAggrCommand(
+                                        L"exfct_c1", NULL, false, func_call);
+      CheckReader(data_reader, false, 0, 31);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-aggregate command to select the value of a
+    // computed property that is defined by using the function COUNT on the
+    // distinct values of a different property of type BYTE. No exceptions are
+    // expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
+    printf("  The test executes a select-aggregate command to select   \n");
+    printf("  the value of a computed property that is defined by us-  \n");
+    printf("  ing the function COUNT on the distinct values of a dif-  \n");
+    printf("  ferent property of type BYTE. No exceptions are expected \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property being
+      // 10. 
+
+      func_call   = L"(Count('distinct', byte_val) as cmp_id)";
+      data_reader = ExecuteSelAggrCommand(
+                                        L"exfct_c1", NULL, false, func_call);
+      CheckReader(data_reader, false, 0, 10);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 3. Test Case:
+    // The test executes a select-aggregate command to select the value of a
+    // computed property that is defined by using the function COUNT on the
     // value of a different property of type DECIMAL. No exceptions are ex-
     // pected.
 
     printf("---------------------------------------------------------- \n");
-    printf("1. Test Case:                                              \n");
+    printf("3. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
     printf("  the value of a computed property that is defined by us-  \n");
     printf("  ing the function COUNT on the value of a different pro-  \n");
@@ -689,7 +860,7 @@ void FdoExpressionFunctionTest::TestCountFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
+    // 4. Test Case:
     // The test executes a select-aggregate command to select the value of a
     // computed property that is defined by using the function COUNT on the
     // value of a different property of type DATE/TIME. This time, the test
@@ -698,7 +869,7 @@ void FdoExpressionFunctionTest::TestCountFunction ()
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("2. Test Case:                                              \n");
+    printf("4. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
     printf("  the value of a computed property that is defined by us-  \n");
     printf("  ing the function COUNT on the value of a different pro-  \n");
@@ -766,11 +937,96 @@ void FdoExpressionFunctionTest::TestMaxFunction ()
     // 1. Test Case:
     // The test executes a select-aggregate command to select the value of a
     // computed property that is defined by using the function MAX on the
+    // value of a different property of type BYTE. No exceptions are expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-aggregate command to select   \n");
+    printf("  the value of a computed property that is defined by us-  \n");
+    printf("  ing the function MAX on the value of a different pro-    \n");
+    printf("  perty of type BYTE. No exceptions are expected.          \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property being
+      // 74. 
+
+      func_call   = L"(Max(byte_val) as cmp_id)";
+      data_reader = ExecuteSelAggrCommand(
+                                        L"exfct_c1", NULL, false, func_call);
+      CheckReader(data_reader, false, 0, 74);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-aggregate command to select the value of a
+    // computed property that is defined by using the function MAX on the
+    // distinct values of a different property of type BYTE. No exceptions
+    // are expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
+    printf("  The test executes a select-aggregate command to select   \n");
+    printf("  the value of a computed property that is defined by us-  \n");
+    printf("  ing the function MAX on the distinct values of a differ- \n");
+    printf("  ent property of type BYTE. No exceptions are expected.   \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property being
+      // 74. 
+
+      func_call   = L"(Max('distinct', byte_val) as cmp_id)";
+      data_reader = ExecuteSelAggrCommand(
+                                        L"exfct_c1", NULL, false, func_call);
+      CheckReader(data_reader, false, 0, 74);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 3. Test Case:
+    // The test executes a select-aggregate command to select the value of a
+    // computed property that is defined by using the function MAX on the
     // value of a different property of type DECIMAL. No exceptions are ex-
     // pected.
 
     printf("---------------------------------------------------------- \n");
-    printf("1. Test Case:                                              \n");
+    printf("3. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
     printf("  the value of a computed property that is defined by us-  \n");
     printf("  ing the function MAX on the value of a different pro-    \n");
@@ -806,7 +1062,7 @@ void FdoExpressionFunctionTest::TestMaxFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
+    // 4. Test Case:
     // The test executes a select-aggregate command to select the value of a
     // computed property that is defined by using the function MAX on the
     // value of a different property of type DATE/TIME. This time, the test
@@ -815,7 +1071,7 @@ void FdoExpressionFunctionTest::TestMaxFunction ()
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("2. Test Case:                                              \n");
+    printf("4. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
     printf("  the value of a computed property that is defined by us-  \n");
     printf("  ing the function MAX on the value of a different pro-    \n");
@@ -883,11 +1139,53 @@ void FdoExpressionFunctionTest::TestMedianFunction ()
     // 1. Test Case:
     // The test executes a select-aggregate command to select the value of a
     // computed property that is defined by using the function MEDIAN on the
+    // value of a different property of type BYTE. No exceptions are expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-aggregate command to select   \n");
+    printf("  the value of a computed property that is defined by us-  \n");
+    printf("  ing the function MEDIAN on the value of a different pro- \n");
+    printf("  perty of type BYTE. No exceptions are expected.          \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property being
+      // 69. 
+
+      func_call   = L"(Median(byte_val) as cmp_id)";
+      data_reader = ExecuteSelAggrCommand(
+                                        L"exfct_c1", NULL, false, func_call);
+      CheckReader(data_reader, false, 0, 69);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-aggregate command to select the value of a
+    // computed property that is defined by using the function MEDIAN on the
     // value of a different property of type DECIMAL. No exceptions are ex-
     // pected.
 
     printf("---------------------------------------------------------- \n");
-    printf("1. Test Case:                                              \n");
+    printf("2. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
     printf("  the value of a computed property that is defined by us-  \n");
     printf("  ing the function MEDIAN on the value of a different pro- \n");
@@ -951,11 +1249,96 @@ void FdoExpressionFunctionTest::TestMinFunction ()
     // 1. Test Case:
     // The test executes a select-aggregate command to select the value of a
     // computed property that is defined by using the function MIN on the
+    // value of a different property of type BYTE. No exceptions are expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-aggregate command to select   \n");
+    printf("  the value of a computed property that is defined by us-  \n");
+    printf("  ing the function MIN on the value of a different pro-    \n");
+    printf("  perty of type BYTE. No exceptions are expected.          \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property being
+      // 65. 
+
+      func_call   = L"(Min(byte_val) as cmp_id)";
+      data_reader = ExecuteSelAggrCommand(
+                                        L"exfct_c1", NULL, false, func_call);
+      CheckReader(data_reader, false, 0, 65);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-aggregate command to select the value of a
+    // computed property that is defined by using the function MIN on the
+    // distinct values of a different property of type BYTE. No exceptions
+    // are expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
+    printf("  The test executes a select-aggregate command to select   \n");
+    printf("  the value of a computed property that is defined by us-  \n");
+    printf("  ing the function MIN on the distinct values of a differ- \n");
+    printf("  ent property of type BYTE. No exceptions are expected.   \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property being
+      // 65. 
+
+      func_call   = L"(Min('distinct', byte_val) as cmp_id)";
+      data_reader = ExecuteSelAggrCommand(
+                                        L"exfct_c1", NULL, false, func_call);
+      CheckReader(data_reader, false, 0, 65);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 3. Test Case:
+    // The test executes a select-aggregate command to select the value of a
+    // computed property that is defined by using the function MIN on the
     // value of a different property of type DECIMAL. No exceptions are ex-
     // pected.
 
     printf("---------------------------------------------------------- \n");
-    printf("1. Test Case:                                              \n");
+    printf("3. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
     printf("  the value of a computed property that is defined by us-  \n");
     printf("  ing the function MIN on the value of a different pro-    \n");
@@ -991,7 +1374,7 @@ void FdoExpressionFunctionTest::TestMinFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
+    // 4. Test Case:
     // The test executes a select-aggregate command to select the value of a
     // computed property that is defined by using the function MIN on the
     // value of a different property of type DATE/TIME. This time, the test
@@ -1000,7 +1383,7 @@ void FdoExpressionFunctionTest::TestMinFunction ()
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("2. Test Case:                                              \n");
+    printf("4. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
     printf("  the value of a computed property that is defined by us-  \n");
     printf("  ing the function MIN on the value of a different pro-    \n");
@@ -1068,11 +1451,96 @@ void FdoExpressionFunctionTest::TestStddevFunction ()
     // 1. Test Case:
     // The test executes a select-aggregate command to select the value of a
     // computed property that is defined by using the function STDDEV on the
+    // value of a different property of type BYTE. No exceptions are expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-aggregate command to select   \n");
+    printf("  the value of a computed property that is defined by us-  \n");
+    printf("  ing the function STDDEV on the value of a different pro- \n");
+    printf("  perty of type BYTE. No exceptions are expected.          \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property being
+      // 2.98382738. 
+
+      func_call   = L"(Stddev(byte_val) as cmp_id)";
+      data_reader = ExecuteSelAggrCommand(
+                                        L"exfct_c1", NULL, false, func_call);
+      CheckReader(data_reader, false, 0, 2.98382738);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-aggregate command to select the value of a
+    // computed property that is defined by using the function STDDEV on the
+    // distinct values of a different property of type BYTE. No exceptions are
+    // expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
+    printf("  The test executes a select-aggregate command to select   \n");
+    printf("  the value of a computed property that is defined by us-  \n");
+    printf("  ing the function STDDEV on the distinct values of a dif- \n");
+    printf("  ferent property of type BYTE. No exceptions are expected \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property being
+      // 3.02765035. 
+
+      func_call   = L"(Stddev('distinct', byte_val) as cmp_id)";
+      data_reader = ExecuteSelAggrCommand(
+                                        L"exfct_c1", NULL, false, func_call);
+      CheckReader(data_reader, false, 0, 3.02765035);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 3. Test Case:
+    // The test executes a select-aggregate command to select the value of a
+    // computed property that is defined by using the function STDDEV on the
     // value of a different property of type DECIMAL. No exceptions are ex-
     // pected.
 
     printf("---------------------------------------------------------- \n");
-    printf("1. Test Case:                                              \n");
+    printf("3. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
     printf("  the value of a computed property that is defined by us-  \n");
     printf("  ing the function STDDEV on the value of a different pro- \n");
@@ -1108,14 +1576,14 @@ void FdoExpressionFunctionTest::TestStddevFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
+    // 4. Test Case:
     // The test executes a select-aggregate command to select the value of a
     // computed property that is defined by using the function STDDEV on the
     // value of a different property of type DECIMAL. In this case the re-
     // quest is to work on distinct values only. No exceptions are expected.
 
     printf("---------------------------------------------------------- \n");
-    printf("2. Test Case:                                              \n");
+    printf("4. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
     printf("  the value of a computed property that is defined by us-  \n");
     printf("  ing the function STDDEV on the value of a different pro- \n");
@@ -1178,11 +1646,96 @@ void FdoExpressionFunctionTest::TestSumFunction ()
     // 1. Test Case:
     // The test executes a select-aggregate command to select the value of a
     // computed property that is defined by using the function SUM on the
+    // value of a different property of type BYTE. No exceptions are expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-aggregate command to select   \n");
+    printf("  the value of a computed property that is defined by us-  \n");
+    printf("  ing the function SUM on the value of a different pro-    \n");
+    printf("  perty of type BYTE. No exceptions are expected.          \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property being
+      // 2150. 
+
+      func_call   = L"(Sum(byte_val) as cmp_id)";
+      data_reader = ExecuteSelAggrCommand(
+                                        L"exfct_c1", NULL, false, func_call);
+      CheckReader(data_reader, false, 0, 2150);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-aggregate command to select the value of a
+    // computed property that is defined by using the function SUM on the
+    // distinct values of a different property of type BYTE. No exceptions
+    // are expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
+    printf("  The test executes a select-aggregate command to select   \n");
+    printf("  the value of a computed property that is defined by us-  \n");
+    printf("  ing the function SUM on the distinct values of a differ- \n");
+    printf("  ent property of type BYTE. No exceptions are expected.   \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property being
+      // 695. 
+
+      func_call   = L"(Sum('distinct', byte_val) as cmp_id)";
+      data_reader = ExecuteSelAggrCommand(
+                                        L"exfct_c1", NULL, false, func_call);
+      CheckReader(data_reader, false, 0, 695);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 3. Test Case:
+    // The test executes a select-aggregate command to select the value of a
+    // computed property that is defined by using the function SUM on the
     // value of a different property of type DECIMAL. No exceptions are ex-
     // pected.
 
     printf("---------------------------------------------------------- \n");
-    printf("1. Test Case:                                              \n");
+    printf("3. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
     printf("  the value of a computed property that is defined by us-  \n");
     printf("  ing the function SUM on the value of a different pro-    \n");
@@ -1218,15 +1771,19 @@ void FdoExpressionFunctionTest::TestSumFunction ()
 
     }  //  catch ( ... ) ...
 
+    // 4. Test Case:
+    // The test executes a select-aggregate command to select the value of a
+    // computed property that is defined by using the function SUM on the
+    // distinct values of a different property of type INT32. No exceptions
+    // are expected.
+
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("2. Test Case:                                              \n");
+    printf("4. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
     printf("  the value of a computed property that is defined by us-  \n");
-    printf("  ing the function SUM on the value of a different pro-    \n");
-    printf("  perty of type INT32. This time, the test requests the    \n");
-    printf("  calculation of the sum on all distinct values only. No   \n");
-    printf("  exceptions are expected.                                 \n");
+    printf("  ing the function SUM on the distinct values of a differ- \n");
+    printf("  ent property of type INT32. No exceptions are expected.  \n");
     printf("---------------------------------------------------------- \n");
 
     try {
@@ -3484,6 +4041,157 @@ void FdoExpressionFunctionTest::TestMonthsBetweenFunction ()
     }  //  catch ( ... ) ...
 
 }  //  TestMonthsBetweenFunction ()
+
+
+// ===========================================================================
+// ==                     TESTING THE GEOMETRY FUNCTIONS                    ==
+// ===========================================================================
+
+void FdoExpressionFunctionTest::TestArea2DFunction ()
+
+// +---------------------------------------------------------------------------
+// | The function executes the test for the expression engine function AREA2D
+// | when used as a select-parameter.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    FdoStringP                func_call;
+
+    FdoPtr<FdoFilter>         filter;
+    FdoPtr<FdoIFeatureReader> data_reader;
+
+    printf("\n");
+    printf("========================================================== \n");
+    printf(" Current Unit Test Suite: Area2D Function Testing          \n");
+    printf("========================================================== \n");
+    printf("\n");
+
+    // Define the filter for all tests in this test suite.
+
+    filter = (FdoComparisonCondition::Create(
+               FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"id")),
+               FdoComparisonOperations_EqualTo, 
+               FdoPtr<FdoDataValue>(FdoDataValue::Create(9))));
+
+    // 1. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function AREA2D on a value of
+    // a different property of type GEOMETRY. No exceptions are expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function AREA2D on a value of a different property of    \n");
+    printf("  type GEOMETRY. No exceptions are expected.               \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed pro-
+      // perty is expected to be 0.
+
+      func_call   = L"(Area2D(RDBMS_GEOM) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 0.0);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+}  //  TestArea2DFunction ()
+
+void FdoExpressionFunctionTest::TestLength2DFunction ()
+
+// +---------------------------------------------------------------------------
+// | The function executes the test for the expression engine function LENGTH2D
+// | when used as a select-parameter.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    FdoStringP                func_call;
+
+    FdoPtr<FdoFilter>         filter;
+    FdoPtr<FdoIFeatureReader> data_reader;
+
+    printf("\n");
+    printf("========================================================== \n");
+    printf(" Current Unit Test Suite: LENGTH2D Function Testing        \n");
+    printf("========================================================== \n");
+    printf("\n");
+
+    // Define the filter for all tests in this test suite.
+
+    filter = (FdoComparisonCondition::Create(
+               FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"id")),
+               FdoComparisonOperations_EqualTo, 
+               FdoPtr<FdoDataValue>(FdoDataValue::Create(9))));
+
+    // 1. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function LENGTH2D on a value of
+    // a different property of type GEOMETRY. No exceptions are expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function LENGTH2D on a value of a different property of  \n");
+    printf("  type GEOMETRY. No exceptions are expected.               \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed pro-
+      // perty is expected to be 1.4142.
+
+      func_call   = L"(Length2D(RDBMS_GEOM) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 1.4142); 
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+}  //  TestLengthFunction ()
 
 
 // ===========================================================================
@@ -7316,154 +8024,6 @@ void FdoExpressionFunctionTest::TestUpperFunction ()
 }  //  TestUpperFunction ()
 
 
-void FdoExpressionFunctionTest::TestLength2DFunction ()
-
-// +---------------------------------------------------------------------------
-// | The function executes the test for the expression engine function LENGTH2D
-// | when used as a select-parameter.
-// +---------------------------------------------------------------------------
-
-{
-
-    // Declare and initialize all necessary local vatiables.
-
-    FdoStringP                func_call;
-
-    FdoPtr<FdoFilter>         filter;
-    FdoPtr<FdoIFeatureReader> data_reader;
-
-    printf("\n");
-    printf("========================================================== \n");
-    printf(" Current Unit Test Suite: LENGTH2D Function Testing          \n");
-    printf("========================================================== \n");
-    printf("\n");
-
-    // Define the filter for all tests in this test suite.
-
-    filter = (FdoComparisonCondition::Create(
-               FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"id")),
-               FdoComparisonOperations_EqualTo, 
-               FdoPtr<FdoDataValue>(FdoDataValue::Create(9))));
-
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function LENGTH on a value of
-    // a different property of type STRING. No exceptions are expected.
-
-    printf("---------------------------------------------------------- \n");
-    printf("1. Test Case:                                              \n");
-    printf("  The test executes a select-command to select the value   \n");
-    printf("  of a computed property that is defined by using the      \n");
-    printf("  function LENGTH2D on a value of a different property of  \n");
-    printf("  type GEOMETRY. No exceptions are expected.               \n");
-    printf("---------------------------------------------------------- \n");
-
-    try {
-
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row. The value for the selected computed pro-
-      // perty is expected to be 18 (length of the value "The Color is: 2118"
-      // for the selected property).
-
-      func_call   = L"(Length2D(RDBMS_GEOM) as cmp_id)";
-      data_reader = ExecuteSelectCommand(
-                                        L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 1.4142); 
-      printf(" >>> Test succeeded \n");
-
-    }  //  try ...
-
-    catch (FdoException *exp) {
-
-      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
-      printf(" >>> Test failed \n");
-      throw exp;
-
-    }  //  catch (FdoException *ex) ...
-
-    catch ( ... ) {
-
-      printf(" >>> Test failed for an unknown reason \n");
-      throw;
-
-    }  //  catch ( ... ) ...
-
-}  //  TestLengthFunction ()
-
-void FdoExpressionFunctionTest::TestArea2DFunction ()
-
-// +---------------------------------------------------------------------------
-// | The function executes the test for the expression engine function LENGTH2D
-// | when used as a select-parameter.
-// +---------------------------------------------------------------------------
-
-{
-
-    // Declare and initialize all necessary local vatiables.
-
-    FdoStringP                func_call;
-
-    FdoPtr<FdoFilter>         filter;
-    FdoPtr<FdoIFeatureReader> data_reader;
-
-    printf("\n");
-    printf("========================================================== \n");
-    printf(" Current Unit Test Suite: Area2D Function Testing          \n");
-    printf("========================================================== \n");
-    printf("\n");
-
-    // Define the filter for all tests in this test suite.
-
-    filter = (FdoComparisonCondition::Create(
-               FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"id")),
-               FdoComparisonOperations_EqualTo, 
-               FdoPtr<FdoDataValue>(FdoDataValue::Create(9))));
-
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function AREA2D on a value of
-    // a different property of type GEOMETRY. No exceptions are expected.
-
-    printf("---------------------------------------------------------- \n");
-    printf("1. Test Case:                                              \n");
-    printf("  The test executes a select-command to select the value   \n");
-    printf("  of a computed property that is defined by using the      \n");
-    printf("  function AREA2D on a value of a different property of  \n");
-    printf("  type GEOMETRY. No exceptions are expected.               \n");
-    printf("---------------------------------------------------------- \n");
-
-    try {
-
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row. The value for the selected computed pro-
-      // perty is expected to be 18 (length of the value "The Color is: 2118"
-      // for the selected property).
-
-      func_call   = L"(Area2D(RDBMS_GEOM) as cmp_id)";
-      data_reader = ExecuteSelectCommand(
-                                        L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 0.0);
-      printf(" >>> Test succeeded \n");
-
-    }  //  try ...
-
-    catch (FdoException *exp) {
-
-      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
-      printf(" >>> Test failed \n");
-      throw exp;
-
-    }  //  catch (FdoException *ex) ...
-
-    catch ( ... ) {
-
-      printf(" >>> Test failed for an unknown reason \n");
-      throw;
-
-    }  //  catch ( ... ) ...
-
-}  //  TestLengthFunction ()
-
 // ----------------------------------------------------------------------------
 // --                      General Supporting Functions                      --
 // ----------------------------------------------------------------------------
@@ -8375,7 +8935,7 @@ FdoDouble FdoExpressionFunctionTest::GetExpectedCountValue (
     switch (test_case_id) {
 
       case 1: return 31; break;
-      case 2: return 31; break;
+      case 2: return 28; break;
 
     }  //  switch ...
 
@@ -8501,7 +9061,7 @@ void FdoExpressionFunctionTest::AddFeature (
       FDO_SAFE_RELEASE(data_value);
       FDO_SAFE_RELEASE(property_value);
 
-      byte_value     = index + 65;
+      byte_value     = (index % 10) + 65;
       data_value     = FdoDataValue::Create(byte_value);
       property_value = AddNewProperty(property_values, L"byte_val");
       property_value->SetValue(data_value);

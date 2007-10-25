@@ -114,8 +114,8 @@ class FdoExpressionFunctionTest : public CppUnit::TestCase
     // =========================================
     // ====   GEOMETRY FUNCTION UNIT TESTS    ====
     // =========================================
-	//   CPPUNIT_TEST(TestLength2DFunction);
-	//CPPUNIT_TEST(TestArea2DFunction);
+	// CPPUNIT_TEST(TestLength2DFunction);
+	// CPPUNIT_TEST(TestArea2DFunction);
     // =========================================
     // ====       RUN ALL UNIT TESTS        ====
     // =========================================
@@ -342,6 +342,21 @@ protected:
     virtual void TestMonthsBetweenFunction ();
 
 
+    // ========================= GEOMETRY FUNCTIONS ==========================
+
+    //  TestArea2DFunction:
+    //      The function executes the test for the expression engine function
+    //      AREA2D when used as a select-parameter.
+
+    virtual void TestArea2DFunction ();
+
+    //  TestLength2DFunction:
+    //      The function executes the test for the expression engine function
+    //      LENGTH2D when used as a select-parameter.
+
+    virtual void TestLength2DFunction ();
+
+
     // =========================== MATH FUNCTIONS ============================
 
     //  TestAbsFunction:
@@ -548,17 +563,6 @@ protected:
 
     virtual void TestUpperFunction ();
 
-    //  TestLength2DFunction:
-    //      The function executes the test for the expression engine function
-    //      LENGTH2D when used as a select-parameter.
-
-    virtual void TestLength2DFunction ();
-
-    //  TestArea2DFunction:
-    //      The function executes the test for the expression engine function
-    //      AREA2D when used as a select-parameter.
-
-    virtual void TestArea2DFunction ();
 
     //-------------------------------------------------------------------------
     //                       General Supporting Functions
