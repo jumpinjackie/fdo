@@ -389,7 +389,7 @@ FdoWmsBandRasterGdalCollection* FdoWmsRasterGdal::_getRasterBands(void)
 	    if (hasRGBA) // first time to meet a R G B or A band, create the FdoWmsImage
 	    {
 		    rgbaImage = FdoWmsImage::Create(rgbaBands);	
-		    images->Add(rgbaImage);
+			images->Insert(0,rgbaImage); // RGBA band should be the first band
 	    }
 
 	    SetNumberOfBands(images->GetCount());
