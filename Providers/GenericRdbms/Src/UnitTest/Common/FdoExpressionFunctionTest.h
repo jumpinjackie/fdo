@@ -50,6 +50,7 @@ class FdoExpressionFunctionTest : public CppUnit::TestCase
     // CPPUNIT_TEST(TestMaxFunction);
     // CPPUNIT_TEST(TestMedianFunction);
     // CPPUNIT_TEST(TestMinFunction);
+    // CPPUNIT_TEST(TestSpatialExtents);
     // CPPUNIT_TEST(TestStddevFunction);
     // CPPUNIT_TEST(TestSumFunction);
     // =========================================
@@ -256,6 +257,12 @@ protected:
     //      MIN when used as a select-parameter.
 
     virtual void TestMinFunction ();
+
+    //  TestSpatialExtents:
+    //      The function executes the test for the expression engine function
+    //      SPATIALEXTENTS when used as a select-parameter.
+
+    virtual void TestSpatialExtents ();
 
     //  TestStddevFunction:
     //      The function executes the test for the expression engine function
@@ -633,6 +640,21 @@ protected:
                                 FdoInt32          expected_id_value,
                                 FdoInt64          expected_value);
 
+    //  CheckReaderGeometry:
+    //      The function checks whether or not the provided reader contains
+    //      the expected data and throws an exception if this is not the 
+    //      case.
+
+    virtual void CheckReaderGeometry (FdoIDataReader *data_reader,
+                                      FdoInt32       expected_data_count,
+                                      FdoInt32       dimensionality,
+                                      FdoDouble      expected_min_x,
+                                      FdoDouble      expected_min_y,
+                                      FdoDouble      expected_min_z,
+                                      FdoDouble      expected_max_x,
+                                      FdoDouble      expected_max_y,
+                                      FdoDouble      expected_max_z);
+
     //  CheckReaderSgl:
     //      The function checks whether or not the provided reader contains
     //      the expected data and throws an exception if this is not the 
@@ -677,6 +699,16 @@ protected:
                                                     FdoFilter *filter,
                                                     bool      inc_id_prop,
                                                     FdoString *cmp_id_str);
+
+    //  ExecuteSelectCommand:
+    //      The function is used to select the geometry information of objects
+    //      of the named class. The returned reader contains the requested in-
+    //      formation.
+
+    virtual FdoIFeatureReader *ExecuteSelectCommand (
+                                                    FdoString *class_name,
+                                                    FdoFilter *filter,
+                                                    FdoString *id_str);
 
     //  GetDate:
     //      The function retrieves the date set for a property identified by

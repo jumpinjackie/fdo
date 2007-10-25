@@ -106,6 +106,7 @@ static wchar_t* mySqlAggregateFunctions[] = {
 static wchar_t* mySqlUnsupportedFdoFunctions[] = {
 
     L"MEDIAN",
+    L"SPATIALEXTENTS",
     L"NULLVALUE",
     L"TODATE",
     L"TOSTRING",

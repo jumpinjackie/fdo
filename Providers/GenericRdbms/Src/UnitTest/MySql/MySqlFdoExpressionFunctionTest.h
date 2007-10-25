@@ -58,6 +58,15 @@ public:
     //                           Unit Test Functions
     //-------------------------------------------------------------------------
 
+    // ========================= AGGREGATE FUNCTIONS =========================
+
+    //  TestSpatialExtents:
+    //      The function executes the test for the expression engine function
+    //      SPATIALEXTENTS when used as a select-parameter.
+
+    void TestSpatialExtents ();
+
+
     // ======================== CONVERSION FUNCTIONS =========================
 
     //  TestToDateFunction:
