@@ -148,6 +148,7 @@ FdoSmPhReaderP FdoSmPhRdMySqlColumnReader::MakeQueryReader (
 
         sql = FdoStringP::Format (
               L"select %ls table_name, column_name as name, 1 as type,\n"
+			  L"COLUMN_DEFAULT as default_value, \n"
               L" CASE lower(data_type) \n"
               L"             WHEN 'tinytext' THEN 255 \n"
               L"             WHEN 'text' THEN 65535 \n"

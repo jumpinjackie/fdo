@@ -32,10 +32,11 @@ public:
         FdoSmPhDbObject* parentObject,
         bool bNullable,
         FdoStringP rootColumnName = L"",
+		FdoStringP defaultValue = L"",
         FdoSmPhRdColumnReader* reader = NULL
     ) :
         FdoSmPhOdbcColumn (reader),
-        FdoSmPhColumn      ( columnName, L"FLOAT", elementState, parentObject, bNullable, rootColumnName)
+        FdoSmPhColumn      ( columnName, L"FLOAT", elementState, parentObject, bNullable, rootColumnName, defaultValue)
     {}
 /*
 FdoStringP FdoSmPhColumn::ToSql() const

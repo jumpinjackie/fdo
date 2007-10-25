@@ -37,6 +37,8 @@ protected:
 
 	virtual FdoStringP GetAutoincrementSql();
 
+	virtual FdoStringP GetDefaultValueSql();
+
 protected:
     // NOTE: The following constructor is to satisfy the compiler, and should never actually be called:
     FdoSmPhMySqlColumn() {}

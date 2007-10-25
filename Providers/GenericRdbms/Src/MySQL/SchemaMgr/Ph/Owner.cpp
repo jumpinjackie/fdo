@@ -287,6 +287,7 @@ FdoStringP FdoSmPhMySqlOwner::GetColumnsTable(bool createTemp)
             L" numeric_precision bigint null,"
             L" numeric_scale bigint null,"
             L" column_type longtext not null,"
+			L" column_default varchar(64) null,"
             L" extra varchar(20) not null collate utf8_bin,"
             L" character_set_name varchar(64) null collate utf8_bin,"
             L" primary key ( table_name, ordinal_position )"
@@ -310,6 +311,7 @@ FdoStringP FdoSmPhMySqlOwner::GetColumnsTable(bool createTemp)
             L" numeric_precision,"
             L" numeric_scale,"
             L" column_type,"
+			L" column_default,"
             L" extra,"
             L" character_set_name"
             L")"
@@ -324,6 +326,7 @@ FdoStringP FdoSmPhMySqlOwner::GetColumnsTable(bool createTemp)
             L" numeric_precision,"
             L" numeric_scale,"
             L" column_type,"
+			L" column_default,"
             L" extra,"
             L" character_set_name"
             L" from information_schema.columns where table_catalog is null and table_schema collate utf8_bin = %ls",

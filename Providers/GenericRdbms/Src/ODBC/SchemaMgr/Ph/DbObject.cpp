@@ -96,10 +96,11 @@ FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnChar(
     bool bNullable,
     int length,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     FdoSmPhRdColumnReader* colRdr
 )
 {
-    return new FdoSmPhOdbcColumnChar(columnName, elementState, this, bNullable, length, rootColumnName, colRdr);
+    return new FdoSmPhOdbcColumnChar(columnName, elementState, this, bNullable, length, rootColumnName, defaultValue, colRdr);
 }
 
 FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnDate(
@@ -107,10 +108,11 @@ FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnDate(
     FdoSchemaElementState elementState,
     bool bNullable,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     FdoSmPhRdColumnReader* colRdr
 )
 {
-    return new FdoSmPhOdbcColumnDate(columnName, elementState, this, bNullable, rootColumnName, colRdr);
+    return new FdoSmPhOdbcColumnDate(columnName, elementState, this, bNullable, rootColumnName, defaultValue, colRdr);
 }
 
 FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnDecimal(
@@ -120,10 +122,11 @@ FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnDecimal(
     int length,
     int scale,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     FdoSmPhRdColumnReader* colRdr
 )
 {
-    return new FdoSmPhOdbcColumnDecimal(columnName, elementState, this, bNullable, length, scale, rootColumnName, colRdr);
+    return new FdoSmPhOdbcColumnDecimal(columnName, elementState, this, bNullable, length, scale, rootColumnName, defaultValue, colRdr);
 }
 
 FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnSingle(
@@ -131,10 +134,11 @@ FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnSingle(
     FdoSchemaElementState elementState,
     bool bNullable,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     FdoSmPhRdColumnReader* colRdr
 )
 {
-    return new FdoSmPhOdbcColumnSingle(columnName, elementState, this, bNullable, rootColumnName, colRdr);
+    return new FdoSmPhOdbcColumnSingle(columnName, elementState, this, bNullable, rootColumnName, defaultValue, colRdr);
 }
 
 FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnDouble(
@@ -142,10 +146,11 @@ FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnDouble(
     FdoSchemaElementState elementState,
     bool bNullable,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     FdoSmPhRdColumnReader* colRdr
 )
 {
-    return new FdoSmPhOdbcColumnDouble(columnName, elementState, this, bNullable, rootColumnName, colRdr);
+    return new FdoSmPhOdbcColumnDouble(columnName, elementState, this, bNullable, rootColumnName, defaultValue, colRdr);
 }
 
 FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnGeom(
@@ -167,10 +172,11 @@ FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnBool(
     FdoSchemaElementState elementState,
     bool bNullable,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     FdoSmPhRdColumnReader* colRdr
 )
 {
-    return new FdoSmPhOdbcColumnBool(columnName, elementState, this, bNullable, rootColumnName, colRdr);
+    return new FdoSmPhOdbcColumnBool(columnName, elementState, this, bNullable, rootColumnName, defaultValue, colRdr);
 }
 
 FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnByte(
@@ -178,10 +184,11 @@ FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnByte(
     FdoSchemaElementState elementState,
     bool bNullable,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     FdoSmPhRdColumnReader* colRdr
 )
 {
-    return new FdoSmPhOdbcColumnByte(columnName, elementState, this, bNullable, rootColumnName, colRdr);
+    return new FdoSmPhOdbcColumnByte(columnName, elementState, this, bNullable, rootColumnName, defaultValue, colRdr);
 }
 
 FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnInt16(
@@ -190,10 +197,11 @@ FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnInt16(
     bool bNullable,
     bool bIsAutoincremented,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     FdoSmPhRdColumnReader* colRdr
 )
 {
-    return new FdoSmPhOdbcColumnInt16(columnName, elementState, this, bNullable, bIsAutoincremented, rootColumnName, colRdr);
+    return new FdoSmPhOdbcColumnInt16(columnName, elementState, this, bNullable, bIsAutoincremented, rootColumnName, defaultValue, colRdr);
 }
 
 FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnInt32(
@@ -202,10 +210,11 @@ FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnInt32(
     bool bNullable,
     bool bIsAutoincremented,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     FdoSmPhRdColumnReader* colRdr
 )
 {
-    return new FdoSmPhOdbcColumnInt32(columnName, elementState, this, bNullable, bIsAutoincremented, rootColumnName, colRdr);
+    return new FdoSmPhOdbcColumnInt32(columnName, elementState, this, bNullable, bIsAutoincremented, rootColumnName, defaultValue, colRdr);
 }
 
 FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnInt64(
@@ -214,10 +223,11 @@ FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnInt64(
     bool bNullable,
     bool bIsAutoincremented,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     FdoSmPhRdColumnReader* colRdr
 )
 {
-    return new FdoSmPhOdbcColumnInt64(columnName, elementState, this, bNullable, bIsAutoincremented, rootColumnName, colRdr);
+    return new FdoSmPhOdbcColumnInt64(columnName, elementState, this, bNullable, bIsAutoincremented, rootColumnName, defaultValue, colRdr);
 }
 
 FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnUnknown(
@@ -249,6 +259,7 @@ FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnDbObject(
         bNullable, 
         (int) GetManager()->DbObjectNameMaxLen(), 
         rootColumnName,
+		L"",
         colRdr
     );
 }

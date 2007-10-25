@@ -236,10 +236,11 @@ FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnChar(
     bool bNullable,
     int length,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     FdoSmPhRdColumnReader* colRdr
 )
 {
-    return new FdoSmPhMySqlColumnChar(columnName, elementState, this, bNullable, length, rootColumnName, colRdr);
+    return new FdoSmPhMySqlColumnChar(columnName, elementState, this, bNullable, length, rootColumnName, defaultValue, colRdr);
 }
 
 FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnDate(
@@ -247,10 +248,11 @@ FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnDate(
     FdoSchemaElementState elementState,
     bool bNullable,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     FdoSmPhRdColumnReader* colRdr
 )
 {
-    return new FdoSmPhMySqlColumnDate(columnName, elementState, this, bNullable, rootColumnName, colRdr);
+    return new FdoSmPhMySqlColumnDate(columnName, elementState, this, bNullable, rootColumnName, defaultValue, colRdr);
 }
 
 FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnDecimal(
@@ -260,10 +262,11 @@ FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnDecimal(
     int length,
     int scale,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     FdoSmPhRdColumnReader* colRdr
 )
 {
-    return new FdoSmPhMySqlColumnDecimal(columnName, elementState, this, bNullable, length, scale, rootColumnName, colRdr);
+    return new FdoSmPhMySqlColumnDecimal(columnName, elementState, this, bNullable, length, scale, rootColumnName, defaultValue, colRdr);
 }
 
 FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnSingle(
@@ -271,10 +274,11 @@ FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnSingle(
     FdoSchemaElementState elementState,
     bool bNullable,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     FdoSmPhRdColumnReader* colRdr
 )
 {
-    return new FdoSmPhMySqlColumnSingle(columnName, elementState, this, bNullable, rootColumnName, colRdr);
+    return new FdoSmPhMySqlColumnSingle(columnName, elementState, this, bNullable, rootColumnName, defaultValue, colRdr);
 }
 
 FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnDouble(
@@ -282,10 +286,11 @@ FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnDouble(
     FdoSchemaElementState elementState,
     bool bNullable,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     FdoSmPhRdColumnReader* colRdr
 )
 {
-    return new FdoSmPhMySqlColumnDouble(columnName, elementState, this, bNullable, rootColumnName, colRdr);
+    return new FdoSmPhMySqlColumnDouble(columnName, elementState, this, bNullable, rootColumnName, defaultValue, colRdr);
 }
 
 FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnGeom(
@@ -307,10 +312,11 @@ FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnBool(
     FdoSchemaElementState elementState,
     bool bNullable,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     FdoSmPhRdColumnReader* colRdr
 )
 {
-    return new FdoSmPhMySqlColumnBool(columnName, elementState, this, bNullable, rootColumnName, colRdr);
+    return new FdoSmPhMySqlColumnBool(columnName, elementState, this, bNullable, rootColumnName, defaultValue, colRdr);
 }
 
 FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnByte(
@@ -318,10 +324,11 @@ FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnByte(
     FdoSchemaElementState elementState,
     bool bNullable,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     FdoSmPhRdColumnReader* colRdr
 )
 {
-    return new FdoSmPhMySqlColumnByte(columnName, elementState, this, bNullable, rootColumnName, colRdr);
+    return new FdoSmPhMySqlColumnByte(columnName, elementState, this, bNullable, rootColumnName, defaultValue, colRdr);
 }
 
 FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnInt16(
@@ -330,10 +337,11 @@ FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnInt16(
     bool bNullable,
     bool bIsAutoincremented,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     FdoSmPhRdColumnReader* colRdr
 )
 {
-    return new FdoSmPhMySqlColumnInt16(columnName, elementState, this, bNullable, bIsAutoincremented, rootColumnName, colRdr);
+    return new FdoSmPhMySqlColumnInt16(columnName, elementState, this, bNullable, bIsAutoincremented, rootColumnName, defaultValue, colRdr);
 }
 
 FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnInt32(
@@ -342,10 +350,11 @@ FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnInt32(
     bool bNullable,
     bool bIsAutoincremented,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     FdoSmPhRdColumnReader* colRdr
 )
 {
-    return new FdoSmPhMySqlColumnInt32(columnName, elementState, this, bNullable, bIsAutoincremented, rootColumnName, colRdr);
+    return new FdoSmPhMySqlColumnInt32(columnName, elementState, this, bNullable, bIsAutoincremented, rootColumnName, defaultValue, colRdr);
 }
 
 FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnInt64(
@@ -354,10 +363,11 @@ FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnInt64(
     bool bNullable,
 	bool bIsAutoincremented,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     FdoSmPhRdColumnReader* colRdr
 )
 {
-    return new FdoSmPhMySqlColumnInt64(columnName, elementState, this, bNullable, bIsAutoincremented, rootColumnName, colRdr);
+    return new FdoSmPhMySqlColumnInt64(columnName, elementState, this, bNullable, bIsAutoincremented, rootColumnName, defaultValue, colRdr);
 }
 
 FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnUnknown(
@@ -389,6 +399,7 @@ FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnDbObject(
         bNullable, 
         (int) GetManager()->DbObjectNameMaxLen(), 
         rootColumnName,
+		L"",
         colRdr
     );
 }

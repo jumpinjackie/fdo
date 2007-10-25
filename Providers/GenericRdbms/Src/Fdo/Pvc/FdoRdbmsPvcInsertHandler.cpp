@@ -317,7 +317,23 @@ void FdoRdbmsPvcInsertHandler::CreateInsertString(const FdoSmLpClassDefinition *
                     const FdoSmPhColumn *column = simpleProp->RefColumn();
                     if( column == NULL || ( ! mInsertAutoIncrementProperties && column->GetAutoincrement() ) )
                         continue;
-
+					// Check for property that has a default value defined
+					if (column->GetDefaultValue() != L"")
+					{
+						//check if the column value is in propValCollection
+						// Try to find this property in the input values
+						bool found = false;
+						for (int ii = 0; (ii < propValCollection->GetCount()) && (found == false); ii++ ) 
+						{
+							FdoPtr<FdoPropertyValue>    propValue = propValCollection->GetItem(ii);
+							FdoPtr<FdoIdentifier>propName = propValue->GetName();
+							if (wcscmp(propName->GetText(), simpleProp->GetName()) == 0)
+								found = true;
+						}
+						if (found == false)
+							continue;
+					}
+						
                     CreateInsertStringForColumn(
                         column,
                         propertyDefinition,
@@ -1107,6 +1123,24 @@ void FdoRdbmsPvcInsertHandler::SetBindVariables(const FdoSmLpClassDefinition *cu
 
                 if ( ! mInsertAutoIncrementProperties && column->GetAutoincrement() )
                     continue;
+
+				//Check if property has a default value
+				if (column->GetDefaultValue() != L"")
+				{
+					// Try to find this property in the input values
+					bool found = false;
+					for (int ii = 0; (ii < propValCollection->GetCount()) && (found == false); ii++ ) 
+					{
+						FdoPtr<FdoPropertyValue>    propValue = propValCollection->GetItem(ii);
+						FdoPtr<FdoIdentifier>propName = propValue->GetName();
+						if (wcscmp(propName->GetText(), dataProp->GetName()) == 0)
+						{
+							found = true;
+						}
+					}
+					if (found == false)
+						continue;
+				}
 
                 FdoDataType dataType =dataProp->GetDataType();
                 const FdoSmLpDataPropertyDefinition *prop = FdoSmLpDataPropertyDefinitionCollection::ColName2Property(currentClass->RefProperties(), colName);

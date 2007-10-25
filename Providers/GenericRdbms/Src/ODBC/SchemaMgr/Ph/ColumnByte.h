@@ -37,10 +37,11 @@ public:
         FdoSmPhDbObject* parentObject,
         bool bNullable,
         FdoStringP rootColumnName = L"",
+		FdoStringP defaultValue = L"",
         FdoSmPhRdColumnReader* reader = NULL
     ) :
         FdoSmPhOdbcColumn (reader),
-        FdoSmPhColumn    ( columnName, L"TINYINT", elementState, parentObject, bNullable, rootColumnName)
+        FdoSmPhColumn    ( columnName, L"TINYINT", elementState, parentObject, bNullable, rootColumnName, defaultValue)
     {}
 
     virtual ~FdoSmPhOdbcColumnByte(void) {}

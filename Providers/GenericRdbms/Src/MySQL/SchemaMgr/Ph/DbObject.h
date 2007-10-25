@@ -108,6 +108,7 @@ protected:
         bool bNullable,
         int length,
         FdoStringP rootColumnName = L"",
+		FdoStringP defaultValue = L"",
         FdoSmPhRdColumnReader* colRdr = NULL
     );
 
@@ -116,6 +117,7 @@ protected:
         FdoSchemaElementState elementState,
         bool bNullable,
         FdoStringP rootColumnName = L"",
+		FdoStringP defaultValue = L"",
         FdoSmPhRdColumnReader* colRdr = NULL
     );
 
@@ -126,6 +128,7 @@ protected:
         int length,
         int scale,
         FdoStringP rootColumnName = L"",
+		FdoStringP defaultValue = L"",
         FdoSmPhRdColumnReader* colRdr = NULL
     );
 
@@ -134,6 +137,7 @@ protected:
         FdoSchemaElementState elementState,
         bool bNullable,
         FdoStringP rootColumnName = L"",
+		FdoStringP defaultValue = L"",
         FdoSmPhRdColumnReader* colRdr = NULL
     );
 
@@ -142,6 +146,7 @@ protected:
         FdoSchemaElementState elementState,
         bool bNullable,
         FdoStringP rootColumnName = L"",
+		FdoStringP defaultValue = L"",
         FdoSmPhRdColumnReader* colRdr = NULL
     );
 
@@ -161,6 +166,7 @@ protected:
         FdoSchemaElementState elementState,
         bool bNullable,
         FdoStringP rootColumnName = L"",
+		FdoStringP defaultValue = L"",
         FdoSmPhRdColumnReader* colRdr = NULL
     );
 
@@ -169,6 +175,7 @@ protected:
         FdoSchemaElementState elementState,
         bool bNullable,
         FdoStringP rootColumnName = L"",
+		FdoStringP defaultValue = L"",
         FdoSmPhRdColumnReader* colRdr = NULL
     );
 
@@ -178,6 +185,7 @@ protected:
         bool bNullable,
 		bool bIsAutoincremented,
         FdoStringP rootColumnName = L"",
+		FdoStringP defaultValue = L"",
         FdoSmPhRdColumnReader* colRdr = NULL
     );
 
@@ -187,6 +195,7 @@ protected:
         bool bNullable,
 		bool bIsAutoincremented,
         FdoStringP rootColumnName = L"",
+		FdoStringP defaultValue = L"",
         FdoSmPhRdColumnReader* colRdr = NULL
     );
 
@@ -196,6 +205,7 @@ protected:
         bool bNullable,
 		bool bIsAutoincremented,
         FdoStringP rootColumnName = L"",
+		FdoStringP defaultValue = L"",
         FdoSmPhRdColumnReader* colRdr = NULL
     );
 
