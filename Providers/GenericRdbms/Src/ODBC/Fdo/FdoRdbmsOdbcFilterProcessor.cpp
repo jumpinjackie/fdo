@@ -55,6 +55,7 @@ static wchar_t* odbcUnsupportedFdoFunctions[] = {
     L"MAX",
     L"MEDIAN",
     L"MIN",
+    L"SPATIALEXTENTS",
     L"STDDEV",
     L"SUM",
     L"NULLVALUE",

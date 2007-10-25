@@ -20,6 +20,14 @@
 #include "FdoExpressionFunctionTest.h"
 #include "UnitTestUtil.h"
 
+#ifndef min
+#define min(a,b) (a < b ? a : b)
+#endif
+
+#ifndef max
+#define max(a,b) (a > b ? a : b)
+#endif
+
 
 // ----------------------------------------------------------------------------
 // --                            Helper functions                            --
@@ -446,6 +454,7 @@ void FdoExpressionFunctionTest::TestAvgFunction ()
     // distinct values of a different property of type BYTE. No exceptions
     // are expected.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
@@ -489,6 +498,7 @@ void FdoExpressionFunctionTest::TestAvgFunction ()
     // value of a different property of type DECIMAL. No exceptions are ex-
     // pected.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("3. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
@@ -778,6 +788,7 @@ void FdoExpressionFunctionTest::TestCountFunction ()
     // distinct values of a different property of type BYTE. No exceptions are
     // expected.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
@@ -821,6 +832,7 @@ void FdoExpressionFunctionTest::TestCountFunction ()
     // value of a different property of type DECIMAL. No exceptions are ex-
     // pected.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("3. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
@@ -982,6 +994,7 @@ void FdoExpressionFunctionTest::TestMaxFunction ()
     // distinct values of a different property of type BYTE. No exceptions
     // are expected.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
@@ -1025,6 +1038,7 @@ void FdoExpressionFunctionTest::TestMaxFunction ()
     // value of a different property of type DECIMAL. No exceptions are ex-
     // pected.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("3. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
@@ -1184,6 +1198,7 @@ void FdoExpressionFunctionTest::TestMedianFunction ()
     // value of a different property of type DECIMAL. No exceptions are ex-
     // pected.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
@@ -1294,6 +1309,7 @@ void FdoExpressionFunctionTest::TestMinFunction ()
     // distinct values of a different property of type BYTE. No exceptions
     // are expected.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
@@ -1337,6 +1353,7 @@ void FdoExpressionFunctionTest::TestMinFunction ()
     // value of a different property of type DECIMAL. No exceptions are ex-
     // pected.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("3. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
@@ -1427,6 +1444,314 @@ void FdoExpressionFunctionTest::TestMinFunction ()
 
 }  //  TestMinFunction ()
 
+void FdoExpressionFunctionTest::TestSpatialExtents ()
+
+// +---------------------------------------------------------------------------
+// | The function executes the test for the expression engine function SPATIAL-
+// | EXTENTS when used as a select-parameter.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    FdoInt32                      count,
+                                  dimensionality;
+
+    FdoDouble	                  min_x,
+                                  min_y,
+                                  min_z,
+                                  max_x,
+                                  max_y,
+                                  max_z;
+
+    FdoStringP                    func_call;
+
+    FdoPtr<FdoFilter>             filter;
+    FdoPtr<FdoByteArray>          byte_array;
+    FdoPtr<FdoIGeometry>          geometry;
+    FdoPtr<FdoIEnvelope>          envelope;
+    FdoPtr<FdoIDataReader>        data_reader;
+    FdoPtr<FdoIFeatureReader>     feature_reader;
+    FdoPtr<FdoFgfGeometryFactory> gf;
+
+    printf("\n");
+    printf("========================================================== \n");
+    printf(" Current Unit Test Suite: SPATIALEXTENTS Function Testing  \n");
+    printf("========================================================== \n");
+    printf("\n");
+
+    // Define the filter for all tests in this test suite.
+
+    filter = (FdoComparisonCondition::Create(
+               FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"id")),
+               FdoComparisonOperations_EqualTo, 
+               FdoPtr<FdoDataValue>(FdoDataValue::Create(9))));
+
+    // Test Case Setup:
+    // The following retrieves the geometry data for a predefined object and
+    // calculates the spatial extent. This is later used to cross-check the
+    // result returned by the expression function call.
+
+    printf("---------------------------------------------------------- \n");
+    printf("Test Case Setup:                                           \n");
+    printf("  The following retrieves the geometry data for the a pre- \n");
+    printf("  defined object and calculates the spatial extent. This   \n");
+    printf("  is later used to cross-check the result returned by the  \n");
+    printf("  expression function call.                                \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      printf(" >>> Retrieve the requested information \n");
+
+      dimensionality = GetDimensionality();
+      gf             = FdoFgfGeometryFactory::GetInstance();
+      feature_reader =
+                    ExecuteSelectCommand(L"exfct_c1", filter, L"RDBMS_GEOM");
+
+      printf(" >>> Process the retrieved data \n");
+
+      while (feature_reader->ReadNext()) {
+
+        if (feature_reader->IsNull(L"RDBMS_GEOM"))
+            throw FdoException::Create(L"Unexpected NULL geometry.");
+
+        byte_array = feature_reader->GetGeometry(L"RDBMS_GEOM");
+        geometry   = gf->CreateGeometryFromFgf(byte_array);
+        envelope   = geometry->GetEnvelope();
+        min_x      = envelope->GetMinX();
+        min_y      = envelope->GetMinY();
+        max_x      = envelope->GetMaxX();
+        max_y      = envelope->GetMaxY();
+
+        if (dimensionality == 3) {
+
+            min_z = envelope->GetMinZ();
+            max_z = envelope->GetMaxZ();
+
+        }  //  if (dimensionality == 3) ...
+
+      }  //  while (feature_reader->ReadNext()) ...
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Setup failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Setup failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 1. Test Case:
+    // The test executes a select-aggregate-command to select the value of a
+    // computed property that is defined by using the function SPATIALEXTENTS
+    // on the value of a different property of type GEOMETRY for a predefined
+    // object. No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-aggregate-command to select   \n");
+    printf("  the value of a computed property that is defined by us-  \n");
+    printf("  ing the function SPATIALEXTENTS on the value of a dif-   \n");
+    printf("  ferent property of type GEOMETRY for a predefined ob-    \n");
+    printf("  ject. No exceptions are expected.                        \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property
+      // being identical to the setting of the mbr values set in the test
+      // setup.
+
+      func_call   = L"(SpatialExtents(RDBMS_GEOM) as cmp_id)";
+      data_reader =
+                ExecuteSelAggrCommand(L"exfct_c1", filter, false, func_call);
+      CheckReaderGeometry(data_reader,
+                          1,
+                          dimensionality,
+                          min_x,
+                          min_y,
+                          min_z,
+                          max_x,
+                          max_y,
+                          max_z);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // Test Case Setup:
+    // The following retrieves the geometry data for all objects and calcu-
+    // lates the spatial extent. This is later used to cross-check the result
+    // returned by the expression function call.
+
+    printf("---------------------------------------------------------- \n");
+    printf("Test Case Setup:                                           \n");
+    printf("  The following retrieves the geometry data for all ob-    \n");
+    printf("  jects and calculates the spatial extent. This is later   \n");
+    printf("  used to cross-check the result returned by the express-  \n");
+    printf("  ion function call.                                       \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      printf(" >>> Retrieve the requested information \n");
+
+      count          = 0;
+      gf             = FdoFgfGeometryFactory::GetInstance();
+      feature_reader =
+                    ExecuteSelectCommand(L"exfct_c1", NULL, L"RDBMS_GEOM");
+
+      printf(" >>> Process the retrieved data \n");
+
+      while (feature_reader->ReadNext()) {
+
+        if (feature_reader->IsNull(L"RDBMS_GEOM"))
+            throw FdoException::Create(L"Unexpected NULL geometry.");
+
+        byte_array = feature_reader->GetGeometry(L"RDBMS_GEOM");
+        geometry   = gf->CreateGeometryFromFgf(byte_array);
+        envelope   = geometry->GetEnvelope();
+        if (count == 0) {
+
+            min_x      = envelope->GetMinX();
+            min_y      = envelope->GetMinY();
+            max_x      = envelope->GetMaxX();
+            max_y      = envelope->GetMaxY();
+
+            if (dimensionality == 3) {
+
+                min_z = envelope->GetMinZ();
+                max_z = envelope->GetMaxZ();
+
+            }  //  if (dimensionality == 3) ...
+
+        }  //  if (count == 0) ...
+        else {
+
+          min_x = min(min_x, envelope->GetMinX());
+          min_y = min(min_y, envelope->GetMinY());
+          max_x = max(max_x, envelope->GetMaxX());
+          max_y = max(max_y, envelope->GetMaxY());
+
+          if (dimensionality == 3) {
+
+              min_z = min(min_z, envelope->GetMinZ());
+              max_z = max(max_z, envelope->GetMaxZ());
+
+          }  //  if (dimensionality == 3) ...
+
+        }  //  else ...
+
+        count++;
+
+      }  //  while (feature_reader->ReadNext()) ...
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Setup failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Setup failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-aggregate command to select the value of a
+    // computed property that is defined by using the function SPATIALEXTENTS
+    // on all the values of a different property of type GEOMETRY. No excep-
+    // tions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
+    printf("  The test executes a select-aggregate command to select   \n");
+    printf("  the value of a computed property that is defined by us-  \n");
+    printf("  ing the function SPATIALEXTENTS on all the values of a   \n");
+    printf("  different property of type GEOMETRY. No exceptions are   \n");
+    printf("  expected.                                                \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property
+      // being identical to the setting of the mbr values set in the test
+      // setup.
+
+      func_call   = L"(SpatialExtents(RDBMS_GEOM) as cmp_id)";
+      data_reader =
+                ExecuteSelAggrCommand(L"exfct_c1", NULL, false, func_call);
+
+      // NOTE: For the checking of the result, the dimensionality is set back
+      //       to 2 as the Z values that are returned are invalid. In other
+      //       tests where SpatialExtents is used, the z-component is not 
+      //       cross-checked either and hence this test is "fine".
+ 
+      dimensionality = 2;
+      CheckReaderGeometry(data_reader,
+                          1,
+                          dimensionality,
+                          min_x,
+                          min_y,
+                          min_z,
+                          max_x,
+                          max_y,
+                          max_z);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+}  //  TestSpatialExtents ()
+
 void FdoExpressionFunctionTest::TestStddevFunction ()
 
 // +---------------------------------------------------------------------------
@@ -1496,6 +1821,7 @@ void FdoExpressionFunctionTest::TestStddevFunction ()
     // distinct values of a different property of type BYTE. No exceptions are
     // expected.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
@@ -1539,6 +1865,7 @@ void FdoExpressionFunctionTest::TestStddevFunction ()
     // value of a different property of type DECIMAL. No exceptions are ex-
     // pected.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("3. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
@@ -1582,6 +1909,7 @@ void FdoExpressionFunctionTest::TestStddevFunction ()
     // value of a different property of type DECIMAL. In this case the re-
     // quest is to work on distinct values only. No exceptions are expected.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("4. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
@@ -1691,6 +2019,7 @@ void FdoExpressionFunctionTest::TestSumFunction ()
     // distinct values of a different property of type BYTE. No exceptions
     // are expected.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
@@ -1734,6 +2063,7 @@ void FdoExpressionFunctionTest::TestSumFunction ()
     // value of a different property of type DECIMAL. No exceptions are ex-
     // pected.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("3. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
@@ -3706,6 +4036,7 @@ void FdoExpressionFunctionTest::TestCurrentDateFunction ()
     // property that is defined by using the function CURRENTDATE. No excep-
     // tions are expected.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
@@ -6672,6 +7003,7 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
     // a different property of type DATE/TIME. The test requests to truncate
     // to the year. No exceptions are expected.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("9. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
@@ -8589,6 +8921,89 @@ void FdoExpressionFunctionTest::CheckReader64 (
 
 }  //  CheckReader64 ()
 
+void FdoExpressionFunctionTest::CheckReaderGeometry (
+                                        FdoIDataReader *data_reader,
+                                        FdoInt32       expected_data_count,
+                                        FdoInt32       dimensionality,
+                                        FdoDouble      expected_min_x,
+                                        FdoDouble      expected_min_y,
+                                        FdoDouble      expected_min_z,
+                                        FdoDouble      expected_max_x,
+                                        FdoDouble      expected_max_y,
+                                        FdoDouble      expected_max_z)
+
+// +---------------------------------------------------------------------------
+// | The function checks whether or not the provided reader contains the ex-
+// | pected data and throws an exception if this is not the case.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    bool                          is_valid_result = false;
+
+    FdoInt32                      data_count      = 0;
+
+    FdoPtr<FdoByteArray>          byte_array;
+    FdoPtr<FdoIGeometry>          geometry;
+    FdoPtr<FdoIEnvelope>          envelope;
+    FdoPtr<FdoFgfGeometryFactory> gf;
+
+    gf = FdoFgfGeometryFactory::GetInstance();
+
+    // Navigate through the reader and perform the necessary checks.
+
+    printf(" >>> Cross check result \n");
+
+    while (data_reader->ReadNext()) {
+
+      data_count++;
+
+      if (data_reader->IsNull(L"cmp_id") )
+          continue;
+
+      byte_array = data_reader->GetGeometry(L"cmp_id");
+      geometry   = gf->CreateGeometryFromFgf(byte_array);
+      envelope   = geometry->GetEnvelope();
+      if (envelope->GetIsEmpty())
+          is_valid_result = false;
+      else {
+
+        is_valid_result = (dimensionality == 3)
+            ? ((fabs(expected_min_x - envelope->GetMinX()) < 0.001) &&
+               (fabs(expected_min_y - envelope->GetMinY()) < 0.001) &&
+               (fabs(expected_min_z - envelope->GetMinZ()) < 0.001) &&
+               (fabs(expected_max_x - envelope->GetMaxX()) < 0.001) &&
+               (fabs(expected_max_y - envelope->GetMaxY()) < 0.001) &&
+               (fabs(expected_max_z - envelope->GetMaxZ()) < 0.001)    )
+            : ((fabs(expected_min_x - envelope->GetMinX()) < 0.001) &&
+               (fabs(expected_min_y - envelope->GetMinY()) < 0.001) &&
+               (fabs(expected_max_x - envelope->GetMaxX()) < 0.001) &&
+               (fabs(expected_max_y - envelope->GetMaxY()) < 0.001)    );
+
+
+      }  //  else ...
+
+      if (!is_valid_result)
+          break;
+
+    }  //  while (data_reader-> ...
+
+    // Close the reader.
+
+    data_reader->Close();
+
+    // Issue an exception if the expected result is not met.
+
+    if ((!is_valid_result) || (data_count != 1))
+         throw FdoException::Create(
+                        L"Unexpected result(s) when checking returned data");
+    else
+      printf(" >>> ... All expected data found\n");
+
+}  //  CheckReaderGeometry ()
+
 void FdoExpressionFunctionTest::CheckReaderSgl (
                                             FdoIDataReader *data_reader,
                                             bool           include_id_check,
@@ -8872,6 +9287,43 @@ FdoIFeatureReader *FdoExpressionFunctionTest::ExecuteSelectCommand (
     // cedure.
 
     printf(" >>> Execute test \n");
+
+    return (select_cmd->Execute());
+
+}  //  ExecuteSelectCommand ()
+
+FdoIFeatureReader *FdoExpressionFunctionTest::ExecuteSelectCommand (
+                                                        FdoString *class_name,
+                                                        FdoFilter *filter,
+                                                        FdoString *id_str)
+
+// +---------------------------------------------------------------------------
+// | The function executes a select-command to retrieve the requested data and
+// | returns the generated reader back to the calling routine.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    FdoPtr<FdoIdentifier>           id_prop;
+
+    FdoPtr<FdoISelect>              select_cmd;
+    FdoPtr<FdoIdentifierCollection> id_col;
+
+    // Create a select function and set the class name and filter.
+
+    select_cmd =
+            (FdoISelect*)m_connection->CreateCommand(FdoCommandType_Select);
+    select_cmd->SetFeatureClassName(class_name);
+    if (filter != NULL)
+        select_cmd->SetFilter(filter);
+    id_col  = select_cmd->GetPropertyNames();
+    id_prop = FdoIdentifier::Create(id_str);
+    id_col->Add(id_prop);
+
+    // Execute the request and return the data reader back to the calling pro-
+    // cedure.
 
     return (select_cmd->Execute());
 

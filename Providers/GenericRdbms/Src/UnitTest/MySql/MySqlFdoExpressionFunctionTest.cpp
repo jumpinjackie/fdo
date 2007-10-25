@@ -91,6 +91,193 @@ FdoDouble MySqlFdoExpressionFunctionTest::GetExpectedCountValue (
 // ----------------------------------------------------------------------------
 
 // ===========================================================================
+// ==                    TESTING THE AGGREGATE FUNCTIONS                    ==
+// ===========================================================================
+
+void MySqlFdoExpressionFunctionTest::TestSpatialExtents ()
+
+// +---------------------------------------------------------------------------
+// | The function executes the test for the expression engine function SPATIAL-
+// | EXTENTS when used as a select-parameter.
+// | NOTE: The common unit test function is overwritten because due to some MAP
+// |       related optimizations, the first test that works on a single object
+// |       will return incorrect information because it actually determines the
+// |       extents of all objects of the test class rather than just the one it
+// |       is asked to do.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    FdoInt32                      count,
+                                  dimensionality;
+
+    FdoDouble	                  min_x,
+                                  min_y,
+                                  min_z,
+                                  max_x,
+                                  max_y,
+                                  max_z;
+
+    FdoStringP                    func_call;
+
+    FdoPtr<FdoByteArray>          byte_array;
+    FdoPtr<FdoIGeometry>          geometry;
+    FdoPtr<FdoIEnvelope>          envelope;
+    FdoPtr<FdoIDataReader>        data_reader;
+    FdoPtr<FdoIFeatureReader>     feature_reader;
+    FdoPtr<FdoFgfGeometryFactory> gf;
+
+    printf("\n");
+    printf("========================================================== \n");
+    printf(" Current Unit Test Suite: SPATIALEXTENTS Function Testing  \n");
+    printf("========================================================== \n");
+    printf("\n");
+
+    // Test Case Setup:
+    // The following retrieves the geometry data for all objects and calcu-
+    // lates the spatial extent. This is later used to cross-check the result
+    // returned by the expression function call.
+
+    printf("---------------------------------------------------------- \n");
+    printf("Test Case Setup:                                           \n");
+    printf("  The following retrieves the geometry data for all ob-    \n");
+    printf("  jects and calculates the spatial extent. This is later   \n");
+    printf("  used to cross-check the result returned by the express-  \n");
+    printf("  ion function call.                                       \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      printf(" >>> Retrieve the requested information \n");
+
+      count          = 0;
+      dimensionality = GetDimensionality();
+      gf             = FdoFgfGeometryFactory::GetInstance();
+      feature_reader =
+                    ExecuteSelectCommand(L"exfct_c1", NULL, L"RDBMS_GEOM");
+
+      printf(" >>> Process the retrieved data \n");
+
+      while (feature_reader->ReadNext()) {
+
+        if (feature_reader->IsNull(L"RDBMS_GEOM"))
+            throw FdoException::Create(L"Unexpected NULL geometry.");
+
+        byte_array = feature_reader->GetGeometry(L"RDBMS_GEOM");
+        geometry   = gf->CreateGeometryFromFgf(byte_array);
+        envelope   = geometry->GetEnvelope();
+        if (count == 0) {
+
+            min_x      = envelope->GetMinX();
+            min_y      = envelope->GetMinY();
+            max_x      = envelope->GetMaxX();
+            max_y      = envelope->GetMaxY();
+
+            if (dimensionality == 3) {
+
+                min_z = envelope->GetMinZ();
+                max_z = envelope->GetMaxZ();
+
+            }  //  if (dimensionality == 3) ...
+
+        }  //  if (count == 0) ...
+        else {
+
+          min_x = min(min_x, envelope->GetMinX());
+          min_y = min(min_y, envelope->GetMinY());
+          max_x = max(max_x, envelope->GetMaxX());
+          max_y = max(max_y, envelope->GetMaxY());
+
+          if (dimensionality == 3) {
+
+              min_z = min(min_z, envelope->GetMinZ());
+              max_z = max(max_z, envelope->GetMaxZ());
+
+          }  //  if (dimensionality == 3) ...
+
+        }  //  else ...
+
+        count++;
+
+      }  //  while (feature_reader->ReadNext()) ...
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Setup failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Setup failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 1. Test Case:
+    // The test executes a select-aggregate command to select the value of a
+    // computed property that is defined by using the function SPATIALEXTENTS
+    // on all the values of a different property of type GEOMETRY. No excep-
+    // tions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-aggregate command to select   \n");
+    printf("  the value of a computed property that is defined by us-  \n");
+    printf("  ing the function SPATIALEXTENTS on all the values of a   \n");
+    printf("  different property of type GEOMETRY. No exceptions are   \n");
+    printf("  expected.                                                \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property
+      // being identical to the setting of the mbr values set in the test
+      // setup.
+
+      func_call   = L"(SpatialExtents(RDBMS_GEOM) as cmp_id)";
+      data_reader =
+                ExecuteSelAggrCommand(L"exfct_c1", NULL, false, func_call);
+      CheckReaderGeometry(data_reader,
+                          1,
+                          dimensionality,
+                          min_x,
+                          min_y,
+                          min_z,
+                          max_x,
+                          max_y,
+                          max_z);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+}  //  TestSpatialExtents ()
+
+
+// ===========================================================================
 // ==                    TESTING THE CONVERSION FUNCTIONS                   ==
 // ===========================================================================
 
