@@ -8320,8 +8320,7 @@ void FdoExpressionFunctionTest::CheckReaderByte (
 
     bool     is_valid_result = false;
 
-    FdoByte  tmp_val,
-             cmp_id_val;
+    FdoByte  cmp_id_val;
 
     FdoInt32 data_count    = 0,
              id_prop_val;
@@ -8338,14 +8337,10 @@ void FdoExpressionFunctionTest::CheckReaderByte (
           id_prop_val = data_reader->GetInt32(L"id");
       cmp_id_val = data_reader->GetByte(L"cmp_id");
 
-      tmp_val = (cmp_id_val - expected_value);
-      if (tmp_val < 0)
-          tmp_val = tmp_val * -1;
-
       is_valid_result = (include_id_check)
-            ? ((tmp_val      < 1                ) &&
+            ? ((cmp_id_val  == expected_value   ) &&
                (id_prop_val == expected_id_value)    )
-            : (tmp_val < 1);
+            : (cmp_id_val == expected_value);
 
       if (!is_valid_result)
           break;
