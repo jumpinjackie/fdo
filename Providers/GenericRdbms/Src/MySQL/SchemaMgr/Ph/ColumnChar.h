@@ -38,6 +38,7 @@ public:
         bool bNullable,
         int length,
         FdoStringP rootColumnName = L"",
+		FdoStringP defaultValue = L"",
         FdoSmPhRdColumnReader* reader = NULL
     ) :
         FdoSmPhMySqlColumn (reader),
@@ -51,7 +52,8 @@ public:
             elementState, 
             parentObject, 
             bNullable, 
-            rootColumnName
+            rootColumnName,
+			defaultValue
         ),
         FdoSmPhColumnChar( length )
     {}

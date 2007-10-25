@@ -41,10 +41,11 @@ public:
         int length,
         int scale,
         FdoStringP rootColumnName = L"",
+		FdoStringP defaultValue = L"",
         FdoSmPhRdColumnReader* reader = NULL
     ) :
         FdoSmPhMySqlColumn (reader),
-        FdoSmPhColumn       ( columnName, L"DECIMAL", elementState, parentObject, bNullable, rootColumnName),
+        FdoSmPhColumn       ( columnName, L"DECIMAL", elementState, parentObject, bNullable, rootColumnName, defaultValue),
         FdoSmPhColumnDecimal( length, scale )
     {}
 

@@ -38,10 +38,11 @@ public:
         bool bNullable,
         int length,
         FdoStringP rootColumnName = L"",
+		FdoStringP defaultValue = L"",
         FdoSmPhRdColumnReader* reader = NULL
     ) :
         FdoSmPhOdbcColumn (reader),
-        FdoSmPhColumn    ( columnName, L"VARCHAR", elementState, parentObject, bNullable, rootColumnName),
+        FdoSmPhColumn    ( columnName, L"VARCHAR", elementState, parentObject, bNullable, rootColumnName, defaultValue),
         FdoSmPhColumnChar( length )
     {}
 

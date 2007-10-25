@@ -38,10 +38,11 @@ public:
         bool bNullable,
         bool bIsAutoincremented,
         FdoStringP rootColumnName = L"",
+		FdoStringP defaultValue = L"",
         FdoSmPhRdColumnReader* reader = NULL
     ) :
         FdoSmPhMySqlColumn (reader),
-        FdoSmPhColumn     ( columnName, L"BIGINT", elementState, parentObject, bNullable, rootColumnName)
+        FdoSmPhColumn     ( columnName, L"BIGINT", elementState, parentObject, bNullable, rootColumnName, defaultValue)
     {
         FdoSmPhColumn::SetAutoincrement(bIsAutoincremented);   
     }

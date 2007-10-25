@@ -38,10 +38,11 @@ public:
         bool bNullable,
         bool bIsAutoincremented,
         FdoStringP rootColumnName = L"",
+		FdoStringP defaultValue = L"",
         FdoSmPhRdColumnReader* reader = NULL
     ) :
         FdoSmPhOdbcColumn (reader),
-        FdoSmPhColumn     ( columnName, L"SMALLINT", elementState, parentObject, bNullable, rootColumnName)
+        FdoSmPhColumn     ( columnName, L"SMALLINT", elementState, parentObject, bNullable, rootColumnName, defaultValue)
     {
         FdoSmPhColumn::SetAutoincrement( bIsAutoincremented );
     }
