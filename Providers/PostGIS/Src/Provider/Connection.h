@@ -270,7 +270,7 @@ private:
 
     void SetPgCurrentSchema(FdoStringP schema);
 
-    FdoStringP Connection::GetPgCurrentSchema();
+    FdoStringP GetPgCurrentSchema();
 };
 
 }} // namespace fdo::postgis
