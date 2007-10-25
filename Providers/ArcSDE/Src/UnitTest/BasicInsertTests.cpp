@@ -972,9 +972,6 @@ void BasicInsertTests::geometry_insert_ZM()
         mConnection->SetConnectionString (ArcSDETestConfig::ConnStringMetadcov());
         mConnection->Open ();
 
-        // Clean up previous tests:
-        CleanUpClass(mConnection, ArcSDETestConfig::ClassSchemaTestClassGeomZm3(), ArcSDETestConfig::ClassNameTestClassGeomZm3(), true);
-
         // Create a bunch of geometries, collecting them in a FdoCollectionBase:
         ///////////////////////////////////////////////////////////////////
 
@@ -991,7 +988,7 @@ void BasicInsertTests::geometry_insert_ZM()
         collection->Add(geom);
 
         // MultiPoint:
-        /* // NOTE: there seems to be problems at the ArcSDE level to roundtrip multipoint geometries, at least those with Z and M values
+         // NOTE: there seems to be problems at the ArcSDE level to roundtrip multipoint geometries, at least those with Z and M values
         FdoPtr<FdoPointCollection> points = FdoPointCollection::Create();
         pos = gf->CreatePositionXYZM(1.1, 2.2, 3.0, 4.0);
         point = gf->CreatePoint(pos);
@@ -1004,7 +1001,7 @@ void BasicInsertTests::geometry_insert_ZM()
         points->Add(point);
         geom = gf->CreateMultiPoint(points);
         collection->Add(geom);
-        */
+        
 
         // Line:
         FdoPtr<FdoDirectPositionCollection> positions = FdoDirectPositionCollection::Create();
