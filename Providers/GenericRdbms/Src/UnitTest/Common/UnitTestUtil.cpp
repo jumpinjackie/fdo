@@ -1686,6 +1686,99 @@ void UnitTestUtil::ExportDb(
     mappings->WriteXml( writer );
 }
 
+// The following stylesheet sorts the output XML files so that the Spatial 
+// Contexts, Schemas and Schema Mappings are always in the same order. This
+// allows the XML files to be compared against corresponding masters, without
+// element ordering differences triggering false test failures. 
+
+char* UnitTestUtil::pSortConfigSheet = 
+"<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\
+<stylesheet version=\"1.0\" \
+xmlns=\"http://www.w3.org/1999/XSL/Transform\" \
+xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" \
+xmlns:gml=\"http://www.opengis.net/gml\" \
+xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" \
+xmlns:fdo=\"http://fdo.osgeo.org/schemas\" \
+xmlns:ora=\"http://www.autodesk.com/isd/fdo/OracleProvider\" \
+xmlns:mql=\"http://fdomysql.osgeo.org/schemas\" \
+xmlns:sqs=\"http://www.autodesk.com/isd/fdo/SQLServerProvider\">\
+<xsl:template match=\"fdo:DataStore\">\
+    <xsl:copy>\
+        <xsl:apply-templates select=\"@*\"/>\
+        <xsl:apply-templates select=\"gml:DerivedCRS\">\
+            <xsl:sort select=\"@gml:id\" />\
+        </xsl:apply-templates>\
+        <xsl:apply-templates select=\"xs:schema\">\
+            <xsl:sort select=\"@targetNamespace\" />\
+        </xsl:apply-templates>\
+        <xsl:apply-templates select=\"node()[local-name()='SchemaMapping']\">\
+            <xsl:sort select=\"@name\" />\
+        </xsl:apply-templates>\
+        <xsl:apply-templates select=\"node()[local-name()='FeatureCollection']\"/>\
+    </xsl:copy>\
+</xsl:template>\
+<xsl:template match=\"xs:schema\">\
+    <xsl:copy>\
+        <xsl:apply-templates select=\"@*\"/>\
+        <xsl:apply-templates select=\"xs:annotation\"/>\
+        <xsl:apply-templates select=\"xs:element\">\
+            <xsl:sort select=\"@name\" />\
+        </xsl:apply-templates>\
+        <xsl:apply-templates select=\"xs:complexType\">\
+            <xsl:sort select=\"@name\" />\
+        </xsl:apply-templates>\
+    </xsl:copy>\
+</xsl:template>\
+<xsl:template match=\"xs:sequence\">\
+    <xsl:copy>\
+        <xsl:apply-templates select=\"@*\"/>\
+        <xsl:apply-templates select=\"xs:element\">\
+            <xsl:sort select=\"@name\" />\
+        </xsl:apply-templates>\
+    </xsl:copy>\
+</xsl:template>\
+<xsl:template match=\"node()[local-name() = 'SchemaMapping']\">\
+    <xsl:element name=\"SchemaMapping\" namespace=\"{namespace::node()[name()='']}\">\
+		<xsl:for-each select=\"namespace::node()[not(name()='')]\">\
+			<xsl:copy/>\
+		</xsl:for-each>\
+        <xsl:apply-templates select=\"@*|node()\"/>\
+    </xsl:element>\
+</xsl:template>\
+<xsl:template match=\"gml:FeatureColection\">\
+    <xsl:copy>\
+        <xsl:apply-templates select=\"gml:featureMember\">\
+            <xsl:sort select=\"ClassB1/Prop1\" />\
+        </xsl:apply-templates>\
+    </xsl:copy>\
+</xsl:template>\
+<xsl:template match=\"gml:coordinates\">\
+    <xsl:element name=\"gml:coordinates\" >\
+        <xsl:variable name=\"coords\" select=\"text()\"/>\
+        <xsl:value-of select=\"$coords\"/>\
+        <xsl:if test=\"not(contains(substring-after($coords,','),','))\" >,0.000000</xsl:if>\
+    </xsl:element>\
+</xsl:template>\
+<xsl:template match=\"@*|node()\">\
+  <xsl:copy>\
+    <xsl:apply-templates select=\"@*|node()\"/>\
+  </xsl:copy>\
+  </xsl:template>\
+</stylesheet>";
+
+// Write a config document to a file. Applies an XSL transformation to sort the 
+// elements in the file.
+void UnitTestUtil::Config2SortedFile( FdoIoStream* stream, FdoString* fileName, char* styleSheetString )
+{
+    FdoIoMemoryStreamP sortedStream = FdoIoMemoryStream::Create();
+
+    SortXml( stream, styleSheetString ? styleSheetString : pSortConfigSheet, sortedStream );
+    
+    sortedStream->Reset();
+
+    UnitTestUtil::Stream2File( sortedStream, fileName );
+}
+
 
 // Write a stream out to a file.
 void UnitTestUtil::Stream2File( FdoIoStream* stream, FdoString* fileName )

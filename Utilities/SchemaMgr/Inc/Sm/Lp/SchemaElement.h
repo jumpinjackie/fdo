@@ -53,6 +53,12 @@ class FdoSmLpSchemaElement : public FdoSmSchemaElement
         return mFromFdo;
     }
 
+    /// Returns true if this object was loaded from a config doc.
+    bool GetIsFromConfig() const
+    {
+        return GetIsFromFdo() && (GetElementState() == FdoSchemaElementState_Unchanged);
+    }
+
     /// Copy updates from corresponding FDO element. 
     //
     /// Parameters

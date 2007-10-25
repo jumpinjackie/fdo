@@ -617,7 +617,11 @@ void FdoSmLpAssociationPropertyDefinition::Finalize()
 
         SetState( FdoSmObjectState_Finalizing);
 
-        if( GetElementState() != FdoSchemaElementState_Added )
+        // For performance, load this property from RDBMS only if not new and not 
+        // from a config doc. 
+        // When property is new, it is not in the RDBMS.
+        // When property is from config doc, it is fully defined by the config doc.
+        if( (GetElementState() != FdoSchemaElementState_Added) && !GetIsFromConfig() )
             LoadAssociationDefinition( RefParentClass() );
 
         FdoSmLpAssociationPropertyP pPrevProp = GetPrevProperty().p->SmartCast<FdoSmLpAssociationPropertyDefinition>();
@@ -692,11 +696,16 @@ void FdoSmLpAssociationPropertyDefinition::Finalize()
         {
             FdoSmLpClassDefinition*		      pParent = (FdoSmLpClassDefinition*) RefParentClass();
  
-            // Make sure that an association between these two classes does not already exist
-            FdoSmPhAssociationReaderP rdr = pPhysical->CreateAssociationReader( pParent->GetDbObjectName(), pAssociatedClass->GetDbObjectName(), true );
-	        if ( rdr->ReadNext() ) 
+            // Skip association existence check if from config doc. This helps
+            // performance by avoiding unnecessary foreign key loading.
+            if ( !GetIsFromConfig() ) 
             {
-              ASSOCIATION_EXIST_ERROR(pParent->GetName(), pAssociatedClass->GetName() );
+                // Make sure that an association between these two classes does not already exist
+                FdoSmPhAssociationReaderP rdr = pPhysical->CreateAssociationReader( pParent->GetDbObjectName(), pAssociatedClass->GetDbObjectName(), true );
+	            if ( rdr->ReadNext() ) 
+                {
+                  ASSOCIATION_EXIST_ERROR(pParent->GetName(), pAssociatedClass->GetName() );
+                }
             }
 
             if( mpIndProperties->GetCount() == 0 && ! mbColumnAdded )

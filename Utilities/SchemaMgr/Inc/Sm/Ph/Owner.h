@@ -196,6 +196,8 @@ public:
     // Create a reader to get all base object references for this owner
     virtual FdoPtr<FdoSmPhRdBaseObjectReader> CreateBaseObjectReader() const;
 
+    virtual FdoPtr<FdoSmPhRdBaseObjectReader> CreateBaseObjectReader( FdoStringsP objectNames ) const;
+
     /// Create a new table. Table is not posted to the datastore until its Commit() function
     /// is called.
     FdoSmPhTableP CreateTable(

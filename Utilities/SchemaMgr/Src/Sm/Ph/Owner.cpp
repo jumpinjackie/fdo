@@ -384,6 +384,11 @@ FdoPtr<FdoSmPhRdBaseObjectReader> FdoSmPhOwner::CreateBaseObjectReader() const
     return (FdoSmPhRdBaseObjectReader*) NULL;
 }
 
+FdoPtr<FdoSmPhRdBaseObjectReader> FdoSmPhOwner::CreateBaseObjectReader( FdoStringsP objectNames ) const
+{
+    return (FdoSmPhRdBaseObjectReader*) NULL;
+}
+
 FdoPtr<FdoSmPhRdSpatialContextReader> FdoSmPhOwner::CreateRdSpatialContextReader()
 {
     return new FdoSmPhRdSpatialContextReader(FDO_SAFE_ADDREF(this) );
@@ -806,6 +811,7 @@ FdoSmPhDbObjectP FdoSmPhOwner::CacheCandDbObjects( FdoStringP objectName )
     FdoSmPhRdConstraintReaderP ukeyReader;
     FdoSmPhRdConstraintReaderP ckeyReader;
     FdoSmPhRdColumnReaderP columnReader;
+    FdoSmPhRdBaseObjectReaderP baseObjectReader;
 
     // Create reader for candidate db objects.
     objReader = CreateDbObjectReader( cands );
@@ -834,6 +840,8 @@ FdoSmPhDbObjectP FdoSmPhOwner::CacheCandDbObjects( FdoStringP objectName )
 
             columnReader = CreateColumnReader( cands );
 
+            baseObjectReader = CreateBaseObjectReader(cands);
+ 
             first = false;
         }
 
@@ -862,6 +870,9 @@ FdoSmPhDbObjectP FdoSmPhOwner::CacheCandDbObjects( FdoStringP objectName )
                 if ( ckeyReader ) 
                     table->CacheCkeys( ckeyReader );
             }
+
+            if ( baseObjectReader ) 
+                dbObject->CacheBaseObjects( baseObjectReader );
         }
     }
 

@@ -189,6 +189,9 @@ public:
         FdoString* oldDsSchemaName = NULL,
         FdoString* newDsSchemaName = L"AutoGen"
     );
+
+    static void Config2SortedFile( FdoIoStream* stream, FdoString* fileName, char* styleSheetString = NULL );
+
     static void Stream2File( FdoIoStream* stream, FdoString* fileName );
 
 	static void LogicalPhysicalFormat(FdoIoStream* stream1, FdoIoStream* stream2);
@@ -225,6 +228,9 @@ public:
 
     // Accesses the data on the current row.
     static void ProcessData(FdoIDataReader* reader);
+
+private:
+	static char* pSortConfigSheet;
 };
 
 #endif // CPP_UNIT_UNITTESTUTIL_H

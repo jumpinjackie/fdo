@@ -95,6 +95,8 @@ protected:
     void CreateTableGroup( FdoSmPhOwnerP owner, FdoStringP prefix, FdoInt32 count, int lt_mode );
     void CreateFkey( FdoSmPhOwnerP owner, FdoStringP fTableName, FdoStringP pTableName, FdoStringP pOwnerName = L"" );
 
+    virtual void VldDefaultConfig( FdoClassesP classes );
+
     virtual bool SupportsBaseObjects();
     virtual bool SupportsViewPkey();
 

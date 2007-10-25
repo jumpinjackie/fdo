@@ -41,78 +41,6 @@ void FdoImportExportTest::tearDown ()
 {
 }
 
-// The following stylesheet sorts the output XML files so that the Spatial 
-// Contexts, Schemas and Schema Mappings are always in the same order. This
-// allows the XML files to be compared against corresponding masters, without
-// element ordering differences triggering false test failures. 
-
-char* FdoImportExportTest::pSortSheet = 
-"<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\
-<stylesheet version=\"1.0\" \
-xmlns=\"http://www.w3.org/1999/XSL/Transform\" \
-xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" \
-xmlns:gml=\"http://www.opengis.net/gml\" \
-xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" \
-xmlns:fdo=\"http://fdo.osgeo.org/schemas\" \
-xmlns:ora=\"http://www.autodesk.com/isd/fdo/OracleProvider\" \
-xmlns:mql=\"http://fdomysql.osgeo.org/schemas\" \
-xmlns:sqs=\"http://www.autodesk.com/isd/fdo/SQLServerProvider\">\
-<xsl:template match=\"fdo:DataStore\">\
-    <xsl:copy>\
-        <xsl:apply-templates select=\"@*\"/>\
-        <xsl:apply-templates select=\"gml:DerivedCRS\">\
-            <xsl:sort select=\"@gml:id\" />\
-        </xsl:apply-templates>\
-        <xsl:apply-templates select=\"xs:schema\">\
-            <xsl:sort select=\"@targetNamespace\" />\
-        </xsl:apply-templates>\
-        <xsl:apply-templates select=\"node()[local-name()='SchemaMapping']\">\
-            <xsl:sort select=\"@name\" />\
-        </xsl:apply-templates>\
-        <xsl:apply-templates select=\"node()[local-name()='FeatureCollection']\"/>\
-    </xsl:copy>\
-</xsl:template>\
-<xsl:template match=\"xs:schema\">\
-    <xsl:copy>\
-        <xsl:apply-templates select=\"@*\"/>\
-        <xsl:apply-templates select=\"xs:annotation\"/>\
-        <xsl:apply-templates select=\"xs:element\">\
-            <xsl:sort select=\"@name\" />\
-        </xsl:apply-templates>\
-        <xsl:apply-templates select=\"xs:complexType\">\
-            <xsl:sort select=\"@name\" />\
-        </xsl:apply-templates>\
-    </xsl:copy>\
-</xsl:template>\
-<xsl:template match=\"node()[local-name() = 'SchemaMapping']\">\
-    <xsl:element name=\"SchemaMapping\" namespace=\"{namespace::node()[name()='']}\">\
-		<xsl:for-each select=\"namespace::node()[not(name()='')]\">\
-			<xsl:copy/>\
-		</xsl:for-each>\
-        <xsl:apply-templates select=\"@*|node()\"/>\
-    </xsl:element>\
-</xsl:template>\
-<xsl:template match=\"gml:FeatureColection\">\
-    <xsl:copy>\
-        <xsl:apply-templates select=\"gml:featureMember\">\
-            <xsl:sort select=\"ClassB1/Prop1\" />\
-        </xsl:apply-templates>\
-    </xsl:copy>\
-</xsl:template>\
-<xsl:template match=\"gml:coordinates\">\
-    <xsl:element name=\"gml:coordinates\" >\
-        <xsl:variable name=\"coords\" select=\"text()\"/>\
-        <xsl:value-of select=\"$coords\"/>\
-        <xsl:if test=\"not(contains(substring-after($coords,','),','))\" >,0.000000</xsl:if>\
-    </xsl:element>\
-</xsl:template>\
-<xsl:template match=\"@*|node()\">\
-  <xsl:copy>\
-    <xsl:apply-templates select=\"@*|node()\"/>\
-  </xsl:copy>\
-  </xsl:template>\
-</stylesheet>";
-
 FdoPropertyValue* FdoImportExportTest::AddNewProperty( FdoPropertyValueCollection* propertyValues, const wchar_t *name )
 {
     FdoPropertyValue*  propertyValue = NULL;
@@ -208,8 +136,8 @@ void FdoImportExportTest::Test2_3_4 ()
             );
 
         DoTest( configStream1, stream2A, stream2B, flags, DB_NAME_SRC_SUFFIX );
-        Stream2SortedFile( stream2A, UnitTestUtil::GetOutputFileName( L"impexp2a.xml" ) );
-        Stream2SortedFile( stream2B, UnitTestUtil::GetOutputFileName( L"impexp2b.xml" ) );
+        UnitTestUtil::Config2SortedFile( stream2A, UnitTestUtil::GetOutputFileName( L"impexp2a.xml" ) );
+        UnitTestUtil::Config2SortedFile( stream2B, UnitTestUtil::GetOutputFileName( L"impexp2b.xml" ) );
 
 /* TODO: activate test 3 when update spatial context supported
         // Test 3 is also the same as Test 1 except that the flags allow spatial
@@ -283,8 +211,8 @@ void FdoImportExportTest::Test5_6_7 ()
 
         DoTest( configStream, streamA, streamB, flags, DB_NAME_SRC_SUFFIX );
 
-        Stream2SortedFile( streamA, UnitTestUtil::GetOutputFileName( L"impexp5a.xml" ) );
-        Stream2SortedFile( streamB, UnitTestUtil::GetOutputFileName( L"impexp5b.xml" ) );
+        UnitTestUtil::Config2SortedFile( streamA, UnitTestUtil::GetOutputFileName( L"impexp5a.xml" ) );
+        UnitTestUtil::Config2SortedFile( streamB, UnitTestUtil::GetOutputFileName( L"impexp5b.xml" ) );
 
         // Unlike Tests 1-5, Test6 does not re-create the datastore. It tests the 
         // skipping of non-default spatial contexts that are already in the database.
@@ -294,8 +222,8 @@ void FdoImportExportTest::Test5_6_7 ()
 
         DoTest( configStream, streamA, streamB, flags, DB_NAME_SRC_SUFFIX, false, true, false );
 
-        Stream2SortedFile( streamA, UnitTestUtil::GetOutputFileName( L"impexp6a.xml" ) );
-        Stream2SortedFile( streamB, UnitTestUtil::GetOutputFileName( L"impexp6b.xml" ) );
+        UnitTestUtil::Config2SortedFile( streamA, UnitTestUtil::GetOutputFileName( L"impexp6a.xml" ) );
+        UnitTestUtil::Config2SortedFile( streamB, UnitTestUtil::GetOutputFileName( L"impexp6b.xml" ) );
 
         // Test 7 is similar to Test 8, except that attempts to update spatial contexts
         // generate an error. It tests generating an error for a pre-existing 
@@ -608,7 +536,7 @@ void FdoImportExportTest::CreateConfig1( FdoIoStream* stream )
     AddMapping( writer, L"Schema3", 2 );
     writer = NULL;
 
-    Stream2File( stream, UnitTestUtil::GetOutputFileName( L"impexp_config1.xml" ) );
+    UnitTestUtil::Stream2File( stream, UnitTestUtil::GetOutputFileName( L"impexp_config1.xml" ) );
 }
 
 // Creates a config file similar to the previous one, but with an extra spatial
@@ -625,7 +553,7 @@ void FdoImportExportTest::CreateConfig2( FdoIoStream* stream )
     AddSchema( writer, 3 );
     writer = NULL;
 
-    Stream2File( stream, UnitTestUtil::GetOutputFileName( L"impexp_config2.xml" ) );
+    UnitTestUtil::Stream2File( stream, UnitTestUtil::GetOutputFileName( L"impexp_config2.xml" ) );
 }
 
 // Creates a config file similar to the previous one, but with an extra spatial
@@ -637,7 +565,7 @@ void FdoImportExportTest::CreateConfigBadWkt( FdoIoStream* stream )
     AddSC( writer, L"Manhole1", L"diagram", L"Non-Earth (Meter)", L"nonsense wkt", 3 );
     writer = NULL;
 
-    Stream2File( stream, UnitTestUtil::GetOutputFileName( L"impexp_configBadWkt.xml" ) );
+    UnitTestUtil::Stream2File( stream, UnitTestUtil::GetOutputFileName( L"impexp_configBadWkt.xml" ) );
 }
 
 // Create a Feature Schema and add it to an XML document
@@ -797,42 +725,6 @@ FdoByteArray* FdoImportExportTest::SerializeExtent( double minX, double minY, do
     return( gf->GetFgf(geom) );
 }
 
-// Write a stream out to a file. Applies an XSL transformation to sort the 
-// elements in the file.
-void FdoImportExportTest::Stream2SortedFile( FdoIoStream* stream, FdoString* fileName )
-{
-    FdoIoMemoryStreamP stylesheetStream = FdoIoMemoryStream::Create();
-    FdoIoMemoryStreamP sortedStream = FdoIoMemoryStream::Create();
-
-    stylesheetStream->Write( (FdoByte*) pSortSheet, strlen(pSortSheet) );
-    stylesheetStream->Reset();
-
-    stream->Reset();
-
-    FdoXslTransformerP tfmr = FdoXslTransformer::Create(
-        FdoXmlReaderP( FdoXmlReader::Create(stream) ),
-        FdoXmlReaderP( FdoXmlReader::Create(stylesheetStream) ),
-        FdoXmlWriterP( FdoXmlWriter::Create(sortedStream, false) )
-    );
-
-    tfmr->Transform();
-
-    sortedStream->Reset();
-
-    Stream2File( sortedStream, fileName );
-}
-
-
-// Write a stream out to a file.
-void FdoImportExportTest::Stream2File( FdoIoStream* stream, FdoString* fileName )
-{
-    stream->Reset();
-
-    FdoIoFileStreamP fileStream = FdoIoFileStream::Create( fileName, L"w+t" );
-    XmlFormatter formatter(stream, fileStream);
-    formatter.Format();
-}
-
 void FdoImportExportTest::AddMapping( FdoXmlWriter* writer, FdoString* name, FdoInt32 providerVersion )
 {
 }
@@ -866,7 +758,7 @@ void FdoImportExportTest::_overrideBend(
     );
 
     stream2->Reset();
-    Stream2File( stream2, outFile );
+    UnitTestUtil::Stream2File( stream2, outFile );
 }
 
 FdoStringP FdoImportExportTest::OverrideBend( FdoString* inFile )
