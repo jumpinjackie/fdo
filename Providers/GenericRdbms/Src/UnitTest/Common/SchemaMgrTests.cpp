@@ -386,18 +386,18 @@ void SchemaMgrTests::testGenDefault ()
             pCmd->Execute();
         }
 
-        stream1 = FdoIoMemoryStream::Create();
+        FdoIoMemoryStreamP stream2 = FdoIoMemoryStream::Create();
 
         UnitTestUtil::ExportDb( 
             fdoConn, 
-            stream1, 
+            stream2, 
             NULL, 
             false, 
             FdoStringP(L"Fdo") + datastore,
             L"AutoGen"
         );
 
-        UnitTestUtil::Stream2File( stream1, UnitTestUtil::GetOutputFileName( L"gen_default1.xml" ) );
+        UnitTestUtil::Stream2File( stream2, UnitTestUtil::GetOutputFileName( L"gen_default1.xml" ) );
 
         UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_COPY_SUFFIX );
 
@@ -431,6 +431,66 @@ void SchemaMgrTests::testGenDefault ()
                 throw exception;
         }
 
+        printf( "Opening original db with config doc ...\n" );
+        fdoConn = UnitTestUtil::GetProviderConnectionObject();
+        stream1->Reset();
+
+        fdoConn->SetConfiguration(stream1);
+        FdoStringP dbConnectString = UnitTestUtil::GetConnectionString(Connection_WithDatastore, DB_NAME_SUFFIX);
+        fdoConn->SetConnectionString ( dbConnectString);
+        fdoConn->Open();
+ 
+        conn = CreateStaticConnection();
+        conn->connect();
+        mgr = conn->CreateSchemaManager();
+        phMgr = mgr->GetPhysicalSchema()->SmartCast<FdoSmPhGrdMgr>();
+
+        FdoPtr<FdoIDescribeSchema>  pDescSchemaCmd = (FdoIDescribeSchema*) fdoConn->CreateCommand(FdoCommandType_DescribeSchema);
+        FdoFeatureSchemasP                     fsc = pDescSchemaCmd->Execute();
+        FdoFeatureSchemaP schema = fsc->GetItem(0);
+        FdoClassesP classes = schema->GetClasses();
+
+        FdoClassDefinitionP classDef = classes->FindItem( phMgr->GetDcDbObjectName(L"VIEW1") );
+        FdoPtr<FdoClassCapabilities> cap = classDef->GetCapabilities();
+        CPPUNIT_ASSERT( !cap->SupportsLongTransactions() );
+
+        VldDefaultConfig( classes );
+
+        FdoIoMemoryStreamP stream3 = FdoIoMemoryStream::Create();
+
+        UnitTestUtil::ExportDb( 
+            fdoConn, 
+            stream3, 
+            NULL, 
+            false, 
+            FdoStringP(L"Fdo") + datastore,
+            L"AutoGen"
+        );
+
+        stream3->Reset();
+
+        UnitTestUtil::Config2SortedFile( stream3, UnitTestUtil::GetOutputFileName(L"gen_default2.xml") );
+
+        FdoStringP masterFileName = FdoStringP::Format( L"gen_default1_%ls_master.txt", (FdoString*) providerName );
+        FdoIoFileStreamP masterStream = FdoIoFileStream::Create( masterFileName, L"rt" );
+        UnitTestUtil::Config2SortedFile( masterStream, UnitTestUtil::GetOutputFileName(masterFileName) );
+
+        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_SUFFIX );
+
+        phMgr = NULL;
+        mgr = NULL;
+        conn->disconnect();
+        delete conn;
+
+#if 0 
+//TODO: investigate file differences
+//        - check constraints missing from output
+//        - output has schema mappings, master does not.
+        UnitTestUtil::CheckOutput( 
+            UnitTestUtil::GetOutputFileName(masterFileName),
+            UnitTestUtil::GetOutputFileName( L"gen_default2.xml" )
+        );
+#endif
         printf( "Done\n" );
     }
     catch (FdoException* e ) 
@@ -1524,6 +1584,10 @@ void SchemaMgrTests::CreateFkey( FdoSmPhOwnerP owner, FdoStringP fTableName, Fdo
 
     FdoSmPhFkeyP fkey = fTable->CreateFkey( fkeyName, pTableName, pOwnerName );
     fkey->AddFkeyColumn( fColumn, L"ID" );
+}
+
+void  SchemaMgrTests::VldDefaultConfig( FdoClassesP classes )
+{
 }
 
 FdoSmPhTableP SchemaMgrTests::CreateIxTable( FdoSmPhOwnerP owner, FdoStringP tableName, int lt_mode )   

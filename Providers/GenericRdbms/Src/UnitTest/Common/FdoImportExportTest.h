@@ -74,8 +74,6 @@ protected:
     void AddFeature( FdoIInsert* insertCommand, FdoInt32 idx  );
     void _addMapping( FdoXmlWriter* writer, FdoString* name, FdoString* provider, FdoString* xmlns );
     FdoByteArray* SerializeExtent( double minX, double minY, double maxX, double maxY );
-    void Stream2SortedFile( FdoIoStream* stream, FdoString* fileName );
-    void Stream2File( FdoIoStream* stream, FdoString* fileName );
 
     void _overrideBend( 
         FdoString* inFile, 
@@ -91,7 +89,6 @@ protected:
 
 	static FdoPropertyValue* AddNewProperty( FdoPropertyValueCollection* propertyValues, const wchar_t *name );
 protected:
-	static char* pSortSheet;
 };
 
 #endif // CPP_UNIT_FDOIMPORTEXPORTTEST_H
