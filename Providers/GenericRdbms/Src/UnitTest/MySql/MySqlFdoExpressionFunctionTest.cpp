@@ -20,6 +20,15 @@
 #include "MySqlFdoExpressionFunctionTest.h"
 #include "UnitTestUtil.h"
 
+#ifndef min
+#define min(a,b) (a < b ? a : b)
+#endif
+
+#ifndef max
+#define max(a,b) (a > b ? a : b)
+#endif
+
+
 CPPUNIT_TEST_SUITE_REGISTRATION(MySqlFdoExpressionFunctionTest);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(MySqlFdoExpressionFunctionTest, "FdoExpressionFunctionTest");
 
