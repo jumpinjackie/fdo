@@ -124,6 +124,11 @@ class FdoExpressionFunctionTest : public CppUnit::TestCase
     // ====       RUN ALL UNIT TESTS        ====
     // =========================================
     CPPUNIT_TEST(RunAllExpFctTests);
+    // =========================================
+    // ====       SPECIAL UNIT TESTS        ====
+    // =========================================
+    // CPPUNIT_TEST(ModuloOperation);
+    // CPPUNIT_TEST(SubstrOperation);
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -526,6 +531,23 @@ protected:
 
 
     //-------------------------------------------------------------------------
+    //                       Special Unit Test Functions
+    //-------------------------------------------------------------------------
+
+    //  ModuloOperation:
+    //      The function executes a modulo operation on multiple rows. This is
+    //      to verify that the returned data is accurate for each row.
+
+    void ModuloOperation ();
+
+    //  SubstrOperation:
+    //      The function executes a substring operation on multiple rows. This
+    //      is to verify that the returned data is accurate for each row.
+
+    void SubstrOperation ();
+
+
+    //-------------------------------------------------------------------------
     //                       General Supporting Functions
     //-------------------------------------------------------------------------
 
@@ -580,6 +602,16 @@ protected:
                         bool           include_id_check,
                         FdoInt32       expected_id_value,
                         FdoInt64       expected_value);
+
+    //  CheckReaderByte:
+    //      The function checks whether or not the provided reader contains
+    //      the expected data and throws an exception if this is not the 
+    //      case.
+
+    void CheckReaderByte (FdoIDataReader *data_reader,
+                          bool           include_id_check,
+                          FdoInt32       expected_id_value,
+                          FdoByte        expected_value);
 
     //  CheckReaderSgl:
     //      The function checks whether or not the provided reader contains
