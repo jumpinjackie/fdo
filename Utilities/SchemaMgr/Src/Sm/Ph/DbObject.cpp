@@ -449,10 +449,11 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnChar(
 	bool bNullable, 
     int length,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     bool bAttach
 )
 {
-    FdoSmPhColumnP column = NewColumnChar( columnName, FdoSchemaElementState_Added, bNullable, length, rootColumnName );
+    FdoSmPhColumnP column = NewColumnChar( columnName, FdoSchemaElementState_Added, bNullable, length, rootColumnName, defaultValue );
 
     if (bAttach )
 	{
@@ -467,10 +468,11 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnDate(
 	FdoStringP columnName, 
 	bool bNullable, 
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     bool bAttach
 )
 {
-    FdoSmPhColumnP column = NewColumnDate( columnName, FdoSchemaElementState_Added, bNullable, rootColumnName );
+    FdoSmPhColumnP column = NewColumnDate( columnName, FdoSchemaElementState_Added, bNullable, rootColumnName, defaultValue );
 
     if (bAttach )
 	{
@@ -487,6 +489,7 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnDecimal(
     int length,
     int scale,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     bool bAttach
 )
 {
@@ -496,7 +499,8 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnDecimal(
         bNullable, 
         length,
         scale,
-        rootColumnName 
+        rootColumnName,
+		defaultValue
     );
 
     if (bAttach )
@@ -512,6 +516,7 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnSingle(
 	FdoStringP columnName, 
 	bool bNullable, 
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     bool bAttach
 )
 {
@@ -519,7 +524,8 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnSingle(
         columnName, 
         FdoSchemaElementState_Added, 
         bNullable, 
-        rootColumnName 
+        rootColumnName,
+		defaultValue
     );
 
     if (bAttach )
@@ -535,6 +541,7 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnDouble(
 	FdoStringP columnName, 
 	bool bNullable, 
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     bool bAttach
 )
 {
@@ -542,7 +549,8 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnDouble(
         columnName, 
         FdoSchemaElementState_Added, 
         bNullable, 
-        rootColumnName 
+        rootColumnName,
+		defaultValue
     );
 
     if (bAttach )
@@ -587,10 +595,11 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnBool(
 	FdoStringP columnName, 
 	bool bNullable, 
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     bool bAttach
 )
 {
-    FdoSmPhColumnP column = NewColumnBool( columnName, FdoSchemaElementState_Added, bNullable, rootColumnName );
+    FdoSmPhColumnP column = NewColumnBool( columnName, FdoSchemaElementState_Added, bNullable, rootColumnName, defaultValue );
 
     if (bAttach )
 	{
@@ -605,10 +614,11 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnByte(
 	FdoStringP columnName, 
 	bool bNullable, 
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     bool bAttach
 )
 {
-    FdoSmPhColumnP column = NewColumnByte( columnName, FdoSchemaElementState_Added, bNullable, rootColumnName );
+    FdoSmPhColumnP column = NewColumnByte( columnName, FdoSchemaElementState_Added, bNullable, rootColumnName, defaultValue );
 
     if (bAttach )
 	{
@@ -624,10 +634,11 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnInt16(
 	bool bNullable, 
 	bool bIsAutoincremented,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     bool bAttach
 )
 {
-    FdoSmPhColumnP column = NewColumnInt16( columnName, FdoSchemaElementState_Added, bNullable, bIsAutoincremented, rootColumnName );
+    FdoSmPhColumnP column = NewColumnInt16( columnName, FdoSchemaElementState_Added, bNullable, bIsAutoincremented, rootColumnName, defaultValue );
 
     if (bAttach )
 	{
@@ -643,10 +654,11 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnInt32(
 	bool bNullable, 
 	bool bIsAutoincremented,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     bool bAttach
 )
 {
-    FdoSmPhColumnP column = NewColumnInt32( columnName, FdoSchemaElementState_Added, bNullable, bIsAutoincremented, rootColumnName );
+    FdoSmPhColumnP column = NewColumnInt32( columnName, FdoSchemaElementState_Added, bNullable, bIsAutoincremented, rootColumnName, defaultValue );
 
     if (bAttach )
 	{
@@ -662,10 +674,11 @@ FdoSmPhColumnP FdoSmPhDbObject::CreateColumnInt64(
 	bool bNullable, 
 	bool bIsAutoincremented,
     FdoStringP rootColumnName,
+	FdoStringP defaultValue,
     bool bAttach
 )
 {
-    FdoSmPhColumnP column = NewColumnInt64( columnName, FdoSchemaElementState_Added, bNullable, bIsAutoincremented, rootColumnName );
+    FdoSmPhColumnP column = NewColumnInt64( columnName, FdoSchemaElementState_Added, bNullable, bIsAutoincremented, rootColumnName, defaultValue );
 
     if (bAttach )
 	{
@@ -1243,6 +1256,7 @@ FdoSmPhColumnP FdoSmPhDbObject::NewColumn(
             FdoSchemaElementState_Unchanged,
             colRdr->GetBoolean(L"",L"nullable"),
             L"",
+			colRdr->GetString(L"", L"default_value"),
             colRdr
         );
 
@@ -1254,6 +1268,7 @@ FdoSmPhColumnP FdoSmPhDbObject::NewColumn(
             colRdr->GetLong(L"",L"size"),
             colRdr->GetLong(L"",L"scale"),
             L"",
+			colRdr->GetString(L"", L"default_value"),
             colRdr
         );
 
@@ -1263,6 +1278,7 @@ FdoSmPhColumnP FdoSmPhDbObject::NewColumn(
             FdoSchemaElementState_Unchanged,
             colRdr->GetBoolean(L"",L"nullable"),
             L"",
+			colRdr->GetString(L"", L"default_value"),
             colRdr
         );
 
@@ -1272,6 +1288,7 @@ FdoSmPhColumnP FdoSmPhDbObject::NewColumn(
             FdoSchemaElementState_Unchanged,
             colRdr->GetBoolean(L"",L"nullable"),
             L"",
+			colRdr->GetString(L"", L"default_value"),
             colRdr
         );
 
@@ -1293,6 +1310,7 @@ FdoSmPhColumnP FdoSmPhDbObject::NewColumn(
             FdoSchemaElementState_Unchanged,
             colRdr->GetBoolean(L"",L"nullable"),
             L"",
+			colRdr->GetString(L"", L"default_value"),
             colRdr
         );
 
@@ -1302,6 +1320,7 @@ FdoSmPhColumnP FdoSmPhDbObject::NewColumn(
             FdoSchemaElementState_Unchanged,
             colRdr->GetBoolean(L"",L"nullable"),
             L"",
+			colRdr->GetString(L"", L"default_value"),
             colRdr
         );
 
@@ -1312,6 +1331,7 @@ FdoSmPhColumnP FdoSmPhDbObject::NewColumn(
             colRdr->GetBoolean(L"",L"nullable"),
 			colRdr->GetBoolean(L"",L"is_autoincremented"),
             L"",
+			colRdr->GetString(L"", L"default_value"),
             colRdr
         );
 
@@ -1322,6 +1342,7 @@ FdoSmPhColumnP FdoSmPhDbObject::NewColumn(
             colRdr->GetBoolean(L"",L"nullable"),
 			colRdr->GetBoolean(L"",L"is_autoincremented"),
             L"",
+			colRdr->GetString(L"", L"default_value"),
             colRdr
         );
 
@@ -1332,6 +1353,7 @@ FdoSmPhColumnP FdoSmPhDbObject::NewColumn(
             colRdr->GetBoolean(L"",L"nullable"),
 			colRdr->GetBoolean(L"",L"is_autoincremented"),
             L"",
+			colRdr->GetString(L"", L"default_value"),
             colRdr
         );
 
@@ -1342,6 +1364,7 @@ FdoSmPhColumnP FdoSmPhDbObject::NewColumn(
             colRdr->GetBoolean(L"",L"nullable"),
             colRdr->GetLong(L"",L"size"),
             L"",
+			colRdr->GetString(L"", L"default_value"),
             colRdr
         );
 

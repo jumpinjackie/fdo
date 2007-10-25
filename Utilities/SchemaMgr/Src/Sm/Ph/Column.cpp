@@ -29,7 +29,8 @@ FdoSmPhColumn::FdoSmPhColumn(
 	FdoSchemaElementState elementState,
 	FdoSmPhDbObject* parentObject,
 	bool bNullable, 
-    FdoStringP rootColumnName
+    FdoStringP rootColumnName,
+	FdoStringP defaultValue
 ): 
     FdoSmPhDbElement( 
         columnName, 
@@ -42,7 +43,8 @@ FdoSmPhColumn::FdoSmPhColumn(
 	mTypeName( typeName ),
 	mbNullable(bNullable),
     miDimensionality(-1),
-	mbAutoIncrement(false)
+	mbAutoIncrement(false),
+	mDefaultValue(defaultValue)
 {
 	SetElementState(elementState);
 }
@@ -94,6 +96,11 @@ FdoStringP FdoSmPhColumn::GetTypeName() const
 bool FdoSmPhColumn::GetAutoincrement() const
 {
 	return mbAutoIncrement;
+}
+
+FdoStringP FdoSmPhColumn::GetDefaultValue() const
+{
+	return mDefaultValue;
 }
 
 int FdoSmPhColumn::GetLength()const
@@ -182,10 +189,11 @@ FdoStringP FdoSmPhColumn::GetBestPropertyName() const
 FdoStringP FdoSmPhColumn::GetAddSql()
 {
     FdoStringP sqlClause = FdoStringP::Format(
-        L"%ls %ls %ls %ls",
+        L"%ls %ls %ls %ls %ls",
         (FdoString*) GetDbName(),
         (FdoString*) GetTypeSql(),
 		(FdoString*) GetAutoincrementSql(),
+		(FdoString*) GetDefaultValueSql(),
         (FdoString*) GetNullabilitySql()
     );
 
@@ -229,6 +237,27 @@ FdoStringP FdoSmPhColumn::GetAutoincrementSql()
 {
 	return L"";
 }
+
+FdoStringP FdoSmPhColumn::GetDefaultValueSql()
+{
+	if (GetDefaultValue() != L"")
+	{
+		bool addQuote = false;
+		if (wcscmp (GetBestFdoType(), L"datetime") == 0 ||
+			wcscmp (GetBestFdoType(), L"string") == 0)
+			addQuote = true;
+		
+		FdoStringP	defaultValueSql = FdoStringP::Format(
+				L" DEFAULT %ls%ls%ls ", 
+				(addQuote == true) ? L"'":L"",
+				(FdoString*)(GetDefaultValue()),
+				(addQuote == true) ? L"'":L""
+				);
+		return defaultValueSql;
+	}
+	return L"";
+}
+
 
 FdoStringP FdoSmPhColumn::GetValueSql( FdoStringP val )
 {

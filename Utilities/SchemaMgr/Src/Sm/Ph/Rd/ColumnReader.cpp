@@ -95,6 +95,11 @@ FdoSmPhRowsP FdoSmPhRdColumnReader::MakeRows( FdoSmPhMgrP mgr )
         row->CreateColumnBool(L"is_autoincremented",false)
     );
 
+	field = new FdoSmPhField(
+		row,
+		L"default_value",
+		row->CreateColumnChar(L"default_value", true, 4096)
+	);
     return( rows );
 }
 
