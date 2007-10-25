@@ -319,34 +319,34 @@ void FdoFunctionCount::CreateFunctionDefinition ()
 
     // Declare and initialize all necessary local variables.
 
-    FdoString *desc = NULL;
+    FdoString                               *desc               = NULL;
 
-    FdoStringP arg1_description;
-    FdoStringP arg2_description;
-    FdoStringP bool_arg_literal;
-    FdoStringP blob_arg_literal;
-    FdoStringP byte_arg_literal;
-    FdoStringP clob_arg_literal;
-    FdoStringP date_arg_literal;
-    FdoStringP num_arg_literal;
-    FdoStringP opt_arg_literal;
-    FdoStringP str_arg_literal;
-    FdoStringP geom_arg_literal;
+    FdoStringP                              arg1_description;
+    FdoStringP                              arg2_description;
+    FdoStringP                              bool_arg_literal;
+    FdoStringP                              blob_arg_literal;
+    FdoStringP                              byte_arg_literal;
+    FdoStringP                              clob_arg_literal;
+    FdoStringP                              date_arg_literal;
+    FdoStringP                              num_arg_literal;
+    FdoStringP                              opt_arg_literal;
+    FdoStringP                              str_arg_literal;
+    FdoStringP                              geom_arg_literal;
 
-    FdoPtr<FdoArgumentDefinition> bool_arg;
-    FdoPtr<FdoArgumentDefinition> blob_arg;
-    FdoPtr<FdoArgumentDefinition> byte_arg;
-    FdoPtr<FdoArgumentDefinition> clob_arg;
-    FdoPtr<FdoArgumentDefinition> date_arg;
-    FdoPtr<FdoArgumentDefinition> dcl_arg;
-    FdoPtr<FdoArgumentDefinition> dbl_arg;
-    FdoPtr<FdoArgumentDefinition> int16_arg;
-    FdoPtr<FdoArgumentDefinition> int32_arg;
-    FdoPtr<FdoArgumentDefinition> int64_arg;
-    FdoPtr<FdoArgumentDefinition> opt_arg;
-    FdoPtr<FdoArgumentDefinition> sgl_arg;
-    FdoPtr<FdoArgumentDefinition> str_arg;
-    FdoPtr<FdoArgumentDefinition> geom_arg;
+    FdoPtr<FdoArgumentDefinition>           bool_arg;
+    FdoPtr<FdoArgumentDefinition>           blob_arg;
+    FdoPtr<FdoArgumentDefinition>           byte_arg;
+    FdoPtr<FdoArgumentDefinition>           clob_arg;
+    FdoPtr<FdoArgumentDefinition>           date_arg;
+    FdoPtr<FdoArgumentDefinition>           dcl_arg;
+    FdoPtr<FdoArgumentDefinition>           dbl_arg;
+    FdoPtr<FdoArgumentDefinition>           int16_arg;
+    FdoPtr<FdoArgumentDefinition>           int32_arg;
+    FdoPtr<FdoArgumentDefinition>           int64_arg;
+    FdoPtr<FdoArgumentDefinition>           opt_arg;
+    FdoPtr<FdoArgumentDefinition>           sgl_arg;
+    FdoPtr<FdoArgumentDefinition>           str_arg;
+    FdoPtr<FdoArgumentDefinition>           geom_arg;
 
     FdoPtr<FdoArgumentDefinitionCollection> bool_args;
     FdoPtr<FdoArgumentDefinitionCollection> blob_args;

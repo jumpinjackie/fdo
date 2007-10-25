@@ -126,6 +126,7 @@ void FdoFunctionSum::Process (FdoLiteralValueCollection *literal_values)
 
     // Declare and initialize all necessary local variables.
 
+    FdoPtr<FdoByteValue>    byte_value;
     FdoPtr<FdoDecimalValue> decimal_value;
     FdoPtr<FdoDoubleValue>  double_value;
     FdoPtr<FdoInt16Value>   int16_value;
@@ -148,6 +149,13 @@ void FdoFunctionSum::Process (FdoLiteralValueCollection *literal_values)
     // Process the request.
 
     switch (incoming_data_type) {
+
+      case FdoDataType_Byte:
+        byte_value =
+                    (FdoByteValue *) literal_values->GetItem(process_value);
+        if (!byte_value->IsNull())
+            ProcessRequest(byte_value->GetByte());
+        break;
 
       case FdoDataType_Decimal:
         decimal_value =
@@ -223,7 +231,7 @@ void FdoFunctionSum::CreateFunctionDefinition ()
 // | ing signatures are supported:
 // |
 // |    SUM ([string, ]
-// |         {decimal, double, int16, int32, int64, single})
+// |         {byte, decimal, double, int16, int32, int64, single})
 // |
 // | If the optional first parameter is used, then the parameter value must be
 // | ALL or DISTINCT. The function always returns a DOUBLE.
@@ -233,21 +241,23 @@ void FdoFunctionSum::CreateFunctionDefinition ()
 
     // Declare and initialize all necessary local variables.
 
-    FdoString *desc = NULL;
+    FdoString                               *desc               = NULL;
 
-    FdoStringP arg1_description;
-    FdoStringP arg2_description;
-    FdoStringP num_arg_literal;
-    FdoStringP opt_arg_literal;
+    FdoStringP                              arg1_description;
+    FdoStringP                              arg2_description;
+    FdoStringP                              num_arg_literal;
+    FdoStringP                              opt_arg_literal;
 
-    FdoPtr<FdoArgumentDefinition> dcl_arg;
-    FdoPtr<FdoArgumentDefinition> dbl_arg;
-    FdoPtr<FdoArgumentDefinition> int16_arg;
-    FdoPtr<FdoArgumentDefinition> int32_arg;
-    FdoPtr<FdoArgumentDefinition> int64_arg;
-    FdoPtr<FdoArgumentDefinition> opt_arg;
-    FdoPtr<FdoArgumentDefinition> sgl_arg;
+    FdoPtr<FdoArgumentDefinition>           byte_arg;
+    FdoPtr<FdoArgumentDefinition>           dcl_arg;
+    FdoPtr<FdoArgumentDefinition>           dbl_arg;
+    FdoPtr<FdoArgumentDefinition>           int16_arg;
+    FdoPtr<FdoArgumentDefinition>           int32_arg;
+    FdoPtr<FdoArgumentDefinition>           int64_arg;
+    FdoPtr<FdoArgumentDefinition>           opt_arg;
+    FdoPtr<FdoArgumentDefinition>           sgl_arg;
 
+    FdoPtr<FdoArgumentDefinitionCollection> byte_args;
     FdoPtr<FdoArgumentDefinitionCollection> dcl_args;
     FdoPtr<FdoArgumentDefinitionCollection> dbl_args;
     FdoPtr<FdoArgumentDefinitionCollection> int16_args;
@@ -255,6 +265,7 @@ void FdoFunctionSum::CreateFunctionDefinition ()
     FdoPtr<FdoArgumentDefinitionCollection> int64_args;
     FdoPtr<FdoArgumentDefinitionCollection> sgl_args;
 
+    FdoPtr<FdoArgumentDefinitionCollection> byte_opt_args;
     FdoPtr<FdoArgumentDefinitionCollection> dcl_opt_args;
     FdoPtr<FdoArgumentDefinitionCollection> dbl_opt_args;
     FdoPtr<FdoArgumentDefinitionCollection> int16_opt_args;
@@ -262,11 +273,11 @@ void FdoFunctionSum::CreateFunctionDefinition ()
     FdoPtr<FdoArgumentDefinitionCollection> int64_opt_args;
     FdoPtr<FdoArgumentDefinitionCollection> sgl_opt_args;
 
-    FdoPtr<FdoDataValueCollection>           values;
-    FdoPtr<FdoPropertyValueConstraintList>   argument_value_list;
+    FdoPtr<FdoDataValueCollection>          values;
+    FdoPtr<FdoPropertyValueConstraintList>  argument_value_list;
 
-    FdoPtr<FdoSignatureDefinition>           signature;
-    FdoSignatureDefinitionCollection         *signatures;
+    FdoPtr<FdoSignatureDefinition>          signature;
+    FdoSignatureDefinitionCollection        *signatures;
 
     // The function contains signatures that allow an optional first parameter.
     // If used the value of this parameter must be either ALL or DISTINCT. The
@@ -303,6 +314,8 @@ void FdoFunctionSum::CreateFunctionDefinition ()
     num_arg_literal =
             FdoException::NLSGetMessage(FUNCTION_NUMBER_ARG_LIT, "number");
 
+    byte_arg  = FdoArgumentDefinition::Create(
+                    num_arg_literal, arg1_description, FdoDataType_Byte);
     dcl_arg   = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Decimal);
     dbl_arg   = FdoArgumentDefinition::Create(
@@ -315,6 +328,9 @@ void FdoFunctionSum::CreateFunctionDefinition ()
                     num_arg_literal, arg1_description, FdoDataType_Int64);
     sgl_arg   = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Single);
+
+    byte_args = FdoArgumentDefinitionCollection::Create();
+    byte_args->Add(byte_arg);
 
     dcl_args = FdoArgumentDefinitionCollection::Create();
     dcl_args->Add(dcl_arg);
@@ -333,6 +349,10 @@ void FdoFunctionSum::CreateFunctionDefinition ()
 
     sgl_args = FdoArgumentDefinitionCollection::Create();
     sgl_args->Add(sgl_arg);
+
+    byte_opt_args = FdoArgumentDefinitionCollection::Create();
+    byte_opt_args->Add(opt_arg);
+    byte_opt_args->Add(byte_arg);
 
     dcl_opt_args = FdoArgumentDefinitionCollection::Create();
     dcl_opt_args->Add(opt_arg);
@@ -362,6 +382,9 @@ void FdoFunctionSum::CreateFunctionDefinition ()
 
     signatures = FdoSignatureDefinitionCollection::Create();
 
+    signature = FdoSignatureDefinition::Create(FdoDataType_Double, byte_args);
+    signatures->Add(signature);
+
     signature = FdoSignatureDefinition::Create(FdoDataType_Double, dcl_args);
     signatures->Add(signature);
 
@@ -378,6 +401,10 @@ void FdoFunctionSum::CreateFunctionDefinition ()
     signatures->Add(signature);
 
     signature = FdoSignatureDefinition::Create(FdoDataType_Double, sgl_args);
+    signatures->Add(signature);
+
+    signature = FdoSignatureDefinition::Create(
+                                            FdoDataType_Double, byte_opt_args);
     signatures->Add(signature);
 
     signature = FdoSignatureDefinition::Create(
@@ -418,6 +445,61 @@ void FdoFunctionSum::CreateFunctionDefinition ()
                                         FdoFunctionCategoryType_Aggregate);
 
 }  //  CreateFunctionDefinition ()
+
+void FdoFunctionSum::ProcessRequest (FdoByte value)
+
+// +---------------------------------------------------------------------------
+// | The function processes a request to the Expression Engine function SUM
+// | when applied to values of type BYTE.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local variables.
+
+    bool     data_processed              = false;
+
+    FdoInt32 loop_count,
+             cache_count                 = 0;
+
+    FdoPtr<CacheValue> new_cache_value,
+                       curr_cache_value;
+    
+    // If this is a request on a distinct set of data, only process the value
+    // if it is not stored in the cache yet. 
+
+    if (is_distinct_request) {
+
+        cache_count = value_cache->GetCount();
+        for (loop_count = 0; loop_count < cache_count; loop_count++) {
+
+          curr_cache_value = value_cache->GetItem(loop_count);
+          if (curr_cache_value->GetByteValue() == value) {
+
+              data_processed = true;
+              break;
+
+          }  //  if (curr_cache_value->GetByteValue() == value) ...
+
+        }  //  for ...
+
+        // Data hasn't been processed yet. Add it to the cache.
+
+        if (!data_processed) {
+
+            new_cache_value = CacheValue::Create(value);
+            value_cache->Add(new_cache_value);
+
+        }  //  if (!data_processed) ...
+
+    }  //  if (is_distinct_request) ...
+
+    // If the data hasn't been processed yet, handle it.
+
+    if (!data_processed)
+        function_result = function_result + value;
+
+}  //  ProcessRequest ()
 
 void FdoFunctionSum::ProcessRequest (FdoDouble value)
 
@@ -796,7 +878,6 @@ void FdoFunctionSum::Validate (FdoLiteralValueCollection *literal_values)
     data_value = static_cast<FdoDataValue *>(literal_value.p);
     incoming_data_type = data_value->GetDataType();
     if ((incoming_data_type == FdoDataType_Boolean ) ||
-        (incoming_data_type == FdoDataType_Byte    ) ||
         (incoming_data_type == FdoDataType_DateTime) ||
         (incoming_data_type == FdoDataType_String  ) ||
         (incoming_data_type == FdoDataType_BLOB    ) ||
