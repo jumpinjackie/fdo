@@ -92,6 +92,48 @@ void WmsTestCustomCommands::testGetFeatureStyles ()
         fail(e);
     }
 }
+
+void WmsTestCustomCommands::testSpacialFeatureClassName ()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
+
+        FdoStringP sServer = FdoStringP::Format(L"FeatureServer=http://demo.cubewerx.com/demo/cubeserv/cubeserv.cgi?version=1.1.0");
+        connection->SetConnectionString((FdoString*)sServer);
+        FdoConnectionState state = connection->Open ();
+        
+        //test for get styles command
+        FdoPtr<FdoWmsIGetFeatureClassStyles> cmdGLS = static_cast<FdoWmsIGetFeatureClassStyles *> (connection->CreateCommand(FdoWmsCommandType_GetFeatureClassStyles));
+        cmdGLS->SetFeatureClassName(L"BARRIERL_1M Foundation"); // layer name is BARRIERL_1M:Foundation
+        FdoStringsP styles = cmdGLS->Execute();
+        CPPUNIT_ASSERT(styles->GetCount() == 1);
+#ifdef _DEBUG
+		for (int i = 0; i < styles->GetCount(); ++i)
+		{
+			wprintf (L"Layer Style: %ls\n", styles->GetString(i));
+		}
+#endif
+        //test for get CRS command
+        FdoPtr<FdoWmsIGetFeatureClassCRSNames> cmdGLCRS = static_cast<FdoWmsIGetFeatureClassCRSNames *> (connection->CreateCommand(FdoWmsCommandType_GetFeatureClassCRSNames));
+        cmdGLCRS->SetFeatureClassName(L"BARRIERL_1M Foundation");//layer name is BARRIERL_1M:Foundation
+        FdoStringsP crsNames = cmdGLCRS->Execute();
+        //CPPUNIT_ASSERT(crsNames->GetCount() == 6);
+#ifdef _DEBUG
+		for (int i = 0; i < crsNames->GetCount(); ++i)
+		{
+			wprintf (L"CRS Name: %ls\n", crsNames->GetString(i));
+		}
+#endif		
+
+        connection->Close ();
+    }
+    catch (FdoException* e)
+    {
+        fail(e);
+    }
+}
+
 void WmsTestCustomCommands::testGetFeatureCRSNames ()
 {
     try
@@ -106,7 +148,7 @@ void WmsTestCustomCommands::testGetFeatureCRSNames ()
         FdoPtr<FdoWmsIGetFeatureClassCRSNames> cmdGLCRS = static_cast<FdoWmsIGetFeatureClassCRSNames *> (connection->CreateCommand(FdoWmsCommandType_GetFeatureClassCRSNames));
         cmdGLCRS->SetFeatureClassName(L"drainage");
         FdoStringsP crsNames = cmdGLCRS->Execute();
-        CPPUNIT_ASSERT(crsNames->GetCount() == 6);
+        CPPUNIT_ASSERT(crsNames->GetCount() == 3);
 #ifdef _DEBUG
 		for (int i = 0; i < crsNames->GetCount(); ++i)
 		{

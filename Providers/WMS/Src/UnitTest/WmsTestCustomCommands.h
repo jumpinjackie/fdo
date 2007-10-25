@@ -37,6 +37,7 @@ class WmsTestCustomCommands : public WmsTests
     CPPUNIT_TEST (testGetImageFormats);
     CPPUNIT_TEST (testGetFeatureStyles);
     CPPUNIT_TEST (testGetFeatureCRSNames);
+    CPPUNIT_TEST (testSpacialFeatureClassName);
 	CPPUNIT_TEST (testInvalidParamForStyle);
 	CPPUNIT_TEST (testInvalidParamForCRS);
 
@@ -54,6 +55,7 @@ public:
 	void testGetImageFormats ();
 	void testGetFeatureStyles ();
     void testGetFeatureCRSNames ();
+    void testSpacialFeatureClassName();
 	void testInvalidParamForStyle ();
 	void testInvalidParamForCRS ();
 };

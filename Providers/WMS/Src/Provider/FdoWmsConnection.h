@@ -47,11 +47,11 @@ protected:
 public:
     /// <summary>Gets all the supported Styles for sepcific layer.</summary>
     /// <returns>Returns string collection of all supported style names.</returns> 
-    FdoStringCollection* GetSupportedStyles(FdoString* layerName);
+    FdoStringCollection* GetSupportedStyles(FdoString* featureClass);
  
     /// <summary>Gets all the supported CRS names for sepcific layer.</summary>
     /// <returns>Returns string collection of all supported CRS names.</returns> 
-    FdoStringCollection* GetSupportedCRSNames(FdoString* layerName);
+    FdoStringCollection* GetSupportedCRSNames(FdoString* featureClass);
 
     /// <summary>Gets all the supported image formats from WMS server.</summary>
     /// <returns>Returns string collection of all supported image formats.</returns> 
@@ -264,9 +264,13 @@ protected:
 
 private:
     // test
-    void _processLayerStyles(FdoWmsLayer* layers, FdoStringCollection* styleNames);
-    void _processLayerCRSNames(FdoWmsLayer* layer, FdoStringCollection* crsNames);
+    void _processLayerStyles(FdoWmsLayer* layers, FdoStringCollection* styleNames, FdoStringCollection* intersectStyleSet);
+    void _processLayerCRSNames(FdoWmsLayer* layer, FdoStringCollection* crsNames, FdoStringCollection* intersectCRSSet);
 
+    // get the real layer name refered by specific feature class
+    FdoStringCollection* _getLayerNamesForClass(FdoString* className);
+    FdoString* _getOriginalLayerName (FdoString* mangledLayerName);
+    
     // build up the class/layer name mapping
     void _buildUpClassLayerMappings (FdoWmsLayerCollection* layers);
     void _buildUpClassLayerMapping (FdoWmsLayer* layer);
