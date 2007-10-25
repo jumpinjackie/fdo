@@ -183,17 +183,17 @@ void FdoFunctionSpatialExtents::CreateFunctionDefinition ()
 
     // Declare and initialize all necessary local variables.
 
-    FdoString *desc = NULL;
+    FdoString                               *desc               = NULL;
 
-    FdoStringP arg1_description;
-    FdoStringP geom_arg_literal;
+    FdoStringP                              arg1_description;
+    FdoStringP                              geom_arg_literal;
 
-    FdoPtr<FdoArgumentDefinition> geom_arg;
+    FdoPtr<FdoArgumentDefinition>           geom_arg;
 
     FdoPtr<FdoArgumentDefinitionCollection> geom_args;
 
-    FdoPtr<FdoSignatureDefinition>   signature;
-    FdoSignatureDefinitionCollection *signatures;
+    FdoPtr<FdoSignatureDefinition>          signature;
+    FdoSignatureDefinitionCollection        *signatures;
 
     // Get the general descriptions for the arguments.
 

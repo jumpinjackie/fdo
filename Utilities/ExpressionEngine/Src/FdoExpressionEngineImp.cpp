@@ -3308,6 +3308,16 @@ FdoPropertyValueCollection* FdoExpressionEngineImp::RunQuery()
             {
                 switch (this->GetResultDataType())
                 {
+                    case FdoDataType_Byte:
+                    {
+                        bool bIsNull;
+                        FdoByte byte = GetByteResult(bIsNull);
+                        if (bIsNull)
+                            dv = FdoByteValue::Create();  // defaults to NULL
+                        else
+                            dv = FdoByteValue::Create(byte);
+                    }
+                    break;
                     case FdoDataType_Int32:
                     {
                         bool bIsNull;

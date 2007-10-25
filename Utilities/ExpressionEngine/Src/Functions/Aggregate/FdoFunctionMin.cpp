@@ -338,26 +338,26 @@ void FdoFunctionMin::CreateFunctionDefinition ()
 
     // Declare and initialize all necessary local variables.
 
-    FdoString *desc = NULL;
+    FdoString                               *desc               = NULL;
 
-    FdoStringP arg1_description;
-    FdoStringP arg2_description;
-    FdoStringP byte_arg_literal;
-    FdoStringP date_arg_literal;
-    FdoStringP num_arg_literal;
-    FdoStringP str_arg_literal;
-    FdoStringP opt_arg_literal;
+    FdoStringP                              arg1_description;
+    FdoStringP                              arg2_description;
+    FdoStringP                              byte_arg_literal;
+    FdoStringP                              date_arg_literal;
+    FdoStringP                              num_arg_literal;
+    FdoStringP                              str_arg_literal;
+    FdoStringP                              opt_arg_literal;
 
-    FdoPtr<FdoArgumentDefinition> byte_arg;
-    FdoPtr<FdoArgumentDefinition> date_arg;
-    FdoPtr<FdoArgumentDefinition> dcl_arg;
-    FdoPtr<FdoArgumentDefinition> dbl_arg;
-    FdoPtr<FdoArgumentDefinition> int16_arg;
-    FdoPtr<FdoArgumentDefinition> int32_arg;
-    FdoPtr<FdoArgumentDefinition> int64_arg;
-    FdoPtr<FdoArgumentDefinition> opt_arg;
-    FdoPtr<FdoArgumentDefinition> sgl_arg;
-    FdoPtr<FdoArgumentDefinition> str_arg;
+    FdoPtr<FdoArgumentDefinition>           byte_arg;
+    FdoPtr<FdoArgumentDefinition>           date_arg;
+    FdoPtr<FdoArgumentDefinition>           dcl_arg;
+    FdoPtr<FdoArgumentDefinition>           dbl_arg;
+    FdoPtr<FdoArgumentDefinition>           int16_arg;
+    FdoPtr<FdoArgumentDefinition>           int32_arg;
+    FdoPtr<FdoArgumentDefinition>           int64_arg;
+    FdoPtr<FdoArgumentDefinition>           opt_arg;
+    FdoPtr<FdoArgumentDefinition>           sgl_arg;
+    FdoPtr<FdoArgumentDefinition>           str_arg;
 
     FdoPtr<FdoArgumentDefinitionCollection> byte_args;
     FdoPtr<FdoArgumentDefinitionCollection> date_args;
@@ -379,11 +379,11 @@ void FdoFunctionMin::CreateFunctionDefinition ()
     FdoPtr<FdoArgumentDefinitionCollection> sgl_opt_args;
     FdoPtr<FdoArgumentDefinitionCollection> str_opt_args;
 
-    FdoPtr<FdoDataValueCollection>           values;
-    FdoPtr<FdoPropertyValueConstraintList>   argument_value_list;
+    FdoPtr<FdoDataValueCollection>          values;
+    FdoPtr<FdoPropertyValueConstraintList>  argument_value_list;
 
-    FdoPtr<FdoSignatureDefinition>           signature;
-    FdoSignatureDefinitionCollection         *signatures;
+    FdoPtr<FdoSignatureDefinition>          signature;
+    FdoSignatureDefinitionCollection        *signatures;
 
     // The function contains signatures that allow an optional first parameter.
     // If used the value of this parameter must be either ALL or DISTINCT. The

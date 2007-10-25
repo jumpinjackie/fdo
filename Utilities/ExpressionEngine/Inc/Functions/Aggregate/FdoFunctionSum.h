@@ -107,6 +107,7 @@ class FdoFunctionSum : public FdoExpressionEngineIAggregateFunction
         // ProcessRequest:
         //  The function processes a call to the Expression Engine function SUM.
 
+        void ProcessRequest (FdoByte     value);
         void ProcessRequest (FdoDouble   value);
         void ProcessRequest (FdoFloat    value);
         void ProcessRequest (FdoInt16    value);

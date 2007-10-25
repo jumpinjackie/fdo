@@ -131,6 +131,7 @@ void FdoFunctionMedian::Process (FdoLiteralValueCollection *literal_values)
 
     FdoDouble               curr_value        = 0;
 
+    FdoPtr<FdoByteValue>    byte_value;
     FdoPtr<FdoDecimalValue> decimal_value;
     FdoPtr<FdoDoubleValue>  double_value;
     FdoPtr<FdoInt16Value>   int16_value;
@@ -154,6 +155,13 @@ void FdoFunctionMedian::Process (FdoLiteralValueCollection *literal_values)
     // Process the request.
 
     switch (incoming_data_type) {
+
+      case FdoDataType_Byte:
+        byte_value = (FdoByteValue *) literal_values->GetItem(0);
+        is_NULL_value = byte_value->IsNull();
+        if (!is_NULL_value)
+            curr_value = (FdoDouble) byte_value->GetByte();
+        break;
 
       case FdoDataType_Decimal:
         decimal_value = (FdoDecimalValue *) literal_values->GetItem(0);
@@ -296,7 +304,7 @@ void FdoFunctionMedian::CreateFunctionDefinition ()
 // | function definition includes the list of supported signatures. The follow-
 // | ing signatures are supported:
 // |
-// |    MEDIAN ({decimal, double, int16, int32, int64, single})
+// |    MEDIAN ({byte decimal, double, int16, int32, int64, single})
 // |
 // | The function always returns a DOUBLE.
 // +---------------------------------------------------------------------------
@@ -305,19 +313,21 @@ void FdoFunctionMedian::CreateFunctionDefinition ()
 
     // Declare and initialize all necessary local variables.
 
-    FdoString *desc = NULL;
+    FdoString                               *desc               = NULL;
 
-    FdoStringP arg1_description;
-    FdoStringP num_arg_literal;
+    FdoStringP                              arg1_description;
+    FdoStringP                              num_arg_literal;
 
-    FdoPtr<FdoArgumentDefinition> dcl_arg;
-    FdoPtr<FdoArgumentDefinition> dbl_arg;
-    FdoPtr<FdoArgumentDefinition> int16_arg;
-    FdoPtr<FdoArgumentDefinition> int32_arg;
-    FdoPtr<FdoArgumentDefinition> int64_arg;
-    FdoPtr<FdoArgumentDefinition> opt_arg;
-    FdoPtr<FdoArgumentDefinition> sgl_arg;
+    FdoPtr<FdoArgumentDefinition>           byte_arg;
+    FdoPtr<FdoArgumentDefinition>           dcl_arg;
+    FdoPtr<FdoArgumentDefinition>           dbl_arg;
+    FdoPtr<FdoArgumentDefinition>           int16_arg;
+    FdoPtr<FdoArgumentDefinition>           int32_arg;
+    FdoPtr<FdoArgumentDefinition>           int64_arg;
+    FdoPtr<FdoArgumentDefinition>           opt_arg;
+    FdoPtr<FdoArgumentDefinition>           sgl_arg;
 
+    FdoPtr<FdoArgumentDefinitionCollection> byte_args;
     FdoPtr<FdoArgumentDefinitionCollection> dcl_args;
     FdoPtr<FdoArgumentDefinitionCollection> dbl_args;
     FdoPtr<FdoArgumentDefinitionCollection> int16_args;
@@ -339,6 +349,8 @@ void FdoFunctionMedian::CreateFunctionDefinition ()
     num_arg_literal =
             FdoException::NLSGetMessage(FUNCTION_NUMBER_ARG_LIT, "number");
 
+    byte_arg  = FdoArgumentDefinition::Create(
+                    num_arg_literal, arg1_description, FdoDataType_Byte);
     dcl_arg   = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Decimal);
     dbl_arg   = FdoArgumentDefinition::Create(
@@ -351,6 +363,9 @@ void FdoFunctionMedian::CreateFunctionDefinition ()
                     num_arg_literal, arg1_description, FdoDataType_Int64);
     sgl_arg   = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Single);
+
+    byte_args = FdoArgumentDefinitionCollection::Create();
+    byte_args->Add(byte_arg);
 
     dcl_args = FdoArgumentDefinitionCollection::Create();
     dcl_args->Add(dcl_arg);
@@ -373,6 +388,9 @@ void FdoFunctionMedian::CreateFunctionDefinition ()
     // Create the signature collection.
 
     signatures = FdoSignatureDefinitionCollection::Create();
+
+    signature = FdoSignatureDefinition::Create(FdoDataType_Double, byte_args);
+    signatures->Add(signature);
 
     signature = FdoSignatureDefinition::Create(FdoDataType_Double, dcl_args);
     signatures->Add(signature);
@@ -520,7 +538,8 @@ void FdoFunctionMedian::Validate (FdoLiteralValueCollection *literal_values)
 
     data_value = static_cast<FdoDataValue *>(literal_value.p);
     incoming_data_type = data_value->GetDataType();
-    if ((incoming_data_type != FdoDataType_Decimal) &&
+    if ((incoming_data_type != FdoDataType_Byte   ) &&
+        (incoming_data_type != FdoDataType_Decimal) &&
         (incoming_data_type != FdoDataType_Double ) &&
         (incoming_data_type != FdoDataType_Int16  ) &&
         (incoming_data_type != FdoDataType_Int32  ) &&
