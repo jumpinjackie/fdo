@@ -556,6 +556,9 @@ void ArcSDEApplySchemaCommand::add_class (FdoFeatureSchema* schema, FdoClassDefi
             // TODO: calculate a valid set of grid values (based on the coordref envelope?)
             // TODO: allow user to specify spatial grid size?  What about other settings via SE_layerinfo_set_*() ?
             LFLOAT grid = 250000.0 / xyunits; // grid sizes must be >250 integer system units (converted with SE_COORDREF)
+            if ( grid < 250 )
+                grid = 250;
+
             result = SE_layerinfo_set_grid_sizes (layer, grid, 0.0, 0.0);
             handle_sde_err<FdoSchemaException>(connection->GetConnection(), result, __FILE__, __LINE__, ARCSDE_SCHEMA_ADD_LAYER_FAILED, "Failed to create layer (spatial column) for class '%1$ls'.", cls->GetName());
 
