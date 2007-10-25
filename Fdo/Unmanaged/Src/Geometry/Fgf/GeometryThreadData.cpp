@@ -39,6 +39,8 @@ FdoGeometryThreadData::GetValue()
         data = new FdoGeometryThreadData;
         if (NULL == data)
             throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
+        else
+            data->geometryPools = new FdoFgfGeometryPools();
         SET_VALUE(threadDataKey_S, data);
 	}
 	return data;
