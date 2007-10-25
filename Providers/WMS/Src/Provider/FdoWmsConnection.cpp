@@ -385,7 +385,7 @@ FdoStringCollection* FdoWmsConnection::GetSupportedStyles(FdoString* featureClas
         {
             throw FdoException::Create (NlsMsgGet(FDOWMS_12001_LAYER_NOT_EXIST, 
             "The WMS layer '%1$ls' does not exist.", 
-            layerName));
+            (FdoString *) layerName));
         }
         _processLayerStyles(currentLayer, styleNames, NULL);
      
@@ -400,7 +400,7 @@ FdoStringCollection* FdoWmsConnection::GetSupportedStyles(FdoString* featureClas
             {
                 throw FdoException::Create (NlsMsgGet(FDOWMS_12001_LAYER_NOT_EXIST, 
                 "The WMS layer '%1$ls' does not exist.", 
-                layerName));
+                (FdoString *) layerName));
             }
 
             FdoStringCollection* baseStyleSet = FdoStringCollection::Create(styleNames);
@@ -458,7 +458,7 @@ FdoStringCollection* FdoWmsConnection::GetSupportedCRSNames(FdoString* featureCl
         {
             throw FdoException::Create (NlsMsgGet(FDOWMS_12001_LAYER_NOT_EXIST, 
             "The WMS layer '%1$ls' does not exist.", 
-            layerName));
+            (FdoString *) layerName));
         }
         _processLayerCRSNames(currentLayer, crsNames, capa->GetCRSNames());
 
@@ -473,7 +473,7 @@ FdoStringCollection* FdoWmsConnection::GetSupportedCRSNames(FdoString* featureCl
             {
                 throw FdoException::Create (NlsMsgGet(FDOWMS_12001_LAYER_NOT_EXIST, 
                 "The WMS layer '%1$ls' does not exist.", 
-                layerName));
+                (FdoString *) layerName));
             }
             FdoStringCollection* baseCRSSet = FdoStringCollection::Create(crsNames);
             crsNames->Clear();
