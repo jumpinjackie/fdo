@@ -450,7 +450,7 @@ void SchemaMgrTests::testGenDefault ()
         FdoFeatureSchemaP schema = fsc->GetItem(0);
         FdoClassesP classes = schema->GetClasses();
 
-        FdoClassDefinitionP classDef = classes->FindItem( phMgr->GetDcDbObjectName(L"VIEW1") );
+        FdoClassDefinitionP classDef = classes->FindItem( table2class(phMgr, L"VIEW1") );
         FdoPtr<FdoClassCapabilities> cap = classDef->GetCapabilities();
         CPPUNIT_ASSERT( !cap->SupportsLongTransactions() );
 
