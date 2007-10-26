@@ -119,7 +119,7 @@ bool FdoSmPhRdOdbcColumnReader::ReadNext()
         SetInt64( FdoStringP::mEmptyString, "scale", scale);
         SetBoolean( FdoStringP::mEmptyString, "nullable", nullable ? true : false );
         SetBoolean( FdoStringP::mEmptyString, "is_autoincremented", is_autoincrement ? true : false );
-
+		SetString( FdoStringP::mEmptyString, L"default_value", L"");
         SetBOF(false);
     }
 

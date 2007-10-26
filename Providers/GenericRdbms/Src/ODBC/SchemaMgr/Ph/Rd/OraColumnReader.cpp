@@ -60,7 +60,7 @@ FdoSmPhRdOraOdbcColumnReader::FdoSmPhRdOraOdbcColumnReader(
 
     // Generate SQL statement for selecting the columns.
     FdoStringP sqlString = FdoStringP::Format(
-        L"select table_name, column_name as name, data_type as type, data_length as \"size\", data_precision as \"precision\", data_scale as scale, nullable\n"
+        L"select table_name, column_name as name, data_type as type, data_length as \"size\", data_precision as \"precision\", data_scale as scale, DATA_DEFAULT as default_value, nullable\n"
         L"         from  all_tab_columns\n"
         L"         where\n"
         L"         owner     = :1 \n"
