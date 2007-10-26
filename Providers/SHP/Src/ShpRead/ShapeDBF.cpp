@@ -108,7 +108,13 @@ ShapeDBF::ShapeDBF (const WCHAR* name, FdoString* codepageCPG) :
         // Read the column info
         TableFieldDescriptor* pTableFieldDescriptorArray = new TableFieldDescriptor[nNumColumns];
         if (!ReadFile (pTableFieldDescriptorArray, sizeof(TableFieldDescriptor) * nNumColumns))
-            throw FdoCommonFile::LastErrorToException (L"ShapeDBF::ShapeDBF(ReadTableFieldDescriptorArray)");
+        {
+            FdoException*  ex = FdoCommonFile::LastErrorToException (L"ShapeDBF::ShapeDBF(ReadTableFieldDescriptorArray)");
+            if ( ex )
+			    throw ex;
+		    else
+			    throw FdoException::Create (NlsMsgGet(SHP_READ_FILE_ERROR, "Error occured reading file '%1$ls'.", FileName() ));
+        }
 
 		// Get the OEM code page either from the header or CPG
 		FdoStringP	codepageESRI = (mCodePageESRI == L"") ? codepageCPG : (FdoString *)mCodePageESRI;
