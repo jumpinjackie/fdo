@@ -121,6 +121,7 @@ INCLUDES = \
   -I../Message/Inc/  \
   -I../../../../Fdo/Unmanaged/Inc \
   -I../../../../Utilities/Common/Inc \
-  -I../../../../Thirdparty/pgsql/include
+  -I../../../../Thirdparty/pgsql/include \
+  -I../../../../Thirdparty/boost_1_32_0
 
 CXXFLAGS = @CXXFLAGS@ -D__USE_GNU -DLINUX -DLINUX_IA32
