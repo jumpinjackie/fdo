@@ -308,7 +308,7 @@ void FilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& cond)
     mExprProc->ReleaseExpressionText(geomHex);
 
     // Cache the constructor of tested geometry
-    std::string geomFromText("GeomFromWKB(decode(\'" + geomHex + "\', \'hex\')," + mSRID + ")");
+    std::string geomFromText("GeomFromWKB(decode(" + geomHex + ", \'hex\')," + mSRID + ")");
 
     // Spatial predicate
     std::string spatialPred;
@@ -432,7 +432,7 @@ void FilterProcessor::ProcessDistanceCondition(FdoDistanceCondition& cond)
     }
 
     // Prepare geometry literal value
-    std::string geomFromText("GeomFromWKB(decode(\'" + geomHex + "\', \'hex\'), " + mSRID +")");
+    std::string geomFromText("GeomFromWKB(decode(" + geomHex + ", \'hex\'), " + mSRID +")"); 
 
     // Prepare distance-based predicate
     switch(cond.GetOperation())
