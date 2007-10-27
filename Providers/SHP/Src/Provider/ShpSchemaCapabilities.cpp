@@ -80,7 +80,7 @@ bool ShpSchemaCapabilities::SupportsInheritance ()
 /// <returns>Returns true if the provider supports multiple schemas.</returns> 
 bool ShpSchemaCapabilities::SupportsMultipleSchemas ()
 {
-    return (true);
+    return (false);
 }
 
 
