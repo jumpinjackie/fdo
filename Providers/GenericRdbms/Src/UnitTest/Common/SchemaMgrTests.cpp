@@ -248,10 +248,8 @@ void SchemaMgrTests::testGenDefault ()
         fkey = table->CreateFkey( "FK_RTABLE7_TABLE7", phMgr->GetDcDbObjectName("TABLE7" ));
         fkey->AddFkeyColumn( fkeyColumn7, L"ID" );
 
-        FdoSmPhBatchColumnsP ukeys = table->GetUkeyColumns(); 
-        FdoSmPhColumnsP	ukeyColumns = new FdoSmPhColumnCollection();
-        ukeys->Add( ukeyColumns );
-    	table->AddUkeyCol( ukeys->GetCount() - 1, L"TABLE7_ID" );
+        table->CreateUkey();
+    	table->AddUkeyCol( table->GetUkeyColumns()->GetCount() - 1, L"TABLE7_ID" );
 
         database->Commit();
         
@@ -275,7 +273,6 @@ void SchemaMgrTests::testGenDefault ()
         column->SetElementState( FdoSchemaElementState_Deleted );
         column = table->CreateColumnGeom( L"NEW_GEOM_COLUMN", (FdoSmPhScInfo*) NULL, true, false );
         table->Commit();
-
 
         printf( "Dumping original schema ...\n" );
 
@@ -1555,8 +1552,7 @@ void SchemaMgrTests::CreateTableGroup( FdoSmPhOwnerP owner, FdoStringP prefix, F
             table->AddCkeyCol( constraint );
 
         	FdoSmPhBatchColumnsP ukeys = table->GetUkeyColumns(); 
-            FdoSmPhColumnsP	ukeyColumns = new FdoSmPhColumnCollection();
-            ukeys->Add( ukeyColumns );
+            table->CreateUkey();
     		table->AddUkeyCol( ukeys->GetCount() - 1, L"DOUBLE_COLUMN" );
         }
     }
