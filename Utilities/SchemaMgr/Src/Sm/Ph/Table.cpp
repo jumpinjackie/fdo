@@ -224,6 +224,15 @@ FdoSmPhIndexP FdoSmPhTable::CreateIndex(
     return index;
 }
 
+FdoSmPhColumnsP FdoSmPhTable::CreateUkey()
+{
+    FdoSmPhColumnsP ukeyColumns = new FdoSmPhColumnCollection();
+    ukeyColumns->SetElementState(FdoSchemaElementState_Added);
+	GetUkeyColumns()->Add( ukeyColumns );
+
+    return ukeyColumns;
+}
+
 void FdoSmPhTable::DiscardIndex( FdoSmPhIndex* index )
 {
     FdoSmPhIndexesP indexes = GetIndexes();
@@ -416,32 +425,35 @@ void FdoSmPhTable::CommitChildren( bool isBeforeParent )
 
 void FdoSmPhTable::CommitUConstraints(bool isBeforeParent)
 {
-	// The table is created along with the constraints. Skip adding constraints explicitly.
     // New constraints must be added after mods to existing table are committed.
     // Deleted constraints are processed before table is committed.
-	if ( (GetCommitState() != FdoSchemaElementState_Added) && mUkeysCollection ) {
+	if ( mUkeysCollection ) {
 
 		for ( int i = 0; i < mUkeysCollection->GetCount(); i++ ) {
 			FdoSmPhColumnsP		ukeyColumns = mUkeysCollection->GetItem(i);	
 
 			if ( ukeyColumns->GetElementState() == FdoSchemaElementState_Added ) {
-                // Unique key redundant (and illegal in Oracle) if has same columns
-                // as primary key.
-                if ( !IsUkeyPkey(ukeyColumns) ) {
-				    FdoStringsP ukColNames = GetKeyColsSql( ukeyColumns );
+                // Constraints are created along with table, so skip adding constraint
+                // if table was new.
+                if ( (GetCommitState() != FdoSchemaElementState_Added) ) {
+                    // Unique key redundant (and illegal in Oracle) if has same columns
+                    // as primary key.
+                    if ( !IsUkeyPkey(ukeyColumns) ) {
+				        FdoStringsP ukColNames = GetKeyColsSql( ukeyColumns );
 
-				    FdoStringP ukeySql = FdoStringP::Format( 
-							    L"UNIQUE (%ls)",
-							    (FdoString*) ukColNames->ToString()
-				    );
+				        FdoStringP ukeySql = FdoStringP::Format( 
+							        L"UNIQUE (%ls)",
+							        (FdoString*) ukColNames->ToString()
+				        );
 
-				    if ( !AddConstraint( ukeySql ) ) {
-					    AddUkeyError(ukColNames->ToString());
+				        if ( !AddConstraint( ukeySql ) ) {
+					        AddUkeyError(ukColNames->ToString());
 
-					    // This will trigger error reporting
-					    if (GetElementState() == FdoSchemaElementState_Unchanged )
-						    SetElementState(FdoSchemaElementState_Modified);
-				    } 
+					        // This will trigger error reporting
+					        if (GetElementState() == FdoSchemaElementState_Unchanged )
+						        SetElementState(FdoSchemaElementState_Modified);
+				        } 
+                    }
                 }
 				ukeyColumns->SetElementState(FdoSchemaElementState_Unchanged);
 			}
@@ -454,25 +466,29 @@ void FdoSmPhTable::CommitCConstraints(bool isBeforeParent)
     // New constraints must be added after mods to existing table are committed.
     // Deleted constraints are processed before table is committed.
  
-	if ( (GetCommitState() != FdoSchemaElementState_Added) && mCkeysCollection ) {
+	if ( mCkeysCollection ) {
 
 		for ( int i = 0; i < mCkeysCollection->GetCount(); i++ ) {
 			FdoSmPhCheckConstraintP		pCheck = mCkeysCollection->GetItem(i);	
 
 			if ( pCheck->GetElementState() == FdoSchemaElementState_Added ) {
 
-				FdoStringP ckeySql = FdoStringP::Format( 
-							L"CHECK (%ls)",
-							(FdoString *)pCheck->GetClause()
-				);
+                // Constraints are created along with table, so skip adding constraint
+                // if table was new.
+            	if ( GetCommitState() != FdoSchemaElementState_Added ) {
+				    FdoStringP ckeySql = FdoStringP::Format( 
+							    L"CHECK (%ls)",
+							    (FdoString *)pCheck->GetClause()
+				    );
 
-				if ( !AddConstraint( ckeySql ) ) {
-					AddCkeyError(pCheck->GetClause());
+				    if ( !AddConstraint( ckeySql ) ) {
+					    AddCkeyError(pCheck->GetClause());
 
-					// This will trigger error reporting
-					if (GetElementState() == FdoSchemaElementState_Unchanged )
-						SetElementState(FdoSchemaElementState_Modified);
-				} 
+					    // This will trigger error reporting
+					    if (GetElementState() == FdoSchemaElementState_Unchanged )
+						    SetElementState(FdoSchemaElementState_Modified);
+				    } 
+                }
 				pCheck->SetElementState(FdoSchemaElementState_Unchanged);
 			}
 		}

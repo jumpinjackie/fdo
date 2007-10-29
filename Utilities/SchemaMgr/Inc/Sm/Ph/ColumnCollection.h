@@ -44,8 +44,14 @@ public:
 	void		SetName( FdoStringP collName ) { mCollName = collName; }
 	FdoStringP	GetName() { return mCollName; }
 
-	void		SetElementState(FdoSchemaElementState state) { mState = state; }
-	FdoSchemaElementState GetElementState() { return mState; }
+	void		SetElementState(FdoSchemaElementState state) 
+    { 
+        mState = state; 
+    }
+	FdoSchemaElementState GetElementState() 
+    { 
+        return mState; 
+    }
 	
 private:
 	FdoStringP				mCollName;
