@@ -141,6 +141,9 @@ public:
         bool isUnique
     );
 
+    // Add a unique constraint to this table.
+    FdoSmPhColumnsP CreateUkey();
+
 	/// Return the list of constraints marked for drop
 	FdoStringsP	GetDeletedConstraints();
 
