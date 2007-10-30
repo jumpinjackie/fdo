@@ -224,10 +224,12 @@ FdoLiteralValue *FdoFunctionSoundex::Evaluate (
 
     // Eliminate all duplicate numbers if they are besides each other (step 6).
 
+    str_length  = work_string.GetLength();
     work_string = EliminateDuplicateNumbers(work_string, str_length);
 
     // Eliminate all zeros.
 
+    str_length  = work_string.GetLength();
     work_string = EliminateZeros (work_string, str_length);
 
     // Construct the resulting string and return the value back to the calling
@@ -262,17 +264,17 @@ void FdoFunctionSoundex::CreateFunctionDefinition ()
 
     // Declare and initialize all necessary local variables.
 
-    FdoString *desc = NULL;
+    FdoString                               *desc               = NULL;
 
-    FdoStringP arg1_description;
-    FdoStringP str_arg_literal;
+    FdoStringP                              arg1_description;
+    FdoStringP                              str_arg_literal;
 
-    FdoPtr<FdoArgumentDefinition> str_arg;
+    FdoPtr<FdoArgumentDefinition>           str_arg;
 
     FdoPtr<FdoArgumentDefinitionCollection> str_args;
 
-    FdoPtr<FdoSignatureDefinition>   signature;
-    FdoSignatureDefinitionCollection *signatures;
+    FdoPtr<FdoSignatureDefinition>          signature;
+    FdoSignatureDefinitionCollection        *signatures;
 
     // Get the general descriptions for the arguments.
 
