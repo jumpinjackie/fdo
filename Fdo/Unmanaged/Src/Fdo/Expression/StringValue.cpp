@@ -41,6 +41,8 @@ FdoStringValue* FdoStringValue::Create(FdoString* value)
 FdoStringValue::FdoStringValue()
 {
     m_data = NULL;
+    m_allocatedSize = 0;
+
 }
 
 // Constructs an instance of a string DataValue using the specified
@@ -49,6 +51,10 @@ FdoStringValue::FdoStringValue(FdoString* value)
 {
 	m_data = FdoStringUtility::MakeString(value);
 	m_isNull = (m_data == NULL);
+    if (value)
+        m_allocatedSize = wcslen(value);
+    else
+        m_allocatedSize = 0;
 }
 
 FdoStringValue::~FdoStringValue()
@@ -82,16 +88,34 @@ FdoString* FdoStringValue::GetString()
 // Sets the DataValue as a string.
 void FdoStringValue::SetString(FdoString* value)
 {
-    FdoStringUtility::ClearString(m_data);
+    if (value)
+    {
+        size_t size = wcslen(value);
+        if ((size > m_allocatedSize) || (m_data == NULL))
+        {
+            FdoStringUtility::ClearString(m_data);
 
-	m_data = FdoStringUtility::MakeString(value);
-	m_isNull = (m_data == NULL);
+	        m_data = FdoStringUtility::MakeString(value);
+            m_allocatedSize = size;
+        }
+        else
+        {
+            wcscpy(m_data, value);
+        }
+    }
+    else
+    {
+        if (m_data)
+            m_data[0] = '\0';
+    }
+	m_isNull = (value == NULL);
 }
 
 // Sets the DataValue to a null value of the specified type.
 void FdoStringValue::SetNull()
 {
-    FdoStringUtility::ClearString(m_data);
+    if (m_data)
+        m_data[0] = '\0';
     FdoDataValue::SetNull();
 }
 
