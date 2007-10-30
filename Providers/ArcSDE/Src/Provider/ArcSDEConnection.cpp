@@ -1372,7 +1372,10 @@ long ArcSDEConnection::GetArcSDELayerInfo(SE_LAYERINFO &pLayerInfo, const CHAR* 
             CHAR cachedTableName[SE_QUALIFIED_TABLE_NAME];
             CHAR cachedColumnName[SE_MAX_COLUMN_LEN];
             result = SE_layerinfo_get_spatial_column(mCachedLayerList[i], cachedTableName, cachedColumnName);
-            if ((result==SE_SUCCESS) && (0==strcmp(tableName, cachedTableName)) && (0==strcmp(columnName, cachedColumnName)))
+
+            if ((result==SE_SUCCESS) && 
+                (0==FdoCommonOSUtil::stricmp(tableName, cachedTableName)) && 
+                (0==FdoCommonOSUtil::stricmp(columnName, cachedColumnName)))
             {
                 pLayerInfo = mCachedLayerList[i];
                 break;
