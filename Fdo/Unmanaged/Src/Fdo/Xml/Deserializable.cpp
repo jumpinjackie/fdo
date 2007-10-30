@@ -124,6 +124,28 @@ void FdoXmlDeserializable::ReadXml(
             ) 
         );
 
+        char errorLevel = 'n';
+        switch ( mFlags->GetErrorLevel() ) {
+        case FdoXmlFlags::ErrorLevel_High:
+            errorLevel = 'h';
+            break;
+        case FdoXmlFlags::ErrorLevel_Low:
+            errorLevel = 'l';
+            break;
+        case FdoXmlFlags::ErrorLevel_VeryLow:
+            errorLevel = 'v';
+            break;
+        }
+
+        params->Add( 
+            FdoDictionaryElementP( 
+                FdoDictionaryElement::Create( 
+                    L"error_level", 
+                    FdoStringP::Format( L"'%c'", errorLevel )
+                ) 
+            ) 
+        );
+
         transformer->Transform();
         transformer = NULL;
         internalWriter = NULL;

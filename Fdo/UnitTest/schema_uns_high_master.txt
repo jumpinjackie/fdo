@@ -54,9 +54,9 @@ Error reading schema 'unsupported' from XML, attribute 'ref' in xs:schema/xs:com
 Error reading schema 'unsupported' from XML, attribute 'ref' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=Prop6] not supported by FDO. 
 Error reading schema 'unsupported' from XML, xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=BadCount]/@maxOccurs value '5' not supported by FDO. 
 Error reading schema 'unsupported' from XML, element 'maxLength' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=DataProp]/xs:simpleType/xs:restriction[base=xs:decimal] not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'union' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=DataProp]/xs:simpleType not supported by FDO. 
 Error reading schema 'unsupported' from XML, attribute 'final' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=DataProp]/xs:simpleType not supported by FDO. 
 Error reading schema 'unsupported' from XML, element 'annotation' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=DataProp]/xs:simpleType not supported by FDO. 
-Error reading schema 'unsupported' from XML, element 'union' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=DataProp]/xs:simpleType not supported by FDO. 
 Error reading schema 'unsupported' from XML, element 'list' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=DataProp]/xs:simpleType not supported by FDO. 
 Error reading schema 'unsupported' from XML, element 'annotation' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=DataProp]/xs:simpleType/xs:restriction not supported by FDO. 
 Error reading schema 'unsupported' from XML, element 'pattern' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=DataProp]/xs:simpleType/xs:restriction not supported by FDO. 
