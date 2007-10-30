@@ -146,6 +146,7 @@ protected:
     virtual FdoCompareType DoCompare( FdoDataValue* other );
 
     wchar_t*    m_data;
+    size_t      m_allocatedSize;
 };
 #endif
 
