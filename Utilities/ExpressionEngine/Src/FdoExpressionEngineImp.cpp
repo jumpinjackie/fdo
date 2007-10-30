@@ -114,6 +114,13 @@ FdoExpressionEngineImp::~FdoExpressionEngineImp()
 	{
 		FDO_SAFE_RELEASE(m_CacheFunc[i].function);
 	}
+    size_t size = m_AggregateFunctions.size();
+    for (size_t i=0; i<size; i++)
+    {
+        FdoExpressionEngineIAggregateFunction *func = (FdoExpressionEngineIAggregateFunction*)m_AggregateFunctions.back();
+        FDO_SAFE_RELEASE(func);
+        m_AggregateFunctions.pop_back();
+    }
 	free(m_CacheFunc);
 
     for (retval_stack::iterator iter = m_retvals.begin (); iter != m_retvals.end (); iter++)
