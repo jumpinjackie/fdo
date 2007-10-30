@@ -1148,7 +1148,8 @@ void ArcSDEConnection::Flush ()
         handle_sde_err<FdoCommandException> (GetConnection (), result, __FILE__, __LINE__, ARCSDE_VERSION_INFO, "Version info for '%1$ls' could not be retrieved.", FdoCommonOSUtil::itow (GetActiveVersion (), buffer, ELEMENTS(buffer)));
 
         // close the state and move the version to that state
-        ArcSDELongTransactionUtility::UnlockVersion (GetConnection (), version, GetActiveState ());
+        if ( GetActiveState () != 0 )
+            ArcSDELongTransactionUtility::UnlockVersion (GetConnection (), version, GetActiveState ());
 
         // free the version info structure
         SE_versioninfo_free (version);
