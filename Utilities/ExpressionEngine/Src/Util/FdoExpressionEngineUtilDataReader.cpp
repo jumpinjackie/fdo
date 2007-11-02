@@ -673,12 +673,21 @@ bool vector_sort(orderby_context rowcontext1, orderby_context rowcontext2)
 
         FdoCommonPropertyStub* ps = propIndex->GetPropInfo(orderbyidName);
         int len1 = orderbyBinReader1->PositionReader(ps->m_recordIndex, propIndex);
-        if (len1 == 0)
-            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_73_PROPERTY_INDEXOUTOFBOUNDS), ps->m_recordIndex));
         int len2 = orderbyBinReader2->PositionReader(ps->m_recordIndex, propIndex);
-        if (len2 == 0)
-            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_73_PROPERTY_INDEXOUTOFBOUNDS), ps->m_recordIndex));
+		if( len1 == 0 || len2 == 0 )
+		{
+			int result = 1;
+			if( len1 == 0 && len2 == 0 )
+				result = 0;
+			else if( len1 == 0 )
+				result = -1;
 
+			bDone = (result != 0);
+            bRet  = (result <  0);
+
+			continue;
+		}
+		
         switch (ps->m_dataType)
         {
         case FdoDataType_String:
