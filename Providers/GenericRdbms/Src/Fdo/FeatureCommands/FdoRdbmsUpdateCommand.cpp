@@ -195,25 +195,6 @@ FdoInt32 FdoRdbmsUpdateCommand::Execute ()
 
         int  featId;
         bool addedIndentProperties = false;  // Used to indicate if we added any property to the user populated property value collection
-        const wchar_t *prmPrtName = L"FeatId";
-        wchar_t *prmColName = NULL;
-        const FdoSmLpDataPropertyDefinition *featIdProp = NULL;
-        if ( isFeatClass ) {
-            featIdProp = classDefinition->RefFeatIdProperty();
-            if( featIdProp != NULL ) {
-                const FdoSmPhColumn* featIdCol = featIdProp->RefColumn();
-
-                if ( featIdCol != NULL ) {
-                    const wchar_t *colName = featIdCol->GetName();
-                    prmColName = (wchar_t*)alloca ((wcslen(colName) + 1)*sizeof( wchar_t ) );
-                    wcscpy(prmColName, colName);
-                }
-                else {
-                    featIdProp = NULL;
-                }
-            }
-        }
-
 		
 		// Initialize the long transaction manager if we have one
 		const FdoRdbmsPvcProcessor* ltPvcProcessor = NULL;
@@ -227,70 +208,44 @@ FdoInt32 FdoRdbmsUpdateCommand::Execute ()
         for( int i =0; properties!= NULL && i<properties->GetCount(); i++ )
         {
             // following needs to change to handle numeric columns.
-            if ( !properties->RefItem(i)->GetIsFeatId() )
+            const wchar_t* name = properties->RefItem(i)->GetName();
+
+            FdoPtr<FdoPropertyValue> propVal = mPropertyValues->FindItem( name );
+
+            if( propVal != NULL )
             {
-                const wchar_t* name = properties->RefItem(i)->GetName();
+                FdoPtr<FdoDataValue> value = (FdoDataValue*)propVal->GetValue();
+                int length;
 
-                FdoPtr<FdoPropertyValue> propVal = mPropertyValues->FindItem( name );
+                // For non object property class, we should not accept an initialized identity property
+                // as the user may think that updating identity properties is allowed.
+                // For collection object properties, the user has to provide the identity values.
 
-                if( propVal != NULL )
+                if( value != NULL && className->GetScope( length ) == NULL )
                 {
-                    FdoPtr<FdoDataValue> value = (FdoDataValue*)propVal->GetValue();
-                    int length;
-
-                    // For non object property class, we should not accept an initialized identity property
-                    // as the user may think that updating identity properties is allowed.
-                    // For collection object properties, the user has to provide the identity values.
-
-                    if( value != NULL && className->GetScope( length ) == NULL )
-                    {
-                        throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_389, "Identity properties are not updateable" ));
-                    }
+                    throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_389, "Identity properties are not updateable" ));
                 }
             }
-
         }
 
         while( query->ReadNext() )
         {
             for( int i =0; properties!= NULL && i<properties->GetCount(); i++ )
             {
-                if ( properties->RefItem(i)->GetIsFeatId() )
+                // following needs to change to handle numeric columns.
+                FdoPtr<FdoPropertyValue> propVal;
+                const wchar_t* name = properties->RefItem(i)->GetName();
+                propVal = mPropertyValues->FindItem( name );
+                if( propVal == NULL )
                 {
-                    if ( isFeatClass && featIdProp )
-                    {
-                        //
-                        // Update the FeatId property value.
-                        featId = (int)query->GetInt64(prmColName, NULL, NULL );
-                        FdoPtr<FdoDataValue> featNum = FdoDataValue::Create(mConnection->GetUtility()->Utf8ToUnicode(ut_itoa( featId, buffer) ) );
-                        FdoPtr<FdoPropertyValue> propVal = mPropertyValues->FindItem( prmPrtName );
-                        if (propVal == NULL)
-                        {
-                            propVal = FdoPropertyValue::Create(  );
-                            propVal->SetName( prmPrtName );
-                            mPropertyValues->Add( propVal );
-                            addedIndentProperties = true;
-                        }
-                        propVal->SetValue( featNum );
-                    }
+                    propVal = FdoPropertyValue::Create();
+                    propVal->SetName( name );
+                    mPropertyValues->Add( propVal );
+                    addedIndentProperties = true;
                 }
-                else
-                {
-                    // following needs to change to handle numeric columns.
-                    FdoPtr<FdoPropertyValue> propVal;
-                    const wchar_t* name = properties->RefItem(i)->GetName();
-                    propVal = mPropertyValues->FindItem( name );
-                    if( propVal == NULL )
-                    {
-                        propVal = FdoPropertyValue::Create();
-                        propVal->SetName( name );
-                        mPropertyValues->Add( propVal );
-                        addedIndentProperties = true;
-                    }
-                    const wchar_t* strVal = query->GetString(  properties->RefItem(i)->GetColumnName(), NULL, NULL );
-                    FdoPtr<FdoDataValue> propData = FdoDataValue::Create( strVal );
-                    propVal->SetValue( propData );
-                }
+                const wchar_t* strVal = query->GetString(  properties->RefItem(i)->GetColumnName(), NULL, NULL );
+                FdoPtr<FdoDataValue> propData = FdoDataValue::Create( strVal );
+                propVal->SetValue( propData );
             }
             //
             // Update the properties associated with this feature

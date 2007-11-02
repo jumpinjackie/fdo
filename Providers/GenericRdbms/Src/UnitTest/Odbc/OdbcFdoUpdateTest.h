@@ -41,6 +41,7 @@ public:
   	virtual void UpdateObjectProperty(){}
   	virtual void UpdateMultiIdFeatureClass (){}
   	virtual void UpdateSingleIdFeatureClass (){}
+  	virtual void UpdateNlsIdFeatureClass (){}
   	virtual void ConditionalUpdate (){}
   	virtual void UpdateNoMeta (){}
 

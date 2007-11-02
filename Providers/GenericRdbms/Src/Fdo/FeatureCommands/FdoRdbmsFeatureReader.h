@@ -151,8 +151,6 @@ class FdoRdbmsFeatureReader: public FdoIFeatureReader
 
       int GetAttributeQuery( wchar_t* className );
 
-      bool GetIfFeatId( const wchar_t *propertyName, long *featId );
-
       void FetchProperties ( );
 
       void ThrowPropertyNotFoundExp( const wchar_t* propertyName, FdoException* exc = NULL);
@@ -229,7 +227,6 @@ public:
       int                mAttrsQidIdx;
       bool               mPropertiesFetched;
 
-      FdoPropertyValueCollection    *mCurrentFeatId; // Used to maintain the feature id name/value pairs
       bool               mHasMoreFeatures;
       bool               mIsFeatureQuery;   // Used to indicate that this reader is for a feature query
       wchar_t            mCurrentClassName[GDBI_SCHEMA_ELEMENT_NAME_SIZE]; // Contains the class name of the current record(feature)
@@ -258,14 +255,12 @@ public:
       int               mUnskippedColCount;
       GdbiColumnDesc    *mColList;
 
-      FdoStringP        mFeatIdColName;
       FdoStringP        mClassIdColName;
       FdoStringP        mRevNumColName;
 
       StringMap         mStringMap;
 
       char              mTmpStringValue[GDBI_MAXIMUM_STRING_SIZE+1];
-      int               mFeatNum;
 
       dbi_pn_id_t       mOldActiveSC;
       dbi_pn_id_t       mNewActiveSC;

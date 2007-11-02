@@ -1307,6 +1307,172 @@ void FdoUpdateTest::UpdateSingleIdFeatureClass()
 
 }
 
+void FdoUpdateTest::UpdateNlsIdFeatureClass()
+{
+    FdoPtr<FdoIConnection> connection;
+    FdoPtr<FdoITransaction> featureTransaction;
+
+    try
+    {
+        connection = UnitTestUtil::GetConnection(mSuffix, false);
+        UnitTestUtil::CreateLandSchema(connection);
+        UnitTestUtil::CreateNonUniqueSchema(connection);
+
+        featureTransaction = connection->BeginTransaction();
+
+        // Clear out any data from previous run.
+
+        FdoPtr<FdoIDelete> deleteCommand = (FdoIDelete *) connection->CreateCommand(FdoCommandType_Delete);
+        deleteCommand->SetFeatureClassName(L"L\x00e4nd:Building");
+        deleteCommand->Execute();
+        deleteCommand = NULL;
+
+        // Create the test data
+
+        FdoPtr<FdoIInsert> insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
+        insertCommand->SetFeatureClassName(L"L\x00e4nd:Building");
+        FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
+        FdoPtr<FdoDataValue> dataValue;
+        FdoPtr<FdoPropertyValue> propertyValue;
+
+        dataValue = FdoDataValue::Create(L"Keep");
+        propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, L"Value");
+        propertyValue->SetValue(dataValue);
+
+        double       coordsBuffer[3];
+        int          segCount = 1;
+
+        coordsBuffer[0] = 2;
+        coordsBuffer[1] = 15;
+        coordsBuffer[2] = 0;
+
+        propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, L"Geometry");
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+        bool supportsZ = (FdoPtr<FdoIGeometryCapabilities>(connection->GetGeometryCapabilities())->GetDimensionalities() & FdoDimensionality_Z);
+
+        FdoPtr<FdoILineString> line1;
+		
+		if ( supportsZ )
+			line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, segCount*3, coordsBuffer);
+		else
+			line1 = gf->CreateLineString(FdoDimensionality_XY, segCount*2, coordsBuffer);
+
+        FdoPtr<FdoByteArray> byteArray = gf->GetFgf(line1);
+        FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
+        propertyValue->SetValue(geometryValue);
+
+        FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
+        dataValue = FdoDataValue::Create(L"Discard");
+        propertyValue = propertyValues->GetItem(L"Value");
+        propertyValue->SetValue(dataValue);
+
+        reader = insertCommand->Execute();
+
+        dataValue = FdoDataValue::Create(L"Update");
+        propertyValue = propertyValues->GetItem(L"Value");
+        propertyValue->SetValue(dataValue);
+
+        reader = insertCommand->Execute();
+
+        insertCommand = NULL;
+        featureTransaction->Commit();
+
+
+        FdoPtr<FdoFilter>   filter = FdoComparisonCondition::Create(
+            FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Value") ),
+            FdoComparisonOperations_EqualTo,
+            FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Update") )
+        );
+
+
+        FdoPtr<FdoIUpdate> UpdateCommand = (FdoIUpdate *) connection->CreateCommand(FdoCommandType_Update);
+        UpdateCommand->SetFeatureClassName(L"L\x00e4nd:Building");
+        UpdateCommand->SetFilter( filter );
+
+        propertyValues = UpdateCommand->GetPropertyValues();
+
+        dataValue = FdoDataValue::Create(L"Updated" );
+        propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, L"Value");
+        propertyValue->SetValue(dataValue);
+
+        UpdateCommand->Execute();
+
+        UpdateCommand = NULL;
+
+        deleteCommand = (FdoIDelete *) connection->CreateCommand(FdoCommandType_Delete);
+
+        filter = FdoComparisonCondition::Create(
+            FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Value") ),
+            FdoComparisonOperations_EqualTo,
+            FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Discard") )
+        );
+
+        deleteCommand->SetFeatureClassName(L"L\x00e4nd:Building");
+        deleteCommand->SetFilter( filter );
+
+        deleteCommand->Execute();
+        deleteCommand = NULL;
+
+        featureTransaction->Commit();
+
+        // Select and verify all data (post-update state).
+
+        FdoPtr<FdoISelect> selectCommand = (FdoISelect *) connection->CreateCommand(FdoCommandType_Select);
+
+        selectCommand->SetFeatureClassName( L"L\x00e4nd:Building" );
+
+        FdoPtr<FdoIFeatureReader> rdr = selectCommand->Execute();
+        FdoPtr<FdoIdentifierCollection> props = selectCommand->GetPropertyNames();
+
+        int rowCount = 0;
+        bool foundKeep = false;
+        bool foundUpdated = false;
+
+        while ( rdr->ReadNext() )
+        {
+            rowCount++;
+            CPPUNIT_ASSERT( !rdr->IsNull(L"Value") );
+            FdoStringP val = rdr->GetString(L"Value");
+            
+            if ( val == L"Keep" ) 
+                foundKeep = true;
+
+            if ( val == L"Updated" ) 
+                foundUpdated = true;
+
+        }
+
+        CPPUNIT_ASSERT( rowCount == 2 );
+        CPPUNIT_ASSERT( foundKeep );
+        CPPUNIT_ASSERT( foundUpdated );
+
+        connection->Close ();
+    }
+    catch (FdoException *ex)
+    {
+        try {
+            if( connection )
+                connection->Close ();
+        }
+        catch ( ... )
+        {
+        }
+        UnitTestUtil::FailOnException(ex);
+    }
+    catch (...)
+    {
+        try {
+            if( connection )
+                connection->Close ();
+        }
+        catch ( ... )
+        {
+        }
+        throw;
+    }
+
+}
+
 void FdoUpdateTest::CheckGeometry(FdoPtr<FdoIFeatureReader> rdr, FdoString* propName, double expectedX, double expectedY, double expectedZ)
 {
     CPPUNIT_ASSERT( !rdr->IsNull(propName) );
