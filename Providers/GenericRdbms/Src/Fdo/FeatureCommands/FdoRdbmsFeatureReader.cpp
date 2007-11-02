@@ -56,8 +56,6 @@ public:
     FdoRdbmsFeatureReader( connection, queryResult, isFeatureQuery, classDef, schmCol, properties, level, secondarySpatialFilters )
     {
         mInvoked = false;
-        if(  mCurrentFeatId )
-            mCurrentFeatId->AddRef();
 
         if( mSchemaCollection )
             mSchemaCollection->AddRef();
@@ -149,7 +147,6 @@ FdoRdbmsFeatureReader::FdoRdbmsFeatureReader( FdoIConnection *connection, GdbiQu
   mAttrsQidIdx( -1 ),
   mPropertiesFetched( false ),
   mIsFeatureQuery( isFeatureQuery ),
-  mCurrentFeatId( NULL ),
   mClassDefinition( classDef ),
   mCurrentRevisionNumber(0),
   mSchemaCollection( schmCol  ),
@@ -191,13 +188,6 @@ FdoRdbmsFeatureReader::FdoRdbmsFeatureReader( FdoIConnection *connection, GdbiQu
 	m_cacheMissed1 = 0;
 	m_cacheMissed2 = 0;
 
-    const FdoSmLpDataPropertyDefinition* featIdProp = classDef->RefFeatIdProperty();
-    if ( featIdProp ) {
-		// Cache the property in the 1st slot, followed by class id and revisionnumber.
-		// This is the order used by ReadNext()
-		mFeatIdColName = Property2ColName( featIdProp->GetName(), NULL );
-    }	
-
     // TODO: push down to Schema Manager, rather than hard-code property names.
     mClassIdColName = Property2ColName( L"ClassId", NULL );
     mRevNumColName = Property2ColName( L"RevisionNumber", NULL );
@@ -211,9 +201,6 @@ FdoRdbmsFeatureReader::FdoRdbmsFeatureReader( FdoIConnection *connection, GdbiQu
 
 FdoRdbmsFeatureReader::~FdoRdbmsFeatureReader()
 {
-  if(  mCurrentFeatId )
-    mCurrentFeatId->Release();
-
   if( mSchemaCollection )
       mSchemaCollection->Release();
 
@@ -697,22 +684,15 @@ void  FdoRdbmsFeatureReader::FetchProperties ()
 
             //const char* tableNameString = mConnection->GetUtility()->UnicodeToUtf8(tableName);
 
-            FdoPropertyType type;
-            FdoPtr<FdoPropertyValue> FeatIdProp = mCurrentFeatId->GetItem(0);
-            FdoPtr<FdoIdentifier> id = FeatIdProp->GetName();
-            const char *primKey = Property2ColName( id->GetText(), &type );
-            if( primKey == NULL || type != FdoPropertyType_DataProperty )
-                throw "";
-
+            /* TODO: Abstract class query can no longer be done since feature table no longer supported.
+             * However, we might someday implement class table mapping in which case this type of query
+             * would be possible again. This would mean rewriting the following to bind in all identity
+             * properties.
             mAttrQueryCache[mAttrsQidIdx].statement = mConnection->GetGdbiConnection()->Prepare( (const wchar_t*)FdoStringP::Format(gql_query,(FdoString *)tableName, primKey) );
             mAttrQueryCache[mAttrsQidIdx].statement->Bind( 1, &mFeatNum, NULL);
+            */
         }
 
-        //
-        // Initialize the bind variable
-        FdoPtr<FdoPropertyValue> FeatIdProp = mCurrentFeatId->GetItem(0);
-        FdoPtr<FdoInt32Value> dataValue = (static_cast<FdoInt32Value*>(FeatIdProp->GetValue()));
-        mFeatNum = dataValue->GetInt32();
         mAttrQueryCache[mAttrsQidIdx].query = mAttrQueryCache[mAttrsQidIdx].statement->ExecuteQuery();
 
         if( mAttrQueryCache[mAttrsQidIdx].query->ReadNext() == RDBI_END_OF_FETCH )
@@ -1266,37 +1246,6 @@ double FdoRdbmsFeatureReader::GetDouble( const wchar_t *propertyName )
     GET_ATTRIBUTE( mAttrQueryCache[mAttrsQidIdx].query->GetDouble, double );
     return value;
 }
-
-bool  FdoRdbmsFeatureReader::GetIfFeatId( const wchar_t *propertyName, long *featId )
-{
-    if( ! mIsFeatureQuery )
-        return false;
-
-#ifdef _WIN32
-    if( mCurrentRevisionNumberValid && FdoCommonOSUtil::wcsicmp( propertyName, L"RevisionNumber") == 0 )
-#else
-    if( wcscasecmp( propertyName, L"RevisionNumber") == 0 )
-#endif
-    {
-        *featId = mCurrentRevisionNumber;
-        return true;
-    }
-
-    if( NULL == mCurrentFeatId || mCurrentFeatId->GetCount() != 1 )
-        return false;
-
-    FdoPtr<FdoPropertyValue> FeatIdProp = mCurrentFeatId->GetItem(0);
-    FdoPtr<FdoIdentifier> id = FeatIdProp->GetName();
-    if( FeatIdProp && id->GetName() && id->GetText() &&
-        wcscmp( propertyName, id->GetText() ) == 0 )
-    {
-        FdoPtr<FdoInt32Value> featIdValue = (static_cast<FdoInt32Value*>(FeatIdProp->GetValue()));
-        *featId = (FdoInt32)featIdValue->GetInt32();
-        return true;
-    }
-    return false;
-}
-
 
 const wchar_t* FdoRdbmsFeatureReader::GetString( const wchar_t *propertyName )
 {
@@ -2003,15 +1952,6 @@ bool FdoRdbmsFeatureReader::ReadNext( )
 		// Reinitialize cache cursor
 		mLastPropertyInfoDef = 0;
 
-        if ( mFeatIdColName == L"" )
-            dbiFeature.feat_num = 0;
-        else
-		{
-			PROPERTY2COLNAME_IDX( mFeatIdColName, NULL, NULL, &cacheIndex );
-            mQueryResult->GetBinaryValue( mPropertyInfoDefs[cacheIndex].columnPosition, sizeof(long),
-                        (char *)&dbiFeature.feat_num, NULL, NULL );
-		}
-
         if ( mClassIdColName == L"" )
             dbiFeature.classid = (long)mClassDefinition->GetId();
         else
@@ -2052,45 +1992,6 @@ bool FdoRdbmsFeatureReader::ReadNext( )
             mPropertiesFetched = true;
         }
 
-        if( mCurrentFeatId == NULL || wcscmp( mLastClassName, mCurrentClassName ) != 0   )
-        {
-            if( mCurrentFeatId != NULL )
-                mCurrentFeatId->Release();
-            
-            mCurrentFeatId = NULL;
-
-             //
-            // Find the primary key and initialize the primary key list. Note that non-FeatureClass tables may have primary key made of more than
-            // one column. Those column can be of any type.
-            // The FdoPropertyValueCollection is used a dictionary to maintain the list of primary key column and their values.
-            // Feature class table only have a single column primary key and it must be a featid colum.
-            const FdoSmLpDataPropertyDefinition *featIdProp = mClassDefinition->RefFeatIdProperty();
-            if( featIdProp != NULL )
-            {
-                const wchar_t *featId = featIdProp->GetName();
-                if ( (featId == NULL) || (wcslen(featId) == 0) )
-                    throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_15, "Feature ID does not exist"));
-
-                mCurrentFeatId = FdoPropertyValueCollection::Create();
-                FdoPropertyValue *propValue = FdoPropertyValue::Create();
-                FdoDataValue  *featNum = FdoDataValue::Create((FdoInt32) dbiFeature.feat_num );
-                propValue->SetName( featId  );
-                propValue->SetValue( featNum );
-                mCurrentFeatId->Add(propValue);
-                propValue->Release();
-                featNum->Release();
-            }
-        }
-        else
-        { 
-            if ( mCurrentFeatId != NULL ) 
-            {
-                // Just reinitialize the value
-                FdoPtr<FdoPropertyValue> FeatIdProp = mCurrentFeatId->GetItem(0);
-                FdoPtr<FdoDataValue> featNum = FdoDataValue::Create((FdoInt32) dbiFeature.feat_num );
-                FeatIdProp->SetValue( featNum );
-            }
-        }
     } // if( mIsFeatureQuery )
     else
     {
