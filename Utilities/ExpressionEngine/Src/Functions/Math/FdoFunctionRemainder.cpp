@@ -122,8 +122,6 @@ FdoLiteralValue *FdoFunctionRemainder::Evaluate (
                             is_zero_divisor   = false,
                             is_zero_dividend  = false;
 
-    FdoByte                 f_byte_result;
-
     FdoDouble               abs_int64_p1,
                             abs_int64_p2,
                             f_dbl_result,

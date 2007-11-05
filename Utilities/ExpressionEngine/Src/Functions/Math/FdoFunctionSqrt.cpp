@@ -133,13 +133,9 @@ FdoLiteralValue *FdoFunctionSqrt::Evaluate (
 
       case FdoDataType_Byte:
         byte_value =(FdoByteValue *) literal_values->GetItem(0);
-        if (!byte_value->IsNull()) {
-
-            if (byte_value->GetByte() >= 0)
-                return FdoDoubleValue::Create(
+        if (!byte_value->IsNull())
+            return FdoDoubleValue::Create(
                                         sqrt((double)byte_value->GetByte()));
-
-        }  //  if (!decimal_value->IsNull()) ...
         else
           return FdoDoubleValue::Create();
         break;
