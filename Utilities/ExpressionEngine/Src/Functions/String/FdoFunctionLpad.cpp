@@ -230,8 +230,9 @@ void FdoFunctionLpad::CreateFunctionDefinition ()
 // | function definition includes the list of supported signatures. The follow-
 // | ing signatures are supported:
 // |
-// |    LPAD (
-// |        string, {decimal, double, int16, int32, int64, single} [, string] )
+// |    LPAD (string, 
+// |          {byte, decimal, double, int16, int32, int64, single}
+// |          [, string] )
 // |
 // | The function always returns a STRING.
 // +---------------------------------------------------------------------------
@@ -240,24 +241,26 @@ void FdoFunctionLpad::CreateFunctionDefinition ()
 
     // Declare and initialize all necessary local variables.
 
-    FdoString *desc = NULL;
+    FdoString                               *desc               = NULL;
 
-    FdoStringP arg1_description;
-    FdoStringP arg2_description;
-    FdoStringP arg3_description;
-    FdoStringP str_arg_literal;
-    FdoStringP length_arg_literal;
-    FdoStringP pad_str_arg_literal;
+    FdoStringP                              arg1_description;
+    FdoStringP                              arg2_description;
+    FdoStringP                              arg3_description;
+    FdoStringP                              str_arg_literal;
+    FdoStringP                              length_arg_literal;
+    FdoStringP                              pad_str_arg_literal;
 
-    FdoPtr<FdoArgumentDefinition> dcl_arg;
-    FdoPtr<FdoArgumentDefinition> dbl_arg;
-    FdoPtr<FdoArgumentDefinition> int16_arg;
-    FdoPtr<FdoArgumentDefinition> int32_arg;
-    FdoPtr<FdoArgumentDefinition> int64_arg;
-    FdoPtr<FdoArgumentDefinition> sgl_arg;
-    FdoPtr<FdoArgumentDefinition> str_arg;
-    FdoPtr<FdoArgumentDefinition> str_opt_arg;
+    FdoPtr<FdoArgumentDefinition>           byte_arg;
+    FdoPtr<FdoArgumentDefinition>           dcl_arg;
+    FdoPtr<FdoArgumentDefinition>           dbl_arg;
+    FdoPtr<FdoArgumentDefinition>           int16_arg;
+    FdoPtr<FdoArgumentDefinition>           int32_arg;
+    FdoPtr<FdoArgumentDefinition>           int64_arg;
+    FdoPtr<FdoArgumentDefinition>           sgl_arg;
+    FdoPtr<FdoArgumentDefinition>           str_arg;
+    FdoPtr<FdoArgumentDefinition>           str_opt_arg;
 
+    FdoPtr<FdoArgumentDefinitionCollection> str_byte_args;
     FdoPtr<FdoArgumentDefinitionCollection> str_dcl_args;
     FdoPtr<FdoArgumentDefinitionCollection> str_dbl_args;
     FdoPtr<FdoArgumentDefinitionCollection> str_int16_args;
@@ -265,6 +268,7 @@ void FdoFunctionLpad::CreateFunctionDefinition ()
     FdoPtr<FdoArgumentDefinitionCollection> str_int64_args;
     FdoPtr<FdoArgumentDefinitionCollection> str_sgl_args;
 
+    FdoPtr<FdoArgumentDefinitionCollection> str_byte_str_args;
     FdoPtr<FdoArgumentDefinitionCollection> str_dcl_str_args;
     FdoPtr<FdoArgumentDefinitionCollection> str_dbl_str_args;
     FdoPtr<FdoArgumentDefinitionCollection> str_int16_str_args;
@@ -272,8 +276,8 @@ void FdoFunctionLpad::CreateFunctionDefinition ()
     FdoPtr<FdoArgumentDefinitionCollection> str_int64_str_args;
     FdoPtr<FdoArgumentDefinitionCollection> str_sgl_str_args;
 
-    FdoPtr<FdoSignatureDefinition>   signature;
-    FdoSignatureDefinitionCollection *signatures;
+    FdoPtr<FdoSignatureDefinition>          signature;
+    FdoSignatureDefinitionCollection        *signatures;
 
     // Get the general descriptions for the arguments.
 
@@ -306,27 +310,28 @@ void FdoFunctionLpad::CreateFunctionDefinition ()
     str_arg   = FdoArgumentDefinition::Create(
                     str_arg_literal, arg1_description, FdoDataType_String);
 
+    byte_arg  = FdoArgumentDefinition::Create(
+                    length_arg_literal, arg2_description, FdoDataType_Byte);
     dcl_arg   = FdoArgumentDefinition::Create(
                     length_arg_literal, arg2_description, FdoDataType_Decimal);
-
     dbl_arg   = FdoArgumentDefinition::Create(
                     length_arg_literal, arg2_description, FdoDataType_Double);
-
     int16_arg = FdoArgumentDefinition::Create(
                     length_arg_literal, arg2_description, FdoDataType_Int16);
-
     int32_arg = FdoArgumentDefinition::Create(
                     length_arg_literal, arg2_description, FdoDataType_Int32);
-
     int64_arg = FdoArgumentDefinition::Create(
                     length_arg_literal, arg2_description, FdoDataType_Int64);
-
     sgl_arg   = FdoArgumentDefinition::Create(
                     length_arg_literal, arg2_description, FdoDataType_Single);
 
     str_opt_arg =
             FdoArgumentDefinition::Create(
                 pad_str_arg_literal, arg3_description, FdoDataType_String);
+
+    str_byte_args = FdoArgumentDefinitionCollection::Create();
+    str_byte_args->Add(str_arg);
+    str_byte_args->Add(byte_arg);
 
     str_dcl_args = FdoArgumentDefinitionCollection::Create();
     str_dcl_args->Add(str_arg);
@@ -351,6 +356,11 @@ void FdoFunctionLpad::CreateFunctionDefinition ()
     str_sgl_args = FdoArgumentDefinitionCollection::Create();
     str_sgl_args->Add(str_arg);
     str_sgl_args->Add(sgl_arg);
+
+    str_byte_str_args = FdoArgumentDefinitionCollection::Create();
+    str_byte_str_args->Add(str_arg);
+    str_byte_str_args->Add(byte_arg);
+    str_byte_str_args->Add(str_opt_arg);
 
     str_dcl_str_args = FdoArgumentDefinitionCollection::Create();
     str_dcl_str_args->Add(str_arg);
@@ -386,30 +396,48 @@ void FdoFunctionLpad::CreateFunctionDefinition ()
 
     signatures = FdoSignatureDefinitionCollection::Create();
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_String, str_dcl_args);
+    signature = FdoSignatureDefinition::Create(
+                                    FdoDataType_String, str_byte_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_String, str_dbl_args);
+    signature = FdoSignatureDefinition::Create(
+                                    FdoDataType_String, str_dcl_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_String, str_int16_args);
+    signature = FdoSignatureDefinition::Create(
+                                    FdoDataType_String, str_dbl_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_String, str_int32_args);
+    signature = FdoSignatureDefinition::Create(
+                                    FdoDataType_String, str_int16_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_String, str_int64_args);
+    signature = FdoSignatureDefinition::Create(
+                                    FdoDataType_String, str_int32_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_String, str_sgl_args);
+    signature = FdoSignatureDefinition::Create(
+                                    FdoDataType_String, str_int64_args);
+    signatures->Add(signature);
+    signature = FdoSignatureDefinition::Create(
+                                    FdoDataType_String, str_sgl_args);
     signatures->Add(signature);
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_String, str_dcl_str_args);
+    signature = FdoSignatureDefinition::Create(
+                                    FdoDataType_String, str_byte_str_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_String, str_dbl_str_args);
+    signature = FdoSignatureDefinition::Create(
+                                    FdoDataType_String, str_dcl_str_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_String, str_int16_str_args);
+    signature = FdoSignatureDefinition::Create(
+                                    FdoDataType_String, str_dbl_str_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_String, str_int32_str_args);
+    signature = FdoSignatureDefinition::Create(
+                                    FdoDataType_String, str_int16_str_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_String, str_int64_str_args);
+    signature = FdoSignatureDefinition::Create(
+                                    FdoDataType_String, str_int32_str_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_String, str_sgl_str_args);
+    signature = FdoSignatureDefinition::Create(
+                                    FdoDataType_String, str_int64_str_args);
+    signatures->Add(signature);
+    signature = FdoSignatureDefinition::Create(
+                                    FdoDataType_String, str_sgl_str_args);
     signatures->Add(signature);
 
     // Create the function definition.
@@ -441,6 +469,7 @@ FdoInt64 FdoFunctionLpad::GetPaddingLength (
 
     // Declare all necessary local variables and initialize them.
 
+    FdoPtr<FdoByteValue>    byte_value;
     FdoPtr<FdoDecimalValue> decimal_value;
     FdoPtr<FdoDoubleValue>  double_value;
     FdoPtr<FdoInt16Value>   int16_value;
@@ -452,6 +481,18 @@ FdoInt64 FdoFunctionLpad::GetPaddingLength (
     // calling routine.
 
     switch (data_type) {
+
+      case FdoDataType_Byte:
+        byte_value =(FdoByteValue *) literal_values->GetItem(1);
+        if (!byte_value->IsNull())
+            return (FdoInt64) (byte_value->GetByte());
+        else {
+
+          *is_NULL_value = true;
+          return 0;
+
+        }  //  else ...
+        break;
 
       case FdoDataType_Decimal:
         decimal_value =(FdoDecimalValue *) literal_values->GetItem(1);
@@ -596,7 +637,8 @@ void FdoFunctionLpad::Validate (FdoLiteralValueCollection *literal_values)
     // tion signatures. If this is not the case issue an exception.
 
     if ((para1_data_type  != FdoDataType_String      ) ||
-        ((para2_data_type != FdoDataType_Decimal) &&
+        ((para2_data_type != FdoDataType_Byte   ) &&
+         (para2_data_type != FdoDataType_Decimal) &&
          (para2_data_type != FdoDataType_Double ) &&
          (para2_data_type != FdoDataType_Int16  ) &&
          (para2_data_type != FdoDataType_Int32  ) &&

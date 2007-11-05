@@ -122,12 +122,13 @@ FdoLiteralValue *FdoFunctionToString::Evaluate (
 
     // Declare and initialize all necessary local variables.
 
-    FdoPtr<FdoDecimalValue>  decimal_value;
-    FdoPtr<FdoDoubleValue>   double_value;
-    FdoPtr<FdoInt16Value>    int16_value;
-    FdoPtr<FdoInt32Value>    int32_value;
-    FdoPtr<FdoInt64Value>    int64_value;
-    FdoPtr<FdoSingleValue>   single_value;
+    FdoPtr<FdoByteValue>    byte_value;
+    FdoPtr<FdoDecimalValue> decimal_value;
+    FdoPtr<FdoDoubleValue>  double_value;
+    FdoPtr<FdoInt16Value>   int16_value;
+    FdoPtr<FdoInt32Value>   int32_value;
+    FdoPtr<FdoInt64Value>   int64_value;
+    FdoPtr<FdoSingleValue>  single_value;
 
     // Validate the function call.
 
@@ -139,6 +140,16 @@ FdoLiteralValue *FdoFunctionToString::Evaluate (
 
       case FdoDataType_DateTime:
         return ProcessDateTime(literal_values);
+        break;
+
+      case FdoDataType_Byte:
+        byte_value = (FdoByteValue *) literal_values->GetItem(0);
+        if (byte_value->IsNull())
+            return FdoStringValue::Create();
+        else
+          return FdoStringValue::Create(
+                   FdoStringP::Format(
+                                L"%d", (FdoInt16) byte_value->GetByte()));
         break;
 
       case FdoDataType_Decimal:
@@ -227,7 +238,7 @@ void FdoFunctionToString::CreateFunctionDefinition ()
 // | following signatures are supported:
 // |
 // |    TOSTRING (date [, string])
-// |    TOSTRING ({decimal, double, int16, int32, int64, single})
+// |    TOSTRING ({byte, decimal, double, int16, int32, int64, single})
 // |
 // | The function always returns a STRING.
 // +---------------------------------------------------------------------------
@@ -244,6 +255,7 @@ void FdoFunctionToString::CreateFunctionDefinition ()
     FdoStringP                              form_arg_literal;
     FdoStringP                              num_arg_literal;
 
+    FdoPtr<FdoArgumentDefinition>           byte_arg;
     FdoPtr<FdoArgumentDefinition>           dt_arg;
     FdoPtr<FdoArgumentDefinition>           dcl_arg;
     FdoPtr<FdoArgumentDefinition>           dbl_arg;
@@ -256,6 +268,7 @@ void FdoFunctionToString::CreateFunctionDefinition ()
     FdoPtr<FdoArgumentDefinitionCollection> dt_args;
     FdoPtr<FdoArgumentDefinitionCollection> dt_form_args;
 
+    FdoPtr<FdoArgumentDefinitionCollection> byte_args;
     FdoPtr<FdoArgumentDefinitionCollection> dcl_args;
     FdoPtr<FdoArgumentDefinitionCollection> dbl_args;
     FdoPtr<FdoArgumentDefinitionCollection> int16_args;
@@ -289,25 +302,20 @@ void FdoFunctionToString::CreateFunctionDefinition ()
 
     dt_arg    = FdoArgumentDefinition::Create(
                     dt_arg_literal, arg1_description, FdoDataType_DateTime);
-
     form_arg  = FdoArgumentDefinition::Create(
                     form_arg_literal, arg2_description, FdoDataType_String);
-
+    byte_arg  = FdoArgumentDefinition::Create(
+                    num_arg_literal, arg1_description, FdoDataType_Byte);
     dcl_arg   = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Decimal);
-
     dbl_arg   = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Double);
-
     int16_arg = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Int16);
-
     int32_arg = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Int32);
-
     int64_arg = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Int64);
-
     sgl_arg   = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Single);
 
@@ -317,6 +325,9 @@ void FdoFunctionToString::CreateFunctionDefinition ()
     dt_form_args = FdoArgumentDefinitionCollection::Create();
     dt_form_args->Add(dt_arg);
     dt_form_args->Add(form_arg);
+
+    byte_args = FdoArgumentDefinitionCollection::Create();
+    byte_args->Add(byte_arg);
 
     dcl_args = FdoArgumentDefinitionCollection::Create();
     dcl_args->Add(dcl_arg);
@@ -345,6 +356,9 @@ void FdoFunctionToString::CreateFunctionDefinition ()
 
     signature = FdoSignatureDefinition::Create(
                                             FdoDataType_String, dt_form_args);
+    signatures->Add(signature);
+
+    signature = FdoSignatureDefinition::Create(FdoDataType_String, byte_args);
     signatures->Add(signature);
 
     signature = FdoSignatureDefinition::Create(FdoDataType_String, dcl_args);
@@ -1267,7 +1281,8 @@ void FdoFunctionToString::Validate (FdoLiteralValueCollection *literal_values)
 
     }  //  for (i = 0; i < count; i++) ...
 
-    if ((para1_data_type != FdoDataType_Decimal ) &&
+    if ((para1_data_type != FdoDataType_Byte    ) &&
+        (para1_data_type != FdoDataType_Decimal ) &&
         (para1_data_type != FdoDataType_Double  ) &&
         (para1_data_type != FdoDataType_Int16   ) &&
         (para1_data_type != FdoDataType_Int32   ) &&

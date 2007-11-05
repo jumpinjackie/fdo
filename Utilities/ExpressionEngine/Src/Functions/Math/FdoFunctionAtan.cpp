@@ -115,6 +115,11 @@ FdoLiteralValue *FdoFunctionAtan::Evaluate (
 
     // Declare and initialize all necessary local variables.
 
+
+    bool                    is_NULL         = false;
+    FdoDouble               curr_value;
+
+    FdoPtr<FdoByteValue>    byte_value;
     FdoPtr<FdoDecimalValue> decimal_value;
     FdoPtr<FdoDoubleValue>  double_value;
     FdoPtr<FdoInt16Value>   int16_value;
@@ -130,70 +135,75 @@ FdoLiteralValue *FdoFunctionAtan::Evaluate (
 
     switch (incoming_data_type) {
 
+      case FdoDataType_Byte:
+        byte_value = (FdoByteValue *) literal_values->GetItem(0);
+        is_NULL    = byte_value->IsNull();
+        if (!is_NULL)
+            curr_value = (FdoDouble) byte_value->GetByte();
+        break;
+
       case FdoDataType_Decimal:
         decimal_value =(FdoDecimalValue *) literal_values->GetItem(0);
-        if (!decimal_value->IsNull())
-            return FdoDoubleValue::Create(atan(decimal_value->GetDecimal()));
-        else
-          return FdoDoubleValue::Create();
+        is_NULL       = decimal_value->IsNull();
+        if (!is_NULL)
+            curr_value = decimal_value->GetDecimal();
         break;
 
       case FdoDataType_Double:
         double_value = (FdoDoubleValue *) literal_values->GetItem(0);
-        if (!double_value->IsNull())
-            return FdoDoubleValue::Create(atan(double_value->GetDouble()));
-        else
-          return FdoDoubleValue::Create();
+        is_NULL      = double_value->IsNull();
+        if (!is_NULL)
+            curr_value = double_value->GetDouble();
         break;
 
       case FdoDataType_Int16:
         int16_value = (FdoInt16Value *) literal_values->GetItem(0);
-        if (!int16_value->IsNull())
-            return FdoDoubleValue::Create(
-                                    atan((double)int16_value->GetInt16()));
-        else
-          return FdoDoubleValue::Create();
+        is_NULL     = int16_value->IsNull();
+        if (!is_NULL)
+            curr_value = (FdoDouble) int16_value->GetInt16();
         break;
 
       case FdoDataType_Int32:
         int32_value = (FdoInt32Value *) literal_values->GetItem(0);
-        if (!int32_value->IsNull())
-            return FdoDoubleValue::Create(
-                                    atan((double)int32_value->GetInt32()));
-        else
-          return FdoDoubleValue::Create();
+        is_NULL     = int32_value->IsNull();
+        if (!is_NULL)
+            curr_value = (FdoDouble) int32_value->GetInt32();
         break;
 
       case FdoDataType_Int64:
         int64_value = (FdoInt64Value *) literal_values->GetItem(0);
-        if (!int64_value->IsNull())
-            return FdoDoubleValue::Create(
-                                    atan((double)int64_value->GetInt64()));
-        else
-          return FdoDoubleValue::Create();
+        is_NULL     = int64_value->IsNull();
+        if (!is_NULL)
+            curr_value = (FdoDouble) int64_value->GetInt64();
         break;
 
       case FdoDataType_Single:
         single_value = (FdoSingleValue *) literal_values->GetItem(0);
-        if (!single_value->IsNull())
-            return FdoDoubleValue::Create(atan(single_value->GetSingle()));
-        else
-          return FdoDoubleValue::Create();
+        is_NULL      = single_value->IsNull();
+        if (!is_NULL)
+            curr_value = (FdoDouble) single_value->GetSingle();
         break;
 
-    }  //  switch ...
+      default:
 
-    // The validation at the top of the function ensures that any invalid call
-    // is handled correctly. Therefore, the above statements should have pro-
-    // cessed the request correctly and the function result should have been
-    // returned. Just in case there is an issue, the following exception is
-    // thrown if this part of the function implementation is reached.
+        // Because of the argument validation, this statement should never be
+        // reached. 
 
-    throw FdoException::Create(
+        throw FdoException::Create(
             FdoException::NLSGetMessage(
               FUNCTION_UNEXPECTED_RESULT_ERROR, 
               "Expression Engine: Unexpected result for function '%1$ls'",
               FDO_FUNCTION_ATAN));
+        break;
+
+    }  //  switch ...
+
+    // Calculate the result and return it back to the calling routine.
+
+    if (!is_NULL)
+        return FdoDoubleValue::Create(atan(curr_value));
+    else
+      return FdoDoubleValue::Create();
 
 }  //  Evaluate ()
 
@@ -209,7 +219,7 @@ void FdoFunctionAtan::CreateFunctionDefinition ()
 // | function definition includes the list of supported signatures. The follow-
 // | ing signatures are supported:
 // |
-// |    ATAN ({decimal, double, int16, int32, int64, single})
+// |    ATAN ({byte, decimal, double, int16, int32, int64, single})
 // |
 // | The function always returns a DOUBLE.
 // +---------------------------------------------------------------------------
@@ -218,18 +228,20 @@ void FdoFunctionAtan::CreateFunctionDefinition ()
 
     // Declare and initialize all necessary local variables.
 
-    FdoString *desc = NULL;
+    FdoString                               *desc               = NULL;
 
-    FdoStringP arg1_description;
-    FdoStringP num_arg_literal;
+    FdoStringP                              arg1_description;
+    FdoStringP                              num_arg_literal;
 
-    FdoPtr<FdoArgumentDefinition> dcl_arg;
-    FdoPtr<FdoArgumentDefinition> dbl_arg;
-    FdoPtr<FdoArgumentDefinition> int16_arg;
-    FdoPtr<FdoArgumentDefinition> int32_arg;
-    FdoPtr<FdoArgumentDefinition> int64_arg;
-    FdoPtr<FdoArgumentDefinition> sgl_arg;
+    FdoPtr<FdoArgumentDefinition>           byte_arg;
+    FdoPtr<FdoArgumentDefinition>           dcl_arg;
+    FdoPtr<FdoArgumentDefinition>           dbl_arg;
+    FdoPtr<FdoArgumentDefinition>           int16_arg;
+    FdoPtr<FdoArgumentDefinition>           int32_arg;
+    FdoPtr<FdoArgumentDefinition>           int64_arg;
+    FdoPtr<FdoArgumentDefinition>           sgl_arg;
 
+    FdoPtr<FdoArgumentDefinitionCollection> byte_args;
     FdoPtr<FdoArgumentDefinitionCollection> dcl_args;
     FdoPtr<FdoArgumentDefinitionCollection> dbl_args;
     FdoPtr<FdoArgumentDefinitionCollection> int16_args;
@@ -251,6 +263,8 @@ void FdoFunctionAtan::CreateFunctionDefinition ()
     num_arg_literal =
             FdoException::NLSGetMessage(FUNCTION_NUMBER_ARG_LIT, "number");
 
+    byte_arg  = FdoArgumentDefinition::Create(
+                    num_arg_literal, arg1_description, FdoDataType_Byte);
     dcl_arg   = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Decimal);
     dbl_arg   = FdoArgumentDefinition::Create(
@@ -263,6 +277,9 @@ void FdoFunctionAtan::CreateFunctionDefinition ()
                     num_arg_literal, arg1_description, FdoDataType_Int64);
     sgl_arg   = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Single);
+
+    byte_args = FdoArgumentDefinitionCollection::Create();
+    byte_args->Add(byte_arg);
 
     dcl_args = FdoArgumentDefinitionCollection::Create();
     dcl_args->Add(dcl_arg);
@@ -285,6 +302,9 @@ void FdoFunctionAtan::CreateFunctionDefinition ()
     // Create the signature collection.
 
     signatures = FdoSignatureDefinitionCollection::Create();
+
+    signature = FdoSignatureDefinition::Create(FdoDataType_Double, byte_args);
+    signatures->Add(signature);
 
     signature = FdoSignatureDefinition::Create(FdoDataType_Double, dcl_args);
     signatures->Add(signature);
@@ -360,7 +380,8 @@ void FdoFunctionAtan::Validate (FdoLiteralValueCollection *literal_values)
 
     data_value = static_cast<FdoDataValue *>(literal_value.p);
     incoming_data_type = data_value->GetDataType();
-    if ((incoming_data_type != FdoDataType_Decimal) &&
+    if ((incoming_data_type != FdoDataType_Byte   ) &&
+        (incoming_data_type != FdoDataType_Decimal) &&
         (incoming_data_type != FdoDataType_Double ) &&
         (incoming_data_type != FdoDataType_Int16  ) &&
         (incoming_data_type != FdoDataType_Int32  ) &&

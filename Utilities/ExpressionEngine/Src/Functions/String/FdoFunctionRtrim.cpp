@@ -183,17 +183,17 @@ void FdoFunctionRtrim::CreateFunctionDefinition ()
 
     // Declare and initialize all necessary local variables.
 
-    FdoString *desc = NULL;
+    FdoString                               *desc               = NULL;
 
-    FdoStringP arg1_description;
-    FdoStringP str_arg_literal;
+    FdoStringP                              arg1_description;
+    FdoStringP                              str_arg_literal;
 
-    FdoPtr<FdoArgumentDefinition> str_arg;
+    FdoPtr<FdoArgumentDefinition>           str_arg;
 
     FdoPtr<FdoArgumentDefinitionCollection> str_args;
 
-    FdoPtr<FdoSignatureDefinition>   signature;
-    FdoSignatureDefinitionCollection *signatures;
+    FdoPtr<FdoSignatureDefinition>          signature;
+    FdoSignatureDefinitionCollection        *signatures;
 
     // Get the general descriptions for the arguments.
 

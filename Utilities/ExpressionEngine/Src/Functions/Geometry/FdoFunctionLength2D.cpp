@@ -33,9 +33,10 @@ FdoFunctionLength2D::FdoFunctionLength2D (FdoBoolean computeGeodetic)
 
 {
     // Initialize all class variables.
-	is_validated = false;
+
+	is_validated        = false;
     function_definition = NULL;
-	compute_geodetic = computeGeodetic;
+	compute_geodetic    = computeGeodetic;
 
 }  //  FdoFunctionLength2D ()
 
@@ -106,7 +107,16 @@ FdoLiteralValue *FdoFunctionLength2D::Evaluate (
 // +---------------------------------------------------------------------------
 
 {
-    FdoPtr<FdoGeometryValue> geom_value;
+
+    // Declare and initialize all necessary local variables.
+
+    FdoDouble                     length = 0.0;
+
+    FdoPtr<FdoFgfGeometryFactory> gf;
+    FdoPtr<FdoIGeometry>          geom;
+    FdoPtr<FdoGeometryValue>      geom_value;
+
+    gf = FdoFgfGeometryFactory::GetInstance();
 
     // If the argument list has not been validated, execute the check next.
     // NOTE: the validation is executed only the first time the procedure is
@@ -122,17 +132,18 @@ FdoLiteralValue *FdoFunctionLength2D::Evaluate (
 
     geom_value = (FdoGeometryValue *) literal_values->GetItem(0);
     if (geom_value->IsNull())
-		return FdoDoubleValue::Create();
+        return FdoDoubleValue::Create();
 
-	// Create a geometry object
-    FdoPtr<FdoFgfGeometryFactory>	gf = FdoFgfGeometryFactory::GetInstance();
-    FdoPtr<FdoIGeometry>			geom = gf->CreateGeometryFromFgf( FdoPtr<FdoByteArray>(geom_value->GetGeometry()));
-	FdoDouble						length = 0.0;
+    // Create a geometry object
+
+    geom = gf->CreateGeometryFromFgf(
+                            FdoPtr<FdoByteArray>(geom_value->GetGeometry()));
 
 	// Compute
-	FdoExpressionEngineGeometryUtil::ComputeGeometryLength( compute_geodetic, false /*3D*/, geom, &length );
-	
-	return FdoDoubleValue::Create(length);
+
+    FdoExpressionEngineGeometryUtil::ComputeGeometryLength(
+                            compute_geodetic, false /*3D*/, geom, &length);
+    return FdoDoubleValue::Create(length);
 
 }  //  Evaluate ()
 

@@ -172,15 +172,15 @@ void FdoFunctionInstr::CreateFunctionDefinition ()
 
     // Declare and initialize all necessary local variables.
 
-    FdoString *desc = NULL;
+    FdoString                               *desc               = NULL;
 
-    FdoStringP arg1_description;
-    FdoStringP arg2_description;
-    FdoStringP str_arg_literal;
-    FdoStringP str2_arg_literal;
+    FdoStringP                              arg1_description;
+    FdoStringP                              arg2_description;
+    FdoStringP                              str_arg_literal;
+    FdoStringP                              str2_arg_literal;
 
-    FdoPtr<FdoArgumentDefinition> str1_arg;
-    FdoPtr<FdoArgumentDefinition> str2_arg;
+    FdoPtr<FdoArgumentDefinition>           str1_arg;
+    FdoPtr<FdoArgumentDefinition>           str2_arg;
 
     FdoPtr<FdoArgumentDefinitionCollection> str_args;
 

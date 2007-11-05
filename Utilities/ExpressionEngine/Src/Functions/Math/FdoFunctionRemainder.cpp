@@ -122,9 +122,14 @@ FdoLiteralValue *FdoFunctionRemainder::Evaluate (
                             is_zero_divisor   = false,
                             is_zero_dividend  = false;
 
-    FdoDouble               f_dbl_result,
+    FdoByte                 f_byte_result;
+
+    FdoDouble               abs_int64_p1,
+                            abs_int64_p2,
+                            f_dbl_result,
                             p1_dbl_value,
-                            p2_dbl_value;
+                            p2_dbl_value,
+                            nearest_int_val;
 
     FdoFloat                f_flt_result,
                             p1_flt_value,
@@ -136,15 +141,14 @@ FdoLiteralValue *FdoFunctionRemainder::Evaluate (
     FdoInt32                i,
                             f_int32_result;
 
-    FdoInt64                abs_int64_p1,
-                            abs_int64_p2,
-                            p1_int64_value,
+    FdoInt64                p1_int64_value,
                             p2_int64_value,
                             f_int64_result;
 
     FdoDataType             ret_data_type,
                             curr_data_type;
 
+    FdoPtr<FdoByteValue>    byte_value;
     FdoPtr<FdoDecimalValue> decimal_value;
     FdoPtr<FdoDoubleValue>  double_value;
     FdoPtr<FdoInt16Value>   int16_value;
@@ -163,6 +167,30 @@ FdoLiteralValue *FdoFunctionRemainder::Evaluate (
       is_NULL_input  = true;
       curr_data_type = (i == 0) ? para1_data_type : para2_data_type;
       switch (curr_data_type) {
+
+        case FdoDataType_Byte:
+          byte_value = (FdoByteValue *) literal_values->GetItem(i);
+          if (!byte_value->IsNull()) {
+
+              is_NULL_input = false;
+
+              if (i == 0) {
+
+                  p1_int64_value   = byte_value->GetByte();
+                  p1_sign          = 1;
+                  is_zero_dividend = (p1_int64_value == 0);
+
+              }  //  if (i == 0) ...
+              else {
+
+                p2_int64_value  = byte_value->GetByte();
+                is_zero_divisor = (p2_int64_value == 0);
+
+              }  //  else ...
+
+          }  //  if (!byte_value->IsNull()) ...
+
+          break;
 
         case FdoDataType_Decimal:
           decimal_value =(FdoDecimalValue *) literal_values->GetItem(i);
@@ -293,7 +321,7 @@ FdoLiteralValue *FdoFunctionRemainder::Evaluate (
               if (i == 0) {
 
                   p1_flt_value     = single_value->GetSingle();
-                  p1_sign          = (p1_dbl_value < 0) ? -1 : 1;
+                  p1_sign          = (p1_flt_value < 0) ? -1 : 1;
                   is_zero_dividend = (p1_flt_value == 0);
 
               }  //  if (i == 0) ...
@@ -326,6 +354,10 @@ FdoLiteralValue *FdoFunctionRemainder::Evaluate (
     if (is_NULL_input) {
 
         switch (ret_data_type) {
+
+          case FdoDataType_Byte:
+            return FdoByteValue::Create();
+            break;
 
           case FdoDataType_Decimal:
             return FdoDecimalValue::Create();
@@ -370,6 +402,10 @@ FdoLiteralValue *FdoFunctionRemainder::Evaluate (
 
         switch (ret_data_type) {
 
+          case FdoDataType_Byte:
+            return FdoByteValue::Create((FdoByte)0);
+            break;
+
           case FdoDataType_Decimal:
             return FdoDecimalValue::Create((double)0);
             break;
@@ -400,6 +436,49 @@ FdoLiteralValue *FdoFunctionRemainder::Evaluate (
 
     // Calculate the function result.
 
+    if ((para1_data_type == FdoDataType_Byte       ) &&
+        ((para2_data_type == FdoDataType_Byte ) ||
+         (para2_data_type == FdoDataType_Int16)    )    ){
+
+         abs_int64_p1    = GetInt64AbsValue(p1_int64_value);
+         abs_int64_p2    = GetInt64AbsValue(p2_int64_value); 
+         nearest_int_val = Round((abs_int64_p1 / abs_int64_p2));
+         f_int16_result  =
+            (FdoInt16) (p1_sign * (abs_int64_p1 -
+                                        (abs_int64_p2 * nearest_int_val)));
+
+         return FdoInt16Value::Create(f_int16_result);
+
+    }  //  if ((para1_data_type == FdoDataType_Byte) ...
+
+    if ((para1_data_type == FdoDataType_Byte ) &&
+        (para2_data_type == FdoDataType_Int32)    ) {
+
+         abs_int64_p1    = GetInt64AbsValue(p1_int64_value);
+         abs_int64_p2    = GetInt64AbsValue(p2_int64_value);
+         nearest_int_val = Round((abs_int64_p1 / abs_int64_p2));
+         f_int32_result  =
+            (FdoInt32) (p1_sign * (abs_int64_p1 -
+                                        (abs_int64_p2 * nearest_int_val)));
+
+         return FdoInt32Value::Create(f_int32_result);
+
+    }  //  if ((para1_data_type == FdoDataType_Byte) ...
+
+    if ((para1_data_type == FdoDataType_Byte ) &&
+        (para2_data_type == FdoDataType_Int64)    ) {
+
+         abs_int64_p1    = GetInt64AbsValue(p1_int64_value);
+         abs_int64_p2    = GetInt64AbsValue(p2_int64_value); 
+         nearest_int_val = Round((abs_int64_p1 / abs_int64_p2));
+         f_int64_result  =
+            (FdoInt64) (p1_sign * (abs_int64_p1 -
+                                        (abs_int64_p2 * nearest_int_val)));
+
+         return FdoInt64Value::Create(f_int64_result);
+
+    }  //  if ((para1_data_type == FdoDataType_Byte) ...
+
     if (((para1_data_type == FdoDataType_Decimal) &&
          (para2_data_type == FdoDataType_Decimal)    ) ||
         ((para1_data_type == FdoDataType_Decimal) &&
@@ -409,25 +488,26 @@ FdoLiteralValue *FdoFunctionRemainder::Evaluate (
         ((para1_data_type == FdoDataType_Double ) &&
          (para2_data_type == FdoDataType_Double )    )    ) {
 
-         f_dbl_result =
+         nearest_int_val = Round(fabs(p1_dbl_value) / fabs(p2_dbl_value));
+         f_dbl_result    =
             p1_sign * (fabs(p1_dbl_value) -
-                      (fabs(p2_dbl_value) * Round(fabs(p1_dbl_value) / fabs(p2_dbl_value))));
+                                    (fabs(p2_dbl_value) * nearest_int_val));
 
          return FdoDoubleValue::Create(f_dbl_result);
 
     }  //  if (((para1_data_type == FdoDataType_Decimal) ...
 
     if ((para1_data_type == FdoDataType_Decimal    ) &&
-        ((para2_data_type == FdoDataType_Int16) ||
+        ((para2_data_type == FdoDataType_Byte ) ||
+         (para2_data_type == FdoDataType_Int16) ||
          (para2_data_type == FdoDataType_Int32) ||
          (para2_data_type == FdoDataType_Int64)    )    ) {
 
-         abs_int64_p2 = (p2_int64_value > 0)
-                        ? p2_int64_value
-                        : -1 * p2_int64_value; 
-         f_dbl_result =
-            p1_sign * (fabs(p1_dbl_value) -
-                      (abs_int64_p2 * Round(fabs(p1_dbl_value) / abs_int64_p2)));
+         abs_int64_p2    = GetInt64AbsValue(p2_int64_value);
+         nearest_int_val = Round(fabs(p1_dbl_value) / abs_int64_p2);
+         f_dbl_result    =
+                p1_sign * (fabs(p1_dbl_value) -
+                                        (abs_int64_p2 * nearest_int_val));
 
          return FdoDoubleValue::Create(f_dbl_result);
 
@@ -436,25 +516,26 @@ FdoLiteralValue *FdoFunctionRemainder::Evaluate (
     if ((para1_data_type == FdoDataType_Decimal) &&
         (para2_data_type == FdoDataType_Single )    ) {
 
-         f_dbl_result =
+         nearest_int_val = Round(fabs(p1_dbl_value) / fabs(p2_flt_value));
+         f_dbl_result    =
             p1_sign * (fabs(p1_dbl_value) -
-                      (fabs(p2_flt_value) * Round(fabs(p1_dbl_value) / fabs(p2_flt_value))));
+                                    (fabs(p2_flt_value) * nearest_int_val));
 
          return FdoDoubleValue::Create(f_dbl_result);
 
     }  //  if ((para1_data_type == FdoDataType_Decimal) ...
 
     if ((para1_data_type == FdoDataType_Double     ) &&
-        ((para2_data_type == FdoDataType_Int16) ||
+        ((para2_data_type == FdoDataType_Byte ) ||
+         (para2_data_type == FdoDataType_Int16) ||
          (para2_data_type == FdoDataType_Int32) ||
          (para2_data_type == FdoDataType_Int64)    )    ) {
 
-         abs_int64_p2 = (p2_int64_value > 0)
-                        ? p2_int64_value
-                        : -1 * p2_int64_value; 
-         f_dbl_result =
-            p1_sign * (fabs(p1_dbl_value) -
-                      (abs_int64_p2 * Round(fabs(p1_dbl_value) / abs_int64_p2)));
+         abs_int64_p2    = GetInt64AbsValue(p2_int64_value);
+         nearest_int_val = Round(fabs(p1_dbl_value) / abs_int64_p2);
+         f_dbl_result    =
+                p1_sign * (fabs(p1_dbl_value) -
+                                        (abs_int64_p2 * nearest_int_val));
 
          return FdoDoubleValue::Create(f_dbl_result);
 
@@ -463,68 +544,60 @@ FdoLiteralValue *FdoFunctionRemainder::Evaluate (
     if ((para1_data_type == FdoDataType_Double) &&
         (para2_data_type == FdoDataType_Single )    ) {
 
-         f_dbl_result =
+         nearest_int_val = Round(fabs(p1_dbl_value) / fabs(p2_flt_value));
+         f_dbl_result    =
             p1_sign * (fabs(p1_dbl_value) -
-                      (fabs(p2_flt_value) * Round(fabs(p1_dbl_value) / fabs(p2_flt_value))));
+                                    (fabs(p2_flt_value) * nearest_int_val));
 
          return FdoDoubleValue::Create(f_dbl_result);
 
     }  //  if ((para1_data_type == FdoDataType_Double) ...
 
-    if (((para1_data_type == FdoDataType_Int16  ) ||
+    if (((para1_data_type == FdoDataType_Byte   ) ||
+         (para1_data_type == FdoDataType_Int16  ) ||
          (para1_data_type == FdoDataType_Int32  ) ||
          (para1_data_type == FdoDataType_Int64  )    ) &&
         ((para2_data_type == FdoDataType_Decimal) ||
          (para2_data_type == FdoDataType_Double )    )    ) {
 
-         abs_int64_p1 = (p1_int64_value > 0)
-                        ? p1_int64_value
-                        : -1 * p1_int64_value; 
-         f_dbl_result =
-            p1_sign * (abs_int64_p1 -
-                      (fabs(p2_dbl_value) * Round(abs_int64_p1 / fabs(p2_dbl_value))));
+         abs_int64_p1    = GetInt64AbsValue(p1_int64_value);
+         nearest_int_val = Round(abs_int64_p1 / fabs(p2_dbl_value));
+         f_dbl_result    =
+                    p1_sign * (abs_int64_p1 -
+                                    (fabs(p2_dbl_value) * nearest_int_val));
 
          return FdoDoubleValue::Create(f_dbl_result);
 
     }  //  if (((para1_data_type == FdoDataType_Int16) ...
 
     if ((para1_data_type == FdoDataType_Int16 )      &&
-        ((para2_data_type == FdoDataType_Int16) ||
+        ((para2_data_type == FdoDataType_Byte ) ||
+         (para2_data_type == FdoDataType_Int16) ||
          (para2_data_type == FdoDataType_Int32) ||
          (para2_data_type == FdoDataType_Int64)    )    ) {
 
-         abs_int64_p1 = (p1_int64_value > 0)
-                        ? p1_int64_value
-                        : -1 * p1_int64_value; 
-
-         abs_int64_p2 = (p2_int64_value > 0)
-                        ? p2_int64_value
-                        : -1 * p2_int64_value; 
-
-         f_int16_result =
-            (FdoInt16) (p1_sign *
-                         (abs_int64_p1 -
-                          (abs_int64_p2 *
-                           Round((double)(abs_int64_p1 / abs_int64_p2)))));
+         abs_int64_p1    = GetInt64AbsValue(p1_int64_value);
+         abs_int64_p2    = GetInt64AbsValue(p2_int64_value);
+         nearest_int_val = Round((abs_int64_p1 / abs_int64_p2));
+         f_int16_result  =
+            (FdoInt16) (p1_sign * (abs_int64_p1 -
+                                        (abs_int64_p2 * nearest_int_val)));
 
          return FdoInt16Value::Create(f_int16_result);
 
     }  //  if (((para1_data_type == FdoDataType_Int16) ...
 
-    if (((para1_data_type == FdoDataType_Int16 ) ||
+    if (((para1_data_type == FdoDataType_Byte  ) ||
+         (para1_data_type == FdoDataType_Int16 ) ||
          (para1_data_type == FdoDataType_Int32 ) ||
          (para1_data_type == FdoDataType_Int64 )    ) &&
         (para2_data_type == FdoDataType_Single      )    ) {
 
-         abs_int64_p1 = (p1_int64_value > 0)
-                        ? p1_int64_value
-                        : -1 * p1_int64_value; 
-
-         f_flt_result =
-           (FdoFloat) (p1_sign *
-                       (abs_int64_p1 -
-                        (fabs(p2_flt_value) *
-                         Round((double)(abs_int64_p1 / fabs(p2_flt_value))))));
+         abs_int64_p1    = GetInt64AbsValue(p1_int64_value);
+         nearest_int_val = Round(abs_int64_p1 / fabs(p2_flt_value));
+         f_flt_result    =
+           (FdoFloat) (p1_sign * (abs_int64_p1 -
+                                    (fabs(p2_flt_value) * nearest_int_val)));
 
          return FdoSingleValue::Create(f_flt_result);
 
@@ -534,21 +607,29 @@ FdoLiteralValue *FdoFunctionRemainder::Evaluate (
          (para1_data_type == FdoDataType_Int64)    ) &&
         (para2_data_type == FdoDataType_Int16      )    ) {
 
-         abs_int64_p1 = (p1_int64_value > 0)
-                        ? p1_int64_value
-                        : -1 * p1_int64_value; 
-
-         abs_int64_p2 = (p2_int64_value > 0)
-                        ? p2_int64_value
-                        : -1 * p2_int64_value; 
-
-         f_int16_result =
-            (FdoInt16) (p1_sign *
-                        (abs_int64_p1 -
-                         (abs_int64_p2 *
-                          Round((double)(abs_int64_p1 / abs_int64_p2)))));
+         abs_int64_p1    = GetInt64AbsValue(p1_int64_value);
+         abs_int64_p2    = GetInt64AbsValue(p2_int64_value);
+         nearest_int_val = Round(abs_int64_p1 / abs_int64_p2);
+         f_int16_result  =
+            (FdoInt16) (p1_sign * (abs_int64_p1 -
+                                        (abs_int64_p2 * nearest_int_val)));
 
          return FdoInt16Value::Create(f_int16_result);
+
+    }  //  if (((para1_data_type == FdoDataType_Int32) ...
+
+    if ((para1_data_type == FdoDataType_Int32      ) &&
+        ((para2_data_type == FdoDataType_Byte ) ||
+         (para2_data_type == FdoDataType_Int64)    )    ) {
+
+         abs_int64_p1    = GetInt64AbsValue(p1_int64_value);
+         abs_int64_p2    = GetInt64AbsValue(p2_int64_value);
+         nearest_int_val = Round(abs_int64_p1 / abs_int64_p2);
+         f_int32_result  = 
+            (FdoInt32) (p1_sign * (abs_int64_p1 -
+                                        (abs_int64_p2 * nearest_int_val)));
+
+         return FdoInt32Value::Create(f_int32_result);
 
     }  //  if (((para1_data_type == FdoDataType_Int32) ...
 
@@ -556,40 +637,27 @@ FdoLiteralValue *FdoFunctionRemainder::Evaluate (
          (para1_data_type == FdoDataType_Int64)    ) &&
         (para2_data_type == FdoDataType_Int32      )    ) {
 
-         abs_int64_p1 = (p1_int64_value > 0)
-                        ? p1_int64_value
-                        : -1 * p1_int64_value; 
-
-         abs_int64_p2 = (p2_int64_value > 0)
-                        ? p2_int64_value
-                        : -1 * p2_int64_value; 
-
-         f_int32_result =
-            (FdoInt32) (p1_sign *
-                        (abs_int64_p1 -
-                         (abs_int64_p2 *
-                          Round((double)(abs_int64_p1 / abs_int64_p2)))));
+         abs_int64_p1    = GetInt64AbsValue(p1_int64_value);
+         abs_int64_p2    = GetInt64AbsValue(p2_int64_value);
+         nearest_int_val = Round(abs_int64_p1 / abs_int64_p2);
+         f_int32_result  =
+            (FdoInt32) (p1_sign * (abs_int64_p1 -
+                                        (abs_int64_p2 * nearest_int_val)));
 
          return FdoInt32Value::Create(f_int32_result);
 
     }  //  if (((para1_data_type == FdoDataType_Int32) ...
 
-    if ((para1_data_type == FdoDataType_Int64) &&
-        (para2_data_type == FdoDataType_Int64)    ) {
+    if ((para1_data_type == FdoDataType_Int64      ) &&
+        ((para2_data_type == FdoDataType_Byte ) ||
+         (para2_data_type == FdoDataType_Int64)    )    ) {
 
-         abs_int64_p1 = (p1_int64_value > 0)
-                        ? p1_int64_value
-                        : -1 * p1_int64_value; 
-
-         abs_int64_p2 = (p2_int64_value > 0)
-                        ? p2_int64_value
-                        : -1 * p2_int64_value; 
-
-         f_int64_result =
-            (FdoInt64) (p1_sign *
-                        (abs_int64_p1 -
-                         (abs_int64_p2 *
-                          Round((double)(abs_int64_p1 / abs_int64_p2)))));
+         abs_int64_p1    = GetInt64AbsValue(p1_int64_value);
+         abs_int64_p2    = GetInt64AbsValue(p2_int64_value);
+         nearest_int_val = Round(abs_int64_p1 / abs_int64_p2);
+         f_int64_result  =
+            (FdoInt64) (p1_sign * (abs_int64_p1 -
+                                        (abs_int64_p2 * nearest_int_val)));
 
          return FdoInt64Value::Create(f_int64_result);
 
@@ -599,28 +667,26 @@ FdoLiteralValue *FdoFunctionRemainder::Evaluate (
         ((para2_data_type == FdoDataType_Decimal) ||
          (para2_data_type == FdoDataType_Double )    )    ) {
 
-         f_dbl_result =
+         nearest_int_val = Round(fabs(p1_flt_value) / fabs(p2_dbl_value));
+         f_dbl_result    =
             p1_sign * (fabs(p1_flt_value) -
-                      (fabs(p2_dbl_value) * Round(fabs(p1_flt_value) / fabs(p2_dbl_value))));
+                                    (fabs(p2_dbl_value) * nearest_int_val));
 
          return FdoDoubleValue::Create(f_dbl_result);
 
     }  //  if (((para1_data_type == FdoDataType_Single) ...
 
     if ((para1_data_type == FdoDataType_Single       ) &&
-        ((para2_data_type == FdoDataType_Int16) ||
+        ((para2_data_type == FdoDataType_Byte ) ||
+         (para2_data_type == FdoDataType_Int16) ||
          (para2_data_type == FdoDataType_Int32) ||
          (para2_data_type == FdoDataType_Int32)    )    ) {
 
-         abs_int64_p2 = (p2_int64_value > 0)
-                        ? p2_int64_value
-                        : -1 * p2_int64_value; 
-
-         f_flt_result =
-                  (FdoFloat) (p1_sign *
-                              (fabs(p1_flt_value) -
-                               (abs_int64_p2 *
-                                Round(fabs(p1_flt_value) / abs_int64_p2))));
+         abs_int64_p2    = GetInt64AbsValue(p2_int64_value);
+         nearest_int_val = Round(fabs(p1_flt_value) / abs_int64_p2);
+         f_flt_result    =
+              (FdoFloat) (p1_sign * (fabs(p1_flt_value) -
+                                        (abs_int64_p2 * nearest_int_val)));
 
          return FdoSingleValue::Create(f_flt_result);
 
@@ -629,11 +695,10 @@ FdoLiteralValue *FdoFunctionRemainder::Evaluate (
     if ((para1_data_type == FdoDataType_Single) &&
         (para2_data_type == FdoDataType_Single)    ) {
 
-         f_flt_result =
-            (FdoFloat) (p1_sign *
-                        (fabs(p1_flt_value) -
-                         (fabs(p2_flt_value) *
-                          Round(fabs(p1_flt_value) / fabs(p2_flt_value)))));
+         nearest_int_val = Round(fabs(p1_flt_value) / fabs(p2_flt_value));
+         f_flt_result    =
+            (FdoFloat) (p1_sign * (fabs(p1_flt_value) -
+                                    (fabs(p2_flt_value) * nearest_int_val)));
 
          return FdoSingleValue::Create(f_flt_result);
 
@@ -665,8 +730,8 @@ void FdoFunctionRemainder::CreateFunctionDefinition ()
 // | The function definition includes the list of supported signatures. The
 // | following signatures are supported:
 // |
-// |    REMAINDER ({decimal, double, int16, int32, int64, single},
-// |               {decimal, double, int16, int32, int64, single} )
+// |    REMAINDER ({byte, decimal, double, int16, int32, int64, single},
+// |               {byte, decimal, double, int16, int32, int64, single} )
 // |
 // | The function's return value data type depends on the provided input para-
 // | meter types.
@@ -676,27 +741,38 @@ void FdoFunctionRemainder::CreateFunctionDefinition ()
 
     // Declare and initialize all necessary local variables.
 
-    FdoString *desc = NULL;
+    FdoString                               *desc               = NULL;
 
-    FdoStringP arg1_description;
-    FdoStringP arg2_description;
-    FdoStringP num_arg_literal;
-    FdoStringP div_arg_literal;
+    FdoStringP                              arg1_description;
+    FdoStringP                              arg2_description;
+    FdoStringP                              num_arg_literal;
+    FdoStringP                              div_arg_literal;
 
-    FdoPtr<FdoArgumentDefinition> dcl_arg;
-    FdoPtr<FdoArgumentDefinition> dbl_arg;
-    FdoPtr<FdoArgumentDefinition> int16_arg;
-    FdoPtr<FdoArgumentDefinition> int32_arg;
-    FdoPtr<FdoArgumentDefinition> int64_arg;
-    FdoPtr<FdoArgumentDefinition> sgl_arg;
+    FdoPtr<FdoArgumentDefinition>           byte_arg;
+    FdoPtr<FdoArgumentDefinition>           dcl_arg;
+    FdoPtr<FdoArgumentDefinition>           dbl_arg;
+    FdoPtr<FdoArgumentDefinition>           int16_arg;
+    FdoPtr<FdoArgumentDefinition>           int32_arg;
+    FdoPtr<FdoArgumentDefinition>           int64_arg;
+    FdoPtr<FdoArgumentDefinition>           sgl_arg;
 
-    FdoPtr<FdoArgumentDefinition> dcl_div_arg;
-    FdoPtr<FdoArgumentDefinition> dbl_div_arg;
-    FdoPtr<FdoArgumentDefinition> int16_div_arg;
-    FdoPtr<FdoArgumentDefinition> int32_div_arg;
-    FdoPtr<FdoArgumentDefinition> int64_div_arg;
-    FdoPtr<FdoArgumentDefinition> sgl_div_arg;
+    FdoPtr<FdoArgumentDefinition>           byte_div_arg;
+    FdoPtr<FdoArgumentDefinition>           dcl_div_arg;
+    FdoPtr<FdoArgumentDefinition>           dbl_div_arg;
+    FdoPtr<FdoArgumentDefinition>           int16_div_arg;
+    FdoPtr<FdoArgumentDefinition>           int32_div_arg;
+    FdoPtr<FdoArgumentDefinition>           int64_div_arg;
+    FdoPtr<FdoArgumentDefinition>           sgl_div_arg;
 
+    FdoPtr<FdoArgumentDefinitionCollection> byte_byte_args;
+    FdoPtr<FdoArgumentDefinitionCollection> byte_dcl_args;
+    FdoPtr<FdoArgumentDefinitionCollection> byte_dbl_args;
+    FdoPtr<FdoArgumentDefinitionCollection> byte_int16_args;
+    FdoPtr<FdoArgumentDefinitionCollection> byte_int32_args;
+    FdoPtr<FdoArgumentDefinitionCollection> byte_int64_args;
+    FdoPtr<FdoArgumentDefinitionCollection> byte_sgl_args;
+
+    FdoPtr<FdoArgumentDefinitionCollection> dcl_byte_args;
     FdoPtr<FdoArgumentDefinitionCollection> dcl_dcl_args;
     FdoPtr<FdoArgumentDefinitionCollection> dcl_dbl_args;
     FdoPtr<FdoArgumentDefinitionCollection> dcl_int16_args;
@@ -704,6 +780,7 @@ void FdoFunctionRemainder::CreateFunctionDefinition ()
     FdoPtr<FdoArgumentDefinitionCollection> dcl_int64_args;
     FdoPtr<FdoArgumentDefinitionCollection> dcl_sgl_args;
 
+    FdoPtr<FdoArgumentDefinitionCollection> dbl_byte_args;
     FdoPtr<FdoArgumentDefinitionCollection> dbl_dcl_args;
     FdoPtr<FdoArgumentDefinitionCollection> dbl_dbl_args;
     FdoPtr<FdoArgumentDefinitionCollection> dbl_int16_args;
@@ -711,6 +788,7 @@ void FdoFunctionRemainder::CreateFunctionDefinition ()
     FdoPtr<FdoArgumentDefinitionCollection> dbl_int64_args;
     FdoPtr<FdoArgumentDefinitionCollection> dbl_sgl_args;
 
+    FdoPtr<FdoArgumentDefinitionCollection> int16_byte_args;
     FdoPtr<FdoArgumentDefinitionCollection> int16_dcl_args;
     FdoPtr<FdoArgumentDefinitionCollection> int16_dbl_args;
     FdoPtr<FdoArgumentDefinitionCollection> int16_int16_args;
@@ -718,6 +796,7 @@ void FdoFunctionRemainder::CreateFunctionDefinition ()
     FdoPtr<FdoArgumentDefinitionCollection> int16_int64_args;
     FdoPtr<FdoArgumentDefinitionCollection> int16_sgl_args;
 
+    FdoPtr<FdoArgumentDefinitionCollection> int32_byte_args;
     FdoPtr<FdoArgumentDefinitionCollection> int32_dcl_args;
     FdoPtr<FdoArgumentDefinitionCollection> int32_dbl_args;
     FdoPtr<FdoArgumentDefinitionCollection> int32_int16_args;
@@ -725,6 +804,7 @@ void FdoFunctionRemainder::CreateFunctionDefinition ()
     FdoPtr<FdoArgumentDefinitionCollection> int32_int64_args;
     FdoPtr<FdoArgumentDefinitionCollection> int32_sgl_args;
 
+    FdoPtr<FdoArgumentDefinitionCollection> int64_byte_args;
     FdoPtr<FdoArgumentDefinitionCollection> int64_dcl_args;
     FdoPtr<FdoArgumentDefinitionCollection> int64_dbl_args;
     FdoPtr<FdoArgumentDefinitionCollection> int64_int16_args;
@@ -732,6 +812,7 @@ void FdoFunctionRemainder::CreateFunctionDefinition ()
     FdoPtr<FdoArgumentDefinitionCollection> int64_int64_args;
     FdoPtr<FdoArgumentDefinitionCollection> int64_sgl_args;
 
+    FdoPtr<FdoArgumentDefinitionCollection> sgl_byte_args;
     FdoPtr<FdoArgumentDefinitionCollection> sgl_dcl_args;
     FdoPtr<FdoArgumentDefinitionCollection> sgl_dbl_args;
     FdoPtr<FdoArgumentDefinitionCollection> sgl_int16_args;
@@ -760,6 +841,8 @@ void FdoFunctionRemainder::CreateFunctionDefinition ()
     num_arg_literal =
             FdoException::NLSGetMessage(FUNCTION_NUMBER_ARG_LIT, "number");
 
+    byte_arg  = FdoArgumentDefinition::Create(
+                    num_arg_literal, arg1_description, FdoDataType_Byte);
     dcl_arg   = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Decimal);
     dbl_arg   = FdoArgumentDefinition::Create(
@@ -773,23 +856,52 @@ void FdoFunctionRemainder::CreateFunctionDefinition ()
     sgl_arg   = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Single);
 
+    byte_div_arg  = FdoArgumentDefinition::Create(
+                        div_arg_literal, arg2_description, FdoDataType_Byte);
     dcl_div_arg   = FdoArgumentDefinition::Create(
                         div_arg_literal, arg2_description, FdoDataType_Decimal);
-
     dbl_div_arg   = FdoArgumentDefinition::Create(
                         div_arg_literal, arg2_description, FdoDataType_Double);
-
     int16_div_arg = FdoArgumentDefinition::Create(
                         div_arg_literal, arg2_description, FdoDataType_Int16);
-
     int32_div_arg = FdoArgumentDefinition::Create(
                         div_arg_literal, arg2_description, FdoDataType_Int32);
-
     int64_div_arg = FdoArgumentDefinition::Create(
                         div_arg_literal, arg2_description, FdoDataType_Int64);
-
     sgl_div_arg   = FdoArgumentDefinition::Create(
                         div_arg_literal, arg2_description, FdoDataType_Single);
+
+    byte_byte_args = FdoArgumentDefinitionCollection::Create();
+    byte_byte_args->Add(byte_arg);
+    byte_byte_args->Add(byte_div_arg);
+
+    byte_dcl_args = FdoArgumentDefinitionCollection::Create();
+    byte_dcl_args->Add(byte_arg);
+    byte_dcl_args->Add(dcl_div_arg);
+
+    byte_dbl_args = FdoArgumentDefinitionCollection::Create();
+    byte_dbl_args->Add(byte_arg);
+    byte_dbl_args->Add(dbl_div_arg);
+
+    byte_int16_args = FdoArgumentDefinitionCollection::Create();
+    byte_int16_args->Add(byte_arg);
+    byte_int16_args->Add(int16_div_arg);
+
+    byte_int32_args = FdoArgumentDefinitionCollection::Create();
+    byte_int32_args->Add(byte_arg);
+    byte_int32_args->Add(int32_div_arg);
+
+    byte_int64_args = FdoArgumentDefinitionCollection::Create();
+    byte_int64_args->Add(byte_arg);
+    byte_int64_args->Add(int64_div_arg);
+
+    byte_sgl_args = FdoArgumentDefinitionCollection::Create();
+    byte_sgl_args->Add(byte_arg);
+    byte_sgl_args->Add(sgl_div_arg);
+
+    dcl_byte_args = FdoArgumentDefinitionCollection::Create();
+    dcl_byte_args->Add(dcl_arg);
+    dcl_byte_args->Add(byte_div_arg);
 
     dcl_dcl_args = FdoArgumentDefinitionCollection::Create();
     dcl_dcl_args->Add(dcl_arg);
@@ -815,6 +927,10 @@ void FdoFunctionRemainder::CreateFunctionDefinition ()
     dcl_sgl_args->Add(dcl_arg);
     dcl_sgl_args->Add(sgl_div_arg);
 
+    dbl_byte_args = FdoArgumentDefinitionCollection::Create();
+    dbl_byte_args->Add(dbl_arg);
+    dbl_byte_args->Add(byte_div_arg);
+
     dbl_dcl_args = FdoArgumentDefinitionCollection::Create();
     dbl_dcl_args->Add(dbl_arg);
     dbl_dcl_args->Add(dcl_div_arg);
@@ -838,6 +954,10 @@ void FdoFunctionRemainder::CreateFunctionDefinition ()
     dbl_sgl_args = FdoArgumentDefinitionCollection::Create();
     dbl_sgl_args->Add(dbl_arg);
     dbl_sgl_args->Add(sgl_div_arg);
+
+    int16_byte_args = FdoArgumentDefinitionCollection::Create();
+    int16_byte_args->Add(int16_arg);
+    int16_byte_args->Add(byte_div_arg);
 
     int16_dcl_args = FdoArgumentDefinitionCollection::Create();
     int16_dcl_args->Add(int16_arg);
@@ -863,6 +983,10 @@ void FdoFunctionRemainder::CreateFunctionDefinition ()
     int16_sgl_args->Add(int16_arg);
     int16_sgl_args->Add(sgl_div_arg);
 
+    int32_byte_args = FdoArgumentDefinitionCollection::Create();
+    int32_byte_args->Add(int32_arg);
+    int32_byte_args->Add(byte_div_arg);
+
     int32_dcl_args = FdoArgumentDefinitionCollection::Create();
     int32_dcl_args->Add(int32_arg);
     int32_dcl_args->Add(dcl_div_arg);
@@ -887,6 +1011,10 @@ void FdoFunctionRemainder::CreateFunctionDefinition ()
     int32_sgl_args->Add(int32_arg);
     int32_sgl_args->Add(sgl_div_arg);
 
+    int64_byte_args = FdoArgumentDefinitionCollection::Create();
+    int64_byte_args->Add(int64_arg);
+    int64_byte_args->Add(byte_div_arg);
+
     int64_dcl_args = FdoArgumentDefinitionCollection::Create();
     int64_dcl_args->Add(int64_arg);
     int64_dcl_args->Add(dcl_div_arg);
@@ -910,6 +1038,10 @@ void FdoFunctionRemainder::CreateFunctionDefinition ()
     int64_sgl_args = FdoArgumentDefinitionCollection::Create();
     int64_sgl_args->Add(int64_arg);
     int64_sgl_args->Add(sgl_div_arg);
+
+    sgl_byte_args = FdoArgumentDefinitionCollection::Create();
+    sgl_byte_args->Add(sgl_arg);
+    sgl_byte_args->Add(byte_div_arg);
 
     sgl_dcl_args = FdoArgumentDefinitionCollection::Create();
     sgl_dcl_args->Add(sgl_arg);
@@ -939,82 +1071,158 @@ void FdoFunctionRemainder::CreateFunctionDefinition ()
 
     signatures = FdoSignatureDefinitionCollection::Create();
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_Double, dcl_dcl_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Int16, byte_byte_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Double, dcl_dbl_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Double, byte_dcl_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Double, dcl_int16_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Double, byte_dbl_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Double, dcl_int32_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Int16, byte_int16_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Double, dcl_int64_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Int32, byte_int32_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Double, dcl_sgl_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Int64, byte_int64_args);
     signatures->Add(signature);
-
-    signature = FdoSignatureDefinition::Create(FdoDataType_Double, dbl_dcl_args);
-    signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Double, dbl_dbl_args);
-    signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Double, dbl_int16_args);
-    signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Double, dbl_int32_args);
-    signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Double, dbl_int64_args);
-    signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Double, dbl_sgl_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Single, byte_sgl_args);
     signatures->Add(signature);
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_Double, int16_dcl_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Double, dcl_byte_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Double, int16_dbl_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Double, dcl_dcl_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Int16, int16_int16_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Double, dcl_dbl_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Int16, int16_int32_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Double, dcl_int16_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Int16, int16_int64_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Double, dcl_int32_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Single, int16_sgl_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Double, dcl_int64_args);
     signatures->Add(signature);
-
-    signature = FdoSignatureDefinition::Create(FdoDataType_Double, int32_dcl_args);
-    signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Double, int32_dbl_args);
-    signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Int16, int32_int16_args);
-    signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Int32, int32_int32_args);
-    signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Int32, int32_int64_args);
-    signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Single, int32_sgl_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Double, dcl_sgl_args);
     signatures->Add(signature);
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_Double, int64_dcl_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Double, dbl_byte_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Double, int64_dbl_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Double, dbl_dcl_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Int16, int64_int16_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Double, dbl_dbl_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Int32, int64_int32_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Double, dbl_int16_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Int64, int64_int64_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Double, dbl_int32_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Single, int64_sgl_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Double, dbl_int64_args);
+    signatures->Add(signature);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Double, dbl_sgl_args);
     signatures->Add(signature);
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_Double, sgl_dcl_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Int16, int16_byte_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Double, sgl_dbl_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Double, int16_dcl_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Single, sgl_int16_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Double, int16_dbl_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Single, sgl_int32_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Int16, int16_int16_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Single, sgl_int64_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Int16, int16_int32_args);
     signatures->Add(signature);
-    signature = FdoSignatureDefinition::Create(FdoDataType_Single, sgl_sgl_args);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Int16, int16_int64_args);
+    signatures->Add(signature);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Single, int16_sgl_args);
+    signatures->Add(signature);
+
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Int32, int32_byte_args);
+    signatures->Add(signature);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Double, int32_dcl_args);
+    signatures->Add(signature);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Double, int32_dbl_args);
+    signatures->Add(signature);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Int16, int32_int16_args);
+    signatures->Add(signature);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Int32, int32_int32_args);
+    signatures->Add(signature);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Int32, int32_int64_args);
+    signatures->Add(signature);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Single, int32_sgl_args);
+    signatures->Add(signature);
+
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Int64, int64_byte_args);
+    signatures->Add(signature);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Double, int64_dcl_args);
+    signatures->Add(signature);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Double, int64_dbl_args);
+    signatures->Add(signature);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Int16, int64_int16_args);
+    signatures->Add(signature);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Int32, int64_int32_args);
+    signatures->Add(signature);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Int64, int64_int64_args);
+    signatures->Add(signature);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Single, int64_sgl_args);
+    signatures->Add(signature);
+
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Single, sgl_byte_args);
+    signatures->Add(signature);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Double, sgl_dcl_args);
+    signatures->Add(signature);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Double, sgl_dbl_args);
+    signatures->Add(signature);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Single, sgl_int16_args);
+    signatures->Add(signature);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Single, sgl_int32_args);
+    signatures->Add(signature);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Single, sgl_int64_args);
+    signatures->Add(signature);
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_Single, sgl_sgl_args);
     signatures->Add(signature);
 
     // Create the function definition.
@@ -1033,6 +1241,18 @@ void FdoFunctionRemainder::CreateFunctionDefinition ()
 
 }  //  CreateFunctionDefinition ()
 
+FdoDouble FdoFunctionRemainder::GetInt64AbsValue (FdoInt64 value)
+
+// +---------------------------------------------------------------------------
+// | The function determines the absolute value of the given Int64 value.
+// +---------------------------------------------------------------------------
+
+{
+
+    return (FdoDouble)((value > 0) ? value : (-1 * value)); 
+
+}  //  GetInt64AbsValue ()
+
 FdoDataType FdoFunctionRemainder::GetReturnDataType (
                                                 FdoDataType inp1_data_type,
                                                 FdoDataType inp2_data_type)
@@ -1044,6 +1264,19 @@ FdoDataType FdoFunctionRemainder::GetReturnDataType (
 // +---------------------------------------------------------------------------
 
 {
+
+    if ((inp1_data_type == FdoDataType_Byte       ) &&
+        ((inp2_data_type == FdoDataType_Byte ) ||
+         (inp2_data_type == FdoDataType_Int16)    )    )
+        return FdoDataType_Int16;
+
+    if ((inp1_data_type == FdoDataType_Byte ) &&
+        (inp2_data_type == FdoDataType_Int32)    )
+        return FdoDataType_Int32;
+
+    if ((inp1_data_type == FdoDataType_Byte ) &&
+        (inp2_data_type == FdoDataType_Int64)    )
+        return FdoDataType_Byte;
 
     if ((inp1_data_type == FdoDataType_Decimal) || 
         (inp1_data_type == FdoDataType_Double )    )
@@ -1060,7 +1293,8 @@ FdoDataType FdoFunctionRemainder::GetReturnDataType (
         return FdoDataType_Int16;
 
     if ((inp1_data_type == FdoDataType_Int32)       &&
-        ((inp2_data_type == FdoDataType_Int32) || 
+        ((inp2_data_type == FdoDataType_Byte ) ||
+         (inp2_data_type == FdoDataType_Int32) || 
          (inp2_data_type == FdoDataType_Int64)    )    )
         return FdoDataType_Int32;
 
@@ -1090,7 +1324,7 @@ FdoDouble FdoFunctionRemainder::Round (FdoDouble value)
 
 {
 
-    if ((value - floor(value)) < 0.5)
+    if ((value - floor(value)) <= 0.5)
         return floor(value);
     else
       return ceil(value); 
@@ -1146,13 +1380,15 @@ void FdoFunctionRemainder::Validate (FdoLiteralValueCollection *literal_values)
 
     }  //  for (i = 0; i < count; i++) ...
 
-    if (((para1_data_type != FdoDataType_Decimal) &&
+    if (((para1_data_type != FdoDataType_Byte   ) &&
+         (para1_data_type != FdoDataType_Decimal) &&
          (para1_data_type != FdoDataType_Double ) &&
          (para1_data_type != FdoDataType_Int16  ) &&
          (para1_data_type != FdoDataType_Int32  ) &&
          (para1_data_type != FdoDataType_Int64  ) &&
          (para1_data_type != FdoDataType_Single )    ) ||
-        ((para2_data_type != FdoDataType_Decimal) &&
+        ((para2_data_type != FdoDataType_Byte   ) &&
+         (para2_data_type != FdoDataType_Decimal) &&
          (para2_data_type != FdoDataType_Double ) &&
          (para2_data_type != FdoDataType_Int16  ) &&
          (para2_data_type != FdoDataType_Int32  ) &&
