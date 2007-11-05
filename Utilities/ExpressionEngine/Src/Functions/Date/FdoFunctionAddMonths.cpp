@@ -138,7 +138,8 @@ void FdoFunctionAddMonths::CreateFunctionDefinition ()
 // | The function definition includes the list of supported signatures. The
 // | following signatures are supported:
 // |
-// |    ADDMONTHS (date_time, {decimal, double, int16, int32, int64, single})
+// |    ADDMONTHS (date_time,
+// |               {byte, decimal, double, int16, int32, int64, single})
 // |
 // | The function always returns a DATETIME.
 // +---------------------------------------------------------------------------
@@ -147,21 +148,23 @@ void FdoFunctionAddMonths::CreateFunctionDefinition ()
 
     // Declare and initialize all necessary local variables.
 
-    FdoString *desc = NULL;
+    FdoString                               *desc               = NULL;
 
-    FdoStringP arg1_description;
-    FdoStringP arg2_description;
-    FdoStringP dt_arg_literal;
-    FdoStringP num_arg_literal;
+    FdoStringP                              arg1_description;
+    FdoStringP                              arg2_description;
+    FdoStringP                              dt_arg_literal;
+    FdoStringP                              num_arg_literal;
 
-    FdoPtr<FdoArgumentDefinition> dcl_arg;
-    FdoPtr<FdoArgumentDefinition> dbl_arg;
-    FdoPtr<FdoArgumentDefinition> int16_arg;
-    FdoPtr<FdoArgumentDefinition> int32_arg;
-    FdoPtr<FdoArgumentDefinition> int64_arg;
-    FdoPtr<FdoArgumentDefinition> sgl_arg;
-    FdoPtr<FdoArgumentDefinition> dt_arg;
+    FdoPtr<FdoArgumentDefinition>           byte_arg;
+    FdoPtr<FdoArgumentDefinition>           dcl_arg;
+    FdoPtr<FdoArgumentDefinition>           dbl_arg;
+    FdoPtr<FdoArgumentDefinition>           int16_arg;
+    FdoPtr<FdoArgumentDefinition>           int32_arg;
+    FdoPtr<FdoArgumentDefinition>           int64_arg;
+    FdoPtr<FdoArgumentDefinition>           sgl_arg;
+    FdoPtr<FdoArgumentDefinition>           dt_arg;
 
+    FdoPtr<FdoArgumentDefinitionCollection> dt_byte_args;
     FdoPtr<FdoArgumentDefinitionCollection> dt_dcl_args;
     FdoPtr<FdoArgumentDefinitionCollection> dt_dbl_args;
     FdoPtr<FdoArgumentDefinitionCollection> dt_int16_args;
@@ -190,9 +193,10 @@ void FdoFunctionAddMonths::CreateFunctionDefinition ()
     num_arg_literal =
             FdoException::NLSGetMessage(FUNCTION_NUMBER_ARG_LIT, "number");
 
-    dt_arg   = FdoArgumentDefinition::Create(
+    dt_arg    = FdoArgumentDefinition::Create(
                     dt_arg_literal, arg1_description, FdoDataType_DateTime);
-
+    byte_arg  = FdoArgumentDefinition::Create(
+                    num_arg_literal, arg2_description, FdoDataType_Byte);
     dcl_arg   = FdoArgumentDefinition::Create(
                     num_arg_literal, arg2_description, FdoDataType_Decimal);
     dbl_arg   = FdoArgumentDefinition::Create(
@@ -205,6 +209,10 @@ void FdoFunctionAddMonths::CreateFunctionDefinition ()
                     num_arg_literal, arg2_description, FdoDataType_Int64);
     sgl_arg   = FdoArgumentDefinition::Create(
                     num_arg_literal, arg2_description, FdoDataType_Single);
+
+    dt_byte_args = FdoArgumentDefinitionCollection::Create();
+    dt_byte_args->Add(dt_arg);
+    dt_byte_args->Add(byte_arg);
 
     dt_dcl_args = FdoArgumentDefinitionCollection::Create();
     dt_dcl_args->Add(dt_arg);
@@ -233,6 +241,10 @@ void FdoFunctionAddMonths::CreateFunctionDefinition ()
     // Create the signature collection.
 
     signatures = FdoSignatureDefinitionCollection::Create();
+
+    signature = FdoSignatureDefinition::Create(
+                                        FdoDataType_DateTime, dt_byte_args);
+    signatures->Add(signature);
 
     signature = FdoSignatureDefinition::Create(
                                         FdoDataType_DateTime, dt_dcl_args);
@@ -326,7 +338,8 @@ void FdoFunctionAddMonths::Validate (FdoLiteralValueCollection *literal_values)
       else {
 
         numeric_data_type = data_type;
-        invalid_data_type = ((data_type != FdoDataType_Decimal) &&
+        invalid_data_type = ((data_type != FdoDataType_Byte   ) &&
+                             (data_type != FdoDataType_Decimal) &&
                              (data_type != FdoDataType_Double ) &&
                              (data_type != FdoDataType_Int16  ) &&
                              (data_type != FdoDataType_Int32  ) &&

@@ -233,15 +233,15 @@ void FdoFunctionTrim::CreateFunctionDefinition ()
 
     // Declare and initialize all necessary local variables.
 
-    FdoString *desc = NULL;
+    FdoString                               *desc               = NULL;
 
-    FdoStringP arg1_description;
-    FdoStringP arg2_description;
-    FdoStringP str_arg_literal;
-    FdoStringP opt_arg_literal;
+    FdoStringP                              arg1_description;
+    FdoStringP                              arg2_description;
+    FdoStringP                              str_arg_literal;
+    FdoStringP                              opt_arg_literal;
 
-    FdoPtr<FdoArgumentDefinition> str_arg;
-    FdoPtr<FdoArgumentDefinition> opt_arg;
+    FdoPtr<FdoArgumentDefinition>           str_arg;
+    FdoPtr<FdoArgumentDefinition>           opt_arg;
 
     FdoPtr<FdoArgumentDefinitionCollection> str_args;
     FdoPtr<FdoArgumentDefinitionCollection> str_opt_args;

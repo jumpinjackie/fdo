@@ -116,6 +116,7 @@ FdoLiteralValue *FdoFunctionToInt64::Evaluate (
 
     FdoStringP              str_value;
 
+    FdoPtr<FdoByteValue>    byte_value;
     FdoPtr<FdoDecimalValue> decimal_value;
     FdoPtr<FdoDoubleValue>  double_value;
     FdoPtr<FdoInt16Value>   int16_value;
@@ -131,6 +132,13 @@ FdoLiteralValue *FdoFunctionToInt64::Evaluate (
     // Get the parameter and process it.
 
     switch (incoming_data_type) {
+
+      case FdoDataType_Byte:
+        byte_value = (FdoByteValue *) literal_values->GetItem(0);
+        is_NULL     = byte_value->IsNull();
+        if (!is_NULL)
+            i64_value = (FdoInt64) byte_value->GetByte();
+        break;
 
       case FdoDataType_Decimal:
         decimal_value = (FdoDecimalValue *) literal_values->GetItem(0);
@@ -275,7 +283,7 @@ void FdoFunctionToInt64::CreateFunctionDefinition ()
 // | The function definition includes the list of supported signatures. The
 // | following signatures are supported:
 // |
-// |    TOINT64 ({decimal, double, int16, int32, int64, single, string})
+// |    TOINT64 ({byte, decimal, double, int16, int32, int64, single, string})
 // |
 // | The function always returns an INT64.
 // +---------------------------------------------------------------------------
@@ -290,6 +298,7 @@ void FdoFunctionToInt64::CreateFunctionDefinition ()
     FdoStringP                              str_arg_literal;
     FdoStringP                              num_arg_literal;
 
+    FdoPtr<FdoArgumentDefinition>           byte_arg;
     FdoPtr<FdoArgumentDefinition>           dcl_arg;
     FdoPtr<FdoArgumentDefinition>           dbl_arg;
     FdoPtr<FdoArgumentDefinition>           int16_arg;
@@ -298,6 +307,7 @@ void FdoFunctionToInt64::CreateFunctionDefinition ()
     FdoPtr<FdoArgumentDefinition>           sgl_arg;
     FdoPtr<FdoArgumentDefinition>           str_arg;
 
+    FdoPtr<FdoArgumentDefinitionCollection> byte_args;
     FdoPtr<FdoArgumentDefinitionCollection> dcl_args;
     FdoPtr<FdoArgumentDefinitionCollection> dbl_args;
     FdoPtr<FdoArgumentDefinitionCollection> int16_args;
@@ -323,26 +333,25 @@ void FdoFunctionToInt64::CreateFunctionDefinition ()
 
     // The following defines the different argument definition collections.
 
+    byte_arg  = FdoArgumentDefinition::Create(
+                    num_arg_literal, arg1_description, FdoDataType_Byte);
     dcl_arg   = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Decimal);
-
     dbl_arg   = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Double);
-
     int16_arg = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Int16);
-
     int32_arg = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Int32);
-
     int64_arg = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Int64);
-
     sgl_arg   = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Single);
-
-    str_arg  = FdoArgumentDefinition::Create(
+    str_arg   = FdoArgumentDefinition::Create(
                     str_arg_literal, arg1_description, FdoDataType_String);
+
+    byte_args = FdoArgumentDefinitionCollection::Create();
+    byte_args->Add(byte_arg);
 
     dcl_args = FdoArgumentDefinitionCollection::Create();
     dcl_args->Add(dcl_arg);
@@ -368,6 +377,9 @@ void FdoFunctionToInt64::CreateFunctionDefinition ()
     // Create the signature collection.
 
     signatures = FdoSignatureDefinitionCollection::Create();
+
+    signature = FdoSignatureDefinition::Create(FdoDataType_Int64, byte_args);
+    signatures->Add(signature);
 
     signature = FdoSignatureDefinition::Create(FdoDataType_Int64, dcl_args);
     signatures->Add(signature);
@@ -512,7 +524,8 @@ void FdoFunctionToInt64::Validate (FdoLiteralValueCollection *literal_values)
 
     data_value         = static_cast<FdoDataValue *>(literal_value.p);
     incoming_data_type = data_value->GetDataType();
-    if ((incoming_data_type != FdoDataType_Decimal) &&
+    if ((incoming_data_type != FdoDataType_Byte   ) &&
+        (incoming_data_type != FdoDataType_Decimal) &&
         (incoming_data_type != FdoDataType_Double ) &&
         (incoming_data_type != FdoDataType_Int16  ) &&
         (incoming_data_type != FdoDataType_Int32  ) &&

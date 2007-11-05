@@ -34,9 +34,10 @@ FdoFunctionArea2D::FdoFunctionArea2D (FdoBoolean computeGeodetic)
 {
 
     // Initialize all class variables.
-	is_validated = false;
+
+	is_validated        = false;
     function_definition = NULL;
-	compute_geodetic = computeGeodetic;
+	compute_geodetic    = computeGeodetic;
 
 }  //  FdoFunctionArea2D ()
 
@@ -107,7 +108,15 @@ FdoLiteralValue *FdoFunctionArea2D::Evaluate (
 
 {
 
-    FdoPtr<FdoGeometryValue> geom_value;
+    // Declare and initialize all necessary local variables.
+
+    FdoDouble						area        = 0.0;
+
+    FdoPtr<FdoIGeometry>			geom;
+    FdoPtr<FdoFgfGeometryFactory>	gf;
+    FdoPtr<FdoGeometryValue>        geom_value;
+
+    gf = FdoFgfGeometryFactory::GetInstance();
 
     // If the argument list has not been validated, execute the check next.
     // NOTE: the validation is executed only the first time the procedure is
@@ -123,17 +132,18 @@ FdoLiteralValue *FdoFunctionArea2D::Evaluate (
 
     geom_value = (FdoGeometryValue *) literal_values->GetItem(0);
     if (geom_value->IsNull())
-		return FdoDoubleValue::Create();
+        return FdoDoubleValue::Create();
 
-	// Create a geometry object
-    FdoPtr<FdoFgfGeometryFactory>	gf = FdoFgfGeometryFactory::GetInstance();
-    FdoPtr<FdoIGeometry>			geom = gf->CreateGeometryFromFgf( FdoPtr<FdoByteArray>(geom_value->GetGeometry()));
-	FdoDouble						area = 0.0;
+    // Create a geometry object
 
-	// Compute
-	FdoExpressionEngineGeometryUtil::ComputeGeometryArea( compute_geodetic, false /*3D*/, geom, &area );
-	
-	return FdoDoubleValue::Create(area);
+    geom = gf->CreateGeometryFromFgf(
+                            FdoPtr<FdoByteArray>(geom_value->GetGeometry()));
+
+    // Compute
+
+    FdoExpressionEngineGeometryUtil::ComputeGeometryArea(
+                                compute_geodetic, false /*3D*/, geom, &area);
+    return FdoDoubleValue::Create(area);
 
 }  //  Evaluate ()
 

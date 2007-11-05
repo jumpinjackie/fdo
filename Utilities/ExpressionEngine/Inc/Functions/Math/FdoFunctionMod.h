@@ -98,6 +98,12 @@ class FdoFunctionMod : public FdoExpressionEngineINonAggregateFunction
 
         virtual void Dispose () { delete this; };
 
+        // GetInt64AbsValue:
+        //  The function determines the absolute value of the given Int64
+        //  value.
+
+        FdoInt64 GetInt64AbsValue (FdoInt64 value);
+
         // GetReturnDataType:
         //  Based on the provided data types of the input parameters, the
         //  function determines the data type to be used to communicate

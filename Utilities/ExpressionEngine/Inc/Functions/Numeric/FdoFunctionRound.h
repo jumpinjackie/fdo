@@ -99,9 +99,6 @@ class FdoFunctionRound : public FdoExpressionEngineINonAggregateFunction
         FdoLiteralValue *CreateReturnValue (FdoDataType data_type,
                                             FdoDouble   d_value,
                                             FdoFloat    f_value,
-                                            FdoInt16    i16_value,
-                                            FdoInt32    i32_value,
-                                            FdoInt64    i64_value,
                                             bool        no_value);
 
         // Dispose:
