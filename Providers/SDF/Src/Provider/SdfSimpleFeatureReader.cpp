@@ -299,8 +299,23 @@ FdoByte SdfSimpleFeatureReader::GetByte(FdoString* propertyName)
 	RefreshData();
     PropertyStub* ps = m_propIndex->GetPropInfo(propertyName);
 
+    //check for computed property
     if (!ps)
-        throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_38_INVALID_PROPERTY_NAME)));
+    {
+        CheckIfPropExists(propertyName);
+
+		FdoPtr<FdoLiteralValue> results = m_filterExec->Evaluate(propertyName);
+		if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
+		{
+			FdoDataValue *dataValue = static_cast<FdoDataValue *> (results.p);
+			if (dataValue->GetDataType() == FdoDataType_Byte)
+			{
+				FdoByteValue *byteValue = static_cast<FdoByteValue *>(dataValue);
+				return byteValue->GetByte();
+			}
+		}
+        throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_57_UNEXPECTEDERROR)));
+    }
 
     if (ps->m_dataType != FdoDataType_Byte)
         throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_36_INCORRECT_PROPERTY_TYPE)));
