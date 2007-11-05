@@ -38,14 +38,12 @@ public:
 
     FdoInt32 GetDimensionality ();   
 
-    //  GetExpectedCountValue:
-    //      The function returns the number of rows expected to be returned
-    //      by the function testing the expression function COUNT. The value
-    //      differs on the underlying database server. In MySQL, for example,
-    //      NULL values are not added to the total count whereas in Oracle
-    //      those rows are.
+    //  GetExpectedValue:
+    //      The function returns the expected value for a computed identifier
+    //      in case the expression function request is treated differently in
+    //      MySQL, Oracle, SQL Server and the standard implementation.
 
-    FdoDouble GetExpectedCountValue (FdoInt16 test_case_id);
+    FdoDouble GetExpectedValue (FdoInt16 test_case_id);
 
     //  SetProvider:
     //      Sets the provider for the current test. Any Provider that supports
