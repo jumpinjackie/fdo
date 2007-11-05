@@ -1867,6 +1867,14 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter     *filter,
     // Reset the buffer.
     ResetBuffer( SqlCommandType_Select );
 
+    // Make a copy of the class name
+    if( mCurrentClassName )
+    {
+        delete[] mCurrentClassName;
+    }
+    mCurrentClassName = new wchar_t[ wcslen( className ) + 1];
+    wcscpy( mCurrentClassName, className );
+
     // Get the class definition for the identified class.
     DbiConnection *mDbiConnection = mFdoConnection->GetDbiConnection();
     const FdoSmLpClassDefinition *classDefinition = mDbiConnection->GetSchemaUtil()->GetClass(className);
@@ -1908,6 +1916,13 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter     *filter,
     FdoStringP tableName = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(classDefinition);
     AppendString( L" FROM " );
     AppendString( (FdoString *)tableName );
+
+    if( filter != NULL )
+    {
+        AppendString(  GetTableAlias( tableName ) );
+        AppendString( L" WHERE " );
+        HandleFilter( filter );
+    }
 
     return &mSqlFilterText[mFirstTxtIndex];
 }
