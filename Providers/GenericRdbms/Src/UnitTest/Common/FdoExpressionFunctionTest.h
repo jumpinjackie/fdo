@@ -37,6 +37,19 @@
 #define DATASTORE_EXTENSION      L"_EX_FCT_B"
 
 
+//  *_TEST_CASE_CODE_*:
+//      The constants specify specific test case codes for various test cases
+//      where the returned value for the computed property varies.
+
+#define COUNT_TEST_CASE_CODE_1       1
+#define COUNT_TEST_CASE_CODE_2       2
+#define COUNT_TEST_CASE_CODE_3       3
+
+#define EXP_TEST_CASE_CODE_1        10
+
+#define POWER_TEST_CASE_CODE_1      20
+
+
 
 class FdoExpressionFunctionTest : public CppUnit::TestCase
 {
@@ -575,26 +588,6 @@ protected:
     //                       General Supporting Functions
     //-------------------------------------------------------------------------
 
-    //  CheckDateTimeReader:
-    //      The function checks whether or not the provided reader contains
-    //      the expected data and throws an exception if this is not the 
-    //      case.
-
-    virtual void CheckDateTimeReader (FdoIDataReader *data_reader,
-                                      bool           include_id_check,
-                                      bool           is_extract_request,
-                                      FdoInt16       extract_type_id,
-                                      FdoInt32       expected_id_value,
-                                      FdoDateTime    expected_cmp_id_value);
-
-    virtual void CheckDateTimeReader (
-                                FdoIFeatureReader *data_reader,
-                                bool              include_id_check,
-                                bool              is_extract_request,
-                                FdoInt16          extract_type_id,
-                                FdoInt32          expected_id_value,
-                                FdoDateTime       expected_cmp_id_value);
-
     //  CheckReader:
     //      The function checks whether or not the provided reader contains
     //      the expected data and throws an exception if this is not the 
@@ -609,6 +602,16 @@ protected:
                               bool              include_id_check,
                               FdoInt32          expected_id_value,
                               FdoDouble         expected_value);
+
+    //  CheckReader16:
+    //      The function checks whether or not the provided reader contains
+    //      the expected data and throws an exception if this is not the 
+    //      case.
+
+    void CheckReader16 (FdoIFeatureReader *data_reader,
+                        bool              include_id_check,
+                        FdoInt32          expected_id_value,
+                        FdoInt16          expected_value);
 
     //  CheckReader32:
     //      The function checks whether or not the provided reader contains
@@ -640,6 +643,41 @@ protected:
                                 FdoInt32          expected_id_value,
                                 FdoInt64          expected_value);
 
+    //  CheckReaderByte:
+    //      The function checks whether or not the provided reader contains
+    //      the expected data and throws an exception if this is not the 
+    //      case.
+
+    void CheckReaderByte (FdoIDataReader *data_reader,
+                          bool           include_id_check,
+                          FdoInt32       expected_id_value,
+                          FdoByte        expected_value);
+
+    void CheckReaderByte (FdoIFeatureReader *data_reader,
+                          bool              include_id_check,
+                          FdoInt32          expected_id_value,
+                          FdoByte           expected_value);
+
+    //  CheckReaderDt:
+    //      The function checks whether or not the provided reader contains
+    //      the expected data and throws an exception if this is not the 
+    //      case.
+
+    virtual void CheckReaderDt (FdoIDataReader *data_reader,
+                                      bool           include_id_check,
+                                      bool           is_extract_request,
+                                      FdoInt16       extract_type_id,
+                                      FdoInt32       expected_id_value,
+                                      FdoDateTime    expected_cmp_id_value);
+
+    virtual void CheckReaderDt (
+                                FdoIFeatureReader *data_reader,
+                                bool              include_id_check,
+                                bool              is_extract_request,
+                                FdoInt16          extract_type_id,
+                                FdoInt32          expected_id_value,
+                                FdoDateTime       expected_cmp_id_value);
+
     //  CheckReaderGeometry:
     //      The function checks whether or not the provided reader contains
     //      the expected data and throws an exception if this is not the 
@@ -654,6 +692,15 @@ protected:
                                       FdoDouble      expected_max_x,
                                       FdoDouble      expected_max_y,
                                       FdoDouble      expected_max_z);
+
+    //  CheckReaderNumberString:
+    //      The function checks whether or not the provided reader contains
+    //      the expected data and throws an exception if this is not the 
+    //      case.
+
+    void CheckReaderNumberString (FdoIFeatureReader *data_reader,
+                                  FdoInt32          expected_id_value,
+                                  FdoString         *expected_cmp_id_value);
 
     //  CheckReaderSgl:
     //      The function checks whether or not the provided reader contains
@@ -670,15 +717,26 @@ protected:
                                  FdoInt32          expected_id_value,
                                  FdoFloat          expected_value);
 
-    //  CheckStringFunctionReader:
+    //  CheckReaderStddev:
+    //      This function represents a special cross-check function for the
+    //      expression function STDDEV. It is required because the behavior
+    //      of the function for a special use-case (where the function is
+    //      executed on a single row only) is different in SQL Server from
+    //      the behavior in MySQL, Oracle or the standard implementation of
+    //      the expression function in the Expression Engine.
+
+    virtual void CheckReaderStddev (FdoIDataReader *data_reader,
+                                    FdoDouble      expected_cmp_id_value);
+
+    //  CheckReaderString:
     //      The function checks whether or not the provided reader contains
     //      the expected data and throws an exception if this is not the 
     //      case.
 
-    virtual void CheckStringFunctionReader (
+    virtual void CheckReaderString (
                                 FdoIFeatureReader *data_reader,
-                                FdoInt32           expected_id_value,
-                                FdoString          *expected_cmp_id_value);
+                                FdoInt32          expected_id_value,
+                                FdoString         *expected_cmp_id_value);
 
     //  ExecuteSelAggrCommand:
     //      The function executes a select-aggregate command using the pro-
@@ -710,6 +768,20 @@ protected:
                                                     FdoFilter *filter,
                                                     FdoString *id_str);
 
+    //  ExecuteSelectCommand:
+    //      The function executes a select-command to retrieve the values of
+    //      the named properties and returns the generated reader back to the
+    //      calling routine.
+
+    FdoIFeatureReader *ExecuteSelectCommand (FdoString *class_name,
+                                             FdoFilter *filter,
+                                             FdoString *prop1,
+                                             FdoString *prop2,
+                                             FdoString *prop3,
+                                             FdoString *prop4,
+                                             FdoString *prop5,
+                                             FdoString *prop6);
+
     //  GetDate:
     //      The function retrieves the date set for a property identified by
     //      the provided filter and returns this one back to the calling pro-
@@ -719,14 +791,12 @@ protected:
                                  FdoString *property_name,
                                  FdoFilter *filter);
 
-    //  GetExpectedCountValue:
-    //      The function returns the number of rows expected to be returned
-    //      by the function testing the expression function COUNT. The value
-    //      differs on the underlying database server. In MySQL, for example,
-    //      NULL values are not added to the total count whereas in Oracle
-    //      those rows are.
+    //  GetExpectedValue:
+    //      The function returns the expected value for a computed identifier
+    //      in case the expression function request is treated differently in
+    //      MySQL, Oracle, SQL Server and the standard implementation.
 
-    virtual FdoDouble GetExpectedCountValue (FdoInt16 test_case_id);
+    virtual FdoDouble GetExpectedValue (FdoInt16 test_case_id);
 
 
     //-------------------------------------------------------------------------

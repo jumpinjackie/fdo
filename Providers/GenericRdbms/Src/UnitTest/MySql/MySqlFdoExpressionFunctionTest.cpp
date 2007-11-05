@@ -68,22 +68,26 @@ FdoInt32 MySqlFdoExpressionFunctionTest::GetDimensionality ()
 
 }  //  GetDimensionality ()   
 
-FdoDouble MySqlFdoExpressionFunctionTest::GetExpectedCountValue (
+FdoDouble MySqlFdoExpressionFunctionTest::GetExpectedValue (
                                                     FdoInt16 test_case_id)
 
 // +---------------------------------------------------------------------------
-// | The function returns the number of rows expected to be returned by the
-// | function testing the expression function COUNT. The value differs on the
-// | underlying database server. In MySQL, for example, NULL values are not
-// | added to the total count whereas in Oracle those rows are.
+// | The function returns the expected value for a computed identifier in case
+// | the expression function request is treated differently in MySQL, Oracle,
+// | SQL Server and the standard implementation.
 // +---------------------------------------------------------------------------
 
 {
 
     switch (test_case_id) {
 
-      case 1: return 30; break;
-      case 2: return 28; break;
+      case COUNT_TEST_CASE_CODE_1: return 30; break;
+      case COUNT_TEST_CASE_CODE_2: return 28; break;
+      case COUNT_TEST_CASE_CODE_3: return 31; break;
+
+      case EXP_TEST_CASE_CODE_1  : return 1.3733829795401790e+032; break;
+
+      case POWER_TEST_CASE_CODE_1: return 399.89670693504; break;
 
     }  //  switch ...
 
@@ -92,7 +96,7 @@ FdoDouble MySqlFdoExpressionFunctionTest::GetExpectedCountValue (
 
     return -1;
 
-}  //  GetExpectedCountValue ()
+}  //  GetExpectedValue ()
 
 
 // ----------------------------------------------------------------------------
@@ -358,7 +362,7 @@ void MySqlFdoExpressionFunctionTest::TestToDateFunction ()
       func_call   = L"(ToDate('21-SEP-07', 'DD-MON-YY') as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckDateTimeReader(data_reader, true, false, 0, 9, expected_dt_data);
+      CheckReaderDt(data_reader, true, false, 0, 9, expected_dt_data);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -970,7 +974,7 @@ void MySqlFdoExpressionFunctionTest::TestToStringFunction ()
       func_call   = L"(ToString(dcl_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"12.840000");
+      CheckReaderString(data_reader, 9, L"12.840000");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -1015,7 +1019,7 @@ void MySqlFdoExpressionFunctionTest::TestToStringFunction ()
       func_call   = L"(ToString(dbl_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"18.889081");
+      CheckReaderString(data_reader, 9, L"18.889081");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -1060,7 +1064,7 @@ void MySqlFdoExpressionFunctionTest::TestToStringFunction ()
       func_call   = L"(ToString(i32_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"90");
+      CheckReaderString(data_reader, 9, L"90");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -1105,7 +1109,7 @@ void MySqlFdoExpressionFunctionTest::TestToStringFunction ()
       func_call   = L"(ToString(sgl_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"3.090129");
+      CheckReaderString(data_reader, 9, L"3.090129");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -1153,7 +1157,7 @@ void MySqlFdoExpressionFunctionTest::TestToStringFunction ()
       func_call   = L"(ToString(dt_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"09-SEP-2007 21:00:00");
+      CheckReaderString(data_reader, 9, L"09-SEP-2007 21:00:00");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -1200,7 +1204,7 @@ void MySqlFdoExpressionFunctionTest::TestToStringFunction ()
       func_call   = L"(ToString(dt_val, 'DD-MON-YYYY') as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"09-SEP-2007");
+      CheckReaderString(data_reader, 9, L"09-SEP-2007");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -1346,7 +1350,7 @@ void MySqlFdoExpressionFunctionTest::TestSoundexFunction ()
       func_call   = L"(Soundex(str2_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"T2462");
+      CheckReaderString(data_reader, 9, L"T2462");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...

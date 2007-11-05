@@ -756,13 +756,15 @@ void FdoExpressionFunctionTest::TestCountFunction ()
     try {
 
       // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row with the value of the computed property being
-      // 31. 
+      // this call returns 1 row with the value of the computed property.
+      // The value depends on the current underlying database system. 
+
+      expected_count = GetExpectedValue(COUNT_TEST_CASE_CODE_3);
 
       func_call   = L"(Count(byte_val) as cmp_id)";
       data_reader = ExecuteSelAggrCommand(
                                         L"exfct_c1", NULL, false, func_call);
-      CheckReader(data_reader, false, 0, 31);
+      CheckReader(data_reader, false, 0, expected_count);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -803,10 +805,12 @@ void FdoExpressionFunctionTest::TestCountFunction ()
       // this call returns 1 row with the value of the computed property being
       // 10. 
 
+      expected_count = 10;
+
       func_call   = L"(Count('distinct', byte_val) as cmp_id)";
       data_reader = ExecuteSelAggrCommand(
                                         L"exfct_c1", NULL, false, func_call);
-      CheckReader(data_reader, false, 0, 10);
+      CheckReader(data_reader, false, 0, expected_count);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -844,10 +848,10 @@ void FdoExpressionFunctionTest::TestCountFunction ()
     try {
 
       // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row with the value of the computed property being
-      // 30 or 31 depending what database system is executed. 
+      // this call returns 1 row with the value of the computed property. 
+      // The value depends on the current underlying database system. 
 
-      expected_count = GetExpectedCountValue(1);
+      expected_count = GetExpectedValue(COUNT_TEST_CASE_CODE_1);
 
       func_call   = L"(Count(dcl_val) as cmp_id)";
       data_reader = ExecuteSelAggrCommand(
@@ -893,12 +897,58 @@ void FdoExpressionFunctionTest::TestCountFunction ()
     try {
 
       // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row with the value of the computed property to
-      // be 30 or 31 depending what database system is executed. 
+      // this call returns 1 row with the value of the computed property.
+      // The value depends on the current underlying database system. 
 
-      expected_count = GetExpectedCountValue(2);
+      expected_count = GetExpectedValue(COUNT_TEST_CASE_CODE_2);
 
       func_call   = L"(Count('distinct', dt_val) as cmp_id)";
+      data_reader = ExecuteSelAggrCommand(
+                                        L"exfct_c1", NULL, false, func_call);
+      CheckReader(data_reader, false, 0, expected_count);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 5. Test Case:
+    // The test executes a select-aggregate command to select the value of a
+    // computed property that is defined by using the function COUNT on the
+    // value of a different property of type STRING. No exceptions are ex-
+    // pected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("5. Test Case:                                              \n");
+    printf("  The test executes a select-aggregate command to select   \n");
+    printf("  the value of a computed property that is defined by us-  \n");
+    printf("  ing the function COUNT on the value of a different pro-  \n");
+    printf("  perty of type STRING. No exceptions are expected.        \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property. 
+      // The value depends on the current underlying database system. 
+
+      expected_count = GetExpectedValue(COUNT_TEST_CASE_CODE_3);
+
+      func_call   = L"(Count(str_val) as cmp_id)";
       data_reader = ExecuteSelAggrCommand(
                                         L"exfct_c1", NULL, false, func_call);
       CheckReader(data_reader, false, 0, expected_count);
@@ -968,7 +1018,7 @@ void FdoExpressionFunctionTest::TestMaxFunction ()
       func_call   = L"(Max(byte_val) as cmp_id)";
       data_reader = ExecuteSelAggrCommand(
                                         L"exfct_c1", NULL, false, func_call);
-      CheckReader(data_reader, false, 0, 74);
+      CheckReaderByte(data_reader, false, 0, 74);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -1012,7 +1062,7 @@ void FdoExpressionFunctionTest::TestMaxFunction ()
       func_call   = L"(Max('distinct', byte_val) as cmp_id)";
       data_reader = ExecuteSelAggrCommand(
                                         L"exfct_c1", NULL, false, func_call);
-      CheckReader(data_reader, false, 0, 74);
+      CheckReaderByte(data_reader, false, 0, 74);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -1107,7 +1157,7 @@ void FdoExpressionFunctionTest::TestMaxFunction ()
       func_call   = L"(Max('distinct', dt_val) as cmp_id)";
       data_reader = ExecuteSelAggrCommand(
                                         L"exfct_c1", NULL, false, func_call);
-      CheckDateTimeReader(data_reader, false, false, 0, 0, expected_dt_data);
+      CheckReaderDt(data_reader, false, false, 0, 0, expected_dt_data);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -1142,6 +1192,7 @@ void FdoExpressionFunctionTest::TestMedianFunction ()
 
     FdoStringP             func_call;
 
+    FdoPtr<FdoFilter>      filter;
     FdoPtr<FdoIDataReader> data_reader;
 
     printf("\n");
@@ -1236,6 +1287,55 @@ void FdoExpressionFunctionTest::TestMedianFunction ()
 
     }  //  catch ( ... ) ...
 
+    // 3. Test Case:
+    // The test executes a select-aggregate command to select the value of a
+    // computed property that is defined by using the function MEDIAN on the
+    // value of a different property of type DECIMAL. This test requests the
+    // calculation of the median on a single row. In this case the result is
+    // expected to be the value of that row. No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("3. Test Case:                                              \n");
+    printf("  The test executes a select-aggregate command to select   \n");
+    printf("  the value of a computed property that is defined by us-  \n");
+    printf("  ing the function MEDIAN on the value of a different      \n");
+    printf("  property of type DECIMAL. This test requests the calcu-  \n");
+    printf("  lation if the median on a single row. In this case, the  \n");
+    printf("  result is expected to be the value of the row. No excep- \n");
+    printf("  tions are expected.                                      \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property being
+      // 12.84. 
+
+      filter      = FdoFilter::Parse(L"id = 9");
+      func_call   = L"(Median(dcl_val) as cmp_id)";
+      data_reader = ExecuteSelAggrCommand(
+                                        L"exfct_c1", filter, false, func_call);
+      CheckReader(data_reader, false, 0, 12.84);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
 }  //  TestMedianFunction ()
 
 void FdoExpressionFunctionTest::TestMinFunction ()
@@ -1283,7 +1383,7 @@ void FdoExpressionFunctionTest::TestMinFunction ()
       func_call   = L"(Min(byte_val) as cmp_id)";
       data_reader = ExecuteSelAggrCommand(
                                         L"exfct_c1", NULL, false, func_call);
-      CheckReader(data_reader, false, 0, 65);
+      CheckReaderByte(data_reader, false, 0, 65);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -1327,7 +1427,7 @@ void FdoExpressionFunctionTest::TestMinFunction ()
       func_call   = L"(Min('distinct', byte_val) as cmp_id)";
       data_reader = ExecuteSelAggrCommand(
                                         L"exfct_c1", NULL, false, func_call);
-      CheckReader(data_reader, false, 0, 65);
+      CheckReaderByte(data_reader, false, 0, 65);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -1422,7 +1522,7 @@ void FdoExpressionFunctionTest::TestMinFunction ()
       func_call   = L"(Min('distinct', dt_val) as cmp_id)";
       data_reader = ExecuteSelAggrCommand(
                                         L"exfct_c1", NULL, false, func_call);
-      CheckDateTimeReader(data_reader, false, false, 0, 0, expected_dt_data);
+      CheckReaderDt(data_reader, false, false, 0, 0, expected_dt_data);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -1610,6 +1710,7 @@ void FdoExpressionFunctionTest::TestSpatialExtents ()
     // lates the spatial extent. This is later used to cross-check the result
     // returned by the expression function call.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("Test Case Setup:                                           \n");
     printf("  The following retrieves the geometry data for all ob-    \n");
@@ -1765,6 +1866,7 @@ void FdoExpressionFunctionTest::TestStddevFunction ()
 
     FdoStringP             func_call;
 
+    FdoPtr<FdoFilter>      filter;
     FdoPtr<FdoIDataReader> data_reader;
 
     printf("\n");
@@ -1929,6 +2031,54 @@ void FdoExpressionFunctionTest::TestStddevFunction ()
       data_reader = ExecuteSelAggrCommand(
                                         L"exfct_c1", NULL, false, func_call);
       CheckReader(data_reader, false, 0, 12.9744572);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 5. Test Case:
+    // The test executes a select-aggregate command to select the value of a
+    // computed property that is defined by using the function STDDEV on the
+    // value of a different property of type DECIMAL. This test requests the
+    // standard deviation on a single row. In this case the result is expected
+    // to be 0. No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("5. Test Case:                                              \n");
+    printf("  The test executes a select-aggregate command to select   \n");
+    printf("  the value of a computed property that is defined by us-  \n");
+    printf("  ing the function STDDEV on the value of a different      \n");
+    printf("  property of type DECIMAL. This test requests the stan-   \n");
+    printf("  dard deviation on a single row. In this case, the result \n");
+    printf("  is expected to be 0. No exceptions are expected.         \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property being
+      // 0. 
+
+      filter      = FdoFilter::Parse(L"id = 9");
+      func_call   = L"(Stddev(dcl_val) as cmp_id)";
+      data_reader = ExecuteSelAggrCommand(
+                                        L"exfct_c1", filter, false, func_call);
+      CheckReaderStddev(data_reader, 0);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -2232,6 +2382,7 @@ void FdoExpressionFunctionTest::TestNullValueFunction ()
     // The test should return this date/time information. No exceptions are
     // expected.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
@@ -2253,7 +2404,7 @@ void FdoExpressionFunctionTest::TestNullValueFunction ()
       func_call   = L"(NullValue(dt_val, dt2_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter1, true, func_call);
-      CheckDateTimeReader(data_reader, true, false, 0, 21, dt1_set);
+      CheckReaderDt(data_reader, true, false, 0, 21, dt1_set);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -2304,7 +2455,7 @@ void FdoExpressionFunctionTest::TestNullValueFunction ()
       func_call   = L"(NullValue(dt_val, dt2_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter2, true, func_call);
-      CheckDateTimeReader(data_reader, true, false, 0, 22, dt2_set);
+      CheckReaderDt(data_reader, true, false, 0, 22, dt2_set);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -2486,9 +2637,8 @@ void FdoExpressionFunctionTest::TestToDateFunction ()
       expected_dt_data.day   = 21;
 
       func_call   = L"(ToDate('21-SEP-07', 'DD-MON-YY') as cmp_id)";
-      data_reader =
-                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckDateTimeReader(data_reader, true, false, 0, 9, expected_dt_data);
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderDt(data_reader, true, false, 0, 9, expected_dt_data);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -2521,10 +2671,21 @@ void FdoExpressionFunctionTest::TestToDoubleFunction ()
 
     // Declare and initialize all necessary local vatiables.
 
-    FdoStringP                func_call;
+    FdoInt16                  counter           = 0;
+
+    FdoDouble                 exp_dcl_val,
+                              exp_dbl_val,
+                              exp_i32_val,
+                              exp_sgl_val,
+                              exp_str_val,
+                              exp_byte_val;
+
+    FdoStringP                str_val,
+                              func_call;
 
     FdoPtr<FdoFilter>         filter;
-    FdoPtr<FdoIFeatureReader> data_reader;
+    FdoPtr<FdoIFeatureReader> data_reader,
+                              feature_reader;
 
     printf("\n");
     printf("========================================================== \n");
@@ -2539,31 +2700,92 @@ void FdoExpressionFunctionTest::TestToDoubleFunction ()
                FdoComparisonOperations_EqualTo, 
                FdoPtr<FdoDataValue>(FdoDataValue::Create(9))));
 
+    // Test Setup:
+    // The following executes a select-command to retrieve the current values
+    // of the properties used in the following tests. Those values are later
+    // used for cross-checking the test result.
+
+    printf("---------------------------------------------------------- \n");
+    printf("Test Setup:                                                \n");
+    printf("  The following executes a select-command to retrieve the  \n");
+    printf("  current values of the properties used in the following   \n");
+    printf("  tests. Those values are later used for cross-checking    \n");
+    printf("  the test result.                                         \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      feature_reader = ExecuteSelectCommand(L"exfct_c1",
+                                            filter,
+                                            L"byte_val",
+                                            L"dcl_val",
+                                            L"dbl_val",
+                                            L"i32_val",
+                                            L"sgl_val",
+                                            L"str_val");
+
+      printf(" >>> Retrieving cross-check data \n");
+
+      while (feature_reader->ReadNext()) {
+
+        counter++;
+
+        exp_byte_val = (FdoDouble)feature_reader->GetByte(L"byte_val");
+        exp_dcl_val  = feature_reader->GetDouble(L"dcl_val");
+        exp_dbl_val  = feature_reader->GetDouble(L"dbl_val");
+        exp_i32_val  = (FdoDouble)feature_reader->GetInt32(L"i32_val");
+        exp_sgl_val  = feature_reader->GetSingle(L"sgl_val");
+        str_val      = feature_reader->GetString(L"str_val");
+        exp_str_val  = str_val.ToDouble();
+
+      }  //  while (feature_reader->ReadNext()) ...
+
+      // Issue an exception if more than the expected number of rows were
+      // returned.
+
+      if (counter != 1)
+          throw FdoException::Create(L"Unexpected number of rows returned");
+ 
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test setup failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test setup failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
     // 1. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TODOUBLE on the value
-    // of a different property of type DECIMAL. The test should return the
-    // same value. No exceptions are expected.
+    // of a different property of type BYTE. The test should return the 
+    // original property value. No exceptions are expected.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TODOUBLE on the value of a different property   \n");
-    printf("  of type DECIMAL. The test should return the same value.  \n");
-    printf("  No exceptions are expected.                              \n");
+    printf("  of type BYTE. The test should return the original prop-  \n");
+    printf("  erty value. No exceptions are expected.                  \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row with the value of the computed property
-      // being 12.84.
+      // Execute the test and check the returned data.
 
-      func_call   = L"(ToDouble(dcl_val) as cmp_id)";
-      data_reader =
-                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 12.84);
+      func_call   = L"(ToDouble(byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, exp_byte_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -2586,8 +2808,8 @@ void FdoExpressionFunctionTest::TestToDoubleFunction ()
     // 2. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TODOUBLE on the value
-    // of a different property of type DOUBLE. The test should return the
-    // same value. No exceptions are expected.
+    // of a different property of type DECIMAL. The test should return the
+    // original propery value. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -2595,20 +2817,17 @@ void FdoExpressionFunctionTest::TestToDoubleFunction ()
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TODOUBLE on the value of a different property   \n");
-    printf("  of type DOUBLE. The test should return the same value.   \n");
-    printf("  No exceptions are expected.                              \n");
+    printf("  of type DECIMAL. The test should return the original     \n");
+    printf("  property value. No exceptions are expected.              \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row with the value of the computed property
-      // being 18.8890815.
+      // Execute the test and check the returned data.
 
-      func_call   = L"(ToDouble(dbl_val) as cmp_id)";
-      data_reader =
-                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 18.8890815);
+      func_call   = L"(ToDouble(dcl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, exp_dcl_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -2631,8 +2850,8 @@ void FdoExpressionFunctionTest::TestToDoubleFunction ()
     // 3. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TODOUBLE on the value
-    // of a different property of type INT32. The test should return the same
-    // value. No exceptions are expected.
+    // of a different property of type DOUBLE. The test should return the
+    // original property value. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -2640,20 +2859,17 @@ void FdoExpressionFunctionTest::TestToDoubleFunction ()
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TODOUBLE on the value of a different property   \n");
-    printf("  of type INT32. The test should return the same value. No \n");
-    printf("  exceptions are expected.                                 \n");
+    printf("  of type DOUBLE. The test should return the original      \n");
+    printf("  property value. No exceptions are expected.              \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row with the value of the computed property
-      // being 90.
+      // Execute the test and check the returned data.
 
-      func_call   = L"(ToDouble(i32_val) as cmp_id)";
-      data_reader =
-                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 90);
+      func_call   = L"(ToDouble(dbl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, exp_dbl_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -2676,8 +2892,8 @@ void FdoExpressionFunctionTest::TestToDoubleFunction ()
     // 4. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TODOUBLE on the value
-    // of a different property of type SINGLE. The test should return the
-    // same value. No exceptions are expected.
+    // of a different property of type INT32. The test should return the
+    // original property value. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -2685,20 +2901,17 @@ void FdoExpressionFunctionTest::TestToDoubleFunction ()
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TODOUBLE on the value of a different property   \n");
-    printf("  of type SINGLE. The test should return the same value.   \n");
-    printf("  No exceptions are expected.                              \n");
+    printf("  of type INT32. The test should return the original prop- \n");
+    printf("  erty value . No exceptions are expected.                 \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row with the value of the computed property
-      // being 3.09012866.
+      // Execute the test and check the returned data.
 
-      func_call   = L"(ToDouble(sgl_val) as cmp_id)";
-      data_reader =
-                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 3.09012866);
+      func_call   = L"(ToDouble(i32_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, exp_i32_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -2721,13 +2934,55 @@ void FdoExpressionFunctionTest::TestToDoubleFunction ()
     // 5. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TODOUBLE on the value
+    // of a different property of type SINGLE. The test should return the
+    // original property value. No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("5. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function TODOUBLE on the value of a different property   \n");
+    printf("  of type SINGLE. The test should return the original      \n");
+    printf("  property value. No exceptions are expected.              \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data.
+
+      func_call   = L"(ToDouble(sgl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, exp_sgl_val);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 6. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function TODOUBLE on the value
     // of a different property of type STRING. The test should return the
     // numeric representation of the value stored in the srring. No excep-
     // tions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("5. Test Case:                                              \n");
+    printf("6. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TODOUBLE on the value of a different property   \n");
@@ -2738,14 +2993,11 @@ void FdoExpressionFunctionTest::TestToDoubleFunction ()
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row with the value of the computed property
-      // being 9.
+      // Execute the test and check the returned data.
 
       func_call   = L"(ToDouble(str_val) as cmp_id)";
-      data_reader =
-                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 9);
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, exp_str_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -2778,10 +3030,21 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
 
     // Declare and initialize all necessary local vatiables.
 
-    FdoStringP                func_call;
+    FdoInt16                  counter           = 0;
+
+    FdoDouble                 exp_dcl_val,
+                              exp_dbl_val,
+                              exp_i32_val,
+                              exp_sgl_val,
+                              exp_str_val,
+                              exp_byte_val;
+
+    FdoStringP                str_val,
+                              func_call;
 
     FdoPtr<FdoFilter>         filter;
-    FdoPtr<FdoIFeatureReader> data_reader;
+    FdoPtr<FdoIFeatureReader> data_reader,
+                              feature_reader;
 
     printf("\n");
     printf("========================================================== \n");
@@ -2796,31 +3059,93 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
                FdoComparisonOperations_EqualTo, 
                FdoPtr<FdoDataValue>(FdoDataValue::Create(9))));
 
+    // Test Setup:
+    // The following executes a select-command to retrieve the current values
+    // of the properties used in the following tests. Those values are later
+    // used for cross-checking the test result.
+
+    printf("---------------------------------------------------------- \n");
+    printf("Test Setup:                                                \n");
+    printf("  The following executes a select-command to retrieve the  \n");
+    printf("  current values of the properties used in the following   \n");
+    printf("  tests. Those values are later used for cross-checking    \n");
+    printf("  the test result.                                         \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      feature_reader = ExecuteSelectCommand(L"exfct_c1",
+                                            filter,
+                                            L"byte_val",
+                                            L"dcl_val",
+                                            L"dbl_val",
+                                            L"i32_val",
+                                            L"sgl_val",
+                                            L"str_val");
+
+      printf(" >>> Retrieving cross-check data \n");
+
+      while (feature_reader->ReadNext()) {
+
+        counter++;
+
+        exp_byte_val = (FdoDouble)feature_reader->GetByte(L"byte_val");
+        exp_dcl_val  = feature_reader->GetDouble(L"dcl_val");
+        exp_dbl_val  = feature_reader->GetDouble(L"dbl_val");
+        exp_i32_val  = (FdoDouble)feature_reader->GetInt32(L"i32_val");
+        exp_sgl_val  = feature_reader->GetSingle(L"sgl_val");
+        str_val      = feature_reader->GetString(L"str_val");
+        exp_str_val  = str_val.ToDouble();
+
+      }  //  while (feature_reader->ReadNext()) ...
+
+      // Issue an exception if more than the expected number of rows were
+      // returned.
+
+      if (counter != 1)
+          throw FdoException::Create(L"Unexpected number of rows returned");
+ 
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test setup failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test setup failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
     // 1. Test Case:
     // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOFLOAT on the value
-    // of a different property of type DECIMAL. The test should return the
-    // same value. No exceptions are expected.
+    // property that is defined by using the function TOFLOAT on the value of
+    // a different property of type BYTE. The test should return the original
+    // property value. No exceptions are expected.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TOFLOAT on the value of a different property of \n");
-    printf("  type DECIMAL. The test should return the same value. No  \n");
-    printf("  exceptions are expected.                                 \n");
+    printf("  type BYTE. The test should return the original property  \n");
+    printf("  value. No exceptions are expected.                       \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row with the value of the computed property
-      // being 12.84.
+      // Execute the test and check the returned data.
 
-      func_call   = L"(ToFloat(dcl_val) as cmp_id)";
+      func_call   = L"(ToFloat(byte_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 12.84);
+      CheckReader(data_reader, true, 9, exp_byte_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -2842,9 +3167,9 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
 
     // 2. Test Case:
     // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOFLOAT on the value of
-    // a different property of type DOUBLE. The test should return the same
-    // value. No exceptions are expected.
+    // property that is defined by using the function TOFLOAT on the value
+    // of a different property of type DECIMAL. The test should return the
+    // original property value. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -2852,20 +3177,17 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TOFLOAT on the value of a different property of \n");
-    printf("  type DOUBLE. The test should return the same value. No   \n");
-    printf("  exceptions are expected.                                 \n");
+    printf("  type DECIMAL. The test should return the original prop-  \n");
+    printf("  erty value. No exceptions are expected.                  \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row with the value of the computed property
-      // being 18.8890815.
+      // Execute the test and check the returned data.
 
-      func_call   = L"(ToFloat(dbl_val) as cmp_id)";
-      data_reader =
-                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 18.8890815);
+      func_call   = L"(ToFloat(dcl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, exp_dcl_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -2888,8 +3210,8 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
     // 3. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TOFLOAT on the value of
-    // a different property of type INT32. The test should return the same
-    // value. No exceptions are expected.
+    // a different property of type DOUBLE. The test should return the original
+    // property value. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -2897,20 +3219,17 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TOFLOAT on the value of a different property of \n");
-    printf("  type INT32. The test should return the same value. No    \n");
-    printf("  exceptions are expected.                                 \n");
+    printf("  type DOUBLE. The test should return the original prop-   \n");
+    printf("  erty value. No exceptions are expected.                  \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row with the value of the computed property
-      // being 90.
+      // Execute the test and check the returned data.
 
-      func_call   = L"(ToFloat(i32_val) as cmp_id)";
-      data_reader =
-                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 90);
+      func_call   = L"(ToFloat(dbl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, exp_dbl_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -2933,8 +3252,8 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
     // 4. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TOFLOAT on the value of
-    // a different property of type SINGLE. The test should return the same
-    // value. No exceptions are expected.
+    // a different property of type INT32. The test should return the original
+    // property value. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -2942,20 +3261,17 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TOFLOAT on the value of a different property of \n");
-    printf("  type SINGLE. The test should return the same value. No   \n");
-    printf("  exceptions are expected.                                 \n");
+    printf("  type INT32. The test should return the original property \n");
+    printf("   value. No exceptions are expected.                      \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row with the value of the computed property
-      // being 3.09012866.
+      // Execute the test and check the returned data.
 
-      func_call   = L"(ToFloat(sgl_val) as cmp_id)";
-      data_reader =
-                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 3.09012866);
+      func_call   = L"(ToFloat(i32_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, exp_i32_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -2977,6 +3293,48 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
 
     // 5. Test Case:
     // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function TOFLOAT on the value of
+    // a different property of type SINGLE. The test should return the original
+    // property value. No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("5. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function TOFLOAT on the value of a different property of \n");
+    printf("  type SINGLE. The test should return the original prop-   \n");
+    printf("  value. No exceptions are expected.                       \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data.
+
+      func_call   = L"(ToFloat(sgl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, exp_sgl_val);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 6. Test Case:
+    // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TOFLOAT on the value
     // of a different property of type STRING. The test should return the
     // numeric representation of the value stored in the string. No exceptions
@@ -2984,7 +3342,7 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("5. Test Case:                                              \n");
+    printf("6. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TOFLOAT on the value of a different property of \n");
@@ -2995,14 +3353,11 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row with the value of the computed property
-      // being 9.
+      // Execute the test and check the returned data.
 
       func_call   = L"(ToFloat(str_val) as cmp_id)";
-      data_reader =
-                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 9);
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, exp_str_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -3035,10 +3390,21 @@ void FdoExpressionFunctionTest::TestToInt32Function ()
 
     // Declare and initialize all necessary local vatiables.
 
-    FdoStringP                func_call;
+    FdoInt16                  counter           = 0;
+
+    FdoInt32                  exp_dcl_val,
+                              exp_dbl_val,
+                              exp_i32_val,
+                              exp_sgl_val,
+                              exp_str_val,
+                              exp_byte_val;
+
+    FdoStringP                str_val,
+                              func_call;
 
     FdoPtr<FdoFilter>         filter;
-    FdoPtr<FdoIFeatureReader> data_reader;
+    FdoPtr<FdoIFeatureReader> data_reader,
+                              feature_reader;
 
     printf("\n");
     printf("========================================================== \n");
@@ -3053,33 +3419,93 @@ void FdoExpressionFunctionTest::TestToInt32Function ()
                FdoComparisonOperations_EqualTo, 
                FdoPtr<FdoDataValue>(FdoDataValue::Create(9))));
 
+    // Test Setup:
+    // The following executes a select-command to retrieve the current values
+    // of the properties used in the following tests. Those values are later
+    // used for cross-checking the test result.
+
+    printf("---------------------------------------------------------- \n");
+    printf("Test Setup:                                                \n");
+    printf("  The following executes a select-command to retrieve the  \n");
+    printf("  current values of the properties used in the following   \n");
+    printf("  tests. Those values are later used for cross-checking    \n");
+    printf("  the test result.                                         \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      feature_reader = ExecuteSelectCommand(L"exfct_c1",
+                                            filter,
+                                            L"byte_val",
+                                            L"dcl_val",
+                                            L"dbl_val",
+                                            L"i32_val",
+                                            L"sgl_val",
+                                            L"str_val");
+
+      printf(" >>> Retrieving cross-check data \n");
+
+      while (feature_reader->ReadNext()) {
+
+        counter++;
+
+        exp_byte_val = feature_reader->GetByte(L"byte_val");
+        exp_dcl_val  = (FdoInt32)feature_reader->GetDouble(L"dcl_val");
+        exp_dbl_val  = (FdoInt32)feature_reader->GetDouble(L"dbl_val");
+        exp_i32_val  = feature_reader->GetInt32(L"i32_val");
+        exp_sgl_val  = (FdoInt32)feature_reader->GetSingle(L"sgl_val");
+        str_val      = feature_reader->GetString(L"str_val");
+        exp_str_val  = str_val.ToLong();
+
+      }  //  while (feature_reader->ReadNext()) ...
+
+      // Issue an exception if more than the expected number of rows were
+      // returned.
+
+      if (counter != 1)
+          throw FdoException::Create(L"Unexpected number of rows returned");
+ 
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test setup failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test setup failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
     // 1. Test Case:
     // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOINT32 on the value
-    // of a different property of type DECIMAL. The test should return the
-    // original value minus the part after the decimal point. No exceptions
-    // are expected.
+    // property that is defined by using the function TOINT32 on the value of
+    // a different property of type BYTE. The test should return the original
+    // property value. No exceptions are expected.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TOINT32 on the value of a different property of \n");
-    printf("  type DECIMAL. The test should return the original value  \n");
-    printf("  minus the part after the decimal point. No exceptions    \n");
-    printf("  are expected.                                            \n");
+    printf("  type BYTE. The test should return the original property  \n");
+    printf("  value. No exceptions are expected.                       \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row with the value of the computed property
-      // being 12.
+      // Execute the test and check the returned data.
 
-      func_call   = L"(ToInt32(dcl_val) as cmp_id)";
+      func_call   = L"(ToInt32(byte_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 12);
+      CheckReader32(data_reader, true, 9, exp_byte_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -3102,7 +3528,7 @@ void FdoExpressionFunctionTest::TestToInt32Function ()
     // 2. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TOINT32 on the value
-    // of a different property of type DOUBLE. The test should return the
+    // of a different property of type DECIMAL. The test should return the
     // original value minus the part after the decimal point. No exceptions
     // are expected.
 
@@ -3112,21 +3538,18 @@ void FdoExpressionFunctionTest::TestToInt32Function ()
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TOINT32 on the value of a different property of \n");
-    printf("  type DOUBLE. The test should return the original value   \n");
+    printf("  type DECIMAL. The test should return the original value  \n");
     printf("  minus the part after the decimal point. No exceptions    \n");
     printf("  are expected.                                            \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row with the value of the computed property
-      // being 18.
+      // Execute the test and check the returned data.
 
-      func_call   = L"(ToInt32(dbl_val) as cmp_id)";
-      data_reader =
-                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 18);
+      func_call   = L"(ToInt32(dcl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader32(data_reader, true, 9, exp_dcl_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -3149,8 +3572,9 @@ void FdoExpressionFunctionTest::TestToInt32Function ()
     // 3. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TOINT32 on the value
-    // of a different property of type INT32. The test should return the same
-    // value. No exceptions are expected.
+    // of a different property of type DOUBLE. The test should return the
+    // original value minus the part after the decimal point. No exceptions
+    // are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -3158,20 +3582,18 @@ void FdoExpressionFunctionTest::TestToInt32Function ()
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TOINT32 on the value of a different property of \n");
-    printf("  type INT32. The test should return the same value. No    \n");
-    printf("  exceptions are expected.                                 \n");
+    printf("  type DOUBLE. The test should return the original value   \n");
+    printf("  minus the part after the decimal point. No exceptions    \n");
+    printf("  are expected.                                            \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row with the value of the computed property
-      // being 90.
+      // Execute the test and check the returned data.
 
-      func_call   = L"(ToInt32(i32_val) as cmp_id)";
-      data_reader =
-                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 90);
+      func_call   = L"(ToInt32(dbl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader32(data_reader, true, 9, exp_dbl_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -3194,9 +3616,8 @@ void FdoExpressionFunctionTest::TestToInt32Function ()
     // 4. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TOINT32 on the value
-    // of a different property of type SINGLE. The test should return the
-    // original value minus the part after the decimal point. No exceptions
-    // are expected.
+    // of a different property of type INT32. The test should return the
+    // original property value. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -3204,21 +3625,17 @@ void FdoExpressionFunctionTest::TestToInt32Function ()
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TOINT32 on the value of a different property of \n");
-    printf("  type SINGLE. The test should return the original value   \n");
-    printf("  minus the part after the decimal point. No exceptions    \n");
-    printf("  are expected.                                            \n");
+    printf("  type INT32. The test should return the original property \n");
+    printf("  value. No exceptions are expected.                       \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row with the value of the computed property
-      // being 3.
+      // Execute the test and check the returned data.
 
-      func_call   = L"(ToInt32(sgl_val) as cmp_id)";
-      data_reader =
-                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 3);
+      func_call   = L"(ToInt32(i32_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader32(data_reader, true, 9, exp_i32_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -3240,6 +3657,50 @@ void FdoExpressionFunctionTest::TestToInt32Function ()
 
     // 5. Test Case:
     // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function TOINT32 on the value
+    // of a different property of type SINGLE. The test should return the
+    // original value minus the part after the decimal point. No exceptions
+    // are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("5. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function TOINT32 on the value of a different property of \n");
+    printf("  type SINGLE. The test should return the original value   \n");
+    printf("  minus the part after the decimal point. No exceptions    \n");
+    printf("  are expected.                                            \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data.
+
+      func_call   = L"(ToInt32(sgl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader32(data_reader, true, 9, exp_sgl_val);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 6. Test Case:
+    // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TOINT64 on the value
     // of a different property of type STRING. The test should return the
     // numeric representation of the value stored in the string without any
@@ -3247,7 +3708,7 @@ void FdoExpressionFunctionTest::TestToInt32Function ()
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("5. Test Case:                                              \n");
+    printf("6. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TOINT32 on the value of a different property of \n");
@@ -3258,14 +3719,11 @@ void FdoExpressionFunctionTest::TestToInt32Function ()
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row with the value of the computed property
-      // being 9.
+      // Execute the test and check the returned data.
 
       func_call   = L"(ToInt32(str_val) as cmp_id)";
-      data_reader =
-                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 9);
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader32(data_reader, true, 9, exp_str_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -3298,10 +3756,21 @@ void FdoExpressionFunctionTest::TestToInt64Function ()
 
     // Declare and initialize all necessary local vatiables.
 
-    FdoStringP                func_call;
+    FdoInt16                  counter           = 0;
+
+    FdoInt64                  exp_dcl_val,
+                              exp_dbl_val,
+                              exp_i32_val,
+                              exp_sgl_val,
+                              exp_str_val,
+                              exp_byte_val;
+
+    FdoStringP                str_val,
+                              func_call;
 
     FdoPtr<FdoFilter>         filter;
-    FdoPtr<FdoIFeatureReader> data_reader;
+    FdoPtr<FdoIFeatureReader> data_reader,
+                              feature_reader;
 
     printf("\n");
     printf("========================================================== \n");
@@ -3316,33 +3785,92 @@ void FdoExpressionFunctionTest::TestToInt64Function ()
                FdoComparisonOperations_EqualTo, 
                FdoPtr<FdoDataValue>(FdoDataValue::Create(9))));
 
+    // Test Setup:
+    // The following executes a select-command to retrieve the current values
+    // of the properties used in the following tests. Those values are later
+    // used for cross-checking the test result.
+
+    printf("---------------------------------------------------------- \n");
+    printf("Test Setup:                                                \n");
+    printf("  The following executes a select-command to retrieve the  \n");
+    printf("  current values of the properties used in the following   \n");
+    printf("  tests. Those values are later used for cross-checking    \n");
+    printf("  the test result.                                         \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      feature_reader = ExecuteSelectCommand(L"exfct_c1",
+                                            filter,
+                                            L"byte_val",
+                                            L"dcl_val",
+                                            L"dbl_val",
+                                            L"i32_val",
+                                            L"sgl_val",
+                                            L"str_val");
+
+      printf(" >>> Retrieving cross-check data \n");
+
+      while (feature_reader->ReadNext()) {
+
+        counter++;
+
+        exp_byte_val = feature_reader->GetByte(L"byte_val");
+        exp_dcl_val  = (FdoInt64)feature_reader->GetDouble(L"dcl_val");
+        exp_dbl_val  = (FdoInt64)feature_reader->GetDouble(L"dbl_val");
+        exp_i32_val  = feature_reader->GetInt32(L"i32_val");
+        exp_sgl_val  = (FdoInt64)feature_reader->GetSingle(L"sgl_val");
+        str_val      = feature_reader->GetString(L"str_val");
+        exp_str_val  = str_val.ToLong();
+
+      }  //  while (feature_reader->ReadNext()) ...
+
+      // Issue an exception if more than the expected number of rows were
+      // returned.
+
+      if (counter != 1)
+          throw FdoException::Create(L"Unexpected number of rows returned");
+ 
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test setup failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test setup failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
     // 1. Test Case:
     // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOINT64 on the value
-    // of a different property of type DECIMAL. The test should return the
-    // original value minus the part after the decimal point. No exceptions
-    // are expected.
+    // property that is defined by using the function TOINT64 on the value of
+    // a different property of type BYTE. The test should return the original
+    // property value. No exceptions are expected.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TOINT64 on the value of a different property of \n");
-    printf("  type DECIMAL. The test should return the original value  \n");
-    printf("  minus the part after the decimal point. No exceptions    \n");
-    printf("  are expected.                                            \n");
+    printf("  type BYTE. The test should return the original property  \n");
+    printf("  value. No exceptions are expected.                       \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row with the value of the computed property
-      // being 12.
+      // Execute the test and check the returned data.
 
-      func_call   = L"(ToInt64(dcl_val) as cmp_id)";
-      data_reader =
-                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 12);
+      func_call   = L"(ToInt64(byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader64(data_reader, true, 9, exp_byte_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -3365,7 +3893,7 @@ void FdoExpressionFunctionTest::TestToInt64Function ()
     // 2. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TOINT64 on the value
-    // of a different property of type DOUBLE. The test should return the
+    // of a different property of type DECIMAL. The test should return the
     // original value minus the part after the decimal point. No exceptions
     // are expected.
 
@@ -3375,21 +3903,18 @@ void FdoExpressionFunctionTest::TestToInt64Function ()
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TOINT64 on the value of a different property of \n");
-    printf("  type DOUBLE. The test should return the original value   \n");
+    printf("  type DECIMAL. The test should return the original value  \n");
     printf("  minus the part after the decimal point. No exceptions    \n");
     printf("  are expected.                                            \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row with the value of the computed property
-      // being 18.
+      // Execute the test and check the returned data.
 
-      func_call   = L"(ToInt64(dbl_val) as cmp_id)";
-      data_reader =
-                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 18);
+      func_call   = L"(ToInt64(dcl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader64(data_reader, true, 9, exp_dcl_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -3412,8 +3937,9 @@ void FdoExpressionFunctionTest::TestToInt64Function ()
     // 3. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TOINT64 on the value
-    // of a different property of type INT32. The test should return the
-    // same value. No exceptions are expected.
+    // of a different property of type DOUBLE. The test should return the
+    // original value minus the part after the decimal point. No exceptions
+    // are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -3421,20 +3947,18 @@ void FdoExpressionFunctionTest::TestToInt64Function ()
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TOINT64 on the value of a different property of \n");
-    printf("  type INT32. The test should return the same value. No    \n");
-    printf("  exceptions are expected.                                 \n");
+    printf("  type DOUBLE. The test should return the original value   \n");
+    printf("  minus the part after the decimal point. No exceptions    \n");
+    printf("  are expected.                                            \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row with the value of the computed property
-      // being 90.
+      // Execute the test and check the returned data.
 
-      func_call   = L"(ToInt64(i32_val) as cmp_id)";
-      data_reader =
-                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 90);
+      func_call   = L"(ToInt64(dbl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader64(data_reader, true, 9, exp_dbl_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -3457,9 +3981,8 @@ void FdoExpressionFunctionTest::TestToInt64Function ()
     // 4. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TOINT64 on the value
-    // of a different property of type SINGLE. The test should return the
-    // original value minus the part after the decimal point. No exceptions
-    // are expected.
+    // of a different property of type INT32. The test should return the
+    // original property value. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -3467,21 +3990,17 @@ void FdoExpressionFunctionTest::TestToInt64Function ()
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TOINT64 on the value of a different property of \n");
-    printf("  type SINGLE. The test should return the original value   \n");
-    printf("  minus the part after the decimal point. No exceptions    \n");
-    printf("  are expected.                                            \n");
+    printf("  type INT32. The test should return the original property \n");
+    printf("  value. No exceptions are expected.                       \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row with the value of the computed property
-      // being 3.
+      // Execute the test and check the returned data.
 
-      func_call   = L"(ToInt64(sgl_val) as cmp_id)";
-      data_reader =
-                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 3);
+      func_call   = L"(ToInt64(i32_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader64(data_reader, true, 9, exp_i32_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -3504,13 +4023,57 @@ void FdoExpressionFunctionTest::TestToInt64Function ()
     // 5. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TOINT64 on the value
+    // of a different property of type SINGLE. The test should return the
+    // original value minus the part after the decimal point. No exceptions
+    // are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("5. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function TOINT64 on the value of a different property of \n");
+    printf("  type SINGLE. The test should return the original value   \n");
+    printf("  minus the part after the decimal point. No exceptions    \n");
+    printf("  are expected.                                            \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data.
+
+      func_call   = L"(ToInt64(sgl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader64(data_reader, true, 9, exp_sgl_val);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 6. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function TOINT64 on the value
     // of a different property of type STRING. The test should return the
     // numeric representation of the value stored in the string. No excep-
     // tions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("5. Test Case:                                              \n");
+    printf("6. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TOINT64 on the value of a different property of \n");
@@ -3521,14 +4084,11 @@ void FdoExpressionFunctionTest::TestToInt64Function ()
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row with the value of the computed property
-      // being 9.
+      // Execute the test and check the returned data.
 
       func_call   = L"(ToInt64(str_val) as cmp_id)";
-      data_reader =
-                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 9);
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader64(data_reader, true, 9, exp_str_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -3582,28 +4142,28 @@ void FdoExpressionFunctionTest::TestToStringFunction ()
     // 1. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TOSTRING on the value
-    // of a different property of type DECIMAL. The test should return the
-    // original value in a string. No exceptions are expected.
+    // of a different property of type BYTE. The test should return the
+    // original property value in a string. No exceptions are expected.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TOSTRING on the value of a different property   \n");
-    printf("  of type DECIMAL. The test should return the original     \n");
-    printf("  value in a string. No exceptions are expected.           \n");
+    printf("  of type BYTE. The test should return the original prop-  \n");
+    printf("  erty value in a string. No exceptions are expected.      \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row with the value of the computed property
-      // being 12.84.
+      // being "74".
 
-      func_call   = L"(ToString(dcl_val) as cmp_id)";
+      func_call   = L"(ToString(byte_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"12.84");
+      CheckReaderNumberString(data_reader, 9, L"74");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -3626,29 +4186,28 @@ void FdoExpressionFunctionTest::TestToStringFunction ()
     // 2. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TOSTRING on the value
-    // of a different property of type DOUBLE. The test should return the
-    // original value in a string. No exceptions are expected.
+    // of a different property of type DECIMAL. The test should return the
+    // original property value in a string. No exceptions are expected.
 
-    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TOSTRING on the value of a different property   \n");
-    printf("  of type DOUBLE. The test should return the original      \n");
-    printf("  value in a string. No exceptions are expected.           \n");
+    printf("  of type DECIMAL. The test should return the original     \n");
+    printf("  property value in a string. No exceptions are expected.  \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row with the value of the computed property
-      // being 18.88908145580589.
+      // being 12.84.
 
-      func_call   = L"(ToString(dbl_val) as cmp_id)";
+      func_call   = L"(ToString(dcl_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"18.88908145580589");
+      CheckReaderNumberString(data_reader, 9, L"12.84");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -3671,8 +4230,8 @@ void FdoExpressionFunctionTest::TestToStringFunction ()
     // 3. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TOSTRING on the value
-    // of a different property of type INT32. The test should return the
-    // original value in a string. No exceptions are expected.
+    // of a different property of type DOUBLE. The test should return the
+    // original property value in a string. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -3680,20 +4239,20 @@ void FdoExpressionFunctionTest::TestToStringFunction ()
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TOSTRING on the value of a different property   \n");
-    printf("  of type INT32. The test should return the original value \n");
-    printf("  in a string. No exceptions are expected.                 \n");
+    printf("  of type DOUBLE. The test should return the original      \n");
+    printf("  property value in a string. No exceptions are expected.  \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row with the value of the computed property
-      // being 90.
+      // being 18.88908145580589.
 
-      func_call   = L"(ToString(i32_val) as cmp_id)";
+      func_call   = L"(ToString(dbl_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"90");
+      CheckReaderNumberString(data_reader, 9, L"18.88908145580589");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -3716,8 +4275,8 @@ void FdoExpressionFunctionTest::TestToStringFunction ()
     // 4. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TOSTRING on the value
-    // of a different property of type SINGLE. The test should return the
-    // original value in a string. No exceptions are expected.
+    // of a different property of type INT32. The test should return the
+    // original property value in a string. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -3725,20 +4284,20 @@ void FdoExpressionFunctionTest::TestToStringFunction ()
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TOSTRING on the value of a different property   \n");
-    printf("  of type SINGLE. The test should return the original      \n");
-    printf("  value in a string. No exceptions are expected.           \n");
+    printf("  of type INT32. The test should return the original prop- \n");
+    printf("  erty value in a string. No exceptions are expected.      \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row with the value of the computed property
-      // being 3.09012866.
+      // being 90.
 
-      func_call   = L"(ToString(sgl_val) as cmp_id)";
+      func_call   = L"(ToString(i32_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"3.09012866");
+      CheckReaderNumberString(data_reader, 9, L"90");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -3760,10 +4319,9 @@ void FdoExpressionFunctionTest::TestToStringFunction ()
 
     // 5. Test Case:
     // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOSTRING on a value
-    // of a different property of type DATE/TIME. In this test, no format
-    // instructions are provided. The test should return the date in a string
-    // using the default format. No exceptions are expected.
+    // property that is defined by using the function TOSTRING on the value
+    // of a different property of type SINGLE. The test should return the
+    // original property value in a string. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -3771,22 +4329,20 @@ void FdoExpressionFunctionTest::TestToStringFunction ()
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TOSTRING on the value of a different property   \n");
-    printf("  of type DATE/TIME. In this test, no format instructions  \n");
-    printf("  are provided. The test should return the date in a       \n");
-    printf("  string using the default format. No exceptions are ex-   \n");
-    printf("  pected.                                                  \n");
+    printf("  of type SINGLE. The test should return the original      \n");
+    printf("  property value in a string. No exceptions are expected.  \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row with the value of the computed property
-      // being "2007-09-09-21-00-00".
+      // being 3.09012866.
 
-      func_call   = L"(ToString(dt_val) as cmp_id)";
+      func_call   = L"(ToString(sgl_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"2007-09-09-21-00-00");
+      CheckReaderNumberString(data_reader, 9, L"3.09012866");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -3808,6 +4364,54 @@ void FdoExpressionFunctionTest::TestToStringFunction ()
 
     // 6. Test Case:
     // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function TOSTRING on a value
+    // of a different property of type DATE/TIME. In this test, no format
+    // instructions are provided. The test should return the date in a string
+    // using the default format. No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("6. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function TOSTRING on the value of a different property   \n");
+    printf("  of type DATE/TIME. In this test, no format instructions  \n");
+    printf("  are provided. The test should return the date in a       \n");
+    printf("  string using the default format. No exceptions are ex-   \n");
+    printf("  pected.                                                  \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property
+      // being "2007-09-09-21-00-00".
+
+      func_call   = L"(ToString(dt_val) as cmp_id)";
+      data_reader =
+                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, L"2007-09-09-21-00-00");
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 7. Test Case:
+    // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TOSTRING on the value
     // of a different property of type DATE/TIME. In this test, format in-
     // structions are provided. The test should return the date in a string
@@ -3815,7 +4419,7 @@ void FdoExpressionFunctionTest::TestToStringFunction ()
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("5. Test Case:                                              \n");
+    printf("7. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TOSTRING on the value of a different property   \n");
@@ -3833,7 +4437,7 @@ void FdoExpressionFunctionTest::TestToStringFunction ()
       func_call   = L"(ToString(dt_val, 'DD-MON-YYYY') as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"09-SEP-2007");
+      CheckReaderString(data_reader, 9, L"09-SEP-2007");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -3953,7 +4557,7 @@ void FdoExpressionFunctionTest::TestAddMonthsFunction ()
       func_call   = L"(AddMonths(dt_val, 12) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckDateTimeReader(data_reader, true, false, 0, 9, expected_dt_data);
+      CheckReaderDt(data_reader, true, false, 0, 9, expected_dt_data);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -4058,7 +4662,7 @@ void FdoExpressionFunctionTest::TestCurrentDateFunction ()
       func_call   = L"(CurrentDate() as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", NULL, false, func_call);
-      // CheckDateTimeReader(data_reader, true, false, 0, 9, expected_dt_data);
+      // CheckReaderDt(data_reader, true, false, 0, 9, expected_dt_data);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -4175,7 +4779,7 @@ void FdoExpressionFunctionTest::TestExtractFunction ()
       func_call   = L"(Extract('YEAR', dt_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckDateTimeReader(data_reader, true, true, 0, 9, expected_dt_data);
+      CheckReaderDt(data_reader, true, true, 0, 9, expected_dt_data);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -4225,7 +4829,7 @@ void FdoExpressionFunctionTest::TestExtractFunction ()
       func_call   = L"(Extract('MONTH', dt_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckDateTimeReader(data_reader, true, true, 1, 9, expected_dt_data);
+      CheckReaderDt(data_reader, true, true, 1, 9, expected_dt_data);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -4275,7 +4879,7 @@ void FdoExpressionFunctionTest::TestExtractFunction ()
       func_call   = L"(Extract('DAY', dt_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckDateTimeReader(data_reader, true, true, 2, 9, expected_dt_data);
+      CheckReaderDt(data_reader, true, true, 2, 9, expected_dt_data);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -4540,10 +5144,17 @@ void FdoExpressionFunctionTest::TestAbsFunction ()
 
     // Declare and initialize all necessary local vatiables.
 
+    FdoInt16                  counter           = 0;
+
+    FdoInt32                  exp_i32_val;
+
+    FdoByte                   exp_byte_val;
+
     FdoStringP                func_call;
 
     FdoPtr<FdoFilter>         filter;
-    FdoPtr<FdoIFeatureReader> data_reader;
+    FdoPtr<FdoIFeatureReader> data_reader,
+                              feature_reader;
 
     printf("\n");
     printf("========================================================== \n");
@@ -4558,30 +5169,85 @@ void FdoExpressionFunctionTest::TestAbsFunction ()
                FdoComparisonOperations_EqualTo, 
                FdoPtr<FdoDataValue>(FdoDataValue::Create(9))));
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ABS on the positive
-    // value of a different property of type INT32. No exceptions are ex-
-    // pected.
+    // Test Setup:
+    // The following executes a select-command to retrieve the current values
+    // of the properties used in the following tests. Those values are later
+    // used for cross-checking the test result.
 
     printf("---------------------------------------------------------- \n");
-    printf("1. Test Case:                                              \n");
-    printf("  The test executes a select-command to select the value   \n");
-    printf("  of a computed property that is defined by using the      \n");
-    printf("  function ABS on the positive value of a different pro-   \n");
-    printf("  perty of type INT32. No exceptions are expected.         \n");
+    printf("Test Setup:                                                \n");
+    printf("  The following executes a select-command to retrieve the  \n");
+    printf("  current values of the properties used in the following   \n");
+    printf("  tests. Those values are later used for cross-checking    \n");
+    printf("  the test result.                                         \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row. The value for the selected computed property
-      // is expected to be 90.
+      feature_reader = ExecuteSelectCommand(L"exfct_c1",
+                                            filter,
+                                            L"byte_val",
+                                            L"i32_val",
+                                            NULL,
+                                            NULL,
+                                            NULL,
+                                            NULL);
 
-      func_call   = L"(Abs(i32_val) as cmp_id)";
-      data_reader = ExecuteSelectCommand(
-                                        L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 90);
+      printf(" >>> Retrieving cross-check data \n");
+
+      while (feature_reader->ReadNext()) {
+
+        counter++;
+
+        exp_byte_val = feature_reader->GetByte(L"byte_val");
+        exp_i32_val  = feature_reader->GetInt32(L"i32_val");
+
+      }  //  while (feature_reader->ReadNext()) ...
+
+      // Issue an exception if more than the expected number of rows were
+      // returned.
+
+      if (counter != 1)
+          throw FdoException::Create(L"Unexpected number of rows returned");
+ 
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test setup failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test setup failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 1. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function ABS on the positive
+    // value of a different property of type BYTE. No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function ABS on the positive value of a different prop-  \n");
+    printf("  erty of type BYTE. No exceptions are expected.           \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data.
+
+      func_call   = L"(Abs(byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderByte(data_reader, true, 9, exp_byte_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -4603,12 +5269,53 @@ void FdoExpressionFunctionTest::TestAbsFunction ()
 
     // 2. Test Case:
     // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function ABS on the positive
+    // value of a different property of type INT32. No exceptions are ex-
+    // pected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function ABS on the positive value of a different pro-   \n");
+    printf("  perty of type INT32. No exceptions are expected.         \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data.
+
+      func_call   = L"(Abs(i32_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      CheckReader32(data_reader, true, 9, exp_i32_val);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 3. Test Case:
+    // The test executes a select-command to select the value of a computed
     // property that is defined by using the function ABS on the negative value
     // of a different property of type INT32. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("2. Test Case:                                              \n");
+    printf("3. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function ABS on the negative value of a different pro-   \n");
@@ -4617,14 +5324,12 @@ void FdoExpressionFunctionTest::TestAbsFunction ()
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row. The value for the selected computed property
-      // is expected to be 90.
+      // Execute the test and check the returned data.
 
       func_call   = L"(Abs(i32_val*-1) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 90);
+      CheckReader32(data_reader, true, 9, exp_i32_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -4677,11 +5382,53 @@ void FdoExpressionFunctionTest::TestAcosFunction ()
 
     // 1. Test Case:
     // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ACOS on the value of
-    // a different property of type DECIMAL. No exceptions are expected.
+    // property that is defined by using the function ACOS on the value of a
+    // different property of type BYTE. No exceptions are expected.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function ACOS on the value of a different property of    \n");
+    printf("  type BYTE. No exceptions are expected.                   \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 0.174298204.
+
+      func_call   = L"(Acos(byte_val/66.0000001) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 0, 0.174298204);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function ACOS on the value of
+    // a different property of type DECIMAL. No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function ACOS on the value of a different property of    \n");
@@ -4750,11 +5497,53 @@ void FdoExpressionFunctionTest::TestAsinFunction ()
 
     // 1. Test Case:
     // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ASIN on the value of
-    // a different property of type DECIMAL. No exceptions are expected.
+    // property that is defined by using the function ASIN on the value of a
+    // different property of type BYTE. No exceptions are expected.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function ASIN on the value of a different property of    \n");
+    printf("  type BYTE. No exceptions are expected.                   \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 1.39649812.
+
+      func_call   = L"(Asin(byte_val/66.0000001) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 0, 1.39649812);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function ASIN on the value of
+    // a different property of type DECIMAL. No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function ASIN on the value of a different property of    \n");
@@ -4823,11 +5612,53 @@ void FdoExpressionFunctionTest::TestAtanFunction ()
 
     // 1. Test Case:
     // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ATAN on the value of
-    // a different property of type DECIMAL. No exceptions are expected.
+    // property that is defined by using the function ATAN on the value of a
+    // different property of type BYTE. No exceptions are expected.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function ATAN on the value of a different property of    \n");
+    printf("  type BYTE. No exceptions are expected.                   \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 1.55541293.
+
+      func_call   = L"(Atan(byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 0, 1.55541293);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function ATAN on the value of
+    // a different property of type DECIMAL. No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function ATAN on the value of a different property of    \n");
@@ -4897,11 +5728,54 @@ void FdoExpressionFunctionTest::TestAtan2Function ()
     // 1. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function ATAN2 on the values of
-    // two different properties (of type DOUBLE, DECIMAL). No exceptions are
+    // two different properties (of type BYTE, DECIMAL). No exceptions are
     // expected.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function ATAN2 on the values of two different properties \n");
+    printf("  (of type BYTE, DECIMAL). No exceptions are expected.     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 1.39899334.
+
+      func_call   = L"(Atan2(byte_val, dcl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 1.39899334);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function ATAN2 on the values of
+    // two different properties (of type DOUBLE, DECIMAL). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function ATAN2 on the values of two different properties \n");
@@ -4971,10 +5845,52 @@ void FdoExpressionFunctionTest::TestCosFunction ()
     // 1. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function COS on the value of a
-    // different property of type DECIMAL. No exceptions are expected.
+    // different property of type BYTE. No exceptions are expected.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function COS on the value of a different property of     \n");
+    printf("  type BYTE. No exceptions are expected.                   \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 0.171717342.
+
+      func_call   = L"(Cos(byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 0.171717342);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function COS on the value of a
+    // different property of type DECIMAL. No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function COS on the value of a different property of     \n");
@@ -5023,6 +5939,8 @@ void FdoExpressionFunctionTest::TestExpFunction ()
 
     // Declare and initialize all necessary local vatiables.
 
+    FdoDouble                 exp_val;
+
     FdoStringP                func_call;
 
     FdoPtr<FdoFilter>         filter;
@@ -5044,10 +5962,51 @@ void FdoExpressionFunctionTest::TestExpFunction ()
     // 1. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function EXP on the value of a
-    // different property of type DECIMAL. No exceptions are expected.
+    // different property of type BYTE. No exceptions are expected.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function EXP on the value of a different property of     \n");
+    printf("  type BYTE. No exceptions are expected.                   \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data.
+
+      exp_val     = GetExpectedValue(EXP_TEST_CASE_CODE_1);
+      func_call   = L"(Exp(byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, exp_val);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function EXP on the value of a
+    // different property of type DECIMAL. No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function EXP on the value of a different property of     \n");
@@ -5117,10 +6076,52 @@ void FdoExpressionFunctionTest::TestLnFunction ()
     // 1. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function LN on the value of a
-    // different property of type DECIMAL. No exceptions are expected.
+    // different property of type BYTE. No exceptions are expected.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function LN on the value of a different property of type \n");
+    printf("  BYTE. No exceptions are expected.                        \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 4.30406509.
+
+      func_call   = L"(Ln(byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 4.30406509);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function LN on the value of a
+    // different property of type DECIMAL. No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function LN on the value of a different property of type \n");
@@ -5190,11 +6191,54 @@ void FdoExpressionFunctionTest::TestLogFunction ()
     // 1. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function LOG on the values of
-    // two different properties (of type DOUBLE, DECIMAL). No exceptions are
+    // two different properties (of type BYTE, DECIMAL). No exceptions are
     // expected.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function LOG on the values of two different properties   \n");
+    printf("  (of type BYTE, DECIMAL). No exceptions are expected.     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 0.593059176.
+
+      func_call   = L"(Log(byte_val, dcl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 0.593059176);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function LOG on the values of
+    // two different properties (of type DOUBLE, DECIMAL). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function LOG on the values of two different properties   \n");
@@ -5264,7 +6308,7 @@ void FdoExpressionFunctionTest::TestModFunction ()
     // 1. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function MOD on the values of
-    // two different properties (of type DOUBLE, DECIMAL). No exceptions are
+    // two different properties (of type BYTE, BYTE). No exceptions are
     // expected.
 
     printf("---------------------------------------------------------- \n");
@@ -5272,7 +6316,566 @@ void FdoExpressionFunctionTest::TestModFunction ()
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function MOD on the values of two different properties   \n");
-    printf("  (of type DOUBLE, DECIMAL). No exceptions are expected.   \n");
+    printf("  (of type BYTE, BYTE). No exceptions are expected.        \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 0.
+
+      func_call   = L"(Mod(byte_val, byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderByte(data_reader, true, 9, 0);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type BYTE, DECIMAL). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type BYTE, DECIMAL). No exceptions are expected.     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 9.8.
+
+      func_call   = L"(Mod(byte_val, dcl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 9.8);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 3. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type BYTE, DOUBLE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("3. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type BYTE, DOUBLE). No exceptions are expected.      \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 17.3327556.
+
+      func_call   = L"(Mod(byte_val, dbl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 17.3327556);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 4. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type BYTE, INT16). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("4. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type BYTE, INT16). No exceptions are expected.       \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 2.
+
+      func_call   = L"(Mod(byte_val, i16_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderByte(data_reader, true, 9, 2);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 5. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type BYTE, INT32). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("5. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type BYTE, INT32). No exceptions are expected.       \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 74.
+
+      func_call   = L"(Mod(byte_val, i32_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderByte(data_reader, true, 9, 74);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 6. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type BYTE, SINGLE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("6. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type BYTE, SINGLE). No exceptions are expected.      \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 2.92704082.
+
+      func_call   = L"(Mod(byte_val, sgl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderSgl(data_reader, true, 9, (FdoFloat)2.92704082);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 7. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type DECIMAL, BYTE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("7. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type DECIMAL, BYTE). No exceptions are expected.     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 12.84.
+
+      func_call   = L"(Mod(dcl_val, byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 12.84);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 8. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type DECIMAL, DECIMAL). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("8. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type DECIMAL, DECIMAL). No exceptions are expected.  \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 0.
+
+      func_call   = L"(Mod(dcl_val, dcl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 0);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 9. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type DECIMAL, DOUBLE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("9. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type DECIMAL, DOUBLE). No exceptions are expected.   \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 12.84.
+
+      func_call   = L"(Mod(dcl_val, dbl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 12.84);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 10. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type DECIMAL, INT16). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("10. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type DECIMAL, INT16). No exceptions are expected.    \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 12.84.
+
+      func_call   = L"(Mod(dcl_val, i16_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 12.84);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 11. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type DECIMAL, INT32). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("11. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type DECIMAL, INT32). No exceptions are expected.    \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 12.84.
+
+      func_call   = L"(Mod(dcl_val, i32_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 12.84);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 12. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type DECIMAL, SINGLE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("12. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type DECIMAL, SINGLE). No exceptions are expected.   \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 0.47948536.
+
+      func_call   = L"(Mod(dcl_val, sgl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 0.47948536);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 13. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type DOUBLE, BYTE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("13. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type DOUBLE, BYTE). No exceptions are expected.      \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 18.8890815.
+
+      func_call   = L"(Mod(dbl_val, byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 18.8890815);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 14. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type DOUBLE, DECIMAL). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("14. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type DOUBLE, DECIMAL). No exceptions are expected.  \n");
     printf("---------------------------------------------------------- \n");
 
     try {
@@ -5282,9 +6885,954 @@ void FdoExpressionFunctionTest::TestModFunction ()
       // is expected to be 6.04908146.
 
       func_call   = L"(Mod(dbl_val, dcl_val) as cmp_id)";
-      data_reader = ExecuteSelectCommand(
-                                        L"exfct_c1", filter, true, func_call);
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
       CheckReader(data_reader, true, 9, 6.04908146);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 15. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type DOUBLE, DOUBLE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("15. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type DOUBLE, DOUBLE). No exceptions are expected.    \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 0.
+
+      func_call   = L"(Mod(dbl_val, dbl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 0);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 16. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type DOUBLE, INT16). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("16. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type DOUBLE, INT16). No exceptions are expected.     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 18.8890815.
+
+      func_call   = L"(Mod(dbl_val, i16_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 18.8890815);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 17. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type DOUBLE, INT32). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("17. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type DOUBLE, INT32). No exceptions are expected.     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 18.8890815.
+
+      func_call   = L"(Mod(dbl_val, i32_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 18.8890815);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 18. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type DOUBLE, SINGLE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("18. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type DOUBLE, SINGLE). No exceptions are expected.    \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 0.348309496.
+
+      func_call   = L"(Mod(dbl_val, sgl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 0.348309496);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 19. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type INT16, BYTE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("19. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type INT16, BYTE). No exceptions are expected.       \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 36.
+
+      func_call   = L"(Mod(i16_val, byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader16(data_reader, true, 9, 36);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 20. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type INT16, DECIMAL). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("20. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type INT16, DECIMAL). No exceptions are expected.    \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 10.32.
+
+      func_call   = L"(Mod(i16_val, dcl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 10.32);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 21. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type INT16, DOUBLE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("21. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type INT16, DOUBLE). No exceptions are expected.     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 17.1109185.
+
+      func_call   = L"(Mod(i16_val, dbl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 17.1109185);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 22. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type INT16, INT16). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("22. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type INT16, INT16). No exceptions are expected.      \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 0.
+
+      func_call   = L"(Mod(i16_val, i16_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader16(data_reader, true, 9, 0);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 23. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type INT16, INT32). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("23. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type INT16, INT32). No exceptions are expected.      \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 36.
+
+      func_call   = L"(Mod(i16_val, i32_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader16(data_reader, true, 9, 36);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 24. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type INT16, SINGLE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("24. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type INT16, SINGLE). No exceptions are expected.     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 2.00858474.
+
+      func_call   = L"(Mod(i16_val, sgl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderSgl(data_reader, true, 9, (FdoFloat)2.00858474);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 25. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type INT32, BYTE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("25. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type INT32, BYTE). No exceptions are expected.       \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 16.
+
+      func_call   = L"(Mod(i32_val, byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader32(data_reader, true, 9, 16);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 26. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type INT32, DECIMAL). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("26. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type INT32, DECIMAL). No exceptions are expected.    \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 0.12.
+
+      func_call   = L"(Mod(i32_val, dcl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 0.12);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 27. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type INT32, DOUBLE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("27. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type INT32, DOUBLE). No exceptions are expected.     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 14.4436742.
+
+      func_call   = L"(Mod(i32_val, dbl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 14.4436742);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 28. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type INT32, INT16). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("28. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type INT32, INT16). No exceptions are expected.      \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 18.
+
+      func_call   = L"(Mod(i32_val, i16_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader16(data_reader, true, 9, 18);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 29. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type INT32, INT32). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("29. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type INT32, INT32). No exceptions are expected.      \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 0.
+
+      func_call   = L"(Mod(i32_val, i32_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader32(data_reader, true, 9, 0);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 30. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type INT32, SINGLE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("30. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type INT32, SINGLE). No exceptions are expected.     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 0.38626886.
+
+      func_call   = L"(Mod(i32_val, sgl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderSgl(data_reader, true, 9, (FdoFloat)0.38626886);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 31. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type SINGLE, BYTE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("31. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type SINGLE, BYTE). No exceptions are expected.      \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 3.09012866.
+
+      func_call   = L"(Mod(sgl_val, byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderSgl(data_reader, true, 9, (FdoFloat)3.09012866);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 32. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type SINGLE, DECIMAL). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("32. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type SINGLE, DECIMAL). No exceptions are expected.   \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 3.09012866.
+
+      func_call   = L"(Mod(sgl_val, dcl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 3.09012866);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 33. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type SINGLE, DOUBLE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("33. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type SINGLE, DOUBLE). No exceptions are expected.    \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 3.09012866.
+
+      func_call   = L"(Mod(sgl_val, dbl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 3.09012866);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 34. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type SINGLE, INT16). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("34. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type SINGLE, INT16). No exceptions are expected.     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 3.09012866.
+
+      func_call   = L"(Mod(sgl_val, i16_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderSgl(data_reader, true, 9, (FdoFloat)3.09012866);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 35. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type SINGLE, INT32). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("35. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type SINGLE, INT32). No exceptions are expected.     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 3.09012866.
+
+      func_call   = L"(Mod(sgl_val, i32_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderSgl(data_reader, true, 9, (FdoFloat)3.09012866);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 36. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type SINGLE, SINGLE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("36. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the values of two different properties   \n");
+    printf("  (of type SINGLE, SINGLE). No exceptions are expected.    \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 0.
+
+      func_call   = L"(Mod(sgl_val, sgl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderSgl(data_reader, true, 9, 0);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -5317,6 +7865,8 @@ void FdoExpressionFunctionTest::TestPowerFunction ()
 
     // Declare and initialize all necessary local vatiables.
 
+    FdoDouble                 exp_val;
+
     FdoStringP                func_call;
 
     FdoPtr<FdoFilter>         filter;
@@ -5337,12 +7887,56 @@ void FdoExpressionFunctionTest::TestPowerFunction ()
 
     // 1. Test Case:
     // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type INT16, INT32). No exceptions are
+    // property that is defined by using the function POWER on the values of
+    // two different properties (of type BYTE, DECIMAL). No exceptions are
     // expected.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function POWER on the values of two different properties \n");
+    printf("  (of type BYTE, DECIMAL). No exceptions are expected.     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 394.84610940851007.
+
+      exp_val     = GetExpectedValue(POWER_TEST_CASE_CODE_1);
+      func_call   = L"(Power(byte_val, dcl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 1, exp_val);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the values of
+    // two different properties (of type INT16, INT32). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function POWER on the values of two different properties \n");
@@ -5394,7 +7988,7 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
     FdoStringP                func_call;
 
     FdoPtr<FdoFilter>         filter;
-    FdoPtr<FdoIFeatureReader> feature_reader;
+    FdoPtr<FdoIFeatureReader> data_reader;
 
     printf("\n");
     printf("========================================================== \n");
@@ -5412,15 +8006,586 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
     // 1. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type DOUBLE, DECIMAL). No exceptions
-    // are expected.
+    // of two different properties (of type BYTE, BYTE). No exceptions are
+    // expected.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
-    printf("  function REMAINDER on the values of two different pro-   \n");
-    printf("  perties (of type DOUBLE, DECIMAL). No exceptions are ex- \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type BYTE, BYTE). No exceptions are expected. \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 0.
+
+      func_call   = L"(Remainder(byte_val, byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader16(data_reader, true, 9, 0);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type BYTE, DECIMAL). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type BYTE, DECIMAL). No exceptions are expec- \n");
+    printf("  ted.                                                     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be -3.04.
+
+      func_call   = L"(Remainder(byte_val, dcl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, -3.04);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 3. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type BYTE, DOUBLE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("3. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type BYTE, DOUBLE). No exceptions are expec-  \n");
+    printf("  ted.                                                     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be -1.5563258.
+
+      func_call   = L"(Remainder(byte_val, dbl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, -1.5563258);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 4. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type BYTE, INT16). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("4. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type BYTE, INT16). No exceptions are expec-   \n");
+    printf("  ted.                                                     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 2.
+
+      func_call   = L"(Remainder(byte_val, i16_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader16(data_reader, true, 9, 2);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 5. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type BYTE, INT32). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("5. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type BYTE, INT32). No exceptions are expec-   \n");
+    printf("  ted.                                                     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be -16.
+
+      func_call   = L"(Remainder(byte_val, i32_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader32(data_reader, true, 9, -16);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 6. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type BYTE, SINGLE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("6. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type BYTE, SINGLE). No exceptions are expec-  \n");
+    printf("  ted.                                                     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be -0.16308784.
+
+      func_call   = L"(Remainder(byte_val, sgl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderSgl(data_reader, true, 9, (FdoFloat)-0.16308784);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 7. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type DECIMAL, BYTE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("7. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type DECIMAL, BYTE). No exceptions are expec- \n");
+    printf("  ted.                                                     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 12.84.
+
+      func_call   = L"(Remainder(dcl_val, byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 12.84);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 8. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type DECIMAL, DECIMAL). No exceptions
+    // are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("8. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type DECIMAL, DECIMAL). No exceptions are     \n");
+    printf("  expected.                                                \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 0.
+
+      func_call   = L"(Remainder(dcl_val, dcl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 0);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 9. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type DECIMAL, DOUBLE). No exceptions
+    // are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("9. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type DECIMAL, DOUBLE). No exceptions are ex-  \n");
+    printf("  pected.                                                  \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be -6.0490815.
+
+      func_call   = L"(Remainder(dcl_val, dbl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, -6.0490815);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 10. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type DECIMAL, INT16). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("10. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type DECIMAL, INT16). No exceptions are ex-   \n");
+    printf("  pected.                                                  \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 12.84.
+
+      func_call   = L"(Remainder(dcl_val, i16_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 12.84);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 11. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type DECIMAL, INT32). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("11. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type DECIMAL, INT32). No exceptions are ex-   \n");
+    printf("  pected.                                                  \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 12.84.
+
+      func_call   = L"(Remainder(dcl_val, i32_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 12.84);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 12. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type DECIMAL, SINGLE). No exceptions
+    // are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("12. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type DECIMAL, SINGLE). No exceptions are ex-  \n");
+    printf("  pected.                                                  \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 0.47948536.
+
+      func_call   = L"(Remainder(dcl_val, sgl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 0.47948536);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 13. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type DOUBLE, BYTE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("13. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type DOUBLE, BYTE). No exceptions are expec-  \n");
+    printf("  ted.                                                     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 18.8890815.
+
+      func_call   = L"(Remainder(dbl_val, byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 18.8890815);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 14. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type DOUBLE, DECIMAL). No exceptions
+    // are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("14. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type DOUBLE, DECIMAL). No exceptions are ex-  \n");
     printf("  pected.                                                  \n");
     printf("---------------------------------------------------------- \n");
 
@@ -5431,9 +8596,975 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
       // is expected to be 6.04908146.
 
       func_call   = L"(Remainder(dbl_val, dcl_val) as cmp_id)";
-      feature_reader = ExecuteSelectCommand(
-                                        L"exfct_c1", filter, true, func_call);
-      CheckReader(feature_reader, true, 9, 6.04908146);
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 6.04908146);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 15. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type DOUBLE, DOUBLE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("15. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type DOUBLE, DOUBLE). No exceptions are ex-   \n");
+    printf("  pected.                                                  \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 0.
+
+      func_call   = L"(Remainder(dbl_val, dbl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 0);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 16. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type DOUBLE, INT16). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("16. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type DOUBLE, INT16). No exceptions are ex-    \n");
+    printf("  pected.                                                  \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be -17.110919.
+
+      func_call   = L"(Remainder(dbl_val, i16_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, -17.110919);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 17. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type DOUBLE, INT32). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("17. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type DOUBLE, INT32). No exceptions are expec- \n");
+    printf("  ted.                                                     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 18.8890815.
+
+      func_call   = L"(Remainder(dbl_val, i32_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 18.8890815);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 18. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type DOUBLE, SINGLE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("18. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type DOUBLE, SINGLE). No exceptions are ex-   \n");
+    printf("  pected.                                                  \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 0.348309496.
+
+      func_call   = L"(Remainder(dbl_val, sgl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 0.348309496);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 19. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type INT16, BYTE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("19. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type INT16, BYTE). No exceptions are expec-   \n");
+    printf("  ted.                                                     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 36.
+
+      func_call   = L"(Remainder(i16_val, byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader16(data_reader, true, 9, 36);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 20. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type INT16, DECIMAL). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("20. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type INT16, DECIMAL). No exceptions are ex-   \n");
+    printf("  pected.                                                  \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be -2.52.
+
+      func_call   = L"(Remainder(i16_val, dcl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, -2.52);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 21. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type INT16, DOUBLE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("21. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type INT16, DOUBLE). No exceptions are expec- \n");
+    printf("  ted.                                                     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be -1.7781629.
+
+      func_call   = L"(Remainder(i16_val, dbl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, -1.7781629);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 22. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type INT16, INT16). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("22. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type INT16, INT16). No exceptions are expec-  \n");
+    printf("  ted.                                                     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 0.
+
+      func_call   = L"(Remainder(i16_val, i16_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader16(data_reader, true, 9, 0);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 23. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type INT16, INT32). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("23. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type INT16, INT32). No exceptions are expec-  \n");
+    printf("  ted.                                                     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 36.
+
+      func_call   = L"(Remainder(i16_val, i32_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader16(data_reader, true, 9, 36);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 24. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type INT16, SINGLE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("24. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type INT16, SINGLE). No exceptions are expec- \n");
+    printf("  ted.                                                     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be -1.0815439.
+
+      func_call   = L"(Remainder(i16_val, sgl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderSgl(data_reader, true, 9, (FdoFloat)-1.0815439);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 25. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type INT32, BYTE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("25. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type INT32, BYTE). No exceptions are expected \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 16.
+
+      func_call   = L"(Remainder(i32_val, byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader32(data_reader, true, 9, 16);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 26. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type INT32, DECIMAL). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("26. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type INT32, DECIMAL). No exceptions are ex-   \n");
+    printf("  pected.                                                  \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 0.12.
+
+      func_call   = L"(Remainder(i32_val, dcl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 0.12);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 27. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type INT32, DOUBLE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("27. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type INT32, DOUBLE). No exceptions are ex-    \n");
+    printf("  pected.                                                  \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be -4.4454073.
+
+      func_call   = L"(Remainder(i32_val, dbl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, -4.4454073);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 28. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type INT32, INT16). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("28. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type INT32, INT16). No exceptions are expec-  \n");
+    printf("  ted.                                                     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 18.
+
+      func_call   = L"(Remainder(i32_val, i16_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader16(data_reader, true, 9, 18);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 29. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type INT32, INT32). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("29. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type INT32, INT32). No exceptions are expec-  \n");
+    printf("  ted.                                                     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 0.
+
+      func_call   = L"(Remainder(i32_val, i32_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader32(data_reader, true, 9, 0);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 30. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type INT32, SINGLE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("30. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type INT32, SINGLE). No exceptions are expec- \n");
+    printf("  ted.                                                     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 0.38626886.
+
+      func_call   = L"(Remainder(i32_val, sgl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderSgl(data_reader, true, 9, (FdoFloat)0.38626886);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 31. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type SINGLE, BYTE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("31. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type SINGLE, BYTE). No exceptions are expec-  \n");
+    printf("  ted.                                                     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 3.09012866.
+
+      func_call   = L"(Remainder(sgl_val, byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderSgl(data_reader, true, 9, (FdoFloat)3.09012866);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 32. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type SINGLE, DECIMAL). No exceptions
+    // are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("32. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type SINGLE, DECIMAL). No exceptions are ex-  \n");
+    printf("  pected.                                                  \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 3.09012866.
+
+      func_call   = L"(Remainder(sgl_val, dcl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 3.09012866);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 33. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type SINGLE, DOUBLE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("33. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type SINGLE, DOUBLE). No exceptions are ex-   \n");
+    printf("  pected.                                                  \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 3.09012866.
+
+      func_call   = L"(Remainder(sgl_val, dbl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 3.09012866);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 34. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type SINGLE, INT16). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("34. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type SINGLE, INT16). No exceptions are ex-    \n");
+    printf("  pected.                                                  \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 3.09012866.
+
+      func_call   = L"(Remainder(sgl_val, i16_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderSgl(data_reader, true, 9, (FdoFloat)3.09012866);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 35. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type SINGLE, INT32). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("35. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type SINGLE, INT32). No exceptions are ex-    \n");
+    printf("  pected.                                                  \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 3.09012866.
+
+      func_call   = L"(Remainder(sgl_val, i32_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderSgl(data_reader, true, 9, (FdoFloat)3.09012866);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 36. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function REMAINDER on the values
+    // of two different properties (of type SINGLE, SINGLE). No exceptions are
+    // expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("36. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function REMAINDER on the values of two different prop-  \n");
+    printf("  erties (of type SINGLE, SINGLE). No exceptions are ex-   \n");
+    printf("  pected.                                                  \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 0.
+
+      func_call   = L"(Remainder(sgl_val, sgl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderSgl(data_reader, true, 9, 0);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -5487,10 +9618,52 @@ void FdoExpressionFunctionTest::TestSinFunction ()
     // 1. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function SIN on the value of a
-    // different property of type DECIMAL. No exceptions are expected.
+    // different property of type BYTE. No exceptions are expected.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function SIN on the value of a different property of     \n");
+    printf("  type BYTE. No exceptions are expected.                   \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be -0.98514626.
+
+      func_call   = L"(Sin(byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, -0.98514626);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function SIN on the value of a
+    // different property of type DECIMAL. No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function SIN on the value of a different property of     \n");
@@ -5559,11 +9732,53 @@ void FdoExpressionFunctionTest::TestSqrtFunction ()
 
     // 1. Test Case:
     // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function SQRT on the value of a
-    // different property of type DECIMAL. No exceptions are expected.
+    // property that is defined by using the function SQRT on the value of
+    // a different property of type BYTE. No exceptions are expected.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function SQRT on the value of a different property of    \n");
+    printf("  type BYTE. No exceptions are expected.                   \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 8.60232527.
+
+      func_call   = L"(Sqrt(byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 8.60232527);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function SQRT on the value of a
+    // different property of type DECIMAL. No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function SQRT on the value of a different property of    \n");
@@ -5633,10 +9848,52 @@ void FdoExpressionFunctionTest::TestTanFunction ()
     // 1. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TAN on the value of a
-    // different property of type DECIMAL. No exceptions are expected.
+    // different property of type BYTE. No exceptions are expected.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function TAN on the value of a different property of     \n");
+    printf("  type BYTE. No exceptions are expected.                   \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be -5.7370225.
+
+      func_call   = L"(Tan(byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, -5.7370225);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function TAN on the value of a
+    // different property of type DECIMAL. No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TAN on the value of a different property of     \n");
@@ -5711,10 +9968,52 @@ void FdoExpressionFunctionTest::TestCeilFunction ()
     // 1. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function CEIL on the value of a
-    // different property of type DECIMAL. No exceptions are expected.
+    // different property of type BYTE. No exceptions are expected.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function CEIL on the value of a different property of    \n");
+    printf("  type BYTE. No exceptions are expected.                   \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 66.
+
+      func_call   = L"(Ceil(byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderByte(data_reader, true, 1, 66);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function CEIL on the value of a
+    // different property of type DECIMAL. No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function CEIL on the value of a different property of    \n");
@@ -5750,14 +10049,14 @@ void FdoExpressionFunctionTest::TestCeilFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
+    // 3. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function CEIL on the value of a
     // different property of type DECIMAL. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("2. Test Case:                                              \n");
+    printf("3. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function CEIL on the value of a different property of    \n");
@@ -5793,14 +10092,14 @@ void FdoExpressionFunctionTest::TestCeilFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 3. Test Case:
+    // 4. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function CEIL on the value of a
     // different property of type INT32. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("3. Test Case:                                              \n");
+    printf("4. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function CEIL on the value of a different property of    \n");
@@ -5816,7 +10115,7 @@ void FdoExpressionFunctionTest::TestCeilFunction ()
       func_call   = L"(Ceil(i32_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 1, 10);
+      CheckReader32(data_reader, true, 1, 10);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -5836,14 +10135,14 @@ void FdoExpressionFunctionTest::TestCeilFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 4. Test Case:
+    // 5. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function CEIL on the value of a
     // different property of type SINGLE. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("4. Test Case:                                              \n");
+    printf("5. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function CEIL on the value of a different property of    \n");
@@ -5859,7 +10158,7 @@ void FdoExpressionFunctionTest::TestCeilFunction ()
       func_call   = L"(Ceil(sgl_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 1, 1);
+      CheckReaderSgl(data_reader, true, 1, 1);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -5913,10 +10212,52 @@ void FdoExpressionFunctionTest::TestFloorFunction ()
     // 1. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function FLOOR on the value of
-    // a different property of type DECIMAL. No exceptions are expected.
+    // a different property of type BYTE. No exceptions are expected.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function FLOOR on the value of a different property of   \n");
+    printf("  type BYTE. No exceptions are expected.                   \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 74.
+
+      func_call   = L"(Floor(byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderByte(data_reader, true, 9, 74);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function FLOOR on the value of
+    // a different property of type DECIMAL. No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function FLOOR on the value of a different property of   \n");
@@ -5952,14 +10293,14 @@ void FdoExpressionFunctionTest::TestFloorFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
+    // 3. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function FLOOR on the value of
     // a different property of type DOUBLE. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("2. Test Case:                                              \n");
+    printf("3. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function FLOOR on the value of a different property of   \n");
@@ -5995,14 +10336,14 @@ void FdoExpressionFunctionTest::TestFloorFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 3. Test Case:
+    // 4. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function FLOOR on the value of
     // a different property of type INT32. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("3. Test Case:                                              \n");
+    printf("4. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function FLOOR on the value of a different property of   \n");
@@ -6018,7 +10359,7 @@ void FdoExpressionFunctionTest::TestFloorFunction ()
       func_call   = L"(Floor(i32_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 90);
+      CheckReader32(data_reader, true, 9, 90);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -6038,14 +10379,14 @@ void FdoExpressionFunctionTest::TestFloorFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 4. Test Case:
+    // 5. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function FLOOR on the value of
     // a different property of type SINGLE. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("4. Test Case:                                              \n");
+    printf("5. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function FLOOR on the value of a different property of   \n");
@@ -6061,7 +10402,7 @@ void FdoExpressionFunctionTest::TestFloorFunction ()
       func_call   = L"(Floor(sgl_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 3);
+      CheckReaderSgl(data_reader, true, 9, 3);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -6115,10 +10456,95 @@ void FdoExpressionFunctionTest::TestRoundFunction ()
     // 1. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function ROUND on the value of
-    // a different property of type DECIMAL. No exceptions are expected.
+    // a different property of type BYTE. No exceptions are expected.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function ROUND on the value of a different property of   \n");
+    printf("  type BYTE. No exceptions are expected.                   \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 74.
+
+      func_call   = L"(Round(byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderByte(data_reader, true, 9, 74);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function ROUND on the value of
+    // a different property of type BYTE. The test requests to round to a
+    // certain scale depth. No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function ROUND on the value of a different property of   \n");
+    printf("  type BYTE. The test requests to round to a certain scale \n");
+    printf("  depth. No exceptions are expected.                       \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 74.
+
+      func_call   = L"(Round(byte_val, 1.223) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderByte(data_reader, true, 9, 74);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 3. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function ROUND on the value of
+    // a different property of type DECIMAL. No exceptions are expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("3. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function ROUND on the value of a different property of   \n");
@@ -6154,7 +10580,7 @@ void FdoExpressionFunctionTest::TestRoundFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
+    // 4. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function ROUND on the value of
     // a different property of type DECIMAL. The test requests to round to
@@ -6162,7 +10588,7 @@ void FdoExpressionFunctionTest::TestRoundFunction ()
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("2. Test Case:                                              \n");
+    printf("4. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function ROUND on the value of a different property of   \n");
@@ -6199,14 +10625,14 @@ void FdoExpressionFunctionTest::TestRoundFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 3. Test Case:
+    // 5. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function ROUND on the value of
     // a different property of type DOUBLE. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("3. Test Case:                                              \n");
+    printf("5. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function ROUND on the value of a different property of   \n");
@@ -6242,7 +10668,7 @@ void FdoExpressionFunctionTest::TestRoundFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 4. Test Case:
+    // 6. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function ROUND on the value of
     // a different property of type DOUBLE. The test requests to round to a
@@ -6250,7 +10676,7 @@ void FdoExpressionFunctionTest::TestRoundFunction ()
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("4. Test Case:                                              \n");
+    printf("6. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function ROUND on the value of a different property of   \n");
@@ -6287,14 +10713,14 @@ void FdoExpressionFunctionTest::TestRoundFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 5. Test Case:
+    // 7. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function ROUND on the value of
     // a different property of type INT32. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("5. Test Case:                                              \n");
+    printf("7. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function ROUND on the value of a different property of   \n");
@@ -6330,7 +10756,7 @@ void FdoExpressionFunctionTest::TestRoundFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 6. Test Case:
+    // 8. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function ROUND on the value of
     // a different property of type INT32. The test requests to round to a
@@ -6375,14 +10801,14 @@ void FdoExpressionFunctionTest::TestRoundFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 7. Test Case:
+    // 9. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function ROUND on the value of
     // a different property of type SINGLE. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("7. Test Case:                                              \n");
+    printf("9. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function ROUND on the value of a different property of   \n");
@@ -6418,7 +10844,7 @@ void FdoExpressionFunctionTest::TestRoundFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 8. Test Case:
+    // 10. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function ROUND on the value of
     // a different property of type SINGLE. The test requests to round to a
@@ -6426,7 +10852,7 @@ void FdoExpressionFunctionTest::TestRoundFunction ()
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("8. Test Case:                                              \n");
+    printf("10. Test Case:                                             \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function ROUND on the value of a different property of   \n");
@@ -6497,14 +10923,14 @@ void FdoExpressionFunctionTest::TestSignFunction ()
     // 1. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function SIGN on the value of a
-    // different property of type DECIMAL. No exceptions are expected.
+    // different property of type BYTE. No exceptions are expected.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function SIGN on the value of a different property of    \n");
-    printf("  type DECIMAL. No exceptions are expected.                \n");
+    printf("  type BYTE. No exceptions are expected.                \n");
     printf("---------------------------------------------------------- \n");
 
     try {
@@ -6513,10 +10939,9 @@ void FdoExpressionFunctionTest::TestSignFunction ()
       // this call returns 1 row. The value for the selected computed property
       // is expected to be 1.
 
-      func_call   = L"(Sign(dcl_val) as cmp_id)";
-      data_reader = ExecuteSelectCommand(
-                                        L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 1);
+      func_call   = L"(Sign(byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader16(data_reader, true, 9, 1);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -6539,11 +10964,54 @@ void FdoExpressionFunctionTest::TestSignFunction ()
     // 2. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function SIGN on the value of a
-    // different property of type DOUBLE. No exceptions are expected.
+    // different property of type DECIMAL. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function SIGN on the value of a different property of    \n");
+    printf("  type DECIMAL. No exceptions are expected.                \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 1.
+
+      func_call   = L"(Sign(dcl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      CheckReader16(data_reader, true, 9, 1);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 3. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function SIGN on the value of a
+    // different property of type DOUBLE. No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("3. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function SIGN on the value of a different property of    \n");
@@ -6559,7 +11027,7 @@ void FdoExpressionFunctionTest::TestSignFunction ()
       func_call   = L"(Sign(dbl_val*-1) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, -1);
+      CheckReader16(data_reader, true, 9, -1);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -6616,10 +11084,96 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
     // 1. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TRUNC on the value of
-    // a different property of type DECIMAL. No exceptions are expected.
+    // a different property of type BYTE. No exceptions are expected.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function TRUNC on the value of a different property of   \n");
+    printf("  type BYTE. No exceptions are expected.                   \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 74.
+
+      func_call   = L"(Trunc(byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderByte(data_reader, true, 9, 74);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function TRUNC on the value of
+    // a different property of type BYTE. The test requests to truncate to a
+    // certain scale depth. No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function TRUNC on the value of a different property of   \n");
+    printf("  type BYTE. The test requests to truncate to a certain    \n");
+    printf("  scale depth. No exceptions are expected.                 \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 74.
+
+      func_call   = L"(Trunc(byte_val, 1.223) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderByte(data_reader, true, 9, 74);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 3. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function TRUNC on the value of
+    // a different property of type DECIMAL. No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("3. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TRUNC on the value of a different property of   \n");
@@ -6655,7 +11209,7 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
+    // 4. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TRUNC on the value of
     // a different property of type DECIMAL. The test requests to truncate
@@ -6663,7 +11217,7 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("2. Test Case:                                              \n");
+    printf("4. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TRUNC on the value of a different property of   \n");
@@ -6700,14 +11254,14 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 3. Test Case:
+    // 5. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TRUNC on the value of
     // a different property of type DOUBLE. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("3. Test Case:                                              \n");
+    printf("5. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TRUNC on the value of a different property of   \n");
@@ -6743,7 +11297,7 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 4. Test Case:
+    // 6. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TRUNC on the value of
     // a different property of type DOUBLE. The test requests to truncate
@@ -6751,7 +11305,7 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("4. Test Case:                                              \n");
+    printf("6. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TRUNC on the value of a different property of   \n");
@@ -6788,14 +11342,14 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 5. Test Case:
+    // 7. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TRUNC on the value of
     // a different property of type INT32. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("5. Test Case:                                              \n");
+    printf("7. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TRUNC on the value of a different property of   \n");
@@ -6831,7 +11385,7 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 6. Test Case:
+    // 8. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TRUNC on the value of
     // a different property of type INT32. The test requests to truncate to
@@ -6839,7 +11393,7 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("6. Test Case:                                              \n");
+    printf("8. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TRUNC on the value of a different property of   \n");
@@ -6876,14 +11430,14 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 7. Test Case:
+    // 9. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TRUNC on the value of
     // a different property of type SINGLE. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("7. Test Case:                                              \n");
+    printf("9. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TRUNC on the value of a different property of   \n");
@@ -6919,7 +11473,7 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 8. Test Case:
+    // 10. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TRUNC on the value of
     // a different property of type SINGLE. The test requests to truncate to
@@ -6927,7 +11481,7 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("8. Test Case:                                              \n");
+    printf("10. Test Case:                                             \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TRUNC on the value of a different property of   \n");
@@ -6997,7 +11551,7 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 9. Test Case:
+    // 11. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TRUNC on the value of
     // a different property of type DATE/TIME. The test requests to truncate
@@ -7005,7 +11559,7 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("9. Test Case:                                              \n");
+    printf("11. Test Case:                                             \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TRUNC on the value of a different property of   \n");
@@ -7026,7 +11580,7 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
       func_call   = L"(Trunc(dt_val, 'YEAR') as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckDateTimeReader(data_reader, true, false, 0, 9, expected_dt_data);
+      CheckReaderDt(data_reader, true, false, 0, 9, expected_dt_data);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -7046,7 +11600,7 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 10. Test Case:
+    // 12. Test Case:
     // The test executes a select-command to select the value of a computed
     // property that is defined by using the function TRUNC on the value of
     // a different property of type DATE/TIME. The test requests to truncate
@@ -7054,7 +11608,7 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("10. Test Case:                                             \n");
+    printf("12. Test Case:                                             \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TRUNC on the value of a different property of   \n");
@@ -7076,7 +11630,7 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
       func_call   = L"(Trunc(dt_val, 'MONTH') as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckDateTimeReader(data_reader, true, false, 0, 9, expected_dt_data);
+      CheckReaderDt(data_reader, true, false, 0, 9, expected_dt_data);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -7154,7 +11708,7 @@ void FdoExpressionFunctionTest::TestConcatFunction ()
       func_call   = L"(Concat(str_val, str2_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"  9  The Color is: 2118");
+      CheckReaderString(data_reader, 9, L"  9  The Color is: 2118");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -7375,7 +11929,7 @@ void FdoExpressionFunctionTest::TestLowerFunction ()
       func_call   = L"(Lower(str2_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"the color is: 2118");
+      CheckReaderString(data_reader, 9, L"the color is: 2118");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -7451,7 +12005,7 @@ void FdoExpressionFunctionTest::TestLpadFunction ()
       func_call   = L"(Lpad(str2_val, 21.43) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"   The Color is: 2118");
+      CheckReaderString(data_reader, 9, L"   The Color is: 2118");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -7497,7 +12051,7 @@ void FdoExpressionFunctionTest::TestLpadFunction ()
       func_call   = L"(Lpad(str2_val, 21.43, str_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"  9The Color is: 2118");
+      CheckReaderString(data_reader, 9, L"  9The Color is: 2118");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -7570,7 +12124,7 @@ void FdoExpressionFunctionTest::TestLtrimFunction ()
       func_call   = L"(Ltrim(str_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"9  ");
+      CheckReaderString(data_reader, 9, L"9  ");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -7646,7 +12200,7 @@ void FdoExpressionFunctionTest::TestRpadFunction ()
       func_call   = L"(Rpad(str2_val, 21.43) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"The Color is: 2118   ");
+      CheckReaderString(data_reader, 9, L"The Color is: 2118   ");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -7692,7 +12246,7 @@ void FdoExpressionFunctionTest::TestRpadFunction ()
       func_call   = L"(Rpad(str2_val, 21.43, str_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"The Color is: 2118  9");
+      CheckReaderString(data_reader, 9, L"The Color is: 2118  9");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -7765,7 +12319,7 @@ void FdoExpressionFunctionTest::TestRtrimFunction ()
       func_call   = L"(Rtrim(str_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"  9");
+      CheckReaderString(data_reader, 9, L"  9");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -7838,7 +12392,7 @@ void FdoExpressionFunctionTest::TestSoundexFunction ()
       func_call   = L"(Soundex(str2_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"T246");
+      CheckReaderString(data_reader, 9, L"T246");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -7917,7 +12471,7 @@ void FdoExpressionFunctionTest::TestSubstrFunction ()
       func_call   = L"(Substr(str2_val, 5.6) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"Color is: 2118");
+      CheckReaderString(data_reader, 9, L"Color is: 2118");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -7964,7 +12518,7 @@ void FdoExpressionFunctionTest::TestSubstrFunction ()
       func_call   = L"(Substr(str2_val, 5.6, 5.6) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"Color");
+      CheckReaderString(data_reader, 9, L"Color");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -8041,7 +12595,7 @@ void FdoExpressionFunctionTest::TestTranslateFunction ()
       func_call   = L"(Translate(str2_val, 'ol', 'xy') as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"The Cxyxr is: 2118");
+      CheckReaderString(data_reader, 9, L"The Cxyxr is: 2118");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -8119,7 +12673,7 @@ void FdoExpressionFunctionTest::TestTrimFunction ()
       func_call   = L"(Trim(str_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"9");
+      CheckReaderString(data_reader, 9, L"9");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -8166,7 +12720,7 @@ void FdoExpressionFunctionTest::TestTrimFunction ()
       func_call   = L"(Trim('BOTH', str_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"9");
+      CheckReaderString(data_reader, 9, L"9");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -8213,7 +12767,7 @@ void FdoExpressionFunctionTest::TestTrimFunction ()
       func_call   = L"(Trim('LEADING', str_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"9  ");
+      CheckReaderString(data_reader, 9, L"9  ");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -8260,7 +12814,7 @@ void FdoExpressionFunctionTest::TestTrimFunction ()
       func_call   = L"(Trim('TRAILING', str_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"  9");
+      CheckReaderString(data_reader, 9, L"  9");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -8333,7 +12887,7 @@ void FdoExpressionFunctionTest::TestUpperFunction ()
       func_call   = L"(Upper(str2_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckStringFunctionReader(data_reader, 9, L"THE COLOR IS: 2118");
+      CheckReaderString(data_reader, 9, L"THE COLOR IS: 2118");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -8359,198 +12913,6 @@ void FdoExpressionFunctionTest::TestUpperFunction ()
 // ----------------------------------------------------------------------------
 // --                      General Supporting Functions                      --
 // ----------------------------------------------------------------------------
-
-void FdoExpressionFunctionTest::CheckDateTimeReader (
-                                        FdoIDataReader *data_reader,
-                                        bool           include_id_check,
-                                        bool           is_extract_request,
-                                        FdoInt16       extract_type_id,
-                                        FdoInt32       expected_id_value,
-                                        FdoDateTime    expected_cmp_id_value)
-
-// +---------------------------------------------------------------------------
-// | The function checks whether or not the provided reader contains the expec-
-// | ted data and throws an exception if this is not the case.
-// +---------------------------------------------------------------------------
-
-{
-
-    // Declare and initialize all necessary local vatiables.
-
-    bool        is_valid_result = false;
-
-    FdoInt32    data_count      = 0,
-                id_prop_val;
-
-    FdoDateTime cmp_id_val;
-
-    // Navigate through the reader and perform the necessary checks.
-
-    printf(" >>> Cross check result \n");
-
-    while (data_reader->ReadNext()) {
-
-      data_count++;
-
-      if (include_id_check)
-          id_prop_val = data_reader->GetInt32(L"id");
-      cmp_id_val  = data_reader->GetDateTime(L"cmp_id");
-
-      if (!is_extract_request)
-          is_valid_result =
-                    ((cmp_id_val.year  == expected_cmp_id_value.year ) &&
-                     (cmp_id_val.month == expected_cmp_id_value.month) &&
-                     (cmp_id_val.day   == expected_cmp_id_value.day  )    );
-      else
-        switch (extract_type_id) {
-
-          case 0:  // Extract the YEAR portion
-            is_valid_result = (cmp_id_val.year == expected_cmp_id_value.year);
-            break;
-
-          case 1:  // Extract the MONTH portion
-            is_valid_result =
-                            (cmp_id_val.month == expected_cmp_id_value.month);
-            break;
-
-          case 2:  // Extract the DAY portion
-            is_valid_result = (cmp_id_val.day == expected_cmp_id_value.day);
-            break;
-
-          case 3:  // Extract the HOUR portion
-            is_valid_result = (cmp_id_val.hour == expected_cmp_id_value.hour);
-            break;
-
-          case 4:  // Extract the MINUTE portion
-            is_valid_result =
-                        (cmp_id_val.minute == expected_cmp_id_value.minute);
-            break;
-
-          case 5:  // Extract the SECOND portion
-            is_valid_result =
-                        (cmp_id_val.seconds == expected_cmp_id_value.seconds);
-            break;
-
-        }  //  switch ...
-
-      if (include_id_check)
-          is_valid_result =
-                        is_valid_result && (id_prop_val == expected_id_value);
-
-      if (!is_valid_result)
-          break;
-
-    }  //  while (data_reader-> ...
-
-    // Close the reader.
-
-    data_reader->Close();
-
-    // Issue an exception if the expected result is not met.
-
-    if ((!is_valid_result) || (data_count != 1))
-         throw FdoException::Create(
-                        L"Unexpected result(s) when checking returned data");
-    else
-      printf(" >>> ... All expected data found\n");
-
-}  //  CheckDateTimeReader ()
-
-void FdoExpressionFunctionTest::CheckDateTimeReader (
-                                    FdoIFeatureReader *data_reader,
-                                    bool              include_id_check,
-                                    bool              is_extract_request,
-                                    FdoInt16          extract_type_id,
-                                    FdoInt32          expected_id_value,
-                                    FdoDateTime       expected_cmp_id_value)
-
-// +---------------------------------------------------------------------------
-// | The function checks whether or not the provided reader contains the expec-
-// | ted data and throws an exception if this is not the case.
-// +---------------------------------------------------------------------------
-
-{
-
-    // Declare and initialize all necessary local vatiables.
-
-    bool        is_valid_result = false;
-
-    FdoInt32    data_count      = 0,
-                id_prop_val;
-
-    FdoDateTime cmp_id_val;
-
-    // Navigate through the reader and perform the necessary checks.
-
-    printf(" >>> Cross check result \n");
-
-    while (data_reader->ReadNext()) {
-
-      data_count++;
-
-      if (include_id_check)
-          id_prop_val = data_reader->GetInt32(L"id");
-      cmp_id_val  = data_reader->GetDateTime(L"cmp_id");
-
-      if (!is_extract_request)
-          is_valid_result =
-                    ((cmp_id_val.year  == expected_cmp_id_value.year ) &&
-                     (cmp_id_val.month == expected_cmp_id_value.month) &&
-                     (cmp_id_val.day   == expected_cmp_id_value.day  )    );
-      else
-        switch (extract_type_id) {
-
-          case 0:  // Extract the YEAR portion
-            is_valid_result = (cmp_id_val.year == expected_cmp_id_value.year);
-            break;
-
-          case 1:  // Extract the MONTH portion
-            is_valid_result =
-                            (cmp_id_val.month == expected_cmp_id_value.month);
-            break;
-
-          case 2:  // Extract the DAY portion
-            is_valid_result = (cmp_id_val.day == expected_cmp_id_value.day);
-            break;
-
-          case 3:  // Extract the HOUR portion
-            is_valid_result = (cmp_id_val.hour == expected_cmp_id_value.hour);
-            break;
-
-          case 4:  // Extract the MINUTE portion
-            is_valid_result =
-                        (cmp_id_val.minute == expected_cmp_id_value.minute);
-            break;
-
-          case 5:  // Extract the SECOND portion
-            is_valid_result =
-                        (cmp_id_val.seconds == expected_cmp_id_value.seconds);
-            break;
-
-        }  //  switch ...
-
-      if (include_id_check)
-          is_valid_result =
-                        is_valid_result && (id_prop_val == expected_id_value);
-
-      if (!is_valid_result)
-          break;
-
-    }  //  while (data_reader-> ...
-
-    // Close the reader.
-
-    data_reader->Close();
-
-    // Issue an exception if the expected result is not met.
-
-    if ((!is_valid_result) || (data_count != 1))
-         throw FdoException::Create(
-                        L"Unexpected result(s) when checking returned data");
-    else
-      printf(" >>> ... All expected data found\n");
-
-}  //  CheckDateTimeReader ()
 
 void FdoExpressionFunctionTest::CheckReader (FdoIDataReader *data_reader,
                                              bool           include_id_check,
@@ -8674,6 +13036,64 @@ void FdoExpressionFunctionTest::CheckReader (
       printf(" >>> ... All expected data found\n");
 
 }  //  CheckReader ()
+
+void FdoExpressionFunctionTest::CheckReader16 (
+                                        FdoIFeatureReader *data_reader,
+                                        bool              include_id_check,
+                                        FdoInt32          expected_id_value,
+                                        FdoInt16          expected_value)
+
+// +---------------------------------------------------------------------------
+// | The function checks whether or not the provided reader contains the ex-
+// | pected data and throws an exception if this is not the case.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    bool     is_valid_result = false;
+
+    FdoInt16 cmp_id_val      = 0;
+
+    FdoInt32 data_count      = 0,
+             id_prop_val;
+
+    // Navigate through the reader and perform the necessary checks.
+
+    printf(" >>> Cross check result \n");
+
+    while (data_reader->ReadNext()) {
+
+      data_count++;
+
+      if (include_id_check)
+          id_prop_val = data_reader->GetInt32(L"id");
+      cmp_id_val = data_reader->GetInt16(L"cmp_id");
+
+      is_valid_result = (include_id_check)
+            ? ((abs((cmp_id_val - expected_value)) < 1) &&
+               (id_prop_val == expected_id_value)          )
+            : (abs((cmp_id_val - expected_value)) < 1);
+
+      if (!is_valid_result)
+          break;
+
+    }  //  while (data_reader-> ...
+
+    // Close the reader.
+
+    data_reader->Close();
+
+    // Issue an exception if the expected result is not met.
+
+    if ((!is_valid_result) || (data_count != 1))
+         throw FdoException::Create(
+                        L"Unexpected result(s) when checking returned data");
+    else
+      printf(" >>> ... All expected data found\n");
+
+}  //  CheckReader16 ()
 
 void FdoExpressionFunctionTest::CheckReader32 (
                                             FdoIDataReader *data_reader,
@@ -8921,6 +13341,314 @@ void FdoExpressionFunctionTest::CheckReader64 (
 
 }  //  CheckReader64 ()
 
+void FdoExpressionFunctionTest::CheckReaderByte (
+                                            FdoIDataReader *data_reader,
+                                            bool           include_id_check,
+                                            FdoInt32       expected_id_value,
+                                            FdoByte        expected_value)
+
+// +---------------------------------------------------------------------------
+// | The function checks whether or not the provided reader contains the ex-
+// | pected data and throws an exception if this is not the case.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    bool     is_valid_result = false;
+
+    FdoByte  cmp_id_val;
+
+    FdoInt32 data_count    = 0,
+             id_prop_val;
+
+    // Navigate through the reader and perform the necessary checks.
+
+    printf(" >>> Cross check result \n");
+
+    while (data_reader->ReadNext()) {
+
+      data_count++;
+
+      if (include_id_check)
+          id_prop_val = data_reader->GetInt32(L"id");
+      cmp_id_val = data_reader->GetByte(L"cmp_id");
+
+      is_valid_result = (include_id_check)
+            ? ((cmp_id_val  == expected_value   ) &&
+               (id_prop_val == expected_id_value)    )
+            : (cmp_id_val == expected_value);
+
+      if (!is_valid_result)
+          break;
+
+    }  //  while (data_reader-> ...
+
+    // Close the reader.
+
+    data_reader->Close();
+
+    // Issue an exception if the expected result is not met.
+
+    if ((!is_valid_result) || (data_count != 1))
+         throw FdoException::Create(
+                        L"Unexpected result(s) when checking returned data");
+    else
+      printf(" >>> ... All expected data found\n");
+
+}  //  CheckReaderByte ()
+
+void FdoExpressionFunctionTest::CheckReaderByte (
+                                        FdoIFeatureReader *data_reader,
+                                        bool              include_id_check,
+                                        FdoInt32          expected_id_value,
+                                        FdoByte           expected_value)
+
+// +---------------------------------------------------------------------------
+// | The function checks whether or not the provided reader contains the ex-
+// | pected data and throws an exception if this is not the case.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    bool     is_valid_result = false;
+
+    FdoByte  cmp_id_val;
+
+    FdoInt32 data_count    = 0,
+             id_prop_val;
+
+    // Navigate through the reader and perform the necessary checks.
+
+    printf(" >>> Cross check result \n");
+
+    while (data_reader->ReadNext()) {
+
+      data_count++;
+
+      if (include_id_check)
+          id_prop_val = data_reader->GetInt32(L"id");
+      cmp_id_val = data_reader->GetByte(L"cmp_id");
+
+      is_valid_result = (include_id_check)
+            ? ((cmp_id_val  == expected_value   ) &&
+               (id_prop_val == expected_id_value)    )
+            : (cmp_id_val == expected_value);
+
+      if (!is_valid_result)
+          break;
+
+    }  //  while (data_reader-> ...
+
+    // Close the reader.
+
+    data_reader->Close();
+
+    // Issue an exception if the expected result is not met.
+
+    if ((!is_valid_result) || (data_count != 1))
+         throw FdoException::Create(
+                        L"Unexpected result(s) when checking returned data");
+    else
+      printf(" >>> ... All expected data found\n");
+
+}  //  CheckReaderByte ()
+
+void FdoExpressionFunctionTest::CheckReaderDt (
+                                        FdoIDataReader *data_reader,
+                                        bool           include_id_check,
+                                        bool           is_extract_request,
+                                        FdoInt16       extract_type_id,
+                                        FdoInt32       expected_id_value,
+                                        FdoDateTime    expected_cmp_id_value)
+
+// +---------------------------------------------------------------------------
+// | The function checks whether or not the provided reader contains the expec-
+// | ted data and throws an exception if this is not the case.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    bool        is_valid_result = false;
+
+    FdoInt32    data_count      = 0,
+                id_prop_val;
+
+    FdoDateTime cmp_id_val;
+
+    // Navigate through the reader and perform the necessary checks.
+
+    printf(" >>> Cross check result \n");
+
+    while (data_reader->ReadNext()) {
+
+      data_count++;
+
+      if (include_id_check)
+          id_prop_val = data_reader->GetInt32(L"id");
+      cmp_id_val  = data_reader->GetDateTime(L"cmp_id");
+
+      if (!is_extract_request)
+          is_valid_result =
+                    ((cmp_id_val.year  == expected_cmp_id_value.year ) &&
+                     (cmp_id_val.month == expected_cmp_id_value.month) &&
+                     (cmp_id_val.day   == expected_cmp_id_value.day  )    );
+      else
+        switch (extract_type_id) {
+
+          case 0:  // Extract the YEAR portion
+            is_valid_result = (cmp_id_val.year == expected_cmp_id_value.year);
+            break;
+
+          case 1:  // Extract the MONTH portion
+            is_valid_result =
+                            (cmp_id_val.month == expected_cmp_id_value.month);
+            break;
+
+          case 2:  // Extract the DAY portion
+            is_valid_result = (cmp_id_val.day == expected_cmp_id_value.day);
+            break;
+
+          case 3:  // Extract the HOUR portion
+            is_valid_result = (cmp_id_val.hour == expected_cmp_id_value.hour);
+            break;
+
+          case 4:  // Extract the MINUTE portion
+            is_valid_result =
+                        (cmp_id_val.minute == expected_cmp_id_value.minute);
+            break;
+
+          case 5:  // Extract the SECOND portion
+            is_valid_result =
+                        (cmp_id_val.seconds == expected_cmp_id_value.seconds);
+            break;
+
+        }  //  switch ...
+
+      if (include_id_check)
+          is_valid_result =
+                        is_valid_result && (id_prop_val == expected_id_value);
+
+      if (!is_valid_result)
+          break;
+
+    }  //  while (data_reader-> ...
+
+    // Close the reader.
+
+    data_reader->Close();
+
+    // Issue an exception if the expected result is not met.
+
+    if ((!is_valid_result) || (data_count != 1))
+         throw FdoException::Create(
+                        L"Unexpected result(s) when checking returned data");
+    else
+      printf(" >>> ... All expected data found\n");
+
+}  //  CheckReaderDt ()
+
+void FdoExpressionFunctionTest::CheckReaderDt (
+                                    FdoIFeatureReader *data_reader,
+                                    bool              include_id_check,
+                                    bool              is_extract_request,
+                                    FdoInt16          extract_type_id,
+                                    FdoInt32          expected_id_value,
+                                    FdoDateTime       expected_cmp_id_value)
+
+// +---------------------------------------------------------------------------
+// | The function checks whether or not the provided reader contains the expec-
+// | ted data and throws an exception if this is not the case.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    bool        is_valid_result = false;
+
+    FdoInt32    data_count      = 0,
+                id_prop_val;
+
+    FdoDateTime cmp_id_val;
+
+    // Navigate through the reader and perform the necessary checks.
+
+    printf(" >>> Cross check result \n");
+
+    while (data_reader->ReadNext()) {
+
+      data_count++;
+
+      if (include_id_check)
+          id_prop_val = data_reader->GetInt32(L"id");
+      cmp_id_val  = data_reader->GetDateTime(L"cmp_id");
+
+      if (!is_extract_request)
+          is_valid_result =
+                    ((cmp_id_val.year  == expected_cmp_id_value.year ) &&
+                     (cmp_id_val.month == expected_cmp_id_value.month) &&
+                     (cmp_id_val.day   == expected_cmp_id_value.day  )    );
+      else
+        switch (extract_type_id) {
+
+          case 0:  // Extract the YEAR portion
+            is_valid_result = (cmp_id_val.year == expected_cmp_id_value.year);
+            break;
+
+          case 1:  // Extract the MONTH portion
+            is_valid_result =
+                            (cmp_id_val.month == expected_cmp_id_value.month);
+            break;
+
+          case 2:  // Extract the DAY portion
+            is_valid_result = (cmp_id_val.day == expected_cmp_id_value.day);
+            break;
+
+          case 3:  // Extract the HOUR portion
+            is_valid_result = (cmp_id_val.hour == expected_cmp_id_value.hour);
+            break;
+
+          case 4:  // Extract the MINUTE portion
+            is_valid_result =
+                        (cmp_id_val.minute == expected_cmp_id_value.minute);
+            break;
+
+          case 5:  // Extract the SECOND portion
+            is_valid_result =
+                        (cmp_id_val.seconds == expected_cmp_id_value.seconds);
+            break;
+
+        }  //  switch ...
+
+      if (include_id_check)
+          is_valid_result =
+                        is_valid_result && (id_prop_val == expected_id_value);
+
+      if (!is_valid_result)
+          break;
+
+    }  //  while (data_reader-> ...
+
+    // Close the reader.
+
+    data_reader->Close();
+
+    // Issue an exception if the expected result is not met.
+
+    if ((!is_valid_result) || (data_count != 1))
+         throw FdoException::Create(
+                        L"Unexpected result(s) when checking returned data");
+    else
+      printf(" >>> ... All expected data found\n");
+
+}  //  CheckReaderDt ()
+
 void FdoExpressionFunctionTest::CheckReaderGeometry (
                                         FdoIDataReader *data_reader,
                                         FdoInt32       expected_data_count,
@@ -9003,6 +13731,72 @@ void FdoExpressionFunctionTest::CheckReaderGeometry (
       printf(" >>> ... All expected data found\n");
 
 }  //  CheckReaderGeometry ()
+
+void FdoExpressionFunctionTest::CheckReaderNumberString (
+                                    FdoIFeatureReader *data_reader,
+                                    FdoInt32          expected_id_value,
+                                    FdoString         *expected_cmp_id_value)
+
+// +---------------------------------------------------------------------------
+// | The function checks whether or not the provided reader contains the expec-
+// | ted data and throws an exception if this is not the case.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    bool        is_valid_result = false;
+
+    FdoInt32    data_count      = 0,
+                id_prop_val;
+
+    FdoDouble   tmp_val         = 0,
+                cmp_id_val_d    = 0,
+                exp_id_val_d    = 0;
+
+    FdoString   *cmp_id_val;
+
+    FdoStringP  tmp_str;
+
+    // Navigate through the reader and perform the necessary checks.
+
+    printf(" >>> Cross check result \n");
+
+    while (data_reader->ReadNext()) {
+
+      data_count++;
+
+      id_prop_val  = data_reader->GetInt32(L"id");
+      cmp_id_val   = data_reader->GetString(L"cmp_id");
+
+      tmp_str      = cmp_id_val;
+      cmp_id_val_d = tmp_str.ToDouble();
+
+      tmp_str      = expected_cmp_id_value;
+      exp_id_val_d = tmp_str.ToDouble();
+
+      tmp_val         = fabs((cmp_id_val_d - exp_id_val_d));
+      is_valid_result = (tmp_val < 1);
+
+      if (!is_valid_result)
+          break;
+
+    }  //  while (data_reader-> ...
+
+    // Close the reader.
+
+    data_reader->Close();
+
+    // Issue an exception if the expected result is not met.
+
+    if ((!is_valid_result) || (data_count != 1))
+         throw FdoException::Create(
+                        L"Unexpected result(s) when checking returned data");
+    else
+      printf(" >>> ... All expected data found\n");
+
+}  //  CheckReaderNumberString ()
 
 void FdoExpressionFunctionTest::CheckReaderSgl (
                                             FdoIDataReader *data_reader,
@@ -9128,7 +13922,29 @@ void FdoExpressionFunctionTest::CheckReaderSgl (
 
 }  //  CheckReaderSgl ()
 
-void FdoExpressionFunctionTest::CheckStringFunctionReader (
+void FdoExpressionFunctionTest::CheckReaderStddev (
+                                        FdoIDataReader *data_reader,
+                                        FdoDouble      expected_cmp_id_value)
+
+// +---------------------------------------------------------------------------
+// | This function represents a special cross-check function for the expression
+// | function STDDEV. It is required because the behavior of the function for a
+// | special use-case (where the function is executed on a single row only) is
+// | different in SQL Server from the behavior in MySQL, Oracle or the standard
+// | implementation of the expression function in the Expression Engine.
+// +---------------------------------------------------------------------------
+
+{
+
+    // In the default implementation, it is expected that the call returns a
+    // single row with only with the value of the computed identifier being
+    // the same as the provided expected value.
+
+    CheckReader(data_reader, false, 0, expected_cmp_id_value);
+
+}  //  CheckReaderStddev ()
+
+void FdoExpressionFunctionTest::CheckReaderString (
                                     FdoIFeatureReader *data_reader,
                                     FdoInt32          expected_id_value,
                                     FdoString         *expected_cmp_id_value)
@@ -9177,7 +13993,7 @@ void FdoExpressionFunctionTest::CheckStringFunctionReader (
     else
       printf(" >>> ... All expected data found\n");
 
-}  //  CheckStringFunctionReader ()
+}  //  CheckReaderString ()
 
 FdoIDataReader *FdoExpressionFunctionTest::ExecuteSelAggrCommand (
                                                         FdoString *class_name,
@@ -9329,6 +14145,90 @@ FdoIFeatureReader *FdoExpressionFunctionTest::ExecuteSelectCommand (
 
 }  //  ExecuteSelectCommand ()
 
+FdoIFeatureReader *FdoExpressionFunctionTest::
+                                ExecuteSelectCommand (FdoString *class_name,
+                                                      FdoFilter *filter,
+                                                      FdoString *prop1,
+                                                      FdoString *prop2,
+                                                      FdoString *prop3,
+                                                      FdoString *prop4,
+                                                      FdoString *prop5,
+                                                      FdoString *prop6)
+
+// +---------------------------------------------------------------------------
+// | The function executes a select-command to retrieve the values of the named
+// | properties and returns the generated reader back to the calling routine.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    FdoPtr<FdoIdentifier>           id_prop;
+
+    FdoPtr<FdoISelect>              sel_cmd;
+    FdoPtr<FdoIdentifierCollection> id_col;
+
+    // Create a select-aggregate function and set the class name and filter.
+
+    printf(" >>> Setup the command \n");
+
+    sel_cmd = (FdoISelect*)m_connection->CreateCommand(FdoCommandType_Select);
+    sel_cmd->SetFeatureClassName(class_name);
+    if (filter != NULL)
+        sel_cmd->SetFilter(filter);
+    id_col = sel_cmd->GetPropertyNames();
+    if (prop1 != NULL) {
+
+        id_prop = FdoIdentifier::Create(prop1);
+        id_col->Add(id_prop);
+
+    }  //  if (prop1 != NULL) ...
+
+    if (prop2 != NULL) {
+
+        id_prop = FdoIdentifier::Create(prop2);
+        id_col->Add(id_prop);
+
+    }  //  if (prop2 != NULL) ...
+
+    if (prop3 != NULL) {
+
+        id_prop = FdoIdentifier::Create(prop3);
+        id_col->Add(id_prop);
+
+    }  //  if (prop3 != NULL) ...
+
+    if (prop4 != NULL) {
+
+        id_prop = FdoIdentifier::Create(prop4);
+        id_col->Add(id_prop);
+
+    }  //  if (prop4 != NULL) ...
+
+    if (prop5 != NULL) {
+
+        id_prop = FdoIdentifier::Create(prop5);
+        id_col->Add(id_prop);
+
+    }  //  if (prop5 != NULL) ...
+
+    if (prop6 != NULL) {
+
+        id_prop = FdoIdentifier::Create(prop6);
+        id_col->Add(id_prop);
+
+    }  //  if (prop6 != NULL) ...
+
+    // Execute the request and return the feature reader back to the calling
+    // procedure.
+
+    printf(" >>> Execute request \n");
+
+    return (sel_cmd->Execute());
+
+}  //  ExecuteSelectCommand ()
+
 FdoDateTime FdoExpressionFunctionTest::GetDate (FdoString *class_name,
                                                 FdoString *property_name,
                                                 FdoFilter *filter)
@@ -9372,22 +14272,25 @@ FdoDateTime FdoExpressionFunctionTest::GetDate (FdoString *class_name,
 
 }  //  GetDate ()
 
-FdoDouble FdoExpressionFunctionTest::GetExpectedCountValue (
-                                                    FdoInt16 test_case_id)
+FdoDouble FdoExpressionFunctionTest::GetExpectedValue (FdoInt16 test_case_id)
 
 // +---------------------------------------------------------------------------
-// | The function returns the number of rows expected to be returned by the
-// | function testing the expression function COUNT. The value differs on the
-// | underlying database server. In MySQL, for example, NULL values are not
-// | added to the total count whereas in Oracle those rows are.
+// | The function returns the expected value for a computed identifier in case
+// | the expression function request is treated differently in MySQL, Oracle,
+// | SQL Server and the standard implementation.
 // +---------------------------------------------------------------------------
 
 {
 
     switch (test_case_id) {
 
-      case 1: return 31; break;
-      case 2: return 28; break;
+      case COUNT_TEST_CASE_CODE_1: return 31; break;
+      case COUNT_TEST_CASE_CODE_2: return 28; break;
+      case COUNT_TEST_CASE_CODE_3: return 31; break;
+
+      case EXP_TEST_CASE_CODE_1  : return 1.3733829795401801e+032; break;
+
+      case POWER_TEST_CASE_CODE_1: return 399.89670693504104; break;
 
     }  //  switch ...
 
@@ -9396,7 +14299,7 @@ FdoDouble FdoExpressionFunctionTest::GetExpectedCountValue (
 
     return -1;
 
-}  //  GetExpectedCountValue ()
+}  //  GetExpectedValue ()
 
 
 // ----------------------------------------------------------------------------
