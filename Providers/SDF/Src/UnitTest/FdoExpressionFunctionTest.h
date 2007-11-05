@@ -551,18 +551,6 @@ protected:
     //                       General Supporting Functions
     //-------------------------------------------------------------------------
 
-    //  CheckDateTimeReader:
-    //      The function checks whether or not the provided reader contains
-    //      the expected data and throws an exception if this is not the 
-    //      case.
-
-    void CheckDateTimeReader (FdoIDataReader *data_reader,
-                              bool           include_id_check,
-                              bool           is_extract_request,
-                              FdoInt16       extract_type_id,
-                              FdoInt32       expected_id_value,
-                              FdoDateTime    expected_cmp_id_value);
-
     //  CheckReader:
     //      The function checks whether or not the provided reader contains
     //      the expected data and throws an exception if this is not the 
@@ -573,25 +561,30 @@ protected:
                       FdoInt32       expected_id_value,
                       FdoDouble      expected_value);
 
+    void CheckReader (FdoIFeatureReader *data_reader,
+                      bool              include_id_check,
+                      FdoInt32          expected_id_value,
+                      FdoDouble         expected_value);
+
     //  CheckReader16:
     //      The function checks whether or not the provided reader contains
     //      the expected data and throws an exception if this is not the 
     //      case.
 
-    void CheckReader16 (FdoIDataReader *data_reader,
-                        bool           include_id_check,
-                        FdoInt32       expected_id_value,
-                        FdoInt16       expected_value);
+    void CheckReader16 (FdoIFeatureReader *data_reader,
+                        bool              include_id_check,
+                        FdoInt32          expected_id_value,
+                        FdoInt16          expected_value);
 
     //  CheckReader32:
     //      The function checks whether or not the provided reader contains
     //      the expected data and throws an exception if this is not the 
     //      case.
 
-    void CheckReader32 (FdoIDataReader *data_reader,
-                        bool           include_id_check,
-                        FdoInt32       expected_id_value,
-                        FdoInt32       expected_value);
+    void CheckReader32 (FdoIFeatureReader *data_reader,
+                        bool              include_id_check,
+                        FdoInt32          expected_id_value,
+                        FdoInt32          expected_value);
 
     //  CheckReader64:
     //      The function checks whether or not the provided reader contains
@@ -603,6 +596,11 @@ protected:
                         FdoInt32       expected_id_value,
                         FdoInt64       expected_value);
 
+    void CheckReader64 (FdoIFeatureReader *data_reader,
+                        bool              include_id_check,
+                        FdoInt32          expected_id_value,
+                        FdoInt64          expected_value);
+
     //  CheckReaderByte:
     //      The function checks whether or not the provided reader contains
     //      the expected data and throws an exception if this is not the 
@@ -613,34 +611,57 @@ protected:
                           FdoInt32       expected_id_value,
                           FdoByte        expected_value);
 
+    void CheckReaderByte (FdoIFeatureReader *data_reader,
+                          bool              include_id_check,
+                          FdoInt32          expected_id_value,
+                          FdoByte           expected_value);
+
+    //  CheckReaderDt:
+    //      The function checks whether or not the provided reader contains
+    //      the expected data and throws an exception if this is not the 
+    //      case.
+
+    void CheckReaderDt (FdoIDataReader *data_reader,
+                        bool           include_id_check,
+                        bool           is_extract_request,
+                        FdoInt16       extract_type_id,
+                        FdoInt32       expected_id_value,
+                        FdoDateTime    expected_cmp_id_value);
+
+    void CheckReaderDt (FdoIFeatureReader *data_reader,
+                        bool              include_id_check,
+                        bool              is_extract_request,
+                        FdoInt16          extract_type_id,
+                        FdoInt32          expected_id_value,
+                        FdoDateTime       expected_cmp_id_value);
+
+    //  CheckReaderNumberString:
+    //      The function checks whether or not the provided reader contains
+    //      the expected data and throws an exception if this is not the 
+    //      case.
+
+    void CheckReaderNumberString (FdoIFeatureReader *data_reader,
+                                  FdoInt32          expected_id_value,
+                                  FdoString         *expected_cmp_id_value);
+
     //  CheckReaderSgl:
     //      The function checks whether or not the provided reader contains
     //      the expected data and throws an exception if this is not the 
     //      case.
 
-    void CheckReaderSgl (FdoIDataReader *data_reader,
-                         bool           include_id_check,
-                         FdoInt32       expected_id_value,
-                         FdoFloat       expected_value);
+    void CheckReaderSgl (FdoIFeatureReader *data_reader,
+                         bool              include_id_check,
+                         FdoInt32          expected_id_value,
+                         FdoFloat          expected_value);
 
-    //  CheckStringFunctionReader:
+    //  CheckReaderString:
     //      The function checks whether or not the provided reader contains
     //      the expected data and throws an exception if this is not the 
     //      case.
 
-    void CheckStringFunctionReader (FdoIDataReader *data_reader,
-                                    FdoInt32       expected_id_value,
-                                    FdoString      *expected_cmp_id_value);
-
-    //  CheckStringNumberFunctionReader:
-    //      The function checks whether or not the provided reader contains
-    //      the expected data and throws an exception if this is not the 
-    //      case.
-
-    void CheckStringNumberFunctionReader (
-                                    FdoIDataReader *data_reader,
-                                    FdoInt32       expected_id_value,
-                                    FdoString      *expected_cmp_id_value);
+    void CheckReaderString (FdoIFeatureReader *data_reader,
+                            FdoInt32          expected_id_value,
+                            FdoString         *expected_cmp_id_value);
 
     //  ExecuteSelAggrCommand:
     //      The function executes a select-aggregate command using the pro-
@@ -651,6 +672,29 @@ protected:
                                            FdoFilter *filter,
                                            bool      inc_id_prop,
                                            FdoString *cmp_id_str);
+
+    //  ExecuteSelectCommand:
+    //      The function executes a select-command using the provided data and
+    //      returns the generated reader back to the calling routine.
+
+    FdoIFeatureReader *ExecuteSelectCommand (FdoString *class_name,
+                                             FdoFilter *filter,
+                                             bool      inc_id_prop,
+                                             FdoString *cmp_id_str);
+
+    //  ExecuteSelectCommand:
+    //      The function executes a select-command to retrieve the values of
+    //      the named properties and returns the generated reader back to the
+    //      calling routine.
+
+    FdoIFeatureReader *ExecuteSelectCommand (FdoString *class_name,
+                                             FdoFilter *filter,
+                                             FdoString *prop1,
+                                             FdoString *prop2,
+                                             FdoString *prop3,
+                                             FdoString *prop4,
+                                             FdoString *prop5,
+                                             FdoString *prop6);
 
     //  GetDate:
     //      The function retrieves the date set for a property identified by
