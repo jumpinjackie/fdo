@@ -16,6 +16,17 @@
 ## Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ##
 
+## boost
+pushd . >& /dev/null
+cd boost
+echo Building boost
+cd tools/jam/src
+chmod a+x ./build.sh
+./build.sh
+cd ../../../
+./tools/jam/src/bin.linuxx86/bjam toolset=gcc variant=release threading=multi link=static --layout=system stage
+popd >& /dev/null
+
 if test "$FDOGDAL" == "$FDOTHIRDPARTY/gdal"; then 
     pushd . >& /dev/null
     cd gdal
