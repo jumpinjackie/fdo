@@ -20,7 +20,7 @@
 ###########################################
 ## build third party libraries:          ##
 ## apache, linux/cppunit, Sqlite3.3.13,  ##
-## boost_1_32_0, libcurl, openssl        ##
+## boost, libcurl, openssl               ##
 ###########################################
 
 ## Thirdparty_fdo
@@ -48,13 +48,13 @@ popd >& /dev/null
 
 ## Thirdparty_OWS
 pushd . >& /dev/null
-cd boost_1_32_0
-echo Building boost_1_32_0
-cd tools/build/jam_src
+cd boost
+echo Building boost
+cd tools/jam/src
 chmod a+x ./build.sh
 ./build.sh
 cd ../../../
-./tools/build/jam_src/bin.linuxx86/bjam "-sTOOLS=gcc" stage
+./tools/jam/src/bin.linuxx86/bjam toolset=gcc variant=release threading=multi link=static --layout=system stage
 popd >& /dev/null
 
 pushd . >& /dev/null
