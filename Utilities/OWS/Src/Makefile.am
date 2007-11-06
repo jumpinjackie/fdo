@@ -48,7 +48,7 @@ INCLUDES = \
   -I../Inc \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDOUTILITIES)/Common/Inc \
-  -I$(FDOTHIRDPARTY)/boost_1_32_0 \
+  -I$(FDOTHIRDPARTY)/boost \
   -I$(FDOTHIRDPARTY)/libcurl/include
 
 libFdoOwsSrc_la_LDFLAGS =
