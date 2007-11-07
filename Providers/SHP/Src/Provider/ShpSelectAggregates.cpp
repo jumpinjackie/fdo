@@ -67,7 +67,7 @@ FdoIDataReader* ShpSelectAggregates::Execute()
 			{
 				FdoPtr<FdoExpression> expr = computedIdentifier->GetExpression();
 				FdoFunction* func = dynamic_cast<FdoFunction*>(expr.p);
-				if (func && 0==wcscmp(func->GetName(), FDO_FUNCTION_SPATIALEXTENTS))
+				if (func && 0==FdoCommonStringUtil::StringCompareNoCase(func->GetName(), FDO_FUNCTION_SPATIALEXTENTS))
 				{
 					FdoPtr<FdoExpressionCollection> args = func->GetArguments();
 					FdoPtr<FdoExpression> arg = args->GetItem(0);
@@ -84,7 +84,7 @@ FdoIDataReader* ShpSelectAggregates::Execute()
 						}
 					}
 				}
-				else if (func && 0 == wcscmp(func->GetName(), FDO_FUNCTION_COUNT))
+				else if (func && 0 == FdoCommonStringUtil::StringCompareNoCase(func->GetName(), FDO_FUNCTION_COUNT))
 				{
 					AggregateElement *id = new AggregateElement;
 					id->name = computedIdentifier->GetName();
