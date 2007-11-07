@@ -36,17 +36,17 @@ int main(int argc, char* argv[])
 
     try
     {
+#pragma message ("!!TODO!!: Fix UnitTest calss to implicit() that stopped working after migration to boost 1_34_1")
         //
         // Parse command line and configure tests
         //
-
         bpo::options_description desc("Usage options");
         desc.add_options()
             ("help", "print help message")
             ("config-file", bpo::value<std::string>(), "set input file with tests configuration")
             ("run-test", bpo::value<std::string>(), "name of test case to run")
-            ("run-all", bpo::value<std::string>()->implicit(), "run all tests (default)")
-            ("wait", bpo::value<std::string>()->implicit(), "run all tests (default: no)")
+            ("run-all", bpo::value<std::string>()/*->implicit()*/, "run all tests (default)")
+            ("wait", bpo::value<std::string>()/*->implicit()*/, "run all tests (default: no)")
             ;
 
         bpo::variables_map vm;        
