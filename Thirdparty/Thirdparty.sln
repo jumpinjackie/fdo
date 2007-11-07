@@ -30,9 +30,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openssl", "openssl\openssl.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gdal", "gdal\gdal.vcproj", "{F0B80E4B-FD5B-4371-9E47-7B82424EBA53}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "boost_1_32_0", "boost_1_32_0\boost_1_32_0.vcproj", "{317315E2-24B6-490C-967D-4B77B7DF5C34}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sqlite3", "Sqlite3.3.13\Sqlite3.vcproj", "{F3910EB6-1756-46F4-8143-C6725ED91935}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "boost", "boost\boost.vcproj", "{317315E2-24B6-490C-967D-4B77B7DF5C34}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -108,12 +108,6 @@ Global
 		{F0B80E4B-FD5B-4371-9E47-7B82424EBA53}.Release|Win32.ActiveCfg = Release|Win32
 		{F0B80E4B-FD5B-4371-9E47-7B82424EBA53}.Release|Win32.Build.0 = Release|Win32
 		{F0B80E4B-FD5B-4371-9E47-7B82424EBA53}.Release|x64.ActiveCfg = Release|Win32
-		{317315E2-24B6-490C-967D-4B77B7DF5C34}.Debug|Win32.ActiveCfg = Debug|Win32
-		{317315E2-24B6-490C-967D-4B77B7DF5C34}.Debug|Win32.Build.0 = Debug|Win32
-		{317315E2-24B6-490C-967D-4B77B7DF5C34}.Debug|x64.ActiveCfg = Debug|Win32
-		{317315E2-24B6-490C-967D-4B77B7DF5C34}.Release|Win32.ActiveCfg = Release|Win32
-		{317315E2-24B6-490C-967D-4B77B7DF5C34}.Release|Win32.Build.0 = Release|Win32
-		{317315E2-24B6-490C-967D-4B77B7DF5C34}.Release|x64.ActiveCfg = Release|Win32
 		{F3910EB6-1756-46F4-8143-C6725ED91935}.Debug|Win32.ActiveCfg = Debug|Win32
 		{F3910EB6-1756-46F4-8143-C6725ED91935}.Debug|Win32.Build.0 = Debug|Win32
 		{F3910EB6-1756-46F4-8143-C6725ED91935}.Debug|x64.ActiveCfg = Debug|x64
@@ -122,6 +116,12 @@ Global
 		{F3910EB6-1756-46F4-8143-C6725ED91935}.Release|Win32.Build.0 = Release|Win32
 		{F3910EB6-1756-46F4-8143-C6725ED91935}.Release|x64.ActiveCfg = Release|x64
 		{F3910EB6-1756-46F4-8143-C6725ED91935}.Release|x64.Build.0 = Release|x64
+		{317315E2-24B6-490C-967D-4B77B7DF5C34}.Debug|Win32.ActiveCfg = Debug|Win32
+		{317315E2-24B6-490C-967D-4B77B7DF5C34}.Debug|Win32.Build.0 = Debug|Win32
+		{317315E2-24B6-490C-967D-4B77B7DF5C34}.Debug|x64.ActiveCfg = Debug|Win32
+		{317315E2-24B6-490C-967D-4B77B7DF5C34}.Release|Win32.ActiveCfg = Release|Win32
+		{317315E2-24B6-490C-967D-4B77B7DF5C34}.Release|Win32.Build.0 = Release|Win32
+		{317315E2-24B6-490C-967D-4B77B7DF5C34}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
