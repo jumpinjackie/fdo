@@ -47,7 +47,7 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 					</xsl:choose>
 				</xsl:attribute>
 				<xsl:attribute name="description"/>
-				<xsl:attribute name="dataType">VARCHAR</xsl:attribute>
+				<xsl:attribute name="dataType">NVARCHAR</xsl:attribute>
 				<xsl:attribute name="length">255</xsl:attribute>
 				<xsl:attribute name="scale">0</xsl:attribute>
 				<xsl:attribute name="nullable">True</xsl:attribute>
@@ -62,7 +62,7 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 					</xsl:choose>
 				</xsl:attribute>
 				<xsl:attribute name="description"/>
-				<xsl:attribute name="dataType">VARCHAR</xsl:attribute>
+				<xsl:attribute name="dataType">NVARCHAR</xsl:attribute>
 				<xsl:attribute name="length">255</xsl:attribute>
 				<xsl:attribute name="scale">0</xsl:attribute>
 				<xsl:attribute name="nullable">True</xsl:attribute>
@@ -149,18 +149,25 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 								</xsl:when>
 								<xsl:when test="$providerName = 'SqlServer'">
 									<xsl:choose>
-										<xsl:when test="@length &lt; 8001">
+                    <xsl:when test="@length &lt; 4001">
+                      <xsl:attribute name="dataType">NVARCHAR</xsl:attribute>
+                      <xsl:choose>
+                        <xsl:when test="$colName='OV_COL_D'">
+                          <xsl:attribute name="length">1</xsl:attribute>
+                        </xsl:when>
+                        <xsl:otherwise>
+                          <xsl:attribute name="length">
+                            <xsl:value-of select="@length"/>
+                          </xsl:attribute>
+                        </xsl:otherwise>
+                      </xsl:choose>
+                      <xsl:attribute name="scale">0</xsl:attribute>
+                    </xsl:when>
+                    <xsl:when test="@length &lt; 8001">
 											<xsl:attribute name="dataType">VARCHAR</xsl:attribute>	
-											<xsl:choose>
-												<xsl:when test="$colName='OV_COL_D'">
-													<xsl:attribute name="length">1</xsl:attribute>				
-												</xsl:when>
-												<xsl:otherwise>
-													<xsl:attribute name="length">
-														<xsl:value-of select="@length"/>
-													</xsl:attribute>				
-												</xsl:otherwise>
-											</xsl:choose>
+											<xsl:attribute name="length">
+												<xsl:value-of select="@length"/>
+											</xsl:attribute>				
 											<xsl:attribute name="scale">0</xsl:attribute>	
 										</xsl:when>
 										<xsl:otherwise>

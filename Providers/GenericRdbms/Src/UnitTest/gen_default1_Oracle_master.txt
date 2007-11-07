@@ -465,24 +465,20 @@ geographic</gml:derivedCRSType>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
 <xs:element name="BINARY_DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:string">
-<xs:maxLength value="8"/>
-</xs:restriction>
-</xs:simpleType>
 </xs:element>
 <xs:element name="BINARY_FLOAT_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:float"/>
+</xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:string">
-<xs:maxLength value="4"/>
-</xs:restriction>
-</xs:simpleType>
 </xs:element>
 <xs:element name="BLOB_COLUMN" minOccurs="0">
 <xs:simpleType>
@@ -609,7 +605,7 @@ geographic</gml:derivedCRSType>
 </xs:annotation>
 <xs:simpleType>
 <xs:restriction base="xs:string">
-<xs:maxLength value="11"/>
+<xs:maxLength value="50"/>
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
@@ -619,7 +615,17 @@ geographic</gml:derivedCRSType>
 </xs:annotation>
 <xs:simpleType>
 <xs:restriction base="xs:string">
-<xs:maxLength value="5"/>
+<xs:maxLength value="50"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="LONG_STRING" minOccurs="0">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="4000"/>
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
@@ -629,7 +635,7 @@ geographic</gml:derivedCRSType>
 </xs:annotation>
 <xs:simpleType>
 <xs:restriction base="xs:string">
-<xs:maxLength value="2"/>
+<xs:maxLength value="1"/>
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
@@ -644,7 +650,7 @@ geographic</gml:derivedCRSType>
 </xs:annotation>
 <xs:simpleType>
 <xs:restriction base="xs:string">
-<xs:maxLength value="10"/>
+<xs:maxLength value="5"/>
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
@@ -692,7 +698,7 @@ geographic</gml:derivedCRSType>
 </xs:annotation>
 <xs:simpleType>
 <xs:restriction base="xs:string">
-<xs:maxLength value="11"/>
+<xs:maxLength value="50"/>
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
