@@ -287,6 +287,63 @@ void MySqlFdoExpressionFunctionTest::TestSpatialExtents ()
 
     }  //  catch ( ... ) ...
 
+    // 2. Test Case:
+    // The test executes a select-aggregate command to select the value of a
+    // computed property that is defined by using the function SPATIALEXTENTS
+    // on all the values of a different property of type GEOMETRY where the
+    // function name differs from the expected function name ('SpAtIaLeXtEnTs'
+    // rather than 'SpatialExtents'). No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
+    printf("  The test executes a select-aggregate command to select   \n");
+    printf("  the value of a computed property that is defined by us-  \n");
+    printf("  ing the function SPATIALEXTENTS on all the values of a   \n");
+    printf("  different property of type GEOMETRY where the function   \n");
+    printf("  name differs from the expected function name ('SpAtIaL-  \n");
+    printf("  eXtEnTs' rather than 'SpatialExtents'). No exceptions    \n");
+    printf("  are expected.                                            \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property
+      // being identical to the setting of the mbr values set in the test
+      // setup.
+
+      func_call   = L"(SpAtIaLeXtEnTs(RDBMS_GEOM) as cmp_id)";
+      data_reader =
+                ExecuteSelAggrCommand(L"exfct_c1", NULL, false, func_call);
+      CheckReaderGeometry(data_reader,
+                          1,
+                          dimensionality,
+                          min_x,
+                          min_y,
+                          min_z,
+                          max_x,
+                          max_y,
+                          max_z);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
 }  //  TestSpatialExtents ()
 
 
@@ -360,6 +417,63 @@ void MySqlFdoExpressionFunctionTest::TestToDateFunction ()
       expected_dt_data.day   = 21;
 
       func_call   = L"(ToDate('21-SEP-07', 'DD-MON-YY') as cmp_id)";
+      data_reader =
+                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderDt(data_reader, true, false, 0, 9, expected_dt_data);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function TODATE on a string
+    // containing date information. This test also provides a format string
+    // describing the date-string where the function name differs from the
+    // expected function name ('ToDaTe' rather than 'ToDate'). The test should
+    // return a date/time object that contains the information provided by the
+    // date-string. No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function TODATE on a string containing date information. \n");
+    printf("  This test also provides a format string describing the   \n");
+    printf("  date-string where the function name differs from the ex- \n");
+    printf("  pected function name ('ToDaTe' rather than 'ToDate').    \n");
+    printf("  The test should return a date/time object that contains  \n");
+    printf("  the information provided by the date-string. No excep-   \n");
+    printf("  tions are expected.                                      \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property
+      // being identical to the setting of the date/time value stored in
+      // the variable dt1_set.
+
+      expected_dt_data.year  = 7;
+      expected_dt_data.month = 9;
+      expected_dt_data.day   = 21;
+
+      func_call   = L"(ToDaTe('21-SEP-07', 'DD-MON-YY') as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
       CheckReaderDt(data_reader, true, false, 0, 9, expected_dt_data);
@@ -648,6 +762,62 @@ void MySqlFdoExpressionFunctionTest::TestToInt32Function ()
       throw;
 
     }  //  catch ( ... ) ...
+    printf("\n");
+
+    // Define the filter for all tests in this test suite.
+
+    filter = (FdoComparisonCondition::Create(
+               FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"id")),
+               FdoComparisonOperations_EqualTo, 
+               FdoPtr<FdoDataValue>(FdoDataValue::Create(9))));
+
+    // 6. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function TOINT32 on the value
+    // of a different property of type DECIMAL where the function name dif-
+    // fers from the expected function name ('ToInT32' rather than 'ToInt32').
+    // The test should return the original value minus the part after the
+    // decimal point. No exceptions are expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function TOINT32 on the value of a different property of \n");
+    printf("  type DECIMAL where the function name differs from the    \n");
+    printf("  expected function name ('ToInT32' rather than 'ToInt32') \n");
+    printf("  The test should return the original value minus the part \n");
+    printf("  after the decimal point. No exceptions are expected.     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property
+      // being 13.
+
+      func_call   = L"(ToInT32(dcl_val) as cmp_id)";
+      data_reader =
+                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 13);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
 
 }  //  TestToInt32Function ()
 
@@ -897,6 +1067,55 @@ void MySqlFdoExpressionFunctionTest::TestToInt64Function ()
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
       CheckReader(data_reader, true, 9, 9);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 6. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function TOINT64 on the value
+    // of a different property of type DECIMAL where the function name dif-
+    // fers from the expected function name ('ToInT64' rather than 'ToInt64').
+    // The test should return the original value minus the part after the
+    // decimal point. No exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("6. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function TOINT64 on the value of a different property of \n");
+    printf("  type DECIMAL where the function name differs from the    \n");
+    printf("  expected function name ('ToInT64' rather than 'ToInt64') \n");
+    printf("  The test should return the original value minus the part \n");
+    printf("  after the decimal point. No exceptions are expected.     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property
+      // being 13.
+
+      func_call   = L"(ToInT64(dcl_val) as cmp_id)";
+      data_reader =
+                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, true, 9, 13);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -1186,7 +1405,7 @@ void MySqlFdoExpressionFunctionTest::TestToStringFunction ()
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("5. Test Case:                                              \n");
+    printf("6. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function TOSTRING on the value of a different property   \n");
@@ -1205,6 +1424,55 @@ void MySqlFdoExpressionFunctionTest::TestToStringFunction ()
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
       CheckReaderString(data_reader, 9, L"09-SEP-2007");
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 7. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function TOSTRING on the value
+    // of a different property of type DECIMAL where the function name dif-
+    // fers from the expected function name ('ToStRiNg' rather than 'To-
+    // String'). The test should return the original value in a string. No
+    // exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("7. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function TOSTRING on the value of a different property   \n");
+    printf("  of type DECIMAL where the function name differs from the \n");
+    printf("  expected function name ('ToStRiNg' rather than 'To-      \n");
+    printf("  String'). The test should return the original value in   \n");
+    printf("  a string. No exceptions are expected.                    \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property
+      // being 12.84.
+
+      func_call   = L"(ToStRiNg(dcl_val) as cmp_id)";
+      data_reader =
+                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, L"12.840000");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -1348,6 +1616,53 @@ void MySqlFdoExpressionFunctionTest::TestSoundexFunction ()
       // is expected to be "T2462".
 
       func_call   = L"(Soundex(str2_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, L"T2462");
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // 2. Test Case:
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function SOUNDEX on a value of
+    // a different property of type STRING where the function name differs
+    // from the expected function name ('SoUnDeX' rather than 'Soundex'). No
+    // exceptions are expected.
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function SOUNDEX on a value of a different property of   \n");
+    printf("  type STRING where the function name differs from the ex- \n");
+    printf("  pected function name ('SoUnDeX' rather than 'Soundex').  \n");
+    printf("  No exceptions are expected.                              \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be "T2462".
+
+      func_call   = L"(SoUnDeX(str2_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
       CheckReaderString(data_reader, 9, L"T2462");
