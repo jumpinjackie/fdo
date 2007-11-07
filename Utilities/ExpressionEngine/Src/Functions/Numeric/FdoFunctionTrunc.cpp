@@ -1332,6 +1332,10 @@ void FdoFunctionTrunc::Validate (FdoLiteralValueCollection *literal_values)
 
     FdoPtr<FdoLiteralValue> literal_value;
 
+    // Reset a flag.
+
+    is_date_truncation = false;
+
     // The function works on different argument types. Depending on the type
     // of the first argument, the caller may or must provide a second argument
     // when invoking the function. The following checks whether or not the 
