@@ -391,8 +391,17 @@ void FdoWmsCapabilities::_processGeographicDataLayer(FdoWmsLayer* layer, FdoBool
     {
         // in case we have a GeographicBoundingBox try to fill up all supported BoundingBoxes
         FdoBoolean isParentDefault = false;
-        // get the default SRS even is from parent
-        FdoStringP defaultSRS = GetDefaultSRS(layer, isParentDefault);
+        // in case default SRS has a bounding box look if global default SRS is supported by layer
+        // if yes generate a new one using global default SRS and GeographicBoundingBox
+        FdoStringP defaultSRS = FdoWmsGlobals::DefaultEPSGCode;
+        bool isSRSSupported = IsSRSSupportedbyLayer(layer, defaultSRS);
+        if (!isSRSSupported)
+        {
+            defaultSRS = FdoWmsGlobals::DefaultEPSGCode2;
+            isSRSSupported = IsSRSSupportedbyLayer(layer, defaultSRS);
+            if (!isSRSSupported) // get the default SRS even is from parent
+                defaultSRS = GetDefaultSRS(layer, isParentDefault);
+        }
         if (defaultSRS.GetLength() != 0)
         {
             // look if we have an bounding box for this default SRS
@@ -426,16 +435,7 @@ void FdoWmsCapabilities::_processGeographicDataLayer(FdoWmsLayer* layer, FdoBool
             }
             else
             {
-                // in case default SRS has a bounding box look if global default SRS is supported by layer
-                // if yes generate a new one using global default SRS and GeographicBoundingBox
-                defaultSRS = FdoWmsGlobals::DefaultEPSGCode;
-                bool isSRSSupported = IsSRSSupportedbyLayer(layer, defaultSRS);
-                if (!isSRSSupported)
-                {
-                    defaultSRS = FdoWmsGlobals::DefaultEPSGCode2;
-                    isSRSSupported = IsSRSSupportedbyLayer(layer, defaultSRS);
-                }
-                if (isSRSSupported)
+                if (IsSRSSupportedbyLayer(layer, defaultSRS))
                 {
                     // add it only in case we don't have a bounding box for global default SRS
                     pBox = _SearchBoundingBox(boundingBoxes, defaultSRS);
