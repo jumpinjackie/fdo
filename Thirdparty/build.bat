@@ -196,7 +196,7 @@ if "%FDOERROR%"=="1" goto error
 msbuild libcurl\lib\curllib.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
-msbuild boost_1_32_0\boost_1_32_0.vcproj /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
+msbuild boost\boost.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 msbuild gdal\gdal.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
@@ -217,7 +217,7 @@ rem # Not all components are x64 enabled
 if not "%PLATFORMTHR%"=="Win32" goto rebuild_fdo
 
 copy /y "gdal\bin\Win32\%TYPEBUILDTHR%\gdal14.dll" "%FDOBINPATHTHR%"
-copy /y "boost_1_32_0\bin\boost\libs\thread\build\boost_thread.dll\vc-8_0\%TYPEBUILDTHR%\threading-multi\boost_thread-vc80-mt%TYPEBUILDTHRPATH%-1_32.dll" "%FDOBINPATHTHR%"
+copy /y "boost\stage\%PLATFORMTHR%\%TYPEBUILDTHR%\lib\boost_thread-vc80-mt%TYPEBUILDTHRPATH%-1_34_1.dll" "%FDOBINPATHTHR%"
 
 rem # Build FDO API Thirdparty Files
 :rebuild_fdo
@@ -263,7 +263,7 @@ if "%FDOERROR%"=="1" goto error
 msbuild libcurl\lib\curllib.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
-msbuild boost_1_32_0\boost_1_32_0.vcproj /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
+msbuild boost\boost.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTIONTHR%"=="build" goto rebuild_wms
@@ -272,7 +272,7 @@ if "%TYPEACTIONTHR%"=="clean" goto rebuild_wms
 rem # Install WFS Provider Thirdparty Files
 :install_wfs_files
 echo copy %TYPEBUILDTHR% Thirdparty WFS files
-copy /y "boost_1_32_0\bin\boost\libs\thread\build\boost_thread.dll\vc-8_0\%TYPEBUILDTHR%\threading-multi\boost_thread-vc80-mt%TYPEBUILDTHRPATH%-1_32.dll" "%FDOBINPATHTHR%"
+copy /y "boost\stage\%PLATFORMTHR%\%TYPEBUILDTHR%\lib\boost_thread-vc80-mt%TYPEBUILDTHRPATH%-1_34_1.dll" "%FDOBINPATHTHR%"
 rem # End WFS part #
 
 rem # Build WMS Provider Thirdparty Files
@@ -291,7 +291,7 @@ if "%FDOERROR%"=="1" goto error
 msbuild gdal\gdal.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
-msbuild boost_1_32_0\boost_1_32_0.vcproj /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
+msbuild boost\boost.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTIONTHR%"=="build" goto end
@@ -301,7 +301,7 @@ rem # Install WMS Provider Thirdparty Files
 :install_wms_files
 echo copy %TYPEBUILDTHR% Thirdparty WMS files
 copy /y "gdal\bin\Win32\%TYPEBUILDTHR%\gdal14.dll" "%FDOBINPATHTHR%"
-copy /y "boost_1_32_0\bin\boost\libs\thread\build\boost_thread.dll\vc-8_0\%TYPEBUILDTHR%\threading-multi\boost_thread-vc80-mt%TYPEBUILDTHRPATH%-1_32.dll" "%FDOBINPATHTHR%"
+copy /y "boost\stage\%PLATFORMTHR%\%TYPEBUILDTHR%\lib\boost_thread-vc80-mt%TYPEBUILDTHRPATH%-1_34_1.dll" "%FDOBINPATHTHR%"
 rem # End WMS part #
 
 rem # Build GDAL Provider Thirdparty Files
@@ -330,7 +330,7 @@ if not "%PLATFORMTHR%"=="Win32" goto end
 if "%TYPEACTIONTHR%"=="install" goto install_postgis_files
 
 echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty PostGIS dlls
-msbuild boost_1_32_0\boost_1_32_0.vcproj /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
+msbuild boost\boost.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTIONTHR%"=="build" goto end
@@ -340,7 +340,7 @@ rem # Install PostGIS Provider Thirdparty Files
 :install_postgis_files
 
 echo copy %TYPEBUILDTHR% Thirdparty PostGIS dlls
-copy /y "boost_1_32_0\bin\boost\libs\program_options\build\boost_program_options.dll\vc-8_0\%TYPEBUILDTHR%\threading-multi\boost_program_options-vc80-mt%TYPEBUILDTHRPATH%-1_32.dll "%FDOBINPATHTHR%"
+copy /y "boost\stage\%PLATFORMTHR%\%TYPEBUILDTHR%\lib\boost_thread-vc80-mt%TYPEBUILDTHRPATH%-1_34_1.dll" "%FDOBINPATHTHR%"
 rem # End PostGIS part 
 
 :end
