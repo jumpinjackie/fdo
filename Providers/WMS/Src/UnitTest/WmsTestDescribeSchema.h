@@ -35,6 +35,7 @@ class WmsTestDescribeSchema : public WmsTests
 	CPPUNIT_TEST (testServer2);
 	CPPUNIT_TEST (testServer3);
 	CPPUNIT_TEST (testServer4);
+	CPPUNIT_TEST (testServer5);
 	CPPUNIT_TEST (testCeoware2);
     CPPUNIT_TEST (testKortPlandk);
 	CPPUNIT_TEST (testSchemaMapping);
@@ -52,6 +53,7 @@ public:
 	void testServer2 ();
 	void testServer3 ();
 	void testServer4 ();
+	void testServer5 ();
 	void testCeoware2 ();
 	void testKortPlandk ();
 	void testSchemaMapping ();

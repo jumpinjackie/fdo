@@ -286,3 +286,29 @@ void WmsTestDescribeSchema::testSchemaMapping ()
     }
 }
 
+// test accessing WFS with WMS
+void WmsTestDescribeSchema::testServer5 ()
+{
+    try 
+    {
+	    TestServer(L"http://kort.plandk.dk/scripts/mapserv.pl?service=wfs", 1);
+    }
+    catch(FdoException* e)
+    {
+        FdoStringP msgErr = e->GetExceptionMessage();
+        FdoStringP expMessage = L"The HTTP request generated an unacceptable response by the server.";
+        FdoInt32 len = (FdoInt32)msgErr.GetLength();
+        if (len > (FdoInt32)expMessage.GetLength())
+            len = (FdoInt32)expMessage.GetLength();
+        e->Release();
+#ifdef _WIN32
+        if(_wcsnicmp (msgErr, expMessage, len) != 0)
+            fail(FdoException::Create(L"Invalid output error message."));
+#else
+        if(wcsncasecmp (msgErr, expMessage, len) != 0)
+            fail(FdoException::Create(L"Invalid output error message."));
+#endif
+    }
+}
+
+
