@@ -21,6 +21,7 @@
 #include <FdoExpressionEngineImp.h>
 #include <FdoCommonOSUtil.h>
 #include <FdoCommonMiscUtil.h>
+#include <FdoCommonStringUtil.h>
 
 #include <Spatial/SpatialStd.h>
 #include <Spatial/SpatialUtility.h>
@@ -96,7 +97,7 @@ bool FdoExpressionEngineImp::IsAggregateFunction(FdoFunctionDefinitionCollection
 	for(int i=0; i<funcDefs->GetCount(); i++)
 	{
 		FdoPtr<FdoFunctionDefinition> funcDef = funcDefs->GetItem(i);
-		if (wcscmp(name, funcDef->GetName()) == 0)
+        if (FdoCommonStringUtil::StringCompareNoCase(name, funcDef->GetName()) == 0)
 		{
 			ret = funcDef->IsAggregate();
 			break;
@@ -1099,7 +1100,7 @@ bool FdoExpressionEngineImp::AddToCache(FdoString *functionName, FdoExpressionEn
 {
     bool bAdded = false;
     FdoPtr<FdoFunctionDefinition> function = functionExtension->GetFunctionDefinition();
-    if (wcscmp(function->GetName(), functionName) == 0)
+    if (FdoCommonStringUtil::StringCompareNoCase(function->GetName(), functionName) == 0)
     {
 		if (m_Current >= m_Size)
 		{
@@ -3236,7 +3237,7 @@ void FdoExpressionEngineImp::ProcessAggregateFunctions()
 		    {
 			    FdoPtr<FdoExpressionEngineIFunction> functionExtension = m_UserDefinedFunctions->GetItem(j);
 			    FdoPtr<FdoFunctionDefinition> function = functionExtension->GetFunctionDefinition();
-			    if (wcscmp(function->GetName(), func->GetName()) == 0)
+	            if (FdoCommonStringUtil::StringCompareNoCase(function->GetName(), func->GetName()) == 0)
 			    {
 				    FdoExpressionEngineIAggregateFunction *aggregateFunction = static_cast<FdoExpressionEngineIAggregateFunction *>(functionExtension.p->CreateObject());
 				    m_AggregateFunctions.push_back(aggregateFunction);
@@ -3253,7 +3254,7 @@ void FdoExpressionEngineImp::ProcessAggregateFunctions()
 		        FdoPtr<FdoFunctionDefinition> functions = standardFunctions[j]->GetFunctionDefinition();
 		        if (functions->IsAggregate())
 		        {
-			        if (wcscmp(functions->GetName(), func->GetName()) == 0)
+	            if (FdoCommonStringUtil::StringCompareNoCase(functions->GetName(), func->GetName()) == 0)
 			        {
 				        FdoExpressionEngineIAggregateFunction *aggregateFunction = static_cast<FdoExpressionEngineIAggregateFunction *>(standardFunctions[j]->CreateObject());
 				        m_AggregateFunctions.push_back(aggregateFunction);
