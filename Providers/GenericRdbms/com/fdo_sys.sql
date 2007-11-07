@@ -22,26 +22,36 @@
 
 create table /* system */  f_schemainfo(
 #ifdef Oracle
-    schemaname          varchar(255) not null,
-    description         varchar(255) null,
-    owner               varchar(255) not null,
+    schemaname          nvarchar2(255) not null,
+    description         nvarchar2(255) null,
+    owner               nvarchar2(255) not null,
     creationdate        date null,
     schemaversionid     number not null,
-    tableowner          varchar(30) null,
+    tableowner          varchar2(30) null,
+    tablelinkname       varchar2(128) null,
+    tablemapping        nvarchar2(30) null
 #else
+#ifdef MySQL
     schemaname          varchar(200) not null,
     description         varchar(255) null,
     owner               varchar(200) not null,
+#else
+    schemaname          nvarchar(200) not null,
+    description         nvarchar(255) null,
+    owner               nvarchar(200) not null,
+#endif
     creationdate        datetime null,
     schemaversionid     decimal(5,3) not null,
 #ifdef MySQL
-    tableowner	   varchar(64) null,
-#else
-    tableowner          varchar(128) null,
-#endif
-#endif
+    tableowner	        varchar(64) null,
     tablelinkname       varchar(128) null,
     tablemapping        varchar(30) null
+#else
+    tableowner          nvarchar(128) null,
+    tablelinkname       nvarchar(128) null,
+    tablemapping        nvarchar(30) null
+#endif
+#endif
     )
 #ifdef MySQL
     engine=InnoDb
@@ -84,8 +94,18 @@ values ('F_MetaClass', 'Special classes for FDO Feature metaclasses', current_da
 
 /* Place to store different options used by the datastore like versioning method. */
 create table f_options (
+#ifdef Oracle
+      name 	nvarchar2(100) null,
+      value     nvarchar2(100) null
+#else
+#ifdef MySQL
       name 	varchar(100) null,
-      value             varchar(100) null
+      value     varchar(100) null
+#else
+      name 	nvarchar(100) null,
+      value     nvarchar(100) null
+#endif
+#endif
 )
 #ifdef MySQL
     engine=InnoDb
@@ -113,11 +133,11 @@ insert into f_options values ('LOCKING_MODE', '1');
 
 create table f_schemaoptions(
 #ifdef Oracle
-    ownername    varchar(512) not null,
-    elementname  varchar(255) not null,
-    elementtype  varchar(30) not null,
-    name         varchar(255) not null,
-    value        varchar(4000) null)
+    ownername    nvarchar2(512) not null,
+    elementname  nvarchar2(255) not null,
+    elementtype  nvarchar2(30) not null,
+    name         nvarchar2(255) not null,
+    value        nvarchar2(2000) null)
  pctfree 5 pctused 90
     storage (initial     4K
              next        20K
@@ -125,11 +145,19 @@ create table f_schemaoptions(
              maxextents  9999
              pctincrease 50)
 #else
+#ifdef MySQL
     ownername    varchar(400) not null,
     elementname  varchar(200) not null,
     elementtype  varchar(30) not null,
     name         varchar(200) not null,
     value        varchar(4000) null)
+#else
+    ownername    nvarchar(400) not null,
+    elementname  nvarchar(200) not null,
+    elementtype  nvarchar(30) not null,
+    name         nvarchar(200) not null,
+    value        nvarchar(4000) null)
+#endif
 #ifdef MySQL
     engine=InnoDb
 #endif
@@ -142,11 +170,11 @@ create table f_schemaoptions(
 
 create table f_sad (
 #ifdef Oracle
-    ownername    varchar(512) not null,
-    elementname  varchar(255) not null,
-    elementtype  varchar(30) not null,
-    name         varchar(255) not null,
-    value        varchar(4000) null)
+    ownername    nvarchar2(512) not null,
+    elementname  nvarchar2(255) not null,
+    elementtype  nvarchar2(30) not null,
+    name         nvarchar2(255) not null,
+    value        nvarchar2(2000) null)
  pctfree 5 pctused 90
     storage (initial     4K
              next        20K
@@ -154,11 +182,19 @@ create table f_sad (
              maxextents  9999
              pctincrease 50)
 #else
+#ifdef MySQL
     ownername    varchar(401) not null,
     elementname  varchar(200) not null,
     elementtype  varchar(30) not null,
     name         varchar(200) not null,
     value        varchar(4000) null)
+#else
+    ownername    nvarchar(401) not null,
+    elementname  nvarchar(200) not null,
+    elementtype  nvarchar(30) not null,
+    name         nvarchar(200) not null,
+    value        nvarchar(4000) null)
+#endif
 #ifdef MySQL
     engine=InnoDb
 #endif
@@ -168,12 +204,12 @@ create table f_sad (
 create table f_dbopen (
 #ifdef Oracle
     usernum             number not null,
-    dbuser              varchar(30) not null,
+    dbuser              nvarchar2(30) not null,
     accessmode          varchar(1),
     activescid          number(20),
     opendate            date,
     sessionid           number,
-    process             varchar(12)
+    process             nvarchar2(12)
     )
 pctfree 5 pctused 90
     storage (initial     4K
@@ -186,13 +222,17 @@ pctfree 5 pctused 90
 #ifdef MySQL
     dbuser              varchar(16) not null,
 #else
-    dbuser              varchar(128) not null,
+    dbuser              nvarchar(128) not null,
 #endif
     accessmode          varchar(1) null,
     activescid	  bigint null,
     opendate	  datetime null,
     sessionid            smallint null,
+#ifdef MySQL
     process             varchar(128) null
+#else
+    process             nvarchar(128) null
+#endif
     )
 #ifdef MySQL
     engine=InnoDb
@@ -247,22 +287,22 @@ create sequence F_UserSeq start with 1;
 create table f_classdefinition (
 #ifdef Oracle
     classid         number(20)  not null,
-    classname       varchar(255) not null,
-    schemaname      varchar(255) null,
-    tablename       varchar(30) not null,
-    roottablename   varchar(30),
-    tableowner      varchar(30),
-    tablelinkname   varchar(128),
-    tablemapping    varchar(30),
+    classname       nvarchar2(255) not null,
+    schemaname      nvarchar2(255) null,
+    tablename       varchar2(30) not null,
+    roottablename   varchar2(30),
+    tableowner      varchar2(30),
+    tablelinkname   varchar2(128),
+    tablemapping    nvarchar2(30),
     classtype       number(10)  not null,
-    description     varchar(255),
+    description     nvarchar2(255),
     isabstract      number(1)   not null,
-    parentclassname varchar(512),
+    parentclassname nvarchar2(512),
     isfixedtable    number(1),
     istablecreator  number(1),
     hasversion      number(1) ,
     haslock         number(1),
-    geometryproperty    varchar(4000)
+    geometryproperty    nvarchar2(2000)
     )     
     pctfree 5 pctused 90
     storage (initial     4K
@@ -272,34 +312,42 @@ create table f_classdefinition (
              pctincrease 5)
 #else
 #ifdef MySQL
-    classid         bigint not null AUTO_INCREMENT, /* starts 1, increment 1 */
 #else
-    classid         bigint not null IDENTITY(1,1),
 #endif
+#ifdef MySQL
+    classid         bigint not null AUTO_INCREMENT, /* starts 1, increment 1 */
     classname       varchar(200) not null,
     schemaname      varchar(200) null,
-#ifdef MySQL
     tablename       varchar(64) null,
     roottablename   varchar(64),
     tableowner      varchar(64),
     tablelinkname   varchar(128),
     tablemapping    varchar(64),
-#else
-    tablename       varchar(128) null,
-    roottablename   varchar(128) null,
-    tableowner      varchar(128) null,
-    tablelinkname   varchar(128) null,
-    tablemapping    varchar(128) null,
-#endif
     classtype       smallint  not null,
     description     varchar(255) null,
+#else
+    classid         bigint not null IDENTITY(1,1),
+    classname       nvarchar(200) not null,
+    schemaname      nvarchar(200) null,
+    tablename       nvarchar(128) null,
+    roottablename   nvarchar(128) null,
+    tableowner      nvarchar(128) null,
+    tablelinkname   nvarchar(128) null,
+    tablemapping    nvarchar(128) null,
+    classtype       smallint  not null,
+    description     nvarchar(255) null,
+#endif
     isabstract      tinyint   not null,
     parentclassname varchar(512) null,
     isfixedtable    tinyint null,
     istablecreator  tinyint null,
     hasversion      tinyint null,
     haslock         tinyint null,
+#ifdef MySQL
     geometryproperty    varchar(4000) null
+#else
+    geometryproperty    nvarchar(4000) null
+#endif
 #ifdef MySQL
     , PRIMARY KEY (classid)
 #endif
@@ -312,26 +360,26 @@ create table f_classdefinition (
 
 create table f_attributedefinition  (
 #ifdef Oracle
-    tablename       varchar(30) not null,
+    tablename       varchar2(30) not null,
     classid         number(20)  not null,
-    columnname      varchar(255) not null,
-    attributename   varchar(4000)not null,
+    columnname      varchar2(255) not null,
+    attributename   nvarchar2(2000)not null,
     idposition      number(5),
-    columntype      varchar(30) not null,
+    columntype      nvarchar2(30) not null,
     columnsize      number      not null,
     columnscale     number,
-    attributetype   varchar(512) not null,
-    geometrytype    varchar(64) null,
+    attributetype   nvarchar2(512) not null,
+    geometrytype    nvarchar2(64) null,
     isnullable      number(1)   not null,
     isfeatid        number(1)   not null,
     issystem        number(1)   not null,
     isreadonly      number(1)   not null,
     isautogenerated number(1) ,
     isrevisionnumber number(1) ,
-    sequencename    varchar(30),
-    owner           varchar(255),
-    description     varchar(255),
-    rootobjectname   varchar(30),
+    sequencename    nvarchar2(30),
+    owner           nvarchar2(255),
+    description     nvarchar2(255),
+    rootobjectname  varchar2(30),
     isfixedcolumn   number(1),
     iscolumncreator  number(1),
     haselevation    number(1),
@@ -346,9 +394,6 @@ create table f_attributedefinition  (
 #else
 #ifdef MySQL
     tablename       varchar(64) not null,
-#else
-    tablename	varchar(128) not null,
-#endif
     classid         bigint  not null,
     columnname      varchar(255) not null,
     attributename   varchar(4000) not null,
@@ -367,10 +412,28 @@ create table f_attributedefinition  (
     sequencename    varchar(30) null,
     owner           varchar(200) null,
     description     varchar(255) null,
-#ifdef MySQL
-	rootobjectname   varchar(64) null,
+    rootobjectname   varchar(64) null,
 #else
-	rootobjectname   varchar(128) null,
+    tablename	nvarchar(128) not null,
+    classid         bigint  not null,
+    columnname      nvarchar(255) not null,
+    attributename   nvarchar(4000) not null,
+    idposition         smallint null,
+    columntype      nvarchar(30) not null,
+    columnsize       bigint      not null,
+    columnscale     smallint null,
+    attributetype   nvarchar(512) not null,
+    geometrytype   nvarchar(64) null,
+    isnullable         tinyint   not null,
+    isfeatid           tinyint   not null,
+    issystem         tinyint   not null,
+    isreadonly       tinyint   not null,
+    isautogenerated tinyint null ,
+    isrevisionnumber tinyint null ,
+    sequencename    nvarchar(30) null,
+    owner           nvarchar(200) null,
+    description     nvarchar(255) null,
+    rootobjectname   nvarchar(128) null,
 #endif
     isfixedcolumn   tinyint null,
     iscolumncreator  tinyint null,
@@ -419,27 +482,15 @@ SYSTEM_USER,  'FDO base property: persistent lock type', 0, 1);
 create table f_spatialcontextgroup (
 #ifdef Oracle
     scgid           number(20) not null,
-#else
-#ifdef MySQL
-    scgid	        bigint not null AUTO_INCREMENT,
-#else
-	scgid	        bigint not null IDENTITY(0,1),
-#endif
-#endif
-    crsname         varchar(255) null,			/* 68 in MDSYS.CS_SRS */
-    crswkt			varchar(2048) null,
-#ifdef Oracle
-    srid			number(38),				/* same as in MDSYS.CS_SRS */
-#else
-    srid	          bigint null,
-#endif
-    areaunit        varchar(30) null,
-    lengthunit      varchar(30) null,
-    positionxyunit  varchar(30) null, 
-    positionzunit   varchar(30) null,
-    volumeunit      varchar(30) null,
-    measureunit     varchar(30) null,
-#ifdef Oracle
+    crsname         nvarchar2(255) null,			/* 68 in MDSYS.CS_SRS */
+    crswkt	    nvarchar2(2000) null,
+    srid  	    number(38),				/* same as in MDSYS.CS_SRS */
+    areaunit        nvarchar2(30) null,
+    lengthunit      nvarchar2(30) null,
+    positionxyunit  nvarchar2(30) null, 
+    positionzunit   nvarchar2(30) null,
+    volumeunit      nvarchar2(30) null,
+    measureunit     nvarchar2(30) null,
     xtolerance      number not null,
     ztolerance      number,
     xmin            number not null,
@@ -449,6 +500,29 @@ create table f_spatialcontextgroup (
     ymax            number not null,
     zmax            number,
 #else
+#ifdef MySQL
+    scgid	        bigint not null AUTO_INCREMENT,
+    crsname         varchar(255) null,			/* 68 in MDSYS.CS_SRS */
+    crswkt	    varchar(2048) null,
+    srid            bigint null,
+    areaunit        varchar(30) null,
+    lengthunit      varchar(30) null,
+    positionxyunit  varchar(30) null, 
+    positionzunit   varchar(30) null,
+    volumeunit      varchar(30) null,
+    measureunit     varchar(30) null,
+#else
+	scgid	        bigint not null IDENTITY(0,1),
+    crsname         nvarchar(255) null,			/* 68 in MDSYS.CS_SRS */
+    crswkt	    nvarchar(2048) null,
+    srid            bigint null,
+    areaunit        nvarchar(30) null,
+    lengthunit      nvarchar(30) null,
+    positionxyunit  nvarchar(30) null, 
+    positionzunit   nvarchar(30) null,
+    volumeunit      nvarchar(30) null,
+    measureunit     nvarchar(30) null,
+#endif
     xtolerance      double precision not null,
     ztolerance      double precision null,
     xmin            double precision not null,
@@ -480,8 +554,8 @@ create table f_spatialcontextgroup (
  create table f_spatialcontextgeom (
 #ifdef Oracle
     scid           		number(20) not null,
-    geomtablename   	varchar(30) not null,
-    geomcolumnname   	varchar(30) not null,	
+    geomtablename   	nvarchar2(30) not null,
+    geomcolumnname   	nvarchar2(30) not null,	
     dimensionality		number  not null              
     )
     pctfree 5 pctused 90
@@ -496,8 +570,8 @@ create table f_spatialcontextgroup (
     geomtablename   	varchar(64) not null,
     geomcolumnname   	varchar(64) not null,
 #else	
-    geomtablename   	varchar(128) not null,
-    geomcolumnname   	varchar(128) not null,
+    geomtablename   	nvarchar(128) not null,
+    geomcolumnname   	nvarchar(128) not null,
 #endif	
     dimensionality		smallint  not null              
     )
@@ -516,12 +590,12 @@ create table f_spatialcontextgroup (
 
 create table f_attributedependencies    (
 #ifdef Oracle
-    pktablename     varchar(30) not null,
-    pkcolumnnames   varchar(1000),
-    fktablename     varchar(30) not null,
-    fkcolumnnames   varchar(1000),
+    pktablename     nvarchar2(30) not null,
+    pkcolumnnames   nvarchar2(1000),
+    fktablename     nvarchar2(30) not null,
+    fkcolumnnames   nvarchar2(1000),
     fkcardinality   number(10) not null,
-    identitycolumn   varchar(30),
+    identitycolumn   nvarchar2(30),
     ordertype       char(1)
     )
     pctfree 5 pctused 90
@@ -539,12 +613,12 @@ create table f_attributedependencies    (
     fkcardinality   int not null,
     identitycolumn   varchar(64),
 #else
-    pktablename     varchar(128) not null,
-    pkcolumnnames   varchar(2080) null,
-    fktablename     varchar(128) not null,
-    fkcolumnnames   varchar(2080) null,
+    pktablename     nvarchar(128) not null,
+    pkcolumnnames   nvarchar(2080) null,
+    fktablename     nvarchar(128) not null,
+    fkcolumnnames   nvarchar(2080) null,
     fkcardinality        int not null,
-    identitycolumn   varchar(128) null,
+    identitycolumn   nvarchar(128) null,
 #endif
     ordertype       char(1)
     )
@@ -562,16 +636,16 @@ values ( 'F_FEATURE', 'CLASSID', 'F_CLASSDEFINITION', 'CLASSID', 1 );
 
 create table f_associationdefinition    (
 #ifdef Oracle
-     pseudocolname          varchar(30) not null, /* used to uniquely identify an association definition */
-     pktablename            varchar(30) not null,
-     pkcolumnnames          varchar(1000),
-     fktablename            varchar(30) not null,
-     fkcolumnnames          varchar(1000),
-     multiplicity           varchar(5),
-     reversemultiplicity    varchar(5),
+     pseudocolname          nvarchar2(30) not null, /* used to uniquely identify an association definition */
+     pktablename            nvarchar2(30) not null,
+     pkcolumnnames          nvarchar2(1000),
+     fktablename            nvarchar2(30) not null,
+     fkcolumnnames          nvarchar2(1000),
+     multiplicity           nvarchar2(5),
+     reversemultiplicity    nvarchar2(5),
      cascadelock            char(1),
      deleterule             number(5),
-     reversename            varchar(4000)
+     reversename            nvarchar2(2000)
    )
     pctfree 5 pctused 90
     storage (initial     4K
@@ -586,18 +660,23 @@ create table f_associationdefinition    (
      pkcolumnnames          varchar(1056),
      fktablename            varchar(64) not null,
      fkcolumnnames          varchar(1056),
-#else
-     pseudocolname          varchar(128) not null, /* used to uniquely identify an association definition */
-     pktablename            varchar(128) not null,
-     pkcolumnnames          varchar(2080) null,
-     fktablename            varchar(128) not null,
-     fkcolumnnames          varchar(2080) null,
-#endif
      multiplicity           varchar(5) null,
      reversemultiplicity    varchar(5) null,
      cascadelock            char(1) null,
-     deleterule                int null,
+     deleterule             int null,
      reversename            varchar(200) null
+#else
+     pseudocolname          nvarchar(128) not null, /* used to uniquely identify an association definition */
+     pktablename            nvarchar(128) not null,
+     pkcolumnnames          nvarchar(2080) null,
+     fktablename            nvarchar(128) not null,
+     fkcolumnnames          nvarchar(2080) null,
+     multiplicity           nvarchar(5) null,
+     reversemultiplicity    nvarchar(5) null,
+     cascadelock            char(1) null,
+     deleterule             int null,
+     reversename            nvarchar(200) null
+#endif
    )
 #ifdef MySQL
     engine=InnoDb
@@ -608,8 +687,8 @@ create table f_associationdefinition    (
 create table f_spatialcontext   (
 #ifdef Oracle
     scid            number(20) not null,
-    scname          varchar(255) not null,
-    description     varchar(255),
+    scname          nvarchar2(255) not null,
+    description     nvarchar2(255),
     scgid           number(20)
 #ifdef FDO_LOCKS
     ,rowlockid       number(10),
@@ -625,11 +704,13 @@ create table f_spatialcontext   (
 #else
 #ifdef MySQL
     scid	        bigint not null AUTO_INCREMENT,
-#else
-	scid	        bigint not null IDENTITY(0,1),
-#endif
     scname          varchar(255) not null,
     description     varchar(255) null,
+#else
+	scid	        bigint not null IDENTITY(0,1),
+    scname          nvarchar(255) not null,
+    description     nvarchar(255) null,
+#endif
     scgid          bigint null
 #ifdef FDO_LOCKS
     ,rowlockid       bigint null,
@@ -661,7 +742,7 @@ create table f_spatialcontext   (
 create table f_classtype (
 #ifdef Oracle
     classtype       number(10)  not null,
-    classtypename   varchar(255) not null
+    classtypename   nvarchar2(255) not null
     )
     pctfree 5 pctused 90
     storage (initial     4K
@@ -671,7 +752,11 @@ create table f_classtype (
              pctincrease 5);
 #else
     classtype          int  not null,
+#ifdef MySQL
     classtypename   varchar(255) not null
+#else
+    classtypename   nvarchar(255) not null
+#endif
     )
 #endif
 #ifdef MySQL
@@ -688,10 +773,10 @@ insert into f_classtype (classtype, classtypename) values (2, 'Feature');
 /* New Lock Table. */
 create table f_lockname (
         lockid      number(20,0)  not null,
-        name        varchar(30)   not null,
-        description varchar(255),
+        name        nvarchar2(30)   not null,
+        description nvarchar2(255),
         createdate  date,
-        owner       varchar(30)   not null)
+        owner       nvarchar2(30)   not null)
       
     pctfree 5 pctused 90
     storage (initial     4K
@@ -702,7 +787,7 @@ create table f_lockname (
 
 /* new sequence table */
 create table f_sequence(
-    seqid           varchar(30) not null,
+    seqid           nvarchar2(30) not null,
     startnum      number  
     )
     pctfree 5 pctused 90

@@ -18,7 +18,6 @@
  Base class 'Orphan Class' for class 'Error:Orphan SubClass' does not belong to a feature schema 
  Error in Property Error:Base Missing.Clob Prop:  Cannot create property Error:Base Missing.Clob Prop, CLOB type not yet supported  
  Cannot autogenerate values for property 'Error:Base Missing.type not autogen supported'; 'string' data type not supported for autogeneration. 
- Data Property Error:Base Missing.has default has a default value; default values are not supported by this provider 
  Error in Column {USER_DS}_apply_schema.dbo.base_missing.neg_length: length or precision 0 is less than minimum allowed (1) 
  Error in Column {USER_DS}_apply_schema.dbo.base_missing.precision_too_low: length or precision 0 is less than minimum allowed (1) 
  Error in Column {USER_DS}_apply_schema.dbo.base_missing.precision_too_high: length or precision 66 is greater than maximum allowed (38) 

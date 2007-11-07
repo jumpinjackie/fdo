@@ -1597,8 +1597,8 @@ FdoSmPhTableP SchemaMgrTests::CreateIxTable( FdoSmPhOwnerP owner, FdoStringP tab
     column = table->CreateColumnInt16( phMgr->GetDcColumnName(L"INT16_COL2"), false);
     column = table->CreateColumnChar( phMgr->GetDcColumnName(L"STRING_COL1"), false, 10 );
     column = table->CreateColumnChar( phMgr->GetDcColumnName(L"STRING_COL2"), false, 7 );
-    column = table->CreateColumnChar( phMgr->GetDcColumnName(L"STRING_COL3"), false, 2500 );
-    column = table->CreateColumnChar( phMgr->GetDcColumnName(L"STRING_COL4"), false, 2501 );
+    column = CreateColumnCharNonUni( table.p, phMgr->GetDcColumnName(L"STRING_COL3"), false, 2500 );
+    column = CreateColumnCharNonUni( table.p, phMgr->GetDcColumnName(L"STRING_COL4"), false, 2501 );
     column = table->CreateColumnChar( phMgr->GetDcColumnName(L"STRING_COL5"), false, 49 );
     column = table->CreateColumnChar( phMgr->GetDcColumnName(L"STRING_COL6"), false, 51 );
     column = table->CreateColumnDate( phMgr->GetDcColumnName(L"DATE_COL1"), false);
@@ -1798,6 +1798,11 @@ void SchemaMgrTests::CreateMultiGeomTable( FdoSmPhOwnerP owner, FdoStringP table
 
 }
 
+FdoSmPhColumnP SchemaMgrTests::CreateColumnCharNonUni( FdoSmPhDbObject* dbObject, FdoStringP colName, bool nullable, int length)
+{
+    return dbObject->CreateColumnChar( colName, nullable, length );
+}
+
 FdoStringP SchemaMgrTests::table2class( FdoSmPhGrdMgrP mgr, FdoStringP tableName )
 {
     return mgr->GetDcDbObjectName( tableName );
@@ -1851,3 +1856,4 @@ SchemaMgrTests::ExpectedClassGeometricProperty::ExpectedClassGeometricProperty (
 SchemaMgrTests::ExpectedClassGeometricProperty::~ExpectedClassGeometricProperty ()
 {
 }
+

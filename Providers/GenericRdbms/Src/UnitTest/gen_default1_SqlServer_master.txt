@@ -377,6 +377,16 @@
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
+<xs:element name="LONG_STRING" minOccurs="0">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="8000"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
 <xs:element name="MONEY_COLUMN" minOccurs="0">
 <xs:annotation>
 <xs:documentation/>
@@ -394,7 +404,7 @@
 </xs:annotation>
 <xs:simpleType>
 <xs:restriction base="xs:string">
-<xs:maxLength value="20"/>
+<xs:maxLength value="10"/>
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
@@ -433,7 +443,7 @@
 </xs:annotation>
 <xs:simpleType>
 <xs:restriction base="xs:string">
-<xs:maxLength value="100"/>
+<xs:maxLength value="50"/>
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
