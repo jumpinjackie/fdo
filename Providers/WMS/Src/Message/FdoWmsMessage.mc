@@ -205,6 +205,21 @@ SymbolicName=FDOWMS_INVALID_CONNECTION_PROPERTY_NAME
 Language=English
 Invalid connection property name '%1$ls'
 .
+MessageId=2012
+SymbolicName=FDOWMS_INVALID_ACCESSED_SERVER
+Language=English
+The HTTP request attempted to connect to a WFS server when expected a WMS server.
+.
+MessageId=2013
+SymbolicName=FDOWMS_UNKNOWN_ACCESSED_SERVER
+Language=English
+The HTTP request attempted to connect to a non WMS server.
+.
+MessageId=2014
+SymbolicName=FDOWMS_UNACCEPTABLE_RESPONSE
+Language=English
+The HTTP request generated an unacceptable response by the server.
+.
 
 ;//************************************************************************************
 ;//************************************************************************************

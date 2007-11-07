@@ -76,71 +76,61 @@ FdoXmlSaxHandler* FdoOwsServiceMetadata::XmlStartElement(
 )
 {
     FdoXmlSaxHandler* pRet = NULL;
-    try 
-	{
-        if (context == NULL || name == NULL)
-            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_61_NULL_ARGUMENT), "A required argument was set to NULL."));
-		
-        FdoOwsXmlSaxContext* myContext = static_cast<FdoOwsXmlSaxContext*>(context);
-        switch (myContext->StateServiceMetadata())
-        {
-        // state 0 represents that we are now in document root
-        // possible subelements include <WFS_Capabilities/>, <WMS_Capabilities/> and <WMT_MS_Capabilities/>
-        case 0:
-            {
-                if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::WFS_Capabilities) == 0 ||
-                    FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::WMS_Capabilities) == 0 ||
-                    FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::WMT_MS_Capabilities) == 0)
-                {
-                    FdoPtr<FdoXmlAttribute> attr = atts->FindItem(FdoOwsGlobals::version);
-                    if (attr != NULL)
-                        m_version = attr->GetValue();
-                    attr = atts->FindItem(FdoOwsGlobals::updateSequence);
-                    if (attr != NULL)
-                        m_updateSequence = attr->GetValue();
-
-                    myContext->SetStateServiceMetadata(1);
-                }
-                else
-                    throw FdoException::Create(FdoException::NLSGetMessage(
-                                            FDO_NLSID(FDO_52_BADSUBELEMENT), 
-                                            "Error reading from XML, unexpected element %1$ls inside '%2$ls'.", 
-                                            name, FdoOwsGlobals::OWS_Capabilities));
-                break;
-            }
-        // state 1 means that we are in nested level 1, possible subelements inlucde 
-        // <Service/> and <Capability/>
-        case 1:
-            {
-                if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Service) == 0)
-                {
-                    m_serviceId = OnCreateServiceIdentification();
-                    m_serviceId->InitFromXml(context, atts);
-                    pRet = m_serviceId.p;
-                }
-                else if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Capability) == 0)
-                {
-                    m_capabilities = OnCreateCapabilities();
-                    m_capabilities->InitFromXml(context, atts);
-                    pRet = m_capabilities.p;
-                }
-                else
-                    pRet = BaseType::XmlStartElement(context, uri, name, qname, atts);
-
-                break;
-            }
-        default:
-            throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_57_UNEXPECTEDERROR), "Unexpected error encountered."));
-
-        }
-
-	}
-    catch (FdoException* ex) 
+    if (context == NULL || name == NULL)
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_61_NULL_ARGUMENT), "A required argument was set to NULL."));
+	
+    FdoOwsXmlSaxContext* myContext = static_cast<FdoOwsXmlSaxContext*>(context);
+    switch (myContext->StateServiceMetadata())
     {
-        context->AddError(ex);
-        ex->Release();
-    }
+    // state 0 represents that we are now in document root
+    // possible subelements include <WFS_Capabilities/>, <WMS_Capabilities/> and <WMT_MS_Capabilities/>
+    case 0:
+        {
+            if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::WFS_Capabilities) == 0 ||
+                FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::WMS_Capabilities) == 0 ||
+                FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::WMT_MS_Capabilities) == 0)
+            {
+                FdoPtr<FdoXmlAttribute> attr = atts->FindItem(FdoOwsGlobals::version);
+                if (attr != NULL)
+                    m_version = attr->GetValue();
+                attr = atts->FindItem(FdoOwsGlobals::updateSequence);
+                if (attr != NULL)
+                    m_updateSequence = attr->GetValue();
 
+                myContext->SetStateServiceMetadata(1);
+            }
+            else
+                throw FdoException::Create(FdoException::NLSGetMessage(
+                                        FDO_NLSID(FDO_52_BADSUBELEMENT), 
+                                        "Error reading from XML, unexpected element %1$ls inside '%2$ls'.", 
+                                        name, FdoOwsGlobals::OWS_Capabilities));
+            break;
+        }
+    // state 1 means that we are in nested level 1, possible subelements inlucde 
+    // <Service/> and <Capability/>
+    case 1:
+        {
+            if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Service) == 0)
+            {
+                m_serviceId = OnCreateServiceIdentification();
+                m_serviceId->InitFromXml(context, atts);
+                pRet = m_serviceId.p;
+            }
+            else if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Capability) == 0)
+            {
+                m_capabilities = OnCreateCapabilities();
+                m_capabilities->InitFromXml(context, atts);
+                pRet = m_capabilities.p;
+            }
+            else
+                pRet = BaseType::XmlStartElement(context, uri, name, qname, atts);
+
+            break;
+        }
+    default:
+        throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_57_UNEXPECTEDERROR), "Unexpected error encountered."));
+
+    }
     return pRet;
 
 
@@ -148,39 +138,30 @@ FdoXmlSaxHandler* FdoOwsServiceMetadata::XmlStartElement(
 FdoBoolean FdoOwsServiceMetadata::XmlEndElement(FdoXmlSaxContext* context, FdoString* uri, FdoString* name, FdoString* qname)
 {
     FdoBoolean ret = false;
-    try 
-	{
-        if (context == NULL || name == NULL)
-            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_61_NULL_ARGUMENT), "A required argument was set to NULL."));
-		
-        FdoOwsXmlSaxContext* myContext = static_cast<FdoOwsXmlSaxContext*>(context);
-        switch (myContext->StateServiceMetadata())
-        {
-        case 0:
-            {
-                ret = BaseType::XmlEndElement(context, uri, name, qname);
-                break;
-            }
-        case 1:
-            {
-                if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::WFS_Capabilities) == 0 ||
-                    FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::WMS_Capabilities) == 0  ||
-                    FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::WMT_MS_Capabilities) == 0)
-                    myContext->SetStateServiceMetadata(0);
-                else
-                    ret = BaseType::XmlEndElement(context, uri, name, qname);
-                break;
-            }
-        default:
-            throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_57_UNEXPECTEDERROR), "Unexpected error encountered."));
-        }
-	}
-    catch (FdoException* ex) 
+    if (context == NULL || name == NULL)
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_61_NULL_ARGUMENT), "A required argument was set to NULL."));
+	
+    FdoOwsXmlSaxContext* myContext = static_cast<FdoOwsXmlSaxContext*>(context);
+    switch (myContext->StateServiceMetadata())
     {
-        context->AddError(ex);
-        ex->Release();
+    case 0:
+        {
+            ret = BaseType::XmlEndElement(context, uri, name, qname);
+            break;
+        }
+    case 1:
+        {
+            if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::WFS_Capabilities) == 0 ||
+                FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::WMS_Capabilities) == 0  ||
+                FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::WMT_MS_Capabilities) == 0)
+                myContext->SetStateServiceMetadata(0);
+            else
+                ret = BaseType::XmlEndElement(context, uri, name, qname);
+            break;
+        }
+    default:
+        throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_57_UNEXPECTEDERROR), "Unexpected error encountered."));
     }
-
     return ret;
 }
 
@@ -188,6 +169,7 @@ FdoXmlSaxContext* FdoOwsServiceMetadata::GetSaxContext()
 {
     return new FdoOwsXmlSaxContext(FdoPtr<FdoXmlReader>(GetXmlReader()));
 }
+
 
 
 

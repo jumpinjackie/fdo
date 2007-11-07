@@ -89,6 +89,21 @@ SymbolicName=WFS_CONNECTION_CLOSED
 Language=English
 The Connection to the WFS provider is closed.
 .
+MessageId=2012
+SymbolicName=WFS_UNACCEPTABLE_RESPONSE
+Language=English
+The HTTP request generated an unacceptable response by the server.
+.
+MessageId=2013
+SymbolicName=WFS_INVALID_ACCESSED_SERVER
+Language=English
+The HTTP request attempted to connect to a WMS server when expected a WFS server.
+.
+MessageId=2014
+SymbolicName=WFS_UNKNOWN_ACCESSED_SERVER
+Language=English
+The HTTP request attempted to connect to a non WFS server.
+.
 
 ;//************************************************************************************
 ;//************************************************************************************

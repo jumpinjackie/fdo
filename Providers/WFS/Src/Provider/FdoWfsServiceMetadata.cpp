@@ -22,6 +22,7 @@
 #include "FdoWfsFeatureTypeList.h"
 #include "FdoWfsOgcFilterCapabilities.h"
 #include "FdoWfsCapabilitiesSaxContext.h"
+#include <OWS/FdoOwsGlobals.h>
 
 FdoWfsServiceMetadata::FdoWfsServiceMetadata()
 {
@@ -87,17 +88,35 @@ FdoXmlSaxHandler* FdoWfsServiceMetadata::XmlStartElement(
             pRet = m_filterCapabilities.p;
         }
         else
+        {
+            if (myContext->StateServiceMetadata() == 0) 
+            {
+                if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::WFS_Capabilities) != 0)
+                {
+                    if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::WMS_Capabilities) == 0 || FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::WMT_MS_Capabilities) == 0)
+                        throw FdoException::Create(NlsMsgGet(WFS_INVALID_ACCESSED_SERVER, "The HTTP request attempted to connect to a WMS server when expected a WFS server."));
+                    else
+                        throw FdoException::Create(NlsMsgGet(WFS_UNKNOWN_ACCESSED_SERVER, "The HTTP request attempted to connect to a non WFS server."));
+                }
+            }
             pRet = BaseType::XmlStartElement(context, uri, name, qname, atts);
-
+        }
 	}
     catch (FdoException* ex) 
     {
         context->AddError(ex);
         ex->Release();
+        
+        try{context->ThrowErrors();}
+        catch (FdoException* newEx)
+        {
+            FdoException* exc = FdoException::Create(NlsMsgGet(WFS_UNACCEPTABLE_RESPONSE, "The HTTP request generated an unacceptable response by the server."));
+            exc->SetCause(newEx);
+            newEx->Release();
+            throw exc;
+        }
     }
-
     return pRet;
-
 }
 
 FdoBoolean FdoWfsServiceMetadata::XmlEndElement(FdoXmlSaxContext* context, FdoString* uri, FdoString* name, FdoString* qname)
@@ -118,8 +137,16 @@ FdoBoolean FdoWfsServiceMetadata::XmlEndElement(FdoXmlSaxContext* context, FdoSt
     {
         context->AddError(ex);
         ex->Release();
+        
+        try{context->ThrowErrors();}
+        catch (FdoException* newEx)
+        {
+            FdoException* exc = FdoException::Create(NlsMsgGet(WFS_UNACCEPTABLE_RESPONSE, "The HTTP request generated an unacceptable response by the server."));
+            exc->SetCause(newEx);
+            newEx->Release();
+            throw exc;
+        }
     }
-
     return ret;
 }
 
