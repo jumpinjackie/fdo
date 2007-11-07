@@ -2020,8 +2020,36 @@ void FdoCommonMiscUtil::GetExpressionType(FdoFunctionDefinitionCollection *funct
             GetExpressionType(functionDefinitions, originalClassDef, arg, argPropType[i], argDataType[i]);
         }
 
-        // Match them up to the correct function signature:
-        FdoPtr<FdoFunctionDefinition> funcDef = functionDefinitions->GetItem(function->GetName());
+        // Match them up to the correct function signature.
+        // NOTE: Attempt to find the function definition for the current function in the
+        //       corresponding collection. This may return a NULL pointer due to the fact
+        //       that the function names in the collection are case sensitive and the user
+        //       may have entered a function name that differs (for example "AvG" instead
+        //       of "Avg"). If the definition is not found, execute a case-insensitive search
+        //       before issuing any exception.
+        FdoPtr<FdoFunctionDefinition> funcDef = functionDefinitions->FindItem(function->GetName());
+        if (funcDef == NULL)
+        {
+            bool functionFound = false;
+            FdoInt32 pos;
+            FdoInt32 functionDefinitionCount = functionDefinitions->GetCount();
+            for (pos = 0; pos < functionDefinitionCount; pos++)
+            {
+                funcDef = functionDefinitions->GetItem(pos);
+                if (FdoCommonStringUtil::StringCompareNoCase(funcDef->GetName(), function->GetName()) == 0)
+                {
+                    functionFound = true;
+                    break;
+                }
+            }
+
+            if (!functionFound)
+                throw FdoException::Create(
+                        FdoException::NLSGetMessage(FDO_38_ITEMNOTFOUND,
+                                                    "Item '%1$ls' not found in collection",
+                                                    function->GetName()));
+        }
+
         FdoPtr<FdoReadOnlySignatureDefinitionCollection> sigDefs = funcDef->GetSignatures();
         bool bFound = false;
         for (int s=0; s<sigDefs->GetCount() && !bFound; s++)
