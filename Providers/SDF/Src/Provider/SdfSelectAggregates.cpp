@@ -19,6 +19,7 @@
 #include "SdfSelectAggregates.h"
 #include "SdfConnection.h"
 #include "SdfSpatialExtentsAggregateReader.h"
+#include <FdoCommonStringUtil.h>
 
 SdfSelectAggregates::SdfSelectAggregates(SdfConnection* connection)
     : SdfSelectAggregatesCommand(connection)
@@ -74,7 +75,7 @@ FdoIDataReader* SdfSelectAggregates::Execute()
             {
                 FdoPtr<FdoExpression> expr = computedIdentifier->GetExpression();
                 FdoFunction* func = dynamic_cast<FdoFunction*>(expr.p);
-                if (func && 0==wcscmp(func->GetName(), FDO_FUNCTION_SPATIALEXTENTS))
+                if (func && 0==FdoCommonStringUtil::StringCompareNoCase(func->GetName(), FDO_FUNCTION_SPATIALEXTENTS))
                 {
                     FdoPtr<FdoExpressionCollection> args = func->GetArguments();
                     FdoPtr<FdoExpression> arg = args->GetItem(0);
@@ -88,7 +89,7 @@ FdoIDataReader* SdfSelectAggregates::Execute()
                             extentIdName = computedIdentifier->GetName();
                     }
                 }
-                else if (func && 0==wcscmp(func->GetName(), FDO_FUNCTION_COUNT) && propsCount == 2 )
+                else if (func && 0==FdoCommonStringUtil::StringCompareNoCase(func->GetName(), FDO_FUNCTION_COUNT) && propsCount == 2 )
 					countName = computedIdentifier->GetName();
                 else
                     bCanOptimizeSpatialExtents = false;
