@@ -1919,7 +1919,9 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter     *filter,
 
     if( filter != NULL )
     {
-        AppendString(  GetTableAlias( tableName ) );
+        FdoString * tableAlias = GetTableAlias( tableName );
+        if (wcscmp(tableAlias, tableName) != 0)
+            AppendString(  GetTableAlias( tableName ) );
         AppendString( L" WHERE " );
         HandleFilter( filter );
     }
