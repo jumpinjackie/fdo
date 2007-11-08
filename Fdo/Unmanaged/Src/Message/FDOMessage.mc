@@ -1454,7 +1454,7 @@ Expression Engine: DISTINCT not allowed for BLOB/CLOB for function '%1$ls'
 MessageId=8045
 SymbolicName=FUNCTION_SIGN
 Language=English
-Returns -1, 0, 1 depending on whether the value is > 0, == 0 or < 0
+Returns -1, 0, 1 depending on whether the value is < 0, == 0 or > 0
 .
 MessageId=8046
 SymbolicName=FUNCTION_CONCAT_STRING1_ARG
