@@ -54,7 +54,7 @@ public:
     /// \return
     /// Returns the WMS image format.
     /// 
-    FDOWMS_API FdoString* GetImageFormat(void) const;
+    FDOWMS_API FdoString* GetImageFormat(void);
 
     /// \brief
     /// Sets the format type in which the WMS image will be generated.
@@ -270,10 +270,17 @@ protected:
 	FDOWMS_API virtual ~FdoWmsOvRasterDefinition(void);
 
 protected:
+    void _SetFullFormatType(FdoString* value);
+
+    void _SetFormatAbbr(FdoString* value);
+    FdoStringP _GetFormatAbbr() const;
+
     void _SetTransparent(FdoString* value);
     FdoStringP _GetTransparent(void) const;
 	void Dispose(void);
 
+    FdoStringP MIMEFormatTypeToAbbr(FdoString* fullFormat);
+    FdoStringP AbbrToMIMEFormatType(FdoString* abbrFormat);
 private:
     FdoStringP m_backgroundColor;
     FdoStringP m_timeDimension;
@@ -281,8 +288,11 @@ private:
     FdoStringP m_spatialContext;
     FdoBoolean m_transparent;
     FdoStringP m_formatType;
+    FdoStringP m_formatDesc;
 	FdoWmsOvLayersP m_layers;
     FdoXmlCharDataHandler *m_pXmlContentHandler;
+    bool m_hasFormat;
+    bool m_hasFormatType;
 
 /// \endcond
 

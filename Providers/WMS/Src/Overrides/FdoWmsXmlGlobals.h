@@ -32,6 +32,7 @@ namespace FdoWmsXmlGlobals
     static FdoString* g_WmsLayerDefinition                  = L"Layer";
     static FdoString* g_WmsStyleDefinition                  = L"Style";
     static FdoString* g_WmsImageFormat                      = L"Format";
+    static FdoString* g_WmsImageFormatType                  = L"FormatType";
 
     static FdoString* g_WmsTransparent                      = L"Transparent";
     static FdoString* g_WmsBackgroundColor                  = L"BackgroundColor";
@@ -49,13 +50,14 @@ namespace FdoWmsXmlGlobals
     static FdoString* g_WmsImageFormatGif                   = L"GIF";
 
     // For extend the WMS supported image format in the future
-    static FdoString* g_NewMIMEImageFormats[]               = {
-                                                                L"image/png",
+    static FdoString* g_MIMEImageFormats[]                  = {
+                                                                L"image/png", 
                                                                 L"image/tiff",
                                                                 L"image/jpeg",
                                                                 L"image/gif",
                                                                 NULL
-                                                            };
+                                                              };
+
 };
 
 

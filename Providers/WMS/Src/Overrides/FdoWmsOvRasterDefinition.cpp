@@ -24,7 +24,10 @@
 
 FdoWmsOvRasterDefinition::FdoWmsOvRasterDefinition(void) :
     m_pXmlContentHandler(NULL),
-    m_formatType(FdoWmsGlobals::RasterMIMEFormat_PNG),
+    m_formatType(FdoWmsXmlGlobals::g_WmsImageFormatPng),
+    m_formatDesc(FdoWmsGlobals::RasterMIMEFormat_PNG),
+    m_hasFormat(false),
+    m_hasFormatType(false),
     m_transparent(false)
 {
 	m_layers = FdoWmsOvLayerCollection::Create(this);
@@ -45,59 +48,30 @@ FdoWmsOvRasterDefinition* FdoWmsOvRasterDefinition::Create()
 	return new FdoWmsOvRasterDefinition();
 }
 
-FdoString* FdoWmsOvRasterDefinition::GetImageFormat(void) const
+FdoString* FdoWmsOvRasterDefinition::GetImageFormat(void) 
 {
-    return m_formatType;
+    if (!m_hasFormatType && m_hasFormat) // value is from WMS 3.2.2 version configuration
+    {
+        // set <FormatType> interpreted from <Format>
+        m_formatDesc = this->AbbrToMIMEFormatType(m_formatType);
+    }
+
+    // m_formatDesc is valid for WMS 3.3    
+    return m_formatDesc;
 }
 
+// Input value would like: "image/png; PhotometricInterpretation=PaletteColor"
+// or "image/png"
 void FdoWmsOvRasterDefinition::SetImageFormat(FdoString* value)
 {
-    FdoStringP format(value);
-    bool bMatch = false;
+    VALIDATE_ARGUMENT(value);
 
-    // Handle the new xml image format, like <Format>image/png; PhotometricInterpretation=RGB</Format>
-    if (format.Lower().Contains(FdoWmsGlobals::ImageFormatPrefix)) 
-    {
-        // Format contains extra parameter
-        if (format.Contains(L";"))
-            format = format.Left(L";");
+    // Set the WMS 3.3 tag: <FormatType>
+    _SetFullFormatType(value);
 
-        for (int i = 0; FdoWmsXmlGlobals::g_NewMIMEImageFormats[i] != NULL; i++)
-        {
-            if (FdoCommonStringUtil::StringCompareNoCase((FdoString*)format, FdoWmsXmlGlobals::g_NewMIMEImageFormats[i]) == 0)
-            {
-                bMatch = true;
-                m_formatType = value;
-                break;
-            }
-        }
-    }
-    else // Handle the old xml image formats,  before version 3.3.0 WMS only allows 4 types: PNG, TIF, GIF and JPG.
-    {
-        if (FdoCommonStringUtil::StringCompareNoCase(value, FdoWmsXmlGlobals::g_WmsImageFormatPng) == 0)
-        {
-            bMatch = true;
-            m_formatType = FdoWmsGlobals::RasterMIMEFormat_PNG;
-        }
-        else if (FdoCommonStringUtil::StringCompareNoCase(value, FdoWmsXmlGlobals::g_WmsImageFormatGif) == 0)
-        {
-            bMatch = true;
-            m_formatType = FdoWmsGlobals::RasterMIMEFormat_GIF;
-        }
-        else if (FdoCommonStringUtil::StringCompareNoCase(value, FdoWmsXmlGlobals::g_WmsImageFormatTif) == 0)
-        {
-            bMatch = true;
-            m_formatType = FdoWmsGlobals::RasterMIMEFormat_TIFF;
-        }
-        else if (FdoCommonStringUtil::StringCompareNoCase(value, FdoWmsXmlGlobals::g_WmsImageFormatJpg) == 0)
-        {
-            bMatch = true;
-            m_formatType = FdoWmsGlobals::RasterMIMEFormat_JPEG;
-        }
-
-    }
-    if (!bMatch)
-        throw FdoSchemaException::Create (NlsMsgGet (FDOWMS_INVALID_XMLSCHEMA_RASTERFORMATTYPE, "'%1$ls' is not a valid XML Raster Format Type.", value));
+    // Maintain the WMS 3.2.2 tag: <Format>PNG</Format> only allows 4 types: PNG, TIF, GIF and JPG.
+    FdoStringP format = this->MIMEFormatTypeToAbbr(value);
+    _SetFormatAbbr(format);
 }
 
 FdoBoolean FdoWmsOvRasterDefinition::GetTransparent(void) const
@@ -184,6 +158,7 @@ FdoXmlSaxHandler* FdoWmsOvRasterDefinition::XmlStartElement(
 				pRet = pNewObj;
 			}
             else if (FdoCommonStringUtil::StringCompareNoCase(name, FdoWmsXmlGlobals::g_WmsImageFormat) == 0 ||
+                     FdoCommonStringUtil::StringCompareNoCase(name, FdoWmsXmlGlobals::g_WmsImageFormatType) == 0 ||
                      FdoCommonStringUtil::StringCompareNoCase(name, FdoWmsXmlGlobals::g_WmsTransparent) == 0 ||
                      FdoCommonStringUtil::StringCompareNoCase(name, FdoWmsXmlGlobals::g_WmsBackgroundColor) == 0 ||
                      FdoCommonStringUtil::StringCompareNoCase(name, FdoWmsXmlGlobals::g_WmsTimeDimension) == 0 ||
@@ -215,7 +190,10 @@ FdoBoolean FdoWmsOvRasterDefinition::XmlEndElement(FdoXmlSaxContext* context, Fd
         BaseType::XmlEndElement(context, uri, name, qname);
 
         if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::g_WmsImageFormat) == 0) {
-            SetImageFormat(m_pXmlContentHandler->GetString());
+            _SetFormatAbbr(m_pXmlContentHandler->GetString());
+        }
+        else if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::g_WmsImageFormatType) == 0) {
+            _SetFullFormatType(m_pXmlContentHandler->GetString());
         }
         else if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::g_WmsTransparent) == 0) {
             _SetTransparent(m_pXmlContentHandler->GetString());
@@ -254,6 +232,10 @@ void FdoWmsOvRasterDefinition::_writeXml( FdoXmlWriter* xmlWriter, const FdoXmlF
 	BaseType::_writeXml(xmlWriter, flags);
 
     xmlWriter->WriteStartElement(FdoWmsXmlGlobals::g_WmsImageFormat);
+    xmlWriter->WriteCharacters(_GetFormatAbbr());
+    xmlWriter->WriteEndElement();
+
+    xmlWriter->WriteStartElement(FdoWmsXmlGlobals::g_WmsImageFormatType);
     xmlWriter->WriteCharacters(GetImageFormat());
     xmlWriter->WriteEndElement();
 
@@ -285,6 +267,69 @@ void FdoWmsOvRasterDefinition::_writeXml( FdoXmlWriter* xmlWriter, const FdoXmlF
 	}
 
 	xmlWriter->WriteEndElement();
+}
+
+// This one is for WMS provider 3.3 tag: <FormatType>
+// <FormatType>image/png;PhotometricInterpretation=PaletteColor</FormatType>
+// or
+// <FormatType>image/png</FormatType>
+void FdoWmsOvRasterDefinition::_SetFullFormatType(FdoString *value)
+{
+    VALIDATE_ARGUMENT(value);
+
+    bool bMatch = false;
+    FdoStringP format(value);
+
+    // Format contains extra parameter
+    if (format.Contains(FdoWmsGlobals::RasterFormatSemicolon))
+        format = format.Left(FdoWmsGlobals::RasterFormatSemicolon);
+
+    for (int i = 0; FdoWmsXmlGlobals::g_MIMEImageFormats[i] != NULL; i++)
+    {
+        if (FdoCommonStringUtil::StringCompareNoCase((FdoString*)format, FdoWmsXmlGlobals::g_MIMEImageFormats[i]) == 0)
+        {
+            bMatch = true;
+            m_formatDesc = value;
+            break;
+        }
+    }
+
+    if (!bMatch)
+        throw FdoSchemaException::Create (NlsMsgGet (FDOWMS_INVALID_XMLSCHEMA_RASTERFORMATTYPE, "'%1$ls' is not a valid XML Raster Format Type.", value));
+
+    // <FormatType> is from XML file
+    m_hasFormatType = true;
+}
+
+// This one for the WMS 3.2.2 tag: 
+// <Format>PNG</Format> only allows 4 types: PNG, TIF, GIF and JPG.
+void FdoWmsOvRasterDefinition::_SetFormatAbbr(FdoString* value)
+{
+    VALIDATE_ARGUMENT(value);
+
+    if (FdoCommonStringUtil::StringCompareNoCase((FdoString*)value, FdoWmsXmlGlobals::g_WmsImageFormatPng) == 0) {
+        m_formatType = FdoWmsXmlGlobals::g_WmsImageFormatPng;    
+    }
+    else if (FdoCommonStringUtil::StringCompareNoCase((FdoString*)value, FdoWmsXmlGlobals::g_WmsImageFormatTif) == 0) {
+        m_formatType = FdoWmsXmlGlobals::g_WmsImageFormatTif;    
+    }
+    else if (FdoCommonStringUtil::StringCompareNoCase((FdoString*)value, FdoWmsXmlGlobals::g_WmsImageFormatJpg) == 0) {
+        m_formatType = FdoWmsXmlGlobals::g_WmsImageFormatJpg;    
+    }
+    else if (FdoCommonStringUtil::StringCompareNoCase((FdoString*)value, FdoWmsXmlGlobals::g_WmsImageFormatGif) == 0) {
+        m_formatType = FdoWmsXmlGlobals::g_WmsImageFormatGif;    
+    }
+    else {
+        throw FdoSchemaException::Create (NlsMsgGet (FDOWMS_INVALID_XMLSCHEMA_RASTERFORMATTYPE, "'%1$ls' is not a valid XML Raster Format Type.", value));
+    }
+    
+    // <Format> is from XML file
+    m_hasFormat = true;
+}
+
+FdoStringP FdoWmsOvRasterDefinition::_GetFormatAbbr(void) const
+{       
+    return m_formatType;
 }
 
 FdoStringP FdoWmsOvRasterDefinition::_GetTransparent(void) const
@@ -323,6 +368,61 @@ FdoStringP FdoWmsOvRasterDefinition::GetQualifiedName()
         {
             ret = parentQName + L"." + ret;
         }
+    }
+
+    return ret;
+}
+
+// Convert from WMS 3.3 format type to WMS 3.2.2 value
+FdoStringP FdoWmsOvRasterDefinition::MIMEFormatTypeToAbbr(FdoString* fullFormat)
+{
+    VALIDATE_ARGUMENT(fullFormat);
+
+    // Ignore the extra parameter
+    FdoStringP format(fullFormat);
+    if (format.Contains(FdoWmsGlobals::RasterFormatSemicolon))
+        format = format.Left(FdoWmsGlobals::RasterFormatSemicolon);
+
+    FdoStringP ret;
+    if (FdoCommonStringUtil::StringCompareNoCase((FdoString*)format, FdoWmsGlobals::RasterMIMEFormat_PNG) == 0) {
+        ret = FdoWmsXmlGlobals::g_WmsImageFormatPng;    // convert from "image/png" to "PNG"
+    }
+    else if (FdoCommonStringUtil::StringCompareNoCase((FdoString*)format, FdoWmsGlobals::RasterMIMEFormat_TIFF) == 0) {
+        ret = FdoWmsXmlGlobals::g_WmsImageFormatTif;    // convert from "image/tiff" to "TIF"
+    }
+    else if (FdoCommonStringUtil::StringCompareNoCase((FdoString*)format, FdoWmsGlobals::RasterMIMEFormat_JPEG) == 0) {
+        ret = FdoWmsXmlGlobals::g_WmsImageFormatJpg;    // convert from "image/jpeg" to "JPG"
+    }
+    else if (FdoCommonStringUtil::StringCompareNoCase((FdoString*)format, FdoWmsGlobals::RasterMIMEFormat_GIF) == 0) {
+        ret = FdoWmsXmlGlobals::g_WmsImageFormatGif;    // convert from "image/gif" to "GIF"
+    }
+    else {
+        throw FdoSchemaException::Create (NlsMsgGet (FDOWMS_INVALID_XMLSCHEMA_RASTERFORMATTYPE, "'%1$ls' is not a valid XML Raster Format Type.", fullFormat));
+    }
+
+    return ret;
+}
+
+// Convert from WMS 3.3 format type to WMS 3.2.2 value
+FdoStringP FdoWmsOvRasterDefinition::AbbrToMIMEFormatType(FdoString* abbrFormat)
+{
+    VALIDATE_ARGUMENT(abbrFormat);
+
+    FdoStringP ret;
+    if (FdoCommonStringUtil::StringCompareNoCase((FdoString*)abbrFormat, FdoWmsXmlGlobals::g_WmsImageFormatPng) == 0) {
+        ret = FdoWmsGlobals::RasterMIMEFormat_PNG;    // convert from "PNG" to "image/png"
+    }
+    else if (FdoCommonStringUtil::StringCompareNoCase((FdoString*)abbrFormat, FdoWmsXmlGlobals::g_WmsImageFormatTif) == 0) {
+        ret = FdoWmsGlobals::RasterMIMEFormat_TIFF;    // convert from "TIF" to "image/tiff"
+    }
+    else if (FdoCommonStringUtil::StringCompareNoCase((FdoString*)abbrFormat,FdoWmsXmlGlobals::g_WmsImageFormatJpg) == 0) {
+        ret = FdoWmsGlobals::RasterMIMEFormat_JPEG;    // convert from "JPG" to "image/jpeg"
+    }
+    else if (FdoCommonStringUtil::StringCompareNoCase((FdoString*)abbrFormat,FdoWmsXmlGlobals::g_WmsImageFormatGif) == 0) {
+        ret = FdoWmsGlobals::RasterMIMEFormat_GIF;    // convert from "GIF" to "image/gif"
+    }
+    else {
+        throw FdoSchemaException::Create (NlsMsgGet (FDOWMS_INVALID_XMLSCHEMA_RASTERFORMATTYPE, "'%1$ls' is not a valid XML Raster Format Type.", abbrFormat));
     }
 
     return ret;

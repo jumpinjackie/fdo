@@ -30,6 +30,9 @@ class OverridesTest : public WmsTests
   CPPUNIT_TEST_SUITE( OverridesTest );
   CPPUNIT_TEST( TestCreateSchemaOverrides );
   CPPUNIT_TEST( TestSimple );
+  CPPUNIT_TEST( TestImageFormatBackwardsComp);
+  CPPUNIT_TEST( TestConflictImageFormatConfig);
+  CPPUNIT_TEST( TestDefaultImageFormat);
   CPPUNIT_TEST( TestSetConfiguration );
 #ifdef _FDO_RUN_INTERNAL_TEST
   CPPUNIT_TEST( TestSetConfiguration2); 
@@ -47,6 +50,9 @@ public:
 
 protected:
     void TestSimple();
+    void TestImageFormatBackwardsComp();
+    void TestConflictImageFormatConfig();
+    void TestDefaultImageFormat();
     void TestCreateSchemaOverrides();
     void TestSetConfiguration();
 	void TestSetConfiguration2();
