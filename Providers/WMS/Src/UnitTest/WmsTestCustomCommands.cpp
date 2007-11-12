@@ -118,7 +118,7 @@ void WmsTestCustomCommands::testSpacialFeatureClassName ()
         FdoPtr<FdoWmsIGetFeatureClassCRSNames> cmdGLCRS = static_cast<FdoWmsIGetFeatureClassCRSNames *> (connection->CreateCommand(FdoWmsCommandType_GetFeatureClassCRSNames));
         cmdGLCRS->SetFeatureClassName(L"BARRIERL_1M Foundation");//layer name is BARRIERL_1M:Foundation
         FdoStringsP crsNames = cmdGLCRS->Execute();
-        //CPPUNIT_ASSERT(crsNames->GetCount() == 6);
+        CPPUNIT_ASSERT(crsNames->GetCount() == 1);
 #ifdef _DEBUG
 		for (int i = 0; i < crsNames->GetCount(); ++i)
 		{
@@ -148,7 +148,7 @@ void WmsTestCustomCommands::testGetFeatureCRSNames ()
         FdoPtr<FdoWmsIGetFeatureClassCRSNames> cmdGLCRS = static_cast<FdoWmsIGetFeatureClassCRSNames *> (connection->CreateCommand(FdoWmsCommandType_GetFeatureClassCRSNames));
         cmdGLCRS->SetFeatureClassName(L"drainage");
         FdoStringsP crsNames = cmdGLCRS->Execute();
-        CPPUNIT_ASSERT(crsNames->GetCount() == 3);
+        CPPUNIT_ASSERT(crsNames->GetCount() == 2);
 #ifdef _DEBUG
 		for (int i = 0; i < crsNames->GetCount(); ++i)
 		{

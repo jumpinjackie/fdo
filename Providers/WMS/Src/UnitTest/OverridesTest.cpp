@@ -267,7 +267,7 @@ void OverridesTest::TestSimple ()
         srand((unsigned)time(NULL));
 
         FdoSchemaMappingsP mappings = FdoPhysicalSchemaMappingCollection::Create();
-        FdoXmlReaderP configReader = FdoXmlReader::Create(L"WmsOverridesConfig.xml");
+        FdoXmlReaderP configReader = FdoXmlReader::Create(L"WmsOverridesConfig.xml"); // this configuration is from WMS 3.3
         mappings->ReadXml(configReader);
 
         FdoWmsOvPhysicalSchemaMappingP config = static_cast<FdoWmsOvPhysicalSchemaMapping*>(mappings->GetItem(0));
@@ -286,6 +286,112 @@ void OverridesTest::TestSimple ()
 #ifdef _WIN32
         UnitTestUtil::CheckOutput(baseConfigFileName, configFileName);
 #endif
+    }
+	catch (FdoException* e) 
+    {
+        fail (e);
+	}
+	catch (char* error) 
+    {
+        fail (error);
+	}
+}
+
+void OverridesTest::TestImageFormatBackwardsComp () 
+{
+    try {
+        srand((unsigned)time(NULL));
+
+        FdoSchemaMappingsP mappings = FdoPhysicalSchemaMappingCollection::Create();
+        FdoXmlReaderP configReader = FdoXmlReader::Create(L"Wms322OverridesConfig.xml"); // this configuration is from WMS 3.2
+        mappings->ReadXml(configReader);
+
+        FdoWmsOvPhysicalSchemaMappingP schemaMapping = static_cast<FdoWmsOvPhysicalSchemaMapping*>(mappings->GetItem(0));
+
+        TestBaseProperties(schemaMapping);
+        FdoString * providerName = schemaMapping->GetProvider();
+        
+        FdoWmsOvClassesP classes = schemaMapping->GetClasses();
+        CPPUNIT_ASSERT(classes->GetCount() == 1);
+
+        FdoWmsOvClassDefinitionP classDefn = classes->GetItem(0);
+        TestBaseProperties(classDefn);
+        
+        FdoWmsOvRasterDefinitionP rasterDefn = classDefn->GetRasterDefinition();
+        TestBaseProperties(rasterDefn);
+        FdoStringP format = rasterDefn->GetImageFormat();
+        CPPUNIT_ASSERT(format == L"image/tiff");
+    }
+	catch (FdoException* e) 
+    {
+        fail (e);
+	}
+	catch (char* error) 
+    {
+        fail (error);
+	}
+}
+
+void OverridesTest::TestConflictImageFormatConfig () 
+{
+    try {
+        srand((unsigned)time(NULL));
+
+        FdoSchemaMappingsP mappings = FdoPhysicalSchemaMappingCollection::Create();
+        FdoXmlReaderP configReader = FdoXmlReader::Create(L"WmsOverridesConflictImageFormat.xml"); // this configuration is from WMS 3.3
+        mappings->ReadXml(configReader);
+
+        FdoWmsOvPhysicalSchemaMappingP schemaMapping = static_cast<FdoWmsOvPhysicalSchemaMapping*>(mappings->GetItem(0));
+
+        TestBaseProperties(schemaMapping);
+        FdoString * providerName = schemaMapping->GetProvider();
+        
+        FdoWmsOvClassesP classes = schemaMapping->GetClasses();
+        CPPUNIT_ASSERT(classes->GetCount() == 1);
+
+        FdoWmsOvClassDefinitionP classDefn = classes->GetItem(0);
+        TestBaseProperties(classDefn);
+        
+        FdoWmsOvRasterDefinitionP rasterDefn = classDefn->GetRasterDefinition();
+        TestBaseProperties(rasterDefn);
+        FdoStringP format = rasterDefn->GetImageFormat();
+        CPPUNIT_ASSERT(format == L"image/tiff; PhotometricInterpretation=RGB");
+    }
+	catch (FdoException* e) 
+    {
+        fail (e);
+	}
+	catch (char* error) 
+    {
+        fail (error);
+	}
+}
+
+void OverridesTest::TestDefaultImageFormat () 
+{
+    try {
+        srand((unsigned)time(NULL));
+
+        FdoSchemaMappingsP mappings = FdoPhysicalSchemaMappingCollection::Create();
+        FdoXmlReaderP configReader = FdoXmlReader::Create(L"WmsOverridesConfigNoneImageFormat.xml"); // this configuration is from WMS 3.2
+        mappings->ReadXml(configReader);
+
+        FdoWmsOvPhysicalSchemaMappingP schemaMapping = static_cast<FdoWmsOvPhysicalSchemaMapping*>(mappings->GetItem(0));
+
+        TestBaseProperties(schemaMapping);
+        FdoString * providerName = schemaMapping->GetProvider();
+        
+        FdoWmsOvClassesP classes = schemaMapping->GetClasses();
+        CPPUNIT_ASSERT(classes->GetCount() == 1);
+
+        FdoWmsOvClassDefinitionP classDefn = classes->GetItem(0);
+        TestBaseProperties(classDefn);
+        
+        FdoWmsOvRasterDefinitionP rasterDefn = classDefn->GetRasterDefinition();
+        TestBaseProperties(rasterDefn);
+        FdoStringP format = rasterDefn->GetImageFormat();
+        CPPUNIT_ASSERT(format == L"image/png");
+
     }
 	catch (FdoException* e) 
     {
@@ -374,7 +480,7 @@ void OverridesTest::TestSetConfiguration()
         }
 
         connection->SetConnectionString(L"FeatureServer=http://wms.jpl.nasa.gov/wms.cgi");
-        FdoIoFileStreamP fileStream = FdoIoFileStream::Create(L"WmsSchemaConfig.xml", L"r");
+        FdoIoFileStreamP fileStream = FdoIoFileStream::Create(L"WmsSchemaConfig.xml", L"r"); // config is from WMS 3.2.2
 
         connection->SetConfiguration(fileStream);
         connection->Open();
@@ -418,7 +524,7 @@ void OverridesTest::TestSetConfiguration3()
         }
 
         connection->SetConnectionString(L"FeatureServer=http://wms.jpl.nasa.gov/wms.cgi");
-        FdoIoFileStreamP fileStream = FdoIoFileStream::Create(L"WMSOverrideClass2.xml", L"r");
+        FdoIoFileStreamP fileStream = FdoIoFileStream::Create(L"WMSOverrideClass2.xml", L"r"); //WMS 3.2.2
 
         connection->SetConfiguration(fileStream);
         connection->Open();
@@ -509,7 +615,7 @@ void OverridesTest::TestRequestSpcialImageFormat()
         }
  
         connection->SetConnectionString(L"FeatureServer=http://demo.cubewerx.com/demo/cubeserv/cubeserv.cgi?version=1.1.0"); 
-        FdoIoFileStreamP fileStream = FdoIoFileStream::Create(L"newconfig1.xml", L"r");
+        FdoIoFileStreamP fileStream = FdoIoFileStream::Create(L"newconfig1.xml", L"r"); // config for WMS 3.3
   
         connection->SetConfiguration(fileStream);
         connection->Open();
@@ -554,7 +660,7 @@ void OverridesTest::TestRequestUnsupportedImage()
         }
 
         connection->SetConnectionString(L"FeatureServer=http://www2.dmsolutions.ca/cgi-bin/mswms_gmap?version=1.3.0"); 
-        FdoIoFileStreamP fileStream = FdoIoFileStream::Create(L"newconfig.xml", L"r");
+        FdoIoFileStreamP fileStream = FdoIoFileStream::Create(L"newconfig.xml", L"r"); // WMS 3.3
         connection->SetConfiguration(fileStream);
         connection->Open();
       
@@ -737,7 +843,7 @@ void OverridesTest::TestQualifiedName()
     try
     {
 	    FdoPtr<FdoIConnection> conn = this->GetConnection ();
-	    FdoIoFileStreamP fileStream = FdoIoFileStream::Create(L"NASA_WMS_Config.xml", L"r");
+	    FdoIoFileStreamP fileStream = FdoIoFileStream::Create(L"NASA_WMS_Config.xml", L"r"); // configuration from WMS 3.2.2
 	    conn->SetConnectionString (L"FeatureServer=http://wms.jpl.nasa.gov/wms.cgi?");
 	    conn->SetConfiguration (fileStream);
 	    CPPUNIT_ASSERT (FdoConnectionState_Open == conn->Open ());

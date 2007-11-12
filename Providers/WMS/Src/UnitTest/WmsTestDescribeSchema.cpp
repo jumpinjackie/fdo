@@ -74,6 +74,7 @@ void WmsTestDescribeSchema::testServer3 ()
 {
     try 
     {
+        //This server cannot connect any more
 	    TestServer(L"http://globe.digitalearth.gov/viz-bin/wmt.cgi");
     }
     catch (FdoException* e)
@@ -87,7 +88,7 @@ void WmsTestDescribeSchema::testServer4 ()
 {
     try 
     {
-	    TestServer(L"http://fbinter.stadt-berlin.de/fb/wms/oma_ogc_capabilitiesrequest.jsp", 386);
+	    TestServer(L"http://fbinter.stadt-berlin.de/fb/wms/oma_ogc_capabilitiesrequest.jsp", 419);
     }
     catch (FdoException* e)
     {
