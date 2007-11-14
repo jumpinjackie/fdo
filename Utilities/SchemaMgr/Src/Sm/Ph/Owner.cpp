@@ -80,6 +80,10 @@ FdoSmPhOwner::FdoSmPhOwner(
     AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_spatialcontext") );
     AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_spatialcontextgeom") );
     AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_spatialcontextgroup") );
+
+    mCandIndexes = FdoDictionary::Create();   
+    mCandIndexesLoadedTables = false;
+    mCandIndexesLoadedRootTables = false;
 }
 
 FdoSmPhOwner::~FdoSmPhOwner(void)
@@ -354,6 +358,11 @@ FdoPtr<FdoSmPhRdIndexReader> FdoSmPhOwner::CreateIndexReader() const
     return (FdoSmPhRdIndexReader*) NULL;
 }
 
+FdoPtr<FdoSmPhRdIndexReader> FdoSmPhOwner::CreateIndexReader( FdoStringsP objectNames ) const
+{
+    return (FdoSmPhRdIndexReader*) NULL;
+}
+
 FdoPtr<FdoSmPhRdPkeyReader> FdoSmPhOwner::CreatePkeyReader() const
 {
     return (FdoSmPhRdPkeyReader*) NULL;
@@ -461,7 +470,6 @@ FdoSmPhDbObjectsP FdoSmPhOwner::CacheDbObjects( bool cacheComponents )
         FdoSmPhRdConstraintReaderP ukeyReader;
         FdoSmPhRdConstraintReaderP ckeyReader;
         FdoSmPhRdFkeyReaderP fkeyReader;
-        FdoSmPhRdIndexReaderP indexReader;
         FdoSmPhRdPkeyReaderP pkeyReader;
 
        // Create reader for owner's db objects
@@ -480,7 +488,6 @@ FdoSmPhDbObjectsP FdoSmPhOwner::CacheDbObjects( bool cacheComponents )
             ukeyReader = CreateConstraintReader( L"", L"U" );
             ckeyReader = CreateConstraintReader( L"", L"C" );
             fkeyReader = CreateFkeyReader();
-            indexReader = CreateIndexReader();
             pkeyReader = CreatePkeyReader();
         }
 
@@ -511,10 +518,6 @@ FdoSmPhDbObjectsP FdoSmPhOwner::CacheDbObjects( bool cacheComponents )
 
                     if ( ckeyReader ) 
                         table->CacheCkeys( ckeyReader );
-
-                    if ( indexReader ) 
-                        table->CacheIndexes( indexReader );
-
                 }
 
                 // Load the components into the db object.
@@ -606,6 +609,27 @@ void FdoSmPhOwner::RemoveCandDbObject( FdoStringP objectName )
     FdoInt32 ix = mCandDbObjects->IndexOf(objectName);
     if ( ix >= 0 ) 
         mCandDbObjects->RemoveAt( ix );
+
+}
+
+void FdoSmPhOwner::AddCandIndex( FdoStringP objectName )
+{
+    // Bulk fetching candidates is pointless when fetch size is 1.
+    if ( GetCandFetchSize() > 1 ) {
+        FdoDictionaryElementP elem = mCandIndexes->FindItem( objectName );
+            
+        if ( !elem ) {
+            elem = FdoDictionaryElement::Create( objectName, L"" );
+            mCandIndexes->Add( elem );
+        }
+    }
+}
+
+void FdoSmPhOwner::RemoveCandIndex( FdoStringP objectName )
+{
+    FdoInt32 ix = mCandIndexes->IndexOf(objectName);
+    if ( ix >= 0 ) 
+        mCandIndexes->RemoveAt( ix );
 
 }
 
@@ -884,6 +908,230 @@ FdoSmPhDbObjectP FdoSmPhOwner::CacheCandDbObjects( FdoStringP objectName )
     }
 
    return retDbObject;
+}
+
+void FdoSmPhOwner::CacheCandIndexes( FdoStringP objectName )
+{
+    FdoInt32 fetchSize = GetCandFetchSize();
+
+    // Can't bulk load if fetch size too small or no db objects
+    // have been cached
+    if ( (fetchSize < 2) || (mDbObjects->GetCount() == 0) ) 
+        return;
+
+    // Check if requested dbObject is on the index candidates list
+    FdoDictionaryP candIndexes = FdoDictionary::Create();
+    FdoInt32 ix = mCandIndexes->IndexOf( objectName );
+    FdoInt32 idx;
+
+    if ( ix < 0 ) {
+        // Not on the candidates list. May need to initialize the list with tables
+        // whose indexes are needed for reverse-engineering.
+        // First add tables without primary key, or tables with multiple geometric columns
+        LoadIndexTableCands();
+        ix = mCandIndexes->IndexOf( objectName );
+
+        if ( ix < 0 )
+            // Still not on candidates list. Object might be a table with pkey, that
+            // has dependent view that does not include all of the table's pkey columns
+            // (in this case, we try to generate view identity from a unique index on the
+            // table. Load all tables with dependent views (where the view has no direct pkey).
+            LoadIndexRootTableCands();
+    
+        ix = mCandIndexes->IndexOf( objectName );
+    }
+
+    // dbObject is still not a candidate, fall back to loading only the indexes
+    // for that dbObject.
+    if ( ix < 0 ) 
+        return;
+
+    FdoStringsP cands = FdoStringCollection::Create();
+    FdoSmPhRdIndexReaderP indexReader;
+
+    // The following block creates an index reader to fetch indexes for given object plus
+    // a certain number of other candidates (bulk fetched for better performance).
+    // This type of fetch is done by binding all of the candidates into a select statement.
+    // When there are many candidates, it is more efficient to fetch all indexes.
+    // Therefore, the following is skipped if all dbObjects for this owner have been cached,
+    // and at least half of them are candidates.
+    //
+    // TODO: check if 50% is the optimal threshold.
+    if ( (!mDbObjectsCached) || (((double)(mCandIndexes->GetCount())) / ((double)(mDbObjects->GetCount())) < 0.5) ) {
+        // Fetch some of the other candidates. Get the ones in the neighbourhood of the given object.
+        FdoInt32 start = ix - (fetchSize/2);
+        if ( start < 0 ) 
+            start = 0;
+
+        // Build the candidates list.
+        FdoInt32 end;
+
+        for ( end = start; (end < mCandIndexes->GetCount()) && (cands->GetCount() < fetchSize); end++ ) {
+            FdoDictionaryElementP elem = mCandIndexes->GetItem(end);
+            cands->Add( elem->GetName() );
+        }
+
+        // Pad out list with empty object names. 
+        // Candidate fetches are done by binding candidate names into selects. Selects can be re-used
+        // if number of bind variables stays consistent
+        while ( cands->GetCount() < fetchSize ) 
+            cands->Add( L"" );
+
+        // Remove candidates from candidate list.
+        // Put in temporary list to track which ones were not found.
+        for  ( idx = (end - 1); idx >= start; idx-- ) {
+            FdoDictionaryElementP elem = mCandIndexes->GetItem( idx );
+            candIndexes->Add( elem );
+            mCandIndexes->RemoveAt(idx);
+        }
+
+        // Read the candidates.
+
+        // Create reader for candidate indexes.
+        indexReader = CreateIndexReader( cands );
+    }
+
+    if ( (!indexReader) && mDbObjectsCached ) {
+        // Reader for candidates not created. There were either too many candidates or
+        // the provider does not support index retrieval by binding multiple dbObjects.
+
+        // If all dbObjects are cached then load all indexes for this owner. Otherwise,
+        // fall back to loading one dbObject at a time.
+        indexReader = CreateIndexReader();
+        if ( indexReader ) {
+            // Candidates list no longer needed. All indexes will be loaded.
+            mCandIndexes->Clear();
+
+            // Reset the current candidates list to include all dbObjects for this owner.
+            candIndexes->Clear();
+
+            for ( idx = 0; idx < mDbObjects->GetCount(); idx++ ) {
+                FdoSmPhDbObjectP dbObject = mDbObjects->GetItem(idx);
+                FdoDictionaryElementP elem = FdoDictionaryElement::Create( dbObject->GetName(), L"" );
+                candIndexes->Add( elem );
+            }
+        }
+    }
+
+    if ( indexReader && indexReader->ReadNext() ) {
+        // An index reader was created so cache the indexes that it fetches.
+
+        while ( !indexReader->IsEOF()) {
+            // Get the dbObject name for the currently read row.
+            FdoStringP objectName = indexReader->GetString( L"", L"table_name" );
+
+            // Cache all indexes for this dbObject
+            if ( !CacheObjectIndexes( indexReader ) )
+                // If the indexes were cached, the index reader is advanced to just 
+                // after the current dbObject. However, if they weren't, then must
+                // advance the reader here. This can happen if the current dbObject
+                // is not in the cache.
+                indexReader->ReadNext();
+
+            FdoDictionaryElementP elem = candIndexes->FindItem( objectName );
+            if ( elem )
+                // Mark current candidate dbObject has having been read.
+                elem->SetValue(L"f");
+        }
+
+        // Do index caching for any candidates for which no indexes were found. 
+        // This forces the index list for each candidate to be initialized so that
+        // we won't retry loading its indexes. The retry would be done with one query
+        // per candidate, which would be slow.
+        // At this point, the index reader is at EOF, so no indexes are cached.
+        for  ( ix = 0; ix < candIndexes->GetCount(); ix++ ) {
+            FdoDictionaryElementP elem = candIndexes->GetItem( ix );
+            if ( wcslen(elem->GetValue()) == 0 ) {
+                FdoSmPhTableP table = this->FindDbObject( elem->GetName() ).p->SmartCast<FdoSmPhTable>();
+                if (table )
+                    table->CacheIndexes( indexReader );
+            }
+        }
+    }
+}
+
+bool FdoSmPhOwner::CacheObjectIndexes( FdoSmPhRdIndexReaderP indexReader )
+{
+    // Get current dbObject name
+    FdoStringP objectName = indexReader->GetString( L"", L"table_name" );
+    FdoSmPhTableP table = this->FindDbObject( objectName ).p->SmartCast<FdoSmPhTable>();
+ 
+    if (table )
+        // dbObject is cached so load its indexes from the reader.
+        table->CacheIndexes( indexReader );
+
+    return ( table != NULL );
+}
+
+void FdoSmPhOwner::LoadIndexTableCands()
+{
+    FdoInt32 idx;
+
+    if ( !mCandIndexesLoadedTables ) {
+        for ( idx = 0; idx < mDbObjects->GetCount(); idx++ ) {
+            FdoSmPhDbObjectP dbObject = mDbObjects->GetItem( idx );
+            FdoSmPhTableP table = dbObject->SmartCast<FdoSmPhTable>();
+
+            // Skip tables whose indexes are already loaded
+            if ( table && !table->IndexesLoaded() ) {
+                bool isIndexCand = false;
+
+                if ( table->GetPkeyColumns()->GetCount() == 0 ) {
+                    // Indexes are used to generate identity when no primary key, so this
+                    // table is a candidate for bulk loading indexes.
+                    isIndexCand = true;
+                }
+                else {
+                    FdoSmPhColumnsP columns = table->GetColumns();
+                    int i;
+                    int geomCount = 0;
+
+                    for ( i = 0; i < columns->GetCount(); i++ ) {
+                        FdoSmPhColumnP column = columns->GetItem(i);
+                        if ( column->GetType() == FdoSmPhColType_Geom ) 
+                            geomCount++;
+
+                        if ( geomCount > 1 ) {
+                            // Spatial indexes are used to pick main geometry when 
+                            // table has multiple geometric columns.
+                            isIndexCand = true;
+                            break;
+                        }
+                    }
+                }
+
+                if ( isIndexCand ) 
+                    AddCandIndex( table->GetName() );
+            }
+        }
+
+        mCandIndexesLoadedTables = true;
+    }
+}
+
+void FdoSmPhOwner::LoadIndexRootTableCands()
+{
+    FdoInt32 idx;
+
+    if ( !mCandIndexesLoadedRootTables ) {
+        for ( idx = 0; idx < mDbObjects->GetCount(); idx++ ) {
+            FdoSmPhDbObjectP dbObject = mDbObjects->GetItem( idx );
+            if ( dbObject->GetPkeyColumns()->GetCount() == 0 ) {
+                FdoSmPhDbObjectP rootObject = dbObject->GetLowestRootObject();
+                
+                if ( rootObject && (dbObject->GetQName() != rootObject->GetQName()) ) {
+                    // Object has no primary key but has a root object. We might 
+                    // use root object's indexes to generate object's identity.
+                    FdoSmPhTableP table = rootObject->SmartCast<FdoSmPhTable>();
+
+                    if ( table && !table->IndexesLoaded() )
+                        AddCandIndex( table->GetName() );
+                }
+            }
+        }
+
+        mCandIndexesLoadedRootTables = true;
+    }
 }
 
 FdoInt32 FdoSmPhOwner::GetCandFetchSize()
