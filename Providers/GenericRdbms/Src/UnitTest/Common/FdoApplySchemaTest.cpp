@@ -557,8 +557,8 @@ void FdoApplySchemaTest::TestOverrides ()
         column = table->CreateColumnChar( ph->GetDcColumnName(L"data"), true, 50 );
         column = table->CreateColumnGeom( ph->GetDcColumnName(L"geometry"), (FdoSmPhScInfo*) NULL );
 #ifdef RDBI_DEF_SSQL
-        column = table->CreateColumnChar( ph->GetDcColumnName(L"GEOMETRY_SI_1"), true, 255 );
-        column = table->CreateColumnChar( ph->GetDcColumnName(L"GEOMETRY_SI_2"), true, 255 );
+        column = table->CreateColumnChar( L"GEOMETRY_SI_1", true, 255 );
+        column = table->CreateColumnChar( L"GEOMETRY_SI_2", true, 255 );
 #endif
         table->Commit();
 
