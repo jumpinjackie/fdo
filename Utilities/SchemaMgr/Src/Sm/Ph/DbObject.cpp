@@ -1114,19 +1114,21 @@ void FdoSmPhDbObject::LoadBaseObjects()
     }
 }
 
-void FdoSmPhDbObject::LoadBaseObjects( FdoPtr<FdoSmPhTableComponentReader> baseObjRdr )
+void FdoSmPhDbObject::LoadBaseObjects( FdoPtr<FdoSmPhTableComponentReader> baseObjRdr, bool isSkipAdd )
 {
     while ( baseObjRdr->ReadNext() ) {
-        FdoSmPhBaseObjectP newBaseObject = NewBaseObject( baseObjRdr );
+        if ( !isSkipAdd ) {
+            FdoSmPhBaseObjectP newBaseObject = NewBaseObject( baseObjRdr );
 
-        if ( newBaseObject ) {
-            FdoSmPhBaseObjectP currBaseObject = mBaseObjects->FindItem( newBaseObject->GetName() );
-            if ( currBaseObject ) 
-                // Base object already in collection, just add a base reference.
-                currBaseObject->AddBaseRef();
-            else
-                // Not in collection, add it.
-                mBaseObjects->Add( newBaseObject );
+            if ( newBaseObject ) {
+                FdoSmPhBaseObjectP currBaseObject = mBaseObjects->FindItem( newBaseObject->GetName() );
+                if ( currBaseObject ) 
+                    // Base object already in collection, just add a base reference.
+                    currBaseObject->AddBaseRef();
+                else
+                    // Not in collection, add it.
+                    mBaseObjects->Add( newBaseObject );
+            }
         }
     }
 }

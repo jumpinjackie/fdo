@@ -405,7 +405,7 @@ protected:
 
     /// Loads objects that this object is based on, if not yet loaded. 
     void LoadBaseObjects();
-    void LoadBaseObjects( FdoPtr<FdoSmPhTableComponentReader> baseObjRdr );
+    virtual void LoadBaseObjects( FdoPtr<FdoSmPhTableComponentReader> baseObjRdr, bool isSkipAdd = false );
 
     /// Load Primary Key if not yet loaded
     void LoadPkeys();

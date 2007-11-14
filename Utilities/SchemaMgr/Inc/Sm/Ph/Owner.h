@@ -170,6 +170,9 @@ public:
     // Default implementation returns NULL (not supported).
     virtual FdoPtr<FdoSmPhRdIndexReader> CreateIndexReader() const;
 
+    /// Create a reader to get all indexes for this owner and object name list.
+    virtual FdoPtr<FdoSmPhRdIndexReader> CreateIndexReader( FdoStringsP objectNames ) const;
+
     // Create a reader to get all primary keys (ordered by table) for this owner
     // Default implementation returns NULL (not supported).
     virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader() const;
@@ -237,6 +240,12 @@ public:
     // Remove a table or view name from fetch candidates list
     void RemoveCandDbObject( FdoStringP objectName );
 
+    // Add a table or view name to the index fetch candidates list
+    void AddCandIndex( FdoStringP objectName );
+
+    // Remove a table or view name from the index fetch candidates list
+    void RemoveCandIndex( FdoStringP objectName );
+
     /// Gather all errors for this element and child elements into a chain of exceptions.
     /// Adds each error as an exception, to the given exception chain and returns
     /// the chain.
@@ -261,6 +270,10 @@ public:
 
 	/// Insert Meta class
 	virtual void CreateMetaClass() = 0;
+
+    // Cache the indexes for the given dbObject along with up to 50 other candidates.
+    void CacheCandIndexes( FdoStringP objectName );
+
 protected:
     //Unused constructor needed only to build on Linux
     FdoSmPhOwner() {}
@@ -330,6 +343,12 @@ protected:
     // Returns the number of object candidates to fetch in one operation (See CacheCandDbObjects). 
     virtual FdoInt32 GetCandFetchSize();
 
+protected:
+    // Looks at the index reader to determine the table for the current index.
+    // Caches all indexes for that table from the index reader.
+    // When done, the index reader is positioned at the next table.
+    virtual bool CacheObjectIndexes( FdoPtr<FdoSmPhRdIndexReader> indexReader );
+
 private:
     /// Load Schema Information
     void LoadSchemaInfo();
@@ -340,12 +359,31 @@ private:
     // Caches spatial context to geometric column relationships, and physical spatial contexts.
     void LoadSpatialContexts();
 
+    // Gathers candidate tables for bulk loading indexes. A table is added to the candidates
+    // list if its indexes are needed for reverse-engineering in the following two cases:
+    //      - table has no primary key
+    //      - table has multiple geometric columns.
+    void LoadIndexTableCands();
+    // Gathers candidate tables for a 3rd case:
+    //      - a view is based on the table, but the view does not contain all of the 
+    //        table's primary key columns.
+    // This triggers a load of indexes for all tables that have dependent views. This
+    // could be further refined to skip the table if the view contains all primary key
+    // columns. However, views that don't contain all primary key columns, are probably
+    // rare so this refinement would not likely help performance much.
+    void LoadIndexRootTableCands();
+
+
     bool mDbObjectsCached;              // true if all db objects have been cached.
 	FdoSmPhDbObjectsP mDbObjects;       // collection of cached objects
     FdoDictionaryP mNotFoundObjects;    // collection of object which were queried from the RDBMS but not
                                         // found. Use to prevent repeated attempts to fetch these objects.
 	FdoStringsP mReservedDbObjectNames;
     FdoDictionaryP mCandDbObjects;      // List of candidate objects for fetching from RDBMS. 
+    FdoDictionaryP mCandIndexes;      // List of candidate objects for fetching indexes from RDBMS. 
+
+    bool mCandIndexesLoadedTables;
+    bool mCandIndexesLoadedRootTables;
 
     // Cache of spatial contexts
     FdoSmPhSpatialContextsP mSpatialContexts;

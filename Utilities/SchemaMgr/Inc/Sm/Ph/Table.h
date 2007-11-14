@@ -166,6 +166,9 @@ public:
     // Load this table's indexes from the given reader
     virtual void CacheIndexes( FdoPtr<FdoSmPhRdIndexReader> rdr );
 
+    // Returns true if this table's indexes have been cached.
+    bool IndexesLoaded();
+
     /// Gather all errors for this element and child elements into a chain of exceptions.
     /// Adds each error as an exception, to the given exception chain and returns
     /// the chain.

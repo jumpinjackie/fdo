@@ -292,6 +292,11 @@ void FdoSmPhTable::CacheIndexes( FdoSmPhRdIndexReaderP rdr )
         LoadIndexes( NewTableIndexReader(rdr), true );
 }
 
+bool FdoSmPhTable::IndexesLoaded()
+{
+    return (mIndexes != NULL);
+}
+
 FdoSchemaExceptionP FdoSmPhTable::Errors2Exception(FdoSchemaException* pFirstException ) const
 {
     FdoInt32 i;
@@ -869,7 +874,16 @@ void FdoSmPhTable::LoadCkeys( FdoSmPhReaderP ckeyRdr, bool isSkipAdd )
 void FdoSmPhTable::LoadIndexes(void)
 {
     // Do nothing if already loaded
+
+    // If not loaded, try bulk fetch of indexes for this table plus some other
+    // candidates.
+    if ( !mIndexes && (GetElementState() != FdoSchemaElementState_Added) ) {
+        FdoSmPhOwner* pOwner = (FdoSmPhOwner*) GetParent();
+        pOwner->CacheCandIndexes( GetName() );
+    }
+
 	if ( !mIndexes ) {
+        // Not loaded by bulk fetch, just load indexes for this table.
         mIndexes = new FdoSmPhIndexCollection();
 
         // Skip load if table is new

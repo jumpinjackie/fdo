@@ -241,37 +241,59 @@ FdoStringP FdoSmPhRdClassReader::FindGeometryProperty( FdoSmPhColumnsP cols, boo
     hasGeom = false;
 
     // Find the best main geometry
+
+    // First, check if table has only one geometric column. If it does then 
+    // it is the main geometry. This first loop is done to avoid tripping
+    // index loads for these tables.
     for ( idx = 0; idx < cols->GetCount(); idx++ ) {
-        propScore = 0;
         FdoSmPhColumnP col = cols->GetItem(idx);
         if ( col->GetType() == FdoSmPhColType_Geom ) {
-            FdoSmPhColumnGeomP colGeom = col->SmartCast<FdoSmPhColumnGeom>();
-            if ( colGeom ) {
-                // Found a geometric column, calculate its score.
-                propScore++;
+            if ( geomPropName == L"" ) {
+                geomPropName = col->GetName();
                 hasGeom = true;
+            }
+            else {
+                geomPropName = L"";
+                break;
+            }
+        }
+    }
 
-                // When multiple geometric columns, try to select the one
-                // with spatial index (give it a high score).
-                if ( colGeom->GetSpatialIndex() ) 
-                    propScore += 100;
+    
+    if ( geomPropName == L"" ) {
+        // No single geometric column. Determine the best column to be the main geometry.
+        for ( idx = 0; idx < cols->GetCount(); idx++ ) {
+            propScore = 0;
+            FdoSmPhColumnP col = cols->GetItem(idx);
+            if ( col->GetType() == FdoSmPhColType_Geom ) {
+                FdoSmPhColumnGeomP colGeom = col->SmartCast<FdoSmPhColumnGeom>();
+                if ( colGeom ) {
+                    // Found a geometric column, calculate its score.
+                    propScore++;
+                    hasGeom = true;
 
-                // If spatial index presence doesn't break the tie
-                // give priority to not nullable columns.
-                if ( !colGeom->GetNullable() )
-                    propScore += 10;
+                    // When multiple geometric columns, try to select the one
+                    // with spatial index (give it a high score).
+                    if ( colGeom->GetSpatialIndex() ) 
+                        propScore += 100;
 
-                // Check column's score against previous high score
-                if ( propScore > highestScore ) {
-                    // It has the highest score sofar. Make it the 
-                    // candidate geometryProperty
-                    geomPropName = col->GetName();
-                    highestScore = propScore;
-                }
-                else if ( propScore == highestScore ) {
-                    // A tie with previous highest score, 
-                    // discard current candidate.
-                    geomPropName = L"";
+                    // If spatial index presence doesn't break the tie
+                    // give priority to not nullable columns.
+                    if ( !colGeom->GetNullable() )
+                        propScore += 10;
+
+                    // Check column's score against previous high score
+                    if ( propScore > highestScore ) {
+                        // It has the highest score sofar. Make it the 
+                        // candidate geometryProperty
+                        geomPropName = col->GetName();
+                        highestScore = propScore;
+                    }
+                    else if ( propScore == highestScore ) {
+                        // A tie with previous highest score, 
+                        // discard current candidate.
+                        geomPropName = L"";
+                    }
                 }
             }
         }
