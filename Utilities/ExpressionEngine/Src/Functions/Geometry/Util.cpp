@@ -104,8 +104,6 @@ void FdoExpressionEngineGeometryUtil::ComputeGeometryLength(FdoBoolean computeGe
 
 	case FdoGeometryType_CurveString:
         cs = static_cast<FdoICurveString *>(geometry);
-	    dimensionality = cs->GetDimensionality();
-	    pos = cs->GetStartPosition();
 	    numCurveSegments = cs->GetCount();
 	    for (i=0; i<numCurveSegments; i++)
 	    {
@@ -219,16 +217,18 @@ void FdoExpressionEngineGeometryUtil::ComputeCurveSegmentLength(FdoBoolean compu
 	switch (geomType)
 	{
 	case FdoGeometryComponentType_CircularArcSegment:
-		{			
-			// Needs tesselation. Create a geometry out of this curve.
-			FdoPtr<FdoCurveSegmentCollection>	segs = FdoCurveSegmentCollection::Create();
+		{	
+		    // Needs tesselation. Create a geometry out of this curve.
+            // TODO: at least for non-geodetic arc do exact calculations (unfortunately FdoSpatialUtilityCircularArc
+            // is not exported).
+		    FdoPtr<FdoCurveSegmentCollection>	segs = FdoCurveSegmentCollection::Create();
             segs->Add(curveSeg);
 
-			FdoPtr<FdoFgfGeometryFactory>	gf = FdoFgfGeometryFactory::GetInstance();
+   		    FdoPtr<FdoFgfGeometryFactory>	gf = FdoFgfGeometryFactory::GetInstance();
             FdoPtr<FdoIGeometry> geom = gf->CreateCurveString(segs);
 
-			FdoPtr<FdoIGeometry> curve = FdoSpatialUtility::TesselateCurve(geom);
-			FdoExpressionEngineGeometryUtil::ComputeGeometryLength( computeGeodetic, compute3D, curve, length );
+            FdoPtr<FdoIGeometry> curve = FdoSpatialUtility::TesselateCurve(geom);
+		    FdoExpressionEngineGeometryUtil::ComputeGeometryLength( computeGeodetic, compute3D, curve, length );
 
 			break;
 		}
@@ -239,7 +239,7 @@ void FdoExpressionEngineGeometryUtil::ComputeCurveSegmentLength(FdoBoolean compu
         	FdoInt32 dimensionality = lss->GetDimensionality();
 			FdoInt32 numPositions = lss->GetCount();
             FdoInt32 numOrdsPerPos = FdoExpressionEngineGeometryUtil::DimensionalityToNumOrdinates(dimensionality);
-            FdoInt32 numOrds = (numPositions-1) * numOrdsPerPos;
+            FdoInt32 numOrds = numPositions * numOrdsPerPos;
             const double * ordinates = lss->GetOrdinates();
             *length += FdoExpressionEngineGeometryUtil::ComputeLength(computeGeodetic, compute3D, numOrdsPerPos, numOrds, ordinates);
 
@@ -390,8 +390,6 @@ void FdoExpressionEngineGeometryUtil::ComputeGeometryArea(FdoBoolean computeGeod
     FdoPtr<FdoIDirectPosition> pos;
     FdoIPolygon * poly;
     FdoIMultiPolygon * mpoly;
-    FdoICurveString * cs;
-    FdoIMultiCurveString * mcs;
     FdoICurvePolygon * cpoly;
     FdoIMultiCurvePolygon * mcpoly;
     FdoIMultiGeometry * mgeom;
@@ -403,8 +401,11 @@ void FdoExpressionEngineGeometryUtil::ComputeGeometryArea(FdoBoolean computeGeod
     {
 	case FdoGeometryType_LineString:
 	case FdoGeometryType_MultiLineString:
+	case FdoGeometryType_CurveString:
+	case FdoGeometryType_MultiCurveString:
 	case FdoGeometryType_Point:
 	case FdoGeometryType_MultiPoint:
+
 		// Do nothing
 		break;
 
@@ -431,28 +432,6 @@ void FdoExpressionEngineGeometryUtil::ComputeGeometryArea(FdoBoolean computeGeod
         }
 		break;
 
-	case FdoGeometryType_CurveString:
-        cs = static_cast<FdoICurveString *>(geometry);
-	    dimensionality = cs->GetDimensionality();
-	    pos = cs->GetStartPosition();
-	    numCurveSegments = cs->GetCount();
-	    for (i=0; i<numCurveSegments; i++)
-	    {
-		    FdoPtr<FdoICurveSegmentAbstract> curveSeg = cs->GetItem(i);
-		    FdoExpressionEngineGeometryUtil::ComputeCurveSegmentArea(computeGeodetic, compute3D, curveSeg, area);
-	    }
-		break;
-
-	case FdoGeometryType_MultiCurveString:
-        mcs = static_cast<FdoIMultiCurveString *>(geometry);
-	    numSubGeometries = mcs->GetCount();
-	    for (i=0; i<numSubGeometries; i++)
-	    {
-		    FdoPtr<FdoICurveString> curveString = mcs->GetItem(i);
-            FdoExpressionEngineGeometryUtil::ComputeGeometryLength(computeGeodetic, compute3D, curveString, area);
-	    }
-		break;
-
 	case FdoGeometryType_CurvePolygon:
         cpoly = static_cast<FdoICurvePolygon *>(geometry);
 	    dimensionality = cpoly->GetDimensionality();
@@ -470,12 +449,12 @@ void FdoExpressionEngineGeometryUtil::ComputeGeometryArea(FdoBoolean computeGeod
 
 	case FdoGeometryType_MultiCurvePolygon:
         mcpoly = static_cast<FdoIMultiCurvePolygon *>(geometry);
-	    numSubGeometries = mcpoly->GetCount();
+	    numSubGeometries = mcpoly->GetCount(); 
 	    for (i=0; i<numSubGeometries; i++)
-	    {
-		    FdoPtr<FdoICurvePolygon> curvePolygon = mcpoly->GetItem(i);
+        {
+            FdoPtr<FdoICurvePolygon> curvePolygon = mcpoly->GetItem(i);
             FdoExpressionEngineGeometryUtil::ComputeGeometryArea(computeGeodetic, compute3D, curvePolygon, area);
-	    }
+        }
 		break;
 
 	case FdoGeometryType_MultiGeometry:
@@ -578,7 +557,7 @@ void FdoExpressionEngineGeometryUtil::ComputeCurveSegmentArea(FdoBoolean compute
         		FdoInt32 dimensionality = ls->GetDimensionality();
 				FdoInt32 numPositions = ls->GetCount();
 				FdoInt32 numOrdsPerPos = FdoExpressionEngineGeometryUtil::DimensionalityToNumOrdinates(dimensionality);
-				FdoInt32 numOrds = (numPositions-1) * numOrdsPerPos;
+				FdoInt32 numOrds = numPositions * numOrdsPerPos;
 				const double * ordinates = ls->GetOrdinates();
 				*area += FdoExpressionEngineGeometryUtil::ComputeArea(computeGeodetic, compute3D, numOrdsPerPos, numOrds, ordinates);
 			}
@@ -591,7 +570,7 @@ void FdoExpressionEngineGeometryUtil::ComputeCurveSegmentArea(FdoBoolean compute
     				FdoInt32 dimensionality = ls->GetDimensionality();
 					FdoInt32 numPositions = ls->GetCount();
 					FdoInt32 numOrdsPerPos = FdoExpressionEngineGeometryUtil::DimensionalityToNumOrdinates(dimensionality);
-					FdoInt32 numOrds = (numPositions-1) * numOrdsPerPos;
+					FdoInt32 numOrds = numPositions * numOrdsPerPos;
 					const double * ordinates = ls->GetOrdinates();
 					*area += FdoExpressionEngineGeometryUtil::ComputeArea(computeGeodetic, compute3D, numOrdsPerPos, numOrds, ordinates);
 				}
@@ -610,7 +589,7 @@ void FdoExpressionEngineGeometryUtil::ComputeCurveSegmentArea(FdoBoolean compute
         	FdoInt32 dimensionality = lss->GetDimensionality();
 			FdoInt32 numPositions = lss->GetCount();
             FdoInt32 numOrdsPerPos = FdoExpressionEngineGeometryUtil::DimensionalityToNumOrdinates(dimensionality);
-            FdoInt32 numOrds = (numPositions-1) * numOrdsPerPos;
+            FdoInt32 numOrds = numPositions * numOrdsPerPos;
             const double * ordinates = lss->GetOrdinates();
             *area += FdoExpressionEngineGeometryUtil::ComputeArea(computeGeodetic, compute3D, numOrdsPerPos, numOrds, ordinates);
 
