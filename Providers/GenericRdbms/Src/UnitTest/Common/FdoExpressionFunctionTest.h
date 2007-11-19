@@ -114,6 +114,7 @@ class FdoExpressionFunctionTest : public CppUnit::TestCase
     // =========================================
     // CPPUNIT_TEST(TestConcatFunction);
     // CPPUNIT_TEST(TestInstrFunction);
+    // CPPUNIT_TEST(TestInstrFunctionAsFilter);
     // CPPUNIT_TEST(TestLengthFunction);
     // CPPUNIT_TEST(TestLowerFunction);
     // CPPUNIT_TEST(TestLpadFunction);
@@ -126,7 +127,7 @@ class FdoExpressionFunctionTest : public CppUnit::TestCase
     // CPPUNIT_TEST(TestTrimFunction);
     // CPPUNIT_TEST(TestUpperFunction);
     // =========================================
-    // ====   GEOMETRY FUNCTION UNIT TESTS    ====
+    // ====   GEOMETRY FUNCTION UNIT TESTS  ====
     // =========================================
 	// CPPUNIT_TEST(TestLength2DFunction);
 	// CPPUNIT_TEST(TestArea2DFunction);
@@ -134,6 +135,11 @@ class FdoExpressionFunctionTest : public CppUnit::TestCase
     // ====       RUN ALL UNIT TESTS        ====
     // =========================================
     CPPUNIT_TEST(RunAllExpFctTests);
+    // =========================================
+    // ====       SPECIAL UNIT TESTS        ====
+    // =========================================
+    // CPPUNIT_TEST(RunInstrPittsburgh);
+    // CPPUNIT_TEST(RunUpdate);
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -517,6 +523,12 @@ protected:
 
     virtual void TestInstrFunction ();
 
+    //  TestInstrFunctionAsFilter:
+    //      The function executes the test for the expression engine function
+    //      INSTR when used in a filter.
+
+    virtual void TestInstrFunctionAsFilter ();
+
     //  TestLengthFunction:
     //      The function executes the test for the expression engine function
     //      LENGTH when used as a select-parameter.
@@ -582,6 +594,26 @@ protected:
     //      UPPER when used as a select-parameter.
 
     virtual void TestUpperFunction ();
+
+
+    //-------------------------------------------------------------------------
+    //                         Special Test Functions
+    //-------------------------------------------------------------------------
+
+    //  RunInstrPittsburgh:
+    //      The function tests an issue related to the use of the expression
+    //      function INSTR in a filter against data stored in a SQL Server.
+    //      The reported and confirmed behavior is that in MAP, the filter
+    //      is not applied (there is no problem with this in MySQL, Oracle as
+    //      those RDBMS systems have native support for the expression function
+    //      INSTR).
+
+    virtual void RunInstrPittsburgh ();
+
+    //  RunUpdate:
+    //      ->> FILL
+
+    virtual void RunUpdate ();
 
 
     //-------------------------------------------------------------------------

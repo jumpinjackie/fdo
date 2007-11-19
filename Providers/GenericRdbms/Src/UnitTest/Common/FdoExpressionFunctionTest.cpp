@@ -366,6 +366,7 @@ void FdoExpressionFunctionTest::RunAllExpFctTests ()
     printf("\n");
     TestConcatFunction();
     TestInstrFunction();
+    TestInstrFunctionAsFilter();
     TestLengthFunction();
     TestLowerFunction();
     TestLpadFunction();
@@ -13849,6 +13850,88 @@ void FdoExpressionFunctionTest::TestInstrFunction ()
 
 }  //  TestInstrFunction ()
 
+void FdoExpressionFunctionTest::TestInstrFunctionAsFilter ()
+
+// +---------------------------------------------------------------------------
+// | The function executes the test for the expression engine function INSTR
+// | when used in a filter.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    FdoInt32                  row_count     = 0;
+
+    FdoPtr<FdoFilter>         filter;
+    FdoPtr<FdoIFeatureReader> data_reader;
+
+    printf("\n");
+    printf("========================================================== \n");
+    printf(" Current Unit Test Suite: INSTR Function Filter Testing    \n");
+    printf("========================================================== \n");
+    printf("\n");
+
+    // Define the filter for all tests in this test suite.
+
+    filter = FdoFilter::Parse(L"Instr(str2_val, 'is: 213') = 11");
+
+    // 1. Test Case:
+    // The test executes a select-command to select data from a class table
+    // using a filter that includes the expression function INSTR. The re-
+    // quest should return a sub-set of the available data. No exceptions
+    // are expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select data from a \n");
+    printf("  class table using a filter that includes the expression  \n");
+    printf("  function INSTR. The request should return a sub-set of   \n");
+    printf("  the available data. No exceptions are expected.          \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the number of the returned data. If the
+      // number does not match the expected result, issue an exception.
+
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, NULL);
+
+      printf(" >>> Cross check result \n");
+      while (data_reader->ReadNext())
+        row_count++;
+
+      data_reader->Close();
+
+      // Issue an exception if the expected result is not met.
+
+      if (row_count != 10)
+          throw FdoException::Create(
+                        L"Unexpected result(s) when checking returned data");
+      else
+        printf(" >>> ... All expected data found\n");
+
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+}  //  TestInstrFunctionAsFilter ()
+
 void FdoExpressionFunctionTest::TestLengthFunction ()
 
 // +---------------------------------------------------------------------------
@@ -15484,6 +15567,99 @@ void FdoExpressionFunctionTest::TestUpperFunction ()
     }  //  catch ( ... ) ...
 
 }  //  TestUpperFunction ()
+
+
+// ----------------------------------------------------------------------------
+// --                         Special Test Functions                         --
+// ----------------------------------------------------------------------------
+
+void FdoExpressionFunctionTest::RunInstrPittsburgh ()
+
+// +---------------------------------------------------------------------------
+// | The function tests an issue related to the use of the expression function
+// | INSTR in a filter against data stored in a SQL Server. The reported and
+// | confirmed behavior is that in MAP, the filter is not applied (there is no
+// | problem with this in MySQL, Oracle as those RDBMS systems have native
+// | support for the expression function INSTR).
+// +---------------------------------------------------------------------------
+
+{
+
+    try {
+
+      FdoIConnection *x_con = UnitTestUtil::GetConnection();
+
+      FdoPtr<FdoISelect> sel_cmd = (FdoISelect *) x_con->CreateCommand(FdoCommandType_Select);
+      sel_cmd->SetFeatureClassName(L"Schools");
+      sel_cmd->SetFilter(L"Instr(DISTRICT, 'Pittsburgh') = 9");
+
+      FdoInt32 row_count = 0;
+      FdoPtr<FdoIFeatureReader> freader = sel_cmd->Execute();
+      while (freader->ReadNext())
+        row_count++;
+      freader->Close();
+
+      x_con->Close();
+
+   }  //  try ...
+
+   catch (FdoException *exp) {
+
+     printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+     throw exp;
+
+   }  //  catch ...
+
+   catch ( ... ) {
+
+     throw;
+
+   }  //  catch ...
+
+}  //  RunInstrPittsburgh ()
+
+
+
+void FdoExpressionFunctionTest::RunUpdate ()
+{
+
+    try {
+
+      FdoIConnection *x_con = UnitTestUtil::GetConnection();
+
+      FdoPtr<FdoIUpdate> up_cmd = (FdoIUpdate *) x_con->CreateCommand(FdoCommandType_Update);
+      up_cmd->SetFeatureClassName(L"bayarea_county");
+      up_cmd->SetFilter(L"OBJECTID = 8");
+      FdoPropertyValueCollection *property_values = up_cmd->GetPropertyValues();
+
+      FdoDataValue *data_value = FdoDataValue::Create(L"06095111xx");
+
+      FdoPropertyValue *property_value = FdoPropertyValue::Create();
+      property_value->SetName(L"FIPSSTCO");
+      property_value->SetValue(data_value);
+      property_values->Add(property_value);
+      data_value->Release();
+
+      FdoInt32 x = up_cmd->Execute();
+
+      x_con->Close();
+
+   }  //  try ...
+
+   catch (FdoException *exp) {
+
+     printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+     throw exp;
+
+   }  //  catch ...
+
+   catch ( ... ) {
+
+     throw;
+
+   }  //  catch ...
+
+}  //  RunUpdate ()
 
 
 // ----------------------------------------------------------------------------

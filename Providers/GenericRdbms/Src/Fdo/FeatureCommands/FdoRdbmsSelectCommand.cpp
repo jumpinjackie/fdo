@@ -157,9 +157,7 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
 			return new FdoExpressionEngineUtilFeatureReader(
                                                         classDef,
                                                         featureReader, 
-                                                        ((isValidFilter)
-                                                            ? this->GetFilterRef()
-                                                            : NULL),
+                                                        this->GetFilterRef(),
                                                         mIdentifiers,
                                                         userDefinedFunctions);
 		}
