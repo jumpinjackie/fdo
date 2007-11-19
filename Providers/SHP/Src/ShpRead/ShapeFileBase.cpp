@@ -180,8 +180,14 @@ void ShapeFileBase::GetFileHeaderDetails ()
             (m_nFileShapeType == ePolygonZShape) ||
             (m_nFileShapeType == eMultiPointZShape))
         {
+
+#if 0
+            // Some SHP file use different values for 'no-data' indicator rather than fNO_DATA.
+            // Skip the validation test since a) such value is not standard and b) the Z bounding box 
+            // values are not used.
             if (m_nFileLength * WORD_SIZE_IN_BYTES > SHPHeaderSize) // only check if there are shapes
                 CheckBoundingBox(m_dZMin, m_dZMax, eMinZMaxZ);
+#endif
             m_dMMin = shpHeader.cMMin;
             m_dMMax = shpHeader.cMMax;
             if ((m_dMMin > fNO_DATA) && (m_dMMax > fNO_DATA))
