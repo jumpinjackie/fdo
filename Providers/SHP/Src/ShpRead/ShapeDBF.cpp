@@ -92,7 +92,6 @@ ShapeDBF::ShapeDBF (const WCHAR* name, FdoString* codepageCPG) :
     int nNumColumns;
     int coloff;
     eDBFColumnType eType;
-    unsigned long offset;
 
     _FDORPT0(0, "Creating ShapeDBF object\n");
 
@@ -177,14 +176,10 @@ ShapeDBF::ShapeDBF (const WCHAR* name, FdoString* codepageCPG) :
             _FDORPT4(0, "Column: %d  Name:'%s'  Type:%d  Length:%d\n",i,wszColumnName,eType,pTableFieldDescriptorArray[i].cFieldLength);
         }
 
-        // Save current file pointer location
-		FdoInt64   offset64;
 
-        if (!GetFilePointer64 (offset64))
-            throw FdoCommonFile::LastErrorToException (L"ShapeDBF::ShapeDBF(GetFilePointer64)");
-
-		offset = (ULONG)offset64;
-        m_nRecordStart = (int)offset + 1;  // Need to skip ODh end of header bytes
+        // Save current file pointer location.
+        // Note: some DBF files don't use ODh as the header end indicator. Just trust the header file size.
+        m_nRecordStart = m_DBFHeader.wHeaderSize;
 
         delete [] pTableFieldDescriptorArray;
         pTableFieldDescriptorArray = NULL;
