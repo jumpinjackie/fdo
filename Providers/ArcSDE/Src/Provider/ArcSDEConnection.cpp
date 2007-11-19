@@ -1096,7 +1096,6 @@ void ArcSDEConnection::SetActiveVersion (LONG id)
     SE_VERSIONINFO version;
     LONG result;
     wchar_t buffer[50];
-    LONG access;
 
     // create the empty version object
     result = SE_versioninfo_create (&version);
@@ -1471,8 +1470,11 @@ void ArcSDEConnection::GetArcSDESpatialRefList(SE_SPATIALREFINFO** pSpatialRefIn
                 if (!sqlReader->IsNull(AdjustSystemColumnName(L"srtext")))
                     coordsysWkt = sqlReader->GetString(AdjustSystemColumnName(L"srtext"));
                 lResult = SE_coordref_set_by_description(coordref, coordsysWkt);
-                handle_sde_err<FdoException>(lResult, __FILE__, __LINE__, ARCSDE_FAILED_TO_READ_SRS, "Failed to get or set information for this ArcSDE Spatial Reference System.");
 
+                // Ignore corrupted WKTs
+                if (lResult != SE_SUCCESS)
+                    continue;
+                
                 // Read coordsys extents:
                 double dFalseX  = sqlReader->GetDouble(AdjustSystemColumnName(L"falsex"));
                 double dFalseY  = sqlReader->GetDouble(AdjustSystemColumnName(L"falsey"));
