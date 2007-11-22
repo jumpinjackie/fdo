@@ -2906,7 +2906,7 @@ void FdoApplySchemaTest::CreateNLSSchema( FdoIConnection* connection, StaticConn
 {
 	FdoPtr<FdoFeatureSchema> pSchema = FdoFeatureSchema::Create( 
         FdoStringP::Format(
-            L"%c%c%c", 
+            L"%lc%lc%lc", 
             UnitTestUtil::GetNlsChar(1),
             UnitTestUtil::GetNlsChar(2),
             UnitTestUtil::GetNlsChar(3)
@@ -2917,7 +2917,7 @@ void FdoApplySchemaTest::CreateNLSSchema( FdoIConnection* connection, StaticConn
     /* Name completely non-ASCII7 */
 	FdoPtr<FdoClass> pPersonClass = FdoClass::Create( 
         FdoStringP::Format(
-            L"%c%c%c%c", 
+            L"%lc%lc%lc%lc", 
             UnitTestUtil::GetNlsChar(1),
             UnitTestUtil::GetNlsChar(2),
             UnitTestUtil::GetNlsChar(3),
@@ -2929,7 +2929,7 @@ void FdoApplySchemaTest::CreateNLSSchema( FdoIConnection* connection, StaticConn
 
 	FdoPtr<FdoDataPropertyDefinition> pProp = FdoDataPropertyDefinition::Create( 
         FdoStringP::Format(
-            L"One%c%c%c%c", 
+            L"One%lc%lc%lc%lc", 
             UnitTestUtil::GetNlsChar(1),
             UnitTestUtil::GetNlsChar(2),
             UnitTestUtil::GetNlsChar(3),
@@ -2945,7 +2945,7 @@ void FdoApplySchemaTest::CreateNLSSchema( FdoIConnection* connection, StaticConn
 
 	pProp = FdoDataPropertyDefinition::Create( 
         FdoStringP::Format(
-            L"Two%c%c%c%cplus%c%c%c%cterm", 
+            L"Two%lc%lc%lc%lcplus%lc%lc%lc%lcterm", 
             UnitTestUtil::GetNlsChar(1),
             UnitTestUtil::GetNlsChar(2),
             UnitTestUtil::GetNlsChar(3),
@@ -2965,7 +2965,7 @@ void FdoApplySchemaTest::CreateNLSSchema( FdoIConnection* connection, StaticConn
 
 	pProp = FdoDataPropertyDefinition::Create( 
         FdoStringP::Format(
-            L"Two%c%c%c%cplus%c%c%c%cterm", 
+            L"Two%lc%lc%lc%lcplus%lc%lc%lc%lcterm", 
             UnitTestUtil::GetNlsChar(2),
             UnitTestUtil::GetNlsChar(1),
             UnitTestUtil::GetNlsChar(3),
@@ -2984,7 +2984,7 @@ void FdoApplySchemaTest::CreateNLSSchema( FdoIConnection* connection, StaticConn
 
 	pProp = FdoDataPropertyDefinition::Create( 
         FdoStringP::Format(
-            L"Two%c%c%c%cplus_%c%c%c%c__term", 
+            L"Two%lc%lc%lc%lcplus_%lc%lc%lc%lc__term", 
             UnitTestUtil::GetNlsChar(2),
             UnitTestUtil::GetNlsChar(1),
             UnitTestUtil::GetNlsChar(3),
@@ -3005,7 +3005,7 @@ void FdoApplySchemaTest::CreateNLSSchema( FdoIConnection* connection, StaticConn
 
 	FdoPtr<FdoFeatureClass> pDrvClass = FdoFeatureClass::Create( 
         FdoStringP::Format(
-            L"Three%c%c%c%cplus%cplus%c%c%c%c", 
+            L"Three%lc%lc%lc%lcplus%lcplus%lc%lc%lc%lc", 
             UnitTestUtil::GetNlsChar(1),
             UnitTestUtil::GetNlsChar(2),
             UnitTestUtil::GetNlsChar(3),
@@ -3022,7 +3022,7 @@ void FdoApplySchemaTest::CreateNLSSchema( FdoIConnection* connection, StaticConn
 
 	pProp = FdoDataPropertyDefinition::Create( 
         FdoStringP::Format(
-            L"Three%c%c%c%cplus%c%c%c%cplus%c", 
+            L"Three%lc%lc%lc%lcplus%lc%lc%lc%lcplus%lc", 
             UnitTestUtil::GetNlsChar(1),
             UnitTestUtil::GetNlsChar(2),
             UnitTestUtil::GetNlsChar(3),
@@ -3043,7 +3043,7 @@ void FdoApplySchemaTest::CreateNLSSchema( FdoIConnection* connection, StaticConn
 
     pProp = FdoDataPropertyDefinition::Create( 
         FdoStringP::Format(
-            L"%c%c%c%c'#term", 
+            L"%lc%lc%lc%lc'#term", 
             UnitTestUtil::GetNlsChar(1),
             UnitTestUtil::GetNlsChar(2),
             UnitTestUtil::GetNlsChar(3),
@@ -3057,7 +3057,7 @@ void FdoApplySchemaTest::CreateNLSSchema( FdoIConnection* connection, StaticConn
 
 	FdoPtr<FdoGeometricPropertyDefinition> pGeomProp = FdoGeometricPropertyDefinition::Create( 
         FdoStringP::Format(
-            L"%c%c", 
+            L"%lc%lc", 
             UnitTestUtil::GetNlsChar(1),
             UnitTestUtil::GetNlsChar(2)
         ),
@@ -3073,7 +3073,7 @@ void FdoApplySchemaTest::CreateNLSSchema( FdoIConnection* connection, StaticConn
     // Test adding second geometric property.
 	pGeomProp = FdoGeometricPropertyDefinition::Create( 
         FdoStringP::Format(
-            L"One%c%c", 
+            L"One%lc%lc", 
             UnitTestUtil::GetNlsChar(1),
             UnitTestUtil::GetNlsChar(2)
         ),
@@ -3087,7 +3087,7 @@ void FdoApplySchemaTest::CreateNLSSchema( FdoIConnection* connection, StaticConn
     /* Name completely non-ASCII7 */
 	pPersonClass = FdoClass::Create( 
         FdoStringP::Format(
-            L"%c%c%c%c", 
+            L"%lc%lc%lc%lc", 
             UnitTestUtil::GetNlsChar(4),
             UnitTestUtil::GetNlsChar(1),
             UnitTestUtil::GetNlsChar(2),
@@ -3099,7 +3099,7 @@ void FdoApplySchemaTest::CreateNLSSchema( FdoIConnection* connection, StaticConn
 
 	pProp = FdoDataPropertyDefinition::Create( 
         FdoStringP::Format(
-            L"One%c%c%c%c", 
+            L"One%lc%lc%lc%lc", 
             UnitTestUtil::GetNlsChar(1),
             UnitTestUtil::GetNlsChar(2),
             UnitTestUtil::GetNlsChar(3),
@@ -3115,7 +3115,7 @@ void FdoApplySchemaTest::CreateNLSSchema( FdoIConnection* connection, StaticConn
 
 	pProp = FdoDataPropertyDefinition::Create(
         FdoStringP::Format(
-            L"Two%c%c%c%cplus%c%c%c%cterm", 
+            L"Two%lc%lc%lc%lcplus%lc%lc%lc%lcterm", 
             UnitTestUtil::GetNlsChar(1),
             UnitTestUtil::GetNlsChar(2),
             UnitTestUtil::GetNlsChar(3),
