@@ -585,7 +585,7 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
         FdoPtr<FdoDataValue> dataValue;
         FdoPtr<FdoPropertyValue> propertyValue;
 
-        dataValue = FdoDataValue::Create(UnitTestUtil::GetNlsValue(4));
+        dataValue = FdoDataValue::Create((FdoString *)UnitTestUtil::GetNlsValue(4));
         propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, L"Pr\x00f6vince");
         propertyValue->SetValue(dataValue);
 
@@ -650,7 +650,7 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
 
         reader = insertCommand->Execute();
 
-        dataValue = FdoDataValue::Create(UnitTestUtil::GetNlsValue(2));
+        dataValue = FdoDataValue::Create((FdoString *)UnitTestUtil::GetNlsValue(2));
         propertyValue = propertyValues->GetItem(L"PIN");
         propertyValue->SetValue(dataValue);
 
@@ -747,7 +747,7 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
         filter = FdoComparisonCondition::Create(
             FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"PIN") ),
             FdoComparisonOperations_EqualTo,
-            FdoPtr<FdoDataValue>(FdoDataValue::Create(UnitTestUtil::GetNlsValue(2)) )
+            FdoPtr<FdoDataValue>(FdoDataValue::Create((FdoString *)UnitTestUtil::GetNlsValue(2)) )
         );
         UpdateCommand = (FdoIUpdate *) connection->CreateCommand(FdoCommandType_Update);
         UpdateCommand->SetFeatureClassName(FdoStringP(L"L\x00e4nd:") + UnitTestUtil::GetNlsObjectName(L"Industrial Parcel"));
@@ -895,7 +895,7 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
         filter2 = FdoComparisonCondition::Create(
             FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"PIN") ),
             FdoComparisonOperations_EqualTo,
-            FdoPtr<FdoDataValue>( FdoDataValue::Create(UnitTestUtil::GetNlsValue(2)) )
+            FdoPtr<FdoDataValue>( FdoDataValue::Create((FdoString *)UnitTestUtil::GetNlsValue(2)) )
         );
 
         filter = FdoFilter::Combine(filter1, FdoBinaryLogicalOperations_Or , filter2 );
@@ -983,7 +983,7 @@ void FdoUpdateTest::UpdateSingleIdFeatureClass()
         propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, L"mayor.First N\x00e4me");
         propertyValue->SetValue(dataValue);
 
-        dataValue = FdoDataValue::Create(UnitTestUtil::GetNlsValue(3));
+        dataValue = FdoDataValue::Create((FdoString *) UnitTestUtil::GetNlsValue(3));
         propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, L"mayor.Last Name");
         propertyValue->SetValue(dataValue);
 
