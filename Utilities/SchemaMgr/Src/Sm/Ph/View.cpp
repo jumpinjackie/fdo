@@ -62,11 +62,12 @@ void FdoSmPhView::CacheView( FdoSmPhRdViewReaderP rdr )
 
 void FdoSmPhView::XMLSerialize( FILE* xmlFp, int ref ) const
 {
-	fprintf( xmlFp, "<view name=\"%ls\" description=\"%ls\"\n rootObject=\"%ls.%ls.%ls\" >\n",
-			GetName(), GetDescription(),
-            (FdoString*) GetRootDatabase(),
-            (FdoString*) GetRootOwner(),
-            (FdoString*) GetRootObjectName()
+	fprintf( xmlFp, "<view name=\"%s\" description=\"%s\"\n rootObject=\"%s.%s.%s\" >\n",
+			(const char*) FdoStringP(GetName()), 
+            (const char*) FdoStringP(GetDescription()),
+            (const char*) GetRootDatabase(),
+            (const char*) GetRootOwner(),
+            (const char*) GetRootObjectName()
 	);
 
 	if ( ref == 0 ) {

@@ -26,10 +26,10 @@
 </element>
 </complexType>
 <complexType name="Customer-x20---x20-BusinessType" tableMapping="Concrete">
-<Table pkeyName="PK_CUSTOMER___BUSINESS" name="CUSTOMER___BUSINESS"/>
+<Table pkeyName="PK_CUSTOMER_BUSINESS" name="CUSTOMER_BUSINESS"/>
 </complexType>
 <complexType name="Customer-x20---x20-ResidentialType" tableMapping="Concrete">
-<Table pkeyName="PK_CUSTOMER___RESIDEN1" name="CUSTOMER___RESIDENTIAL"/>
+<Table pkeyName="PK_CUSTOMER_RESIDENTI1" name="CUSTOMER_RESIDENTIAL"/>
 </complexType>
 <complexType name="ElectricDeviceType" tableMapping="Concrete">
 <Table pkeyName="PK_ELECTRICDEVICE" name="ELECTRICDEVICE"/>
@@ -89,10 +89,10 @@
 <PropertyMappingConcrete>
 <Table pkeyName="PK_ELECTRICDEVICE_MAI1" name="ELECTRICDEVICE_MAINT_2"/>
 <element name="It-x27-m-x20--x23-">
-<Column name="IT_M__"/>
+<Column name="IT_M_"/>
 </element>
 <element name="Part-x20--x23-">
-<Column name="PART__"/>
+<Column name="PART_"/>
 </element>
 <element name="Work-x20-Description">
 <Column name="WORK_DESCRIPTION"/>
@@ -126,10 +126,10 @@
 <PropertyMappingConcrete>
 <Table name="MAINT_HISTORY_MAINT_H1"/>
 <element name="It-x27-m-x20--x23-">
-<Column name="IT_M__"/>
+<Column name="IT_M_"/>
 </element>
 <element name="Part-x20--x23-">
-<Column name="PART__"/>
+<Column name="PART_"/>
 </element>
 <element name="Work-x20-Description">
 <Column name="WORK_DESCRIPTION"/>
@@ -143,7 +143,7 @@
 <complexType name="Maint-x20-History-x20-ItemType" tableMapping="Concrete">
 <Table name="MAINT_HISTORY_ITEM"/>
 <element name="Part-x20--x23-">
-<Column name="PART__"/>
+<Column name="PART_"/>
 </element>
 <element name="Work-x20-Description">
 <Column name="WORK_DESCRIPTION"/>
@@ -197,7 +197,7 @@
 <complexType name="Work-x20-ItemType" tableMapping="Concrete">
 <Table name="WORK_ITEM"/>
 <element name="It-x27-m-x20--x23-">
-<Column name="IT_M__"/>
+<Column name="IT_M_"/>
 </element>
 <element name="classname">
 <Column name="CLASSNAME1"/>

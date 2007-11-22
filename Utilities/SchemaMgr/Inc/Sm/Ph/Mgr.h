@@ -473,6 +473,8 @@ public:
 
     virtual bool IsRdbUnicode() = 0;
 
+    // Returns true if database element names must be ASCII7 plus 
+    // '_' or '$' characters.
     virtual bool IsRdbObjNameAscii7();
 
     /// Gets the provider-specific maximum length of a database object (table, view etc.) 
@@ -514,7 +516,15 @@ public:
     /// Censor a database object name. Only alphanumeric characters 
     /// ( or '_' or '$' ) are allowed in a table or column name.
     /// This function replaces other characters with '_'.
-	virtual FdoStringP CensorDbObjectName( FdoStringP objName );
+    /// If the provider does not limit object names to ASCII7 
+    /// (see IsRdbObjNameAscii7()) then this function does nothing, and 
+    /// simply returns the object name given.
+    /// However, if forceAscii7 is true then the name will be censored
+    /// to ASCII7 regardless of what IsRdbObjNameAscii& says.
+    /// When compress is true, consecutive non-ASCII7 characters are 
+    /// collapsed to a single '_'. Otherwise each character gets its 
+    /// own '_'.
+	virtual FdoStringP CensorDbObjectName( FdoStringP objName, bool forceAscii7 = false, bool compress = true );
 
     /// Returns true if the given objName is a reserved word.
     virtual FdoBoolean IsDbObjectNameReserved( FdoStringP objName )

@@ -38,8 +38,8 @@ FdoSmPhRbColumn::~FdoSmPhRbColumn(void)
 
 void FdoSmPhRbColumn::XMLSerialize( FILE* xmlFp, int ref ) const
 {
-	fprintf( xmlFp, "<column name=\"%ls\" >\n",
-			GetName()
+	fprintf( xmlFp, "<column name=\"%s\" >\n",
+			(const char*) FdoStringP(GetName())
 	);
 
 	FdoSmSchemaElement::XMLSerialize( xmlFp, ref );

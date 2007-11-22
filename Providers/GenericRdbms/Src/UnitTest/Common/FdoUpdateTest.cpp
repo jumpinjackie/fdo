@@ -573,19 +573,19 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
         // Clear out any data from previous run.
 
         FdoPtr<FdoIDelete> deleteCommand = (FdoIDelete *) connection->CreateCommand(FdoCommandType_Delete);
-        deleteCommand->SetFeatureClassName(L"L\x00e4nd:Ind\x00fcstri\x00e4l P\x00e4rcel");
+        deleteCommand->SetFeatureClassName(FdoStringP(L"L\x00e4nd:") + UnitTestUtil::GetNlsObjectName(L"Industrial Parcel"));
         deleteCommand->Execute();
         deleteCommand = NULL;
 
         // Create the test data
 
         FdoPtr<FdoIInsert> insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
-        insertCommand->SetFeatureClassName(L"L\x00e4nd:Ind\x00fcstri\x00e4l P\x00e4rcel");
+        insertCommand->SetFeatureClassName(FdoStringP(L"L\x00e4nd:") + UnitTestUtil::GetNlsObjectName(L"Industrial Parcel"));
         FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
         FdoPtr<FdoDataValue> dataValue;
         FdoPtr<FdoPropertyValue> propertyValue;
 
-        dataValue = FdoDataValue::Create(L"Ont\x00e4ri\x00f6");
+        dataValue = FdoDataValue::Create(UnitTestUtil::GetNlsValue(4));
         propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, L"Pr\x00f6vince");
         propertyValue->SetValue(dataValue);
 
@@ -616,7 +616,7 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
         coordsBuffer[1] = 10;
         coordsBuffer[2] = 0;
 
-        propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, L"Geometry");
+        propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, UnitTestUtil::GetNlsObjectName(L"Geometry"));
         FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
 
         bool supportsZ = (FdoPtr<FdoIGeometryCapabilities>(connection->GetGeometryCapabilities())->GetDimensionalities() & FdoDimensionality_Z);
@@ -650,7 +650,7 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
 
         reader = insertCommand->Execute();
 
-        dataValue = FdoDataValue::Create(L"5");
+        dataValue = FdoDataValue::Create(UnitTestUtil::GetNlsValue(2));
         propertyValue = propertyValues->GetItem(L"PIN");
         propertyValue->SetValue(dataValue);
 
@@ -683,7 +683,7 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
 
 
         FdoPtr<FdoIUpdate> UpdateCommand = (FdoIUpdate *) connection->CreateCommand(FdoCommandType_Update);
-        UpdateCommand->SetFeatureClassName(L"L\x00e4nd:Ind\x00fcstri\x00e4l P\x00e4rcel");
+        UpdateCommand->SetFeatureClassName(FdoStringP(L"L\x00e4nd:") + UnitTestUtil::GetNlsObjectName(L"Industrial Parcel"));
         UpdateCommand->SetFilter( filter );
 
         propertyValues = UpdateCommand->GetPropertyValues();
@@ -702,7 +702,7 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
             FdoPtr<FdoDataValue>(FdoDataValue::Create(L"3") )
         );
         UpdateCommand = (FdoIUpdate *) connection->CreateCommand(FdoCommandType_Update);
-        UpdateCommand->SetFeatureClassName(L"L\x00e4nd:Ind\x00fcstri\x00e4l P\x00e4rcel");
+        UpdateCommand->SetFeatureClassName(FdoStringP(L"L\x00e4nd:") + UnitTestUtil::GetNlsObjectName(L"Industrial Parcel"));
         UpdateCommand->SetFilter( filter );
         propertyValues = UpdateCommand->GetPropertyValues();
 
@@ -724,7 +724,7 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
             FdoPtr<FdoDataValue>(FdoDataValue::Create(L"4") )
         );
         UpdateCommand = (FdoIUpdate *) connection->CreateCommand(FdoCommandType_Update);
-        UpdateCommand->SetFeatureClassName(L"L\x00e4nd:Ind\x00fcstri\x00e4l P\x00e4rcel");
+        UpdateCommand->SetFeatureClassName(FdoStringP(L"L\x00e4nd:") + UnitTestUtil::GetNlsObjectName(L"Industrial Parcel"));
         UpdateCommand->SetFilter( filter );
         propertyValues = UpdateCommand->GetPropertyValues();
 
@@ -747,10 +747,10 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
         filter = FdoComparisonCondition::Create(
             FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"PIN") ),
             FdoComparisonOperations_EqualTo,
-            FdoPtr<FdoDataValue>(FdoDataValue::Create(L"5") )
+            FdoPtr<FdoDataValue>(FdoDataValue::Create(UnitTestUtil::GetNlsValue(2)) )
         );
         UpdateCommand = (FdoIUpdate *) connection->CreateCommand(FdoCommandType_Update);
-        UpdateCommand->SetFeatureClassName(L"L\x00e4nd:Ind\x00fcstri\x00e4l P\x00e4rcel");
+        UpdateCommand->SetFeatureClassName(FdoStringP(L"L\x00e4nd:") + UnitTestUtil::GetNlsObjectName(L"Industrial Parcel"));
         UpdateCommand->SetFilter( filter );
         propertyValues = UpdateCommand->GetPropertyValues();
 
@@ -768,7 +768,7 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
 
         coordsBuffer[2] = 5;
 
-        propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, L"Geometry");
+        propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, UnitTestUtil::GetNlsObjectName(L"Geometry"));
 
 		if ( supportsZ )
 			line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, segCount*3, coordsBuffer);
@@ -801,7 +801,7 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
 
         filter = FdoFilter::Combine(filter1, FdoBinaryLogicalOperations_Or , filter2 );
 
-        deleteCommand->SetFeatureClassName(L"L\x00e4nd:Ind\x00fcstri\x00e4l P\x00e4rcel");
+        deleteCommand->SetFeatureClassName(FdoStringP(L"L\x00e4nd:") + UnitTestUtil::GetNlsObjectName(L"Industrial Parcel"));
         deleteCommand->SetFilter( filter );
 
         deleteCommand->Execute();
@@ -813,7 +813,7 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
 
         FdoPtr<FdoISelect> selectCommand = (FdoISelect *) connection->CreateCommand(FdoCommandType_Select);
 
-        selectCommand->SetFeatureClassName( L"L\x00e4nd:Ind\x00fcstri\x00e4l P\x00e4rcel" );
+        selectCommand->SetFeatureClassName( FdoStringP(L"L\x00e4nd:") + UnitTestUtil::GetNlsObjectName(L"Industrial Parcel") );
 
         FdoPtr<FdoIFeatureReader> rdr = selectCommand->Execute();
         FdoPtr<FdoIdentifierCollection> props = selectCommand->GetPropertyNames();
@@ -822,7 +822,6 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
 
         while ( rdr->ReadNext() )
         {
-            rowCount++;
             const wchar_t* pPin = rdr->GetString(L"PIN");
             CPPUNIT_ASSERT( !rdr->IsNull( L"owner" ) );
             FdoPtr<FdoIFeatureReader> rdr2 = rdr->GetFeatureObject( L"owner" );
@@ -833,10 +832,11 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
             {
                 CPPUNIT_ASSERT( rdr->GetInt32(L"Value") == 5000000 );
                 CPPUNIT_ASSERT( rdr->GetInt32(L"# employees") == 200 );
-                CPPUNIT_ASSERT( wcscmp( rdr->GetString(L"Pr\x00f6vince"), L"Ont\x00e4ri\x00f6" ) == 0 );
+                CPPUNIT_ASSERT( wcscmp( rdr->GetString(L"Pr\x00f6vince"), UnitTestUtil::GetNlsValue(4) ) == 0 );
                 CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"First N\x00e4me"), L"J.R." ) == 0 );
                 CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"Last Name"), L"Booth" ) == 0 );
-                CheckGeometry( rdr, L"Geometry", 5, 10, 0 );
+                CheckGeometry( rdr, UnitTestUtil::GetNlsObjectName(L"Geometry"), 5, 10, 0 );
+                rowCount++;
             }
 
             if ( wcscmp( pPin, L"2" ) == 0 )
@@ -845,7 +845,8 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
                 CPPUNIT_ASSERT( rdr->GetInt32(L"# employees") == 250 );
                 CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"First N\x00e4me"), L"J.R." ) == 0 );
                 CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"Last Name"), L"Booth" ) == 0 );
-                CheckGeometry( rdr, L"Geometry", 5, 10, 0 );
+                CheckGeometry( rdr, UnitTestUtil::GetNlsObjectName(L"Geometry"), 5, 10, 0 );
+                rowCount++;
             }
 
             if ( wcscmp( pPin, L"3" ) == 0 )
@@ -854,7 +855,8 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
                 CPPUNIT_ASSERT( rdr->GetInt32(L"# employees") == 200 );
                 CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"First N\x00e4me"), L"E.\x00df." ) == 0 );
                 CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"Last Name"), L"Eddy" ) == 0 );
-                CheckGeometry( rdr, L"Geometry", 5, 10, 0 );
+                CheckGeometry( rdr, UnitTestUtil::GetNlsObjectName(L"Geometry"), 5, 10, 0 );
+                rowCount++;
             }
 
             if ( wcscmp( pPin, L"4" ) == 0 )
@@ -863,16 +865,18 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
                 CPPUNIT_ASSERT( rdr->GetInt32(L"# employees") == 250 );
                 CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"First N\x00e4me"), L"E.B." ) == 0 );
                 CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"Last Name"), L"Eddy" ) == 0 );
-                CheckGeometry( rdr, L"Geometry", 5, 10, 0 );
+                CheckGeometry( rdr, UnitTestUtil::GetNlsObjectName(L"Geometry"), 5, 10, 0 );
+                rowCount++;
             }
 
-            if ( wcscmp( pPin, L"5" ) == 0 )
+            if ( wcscmp( pPin, UnitTestUtil::GetNlsValue(2) ) == 0 )
             {
                 CPPUNIT_ASSERT( rdr->GetInt32(L"Value") == 5000000 );
                 CPPUNIT_ASSERT( rdr->GetInt32(L"# employees") == 250 );
                 CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"First N\x00e4me"), L"E.B." ) == 0 );
                 CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"Last Name"), L"Eddy" ) == 0 );
-				CheckGeometry( rdr, L"Geometry", 5, 10, 5 );
+				CheckGeometry( rdr, UnitTestUtil::GetNlsObjectName(L"Geometry"), 5, 10, 5 );
+                rowCount++;
             }
         }
 
@@ -891,13 +895,13 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
         filter2 = FdoComparisonCondition::Create(
             FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"PIN") ),
             FdoComparisonOperations_EqualTo,
-            FdoPtr<FdoDataValue>(FdoDataValue::Create(L"5") )
+            FdoPtr<FdoDataValue>( FdoDataValue::Create(UnitTestUtil::GetNlsValue(2)) )
         );
 
         filter = FdoFilter::Combine(filter1, FdoBinaryLogicalOperations_Or , filter2 );
 
         selectCommand = (FdoISelect *) connection->CreateCommand(FdoCommandType_Select);
-        selectCommand->SetFeatureClassName( L"L\x00e4nd:Ind\x00fcstri\x00e4l P\x00e4rcel" );
+        selectCommand->SetFeatureClassName( FdoStringP(L"L\x00e4nd:") + UnitTestUtil::GetNlsObjectName(L"Industrial Parcel") );
         selectCommand->SetFilter(filter);
 
         rdr = selectCommand->Execute();
@@ -979,7 +983,7 @@ void FdoUpdateTest::UpdateSingleIdFeatureClass()
         propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, L"mayor.First N\x00e4me");
         propertyValue->SetValue(dataValue);
 
-        dataValue = FdoDataValue::Create(L"McCheese");
+        dataValue = FdoDataValue::Create(UnitTestUtil::GetNlsValue(3));
         propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, L"mayor.Last Name");
         propertyValue->SetValue(dataValue);
 
@@ -1208,7 +1212,7 @@ void FdoUpdateTest::UpdateSingleIdFeatureClass()
             {
                 CPPUNIT_ASSERT( rdr->GetInt32(L"Population") == 800000 );
                 CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"First N\x00e4me"), L"Mayor" ) == 0 );
-                CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"Last Name"), L"McCheese" ) == 0 );
+                CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"Last Name"), UnitTestUtil::GetNlsValue(3) ) == 0 );
                 CheckGeometry( rdr, L"Geometry", 5, 10, 0 );
             }
 
@@ -1216,7 +1220,7 @@ void FdoUpdateTest::UpdateSingleIdFeatureClass()
             {
                 CPPUNIT_ASSERT( rdr->GetInt32(L"Population") == 2500000 );
                 CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"First N\x00e4me"), L"Mayor" ) == 0 );
-                CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"Last Name"), L"McCheese" ) == 0 );
+                CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"Last Name"), UnitTestUtil::GetNlsValue(3) ) == 0 );
                 CheckGeometry( rdr, L"Geometry", 5, 10, 0 );
             }
 

@@ -26,6 +26,8 @@
  * Loads some schemas into a database.
  */
 
+class StaticConnection;
+
 class FdoApplySchemaTest : public CppUnit::TestCase
 {
   CPPUNIT_TEST_SUITE( FdoApplySchemaTest );
@@ -62,6 +64,7 @@ protected:
     void CreateLandSchema( FdoFeatureSchemaCollection* pSchemas );
     void CreateLTSchema( FdoIConnection* connection );
 	void CreateErrorSchema( FdoIConnection* connection );
+	virtual void CreateNLSSchema( FdoIConnection* connection, StaticConnection* staticConn );
 
 	void CreateLongStringSchema( FdoIConnection* connection );
 	void CreateOverrideSchema( FdoIConnection* connection, FdoRdbmsOvPhysicalSchemaMapping* pOverrides = NULL, bool nnull = false, bool addConstraints = true );
@@ -186,7 +189,7 @@ protected:
     void DeleteObjects( FdoIConnection* connection, FdoStringP schemaName, FdoStringP className );
 
     void _logicalPhysicalBend( FdoString* inFile, FdoString* outFile, FdoStringP providerName );
-    void _logicalPhysicalFormat( FdoString* inFile, FdoString* outFile );
+    void _logicalPhysicalFormat( FdoString* inFile, FdoString* outFile, FdoStringP providerName );
     virtual FdoStringP LogicalPhysicalBend( FdoString* inFile );
     virtual FdoStringP LogicalPhysicalFormat( FdoString* inFile );
 

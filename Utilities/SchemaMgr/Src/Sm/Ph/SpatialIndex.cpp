@@ -36,10 +36,10 @@ FdoSmPhSpatialIndex::~FdoSmPhSpatialIndex(void)
 
 void FdoSmPhSpatialIndex::XMLSerialize( FILE* xmlFp, int ref ) const
 {
-	fprintf( xmlFp, "<SpatialIndex name=\"%ls\" unique=\"%ls\" table=\"%ls\">\n",
-			GetName(), 
-            GetIsUnique() ? L"true" : L"false",
-            RefTable() ? RefTable()->GetName() : L""
+	fprintf( xmlFp, "<SpatialIndex name=\"%s\" unique=\"%s\" table=\"%s\">\n",
+			(const char*) FdoStringP(GetName()), 
+            GetIsUnique() ? "true" : "false",
+            RefTable() ? (const char*) FdoStringP(RefTable()->GetName()) : ""
 	);
 
     FdoSmPhDbObject::XMLSerialize(xmlFp, ref);

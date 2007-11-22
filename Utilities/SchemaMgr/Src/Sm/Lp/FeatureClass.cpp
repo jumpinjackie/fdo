@@ -172,7 +172,7 @@ bool FdoSmLpFeatureClass::IsGeomInMetaschema()
 void FdoSmLpFeatureClass::XMLSerializeSubElements(  FILE* xmlFp, int ref ) const
 {
 	if ( RefGeometryProperty() ) 
-		fprintf( xmlFp, "<geometryProperty>%ls</geometryProperty>\n",RefGeometryProperty()->GetName() );
+		fprintf( xmlFp, "<geometryProperty>%s</geometryProperty>\n",(const char*) FdoStringP(RefGeometryProperty()->GetName()) );
 }
 
 void FdoSmLpFeatureClass::PostFinalize()

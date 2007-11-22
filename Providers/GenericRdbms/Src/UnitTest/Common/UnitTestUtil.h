@@ -194,7 +194,7 @@ public:
 
     static void Stream2File( FdoIoStream* stream, FdoString* fileName );
 
-	static void LogicalPhysicalFormat(FdoIoStream* stream1, FdoIoStream* stream2);
+	static void LogicalPhysicalFormat(FdoIoStream* stream1, FdoIoStream* stream2, FdoStringP providerName );
 
     static void LogicalPhysicalBend(FdoIoStream* stream1, FdoIoStream* stream2, FdoStringP providerName );
 
@@ -228,6 +228,10 @@ public:
 
     // Accesses the data on the current row.
     static void ProcessData(FdoIDataReader* reader);
+
+    static wchar_t GetNlsChar( int index );
+    static FdoStringP GetNlsValue( int index );
+    static FdoStringP GetNlsObjectName( FdoStringP inName );
 
 private:
 	static char* pSortConfigSheet;

@@ -569,8 +569,7 @@ bool FdoSmPhMgr::SupportsAnsiQuotes()
 
 bool FdoSmPhMgr::IsRdbObjNameAscii7()
 {
-//future    return !IsRdbUnicode();
-    return true;
+    return false;
 }
 
 FdoSize FdoSmPhMgr::TableNameMaxLen()
@@ -613,10 +612,18 @@ FdoStringP FdoSmPhMgr::DbObject2MetaSchemaName( FdoStringP objectName )
     return objectName;
 }
 
-FdoStringP FdoSmPhMgr::CensorDbObjectName( FdoStringP objName )
+FdoStringP FdoSmPhMgr::CensorDbObjectName( FdoStringP objName, bool forceAscii7, bool compress )
 {
+    if ( (!forceAscii7) && (!IsRdbObjNameAscii7()) ) 
+        // not forcing to ASCII&, and provider supports non-ASCII7 element
+        // names in RDBMS. Leave object name as is.
+        return objName;
+
     wchar_t* workString = (wchar_t*) alloca((objName.GetLength()+1) * sizeof(wchar_t));
     wcscpy(workString, (const wchar_t*)objName);
+
+    size_t iDest = 0;
+    int censor = 0;
 
     for ( size_t i = 0; i < wcslen(workString); i++ ) {
 
@@ -624,21 +631,55 @@ FdoStringP FdoSmPhMgr::CensorDbObjectName( FdoStringP objName )
         FdoStringP midString = objName.Mid( i, 1 );
         unsigned char* workChar = (unsigned char*)((const char *)midString);
 
+        bool charOk = true;
         // Check each utf8 char to see if it is acceptable to the RDBMS.
         for ( size_t j = 0; j < strlen((const char*)workChar); j++ ) {
             // Only alphanumerics, '_' or '$' are valid in a database object name.
             // 8-bit characters are also risky so censor them out even if they pass
             // the isalnum test. Due to the unicode-utf8 conversion, the 8-bit characters
             // in the utf8 string won't look anything like the unicode characters anyway.
+
             if ( (!isalnum(workChar[j])) || (workChar[j] & 0x80) ) {
-                if ( workChar[j] != '$' && workChar[j] != '.' ) {
+                if ( workChar[j] != '_' && workChar[j] != '$' && workChar[j] != '.' ) {
                         // Not all chars ok so change the current unicode character.
-                        workString[i] = '_';
+                        charOk = false;
                         break;
                 }
             }
         }
+
+        if ( charOk )
+            censor = 0;
+        else
+            censor++;
+
+        switch (censor) {
+        case 0:
+            // In State 0, the character is ok so leave it as is.
+            if ( i != iDest ) 
+                // Name has been compressed so shift character to new position.
+                workString[iDest] = workString[i];
+            iDest++;
+            break;
+
+        case 1:
+            // Current character not ok, previous character ok.
+            // Censor current character.
+            workString[iDest++] = '_';
+            break;
+        
+        default:
+            // Current and previous characters not ok.
+            // Suppress writing censor character if compressing.
+            // Representing consecutive censored characters with a
+            // single '_' makes the object name slightly more readable.
+            if ( !compress ) 
+                workString[iDest++] = '_';
+            break;
+        }
     }
+
+    workString[iDest] = 0;
 
     FdoStringP outName(workString);
 

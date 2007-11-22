@@ -87,6 +87,8 @@ public:
 
     virtual FdoBoolean IsDbObjectNameReserved( FdoStringP objName );
 
+    virtual bool IsRdbObjNameAscii7();
+
     virtual FdoSize DbObjectNameMaxLen();
 
     virtual FdoSize ColNameMaxLen();

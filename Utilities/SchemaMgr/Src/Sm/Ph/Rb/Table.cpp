@@ -38,8 +38,8 @@ FdoSmPhRbTable::~FdoSmPhRbTable(void)
 
 void FdoSmPhRbTable::XMLSerialize( FILE* xmlFp, int ref ) const
 {
-	fprintf( xmlFp, "<table name=\"%ls\" >\n",
-			GetName()
+	fprintf( xmlFp, "<table name=\"%s\" >\n",
+			(const char*) FdoStringP(GetName())
 	);
 
 	if ( ref == 0 ) {
