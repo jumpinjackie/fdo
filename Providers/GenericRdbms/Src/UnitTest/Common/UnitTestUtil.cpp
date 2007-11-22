@@ -2302,7 +2302,7 @@ wchar_t UnitTestUtil::GetNlsChar( int index )
 FdoStringP UnitTestUtil::GetNlsValue( int index )
 {
     FdoStringP val = FdoStringP::Format( 
-        L"Val%c%c%c",
+        L"Val%lc%lc%lc",
         GetNlsChar(1),
         GetNlsChar(2),
         GetNlsChar(3)
@@ -2311,20 +2311,20 @@ FdoStringP UnitTestUtil::GetNlsValue( int index )
     switch ( index ) {
         case 1:
             val = FdoStringP::Format( 
-                L"%c",
+                L"%lc",
                 GetNlsChar(1)
             );
             break;
         case 2:
             val = FdoStringP::Format( 
-                L"%c%c",
+                L"%lc%lc",
                 GetNlsChar(1),
                 GetNlsChar(3)
             );
             break;
         case 3:
             val = FdoStringP::Format( 
-                L"%c%c%c",
+                L"%lc%lc%lc",
                 GetNlsChar(1),
                 GetNlsChar(2),
                 GetNlsChar(3)
@@ -2332,7 +2332,7 @@ FdoStringP UnitTestUtil::GetNlsValue( int index )
             break;
         case 4:
             val = FdoStringP::Format( 
-                L"%c%c%c%c",
+                L"%lc%lc%lc%lc",
                 GetNlsChar(4),
                 GetNlsChar(3),
                 GetNlsChar(2),
@@ -2348,7 +2348,7 @@ FdoStringP UnitTestUtil::GetNlsObjectName( FdoStringP inName )
 {
     if ( inName == L"Industrial Parcel" ) 
         return FdoStringP::Format(
-            L"Ind%cstri%c P%crcel",
+            L"Ind%lcstri%lc P%lcrcel",
             GetNlsChar(1),
             GetNlsChar(2),
             GetNlsChar(3)
@@ -2356,7 +2356,7 @@ FdoStringP UnitTestUtil::GetNlsObjectName( FdoStringP inName )
 
     if ( inName == L"Geometry" ) 
         return FdoStringP::Format(
-            L"G%c%cm%ctry",
+            L"G%lc%lcm%lctry",
             GetNlsChar(1),
             GetNlsChar(2),
             GetNlsChar(3)
