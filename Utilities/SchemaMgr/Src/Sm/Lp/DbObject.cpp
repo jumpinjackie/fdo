@@ -167,9 +167,10 @@ FdoSchemaExceptionP FdoSmLpDbObject::Errors2Exception(FdoSchemaException* pFirst
 
 void FdoSmLpDbObject::XMLSerialize( FILE* xmlFp, int ref ) const
 {
-	fprintf( xmlFp, "<table name=\"%ls\" description=\"%ls\" pkeyName=\"%ls\" %ls>\n",
-			RefDbObject()->GetName(), RefDbObject()->GetDescription(), GetPkeyName(),
-            (FdoString*) RefDbObject()->XMLSerializeProviderAtts()
+	fprintf( xmlFp, "<table name=\"%s\" description=\"%s\" pkeyName=\"%s\" %s>\n",
+			(const char*) FdoStringP(RefDbObject()->GetName()), (const char*) FdoStringP(RefDbObject()->GetDescription()), 
+            (const char*) FdoStringP(GetPkeyName()),
+            (const char*) RefDbObject()->XMLSerializeProviderAtts()
 	);
 
 	if ( RefTargetDbObject() ) {

@@ -202,11 +202,19 @@ void FdoApplySchemaTest::TestSchema ()
         CreateLongStringSchema( connection );
 #endif
 
+#ifndef RDBI_DEF_SSQL
+        printf( "Testing non-ASCII7 element names ... \n" );
+        CreateNLSSchema( connection, staticConn );
+#endif
         printf( "Writing 3rd LogicalPhysical Schema ... \n" );
         mgr = staticConn->CreateSchemaManager();
         lp = mgr->RefLogicalPhysicalSchemas();
         lp->XMLSerialize( UnitTestUtil::GetOutputFileName( L"apply_schema_test3.xml" ) );
 
+#ifdef RDBI_DEF_SSQL
+        printf( "Testing non-ASCII7 element names ... \n" );
+        CreateNLSSchema( connection, staticConn );
+#endif
 /*
 		printf( "Testing Join Tree retrieval ... \n" );
 		GetJoinTree( sm );
@@ -241,7 +249,6 @@ void FdoApplySchemaTest::TestSchema ()
 
         FdoStringP out1master = LogicalPhysicalBend(L"apply_schema_test1_master.txt");
         FdoStringP out1       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_test1.xml" ) );
-
         FdoStringP out2master = LogicalPhysicalBend(L"apply_schema_test2_master.txt");
         FdoStringP out2       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_test2.xml" ) );
         FdoStringP out3master = LogicalPhysicalBend(L"apply_schema_test3_master.txt");
@@ -250,7 +257,6 @@ void FdoApplySchemaTest::TestSchema ()
         FdoStringP out4       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_test4.xml" ) );
         FdoStringP out5master = LogicalPhysicalBend(L"apply_schema_test5_master.txt");
         FdoStringP out5       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_test5.xml" ) );
-        
         UnitTestUtil::CheckOutput( (const char*) out1master,(const char*) out1 );
         UnitTestUtil::CheckOutput( (const char*) out2master,(const char*) out2 );
         UnitTestUtil::CheckOutput( (const char*) out3master,(const char*) out3 );
@@ -491,6 +497,15 @@ void FdoApplySchemaTest::TestOverrides ()
         pDescMappingCmd->SetSchemaName( L"NoExist" );
         FdoSchemaMappingsP mappings = pDescMappingCmd->Execute();
         CPPUNIT_ASSERT( mappings->GetCount() == 0 );
+
+#ifdef RDBI_DEF_SSQL
+        const FdoSmLpGeometricPropertyDefinition* geomProp = FdoSmLpGeometricPropertyDefinition::Cast(
+            lp->RefItem(L"OverridesA")->RefClasses()->RefItem(L"OvClassA")->RefProperties()->RefItem(L"GeomA")
+        );
+
+        CPPUNIT_ASSERT( wcscmp(geomProp->GetColumnNameSi1(), L"GEOMA_SI_1") == 0 );
+        CPPUNIT_ASSERT( wcscmp(geomProp->GetColumnNameSi2(), L"GEOMA_SI_2") == 0 );
+#endif
 
 #ifdef RDBI_DEF_ORA
 		// grant access to foreign datastore.
@@ -1037,7 +1052,11 @@ void FdoApplySchemaTest::TestLT ()
 #ifdef RDBI_DEF_ORA
         pTable = ph->FindDbObject(L"CIRCLE_LT1_GRIP",L"",L"",false);
 #else
+#ifdef RDBI_DEF_SSQL
+        pTable = ph->FindDbObject(L"circle lt_grip",L"",L"",false);
+#else
         pTable = ph->FindDbObject(L"CIRCLE_LT_GRIP",L"",L"",false);
+#endif
 #endif
         column = pTable->RefColumns()->RefItem( ph->GetDcColumnName(L"LTID") );
         CPPUNIT_ASSERT( (LtLckMethod == 1) == (column != NULL) );
@@ -1743,8 +1762,8 @@ void FdoApplySchemaTest::DeleteAcadSchema( FdoIConnection* connection )
 
 void FdoApplySchemaTest::DeleteLandSchema( FdoIConnection* connection )
 {
-	UnitTestUtil::Sql2Db( L"delete from a1_8_school", connection );
-	UnitTestUtil::Sql2Db( L"delete from driveway", connection );
+    DeleteObjects( connection, L"Land", L"1-8 School" );
+    DeleteObjects( connection, L"Land", L"Driveway" );
 	UnitTestUtil::Sql2Db( L"delete from parcel_person", connection );
 
 	FdoPtr<FdoIDestroySchema>  pCmd = (FdoIDestroySchema*) connection->CreateCommand(FdoCommandType_DestroySchema);
@@ -2218,7 +2237,11 @@ void FdoApplySchemaTest::CreateLandSchema( FdoIConnection* connection )
 
     InsertObject(connection, false, L"Land", L"1-8 School", L"# Rooms", L"20", NULL );
     InsertObject(connection, false, L"Land", L"Driveway", L"Pav'd", L"1", NULL );
-	UnitTestUtil::Sql2Db( L"insert into parcel_person ( first_name, last_name, parcel_province, parcel_pin ) values ( 'Fraser', 'Simon', 'Ontario', '1234-5678' )", connection );
+#ifdef RDBI_DEF_SSQL
+    UnitTestUtil::Sql2Db( L"insert into parcel_person ( \"first name\", \"last name\", parcel_province, parcel_pin ) values ( 'Fraser', 'Simon', 'Ontario', '1234-5678' )", connection );
+#else
+    UnitTestUtil::Sql2Db( L"insert into parcel_person ( first_name, last_name, parcel_province, parcel_pin ) values ( 'Fraser', 'Simon', 'Ontario', '1234-5678' )", connection );
+#endif
 }
 
 void FdoApplySchemaTest::CreateLandSchema( FdoFeatureSchemaCollection* pSchemas )
@@ -2879,6 +2902,244 @@ void FdoApplySchemaTest::CreateErrorSchema( FdoIConnection* connection )
 
 }
 
+void FdoApplySchemaTest::CreateNLSSchema( FdoIConnection* connection, StaticConnection* /*staticConn*/ )
+{
+	FdoPtr<FdoFeatureSchema> pSchema = FdoFeatureSchema::Create( 
+        FdoStringP::Format(
+            L"%c%c%c", 
+            UnitTestUtil::GetNlsChar(1),
+            UnitTestUtil::GetNlsChar(2),
+            UnitTestUtil::GetNlsChar(3)
+        ),
+        L"NLS Schema"
+    );
+
+    /* Name completely non-ASCII7 */
+	FdoPtr<FdoClass> pPersonClass = FdoClass::Create( 
+        FdoStringP::Format(
+            L"%c%c%c%c", 
+            UnitTestUtil::GetNlsChar(1),
+            UnitTestUtil::GetNlsChar(2),
+            UnitTestUtil::GetNlsChar(3),
+            UnitTestUtil::GetNlsChar(4)
+        ),
+        L"" 
+    );
+	pPersonClass->SetIsAbstract(false);
+
+	FdoPtr<FdoDataPropertyDefinition> pProp = FdoDataPropertyDefinition::Create( 
+        FdoStringP::Format(
+            L"One%c%c%c%c", 
+            UnitTestUtil::GetNlsChar(1),
+            UnitTestUtil::GetNlsChar(2),
+            UnitTestUtil::GetNlsChar(3),
+            UnitTestUtil::GetNlsChar(4)
+        ),
+        L"" 
+    );
+	pProp->SetDataType( FdoDataType_String );
+	pProp->SetNullable(false);
+	pProp->SetLength(50);
+	FdoPropertiesP(pPersonClass->GetProperties())->Add( pProp );
+	FdoDataPropertiesP(pPersonClass->GetIdentityProperties())->Add( pProp );
+
+	pProp = FdoDataPropertyDefinition::Create( 
+        FdoStringP::Format(
+            L"Two%c%c%c%cplus%c%c%c%cterm", 
+            UnitTestUtil::GetNlsChar(1),
+            UnitTestUtil::GetNlsChar(2),
+            UnitTestUtil::GetNlsChar(3),
+            UnitTestUtil::GetNlsChar(4),
+            UnitTestUtil::GetNlsChar(4),
+            UnitTestUtil::GetNlsChar(3),
+            UnitTestUtil::GetNlsChar(2),
+            UnitTestUtil::GetNlsChar(1)
+        ),
+        L""
+    );
+	pProp->SetDataType( FdoDataType_String );
+	pProp->SetNullable(false);
+	pProp->SetLength(50);
+	FdoPropertiesP(pPersonClass->GetProperties())->Add( pProp );
+	FdoDataPropertiesP(pPersonClass->GetIdentityProperties())->Add( pProp );
+
+	pProp = FdoDataPropertyDefinition::Create( 
+        FdoStringP::Format(
+            L"Two%c%c%c%cplus%c%c%c%cterm", 
+            UnitTestUtil::GetNlsChar(2),
+            UnitTestUtil::GetNlsChar(1),
+            UnitTestUtil::GetNlsChar(3),
+            UnitTestUtil::GetNlsChar(4),
+            UnitTestUtil::GetNlsChar(4),
+            UnitTestUtil::GetNlsChar(3),
+            UnitTestUtil::GetNlsChar(2),
+            UnitTestUtil::GetNlsChar(1)
+        ),
+        L"" 
+    );
+	pProp->SetDataType( FdoDataType_String );
+	pProp->SetNullable(false);
+	pProp->SetLength(50);
+	FdoPropertiesP(pPersonClass->GetProperties())->Add( pProp );
+
+	pProp = FdoDataPropertyDefinition::Create( 
+        FdoStringP::Format(
+            L"Two%c%c%c%cplus_%c%c%c%c__term", 
+            UnitTestUtil::GetNlsChar(2),
+            UnitTestUtil::GetNlsChar(1),
+            UnitTestUtil::GetNlsChar(3),
+            UnitTestUtil::GetNlsChar(4),
+            UnitTestUtil::GetNlsChar(2),
+            UnitTestUtil::GetNlsChar(3),
+            UnitTestUtil::GetNlsChar(1),
+            UnitTestUtil::GetNlsChar(4)
+        ),
+        L"" 
+    );
+	pProp->SetDataType( FdoDataType_String );
+	pProp->SetNullable(false);
+	pProp->SetLength(50);
+	FdoPropertiesP(pPersonClass->GetProperties())->Add( pProp );
+
+    FdoClassesP(pSchema->GetClasses())->Add( pPersonClass );
+
+	FdoPtr<FdoFeatureClass> pDrvClass = FdoFeatureClass::Create( 
+        FdoStringP::Format(
+            L"Three%c%c%c%cplus%cplus%c%c%c%c", 
+            UnitTestUtil::GetNlsChar(1),
+            UnitTestUtil::GetNlsChar(2),
+            UnitTestUtil::GetNlsChar(3),
+            UnitTestUtil::GetNlsChar(4),
+            UnitTestUtil::GetNlsChar(3),
+            UnitTestUtil::GetNlsChar(2),
+            UnitTestUtil::GetNlsChar(3),
+            UnitTestUtil::GetNlsChar(1),
+            UnitTestUtil::GetNlsChar(4)
+        ),
+        L"" 
+    );
+	pDrvClass->SetIsAbstract(false);
+
+	pProp = FdoDataPropertyDefinition::Create( 
+        FdoStringP::Format(
+            L"Three%c%c%c%cplus%c%c%c%cplus%c", 
+            UnitTestUtil::GetNlsChar(1),
+            UnitTestUtil::GetNlsChar(2),
+            UnitTestUtil::GetNlsChar(3),
+            UnitTestUtil::GetNlsChar(4),
+            UnitTestUtil::GetNlsChar(2),
+            UnitTestUtil::GetNlsChar(3),
+            UnitTestUtil::GetNlsChar(1),
+            UnitTestUtil::GetNlsChar(4),
+            UnitTestUtil::GetNlsChar(3)
+        ),
+        L"" 
+    );
+	pProp->SetDataType( FdoDataType_Int64 );
+	pProp->SetNullable(false);
+    pProp->SetIsAutoGenerated(true);
+	FdoPropertiesP(pDrvClass->GetProperties())->Add( pProp );
+	FdoDataPropertiesP(pDrvClass->GetIdentityProperties())->Add( pProp );
+
+    pProp = FdoDataPropertyDefinition::Create( 
+        FdoStringP::Format(
+            L"%c%c%c%c'#term", 
+            UnitTestUtil::GetNlsChar(1),
+            UnitTestUtil::GetNlsChar(2),
+            UnitTestUtil::GetNlsChar(3),
+            UnitTestUtil::GetNlsChar(4)
+        ),
+        L"'''" 
+    );
+	pProp->SetDataType( FdoDataType_Boolean );
+	pProp->SetNullable(false);
+	FdoPropertiesP(pDrvClass->GetProperties())->Add( pProp );
+
+	FdoPtr<FdoGeometricPropertyDefinition> pGeomProp = FdoGeometricPropertyDefinition::Create( 
+        FdoStringP::Format(
+            L"%c%c", 
+            UnitTestUtil::GetNlsChar(1),
+            UnitTestUtil::GetNlsChar(2)
+        ),
+        L"location's" 
+    );
+	pGeomProp->SetGeometryTypes( FdoGeometricType_Curve );
+    FdoGeometryType geoms[] = {FdoGeometryType_LineString, FdoGeometryType_MultiLineString};
+    pGeomProp->SetSpecificGeometryTypes( geoms, 2 );
+    pGeomProp->SetHasMeasure(true);
+	FdoPropertiesP(pDrvClass->GetProperties())->Add( pGeomProp );
+	pDrvClass->SetGeometryProperty(pGeomProp);
+
+    // Test adding second geometric property.
+	pGeomProp = FdoGeometricPropertyDefinition::Create( 
+        FdoStringP::Format(
+            L"One%c%c", 
+            UnitTestUtil::GetNlsChar(1),
+            UnitTestUtil::GetNlsChar(2)
+        ),
+        L"secondary geometry" 
+    );
+	pGeomProp->SetGeometryTypes( FdoGeometricType_Point  );
+	FdoPropertiesP(pDrvClass->GetProperties())->Add( pGeomProp );
+
+	FdoClassesP(pSchema->GetClasses())->Add( pDrvClass );
+
+    /* Name completely non-ASCII7 */
+	pPersonClass = FdoClass::Create( 
+        FdoStringP::Format(
+            L"%c%c%c%c", 
+            UnitTestUtil::GetNlsChar(4),
+            UnitTestUtil::GetNlsChar(1),
+            UnitTestUtil::GetNlsChar(2),
+            UnitTestUtil::GetNlsChar(3)
+        ),
+        L"" 
+    );
+	pPersonClass->SetIsAbstract(false);
+
+	pProp = FdoDataPropertyDefinition::Create( 
+        FdoStringP::Format(
+            L"One%c%c%c%c", 
+            UnitTestUtil::GetNlsChar(1),
+            UnitTestUtil::GetNlsChar(2),
+            UnitTestUtil::GetNlsChar(3),
+            UnitTestUtil::GetNlsChar(4)
+        ),
+        L"" 
+    );
+	pProp->SetDataType( FdoDataType_String );
+	pProp->SetNullable(false);
+	pProp->SetLength(50);
+	FdoPropertiesP(pPersonClass->GetProperties())->Add( pProp );
+	FdoDataPropertiesP(pPersonClass->GetIdentityProperties())->Add( pProp );
+
+	pProp = FdoDataPropertyDefinition::Create(
+        FdoStringP::Format(
+            L"Two%c%c%c%cplus%c%c%c%cterm", 
+            UnitTestUtil::GetNlsChar(1),
+            UnitTestUtil::GetNlsChar(2),
+            UnitTestUtil::GetNlsChar(3),
+            UnitTestUtil::GetNlsChar(4),
+            UnitTestUtil::GetNlsChar(4),
+            UnitTestUtil::GetNlsChar(3),
+            UnitTestUtil::GetNlsChar(2),
+            UnitTestUtil::GetNlsChar(1)
+        ),
+        L""
+    );
+	pProp->SetDataType( FdoDataType_String );
+	pProp->SetNullable(false);
+	pProp->SetLength(50);
+	FdoPropertiesP(pPersonClass->GetProperties())->Add( pProp );
+	FdoDataPropertiesP(pPersonClass->GetIdentityProperties())->Add( pProp );
+
+    FdoClassesP(pSchema->GetClasses())->Add( pPersonClass );
+
+    FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
+    pCmd->SetFeatureSchema( pSchema );
+	pCmd->Execute();
+}
+
 void FdoApplySchemaTest::ModElectricSchema( FdoIConnection* connection )
 {
 	/* Test modifying an existing schema */
@@ -3298,7 +3559,7 @@ void FdoApplySchemaTest::DelPropertyError( FdoIConnection* connection )
 	if ( succeeded ) 
 		CPPUNIT_FAIL( "Invalid modifications were supposed to fail" );
 
-   	UnitTestUtil::Sql2Db( L"delete from a1_8_school", connection );
+   	DeleteObjects( connection, L"Land", L"1-8 School" );
 
     // Retest with empty school table. This time we shouldn't get the
     // "school has rows" error message when Build'g.Geometry is deleted.
@@ -5906,14 +6167,9 @@ void FdoApplySchemaTest::InsertObject( FdoIConnection* connection, bool conditio
 
 void FdoApplySchemaTest::DeleteObjects( FdoIConnection* connection, FdoStringP schemaName, FdoStringP className )
 {
-
-    StartLongTransaction( connection, schemaName );
-
     FdoPtr<FdoIDelete> deleteCommand = (FdoIDelete *) connection->CreateCommand(FdoCommandType_Delete);
     deleteCommand->SetFeatureClassName(schemaName + L":" + className);
 	deleteCommand->Execute();
-
-    EndLongTransaction( connection );
 }
 
 void FdoApplySchemaTest::_logicalPhysicalBend( FdoString* inFile, FdoString* outFile, FdoStringP providerName )
@@ -5930,13 +6186,14 @@ void FdoApplySchemaTest::_logicalPhysicalBend( FdoString* inFile, FdoString* out
     UnitTestUtil::Stream2File( stream2, outFile );
 }
 
-void FdoApplySchemaTest::_logicalPhysicalFormat( FdoString* inFile, FdoString* outFile )
+void FdoApplySchemaTest::_logicalPhysicalFormat( FdoString* inFile, FdoString* outFile, FdoStringP providerName )
 {
     FdoIoFileStreamP stream1 = FdoIoFileStream::Create( inFile, L"rt" );
     FdoIoMemoryStreamP stream2 = FdoIoMemoryStream::Create();
     UnitTestUtil::LogicalPhysicalFormat( 
         stream1, 
-        stream2
+        stream2,
+        providerName
     );
 
     stream2->Reset();
@@ -5966,7 +6223,7 @@ FdoStringP FdoApplySchemaTest::SchemaOvErrFile( int fileNum, bool isMaster )
 	if (isMaster)
 		return FdoStringP::Format( L"apply_schema_overrides_err%d%ls.txt", fileNum, L"_master");
 	else
-		return UnitTestUtil::GetOutputFileName( FdoStringP::Format( L"apply_schema_overrides_err%d%ls.txt", fileNum, L"_master") );
+		return UnitTestUtil::GetOutputFileName( FdoStringP::Format( L"apply_schema_overrides_err%d.txt", fileNum) );
 }
 
 FdoRdbmsOvClassDefinition* FdoApplySchemaTest::CreateOvClassDefinition(FdoString *name)

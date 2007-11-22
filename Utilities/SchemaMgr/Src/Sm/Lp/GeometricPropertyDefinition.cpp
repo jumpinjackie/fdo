@@ -469,23 +469,23 @@ FdoSchemaExceptionP FdoSmLpGeometricPropertyDefinition::Errors2Exception(FdoSche
 void FdoSmLpGeometricPropertyDefinition::XMLSerialize( FILE* xmlFp, int ref ) const
 {
 	if ( ref == 0 ) {
-		fprintf( xmlFp, "<property xsi:type=\"%ls\" name=\"%ls\" description=\"%ls\"\ngeometricTypes=\"%ld\" geometryTypes=\"%ld\" hasElevation=\"%s\" hasMeasure=\"%s\"\n tableName=\"%ls\" columnName=\"%ls\" colCreator=\"%s\" fixedCol=\"%s\" >\n",
+		fprintf( xmlFp, "<property xsi:type=\"%ls\" name=\"%s\" description=\"%s\"\ngeometricTypes=\"%ld\" geometryTypes=\"%ld\" hasElevation=\"%s\" hasMeasure=\"%s\"\n tableName=\"%s\" columnName=\"%s\" colCreator=\"%s\" fixedCol=\"%s\" >\n",
                 (FdoString*) FdoSmLpPropertyTypeMapper::Type2String(GetPropertyType()),
-				GetName(), GetDescription(),
+				(const char*) FdoStringP(GetName()), (const char*) FdoStringP(GetDescription()),
 				GetGeometryTypes(),
 				GetSpecificGeometryTypes(),
 				GetHasElevation() ? "True" : "False",
 				GetHasMeasure() ? "True" : "False",
-				GetContainingDbObjectName(),
-				GetColumnName(),
+				(const char*) FdoStringP(GetContainingDbObjectName()),
+				(const char*) FdoStringP(GetColumnName()),
 				GetIsColumnCreator() ? "True" : "False",
 				GetIsFixedColumn() ? "True" : "False"
 		);
 
 		if ( RefDefiningClass() &&
 			RefBaseProperty() ) 
-			fprintf( xmlFp, "<Inherited baseClass=\"%ls\" />\n",
-				RefDefiningClass()->GetName()
+			fprintf( xmlFp, "<Inherited baseClass=\"%s\" />\n",
+				(const char*) FdoStringP(RefDefiningClass()->GetName())
 			);
 
 		if ( RefColumn() ) 
@@ -496,9 +496,9 @@ void FdoSmLpGeometricPropertyDefinition::XMLSerialize( FILE* xmlFp, int ref ) co
 		fprintf( xmlFp, "</property>\n" );
     }
 	else {
-		fprintf( xmlFp, "<property xsi:type=\"%ls\" name=\"%ls\" />\n",
+		fprintf( xmlFp, "<property xsi:type=\"%ls\" name=\"%s\" />\n",
 				(FdoString*) FdoSmLpPropertyTypeMapper::Type2String(GetPropertyType()),
-				GetName()
+				(const char*) FdoStringP(GetName())
 		);
 	}
 }
@@ -808,7 +808,12 @@ void FdoSmLpGeometricPropertyDefinition::AddSiColumns()
         // CensorDbObjectName temporarily here, because this code is used to formulate
         // names of existing SI columns, in addition to the names of new ones.
         // After lookup is supported, this should only be used for new SI columns.
-        name = pPhysical->CensorDbObjectName(name);
+        // Censoring to ASCII7 is forced because the mapping from property to
+        // SI column name is implicit and cannot change until we're allowed to
+        // break format compatibility between FDO versions. 
+        // TODO: add this mapping to the MetaSchema to avoid this compatibility
+        // issue in the future.
+        name = pPhysical->CensorDbObjectName(name, true, false);
     	//name = ((FdoSmLpClassDefinition*)RefParentClass())->UniqueColumnName( 
         //    pPhDbObject, this, name, false);
         if (NULL != columns)
@@ -821,7 +826,12 @@ void FdoSmLpGeometricPropertyDefinition::AddSiColumns()
         name = columnName;
         name += FDOSMLP_SI_COLUMN_2_NAME;
         name = name.Upper();
-        name = pPhysical->CensorDbObjectName(name);
+        // Censoring to ASCII7 is forced because the mapping from property to
+        // SI column name is implicit and cannot change until we're allowed to
+        // break format compatibility between FDO versions. 
+        // TODO: add this mapping to the MetaSchema to avoid this compatibility
+        // issue in the future.
+        name = pPhysical->CensorDbObjectName(name, true, false);
     	//name = ((FdoSmLpClassDefinition*)RefParentClass())->UniqueColumnName( 
         //    pPhDbObject, this, name, false);
         if (NULL != columns)

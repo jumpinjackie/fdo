@@ -3232,12 +3232,12 @@ void FdoSmLpClassBase::AddUkeyBasePropError(FdoDataPropertyDefinition* pProp)
 void FdoSmLpClassBase::XMLSerialize( FILE* xmlFp, int ref  ) const
 {
 	if ( ref == 0 ) {
-		fprintf( xmlFp, "<class xsi:type=\"%ls\" name=\"%ls\" description=\"%ls\"\n baseClass=\"%ls\" abstract=\"%s\"\n tableName=\"%ls\" tblCreator=\"%s\" fixedTbl=\"%s\" >\n",
+		fprintf( xmlFp, "<class xsi:type=\"%ls\" name=\"%s\" description=\"%s\"\n baseClass=\"%s\" abstract=\"%s\"\n tableName=\"%s\" tblCreator=\"%s\" fixedTbl=\"%s\" >\n",
                 (FdoString*) FdoSmLpClassTypeMapper::Type2String(GetClassType()), 
-				GetName(), GetDescription(),
-				RefBaseClass() ? RefBaseClass()->GetName() : L"", 
+				(const char*) FdoStringP(GetName()), (const char*) FdoStringP(GetDescription()),
+				RefBaseClass() ? (const char*) FdoStringP(RefBaseClass()->GetName()) : "", 
 				GetIsAbstract() ? "True" : "False",
-				GetDbObjectName(),
+				(const char*) FdoStringP(GetDbObjectName()),
                 IsDbObjectCreator() ? "True" : "False",
                 GetIsFixedDbObject() ? "True" : "False"
 		);
@@ -3295,7 +3295,7 @@ void FdoSmLpClassBase::XMLSerialize( FILE* xmlFp, int ref  ) const
 	else {
 		fprintf( xmlFp, "<class xsi:type=\"%ls\" name=\"%ls\" />\n",
                 (FdoString*) FdoSmLpClassTypeMapper::Type2String(GetClassType()), 
-				GetName() 
+				(const char*) FdoStringP(GetName()) 
 		);
 	}
 

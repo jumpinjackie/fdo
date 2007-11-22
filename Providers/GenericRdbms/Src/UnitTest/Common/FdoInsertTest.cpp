@@ -317,7 +317,7 @@ void FdoInsertTest::MainInsertTest (FdoIConnection *conn)
                         propertyValue = AddNewProperty( propertyValues3, L"PIN");
                         propertyValue->SetValue(dataValue);
 
-                        propertyValue = AddNewProperty( propertyValues3, L"Geometry");
+                        propertyValue = AddNewProperty( propertyValues3, UnitTestUtil::GetNlsObjectName(L"Geometry"));
                         propertyValue->SetValue(geometryValue);
 
 //                        if( count1 > 7 )

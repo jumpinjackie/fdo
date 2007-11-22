@@ -166,6 +166,11 @@ FdoBoolean FdoSmPhMySqlMgr::IsDbObjectNameReserved( FdoStringP objName )
     return mMySqlReservedDbObjectNames.IsReserved( objName );
 }
 
+bool FdoSmPhMySqlMgr::IsRdbObjNameAscii7()
+{
+    return true;
+}
+
 FdoSize FdoSmPhMySqlMgr::DbObjectNameMaxLen()
 {
     return 64;

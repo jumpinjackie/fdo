@@ -505,8 +505,8 @@ void FdoSmLpSchema::AddClassNotExistsError( FdoString* className )
 
 void FdoSmLpSchema::XMLSerialize( FILE* xmlFp, int ref ) const
 {
-	fprintf( xmlFp, "<schema name=\"%ls\" description=\"%ls\" >\n",
-		GetName(), GetDescription() );
+	fprintf( xmlFp, "<schema name=\"%s\" description=\"%s\" >\n",
+        (const char*) FdoStringP(GetName()), (const char*) FdoStringP(GetDescription()) );
 
 	if ( ref == 0 ) {
 		const FdoSmLpClassCollection* classes = RefClasses();

@@ -128,10 +128,10 @@ bool FdoSmPhIndex::CheckCommitDependencies( bool fromParent, bool isBeforeParent
 
 void FdoSmPhIndex::XMLSerialize( FILE* xmlFp, int ref ) const
 {
-	fprintf( xmlFp, "<dbmsIndex name=\"%ls\" unique=\"%ls\" table=\"%ls\">\n",
-			GetName(), 
+	fprintf( xmlFp, "<dbmsIndex name=\"%s\" unique=\"%ls\" table=\"%s\">\n",
+			(const char*) FdoStringP(GetName()), 
             mIsUnique ? L"true" : L"false",
-            mpTable ? mpTable->GetName() : L""
+            mpTable ? (const char*) FdoStringP(mpTable->GetName()) : ""
 	);
 
     FdoSmPhDbObject::XMLSerialize(xmlFp, ref);

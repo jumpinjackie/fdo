@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+﻿<?xml version="1.0" encoding="UTF-8" ?>
 <xsl:stylesheet version="1.0" 
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 xmlns:xsi="http://www.w3.org/2001/XMLSchema" 
@@ -9,6 +9,8 @@ xmlns:lp="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 >
 
+<xsl:param name="providerName"/>
+  
 <xsl:template match="lp:schema[@name='F_MetaClass']"/>
 <xsl:template match="lp:column[@name = 'classname' or @name = 'schemaname' or @name = 'CLASSNAME' or @name = 'SCHEMANAME']">
 </xsl:template>

@@ -407,9 +407,9 @@ void FdoSmPhColumn::UpdRollbackCache()
 void FdoSmPhColumn::XMLSerialize( FILE* xmlFp, int ref ) const
 {
 	if ( ref == 0 ) {
-		fprintf( xmlFp, "<column name=\"%ls\" description=\"%ls\" dataType=\"%ls\" length=\"%d\" scale=\"%d\" nullable=\"%s\" >\n",
-				GetName(), GetDescription(),
-				(FdoString*) GetTypeName(),
+		fprintf( xmlFp, "<column name=\"%s\" description=\"%s\" dataType=\"%s\" length=\"%d\" scale=\"%d\" nullable=\"%s\" >\n",
+				(const char*) FdoStringP(GetName()), (const char*) FdoStringP(GetDescription()),
+				(const char*) FdoStringP(GetTypeName()),
 				GetLength(), 
 				(GetLength() > 0 ) ? GetScale() : 0, 
 				GetNullable() ? "True" : "False"

@@ -88,9 +88,9 @@ void FdoSmLpSchemaElement::XMLSerialize( FILE* xmlFp, int ref  ) const
 		fprintf( xmlFp, "<SAD>\n" );
 		for ( int i = 0; i < mSAD->GetCount(); i++ ) {
 			const FdoSmLpSADElement* pElement = mSAD->RefItem(i);
-			fprintf( xmlFp, "<element name=\"%ls\" value=\"%ls\" />\n",
-				(FdoString*) pElement->GetName(), 
-				(FdoString*) pElement->GetValue() 
+			fprintf( xmlFp, "<element name=\"%s\" value=\"%s\" />\n",
+				(const char*) FdoStringP(pElement->GetName()), 
+				(const char*) FdoStringP(pElement->GetValue())
 			);
 		}
 		fprintf( xmlFp, "</SAD>\n" );

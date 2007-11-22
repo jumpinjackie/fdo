@@ -125,7 +125,7 @@ FdoStringP MySqlFdoApplySchemaTest::LogicalPhysicalFormat( FdoString* inFile )
 {
     FdoStringP outFile = FdoStringP(inFile).Replace( L".", L"_LPhF." );
 
-    _logicalPhysicalFormat( inFile, outFile );
+    _logicalPhysicalFormat( inFile, outFile, "MySql" );
 
     return outFile;
 }

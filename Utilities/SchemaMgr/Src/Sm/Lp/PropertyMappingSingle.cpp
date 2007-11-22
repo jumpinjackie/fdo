@@ -60,8 +60,8 @@ void FdoSmLpPropertyMappingSingle::WriteDb( FdoSmPhPropertyWriterP pWriter ) con
 
 void FdoSmLpPropertyMappingSingle::XMLSerialize( FILE* xmlFp, int ref ) const
 {
-	fprintf( xmlFp, "<mappingDefinition xsi:type=\"Single\" prefix=\"%ls\">\n",
-        GetPrefix()
+	fprintf( xmlFp, "<mappingDefinition xsi:type=\"Single\" prefix=\"%s\">\n",
+        (const char*) FdoStringP(GetPrefix())
 	);
 
 	if ( ref == 0 ) {

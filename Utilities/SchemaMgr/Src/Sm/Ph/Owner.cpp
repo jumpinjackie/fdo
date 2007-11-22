@@ -661,8 +661,8 @@ void FdoSmPhOwner::OnAfterCommit()
 
 void FdoSmPhOwner::XMLSerialize( FILE* xmlFp, int ref ) const
 {
-	fprintf( xmlFp, "<owner name=\"%ls\">\n",
-			GetName()
+	fprintf( xmlFp, "<owner name=\"%s\">\n",
+			(const char*) FdoStringP(GetName())
 	);
 
 	if ( mDbObjects && ref == 0 ) {

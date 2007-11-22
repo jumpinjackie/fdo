@@ -722,6 +722,10 @@ FdoInt32 FdoRdbmsDeleteCommand::DeleteRelatedObjects( const wchar_t* scope, cons
     queryStmt += &sqlBuffer[idx];
 	GdbiQueryResult *result = mConnection->GetGdbiConnection()->ExecuteQuery( (const wchar_t*)queryStmt );
 	count = 0;
+
+    FdoSchemaManagerP pschemaManager = mConnection->GetSchemaUtil()->GetSchemaManager();
+    FdoSmPhMgrP phMgr = pschemaManager->GetPhysicalSchema();
+
 	while( result && result->ReadNext() )
 	{
 		FdoStringP subDelStmt = delStmt;
@@ -734,9 +738,8 @@ FdoInt32 FdoRdbmsDeleteCommand::DeleteRelatedObjects( const wchar_t* scope, cons
 			subDelStmt += tableName;
 			subDelStmt += L".";
 			subDelStmt += mConnection->GetSchemaUtil()->GetColumnSqlName(fkProps->RefItem(k));
-			subDelStmt += L"='";
-			subDelStmt += result->GetString( k+1, NULL, NULL );
-			subDelStmt += L"'";
+			subDelStmt += L"=";
+			subDelStmt += phMgr->FormatSQLVal(result->GetString( k+1, NULL, NULL ), FdoSmPhColType_String);
 		}
 		count += mConnection->GetGdbiConnection()->ExecuteNonQuery( (const wchar_t*)subDelStmt );
 	}

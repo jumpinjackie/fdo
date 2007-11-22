@@ -352,8 +352,8 @@ void FdoRdbmsLpIndex::XMLSerialize( FILE* xmlFp, int ref ) const
 {
     ((FdoRdbmsLpIndex*) this)->Finalize();
 
-    fprintf( xmlFp, "<index name=\"%ls\" unique=\"%ls\">\n",
-			GetName(),
+    fprintf( xmlFp, "<index name=\"%s\" unique=\"%ls\">\n",
+			(const char*) FdoStringP(GetName()),
             mbIsUnique ? L"true" : L"false"
 	);
 

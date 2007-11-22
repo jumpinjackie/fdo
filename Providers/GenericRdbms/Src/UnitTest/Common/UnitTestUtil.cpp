@@ -495,7 +495,7 @@ void UnitTestUtil::CreateLandSchema( FdoIConnection* connection )
 {
     // Version must be incremented each time the following Land schema is updated.
     // This forces a re-create of the Land Schema in existing datastores.
-    static wchar_t* currVersion = L"1.8";
+    static wchar_t* currVersion = L"1.9";
     FdoPtr<FdoISchemaCapabilities>	schemaCap = connection->GetSchemaCapabilities();    
 
     FdoPtr<FdoIDescribeSchema> pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
@@ -515,15 +515,19 @@ void UnitTestUtil::CreateLandSchema( FdoIConnection* connection )
             // No version or wrong version, destroy and re-create the schema.
             // First, delete any objects, since these will prevent schema destruction.
 
-            FdoPtr<FdoIDelete> deleteCommand = (FdoIDelete *) connection->CreateCommand(FdoCommandType_Delete);
-            deleteCommand->SetFeatureClassName(L"L\x00e4nd:Ind\x00fcstri\x00e4l P\x00e4rcel");
-            deleteCommand->Execute();
+            FdoClassesP classes = pSchema->GetClasses();
 
-            deleteCommand->SetFeatureClassName(L"L\x00e4nd:Municipality");
-            deleteCommand->Execute();
+            for ( int idx = 0; idx < classes->GetCount(); idx++ ) {
+                FdoClassDefinitionP classDef = classes->GetItem(idx);
 
-            deleteCommand->SetFeatureClassName(L"L\x00e4nd:Parcel");
-            deleteCommand->Execute();
+                if ( (!classDef->GetIsAbstract()) && 
+                     ((FdoDataPropertiesP(classDef->GetIdentityProperties())->GetCount() > 0) ||
+                      (FdoPtr<FdoReadOnlyDataPropertyDefinitionCollection>(classDef->GetBaseIdentityProperties())->GetCount() > 0)) ) {
+                    FdoPtr<FdoIDelete> deleteCommand = (FdoIDelete *) connection->CreateCommand(FdoCommandType_Delete);
+                    deleteCommand->SetFeatureClassName( classDef->GetQualifiedName() );
+                    deleteCommand->Execute();
+                }
+            }
 
             FdoPtr<FdoIDestroySchema>  pCmd = (FdoIDestroySchema*) connection->CreateCommand(FdoCommandType_DestroySchema);
             pCmd->SetSchemaName(L"L\x00e4nd");
@@ -633,7 +637,10 @@ void UnitTestUtil::CreateLandSchema( FdoIConnection* connection )
         pObjProp->SetClass( pPersonClass );
         FdoPropertiesP(pParcelClass->GetProperties())->Add( pObjProp );
 
-        FdoPtr<FdoGeometricPropertyDefinition> pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"" );
+        FdoPtr<FdoGeometricPropertyDefinition> pGeomProp = FdoGeometricPropertyDefinition::Create( 
+            UnitTestUtil::GetNlsObjectName(L"Geometry"),
+            L"" 
+        );
         pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve);
         FdoPropertiesP(pParcelClass->GetProperties())->Add( pGeomProp );
         pGeomProp->SetHasElevation( true );
@@ -678,7 +685,7 @@ void UnitTestUtil::CreateLandSchema( FdoIConnection* connection )
 
 		FdoClassesP(pSchema->GetClasses())->Add( pParcelAClass );
 
-        FdoPtr<FdoFeatureClass> pClass = FdoFeatureClass::Create( L"Ind\x00fcstri\x00e4l P\x00e4rcel", L"" );
+        FdoPtr<FdoFeatureClass> pClass = FdoFeatureClass::Create( GetNlsObjectName(L"Industrial Parcel"), L"" );
         pClass->SetIsAbstract(false);
         pClass->SetBaseClass( pParcelClass );
 
@@ -826,7 +833,7 @@ void UnitTestUtil::CreateNonUniqueSchema( FdoIConnection* connection )
 {
     // Version must be incremented each time the following Land schema is updated.
     // This forces a re-create of the NonUnique Schema in existing datastores.
-    static wchar_t* currVersion = L"1.3";
+    static wchar_t* currVersion = L"1.4";
 
     FdoPtr<FdoIDescribeSchema> pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
 
@@ -928,7 +935,7 @@ void UnitTestUtil::CreateNonUniqueSchema( FdoIConnection* connection )
         pGeomProp->SetHasElevation( true );
         FdoClassesP(pSchema->GetClasses())->Add( pParcelClass );
 
-        FdoPtr<FdoFeatureClass> pClass = FdoFeatureClass::Create( L"Ind\x00fcstri\x00e4l P\x00e4rcel", L"" );
+        FdoPtr<FdoFeatureClass> pClass = FdoFeatureClass::Create( GetNlsObjectName(L"Industrial Parcel"), L"" );
         pClass->SetIsAbstract(false);
         pClass->SetBaseClass( pParcelClass );
 
@@ -1811,7 +1818,7 @@ void UnitTestUtil::Stream2File( FdoIoStream* stream, FdoString* fileName )
     formatter.Format();
 }
 
-void UnitTestUtil::LogicalPhysicalFormat(FdoIoStream* stream1, FdoIoStream* stream2)
+void UnitTestUtil::LogicalPhysicalFormat(FdoIoStream* stream1, FdoIoStream* stream2, FdoStringP providerName)
 {
     FdoIoMemoryStreamP tempStream = FdoIoMemoryStream::Create();
 
@@ -1822,6 +1829,16 @@ void UnitTestUtil::LogicalPhysicalFormat(FdoIoStream* stream1, FdoIoStream* stre
         FdoXmlReaderP(FdoXmlReader::Create(stream1)), 
         stylesheet, 
         FdoXmlWriterP(FdoXmlWriter::Create(tempStream,false))
+    );
+
+    FdoDictionaryP params = transformer->GetParameters();
+    params->Add( 
+        FdoDictionaryElementP( 
+            FdoDictionaryElement::Create( 
+                L"providerName", 
+                FdoStringP(L"'") + providerName + L"'"
+            ) 
+        ) 
     );
 
     transformer->Transform();
@@ -2276,3 +2293,76 @@ void UnitTestUtil::ProcessData(FdoIDataReader* reader)
         }
     }
 }
+
+wchar_t UnitTestUtil::GetNlsChar( int index )
+{
+	return UnitTestUtil::InfoUtilConnection->GetNlsChar( index );
+}
+
+FdoStringP UnitTestUtil::GetNlsValue( int index )
+{
+    FdoStringP val = FdoStringP::Format( 
+        L"Val%c%c%c",
+        GetNlsChar(1),
+        GetNlsChar(2),
+        GetNlsChar(3)
+    );
+
+    switch ( index ) {
+        case 1:
+            val = FdoStringP::Format( 
+                L"%c",
+                GetNlsChar(1)
+            );
+            break;
+        case 2:
+            val = FdoStringP::Format( 
+                L"%c%c",
+                GetNlsChar(1),
+                GetNlsChar(3)
+            );
+            break;
+        case 3:
+            val = FdoStringP::Format( 
+                L"%c%c%c",
+                GetNlsChar(1),
+                GetNlsChar(2),
+                GetNlsChar(3)
+            );
+            break;
+        case 4:
+            val = FdoStringP::Format( 
+                L"%c%c%c%c",
+                GetNlsChar(4),
+                GetNlsChar(3),
+                GetNlsChar(2),
+                GetNlsChar(1)
+            );
+            break;
+    }
+
+    return val;
+}
+
+FdoStringP UnitTestUtil::GetNlsObjectName( FdoStringP inName )
+{
+    if ( inName == L"Industrial Parcel" ) 
+        return FdoStringP::Format(
+            L"Ind%cstri%c P%crcel",
+            GetNlsChar(1),
+            GetNlsChar(2),
+            GetNlsChar(3)
+        );
+
+    if ( inName == L"Geometry" ) 
+        return FdoStringP::Format(
+            L"G%c%cm%ctry",
+            GetNlsChar(1),
+            GetNlsChar(2),
+            GetNlsChar(3)
+        );
+
+    return inName;
+}
+
+

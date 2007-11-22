@@ -1256,13 +1256,13 @@ void FdoSmLpObjectPropertyDefinition::XMLSerialize( FILE* xmlFp, int ref ) const
 {
     ((FdoSmLpObjectPropertyDefinition*) this)->Finalize();
 
-	fprintf( xmlFp, "<property xsi:type=\"%ls\" name=\"%ls\" description=\"%ls\"\n objectType=\"%s\" className=\"%ls\" idColumn=\"%ls\" order=\"%s\"\n fixedCol=\"%s\" >\n",
+	fprintf( xmlFp, "<property xsi:type=\"%ls\" name=\"%s\" description=\"%s\"\n objectType=\"%s\" className=\"%s\" idColumn=\"%s\" order=\"%s\"\n fixedCol=\"%s\" >\n",
             (FdoString*) FdoSmLpPropertyTypeMapper::Type2String(GetPropertyType()),
-			GetName(), GetDescription(), 
+			(const char*) FdoStringP(GetName()), (const char*) FdoStringP(GetDescription()), 
 			(GetObjectType() == FdoObjectType_OrderedCollection) ? "Ordered Collection" :
 				( (GetObjectType() == FdoObjectType_Collection) ? "Collection" : "Value" ),
-			GetFeatureClassName(),
-			RefIdentityProperty() ? RefIdentityProperty()->GetColumnName() : L"",
+			(const char*) FdoStringP(GetFeatureClassName()),
+			RefIdentityProperty() ? (const char*) FdoStringP(RefIdentityProperty()->GetColumnName()) : "",
 			(GetOrderType() == FdoOrderType_Descending) ? "descending" : "ascending",
             GetIsFixedDbObject() ? "True" : "False"
 	);
@@ -1270,8 +1270,8 @@ void FdoSmLpObjectPropertyDefinition::XMLSerialize( FILE* xmlFp, int ref ) const
 	if ( ref == 0 ) {
 		if ( RefDefiningClass() &&
 			RefBaseProperty() ) 
-			fprintf( xmlFp, "<Inherited baseClass=\"%ls\" />\n",
-				RefDefiningClass()->GetName()
+			fprintf( xmlFp, "<Inherited baseClass=\"%s\" />\n",
+				(const char*) FdoStringP(RefDefiningClass()->GetName())
 			);
 
 		if ( RefIdentityProperty() ) {

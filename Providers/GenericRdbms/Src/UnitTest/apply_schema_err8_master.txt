@@ -6,5 +6,5 @@
  Cannot delete table "{USER_DS}_APPLY_SCHEMA"."PARCEL_PERSON" because it has rows 
  Cannot delete geometric property 'Land:Parcel.Grading'; it is the geometry property for class 'Land:Parcel' 
  Column {USER_DS}_APPLY_SCHEMA.DRIVEWAY.PAV_D has conditional rows or rows with non-null values, cannot delete its property 
- Column {USER_DS}_APPLY_SCHEMA.A1_8_SCHOOL.A__ROOMS has conditional rows or rows with non-null values, cannot delete its property 
+ Column {USER_DS}_APPLY_SCHEMA.A1_8_SCHOOL.A_ROOMS has conditional rows or rows with non-null values, cannot delete its property 
  Cannot delete geometric property 'Land:Build'g.Geometry'; it is the geometry property for class 'Land:1-8 School' 

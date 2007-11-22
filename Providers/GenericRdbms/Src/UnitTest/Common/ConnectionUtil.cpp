@@ -427,3 +427,26 @@ SchemaOverrideUtilP ConnectionUtil::NewSchemaOverrideUtil()
 {
     return new SchemaOverrideUtil();
 }
+
+wchar_t ConnectionUtil::GetNlsChar( int index )
+{
+    wchar_t ret = 0x00c1;
+
+    switch ( index ) 
+    {
+        case 1:
+            ret = 0x00c2;
+            break;
+        case 2:
+            ret = 0x00c3;
+            break;
+        case 3:
+            ret = 0x00e3;
+            break;
+        case 4:
+            ret = 0x00e4;
+            break;
+    }
+
+    return ret;
+}

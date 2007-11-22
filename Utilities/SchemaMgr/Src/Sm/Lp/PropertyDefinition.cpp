@@ -487,8 +487,8 @@ void FdoSmLpPropertyDefinition::Finalize()
 
 void FdoSmLpPropertyDefinition::XmlSerializeProperty( wchar_t* propertyType, FILE* xmlFp, int ref )
 {
-	fprintf( xmlFp, "<property xsi:type=\"%ls\" name=\"%ls\" description=\"%ls\" />\n",
-			propertyType, GetName(), GetDescription() );
+	fprintf( xmlFp, "<property xsi:type=\"%ls\" name=\"%s\" description=\"%s\" />\n",
+			propertyType, (const char*) FdoStringP(GetName()), (const char*) FdoStringP(GetDescription()) );
 }
 
 void FdoSmLpPropertyDefinition::AddPropTypeChangeError( FdoPropertyType newType )

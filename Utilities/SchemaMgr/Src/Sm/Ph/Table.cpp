@@ -551,9 +551,11 @@ void FdoSmPhTable::CommitColumns( bool isBeforeParent )
 
 void FdoSmPhTable::XMLSerialize( FILE* xmlFp, int ref ) const
 {
-	fprintf( xmlFp, "<table name=\"%ls\" description=\"%ls\" pkeyName=\"%ls\" %ls>\n",
-			GetName(), GetDescription(), (FdoString*) GetPkeyName(),
-            (FdoString*) XMLSerializeProviderAtts()
+	fprintf( xmlFp, "<table name=\"%s\" description=\"%s\" pkeyName=\"%s\" %s>\n",
+			(const char*) FdoStringP(GetName()), 
+            (const char*) FdoStringP(GetDescription()), 
+            (const char*) GetPkeyName(),
+            (const char*) XMLSerializeProviderAtts()
 	);
 
 	if ( ref == 0 ) {

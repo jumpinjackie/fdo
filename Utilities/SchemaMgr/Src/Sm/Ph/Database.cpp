@@ -252,8 +252,8 @@ FdoSchemaExceptionP FdoSmPhDatabase::Errors2Exception(FdoSchemaException* pFirst
 
 void FdoSmPhDatabase::XMLSerialize( FILE* xmlFp, int ref ) const
 {
-	fprintf( xmlFp, "<database name=\"%ls\">\n",
-			GetName()
+	fprintf( xmlFp, "<database name=\"%s\">\n",
+			(const char*) FdoStringP(GetName())
 	);
 
 	if ( mOwners && ref == 0 ) {

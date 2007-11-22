@@ -81,6 +81,7 @@ public:
 	virtual FdoInsertTest* GetInsertTest () = 0;
 	virtual FdoStringP GetOutputFileName (FdoString* pBaseFileName) = 0;
 	virtual const char* GetSuffixTest(){return NULL;};
+    virtual wchar_t GetNlsChar( int index );
 
 public:
 	virtual ~ConnectionUtil(void);
