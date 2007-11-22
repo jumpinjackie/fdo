@@ -174,6 +174,10 @@ private:
     void EvaluateAggregateExpression();
     void ProcessAggregateFunctions();
 	FdoPropertyDefinition* GetProperty(FdoClassDefinition* cls, FdoString* propName );
+    static FdoFunctionDefinitionCollection *DeepCopyFunctionDefinitions(FdoExpressionEngineFunctionCollection *functions);
+    static FdoFunctionDefinition *DeepCopyFunctionDefinition(FdoFunctionDefinition *function);
+
+
 
 
 	FdoCommonPropertyStub* GetPropInfo(FdoString* name);

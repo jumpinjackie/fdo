@@ -83,90 +83,90 @@
 #include <Functions/String/FdoFunctionUpper.h>
 
 
-const int NUMBER_FUNCTIONS = 54;
-
 class ExpressionEngineInitializeClass
 {
 
 public:
-	FdoExpressionEngineIFunction *m_Functions[NUMBER_FUNCTIONS+1];
+    FdoPtr<FdoExpressionEngineFunctionCollection> m_StandardFunctions;
+    FdoPtr<FdoExpressionEngineFunctionCollection> m_UserDefinedFunctions;
+
 	ExpressionEngineInitializeClass()
 	{
-		int i=0;
-        m_Functions[i++] = FdoFunctionAvg::Create();
-        m_Functions[i++] = FdoFunctionCount::Create();
-        m_Functions[i++] = FdoFunctionMax::Create();
-        m_Functions[i++] = FdoFunctionMedian::Create();
-        m_Functions[i++] = FdoFunctionMin::Create();
-        m_Functions[i++] = FdoFunctionSpatialExtents::Create();
-        m_Functions[i++] = FdoFunctionStddev::Create();
-        m_Functions[i++] = FdoFunctionSum::Create();
+        m_UserDefinedFunctions = FdoExpressionEngineFunctionCollection::Create();
+        m_StandardFunctions = FdoExpressionEngineFunctionCollection::Create();
 
-        m_Functions[i++] = FdoFunctionNullValue::Create();
-        m_Functions[i++] = FdoFunctionToDate::Create();
-        m_Functions[i++] = FdoFunctionToDouble::Create();
-        m_Functions[i++] = FdoFunctionToFloat::Create();
-        m_Functions[i++] = FdoFunctionToInt32::Create();
-        m_Functions[i++] = FdoFunctionToInt64::Create();
-        m_Functions[i++] = FdoFunctionToString::Create();
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionAvg::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionCount::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionMax::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionMedian::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionMin::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionSpatialExtents::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionStddev::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionSum::Create()));
 
-        m_Functions[i++] = FdoFunctionAddMonths::Create();
-        m_Functions[i++] = FdoFunctionCurrentDate::Create();
-        m_Functions[i++] = FdoFunctionExtract::Create();
-        m_Functions[i++] = FdoFunctionMonthsBetween::Create();
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionNullValue::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionToDate::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionToDouble::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionToFloat::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionToInt32::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionToInt64::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionToString::Create()));
 
-        m_Functions[i++] = FdoFunctionArea2D::Create();
-        m_Functions[i++] = FdoFunctionLength2D::Create();
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionAddMonths::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionCurrentDate::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionExtract::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionMonthsBetween::Create()));
 
-        m_Functions[i++] = FdoFunctionAbs::Create();
-        m_Functions[i++] = FdoFunctionAcos::Create();
-        m_Functions[i++] = FdoFunctionAsin::Create();
-        m_Functions[i++] = FdoFunctionAtan::Create();
-        m_Functions[i++] = FdoFunctionAtan2::Create();
-        m_Functions[i++] = FdoFunctionCos::Create();
-        m_Functions[i++] = FdoFunctionExp::Create();
-        m_Functions[i++] = FdoFunctionLn::Create();
-        m_Functions[i++] = FdoFunctionLog::Create();
-        m_Functions[i++] = FdoFunctionMod::Create();
-        m_Functions[i++] = FdoFunctionPower::Create();
-        m_Functions[i++] = FdoFunctionRemainder::Create();
-        m_Functions[i++] = FdoFunctionSin::Create();
-        m_Functions[i++] = FdoFunctionSqrt::Create();
-        m_Functions[i++] = FdoFunctionTan::Create();
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionArea2D::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionLength2D::Create()));
 
-        m_Functions[i++] = FdoFunctionCeil::Create();
-		m_Functions[i++] = FdoFunctionFloor::Create();
-		m_Functions[i++] = FdoFunctionRound::Create();
-		m_Functions[i++] = FdoFunctionSign::Create();
-		m_Functions[i++] = FdoFunctionTrunc::Create();
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionAbs::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionAcos::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionAsin::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionAtan::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionAtan2::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionCos::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionExp::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionLn::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionLog::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionMod::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionPower::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionRemainder::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionSin::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionSqrt::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionTan::Create()));
 
-		m_Functions[i++] = FdoFunctionConcat::Create();
-		m_Functions[i++] = FdoFunctionInstr::Create();
-		m_Functions[i++] = FdoFunctionLength::Create();
-		m_Functions[i++] = FdoFunctionLower::Create();
-		m_Functions[i++] = FdoFunctionLpad::Create();
-		m_Functions[i++] = FdoFunctionLtrim::Create();
-		m_Functions[i++] = FdoFunctionRpad::Create();
-		m_Functions[i++] = FdoFunctionRtrim::Create();
-		m_Functions[i++] = FdoFunctionSoundex::Create();
-		m_Functions[i++] = FdoFunctionSubstr::Create();
-		m_Functions[i++] = FdoFunctionTranslate::Create();
-		m_Functions[i++] = FdoFunctionTrim::Create();
-		m_Functions[i++] = FdoFunctionUpper::Create();
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionCeil::Create()));
+		m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionFloor::Create()));
+		m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionRound::Create()));
+		m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionSign::Create()));
+		m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionTrunc::Create()));
 
-		m_Functions[i++] = NULL;
-	}
+		m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionConcat::Create()));
+		m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionInstr::Create()));
+		m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionLength::Create()));
+		m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionLower::Create()));
+		m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionLpad::Create()));
+		m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionLtrim::Create()));
+		m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionRpad::Create()));
+
+		m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionRtrim::Create()));
+		m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionSoundex::Create()));
+		m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionSubstr::Create()));
+		m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionTranslate::Create()));
+		m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionTrim::Create()));
+		m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionUpper::Create()));
+    }
 
 	~ExpressionEngineInitializeClass()
 	{
-		for (int i=0; m_Functions[i] != NULL; i++)
-		{
-			m_Functions[i]->Release();
-		};
 	};
 
-	FdoExpressionEngineIFunction** GetStandardFunctions()
+	FdoExpressionEngineFunctionCollection* GetStandardFunctions()
 	{
-		return m_Functions;
+		return FDO_SAFE_ADDREF(m_StandardFunctions.p);
 	}
 };
+
+
+
