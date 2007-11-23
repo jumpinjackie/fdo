@@ -1413,10 +1413,11 @@ void ShapeFile::ReadRecordInfo(SHPRecordInfo *pRecordInfo )
         // These are stored in BigEndian so they must be swapped
         pRecordInfo->nRecordNumber = SWAPLONG(shpRecordHeader.nRecordNumber);
         pRecordInfo->nContentLength = SWAPLONG(shpRecordHeader.nContentLength);
-
-        if(pRecordInfo->nRecordNumber < 1)
+        
+        // in case pRecordInfo->nRecordNumber == 0 the header is emty and will be handled later as a null shape object
+        if(pRecordInfo->nRecordNumber < 0)
             throw FdoException::Create (NlsMsgGet(SHP_INVALID_RECORD_NUMBER_ERROR, "Invalid record number %1$ld for file '%2$ls'.", pRecordInfo->nRecordNumber, FileName ()));
-    } 
+    }
     else
         throw FdoCommonFile::LastErrorToException (L"ShapeFile::ReadRecordInfo()");
 }
