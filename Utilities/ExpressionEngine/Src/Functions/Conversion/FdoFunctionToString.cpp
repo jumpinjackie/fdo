@@ -394,8 +394,10 @@ void FdoFunctionToString::CreateFunctionDefinition ()
 
 }  //  CreateFunctionDefinition ()
 
-FdoStringP FdoFunctionToString::GetDay (FdoInt8 day,
-                                        bool    ret_abbreviation)
+FdoStringP FdoFunctionToString::GetDay (FdoInt16 year,
+                                        FdoInt8  month,
+                                        FdoInt8  day,
+                                        bool     ret_abbreviation)
 
 // +---------------------------------------------------------------------------
 // | The function returns either the day name or abbreviation for the pro-
@@ -408,7 +410,10 @@ FdoStringP FdoFunctionToString::GetDay (FdoInt8 day,
 
     FdoStringP d_name;
 
-    // Get the requested value.
+    // Determine the day of the week for the given day and then determine the
+    // day's name or abbreviation.
+
+    // TODO: FIND THE DAY OF THE WEEK.
 
     switch (day) {
 
@@ -881,9 +886,15 @@ FdoStringP FdoFunctionToString::ProcessDay (FdoInt8 day)
 
 {
 
-    // Check whether or not the value is valid. If it is not valid issue an
-    // exception. Otherwise, convert the day to a string and return it back
-    // to the calling routine.
+    // If the given value is -1, the day is not set. In this case return the
+    // string "01" back to the calling routine.
+
+    if (day == -1)
+        return(L"01");
+
+    // The day has been set. In this case, validate the day. If it is not valid
+    // an exception is issued. Otherwise, convert the day into a string and
+    // return it back to the calling routine.
 
     ValidateDay(day);
     return ((day < 10) ? FdoStringP::Format(L"0%d", day)
@@ -892,9 +903,11 @@ FdoStringP FdoFunctionToString::ProcessDay (FdoInt8 day)
 }  //  ProcessDay ()
 
 FdoStringP FdoFunctionToString::ProcessDayAbb (
-                                            FdoInt8 day,
-                                            bool    mixedcase_representation,
-                                            bool    uppercase_representation)
+                                            FdoInt16 year,
+                                            FdoInt8  month,
+                                            FdoInt8  day,
+                                            bool     mixedcase_representation,
+                                            bool     uppercase_representation)
 
 // +---------------------------------------------------------------------------
 // | Returns a string containing the corresponding day abbreviation for the
@@ -907,15 +920,18 @@ FdoStringP FdoFunctionToString::ProcessDayAbb (
 
     FdoStringP ret_value;
 
-    // Validate the day information. If the day information is valid get the
-    // corresponding abbreviation. If the abbreviation has to be provided in
-    // mixed-case letters, nothing else needs to be done as this is the case
-    // the abbreviations are defined. In case the abbreviation has not to be
-    // provided in mixed case, either convert it to uppercase or lowercase
-    // letters depending on the request.
+    // If the day information is either not set (in which case the value is
+    // -1) or invalid, then there is no way the day's abbreviation can be
+    // determined. In this case, issue an exception. Otherwise, determine
+    // the day of the week for the given day and return the day's abbrevia-
+    // tion. If the abbreviation has to be provided in mixed-case letters,
+    // nothing else needs to be done as this is the case the abbreviations
+    // are defined. In case the abbreviation has not to be provided in mixed
+    // case, either convert it to uppercase or lowercase letters depending on
+    // the request.
 
     ValidateDay(day);
-    ret_value = GetDay(day, true);
+    ret_value = GetDay(year, month, day, true);
     if (!mixedcase_representation) {
 
         if (uppercase_representation)
@@ -932,9 +948,11 @@ FdoStringP FdoFunctionToString::ProcessDayAbb (
 }  //  ProcessDayAbb ()
 
 FdoStringP FdoFunctionToString::ProcessDayName (
-                                            FdoInt8 day,
-                                            bool    mixedcase_representation,
-                                            bool    uppercase_representation)
+                                            FdoInt16 year,
+                                            FdoInt8  month,
+                                            FdoInt8  day,
+                                            bool     mixedcase_representation,
+                                            bool     uppercase_representation)
 
 // +---------------------------------------------------------------------------
 // | Returns a string containing the corresponding day name for the provided
@@ -947,14 +965,17 @@ FdoStringP FdoFunctionToString::ProcessDayName (
 
     FdoStringP ret_value;
 
-    // Validate the day information. If the day information is valid get the
-    // corresponding day name. If the name has to be provided in mixed case
-    // letters, nothing else needs to be done as this is the way the names are
-    // defined. In case the name has not to be provided in mixed case, either
-    // convert it to uppercase or lowercase letters depending on the request.
+    // If the day information is either not set (in which case the value is
+    // -1) or invalid, then there is no way the day's abbreviation can be
+    // determined. In this case, issue an exception. Otherwise, determine
+    // the day of the week for the given day and return the day's name. If
+    // the name has to be provided in mixed case letters, nothing else needs
+    // to be done as this is the way the names are defined. In case the name
+    // has not to be provided in mixed case, either convert it to uppercase
+    // or lowercase letters depending on the request.
 
     ValidateDay(day);
-    ret_value = GetDay(day, false);
+    ret_value = GetDay(year, month, day, false);
     if (!mixedcase_representation) {
 
         if (uppercase_representation)
@@ -979,18 +1000,21 @@ FdoStringP FdoFunctionToString::ProcessHour (FdoInt8 hour)
 
 {
 
-    // The representation in the date/time object is in a 24-hour model.
-    // Validate that the value is in the valid range. If it is not issue an
-    // exception. Otherwise convert it to a string.
+    // If the given value is -1, the hour is not set. In this case return the
+    // string "00" back to the calling routine.
 
-    if ((hour < 0) || (hour > 24))
-        throw FdoException::Create(
-                 FdoException::NLSGetMessage(
-                     FUNCTION_DATA_VALUE_ERROR, 
-                     "Expression Engine: Invalid value for execution of function '%1$ls'",
-                     FDO_FUNCTION_TOSTRING));
+    if (hour == -1)
+        return(L"00");
 
-    return(FdoStringP::Format(L"%d", hour));
+    // In this case the hour has been set. Check if the hour is valid. If it is
+    // valid convert the value into a string and return it back to the calling
+    // routine.
+
+    ValidateHour(hour);
+    if (hour < 10)
+        return(FdoStringP::Format(L"0%d", hour));
+    else
+      return(FdoStringP::Format(L"%d", hour));
 
 }  //  ProcessHour ()
 
@@ -1003,25 +1027,21 @@ FdoStringP FdoFunctionToString::ProcessMinute (FdoInt8 minute)
 
 {
 
-    // Declare and initialize all necessary local variables.
+    // If the given value is -1, the minute is not set. In this case return
+    // the string "00" back to the calling routine.
 
-    FdoStringP ret_value;
+    if (minute == -1)
+        return(L"00");
 
-    // Validate that the value is in the valid range. If it is not issue an
-    // exception. Otherwise convert it to a string.
+    // In this case the minute has been set. Check if the minute is valid. If
+    // it is valid convert the value into a string and return it back to the
+    // calling routine.
 
-    if ((minute < 0) || (minute > 59))
-        throw FdoException::Create(
-                 FdoException::NLSGetMessage(
-                     FUNCTION_DATA_VALUE_ERROR, 
-                     "Expression Engine: Invalid value for execution of function '%1$ls'",
-                     FDO_FUNCTION_TOSTRING));
-
-    ret_value = FdoStringP::Format(L"%d", minute);
-    if (ret_value.GetLength() == 1)
-        ret_value = FdoStringP::Format(L"%s", L"0") + ret_value;
-
-    return ret_value;
+    ValidateMinute(minute);
+    if (minute < 10)
+        return(FdoStringP::Format(L"0%d", minute));
+    else
+      return(FdoStringP::Format(L"%d", minute));
 
 }  //  ProcessMinute ()
 
@@ -1034,9 +1054,15 @@ FdoStringP FdoFunctionToString::ProcessMonth (FdoInt8 month)
 
 {
 
-    // Check whether or not the value is valid. If it is not valid issue an
-    // exception. Otherwise, convert the month to a string and return it back
-    // to the calling routine.
+    // If the given value is -1, the month is not set. In this case return
+    // the string "01" back to the calling routine.
+
+    if (month == -1)
+        return(L"01");
+
+    // In this case, the month is set. Validate the month. If the month is
+    // valid convert the value to a string and return it back to the calling
+    // routine.
 
     ValidateMonth(month);
     return ((month < 10) ? FdoStringP::Format(L"0%d", month)
@@ -1060,12 +1086,22 @@ FdoStringP FdoFunctionToString::ProcessMonthAbb (
 
     FdoStringP ret_value;
 
-    // Validate the month information. If the month information is valid get
-    // the corresponding abbreviation. If the abbreviation has to be provided
-    // in mixed-case letters, nothing else needs to be done as this is the
-    // case the abbreviations are defined. In case the abbreviation has not to
-    // be provided in mixed case, either convert it to uppercase or lowercase
-    // letters depending on the request.
+    // If the given value is -1, the month is not set. In this case return
+    // one of "JAN", "Jan" or "jan" depending on what is required back to
+    // the calling routine.
+
+    if (month == -1)
+        if (mixedcase_representation)
+            return(L"Jan");
+        else
+          if (uppercase_representation)
+              return(L"JAN");
+          else
+            return(L"jan");
+
+    // In this case, the month is set. Validate the month. If the month is
+    // valid determine its abbreviation and return it back to the calling
+    // routine according to the requested format.
 
     ValidateMonth(month);
     ret_value = GetMonth(month, true);
@@ -1100,12 +1136,22 @@ FdoStringP FdoFunctionToString::ProcessMonthName (
 
     FdoStringP ret_value;
 
-    // Validate the month information. If the month information is valid get
-    // the corresponding month name. If the name has to be provided in mixed
-    // case letters, nothing else needs to be done as this is the way the names
-    // are defined. In case the name has not to be provided in mixed case,
-    // either convert it to uppercase or lowercase letters depending on the
-    // request.
+    // If the given value is -1, the month is not set. In this case return
+    // one of "JANUARY", "January" or "january" depending on what is required
+    // back to the calling routine.
+
+    if (month == -1)
+        if (mixedcase_representation)
+            return(L"January");
+        else
+          if (uppercase_representation)
+              return(L"JANUARY");
+          else
+            return(L"january");
+
+    // In this case, the month is set. Validate the month. If the month is
+    // valid determine its name and return it back to the calling routine
+    // according to the requested format.
 
     ValidateMonth(month);
     ret_value = GetMonth(month, false);
@@ -1133,12 +1179,17 @@ FdoStringP FdoFunctionToString::ProcessSeconds (FdoFloat seconds)
 
 {
 
-    // Convert the value to a string.
+    // Validate the given value. If it is valid convert the value into a string
+    // and return it back to the calling routine.
 
+    ValidateSecond(seconds);
     if (seconds == 0)
         return(L"00");
     else
-      return(FdoStringP::Format(L"%f", seconds));
+      if (seconds < 10)
+          return(FdoStringP::Format(L"0%f", seconds));
+      else
+        return(FdoStringP::Format(L"%f", seconds));
 
 }  //  ProcessSeconds ()
 
@@ -1156,6 +1207,12 @@ FdoStringP FdoFunctionToString::ProcessYear (FdoInt16 year,
 
     FdoStringP ret_value;
 
+    // If given value is -1 the year is not set. In this case either return
+    // "0000" or "00" depending on the requested format.
+
+    if (year == -1)
+        return((year2_representation) ? L"00" : L"0000");
+
     // Convert the year to a string and get the length of the resulting string.
     // If the format specification asks for two year columns only, cut off the
     // leading two characters.
@@ -1163,7 +1220,9 @@ FdoStringP FdoFunctionToString::ProcessYear (FdoInt16 year,
     //       format instruction asks for 4 digits, nothing is done as it is not
     //       clear how to complete the year.
 
-    ret_value = FdoStringP::Format(L"%d", year);
+    ret_value = (year < 10)
+              ? FdoStringP::Format(L"0%d", year)
+              : FdoStringP::Format(L"%d", year);
     if ((ret_value.GetLength() > 2) && (year2_representation))
         ret_value = ret_value.Mid((ret_value.GetLength() - 2), 2);
 
@@ -1305,6 +1364,24 @@ void FdoFunctionToString::Validate (FdoLiteralValueCollection *literal_values)
 
 }  //  Validate ()
 
+void FdoFunctionToString::ValidateDay (FdoInt16 day)
+
+// +---------------------------------------------------------------------------
+// | The function checks whether or not the provided day value is valid. If
+// | it is not valid the function issues an exception.
+// +---------------------------------------------------------------------------
+
+{
+
+    if ((day < 1) || (day > 31))
+        throw FdoException::Create(
+                 FdoException::NLSGetMessage(
+                     FUNCTION_DATA_VALUE_ERROR, 
+                     "Expression Engine: Invalid value for execution of function '%1$ls'",
+                     FDO_FUNCTION_TOSTRING));
+
+}  //  ValidateDay ()
+
 void FdoFunctionToString::ValidateFormatSpecification (
                                                     FdoStringP format_string)
 
@@ -1411,25 +1488,43 @@ void FdoFunctionToString::ValidateFormatSpecification (
 
 }  //  ValidateFormatSpecification ()
 
-void FdoFunctionToString::ValidateDay (FdoInt16 day)
+void FdoFunctionToString::ValidateHour (FdoInt8 hour)
 
 // +---------------------------------------------------------------------------
-// | The function checks whether or not the provided day value is valid. If
+// | The function checks whether or not the provided hour value is valid. If
 // | it is not valid the function issues an exception.
 // +---------------------------------------------------------------------------
 
 {
 
-    if ((day < 1) || (day > 31))
+    if ((hour < 0) || (hour > 23))
         throw FdoException::Create(
                  FdoException::NLSGetMessage(
                      FUNCTION_DATA_VALUE_ERROR, 
                      "Expression Engine: Invalid value for execution of function '%1$ls'",
                      FDO_FUNCTION_TOSTRING));
 
-}  //  ValidateDay ()
+}  //  ValidateHour ()
 
-void FdoFunctionToString::ValidateMonth (FdoInt16 month)
+void FdoFunctionToString::ValidateMinute (FdoInt8 minute)
+
+// +---------------------------------------------------------------------------
+// | The function checks whether or not the provided minute value is valid. If
+// | it is not valid the function issues an exception.
+// +---------------------------------------------------------------------------
+
+{
+
+    if ((minute < 0) || (minute > 59))
+        throw FdoException::Create(
+                 FdoException::NLSGetMessage(
+                     FUNCTION_DATA_VALUE_ERROR, 
+                     "Expression Engine: Invalid value for execution of function '%1$ls'",
+                     FDO_FUNCTION_TOSTRING));
+
+}  //  ValidateMinute ()
+
+void FdoFunctionToString::ValidateMonth (FdoInt8 month)
 
 // +---------------------------------------------------------------------------
 // | The function checks whether or not the provided month value is valid. If
@@ -1446,4 +1541,22 @@ void FdoFunctionToString::ValidateMonth (FdoInt16 month)
                      FDO_FUNCTION_TOSTRING));
 
 }  //  ValidateMonth ()
+
+void FdoFunctionToString::ValidateSecond (FdoFloat second)
+
+// +---------------------------------------------------------------------------
+// | The function checks whether or not the provided second value is valid. If
+// | it is not valid the function issues an exception.
+// +---------------------------------------------------------------------------
+
+{
+
+    if ((second < 0) || (second >= 60))
+        throw FdoException::Create(
+                 FdoException::NLSGetMessage(
+                     FUNCTION_DATA_VALUE_ERROR, 
+                     "Expression Engine: Invalid value for execution of function '%1$ls'",
+                     FDO_FUNCTION_TOSTRING));
+
+}  //  ValidateSecond ()
 

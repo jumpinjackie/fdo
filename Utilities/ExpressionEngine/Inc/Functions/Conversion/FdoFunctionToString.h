@@ -137,8 +137,10 @@ class FdoFunctionToString : public FdoExpressionEngineINonAggregateFunction
         //  The function returns either the day name or abbreviation for the
         //  provided numeric day identifier based on the requested data.
 
-        FdoStringP GetDay (FdoInt8 day,
-                           bool    ret_abbreviation);
+        FdoStringP GetDay (FdoInt16 year,
+                           FdoInt8  month,
+                           FdoInt8  day,
+                           bool     ret_abbreviation);
 
         // GetMonth:
         //  The function returns either the month name or abbreviation for the
@@ -169,17 +171,21 @@ class FdoFunctionToString : public FdoExpressionEngineINonAggregateFunction
         //  Returns a string containing the corresponding day abbreviation
         //  for the provided day information.
 
-        FdoStringP ProcessDayAbb (FdoInt8 day,
-                                  bool    mixedcase_representation,
-                                  bool    uppercase_representation);
+        FdoStringP ProcessDayAbb (FdoInt16 year,
+                                  FdoInt8  month,
+                                  FdoInt8  day,
+                                  bool     mixedcase_representation,
+                                  bool     uppercase_representation);
 
         // ProcessDayName:
         //  Returns a string containing the corresponding day name for the
         //  provided day information.
 
-        FdoStringP ProcessDayName (FdoInt8 day,
-                                   bool    mixedcase_representation,
-                                   bool    uppercase_representation);
+        FdoStringP ProcessDayName (FdoInt16 year,
+                                   FdoInt8  month,
+                                   FdoInt8  day,
+                                   bool     mixedcase_representation,
+                                   bool     uppercase_representation);
 
         // ProcessHour:
         //  Returns a string containing the numeric representation of the
@@ -247,6 +253,12 @@ class FdoFunctionToString : public FdoExpressionEngineINonAggregateFunction
 
         void Validate (FdoLiteralValueCollection *literal_values);
 
+        // ValidateDay
+        //  The function checks whether or not the provided day value is
+        //  valid. If it is not valid the function issues an exception.
+
+        void ValidateDay (FdoInt16 day);
+
         // ValidateFormatSpecification:
         //  The function checks whether or not the string containing the 
         //  format specification is valid. If it is invalid, the function
@@ -254,17 +266,30 @@ class FdoFunctionToString : public FdoExpressionEngineINonAggregateFunction
 
         void ValidateFormatSpecification (FdoStringP format_string);
 
-        // ValidateDay
-        //  The function checks whether or not the provided day value is
+        // ValidateHour
+        //  The function checks whether or not the provided hour value is
         //  valid. If it is not valid the function issues an exception.
 
-        void ValidateDay (FdoInt16 day);
+        void ValidateHour (FdoInt8 hour);
+
+        // ValidateMinute
+        //  The function checks whether or not the provided minute value is
+        //  valid. If it is not valid the function issues an exception.
+
+        void ValidateMinute (FdoInt8 minute);
 
         // ValidateMonth
         //  The function checks whether or not the provided month value is
         //  valid. If it is not valid the function issues an exception.
 
-        void ValidateMonth (FdoInt16 month);
+        void ValidateMonth (FdoInt8 month);
+
+        // ValidateSecond
+        //  The function checks whether or not the provided second value is
+        //  valid. If it is not valid the function issues an exception.
+
+        void ValidateSecond (FdoFloat second);
+
 
         // ********************************************************************
         // *                      Private Member Variables                    *
