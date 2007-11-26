@@ -115,7 +115,7 @@ FdoLiteralValue *FdoFunctionSign::Evaluate (
 
     // Declare and initialize all necessary local variables.
 
-    FdoInt16                result          = 21;
+    FdoInt32                result          = 21;
 
     FdoPtr<FdoByteValue>    byte_value;
     FdoPtr<FdoDecimalValue> decimal_value;
@@ -205,8 +205,8 @@ FdoLiteralValue *FdoFunctionSign::Evaluate (
     // the function result.
 
     return (result == 21)
-            ? FdoInt16Value::Create()
-            : FdoInt16Value::Create(result);
+            ? FdoInt32Value::Create()
+            : FdoInt32Value::Create(result);
 
 }  //  Evaluate ()
 
@@ -224,7 +224,7 @@ void FdoFunctionSign::CreateFunctionDefinition ()
 // |
 // |    SIGN ({byte, decimal, double, int16, int32, int64, single})
 // |
-// | The function always returns a INT16.
+// | The function always returns a INT32.
 // +---------------------------------------------------------------------------
 
 {
@@ -306,25 +306,25 @@ void FdoFunctionSign::CreateFunctionDefinition ()
 
     signatures = FdoSignatureDefinitionCollection::Create();
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_Int16, byte_args);
+    signature = FdoSignatureDefinition::Create(FdoDataType_Int32, byte_args);
     signatures->Add(signature);
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_Int16, dcl_args);
+    signature = FdoSignatureDefinition::Create(FdoDataType_Int32, dcl_args);
     signatures->Add(signature);
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_Int16, dbl_args);
+    signature = FdoSignatureDefinition::Create(FdoDataType_Int32, dbl_args);
     signatures->Add(signature);
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_Int16, int16_args);
+    signature = FdoSignatureDefinition::Create(FdoDataType_Int32, int16_args);
     signatures->Add(signature);
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_Int16, int32_args);
+    signature = FdoSignatureDefinition::Create(FdoDataType_Int32, int32_args);
     signatures->Add(signature);
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_Int16, int64_args);
+    signature = FdoSignatureDefinition::Create(FdoDataType_Int32, int64_args);
     signatures->Add(signature);
 
-    signature = FdoSignatureDefinition::Create(FdoDataType_Int16, sgl_args);
+    signature = FdoSignatureDefinition::Create(FdoDataType_Int32, sgl_args);
     signatures->Add(signature);
 
     // Create the function definition.
