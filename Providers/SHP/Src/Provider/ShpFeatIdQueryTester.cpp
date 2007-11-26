@@ -94,11 +94,20 @@ void ShpFeatIdQueryTester::ProcessComparisonCondition(FdoComparisonCondition& fi
     FdoPtr<FdoExpression> right = filter.GetRightExpression();
 
     FdoIdentifier* ident = dynamic_cast<FdoIdentifier*>(left.p);
-    FdoDataValue* val = dynamic_cast<FdoDataValue*>(right.p);
-
-    if (0 != wcscmp (ident->GetName(), m_LogicalIdentityPropertyName) != 0)
-    {
+    if (ident == NULL)
         m_IsFeatidQuery = false;
+    else
+    {
+        FdoDataValue* val = dynamic_cast<FdoDataValue*>(right.p);
+        if (val == NULL)
+            m_IsFeatidQuery = false;
+        else
+        {
+            if (0 != wcscmp (ident->GetName(), m_LogicalIdentityPropertyName) != 0)
+            {
+                m_IsFeatidQuery = false;
+            }
+        }
     }
 }
 
