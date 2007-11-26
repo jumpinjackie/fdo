@@ -3146,6 +3146,90 @@ void FdoExpressionFunctionTest::TestToDoubleFunction ()
 
 }  //  TestToDoubleFunction ()
 
+void FdoExpressionFunctionTest::TestToDoubleFunctionAsFilter ()
+
+// +---------------------------------------------------------------------------
+// | The function executes the test for the expression engine function TODOUBLE
+// | when used within a filter.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    FdoInt16                  counter           = 0;
+
+    FdoStringP                str_val;
+
+    FdoPtr<FdoFilter>         filter;
+    FdoPtr<FdoIFeatureReader> data_reader;
+
+    printf("\n");
+    printf("========================================================== \n");
+    printf(" Current Unit Test Suite: TODOUBLE Function Filter Testing \n");
+    printf("========================================================== \n");
+    printf("\n");
+
+    // Define the filter for all tests in this test suite.
+
+    filter = FdoFilter::Parse(L"ToDouble(str_val) = dbl_val");
+
+    // 1. Test Case:
+    // The test executes a select-command to select data from a class table
+    // using a filter that includes the expression function TODOUBLE. The
+    // request should return a subset of the available data. No exceptions
+    // are expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select data from a \n");
+    printf("  class table using a filter that includes the expression  \n");
+    printf("  function TODOUBLE. The request should return a subset of \n");
+    printf("  the available data. No exceptions are expected.          \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the number of the returned data. If the
+      // number does not match the expected result, issue an exception.
+
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, NULL);
+
+      printf(" >>> Cross check result \n");
+      while (data_reader->ReadNext())
+        counter++;
+
+      data_reader->Close();
+
+      // Issue an exception if the expected result is not met.
+
+      if (counter != 2)
+          throw FdoException::Create(
+                        L"Unexpected result(s) when checking returned data");
+      else
+        printf(" >>> ... All expected data found\n");
+
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+}  //  TestToDoubleFunctionAsFilter ()
+
 void FdoExpressionFunctionTest::TestToFloatFunction ()
 
 // +---------------------------------------------------------------------------
@@ -11880,7 +11964,7 @@ void FdoExpressionFunctionTest::TestSignFunction ()
 
       func_call   = L"(Sign(byte_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader16(data_reader, true, 9, 1);
+      CheckReader32(data_reader, true, 9, 1);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -11921,7 +12005,7 @@ void FdoExpressionFunctionTest::TestSignFunction ()
 
       func_call   = L"(Sign(dcl_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader16(data_reader, true, 9, 1);
+      CheckReader32(data_reader, true, 9, 1);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -11963,7 +12047,7 @@ void FdoExpressionFunctionTest::TestSignFunction ()
 
       func_call   = L"(Sign(dbl_val*-1) as cmp_id)";
       data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader16(data_reader, true, 9, -1);
+      CheckReader32(data_reader, true, 9, -1);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -12009,7 +12093,7 @@ void FdoExpressionFunctionTest::TestSignFunction ()
 
       func_call   = L"(SiGn(byte_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader16(data_reader, true, 9, 1);
+      CheckReader32(data_reader, true, 9, 1);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -12902,6 +12986,88 @@ void FdoExpressionFunctionTest::TestInstrFunction ()
     }  //  catch ( ... ) ...
 
 }  //  TestInstrFunction ()
+
+void FdoExpressionFunctionTest::TestInstrFunctionAsFilter ()
+
+// +---------------------------------------------------------------------------
+// | The function executes the test for the expression engine function INSTR
+// | when used in a filter.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    FdoInt32                  row_count     = 0;
+
+    FdoPtr<FdoFilter>         filter;
+    FdoPtr<FdoIFeatureReader> data_reader;
+
+    printf("\n");
+    printf("========================================================== \n");
+    printf(" Current Unit Test Suite: INSTR Function Filter Testing    \n");
+    printf("========================================================== \n");
+    printf("\n");
+
+    // Define the filter for all tests in this test suite.
+
+    filter = FdoFilter::Parse(L"Instr(str2_val, 'is: 213') = 11");
+
+    // 1. Test Case:
+    // The test executes a select-command to select data from a class table
+    // using a filter that includes the expression function INSTR. The re-
+    // quest should return a sub-set of the available data. No exceptions
+    // are expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select data from a \n");
+    printf("  class table using a filter that includes the expression  \n");
+    printf("  function INSTR. The request should return a sub-set of   \n");
+    printf("  the available data. No exceptions are expected.          \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the number of the returned data. If the
+      // number does not match the expected result, issue an exception.
+
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, NULL);
+
+      printf(" >>> Cross check result \n");
+      while (data_reader->ReadNext())
+        row_count++;
+
+      data_reader->Close();
+
+      // Issue an exception if the expected result is not met.
+
+      if (row_count != 10)
+          throw FdoException::Create(
+                        L"Unexpected result(s) when checking returned data");
+      else
+        printf(" >>> ... All expected data found\n");
+
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+}  //  TestInstrFunctionAsFilter ()
 
 void FdoExpressionFunctionTest::TestLengthFunction ()
 
@@ -14494,12 +14660,12 @@ void FdoExpressionFunctionTest::ModuloOperation ()
 
     // Declare and initialize all necessary local vatiables.
 
-    FdoInt32               id_val,
-                           cmp_val;
+    FdoInt32                  id_val,
+                              cmp_val;
 
-    FdoStringP             func_call;
+    FdoStringP                func_call;
 
-    FdoPtr<FdoIDataReader> data_reader;
+    FdoPtr<FdoIFeatureReader> data_reader;
 
     printf("\n");
     printf("========================================================== \n");
@@ -14508,26 +14674,31 @@ void FdoExpressionFunctionTest::ModuloOperation ()
     printf("\n");
 
     // 1. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function MOD on the
-    // value of a different property of type INT32. The test works on all
-    // rows for the test class. No exceptions are expected.
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function MOD on the value of a
+    // different property of type INT32. The test works on all rows in the
+    // test class table. The test is to check that not the same value is re-
+    // turned for each of the rows as the original property value is different
+    // for each row. No exceptions are expected.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
-    printf("  The test executes a select-aggregate command to select   \n");
-    printf("  the value of a computed property that is defined by us-  \n");
-    printf("  ing the function MOD on the value of a different pro-    \n");
-    printf("  perty of type INT32. The test works on all rows for the  \n");
-    printf("  test class. No exceptions are expected.                  \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MOD on the value of a different property of     \n");
+    printf("  type INT32. The test works on all rows in the test class \n");
+    printf("  table. The test is to check that not the same value is   \n");
+    printf("  returned for each of the rows as the original property   \n");
+    printf("  value is different for each row. No exceptions are ex-   \n");
+    printf("  pected.                                                  \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
-      // Execute the test and check the returned data.
+      // Execute the test and document the returned data.
 
       func_call   = L"(Mod(id, 10) as cmp_id)";
-      data_reader = ExecuteSelAggrCommand(
+      data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", NULL, true, func_call);
       while (data_reader->ReadNext()) {
 
@@ -14559,6 +14730,88 @@ void FdoExpressionFunctionTest::ModuloOperation ()
 
 }  //  ModuloOperation ()
 
+void FdoExpressionFunctionTest::SoundexFilter ()
+
+// +---------------------------------------------------------------------------
+// | The function executes a specific test identified by QA that resulted in a
+// | MAP crash.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    FdoInt32                  id_val,
+                              row_count     = 0;
+
+    FdoPtr<FdoFilter>         filter;
+    FdoPtr<FdoIFeatureReader> data_reader;
+
+    printf("\n");
+    printf("========================================================== \n");
+    printf(" Special Unit Test Suite: SOUNDEX as filter                \n");
+    printf("========================================================== \n");
+    printf("\n");
+
+    // 1. Test Case:
+    // The test executes a select-command to select the feature ids of object
+    // for which a filter using the expression function SOUNDEX applies. The
+    // test is expected to return a specific number of rows. No exceptions are
+    // expected.
+
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the feature \n");
+    printf("  ids of object for which a filter using the expression    \n");
+    printf("  function SOUNDEX applies. The test is expected to return \n");
+    printf("  a specific number of rows. No exceptions are expected.   \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data.
+
+      filter = FdoFilter::Parse(
+                        L"Soundex(str2_val) = Soundex('The Color is: 777')");
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, NULL);
+
+      printf(" >>> Cross check result \n");
+      while (data_reader->ReadNext()) {
+
+        row_count++;
+        id_val  = data_reader->GetInt32(L"id");
+        printf(" --->>> (id) = (%d) \n", id_val);
+
+      }  //  while ...
+
+      if (row_count != 31)
+          throw FdoException::Create(
+                        L"Unexpected result(s) when checking returned data");
+    else
+      printf(" >>> ... All expected data found\n");
+
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+}  //  SoundexFilter ()
+
 void FdoExpressionFunctionTest::SubstrOperation ()
 
 // +---------------------------------------------------------------------------
@@ -14571,12 +14824,12 @@ void FdoExpressionFunctionTest::SubstrOperation ()
 
     // Declare and initialize all necessary local vatiables.
 
-    FdoInt32               id_val;
+    FdoInt32                  id_val;
 
-    FdoStringP             cmp_val,
-                           func_call;
+    FdoStringP                cmp_val,
+                              func_call;
 
-    FdoPtr<FdoIDataReader> data_reader;
+    FdoPtr<FdoIFeatureReader> data_reader;
 
     printf("\n");
     printf("========================================================== \n");
@@ -14585,32 +14838,33 @@ void FdoExpressionFunctionTest::SubstrOperation ()
     printf("\n");
 
     // 1. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function SUBSTR on the
-    // value of a different property. In this case, the test requests a sub-
-    // string from a position within the source string to the end of it by
-    // not specifying the optional length parameter. No exceptions are ex-
-    // pected.
+    // The test executes a select-command to select the value of a computed
+    // property that is defined by using the function SUBSTR on the value of
+    // a different property. In this case, the test requests a sub-string from
+    // a position within the source string to the end of it by not specifying
+    // the optional length parameter. The test is to verify that the returned
+    // value for each of the rows is accurate and that not one value is re-
+    // turned for all the rows. No exceptions are expected.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
-    printf("  The test executes a select-aggregate command to select   \n");
-    printf("  the value of a computed property that is defined by us-  \n");
-    printf("  ing the function SUBSTR on the value of a different pro- \n");
-    printf("  perty. In this case, the test requests a sub-string from \n");
-    printf("  a position within the source string to the end of it by  \n");
-    printf("  not specifying the optional length parameter. No excep-  \n");
-    printf("  tions are expected.                                      \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function SUBSTR on the value of a different property of  \n");
+    printf("  type STRING. In this case the test requests a sub-string \n");
+    printf("  from a position within the source string to the end of   \n");
+    printf("  it by not specifying the optional length parameter. The  \n");
+    printf("  test is to verify that the returned value for each of    \n");
+    printf("  the rows is accurate and that not one value is returned  \n");
+    printf("  for all the rows. No exceptions are expected.            \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row. The value for the selected computed property
-      // is expected to be "Color is: 2118".
+      // Execute the test and document the returned data.
 
       func_call   = L"(Substr(str2_val, 5.6) as cmp_id)";
-      data_reader = ExecuteSelAggrCommand(
+      data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", NULL, true, func_call);
       while (data_reader->ReadNext()) {
 
@@ -15896,12 +16150,26 @@ void FdoExpressionFunctionTest::AddFeature (
 
       if (index != 22) {
 
-          dbl_value      = index + (6.34 * index/5.77);
+          if (index == 20) {
+
+          dbl_value      = 30.3;
           data_value     = FdoDataValue::Create(dbl_value, FdoDataType_Double);
           property_value = AddNewProperty(property_values, L"dbl_val");
           property_value->SetValue(data_value);
           FDO_SAFE_RELEASE(data_value);
           FDO_SAFE_RELEASE(property_value);
+
+          }  //  if (index == 20) ...
+          else {
+
+            dbl_value      = index + (6.34 * index/5.77);
+            data_value     = FdoDataValue::Create(dbl_value, FdoDataType_Double);
+            property_value = AddNewProperty(property_values, L"dbl_val");
+            property_value->SetValue(data_value);
+            FDO_SAFE_RELEASE(data_value);
+            FDO_SAFE_RELEASE(property_value);
+
+          }  //  else ...
 
       }  //  if (index != 22) ...
 
@@ -15924,12 +16192,25 @@ void FdoExpressionFunctionTest::AddFeature (
       FDO_SAFE_RELEASE(data_value);
       FDO_SAFE_RELEASE(property_value);
 
-      id_str         = FdoStringP::Format(L"  %d  ", index);
-      data_value     = FdoDataValue::Create((FdoString *)id_str);
-      property_value = AddNewProperty(property_values, L"str_val");
-      property_value->SetValue(data_value);
-      FDO_SAFE_RELEASE(data_value);
-      FDO_SAFE_RELEASE(property_value);
+      if (index == 20) {
+
+          data_value     = FdoDataValue::Create(L"30.3");
+          property_value = AddNewProperty(property_values, L"str_val");
+          property_value->SetValue(data_value);
+          FDO_SAFE_RELEASE(data_value);
+          FDO_SAFE_RELEASE(property_value);
+
+      }  //  if (index == 20) ...
+      else {
+
+        id_str         = FdoStringP::Format(L"  %d  ", index);
+        data_value     = FdoDataValue::Create((FdoString *)id_str);
+        property_value = AddNewProperty(property_values, L"str_val");
+        property_value->SetValue(data_value);
+        FDO_SAFE_RELEASE(data_value);
+        FDO_SAFE_RELEASE(property_value);
+
+      }  //  else ...
 
       id_str         = FdoStringP::Format(L"The Color is: %d", (index + 2109));
       data_value     = FdoDataValue::Create((FdoString *)id_str);
