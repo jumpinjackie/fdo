@@ -12800,7 +12800,7 @@ void FdoExpressionFunctionTest::TestSignFunction ()
 
       func_call   = L"(Sign(byte_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader16(data_reader, true, 9, 1);
+      CheckReader32(data_reader, true, 9, 1);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -12843,7 +12843,7 @@ void FdoExpressionFunctionTest::TestSignFunction ()
       func_call   = L"(Sign(dcl_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckReader16(data_reader, true, 9, 1);
+      CheckReader32(data_reader, true, 9, 1);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -12886,7 +12886,7 @@ void FdoExpressionFunctionTest::TestSignFunction ()
       func_call   = L"(Sign(dbl_val*-1) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckReader16(data_reader, true, 9, -1);
+      CheckReader32(data_reader, true, 9, -1);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -12932,7 +12932,7 @@ void FdoExpressionFunctionTest::TestSignFunction ()
 
       func_call   = L"(SiGn(byte_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader16(data_reader, true, 9, 1);
+      CheckReader32(data_reader, true, 9, 1);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
