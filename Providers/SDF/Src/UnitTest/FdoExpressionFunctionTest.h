@@ -67,6 +67,7 @@ class FdoExpressionFunctionTest : public CppUnit::TestCase
     // CPPUNIT_TEST(TestNullValueFunction);
     // CPPUNIT_TEST(TestToDateFunction);
     // CPPUNIT_TEST(TestToDoubleFunction);
+    // CPPUNIT_TEST(TestToDoubleFunctionAsFilter);
     // CPPUNIT_TEST(TestToFloatFunction);
     // CPPUNIT_TEST(TestToInt32Function);
     // CPPUNIT_TEST(TestToInt64Function);
@@ -109,6 +110,7 @@ class FdoExpressionFunctionTest : public CppUnit::TestCase
     // =========================================
     // CPPUNIT_TEST(TestConcatFunction);
     // CPPUNIT_TEST(TestInstrFunction);
+    // CPPUNIT_TEST(TestInstrFunctionAsFilter);
     // CPPUNIT_TEST(TestLengthFunction);
     // CPPUNIT_TEST(TestLowerFunction);
     // CPPUNIT_TEST(TestLpadFunction);
@@ -128,6 +130,7 @@ class FdoExpressionFunctionTest : public CppUnit::TestCase
     // ====       SPECIAL UNIT TESTS        ====
     // =========================================
     // CPPUNIT_TEST(ModuloOperation);
+    // CPPUNIT_TEST(SoundexFilter);
     // CPPUNIT_TEST(SubstrOperation);
   CPPUNIT_TEST_SUITE_END();
 
@@ -276,6 +279,12 @@ protected:
     //      TODOUBLE when used as a select-parameter.
 
     void TestToDoubleFunction ();
+
+    //  TestToDoubleFunctionAsFilter:
+    //      The function executes the test for the expression engine function
+    //      TODOUBLE when used in a filter.
+
+    void TestToDoubleFunctionAsFilter ();
 
     //  TestToFloatFunction:
     //      The function executes the test for the expression engine function
@@ -463,6 +472,12 @@ protected:
 
     void TestInstrFunction ();
 
+    //  TestInstrFunctionAsFilter:
+    //      The function executes the test for the expression engine function
+    //      INSTR when used in a filter.
+
+    void TestInstrFunctionAsFilter ();
+
     //  TestLengthFunction:
     //      The function executes the test for the expression engine function
     //      LENGTH when used as a select-parameter.
@@ -539,6 +554,12 @@ protected:
     //      to verify that the returned data is accurate for each row.
 
     void ModuloOperation ();
+
+    //  SoundexFilter:
+    //      The function executes a specific test identified by QA that
+    //      resulted in a MAP crash.
+
+    void SoundexFilter ();
 
     //  SubstrOperation:
     //      The function executes a substring operation on multiple rows. This
