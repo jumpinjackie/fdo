@@ -227,6 +227,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FdoExpressionFunctionTest.cpp"
+				>
+			</File>
+			<File
 				RelativePath="FidelityTests.cpp"
 				>
 			</File>
@@ -333,6 +337,10 @@
 			</File>
 			<File
 				RelativePath=".\ExtendedSelectTests.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FdoExpressionFunctionTest.h"
 				>
 			</File>
 			<File
