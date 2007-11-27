@@ -33,6 +33,12 @@ struct FunctionCache
 	FdoExpressionEngineINonAggregateFunction *function;  // only set if the function is a non aggregate function
 };
 
+struct ExpressionCache
+{
+	FdoExpression *m_Address;                               // used to store the address
+    FdoPtr< FdoArray<FdoFunction*> > m_AggrIdents;          // non-null value for aggregate functions
+};
+
 class FdoExpressionEngineImp : public FdoIFilterProcessor, public FdoIExpressionProcessor
 {
 
@@ -248,6 +254,11 @@ private:
 	int m_Size;             // number of items allocated in the cache
 	int m_Current;          // number of items in the cache
 	FunctionCache *m_CacheFunc; //the cache functions
+
+	int m_ExpressionCacheSize;             // number of items allocated in the cache
+	int m_ExpressionCacheCurrent;        // number of items in the cache
+	ExpressionCache *m_ExpressionCache;     // the cache expressions
+
 
     FdoPtr<FdoFunctionDefinitionCollection> m_AllFunctions; // collection of user-defined functions + standard functions
 
