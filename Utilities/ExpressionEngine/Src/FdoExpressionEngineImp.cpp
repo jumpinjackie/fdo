@@ -101,13 +101,16 @@ FdoExpressionEngineImp::FdoExpressionEngineImp(FdoIReader* reader, FdoClassDefin
         mutex.Leave();
         throw;
     }
-
 	m_UserDefinedFunctions = FDO_SAFE_ADDREF(userDefinedFunctions);
 
 	m_Size = 10;
 	m_Current = 0;
 	m_CacheFunc = (FunctionCache *) malloc(m_Size*sizeof(FunctionCache));
     m_CurrentIndex = 0;
+
+	m_ExpressionCacheSize = 10;
+	m_ExpressionCacheCurrent = 0;
+	m_ExpressionCache = new ExpressionCache[m_ExpressionCacheSize];
 }
 
 FdoExpressionEngineImp::FdoExpressionEngineImp()
@@ -148,6 +151,8 @@ FdoExpressionEngineImp::~FdoExpressionEngineImp()
         m_AggregateFunctions.pop_back();
     }
 	free(m_CacheFunc);
+
+    delete [] m_ExpressionCache;
 
     for (retval_stack::iterator iter = m_retvals.begin (); iter != m_retvals.end (); iter++)
         delete *iter;
@@ -1230,7 +1235,7 @@ void FdoExpressionEngineImp::ProcessFunction (FdoFunction& expr)
 	{
 		if (m_processingAggregate)
 		{
-	        FdoPtr<FdoLiteralValueCollection> functionParameters = FdoLiteralValueCollection::Create();
+	        FdoLiteralValueCollection* functionParameters = ObtainLiteralValueCollection();
 			FdoPtr<FdoExpressionCollection> args = expr.GetArguments ();
 			for (int i=0; i<args->GetCount(); i++)
 			{
@@ -1252,6 +1257,7 @@ void FdoExpressionEngineImp::ProcessFunction (FdoFunction& expr)
 				RelinquishDataValue(literalValue);
 			}
             functionParameters->Clear();
+            RelinquishLiteralValueCollection(functionParameters);
 		}
 		else
 		{
@@ -3217,7 +3223,30 @@ FdoLiteralValue* FdoExpressionEngineImp::Evaluate(FdoExpression *expression)
 {
     FdoCommonExpressionType exprType;
     
-    mAggrIdents = FdoExpressionEngineUtilDataReader::GetAggregateFunctions(m_AllFunctions, expression, exprType);
+    bool bExpressionFound = false;
+	for (int i=0; i<m_ExpressionCacheCurrent; i++)
+	{
+		if (m_ExpressionCache[i].m_Address == expression)
+		{
+            bExpressionFound = true;
+            mAggrIdents = m_ExpressionCache[i].m_AggrIdents;
+			break;
+		}
+	}
+
+    if (bExpressionFound == false)
+    {
+        mAggrIdents = FdoExpressionEngineUtilDataReader::GetAggregateFunctions(m_AllFunctions, expression, exprType);
+        if (m_ExpressionCacheCurrent >= m_ExpressionCacheSize)
+		{
+            delete [] m_ExpressionCache;
+            m_ExpressionCacheSize *= 2;
+            m_ExpressionCache = new ExpressionCache[m_ExpressionCacheSize];
+		}
+   		m_ExpressionCache[m_ExpressionCacheCurrent].m_Address = expression;
+        m_ExpressionCache[m_ExpressionCacheCurrent].m_AggrIdents = mAggrIdents;
+        m_ExpressionCacheCurrent++;
+    }
 
     if ((mAggrIdents != NULL) && (mAggrIdents->GetCount() > 0))
     {
@@ -3721,5 +3750,6 @@ FdoFunctionDefinition *FdoExpressionEngineImp::DeepCopyFunctionDefinition(FdoFun
     FdoFunctionDefinition *newFunction = FdoFunctionDefinition::Create(functionDefinition->GetName(),functionDefinition->GetDescription(), functionDefinition->IsAggregate(), newSignatures, functionDefinition->GetFunctionCategoryType());
 
     return newFunction;
-
 }
+
+
