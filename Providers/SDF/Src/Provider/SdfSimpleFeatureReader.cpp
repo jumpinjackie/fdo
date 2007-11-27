@@ -184,6 +184,17 @@ SdfSimpleFeatureReader::~SdfSimpleFeatureReader()
     delete m_currentKey;
     delete m_currentData;
     delete m_dataReader;
+
+    if (!m_stringPropsCache.empty())
+    {
+        std::map<std::wstring, wchar_t*>::iterator iter = m_stringPropsCache.begin();
+
+        for (; iter != m_stringPropsCache.end(); iter++)
+            delete [] iter->second;
+
+        m_stringPropsCache.clear();
+    }
+
 }
 
 //-------------------------------------------------------
@@ -1362,8 +1373,8 @@ FdoExpressionEngineFunctionCollection* SdfSimpleFeatureReader::GetUserDefinedFun
 					else if ( wkt.Contains( L"GEOGCS" ) || csysName.Contains( L"[LL84]" ))
 					{
 						userDefinedFunctions = FdoExpressionEngineFunctionCollection::Create();
-						userDefinedFunctions->Add( FdoFunctionLength2D::Create(true));
-						userDefinedFunctions->Add( FdoFunctionArea2D::Create(true));
+						userDefinedFunctions->Add( FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionLength2D::Create(true)));
+						userDefinedFunctions->Add( FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionArea2D::Create(true)));
 					}
 				}
 			}

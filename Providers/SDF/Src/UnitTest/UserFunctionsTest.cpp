@@ -204,7 +204,7 @@ public:
 
 	virtual void Process(FdoLiteralValueCollection *literalValues)
 	{
-		FdoInt32Value *int32 = (FdoInt32Value *) literalValues->GetItem(0);
+		FdoPtr<FdoInt32Value> int32 = (FdoInt32Value *) literalValues->GetItem(0);
 		if (int32->GetInt32() > m_Max)
 			m_Max = int32->GetInt32();
 	}
