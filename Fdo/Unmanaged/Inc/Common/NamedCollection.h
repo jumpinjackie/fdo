@@ -116,6 +116,9 @@ public:
             // Check if object name can be modified. 
             bool canSetName = canSetObj ? canSetObj->CanSetName() : true;
 
+            if (!obj)
+                FDO_SAFE_RELEASE(canSetObj);
+
             // If the object name can't be modified then we're done.
             // Otherwise, there's a chance the object name was modified,
             // meaning that it can be in the collection but not the map,
