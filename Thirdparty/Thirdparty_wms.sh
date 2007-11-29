@@ -65,7 +65,7 @@ if test "$FDOGDAL" == "$FDOTHIRDPARTY/gdal"; then
     rm -f lib/*.libgdal.a    
     rm -f lib/*.libgdal.so    
     rm -f lib/*.libgdal.so.1    
-    rm -f lib/*.libgdal.so.1.11.3   
+    rm -f lib/*.libgdal.so.1.11.4   
     rm -f include/*
     chmod a+x ./configure
     echo Build GDAL library with the following settings:
@@ -83,7 +83,7 @@ if test "$FDOGDAL" == "$FDOTHIRDPARTY/gdal"; then
     cp -f .libs/libgdal.a lib/
     cp -f .libs/libgdal.so lib/
     cp -f .libs/libgdal.so.1 lib/
-    cp -f .libs/libgdal.so.1.11.3 lib/
+    cp -f .libs/libgdal.so.1.11.4 lib/
     cp -f port/*.h include/
     cp -f gcore/*.h include/
     cp -f alg/*.h include/
