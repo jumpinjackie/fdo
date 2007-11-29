@@ -127,7 +127,9 @@
 #endif
 
 #ifdef HAVE_DIRECT_H
+#ifdef WIN32
 #  include <direct.h>
+#endif
 #endif
 
 #ifdef _AIX
