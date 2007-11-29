@@ -1,5 +1,5 @@
 dnl ***************************************************************************
-dnl $Id: configure.in 12500 2007-10-22 17:10:21Z rouault $
+dnl $Id: configure.in 12726 2007-11-12 15:43:41Z warmerdam $
 dnl
 dnl Project:  GDAL
 dnl Purpose:  Configure source file.
@@ -273,13 +273,13 @@ else
   AC_MSG_RESULT([yes])
 
   ax_save_LIBS="${LIBS}"
-  LIBS="-L`$PG_CONFIG --libdir` -lpq"
+  LIBS=-L`$PG_CONFIG --libdir`" -lpq"
   AC_CHECK_LIB(pq,PQconnectdb,HAVE_PG=yes,HAVE_PG=no,)
   LIBS="${ax_save_LIBS}"
   
   if test "${HAVE_PG}" = "yes" ; then
-    LIBS="-L`$PG_CONFIG --libdir` -lpq $LIBS"
-    PG_INC="-I`$PG_CONFIG --includedir` -I`$PG_CONFIG --includedir-server`"
+    LIBS=-L`$PG_CONFIG --libdir`" -lpq $LIBS"
+    PG_INC=-I`$PG_CONFIG --includedir`" -I"`$PG_CONFIG --includedir-server`
 
     PG_EXTRA_DEC=""
     AC_CHECK_LIB(pq,PQputCopyData,,PG_EXTRA_DEC=-DPG_PRE74,)
