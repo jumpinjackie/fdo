@@ -40,13 +40,17 @@ MSVC_VER=1310
 !ENDIF
 
 !IF $(MSVC_VER) == 1400
-# Uncomment the first for an optimized build or the second for a debug build.
-#OPTFLAGS=	/nologo /MD /EHsc /Ox /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
+!IFDEF BUILD_DEBUG
 OPTFLAGS=	/nologo /MD /EHsc /Zi /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE /Fd$(GDAL_ROOT)\gdal.pdb
 !ELSE
-# Uncomment the first for an optimized build or the second for a debug build.
-#OPTFLAGS=	/nologo /MD /EHsc /Ox
+OPTFLAGS=	/nologo /MD /EHsc /Ox /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
+!ENDIF
+!ELSE
+!IFDEF BUILD_DEBUG
 OPTFLAGS=	/nologo /MD /EHsc /Zi /Fd$(GDAL_ROOT)\gdal.pdb
+!ELSE
+OPTFLAGS=	/nologo /MD /EHsc /Ox
+!ENDIF
 !ENDIF
 
 # Uncomment the following if you are building for 64-bit windows
