@@ -149,7 +149,6 @@ public:
 		m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionLpad::Create()));
 		m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionLtrim::Create()));
 		m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionRpad::Create()));
-
 		m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionRtrim::Create()));
 		m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionSoundex::Create()));
 		m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionSubstr::Create()));
@@ -166,7 +165,42 @@ public:
 	{
 		return FDO_SAFE_ADDREF(m_StandardFunctions.p);
 	}
+
+    void RegisterFunctions(FdoExpressionEngineFunctionCollection *functions)
+    {
+        for (int i=0; i<functions->GetCount(); i++)
+        {
+            FdoPtr<FdoExpressionEngineIFunction> function = functions->GetItem(i);
+            FdoPtr<FdoFunctionDefinition> functionDefinition = function->GetFunctionDefinition();
+            int j;
+            for (j=0; j<m_UserDefinedFunctions->GetCount(); j++)
+            {
+                FdoPtr<FdoExpressionEngineIFunction> cacheFunction = m_UserDefinedFunctions->GetItem(j);
+                FdoPtr<FdoFunctionDefinition> cacheFunctionDefinition = cacheFunction->GetFunctionDefinition();
+                if (FdoCommonOSUtil::wcsicmp(functionDefinition->GetName(), cacheFunctionDefinition->GetName()) == 0)
+                    break;
+            }
+            if (j == m_UserDefinedFunctions->GetCount())
+                m_UserDefinedFunctions->Add(function);
+        }
+    }
+
+    FdoExpressionEngineFunctionCollection* GetAllFunctions()
+    {
+        FdoExpressionEngineFunctionCollection* allFunctions;
+        allFunctions = FdoExpressionEngineFunctionCollection::Create();
+
+        for (int i=0; i<m_UserDefinedFunctions->GetCount(); i++)
+        {
+            FdoPtr<FdoExpressionEngineIFunction> function = m_UserDefinedFunctions->GetItem(i);
+            allFunctions->Add(function);
+        }
+        for (int i=0; i<m_StandardFunctions->GetCount(); i++)
+        {
+            FdoPtr<FdoExpressionEngineIFunction> function = m_StandardFunctions->GetItem(i);
+            allFunctions->Add(function);
+        }
+        return allFunctions;
+    }
+
 };
-
-
-

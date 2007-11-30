@@ -129,3 +129,8 @@ void FdoExpressionEngine::GetExpressionType(FdoClassDefinition* originalClassDef
     FdoExpressionEngineImp::GetExpressionType(originalClassDef, expr, retPropType, retDataType);
 }
 
+
+void FdoExpressionEngine::RegisterFunctions(FdoExpressionEngineFunctionCollection *userDefinedFunctions)
+{
+    FdoExpressionEngineImp::RegisterFunctions(userDefinedFunctions);
+}

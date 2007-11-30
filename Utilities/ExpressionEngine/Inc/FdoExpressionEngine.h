@@ -179,9 +179,6 @@ public:
     /// 
    	EXPRESSIONENGINE_API static bool IsAggregateFunction(FdoFunctionDefinitionCollection *funcDefs, FdoString *name);
 
-
-    // Returns the type of the expression
-
     /// \brief
     /// Returns the type of expression
     /// 
@@ -200,10 +197,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-
 	EXPRESSIONENGINE_API static void GetExpressionType(FdoFunctionDefinitionCollection *functionDefinitions, FdoClassDefinition* originalClassDef, FdoExpression *expr, FdoPropertyType &retPropType, FdoDataType &retDataType);
-
-    // Returns the type of the expression
 
     /// \brief
     /// Returns the type of expression
@@ -219,8 +213,18 @@ public:
     /// \return
     /// Returns nothing
     /// 
-
 	EXPRESSIONENGINE_API static void GetExpressionType(FdoClassDefinition* originalClassDef, FdoExpression *expr, FdoPropertyType &retPropType, FdoDataType &retDataType);
+
+    /// \brief
+    /// Registers the user-defined functions
+    ///
+    /// \param userDefinedFunctions
+    /// Input the user-defined functions
+    ///
+    /// \return
+    /// Returns nothing
+    /// 
+    EXPRESSIONENGINE_API static void RegisterFunctions(FdoExpressionEngineFunctionCollection *userDefinedFunctions);
 
 
 public:
