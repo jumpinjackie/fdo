@@ -257,6 +257,7 @@ void FdoApplySchemaTest::TestSchema ()
         FdoStringP out4       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_test4.xml" ) );
         FdoStringP out5master = LogicalPhysicalBend(L"apply_schema_test5_master.txt");
         FdoStringP out5       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_test5.xml" ) );
+
         UnitTestUtil::CheckOutput( (const char*) out1master,(const char*) out1 );
         UnitTestUtil::CheckOutput( (const char*) out2master,(const char*) out2 );
         UnitTestUtil::CheckOutput( (const char*) out3master,(const char*) out3 );
@@ -301,6 +302,7 @@ void FdoApplySchemaTest::TestSchema ()
         if ( SchemaTestErrFile(9,true).GetLength() > 0 )
 		    UnitTestUtil::CheckOutput( SchemaTestErrFile(9,true), SchemaTestErrFile(9,false) );
 #endif
+
     }
 	catch ( FdoException* e ) 
 	{
@@ -513,22 +515,29 @@ void FdoApplySchemaTest::TestOverrides ()
 #endif
 
         owner = ph->GetOwner();
-        table = owner->CreateTable( ph->GetDcDbObjectName(L"storage") );
-        column = table->CreateColumnInt64( ph->GetDcColumnName(L"id"), false );
-        column = table->CreateColumnChar( ph->GetDcColumnName(L"storage"), true, 50 );
-        column = table->CreateColumnGeom( ph->GetDcColumnName(L"floor"), (FdoSmPhScInfo*) NULL );
-        column = table->CreateColumnInt16( ph->GetDcColumnName(L"extra"), !mCanAddNotNullCol );
+        table = owner->CreateTable( ph->GetDcDbObjectName(L"Storage") );
+        column = table->CreateColumnInt64( ph->GetDcColumnName(L"ID"), false );
+        column = table->CreateColumnChar( ph->GetDcColumnName(L"Storage"), true, 50 );
+        column = table->CreateColumnGeom( ph->GetDcColumnName(L"Floor"), (FdoSmPhScInfo*) NULL );
+        column = table->CreateColumnInt16( ph->GetDcColumnName(L"Extra"), !mCanAddNotNullCol );
 
         table = owner->CreateTable( ph->GetDcDbObjectName(L"oneforeign") );
-        column = table->CreateColumnInt64( ph->GetDcColumnName(L"id"), false );
-        column = table->CreateColumnChar( ph->GetDcColumnName(L"data"), true, 50 );
+        column = table->CreateColumnInt64( ph->GetDcColumnName(L"ID"), false );
+        column = table->CreateColumnChar( ph->GetDcColumnName(L"Data"), true, 50 );
 
         owner->Commit();
 
+#ifdef RDBI_DEF_SSQL
         UnitTestUtil::Sql2Db( 
             L"insert into storage values ( 1, 'a string', NULL, 2)",
             connection
         );
+#else
+        UnitTestUtil::Sql2Db( 
+            L"insert into storage values ( 1, 'a string', NULL, 2)",
+            connection
+        );
+#endif
 
 #ifdef RDBI_DEF_ORA
         UnitTestUtil::Sql2Db( 
@@ -550,10 +559,10 @@ void FdoApplySchemaTest::TestOverrides ()
                 );
 #endif
 
-        table = owner->CreateTable( ph->GetDcDbObjectName(L"storage_floor") );
-        column = table->CreateColumnInt64( ph->GetDcColumnName(L"id"), false );
-        column = table->CreateColumnInt64( ph->GetDcColumnName(L"storage_id"), false );
-        column = table->CreateColumnChar( ph->GetDcColumnName(L"storage"), true, 50 );
+        table = owner->CreateTable( ph->GetDcDbObjectName(L"Storage_Floor") );
+        column = table->CreateColumnInt64( ph->GetDcColumnName(L"ID"), false );
+        column = table->CreateColumnInt64( ph->GetDcColumnName(L"Storage_ID"), false );
+        column = table->CreateColumnChar( ph->GetDcColumnName(L"Storage"), true, 50 );
         table->Commit();
 
 #ifdef RDBI_DEF_ORA
@@ -567,10 +576,10 @@ void FdoApplySchemaTest::TestOverrides ()
         );
 #endif
 
-        table = owner->CreateTable( ph->GetDcDbObjectName(L"nofeatid") );
-        column = table->CreateColumnChar( ph->GetDcColumnName(L"id"), false, 20 );
-        column = table->CreateColumnChar( ph->GetDcColumnName(L"data"), true, 50 );
-        column = table->CreateColumnGeom( ph->GetDcColumnName(L"geometry"), (FdoSmPhScInfo*) NULL );
+        table = owner->CreateTable( ph->GetDcDbObjectName(L"NOFEATID") );
+        column = table->CreateColumnChar( ph->GetDcColumnName(L"ID"), false, 20 );
+        column = table->CreateColumnChar( ph->GetDcColumnName(L"DATA"), true, 50 );
+        column = table->CreateColumnGeom( ph->GetDcColumnName(L"GEOMETRY"), (FdoSmPhScInfo*) NULL );
 #ifdef RDBI_DEF_SSQL
         column = table->CreateColumnChar( L"GEOMETRY_SI_1", true, 255 );
         column = table->CreateColumnChar( L"GEOMETRY_SI_2", true, 255 );
@@ -1024,13 +1033,13 @@ void FdoApplySchemaTest::TestLT ()
         const FdoSmPhColumn* column = table->RefColumns()->RefItem( ph->GetDcColumnName(L"LTID") );
         CPPUNIT_ASSERT( (LtLckMethod == 1) == (column != NULL) );
 
-        column = table->RefColumns()->RefItem( ph->GetDcColumnName(L"NEXTLTID") );
+        column = table->RefColumns()->RefItem( ph->GetDcColumnName(L"nextltid") );
         CPPUNIT_ASSERT( (LtLckMethod == 1) == (column != NULL) );
 
-        column = table->RefColumns()->RefItem( ph->GetDcColumnName(L"LOCKID") );
+        column = table->RefColumns()->RefItem( ph->GetDcColumnName(L"lockid") );
         CPPUNIT_ASSERT( (LtLckMethod == 1) == (column != NULL) );
 
-        column = table->RefColumns()->RefItem( ph->GetDcColumnName(L"LOCKTYPE") );
+        column = table->RefColumns()->RefItem( ph->GetDcColumnName(L"locktype") );
         CPPUNIT_ASSERT( (LtLckMethod == 1) == (column != NULL) );
 
         if ( LtLckMethod == 1  ) 
@@ -1038,12 +1047,12 @@ void FdoApplySchemaTest::TestLT ()
         else
             CPPUNIT_ASSERT( table->RefPkeyColumns()->GetCount() == 1 );
 
-        column = table->RefPkeyColumns()->RefItem( ph->GetDcColumnName(L"FEATID") );
+        column = table->RefPkeyColumns()->RefItem( ph->GetDcColumnName(L"FeatId") );
         CPPUNIT_ASSERT( column != NULL );
         column = table->RefPkeyColumns()->RefItem( 0 );
-        CPPUNIT_ASSERT( FdoStringP(column->GetName()).ICompare(L"FEATID") == 0 );
+        CPPUNIT_ASSERT( FdoStringP(column->GetName()).ICompare(ph->GetDcColumnName(L"FeatId")) == 0 );
 
-        column = table->RefPkeyColumns()->RefItem( ph->GetDcColumnName(L"LTID") );
+        column = table->RefPkeyColumns()->RefItem( ph->GetDcColumnName(L"ltid") );
         CPPUNIT_ASSERT( (LtLckMethod == 1) == (column != NULL) );
 
         ph = mgr->GetPhysicalSchema();
@@ -1053,21 +1062,21 @@ void FdoApplySchemaTest::TestLT ()
         pTable = ph->FindDbObject(L"CIRCLE_LT1_GRIP",L"",L"",false);
 #else
 #ifdef RDBI_DEF_SSQL
-        pTable = ph->FindDbObject(L"circle lt_grip",L"",L"",false);
+        pTable = ph->FindDbObject(ph->GetDcDbObjectName(L"Circle Lt_Grip"),L"",L"",false);
 #else
         pTable = ph->FindDbObject(L"CIRCLE_LT_GRIP",L"",L"",false);
 #endif
 #endif
-        column = pTable->RefColumns()->RefItem( ph->GetDcColumnName(L"LTID") );
+        column = pTable->RefColumns()->RefItem( ph->GetDcColumnName(L"ltid") );
         CPPUNIT_ASSERT( (LtLckMethod == 1) == (column != NULL) );
 
-        column = pTable->RefColumns()->RefItem( ph->GetDcColumnName(L"NEXTLTID") );
+        column = pTable->RefColumns()->RefItem( ph->GetDcColumnName(L"nextltid") );
         CPPUNIT_ASSERT( (LtLckMethod == 1) == (column != NULL) );
 
-        column = pTable->RefColumns()->RefItem( ph->GetDcColumnName(L"LOCKID") );
+        column = pTable->RefColumns()->RefItem( ph->GetDcColumnName(L"lockid") );
         CPPUNIT_ASSERT( column == NULL );
 
-        column = pTable->RefColumns()->RefItem( ph->GetDcColumnName(L"LOCKTYPE") );
+        column = pTable->RefColumns()->RefItem( ph->GetDcColumnName(L"locktype") );
         CPPUNIT_ASSERT( column == NULL );
 
 	    FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
@@ -1256,7 +1265,7 @@ static char* pRmvLpMetaSchema2 =
         <xsl:variable name=\"tableName\" select=\"@name\"/>\
         <xsl:copy>\
             <xsl:apply-templates select=\"@*\"/>\
-            <xsl:apply-templates select=\"lp:property[not(@name = 'FeatId' and ($tableName = 'PARCEL' or $tableName = 'ZONING' or $tableName = 'parcel' or $tableName = 'zoning' or $tableName = 'dbo.parcel' or $tableName = 'dbo.zoning')) and not(@name = 'ClassId' or @name = 'RevisionNumber' or @name = 'ClassName' or @name = 'SchemaName' or @name='Bounds')]\">\
+            <xsl:apply-templates select=\"lp:property[not(@name = 'FeatId' and ($tableName = 'PARCEL' or $tableName = 'ZONING' or $tableName = 'parcel' or $tableName = 'zoning' or $tableName = 'dbo.Parcel' or $tableName = 'dbo.Zoning' or $tableName = 'dbo.parcel' or $tableName = 'dbo.zoning')) and not(@name = 'ClassId' or @name = 'RevisionNumber' or @name = 'ClassName' or @name = 'SchemaName' or @name='Bounds')]\">\
             <xsl:sort select=\"@name\" />\
             </xsl:apply-templates>\
             <xsl:apply-templates select=\"lp:column\">\
@@ -1459,7 +1468,7 @@ void FdoApplySchemaTest::TestConfigDoc ()
 
         const FdoSmLpDbObject* lpTable = lpClass->RefDbObject();
         CPPUNIT_ASSERT( lpTable );
-        CPPUNIT_ASSERT( ph->GetDcDbObjectName(L"acdb3dpolyline") == lpTable->GetName() );
+        CPPUNIT_ASSERT( ph->GetDcDbObjectName(L"AcDb3dPolyline") == lpTable->GetName() );
 
         const FdoSmLpDataPropertyDefinition* lpProp = 
             FdoSmLpDataPropertyDefinition::Cast(lpClass->RefProperties()->RefItem(L"Closed"));
@@ -1467,7 +1476,7 @@ void FdoApplySchemaTest::TestConfigDoc ()
 
         const FdoSmPhColumn* lpColumn = lpProp->RefColumn();
         CPPUNIT_ASSERT(lpColumn);
-        CPPUNIT_ASSERT( ph->GetDcColumnName(L"closed") == lpColumn->GetName() );
+        CPPUNIT_ASSERT( ph->GetDcColumnName(L"Closed") == lpColumn->GetName() );
 
         lpClass = lp->FindClass( L"Electric'l", L"Transformer" );
         CPPUNIT_ASSERT( lpClass );
@@ -1478,7 +1487,7 @@ void FdoApplySchemaTest::TestConfigDoc ()
 
         lpColumn = lpGeomProp->RefColumn();
         CPPUNIT_ASSERT(lpColumn);
-        CPPUNIT_ASSERT( ph->GetDcColumnName(L"geometry") == lpColumn->GetName() );
+        CPPUNIT_ASSERT( ph->GetDcColumnName(L"Geometry") == lpColumn->GetName() );
 
         printf( "Closing Connection ... \n" );
 		UnitTestUtil::CloseConnection(
@@ -1494,48 +1503,76 @@ void FdoApplySchemaTest::TestConfigDoc ()
         FdoSmPhCheckConstraintP constraint;
 
         if ( supportsRange ) {
-            table = owner->GetDbObject( ph->GetDcDbObjectName(L"parcel") )->SmartCast<FdoSmPhTable>();
-            constraint = new FdoSmPhCheckConstraint( L"value_check", ph->GetDcColumnName(L"value"), L"value < 10000000" );
+            table = owner->GetDbObject( ph->GetDcDbObjectName(L"Parcel") )->SmartCast<FdoSmPhTable>();
+            constraint = new FdoSmPhCheckConstraint( 
+                L"value_check", 
+                ph->GetDcColumnName(L"Value"), 
+                FdoStringP::Format( L"%ls < 10000000", (FdoString*)(ph->GetDcColumnName(L"Value")) ) 
+            );
             table->AddCkeyCol( constraint );
-            grdOwner->ActivateAndExecute( L"alter table parcel add constraint value_check check ( value1 < 10000000 )" );
+            grdOwner->ActivateAndExecute( 
+                FdoStringP::Format(
+                    L"alter table %ls add constraint value_check check ( %ls < 10000000 )",
+                    (FdoString*)(ph->GetDcDbObjectName(L"Parcel")),
+                    (FdoString*)(ph->GetDcColumnName(L"Value1"))
+                )
+            );
         }
 
-        table = owner->GetDbObject( ph->GetDcDbObjectName(L"zoning") )->SmartCast<FdoSmPhTable>();
+        table = owner->GetDbObject( ph->GetDcDbObjectName(L"Zoning") )->SmartCast<FdoSmPhTable>();
 
         FdoSmPhColumnsP	ukeyColumns = new FdoSmPhColumnCollection();
 	    table->GetUkeyColumns()->Add( ukeyColumns );
 		int numUkeys = table->GetUkeyColumns()->GetCount();
-        table->AddUkeyCol( numUkeys - 1, ph->GetDcColumnName(L"authority") );
-        table->AddUkeyCol( numUkeys - 1, ph->GetDcColumnName(L"zoningtype") );
+        table->AddUkeyCol( numUkeys - 1, ph->GetDcColumnName(L"Authority") );
+        table->AddUkeyCol( numUkeys - 1, ph->GetDcColumnName(L"ZoningType") );
 		ukeyColumns->SetElementState(FdoSchemaElementState_Added);
 
-        table = owner->GetDbObject( ph->GetDcDbObjectName(L"transformer") )->SmartCast<FdoSmPhTable>();
+        table = owner->GetDbObject( ph->GetDcDbObjectName(L"Transformer") )->SmartCast<FdoSmPhTable>();
 
         ukeyColumns = new FdoSmPhColumnCollection();
 	    table->GetUkeyColumns()->Add( ukeyColumns );
 		numUkeys = table->GetUkeyColumns()->GetCount();
-        table->AddUkeyCol( numUkeys - 1, ph->GetDcColumnName(L"phase") );
-        table->AddUkeyCol( numUkeys - 1, ph->GetDcColumnName(L"partnum") );
+        table->AddUkeyCol( numUkeys - 1, ph->GetDcColumnName(L"Phase") );
+        table->AddUkeyCol( numUkeys - 1, ph->GetDcColumnName(L"PartNum") );
 		ukeyColumns->SetElementState(FdoSchemaElementState_Added);
 
         if ( supportsRange ) {
-            constraint = new FdoSmPhCheckConstraint( L"partnum_check", ph->GetDcColumnName(L"partnum"), L"partnum > 0" );
+            constraint = new FdoSmPhCheckConstraint( L"partnum_check", ph->GetDcColumnName(L"PartNum"), 
+                FdoStringP::Format( L"%ls > 0", (FdoString*)(ph->GetDcColumnName(L"PartNum")) )
+            );
             table->AddCkeyCol( constraint );
-            grdOwner->ActivateAndExecute( L"alter table transformer add constraint partnum_check check ( partnum > 0 )" );
+            grdOwner->ActivateAndExecute( 
+                FdoStringP::Format(
+                    L"alter table %ls add constraint partnum_check check ( %ls > 0 )",
+                    (FdoString*)(ph->GetDcDbObjectName(L"Transformer")),
+                    (FdoString*)(ph->GetDcColumnName(L"PartNum"))
+                )
+            );
         }
 
-        table = owner->GetDbObject( ph->GetDcDbObjectName(L"pole") )->SmartCast<FdoSmPhTable>();
+        table = owner->GetDbObject( ph->GetDcDbObjectName(L"Pole") )->SmartCast<FdoSmPhTable>();
 
         ukeyColumns = new FdoSmPhColumnCollection();
 	    table->GetUkeyColumns()->Add( ukeyColumns );
 		numUkeys = table->GetUkeyColumns()->GetCount();
-        table->AddUkeyCol( numUkeys - 1, ph->GetDcColumnName(L"height") );
+        table->AddUkeyCol( numUkeys - 1, ph->GetDcColumnName(L"Height") );
 		ukeyColumns->SetElementState(FdoSchemaElementState_Added);
 
         if ( supportsRange ) {
-            constraint = new FdoSmPhCheckConstraint( L"height_check", ph->GetDcColumnName(L"height"), L"height > 5" );
+            constraint = new FdoSmPhCheckConstraint( 
+                L"height_check", 
+                ph->GetDcColumnName(L"height"), 
+                FdoStringP::Format(L"%ls > 5", (FdoString*)(ph->GetDcColumnName(L"height")))
+            );
             table->AddCkeyCol( constraint );
-            grdOwner->ActivateAndExecute( L"alter table pole add constraint height_check check ( height > 5.1 )" );
+            grdOwner->ActivateAndExecute( 
+                FdoStringP::Format(
+                    L"alter table %ls add constraint height_check check ( %ls > 5.1 )",
+                    (FdoString*)(ph->GetDcDbObjectName(L"Pole")),
+                    (FdoString*)(ph->GetDcColumnName(L"Height"))
+                )
+            );
         }
 
         owner->Commit();
@@ -1764,7 +1801,11 @@ void FdoApplySchemaTest::DeleteLandSchema( FdoIConnection* connection )
 {
     DeleteObjects( connection, L"Land", L"1-8 School" );
     DeleteObjects( connection, L"Land", L"Driveway" );
+#ifdef RDBI_DEF_SSQL
+    UnitTestUtil::Sql2Db( L"delete from \"parcel_person\"", connection );
+#else
 	UnitTestUtil::Sql2Db( L"delete from parcel_person", connection );
+#endif
 
 	FdoPtr<FdoIDestroySchema>  pCmd = (FdoIDestroySchema*) connection->CreateCommand(FdoCommandType_DestroySchema);
 
@@ -2238,7 +2279,7 @@ void FdoApplySchemaTest::CreateLandSchema( FdoIConnection* connection )
     InsertObject(connection, false, L"Land", L"1-8 School", L"# Rooms", L"20", NULL );
     InsertObject(connection, false, L"Land", L"Driveway", L"Pav'd", L"1", NULL );
 #ifdef RDBI_DEF_SSQL
-    UnitTestUtil::Sql2Db( L"insert into parcel_person ( \"first name\", \"last name\", parcel_province, parcel_pin ) values ( 'Fraser', 'Simon', 'Ontario', '1234-5678' )", connection );
+    UnitTestUtil::Sql2Db( L"insert into \"parcel_person\" ( \"first name\", \"last name\", \"parcel_province\", \"parcel_pin\" ) values ( 'Fraser', 'Simon', 'Ontario', '1234-5678' )", connection );
 #else
     UnitTestUtil::Sql2Db( L"insert into parcel_person ( first_name, last_name, parcel_province, parcel_pin ) values ( 'Fraser', 'Simon', 'Ontario', '1234-5678' )", connection );
 #endif

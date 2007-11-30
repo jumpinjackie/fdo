@@ -67,7 +67,7 @@ FdoSmPhReaderP FdoSmPhRdMySqlOwnerReader::MakeQueryReader(
 
         sqlString = FdoStringP::Format(
               L"select schema_name as name, \n"
-              L" (select table_name from information_schema.tables T where S.schema_name = T.table_schema and T.table_name = 'F_SCHEMAINFO') as schemas_table,\n"
+              L" (select table_name from information_schema.tables T where S.schema_name = T.table_schema and T.table_name = 'f_schemainfo') as schemas_table,\n"
               L" default_character_set_name \n"
               L" from information_schema.schemata S\n"
               L" %ls\n"

@@ -748,7 +748,7 @@ void FdoSmPhTable::LoadUkeys()
         mUkeysCollection = new FdoSmPhBatchColumnCollection();
 
 		// Quick exit if nothing to do.
-		if ( wcscmp(this->GetName(), L"F_CLASSDEFINITION" ) == 0 )
+		if ( wcscmp(this->GetName(), GetManager()->GetDcDbObjectName(L"f_classdefinition") ) == 0 )
 			return;
 
         // Skip load if new table.
@@ -810,7 +810,7 @@ void FdoSmPhTable::LoadCkeys()
 		mCkeysCollection = new FdoSmPhCheckConstraintCollection();
 
 		// Quick exit if nothing to do.
-		if ( wcscmp(this->GetName(), L"F_CLASSDEFINITION" ) == 0 )
+		if ( wcscmp(this->GetName(), GetManager()->GetDcDbObjectName(L"f_classdefinition") ) == 0 )
 			return;
 
         // Skip load if new table.

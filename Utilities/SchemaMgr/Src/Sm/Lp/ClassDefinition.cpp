@@ -2408,7 +2408,7 @@ FdoSmLpDbObjectP FdoSmLpClassBase::FinalizeDbObject(
                 // There is currently no join between a non-feature class and 
                 // F_ClassDefinition, so no error in this case.
 //                if ( (GetClassType() != FdoClassType_Class) || 
-//                        (FdoStringP("F_CLASSDEFINITION").ICompare(pLpDbObject->GetName()) != 0) )  
+//                        (FdoStringP("f_classdefinition").ICompare(pLpDbObject->GetName()) != 0) )  
 //    				AddPathNotFoundError( pLpDbObject->GetName() );
                 }
 		}

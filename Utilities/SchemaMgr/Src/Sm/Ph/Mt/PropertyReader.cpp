@@ -76,9 +76,11 @@ FdoSmPhReaderP FdoSmPhMtPropertyReader::MakeReader( FdoSmPhRowsP froms, FdoStrin
 
     // Generate the where clause
     FdoStringP where = FdoStringP::Format( 
-        L"where f_attributedefinition.classid = f_classdefinition.classid and schemaname = %ls %ls order by classname, attributename", 
+        L"where f_attributedefinition.classid = f_classdefinition.classid and schemaname = %ls %ls order by %ls, %ls", 
     	(FdoString*) mgr->FormatSQLVal(schemaName, FdoSmPhColType_String),
-        (FdoString*) classidRow
+        (FdoString*) classidRow,
+        (FdoString*) mgr->FormatOrderCol(L"classname", FdoSmPhColType_String),
+        (FdoString*) mgr->FormatOrderCol(L"attributename", FdoSmPhColType_String)
     );
 
     // Create a query reader to wrap around

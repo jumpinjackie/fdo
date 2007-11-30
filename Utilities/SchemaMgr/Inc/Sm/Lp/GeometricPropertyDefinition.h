@@ -289,11 +289,20 @@ protected:
 
     bool TableHasSpatialIndexColumns();
 
-	virtual FdoSmPhColumnP NewSiColumn( FdoSmPhDbObjectP dbObject, FdoStringP columnName, bool isNullable );
+    // Find Si column 1 or 2, as determined by the suffix
+    FdoSmPhColumnP FindSiColumn( FdoStringP suffix );
+    // Given a suffix, generate full name for an SI column
+    virtual FdoStringP GenSiColumnName( FdoStringP suffix );
+    // Find a column in the property's containing dbObject, without
+    // tripping a finalize of this property.
+    FdoSmPhColumnP FindColumn( FdoStringP columnName );
+
+    virtual FdoSmPhColumnP NewSiColumn( FdoSmPhDbObjectP dbObject, FdoStringP columnName, bool isNullable );
 	virtual FdoSmPhColumnP NewOrdColumn( FdoSmPhDbObjectP dbObject, FdoStringP columnName, bool isNullable );
 
     void SetWantSiColumns(bool wantSiColumns) { mWantSiColumns = wantSiColumns; }
     void AddSiColumns();
+    virtual FdoSmPhColumnP AddSiColumn( FdoSmPhDbObjectP pPhDbObject, FdoStringP suffix ); 
 
     FdoSmLpGeometricPropertyDefinition(FdoSmPhClassPropertyReaderP propReader, FdoSmLpClassDefinition* parent);
     

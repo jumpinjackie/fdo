@@ -756,18 +756,18 @@ bool FdoSmPhOwner::IsDbObjectNameReserved( FdoStringP objectName )
 	if ( !bReserved ) {
 		// Still not found. Check if it is referenced by the metaschema.
 
-        FdoSmPhDbObjectP classDef = FindDbObject( GetManager()->GetDcDbObjectName(L"F_CLASSDEFINITION") );
-        FdoSmPhDbObjectP attDef = FindDbObject( GetManager()->GetDcDbObjectName(L"F_ATTRIBUTEDEFINITION") );
+        FdoSmPhDbObjectP classDef = FindDbObject( GetManager()->GetDcDbObjectName(L"f_classdefinition") );
+        FdoSmPhDbObjectP attDef = FindDbObject( GetManager()->GetDcDbObjectName(L"f_attributedefinition") );
         FdoStringP localObjectName = GetManager()->DbObject2MetaSchemaName(objectName);
 
         if ( classDef && attDef ) {
 		    FdoStringP statement = 
 			    FdoStringP::Format( 
 				    L"select 1 from %ls where tablename in ( %ls, %ls ) union select 1 from %ls where tablename in ( %ls, %ls )",
-				    (FdoString*)(GetManager()->GetDcDbObjectName(L"F_CLASSDEFINITION")),
+				    (FdoString*)(GetManager()->GetDcDbObjectName(L"f_classdefinition")),
                     (FdoString*) GetManager()->FormatSQLVal(objectName, FdoSmPhColType_String),
                     (FdoString*) GetManager()->FormatSQLVal(localObjectName, FdoSmPhColType_String),
-                    (FdoString*)(GetManager()->GetDcDbObjectName(L"F_ATTRIBUTEDEFINITION")),
+                    (FdoString*)(GetManager()->GetDcDbObjectName(L"f_attributedefinition")),
 				    (FdoString*) GetManager()->FormatSQLVal(objectName, FdoSmPhColType_String),
 				    (FdoString*) GetManager()->FormatSQLVal(localObjectName, FdoSmPhColType_String)
 			    );

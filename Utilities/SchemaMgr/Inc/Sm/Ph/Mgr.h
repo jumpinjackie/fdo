@@ -450,6 +450,13 @@ public:
     /// Otherwise "[value]" is returned
 	virtual FdoStringP FormatSQLVal( FdoStringP value, FdoSmPhColType valueType ) = 0;
 
+    /// Given a column name, returns the name formatted for inclusion in 
+    /// a SQL order by clause.
+    /// Default implementation simply returns the name as is. However, this
+    /// function can be overridden to add customizations such as the 
+    /// collation to use.
+	virtual FdoStringP FormatOrderCol( FdoStringP colName, FdoSmPhColType colType );
+
     /// Given a field and default value, returns a column expression that can be 
     /// embedded in a SQL statement. The expression returns the underlying column value
     /// when this value is not null. The default value is returned when the column value

@@ -153,7 +153,14 @@ FdoSmPhReaderP FdoSmPhSOReader::MakeReader(
 
 	    // Ordering is important. This particular ordering is expected by callers.
 
-	    where += L" order by ownername, elementname, elementtype, name ";
+        where += FdoStringP::Format(
+            L" order by %ls, %ls, %ls, %ls ",
+            (FdoString*) mgr->FormatOrderCol(L"ownername", FdoSmPhColType_String),
+            (FdoString*) mgr->FormatOrderCol(L"elementname", FdoSmPhColType_String),
+            (FdoString*) mgr->FormatOrderCol(L"elementtype", FdoSmPhColType_String),
+            (FdoString*) mgr->FormatOrderCol(L"name", FdoSmPhColType_String)
+        );
+
 
 
         // F_SCHEMAOPTIONS exists, read from MetaSchema

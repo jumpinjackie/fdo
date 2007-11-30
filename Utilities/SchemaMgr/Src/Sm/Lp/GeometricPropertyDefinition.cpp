@@ -27,9 +27,9 @@
 #include <FdoCommonGeometryUtil.h>
 
 #define FDOSMLP_SI_COLUMN_LENGTH    255
-#define FDOSMLP_SI_COLUMN_1_NAME    L"_SI_1"
-#define FDOSMLP_SI_COLUMN_2_NAME    L"_SI_2"
-#define FDOSMLP_SI_COLUMN_IDX_SUFFIX    L"_IDX"
+#define FDOSMLP_SI_COLUMN_1_NAME    L"_si_1"
+#define FDOSMLP_SI_COLUMN_2_NAME    L"_si_2"
+#define FDOSMLP_SI_COLUMN_IDX_SUFFIX    L"_idx"
 
 FdoSmLpGeometricPropertyDefinition::FdoSmLpGeometricPropertyDefinition(
     FdoSmPhClassPropertyReaderP propReader, FdoSmLpClassDefinition* parent
@@ -788,7 +788,7 @@ void FdoSmLpGeometricPropertyDefinition::AddSiColumns()
     if (NULL != mColumnSi1.p || NULL != mColumnSi2.p)
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_4_UNREADY)));
 
-	FdoSmPhMgrP pPhysical	        = GetLogicalPhysicalSchema()->GetPhysicalSchema();
+    FdoSmPhMgrP pPhysical	        = GetLogicalPhysicalSchema()->GetPhysicalSchema();
 	FdoSmPhDbObjectP pPhDbObject;
     if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
     	pPhDbObject = pPhysical->FindDbObject( GetContainingDbObjectName());
@@ -797,51 +797,25 @@ void FdoSmLpGeometricPropertyDefinition::AddSiColumns()
 
     if (NULL != pPhDbObject.p)
     {
-        FdoSmPhColumnP column;
-        FdoSmPhColumnsP columns = pPhDbObject->GetColumns();
-
-        FdoStringP name = columnName;
-        name += FDOSMLP_SI_COLUMN_1_NAME;
-        name = name.Upper();
-        // TODO: After column name lookup from F_SPATIALCONTEXTGEOM is supported, this
-        // code should call UniqueColumnName instead of CensorDbObjectName.  We call
-        // CensorDbObjectName temporarily here, because this code is used to formulate
-        // names of existing SI columns, in addition to the names of new ones.
-        // After lookup is supported, this should only be used for new SI columns.
-        // Censoring to ASCII7 is forced because the mapping from property to
-        // SI column name is implicit and cannot change until we're allowed to
-        // break format compatibility between FDO versions. 
-        // TODO: add this mapping to the MetaSchema to avoid this compatibility
-        // issue in the future.
-        name = pPhysical->CensorDbObjectName(name, true, false);
-    	//name = ((FdoSmLpClassDefinition*)RefParentClass())->UniqueColumnName( 
-        //    pPhDbObject, this, name, false);
-        if (NULL != columns)
-            column = columns->FindItem(name);
-        if (NULL == column.p)
-            column = NewSiColumn(pPhDbObject, name, true);
+        FdoSmPhColumnP column = AddSiColumn( pPhDbObject, FDOSMLP_SI_COLUMN_1_NAME );
         SetColumnSi1(column);
 
-        column = (FdoSmPhColumn*) NULL;
-        name = columnName;
-        name += FDOSMLP_SI_COLUMN_2_NAME;
-        name = name.Upper();
-        // Censoring to ASCII7 is forced because the mapping from property to
-        // SI column name is implicit and cannot change until we're allowed to
-        // break format compatibility between FDO versions. 
-        // TODO: add this mapping to the MetaSchema to avoid this compatibility
-        // issue in the future.
-        name = pPhysical->CensorDbObjectName(name, true, false);
-    	//name = ((FdoSmLpClassDefinition*)RefParentClass())->UniqueColumnName( 
-        //    pPhDbObject, this, name, false);
-        if (NULL != columns)
-            column = columns->FindItem(name);
-        if (NULL == column.p)
-            column = NewSiColumn(pPhDbObject, name, true);
+        column = AddSiColumn( pPhDbObject, FDOSMLP_SI_COLUMN_2_NAME );
         SetColumnSi2(column);
     }
 }
 
+FdoSmPhColumnP FdoSmLpGeometricPropertyDefinition::AddSiColumn( FdoSmPhDbObjectP pPhDbObject, FdoStringP suffix ) 
+{
+    FdoStringP name = GenSiColumnName( suffix );
+    FdoSmPhColumnP column = FindColumn( name );
+    if (NULL == column.p)
+    {
+        column = NewSiColumn(pPhDbObject, name, true);
+    }
+
+    return column;
+}
 
 //////////////////////////////////////////////////////////////////////
 
@@ -1101,38 +1075,67 @@ bool FdoSmLpGeometricPropertyDefinition::TableHasSpatialIndexColumns()
 {
     bool hasSiColumns = false;
 
+    FdoString * columnName = GetName();
     // Both columns must be here.
 
-    FdoString * columnName = GetName();
     if ( wcscmp(columnName, L"Bounds") == 0 )
         return hasSiColumns;
 
-	FdoSmPhMgrP pPhysical	        = GetLogicalPhysicalSchema()->GetPhysicalSchema();
-    FdoSmPhDbObjectP pPhDbObject;
-    if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
-    	pPhDbObject = pPhysical->FindDbObject( GetContainingDbObjectName());
-    else
-    	pPhDbObject = pPhysical->FindDbObject( GetContainingDbObjectName(), RefParentClass()->GetOwner() );
+    if (NULL != FindSiColumn(FDOSMLP_SI_COLUMN_1_NAME) && NULL != FindSiColumn(FDOSMLP_SI_COLUMN_2_NAME))
+        hasSiColumns = true;
 
-    if (NULL != pPhDbObject.p)
-    {
-        FdoSmPhColumnP column;
-        const FdoSmPhColumnCollection * columns = pPhDbObject->RefColumns();
+    return hasSiColumns;
+}
 
-        if (NULL != columns)
+FdoSmPhColumnP FdoSmLpGeometricPropertyDefinition::FindSiColumn( FdoStringP suffix )
+{
+    return FindColumn( GenSiColumnName(suffix) );
+}
+
+FdoStringP FdoSmLpGeometricPropertyDefinition::GenSiColumnName( FdoStringP suffix ) 
+{
+    FdoSmPhMgrP pPhysical	        = GetLogicalPhysicalSchema()->GetPhysicalSchema();
+
+    FdoStringP name = GetName();
+    name += suffix;
+
+
+    // TODO: After column name lookup from F_SPATIALCONTEXTGEOM is supported, this
+    // code should call UniqueColumnName.
+    //name = ((FdoSmLpClassDefinition*)RefParentClass())->UniqueColumnName( 
+    //    pPhDbObject, this, name, false);
+
+    // Note: CensorDbObjectName does not always change the name to be ASCII7. The 
+    // specific provider decides how the name gets censored.
+    FdoStringP censoredName = pPhysical->CensorDbObjectName(name);
+
+    return censoredName;
+}
+
+FdoSmPhColumnP FdoSmLpGeometricPropertyDefinition::FindColumn( FdoStringP columnName )
+{
+    FdoSmPhColumnP column;
+
+    if ( columnName != FdoStringP::mEmptyString ) {
+        FdoSmPhMgrP pPhysical	        = GetLogicalPhysicalSchema()->GetPhysicalSchema();
+        FdoSmPhDbObjectP pPhDbObject;
+        if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
+    	    pPhDbObject = pPhysical->FindDbObject( GetContainingDbObjectName());
+        else
+    	    pPhDbObject = pPhysical->FindDbObject( GetContainingDbObjectName(), RefParentClass()->GetOwner() );
+
+        if (NULL != pPhDbObject.p)
         {
-            FdoStringP name1 = columnName;
-            name1 += FDOSMLP_SI_COLUMN_1_NAME;
-            name1 = name1.Upper();
-            FdoStringP name2 = columnName;
-            name2 += FDOSMLP_SI_COLUMN_2_NAME;
-            name2 = name2.Upper();
-            if (NULL != columns->RefItem(name1) && NULL != columns->RefItem(name2))
-                hasSiColumns = true;
+            FdoSmPhColumnsP columns = pPhDbObject->GetColumns();
+
+            if (NULL != columns)
+            {
+                column = columns->FindItem(columnName);
+            }
         }
     }
 
-    return hasSiColumns;
+    return column;
 }
 
 void FdoSmLpGeometricPropertyDefinition::AddGeometricTypeChangeError( FdoInt32 newTypes, bool bEmptyGeom ) 

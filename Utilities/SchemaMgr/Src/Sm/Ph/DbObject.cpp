@@ -1418,7 +1418,7 @@ FdoStringP FdoSmPhDbObject::GenPkeyName()
 {
     if ( mPkeyName == L"" ) {
         FdoSmPhOwner* pOwner = dynamic_cast<FdoSmPhOwner*>((FdoSmPhSchemaElement*) GetParent());
-        mPkeyName = pOwner->UniqueDbObjectName( FdoStringP(L"PK_") + FdoStringP(GetName()) ).Replace(L".",L"_");
+        mPkeyName = pOwner->UniqueDbObjectName( FdoStringP(L"pk_") + FdoStringP(GetName()) ).Replace(L".",L"_");
     }
 
     return mPkeyName;
