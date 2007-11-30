@@ -40,14 +40,16 @@ FdoSmPhReaderP FdoSmPhMtClassReader::MakeReader( FdoSmPhRowsP froms, FdoStringP 
     FdoStringP where;
     if( className == NULL || className[0] == '\0' )
         where = FdoStringP::Format( 
-            L"where schemaname = %ls and f_classdefinition.classtype = f_classtype.classtype order by f_classdefinition.classname", 
-    	    (FdoString*) mgr->FormatSQLVal(schemaName, FdoSmPhColType_String)
+            L"where schemaname = %ls and f_classdefinition.classtype = f_classtype.classtype order by %ls", 
+    	    (FdoString*) mgr->FormatSQLVal(schemaName, FdoSmPhColType_String),
+            (FdoString*) mgr->FormatOrderCol(L"f_classdefinition.classname", FdoSmPhColType_String)
     );
     else
         where = FdoStringP::Format( 
-            L"where schemaname = %ls and f_classdefinition.classname = %ls and  f_classdefinition.classtype = f_classtype.classtype order by f_classdefinition.classname", 
+            L"where schemaname = %ls and f_classdefinition.classname = %ls and  f_classdefinition.classtype = f_classtype.classtype order by %ls", 
     	    (FdoString*) mgr->FormatSQLVal(schemaName, FdoSmPhColType_String),
-            (FdoString*) mgr->FormatSQLVal(className, FdoSmPhColType_String)
+            (FdoString*) mgr->FormatSQLVal(className, FdoSmPhColType_String),
+            (FdoString*) mgr->FormatOrderCol(L"f_classdefinition.classname", FdoSmPhColType_String)
     );
 
     // Create a query reader to wrap around

@@ -343,14 +343,6 @@
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
-<xs:element name="INT_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="fdo:int32"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
 <xs:element name="INT16_COLUMN" minOccurs="0">
 <xs:simpleType>
 <xs:restriction base="fdo:int16">
@@ -372,6 +364,14 @@
 <xs:element name="INT64_COLUMN" minOccurs="0">
 <xs:simpleType>
 <xs:restriction base="fdo:int64"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="INT_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>

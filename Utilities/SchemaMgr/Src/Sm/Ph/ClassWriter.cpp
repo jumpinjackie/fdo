@@ -232,12 +232,12 @@ void FdoSmPhClassWriter::Add()
     // unstead of a GQL insert statement, in order to generate classId.
 
     FdoSmPhMgrP mgr = GetManager();
-    FdoStringP classTypeTable = mgr->GetDcDbObjectName(L"f_classType");
+    FdoStringP classTypeTable = mgr->GetDcDbObjectName(L"f_classtype");
 
     // Translate class type enum into the datastore class type id.
 
     FdoSmPhRowsP pFroms = new FdoSmPhRowCollection();
-    FdoSmPhRowP pFrom = new FdoSmPhRow( mgr, L"f_classType", mgr->FindDbObject(classTypeTable) );
+    FdoSmPhRowP pFrom = new FdoSmPhRow( mgr, L"f_classtype", mgr->FindDbObject(classTypeTable) );
     pFroms->Add(pFrom);
     
     FdoSmPhFieldP pField = new FdoSmPhField( pFrom, L"classtype", (FdoSmPhColumn*) NULL, L"", false );
@@ -335,7 +335,7 @@ FdoSmPhRowP FdoSmPhClassWriter::MakeRow( FdoSmPhMgrP mgr )
 FdoSmPhRowP FdoSmPhClassWriter::MakeClassTypeRow( FdoSmPhMgrP mgr )
 {
     bool hasMs = FdoSmPhOwnerP(mgr->GetOwner())->GetHasMetaSchema();
-    FdoStringP classTypeTable = mgr->GetDcDbObjectName(L"f_classType");
+    FdoStringP classTypeTable = mgr->GetDcDbObjectName(L"f_classtype");
 
     FdoSmPhRowP row = new FdoSmPhRow( 
         mgr, 

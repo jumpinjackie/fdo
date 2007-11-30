@@ -156,16 +156,16 @@ void FdoSmLpSchemaElement::Update(
 
     ValidateStringLength( 
         GetName(), 
-        pPhysical->GetDcDbObjectName(L"F_SCHEMAINFO"),
-        pPhysical->GetDcColumnName(L"SCHEMANAME"),
+        pPhysical->GetDcDbObjectName(L"f_schemainfo"),
+        pPhysical->GetDcColumnName(L"schemaname"),
         FDOSM_269, "Schema Element",     
         FDOSM_274, "Name"
 	);
 
     ValidateStringLength( 
         GetDescription(), 
-        pPhysical->GetDcDbObjectName(L"F_SCHEMAINFO"),
-        pPhysical->GetDcColumnName(L"DESCRIPTION"),
+        pPhysical->GetDcDbObjectName(L"f_schemainfo"),
+        pPhysical->GetDcColumnName(L"description"),
         FDOSM_269, "Schema Element",     
         FDOSM_271, "Description"
 	);
@@ -208,16 +208,16 @@ void FdoSmLpSchemaElement::LoadSAD( FdoSchemaAttributeDictionary* pFdoSAD )
 
         ValidateStringLength( 
             pElement->GetName(), 
-            pPhysical->GetDcDbObjectName(L"F_SAD"),
-            pPhysical->GetDcColumnName(L"NAME"),
+            pPhysical->GetDcDbObjectName(L"f_sad"),
+            pPhysical->GetDcColumnName(L"name"),
             FDOSM_270, "Schema Attribute Dictionary",     
             FDOSM_274, "Name"
     	);
 
         ValidateStringLength( 
             pElement->GetValue(), 
-            pPhysical->GetDcDbObjectName(L"F_SAD"),
-            pPhysical->GetDcColumnName(L"VALUE"),
+            pPhysical->GetDcDbObjectName(L"f_sad"),
+            pPhysical->GetDcColumnName(L"value"),
             FDOSM_270, "Schema Attribute Dictionary",     
             FDOSM_275, "Value"  
     	);
@@ -256,16 +256,16 @@ void FdoSmLpSchemaElement::MergeSAD( FdoSchemaAttributeDictionary* pFdoSAD )
 
         ValidateStringLength( 
             SADName, 
-            pPhysical->GetDcDbObjectName(L"F_SAD"),
-            pPhysical->GetDcColumnName(L"NAME"),
+            pPhysical->GetDcDbObjectName(L"f_sad"),
+            pPhysical->GetDcColumnName(L"name"),
             FDOSM_270, "Schema Attribute Dictionary",     
             FDOSM_274, "Name"
     	);
 
         ValidateStringLength( 
             SADValue, 
-            pPhysical->GetDcDbObjectName(L"F_SAD"),
-            pPhysical->GetDcColumnName(L"VALUE"),
+            pPhysical->GetDcDbObjectName(L"f_sad"),
+            pPhysical->GetDcColumnName(L"value"),
             FDOSM_270, "Schema Attribute Dictionary",     
             FDOSM_275, "Value"  
     	);

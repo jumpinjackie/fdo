@@ -709,6 +709,11 @@ FdoStringP FdoSmPhMgr::FormatSQLVal( FdoStringP value, FdoSmPhColType valueType 
 	return sqlString;
 }
 
+FdoStringP FdoSmPhMgr::FormatOrderCol( FdoStringP colName, FdoSmPhColType colType )
+{
+	return colName;
+}
+
 void FdoSmPhMgr::ValidateStringLength( 
     FdoStringP pString, 
     size_t limit, 

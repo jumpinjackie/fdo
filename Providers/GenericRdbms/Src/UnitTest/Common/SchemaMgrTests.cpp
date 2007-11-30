@@ -845,7 +845,12 @@ void SchemaMgrTests::testGenKeys ()
         columns->RemoveAt( columns->IndexOf(phMgr->GetDcColumnName(L"STRING_COL5")) );
 
         FdoStringP createIx2cSql = FdoStringP::Format( 
-            L"create view view_ix2c ( id, int16_col1 ) as select id, int16_col1 from %ls", 
+            L"create view %ls ( %ls, %ls ) as select %ls, %ls from %ls", 
+            (FdoString*)(phMgr->GetDcDbObjectName(L"VIEW_IX2C")),
+            (FdoString*)(phMgr->GetDcColumnName(L"ID")),
+            (FdoString*)(phMgr->GetDcColumnName(L"INT16_COL1")),
+            (FdoString*)(phMgr->GetDcColumnName(L"ID")),
+            (FdoString*)(phMgr->GetDcColumnName(L"INT16_COL1")),
             (FdoString*)(view->GetDbQName())
         );
 
@@ -885,12 +890,30 @@ void SchemaMgrTests::testGenKeys ()
 
         view = CreateIxView( owner, phMgr->GetDcDbObjectName(L"VIEW_IX6A"), table->GetName() );
         FdoStringP createIx6bSql = FdoStringP::Format( 
-            L"create view view_ix6b ( icol1, icol2, string_col1, string_col2 ) as select int16_col1, int16_col2, string_col1, string_col2 from %ls", 
+            L"create view %ls ( %ls, %ls, %ls, %ls ) as select %ls, %ls, %ls, %ls from %ls", 
+            (FdoString*)(phMgr->GetDcDbObjectName(L"VIEW_IX6B")),
+            (FdoString*)(phMgr->GetDcColumnName(L"ICOL1")),
+            (FdoString*)(phMgr->GetDcColumnName(L"ICOL2")),
+            (FdoString*)(phMgr->GetDcColumnName(L"STRING_COL1")),
+            (FdoString*)(phMgr->GetDcColumnName(L"STRING_COL2")),
+            (FdoString*)(phMgr->GetDcColumnName(L"INT16_COL1")),
+            (FdoString*)(phMgr->GetDcColumnName(L"INT16_COL2")),
+            (FdoString*)(phMgr->GetDcColumnName(L"STRING_COL1")),
+            (FdoString*)(phMgr->GetDcColumnName(L"STRING_COL2")),
             (FdoString*)(view->GetDbQName())
         );
 
         FdoStringP createIx6cSql = FdoStringP::Format( 
-            L"create view view_ix6c ( string_col1, int16_col2, int16_col1, string_col2 ) as select int16_col1, int16_col2, string_col1, string_col2 from %ls", 
+            L"create view %ls ( %ls, %ls, %ls, %ls ) as select %ls, %ls, %ls, %ls from %ls", 
+            (FdoString*)(phMgr->GetDcDbObjectName(L"VIEW_IX6C")),
+            (FdoString*)(phMgr->GetDcColumnName(L"STRING_COL1")),
+            (FdoString*)(phMgr->GetDcColumnName(L"INT16_COL2")),
+            (FdoString*)(phMgr->GetDcColumnName(L"INT16_COL1")),
+            (FdoString*)(phMgr->GetDcColumnName(L"STRING_COL2")),
+            (FdoString*)(phMgr->GetDcColumnName(L"INT16_COL1")),
+            (FdoString*)(phMgr->GetDcColumnName(L"INT16_COL2")),
+            (FdoString*)(phMgr->GetDcColumnName(L"STRING_COL1")),
+            (FdoString*)(phMgr->GetDcColumnName(L"STRING_COL2")),
             (FdoString*)(view->GetDbQName())
         );
 
@@ -907,7 +930,16 @@ void SchemaMgrTests::testGenKeys ()
 
         view = CreateIxView( owner, phMgr->GetDcDbObjectName(L"VIEW_IX8A"), table->GetName() );
 
-        FdoStringP createJoinSql = L"create view view_join ( id, string_col5 ) as select a.id, b.string_col5 from table_ix1 a, table_ix2 b";
+        FdoStringP createJoinSql = FdoStringP::Format(
+            L"create view %ls ( %ls, %ls ) as select a.%ls, b.%ls from %ls a, %ls b",
+            (FdoString*)(phMgr->GetDcDbObjectName(L"VIEW_JOIN")),
+            (FdoString*)(phMgr->GetDcColumnName(L"ID")),
+            (FdoString*)(phMgr->GetDcColumnName(L"STRING_COL5")),
+            (FdoString*)(phMgr->GetDcColumnName(L"ID")),
+            (FdoString*)(phMgr->GetDcColumnName(L"STRING_COL5")),
+            (FdoString*)(phMgr->GetDcDbObjectName(L"TABLE_IX1")),
+            (FdoString*)(phMgr->GetDcDbObjectName(L"TABLE_IX2"))
+        );
 
         database->Commit();
 
@@ -1064,7 +1096,7 @@ void SchemaMgrTests::testGenKeys ()
 
             featClass = classes->GetItem( table2class(phMgr, L"VIEW_IX6B") );
             idProps = featClass->GetIdentityProperties();
-            CPPUNIT_ASSERT( idProps->GetCount() == 2 );
+              CPPUNIT_ASSERT( idProps->GetCount() == 2 );
             prop = idProps->GetItem(0);
             CPPUNIT_ASSERT( wcscmp(prop->GetName(), phMgr->GetDcColumnName(L"STRING_COL1")) == 0 );
             prop = idProps->GetItem(1);
@@ -1401,17 +1433,35 @@ void SchemaMgrTests::testViews ()
 #endif
 
         FdoStringP createViewSql = FdoStringP::Format( 
-            L"create view view1 ( id, int16_col1, int16_col2b ) as select a.id, a.int16_col1, b.int16_col1 from %ls a, %ls b where a.id = b.parent_id", 
+            L"create view %ls ( %ls, %ls, %ls ) as select a.%ls, a.%ls, b.%ls from %ls a, %ls b where a.%ls = b.%ls", 
+            (FdoString*)(phMgr->GetDcDbObjectName(L"VIEW1")),
+            (FdoString*)(phMgr->GetDcColumnName(L"ID")),
+            (FdoString*)(phMgr->GetDcColumnName(L"INT16_COL1")),
+            (FdoString*)(phMgr->GetDcColumnName(L"INT16_COL2B")),
+            (FdoString*)(phMgr->GetDcColumnName(L"ID")),
+            (FdoString*)(phMgr->GetDcColumnName(L"INT16_COL1")),
+            (FdoString*)(phMgr->GetDcColumnName(L"INT16_COL1")),
             (FdoString*)(tableA->GetDbQName()),
-            (FdoString*)(tableA->GetDbQName())
+            (FdoString*)(tableA->GetDbQName()),
+            (FdoString*)(phMgr->GetDcColumnName(L"ID")),
+            (FdoString*)(phMgr->GetDcColumnName(L"PARENT_ID"))
         );
         grdOwner = owner->SmartCast<FdoSmPhGrdOwner>();
         grdOwner->ActivateAndExecute( (FdoString*) createViewSql );
 
         createViewSql = FdoStringP::Format( 
-            L"create view view2 ( id, int16_col1, int16_col2b ) as select a.id, a.int16_col1, b.int16_col1 from %ls a, %ls b where a.id = b.parent_id", 
+            L"create view %ls ( %ls, %ls, %ls ) as select a.%ls, a.%ls, b.%ls from %ls a, %ls b where a.%ls = b.%ls", 
+            (FdoString*)(phMgr->GetDcDbObjectName(L"VIEW2")),
+            (FdoString*)(phMgr->GetDcColumnName(L"ID")),
+            (FdoString*)(phMgr->GetDcColumnName(L"INT16_COL1")),
+            (FdoString*)(phMgr->GetDcColumnName(L"INT16_COL2B")),
+            (FdoString*)(phMgr->GetDcColumnName(L"ID")),
+            (FdoString*)(phMgr->GetDcColumnName(L"INT16_COL1")),
+            (FdoString*)(phMgr->GetDcColumnName(L"INT16_COL1")),
             (FdoString*)(tableA->GetDbQName()),
-            (FdoString*)(tableB->GetDbQName())
+            (FdoString*)(tableB->GetDbQName()),
+            (FdoString*)(phMgr->GetDcColumnName(L"ID")),
+            (FdoString*)(phMgr->GetDcColumnName(L"PARENT_ID"))
         );
         grdOwner->ActivateAndExecute( (FdoString*) createViewSql );
 

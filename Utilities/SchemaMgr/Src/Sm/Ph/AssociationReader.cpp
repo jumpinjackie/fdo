@@ -171,7 +171,7 @@ FdoSmPhRowsP FdoSmPhAssociationReader::MakeRows( FdoSmPhMgrP mgr, bool bAddClass
 
     // Join to F_CLASSDEFINITION for classid
     if ( bAddClassDef ) {
-        FdoSmPhRowP classRow = new FdoSmPhRow( mgr, L"F_CLASSDEFINITION", mgr->FindDbObject(L"F_CLASSDEFINITION") );
+        FdoSmPhRowP classRow = new FdoSmPhRow( mgr, L"f_classdefinition", mgr->FindDbObject(L"F_CLASSDEFINITION") );
         rows->Add( classRow );
     }
 

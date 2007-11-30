@@ -42,8 +42,9 @@ FdoSmPhReaderP FdoSmPhMtSchemaReader::MakeReader( FdoSmPhRowsP froms, FdoSmPhOwn
     else {
         // Generate the where clause for retrieving feature schemas
         whereClause = FdoStringP::Format( 
-            L"where %ls order by schemaname", 
-	        owner->GetDbNameClause(false)
+            L"where %ls order by %ls", 
+	        owner->GetDbNameClause(false),
+            (FdoString*) owner->GetManager()->FormatOrderCol(L"schemaname", FdoSmPhColType_String)
         );
     }
 

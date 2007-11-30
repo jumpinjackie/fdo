@@ -152,7 +152,10 @@ FdoSmPhReaderP FdoSmPhDependencyReader::MakeReader( FdoSmPhRdTableJoinP join, Fd
         // f_attributedependency exists, read from MetaSchema.
         // Create a where clause that joins f_attributedependency and the join table
         FdoStringP whereClause = FdoStringP::Format( 
-            L" where (%ls) order by f_attributedependencies.fktablename asc\n", (FdoString*) join->GetWhere(L"f_attributedependencies.fktablename") );
+            L" where (%ls) order by %ls asc\n", 
+            (FdoString*) join->GetWhere(L"f_attributedependencies.fktablename"), 
+            (FdoString*) mgr->FormatOrderCol(L"f_attributedependencies.fktablename", FdoSmPhColType_String)
+        );
 
         pSubReader = mgr->CreateQueryReader( rows, whereClause ).p->SmartCast<FdoSmPhReader>();
     }

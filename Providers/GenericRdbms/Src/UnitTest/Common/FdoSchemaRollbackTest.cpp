@@ -178,10 +178,10 @@ void FdoSchemaRollbackTest::DoTest ( bool bPreClear, const wchar_t* schemaName, 
         // bPreClear and bRollbackOnly are true, since these tables won't be in the 
         // rollback cache.
         FdoSmPhMgrP phMgr = mgr->GetPhysicalSchema();
-        FdoSmPhDbObjectP pObject = phMgr->FindDbObject( L"CONDUCTOR", L"", L"", false );
+        FdoSmPhDbObjectP pObject = phMgr->FindDbObject( phMgr->GetDcDbObjectName(L"Conductor"), L"", L"", false );
         pObject->SetElementState( FdoSchemaElementState_Deleted );
         pObject->Commit();
-        pObject = phMgr->FindDbObject( L"ACDBENTITY_ACXDATA", L"", L"", false );
+        pObject = phMgr->FindDbObject( phMgr->GetDcDbObjectName(L"AcDbEntity_AcXData"), L"", L"", false );
         pObject->SetElementState( FdoSchemaElementState_Deleted );
         pObject->Commit();
     	
