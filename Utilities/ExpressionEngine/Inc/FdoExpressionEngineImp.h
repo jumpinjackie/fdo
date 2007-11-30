@@ -64,6 +64,8 @@ public:
    	EXPRESSIONENGINE_API static bool IsAggregateFunction(FdoFunctionDefinitionCollection *funcDefs, FdoString *name);
 	EXPRESSIONENGINE_API static void GetExpressionType(FdoFunctionDefinitionCollection *functionDefinitions, FdoClassDefinition* originalClassDef, FdoExpression *expr, FdoPropertyType &retPropType, FdoDataType &retDataType);
 	EXPRESSIONENGINE_API static void GetExpressionType(FdoClassDefinition* originalClassDef, FdoExpression *expr, FdoPropertyType &retPropType, FdoDataType &retDataType);
+    EXPRESSIONENGINE_API static void RegisterFunctions(FdoExpressionEngineFunctionCollection *userDefinedFunctions);
+
 
 public:
     EXPRESSIONENGINE_API FdoPropertyType GetResultPropertyType ();

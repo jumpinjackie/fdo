@@ -74,7 +74,7 @@ FdoExpressionEngineImp::FdoExpressionEngineImp(FdoIReader* reader, FdoClassDefin
     try
     {
         mutex.Enter();
-        FdoPtr<FdoExpressionEngineFunctionCollection> functions = initFunction.GetStandardFunctions();
+        FdoPtr<FdoExpressionEngineFunctionCollection> functions = initFunction.GetAllFunctions();
         for (int i=0; i<functions->GetCount(); i++)
         {
             FdoPtr<FdoExpressionEngineIFunction> functionDefinition = functions->GetItem(i);
@@ -1199,7 +1199,7 @@ void FdoExpressionEngineImp::ProcessFunction (FdoFunction& expr)
             try
             {
                 mutex.Enter();
-                FdoPtr<FdoExpressionEngineFunctionCollection> functions = initFunction.GetStandardFunctions();
+                FdoPtr<FdoExpressionEngineFunctionCollection> functions = initFunction.GetAllFunctions();
 			    for (i=0; i<functions->GetCount(); i++)
 			    {
                     FdoPtr<FdoExpressionEngineIFunction> functionDefinition = functions->GetItem(i);
@@ -3337,7 +3337,7 @@ void FdoExpressionEngineImp::ProcessAggregateFunctions()
             try
             {
                 mutex.Enter();
-                FdoPtr<FdoExpressionEngineFunctionCollection> functions = initFunction.GetStandardFunctions();
+                FdoPtr<FdoExpressionEngineFunctionCollection> functions = initFunction.GetAllFunctions();
 	            for (j=0; j<functions->GetCount(); j++)
 	            {
                     FdoPtr<FdoExpressionEngineIFunction> functionDefinition = functions->GetItem(j);
@@ -3672,7 +3672,7 @@ void FdoExpressionEngineImp::GetExpressionType(FdoClassDefinition* originalClass
     try
     {
         mutex.Enter();
-        FdoPtr<FdoExpressionEngineFunctionCollection> functions = initFunction.GetStandardFunctions();
+        FdoPtr<FdoExpressionEngineFunctionCollection> functions = initFunction.GetAllFunctions();
         FdoPtr<FdoFunctionDefinitionCollection> functionDefinitions = FdoFunctionDefinitionCollection::Create();
         for (int i=0; i<functions->GetCount(); i++)
         {
@@ -3753,3 +3753,22 @@ FdoFunctionDefinition *FdoExpressionEngineImp::DeepCopyFunctionDefinition(FdoFun
 }
 
 
+void FdoExpressionEngineImp::RegisterFunctions(FdoExpressionEngineFunctionCollection *userDefinedFunctions)
+{
+    try
+    {
+        mutex.Enter();
+        initFunction.RegisterFunctions(userDefinedFunctions);
+        mutex.Leave();
+    }
+    catch (FdoException *)
+    {
+        mutex.Leave();
+        throw;
+    }
+    catch (...)
+    {
+        throw;
+    }
+
+}
