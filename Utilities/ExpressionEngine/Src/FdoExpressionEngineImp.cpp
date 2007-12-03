@@ -1408,7 +1408,7 @@ void FdoExpressionEngineImp::ProcessFunction (FdoFunction& expr)
                 if (bAdded)
                 {
                     if (!isAggregate)
-					    func = static_cast<FdoExpressionEngineINonAggregateFunction *> (functionExtension.p);
+					    func = m_CacheFunc[m_Current-1].function;
                     bFunctionFound = true;
                     break;
                 }
@@ -1427,7 +1427,7 @@ void FdoExpressionEngineImp::ProcessFunction (FdoFunction& expr)
                     if (bAdded)
                     {
                         if (!isAggregate)
-					        func = static_cast<FdoExpressionEngineINonAggregateFunction *> (functionDefinition.p);
+                            func = m_CacheFunc[m_Current-1].function;
                         bFunctionFound = true;
                         break;
                     }
