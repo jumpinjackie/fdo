@@ -177,6 +177,8 @@ protected:
     EXPRESSIONENGINE_API virtual void RelinquishDataValue (FdoLiteralValue* data);
     EXPRESSIONENGINE_API virtual void RelinquishLiteralValueCollection(FdoLiteralValueCollection* literals);
 
+    EXPRESSIONENGINE_API virtual void PotentialRelinquishLiteralValue(FdoLiteralValue *value);
+
 
 private:
     void EvaluateAggregateExpression();
@@ -236,6 +238,19 @@ private:
     std::vector<FdoBLOBValue*> mBLOBPool;
     std::vector<FdoCLOBValue*> mCLOBPool;
     std::vector<FdoLiteralValueCollection*> mLiteralValueCollectionPool;
+
+    std::vector<FdoBooleanValue*> mPotentialBooleanPool;
+    std::vector<FdoByteValue*> mPotentialBytePool;
+    std::vector<FdoDateTimeValue*> mPotentialDateTimePool;
+    std::vector<FdoDecimalValue*> mPotentialDecimalPool;
+    std::vector<FdoDoubleValue*> mPotentialDoublePool;
+    std::vector<FdoInt16Value*> mPotentialInt16Pool;
+    std::vector<FdoInt32Value*> mPotentialInt32Pool;
+    std::vector<FdoInt64Value*> mPotentialInt64Pool;
+    std::vector<FdoSingleValue*> mPotentialSinglePool;
+    std::vector<FdoStringValue*> mPotentialStringPool;
+    std::vector<FdoBLOBValue*> mPotentialBLOBPool;
+    std::vector<FdoCLOBValue*> mPotentialCLOBPool;
 
 	FdoPtr<FdoClassDefinition> m_classDefinition;
 

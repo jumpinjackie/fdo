@@ -182,6 +182,32 @@ FdoExpressionEngineImp::~FdoExpressionEngineImp()
         (*i)->Release ();
     for (std::vector<FdoLiteralValueCollection*>::iterator i = mLiteralValueCollectionPool.begin (); i != mLiteralValueCollectionPool.end (); i++)
         (*i)->Release ();
+
+
+    for (std::vector<FdoBooleanValue*>::iterator i = mPotentialBooleanPool.begin (); i != mPotentialBooleanPool.end (); i++)
+        (*i)->Release ();
+    for (std::vector<FdoByteValue*>::iterator i = mPotentialBytePool.begin (); i != mPotentialBytePool.end (); i++)
+        (*i)->Release ();
+    for (std::vector<FdoDateTimeValue*>::iterator i = mPotentialDateTimePool.begin (); i != mPotentialDateTimePool.end (); i++)
+        (*i)->Release ();
+    for (std::vector<FdoDecimalValue*>::iterator i = mPotentialDecimalPool.begin (); i != mPotentialDecimalPool.end (); i++)
+        (*i)->Release ();
+    for (std::vector<FdoDoubleValue*>::iterator i = mPotentialDoublePool.begin (); i != mPotentialDoublePool.end (); i++)
+        (*i)->Release ();
+    for (std::vector<FdoInt16Value*>::iterator i = mPotentialInt16Pool.begin (); i != mPotentialInt16Pool.end (); i++)
+        (*i)->Release ();
+    for (std::vector<FdoInt32Value*>::iterator i = mPotentialInt32Pool.begin (); i != mPotentialInt32Pool.end (); i++)
+        (*i)->Release ();
+    for (std::vector<FdoInt64Value*>::iterator i = mPotentialInt64Pool.begin (); i != mPotentialInt64Pool.end (); i++)
+        (*i)->Release ();
+    for (std::vector<FdoSingleValue*>::iterator i = mPotentialSinglePool.begin (); i != mPotentialSinglePool.end (); i++)
+        (*i)->Release ();
+    for (std::vector<FdoStringValue*>::iterator i = mPotentialStringPool.begin (); i != mPotentialStringPool.end (); i++)
+        (*i)->Release ();
+    for (std::vector<FdoBLOBValue*>::iterator i = mPotentialBLOBPool.begin (); i != mPotentialBLOBPool.end (); i++)
+        (*i)->Release ();
+    for (std::vector<FdoCLOBValue*>::iterator i = mPotentialCLOBPool.begin (); i != mPotentialCLOBPool.end (); i++)
+        (*i)->Release ();
 }
 
 void FdoExpressionEngineImp::Dispose ()
@@ -483,300 +509,494 @@ FdoBooleanValue* FdoExpressionEngineImp::ObtainBooleanValue (bool bIsNull, bool 
 {
     FdoBooleanValue* ret;
 
-    if (0 == mBooleanPool.size ())
+    if (0 != mBooleanPool.size ())
     {
-        // if the pool is empty, create new
-        if (bIsNull)
-            ret = FdoBooleanValue::Create();  // defaults to NULL
-        else
-            ret = FdoBooleanValue::Create (value);
-    }
-    else
-    {  // otherwise get an object from the pool and initialize it
         ret = mBooleanPool.back ();
         mBooleanPool.pop_back ();
         if (bIsNull)
             ret->SetNull();
         else
             ret->SetBoolean (value);
+        return ret;
     }
 
-    return (ret);
+    if (0 != mPotentialBooleanPool.size ())
+    {
+        int  size = (int) mPotentialBooleanPool.size();
+        for (int i=0; i<size; i++)
+        {
+            ret = mPotentialBooleanPool[i];
+            if (ret->GetRefCount() == 1)
+            {
+                mPotentialBooleanPool.erase(mPotentialBooleanPool.begin() + i);
+                if (bIsNull)
+                    ret->SetNull();
+                else
+                    ret->SetBoolean (value);
+                return ret;
+            }
+        }
+    }
+
+    // if the pool is empty, create new
+    if (bIsNull)
+        ret = FdoBooleanValue::Create();  // defaults to NULL
+    else
+        ret = FdoBooleanValue::Create (value);
+    return ret;
 }
 
 FdoByteValue* FdoExpressionEngineImp::ObtainByteValue (bool bIsNull, FdoByte value)
 {
     FdoByteValue* ret;
 
-    if (0 == mBytePool.size ())
+    if (0 != mBytePool.size ())
     {
-        // if the pool is empty, create new
-        if (bIsNull)
-            ret = FdoByteValue::Create (); // defaults to NULL
-        else
-            ret = FdoByteValue::Create (value);
-    }
-    else
-    {  // otherwise get an object from the pool and initialize it
         ret = mBytePool.back ();
         mBytePool.pop_back ();
         if (bIsNull)
             ret->SetNull();
         else
             ret->SetByte (value);
+        return ret;
     }
 
-    return (ret);
+    if (0 != mPotentialBytePool.size ())
+    {
+        int  size = (int) mPotentialBytePool.size();
+        for (int i=0; i<size; i++)
+        {
+            ret = mPotentialBytePool[i];
+            if (ret->GetRefCount() == 1)
+            {
+                mPotentialBytePool.erase(mPotentialBytePool.begin() + i);
+                if (bIsNull)
+                    ret->SetNull();
+                else
+                    ret->SetByte (value);
+                return ret;
+            }
+        }
+    }
+
+
+    // if the pool is empty, create new
+    if (bIsNull)
+        ret = FdoByteValue::Create (); // defaults to NULL
+    else
+        ret = FdoByteValue::Create (value);
+    return ret;
 }
 
 FdoDateTimeValue* FdoExpressionEngineImp::ObtainDateTimeValue (bool bIsNull, FdoDateTime value)
 {
     FdoDateTimeValue* ret;
 
-    if (0 == mDateTimePool.size ())
+    if (0 != mDateTimePool.size ())
     {
-        // if the pool is empty, create new
-        if (bIsNull)
-            ret = FdoDateTimeValue::Create ();  // defaults to NULL
-        else
-            ret = FdoDateTimeValue::Create (value);
-    }
-    else
-    {  // otherwise get an object from the pool and initialize it
         ret = mDateTimePool.back ();
         mDateTimePool.pop_back ();
         if (bIsNull)
             ret->SetNull();
         else
             ret->SetDateTime (value);
+        return ret;
     }
 
-    return (ret);
+    if (0 != mPotentialDateTimePool.size ())
+    {
+        int  size = (int) mPotentialDateTimePool.size();
+        for (int i=0; i<size; i++)
+        {
+            ret = mPotentialDateTimePool[i];
+            if (ret->GetRefCount() == 1)
+            {
+                mPotentialDateTimePool.erase(mPotentialDateTimePool.begin() + i);
+                if (bIsNull)
+                    ret->SetNull();
+                else
+                    ret->SetDateTime (value);
+                return ret;
+            }
+        }
+    }
+
+    // if the pool is empty, create new
+    if (bIsNull)
+        ret = FdoDateTimeValue::Create ();  // defaults to NULL
+    else
+        ret = FdoDateTimeValue::Create (value);
+    return ret;
 }
 
 FdoDecimalValue* FdoExpressionEngineImp::ObtainDecimalValue (bool bIsNull, double value)
 {
     FdoDecimalValue* ret;
 
-    if (0 == mDecimalPool.size ())
+    if (0 != mDecimalPool.size ())
     {
-        // if the pool is empty, create new
-        if (bIsNull)
-            ret = FdoDecimalValue::Create ();  // defaults to NULL
-        else
-            ret = FdoDecimalValue::Create (value);
-    }
-    else
-    {  // otherwise get an object from the pool and initialize it
         ret = mDecimalPool.back ();
         mDecimalPool.pop_back ();
         if (bIsNull)
             ret->SetNull();
         else
             ret->SetDecimal (value);
+        return ret;
     }
 
-    return (ret);
+    if (0 != mPotentialDecimalPool.size ())
+    {
+        int  size = (int) mPotentialDecimalPool.size();
+        for (int i=0; i<size; i++)
+        {
+            ret = mPotentialDecimalPool[i];
+            if (ret->GetRefCount() == 1)
+            {
+                mPotentialDecimalPool.erase(mPotentialDecimalPool.begin() + i);
+                if (bIsNull)
+                    ret->SetNull();
+                else
+                    ret->SetDecimal (value);
+                return ret;
+            }
+        }
+    }
+
+    // if the pool is empty, create new
+    if (bIsNull)
+        ret = FdoDecimalValue::Create ();  // defaults to NULL
+    else
+        ret = FdoDecimalValue::Create (value);
+    return ret;
 }
 
 FdoDoubleValue* FdoExpressionEngineImp::ObtainDoubleValue (bool bIsNull, double value)
 {
     FdoDoubleValue* ret;
 
-    if (0 == mDoublePool.size ())
+    if (0 != mDoublePool.size ())
     {
-        // if the pool is empty, create new
-        if (bIsNull)
-            ret = FdoDoubleValue::Create ();  // defaults to NULL
-        else
-            ret = FdoDoubleValue::Create (value);
-    }
-    else
-    {  // otherwise get an object from the pool and initialize it
         ret = mDoublePool.back ();
         mDoublePool.pop_back ();
         if (bIsNull)
             ret->SetNull ();
         else
             ret->SetDouble (value);
+        return ret;
     }
 
-    return (ret);
+    if (0 != mPotentialDoublePool.size ())
+    {
+        int  size = (int) mPotentialDoublePool.size();
+        for (int i=0; i<size; i++)
+        {
+            ret = mPotentialDoublePool[i];
+            if (ret->GetRefCount() == 1)
+            {
+                mPotentialDoublePool.erase(mPotentialDoublePool.begin() + i);
+                if (bIsNull)
+                    ret->SetNull ();
+                else
+                    ret->SetDouble (value);
+                return ret;
+            }
+        }
+    }
+
+    // if the pool is empty, create new
+    if (bIsNull)
+        ret = FdoDoubleValue::Create ();  // defaults to NULL
+    else
+        ret = FdoDoubleValue::Create (value);
+    return ret;
 }
 
 FdoInt16Value* FdoExpressionEngineImp::ObtainInt16Value (bool bIsNull, FdoInt16 value)
 {
     FdoInt16Value* ret;
 
-    if (0 == mInt16Pool.size ())
+    if (0 != mInt16Pool.size ())
     {
-        // if the pool is empty, create new
-        if (bIsNull)
-            ret = FdoInt16Value::Create ();  // defaults to NULL
-        else
-            ret = FdoInt16Value::Create (value);
-    }
-    else
-    {  // otherwise get an object from the pool and initialize it
         ret = mInt16Pool.back ();
         mInt16Pool.pop_back ();
         if (bIsNull)
             ret->SetNull ();
         else
             ret->SetInt16 (value);
+        return ret;
     }
 
-    return (ret);
+    if (0 != mPotentialInt16Pool.size ())
+    {
+        int  size = (int) mPotentialInt16Pool.size();
+        for (int i=0; i<size; i++)
+        {
+            ret = mPotentialInt16Pool[i];
+            if (ret->GetRefCount() == 1)
+            {
+                mPotentialInt16Pool.erase(mPotentialInt16Pool.begin() + i);
+                if (bIsNull)
+                    ret->SetNull ();
+                else
+                    ret->SetInt16 (value);
+                return ret;
+            }
+        }
+    }
+
+    // if the pool is empty, create new
+    if (bIsNull)
+        ret = FdoInt16Value::Create ();  // defaults to NULL
+    else
+        ret = FdoInt16Value::Create (value);
+    return ret;
 }
 
 FdoInt32Value* FdoExpressionEngineImp::ObtainInt32Value (bool bIsNull, FdoInt32 value)
 {
     FdoInt32Value* ret;
 
-    if (0 == mInt32Pool.size ())
+    if (0 != mInt32Pool.size ())
     {
-        // if the pool is empty, create new
-        if (bIsNull)
-            ret = FdoInt32Value::Create ();  // defaults to NULL
-        else
-            ret = FdoInt32Value::Create (value);
-    }
-    else
-    {  // otherwise get an object from the pool and initialize it
         ret = mInt32Pool.back ();
         mInt32Pool.pop_back ();
         if (bIsNull)
             ret->SetNull ();
         else
             ret->SetInt32 (value);
+        return ret;
+    }
+    if (0 != mPotentialInt32Pool.size ())
+    {
+        int  size = (int) mPotentialInt32Pool.size();
+        for (int i=0; i<size; i++)
+        {
+            ret = mPotentialInt32Pool[i];
+            if (ret->GetRefCount() == 1)
+            {
+                mPotentialInt32Pool.erase(mPotentialInt32Pool.begin() + i);
+                if (bIsNull)
+                    ret->SetNull ();
+                else
+                    ret->SetInt32 (value);
+                return ret;
+            }
+        }
     }
 
-    return (ret);
+    // if the pool is empty, create new
+    if (bIsNull)
+        ret = FdoInt32Value::Create ();  // defaults to NULL
+    else
+        ret = FdoInt32Value::Create (value);
+    return ret;
 }
 
 FdoInt64Value* FdoExpressionEngineImp::ObtainInt64Value (bool bIsNull, FdoInt64 value)
 {
     FdoInt64Value* ret;
 
-    if (0 == mInt64Pool.size ())
+    if (0 != mInt64Pool.size ())
     {
-        // if the pool is empty, create new
-        if (bIsNull)
-            ret = FdoInt64Value::Create ();  // defaults to NULL
-        else
-            ret = FdoInt64Value::Create (value);
-    }
-    else
-    {  // otherwise get an object from the pool and initialize it
         ret = mInt64Pool.back ();
         mInt64Pool.pop_back ();
         if (bIsNull)
             ret->SetNull ();
         else
             ret->SetInt64 (value);
+        return ret;
     }
 
-    return (ret);
+    if (0 != mPotentialInt64Pool.size ())
+    {
+        int  size = (int) mPotentialInt64Pool.size();
+        for (int i=0; i<size; i++)
+        {
+            ret = mPotentialInt64Pool[i];
+            if (ret->GetRefCount() == 1)
+            {
+                mPotentialInt64Pool.erase(mPotentialInt64Pool.begin() + i);
+                if (bIsNull)
+                    ret->SetNull ();
+                else
+                    ret->SetInt64 (value);
+                return ret;
+            }
+        }
+    }
+
+    // if the pool is empty, create new
+    if (bIsNull)
+        ret = FdoInt64Value::Create ();  // defaults to NULL
+    else
+        ret = FdoInt64Value::Create (value);
+    return ret;
 }
 
 FdoSingleValue* FdoExpressionEngineImp::ObtainSingleValue (bool bIsNull, float value)
 {
     FdoSingleValue* ret;
 
-    if (0 == mSinglePool.size ())
+    if (0 != mSinglePool.size ())
     {
-        // if the pool is empty, create new
-        if (bIsNull)
-            ret = FdoSingleValue::Create ();  // defaults to NULL
-        else
-            ret = FdoSingleValue::Create (value);
-    }
-    else
-    {  // otherwise get an object from the pool and initialize it
         ret = mSinglePool.back ();
         mSinglePool.pop_back ();
         if (bIsNull)
             ret->SetNull ();
         else
             ret->SetSingle (value);
+        return ret;
     }
 
-    return (ret);
+    if (0 != mPotentialSinglePool.size ())
+    {
+        int  size = (int) mPotentialSinglePool.size();
+        for (int i=0; i<size; i++)
+        {
+            ret = mPotentialSinglePool[i];
+            if (ret->GetRefCount() == 1)
+            {
+                mPotentialSinglePool.erase(mPotentialSinglePool.begin() + i);
+                if (bIsNull)
+                    ret->SetNull ();
+                else
+                    ret->SetSingle (value);
+                return ret;
+            }
+        }
+    }
+
+    // if the pool is empty, create new
+    if (bIsNull)
+        ret = FdoSingleValue::Create ();  // defaults to NULL
+    else
+        ret = FdoSingleValue::Create (value);
+    return ret;
 }
 
 FdoStringValue* FdoExpressionEngineImp::ObtainStringValue (bool bIsNull, FdoString* value)
 {
     FdoStringValue* ret;
 
-    if (0 == mStringPool.size ())
+    if (0 != mStringPool.size ())
     {
-        // if the pool is empty, create new
-        if (bIsNull)
-            ret = FdoStringValue::Create ();  // defaults to NULL
-        else
-            ret = FdoStringValue::Create (value);
-    }
-    else
-    {  // otherwise get an object from the pool and initialize it
         ret = mStringPool.back ();
-        mStringPool.pop_back ();
-        if (bIsNull)
-            ret->SetNull ();
-        else
-            ret->SetString (value);
+        if (ret->GetRefCount() == 1)
+        {
+            mStringPool.pop_back ();
+            if (bIsNull)
+                ret->SetNull ();
+            else
+                ret->SetString (value);
+            return ret;
+        }
     }
 
-    return (ret);
+    if (0 != mPotentialStringPool.size ())
+    {
+        int  size = (int) mPotentialStringPool.size();
+        for (int i=0; i<size; i++)
+        {
+            ret = mPotentialStringPool[i];
+            if (ret->GetRefCount() == 1)
+            {
+                mPotentialStringPool.erase(mPotentialStringPool.begin() + i);
+                if (bIsNull)
+                    ret->SetNull ();
+                else
+                    ret->SetString (value);
+                return ret;
+            }
+        }
+    }
+
+    if (bIsNull)
+        ret = FdoStringValue::Create ();  // defaults to NULL
+    else
+        ret = FdoStringValue::Create (value);
+    return ret;
 }
 
 FdoBLOBValue* FdoExpressionEngineImp::ObtainBLOBValue (bool bIsNull, FdoByteArray* value)
 {
     FdoBLOBValue* ret;
 
-    if (0 == mBLOBPool.size ())
+    if (0 != mBLOBPool.size ())
     {
-        // if the pool is empty, create new
-        if (bIsNull)
-            ret = FdoBLOBValue::Create ();  // defaults to NULL;
-        else
-            ret = FdoBLOBValue::Create (value);  //TODO: there is probable a memory leak here
-    }
-    else
-    {  // otherwise get an object from the pool and initialize it
         ret = mBLOBPool.back ();
         mBLOBPool.pop_back ();
         if (bIsNull)
             ret->SetNull ();
         else
             ret->SetData (value);
+        return ret;
     }
 
-    return (ret);
+    if (0 != mPotentialBLOBPool.size ())
+    {
+        int  size = (int) mPotentialBLOBPool.size();
+        for (int i=0; i<size; i++)
+        {
+            ret = mPotentialBLOBPool[i];
+            if (ret->GetRefCount() == 1)
+            {
+                mPotentialBLOBPool.erase(mPotentialBLOBPool.begin() + i);
+                if (bIsNull)
+                    ret->SetNull ();
+                else
+                    ret->SetData (value);
+                return ret;
+            }
+        }
+    }
+
+    // if the pool is empty, create new
+    if (bIsNull)
+        ret = FdoBLOBValue::Create ();  // defaults to NULL;
+    else
+        ret = FdoBLOBValue::Create (value);  //TODO: there is probable a memory leak here
+    return ret;
 }
 
 FdoCLOBValue* FdoExpressionEngineImp::ObtainCLOBValue (bool bIsNull, FdoByteArray* value)
 {
     FdoCLOBValue* ret;
 
-    if (0 == mCLOBPool.size ())
+    if (0 != mCLOBPool.size ())
     {
-        // if the pool is empty, create new
-        if (bIsNull)
-            ret = FdoCLOBValue::Create ();  // defaults to NULL
-        else
-            ret = FdoCLOBValue::Create (value);  //TODO: there is probable a memory leak here
-    }
-    else
-    {  // otherwise get an object from the pool and initialize it
         ret = mCLOBPool.back ();
         mCLOBPool.pop_back ();
         if (bIsNull)
             ret->SetNull ();
         else
             ret->SetData (value);
+        return ret;
     }
 
-    return (ret);
+    if (0 != mPotentialCLOBPool.size ())
+    {
+        int  size = (int) mPotentialCLOBPool.size();
+        for (int i=0; i<size; i++)
+        {
+            ret = mPotentialCLOBPool[i];
+            if (ret->GetRefCount() == 1)
+            {
+                mPotentialCLOBPool.erase(mPotentialCLOBPool.begin() + i);
+                if (bIsNull)
+                    ret->SetNull ();
+                else
+                    ret->SetData (value);
+                return ret;
+            }
+        }
+    }
+
+    // if the pool is empty, create new
+    if (bIsNull)
+        ret = FdoCLOBValue::Create ();  // defaults to NULL
+    else
+        ret = FdoCLOBValue::Create (value);  //TODO: there is probable a memory leak here
+    return ret;
 }
 
 FdoLiteralValueCollection* FdoExpressionEngineImp::ObtainLiteralValueCollection ()
@@ -3255,6 +3475,7 @@ FdoLiteralValue* FdoExpressionEngineImp::Evaluate(FdoExpression *expression)
 
 	expression->Process (this);
     FdoLiteralValue* result = (FdoLiteralValue*)m_retvals.back ();
+    PotentialRelinquishLiteralValue(result);
 	m_retvals.pop_back ();
     return result;
 };
@@ -3263,6 +3484,7 @@ FdoLiteralValue *FdoExpressionEngineImp::Evaluate(FdoIdentifier& expr)
 {
 	ProcessIdentifier(expr);
 	FdoLiteralValue* value = (FdoLiteralValue*)m_retvals.back ();
+    PotentialRelinquishLiteralValue(value);
 	m_retvals.pop_back();
 	return value;
 }
@@ -3271,6 +3493,7 @@ FdoLiteralValue *FdoExpressionEngineImp::Evaluate(FdoString* name)
 {
     ProcessIdentifier(name);
     FdoLiteralValue* value = (FdoLiteralValue*)m_retvals.back ();
+    PotentialRelinquishLiteralValue(value);
     m_retvals.pop_back();
     return value;
 }
@@ -3770,5 +3993,65 @@ void FdoExpressionEngineImp::RegisterFunctions(FdoExpressionEngineFunctionCollec
     {
         throw;
     }
-
 }
+
+// This method would only be usefully when calling from the Evaluate methods. The Evaluate method returns a FdoLiteralValue object to the user. This object should only be re-used
+// by the Expression Egnine when the ref-count is 1(ie. the caller is not holding a reference to the object.)
+void FdoExpressionEngineImp::PotentialRelinquishLiteralValue(FdoLiteralValue *value)
+{
+    if (value->GetLiteralValueType() == FdoLiteralValueType_Data)
+    {
+        switch (((FdoDataValue*)value)->GetDataType ())
+        {
+            case FdoDataType_Boolean:
+                value->AddRef();
+                mPotentialBooleanPool.push_back ((FdoBooleanValue*)value);
+                break;
+            case FdoDataType_Byte:
+                value->AddRef();
+                mPotentialBytePool.push_back ((FdoByteValue*)value);
+                break;
+            case FdoDataType_DateTime:
+                value->AddRef();
+                mPotentialDateTimePool.push_back ((FdoDateTimeValue*)value);
+                break;
+            case FdoDataType_Decimal:
+                value->AddRef();
+                mPotentialDecimalPool.push_back ((FdoDecimalValue*)value);
+                break;
+            case FdoDataType_Double:
+                value->AddRef();
+                mPotentialDoublePool.push_back ((FdoDoubleValue*)value);
+                break;
+            case FdoDataType_Int16:
+                value->AddRef();
+                mPotentialInt16Pool.push_back ((FdoInt16Value*)value);
+                break;
+            case FdoDataType_Int32:
+                value->AddRef();
+                mPotentialInt32Pool.push_back ((FdoInt32Value*)value);
+                break;
+            case FdoDataType_Int64:
+                value->AddRef();
+                mPotentialInt64Pool.push_back ((FdoInt64Value*)value);
+                break;
+            case FdoDataType_Single:
+                value->AddRef();
+                mPotentialSinglePool.push_back ((FdoSingleValue*)value);
+                break;
+            case FdoDataType_String:
+                value->AddRef();
+                mPotentialStringPool.push_back ((FdoStringValue*)value);
+                break;
+            case FdoDataType_BLOB:
+                value->AddRef();
+                mPotentialBLOBPool.push_back ((FdoBLOBValue*)value);
+                break;
+            case FdoDataType_CLOB:
+                value->AddRef();
+                mPotentialCLOBPool.push_back ((FdoCLOBValue*)value);
+                break;
+        }
+    }
+}
+

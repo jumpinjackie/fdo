@@ -40,7 +40,7 @@
 
 class FdoFunctionConcat : public FdoExpressionEngineINonAggregateFunction
 {
-
+    static const FdoInt32 INIT_ALLOCATE_SIZE = 100;
     public:
 
         // ********************************************************************
@@ -114,6 +114,11 @@ class FdoFunctionConcat : public FdoExpressionEngineINonAggregateFunction
         //  CONCAT.
 
         FdoFunctionDefinition *function_definition;
+
+        FdoPtr<FdoStringValue>  m_string_value; // object returned by Evaluate. Allocated only once
+        wchar_t                 *m_temp_buffer; // Temporary buffer 
+        size_t                  m_size;         // size of m_temp_buffer
+        bool                    m_first;
 
 };  //  class FdoFunctionConcat
 
