@@ -36,6 +36,8 @@ FdoFunctionConcat::FdoFunctionConcat ()
     // Initialize all class variables.
 
     function_definition = NULL;
+    m_first = true;
+    m_temp_buffer = NULL;
 
 }  //  FdoFunctionConcat ()
 
@@ -51,6 +53,8 @@ FdoFunctionConcat::~FdoFunctionConcat ()
     // Delete the function definition.
 
     FDO_SAFE_RELEASE(function_definition);
+
+    delete [] m_temp_buffer;
 
 }  //  ~FdoFunctionConcat ()
 
@@ -109,27 +113,56 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
 
     // Declare and initialize all necessary local variables.
 
-    FdoInt32               i;
-
-    FdoStringP             result;
-
-    FdoPtr<FdoStringValue> string_value;
+    FdoPtr<FdoStringValue> string_value1;
+    FdoPtr<FdoStringValue> string_value2;
 
     // Validate the function call.
-
-    Validate(literal_values);
+    if (m_first == true)
+    {
+        Validate(literal_values);
+        m_string_value = FdoStringValue::Create();
+        m_temp_buffer = new wchar_t[INIT_ALLOCATE_SIZE+1];
+        m_size = INIT_ALLOCATE_SIZE;
+        m_first = false;
+    }
 
     // Process the request and return the result back to the calling routine.
 
-    for (i = 0; i < 2; i++) {
+    string_value1 = (FdoStringValue *) literal_values->GetItem(0);
+    string_value2 = (FdoStringValue *) literal_values->GetItem(1);
 
-      string_value = (FdoStringValue *) literal_values->GetItem(i);
-      if (!string_value->IsNull())
-          result = result + string_value->GetString();
+    size_t size = 0;
+    FdoString *string1 = NULL;
+    FdoString *string2 = NULL;
+    if (!string_value1->IsNull())
+    {
+        string1 = string_value1->GetString();
+        size = wcslen(string1);
+    }
 
-    }  //  for (i = 0; i < 2; i++) ...
+    if (!string_value2->IsNull())
+    {
+        string2 = string_value2->GetString();
+        size += wcslen(string2);
+    }
 
-    return FdoStringValue::Create(result);
+    if (size > m_size)
+    {
+        delete [] m_temp_buffer;
+        m_size = size;
+        m_temp_buffer = new wchar_t[m_size + 1];
+    }
+
+    m_temp_buffer[0] = '\0';
+
+    if (string1)
+        wcscpy(m_temp_buffer, string1);
+
+    if (string2)
+        wcscat(m_temp_buffer, string2);
+
+    m_string_value->SetString(m_temp_buffer);
+    return FDO_SAFE_ADDREF(m_string_value.p);
 
 }  //  Evaluate ()
 
