@@ -259,6 +259,21 @@ FdoSmPhSpatialContextsP FdoSmPhOwner::GetSpatialContexts()
     return mSpatialContexts;
 }
 
+FdoSmPhSpatialContextP FdoSmPhOwner::FindSpatialContext( FdoInt64 scId )
+{
+    FdoSmPhSpatialContextP sc;
+
+    if ( mSpatialContexts ) 
+        sc = mSpatialContexts->FindItemById( scId );
+
+    if ( !sc ) {
+        LoadSpatialContexts();
+        sc = mSpatialContexts->FindItemById( scId );
+    }
+
+    return sc;
+}
+
 FdoSmPhSpatialContextGeomsP FdoSmPhOwner::GetSpatialContextGeoms()
 {
     LoadSpatialContexts();

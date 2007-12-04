@@ -121,6 +121,10 @@ public:
     // it contains the spatial contexts reverse-engineered from the RDBMS.
     FdoSmPhSpatialContextsP GetSpatialContexts();
 
+    // Given a Spatial Context id, return the spatial context.
+    // Returns NULL if the spatial contexts does not exist.
+    FdoSmPhSpatialContextP FindSpatialContext( FdoInt64 scId );
+
     // Gets all spatial context to geometric column relations for this owner. 
     // it reverse-engineers the relations from the RDBMS.
     FdoSmPhSpatialContextGeomsP GetSpatialContextGeoms();
