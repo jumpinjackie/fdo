@@ -98,6 +98,20 @@ FdoSchemaMappingsP FdoSchemaManager::GetSchemaMappings(
     return mappings;
 }
 
+FdoSmLpSpatialContextP FdoSchemaManager::FindSpatialContext( FdoInt64 scId )
+{
+	// Reload LogicalPhysical spatial contexts if Physical Schema has changed.
+	SynchRevision();
+
+	FdoSmPhMgrP physMgr = GetPhysicalSchema();
+
+    if ( physMgr && (!mSpatialContexts) ) {
+		mSpatialContexts = CreateLpSpatialContexts(physMgr);
+    }
+
+	return mSpatialContexts->FindSpatialContext( scId );
+}
+
 void FdoSchemaManager::DestroySchema( const wchar_t* schemaName  )
 {
 	try {
@@ -575,8 +589,9 @@ FdoSmLpSpatialContextsP FdoSchemaManager::GetLpSpatialContexts()
 
     if ( physMgr && (!mSpatialContexts) ) {
 		mSpatialContexts = CreateLpSpatialContexts(physMgr);
-        mSpatialContexts->Load();
     }
+
+    mSpatialContexts->Load();
 
 	return mSpatialContexts;
 }

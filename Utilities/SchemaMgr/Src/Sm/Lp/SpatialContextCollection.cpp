@@ -35,6 +35,22 @@ FdoSmLpSpatialContextCollection::~FdoSmLpSpatialContextCollection(void)
 {
 }
 
+FdoSmLpSpatialContextP FdoSmLpSpatialContextCollection::FindSpatialContext( FdoInt64 scId )
+{
+    // Check if already in cache
+    FdoSmLpSpatialContextP sc = FindItemById(scId);
+
+    if ( !sc ) 
+    {
+        // Not in cache, load the spatial context and try again.
+        Load(scId);
+        sc = FindItemById(scId);
+    }
+
+    return(sc);
+}
+
+
 FdoSmLpSpatialContextP FdoSmLpSpatialContextCollection::FindItemById( FdoInt64 scid )
 {
     FdoSmLpSpatialContextP sc;
@@ -61,6 +77,42 @@ FdoInt32 FdoSmLpSpatialContextCollection::Add( FdoSmLpSpatialContext* value)
 
     return ret;
 }
+
+FdoSmLpSpatialContextP FdoSmLpSpatialContextCollection::AddFromPhysical( FdoSmPhSpatialContextP phSc )
+{
+    FdoSmLpSpatialContextP sc;
+
+    if ( IndexOf(phSc->GetName() ) < 0 )
+    {
+        FdoPtr<FdoByteArray> pExtVal = phSc->GetExtent();
+        sc = NewSpatialContext(
+            phSc->GetName(),
+            phSc->GetDescription(),
+            phSc->GetCoordinateSystem(),
+            phSc->GetCoordinateSystemWkt(),
+            phSc->GetExtentType(),
+            pExtVal.p,
+            phSc->GetXYTolerance(),
+            phSc->GetZTolerance(),
+            true,
+            mPhysicalSchema);
+
+        if (NULL == sc.p)
+            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
+        
+        sc->SetSrid( phSc->GetSrid() );
+
+        // Avoid cs_name etc. validation in Finalize() against catalog
+        sc->SetState( FdoSmObjectState_Final );
+
+        sc->SetId( phSc->GetId() ); 
+
+        this->Add( sc );
+    }
+
+    return sc;
+}
+
 
 FdoSmLpSpatialContextP FdoSmLpSpatialContextCollection::CreateSpatialContext(
         FdoString* name,
@@ -121,15 +173,13 @@ FdoSchemaExceptionP FdoSmLpSpatialContextCollection::Errors2Exception(FdoSchemaE
 }
 
 
-void FdoSmLpSpatialContextCollection::Load()
+void FdoSmLpSpatialContextCollection::Load( FdoInt64 scId )
 {
     FdoInt32 idx;
     FdoSmPhSpatialContextsP phScs;
     FdoSmPhSpatialContextGeomsP scGeoms;
 
 	if ( (mPhysicalSchema != NULL) && !mAreLoaded ) {
-        mAreLoaded = true;
-
         // Cache the SpatialContextGeomReader info  
         if ( mSpatialContextGeoms.p == NULL )
             mSpatialContextGeoms = new FdoSmPhSpatialContextGeomCollection();
@@ -139,6 +189,8 @@ void FdoSmLpSpatialContextCollection::Load()
         FdoStringP providerName = mPhysicalSchema->GetProviderName();
 
         if ( configDoc ) {
+            mAreLoaded = true;
+
             // There is a config doc, so load spatial contexts from it exclusively.
             configDoc->Reset();
 	        FdoXmlReaderP reader = FdoXmlReader::Create(configDoc);
@@ -169,6 +221,8 @@ void FdoSmLpSpatialContextCollection::Load()
         else if ( FdoSmPhOwnerP(mPhysicalSchema->GetOwner())->GetHasMetaSchema() )
 			// No config document; load from metaschema or reverse-engineering/defaults.
         {
+            mAreLoaded = true;
+
             // This is where we merge physical spatial contexts and spatial context groups
             // into logical/physical spatial contexts.  Spatial context groups will not be
             // seen above this point in the code.  Currently, the relationship between
@@ -226,42 +280,33 @@ void FdoSmLpSpatialContextCollection::Load()
         }
 		else
 		{
+
             // Use Physical SpatialContextGeoms.
             mSpatialContextGeoms = NULL;
 
 			// Create a LogicalPhysical spatial context from each Physical spatial context
 
-            phScs = mPhysicalSchema->GetOwner()->GetSpatialContexts();
-			
-			FdoInt32	currSC = 0;
-
-            for ( idx = 0; idx <  phScs->GetCount(); idx++ ) 
+            if ( scId >= 0) 
             {
-                FdoSmPhSpatialContextP phSc = phScs->GetItem( idx );
-                FdoPtr<FdoByteArray> pExtVal = phSc->GetExtent();
-		        FdoSmLpSpatialContextP sc = NewSpatialContext(
-                    phSc->GetName(),
-                    phSc->GetDescription(),
-                    phSc->GetCoordinateSystem(),
-                    phSc->GetCoordinateSystemWkt(),
-                    phSc->GetExtentType(),
-                    pExtVal.p,
-                    phSc->GetXYTolerance(),
-                    phSc->GetZTolerance(),
-                    true,
-                    mPhysicalSchema);
+                // Just load the specified Spatial Contest
+                FdoSmPhSpatialContextP phSc = mPhysicalSchema->GetOwner()->FindSpatialContext(scId);            
+                if ( phSc ) 
+                    AddFromPhysical(phSc);
+            }
+            else 
+            {
+                // No Spatial Context specified, load all of them.
+                mAreLoaded = true;
+                phScs = mPhysicalSchema->GetOwner()->GetSpatialContexts();
+    			
+			    FdoInt32	currSC = 0;
 
-                if (NULL == sc.p)
-    		        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
-		        
-                sc->SetSrid( phSc->GetSrid() );
-
-		        // Avoid cs_name etc. validation in Finalize() against catalog
-		        sc->SetState( FdoSmObjectState_Final );
-
-                sc->SetId( phSc->GetId() ); 
-		        this->Add( sc );
-	        }	
+                for ( idx = 0; idx <  phScs->GetCount(); idx++ ) 
+                {
+                    FdoSmPhSpatialContextP phSc = phScs->GetItem( idx );
+	                AddFromPhysical(phSc);
+                }
+            }
 		}
 	}
 }

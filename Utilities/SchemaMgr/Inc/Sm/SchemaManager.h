@@ -93,6 +93,9 @@ public:
     /// false: include only non-default mappings.
     );
 
+    // Given a Spatial Context id, return the spatial context.
+    // Returns NULL if the spatial contexts does not exist.
+    FdoSmLpSpatialContextP FindSpatialContext( FdoInt64 scId );
 
     /// Apply updates to the given schema to the FDO DataStore.
     //

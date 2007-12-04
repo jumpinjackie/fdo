@@ -38,6 +38,10 @@ public:
 	FdoSmLpSpatialContextCollection( FdoSmPhMgrP physicalSchema );
 	~FdoSmLpSpatialContextCollection(void);
 
+    // Given a Spatial Context id, return the spatial context.
+    // Returns NULL if the spatial contexts does not exist.
+    FdoSmLpSpatialContextP FindSpatialContext( FdoInt64 scId );
+
     FdoSmLpSpatialContextP CreateSpatialContext(
         FdoString* name,
         FdoString* description,
@@ -68,7 +72,11 @@ public:
     /// 	pFirstException: a chain of exceptions.
 	virtual FdoSchemaExceptionP Errors2Exception( FdoSchemaException* pFirstException = NULL ) const;
 
-    void Load();
+    // Load up the Spatial Contexts.
+    // When scId = -1, load all spatial contexts.
+    // Otherwise, load at least the specified scID (loads all spatial 
+    // contexts when metaschema or config file is used).
+    void Load( FdoInt64 scId = -1 );
 
 	FdoSmPhSpatialContextGeomsP  GetSpatialContextGeoms();
 
@@ -95,6 +103,8 @@ protected:
         double zTolerance,
         bool bIgnoreStates,
         FdoSmPhMgrP physicalSchema);
+
+    virtual FdoSmLpSpatialContextP AddFromPhysical( FdoSmPhSpatialContextP phSc );
 
 private:
     // Functions for maintaining the lookup by id map.
