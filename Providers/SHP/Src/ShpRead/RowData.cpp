@@ -22,6 +22,7 @@
 #include "RowData.h"
 #include <wctype.h>
 #include <FdoCommonOSUtil.h>
+#include <math.h>
 
 /*****************************************************************************
  * Name         : RowData
@@ -189,6 +190,21 @@ void RowData::SetData (int index, bool bIsNull, double value)
         // all fields are space padded
         memset (raw, ' ', width-length);
 
+		// Substitute ',' (when the locale is French, for example) with '.', the only valid decimal separator.
+		if (length > 0)
+		{
+			char *p = &buffer[length - 1];
+			while (p > buffer)
+			{
+				if (*p == ',')
+				{
+					*p = '.';
+					break;
+				}
+				p--;
+			}
+		}
+
         // right justify
         strncpy ((char*)(raw + width - length), buffer, length);
     }
@@ -341,7 +357,35 @@ void RowData::GetData (ColumnData* data, int index, eDBFColumnType type, WCHAR* 
                 p--;
             data->bIsNull = (p==raw);
             if (!data->bIsNull)
+			{
                 data->value.dData = atof((const char*)raw);
+
+				// In case the locale is using ',' as decimal separator, then atof() truncates
+				// the number to its integer value. Note errno doesn't seem to be reliable since it returns
+				// ERANGE even in valid cases. The code below will do a conversion on the same
+				// string with '.' replaced by ',' then the largest value (that is, not truncated) 
+				// will be selected for output.
+				char	buffer[50];
+				size_t	length = strlen((const char*)raw);
+				memcpy(buffer, (const char*)raw, length);
+				buffer[length] = '\0';
+				char *p = &buffer[length - 1];
+				while (p > buffer)
+				{
+					if (*p == '.')
+					{
+						*p = ',';
+						break;
+					}
+					p--;
+				}
+
+				double value = atof(buffer);
+				
+				// Select the not triuncated value.
+				if (fabs(value) > fabs(data->value.dData))
+					data->value.dData = value;
+			}
             break;
 
         case kColumnDateType:

@@ -299,9 +299,6 @@ void InsertTests::insert_locale (char *orig_locale, char *new_locale, FdoString 
 		// This throws exception if not found.
 		ShapeDBF  *dbf = new ShapeDBF( LOCATION DBG_NAME );
 
-		// Restore the locale.  
-		setlocale(LC_ALL, orig_locale);
-
 		FdoString *esriCodepage = (FdoString *)cpg->GetCodePage();
 		if (VERBOSE) printf("CPG: %ls\n", (FdoString*)esriCodepage );
 
@@ -335,6 +332,14 @@ void InsertTests::insert_locale (char *orig_locale, char *new_locale, FdoString 
         expression = (FdoValueExpression*)FdoExpression::Parse ((FdoString *)a_value2);
         value = FdoPropertyValue::Create (L"Street", expression);
         values->Add (value);
+
+		// Parsing will return a truncated value when decimal separator different from '.'
+        //expression = (FdoValueExpression*)ShpTests::ParseByDataType(L"971.456", FdoDataType_Decimal);
+		expression = FdoDecimalValue::Create(971.456);
+
+        value = FdoPropertyValue::Create (L"Area", expression);
+        values->Add (value);
+
         // add NULL geometry value:
         FdoPtr<FdoGeometryValue> geometry = FdoGeometryValue::Create ();
         geometry->SetNullValue ();
@@ -371,7 +376,8 @@ void InsertTests::insert_locale (char *orig_locale, char *new_locale, FdoString 
             CPPUNIT_ASSERT_MESSAGE ("incorrect id value", 24 == reader->GetDouble (L"Id"));
             CPPUNIT_ASSERT_MESSAGE ("incorrect street nullness", !reader->IsNull (L"Street"));
             CPPUNIT_ASSERT_MESSAGE ("incorrect street value", 0 == wcscmp (a_value, reader->GetString (L"Street")));
-            CPPUNIT_ASSERT_MESSAGE ("incorrect area value", reader->IsNull (L"Area"));
+			double area = reader->GetDouble (L"Area");
+			CPPUNIT_ASSERT_MESSAGE ("incorrect area value", TestCommonMiscUtil::FuzzyEqual(971.456, area));
             CPPUNIT_ASSERT_MESSAGE ("incorrect vacant value", reader->IsNull (L"Vacant"));
             CPPUNIT_ASSERT_MESSAGE ("incorrect birthday value", reader->IsNull (L"Birthday"));
             CPPUNIT_ASSERT_MESSAGE ("incorrect geometry value", reader->IsNull (L"Geometry"));
@@ -391,12 +397,16 @@ void InsertTests::insert_locale (char *orig_locale, char *new_locale, FdoString 
             CPPUNIT_ASSERT_MESSAGE ("incorrect featid value", featid == reader->GetInt32 (L"FeatId"));
             CPPUNIT_ASSERT_MESSAGE ("incorrect id value", 24 == reader->GetDouble (L"Id"));
             CPPUNIT_ASSERT_MESSAGE ("incorrect street value", 0 == wcscmp (a_value, reader->GetString (L"Street")));
-            CPPUNIT_ASSERT_MESSAGE ("incorrect area value", reader->IsNull (L"Area"));
-            CPPUNIT_ASSERT_MESSAGE ("incorrect vacant value", reader->IsNull (L"Vacant"));
+			double area = reader->GetDouble (L"Area");
+			CPPUNIT_ASSERT_MESSAGE ("incorrect area value", TestCommonMiscUtil::FuzzyEqual(971.456, area));
+			CPPUNIT_ASSERT_MESSAGE ("incorrect vacant value", reader->IsNull (L"Vacant"));
             CPPUNIT_ASSERT_MESSAGE ("incorrect birthday value", reader->IsNull (L"Birthday"));
             CPPUNIT_ASSERT_MESSAGE ("incorrect geometry value", reader->IsNull (L"Geometry"));
         }
         reader->Close ();
+
+		// Restore the locale.  
+		setlocale(LC_ALL, orig_locale);
     }
     catch (FdoException* ge) 
     {
