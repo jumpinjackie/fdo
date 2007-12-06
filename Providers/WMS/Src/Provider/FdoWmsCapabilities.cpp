@@ -404,55 +404,45 @@ void FdoWmsCapabilities::_processGeographicDataLayer(FdoWmsLayer* layer, FdoBool
         }
         if (defaultSRS.GetLength() != 0)
         {
-            // look if we have an bounding box for this default SRS
-            FdoPtr<FdoWmsBoundingBox> pBox = _SearchBoundingBox(boundingBoxes, defaultSRS);
-            if (pBox == NULL)
+            if (isSRSSupported)
             {
-                // in case we don't have a bounding box for the default SRS, try to generate one
-                FdoPtr<FdoWmsBoundingBox> parentBox;
-                // in case we have a default SRS from parent we must see if we have a bounding box on the parent
-                if (isParentDefault)
-                    parentBox = _SearchParentBoundingBox(layer, defaultSRS);
-                pBox = FdoWmsBoundingBox::Create();
+                // add EPSG:4326
+                FdoPtr<FdoWmsBoundingBox> pBox = FdoWmsBoundingBox::Create();
                 pBox->SetCRS(defaultSRS);
-                if (parentBox)
-                {
-                    // add parent bounding box 
-                    pBox->SetMinY(parentBox->GetMinY ());
-                    pBox->SetMinX(parentBox->GetMinX ());
-                    pBox->SetMaxX(parentBox->GetMaxX ());
-                    pBox->SetMaxY(parentBox->GetMaxY ());
-                }
-                else
-                {
-                    // generate a new one using default SRS and GeographicBoundingBox
-                    pBox->SetMinY(geoBox->GetSouthBoundLatitude ());
-                    pBox->SetMinX(geoBox->GetWestBoundLongitude ());
-                    pBox->SetMaxX(geoBox->GetEastBoundLongitude ());
-                    pBox->SetMaxY(geoBox->GetNorthBoundLatitude ());
-                }
+
+                // generate a new one using default SRS and GeographicBoundingBox
+                pBox->SetMinY(geoBox->GetSouthBoundLatitude ());
+                pBox->SetMinX(geoBox->GetWestBoundLongitude ());
+                pBox->SetMaxX(geoBox->GetEastBoundLongitude ());
+                pBox->SetMaxY(geoBox->GetNorthBoundLatitude ());
+                
                 boundingBoxes->Add(pBox);
             }
             else
             {
-                if (IsSRSSupportedbyLayer(layer, defaultSRS))
+                // look if we have an bounding box for this default SRS
+                FdoPtr<FdoWmsBoundingBox> pBox = _SearchBoundingBox(boundingBoxes, defaultSRS);
+                // NOTE: For WMS 1.1.1, Layers may have 0+ <BoundingBox> elements
+                // For WMS 1.3.0, WMS service metadata shall declare 1+ bounding boxes for each Layer. 
+                if (pBox == NULL)
                 {
-                    // add it only in case we don't have a bounding box for global default SRS
-                    pBox = _SearchBoundingBox(boundingBoxes, defaultSRS);
-                    if (pBox == NULL)
+                    // in case we don't have a bounding box for the default SRS, try to generate one
+                    FdoPtr<FdoWmsBoundingBox> parentBox;
+
+                    // A Bounding Box metadata element may either be stated explicitly or may be inherited from a parent Layer.
+                    parentBox = _SearchParentBoundingBox(layer, defaultSRS);
+
+                    pBox = FdoWmsBoundingBox::Create();
+                    pBox->SetCRS(defaultSRS);
+                    if (parentBox)
                     {
-                        pBox = FdoWmsBoundingBox::Create();
-                        pBox->SetCRS(defaultSRS);
-                        pBox->SetMinY(geoBox->GetSouthBoundLatitude ());
-                        pBox->SetMinX(geoBox->GetWestBoundLongitude ());
-                        pBox->SetMaxX(geoBox->GetEastBoundLongitude ());
-                        pBox->SetMaxY(geoBox->GetNorthBoundLatitude ());
+                        // add parent bounding box 
+                        pBox->SetMinY(parentBox->GetMinY ());
+                        pBox->SetMinX(parentBox->GetMinX ());
+                        pBox->SetMaxX(parentBox->GetMaxX ());
+                        pBox->SetMaxY(parentBox->GetMaxY ());
                         boundingBoxes->Add(pBox);
-                    }
-                    else
-                    {
-                        // here we could verify if (geoBox data) == (pBox data)
-                    }
+                   }
                 }
             }
         }
