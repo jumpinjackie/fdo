@@ -66,6 +66,7 @@ class FdoExpressionFunctionTest : public CppUnit::TestCase
     // =========================================
     // CPPUNIT_TEST(TestNullValueFunction);
     // CPPUNIT_TEST(TestToDateFunction);
+    // CPPUNIT_TEST(TestToDateFunctionAsFilter);
     // CPPUNIT_TEST(TestToDoubleFunction);
     // CPPUNIT_TEST(TestToDoubleFunctionAsFilter);
     // CPPUNIT_TEST(TestToFloatFunction);
@@ -123,6 +124,11 @@ class FdoExpressionFunctionTest : public CppUnit::TestCase
     // CPPUNIT_TEST(TestTrimFunction);
     // CPPUNIT_TEST(TestUpperFunction);
     // =========================================
+    // ====     COMBINATION UNIT TESTS      ====
+    // =========================================
+    // CPPUNIT_TEST(NumberToStringComparison);
+    // CPPUNIT_TEST(RoundNumberToStringComparison);
+    // =========================================
     // ====       RUN ALL UNIT TESTS        ====
     // =========================================
     CPPUNIT_TEST(RunAllExpFctTests);
@@ -132,6 +138,7 @@ class FdoExpressionFunctionTest : public CppUnit::TestCase
     // CPPUNIT_TEST(ModuloOperation);
     // CPPUNIT_TEST(SoundexFilter);
     // CPPUNIT_TEST(SubstrOperation);
+    // CPPUNIT_TEST(ToDateOperation);
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -273,6 +280,12 @@ protected:
     //      TODATE when used as a select-parameter.
 
     void TestToDateFunction ();
+
+    //  TestToDateFunctionAsFilter:
+    //      The function executes the test for the expression engine function
+    //      TODATE when used in a filter.
+
+    void TestToDateFunctionAsFilter ();
 
     //  TestToDoubleFunction:
     //      The function executes the test for the expression engine function
@@ -546,6 +559,27 @@ protected:
 
 
     //-------------------------------------------------------------------------
+    //                     Combination Unit Test Functions
+    //-------------------------------------------------------------------------
+
+    //  NumberToStringComparison:
+    //      The function executes a filter on the test data set that uses the
+    //      function TOSTRING on two different properties and compares the
+    //      function results to determine if a data set qualifies as defined
+    //      by the filter.
+
+    void NumberToStringComparison ();
+
+    //  RoundNumberToStringComparison:
+    //      The function executes a filter on the test data set that uses the
+    //      functions ROUND and TOSTRING on two different properties and
+    //      compares the function results to determine if a data set qualifies
+    //      as defined by the filter.
+
+    void RoundNumberToStringComparison ();
+
+
+    //-------------------------------------------------------------------------
     //                       Special Unit Test Functions
     //-------------------------------------------------------------------------
 
@@ -566,6 +600,13 @@ protected:
     //      is to verify that the returned data is accurate for each row.
 
     void SubstrOperation ();
+
+    //  ToDateOperation:
+    //      The function tests the expression function TODATE as a filter
+    //      when connected to a specific SDF file provided by QA. Apparently,
+    //      no data is returned although at least one row qualifies.
+
+    void ToDateOperation ();
 
 
     //-------------------------------------------------------------------------
