@@ -40,7 +40,17 @@
 
 class FdoFunctionConcat : public FdoExpressionEngineINonAggregateFunction
 {
-    static const FdoInt32 INIT_ALLOCATE_SIZE = 100;
+
+        // ********************************************************************
+        // *                             Constants                            *
+        // ********************************************************************
+
+        // INIT_ALLOCATE_SIZE:
+        //  The constant defines the initial size of the internal text buffer.
+
+        static const FdoInt32 INIT_ALLOCATE_SIZE = 100;
+
+
     public:
 
         // ********************************************************************
@@ -98,6 +108,18 @@ class FdoFunctionConcat : public FdoExpressionEngineINonAggregateFunction
 
         virtual void Dispose () { delete this; };
 
+        // IsValidDataType:
+        //  The function returns true if the provided data type is valid for
+        //  this function, false otherwise.
+
+        bool IsValidDataType (FdoDataType data_type);
+
+        // ProcessArgument:
+        //  The function converts the given argument value into a string and
+        //  returns it back to the calling routine.
+
+        FdoString *ProcessArgument (FdoDateTimeValue *value);
+
         // Validate:
         //  The function validates the provided parameters for the function
         //  CONCAT.
@@ -115,10 +137,41 @@ class FdoFunctionConcat : public FdoExpressionEngineINonAggregateFunction
 
         FdoFunctionDefinition *function_definition;
 
-        FdoPtr<FdoStringValue>  m_string_value; // object returned by Evaluate. Allocated only once
-        wchar_t                 *m_temp_buffer; // Temporary buffer 
-        size_t                  m_size;         // size of m_temp_buffer
-        bool                    m_first;
+        // is_validated:
+        //  For performance reasons the arguments passed to the procedure
+        //  processing the request is done once only for the time of its
+        //  execution. This variable stores whether or not the validation
+        //  has been performed.
+
+        bool is_validated;
+
+        // para1_data_type:
+        //  References the data type associated with the first parameter.
+
+        FdoDataType para1_data_type;
+
+        // para2_data_type:
+        //  References the data type associated with the second parameter.
+
+        FdoDataType para2_data_type;
+
+        // result:
+        //  The variable represents the object to be returned by the function
+        //  "Evaluate". For performance reasons, this object is allocated only
+        //  once.
+
+        FdoPtr<FdoStringValue> result;
+
+        // tmp_buffer:
+        //  The variable represents the internal buffer used to create the
+        //  resulting string.
+
+        wchar_t *tmp_buffer;
+
+        // tmp_buffer_size:
+        //  The variable holds the current size of the temporary buffer.
+
+        size_t tmp_buffer_size;
 
 };  //  class FdoFunctionConcat
 
