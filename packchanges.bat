@@ -48,6 +48,11 @@ echo $(Utilities)>> ..\FilesChanges.log
 svn status -q >> ..\FilesChanges.log
 popd
 
+pushd Tools
+echo $(Tools)>> ..\FilesChanges.log
+svn status -q >> ..\FilesChanges.log
+popd
+
 pushd www
 echo $(www)>> ..\FilesChanges.log
 svn status -q >> ..\FilesChanges.log
@@ -93,8 +98,18 @@ echo $(KingOracle)>> ..\..\FilesChanges.log
 svn status -q >> ..\..\FilesChanges.log
 popd
 
+pushd Providers\KingMsSqlSpatial
+echo $(KingMsSqlSpatial)>> ..\..\FilesChanges.log
+svn status -q >> ..\..\FilesChanges.log
+popd
+
 pushd Providers\OGR
 echo $(OGR)>> ..\..\FilesChanges.log
+svn status -q >> ..\..\FilesChanges.log
+popd
+
+pushd Providers\PostGIS
+echo $(PostGIS)>> ..\..\FilesChanges.log
 svn status -q >> ..\..\FilesChanges.log
 popd
 

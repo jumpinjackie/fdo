@@ -126,7 +126,20 @@ II. Build Notes
 
      e.g. set FDOMYSQL=c:\Program Files\MySQL\MySQL Server 5.0
 
-  7. OPTIONAL: The FDO build includes several generated .cpp files that were 
+  7. In order to build the King Oracle Provider, you will need to download 
+     and install the 'Oracle 10.2.0.3 Instant Client' for Windows from:
+
+        http://www.oracle.com/technology/software/tech/oci/instantclient/htdocs/winsoft.html
+
+     The name of the installation file is 'instantclient-sdk-win32-10.2.0.3-20061115.zip'
+	 
+	 Following the installation, set the following FDO Windows environment variable:
+
+        set FDOORACLE=[Oracle instant client path] 
+
+     e.g. set FDOORACLE=C:\oracle\instantclient\10.2\sdk
+
+  8. OPTIONAL: The FDO build includes several generated .cpp files that were 
      generated from source .y files by the Bision and Sed utilities. These 
      files are fairly static therefore they are not automatically regenerated 
      as a part of the standard FDO build process. If changes are made 
@@ -174,7 +187,7 @@ II. Build Notes
 
         build_parse.bat
  
-  8. OPTIONAL: The FDO build process allows it's documentation to be regenerated. 
+  9. OPTIONAL: The FDO build process allows it's documentation to be regenerated. 
      If this is required, install the OpenSource Doxygen documentation generation
      software.  Doxygen is a documentation system for C++, C, Java, Objective-C, 
      Python, IDL (Corba and Microsoft flavors) and to some extent PHP, C#, and D.
@@ -207,7 +220,7 @@ II. Build Notes
         set PATH=%PATH%;C:\Program Files\doxygen\bin
         set PATH=%PATH%;C:\Program Files\ATT\Graphviz\bin
 
-  8. OPTIONAL: The FDO build process supports the generation of a set of python 
+ 10. OPTIONAL: The FDO build process supports the generation of a set of python 
      wrapper scripts for the FDO API. The python scripts are generated using SWIG. To
      generate the python scripts, you must have Python and SWIG installed.
   
@@ -226,12 +239,12 @@ II. Build Notes
         
      ** NOTE: These variables are maintained in the setenvironment.bat script. 
 
- 9. Use the [FDO OpenSource]\setenvironment.bat script to assist in setting and
+ 11.Use the [FDO OpenSource]\setenvironment.bat script to assist in setting and
     maintaing the correct environment settings for the FDO build process. 
     This script can be modifed and used to set the correct environment variables 
     and PATH settings.
 
- 10. The build_thirdparty.bat file is used to build the FDO Thirdparty binaries. The following 
+ 12. The build_thirdparty.bat file is used to build the FDO Thirdparty binaries. The following 
      is a general guideline on how to use the build_thirdparty.bat build script.
   
            **************************************************************************
@@ -265,21 +278,23 @@ II. Build Notes
             **** Build Thirdparty components for for the WMS and WFS Providers
             build_thirdparty -w=wms -w=wfs
 
- 11. The build.bat file is used to build the FDO binaries. The following 
+ 13. The build.bat file is used to build the FDO binaries. The following 
      is a general guideline on how to use the build.bat build script.
   
            **************************************************************************
-           build.bat [-h] 
-                     [-o=OutFolder] 
-                     [-c=BuildType] 
-                     [-a=Action] 
-                     [-w=WithModule] 
+           build.bat [-h]
+                     [-o=OutFolder]
+                     [-c=BuildType]
+                     [-p=PlatformType]
+                     [-a=Action]
+                     [-w=WithModule]
                      [-d=BuildDocs]
-                     [-p=BuildPythonWrappers]
-
+                     [-py=BuildPythonWrappers]
+           
            Help:                  -h[elp]
            OutFolder:             -o[utpath]=destination folder for binaries
            BuildType:             -c[onfig]=release(default), debug
+		   PlatformType:          -p[latform]=Win32(default), x64
            Action:                -a[ction]=build(default), 
                                             buildinstall, 
                                             install, 
@@ -294,9 +309,12 @@ II. Build Notes
                                           arcsde, 
                                           odbc, 
                                           mysql,
-                                          gdal
+                                          gdal,
+                                          ogr
+                                          postgis
+                                          kingoracle
            BuildDocs:             -d[ocs]=skip(default), build
-           BuildPythonWrappers:   -p[ython]=skip(default), build
+           BuildPythonWrappers:   -py[thon]=skip(default), build
            **************************************************************************
             
             e.g.
@@ -320,7 +338,7 @@ II. Build Notes
             **** Build the FDO WMS and WFS Providers
             build -w=wms -w=wfs
             **** Build the FDO Python Wrapper scripts
-            build -p=build
+            build -py=build
             **** Build documentation and install all files to C:\Fdo
             build -a=install -o=C:\Fdo -d=build 
 
