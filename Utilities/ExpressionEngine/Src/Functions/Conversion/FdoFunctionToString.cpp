@@ -147,9 +147,7 @@ FdoLiteralValue *FdoFunctionToString::Evaluate (
         if (byte_value->IsNull())
             return FdoStringValue::Create();
         else
-          return FdoStringValue::Create(
-                   FdoStringP::Format(
-                                L"%d", (FdoInt16) byte_value->GetByte()));
+          return FdoStringValue::Create(byte_value->ToString());
         break;
 
       case FdoDataType_Decimal:
@@ -157,8 +155,7 @@ FdoLiteralValue *FdoFunctionToString::Evaluate (
         if (decimal_value->IsNull())
             return FdoStringValue::Create();
         else
-          return FdoStringValue::Create(
-                    FdoStringP::Format(L"%f", decimal_value->GetDecimal()));
+          return FdoStringValue::Create(decimal_value->ToString());
         break;
 
       case FdoDataType_Double:
@@ -166,8 +163,7 @@ FdoLiteralValue *FdoFunctionToString::Evaluate (
         if (double_value->IsNull())
             return FdoStringValue::Create();
         else
-          return FdoStringValue::Create(
-                    FdoStringP::Format(L"%f", double_value->GetDouble()));
+          return FdoStringValue::Create(double_value->ToString());
         break;
 
       case FdoDataType_Int16:
@@ -175,8 +171,7 @@ FdoLiteralValue *FdoFunctionToString::Evaluate (
         if (int16_value->IsNull())
             return FdoStringValue::Create();
         else
-          return FdoStringValue::Create(
-                    FdoStringP::Format(L"%d", int16_value->GetInt16()));
+          return FdoStringValue::Create(int16_value->ToString());
         break;
 
       case FdoDataType_Int32:
@@ -184,8 +179,7 @@ FdoLiteralValue *FdoFunctionToString::Evaluate (
         if (int32_value->IsNull())
             return FdoStringValue::Create();
         else
-          return FdoStringValue::Create(
-                    FdoStringP::Format(L"%d", int32_value->GetInt32()));
+          return FdoStringValue::Create(int32_value->ToString());
         break;
 
       case FdoDataType_Int64:
@@ -193,13 +187,7 @@ FdoLiteralValue *FdoFunctionToString::Evaluate (
         if (int64_value->IsNull())
             return FdoStringValue::Create();
         else
-#ifdef _WIN32
-          return FdoStringValue::Create(
-                    FdoStringP::Format(L"%I64d", int64_value->GetInt64()));
-#else
-          return FdoStringValue::Create(
-                    FdoStringP::Format(L"%lld", int64_value->GetInt64()));
-#endif
+          return FdoStringValue::Create(int64_value->ToString());
         break;
 
       case FdoDataType_Single:
@@ -207,8 +195,7 @@ FdoLiteralValue *FdoFunctionToString::Evaluate (
         if (single_value->IsNull())
             return FdoStringValue::Create();
         else
-          return FdoStringValue::Create(
-                    FdoStringP::Format(L"%f", single_value->GetSingle()));
+          return FdoStringValue::Create(single_value->ToString());
         break;
 
     }  //  switch ...
