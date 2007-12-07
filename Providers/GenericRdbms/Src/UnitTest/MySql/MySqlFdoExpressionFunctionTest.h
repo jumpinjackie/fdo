@@ -109,6 +109,12 @@ public:
 
     // ========================== STRING FUNCTIONS ===========================
 
+    //  TestConcatFunction:
+    //      The function executes the test for the expression engine function
+    //      CONCAT when used as a select-parameter.
+
+    void TestConcatFunction ();
+
     //  TestSoundexFunction:
     //      The function executes the test for the expression engine function
     //      SOUNDEX when used as a select-parameter.
