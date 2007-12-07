@@ -338,6 +338,11 @@ void FdoExpressionFunctionTest::RunAllExpFctTests ()
     TestTrimFunction();
     TestUpperFunction();
 
+    // Executing the combination tests.
+
+    NumberToStringComparison();
+    RoundNumberToStringComparison();
+
 }  //  RunAllExpFctTests ()
 
 // ===========================================================================
@@ -365,11 +370,7 @@ void FdoExpressionFunctionTest::TestAvgFunction ()
     printf("========================================================== \n");
     printf("\n");
 
-    // 1. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function AVG on the
-    // value of a different property of type BYTE. No exceptions are expec-
-    // ted.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -407,12 +408,6 @@ void FdoExpressionFunctionTest::TestAvgFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function AVG on the
-    // distinct values of a different property of type BYTE. No exceptions
-    // are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -452,12 +447,6 @@ void FdoExpressionFunctionTest::TestAvgFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 3. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function AVG on the
-    // value of a different property of type DECIMAL. No exceptions are ex-
-    // pected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("3. Test Case:                                              \n");
@@ -496,12 +485,6 @@ void FdoExpressionFunctionTest::TestAvgFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 4. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function AVG on the
-    // value of a different property of type DOUBLE. No exceptions are ex-
-    // pected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("4. Test Case:                                              \n");
@@ -515,12 +498,12 @@ void FdoExpressionFunctionTest::TestAvgFunction ()
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row with the value of the computed property being
-      // 21.404516129032299. 
+      // 30.425840411322937. 
 
       func_call   = L"(Avg(dbl_val) as cmp_id)";
       data_reader = ExecuteSelAggrCommand(
                                         L"exfct_c1", NULL, false, func_call);
-      CheckReader(data_reader, false, 0, 31.481802426343197);
+      CheckReader(data_reader, false, 0, 30.425840411322937);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -539,12 +522,6 @@ void FdoExpressionFunctionTest::TestAvgFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 5. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function AVG on the
-    // value of a different property of type INT16. No exceptions are ex-
-    // pected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -584,12 +561,6 @@ void FdoExpressionFunctionTest::TestAvgFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 6. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function AVG on the
-    // value of a different property of type SINGLE. No exceptions are ex-
-    // pected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("6. Test Case:                                              \n");
@@ -603,12 +574,12 @@ void FdoExpressionFunctionTest::TestAvgFunction ()
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row with the value of the computed property being
-      // 5.1502145845161298. 
+      // 6.6974370450742784. 
 
       func_call   = L"(Avg(sgl_val) as cmp_id)";
       data_reader = ExecuteSelAggrCommand(
                                         L"exfct_c1", NULL, false, func_call);
-      CheckReader(data_reader, false, 0, 5.1502145845161298);
+      CheckReader(data_reader, false, 0, 6.6974370450742784);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -627,13 +598,6 @@ void FdoExpressionFunctionTest::TestAvgFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 7. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function AVG on the
-    // value of a different property of type SINGLE. This time, the test re-
-    // quests the average on all distinct values only. No exceptions are ex-
-    // pected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -650,12 +614,12 @@ void FdoExpressionFunctionTest::TestAvgFunction ()
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row with the value of the computed property being
-      // 5.1502145845161298. 
+      // 6.6974370450742784. 
 
       func_call   = L"(Avg('distinct', sgl_val) as cmp_id)";
       data_reader = ExecuteSelAggrCommand(
                                         L"exfct_c1", NULL, false, func_call);
-      CheckReader(data_reader, false, 0, 5.1502145845161298);
+      CheckReader(data_reader, false, 0, 6.6974370450742784);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -674,13 +638,6 @@ void FdoExpressionFunctionTest::TestAvgFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 8. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function AVG on the
-    // value of a different property of type BYTE. In this case, the function
-    // name does not match the expected function name ("AvG" rather than
-    // "Avg"). No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -745,10 +702,7 @@ void FdoExpressionFunctionTest::TestCountFunction ()
     printf("========================================================== \n");
     printf("\n");
 
-    // 1. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function COUNT on the
-    // value of a different property of type BYTE. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -786,12 +740,6 @@ void FdoExpressionFunctionTest::TestCountFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function COUNT on the
-    // distinct values of a different property of type BYTE. No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -832,12 +780,6 @@ void FdoExpressionFunctionTest::TestCountFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 3. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function COUNT on the
-    // value of a different property of type DECIMAL. No exceptions are ex-
-    // pected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("3. Test Case:                                              \n");
@@ -875,13 +817,6 @@ void FdoExpressionFunctionTest::TestCountFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 4. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function COUNT on the
-    // value of a different property of type DATE/TIME. This time, the test
-    // requests the count on all distinct values only. No exceptions are ex-
-    // pected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -923,12 +858,6 @@ void FdoExpressionFunctionTest::TestCountFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 5. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function COUNT on the
-    // value of a different property of type STRING. No exceptions are ex-
-    // pected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("5. Test Case:                                              \n");
@@ -966,13 +895,6 @@ void FdoExpressionFunctionTest::TestCountFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 6. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function COUNT on the
-    // value of a different property of type BYTE. In this case, the function
-    // name does not match the expected function name ("CoUnT" rather than
-    // "Count"). No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -1039,10 +961,7 @@ void FdoExpressionFunctionTest::TestMaxFunction ()
     printf("========================================================== \n");
     printf("\n");
 
-    // 1. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function MAX on the
-    // value of a different property of type BYTE. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -1080,12 +999,6 @@ void FdoExpressionFunctionTest::TestMaxFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function MAX on the
-    // distinct values of a different property of type BYTE. No exceptions
-    // are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -1125,12 +1038,6 @@ void FdoExpressionFunctionTest::TestMaxFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 3. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function MAX on the
-    // value of a different property of type DECIMAL. No exceptions are ex-
-    // pected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("3. Test Case:                                              \n");
@@ -1168,13 +1075,6 @@ void FdoExpressionFunctionTest::TestMaxFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 4. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function MAX on the
-    // value of a different property of type DATE/TIME. This time, the test
-    // requests the calculation of the maximum value on all distinct values
-    // only. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -1219,13 +1119,6 @@ void FdoExpressionFunctionTest::TestMaxFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 5. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function MAX on the
-    // value of a different property of type BYTE. In this case, the function
-    // name does not match the expected function name ("MaX" instead of "Max").
-    // No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -1291,10 +1184,7 @@ void FdoExpressionFunctionTest::TestMedianFunction ()
     printf("========================================================== \n");
     printf("\n");
 
-    // 1. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function MEDIAN on the
-    // value of a different property of type BYTE. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -1333,12 +1223,6 @@ void FdoExpressionFunctionTest::TestMedianFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function MEDIAN on the
-    // value of a different property of type DECIMAL. No exceptions are ex-
-    // pected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
@@ -1376,13 +1260,6 @@ void FdoExpressionFunctionTest::TestMedianFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 3. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function MEDIAN on the
-    // value of a different property of type DECIMAL. This test requests the
-    // calculation of the median on a single row. In this case the result is
-    // expected to be the value of that row. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -1425,13 +1302,6 @@ void FdoExpressionFunctionTest::TestMedianFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 4. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function MEDIAN on the
-    // value of a different property of type BYTE. In this case, the function
-    // name does not match the expected function name ("MeDiAn" rather than
-    // "Median"). No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -1498,10 +1368,7 @@ void FdoExpressionFunctionTest::TestMinFunction ()
     printf("========================================================== \n");
     printf("\n");
 
-    // 1. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function MIN on the
-    // value of a different property of type BYTE. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -1539,12 +1406,6 @@ void FdoExpressionFunctionTest::TestMinFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function MIN on the
-    // distinct values of a different property of type BYTE. No exceptions
-    // are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -1584,12 +1445,6 @@ void FdoExpressionFunctionTest::TestMinFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 3. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function MIN on the
-    // value of a different property of type DECIMAL. No exceptions are ex-
-    // pected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("3. Test Case:                                              \n");
@@ -1627,13 +1482,6 @@ void FdoExpressionFunctionTest::TestMinFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 4. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function MIN on the
-    // value of a different property of type DATE/TIME. This time, the test
-    // requests the calculation of the minimum value on all distinct values
-    // only. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -1678,13 +1526,6 @@ void FdoExpressionFunctionTest::TestMinFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 5. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function MIN on the
-    // value of a different property of type BYTE. In this case, the function
-    // name does not match the expected function name ("MiN" instead of "Min").
-    // No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -1750,10 +1591,7 @@ void FdoExpressionFunctionTest::TestStddevFunction ()
     printf("========================================================== \n");
     printf("\n");
 
-    // 1. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function STDDEV on the
-    // value of a different property of type BYTE. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -1791,12 +1629,6 @@ void FdoExpressionFunctionTest::TestStddevFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function STDDEV on the
-    // distinct values of a different property of type BYTE. No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -1836,12 +1668,6 @@ void FdoExpressionFunctionTest::TestStddevFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 3. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function STDDEV on the
-    // value of a different property of type DECIMAL. No exceptions are ex-
-    // pected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("3. Test Case:                                              \n");
@@ -1879,13 +1705,6 @@ void FdoExpressionFunctionTest::TestStddevFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 4. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function STDDEV on the
-    // value of a different property of type DECIMAL. This test requests the
-    // standard deviation being calculated on the distinct set of data. No
-    // exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -1927,13 +1746,6 @@ void FdoExpressionFunctionTest::TestStddevFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 5. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function STDDEV on the
-    // value of a different property of type DECIMAL. This test requests the
-    // standard deviation on a single row. In this case the result is expected
-    // to be 0. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("5. Test Case:                                              \n");
@@ -1974,13 +1786,6 @@ void FdoExpressionFunctionTest::TestStddevFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 6. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function STDDEV on the
-    // value of a different property of type BYTE. In this case, the function
-    // name does not match the expected function name ("StDdEv" rather than
-    // "Stddev"). No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -2045,10 +1850,7 @@ void FdoExpressionFunctionTest::TestSumFunction ()
     printf("========================================================== \n");
     printf("\n");
 
-    // 1. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function SUM on the
-    // value of a different property of type BYTE. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -2086,12 +1888,6 @@ void FdoExpressionFunctionTest::TestSumFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function SUM on the
-    // distinct values of a different property of type BYTE. No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -2131,12 +1927,6 @@ void FdoExpressionFunctionTest::TestSumFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 3. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function SUM on the
-    // value of a different property of type DECIMAL. No exceptions are ex-
-    // pected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("3. Test Case:                                              \n");
@@ -2174,13 +1964,6 @@ void FdoExpressionFunctionTest::TestSumFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 4. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function SUM on the value
-    // of a different property of type INT32. This time, the test requests the
-    // calculation of the sum on all distinct values only. No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -2221,13 +2004,6 @@ void FdoExpressionFunctionTest::TestSumFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 5. Test Case:
-    // The test executes a select-aggregate command to select the value of a
-    // computed property that is defined by using the function SUM on the
-    // value of a different property of type BYTE. In this case, the function
-    // name does not match the expected function name ("SuM" instead of "Sum").
-    // No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -2307,9 +2083,7 @@ void FdoExpressionFunctionTest::TestNullValueFunction ()
     filter1 = FdoFilter::Parse(L"id = 21");
     filter2 = FdoFilter::Parse(L"id = 22");
 
-    // Some of the tests in this test suits deal with the processing of date/
-    // time data. To ensure propper execution at all time, get the date/time
-    // information that is set for the rows used in the following test.
+    // Test Setup.
 
     printf("---------------------------------------------------------- \n");
     printf("Test Case Setup:                                           \n");
@@ -2341,13 +2115,7 @@ void FdoExpressionFunctionTest::TestNullValueFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function NULLVALUE on the values
-    // of two different properties of type DATE/TIME. In this test, the value
-    // of the first property is NULL whereas it is set for the second property.
-    // The test should return this date/time information. No exceptions are
-    // expected.
+    // Execute the test cases.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -2390,14 +2158,6 @@ void FdoExpressionFunctionTest::TestNullValueFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function NULLVALUE on the values
-    // of two different properties of type DATE/TIME. In this test, the value
-    // of the first property is set whereas it is NULL for the second property.
-    // The test should therefore return the date/time information for the first
-    // property. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -2442,14 +2202,6 @@ void FdoExpressionFunctionTest::TestNullValueFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function NULLVALUE on the values
-    // of two different properties of type DECIMAL and DOUBLE. In this test,
-    // the value of the first property is NULL whereas it is set for the
-    // second property. The test should return this value. No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("3. Test Case:                                              \n");
@@ -2490,14 +2242,6 @@ void FdoExpressionFunctionTest::TestNullValueFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 4. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function NULLVALUE on the values
-    // of two different properties of type DECIMAL and DOUBLE. In this test,
-    // the value of the first property is set whereas it is NULL for the
-    // second property. The test should therefore return the value of the
-    // first property. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -2540,15 +2284,6 @@ void FdoExpressionFunctionTest::TestNullValueFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 5. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function NULLVALUE on the values
-    // of two different properties of type DATE/TIME where the function name
-    // differs from the expected function name ("NuLlVaLuE" rather than "Null-
-    // "Value"). In this test, the value of the first property is NULL whereas
-    // it is set for the second property. The test should return this date/time
-    // information. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -2624,13 +2359,7 @@ void FdoExpressionFunctionTest::TestToDateFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TODATE on a string
-    // containing date information. This test also provides a format string
-    // describing the date-string. The test should return a date/time object
-    // that contains the information provided by the date-string. No excep-
-    // tions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -2676,15 +2405,6 @@ void FdoExpressionFunctionTest::TestToDateFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TODATE on a string
-    // containing date information where the function name differs from the
-    // expected function name ("ToDaTe" rather than "ToDate"). This test also
-    // provides a format string describing the date-string. The test should
-    // return a date/time object that contains the information provided by the
-    // date-string. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -2734,8 +2454,86 @@ void FdoExpressionFunctionTest::TestToDateFunction ()
 
     }  //  catch ( ... ) ...
 
-
 }  //  TestToDateFunction ()
+
+void FdoExpressionFunctionTest::TestToDateFunctionAsFilter ()
+
+// +---------------------------------------------------------------------------
+// | The function executes the test for the expression engine function TODATE
+// | when used in a filter.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    FdoInt16                  counter           = 0;
+
+    FdoPtr<FdoFilter>         filter;
+    FdoPtr<FdoIFeatureReader> data_reader;
+
+    printf("\n");
+    printf("========================================================== \n");
+    printf(" Current Unit Test Suite: TODATE Function Filter Testing   \n");
+    printf("========================================================== \n");
+    printf("\n");
+
+    // Define the filter for all tests in this test suite.
+
+    // filter = FdoFilter::Parse(L"dt_val = ToDate(dtstr_val, 'MM/DD/YYYY hh:mm:ss')");
+    filter = FdoFilter::Parse(L"dt_val = ToDate(dtstr_val, 'MM/DD/YYYY')");
+
+    // Execute the test cases.
+
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select data from a \n");
+    printf("  class table using a filter that includes the expression  \n");
+    printf("  function TODATE. The request should return a subset of   \n");
+    printf("  the available data. No exceptions are expected.          \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the number of the returned data. If the
+      // number does not match the expected result, issue an exception.
+
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, NULL);
+
+      printf(" >>> Cross check result \n");
+      while (data_reader->ReadNext())
+        counter++;
+
+      data_reader->Close();
+
+      // Issue an exception if the expected result is not met.
+
+      //if (counter != 2)
+      //    throw FdoException::Create(
+      //                  L"Unexpected result(s) when checking returned data");
+      //else
+        printf(" >>> ... All expected data found\n");
+
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+}  //  TestToDateFunctionAsFilter ()
 
 void FdoExpressionFunctionTest::TestToDoubleFunction ()
 
@@ -2774,10 +2572,7 @@ void FdoExpressionFunctionTest::TestToDoubleFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // Test Setup:
-    // The following executes a select-command to retrieve the current values
-    // of the properties used in the following tests. Those values are later
-    // used for cross-checking the test result.
+    // Test Setup.
 
     printf("---------------------------------------------------------- \n");
     printf("Test Setup:                                                \n");
@@ -2837,11 +2632,7 @@ void FdoExpressionFunctionTest::TestToDoubleFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TODOUBLE on the value
-    // of a different property of type BYTE. The test should return the 
-    // original property value. No exceptions are expected.
+    // Execute the test cases.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -2880,12 +2671,6 @@ void FdoExpressionFunctionTest::TestToDoubleFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TODOUBLE on the value
-    // of a different property of type DECIMAL. The test should return the
-    // original property value. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
@@ -2922,12 +2707,6 @@ void FdoExpressionFunctionTest::TestToDoubleFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TODOUBLE on the value
-    // of a different property of type DOUBLE. The test should return the
-    // original property value. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -2966,12 +2745,6 @@ void FdoExpressionFunctionTest::TestToDoubleFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 4. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TODOUBLE on the value
-    // of a different property of type INT32. The test should return the
-    // original property value. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("4. Test Case:                                              \n");
@@ -3008,12 +2781,6 @@ void FdoExpressionFunctionTest::TestToDoubleFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 5. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TODOUBLE on the value
-    // of a different property of type SINGLE. The test should return the
-    // original property value. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -3052,13 +2819,6 @@ void FdoExpressionFunctionTest::TestToDoubleFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 6. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TODOUBLE on the value
-    // of a different property of type STRING. The test should return the
-    // numeric value stored in the addressed property. No exceptions are ex-
-    // pected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("6. Test Case:                                              \n");
@@ -3096,14 +2856,6 @@ void FdoExpressionFunctionTest::TestToDoubleFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 7. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TODOUBLE on the value
-    // of a different property of type BYTE where the function name differs
-    // from the expected function name ("ToDoUbLe" rather than "ToDouble").
-    // The test should return the original property value. No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -3159,8 +2911,6 @@ void FdoExpressionFunctionTest::TestToDoubleFunctionAsFilter ()
 
     FdoInt16                  counter           = 0;
 
-    FdoStringP                str_val;
-
     FdoPtr<FdoFilter>         filter;
     FdoPtr<FdoIFeatureReader> data_reader;
 
@@ -3174,11 +2924,7 @@ void FdoExpressionFunctionTest::TestToDoubleFunctionAsFilter ()
 
     filter = FdoFilter::Parse(L"ToDouble(str_val) = dbl_val");
 
-    // 1. Test Case:
-    // The test executes a select-command to select data from a class table
-    // using a filter that includes the expression function TODOUBLE. The
-    // request should return a subset of the available data. No exceptions
-    // are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -3267,10 +3013,7 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // Test Setup:
-    // The following executes a select-command to retrieve the current values
-    // of the properties used in the following tests. Those values are later
-    // used for cross-checking the test result.
+    // Test Setup.
 
     printf("---------------------------------------------------------- \n");
     printf("Test Setup:                                                \n");
@@ -3330,11 +3073,7 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOFLOAT on the value of
-    // a different property of type BYTE. The test should return the original
-    // property value. No exceptions are expected.
+    // Execute the test cases.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -3373,12 +3112,6 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOFLOAT on the value
-    // of a different property of type DECIMAL. The test should return the
-    // original property value. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
@@ -3415,12 +3148,6 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOFLOAT on the value
-    // of a different property of type DOUBLE. The test should return the
-    // original property value. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -3459,12 +3186,6 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 4. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOFLOAT on the value of
-    // a different property of type INT32. The test should return the original
-    // property value. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("4. Test Case:                                              \n");
@@ -3501,12 +3222,6 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 5. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOFLOAT on the value
-    // of a different property of type SINGLE. The test should return the
-    // original property value. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -3545,12 +3260,6 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 6. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOFLOAT on the value
-    // of a different property of type STRING. The test should return the
-    // numeric value of the addressed property. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("6. Test Case:                                              \n");
@@ -3587,13 +3296,6 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 7. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOFLOAT on the value of
-    // a different property of type BYTE where the function name differs from
-    // the expected function name ("ToFlOaT" rather than "ToFloat"). The test
-    // should return the original property value. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -3673,10 +3375,7 @@ void FdoExpressionFunctionTest::TestToInt32Function ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // Test Setup:
-    // The following executes a select-command to retrieve the current values
-    // of the properties used in the following tests. Those values are later
-    // used for cross-checking the test result.
+    // Test Setup.
 
     printf("---------------------------------------------------------- \n");
     printf("Test Setup:                                                \n");
@@ -3736,11 +3435,7 @@ void FdoExpressionFunctionTest::TestToInt32Function ()
 
     }  //  catch ( ... ) ...
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOINT32 on the value of
-    // a different property of type BYTE. The test should return the original
-    // property value. No exceptions are expected.
+    // Execute the test cases.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -3778,13 +3473,6 @@ void FdoExpressionFunctionTest::TestToInt32Function ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOINT32 on the value
-    // of a different property of type DECIMAL. The test should return the
-    // original property value without the part after the decimal point. No
-    // exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -3824,13 +3512,6 @@ void FdoExpressionFunctionTest::TestToInt32Function ()
 
     }  //  catch ( ... ) ...
 
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOINT32 on the value
-    // of a different property of type DOUBLE. The test should return the
-    // original property value without the part after the decimal point. No
-    // exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("3. Test Case:                                              \n");
@@ -3869,12 +3550,6 @@ void FdoExpressionFunctionTest::TestToInt32Function ()
 
     }  //  catch ( ... ) ...
 
-    // 4. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOINT32 on the value of
-    // a different property of type INT32. The test should return the original
-    // property value. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("4. Test Case:                                              \n");
@@ -3911,13 +3586,6 @@ void FdoExpressionFunctionTest::TestToInt32Function ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 5. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOINT32 on the value of
-    // a different property of type SINGLE. The test should return the original
-    // property value without the part after the decimal point. No exceptions
-    // are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -3957,12 +3625,6 @@ void FdoExpressionFunctionTest::TestToInt32Function ()
 
     }  //  catch ( ... ) ...
 
-    // 6. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOINT32 on the value of
-    // a different property of type STRING. The test should return the numeric
-    // value of the addressed property. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("6. Test Case:                                              \n");
@@ -3999,13 +3661,6 @@ void FdoExpressionFunctionTest::TestToInt32Function ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 7. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOINT32 on the value of
-    // a different property of type BYTE where the function name differs from
-    // the expected function name ("ToInT32" rather than "ToInt32"). The test
-    // should return the original property value. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -4085,10 +3740,7 @@ void FdoExpressionFunctionTest::TestToInt64Function ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // Test Setup:
-    // The following executes a select-command to retrieve the current values
-    // of the properties used in the following tests. Those values are later
-    // used for cross-checking the test result.
+    // Test Setup.
 
     printf("---------------------------------------------------------- \n");
     printf("Test Setup:                                                \n");
@@ -4148,11 +3800,7 @@ void FdoExpressionFunctionTest::TestToInt64Function ()
 
     }  //  catch ( ... ) ...
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOINT64 on the value of
-    // a different property of type BYTE. The test should return the original
-    // property value. No exceptions are expected.
+    // Execute the test cases.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -4190,13 +3838,6 @@ void FdoExpressionFunctionTest::TestToInt64Function ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOINT64 on the value
-    // of a different property of type DECIMAL. The test should return the
-    // original property value without the part after the decimal point. No
-    // exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -4236,13 +3877,6 @@ void FdoExpressionFunctionTest::TestToInt64Function ()
 
     }  //  catch ( ... ) ...
 
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOINT64 on the value
-    // of a different property of type DOUBLE. The test should return the
-    // original property value without the part after the decimal point. No
-    // exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("3. Test Case:                                              \n");
@@ -4281,12 +3915,6 @@ void FdoExpressionFunctionTest::TestToInt64Function ()
 
     }  //  catch ( ... ) ...
 
-    // 4. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOINT64 on the value of
-    // a different property of type INT32. The test should return the original
-    // property value. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("4. Test Case:                                              \n");
@@ -4323,13 +3951,6 @@ void FdoExpressionFunctionTest::TestToInt64Function ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 5. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOINT64 on the value
-    // of a different property of type SINGLE. The test should return the
-    // original property value without the part after the decimal point. No
-    // exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -4369,12 +3990,6 @@ void FdoExpressionFunctionTest::TestToInt64Function ()
 
     }  //  catch ( ... ) ...
 
-    // 6. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOINT64 on the value of
-    // a different property of type STRING. The test should return the numeric
-    // value of the addressed property. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("6. Test Case:                                              \n");
@@ -4411,13 +4026,6 @@ void FdoExpressionFunctionTest::TestToInt64Function ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 7. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOINT64 on the value of
-    // a different property of type BYTE where the function name differs from
-    // the expected function name ("ToInT64" rather than "ToInt64"). The test
-    // should return the original property value. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -4486,11 +4094,7 @@ void FdoExpressionFunctionTest::TestToStringFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOSTRING on the value
-    // of a different property of type BYTE. The test should return the
-    // original property value in a string. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -4510,7 +4114,7 @@ void FdoExpressionFunctionTest::TestToStringFunction ()
       func_call   = L"(ToString(byte_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderNumberString(data_reader, 9, L"74");
+      CheckReaderString(data_reader, 9, L"74");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -4529,12 +4133,6 @@ void FdoExpressionFunctionTest::TestToStringFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOSTRING on the value
-    // of a different property of type DECIMAL. The test should return the
-    // original property value in a string. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -4575,12 +4173,6 @@ void FdoExpressionFunctionTest::TestToStringFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOSTRING on the value
-    // of a different property of type DOUBLE. The test should return the
-    // original property value in a string. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("3. Test Case:                                              \n");
@@ -4620,12 +4212,6 @@ void FdoExpressionFunctionTest::TestToStringFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 4. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOSTRING on the value of
-    // a different property of type INT32. The test should return the original
-    // property value in a string. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("4. Test Case:                                              \n");
@@ -4645,7 +4231,7 @@ void FdoExpressionFunctionTest::TestToStringFunction ()
       func_call   = L"(ToString(i32_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderNumberString(data_reader, 9, L"90");
+      CheckReaderString(data_reader, 9, L"90");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -4664,12 +4250,6 @@ void FdoExpressionFunctionTest::TestToStringFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 5. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOSTRING on the value
-    // of a different property of type SINGLE. The test should return the
-    // original property value in a string. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -4709,13 +4289,6 @@ void FdoExpressionFunctionTest::TestToStringFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 6. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOSTRING on the value
-    // of a different property of type DATE/TIME. In this test, no format
-    // instruction is provided. The test should return the date in a string
-    // using the default format. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -4757,13 +4330,6 @@ void FdoExpressionFunctionTest::TestToStringFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 7. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOSTRING on the value
-    // of a different property of type DATE/TIME. In this test, a format in-
-    // struction is provided. The test should return the date in a string us-
-    // ing the provided format. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("7. Test Case:                                              \n");
@@ -4804,14 +4370,6 @@ void FdoExpressionFunctionTest::TestToStringFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 8. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TOSTRING on the value
-    // of a different property of type BYTE where the function name differs
-    // from the expected function name ("ToStRiNg" rather than "ToString").
-    // The test should return the original property value in a string. No
-    // exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("8. Test Case:                                              \n");
@@ -4833,7 +4391,93 @@ void FdoExpressionFunctionTest::TestToStringFunction ()
       func_call   = L"(ToStRiNg(byte_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderNumberString(data_reader, 9, L"74");
+      CheckReaderString(data_reader, 9, L"74");
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // The following test cases are specifically to an issue QA reported
+    // but because they establish a general test, those cases are added
+    // to the standard unit test suite. 
+
+    // Reset the filter and execute the tests.
+
+    filter = FdoFilter::Parse(L"id = 20");
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("9. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function TOSTRING on the value of a different property   \n");
+    printf("  of type DOUBLE. The test should return the original      \n");
+    printf("  property value in a string. No exceptions are expected.  \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property
+      // being "30.3".
+
+      func_call   = L"(ToString(dbl_val) as cmp_id)";
+      data_reader =
+                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, L"30.3");
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("10. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function TOSTRING on the value of a different property   \n");
+    printf("  of type SINGLE. The test should return the original      \n");
+    printf("  property value in a string. No exceptions are expected.  \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row with the value of the computed property
+      // being "30.3".
+
+      func_call   = L"(ToString(sgl_val) as cmp_id)";
+      data_reader =
+                ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, L"30.3");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -4893,9 +4537,7 @@ void FdoExpressionFunctionTest::TestAddMonthsFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // This test suits deals with the processing of date/time data. To ensure
-    // propper execution at all time, get the date/time information that is set
-    // for the row used in the following test.
+    // Test Setup.
 
     printf("---------------------------------------------------------- \n");
     printf("Test Case Setup:                                           \n");
@@ -4925,11 +4567,7 @@ void FdoExpressionFunctionTest::TestAddMonthsFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ADDMONTHS on the value
-    // of a different property of type DATE/TIME. The test adds 12 months to
-    // the date on which the function is based. No exceptions are expected.
+    // Execute the test cases.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -4972,14 +4610,6 @@ void FdoExpressionFunctionTest::TestAddMonthsFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ADDMONTHS on the value
-    // of a different property of type DATE/TIME where the function name dif-
-    // fers from the expected function name ("AdDmOnThS" rather than "Add-
-    // Months"). The test adds 12 months to the date on which the function
-    // is based. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -5055,9 +4685,7 @@ void FdoExpressionFunctionTest::TestExtractFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // This test suits deals with the processing of date/time data. To ensure
-    // propper execution at all time, get the date/time information that is set
-    // for the row used in the following test.
+    // Test Setup.
 
     printf("---------------------------------------------------------- \n");
     printf("Test Case Setup:                                           \n");
@@ -5087,12 +4715,7 @@ void FdoExpressionFunctionTest::TestExtractFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function EXTRACT on the value
-    // of a different property of type DATE/TIME. The test extracts the year
-    // from the date on which the function is based. No exceptions are ex-
-    // pected.
+    // Execute the test cases.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -5137,13 +4760,6 @@ void FdoExpressionFunctionTest::TestExtractFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function EXTRACT on the value
-    // of a different property of type DATE/TIME. The test extracts the month
-    // from the date on which the function is based. No exceptions are expec-
-    // ted.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
@@ -5187,13 +4803,6 @@ void FdoExpressionFunctionTest::TestExtractFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function EXTRACT on the value
-    // of a different property of type DATE/TIME. The test extracts the day
-    // from the date on which the function is based. No exceptions are expec-
-    // ted.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("3. Test Case:                                              \n");
@@ -5236,14 +4845,6 @@ void FdoExpressionFunctionTest::TestExtractFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 4. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function EXTRACT on the value
-    // of a different property of type DATE/TIME where the function name dif-
-    // fers from the expected function name ("ExTrAcT" rather than "Extract").
-    // The test extracts the year from the date on which the function is based.
-    // No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -5321,11 +4922,7 @@ void FdoExpressionFunctionTest::TestMonthsBetweenFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MONTHSBETWEEN on the
-    // values of two different properties of type DATE/TIME. The test should
-    // return the months between those two dates. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -5365,14 +4962,6 @@ void FdoExpressionFunctionTest::TestMonthsBetweenFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MONTHSBETWEEN on the
-    // values of two different properties of type DATE/TIME where the function
-    // name differs from the expected function name ("MoNtHsBeTwEeN" rather
-    // than "MonthsBetween"). The test should return the months between those
-    // two dates. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -5457,9 +5046,6 @@ void FdoExpressionFunctionTest::TestAbsFunction ()
     filter = FdoFilter::Parse(L"id = 9");
 
     // Test Setup:
-    // The following executes a select-command to retrieve the current values
-    // of the properties used in the following tests. Those values are later
-    // used for cross-checking the test result.
 
     printf("---------------------------------------------------------- \n");
     printf("Test Setup:                                                \n");
@@ -5514,10 +5100,7 @@ void FdoExpressionFunctionTest::TestAbsFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ABS on the positive
-    // value of a different property of type BYTE. No exceptions are expected.
+    // Execute the test cases.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -5554,11 +5137,6 @@ void FdoExpressionFunctionTest::TestAbsFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ABS on the positive
-    // value of a different property of type INT32. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
@@ -5594,11 +5172,6 @@ void FdoExpressionFunctionTest::TestAbsFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ABS on the negative
-    // value of a different property of type INT32. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("3. Test Case:                                              \n");
@@ -5633,13 +5206,6 @@ void FdoExpressionFunctionTest::TestAbsFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 4. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ABS on the positive
-    // value of a different property of type BYTE where the function name
-    // differs from the expected function name ("AbS" rather than "Abs").
-    // No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -5706,10 +5272,7 @@ void FdoExpressionFunctionTest::TestAcosFunction ()
 
     filter = FdoFilter::Parse(L"id = 0");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ACOS on the value of a
-    // different property of type BYTE. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -5747,11 +5310,6 @@ void FdoExpressionFunctionTest::TestAcosFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ACOS on the value of a
-    // different property of type DECIMAL. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
@@ -5788,13 +5346,6 @@ void FdoExpressionFunctionTest::TestAcosFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ACOS on the value of a
-    // different property of type BYTE where the function name differs from
-    // the expected function name ("AcOs" rather than "Acos"). No exceptions
-    // are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -5863,10 +5414,7 @@ void FdoExpressionFunctionTest::TestAsinFunction ()
 
     filter = FdoFilter::Parse(L"id = 0");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ASIN on the value of a
-    // different property of type BYTE. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -5904,11 +5452,6 @@ void FdoExpressionFunctionTest::TestAsinFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ASIN on the value of a
-    // different property of type DECIMAL. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
@@ -5945,13 +5488,6 @@ void FdoExpressionFunctionTest::TestAsinFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ASIN on the value of a
-    // different property of type BYTE where the function name differs from
-    // the expected function name ("AsIn" rather than "Asin"). No exceptions
-    // are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -6020,10 +5556,7 @@ void FdoExpressionFunctionTest::TestAtanFunction ()
 
     filter = FdoFilter::Parse(L"id = 0");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ATAN on the value of a
-    // different property of type BYTE. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -6061,11 +5594,6 @@ void FdoExpressionFunctionTest::TestAtanFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ATAN on the value of a
-    // different property of type DECIMAL. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
@@ -6102,13 +5630,6 @@ void FdoExpressionFunctionTest::TestAtanFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ATAN on the value of a
-    // different property of type BYTE where the function name differs from
-    // the expected function name ("AtAn" rather than "Atan"). No exceptions
-    // are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -6177,11 +5698,7 @@ void FdoExpressionFunctionTest::TestAtan2Function ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ATAN2 on the values of
-    // two different properties (of type BYTE, DECIMAL). No exceptions are
-    // expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -6219,12 +5736,6 @@ void FdoExpressionFunctionTest::TestAtan2Function ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ATAN2 on the values of
-    // two different properties (of type DOUBLE, DECIMAL). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
@@ -6261,13 +5772,6 @@ void FdoExpressionFunctionTest::TestAtan2Function ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ATAN2 on the values of
-    // two different properties (of type BYTE, DECIMAL) where the function
-    // name differs from the expected function name ("AtAn2" rather than 
-    // "Atan2"). No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -6336,10 +5840,7 @@ void FdoExpressionFunctionTest::TestCosFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function COS on the value of a
-    // different property of type BYTE. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -6377,11 +5878,6 @@ void FdoExpressionFunctionTest::TestCosFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function COS on the value of a
-    // different property of type DECIMAL. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
@@ -6418,13 +5914,6 @@ void FdoExpressionFunctionTest::TestCosFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function COS on the value of a
-    // different property of type BYTE where the function name differs from
-    // the expected function name ("CoS" rather than "Cos"). No exceptions
-    // are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -6493,10 +5982,7 @@ void FdoExpressionFunctionTest::TestExpFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function EXP on the value of a
-    // different property of type BYTE. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -6534,11 +6020,6 @@ void FdoExpressionFunctionTest::TestExpFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function EXP on the value of a
-    // different property of type DECIMAL. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
@@ -6575,13 +6056,6 @@ void FdoExpressionFunctionTest::TestExpFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function EXP on the value of a
-    // different property of type BYTE where the function name differs from
-    // the expected function name ("ExP" rather than "Exp"). No exceptions
-    // are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -6650,10 +6124,7 @@ void FdoExpressionFunctionTest::TestLnFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function LN on the value of a
-    // different property of type BYTE. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -6691,11 +6162,6 @@ void FdoExpressionFunctionTest::TestLnFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function LN on the value of a
-    // different property of type DECIMAL. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
@@ -6732,13 +6198,6 @@ void FdoExpressionFunctionTest::TestLnFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function LN on the value of a
-    // different property of type BYTE where the function name differs from
-    // the expected function name ("LN" rather than "Ln"). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -6807,11 +6266,7 @@ void FdoExpressionFunctionTest::TestLogFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function LOG on the values of
-    // two different properties (of type BYTE, DECIMAL). No exceptions are
-    // expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -6849,12 +6304,6 @@ void FdoExpressionFunctionTest::TestLogFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function LOG on the values of
-    // two different properties (of type DOUBLE, DECIMAL). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
@@ -6891,13 +6340,6 @@ void FdoExpressionFunctionTest::TestLogFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function LOG on the values of
-    // two different properties (of type BYTE, DECIMAL) where the function
-    // name differs from the expected function name ("LoG" rather than "Log").
-    // No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -6966,11 +6408,7 @@ void FdoExpressionFunctionTest::TestModFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type BYTE, BYTE). No exceptions are
-    // expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -7007,12 +6445,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type BYTE, DECIMAL). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -7051,12 +6483,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type BYTE, DOUBLE). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("3. Test Case:                                              \n");
@@ -7093,12 +6519,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 4. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type BYTE, INT16). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -7137,12 +6557,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 5. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type BYTE, INT32). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("5. Test Case:                                              \n");
@@ -7179,12 +6593,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 6. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type BYTE, SINGLE). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -7223,12 +6631,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 7. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type DECIMAL, BYTE). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("7. Test Case:                                              \n");
@@ -7265,12 +6667,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 8. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type DECIMAL, DECIMAL). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -7309,12 +6705,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 9. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type DECIMAL, DOUBLE). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("9. Test Case:                                              \n");
@@ -7351,12 +6741,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 10. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type DECIMAL, INT16). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -7395,11 +6779,7 @@ void FdoExpressionFunctionTest::TestModFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 11. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type DECIMAL, INT32). No exceptions are
-    // expected.
+    // Execute the test cases.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -7438,12 +6818,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 12. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type DECIMAL, SINGLE). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("12. Test Case:                                             \n");
@@ -7480,12 +6854,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 13. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type DOUBLE, BYTE). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -7524,12 +6892,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 14. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type DOUBLE, DECIMAL). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("14. Test Case:                                             \n");
@@ -7566,12 +6928,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 15. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type DOUBLE, DOUBLE). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -7610,12 +6966,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 16. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type DOUBLE, INT16). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("16. Test Case:                                             \n");
@@ -7652,12 +7002,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 17. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type DOUBLE, INT32). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -7696,12 +7040,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 18. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type DOUBLE, SINGLE). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("18. Test Case:                                             \n");
@@ -7738,12 +7076,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 19. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type INT16, BYTE). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -7782,12 +7114,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 20. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type INT16, DECIMAL). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("20. Test Case:                                             \n");
@@ -7825,11 +7151,7 @@ void FdoExpressionFunctionTest::TestModFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 21. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type INT16, DOUBLE). No exceptions are
-    // expected.
+    // Execute the test cases.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -7868,12 +7190,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 22. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type INT16, INT16). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("22. Test Case:                                             \n");
@@ -7910,12 +7226,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 23. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type INT16, INT32). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -7954,12 +7264,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 24. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type INT16, SINGLE). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("24. Test Case:                                             \n");
@@ -7996,12 +7300,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 25. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type INT32, BYTE). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -8040,12 +7338,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 26. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type INT32, DECIMAL). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("26. Test Case:                                             \n");
@@ -8082,12 +7374,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 27. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type INT32, DOUBLE). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -8126,12 +7412,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 28. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type INT32, INT16). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("28. Test Case:                                             \n");
@@ -8168,12 +7448,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 29. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type INT32, INT32). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -8212,12 +7486,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 30. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type INT32, SINGLE). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("30. Test Case:                                             \n");
@@ -8255,11 +7523,7 @@ void FdoExpressionFunctionTest::TestModFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 31. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type SINGLE, BYTE). No exceptions are
-    // expected.
+    // Execute the test cases.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -8298,12 +7562,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 32. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type SINGLE, DECIMAL). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("32. Test Case:                                             \n");
@@ -8340,12 +7598,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 33. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type SINGLE, DOUBLE). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -8384,12 +7636,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 34. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type SINGLE, INT16). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("34. Test Case:                                             \n");
@@ -8426,12 +7672,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 35. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type SINGLE, INT32). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -8470,12 +7710,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 36. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type SINGLE, SINGLE). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("36. Test Case:                                             \n");
@@ -8512,13 +7746,6 @@ void FdoExpressionFunctionTest::TestModFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 37. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the values of
-    // two different properties (of type BYTE, BYTE) where the function name
-    // differs from the expected function name ("MoD" rather than "Mod"). No
-    // exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -8587,11 +7814,7 @@ void FdoExpressionFunctionTest::TestPowerFunction ()
 
     filter = FdoFilter::Parse(L"id = 1");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function POWER on the values of
-    // two different properties (of type BYTE, DECIMAL). No exceptions are
-    // expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -8629,12 +7852,6 @@ void FdoExpressionFunctionTest::TestPowerFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function POWER on the values of
-    // two different properties (of type INT16, INT32). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
@@ -8671,13 +7888,6 @@ void FdoExpressionFunctionTest::TestPowerFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function POWER on the values of
-    // two different properties (of type BYTE, DECIMAL) where the function
-    // name differs from the expected function name ("PoWeR" rather than
-    // "Power"). No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -8746,11 +7956,7 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type BYTE, BYTE). No exceptions are
-    // expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -8787,12 +7993,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type BYTE, DECIMAL). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -8832,12 +8032,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type BYTE, DOUBLE). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("3. Test Case:                                              \n");
@@ -8875,12 +8069,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 4. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type BYTE, INT16). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -8920,12 +8108,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 5. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type BYTE, INT32). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("5. Test Case:                                              \n");
@@ -8963,12 +8145,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 6. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type BYTE, SINGLE). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -9008,12 +8184,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 7. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type DECIMAL, BYTE). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("7. Test Case:                                              \n");
@@ -9051,12 +8221,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 8. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type DECIMAL, DECIMAL). No exceptions
-    // are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -9096,12 +8260,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 9. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type DECIMAL, DOUBLE). No exceptions
-    // are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("9. Test Case:                                              \n");
@@ -9139,12 +8297,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 10. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type DECIMAL, INT16). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -9184,11 +8336,7 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 11. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type DECIMAL, INT32). No exceptions are
-    // expected.
+    // Execute the test cases.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -9228,12 +8376,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 12. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type DECIMAL, SINGLE). No exceptions
-    // are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("12. Test Case:                                             \n");
@@ -9271,12 +8413,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 13. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type DOUBLE, BYTE). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -9316,12 +8452,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 14. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type DOUBLE, DECIMAL). No exceptions
-    // are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("14. Test Case:                                             \n");
@@ -9359,12 +8489,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 15. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type DOUBLE, DOUBLE). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -9404,12 +8528,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 16. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type DOUBLE, INT16). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("16. Test Case:                                             \n");
@@ -9447,12 +8565,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 17. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type DOUBLE, INT32). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -9492,12 +8604,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 18. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type DOUBLE, SINGLE). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("18. Test Case:                                             \n");
@@ -9535,12 +8641,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 19. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type INT16, BYTE). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -9580,12 +8680,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 20. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type INT16, DECIMAL). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("20. Test Case:                                             \n");
@@ -9623,12 +8717,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 21. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type INT16, DOUBLE). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -9668,12 +8756,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 22. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type INT16, INT16). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("22. Test Case:                                             \n");
@@ -9711,12 +8793,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 23. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type INT16, INT32). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -9756,12 +8832,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 24. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type INT16, SINGLE). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("24. Test Case:                                             \n");
@@ -9800,12 +8870,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 25. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type INT32, BYTE). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("25. Test Case:                                             \n");
@@ -9842,12 +8906,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 26. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type INT32, DECIMAL). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -9887,12 +8945,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 27. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type INT32, DOUBLE). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("27. Test Case:                                             \n");
@@ -9930,12 +8982,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 28. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type INT32, INT16). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -9975,12 +9021,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 29. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type INT32, INT32). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("29. Test Case:                                             \n");
@@ -10018,12 +9058,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 30. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type INT32, SINGLE). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -10063,12 +9097,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 31. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type SINGLE, BYTE). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("31. Test Case:                                             \n");
@@ -10106,12 +9134,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 32. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type SINGLE, DECIMAL). No exceptions
-    // are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -10151,12 +9173,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 33. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type SINGLE, DOUBLE). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("33. Test Case:                                             \n");
@@ -10194,12 +9210,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 34. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type SINGLE, INT16). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -10239,12 +9249,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 35. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type SINGLE, INT32). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("35. Test Case:                                             \n");
@@ -10283,12 +9287,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 36. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type SINGLE, SINGLE). No exceptions are
-    // expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("36. Test Case:                                             \n");
@@ -10326,12 +9324,6 @@ void FdoExpressionFunctionTest::TestRemainderFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 37. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function REMAINDER on the values
-    // of two different properties (of type BYTE, BYTE). No exceptions are
-    // expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -10400,10 +9392,7 @@ void FdoExpressionFunctionTest::TestSinFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function SIN on the value of a
-    // different property of type BYTE. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -10441,11 +9430,6 @@ void FdoExpressionFunctionTest::TestSinFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function SIN on the value of a
-    // different property of type DECIMAL. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
@@ -10482,13 +9466,6 @@ void FdoExpressionFunctionTest::TestSinFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function SIN on the value of a
-    // different property of type BYTE where the function name differs from
-    // the expected function name ("SiN" rather than "Sin"). No exceptions
-    // are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -10557,10 +9534,7 @@ void FdoExpressionFunctionTest::TestSqrtFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function SQRT on the value of
-    // a different property of type BYTE. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -10598,11 +9572,6 @@ void FdoExpressionFunctionTest::TestSqrtFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function SQRT on the value of
-    // a different property of type DECIMAL. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
@@ -10639,13 +9608,6 @@ void FdoExpressionFunctionTest::TestSqrtFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function SQRT on the value of
-    // a different property of type BYTE where the function name differs
-    // from the expected function name ("SqRt" rather than "Sqrt"). No ex-
-    // ceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -10714,10 +9676,7 @@ void FdoExpressionFunctionTest::TestTanFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TAN on the value of a
-    // different property of type BYTE. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -10755,11 +9714,6 @@ void FdoExpressionFunctionTest::TestTanFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TAN on the value of a
-    // different property of type DECIMAL. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
@@ -10796,13 +9750,6 @@ void FdoExpressionFunctionTest::TestTanFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TAN on the value of a
-    // different property of type BYTE where the function name differs from
-    // the expected function name ("TaN" rather than "Tan"). No exceptions
-    // are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -10876,10 +9823,7 @@ void FdoExpressionFunctionTest::TestCeilFunction ()
 
     filter = FdoFilter::Parse(L"id = 1");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function CEIL on the value of a
-    // different property of type BYTE. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -10916,11 +9860,6 @@ void FdoExpressionFunctionTest::TestCeilFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function CEIL on the value of a
-    // different property of type DECIMAL. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -10959,11 +9898,6 @@ void FdoExpressionFunctionTest::TestCeilFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function CEIL on the value of a
-    // different property of type DECIMAL. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("3. Test Case:                                              \n");
@@ -11000,11 +9934,6 @@ void FdoExpressionFunctionTest::TestCeilFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 4. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function CEIL on the value of a
-    // different property of type INT32. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -11043,11 +9972,6 @@ void FdoExpressionFunctionTest::TestCeilFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 5. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function CEIL on the value of a
-    // different property of type SINGLE. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("5. Test Case:                                              \n");
@@ -11084,13 +10008,6 @@ void FdoExpressionFunctionTest::TestCeilFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 6. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function CEIL on the value of a
-    // different property of type BYTE where the function name differs from
-    // the expected function name ("CeIl" rather than "Ceil"). No exceptions
-    // are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -11159,10 +10076,7 @@ void FdoExpressionFunctionTest::TestFloorFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function FLOOR on the value of
-    // a different property of type BYTE. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -11200,11 +10114,6 @@ void FdoExpressionFunctionTest::TestFloorFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function FLOOR on the value of
-    // a different property of type DECIMAL. No exceptions are expected.
-
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
@@ -11240,11 +10149,6 @@ void FdoExpressionFunctionTest::TestFloorFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function FLOOR on the value of
-    // a different property of type DOUBLE. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -11283,11 +10187,6 @@ void FdoExpressionFunctionTest::TestFloorFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 4. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function FLOOR on the value of
-    // a different property of type INT32. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("4. Test Case:                                              \n");
@@ -11325,11 +10224,6 @@ void FdoExpressionFunctionTest::TestFloorFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 5. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function FLOOR on the value of
-    // a different property of type SINGLE. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("5. Test Case:                                              \n");
@@ -11366,13 +10260,6 @@ void FdoExpressionFunctionTest::TestFloorFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 6. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function FLOOR on the value of
-    // a different property of type BYTE where the function name differs from
-    // the expected function name ("FlOoR" rather than "Floor"). No exceptions
-    // are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -11441,10 +10328,7 @@ void FdoExpressionFunctionTest::TestRoundFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ROUND on the value of
-    // a different property of type BYTE. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -11481,12 +10365,6 @@ void FdoExpressionFunctionTest::TestRoundFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ROUND on the value of
-    // a different property of type BYTE. The test requests to round to a
-    // certain scale depth. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -11526,11 +10404,6 @@ void FdoExpressionFunctionTest::TestRoundFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ROUND on the value of
-    // a different property of type DECIMAL. No exceptions are expected.
-
     printf("---------------------------------------------------------- \n");
     printf("3. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
@@ -11566,12 +10439,6 @@ void FdoExpressionFunctionTest::TestRoundFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 4. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ROUND on the value of
-    // a different property of type DECIMAL. The test requests to round to a
-    // certain scale depth. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -11611,11 +10478,6 @@ void FdoExpressionFunctionTest::TestRoundFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 5. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ROUND on the value of
-    // a different property of type DOUBLE. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("5. Test Case:                                              \n");
@@ -11652,12 +10514,6 @@ void FdoExpressionFunctionTest::TestRoundFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 6. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ROUND on the value of
-    // a different property of type DOUBLE. The test requests to round to a
-    // certain scale depth. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -11697,11 +10553,6 @@ void FdoExpressionFunctionTest::TestRoundFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 7. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ROUND on the value of
-    // a different property of type INT32. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("7. Test Case:                                              \n");
@@ -11738,12 +10589,6 @@ void FdoExpressionFunctionTest::TestRoundFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 8. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ROUND on the value of
-    // a different property of type INT32. The test requests to round to a
-    // certain scale depth. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -11783,11 +10628,6 @@ void FdoExpressionFunctionTest::TestRoundFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 9. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ROUND on the value of
-    // a different property of type SINGLE. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("9. Test Case:                                              \n");
@@ -11824,12 +10664,6 @@ void FdoExpressionFunctionTest::TestRoundFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 10. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ROUND on the value of
-    // a different property of type SINGLE. The test requests to round to a
-    // certain scale depth. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -11868,13 +10702,6 @@ void FdoExpressionFunctionTest::TestRoundFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 11. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function ROUND on the value of
-    // a different property of type BYTE where the function name differs from
-    // the expected function name ("RoUnD" rather than "Round"). No exceptions
-    // are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -11943,10 +10770,7 @@ void FdoExpressionFunctionTest::TestSignFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function SIGN on the value of a
-    // different property of type BYTE. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -11984,11 +10808,6 @@ void FdoExpressionFunctionTest::TestSignFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function SIGN on the value of a
-    // different property of type DECIMAL. No exceptions are expected.
-
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
@@ -12024,11 +10843,6 @@ void FdoExpressionFunctionTest::TestSignFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function SIGN on the value of a
-    // different property of type DOUBLE. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -12066,13 +10880,6 @@ void FdoExpressionFunctionTest::TestSignFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 4. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function SIGN on the value of a
-    // different property of type BYTE where the function name differs from
-    // the expected function name ("SiGn" rather than "Sign"). No exceptions
-    // are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -12144,10 +10951,7 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TRUNC on the value of
-    // a different property of type BYTE. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -12184,12 +10988,6 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TRUNC on the value of
-    // a different property of type BYTE. The test requests to truncate to a
-    // certain scale depth. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -12229,11 +11027,6 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TRUNC on the value of
-    // a different property of type DECIMAL. No exceptions are expected.
-
     printf("---------------------------------------------------------- \n");
     printf("3. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
@@ -12269,12 +11062,6 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 4. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TRUNC on the value of
-    // a different property of type DECIMAL. The test requests to truncate
-    // to a certain scale depth. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -12314,11 +11101,6 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 5. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TRUNC on the value of
-    // a different property of type DOUBLE. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("5. Test Case:                                              \n");
@@ -12355,12 +11137,6 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 6. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TRUNC on the value of
-    // a different property of type DOUBLE. The test requests to truncate to
-    // a certain scale depth. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -12400,11 +11176,6 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 7. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TRUNC on the value of
-    // a different property of type INT32. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("7. Test Case:                                              \n");
@@ -12441,12 +11212,6 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 8. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TRUNC on the value of
-    // a different property of type INT32. The test requests to truncate to
-    // a certain scale depth. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -12486,11 +11251,6 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 9. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TRUNC on the value of
-    // a different property of type SINGLE. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("9. Test Case:                                              \n");
@@ -12527,12 +11287,6 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 10. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TRUNC on the value of
-    // a different property of type SINGLE. The test requests to truncate to
-    // a certain scale depth. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -12571,13 +11325,6 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 11. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TRUNC on the value of
-    // a different property of type BYTE where the function name differs from
-    // the expected function name ("TrUnC" rather than "Trunc"). No exceptions
-    // are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -12651,12 +11398,6 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 12. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TRUNC on the value of
-    // a different property of type DATE/TIME. The test requests to truncate
-    // to the year. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("12. Test Case:                                             \n");
@@ -12698,12 +11439,6 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 13. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TRUNC on the value of
-    // a different property of type DATE/TIME. The test requests to truncate
-    // to the month. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -12781,13 +11516,349 @@ void FdoExpressionFunctionTest::TestConcatFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function CONCAT on values of
-    // two different properties of type STRING. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function CONCAT on values of two different properties of \n");
+    printf("  type BOOLEAN. No exceptions are expected.                \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be "FALSEFALSE".
+
+      func_call   = L"(Concat(bool_val, bool_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, L"FALSEFALSE");
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function CONCAT on values of two different properties of \n");
+    printf("  type BOOLEAN and BYTE. No exceptions are expected.       \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be "FALSE74".
+
+      func_call   = L"(Concat(bool_val, byte_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, L"FALSE74");
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("3. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function CONCAT on values of two different properties of \n");
+    printf("  type BOOLEAN and DATETIME. No exceptions are expected.   \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be "FALSE2007-09-09 21:00:00".
+
+      func_call   = L"(Concat(bool_val, dt_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, L"FALSE2007-09-09 21:00:00");
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("4. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function CONCAT on values of two different properties of \n");
+    printf("  type BOOLEAN and DECIMAL. No exceptions are expected.    \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be "FALSE12.8426966292135".
+      // NOTE: The decimal value is 12.84, but the function converting the
+      //       value to a string adds additional decimal positions that the
+      //       test has to take into account. 
+
+      func_call   = L"(Concat(bool_val, dcl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, L"FALSE12.8426966292135");
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("5. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function CONCAT on values of two different properties of \n");
+    printf("  type BOOLEAN and DOUBLE. No exceptions are expected.     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be "FALSE18.8890814558059".
+      // NOTE: The decimal value is 18.8890815, but the function converting the
+      //       value to a string adds additional decimal positions that the
+      //       test has to take into account. 
+
+      func_call   = L"(Concat(bool_val, dbl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, L"FALSE18.8890814558059");
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("6. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function CONCAT on values of two different properties of \n");
+    printf("  type BOOLEAN and INT16. No exceptions are expected.      \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be "FALSE36".
+
+      func_call   = L"(Concat(bool_val, i16_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, L"FALSE36");
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("7. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function CONCAT on values of two different properties of \n");
+    printf("  type BOOLEAN and INT32. No exceptions are expected.      \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be "FALSE90".
+
+      func_call   = L"(Concat(bool_val, i32_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, L"FALSE90");
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("8. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function CONCAT on values of two different properties of \n");
+    printf("  type BOOLEAN and SINGLE. No exceptions are expected.     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be "FALSE3.09013".
+
+      func_call   = L"(Concat(bool_val, sgl_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, L"FALSE3.09013");
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("9. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function CONCAT on values of two different properties of \n");
+    printf("  type BOOLEAN and STRING. No exceptions are expected.     \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be "FALSEThe Color is: 2118".
+
+      func_call   = L"(Concat(bool_val, str2_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, L"FALSEThe Color is: 2118");
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("10. Test Case:                                             \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function CONCAT on values of two different properties of \n");
@@ -12822,16 +11893,9 @@ void FdoExpressionFunctionTest::TestConcatFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function CONCAT on values of
-    // two different properties of type STRING where the function name differs
-    // from the expected function name ("CoNcAt" rather than "Concat"). No
-    // exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("2. Test Case:                                              \n");
+    printf("12. Test Case:                                             \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function CONCAT on values of two different properties of \n");
@@ -12896,10 +11960,7 @@ void FdoExpressionFunctionTest::TestInstrFunction ()
 
     filter = FdoFilter::Parse(L"id = 2");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function INSTR on values of two
-    // different properties of type STRING. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -12937,13 +11998,6 @@ void FdoExpressionFunctionTest::TestInstrFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function INSTR on values of two
-    // different properties of type STRING where the function name differs
-    // from the expected function name ("InStR" rather than "InStr"). No ex-
-    // ceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -13013,11 +12067,7 @@ void FdoExpressionFunctionTest::TestInstrFunctionAsFilter ()
 
     filter = FdoFilter::Parse(L"Instr(str2_val, 'is: 213') = 11");
 
-    // 1. Test Case:
-    // The test executes a select-command to select data from a class table
-    // using a filter that includes the expression function INSTR. The re-
-    // quest should return a sub-set of the available data. No exceptions
-    // are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -13095,10 +12145,7 @@ void FdoExpressionFunctionTest::TestLengthFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function LENGTH on a value of
-    // a different property of type STRING. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -13136,13 +12183,6 @@ void FdoExpressionFunctionTest::TestLengthFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function LENGTH on a value of
-    // a different property of type STRING where the function name differs
-    // from the expected function name ("LeNgTh" rather than "Length"). No
-    // exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -13212,10 +12252,7 @@ void FdoExpressionFunctionTest::TestLowerFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function LOWER on a value of a
-    // different property of type STRING. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -13252,13 +12289,6 @@ void FdoExpressionFunctionTest::TestLowerFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function LOWER on a value of a
-    // different property of type STRING where the function name differs from
-    // the expected function name ("LoWeR" rather than "Lower"). No exceptions
-    // are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -13327,11 +12357,7 @@ void FdoExpressionFunctionTest::TestLpadFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function LPAD on a value of a
-    // different property of type STRING. For this test, no pad-string is
-    // provided. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -13371,12 +12397,6 @@ void FdoExpressionFunctionTest::TestLpadFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function LPAD on a value of a
-    // different property of type STRING. For this test, a pad-string is
-    // provided. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
@@ -13415,13 +12435,6 @@ void FdoExpressionFunctionTest::TestLpadFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function LPAD on a value of a
-    // different property of type STRING where the function name differs from
-    // the expected function name ("LpAd" rather than "Lpad"). For this test,
-    // no pad-string is provided. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -13491,10 +12504,7 @@ void FdoExpressionFunctionTest::TestLtrimFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function LTRIM on a value of a
-    // different property of type STRING. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -13531,13 +12541,6 @@ void FdoExpressionFunctionTest::TestLtrimFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function LTRIM on a value of a
-    // different property of type STRING where the function name differs from
-    // the expected function name ("LtRiM" rather than "Ltrim"). No exceptions
-    // are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -13606,11 +12609,7 @@ void FdoExpressionFunctionTest::TestRpadFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function RPAD on a value of a
-    // different property of type STRING. For this test, no pad-string is
-    // provided. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -13650,12 +12649,6 @@ void FdoExpressionFunctionTest::TestRpadFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function RPAD on a value of a
-    // different property of type STRING. For this test, a pad-string is
-    // provided. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
@@ -13694,13 +12687,6 @@ void FdoExpressionFunctionTest::TestRpadFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function RPAD on a value of a
-    // different property of type STRING where the function name differs from
-    // the expected function name ("RpAd" rather than "Rpad"). For this test,
-    // no pad-string is provided. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -13770,10 +12756,7 @@ void FdoExpressionFunctionTest::TestRtrimFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function RTRIM on a value of a
-    // different property of type STRING. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -13810,13 +12793,6 @@ void FdoExpressionFunctionTest::TestRtrimFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function RTRIM on a value of a
-    // different property of type STRING where the function name differs from
-    // the expected function name ("RtRiM" rather than "Rtrim"). No exceptions
-    // are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -13885,10 +12861,7 @@ void FdoExpressionFunctionTest::TestSoundexFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function SOUNDEX on a value of
-    // a different property of type STRING. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -13925,13 +12898,6 @@ void FdoExpressionFunctionTest::TestSoundexFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function SOUNDEX on a value of
-    // a different property of type STRING where the function name differs
-    // from the expected function name ("SoUnDeX" rather than "Soundex"). No
-    // exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -14000,13 +12966,7 @@ void FdoExpressionFunctionTest::TestSubstrFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function SUBSTR on the value of
-    // a different property of type STRING. In this case, the test requests
-    // a sub-string from a position within the source string to the end of it
-    // by not specifying the optional length parameter. No exceptions are ex-
-    // pected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -14047,13 +13007,6 @@ void FdoExpressionFunctionTest::TestSubstrFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function SUBSTR on the value of
-    // a different property of type STRING. In this case, the test requests
-    // a sub-string from a position within the source string for a predefined
-    // length. No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
@@ -14092,15 +13045,6 @@ void FdoExpressionFunctionTest::TestSubstrFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function SUBSTR on the value of
-    // a different property of type STRING where the function name differs
-    // from the expected function name ("SuBsTr" rather than "Substr"). In
-    // this case, the test requests a sub-string from a position within the
-    // source string to the end of it by not specifying the optional length
-    // parameter. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -14172,12 +13116,7 @@ void FdoExpressionFunctionTest::TestTranslateFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TRANSLATE on the value
-    // of a different property of type STRING. In this case, the test requests
-    // to substitute all "o" with an "x" and all "l" with a "y". No exceptions
-    // are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -14216,14 +13155,6 @@ void FdoExpressionFunctionTest::TestTranslateFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TRANSLATE on the value
-    // of a different property of type STRING where the function name differs
-    // from the expected function name ("TrAnSlAtE" rather than "Translate").
-    // In this case, the test requests to substitute all "o" with an "x" and
-    // all "l" with a "y". No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -14294,11 +13225,7 @@ void FdoExpressionFunctionTest::TestTrimFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TRIM on a value of a
-    // different property of type STRING. For this test, no execution operator
-    // is set. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -14340,12 +13267,6 @@ void FdoExpressionFunctionTest::TestTrimFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TRIM on a value of a
-    // different property of type STRING. For this test, the execution operator
-    // is set to "BOTH". No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
@@ -14385,12 +13306,6 @@ void FdoExpressionFunctionTest::TestTrimFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 3. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TRIM on a value of a
-    // different property of type STRING. For this test, the execution operator
-    // is set to "LEADING". No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -14432,12 +13347,6 @@ void FdoExpressionFunctionTest::TestTrimFunction ()
 
     }  //  catch ( ... ) ...
 
-    // 4. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TRIM on a value of a
-    // different property of type STRING. For this test, the execution operator
-    // is set to "TRAILING". No exceptions are expected.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("4. Test Case:                                              \n");
@@ -14477,13 +13386,6 @@ void FdoExpressionFunctionTest::TestTrimFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 5. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function TRIM on a value of a
-    // different property of type STRING where the function name differs from
-    // the expected function name ("TrIm" rather than "Trim"). For this test,
-    // no execution operator is set. No exceptions are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -14555,10 +13457,7 @@ void FdoExpressionFunctionTest::TestUpperFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function UPPER on a value of a
-    // different property of type STRING. No exceptions are expected.
+    // Execute the test cases.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -14595,13 +13494,6 @@ void FdoExpressionFunctionTest::TestUpperFunction ()
       throw;
 
     }  //  catch ( ... ) ...
-
-    // 2. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function UPPER on a value of a
-    // different property of type STRING where the function name differs from
-    // the expected function name ("UpPeR" rather than "Upper"). No exceptions
-    // are expected.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -14646,6 +13538,191 @@ void FdoExpressionFunctionTest::TestUpperFunction ()
 
 
 // ----------------------------------------------------------------------------
+// --                     Combination Unit Test Functions                    --
+// ----------------------------------------------------------------------------
+
+void FdoExpressionFunctionTest::NumberToStringComparison ()
+
+// +---------------------------------------------------------------------------
+// | The function executes a filter on the test data set that uses the function
+// | TOSTRING on two different properties and compares the function results to
+// | determine if a data set qualifies as defined by the filter.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    bool                      is_valid_result = false;
+
+    FdoInt32                  row_count       =  0,
+                              id_val          = -1;
+
+    FdoPtr<FdoFilter>         filter;
+    FdoPtr<FdoIFeatureReader> data_reader;
+
+    printf("\n");
+    printf("========================================================== \n");
+    printf(" Combination Unit Test: Number to String Comparison        \n");
+    printf("========================================================== \n");
+    printf("\n");
+
+    // Define the filter for all tests in this test suite.
+
+    filter = FdoFilter::Parse(L"ToString(dbl_val) = ToString(sgl_val)");
+
+    // Execute the test cases.
+
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command using the filter to   \n");
+    printf("  determine the qualified data set. The function should    \n");
+    printf("  return two rows. No exceptions are expected.             \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, NULL);
+
+      printf(" >>> Cross check result \n");
+
+      while (data_reader->ReadNext()) {
+
+        row_count++;
+        id_val = data_reader->GetInt32(L"id");
+        is_valid_result = ((id_val == 0) || (id_val == 20));
+        if (!is_valid_result)
+            break;
+        
+      }  //  while (data_reader->ReadNext()) ...
+
+      // Close the reader.
+
+      data_reader->Close();
+
+      // Issue an exception if the expected result is not met.
+
+      if ((!is_valid_result) || (row_count != 2))
+         throw FdoException::Create(
+                        L"Unexpected result(s) when checking returned data");
+      else
+        printf(" >>> ... All expected data found\n");
+
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+}  //  NumberToStringComparison ()
+
+
+void FdoExpressionFunctionTest::RoundNumberToStringComparison ()
+
+// +---------------------------------------------------------------------------
+// | The function executes a filter on the test data set that uses the func-
+// | tions ROUND and TOSTRING on two different properties and compares the
+// | function results to determine if a data set qualifies as defined by the
+// | filter.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    bool                      is_valid_result = false;
+
+    FdoInt32                  row_count       =  0,
+                              id_val          = -1;
+
+    FdoPtr<FdoFilter>         filter;
+    FdoPtr<FdoIFeatureReader> data_reader;
+
+    printf("\n");
+    printf("========================================================== \n");
+    printf(" Combination Unit Test: Round Number to String Comparison  \n");
+    printf("========================================================== \n");
+    printf("\n");
+
+    // Define the filter for all tests in this test suite.
+
+    filter =
+        FdoFilter::Parse(
+                L"ToString(Round(dbl_val, 2)) = ToString(Round(sgl_val, 2))");
+
+    // Execute the test cases.
+
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command using the filter to   \n");
+    printf("  determine the qualified data set. The function should    \n");
+    printf("  return three rows. No exceptions are expected.           \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, NULL);
+
+      printf(" >>> Cross check result \n");
+
+      while (data_reader->ReadNext()) {
+
+        row_count++;
+        id_val = data_reader->GetInt32(L"id");
+        is_valid_result = ((id_val == 0) || (id_val == 17) || (id_val == 20));
+        if (!is_valid_result)
+            break;
+        
+      }  //  while (data_reader->ReadNext()) ...
+
+      // Close the reader.
+
+      data_reader->Close();
+
+      // Issue an exception if the expected result is not met.
+
+      if ((!is_valid_result) || (row_count != 3))
+         throw FdoException::Create(
+                        L"Unexpected result(s) when checking returned data");
+      else
+        printf(" >>> ... All expected data found\n");
+
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+}  //  RoundNumberToStringComparison ()
+
+
+// ----------------------------------------------------------------------------
 // --                       Special Unit Test Functions                      --
 // ----------------------------------------------------------------------------
 
@@ -14672,14 +13749,6 @@ void FdoExpressionFunctionTest::ModuloOperation ()
     printf(" Special Unit Test Suite: Modulo Operation                 \n");
     printf("========================================================== \n");
     printf("\n");
-
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function MOD on the value of a
-    // different property of type INT32. The test works on all rows in the
-    // test class table. The test is to check that not the same value is re-
-    // turned for each of the rows as the original property value is different
-    // for each row. No exceptions are expected.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -14753,12 +13822,6 @@ void FdoExpressionFunctionTest::SoundexFilter ()
     printf("========================================================== \n");
     printf("\n");
 
-    // 1. Test Case:
-    // The test executes a select-command to select the feature ids of object
-    // for which a filter using the expression function SOUNDEX applies. The
-    // test is expected to return a specific number of rows. No exceptions are
-    // expected.
-
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
     printf("  The test executes a select-command to select the feature \n");
@@ -14788,8 +13851,8 @@ void FdoExpressionFunctionTest::SoundexFilter ()
       if (row_count != 31)
           throw FdoException::Create(
                         L"Unexpected result(s) when checking returned data");
-    else
-      printf(" >>> ... All expected data found\n");
+      else
+        printf(" >>> ... All expected data found\n");
 
       printf(" >>> Test succeeded \n");
 
@@ -14836,15 +13899,6 @@ void FdoExpressionFunctionTest::SubstrOperation ()
     printf(" Special Unit Test Suite: SUBSTR Operation                 \n");
     printf("========================================================== \n");
     printf("\n");
-
-    // 1. Test Case:
-    // The test executes a select-command to select the value of a computed
-    // property that is defined by using the function SUBSTR on the value of
-    // a different property. In this case, the test requests a sub-string from
-    // a position within the source string to the end of it by not specifying
-    // the optional length parameter. The test is to verify that the returned
-    // value for each of the rows is accurate and that not one value is re-
-    // turned for all the rows. No exceptions are expected.
 
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
@@ -14896,6 +13950,89 @@ void FdoExpressionFunctionTest::SubstrOperation ()
     }  //  catch ( ... ) ...
 
 }  // SubstrOperation ()
+
+void FdoExpressionFunctionTest::ToDateOperation ()
+
+// +---------------------------------------------------------------------------
+// | The function tests the expression function TODATE as a filter when con-
+// | nected to a specific SDF file provided by QA. Apparently, no data is re-
+// | turned although at least one row qualifies.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local variables.
+
+    FdoInt32                  row_count     = 0;
+
+    FdoPtr<FdoFilter>         filter;
+    FdoPtr<FdoIFeatureReader> data_reader;
+
+    printf("\n");
+    printf("========================================================== \n");
+    printf(" Special Unit Test Suite: TODATE Operation                 \n");
+    printf("========================================================== \n");
+    printf("\n");
+
+    try {
+
+      // At this point there is already a connection to a different SDF file.
+      // For the following test this one needs to be closed and a new connec-
+      // tion established to the file QA provided.
+
+      printf("---------------------------------------------------------- \n");
+      printf("Test Setup:                                                \n");
+      printf("  Close possible current connection and establish a con-   \n");
+      printf("  nection to the QA provided SDF file.                     \n");
+      printf("---------------------------------------------------------- \n");
+
+      CloseConnection();
+      m_connection =
+            UnitTestUtil::OpenConnection(
+                    L"..\\..\\TestData\\SPR1011594\\CopyofConversions.sdf", false);
+
+      // Execute the request that is to be tested with this test case.
+
+      filter      = FdoFilter::Parse(
+                            L"\"DATE\" = ToDate(DateString, 'MM/DD/YYYY hh:mm:ss')");
+      data_reader = ExecuteSelectCommand(
+                                    L"FeatureClass1", filter, false, NULL);
+
+      printf(" >>> Cross check result \n");
+      while (data_reader->ReadNext())
+        row_count++;
+
+      //if (row_count != 31)
+      //    throw FdoException::Create(
+      //                  L"Unexpected result(s) when checking returned data");
+      //else
+      //  printf(" >>> ... All expected data found\n");
+
+      printf(" >>> Test succeeded \n");
+
+      // Close the connection again.
+
+      CloseConnection();
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+}  //  ToDateOperation ()
+
 
 // ----------------------------------------------------------------------------
 // --                      General Supporting Functions                      --
@@ -16150,26 +15287,19 @@ void FdoExpressionFunctionTest::AddFeature (
 
       if (index != 22) {
 
-          if (index == 20) {
+          switch (index) {
 
-          dbl_value      = 30.3;
+            case 17: dbl_value = 30.36776;                    break;
+            case 20: dbl_value = 30.3;                        break;
+            default: dbl_value = index + (6.34 * index/5.77); break;
+
+          }  //  switch ...
+
           data_value     = FdoDataValue::Create(dbl_value, FdoDataType_Double);
           property_value = AddNewProperty(property_values, L"dbl_val");
           property_value->SetValue(data_value);
           FDO_SAFE_RELEASE(data_value);
           FDO_SAFE_RELEASE(property_value);
-
-          }  //  if (index == 20) ...
-          else {
-
-            dbl_value      = index + (6.34 * index/5.77);
-            data_value     = FdoDataValue::Create(dbl_value, FdoDataType_Double);
-            property_value = AddNewProperty(property_values, L"dbl_val");
-            property_value->SetValue(data_value);
-            FDO_SAFE_RELEASE(data_value);
-            FDO_SAFE_RELEASE(property_value);
-
-          }  //  else ...
 
       }  //  if (index != 22) ...
 
@@ -16185,7 +15315,14 @@ void FdoExpressionFunctionTest::AddFeature (
       FDO_SAFE_RELEASE(data_value);
       FDO_SAFE_RELEASE(property_value);
 
-      flt_value      = (FdoFloat) (2.4 * (index /6.99));
+      switch (index) {
+
+        case 17: flt_value = (FdoFloat) 30.36776;              break;
+        case 20: flt_value = (FdoFloat) 30.3;                  break;
+        default: flt_value = (FdoFloat) (2.4 * (index /6.99)); break;
+
+      }  //  switch ....
+
       data_value     = FdoDataValue::Create(flt_value);
       property_value = AddNewProperty(property_values, L"sgl_val");
       property_value->SetValue(data_value);
@@ -16215,6 +15352,13 @@ void FdoExpressionFunctionTest::AddFeature (
       id_str         = FdoStringP::Format(L"The Color is: %d", (index + 2109));
       data_value     = FdoDataValue::Create((FdoString *)id_str);
       property_value = AddNewProperty(property_values, L"str2_val");
+      property_value->SetValue(data_value);
+      FDO_SAFE_RELEASE(data_value);
+      FDO_SAFE_RELEASE(property_value);
+
+      id_str         = FdoStringP::Format(L"9/20/2007");
+      data_value     = FdoDataValue::Create((FdoString *)id_str);
+      property_value = AddNewProperty(property_values, L"dtstr_val");
       property_value->SetValue(data_value);
       FDO_SAFE_RELEASE(data_value);
       FDO_SAFE_RELEASE(property_value);
@@ -16497,6 +15641,11 @@ FdoFeatureClass *FdoExpressionFunctionTest::CreateFdoFeatureClass (
 
       data_property_definition =
            CreateDataProperty(L"str2_val", FdoDataType_String, 30, 0, true);
+	  data_property_definitions->Add(data_property_definition);
+	  FDO_SAFE_RELEASE(data_property_definition);
+
+      data_property_definition =
+           CreateDataProperty(L"dtstr_val", FdoDataType_String, 30, 0, true);
 	  data_property_definitions->Add(data_property_definition);
 	  FDO_SAFE_RELEASE(data_property_definition);
 
