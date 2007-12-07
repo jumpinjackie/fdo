@@ -64,9 +64,15 @@ goto study_params
 	SET ENV_EMPTY=FDOMYSQL
 	if ("%FDOMYSQL%")==("") goto custom_error_ex
 	if not exist "%FDOMYSQL%" goto custom_error_ex
+	
 	SET ENV_EMPTY=SDEHOME
 	if ("%SDEHOME%")==("") goto custom_error_ex
 	if not exist "%SDEHOME%" goto custom_error_ex
+	
+	SET ENV_EMPTY=FDOORACLE
+	if ("%FDOORACLE%")==("") goto custom_error_ex
+	if not exist "%FDOORACLE%" goto custom_error_ex
+	
 	if not exist "%FDOTARGETFOLDER%" mkdir "%FDOTARGETFOLDER%"
 	pushd "%FDOTARGETFOLDER%"
 	SET FDOTARGETFOLDER=%cd%
@@ -79,8 +85,10 @@ goto study_params
 	if exist "%FDOSOURCEZIP%\release.txt" goto get_buildno
 	echo Error: time out waiting for the release...
 	exit /B 1
+	
 :get_buildno
 	for /F %%f in (%FDOSOURCEZIP%\release.txt) do SET FDOBUILDNUMBERRTB=%%f
+	
 :start_copy
    copy /Y "%FDOSOURCEZIP%\fdo-3.3.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
    copy /Y "%FDOSOURCEZIP%\fdoshp-3.3.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
@@ -90,6 +98,10 @@ goto study_params
    copy /Y "%FDOSOURCEZIP%\fdoarcsde-3.3.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
    copy /Y "%FDOSOURCEZIP%\fdordbms-3.3.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
    copy /Y "%FDOSOURCEZIP%\fdogdal-3.3.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdoogr-3.3.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdopostgis-3.3.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdokingoracle-3.3.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   
 :start_unzip
    echo *start unzip files
    pushd "%FDOTARGETFOLDER%"
@@ -101,6 +113,9 @@ goto study_params
    7z x -ry "fdoarcsde-3.3.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
    7z x -ry "fdordbms-3.3.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
    7z x -ry "fdogdal-3.3.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdoogr-3.3.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdopostgis-3.3.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdokingoracle-3.3.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
    
    7z x -ry "fdo-3.3.0_%FDOBUILDNUMBERRTB%.tar" >>nul
    7z x -ry "fdoshp-3.3.0_%FDOBUILDNUMBERRTB%.tar" >>nul
@@ -110,6 +125,9 @@ goto study_params
    7z x -ry "fdoarcsde-3.3.0_%FDOBUILDNUMBERRTB%.tar" >>nul
    7z x -ry "fdordbms-3.3.0_%FDOBUILDNUMBERRTB%.tar" >>nul
    7z x -ry "fdogdal-3.3.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdoogr-3.3.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdopostgis-3.3.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdokingoracle-3.3.0_%FDOBUILDNUMBERRTB%.tar" >>nul
    
    del /Q /F "*.tar"
    echo unzip files done...

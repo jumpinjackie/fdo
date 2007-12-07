@@ -33,6 +33,7 @@ SET MYSQLENABLE=yes
 SET GDALENABLE=yes
 SET OGRENABLE=yes
 SET POSTGISENABLE=yes
+SET KINGORACLEENABLE=yes
 SET FDOENABLE=yes
 SET DOCENABLE=skip
 SET PYTHONENABLE=skip
@@ -83,6 +84,7 @@ if "%DEFMODIFY%"=="yes" goto stp1_get_with
 	SET GDALENABLE=no
 	SET OGRENABLE=no
 	SET POSTGISENABLE=no
+	SET KINGORACLEENABLE=no
 :stp1_get_with
 if not "%2"=="shp" goto stp2_get_with
 	SET SHPENABLE=yes
@@ -124,11 +126,15 @@ if not "%2"=="postgis" goto stp11_get_with
 	SET POSTGISENABLE=yes
 	goto next_param
 :stp11_get_with
-if not "%2"=="fdo" goto stp12_get_with
-	SET FDOENABLE=yes
+if not "%2"=="kingoracle" goto stp12_get_with
+	SET KINGORACLEENABLE=yes
 	goto next_param
 :stp12_get_with
-if not "%2"=="providers" goto stp13_get_with
+if not "%2"=="fdo" goto stp13_get_with
+	SET FDOENABLE=yes
+	goto next_param
+:stp13_get_with
+if not "%2"=="providers" goto stp14_get_with
 	SET SHPENABLE=yes
 	SET SDFENABLE=yes
 	SET WFSENABLE=yes
@@ -139,8 +145,9 @@ if not "%2"=="providers" goto stp13_get_with
 	SET GDALENABLE=yes
 	SET OGRENABLE=yes
 	SET POSTGISENABLE=yes
+	SET KINGORACLEENABLE=yes
 goto next_param
-:stp13_get_with
+:stp14_get_with
 if not "%2"=="all" goto custom_error
 	SET SHPENABLE=yes
 	SET SDFENABLE=yes
@@ -153,6 +160,7 @@ if not "%2"=="all" goto custom_error
 	SET GDALENABLE=yes
 	SET OGRENABLE=yes
 	SET POSTGISENABLE=yes
+	SET KINGORACLEENABLE=yes
 	goto next_param
 
 :get_docs
@@ -300,9 +308,18 @@ popd
 if "%FDOERROR%"=="1" goto error
 
 :rebuild_postgis
-if "%POSTGISENABLE%"=="no" goto end
-if not exist Providers\PostGIS\build.bat goto end
+if "%POSTGISENABLE%"=="no" goto rebuild_kingoracle
+if not exist Providers\PostGIS\build.bat goto rebuild_kingoracle
 pushd Providers\PostGIS
+call build.bat %PROVCALLCMDEX%
+popd
+if "%FDOERROR%"=="1" goto error
+
+:rebuild_kingoracle
+if "%KINGORACLEENABLE%"=="no" goto end
+if not exist "%FDOORACLE%" goto end
+if not exist Providers\KingOracle\build.bat goto end
+pushd Providers\KingOracle
 call build.bat %PROVCALLCMDEX%
 popd
 if "%FDOERROR%"=="1" goto error
@@ -369,8 +386,11 @@ if not exist Providers\GDAL\build.bat goto ogr_check
 if not exist Providers\OGR\build.bat goto postgis_check
 	SET MROVBYPROVP=%MROVBYPROVP%, ogr
 :postgis_check
-if not exist Providers\PostGIS\build.bat goto providers_show
+if not exist Providers\PostGIS\build.bat goto kingoracle_check
 	SET MROVBYPROVP=%MROVBYPROVP%, postgis
+:kingoracle_check
+if not exist Providers\KingOracle\build.bat goto providers_show
+	SET MROVBYPROVP=%MROVBYPROVP%, kingoracle
 :providers_show
 if ("%MROVBYPROVP%")==("") goto show_capabilities
 	SET MPROVECAPABP=%MPROVECAPABP%, providers%MROVBYPROVP%
