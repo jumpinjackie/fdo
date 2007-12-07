@@ -15,7 +15,7 @@
 * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "c_FilterStringBuffer.h"
 
 #define D_FILTER_MEM_BLOCK_ALLOC_SIZE    256

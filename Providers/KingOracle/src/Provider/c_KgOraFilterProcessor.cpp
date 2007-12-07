@@ -15,7 +15,7 @@
 * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "c_KgOraFilterProcessor.h"
 #include "c_FgfToSdoGeom.h"
 #include "c_Ora_API.h"

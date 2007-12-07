@@ -16,7 +16,7 @@
 */
 
 
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "c_KgOraSridDesc.h"
 
 c_KgOraSridDesc::c_KgOraSridDesc(void)
