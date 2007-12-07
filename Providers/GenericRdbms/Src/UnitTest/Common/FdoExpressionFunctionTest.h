@@ -139,6 +139,7 @@ class FdoExpressionFunctionTest : public CppUnit::TestCase
     // ====       SPECIAL UNIT TESTS        ====
     // =========================================
     // CPPUNIT_TEST(RunInstrPittsburgh);
+    // CPPUNIT_TEST(RunInTest);
     // CPPUNIT_TEST(RunUpdate);
   CPPUNIT_TEST_SUITE_END();
 
@@ -609,6 +610,12 @@ protected:
     //      INSTR).
 
     virtual void RunInstrPittsburgh ();
+
+    //  RunInTest:
+    //      The function executes a select statement using a filter that
+    //      selects data based on matching dates.
+
+    virtual void RunInTest ();
 
     //  RunUpdate:
     //      ->> FILL
