@@ -55,7 +55,7 @@ static const wchar_t* GetEmptyString()
 FdoStringP::FdoStringP(void) :
 	mwString(NULL),
 	msString(NULL),
-	mRefCount(NULL)
+	mBuffer(NULL)
 {
 	SetString(GetEmptyString(), true);
 }
@@ -64,7 +64,7 @@ FdoStringP::FdoStringP(void) :
 FdoStringP::FdoStringP( FdoString* wValue, FdoBoolean bAttach ) :
 	mwString(NULL),
 	msString(NULL),
-	mRefCount(NULL)
+	mBuffer(NULL)
 {
 	SetString(wValue, bAttach);
 }
@@ -72,7 +72,7 @@ FdoStringP::FdoStringP( FdoString* wValue, FdoBoolean bAttach ) :
 FdoStringP::FdoStringP( const char* sValue) :
 	mwString(NULL),
 	msString(NULL),
-	mRefCount(NULL)
+	mBuffer(NULL)
 {
 	SetString(sValue);
 }
@@ -80,7 +80,7 @@ FdoStringP::FdoStringP( const char* sValue) :
 FdoStringP::FdoStringP(const FdoStringP& oValue) :
 	mwString(NULL),
 	msString(NULL),
-	mRefCount(NULL)
+	mBuffer(NULL)
 {
 	SetString(oValue);
 }
@@ -109,6 +109,17 @@ FdoStringP& FdoStringP::operator=( FdoString* wString )
 	SetString( wString );
 
 	return(*this);
+}
+
+const FdoStringP FdoStringP::operator+( FdoString* str2 ) const
+{
+    FdoString*  values[3];
+
+    values[0] = mwString;
+    values[1] = str2;
+    values[2] = NULL;
+
+    return(FdoStringP(values));
 }
 
 int FdoStringP::ICompare( const FdoStringP str2 ) const
@@ -591,16 +602,15 @@ void FdoStringP::SetString(FdoString* wValue, FdoBoolean bAttach)
 	// Make NULL and empty strings equivalent
 	FdoString* workString = wValue ? wValue : L"";
 
-	// release the current buffer.
-	Release();
-
     if ( bAttach ) {
-        mRefCount = (long*) GetAttachedRefCount();
+	    // release the current buffer.
+	    Release();
+
         mwString = (wchar_t*) workString;
     }
     else {
 	    // Create a new buffer from new value
-	    mwString = new wchar_t[wcslen(workString)+1];
+	    AllocateBuffer( wcslen(workString) );
 	    wcscpy( mwString, workString );
     }
 
@@ -633,7 +643,7 @@ void FdoStringP::SetString(const FdoStringP& oValue)
 	// point to the buffer and ref counter for input object.
 	// This allows these string objects to share buffers when they
 	// have the same values.
-	mRefCount = oValue.mRefCount;
+	mBuffer = oValue.mBuffer;
 	mwString = oValue.mwString;
 
 	// bump up the ref count.
@@ -649,29 +659,20 @@ void FdoStringP::SetSingle( ) const
 
 void FdoStringP::AddRef()
 {
-	if( !mRefCount ) {
-		// Create new ref counter.
-		mRefCount = new long[1];
-		(*mRefCount) = 0;
-	}
-
-    if ( (*mRefCount) >= 0 ) 
-    	(*mRefCount)++;
+    if ( (GetRefCount()) >= 0 ) 
+    	SetRefCount(GetRefCount() + 1);
 }
 
 void FdoStringP::Release()
 {
-	if ( mRefCount && ((*mRefCount) >= 0) ) {
-		(*mRefCount)--;
+	if ( GetRefCount() >= 0 ) {
+    	SetRefCount(GetRefCount() - 1);
 
-		if ( (*mRefCount) == 0 ) {
+		if ( (GetRefCount()) == 0 ) {
 			// No more references,
 			// get rid of ref counter and buffers
-			delete[] mRefCount;
-
-			if ( mwString )
-				delete[] mwString;
-
+			if ( mBuffer )
+				free((void*) mBuffer);
 		}
 	}
 
@@ -680,9 +681,87 @@ void FdoStringP::Release()
 	if ( msString )
 		delete[] msString;
 
-	mRefCount = NULL;
+    mBuffer = NULL;
 	mwString = NULL;
 	msString = NULL;
 }
 
+FdoStringP::FdoStringP( FdoString** values ) :
+	mwString(NULL),
+	msString(NULL),
+	mBuffer(NULL)
+{
+    size_t totalLength = 0;
+    int idx;
 
+    // Create buffer big enough to hold concatenated strings.
+    for ( idx = 0; values[idx] != NULL; idx++ ) 
+        totalLength += wcslen(values[idx]);
+
+    AllocateBuffer( totalLength );
+
+	// Initialize ref count.
+	AddRef();
+
+    // Concatenate the strings into this object's buffer
+    totalLength = 0;
+    for ( idx = 0; values[idx] != NULL; idx++ ) {
+	    wcscpy(&(mwString[totalLength]), values[idx] );
+        totalLength += wcslen(values[idx]);
+    }
+
+}
+
+void FdoStringP::AllocateBuffer( size_t bufSize )
+{
+    // Re-use current buffer if big enough and no other FdoStringP is referencing it.
+    if ( (!mBuffer) || (GetRefCount() != 1) || (bufSize > GetBufSize()) ) {
+        // Otherwise, Release curent buffer and create a new one.
+        Release();
+        
+        // Allow space for number of wide characters, descriptor and null terminator
+        mBuffer = (Descriptor*) malloc( sizeof(Descriptor) + (sizeof(wchar_t) * (bufSize + 1)) );
+        mwString = (wchar_t*)(mBuffer + 1);
+
+        // Initialize descriptor
+        SetRefCount(0);
+        SetBufSize(bufSize);
+    }
+    else {
+        // Re-using current buffer, just destroy the current UTF8 string.
+	    if ( msString )
+		    delete[] msString;
+
+        msString = NULL;
+    }
+}
+
+void FdoStringP::SetRefCount( long refCount )
+{
+    if ( mBuffer ) {
+        mBuffer->mRefCount = refCount;
+    }
+}
+
+long FdoStringP::GetRefCount()
+{
+    if ( mBuffer ) 
+        return mBuffer->mRefCount;
+    else
+        return -1;
+}
+
+void FdoStringP::SetBufSize( size_t bufSize )
+{
+    if ( mBuffer ) {
+        mBuffer->mBufSize = bufSize;
+    }
+}
+
+size_t FdoStringP::GetBufSize()
+{
+    if ( mBuffer ) 
+        return mBuffer->mBufSize;
+    else
+        return -1;
+}

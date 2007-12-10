@@ -114,10 +114,7 @@ public:
     /// \return
     /// Returns the concatenation of this string plus str2
     /// 
-	FDO_API_COMMON const FdoStringP operator+( FdoString* str2 ) const
-	{
-        return(FdoStringP::Format( L"%ls%ls", mwString, str2 ? str2 : L"") );
-	}
+	FDO_API_COMMON const FdoStringP operator+( FdoString* str2 ) const;
 
     /// \brief
     /// Appends the contents of another string onto this string.
@@ -485,6 +482,11 @@ public:
 /// \endcond
 
 private:
+
+    // Creates an FdoStringP from a null-terminated list of strings.
+    // The strings are concatenated together
+    FdoStringP( FdoString** values );
+
     /// structure used to convert between Unicode and UTF8
     typedef struct
     {
@@ -494,6 +496,13 @@ private:
     long    lmask;
     long    lval;
     } Tab;
+
+    // Descriptor containing refcount and size for the string buffer
+    typedef struct
+    {
+        long mRefCount;
+        size_t mBufSize;    // size in # of wide characters
+    } Descriptor;
 
     /// General functions to set this object's string value.
 	void SetString(const FdoStringP& oValue);
@@ -512,14 +521,26 @@ private:
 	void AddRef();
 	void Release();
 	
+    // Allocate a fresh buffer big enough to hold the given number of characters.
+    // Current buffer is re-used if big enough and not referenced by any other FdoStringP
+    void AllocateBuffer( size_t bufSize );
+
+    // Refcount setter and getter
+    void SetRefCount( long refCount );
+    long GetRefCount();
+
+    // Buffer size (in characters) setter and getter.
+    void SetBufSize( size_t bufSize );
+    size_t GetBufSize();
+
     /// String buffer 
 
-    /// unicode string
+    /// wide-char string
 	wchar_t* mwString;
     /// utf8 string
 	char* msString;
-    /// associated ref counter.
-	long* mRefCount;
+    /// Buffer - descriptor + wide-char string
+	Descriptor* mBuffer;
 
     /// table for converting between UTF8 and Unicode.
     static Tab tab[];
