@@ -14267,114 +14267,63 @@ void FdoExpressionFunctionTest::TestUpperFunction ()
 // --                         Special Test Functions                         --
 // ----------------------------------------------------------------------------
 
-void FdoExpressionFunctionTest::RunInstrPittsburgh ()
-
-// +---------------------------------------------------------------------------
-// | The function tests an issue related to the use of the expression function
-// | INSTR in a filter against data stored in a SQL Server. The reported and
-// | confirmed behavior is that in MAP, the filter is not applied (there is no
-// | problem with this in MySQL, Oracle as those RDBMS systems have native
-// | support for the expression function INSTR).
-// +---------------------------------------------------------------------------
-
-{
-
-    try {
-
-      FdoIConnection *x_con = UnitTestUtil::GetConnection();
-
-      FdoPtr<FdoISelect> sel_cmd = (FdoISelect *) x_con->CreateCommand(FdoCommandType_Select);
-      sel_cmd->SetFeatureClassName(L"Schools");
-      sel_cmd->SetFilter(L"Instr(DISTRICT, 'Pittsburgh') = 9");
-
-      FdoInt32 row_count = 0;
-      FdoPtr<FdoIFeatureReader> freader = sel_cmd->Execute();
-      while (freader->ReadNext())
-        row_count++;
-      freader->Close();
-
-      x_con->Close();
-
-   }  //  try ...
-
-   catch (FdoException *exp) {
-
-     printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
-     throw exp;
-
-   }  //  catch ...
-
-   catch ( ... ) {
-
-     throw;
-
-   }  //  catch ...
-
-}  //  RunInstrPittsburgh ()
-
-void FdoExpressionFunctionTest::RunInTest ()
+void FdoExpressionFunctionTest::RunDateInTest ()
 
 // +---------------------------------------------------------------------------
 // | The function executes a select statement using a filter that selects data
-// | based on matching dates.
+// | based on matching dates defined with a IN clause.
 // +---------------------------------------------------------------------------
 
 {
 
-    // Declare and initialize all necessary local variables.
-
-    FdoInt32                  row_counter   = 0;
-
-    FdoPtr<FdoFilter>         filter;
-    FdoPtr<FdoIFeatureReader> data_reader;
-
     printf("\n");
     printf("========================================================== \n");
-    printf(" Current Unit Test Suite: DATE IN Test                     \n");
+    printf(" Current Special Test: IN Clause With DATE                 \n");
     printf("========================================================== \n");
     printf("\n");
 
-    // Define the filter for all tests in this test suite.
+    // The tests this function executes is only valid in a certain context.
+    // Therefore, the function is implemented by the corresponding provider
+    // specific test implementation. In general, this test is deemed to be
+    // not valid in the current context.
 
-    filter =
-        FdoFilter::Parse(
-            L"dt_val in (TIMESTAMP '2007-09-27 21:00:00', TIMESTAMP '2007-09-17 21:00:00', TIMESTAMP '2007-09-16 21:00:00')");
-        // FdoFilter::Parse(L"dt_val = TIMESTAMP '2007-09-27 21:00:00'");
-
-    // Execute the test cases.
-
+    printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("1. Test Case:                                              \n");
-    printf("  Execute a select statenment and check the number of re-  \n");
-    printf("  turned objects. No exceptions are expected.              \n");
+    printf(" Test is not valid in the current environment, hence it is \n");
+    printf(" not executed.                                             \n");
     printf("---------------------------------------------------------- \n");
+    printf("\n");
 
-    try {
+}  //  RunDateInTest ()
 
-      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, false, NULL);
-      while (data_reader->ReadNext())
-        row_counter++;
+void FdoExpressionFunctionTest::RunTestsInPittsburghContext ()
 
-      printf(" >>> Test succeeded \n");
+// +---------------------------------------------------------------------------
+// | This function executes tests in a given data store for which issues have
+// | been reported.
+// +---------------------------------------------------------------------------
 
-    }  //  try ...
+{
 
-    catch (FdoException *exp) {
+    printf("\n");
+    printf("========================================================== \n");
+    printf(" Current Special Test: Pittsburgh Context Tests            \n");
+    printf("========================================================== \n");
+    printf("\n");
 
-      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
-      printf(" >>> Test failed \n");
-      throw exp;
+    // The tests this function executes is only valid in a certain context.
+    // Therefore, the function is implemented by the corresponding provider
+    // specific test implementation. In general, this test is deemed to be
+    // not valid in the current context.
 
-    }  //  catch (FdoException *ex) ...
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf(" Test is not valid in the current environment, hence it is \n");
+    printf(" not executed.                                             \n");
+    printf("---------------------------------------------------------- \n");
+    printf("\n");
 
-    catch ( ... ) {
-
-      printf(" >>> Test failed for an unknown reason \n");
-      throw;
-
-    }  //  catch ( ... ) ...
-
-}  //  RunInTest ()
+}  //  RunTestsInPittsburghContext ()
 
 void FdoExpressionFunctionTest::RunUpdate ()
 {

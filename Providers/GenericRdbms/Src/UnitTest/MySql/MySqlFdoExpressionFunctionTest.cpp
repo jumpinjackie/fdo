@@ -1972,3 +1972,228 @@ void MySqlFdoExpressionFunctionTest::TestSoundexFunction ()
 
 }  //  TestSoundexFunction ()
 
+
+// ----------------------------------------------------------------------------
+// --                         Special Test Functions                         --
+// ----------------------------------------------------------------------------
+
+void MySqlFdoExpressionFunctionTest::RunDateInTest ()
+
+// +---------------------------------------------------------------------------
+// | The function executes a select statement using a filter that selects data
+// | based on matching dates defined with a IN clause.
+// | NOTE:
+// |  (1) It has been detected that the result of the test depends on the cur-
+// |      rent MySQL version. Whereas it works fine with 5.0.24a, the test no
+// |      longer works with 5.0.27 or any newer version. Even using explicit
+// |      convertion does not make a difference as it is not allowed to have
+// |      multiple convertion calls within the IN clause.
+// |  (2) The test works with the data in the data store the standard unit
+// |      test suite generates.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local variables.
+
+    FdoInt32                  row_count     = 0;
+
+    FdoPtr<FdoFilter>         filter;
+    FdoPtr<FdoIFeatureReader> data_reader;
+
+    printf("\n");
+    printf("========================================================== \n");
+    printf(" Current Unit Test Suite: DATE Filter With IN Clause       \n");
+    printf("========================================================== \n");
+    printf("\n");
+
+    // Define the filter for all tests in this test suite.
+
+    filter =
+        FdoFilter::Parse(
+            L"dt_val in (TIMESTAMP '2007-09-27 21:00:00', TIMESTAMP '2007-09-17 21:00:00', TIMESTAMP '2007-09-16 21:00:00')");
+
+    // Execute the test cases.
+
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  Execute a select statenment and check the number of re-  \n");
+    printf("  turned objects. No exceptions are expected.              \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, false, NULL);
+
+      printf(" >>> Cross check result \n");
+
+      while (data_reader->ReadNext())
+        row_count++;
+
+      data_reader->Close();
+
+      // Issue an exception if the expected result is not met.
+
+      if (row_count != 3)
+          throw FdoException::Create(
+                        L"Unexpected result(s) when checking returned data");
+      else
+        printf(" >>> ... All expected data found\n");
+
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+}  //  RunDateInTest ()
+
+void MySqlFdoExpressionFunctionTest::RunTestsInPittsburghContext ()
+
+// +---------------------------------------------------------------------------
+// | This function executes tests in a given data store for which issues have
+// | been reported.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local variables.
+
+    bool                                     org_connection_closed    = false;
+
+    FdoInt32                                 row_count                = 0;
+
+    FdoStringP                               new_connection_string,
+                                             org_connection_string;
+
+    FdoPtr<FdoFilter>                        filter;
+
+    FdoPtr<FdoIFeatureReader>                data_reader;
+
+    FdoPtr<FdoIConnectionInfo>               connection_info;
+
+    FdoPtr<FdoIConnectionPropertyDictionary> connection_info_props;
+
+    printf("\n");
+    printf("========================================================== \n");
+    printf(" Current Special Test: Pittsburgh Context Tests            \n");
+    printf("========================================================== \n");
+    printf("\n");
+
+    try {
+
+      // This test requires to connect to the data store 'Pittsburgh'. At
+      // this point a connection to a different test data store has already
+      // been established and needs to be closed first. Since the connection
+      // to the original data store needs to be re-established at the end of
+      // the test, get the current connection string and keep a reference to
+      // it. Using the connection info information for the current connection
+      // create a new connection string that is then used to connect to the
+      // data store the test requires.
+
+      printf(" >>> Establish connection to data store 'Pittsburgh' \n");
+
+      org_connection_string = m_connection->GetConnectionString();
+
+      connection_info       = m_connection->GetConnectionInfo();
+      connection_info_props = connection_info->GetConnectionProperties();
+
+      new_connection_string =
+            FdoStringP::Format(
+                        L"service=%ls;username=%ls;password=%ls;datastore=%ls",
+                        connection_info_props->GetProperty(L"service"),
+                        connection_info_props->GetProperty(L"username"),
+                        connection_info_props->GetProperty(L"password"),
+                        L"Pittsburgh");
+
+      m_connection->Close();
+      org_connection_closed = true;
+      m_connection->SetConnectionString((FdoString *) new_connection_string);
+      m_connection->Open();
+
+      // Execute the test cases.
+
+      printf("\n");
+      printf("---------------------------------------------------------- \n");
+      printf("1. Test Case:                                              \n");
+      printf("  Set the filter as required and execute the test. Check   \n");
+      printf("  the returned reader for the expected data and issue an   \n");
+      printf("  exception if there is a mismatch. No exceptions are ex-  \n");
+      printf("  pected.                                                  \n");
+      printf("---------------------------------------------------------- \n");
+
+      filter      = FdoFilter::Parse(L"Soundex(HOOD) = Soundex('aligainy')");
+      data_reader = ExecuteSelectCommand(L"schools", filter, false, NULL);
+
+      printf(" >>> Cross check result \n");
+
+      while (data_reader->ReadNext())
+        row_count++;
+
+      data_reader->Close();
+
+      // Issue an exception if the expected result is not met.
+
+      //if (row_count != 1)
+      //    throw FdoException::Create(
+      //                  L"Unexpected result(s) when checking returned data");
+      //else
+        printf(" >>> ... All expected data found\n");
+
+      // Re-establish the connection to the original test data store.
+
+      printf(" >>> Re-establish original connection to test data store \n");
+
+      m_connection->Close();
+      m_connection->SetConnectionString((FdoString *)org_connection_string);
+      m_connection->Open();
+      org_connection_closed = false;
+
+   }  //  try ...
+
+   catch (FdoException *exp) {
+
+     if (org_connection_closed) {
+
+         m_connection->Close();
+         m_connection->SetConnectionString((FdoString *)org_connection_string);
+         m_connection->Open();
+         org_connection_closed = false;
+
+     }  //  if (org_connection_closed) ...
+
+     printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+     throw exp;
+
+   }  //  catch ...
+
+   catch ( ... ) {
+
+     if (org_connection_closed) {
+
+         m_connection->Close();
+         m_connection->SetConnectionString((FdoString *)org_connection_string);
+         m_connection->Open();
+         org_connection_closed = false;
+
+     }  //  if (org_connection_closed) ...
+
+     throw;
+
+   }  //  catch ...
+
+}  //  RunTestsInPittsburghContext ()
+

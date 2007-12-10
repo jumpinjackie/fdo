@@ -122,6 +122,23 @@ public:
     void TestSoundexFunction ();
 
 
+    //-------------------------------------------------------------------------
+    //                         Special Test Functions
+    //-------------------------------------------------------------------------
+
+    //  RunDateInTest:
+    //      The function executes a select statement using a filter that
+    //      selects data based on matching dates defined with a IN clause.
+
+    void RunDateInTest ();
+
+    //  RunTestsInPittsburghContext:
+    //      This function executes tests in a given data store for which issues
+    //      have been reported.
+
+    void RunTestsInPittsburghContext ();
+
+
 };  //  class MySqlFdoExpressionFunctionTest
 
 #endif
