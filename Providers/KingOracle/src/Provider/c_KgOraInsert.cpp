@@ -21,7 +21,7 @@
 #include "c_FgfToSdoGeom.h"
 
 c_KgOraInsert::c_KgOraInsert(c_KgOraConnection *Conn)
-  : c_KgOraFdoCommand(Conn)
+  : c_KgOraFdoCommand<FdoIInsert>(Conn)
 {
 }
 

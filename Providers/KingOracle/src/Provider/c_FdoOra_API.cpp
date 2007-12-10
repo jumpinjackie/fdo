@@ -361,39 +361,39 @@ bool c_FdoOra_API::OraTypeToFdoDataType(const char* OraType,int Scale,int Length
   
   bool isfdotype=false;
   
-  if( strcmpi(OraType,"VARCHAR2") == 0 )
+  if( FdoCommonOSUtil::stricmp(OraType,"VARCHAR2") == 0 )
   {
     FdoType = FdoDataType_String;      
     isfdotype=true;
   } else
-  if( strcmpi(OraType,"VARCHAR") == 0 )
+  if( FdoCommonOSUtil::stricmp(OraType,"VARCHAR") == 0 )
   {
     FdoType = FdoDataType_String;      
     isfdotype=true;
   } else
-  if( strcmpi(OraType,"NUMBER") == 0 )
+  if( FdoCommonOSUtil::stricmp(OraType,"NUMBER") == 0 )
   {            
     if( Scale == 0 ) FdoType = FdoDataType_Int32;
     else FdoType = FdoDataType_Decimal;
     isfdotype=true;
   } else
-  if( strcmpi(OraType,"CHAR") == 0 )
+  if( FdoCommonOSUtil::stricmp(OraType,"CHAR") == 0 )
   {            
     if( Length==1 ) FdoType = FdoDataType_Byte;
     else FdoType = FdoDataType_String;
     isfdotype=true;
   } else
-  if( strcmpi(OraType,"BINARY_FLOAT") == 0 )
+  if( FdoCommonOSUtil::stricmp(OraType,"BINARY_FLOAT") == 0 )
   {            
     FdoType = FdoDataType_Single;    
     isfdotype=true;
   } else
-  if( strcmpi(OraType,"BINARY_DOUBLE") == 0 )
+  if( FdoCommonOSUtil::stricmp(OraType,"BINARY_DOUBLE") == 0 )
   {            
     FdoType = FdoDataType_Double;    
     isfdotype=true;
   } else
-  if( strcmpi(OraType,"DATE") == 0 )
+  if( FdoCommonOSUtil::stricmp(OraType,"DATE") == 0 )
   {            
     FdoType = FdoDataType_DateTime;    
     isfdotype=true;
@@ -516,7 +516,7 @@ bool c_FdoOra_API::DescribeTableProperties(oracle::occi::Connection * OcciConnec
 c_KgOraSchemaDesc* c_FdoOra_API::DescribeSchema(c_KgOraConnection* KgOraConn,const char* OraSchema,const char* KingFdoViews)
 {
       
-        FdoPtr<FdoFeatureSchemaCollection> fschema=NULL;
+        FdoPtr<FdoFeatureSchemaCollection> fschema;
         FdoPtr<FdoKgOraPhysicalSchemaMapping> phschema;
         int alias_num=0;
       
@@ -1518,5 +1518,6 @@ bool c_FdoOra_API::FdoPropertyToOraDataType(FdoPropertyDefinition* Property,FdoS
   
   return true;
 }//end of c_FdoOra_API::FdoPropertyToOraDataType
+
 
 

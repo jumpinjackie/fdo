@@ -19,7 +19,7 @@
 #include "c_FdoOra_API.h"
 
 
-c_KgOraSQLCommand::c_KgOraSQLCommand(c_KgOraConnection* Connection) : c_KgOraFdoCommand(Connection)
+c_KgOraSQLCommand::c_KgOraSQLCommand(c_KgOraConnection* Connection) : c_KgOraFdoCommand<FdoISQLCommand>(Connection)
 {
 }
 

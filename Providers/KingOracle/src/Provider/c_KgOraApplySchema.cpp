@@ -19,8 +19,7 @@
 #include "c_FdoOra_API.h"
 #include "c_Ora_API.h"
 
-c_KgOraApplySchema::c_KgOraApplySchema(c_KgOraConnection *Conn)
-  : c_KgOraFdoCommand(Conn)
+c_KgOraApplySchema::c_KgOraApplySchema(c_KgOraConnection *Conn) : c_KgOraFdoCommand<FdoIApplySchema>(Conn)
 {
   m_IngoreStates = true;
 }
@@ -185,7 +184,7 @@ try
       
       sql_create = sql_create + "CREATE TABLE " + tablename + " ( " + sql_cols + " ) ";
       
-      string sqlstr = sql_create;
+      string sqlstr = (const char*)sql_create;
       const char*dbg = sqlstr.c_str();
       //occi_stm->setSQL( sqlstr );
       occi_stm->executeUpdate(sqlstr);
@@ -593,7 +592,7 @@ void c_KgOraApplySchema::InsertSdoGeomMetadata(FdoString* TableName,FdoGeometric
   
   FdoStringP sridstr;
   if( orasrid.m_OraSrid > 0 )
-    sridstr = FdoStringP::Format(L"%ld",orasrid);
+    sridstr = FdoStringP::Format(L"%ld",orasrid.m_OraSrid);
   else
     sridstr = "NULL";
     
@@ -603,7 +602,7 @@ void c_KgOraApplySchema::InsertSdoGeomMetadata(FdoString* TableName,FdoGeometric
 try
 {
   occi_stm = m_Connection->OCCI_CreateStatement();
-  string sstr = sqlstr;
+  string sstr = (const char*)sqlstr;
   occi_stm->setSQL(sstr);
   occi_stm->setObject(1,xdim_sdoelem);
   occi_stm->setObject(2,ydim_sdoelem);
@@ -688,7 +687,7 @@ try
 {
   occi_stm = m_Connection->OCCI_CreateStatement();
   
-  string sstr=sqlstr;
+  string sstr=(const char*)sqlstr;
   
   occi_stm->executeUpdate(sstr);
   
@@ -739,7 +738,7 @@ try
 {
   occi_stm = m_Connection->OCCI_CreateStatement();
   
-  string sstr=sqlstr;
+  string sstr=(const char*)sqlstr;
   
   occi_stm->executeUpdate(sstr);
   
@@ -772,7 +771,7 @@ try
 {
   occi_stm = m_Connection->OCCI_CreateStatement();
   
-  string sstr=sqlstr;
+  string sstr=(const char*)sqlstr;
   
   occi_stm->executeUpdate(sstr);
   

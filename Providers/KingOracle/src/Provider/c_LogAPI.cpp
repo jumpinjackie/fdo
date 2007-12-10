@@ -16,12 +16,15 @@
 */
 
 #include "stdafx.h"
+#include "time.h"
 #include <stdarg.h>
 #include "c_LogAPI.h"
 
-
-
+#ifdef _WIN32
 extern wchar_t g_LogFileName[MAX_PATH];
+#else
+extern wchar_t g_LogFileName[PATH_MAX];
+#endif
 
 FdoCommonThreadMutex c_LogAPI::m_Mutex;
 
@@ -39,17 +42,19 @@ void c_LogAPI::WriteLog0(const char* Text)
     
     m_Mutex.Enter();
     
+#ifdef _WIN32
     FILE * GisDebugFile = _wfopen(g_LogFileName, L"a+");
+#else
+    char *mb_fn = NULL;
+    wide_to_multibyte(mb_fn, g_LogFileName);
+    FILE * GisDebugFile = fopen(mb_fn, "a+");
+#endif
     if( GisDebugFile )
     {
-    // add new line date and time
+      // add new line date and time
       struct tm *newtime;
-      
-      __time64_t long_time;
+      FdoCommonOSUtil::getsystime(newtime);
 
-      _time64( &long_time );           // Get time as 64-bit integer.
-                                       // Convert to local time.
-      newtime = _localtime64( &long_time ); // C4996
       fprintf(GisDebugFile, "\n<%d-%d-%d %d:%d:%d>",newtime->tm_yday,newtime->tm_mon,newtime->tm_mday,newtime->tm_hour,newtime->tm_min,newtime->tm_sec);
 
       fprintf(GisDebugFile, Text);
@@ -82,18 +87,21 @@ void c_LogAPI::WriteLog(const char* text,...)
     
     va_start(args,text);
 
-     m_Mutex.Enter();
+    m_Mutex.Enter();
+
+#ifdef _WIN32
     FILE * GisDebugFile = _wfopen(g_LogFileName, L"a+");
+#else
+    char *mb_fn = NULL;
+    wide_to_multibyte(mb_fn, g_LogFileName);
+    FILE * GisDebugFile = fopen(mb_fn, "a+");
+#endif
+
     if( GisDebugFile )
     {
-    // add new line date and time
+      // add new line date and time
       struct tm *newtime;
-      
-      __time64_t long_time;
-
-      _time64( &long_time );           // Get time as 64-bit integer.
-                                       // Convert to local time.
-      newtime = _localtime64( &long_time ); // C4996
+      FdoCommonOSUtil::getsystime(newtime);
       fprintf(GisDebugFile, "\n<%d-%d-%d %d:%d:%d>",newtime->tm_yday,newtime->tm_mon,newtime->tm_mday,newtime->tm_hour,newtime->tm_min,newtime->tm_sec);
 
       char* cbuff = new char[2048];

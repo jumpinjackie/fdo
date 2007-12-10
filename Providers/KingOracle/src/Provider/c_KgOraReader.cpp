@@ -20,8 +20,8 @@
 #include <time.h>
 
 
-#include "c_SDoGeomToAGF.h"
-#include "c_LogApi.h"
+#include "c_SdoGeomToAGF.h"
+#include "c_LogAPI.h"
 
 
     

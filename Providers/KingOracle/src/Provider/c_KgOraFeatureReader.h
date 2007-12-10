@@ -23,7 +23,7 @@
 
 
 
-class c_KgOraFeatureReader : public c_KgOraReader< FdoIFeatureReader>
+class c_KgOraFeatureReader : public c_KgOraReader<FdoIFeatureReader>
 {
     public:
         c_KgOraFeatureReader(c_KgOraConnection * Connection

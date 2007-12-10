@@ -17,7 +17,7 @@
 
 #include "stdafx.h"
 
-#include "c_LogApi.h"
+#include "c_LogAPI.h"
 #include "c_KgOraSchemaPool.h"
 
 c_KgOraDescribeSchemaCommand::c_KgOraDescribeSchemaCommand (c_KgOraConnection* Connection) 

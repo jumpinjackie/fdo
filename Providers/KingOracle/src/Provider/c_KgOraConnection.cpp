@@ -24,12 +24,9 @@
 #include "c_FdoOra_API.h"
 #include "c_KgOraSchemaDesc.h"
 #include "c_KgOraSchemaPool.h"
-#include "c_LogApi.h"
+#include "c_LogAPI.h"
 
 #include <time.h>
-
-#define KGORA_MESSAGE_DEFINE
-#include <../Message/inc/KgOraMessage.h>
 
 #ifdef _WIN32
 
@@ -78,6 +75,11 @@ BOOL APIENTRY DllMain (HANDLE Module, DWORD Reason, LPVOID lpReserved)
 
     return (ret);
 }
+
+#else
+
+wchar_t g_LogFileName[PATH_MAX];
+
 #endif // _WIN32
 
 
@@ -233,7 +235,7 @@ void c_KgOraConnection::SetConnectionString (FdoString* value)
         connDict->UpdateFromConnectionString(m_ConnectionString);
     }
     else
-        throw FdoException::Create (NlsMsgGet(M_KGORA_CONNECTION_ALREADY_OPEN, "The connection is already open."));
+        throw FdoException::Create (NlsMsgGetKgOra(M_KGORA_CONNECTION_ALREADY_OPEN, "The connection is already open."));
 }
 
 /// <summary>Gets an FdoIConnectionInfo interface that can be used to interrogate and set connection properties.</summary>
@@ -275,7 +277,7 @@ FdoInt32 c_KgOraConnection::GetConnectionTimeout ()
 void c_KgOraConnection::SetConnectionTimeout (FdoInt32 value)
 {
   D_KGORA_ELOG_WRITE("c_KgOraConnection::SetConnectionTimeout ");
-    throw FdoException::Create (NlsMsgGet(M_KGORA_CONNECTION_TIMEOUT_UNSUPPORTED, "Connection timeout is not supported."));
+    throw FdoException::Create (NlsMsgGetKgOra(M_KGORA_CONNECTION_TIMEOUT_UNSUPPORTED, "Connection timeout is not supported."));
 }
 
 
@@ -461,7 +463,7 @@ g_Mutex.Enter();
 FdoITransaction* c_KgOraConnection::BeginTransaction ()
 {
   D_KGORA_ELOG_WRITE("c_KgOraConnection::BeginTransaction ");
-    throw FdoException::Create(NlsMsgGet(M_KGORA_CONNECTION_TRANSACTIONS_NOT_SUPPORTED, "King.Oracle Provider does not support transactions."));
+    throw FdoException::Create(NlsMsgGetKgOra(M_KGORA_CONNECTION_TRANSACTIONS_NOT_SUPPORTED, "King.Oracle Provider does not support transactions."));
 }
 
 /// <summary>Creates and returns the specified type of command object associated with
@@ -475,7 +477,7 @@ FdoICommand* c_KgOraConnection::CreateCommand (FdoInt32 CommandId)
   D_KGORA_ELOG_WRITE2("c_KgOraConnection::CreateCommand %ld '%s'",(long)CommandId,(const char*)FdoCommonMiscUtil::FdoCommandTypeToString (CommandId));
   
     if ((GetConnectionState() == FdoConnectionState_Closed) || (GetConnectionState() == FdoConnectionState_Pending))
-        throw FdoException::Create(NlsMsgGet(M_KGORA_CONNECTION_INVALID, "Connection is invalid."));
+        throw FdoException::Create(NlsMsgGetKgOra(M_KGORA_CONNECTION_INVALID, "Connection is invalid."));
     switch (CommandId)
     {
         case FdoCommandType_Select:
@@ -965,7 +967,7 @@ void c_KgOraConnection::TestArrayFetch(FdoIdentifier* ClassId, FdoFilter* Filter
         FdoStringP gstr = ea.getMessage().c_str();
         printf("\nTest occi exception: %s",(const char*)gstr);
         //throw FdoConnectionException::Create( gstr );
-        //throw FdoException::Create (NlsMsgGet(KGORA_CONNECTION_ALREADY_OPEN, "The connection is already open."));
+        //throw FdoException::Create (NlsMsgGetKgOra(KGORA_CONNECTION_ALREADY_OPEN, "The connection is already open."));
         //throw c_KgDbException(ea.getErrorCode(),ea.getMessage().data(),"c_KgDbBsAPI::Init");
       }
     
@@ -975,7 +977,7 @@ void c_KgOraConnection::TestArrayFetch(FdoIdentifier* ClassId, FdoFilter* Filter
         FdoStringP gstr = ea->getMessage().c_str();
         printf("\nTest occi exception: %s",(const char*)gstr);
         //throw FdoConnectionException::Create( gstr );
-        //throw FdoException::Create (NlsMsgGet(KGORA_CONNECTION_ALREADY_OPEN, "The connection is already open."));
+        //throw FdoException::Create (NlsMsgGetKgOra(KGORA_CONNECTION_ALREADY_OPEN, "The connection is already open."));
         //throw c_KgDbException(ea.getErrorCode(),ea.getMessage().data(),"c_KgDbBsAPI::Init");
       }
       catch (exception& )                                                      

@@ -17,7 +17,7 @@
 
 #ifndef _c_KgOraReader_h
 #define _c_KgOraReader_h
-#include "c_logApi.h"
+#include "c_LogAPI.h"
 #include "c_SdoGeomToAGF.h"
 #include <time.h>
 

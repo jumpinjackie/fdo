@@ -18,7 +18,7 @@
 #include "c_KgOraCreateDataStore.h"
 
 c_KgOraCreateDataStore::c_KgOraCreateDataStore(c_KgOraConnection *Conn)
-  : c_KgOraFdoCommand(Conn)
+  : c_KgOraFdoCommand<FdoICreateDataStore>(Conn)
 {
 }
 

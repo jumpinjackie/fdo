@@ -21,7 +21,7 @@
 #include "c_KgOraFeatureReader.h"
 #include "c_KgOraFilterProcessor.h"
 
-#include "c_LogApi.h"
+#include "c_LogAPI.h"
 
 #include <malloc.h>
 
@@ -60,7 +60,7 @@ FdoIdentifierCollection* c_KgOraSelectCommand::GetPropertyNames ()
 /// <returns>Returns the lock type.</returns> 
 FdoLockType c_KgOraSelectCommand::GetLockType ()
 {
-    throw FdoCommandException::Create (NlsMsgGet (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"GetLockType"));
+    throw FdoCommandException::Create (NlsMsgGetKgOra (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"GetLockType"));
 }
 
 /// <summary>Sets the FdoLockType value (see "Locking Commands").</summary>
@@ -68,14 +68,14 @@ FdoLockType c_KgOraSelectCommand::GetLockType ()
 /// <returns>Returns nothing</returns> 
 void c_KgOraSelectCommand::SetLockType (FdoLockType value)
 {
-    throw FdoCommandException::Create (NlsMsgGet (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"SetLockType"));
+    throw FdoCommandException::Create (NlsMsgGetKgOra (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"SetLockType"));
 }
 
 /// <summary>Gets the FdoLockStrategy value (see "Locking Commands").</summary>
 /// <returns>Returns the lock strategy.</returns> 
 FdoLockStrategy c_KgOraSelectCommand::GetLockStrategy ()
 {
-    throw FdoCommandException::Create (NlsMsgGet (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"GetLockStrategy"));
+    throw FdoCommandException::Create (NlsMsgGetKgOra (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"GetLockStrategy"));
 }
 
 /// <summary>Sets the FdoLockStrategy value (see "Locking Commands").</summary>
@@ -83,7 +83,7 @@ FdoLockStrategy c_KgOraSelectCommand::GetLockStrategy ()
 /// <returns>Returns nothing</returns> 
 void c_KgOraSelectCommand::SetLockStrategy (FdoLockStrategy value)
 {
-    throw FdoCommandException::Create (NlsMsgGet (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"SetLockStrategy"));
+    throw FdoCommandException::Create (NlsMsgGetKgOra (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"SetLockStrategy"));
 }
 
 /// <summary>Executes the select command and returns a reference to an FdoIFeatureReader.</summary>
@@ -196,7 +196,7 @@ FdoIFeatureReader* c_KgOraSelectCommand::Execute ()
 /// <returns>Returns the feature reader.</returns> 
 FdoIFeatureReader* c_KgOraSelectCommand::ExecuteWithLock ()
 {
-  throw FdoCommandException::Create (NlsMsgGet (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"ExecuteWithLock"));
+  throw FdoCommandException::Create (NlsMsgGetKgOra (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"ExecuteWithLock"));
 }
 
 /// <summary> When executing the operation ExecuteWithLock lock 
@@ -207,7 +207,7 @@ FdoIFeatureReader* c_KgOraSelectCommand::ExecuteWithLock ()
 /// <returns>Returns a lock conflict reader.</returns> 
 FdoILockConflictReader* c_KgOraSelectCommand::GetLockConflicts ()
 {
-    throw FdoCommandException::Create (NlsMsgGet (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"GetLockConflicts"));
+    throw FdoCommandException::Create (NlsMsgGetKgOra (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"GetLockConflicts"));
 }
 
 
@@ -267,7 +267,7 @@ string c_KgOraSelectCommand::CreateSqlString(c_KgOraFilterProcessor& FilterProc,
         
         GeomSqlColumnIndex=ind;
         
-        if( phys_class->GetIsPointGeometry() && (_wcsicmp(propname,phys_class->GetPoinGeometryPropertyName())==0) )
+        if( phys_class->GetIsPointGeometry() && (FdoCommonOSUtil::wcsicmp(propname,phys_class->GetPoinGeometryPropertyName())==0) )
         {
         // this is geometry created as point from numeric columns
           

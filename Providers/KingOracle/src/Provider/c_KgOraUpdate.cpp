@@ -18,7 +18,7 @@
 #include "c_KgOraFilterProcessor.h"
 
 c_KgOraUpdate::c_KgOraUpdate(c_KgOraConnection *Conn)
-  : c_KgOraFdoFeatureCommand(Conn)
+  : c_KgOraFdoFeatureCommand<FdoIUpdate>(Conn)
 {
 }
 
