@@ -15,16 +15,13 @@
 * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-
-
-#ifdef KGORA_MESSAGE_DEFINE
-
 #ifdef _WIN32
-char *g_KgOraMsgCat = "KingOracleMessage.dll";
+#define g_KgOraMsgCat "KingOracleMessage.dll"
 #else
-char *g_KgOraMsgCat = "KingOracleMessage.cat";
+#define g_KgOraMsgCat "KingOracleMessage.cat"
 #endif
-FdoString* NlsMsgGet(int msg_num, char* default_msg, ...)
+
+inline FdoString* NlsMsgGetKgOra(int msg_num, char* default_msg, ...)
 {
     va_list varargs;
     va_start(varargs, default_msg);
@@ -37,8 +34,4 @@ FdoString* NlsMsgGet(int msg_num, char* default_msg, ...)
 
     return ret;
 }
-#else // KGORA_MESSAGE_DEFINE
-extern char *g_KgOraMsgCat;
-extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
-#endif // KGORA_MESSAGE_DEFINE
 
