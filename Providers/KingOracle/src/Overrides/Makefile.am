@@ -1,5 +1,5 @@
 ##
-## Copyright (C) 2006  SL-King d.o.o
+## Copyright (C) 2004-2007  Autodesk, Inc.
 ## 
 ## This library is free software; you can redistribute it and/or
 ## modify it under the terms of version 2.1 of the GNU Lesser
@@ -17,22 +17,30 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-noinst_LTLIBRARIES = libShpOverridesSrc.la
+EXTRA_DIST = KingOracleOverrides.vcproj \
+             FdoKgOraOverrides.rc
 
-libShpOverridesSrc_la_SOURCES = \
-  FdoShpPropertyDefinition.cpp \
-  FdoShpColumnDefinition.cpp \
-  FdoShpPhysicalSchemaMapping.cpp \
-  FdoShpClassDefinition.cpp \
-  FdoShpClassCollection.cpp \
-  FdoShpPropertyDefinitionCollection.cpp
+noinst_LTLIBRARIES = libKingOracleOverridesSrc.la
 
-libShpOverridesSrc_la_LDFLAGS = 
+libKingOracleOverridesSrc_la_SOURCES = \
+ FdoKgOraClassCollection.cpp \
+ FdoKgOraPhysicalSchemaMapping.cpp \
+ FdoKgOraClassDefinition.cpp \
+ FdoKgOraPropertyDefinitionCollection.cpp \
+ FdoKgOraColumnDefinition.cpp \
+ FdoKgOraPropertyDefinition.cpp
+
+noinst_HEADERS = $(libKingOracleOverridesSrc_la_SOURCES) \
+ resource.h \
+ FdoKgOraXmlGlobals.h \
+ stdafx.h
+
+libKingOracleOverridesSrc_la_LDFLAGS = 
 
 INCLUDES = \
+  -I../ \
   -I../../inc \
-  -I../../../../fdo/Unmanaged/inc \
-  -I../../../FdoCommon/inc
+  -I../../../../Fdo/Unmanaged/Inc \
+  -I../../../../Utilities/Common/Inc
 
 CXXFLAGS = @CXXFLAGS@ -D__USE_GNU -DLINUX -DLINUX_IA32
-

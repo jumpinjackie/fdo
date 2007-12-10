@@ -28,7 +28,7 @@
 #endif
 #include <Fdo.h>
 #include "../Provider/FDO_31_Types.h"
-#include <KingOracle/FdoKgOraProvider.h>
+#include <KingOracle/fdokgoraprovider.h>
 //#include <FdoCommonMiscUtil.h>
 #include "FdoKgOraXmlGlobals.h"
 #include "FdoCommonOSUtil.h"
