@@ -78,15 +78,8 @@ FdoInt32 c_KgOraFeatureReader::GetDepth()
     return 0;
 }
 
-
-
 FdoIFeatureReader* c_KgOraFeatureReader::GetFeatureObject(FdoString* propertyName)
 {
     return NULL;
 }
-
-
-
-
-
 

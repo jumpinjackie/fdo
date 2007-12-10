@@ -146,7 +146,7 @@ void c_KgOraSqlParamDesc::ApplySqlParameter(oracle::occi::Environment*Env,oracle
     break;
     case e_DataValue:
     {
-      oracle::occi::Type oratype;
+      //oracle::occi::Type oratype;
       
       if( c_FdoOra_API::SetOracleStatementData(Env,OraStm,SqlParamNum,m_ParamDataValue) )
       {

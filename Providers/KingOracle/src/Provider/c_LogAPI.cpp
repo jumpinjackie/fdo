@@ -52,7 +52,7 @@ void c_LogAPI::WriteLog0(const char* Text)
     if( GisDebugFile )
     {
       // add new line date and time
-      struct tm *newtime;
+      struct tm *newtime = NULL;
       FdoCommonOSUtil::getsystime(newtime);
 
       fprintf(GisDebugFile, "\n<%d-%d-%d %d:%d:%d>",newtime->tm_yday,newtime->tm_mon,newtime->tm_mday,newtime->tm_hour,newtime->tm_min,newtime->tm_sec);
@@ -100,7 +100,7 @@ void c_LogAPI::WriteLog(const char* text,...)
     if( GisDebugFile )
     {
       // add new line date and time
-      struct tm *newtime;
+      struct tm *newtime = NULL;
       FdoCommonOSUtil::getsystime(newtime);
       fprintf(GisDebugFile, "\n<%d-%d-%d %d:%d:%d>",newtime->tm_yday,newtime->tm_mon,newtime->tm_mday,newtime->tm_hour,newtime->tm_min,newtime->tm_sec);
 

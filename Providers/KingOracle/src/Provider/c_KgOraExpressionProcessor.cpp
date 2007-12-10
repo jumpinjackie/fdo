@@ -49,8 +49,8 @@ c_KgOraExpressionProcessor::c_KgOraExpressionProcessor(c_FilterStringBuffer* Str
 
 c_KgOraExpressionProcessor::~c_KgOraExpressionProcessor(void)
 {
-  long size = m_ParamList.size();
-  for(long ind=0;ind<size;ind++)
+  size_t size = m_ParamList.size();
+  for(size_t ind=0;ind<size;ind++)
   {
     delete m_ParamList[ind];
   }
@@ -183,7 +183,7 @@ void c_KgOraExpressionProcessor::ProcessIdentifier( FdoIdentifier& Expr)
 
 void c_KgOraExpressionProcessor::ProcessParameter( FdoParameter& expr )
 {
-  long size = m_ParamList.size();
+  size_t size = m_ParamList.size();
   size++;
   char chbuff[16];
   sprintf(chbuff,"%ld",size);
@@ -198,7 +198,7 @@ void c_KgOraExpressionProcessor::ProcessParameter( FdoParameter& expr )
 
 void c_KgOraExpressionProcessor::AddAsParameter(FdoDataValue& Value)
 {
-  long size = m_ParamList.size();
+  size_t size = m_ParamList.size();
   size++;
   char chbuff[16];
   sprintf(chbuff,":%ld",size);
@@ -517,7 +517,7 @@ void c_KgOraExpressionProcessor::ProcessGeometryValue(FdoGeometryValue& Expr)
   
   if( fgftosdo.ToSdoGeom((int*)fgf->GetData(),m_OraSridDesc.m_OraSrid,sdogeom) == c_FgfToSdoGeom::e_Ok )
   {
-    long size = m_ParamList.size();
+    size_t size = m_ParamList.size();
     size++;
     char chbuff[16];
     sprintf(chbuff,"%ld",size);
@@ -588,7 +588,7 @@ void c_KgOraExpressionProcessor::ProcessGeometryValueRect(FdoGeometryValue& Expr
   SDO_GEOMETRY *sdorect = c_Ora_API::CreateOptimizedRect(m_OraSridDesc.m_OraSrid,minx,miny,maxx,maxy);
         
          
-    long size = m_ParamList.size();
+    size_t size = m_ParamList.size();
     size++;
     char chbuff[16];
     sprintf(chbuff,"%ld",size);
@@ -603,7 +603,7 @@ void c_KgOraExpressionProcessor::ProcessGeometryValueRect(FdoGeometryValue& Expr
 
 int c_KgOraExpressionProcessor::GetSqlParametersCount()
 {
-  return m_ParamList.size();
+  return (int)m_ParamList.size();
       
 }//end of c_KgOraExpressionProcessor::GetSqlParametersCount
 
@@ -611,10 +611,10 @@ void c_KgOraExpressionProcessor::ApplySqlParameters(oracle::occi::Environment*En
 {
   if( m_ParamList.size() > 0 )
   {
-    long psize = m_ParamList.size();
-    for(long pind=0;pind<psize;pind++)
+    size_t psize = m_ParamList.size();
+    for(size_t pind=0;pind<psize;pind++)
     {
-      m_ParamList[pind]->ApplySqlParameter(Env,OraStm,pind+1+ParamOffest);      
+      m_ParamList[pind]->ApplySqlParameter(Env,OraStm,(int)(pind+1+ParamOffest));      
     }
   }
       
