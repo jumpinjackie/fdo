@@ -138,8 +138,8 @@ class FdoExpressionFunctionTest : public CppUnit::TestCase
     // =========================================
     // ====       SPECIAL UNIT TESTS        ====
     // =========================================
-    // CPPUNIT_TEST(RunInstrPittsburgh);
-    // CPPUNIT_TEST(RunInTest);
+    // CPPUNIT_TEST(RunDateInTest);
+    // CPPUNIT_TEST(RunTestsInPittsburghContext);
     // CPPUNIT_TEST(RunUpdate);
   CPPUNIT_TEST_SUITE_END();
 
@@ -601,21 +601,17 @@ protected:
     //                         Special Test Functions
     //-------------------------------------------------------------------------
 
-    //  RunInstrPittsburgh:
-    //      The function tests an issue related to the use of the expression
-    //      function INSTR in a filter against data stored in a SQL Server.
-    //      The reported and confirmed behavior is that in MAP, the filter
-    //      is not applied (there is no problem with this in MySQL, Oracle as
-    //      those RDBMS systems have native support for the expression function
-    //      INSTR).
-
-    virtual void RunInstrPittsburgh ();
-
-    //  RunInTest:
+    //  RunDateInTest:
     //      The function executes a select statement using a filter that
-    //      selects data based on matching dates.
+    //      selects data based on matching dates defined with a IN clause.
 
-    virtual void RunInTest ();
+    virtual void RunDateInTest ();
+
+    //  RunTestsInPittsburghContext:
+    //      This function executes tests in a given data store for which issues
+    //      have been reported.
+
+    virtual void RunTestsInPittsburghContext ();
 
     //  RunUpdate:
     //      ->> FILL
