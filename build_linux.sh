@@ -35,6 +35,7 @@ RDBMSENABLE=yes
 GDALENABLE=yes
 OGRENABLE=yes
 POSTGISENABLE=yes
+KINGORACLEENABLE=yes
 SHOWHELP=no
 
 
@@ -113,6 +114,7 @@ do
        GDALENABLE=no
        OGRENABLE=no
        POSTGISENABLE=no
+       KINGORACLEENABLE=no
     fi
     if test -z "$1"; then
        echo "$arg Invalid parameter $1"
@@ -128,6 +130,7 @@ do
         GDALENABLE=yes
         OGRENABLE=yes
         POSTGISENABLE=yes
+        KINGORACLEENABLE=yes
     elif test "$1" == fdocore; then
 	FDOCOREENABLE=yes
     elif test "$1" == fdo; then
@@ -144,6 +147,7 @@ do
         GDALENABLE=yes
         OGRENABLE=yes
         POSTGISENABLE=yes
+        KINGORACLEENABLE=yes
     elif test "$1" == shp; then
         SHPENABLE=yes
     elif test "$1" == sdf; then
@@ -162,6 +166,8 @@ do
         OGRENABLE=yes
     elif test "$1" == postgis; then
         POSTGISENABLE=yes
+    elif test "$1" == kingoracle; then
+        KINGORACLEENABLE=yes
     else
         echo "$arg Invalid parameter $1"
         exit 1
@@ -241,6 +247,9 @@ if test "$SHOWHELP" == yes; then
    fi
    if test -e "Providers/PostGIS/build_linux.sh"; then
    HELPSTRINGWITH="$HELPSTRINGWITH, postgis"
+   fi
+   if test -e "Providers/KingOracle/build_linux.sh"; then
+   HELPSTRINGWITH="$HELPSTRINGWITH, kingoracle"
    fi
    
    echo "$HELPSTRINGWITH"
@@ -420,6 +429,15 @@ fi
 if test "$POSTGISENABLE" == yes; then
    if test -e "Providers/PostGIS/build_linux.sh"; then
        pushd Providers/PostGIS >& /dev/null
+       ./build_linux.sh $CMDEX
+       popd >& /dev/null
+   fi
+fi
+
+#build KingOracle Provider
+if test "$KINGORACLEENABLE" == yes; then
+   if test -e "Providers/KingOracle/build_linux.sh"; then
+       pushd Providers/KingOracle >& /dev/null
        ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
