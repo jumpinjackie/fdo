@@ -122,6 +122,27 @@ const FdoStringP FdoStringP::operator+( FdoString* str2 ) const
     return(FdoStringP(values));
 }
 
+FdoStringP  FdoStringP::operator+=( FdoString* str2 )
+{
+    // nothing to do if second string null.
+    if ( str2 ) {
+        size_t len1 = wcslen( mwString );
+        size_t len2 = wcslen( str2 );
+
+        if ( mBuffer && ((len1 + len2) <= mBuffer->mBufSize) ) {
+            // This object has an allocated buffer that is big enough to hold the result,
+            // simply append the second string.
+            memcpy((void*)(mwString + len1), (void*) str2, (len2 + 1 ) * sizeof(wchar_t) );
+        }
+        else {
+            // Otherwise delegate to "+" operator, which will allocate new buffer.
+            (*this) = (*this) + str2;
+        }
+    }
+
+    return( *this );
+}
+
 int FdoStringP::ICompare( const FdoStringP str2 ) const
 {
 #ifdef _WIN32
@@ -609,13 +630,14 @@ void FdoStringP::SetString(FdoString* wValue, FdoBoolean bAttach)
         mwString = (wchar_t*) workString;
     }
     else {
-	    // Create a new buffer from new value
-	    AllocateBuffer( wcslen(workString) );
-	    wcscpy( mwString, workString );
+        // Nothing to do if identity assignment (assigning this object to it's own string).
+        if ( (!mBuffer) || (mwString != workString) ) {
+    	    // Create a new buffer from new value
+            size_t len = wcslen(workString);
+	        AllocateBuffer( len );
+	        memcpy( (void*)mwString, (void*)workString, sizeof(wchar_t) * (len + 1) );
+        }
     }
-
-	// Initialize ref count.
-	AddRef();
 }
 
 void FdoStringP::SetString(const char* sValue) 
@@ -637,18 +659,46 @@ void FdoStringP::SetString(const char* sValue)
 
 void FdoStringP::SetString(const FdoStringP& oValue)
 {
-	// release current value
-	Release();
+    // Nothing to do if assigning object to itself.
+    if ( this != &oValue ) {
+	    // release current value
+	    Release();
 
-	// point to the buffer and ref counter for input object.
-	// This allows these string objects to share buffers when they
-	// have the same values.
-	mBuffer = oValue.mBuffer;
-	mwString = oValue.mwString;
+	    // point to the buffer and ref counter for input object.
+	    // This allows these string objects to share buffers when they
+	    // have the same values.
+	    mBuffer = oValue.mBuffer;
+	    mwString = oValue.mwString;
 
-	// bump up the ref count.
-	AddRef();
+	    // bump up the ref count.
+	    AddRef();
+    }
 }
+
+void FdoStringP::SetString( FdoString** values )
+{
+    size_t totalLength = 0;
+    int idx;
+
+
+    // Create buffer big enough to hold concatenated strings.
+    for ( idx = 0; values[idx] != NULL; idx++ ) 
+        totalLength += wcslen(values[idx]);
+
+    AllocateBuffer( totalLength );
+
+    // Concatenate the strings into this object's buffer
+    totalLength = 0;
+    for ( idx = 0; values[idx] != NULL; idx++ ) {
+        size_t curLength = wcslen(values[idx]);
+        memcpy( (void*)&(mwString[totalLength]), (void*) values[idx], curLength * sizeof(wchar_t) );
+        totalLength += curLength;
+    }
+
+    mwString[totalLength] = 0;
+}
+
+
 
 void FdoStringP::SetSingle( ) const
 {
@@ -691,25 +741,7 @@ FdoStringP::FdoStringP( FdoString** values ) :
 	msString(NULL),
 	mBuffer(NULL)
 {
-    size_t totalLength = 0;
-    int idx;
-
-    // Create buffer big enough to hold concatenated strings.
-    for ( idx = 0; values[idx] != NULL; idx++ ) 
-        totalLength += wcslen(values[idx]);
-
-    AllocateBuffer( totalLength );
-
-	// Initialize ref count.
-	AddRef();
-
-    // Concatenate the strings into this object's buffer
-    totalLength = 0;
-    for ( idx = 0; values[idx] != NULL; idx++ ) {
-	    wcscpy(&(mwString[totalLength]), values[idx] );
-        totalLength += wcslen(values[idx]);
-    }
-
+    SetString( values );
 }
 
 void FdoStringP::AllocateBuffer( size_t bufSize )
@@ -724,7 +756,7 @@ void FdoStringP::AllocateBuffer( size_t bufSize )
         mwString = (wchar_t*)(mBuffer + 1);
 
         // Initialize descriptor
-        SetRefCount(0);
+        SetRefCount(1);
         SetBufSize(bufSize);
     }
     else {

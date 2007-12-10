@@ -289,6 +289,7 @@ void CommonTest::testString()
 	CPPUNIT_ASSERT( wcscmp( s2, L"ca_defh" ) == 0 );
 
 	s1 = L"Mixed Case";
+    s1 = s1;
 
 	CPPUNIT_ASSERT( wcscmp(s1.Upper(), L"MIXED CASE") == 0 );
 	CPPUNIT_ASSERT( wcscmp(s1.Lower(), L"mixed case") == 0 );
@@ -364,6 +365,33 @@ void CommonTest::testString()
 
     s1 = L"\\0Xff";
 	CPPUNIT_ASSERT( s1.ToLong() == 255 );
+
+    wchar_t* blueString = L"Blue";
+    s1 = FdoStringP( blueString, true );
+    s1 = (FdoString*) s1;
+	CPPUNIT_ASSERT( s1 == L"Blue" );
+	CPPUNIT_ASSERT( blueString != (FdoString*) s1 );
+
+    int i;
+
+    for ( i = 0; i < 5; i++ ) {
+        s1 = L"Orange";
+        s1 += L"Red";
+        FDO_CPPUNIT_ASSERT( s1 == L"OrangeRed" );
+
+        s1 = L"Blue"; 
+        s1 = s1 + L"Green";
+        FDO_CPPUNIT_ASSERT( s1 == L"BlueGreen" );
+
+        s1 = L"Blue";
+        s2 = s1 + L"Green";
+        FDO_CPPUNIT_ASSERT( s2 == L"BlueGreen" );
+
+        s1 = FdoStringP(L"Red",true);
+        s1 += L"Green";
+        FDO_CPPUNIT_ASSERT( s1 == L"RedGreen" );
+
+    }
 }
 
 void CommonTest::testStringCollection()
@@ -398,7 +426,6 @@ void CommonTest::testStringCollection()
     FDO_CPPUNIT_ASSERT( c3->IndexOf(L"Violet",false) == 2 );
     FDO_CPPUNIT_ASSERT( c3->IndexOf(L"orange",true) == 0 );
     FDO_CPPUNIT_ASSERT( c3->IndexOf(L"orangE",true) == -1 );
-
 }
 
 void CommonTest::testDictionary()

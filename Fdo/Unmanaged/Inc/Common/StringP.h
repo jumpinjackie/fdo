@@ -106,7 +106,9 @@ public:
     /// Various operators for concatenating str2 to this.
 
     /// \brief
-    /// Appends a unicode string onto this string.
+    /// Appends a unicode string onto this string. 
+    /// When performance is critical, += should be used whenever possible
+    /// since it is up to 5X faster than this operator.
     /// 
     /// \param str2 
     /// Unicode string to concatenate
@@ -118,6 +120,8 @@ public:
 
     /// \brief
     /// Appends the contents of another string onto this string.
+    /// When performance is critical, += should be used whenever possible
+    /// since it is up to 5X faster than this operator.
     /// 
     /// \param str2 
     /// string to concatenate
@@ -139,11 +143,7 @@ public:
     /// \return
     /// Returns the concatenation of this string plus str2
     /// 
-	FDO_API_COMMON FdoStringP operator+=( FdoString* str2 )
-	{
-		(*this) = (*this) + str2;
-		return( *this );
-	}
+	FDO_API_COMMON FdoStringP operator+=( FdoString* str2 );
 
     /// \brief
     /// Appends the contents of another string onto this string.
@@ -508,6 +508,7 @@ private:
 	void SetString(const FdoStringP& oValue);
 	void SetString(FdoString* wValue, FdoBoolean bAttach = false);
 	void SetString(const char* sValue);
+	void SetString(const FdoString** values);
 
 	void SetSingle() const;
 
