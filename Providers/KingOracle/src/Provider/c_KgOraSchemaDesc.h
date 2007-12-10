@@ -24,7 +24,7 @@ class c_KgOraSchemaDesc : public FdoDisposable
 {
 
 public:  
-  c_KgOraSchemaDesc() : m_FeatureSchemas(NULL),m_PhysicalSchemaMapping(NULL) { }
+  c_KgOraSchemaDesc() { }
   
   static c_KgOraSchemaDesc* Create() { return new c_KgOraSchemaDesc(); }
   virtual void Dispose() { delete this; }

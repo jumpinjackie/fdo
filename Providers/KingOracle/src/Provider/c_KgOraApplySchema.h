@@ -19,6 +19,8 @@
 #ifndef _c_KgOraApplySchema_h
 #define _c_KgOraApplySchema_h
 
+#include "c_KgOraFdoCommand.h"
+
 class c_KgOraApplySchema : public c_KgOraFdoCommand<FdoIApplySchema>
 {
 public:

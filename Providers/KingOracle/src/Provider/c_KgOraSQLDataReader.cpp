@@ -52,7 +52,7 @@ c_KgOraSQLDataReader::c_KgOraSQLDataReader(c_KgOraConnection * Connection
     }
     else
     {
-      if( strcmpi(oratype.c_str(),"SDO_GEOMETRY") == 0 )
+      if( FdoCommonOSUtil::stricmp(oratype.c_str(),"SDO_GEOMETRY") == 0 )
       {
         m_SqlColumns->Add(cname.c_str());
         m_SqlColIndex.push_back(ind); 
@@ -150,7 +150,7 @@ FdoPropertyType c_KgOraSQLDataReader::GetPropertyType(FdoString* ColumnName)
   
   string oratype = m_MetaData[ind].getString(oracle::occi::MetaData::ATTR_TYPE_NAME);
   
-  if( strcmpi(oratype.c_str(),"SDO_GEOMETRY") == 0 )
+  if( FdoCommonOSUtil::stricmp(oratype.c_str(),"SDO_GEOMETRY") == 0 )
   {
     return FdoPropertyType_GeometricProperty;
   }

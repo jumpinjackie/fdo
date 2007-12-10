@@ -70,7 +70,7 @@ void c_FilterStringBuffer::ReallocBuffer( size_t  Size, bool AtEnd )
     {
         m_SqlBuffSize = ( extraSize < D_FILTER_MEM_BLOCK_ALLOC_SIZE )?D_FILTER_MEM_BLOCK_ALLOC_SIZE:extraSize;
         m_SqlFilterText = new char[m_SqlBuffSize];
-        if( m_SqlFilterText == NULL )  throw FdoFilterException::Create(NlsMsgGet(M_KGORA_OUT_OF_MEMORY_ERROR, "Memory error"));
+        if( m_SqlFilterText == NULL )  throw FdoFilterException::Create(NlsMsgGetKgOra(M_KGORA_OUT_OF_MEMORY_ERROR, "Memory error"));
         m_FirstBuffIndex = m_NextBuffIndex = m_SqlBuffSize/2;
         m_SqlFilterText[m_NextBuffIndex] = '\0';
     }
@@ -79,7 +79,7 @@ void c_FilterStringBuffer::ReallocBuffer( size_t  Size, bool AtEnd )
         m_SqlBuffSize += (( extraSize < D_FILTER_MEM_BLOCK_ALLOC_SIZE )?D_FILTER_MEM_BLOCK_ALLOC_SIZE:extraSize);
         char  *tmp = new char[m_SqlBuffSize];
         if( tmp == NULL )
-            throw FdoFilterException::Create(NlsMsgGet(M_KGORA_OUT_OF_MEMORY_ERROR, "Memory error"));
+            throw FdoFilterException::Create(NlsMsgGetKgOra(M_KGORA_OUT_OF_MEMORY_ERROR, "Memory error"));
         size_t currentSize = strlen( &m_SqlFilterText[m_FirstBuffIndex] );
         strncpy( &tmp[(m_SqlBuffSize-currentSize)/2], &m_SqlFilterText[m_FirstBuffIndex], currentSize );
         m_FirstBuffIndex = (m_SqlBuffSize-currentSize)/2;
