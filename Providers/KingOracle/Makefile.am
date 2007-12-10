@@ -17,22 +17,9 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = \
-   KingOracle/FdoKgOraOverrides.h \
-   KingOracle/fdokgoraprovider.h \
-   KingOracle/Overrides/FdoKgOraClassCollection.h \
-   KingOracle/Overrides/FdoKgOraPhysicalSchemaMapping.h \
-   KingOracle/Overrides/FdoKgOraClassDefinition.h \
-   KingOracle/Overrides/FdoKgOraPropertyDefinitionCollection.h \
-   KingOracle/Overrides/FdoKgOraColumnDefinition.h \
-   KingOracle/Overrides/FdoKgOraPropertyDefinition.h
+SUBDIRS = src inc
 
-INSTALL_DIR  = $(includedir)
+DIST_SUBDIRS = src inc
 
-install :
-	@if [ ! -d $(INSTALL_DIR) ]; then mkdir -p $(INSTALL_DIR); fi
-	@if [ ! -d $(INSTALL_DIR)/KingOracle ]; then mkdir -p $(INSTALL_DIR)/KingOracle; fi
-	@cp -urf ./KingOracle  $(INSTALL_DIR)/KingOracle
-
-uninstall :
-	@rm -drf $(INSTALL_DIR)/KingOracle
+EXTRA_DIST = build.bat \
+             build_linux.sh
