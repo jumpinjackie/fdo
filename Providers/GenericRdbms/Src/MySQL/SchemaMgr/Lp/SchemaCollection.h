@@ -34,7 +34,7 @@ public:
     //
     // Parameters:
     //      mgr: Physical Schema Manager
-    FdoSmLpMySqlSchemaCollection( FdoSmPhMgrP physicalSchema, FdoSmLpSpatialContextsP spatialContexts );
+    FdoSmLpMySqlSchemaCollection( FdoSmPhMgrP physicalSchema, FdoSmLpSpatialContextMgrP scMgr );
 
     ~FdoSmLpMySqlSchemaCollection(void);
 

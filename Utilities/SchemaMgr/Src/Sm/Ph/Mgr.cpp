@@ -384,6 +384,16 @@ void FdoSmPhMgr::SetBulkLoadConstraints( bool bulkLoad )
     mBulkLoadConstraints = bulkLoad;
 }
 
+bool FdoSmPhMgr::GetBulkLoadSpatialContexts()
+{
+    return mBulkLoadSpatialContexts;
+}
+
+void FdoSmPhMgr::SetBulkLoadSpatialContexts( bool bulkLoad )
+{
+    mBulkLoadSpatialContexts = bulkLoad;
+}
+
 /*
 bool FdoSmPhMgr::IsObjectNameValid( FdoStringP objectName )
 {
@@ -753,6 +763,7 @@ void FdoSmPhMgr::Clear()
         mDatabases->Clear();
 
     mBulkLoadConstraints = false;
+    mBulkLoadSpatialContexts = false;
 }
 
 void FdoSmPhMgr::OnAfterCommit()

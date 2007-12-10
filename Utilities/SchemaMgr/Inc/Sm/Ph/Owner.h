@@ -129,6 +129,10 @@ public:
     // it reverse-engineers the relations from the RDBMS.
     FdoSmPhSpatialContextGeomsP GetSpatialContextGeoms();
 
+    // Given database object and column name, returns the association to spatial context.
+    // Returns NULL if the column is not geometric or has no associated spatial context.
+    FdoSmPhSpatialContextGeomP FindSpatialContextGeom( FdoStringP dbObjectName, FdoStringP columnName );
+
     // Reverse-engineers an FDO feature schema name from this datastore.
     // Default implementation returns datastore name prepended by "Fdo".
     // "Fdo" is prepended to prevent name conflict with special schema 
@@ -165,6 +169,9 @@ public:
 
 	/// Get reader to retrieve all spatial contexts for the connection (no metaschema).
 	virtual FdoPtr<FdoSmPhRdSpatialContextReader> CreateRdSpatialContextReader();
+
+	/// Get reader to retrieve all spatial contexts for a database object.
+	virtual FdoPtr<FdoSmPhRdSpatialContextReader> CreateRdSpatialContextReader( FdoStringP dbObjectName );
 
     // Create a reader to get all foreign keys (ordered by foreign table) for this owner.
     // Default implementation returns NULL (not supported).
@@ -361,7 +368,10 @@ private:
     void LoadLtLck();
 
     // Caches spatial context to geometric column relationships, and physical spatial contexts.
-    void LoadSpatialContexts();
+    // When dbObjectName is blank, retrieves all spatial contexts for this owner,
+    // otherwise only the spatial contexts associated with the geometric columns
+    // in the given db object are loaded.
+    void LoadSpatialContexts( FdoStringP dbObjectName = L"" );
 
     // Gathers candidate tables for bulk loading indexes. A table is added to the candidates
     // list if its indexes are needed for reverse-engineering in the following two cases:
@@ -393,6 +403,7 @@ private:
     FdoSmPhSpatialContextsP mSpatialContexts;
     // Cache of spatial context to geometry column relationships
 	FdoSmPhSpatialContextGeomsP mSpatialContextGeoms;
+    bool mSpatialContextsLoaded;
 
     FdoStringP mPassword;
     bool mHasMetaSchema;

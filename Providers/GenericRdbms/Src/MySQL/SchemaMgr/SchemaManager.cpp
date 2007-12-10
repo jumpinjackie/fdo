@@ -29,9 +29,9 @@ FdoMySqlSchemaManager::~FdoMySqlSchemaManager(void)
 {
 }
 
-FdoSmLpSchemasP FdoMySqlSchemaManager::CreateLogicalPhysicalSchemas(FdoSmPhMgrP physMgr, FdoSmLpSpatialContextsP spatialContexts)
+FdoSmLpSchemasP FdoMySqlSchemaManager::CreateLogicalPhysicalSchemas(FdoSmPhMgrP physMgr, FdoSmLpSpatialContextMgrP scMgr)
 {
-    return new FdoSmLpMySqlSchemaCollection(physMgr, spatialContexts);
+    return new FdoSmLpMySqlSchemaCollection(physMgr, scMgr);
 }
 
 FdoSmPhMgrP FdoMySqlSchemaManager::CreatePhysicalSchema()

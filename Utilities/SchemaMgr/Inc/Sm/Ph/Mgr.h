@@ -358,6 +358,13 @@ public:
     // Sets whether to bulk load constraints.
     void SetBulkLoadConstraints( bool bulkLoad );
 
+    // Returns true if spatial contexts are being bulk loaded.
+    // Returns false if they are loaded on a per-table basis
+    bool GetBulkLoadSpatialContexts();
+
+    // Sets whether to bulk load constraints.
+    void SetBulkLoadSpatialContexts( bool bulkLoad );
+
 /* TODO
     /// Returns true if the given table name is a valid name.
 	bool IsObjectNameValid( FdoStringP objectName );
@@ -690,6 +697,7 @@ protected:
 private:
     FdoDictionaryP mDbObjectClassification;
     bool mBulkLoadConstraints;
+    bool mBulkLoadSpatialContexts;
 };
 
 

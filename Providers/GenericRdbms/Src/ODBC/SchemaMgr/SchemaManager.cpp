@@ -29,9 +29,9 @@ FdoOdbcSchemaManager::~FdoOdbcSchemaManager(void)
 {
 }
 
-FdoSmLpSchemasP FdoOdbcSchemaManager::CreateLogicalPhysicalSchemas(FdoSmPhMgrP physMgr, FdoSmLpSpatialContextsP spatialContexts)
+FdoSmLpSchemasP FdoOdbcSchemaManager::CreateLogicalPhysicalSchemas(FdoSmPhMgrP physMgr, FdoSmLpSpatialContextMgrP scMgr)
 {
-    return new FdoSmLpOdbcSchemaCollection(physMgr, spatialContexts);
+    return new FdoSmLpOdbcSchemaCollection(physMgr, scMgr);
 }
 
 FdoSmPhMgrP FdoOdbcSchemaManager::CreatePhysicalSchema()

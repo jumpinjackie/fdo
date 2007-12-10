@@ -37,7 +37,7 @@ protected:
     virtual ~FdoOdbcSchemaManager(void);
 
     // Create Odbc Provider's LogicalPhysical Schema collection.
-    virtual FdoSmLpSchemasP CreateLogicalPhysicalSchemas(FdoSmPhMgrP physMgr, FdoSmLpSpatialContextsP spatialContexts);
+    virtual FdoSmLpSchemasP CreateLogicalPhysicalSchemas(FdoSmPhMgrP physMgr, FdoSmLpSpatialContextMgrP scMgr);
 
     // Create Odbc Provider's Physical Schema Manager.
     virtual FdoSmPhMgrP CreatePhysicalSchema();

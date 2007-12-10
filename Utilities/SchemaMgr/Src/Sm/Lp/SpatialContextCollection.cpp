@@ -50,6 +50,50 @@ FdoSmLpSpatialContextP FdoSmLpSpatialContextCollection::FindSpatialContext( FdoI
     return(sc);
 }
 
+FdoSmLpSpatialContextP FdoSmLpSpatialContextCollection::FindSpatialContext( FdoStringP scName )
+{
+    // Check if already in cache
+    FdoSmLpSpatialContextP sc = FindItem(scName);
+
+    if ( !sc ) 
+    {
+        // Not in cache, load the spatial contexts and try again.
+        Load();
+        sc = FindItem(scName);
+    }
+
+    return(sc);
+}
+
+FdoSmPhSpatialContextGeomP FdoSmLpSpatialContextCollection::FindSpatialContextGeom( FdoStringP dbObjectName, FdoStringP columnName )
+{
+    FdoSmPhSpatialContextGeomP scGeom;
+
+  	if ( mPhysicalSchema != NULL ) {
+        // Check if there is a config doc
+        FdoIoStreamP configDoc = mPhysicalSchema->GetConfigDoc();
+        FdoSmPhOwnerP owner = mPhysicalSchema->GetOwner();
+
+        if ( (!configDoc) && (!owner->GetHasMetaSchema()) ) {
+            // Non-FDO datastore without config doc. Get spatial context
+            // association from Physical Schema Manager.
+            scGeom = owner->FindSpatialContextGeom( dbObjectName, columnName );
+        }
+        else {
+            // For other cases, load the spatial contexts and associations and
+            // look for the one we want.
+            Load();
+
+            if ( mSpatialContextGeoms )
+                scGeom = mSpatialContextGeoms->FindItem( FdoSmPhSpatialContextGeom::MakeName(dbObjectName, columnName) );
+            else
+                // SC assocations not initialized so fall back to physical associations.
+                scGeom = owner->FindSpatialContextGeom( dbObjectName, columnName );
+        }
+    }
+
+    return(scGeom);
+}
 
 FdoSmLpSpatialContextP FdoSmLpSpatialContextCollection::FindItemById( FdoInt64 scid )
 {
@@ -191,6 +235,20 @@ void FdoSmLpSpatialContextCollection::Load( FdoInt64 scId )
         if ( configDoc ) {
             mAreLoaded = true;
 
+            // Calculate next ScId as max(current scid's) + 1. next ScId is 
+            // used to assign unique id to spatial contexts read from config doc.
+            FdoInt64 nextScId = 0;
+            int idx;
+
+            for ( idx = 0; idx < GetCount(); idx++ )
+            {
+                FdoSmLpSpatialContextP currSc = GetItem(idx);
+                FdoInt64 currScId = currSc->GetId();
+
+                if ( currScId >= nextScId )
+                    nextScId = currScId + 1;
+            }
+
             // There is a config doc, so load spatial contexts from it exclusively.
             configDoc->Reset();
 	        FdoXmlReaderP reader = FdoXmlReader::Create(configDoc);
@@ -215,6 +273,7 @@ void FdoSmLpSpatialContextCollection::Load( FdoInt64 scId )
                 if (NULL == sc.p)
 					throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
+                sc->SetId( nextScId++ );
                 this->Add( sc );
 	        }
         }
@@ -288,7 +347,7 @@ void FdoSmLpSpatialContextCollection::Load( FdoInt64 scId )
 
             if ( scId >= 0) 
             {
-                // Just load the specified Spatial Contest
+                // Just load the specified Spatial Context
                 FdoSmPhSpatialContextP phSc = mPhysicalSchema->GetOwner()->FindSpatialContext(scId);            
                 if ( phSc ) 
                     AddFromPhysical(phSc);

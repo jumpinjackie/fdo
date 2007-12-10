@@ -152,7 +152,7 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
 			// Create the collection of custom functions.
 			FdoSmLpSchemasP	schemas = ((FdoSmLpSchema *) schema)->GetSchemas();
 
-			FdoExpressionEngineFunctionCollection *userDefinedFunctions = GetUserDefinedFunctions( schemas->GetSpatialContexts(), classDef );
+			FdoExpressionEngineFunctionCollection *userDefinedFunctions = GetUserDefinedFunctions( schemas->GetSpatialContextMgr()->GetSpatialContexts(), classDef );
 
 			return new FdoExpressionEngineUtilFeatureReader(
                                                         classDef,

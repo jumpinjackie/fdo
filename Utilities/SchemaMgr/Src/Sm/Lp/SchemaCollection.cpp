@@ -32,9 +32,9 @@
 #endif
 #endif
 
-FdoSmLpSchemaCollection::FdoSmLpSchemaCollection(FdoSmPhMgrP physicalSchema, FdoSmLpSpatialContextsP spatialContexts) :
+FdoSmLpSchemaCollection::FdoSmLpSchemaCollection(FdoSmPhMgrP physicalSchema, FdoSmLpSpatialContextMgrP scMgr) :
 	mPhysicalSchema(physicalSchema),
-    mSpatialContexts(spatialContexts),
+    mSpatialContextMgr(scMgr),
     mSchemasLoaded(false)
 {
 }

@@ -46,6 +46,7 @@ libSmLogicalPhysical_la_SOURCES = \
   SimplePropertyDefinition.cpp \
   SpatialContext.cpp \
   SpatialContextCollection.cpp \
+  SpatialContextMgr.cpp \
   UniqueConstraint.cpp \
   stdafx.cpp
 

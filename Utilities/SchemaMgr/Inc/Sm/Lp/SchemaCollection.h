@@ -22,7 +22,7 @@
 
 #include <Sm/Lp/Schema.h>
 #include <Sm/NamedCollection.h>
-#include <Sm/Lp/SpatialContextCollection.h>
+#include <Sm/Lp/SpatialContextMgr.h>
 
 class FdoSmLpObjectPropertyDefinition;
 class FdoSmLpAssociationPropertyDefinition;
@@ -40,7 +40,8 @@ public:
     /// Parameters:
     /// 	physicalSchema: Physical Schema Manager. All Feature Schemas in 
     ///          the current database are added to this collection.
-	FdoSmLpSchemaCollection( FdoSmPhMgrP physicalSchema, FdoSmLpSpatialContextsP spatialContexts );
+    ///     scMgr : Spatial Context Manager (for retrieving spatial contexts)
+	FdoSmLpSchemaCollection( FdoSmPhMgrP physicalSchema, FdoSmLpSpatialContextMgrP scMgr );
 
 	~FdoSmLpSchemaCollection(void);
 
@@ -49,9 +50,10 @@ public:
         return mPhysicalSchema;
     }
 
-    FdoSmLpSpatialContextsP GetSpatialContexts()
+    // Get the Spatial Context Manager for LogicalPhysical Spatial Contexts
+    FdoSmLpSpatialContextMgrP GetSpatialContextMgr()
     {
-        return mSpatialContexts;
+        return mSpatialContextMgr;
     }
 
     /// Finds a class object by name. Returns NULL if the class is not
@@ -253,7 +255,7 @@ private:
 
     bool        mSchemasLoaded;
 	FdoSmPhMgrP mPhysicalSchema;
-    FdoSmLpSpatialContextsP mSpatialContexts;
+    FdoSmLpSpatialContextMgrP mSpatialContextMgr;
 };
 
 typedef FdoPtr<FdoSmLpSchemaCollection> FdoSmLpSchemasP;

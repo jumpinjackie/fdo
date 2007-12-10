@@ -315,6 +315,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Src\Sm\Lp\SpatialContextMgr.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Src\Sm\Lp\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -489,6 +493,10 @@
 			</File>
 			<File
 				RelativePath=".\Inc\Sm\Lp\SpatialContextCollection.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\Sm\Lp\SpatialContextMgr.h"
 				>
 			</File>
 			<File

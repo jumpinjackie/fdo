@@ -38,7 +38,7 @@ protected:
     virtual ~FdoMySqlSchemaManager(void);
 
     // Create MySql Provider's LogicalPhysical Schema collection.
-    virtual FdoSmLpSchemasP CreateLogicalPhysicalSchemas(FdoSmPhMgrP physMgr, FdoSmLpSpatialContextsP spatialContexts);
+    virtual FdoSmLpSchemasP CreateLogicalPhysicalSchemas(FdoSmPhMgrP physMgr, FdoSmLpSpatialContextMgrP scMgr);
 
     // Create MySql Provider's Physical Schema Manager.
     virtual FdoSmPhMgrP CreatePhysicalSchema();

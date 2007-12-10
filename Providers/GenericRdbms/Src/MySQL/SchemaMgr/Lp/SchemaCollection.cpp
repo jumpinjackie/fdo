@@ -17,8 +17,8 @@
 #include "stdafx.h"
 #include "SchemaCollection.h"
 
-FdoSmLpMySqlSchemaCollection::FdoSmLpMySqlSchemaCollection(FdoSmPhMgrP physicalSchema, FdoSmLpSpatialContextsP spatialContexts) :
-    FdoSmLpSchemaCollection(physicalSchema, spatialContexts)
+FdoSmLpMySqlSchemaCollection::FdoSmLpMySqlSchemaCollection(FdoSmPhMgrP physicalSchema, FdoSmLpSpatialContextMgrP scMgr) :
+    FdoSmLpSchemaCollection(physicalSchema, scMgr)
 {
 }
 
