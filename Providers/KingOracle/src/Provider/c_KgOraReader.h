@@ -250,7 +250,7 @@ template <class FDO_READER> FdoDateTime c_KgOraReader<FDO_READER>::GetDateTime(F
       fdodate.day = day;
       fdodate.hour = hour;
       fdodate.minute = min;
-      fdodate.seconds = sec;
+      fdodate.seconds = (float)sec;
       
     }
     return fdodate;

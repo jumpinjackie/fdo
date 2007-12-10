@@ -546,7 +546,3 @@ c_FgfToSdoGeom::e_TransformResult c_FgfToSdoGeom::ToSdoGeom(const int* FGFbuff,l
   return e_Ok;
 }//end of c_FgfToSdoGeom::ToSdoGeom
 
-
-
-
-

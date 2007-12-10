@@ -274,7 +274,7 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
       #endif
       occi_stm->setSQL(sqlstr.GetString());
       
-      unsigned long count = m_BatchParameterValues->GetCount();
+      long count = m_BatchParameterValues->GetCount();
       for( long browind=0;browind<count;browind++)
       {
         // do aply of literal values
@@ -297,7 +297,7 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
             (added_new_batch_parameter_for_sequence_identity && ( (bparamcol->GetCount()+1) == num_batch_columns) )
           )
         {
-          unsigned long bcount = bparamcol->GetCount();
+          long bcount = bparamcol->GetCount();
           for(long bind=0;bind<bcount;bind++)
           {
             FdoPtr<FdoParameterValue> paramval = bparamcol->GetItem(bind);
