@@ -62,7 +62,7 @@ FdoInt32 FdoSmPhSpatialContextCollection::FindExistingSC( FdoSmPhSpatialContextP
 	{
 		FdoSmPhSpatialContextP  sc1 = this->GetItem(i);
 
-		if ( ( sc1->GetSrid() == sc1->GetSrid() ) &&
+		if ( ( sc1->GetSrid() == sc->GetSrid() ) &&
 			 ( wcscmp(sc1->GetCoordinateSystem(), sc->GetCoordinateSystem()) == 0 ) &&
 			 ( wcscmp(sc1->GetCoordinateSystemWkt(), sc->GetCoordinateSystemWkt()) == 0 ) &&
 			 ( sc1->GetXYTolerance() == sc->GetXYTolerance() ) &&

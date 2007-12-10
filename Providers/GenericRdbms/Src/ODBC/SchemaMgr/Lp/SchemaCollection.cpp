@@ -19,8 +19,8 @@
 #include "stdafx.h"
 #include "SchemaCollection.h"
 
-FdoSmLpOdbcSchemaCollection::FdoSmLpOdbcSchemaCollection(FdoSmPhMgrP physicalSchema, FdoSmLpSpatialContextsP spatialContexts) :
-    FdoSmLpSchemaCollection(physicalSchema, spatialContexts)
+FdoSmLpOdbcSchemaCollection::FdoSmLpOdbcSchemaCollection(FdoSmPhMgrP physicalSchema, FdoSmLpSpatialContextMgrP scMgr) :
+    FdoSmLpSchemaCollection(physicalSchema, scMgr)
 {
 }
 

@@ -120,7 +120,7 @@ void FdoSmLpGeometricPropertyDefinition::FixSpatialContextAssociation()
 	FdoSmLpSchemasP	pLpSchemas = pLpSchema->GetSchemas();
 	FdoSmPhMgrP		pPhysical = pLpSchema->GetPhysicalSchema();
 
-	FdoSmLpSpatialContextsP	scs = pLpSchemas->GetSpatialContexts();
+	FdoSmLpSpatialContextMgrP	scMgr = pLpSchemas->GetSpatialContextMgr();
 
 	bool	fromConfigDoc = ( FdoIoStreamP(pPhysical->GetConfigDoc()) != NULL );
 	bool	found = false;
@@ -128,35 +128,23 @@ void FdoSmLpGeometricPropertyDefinition::FixSpatialContextAssociation()
     if ( (GetElementState() != FdoSchemaElementState_Added) && !fromConfigDoc && mAssociatedSCName.GetLength() <= 0 && mAssociatedScId < 0 )
 	{
 		// Look up in the collection of SC geometries associations loaded along the Spatial contexts
-		FdoSmPhSpatialContextGeomsP scgeoms = scs->GetSpatialContextGeoms();
-		if ( scgeoms.p != NULL )
+    	FdoStringP tableName = GetContainingDbObjectName();
+	    FdoStringP columnName = GetColumnName();
+		FdoSmPhSpatialContextGeomP scgeom = scMgr->FindSpatialContextGeom( tableName, columnName );
+		if ( scgeom.p != NULL )
 		{
-			FdoStringP tableName = GetContainingDbObjectName();
-			FdoStringP columnName = GetColumnName();
-            bool scgeomFound = false;
-
-			for (int i = 0; i < scgeoms->GetCount() && !scgeomFound; i++ )
-			{
-				FdoSmPhSpatialContextGeomP scgeom = scgeoms->GetItem(i);
-				
-				// Match by name. Also in the case of providers with no metadata.
-				scgeomFound = ( ( scgeom->GetGeomTableName() == tableName ) && ( scgeom->GetGeomColumnName() == columnName ) ) ||
-						( ( scgeom->GetGeomTableName() == L"" ) &&  ( scgeom->GetGeomColumnName() == L"" ) );
-
-				if ( scgeomFound ) 
-				{
-					mAssociatedScId  = scgeom->GetScId();
-					FdoSmLpSpatialContextP sc = scs->FindItemById((FdoInt32)mAssociatedScId);
-                    if ( sc ) {
-    					mAssociatedSCName = sc->GetName();
-                        found = true;
-                    }
-				}
+			mAssociatedScId  = scgeom->GetScId();
+			FdoSmLpSpatialContextP sc = scMgr->FindSpatialContext(mAssociatedScId);
+            if ( sc ) {
+				mAssociatedSCName = sc->GetName();
+                found = true;
 			}
 		}
 	}
 	else if (mAssociatedSCName == L"")
     {
+        FdoSmLpSpatialContextsP scs = scMgr->GetSpatialContexts();
+
         if (scs->GetCount() >= 1)
         {
 			// We do not have access to the active spatial context here, so let's
@@ -172,7 +160,7 @@ void FdoSmLpGeometricPropertyDefinition::FixSpatialContextAssociation()
     }
     else if (mAssociatedScId < 0 )
     {
-        FdoSmLpSpatialContextP sc = scs->FindItem(mAssociatedSCName);
+        FdoSmLpSpatialContextP sc = scMgr->FindSpatialContext(mAssociatedSCName);
         if (sc != NULL)
 		{
             mAssociatedScId = sc->GetId();
@@ -693,10 +681,10 @@ FdoSmPhScInfoP FdoSmLpGeometricPropertyDefinition::CreateSpatialContextInfo()
 	FdoSmLpSchemasP	pLpSchemas = pLpSchema->GetSchemas();
 	FdoSmPhMgrP		pPhMgr = pLpSchema->GetPhysicalSchema();
 
-    FdoSmLpSpatialContextsP scs = pLpSchemas->GetSpatialContexts();
+    FdoSmLpSpatialContextMgrP scMgr = pLpSchemas->GetSpatialContextMgr();
     FdoSmPhScInfoP scInfo;
 
-    FdoSmLpSpatialContextP sc = scs->FindItem(mAssociatedSCName);
+    FdoSmLpSpatialContextP sc = scMgr->FindSpatialContext(mAssociatedSCName);
 
     if ( sc == NULL )
 	{

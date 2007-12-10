@@ -35,7 +35,7 @@
 #include <Sm/Disposable.h>
 #include <Sm/Ph/Mgr.h>
 #include <Sm/Lp/SchemaCollection.h>
-#include <Sm/Lp/SpatialContextCollection.h>
+#include <Sm/Lp/SpatialContextMgr.h>
 
 class FdoSchemaManager : public FdoSmDisposable
 {
@@ -52,6 +52,10 @@ public:
 	
 	const FdoSmLpSchemaCollection* RefLogicalPhysicalSchemas(void) const;
 
+    // Gets the current LogicalPhysical Spatial Context Manager
+    FdoSmLpSpatialContextMgrP GetLpSpatialContextMgr();
+
+    // Gets all LogicalPhysical Spatial Contexts
     virtual FdoSmLpSpatialContextsP GetLpSpatialContexts();
 
 
@@ -145,10 +149,10 @@ protected:
     FdoSmLpSchemasP GetLogicalPhysicalSchemas();
 
     /// Creates a LogicalPhysical Schema collection
-    virtual FdoSmLpSchemasP CreateLogicalPhysicalSchemas(FdoSmPhMgrP physMgr, FdoSmLpSpatialContextsP spatialContexts) = 0;
+    virtual FdoSmLpSchemasP CreateLogicalPhysicalSchemas(FdoSmPhMgrP physMgr, FdoSmLpSpatialContextMgrP scMgr) = 0;
     
-    /// Creates a Spatial Context Connection
-    virtual FdoSmLpSpatialContextsP CreateLpSpatialContexts(FdoSmPhMgrP physMgr);
+    /// Creates a Spatial Context Manager
+    virtual FdoSmLpSpatialContextMgrP CreateLpSpatialContextMgr(FdoSmPhMgrP physMgr);
     
     /// Creates a Physical Schema Manager.
     virtual FdoSmPhMgrP CreatePhysicalSchema() = 0;
@@ -179,7 +183,7 @@ protected:
 	FdoSmPhMgrP		mPhysicalSchema;
 	long					mRevision;
 
-    FdoSmLpSpatialContextsP mSpatialContexts;
+    FdoSmLpSpatialContextMgrP mSpatialContextMgr;
 
 	static long				mCurrRevision;
     static FdoCommonThreadMutex mMutex;

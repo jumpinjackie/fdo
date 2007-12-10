@@ -84,6 +84,8 @@ FdoSmPhOwner::FdoSmPhOwner(
     mCandIndexes = FdoDictionary::Create();   
     mCandIndexesLoadedTables = false;
     mCandIndexesLoadedRootTables = false;
+
+    mSpatialContextsLoaded = false;
 }
 
 FdoSmPhOwner::~FdoSmPhOwner(void)
@@ -281,6 +283,25 @@ FdoSmPhSpatialContextGeomsP FdoSmPhOwner::GetSpatialContextGeoms()
     return mSpatialContextGeoms;
 }
 
+FdoSmPhSpatialContextGeomP FdoSmPhOwner::FindSpatialContextGeom( FdoStringP dbObjectName, FdoStringP columnName )
+{
+    FdoStringP scGeomName = FdoSmPhSpatialContextGeom::MakeName(dbObjectName, columnName);
+    FdoSmPhSpatialContextGeomP scGeom;
+
+    // Check if required association already cached.
+    if ( mSpatialContextGeoms )
+        scGeom = mSpatialContextGeoms->FindItem(scGeomName);
+
+    if ( !scGeom ) {
+        // Not in cache, so load the associations for the given db object and
+        // try again.
+        LoadSpatialContexts( dbObjectName );
+        scGeom = mSpatialContextGeoms->FindItem(scGeomName);
+    }
+
+    return scGeom;
+}
+
 FdoStringP FdoSmPhOwner::GetBestSchemaName() const
 {
     return FdoSmPhMgr::RdSchemaPrefix + GetName();
@@ -418,6 +439,11 @@ FdoPtr<FdoSmPhRdSpatialContextReader> FdoSmPhOwner::CreateRdSpatialContextReader
     return new FdoSmPhRdSpatialContextReader(FDO_SAFE_ADDREF(this) );
 }
 
+FdoPtr<FdoSmPhRdSpatialContextReader> FdoSmPhOwner::CreateRdSpatialContextReader( FdoStringP dbObjectName )
+{
+    return new FdoSmPhRdSpatialContextReader(FDO_SAFE_ADDREF(this) );
+}
+
 FdoSmPhTableP FdoSmPhOwner::CreateTable(
     FdoStringP tableName,
     FdoStringP pkeyName
@@ -544,6 +570,10 @@ FdoSmPhDbObjectsP FdoSmPhOwner::CacheDbObjects( bool cacheComponents )
                 }
             }
         }
+
+        // At this point, all geometric columns have been bulk loaded so need
+        // to bulk load spatial contexts as well.
+        GetManager()->SetBulkLoadSpatialContexts(true);
     }
 
     return GetDbObjects();
@@ -922,7 +952,7 @@ FdoSmPhDbObjectP FdoSmPhOwner::CacheCandDbObjects( FdoStringP objectName )
             mNotFoundObjects->Add( elem );
     }
 
-   return retDbObject;
+    return retDbObject;
 }
 
 void FdoSmPhOwner::CacheCandIndexes( FdoStringP objectName )
@@ -1231,17 +1261,29 @@ FdoSmPhLockTypesCollection* FdoSmPhOwner::GetLockTypesCollection()
     return mLockTypes;
 }
 
-void FdoSmPhOwner::LoadSpatialContexts()
+void FdoSmPhOwner::LoadSpatialContexts( FdoStringP dbObjectName )
 {
     if ( !mSpatialContexts ) {
         mSpatialContexts = new FdoSmPhSpatialContextCollection();
         mSpatialContextGeoms = new FdoSmPhSpatialContextGeomCollection();
+    }
 
+    if ( !mSpatialContextsLoaded ) {
 		// reverse-engineering. The PH schema object will return the appropiate reader or
 		// the default one.
-        FdoSmPhRdSpatialContextReaderP scReader = CreateRdSpatialContextReader();
+        FdoSmPhRdSpatialContextReaderP scReader;
+        
+        if ( GetManager()->GetBulkLoadSpatialContexts() || (dbObjectName == L"") ) {
+            // We're either asked to or forced to load all spatial contexts.
+            scReader = CreateRdSpatialContextReader();
+            mSpatialContextsLoaded = true;
+        }
+        else {
+            // Incremental loading (SC's associated with given dbObject).
+            scReader = CreateRdSpatialContextReader(dbObjectName);
+        }
 			
-		FdoInt32	currSC = 0;
+		FdoInt32	currSC = mSpatialContexts->GetCount();
 
         while (scReader->ReadNext())
         {
@@ -1291,8 +1333,10 @@ void FdoSmPhOwner::LoadSpatialContexts()
             if (NULL == scgeom.p)
 				throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
-            mSpatialContextGeoms->Add( scgeom );	
+            if ( mSpatialContextGeoms->IndexOf(scgeom->GetName()) < 0 ) 
+                mSpatialContextGeoms->Add( scgeom );	
         }
+
     }
 }
 

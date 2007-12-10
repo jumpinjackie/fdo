@@ -39,8 +39,16 @@ public:
 	~FdoSmLpSpatialContextCollection(void);
 
     // Given a Spatial Context id, return the spatial context.
-    // Returns NULL if the spatial contexts does not exist.
+    // Returns NULL if the spatial context does not exist.
     FdoSmLpSpatialContextP FindSpatialContext( FdoInt64 scId );
+
+    // Given a Spatial Context name, return the spatial context.
+    // Returns NULL if the spatial context does not exist.
+    FdoSmLpSpatialContextP FindSpatialContext( FdoStringP scName );
+
+    // Given database object and column name, returns the association to spatial context.
+    // Returns NULL if the column is not geometric or has no associated spatial context.
+    FdoSmPhSpatialContextGeomP FindSpatialContextGeom( FdoStringP dbObjectName, FdoStringP columnName );
 
     FdoSmLpSpatialContextP CreateSpatialContext(
         FdoString* name,

@@ -52,6 +52,7 @@ FdoFeatureSchemasP FdoSchemaManager::GetFdoSchemas( FdoStringP schemaName)
     {
         // Load all constraints in one select, for performance.
         GetPhysicalSchema()->SetBulkLoadConstraints(true);
+        GetPhysicalSchema()->SetBulkLoadSpatialContexts(true);
 
         FdoSmLpSchemasP pLpSchemaColl = GetLogicalPhysicalSchemas();
 
@@ -100,16 +101,9 @@ FdoSchemaMappingsP FdoSchemaManager::GetSchemaMappings(
 
 FdoSmLpSpatialContextP FdoSchemaManager::FindSpatialContext( FdoInt64 scId )
 {
-	// Reload LogicalPhysical spatial contexts if Physical Schema has changed.
-	SynchRevision();
+	FdoSmLpSpatialContextMgrP scMgr = GetLpSpatialContextMgr();
 
-	FdoSmPhMgrP physMgr = GetPhysicalSchema();
-
-    if ( physMgr && (!mSpatialContexts) ) {
-		mSpatialContexts = CreateLpSpatialContexts(physMgr);
-    }
-
-	return mSpatialContexts->FindSpatialContext( scId );
+    return scMgr->FindSpatialContext( scId );
 }
 
 void FdoSchemaManager::DestroySchema( const wchar_t* schemaName  )
@@ -245,6 +239,7 @@ void FdoSchemaManager::ApplySchema(
 
 	try {
         GetPhysicalSchema()->SetBulkLoadConstraints(true);
+        GetPhysicalSchema()->SetBulkLoadSpatialContexts(true);
 
         if ( bIgnoreStates ) {
             // When ignoring element states, operation depends on whether
@@ -553,8 +548,10 @@ void FdoSchemaManager::SynchRevision()
 void FdoSchemaManager::Clear(bool bClearAll)
 {
 	mLpSchemas = NULL;
-	mPhysicalSchema->Clear();
-    mSpatialContexts = NULL;
+	if ( mPhysicalSchema ) 
+        mPhysicalSchema->Clear();
+    if ( mSpatialContextMgr ) 
+        mSpatialContextMgr->Clear();
 
     if ( bClearAll ) {
         mMutex.Enter();
@@ -573,30 +570,36 @@ FdoSmLpSchemasP FdoSchemaManager::GetLogicalPhysicalSchemas()
 	FdoSmPhMgrP physMgr = GetPhysicalSchema();
 
     if ( physMgr && (!mLpSchemas) ) {
-		mLpSchemas = CreateLogicalPhysicalSchemas(physMgr, GetLpSpatialContexts());
+		mLpSchemas = CreateLogicalPhysicalSchemas(physMgr, GetLpSpatialContextMgr());
         mLpSchemas->Load();
     }
 
 	return mLpSchemas;
 }
 
-FdoSmLpSpatialContextsP FdoSchemaManager::GetLpSpatialContexts()
+FdoSmLpSpatialContextMgrP FdoSchemaManager::GetLpSpatialContextMgr()
 {
 	// Reload LogicalPhysical spatial contexts if Physical Schema has changed.
 	SynchRevision();
 
 	FdoSmPhMgrP physMgr = GetPhysicalSchema();
 
-    if ( physMgr && (!mSpatialContexts) ) {
-		mSpatialContexts = CreateLpSpatialContexts(physMgr);
+    if ( physMgr && (!mSpatialContextMgr) ) {
+		mSpatialContextMgr = CreateLpSpatialContextMgr(physMgr);
     }
 
-    mSpatialContexts->Load();
-
-	return mSpatialContexts;
+	return mSpatialContextMgr;
 }
 
-FdoSmLpSpatialContextsP FdoSchemaManager::CreateLpSpatialContexts( FdoSmPhMgrP physMgr)
+
+FdoSmLpSpatialContextsP FdoSchemaManager::GetLpSpatialContexts()
 {
-	return new FdoSmLpSpatialContextCollection(physMgr);
+	FdoSmLpSpatialContextMgrP scMgr = GetLpSpatialContextMgr();
+
+	return scMgr->GetSpatialContexts();
+}
+
+FdoSmLpSpatialContextMgrP FdoSchemaManager::CreateLpSpatialContextMgr( FdoSmPhMgrP physMgr)
+{
+	return new FdoSmLpSpatialContextMgr(physMgr);
 }

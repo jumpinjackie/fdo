@@ -36,7 +36,7 @@ public:
     //
     // Parameters:
     //      mgr: Physical Schema Manager
-    FdoSmLpOdbcSchemaCollection( FdoSmPhMgrP physicalSchema, FdoSmLpSpatialContextsP spatialContexts );
+    FdoSmLpOdbcSchemaCollection( FdoSmPhMgrP physicalSchema, FdoSmLpSpatialContextMgrP scMgr );
 
     ~FdoSmLpOdbcSchemaCollection(void);
 
