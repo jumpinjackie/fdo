@@ -586,7 +586,20 @@ II. Build Notes
 
            FDOODBC=[unixODBC developer components path]
 
-  6. OPTIONAL: The FDO build process allows it's documentation to be 
+  6. In order to build the King Oracle Provider, you will need to download 
+     and install the 'Oracle 10.2.0.3 Instant Client' for Linux from:
+
+        http://www.oracle.com/technology/software/tech/oci/instantclient/htdocs/winsoft.html
+
+     The name of the installation files are:
+
+         'oracle-instantclient-basic-10.2.0.3-1.i386.rpm'
+         'oracle-instantclient-devel-10.2.0.3-1.i386.rpm'
+        
+     Install the files to the default installation location in /usr/lib and usr/include
+
+ 
+  7. OPTIONAL: The FDO build process allows it's documentation to be 
      regenerated.  If this is required, install the OpenSource Doxygen 
      documentation generation software.  Doxygen is a documentation system for 
      C++, C, Java, Objective-C, Python, IDL (Corba and Microsoft flavors) and 
@@ -602,7 +615,7 @@ II. Build Notes
      
      To install graphviz, refer to: http://www.graphviz.org/ 
 
-  7. OPTIONAL: The FDO build process supports the generation of a set of python 
+  8. OPTIONAL: The FDO build process supports the generation of a set of python 
      wrapper scripts for the FDO API. The python scripts are generated using 
      SWIG. To generate the python scripts, you must have Python and SWIG installed.
   
@@ -629,25 +642,25 @@ II. Build Notes
      [FDO OpenSource]/Fdo/Python/build_linux.sh script. 
      The Python components will be installed in /usr/local/fdo-3.3.0/lib
 
-  8. NOTE: To run the unit test, you must set LD_LIBRARY_PATH as follows:
+  9. NOTE: To run the unit test, you must set LD_LIBRARY_PATH as follows:
 
        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-3.3.0/lib
        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SDEHOME/lib:$FDOTHIRDPARTY/ESRI/ArcSDEClient91/Linux/lib
  
-  9. NOTE: Several known problems exist if auto-mounted drives are used as 
+ 10. NOTE: Several known problems exist if auto-mounted drives are used as 
      locations for the FDO Linux builds. It is recommended that users not use 
      auto-mounted drives when building FDO.
 
- 10. NOTE: The FDO expression scripts (.y) are not automatially recompiled as a
+ 11. NOTE: The FDO expression scripts (.y) are not automatially recompiled as a
      part of the FDO build process. In order to recompile the .y files into 
      their .cpp and .h counterparts, execute the build_parse.sh script.
 
- 11. NOTE: Use the [FDO OpenSource]\setenvironment.sh script to assist in 
+ 12. NOTE: Use the [FDO OpenSource]\setenvironment.sh script to assist in 
      setting and maintaing the correct environment settings for the FDO build 
      process.  This script can be modifed and used to set the correct 
      environment variables and PATH settings.
 
- 12. The build_thirdparty.sh script is used to build the FDO Thirdparty 
+ 13. The build_thirdparty.sh script is used to build the FDO Thirdparty 
      open source components used by the FDO API and the FDO providers.  
      The following is a general guideline on how to use the 
      build_thirdparty.sh build script.
@@ -728,7 +741,10 @@ II. Build Notes
                                      wms, 
                                      arcsde, 
                                      rdbms,
-                                     gdal
+                                     gdal,
+                                     ogr.
+                                     postgis
+                                     kingoracle
            **************************************************************
 
            e.g.
