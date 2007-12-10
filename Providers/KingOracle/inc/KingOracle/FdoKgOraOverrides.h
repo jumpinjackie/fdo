@@ -22,7 +22,7 @@
 #pragma once
 #endif
 
-#include <KingOracle/FdoKgOraProvider.h>
+#include <KingOracle/fdokgoraprovider.h>
 #include <KingOracle/Override/FdoKgOraColumnDefinition.h>
 #include <KingOracle/Override/FdoKgOraPropertyDefinition.h>
 #include <KingOracle/Override/FdoKgOraPropertyDefinitionCollection.h>
