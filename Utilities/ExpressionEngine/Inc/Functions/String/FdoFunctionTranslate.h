@@ -42,6 +42,8 @@
 class FdoFunctionTranslate : public FdoExpressionEngineINonAggregateFunction
 {
 
+    static const FdoInt32 INIT_ALLOCATE_SIZE = 100;
+
     public:
 
         // ********************************************************************
@@ -104,9 +106,9 @@ class FdoFunctionTranslate : public FdoExpressionEngineINonAggregateFunction
         //  The function returns the position of the provided character in the
         //  set of characters that need to be replaced.
 
-        FdoInt32 GetFromSetPosition (FdoStringP char_set,
+        FdoInt32 GetFromSetPosition (FdoString* char_set,
                                      FdoInt32   set_length,
-                                     FdoStringP curr_char);
+                                     FdoString* curr_char);
 
         // Validate:
         //  The function validates the provided parameters for the function
@@ -124,6 +126,15 @@ class FdoFunctionTranslate : public FdoExpressionEngineINonAggregateFunction
         //  TRANSLATE.
 
         FdoFunctionDefinition *function_definition;
+
+
+        FdoPtr<FdoStringValue>  return_string_value;
+
+        bool                    first;
+
+        wchar_t *tmp_buffer;
+
+        size_t tmp_buffer_size;
 
 };  //  class FdoFunctionTranslate
 

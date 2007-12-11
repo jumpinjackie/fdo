@@ -186,9 +186,7 @@ private:
 	FdoPropertyDefinition* GetProperty(FdoClassDefinition* cls, FdoString* propName );
     static FdoFunctionDefinitionCollection *DeepCopyFunctionDefinitions(FdoExpressionEngineFunctionCollection *functions);
     static FdoFunctionDefinition *DeepCopyFunctionDefinition(FdoFunctionDefinition *function);
-
-
-
+    void PopulateFunctions();
 
 	FdoCommonPropertyStub* GetPropInfo(FdoString* name);
 
@@ -275,6 +273,7 @@ private:
 	int m_ExpressionCacheSize;             // number of items allocated in the cache
 	int m_ExpressionCacheCurrent;        // number of items in the cache
 	ExpressionCache *m_ExpressionCache;     // the cache expressions
+    bool m_FunctionsPopulated;
 
 
     FdoPtr<FdoFunctionDefinitionCollection> m_AllFunctions; // collection of user-defined functions + standard functions

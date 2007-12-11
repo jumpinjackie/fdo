@@ -129,6 +129,10 @@ class FdoFunctionToFloat : public FdoExpressionEngineINonAggregateFunction
 
         FdoDataType incoming_data_type;
 
+        FdoPtr<FdoDecimalValue>  return_decimal_value;
+
+        bool                   first;
+
 };  //  class FdoFunctionToFloat
 
 #endif

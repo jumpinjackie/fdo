@@ -43,6 +43,8 @@ FdoFunctionSqrt::FdoFunctionSqrt ()
 
     incoming_data_type  = FdoDataType_CLOB;
 
+    first = true;
+
 }  //  FdoFunctionSqrt ()
 
 
@@ -123,9 +125,12 @@ FdoLiteralValue *FdoFunctionSqrt::Evaluate (
     FdoPtr<FdoInt64Value>   int64_value;
     FdoPtr<FdoSingleValue>  single_value;
 
-    // Validate the function call.
-
-    Validate(literal_values);
+    if (first)
+    {
+        Validate(literal_values);
+        return_double_value = FdoDoubleValue::Create();
+        first = false;
+    }
 
     // Process the request and return the result back to the calling routine.
 
@@ -134,10 +139,10 @@ FdoLiteralValue *FdoFunctionSqrt::Evaluate (
       case FdoDataType_Byte:
         byte_value =(FdoByteValue *) literal_values->GetItem(0);
         if (!byte_value->IsNull())
-            return FdoDoubleValue::Create(
-                                        sqrt((double)byte_value->GetByte()));
+            return_double_value->SetDouble(sqrt((double)byte_value->GetByte()));
         else
-          return FdoDoubleValue::Create();
+            return_double_value->SetNull();
+        return FDO_SAFE_ADDREF(return_double_value.p);
         break;
 
       case FdoDataType_Decimal:
@@ -145,12 +150,17 @@ FdoLiteralValue *FdoFunctionSqrt::Evaluate (
         if (!decimal_value->IsNull()) {
 
             if (decimal_value->GetDecimal() >= 0)
-                return FdoDoubleValue::Create(
-                                        sqrt(decimal_value->GetDecimal()));
+            {
+                return_double_value->SetDouble(sqrt(decimal_value->GetDecimal()));
+                return FDO_SAFE_ADDREF(return_double_value.p);
+            }
 
         }  //  if (!decimal_value->IsNull()) ...
         else
-          return FdoDoubleValue::Create();
+        {
+            return_double_value->SetNull();
+            return FDO_SAFE_ADDREF(return_double_value.p);
+        }
         break;
 
       case FdoDataType_Double:
@@ -158,12 +168,17 @@ FdoLiteralValue *FdoFunctionSqrt::Evaluate (
         if (!double_value->IsNull()) {
 
             if (double_value->GetDouble() >= 0)
-                return FdoDoubleValue::Create(
-                                        sqrt(double_value->GetDouble()));
+            {
+                return_double_value->SetDouble(sqrt(double_value->GetDouble()));
+                return FDO_SAFE_ADDREF(return_double_value.p);
+            }
 
-        }  //  if (!double_value->IsNull()) ...
+        }  //  if (!return_double_value->IsNull()) ...
         else
-          return FdoDoubleValue::Create();
+        {
+            return_double_value->SetNull();
+            return FDO_SAFE_ADDREF(return_double_value.p);
+        }
         break;
 
       case FdoDataType_Int16:
@@ -171,12 +186,17 @@ FdoLiteralValue *FdoFunctionSqrt::Evaluate (
         if (!int16_value->IsNull()) {
 
             if (int16_value->GetInt16() >= 0)
-                return FdoDoubleValue::Create(
-                                        sqrt((double)int16_value->GetInt16()));
+            {
+                return_double_value->SetDouble(sqrt((double)int16_value->GetInt16()));
+                return FDO_SAFE_ADDREF(return_double_value.p);
+            }
 
         }  //  if (!int16_value->IsNull()) ...
         else
-          return FdoDoubleValue::Create();
+        {
+            return_double_value->SetNull();
+            return FDO_SAFE_ADDREF(return_double_value.p);
+        }
         break;
 
       case FdoDataType_Int32:
@@ -184,12 +204,17 @@ FdoLiteralValue *FdoFunctionSqrt::Evaluate (
         if (!int32_value->IsNull()) {
 
             if (int32_value->GetInt32() >= 0)
-                return FdoDoubleValue::Create(
-                                        sqrt((double)int32_value->GetInt32()));
+            {
+                return_double_value->SetDouble(sqrt((double)int32_value->GetInt32()));
+                return FDO_SAFE_ADDREF(return_double_value.p);
+            }
 
         }  //  if (!int32_value->IsNull()) ...
         else
-          return FdoDoubleValue::Create();
+        {
+            return_double_value->SetNull();
+            return FDO_SAFE_ADDREF(return_double_value.p);
+        }
         break;
 
       case FdoDataType_Int64:
@@ -197,25 +222,35 @@ FdoLiteralValue *FdoFunctionSqrt::Evaluate (
         if (!int64_value->IsNull()) {
 
             if (int64_value->GetInt64() >= 0)
-                return FdoDoubleValue::Create(
-                                        sqrt((double)int64_value->GetInt64()));
+            {
+                return_double_value->SetDouble(sqrt((double)int64_value->GetInt64()));
+                return FDO_SAFE_ADDREF(return_double_value.p);
+            }
 
         }  //  if (!int64_value->IsNull()) ...
         else
-          return FdoDoubleValue::Create();
+        {
+            return_double_value->SetNull();
+            return FDO_SAFE_ADDREF(return_double_value.p);
+        }
         break;
 
       case FdoDataType_Single:
         single_value = (FdoSingleValue *) literal_values->GetItem(0);
         if (!single_value->IsNull()) {
 
-            if (single_value->GetSingle() >= 0)
-                return FdoDoubleValue::Create(
-                                        sqrt(single_value->GetSingle()));
+           if (single_value->GetSingle() >= 0)
+           {
+               return_double_value->SetDouble(sqrt(single_value->GetSingle()));
+               return FDO_SAFE_ADDREF(return_double_value.p);
+           }
 
         }  //  if (!single_value->IsNull()) ...
         else
-          return FdoDoubleValue::Create();
+        {
+            return_double_value->SetNull();
+            return FDO_SAFE_ADDREF(return_double_value.p);
+        }
         break;
 
     }  //  switch ...

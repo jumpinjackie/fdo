@@ -49,6 +49,8 @@ FdoFunctionToString::FdoFunctionToString ()
     is_pm_time            = false;
     is_h12_representation = false;
 
+    first = true;
+
 }  //  FdoFunctionToString ()
 
 
@@ -130,9 +132,12 @@ FdoLiteralValue *FdoFunctionToString::Evaluate (
     FdoPtr<FdoInt64Value>   int64_value;
     FdoPtr<FdoSingleValue>  single_value;
 
-    // Validate the function call.
-
-    Validate(literal_values);
+    if (first)
+    {
+        Validate(literal_values);
+        return_string_value = FdoStringValue::Create();
+        first = false;
+    }
 
     // The processing depends on the data type of the first argument.
 
@@ -145,57 +150,64 @@ FdoLiteralValue *FdoFunctionToString::Evaluate (
       case FdoDataType_Byte:
         byte_value = (FdoByteValue *) literal_values->GetItem(0);
         if (byte_value->IsNull())
-            return FdoStringValue::Create();
+            return_string_value->SetNull();
         else
-          return FdoStringValue::Create(byte_value->ToString());
+            return_string_value->SetString(byte_value->ToString());
+          return FDO_SAFE_ADDREF(return_string_value.p);
         break;
 
       case FdoDataType_Decimal:
         decimal_value = (FdoDecimalValue *) literal_values->GetItem(0);
         if (decimal_value->IsNull())
-            return FdoStringValue::Create();
+            return_string_value->SetNull();
         else
-          return FdoStringValue::Create(decimal_value->ToString());
+          return_string_value->SetString(decimal_value->ToString());
+        return FDO_SAFE_ADDREF(return_string_value.p);
         break;
 
       case FdoDataType_Double:
         double_value = (FdoDoubleValue *) literal_values->GetItem(0);
         if (double_value->IsNull())
-            return FdoStringValue::Create();
+            return_string_value->SetNull();
         else
-          return FdoStringValue::Create(double_value->ToString());
+          return_string_value->SetString(double_value->ToString());
+        return FDO_SAFE_ADDREF(return_string_value.p);
         break;
 
       case FdoDataType_Int16:
         int16_value = (FdoInt16Value *) literal_values->GetItem(0);
         if (int16_value->IsNull())
-            return FdoStringValue::Create();
+            return_string_value->SetNull();
         else
-          return FdoStringValue::Create(int16_value->ToString());
+          return_string_value->SetString(int16_value->ToString());
+          return FDO_SAFE_ADDREF(return_string_value.p);
         break;
 
       case FdoDataType_Int32:
         int32_value = (FdoInt32Value *) literal_values->GetItem(0);
         if (int32_value->IsNull())
-            return FdoStringValue::Create();
+            return_string_value->SetNull();
         else
-          return FdoStringValue::Create(int32_value->ToString());
+          return_string_value->SetString(int32_value->ToString());
+          return FDO_SAFE_ADDREF(return_string_value.p);
         break;
 
       case FdoDataType_Int64:
         int64_value = (FdoInt64Value *) literal_values->GetItem(0);
         if (int64_value->IsNull())
-            return FdoStringValue::Create();
+            return_string_value->SetNull();
         else
-          return FdoStringValue::Create(int64_value->ToString());
+          return_string_value->SetString(int64_value->ToString());
+          return FDO_SAFE_ADDREF(return_string_value.p);
         break;
 
       case FdoDataType_Single:
         single_value = (FdoSingleValue *) literal_values->GetItem(0);
         if (single_value->IsNull())
-            return FdoStringValue::Create();
+            return_string_value->SetNull();
         else
-          return FdoStringValue::Create(single_value->ToString());
+          return_string_value->SetString(single_value->ToString());
+        return FDO_SAFE_ADDREF(return_string_value.p);
         break;
 
     }  //  switch ...
@@ -700,7 +712,10 @@ FdoLiteralValue *FdoFunctionToString::ProcessDateTime (
 
     dt_value = (FdoDateTimeValue *) literal_values->GetItem(0);
     if (dt_value->IsNull())
-        return FdoStringValue::Create();
+    {
+        return_string_value->SetNull();
+        return FDO_SAFE_ADDREF(return_string_value.p);
+    }
 
     // Get the date/time information. If the provided information does not
     // representa a valid date or time issue an exception.
@@ -860,7 +875,8 @@ FdoLiteralValue *FdoFunctionToString::ProcessDateTime (
 
     // Return the generated string.
 
-    return FdoStringValue::Create(dt_string);
+    return_string_value->SetString(dt_string);
+    return FDO_SAFE_ADDREF(return_string_value.p);
 
 }  //  ProcessDateTime ()
 

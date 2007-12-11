@@ -129,6 +129,10 @@ class FdoFunctionToDouble : public FdoExpressionEngineINonAggregateFunction
 
         FdoDataType incoming_data_type;
 
+        FdoPtr<FdoDoubleValue> return_double_value;
+
+        bool                    first;
+
 };  //  class FdoFunctionToDouble
 
 #endif

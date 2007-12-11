@@ -48,6 +48,9 @@ FdoFunctionSubstr::FdoFunctionSubstr ()
     para2_data_type      = FdoDataType_CLOB;
     para3_data_type      = FdoDataType_CLOB;
 
+    first = true;
+    tmp_buffer = NULL;
+
 }  //  FdoFunctionSubstr ()
 
 
@@ -62,6 +65,8 @@ FdoFunctionSubstr::~FdoFunctionSubstr ()
     // Delete the function definition.
 
     FDO_SAFE_RELEASE(function_definition);
+
+    delete [] tmp_buffer;
 
 }  //  ~FdoFunctionSubstr ()
 
@@ -126,23 +131,32 @@ FdoLiteralValue *FdoFunctionSubstr::Evaluate (
                            string_length                = -1,
                            substring_length             = 0;
 
-    FdoStringP             base_string;
+    FdoString              *base_string;
 
     FdoPtr<FdoStringValue> string_value;
 
-    // Validate the function call.
+    if (first)
+    {
+        Validate(literal_values);
+        return_string_value = FdoStringValue::Create();
+        tmp_buffer      = new wchar_t[INIT_ALLOCATE_SIZE+1];
+        tmp_buffer_size = INIT_ALLOCATE_SIZE;
+        first = false;
+    }
 
-    Validate(literal_values);
 
     // Get the string from which to extract a substring. If no value is pro-
     // vided, terminate the function.
 
     string_value = (FdoStringValue *) literal_values->GetItem(0);
     if (string_value->IsNull())
-        return FdoStringValue::Create();
+    {
+        return_string_value->SetNull();
+        return FDO_SAFE_ADDREF(return_string_value.p);
+    }
     else
-      base_string = base_string + string_value->GetString();
-    string_length = base_string.GetLength();
+      base_string = string_value->GetString();
+    string_length = wcslen(base_string);
 
     // Next, get the start position for the substring. If no value is pro-
     // vided, an empty string is returned back to the calling routine. If
@@ -154,7 +168,10 @@ FdoLiteralValue *FdoFunctionSubstr::Evaluate (
     start_pos =
         GetNumericValue(literal_values, 1, para2_data_type, &is_NULL_value);
     if (is_NULL_value)
-        return FdoStringValue::Create();
+    {
+        return_string_value->SetNull();
+        return FDO_SAFE_ADDREF(return_string_value.p);
+    }
     start_pos = start_pos - 1;
     if (start_pos < 0)
         start_pos = 0;
@@ -170,9 +187,15 @@ FdoLiteralValue *FdoFunctionSubstr::Evaluate (
             GetNumericValue(
                         literal_values, 2, para3_data_type, &is_NULL_value);
         if (is_NULL_value)
-            return FdoStringValue::Create();
+        {
+            return_string_value->SetNull();
+            return FDO_SAFE_ADDREF(return_string_value.p);
+        }
         if (substring_length < 0)
-            return FdoStringValue::Create();
+        {
+            return_string_value->SetNull();
+            return FDO_SAFE_ADDREF(return_string_value.p);
+        }
 
     } //  if (literal_values->GetCount() == 3) ...
     else
@@ -180,9 +203,18 @@ FdoLiteralValue *FdoFunctionSubstr::Evaluate (
 
     // Create the resulting string and return it back to the calling routine.
 
-    return FdoStringValue::Create(
-                    base_string.Mid(
-                            (size_t) start_pos, (size_t) substring_length));
+    if (substring_length > tmp_buffer_size) {
+
+        delete [] tmp_buffer;
+        tmp_buffer_size = (size_t)substring_length;
+        tmp_buffer      = new wchar_t[tmp_buffer_size + 1];
+
+    } 
+
+    wcsncpy(tmp_buffer, base_string+start_pos, (size_t)substring_length);
+    tmp_buffer[substring_length] = '\0';
+    return_string_value->SetString(tmp_buffer);
+    return FDO_SAFE_ADDREF(return_string_value.p);
 
 }  //  Evaluate ()
 

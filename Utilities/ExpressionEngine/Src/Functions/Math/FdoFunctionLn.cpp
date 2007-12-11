@@ -43,6 +43,8 @@ FdoFunctionLn::FdoFunctionLn ()
 
     incoming_data_type  = FdoDataType_CLOB;
 
+    first = true;
+
 }  //  FdoFunctionLn ()
 
 
@@ -126,9 +128,12 @@ FdoLiteralValue *FdoFunctionLn::Evaluate (
     FdoPtr<FdoInt64Value>   int64_value;
     FdoPtr<FdoSingleValue>  single_value;
 
-    // Validate the function call.
-
-    Validate(literal_values);
+    if (first)
+    {
+        Validate(literal_values);
+        return_double_value = FdoDoubleValue::Create();
+        first = false;
+    }
 
     // Process the request and return the result back to the calling routine.
 
@@ -200,12 +205,17 @@ FdoLiteralValue *FdoFunctionLn::Evaluate (
     // Calculate the result and return it back to the calling routine.
 
     if (is_NULL)
-        return FdoDoubleValue::Create();
+    {
+        return_double_value->SetNull();
+        return FDO_SAFE_ADDREF(return_double_value.p);
+    }
 
     if (curr_value > 0)
-        return FdoDoubleValue::Create(log(curr_value));
+        return_double_value->SetDouble(log(curr_value));
     else
-      return FdoDoubleValue::Create();
+        return_double_value->SetNull();
+
+    return FDO_SAFE_ADDREF(return_double_value.p);
 
 }  //  Evaluate ()
 

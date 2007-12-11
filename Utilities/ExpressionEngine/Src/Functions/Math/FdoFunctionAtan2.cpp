@@ -45,6 +45,8 @@ FdoFunctionAtan2::FdoFunctionAtan2 ()
     para1_data_type     = FdoDataType_CLOB;
     para2_data_type     = FdoDataType_CLOB;
 
+    first = true;
+
 }  //  FdoFunctionAtan2 ()
 
 
@@ -122,21 +124,31 @@ FdoLiteralValue *FdoFunctionAtan2::Evaluate (
     FdoDouble p1,
               p2;
 
-    // Validate the function call.
-
-    Validate(literal_values);
+    if (first)
+    {
+        Validate(literal_values);
+        return_double_value = FdoDoubleValue::Create();
+        first = false;
+    }
 
     // Process the request and return the result back to the calling routine.
 
     p1 = GetParameterValue(literal_values, 0, para1_data_type, &is_NULL_value);
     if (is_NULL_value)
-        return FdoDoubleValue::Create();
+    {
+        return_double_value->SetNull();
+        return FDO_SAFE_ADDREF(return_double_value.p);
+    }
 
     p2 = GetParameterValue(literal_values, 1, para2_data_type, &is_NULL_value);
     if (is_NULL_value)
-        return FdoDoubleValue::Create();
+    {
+        return_double_value->SetNull();
+        return FDO_SAFE_ADDREF(return_double_value.p);
+    }
 
-    return FdoDoubleValue::Create(atan2(p1, p2));
+    return_double_value->SetDouble(atan2(p1, p2));
+    return FDO_SAFE_ADDREF(return_double_value.p);
 
 }  //  Evaluate ()
 

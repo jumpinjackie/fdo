@@ -37,6 +37,8 @@ FdoFunctionLength::FdoFunctionLength ()
 
     function_definition = NULL;
 
+    first = true;
+
 }  //  FdoFunctionLength ()
 
 
@@ -109,13 +111,16 @@ FdoLiteralValue *FdoFunctionLength::Evaluate (
 
     // Declare and initialize all necessary local variables.
 
-    FdoStringP             result;
+    FdoString *result;
 
     FdoPtr<FdoStringValue> string_value;
 
-    // Validate the function call.
-
-    Validate(literal_values);
+    if (first)
+    {
+        Validate(literal_values);
+        return_int64_value = FdoInt64Value::Create();
+        first = false;
+    }
 
     // Process the request and return the result back to the calling routine.
 
@@ -123,12 +128,17 @@ FdoLiteralValue *FdoFunctionLength::Evaluate (
     if (!string_value->IsNull())
         result = string_value->GetString();
     else
-      return FdoInt64Value::Create();
+    {
+        return_int64_value->SetNull();
+        return FDO_SAFE_ADDREF(return_int64_value.p);
+    }
 
     if (result == NULL)
-        return FdoInt64Value::Create();
+        return_int64_value->SetNull();
     else
-      return FdoInt64Value::Create(result.GetLength());
+        return_int64_value->SetInt64(wcslen(result));
+
+    return FDO_SAFE_ADDREF(return_int64_value.p);
 
 }  //  Evaluate ()
 

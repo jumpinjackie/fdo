@@ -207,6 +207,11 @@ class FdoFunctionNullValue : public FdoExpressionEngineINonAggregateFunction
 
         FdoDataType para2_data_type;
 
+
+        bool first;
+
+        FdoPtr<FdoDataValue> return_data_value;
+
 };  //  class FdoFunctionNullValue
 
 #endif

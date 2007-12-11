@@ -401,19 +401,18 @@ void FdoCommonBinaryWriter::WritePropertyValues(FdoClassDefinition* classDef, Fd
     {
         FdoCommonPropertyStub* propStub = pi->GetPropInfo(i);
 
-        // Find the related property definition:
         FdoPtr<FdoPropertyDefinition> pd;
-        try
+        for (int j=0; j<bpdc->GetCount(); j++)
         {
-            pd = bpdc->GetItem(propStub->m_name);
+            FdoPtr<FdoPropertyDefinition> item = bpdc->GetItem(j);
+            if (item->GetName() != NULL && (wcscmp(item->GetName(), propStub->m_name) == 0))
+            {
+                pd = FDO_SAFE_ADDREF(item.p);
+                break;
+            }
         }
-        catch (FdoException *e)
-        {
-            e->Release();
-            // If an exception thrown here, don't catch it since there's nothing more we can do:
+        if (pd == NULL)
             pd = pdc->GetItem(propStub->m_name);
-        }
-
 
         //save offset of property data to the reserved position at the
         //beginning of the record

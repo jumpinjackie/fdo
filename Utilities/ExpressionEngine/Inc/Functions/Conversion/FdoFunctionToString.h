@@ -42,6 +42,8 @@
 class FdoFunctionToString : public FdoExpressionEngineINonAggregateFunction
 {
 
+    static const FdoInt32 INIT_ALLOCATE_SIZE = 100;
+
     public:
 
         // ********************************************************************
@@ -339,6 +341,13 @@ class FdoFunctionToString : public FdoExpressionEngineINonAggregateFunction
         //  separator list array.
 
         FdoInt16 separators_list_count;
+
+
+        FdoPtr<FdoStringValue>  return_string_value;
+
+        bool                    first;
+
+        wchar_t                 tmp_buffer[INIT_ALLOCATE_SIZE]; 
 
 };  //  class FdoFunctionToString
 

@@ -37,6 +37,8 @@ FdoFunctionToInt32::FdoFunctionToInt32 ()
 
     function_definition = NULL;
 
+    first = true;
+
 }  //  FdoFunctionToInt32 ()
 
 FdoFunctionToInt32::~FdoFunctionToInt32 ()
@@ -127,9 +129,12 @@ FdoLiteralValue *FdoFunctionToInt32::Evaluate (
     FdoPtr<FdoSingleValue>  single_value;
     FdoPtr<FdoStringValue>  string_value;
 
-    // Validate the function call.
-
-    Validate(literal_values);
+    if (first)
+    {
+        Validate(literal_values);
+        return_int32_value = FdoInt32Value::Create();
+        first = false;
+    }
 
     // Get the parameter and process it.
 
@@ -278,9 +283,10 @@ FdoLiteralValue *FdoFunctionToInt32::Evaluate (
     }  //  switch ...
 
     if (is_NULL)
-        return FdoInt32Value::Create();
+        return_int32_value->SetNull();
     else
-      return FdoInt32Value::Create(i32_value);
+        return_int32_value->SetInt32(i32_value);
+    return FDO_SAFE_ADDREF(return_int32_value.p);
 
 }  //  Evaluate ()
 

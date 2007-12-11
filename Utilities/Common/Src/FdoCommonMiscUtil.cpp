@@ -1924,14 +1924,17 @@ void FdoCommonMiscUtil::GetExpressionType(FdoFunctionDefinitionCollection *funct
             FdoPtr<FdoPropertyDefinition> propDef = properties->FindItem(noncomputedId->GetName());
             FdoDataPropertyDefinition* dataPropDef = dynamic_cast<FdoDataPropertyDefinition*>(propDef.p);
             FdoPtr<FdoPropertyDefinition> basePropDef;
-            try
+
+            for (int i=0; i<baseProperties->GetCount(); i++)
             {
-                basePropDef = baseProperties->GetItem(noncomputedId->GetName());
+                FdoPtr<FdoPropertyDefinition> item = baseProperties->GetItem(i);
+                if (item->GetName() != NULL && (wcscmp(item->GetName(), noncomputedId->GetName()) == 0))
+                {
+                    basePropDef = FDO_SAFE_ADDREF(item.p);
+                    break;
+                }
             }
-            catch (FdoException *e)
-            {
-                e->Release();
-            }
+
             FdoDataPropertyDefinition* baseDataPropDef = dynamic_cast<FdoDataPropertyDefinition*>(basePropDef.p);
 
             if (propDef != NULL)

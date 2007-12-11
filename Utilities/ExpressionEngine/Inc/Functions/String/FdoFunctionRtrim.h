@@ -41,6 +41,8 @@
 class FdoFunctionRtrim : public FdoExpressionEngineINonAggregateFunction
 {
 
+    static const FdoInt32 INIT_ALLOCATE_SIZE = 100;
+
     public:
 
         // ********************************************************************
@@ -114,6 +116,14 @@ class FdoFunctionRtrim : public FdoExpressionEngineINonAggregateFunction
         //  RTRIM.
 
         FdoFunctionDefinition *function_definition;
+
+        FdoPtr<FdoStringValue> return_string_value;
+
+        wchar_t *tmp_buffer;
+
+        size_t tmp_buffer_size;
+
+        bool first;
 
 };  //  class FdoFunctionRtrim
 

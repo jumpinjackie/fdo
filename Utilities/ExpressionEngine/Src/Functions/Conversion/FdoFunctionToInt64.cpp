@@ -37,6 +37,8 @@ FdoFunctionToInt64::FdoFunctionToInt64 ()
 
     function_definition = NULL;
 
+    first = true;
+
 }  //  FdoFunctionToInt64 ()
 
 FdoFunctionToInt64::~FdoFunctionToInt64 ()
@@ -125,10 +127,12 @@ FdoLiteralValue *FdoFunctionToInt64::Evaluate (
     FdoPtr<FdoSingleValue>  single_value;
     FdoPtr<FdoStringValue>  string_value;
 
-    // Validate the function call.
-
-    Validate(literal_values);
-
+    if (first)
+    {
+        Validate(literal_values);
+        return_int64_value = FdoInt64Value::Create();
+        first = false;
+    }
     // Get the parameter and process it.
 
     switch (incoming_data_type) {
@@ -265,9 +269,10 @@ FdoLiteralValue *FdoFunctionToInt64::Evaluate (
     }  //  switch ...
 
     if (is_NULL)
-        return FdoInt64Value::Create();
+        return_int64_value->SetNull();
     else
-      return FdoInt64Value::Create(i64_value);
+      return_int64_value->SetInt64(i64_value);
+    return FDO_SAFE_ADDREF(return_int64_value.p);
 
 }  //  Evaluate ()
 

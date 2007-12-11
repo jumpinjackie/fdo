@@ -41,6 +41,8 @@
 class FdoFunctionTrim : public FdoExpressionEngineINonAggregateFunction
 {
 
+    static const FdoInt32 INIT_ALLOCATE_SIZE = 100;
+
     public:
 
         // ********************************************************************
@@ -123,6 +125,14 @@ class FdoFunctionTrim : public FdoExpressionEngineINonAggregateFunction
         //  formation that is provided with the call.
 
         FdoStringP function_operation_request;
+
+        FdoPtr<FdoStringValue> return_string_value;
+
+        bool first;
+
+        wchar_t *tmp_buffer;
+
+        size_t tmp_buffer_size;
 
 };  //  class FdoFunctionTrim
 

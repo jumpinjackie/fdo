@@ -129,6 +129,10 @@ class FdoFunctionToInt64 : public FdoExpressionEngineINonAggregateFunction
 
         FdoDataType incoming_data_type;
 
+        FdoPtr<FdoInt64Value>  return_int64_value;
+
+        bool                   first;
+
 };  //  class FdoFunctionToInt64
 
 #endif

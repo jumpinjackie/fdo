@@ -149,6 +149,9 @@ class FdoFunctionExtract : public FdoExpressionEngineINonAggregateFunction
 
         FdoStringP function_operation_request;
 
+        FdoPtr<FdoDateTimeValue> return_datetime_value;
+        bool first;
+
 };  //  class FdoFunctionExtract
 
 #endif

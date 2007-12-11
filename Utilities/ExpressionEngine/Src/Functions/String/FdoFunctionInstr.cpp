@@ -36,6 +36,7 @@ FdoFunctionInstr::FdoFunctionInstr ()
     // Initialize all class variables.
 
     function_definition = NULL;
+    first = true;
 
 }  //  FdoFunctionInstr ()
 
@@ -111,15 +112,17 @@ FdoLiteralValue *FdoFunctionInstr::Evaluate (
 
     FdoInt32               i;
 
-    FdoStringP             result,
-                           base_string,
-                           search_string;
+    FdoString              *base_string,
+                           *search_string;
 
     FdoPtr<FdoStringValue> string_value;
 
-    // Validate the function call.
-
-    Validate(literal_values);
+    if (first)
+    {
+        Validate(literal_values);
+        return_int64_value = FdoInt64Value::Create();
+        first = false;
+    }
 
     // Get the strings provided as arguments. If any of them represents an
     // empty value terminate the function by returning 0.
@@ -128,13 +131,16 @@ FdoLiteralValue *FdoFunctionInstr::Evaluate (
 
       string_value = (FdoStringValue *) literal_values->GetItem(i);
       if (string_value->IsNull())
-          return FdoInt64Value::Create((FdoInt64)0);
+      {
+          return_int64_value->SetInt64((FdoInt64)0);
+          return FDO_SAFE_ADDREF(return_int64_value.p);
+      }
       else {
 
         if (i == 0)
-            base_string = base_string + string_value->GetString();
+            base_string = string_value->GetString();
         else
-          search_string = search_string + string_value->GetString();
+            search_string = string_value->GetString();
 
       }  //  else ...
 
@@ -143,11 +149,16 @@ FdoLiteralValue *FdoFunctionInstr::Evaluate (
     // Process the request and return the position of the search string within
     // the given string.
 
-    if (!base_string.Contains(search_string))
-        return FdoInt64Value::Create((FdoInt64)0);
+    FdoString *res = wcsstr(base_string, search_string);
 
-    result = base_string.Left(search_string);
-    return FdoInt64Value::Create(result.GetLength()+1);
+    if (res == NULL) {
+        return_int64_value->SetInt64((FdoInt64)0);
+        return FDO_SAFE_ADDREF(return_int64_value.p);
+    }
+
+
+    return_int64_value->SetInt64(res-base_string+1);
+    return FDO_SAFE_ADDREF(return_int64_value.p);
 
 }  //  Evaluate ()
 

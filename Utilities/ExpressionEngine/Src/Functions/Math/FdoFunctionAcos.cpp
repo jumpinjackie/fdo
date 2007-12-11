@@ -43,6 +43,8 @@ FdoFunctionAcos::FdoFunctionAcos ()
 
     incoming_data_type  = FdoDataType_CLOB;
 
+    first = true;
+
 }  //  FdoFunctionAcos ()
 
 
@@ -126,9 +128,12 @@ FdoLiteralValue *FdoFunctionAcos::Evaluate (
     FdoPtr<FdoInt64Value>   int64_value;
     FdoPtr<FdoSingleValue>  single_value;
 
-    // Validate the function call.
-
-    Validate(literal_values);
+    if (first)
+    {
+        Validate(literal_values);
+        return_double_value = FdoDoubleValue::Create();
+        first = false;
+    }
 
     // Process the request and return the result back to the calling routine.
 
@@ -200,12 +205,16 @@ FdoLiteralValue *FdoFunctionAcos::Evaluate (
     // Calculate the result and return it back to the calling routine.
 
     if (is_NULL)
-        return FdoDoubleValue::Create();
+    {
+        return_double_value->SetNull();
+        return FDO_SAFE_ADDREF(return_double_value.p);
+    }
 
     if ((curr_value >= -1) && (curr_value <= 1))
-        return FdoDoubleValue::Create(acos(curr_value));
+        return_double_value->SetDouble(acos(curr_value));
     else
-      return FdoDoubleValue::Create();
+        return_double_value->SetNull();
+    return FDO_SAFE_ADDREF(return_double_value.p);
 
 }  //  Evaluate ()
 

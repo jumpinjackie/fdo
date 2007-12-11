@@ -80,6 +80,9 @@ public:
     /// Convert a wide string to uppercase:
     static wchar_t* wcsupr(wchar_t* str);
 
+    /// Convert a wide string to lowercase:
+    static wchar_t* wcslwr(wchar_t* str);
+
     /// Return a duplicate copy of a wide string (use free() to deallocate):
     static wchar_t* wcsdup(wchar_t* str);
 

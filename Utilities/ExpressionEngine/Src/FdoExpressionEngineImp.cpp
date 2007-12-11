@@ -71,36 +71,7 @@ FdoExpressionEngineImp::FdoExpressionEngineImp(FdoIReader* reader, FdoClassDefin
         }
     }
 
-    try
-    {
-        mutex.Enter();
-        FdoPtr<FdoExpressionEngineFunctionCollection> functions = initFunction.GetAllFunctions();
-        for (int i=0; i<functions->GetCount(); i++)
-        {
-            FdoPtr<FdoExpressionEngineIFunction> functionDefinition = functions->GetItem(i);
-            FdoPtr<FdoFunctionDefinition> function = functionDefinition->GetFunctionDefinition();
-
-		    // Add it only if not user defined
-            FdoPtr<FdoFunctionDefinition> func = m_AllFunctions->FindItem(function->GetName());
-		    if ( func == NULL)
-            {
-                FdoPtr<FdoFunctionDefinition> copyFunc = DeepCopyFunctionDefinition(function);
-			    m_AllFunctions->Add(copyFunc);
-            }
-        }
-        functions = NULL;
-        mutex.Leave();
-    }
-    catch(FdoException *)
-    {
-        mutex.Leave();
-        throw;
-    }
-    catch(...)
-    {
-        mutex.Leave();
-        throw;
-    }
+    m_FunctionsPopulated = false;
 	m_UserDefinedFunctions = FDO_SAFE_ADDREF(userDefinedFunctions);
 
 	m_Size = 10;
@@ -881,15 +852,12 @@ FdoStringValue* FdoExpressionEngineImp::ObtainStringValue (bool bIsNull, FdoStri
     if (0 != mStringPool.size ())
     {
         ret = mStringPool.back ();
-        if (ret->GetRefCount() == 1)
-        {
-            mStringPool.pop_back ();
-            if (bIsNull)
-                ret->SetNull ();
-            else
-                ret->SetString (value);
-            return ret;
-        }
+        mStringPool.pop_back ();
+        if (bIsNull)
+            ret->SetNull ();
+        else
+            ret->SetString (value);
+        return ret;
     }
 
     if (0 != mPotentialStringPool.size ())
@@ -1497,6 +1465,7 @@ void FdoExpressionEngineImp::ProcessFunction (FdoFunction& expr)
                         FdoPropertyType propType;
                         FdoDataType dataType;
                         
+                        PopulateFunctions();
 					    FdoCommonMiscUtil::GetExpressionType(m_AllFunctions, m_classDefinition,  aggrFunc, propType, dataType);
 
                         switch (propType)
@@ -3456,6 +3425,7 @@ FdoLiteralValue* FdoExpressionEngineImp::Evaluate(FdoExpression *expression)
 
     if (bExpressionFound == false)
     {
+        PopulateFunctions();
         mAggrIdents = FdoExpressionEngineUtilDataReader::GetAggregateFunctions(m_AllFunctions, expression, exprType);
         if (m_ExpressionCacheCurrent >= m_ExpressionCacheSize)
 		{
@@ -3500,7 +3470,7 @@ FdoLiteralValue *FdoExpressionEngineImp::Evaluate(FdoString* name)
 
 FdoFunctionDefinitionCollection* FdoExpressionEngineImp::GetStandardFunctions()
 {
-    FdoFunctionDefinitionCollection *functionDefinitions = FdoFunctionDefinitionCollection::Create();
+    FdoFunctionDefinitionCollection *functionDefinitions = NULL;
 
     try
     {
@@ -3527,6 +3497,7 @@ FdoFunctionDefinitionCollection* FdoExpressionEngineImp::GetStandardFunctions()
 
 FdoFunctionDefinitionCollection *FdoExpressionEngineImp::GetAllFunctions()
 {
+    PopulateFunctions();
     return FDO_SAFE_ADDREF(m_AllFunctions.p);
 }
 
@@ -3619,6 +3590,7 @@ FdoPropertyValueCollection* FdoExpressionEngineImp::RunQuery()
 {
 	FdoCommonExpressionType exprType;
 
+    PopulateFunctions();
     mAggrIdents = FdoExpressionEngineUtilDataReader::GetAggregateFunctions(m_AllFunctions, m_compIdents, exprType);
 
     if (mAggrIdents)
@@ -4055,3 +4027,40 @@ void FdoExpressionEngineImp::PotentialRelinquishLiteralValue(FdoLiteralValue *va
     }
 }
 
+void FdoExpressionEngineImp::PopulateFunctions()
+{
+    try
+    {
+        if (m_FunctionsPopulated)
+            return;
+
+        m_FunctionsPopulated = true;
+        mutex.Enter();
+        FdoPtr<FdoExpressionEngineFunctionCollection> functions = initFunction.GetAllFunctions();
+        for (int i=0; i<functions->GetCount(); i++)
+        {
+            FdoPtr<FdoExpressionEngineIFunction> functionDefinition = functions->GetItem(i);
+            FdoPtr<FdoFunctionDefinition> function = functionDefinition->GetFunctionDefinition();
+
+		    // Add it only if not user defined
+            FdoPtr<FdoFunctionDefinition> func = m_AllFunctions->FindItem(function->GetName());
+		    if ( func == NULL)
+            {
+                FdoPtr<FdoFunctionDefinition> copyFunc = DeepCopyFunctionDefinition(function);
+			    m_AllFunctions->Add(copyFunc);
+            }
+        }
+        functions = NULL;
+        mutex.Leave();
+    }
+    catch(FdoException *)
+    {
+        mutex.Leave();
+        throw;
+    }
+    catch(...)
+    {
+        mutex.Leave();
+        throw;
+    }
+}
