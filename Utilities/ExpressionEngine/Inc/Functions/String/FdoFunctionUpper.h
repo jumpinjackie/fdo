@@ -40,6 +40,7 @@
 
 class FdoFunctionUpper : public FdoExpressionEngineINonAggregateFunction
 {
+    static const FdoInt32 INIT_ALLOCATE_SIZE = 100;
 
     public:
 
@@ -114,6 +115,14 @@ class FdoFunctionUpper : public FdoExpressionEngineINonAggregateFunction
         //  UPPER.
 
         FdoFunctionDefinition *function_definition;
+
+        FdoPtr<FdoStringValue> return_string_value;
+
+        bool first;
+
+        wchar_t *tmp_buffer;
+
+        size_t tmp_buffer_size;
 
 };  //  class FdoFunctionUpper
 

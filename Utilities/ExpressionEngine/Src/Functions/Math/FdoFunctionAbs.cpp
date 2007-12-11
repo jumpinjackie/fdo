@@ -43,6 +43,8 @@ FdoFunctionAbs::FdoFunctionAbs ()
 
     incoming_data_type  = FdoDataType_CLOB;
 
+    first = true;
+
 }  //  FdoFunctionAbs ()
 
 
@@ -125,74 +127,117 @@ FdoLiteralValue *FdoFunctionAbs::Evaluate (
     FdoPtr<FdoInt64Value>   int64_value;
     FdoPtr<FdoSingleValue>  single_value;
 
-    // Validate the function call.
-
-    Validate(literal_values);
+    if (first)
+    {
+        Validate(literal_values);
+    }
 
     // Process the request and return the result back to the calling routine.
 
     switch (incoming_data_type) {
 
       case FdoDataType_Byte:
+        if (first)
+        {
+            return_data_value = FdoByteValue::Create();
+            first = false;
+        }
         byte_value =(FdoByteValue *) literal_values->GetItem(0);
         if (!byte_value->IsNull())
-            return FdoByteValue::Create(byte_value->GetByte());
+            (static_cast<FdoByteValue *> (return_data_value.p))->SetByte(byte_value->GetByte());
         else
-          return FdoByteValue::Create();
+            return_data_value->SetNull();
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
       case FdoDataType_Decimal:
+        if (first)
+        {
+            return_data_value = FdoDecimalValue::Create();
+            first = false;
+        }
         decimal_value =(FdoDecimalValue *) literal_values->GetItem(0);
         if (!decimal_value->IsNull())
-            return FdoDecimalValue::Create(fabs(decimal_value->GetDecimal()));
+            (static_cast<FdoDecimalValue *> (return_data_value.p))->SetDecimal(fabs(decimal_value->GetDecimal()));
         else
-          return FdoDecimalValue::Create();
+            return_data_value->SetNull();
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
       case FdoDataType_Double:
+        if (first)
+        {
+            return_data_value = FdoDoubleValue::Create();
+            first = false;
+        }
         double_value = (FdoDoubleValue *) literal_values->GetItem(0);
         if (!double_value->IsNull())
-            return FdoDoubleValue::Create(fabs(double_value->GetDouble()));
+            (static_cast<FdoDoubleValue *> (return_data_value.p))->SetDouble(fabs(double_value->GetDouble()));
         else
-          return FdoDoubleValue::Create();
+            return_data_value->SetNull();
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
       case FdoDataType_Int16:
+        if (first)
+        {
+            return_data_value = FdoInt16Value::Create();
+            first = false;
+        }
         int16_value = (FdoInt16Value *) literal_values->GetItem(0);
         if (!int16_value->IsNull())
-            return FdoInt16Value::Create(abs(int16_value->GetInt16()));
+            (static_cast<FdoInt16Value *> (return_data_value.p))->SetInt16(abs(int16_value->GetInt16()));
         else
-          return FdoInt16Value::Create();
+            return_data_value->SetNull();
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
       case FdoDataType_Int32:
+        if (first)
+        {
+            return_data_value = FdoInt32Value::Create();
+            first = false;
+        }
         int32_value = (FdoInt32Value *) literal_values->GetItem(0);
         if (!int32_value->IsNull())
-            return FdoInt32Value::Create(abs(int32_value->GetInt32()));
+            (static_cast<FdoInt32Value *> (return_data_value.p))->SetInt32(abs(int32_value->GetInt32()));
         else
-          return FdoInt32Value::Create();
+            return_data_value->SetNull();
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
       case FdoDataType_Int64:
+        if (first)
+        {
+            return_data_value = FdoInt64Value::Create();
+            first = false;
+        }
         int64_value = (FdoInt64Value *) literal_values->GetItem(0);
         if (!int64_value->IsNull()) {
 
             int64_val = (int64_value->GetInt64() < 0)
                         ? -1 * int64_value->GetInt64()
                         : int64_value->GetInt64();
-            return FdoInt64Value::Create(int64_val);
 
-        }  //  if (!int64_value->IsNull()) ...
+            (static_cast<FdoInt64Value *> (return_data_value.p))->SetInt64(int64_val);
+        }
         else
-          return FdoInt64Value::Create();
+            return_data_value->SetNull();
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
       case FdoDataType_Single:
+        if (first)
+        {
+            return_data_value = FdoSingleValue::Create();
+            first = false;
+        }
         single_value = (FdoSingleValue *) literal_values->GetItem(0);
         if (!single_value->IsNull())
-            return FdoSingleValue::Create(fabs(single_value->GetSingle()));
+            (static_cast<FdoSingleValue *> (return_data_value.p))->SetSingle(fabs(single_value->GetSingle()));
         else
-          return FdoSingleValue::Create();
+            return_data_value->SetNull();
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
     }  //  switch ...

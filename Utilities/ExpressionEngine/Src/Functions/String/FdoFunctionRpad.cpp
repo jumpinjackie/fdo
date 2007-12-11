@@ -48,6 +48,9 @@ FdoFunctionRpad::FdoFunctionRpad ()
     para2_data_type      = FdoDataType_CLOB;
     para3_data_type      = FdoDataType_CLOB;
 
+    first = true;
+    tmp_buffer = NULL;
+
 }  //  FdoFunctionRpad ()
 
 
@@ -62,6 +65,8 @@ FdoFunctionRpad::~FdoFunctionRpad ()
     // Delete the function definition.
 
     FDO_SAFE_RELEASE(function_definition);
+
+    delete [] tmp_buffer;
 
 }  //  ~FdoFunctionRpad ()
 
@@ -125,28 +130,34 @@ FdoLiteralValue *FdoFunctionRpad::Evaluate (
     FdoInt64               string_length,
                            pad_string_length            = 0,
                            desired_string_length,
-                           current_pad_string_length    = 0,
                            necessary_pad_string_length;
 
-    FdoStringP             base_string,
-                           pad_string,
-                           current_pad_string;
+    FdoString              *base_string,
+                           *pad_string;
 
     FdoPtr<FdoStringValue> string_value;
 
-    // Validate the function call.
-
-    Validate(literal_values);
+    if (first)
+    {
+        Validate(literal_values);
+        return_string_value = FdoStringValue::Create();
+        tmp_buffer      = new wchar_t[INIT_ALLOCATE_SIZE+1];
+        tmp_buffer_size = INIT_ALLOCATE_SIZE;
+        first = true;
+    }
 
     // Get the string that needs to be padded. If no value is provided, termi-
     // nate the function.
 
     string_value = (FdoStringValue *) literal_values->GetItem(0);
     if (string_value->IsNull())
-        return FdoStringValue::Create();
+    {
+        return_string_value->SetNull();
+        return FDO_SAFE_ADDREF(return_string_value.p);
+    }
     else
-      base_string = base_string + string_value->GetString();
-    string_length = base_string.GetLength();
+      base_string = string_value->GetString();
+    string_length = wcslen(base_string);
 
     // Next, get the desired string length. If no length is provided, it is
     // assumed that no padding needs to be done and the current string is re-
@@ -155,28 +166,48 @@ FdoLiteralValue *FdoFunctionRpad::Evaluate (
     desired_string_length =
             GetPaddingLength(literal_values, para2_data_type, &is_NULL_value);
     if (is_NULL_value)
-        return FdoStringValue::Create(base_string);
+    {
+        return_string_value->SetString(base_string);
+        return FDO_SAFE_ADDREF(return_string_value.p);
+    }
 
     // If the desired string length corresonds to the actual string length,
     // return the current string back to the calling routine.
 
     if (desired_string_length == string_length)
-        return FdoStringValue::Create(base_string);
+    {
+        return_string_value->SetString(base_string);
+        return FDO_SAFE_ADDREF(return_string_value.p);
+    }
 
     // If the desired string length is 0, return a NULL string back to the
     // calling routine.
 
     if (desired_string_length <= 0)
-        return FdoStringValue::Create();
+    {
+        return_string_value->SetNull();
+        return FDO_SAFE_ADDREF(return_string_value.p);
+    }
+
+    if (desired_string_length > tmp_buffer_size) {
+
+        delete [] tmp_buffer;
+        tmp_buffer_size = (size_t)desired_string_length;
+        tmp_buffer      = new wchar_t[tmp_buffer_size + 1];
+
+    }  //  if (exp_buffer_size > tmp_buffer_size) ...
 
     // If the desired length is less than the current string length, the pro-
     // vided string needs to be cut in size and the resulting string returned
     // to the calling routine.
 
     if (desired_string_length < string_length)
-        return FdoStringValue::Create(
-                            base_string.Mid(0,
-                                            (size_t)desired_string_length));
+    {
+        wcsncpy(tmp_buffer, base_string, (size_t)desired_string_length);
+        tmp_buffer[desired_string_length] = '\0';
+        return FDO_SAFE_ADDREF(return_string_value.p);
+
+    }
 
     // The provided string needs to be padded. If three arguments were provided
     // the last argument represent the pad-string to be used. If the string is
@@ -186,35 +217,33 @@ FdoLiteralValue *FdoFunctionRpad::Evaluate (
 
         string_value = (FdoStringValue *) literal_values->GetItem(2);
         if (string_value->IsNull())
-            pad_string = pad_string + L" ";
+            pad_string = L" ";
         else
-          pad_string = pad_string + string_value->GetString();
+          pad_string = string_value->GetString();
 
     }  //  if (number_of_parameters == 3) ...
     else
-      pad_string = pad_string + L" ";
+        pad_string = L" ";
 
     // Get the length of the pad-string being used in the operation.
 
-    pad_string_length = pad_string.GetLength();
+    pad_string_length = wcslen(pad_string);
 
     // Extend the pad-string to the necessary length.
 
     necessary_pad_string_length = (desired_string_length - string_length);
-    while (current_pad_string.GetLength() < necessary_pad_string_length)
-      current_pad_string = current_pad_string + pad_string;
-
-    // The pad-string is created. Note that if the provided pad-string consists
-    // of multiple characters, it is possible that the generated pad-string is
-    // too long and hence needs to be cut to the necessary size.
-
-    if (current_pad_string.GetLength() > necessary_pad_string_length)
-        current_pad_string =
-            current_pad_string.Mid(0, (size_t) necessary_pad_string_length);
-
-    // Create the resulting string and return it back to the calling routine.
-
-    return FdoStringValue::Create(base_string + current_pad_string);
+    wcscpy(tmp_buffer, base_string);
+    for (int i=0; i<necessary_pad_string_length/pad_string_length; i++)
+    {
+        wcscat(tmp_buffer, pad_string);
+    }
+    if (necessary_pad_string_length%pad_string_length != 0)
+    {
+        wcsncat(tmp_buffer, pad_string,(size_t)(necessary_pad_string_length%pad_string_length));
+        tmp_buffer[desired_string_length] = '\0';
+    }
+    return_string_value->SetString(tmp_buffer);
+    return FDO_SAFE_ADDREF(return_string_value.p);
 
 }  //  Evaluate ()
 

@@ -43,6 +43,8 @@ FdoFunctionSin::FdoFunctionSin ()
 
     incoming_data_type  = FdoDataType_CLOB;
 
+    first = true;
+
 }  //  FdoFunctionSin ()
 
 
@@ -123,9 +125,13 @@ FdoLiteralValue *FdoFunctionSin::Evaluate (
     FdoPtr<FdoInt64Value>   int64_value;
     FdoPtr<FdoSingleValue>  single_value;
 
-    // Validate the function call.
 
-    Validate(literal_values);
+    if (first)
+    {
+        Validate(literal_values);
+        return_double_value = FdoDoubleValue::Create();
+        first = false;
+    }
 
     // Process the request and return the result back to the calling routine.
 
@@ -134,57 +140,64 @@ FdoLiteralValue *FdoFunctionSin::Evaluate (
       case FdoDataType_Byte:
         byte_value =(FdoByteValue *) literal_values->GetItem(0);
         if (!byte_value->IsNull())
-            return FdoDoubleValue::Create(sin((double)byte_value->GetByte()));
+            return_double_value->SetDouble(sin((double)byte_value->GetByte()));
         else
-          return FdoDoubleValue::Create();
+            return_double_value->SetNull();
+        return FDO_SAFE_ADDREF(return_double_value.p);
         break;
 
       case FdoDataType_Decimal:
         decimal_value =(FdoDecimalValue *) literal_values->GetItem(0);
         if (!decimal_value->IsNull())
-            return FdoDoubleValue::Create(sin(decimal_value->GetDecimal()));
+            return_double_value->SetDouble(sin(decimal_value->GetDecimal()));
         else
-          return FdoDoubleValue::Create();
+            return_double_value->SetNull();
+        return FDO_SAFE_ADDREF(return_double_value.p);
         break;
 
       case FdoDataType_Double:
         double_value = (FdoDoubleValue *) literal_values->GetItem(0);
         if (!double_value->IsNull())
-            return FdoDoubleValue::Create(sin(double_value->GetDouble()));
+            return_double_value->SetDouble(sin(double_value->GetDouble()));
         else
-          return FdoDoubleValue::Create();
+            return_double_value->SetNull();
+        return FDO_SAFE_ADDREF(return_double_value.p);
         break;
 
       case FdoDataType_Int16:
         int16_value = (FdoInt16Value *) literal_values->GetItem(0);
         if (!int16_value->IsNull())
-            return FdoDoubleValue::Create(sin((double)int16_value->GetInt16()));
+            return_double_value->SetDouble(sin((double)int16_value->GetInt16()));
         else
-          return FdoDoubleValue::Create();
+            return_double_value->SetNull();
+        return FDO_SAFE_ADDREF(return_double_value.p);
         break;
 
       case FdoDataType_Int32:
         int32_value = (FdoInt32Value *) literal_values->GetItem(0);
         if (!int32_value->IsNull())
-            return FdoDoubleValue::Create(sin((double)int32_value->GetInt32()));
+            return_double_value->SetDouble(sin((double)int32_value->GetInt32()));
         else
-          return FdoDoubleValue::Create();
+            return_double_value->SetNull();
+        return FDO_SAFE_ADDREF(double_value.p);
         break;
 
       case FdoDataType_Int64:
         int64_value = (FdoInt64Value *) literal_values->GetItem(0);
         if (!int64_value->IsNull())
-            return FdoDoubleValue::Create(sin((double)int64_value->GetInt64()));
+            return_double_value->SetDouble(sin((double)int64_value->GetInt64()));
         else
-          return FdoDoubleValue::Create();
+            return_double_value->SetNull();
+        return FDO_SAFE_ADDREF(return_double_value.p);
         break;
 
       case FdoDataType_Single:
         single_value = (FdoSingleValue *) literal_values->GetItem(0);
         if (!single_value->IsNull())
-            return FdoDoubleValue::Create(sin(single_value->GetSingle()));
+            return_double_value->SetDouble(sin(single_value->GetSingle()));
         else
-          return FdoDoubleValue::Create();
+            return_double_value->SetNull();
+        return FDO_SAFE_ADDREF(return_double_value.p);
         break;
 
     }  //  switch ...

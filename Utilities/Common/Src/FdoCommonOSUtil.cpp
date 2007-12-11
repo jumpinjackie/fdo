@@ -271,6 +271,19 @@ wchar_t* FdoCommonOSUtil::wcsupr(wchar_t* str)
     return str;
 }
 
+wchar_t* FdoCommonOSUtil::wcslwr(wchar_t* str)
+{
+    // Convert each letter to lowercase:
+    wchar_t* pStringTerminator = str + wcslen(str);
+    for (wchar_t* p=str; p < pStringTerminator; p++)
+    {
+        *p = towlower(*p);
+    }
+
+    // Return pointer to given string:
+    return str;
+}
+
 
 
 

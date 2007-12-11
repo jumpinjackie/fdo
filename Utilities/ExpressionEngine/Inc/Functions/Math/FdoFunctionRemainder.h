@@ -148,6 +148,9 @@ class FdoFunctionRemainder : public FdoExpressionEngineINonAggregateFunction
 
         FdoDataType para2_data_type;
 
+        FdoPtr<FdoDataValue>  return_data_value;
+        bool                    first;
+
 };  //  class FdoFunctionRemainder
 
 #endif

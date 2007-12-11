@@ -43,6 +43,8 @@ FdoFunctionAtan::FdoFunctionAtan ()
 
     incoming_data_type  = FdoDataType_CLOB;
 
+    first = true;
+
 }  //  FdoFunctionAtan ()
 
 
@@ -127,9 +129,12 @@ FdoLiteralValue *FdoFunctionAtan::Evaluate (
     FdoPtr<FdoInt64Value>   int64_value;
     FdoPtr<FdoSingleValue>  single_value;
 
-    // Validate the function call.
-
-    Validate(literal_values);
+    if (first)
+    {
+        Validate(literal_values);
+        return_double_value = FdoDoubleValue::Create();
+        first = false;
+    }
 
     // Process the request and return the result back to the calling routine.
 
@@ -201,9 +206,10 @@ FdoLiteralValue *FdoFunctionAtan::Evaluate (
     // Calculate the result and return it back to the calling routine.
 
     if (!is_NULL)
-        return FdoDoubleValue::Create(atan(curr_value));
+        return_double_value->SetDouble(atan(curr_value));
     else
-      return FdoDoubleValue::Create();
+        return_double_value->SetNull();
+    return FDO_SAFE_ADDREF(return_double_value.p);
 
 }  //  Evaluate ()
 

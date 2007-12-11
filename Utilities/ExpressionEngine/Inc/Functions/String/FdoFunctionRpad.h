@@ -41,6 +41,8 @@
 class FdoFunctionRpad : public FdoExpressionEngineINonAggregateFunction
 {
 
+    static const FdoInt32 INIT_ALLOCATE_SIZE = 100;
+
     public:
 
         // ********************************************************************
@@ -145,6 +147,14 @@ class FdoFunctionRpad : public FdoExpressionEngineINonAggregateFunction
         //  meter.
 
         FdoDataType para3_data_type;
+
+        FdoPtr<FdoStringValue> return_string_value;
+
+        wchar_t *tmp_buffer;
+
+        size_t tmp_buffer_size;
+
+        bool first;
 
 };  //  class FdoFunctionRpad
 

@@ -38,6 +38,8 @@ FdoFunctionExtract::FdoFunctionExtract ()
 
     function_definition = NULL;
 
+    first = true;
+
 }  //  FdoFunctionExtract ()
 
 
@@ -126,9 +128,12 @@ FdoLiteralValue *FdoFunctionExtract::Evaluate (
 
     FdoPtr<FdoLiteralValue>  literal_value;
 
-    // Validate the function call.
+    if (first) {
+        Validate(literal_values);
+        return_datetime_value = FdoDateTimeValue::Create();
+        first = false;
+    }
 
-    Validate(literal_values);
 
     // Get the date-time value to be processed. If the value is not provided
     // return an empty. Otherwise extract the requested data, create the
@@ -137,7 +142,10 @@ FdoLiteralValue *FdoFunctionExtract::Evaluate (
     literal_value = literal_values->GetItem(1);
     dt_value      = static_cast<FdoDateTimeValue *>(literal_value.p);
     if (dt_value->IsNull())
-        return FdoDateTimeValue::Create();
+    {
+        return_datetime_value->SetNull();
+        return FDO_SAFE_ADDREF(return_datetime_value.p);
+    }
 
     dt = dt_value->GetDateTime();
     switch (GetToken(function_operation_request)) {
@@ -151,9 +159,14 @@ FdoLiteralValue *FdoFunctionExtract::Evaluate (
 
     }  //  switch ...
 
-    return FdoDateTimeValue::Create(
-                                FdoDateTime(
-                                    year, month, day, hour, minute, seconds));
+    dt.year = year;
+    dt.month = month;
+    dt.day = day;
+    dt.hour = hour;
+    dt.minute = minute;
+    dt.seconds = seconds;
+    return_datetime_value->SetDateTime(dt);
+    return FDO_SAFE_ADDREF(return_datetime_value.p);
 
 }  //  Evaluate ()
 

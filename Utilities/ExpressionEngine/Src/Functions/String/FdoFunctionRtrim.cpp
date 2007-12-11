@@ -37,6 +37,9 @@ FdoFunctionRtrim::FdoFunctionRtrim ()
 
     function_definition = NULL;
 
+    first = true;
+    tmp_buffer = NULL;
+
 }  //  FdoFunctionRtrim ()
 
 
@@ -51,6 +54,8 @@ FdoFunctionRtrim::~FdoFunctionRtrim ()
     // Delete the function definition.
 
     FDO_SAFE_RELEASE(function_definition);
+
+    delete [] tmp_buffer;
 
 }  //  ~FdoFunctionRtrim ()
 
@@ -114,26 +119,36 @@ FdoLiteralValue *FdoFunctionRtrim::Evaluate (
     FdoInt64               pos              = 0,
                            string_length;
 
-    FdoStringP             tmp_str,
-                           base_string;
+    FdoString             *base_string;
 
     FdoPtr<FdoStringValue> string_value;
 
-    // Validate the function call.
-
-    Validate(literal_values);
+    if (first)
+    {
+        Validate(literal_values);
+        return_string_value = FdoStringValue::Create();
+        tmp_buffer      = new wchar_t[INIT_ALLOCATE_SIZE+1];
+        tmp_buffer_size = INIT_ALLOCATE_SIZE;
+        first = false;
+    }
 
     // Get the string that needs to be trimmed. If no value is provided, termi-
     // nate the function.
 
     string_value = (FdoStringValue *) literal_values->GetItem(0);
     if (string_value->IsNull())
-        return FdoStringValue::Create();
+    {
+        return_string_value->SetNull();
+        return FDO_SAFE_ADDREF(return_string_value.p);
+    }
     else
-      base_string = base_string + string_value->GetString();
-    string_length = base_string.GetLength();
+      base_string = string_value->GetString();
+    string_length = wcslen(base_string);
     if (string_length == 0)
-        return FdoStringValue::Create();
+    {
+        return_string_value->SetNull();
+        return FDO_SAFE_ADDREF(return_string_value.p);
+    }
 
     // Navigate the given string from the right and find the first character
     // different from a blank. 
@@ -142,8 +157,7 @@ FdoLiteralValue *FdoFunctionRtrim::Evaluate (
 
     while (!endloop) {
 
-      tmp_str = base_string.Mid((size_t)pos, 1);
-      if (tmp_str != L" ")
+      if (base_string[pos] != L' ')
           break;
        pos--;
        endloop = (pos == -1);
@@ -156,9 +170,28 @@ FdoLiteralValue *FdoFunctionRtrim::Evaluate (
     // other than a blank from the right.
 
     if (pos == -1)
-        return FdoStringValue::Create(base_string);
+    {
+        
+        if (string_length> tmp_buffer_size) {
+            delete [] tmp_buffer;
+            tmp_buffer_size = (size_t) string_length;
+            tmp_buffer      = new wchar_t[tmp_buffer_size + 1];
+        }
+        wcscpy(tmp_buffer, base_string);
+        return_string_value->SetString(tmp_buffer);
+    }
     else
-      return FdoStringValue::Create(base_string.Mid(0, (size_t) (pos+1)));
+    {
+        if (pos+1 > tmp_buffer_size) {
+            delete [] tmp_buffer;
+            tmp_buffer_size = (size_t) (pos+1);
+            tmp_buffer      = new wchar_t[tmp_buffer_size + 1];
+        }  
+        wcsncpy(tmp_buffer, base_string, (size_t)(pos+1));
+        tmp_buffer[pos+1] = '\0';
+        return_string_value->SetString(tmp_buffer);
+    }
+    return FDO_SAFE_ADDREF(return_string_value.p);
 
 }  //  Evaluate ()
 

@@ -136,6 +136,9 @@ class FdoFunctionPower : public FdoExpressionEngineINonAggregateFunction
 
         FdoDataType para2_data_type;
 
+        FdoPtr<FdoDoubleValue>  return_double_value;
+        bool                    first;
+
 };  //  class FdoFunctionPower
 
 #endif

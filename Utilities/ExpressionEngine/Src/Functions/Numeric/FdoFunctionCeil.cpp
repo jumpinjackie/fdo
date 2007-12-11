@@ -43,6 +43,8 @@ FdoFunctionCeil::FdoFunctionCeil ()
 
     incoming_data_type  = FdoDataType_CLOB;
 
+    first = true;
+
 }  //  FdoFunctionCeil ()
 
 
@@ -123,9 +125,13 @@ FdoLiteralValue *FdoFunctionCeil::Evaluate (
     FdoPtr<FdoInt64Value>   int64_value;
     FdoPtr<FdoSingleValue>  single_value;
 
-    // Validate the function call.
+    if (first)
+    {
+        Validate(literal_values);
+        return_data_value = FdoDataValue::Create(incoming_data_type);
+        first = false;
+    }
 
-    Validate(literal_values);
 
     // Process the request and return the result back to the calling routine.
 
@@ -134,57 +140,64 @@ FdoLiteralValue *FdoFunctionCeil::Evaluate (
       case FdoDataType_Byte:
         byte_value = (FdoByteValue *) literal_values->GetItem(0);
         if (!byte_value->IsNull())
-            return FdoByteValue::Create(byte_value->GetByte());
+            (static_cast<FdoByteValue *> (return_data_value.p))->SetByte(byte_value->GetByte());
         else
-          return FdoByteValue::Create();
+            return_data_value->SetNull();
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
       case FdoDataType_Decimal:
         decimal_value =(FdoDecimalValue *) literal_values->GetItem(0);
         if (!decimal_value->IsNull())
-            return FdoDecimalValue::Create(ceil(decimal_value->GetDecimal()));
+            (static_cast<FdoDecimalValue *> (return_data_value.p))->SetDecimal(ceil(decimal_value->GetDecimal()));
         else
-          return FdoDecimalValue::Create();
+            return_data_value->SetNull();
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
       case FdoDataType_Double:
         double_value = (FdoDoubleValue *) literal_values->GetItem(0);
         if (!double_value->IsNull())
-            return FdoDoubleValue::Create(ceil(double_value->GetDouble()));
+            (static_cast<FdoDoubleValue *> (return_data_value.p))->SetDouble(ceil(double_value->GetDouble()));
         else
-          return FdoDoubleValue::Create();
+            return_data_value->SetNull();
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
       case FdoDataType_Int16:
         int16_value = (FdoInt16Value *) literal_values->GetItem(0);
         if (!int16_value->IsNull())
-            return FdoInt16Value::Create(int16_value->GetInt16());
+            (static_cast<FdoInt16Value *> (return_data_value.p))->SetInt16(int16_value->GetInt16());
         else
-          return FdoInt16Value::Create();
+            return_data_value->SetNull();
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
       case FdoDataType_Int32:
         int32_value = (FdoInt32Value *) literal_values->GetItem(0);
         if (!int32_value->IsNull())
-            return FdoInt32Value::Create(int32_value->GetInt32());
+            (static_cast<FdoInt32Value *> (return_data_value.p))->SetInt32(int32_value->GetInt32());
         else
-          return FdoInt32Value::Create();
+            return_data_value->SetNull();
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
       case FdoDataType_Int64:
         int64_value = (FdoInt64Value *) literal_values->GetItem(0);
         if (!int64_value->IsNull())
-            return FdoInt64Value::Create(int64_value->GetInt64());
+            (static_cast<FdoInt64Value *> (return_data_value.p))->SetInt64(int64_value->GetInt64());
         else
-          return FdoInt64Value::Create();
+            return_data_value->SetNull();
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
       case FdoDataType_Single:
         single_value = (FdoSingleValue *) literal_values->GetItem(0);
         if (!single_value->IsNull())
-            return FdoSingleValue::Create(ceil(single_value->GetSingle()));
+            (static_cast<FdoSingleValue *> (return_data_value.p))->SetSingle(ceil(single_value->GetSingle()));
         else
-          return FdoSingleValue::Create();
+            return_data_value->SetNull();
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
     }  //  switch ...

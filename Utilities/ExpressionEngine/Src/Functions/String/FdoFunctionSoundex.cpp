@@ -37,6 +37,10 @@ FdoFunctionSoundex::FdoFunctionSoundex ()
 
     function_definition = NULL;
 
+    first = true;
+    tmp_buffer = NULL;
+
+
 }  //  FdoFunctionSoundex ()
 
 
@@ -52,6 +56,7 @@ FdoFunctionSoundex::~FdoFunctionSoundex ()
 
     FDO_SAFE_RELEASE(function_definition);
 
+    delete [] tmp_buffer;
 }  //  ~FdoFunctionSoundex ()
 
 
@@ -128,26 +133,32 @@ FdoLiteralValue *FdoFunctionSoundex::Evaluate (
 // +---------------------------------------------------------------------------
 
 {
-
     // Declare and initialize all necessary local variables.
 
     FdoInt64               str_length;
 
-    FdoStringP             base_string,
-                           work_string;
+    FdoString              *work_string;
 
     FdoPtr<FdoStringValue> string_value;
 
-    // Validate the function call.
-
-    Validate(literal_values);
+    if (first)
+    {
+        Validate(literal_values);
+        return_string_value = FdoStringValue::Create();
+        tmp_buffer      = new wchar_t[INIT_ALLOCATE_SIZE+1];
+        tmp_buffer_size = INIT_ALLOCATE_SIZE;
+        first = false;
+    }
 
     // Get the string that needs to be processed. If no value is provided,
     // terminate the function.
 
     string_value = (FdoStringValue *) literal_values->GetItem(0);
     if (string_value->IsNull())
-        return FdoStringValue::Create();
+    {
+        return_string_value->SetNull();
+        return FDO_SAFE_ADDREF(return_string_value.p);
+    }
 
     // Make a work-copy of the provided string.
 
@@ -156,34 +167,44 @@ FdoLiteralValue *FdoFunctionSoundex::Evaluate (
     // Get the length of the provided string. If it is 0, then there is nothing
     // to do and the functin can terminate.
 
-    str_length = (FdoInt64)work_string.GetLength();
+    str_length = (FdoInt64)wcslen(work_string);
     if (str_length == 0)
-        return FdoStringValue::Create();
+    {
+        return_string_value->SetNull();
+        return FDO_SAFE_ADDREF(return_string_value.p);
+    }
 
-    // Check if the string contains numbers only. If this is the case, nothing
-    // else needs to be done and the function can terminate.
+    if (str_length > tmp_buffer_size)
+    {
+        delete [] tmp_buffer;
+        tmp_buffer_size = (size_t) str_length;
+        tmp_buffer      = new wchar_t[tmp_buffer_size + 1];
 
-    if (work_string.IsNumber())
-        return FdoStringValue::Create();
+    }
+    
+    wcscpy(tmp_buffer, work_string);
 
     // Execute the first step of the algorithm and remove all punctation marks
     // and numbers. For the resulting string, check the length. If it is 0,
     // nothing else needs to be done and the function can terminate.
 
-    work_string = EliminateNonAlphaChars(work_string, str_length);
-    str_length  = (FdoInt64)work_string.GetLength();
+    EliminateNonAlphaChars(tmp_buffer, str_length);
+    str_length  = (FdoInt64)wcslen(tmp_buffer);
     if (str_length == 0)
-        return FdoStringValue::Create();
+    {
+        return_string_value->SetNull();
+        return FDO_SAFE_ADDREF(return_string_value.p);
+    }
 
     // If there is just one letter left, add three trailing zeros to the string
     // and return it back to the calling routine.
 
     if (str_length == 1) {
 
-        base_string = work_string.Mid(0, 1);
-        base_string = base_string.Upper();
-        base_string = base_string + L"000";
-        return FdoStringValue::Create((FdoString *)base_string);
+        FdoCommonOSUtil::wcsupr(tmp_buffer);
+        wcscat(tmp_buffer, L"000");
+        return_string_value->SetString(tmp_buffer);
+        return FDO_SAFE_ADDREF(return_string_value.p);
 
     }  //  if (str_length == 1) ...
 
@@ -191,56 +212,81 @@ FdoLiteralValue *FdoFunctionSoundex::Evaluate (
     // substitute letters with numbers as outlined in the algorithm (step 3,
     // 4) for the remaining string.
 
-    work_string = work_string.Upper();
-    base_string = work_string.Mid(0, 1);
+    FdoCommonOSUtil::wcsupr(tmp_buffer);
 
-    work_string = work_string.Mid(1, (size_t)str_length+1);
-    work_string = work_string.Replace(L"A", L"0");
-    work_string = work_string.Replace(L"E", L"0");
-    work_string = work_string.Replace(L"I", L"0");
-    work_string = work_string.Replace(L"O", L"0");
-    work_string = work_string.Replace(L"U", L"0");
-    work_string = work_string.Replace(L"H", L"0");
-    work_string = work_string.Replace(L"W", L"0");
-    work_string = work_string.Replace(L"Z", L"0");
-    work_string = work_string.Replace(L"B", L"1");
-    work_string = work_string.Replace(L"F", L"1");
-    work_string = work_string.Replace(L"P", L"1");
-    work_string = work_string.Replace(L"V", L"1");
-    work_string = work_string.Replace(L"C", L"2");
-    work_string = work_string.Replace(L"G", L"2");
-    work_string = work_string.Replace(L"J", L"2");
-    work_string = work_string.Replace(L"K", L"2");
-    work_string = work_string.Replace(L"Q", L"2");
-    work_string = work_string.Replace(L"S", L"2");
-    work_string = work_string.Replace(L"X", L"2");
-    work_string = work_string.Replace(L"Z", L"2");
-    work_string = work_string.Replace(L"D", L"3");
-    work_string = work_string.Replace(L"T", L"3");
-    work_string = work_string.Replace(L"L", L"4");
-    work_string = work_string.Replace(L"M", L"5");
-    work_string = work_string.Replace(L"N", L"5");
-    work_string = work_string.Replace(L"R", L"6");
+    for (int i=1; i<(int) wcslen(tmp_buffer); i++)
+    {
+        switch (tmp_buffer[i])
+        {
+        case 'A':
+        case 'E':
+        case 'I':
+        case 'O':
+        case 'U':
+        case 'H':
+        case 'W':
+            tmp_buffer[i] = '0';
+            break;
+        case 'B':
+        case 'F':
+        case 'P':
+        case 'V':
+            tmp_buffer[i] = '1';
+            break;
+        case 'C':
+        case 'G':
+        case 'J':
+        case 'K':
+        case 'Q':
+        case 'S':
+        case 'X':
+        case 'Z':
+            tmp_buffer[i] = '2';
+            break;
+        case 'D':
+        case 'T':
+            tmp_buffer[i] = '3';
+            break;
+        case 'L':
+            tmp_buffer[i] = '4';
+            break;
+        case 'M':
+        case 'N':
+            tmp_buffer[i] = '5';
+            break;
+        case 'R':
+            tmp_buffer[i] = '6';
+            break;
+
+        }
+    }
+
 
     // Eliminate all duplicate numbers if they are besides each other (step 6).
 
-    str_length  = work_string.GetLength();
-    work_string = EliminateDuplicateNumbers(work_string, str_length);
+    str_length  = wcslen(tmp_buffer);
+    EliminateDuplicateNumbers(tmp_buffer+1, str_length-1);
 
     // Eliminate all zeros.
 
-    str_length  = work_string.GetLength();
-    work_string = EliminateZeros (work_string, str_length);
+    str_length  = wcslen(tmp_buffer);
+    EliminateZeros (tmp_buffer+1, str_length-1);
 
     // Construct the resulting string and return the value back to the calling
     // routine.
 
-    base_string = base_string + work_string.Mid(0, 3);
-    while (base_string.GetLength() < 4)
-      base_string = base_string + L"0";
-
-    return FdoStringValue::Create((FdoString *)base_string);
-
+    size_t size = wcslen(tmp_buffer);
+    if (size < 4)
+    {
+        for (int i=(int)size; i<4; i++)
+        {
+            tmp_buffer[i] = L'0';
+        }
+    }
+    tmp_buffer[4] = '\0';
+    
+    return_string_value->SetString(tmp_buffer);
+    return FDO_SAFE_ADDREF(return_string_value.p);
 }  //  Evaluate ()
 
 
@@ -317,8 +363,9 @@ void FdoFunctionSoundex::CreateFunctionDefinition ()
 
 }  //  CreateFunctionDefinition ()
 
-FdoStringP FdoFunctionSoundex::EliminateDuplicateNumbers (FdoStringP value,
-                                                          FdoInt64   length)
+void FdoFunctionSoundex::EliminateDuplicateNumbers (wchar_t* value,
+                                                          FdoInt64   length
+                                                          )
 
 // +---------------------------------------------------------------------------
 // | The function executes the sixth step as outlined in the algorithm for the
@@ -326,39 +373,34 @@ FdoStringP FdoFunctionSoundex::EliminateDuplicateNumbers (FdoStringP value,
 // +---------------------------------------------------------------------------
 
 {
-
     // Declare and initialize all necessary local variables.
 
     FdoInt64   loop_count         = 0;
 
-    FdoStringP curr_char,
-               comp_char,
-               resulting_string;
+    wchar_t curr_char;
 
     // Loop through each of the characters in the given string and remove any
     // duplicate numbers that are adjacent to each other (the first occurance
     // of the number is kept.
 
-    comp_char        = value.Mid(0, 1);
-    resulting_string = resulting_string + comp_char;
-
+    wchar_t comp_char = value[0];
+    wchar_t* ptr = value;
+    ptr++;
     for (loop_count = 1; loop_count < length; loop_count++) {
 
-      curr_char = value.Mid((size_t)loop_count, 1);
-      if (curr_char != comp_char) {
+        curr_char = value[loop_count];
+        if (curr_char != comp_char) {
+            *ptr = curr_char;
+            ptr++;
+            comp_char        = value[loop_count];
 
-          resulting_string = resulting_string + curr_char;
-          comp_char        = value.Mid((size_t)loop_count, 1);
-
-      }  //  if (curr_char != comp_char) ...
+        }  //  if (curr_char != comp_char) ...
 
     }  //  for (loop_count = 0; loop_count < length; loop_count++) ...
-
-    return resulting_string;
-
+    *ptr = '\0';
 }  //  EliminateDuplicateNumbers ()
 
-FdoStringP FdoFunctionSoundex::EliminateNonAlphaChars (FdoStringP value,
+void FdoFunctionSoundex::EliminateNonAlphaChars (wchar_t* value,
                                                        FdoInt64   length)
 
 // +---------------------------------------------------------------------------
@@ -372,29 +414,23 @@ FdoStringP FdoFunctionSoundex::EliminateNonAlphaChars (FdoStringP value,
 
     FdoInt64      loop_count         = 0;
 
-    FdoStringP    curr_char,
-                  resulting_string;
-
-    unsigned char *work_char         = NULL;
-
     // Loop through each of the characters in the given string and remove any
     // characters that is not a letter.
 
+    wchar_t *ptr = value;
     for (loop_count = 0; loop_count < length; loop_count++) {
 
-      curr_char = value.Mid((size_t)loop_count, 1);
-      work_char = (unsigned char*)((const char *)curr_char);
-
-      if (isalpha(work_char[0]))
-          resulting_string = resulting_string + curr_char;
-
+      if (isalpha(value[loop_count]))
+      {
+          *ptr = value[loop_count];
+          ptr++;
+      }
     }  //  for (loop_count = 0; loop_count < length; loop_count++) ...
-
-    return resulting_string;
+    *ptr = '\0';
 
 }  //  EliminateNonAlphaChars ()
 
-FdoStringP FdoFunctionSoundex::EliminateZeros (FdoStringP value,
+void FdoFunctionSoundex::EliminateZeros (wchar_t* value,
                                                FdoInt64   length)
 
 // +---------------------------------------------------------------------------
@@ -408,22 +444,19 @@ FdoStringP FdoFunctionSoundex::EliminateZeros (FdoStringP value,
 
     FdoInt64   loop_count         = 0;
 
-    FdoStringP curr_char,
-               resulting_string;
-
     // Loop through each of the characters in the given string and remove any
     // zeros.
 
+    wchar_t *ptr = value;
     for (loop_count = 0; loop_count < length; loop_count++) {
-
-      curr_char = value.Mid((size_t)loop_count, 1);
-      if (curr_char != L"0")
-          resulting_string = resulting_string + curr_char;
+        if (value[loop_count] != L'0')
+        {
+            *ptr = value[loop_count];
+            ptr++;
+        }
 
     }  //  for (loop_count = 0; loop_count < length; loop_count++) ...
-
-    return resulting_string;
-
+    *ptr = '\0';
 }  //  EliminateZeros ()
 
 void FdoFunctionSoundex::Validate (FdoLiteralValueCollection *literal_values)

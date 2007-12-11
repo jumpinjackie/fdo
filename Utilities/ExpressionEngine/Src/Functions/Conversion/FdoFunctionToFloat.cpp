@@ -37,6 +37,8 @@ FdoFunctionToFloat::FdoFunctionToFloat ()
 
     function_definition = NULL;
 
+    first = true;
+
 }  //  FdoFunctionToFloat ()
 
 FdoFunctionToFloat::~FdoFunctionToFloat ()
@@ -123,10 +125,12 @@ FdoLiteralValue *FdoFunctionToFloat::Evaluate (
     FdoPtr<FdoSingleValue>  single_value;
     FdoPtr<FdoStringValue>  string_value;
 
-    // Validate the function call.
-
-    Validate(literal_values);
-
+    if (first)
+    {
+        Validate(literal_values);
+        return_decimal_value = FdoDecimalValue::Create();
+        first = false;
+    }
     // Get the parameter and process it.
 
     switch (incoming_data_type) {
@@ -221,10 +225,11 @@ FdoLiteralValue *FdoFunctionToFloat::Evaluate (
     }  //  switch ...
 
     if (is_NULL)
-        return FdoDecimalValue::Create();
+        return_decimal_value->SetNull();
     else
-      return FdoDecimalValue::Create(dbl_value);
-
+        return_decimal_value->SetDecimal(dbl_value);
+    return FDO_SAFE_ADDREF(return_decimal_value.p);
+    
 }  //  Evaluate ()
 
 

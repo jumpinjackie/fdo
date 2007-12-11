@@ -37,6 +37,9 @@ FdoFunctionTranslate::FdoFunctionTranslate ()
 
     function_definition = NULL;
 
+    first = true;
+    tmp_buffer = NULL;
+
 }  //  FdoFunctionTranslate ()
 
 
@@ -51,6 +54,7 @@ FdoFunctionTranslate::~FdoFunctionTranslate ()
     // Delete the function definition.
 
     FDO_SAFE_RELEASE(function_definition);
+    delete [] tmp_buffer;
 
 }  //  ~FdoFunctionTranslate ()
 
@@ -112,21 +116,24 @@ FdoLiteralValue *FdoFunctionTranslate::Evaluate (
 
     FdoInt32               i,
                            pos,
-                           to_set_length,
-                           from_set_length,
+                           to_set_length;
+    size_t                 from_set_length,
                            source_string_length;
-
-    FdoStringP             result,
-                           curr_char,
-                           to_char_set,
-                           source_string,
-                           from_char_set;
+    wchar_t                curr_char[2];
+    FdoString              *source_string,
+                           *from_char_set,
+                           *to_char_set;
 
     FdoPtr<FdoStringValue> string_value;
 
-    // Validate the function call.
-
-    Validate(literal_values);
+    if (first)
+    {
+        Validate(literal_values);
+        return_string_value = FdoStringValue::Create();
+        tmp_buffer      = new wchar_t[INIT_ALLOCATE_SIZE+1];
+        tmp_buffer_size = INIT_ALLOCATE_SIZE;
+        first = false;
+    }
 
     // Get the source string and the two character sets involved in the opera-
     // tion. If any of the provided strings is empty, return an empty string
@@ -141,15 +148,15 @@ FdoLiteralValue *FdoFunctionTranslate::Evaluate (
         switch (i) {
 
           case 0:
-            source_string = source_string + string_value->GetString();
+            source_string = string_value->GetString();
             break;
 
           case 1:
-            from_char_set = from_char_set + string_value->GetString();
+            from_char_set = string_value->GetString();
             break;
 
           case 2:
-            to_char_set = to_char_set + string_value->GetString();
+            to_char_set = string_value->GetString();
             break;
 
         }  //  switch ...
@@ -158,9 +165,17 @@ FdoLiteralValue *FdoFunctionTranslate::Evaluate (
 
     // Get the length of the character sets involved.
 
-    to_set_length        = (FdoInt32) to_char_set.GetLength();
-    from_set_length      = (FdoInt32) from_char_set.GetLength();
-    source_string_length = (FdoInt32) source_string.GetLength();
+    to_set_length = (FdoInt32) wcslen(to_char_set);
+    from_set_length = (FdoInt32) wcslen(from_char_set);
+    source_string_length = (FdoInt32) wcslen(source_string);
+
+    if (from_set_length > tmp_buffer_size) {
+
+        delete [] tmp_buffer;
+        tmp_buffer_size = from_set_length;
+        tmp_buffer      = new wchar_t[tmp_buffer_size + 1];
+
+    }
 
     // Navigate through the source string and execute the replacement. The
     // following rules apply:
@@ -177,24 +192,28 @@ FdoLiteralValue *FdoFunctionTranslate::Evaluate (
     //       result should be 'ebcd', not 'Sbcd' which would be the case if
     //       the mentioned function is used to do the job.
 
-    for (i = 0; i < source_string_length; i++) {
+    for (i = 0; i < (int) source_string_length; i++) {
 
-      curr_char = source_string.Mid(i, 1);
-      if (from_char_set.Contains(curr_char)) {
+      curr_char[0] = source_string[i];
+      curr_char[1] = '\0';
+      if (wcsstr(from_char_set, curr_char) != NULL) {
 
-          pos = GetFromSetPosition(from_char_set, from_set_length, curr_char);
+          pos = GetFromSetPosition(from_char_set, (FdoInt32) from_set_length, curr_char);
           if (pos <= to_set_length)
-              result = result + to_char_set.Mid(pos, 1);
+              tmp_buffer[i] = to_char_set[pos];
 
       }  //  if (from_char_set.Contains( ...
       else
-        result = result + curr_char;
+        tmp_buffer[i] = curr_char[0];
 
     }  //  for (i = 0; ...
+     tmp_buffer[i] = '\0';
 
     // Return the resulting string back to the calling routine.
 
-    return FdoStringValue::Create(result);
+    
+    return_string_value->SetString(tmp_buffer);
+    return FDO_SAFE_ADDREF(return_string_value.p);
 
 }  //  Evaluate ()
 
@@ -298,9 +317,9 @@ void FdoFunctionTranslate::CreateFunctionDefinition ()
 
 }  //  CreateFunctionDefinition ()
 
-FdoInt32 FdoFunctionTranslate::GetFromSetPosition (FdoStringP char_set,
+FdoInt32 FdoFunctionTranslate::GetFromSetPosition (FdoString* char_set,
                                                    FdoInt32   set_length,
-                                                   FdoStringP curr_char)
+                                                   FdoString* curr_char)
 
 // +---------------------------------------------------------------------------
 // | The function returns the position of the provided character in the set of
@@ -314,15 +333,15 @@ FdoInt32 FdoFunctionTranslate::GetFromSetPosition (FdoStringP char_set,
 
     FdoInt32   pos = 0;
 
-    FdoStringP tmp_char;
+    wchar_t tmp_char;
 
     // Navigate the given string from the left, find the position of the pro-
     // vided character and return the position back to the calling routine.
 
     while (pos < set_length) {
 
-      tmp_char = char_set.Mid(pos, 1);
-      if (tmp_char == curr_char)
+      tmp_char = char_set[pos];
+      if (tmp_char == *curr_char)
           break;
       pos++;
 

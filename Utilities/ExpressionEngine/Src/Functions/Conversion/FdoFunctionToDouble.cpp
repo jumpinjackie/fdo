@@ -43,6 +43,8 @@ FdoFunctionToDouble::FdoFunctionToDouble ()
 
     incoming_data_type  = FdoDataType_CLOB;
 
+    first = true;
+
 }  //  FdoFunctionToDouble ()
 
 FdoFunctionToDouble::~FdoFunctionToDouble ()
@@ -130,9 +132,12 @@ FdoLiteralValue *FdoFunctionToDouble::Evaluate (
     FdoPtr<FdoSingleValue>  single_value;
     FdoPtr<FdoStringValue>  string_value;
 
-    // Validate the function call.
-
-    Validate(literal_values);
+    if (first)
+    {
+        Validate(literal_values);
+        return_double_value = FdoDoubleValue::Create();
+        first = false;
+    }
 
     // Get the parameter and process it.
 
@@ -228,9 +233,10 @@ FdoLiteralValue *FdoFunctionToDouble::Evaluate (
     }  //  switch ...
 
     if (is_NULL)
-        return FdoDoubleValue::Create();
+        return_double_value->SetNull();
     else
-      return FdoDoubleValue::Create(dbl_value);
+        return_double_value->SetDouble(dbl_value);
+    return FDO_SAFE_ADDREF(return_double_value.p);
 
 }  //  Evaluate ()
 

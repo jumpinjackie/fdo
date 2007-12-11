@@ -45,6 +45,8 @@ FdoFunctionLog::FdoFunctionLog ()
     para1_data_type     = FdoDataType_CLOB;
     para2_data_type     = FdoDataType_CLOB;
 
+    first = true;
+
 }  //  FdoFunctionLog ()
 
 
@@ -122,19 +124,27 @@ FdoLiteralValue *FdoFunctionLog::Evaluate (
     FdoDouble p1,
               p2;
 
-    // Validate the function call.
-
-    Validate(literal_values);
+    if (first)
+    {
+        Validate(literal_values);
+        return_double_value = FdoDoubleValue::Create();
+        first = false;
+    }
 
     // Process the request and return the result back to the calling routine.
 
     p1 = GetParameterValue(literal_values, 0, para1_data_type, &is_NULL_value);
     if (is_NULL_value)
-        return FdoDoubleValue::Create();
+    {
+        return_double_value->SetNull();
+        return FDO_SAFE_ADDREF(return_double_value.p);
+    }
     p2 = GetParameterValue(literal_values, 1, para2_data_type, &is_NULL_value);
     if (is_NULL_value)
-        return FdoDoubleValue::Create();
-
+    {
+        return_double_value->SetNull();
+        return FDO_SAFE_ADDREF(return_double_value.p);
+    }
     if ((p1 <= 0) || (p2 <= 0))
         throw FdoException::Create(
             FdoException::NLSGetMessage(
@@ -142,7 +152,8 @@ FdoLiteralValue *FdoFunctionLog::Evaluate (
                 "Expression Engine: Invalid value for execution of function '%1$ls'",
                 FDO_FUNCTION_LOG));
 
-    return FdoDoubleValue::Create(log(p2)/log(p1));
+    return_double_value->SetDouble(log(p2)/log(p1));
+    return FDO_SAFE_ADDREF(return_double_value.p);
 
 }  //  Evaluate ()
 

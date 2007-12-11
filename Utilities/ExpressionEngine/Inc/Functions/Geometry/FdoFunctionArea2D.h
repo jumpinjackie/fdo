@@ -127,6 +127,9 @@ class FdoFunctionArea2D : public FdoExpressionEngineINonAggregateFunction
 		// Compute geodetic/euclidian distances.
 		FdoBoolean			compute_geodetic;
 
+        FdoPtr<FdoDoubleValue> return_double_value;
+
+
 };  //  class FdoFunctionArea2D
 
 #endif

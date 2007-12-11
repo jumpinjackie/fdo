@@ -43,6 +43,8 @@ FdoFunctionSign::FdoFunctionSign ()
 
     incoming_data_type  = FdoDataType_CLOB;
 
+    first = true;
+
 }  //  FdoFunctionSign ()
 
 
@@ -125,9 +127,12 @@ FdoLiteralValue *FdoFunctionSign::Evaluate (
     FdoPtr<FdoInt64Value>   int64_value;
     FdoPtr<FdoSingleValue>  single_value;
 
-    // Validate the function call.
-
-    Validate(literal_values);
+    if (first)
+    {
+        Validate(literal_values);
+       return_int32_value = FdoInt32Value::Create();
+       first = false;
+    }
 
     // Process the request and return the result back to the calling routine.
 
@@ -204,9 +209,12 @@ FdoLiteralValue *FdoFunctionSign::Evaluate (
     // If the value is NULL return an empty result object. Otherwise return
     // the function result.
 
-    return (result == 21)
-            ? FdoInt32Value::Create()
-            : FdoInt32Value::Create(result);
+    if (result == 21)
+        return_int32_value->SetNull();
+    else
+        return_int32_value->SetInt32(result);
+
+    return FDO_SAFE_ADDREF(return_int32_value.p);
 
 }  //  Evaluate ()
 

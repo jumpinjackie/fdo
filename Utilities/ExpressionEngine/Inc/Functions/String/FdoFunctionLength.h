@@ -116,6 +116,10 @@ class FdoFunctionLength : public FdoExpressionEngineINonAggregateFunction
 
         FdoFunctionDefinition *function_definition;
 
+        FdoPtr<FdoInt64Value> return_int64_value;
+
+        bool first;
+
 };  //  class FdoFunctionLength
 
 #endif

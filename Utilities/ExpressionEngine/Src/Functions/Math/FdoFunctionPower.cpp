@@ -45,6 +45,8 @@ FdoFunctionPower::FdoFunctionPower ()
     para1_data_type     = FdoDataType_CLOB;
     para2_data_type     = FdoDataType_CLOB;
 
+    first = true;
+
 }  //  FdoFunctionPower ()
 
 
@@ -122,21 +124,31 @@ FdoLiteralValue *FdoFunctionPower::Evaluate (
     double p1,
            p2;
 
-    // Validate the function call.
-
-    Validate(literal_values);
+    if (first)
+    {
+        Validate(literal_values);
+        return_double_value = FdoDoubleValue::Create();
+        first = false;
+    }
 
     // Process the request and return the result back to the calling routine.
 
     p1 = GetParameterValue(literal_values, 0, para1_data_type, &is_NULL_value);
     if (is_NULL_value)
-        return FdoDoubleValue::Create();
+    {
+        return_double_value->SetNull();
+        return FDO_SAFE_ADDREF(return_double_value.p);
+    }
 
     p2 = GetParameterValue(literal_values, 1, para2_data_type, &is_NULL_value);
     if (is_NULL_value)
-        return FdoDoubleValue::Create();
+    {
+        return_double_value->SetNull();
+        return FDO_SAFE_ADDREF(return_double_value.p);
+    }
 
-    return FdoDoubleValue::Create(pow(p1, p2));
+    return_double_value->SetDouble(pow(p1, p2));
+    return FDO_SAFE_ADDREF(return_double_value.p);
 
 }  //  Evaluate ()
 

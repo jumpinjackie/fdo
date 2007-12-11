@@ -126,13 +126,17 @@ FdoLiteralValue *FdoFunctionLength2D::Evaluate (
     if (!is_validated) {
 
         Validate(literal_values);
+        return_double_value = FdoDoubleValue::Create();
         is_validated = true;
 
     }  //  if (!is_validated) ...
 
     geom_value = (FdoGeometryValue *) literal_values->GetItem(0);
     if (geom_value->IsNull())
-        return FdoDoubleValue::Create();
+    {
+        return_double_value->SetNull();
+        return FDO_SAFE_ADDREF(return_double_value.p);
+    }
 
     // Create a geometry object
 
@@ -143,7 +147,9 @@ FdoLiteralValue *FdoFunctionLength2D::Evaluate (
 
     FdoExpressionEngineGeometryUtil::ComputeGeometryLength(
                             compute_geodetic, false /*3D*/, geom, &length);
-    return FdoDoubleValue::Create(length);
+
+    return_double_value->SetDouble(length);
+    return FDO_SAFE_ADDREF(return_double_value.p);
 
 }  //  Evaluate ()
 

@@ -120,6 +120,10 @@ class FdoFunctionAbs : public FdoExpressionEngineINonAggregateFunction
 
         FdoDataType incoming_data_type;
 
+        FdoPtr<FdoDataValue>    return_data_value;
+        bool                    first;
+
+
 };  //  class FdoFunctionAbs
 
 #endif

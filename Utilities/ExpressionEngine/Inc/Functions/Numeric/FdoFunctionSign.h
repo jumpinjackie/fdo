@@ -120,6 +120,8 @@ class FdoFunctionSign : public FdoExpressionEngineINonAggregateFunction
 
         FdoDataType incoming_data_type;
 
+        FdoPtr<FdoInt32Value>    return_int32_value;
+        bool first;
 };  //  class FdoFunctionSign
 
 #endif

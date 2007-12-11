@@ -36,6 +36,8 @@ FdoFunctionLower::FdoFunctionLower ()
     // Initialize all class variables.
 
     function_definition = NULL;
+    tmp_buffer = NULL;
+    first = true;
 
 }  //  FdoFunctionLower ()
 
@@ -51,6 +53,8 @@ FdoFunctionLower::~FdoFunctionLower ()
     // Delete the function definition.
 
     FDO_SAFE_RELEASE(function_definition);
+
+    delete [] tmp_buffer;
 
 }  //  ~FdoFunctionLower ()
 
@@ -109,25 +113,37 @@ FdoLiteralValue *FdoFunctionLower::Evaluate (
 
     // Declare and initialize all necessary local variables.
 
-    FdoStringP             result;
-
     FdoPtr<FdoStringValue> string_value;
 
-    // Validate the function call.
-
-    Validate(literal_values);
+    if (first)
+    {
+        Validate(literal_values);
+        return_string_value    = FdoStringValue::Create();
+        tmp_buffer      = new wchar_t[INIT_ALLOCATE_SIZE+1];
+        tmp_buffer_size = INIT_ALLOCATE_SIZE;
+        first = false;
+    }
 
     // Process the request and return the result back to the calling routine.
 
     string_value = (FdoStringValue *) literal_values->GetItem(0);
     if (!string_value->IsNull()) {
 
-        result = result + string_value->GetString();
-        result = result.Lower();
+        size_t size = wcslen(string_value->GetString());
+        if (size > tmp_buffer_size) {
+            delete [] tmp_buffer;
+            tmp_buffer_size = size;
+            tmp_buffer = new wchar_t[tmp_buffer_size + 1];
+
+        }
+        wcscpy(tmp_buffer, string_value->GetString());
+        
+        return_string_value->SetString(FdoCommonOSUtil::wcslwr(tmp_buffer));
 
     }  //  if (!string_value->IsNull()) ...
-
-    return FdoStringValue::Create(result);
+    else
+       return_string_value->SetString(L"");
+    return FDO_SAFE_ADDREF(return_string_value.p);
 
 }  //  Evaluate ()
 

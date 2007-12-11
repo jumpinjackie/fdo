@@ -42,6 +42,8 @@
 class FdoFunctionSoundex : public FdoExpressionEngineINonAggregateFunction
 {
 
+    static const FdoInt32 INIT_ALLOCATE_SIZE = 100;
+
     public:
 
         // ********************************************************************
@@ -104,7 +106,7 @@ class FdoFunctionSoundex : public FdoExpressionEngineINonAggregateFunction
         //  The function executes the fifth step as outlined in the algorithm
         //  for the function SOUNDEX and eliminates all duplicate numbers.
 
-        FdoStringP EliminateDuplicateNumbers (FdoStringP value,
+        void EliminateDuplicateNumbers (wchar_t* value,
                                               FdoInt64   length);
 
         // EliminateNonAlphaChars:
@@ -112,15 +114,15 @@ class FdoFunctionSoundex : public FdoExpressionEngineINonAggregateFunction
         //  for the function SOUNDEX and eliminates all characters that are
         //  not letters.
 
-        FdoStringP EliminateNonAlphaChars (FdoStringP value,
-                                           FdoInt64   length);
+        void EliminateNonAlphaChars (wchar_t* value,
+                                    FdoInt64   length);
 
         // EliminateZeros:
         //  The function executes the sixth step as outlined in the algorithm
         //  for the function SOUNDEX and eliminates all zeros.
 
-        FdoStringP EliminateZeros (FdoStringP value,
-                                   FdoInt64   length);
+        void EliminateZeros (wchar_t* value,
+                                FdoInt64   length);
 
         // Validate:
         //  The function validates the provided parameters for the function
@@ -138,6 +140,14 @@ class FdoFunctionSoundex : public FdoExpressionEngineINonAggregateFunction
         //  SOUNDEX.
 
         FdoFunctionDefinition *function_definition;
+
+        FdoPtr<FdoStringValue> return_string_value;
+
+        wchar_t *tmp_buffer;
+
+        size_t tmp_buffer_size;
+
+        bool first;
 
 };  //  class FdoFunctionSoundex
 
