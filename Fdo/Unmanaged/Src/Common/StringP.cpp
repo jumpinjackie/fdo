@@ -795,5 +795,5 @@ size_t FdoStringP::GetBufSize()
     if ( mBuffer ) 
         return mBuffer->mBufSize;
     else
-        return -1;
+        return 0;
 }
