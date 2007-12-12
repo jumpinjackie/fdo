@@ -50,6 +50,8 @@ FdoFunctionTrunc::FdoFunctionTrunc ()
     para1_data_type      = FdoDataType_CLOB;
     para2_data_type      = FdoDataType_CLOB;
 
+    first = true;
+
 }  //  FdoFunctionTrunc ()
 
 
@@ -120,9 +122,10 @@ FdoLiteralValue *FdoFunctionTrunc::Evaluate (
 
 {
 
-    // Validate the function call.
-
-    Validate(literal_values);
+    if (first)
+    {
+        Validate(literal_values);
+    }
 
     // Processing differs depending on the data type of the first parameter.
 
@@ -784,18 +787,42 @@ FdoLiteralValue *FdoFunctionTrunc::CreateReturnValue (FdoDataType data_type,
     switch (data_type) {
 
       case FdoDataType_Decimal:
-        return (no_value) ? FdoDecimalValue::Create()
-                          : FdoDecimalValue::Create(d_value);
+        if (first)
+        {
+            return_data_value = FdoDecimalValue::Create();
+            first = false;
+        }
+        if (no_value)
+            return_data_value->SetNull();
+        else
+            (static_cast<FdoDecimalValue *> (return_data_value.p))->SetDecimal(d_value);
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
       case FdoDataType_Double:
-        return (no_value) ? FdoDoubleValue::Create()
-                          : FdoDoubleValue::Create(d_value);
+        if (first)
+        {
+            return_data_value = FdoDoubleValue::Create();
+            first = false;
+        }
+        if (no_value)
+            return_data_value->SetNull();
+        else
+            (static_cast<FdoDoubleValue *> (return_data_value.p))->SetDouble(d_value);
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
       case FdoDataType_Single:
-        return (no_value) ? FdoSingleValue::Create()
-                          : FdoSingleValue::Create(f_value);
+        if (first)
+        {
+            return_data_value = FdoSingleValue::Create();
+            first = false;
+        }
+        if (no_value)
+            return_data_value->SetNull();
+        else
+            (static_cast<FdoSingleValue *> (return_data_value.p))->SetSingle(f_value);
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
     }  //  switch ...
@@ -1070,12 +1097,20 @@ FdoLiteralValue *FdoFunctionTrunc::ProcessDateTruncationRequest (
     FdoPtr<FdoDateTimeValue> date_time_value; 
 
 
+    if (first)
+    {
+        return_data_value = FdoDateTimeValue::Create();
+        first = false;
+    }
     // Get the value to be processed. If no data is provided, create an empty
     // object being returned and terminate the function.
 
     date_time_value = (FdoDateTimeValue *) literal_values->GetItem(0);
     if (date_time_value->IsNull())
-        return FdoDateTimeValue::Create();
+    {
+        return_data_value->SetNull();
+        return FDO_SAFE_ADDREF(return_data_value.p);
+    }
 
     date_time = date_time_value->GetDateTime();
 
@@ -1167,10 +1202,22 @@ FdoLiteralValue *FdoFunctionTrunc::ProcessDateTruncationRequest (
     }  //  switch ...
 
     if (truncation_done)
-        return FdoDateTimeValue::Create(
-                        FdoDateTime(year, month, day, hour, minute, seconds));
+    {
+        FdoDateTimeValue *dateTimeValue = static_cast<FdoDateTimeValue *> (return_data_value.p);
+        date_time.year = year;
+        date_time.month = month;
+        date_time.day = day;
+        date_time.hour = hour;
+        date_time.minute = minute;
+        date_time.seconds = seconds;
+        dateTimeValue->SetDateTime(date_time);
+    
+    }
     else
-      return FdoDateTimeValue::Create(FdoDateTime());
+    {
+        return_data_value->SetNull();
+    }
+    return FDO_SAFE_ADDREF(return_data_value.p);
 
 }  //  ProcessDateTruncationRequest ()
 
@@ -1210,31 +1257,59 @@ FdoLiteralValue *FdoFunctionTrunc::ProcessNumericTruncationRequest (
     switch (para1_data_type) {
 
       case FdoDataType_Byte:
+        if (first)
+        {
+            return_data_value = FdoByteValue::Create();
+            first = false;
+        }
         byte_value = (FdoByteValue *) literal_values->GetItem(0);
-        return (!byte_value->IsNull())
-                ? FdoByteValue::Create(byte_value->GetByte())
-                : FdoByteValue::Create();
+        if (!byte_value->IsNull())
+            (static_cast<FdoByteValue *> (return_data_value.p))->SetByte(byte_value->GetByte());
+        else
+            return_data_value->SetNull();
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
       case FdoDataType_Int16:
+        if (first)
+        {
+            return_data_value = FdoInt16Value::Create();
+            first = false;
+        }
         int16_value = (FdoInt16Value *) literal_values->GetItem(0);
-        return (!int16_value->IsNull())
-                ? FdoInt16Value::Create(int16_value->GetInt16())
-                : FdoInt16Value::Create();
+        if (!int16_value->IsNull())
+            (static_cast<FdoInt16Value *> (return_data_value.p))->SetInt16(int16_value->GetInt16());
+        else
+            return_data_value->SetNull();
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
       case FdoDataType_Int32:
+        if (first)
+        {
+            return_data_value = FdoInt32Value::Create();
+            first = false;
+        }
         int32_value = (FdoInt32Value *) literal_values->GetItem(0);
-        return (!int32_value->IsNull())
-                ? FdoInt32Value::Create(int32_value->GetInt32())
-                : FdoInt32Value::Create();
+        if (!int32_value->IsNull())
+            (static_cast<FdoInt32Value *> (return_data_value.p))->SetInt32(int32_value->GetInt32());
+        else
+            return_data_value->SetNull();
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
       case FdoDataType_Int64:
+        if (first)
+        {
+            return_data_value = FdoInt64Value::Create();
+            first = false;
+        }
         int64_value = (FdoInt64Value *) literal_values->GetItem(0);
-        return (!int64_value->IsNull())
-                ? FdoInt64Value::Create(int64_value->GetInt64())
-                : FdoInt64Value::Create();
+        if (!int64_value->IsNull())
+            (static_cast<FdoInt64Value *> (return_data_value.p))->SetInt64(int64_value->GetInt64());
+        else
+            return_data_value->SetNull();
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
     }  //  switch ...

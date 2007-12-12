@@ -47,6 +47,8 @@ FdoFunctionRound::FdoFunctionRound ()
     para1_data_type      = FdoDataType_CLOB;
     para2_data_type      = FdoDataType_CLOB;
 
+    first = true;
+
 }  //  FdoFunctionRound ()
 
 
@@ -136,9 +138,11 @@ FdoLiteralValue *FdoFunctionRound::Evaluate (
     FdoPtr<FdoInt32Value> int32_value;
     FdoPtr<FdoInt64Value> int64_value;
 
-    // Validate the function call.
-
-    Validate(literal_values);
+    if (first)
+    {
+        Validate(literal_values);
+        // first will be clear after the return object is created
+    }
 
     // The value to be processed is the first function parameter. If this para-
     // meter is of type BYTE, INT16, INT32 or INT64 nothing further needs to be
@@ -147,31 +151,59 @@ FdoLiteralValue *FdoFunctionRound::Evaluate (
     switch (para1_data_type) {
 
       case FdoDataType_Byte:
+        if (first)
+        {
+            return_data_value = FdoByteValue::Create();
+            first = false;
+        }
         byte_value = (FdoByteValue *) literal_values->GetItem(0);
-        return (!byte_value->IsNull())
-                ? FdoByteValue::Create(byte_value->GetByte())
-                : FdoByteValue::Create();
+        if (!byte_value->IsNull())
+            (static_cast<FdoByteValue *> (return_data_value.p))->SetByte(byte_value->GetByte());
+        else
+            return_data_value->SetNull();
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
       case FdoDataType_Int16:
+        if (first)
+        {
+            return_data_value = FdoInt16Value::Create();
+            first = false;
+        }
         int16_value = (FdoInt16Value *) literal_values->GetItem(0);
-        return (!int16_value->IsNull())
-                ? FdoInt16Value::Create(int16_value->GetInt16())
-                : FdoInt16Value::Create();
+        if (!int16_value->IsNull())
+            (static_cast<FdoInt16Value *> (return_data_value.p))->SetInt16(int16_value->GetInt16());
+        else
+            return_data_value->SetNull();
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
       case FdoDataType_Int32:
+        if (first)
+        {
+            return_data_value = FdoInt32Value::Create();
+            first = false;
+        }
         int32_value = (FdoInt32Value *) literal_values->GetItem(0);
-        return (!int32_value->IsNull())
-                ? FdoInt32Value::Create(int32_value->GetInt32())
-                : FdoInt32Value::Create();
+        if (!int32_value->IsNull())
+            (static_cast<FdoInt32Value *> (return_data_value.p))->SetInt32(int32_value->GetInt32());
+        else
+            return_data_value->SetNull();
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
       case FdoDataType_Int64:
+        if (first)
+        {
+            return_data_value = FdoInt64Value::Create();
+            first = false;
+        }
         int64_value = (FdoInt64Value *) literal_values->GetItem(0);
-        return (!int64_value->IsNull())
-                ? FdoInt64Value::Create(int64_value->GetInt64())
-                : FdoInt64Value::Create();
+        if (!int64_value->IsNull())
+            (static_cast<FdoInt64Value *> (return_data_value.p))->SetInt64(int64_value->GetInt64());
+        else
+            return_data_value->SetNull();
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
     }  //  switch ...
@@ -650,6 +682,8 @@ void FdoFunctionRound::CreateFunctionDefinition ()
 
     signatures = FdoSignatureDefinitionCollection::Create();
 
+    signature = FdoSignatureDefinition::Create(FdoDataType_Byte, byte_args);
+    signatures->Add(signature);
     signature = FdoSignatureDefinition::Create(FdoDataType_Decimal, dcl_args);
     signatures->Add(signature);
     signature = FdoSignatureDefinition::Create(FdoDataType_Double, dbl_args);
@@ -847,18 +881,42 @@ FdoLiteralValue *FdoFunctionRound::CreateReturnValue (FdoDataType data_type,
     switch (data_type) {
 
       case FdoDataType_Decimal:
-        return (no_value) ? FdoDecimalValue::Create()
-                          : FdoDecimalValue::Create(d_value);
+        if (first)
+        {
+            return_data_value = FdoDecimalValue::Create();
+            first = false;
+        }
+        if (no_value)
+            return_data_value->SetNull();
+        else
+            (static_cast<FdoDecimalValue *> (return_data_value.p))->SetDecimal(d_value);
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
       case FdoDataType_Double:
-        return (no_value) ? FdoDoubleValue::Create()
-                          : FdoDoubleValue::Create(d_value);
+        if (first)
+        {
+            return_data_value = FdoDoubleValue::Create();
+            first = false;
+        }
+        if (no_value)
+            return_data_value->SetNull();
+        else
+            (static_cast<FdoDoubleValue *> (return_data_value.p))->SetDouble(d_value);
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
       case FdoDataType_Single:
-        return (no_value) ? FdoSingleValue::Create()
-                          : FdoSingleValue::Create(f_value);
+        if (first)
+        {
+            return_data_value = FdoSingleValue::Create();
+            first = false;
+        }
+        if (no_value)
+            return_data_value->SetNull();
+        else
+            (static_cast<FdoSingleValue *> (return_data_value.p))->SetSingle(f_value);
+        return FDO_SAFE_ADDREF(return_data_value.p);
         break;
 
     }  //  switch ...

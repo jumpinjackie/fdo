@@ -51,6 +51,10 @@ FdoFunctionToDate::FdoFunctionToDate ()
     dt_object.minute    = -1;
     dt_object.seconds   = 0;
 
+    first = true;
+    tmp_buffer = NULL;
+
+
 }  //  FdoFunctionToDate ()
 
 FdoFunctionToDate::~FdoFunctionToDate ()
@@ -64,6 +68,8 @@ FdoFunctionToDate::~FdoFunctionToDate ()
     // Delete the function definition.
 
     FDO_SAFE_RELEASE(function_definition);
+
+    delete [] tmp_buffer;
 
 }  //  ~FdoFunctionToDate ()
 
@@ -124,21 +130,30 @@ FdoLiteralValue *FdoFunctionToDate::Evaluate (
 
     FdoDateTime            dt;
 
-    FdoStringP             dt_string,
-                           format_string;
+    FdoString              *dt_string,
+                           *format_string;
 
     FdoPtr<FdoStringValue> string_value;
 
-    // Validate the function call.
 
-    Validate(literal_values);
+    if (first)
+    {
+        Validate(literal_values);
+        return_datetime_value = FdoDateTimeValue::Create();
+        tmp_buffer      = new wchar_t[INIT_ALLOCATE_SIZE+1];
+        tmp_buffer_size = INIT_ALLOCATE_SIZE;
+        first = false;
+    }
 
     // Get the first parameter representing a string with some sort of date/
     // time information. If the value is NULL, terminate the routine.
 
     string_value = (FdoStringValue *) literal_values->GetItem(0);
     if (string_value->IsNull())
-        return FdoDateTimeValue::Create();
+    {
+        return_datetime_value->SetNull();
+        return FDO_SAFE_ADDREF(return_datetime_value.p);
+    }
 
     dt_string = string_value->GetString();
 
@@ -665,7 +680,7 @@ bool FdoFunctionToDate::IsValidMonthName (FdoInt8    index,
 
 }  //  IsValidMonthName ()
 
-FdoLiteralValue *FdoFunctionToDate::Process (FdoStringP dt_string)
+FdoLiteralValue *FdoFunctionToDate::Process (FdoString *dt_string)
 
 // +---------------------------------------------------------------------------
 // | The function processes the request. It issues an exception if the struc-
@@ -685,10 +700,6 @@ FdoLiteralValue *FdoFunctionToDate::Process (FdoStringP dt_string)
 
     FdoInt16      curr_token_pos         = 0;
 
-    FdoStringP    dt_value,
-                  mid_string;
-
-    unsigned char *work_char             = NULL;
 
     // The following moves through the date/time string and collects infor-
     // mation between the separators. Once the information is retrieved, the
@@ -696,7 +707,7 @@ FdoLiteralValue *FdoFunctionToDate::Process (FdoStringP dt_string)
     // mation represents. If an error is detected during this mapping, an
     // exception is issued.
 
-    dt_string_length = dt_string.GetLength();
+    dt_string_length = wcslen(dt_string);
 
     if (dt_string_length == 0)
         throw FdoException::Create(
@@ -707,14 +718,18 @@ FdoLiteralValue *FdoFunctionToDate::Process (FdoStringP dt_string)
 
     for (pos = 0; pos < dt_string_length; pos++) {
 
-      mid_string = dt_string.Mid(pos, 1);
-      work_char  = (unsigned char*)((const char *)mid_string);
-
-      if (!isalnum(work_char[0])) {
+      if (!isalnum(dt_string[pos])) {
 
           if (start_pos_set) {
-
-              dt_value = dt_string.Mid(start_pos, (pos - start_pos));
+                
+              if (pos - start_pos>tmp_buffer_size)
+              {
+                delete [] tmp_buffer;
+                tmp_buffer_size = pos - start_pos;
+                tmp_buffer      = new wchar_t[tmp_buffer_size + 1];  
+              }
+              wcsncpy(tmp_buffer, dt_string+start_pos, pos - start_pos);
+              tmp_buffer[pos - start_pos] = '\0';
 
               if (curr_token_pos >= format_token_count)
                  throw FdoException::Create(
@@ -723,7 +738,7 @@ FdoLiteralValue *FdoFunctionToDate::Process (FdoStringP dt_string)
                          "Expression Engine: Invalid value for execution of function '%1$ls'",
                          FDO_FUNCTION_TODATE));
 
-              ProcessDateTimeValue(dt_value, curr_token_pos);
+              ProcessDateTimeValue(tmp_buffer, curr_token_pos);
 
               curr_token_pos++;
               start_pos_set = false;
@@ -749,7 +764,14 @@ FdoLiteralValue *FdoFunctionToDate::Process (FdoStringP dt_string)
 
     if (start_pos_set) {
 
-        dt_value = dt_string.Mid(start_pos, (pos - start_pos));
+        if (pos - start_pos>tmp_buffer_size)
+        {
+          delete [] tmp_buffer;
+          tmp_buffer_size = pos - start_pos;
+          tmp_buffer      = new wchar_t[tmp_buffer_size + 1];  
+        }
+        wcsncpy(tmp_buffer, dt_string+start_pos, pos - start_pos);
+        tmp_buffer[pos - start_pos] = '\0';
 
         if (curr_token_pos >= format_token_count)
             throw FdoException::Create(
@@ -758,15 +780,16 @@ FdoLiteralValue *FdoFunctionToDate::Process (FdoStringP dt_string)
                      "Expression Engine: Invalid value for execution of function '%1$ls'",
                      FDO_FUNCTION_TODATE));
 
-        ProcessDateTimeValue(dt_value, curr_token_pos);
+        ProcessDateTimeValue(tmp_buffer, curr_token_pos);
 
     }  //  if (start_pos_set) ...
 
-    return FdoDateTimeValue::Create(dt_object);
+    return_datetime_value->SetDateTime(dt_object);
+    return FDO_SAFE_ADDREF(return_datetime_value.p);
 
 }  //  Process ()
 
-void FdoFunctionToDate::ProcessDateTimeValue (FdoStringP dt_value,
+void FdoFunctionToDate::ProcessDateTimeValue (FdoString  *dt_value,
                                               FdoInt16   curr_token)
 
 // +---------------------------------------------------------------------------
@@ -1264,7 +1287,7 @@ void FdoFunctionToDate::Validate (FdoLiteralValueCollection *literal_values)
 
 }  //  Validate ()
 
-void FdoFunctionToDate::ValidateFormatSpecification (FdoStringP format_string)
+void FdoFunctionToDate::ValidateFormatSpecification (FdoString *format_string)
 
 // +---------------------------------------------------------------------------
 // | The function checks whether or not the string containing the format spe-
@@ -1282,16 +1305,12 @@ void FdoFunctionToDate::ValidateFormatSpecification (FdoStringP format_string)
                   start_pos              = 0,
                   format_length          = 0;
 
-    FdoStringP    mid_string,
-                  format_spec;
-
-    unsigned char *work_char             = NULL;
 
     // The following moves through the string and collects strings between
     // separators. Once a string is collected it is checked against the set
     // of valid format specifiers. If this test fails, the format is invalid.
 
-    format_length = format_string.GetLength();
+    format_length = wcslen(format_string);
 
     if (format_length == 0)
         throw FdoException::Create(
@@ -1302,16 +1321,20 @@ void FdoFunctionToDate::ValidateFormatSpecification (FdoStringP format_string)
 
     for (pos = 0; pos < format_length; pos++) {
 
-      mid_string = format_string.Mid(pos, 1);
-      work_char  = (unsigned char*)((const char *)mid_string);
-
-      if (!isalnum(work_char[0])) {
+      if (!isalnum(format_string[pos])) {
 
           if (start_pos_set) {
 
               format_specifier_found = true;
-              format_spec = format_string.Mid(start_pos, (pos - start_pos));
-              format_tokens[format_token_count] = GetToken(format_spec);
+              if (pos - start_pos>tmp_buffer_size)
+              {
+                delete [] tmp_buffer;
+                tmp_buffer_size = pos - start_pos;
+                tmp_buffer      = new wchar_t[tmp_buffer_size + 1];  
+              }
+              wcsncpy(tmp_buffer, format_string+start_pos, pos - start_pos);
+              tmp_buffer[pos - start_pos] = '\0';
+              format_tokens[format_token_count] = GetToken(tmp_buffer);
               format_token_count++;
               start_pos_set = false;
 
@@ -1337,8 +1360,15 @@ void FdoFunctionToDate::ValidateFormatSpecification (FdoStringP format_string)
     if (start_pos_set) {
 
         format_specifier_found = true;
-        format_spec = format_string.Mid(start_pos, (pos - start_pos));
-        format_tokens[format_token_count] = GetToken(format_spec);
+        if (pos - start_pos>tmp_buffer_size)
+        {
+          delete [] tmp_buffer;
+          tmp_buffer_size = pos - start_pos;
+          tmp_buffer      = new wchar_t[tmp_buffer_size + 1];  
+        }
+        wcsncpy(tmp_buffer, format_string+start_pos, pos - start_pos);
+        tmp_buffer[pos - start_pos] = '\0';
+        format_tokens[format_token_count] = GetToken(tmp_buffer);
         format_token_count++;
 
     }  //  if (start_pos_set) ...
