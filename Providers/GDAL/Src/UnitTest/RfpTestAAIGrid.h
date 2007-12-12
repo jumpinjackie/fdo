@@ -33,15 +33,18 @@
 
 class RfpTestAAIGird : public RfpTestCase
 {
-	FDO_CPPUNIT_DEFINE(testDataStream);
-	FDO_CPPUNIT_DEFINE(testGetNullValue);
+	// TODO: Enable test function once SAMPLE data is validated and redistributable
+	// FDO_CPPUNIT_DEFINE(testDataStream);
+	// FDO_CPPUNIT_DEFINE(testGetNullValue);
 
     // TODO: Enable test function once MOSIAC is supported
 	// FDO_CPPUNIT_DEFINE(testClippedMosaic);
 	
 	CPPUNIT_TEST_SUITE(RfpTestAAIGird);	
-	CPPUNIT_TEST(testDataStream);
-	CPPUNIT_TEST(testGetNullValue);
+
+	// TODO: Enable test function once SAMPLE data is validated and redistributable
+	// CPPUNIT_TEST(testDataStream);
+	// CPPUNIT_TEST(testGetNullValue);
 
     // TODO: Enable test function once MOSIAC is supported
 	// CPPUNIT_TEST(testClippedMosaic);
