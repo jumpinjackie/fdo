@@ -41,6 +41,8 @@
 class FdoFunctionToDate : public FdoExpressionEngineINonAggregateFunction
 {
 
+    static const FdoInt32 INIT_ALLOCATE_SIZE = 100;
+
     public:
 
         // ********************************************************************
@@ -174,14 +176,14 @@ class FdoFunctionToDate : public FdoExpressionEngineINonAggregateFunction
         //  structure of the date/time string does not match the structure de-
         //  fined in the format specification.
 
-        FdoLiteralValue *Process (FdoStringP dt_string);
+        FdoLiteralValue *Process (FdoString *dt_string);
 
         // ProcessDateTimeValue:
         //  The function processes the provided date/time information. If the
         //  value is valid, it is stored in the corresponding property of the
         //  date/time object. Otherwise, the function issues an exception.
 
-        void ProcessDateTimeValue (FdoStringP dt_value,
+        void ProcessDateTimeValue (FdoString  *dt_value,
                                    FdoInt16   curr_token);
 
         // ProcessDayName:
@@ -254,7 +256,7 @@ class FdoFunctionToDate : public FdoExpressionEngineINonAggregateFunction
         //  format specification is valid. If it is invalid, the function
         //  issues an exception.
 
-        void ValidateFormatSpecification (FdoStringP format_string);
+        void ValidateFormatSpecification (FdoString *format_string);
 
 
         // ********************************************************************
@@ -300,6 +302,15 @@ class FdoFunctionToDate : public FdoExpressionEngineINonAggregateFunction
         //  A flag indicating whether or not the PM notation is used.
 
         bool is_pm_hour;
+
+
+        FdoPtr<FdoDateTimeValue> return_datetime_value;
+
+        bool first;
+
+        wchar_t *tmp_buffer;
+
+        size_t tmp_buffer_size;
 
 };  //  class FdoFunctionToDate
 
