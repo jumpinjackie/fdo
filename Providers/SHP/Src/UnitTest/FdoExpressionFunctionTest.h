@@ -314,6 +314,12 @@ protected:
 
     void TestAddMonthsFunction ();
 
+    //  TestCurrentDateFunction:
+    //      The function executes the test for the expression engine function
+    //      CURRENTDATE when used as a select parameter.
+
+    void TestCurrentDateFunction ();
+
     //  TestExtractFunction:
     //      The function executes the test for the expression engine function
     //      EXTRACT when used as a select-parameter.
