@@ -41,6 +41,8 @@ FdoFunctionAddMonths::FdoFunctionAddMonths ()
 
     function_definition = NULL;
 
+    is_validated        = false;
+
     numeric_data_type   = FdoDataType_CLOB;
 
 }  //  FdoFunctionAddMonths ()
@@ -114,15 +116,116 @@ FdoLiteralValue *FdoFunctionAddMonths::Evaluate (
 
 {
 
-    // NOT YET IMPLEMENTED
+    // Declare and initialize all necessary local variables.
 
-    throw FdoException::Create(
-            FdoException::NLSGetMessage(
-                FUNCTION_UNEXPECTED_RESULT_ERROR, 
-                "Expression Engine: Unexpected result for function '%1$ls'",
-                FDO_FUNCTION_ADDMONTHS));
+    bool                     is_addition             = true;
 
-    return FdoDateTimeValue::Create();
+    FdoInt8                  curr_month,
+                             num_of_months;
+
+    FdoInt16                 curr_year,
+                             num_of_years;
+
+    FdoInt64                 number_of_months_to_add = 0;
+
+    FdoDateTime              dt;
+
+    FdoPtr<FdoDateTimeValue> dt_value;
+
+    // If this is the first call to this function validate the arguments and
+    // initialize some member variables used to process the request.
+
+    if (!is_validated) {
+
+        Validate(literal_values);
+        result       = FdoDateTimeValue::Create();
+        is_validated = true;
+
+    }  //  if (!is_validated) ...
+
+    // Get the date/time parameter to which the months are added. If the value
+    // is not set nothing else needs to be done. Otherwise get the value.
+
+    dt_value = (FdoDateTimeValue *) literal_values->GetItem(0);
+    if (dt_value->IsNull()) {
+
+        result->SetNull();
+        return FDO_SAFE_ADDREF(result.p);
+
+    }  //  if (!dt_value->IsNull()) ...
+
+    dt = dt_value->GetDateTime();
+
+    // Get the number of months that need to be added. If the request is to
+    // add 0 months return the original date/time object.
+
+    number_of_months_to_add = GetNumberOfMonthsToAdd(
+                                        literal_values, numeric_data_type);
+
+    if (number_of_months_to_add == 0) {
+
+        result->SetDateTime(dt);
+        return FDO_SAFE_ADDREF(result.p);
+        
+    }  //  if (number_of_months_to_add) ...
+
+    // Determine the sign of the months to be added as this affects further
+    // processing.
+
+    is_addition = (number_of_months_to_add > 0);
+
+    // Determine the number of years defined by the number of months to be
+    // added and the remaining months.
+
+    num_of_years  = (FdoInt16) (number_of_months_to_add / 12);
+    num_of_months = (FdoInt8)  (number_of_months_to_add % 12);
+
+    // Get the current year and month data. The values need to be adjusted if
+    // the values are the initial settings.
+
+    curr_year  = (dt.year  == -1) ? 0 : dt.year;
+    curr_month = (dt.month == -1) ? 1 : dt.month;
+
+    // The number of years must be adjusted if the addition of the remaining
+    // number of months crosses the year. If this is the case then the re-
+    // sulting month can be set outright.
+
+    if (is_addition) {
+
+        if ((curr_month + num_of_months) > 12) {
+
+            num_of_years++;
+            dt.month = (curr_month + num_of_months) - 12;
+
+        }  //  if ((curr_month + num_of_months) > 12) ...
+        else
+          dt.month = (curr_month + num_of_months);
+
+        dt.year = curr_year + num_of_years;
+
+    }  //  if (is_addition) ...
+    else {
+
+      // NOTE: If this is to subtract months, then the values of the variables
+      //       num_of_months and num_of_years are negative.
+
+      if ((curr_month + num_of_months) < 0) {
+
+          num_of_years--;
+          dt.month = 12 - (curr_month + num_of_months);
+
+      }  //  if ((curr_month + num_of_months) > 12) ...
+      else
+        dt.month = (curr_month + num_of_months);
+
+        dt.year = curr_year + num_of_years;
+
+    }  //  else ...
+
+    // Set the value and return a reference to it.
+
+    result->SetDateTime(dt);
+    return FDO_SAFE_ADDREF(result.p);
 
 }  //  Evaluate ()
 
@@ -284,6 +387,155 @@ void FdoFunctionAddMonths::CreateFunctionDefinition ()
                                         FdoFunctionCategoryType_Date);
 
 }  //  CreateFunctionDefinition ()
+
+FdoInt64 FdoFunctionAddMonths::GetNumberOfMonthsToAdd (
+                                FdoLiteralValueCollection *literal_values,
+                                FdoDataType               data_type)
+
+// +---------------------------------------------------------------------------
+// | The function returns the number of months to be added to the provided
+// | date/time object.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Get the number of months to be added to the provided data/time.
+    // NOTE: Although some RDBMS providers work with fractional numbers as
+    //       the number of months to be added, the default implementation
+    //       does not. It only works with the value ahead of the decimal
+    //       point (if present).
+    
+    switch (data_type) {
+
+      case FdoDataType_Byte:
+        {
+
+            FdoByte              byte_val     = 0;
+            FdoPtr<FdoByteValue> byte_value;
+
+            byte_value = (FdoByteValue *) literal_values->GetItem(1);
+            if (!byte_value->IsNull())
+                byte_val = byte_value->GetByte();
+            return (FdoInt64) (byte_val);
+
+        }
+        break;
+
+      case FdoDataType_Decimal:
+        {
+
+            FdoDouble               dbl_val         = 0;
+            FdoPtr<FdoDecimalValue> decimal_value;
+
+            decimal_value = (FdoDecimalValue *) literal_values->GetItem(1);
+            if (!decimal_value->IsNull()) {
+
+                dbl_val = decimal_value->GetDecimal();
+                if ((dbl_val < LLONG_MIN) || (dbl_val > LLONG_MAX))
+                    throw FdoException::Create(
+                        FdoException::NLSGetMessage(
+                        FUNCTION_DATA_VALUE_ERROR, 
+                        "Expression Engine: Invalid value for execution of function '%1$ls'",
+                        FDO_FUNCTION_ADDMONTHS));
+
+            }  //  if (!decimal_value->IsNull()) ...
+
+            return (FdoInt64) dbl_val;
+
+        }
+        break;
+
+      case FdoDataType_Double:
+        {
+
+            FdoDouble              dbl_val          = 0;
+            FdoPtr<FdoDoubleValue> double_value;
+
+            double_value = (FdoDoubleValue *) literal_values->GetItem(1);
+            if (!double_value->IsNull()) {
+
+                dbl_val = double_value->GetDouble();
+                if ((dbl_val < LLONG_MIN) || (dbl_val > LLONG_MAX))
+                    throw FdoException::Create(
+                        FdoException::NLSGetMessage(
+                        FUNCTION_DATA_VALUE_ERROR, 
+                        "Expression Engine: Invalid value for execution of function '%1$ls'",
+                        FDO_FUNCTION_ADDMONTHS));
+
+            }  //  if (!double_value->IsNull()) ...
+
+            return (FdoInt64) dbl_val;
+
+        }
+        break;
+
+      case FdoDataType_Int16:
+        {
+
+            FdoInt16              i16_val    = 0;
+            FdoPtr<FdoInt16Value> i16_value;
+
+            i16_value = (FdoInt16Value *) literal_values->GetItem(1);
+            if (!i16_value->IsNull())
+                i16_val = i16_value->GetInt16();
+            return (FdoInt64) (i16_val);
+
+        }
+        break;
+
+      case FdoDataType_Int32:
+        {
+
+            FdoInt32              i32_val    = 0;
+            FdoPtr<FdoInt32Value> i32_value;
+
+            i32_value = (FdoInt32Value *) literal_values->GetItem(1);
+            if (!i32_value->IsNull())
+                i32_val = i32_value->GetInt32();
+            return (FdoInt64) (i32_val);
+
+        }
+        break;
+
+      case FdoDataType_Int64:
+        {
+
+            FdoInt64              i64_val    = 0;
+            FdoPtr<FdoInt64Value> i64_value;
+
+            i64_value = (FdoInt64Value *) literal_values->GetItem(1);
+            if (!i64_value->IsNull())
+                i64_val = i64_value->GetInt64();
+            return (i64_val);
+
+        }
+        break;
+
+      case FdoDataType_Single:
+        {
+
+            FdoFloat               sgl_val    = 0;
+            FdoPtr<FdoSingleValue> sgl_value;
+
+            sgl_value = (FdoSingleValue *) literal_values->GetItem(1);
+            if (!sgl_value->IsNull())
+                sgl_val = sgl_value->GetSingle();
+            return (FdoInt64) (sgl_val);
+
+        }
+        break;
+
+      default:
+        throw FdoException::Create(
+                  FdoException::NLSGetMessage(
+                    FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
+                    "Expression Engine: Invalid parameter data type for function '%1$ls'",
+                    FDO_FUNCTION_ADDMONTHS));
+        break;
+
+    }  //  switch ...
+
+}  //  GetNumberOfMonthsToAdd ()
 
 void FdoFunctionAddMonths::Validate (FdoLiteralValueCollection *literal_values)
 

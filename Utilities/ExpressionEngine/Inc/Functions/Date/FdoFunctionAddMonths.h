@@ -100,6 +100,14 @@ class FdoFunctionAddMonths : public FdoExpressionEngineINonAggregateFunction
 
         virtual void Dispose () { delete this; };
 
+        // GetNumberOfMonthsToAdd:
+        //  The function returns the number of months to be added to the pro-
+        //  vided date/time object.
+
+        FdoInt64 GetNumberOfMonthsToAdd (
+                                FdoLiteralValueCollection *literal_values,
+                                FdoDataType               data_type);
+
         // Validate:
         //  The function validates the provided parameters for the function
         //  ADDMONTHS.
@@ -117,10 +125,25 @@ class FdoFunctionAddMonths : public FdoExpressionEngineINonAggregateFunction
 
         FdoFunctionDefinition *function_definition;
 
+        // is_validated:
+        //  For performance reasons the arguments passed to the procedure
+        //  processing the request is done once only for the time of its
+        //  execution. This variable stores whether or not the validation
+        //  has been performed.
+
+        bool is_validated;
+
         // numeric_data_type:
         //  Stores the kind of data type associated with the numeric argument.
 
         FdoDataType numeric_data_type;
+
+        // result:
+        //  The variable represents the object to be returned by the function
+        //  "Evaluate". For performance reasons, this object is allocated only
+        //  once.
+
+        FdoPtr<FdoDateTimeValue> result;
 
 };  //  class FdoFunctionAddMonths
 
