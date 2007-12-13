@@ -4745,6 +4745,7 @@ void FdoExpressionFunctionTest::TestAddMonthsFunction ()
 
     // Execute the test cases.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
@@ -4788,8 +4789,93 @@ void FdoExpressionFunctionTest::TestAddMonthsFunction ()
 
     }  //  catch ( ... ) ...
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function ADDMONTHS on the value of a different property  \n");
+    printf("  of type DATE/TIME. The test adds 88 months to the date   \n");
+    printf("  on which the function is based. No exceptions are ex-    \n");
+    printf("  pected.                                                  \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data.
+
+      expected_dt_data.year  = dt_set.year + 8;
+      expected_dt_data.month = 1;
+      expected_dt_data.day   = dt_set.day;
+
+      func_call   = L"(AddMonths(dt_val, 88) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      CheckReaderDt(data_reader, true, false, 0, 9, expected_dt_data);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("3. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function ADDMONTHS on the value of a different property  \n");
+    printf("  of type DATE/TIME. The test subtracts 88 months from the \n");
+    printf("  date on which the function is based. No exceptions are   \n");
+    printf("  expected.                                                \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data.
+
+      expected_dt_data.year  = dt_set.year - 7;
+      expected_dt_data.month = dt_set.month - 4;
+      expected_dt_data.day   = dt_set.day;
+
+      func_call   = L"(AddMonths(dt_val, -88) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      CheckReaderDt(data_reader, true, false, 0, 9, expected_dt_data);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("4. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function ADDMONTHS on the value of a different property  \n");
@@ -4845,11 +4931,11 @@ void FdoExpressionFunctionTest::TestCurrentDateFunction ()
 
     // Declare and initialize all necessary local vatiables.
 
+    FdoInt32                  row_count     = 0;
+
     FdoStringP                func_call;
 
-    FdoDateTime               dt_set,
-                              expected_dt_data;
-
+    FdoPtr<FdoFilter>         filter;
     FdoPtr<FdoIFeatureReader> data_reader;
 
     printf("\n");
@@ -4858,39 +4944,20 @@ void FdoExpressionFunctionTest::TestCurrentDateFunction ()
     printf("========================================================== \n");
     printf("\n");
 
-    // This test suits deals with the processing of date/time data. To ensure
-    // propper execution at all time, get the date/time information that is
-    // set for the row used in the following test.
+    // Define the filter for all tests in this test suite.
 
-    //printf("---------------------------------------------------------- \n");
-    //printf("Test Case Setup:                                           \n");
-    //printf("  The following retrieves date/time information used when  \n");
-    //printf("  cross-checking function results. No exceptions are ex-   \n");
-    //printf("  pected.                                                  \n");
-    //printf("---------------------------------------------------------- \n");
-
-    //try {
-
-    //  dt_set = GetDate(L"exfct_c1", L"dt_val", filter);
-
-    //}  //  try ...
-
-    //catch (FdoException *exp) {
-
-    //  printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
-    //  printf(" >>> Test failed \n");
-    //  throw exp;
-
-    //}  //  catch (FdoException *ex) ...
-
-    //catch ( ... ) {
-
-    //  printf(" >>> Test failed for an unknown reason \n");
-    //  throw;
-
-    //}  //  catch ( ... ) ...
+    filter = (FdoComparisonCondition::Create(
+               FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"id")),
+               FdoComparisonOperations_EqualTo, 
+               FdoPtr<FdoDataValue>(FdoDataValue::Create(9))));
 
     // Execute the test cases.
+    // NOTE: For these tests there is no cross-checking of the results because
+    //       there is nothing to check against. Theoretically, one could get
+    //       the current time before executing the tests and use it for cross-
+    //       checks. But then, the only data that is fairly safe to check is
+    //       the year as all the other pieces may already differ from the
+    //       cross check value when the test is executed.
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
@@ -4903,18 +4970,29 @@ void FdoExpressionFunctionTest::TestCurrentDateFunction ()
     try {
 
       // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row. The date value for the selected computed
-      // property is expected to be the same as previously retrieved in the
-      // test setup.
-
-      //expected_dt_data.year  = dt_set.year + 1;
-      //expected_dt_data.month = dt_set.month;
-      //expected_dt_data.day   = dt_set.day;
+      // this call returns 1 row.
 
       func_call   = L"(CurrentDate() as cmp_id)";
       data_reader = ExecuteSelectCommand(
-                                        L"exfct_c1", NULL, false, func_call);
-      // CheckReaderDt(data_reader, true, false, 0, 9, expected_dt_data);
+                                    L"exfct_c1", filter, false, func_call);
+
+      printf(" >>> Cross check result \n");
+
+      while (data_reader->ReadNext())
+        row_count++;
+
+      // Close the reader.
+
+      data_reader->Close();
+
+      // Issue an exception if the expected result is not met.
+
+      if (row_count != 1)
+         throw FdoException::Create(
+                        L"Unexpected result(s) when checking returned data");
+      else
+        printf(" >>> ... All expected data found\n");
+
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -4938,7 +5016,7 @@ void FdoExpressionFunctionTest::TestCurrentDateFunction ()
 
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("1. Test Case:                                              \n");
+    printf("2. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function CURRENTDATE where the function name differs     \n");
@@ -4949,18 +5027,30 @@ void FdoExpressionFunctionTest::TestCurrentDateFunction ()
     try {
 
       // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row. The date value for the selected computed
-      // property is expected to be the same as previously retrieved in the
-      // test setup.
+      // this call returns 1 row.
 
-      //expected_dt_data.year  = dt_set.year + 1;
-      //expected_dt_data.month = dt_set.month;
-      //expected_dt_data.day   = dt_set.day;
-
+      row_count   = 0;
       func_call   = L"(CuRrEnTdAtE() as cmp_id)";
       data_reader = ExecuteSelectCommand(
-                                        L"exfct_c1", NULL, false, func_call);
-      // CheckReaderDt(data_reader, true, false, 0, 9, expected_dt_data);
+                                    L"exfct_c1", filter, false, func_call);
+
+      printf(" >>> Cross check result \n");
+
+      while (data_reader->ReadNext())
+        row_count++;
+
+      // Close the reader.
+
+      data_reader->Close();
+
+      // Issue an exception if the expected result is not met.
+
+      if (row_count != 1)
+         throw FdoException::Create(
+                        L"Unexpected result(s) when checking returned data");
+      else
+        printf(" >>> ... All expected data found\n");
+
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -5297,6 +5387,46 @@ void FdoExpressionFunctionTest::TestMonthsBetweenFunction ()
     printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("2. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MONTHSBETWEEN on the values of two different    \n");
+    printf("  properties of type DATE/TIME. The test should return     \n");
+    printf("  the months between those two dates. No exceptions are    \n");
+    printf("  expected.                                                \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 8.
+
+      func_call   = L"(MonthsBetween(dt2_val, dt_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, false, 0, 8);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("3. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function MONTHSBETWEEN on the values of two different    \n");
@@ -12143,6 +12273,84 @@ void FdoExpressionFunctionTest::TestTruncFunction ()
     }  //  catch ( ... ) ...
 
 }  //  TestTruncFunction ()
+
+void FdoExpressionFunctionTest::TestTruncFunctionAsFilter ()
+
+// +---------------------------------------------------------------------------
+// | The function executes the test for the expression engine function TRUNC
+// | when used as a select-parameter.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    FdoInt32                  row_count     = 0;
+
+    FdoPtr<FdoFilter>         filter;
+    FdoPtr<FdoIFeatureReader> data_reader;
+
+    printf("\n");
+    printf("========================================================== \n");
+    printf(" Current Unit Test Suite: TRUNC Function Testing           \n");
+    printf("========================================================== \n");
+    printf("\n");
+
+    // Define the filter for all tests in this test suite.
+
+    filter = FdoFilter::Parse(L"Trunc(sgl_val, 1) = 4.80");
+
+    // Execute the test cases.
+
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select data from a \n");
+    printf("  class table using a filter that includes the expression  \n");
+    printf("  function TRUNC. The request should return a sub-set of   \n");
+    printf("  the available data. No exceptions are expected.          \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the number of the returned data. If the
+      // number does not match the expected result, issue an exception.
+
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, NULL);
+
+      printf(" >>> Cross check result \n");
+      while (data_reader->ReadNext())
+        row_count++;
+
+      data_reader->Close();
+
+      // Issue an exception if the expected result is not met.
+
+      //if (row_count != 10)
+      //    throw FdoException::Create(
+      //                  L"Unexpected result(s) when checking returned data");
+      //else
+        printf(" >>> ... All expected data found\n");
+
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+}  //  TestTruncFunctionAsFilter ()
 
 
 // ===========================================================================

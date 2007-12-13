@@ -1346,37 +1346,6 @@ void MySqlFdoExpressionFunctionTest::TestToStringFunction ()
 // ==                      TESTING THE DATE FUNCTIONS                       ==
 // ===========================================================================
 
-void MySqlFdoExpressionFunctionTest::TestAddMonthsFunction ()
-
-// +---------------------------------------------------------------------------
-// | The function executes the test for the expression engine function ADD-
-// | MONTHS when used as a select-parameter.
-// | NOTE: The native implementation of the expression function cannot be
-// |       used because of the structure of the SQL statement that is con-
-// |       structed. Because of this any request is redirected to the standard
-// |       implementation of the Expression Engine. At this point this pro-
-// |       cedure is not yet implemented and hence the test cannot be exe-
-// |       cuted.
-// +---------------------------------------------------------------------------
-
-{
-
-    printf("\n");
-    printf("========================================================== \n");
-    printf(" Current Unit Test Suite: ADDMONTHS Function Testing           \n");
-    printf("========================================================== \n");
-    printf("\n");
-
-    printf("\n");
-    printf(" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! \n");
-    printf(" >>> FUNCTION NOT YET SUPPORTED IN THE EXPRESSION ENGINE \n");
-    printf(" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! \n");
-    printf("\n");
-
-    return;
-
-}  //  TestAddMonthsFunction ()
-
 void MySqlFdoExpressionFunctionTest::TestMonthsBetweenFunction ()
 
 // +---------------------------------------------------------------------------
@@ -1389,19 +1358,148 @@ void MySqlFdoExpressionFunctionTest::TestMonthsBetweenFunction ()
 
 {
 
+    // Declare and initialize all necessary local vatiables.
+
+    FdoStringP                func_call;
+
+    FdoPtr<FdoFilter>         filter;
+    FdoPtr<FdoIFeatureReader> data_reader;
+
     printf("\n");
     printf("========================================================== \n");
     printf(" Current Unit Test Suite: MONTHSBETWEEN Function Testing   \n");
     printf("========================================================== \n");
     printf("\n");
 
-    printf("\n");
-    printf(" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! \n");
-    printf(" >>> FUNCTION NOT YET SUPPORTED IN THE EXPRESSION ENGINE \n");
-    printf(" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! \n");
-    printf("\n");
+    // Define the filter for all tests in this test suite.
 
-    return;
+    filter = (FdoComparisonCondition::Create(
+               FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"id")),
+               FdoComparisonOperations_EqualTo, 
+               FdoPtr<FdoDataValue>(FdoDataValue::Create(9))));
+
+    // Execute the test cases.
+
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MONTHSBETWEEN on the values of two different    \n");
+    printf("  properties of type DATE/TIME. The test should return     \n");
+    printf("  the months between those two dates. No exceptions are    \n");
+    printf("  expected.                                                \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 8.
+
+      func_call   = L"(MonthsBetween(dt_val, dt2_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, false, 0, 8);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MONTHSBETWEEN on the values of two different    \n");
+    printf("  properties of type DATE/TIME. The test should return     \n");
+    printf("  the months between those two dates. No exceptions are    \n");
+    printf("  expected.                                                \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be -8.
+
+      func_call   = L"(MonthsBetween(dt2_val, dt_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, false, 0, -8);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("3. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function MONTHSBETWEEN on the values of two different    \n");
+    printf("  properties of type DATE/TIME where the function name     \n");
+    printf("  name differs from the expected function name ('MoNtHs-   \n");
+    printf("  BeTwEeN' rather than 'MonthsBetween'). The test should   \n");
+    printf("  return the months between those two dates. No exceptions \n");
+    printf("  are expected.                                            \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be 8.
+
+      func_call   = L"(MoNtHsBeTwEeN(dt_val, dt2_val) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      CheckReader(data_reader, false, 0, 8);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
 
 }  //  TestMonthsBetweenFunction ()
 

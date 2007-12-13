@@ -109,6 +109,7 @@ class FdoExpressionFunctionTest : public CppUnit::TestCase
     // CPPUNIT_TEST(TestRoundFunction);
     // CPPUNIT_TEST(TestSignFunction);
     // CPPUNIT_TEST(TestTruncFunction);
+    // CPPUNIT_TEST(TestTruncFunctionAsFilter);
     // =========================================
     // ====   STRING FUNCTION UNIT TESTS    ====
     // =========================================
@@ -503,11 +504,17 @@ protected:
 
     virtual void TestSignFunction ();
 
-    //  TestTuncFunction:
+    //  TestTruncFunction:
     //      The function executes the test for the expression engine function
     //      TRUNC when used as a select-parameter.
 
     virtual void TestTruncFunction ();
+
+    //  TestTruncFunctionAsFilter:
+    //      The function executes the test for the expression engine function
+    //      TRUNC when used in a filter.
+
+    virtual void TestTruncFunctionAsFilter ();
 
 
     // ========================== STRING FUNCTIONS ===========================
