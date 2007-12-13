@@ -118,10 +118,20 @@ class FdoFunctionMonthsBetween :
 
         FdoFunctionDefinition *function_definition;
 
-        // numeric_data_type:
-        //  Stores the kind of data type associated with the numeric argument.
+        // is_validated:
+        //  For performance reasons the arguments passed to the procedure
+        //  processing the request is done once only for the time of its
+        //  execution. This variable stores whether or not the validation
+        //  has been performed.
 
-        FdoDataType numeric_data_type;
+        bool is_validated;
+
+        // result:
+        //  The variable represents the object to be returned by the function
+        //  "Evaluate". For performance reasons, this object is allocated only
+        //  once.
+
+        FdoPtr<FdoDoubleValue> result;
 
 };  //  class FdoFunctionMonthsBetween
 

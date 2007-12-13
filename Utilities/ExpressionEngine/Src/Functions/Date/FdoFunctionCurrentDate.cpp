@@ -20,6 +20,7 @@
 #include <stdafx.h>
 #include <Functions/Date/FdoFunctionCurrentDate.h>
 
+#include <time.h>
 
 // ----------------------------------------------------------------------------
 // --                         Constructors/Destructors                       --
@@ -34,14 +35,10 @@ FdoFunctionCurrentDate::FdoFunctionCurrentDate ()
 {
 
     // Initialize all class variables.
-    // NOTE: Due to the fact that data type enumeration misses an entry to
-    //       indicate a not-set value, the variable "numeric_data_type" is
-    //       set to "FdoDataType_CLOB" to indicate an invalid data type be-
-    //       cause this function does not support this type. 
 
     function_definition = NULL;
 
-    numeric_data_type   = FdoDataType_CLOB;
+    is_validated        = false;
 
 }  //  FdoFunctionCurrentDate ()
 
@@ -114,15 +111,44 @@ FdoLiteralValue *FdoFunctionCurrentDate::Evaluate (
 
 {
 
-    // NOT YET IMPLEMENTED
+    // Declare and initialize all necessary local variables.
 
-    throw FdoException::Create(
-            FdoException::NLSGetMessage(
-                FUNCTION_UNEXPECTED_RESULT_ERROR, 
-                "Expression Engine: Unexpected result for function '%1$ls'",
-                FDO_FUNCTION_CURRENTDATE));
+    FdoDateTime dt;
 
-    return FdoDateTimeValue::Create();
+    struct tm   local_time;
+
+    // If this is the first call to this function validate the arguments and
+    // initialize some member variables used to process the request.
+
+    if (!is_validated) {
+
+        Validate(literal_values);
+        result       = FdoDateTimeValue::Create();
+        is_validated = true;
+
+    }  //  if (!is_validated) ...
+
+    // Get the local system time and copy the data into the date/time object.
+
+    FdoCommonOSUtil::getsystime(&local_time);
+
+    // NOTE: By default, the year will always be returned as an offset to 1900
+    //       and hence this needs to be added to get the current year. Also,
+    //       the month information is based on a 0-based vector and hence by
+    //       default returns a value that is one month off. This needs to be
+    //       corrected as well.
+
+    dt.year    = local_time.tm_year + 1900;
+    dt.month   = local_time.tm_mon + 1;
+    dt.day     = local_time.tm_mday;
+    dt.hour    = local_time.tm_hour;
+    dt.minute  = local_time.tm_min;
+    dt.seconds = local_time.tm_sec;
+
+    // Return the requested information.
+
+    result->SetDateTime(dt);
+    return FDO_SAFE_ADDREF(result.p);
 
 }  //  Evaluate ()
 

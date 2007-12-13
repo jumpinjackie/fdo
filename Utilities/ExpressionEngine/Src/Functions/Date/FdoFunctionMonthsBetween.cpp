@@ -34,14 +34,10 @@ FdoFunctionMonthsBetween::FdoFunctionMonthsBetween ()
 {
 
     // Initialize all class variables.
-    // NOTE: Due to the fact that data type enumeration misses an entry to
-    //       indicate a not-set value, the variable "numeric_data_type" is
-    //       set to "FdoDataType_CLOB" to indicate an invalid data type be-
-    //       cause this function does not support this type. 
 
     function_definition = NULL;
 
-    numeric_data_type   = FdoDataType_CLOB;
+    is_validated        = false;
 
 }  //  FdoFunctionMonthsBetween ()
 
@@ -110,19 +106,72 @@ FdoLiteralValue *FdoFunctionMonthsBetween::Evaluate (
 
 // +---------------------------------------------------------------------------
 // | The function processes a call to the function MONTHSBETWEEN.
+// | NOTE: Unlike native functions in different RDBMS systems, this implemen-
+// |       tation of the function will soley use the year and month informa-
+// |       tion that is provided. Day data is not considered.
 // +---------------------------------------------------------------------------
 
 {
 
-    // NOT YET IMPLEMENTED
+    // Declare and initialize all necessary local variables.
 
-    throw FdoException::Create(
-            FdoException::NLSGetMessage(
-                FUNCTION_UNEXPECTED_RESULT_ERROR, 
-                "Expression Engine: Unexpected result for function '%1$ls'",
-                FDO_FUNCTION_MONTHSBETWEEN));
+    FdoDouble                months_between     = 0;
 
-    return FdoDateTimeValue::Create();
+    FdoDateTime              dt_end,
+                             dt_start;
+
+    FdoPtr<FdoDateTimeValue> dt_value_end,
+                             dt_value_start;
+
+    // If this is the first call to this function validate the arguments and
+    // initialize some member variables used to process the request.
+
+    if (!is_validated) {
+
+        Validate(literal_values);
+        result       = FdoDoubleValue::Create();
+        is_validated = true;
+
+    }  //  if (!is_validated) ...
+
+    // Get the date information provided to the function. If either of the
+    // provided date information is NULL. nothing further needs to be done.
+
+    dt_value_start = (FdoDateTimeValue *) literal_values->GetItem(0);
+    dt_value_end   = (FdoDateTimeValue *) literal_values->GetItem(1);
+
+    if ((dt_value_start->IsNull()) || (dt_value_end->IsNull())) {
+
+        result->SetNull();
+        return FDO_SAFE_ADDREF(result.p);
+
+    }  //  if (!dt_value->IsNull()) ...
+
+    dt_start = dt_value_start->GetDateTime();
+    dt_end   = dt_value_end->GetDateTime();
+
+    // Check the year and month information for either of the provided date
+    // information. If either of them is not set (indicated by the value being
+    // -1), then there is nothing to do and the function can be terminated.
+
+    if ((dt_start.year == -1) || (dt_start.month == -1) ||
+        (dt_end.year   == -1) || (dt_end.month   == -1)    ) {
+
+        result->SetNull();
+        return FDO_SAFE_ADDREF(result.p);
+
+    }  //  if ((dt_start.year == -1) || ...
+
+    // Determine the number of months between the two given dates.
+
+    months_between =
+        (dt_end.year - dt_start.year) * 12 + dt_end.month - dt_start.month;
+
+
+    // Set the value and return a reference to it.
+
+    result->SetDouble(months_between);
+    return FDO_SAFE_ADDREF(result.p);
 
 }  //  Evaluate ()
 
@@ -217,8 +266,6 @@ void FdoFunctionMonthsBetween::Validate (FdoLiteralValueCollection *literal_valu
 
     // Declare and initialize all necessary local variables.
 
-    bool                    invalid_data_type;
-
     FdoInt32                i,
                             count               = literal_values->GetCount();
 
@@ -253,23 +300,8 @@ void FdoFunctionMonthsBetween::Validate (FdoLiteralValueCollection *literal_valu
                     FDO_FUNCTION_MONTHSBETWEEN));
 
       data_value = static_cast<FdoDataValue *>(literal_value.p);
-      data_type  = data_value->GetDataType();
 
-      if (i == 0)
-          invalid_data_type = (data_type != FdoDataType_DateTime);
-      else {
-
-        numeric_data_type = data_type;
-        invalid_data_type = ((data_type != FdoDataType_Decimal) &&
-                             (data_type != FdoDataType_Double ) &&
-                             (data_type != FdoDataType_Int16  ) &&
-                             (data_type != FdoDataType_Int32  ) &&
-                             (data_type != FdoDataType_Int64  ) &&
-                             (data_type != FdoDataType_Single )    );
-
-      }  //  else ...
-
-      if (invalid_data_type)
+      if (data_value->GetDataType() != FdoDataType_DateTime)
           throw FdoException::Create(
                   FdoException::NLSGetMessage(
                     FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
