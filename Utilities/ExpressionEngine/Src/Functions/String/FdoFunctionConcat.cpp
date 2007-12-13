@@ -19,6 +19,7 @@
 
 #include <stdafx.h>
 #include <Functions/String/FdoFunctionConcat.h>
+#include "../../../../../Fdo/Unmanaged/Src/Common/StringUtility.h"
 
 
 // ----------------------------------------------------------------------------
@@ -141,6 +142,9 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
     FdoPtr<FdoSingleValue>   single_value;
     FdoPtr<FdoStringValue>   string_value;
 
+    size_t                   size[2];
+
+
     // If this is the first call to this function validate the arguments and
     // initialize some member variables used to process the request.
 
@@ -162,8 +166,9 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
     dt_index[0]   = -1;
     dt_index[1]   = -1;
 
-    for (i = 0; i < 2; i++) {
 
+    for (i = 0; i < 2; i++) {
+      size[i] = 0;
       curr_data_type = (i == 0) ? para1_data_type : para2_data_type;
 
       switch (curr_data_type) {
@@ -171,13 +176,27 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
         case FdoDataType_Boolean:
           bool_value = (FdoBooleanValue *) literal_values->GetItem(i);
           if (!bool_value->IsNull())
-              arg_values[i] = bool_value->ToString();
+          {
+              if (bool_value->GetBoolean())
+                arg_values[i] = L"TRUE";
+              else
+                arg_values[i] = L"FALSE";
+          }
+
           break;
 
         case FdoDataType_Byte:
           byte_value = (FdoByteValue *) literal_values->GetItem(i);
           if (!byte_value->IsNull())
-              arg_values[i] = byte_value->ToString();
+          {
+#ifdef _WIN32
+            _itow(byte_value->GetByte(), buffer[i], 10);
+#else
+	        swprintf(buffer[i], BUFFER_SIZE, L"%d", (FdoInt32)byte_value->GetByte());
+#endif	
+            arg_values[i] = buffer[i];
+          }
+
           break;
 
         case FdoDataType_DateTime:
@@ -193,37 +212,71 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
         case FdoDataType_Decimal:
           decimal_value = (FdoDecimalValue *) literal_values->GetItem(i);
           if (!decimal_value->IsNull())
-              arg_values[i] = decimal_value->ToString();
+          {
+              FdoStringUtility::FormatDouble(decimal_value->GetDecimal(), buffer[i], BUFFER_SIZE);
+              arg_values[i] = buffer[i];
+          }
+
           break;
 
         case FdoDataType_Double:
           double_value = (FdoDoubleValue *) literal_values->GetItem(i);
           if (!double_value->IsNull())
-              arg_values[i] = double_value->ToString();
+          {
+              FdoStringUtility::FormatDouble(double_value->GetDouble(), buffer[i], BUFFER_SIZE);
+              arg_values[i] = buffer[i];
+          }
+
           break;
 
         case FdoDataType_Int16:
           int16_value = (FdoInt16Value *) literal_values->GetItem(i);
           if (!int16_value->IsNull())
-              arg_values[i] = int16_value->ToString();
+          {
+#ifdef _WIN32
+            _itow(int16_value->GetInt16(), buffer[i], 10);
+#else
+	        swprintf(buffer[i], BUFFER_SIZE, L"%d", (FdoInt32)int16_value->GetInt16());
+#endif	
+            arg_values[i] = buffer[i];
+
+          }
           break;
 
         case FdoDataType_Int32:
           int32_value = (FdoInt32Value *) literal_values->GetItem(i);
           if (!int32_value->IsNull())
-              arg_values[i] = int32_value->ToString();
+          {
+#ifdef _WIN32
+            _itow(int32_value->GetInt32(), buffer[i], 10);
+#else
+	        swprintf(buffer[i], BUFFER_SIZE, L"%d", int32_value->GetInt32());
+#endif
+            arg_values[i] = buffer[i];
+          }
           break;
 
         case FdoDataType_Int64:
           int64_value = (FdoInt64Value *) literal_values->GetItem(i);
           if (!int64_value->IsNull())
-              arg_values[i] = int64_value->ToString();
+          {
+
+#ifdef _WIN32
+                _i64tow(int64_value->GetInt64(), buffer[i], 10);
+#else
+	            swprintf(buffer[i], BUFFER_SIZE, L"%lld", int64_value->GetInt64());
+#endif
+                arg_values[i] = buffer[i];
+          }
           break;
 
         case FdoDataType_Single:
           single_value = (FdoSingleValue *) literal_values->GetItem(i);
           if (!single_value->IsNull())
-              arg_values[i] = single_value->ToString();
+          {
+            FdoStringUtility::FormatSingle(single_value->GetSingle(), buffer[i], BUFFER_SIZE);
+            arg_values[i] = buffer[i];
+          }
           break;
 
         case FdoDataType_String:
@@ -235,7 +288,10 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
       }  //  switch (curr_data_type) ...
 
       if (arg_values[i] != NULL)
-          exp_buffer_size += wcslen(arg_values[i]);
+      {
+          size[i] = wcslen(arg_values[i]);
+          exp_buffer_size += size[i];
+      }
 
     }  //  for (i = 0; i < 2; i++) ...
 
@@ -249,19 +305,24 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
 
     tmp_buffer[0] = '\0';
 
+    size_t index = 0;
     for (i = 0; i < 2; i++) {
-
       if (arg_values[i] != NULL) {
 
           if (dt_index[i] != -1)
-              wcsncat(tmp_buffer, arg_values[i], (wcslen(arg_values[i]) - 1));
+          {
+              memcpy(tmp_buffer+index, arg_values[i], (size[i] - 1) *sizeof(wchar_t));
+              index = index + size[i] - 1;
+          }
           else
-            wcscat(tmp_buffer, arg_values[i]);
+          {
+              memcpy(tmp_buffer+index, arg_values[i], size[i]*sizeof(wchar_t));
+              index += size[i];
+          }
 
       }  //  if (arg_values[0] != NULL) ...
-
     }  //  for (i = 0; i < 2; i++) {
-
+    tmp_buffer[index] = '\0';
     result->SetString(tmp_buffer);
     return FDO_SAFE_ADDREF(result.p);
 
@@ -1412,7 +1473,7 @@ FdoString *FdoFunctionConcat::ProcessArgument (FdoDateTimeValue *value)
 
     return ((curr_char == NULL) ? base_string : curr_char);
 
-}  //  ProcessArgument ()
+}    //  ProcessArgument ()
 
 void FdoFunctionConcat::Validate (FdoLiteralValueCollection *literal_values)
 

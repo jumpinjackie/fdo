@@ -50,6 +50,7 @@ class FdoFunctionConcat : public FdoExpressionEngineINonAggregateFunction
 
         static const FdoInt32 INIT_ALLOCATE_SIZE = 100;
 
+        static const FdoInt32 BUFFER_SIZE = 64;
 
     public:
 
@@ -172,6 +173,8 @@ class FdoFunctionConcat : public FdoExpressionEngineINonAggregateFunction
         //  The variable holds the current size of the temporary buffer.
 
         size_t tmp_buffer_size;
+
+        wchar_t buffer[2][BUFFER_SIZE];
 
 };  //  class FdoFunctionConcat
 
