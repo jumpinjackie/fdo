@@ -121,10 +121,7 @@ FdoIDataReader* SdfSelectAggregatesCommand::Execute ()
 		reader = selectCmd->Execute();
 	}
 
-	FdoPtr<FdoIExpressionCapabilities> expressionCaps = conn->GetExpressionCapabilities();
-    FdoPtr<FdoFunctionDefinitionCollection> functions = expressionCaps->GetFunctions();
-
-    FdoPtr<FdoIDataReader> dataReader = new FdoExpressionEngineUtilDataReader(functions, reader, originalClassDef, selectedIds, m_bDistinct, m_OrderingIds, m_eOrderingOption, ids, aggrIdents);
+    FdoPtr<FdoIDataReader> dataReader = new FdoExpressionEngineUtilDataReader(funcDefs, reader, originalClassDef, selectedIds, m_bDistinct, m_OrderingIds, m_eOrderingOption, ids, aggrIdents);
     return FDO_SAFE_ADDREF(dataReader.p);
 }
 
