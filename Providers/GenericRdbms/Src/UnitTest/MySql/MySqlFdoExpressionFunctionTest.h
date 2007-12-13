@@ -94,12 +94,6 @@ public:
 
     // =========================== DATE FUNCTIONS ============================
 
-    //  TestAddMonthsFunction:
-    //      The function executes the test for the expression engine function
-    //      ADDMONTHS when used as a select-parameter.
-
-    void TestAddMonthsFunction ();
-
     //  TestMonthsBetweenFunction:
     //      The function executes the test for the expression engine function
     //      MONTHSBETWEEN when used as a select-parameter.
