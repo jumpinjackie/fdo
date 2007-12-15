@@ -201,7 +201,6 @@ FdoPropertyDefinitionCollection* SdfSelect::ProcessComputedIdentifiers(PropertyI
                 FdoClassDefinition* clas, FdoFilter* rdrFilter, recno_list* &features)
 {
     SdfSimpleFeatureReader* temprdr = NULL; //can't use FdoPtr because of Linux build
-    FdoExpressionEngine* tempfe = NULL;
     FdoPropertyDefinitionCollection* pdc = NULL;
 
     //check for any computed properties
@@ -235,10 +234,6 @@ FdoPropertyDefinitionCollection* SdfSelect::ProcessComputedIdentifiers(PropertyI
                 temprdr = new SdfSimpleFeatureReader(m_connection, clas, rdrFilter, features, m_properties, NULL);
                 if (!temprdr->ReadNext())
                 {
-                    //query returned no features... skip computed identifiers stuff
-                    //and return nothing
-                    if (tempfe)
-                        ((FdoIExpressionProcessor*)tempfe)->Release();
 
 					// get a copy of the features object
 					recno_list rec;
@@ -260,26 +255,21 @@ FdoPropertyDefinitionCollection* SdfSelect::ProcessComputedIdentifiers(PropertyI
                 }
             }
 
-            if (!tempfe)
-				tempfe = FdoExpressionEngine::Create(temprdr, clas, m_properties, NULL);
-                
             if (!pdc)
                 pdc = FdoPropertyDefinitionCollection::Create(NULL);
 
             FdoPtr<FdoExpression> expr = cident->GetExpression();
 
-            // results should not be release
-			FdoPtr<FdoLiteralValue> results = tempfe->Evaluate(expr);
+            FdoPropertyType propType;
+            FdoDataType dataType;
+
+            FdoExpressionEngine::GetExpressionType(clas, expr, propType, dataType);
 
             FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(cident->GetName(), NULL);
-			FdoDataValue *dataValue = static_cast<FdoDataValue *>(results.p);
-			dpd->SetDataType(dataValue->GetDataType());
+			dpd->SetDataType(dataType);
             pdc->Add(dpd);
         }
     }
-
-    if (tempfe)
-        ((FdoIExpressionProcessor*)tempfe)->Release();
 
 	if (temprdr)
 	{
