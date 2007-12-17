@@ -39,24 +39,34 @@ public:
   oracle::occi::Connection* m_Conn;
   oracle::occi::Environment* m_Env;
   
-  static void c_OCCI_API::CreateConnection(const char*User,const char*Password,const char* DbLink,oracle::occi::Connection *& Conn,oracle::occi::Environment*& Env);
+  static void CreateConnection(const char*User,
+                               const char*Password,
+                               const char* DbLink,
+                               oracle::occi::Connection*& Conn,
+                               oracle::occi::Environment*& Env);
+
   //static oracle::occi::Connection * CreateConnection(const char*User,const char*Password,const char*DbLink);
+  //static void CloseConnection(oracle::occi::Connection * Conn);
   
-  
-  //static void c_OCCI_API::CloseConnection(oracle::occi::Connection * Conn);
-  static void c_OCCI_API::CloseConnection(oracle::occi::Connection *& Conn,oracle::occi::Environment*& Env);
+  static void CloseConnection(oracle::occi::Connection*& Conn, 
+                              oracle::occi::Environment*& Env);
 
   
   // Returns column name's of primary key of given table.
   // No primary key - returns no column names
-  static int GetTablePkeyColumns(oracle::occi::Connection * OcciConnection,const char* Owner,const char* TableName,vector<string>& ColNames);
+  static int GetTablePkeyColumns(oracle::occi::Connection * OcciConnection,
+                                 const char* Owner, 
+                                 const char* TableName,
+                                 vector<string>& ColNames);
   
   //static FdoCommonThreadMutex m_Mutex;
-
   //static oracle::occi::Environment* GetEnvironment();
   
 private:
-  static oracle::occi::StatelessConnectionPool* c_OCCI_API::GetConnPool(const char*User,const char*Password,const char* DbLink,int& IndCpDesc);
+  static oracle::occi::StatelessConnectionPool* GetConnPool(const char*User,
+                                                            const char*Password,
+                                                            const char* DbLink,
+                                                            int& IndCpDesc);
   
 };
 

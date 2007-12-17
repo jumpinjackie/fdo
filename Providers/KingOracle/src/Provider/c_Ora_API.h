@@ -37,7 +37,7 @@ public:
   
   static char* SdoGeomToString(SDO_GEOMETRY *SdoGeom);
   
-  static SDO_GEOMETRY* c_Ora_API::CreateOptimizedRect(long Srid,double MinX,double MinY,double MaxX,double MaxY);
+  static SDO_GEOMETRY* CreateOptimizedRect(long Srid,double MinX,double MinY,double MaxX,double MaxY);
   
   static long GetSrid(oracle::occi::Connection*Conn,const char* CoordSysName);
   static long GetSequenceNextVal(oracle::occi::Connection*Conn,const char* SequenceName);  
@@ -46,7 +46,7 @@ public:
   
   static bool IsGeodeticCoordSystem(const char* CoordSysWkt);
   
-  static bool c_Ora_API::GetCoordinateSystemWkt(oracle::occi::Connection*Conn,long Srid,string& Wkt);
+  static bool GetCoordinateSystemWkt(oracle::occi::Connection*Conn,long Srid,string& Wkt);
 };
 
 #endif

@@ -15,16 +15,13 @@
 * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-
-
-#ifdef KGORA_MESSAGE_DEFINE
-
 #ifdef _WIN32
-char *g_KgOraMsgCat = "KingOracleMessage.dll";
+#define g_KgOraMsgCat "KingOracleMessage.dll"
 #else
-char *g_KgOraMsgCat = "KingOracleMessage.cat";
+#define g_KgOraMsgCat "KingOracleMessage.cat"
 #endif
-FdoString* NlsMsgGet(int msg_num, char* default_msg, ...)
+
+inline FdoString* NlsMsgGetKgOra(int msg_num, char* default_msg, ...)
 {
     va_list varargs;
     va_start(varargs, default_msg);
@@ -37,10 +34,6 @@ FdoString* NlsMsgGet(int msg_num, char* default_msg, ...)
 
     return ret;
 }
-#else // KGORA_MESSAGE_DEFINE
-extern char *g_KgOraMsgCat;
-extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
-#endif // KGORA_MESSAGE_DEFINE
 
 //************************************************************************************
 //************************************************************************************
@@ -48,7 +41,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //************************************************************************************
 //************************************************************************************
 //
-//  Values are 32 bit values layed out as follows:
+//  Values are 32 bit values laid out as follows:
 //
 //   3 3 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1
 //   1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
@@ -88,7 +81,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Unexpected error '%1$ls'.
+// Unexpected error '%1$ls'.
 //
 #define M_KGORA_UNEXPECTED_ERROR         0x000003E9L
 
@@ -97,7 +90,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Error code '%1$d' returned.
+// Error code '%1$d' returned.
 //
 #define M_KGORA_UNDEFINED_ERROR          0x000003EAL
 
@@ -106,7 +99,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Out of memory.
+// Out of memory.
 //
 #define M_KGORA_OUT_OF_MEMORY_ERROR      0x000003EBL
 
@@ -115,7 +108,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Null parameter.
+// Null parameter.
 //
 #define M_KGORA_NULL_PARAMETER_ERROR     0x000003ECL
 
@@ -124,7 +117,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Error occured reading file '%1$ls'.
+// Error occured reading file '%1$ls'.
 //
 #define M_KGORA_READ_FILE_ERROR          0x000003EDL
 
@@ -133,7 +126,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Error occured writing file '%1$ls'.
+// Error occured writing file '%1$ls'.
 //
 #define M_KGORA_WRITE_FILE_ERROR         0x000003EEL
 
@@ -142,7 +135,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Invalid record number %1$ld for file '%2$ls'.
+// Invalid record number %1$ld for file '%2$ls'.
 //
 #define M_KGORA_INVALID_RECORD_NUMBER_ERROR 0x000003EFL
 
@@ -151,7 +144,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  End of file occured reading shape at offset %1$ld for file '%2$ls'.
+// End of file occured reading shape at offset %1$ld for file '%2$ls'.
 //
 #define M_KGORA_END_OF_FILE_ERROR        0x000003F0L
 
@@ -160,7 +153,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The file '%1$ls' has an unsupported format (%2$ld).
+// The file '%1$ls' has an unsupported format (%2$ld).
 //
 #define M_KGORA_UNSUPPORTED_FILE_FORMAT_ERROR 0x000003F1L
 
@@ -174,7 +167,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Connection timeout is not supported.
+// Connection timeout is not supported.
 //
 #define M_KGORA_CONNECTION_TIMEOUT_UNSUPPORTED 0x000007D1L
 
@@ -183,7 +176,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The command %1$d is not supported.
+// The command %1$d is not supported.
 //
 #define M_KGORA_CONNECTION_COMMAND_NOT_SUPPORTED 0x000007D2L
 
@@ -192,7 +185,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  King.Oracle Provider does not support configuration files.
+// King.Oracle Provider does not support configuration files.
 //
 #define M_KGORA_CONNECTION_CONFIGURATION_FILE_NOT_SUPPORTED 0x000007D3L
 
@@ -201,7 +194,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Connection is invalid.
+// Connection is invalid.
 //
 #define M_KGORA_CONNECTION_INVALID       0x000007D4L
 
@@ -210,7 +203,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The required property '%1$ls' cannot be set to NULL.
+// The required property '%1$ls' cannot be set to NULL.
 //
 #define M_KGORA_CONNECTION_REQUIRED_PROPERTY_NULL 0x000007D5L
 
@@ -219,7 +212,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The given value '%1$ls' for enumerable property '%2$ls' is not in the enumeration value collection.
+// The given value '%1$ls' for enumerable property '%2$ls' is not in the enumeration value collection.
 //
 #define M_KGORA_CONNECTION_ENUM_PROPERTY_WRONG_VALUE 0x000007D6L
 
@@ -228,7 +221,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The connection property '%1$ls' was not found.
+// The connection property '%1$ls' was not found.
 //
 #define M_KGORA_CONNECTION_PROPERTY_NOT_FOUND 0x000007D7L
 
@@ -237,7 +230,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The connection is already open.
+// The connection is already open.
 //
 #define M_KGORA_CONNECTION_ALREADY_OPEN  0x000007D8L
 
@@ -246,7 +239,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The directory '%1$ls' does not exist.
+// The directory '%1$ls' does not exist.
 //
 #define M_KGORA_CONNECTION_LOCATION_NOT_EXIST 0x000007D9L
 
@@ -255,7 +248,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The file '%1$ls' has an invalid version number (%2$d).
+// The file '%1$ls' has an invalid version number (%2$d).
 //
 #define M_KGORA_CONNECTION_FILE_INVALID_VERSION 0x000007DAL
 
@@ -264,7 +257,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The file '%1$ls' was not found.
+// The file '%1$ls' was not found.
 //
 #define M_KGORA_CONNECTION_FILE_NOT_FOUND 0x000007DBL
 
@@ -273,7 +266,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The path to file '%1$ls' was not found.
+// The path to file '%1$ls' was not found.
 //
 #define M_KGORA_CONNECTION_PATH_NOT_FOUND 0x000007DCL
 
@@ -282,7 +275,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Too many open files.
+// Too many open files.
 //
 #define M_KGORA_CONNECTION_TOO_MANY_OPEN_FILES 0x000007DDL
 
@@ -291,7 +284,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Access to file '%1$ls' was denied.
+// Access to file '%1$ls' was denied.
 //
 #define M_KGORA_CONNECTION_ACCESS_DENIED 0x000007DEL
 
@@ -300,7 +293,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The file '%1$ls' has an invalid bounding box (%2$ls).
+// The file '%1$ls' has an invalid bounding box (%2$ls).
 //
 #define M_KGORA_CONNECTION_FILE_INVALID_BOUNDING_BOX 0x000007DFL
 
@@ -309,7 +302,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The file '%1$ls' cannot be opened.
+// The file '%1$ls' cannot be opened.
 //
 #define M_KGORA_CONNECTION_FILE_INVALID  0x000007E0L
 
@@ -318,7 +311,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The file '%1$ls' is corrupt or does not have the same number of objects as the file '%2$ls'.
+// The file '%1$ls' is corrupt or does not have the same number of objects as the file '%2$ls'.
 //
 #define M_KGORA_CONNECTION_FILE_MISMATCH 0x000007E1L
 
@@ -327,7 +320,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The '%1$ls' connection property was not specified and no shape file location override was specified.
+// The '%1$ls' connection property was not specified and no shape file location override was specified.
 //
 #define M_KGORA_NO_DIRECTORY_SPECIFIED   0x000007E2L
 
@@ -336,7 +329,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  A temporary file could not be created in directory '%1$ls'.
+// A temporary file could not be created in directory '%1$ls'.
 //
 #define M_KGORA_TEMPORARY_FILE_PROBLEM   0x000007E3L
 
@@ -345,7 +338,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Invalid connection string '%1$ls'
+// Invalid connection string '%1$ls'
 //
 #define M_KGORA_INVALID_CONNECTION_STRING 0x000007E4L
 
@@ -359,7 +352,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  DefaultFileLocation2
+// DefaultFileLocation2
 //
 #define M_KGORA_CONNECTION_PROPERTY_DEFAULT_FILE_LOCATION 0x00000BB9L
 
@@ -368,7 +361,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  TemporaryFileLocation
+// TemporaryFileLocation
 //
 #define M_KGORA_CONNECTION_PROPERTY_TEMPORARY_FILE_LOCATION 0x00000BBAL
 
@@ -377,7 +370,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  ServiceName
+// ServiceName
 //
 #define M_KGORA_CONNECTION_PROPERTY_SERVICE_NAME 0x00000BBBL
 
@@ -386,7 +379,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Username
+// Username
 //
 #define M_KGORA_CONNECTION_PROPERTY_USERNAME 0x00000BBCL
 
@@ -395,7 +388,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Password
+// Password
 //
 #define M_KGORA_CONNECTION_PROPERTY_PASSWORD 0x00000BBDL
 
@@ -404,7 +397,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  OracleSchema
+// OracleSchema
 //
 #define M_KGORA_CONNECTION_PROPERTY_ORACLE_SCHEMA 0x00000BBEL
 
@@ -413,7 +406,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  FdoViewsTable
+// FdoViewsTable
 //
 #define M_KGORA_CONNECTION_PROPERTY_FDO_VIEWS_TABLE 0x00000BBFL
 
@@ -427,7 +420,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Object properties are not supported.
+// Object properties are not supported.
 //
 #define M_KGORA_OBJECT_PROPERTIES_NOT_SUPPORTED 0x00000FA1L
 
@@ -436,7 +429,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The '%1$ls' data type is not supported by King.Oracle.
+// The '%1$ls' data type is not supported by King.Oracle.
 //
 #define M_KGORA_UNSUPPORTED_DATATYPE     0x00000FA2L
 
@@ -445,7 +438,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The '%1$d' column type is unknown.
+// The '%1$d' column type is unknown.
 //
 #define M_KGORA_UNKNOWN_COLUMN_TYPE      0x00000FA3L
 
@@ -454,7 +447,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The shape type number '%1$d' is unknown.
+// The shape type number '%1$d' is unknown.
 //
 #define M_KGORA_UNKNOWN_SHAPE_TYPE       0x00000FA4L
 
@@ -463,7 +456,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Failed to de-serialize the feature schemas from the configuration.
+// Failed to de-serialize the feature schemas from the configuration.
 //
 #define M_KGORA_SCHEMA_FAIL_READ_FEATURE_SCHEMAS 0x00000FA5L
 
@@ -472,7 +465,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Failed to de-serialize the schema mappings from the configuration.
+// Failed to de-serialize the schema mappings from the configuration.
 //
 #define M_KGORA_SCHEMA_FAIL_READ_SCHEMA_MAPPINGS 0x00000FA6L
 
@@ -481,7 +474,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The class '%1$ls' contains more than one geometry property.
+// The class '%1$ls' contains more than one geometry property.
 //
 #define M_KGORA_SCHEMA_EXCESSIVE_GEOMETRY 0x00000FA8L
 
@@ -490,7 +483,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Schema create failed.
+// Schema create failed.
 //
 #define M_KGORA_SCHEMA_CREATION_FAILED   0x00000FAAL
 
@@ -499,7 +492,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The '%1$ls' geometry type is not supported by King.Oracle.
+// The '%1$ls' geometry type is not supported by King.Oracle.
 //
 #define M_KGORA_UNSUPPORTED_SHAPE        0x00000FABL
 
@@ -508,7 +501,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Missing schema mapping for feature schema in configuration file.
+// Missing schema mapping for feature schema in configuration file.
 //
 #define M_KGORA_MISSING_SCHEMA_MAPPING   0x00000FACL
 
@@ -517,7 +510,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Missing physical schema.
+// Missing physical schema.
 //
 #define M_KGORA_MISSING_PHYSICAL_SCHEMA  0x00000FADL
 
@@ -526,7 +519,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Schema '%1$ls' not found.
+// Schema '%1$ls' not found.
 //
 #define M_KGORA_SCHEMA_NOT_FOUND         0x00000FAEL
 
@@ -535,7 +528,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Fdo Class Identifiers that contain scopes are not supported.
+// Fdo Class Identifiers that contain scopes are not supported.
 //
 #define M_KGORA_CLASS_IDENTIFIER_SCOPES_NOT_SUPPORTED 0x00000FAFL
 
@@ -544,7 +537,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The unqualified FDO class name '%1$ls' is not unique across all FDO schemas.
+// The unqualified FDO class name '%1$ls' is not unique across all FDO schemas.
 //
 #define M_KGORA_CLASS_NAME_NOT_UNIQUE    0x00000FB0L
 
@@ -553,7 +546,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  FDO class '%1$ls' not found in schema.
+// FDO class '%1$ls' not found in schema.
 //
 #define M_KGORA_FEATURE_CLASS_NOT_FOUND  0x00000FB1L
 
@@ -562,7 +555,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  FDO class '%1$ls' has more than one identity property; only one identity property is supported.
+// FDO class '%1$ls' has more than one identity property; only one identity property is supported.
 //
 #define M_KGORA_TOO_MANY_IDENTITY_PROPERTIES 0x00000FB2L
 
@@ -571,7 +564,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  FDO class '%1$ls' has an identity property of type '%2$ls'; only type 'Int32' is supported.
+// FDO class '%1$ls' has an identity property of type '%2$ls'; only type 'Int32' is supported.
 //
 #define M_KGORA_IDENTITY_PROPERTY_INCORRECT_TYPE 0x00000FB3L
 
@@ -580,7 +573,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  No schema specified for the apply schema command.
+// No schema specified for the apply schema command.
 //
 #define M_KGORA_SCHEMA_NOT_SPECIFIED     0x00000FB4L
 
@@ -589,7 +582,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Schema element state '%1$d' is not supported.
+// Schema element state '%1$d' is not supported.
 //
 #define M_KGORA_SCHEMA_UNSUPPORTED_ELEMENT_STATE 0x00000FB5L
 
@@ -598,7 +591,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Conflicting schema element state: a class marked for deletion was found in a schema to be added.
+// Conflicting schema element state: a class marked for deletion was found in a schema to be added.
 //
 #define M_KGORA_SCHEMA_DELETED_CLASS_IN_ADDED_SCHEMA 0x00000FB6L
 
@@ -607,7 +600,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Conflicting schema element state: a class marked for modification was found in a schema to be added.
+// Conflicting schema element state: a class marked for modification was found in a schema to be added.
 //
 #define M_KGORA_SCHEMA_MODIFIED_CLASS_IN_ADDED_SCHEMA 0x00000FB7L
 
@@ -616,7 +609,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Conflicting schema element state: a class marked unchanged was found in a schema to be added.
+// Conflicting schema element state: a class marked unchanged was found in a schema to be added.
 //
 #define M_KGORA_SCHEMA_UNCHANGED_CLASS_IN_ADDED_SCHEMA 0x00000FB8L
 
@@ -625,7 +618,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The King.Oracle filename override '%1$ls' is not a fully-qualified path.
+// The King.Oracle filename override '%1$ls' is not a fully-qualified path.
 //
 #define M_KGORA_OVERRIDE_FILENAME_NOT_QUALIFIED 0x00000FB9L
 
@@ -634,7 +627,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The '%1$ls' class type is not supported by King.Oracle.
+// The '%1$ls' class type is not supported by King.Oracle.
 //
 #define M_KGORA_UNSUPPORTED_CLASSTYPE    0x00000FBAL
 
@@ -643,7 +636,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The value '%1$d' is invalid for the column width (must be between 0 and 255).
+// The value '%1$d' is invalid for the column width (must be between 0 and 255).
 //
 #define M_KGORA_COLUMN_WIDTH_INVALID     0x00000FBBL
 
@@ -652,7 +645,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The value '%1$d' is invalid for the column scale (must be between 0 and 255).
+// The value '%1$d' is invalid for the column scale (must be between 0 and 255).
 //
 #define M_KGORA_COLUMN_SCALE_INVALID     0x00000FBCL
 
@@ -661,7 +654,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The class name '%1$ls' is invalid.
+// The class name '%1$ls' is invalid.
 //
 #define M_KGORA_CLASS_NAME_INVALID       0x00000FBDL
 
@@ -670,7 +663,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Apply schema after configuration or override is not allowed.
+// Apply schema after configuration or override is not allowed.
 //
 #define M_KGORA_APPLY_CONFIGURED         0x00000FBEL
 
@@ -679,8 +672,8 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  King.Oracle file '%1$ls' was not found.
-//  
+// King.Oracle file '%1$ls' was not found.
+// 
 //
 #define M_KGORA_NOT_FOUND                0x00000FBFL
 
@@ -689,7 +682,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Invalid Physical Schema Mapping Provider Name.
+// Invalid Physical Schema Mapping Provider Name.
 //
 #define M_KGORA_INVALID_PHYSICAL_SCHEMA_PROVIDER_NAME 0x00000FC1L
 
@@ -698,7 +691,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Invalid Physical Schema Mapping Provider Version.
+// Invalid Physical Schema Mapping Provider Version.
 //
 #define M_KGORA_INVALID_PHYSICAL_SCHEMA_PROVIDER_VERSION 0x00000FC2L
 
@@ -707,7 +700,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Duplicate field name '%1$ls' in '%2$ls'.
+// Duplicate field name '%1$ls' in '%2$ls'.
 //
 #define M_KGORA_DUPLICATE_COLUMN         0x00000FC3L
 
@@ -716,7 +709,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Can't modify class '%1$ls' because it contains data.
+// Can't modify class '%1$ls' because it contains data.
 //
 #define M_KGORA_CANT_MODIFY_NON_EMPTY_CLASS 0x00000FC4L
 
@@ -725,7 +718,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Can't delete class '%1$ls' because it contains data.
+// Can't delete class '%1$ls' because it contains data.
 //
 #define M_KGORA_CANT_DELETE_NON_EMPTY_CLASS 0x00000FC5L
 
@@ -734,7 +727,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Can't delete schema '%1$ls' because class '%2$ls' contains data.
+// Can't delete schema '%1$ls' because class '%2$ls' contains data.
 //
 #define M_KGORA_CANT_DELETE_NON_EMPTY_SCHEMA 0x00000FC6L
 
@@ -753,7 +746,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Null parameter.
+// Null parameter.
 //
 #define M_KGORA_EXPRESSION_NULL_PARAMETER 0x00001771L
 
@@ -762,7 +755,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Invalid parameter type.
+// Invalid parameter type.
 //
 #define M_KGORA_EXPRESSION_INVALID_PARAMETER_TYPE 0x00001772L
 
@@ -776,7 +769,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Command parameters are not supported.
+// Command parameters are not supported.
 //
 #define M_KGORA_COMMAND_PARAMETERS_NOT_SUPPORTED 0x00001B59L
 
@@ -785,8 +778,8 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Command timeout is not supported.
-//  
+// Command timeout is not supported.
+// 
 //
 #define M_KGORA_COMMAND_TIMEOUT_NOT_SUPPORTED 0x00001B5AL
 
@@ -795,7 +788,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Property '%1$ls' is not part of class '%2$ls'.
+// Property '%1$ls' is not part of class '%2$ls'.
 //
 #define M_KGORA_COMMAND_PROPERTY_NOT_FOUND 0x00001B5CL
 
@@ -804,7 +797,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Value type to insert, update or retrieve doesn't match the type (%1$ls) of property '%2$ls'.
+// Value type to insert, update or retrieve doesn't match the type (%1$ls) of property '%2$ls'.
 //
 #define M_KGORA_VALUE_TYPE_MISMATCH      0x00001B5DL
 
@@ -813,7 +806,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The property '%1$ls' is read-only.
+// The property '%1$ls' is read-only.
 //
 #define M_KGORA_FEATID_READONLY          0x00001B5EL
 
@@ -822,7 +815,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The value for property '%1$ls' is not '%2$ls'.
+// The value for property '%1$ls' is not '%2$ls'.
 //
 #define M_KGORA_INVALID_DATA_TYPE        0x00001B5FL
 
@@ -831,7 +824,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The geometry type ('%1$ls') of the feature conflicts with the shape file type ('%2$ls').
+// The geometry type ('%1$ls') of the feature conflicts with the shape file type ('%2$ls').
 //
 #define M_KGORA_INVALID_GEOMETRY_TYPE    0x00001B60L
 
@@ -840,7 +833,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Only literal geometry values supported.
+// Only literal geometry values supported.
 //
 #define M_KGORA_LITERAL_GEOM_VALUES_ONLY 0x00001B61L
 
@@ -849,7 +842,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Failed to initialize the delete operation.
+// Failed to initialize the delete operation.
 //
 #define M_KGORA_DELETE_SETUP_FAILED      0x00001B62L
 
@@ -858,7 +851,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Delete failed.
+// Delete failed.
 //
 #define M_KGORA_DELETE_FAILED            0x00001B63L
 
@@ -867,7 +860,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Illegal column assignment.
+// Illegal column assignment.
 //
 #define M_KGORA_ILLEGAL_COLUMN_ASSIGNMENT 0x00001B64L
 
@@ -876,7 +869,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The value '%1$ls' is too wide for column '%2$ls'.
+// The value '%1$ls' is too wide for column '%2$ls'.
 //
 #define M_KGORA_VALUE_TOO_WIDE_FOR_COLUMN 0x00001B65L
 
@@ -885,7 +878,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Failed to initialize the update operation.
+// Failed to initialize the update operation.
 //
 #define M_KGORA_UPDATE_SETUP_FAILED      0x00001B66L
 
@@ -894,7 +887,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Cannot update read-only file '%1$ls'.
+// Cannot update read-only file '%1$ls'.
 //
 #define M_KGORA_READ_ONLY_UPDATE         0x00001B67L
 
@@ -903,7 +896,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Cannot insert into read-only file '%1$ls'.
+// Cannot insert into read-only file '%1$ls'.
 //
 #define M_KGORA_READ_ONLY_INSERT         0x00001B68L
 
@@ -912,7 +905,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Cannot delete from read-only file '%1$ls'.
+// Cannot delete from read-only file '%1$ls'.
 //
 #define M_KGORA_READ_ONLY_DELETE         0x00001B69L
 
@@ -926,7 +919,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Locking not supported (%1$ls).
+// Locking not supported (%1$ls).
 //
 #define M_KGORA_LOCKING_NOT_SUPPORTED    0x00001F41L
 
@@ -940,7 +933,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Cannot have more than one spatial context in a configuration file.
+// Cannot have more than one spatial context in a configuration file.
 //
 #define M_KGORA_SPATIALCONTEXT_INVALIDCONFIGURATION 0x00002329L
 
@@ -949,7 +942,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Unsupported option.
+// Unsupported option.
 //
 #define M_KGORA_SPATIALCONTEXT_INVALIDOPTION 0x0000232AL
 
@@ -963,7 +956,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  King.Oracle Provider does not support transactions.
+// King.Oracle Provider does not support transactions.
 //
 #define M_KGORA_CONNECTION_TRANSACTIONS_NOT_SUPPORTED 0x00002711L
 
@@ -977,7 +970,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  '%1$ls' reader not ready.
+// '%1$ls' reader not ready.
 //
 #define M_KGORA_READER_NOT_READY         0x00002AF9L
 
@@ -986,7 +979,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  '%1$ls' reader exhausted.
+// '%1$ls' reader exhausted.
 //
 #define M_KGORA_READER_EXHAUSTED         0x00002AFAL
 
@@ -995,7 +988,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The property '%1$ls' is NULL.
+// The property '%1$ls' is NULL.
 //
 #define M_KGORA_READER_PROPERTY_NULL     0x00002AFBL
 
@@ -1009,7 +1002,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The file '%1$ls' cannot be opened.
+// The file '%1$ls' cannot be opened.
 //
 #define M_KGORA_SI_UNABLE_TO_OPEN        0x00002EE1L
 
@@ -1018,7 +1011,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Corrupted Spatial Index file '%1$ls'.
+// Corrupted Spatial Index file '%1$ls'.
 //
 #define M_KGORA_SI_NOT_AN_SSI            0x00002EE2L
 
@@ -1027,7 +1020,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Error reading the file '%1$ls'.
+// Error reading the file '%1$ls'.
 //
 #define M_KGORA_SI_READ_ERROR            0x00002EE3L
 
@@ -1036,7 +1029,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Error writing the file '%1$ls'.
+// Error writing the file '%1$ls'.
 //
 #define M_KGORA_SI_WRITE_ERROR           0x00002EE4L
 
@@ -1045,7 +1038,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Version mismatch '%1$ls', expected %2$d, found %3$d.
+// Version mismatch '%1$ls', expected %2$d, found %3$d.
 //
 #define M_KGORA_SI_VERSION_MISMATCH      0x00002EE5L
 
@@ -1054,7 +1047,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  File '%1$ls' is read-only.
+// File '%1$ls' is read-only.
 //
 #define M_KGORA_SI_READ_ONLY             0x00002EE6L
 
@@ -1063,7 +1056,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Spatial Index search has not been initialized.
+// Spatial Index search has not been initialized.
 //
 #define M_KGORA_SI_SEARCH_NOT_INITIALIZED 0x00002EE7L
 
@@ -1072,7 +1065,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Invalid floating point precision (%2$d).
+// Invalid floating point precision (%2$d).
 //
 #define M_KGORA_SI_INVALID_PRECISION     0x00002EE8L
 
@@ -1081,7 +1074,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Specified object was not found in Spatial Index.
+// Specified object was not found in Spatial Index.
 //
 #define M_KGORA_SI_OBJECT_NOT_FOUND      0x00002EE9L
 
@@ -1090,7 +1083,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Cannot create temporary file while defragmenting the Spatial Index.
+// Cannot create temporary file while defragmenting the Spatial Index.
 //
 #define M_KGORA_SI_CANT_CREATE_TEMP_FILE 0x00002EEAL
 
@@ -1099,7 +1092,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Cannot write temporary file while defragmenting the Spatial Index.
+// Cannot write temporary file while defragmenting the Spatial Index.
 //
 #define M_KGORA_SI_TEMP_FILE_WRITE_ERROR 0x00002EEBL
 
@@ -1108,7 +1101,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Cannot replace the Spatial Index.
+// Cannot replace the Spatial Index.
 //
 #define M_KGORA_SI_CANT_REPLACE_SSI      0x00002EECL
 
@@ -1117,7 +1110,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  The spatial operation %1$ls is not supported.
+// The spatial operation %1$ls is not supported.
 //
 #define M_KGORA_SI_OPERATOR_NOT_SUPPORTED 0x00002EEDL
 
@@ -1126,7 +1119,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Error #%1$d occured initializating the RTree.
+// Error #%1$d occured initializating the RTree.
 //
 #define M_KGORA_SI_INITIALIZATION_FAILED 0x00002EEEL
 
@@ -1135,7 +1128,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Spatial Index traversal has not been initialized.
+// Spatial Index traversal has not been initialized.
 //
 #define M_KGORA_SI_TRAVERSAL_NOT_INITIALIZED 0x00002EEFL
 
@@ -1144,7 +1137,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Invalid minimum entries per node (%2$d).
+// Invalid minimum entries per node (%2$d).
 //
 #define M_KGORA_SI_INVALID_MINIMUM_NODES 0x00002EF0L
 
@@ -1153,7 +1146,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Invalid maximum entries per node (%2$d).
+// Invalid maximum entries per node (%2$d).
 //
 #define M_KGORA_SI_INVALID_MAXIMUM_NODES 0x00002EF1L
 
@@ -1167,7 +1160,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Geometry creation failed for '%1$ls'.
+// Geometry creation failed for '%1$ls'.
 //
 #define M_KGORA_CREATE_GEOMETRY_FAILED   0x000032C9L
 
@@ -1181,7 +1174,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  KingOracle FDO Provider for Oracle Spatial
+// KingOracle FDO Provider for Oracle Spatial
 //
 #define M_KGORA_PROVIDER_DISPLAY_NAME    0x000036B1L
 
@@ -1190,7 +1183,7 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 // MessageText:
 //
-//  Read/write access to spatial and attribute data in an Oracle Spatial.
+// Read/write access to spatial and attribute data in an Oracle Spatial.
 //
 #define M_KGORA_PROVIDER_DESCRIPTION     0x000036B2L
 
