@@ -63,7 +63,7 @@ if exist "%SDEHOME%\bin\sde91.dll" SET SDEVER_ARCUNITTEST=91
 if not exist "%FDOMYSQL%" SET FDOMYSQL=C:\Program Files\MySQL\MySQL Server 5.0
 if not exist "%FDOMYSQL%" echo OPTIONAL FDO environment variable FDOMYSQL is not set
 
-if not exist "%FDOORACLE%" SET FDOMYSQL=%FDOTHIRDPARTY%\oracle\instant_client\10.2\sdk
+if not exist "%FDOORACLE%" SET FDOORACLE=%FDOTHIRDPARTY%\oracle\instant_client\10.2\sdk
 if not exist "%FDOORACLE%" echo OPTIONAL FDO environment variable FDOORACLE is not set
 
 if not exist "%FDOGDAL%" SET FDOGDAL=%FDOTHIRDPARTY%\gdal
