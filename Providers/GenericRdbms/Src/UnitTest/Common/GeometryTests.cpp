@@ -249,7 +249,7 @@ void GeometryTests::define ()
 
         CPPUNIT_ASSERT_MESSAGE ("do_insert_geometry", RDBI_SUCCESS == do_insert_geometry( cursor, &featId, &geometry.p )); 
 
-        sprintf (select, "select position from foo where id=%ld", featId);
+        sprintf (select, "select position%s from foo where id=%ld", get_geom_conv(), featId);
         if (mRdbiContext->dispatch.capabilities.supports_unicode == 1){
             CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_vaW (mRdbiContext, RDBI_VA_EXEC, cursor,
                 FdoStringP(select), RDBI_VA_EOL, RDBI_GEOMETRY, sizeof (answer), &answer, RDBI_VA_EOL));
@@ -354,7 +354,7 @@ void GeometryTests::bind ()
         }
 
         // check it got inserted
-        sprintf (select, "select position from foo where id=%s", get_bind_var (1));
+        sprintf (select, "select position%s from foo where id=%s", get_geom_conv (), get_bind_var (1));
         if (mRdbiContext->dispatch.capabilities.supports_unicode == 1){
             CPPUNIT_ASSERT_MESSAGE ("rdbi_sql_va failed", RDBI_SUCCESS == rdbi_sql_vaW (mRdbiContext, RDBI_VA_EXEC, cursor,
             FdoStringP(select), RDBI_INT, sizeof(id), &id, RDBI_VA_EOL, RDBI_GEOMETRY, sizeof (answer), &answer, RDBI_VA_EOL));

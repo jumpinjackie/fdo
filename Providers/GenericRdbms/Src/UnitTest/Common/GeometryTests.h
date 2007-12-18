@@ -54,6 +54,7 @@ protected:
     virtual int do_rdbi_init ();
     virtual int do_rdbi_connect (const char* dataStoreName, const char* userName, const char* userPassword);
     virtual char *get_bind_var (int n);
+    virtual char *get_geom_conv () { return ""; };
     virtual char *get_date_time (const struct tm *when);
     virtual char *get_geometry_type ();
     virtual char *get_geometry_text (FdoIGeometry *geometry);

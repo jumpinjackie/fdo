@@ -92,6 +92,10 @@ class FdoRdbmsSelectCommand : public FdoRdbmsFeatureCommand<FdoISelect>
 	  // Internal method added in support for the expression engine 
 	  FdoExpressionEngineFunctionCollection* GetUserDefinedFunctions( FdoSmLpSpatialContextCollection *scColl, FdoClassDefinition *classDef );
 
+      // Internal method in support for select command 
+      FdoRdbmsFeatureReader *GetOptimizedFeatureReader( const FdoSmLpClassDefinition *classDefinition );
+
+
   public:
 
       //

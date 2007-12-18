@@ -686,11 +686,21 @@ GdbiColumnInfoType *GdbiQueryResult::FindColumnCache( const wchar_t *colName )
 		FdoStringP  upperName = FdoStringP(colName).Upper();
 		const wchar_t* name = StripTable(upperName);
 
+        size_t index_empty = -1;
 		for ( size_t i = 0; !found && i < mColList->size(); i++ )
 		{
 			colInfo = mColList->at(i);
 			found = ( wcscmp( colInfo->name, name ) == 0 );
+
+            // bug in SQL Server 2008 - returns "" for geometry column wrapped in a conversion function.
+            if ( wcscmp( colInfo->name, L"") == 0 )
+                index_empty = i;
 		}
+        if ( !found && (index_empty != -1) )
+        {
+            colInfo = mColList->at(index_empty);
+            found = true;
+        }
 	}
 
 	if ( !found )

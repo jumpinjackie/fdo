@@ -1343,16 +1343,30 @@ void FdoUpdateTest::UpdateNlsIdFeatureClass()
         propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, L"Value");
         propertyValue->SetValue(dataValue);
 
-        double       coordsBuffer[3];
-        int          segCount = 1;
+        double       coordsBuffer[6];
+        int          segCount = 2;
 
-        coordsBuffer[0] = 2;
-        coordsBuffer[1] = 15;
-        coordsBuffer[2] = 0;
+        bool supportsZ = (FdoPtr<FdoIGeometryCapabilities>(connection->GetGeometryCapabilities())->GetDimensionalities() & FdoDimensionality_Z);
+
+        if ( supportsZ )
+        {
+            coordsBuffer[0] = 2;
+            coordsBuffer[1] = 15;
+            coordsBuffer[2] = 0;
+            coordsBuffer[3] = 10;
+            coordsBuffer[4] = 15;
+            coordsBuffer[5] = 0;
+        }
+        else
+        {
+            coordsBuffer[0] = 2;
+            coordsBuffer[1] = 15;
+            coordsBuffer[2] = 10;
+            coordsBuffer[3] = 15;
+        }
 
         propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, L"Geometry");
         FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-        bool supportsZ = (FdoPtr<FdoIGeometryCapabilities>(connection->GetGeometryCapabilities())->GetDimensionalities() & FdoDimensionality_Z);
 
         FdoPtr<FdoILineString> line1;
 		

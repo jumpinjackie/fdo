@@ -25,7 +25,7 @@
 #include "../../Gdbi/GdbiStatement.h"
 #include <Sm/Lp/PropertyMappingConcrete.h>
 #include <Sm/Lp/ObjectPropertyClass.h>
-#include "FdoRdbmsFilterProcessor.h"
+#include "../Filter/FdoRdbmsFilterProcessor.h"
 
 class FdoRdbmsConnection;
 class ISchemaHandler;
@@ -72,6 +72,13 @@ typedef std::map<std::string, ValueDef *> StrMap;
 typedef std::pair<std::string, ValueDef *> ModulePair;
 typedef StrMap::iterator StringMapIterator;
 
+typedef struct _AggregateElement_ {
+	FdoStringP		propName;
+	FdoStringP		name;
+	FdoPropertyType	type;
+} AggregateElement;
+
+typedef std::vector<AggregateElement*> aggr_list;
 
 class StringMap
 {

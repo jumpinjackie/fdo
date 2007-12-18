@@ -28,9 +28,9 @@
 
 #include "FdoRdbms.h"
 #include "FdoRdbmsConnection.h"
-#include "LockConflictQueryHandler.h"
+#include "../LockManager/LockConflictQueryHandler.h"
 #include "FdoRdbmsLockConflicts.h"
-#include "LockConflict.h"
+#include "../LockManager/LockConflict.h"
 #include "LockUtility.h"
 
 class FdoRdbmsLockConflict;

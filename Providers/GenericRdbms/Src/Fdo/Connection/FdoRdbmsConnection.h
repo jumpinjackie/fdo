@@ -19,13 +19,15 @@
 
 
 #include "FdoRdbms.h"
-#include <LongTransactionManager.h>
-#include <LockManager.h>
-#include <LongTransactionManagerService.h>
+#include "../LongTransactionManager/LongTransactionManager.h"
+#include "../LockManager/LockManager.h"
+#include "../LongTransactionManager/LongTransactionManagerService.h"
 #include <Sm/SchemaManager.h>
 #include "SpatialManager/FdoRdbmsSpatialManager.h"
+#include "../FeatureCommands/FdoRdbmsFeatureReader.h"
 
 class FdoRdbmsFilterProcessor;
+
 
 #include "DbiConnection.h"
 
@@ -208,7 +210,7 @@ public:
     //
     // Returns the bind string used by the specific database engine; for example :1 for Oracle and ? for MySql.
     // By default ? is returned. If the database engine uses different syntax, then this method need to be ovewritten.
-    virtual const char* GetBindString( int n ) { return "?"; }
+    virtual const char* GetBindString( int n, bool isGeom = false ) { return "?"; }
 
     // Creates a Long Transaction Manager and its corresponding Long Transaction
     // Manager Service.
@@ -232,6 +234,8 @@ public:
     FdoString * GetActiveSpatialContextName();
     void SetActiveSpatialContextName(FdoString * spatialContextName);
     void SetDefaultActiveSpatialContextName();
+
+    virtual FdoRdbmsFeatureReader *GetOptimizedAggregateReader(const FdoSmLpClassDefinition* classDef, aggr_list *selAggrList) { return NULL; }
 
     virtual void Flush() {}
 

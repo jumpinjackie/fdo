@@ -29,7 +29,7 @@
 // #include "fdo/Collection.h"
 #include <FdoRdbms.h>
 #include "Collection.h"
-#include "LockConflict.h"
+#include "../LockManager/LockConflict.h"
 
 // class FdoRdbmsLockConflicts : public FdoCollection<FdoRdbmsLockConflict, FdoCommandException>
 class FdoRdbmsLockConflicts : public FdoRdbmsCollection<FdoRdbmsLockConflict>
