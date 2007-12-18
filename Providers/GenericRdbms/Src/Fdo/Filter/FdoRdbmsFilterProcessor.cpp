@@ -612,7 +612,9 @@ void FdoRdbmsFilterProcessor::ProcessIdentifier( FdoIdentifier& expr, bool useOu
                     FdoString * tableAlias = GetTableAlias( sqlTableName );
                     AppendString( tableAlias );
                     AppendString( L"." );
-                    AppendString( (FdoString*)(column->GetDbName()) );
+                    
+                    FdoStringP  colName = GetGeometryString( (FdoString*)(column->GetDbName()) );
+                    AppendString( (FdoString*)colName );
                 }
             }
             break;
@@ -1586,12 +1588,7 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
 
                 if( ! tabRelation.duplicatefkTable )
                 {
-                    PrependString ( L"*" );
-                    PrependString ( L"." );
-					if( mUseTableAliases )
-						PrependString ( tabRelation.fk_TabAlias );
-					else
-						PrependString ( tabRelation.fk_TableName );
+                    PrependSelectStar( mUseTableAliases ? tabRelation.fk_TabAlias : tabRelation.fk_TableName ); // i.e. ".*" or expand the list of properties 
                 }
                 if( relationColumns.GetLength() != 0 )
                     PrependString( (const wchar_t*)relationColumns );
@@ -1928,3 +1925,16 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter     *filter,
 
     return &mSqlFilterText[mFirstTxtIndex];
 }
+
+FdoStringP FdoRdbmsFilterProcessor::GetGeometryString( FdoString* columnName )
+{ 
+    return columnName; 
+}
+
+void FdoRdbmsFilterProcessor::PrependSelectStar( FdoString* tableName)
+{ 
+    PrependString ( L"*" ); 
+    PrependString ( L"." ); 
+    PrependString (tableName); 
+}
+

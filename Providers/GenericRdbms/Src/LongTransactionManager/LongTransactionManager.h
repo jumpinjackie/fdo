@@ -45,7 +45,7 @@
 #include "LongTransactionLTQueryHandler.h"
 #include "LongTransactionManagerService.h"
 #include "LongTransactionConstants.h"
-#include "LockManager.h"
+#include "../LockManager/LockManager.h"
 #include "../Fdo/Pvc/FdoRdbmsPvcProcessor.h"
 
 

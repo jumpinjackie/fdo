@@ -40,7 +40,7 @@
 #include "GdbiQueryResult.h"
 #include "GdbiConnection.h"
 #include "GdbiStatement.h"
-#include "LockManager.h"
+#include "../LockManager/LockManager.h"
 
 
 class FdoRdbmsLongTransactionLtQueryHandler : public FdoLtmDisposable

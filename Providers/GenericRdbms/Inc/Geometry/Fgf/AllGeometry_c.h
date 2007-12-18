@@ -46,11 +46,13 @@ int             IGeometry_AddRef( pIGeometry_def );
 int             IGeometry_GetFgftString( pIGeometry_def, const wchar_t ** );
 
 int             IGeometry_GetByteArrayData( pByteArray_def, unsigned char **, int * );
+int             IGeometry_GetWkbData( pByteArray_def, unsigned char **, int * );
+
 pByteArray_def  IByteArray_Create(unsigned char* bytes, int count);
 void			IByteArray_Release( pByteArray_def );
 
 int             IGeometry_GetWkb( pIGeometry_def, pByteArray_def * );
-int             IGeometry_CreateGeometryFromWkb( pByteArray_def, pIGeometry_def * );
+int             IGeometry_CreateGeometryFromWkb( pByteArray_def, pIGeometry_def *, pIGeometry_def* );
 int             IGeometry_GetFgf( pIGeometry_def, pByteArray_def * );
 int             IGeometry_CreateGeometryFromFgf( pByteArray_def, pIGeometry_def *, pIGeometry_def* );
 

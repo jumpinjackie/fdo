@@ -20,7 +20,7 @@
 #include "FdoRdbms.h"
 #include "FdoRdbmsConnection.h"
 #include "FdoRdbmsFeatureCommand.h"
-#include "FdoRdbmsLockConflictReader.h"
+#include "../Lock/FdoRdbmsLockConflictReader.h"
 
 
 class FdoRdbmsDeleteCommand : public FdoRdbmsFeatureCommand<FdoIDelete>

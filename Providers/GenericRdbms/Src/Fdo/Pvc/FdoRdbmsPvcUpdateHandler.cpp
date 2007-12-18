@@ -360,8 +360,10 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
         }
         else
         {
-            updateString += mFdoConnection->GetBindString( bindIndex++ );
-			if ( propType == FdoPropertyType_GeometricProperty )
+            bool isGeomProp = (propType == FdoPropertyType_GeometricProperty);
+            updateString += mFdoConnection->GetBindString( bindIndex++, isGeomProp );
+
+			if ( isGeomProp )
 			{
 				const FdoSmLpGeometricPropertyDefinition* geomProp =
                     static_cast<const FdoSmLpGeometricPropertyDefinition*>(propertyDefinition);

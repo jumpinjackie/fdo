@@ -249,7 +249,7 @@ long FdoRdbmsPvcInsertHandler::Execute( const FdoSmLpClassDefinition *classDefin
 //        FdoRdbmsLobUtility::InsertStreamedLobs( mConnection, classDefinition, propValCollection, insertQuery->bind, insertQuery->count );
 
     }
-    catch( ... )
+    catch( FdoException *ex )
     {
         if( insertQuery != NULL && insertQuery->qid != -1 )
         {
@@ -259,7 +259,11 @@ long FdoRdbmsPvcInsertHandler::Execute( const FdoSmLpClassDefinition *classDefin
             insertQuery->bind = NULL;
         }
 
-        throw;
+        throw ex;
+    }
+    catch (...)
+    {
+        throw FdoException::Create(L"FdoRdbmsPvcInsertHandler::Execute() failed");
     }
 
 	return 1;
@@ -638,7 +642,7 @@ void FdoRdbmsPvcInsertHandler::CreateInsertStringForColumn(
     }
     if ( !emptyBlobAdded )
     {
-        valuesString += mFdoConnection->GetBindString( bindCount+1 );
+        valuesString += mFdoConnection->GetBindString( bindCount+1, (propType == FdoPropertyType_GeometricProperty ));
     }
     bindCount++;
 }
