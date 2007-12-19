@@ -34,6 +34,7 @@ SET GDALENABLE=yes
 SET OGRENABLE=yes
 SET POSTGISENABLE=yes
 SET KINGORACLEENABLE=yes
+SET SQLSPATIALENABLE=yes
 SET FDOENABLE=yes
 SET DOCENABLE=skip
 SET PYTHONENABLE=skip
@@ -85,6 +86,7 @@ if "%DEFMODIFY%"=="yes" goto stp1_get_with
 	SET OGRENABLE=no
 	SET POSTGISENABLE=no
 	SET KINGORACLEENABLE=no
+	SET SQLSPATIALENABLE=no
 :stp1_get_with
 if not "%2"=="shp" goto stp2_get_with
 	SET SHPENABLE=yes
@@ -130,11 +132,15 @@ if not "%2"=="kingoracle" goto stp12_get_with
 	SET KINGORACLEENABLE=yes
 	goto next_param
 :stp12_get_with
-if not "%2"=="fdo" goto stp13_get_with
-	SET FDOENABLE=yes
+if not "%2"=="sqlspatial" goto stp13_get_with
+	SET SQLSPATIALENABLE=yes
 	goto next_param
 :stp13_get_with
-if not "%2"=="providers" goto stp14_get_with
+if not "%2"=="fdo" goto stp14_get_with
+	SET FDOENABLE=yes
+	goto next_param
+:stp14_get_with
+if not "%2"=="providers" goto stp15_get_with
 	SET SHPENABLE=yes
 	SET SDFENABLE=yes
 	SET WFSENABLE=yes
@@ -146,8 +152,9 @@ if not "%2"=="providers" goto stp14_get_with
 	SET OGRENABLE=yes
 	SET POSTGISENABLE=yes
 	SET KINGORACLEENABLE=yes
-goto next_param
-:stp14_get_with
+	SET SQLSPATIALENABLE=yes
+	goto next_param
+:stp15_get_with
 if not "%2"=="all" goto custom_error
 	SET SHPENABLE=yes
 	SET SDFENABLE=yes
@@ -161,6 +168,7 @@ if not "%2"=="all" goto custom_error
 	SET OGRENABLE=yes
 	SET POSTGISENABLE=yes
 	SET KINGORACLEENABLE=yes
+	SET SQLSPATIALENABLE=yes
 	goto next_param
 
 :get_docs
@@ -316,10 +324,18 @@ popd
 if "%FDOERROR%"=="1" goto error
 
 :rebuild_kingoracle
-if "%KINGORACLEENABLE%"=="no" goto end
-if not exist "%FDOORACLE%" goto end
-if not exist Providers\KingOracle\build.bat goto end
+if "%KINGORACLEENABLE%"=="no" goto rebuild_sqlspatial
+if not exist "%FDOORACLE%" goto rebuild_sqlspatial
+if not exist Providers\KingOracle\build.bat goto rebuild_sqlspatial
 pushd Providers\KingOracle
+call build.bat %PROVCALLCMDEX%
+popd
+if "%FDOERROR%"=="1" goto error
+
+:rebuild_sqlspatial
+if "%SQLSPATIALENABLE%"=="no" goto end
+if not exist Providers\GenericRdbms\Src\SQLServerSpatial\build.bat goto end
+pushd Providers\GenericRdbms\Src\SQLServerSpatial
 call build.bat %PROVCALLCMDEX%
 popd
 if "%FDOERROR%"=="1" goto error
@@ -389,8 +405,11 @@ if not exist Providers\OGR\build.bat goto postgis_check
 if not exist Providers\PostGIS\build.bat goto kingoracle_check
 	SET MROVBYPROVP=%MROVBYPROVP%, postgis
 :kingoracle_check
-if not exist Providers\KingOracle\build.bat goto providers_show
+if not exist Providers\KingOracle\build.bat goto sqlspatial_check
 	SET MROVBYPROVP=%MROVBYPROVP%, kingoracle
+:sqlspatial_check
+if not exist Providers\GenericRdbms\Src\SQLServerSpatial\build.bat goto providers_show
+	SET MROVBYPROVP=%MROVBYPROVP%, sqlspatial
 :providers_show
 if ("%MROVBYPROVP%")==("") goto show_capabilities
 	SET MPROVECAPABP=%MPROVECAPABP%, providers%MROVBYPROVP%
