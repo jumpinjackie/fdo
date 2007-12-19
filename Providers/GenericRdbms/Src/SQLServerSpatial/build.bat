@@ -122,9 +122,9 @@ copy /y "..\..\Lib\Win32\%TYPEBUILDSQLSPATIAL%\SQLServerSpatialOverrides.lib" "%
 copy /y "..\..\com\fdosys_sys.sql" "%FDOBINPATHSQLSPATIAL%\com"
 copy /y "..\..\com\fdo_sys_idx.sql" "%FDOBINPATHSQLSPATIAL%\com"
 copy /y "..\..\com\fdo_sys.sql" "%FDOBINPATHSQLSPATIAL%\com"
-rem copy /y "..\..\Managed\bin\%TYPEBUILDSQLSPATIAL%\OSGeo.FDO.Providers.MySQL.Overrides.dll" "%FDOBINPATHSQLSPATIAL%"
-rem copy /y "..\..\Managed\bin\%TYPEBUILDSQLSPATIAL%\OSGeo.FDO.Providers.Rdbms.dll" "%FDOBINPATHSQLSPATIAL%"
-rem copy /y "..\..\Managed\bin\%TYPEBUILDSQLSPATIAL%\OSGeo.FDO.Providers.Rdbms.Overrides.dll" "%FDOBINPATHSQLSPATIAL%"
+copy /y "..\..\Managed\bin\%TYPEBUILDSQLSPATIAL%\OSGeo.FDO.Providers.SQLServerSpatial.Overrides.dll" "%FDOBINPATHSQLSPATIAL%"
+copy /y "..\..\Managed\bin\%TYPEBUILDSQLSPATIAL%\OSGeo.FDO.Providers.Rdbms.dll" "%FDOBINPATHSQLSPATIAL%"
+copy /y "..\..\Managed\bin\%TYPEBUILDSQLSPATIAL%\OSGeo.FDO.Providers.Rdbms.Overrides.dll" "%FDOBINPATHSQLSPATIAL%"
 
 echo copy header files
 xcopy /S /C /Q /R /Y "..\..\inc\Rdbms\*.h" "%FDOINCPATHSQLSPATIAL%\Rdbms\"
