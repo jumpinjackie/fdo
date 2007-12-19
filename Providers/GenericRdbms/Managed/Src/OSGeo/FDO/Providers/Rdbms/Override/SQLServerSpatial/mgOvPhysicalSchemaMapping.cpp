@@ -20,7 +20,7 @@
 
 #include "stdafx.h"
 #include "Rdbms\Override\RdbmsOv.h"
-#include "SqlServer\SqlServerOvPhysicalSchemaMapping.h"
+#include "SQLServerSpatial\SqlServerOvPhysicalSchemaMapping.h"
 
 #include "FDO\Providers\Rdbms\Override\SQLServerSpatial\mgOvTextInRowOption.h"
 #include "FDO\Providers\Rdbms\Override\SQLServerSpatial\mgOvPhysicalSchemaMapping.h"

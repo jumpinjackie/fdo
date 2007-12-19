@@ -18,7 +18,7 @@
 #include <Fdo.h>
 
 #include <Rdbms/Override/RdbmsOv.h>
-#include <Rdbms/Override/SqlServer/SqlServerOv.h>
+#include <Rdbms/Override/SQLServerSpatial/SqlServerOv.h>
 
 #endif
 

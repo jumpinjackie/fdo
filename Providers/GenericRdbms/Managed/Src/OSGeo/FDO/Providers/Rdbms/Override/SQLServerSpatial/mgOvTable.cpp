@@ -20,7 +20,7 @@
 
 #include "stdafx.h"
 #include "Rdbms\Override\RdbmsOv.h"
-#include "SqlServer\SqlServerOvTable.h"
+#include "SQLServerSpatial\SqlServerOvTable.h"
 
 #include "FDO\Providers\Rdbms\Override\SQLServerSpatial\mgOvTextInRowOption.h"
 #include "FDO\Providers\Rdbms\Override\SQLServerSpatial\mgOvTable.h"

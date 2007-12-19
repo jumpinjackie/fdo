@@ -21,8 +21,8 @@
 #include "SqlServerSchemaOverrideUtil.h"
 #include "UnitTestUtil.h"
 #include "SqlServerFdoInsertTest.h"
-#include "../../SqlServer/SchemaMgr/SchemaManager.h"
-#include "../../SqlServer/SchemaMgr/Ph/Mgr.h"
+#include "../../SQLServerSpatial/SchemaMgr/SchemaManager.h"
+#include "../../SQLServerSpatial/SchemaMgr/Ph/Mgr.h"
 #include <FdoCommonFile.h>
 #include "../../ODBCDriver/context.h"
 int odbcdr_rdbi_init( odbcdr_context_def **, rdbi_methods	methods );
