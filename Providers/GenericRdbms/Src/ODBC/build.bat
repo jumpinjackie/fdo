@@ -133,6 +133,7 @@ copy /y "..\..\Managed\bin\%TYPEBUILDODBC%\OSGeo.FDO.Providers.Rdbms.Overrides.d
 echo copy header files
 xcopy /S /C /Q /R /Y "..\..\Inc\Rdbms\*.h" "%FDOINCPATHODBC%\Rdbms\"
 copy /y "..\..\Inc\Rdbms.h" "%FDOINCPATHODBC%\Rdbms\"
+if exist "%FDOINCPATHODBC%\Rdbms\Override\PostGis" rmdir /S /Q "%FDOINCPATHODBC%\Rdbms\Override\PostGis"
 if exist "%FDOINCPATHODBC%\Rdbms\Override\Oracle" rmdir /S /Q "%FDOINCPATHODBC%\Rdbms\Override\Oracle"
 if exist "%FDOINCPATHODBC%\Rdbms\Override\SqlServer" rmdir /S /Q "%FDOINCPATHODBC%\Rdbms\Override\SqlServer"
 if exist "%FDOINCPATHODBC%\Rdbms\FdoSqlServer.h" del /Q /F "%FDOINCPATHODBC%\Rdbms\FdoSqlServer.h"
