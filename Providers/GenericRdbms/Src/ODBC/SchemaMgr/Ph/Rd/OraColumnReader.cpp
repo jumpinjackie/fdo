@@ -34,8 +34,11 @@ struct FdoSmPhOraOdbcColTypeMapEntry
 static FdoSmPhOraOdbcColTypeMapEntry typeMap_S[] =
 {
     { FdoSmPhColType_String,    L"VARCHAR",      -1, -1 },
+    { FdoSmPhColType_String,    L"NVARCHAR",      -1, -1 },
     { FdoSmPhColType_String,    L"VARCHAR2",     -1, -1 },
+    { FdoSmPhColType_String,    L"NVARCHAR2",     -1, -1 },
     { FdoSmPhColType_String,    L"CHAR",         -1, -1 },
+    { FdoSmPhColType_String,    L"NCHAR",         -1, -1 },
     { FdoSmPhColType_String,    L"LONG",         -1, -1 },
     { FdoSmPhColType_String,    L"UNKNOWN",       0,  0 },
     { FdoSmPhColType_Date,      L"TIMESTAMP(6)", -1, -1 },
@@ -60,7 +63,9 @@ FdoSmPhRdOraOdbcColumnReader::FdoSmPhRdOraOdbcColumnReader(
 
     // Generate SQL statement for selecting the columns.
     FdoStringP sqlString = FdoStringP::Format(
-        L"select table_name, column_name as name, data_type as type, data_length as \"size\", data_precision as \"precision\", data_scale as scale, DATA_DEFAULT as default_value, nullable\n"
+        L"select table_name, column_name as name, data_type as type,\n"
+        L"         nvl(char_col_decl_length,data_length) as \"size\",\n"
+        L"         data_precision as \"precision\", data_scale as scale, DATA_DEFAULT as default_value, nullable\n"
         L"         from  all_tab_columns\n"
         L"         where\n"
         L"         owner     = :1 \n"
