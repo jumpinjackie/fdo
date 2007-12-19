@@ -18,8 +18,8 @@
 
 #pragma once
 
-#define BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS namespace Rdbms {
-#define END_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS }}}}
+#include "..\Namespace.h"
+
 // RdbmsOverrides
 #define BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS namespace Override {
 #define END_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE }}}}}
@@ -27,6 +27,4 @@
 //-------------------------------------------------------------------
 // Namespace abbrevative
 //-------------------------------------------------------------------
-
-#define NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS NAMESPACE_OSGEO_FDO_PROVIDERS::Rdbms
 #define NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::Override
