@@ -20,7 +20,7 @@
 
 #include "stdafx.h"
 #include "Rdbms\Override\RdbmsOv.h"
-#include "SqlServer\SqlServerOvObjectPropertyDefinition.h"
+#include "SQLServerSpatial\SqlServerOvObjectPropertyDefinition.h"
 
 #include "FDO\Providers\Rdbms\Override\SQLServerSpatial\mgOvObjectPropertyDefinition.h"
 #include "FDO\Providers\Rdbms\Override\SQLServerSpatial\mgObjectFactory.h"

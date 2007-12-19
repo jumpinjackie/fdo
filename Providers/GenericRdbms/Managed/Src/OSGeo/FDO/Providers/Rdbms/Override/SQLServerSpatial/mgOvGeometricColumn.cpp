@@ -20,7 +20,7 @@
 
 #include "stdafx.h"
 #include "Rdbms\Override\RdbmsOv.h"
-#include "SqlServer\SqlServerOvGeometricColumn.h"
+#include "SQLServerSpatial\SqlServerOvGeometricColumn.h"
 
 #include "FDO\Providers\Rdbms\Override\SQLServerSpatial\mgOvGeometricColumn.h"
 

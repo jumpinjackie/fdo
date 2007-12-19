@@ -21,7 +21,7 @@
 #include "UnitTestUtil.h"
 #include "ConnectionUtil.h"
 #include "SqlServerConnectionUtil.h"
-#include "../../SqlServer/SchemaMgr/Ph/Mgr.h"
+#include "../../SQLServerSpatial/SchemaMgr/Ph/Mgr.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION( SqlServerSchemaMgrTests );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( SqlServerSchemaMgrTests, "SchemaMgrTests");

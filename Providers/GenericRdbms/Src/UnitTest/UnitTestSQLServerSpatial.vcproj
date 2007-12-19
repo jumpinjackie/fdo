@@ -65,7 +65,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/fixed:no"
-				AdditionalDependencies="FDONLS.lib Rdbi.lib cppunitd.lib FDO.lib FDOCommon.lib SQLServerSpatialOverrides.lib FDOGeometry.lib rsi.lib gdbi.lib util.lib FdoGeneric.lib SQLServerSpatial.lib ProvidersCommon.lib grdschemamgr.lib rdbmsoverrides.lib schemamgr_lpnew.lib schemamgr_phnew.lib SQLServerSpatialSchemaMgr.lib schemamgrnew.lib FDOSpatial.lib SchemaMgr_OVNew.lib SQLServerSpatialODBCDriver.lib longtransactionmanager.lib geometry_fgf.lib TestCommon.lib ExpressionEngine.lib"
+				AdditionalDependencies="FDONLS.lib Rdbi.lib cppunitd.lib FDO.lib FDOCommon.lib SQLServerSpatialOverrides.lib FDOGeometry.lib gdbi.lib util.lib FdoGeneric.lib SQLServerSpatial.lib ProvidersCommon.lib grdschemamgr.lib rdbmsoverrides.lib schemamgr_lpnew.lib schemamgr_phnew.lib SQLServerSpatialSchemaMgr.lib schemamgrnew.lib FDOSpatial.lib SchemaMgr_OVNew.lib SQLServerSpatialODBCDriver.lib longtransactionmanager.lib geometry_fgf.lib TestCommon.lib ExpressionEngine.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Lib\Win32\Debug;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\Lib\Win32&quot;;&quot;$(FDOTHIRDPARTY)\oracle\oci\Lib\Win32\msvc&quot;;&quot;$(FDOTHIRDPARTY)\SqlServer\odbc\lib&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Debug&quot;"
 				IgnoreDefaultLibraryNames="libcd.lib"
@@ -143,7 +143,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDONLS.lib Rdbi.lib cppunit.lib FDO.lib FDOCommon.lib SQLServerSpatialOverrides.lib FDOGeometry.lib rsi.lib gdbi.lib util.lib FdoGeneric.lib SQLServerSpatial.lib ProvidersCommon.lib grdschemamgr.lib rdbmsoverrides.lib schemamgr_lpnew.lib schemamgr_phnew.lib SQLServerSpatialSchemaMgr.lib schemamgrnew.lib FDOSpatial.lib SchemaMgr_OVNew.lib SQLServerSpatialODBCDriver.lib longtransactionmanager.lib geometry_fgf.lib TestCommon.lib ExpressionEngine.lib"
+				AdditionalDependencies="FDONLS.lib Rdbi.lib cppunit.lib FDO.lib FDOCommon.lib SQLServerSpatialOverrides.lib FDOGeometry.lib gdbi.lib util.lib FdoGeneric.lib SQLServerSpatial.lib ProvidersCommon.lib grdschemamgr.lib rdbmsoverrides.lib schemamgr_lpnew.lib schemamgr_phnew.lib SQLServerSpatialSchemaMgr.lib schemamgrnew.lib FDOSpatial.lib SchemaMgr_OVNew.lib SQLServerSpatialODBCDriver.lib longtransactionmanager.lib geometry_fgf.lib TestCommon.lib ExpressionEngine.lib"
 				AdditionalLibraryDirectories="..\..\Lib\Win32\Release;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\Lib\Win32&quot;;&quot;$(FDOTHIRDPARTY)\oracle\oci\Lib\Win32\msvc&quot;;&quot;$(FDOTHIRDPARTY)\SqlServer\odbc\lib&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Release&quot;"
 				IgnoreDefaultLibraryNames="mfc80d.lib;mfcs80d.lib;libc.lib"
 			/>

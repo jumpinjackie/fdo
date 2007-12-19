@@ -20,8 +20,8 @@
 #include "SqlServerFdoUpdateTest.h"
 #include "UnitTestUtil.h"
 #include "ConnectionUtil.h"
-#include "../../SqlServer/SchemaMgr/SchemaManager.h"
-#include "../../SqlServer/SchemaMgr/Ph/Mgr.h"
+#include "../../SQLServerSpatial/SchemaMgr/SchemaManager.h"
+#include "../../SQLServerSpatial/SchemaMgr/Ph/Mgr.h"
 #include <Sm/Ph/Rd/QueryReader.h>
 
 #define NO_META_SUFFIX L"_no_meta2"
