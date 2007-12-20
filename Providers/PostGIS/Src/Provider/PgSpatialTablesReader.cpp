@@ -195,7 +195,7 @@ void PgSpatialTablesReader::Open()
 
     std::string sql("SELECT n.nspname AS schemaname, c.relname AS tablename "
                     "FROM pg_class c, pg_namespace n, geometry_columns g "
-                    "WHERE c.relkind = 'r' AND c.relname !~ '^(pg_|sql_)' "
+                    "WHERE c.relkind IN ('r','v') AND c.relname !~ '^(pg_|sql_)' "
                     "AND c.relnamespace = n.oid AND n.nspname = g.f_table_schema "
                     "AND c.relname::TEXT = g.f_table_name::TEXT "
                     "AND n.nspname = '"
