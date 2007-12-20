@@ -24,6 +24,7 @@ SET FDOINSPATHSQLSPATIAL=\Fdo
 SET FDOBINPATHSQLSPATIAL=\Fdo\Bin
 SET FDOINCPATHSQLSPATIAL=\Fdo\Inc
 SET FDOLIBPATHSQLSPATIAL=\Fdo\Lib
+SET DOCENABLESQLSPATIAL=skip
 SET FDOERROR=0
 
 :study_params
@@ -47,7 +48,10 @@ if "%1"=="-docs"    goto get_docs
 goto custom_error
 
 :get_docs
-goto next_param
+SET DOCENABLESQLSPATIAL=%2
+if "%2"=="build" goto next_param
+if "%2"=="skip" goto next_param
+goto custom_error
 
 :get_conf 
 SET TYPEBUILDSQLSPATIAL=%2
@@ -69,6 +73,7 @@ SET FDOINSPATHSQLSPATIAL=%~2\Fdo
 SET FDOBINPATHSQLSPATIAL=%~2\Fdo\Bin
 SET FDOINCPATHSQLSPATIAL=%~2\Fdo\Inc
 SET FDOLIBPATHSQLSPATIAL=%~2\Fdo\Lib
+SET FDODOCPATHSQLSPATIAL=%~2\Fdo\Docs
 
 :next_param
 shift
@@ -92,6 +97,7 @@ if not exist "%FDOINSPATHSQLSPATIAL%" mkdir "%FDOINSPATHSQLSPATIAL%"
 if not exist "%FDOBINPATHSQLSPATIAL%" mkdir "%FDOBINPATHSQLSPATIAL%"
 if not exist "%FDOINCPATHSQLSPATIAL%" mkdir "%FDOINCPATHSQLSPATIAL%"
 if not exist "%FDOLIBPATHSQLSPATIAL%" mkdir "%FDOLIBPATHSQLSPATIAL%"
+if not exist "%FDODOCPATHSQLSPATIAL%" mkdir "%FDODOCPATHSQLSPATIAL%"
 if not exist "%FDOBINPATHSQLSPATIAL%\com" mkdir "%FDOBINPATHSQLSPATIAL%\com"
 
 :start_exbuild
@@ -106,7 +112,7 @@ SET FDOERROR=%errorlevel%
 if exist SQLServerSpatial_temp.sln del /Q /F SQLServerSpatial_temp.sln
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTIONSQLSPATIAL%"=="clean" goto end
-if "%TYPEACTIONSQLSPATIAL%"=="build" goto end
+if "%TYPEACTIONSQLSPATIAL%"=="build" goto generate_docs
 
 :install_files_sqlspatial
 echo copy %TYPEBUILDSQLSPATIAL% SQLServer Spatial Provider Output Files
@@ -135,6 +141,33 @@ if exist "%FDOINCPATHSQLSPATIAL%\Rdbms\Override\SqlServer" rmdir /S /Q "%FDOINCP
 if exist "%FDOINCPATHSQLSPATIAL%\Rdbms\FdoSqlServer.h" del /Q /F "%FDOINCPATHSQLSPATIAL%\Rdbms\FdoSqlServer.h"
 if exist "%FDOINCPATHSQLSPATIAL%\Rdbms\FdoOracle.h" del /Q /F "%FDOINCPATHSQLSPATIAL%\Rdbms\FdoOracle.h"
 
+:generate_docs
+if "%DOCENABLESQLSPATIAL%"=="skip" goto install_docs
+pushd ..\..\
+echo Creating SQLServer Spatial provider html and chm documentation
+if exist "Docs\HTML\SQLServerSpatial" rmdir /S /Q "Docs\HTML\SQLServerSpatial"
+if not exist "Docs\HTML\SQLServerSpatial" mkdir "Docs\HTML\SQLServerSpatial"
+if exist Docs\SQLServerSpatial_Provider_API.chm attrib -r Docs\SQLServerSpatial_Provider_API.chm
+if exist "Docs\HTML\SQLServerSpatial_managed" rmdir /S /Q "Docs\HTML\SQLServerSpatial_managed"
+if not exist "Docs\HTML\SQLServerSpatial_managed" mkdir "Docs\HTML\SQLServerSpatial_managed"
+if exist Docs\SQLServerSpatial_Provider_API_managed.chm attrib -r Docs\SQLServerSpatial_Provider_API_managed.chm
+pushd Docs\doc_src
+doxygen Doxyfile_SQLServerSpatial
+doxygen Doxyfile_SQLServerSpatial_managed
+popd
+popd
+
+:install_docs
+if "%TYPEACTIONSQLSPATIAL%"=="build" goto end
+pushd ..\..\
+if exist "%FDODOCPATHSQLSPATIAL%\HTML\Providers\SQLServerSpatial" rmdir /S /Q "%FDODOCPATHSQLSPATIAL%\HTML\Providers\SQLServerSpatial"
+if exist Docs\HTML\SQLServerSpatial xcopy/CQEYI Docs\HTML\SQLServerSpatial\* "%FDODOCPATHSQLSPATIAL%\HTML\Providers\SQLServerSpatial"
+if exist "Docs\SQLServerSpatial_Provider_API.chm" copy /y "Docs\SQLServerSpatial_Provider_API.chm" "%FDODOCPATHSQLSPATIAL%"
+if exist "%FDODOCPATHSQLSPATIAL%\HTML\Providers\SQLServerSpatial_managed" rmdir /S /Q "%FDODOCPATHSQLSPATIAL%\HTML\Providers\SQLServerSpatial_managed"
+if exist Docs\HTML\SQLServerSpatial_managed xcopy/CQEYI Docs\HTML\SQLServerSpatial_managed\* "%FDODOCPATHSQLSPATIAL%\HTML\Providers\SQLServerSpatial_managed"
+if exist "Docs\SQLServerSpatial_Provider_API_managed.chm" copy /y "Docs\SQLServerSpatial_Provider_API_managed.chm" "%FDODOCPATHSQLSPATIAL%"
+popd
+
 :end
 echo End SQLServer Spatial %MSACTIONSQLSPATIAL%
 exit /B 0
@@ -155,7 +188,7 @@ SET FDOERROR=1
 exit /B 1
 
 :error
-echo There was a build error executing action: %MSACTIONMYSQL%
+echo There was a build error executing action: %MSACTIONSQLSPATIAL%
 exit /B 1
 
 :custom_error
