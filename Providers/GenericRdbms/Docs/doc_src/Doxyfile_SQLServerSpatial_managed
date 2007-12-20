@@ -79,6 +79,7 @@ FILE_PATTERNS          = *.h
 RECURSIVE              = YES
 EXCLUDE                = ../../Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/ODBC \
                          ../../Managed/Src/Autodesk/Gis/Fdo/Providers/Rdbms/Override/Oracle \
+                         ../../Managed/Src/Autodesk/Gis/Fdo/Providers/Rdbms/Override/SQLServer \
                          ../../Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
@@ -111,7 +112,7 @@ IGNORE_PREFIX          = Fdo \
 # configuration options related to the HTML output
 #---------------------------------------------------------------------------
 GENERATE_HTML          = YES
-HTML_OUTPUT            = ../HTML/SQLServer_managed
+HTML_OUTPUT            = ../HTML/SQLServerSpatial_managed
 HTML_FILE_EXTENSION    = .htm
 HTML_HEADER            = headers_and_footers/SQLServerSpatial/header_managed.html
 HTML_FOOTER            = headers_and_footers/SQLServerSpatial/footer_managed.html
