@@ -574,7 +574,6 @@ geom_convert_S(
 						        (SQLLEN *) NULL),
 				        SQL_HANDLE_STMT, cursor->hStmt,
 				        "SQLBindCol", "unbind" );   
-
                     cursor->odbcdr_blob_use_binds = false;
                 }
             }
@@ -627,6 +626,22 @@ geom_convert_S(
                 }
             }
 
+            // Apparently this is illegal:
+            // [Microsoft][ODBC SQL Server Driver]Invalid Descriptor Index
+            /*
+            if ( (conversionCode == CONVERSION_FROM_SQLSERVER ) && !cursor->odbcdr_blob_use_binds )
+            {
+                // Rebind back.
+                ODBCDR_ODBC_ERR( SQLBindCol( cursor->hStmt,
+				            (SQLUSMALLINT) column->position,
+				            (SQLSMALLINT) SQL_C_BINARY,
+                            (SQLPOINTER) (char*)cursor->odbcdr_blob_tmp,
+                            (SQLINTEGER) ODBCDR_BLOB_CHUNK_SIZE,
+				            (SQLLEN *)cursor->odbcdr_geomNI_tmp),
+		            SQL_HANDLE_STMT, cursor->hStmt,
+		            "SQLBindCol", "rebind" );   
+            }
+            */
         }   /* end for (i < columnList->size) */
 		
 		// Make final SQLParamData call. SQLParamData executes the SQL and
@@ -643,7 +658,7 @@ geom_convert_S(
 				goto the_exit;
 			}
 		}
-    }   /* end if (columnList != NULL) */
+     }   /* end if (columnList != NULL) */
 
     rdbi_status = RDBI_SUCCESS;
 
@@ -991,12 +1006,17 @@ geom_convertFromSqlServer_S(
         debug0( "Geometry is not NULL." );
 
         // Allocate the buffer
+        int  allocMore = true;
         if ( cursor->odbcdr_blob_tmp == NULL )
             cursor->odbcdr_blob_tmp = (PBYTE)malloc( count );
         else if ( cursor->odbcdr_blob_tmp_size < count )
             cursor->odbcdr_blob_tmp = (PBYTE)realloc( cursor->odbcdr_blob_tmp, count );
+        else
+            allocMore = false;
 
-        cursor->odbcdr_blob_tmp_size = count;
+        if ( allocMore )
+            cursor->odbcdr_blob_tmp_size = count;
+
         pData = cursor->odbcdr_blob_tmp;
 
         ODBCDR_ODBC_ERR( SQLGetData( cursor->hStmt, 
@@ -1140,19 +1160,23 @@ geom_checkFetchStatus_S (
     {
         if ( cursor->odbcdr_geomNI_tmp[i] == SQL_NULL_DATA)
             continue;
-
-        PBYTE pData = (PBYTE)&cursor->odbcdr_blob_tmp[ODBCDR_BLOB_CHUNK_SIZE * i];
-     
-        // Create a byte array from the array of bytes.
-        status = ( NULL != ( wkb = IByteArray_Create( pData, ODBCDR_BLOB_CHUNK_SIZE) ) );
-
-        // Create the geometry. In case it succeeds then all the bytes have been read in.
-        if ( status )
+        else if ( cursor->odbcdr_geomNI_tmp[i] > ODBCDR_BLOB_CHUNK_SIZE )
+            status = false;
+        else
         {
-            status = IGeometry_CreateGeometryFromWkb( wkb, &geom, NULL );
+            PBYTE pData = (PBYTE)&cursor->odbcdr_blob_tmp[ODBCDR_BLOB_CHUNK_SIZE * i];
+         
+            // Create a byte array from the array of bytes.
+            status = ( NULL != ( wkb = IByteArray_Create( pData, ODBCDR_BLOB_CHUNK_SIZE) ) );
 
-            IByteArray_Release( wkb );
-            IGeometry_Release( geom );
+            // Create the geometry. In case it succeeds then all the bytes have been read in.
+            if ( status )
+            {
+                status = IGeometry_CreateGeometryFromWkb( wkb, &geom, NULL );
+
+                IByteArray_Release( wkb );
+                IGeometry_Release( geom );
+            }
         }
     }
 
