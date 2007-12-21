@@ -251,117 +251,6 @@ FdoString* FdoWmsConnection::_getOriginalLayerName (FdoString* mangledLayerName)
     return L"";
 }
 
-// Should call after connection::open()
-FdoStringCollection* FdoWmsConnection::_getLayerNamesForClass(FdoString* className)
-{
-    FdoStringsP layerNames = FdoStringCollection::Create();
-
-    FdoPtr<FdoIdentifier> class_name = FdoIdentifier::Create (className);;
-    FdoStringP clsName = class_name->GetName ();	
-	FdoStringP schemaName = class_name->GetSchemaName ();
-    
-    // Get the class in the schemas
-	FdoFeatureClassP featClass;
-	FdoFeatureSchemasP schemas = GetSchemas ();
-	if (schemaName != NULL && schemaName.GetLength() > 0)
-	{
-		FdoFeatureSchemaP schema = schemas->GetItem (schemaName);
-		if (schema == NULL)
-			throw FdoSchemaException::Create (NlsMsgGet (FDOWMS_NAMED_SCHEMA_NOT_FOUND, "FDO Schema '%1$ls' was not found.", (FdoString*)schemaName));
-
-		FdoPtr<FdoClassCollection> featClasses = schema->GetClasses ();
-		featClass = static_cast<FdoFeatureClass *> (featClasses->GetItem (clsName));
-	}
-	else
-	{
-		FdoIDisposableCollection* featClasses = schemas->FindClass (clsName);	
-		if (featClasses->GetCount () == 0)
-			throw FdoSchemaException::Create (NlsMsgGet(FDOWMS_NAMED_SCHEMACLASS_NOT_FOUND, "FDO Feature Class '%1$ls' was not found.", (FdoString*)clsName ));
-
-		if (featClasses->GetCount () > 1)
-			throw FdoSchemaException::Create (NlsMsgGet(FDOWMS_NAMED_SCHEMACLASS_NOT_FOUND, "Duplicate FDO Feature Class '%1$ls' found in Schema.", (FdoString*)clsName ));
-
-		featClass = static_cast<FdoFeatureClass *> (featClasses->GetItem (0));
-	}
-
-	if (featClass == NULL)
-		throw FdoSchemaException::Create (NlsMsgGet(FDOWMS_NAMED_SCHEMACLASS_NOT_FOUND, "FDO Feature Class '%1$ls' was not found.", (FdoString*)clsName));
-
-   	// Retrieve the layer name that corresponds to the FDO clas name
-	if (!IsConfigured ())
-	{
-		FdoDictionaryP namedLayerMappings = GetNamedLayerMappings();
-		FdoDictionaryElementP layerElement = namedLayerMappings->GetItem(clsName);
-		if (layerElement)
-		{
-			layerNames->Add (layerElement->GetValue());
-		}
-		else
-			throw FdoSchemaException::Create (NlsMsgGet (FDOWMS_12001_LAYER_NOT_EXIST, "The WMS layer '%1$ls' does not exist.", (FdoString*)clsName));
-
-    }
-    else
-    {
-        FdoSchemaMappingsP schemaMappings = GetSchemaMappings ();
-		FdoInt32 cntMappings = schemaMappings->GetCount ();
-		for (FdoInt32 i=0; i<cntMappings; i++)
-		{
-			FdoPtr<FdoPhysicalSchemaMapping> schemaMapping = schemaMappings->GetItem (i);
-			if (schemaName.GetLength () > 0)
-			{
-				if (wcscmp (schemaMapping->GetName (), schemaName) != 0)
-					continue;
-			}
-
-			FdoWmsOvPhysicalSchemaMapping* physicalMapping = static_cast<FdoWmsOvPhysicalSchemaMapping *> (schemaMapping.p);
-			if (physicalMapping == NULL)
-				throw FdoSchemaException::Create (NlsMsgGet (FDOWMS_SCHEMA_MAPPING_NOT_FOUND, "Physical schema mapping '%1$ls' was not found.", (FdoString*)schemaName));
-			
-			FdoWmsOvClassesP classMappings = physicalMapping->GetClasses ();
-			FdoWmsOvClassDefinitionP clsDefinition = classMappings->GetItem (clsName);
-
-			if (clsDefinition != NULL)
-			{
-				// Now we've got the feature class. Then we can get the layer names and styles.
-				FdoWmsOvRasterDefinitionP rasterDefinition = clsDefinition->GetRasterDefinition ();
-				FdoWmsOvLayersP layers = rasterDefinition->GetLayers ();
-				for (FdoInt32 k=0; k<layers->GetCount (); k++)
-				{
-					FdoWmsOvLayerDefinitionP layer = layers->GetItem (k);
-					FdoStringP layerName = layer->GetName ();
-                    if (layerName != NULL && layerName.GetLength () > 0)
-                    {
-                        FdoStringP originalName = _getOriginalLayerName (layerName);
-                        // if the layer is not found, the name used here can be
-                        // qualified name of the feature class, such as "WMS_Schema:SomeLayer"
-                        // or "WMS_Schema:Some Layer".
-                        if (originalName.GetLength() == 0)
-                        {
-                            FdoStringP tempLayerName = layerName.Right (L":");
-                            originalName = _getOriginalLayerName (tempLayerName);
-                        }
-
-                        if (originalName.GetLength () > 0)
-                            layerNames->Add(originalName);
-                        else
-                        {
-                            // The layer name must be wrong.
-                            throw FdoCommandException::Create (
-                                NlsMsgGet(FDOWMS_12001_LAYER_NOT_EXIST, "The WMS layer '%1$ls' does not exist.", (FdoString *)layerName));
-                        }
-
-                    }
-                    else
-                        throw FdoSchemaException::Create (NlsMsgGet (FDOWMS_PHYSICAL_SCHEMA_LAYER_HAS_NO_NAME, 
-								"A WMS layer has no name in physical shema mappings."));
-                }
-            }
-        }
-    }
-
-    return FDO_SAFE_ADDREF(layerNames.p);
-
-}
 // should call after open
 // Child return the style supportted by its parents
 FdoStringCollection* FdoWmsConnection::GetSupportedStyles(FdoString* featureClass)
@@ -375,10 +264,8 @@ FdoStringCollection* FdoWmsConnection::GetSupportedStyles(FdoString* featureClas
     FdoStringsP styleNames = FdoStringCollection::Create();
     if (layers->GetCount() > 0) 
     {
-
-        FdoStringsP layerNames = _getLayerNamesForClass(featureClass);
-    
-        FdoStringP layerName = layerNames->GetString(0);
+        // NOTE: Currently, the default WMS provider configuration will create one featureclass refer to one layer
+        FdoStringP layerName = _getOriginalLayerName(featureClass);
         // Find in all layers, including the ROOT
         FdoPtr<FdoWmsLayer> currentLayer = FindLayer(layers, layerName);
         if (currentLayer == NULL)
@@ -387,41 +274,20 @@ FdoStringCollection* FdoWmsConnection::GetSupportedStyles(FdoString* featureClas
             "The WMS layer '%1$ls' does not exist.", 
             (FdoString *) layerName));
         }
-        _processLayerStyles(currentLayer, styleNames, NULL);
+        _processLayerStyles(currentLayer, styleNames);
      
-        // NOTE: Currently, the default WMS provider configuration will create one featureclass refer to one layer
-        // If there is more than one layer in one feature class, return the intersection of each layer supported styles
-        for (int i = 1 ; i < layerNames->GetCount() ; i++)
-        {
-            FdoStringP layerName = layerNames->GetString(i);
-	        // Find in all layers, including the ROOT
-            FdoPtr<FdoWmsLayer> currentLayer = FindLayer(layers, layerName);
-            if (currentLayer == NULL)
-            {
-                throw FdoException::Create (NlsMsgGet(FDOWMS_12001_LAYER_NOT_EXIST, 
-                "The WMS layer '%1$ls' does not exist.", 
-                (FdoString *) layerName));
-            }
-
-            FdoStringCollection* baseStyleSet = FdoStringCollection::Create(styleNames);
-            styleNames->Clear();
-            _processLayerStyles(currentLayer, styleNames, baseStyleSet);
-            
-        }
-
     }
     return FDO_SAFE_ADDREF(styleNames.p);
 }
 
 
-void FdoWmsConnection::_processLayerStyles(FdoWmsLayer* layer, FdoStringCollection* styleNames, FdoStringCollection* intersectStyleSet)
+void FdoWmsConnection::_processLayerStyles(FdoWmsLayer* layer, FdoStringCollection* styleNames)
 {
     FdoWmsStyleCollectionP styles = layer->GetStyles();
     for (int i = 0; i < styles->GetCount(); i++)
     {
         FdoWmsStyleP style = styles->GetItem(i);
-        if (((intersectStyleSet == NULL) || (intersectStyleSet->IndexOf(style->GetName()) != -1)) 
-            && (styleNames->IndexOf (style->GetName()) == -1))
+        if ( styleNames->IndexOf (style->GetName()) == -1 )
 		{
 			styleNames->Add(style->GetName());
         }
@@ -431,7 +297,7 @@ void FdoWmsConnection::_processLayerStyles(FdoWmsLayer* layer, FdoStringCollecti
     FdoPtr<FdoWmsLayer> parentLayer = layer->GetParent();
     if (parentLayer != NULL)
     {
-        _processLayerStyles(parentLayer, styleNames, intersectStyleSet);
+        _processLayerStyles(parentLayer, styleNames);
     }
 
 }
@@ -449,10 +315,10 @@ FdoStringCollection* FdoWmsConnection::GetSupportedCRSNames(FdoString* featureCl
     FdoStringsP crsNames = FdoStringCollection::Create();
     if (layers->GetCount() > 0) 
     {
-        FdoStringsP layerNames = _getLayerNamesForClass(featureClass);
+        // NOTE: Currently, the default WMS provider configuration will create one featureclass refer to one layer
+        FdoStringP layerName = _getOriginalLayerName(featureClass);
 
-        FdoStringP layerName = layerNames->GetString(0);
-	    // Find in all layers, including the ROOT
+        // Find in all layers, including the ROOT
         FdoPtr<FdoWmsLayer> currentLayer = FindLayer(layers, layerName);
         if (currentLayer == NULL)
         {
@@ -462,38 +328,21 @@ FdoStringCollection* FdoWmsConnection::GetSupportedCRSNames(FdoString* featureCl
         }
         _processLayerCRSNames(currentLayer, crsNames, capa->GetCRSNames());
 
-        // NOTE: Currently, the default WMS provider configuration will create one featureclass refer to one layer
-        // If there is more than one layer in one feature class, return the intersection of each layer supported CRS
-        for (int i = 1; i < layerNames->GetCount(); i++)
-        {
-            FdoStringP layerName = layerNames->GetString(i);
-    	    // Find in all layers, including the ROOT
-            FdoPtr<FdoWmsLayer> currentLayer = FindLayer(layers, layerName);
-            if (currentLayer == NULL)
-            {
-                throw FdoException::Create (NlsMsgGet(FDOWMS_12001_LAYER_NOT_EXIST, 
-                "The WMS layer '%1$ls' does not exist.", 
-                (FdoString *) layerName));
-            }
-            FdoStringCollection* baseCRSSet = FdoStringCollection::Create(crsNames);
-            crsNames->Clear();
-            _processLayerCRSNames(currentLayer, crsNames, baseCRSSet);
-        }
-
     }
     return FDO_SAFE_ADDREF(crsNames.p);
 }
 
 void FdoWmsConnection::_processLayerCRSNames(FdoWmsLayer* layer, FdoStringCollection* crsNames, FdoStringCollection* intersectCRSSet)
 {
-    FdoStringsP tempNames = layer->GetCoordinateReferenceSystems();
-    for (int i = 0; i < tempNames->GetCount(); i++)
+    FdoPtr<FdoWmsBoundingBoxCollection> boundingboxs = layer->GetBoundingBoxes();
+    for (int i = 0; i < boundingboxs->GetCount(); i++)
     {
-        FdoStringP crs = tempNames->GetString(i);
+        FdoWmsBoundingBoxP box = boundingboxs->GetItem(i);
+        FdoStringP crs = box->GetCRS();
         if ( ((intersectCRSSet == NULL) || (intersectCRSSet->IndexOf(crs) != -1))
-            && (crsNames->IndexOf(crs) == -1))
+            && (crsNames->IndexOf(crs) == -1) )
 		{
-			crsNames->Add(crs);
+            crsNames->Add(crs);
         }
     }
     

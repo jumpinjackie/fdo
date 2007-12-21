@@ -264,11 +264,10 @@ protected:
 
 private:
     // test
-    void _processLayerStyles(FdoWmsLayer* layers, FdoStringCollection* styleNames, FdoStringCollection* intersectStyleSet);
+    void _processLayerStyles(FdoWmsLayer* layers, FdoStringCollection* styleNames);
     void _processLayerCRSNames(FdoWmsLayer* layer, FdoStringCollection* crsNames, FdoStringCollection* intersectCRSSet);
 
     // get the real layer name refered by specific feature class
-    FdoStringCollection* _getLayerNamesForClass(FdoString* className);
     FdoString* _getOriginalLayerName (FdoString* mangledLayerName);
     
     // build up the class/layer name mapping
