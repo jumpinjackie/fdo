@@ -610,14 +610,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Common\FdoLockTest.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Common\FdoLockTest.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Common\FdoMultiThreadTest.cpp"
 				>
 			</File>
@@ -671,14 +663,6 @@
 			</File>
 			<File
 				RelativePath=".\Common\GeometryTests.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Common\LongTransactionTests.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Common\LongTransactionTests.h"
 				>
 			</File>
 			<File
@@ -975,14 +959,6 @@
 			</File>
 			<File
 				RelativePath=".\SQLServerSpatial\SqlServerGeometryTests.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SQLServerSpatial\SqlServerLongTransactionTests.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SQLServerSpatial\SqlServerLongTransactionTests.h"
 				>
 			</File>
 			<File
