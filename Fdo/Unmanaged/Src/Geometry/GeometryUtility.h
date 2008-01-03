@@ -51,6 +51,9 @@ public:
     static wchar_t * CreateFgftContentForCurveSegments(FdoCurveSegmentCollection * segments);
 
 protected:
+    static FdoInt32 FormatNumber(double d, wchar_t* pszBuffer, FdoInt32 iLen, bool addSeparator);
+    static FdoInt32 WritePositionToString(wchar_t * string, const FdoIDirectPosition * position); 
 };
 #endif
+
 

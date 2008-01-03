@@ -21,6 +21,10 @@
 
 #include "GeometryUtility.h"
 #include "StringUtility.h"
+#include <float.h>
+#include <locale.h>
+#include <math.h>
+#include <stdio.h>
 
 FdoString* GeometryUtility::DimensionalityToFgftString(FdoInt32 dimensionality)
 {
@@ -79,6 +83,99 @@ wchar_t * GeometryUtility::AllocateStringForPositions(FdoInt32 dimensionality, F
     return value;
 }
 
+FdoInt32 GeometryUtility::FormatNumber(double d, wchar_t* pszBuffer, FdoInt32 iLen, bool addSeparator)
+{
+    FdoInt32 precision = 15;
+    int             left;               // digits to left of decimal
+    int             right;              // digits to right of decimal
+    wchar_t*        end;                // end of formatted string
+    wchar_t         radix = L'\0';      // radix character
+    struct lconv    *nls;               // NLS info
+    FdoInt32 retVal = 0;
+    FdoInt32 extraChar = addSeparator ? 1 : 0;
+    iLen += extraChar;
+
+    // Get NLS Info and extract the decimal separator character (if available)
+    nls = localeconv();
+    if (nls)
+        radix = nls->decimal_point[0];
+    if (radix == '\0')
+        radix = '.';    // if not there, default to '.'
+
+    // determine digits to left of decimal point.  note: add 1.0 before int cnv
+    // so that: 1.n=>1, 0.n=>0 not 0.n=>1
+    if (d > 0)
+        left = (int)(log10(d) + 1.0);
+    else if (d < 0)
+        left = (int)(log10(-d) + 1.0);
+    else
+        left = 0;
+    //  treat 0 like .nnnn ...
+    if (left < 0)
+        left = 0;
+
+    // determine digits allowed on right, within precision
+    right = precision - left;
+
+    //  format with appropriate decimals
+    if (right < 0)      // go to exponential format
+    {
+        FdoString* formatNumber = addSeparator ? L" %.*g" : L"%.*g";
+        right = 0;
+#ifdef _WIN32
+        retVal = (FdoInt32)_snwprintf(pszBuffer, iLen, formatNumber, precision, d);
+#else
+        retVal = (FdoInt32)swprintf(pszBuffer, iLen, formatNumber, precision, d);
+#endif
+        if (retVal < 0 || retVal == iLen)
+        {
+            retVal = iLen;
+            pszBuffer[retVal] = L'\0';
+        }
+        return retVal;
+    }
+    else
+    {
+        FdoString* formatNumber = addSeparator ? L" %.*f" : L"%.*f";
+#ifdef _WIN32
+        retVal = (FdoInt32)_snwprintf(pszBuffer, iLen, formatNumber, right, d);
+#else
+        retVal = (FdoInt32)swprintf(pszBuffer, iLen, formatNumber, right, d);
+#endif
+    }
+    if (retVal < 0 || retVal == iLen)
+    {
+        retVal = iLen;
+        pszBuffer[retVal] = L'\0';
+    }
+
+    end = pszBuffer + retVal - 1;
+
+    //  note: sprintf rounds dec remove trailing '0's if there is a decimal
+    if (right > 0) {
+        while (*end == L'0')
+            end--;
+    }
+
+    //  remove radix if no decimal
+    if (*end == radix)
+        *end = L'\0';
+    else
+        *(++end) = L'\0';   //  keep last non-zero
+
+    retVal = (FdoInt32)(end - pszBuffer);
+
+    // special case for "-0".  Change to "0"
+    if ( (2 + extraChar) == retVal && *(pszBuffer + extraChar) == L'-' && *(pszBuffer + extraChar + 1) == L'0')
+    {
+        if (extraChar != 0)
+            *pszBuffer = L' ';
+        *(pszBuffer + extraChar) = L'0';
+        *(pszBuffer + extraChar + 1) = L'\0';
+        retVal = extraChar + 1;
+    }
+    return retVal;
+}
 
 void GeometryUtility::AppendPositionToString(wchar_t * string, const FdoIDirectPosition * position)
 {
@@ -112,6 +209,26 @@ void GeometryUtility::AppendPositionToString(wchar_t * string, const FdoIDirectP
     }
 }
 
+FdoInt32 GeometryUtility::WritePositionToString(wchar_t * string, const FdoIDirectPosition * position)
+{
+    FdoInt32 offset = 0;
+
+    // Convert X ordinate to string and append to string buffer, which had better be
+    // big enough -- see AllocateStringForPositions().
+    offset = GeometryUtility::FormatNumber(position->GetX(), string, GeometryUtility::GenerousCharsPerOrdinate, false);
+
+    // Append Y ordinate.
+    offset += GeometryUtility::FormatNumber(position->GetY(), string + offset, GeometryUtility::GenerousCharsPerOrdinate, true);
+
+    if ( (position->GetDimensionality() & FdoDimensionality_Z ) != 0 ) // Append Z ordinate.
+        offset += GeometryUtility::FormatNumber(position->GetZ(), string + offset, GeometryUtility::GenerousCharsPerOrdinate, true);
+
+    if ( (position->GetDimensionality() & FdoDimensionality_M ) != 0 ) // Append M ordinate.
+        offset += GeometryUtility::FormatNumber(position->GetM(), string + offset, GeometryUtility::GenerousCharsPerOrdinate, true);
+
+    return offset;
+}
+
 FdoString* GeometryUtility::CreateGeometryText(FdoIGeometry * geometry)
 {
     // This code really should be distributed among the various geometry types,
@@ -132,7 +249,7 @@ FdoString* GeometryUtility::CreateGeometryText(FdoIGeometry * geometry)
             const FdoIPoint * dg = static_cast<const FdoIPoint *>(geometry);   // derived geometry
             buffer = AllocateStringForPositions(dim, 1);
             FdoPtr<FdoIDirectPosition> pos = dg->GetPosition();
-            AppendPositionToString(buffer, pos);
+            WritePositionToString(buffer, pos);
             wchar_t * tmp = FdoStringUtility::MakeString(L"POINT ", DimensionalityToFgftString(dim), L"(", buffer, L")");
             value = (FdoString*) tmp;
         }
@@ -304,15 +421,20 @@ wchar_t * GeometryUtility::CreateFgftContentForPositions(FdoInt32 dimensionality
     wchar_t * value = AllocateStringForPositions(dimensionality, positions->GetCount());
     static FdoString* pointSeparator = L", ";
 
-    FdoStringUtility::StringConcatenate(value, L"(");
+    FdoStringUtility::StringCopy(value, L"(");
+    FdoInt32 offset = 1; // jump over "("
+
     for (FdoInt32 i = 0;  i < positions->GetCount();  i++ )
     {
         if ( i > 0 )
-            FdoStringUtility::StringConcatenate(value, pointSeparator);
+        {
+            FdoStringUtility::StringCopy(value + offset, pointSeparator);
+            offset += 2; // jump over ", "
+        }
 		FdoPtr<FdoIDirectPosition> pos = positions->GetItem(i);
-        AppendPositionToString(value, pos);
+        offset += WritePositionToString(value + offset, pos);
     }
-    FdoStringUtility::StringConcatenate(value, L")");
+    FdoStringUtility::StringCopy(value + offset, L")");
 
     return value;
 }
@@ -426,10 +548,11 @@ wchar_t * GeometryUtility::CreateFgftContentForCurveSegments(FdoCurveSegmentColl
     FdoInt32 dim = firstSegment->GetDimensionality();
     buffer = FdoStringUtility::MakeString(numBuffers, (FdoString**)buffers, L", ");
     wchar_t * startPositionBuffer = AllocateStringForPositions(dim, 1); // Start pos
-    FdoStringUtility::StringConcatenate(startPositionBuffer, L"(");
+    FdoStringUtility::StringCopy(startPositionBuffer, L"(");
+    FdoInt32 offset = 1; // jump over "("
     FdoPtr<FdoIDirectPosition> startPosition = firstSegment->GetStartPosition();
-    AppendPositionToString(startPositionBuffer, startPosition);
-    FdoStringUtility::StringConcatenate(startPositionBuffer, L" (");
+    offset += WritePositionToString(startPositionBuffer + offset, startPosition);
+    FdoStringUtility::StringCopy(startPositionBuffer + offset, L" (");
     value = FdoStringUtility::MakeString(startPositionBuffer, buffer, L"))");
     delete [] startPositionBuffer;
     startPositionBuffer = 0;
@@ -479,16 +602,18 @@ wchar_t * GeometryUtility::CreateFgftContentForCurveSegment(FdoICurveSegmentAbst
             FdoICircularArcSegment * dg = static_cast<FdoICircularArcSegment *>(segment);   // derived geometry component
             value = AllocateStringForPositions(dim, 2);                // Skip 1st point
 
-            FdoStringUtility::StringConcatenate(value, L"CIRCULARARCSEGMENT (");
+            FdoStringUtility::StringCopy(value, L"CIRCULARARCSEGMENT (");
 
             FdoPtr<FdoIDirectPosition> pos = dg->GetMidPoint();
-            AppendPositionToString(value, pos);
+            FdoInt32 offset = 20; // jump over "CIRCULARARCSEGMENT ("
+            offset += WritePositionToString(value + offset, pos);
 
-            FdoStringUtility::StringConcatenate(value, L", ");
+            FdoStringUtility::StringCopy(value + offset, L", ");
+            offset += 2; // jump over ", "
 
             pos = dg->GetEndPosition();
-            AppendPositionToString(value, pos);
-            FdoStringUtility::StringConcatenate(value, L")");
+            offset += WritePositionToString(value + offset, pos);
+            FdoStringUtility::StringCopy(value + offset, L")");
         }
         break;
     default:
@@ -506,4 +631,5 @@ wchar_t * GeometryUtility::CreateFgftContentForCurveSegment(FdoICurveSegmentAbst
 
     return value;
 }
+
 
