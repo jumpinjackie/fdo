@@ -94,9 +94,11 @@ private:
     bool			getnumber		(bool);			// Get number 
 
     // Lexical analyzer state
+    FdoInt32  		m_lenLine;		// Points to parsed string
     FdoString*		m_line;			// Points to parsed string
     FdoInt32		m_cc;			// Current position in the input string
     wchar_t			m_ch;			// Current character in the input string
     FdoInt32		m_prevToken;	// Previous token type for internal use
 };
+
 

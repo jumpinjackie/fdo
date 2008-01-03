@@ -185,6 +185,7 @@ inline double make_double(FdoUInt32 n, FdoUInt32 f, FdoInt32 m)
 FdoLexFgft::FdoLexFgft(FdoString* str)
 {
 	m_line = str;
+    m_lenLine = (FdoInt32)FdoStringUtility::StringLength(m_line);
 	m_prevToken = FdoToken_Start;
 	m_lastToken = FdoToken_Start;
 	m_token = FdoToken_Start;
@@ -206,7 +207,7 @@ const wchar_t FdoLexFgft::if_getch(void)
 {
 	wchar_t	c;
 
-	if (m_cc >= (FdoInt32)FdoStringUtility::StringLength(m_line)) 
+	if (m_cc >= m_lenLine) 
 	{
 		c = '\0';
 	}
@@ -472,4 +473,5 @@ FdoInt32 FdoLexFgft::GetToken()
     m_prevToken = m_token;
     return m_token;
 }
+
 
