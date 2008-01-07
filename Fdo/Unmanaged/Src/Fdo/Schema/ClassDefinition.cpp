@@ -728,7 +728,7 @@ void FdoClassDefinition::CheckReferences( FdoSchemaMergeContext* pContext )
     }
 }
 
-void FdoClassDefinition::InitFromXml(const FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
+void FdoClassDefinition::InitFromXml(FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
 {
     InitFromXml( pContext, attrs );
 }

@@ -134,7 +134,7 @@ public:
     /// \return
     /// Returns FdoVector
     /// 
-	FDO_API_COMMON static FdoVector* Create( const FdoStringP& inString, const FdoString* delimiters, bool bNullTokens = false );
+	FDO_API_COMMON static FdoVector* Create( const FdoStringP& inString, FdoString* delimiters, bool bNullTokens = false );
 
     /// \brief
     /// Gets the number in the vector at the specified index. Throws an invalid argument exception if the index is out of range.
@@ -173,13 +173,13 @@ public:
     /// Returns the concatenation of all numbers in this vector, 
     /// separated by the given separator..
     /// 
-	FDO_API_COMMON FdoStringP ToString( const FdoString* separator = L", " );
+	FDO_API_COMMON FdoStringP ToString( FdoString* separator = L", " );
 
 protected:
 /// \cond DOXYGEN-IGNORE
 	FdoVector(void);
 	FdoVector( const FdoVector* src);
-	FdoVector( const FdoStringP& inString, const FdoString* delimiters, bool bNullTokens = false );
+	FdoVector( const FdoStringP& inString, FdoString* delimiters, bool bNullTokens = false );
 
 	virtual ~FdoVector(void);
 /// \endcond

@@ -47,7 +47,7 @@ public:
     /// \return
     /// Returns the element content.
     /// 
-    FDO_API_COMMON const FdoString* GetString()
+    FDO_API_COMMON FdoString* GetString()
     {
         return(mString);
     }

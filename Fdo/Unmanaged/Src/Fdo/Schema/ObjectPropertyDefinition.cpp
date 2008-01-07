@@ -402,7 +402,7 @@ void FdoObjectPropertyDefinition::CheckReferences( FdoSchemaMergeContext* pConte
     }
 }
 
-void FdoObjectPropertyDefinition::InitFromXml(const FdoString* propertyTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
+void FdoObjectPropertyDefinition::InitFromXml(FdoString* propertyTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
 {
     // Error if FDO and XML property types are not the same.
     if ( wcscmp( propertyTypeName, L"ObjectProperty" ) != 0 ) {

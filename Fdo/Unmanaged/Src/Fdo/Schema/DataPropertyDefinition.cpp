@@ -516,7 +516,7 @@ void FdoDataPropertyDefinition::Set( FdoPropertyDefinition* pProperty, FdoSchema
     }
 }
 
-void FdoDataPropertyDefinition::InitFromXml(const FdoString* propertyTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
+void FdoDataPropertyDefinition::InitFromXml(FdoString* propertyTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
 {
     // Error if FDO and XML property types are not the same.
     if ( wcscmp( propertyTypeName, L"DataProperty" ) != 0 ) {

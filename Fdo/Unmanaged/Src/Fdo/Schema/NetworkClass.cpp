@@ -230,7 +230,7 @@ void FdoNetworkClass::CheckReferences( FdoSchemaMergeContext* pContext )
     }
 }
 
-void FdoNetworkClass::InitFromXml(const FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
+void FdoNetworkClass::InitFromXml(FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
 {
     // Make sure FDO and XML class type agree, class type change not allowed.
     if ( (wcscmp( classTypeName, L"ClassDefinition" ) != 0) && (wcscmp( classTypeName, L"NetworkClass" ) != 0) )

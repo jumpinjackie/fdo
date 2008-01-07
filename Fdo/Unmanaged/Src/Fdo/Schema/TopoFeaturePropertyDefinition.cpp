@@ -33,7 +33,7 @@ void FdoTopoFeaturePropertyDefinition::Dispose()
     delete this;
 }
 
-void FdoTopoFeaturePropertyDefinition::InitFromXml(const FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
+void FdoTopoFeaturePropertyDefinition::InitFromXml(FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
 {
     throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_3_NOTIMPLEMENTED)));
 }

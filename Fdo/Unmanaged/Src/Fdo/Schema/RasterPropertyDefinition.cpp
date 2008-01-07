@@ -413,7 +413,7 @@ TODO copy the datamodel
     }
 }
 
-void FdoRasterPropertyDefinition::InitFromXml(const FdoString* propertyTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
+void FdoRasterPropertyDefinition::InitFromXml(FdoString* propertyTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
 {
     // Error if FDO and XML property types are not the same.
     if ( wcscmp( propertyTypeName, L"RasterProperty" ) != 0 ) {

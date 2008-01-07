@@ -45,7 +45,7 @@ public:
 	}
 
     /// Operator to copy from an "unmanaged" string.
-	FdoStringElement& operator=( const FdoString* wString )
+	FdoStringElement& operator=( FdoString* wString )
 	{
 	    mString = wString;
         return(*this);
@@ -126,7 +126,7 @@ public:
     /// \return
     /// Returns FdoStringCollection
     /// 
-	FDO_API_COMMON static FdoStringCollection* Create( const FdoStringP& inString, const FdoString* delimiters, bool bNullTokens = false );
+	FDO_API_COMMON static FdoStringCollection* Create( const FdoStringP& inString, FdoString* delimiters, bool bNullTokens = false );
 
     /// \brief
     /// Gets the string in the collection at the specified index. Throws an invalid argument exception if the index is out of range.
@@ -182,14 +182,14 @@ public:
     /// 
     /// Returns a concatenation of all the strings in this collection, 
     /// separated by the given separator.
-	FDO_API_COMMON FdoStringP ToString( const FdoString* separator = L", " );
+	FDO_API_COMMON FdoStringP ToString( FdoString* separator = L", " );
 
 protected:
 /// \cond DOXYGEN-IGNORE
 	FDO_API_COMMON FdoStringCollection(void);
 	FDO_API_COMMON FdoStringCollection( const FdoStringCollection& src);
 	FDO_API_COMMON FdoStringCollection( const FdoStringCollection* src);
-	FDO_API_COMMON FdoStringCollection( const FdoStringP& inString, const FdoString* delimiters, bool bNullTokens = false );
+	FDO_API_COMMON FdoStringCollection( const FdoStringP& inString, FdoString* delimiters, bool bNullTokens = false );
 
 	FDO_API_COMMON virtual ~FdoStringCollection(void);
 
