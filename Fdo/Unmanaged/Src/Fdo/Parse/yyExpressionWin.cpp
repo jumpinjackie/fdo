@@ -84,28 +84,30 @@
      FdoToken_STRING = 286,
      FdoToken_INTEGER = 287,
      FdoToken_INT64 = 288,
-     FdoToken_DOUBLE = 289,
-     FdoToken_DATETIME = 290,
-     FdoToken_BLOB = 291,
-     FdoToken_CLOB = 292,
-     FdoToken_Add = 293,
-     FdoToken_Subtract = 294,
-     FdoToken_Multiply = 295,
-     FdoToken_Divide = 296,
-     FdoToken_Negate = 297,
-     FdoToken_EQ = 298,
-     FdoToken_NE = 299,
-     FdoToken_GT = 300,
-     FdoToken_GE = 301,
-     FdoToken_LT = 302,
-     FdoToken_LE = 303,
-     FdoToken_LeftParenthesis = 304,
-     FdoToken_RightParenthesis = 305,
-     FdoToken_Comma = 306,
-     FdoToken_Dot = 307,
-     FdoToken_Colon = 308,
-     FdoToken_AS = 309,
-     FdoToken_BETWEEN = 310
+     FdoToken_INTHEX = 289,
+     FdoToken_INTBIN = 290,
+     FdoToken_DOUBLE = 291,
+     FdoToken_DATETIME = 292,
+     FdoToken_BLOB = 293,
+     FdoToken_CLOB = 294,
+     FdoToken_Add = 295,
+     FdoToken_Subtract = 296,
+     FdoToken_Multiply = 297,
+     FdoToken_Divide = 298,
+     FdoToken_Negate = 299,
+     FdoToken_EQ = 300,
+     FdoToken_NE = 301,
+     FdoToken_GT = 302,
+     FdoToken_GE = 303,
+     FdoToken_LT = 304,
+     FdoToken_LE = 305,
+     FdoToken_LeftParenthesis = 306,
+     FdoToken_RightParenthesis = 307,
+     FdoToken_Comma = 308,
+     FdoToken_Dot = 309,
+     FdoToken_Colon = 310,
+     FdoToken_AS = 311,
+     FdoToken_BETWEEN = 312
    };
 #endif
 #define FdoToken_NULL 258
@@ -139,28 +141,30 @@
 #define FdoToken_STRING 286
 #define FdoToken_INTEGER 287
 #define FdoToken_INT64 288
-#define FdoToken_DOUBLE 289
-#define FdoToken_DATETIME 290
-#define FdoToken_BLOB 291
-#define FdoToken_CLOB 292
-#define FdoToken_Add 293
-#define FdoToken_Subtract 294
-#define FdoToken_Multiply 295
-#define FdoToken_Divide 296
-#define FdoToken_Negate 297
-#define FdoToken_EQ 298
-#define FdoToken_NE 299
-#define FdoToken_GT 300
-#define FdoToken_GE 301
-#define FdoToken_LT 302
-#define FdoToken_LE 303
-#define FdoToken_LeftParenthesis 304
-#define FdoToken_RightParenthesis 305
-#define FdoToken_Comma 306
-#define FdoToken_Dot 307
-#define FdoToken_Colon 308
-#define FdoToken_AS 309
-#define FdoToken_BETWEEN 310
+#define FdoToken_INTHEX 289
+#define FdoToken_INTBIN 290
+#define FdoToken_DOUBLE 291
+#define FdoToken_DATETIME 292
+#define FdoToken_BLOB 293
+#define FdoToken_CLOB 294
+#define FdoToken_Add 295
+#define FdoToken_Subtract 296
+#define FdoToken_Multiply 297
+#define FdoToken_Divide 298
+#define FdoToken_Negate 299
+#define FdoToken_EQ 300
+#define FdoToken_NE 301
+#define FdoToken_GT 302
+#define FdoToken_GE 303
+#define FdoToken_LT 304
+#define FdoToken_LE 305
+#define FdoToken_LeftParenthesis 306
+#define FdoToken_RightParenthesis 307
+#define FdoToken_Comma 308
+#define FdoToken_Dot 309
+#define FdoToken_Colon 310
+#define FdoToken_AS 311
+#define FdoToken_BETWEEN 312
 
 
 
@@ -309,22 +313,22 @@ union fdo_expression_yyalloc
 #endif
 
 /* FDO_EXPRESSION_YYFINAL -- State number of the termination state. */
-#define FDO_EXPRESSION_YYFINAL  40
+#define FDO_EXPRESSION_YYFINAL  44
 /* FDO_EXPRESSION_YYLAST -- Last index in FDO_EXPRESSION_YYTABLE.  */
-#define FDO_EXPRESSION_YYLAST   81
+#define FDO_EXPRESSION_YYLAST   94
 
 /* FDO_EXPRESSION_YYNTOKENS -- Number of terminals. */
-#define FDO_EXPRESSION_YYNTOKENS  59
+#define FDO_EXPRESSION_YYNTOKENS  61
 /* FDO_EXPRESSION_YYNNTS -- Number of nonterminals. */
-#define FDO_EXPRESSION_YYNNTS  20
+#define FDO_EXPRESSION_YYNNTS  22
 /* FDO_EXPRESSION_YYNRULES -- Number of rules. */
-#define FDO_EXPRESSION_YYNRULES  45
+#define FDO_EXPRESSION_YYNRULES  49
 /* FDO_EXPRESSION_YYNRULES -- Number of states. */
-#define FDO_EXPRESSION_YYNSTATES  62
+#define FDO_EXPRESSION_YYNSTATES  66
 
 /* FDO_EXPRESSION_YYTRANSLATE(FDO_EXPRESSION_YYLEX) -- Bison symbol number corresponding to FDO_EXPRESSION_YYLEX.  */
 #define FDO_EXPRESSION_YYUNDEFTOK  2
-#define FDO_EXPRESSION_YYMAXUTOK   310
+#define FDO_EXPRESSION_YYMAXUTOK   312
 
 #define FDO_EXPRESSION_YYTRANSLATE(FDO_EXPRESSION_YYX) 						\
   ((unsigned int) (FDO_EXPRESSION_YYX) <= FDO_EXPRESSION_YYMAXUTOK ? fdo_expression_yytranslate[FDO_EXPRESSION_YYX] : FDO_EXPRESSION_YYUNDEFTOK)
@@ -336,7 +340,7 @@ static const unsigned char fdo_expression_yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-      56,    57,     2,     2,    58,     2,     2,     2,     2,     2,
+      58,    59,     2,     2,    60,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -363,7 +367,7 @@ static const unsigned char fdo_expression_yytranslate[] =
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
       45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
-      55
+      55,    56,    57
 };
 
 #if FDO_EXPRESSION_YYDEBUG
@@ -374,35 +378,36 @@ static const unsigned char fdo_expression_yyprhs[] =
        0,     0,     3,     5,     7,    11,    13,    15,    17,    19,
       21,    23,    27,    31,    35,    39,    41,    43,    45,    47,
       49,    51,    53,    55,    57,    59,    61,    63,    65,    67,
-      69,    71,    76,    82,    86,    87,    89,    93,    98,   100,
-     102,   104,   106,   108,   110,   113
+      69,    71,    73,    75,    77,    79,    84,    90,    94,    95,
+      97,   101,   106,   108,   110,   112,   114,   116,   118,   121
 };
 
 /* FDO_EXPRESSION_YYRHS -- A `-1'-separated list of the rules' RHS. */
 static const fdo_expression_yysigned_char fdo_expression_yyrhs[] =
 {
-      60,     0,    -1,    61,    -1,     1,    -1,    56,    61,    57,
-      -1,    78,    -1,    62,    -1,    70,    -1,    74,    -1,    75,
-      -1,    71,    -1,    61,    38,    61,    -1,    61,    39,    61,
-      -1,    61,    40,    61,    -1,    61,    41,    61,    -1,    64,
-      -1,    69,    -1,    68,    -1,    66,    -1,    67,    -1,    65,
-      -1,    36,    -1,    37,    -1,     3,    -1,     4,    -1,     5,
-      -1,    31,    -1,    32,    -1,    33,    -1,    34,    -1,    35,
-      -1,    74,    56,    72,    57,    -1,    56,    61,    57,    54,
-      74,    -1,    61,    54,    74,    -1,    -1,    61,    -1,    72,
-      58,    61,    -1,     9,    56,    31,    57,    -1,    29,    -1,
-      76,    -1,    77,    -1,    73,    -1,    63,    -1,    30,    -1,
-      53,    31,    -1,    42,    61,    -1
+      62,     0,    -1,    63,    -1,     1,    -1,    58,    63,    59,
+      -1,    82,    -1,    64,    -1,    74,    -1,    78,    -1,    79,
+      -1,    75,    -1,    63,    40,    63,    -1,    63,    41,    63,
+      -1,    63,    42,    63,    -1,    63,    43,    63,    -1,    66,
+      -1,    73,    -1,    72,    -1,    68,    -1,    69,    -1,    70,
+      -1,    71,    -1,    67,    -1,    38,    -1,    39,    -1,     3,
+      -1,     4,    -1,     5,    -1,    31,    -1,    32,    -1,    33,
+      -1,    34,    -1,    35,    -1,    36,    -1,    37,    -1,    78,
+      58,    76,    59,    -1,    58,    63,    59,    56,    78,    -1,
+      63,    56,    78,    -1,    -1,    63,    -1,    76,    60,    63,
+      -1,     9,    58,    31,    59,    -1,    29,    -1,    80,    -1,
+      81,    -1,    77,    -1,    65,    -1,    30,    -1,    55,    31,
+      -1,    44,    63,    -1
 };
 
 /* FDO_EXPRESSION_YYRLINE[FDO_EXPRESSION_YYN] -- source line where rule number FDO_EXPRESSION_YYN was defined.  */
 static const unsigned char fdo_expression_yyrline[] =
 {
-       0,   108,   108,   109,   113,   114,   115,   116,   117,   118,
-     119,   123,   124,   125,   126,   130,   133,   135,   137,   139,
-     141,   143,   145,   147,   152,   153,   156,   159,   162,   165,
-     168,   172,   177,   178,   181,   182,   183,   187,   192,   197,
-     198,   202,   203,   207,   209,   214
+       0,   110,   110,   111,   115,   116,   117,   118,   119,   120,
+     121,   125,   126,   127,   128,   132,   135,   137,   139,   141,
+     143,   145,   147,   149,   151,   153,   158,   159,   162,   165,
+     168,   171,   174,   177,   180,   184,   189,   190,   193,   194,
+     195,   199,   204,   209,   210,   214,   215,   219,   221,   226
 };
 #endif
 
@@ -421,16 +426,17 @@ static const char *const fdo_expression_yytname[] =
   "FdoToken_INSIDE", "FdoToken_OVERLAPS", "FdoToken_TOUCHES", 
   "FdoToken_WITHIN", "FdoToken_RELATE", "FdoToken_IDENTIFIER", 
   "FdoToken_PARAMETER", "FdoToken_STRING", "FdoToken_INTEGER", 
-  "FdoToken_INT64", "FdoToken_DOUBLE", "FdoToken_DATETIME", 
-  "FdoToken_BLOB", "FdoToken_CLOB", "FdoToken_Add", "FdoToken_Subtract", 
+  "FdoToken_INT64", "FdoToken_INTHEX", "FdoToken_INTBIN", 
+  "FdoToken_DOUBLE", "FdoToken_DATETIME", "FdoToken_BLOB", 
+  "FdoToken_CLOB", "FdoToken_Add", "FdoToken_Subtract", 
   "FdoToken_Multiply", "FdoToken_Divide", "FdoToken_Negate", 
   "FdoToken_EQ", "FdoToken_NE", "FdoToken_GT", "FdoToken_GE", 
   "FdoToken_LT", "FdoToken_LE", "FdoToken_LeftParenthesis", 
   "FdoToken_RightParenthesis", "FdoToken_Comma", "FdoToken_Dot", 
   "FdoToken_Colon", "FdoToken_AS", "FdoToken_BETWEEN", "'('", "')'", 
   "','", "$accept", "fdo", "Expression", "BinaryExpression", "DataValue", 
-  "boolean", "string", "integer", "int64", "double", "datetime", 
-  "Function", "ComputedIdentifier", "ExpressionCollection", 
+  "boolean", "string", "integer", "int64", "inthex", "intbin", "double", 
+  "datetime", "Function", "ComputedIdentifier", "ExpressionCollection", 
   "GeometryValue", "Identifier", "ValueExpression", "LiteralValue", 
   "Parameter", "UnaryExpression", 0
 };
@@ -446,18 +452,19 @@ static const unsigned short fdo_expression_yytoknum[] =
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
      285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
      295,   296,   297,   298,   299,   300,   301,   302,   303,   304,
-     305,   306,   307,   308,   309,   310,    40,    41,    44
+     305,   306,   307,   308,   309,   310,   311,   312,    40,    41,
+      44
 };
 # endif
 
 /* FDO_EXPRESSION_YYR1[FDO_EXPRESSION_YYN] -- Symbol number of symbol that rule FDO_EXPRESSION_YYN derives.  */
 static const unsigned char fdo_expression_yyr1[] =
 {
-       0,    59,    60,    60,    61,    61,    61,    61,    61,    61,
-      61,    62,    62,    62,    62,    63,    63,    63,    63,    63,
-      63,    63,    63,    63,    64,    64,    65,    66,    67,    68,
-      69,    70,    71,    71,    72,    72,    72,    73,    74,    75,
-      75,    76,    76,    77,    77,    78
+       0,    61,    62,    62,    63,    63,    63,    63,    63,    63,
+      63,    64,    64,    64,    64,    65,    65,    65,    65,    65,
+      65,    65,    65,    65,    65,    65,    66,    66,    67,    68,
+      69,    70,    71,    72,    73,    74,    75,    75,    76,    76,
+      76,    77,    78,    79,    79,    80,    80,    81,    81,    82
 };
 
 /* FDO_EXPRESSION_YYR2[FDO_EXPRESSION_YYN] -- Number of symbols composing right hand side of rule FDO_EXPRESSION_YYN.  */
@@ -466,8 +473,8 @@ static const unsigned char fdo_expression_yyr2[] =
        0,     2,     1,     1,     3,     1,     1,     1,     1,     1,
        1,     3,     3,     3,     3,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     4,     5,     3,     0,     1,     3,     4,     1,     1,
-       1,     1,     1,     1,     2,     2
+       1,     1,     1,     1,     1,     4,     5,     3,     0,     1,
+       3,     4,     1,     1,     1,     1,     1,     1,     2,     2
 };
 
 /* FDO_EXPRESSION_YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -475,20 +482,21 @@ static const unsigned char fdo_expression_yyr2[] =
    means the default is an error.  */
 static const unsigned char fdo_expression_yydefact[] =
 {
-       0,     3,    23,    24,    25,     0,    38,    43,    26,    27,
-      28,    29,    30,    21,    22,     0,     0,     0,     0,     2,
-       6,    42,    15,    20,    18,    19,    17,    16,     7,    10,
-      41,     8,     9,    39,    40,     5,     0,    45,    44,     0,
-       1,     0,     0,     0,     0,     0,    34,     0,     4,    11,
-      12,    13,    14,    33,    35,     0,    37,     0,    31,     0,
-      32,    36
+       0,     3,    25,    26,    27,     0,    42,    47,    28,    29,
+      30,    31,    32,    33,    34,    23,    24,     0,     0,     0,
+       0,     2,     6,    46,    15,    22,    18,    19,    20,    21,
+      17,    16,     7,    10,    45,     8,     9,    43,    44,     5,
+       0,    49,    48,     0,     1,     0,     0,     0,     0,     0,
+      38,     0,     4,    11,    12,    13,    14,    37,    39,     0,
+      41,     0,    35,     0,    36,    40
 };
 
 /* FDO_EXPRESSION_YYDEFGOTO[NTERM-NUM]. */
 static const fdo_expression_yysigned_char fdo_expression_yydefgoto[] =
 {
-      -1,    18,    19,    20,    21,    22,    23,    24,    25,    26,
-      27,    28,    29,    55,    30,    31,    32,    33,    34,    35
+      -1,    20,    21,    22,    23,    24,    25,    26,    27,    28,
+      29,    30,    31,    32,    33,    59,    34,    35,    36,    37,
+      38,    39
 };
 
 /* FDO_EXPRESSION_YYPACT[STATE-NUM] -- Index in FDO_EXPRESSION_YYTABLE of the portion describing
@@ -497,19 +505,20 @@ static const fdo_expression_yysigned_char fdo_expression_yydefgoto[] =
 static const fdo_expression_yysigned_char fdo_expression_yypact[] =
 {
       -1,   -52,   -52,   -52,   -52,   -51,   -52,   -52,   -52,   -52,
-     -52,   -52,   -52,   -52,   -52,    14,   -15,    14,    21,   -29,
-     -52,   -52,   -52,   -52,   -52,   -52,   -52,   -52,   -52,   -52,
-     -52,   -32,   -52,   -52,   -52,   -52,    -9,   -28,   -52,    19,
-     -52,    14,    14,    14,    14,    -2,    14,   -19,   -14,   -34,
-     -34,   -28,   -28,   -52,   -29,   -43,   -52,    -2,   -52,    14,
-     -52,   -29
+     -52,   -52,   -52,   -52,   -52,   -52,   -52,    36,   -15,    36,
+      17,   -31,   -52,   -52,   -52,   -52,   -52,   -52,   -52,   -52,
+     -52,   -52,   -52,   -52,   -52,   -36,   -52,   -52,   -52,   -52,
+     -10,   -33,   -52,    20,   -52,    36,    36,    36,    36,    -5,
+      36,   -32,   -30,   -37,   -37,   -33,   -33,   -52,   -31,   -45,
+     -52,    -5,   -52,    36,   -52,   -31
 };
 
 /* FDO_EXPRESSION_YYPGOTO[NTERM-NUM].  */
 static const fdo_expression_yysigned_char fdo_expression_yypgoto[] =
 {
-     -52,   -52,    22,   -52,   -52,   -52,   -52,   -52,   -52,   -52,
-     -52,   -52,   -52,   -52,   -52,   -44,   -52,   -52,   -52,   -52
+     -52,   -52,     1,   -52,   -52,   -52,   -52,   -52,   -52,   -52,
+     -52,   -52,   -52,   -52,   -52,   -52,   -52,   -48,   -52,   -52,
+     -52,   -52
 };
 
 /* FDO_EXPRESSION_YYTABLE[FDO_EXPRESSION_YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -519,28 +528,30 @@ static const fdo_expression_yysigned_char fdo_expression_yypgoto[] =
 #define FDO_EXPRESSION_YYTABLE_NINF -1
 static const unsigned char fdo_expression_yytable[] =
 {
-       1,    53,     2,     3,     4,    36,    43,    44,     5,    41,
-      42,    43,    44,    60,    58,    59,    38,     2,     3,     4,
-      45,    40,    47,     5,    46,    45,    45,     6,     6,     7,
-       8,     9,    10,    11,    12,    13,    14,    37,    56,    39,
-      57,    15,     0,     6,     7,     8,     9,    10,    11,    12,
-      13,    14,    16,     0,     0,    17,    15,    41,    42,    43,
-      44,     0,     0,    49,    50,    51,    52,    16,    54,     0,
-      17,     0,     0,    45,     0,     0,    48,     0,     0,     0,
-       0,    61
+       1,    57,     2,     3,     4,    47,    48,    40,     5,    45,
+      46,    47,    48,    64,    62,    63,    42,    44,    41,    49,
+      43,    51,    50,    49,     6,    49,    61,    60,     6,     7,
+       8,     9,    10,    11,    12,    13,    14,    15,    16,     2,
+       3,     4,     0,    17,     0,     5,    53,    54,    55,    56,
+       0,    58,     0,     0,    18,     0,     0,    19,     0,     0,
+      45,    46,    47,    48,    65,     6,     7,     8,     9,    10,
+      11,    12,    13,    14,    15,    16,    49,     0,     0,    52,
+      17,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,    18,     0,     0,    19
 };
 
 static const fdo_expression_yysigned_char fdo_expression_yycheck[] =
 {
-       1,    45,     3,     4,     5,    56,    40,    41,     9,    38,
-      39,    40,    41,    57,    57,    58,    31,     3,     4,     5,
-      54,     0,    31,     9,    56,    54,    54,    29,    29,    30,
-      31,    32,    33,    34,    35,    36,    37,    15,    57,    17,
-      54,    42,    -1,    29,    30,    31,    32,    33,    34,    35,
-      36,    37,    53,    -1,    -1,    56,    42,    38,    39,    40,
-      41,    -1,    -1,    41,    42,    43,    44,    53,    46,    -1,
-      56,    -1,    -1,    54,    -1,    -1,    57,    -1,    -1,    -1,
-      -1,    59
+       1,    49,     3,     4,     5,    42,    43,    58,     9,    40,
+      41,    42,    43,    61,    59,    60,    31,     0,    17,    56,
+      19,    31,    58,    56,    29,    56,    56,    59,    29,    30,
+      31,    32,    33,    34,    35,    36,    37,    38,    39,     3,
+       4,     5,    -1,    44,    -1,     9,    45,    46,    47,    48,
+      -1,    50,    -1,    -1,    55,    -1,    -1,    58,    -1,    -1,
+      40,    41,    42,    43,    63,    29,    30,    31,    32,    33,
+      34,    35,    36,    37,    38,    39,    56,    -1,    -1,    59,
+      44,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    55,    -1,    -1,    58
 };
 
 /* FDO_EXPRESSION_YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -548,12 +559,12 @@ static const fdo_expression_yysigned_char fdo_expression_yycheck[] =
 static const unsigned char fdo_expression_yystos[] =
 {
        0,     1,     3,     4,     5,     9,    29,    30,    31,    32,
-      33,    34,    35,    36,    37,    42,    53,    56,    60,    61,
+      33,    34,    35,    36,    37,    38,    39,    44,    55,    58,
       62,    63,    64,    65,    66,    67,    68,    69,    70,    71,
-      73,    74,    75,    76,    77,    78,    56,    61,    31,    61,
-       0,    38,    39,    40,    41,    54,    56,    31,    57,    61,
-      61,    61,    61,    74,    61,    72,    57,    54,    57,    58,
-      74,    61
+      72,    73,    74,    75,    77,    78,    79,    80,    81,    82,
+      58,    63,    31,    63,     0,    40,    41,    42,    43,    56,
+      58,    31,    59,    63,    63,    63,    63,    78,    63,    76,
+      59,    56,    59,    60,    78,    63
 };
 
 #if ! defined (FDO_EXPRESSION_YYSIZE_T) && defined (__SIZE_TYPE__)
@@ -861,7 +872,7 @@ fdo_expression_yydestruct (fdo_expression_yytype, fdo_expression_yyvaluep)
 
   switch (fdo_expression_yytype)
     {
-      case 0:
+
       default:
         break;
     }
@@ -1245,130 +1256,150 @@ fdo_expression_yyreduce:
 
   case 20:
 
-    {pParse->fdo_expression_yyval.m_node=Node_Copy(L"string", pParse->fdo_expression_yyvsp[0].m_node);}
+    {pParse->fdo_expression_yyval.m_node=Node_Copy(L"inthex", pParse->fdo_expression_yyvsp[0].m_node);}
     break;
 
   case 21:
 
-    {pParse->fdo_expression_yyval.m_node=Node_Copy(L"TODO:BLOB", NULL);}
+    {pParse->fdo_expression_yyval.m_node=Node_Copy(L"intbin", pParse->fdo_expression_yyvsp[0].m_node);}
     break;
 
   case 22:
 
-    {pParse->fdo_expression_yyval.m_node=Node_Copy(L"TODO:CLOB", NULL);}
+    {pParse->fdo_expression_yyval.m_node=Node_Copy(L"string", pParse->fdo_expression_yyvsp[0].m_node);}
     break;
 
   case 23:
 
-    {pParse->fdo_expression_yyval.m_node=Node_Add(L"NULL", FdoDataValue::Create(FdoDataType_Boolean));}
+    {pParse->fdo_expression_yyval.m_node=Node_Copy(L"TODO:BLOB", NULL);}
     break;
 
   case 24:
 
-    {pParse->fdo_expression_yyval.m_node=Node_Add(L"TRUE", FdoBooleanValue::Create(true));}
+    {pParse->fdo_expression_yyval.m_node=Node_Copy(L"TODO:CLOB", NULL);}
     break;
 
   case 25:
 
-    {pParse->fdo_expression_yyval.m_node=Node_Add(L"FALSE", FdoBooleanValue::Create(false));}
+    {pParse->fdo_expression_yyval.m_node=Node_Add(L"NULL", FdoDataValue::Create(FdoDataType_Boolean));}
     break;
 
   case 26:
 
-    {pParse->fdo_expression_yyval.m_node=Node_Add(L"STRING", FdoDataValue::Create(pParse->fdo_expression_yyvsp[0].m_string));}
+    {pParse->fdo_expression_yyval.m_node=Node_Add(L"TRUE", FdoBooleanValue::Create(true));}
     break;
 
   case 27:
 
-    {pParse->fdo_expression_yyval.m_node=Node_Add(L"INTEGER", FdoInt32Value::Create(pParse->fdo_expression_yyvsp[0].m_integer));}
+    {pParse->fdo_expression_yyval.m_node=Node_Add(L"FALSE", FdoBooleanValue::Create(false));}
     break;
 
   case 28:
 
-    {pParse->fdo_expression_yyval.m_node=Node_Add(L"INT64", FdoInt64Value::Create(pParse->fdo_expression_yyvsp[0].m_int64));}
+    {pParse->fdo_expression_yyval.m_node=Node_Add(L"STRING", FdoDataValue::Create(pParse->fdo_expression_yyvsp[0].m_string));}
     break;
 
   case 29:
 
-    {pParse->fdo_expression_yyval.m_node=Node_Add(L"DOUBLE", FdoDoubleValue::Create(pParse->fdo_expression_yyvsp[0].m_double));}
+    {pParse->fdo_expression_yyval.m_node=Node_Add(L"INTEGER", FdoInt32Value::Create(pParse->fdo_expression_yyvsp[0].m_integer));}
     break;
 
   case 30:
 
-    {pParse->fdo_expression_yyval.m_node=Node_Add(L"DateTime", FdoDataValue::Create(pParse->fdo_expression_yyvsp[0].m_datetime));}
+    {pParse->fdo_expression_yyval.m_node=Node_Add(L"INT64", FdoInt64Value::Create(pParse->fdo_expression_yyvsp[0].m_int64));}
     break;
 
   case 31:
 
-    {pParse->fdo_expression_yyval.m_node=Node_Add(L"ExpressionCollection", FdoFunction::Create(((FdoIdentifier*)pParse->fdo_expression_yyvsp[-3].m_node)->GetName(), (FdoExpressionCollection*)pParse->fdo_expression_yyvsp[-1].m_node));}
+    {pParse->fdo_expression_yyval.m_node=Node_Add(L"INTHEX", FdoIntHexValue::Create(pParse->fdo_expression_yyvsp[0].m_int64));}
     break;
 
   case 32:
 
-    {pParse->fdo_expression_yyval.m_node=Node_Add(L"ComputedIdentifier", FdoComputedIdentifier::Create(((FdoIdentifier*)pParse->fdo_expression_yyvsp[0].m_node)->GetName(), (FdoExpression*)pParse->fdo_expression_yyvsp[-3].m_node));}
+    {pParse->fdo_expression_yyval.m_node=Node_Add(L"INTBIN", FdoIntBinValue::Create(pParse->fdo_expression_yyvsp[0].m_int64));}
     break;
 
   case 33:
 
-    {pParse->fdo_expression_yyval.m_node=Node_Add(L"ComputedIdentifier", FdoComputedIdentifier::Create(((FdoIdentifier*)pParse->fdo_expression_yyvsp[0].m_node)->GetName(), (FdoExpression*)pParse->fdo_expression_yyvsp[-2].m_node));}
+    {pParse->fdo_expression_yyval.m_node=Node_Add(L"DOUBLE", FdoDoubleValue::Create(pParse->fdo_expression_yyvsp[0].m_double));}
     break;
 
   case 34:
 
-    {pParse->fdo_expression_yyval.m_node=pParse->AddNodeToDelete(FdoExpressionCollection::Create());}
+    {pParse->fdo_expression_yyval.m_node=Node_Add(L"DateTime", FdoDataValue::Create(pParse->fdo_expression_yyvsp[0].m_datetime));}
     break;
 
   case 35:
 
-    {pParse->fdo_expression_yyval.m_node=pParse->AddNodeToDelete(FdoExpressionCollection::Create()); ((FdoExpressionCollection*)pParse->fdo_expression_yyval.m_node)->Add((FdoExpression*)pParse->fdo_expression_yyvsp[0].m_node); Node_Trace(L"Expression Arg 1,");}
+    {pParse->fdo_expression_yyval.m_node=Node_Add(L"ExpressionCollection", FdoFunction::Create(((FdoIdentifier*)pParse->fdo_expression_yyvsp[-3].m_node)->GetName(), (FdoExpressionCollection*)pParse->fdo_expression_yyvsp[-1].m_node));}
     break;
 
   case 36:
 
-    {((FdoExpressionCollection*)pParse->fdo_expression_yyval.m_node)->Add((FdoExpression*)pParse->fdo_expression_yyvsp[0].m_node); Node_Trace(L"Expression Arg N,");}
+    {pParse->fdo_expression_yyval.m_node=Node_Add(L"ComputedIdentifier", FdoComputedIdentifier::Create(((FdoIdentifier*)pParse->fdo_expression_yyvsp[0].m_node)->GetName(), (FdoExpression*)pParse->fdo_expression_yyvsp[-3].m_node));}
     break;
 
   case 37:
 
-    {pParse->fdo_expression_yyval.m_node=Node_Add(L"GeomFromText('FGFT')", pParse->FgftToGeometryValue(pParse->fdo_expression_yyvsp[-1].m_string));}
+    {pParse->fdo_expression_yyval.m_node=Node_Add(L"ComputedIdentifier", FdoComputedIdentifier::Create(((FdoIdentifier*)pParse->fdo_expression_yyvsp[0].m_node)->GetName(), (FdoExpression*)pParse->fdo_expression_yyvsp[-2].m_node));}
     break;
 
   case 38:
 
-    {pParse->fdo_expression_yyval.m_node = Node_Add(L"IDENTIFIER", FdoIdentifier::Create(pParse->fdo_expression_yyvsp[0].m_string));}
+    {pParse->fdo_expression_yyval.m_node=pParse->AddNodeToDelete(FdoExpressionCollection::Create());}
     break;
 
   case 39:
 
-    {pParse->fdo_expression_yyval.m_node=Node_Copy(L"LiteralValue", pParse->fdo_expression_yyvsp[0].m_node);}
+    {pParse->fdo_expression_yyval.m_node=pParse->AddNodeToDelete(FdoExpressionCollection::Create()); ((FdoExpressionCollection*)pParse->fdo_expression_yyval.m_node)->Add((FdoExpression*)pParse->fdo_expression_yyvsp[0].m_node); Node_Trace(L"Expression Arg 1,");}
     break;
 
   case 40:
 
-    {pParse->fdo_expression_yyval.m_node=Node_Copy(L"Parameter", pParse->fdo_expression_yyvsp[0].m_node);}
+    {((FdoExpressionCollection*)pParse->fdo_expression_yyval.m_node)->Add((FdoExpression*)pParse->fdo_expression_yyvsp[0].m_node); Node_Trace(L"Expression Arg N,");}
     break;
 
   case 41:
 
-    {pParse->fdo_expression_yyval.m_node=Node_Copy(L"GeometryValue", pParse->fdo_expression_yyvsp[0].m_node);}
+    {pParse->fdo_expression_yyval.m_node=Node_Add(L"GeomFromText('FGFT')", pParse->FgftToGeometryValue(pParse->fdo_expression_yyvsp[-1].m_string));}
     break;
 
   case 42:
 
-    {pParse->fdo_expression_yyval.m_node=Node_Copy(L"DataValue", pParse->fdo_expression_yyvsp[0].m_node);}
+    {pParse->fdo_expression_yyval.m_node = Node_Add(L"IDENTIFIER", FdoIdentifier::Create(pParse->fdo_expression_yyvsp[0].m_string));}
     break;
 
   case 43:
 
-    {pParse->fdo_expression_yyval.m_node = Node_Add(L"PARAMETER", FdoParameter::Create(pParse->fdo_expression_yyvsp[0].m_string));}
+    {pParse->fdo_expression_yyval.m_node=Node_Copy(L"LiteralValue", pParse->fdo_expression_yyvsp[0].m_node);}
     break;
 
   case 44:
 
-    {pParse->fdo_expression_yyval.m_node = Node_Add(L":Parameter", FdoParameter::Create(pParse->fdo_expression_yyvsp[0].m_string));}
+    {pParse->fdo_expression_yyval.m_node=Node_Copy(L"Parameter", pParse->fdo_expression_yyvsp[0].m_node);}
     break;
 
   case 45:
+
+    {pParse->fdo_expression_yyval.m_node=Node_Copy(L"GeometryValue", pParse->fdo_expression_yyvsp[0].m_node);}
+    break;
+
+  case 46:
+
+    {pParse->fdo_expression_yyval.m_node=Node_Copy(L"DataValue", pParse->fdo_expression_yyvsp[0].m_node);}
+    break;
+
+  case 47:
+
+    {pParse->fdo_expression_yyval.m_node = Node_Add(L"PARAMETER", FdoParameter::Create(pParse->fdo_expression_yyvsp[0].m_string));}
+    break;
+
+  case 48:
+
+    {pParse->fdo_expression_yyval.m_node = Node_Add(L":Parameter", FdoParameter::Create(pParse->fdo_expression_yyvsp[0].m_string));}
+    break;
+
+  case 49:
 
     {pParse->fdo_expression_yyval.m_node = Node_Add(L"UnaryExpression", FdoUnaryExpression::Create(FdoUnaryOperations_Negate, (FdoExpression*)pParse->fdo_expression_yyvsp[0].m_node));}
     break;
@@ -1645,4 +1676,5 @@ static void  print_current_token()
 	printf( "***  current token is %d (%s)  ***\n", pParse->fdo_expression_yychar, token_name );
 #endif
 }
+
 

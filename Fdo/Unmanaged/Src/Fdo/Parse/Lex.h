@@ -65,7 +65,6 @@ class FdoLex
 {
 // was 256 in Object_Data2; the max text literal length in SQL is 4000 bytes
 static const FdoInt32 maxCharLength = 4000;
-static const FdoInt32 maxBinaryLength = 256*8;
 
   public:
 	// must contruct class with string to parse.
@@ -107,7 +106,7 @@ private:
     bool			get_time		(FdoParse *pParse, FdoUInt16 *, FdoUInt16 *, double *);
     bool			get_timestamp	(FdoParse *pParse, FdoUInt16 *, FdoUInt16 *, FdoUInt16 *,	FdoUInt16 *, FdoUInt16 *, double *);
     bool			get_bitstring	(FdoParse *pParse);
-    bool			get_hexstring	(FdoParse *pParse);
+    bool			get_hexstring	(FdoParse *pParse, wchar_t endChar);
 
     // Lexical analyzer state
     FdoString*		m_line;			// Points to parsed string
@@ -116,5 +115,6 @@ private:
     wchar_t			m_ch;			// Current character in the input string
     FdoInt32		m_prevToken;	// Previous token type for internal use
 };
+
 
 
