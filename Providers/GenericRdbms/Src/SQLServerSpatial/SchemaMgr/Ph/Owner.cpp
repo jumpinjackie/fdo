@@ -28,7 +28,10 @@
 #include "Rd/FkeyReader.h"
 #include "Rd/IndexReader.h"
 #include "Rd/PkeyReader.h"
+#include "Rd/SpatialContextReader.h"
+#include "Rd/CoordSysReader.h"
 #include "Rdbi/proto.h"
+#include <FdoCommonStringUtil.h>
 
 struct odbcdr_context_def;
 
@@ -64,6 +67,35 @@ void FdoSmPhSqsOwner::SetCurrent()
     }
 	mgr->RemoveStaticReaders();
 
+}
+
+FdoInt64 FdoSmPhSqsOwner::SampleColumnSrid( FdoStringP dbObjectName, FdoStringP columnName )
+{
+	// SRID is -1 if table is empty or geometry column has not been populated yet
+    FdoInt64 srid = -1;
+    FdoStringP fmtObjectName = FdoStringP(L"\"") + dbObjectName.Replace(L".", L"\".\"") + L"\"";
+
+    // Note, column not quote-delimited since this does not work with column member extraction.
+	FdoStringP sqlStmt = FdoStringP::Format(
+		L"select %ls.STSrid as srid from %ls.%ls", 
+        (FdoString*) columnName,
+        (FdoString*) this->GetDbName(),
+        (FdoString*) fmtObjectName
+    );
+
+	FdoSmPhSqsMgrP mgr = this->GetManager()->SmartCast<FdoSmPhSqsMgr>();
+	GdbiConnection* gdbiConn = mgr->GetGdbiConnection();
+	GdbiQueryResult *gdbiResult = gdbiConn->ExecuteQuery((const char*)sqlStmt);
+
+	if (gdbiResult->ReadNext())
+	{
+		if (!gdbiResult->GetIsNull(L"srid"))
+			srid = gdbiResult->GetInt64(L"srid", NULL, NULL);
+	}
+	gdbiResult->End();
+    delete gdbiResult;
+
+    return srid;
 }
 
 FdoSmPhDbObjectP FdoSmPhSqsOwner::NewTable(
@@ -190,6 +222,30 @@ FdoPtr<FdoSmPhRdColumnReader> FdoSmPhSqsOwner::CreateColumnReader( FdoSmPhRdTabl
     FdoSmPhSqsOwner* pOwner = (FdoSmPhSqsOwner*) this;
 
     return new FdoSmPhRdSqsColumnReader( FDO_SAFE_ADDREF(pOwner), join );
+}
+
+FdoPtr<FdoSmPhRdSpatialContextReader> FdoSmPhSqsOwner::CreateRdSpatialContextReader()
+{
+    return new FdoSmPhRdSqsSpatialContextReader(FDO_SAFE_ADDREF(this) );
+}
+
+FdoPtr<FdoSmPhRdSpatialContextReader> FdoSmPhSqsOwner::CreateRdSpatialContextReader( FdoStringP dbObjectName )
+{
+    return new FdoSmPhRdSqsSpatialContextReader(FDO_SAFE_ADDREF(this) );
+}
+
+FdoSmPhRdCoordSysReaderP FdoSmPhSqsOwner::CreateCoordSysReader( FdoInt64 srid ) const
+{
+    FdoSmPhSqsOwner* pOwner = (FdoSmPhSqsOwner*) this;
+
+    return new FdoSmPhRdSqsCoordSysReader( FDO_SAFE_ADDREF(pOwner), srid );
+}
+
+FdoSmPhRdCoordSysReaderP FdoSmPhSqsOwner::CreateCoordSysReader( FdoStringP csName ) const
+{
+    FdoSmPhSqsOwner* pOwner = (FdoSmPhSqsOwner*) this;
+
+    return new FdoSmPhRdSqsCoordSysReader( FDO_SAFE_ADDREF(pOwner), csName );
 }
 
 bool FdoSmPhSqsOwner::Add()

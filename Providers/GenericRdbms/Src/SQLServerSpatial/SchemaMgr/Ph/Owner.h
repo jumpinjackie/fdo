@@ -23,6 +23,8 @@
 #include <Sm/Ph/Rd/ConstraintReader.h>
 #include <Sm/Ph/Rd/TableJoin.h>
 
+class FdoSmPhSqsCoordinateSystem;
+
 // SqlServer Provider implementation of an Owner.
 // Represents an SqlServer schema (user)
 class FdoSmPhSqsOwner : public FdoSmPhGrdOwner
@@ -50,6 +52,13 @@ public:
 
     // Make this owner the current schema
     virtual void SetCurrent();
+
+    // Given a database object and geometric column name, returns it's SRID.
+    // The SRID is determined by the value of the first row in the dbobject.
+    // Returns -1 if the dbobject has no rows.
+    //
+    // Exception is thrown if the column does not exist or is not geometric.
+    virtual FdoInt64 SampleColumnSrid( FdoStringP dbObjectName, FdoStringP columnName );
 
     virtual FdoPtr<FdoSmPhRdDbObjectReader> CreateDbObjectReader( FdoStringP dbObject = L"") const;
 
@@ -81,6 +90,19 @@ public:
     virtual FdoPtr<FdoSmPhRdColumnReader> CreateColumnReader( FdoStringsP objectNames ) const;
 
     virtual FdoPtr<FdoSmPhRdColumnReader> CreateColumnReader( FdoSmPhRdTableJoinP join ) const;
+
+	/// Get reader to retrieve all spatial contexts for the connection (no metaschema).
+	virtual FdoPtr<FdoSmPhRdSpatialContextReader> CreateRdSpatialContextReader();
+
+	/// Get reader to retrieve all spatial contexts for a database object.
+	virtual FdoPtr<FdoSmPhRdSpatialContextReader> CreateRdSpatialContextReader( FdoStringP dbObjectName );
+
+    // Create a reader to get the coordinate system(s) of the given csysName.
+    // When csysName is L"" then all coordinates systems for this datastore are read.
+    virtual FdoPtr<FdoSmPhRdCoordSysReader> CreateCoordSysReader( FdoStringP csysName = L"") const;
+
+    // Create a reader to get the coordinate system with the given SRID.
+    virtual FdoPtr<FdoSmPhRdCoordSysReader> CreateCoordSysReader( FdoInt64 srid ) const;
 
    	void SetOptions();
 

@@ -21,6 +21,7 @@
 #include <Sm/Ph/Mgr.h>
 #include <Sm/Ph/DbObject.h>
 #include <Sm/Ph/Rd/QueryReader.h>
+#include <Sm/Ph/Rd/ColumnReader.h>
 #include <Sm/Error.h>
 
 FdoSmPhColumn::FdoSmPhColumn(
@@ -30,8 +31,9 @@ FdoSmPhColumn::FdoSmPhColumn(
 	FdoSmPhDbObject* parentObject,
 	bool bNullable, 
     FdoStringP rootColumnName,
-	FdoStringP defaultValue
-): 
+	FdoStringP defaultValue,
+    FdoSmPhRdColumnReader* reader
+) : 
     FdoSmPhDbElement( 
         columnName, 
         (FdoSmPhMgr*) NULL,
@@ -40,7 +42,7 @@ FdoSmPhColumn::FdoSmPhColumn(
     ),
     mDbObject(parentObject),
     mRootName( rootColumnName ),
-	mTypeName( typeName ),
+    mTypeName( reader ? reader->GetString(L"",L"type_string") : typeName ),
 	mbNullable(bNullable),
     miDimensionality(-1),
 	mbAutoIncrement(false),
@@ -299,6 +301,11 @@ bool FdoSmPhColumn::DefinitionEquals( FdoSmPhColumnP otherColumn )
         equals = true;
 
     return equals;
+}
+
+void FdoSmPhColumn::SetTypeName( FdoStringP typeName )
+{
+    mTypeName = typeName;
 }
 
 void FdoSmPhColumn::SetElementState(FdoSchemaElementState elementState)

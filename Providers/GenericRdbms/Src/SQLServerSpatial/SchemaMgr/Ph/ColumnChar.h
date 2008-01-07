@@ -44,18 +44,17 @@ public:
         FdoSmPhSqsColumn (reader),
         FdoSmPhColumn    ( 
             columnName, 
-            reader ?
-                (FdoString*) reader->GetString(L"",L"type_string") :
-                // Unicode varchar is the preferred column type, but fall back 
-                // to varchar or text if length too long.
-                ((length > mVarcharMaxLen) ? 
-                    L"TEXT" : 
-                    ((length > mNVarcharMaxLen) ? L"VARCHAR" : L"NVARCHAR")), 
+            // Unicode varchar is the preferred column type, but fall back 
+            // to varchar or text if length too long.
+            ((length > mVarcharMaxLen) ? 
+                L"TEXT" : 
+                ((length > mNVarcharMaxLen) ? L"VARCHAR" : L"NVARCHAR")), 
             elementState, 
             parentObject, 
             bNullable, 
             rootColumnName,
-			defaultValue
+			defaultValue,
+            reader
         ),
         FdoSmPhColumnChar(
             // When using the varchar type, make column as wide as possible

@@ -2346,23 +2346,7 @@ FdoStringP UnitTestUtil::GetNlsValue( int index )
 
 FdoStringP UnitTestUtil::GetNlsObjectName( FdoStringP inName )
 {
-    if ( inName == L"Industrial Parcel" ) 
-        return FdoStringP::Format(
-            L"Ind%lcstri%lc P%lcrcel",
-            GetNlsChar(1),
-            GetNlsChar(2),
-            GetNlsChar(3)
-        );
-
-    if ( inName == L"Geometry" ) 
-        return FdoStringP::Format(
-            L"G%lc%lcm%lctry",
-            GetNlsChar(1),
-            GetNlsChar(2),
-            GetNlsChar(3)
-        );
-
-    return inName;
+	return UnitTestUtil::InfoUtilConnection->GetNlsObjectName( inName );
 }
 
 

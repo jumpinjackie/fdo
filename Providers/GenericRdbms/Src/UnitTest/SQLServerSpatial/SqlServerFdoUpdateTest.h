@@ -43,6 +43,8 @@ public:
     virtual void UpdateSingleIdFeatureClass();
 
 protected:
+    virtual FdoStringP FixStringVal( FdoString* val );
+
     void TestRectangleFilter(
         FdoISelect * selectCommand,
         double xmin,

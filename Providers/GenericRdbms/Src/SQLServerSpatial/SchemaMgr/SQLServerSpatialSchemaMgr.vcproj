@@ -362,6 +362,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Ph\Rd\CoordSysReader.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Ph\Rd\DbObjectBinds.cpp"
 						>
 					</File>
@@ -387,6 +391,10 @@
 					</File>
 					<File
 						RelativePath=".\Ph\Rd\SchemaReader.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Ph\Rd\SpatialContextReader.cpp"
 						>
 					</File>
 				</Filter>
@@ -568,6 +576,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Ph\Rd\CoordSysReader.h"
+						>
+					</File>
+					<File
 						RelativePath=".\Ph\Rd\DbObjectBinds.h"
 						>
 					</File>
@@ -593,6 +605,10 @@
 					</File>
 					<File
 						RelativePath=".\Ph\Rd\SchemaReader.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Ph\Rd\SpatialContextReader.h"
 						>
 					</File>
 				</Filter>

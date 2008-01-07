@@ -47,6 +47,8 @@ FdoStringP FdoSmPhSqsSpatialIndex::GetDDLName() const
 {
     const FdoSmPhSqsTable* table = static_cast<const FdoSmPhSqsTable*>(RefTable());
     FdoStringP name = GetName();
+    if ( name.Contains(L".") ) 
+        name = name.Right(L".");
 
     return FdoStringP(L"\"") + name + L"\"";
 }
@@ -199,17 +201,30 @@ bool FdoSmPhSqsSpatialIndex::Add()
             indexName = indexName.Right(L"."); // no dbo.
 
             FdoStringP  dropExisting = L""; // L", DROP_EXISTING = ON"; - Doens't work on fresh tables.
-            FdoStringP  otherOptions = FdoStringP(L", GRIDS = (LEVEL_1 = MEDIUM, LEVEL_2 = MEDIUM, LEVEL_3 = MEDIUM, LEVEL_4 = MEDIUM), CELLS_PER_OBJECT = 16");
+            FdoStringP  otherOptions = FdoStringP(L" GRIDS = (LEVEL_1 = MEDIUM, LEVEL_2 = MEDIUM, LEVEL_3 = MEDIUM, LEVEL_4 = MEDIUM), CELLS_PER_OBJECT = 16");
             
-            sqlStmt = FdoStringP::Format(
-                L"CREATE SPATIAL INDEX %ls ON %ls(%ls) USING GEOMETRY_GRID WITH ( BOUNDING_BOX = (%ls, %ls, %ls, %ls) %ls %ls);",
-                (FdoString*) indexName,
-                (FdoString*) tableName, // no dbo. prefix etc.
-                column->GetName(),
-                minxStr, minyStr, maxxStr, maxyStr,
-                (FdoString*) otherOptions,
-                (FdoString*) dropExisting 
-            );
+            if ( column->GetTypeName().ICompare(L"geometry") == 0 ) {
+                sqlStmt = FdoStringP::Format(
+                    L"CREATE SPATIAL INDEX %ls ON %ls(%ls) USING GEOMETRY_GRID WITH ( BOUNDING_BOX = (%ls, %ls, %ls, %ls), %ls %ls);",
+                    (FdoString*) indexName,
+                    (FdoString*) tableDbQName, // no dbo. prefix etc.
+                    column->GetName(),
+                    minxStr, minyStr, maxxStr, maxyStr,
+                    (FdoString*) otherOptions,
+                    (FdoString*) dropExisting 
+                );
+            }
+            else {
+                // Bounds cannot be specified for geography column.
+                sqlStmt = FdoStringP::Format(
+                    L"CREATE SPATIAL INDEX %ls ON %ls(%ls) USING GEOGRAPHY_GRID WITH ( %ls %ls);",
+                    (FdoString*) indexName,
+                    (FdoString*) tableDbQName, // no dbo. prefix etc.
+                    column->GetName(),
+                    (FdoString*) otherOptions,
+                    (FdoString*) dropExisting 
+                );
+            }
 
             table->ExecuteDDL( sqlStmt, NULL, false );
         }
@@ -220,14 +235,20 @@ bool FdoSmPhSqsSpatialIndex::Add()
 
 bool FdoSmPhSqsSpatialIndex::Delete()
 {
-    FdoSmPhSqsTable* table = static_cast<FdoSmPhSqsTable*>((FdoSmPhTable*)(RefTable()));
+    const FdoSmPhTable* table = RefTable();
 
-    FdoStringP sqlStmt = FdoStringP::Format( 
-        L"DROP INDEX %ls FORCE", 
-        (FdoString*) GetDDLQName()
+    // Index name must be qualified by table name.
+    FdoStringP sqlStmt = FdoStringP::Format(
+        L"drop index %ls on %ls",
+        (FdoString*) GetDDLName(),
+        (FdoString*) ((FdoSmPhTable*)table)->GetDbName()
     );
 
-    table->ExecuteDDL( sqlStmt, NULL, true );
+    // SqlServer does not allow qualified name for index to create.
+    // Therefore, must switch to the index's owning database before deleting
+    // it.
+    ActivateOwnerAndExecute( sqlStmt );
+
 
     return( true );
 }

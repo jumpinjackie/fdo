@@ -64,6 +64,12 @@ FdoSmPhRowsP FdoSmPhRdCoordSysReader::MakeRows( FdoSmPhMgrP mgr)
 
     pField = new FdoSmPhField(
         row, 
+        L"srid",
+        row->CreateColumnInt64(L"srid",false)
+    );
+
+    pField = new FdoSmPhField(
+        row, 
         L"wktext",
         row->CreateColumnChar(L"wktext",true,3000)
     );

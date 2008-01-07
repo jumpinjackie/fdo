@@ -42,8 +42,9 @@ FdoSmPhSqsColumnGeom::FdoSmPhSqsColumnGeom(
     FdoSmPhRdColumnReader* reader
 ) :
     FdoSmPhSqsColumn (reader),
-    FdoSmPhColumn    ( columnName, L"GEOMETRY", elementState, parentObject, bNullable, rootColumnName),
-    FdoSmPhColumnGeom( AssociatedSCInfo, bHasElevation, bHasMeasure )
+    FdoSmPhColumn    ( columnName, L"geometry", elementState, parentObject, bNullable, rootColumnName, L"", reader),
+    FdoSmPhColumnGeom( AssociatedSCInfo, bHasElevation, bHasMeasure ),
+    mSRID(-1)
 {
     if ( elementState == FdoSchemaElementState_Added ) {
         //Create a spatial index if this is a new geometric column
@@ -59,6 +60,32 @@ FdoSmPhSqsColumnGeom::~FdoSmPhSqsColumnGeom(void)
 {
 }
 
+FdoInt64 FdoSmPhSqsColumnGeom::GetSRID()
+{
+    if (mSRID == -1)
+    {
+        // SqlServer SRIDs are associated with geometry values, rather than entire column.
+        // The following gets the srid from the first row.
+        // The other rows might have different srids but FDO currently does not have
+        // a way of handling this. 
+        
+        if ( GetElementState() != FdoSchemaElementState_Added ) {
+            FdoSmPhSqsOwner* owner = (FdoSmPhSqsOwner*)(this->GetParent()->GetParent());
+            mSRID = owner->SampleColumnSrid( GetParent()->GetName(), GetName() );
+        }
+
+        // When SRID was not found ...
+        if ( mSRID == -1 ) {
+            if ( this->GetTypeName() == L"geography" ) 
+                // Default for geography columns is "WGS 84"
+                mSRID = 4326;
+            else
+                // Default for geometry columns is a planar coordinate system
+                mSRID = 0;
+        }
+    }
+    return mSRID;
+}
 
 FdoSmPhSpatialIndexP FdoSmPhSqsColumnGeom::CreateSpatialIndex( FdoStringP indexName)
 {
@@ -110,13 +137,12 @@ void FdoSmPhSqsColumnGeom::SetElementState(FdoSchemaElementState elementState)
 
     if ( GetElementState() == FdoSchemaElementState_Deleted ) {
 
-        // TODO: Is the index dropped along with the column?
 
-        //FdoSmPhSpatialIndexP currIndex = GetSpatialIndex();
+        FdoSmPhSpatialIndexP currIndex = GetSpatialIndex();
 
-        //if ( currIndex ) 
-        //    // Deleting the column, so must delete the spatial index.
-        //    currIndex->SetElementState( FdoSchemaElementState_Deleted );
+        if ( currIndex ) 
+            // Deleting the column, so must delete the spatial index.
+            currIndex->SetElementState( FdoSchemaElementState_Deleted );
     }
 }
 

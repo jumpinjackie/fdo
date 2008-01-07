@@ -58,6 +58,8 @@ protected:
     virtual void testConfigError();
     void testGeometricProperties();
 
+    void testSpatialContexts();
+
     void constraints ();
     void delFdoBr ();
     virtual FdoIoStream* OverrideBend( FdoIoStream* stream1, FdoStringP oldOwnerPrefix, FdoStringP newOwnerPrefix )
@@ -82,6 +84,8 @@ protected:
 
     virtual FdoStringP table2class( FdoSmPhGrdMgrP mgr, FdoStringP tableName );
 
+    virtual FdoStringP table2qclass( FdoSmPhGrdMgrP mgr, FdoStringP datastoreName, FdoStringP tableName );
+    
     virtual void VldLtReaders( StaticConnection* conn, FdoStringP datastore ) 
     {
     }
@@ -100,6 +104,10 @@ protected:
 
     virtual bool SupportsBaseObjects();
     virtual bool SupportsViewPkey();
+
+    virtual FdoSmPhScInfoP CreateSc( FdoInt64 srid, double minx, double miny, double maxx, double maxy, double xtol, double ztol );
+
+    virtual FdoInt64 GetSrid( int index );
 
     static FdoString* DB_NAME_SUFFIX;
     static FdoString* DB_NAME_COPY_SUFFIX;

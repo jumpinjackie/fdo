@@ -210,13 +210,10 @@ FdoSmPhReaderP FdoSmPhRdSqsConstraintReader::MakeReader(
     // Create binds for owner and optional object names
     FdoSmPhRdSqsDbObjectBindsP binds = new FdoSmPhRdSqsDbObjectBinds(
         owner->GetManager(),
-        L"CK.TABLE_CATALOG",
-        L"owner_name",
         L"CK.TABLE_SCHEMA",
         L"user_name",
         L"CK.TABLE_NAME",
         L"object_name",
-        ownerName,
         tableNames
     );
 
@@ -252,7 +249,7 @@ FdoSmPhReaderP FdoSmPhRdSqsConstraintReader::MakeReader(
 			L"		   %ls.INFORMATION_SCHEMA.TABLE_CONSTRAINTS TK \n"
             L"         %ls"
 			L"    where (\n"
-			L"			%ls and\n"
+			L"			%ls %ls\n"
 			L"			CK.CONSTRAINT_NAME = CCK.CONSTRAINT_NAME and \n"
 			L"			CK.CONSTRAINT_NAME = TK.CONSTRAINT_NAME and \n"
 			L"			TK.CONSTRAINT_TYPE = 'CHECK' )"			
@@ -262,8 +259,9 @@ FdoSmPhReaderP FdoSmPhRdSqsConstraintReader::MakeReader(
 			(FdoString*) ownerName,
 			(FdoString*) ownerName,
             (FdoString*) joinFrom,
-			(FdoString*) qualification
-			);
+			(FdoString*) qualification,
+            (qualification == L"") ? L"" : L"and"
+    	);
 
 		field = new FdoSmPhField(
 			row, 
@@ -283,7 +281,7 @@ FdoSmPhReaderP FdoSmPhRdSqsConstraintReader::MakeReader(
 			L"		   %ls.INFORMATION_SCHEMA.TABLE_CONSTRAINTS TK \n"
             L"         %ls"
 			L"    where (\n"
-			L"			%ls and\n"
+			L"			%ls %ls\n"
 			L"			CK.CONSTRAINT_NAME = TK.CONSTRAINT_NAME and \n"
 			L"			TK.CONSTRAINT_TYPE = 'UNIQUE' )"			
 			L"    order by CK.TABLE_SCHEMA collate latin1_general_bin asc, CK.TABLE_NAME collate latin1_general_bin asc, CK.CONSTRAINT_NAME collate latin1_general_bin asc, CK.COLUMN_NAME collate latin1_general_bin asc",
@@ -291,8 +289,9 @@ FdoSmPhReaderP FdoSmPhRdSqsConstraintReader::MakeReader(
 			(FdoString*) ownerName,
 			(FdoString*) ownerName,
             (FdoString*) joinFrom,
-			(FdoString*) qualification
-			);
+			(FdoString*) qualification,
+            (qualification == L"") ? L"" : L"and"
+		);
 	}
 
 //TODO: cache this query to make full use of the binds.

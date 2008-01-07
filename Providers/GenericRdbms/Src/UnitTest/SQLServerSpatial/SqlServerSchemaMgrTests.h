@@ -24,13 +24,21 @@
 class SqlServerSchemaMgrTests : public SchemaMgrTests
 {
     CPPUNIT_TEST_SUB_SUITE (SqlServerSchemaMgrTests, SchemaMgrTests);
+    CPPUNIT_TEST (testSpatialContexts);
+    CPPUNIT_TEST (testSpatialContextsGeog);
     CPPUNIT_TEST_SUITE_END ();
 
-	virtual StaticConnection* CreateStaticConnection();
+    void testSpatialContextsGeog();
+
+    virtual StaticConnection* CreateStaticConnection();
     virtual FdoIoStream* OverrideBend( FdoIoStream* stream1, FdoStringP oldOwnerPrefix, FdoStringP newOwnerPrefix );
     virtual void AddProviderColumns( FdoSmPhTableP table );
     virtual FdoStringP table2class( FdoSmPhGrdMgrP mgr, FdoStringP tableName );
+    virtual FdoStringP table2qclass( FdoSmPhGrdMgrP mgr, FdoStringP datastoreName, FdoStringP tableName );
     virtual bool SupportsBaseObjects();
+
+    virtual FdoInt64 GetSrid( int index );
+
 };
 
 #endif // SQLSERVER_SCHEMAMGRTESTS_H

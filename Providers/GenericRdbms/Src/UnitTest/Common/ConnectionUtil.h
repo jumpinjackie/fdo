@@ -53,6 +53,8 @@ public:
 
     virtual void SetSchema ( FdoString* suffix );
 
+    rdbi_context_def *m_rdbi_context;
+
 protected:
     void init ();
     void name ();
@@ -61,7 +63,6 @@ protected:
     virtual int do_rdbi_init (rdbi_context_def** rdbi_context);
     virtual int do_rdbi_connect (rdbi_context_def* rdbi_context, int& id);
 
-    rdbi_context_def *m_rdbi_context;
     GdbiConnection* m_gdbi_conn;
     FdoStringP mDatastore;
 };
@@ -81,6 +82,7 @@ public:
 	virtual FdoInsertTest* GetInsertTest () = 0;
 	virtual FdoStringP GetOutputFileName (FdoString* pBaseFileName) = 0;
 	virtual const char* GetSuffixTest(){return NULL;};
+    virtual FdoStringP GetNlsObjectName( FdoStringP inName );
     virtual wchar_t GetNlsChar( int index );
 
 public:

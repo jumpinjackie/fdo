@@ -139,13 +139,10 @@ FdoSmPhReaderP FdoSmPhRdSqsBaseObjectReader::MakeQueryReader(
             // Create binds for owner and optional object names
             FdoSmPhRdSqsDbObjectBindsP binds = new FdoSmPhRdSqsDbObjectBinds(
                 mgr,
-                L"D.VIEW_CATALOG",
-                L"owner_name",
                 L"D.VIEW_SCHEMA",
                 L"user_name",
                 L"D.VIEW_NAME",
                 L"name",
-                ownerName,
                 objectNames
             );
 
@@ -174,12 +171,13 @@ FdoSmPhReaderP FdoSmPhRdSqsBaseObjectReader::MakeQueryReader(
                 L" D.VIEW_SCHEMA collate latin1_general_bin as view_schema, D.TABLE_SCHEMA as table_schema\n"
                 L" from %ls.INFORMATION_SCHEMA.VIEW_TABLE_USAGE D\n"
                 L" %ls\n"
-                L" where\n"
+                L" %ls\n"
                 L" %ls \n"
                 L" order by D.VIEW_SCHEMA collate latin1_general_bin asc, D.VIEW_NAME collate latin1_general_bin asc",
                 join ? L"distinct" : L"",
                 (FdoString*)ownerName,
                 (FdoString*)joinFrom,
+                (qualification == L"") ? L"" : L"where",
                 (FdoString*) qualification
             );
 
@@ -202,13 +200,10 @@ FdoSmPhReaderP FdoSmPhRdSqsBaseObjectReader::MakeQueryReader(
 
             FdoSmPhRdSqsDbObjectBindsP binds = new FdoSmPhRdSqsDbObjectBinds(
                 mgr,
-                L"D.VIEW_CATALOG",
-                L"owner_name",
                 L"D.VIEW_SCHEMA",
                 L"user_name",
                 L"D.VIEW_NAME",
                 L"name",
-                ownerName,
                 objectNames,
                 bindRow,
                 true

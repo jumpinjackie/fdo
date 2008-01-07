@@ -1988,12 +1988,17 @@ void FdoUpdateTest::UpdateNoMeta()
 
         CreateExternalTable( owner, table_id_geom, true, m_hasGeom, m_hasAssoc );
         CreateExternalView( owner, L"view_id_geom", table_id_geom, true, m_hasGeom, false );
-        CreateExternalTable( owner, L"table_noid_geom", false, m_hasGeom, false );
+
+        // Skip this case for SqlServer 2008, which doesn't allow geometric columns in a
+        // table without identity.
+        if ( providerName != L"SQLServerSpatial" ) 
+            CreateExternalTable( owner, L"table_noid_geom", false, m_hasGeom, false );
+        
         CreateExternalTable( owner, table_noid_nogeom, false, false, false );
 
         // Special tables for special testing. 
-        CreateExternalTable( owner, L"table_id_geom_ll", true, providerName != L"SqlServer", false );
-        CreateExternalTable( owner, L"table_id_geom_xyzm", true, providerName != L"SqlServer", false );
+        CreateExternalTable( owner, L"table_id_geom_ll", true, m_hasGeom, false );
+        CreateExternalTable( owner, L"table_id_geom_xyzm", true, m_hasGeom, false );
 
         owner->Commit();
 
@@ -2021,32 +2026,35 @@ void FdoUpdateTest::UpdateNoMeta()
         UpdSpatialMetadata( connection );
         CreateExternalData( connection, phMgr, table_id_geom, m_hasGeom, m_hasAssoc );
 
-#ifdef RDBI_DEF_SSQL
-        UnitTestUtil::Sql2Db( 
-            FdoStringP::Format(
-                L"insert into table_noid_geom ( key1, \"%ls\", \"%ls\" ) select key1, \"%ls\", \"%ls\" from \"%ls\"", 
-                (FdoString*) phMgr->GetDcColumnName( Key2ColName() ),
-                (FdoString*) phMgr->GetDcColumnName( ValueColName() ),
-                (FdoString*) phMgr->GetDcColumnName( Key2ColName() ),
-                (FdoString*) phMgr->GetDcColumnName( ValueColName() ),
-                (FdoString*) phMgr->GetDcDbObjectName( table_id_geom ).Replace(L".",L"\".\"")
-            ),
-            connection 
-        );
-#else
-        UnitTestUtil::Sql2Db( 
-            FdoStringP::Format(
-                L"insert into table_noid_geom ( key1, \"%ls\", geometry, \"%ls\" ) select key1, \"%ls\", geometry, \"%ls\" from \"%ls\"",
-                (FdoString*) phMgr->GetDcColumnName( Key2ColName() ),
-                (FdoString*) phMgr->GetDcColumnName( ValueColName() ),
-                (FdoString*) phMgr->GetDcColumnName( Key2ColName() ),
-                (FdoString*) phMgr->GetDcColumnName( ValueColName() ),
-                (FdoString*) phMgr->GetDcDbObjectName( table_id_geom )
-            ),
-            connection 
-        );
+        if ( providerName != L"SQLServerSpatial" ) {
+            if ( m_hasGeom ) {
+                UnitTestUtil::Sql2Db( 
+                    FdoStringP::Format(
+                        L"insert into table_noid_geom ( key1, \"%ls\", geometry, \"%ls\" ) select key1, \"%ls\", geometry, \"%ls\" from \"%ls\"",
+                        (FdoString*) phMgr->GetDcColumnName( Key2ColName() ),
+                        (FdoString*) phMgr->GetDcColumnName( ValueColName() ),
+                        (FdoString*) phMgr->GetDcColumnName( Key2ColName() ),
+                        (FdoString*) phMgr->GetDcColumnName( ValueColName() ),
+                        (FdoString*) phMgr->GetDcDbObjectName( table_id_geom )
+                    ),
+                    connection 
+                );
+            }
+            else {
+                UnitTestUtil::Sql2Db( 
+                    FdoStringP::Format(
+                        L"insert into table_noid_geom ( key1, \"%ls\", \"%ls\" ) select key1, \"%ls\", \"%ls\" from \"%ls\"", 
+                        (FdoString*) phMgr->GetDcColumnName( Key2ColName() ),
+                        (FdoString*) phMgr->GetDcColumnName( ValueColName() ),
+                        (FdoString*) phMgr->GetDcColumnName( Key2ColName() ),
+                        (FdoString*) phMgr->GetDcColumnName( ValueColName() ),
+                        (FdoString*) phMgr->GetDcDbObjectName( table_id_geom ).Replace(L".",L"\".\"")
+                    ),
+                    connection 
+                );
+            }
+        }
 
-#endif
         UnitTestUtil::Sql2Db( 
                 FdoStringP::Format(
                     L"insert into \"%ls\" ( key1, \"%ls\", \"%ls\" ) select key1, \"%ls\", \"%ls\" from \"%ls\"",
@@ -2066,23 +2074,32 @@ void FdoUpdateTest::UpdateNoMeta()
 #ifndef RDBI_DEF_SSQL
         SelectNoMetaAll( connection, phMgr, L"view_w_nullcol", false, false, true );
 #endif
-        SelectNoMetaAll( connection, phMgr, L"table_noid_geom", m_hasGeom, false );
+        if ( providerName != L"SQLServerSpatial" ) 
+            SelectNoMetaAll( connection, phMgr, L"table_noid_geom", m_hasGeom, false );
+
         SelectNoMetaAll( connection, phMgr, table_noid_nogeom, false, false );
 
         SelectNoMetaFilter( connection, phMgr, table_id_geom, m_hasGeom, m_hasAssoc );
         SelectNoMetaFilter( connection, phMgr, L"view_id_geom", m_hasGeom, false );
-        SelectNoMetaFilter( connection, phMgr, L"table_noid_geom", m_hasGeom, false );
+
+        if ( providerName != L"SQLServerSpatial" ) 
+            SelectNoMetaFilter( connection, phMgr, L"table_noid_geom", m_hasGeom, false );
+
         SelectNoMetaFilter( connection, phMgr, table_noid_nogeom, false, false );
 
-#ifndef RDBI_DEF_SSQL
-		SelectNoMetaSpatial( connection, phMgr, table_id_geom, m_hasAssoc );
-		SelectNoMetaSpatial( connection, phMgr, L"view_id_geom", false );
-		SelectNoMetaSpatial( connection, phMgr, L"table_noid_geom", false );
-#endif
+        if ( m_hasGeom ) {
+		    SelectNoMetaSpatial( connection, phMgr, table_id_geom, m_hasAssoc );
+		    SelectNoMetaSpatial( connection, phMgr, L"view_id_geom", false );
+            if ( providerName != L"SQLServerSpatial" ) 
+	    	    SelectNoMetaSpatial( connection, phMgr, L"table_noid_geom", false );
+        }
 
         SelectNoMetaProps( connection, phMgr, table_id_geom, m_hasGeom );
         SelectNoMetaProps( connection, phMgr, L"view_id_geom", m_hasGeom );
-        SelectNoMetaProps( connection, phMgr, L"table_noid_geom", m_hasGeom );
+
+        if ( providerName != L"SQLServerSpatial" ) 
+            SelectNoMetaProps( connection, phMgr, L"table_noid_geom", m_hasGeom );
+        
         SelectNoMetaProps( connection, phMgr, table_noid_nogeom, false );
 
         connection->Close ();
@@ -2470,7 +2487,7 @@ void FdoUpdateTest::SelectNoMetaFilter( FdoPtr<FdoIConnection> connection, FdoSm
 
     {
         rowCount++;
-        CPPUNIT_ASSERT( wcscmp( rdr->GetString(phMgr->GetDcColumnName(L"key1")), L"KEY1_3" ) == 0 );
+        CPPUNIT_ASSERT( wcscmp( FixStringVal(rdr->GetString(phMgr->GetDcColumnName(L"key1"))), L"KEY1_3" ) == 0 );
         VldNoMetaRow( phMgr, rdr, props, hasGeom, false, hasAssoc );
     }
 
@@ -2510,7 +2527,7 @@ void FdoUpdateTest::SelectNoMetaProps( FdoPtr<FdoIConnection> connection, FdoSmP
 
     {
         rowCount++;
-        CPPUNIT_ASSERT( wcscmp( rdr->GetString(phMgr->GetDcColumnName(L"key1")), L"KEY1_3" ) == 0 );
+        CPPUNIT_ASSERT( wcscmp( FixStringVal(rdr->GetString(phMgr->GetDcColumnName(L"key1"))), L"KEY1_3" ) == 0 );
         VldNoMetaRow( phMgr, rdr, props, hasGeom, true, false );
     }
 
@@ -2557,7 +2574,7 @@ void FdoUpdateTest::SelectNoMetaSpatial( FdoPtr<FdoIConnection> connection, FdoS
 
     {
         rowCount++;
-        CPPUNIT_ASSERT( wcscmp( rdr->GetString(phMgr->GetDcColumnName(L"key1")), L"KEY1_1" ) == 0 );
+        CPPUNIT_ASSERT( wcscmp( FixStringVal(rdr->GetString(phMgr->GetDcColumnName(L"key1"))), L"KEY1_1" ) == 0 );
         VldNoMetaRow( phMgr, rdr, props, true, false, hasAssoc );
     }
 
@@ -2577,22 +2594,22 @@ void FdoUpdateTest::VldNoMetaRow(
 )
 {
     FdoPtr<FdoIFeatureReader> objRdr;
-    FdoStringP key1val = rdr->GetString(phMgr->GetDcColumnName(L"key1"));
+    FdoStringP key1val = FixStringVal( rdr->GetString(phMgr->GetDcColumnName(L"key1")) );
 
     if ( wcscmp(key1val, L"KEY1_1" ) == 0 )
     {
         if ( !propsPruned ) {
-            CPPUNIT_ASSERT( wcscmp( rdr->GetString(phMgr->GetDcColumnName(Key2ColName())), L"KEY2_1" ) == 0 );
+            CPPUNIT_ASSERT( wcscmp( FixStringVal(rdr->GetString(phMgr->GetDcColumnName(Key2ColName()))), L"KEY2_1" ) == 0 );
         
             if ( hasAssoc ) {
                 objRdr = rdr->GetFeatureObject( phMgr->GetDcColumnName(L"lookup") );
                 CPPUNIT_ASSERT( objRdr != NULL );
                 CPPUNIT_ASSERT( objRdr->ReadNext() );
-                CPPUNIT_ASSERT( wcscmp( objRdr->GetString(phMgr->GetDcColumnName(L"name")), L"NAME1" ) == 0 );
+                CPPUNIT_ASSERT( wcscmp( FixStringVal(objRdr->GetString(phMgr->GetDcColumnName(L"name"))), L"NAME1" ) == 0 );
             }
         }
 
-        CPPUNIT_ASSERT( wcscmp( rdr->GetString(phMgr->GetDcColumnName(ValueColName())), L"A" ) == 0 );
+        CPPUNIT_ASSERT( wcscmp( FixStringVal(rdr->GetString(phMgr->GetDcColumnName(ValueColName()))), L"A" ) == 0 );
 
         if ( hasGeom & !propsPruned )         
             CheckGeometry( rdr, phMgr->GetDcColumnName(L"geometry"), 5, 5, 0 );
@@ -2601,17 +2618,17 @@ void FdoUpdateTest::VldNoMetaRow(
     if ( wcscmp(key1val, L"KEY1_3" ) == 0 )
     {
         if ( !propsPruned ) {
-            CPPUNIT_ASSERT( wcscmp( rdr->GetString(phMgr->GetDcColumnName(Key2ColName())), L"KEY2_3" ) == 0 );
+            CPPUNIT_ASSERT( wcscmp( FixStringVal(rdr->GetString(phMgr->GetDcColumnName(Key2ColName()))), L"KEY2_3" ) == 0 );
                 
             if ( hasAssoc ) {
                 objRdr = rdr->GetFeatureObject( phMgr->GetDcColumnName(L"lookup") );
                 CPPUNIT_ASSERT( objRdr != NULL );
                 CPPUNIT_ASSERT( objRdr->ReadNext() );
-                CPPUNIT_ASSERT( wcscmp( objRdr->GetString(phMgr->GetDcColumnName(L"name")), L"NAME3" ) == 0 );
+                CPPUNIT_ASSERT( wcscmp( FixStringVal(objRdr->GetString(phMgr->GetDcColumnName(L"name"))), L"NAME3" ) == 0 );
             }
         }
 
-        CPPUNIT_ASSERT( wcscmp( rdr->GetString(phMgr->GetDcColumnName(ValueColName())), L"M\x00f6"L"dified" ) == 0 );
+        CPPUNIT_ASSERT( wcscmp( FixStringVal(rdr->GetString(phMgr->GetDcColumnName(ValueColName()))), L"M\x00f6"L"dified" ) == 0 );
 
         if ( hasGeom && !propsPruned ) 
             CheckGeometry( rdr, phMgr->GetDcColumnName(L"geometry"), 5, 10, 0 );
@@ -2669,6 +2686,11 @@ FdoStringP FdoUpdateTest::Key2ColName()
 FdoStringP FdoUpdateTest::ValueColName()
 {
     return L"value \x00e4";
+}
+
+FdoStringP FdoUpdateTest::FixStringVal( FdoString* val )
+{
+    return val;
 }
 
 FdoPropertyValue* FdoUpdateTest::AddNewProperty( FdoPropertyValueCollection* propertyValues, const wchar_t *name )

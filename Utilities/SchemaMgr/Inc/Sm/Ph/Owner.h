@@ -28,6 +28,7 @@
 #include <Sm/Ph/View.h>
 #include <Sm/Ph/SpatialContextCollection.h>
 #include <Sm/Ph/SpatialContextGeom.h>
+#include <Sm/Ph/CoordinateSystemCollection.h>
 
 static const FdoStringP FDOSYS_OWNER = L"FDOSYS";
 
@@ -40,6 +41,7 @@ class FdoSmPhRdColumnReader;
 class FdoSmPhRdBaseObjectReader;
 class FdoSmPhRdTableJoin;
 class FdoSmPhRdSpatialContextReader;
+class FdoSmPhRdCoordSysReader;
 
 // This class represents an Owner (Physical Schema). The exact meaning
 // of Owner depends on the Provider. For example, in the Oracle Provider
@@ -133,6 +135,14 @@ public:
     // Returns NULL if the column is not geometric or has no associated spatial context.
     FdoSmPhSpatialContextGeomP FindSpatialContextGeom( FdoStringP dbObjectName, FdoStringP columnName );
 
+    // Given a Spatial Reference ID, return the coordinate system info
+    // Returns NULL if coordinate system not found.
+    FdoSmPhCoordinateSystemP FindCoordinateSystem( FdoInt64 srid );
+
+    // Return the coordinate system info for the given coordinate system name.
+    // Returns NULL if coordinate system not found.
+    FdoSmPhCoordinateSystemP FindCoordinateSystem( FdoStringP csName );
+
     // Reverse-engineers an FDO feature schema name from this datastore.
     // Default implementation returns datastore name prepended by "Fdo".
     // "Fdo" is prepended to prevent name conflict with special schema 
@@ -160,6 +170,9 @@ public:
 
     /// Create a reader to get one or more coordinate system(s) for this owner.
     virtual FdoPtr<FdoSmPhRdCoordSysReader> CreateCoordSysReader( FdoStringP csysName = L"") const;
+
+    /// Create a reader to get one or more coordinate system(s) for this owner.
+    virtual FdoPtr<FdoSmPhRdCoordSysReader> CreateCoordSysReader( FdoInt64 srid ) const;
 
     /// Create a reader to get a constraint by name
     virtual FdoPtr<FdoSmPhRdConstraintReader> CreateConstraintReader( FdoStringP constraintName ) const = 0;
@@ -373,6 +386,9 @@ private:
     // in the given db object are loaded.
     void LoadSpatialContexts( FdoStringP dbObjectName = L"" );
 
+    // Caches the coordinate systems retrieved by the given reader.
+    void LoadCoordinateSystems( FdoPtr<FdoSmPhRdCoordSysReader> rdr );
+
     // Gathers candidate tables for bulk loading indexes. A table is added to the candidates
     // list if its indexes are needed for reverse-engineering in the following two cases:
     //      - table has no primary key
@@ -404,6 +420,9 @@ private:
     // Cache of spatial context to geometry column relationships
 	FdoSmPhSpatialContextGeomsP mSpatialContextGeoms;
     bool mSpatialContextsLoaded;
+
+    // Cache of coordinate systems.
+    FdoSmPhCoordinateSystemsP mCoordinateSystems;
 
     FdoStringP mPassword;
     bool mHasMetaSchema;

@@ -20,6 +20,7 @@
 #include <Sm/Ph/Coltype.h>
 
 class FdoSmPhDbObject;
+class FdoSmPhRdColumnReader;
 
 // Describes a column in the database. Usually a column for a
 // DataProperty in a Feature Schema.
@@ -148,6 +149,9 @@ public:
     /// Returns the RDBI type for this column
     virtual int GetRdbType() = 0;
 
+    // Sets the RDBMS data type name for new columns.
+    virtual void SetTypeName( FdoStringP typeName );
+
     /// Set the modification state of this column.
 	virtual void SetElementState(FdoSchemaElementState elementState);
 
@@ -215,6 +219,8 @@ protected:
     ///      RootColumnName: set only when column is in a view on 
     ///          a foreign table. Indicates the corresponding
     ///          column in the foreign table.
+    ///     defaultValue: column's default value. L"" if no default value.
+    ///     reader: initialize the column from this column reader.
     FdoSmPhColumn(
 		FdoStringP columnName, 
 		FdoStringP typeName, 
@@ -222,7 +228,8 @@ protected:
 		FdoSmPhDbObject* parentObject,
 		bool bNullable,
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L""
+		FdoStringP defaultValue = L"",
+        FdoSmPhRdColumnReader* reader = NULL
 	);
 
     /// NOTE: The following constructor is to satisfy the compiler, and should never actually be called:

@@ -112,33 +112,25 @@ FdoSmPhReaderP FdoSmPhRdSqsColumnReader::MakeQueryReader (
         // Create binds for owner and optional object names
         FdoSmPhRdSqsDbObjectBindsP binds = new FdoSmPhRdSqsDbObjectBinds(
             mgr,
-            L"C.TABLE_CATALOG",
-            L"owner_name",
-            L"C.TABLE_SCHEMA",
+            L"d.name",
             L"user_name",
-            L"C.TABLE_NAME",
+            L"a.name",
             L"object_name",
-            ownerName,
             objectNames
         );
 
         // If joining to another table, generated from sub-clause for table.
         FdoStringP joinFrom;
         if ( join != NULL ) 
-            joinFrom = FdoStringP::Format( L"  , %ls\n", (FdoString*) join->GetFrom() );
-
-        // Get where clause for owner and object name binds.
-        FdoStringP qualification = binds->GetSQL();
-
-        if ( join != NULL ) {
-            // If joining to another table, add generated join clause.
-            qualification = FdoStringP::Format( 
-                L"  %ls and ((C.TABLE_SCHEMA = 'dbo' and C.TABLE_NAME = %ls) or ((C.TABLE_SCHEMA + '.' + C.TABLE_NAME) = %ls))\n", 
-                (FdoString*) ((FdoSmPhRdJoin*)(join.p))->GetWhere(),
+            joinFrom = FdoStringP::Format( 
+                L"INNER JOIN %ls ON ((d.name = 'dbo' and a.name = %ls) or ((d.name + '.' + a.name) = %ls))\n", 
+                (FdoString*) join->GetFrom(),
                 (FdoString*) join->GetJoinColumn(),
                 (FdoString*) join->GetJoinColumn()
             );
-        }
+
+        // Get where clause for owner and object name binds.
+        FdoStringP qualification = binds->GetSQL();
 
         //SqlServer> desc INFORMATION_SCHEMA.COLUMNS;
         //+--------------------------+--------------+------+-----+---------+-------+
@@ -161,17 +153,18 @@ FdoSmPhReaderP FdoSmPhRdSqsColumnReader::MakeQueryReader (
         // ... others not used
         //+--------------------------+--------------+------+-----+---------+-------+
 
-        // FDO needs a size (length) for types that become strings. For such types 
-        // that don't allow size to be set, the following query returns the 
-        // max length for the type, as size.
-
+        // Note: The data type for geometry and geography columns, reported by the Information Schema,
+        // is always NULL.
+        // The current workaround is to select directly from the system tables.
+        // TODO: When the data type problems is fixed, check if selecting from Information Schema is faster.
+        // If it is then switch back to selecting from Information Schema.
+/*
         sql = FdoStringP::Format(
                     L"select %ls C.TABLE_NAME collate latin1_general_bin as table_name, C.COLUMN_NAME as name, 1 as type,\n"
                     L" size = CASE lower(C.DATA_TYPE) \n"
                     L"             WHEN 'text' THEN 2147483647 \n"
                     L"             WHEN 'ntext' THEN 1073741823 \n"
                     L"             WHEN 'uniqueidentifier' THEN 36 \n"
-                    L"             WHEN 'null' THEN 0 \n"
                     L"             ELSE isnull(C.CHARACTER_MAXIMUM_LENGTH,C.NUMERIC_PRECISION) \n"
                     L"         END,                   \n"
                     L" C.NUMERIC_SCALE as scale,\n"
@@ -192,6 +185,48 @@ FdoSmPhReaderP FdoSmPhRdSqsColumnReader::MakeQueryReader (
                  join ? L"distinct" : L"",
                 (FdoString *)ownerName,
                 (FdoString *)joinFrom,
+                (FdoString *)qualification
+              );
+*/
+        sql = FdoStringP::Format(
+                    L"select %ls a.name collate latin1_general_bin as table_name, b.name as name, 1 as type,\n"
+                    L" size = CASE lower(c.name) \n"
+                    L"             WHEN 'text' THEN 2147483647 \n"
+                    L"             WHEN 'ntext' THEN 1073741823 \n"
+                    L"             WHEN 'nchar' THEN 1 \n"
+                    L"             WHEN 'nvarchar' THEN (b.max_length / 2) \n"
+                    L"             WHEN 'uniqueidentifier' THEN 36 \n"
+                    L"             WHEN 'decimal' THEN b.precision \n"
+                    L"             WHEN 'money' THEN b.precision \n"
+                    L"             WHEN 'numeric' THEN b.precision \n"
+                    L"             WHEN 'smallmoney' THEN b.precision \n"
+                    L"             ELSE b.max_length \n"
+                    L"         END,                   \n"
+                    L" b.scale as scale,\n"
+                    L" b.is_nullable as nullable, \n"
+                    L" lower(c.name) as type_string,\n"
+                    L" 0 as isunsigned, \n"
+                    L" COLUMNPROPERTY(a.object_id, b.name, 'IsComputed') as has_computed_expression, \n"
+                    L" COLUMNPROPERTY(a.object_id, b.name, 'IsIdentity') as is_autoincremented, \n"
+                    L" d.name collate latin1_general_bin as table_schema, b.object_id as ordinal_position,\n"
+					L" e.definition as default_value, \n"
+					L" b.column_id as position \n"
+                    L" from %ls.sys.objects  a\n"
+                    L"  INNER JOIN %ls.sys.columns b ON ( a.object_id = b.object_id ) \n"
+                    L"  INNER JOIN %ls.sys.types  c ON ( b.user_type_id = c.user_type_id ) \n"
+                    L"  INNER JOIN %ls.sys.schemas d ON ( a.schema_id = d.schema_id ) \n"
+                    L" %ls\n"
+                    L"  LEFT OUTER JOIN %ls.sys.default_constraints e ON ( b.default_object_id = e.object_id) \n"
+                    L" %ls %ls\n"
+                    L" order by d.name collate latin1_general_bin asc, a.name collate latin1_general_bin asc, b.column_id asc",
+                 join ? L"distinct" : L"",
+                (FdoString *)ownerName,
+                (FdoString *)ownerName,
+                (FdoString *)ownerName,
+                (FdoString *)ownerName,
+                (FdoString *)joinFrom,
+                (FdoString *)ownerName,
+                (qualification == L"") ? L"" : L"where",
                 (FdoString *)qualification
               );
 
@@ -233,13 +268,10 @@ FdoSmPhReaderP FdoSmPhRdSqsColumnReader::MakeQueryReader (
 
         FdoSmPhRdSqsDbObjectBindsP binds = new FdoSmPhRdSqsDbObjectBinds(
             mgr,
-            L"C.TABLE_CATALOG",
-            L"owner_name",
             L"C.TABLE_SCHEMA",
             L"user_name",
             L"C.TABLE_NAME",
             L"object_name",
-            ownerName,
             objectNames,
             bindRow,
             true

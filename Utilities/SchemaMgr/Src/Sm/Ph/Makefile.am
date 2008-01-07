@@ -43,6 +43,8 @@ libSmPhysical_la_SOURCES = \
   ColumnUnknown.cpp \
   ColumnVarlen.cpp \
   CommandWriter.cpp \
+  CoordinateSystem.cpp \
+  CoordinateSystemCollection.cpp \
   Database.cpp \
   DbElement.cpp \
   DbObject.cpp \

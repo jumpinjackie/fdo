@@ -243,6 +243,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Src\Sm\Ph\CoordinateSystem.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Src\Sm\Ph\CoordinateSystemCollection.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Src\Sm\Ph\Database.cpp"
 				>
 			</File>
@@ -1095,11 +1103,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Inc\Sm\Ph\ColumnList.h"
+				RelativePath=".\inc\Sm\Ph\ColumnList.h"
 				>
 			</File>
 			<File
-				RelativePath=".\inc\Sm\Ph\ColumnList.h"
+				RelativePath=".\Inc\Sm\Ph\ColumnList.h"
 				>
 			</File>
 			<File
@@ -1116,6 +1124,14 @@
 			</File>
 			<File
 				RelativePath="Inc\Sm\Ph\CommandWriter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\Sm\Ph\CoordinateSystem.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\Sm\Ph\CoordinateSystemCollection.h"
 				>
 			</File>
 			<File
