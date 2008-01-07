@@ -1963,7 +1963,7 @@ FdoDataValue* FdoExpressionEngineImp::Add (FdoDataValue* argLeft, FdoDataValue* 
                 case FdoDataType_DateTime:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Decimal:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () + ((FdoDecimalValue*)argRight)->GetDecimal ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () + ((FdoDecimalValue*)argRight)->GetDecimal ());
                     break;
                 case FdoDataType_Double:
                     ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () + ((FdoDoubleValue*)argRight)->GetDouble ());
@@ -1978,7 +1978,7 @@ FdoDataValue* FdoExpressionEngineImp::Add (FdoDataValue* argLeft, FdoDataValue* 
                     ret = ObtainInt64Value (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () + ((FdoInt64Value*)argRight)->GetInt64 ());
                     break;
                 case FdoDataType_Single:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () + ((FdoSingleValue*)argRight)->GetSingle ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () + ((FdoSingleValue*)argRight)->GetSingle ());
                     break;
                 case FdoDataType_String:
                 case FdoDataType_BLOB:
@@ -1995,27 +1995,27 @@ FdoDataValue* FdoExpressionEngineImp::Add (FdoDataValue* argLeft, FdoDataValue* 
                 case FdoDataType_Boolean:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Byte:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () + ((FdoByteValue*)argRight)->GetByte ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () + ((FdoByteValue*)argRight)->GetByte ());
                     break;
                 case FdoDataType_DateTime:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Decimal:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () + ((FdoDecimalValue*)argRight)->GetDecimal ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () + ((FdoDecimalValue*)argRight)->GetDecimal ());
                     break;
                 case FdoDataType_Double:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () + ((FdoDoubleValue*)argRight)->GetDouble ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () + ((FdoDoubleValue*)argRight)->GetDouble ());
                     break;
                 case FdoDataType_Int16:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () + ((FdoInt16Value*)argRight)->GetInt16 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () + ((FdoInt16Value*)argRight)->GetInt16 ());
                     break;
                 case FdoDataType_Int32:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () + ((FdoInt32Value*)argRight)->GetInt32 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () + ((FdoInt32Value*)argRight)->GetInt32 ());
                     break;
                 case FdoDataType_Int64:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () + ((FdoInt64Value*)argRight)->GetInt64 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () + ((FdoInt64Value*)argRight)->GetInt64 ());
                     break;
                 case FdoDataType_Single:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () + ((FdoSingleValue*)argRight)->GetSingle ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () + ((FdoSingleValue*)argRight)->GetSingle ());
                     break;
                 case FdoDataType_String:
                 case FdoDataType_BLOB:
@@ -2070,7 +2070,7 @@ FdoDataValue* FdoExpressionEngineImp::Add (FdoDataValue* argLeft, FdoDataValue* 
                 case FdoDataType_DateTime:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Decimal:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () + ((FdoDecimalValue*)argRight)->GetDecimal ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () + ((FdoDecimalValue*)argRight)->GetDecimal ());
                     break;
                 case FdoDataType_Double:
                     ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () + ((FdoDoubleValue*)argRight)->GetDouble ());
@@ -2085,7 +2085,7 @@ FdoDataValue* FdoExpressionEngineImp::Add (FdoDataValue* argLeft, FdoDataValue* 
                     ret = ObtainInt64Value (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () + ((FdoInt64Value*)argRight)->GetInt64 ());
                     break;
                 case FdoDataType_Single:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () + ((FdoSingleValue*)argRight)->GetSingle ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () + ((FdoSingleValue*)argRight)->GetSingle ());
                     break;
                 case FdoDataType_String:
                 case FdoDataType_BLOB:
@@ -2105,7 +2105,7 @@ FdoDataValue* FdoExpressionEngineImp::Add (FdoDataValue* argLeft, FdoDataValue* 
                 case FdoDataType_DateTime:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Decimal:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () + ((FdoDecimalValue*)argRight)->GetDecimal ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () + ((FdoDecimalValue*)argRight)->GetDecimal ());
                     break;
                 case FdoDataType_Double:
                     ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () + ((FdoDoubleValue*)argRight)->GetDouble ());
@@ -2120,7 +2120,7 @@ FdoDataValue* FdoExpressionEngineImp::Add (FdoDataValue* argLeft, FdoDataValue* 
                     ret = ObtainInt64Value (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () + ((FdoInt64Value*)argRight)->GetInt64 ());
                     break;
                 case FdoDataType_Single:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () + ((FdoSingleValue*)argRight)->GetSingle ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () + ((FdoSingleValue*)argRight)->GetSingle ());
                     break;
                 case FdoDataType_String:
                 case FdoDataType_BLOB:
@@ -2140,7 +2140,7 @@ FdoDataValue* FdoExpressionEngineImp::Add (FdoDataValue* argLeft, FdoDataValue* 
                 case FdoDataType_DateTime:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Decimal:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () + ((FdoDecimalValue*)argRight)->GetDecimal ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () + ((FdoDecimalValue*)argRight)->GetDecimal ());
                     break;
                 case FdoDataType_Double:
                     ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () + ((FdoDoubleValue*)argRight)->GetDouble ());
@@ -2155,7 +2155,7 @@ FdoDataValue* FdoExpressionEngineImp::Add (FdoDataValue* argLeft, FdoDataValue* 
                     ret = ObtainInt64Value (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () + ((FdoInt64Value*)argRight)->GetInt64 ());
                     break;
                 case FdoDataType_Single:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () + ((FdoSingleValue*)argRight)->GetSingle ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () + ((FdoSingleValue*)argRight)->GetSingle ());
                     break;
                 case FdoDataType_String:
                 case FdoDataType_BLOB:
@@ -2170,27 +2170,27 @@ FdoDataValue* FdoExpressionEngineImp::Add (FdoDataValue* argLeft, FdoDataValue* 
                 case FdoDataType_Boolean:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Byte:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () + ((FdoByteValue*)argRight)->GetByte ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () + ((FdoByteValue*)argRight)->GetByte ());
                     break;
                 case FdoDataType_DateTime:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Decimal:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () + ((FdoDecimalValue*)argRight)->GetDecimal ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () + ((FdoDecimalValue*)argRight)->GetDecimal ());
                     break;
                 case FdoDataType_Double:
                     ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () + ((FdoDoubleValue*)argRight)->GetDouble ());
                     break;
                 case FdoDataType_Int16:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () + ((FdoInt16Value*)argRight)->GetInt16 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () + ((FdoInt16Value*)argRight)->GetInt16 ());
                     break;
                 case FdoDataType_Int32:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () + ((FdoInt32Value*)argRight)->GetInt32 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () + ((FdoInt32Value*)argRight)->GetInt32 ());
                     break;
                 case FdoDataType_Int64:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () + ((FdoInt64Value*)argRight)->GetInt64 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () + ((FdoInt64Value*)argRight)->GetInt64 ());
                     break;
                 case FdoDataType_Single:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () + ((FdoSingleValue*)argRight)->GetSingle ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () + ((FdoSingleValue*)argRight)->GetSingle ());
                     break;
                 case FdoDataType_String:
                 case FdoDataType_BLOB:
@@ -2231,7 +2231,7 @@ FdoDataValue* FdoExpressionEngineImp::Subtract (FdoDataValue* argLeft, FdoDataVa
                 case FdoDataType_DateTime:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Decimal:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () - ((FdoDecimalValue*)argRight)->GetDecimal ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () - ((FdoDecimalValue*)argRight)->GetDecimal ());
                     break;
                 case FdoDataType_Double:
                     ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () - ((FdoDoubleValue*)argRight)->GetDouble ());
@@ -2246,7 +2246,7 @@ FdoDataValue* FdoExpressionEngineImp::Subtract (FdoDataValue* argLeft, FdoDataVa
                     ret = ObtainInt64Value (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () - ((FdoInt64Value*)argRight)->GetInt64 ());
                     break;
                 case FdoDataType_Single:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () - ((FdoSingleValue*)argRight)->GetSingle ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () - ((FdoSingleValue*)argRight)->GetSingle ());
                     break;
                 case FdoDataType_String:
                 case FdoDataType_BLOB:
@@ -2263,27 +2263,27 @@ FdoDataValue* FdoExpressionEngineImp::Subtract (FdoDataValue* argLeft, FdoDataVa
                 case FdoDataType_Boolean:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Byte:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () - ((FdoByteValue*)argRight)->GetByte ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () - ((FdoByteValue*)argRight)->GetByte ());
                     break;
                 case FdoDataType_DateTime:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Decimal:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () - ((FdoDecimalValue*)argRight)->GetDecimal ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () - ((FdoDecimalValue*)argRight)->GetDecimal ());
                     break;
                 case FdoDataType_Double:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () - ((FdoDoubleValue*)argRight)->GetDouble ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () - ((FdoDoubleValue*)argRight)->GetDouble ());
                     break;
                 case FdoDataType_Int16:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () - ((FdoInt16Value*)argRight)->GetInt16 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () - ((FdoInt16Value*)argRight)->GetInt16 ());
                     break;
                 case FdoDataType_Int32:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () - ((FdoInt32Value*)argRight)->GetInt32 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () - ((FdoInt32Value*)argRight)->GetInt32 ());
                     break;
                 case FdoDataType_Int64:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () - ((FdoInt64Value*)argRight)->GetInt64 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () - ((FdoInt64Value*)argRight)->GetInt64 ());
                     break;
                 case FdoDataType_Single:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () - ((FdoSingleValue*)argRight)->GetSingle ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () - ((FdoSingleValue*)argRight)->GetSingle ());
                     break;
                 case FdoDataType_String:
                 case FdoDataType_BLOB:
@@ -2338,7 +2338,7 @@ FdoDataValue* FdoExpressionEngineImp::Subtract (FdoDataValue* argLeft, FdoDataVa
                 case FdoDataType_DateTime:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Decimal:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () - ((FdoDecimalValue*)argRight)->GetDecimal ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () - ((FdoDecimalValue*)argRight)->GetDecimal ());
                     break;
                 case FdoDataType_Double:
                     ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () - ((FdoDoubleValue*)argRight)->GetDouble ());
@@ -2353,7 +2353,7 @@ FdoDataValue* FdoExpressionEngineImp::Subtract (FdoDataValue* argLeft, FdoDataVa
                     ret = ObtainInt64Value (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () - ((FdoInt64Value*)argRight)->GetInt64 ());
                     break;
                 case FdoDataType_Single:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () - ((FdoSingleValue*)argRight)->GetSingle ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () - ((FdoSingleValue*)argRight)->GetSingle ());
                     break;
                 case FdoDataType_String:
                 case FdoDataType_BLOB:
@@ -2373,7 +2373,7 @@ FdoDataValue* FdoExpressionEngineImp::Subtract (FdoDataValue* argLeft, FdoDataVa
                 case FdoDataType_DateTime:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Decimal:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () - ((FdoDecimalValue*)argRight)->GetDecimal ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () - ((FdoDecimalValue*)argRight)->GetDecimal ());
                     break;
                 case FdoDataType_Double:
                     ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () - ((FdoDoubleValue*)argRight)->GetDouble ());
@@ -2388,7 +2388,7 @@ FdoDataValue* FdoExpressionEngineImp::Subtract (FdoDataValue* argLeft, FdoDataVa
                     ret = ObtainInt64Value (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () - ((FdoInt64Value*)argRight)->GetInt64 ());
                     break;
                 case FdoDataType_Single:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () - ((FdoSingleValue*)argRight)->GetSingle ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () - ((FdoSingleValue*)argRight)->GetSingle ());
                     break;
                 case FdoDataType_String:
                 case FdoDataType_BLOB:
@@ -2408,7 +2408,7 @@ FdoDataValue* FdoExpressionEngineImp::Subtract (FdoDataValue* argLeft, FdoDataVa
                 case FdoDataType_DateTime:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Decimal:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () - ((FdoDecimalValue*)argRight)->GetDecimal ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () - ((FdoDecimalValue*)argRight)->GetDecimal ());
                     break;
                 case FdoDataType_Double:
                     ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () - ((FdoDoubleValue*)argRight)->GetDouble ());
@@ -2423,7 +2423,7 @@ FdoDataValue* FdoExpressionEngineImp::Subtract (FdoDataValue* argLeft, FdoDataVa
                     ret = ObtainInt64Value (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () - ((FdoInt64Value*)argRight)->GetInt64 ());
                     break;
                 case FdoDataType_Single:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () - ((FdoSingleValue*)argRight)->GetSingle ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () - ((FdoSingleValue*)argRight)->GetSingle ());
                     break;
                 case FdoDataType_String:
                 case FdoDataType_BLOB:
@@ -2438,27 +2438,27 @@ FdoDataValue* FdoExpressionEngineImp::Subtract (FdoDataValue* argLeft, FdoDataVa
                 case FdoDataType_Boolean:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Byte:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () - ((FdoByteValue*)argRight)->GetByte ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () - ((FdoByteValue*)argRight)->GetByte ());
                     break;
                 case FdoDataType_DateTime:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Decimal:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () - ((FdoDecimalValue*)argRight)->GetDecimal ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () - ((FdoDecimalValue*)argRight)->GetDecimal ());
                     break;
                 case FdoDataType_Double:
                     ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () - ((FdoDoubleValue*)argRight)->GetDouble ());
                     break;
                 case FdoDataType_Int16:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () - ((FdoInt16Value*)argRight)->GetInt16 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () - ((FdoInt16Value*)argRight)->GetInt16 ());
                     break;
                 case FdoDataType_Int32:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () - ((FdoInt32Value*)argRight)->GetInt32 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () - ((FdoInt32Value*)argRight)->GetInt32 ());
                     break;
                 case FdoDataType_Int64:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () - ((FdoInt64Value*)argRight)->GetInt64 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () - ((FdoInt64Value*)argRight)->GetInt64 ());
                     break;
                 case FdoDataType_Single:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () - ((FdoSingleValue*)argRight)->GetSingle ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () - ((FdoSingleValue*)argRight)->GetSingle ());
                     break;
                 case FdoDataType_String:
                 case FdoDataType_BLOB:
@@ -2503,7 +2503,7 @@ FdoDataValue* FdoExpressionEngineImp::Multiply (FdoDataValue* argLeft, FdoDataVa
                 case FdoDataType_DateTime:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Decimal:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () * ((FdoDecimalValue*)argRight)->GetDecimal ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () * ((FdoDecimalValue*)argRight)->GetDecimal ());
                     break;
                 case FdoDataType_Double:
                     ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () * ((FdoDoubleValue*)argRight)->GetDouble ());
@@ -2518,7 +2518,7 @@ FdoDataValue* FdoExpressionEngineImp::Multiply (FdoDataValue* argLeft, FdoDataVa
                     ret = ObtainInt64Value (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () * ((FdoInt64Value*)argRight)->GetInt64 ());
                     break;
                 case FdoDataType_Single:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () * ((FdoSingleValue*)argRight)->GetSingle ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () * ((FdoSingleValue*)argRight)->GetSingle ());
                     break;
                 case FdoDataType_String:
                 case FdoDataType_BLOB:
@@ -2535,27 +2535,27 @@ FdoDataValue* FdoExpressionEngineImp::Multiply (FdoDataValue* argLeft, FdoDataVa
                 case FdoDataType_Boolean:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Byte:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () * ((FdoByteValue*)argRight)->GetByte ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () * ((FdoByteValue*)argRight)->GetByte ());
                     break;
                 case FdoDataType_DateTime:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Decimal:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () * ((FdoDecimalValue*)argRight)->GetDecimal ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () * ((FdoDecimalValue*)argRight)->GetDecimal ());
                     break;
                 case FdoDataType_Double:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () * ((FdoDoubleValue*)argRight)->GetDouble ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () * ((FdoDoubleValue*)argRight)->GetDouble ());
                     break;
                 case FdoDataType_Int16:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () * ((FdoInt16Value*)argRight)->GetInt16 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () * ((FdoInt16Value*)argRight)->GetInt16 ());
                     break;
                 case FdoDataType_Int32:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () * ((FdoInt32Value*)argRight)->GetInt32 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () * ((FdoInt32Value*)argRight)->GetInt32 ());
                     break;
                 case FdoDataType_Int64:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () * ((FdoInt64Value*)argRight)->GetInt64 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () * ((FdoInt64Value*)argRight)->GetInt64 ());
                     break;
                 case FdoDataType_Single:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () * ((FdoSingleValue*)argRight)->GetSingle ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () * ((FdoSingleValue*)argRight)->GetSingle ());
                     break;
                 case FdoDataType_String:
                 case FdoDataType_BLOB:
@@ -2610,7 +2610,7 @@ FdoDataValue* FdoExpressionEngineImp::Multiply (FdoDataValue* argLeft, FdoDataVa
                 case FdoDataType_DateTime:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Decimal:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () * ((FdoDecimalValue*)argRight)->GetDecimal ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () * ((FdoDecimalValue*)argRight)->GetDecimal ());
                     break;
                 case FdoDataType_Double:
                     ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () * ((FdoDoubleValue*)argRight)->GetDouble ());
@@ -2625,7 +2625,7 @@ FdoDataValue* FdoExpressionEngineImp::Multiply (FdoDataValue* argLeft, FdoDataVa
                     ret = ObtainInt64Value (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () * ((FdoInt64Value*)argRight)->GetInt64 ());
                     break;
                 case FdoDataType_Single:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () * ((FdoSingleValue*)argRight)->GetSingle ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () * ((FdoSingleValue*)argRight)->GetSingle ());
                     break;
                 case FdoDataType_String:
                 case FdoDataType_BLOB:
@@ -2645,7 +2645,7 @@ FdoDataValue* FdoExpressionEngineImp::Multiply (FdoDataValue* argLeft, FdoDataVa
                 case FdoDataType_DateTime:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Decimal:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () * ((FdoDecimalValue*)argRight)->GetDecimal ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () * ((FdoDecimalValue*)argRight)->GetDecimal ());
                     break;
                 case FdoDataType_Double:
                     ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () * ((FdoDoubleValue*)argRight)->GetDouble ());
@@ -2660,7 +2660,7 @@ FdoDataValue* FdoExpressionEngineImp::Multiply (FdoDataValue* argLeft, FdoDataVa
                     ret = ObtainInt64Value (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () * ((FdoInt64Value*)argRight)->GetInt64 ());
                     break;
                 case FdoDataType_Single:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () * ((FdoSingleValue*)argRight)->GetSingle ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () * ((FdoSingleValue*)argRight)->GetSingle ());
                     break;
                 case FdoDataType_String:
                 case FdoDataType_BLOB:
@@ -2680,7 +2680,7 @@ FdoDataValue* FdoExpressionEngineImp::Multiply (FdoDataValue* argLeft, FdoDataVa
                 case FdoDataType_DateTime:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Decimal:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () * ((FdoDecimalValue*)argRight)->GetDecimal ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () * ((FdoDecimalValue*)argRight)->GetDecimal ());
                     break;
                 case FdoDataType_Double:
                     ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () * ((FdoDoubleValue*)argRight)->GetDouble ());
@@ -2695,7 +2695,7 @@ FdoDataValue* FdoExpressionEngineImp::Multiply (FdoDataValue* argLeft, FdoDataVa
                     ret = ObtainInt64Value (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () * ((FdoInt64Value*)argRight)->GetInt64 ());
                     break;
                 case FdoDataType_Single:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () * ((FdoSingleValue*)argRight)->GetSingle ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () * ((FdoSingleValue*)argRight)->GetSingle ());
                     break;
                 case FdoDataType_String:
                 case FdoDataType_BLOB:
@@ -2710,27 +2710,27 @@ FdoDataValue* FdoExpressionEngineImp::Multiply (FdoDataValue* argLeft, FdoDataVa
                 case FdoDataType_Boolean:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Byte:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () * ((FdoByteValue*)argRight)->GetByte ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () * ((FdoByteValue*)argRight)->GetByte ());
                     break;
                 case FdoDataType_DateTime:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Decimal:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () * ((FdoDecimalValue*)argRight)->GetDecimal ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () * ((FdoDecimalValue*)argRight)->GetDecimal ());
                     break;
                 case FdoDataType_Double:
                     ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () * ((FdoDoubleValue*)argRight)->GetDouble ());
                     break;
                 case FdoDataType_Int16:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () * ((FdoInt16Value*)argRight)->GetInt16 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () * ((FdoInt16Value*)argRight)->GetInt16 ());
                     break;
                 case FdoDataType_Int32:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () * ((FdoInt32Value*)argRight)->GetInt32 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () * ((FdoInt32Value*)argRight)->GetInt32 ());
                     break;
                 case FdoDataType_Int64:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () * ((FdoInt64Value*)argRight)->GetInt64 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () * ((FdoInt64Value*)argRight)->GetInt64 ());
                     break;
                 case FdoDataType_Single:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () * ((FdoSingleValue*)argRight)->GetSingle ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () * ((FdoSingleValue*)argRight)->GetSingle ());
                     break;
                 case FdoDataType_String:
                 case FdoDataType_BLOB:
@@ -2770,27 +2770,27 @@ FdoDataValue* FdoExpressionEngineImp::Divide (FdoDataValue* argLeft, FdoDataValu
                 case FdoDataType_Boolean:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Byte:
-                    ret = ObtainByteValue (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () / ((FdoByteValue*)argRight)->GetByte ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : (FdoDouble)((FdoByteValue*)argLeft)->GetByte () / ((FdoByteValue*)argRight)->GetByte ());
                     break;
                 case FdoDataType_DateTime:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Decimal:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () / ((FdoDecimalValue*)argRight)->GetDecimal ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () / ((FdoDecimalValue*)argRight)->GetDecimal ());
                     break;
                 case FdoDataType_Double:
                     ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () / ((FdoDoubleValue*)argRight)->GetDouble ());
                     break;
                 case FdoDataType_Int16:
-                    ret = ObtainInt16Value (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () / ((FdoInt16Value*)argRight)->GetInt16 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : (FdoDouble)((FdoByteValue*)argLeft)->GetByte () / ((FdoInt16Value*)argRight)->GetInt16 ());
                     break;
                 case FdoDataType_Int32:
-                    ret = ObtainInt32Value (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () / ((FdoInt32Value*)argRight)->GetInt32 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : (FdoDouble)((FdoByteValue*)argLeft)->GetByte () / ((FdoInt32Value*)argRight)->GetInt32 ());
                     break;
                 case FdoDataType_Int64:
-                    ret = ObtainInt64Value (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () / ((FdoInt64Value*)argRight)->GetInt64 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : (FdoDouble)(FdoDouble)((FdoByteValue*)argLeft)->GetByte () / ((FdoInt64Value*)argRight)->GetInt64 ());
                     break;
                 case FdoDataType_Single:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () / ((FdoSingleValue*)argRight)->GetSingle ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoByteValue*)argLeft)->GetByte () / ((FdoSingleValue*)argRight)->GetSingle ());
                     break;
                 case FdoDataType_String:
                 case FdoDataType_BLOB:
@@ -2807,27 +2807,27 @@ FdoDataValue* FdoExpressionEngineImp::Divide (FdoDataValue* argLeft, FdoDataValu
                 case FdoDataType_Boolean:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Byte:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () / ((FdoByteValue*)argRight)->GetByte ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () / ((FdoByteValue*)argRight)->GetByte ());
                     break;
                 case FdoDataType_DateTime:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Decimal:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () / ((FdoDecimalValue*)argRight)->GetDecimal ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () / ((FdoDecimalValue*)argRight)->GetDecimal ());
                     break;
                 case FdoDataType_Double:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () / ((FdoDoubleValue*)argRight)->GetDouble ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () / ((FdoDoubleValue*)argRight)->GetDouble ());
                     break;
                 case FdoDataType_Int16:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () / ((FdoInt16Value*)argRight)->GetInt16 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () / ((FdoInt16Value*)argRight)->GetInt16 ());
                     break;
                 case FdoDataType_Int32:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () / ((FdoInt32Value*)argRight)->GetInt32 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () / ((FdoInt32Value*)argRight)->GetInt32 ());
                     break;
                 case FdoDataType_Int64:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () / ((FdoInt64Value*)argRight)->GetInt64 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () / ((FdoInt64Value*)argRight)->GetInt64 ());
                     break;
                 case FdoDataType_Single:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () / ((FdoSingleValue*)argRight)->GetSingle ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoDecimalValue*)argLeft)->GetDecimal () / ((FdoSingleValue*)argRight)->GetSingle ());
                     break;
                 case FdoDataType_String:
                 case FdoDataType_BLOB:
@@ -2877,27 +2877,27 @@ FdoDataValue* FdoExpressionEngineImp::Divide (FdoDataValue* argLeft, FdoDataValu
                 case FdoDataType_Boolean:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Byte:
-                    ret = ObtainInt16Value (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () / ((FdoByteValue*)argRight)->GetByte ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : (FdoDouble)((FdoInt16Value*)argLeft)->GetInt16 () / ((FdoByteValue*)argRight)->GetByte ());
                     break;
                 case FdoDataType_DateTime:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Decimal:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () / ((FdoDecimalValue*)argRight)->GetDecimal ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () / ((FdoDecimalValue*)argRight)->GetDecimal ());
                     break;
                 case FdoDataType_Double:
                     ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () / ((FdoDoubleValue*)argRight)->GetDouble ());
                     break;
                 case FdoDataType_Int16:
-                    ret = ObtainInt16Value (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () / ((FdoInt16Value*)argRight)->GetInt16 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : (FdoDouble)((FdoInt16Value*)argLeft)->GetInt16 () / ((FdoInt16Value*)argRight)->GetInt16 ());
                     break;
                 case FdoDataType_Int32:
-                    ret = ObtainInt32Value (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () / ((FdoInt32Value*)argRight)->GetInt32 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : (FdoDouble)((FdoInt16Value*)argLeft)->GetInt16 () / ((FdoInt32Value*)argRight)->GetInt32 ());
                     break;
                 case FdoDataType_Int64:
-                    ret = ObtainInt64Value (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () / ((FdoInt64Value*)argRight)->GetInt64 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : (FdoDouble)((FdoInt16Value*)argLeft)->GetInt16 () / ((FdoInt64Value*)argRight)->GetInt64 ());
                     break;
                 case FdoDataType_Single:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () / ((FdoSingleValue*)argRight)->GetSingle ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt16Value*)argLeft)->GetInt16 () / ((FdoSingleValue*)argRight)->GetSingle ());
                     break;
                 case FdoDataType_String:
                 case FdoDataType_BLOB:
@@ -2912,27 +2912,27 @@ FdoDataValue* FdoExpressionEngineImp::Divide (FdoDataValue* argLeft, FdoDataValu
                 case FdoDataType_Boolean:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Byte:
-                    ret = ObtainInt32Value (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () / ((FdoByteValue*)argRight)->GetByte ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : (FdoDouble)((FdoInt32Value*)argLeft)->GetInt32 () / ((FdoByteValue*)argRight)->GetByte ());
                     break;
                 case FdoDataType_DateTime:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Decimal:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () / ((FdoDecimalValue*)argRight)->GetDecimal ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () / ((FdoDecimalValue*)argRight)->GetDecimal ());
                     break;
                 case FdoDataType_Double:
                     ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () / ((FdoDoubleValue*)argRight)->GetDouble ());
                     break;
                 case FdoDataType_Int16:
-                    ret = ObtainInt32Value (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () / ((FdoInt16Value*)argRight)->GetInt16 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : (FdoDouble)((FdoInt32Value*)argLeft)->GetInt32 () / ((FdoInt16Value*)argRight)->GetInt16 ());
                     break;
                 case FdoDataType_Int32:
-                    ret = ObtainInt32Value (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () / ((FdoInt32Value*)argRight)->GetInt32 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : (FdoDouble)((FdoInt32Value*)argLeft)->GetInt32 () / ((FdoInt32Value*)argRight)->GetInt32 ());
                     break;
                 case FdoDataType_Int64:
-                    ret = ObtainInt64Value (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () / ((FdoInt64Value*)argRight)->GetInt64 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : (FdoDouble)((FdoInt32Value*)argLeft)->GetInt32 () / ((FdoInt64Value*)argRight)->GetInt64 ());
                     break;
                 case FdoDataType_Single:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () / ((FdoSingleValue*)argRight)->GetSingle ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt32Value*)argLeft)->GetInt32 () / ((FdoSingleValue*)argRight)->GetSingle ());
                     break;
                 case FdoDataType_String:
                 case FdoDataType_BLOB:
@@ -2947,27 +2947,27 @@ FdoDataValue* FdoExpressionEngineImp::Divide (FdoDataValue* argLeft, FdoDataValu
                 case FdoDataType_Boolean:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Byte:
-                    ret = ObtainInt64Value (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () / ((FdoByteValue*)argRight)->GetByte ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () / (FdoDouble)((FdoByteValue*)argRight)->GetByte ());
                     break;
                 case FdoDataType_DateTime:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Decimal:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () / ((FdoDecimalValue*)argRight)->GetDecimal ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () / ((FdoDecimalValue*)argRight)->GetDecimal ());
                     break;
                 case FdoDataType_Double:
                     ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () / ((FdoDoubleValue*)argRight)->GetDouble ());
                     break;
                 case FdoDataType_Int16:
-                    ret = ObtainInt64Value (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () / ((FdoInt16Value*)argRight)->GetInt16 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () / (FdoDouble)((FdoInt16Value*)argRight)->GetInt16 ());
                     break;
                 case FdoDataType_Int32:
-                    ret = ObtainInt64Value (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () / ((FdoInt32Value*)argRight)->GetInt32 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () / (FdoDouble)((FdoInt32Value*)argRight)->GetInt32 ());
                     break;
                 case FdoDataType_Int64:
-                    ret = ObtainInt64Value (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () / ((FdoInt64Value*)argRight)->GetInt64 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : (FdoDouble)((FdoInt64Value*)argLeft)->GetInt64 () / ((FdoInt64Value*)argRight)->GetInt64 ());
                     break;
                 case FdoDataType_Single:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () / ((FdoSingleValue*)argRight)->GetSingle ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoInt64Value*)argLeft)->GetInt64 () / ((FdoSingleValue*)argRight)->GetSingle ());
                     break;
                 case FdoDataType_String:
                 case FdoDataType_BLOB:
@@ -2982,27 +2982,27 @@ FdoDataValue* FdoExpressionEngineImp::Divide (FdoDataValue* argLeft, FdoDataValu
                 case FdoDataType_Boolean:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Byte:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () / ((FdoByteValue*)argRight)->GetByte ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () / ((FdoByteValue*)argRight)->GetByte ());
                     break;
                 case FdoDataType_DateTime:
                     throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                 case FdoDataType_Decimal:
-                    ret = ObtainDecimalValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () / ((FdoDecimalValue*)argRight)->GetDecimal ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () / ((FdoDecimalValue*)argRight)->GetDecimal ());
                     break;
                 case FdoDataType_Double:
                     ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () / ((FdoDoubleValue*)argRight)->GetDouble ());
                     break;
                 case FdoDataType_Int16:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () / ((FdoInt16Value*)argRight)->GetInt16 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () / ((FdoInt16Value*)argRight)->GetInt16 ());
                     break;
                 case FdoDataType_Int32:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () / ((FdoInt32Value*)argRight)->GetInt32 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () / ((FdoInt32Value*)argRight)->GetInt32 ());
                     break;
                 case FdoDataType_Int64:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () / ((FdoInt64Value*)argRight)->GetInt64 ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () / ((FdoInt64Value*)argRight)->GetInt64 ());
                     break;
                 case FdoDataType_Single:
-                    ret = ObtainSingleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () / ((FdoSingleValue*)argRight)->GetSingle ());
+                    ret = ObtainDoubleValue (bRetNull, bRetNull ? 0 : ((FdoSingleValue*)argLeft)->GetSingle () / ((FdoSingleValue*)argRight)->GetSingle ());
                     break;
                 case FdoDataType_String:
                 case FdoDataType_BLOB:

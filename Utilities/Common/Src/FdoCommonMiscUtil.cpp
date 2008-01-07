@@ -1815,7 +1815,17 @@ void FdoCommonMiscUtil::GetExpressionType(FdoFunctionDefinitionCollection *funct
         if ((leftPropType != FdoPropertyType_DataProperty) || (rightPropType != FdoPropertyType_DataProperty))
             throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_57_UNEXPECTEDERROR)));
 
-        if (leftDataType==FdoDataType_Double)
+        if (binaryExpr->GetOperation() == FdoBinaryOperations_Divide)
+        {
+            if (((leftDataType==FdoDataType_Single) || (leftDataType==FdoDataType_Double) || (leftDataType==FdoDataType_Byte) || (leftDataType==FdoDataType_Decimal)
+                 || (leftDataType==FdoDataType_Int16) || (leftDataType==FdoDataType_Int32) || (leftDataType==FdoDataType_Int64)) &&
+                ((rightDataType==FdoDataType_Single) || (rightDataType==FdoDataType_Double) || (rightDataType==FdoDataType_Byte) || (rightDataType==FdoDataType_Decimal)
+                 || (rightDataType==FdoDataType_Int16) || (rightDataType==FdoDataType_Int32) || (rightDataType==FdoDataType_Int64)))
+                retDataType = FdoDataType_Double;
+            else
+                throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_80_INVALID_EXPRESSION)));
+        }
+        else if (leftDataType==FdoDataType_Double || leftDataType==FdoDataType_Single || leftDataType==FdoDataType_Decimal)
         {
             if ((rightDataType==FdoDataType_Single) || (rightDataType==FdoDataType_Double) || (rightDataType==FdoDataType_Byte) || (rightDataType==FdoDataType_Decimal)
                  || (rightDataType==FdoDataType_Int16) || (rightDataType==FdoDataType_Int32) || (rightDataType==FdoDataType_Int64))
@@ -1823,36 +1833,10 @@ void FdoCommonMiscUtil::GetExpressionType(FdoFunctionDefinitionCollection *funct
             else
                 throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_80_INVALID_EXPRESSION)));
         }
-        else if (leftDataType==FdoDataType_Single)
-        {
-            if ((rightDataType==FdoDataType_Single) || (rightDataType==FdoDataType_Byte) 
-                 || (rightDataType==FdoDataType_Int16) || (rightDataType==FdoDataType_Int32) || (rightDataType==FdoDataType_Int64))
-                retDataType = FdoDataType_Single;
-            else if (rightDataType==FdoDataType_Decimal)
-                retDataType = FdoDataType_Decimal;
-            else if (rightDataType==FdoDataType_Double)
-                retDataType = FdoDataType_Double;
-            else
-                throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_80_INVALID_EXPRESSION)));
-        }
-        else if (leftDataType==FdoDataType_Decimal)
-        {
-            if (rightDataType==FdoDataType_Double)
-                retDataType = FdoDataType_Double;
-            else if ((rightDataType==FdoDataType_Byte) || (rightDataType==FdoDataType_Decimal) || (rightDataType==FdoDataType_Single)
-                 || (rightDataType==FdoDataType_Int16) || (rightDataType==FdoDataType_Int32) || (rightDataType==FdoDataType_Int64))
-                retDataType = FdoDataType_Decimal;
-            else
-                throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_80_INVALID_EXPRESSION)));
-        }
         else if (leftDataType==FdoDataType_Int64)
         {
-            if (rightDataType==FdoDataType_Single)
-                retDataType = FdoDataType_Single;
-            else if (rightDataType==FdoDataType_Double)
+            if (rightDataType==FdoDataType_Single || rightDataType==FdoDataType_Double || rightDataType==FdoDataType_Decimal)
                 retDataType = FdoDataType_Double;
-            else if (rightDataType==FdoDataType_Decimal)
-                retDataType = FdoDataType_Decimal;
             else if ((rightDataType==FdoDataType_Byte) || (rightDataType==FdoDataType_Int16) || (rightDataType==FdoDataType_Int32) || (rightDataType==FdoDataType_Int64))
                 retDataType = FdoDataType_Int64;
             else
@@ -1860,12 +1844,8 @@ void FdoCommonMiscUtil::GetExpressionType(FdoFunctionDefinitionCollection *funct
         }
         else if (leftDataType==FdoDataType_Int32)
         {
-            if (rightDataType==FdoDataType_Single)
-                retDataType = FdoDataType_Single;
-            else if (rightDataType==FdoDataType_Double)
+            if (rightDataType==FdoDataType_Single || rightDataType==FdoDataType_Double || rightDataType==FdoDataType_Decimal)
                 retDataType = FdoDataType_Double;
-            else if (rightDataType==FdoDataType_Decimal)
-                retDataType = FdoDataType_Decimal;
             else if (rightDataType==FdoDataType_Int64)
                 retDataType = FdoDataType_Int64;
             else if ((rightDataType==FdoDataType_Byte) || (rightDataType==FdoDataType_Int16) || (rightDataType==FdoDataType_Int32))
@@ -1875,12 +1855,8 @@ void FdoCommonMiscUtil::GetExpressionType(FdoFunctionDefinitionCollection *funct
         }
         else if (leftDataType==FdoDataType_Int16)
         {
-            if (rightDataType==FdoDataType_Single)
-                retDataType = FdoDataType_Single;
-            else if (rightDataType==FdoDataType_Double)
+            if (rightDataType==FdoDataType_Single || rightDataType==FdoDataType_Double || rightDataType==FdoDataType_Decimal)
                 retDataType = FdoDataType_Double;
-            else if (rightDataType==FdoDataType_Decimal)
-                retDataType = FdoDataType_Decimal;
             else if (rightDataType==FdoDataType_Int64)
                 retDataType = FdoDataType_Int64;
             else if (rightDataType==FdoDataType_Int32)
@@ -1892,12 +1868,8 @@ void FdoCommonMiscUtil::GetExpressionType(FdoFunctionDefinitionCollection *funct
         }
         else if (leftDataType==FdoDataType_Byte)
         {
-            if (rightDataType==FdoDataType_Single)
-                retDataType = FdoDataType_Single;
-            else if (rightDataType==FdoDataType_Double)
+            if (rightDataType==FdoDataType_Single || rightDataType==FdoDataType_Double || rightDataType==FdoDataType_Decimal)
                 retDataType = FdoDataType_Double;
-            else if (rightDataType==FdoDataType_Decimal)
-                retDataType = FdoDataType_Decimal;
             else if (rightDataType==FdoDataType_Int64)
                 retDataType = FdoDataType_Int64;
             else if (rightDataType==FdoDataType_Int32)
