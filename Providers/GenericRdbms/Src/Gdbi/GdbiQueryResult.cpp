@@ -686,8 +686,8 @@ GdbiColumnInfoType *GdbiQueryResult::FindColumnCache( const wchar_t *colName )
 		FdoStringP  upperName = FdoStringP(colName).Upper();
 		const wchar_t* name = StripTable(upperName);
 
-        size_t index_empty = -1;
-		for ( size_t i = 0; !found && i < mColList->size(); i++ )
+        int     index_empty = -1;
+		for ( int i = 0; !found && i < (int)mColList->size(); i++ )
 		{
 			colInfo = mColList->at(i);
 			found = ( wcscmp( colInfo->name, name ) == 0 );
