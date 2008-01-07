@@ -27,11 +27,11 @@
 
 /// \brief
 /// Defines synonyms for the active long transaction.
-static const FdoString *FDO_ACTIVELONGTRANSACTION = L"_ACTIVE_";
+static FdoString *FDO_ACTIVELONGTRANSACTION = L"_ACTIVE_";
 
 /// \brief
 /// Defines synonyms for the root long transaction.
-static const FdoString *FDO_ROOTLONGTRANSACTION   = L"_ROOT_";
+static FdoString *FDO_ROOTLONGTRANSACTION   = L"_ROOT_";
 
 #endif
 

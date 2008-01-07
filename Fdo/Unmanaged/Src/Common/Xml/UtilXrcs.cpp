@@ -75,7 +75,7 @@ FdoStringP FdoXmlUtilXrcs::Xrcs2Unicode( const XMLCh* chars, const unsigned int 
     return outString;
 }
 
-XMLCh* FdoXmlUtilXrcs::Unicode2Xrcs( const FdoString* chars )
+XMLCh* FdoXmlUtilXrcs::Unicode2Xrcs( FdoString* chars )
 {
     FdoStringP tempString(chars);
     XMLCh* xBuffer = XERCES_CPP_NAMESPACE::XMLString::transcode((const char*) tempString);;

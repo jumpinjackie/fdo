@@ -57,7 +57,7 @@ void FdoTopoGeometryPropertyDefinition::SetDependsOnTopoGeometry(
     throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_3_NOTIMPLEMENTED)));
 }
 
-void FdoTopoGeometryPropertyDefinition::InitFromXml(const FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
+void FdoTopoGeometryPropertyDefinition::InitFromXml(FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
 {
     throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_3_NOTIMPLEMENTED)));
 }

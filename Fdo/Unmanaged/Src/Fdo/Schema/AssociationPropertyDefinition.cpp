@@ -824,7 +824,7 @@ void FdoAssociationPropertyDefinition::CheckIdentityReferences( FdoSchemaMergeCo
     }
 }
 
-void FdoAssociationPropertyDefinition::InitFromXml(const FdoString* propertyTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
+void FdoAssociationPropertyDefinition::InitFromXml(FdoString* propertyTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
 {
     // Error if FDO and XML property types are not the same.
     if ( wcscmp( propertyTypeName, L"AssociationProperty" ) != 0 ) {

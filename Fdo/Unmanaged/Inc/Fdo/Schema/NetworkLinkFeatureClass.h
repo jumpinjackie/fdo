@@ -130,7 +130,7 @@ public:
     virtual void CheckReferences( FdoSchemaMergeContext* pContext );
 
     /// Initialize this property from its XML attributes
-    virtual void InitFromXml(const FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs);
+    virtual void InitFromXml(FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs);
 
     /// Handle sub-elements such as properties
     /// Element start

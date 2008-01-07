@@ -757,7 +757,7 @@ void FdoSchemaMergeContext::AddElementMap( FdoSchemaElement* pElement )
     }
 }
 
-void FdoSchemaMergeContext::AddBaseClassRef( FdoClassDefinition* pReferencer, const FdoString* schemaName, const FdoString* className )
+void FdoSchemaMergeContext::AddBaseClassRef( FdoClassDefinition* pReferencer, FdoString* schemaName, FdoString* className )
 {
     FdoPtr<ClassRef> ref = mBaseClassRefs->FindItem( pReferencer->GetQualifiedName() );
     
@@ -1893,7 +1893,7 @@ FdoClassDefinition* FdoSchemaMergeContext::FindClass( FdoFeatureSchemaCollection
     return FindClass( pSchemas, parent->GetName(), pClass->GetName() );
 }
 
-FdoClassDefinition* FdoSchemaMergeContext::FindClass( FdoFeatureSchemaCollection* pSchemas, const FdoString* schemaName, const FdoString* className )
+FdoClassDefinition* FdoSchemaMergeContext::FindClass( FdoFeatureSchemaCollection* pSchemas, FdoString* schemaName, FdoString* className )
 {
     FdoClassDefinition* classDef = NULL;
     FdoFeatureSchemaP schema = pSchemas->FindItem(schemaName);
@@ -1904,7 +1904,7 @@ FdoClassDefinition* FdoSchemaMergeContext::FindClass( FdoFeatureSchemaCollection
     return(classDef);
 }
 
-FdoPropertyDefinition* FdoSchemaMergeContext::FindProperty( FdoClassDefinition* pClass, const FdoString* propName, FdoBoolean checkUpdSchemas )
+FdoPropertyDefinition* FdoSchemaMergeContext::FindProperty( FdoClassDefinition* pClass, FdoString* propName, FdoBoolean checkUpdSchemas )
 {
     FDO_SAFE_ADDREF(pClass);
     FdoClassDefinitionP currClass = pClass;

@@ -79,7 +79,7 @@ void FdoPropertyDefinition::Set( FdoPropertyDefinition* pProperty, FdoSchemaMerg
     FdoSchemaElement::Set(pProperty, pContext);
 }
 
-void FdoPropertyDefinition::InitFromXml(const FdoString* propertyTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
+void FdoPropertyDefinition::InitFromXml(FdoString* propertyTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
 {
     InitFromXml( pContext, attrs );
 }

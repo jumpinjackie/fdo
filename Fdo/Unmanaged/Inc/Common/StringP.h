@@ -213,7 +213,7 @@ public:
     /// \return
     /// Returns true if this string is lexically equal to str2
     /// 
-	FDO_API_COMMON bool operator==( const FdoString* str2 ) const
+	FDO_API_COMMON bool operator==( FdoString* str2 ) const
 	{
         return( wcscmp( *this, str2 ? str2 : L"" ) == 0 );
 	}
@@ -227,7 +227,7 @@ public:
     /// \return
     /// Returns true if this string is not lexically equal to str2
     /// 
-	FDO_API_COMMON bool operator!=( const FdoString* str2 ) const
+	FDO_API_COMMON bool operator!=( FdoString* str2 ) const
 	{
 		return( !((*this) == str2) );
 	}
@@ -508,7 +508,7 @@ private:
 	void SetString(const FdoStringP& oValue);
 	void SetString(FdoString* wValue, FdoBoolean bAttach = false);
 	void SetString(const char* sValue);
-	void SetString(const FdoString** values);
+	void SetString(FdoString** values);
 
 	void SetSingle() const;
 

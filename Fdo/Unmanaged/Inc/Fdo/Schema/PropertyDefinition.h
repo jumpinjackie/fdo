@@ -88,7 +88,7 @@ public:
     virtual void Set( FdoPropertyDefinition* pProperty, FdoSchemaMergeContext* pContext );
 
     /// Initialize this property from its XML attributes
-    virtual void InitFromXml(const FdoString* propertyTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs);
+    virtual void InitFromXml(FdoString* propertyTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs);
     virtual void InitFromXml(FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs);
 
     /// Serialize this property to XML.

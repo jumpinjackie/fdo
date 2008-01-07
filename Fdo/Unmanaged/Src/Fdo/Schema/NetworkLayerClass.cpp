@@ -111,7 +111,7 @@ void FdoNetworkLayerClass::Set( FdoClassDefinition* pClass, FdoSchemaMergeContex
     FdoClassDefinition::Set( pClass, pContext );
 }
 
-void FdoNetworkLayerClass::InitFromXml(const FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
+void FdoNetworkLayerClass::InitFromXml(FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
 {
     // Make sure FDO and XML class type agree, class type change not allowed.
     if ( (wcscmp( classTypeName, L"ClassDefinition" ) != 0) && (wcscmp( classTypeName, L"NetworkLayerClass" ) != 0) ) {

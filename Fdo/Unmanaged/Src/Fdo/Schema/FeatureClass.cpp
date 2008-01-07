@@ -209,7 +209,7 @@ void FdoFeatureClass::CheckReferences( FdoSchemaMergeContext* pContext )
     }
 }
 
-void FdoFeatureClass::InitFromXml(const FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
+void FdoFeatureClass::InitFromXml(FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
 {
     // Make sure FDO and XML class type agree, class type change not allowed.
     if ( (wcscmp( classTypeName, L"ClassDefinition" ) != 0) && (wcscmp( classTypeName, L"FeatureClass" ) != 0) ) {

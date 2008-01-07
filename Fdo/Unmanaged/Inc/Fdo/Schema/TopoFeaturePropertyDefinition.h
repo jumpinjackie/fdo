@@ -64,7 +64,7 @@ public:
     /// Public non-API functions for XML support
 
     /// Initialize the class from its XML attributes
-    virtual void InitFromXml(const FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs);
+    virtual void InitFromXml(FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs);
     virtual void InitFromXml(FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs);
 
     /// Handle sub-elements such as properties

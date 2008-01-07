@@ -331,7 +331,7 @@ void FdoNetworkLinkFeatureClass::CheckReferences( FdoSchemaMergeContext* pContex
     }
 }
 
-void FdoNetworkLinkFeatureClass::InitFromXml(const FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
+void FdoNetworkLinkFeatureClass::InitFromXml(FdoString* classTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs)
 {
     // Make sure FDO and XML class type agree, class type change not allowed.
     if ( (wcscmp( classTypeName, L"ClassDefinition" ) != 0) && (wcscmp( classTypeName, L"NetworkLinkFeatureClass" ) != 0) )

@@ -38,7 +38,7 @@ public:
     /// Converts FDO wide char string to Xerces wide chars.
     /// Caller is responsible for freeing returned string. The string must be freed using
     /// XERCES_CPP_NAMESPACE::XMLString::release().
-    FDO_API_COMMON static XMLCh* Unicode2Xrcs( const FdoString* chars );
+    FDO_API_COMMON static XMLCh* Unicode2Xrcs( FdoString* chars );
 };
 /// \endcond
 

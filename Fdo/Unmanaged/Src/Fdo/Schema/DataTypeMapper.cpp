@@ -31,7 +31,7 @@ FdoDataTypeMapper::~FdoDataTypeMapper(void)
 {
 }
 
-FdoDataType FdoDataTypeMapper::String2Type( const FdoString* dataTypeString, bool* pbFound )
+FdoDataType FdoDataTypeMapper::String2Type( FdoString* dataTypeString, bool* pbFound )
 {
     if ( pbFound )
         (*pbFound) = true;

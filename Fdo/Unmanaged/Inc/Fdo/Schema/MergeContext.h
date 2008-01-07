@@ -464,7 +464,7 @@ public:
 
     FdoClassDefinition* FindClass( FdoFeatureSchemaCollection* pSchemas, FdoClassDefinition* pClass );
     // Find a class in the given schema collection.
-    FdoClassDefinition* FindClass( FdoFeatureSchemaCollection* pSchemas, const FdoString* schemaName, const FdoString* className );
+    FdoClassDefinition* FindClass( FdoFeatureSchemaCollection* pSchemas, FdoString* schemaName, FdoString* className );
     
     bool CheckModDataConstraint( FdoDataPropertyDefinition* oldProp, FdoDataPropertyDefinition* newProp );
 
@@ -504,7 +504,7 @@ private:
     // Various functions for finding FDO elements. 
 
     // Find a class property. Walks up the base classes until the property is found.
-    FdoPropertyDefinition* FindProperty( FdoClassDefinition* pClass, const FdoString* propName, FdoBoolean checkUpdSchemas = true );
+    FdoPropertyDefinition* FindProperty( FdoClassDefinition* pClass, FdoString* propName, FdoBoolean checkUpdSchemas = true );
     // Find an identity property. Checks the topmost base class.
     FdoDataPropertyDefinition* GetIdProperty( FdoClassDefinition* pClass, const FdoInt32 idx, FdoBoolean checkUpdSchemas = true );
 

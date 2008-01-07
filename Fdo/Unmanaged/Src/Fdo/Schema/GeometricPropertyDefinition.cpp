@@ -528,7 +528,7 @@ void FdoGeometricPropertyDefinition::Set(FdoPropertyDefinition *pProperty, FdoSc
     }
 }
 
-void FdoGeometricPropertyDefinition::InitFromXml(const FdoString *propertyTypeName, FdoSchemaXmlContext *pContext, FdoXmlAttributeCollection *attrs)
+void FdoGeometricPropertyDefinition::InitFromXml(FdoString *propertyTypeName, FdoSchemaXmlContext *pContext, FdoXmlAttributeCollection *attrs)
 {
     // Error if FDO and XML property types are not the same.
     if (wcscmp(propertyTypeName, L"GeometricProperty") != 0) {
