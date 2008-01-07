@@ -391,7 +391,19 @@ start:;
 		{
 			// Hex string literal
             m_ch = if_getch(pParse);    // Get '
-            if (get_hexstring(pParse) == false) 
+            if (get_hexstring(pParse, L'\'') == false) 
+			{
+               // Error !!! Wrong hex string format
+               throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(PARSE_4_STRINGINCORRECTLYFORMATTED)));
+            }
+            m_token = m_prevToken = FdoToken_Literal;
+            return m_token;
+        }
+        if (m_ch == '0' && (nextchar() == 'x' || nextchar() == 'X')) 
+		{
+			// Hex string literal
+            m_ch = if_getch(pParse);    // Get '
+            if (get_hexstring(pParse, L' ') == false) 
 			{
                // Error !!! Wrong hex string format
                throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(PARSE_4_STRINGINCORRECTLYFORMATTED)));
@@ -1177,85 +1189,83 @@ bool FdoLex::get_timestamp(
 //  Get bit string
 bool FdoLex::get_bitstring(FdoParse *pParse)
 {
-	FdoInt32			len         = 0;
-//	FdoInt32			rlen        = 0;
-	char buffer [256];
-
-//	memset(buffer, 0, 256);
-	for (FdoInt32 i=0; i<256; i++)
+	wchar_t     buffer[33];
+	FdoInt32    idx  = 0;
+	
+    for (FdoInt32 i = 0; i < 33; i++)
 		buffer[i] = 0;
-
-	m_ch = if_getch(pParse);
-	while (m_ch != '\'') 
-	{
-		if (m_ch == '1') {
-			buffer[len / 8] |= (0x80 >> (len % 8));
-
-		} else if (m_ch != '0') {
-			// Error !!! Wrong binary digit
+	
+    m_ch = if_getch(pParse);
+	while (m_ch != '\0' && m_ch != '\'')
+    {
+		if (m_ch == L'0' || m_ch == L'1')
+            buffer[idx] = m_ch;
+        else // Error !!! Wrong binary digit
 			throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(PARSE_8_INVALIDBITDIGIT)));
-		}
-		len ++;
-		if (len > maxBinaryLength) {
-			// Error !!! Bit string is too long
+
+        idx++;
+		if (idx > 32) // Error !!! String too long
 			throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(PARSE_5_STRINGTOOLONG)));
-		}
-		m_ch = if_getch(pParse);
+		
+        m_ch = if_getch(pParse);
 	}
+    if(m_ch == '\0') // Error !!! End unclosed '
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(PARSE_5_STRINGTOOLONG)));
+
 	m_ch = if_getch(pParse);  /* get next character after ' */
 
-//TODO:	m_aBit.StoreValue (buffer, len, &rlen);
-//TODO:	m_aData = (CQryData *) &m_aBit;
-
-	return true; 
-  
+	FDO_SAFE_RELEASE(m_data);
+    m_data = FdoIntBinValue::Create((FdoInt64)(FdoUInt32)wcstoul(buffer, NULL, 2));
+	return true;
 }
 
 //  Get hex string
-bool FdoLex::get_hexstring(FdoParse *pParse)
+bool FdoLex::get_hexstring(FdoParse *pParse, wchar_t endChar)
 {
-	char buffer[256];
-	FdoInt32			val;                   // value of hex number 
-	FdoInt32			len  = 0;
-	FdoInt32			rlen = 0;
+	wchar_t     buffer[9];
+	FdoInt32    idx  = 0;
+	bool readNextChar = true;
 
-//	memset(buffer, 0, 256);
-	for (FdoInt32 i=0; i<256; i++)
+    for (FdoInt32 i = 0; i < 9; i++)
 		buffer[i] = 0;
-	m_ch = if_getch(pParse);
-	while (m_ch != '\'') {
-		m_ch = towupper(m_ch);
-		if (iswxdigit(m_ch)) {
-			if (m_ch >= '0' && m_ch <= '9') 
-				val = (FdoInt32)(m_ch - '0');
-			else 
-				val = (FdoInt32)(m_ch - 'A' + 10);
-			
-			if (len % 2 == 0) 
-				buffer[len / 2] |= (val << 4);
-			else
-				buffer[len / 2] |= val;
-
-		} else {
-			// Error !!! Wrong Hexadecimal digit
+	
+    m_ch = if_getch(pParse);
+	while (m_ch != endChar && m_ch != '\0')
+    {
+		if (iswxdigit(m_ch))
+            buffer[idx] = m_ch;
+        else
+        {
+            if (endChar != '\'')
+            {
+                // in case there is a 0xFF format operators can be end of hex string
+                if (m_ch == '+' || m_ch == '-' || m_ch == '*' || m_ch == '/' || m_ch == '>' || m_ch == '<' ||
+                    m_ch == '=' || m_ch == '!' || m_ch == ')' || m_ch == '(' || m_ch == ',')
+                {
+                    readNextChar = false;
+                    break;
+                }
+            }
+            // Error !!! Wrong Hexadecimal digit
 			throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(PARSE_7_INVALIDHEXDIGIT)));
-		}
-
-		len ++;
-			if (len > maxBinaryLength) {
-				// Error !!! String too long
-				throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(PARSE_5_STRINGTOOLONG)));
-			}
-			m_ch = if_getch(pParse);
+        }
+		
+        idx++;
+		if (idx > 8) // Error !!! String too long
+			throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(PARSE_5_STRINGTOOLONG)));
+		
+        m_ch = if_getch(pParse);
 	}
-	m_ch = if_getch(pParse);  /* get next character after ' */
+    if(L'\'' == endChar && m_ch == '\0') // Error !!! End unclosed '
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(PARSE_5_STRINGTOOLONG)));
 
-//TODO:	m_aBit.StoreValue(buffer, len*4, &rlen);
-//TODO:	m_aData = (CQryData *) &m_aBit;
+    if (readNextChar)
+	    m_ch = if_getch(pParse);  /* get next character after ' */
 
+	FDO_SAFE_RELEASE(m_data);
+    m_data = FdoIntHexValue::Create((FdoInt64)(FdoUInt32)wcstoul(buffer, NULL, 16));
 	return true;
-  
-} // end of get_hexstring()
+}
 
 //  Find first non-blank symbol
 const wchar_t FdoLex::find_nonblank(FdoParse *pParse) 
@@ -1286,5 +1296,6 @@ bool IsKeyWord(FdoString* word)
 {
     return findtoken(word, g_aKeyWords, KEYWORDCOUNT) >= 0;
 }
+
 
 

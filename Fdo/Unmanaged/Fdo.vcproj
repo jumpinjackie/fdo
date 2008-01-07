@@ -523,6 +523,22 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Src\Fdo\Expression\IntBinValue.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Inc\Fdo\Expression\IntBinValue.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Src\Fdo\Expression\IntHexValue.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Inc\Fdo\Expression\IntHexValue.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Src\Fdo\Expression\LiteralValueCollection.cpp"
 					>
 				</File>

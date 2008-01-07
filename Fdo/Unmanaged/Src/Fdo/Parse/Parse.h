@@ -51,6 +51,8 @@ typedef uint32_t         FdoUInt32;
 #include <Fdo/Expression/Int64Value.h>
 #include <Fdo/Expression/SingleValue.h>
 #include <Fdo/Expression/StringValue.h>
+#include <Fdo/Expression/IntHexValue.h>
+#include <Fdo/Expression/IntBinValue.h>
 #include <Fdo/Expression/ComputedIdentifier.h>
 #include <Fdo/Commands/IdentifierCollection.h>
 
@@ -249,4 +251,5 @@ extern FdoInt32		fdo_filter_yylex(FdoParse*);
 #define Node_Trace(a)	
 #endif
 #endif
+
 
