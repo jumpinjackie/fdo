@@ -34,7 +34,7 @@ static FdoSmPhSqsColTypeMapEntry smallMoneyEntry( FdoSmPhColType_Decimal, L"smal
 static FdoSmPhSqsColTypeMapEntry doubleEntry( FdoSmPhColType_Double, L"float" );
 static FdoSmPhSqsColTypeMapEntry realEntry( FdoSmPhColType_Double, L"real" );
 static FdoSmPhSqsColTypeMapEntry geomEntry( FdoSmPhColType_Geom, L"geometry" );
-static FdoSmPhSqsColTypeMapEntry geomEntrySpatial( FdoSmPhColType_Geom, L"" ); 
+static FdoSmPhSqsColTypeMapEntry geogEntry( FdoSmPhColType_Geom, L"geography" );
 static FdoSmPhSqsColTypeMapEntry stringEntry( FdoSmPhColType_String, L"varchar" );
 static FdoSmPhSqsColTypeMapEntry unicodeStringEntry( FdoSmPhColType_String, L"nvarchar" );
 static FdoSmPhSqsColTypeMapEntry longIntEntry( FdoSmPhColType_Int32, L"integer" );
@@ -63,7 +63,7 @@ FdoSmPhSqsColTypeMapEntry* FdoSmPhSqsColTypeMapper::mMap[] = {
     &doubleEntry,
     &realEntry,
     &geomEntry,
-    &geomEntrySpatial,
+    &geogEntry,
     &stringEntry,
 	&unicodeStringEntry,
     &longIntEntry,

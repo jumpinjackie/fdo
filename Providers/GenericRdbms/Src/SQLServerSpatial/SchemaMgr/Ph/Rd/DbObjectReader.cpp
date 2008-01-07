@@ -150,13 +150,10 @@ FdoSmPhReaderP FdoSmPhRdSqsDbObjectReader::MakeQueryReader(
             // Create binds for owner and optional object names
             FdoSmPhRdSqsDbObjectBindsP binds = new FdoSmPhRdSqsDbObjectBinds(
                 mgr,
-                L"a.TABLE_CATALOG",
-                L"owner_name",
                 L"a.TABLE_SCHEMA",
                 L"user_name",
                 L"a.TABLE_NAME",
                 L"object_name",
-                ownerName,
                 objectNames
             );
 
@@ -210,7 +207,7 @@ FdoSmPhReaderP FdoSmPhRdSqsDbObjectReader::MakeQueryReader(
                 L"  LEFT OUTER JOIN %ls.dbo.syscolumns d ON (b.id = d.id and COLUMNPROPERTY(d.id, d.name, 'IsIdentity') = 1) \n"
                 L"%ls\n"
                 L" where\n"
-                L" %ls %ls %ls\n"
+                L" %ls %ls %ls %ls\n"
                 L" order by a.TABLE_SCHEMA collate latin1_general_bin asc, a.TABLE_NAME collate latin1_general_bin asc",
                 join ? L"distinct" : L"",
                 (FdoString*)ownerName,
@@ -218,8 +215,10 @@ FdoSmPhReaderP FdoSmPhRdSqsDbObjectReader::MakeQueryReader(
                 (FdoString*)ownerName,
                 (FdoString*)ownerName,
                 (FdoString*)joinFrom,
-                L"a.TABLE_TYPE in ('BASE TABLE', 'VIEW') and ", //This was done because format string got too long.
+                L"a.TABLE_TYPE in ('BASE TABLE', 'VIEW')", //This was done because format string got too long.
+                (qualification == L"") ? L"" : L" and ",
                 (FdoString*) qualification,
+
                 (objectNames->GetCount() == 1) ? L"" : L" and (TABLE_SCHEMA != 'dbo' or TABLE_NAME not in ( 'sysconstraints', 'syssegments')) "
             );
 
@@ -242,13 +241,10 @@ FdoSmPhReaderP FdoSmPhRdSqsDbObjectReader::MakeQueryReader(
 
             FdoSmPhRdSqsDbObjectBindsP binds = new FdoSmPhRdSqsDbObjectBinds(
                 mgr,
-                L"a.TABLE_CATALOG",
-                L"owner_name",
                 L"a.TABLE_SCHEMA",
                 L"user_name",
                 L"a.TABLE_NAME",
                 L"object_name",
-                ownerName,
                 objectNames,
                 bindRow,
                 true

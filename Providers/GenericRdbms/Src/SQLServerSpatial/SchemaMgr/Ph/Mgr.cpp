@@ -262,7 +262,7 @@ bool FdoSmPhSqsMgr::IsRdbObjNameAscii7()
     if ( (!owner) || (!owner->GetHasMetaSchema()) ) 
         return false;
 
-    FdoSmPhDbObjectP dbObject = owner->FindDbObject( L"f_classdefinition" );
+    FdoSmPhDbObjectP dbObject = owner->FindDbObject( L"dbo.f_classdefinition" );
     if ( !dbObject ) 
         return false;
 

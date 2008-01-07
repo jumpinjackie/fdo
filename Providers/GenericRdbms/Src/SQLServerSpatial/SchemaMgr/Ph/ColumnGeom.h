@@ -21,6 +21,7 @@
 #include <Inc/rdbi.h>
 #include <Sm/Ph/ColumnGeom.h>
 #include "Column.h"
+#include "Owner.h"
 
 // Represents a SqlServer geometric type column.
 class FdoSmPhSqsColumnGeom :
@@ -46,6 +47,8 @@ public:
         return RDBI_GEOMETRY;
     }
 
+    virtual FdoInt64 GetSRID();
+
     virtual void SetElementState(FdoSchemaElementState elementState);
 
     // Creates a spatial index for this column. Throws an exception if column
@@ -63,6 +66,8 @@ protected:
 
     virtual void PostFinalize();
 
+private:
+  	FdoInt64 mSRID;
 };
 
 typedef FdoPtr<FdoSmPhSqsColumnGeom> FdoSmPhSqsColumnGeomP;

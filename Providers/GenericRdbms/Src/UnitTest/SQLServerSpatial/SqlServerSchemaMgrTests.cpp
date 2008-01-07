@@ -22,9 +22,182 @@
 #include "ConnectionUtil.h"
 #include "SqlServerConnectionUtil.h"
 #include "../../SQLServerSpatial/SchemaMgr/Ph/Mgr.h"
+#include "../../SchemaMgr/Ph/Owner.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION( SqlServerSchemaMgrTests );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( SqlServerSchemaMgrTests, "SchemaMgrTests");
+
+void SqlServerSchemaMgrTests::testSpatialContextsGeog()
+{
+    StaticConnection* conn = CreateStaticConnection();
+    FdoPtr<FdoIConnection> fdoConn;
+
+    try
+    {
+        char prvenv[100];
+        FdoStringP providerName = conn->GetServiceName();
+        sprintf( prvenv, "provider=%ls", (FdoString*) providerName );
+#ifdef _WIN32
+        _putenv( prvenv );
+#else
+        putenv( prvenv );
+#endif
+
+        // Sets the other env.
+        UnitTestUtil::SetProvider( conn->GetServiceName() ); 
+
+        printf( "\nOpening Connection ...\n" );
+
+        conn->connect();
+
+        FdoSchemaManagerP mgr = conn->CreateSchemaManager();
+
+        FdoSmPhGrdMgrP phMgr = mgr->GetPhysicalSchema()->SmartCast<FdoSmPhGrdMgr>();
+
+        FdoSmPhDatabaseP database = phMgr->GetDatabase();
+
+        printf( "Predeleting schema ...\n" );
+
+        FdoStringP datastore = phMgr->GetDcOwnerName(
+            UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX)
+        );
+
+        FdoSmPhOwnerP owner = phMgr->FindOwner( datastore, L"", false );
+        if ( owner ) {
+            owner->SetElementState( FdoSchemaElementState_Deleted );
+            owner->Commit();
+        }
+
+        printf( "Creating schema ...\n" );
+
+        owner = database->CreateOwner(
+            datastore, 
+            false
+        );
+        owner->SetPassword( L"test" );
+
+
+        FdoSmPhTableP table = owner->CreateTable( phMgr->GetDcDbObjectName(L"table1" ));
+        FdoSmPhColumnP column = table->CreateColumnInt32( L"id", false );
+        table->AddPkeyCol( column->GetName() );
+
+        FdoSmPhScInfoP scinfo = CreateSc( GetSrid(0), -90, -180, 90, 180, 0.0333, 0.0111 );
+        column = table->CreateColumnGeom( L"geog_column1", scinfo, true, true );
+        column->SetTypeName(L"geography");
+        
+        scinfo = CreateSc( GetSrid(0), -1001, -1002, 1001, 1002, 0.0333, 0.0111 );
+        column = table->CreateColumnGeom( L"geom_column2", scinfo, true, false );
+        
+        table = owner->CreateTable( phMgr->GetDcDbObjectName(L"table2" ));
+        column = table->CreateColumnInt32( L"id", false );
+        table->AddPkeyCol( column->GetName() );
+        
+        scinfo = CreateSc( GetSrid(0), -90, -180, 90, 180, 0.0333, 0.0111 );
+        column = table->CreateColumnGeom( L"geog_column1", scinfo, true, true );
+        column->SetTypeName(L"geography");
+        
+        table = owner->CreateTable( phMgr->GetDcDbObjectName(L"table3" ));
+        column = table->CreateColumnInt32( L"id", false );
+        table->AddPkeyCol( column->GetName() );
+        
+        scinfo = CreateSc( GetSrid(0), -100, 45, -90, 55, 0.0333, 0.0111 );
+        column = table->CreateColumnGeom( L"geom_column1", scinfo, true, true );
+        
+        table = owner->CreateTable( phMgr->GetDcDbObjectName(L"table4" ));
+        column = table->CreateColumnInt32( L"id", false );
+        table->AddPkeyCol( column->GetName() );
+        
+        scinfo = CreateSc( GetSrid(0), -90, -180, 90, 180, 0.0333, 0.0111 );
+        column = table->CreateColumnGeom( L"geog_column1", scinfo, true, true );
+        column->SetTypeName(L"geography");
+        
+        table = owner->CreateTable( phMgr->GetDcDbObjectName(L"table5" ));
+        column = table->CreateColumnInt32( L"id", false );
+        table->AddPkeyCol( column->GetName() );
+        
+        scinfo = CreateSc( GetSrid(0), -90, -180, 90, 180, 0.0333, 0.0111 );
+        column = table->CreateColumnGeom( L"geog_column1", scinfo, true, true );
+        column->SetTypeName(L"geography");
+        
+        
+        owner->Commit();
+
+
+        FdoSmPhGrdOwnerP grdOwner = owner->SmartCast<FdoSmPhGrdOwner>();
+
+        FdoStringP sqlStmt = FdoStringP::Format( 
+            L"insert into table3 ( id, geom_column1 ) values ( 1, geometry::STGeomFromText('POINT ( 10 15 )', %I64d) )", 
+            GetSrid(1)
+        );
+        grdOwner->ActivateAndExecute( (FdoString*) sqlStmt );
+
+        sqlStmt = FdoStringP::Format( 
+            L"insert into table4 ( id, geog_column1 ) values ( 1, geography::STGeomFromText('POINT ( 10 15 )', %I64d) )", 
+            GetSrid(2)
+        );
+        grdOwner->ActivateAndExecute( (FdoString*) sqlStmt );
+
+        sqlStmt = FdoStringP::Format( 
+            L"insert into table5 ( id, geog_column1 ) values ( 1, geography::STGeomFromText('POINT ( 10 15 )', %I64d) )", 
+            GetSrid(1)
+        );
+        grdOwner->ActivateAndExecute( (FdoString*) sqlStmt );
+
+        phMgr = NULL;
+        mgr = NULL;
+        conn->disconnect();
+        delete conn;
+
+		printf( "Connecting and Describing ...\n" );
+
+        fdoConn = UnitTestUtil::CreateConnection(
+            false,
+            false,
+            DB_NAME_SUFFIX
+        );
+
+        FdoIoMemoryStreamP stream1 = FdoIoMemoryStream::Create();
+
+        FdoXmlSpatialContextFlagsP flags = FdoXmlSpatialContextFlags::Create(
+            L"fdo.osgeo.org/schemas/feature",
+            FdoXmlFlags::ErrorLevel_Normal,
+            true,
+            FdoXmlSpatialContextFlags::ConflictOption_Add,
+            true
+        );
+
+        UnitTestUtil::ExportDb( 
+            fdoConn, 
+            stream1, 
+            flags,
+            false, 
+            FdoStringP(L"Fdo") + datastore
+        );
+		UnitTestUtil::Stream2File( stream1, UnitTestUtil::GetOutputFileName( L"spatial_contexts3.xml" ) );
+
+        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_SUFFIX );
+
+        UnitTestUtil::CheckOutput( 
+            FdoStringP::Format(L"spatial_contexts3_%ls_master.txt", (FdoString*) providerName),
+            UnitTestUtil::GetOutputFileName( L"spatial_contexts3.xml" )
+        );
+
+        printf( "Done\n" );
+    }
+    catch (FdoException* e ) 
+    {
+        UnitTestUtil::FailOnException(e);
+    }
+    catch (CppUnit::Exception exception)
+    {
+        throw exception;
+    }
+    catch (...)
+    {
+        CPPUNIT_FAIL ("unexpected exception encountered");
+    }
+}
+
 
 StaticConnection* SqlServerSchemaMgrTests::CreateStaticConnection()
 {
@@ -35,8 +208,8 @@ FdoIoStream* SqlServerSchemaMgrTests::OverrideBend( FdoIoStream* stream1, FdoStr
 {
     FdoIoMemoryStream* stream2 = FdoIoMemoryStream::Create();
     UnitTestUtil::OverrideBend( stream1, stream2, 
-        "Autodesk.SqlServer.3.3", 
-        "http://www.autodesk.com/isd/fdo/SQLServerProvider",
+        "Autodesk.SqlServerSpatial.3.3", 
+        "http://www.autodesk.com/isd/fdo/SQLServerSpatialProvider",
         oldOwnerPrefix,newOwnerPrefix);
 
     return stream2;
@@ -273,8 +446,29 @@ FdoStringP SqlServerSchemaMgrTests::table2class( FdoSmPhGrdMgrP mgr, FdoStringP 
     return mgr->GetDcDbObjectName( tableName ).Right(L".");
 }
 
+FdoStringP SqlServerSchemaMgrTests::table2qclass( FdoSmPhGrdMgrP mgr, FdoStringP datastoreName, FdoStringP tableName )
+{
+    return FdoStringP(L"dbo:") + table2class(mgr, tableName);
+}
+
 bool SqlServerSchemaMgrTests::SupportsBaseObjects()
 {
     return true;
+}
+
+FdoInt64 SqlServerSchemaMgrTests::GetSrid( int index )
+{
+    FdoInt64 srid = 0;
+
+    switch ( index ) {
+    case 1: 
+        srid = 4120;
+        break;
+    case 2: 
+        srid = 4236;
+        break;
+    }
+
+    return srid;
 }
 

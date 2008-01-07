@@ -21,13 +21,10 @@
 
 FdoSmPhRdSqsDbObjectBinds::FdoSmPhRdSqsDbObjectBinds(
     FdoSmPhMgrP mgr,
-    FdoStringP ownerFieldName,
-    FdoStringP ownerAlias,
     FdoStringP userFieldName,
     FdoStringP userAlias,
     FdoStringP objectFieldName,
     FdoStringP objectAlias,
-    FdoStringP ownerName,
     FdoStringsP objectNames,
     FdoSmPhRowP binds,
     bool rebind
@@ -49,20 +46,13 @@ FdoSmPhRdSqsDbObjectBinds::FdoSmPhRdSqsDbObjectBinds(
     // figure out offset of owner name bind field.
     if ( rebind ) {
         // If rebinding, look it up in bind fields collection
-        bindOffset = mBinds->RefFields()->IndexOf( ownerAlias );
+        bindOffset = mBinds->RefFields()->IndexOf( userAlias );
     }
     else {
         // Not rebinding so owner bind will be added to the end of bind collection.
         bindOffset = mBinds->RefFields()->GetCount();
 
         FdoSmPhDbObjectP rowObj = mBinds->GetDbObject();
-
-        // Add owner name bind field.
-        FdoSmPhFieldP field = new FdoSmPhField(
-            mBinds,
-            ownerAlias,
-            rowObj->CreateColumnDbObject(ownerAlias,false)
-        );
 
         // Add a user name and object name bind field for each object.
         for ( objectIx = 0; objectIx < objectNames->GetCount(); objectIx++ ) {
@@ -72,7 +62,7 @@ FdoSmPhRdSqsDbObjectBinds::FdoSmPhRdSqsDbObjectBinds(
                 objectIx + 1
             );
 
-            field = new FdoSmPhField(
+            FdoSmPhFieldP field = new FdoSmPhField(
                 mBinds,
                 bindFieldName,
                 rowObj->CreateColumnDbObject(bindFieldName,false)
@@ -94,10 +84,9 @@ FdoSmPhRdSqsDbObjectBinds::FdoSmPhRdSqsDbObjectBinds(
 
     // Set bind value for owner
 	FdoSmPhFieldsP	fields = mBinds->GetFields();
-    FdoSmPhFieldP(fields->GetItem(bindOffset))->SetFieldValue( ownerName );
 
     // Set bind values for objects.
-    for ( objectIx = 0, ix = (bindOffset + 1); objectIx < objectNames->GetCount(); objectIx++ ) {
+    for ( objectIx = 0, ix = bindOffset; objectIx < objectNames->GetCount(); objectIx++ ) {
         FdoStringP fullObjectName = objectNames->GetString( objectIx );
         FdoStringP userName;
         FdoStringP objectName;
@@ -120,13 +109,10 @@ FdoSmPhRdSqsDbObjectBinds::FdoSmPhRdSqsDbObjectBinds(
 
     // Generate SQL
 
-    // Owner bind first
-    FdoStringP sqlOwnerBind = mgr->FormatBindField(bindOffset);
-
     FdoStringsP sqlObjectBinds = FdoStringCollection::Create();
 
     // Object name binds next.
-    for ( objectIx = 0, ix = (bindOffset + 1); objectIx < objectNames->GetCount(); objectIx++ ) {
+    for ( objectIx = 0, ix = bindOffset; objectIx < objectNames->GetCount(); objectIx++ ) {
         FdoStringP userBind =  mgr->FormatBindField(ix++);
         FdoStringP objectBind =  mgr->FormatBindField(ix++);
 
@@ -141,16 +127,9 @@ FdoSmPhRdSqsDbObjectBinds::FdoSmPhRdSqsDbObjectBinds(
         );
     }
 
-    // Put owner and object binds together.
-    mSQL = FdoStringP::Format(
-            L"%ls = %ls",
-            (FdoString*) ownerFieldName,
-            (FdoString*) sqlOwnerBind
-    );
-
     if ( objectNames->GetCount() > 0 ) {
         mSQL += FdoStringP::Format(
-                L" and ( %ls )",
+                L" ( %ls )",
                 (FdoString*) sqlObjectBinds->ToString( L" or " )
         );
     }

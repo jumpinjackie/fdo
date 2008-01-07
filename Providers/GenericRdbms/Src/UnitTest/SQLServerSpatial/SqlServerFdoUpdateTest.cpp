@@ -32,7 +32,7 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( SqlServerFdoUpdateTest, "FdoUpdateTest");
 void SqlServerFdoUpdateTest::set_provider()
 {
 	UnitTestUtil::SetProvider( "SQLServerSpatial" );
-	m_hasGeom = false;
+	m_hasGeom = true;
 	m_hasAssoc = true;
 }
 
@@ -396,3 +396,20 @@ void SqlServerFdoUpdateTest::TestRectangleFilter(
     CPPUNIT_ASSERT( rowCount == numRowsExpected );
     rdr->Close();
 }
+
+
+FdoStringP SqlServerFdoUpdateTest::FixStringVal( FdoString* val )
+{
+    int i;
+
+
+    for ( i = (wcslen(val) - 1); i > 0; i-- ) {
+        if ( val[i] != ' ' ) 
+            break;
+    }
+
+    FdoStringP ret = FdoStringP(val).Mid(0, i + 1 );
+  
+    return ret;
+}
+

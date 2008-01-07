@@ -20,6 +20,12 @@
 #include <Sm/Ph/Rd/SpatialContextReader.h>
 #include <Sm/Ph/Table.h>
 
+const double FdoSmPhRdSpatialContextReader::mDefaultXMin = -2000000;
+const double FdoSmPhRdSpatialContextReader::mDefaultYMin = -2000000;
+const double FdoSmPhRdSpatialContextReader::mDefaultXMax = 2000000;
+const double FdoSmPhRdSpatialContextReader::mDefaultYMax = 2000000;;
+
+
 FdoSmPhRdSpatialContextReader::FdoSmPhRdSpatialContextReader()
 {
 }
@@ -89,7 +95,7 @@ FdoSpatialContextExtentType FdoSmPhRdSpatialContextReader::GetExtentType()
 FdoByteArray* FdoSmPhRdSpatialContextReader::GetExtent()
 {
 	FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-    FdoPtr<FdoIEnvelope>          env = gf->CreateEnvelopeXY( -2000000, -2000000, 2000000, 2000000 );
+    FdoPtr<FdoIEnvelope>          env = gf->CreateEnvelopeXY( mDefaultXMin, mDefaultYMin, mDefaultXMax, mDefaultYMax );
     FdoPtr<FdoIGeometry> geom = gf->CreateGeometry(env); 
 
     return  (gf->GetFgf(geom));

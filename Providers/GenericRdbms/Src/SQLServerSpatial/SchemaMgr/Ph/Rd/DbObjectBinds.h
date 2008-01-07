@@ -32,10 +32,6 @@ class FdoSmPhRdSqsDbObjectBinds : public FdoSmPhSchemaElement
 public:
 	FdoSmPhRdSqsDbObjectBinds(
         FdoSmPhMgrP mgr,                 // Physical Schema Manager
-        FdoStringP ownerFieldName,       // name of column representing the owner name.
-                                         // can be qualified by table alias to resolve ambiguity
-        FdoStringP ownerAlias,           // owner column alias (as defined in the select clause
-                                         // of the destination select statement).
         FdoStringP userFieldName,        // name of column representing the user name part of an object.
                                          // can be qualified by table alias to resolve ambiguity
         FdoStringP userAlias,            // user name column alias (as defined in the select clause
@@ -44,7 +40,6 @@ public:
                                          // can be qualified by table alias to resolve ambiguity
         FdoStringP objectAlias,         // object name column alias (as defined in the select clause
                                          // of the destination select statement).
-        FdoStringP ownerName,            // owner. A bind field is generated for this owner.
         FdoStringsP objectNames,         // list of names of objects to select 
                                          // a bind field is generated for each name.
                                          // the list can be empty, in which case no object names are bound.

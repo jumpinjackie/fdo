@@ -302,6 +302,40 @@ FdoSmPhSpatialContextGeomP FdoSmPhOwner::FindSpatialContextGeom( FdoStringP dbOb
     return scGeom;
 }
 
+FdoSmPhCoordinateSystemP FdoSmPhOwner::FindCoordinateSystem( FdoInt64 srid )
+{
+    FdoSmPhCoordinateSystemP coordSys;
+
+    // Check the cache first
+    if ( mCoordinateSystems ) 
+        coordSys = mCoordinateSystems->FindItemById( srid );
+
+    if ( !coordSys ) {
+        // Not in the cache, load from the RDBMS and try again.
+        LoadCoordinateSystems( CreateCoordSysReader(srid) );
+        coordSys = mCoordinateSystems->FindItemById( srid );
+    }
+
+    return coordSys;
+}
+
+FdoSmPhCoordinateSystemP FdoSmPhOwner::FindCoordinateSystem( FdoStringP csName )
+{
+    FdoSmPhCoordinateSystemP coordSys;
+
+    // Check the cache first
+    if ( mCoordinateSystems ) 
+        coordSys = mCoordinateSystems->FindItem( csName );
+
+    if ( !coordSys ) {
+        // Not in the cache, load from the RDBMS and try again.
+        LoadCoordinateSystems( CreateCoordSysReader(csName) );
+        coordSys = mCoordinateSystems->FindItem( csName );
+    }
+
+    return coordSys;
+}
+
 FdoStringP FdoSmPhOwner::GetBestSchemaName() const
 {
     return FdoSmPhMgr::RdSchemaPrefix + GetName();
@@ -380,6 +414,11 @@ FdoPtr<FdoSmPhRdConstraintReader> FdoSmPhOwner::CreateConstraintReader( FdoSmPhR
 }
 
 FdoPtr<FdoSmPhRdCoordSysReader> FdoSmPhOwner::CreateCoordSysReader( FdoStringP csysName) const
+{
+    return new FdoSmPhRdCoordSysReader();
+}
+
+FdoPtr<FdoSmPhRdCoordSysReader> FdoSmPhOwner::CreateCoordSysReader( FdoInt64 srid ) const
 {
     return new FdoSmPhRdCoordSysReader();
 }
@@ -793,45 +832,48 @@ bool FdoSmPhOwner::IsDbObjectNameReserved( FdoStringP objectName )
 	if ( !bReserved && FindDbObject(objectName) )
 		bReserved = true;
 
-    // Also check if this name is used by a constraint
-    FdoSmPhRdConstraintReaderP conRdr = CreateConstraintReader(objectName);
-    if ( conRdr->ReadNext() ) 
-        bReserved = true;
+    // The rest of the checks are unnecessary if this datastore does not yet exist.
+    if ( GetElementState() != FdoSchemaElementState_Added ) {
+        // Also check if this name is used by a constraint
+        FdoSmPhRdConstraintReaderP conRdr = CreateConstraintReader(objectName);
+        if ( conRdr->ReadNext() ) 
+            bReserved = true;
 
-	if ( !bReserved ) {
-		// Still not found. Check if it is referenced by the metaschema.
+	    if ( !bReserved ) {
+		    // Still not found. Check if it is referenced by the metaschema.
 
-        FdoSmPhDbObjectP classDef = FindDbObject( GetManager()->GetDcDbObjectName(L"f_classdefinition") );
-        FdoSmPhDbObjectP attDef = FindDbObject( GetManager()->GetDcDbObjectName(L"f_attributedefinition") );
-        FdoStringP localObjectName = GetManager()->DbObject2MetaSchemaName(objectName);
+            FdoSmPhDbObjectP classDef = FindDbObject( GetManager()->GetDcDbObjectName(L"f_classdefinition") );
+            FdoSmPhDbObjectP attDef = FindDbObject( GetManager()->GetDcDbObjectName(L"f_attributedefinition") );
+            FdoStringP localObjectName = GetManager()->DbObject2MetaSchemaName(objectName);
 
-        if ( classDef && attDef ) {
-		    FdoStringP statement = 
-			    FdoStringP::Format( 
-				    L"select 1 from %ls where tablename in ( %ls, %ls ) union select 1 from %ls where tablename in ( %ls, %ls )",
-				    (FdoString*)(GetManager()->GetDcDbObjectName(L"f_classdefinition")),
-                    (FdoString*) GetManager()->FormatSQLVal(objectName, FdoSmPhColType_String),
-                    (FdoString*) GetManager()->FormatSQLVal(localObjectName, FdoSmPhColType_String),
-                    (FdoString*)(GetManager()->GetDcDbObjectName(L"f_attributedefinition")),
-				    (FdoString*) GetManager()->FormatSQLVal(objectName, FdoSmPhColType_String),
-				    (FdoString*) GetManager()->FormatSQLVal(localObjectName, FdoSmPhColType_String)
-			    );
+            if ( classDef && attDef ) {
+		        FdoStringP statement = 
+			        FdoStringP::Format( 
+				        L"select 1 from %ls where tablename in ( %ls, %ls ) union select 1 from %ls where tablename in ( %ls, %ls )",
+				        (FdoString*)(GetManager()->GetDcDbObjectName(L"f_classdefinition")),
+                        (FdoString*) GetManager()->FormatSQLVal(objectName, FdoSmPhColType_String),
+                        (FdoString*) GetManager()->FormatSQLVal(localObjectName, FdoSmPhColType_String),
+                        (FdoString*)(GetManager()->GetDcDbObjectName(L"f_attributedefinition")),
+				        (FdoString*) GetManager()->FormatSQLVal(objectName, FdoSmPhColType_String),
+				        (FdoString*) GetManager()->FormatSQLVal(localObjectName, FdoSmPhColType_String)
+			        );
 
-		    // Running a query for each table is not the most efficient way to do 
-		    // things but this query is only run when schemas are updated. 
+		        // Running a query for each table is not the most efficient way to do 
+		        // things but this query is only run when schemas are updated. 
 
-            FdoSmPhRowP row = new FdoSmPhRow( GetManager(), L"findtable" );
-            FdoSmPhColumnP column = FdoSmPhDbObjectP(row->GetDbObject())->CreateColumnInt16( L"one", true );
-            FdoSmPhFieldP field = new FdoSmPhField( row, L"one", column, L"", false );
-		    FdoSmPhRdQueryReaderP tableRef = GetManager()->CreateQueryReader( row, statement );
+                FdoSmPhRowP row = new FdoSmPhRow( GetManager(), L"findtable" );
+                FdoSmPhColumnP column = FdoSmPhDbObjectP(row->GetDbObject())->CreateColumnInt16( L"one", true );
+                FdoSmPhFieldP field = new FdoSmPhField( row, L"one", column, L"", false );
+		        FdoSmPhRdQueryReaderP tableRef = GetManager()->CreateQueryReader( row, statement );
 
-		    if ( tableRef->ReadNext() ) {
-			    // Table is referenced by metaschema
-			    bReserved = true;
-			    mReservedDbObjectNames->Add(objectName);
-		    }
-        }
-	}
+		        if ( tableRef->ReadNext() ) {
+			        // Table is referenced by metaschema
+			        bReserved = true;
+			        mReservedDbObjectNames->Add(objectName);
+		        }
+            }
+	    }
+    }
 
 	return(bReserved);
 }
@@ -1340,3 +1382,22 @@ void FdoSmPhOwner::LoadSpatialContexts( FdoStringP dbObjectName )
     }
 }
 
+void FdoSmPhOwner::LoadCoordinateSystems( FdoSmPhRdCoordSysReaderP rdr )
+{
+    if ( !mCoordinateSystems ) 
+        mCoordinateSystems = new FdoSmPhCoordinateSystemCollection();
+
+    while ( rdr->ReadNext() ) {
+        FdoSmPhCoordinateSystemP coordSys = new FdoSmPhCoordinateSystem(
+            GetManager(),
+            rdr->GetString(L"", L"name"),
+            L"",
+            rdr->GetInt64(L"", L"srid"),
+            rdr->GetString(L"", L"wktext")
+        );
+
+        // Add the coordinate system to the cache if not already present.
+        if ( !mCoordinateSystems->FindItem(coordSys->GetName()) )
+            mCoordinateSystems->Add( coordSys );
+    }
+}

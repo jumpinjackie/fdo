@@ -19,8 +19,8 @@
 #ifndef FDORDBMSSQLSERVERPROVIDERINFO_H
 #define FDORDBMSSQLSERVERPROVIDERINFO_H
 
-#define RDBMS_SQLSERVER_PROVIDER_NAME L"Autodesk.SqlServer.3.3"
-#define RDBMS_SQLSERVER_PROVIDER_DEFAULT_DISPLAY_NAME "Autodesk FDO Provider for SQL Server"
+#define RDBMS_SQLSERVER_PROVIDER_NAME L"Autodesk.SqlServerSpatial.3.3"
+#define RDBMS_SQLSERVER_PROVIDER_DEFAULT_DISPLAY_NAME "OSGeo FDO Provider Provider for SQL Server Spatial"
 #define RDBMS_SQLSERVER_PROVIDER_DEFAULT_DESCRIPTION "Read/write access to feature data in a MS SQL Server-based data store. Supports geospatial and nongeospatial data and schema R/W access."
 #define RDBMS_SQLSERVER_PROVIDER_VERSION L"3.3.0.0"
 #define RDBMS_SQLSERVER_FDO_VERSION L"3.3.0.0"

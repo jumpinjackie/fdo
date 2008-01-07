@@ -92,6 +92,7 @@ protected:
     virtual FdoStringP TableNoIdNoGeomName();
     virtual FdoStringP Key2ColName();
     virtual FdoStringP ValueColName();
+    virtual FdoStringP FixStringVal( FdoString* val );
 
 protected:
 	static FdoPropertyValue* AddNewProperty( FdoPropertyValueCollection* propertyValues, const wchar_t *name );

@@ -154,7 +154,7 @@ void FdoSqlServerOvPhysicalSchemaMapping::InitFromXml(FdoXmlSaxContext* pContext
 
 void FdoSqlServerOvPhysicalSchemaMapping::_writeXmlAttributes(FdoXmlWriter* xmlWriter, const FdoXmlFlags* flags)
 {
-    xmlWriter->WriteAttribute( L"xmlns", L"http://www.autodesk.com/isd/fdo/SqlServerProvider" );
+    xmlWriter->WriteAttribute( L"xmlns", L"http://www.autodesk.com/isd/fdo/SqlServerSpatialProvider" );
 
     if ( mDatabase.GetLength() > 0 )
         xmlWriter->WriteAttribute( L"database", mDatabase );

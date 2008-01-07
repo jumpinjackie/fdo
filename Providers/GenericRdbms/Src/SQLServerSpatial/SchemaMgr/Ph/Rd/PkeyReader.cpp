@@ -112,13 +112,10 @@ FdoSmPhReaderP FdoSmPhRdSqsPkeyReader::MakeReader(
         // Create binds for owner and optional object names
         FdoSmPhRdSqsDbObjectBindsP binds = new FdoSmPhRdSqsDbObjectBinds(
             mgr,
-            L"tc.TABLE_CATALOG",
-            L"owner_name",
             L"tc.TABLE_SCHEMA",
             L"user_name",
             L"tc.TABLE_NAME",
             L"object_name",
-            ownerName,
             objectNames
             );
 
@@ -178,13 +175,14 @@ FdoSmPhReaderP FdoSmPhRdSqsPkeyReader::MakeReader(
 		  L" where (tc.CONSTRAINT_CATALOG = kcu.CONSTRAINT_CATALOG\n"
 		  L"     and tc.CONSTRAINT_SCHEMA = kcu.CONSTRAINT_SCHEMA\n"
 		  L"     and tc.CONSTRAINT_NAME = kcu.CONSTRAINT_NAME\n"
-		  L"     and %ls\n"
+		  L"     %ls %ls\n"
 		  L"     and tc.CONSTRAINT_TYPE = 'PRIMARY KEY')\n"
 		  L" order by tc.TABLE_SCHEMA collate latin1_general_bin asc, tc.TABLE_NAME collate latin1_general_bin asc, kcu.ORDINAL_POSITION asc",
           join ? L"distinct" : L"",
 		  (FdoString*) ownerName,
 		  (FdoString*) ownerName,
           (FdoString*)joinFrom,
+          (qualification == L"") ? L"" : L"and",
           (FdoString*) qualification
 		);
 
@@ -208,13 +206,10 @@ FdoSmPhReaderP FdoSmPhRdSqsPkeyReader::MakeReader(
 
             FdoSmPhRdSqsDbObjectBindsP binds = new FdoSmPhRdSqsDbObjectBinds(
                 mgr,
-                L"tc.TABLE_CATALOG",
-                L"owner_name",
                 L"tc.TABLE_SCHEMA",
                 L"user_name",
                 L"tc.TABLE_NAME",
                 L"object_name",
-                ownerName,
                 objectNames,
                 bindRow,
                 true

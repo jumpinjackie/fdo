@@ -1583,6 +1583,220 @@ void SchemaMgrTests::testGenConfigGeom()
     //TODO: add tests for autogenerating geometric property attributes.
 }
 
+void SchemaMgrTests::testSpatialContexts()
+{
+    StaticConnection* conn = CreateStaticConnection();
+    FdoPtr<FdoIConnection> fdoConn;
+
+    try
+    {
+        char prvenv[100];
+        FdoStringP providerName = conn->GetServiceName();
+        sprintf( prvenv, "provider=%ls", (FdoString*) providerName );
+#ifdef _WIN32
+        _putenv( prvenv );
+#else
+        putenv( prvenv );
+#endif
+
+        // Sets the other env.
+        UnitTestUtil::SetProvider( conn->GetServiceName() ); 
+
+        printf( "\nOpening Connection ...\n" );
+
+        conn->connect();
+
+        FdoSchemaManagerP mgr = conn->CreateSchemaManager();
+
+        FdoSmPhGrdMgrP phMgr = mgr->GetPhysicalSchema()->SmartCast<FdoSmPhGrdMgr>();
+
+        FdoSmPhDatabaseP database = phMgr->GetDatabase();
+
+        printf( "Predeleting schema ...\n" );
+
+        FdoStringP datastore = phMgr->GetDcOwnerName(
+            UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX)
+        );
+
+        FdoStringP className2 = table2qclass( phMgr, datastore, L"TABLE2" );
+        FdoStringP className4 = table2qclass( phMgr, datastore, L"TABLE4" );
+
+        FdoSmPhOwnerP owner = phMgr->FindOwner( datastore, L"", false );
+        if ( owner ) {
+            owner->SetElementState( FdoSchemaElementState_Deleted );
+            owner->Commit();
+        }
+
+        printf( "Creating schema ...\n" );
+
+        owner = database->CreateOwner(
+            datastore, 
+            false
+        );
+        owner->SetPassword( L"test" );
+
+
+        FdoSmPhTableP table = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE1" ));
+        FdoSmPhColumnP column = table->CreateColumnInt32( L"ID", false );
+        table->AddPkeyCol( column->GetName() );
+
+        FdoSmPhScInfoP scinfo = CreateSc( GetSrid(0), -1001, -1002, 1001, 1002, 0.0333, 0.0111 );
+        column = table->CreateColumnGeom( L"GEOM_COLUMN1", scinfo, true, true );
+        
+        scinfo = CreateSc( GetSrid(0), -1001, -1002, 1001, 1002, 0.0333, 0.0111 );
+        column = table->CreateColumnGeom( L"GEOM_COLUMN2", scinfo, true, false );
+        
+        scinfo = CreateSc( GetSrid(1), -1001, -1002, 1001, 1002, 0.0333, 0.0111 );
+        column = table->CreateColumnGeom( L"GEOM_COLUMN3", scinfo, true, true );
+
+        scinfo = CreateSc( GetSrid(0), -2001, -1002, 1001, 1002, 0.0333, 0.0111 );
+        column = table->CreateColumnGeom( L"GEOM_COLUMN4", scinfo, true, true );
+
+        scinfo = CreateSc( GetSrid(0), -1001, -2002, 1001, 1002, 0.0333, 0.0111 );
+        column = table->CreateColumnGeom( L"GEOM_COLUMN5", scinfo, true, true );
+
+        scinfo = CreateSc( GetSrid(0), -1001, -1002, 2001, 1002, 0.0333, 0.0111 );
+        column = table->CreateColumnGeom( L"GEOM_COLUMN6", scinfo, true, true );
+        
+        scinfo = CreateSc( GetSrid(0), -1001, -1002, 1001, 2002, 0.0333, 0.0111 );
+        column = table->CreateColumnGeom( L"GEOM_COLUMN7", scinfo, true, true );
+        
+        scinfo = CreateSc( GetSrid(0), -1001, -1002, 1001, 1002, 0.0222, 0.0111 );
+        column = table->CreateColumnGeom( L"GEOM_COLUMN8", scinfo, true, true );
+        
+        table = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE2" ));
+        column = table->CreateColumnInt32( L"ID", false );
+        table->AddPkeyCol( column->GetName() );
+        
+        scinfo = CreateSc( GetSrid(0), -1001, -1002, 1001, 1002, 0.0333, 0.0222 );
+        column = table->CreateColumnGeom( L"GEOM_COLUMN1", scinfo, true, true );
+        
+        scinfo = CreateSc( GetSrid(0), -1001, -1002, 1001, 1002, 0.0333, 0.0111 );
+        column = table->CreateColumnGeom( L"GEOM_COLUMN2", scinfo, true, true );
+        
+        scinfo = CreateSc( GetSrid(1), -1001, -1002, 1001, 1002, 0.0333, 0.0111 );
+        column = table->CreateColumnGeom( L"GEOM_COLUMN3", scinfo, true, true );
+
+        table = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE3" ));
+        column = table->CreateColumnInt32( L"ID", false );
+        table->AddPkeyCol( column->GetName() );
+        
+        scinfo = CreateSc( GetSrid(0), -1001, -1002, 1001, 1002, 0.0333, 0.0111 );
+        column = table->CreateColumnGeom( L"GEOM_COLUMN1", scinfo, true, true );
+        
+        scinfo = CreateSc( GetSrid(1), -1001, -1002, 1001, 1002, 0.0333, 0.0111 );
+        column = table->CreateColumnGeom( L"GEOM_COLUMN2", scinfo, true, true );
+
+        table = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE4" ));
+        column = table->CreateColumnInt32( L"ID", false );
+        table->AddPkeyCol( column->GetName() );
+        
+        scinfo = CreateSc( GetSrid(0), -1001, -1002, 1001, 2002, 0.0333, 0.0111 );
+        column = table->CreateColumnGeom( L"GEOM_COLUMN1", scinfo, true, true );
+        
+        scinfo = CreateSc( GetSrid(1), -1001, -1002, 1001, 3002, 0.0333, 0.0111 );
+        column = table->CreateColumnGeom( L"GEOM_COLUMN2", scinfo, true, true );
+
+        table = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE5" ));
+        column = table->CreateColumnInt32( L"ID", false );
+        table->AddPkeyCol( column->GetName() );
+        
+        scinfo = CreateSc( GetSrid(0), -1001, -1002, 1001, 1002, 0.0333, 0.0111 );
+        column = table->CreateColumnGeom( L"GEOM_COLUMN1", scinfo, true, true );
+        
+        owner->Commit();
+
+        phMgr = NULL;
+        mgr = NULL;
+        conn->disconnect();
+        delete conn;
+
+		printf( "Connecting and Describing ...\n" );
+
+        fdoConn = UnitTestUtil::CreateConnection(
+            false,
+            false,
+            DB_NAME_SUFFIX
+        );
+
+        FdoIoMemoryStreamP stream1 = FdoIoMemoryStream::Create();
+
+        FdoXmlSpatialContextFlagsP flags = FdoXmlSpatialContextFlags::Create(
+            L"fdo.osgeo.org/schemas/feature",
+            FdoXmlFlags::ErrorLevel_Normal,
+            true,
+            FdoXmlSpatialContextFlags::ConflictOption_Add,
+            true
+        );
+
+        UnitTestUtil::ExportDb( 
+            fdoConn, 
+            stream1, 
+            flags,
+            false, 
+            FdoStringP(L"Fdo") + datastore
+        );
+		UnitTestUtil::Stream2File( stream1, UnitTestUtil::GetOutputFileName( L"spatial_contexts1.xml" ) );
+
+        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_SUFFIX );
+
+        UnitTestUtil::CheckOutput( 
+            FdoStringP::Format(L"spatial_contexts1_%ls_master.txt", (FdoString*) providerName),
+            UnitTestUtil::GetOutputFileName( L"spatial_contexts1.xml" )
+        );
+
+		printf( "Connecting, selecting and Describing ...\n" );
+
+        fdoConn = UnitTestUtil::CreateConnection(
+            false,
+            false,
+            DB_NAME_SUFFIX
+        );
+
+        FdoPtr<FdoISelect> select = (FdoISelect*)fdoConn->CreateCommand(FdoCommandType_Select); 
+        select->SetFeatureClassName(className2);
+	    FdoPtr<FdoIFeatureReader> rdr = select->Execute();
+        rdr->ReadNext();
+
+        select = (FdoISelect*)fdoConn->CreateCommand(FdoCommandType_Select); 
+        select->SetFeatureClassName(className4);
+	    rdr = select->Execute();
+        rdr->ReadNext();
+        
+        stream1 = FdoIoMemoryStream::Create();
+
+        UnitTestUtil::ExportDb( 
+            fdoConn, 
+            stream1, 
+            flags,
+            false, 
+            FdoStringP(L"Fdo") + datastore
+        );
+		UnitTestUtil::Stream2File( stream1, UnitTestUtil::GetOutputFileName( L"spatial_contexts2.xml" ) );
+
+        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_SUFFIX );
+
+        UnitTestUtil::CheckOutput( 
+            FdoStringP::Format(L"spatial_contexts2_%ls_master.txt", (FdoString*) providerName),
+            UnitTestUtil::GetOutputFileName( L"spatial_contexts2.xml" )
+        );
+
+        printf( "Done\n" );
+    }
+    catch (FdoException* e ) 
+    {
+        UnitTestUtil::FailOnException(e);
+    }
+    catch (CppUnit::Exception exception)
+    {
+        throw exception;
+    }
+    catch (...)
+    {
+        CPPUNIT_FAIL ("unexpected exception encountered");
+    }
+}
+
 void SchemaMgrTests::CreateTableGroup( FdoSmPhOwnerP owner, FdoStringP prefix, FdoInt32 count, int lt_mode )
 {
     int i;
@@ -1858,6 +2072,11 @@ FdoStringP SchemaMgrTests::table2class( FdoSmPhGrdMgrP mgr, FdoStringP tableName
     return mgr->GetDcDbObjectName( tableName );
 }
 
+FdoStringP SchemaMgrTests::table2qclass( FdoSmPhGrdMgrP mgr, FdoStringP datastoreName, FdoStringP tableName )
+{
+    return FdoStringP(L"Fdo") + mgr->GetDcOwnerName(datastoreName) + L":" + mgr->GetDcDbObjectName( tableName );
+}
+
 
 void SchemaMgrTests::AddProviderColumns( FdoSmPhTableP table )
 {
@@ -1889,6 +2108,27 @@ bool SchemaMgrTests::SupportsBaseObjects()
 bool SchemaMgrTests::SupportsViewPkey()
 {
     return false;
+}
+
+FdoSmPhScInfoP SchemaMgrTests::CreateSc( FdoInt64 srid, double minx, double miny, double maxx, double maxy, double xtol, double ztol )
+{
+    FdoSmPhScInfoP scinfo = FdoSmPhScInfo::Create();
+    scinfo->mSrid = srid;
+    scinfo->mCoordSysName = L"";
+
+   	FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoIEnvelope>          env = gf->CreateEnvelopeXY( minx, miny, maxx, maxy );
+       FdoPtr<FdoIGeometry>		  geom = gf->CreateGeometry(env); 
+    scinfo->mExtent = gf->GetFgf(geom);
+    scinfo->mXYTolerance = xtol;
+    scinfo->mZTolerance = ztol;
+
+    return scinfo;
+}
+
+FdoInt64 SchemaMgrTests::GetSrid( int index )
+{
+    return 0;
 }
 
 SchemaMgrTests::ExpectedClassGeometricProperty::ExpectedClassGeometricProperty ()

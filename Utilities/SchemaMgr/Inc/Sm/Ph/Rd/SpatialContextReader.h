@@ -89,6 +89,11 @@ public:
     /// Get the next row and make it current.
 	virtual bool ReadNext();
 
+    static const double mDefaultXMin;
+    static const double mDefaultYMin;
+    static const double mDefaultXMax;
+    static const double mDefaultYMax;
+
 protected:
 	FdoSmPhRdSpatialContextReader();
 

@@ -854,7 +854,9 @@ void FdoRdbmsSqlServerFilterProcessor::PrependSelectStar(FdoString *tableName)
         }
         else
         {
+            PrependString(L"\"");
             PrependString(colName);
+            PrependString(L"\"");
         }
 
         PrependString(L".");
