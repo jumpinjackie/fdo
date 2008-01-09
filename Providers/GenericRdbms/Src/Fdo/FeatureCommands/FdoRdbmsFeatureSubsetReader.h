@@ -25,7 +25,7 @@ class FdoRdbmsFeatureSubsetReader : public FdoRdbmsFeatureReader
 {
     friend class FdoRdbmsSelectCommand;
 public:
-    FdoRdbmsFeatureSubsetReader( FdoIConnection *connection, GdbiQueryResult *queryResult, bool isFeatureQuery, const FdoSmLpClassDefinition *classDef, FdoFeatureSchemaCollection *schmCol, FdoIdentifierCollection *properties, FdoRdbmsSecondarySpatialFilterCollection * secondarySpatialFilters );
+    FdoRdbmsFeatureSubsetReader( FdoIConnection *connection, GdbiQueryResult *queryResult, bool isFeatureQuery, const FdoSmLpClassDefinition *classDef, FdoFeatureSchemaCollection *schmCol, FdoIdentifierCollection *properties, FdoRdbmsSecondarySpatialFilterCollection * secondarySpatialFilters, vector<int> *logicalOps );
 
     virtual bool     ReadNext( );
 

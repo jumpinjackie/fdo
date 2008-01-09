@@ -143,7 +143,10 @@ class FdoRdbmsFeatureReader: public FdoIFeatureReader
       FdoRdbmsFeatureReader()
       {
       }
-      FdoRdbmsFeatureReader( FdoIConnection *connection, GdbiQueryResult *queryResult, bool isFeatureQuery, const FdoSmLpClassDefinition *classDef, FdoFeatureSchemaCollection *schmCol, FdoIdentifierCollection *properties = NULL, int level=0, FdoRdbmsSecondarySpatialFilterCollection * secondarySpatialFilters=NULL);
+      FdoRdbmsFeatureReader( FdoIConnection *connection, GdbiQueryResult *queryResult, bool isFeatureQuery, 
+							 const FdoSmLpClassDefinition *classDef, FdoFeatureSchemaCollection *schmCol, 
+							 FdoIdentifierCollection *properties = NULL, int level=0, 
+							 FdoRdbmsSecondarySpatialFilterCollection * secondarySpatialFilters=NULL, vector<int> *logicalOps = NULL);
 
       FdoRdbmsFeatureReader(const FdoRdbmsFeatureReader &right);
 
@@ -272,11 +275,11 @@ public:
       dbi_pn_id_t       mOldActiveSC;
       dbi_pn_id_t       mNewActiveSC;
 
-    // List of secondary spatial filters that apply to this filter.  The current way of storing 
-    // them does not include structure of binary conditions, so it is assumed that these
-    // are all applied equally ("and" of all conditions must be satisfied in any 
-    // secondary spatial filtering).
+    // List of secondary spatial filters that apply to this filter.
     FdoRdbmsSecondarySpatialFilters     mSecondarySpatialFilters;
+
+	// Logical operations list that apply to the secondary spatial filters.
+	vector<int>							mFilterLogicalOps;
 
 	// A cache of property definition names to avoid expensive string conversions
 	FdoRdbmsPropertyInfoDef   *mPropertyInfoDefs;

@@ -1905,3 +1905,13 @@ SymbolicName=FDORDBMS_531
 Language=English
 %1$ls: Cannot execute request because Workspace Manager is not installed
 .
+MessageId=2757
+SymbolicName=FDORDBMS_532
+Language=English
+AND and OR not supported in a query when mixing property with spatial filters 
+.
+MessageId=2758
+SymbolicName=FDORDBMS_533
+Language=English
+NOT operator not supported with spatial filters
+.

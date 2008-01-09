@@ -138,7 +138,7 @@ private:
 
 
 // Class FdoRdbmsFeatureReader
-FdoRdbmsFeatureReader::FdoRdbmsFeatureReader( FdoIConnection *connection, GdbiQueryResult* queryResult, bool  isFeatureQuery, const FdoSmLpClassDefinition *classDef, FdoFeatureSchemaCollection *schmCol, FdoIdentifierCollection *properties, int level, FdoRdbmsSecondarySpatialFilterCollection * secondarySpatialFilters):
+FdoRdbmsFeatureReader::FdoRdbmsFeatureReader( FdoIConnection *connection, GdbiQueryResult* queryResult, bool  isFeatureQuery, const FdoSmLpClassDefinition *classDef, FdoFeatureSchemaCollection *schmCol, FdoIdentifierCollection *properties, int level, FdoRdbmsSecondarySpatialFilterCollection * secondarySpatialFilters, vector<int> *logicalOps):
   mQueryResult(queryResult),
   mNextQidToFree( 0 ),
   mFdoConnection( NULL ),
@@ -196,6 +196,13 @@ FdoRdbmsFeatureReader::FdoRdbmsFeatureReader( FdoIConnection *connection, GdbiQu
     ChangeActiveSpatialContext();
 
     mSecondarySpatialFilters = FDO_SAFE_ADDREF(secondarySpatialFilters);
+
+	// Make a copy
+	if ( logicalOps )
+	{
+		for ( size_t i = 0; i < logicalOps->size(); i++)
+			mFilterLogicalOps.push_back( logicalOps->at(i) );
+	}
 }
 
 
@@ -1810,36 +1817,66 @@ bool FdoRdbmsFeatureReader::ReadNextWithLocalFilter()
     mPropertiesFetched = false;
     bool noMore = false;
 
+	// Do this only in the case of spatial filters only
+	FdoInt32	numFilters = mSecondarySpatialFilters ? mSecondarySpatialFilters->GetCount() : 0;
+	FdoInt32	numLogicalOps = (FdoInt32) mFilterLogicalOps.size();
+	bool		doSecFilter = false;
+
+	// Optimization: in case all the filters are primary filters, no further processing is needed.
+    for (FdoInt32 i = 0;  i < numFilters && !doSecFilter;  i++)
+    { 
+        FdoPtr<FdoRdbmsSpatialSecondaryFilter> filter = mSecondarySpatialFilters->GetItem(i);
+		doSecFilter = ( filter->GetOperation() != FdoSpatialOperations_EnvelopeIntersects );
+	}
+
     while (!mPropertiesFetched && !noMore)
     {
         mPropertiesFetched = ( this->mQueryResult->ReadNext() != 0 );
 
-        if (mPropertiesFetched)
+        if (mPropertiesFetched && ( numFilters > 0 ) && doSecFilter)
         {
-            if (mSecondarySpatialFilters != NULL && mSecondarySpatialFilters->GetCount() > 0)
-            {
-                FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-                for (FdoInt32 i=0;  i < mSecondarySpatialFilters->GetCount();  i++)
-                {
-                    FdoPtr<FdoRdbmsSpatialSecondaryFilter> filter = mSecondarySpatialFilters->GetItem(i);
-                    FdoString * geomPropName = filter->GetPropertyName();
-                    mHasMoreFeatures = true;    // Fake out flag so property fetch doesn't balk.
-                    FdoPtr<FdoByteArray> ba = this->GetGeometry(geomPropName, false, mQueryResult);
-                    mHasMoreFeatures = false;
-                    if (ba == NULL)
-                    {
-                        mPropertiesFetched = false;
-                    }
-                    else
-                    {
-                        FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(ba);
-                        if (!filter->MeetsCondition(geom))
-                        {
-                            mPropertiesFetched = false;
-                        }
-                    }
-                }
-            }
+			// Evaluate each filter 
+			for (FdoInt32 i = 0;  i < numFilters;  i++)
+			{
+				FdoPtr<FdoRdbmsSpatialSecondaryFilter> filter = mSecondarySpatialFilters->GetItem(i);
+				FdoString * geomPropName = filter->GetPropertyName();
+				mHasMoreFeatures = true;    // Fake out flag so property fetch doesn't balk.
+				FdoPtr<FdoByteArray> ba = this->GetGeometry(geomPropName, false, mQueryResult);
+				mHasMoreFeatures = false;
+
+				// Evaluate the current logical operation.
+				int	currLogicalOp = (i == 0)? (int)FdoBinaryLogicalOperations_Or : 
+											  mFilterLogicalOps.at(i-1);
+
+				if (ba == NULL)
+				{
+					mPropertiesFetched = false;
+				}
+				else 
+				{
+					FdoPtr<FdoFgfGeometryFactory>	gf = FdoFgfGeometryFactory::GetInstance();
+					FdoPtr<FdoIGeometry>			geom = gf->CreateGeometryFromFgf(ba);
+
+					bool	pass = filter->MeetsCondition(geom);
+
+					if ( pass && (currLogicalOp == FdoBinaryLogicalOperations_Or ) )
+					{
+						mPropertiesFetched = true;
+					}
+					else if ( !pass && (currLogicalOp == FdoBinaryLogicalOperations_And ) )
+					{
+						mPropertiesFetched = false;
+					}
+					else if ( pass && (currLogicalOp == FdoBinaryLogicalOperations_And ) )
+					{
+						mPropertiesFetched = mPropertiesFetched; // Unchanged
+					}
+					else // i.e. ( !pass && (currLogicalOp == FdoBinaryLogicalOperations_Or ) )
+					{
+						mPropertiesFetched = (i == 0)? false : mPropertiesFetched;
+					}	
+				}
+			}
         }
         else
         {

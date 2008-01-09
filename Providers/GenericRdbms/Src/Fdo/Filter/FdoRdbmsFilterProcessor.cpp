@@ -68,6 +68,7 @@ FdoRdbmsFilterProcessor::~FdoRdbmsFilterProcessor(void)
 
 	mCurrentTableRelationArray.clear();
 	mClassArray.clear();
+	mFilterLogicalOps.clear();
 }
 
 //
@@ -83,6 +84,8 @@ void FdoRdbmsFilterProcessor::ResetBuffer( SqlCommandType cmdType )
 
     if (mSecondarySpatialFilters != NULL)
         mSecondarySpatialFilters->Clear();
+
+   	mFilterLogicalOps.clear();
 }
 
 //
@@ -758,6 +761,9 @@ void FdoRdbmsFilterProcessor::ProcessBinaryLogicalOperator(FdoBinaryLogicalOpera
     }
 
     AppendString(CLOSE_PARENTH);
+
+  	// Save 
+	mFilterLogicalOps.push_back( filter.GetOperation() );
 }
 
 void FdoRdbmsFilterProcessor::ProcessComparisonCondition(FdoComparisonCondition& filter)
@@ -858,6 +864,9 @@ void FdoRdbmsFilterProcessor::ProcessUnaryLogicalOperator(FdoUnaryLogicalOperato
 
     HandleFilter( unaryOp );
     AppendString(CLOSE_PARENTH);
+
+	// Save 
+	mFilterLogicalOps.push_back( filter.GetOperation() );
 }
 
 

@@ -188,6 +188,8 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
                                                              callerId );
 
         FdoPtr<FdoRdbmsSecondarySpatialFilterCollection> geometricConditions = flterProcessor->GetGeometricConditions();
+   		vector<int> * logicalOps = flterProcessor->GetFilterLogicalOps();
+
         FdoPtr<FdoIdentifierCollection> idsWithGeoms = FdoIdentifierCollection::Create();
 
         if (( mIdentifiers && mIdentifiers->GetCount() > 0) )
@@ -238,12 +240,15 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
             }
         }
 
+		// Test the spatial queries validity. Not all filters are currently supported.
+		CheckSpatialFilters( geometricConditions, logicalOps );
+
         GdbiQueryResult *queryRslt = mConnection->GetGdbiConnection()->ExecuteQuery( sqlString );
 
         if (( mIdentifiers && mIdentifiers->GetCount() > 0) )
-            return new FdoRdbmsFeatureSubsetReader( FdoPtr<FdoIConnection>(GetConnection()), queryRslt, isFeatureClass, classDefinition, NULL, mIdentifiers, geometricConditions );
+            return new FdoRdbmsFeatureSubsetReader( FdoPtr<FdoIConnection>(GetConnection()), queryRslt, isFeatureClass, classDefinition, NULL, mIdentifiers, geometricConditions, logicalOps );
         else
-            return new FdoRdbmsFeatureReader( FdoPtr<FdoIConnection>(GetConnection()), queryRslt, isFeatureClass, classDefinition, NULL, NULL, 0, geometricConditions ); // The feature reader should free the queryRslt
+            return new FdoRdbmsFeatureReader( FdoPtr<FdoIConnection>(GetConnection()), queryRslt, isFeatureClass, classDefinition, NULL, NULL, 0, geometricConditions, logicalOps ); // The feature reader should free the queryRslt
 
     }
 
@@ -576,3 +581,23 @@ FdoRdbmsFeatureReader *FdoRdbmsSelectCommand::GetOptimizedFeatureReader( const F
     return reader;
 }
 
+void FdoRdbmsSelectCommand::CheckSpatialFilters( FdoRdbmsSecondarySpatialFilterCollection * geometricConditions, vector<int> *logicalOps )
+{
+	// Do this only in the case of spatial filters only
+	FdoInt32	numFilters = geometricConditions ? geometricConditions->GetCount() : 0;
+	FdoInt32	numLogicalOps = logicalOps ? (FdoInt32) logicalOps->size() : 0;
+
+	if ( numFilters > 0 )
+	{	
+		// NOT operators not supported with spatial filters.
+		for ( FdoInt32 i = 0;  i < numLogicalOps;  i++ )
+		{
+			if ( logicalOps->at(i) == -1 /*FdoUnaryLogicalOperations_Not*/ )
+				throw FdoCommandException::Create( NlsMsgGet(FDORDBMS_533, "NOT operator not supported with spatial filters" ) );
+		}
+
+		// The number of binary operators should match the number of spatial filters. 
+		if ( numLogicalOps != (numFilters - 1) )
+			throw FdoCommandException::Create( NlsMsgGet(FDORDBMS_532, "AND and OR not supported in a query when mixing property with spatial filters" ) );
+	}
+}
