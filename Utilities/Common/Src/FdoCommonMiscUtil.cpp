@@ -473,6 +473,44 @@ int FdoCommonMiscUtil::CompareDateTimes(FdoDateTime d1, FdoDateTime d2)
     return 0;  // d1==d2 if we get here
 }
 
+int FdoCommonMiscUtil::CompareDateTimes2(FdoDateTime dt1, FdoDateTime dt2)
+{
+    if ( (dt1.IsDateTime() || dt1.IsDate()) && (dt2.IsDateTime() || dt2.IsDate()))
+    {
+        if ( dt1.year < dt2.year ) 
+            return -1;
+        else if ( dt1.year > dt2.year )
+            return 1;
+        else if ( dt1.month < dt2.month )
+            return -1;
+        else if ( dt1.month > dt2.month )
+            return 1;
+        else if ( dt1.day < dt2.day )
+            return -1;
+        else if ( dt1.day > dt2.day )
+            return 1;
+    }
+
+    if ( (dt1.IsDateTime() || dt1.IsTime()) && (dt2.IsDateTime() || dt2.IsTime()) )
+    {
+
+        // Compare hour, minute and seconds
+        if ( dt1.hour < dt2.hour ) 
+            return -1;
+        else if ( dt1.hour > dt2.hour )
+            return 1;
+        else if ( dt1.minute < dt2.minute )
+            return -1;
+        else if ( dt1.minute > dt2.minute )
+            return 1;
+        else if ( dt1.seconds < dt2.seconds)
+            return -1;
+        else if ( dt1.seconds > dt2.seconds )
+            return 1;
+    }
+
+    return 0;
+}
 
 int FdoCommonMiscUtil::CompareDataValues(FdoDataValue *d1, FdoDataValue *d2)
 {
@@ -939,12 +977,7 @@ bool FdoCommonMiscUtil::IsEqualTo (FdoDataValue* argLeft, FdoDataValue* argRight
 
                 t1 = ((FdoDateTimeValue*)argLeft)->GetDateTime ();
                 t2 = ((FdoDateTimeValue*)argRight)->GetDateTime ();
-                ret = ((t1.year == t2.year) &&
-                       (t1.month == t2.month) &&
-                       (t1.day == t2.day) &&
-                       (t1.hour == t2.hour) &&
-                       (t1.minute == t2.minute) &&
-                       (t1.seconds == t2.seconds));
+                ret = CompareDateTimes2(t1, t2) == 0;
             }
             break;
         case FdoDataType_Decimal:
@@ -1264,12 +1297,7 @@ bool FdoCommonMiscUtil::IsLessThan (FdoDataValue* argLeft, FdoDataValue* argRigh
 
                 t1 = ((FdoDateTimeValue*)argLeft)->GetDateTime ();
                 t2 = ((FdoDateTimeValue*)argRight)->GetDateTime ();
-                ret = ((t1.year < t2.year) ||
-                      ((t1.year == t2.year) && (t1.month < t2.month)) ||
-                      ((t1.year == t2.year) && (t1.month == t2.month) && (t1.day < t2.day)) ||
-                      ((t1.year == t2.year) && (t1.month == t2.month) && (t1.day == t2.day) && (t1.hour < t2.hour)) ||
-                      ((t1.year == t2.year) && (t1.month == t2.month) && (t1.day == t2.day) && (t1.hour == t2.hour) && (t1.minute < t2.minute)) ||
-                      ((t1.year == t2.year) && (t1.month == t2.month) && (t1.day == t2.day) && (t1.hour == t2.hour) && (t1.minute == t2.minute) && (t1.seconds < t2.seconds)));
+                ret = CompareDateTimes2(t1, t2) < 0;
             }
             break;
         case FdoDataType_Decimal:
@@ -1551,12 +1579,7 @@ bool FdoCommonMiscUtil::IsGreaterThan (FdoDataValue* argLeft, FdoDataValue* argR
 
                 t1 = ((FdoDateTimeValue*)argLeft)->GetDateTime ();
                 t2 = ((FdoDateTimeValue*)argRight)->GetDateTime ();
-                ret = ((t1.year > t2.year) ||
-                      ((t1.year == t2.year) && (t1.month > t2.month)) ||
-                      ((t1.year == t2.year) && (t1.month == t2.month) && (t1.day > t2.day)) ||
-                      ((t1.year == t2.year) && (t1.month == t2.month) && (t1.day == t2.day) && (t1.hour > t2.hour)) ||
-                      ((t1.year == t2.year) && (t1.month == t2.month) && (t1.day == t2.day) && (t1.hour == t2.hour) && (t1.minute > t2.minute)) ||
-                      ((t1.year == t2.year) && (t1.month == t2.month) && (t1.day == t2.day) && (t1.hour == t2.hour) && (t1.minute == t2.minute) && (t1.seconds > t2.seconds)));
+                ret = CompareDateTimes2(t1, t2) > 0;
             }
             break;
         case FdoDataType_Decimal:
