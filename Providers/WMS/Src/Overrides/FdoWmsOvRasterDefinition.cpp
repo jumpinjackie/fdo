@@ -28,7 +28,8 @@ FdoWmsOvRasterDefinition::FdoWmsOvRasterDefinition(void) :
     m_formatDesc(FdoWmsGlobals::RasterMIMEFormat_PNG),
     m_hasFormat(false),
     m_hasFormatType(false),
-    m_transparent(false)
+    m_transparent(false),
+    m_useTileCache(true)
 {
 	m_layers = FdoWmsOvLayerCollection::Create(this);
 }
@@ -82,6 +83,16 @@ FdoBoolean FdoWmsOvRasterDefinition::GetTransparent(void) const
 void FdoWmsOvRasterDefinition::SetTransparent(FdoBoolean transparent)
 {
     m_transparent = transparent;
+}
+
+FdoBoolean FdoWmsOvRasterDefinition::GetUseTileCache(void) const
+{
+    return m_useTileCache;
+}
+
+void FdoWmsOvRasterDefinition::SetUseTileCache(FdoBoolean value)
+{
+    m_useTileCache = value;
 }
 
 FdoString* FdoWmsOvRasterDefinition::GetBackgroundColor(void) const
@@ -164,7 +175,7 @@ FdoXmlSaxHandler* FdoWmsOvRasterDefinition::XmlStartElement(
                      FdoCommonStringUtil::StringCompareNoCase(name, FdoWmsXmlGlobals::g_WmsTimeDimension) == 0 ||
                      FdoCommonStringUtil::StringCompareNoCase(name, FdoWmsXmlGlobals::g_WmsElevationDimension) == 0 ||
                      FdoCommonStringUtil::StringCompareNoCase(name, FdoWmsXmlGlobals::g_WmsSpatialContext) == 0 ||
-                     FdoCommonStringUtil::StringCompareNoCase(name, FdoWmsXmlGlobals::g_WmsTransparent) == 0) 
+                     FdoCommonStringUtil::StringCompareNoCase(name, FdoWmsXmlGlobals::g_WmsUseTileCache) == 0) 
             {
                 m_pXmlContentHandler = FdoXmlCharDataHandler::Create();
                 pRet = m_pXmlContentHandler;
@@ -197,6 +208,9 @@ FdoBoolean FdoWmsOvRasterDefinition::XmlEndElement(FdoXmlSaxContext* context, Fd
         }
         else if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::g_WmsTransparent) == 0) {
             _SetTransparent(m_pXmlContentHandler->GetString());
+        }
+        else if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::g_WmsUseTileCache) == 0) {
+            _SetUseTileCache(m_pXmlContentHandler->GetString());
         }
         else if (FdoCommonOSUtil::wcsicmp(name, FdoWmsXmlGlobals::g_WmsBackgroundColor) == 0) {
             SetBackgroundColor(m_pXmlContentHandler->GetString());
@@ -241,6 +255,10 @@ void FdoWmsOvRasterDefinition::_writeXml( FdoXmlWriter* xmlWriter, const FdoXmlF
 
     xmlWriter->WriteStartElement(FdoWmsXmlGlobals::g_WmsTransparent);
     xmlWriter->WriteCharacters(_GetTransparent());
+    xmlWriter->WriteEndElement();
+
+    xmlWriter->WriteStartElement(FdoWmsXmlGlobals::g_WmsUseTileCache);
+    xmlWriter->WriteCharacters(_GetUseTileCache());
     xmlWriter->WriteEndElement();
 
     xmlWriter->WriteStartElement(FdoWmsXmlGlobals::g_WmsBackgroundColor);
@@ -355,6 +373,31 @@ void FdoWmsOvRasterDefinition::_SetTransparent(FdoString* value)
     }
 
     SetTransparent(transparent);
+}
+
+void FdoWmsOvRasterDefinition::_SetUseTileCache(FdoString* value)
+{
+    VALIDATE_ARGUMENT(value);
+
+    FdoBoolean useTileCache = true;
+    if (FdoCommonStringUtil::StringCompareNoCase(value, FdoWmsXmlGlobals::g_WmsTrue) == 0) {
+        useTileCache = true;
+    }
+    else if (FdoCommonStringUtil::StringCompareNoCase(value, FdoWmsXmlGlobals::g_WmsFalse) == 0) {
+        useTileCache = false;
+    }
+    else {
+        throw FdoSchemaException::Create (NlsMsgGet (FDOWMS_INVALID_XMLSCHEMA_USETILECACHE_VALUE, "'%1$ls' is not a valid XML use tile cache value.", value));
+    }
+
+    SetUseTileCache(useTileCache);
+}
+
+FdoStringP FdoWmsOvRasterDefinition::_GetUseTileCache(void) const
+{
+    FdoStringP strUseTileCache;
+    strUseTileCache = (GetUseTileCache() == true ? L"true" : L"false");
+    return strUseTileCache;
 }
 
 FdoStringP FdoWmsOvRasterDefinition::GetQualifiedName()

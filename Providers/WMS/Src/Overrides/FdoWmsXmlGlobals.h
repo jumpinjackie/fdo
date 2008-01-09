@@ -35,6 +35,7 @@ namespace FdoWmsXmlGlobals
     static FdoString* g_WmsImageFormatType                  = L"FormatType";
 
     static FdoString* g_WmsTransparent                      = L"Transparent";
+    static FdoString* g_WmsUseTileCache                     = L"UseTileCache";
     static FdoString* g_WmsBackgroundColor                  = L"BackgroundColor";
     static FdoString* g_WmsTimeDimension                    = L"Time";
     static FdoString* g_WmsElevationDimension               = L"Elevation";

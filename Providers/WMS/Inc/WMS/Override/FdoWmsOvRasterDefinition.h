@@ -137,6 +137,30 @@ public:
     FDOWMS_API void SetBackgroundColor(FdoString* bgColor);
 
     /// \brief
+    /// Gets the tile caching option value.
+    /// 
+    /// \remarks
+    /// This option specifies whether using the tile caching method to query the raster data. 
+    /// The default value is true.
+    ///
+    /// \return
+    /// Returns a FdoBoolean indicating whether using tile cache or not.
+    /// 
+    FDOWMS_API FdoBoolean GetUseTileCache(void) const;
+
+    /// \brief
+    /// Sets the tile caching option value.
+    /// 
+    /// \remarks
+    /// This option specifies whether using the tile caching method to query the raster data. 
+    /// The default value is true.
+    /// 
+    /// \return
+    /// Returns nothing.
+    /// 
+    FDOWMS_API void SetUseTileCache(FdoBoolean value);
+
+    /// \brief
     /// Gets the time dimension of the requested WMS map.
     /// 
     /// \remarks
@@ -277,6 +301,8 @@ protected:
 
     void _SetTransparent(FdoString* value);
     FdoStringP _GetTransparent(void) const;
+    void _SetUseTileCache(FdoString* value);
+    FdoStringP _GetUseTileCache(void) const;
 	void Dispose(void);
 
     FdoStringP MIMEFormatTypeToAbbr(FdoString* fullFormat);
@@ -287,6 +313,7 @@ private:
     FdoStringP m_elevationDimension;
     FdoStringP m_spatialContext;
     FdoBoolean m_transparent;
+    FdoBoolean m_useTileCache;
     FdoStringP m_formatType;
     FdoStringP m_formatDesc;
 	FdoWmsOvLayersP m_layers;

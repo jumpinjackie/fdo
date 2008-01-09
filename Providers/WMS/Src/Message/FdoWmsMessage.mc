@@ -374,6 +374,11 @@ SymbolicName=FDOWMS_PHYSICAL_CLASS_DEFINITION_HAS_NO_LAYERS
 Language=English
 No WMS layers are found in physical class definition '%1$ls'.
 .
+MessageId=4021
+SymbolicName=FDOWMS_INVALID_XMLSCHEMA_USETILECACHE_VALUE
+Language=English
+'%1$ls' is not a valid XML use tile cache value.
+.
 
 ;//************************************************************************************
 ;//************************************************************************************

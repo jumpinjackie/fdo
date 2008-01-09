@@ -65,6 +65,18 @@ public:
     /// to be overlaid, producing a composite map. </remarks>
 	__property System::Void set_Transparent(System::Boolean transparent);  
 
+    /// <summary> Gets the tile caching option value. </summary>
+    /// <returns> Returns a FdoBoolean indicating whether using tile cache or not. </returns> 
+    /// <remarks> This option specifies whether using the tile caching method to query the raster data.
+    /// The default value is true.</remarks> 
+    __property System::Boolean get_UseTileCache();
+
+    /// <summary> Sets the tile caching option value. </summary>
+    /// <returns> Returns nothing. </returns> 
+    /// <remarks> This option specifies whether using the tile caching method to query the raster data.
+    /// The default value is true.</remarks> 
+    __property System::Void set_UseTileCache(System::Boolean value);
+
     /// <summary>Gets the background color.</summary>
     /// <returns>Returns a System::String indicating the background color 
     /// to be used when rendering the WMS image.</returns> 
