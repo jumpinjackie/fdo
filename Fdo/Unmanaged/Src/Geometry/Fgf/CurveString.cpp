@@ -39,7 +39,6 @@ FdoFgfCurveString::FdoFgfCurveString(
     : FdoFgfGeometryImpl<FdoICurveString>(factory, pools)
 {
 	if ( (NULL == curveSegs) ||
-		  (NULL == factory) ||
           (0 == curveSegs->GetCount()) )
 		 throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
                                                                 L"FdoFgfCurveString",

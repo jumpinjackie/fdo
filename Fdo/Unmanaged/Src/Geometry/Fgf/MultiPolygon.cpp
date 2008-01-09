@@ -34,8 +34,7 @@ FdoFgfMultiPolygon::FdoFgfMultiPolygon(
     : FdoFgfGeometryImpl<FdoIMultiPolygon>(factory, pools)
 {
 	if ( (NULL == polygons) ||
-         (0 == polygons->GetCount()) ||
-		 (NULL == factory) )
+         (0 == polygons->GetCount()) )
 		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
                                                                L"FdoFgfMultiPolygon",
                                                                L"polygons/factory"));

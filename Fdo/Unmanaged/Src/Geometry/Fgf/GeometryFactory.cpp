@@ -210,7 +210,7 @@ FdoILineString* FdoFgfGeometryFactory::CreateLineString(FdoDirectPositionCollect
     FDOPOOL_CREATE_OBJECT(
         m_private->m_geometryPools->m_PoolLineString, FdoPoolFgfLineString, 4,
         FdoFgfLineString,
-        FdoFgfLineString(this, m_private->GetPoolsForGeomCtor(), positions),
+        FdoFgfLineString((m_private->m_useThreadLocal)?NULL:this, m_private->GetPoolsForGeomCtor(), positions),
         Reset(positions) );
 }
 
@@ -219,7 +219,7 @@ FdoILineString* FdoFgfGeometryFactory::CreateLineString(FdoInt32 dimensionType, 
     FDOPOOL_CREATE_OBJECT(
         m_private->m_geometryPools->m_PoolLineString, FdoPoolFgfLineString, 4,
         FdoFgfLineString,
-        FdoFgfLineString(this, m_private->GetPoolsForGeomCtor(), dimensionType, numOrdinates, ordinates),
+        FdoFgfLineString((m_private->m_useThreadLocal)?NULL:this, m_private->GetPoolsForGeomCtor(), dimensionType, numOrdinates, ordinates),
         Reset(dimensionType, numOrdinates, ordinates) );
 }
 
@@ -324,7 +324,7 @@ FdoIGeometry * FdoFgfGeometryFactory::CreateGeometryFromFgf(
 
 #define CASE_CREATE_POOLED_GEOMETRY(type) \
     case FdoGeometryType_##type: \
-        newGeometry = m_private->m_geometryPools->Create##type(this, m_private->GetPoolsForGeomCtor(), byteArray, byteArrayData, count); \
+	newGeometry = m_private->m_geometryPools->Create##type((m_private->m_useThreadLocal)?NULL:this, m_private->GetPoolsForGeomCtor(), byteArray, byteArrayData, count); \
         break;
 
     // Acquire (from a pool or 'new') a geometry of the needed
@@ -710,7 +710,7 @@ FdoIPoint* FdoFgfGeometryFactory::CreatePoint(FdoIDirectPosition* position)
                                                                L"FdoIPoint",
                                                                L"position"));
 
-	FdoPtr<FdoIPoint> point = new FdoFgfPoint(this, m_private->GetPoolsForGeomCtor(), position);
+	FdoPtr<FdoIPoint> point = new FdoFgfPoint((m_private->m_useThreadLocal)?NULL:this, m_private->GetPoolsForGeomCtor(), position);
     if (point == NULL)
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 #ifdef EXTRA_DEBUG
@@ -740,7 +740,7 @@ FdoIPoint* FdoFgfGeometryFactory::CreatePoint(FdoInt32 dimensionality, double* o
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
                                                                L"ordinates"));
 
-	FdoPtr<FdoIPoint> point = new FdoFgfPoint(this, m_private->GetPoolsForGeomCtor(), dimensionality, ordinates);
+	FdoPtr<FdoIPoint> point = new FdoFgfPoint((m_private->m_useThreadLocal)?NULL:this, m_private->GetPoolsForGeomCtor(), dimensionality, ordinates);
     if (point == NULL)
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 #ifdef EXTRA_DEBUG
@@ -867,7 +867,7 @@ FdoIPolygon* FdoFgfGeometryFactory::CreatePolygon(FdoILinearRing* exteriorRing, 
                                                                L"FdoIPolygon",
                                                                L"exteriorRing"));
 
-	FdoPtr<FdoFgfPolygon> polygon = new FdoFgfPolygon(this, m_private->GetPoolsForGeomCtor(), exteriorRing, interiorRings);
+	FdoPtr<FdoFgfPolygon> polygon = new FdoFgfPolygon((m_private->m_useThreadLocal)?NULL:this, m_private->GetPoolsForGeomCtor(), exteriorRing, interiorRings);
 
     if (polygon == NULL)
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
@@ -902,7 +902,7 @@ FdoIMultiPoint* FdoFgfGeometryFactory::CreateMultiPoint(FdoPointCollection* poin
                                                                L"FdoIMultiPoint",
                                                                L"points"));
 
-	FdoPtr<FdoFgfMultiPoint> multiPoint =  new FdoFgfMultiPoint(this, m_private->GetPoolsForGeomCtor(), points);
+	FdoPtr<FdoFgfMultiPoint> multiPoint =  new FdoFgfMultiPoint((m_private->m_useThreadLocal)?NULL:this, m_private->GetPoolsForGeomCtor(), points);
 
     if (multiPoint == NULL)
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
@@ -937,7 +937,7 @@ FdoIMultiPoint* FdoFgfGeometryFactory::CreateMultiPoint(FdoInt32 dimensionality,
                                                                L"FdoIMultiPoint",
                                                                L"ordinates/numOrdinates"));
 
-	FdoPtr<FdoFgfMultiPoint> multiPoint =  new FdoFgfMultiPoint(this, m_private->GetPoolsForGeomCtor(), dimensionality, numOrdinates, ordinates);
+	FdoPtr<FdoFgfMultiPoint> multiPoint =  new FdoFgfMultiPoint((m_private->m_useThreadLocal)?NULL:this, m_private->GetPoolsForGeomCtor(), dimensionality, numOrdinates, ordinates);
 
     if (multiPoint == NULL)
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
@@ -972,7 +972,7 @@ FdoIMultiGeometry* FdoFgfGeometryFactory::CreateMultiGeometry(FdoGeometryCollect
                                                                L"FdoIMultiGeometry",
                                                                L"geometries"));
 
-	FdoPtr<FdoFgfMultiGeometry> multiGeometry =  new FdoFgfMultiGeometry(this, m_private->GetPoolsForGeomCtor(), geometries);
+	FdoPtr<FdoFgfMultiGeometry> multiGeometry =  new FdoFgfMultiGeometry((m_private->m_useThreadLocal)?NULL:this, m_private->GetPoolsForGeomCtor(), geometries);
 
     if (multiGeometry == NULL)
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
@@ -1007,7 +1007,7 @@ FdoIMultiLineString* FdoFgfGeometryFactory::CreateMultiLineString(FdoLineStringC
                                                                L"FdoIMultiLineString",
                                                                L"lineStrings"));
 
-	FdoPtr<FdoFgfMultiLineString> multiLineString =  new FdoFgfMultiLineString(this, m_private->GetPoolsForGeomCtor(), lineStrings);
+	FdoPtr<FdoFgfMultiLineString> multiLineString =  new FdoFgfMultiLineString((m_private->m_useThreadLocal)?NULL:this, m_private->GetPoolsForGeomCtor(), lineStrings);
 
     if (multiLineString == NULL)
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
@@ -1043,7 +1043,7 @@ FdoIMultiPolygon* FdoFgfGeometryFactory::CreateMultiPolygon(FdoPolygonCollection
                                                                L"FdoIMultiPolygon",
                                                                L"polygons"));
 
-	FdoPtr<FdoFgfMultiPolygon> multiPolygon =  new FdoFgfMultiPolygon(this, m_private->GetPoolsForGeomCtor(), polygons);
+	FdoPtr<FdoFgfMultiPolygon> multiPolygon =  new FdoFgfMultiPolygon((m_private->m_useThreadLocal)?NULL:this, m_private->GetPoolsForGeomCtor(), polygons);
 
     if (multiPolygon == NULL)
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
@@ -1113,7 +1113,7 @@ FdoICurveString* FdoFgfGeometryFactory::CreateCurveString(FdoCurveSegmentCollect
                                                                L"FdoICurveString",
                                                                L"curveSegments"));
 
-	FdoPtr<FdoFgfCurveString> curveString = new FdoFgfCurveString(this, m_private->GetPoolsForGeomCtor(), curveSegments);
+	FdoPtr<FdoFgfCurveString> curveString = new FdoFgfCurveString((m_private->m_useThreadLocal)?NULL:this, m_private->GetPoolsForGeomCtor(), curveSegments);
 
     if (curveString == NULL)
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
@@ -1147,7 +1147,7 @@ FdoIMultiCurveString* FdoFgfGeometryFactory::CreateMultiCurveString(FdoCurveStri
                                                                L"FdoIMultiCurveString",
                                                                L"curveStrings"));
 
-	FdoPtr<FdoFgfMultiCurveString> multiCurveString = new FdoFgfMultiCurveString(this, m_private->GetPoolsForGeomCtor(), curveStrings);
+	FdoPtr<FdoFgfMultiCurveString> multiCurveString = new FdoFgfMultiCurveString((m_private->m_useThreadLocal)?NULL:this, m_private->GetPoolsForGeomCtor(), curveStrings);
 
     if (multiCurveString == NULL)
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
@@ -1217,7 +1217,7 @@ FdoICurvePolygon* FdoFgfGeometryFactory::CreateCurvePolygon(FdoIRing* exteriorRi
                                                                L"FdoICurvePolygon",
                                                                L"exteriorRing"));
 
-	FdoPtr<FdoFgfCurvePolygon> curvePolygon = new FdoFgfCurvePolygon(this, m_private->GetPoolsForGeomCtor(), exteriorRing, interiorRings);
+	FdoPtr<FdoFgfCurvePolygon> curvePolygon = new FdoFgfCurvePolygon((m_private->m_useThreadLocal)?NULL:this, m_private->GetPoolsForGeomCtor(), exteriorRing, interiorRings);
 
     if (curvePolygon == NULL)
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
@@ -1252,7 +1252,7 @@ FdoIMultiCurvePolygon* FdoFgfGeometryFactory::CreateMultiCurvePolygon(FdoCurvePo
                                                                L"FdoIMultiCurvePolygon",
                                                                L"curvePolygons"));
 
-	FdoPtr<FdoFgfMultiCurvePolygon> multiCurvePolygon = new FdoFgfMultiCurvePolygon(this, m_private->GetPoolsForGeomCtor(), curvePolygons);
+	FdoPtr<FdoFgfMultiCurvePolygon> multiCurvePolygon = new FdoFgfMultiCurvePolygon((m_private->m_useThreadLocal)?NULL:this, m_private->GetPoolsForGeomCtor(), curvePolygons);
 
     if (multiCurvePolygon == NULL)
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));

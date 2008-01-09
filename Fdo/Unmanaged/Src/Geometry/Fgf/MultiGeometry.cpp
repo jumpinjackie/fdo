@@ -50,8 +50,7 @@ FdoFgfMultiGeometry::FdoFgfMultiGeometry(
     : FdoFgfGeometryImpl<FdoIMultiGeometry>(factory, pools)
 {
 	if ( (NULL == geometries) ||
-         (0 == geometries->GetCount()) ||
-		 (NULL == factory) )
+         (0 == geometries->GetCount()) )
 		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
                                                                L"FdoFgfMultiGeometry",
                                                                L"geometries/factory"));
