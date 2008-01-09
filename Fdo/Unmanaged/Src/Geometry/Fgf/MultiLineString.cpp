@@ -35,8 +35,7 @@ FdoFgfMultiLineString::FdoFgfMultiLineString(
     : FdoFgfGeometryImpl<FdoIMultiLineString>(factory, pools)
 {
 	if ( (NULL == lineStrings) ||
-         (0 == lineStrings->GetCount()) ||
-		 (NULL == factory) )
+         (0 == lineStrings->GetCount()) )
 		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
                                                                L"FdoFgfMultiLineString",
                                                                L"lineStrings/factory"));

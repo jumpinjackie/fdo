@@ -37,8 +37,7 @@ FdoFgfMultiPoint::FdoFgfMultiPoint(
     : FdoFgfGeometryImpl<FdoIMultiPoint>(factory, pools),
       m_ordinates(NULL)
 {
-	if ( (NULL == ordinates) ||
-		 (NULL == factory) )
+	if ( NULL == ordinates )
 		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
                                                                L"FdoFgfMultiPoint",
                                                                L"ordinates/factory"));
@@ -88,8 +87,7 @@ FdoFgfMultiPoint::FdoFgfMultiPoint(
       m_ordinates(NULL)
 {
 	if ( (NULL == points) ||
-        (0 == points->GetCount()) ||
-		(NULL == factory) )
+        (0 == points->GetCount()) )
 		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
                                                                L"FdoFgfMultiPoint",
                                                                L"points/factory"));

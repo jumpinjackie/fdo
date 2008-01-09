@@ -36,8 +36,7 @@ FdoFgfPoint::FdoFgfPoint(
         )
     : FdoFgfGeometryImpl<FdoIPoint>(factory, pools)
 {
-	if ( (NULL == factory) ||
-		 (NULL == ordinates) )
+	if ( NULL == ordinates )
 		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
                                                                L"FdoFgfPoint",
                                                                L"ordinates/factory"));
@@ -67,8 +66,7 @@ FdoFgfPoint::FdoFgfPoint(
     )
     : FdoFgfGeometryImpl<FdoIPoint>(factory, pools)
 {
-	if ( (NULL == factory) ||
-		 (NULL == position) )
+	if ( NULL == position )
 		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
                                                                L"FdoFgfPoint",
                                                                L"position/factory"));
