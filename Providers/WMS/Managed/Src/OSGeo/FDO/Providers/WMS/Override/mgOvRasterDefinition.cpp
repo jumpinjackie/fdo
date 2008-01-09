@@ -66,6 +66,20 @@ System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::set
 	EXCEPTION_HANDLER(GetImpObj()->SetTransparent(value))
 }
 
+System::Boolean NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::get_UseTileCache()
+{
+	FdoBoolean result;
+
+	EXCEPTION_HANDLER(result = !!GetImpObj()->GetUseTileCache())
+	
+	return result;
+}
+    
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::set_UseTileCache(System::Boolean value)
+{
+	EXCEPTION_HANDLER(GetImpObj()->SetUseTileCache(value))
+}
+
 System::String* NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::get_BackgroundColor()
 {
 	FdoString* result;
