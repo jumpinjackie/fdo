@@ -100,9 +100,9 @@ static int local_compare( void *handler, const void * lhs, const void * rhs )
                 continue;
 
             if( ctx->propCache[idx1][i].type == -1 )
-                retcode = 1;
-            else 
                 retcode = -1;
+            else 
+                retcode = 1;
 
             if( ctx->options[i] == FdoOrderingOption_Descending )
 			    retcode *= -1; 
