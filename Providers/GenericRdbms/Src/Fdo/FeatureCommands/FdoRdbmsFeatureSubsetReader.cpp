@@ -26,8 +26,8 @@
 #include "FdoRdbmsUtil.h"
 
 
-FdoRdbmsFeatureSubsetReader::FdoRdbmsFeatureSubsetReader( FdoIConnection *connection, GdbiQueryResult *queryResult, bool isFeatureQuery, const FdoSmLpClassDefinition *classDef, FdoFeatureSchemaCollection *schmCol, FdoIdentifierCollection *properties, FdoRdbmsSecondarySpatialFilterCollection * secondarySpatialFilters):
-FdoRdbmsFeatureReader(connection, queryResult, isFeatureQuery, classDef, schmCol, properties, 0, secondarySpatialFilters)
+FdoRdbmsFeatureSubsetReader::FdoRdbmsFeatureSubsetReader( FdoIConnection *connection, GdbiQueryResult *queryResult, bool isFeatureQuery, const FdoSmLpClassDefinition *classDef, FdoFeatureSchemaCollection *schmCol, FdoIdentifierCollection *properties, FdoRdbmsSecondarySpatialFilterCollection * secondarySpatialFilters, vector<int> *logicalOps):
+FdoRdbmsFeatureReader(connection, queryResult, isFeatureQuery, classDef, schmCol, properties, 0, secondarySpatialFilters, logicalOps)
 {
 }
 

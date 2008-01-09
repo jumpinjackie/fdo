@@ -154,11 +154,9 @@ protected:
 
     FdoRdbmsConnection*  mFdoConnection;  // Dbi connection used by this filter
 
-    // List of secondary spatial filters that apply to this filter.  The current way of storing 
-    // them does not include structure of binary conditions, so it is assumed that these
-    // are all applied equally ("and" of all conditions must be satisfied in any 
-    // secondary spatial filtering).
+    // List of secondary spatial filters that apply to this filter.  
     FdoRdbmsSecondarySpatialFilters     mSecondarySpatialFilters;
+	vector<int>							mFilterLogicalOps;
 
 public:
     FdoRdbmsFilterProcessor();
@@ -307,6 +305,8 @@ public:
                                         const wchar_t *className );
 
     FdoRdbmsSecondarySpatialFilterCollection * GetGeometricConditions() { return FDO_SAFE_ADDREF(mSecondarySpatialFilters.p); }
+	
+    vector<int> * GetFilterLogicalOps() { return &mFilterLogicalOps; }
 };
 
 #endif //_FDORDBMSFILTERPROCESSOR_

@@ -36,6 +36,7 @@ public:
         FdoIGeometry * geometry)= 0;
 
     virtual FdoString *  GetPropertyName() = 0;
+   	virtual FdoSpatialOperations GetOperation() = 0;
 
 protected:
 

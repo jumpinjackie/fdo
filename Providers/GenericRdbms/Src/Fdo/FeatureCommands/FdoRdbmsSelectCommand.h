@@ -95,6 +95,8 @@ class FdoRdbmsSelectCommand : public FdoRdbmsFeatureCommand<FdoISelect>
       // Internal method in support for select command 
       FdoRdbmsFeatureReader *GetOptimizedFeatureReader( const FdoSmLpClassDefinition *classDefinition );
 
+	  // Internal method added in support for processing spatial conditions.
+	  void CheckSpatialFilters( FdoRdbmsSecondarySpatialFilterCollection * geometricConditions, vector<int> *logicalOps );
 
   public:
 
