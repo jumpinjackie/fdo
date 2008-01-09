@@ -1387,8 +1387,7 @@ void TestCommonConstraints::UpdateRangeDateValues(
     dateTime.hour = dateTime.hour + 1;
     badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(dateTime)) );
     dateTime = minDateTime;
-    dateTime.hour = dateTime.hour - 1;
-    dateTime.minute = dateTime.minute + 1;
+    dateTime.minute = dateTime.minute - 1;
     badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(dateTime)) );
     dateTime = minDateTime;
     dateTime.minute = dateTime.minute - 1;

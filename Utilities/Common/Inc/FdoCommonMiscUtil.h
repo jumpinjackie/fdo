@@ -98,6 +98,18 @@ public:
     /// If d1 and d2 are different date/time types, they are sorted as follows: datetime before date before time.
     static int CompareDateTimes(FdoDateTime d1, FdoDateTime d2);
 
+    /// brief
+    /// Compares two FdoDateTime instances
+    /// return 
+    /// Returns the following:
+    /// \li \c -1 if d1 less than d2
+    /// \li \c 0 if d1==d2
+    /// \li \c 1 if d1 greater than d2
+    /// \note
+    /// If d1 and d2 are different date/time types, the date/time comparision is only done if both are set.
+    /// For example, if d1 has a date and time value and d2 has only a date value, the comparison is done only on the dates.
+    static int CompareDateTimes2(FdoDateTime dt1, FdoDateTime dt2);
+
     /// \brief
     /// Compares two FdoDataValue instances.
     /// \return
