@@ -30,6 +30,7 @@
 #endif //_WIN32
 
 #include <FdoRfpDefines.h>
+#include "cpl_multiproc.h"
 
 typedef void *GDALDatasetH;
 
@@ -37,7 +38,7 @@ typedef void *GDALDatasetH;
 class FdoRfpDatasetCache : public FdoIDisposable
 {
 private:
-    GDALDatasetH*pahDatasetList;
+    GDALDatasetH *pahDatasetList;
     int           nDatasetCount;
     int           nDatasetAlloc;
 
@@ -55,6 +56,13 @@ public:
 
     void          CloseUnlocked();
     void          CloseAll();
+};
+
+class FdoGdalMutexHolder
+{
+  public:
+    FdoGdalMutexHolder();
+    ~FdoGdalMutexHolder();
 };
 
 #endif

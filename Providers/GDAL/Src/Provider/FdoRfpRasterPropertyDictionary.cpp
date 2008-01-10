@@ -28,12 +28,13 @@
 #include "FdoRfpBandRaster.h"
 #include "FdoRfpGlobals.h"
 #include "FdoRfpImage.h"
+#include "FdoRfpDatasetCache.h"
 #include <gdal.h>
 
 FdoRfpRasterPropertyDictionay::FdoRfpRasterPropertyDictionay(FdoRfpBandRaster* bandRaster) :
-		m_raster(bandRaster)
+        m_raster(bandRaster)
 {
-	FDO_SAFE_ADDREF(bandRaster);
+    FDO_SAFE_ADDREF(bandRaster);
 }
 
 FdoRfpRasterPropertyDictionay::~FdoRfpRasterPropertyDictionay()
@@ -97,6 +98,7 @@ FdoDataValue* FdoRfpRasterPropertyDictionay::GetProperty (FdoString* name)
 
     FdoDataValue* rv;
     FdoPtr<FdoRfpImage> image = m_raster->GetImage();
+    FdoGdalMutexHolder oHolder;
     GDALColorTableH hCT = GDALGetRasterColorTable( GDALGetRasterBand( image->GetDS(), image->m_bandList[0] ) );
     int numOfEntries = 0;
 
@@ -135,7 +137,7 @@ FdoDataValue* FdoRfpRasterPropertyDictionay::GetProperty (FdoString* name)
 /// <param name="value">The new value for the property.</param>
 void FdoRfpRasterPropertyDictionay::SetProperty (FdoString* name, FdoDataValue* value)
 {
-	throw FdoCommandException::Create(NlsMsgGet1(GRFP_59_OPERATION_NOT_SUPPORTED, "'%1$ls' not supported.", "IRasterPropertyDictionary::SetProperty"));
+    throw FdoCommandException::Create(NlsMsgGet1(GRFP_59_OPERATION_NOT_SUPPORTED, "'%1$ls' not supported.", "IRasterPropertyDictionary::SetProperty"));
 }
 
 /// <summary>Gets the default value for the specified property.</summary>
@@ -143,7 +145,7 @@ void FdoRfpRasterPropertyDictionay::SetProperty (FdoString* name, FdoDataValue* 
 /// <returns>The default value of the property.</returns>
 FdoDataValue* FdoRfpRasterPropertyDictionay::GetPropertyDefault (FdoString* name)
 {
-	return NULL;
+    return NULL;
 }
 
 /// <summary>Predicate to determine if the property is required to be set.</summary>
@@ -151,7 +153,7 @@ FdoDataValue* FdoRfpRasterPropertyDictionay::GetPropertyDefault (FdoString* name
 /// <returns>Returns true if the specified property is required, false if it is optional.</returns>
 bool FdoRfpRasterPropertyDictionay::IsPropertyRequired (FdoString* name)
 {
-	return false;
+    return false;
 }
 
 /// <summary>Predicate to determine if the property is enumerable (has more than one value).</summary>
@@ -160,7 +162,7 @@ bool FdoRfpRasterPropertyDictionay::IsPropertyRequired (FdoString* name)
 /// can be enumerated via the GetPropertyValues method.</returns>
 bool FdoRfpRasterPropertyDictionay::IsPropertyEnumerable (FdoString* name)
 {
-	return false;
+    return false;
 }
 
 /// <summary>Access the values of the specified enumerable property.
@@ -169,7 +171,7 @@ bool FdoRfpRasterPropertyDictionay::IsPropertyEnumerable (FdoString* name)
 /// <returns>A collection of datavaluesfor the enumerable property.</returns>
 FdoDataValueCollection* FdoRfpRasterPropertyDictionay::GetPropertyValues (FdoString* name)
 {
-	return NULL;
+    return NULL;
 }
 
 /// <summary>Set the values of the specified enumerable property.

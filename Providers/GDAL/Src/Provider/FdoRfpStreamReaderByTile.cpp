@@ -26,6 +26,7 @@
 #include "FDORFP.h"
 #include "FdoRfpStreamReaderByTile.h"
 #include "FdoRfpImage.h"
+#include "FdoRfpDatasetCache.h"
 #include "FdoCommonStringUtil.h"
 #include <cpl_conv.h>
 
@@ -212,7 +213,7 @@ void FdoRfpStreamReaderGdalByTile::Skip(const FdoInt32 offset)
 // move the cursor to the position
 void FdoRfpStreamReaderGdalByTile::_moveTo(int row, int col, int offset)
 {
-    if (row == m_row && col == m_col)	// remain in the same tile
+    if (row == m_row && col == m_col)    // remain in the same tile
         m_offset = offset;
     else
     {
@@ -416,6 +417,7 @@ void FdoRfpStreamReaderGdalByTile::_getTile()
         wrkComponents = 3;
 
     // Read into interleaved buffer.
+    FdoGdalMutexHolder oHolder;
     eErr = GDALDatasetRasterIO( m_image->GetDS(), GF_Read, 
                                 fileWinXOff, fileWinYOff, fileWinXSize, fileWinYSize,
                                 m_tileData, wrkBlockXSize, wrkBlockYSize, 

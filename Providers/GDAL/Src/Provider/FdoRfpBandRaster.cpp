@@ -36,11 +36,12 @@
 #include "FdoRfpRasterUtil.h"
 #include "FdoRfpGlobals.h"
 #include "FdoRfpKeyColor.h"
+#include "FdoRfpDatasetCache.h"
 #include <gdal.h>
 
 FdoRfpBandRaster::FdoRfpBandRaster(const FdoPtr<FdoRfpGeoBandRaster>& geoBandRaster, 
                                    FdoRfpRect* clippingBounds) : 
-	m_geoBandRaster(geoBandRaster), m_clippingBounds(NULL),
+    m_geoBandRaster(geoBandRaster), m_clippingBounds(NULL),
         m_bNull(false), m_imageXSize(NULL), m_imageYSize(NULL),
         m_resolutionX(NULL), m_resolutionY(NULL), m_bounds(NULL)
 {
@@ -48,7 +49,7 @@ FdoRfpBandRaster::FdoRfpBandRaster(const FdoPtr<FdoRfpGeoBandRaster>& geoBandRas
     _recomputeImageSize();
 
     if (clippingBounds != NULL)
-		SetBounds( clippingBounds );
+        SetBounds( clippingBounds );
 }
 
 FdoRfpBandRaster::~FdoRfpBandRaster()
@@ -193,6 +194,7 @@ FdoRasterDataModel* FdoRfpBandRaster::GetDataModel ()
     if( m_dataModel != NULL )
         return FDO_SAFE_ADDREF(m_dataModel.p);
 
+    FdoGdalMutexHolder oHolder;
     FdoPtr<FdoRasterDataModel> dataModel = FdoRasterDataModel::Create();
     FdoPtr<FdoRfpImage> image =m_geoBandRaster->GetImage();
 
@@ -302,7 +304,7 @@ FdoInt32 FdoRfpBandRaster::GetImageXSize ()
 /// with no appreciable difference in display quality to the user.</summary>
 /// <param name="size">The desired horizontal image size in pixels
 /// (number of columns).</param> 
-								
+
 void FdoRfpBandRaster::SetImageXSize (FdoInt32 size)
 {
     if (size <= 0)
@@ -404,10 +406,11 @@ void FdoRfpBandRaster::SetStreamReader (FdoIStreamReader* reader)
 /// call to GetNullPixelValue will need to be made in order to determine the valid Null 
 /// value for the current data model.</remarks>
 FdoDataValue* FdoRfpBandRaster::GetNullPixelValue ()
-{	
+{
     FdoPtr<FdoDataValue> val;
     FdoRasterDataModel* dataModel = GetDataModel ();
     FdoPtr<FdoRfpImage> image = m_geoBandRaster->GetImage();
+    FdoGdalMutexHolder oHolder;
 
     int bGotNoData;
     double dfNoData;

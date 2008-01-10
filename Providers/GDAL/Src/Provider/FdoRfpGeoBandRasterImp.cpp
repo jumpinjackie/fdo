@@ -178,6 +178,7 @@ bool FdoRfpGeoBandRasterRot::loadImageInfo()
     GDALDatasetH hDS;
     FdoPtr<FdoRfpDatasetCache>  datasetCache = m_connection->GetDatasetCache();
 
+    FdoGdalMutexHolder oHolder;
     hDS = datasetCache->LockDataset( m_imagePath, false );
 
     if( hDS == NULL )
