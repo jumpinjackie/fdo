@@ -118,6 +118,81 @@ geographic</gml:derivedCRSType>
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
+<xs:element name="table2" type="dbo:table2Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table2Key">
+<xs:selector xpath=".//table2"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="table2Type" abstract="false" fdo:hasGeometry="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="ID">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="GEOM_COLUMN1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="GEOM_COLUMN2" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="GEOM_COLUMN3" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="table4" type="dbo:table4Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table4Key">
+<xs:selector xpath=".//table4"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="table4Type" abstract="false" fdo:hasGeometry="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="ID">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="GEOM_COLUMN1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="SC_4" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="GEOM_COLUMN2" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="SC_5" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
 <xs:element name="table1" type="dbo:table1Type" abstract="false" substitutionGroup="gml:_Feature">
 <xs:key name="table1Key">
 <xs:selector xpath=".//table1"/>
@@ -183,46 +258,6 @@ geographic</gml:derivedCRSType>
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="table2" type="dbo:table2Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table2Key">
-<xs:selector xpath=".//table2"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
-<xs:complexType name="table2Type" abstract="false" fdo:hasGeometry="false">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="gml:AbstractFeatureType">
-<xs:sequence>
-<xs:element name="ID">
-<xs:simpleType>
-<xs:restriction base="fdo:int32"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="GEOM_COLUMN1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="GEOM_COLUMN2" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="GEOM_COLUMN3" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
 <xs:element name="table3" type="dbo:table3Type" abstract="false" substitutionGroup="gml:_Feature">
 <xs:key name="table3Key">
 <xs:selector xpath=".//table3"/>
@@ -250,41 +285,6 @@ geographic</gml:derivedCRSType>
 </xs:annotation>
 </xs:element>
 <xs:element name="GEOM_COLUMN2" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:element name="table4" type="dbo:table4Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table4Key">
-<xs:selector xpath=".//table4"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
-<xs:complexType name="table4Type" abstract="false" fdo:hasGeometry="false">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="gml:AbstractFeatureType">
-<xs:sequence>
-<xs:element name="ID">
-<xs:simpleType>
-<xs:restriction base="fdo:int32"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="GEOM_COLUMN1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="SC_4" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="GEOM_COLUMN2" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="SC_5" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -324,7 +324,34 @@ geographic</gml:derivedCRSType>
 </xs:complexContent>
 </xs:complexType>
 </xs:schema>
-<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/SqlServerSpatialProvider" textInRow="NotInRow" provider="Autodesk.SqlServerSpatial.3.3" name="dbo">
+<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/SQLServerSpatialProvider" textInRow="NotInRow" provider="Autodesk.SQLServerSpatial.3.3" name="dbo">
+<complexType name="table2Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
+<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_table2" name="dbo.table2"/>
+<element name="ID">
+<Column name="ID"/>
+</element>
+<element name="GEOM_COLUMN1">
+<GeometricColumn name="GEOM_COLUMN1"/>
+</element>
+<element name="GEOM_COLUMN2">
+<GeometricColumn name="GEOM_COLUMN2"/>
+</element>
+<element name="GEOM_COLUMN3">
+<GeometricColumn name="GEOM_COLUMN3"/>
+</element>
+</complexType>
+<complexType name="table4Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
+<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_table4" name="dbo.table4"/>
+<element name="ID">
+<Column name="ID"/>
+</element>
+<element name="GEOM_COLUMN1">
+<GeometricColumn name="GEOM_COLUMN1"/>
+</element>
+<element name="GEOM_COLUMN2">
+<GeometricColumn name="GEOM_COLUMN2"/>
+</element>
+</complexType>
 <complexType name="table1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
 <Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_table1" name="dbo.table1"/>
 <element name="ID">
@@ -355,35 +382,8 @@ geographic</gml:derivedCRSType>
 <GeometricColumn name="GEOM_COLUMN8"/>
 </element>
 </complexType>
-<complexType name="table2Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_table2" name="dbo.table2"/>
-<element name="ID">
-<Column name="ID"/>
-</element>
-<element name="GEOM_COLUMN1">
-<GeometricColumn name="GEOM_COLUMN1"/>
-</element>
-<element name="GEOM_COLUMN2">
-<GeometricColumn name="GEOM_COLUMN2"/>
-</element>
-<element name="GEOM_COLUMN3">
-<GeometricColumn name="GEOM_COLUMN3"/>
-</element>
-</complexType>
 <complexType name="table3Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
 <Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_table3" name="dbo.table3"/>
-<element name="ID">
-<Column name="ID"/>
-</element>
-<element name="GEOM_COLUMN1">
-<GeometricColumn name="GEOM_COLUMN1"/>
-</element>
-<element name="GEOM_COLUMN2">
-<GeometricColumn name="GEOM_COLUMN2"/>
-</element>
-</complexType>
-<complexType name="table4Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_table4" name="dbo.table4"/>
 <element name="ID">
 <Column name="ID"/>
 </element>
