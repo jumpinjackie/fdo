@@ -63,10 +63,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(FDO)\Unmanaged\Lib\Win32\Debug\FDO.lib FDOCommon.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib"
 				OutputFile="$(OutDir)\OSGeo.FDO.Providers.Rdbms.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Debug"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				ProgramDatabaseFile="$(TargetDir)\OSGeo.FDO.Providers.Rdbms.pdb"
@@ -147,10 +147,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(FDO)\Unmanaged\Lib\Win32\Release\FDO.lib FDOCommon.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib"
 				OutputFile="$(OutDir)\OSGeo.FDO.Providers.Rdbms.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Release"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(TargetDir)\OSGeo.FDO.Providers.Rdbms.pdb"
 				TargetMachine="1"

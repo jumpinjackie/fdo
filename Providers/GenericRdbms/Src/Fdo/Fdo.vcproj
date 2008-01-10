@@ -40,7 +40,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="-Zm112"
+				AdditionalOptions="-Zm130"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../inc/rdbi;../;../../;../../inc/fdo;../../inc;./Other;./Capability;./Connection;./Custom;./FeatureCommands;./Filter;./Lock;./Lt;./Schema;./SpatialContext;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDO)\Unmanaged/src/geometry&quot;;&quot;$(FDOUTILITIES)\SchemaMgr/inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi;..\LongTransactionManager;..\LockManager;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;FDORDBMS_EXPORTS;_LIB;FULLPROTO;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE"

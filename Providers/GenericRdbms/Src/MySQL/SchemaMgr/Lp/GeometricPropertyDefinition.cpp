@@ -184,15 +184,27 @@ FdoSmLpPropertyP FdoSmLpMySqlGeometricPropertyDefinition::NewCopy(
 bool FdoSmLpMySqlGeometricPropertyDefinition::CheckGeomPropShapeType (FdoGeometryType geomType) const
 {
     bool retVal = FdoSmLpGeometricPropertyDefinition::CheckGeomPropShapeType (geomType);
+
+// NOTE: In order to address Defect 1030026, relax the check for the correct Geometry Types.
+//       This check should be re-enabled post-FDO 3.3.0, once a complete analysis is made  
+//       of how Applications using FDO 3.3.0 are using the Geometry Types. An analysis will need 
+//       to be made for all OSGeo Providers to ensure that all or none of the OSGeo providers
+//       validate the GeometryType. Consistency is a key factor.
+
+/*
     if( retVal )
     {
         FdoGeometryType allowedGeomType = FdoGeometryType_MultiGeometry;
         long allowedHexTypes = GetSpecificGeometryTypes() ;
+
         // call FdoCommonGeometryUtil::MapHexCodeToGeometryType only if we have a single geometry allowed
         // otherwise skip the test if we have more than one geometries (e.g. point and multipoint)
         if (FdoCommonGeometryUtil::GetCountGeometryTypesFromHex(allowedHexTypes) <= 1)
-                allowedGeomType = FdoCommonGeometryUtil::MapHexCodeToGeometryType(allowedHexTypes);
-            retVal = ((allowedGeomType == FdoGeometryType_MultiGeometry) || (allowedGeomType == geomType) );
+            allowedGeomType = FdoCommonGeometryUtil::MapHexCodeToGeometryType(allowedHexTypes);
+
+        retVal = ((allowedGeomType == FdoGeometryType_MultiGeometry) || (allowedGeomType == geomType) );
     }
+*/
+
     return retVal;
 }
