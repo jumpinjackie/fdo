@@ -77,6 +77,7 @@ private:
 	static void ComputeLinearRingLength(FdoBoolean computeGeodetic, FdoBoolean compute3D, FdoILinearRing* lineRing, FdoDouble *length);
 	static void ComputeRingLength(FdoBoolean computeGeodetic, FdoBoolean compute3D, FdoIRing* ring, FdoDouble *length);
 	static void ComputeCurveSegmentLength(FdoBoolean computeGeodetic, FdoBoolean compute3D, FdoICurveSegmentAbstract* curveSeg, FdoDouble *length);
+	static void ComputeArcSegmentLength(FdoBoolean computeGeodetic, FdoBoolean compute3D, FdoICircularArcSegment* arcSeg, FdoDouble *length);
 
 	static FdoDouble ComputeEuclidianDistance2D(FdoDouble x1, FdoDouble y1, FdoDouble x2, FdoDouble y2 );
 	static FdoDouble ComputeGeodeticDistance2D(FdoDouble lat1, FdoDouble lon1, FdoDouble lat2, FdoDouble lon2 );
@@ -95,6 +96,8 @@ private:
 	static FdoDouble ComputeEuclidianTrapezoidArea2D(FdoDouble x1, FdoDouble y1, FdoDouble x2, FdoDouble y2 );
 	static FdoDouble ComputeGeodeticTrapezoidArea2D(FdoDouble lat1, FdoDouble lon1, FdoDouble lat2, FdoDouble lon2, FdoDouble minLat );
 
+	static double	DistanceBetweenPositionsXY(FdoIDirectPosition * p1, FdoIDirectPosition * p2);
+	static bool		ArePositionsEqualXY(FdoIDirectPosition * p1, FdoIDirectPosition * p2);
 };
 
 #endif
