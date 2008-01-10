@@ -23,6 +23,10 @@
 #include <Spatial/SpatialUtility.h>		// for TesselateCurve()
 #include <math.h>
 
+#ifndef M_PI
+#define M_PI		3.14159265358979323846
+#endif
+
 /************************************************************************/
 /* ComputeGeometryLength												*/
 /************************************************************************/
@@ -227,9 +231,16 @@ void FdoExpressionEngineGeometryUtil::ComputeCurveSegmentLength(FdoBoolean compu
    		    FdoPtr<FdoFgfGeometryFactory>	gf = FdoFgfGeometryFactory::GetInstance();
             FdoPtr<FdoIGeometry> geom = gf->CreateCurveString(segs);
 
-            FdoPtr<FdoIGeometry> curve = FdoSpatialUtility::TesselateCurve(geom);
-		    FdoExpressionEngineGeometryUtil::ComputeGeometryLength( computeGeodetic, compute3D, curve, length );
-
+			if ( computeGeodetic )
+			{
+				FdoPtr<FdoIGeometry> curve = FdoSpatialUtility::TesselateCurve(geom);
+				FdoExpressionEngineGeometryUtil::ComputeGeometryLength( computeGeodetic, compute3D, curve, length );
+			}
+			else
+			{
+				FdoICircularArcSegment* arcSeg = (FdoICircularArcSegment *)curveSeg;
+				FdoExpressionEngineGeometryUtil::ComputeArcSegmentLength( computeGeodetic, compute3D, arcSeg, length );			
+			}
 			break;
 		}
 
@@ -710,4 +721,126 @@ FdoInt32 FdoExpressionEngineGeometryUtil::DimensionalityToNumOrdinates(FdoInt32 
                                                                L"FdoExpressionEngineGeometryUtil::DimensionalityToNumOrdinates",
                                                                L"dimensionality"));
     return value;
+}
+
+/************************************************************************/
+/*  ComputeArcSegmentLength                                             */
+/************************************************************************/
+
+#define	EPS2               0.00000001
+
+void FdoExpressionEngineGeometryUtil::ComputeArcSegmentLength(FdoBoolean computeGeodetic, FdoBoolean compute3D, FdoICircularArcSegment* arcSeg, FdoDouble *length)
+{    
+    FdoPtr<FdoIDirectPosition> start = arcSeg->GetStartPosition();
+    FdoPtr<FdoIDirectPosition> mid = arcSeg->GetMidPoint();
+    FdoPtr<FdoIDirectPosition> end = arcSeg->GetEndPosition();
+
+	// Special cases
+    if ( ArePositionsEqualXY(start, end) )
+    {
+        // This might be a supported circle case.
+        if ( ArePositionsEqualXY(start, mid) )
+		{
+			// Degenerated arc, all 3 points are coincident.
+			return;
+		}
+		else
+		{
+			// Full circle. 
+			double diameter = DistanceBetweenPositionsXY(start, mid);
+
+			*length += diameter * M_PI;
+			return;
+		}
+	}
+
+	// We need 2 equal consecutive segments. In case the mid point is really in
+	// the middle of the arc then we save the tesselation.
+	double len1 = DistanceBetweenPositionsXY(start, mid);
+	double len2 = DistanceBetweenPositionsXY(end, mid);
+
+	// The length of an arc segment. 
+	double	segLen = len1;
+
+	// Number of segments approximating the arc.
+	int		nSegs = 2;
+
+	if ( fabs(len1 - len2) > EPS2 )
+	{
+		// The midpoint is not in the middle. Tesselate.
+	    FdoPtr<FdoFgfGeometryFactory>	gf = FdoFgfGeometryFactory::GetInstance();
+		FdoPtr<FdoCurveSegmentCollection>	segs = FdoCurveSegmentCollection::Create();
+        segs->Add((FdoICurveSegmentAbstract *) arcSeg);
+        FdoPtr<FdoIGeometry> geom = gf->CreateCurveString(segs);
+
+		FdoPtr<FdoIGeometry> curve = FdoSpatialUtility::TesselateCurve(geom);
+		FdoILineString	*line = (FdoILineString	*)(curve.p);
+
+		// Assume the points are not collinear and adjancent segments are equal
+		start = line->GetItem(0);
+		mid = line->GetItem(1);
+
+		// Compute the length of the arc segment (SM in the picture below)
+		segLen = DistanceBetweenPositionsXY(start, mid);
+		nSegs = line->GetCount() - 1;
+	}
+
+	/*************************************************************************
+						   M
+						   *
+					   T   |        
+				   S*------*------*E
+					 \     | K   /
+					  \    |    /
+					   \   |   /
+						\  |  /
+						 \ | /
+						  \|/
+						   C 
+    Legend: S, M, E are 3 points on the circle, at equal distance. 
+            T is middle of SM segment, C the center of the circle.
+            CM is the radius. CT is perpendicular on SM.
+    ***************************************************************************/
+
+	// Compute the distance between start and end points (the SE segment)
+	double Dist2 = DistanceBetweenPositionsXY(start, end)/2;
+
+	// Compute the distance between the mid point and the SE segment (the MK segment)
+	double d = sqrt( segLen*segLen - Dist2*Dist2);
+
+	// There are 2 similar triangles sharing the same angle SMK (alpha). 
+	// In picture above the median of segment SM (in point T) intersects the center,
+	// where CT is perpendicular on SM.
+	// 
+	// Triangles SMK and CTM are similar, therefore:
+	//			segLen/2 / R = d /segLen
+
+	// To compute the arc length we need the radius and the angle.
+	double radius = (segLen * segLen)/(2 * d );
+
+	// The angle MSK
+	double alpha = atan2(d, Dist2);
+
+	// Angle MSK = TCM = alpha. The angle at center encompassing one segment is 2*alpha.
+	*length += radius * (nSegs * (2 * alpha));
+}
+
+double FdoExpressionEngineGeometryUtil::DistanceBetweenPositionsXY(
+    FdoIDirectPosition * p1,
+    FdoIDirectPosition * p2)
+{
+    double dx = p1->GetX() - p2->GetX();
+    double dy = p1->GetY() - p2->GetY();
+
+    return ( sqrt(dx*dx + dy*dy) );
+}
+
+bool FdoExpressionEngineGeometryUtil::ArePositionsEqualXY(
+    FdoIDirectPosition * p1,
+    FdoIDirectPosition * p2)
+{
+    double dx = p1->GetX() - p2->GetX();
+    double dy = p1->GetY() - p2->GetY();
+
+    return	( (fabs(dx) < EPS2) && (fabs(dy) < EPS2) );
 }
