@@ -67,21 +67,21 @@ void FdoRfpGeoRasterExtractor::_getAllFiles(const char* path, std::vector<std::s
 #include <dirent.h>
 void FdoRfpGeoRasterExtractor::_getAllFiles(const char* path, std::vector<std::string>& files)
 {
-	struct dirent* dptr;
-	DIR* dirp;
-	if ((dirp = opendir(path)) != NULL)
-	{
-		while (dptr = readdir(dirp))
-		{
-			//std::string path1 = path;
-			//path1 += "/";
-			//path1 += dptr->d_name;
-			//struct stat s;
-			//if (0 == stat(path1.c_str(), &s) && S_ISREG(s))
-			files.push_back(dptr->d_name);
-		}
-		closedir(dirp);
-	}
+    struct dirent* dptr;
+    DIR* dirp;
+    if ((dirp = opendir(path)) != NULL)
+    {
+        while (dptr = readdir(dirp))
+        {
+            //std::string path1 = path;
+            //path1 += "/";
+            //path1 += dptr->d_name;
+            //struct stat s;
+            //if (0 == stat(path1.c_str(), &s) && S_ISREG(s))
+            files.push_back(dptr->d_name);
+        }
+        closedir(dirp);
+    }
 
 }
 #endif
@@ -110,8 +110,8 @@ void FdoRfpGeoRasterExtractor::ExtractRasters(FdoRfpConnection* conn,
 
 #ifndef _WIN32
     struct stat my_stat;
-	
-    if (0 != stat (location1.c_str(), &my_stat))
+
+	if (0 != stat (location1.c_str(), &my_stat))
         return;
 
     if ((0 == stat (location1.c_str(), &my_stat)) && S_ISDIR(my_stat.st_mode))
@@ -125,7 +125,7 @@ void FdoRfpGeoRasterExtractor::ExtractRasters(FdoRfpConnection* conn,
 
     if ((INVALID_FILE_ATTRIBUTES != attributes) && (FILE_ATTRIBUTE_DIRECTORY & attributes))
         bPath = true;
-		
+
 #endif
 
     if (bPath)
@@ -161,8 +161,8 @@ void FdoRfpGeoRasterExtractor::ExtractRasters(FdoRfpConnection* conn,
         }
 
     }
-	
-    location1 += (const char*)(FdoStringP(FILE_PATH_DELIMITER));
+
+	location1 += (const char*)(FdoStringP(FILE_PATH_DELIMITER));
 
     int width, height, frameNumber;
     int i, j;
@@ -175,6 +175,7 @@ void FdoRfpGeoRasterExtractor::ExtractRasters(FdoRfpConnection* conn,
 
         FdoStringP fileName = filePath.c_str();
 
+		FdoGdalMutexHolder oHolder;
         GDALDatasetH hDS = datasetCache->LockDataset( fileName, true );
         if( hDS == NULL )
             continue;
@@ -210,12 +211,12 @@ void FdoRfpGeoRasterExtractor::ExtractRasters(FdoRfpConnection* conn,
             coordSystems->Add(coord);
         }
 
-        FdoRasterType rasterType;
-        if (frameNumber == 1)	// single file - single frame
+		FdoRasterType rasterType;
+        if (frameNumber == 1)    // single file - single frame
             rasterType = RasterType_SFSB;
-        else					// single file - multi frames
+        else                    // single file - multi frames
             rasterType = RasterType_SFMB;
-		
+        
         FdoRfpGeoRasterP geoRaster = FdoRfpGeoRaster::Create();
         for (j=0; j < frameNumber; j++)
         {

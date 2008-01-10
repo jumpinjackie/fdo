@@ -25,6 +25,7 @@
 
 #include "FDORFP.h"
 #include "FdoRfpDatasetCache.h"
+#include "FdoCommonThreadMutex.h"
 #include <gdal.h>
 #include <cpl_conv.h>
 
@@ -54,6 +55,7 @@ GDALDatasetH FdoRfpDatasetCache::LockDataset( FdoStringP filePath, bool failQuie
 {
     int iDS;
     GDALDatasetH hDS;
+    FdoGdalMutexHolder oHolder;
 
     // Do we already have the dataset open?  If so, add a reference, promote
     // it in the LRU ordering, and return it.
@@ -126,6 +128,8 @@ void FdoRfpDatasetCache::UnlockDataset( GDALDatasetH hDS )
     if( hDS == NULL )
         return;
 
+    FdoGdalMutexHolder oHolder;
+    
     if( GDALDereferenceDataset( hDS ) > 1 
         || nDatasetCount <= nOpenDatasetMaximum )
         return;
@@ -143,6 +147,8 @@ void FdoRfpDatasetCache::UnlockDataset( GDALDatasetH hDS )
 void FdoRfpDatasetCache::CloseDataset( int iDS )
 
 {
+    FdoGdalMutexHolder oHolder;
+
     GDALClose( pahDatasetList[iDS] );
     if( iDS != nDatasetCount-1 )
         memmove( pahDatasetList + iDS, pahDatasetList + iDS + 1, 
@@ -154,6 +160,7 @@ void FdoRfpDatasetCache::CloseUnlocked()
 
 {
     int iDS;
+    FdoGdalMutexHolder oHolder;
 
     for( iDS = nDatasetCount-1; iDS >= 0; iDS-- )
     {
@@ -167,6 +174,7 @@ void FdoRfpDatasetCache::CloseAll()
 
 {
     int iDS;
+    FdoGdalMutexHolder oHolder;
 
     for( iDS = nDatasetCount-1; iDS >= 0; iDS-- )
     {
@@ -179,4 +187,18 @@ void FdoRfpDatasetCache::CloseAll()
         
         CloseDataset( iDS );
     }
+}
+
+static FdoCommonThreadMutex g_GdalMutex;
+
+FdoGdalMutexHolder::FdoGdalMutexHolder()
+
+{
+    g_GdalMutex.Enter();
+}
+
+FdoGdalMutexHolder::~FdoGdalMutexHolder()
+
+{
+    g_GdalMutex.Leave();
 }

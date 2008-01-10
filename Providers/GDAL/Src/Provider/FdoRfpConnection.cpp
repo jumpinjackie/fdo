@@ -54,6 +54,7 @@ extern "C" FDOGRFP_API FdoIConnection* CreateConnection ()
 {
     static int bInitialized = FALSE;
 
+    FdoGdalMutexHolder oHolder;
     if( !bInitialized )
     {
         GDALAllRegister();

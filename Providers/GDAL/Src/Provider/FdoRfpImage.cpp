@@ -46,6 +46,8 @@ void FdoRfpImage::Initialize( FdoRfpDatasetCache* datasetCache, FdoStringP datas
     if( GetDS() == NULL )
         return;
     
+    FdoGdalMutexHolder oHolder;
+
     m_redBand = GDALGetRasterBand( m_ds, 1 );
     
     // TODO: For now just use first band.
@@ -117,12 +119,12 @@ FdoRfpImageCollection::~FdoRfpImageCollection()
 
 void FdoRfpImageCollection::Dispose()
 {
-	delete this;
+    delete this;
 }
 
 FdoRfpImageCollection* FdoRfpImageCollection::Create()
 {
-	return new FdoRfpImageCollection();
+    return new FdoRfpImageCollection();
 }
 
 
