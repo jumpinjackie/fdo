@@ -538,8 +538,11 @@ void FdoSelectTest::spatial_query()
                                                                       FdoSpatialOperations_Intersects,
                                                                       geomValue));
 
+            // This AND filter is bogus since filterPtr is empty.
             FdoPtr<FdoFilter> filter = FdoFilter::Combine( filterPtr, FdoBinaryLogicalOperations_And, pSpatialFilter);
-            selCmd->SetFilter(filter);
+            //selCmd->SetFilter(filter);
+            
+            selCmd->SetFilter(pSpatialFilter);
 
             myReader = selCmd->Execute();
             if( myReader != NULL  )
@@ -596,9 +599,11 @@ void FdoSelectTest::spatial_query_defect792377()
 																	  FdoSpatialOperations_Intersects, 
 																	  geomValue));
 
+            // This AND filter is bogus since filterPtr is empty
 			FdoPtr<FdoFilter> filter = FdoFilter::Combine( filterPtr, FdoBinaryLogicalOperations_And, pSpatialFilter);
-			selCmd->SetFilter(filter);
+			//selCmd->SetFilter(filter);
             
+            selCmd->SetFilter(pSpatialFilter);
             FdoInt32 numFeatures = 0;
 
             myReader = selCmd->Execute();
