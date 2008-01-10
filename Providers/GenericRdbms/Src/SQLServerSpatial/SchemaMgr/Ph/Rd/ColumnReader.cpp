@@ -193,7 +193,7 @@ FdoSmPhReaderP FdoSmPhRdSqsColumnReader::MakeQueryReader (
                     L" size = CASE lower(c.name) \n"
                     L"             WHEN 'text' THEN 2147483647 \n"
                     L"             WHEN 'ntext' THEN 1073741823 \n"
-                    L"             WHEN 'nchar' THEN 1 \n"
+                    L"             WHEN 'nchar' THEN (b.max_length / 2) \n"
                     L"             WHEN 'nvarchar' THEN (b.max_length / 2) \n"
                     L"             WHEN 'uniqueidentifier' THEN 36 \n"
                     L"             WHEN 'decimal' THEN b.precision \n"
