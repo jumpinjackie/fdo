@@ -120,7 +120,7 @@ void ShpLpFeatureSchema::ConvertPhysicalToLogical(
     // Create the logical schema:
     //////////////////////////////////////////////////////////////////////
 
-    FdoStringP pDefaultSchName = NlsMsgGet(SHP_DEFAULT_SCHEMA_NAME, "Default");
+    FdoStringP pDefaultSchName = L"Default";
     if(((FdoString*)pDefaultSchName)[pDefaultSchName.GetLength()-1] == L' ')
         pDefaultSchName = pDefaultSchName.Mid(0, pDefaultSchName.GetLength()-1);
 

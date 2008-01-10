@@ -29,7 +29,7 @@ class SchemaTests :
 {
     CPPUNIT_TEST_SUITE (SchemaTests);
     CPPUNIT_TEST (describe);
-    CPPUNIT_TEST (describe_bogus);
+    //CPPUNIT_TEST (describe_bogus); // allow query any schema since there is just one arbitrary schema
     CPPUNIT_TEST (apply);
     CPPUNIT_TEST (apply_schema);
     CPPUNIT_TEST (apply_nameless);
