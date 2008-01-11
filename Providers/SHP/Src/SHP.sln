@@ -51,8 +51,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExpressionEngine", "..\..\.
 		{9037A345-04EB-418C-98D0-3D5B19FC9D55} = {9037A345-04EB-418C-98D0-3D5B19FC9D55}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTestBuffer", "UnitTest\UnitTestBuffer.vcproj", "{BD96758F-EEDB-4649-8081-87523A6F857D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -98,10 +96,6 @@ Global
 		{34FF1437-0853-44D4-B786-48ACB3AACBB5}.Debug|Win32.Build.0 = Debug|Win32
 		{34FF1437-0853-44D4-B786-48ACB3AACBB5}.Release|Win32.ActiveCfg = Release|Win32
 		{34FF1437-0853-44D4-B786-48ACB3AACBB5}.Release|Win32.Build.0 = Release|Win32
-		{BD96758F-EEDB-4649-8081-87523A6F857D}.Debug|Win32.ActiveCfg = Debug|Win32
-		{BD96758F-EEDB-4649-8081-87523A6F857D}.Debug|Win32.Build.0 = Debug|Win32
-		{BD96758F-EEDB-4649-8081-87523A6F857D}.Release|Win32.ActiveCfg = Release|Win32
-		{BD96758F-EEDB-4649-8081-87523A6F857D}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
