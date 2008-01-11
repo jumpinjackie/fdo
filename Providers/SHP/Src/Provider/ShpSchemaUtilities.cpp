@@ -239,7 +239,15 @@ ShpLpClassDefinition* ShpSchemaUtilities::GetLpClassDefinition(ShpConnection* co
         FdoPtr<ShpLpFeatureSchema> pLpSchema = pLpSchemaColl->GetItem(i);
         VALIDATE_POINTER(pLpSchema);
 
-        if ((logicalSchemaName==NULL) || (wcslen(logicalSchemaName)==0) || (wcscmp(logicalSchemaName, pLpSchema->GetName()) == 0))
+        // Allow any schema name because: 
+        //  - practically there is just one schema ("Default")
+        //  - "Default" is globalized and may be different in other locale. If persisted in 
+        //    config file it will not match Latin1 "Default".
+        //  - previously "support multiple schemas" capability was wrongly set to TRUE. There might
+        //    old config files containing bogus schema names.
+        //  - the schema name is ignored anyways by the features commands. 
+
+        //if ((logicalSchemaName==NULL) || (wcslen(logicalSchemaName)==0) || (wcscmp(logicalSchemaName, pLpSchema->GetName()) == 0))
         {
             FdoPtr<ShpLpClassDefinitionCollection> pLpClasses = pLpSchema->GetLpClasses();
             VALIDATE_POINTER(pLpClasses);
