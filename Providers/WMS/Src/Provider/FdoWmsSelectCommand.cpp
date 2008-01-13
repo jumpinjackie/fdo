@@ -31,8 +31,8 @@
 #include <math.h>
 
 #define MAXPOWER2RESOLUTION 4096
-#define DEFAULTRESOLUTIONX 1000
-#define DEFAULTRESOLUTIONY 1000
+#define DEFAULTRESOLUTIONX 256
+#define DEFAULTRESOLUTIONY 256
 
 FdoWmsSelectCommand::FdoWmsSelectCommand (FdoWmsConnection* connection) :
     FdoWmsFeatureCommand<FdoISelect> (connection),
