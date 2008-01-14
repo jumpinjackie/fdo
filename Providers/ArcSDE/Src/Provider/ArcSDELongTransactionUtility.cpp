@@ -65,8 +65,8 @@ FdoString* ArcSDELongTransactionUtility::CheckName (FdoString* value)
     if (0 == wcslen (temp))
         throw FdoException::Create (NlsMsgGet (ARCSDE_VERSION_NULL, "Version name cannot be NULL."));
     wide_to_multibyte (name, value);
-    if (strlen (name) > SE_MAX_VERSION_INPUT_LEN)
-        throw FdoCommandException::Create (NlsMsgGet (ARCSDE_VERSION_NAME_TOO_LONG, "Version name exceeds SE_MAX_VERSION_INPUT_LEN characters."));
+    //if (strlen (name) > SE_MAX_VERSION_INPUT_LEN)
+    //    throw FdoCommandException::Create (NlsMsgGet (ARCSDE_VERSION_NAME_TOO_LONG, "Version name exceeds SE_MAX_VERSION_INPUT_LEN characters."));
 
     return (value);
 }
@@ -113,7 +113,7 @@ bool ArcSDELongTransactionUtility::IsVersioned (SE_CONNECTION connection, CHAR* 
 bool ArcSDELongTransactionUtility::IsOurVersion (SE_CONNECTION connection, SE_VERSIONINFO version)
 {
     LONG result;
-    CHAR owner[SE_MAX_VERSION_LEN];
+    CHAR owner[2*SE_MAX_VERSION_LEN];
     CHAR user_name[SE_MAX_OWNER_LEN];
     bool ret;
 
@@ -379,7 +379,7 @@ bool ArcSDELongTransactionUtility::StateHasChildren (ArcSDEConnection* providerC
 /// <returns>Returns the active state.</returns> 
 LONG ArcSDELongTransactionUtility::LockVersion (ArcSDEConnection* providerConnection, SE_VERSIONINFO version, bool open)
 {
-    CHAR name[SE_MAX_VERSION_LEN];
+    CHAR name[2*SE_MAX_VERSION_LEN];
     wchar_t* wname;
     LONG result;
     LONG state;
