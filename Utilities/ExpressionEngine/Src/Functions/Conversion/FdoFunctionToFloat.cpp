@@ -18,6 +18,9 @@
 //
 
 #include <stdafx.h>
+#ifndef _WIN32
+#include <values.h>
+#endif
 #include <Functions/Conversion/FdoFunctionToFloat.h>
 
 
@@ -112,6 +115,7 @@ FdoLiteralValue *FdoFunctionToFloat::Evaluate (
 
     bool                    is_NULL         = false;
 
+    FdoFloat                sgl_value       = 0;
     FdoDouble               dbl_value       = 0;
 
     FdoStringP              str_value;
@@ -128,7 +132,7 @@ FdoLiteralValue *FdoFunctionToFloat::Evaluate (
     if (first)
     {
         Validate(literal_values);
-        return_decimal_value = FdoDecimalValue::Create();
+        return_single_value = FdoSingleValue::Create();
         first = false;
     }
     // Get the parameter and process it.
@@ -139,49 +143,67 @@ FdoLiteralValue *FdoFunctionToFloat::Evaluate (
         byte_value = (FdoByteValue *) literal_values->GetItem(0);
         is_NULL     = byte_value->IsNull();
         if (!is_NULL)
-            dbl_value = (FdoDouble) byte_value->GetByte();
+            sgl_value = byte_value->GetByte();
         break;
 
       case FdoDataType_Decimal:
         decimal_value = (FdoDecimalValue *) literal_values->GetItem(0);
         is_NULL       = decimal_value->IsNull();
-        if (!is_NULL)
+        if (!is_NULL) 
             dbl_value = decimal_value->GetDecimal();
+            if (dbl_value < FLT_MIN || dbl_value > FLT_MAX)
+                throw FdoException::Create(
+                        FdoException::NLSGetMessage(
+                        FUNCTION_DATA_VALUE_ERROR, 
+                        "Expression Engine: Invalid value for execution of function '%1$ls'",
+                        FDO_FUNCTION_TOFLOAT));
+            else
+                sgl_value = (FdoFloat) dbl_value;
         break;
 
       case FdoDataType_Double:
         double_value = (FdoDoubleValue *) literal_values->GetItem(0);
         is_NULL      = double_value->IsNull();
-        if (!is_NULL)
+        if (!is_NULL) {
             dbl_value = double_value->GetDouble();
+            if (dbl_value < FLT_MIN || dbl_value > FLT_MAX)
+                throw FdoException::Create(
+                        FdoException::NLSGetMessage(
+                        FUNCTION_DATA_VALUE_ERROR, 
+                        "Expression Engine: Invalid value for execution of function '%1$ls'",
+                        FDO_FUNCTION_TOFLOAT));
+            else
+                sgl_value = (FdoFloat) dbl_value;
+
+        }
         break;
 
       case FdoDataType_Int16:
         int16_value = (FdoInt16Value *) literal_values->GetItem(0);
         is_NULL     = int16_value->IsNull();
         if (!is_NULL)
-            dbl_value = (FdoDouble) int16_value->GetInt16();
+            sgl_value = int16_value->GetInt16();
         break;
 
       case FdoDataType_Int32:
         int32_value = (FdoInt32Value *) literal_values->GetItem(0);
         is_NULL     = int32_value->IsNull();
         if (!is_NULL)
-            dbl_value = (FdoDouble) int32_value->GetInt32();
+            sgl_value = (FdoFloat) int32_value->GetInt32();
         break;
 
       case FdoDataType_Int64:
         int64_value = (FdoInt64Value *) literal_values->GetItem(0);
         is_NULL     = int64_value->IsNull();
         if (!is_NULL)
-            dbl_value = (FdoDouble) int64_value->GetInt64();
+            sgl_value = (FdoFloat) int64_value->GetInt64();
         break;
 
       case FdoDataType_Single:
         single_value = (FdoSingleValue *) literal_values->GetItem(0);
         is_NULL      = single_value->IsNull();
         if (!is_NULL)
-            dbl_value = single_value->GetSingle();
+            sgl_value = single_value->GetSingle();
         break;
 
       case FdoDataType_String:
@@ -190,9 +212,18 @@ FdoLiteralValue *FdoFunctionToFloat::Evaluate (
         if (!is_NULL) {
 
             str_value = string_value->GetString();
-            if (str_value.IsNumber())
+            if (str_value.IsNumber()) {
+
                 dbl_value = str_value.ToDouble();
-            else {
+                if (dbl_value < FLT_MIN || dbl_value > FLT_MAX)
+                    throw FdoException::Create(
+                        FdoException::NLSGetMessage(
+                        FUNCTION_DATA_VALUE_ERROR, 
+                        "Expression Engine: Invalid value for execution of function '%1$ls'",
+                        FDO_FUNCTION_TOFLOAT));
+                else
+                    sgl_value = (FdoFloat) dbl_value;
+            } else {
 
               // The current string does not represent a number. This may be
               // the case because of leading and/or trailing blanks. If those
@@ -200,14 +231,22 @@ FdoLiteralValue *FdoFunctionToFloat::Evaluate (
               // does not represent a number issue an exception.
 
               str_value = RemoveBlanks(str_value);
-              if (str_value.IsNumber())
-                  dbl_value = str_value.ToDouble();
-              else
+              if (str_value.IsNumber()) {
+                dbl_value = str_value.ToDouble();
+                if (dbl_value < FLT_MIN || dbl_value > FLT_MAX)
+                    throw FdoException::Create(
+                        FdoException::NLSGetMessage(
+                        FUNCTION_DATA_VALUE_ERROR, 
+                        "Expression Engine: Invalid value for execution of function '%1$ls'",
+                        FDO_FUNCTION_TOFLOAT));
+                else
+                    sgl_value = (FdoFloat) dbl_value;
+              } else
                 throw FdoException::Create(
                         FdoException::NLSGetMessage(
                         FUNCTION_DATA_VALUE_ERROR, 
                         "Expression Engine: Invalid value for execution of function '%1$ls'",
-                        FDO_FUNCTION_TODOUBLE));
+                        FDO_FUNCTION_TOFLOAT));
 
             }  //  else ...
 
@@ -225,10 +264,10 @@ FdoLiteralValue *FdoFunctionToFloat::Evaluate (
     }  //  switch ...
 
     if (is_NULL)
-        return_decimal_value->SetNull();
+        return_single_value->SetNull();
     else
-        return_decimal_value->SetDecimal(dbl_value);
-    return FDO_SAFE_ADDREF(return_decimal_value.p);
+        return_single_value->SetSingle(sgl_value);
+    return FDO_SAFE_ADDREF(return_single_value.p);
     
 }  //  Evaluate ()
 
