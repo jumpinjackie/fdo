@@ -65,8 +65,9 @@ odbcdr_cursor_def *odbcdr_crt_cursor(
 	c->next				    = (odbcdr_cursor_def *)NULL;
 	c->cumul_rows_fetched   = 0;
 	c->is_rollback		    = FALSE;
+    c->odbcdr_geom          = NULL;
+    c->odbcdr_geomNI        = NULL;
     c->odbcdr_blob_tmp      = NULL;
-    c->odbcdr_geomNI_tmp    = NULL;
     c->odbcdr_blob_tmp_size = 0;
     c->odbcdr_blob_use_binds = ODBCDR_BLOB_USE_BINDS;
 

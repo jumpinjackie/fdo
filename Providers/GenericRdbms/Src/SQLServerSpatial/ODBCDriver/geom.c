@@ -148,6 +148,7 @@ static int geom_convertFromSqlServer_S( odbcdr_context_def	*context, odbcdr_curs
                                      odbcdr_geom_def *sqlserverGeom_I,
                                      odbcdr_geomNI_def *sqlserverGeomNI_I,
                                      int wantedDim,
+                                     int geomValid,
                                      pIGeometry_def *visionGeom_O,
 									 pIGeometry_def *l_visionGeom_O );
 static int geom_convertToSqlServer_S( odbcdr_context_def *context, 
@@ -158,7 +159,7 @@ static int geom_convertToSqlServer_S( odbcdr_context_def *context,
                                    int  wantedDim,
                                    odbcdr_geom_def **sqlserverGeom_O,
                                    odbcdr_geomNI_def **sqlserverGeomNI_O );
-static int geom_checkFetchStatus_S( odbcdr_cursor_def  *cursor, int numNumRows_I );
+static int geom_checkFetchStatusRow_S( odbcdr_cursor_def  *cursor, int numRow_I );
 
 /*************************************************************************/
 
@@ -556,29 +557,12 @@ geom_convert_S(
 
             if ( sqlserverGeom == NULL || sqlserverGeomNI == NULL || visionGeom == NULL ) goto the_exit;
 
-            // Check if geometry fetching was successful when using bind method.
-            if ( (conversionCode == CONVERSION_FROM_SQLSERVER ) && cursor->odbcdr_blob_use_binds )
-            {
-                if ( !geom_checkFetchStatus_S( cursor, numRows_I ) )
-                {
-                    // Unbind the geometry column and change the fetch method to get blobs
-                    // directly. 
-                    // NOTE: Another variant is to keep rebinding with larger and larger
-                    // buffer using SQLBindCol followed by SQLSetPos with SQL_REFRESH for each
-                    // row in the dataset.
-                    ODBCDR_ODBC_ERR( SQLBindCol( cursor->hStmt,
-						        (SQLUSMALLINT) column->position,
-						        (SQLSMALLINT) SQL_C_BINARY,
-                                (SQLPOINTER) (char*)NULL,
-                                (SQLINTEGER) 0,
-						        (SQLLEN *) NULL),
-				        SQL_HANDLE_STMT, cursor->hStmt,
-				        "SQLBindCol", "unbind" );   
-                    cursor->odbcdr_blob_use_binds = false;
-                }
-            }
+            // Process each geometry in the dataset. The geometries are bound.
+            // In case a large geometry is hit (data truncation), the geometries are unbound and 
+            // the current geometry is fetched again as a blob.
+            // After the entire batch is processed the geometries are bound again.
+            int  unbound = false; 
 
-            // Process each geometry in the dataset
             for ( j = 0;  j < numRows_I;  j++ )
             {
                 debug2( "converting geometry column pos '%d', row %d",
@@ -601,7 +585,26 @@ geom_convert_S(
                     IGeometry_Release(visionGeom[j]);
                     visionGeom[j] = NULL;
 
-                    if ( !cursor->odbcdr_blob_use_binds )
+                    // Check the status of this geometry.
+                    int geomValid = geom_checkFetchStatusRow_S( cursor, j );
+
+                    // Unbind if not already unbound.
+                    if ( !geomValid && !unbound)
+                    {
+                                    ODBCDR_ODBC_ERR( SQLBindCol( cursor->hStmt,
+						                        (SQLUSMALLINT) column->position,
+						                        (SQLSMALLINT) SQL_C_BINARY,
+                                                (SQLPOINTER) (char*)NULL,
+                                                (SQLINTEGER) 0,
+						                        (SQLLEN *) NULL),
+				                        SQL_HANDLE_STMT, cursor->hStmt,
+				                        "SQLBindCol", "unbind" );  
+
+                        debug0("UNBOUND!\n");
+                        unbound = true;
+                    }
+    
+                    if ( unbound )
                     {
                         // Advance 
 				        ODBCDR_ODBC_ERR( SQLSetPos(	cursor->hStmt,
@@ -620,28 +623,24 @@ geom_convert_S(
                                                               sqlserverGeom[j],
                                                               sqlserverGeomNI[j],
                                                               wantedDim,
+                                                              geomValid,
                                                               &visionGeom[j],
 														      &l_visionGeom[j] ));
-           
                 }
             }
 
-            // Apparently this is illegal:
-            // [Microsoft][ODBC SQL Server Driver]Invalid Descriptor Index
-            /*
-            if ( (conversionCode == CONVERSION_FROM_SQLSERVER ) && !cursor->odbcdr_blob_use_binds )
+            // Rebind back if the case.            
+            if ( (conversionCode == CONVERSION_FROM_SQLSERVER ) && unbound )
             {
-                // Rebind back.
                 ODBCDR_ODBC_ERR( SQLBindCol( cursor->hStmt,
 				            (SQLUSMALLINT) column->position,
 				            (SQLSMALLINT) SQL_C_BINARY,
-                            (SQLPOINTER) (char*)cursor->odbcdr_blob_tmp,
+                            (SQLPOINTER) (char*)cursor->odbcdr_geom,
                             (SQLINTEGER) ODBCDR_BLOB_CHUNK_SIZE,
-				            (SQLLEN *)cursor->odbcdr_geomNI_tmp),
+				            (SQLLEN *)cursor->odbcdr_geomNI),
 		            SQL_HANDLE_STMT, cursor->hStmt,
 		            "SQLBindCol", "rebind" );   
-            }
-            */
+            }   
         }   /* end for (i < columnList->size) */
 		
 		// Make final SQLParamData call. SQLParamData executes the SQL and
@@ -943,6 +942,7 @@ geom_convertFromSqlServer_S(
     odbcdr_geom_def         *sqlserverGeom_I,
     odbcdr_geomNI_def       *sqlserverGeomNI_I,
     int                     wantedDim,
+    int                     geomValid,
     pIGeometry_def          *visionGeom_O,
 	pIGeometry_def		    *l_visionGeom_0
     )
@@ -957,9 +957,9 @@ geom_convertFromSqlServer_S(
 
     debug_on( "odbcdr_geom:geom_convertFromSqlServer_S" );
 
-    if ( cursor->odbcdr_blob_use_binds )
+    if ( geomValid )
     {
-        if ( cursor->odbcdr_geomNI_tmp[recNo] == SQL_NULL_DATA)
+        if ( cursor->odbcdr_geomNI[recNo] == SQL_NULL_DATA)
         {
             *visionGeom_O = NULL;
             debug0( "Geometry is NULL." );
@@ -969,7 +969,7 @@ geom_convertFromSqlServer_S(
 
         debug0( "Geometry is not NULL." );
 
-        pData = (PBYTE)&cursor->odbcdr_blob_tmp[ODBCDR_BLOB_CHUNK_SIZE * recNo];
+        pData = (PBYTE)&cursor->odbcdr_geom[ODBCDR_BLOB_CHUNK_SIZE * recNo];
      
         int num_pos = *((int *)&pData[5]);
 
@@ -981,7 +981,7 @@ geom_convertFromSqlServer_S(
     }
     else
     {
-        // First get the size
+        // Fetch as blob. First get the size.
         rc = SQLGetData( cursor->hStmt, 
                                      position, 
                                      SQL_C_BINARY, 
@@ -1029,7 +1029,7 @@ geom_convertFromSqlServer_S(
                             "SQLGetData", "getData");
     }
 
-    // Create a byte array from the array of bytes.
+    // Create a byte array from the array of bytes. Note 'count' is an initial size.
     if ( NULL == ( wkb = IByteArray_Create( pData, count) ) )
         goto the_exit;
 
@@ -1047,7 +1047,7 @@ geom_convertFromSqlServer_S(
     {
         const wchar_t * fgft;
         if ( IGeometry_GetFgftString(*visionGeom_O, &fgft)) {
-            /*debug1*/printf( "%d - FgftGeometry = '%ls'\n", wantedDim, fgft );
+            debug2("%d - FgftGeometry = '%ls'\n", wantedDim, fgft );
         }
     }
 
@@ -1147,42 +1147,20 @@ geom_convertToSqlServer_S(
 
 /**************************************************************************/
 static int
-geom_checkFetchStatus_S (
+geom_checkFetchStatusRow_S (
     odbcdr_cursor_def   *cursor,
-    int                 numNumRows_I
+    int                 numRow_I
     )
 {
-    pIGeometry_def  geom;
-    pByteArray_def  wkb = NULL;
     int             status = true;
     
-    for (int i = 0; i < numNumRows_I && status; i++ )
-    {
-        if ( cursor->odbcdr_geomNI_tmp[i] == SQL_NULL_DATA)
-            continue;
-        else if ( cursor->odbcdr_geomNI_tmp[i] > ODBCDR_BLOB_CHUNK_SIZE )
-            status = false;
-        else
-        {
-            PBYTE pData = (PBYTE)&cursor->odbcdr_blob_tmp[ODBCDR_BLOB_CHUNK_SIZE * i];
-         
-            // Create a byte array from the array of bytes.
-            status = ( NULL != ( wkb = IByteArray_Create( pData, ODBCDR_BLOB_CHUNK_SIZE) ) );
-
-            // Create the geometry. In case it succeeds then all the bytes have been read in.
-            if ( status )
-            {
-                status = IGeometry_CreateGeometryFromWkb( wkb, &geom, NULL );
-
-                IByteArray_Release( wkb );
-                IGeometry_Release( geom );
-            }
-        }
-    }
+    if ( cursor->odbcdr_geomNI[numRow_I] == SQL_NULL_DATA)
+        status = true;
+    else if ( cursor->odbcdr_geomNI[numRow_I] >= ODBCDR_BLOB_CHUNK_SIZE )
+        status = false;
 
     return status;
 }
-
 
 /**************************************************************************/
 
