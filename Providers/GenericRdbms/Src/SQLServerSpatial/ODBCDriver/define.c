@@ -135,7 +135,7 @@ int odbcdr_define(
 							SQL_HANDLE_STMT, c->hStmt,
 							"SQLBindCol", "define" );
 	}
-    else if ( datatype == RDBI_GEOMETRY )
+    else
 	{
         odbcdr_geom_def   **odbcGeom = NULL;   /* Geometries       */
         odbcdr_geomNI_def **odbcGeomNI = NULL; /* Null indicators  */
@@ -151,26 +151,22 @@ int odbcdr_define(
                                             &odbcGeom,
                                             &odbcGeomNI ) );
 
-        if ( c->odbcdr_blob_use_binds )
+        // Allocate the buffers
+        if ( c->odbcdr_geom == NULL )
         {
-            // Allocate the buffers
-            if ( c->odbcdr_blob_tmp == NULL )
-            {
-                c->odbcdr_blob_tmp_size = ODBCDR_MAX_ARRAY_SIZE * ODBCDR_BLOB_CHUNK_SIZE;
-                c->odbcdr_blob_tmp = (PBYTE)malloc( c->odbcdr_blob_tmp_size );
-                c->odbcdr_geomNI_tmp = (SQLINTEGER *)malloc( ODBCDR_MAX_ARRAY_SIZE * sizeof(SQLINTEGER));
-            }
-
-            // Do binds
-		    ODBCDR_ODBC_ERR( SQLBindCol( c->hStmt,
-									    (SQLUSMALLINT) position,
-									    (SQLSMALLINT) odbcdr_datatype,
-                                        (SQLPOINTER) (char*)c->odbcdr_blob_tmp,
-                                        (SQLINTEGER) ODBCDR_BLOB_CHUNK_SIZE,
-									    (SQLLEN *) (char*)c->odbcdr_geomNI_tmp),
-							    SQL_HANDLE_STMT, c->hStmt,
-							    "SQLBindCol", "define" );
+            c->odbcdr_geom = (PBYTE)malloc( ODBCDR_MAX_ARRAY_SIZE * ODBCDR_BLOB_CHUNK_SIZE );
+            c->odbcdr_geomNI = (SQLINTEGER *)malloc( ODBCDR_MAX_ARRAY_SIZE * sizeof(SQLINTEGER));
         }
+
+        // Do binds
+	    ODBCDR_ODBC_ERR( SQLBindCol( c->hStmt,
+								    (SQLUSMALLINT) position,
+								    (SQLSMALLINT) odbcdr_datatype,
+                                    (SQLPOINTER) (char*)c->odbcdr_geom,
+                                    (SQLINTEGER) ODBCDR_BLOB_CHUNK_SIZE,
+								    (SQLLEN *) (char*)c->odbcdr_geomNI),
+						    SQL_HANDLE_STMT, c->hStmt,
+						    "SQLBindCol", "define" );
 
     }   /* end if datatype == RDBI_GEOMETRY */
 

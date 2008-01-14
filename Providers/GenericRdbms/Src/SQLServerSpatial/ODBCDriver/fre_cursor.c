@@ -114,11 +114,15 @@ int odbcdr_fre_cursor(
 	}
 #endif
     // Free the working buffer
+    if ( c->odbcdr_geom != NULL )
+        ut_vm_free( _db_function, c->odbcdr_geom );
+
+    if ( c->odbcdr_geomNI != NULL )
+        ut_vm_free( _db_function, c->odbcdr_geomNI );
+
+    // Free the working buffer
     if ( c->odbcdr_blob_tmp != NULL )
         ut_vm_free( _db_function, c->odbcdr_blob_tmp );
-
-    if ( c->odbcdr_geomNI_tmp != NULL )
-        ut_vm_free( _db_function, c->odbcdr_geomNI_tmp );
 
 	// Free the geometry buffers
     ODBCDR_RDBI_ERR( odbcdr_geom_freeAllColumns( context, c ) );   
