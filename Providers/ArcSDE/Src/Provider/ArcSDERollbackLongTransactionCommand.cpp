@@ -58,7 +58,7 @@ void ArcSDERollbackLongTransactionCommand::Execute ()
     SE_VERSIONINFO parent;
     wchar_t buffer[50];
     LONG id;
-    CHAR owner[SE_MAX_VERSION_LEN];
+    CHAR owner[2*SE_MAX_VERSION_LEN];
     CHAR user_name[SE_MAX_OWNER_LEN];
     LONG state;
 

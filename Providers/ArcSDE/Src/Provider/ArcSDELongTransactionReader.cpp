@@ -79,7 +79,7 @@ void ArcSDELongTransactionReader::validate ()
 /// <returns>Returns the name of the long transaction.</returns> 
 FdoString* ArcSDELongTransactionReader::GetName ()
 {
-    char name[SE_MAX_VERSION_LEN];
+    char name[2*SE_MAX_VERSION_LEN];
     wchar_t* temp;
 
     validate ();
@@ -117,7 +117,7 @@ FdoString* ArcSDELongTransactionReader::GetDescription ()
 /// <returns>Returns the owner name.</returns> 
 FdoString* ArcSDELongTransactionReader::GetOwner ()
 {
-    char owner[SE_MAX_VERSION_LEN];
+    char owner[2*SE_MAX_VERSION_LEN];
     char* q;
     wchar_t* temp;
 
