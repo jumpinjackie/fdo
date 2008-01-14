@@ -2990,7 +2990,7 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
 
     FdoInt16                  counter           = 0;
 
-    FdoDouble                 exp_dcl_val,
+    FdoFloat                  exp_dcl_val,
                               exp_dbl_val,
                               exp_i32_val,
                               exp_sgl_val,
@@ -3041,13 +3041,13 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
 
         counter++;
 
-        exp_byte_val = (FdoDouble)feature_reader->GetByte(L"byte_val");
-        exp_dcl_val  = feature_reader->GetDouble(L"dcl_val");
-        exp_dbl_val  = feature_reader->GetDouble(L"dbl_val");
-        exp_i32_val  = (FdoDouble)feature_reader->GetInt32(L"i32_val");
+        exp_byte_val = (FdoFloat)feature_reader->GetByte(L"byte_val");
+        exp_dcl_val  = (FdoFloat)feature_reader->GetDouble(L"dcl_val");
+        exp_dbl_val  = (FdoFloat)feature_reader->GetDouble(L"dbl_val");
+        exp_i32_val  = (FdoFloat)feature_reader->GetInt32(L"i32_val");
         exp_sgl_val  = feature_reader->GetSingle(L"sgl_val");
         str_val      = feature_reader->GetString(L"str_val");
-        exp_str_val  = str_val.ToDouble();
+        exp_str_val  = (FdoFloat)str_val.ToDouble();
 
       }  //  while (feature_reader->ReadNext()) ...
 
@@ -3093,7 +3093,7 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
       func_call   = L"(ToFloat(byte_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, exp_byte_val);
+      CheckReaderSgl(data_reader, true, 9, exp_byte_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -3130,7 +3130,7 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
       func_call   = L"(ToFloat(dcl_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, exp_dcl_val);
+      CheckReaderSgl(data_reader, true, 9, exp_dcl_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -3167,7 +3167,7 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
       func_call   = L"(ToFloat(dbl_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, exp_dbl_val);
+      CheckReaderSgl(data_reader, true, 9, exp_dbl_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -3204,7 +3204,7 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
       func_call   = L"(ToFloat(i32_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, exp_i32_val);
+      CheckReaderSgl(data_reader, true, 9, exp_i32_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -3241,7 +3241,7 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
       func_call   = L"(ToFloat(sgl_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, exp_sgl_val);
+      CheckReaderSgl(data_reader, true, 9, exp_sgl_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -3278,7 +3278,7 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
       func_call   = L"(ToFloat(str_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, exp_str_val);
+      CheckReaderSgl(data_reader, true, 9, exp_str_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -3317,7 +3317,7 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
       func_call   = L"(ToFlOaT(byte_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, exp_byte_val);
+      CheckReaderSgl(data_reader, true, 9, exp_byte_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
