@@ -24,7 +24,9 @@
 class MySqlFdoUpdateTest : public FdoUpdateTest
 {
     CPPUNIT_TEST_SUB_SUITE (MySqlFdoUpdateTest, FdoUpdateTest);
-    CPPUNIT_TEST( testForeignDataStore );
+// Test no longer applicable due to Ticket#220 change.
+// It might be re-instated in the future if specific geometry type validation is re-introduced.
+//    CPPUNIT_TEST( testForeignDataStore );
     CPPUNIT_TEST_SUITE_END ();
 
     void  set_provider();
