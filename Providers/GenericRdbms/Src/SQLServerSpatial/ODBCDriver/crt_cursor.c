@@ -69,7 +69,6 @@ odbcdr_cursor_def *odbcdr_crt_cursor(
     c->odbcdr_geomNI        = NULL;
     c->odbcdr_blob_tmp      = NULL;
     c->odbcdr_blob_tmp_size = 0;
-    c->odbcdr_blob_use_binds = ODBCDR_BLOB_USE_BINDS;
 
 the_exit:
 	debug_return (NULL,c);
