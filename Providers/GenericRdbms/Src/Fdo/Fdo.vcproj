@@ -110,6 +110,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="-Zm130"
 				Optimization="0"
 				InlineFunctionExpansion="0"
 				OmitFramePointers="true"
