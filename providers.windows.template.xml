@@ -7,7 +7,7 @@
     <IsManaged>False</IsManaged>
     <Version>3.3.0.0</Version>
     <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
-    <LibraryPath>%FDOBINPATHFDO%\SDFProvider.dll</LibraryPath>
+    <LibraryPath>.\SDFProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
     <Name>OSGeo.SHP.3.3</Name>
@@ -16,7 +16,7 @@
     <IsManaged>False</IsManaged>
     <Version>3.3.0.0</Version>
     <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
-    <LibraryPath>%FDOBINPATHFDO%\SHPProvider.dll</LibraryPath>
+    <LibraryPath>.\SHPProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
     <Name>OSGeo.ArcSDE.3.3</Name>
@@ -25,7 +25,7 @@
     <IsManaged>False</IsManaged>
     <Version>3.3.0.0</Version>
     <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
-    <LibraryPath>%FDOBINPATHFDO%\ArcSDEProvider.dll</LibraryPath>
+    <LibraryPath>.\ArcSDEProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
     <Name>OSGeo.WFS.3.3</Name>
@@ -34,7 +34,7 @@
     <IsManaged>False</IsManaged>
     <Version>3.3.0.0</Version>
     <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
-    <LibraryPath>%FDOBINPATHFDO%\WFSProvider.dll</LibraryPath>
+    <LibraryPath>.\WFSProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
     <Name>OSGeo.WMS.3.3</Name>
@@ -43,7 +43,7 @@
     <IsManaged>False</IsManaged>
     <Version>3.3.0.0</Version>
     <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
-    <LibraryPath>%FDOBINPATHFDO%\WMSProvider.dll</LibraryPath>
+    <LibraryPath>.\WMSProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
     <Name>OSGeo.ODBC.3.3</Name> 
@@ -52,7 +52,7 @@
     <IsManaged>False</IsManaged> 
     <Version>3.3.0.0</Version> 
     <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
-    <LibraryPath>%FDOBINPATHFDO%\ODBCProvider.dll</LibraryPath>
+    <LibraryPath>.\ODBCProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
     <Name>OSGeo.MySQL.3.3</Name> 
@@ -61,7 +61,7 @@
     <IsManaged>False</IsManaged>
     <Version>3.3.0.0</Version>
     <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
-    <LibraryPath>%FDOBINPATHFDO%\MySQLProvider.dll</LibraryPath>
+    <LibraryPath>.\MySQLProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
     <Name>OSGeo.Gdal.3.3</Name>
@@ -70,7 +70,7 @@
     <IsManaged>False</IsManaged>
     <Version>3.3.0.0</Version>
     <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
-    <LibraryPath>%FDOBINPATHFDO%\GRFPProvider.dll</LibraryPath>
+    <LibraryPath>.\GRFPProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
     <Name>OSGeo.OGR.3.3</Name> 
@@ -79,7 +79,7 @@
     <IsManaged>False</IsManaged> 
     <Version>3.3.0.0</Version> 
     <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion> 
-    <LibraryPath>%FDOBINPATHFDO%\OGRProvider.dll</LibraryPath> 
+    <LibraryPath>.\OGRProvider.dll</LibraryPath> 
  </FeatureProvider>
   <FeatureProvider>
     <Name>OSGeo.PostGIS.3.3</Name>
@@ -88,7 +88,7 @@
     <IsManaged>False</IsManaged>
     <Version>3.3.0.0</Version>
     <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
-    <LibraryPath>%FDOBINPATHFDO%\PostGISProvider.dll</LibraryPath>
+    <LibraryPath>.\PostGISProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
     <Name>OSGeo.KingOracle.3.3</Name>
@@ -97,15 +97,15 @@
     <IsManaged>False</IsManaged>
     <Version>3.3.0.0</Version>
     <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
-    <LibraryPath>%FDOBINPATHFDO%\KingOracleProvider.dll</LibraryPath>
+    <LibraryPath>.\KingOracleProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
     <Name>OSGeo.SQLServerSpatial.3.3</Name>
-    <DisplayName>OSGeo FDO Provider Provider for SQL Server Spatial</DisplayName>
+    <DisplayName>OSGeo FDO Provider for SQL Server Spatial</DisplayName>
     <Description>Read/Write access to feature data in a MS SQL Server spatially enabled data store. Supports geospatial and non-geospatial data and schema.</Description>
     <IsManaged>False</IsManaged>
     <Version>3.3.0.0</Version>
     <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
-    <LibraryPath>%FDOBINPATHFDO%\SQLServerSpatialProvider.dll</LibraryPath>
+    <LibraryPath>.\SQLServerSpatialProvider.dll</LibraryPath>
   </FeatureProvider>
 </FeatureProviderRegistry>
