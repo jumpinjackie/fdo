@@ -27,7 +27,7 @@
 #include "../../ODBCDriver/context.h"
 int odbcdr_rdbi_init( odbcdr_context_def **, rdbi_methods	methods );
 
-#define SQLSERVER_INIT_FILENAME_TEST	"SqlServerInit.txt"
+#define SQLSERVER_INIT_FILENAME_TEST	"SqlServerSpatialInit.txt"
 #define SQLSERVER_SERVICE_DEFAULT		L"seconds"
 #define SQLSERVER_PASSWORD_DEFAULT		L"test"
 
