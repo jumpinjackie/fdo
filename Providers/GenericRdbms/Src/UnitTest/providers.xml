@@ -37,7 +37,7 @@
     <LibraryPath>.\OdbcProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
-    <Name>Autodesk.SQLServerSpatial.3.3</Name>
+    <Name>OSGeo.SQLServerSpatial.3.3</Name>
     <DisplayName>OSGeo FDO Provider Provider for SQL Server Spatial</DisplayName>
     <Description>Read/Write access to feature data in a MS SQL Server spatially enabled data store. Supports geospatial and non-geospatial data and schema.</Description>
     <IsManaged>False</IsManaged>
