@@ -328,15 +328,15 @@ foreach $RDBMS ("ORACLE", "SQLSERVER")
   print "\n" . $ACTION . " tables TREES, TREES_" . $DATASETNAME . ", SOILS and PARCELS for " . $RDBMS . " ... \n";
 
   if ($INSTALLACTION ne "U") {
-    system "shp2sde -o create -l TREES,SHAPE -f " . $SHP_ROOT . "\\Metadcov\\Trees.shp -e p -a all -C OBJECTID,USER,0 -u " . $username_metadcov . " -p test " . $DB_INST;
+    system "shp2sde -o create -l TREES,SHAPE -f " . $SHP_ROOT . "\\Sheboygen\\Trees.shp -e p -a all -C OBJECTID,USER,0 -u " . $username_metadcov . " -p test " . $DB_INST;
     system "echo y | sdetable -o alter_reg -t TREES -V MULTI -c OBJECTID -C SDE -u " . $username_metadcov . " -p test " . $DB_INST;
-    system "shp2sde -o create -l SOILS,SHAPE -f " . $SHP_ROOT . "\\Australia\\Soils.shp -e a -a all -C FID,USER,0 -u " . $username_australia . " -p test " . $DB_INST;
+    system "shp2sde -o create -l SOILS,SHAPE -f " . $SHP_ROOT . "\\Sheboygen\\Soils.shp -e a -a all -C FID,USER,0 -u " . $username_australia . " -p test " . $DB_INST;
     system "echo y | sdetable -o alter_reg -t SOILS -V MULTI -c FID -C SDE -u " . $username_australia . " -p test " . $DB_INST;
-    system "shp2sde -o create -l PARCELS,SHAPE -f " . $SHP_ROOT . "\\Australia\\PARCELS.shp -e a -a all -C FID,USER,0 -u " . $username_australia . " -p test " . $DB_INST;
+    system "shp2sde -o create -l PARCELS,SHAPE -f " . $SHP_ROOT . "\\Sheboygen\\Parcels.shp -e a -a all -C FID,USER,0 -u " . $username_australia . " -p test " . $DB_INST;
     system "echo y | sdetable -o alter_reg -t PARCELS -c FID -C SDE -u " . $username_australia . " -p test " . $DB_INST;
 
     # create a table with a unique name, to test code that deals with unqualified FDO class names:
-    system "shp2sde -o create -l TREES_" . $DATASETNAME . ",SHAPE -f " . $SHP_ROOT . "\\Metadcov\\Trees.shp -e p -a all -C OBJECTID,USER,0 -u " . $username_metadcov . " -p test " . $DB_INST;
+    system "shp2sde -o create -l TREES_" . $DATASETNAME . ",SHAPE -f " . $SHP_ROOT . "\\Sheboygen\\Trees.shp -e p -a all -C OBJECTID,USER,0 -u " . $username_metadcov . " -p test " . $DB_INST;
     system "echo y | sdetable -o alter_reg -t TREES_" . $DATASETNAME . " -V MULTI -c OBJECTID -C SDE -u " . $username_metadcov . " -p test " . $DB_INST;
   } else {
     system "echo y | sdetable -o delete -t TREES -u " . $username_metadcov . " -p test " . $DB_INST;
@@ -350,9 +350,9 @@ foreach $RDBMS ("ORACLE", "SQLSERVER")
   print "\n" . $ACTION . " tables ROADS and DEFECT64335202 for " . $RDBMS . " ... \n";
 
   if ($INSTALLACTION ne "U") {
-    system "shp2sde -o create -l ROADS,GEOMETRY -f " . $SHP_ROOT . "\\Australia\\Roads.shp -e sl -a all -C OBJECTID,USER,0 -u " . $username_australia . " -p test " . $DB_INST;
+    system "shp2sde -o create -l ROADS,GEOMETRY -f " . $SHP_ROOT . "\\Ontario\\roads.shp -e sl -a all -C OBJECTID,USER,0 -u " . $username_australia . " -p test " . $DB_INST;
     system "echo y | sdetable -o alter_reg -t ROADS -c OBJECTID -C SDE -V MULTI -u " . $username_australia . " -p test " . $DB_INST;
-    system "shp2sde -o create -l DEFECT64335202,SHAPE -f " . $SHP_ROOT . "\\Australia\\DEFECT64335202.shp -e npsla+ -g 10 -a all -C OBJECTID,USER,0 -u " . $username_australia . " -p test " . $DB_INST;
+    system "shp2sde -o create -l DEFECT64335202,SHAPE -f " . $SHP_ROOT . "\\General\\DEFECT64335202.shp -e npsla+ -g 10 -a all -C OBJECTID,USER,0 -u " . $username_australia . " -p test " . $DB_INST;
     system "echo y | sdetable -o alter_reg -t DEFECT64335202 -c OBJECTID -C SDE -u " . $username_australia  . " -p test " . $DB_INST;
   } else {
     system "echo y | sdetable -o delete -t ROADS -u " . $username_australia . " -p test " . $DB_INST;
