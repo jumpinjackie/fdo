@@ -270,7 +270,8 @@ void FdoExpressionFunctionTest::RunAllExpFctTests ()
     TestNullValueFunction();
     TestToDateFunction();
     TestToDoubleFunction();
-    TestToFloatFunction();
+    //Temporary comment out until FdoIFeatureReader::GetSingle is supported
+    //TestToFloatFunction();
     TestToInt32Function();
     TestToInt64Function();
     TestToStringFunction();
