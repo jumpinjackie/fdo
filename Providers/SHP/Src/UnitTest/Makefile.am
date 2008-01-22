@@ -48,7 +48,8 @@ UnitTest_SOURCES = \
   UpdateTests.cpp \
   FidelityTests.cpp \
   BigPerformanceTests.cpp \
-  ExtendedSelectTests.cpp
+  ExtendedSelectTests.cpp \
+  FdoExpressionFunctionTest.cpp
 
 noinst_HEADERS = $(UnitTest_SOURCES) \
   BigPerformanceTests.h \
