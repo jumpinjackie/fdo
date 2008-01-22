@@ -212,6 +212,9 @@ public:
     // By default ? is returned. If the database engine uses different syntax, then this method need to be ovewritten.
     virtual const char* GetBindString( int n, bool isGeom = false ) { return "?"; }
 
+    // Workaround for SqlServer spatial bug: on Insert the geometries need to be bound last.
+    virtual bool  BindGeometriesLast() { return false; }
+
     // Creates a Long Transaction Manager and its corresponding Long Transaction
     // Manager Service.
     virtual FdoRdbmsLongTransactionManager *CreateLongTransactionManager() = 0;

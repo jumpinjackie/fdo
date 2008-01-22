@@ -282,6 +282,12 @@ void FdoRdbmsPvcInsertHandler::CreateInsertString(const FdoSmLpClassDefinition *
     int     i;
     bool    emptyBlobAdded;
 
+    // Make a copy of the properties with the geometries at the end of the collection
+    if ( mFdoConnection->BindGeometriesLast() )
+    {
+        propertyDefinitions = MoveGeometryProperties( currentClass );
+    }
+        
     FdoStringP comma(L",");
 
 	DbiConnection *mConnection = mFdoConnection->GetDbiConnection();
@@ -542,7 +548,9 @@ void FdoRdbmsPvcInsertHandler::CreateInsertString(const FdoSmLpClassDefinition *
                 break;
         }
     }
-
+    
+    if ( mFdoConnection->BindGeometriesLast() )
+        delete propertyDefinitions;
 }
 
 void FdoRdbmsPvcInsertHandler::GetStartInsertString( FdoStringP& insertStartString, const wchar_t* tableName )
@@ -1071,6 +1079,13 @@ void FdoRdbmsPvcInsertHandler::SetBindVariables(const FdoSmLpClassDefinition *cu
 												const wchar_t *scope, int &bind_no, FdoPropertyValueCollection  *propValCollection, FdoRdbmsPvcBindDef *bind, int gid)
 {
     const FdoSmLpPropertyDefinitionCollection *propertyDefinitions = currentClass->RefProperties();
+
+    // Make a copy of the properties with the geometries at the end of the collection
+    if ( mFdoConnection->BindGeometriesLast() )
+    {
+        propertyDefinitions = MoveGeometryProperties( currentClass );
+    }
+
     int i;
     const FdoSmPhDbObject* classTab = currentClass->RefDbObject()->RefDbObject();
 	DbiConnection *mConnection = mFdoConnection->GetDbiConnection();
@@ -1422,6 +1437,10 @@ void FdoRdbmsPvcInsertHandler::SetBindVariables(const FdoSmLpClassDefinition *cu
                 break;
         }
     }
+
+    // Clean up
+    if ( mFdoConnection->BindGeometriesLast() )
+        delete propertyDefinitions;
 }
 
 InsertQueryDef *FdoRdbmsPvcInsertHandler::GetInsertQuery( const wchar_t *tableName, bool alloc_new )
@@ -1563,5 +1582,25 @@ void FdoRdbmsPvcInsertHandler::AssociationConstrainCheck( const FdoSmLpAssociati
     //TODO We need to make sure that the associated instance exists. This is a performace issue as we are forcing a cach flush.
     // May be we should ignore the existance of the associated instance is the multiplicity is set to "m".
 
+}
+
+FdoSmLpPropertyDefinitionCollection *FdoRdbmsPvcInsertHandler::MoveGeometryProperties( const FdoSmLpClassDefinition *currentClass )
+{
+    const   FdoSmLpPropertyDefinitionCollection *propertyDefinitions = currentClass->RefProperties();
+
+    FdoSmLpPropertyDefinitionCollection *propertyDefinitions2 = new FdoSmLpPropertyDefinitionCollection();
+    
+    for ( int i = 0; i < propertyDefinitions->GetCount(); i++ )
+    {            
+        if ( propertyDefinitions->RefItem(i)->GetPropertyType() != FdoPropertyType_GeometricProperty )
+            propertyDefinitions2->Add((FdoSmLpPropertyDefinition *)propertyDefinitions->RefItem(i));
+    }
+    for ( int i = 0; i < propertyDefinitions->GetCount(); i++ )
+    {           
+        if ( propertyDefinitions->RefItem(i)->GetPropertyType() == FdoPropertyType_GeometricProperty )
+            propertyDefinitions2->Add((FdoSmLpPropertyDefinition *)propertyDefinitions->RefItem(i));
+    }
+    // Caller should free the collection
+    return propertyDefinitions2;
 }
 

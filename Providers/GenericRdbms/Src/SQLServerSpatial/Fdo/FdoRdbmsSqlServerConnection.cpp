@@ -618,4 +618,8 @@ const char *FdoRdbmsSqlServerConnection::GetBindString( int n, bool isGeom )
     return !isGeom ? "?" : "geometry::STGeomFromWKB(?, 0)"; 
 }
 
+bool  FdoRdbmsSqlServerConnection::BindGeometriesLast() 
+{ 
+    return true; 
+}
 
