@@ -113,6 +113,8 @@ private:
 
 	void AssociationConstrainCheck( const FdoSmLpAssociationPropertyDefinition* propertyDefinition,
                                     FdoPropertyValueCollection  *propValCollection );
+
+    FdoSmLpPropertyDefinitionCollection *MoveGeometryProperties( const FdoSmLpClassDefinition *currentClass );
 };
 
 #endif

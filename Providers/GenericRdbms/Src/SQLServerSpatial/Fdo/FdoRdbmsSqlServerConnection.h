@@ -112,6 +112,9 @@ public:
     // Returns the bind string. The geometries need a conversion wrapper
     virtual const char* GetBindString( int n, bool isGeom );
 
+    // Workaround for SqlServer spatial bug: on Insert the geometries need to be bound last.
+    virtual bool  BindGeometriesLast();
+
     //Count() and SpatialExtents()
     virtual FdoRdbmsFeatureReader *GetOptimizedAggregateReader(const FdoSmLpClassDefinition* classDef, aggr_list *selAggrList);
 };
