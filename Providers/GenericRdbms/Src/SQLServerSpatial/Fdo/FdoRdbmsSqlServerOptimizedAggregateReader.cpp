@@ -70,12 +70,17 @@ FdoRdbmsFeatureReader( connection, NULL, false, classDef, NULL)
 
 	// Get the extents and count
 
+    // Future optimization.
 	//mConnection->dbi_get_geoms_ext( (char *)tableName, (char *)columnName, isGeodetic,
 	//							mbrRequired? &(ba.p) : NULL, 
 	//							countRequired? &count : NULL );
 
     FdoPtr<FdoISQLCommand> selCmd = (FdoISQLCommand*)mFdoConnection->CreateCommand( FdoCommandType_SQLCommand );
-    FdoStringP sql = FdoStringP::Format(L"select %ls.STEnvelope().STAsBinary() as MBR from %ls", colNameW, tableNameW);
+
+    // Apparently strait select is 3x faster.
+    //    FdoStringP sql = FdoStringP::Format(L"select %ls.STEnvelope().STAsBinary() as MBR from %ls", colNameW, tableNameW);
+    FdoStringP sql = FdoStringP::Format(L"select %ls.STAsBinary() as MBR from %ls", colNameW, tableNameW);
+
     selCmd->SetSQLStatement( (FdoString *)sql );
     FdoPtr<FdoISQLDataReader>  rdr = selCmd->ExecuteReader();
 
@@ -94,6 +99,8 @@ FdoRdbmsFeatureReader( connection, NULL, false, classDef, NULL)
             FdoPtr<FdoByteArray> ba = rdr->GetGeometry(L"MBR");
             FdoIGeometry	*geom = gf->CreateGeometryFromFgf(ba);
 
+try
+{
             FdoPtr<FdoIEnvelope>  envelope = geom->GetEnvelope();
             if ( count == 0 )
             {
@@ -109,6 +116,13 @@ FdoRdbmsFeatureReader( connection, NULL, false, classDef, NULL)
                 maxX = FdoCommonMax(envelope->GetMaxX(), maxX);
                 maxY = FdoCommonMax(envelope->GetMaxY(), maxY);          
             }
+}
+catch(...)
+{
+    FdoString*  s = geom->GetText();
+    int x=7;
+}
+
         }
 
         count++;
