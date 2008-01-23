@@ -974,10 +974,7 @@ geom_convertFromSqlServer_S(
         int num_pos = *((int *)&pData[5]);
 
         // WKB is only 2D
-        count = sizeof(byte) /* endian */ 
-               + sizeof(int) /* geometry type */ 
-               + sizeof(int) /* number positions */
-               + num_pos * 2 * sizeof(double);
+        count = cursor->odbcdr_geomNI[recNo];
     }
     else
     {
