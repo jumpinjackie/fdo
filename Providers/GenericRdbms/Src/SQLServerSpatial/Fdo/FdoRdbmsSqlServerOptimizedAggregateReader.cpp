@@ -99,8 +99,6 @@ FdoRdbmsFeatureReader( connection, NULL, false, classDef, NULL)
             FdoPtr<FdoByteArray> ba = rdr->GetGeometry(L"MBR");
             FdoIGeometry	*geom = gf->CreateGeometryFromFgf(ba);
 
-try
-{
             FdoPtr<FdoIEnvelope>  envelope = geom->GetEnvelope();
             if ( count == 0 )
             {
@@ -116,13 +114,6 @@ try
                 maxX = FdoCommonMax(envelope->GetMaxX(), maxX);
                 maxY = FdoCommonMax(envelope->GetMaxY(), maxY);          
             }
-}
-catch(...)
-{
-    FdoString*  s = geom->GetText();
-    int x=7;
-}
-
         }
 
         count++;
