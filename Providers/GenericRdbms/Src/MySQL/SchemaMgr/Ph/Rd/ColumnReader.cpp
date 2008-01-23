@@ -61,6 +61,22 @@ bool FdoSmPhRdMySqlColumnReader::ReadNext()
     return gotRow;
 }
 
+FdoStringP FdoSmPhRdMySqlColumnReader::GetString( FdoStringP tableName, FdoStringP fieldName )
+{
+
+    if ( fieldName == L"size" ) {
+        if ( GetString(L"", L"type_string") == L"bit" ) {
+            FdoStringP fullType = GetString( L"", L"full_type" );
+            FdoStringP bitSize = fullType.Right(L"(").Left(L")");
+            
+            return bitSize;
+        }
+    }
+
+    return FdoSmPhRdColumnReader::GetString( tableName, fieldName );
+}
+
+
 FdoSmPhReaderP FdoSmPhRdMySqlColumnReader::MakeQueryReader (
     FdoSmPhMgrP mgr, 
     const FdoSmPhOwner* owner,
@@ -156,7 +172,6 @@ FdoSmPhReaderP FdoSmPhRdMySqlColumnReader::MakeQueryReader (
               L"             WHEN 'longtext' THEN 65535  \n"
               L"             WHEN 'enum' THEN 255  \n"
               L"             WHEN 'set' THEN 255  \n"
-              L"             When 'bit' THEN CONVERT( MID(column_type,INSTR(column_type,'(')+1,INSTR(column_type,')')-INSTR(column_type,'(')-1), UNSIGNED) \n"
               L"             ELSE ifnull(character_octet_length,numeric_precision) \n"
               L" END as size, \n"
               L" numeric_scale as scale,\n"
@@ -164,7 +179,8 @@ FdoSmPhReaderP FdoSmPhRdMySqlColumnReader::MakeQueryReader (
               L" lower(data_type) as type_string,\n"
               L" instr(column_type,'unsigned') as isunsigned,\n"
 			  L" if(extra='auto_increment',1,0) as is_autoincremented,\n"
-              L" character_set_name\n"
+              L" character_set_name,\n"
+              L" column_type as full_type\n"
               L" from %ls%ls\n"
               L" where table_schema collate utf8_bin = ? \n"
               L" %ls"
@@ -196,6 +212,12 @@ FdoSmPhReaderP FdoSmPhRdMySqlColumnReader::MakeQueryReader (
             row, 
             L"character_set_name",
             row->CreateColumnDbObject(L"character_set_name",true)
+        );
+
+        field = new FdoSmPhField(
+            row, 
+            L"full_type",
+            row->CreateColumnDbObject(L"full_type",true)
         );
 
         reader = new FdoSmPhRdGrdQueryReader (row, sql, mgr, MakeBinds (mgr, ownerName, objectName));

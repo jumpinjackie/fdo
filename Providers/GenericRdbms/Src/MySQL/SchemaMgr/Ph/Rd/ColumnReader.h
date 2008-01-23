@@ -44,6 +44,8 @@ public:
     // type retrieved from MySql.
 	virtual bool ReadNext();
 
+	virtual FdoStringP GetString( FdoStringP tableName, FdoStringP fieldName );
+
     // Get the type enum for the current column
     virtual FdoSmPhColType GetType();
 
