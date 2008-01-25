@@ -1,1 +1,1 @@
-http://www.em.gov.bc.ca/mining/geolsurv/MapPlace/moredetails/Cassiar.htm#Products
+Public Domain Data From: http://www.em.gov.bc.ca/mining/geolsurv/MapPlace/moredetails/Cassiar.htm#Products
