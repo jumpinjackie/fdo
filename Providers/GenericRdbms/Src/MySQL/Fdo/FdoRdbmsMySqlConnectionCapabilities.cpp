@@ -59,6 +59,11 @@ bool FdoRdbmsMySqlConnectionCapabilities::SupportsMultiUserWrite()
     return true;
 }
 
+bool FdoRdbmsMySqlConnectionCapabilities::SupportsTransactions()
+{
+	return false;
+}
+
 
 void FdoRdbmsMySqlConnectionCapabilities::Dispose()
 {

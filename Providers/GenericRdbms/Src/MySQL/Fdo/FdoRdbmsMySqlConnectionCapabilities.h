@@ -54,6 +54,9 @@ public:
     // one time.
     virtual bool SupportsMultiUserWrite();
 
+	// Returns true if the feature provider supports transactions
+	virtual bool SupportsTransactions();
+
 protected:
     ~FdoRdbmsMySqlConnectionCapabilities(void);
     virtual void Dispose();
