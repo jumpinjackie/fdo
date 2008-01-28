@@ -147,12 +147,8 @@ FdoCompareType FdoDateTimeValue::DoCompare( FdoDataValue* other )
         FdoDateTime dt1 = GetDateTime();
         FdoDateTime dt2 = static_cast<FdoDateTimeValue*>(other)->GetDateTime();
 
-        // Can't compare if one value has date component and the other does not
-        if ( (dt1.IsDateTime() || dt1.IsDate()) != (dt2.IsDateTime() || dt2.IsDate()) )
-            return FdoCompareType_Undefined;
-
-        // If values have date component; compare year, month and day.
-        if ( dt1.IsDateTime() || dt1.IsDate() ) {
+        // If both values have date component; compare year, month and day.
+        if ( (dt1.IsDateTime() || dt1.IsDate()) && (dt2.IsDateTime() || dt2.IsDate()) ) {
             if ( dt1.year < dt2.year ) 
                 return FdoCompareType_Less;
             else if ( dt1.year > dt2.year )
@@ -167,36 +163,34 @@ FdoCompareType FdoDateTimeValue::DoCompare( FdoDataValue* other )
                 return FdoCompareType_Greater;
         }
 
-        // If neither value has a date componen t ...
-        if ( (!dt1.IsDateTime()) && (!dt1.IsDate()) ){
-            // Can't compare if one has time component and the other does not.
-            if ( dt1.IsTime() != dt2.IsTime() ) 
-                return FdoCompareType_Undefined;
+        // If both values have time component; compare hour, minute and seconds.
+        if ( (dt1.IsDateTime() || dt1.IsTime()) && (dt2.IsDateTime() || dt2.IsTime()) ) {
+            if ( dt1.hour < dt2.hour ) 
+                return FdoCompareType_Less;
+            else if ( dt1.hour > dt2.hour )
+                return FdoCompareType_Greater;
+            else if ( dt1.minute < dt2.minute )
+                return FdoCompareType_Less;
+            else if ( dt1.minute > dt2.minute )
+                return FdoCompareType_Greater;
+            else if ( dt1.seconds < dt2.seconds)
+                return FdoCompareType_Less;
+            else if ( dt1.seconds > dt2.seconds )
+                return FdoCompareType_Greater;
         }
 
-        // Extract time components for the two values. Assume 0's if neither has a time component. 
-        FdoInt8 dt1_hour = (dt1.IsDateTime() || dt1.IsTime()) ? dt1.hour : 0;
-        FdoInt8 dt2_hour = (dt2.IsDateTime() || dt2.IsTime()) ? dt2.hour : 0;
-        FdoInt8 dt1_minute = (dt1.IsDateTime() || dt1.IsTime()) ? dt1.minute : 0;
-        FdoInt8 dt2_minute = (dt2.IsDateTime() || dt2.IsTime()) ? dt2.minute : 0;
-        FdoFloat dt1_seconds = (dt1.IsDateTime() || dt1.IsTime()) ? dt1.seconds : (float) 0;
-        FdoFloat dt2_seconds = (dt2.IsDateTime() || dt2.IsTime()) ? dt2.seconds : (float) 0;
-
-        // Compare hour, minute and seconds
-        if ( dt1.hour < dt2.hour ) 
-            return FdoCompareType_Less;
-        else if ( dt1.hour > dt2.hour )
-            return FdoCompareType_Greater;
-        else if ( dt1.minute < dt2.minute )
-            return FdoCompareType_Less;
-        else if ( dt1.minute > dt2.minute )
-            return FdoCompareType_Greater;
-        else if ( dt1.seconds < dt2.seconds)
-            return FdoCompareType_Less;
-        else if ( dt1.seconds > dt2.seconds )
-            return FdoCompareType_Greater;
-
-        return FdoCompareType_Equal;
+        if ( (dt1.IsDateTime() == dt2.IsDateTime()) &&
+             (dt1.IsDate() == dt2.IsDate()) &&
+             (dt1.IsTime() == dt2.IsTime())
+        ) {
+            // Both have same Date or Time components defined so they
+            // are equal.
+            return FdoCompareType_Equal;
+        }
+        else {
+            // Not same components (e.g. DateTime vs Date ) so partly equal.
+            return FdoCompareType_PartlyEqual;
+        }
     }
 
     // Other value is not a date.

@@ -30,6 +30,7 @@ class TestCommonConstraints : public CppUnit::TestCase
     CPPUNIT_TEST( TestUpdateCheckConstraints );
 	CPPUNIT_TEST( TestDescribeUpdatedConstraints );
     CPPUNIT_TEST( TestRestrictCheckConstraints );
+    CPPUNIT_TEST( TestCheckConstraintsData );
 	CPPUNIT_TEST( TestDateTimeConstraints );
     CPPUNIT_TEST( TestBaseReferences );
     CPPUNIT_TEST( TestCreateLTConstraints );
@@ -51,6 +52,7 @@ public:
 	virtual void TestUpdateCheckConstraints(void);
 	virtual void TestDescribeUpdatedConstraints(void);
 	virtual void TestRestrictCheckConstraints(void);
+	virtual void TestCheckConstraintsData(void);
 	virtual void TestDateTimeConstraints(void);
     virtual void TestCreateLTConstraints(void);
 	virtual void TestDescribeLTConstraints(void);
@@ -84,10 +86,12 @@ protected:
 	void UpdateCheckConstraints(Context& context);
 	void UpdateUniqueConstraints(Context& context);
 	void RestrictCheckConstraints(Context& context);
+	void CheckConstraintsData(Context& context);
 	void DateTimeConstraints(Context& context);
 
     virtual void CreateConnection( Context& context, FdoBoolean recreateDb = false );
     virtual FdoBoolean CanRestrictCheckConstraint();
+    virtual FdoBoolean FdoValidatesData();
     virtual FdoDouble GetDoubleRounding(FdoDataType dataType);
     virtual FdoFloat GetSecondsIncrement();
     virtual FdoInt32 GetLtMethod();

@@ -18,6 +18,7 @@
 //
 
 #include <Fdo/Schema/PropertyValueConstraintRange.h>
+#include <Fdo/Expression/DateTimeValue.h>
 #include "XmlContext.h"
 #include "StringUtility.h"
 #include "../Expression/ExpressionInternal.h"
@@ -204,7 +205,7 @@ bool FdoPropertyValueConstraintRange::Contains( FdoPropertyValueConstraint* pCon
 
     FdoPropertyValueConstraintRange* pRangeConstraint = (FdoPropertyValueConstraintRange*) pConstraint;
 
-    FdoCompareType compare = CompareEnd( 
+    FdoCompareType compare = CompareRangeEnd( 
         GetMinInclusive(), 
         FdoPtr<FdoDataValue>(GetMinValue()),
         pRangeConstraint->GetMinInclusive(), 
@@ -216,7 +217,7 @@ bool FdoPropertyValueConstraintRange::Contains( FdoPropertyValueConstraint* pCon
     if ( (compare == FdoCompareType_Greater) || (compare == FdoCompareType_Undefined) ) 
         return false;
 
-    compare = CompareEnd( 
+    compare = CompareRangeEnd( 
         GetMaxInclusive(), 
         FdoPtr<FdoDataValue>(GetMaxValue()),
         pRangeConstraint->GetMaxInclusive(), 
@@ -226,6 +227,44 @@ bool FdoPropertyValueConstraintRange::Contains( FdoPropertyValueConstraint* pCon
     
     // Doesn't contain other range if this max < other max or max's can't be compared
     if ( (compare == FdoCompareType_Less) || (compare == FdoCompareType_Undefined) ) 
+        return false;
+
+    return true;
+}
+
+bool FdoPropertyValueConstraintRange::Contains( FdoDataValue* pValue )
+{
+    // Null value always satisfies constraint.
+    if ( (pValue == NULL) || pValue->IsNull() ) 
+        return true;
+
+    FDO_SAFE_ADDREF(pValue);
+    FdoPtr<FdoDataValue> value = pValue;
+
+    // Check the value against the minimum end of the range.
+    FdoCompareType compare = CompareEnd( 
+        GetMinInclusive(), 
+        FdoPtr<FdoDataValue>(GetMinValue()),
+        true, 
+        value,
+        false
+    );
+    
+    if ( (compare == FdoCompareType_Greater) || (compare == FdoCompareType_Undefined) ) 
+        // value is below the minimum (or can't be compared with minimum) so it violates the constraint. 
+        return false;
+
+    // Check the value against the maximum end of the range.
+    compare = CompareEnd( 
+        GetMaxInclusive(), 
+        FdoPtr<FdoDataValue>(GetMaxValue()),
+        true, 
+        value,
+        true
+    );
+    
+    if ( (compare == FdoCompareType_Less) || (compare == FdoCompareType_Undefined) ) 
+        // value is above the maximum (or can't be compared with maximum) so it violates the constraint. 
         return false;
 
     return true;
@@ -252,6 +291,65 @@ FdoStringP FdoPropertyValueConstraintRange::ValueToString( FdoPtr<FdoDataValue> 
     return stringContainer;
 }
 
+FdoCompareType FdoPropertyValueConstraintRange::CompareRangeEnd( FdoBoolean myInclusive, FdoPtr<FdoDataValue> myValue, FdoBoolean theirInclusive, FdoPtr<FdoDataValue> theirValue, FdoBoolean isMax )
+{
+    FdoCompareType result = CompareEnd( myInclusive, myValue, theirInclusive, theirValue, isMax );
+
+    // If both values are not null but have different components then Contains() must return
+    // false (by having this function return Undefined). This forces a check of the data when an SDF range constraint is changed.
+    // The above must also be done if the date component increased but the time component 
+    // decreased or vice versa. 
+    //
+    // The reason for the above is that in these cases there can be existing data values that
+    // are ok for the old constraint but not the new one.
+
+    if ( myValue && !(myValue->IsNull()) && (myValue->GetDataType() == FdoDataType_DateTime) &&
+         theirValue && !(theirValue->IsNull()) && (theirValue->GetDataType() == FdoDataType_DateTime)
+    ) {
+        FdoDateTimeValue* myDtValue = (FdoDateTimeValue*) myValue.p;
+        FdoDateTimeValue* theirDtValue = (FdoDateTimeValue*) theirValue.p;
+        FdoDateTime myDt = myDtValue->GetDateTime();
+        FdoDateTime theirDt = theirDtValue->GetDateTime();
+
+        if ( (myDt.IsDateTime() == theirDt.IsDateTime()) &&
+             (myDt.IsDate() == theirDt.IsDate()) &&
+             (myDt.IsTime() == theirDt.IsTime())
+        ) {
+            // Values define the same components
+
+            if ( myDt.IsDateTime() ) {
+                // Both are date time. Check if date increased but time decreased or vice versa.
+                FdoDateTime myTime( myDt.hour, myDt.minute, myDt.seconds );
+                FdoPtr<FdoDateTimeValue> myTimeValue = FdoDateTimeValue::Create(myTime);
+                FdoDateTime theirTime( theirDt.hour, theirDt.minute, theirDt.seconds );
+                FdoPtr<FdoDateTimeValue> theirTimeValue = FdoDateTimeValue::Create(theirTime);
+
+                FdoCompareType timeCompare = FdoInternalDataValue::Compare( myTimeValue, theirTimeValue );
+
+                if ( (timeCompare == FdoCompareType_Equal) && (myInclusive != theirInclusive) ) {
+                    if ( theirInclusive ) 
+                        timeCompare = isMax ? FdoCompareType_Less : FdoCompareType_Greater;
+
+                    if ( myInclusive ) 
+                        timeCompare = isMax ? FdoCompareType_Greater : FdoCompareType_Less;
+                }
+
+                if ( timeCompare != FdoCompareType_Equal ) {
+                    if ( timeCompare != result ) 
+                        result = FdoCompareType_Undefined;
+                }
+            }
+        }
+        else {
+            // Defined components differ.
+            result = FdoCompareType_Undefined;
+        }
+
+    }
+
+    return result;
+}
+
 FdoCompareType FdoPropertyValueConstraintRange::CompareEnd( FdoBoolean myInclusive, FdoPtr<FdoDataValue> myValue, FdoBoolean theirInclusive, FdoPtr<FdoDataValue> theirValue, FdoBoolean isMax )
 {
     // Equal if both values are null.
@@ -268,14 +366,17 @@ FdoCompareType FdoPropertyValueConstraintRange::CompareEnd( FdoBoolean myInclusi
 
     FdoCompareType result = FdoInternalDataValue::Compare( myValue, theirValue );
 
+    if ( result == FdoCompareType_PartlyEqual ) 
+        result = FdoCompareType_Equal;
+
     // Values are equal. However, if inclusivities not the same then they are 
     // not equal
     if ( (result == FdoCompareType_Equal) && (myInclusive != theirInclusive) ) {
         if ( theirInclusive ) 
-            return isMax ? FdoCompareType_Less : FdoCompareType_Greater;
+            result = isMax ? FdoCompareType_Less : FdoCompareType_Greater;
 
         if ( myInclusive ) 
-            return isMax ? FdoCompareType_Greater : FdoCompareType_Less;
+            result = isMax ? FdoCompareType_Greater : FdoCompareType_Less;
     }
 
     return result;

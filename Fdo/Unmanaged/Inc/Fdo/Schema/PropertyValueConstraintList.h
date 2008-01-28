@@ -110,6 +110,17 @@ public:
     // violate this constraint).
     virtual bool Contains( FdoPropertyValueConstraint* pConstraint );
 
+    // \brief
+    // Checks if the given value violates this constraint.
+    // 
+    // \param value 
+    // The Property Value
+    // 
+    // \return
+    // Returns true if the value is null or is in this constraint's value list.
+    // Returns false if the value does violate this constraint.
+    virtual bool Contains( FdoDataValue* pValue );
+
 private:
     // Builds dictionary from given data values, filtering out duplicates.
     FdoDictionaryP ValuesToDictionary( FdoDataValueCollection* values );

@@ -315,7 +315,7 @@ void TestCommonConstraints::DoTestDescribeUpdatedConstraints (Context& context)
 
 void TestCommonConstraints::TestRestrictCheckConstraints ()
 {
-    if ( !CanRestrictCheckConstraint() ) {
+    if ( FdoValidatesData() ) {
         try
         {
             Context context;
@@ -345,9 +345,41 @@ void TestCommonConstraints::TestRestrictCheckConstraints ()
     }
 }
 
+void TestCommonConstraints::TestCheckConstraintsData ()
+{
+    if ( FdoValidatesData() && CanRestrictCheckConstraint() ) {
+        try
+        {
+            Context context;
+
+            // delete, re-create and open the datastore
+            printf( "Initializing Connection ... \n" );
+            CreateConnection( context, true );
+
+             printf( "Creating Constraints Schema ... \n" );
+            CreateConstraintsSchema( context );
+
+            printf( "Restrict Constraints  ... \n" );
+            CheckConstraintsData( context );
+        }
+        catch ( FdoException* e ) 
+        {
+            TestCommonFail( e );
+        }
+        catch ( CppUnit::Exception e ) 
+        {
+            throw;
+        }
+        catch (...)
+        {
+            CPPUNIT_FAIL ("caught unexpected exception");
+        }
+    }
+}
+
 void TestCommonConstraints::TestDateTimeConstraints ()
 {
-    if ( !CanRestrictCheckConstraint() ) {
+    if ( FdoValidatesData() ) {
         try
         {
             Context context;
@@ -2433,23 +2465,35 @@ void TestCommonConstraints::RestrictCheckConstraints( Context& context )
 
             FdoStringP messages;
             try {
+
                 pApplyCmd->Execute();
             } catch (FdoException *ex) {
                 messages = ex->GetExceptionMessage();
                 ex->Release();
             }
             CPPUNIT_ASSERT_MESSAGE("Restrictive list modifications should have failed", messages != L"" );
-                
-            if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_BYTE_L) > -1 )
-                CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.ByteList'; property has values and new constraint is more restrictive" ) );
-            if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_INT32_L) > -1 )
-                CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.Int32List'; property has values and new constraint is more restrictive" ) );
-            if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_STRING_L) > -1 )
-                CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.StringList'; property has values and new constraint is more restrictive" ) );
-            if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_STRING_R) > -1 )
-                CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint type for property 'constraints:CDataBaseClass.StringRange'; property has values" ) );
-            if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_INT64_L) > -1 )
-                CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint type for property 'constraints:CDataBaseClass.Int64List'; property has values" ) );
+            
+            if ( CanRestrictCheckConstraint() ) {
+                CPPUNIT_ASSERT( !messages.Contains(PROP_BYTE_L) );
+                CPPUNIT_ASSERT( !messages.Contains(PROP_INT32_L) );
+                if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_STRING_L) > -1 )
+                    CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.StringList'; existing data value 'close' violates new constraint" ) );
+                if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_STRING_R) > -1 )
+                    CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.StringRange'; existing data value 'PA' violates new constraint" ) );
+                CPPUNIT_ASSERT( !messages.Contains(PROP_INT64_L) );
+            }
+            else {
+                if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_BYTE_L) > -1 )
+                    CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.ByteList'; property has values and new constraint is more restrictive" ) );
+                if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_INT32_L) > -1 )
+                    CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.Int32List'; property has values and new constraint is more restrictive" ) );
+                if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_STRING_L) > -1 )
+                    CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.StringList'; property has values and new constraint is more restrictive" ) );
+                if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_STRING_R) > -1 )
+                    CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint type for property 'constraints:CDataBaseClass.StringRange'; property has values" ) );
+                if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_INT64_L) > -1 )
+                    CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint type for property 'constraints:CDataBaseClass.Int64List'; property has values" ) );
+            }
         }
 
         pSchemas2 = pDescCmd->Execute();
@@ -2600,24 +2644,38 @@ void TestCommonConstraints::RestrictCheckConstraints( Context& context )
                 }
                 CPPUNIT_ASSERT_MESSAGE("Simple restrictive range modifications should have failed", messages != L"" );
                 
-                if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_BYTE_R) > -1 )
-                    CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.ByteRange'; property has values and new constraint is more restrictive" ) );
-                if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_DATE_R) > -1 )
-                    CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.DateRange'; property has values and new constraint is more restrictive" ) );
-                if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_DECIMAL_R) > -1 )
-                    CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.DecimalRange'; property has values and new constraint is more restrictive" ) );
-                if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_DOUBLE_R) > -1 )
-                    CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.DoubleRange'; property has values and new constraint is more restrictive" ) );
-                if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_INT16_R) > -1 )
-                    CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.Int16Range'; property has values and new constraint is more restrictive" ) );
-                if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_INT32_R) > -1 )
-                    CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.Int32Range'; property has values and new constraint is more restrictive" ) );
-                if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_INT64_R) > -1 )
-                    CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.Int64Range'; property has values and new constraint is more restrictive" ) );
-                if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_SINGLE_R) > -1 )
-                    CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.SingleRange'; property has values and new constraint is more restrictive" ) );
-                if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_STRING_R) > -1 )
-                    CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.StringRange'; property has values and new constraint is more restrictive" ) );
+                if ( CanRestrictCheckConstraint() ) {
+                    CPPUNIT_ASSERT( !messages.Contains( PROP_BYTE_R ) );
+                    CPPUNIT_ASSERT( !messages.Contains( PROP_DATE_R ) );
+                    CPPUNIT_ASSERT( !messages.Contains( PROP_DECIMAL_R ) );
+                    CPPUNIT_ASSERT( !messages.Contains( PROP_DOUBLE_R ) );
+                    CPPUNIT_ASSERT( !messages.Contains( PROP_INT16_R ) );
+                    if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_INT32_R) > -1 )
+                        CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.Int32Range'; existing data value '10' violates new constraint" ) );
+                    CPPUNIT_ASSERT( !messages.Contains( PROP_INT64_R ) );
+                    CPPUNIT_ASSERT( !messages.Contains( PROP_SINGLE_R ) );
+                    CPPUNIT_ASSERT( !messages.Contains( PROP_STRING_R ) );
+                }
+                else {
+                    if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_BYTE_R) > -1 )
+                        CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.ByteRange'; property has values and new constraint is more restrictive" ) );
+                    if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_DATE_R) > -1 )
+                        CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.DateRange'; property has values and new constraint is more restrictive" ) );
+                    if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_DECIMAL_R) > -1 )
+                        CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.DecimalRange'; property has values and new constraint is more restrictive" ) );
+                    if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_DOUBLE_R) > -1 )
+                        CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.DoubleRange'; property has values and new constraint is more restrictive" ) );
+                    if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_INT16_R) > -1 )
+                        CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.Int16Range'; property has values and new constraint is more restrictive" ) );
+                    if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_INT32_R) > -1 )
+                        CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.Int32Range'; property has values and new constraint is more restrictive" ) );
+                    if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_INT64_R) > -1 )
+                        CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.Int64Range'; property has values and new constraint is more restrictive" ) );
+                    if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_SINGLE_R) > -1 )
+                        CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.SingleRange'; property has values and new constraint is more restrictive" ) );
+                    if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_STRING_R) > -1 )
+                        CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.StringRange'; property has values and new constraint is more restrictive" ) );
+                }
             }
             else 
             {
@@ -2693,7 +2751,7 @@ void TestCommonConstraints::RestrictCheckConstraints( Context& context )
                 dataProp->SetValueConstraint(constr);
             }
 
-            if ( idx <= 0 ) 
+            if ( (idx <= 0) && (!CanRestrictCheckConstraint()) ) 
             {
                 FdoStringP messages;
                 try {
@@ -2730,15 +2788,20 @@ void TestCommonConstraints::RestrictCheckConstraints( Context& context )
             dataProp->SetValueConstraint(constr);
 
             FdoStringP messages;
-            try {
+            if ( CanRestrictCheckConstraint() ) {
                 pApplyCmd->Execute();
-            } catch (FdoException *ex) {
-                messages = ex->GetExceptionMessage();
-                ex->Release();
             }
-            CPPUNIT_ASSERT_MESSAGE("Setting Maxinclusive false should have failed", messages != L"" );
-            CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.StringRange'; property has values and new constraint is more restrictive" ) );
-        
+            else {
+                try {
+                    pApplyCmd->Execute();
+                } catch (FdoException *ex) {
+                    messages = ex->GetExceptionMessage();
+                    ex->Release();
+                }
+                CPPUNIT_ASSERT_MESSAGE("Setting Maxinclusive false should have failed", messages != L"" );
+                CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.StringRange'; property has values and new constraint is more restrictive" ) );
+            }
+
             constrR->SetMaxInclusive(false);
             FdoPtr<FdoDataValue> val = constrR->GetMaxValue();
             FdoStringValue* stringVal = (FdoStringValue*) val.p;
@@ -2753,15 +2816,20 @@ void TestCommonConstraints::RestrictCheckConstraints( Context& context )
 
             constrR->SetMinInclusive(false);
             dataProp->SetValueConstraint(constr);
-            try {
+            if ( CanRestrictCheckConstraint() ) {
                 pApplyCmd->Execute();
-            } catch (FdoException *ex) {
-                messages = ex->GetExceptionMessage();
-                ex->Release();
             }
-            CPPUNIT_ASSERT_MESSAGE("Setting ranges to exclusive should have failed.", messages != L"" );
-            CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.StringRange'; property has values and new constraint is more restrictive" ) );
-            constrR->SetMinInclusive(true);
+            else {
+                try {
+                    pApplyCmd->Execute();
+                } catch (FdoException *ex) {
+                    messages = ex->GetExceptionMessage();
+                    ex->Release();
+                }
+                CPPUNIT_ASSERT_MESSAGE("Setting ranges to exclusive should have failed.", messages != L"" );
+                CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.StringRange'; property has values and new constraint is more restrictive" ) );
+                constrR->SetMinInclusive(true);
+            }
         }
 
         prop = FdoPropertiesP(pClass2->GetProperties())->FindItem( PROP_DOUBLE_R );
@@ -2920,7 +2988,7 @@ void TestCommonConstraints::RestrictCheckConstraints( Context& context )
                 dataProp->SetValueConstraint(constr);
             }
                 
-            if ( idx == 1 ) 
+            if ( (idx == 1) && !CanRestrictCheckConstraint() ) 
             {
                 FdoStringP messages;
                 try {
@@ -3075,15 +3143,24 @@ void TestCommonConstraints::RestrictCheckConstraints( Context& context )
                     ex->Release();
                 }
                 CPPUNIT_ASSERT_MESSAGE("Change null to not null should have failed", messages != L"" );
-                
-                if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_BYTE_R) > -1 )
-                    CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.ByteRange'; property has values and new constraint is more restrictive" ) );
-                if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_INT16_R) > -1 )
-                    CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.Int16Range'; property has values and new constraint is more restrictive" ) );
-                if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_DOUBLE_R) > -1 )
-                    CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.DoubleRange'; property has values and new constraint is more restrictive" ) );
-                if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_STRING_R) > -1 )
-                    CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.StringRange'; property has values and new constraint is more restrictive" ) );
+
+                if ( CanRestrictCheckConstraint() ) {
+                    CPPUNIT_ASSERT( !messages.Contains(PROP_BYTE_R) );
+                    CPPUNIT_ASSERT( !messages.Contains(PROP_INT16_R) );
+                    CPPUNIT_ASSERT( !messages.Contains(PROP_DOUBLE_R) );
+                    if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_STRING_R) > -1 )
+                        CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.StringRange'; existing data value 'PA' violates new constraint" ) );
+                }
+                else {
+                    if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_BYTE_R) > -1 )
+                        CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.ByteRange'; property has values and new constraint is more restrictive" ) );
+                    if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_INT16_R) > -1 )
+                        CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.Int16Range'; property has values and new constraint is more restrictive" ) );
+                    if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_DOUBLE_R) > -1 )
+                        CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.DoubleRange'; property has values and new constraint is more restrictive" ) );
+                    if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_STRING_R) > -1 )
+                        CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.StringRange'; property has values and new constraint is more restrictive" ) );
+                }
             }
             else 
             {
@@ -3096,6 +3173,231 @@ void TestCommonConstraints::RestrictCheckConstraints( Context& context )
                 CLASS_NAME_BASE,
                 NULL
             );
+        }
+
+    }
+}
+
+void TestCommonConstraints::CheckConstraintsData( Context& context )
+{
+    FdoPtr<FdoISchemaCapabilities>    schemaCap = context.connection->GetSchemaCapabilities();
+
+    if ( schemaCap->SupportsExclusiveValueRangeConstraints() && schemaCap->SupportsInclusiveValueRangeConstraints())
+    {
+        FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) context.connection->CreateCommand(FdoCommandType_DescribeSchema);
+
+        pDescCmd->SetSchemaName( SCHEMA_NAME );
+        FdoPtr<FdoFeatureSchemaCollection> pSchemas2 = pDescCmd->Execute();
+        FdoPtr<FdoFeatureSchema> pSchema2 = pSchemas2->GetItem( SCHEMA_NAME );
+        FdoPtr<FdoClassCollection> pClasses2 = pSchema2->GetClasses();
+        FdoPtr<FdoClassDefinition> pClass2 = pClasses2->GetItem( CLASS_NAME_BASE );
+       
+        FdoPtr<FdoIApplySchema>  pApplyCmd = (FdoIApplySchema*) context.connection->CreateCommand(FdoCommandType_ApplySchema);
+        pApplyCmd->SetFeatureSchema(pSchema2);
+
+        FdoPtr<FdoIInsert> insertCmd;
+
+        FdoInt32 unique1val = 5500;
+        FdoInt32 idx;
+
+        for ( idx = 0; idx < 15; idx++ ) {
+            TestCommonMiscUtil::InsertObject(
+                context.connection,
+                insertCmd,
+                SCHEMA_NAME,
+                CLASS_NAME,
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
+                PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 15,
+                PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
+                PROP_STRING_L,  FdoDataType_String, L"close",
+                PROP_UNIQUE1,  FdoDataType_Int32,  (unique1val++),
+                PROP_STRING_R, FdoDataType_String, L"PA",
+                (FdoString*) NULL
+            );
+        }
+
+        TestCommonMiscUtil::InsertObject(
+            context.connection,
+            insertCmd,
+            SCHEMA_NAME,
+            CLASS_NAME,
+            PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
+            PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
+            PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
+            PROP_STRING_L,  FdoDataType_String, L"op'en",
+            PROP_UNIQUE1,  FdoDataType_Int32,  (unique1val++),
+            PROP_STRING_R, FdoDataType_String, L"PA",
+            (FdoString*) NULL
+        );
+
+        for ( idx = 0; idx < 15; idx++ ) {
+            TestCommonMiscUtil::InsertObject(
+                context.connection,
+                insertCmd,
+                SCHEMA_NAME,
+                CLASS_NAME,
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
+                PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 15,
+                PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
+                PROP_STRING_L,  FdoDataType_String, L"close",
+                PROP_UNIQUE1,  FdoDataType_Int32,  (unique1val++),
+                PROP_STRING_R, FdoDataType_String, L"PA",
+                (FdoString*) NULL
+            );
+        }
+
+        TestCommonMiscUtil::InsertObject(
+            context.connection,
+            insertCmd,
+            SCHEMA_NAME,
+            CLASS_NAME,
+            PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
+            PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 15,
+            PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 30,
+            PROP_STRING_L,  FdoDataType_String, L"close",
+            PROP_UNIQUE1,  FdoDataType_Int32,  (unique1val++),
+            PROP_STRING_R, FdoDataType_String, L"PA",
+            (FdoString*) NULL
+        );
+
+        for ( idx = 0; idx < 15; idx++ ) {
+            TestCommonMiscUtil::InsertObject(
+                context.connection,
+                insertCmd,
+                SCHEMA_NAME,
+                CLASS_NAME,
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
+                PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 15,
+                PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 30,
+                PROP_STRING_L,  FdoDataType_String, L"close",
+                PROP_UNIQUE1,  FdoDataType_Int32,  (unique1val++),
+                PROP_STRING_R, FdoDataType_String, L"PA",
+                (FdoString*) NULL
+            );
+        }
+
+        for ( idx = 0; idx < 15; idx++ ) {
+            TestCommonMiscUtil::InsertObject(
+                context.connection,
+                insertCmd,
+                SCHEMA_NAME,
+                CLASS_NAME,
+                PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
+                PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 15,
+                PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
+                PROP_STRING_L,  FdoDataType_String, L"close",
+                PROP_UNIQUE1,  FdoDataType_Int32,  (unique1val++),
+                PROP_STRING_R, FdoDataType_String, L"PA",
+                (FdoString*) NULL
+            );
+        }
+
+        printf( "Testing checking constraint mods against multiple features ... \n" );
+        {
+            FdoPropertyP prop = FdoPropertiesP(pClass2->GetProperties())->FindItem( PROP_BYTE_L );
+            if ( prop ) {
+                FdoDataPropertyDefinition* dataProp = (FdoDataPropertyDefinition*)(prop.p);
+
+                FdoPtr<FdoPropertyValueConstraint> constr = dataProp->GetValueConstraint();
+                FdoPropertyValueConstraintList* constrL = (FdoPropertyValueConstraintList*) constr.p;
+                FdoPtr<FdoDataValueCollection> listL = constrL->GetConstraintList();
+                
+                for ( idx = (listL->GetCount() - 1); idx >= 0; idx-- ) {
+                    FdoPtr<FdoDataValue> val = listL->GetItem(idx);
+                    FdoByteValue* byteVal = (FdoByteValue*) val.p;
+                    if ( byteVal->GetByte() == 2 ) 
+                        listL->RemoveAt(idx);
+                }
+
+                dataProp->SetValueConstraint(constr);
+            }
+
+            prop = FdoPropertiesP(pClass2->GetProperties())->FindItem( PROP_INT32_L );
+            if ( prop ) {
+                FdoDataPropertyDefinition* dataProp = (FdoDataPropertyDefinition*)(prop.p);
+
+                FdoPtr<FdoPropertyValueConstraint> constr = dataProp->GetValueConstraint();
+                FdoPropertyValueConstraintList* constrL = (FdoPropertyValueConstraintList*) constr.p;
+                FdoPtr<FdoDataValueCollection> listL = constrL->GetConstraintList();
+                
+                for ( idx = (listL->GetCount() - 1); idx >= 0; idx-- ) {
+                    FdoPtr<FdoDataValue> val = listL->GetItem(idx);
+                    FdoInt32Value* int32Val = (FdoInt32Value*) val.p;
+                    if ( int32Val->GetInt32() == 30 ) 
+                        listL->RemoveAt(idx);
+                }
+
+                FdoPtr<FdoInt32Value> newVal = FdoInt32Value::Create(40);
+                listL->Add(newVal);
+
+                dataProp->SetValueConstraint(constr);
+            }
+
+            prop = FdoPropertiesP(pClass2->GetProperties())->FindItem( PROP_INT32_R );
+            if ( prop ) {
+                FdoDataPropertyDefinition* dataProp = (FdoDataPropertyDefinition*)(prop.p);
+
+                FdoPtr<FdoPropertyValueConstraint> constr = dataProp->GetValueConstraint();
+                FdoPropertyValueConstraintRange* constrR = (FdoPropertyValueConstraintRange*) constr.p;
+                constrR->SetMinInclusive(false);
+                                
+                dataProp->SetValueConstraint(constr);
+            }
+                
+            prop = FdoPropertiesP(pClass2->GetProperties())->FindItem( PROP_STRING_L );
+            if ( prop ) {
+                FdoDataPropertyDefinition* dataProp = (FdoDataPropertyDefinition*)(prop.p);
+
+                FdoPtr<FdoPropertyValueConstraintList> constrL = FdoPropertyValueConstraintList::Create();
+                FdoPtr<FdoDataValueCollection> listL = constrL->GetConstraintList();
+                listL->Add( FdoPtr<FdoDataValue>(FdoStringValue::Create(L"close")) );                
+
+                dataProp->SetValueConstraint( (FdoPropertyValueConstraint*) constrL.p);
+            }
+
+            // Change Range constraint to List (should fail)
+            prop = FdoPropertiesP(pClass2->GetProperties())->FindItem( PROP_STRING_R );
+            if ( prop ) {
+                FdoDataPropertyDefinition* dataProp = (FdoDataPropertyDefinition*)(prop.p);
+
+                FdoPtr<FdoPropertyValueConstraintList> constrL = FdoPropertyValueConstraintList::Create();
+                FdoPtr<FdoDataValueCollection> listL = constrL->GetConstraintList();
+                listL->Add( FdoPtr<FdoDataValue>(FdoStringValue::Create(L"PA")) );                
+ 
+                dataProp->SetValueConstraint( (FdoPropertyValueConstraint*) constrL.p);
+            }
+
+            prop = FdoPropertiesP(pClass2->GetProperties())->FindItem( PROP_INT64_L );
+            if ( prop ) {
+                FdoDataPropertyDefinition* dataProp = (FdoDataPropertyDefinition*)(prop.p);
+
+                FdoPtr<FdoPropertyValueConstraintRange> constrR = FdoPropertyValueConstraintRange::Create();
+                FdoPtr<FdoDataValue> val = FdoInt64Value::Create( 10LL ); 
+                constrR->SetMinValue( val );
+                val = FdoInt64Value::Create( 20LL ); 
+                constrR->SetMaxValue( val );
+
+                dataProp->SetValueConstraint( (FdoPropertyValueConstraint*) constrR.p);
+            }
+
+            FdoStringP messages;
+            try {
+                pApplyCmd->Execute();
+            } catch (FdoException *ex) {
+                messages = ex->GetExceptionMessage();
+                ex->Release();
+            }
+            CPPUNIT_ASSERT_MESSAGE("Restrictive list modifications should have failed", messages != L"" );
+            
+            CPPUNIT_ASSERT( !messages.Contains(PROP_BYTE_L) );
+            if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_INT32_L) > -1 )
+                CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.Int32List'; existing data value '30' violates new constraint" ) );
+            if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_INT32_R) > -1 )
+                CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.Int32Range'; existing data value '10' violates new constraint" ) );
+            if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_STRING_L) > -1 )
+                CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.StringList'; existing data value 'op'en' violates new constraint" ) );
+            CPPUNIT_ASSERT( !messages.Contains(PROP_STRING_R) );
+            CPPUNIT_ASSERT( !messages.Contains(PROP_INT64_L) );
         }
     }
 }
@@ -3129,6 +3431,7 @@ void TestCommonConstraints::DateTimeConstraints( Context& context )
             PROP_STRING_L,  FdoDataType_String, L"close",
             PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 5000,
             PROP_STRING_R, FdoDataType_String, L"PA",
+            PROP_DATE_R, FdoDataType_DateTime, FdoDateTime( 2005, 12, 30, 23, 59, 58.99999 ),
             (FdoString*) NULL
         );
 
@@ -3151,7 +3454,6 @@ void TestCommonConstraints::DateTimeConstraints( Context& context )
                 switch (idx) {
                 case 0:
                     dateTime.year = 2005;
-                    dateTime.day = 15;
                     dateTime.month = 5;
                     dateTime.day = 15;
                     dateTime.hour = 0;
@@ -3205,7 +3507,7 @@ void TestCommonConstraints::DateTimeConstraints( Context& context )
                 dataProp->SetValueConstraint(constr);
             }
                 
-            if ( idx > 6 ) 
+            if ( ((idx > 6) && !CanRestrictCheckConstraint()) || (idx > 11) ) 
             {
                 FdoStringP messages;
                 try {
@@ -3216,8 +3518,14 @@ void TestCommonConstraints::DateTimeConstraints( Context& context )
                 }
                 CPPUNIT_ASSERT_MESSAGE("Date value modification should have failed", messages != L"" );
                 
-                if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_DATE_R) > -1 )
-                    CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.DateRange'; property has values and new constraint is more restrictive" ) );
+                if ( CanRestrictCheckConstraint() ) {
+                    if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_DATE_R) > -1 )
+                        CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.DateRange'; existing data value '2005-12-30T23:59:58.999989' violates new constraint" ) );
+                }
+                else {
+                    if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_DATE_R) > -1 )
+                        CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.DateRange'; property has values and new constraint is more restrictive" ) );
+                }
             }
             else 
             {
@@ -3266,7 +3574,7 @@ void TestCommonConstraints::DateTimeConstraints( Context& context )
                 dataProp->SetValueConstraint(constr);
             }
                 
-            if ( idx > 1 ) 
+            if ( (idx > 1) && !CanRestrictCheckConstraint() ) 
             {
                 FdoStringP messages;
                 try {
@@ -3309,22 +3617,14 @@ void TestCommonConstraints::DateTimeConstraints( Context& context )
                 
             FdoPtr<FdoDataValue> val = constrR->GetMinValue();
             FdoDateTimeValue* dateVal = (FdoDateTimeValue*) val.p;
-            FdoDateTime dateTime;
-
-            dateTime.year = -1;
-            dateTime.hour = 3;
-            dateTime.minute = 0;
-            dateTime.seconds = 0;
-            dateVal->SetDateTime(dateTime);
+            FdoDateTime dateTime1( 3, 0, (FdoFloat) 0 );
+            dateVal->SetDateTime(dateTime1);
 
             val = constrR->GetMaxValue();
             dateVal = (FdoDateTimeValue*) val.p;
 
-            dateTime.year = -1;
-            dateTime.hour = 15;
-            dateTime.minute = 10;
-            dateTime.seconds = 15;
-            dateVal->SetDateTime(dateTime);
+            FdoDateTime dateTime2( 15, 10, (FdoFloat) 15 );
+            dateVal->SetDateTime(dateTime2);
 
             dataProp->SetValueConstraint(constr);
 
@@ -3343,6 +3643,7 @@ void TestCommonConstraints::DateTimeConstraints( Context& context )
             PROP_STRING_L,  FdoDataType_String, L"close",
             PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 5000,
             PROP_STRING_R, FdoDataType_String, L"PA",
+            PROP_DATE_R, FdoDataType_DateTime, FdoDateTime( 2005, 05, (FdoInt8) 30 ),
             (FdoString*) NULL
         );
 
@@ -3400,7 +3701,7 @@ void TestCommonConstraints::DateTimeConstraints( Context& context )
                 dataProp->SetValueConstraint(constr);
             }
                 
-            if ( idx > 3 ) 
+            if ( ((idx > 3) && !CanRestrictCheckConstraint()) || (idx == 8) ) 
             {
                 FdoStringP messages;
                 try {
@@ -3411,8 +3712,14 @@ void TestCommonConstraints::DateTimeConstraints( Context& context )
                 }
                 CPPUNIT_ASSERT_MESSAGE("Time value modification should have failed", messages != L"" );
                 
-                if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_DATE_R) > -1 )
-                    CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.DateRange'; property has values and new constraint is more restrictive" ) );
+                if ( CanRestrictCheckConstraint() ) {
+                    if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_DATE_R) > -1 )
+                        CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.DateRange'; existing data value '2005-05-30T-1:-1:00' violates new constraint" ) );
+                }
+                else {
+                    if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_DATE_R) > -1 )
+                        CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.DateRange'; property has values and new constraint is more restrictive" ) );
+                }
             }
             else 
             {
@@ -3436,6 +3743,11 @@ void TestCommonConstraints::CreateConnection( Context&, FdoBoolean )
 FdoBoolean TestCommonConstraints::CanRestrictCheckConstraint()
 {
     return true;
+}
+
+FdoBoolean TestCommonConstraints::FdoValidatesData()
+{
+    return false;
 }
 
 FdoDouble TestCommonConstraints::GetDoubleRounding(FdoDataType)

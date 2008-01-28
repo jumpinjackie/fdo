@@ -87,6 +87,11 @@ bool SdfSchemaMergeContext::CanModDataConstraint( FdoDataPropertyDefinition* pro
     return true;
 }
 
+bool SdfSchemaMergeContext::CanRestrictDataConstraint( FdoDataPropertyDefinition* prop )
+{
+    return true;
+}
+
 void SdfSchemaMergeContext::Merge()
 {
     CommitSchemas();
