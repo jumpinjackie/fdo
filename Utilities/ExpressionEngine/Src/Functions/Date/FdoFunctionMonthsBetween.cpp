@@ -208,7 +208,7 @@ void FdoFunctionMonthsBetween::CreateFunctionDefinition ()
     FdoPtr<FdoArgumentDefinitionCollection> args;
 
     FdoPtr<FdoSignatureDefinition>          signature;
-    FdoSignatureDefinitionCollection        *signatures;
+    FdoPtr<FdoSignatureDefinitionCollection> signatures;
 
     // Get the general descriptions for the arguments.
 
@@ -268,8 +268,6 @@ void FdoFunctionMonthsBetween::Validate (FdoLiteralValueCollection *literal_valu
 
     FdoInt32                i,
                             count               = literal_values->GetCount();
-
-    FdoDataType             data_type;
 
     FdoDataValue            *data_value         = NULL;
 

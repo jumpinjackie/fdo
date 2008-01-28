@@ -311,7 +311,7 @@ void FdoFunctionLpad::CreateFunctionDefinition ()
     FdoPtr<FdoArgumentDefinitionCollection> str_sgl_str_args;
 
     FdoPtr<FdoSignatureDefinition>          signature;
-    FdoSignatureDefinitionCollection        *signatures;
+    FdoPtr<FdoSignatureDefinitionCollection> signatures;
 
     // Get the general descriptions for the arguments.
 

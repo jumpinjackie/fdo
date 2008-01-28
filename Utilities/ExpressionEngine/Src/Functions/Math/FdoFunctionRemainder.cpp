@@ -1016,7 +1016,7 @@ void FdoFunctionRemainder::CreateFunctionDefinition ()
     FdoPtr<FdoArgumentDefinitionCollection> sgl_sgl_args;
 
     FdoPtr<FdoSignatureDefinition>          signature;
-    FdoSignatureDefinitionCollection        *signatures;
+    FdoPtr<FdoSignatureDefinitionCollection> signatures;
 
     // Get the general descriptions for the arguments.
 

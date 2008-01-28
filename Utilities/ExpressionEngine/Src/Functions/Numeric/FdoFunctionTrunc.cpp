@@ -260,7 +260,7 @@ void FdoFunctionTrunc::CreateFunctionDefinition ()
     FdoPtr<FdoPropertyValueConstraintList>  argument_value_list;
 
     FdoPtr<FdoSignatureDefinition>          signature;
-    FdoSignatureDefinitionCollection        *signatures;
+    FdoPtr<FdoSignatureDefinitionCollection> signatures;
 
     // The function contains signatures that requires a second parameter for
     // which the value has to be one of YEAR, MONTH, DAY, HOUR or MINUTE. The
