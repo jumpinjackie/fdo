@@ -19,6 +19,7 @@
 #include "stdafx.h"
 #include "DbObject.h"
 #include "Owner.h"
+#include "Mgr.h"
 #include "Rd/ColumnReader.h"
 #include "Rd/PkeyReader.h"
 #include "Rd/FkeyReader.h"
@@ -316,6 +317,13 @@ FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnBool(
     FdoSmPhRdColumnReader* colRdr
 )
 {
+	if (defaultValue.GetLength() > 0)
+	{
+		if (defaultValue.ICompare(NlsMsgGet(FDORDBMS_534, "true")) == 0)
+			defaultValue = L"1";
+		else
+			defaultValue = L"0";
+	}
     return new FdoSmPhMySqlColumnBool(columnName, elementState, this, bNullable, rootColumnName, defaultValue, colRdr);
 }
 
