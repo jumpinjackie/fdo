@@ -243,7 +243,29 @@ public:
     /// <returns>Returns the byte value.</returns> 
     virtual FdoByte GetByte (FdoString* identifier)
     {
-        throw FdoException::Create (NlsMsgGet(SHP_UNSUPPORTED_DATATYPE, "The '%1$ls' data type is not supported by Shp.", L"Byte"));
+        FdoPtr<FdoIdentifier> id;
+        FdoComputedIdentifier* computed;
+
+        id = validate (identifier);
+        computed = (id == NULL) ? NULL : dynamic_cast<FdoComputedIdentifier*>(id.p);
+        if (NULL != computed)
+        {
+            FdoPtr<FdoLiteralValue> results = ProcessComputedIdentifier (computed);
+			if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
+			{
+				FdoDataValue *dataValue = static_cast<FdoDataValue *> (results.p);
+				if (dataValue->GetDataType() == FdoDataType_Byte)
+				{
+					FdoByteValue *byteValue = static_cast<FdoByteValue *>(dataValue);
+					if (byteValue->IsNull())
+		                throw FdoException::Create(NlsMsgGet(SHP_READER_PROPERTY_NULL, "The property '%1$ls' is NULL.", identifier));
+					return byteValue->GetByte();
+				}
+			}
+            throw FdoException::Create (NlsMsgGet(SHP_INVALID_LITERAL_TYPE, "Invalid literal type '%1$d'.", results->GetLiteralValueType()));
+        }
+        else
+            throw FdoException::Create (NlsMsgGet(SHP_UNSUPPORTED_DATATYPE, "The '%1$ls' data type is not supported by Shp.", L"Byte"));
     }
 
     /// <summary> Gets the date and time value of the specified property. No conversion is 
@@ -349,7 +371,29 @@ public:
     /// <returns>Returns the FdoInt16 value.</returns> 
     virtual FdoInt16 GetInt16 (FdoString* identifier)
     {
-        throw FdoException::Create (NlsMsgGet(SHP_UNSUPPORTED_DATATYPE, "The '%1$ls' data type is not supported by Shp.", L"Int16"));
+        FdoPtr<FdoIdentifier> id;
+        FdoComputedIdentifier* computed;
+
+        id = validate (identifier);
+        computed = (id == NULL) ? NULL : dynamic_cast<FdoComputedIdentifier*>(id.p);
+        if (NULL != computed)
+        {
+            FdoPtr<FdoLiteralValue> results = ProcessComputedIdentifier (computed);
+			if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
+			{
+				FdoDataValue *dataValue = static_cast<FdoDataValue *> (results.p);
+				if (dataValue->GetDataType() == FdoDataType_Int16)
+				{
+					FdoInt16Value *int16Value = static_cast<FdoInt16Value *>(dataValue);
+					if (int16Value->IsNull())
+		                throw FdoException::Create(NlsMsgGet(SHP_READER_PROPERTY_NULL, "The property '%1$ls' is NULL.", identifier));
+					return int16Value->GetInt16();
+				}
+			}
+            throw FdoException::Create (NlsMsgGet(SHP_INVALID_LITERAL_TYPE, "Invalid literal type '%1$d'.", results->GetLiteralValueType()));
+        }
+        else
+            throw FdoException::Create (NlsMsgGet(SHP_UNSUPPORTED_DATATYPE, "The '%1$ls' data type is not supported by Shp.", L"Int16"));
     }
 
     /// <summary>Gets the 32-bit integer value of the specified property. No conversion is
@@ -445,7 +489,28 @@ public:
     /// <returns>Returns the single value</returns> 
     virtual float GetSingle (FdoString* identifier)
     {
-        throw FdoException::Create (NlsMsgGet(SHP_UNSUPPORTED_DATATYPE, "The '%1$ls' data type is not supported by Shp.", L"Single"));
+        FdoPtr<FdoIdentifier> id;
+        FdoComputedIdentifier* computed;
+        float ret;
+
+        id = validate (identifier);
+        computed = (id == NULL) ? NULL : dynamic_cast<FdoComputedIdentifier*>(id.p);
+        if (NULL != computed)
+        {
+			FdoPtr<FdoLiteralValue> results = ProcessComputedIdentifier (computed);
+			if (results->GetLiteralValueType() == FdoLiteralValueType_Data)
+			{
+				FdoDataValue *dataValue = static_cast<FdoDataValue *> (results.p);
+				if (dataValue->GetDataType() == FdoDataType_Single)
+				{
+					FdoSingleValue *singleValue = static_cast<FdoSingleValue *>(dataValue);
+					return singleValue->GetSingle();
+				}
+			}
+            throw FdoException::Create (NlsMsgGet(SHP_INVALID_LITERAL_TYPE, "Invalid literal type '%1$d'.", results->GetLiteralValueType()));
+        }
+        else
+            throw FdoException::Create (NlsMsgGet(SHP_UNSUPPORTED_DATATYPE, "The '%1$ls' data type is not supported by Shp.", L"Single"));
     }
 
     /// <summary>Gets the string value of the specified property. No conversion is
