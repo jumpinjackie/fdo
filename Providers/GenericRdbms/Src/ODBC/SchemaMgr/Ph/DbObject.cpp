@@ -176,6 +176,13 @@ FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnBool(
     FdoSmPhRdColumnReader* colRdr
 )
 {
+	if (defaultValue.GetLength() > 0)
+	{
+		if (defaultValue.ICompare(NlsMsgGet(FDORDBMS_534, "true")) == 0)
+			defaultValue = L"1";
+		else
+			defaultValue = L"0";
+	}
     return new FdoSmPhOdbcColumnBool(columnName, elementState, this, bNullable, rootColumnName, defaultValue, colRdr);
 }
 
