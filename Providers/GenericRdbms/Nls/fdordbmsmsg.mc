@@ -1915,3 +1915,13 @@ SymbolicName=FDORDBMS_533
 Language=English
 NOT operator not supported with spatial filters
 .
+MessageId=2759
+SymbolicName=FDORDBMS_534
+Language=English
+true
+.
+MessageId=2760
+SymbolicName=FDORDBMS_535
+Language=English
+false
+.
