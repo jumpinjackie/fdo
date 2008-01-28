@@ -359,8 +359,8 @@ void UserFunctionsTest::selectUserDefinedNonAggregatesTest()
         FdoPtr<FdoIReader> testReader = new TestReader();
 
         FdoPtr<FdoExpressionEngineFunctionCollection> userDefinedFunctions = FdoExpressionEngineFunctionCollection::Create();
-        userDefinedFunctions->Add(FdoFunctionMax2::Create());
-        userDefinedFunctions->Add(UserFdoFunctionConcat::Create());
+        userDefinedFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionMax2::Create()));
+        userDefinedFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(UserFdoFunctionConcat::Create()));
         FdoPtr<FdoClass> classDef = FdoClass::Create(L"TestClass", L"test class");
         FdoPtr<FdoPropertyDefinitionCollection> properties = classDef->GetProperties();
 		FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(L"Name", L"The name of the object");
@@ -403,8 +403,8 @@ void UserFunctionsTest::selectUserDefinedAggregatesTest()
         FdoPtr<FdoIReader> testReader = new TestReader();
 
         FdoPtr<FdoExpressionEngineFunctionCollection> userDefinedFunctions = FdoExpressionEngineFunctionCollection::Create();
-        userDefinedFunctions->Add(FdoFunctionMax2::Create());
-        userDefinedFunctions->Add(UserFdoFunctionConcat::Create());
+        userDefinedFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionMax2::Create()));
+        userDefinedFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(UserFdoFunctionConcat::Create()));
         FdoPtr<FdoClass> classDef = FdoClass::Create(L"TestClass", L"test class");
         FdoPtr<FdoPropertyDefinitionCollection> properties = classDef->GetProperties();
 		FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(L"Name", L"The name of the object");
