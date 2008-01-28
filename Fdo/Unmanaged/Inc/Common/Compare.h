@@ -36,13 +36,20 @@
 /// Value 1 is greater than value2
 /// \param FdoCompareType_Equal 
 /// The values are equal or both null.
+/// \param FdoCompareType_PartlyEqual 
+/// One or both values are partly undefined but the defined parts are equal.
+/// For example, a Date value (time undefined) and DateTime value are 
+/// partly equal if their date parts are equal. A Date value and Time 
+/// value are always considered partly equal (defined parts do not
+/// overlap).
 /// 
 enum FdoCompareType
 {
     FdoCompareType_Undefined,
     FdoCompareType_Less,
     FdoCompareType_Greater,
-    FdoCompareType_Equal
+    FdoCompareType_Equal,
+    FdoCompareType_PartlyEqual
 };
 /// \endcond
 

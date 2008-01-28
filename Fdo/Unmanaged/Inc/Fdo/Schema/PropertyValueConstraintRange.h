@@ -189,6 +189,17 @@ public:
     // violate this constraint).
     virtual bool Contains( FdoPropertyValueConstraint* pConstraint );
 
+    // \brief
+    // Checks if the given value violates this constraint.
+    // 
+    // \param value 
+    // The Property Value
+    // 
+    // \return
+    // Returns true if the value is null or is within this constraint's value range.
+    // Returns false if the value does violate this constraint.
+    virtual bool Contains( FdoDataValue* pValue );
+
 private:
     // \brief
     // Compares two data values
@@ -212,7 +223,16 @@ private:
     // \return
     // Returns the data value as a string. L"" if the value is null.
     FdoStringP ValueToString( FdoPtr<FdoDataValue> value );
-    
+
+    // Same as CompareEnd expect that some extra checks are done for 
+    // date ranges. If any of the component nullities of the values to 
+    // compare are different, then FdoCompareType_Undefined is returned.
+    // For example, if one values is a DateTime but the other is a Time
+    // then Undefined is returned. This causes Contains( FdoPropertyValueConstraint*)
+    // to always return false if the component nullities of the range
+    // endpoints differ.
+    FdoCompareType CompareRangeEnd( FdoBoolean myInclusive, FdoPtr<FdoDataValue> myValue, FdoBoolean theirInclusive, FdoPtr<FdoDataValue> theirValue, FdoBoolean isMax );
+
     // \brief
     // Compares the ends of two range constraints.
     // 

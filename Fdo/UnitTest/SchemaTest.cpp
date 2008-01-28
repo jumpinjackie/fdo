@@ -939,6 +939,843 @@ void SchemaTest::testRasterClass ()
     properties->Add (raster);
 }
 
+void SchemaTest::testDataConstraints ()
+{
+    // Tests for the FdoPropertyValueConstraint->Contains( FdoDataValue* ) function.
+
+	FdoFeatureSchemaP schema = FdoFeatureSchema::Create( L"Constraints", L"" );
+
+    // Test Range constraints
+
+    FdoPtr<FdoFeatureClass> featClass = FdoFeatureClass::Create( L"Ranges", L"" );
+	FdoClassesP(schema->GetClasses())->Add( featClass );	
+    featClass->SetIsAbstract(false);
+
+	FdoDataPropertyP prop = FdoDataPropertyDefinition::Create( L"Id", L"" );
+	prop->SetDataType( FdoDataType_Int64 );
+	prop->SetNullable(false);
+    prop->SetReadOnly(true);
+	FdoPropertiesP(featClass->GetProperties())->Add( prop );
+	FdoDataPropertiesP(featClass->GetIdentityProperties())->Add( prop );
+
+    // Create a property for each data type that supports constraints
+
+    FdoByte byteRange[2] = {11, 22};
+    AddRangeProperty(
+        featClass,
+        L"ByteProp", 
+        FdoDataType_Byte, 
+        byteRange, 
+        false,
+        false
+    );
+
+    FdoDouble doubleRange[2] = {50.123456789012345678901234567890, 100.123456789012345678901234567890};
+    AddDoubleRangeProperty(
+        featClass,
+        L"DecimalProp", 
+        FdoDataType_Decimal, 
+        doubleRange, 
+        false,
+        true
+    );
+
+    AddDoubleRangeProperty(
+        featClass,
+        L"DoubleProp", 
+        FdoDataType_Double, 
+        doubleRange, 
+        true,
+        false
+    );
+
+    FdoInt16 int16Range[2] = {-100, 200};
+    AddRangeProperty(
+        featClass,
+        L"Int16Prop", 
+        FdoDataType_Int16, 
+        int16Range, 
+        true,
+        false
+    );
+
+    FdoInt32 int32Range[2] = {10, 20};
+    AddRangeProperty(
+        featClass,
+        L"Int32Prop", 
+        FdoDataType_Int32, 
+        int32Range, 
+        true,
+        true
+    );
+
+    FdoInt64 int64Range[2] = {100, 200};
+    AddRangeProperty(
+        featClass,
+        L"Int64Prop", 
+        FdoDataType_Int64, 
+        int64Range, 
+        false,
+        false
+    );
+
+    FdoFloat singleRange[2] = { (float) 0.000001, (float) 1.0 };
+    AddRangeProperty(
+        featClass,
+        L"SingleProp", 
+        FdoDataType_Single, 
+        singleRange, 
+        false,
+        true
+    );
+
+    FdoString* stringRange[2] = {L"MOM", L"PA'PA"};
+    AddRangeProperty(
+        featClass,
+        L"StringProp", 
+        FdoDataType_String, 
+        stringRange, 
+        true,
+        false
+    );
+
+    FdoDateTime datetimeRange[2] = { 
+        FdoDateTime( 2005, 05, 15, 00, 02, 01 ), 
+        FdoDateTime( 2006, 02, 01, 18, 00, 00 )
+    };
+    AddRangeProperty(
+        featClass,
+        L"DateTimeProp", 
+        FdoDataType_DateTime, 
+        datetimeRange, 
+        true,
+        true
+    );
+    
+    FdoDateTime dateRange[2] = { 
+        FdoDateTime( 2005, 05, (FdoInt8) 15 ), 
+        FdoDateTime( 2006, 02, (FdoInt8) 01 )
+    };
+    AddRangeProperty(
+        featClass,
+        L"DateProp", 
+        FdoDataType_DateTime, 
+        dateRange, 
+        false,
+        false
+    );
+    
+    FdoDateTime timeRange[2] = { 
+        FdoDateTime( 12, 30, (FdoFloat) 0 ), 
+        FdoDateTime( 14, 15, (FdoFloat) 01 )
+    };
+    AddRangeProperty(
+        featClass,
+        L"TimeProp", 
+        FdoDataType_DateTime, 
+        timeRange, 
+        false,
+        true
+    );
+    
+    FdoDateTime mixedDate1Range[2] = { 
+        FdoDateTime( 2005, 10, (FdoInt8) 01 ), 
+        FdoDateTime( 14, 15, (FdoFloat) 01 )
+    };
+    AddRangeProperty(
+        featClass,
+        L"MixedDate1Prop", 
+        FdoDataType_DateTime, 
+        mixedDate1Range, 
+        true,
+        false
+    );
+    
+    FdoDateTime mixedDate2Range[2] = { 
+        FdoDateTime( 2005, 10, (FdoInt8) 01 ), 
+        FdoDateTime( 2005, 10, 01, 14, 15, (FdoFloat) 01 )
+    };
+    AddRangeProperty(
+        featClass,
+        L"MixedDate2Prop", 
+        FdoDataType_DateTime, 
+        mixedDate2Range, 
+        true,
+        true
+    );
+    
+    FdoDateTime mixedDate3Range[2] = { 
+        FdoDateTime( 2005, 10, (FdoInt8) 01 ), 
+        FdoDateTime( 2005, 10, 02, 14, 15, (FdoFloat) 01 )
+    };
+    AddRangeProperty(
+        featClass,
+        L"MixedDate3Prop", 
+        FdoDataType_DateTime, 
+        mixedDate3Range, 
+        false,
+        false
+    );
+    
+    AddRangeProperty(
+        featClass,
+        L"OpenMinProp", 
+        FdoDataType_Byte, 
+        byteRange, 
+        false,
+        false,
+        true,
+        false
+    );
+
+    AddRangeProperty(
+        featClass,
+        L"OpenMaxProp", 
+        FdoDataType_String, 
+        stringRange, 
+        false,
+        true,
+        false,
+        true
+    );
+
+    // Test the Contains function. 
+    // Items 0, 2, 4, 6, 8, .. violate the constraint
+    // Items 1, 3, 5, 7, 9, .. satisfy the constraint
+
+    FdoByte byteRangeValues[6] = {11, 12, 22, 21, 100, 15};
+    CheckConstraintProperty(
+        featClass,
+        L"ByteProp", 
+        FdoDataType_Byte, 
+        byteRangeValues, 
+        6
+    );
+
+    FdoDouble decimalRangeValues[4] = {50.123456789012345678901234567890, 50.1234568, 100.1234568, 100.123456789012345678901234567890};
+    CheckDoubleConstraintProperty(
+        featClass,
+        L"DecimalProp", 
+        FdoDataType_Decimal, 
+        decimalRangeValues, 
+        4
+    );
+
+    FdoDouble doubleRangeValues[4] = {50.123456, 50.123456789012345678901234567890, 100.123456789012345678901234567890, 100.123456};
+    CheckDoubleConstraintProperty(
+        featClass,
+        L"DoubleProp", 
+        FdoDataType_Double, 
+        doubleRangeValues, 
+        4
+    );
+
+    FdoInt16 int16RangeValues[6] = {-101, -100, 200, 199, -500, 150};
+    CheckConstraintProperty(
+        featClass,
+        L"Int16Prop", 
+        FdoDataType_Int16, 
+        int16RangeValues, 
+        6
+    );
+
+    FdoInt32 int32RangeValues[8] = {9, 10, 21, 20, 30, 11, -10, 19};
+    CheckConstraintProperty(
+        featClass,
+        L"Int32Prop", 
+        FdoDataType_Int32, 
+        int32RangeValues, 
+        8
+    );
+
+    FdoInt64 int64RangeValues[4] = {100, 101, 200, 199};
+    CheckConstraintProperty(
+        featClass,
+        L"Int64Prop", 
+        FdoDataType_Int64, 
+        int64RangeValues, 
+        4
+    );
+
+    FdoFloat singleRangeValues[4] = { (float) 0.000001, (float) 0.000002, (float) 1.00001, (float) 1.0 };
+    CheckConstraintProperty(
+        featClass,
+        L"SingleProp", 
+        FdoDataType_Single, 
+        singleRangeValues, 
+        4
+    );
+
+    FdoString* stringRangeValues[4] = {L"MOL", L"MOM", L"PA'PA", L"PA"};
+    CheckConstraintProperty(
+        featClass,
+        L"StringProp", 
+        FdoDataType_String, 
+        stringRangeValues, 
+        4
+    );
+
+    FdoDateTime datetimeRangeValues[4] = { 
+        FdoDateTime( 2005, 05, 15, 00, 02, 00 ), 
+        FdoDateTime( 2005, 05, 15, 00, 02, 01 ), 
+        FdoDateTime( 2006, 02, 01, 18, 00, 01 ), 
+        FdoDateTime( 2006, 02, 01, 18, 00, 00 )
+    };
+
+    CheckConstraintProperty(
+        featClass,
+        L"DateTimeProp", 
+        FdoDataType_DateTime, 
+        datetimeRangeValues, 
+        4
+    );
+    
+    FdoDateTime dateRangeValues[12] = { 
+        FdoDateTime( 2005, 05, (FdoInt8) 15 ), 
+        FdoDateTime( 2005, 05, (FdoInt8) 16 ), 
+        FdoDateTime( 2006, 02, (FdoInt8) 01 ),
+        FdoDateTime( 2006, 01, (FdoInt8) 31 ),
+        FdoDateTime( 2005, 05, 15, 23, 23, (FdoFloat) 59.9 ), 
+        FdoDateTime( 2006, 01, 31, 23, 23, (FdoFloat) 59.9 ),
+        FdoDateTime( 10, 10, (FdoFloat) 1.3 ),
+        FdoDateTime( 2006, 01, 31, 23, 23, (FdoFloat) 59.9 ),
+        FdoDateTime( 2006, 02, 01, 23, 23, (FdoFloat) 59.9 ),
+        FdoDateTime( 2006, 01, 31, 23, 23, (FdoFloat) 59.9 ),
+        FdoDateTime( 0, 0, (FdoFloat) 0 ),
+        FdoDateTime( 2006, 01, 31, 23, 23, (FdoFloat) 59.9 )
+    };
+
+    CheckConstraintProperty(
+        featClass,
+        L"DateProp", 
+        FdoDataType_DateTime, 
+        dateRangeValues, 
+        12
+    );
+
+    FdoDateTime timeRangeValues[6] = { 
+        FdoDateTime( 12, 30, (FdoFloat) 0 ), 
+        FdoDateTime( 14, 15, (FdoFloat) 01 ),
+        FdoDateTime( 14, 15, (FdoFloat) 1.001 ),
+        FdoDateTime( 12, 30, (FdoFloat) 0.001 ), 
+        FdoDateTime( 2006, 01, 05, 12, 30,  0 ), 
+        FdoDateTime( 2006, 01, 05, 14, 15,  01 )
+    };
+
+    CheckConstraintProperty(
+        featClass,
+        L"TimeProp", 
+        FdoDataType_DateTime, 
+        timeRangeValues, 
+        6
+    );
+
+    FdoDateTime mixedDate1RangeValues[12] = { 
+        FdoDateTime( 14, 15, (FdoFloat) 1 ),
+        FdoDateTime( 14, 15, (FdoFloat) 0.9 ),
+        FdoDateTime( 2005, 10, (FdoInt8) 1 ), 
+        FdoDateTime( 2005, 10, 01, 14, 15, 0 ),
+        FdoDateTime( 2005, 10, (FdoInt8) 2 ), 
+        FdoDateTime( 2005, 10, 01, 14, 15, 0 ),
+        FdoDateTime( 2005, 10, 01, 14, 15, 1 ),
+        FdoDateTime( 2005, 10, 01, 14, 15, 0 ),
+        FdoDateTime( 2006, 10, 01, 14, 15, 1 ),
+        FdoDateTime( 2006, 10, 01, 14, 14, 2 ),
+        FdoDateTime( 2005, 9, 30, 14, 15, 2 ),
+        FdoDateTime( 2005, 10, 01, 14, 15, 0 )
+    };
+
+    CheckConstraintProperty(
+        featClass,
+        L"MixedDate1Prop", 
+        FdoDataType_DateTime, 
+        mixedDate1RangeValues, 
+        12
+    );
+
+    FdoDateTime mixedDate2RangeValues[6] = { 
+        FdoDateTime( 2005, 10, (FdoInt8) 00 ), 
+        FdoDateTime( 2005, 10, 01, 14, 15, (FdoFloat) 01 ),
+        FdoDateTime( 2005, 10, 01, 14, 15, (FdoFloat) 01.01 ),
+        FdoDateTime( 2005, 10, (FdoInt8) 01 ), 
+        FdoDateTime( 14, 15, (FdoFloat) 01.01 ),
+        FdoDateTime( 14, 15, (FdoFloat) 01 )
+    };
+
+    CheckConstraintProperty(
+        featClass,
+        L"MixedDate2Prop", 
+        FdoDataType_DateTime, 
+        mixedDate2RangeValues, 
+        6
+    );
+
+    FdoDateTime mixedDate3RangeValues[8] = { 
+        FdoDateTime( 2005, 10, (FdoInt8) 01 ), 
+        FdoDateTime( 2005, 10, 02, 14, 15, (FdoFloat) 0.99 ),
+        FdoDateTime( 2005, 10, 02, 14, 15, (FdoFloat) 01 ),
+        FdoDateTime( 2005, 10, 02, 14, 15, (FdoFloat) 0.99 ),
+        FdoDateTime( 14, 15, (FdoFloat) 0.99 ),
+        FdoDateTime( 2005, 10, (FdoInt8) 02, 14, 15, 0 ), 
+        FdoDateTime( 2008, 10, (FdoInt8) 01 ), 
+        FdoDateTime( 2005, 10, (FdoInt8) 02, 14, 15, 0 ) 
+    };
+
+    CheckConstraintProperty(
+        featClass,
+        L"MixedDate3Prop", 
+        FdoDataType_DateTime, 
+        mixedDate3RangeValues, 
+        8
+    );
+
+    FdoByte openMinRangeValues[4] = {100, 0, 22, 21};
+    CheckConstraintProperty(
+        featClass,
+        L"OpenMinProp", 
+        FdoDataType_Byte, 
+        openMinRangeValues, 
+        4
+    );
+
+    FdoString* openMaxRangeValues[4] = {L"MOM", L"MOMA", L"ABC", L"ZZZ"};
+    CheckConstraintProperty(
+        featClass,
+        L"OpenMaxProp", 
+        FdoDataType_String, 
+        openMaxRangeValues, 
+        4
+    );
+
+    // Test List constraints
+
+    featClass = FdoFeatureClass::Create( L"Lists", L"" );
+	FdoClassesP(schema->GetClasses())->Add( featClass );	
+    featClass->SetIsAbstract(false);
+
+	prop = FdoDataPropertyDefinition::Create( L"Id", L"" );
+	prop->SetDataType( FdoDataType_Int64 );
+	prop->SetNullable(false);
+    prop->SetReadOnly(true);
+	FdoPropertiesP(featClass->GetProperties())->Add( prop );
+	FdoDataPropertiesP(featClass->GetIdentityProperties())->Add( prop );
+
+    // Create a property for each data type that supports constraints
+
+    FdoByte byteList[3]            = {1, 2, 3};
+    AddListProperty(
+        featClass,
+        L"ByteProp", 
+        FdoDataType_Byte, 
+        byteList, 
+        3
+    );
+
+    FdoDouble  doubleList[3]          = {0.123456789012345678901234567890, 100, 0.123456789012345678901234567890};
+    AddDoubleListProperty(
+        featClass,
+        L"DecimalProp", 
+        FdoDataType_Decimal, 
+        doubleList, 
+        3
+    );
+
+    AddDoubleListProperty(
+        featClass,
+        L"DoubleProp", 
+        FdoDataType_Double, 
+        doubleList, 
+        3
+    );
+
+    FdoInt16 int16List[1] = {200};
+    AddListProperty(
+        featClass,
+        L"Int16Prop", 
+        FdoDataType_Int16, 
+        int16List, 
+        1
+    );
+
+    FdoInt32 int32List[5] = {10, 20, 30, LONG_MIN, LONG_MAX};
+    AddListProperty(
+        featClass,
+        L"Int32Prop", 
+        FdoDataType_Int32, 
+        int32List, 
+        5
+    );
+
+    FdoInt64 int64List[4] = {LLONG_MIN, 52, LLONG_MAX - 1, LLONG_MAX};
+    AddListProperty(
+        featClass,
+        L"Int64Prop", 
+        FdoDataType_Int64, 
+        int64List, 
+        4
+    );
+
+    FdoFloat singleList[3] = { (float) 0.1234567, (float) 100, (float) 1.12345678};
+    AddListProperty(
+        featClass,
+        L"SingleProp", 
+        FdoDataType_Single, 
+        singleList, 
+        3
+    );
+
+    FdoString* stringList[2]           = { L"op'en", L"close" };
+    AddListProperty(
+        featClass,
+        L"StringProp", 
+        FdoDataType_String, 
+        stringList, 
+        2
+    );
+
+    FdoDateTime datetimeList[3]        = {
+        FdoDateTime(2003, 10, 31, 03, 02, 01), 
+        FdoDateTime(2005, 10, 31, 03, 02, 01), 
+        FdoDateTime(2005, 10, 31, 15, 02, 01)
+    };
+    AddListProperty(
+        featClass,
+        L"DateTimeProp", 
+        FdoDataType_DateTime, 
+        datetimeList, 
+        3
+    );
+    
+    FdoDateTime dateList[2] = { 
+        FdoDateTime( 2005, 05, (FdoInt8) 15 ), 
+        FdoDateTime( 2006, 02, (FdoInt8) 01 )
+    };
+    AddListProperty(
+        featClass,
+        L"DateProp", 
+        FdoDataType_DateTime, 
+        dateRange, 
+        2
+    );
+    
+    FdoDateTime timeList[2] = { 
+        FdoDateTime( 12, 30, (FdoFloat) 0 ), 
+        FdoDateTime( 14, 15, (FdoFloat) 01 )
+    };
+    AddListProperty(
+        featClass,
+        L"TimeProp", 
+        FdoDataType_DateTime, 
+        timeList, 
+        2
+    );
+    
+    FdoDateTime mixedDate1List[2] = { 
+        FdoDateTime( 2005, 10, (FdoInt8) 01 ), 
+        FdoDateTime( 14, 15, (FdoFloat) 01 )
+    };
+    AddListProperty(
+        featClass,
+        L"MixedDate1Prop", 
+        FdoDataType_DateTime, 
+        mixedDate1List, 
+        2
+    );
+    
+    FdoDateTime mixedDate2List[2] = { 
+        FdoDateTime( 2005, 10, (FdoInt8) 01 ), 
+        FdoDateTime( 2005, 10, 02, 14, 15, (FdoFloat) 01 )
+    };
+    AddListProperty(
+        featClass,
+        L"MixedDate2Prop", 
+        FdoDataType_DateTime, 
+        mixedDate2List, 
+        2
+    );
+    
+    // Test the Contains function. 
+    // Items 0, 2, 4, 6, 8, .. violate the constraint
+    // Items 1, 3, 5, 7, 9, .. satisfy the constraint
+
+    FdoByte byteListValues[6] = {0, 1, 50, 2, 4, 3};
+    CheckConstraintProperty(
+        featClass,
+        L"ByteProp", 
+        FdoDataType_Byte, 
+        byteListValues, 
+        6
+    );
+
+    FdoDouble  doubleListValues[6] = {
+        0.1234567, 
+        0.123456789012345678901234567890, 
+        50,
+        100, 
+        2000.09887,
+        0.123456789012345678901234567890
+    };
+
+    CheckDoubleConstraintProperty(
+        featClass,
+        L"DecimalProp", 
+        FdoDataType_Decimal, 
+        doubleListValues, 
+        6
+    );
+
+    CheckDoubleConstraintProperty(
+        featClass,
+        L"DoubleProp", 
+        FdoDataType_Double, 
+        doubleListValues, 
+        6
+    );
+
+    FdoInt16 int16ListValues[4] = {0, 200, 199, 200};
+    CheckConstraintProperty(
+        featClass,
+        L"Int16Prop", 
+        FdoDataType_Int16, 
+        int16ListValues, 
+        4
+    );
+
+    FdoInt32 int32ListValues[10] = {9, 10, 11, 20, 0, 30, LONG_MIN + 1, LONG_MIN, LONG_MAX - 1, LONG_MAX};
+    CheckConstraintProperty(
+        featClass,
+        L"Int32Prop", 
+        FdoDataType_Int32, 
+        int32ListValues, 
+        10
+    );
+
+    FdoInt64 int64ListValues[8] = {0, LLONG_MIN, 51, 52, 53, LLONG_MAX - 1, -52, LLONG_MAX};
+    CheckConstraintProperty(
+        featClass,
+        L"Int64Prop", 
+        FdoDataType_Int64, 
+        int64ListValues, 
+        8
+    );
+
+    FdoFloat singleListValues[6] = { 
+        (float) 0.1234568, 
+        (float) 0.1234567, 
+        (float) 0.1234576, 
+        (float) 100, 
+        (float) 101, 
+        (float) 1.12345678
+    };
+    CheckConstraintProperty(
+        featClass,
+        L"SingleProp", 
+        FdoDataType_Single, 
+        singleListValues, 
+        6
+    );
+
+    FdoString* stringListValues[4]           = { L"open", L"op'en", L"clos", L"close" };
+    CheckConstraintProperty(
+        featClass,
+        L"StringProp", 
+        FdoDataType_String, 
+        stringListValues, 
+        4
+    );
+
+    FdoDateTime datetimeListValues[6] = {
+        FdoDateTime( 2003, 10, 31, 03, 02, 00 ), 
+        FdoDateTime( 2003, 10, 31, 03, 02, 01 ), 
+        FdoDateTime( 2003, 10, 31, 03, 02, 02 ), 
+        FdoDateTime( 2005, 10, 31, 03, 02, 01 ), 
+        FdoDateTime( 2003, 10, 30, 03, 02, 01 ), 
+        FdoDateTime( 2005, 10, 31, 15, 02, 01 )
+    };
+    CheckConstraintProperty(
+        featClass,
+        L"DateTimeProp", 
+        FdoDataType_DateTime, 
+        datetimeListValues, 
+        6
+    );
+    
+    FdoDateTime dateListValues[8] = { 
+        FdoDateTime( 2005, 06, (FdoInt8) 15 ), 
+        FdoDateTime( 2005, 05, (FdoInt8) 15 ), 
+        FdoDateTime( 2005, 06, 15, 1, 2, 3 ), 
+        FdoDateTime( 2006, 02, (FdoInt8) 01 ),
+        FdoDateTime( 2006, 05, (FdoInt8) 15 ), 
+        FdoDateTime( 1, 2, (FdoFloat) 3 ), 
+        FdoDateTime( 2006, 05, (FdoInt8) 15 ), 
+        FdoDateTime( 2005, 05, 15, 1, 2, 3 )
+    };
+    CheckConstraintProperty(
+        featClass,
+        L"DateProp", 
+        FdoDataType_DateTime, 
+        dateListValues, 
+        8
+    );
+    
+    FdoDateTime timeListValues[8] = { 
+        FdoDateTime( 12, 30, (FdoFloat) 0.1 ), 
+        FdoDateTime( 12, 30, (FdoFloat) 0 ), 
+        FdoDateTime( 2006, 01, 01, 12, 30, (FdoFloat) 0.1 ), 
+        FdoDateTime( 14, 15, (FdoFloat) 01 ),
+        FdoDateTime( 4, 15, (FdoFloat) 01 ),
+        FdoDateTime( 2006, 01, 01, 12, 30, 0 ), 
+        FdoDateTime( 2006, 01, 01, 12, 30, (FdoFloat) 0.1 ), 
+        FdoDateTime( 2006, 01, (FdoInt8) 01 ) 
+    };
+    CheckConstraintProperty(
+        featClass,
+        L"TimeProp", 
+        FdoDataType_DateTime, 
+        timeListValues, 
+        8
+    );
+        
+    FdoDateTime mixedDate1ListValues[8] = { 
+        FdoDateTime( 2005, 11, 01, 15, 15, 01 ), 
+        FdoDateTime( 2005, 10, (FdoInt8) 01 ), 
+        FdoDateTime( 2005, 11, 01, 15, 15, 01 ), 
+        FdoDateTime( 14, 15, (FdoFloat) 01 ),
+        FdoDateTime( 2005, 11, 01, 15, 15, 01 ), 
+        FdoDateTime( 2005, 10, (FdoInt8) 02 ), 
+        FdoDateTime( 2005, 11, 01, 15, 15, 01 ), 
+        FdoDateTime( 15, 15, (FdoFloat) 01 )
+    };
+    CheckConstraintProperty(
+        featClass,
+        L"MixedDate1Prop", 
+        FdoDataType_DateTime, 
+        mixedDate1ListValues, 
+        8
+    );
+            
+    FdoDateTime mixedDate2ListValues[10] = { 
+        FdoDateTime( 2005, 10, (FdoInt8) 03 ), 
+        FdoDateTime( 2005, 10, (FdoInt8) 01 ), 
+        FdoDateTime( 2005, 10, 02, 14, 15, (FdoFloat) 1.1 ),
+        FdoDateTime( 2005, 10, 02, 14, 15, (FdoFloat) 01 ),
+        FdoDateTime( 2005, 10, 02, 14, 15, (FdoFloat) 1.1 ),
+        FdoDateTime( 2005, 10, (FdoInt8) 02 ), 
+        FdoDateTime( 2005, 10, 02, 14, 15, (FdoFloat) 1.1 ),
+        FdoDateTime( 14, 15, (FdoFloat) 01 ),
+        FdoDateTime( 2005, 10, 02, 14, 15, (FdoFloat) 1.1 ),
+        FdoDateTime( 14, 15, (FdoFloat) 01.1 )
+    };
+    CheckConstraintProperty(
+        featClass,
+        L"MixedDate2Prop", 
+        FdoDataType_DateTime, 
+        mixedDate2ListValues, 
+        8
+    );
+    
+    // Test Date Range constraint modifications.
+
+    featClass = (FdoFeatureClass*) FdoPtr<FdoClassCollection>(schema->GetClasses())->FindItem(L"Ranges");
+
+    FdoDateTime datetimeMod1Range[2] = { 
+        FdoDateTime( 2005, 05, (FdoInt8) 15 ), 
+        FdoDateTime( 2006, 02, 01, 18, 00, 00 )
+    };
+    AddRangeProperty(
+        featClass,
+        L"DateTimeMod1Prop", 
+        FdoDataType_DateTime, 
+        datetimeMod1Range, 
+        true,
+        true
+    );
+    
+    FdoDateTime datetimeMod2Range[2] = { 
+        FdoDateTime( 2005, 05, 14, 01, 02, 01 ), 
+        FdoDateTime( 2006, 02, 01, 18, 00, 00 )
+    };
+
+    AddRangeProperty(
+        featClass,
+        L"DateTimeMod2Prop", 
+        FdoDataType_DateTime, 
+        datetimeMod2Range, 
+        true,
+        true
+    );
+
+    FdoDateTime datetimeMod3Range[2] = { 
+        FdoDateTime( 2005, 05, 15, 00, 02, 01 ), 
+        FdoDateTime( 2006, 02, 02, 17, 00, 00 )
+    };
+
+    AddRangeProperty(
+        featClass,
+        L"DateTimeMod3Prop", 
+        FdoDataType_DateTime, 
+        datetimeMod1Range, 
+        true,
+        true
+    );
+
+    FdoDateTime datetimeMod4Range[2] = { 
+        FdoDateTime( 2005, 05, 15, 00, 02, 01 ), 
+        FdoDateTime( 2006, 02, 02, 18, 00, 00 )
+    };
+
+    AddRangeProperty(
+        featClass,
+        L"DateTimeMod4Prop", 
+        FdoDataType_DateTime, 
+        datetimeMod4Range, 
+        true,
+        true
+    );
+
+    FdoDataPropertyP dtProp = (FdoDataPropertyDefinition*) FdoPropertiesP(featClass->GetProperties())->FindItem(L"DateTimeProp");
+    FdoDataPropertyP dtM1Prop = (FdoDataPropertyDefinition*) FdoPropertiesP(featClass->GetProperties())->FindItem(L"DateTimeMod1Prop");
+    FdoDataPropertyP dtM2Prop = (FdoDataPropertyDefinition*) FdoPropertiesP(featClass->GetProperties())->FindItem(L"DateTimeMod2Prop");
+    FdoDataPropertyP dtM3Prop = (FdoDataPropertyDefinition*) FdoPropertiesP(featClass->GetProperties())->FindItem(L"DateTimeMod3Prop");
+    FdoDataPropertyP dtM4Prop = (FdoDataPropertyDefinition*) FdoPropertiesP(featClass->GetProperties())->FindItem(L"DateTimeMod4Prop");
+
+    FdoPtr<FdoPropertyValueConstraint> dtConstr = dtProp->GetValueConstraint(); 
+    FdoPtr<FdoPropertyValueConstraint> dtM1Constr = dtM1Prop->GetValueConstraint(); 
+    FdoPtr<FdoPropertyValueConstraint> dtM2Constr = dtM2Prop->GetValueConstraint(); 
+    FdoPtr<FdoPropertyValueConstraint> dtM3Constr = dtM3Prop->GetValueConstraint(); 
+    FdoPtr<FdoPropertyValueConstraint> dtM4Constr = dtM4Prop->GetValueConstraint(); 
+
+    CPPUNIT_ASSERT( !dtM1Constr->Contains(dtConstr) );
+    CPPUNIT_ASSERT( !dtM2Constr->Contains(dtConstr) );
+    CPPUNIT_ASSERT( !dtM3Constr->Contains(dtConstr) );
+    CPPUNIT_ASSERT( dtM4Constr->Contains(dtConstr) );
+
+    // Test Date List constraint modifications.
+
+    featClass = (FdoFeatureClass*) FdoPtr<FdoClassCollection>(schema->GetClasses())->FindItem(L"Lists");
+
+    FdoDateTime datetimeMod1List[3]        = {
+        FdoDateTime(2003, 10, (FdoInt8) 31), 
+        FdoDateTime(2005, 10, 31, 03, 02, 01), 
+        FdoDateTime(2005, 10, 31, 15, 02, 01)
+    };
+    AddListProperty(
+        featClass,
+        L"DateTimeMod1Prop", 
+        FdoDataType_DateTime, 
+        datetimeMod1List, 
+        3
+    );
+    
+    dtProp = (FdoDataPropertyDefinition*) FdoPropertiesP(featClass->GetProperties())->FindItem(L"DateTimeProp");
+    dtM1Prop = (FdoDataPropertyDefinition*) FdoPropertiesP(featClass->GetProperties())->FindItem(L"DateTimeMod1Prop");
+
+    dtConstr = dtProp->GetValueConstraint(); 
+    dtM1Constr = dtM1Prop->GetValueConstraint(); 
+
+    CPPUNIT_ASSERT( !dtM1Constr->Contains(dtConstr) );
+}
+
 /*TODO:R2 or later
 void SchemaTest::testLineSegmentClass()
 {

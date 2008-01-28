@@ -806,15 +806,20 @@ SymbolicName=SCHEMA_146_DELSCHEMAOBJECTS
 Language=English
 Cannot delete schema definition '%1$ls'; it has objects
 .
+MessageId=1147
+SymbolicName=SCHEMA_147_MODCONSTRAINT
+Language=English
+Cannot modify constraint for property '%1$ls'; property has values and new constraint is more restrictive
+.
 MessageId=1148
 SymbolicName=SCHEMA_148_MODCONSTRAINTTYPE
 Language=English
 Cannot modify constraint type for property '%1$ls'; property has values
 .
-MessageId=1147
-SymbolicName=SCHEMA_147_MODCONSTRAINT
+MessageId=1149
+SymbolicName=SCHEMA_149_CONSTRAINTDATAVIOLATION
 Language=English
-Cannot modify constraint for property '%1$ls'; property has values and new constraint is more restrictive
+Cannot modify constraint for property '%1$ls'; existing data value '%2$ls' violates new constraint
 .
 
 MessageId=2001

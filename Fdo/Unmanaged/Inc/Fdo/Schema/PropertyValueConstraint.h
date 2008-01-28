@@ -27,6 +27,7 @@
 #include <Fdo/Schema/SchemaException.h>
 
 class FdoSchemaMergeContext;
+class FdoDataValue;
 
 /// \brief
 /// FdoPropertyValueConstraint is an abstract class that derives from FdoIDisposable.
@@ -74,6 +75,18 @@ public:
     // for pConstraint (all values that do not violate pConstraint also do not
     // violate this constraint).
     virtual bool Contains( FdoPropertyValueConstraint* pConstraint ) = 0;
+
+    // \brief
+    // Checks if the given value violates this constraint.
+    // 
+    // \param value 
+    // The Property Value
+    // 
+    // \return
+    // Returns true if value is ok (it does not violate this constraint). Always
+    // returns true if the value is null.
+    // Returns false if the value violates this constraint.
+    virtual bool Contains( FdoDataValue* pValue ) = 0;
 /// \endcond
 };
 

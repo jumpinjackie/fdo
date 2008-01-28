@@ -34,6 +34,7 @@ class SchemaTest : public CppUnit::TestCase
     FDO_CPPUNIT_DEFINE(testFeatureClass);
     FDO_CPPUNIT_DEFINE(testSubClass);
     FDO_CPPUNIT_DEFINE(testRasterClass);
+    FDO_CPPUNIT_DEFINE(testDataConstraints);
     FDO_CPPUNIT_DEFINE(testXmlV2);
     FDO_CPPUNIT_DEFINE(testXmlAll);
     FDO_CPPUNIT_DEFINE(testXmlRefs);
@@ -67,6 +68,7 @@ class SchemaTest : public CppUnit::TestCase
     CPPUNIT_TEST(testSubClass);
 
     CPPUNIT_TEST(testRasterClass);
+    CPPUNIT_TEST(testDataConstraints);
 //TODO:R2    CPPUNIT_TEST(testLineSegmentClass);
 //TODO:R2    CPPUNIT_TEST(testTinEdgeClass);
 //TODO:R2    CPPUNIT_TEST(testTinPointClass);
@@ -126,6 +128,7 @@ protected:
     void testFeatureClass();
     void testSubClass();
     void testRasterClass ();
+    void testDataConstraints ();
 //TODO:R2    void testLineSegmentClass();
 //TODO:R2    void testTinEdgeClass();
 //TODO:R2    void testTinPointClass();
@@ -181,6 +184,194 @@ protected:
     FdoFeatureSchema* createAcadSchema();
     FdoFeatureSchema* createElectricSchema( FdoFeatureSchema* pAcadSchema );
     FdoFeatureSchema* createRefSchema( FdoInt32 idx, FdoFeatureSchema* pBaseSchema = NULL );
+
+
+    template< class T> FdoPtr<FdoDataPropertyDefinition> AddRangeProperty(
+        FdoFeatureClass* pClass, 
+        FdoString* pPropName, 
+        FdoDataType dataType, 
+        T* pRange, 
+        FdoBoolean minInclusive,
+        FdoBoolean maxInclusive,
+        FdoBoolean minNull = false,
+        FdoBoolean maxNull = false
+    )
+    {
+        FdoPtr<FdoDataPropertyDefinition> pProp = FdoDataPropertyDefinition::Create( pPropName, L"" );
+        pProp->SetDataType( dataType );
+        pProp->SetNullable(true);
+
+        FdoPtr<FdoPropertyValueConstraintRange>  newRangeConstrR =  FdoPropertyValueConstraintRange::Create();
+        newRangeConstrR->SetMinInclusive(minInclusive);
+        FdoPtr<FdoDataValue>   valR = FdoDataValue::Create( pRange[0] );
+        if ( minNull ) 
+            valR->SetNull();
+        newRangeConstrR->SetMinValue( valR );
+
+        newRangeConstrR->SetMaxInclusive(maxInclusive);
+        valR = FdoDataValue::Create( pRange[1] );
+        if ( maxNull ) 
+            valR->SetNull();
+        newRangeConstrR->SetMaxValue( valR );
+            
+        pProp->SetValueConstraint(newRangeConstrR);
+
+        FdoPropertiesP(pClass->GetProperties())->Add( pProp  );
+
+        return pProp;
+    }
+
+    template< class T> FdoPtr<FdoDataPropertyDefinition> AddDoubleRangeProperty(
+        FdoFeatureClass* pClass, 
+        FdoString* pPropName, 
+        FdoDataType dataType, 
+        T* pRange, 
+        FdoBoolean minInclusive,
+        FdoBoolean maxInclusive,
+        FdoBoolean minNull = false,
+        FdoBoolean maxNull = false
+    )
+    {
+        FdoPtr<FdoDataPropertyDefinition> pProp = FdoDataPropertyDefinition::Create( pPropName, L"" );
+        pProp->SetDataType( dataType );
+        pProp->SetNullable(true);
+
+        FdoPtr<FdoPropertyValueConstraintRange>  newRangeConstrR =  FdoPropertyValueConstraintRange::Create();
+        newRangeConstrR->SetMinInclusive(minInclusive);
+        FdoPtr<FdoDataValue>   valR = FdoDataValue::Create( pRange[0], dataType );
+        if ( minNull ) 
+            valR->SetNull();
+        newRangeConstrR->SetMinValue( valR );
+
+        newRangeConstrR->SetMaxInclusive(maxInclusive);
+        valR = FdoDataValue::Create( pRange[1], dataType );
+        if ( maxNull ) 
+            valR->SetNull();
+        newRangeConstrR->SetMaxValue( valR );                    
+
+        pProp->SetValueConstraint(newRangeConstrR);
+
+        FdoPropertiesP(pClass->GetProperties())->Add( pProp  );
+
+        return pProp;
+    }
+
+    template< class T> FdoPtr<FdoDataPropertyDefinition> AddListProperty(
+        FdoFeatureClass* pClass, 
+        FdoString* pPropName, 
+        FdoDataType dataType, 
+        T* pList, 
+        FdoInt32 pListCount
+    )
+    {
+        FdoPtr<FdoDataPropertyDefinition> pProp = FdoDataPropertyDefinition::Create( pPropName, L"" );
+        pProp->SetDataType( dataType );
+        pProp->SetNullable(true);
+
+        FdoPtr<FdoPropertyValueConstraintList>  newListConstr =  FdoPropertyValueConstraintList::Create();
+        FdoPtr<FdoDataValueCollection> list = newListConstr->GetConstraintList();
+
+        FdoInt32 idx;
+
+        for ( idx = 0; idx < pListCount; idx++ ) {
+            FdoPtr<FdoDataValue>   val = FdoDataValue::Create( pList[idx] );
+            list->Add( val );
+        }
+                
+        pProp->SetValueConstraint(newListConstr);
+
+        FdoPropertiesP(pClass->GetProperties())->Add( pProp  );
+
+        return pProp;
+    }
+
+    template< class T> FdoPtr<FdoDataPropertyDefinition> AddDoubleListProperty(
+        FdoFeatureClass* pClass, 
+        FdoString* pPropName, 
+        FdoDataType dataType, 
+        T* pList, 
+        FdoInt32 pListCount
+    )
+    {
+        FdoPtr<FdoDataPropertyDefinition> pProp = FdoDataPropertyDefinition::Create( pPropName, L"" );
+        pProp->SetDataType( dataType );
+        pProp->SetNullable(true);
+
+        FdoPtr<FdoPropertyValueConstraintList>  newListConstr =  FdoPropertyValueConstraintList::Create();
+        FdoPtr<FdoDataValueCollection> list = newListConstr->GetConstraintList();
+
+        FdoInt32 idx;
+
+        for ( idx = 0; idx < pListCount; idx++ ) {
+            FdoPtr<FdoDataValue>   val = FdoDataValue::Create( pList[idx], dataType );
+            list->Add( val );
+        }
+                
+        pProp->SetValueConstraint(newListConstr);
+
+        FdoPropertiesP(pClass->GetProperties())->Add( pProp  );
+
+        return pProp;
+    }
+
+    template< class T> void CheckConstraintProperty(
+        FdoFeatureClass* pClass, 
+        FdoString* pPropName, 
+        FdoDataType dataType, 
+        T* pValues, 
+        int count
+    )
+    {
+        FdoPropertiesP props = pClass->GetProperties();
+        FdoDataPropertyP pProp = (FdoDataPropertyDefinition*) props->FindItem(pPropName);
+        FdoPtr<FdoPropertyValueConstraint>  constr = pProp->GetValueConstraint();
+
+        int i;
+
+        CPPUNIT_ASSERT( constr->Contains((FdoDataValue*) NULL) );
+
+        FdoPtr<FdoDataValue> valNull = FdoDataValue::Create( pValues[0] );
+        valNull->SetNull();
+        
+        CPPUNIT_ASSERT( constr->Contains(valNull) );
+
+        for ( i = 0; i < count; i++ ) {
+            FdoPtr<FdoDataValue> valR = FdoDataValue::Create( pValues[i] );
+
+            CPPUNIT_ASSERT( ((i%2) == 1) == constr->Contains(valR) );
+        }
+    }
+
+    template< class T> void CheckDoubleConstraintProperty(
+        FdoFeatureClass* pClass, 
+        FdoString* pPropName, 
+        FdoDataType dataType, 
+        T* pValues, 
+        int count
+    )
+    {
+        FdoPropertiesP props = pClass->GetProperties();
+        FdoDataPropertyP pProp = (FdoDataPropertyDefinition*) props->FindItem(pPropName);
+        FdoPtr<FdoPropertyValueConstraint>  constr = pProp->GetValueConstraint();
+
+        int i;
+
+        CPPUNIT_ASSERT( constr->Contains((FdoDataValue*) NULL) );
+
+        FdoPtr<FdoDataValue> valNull = FdoDataValue::Create( pValues[0], dataType );
+        valNull->SetNull();
+        
+        CPPUNIT_ASSERT( constr->Contains(valNull) );
+
+        for ( i = 0; i < count; i++ ) {
+            FdoPtr<FdoDataValue> valR = FdoDataValue::Create( pValues[i], dataType );
+
+            CPPUNIT_ASSERT( ((i%2) == 1) == constr->Contains(valR) );
+        }
+
+    }
+
+
 };
 
 #endif

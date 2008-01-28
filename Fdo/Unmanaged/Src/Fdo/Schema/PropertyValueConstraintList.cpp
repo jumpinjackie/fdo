@@ -21,6 +21,7 @@
 #include <Fdo/Schema/PropertyValueConstraintList.h>
 #include "XmlContext.h"
 #include "StringUtility.h"
+#include "../Expression/ExpressionInternal.h"
 
 // Constructs a default instance of a FdoPropertyValueConstraintList.
 FdoPropertyValueConstraintList::FdoPropertyValueConstraintList():m_constraintList( NULL )
@@ -152,6 +153,28 @@ bool FdoPropertyValueConstraintList::Contains( FdoPropertyValueConstraint* pCons
     }
 
     return contains;
+}
+
+
+bool FdoPropertyValueConstraintList::Contains( FdoDataValue* pValue )
+{
+    // Null values always satisfy the constraint.
+    if ( (pValue == NULL) || pValue->IsNull() ) 
+        return true;
+
+    FdoInt32 idx;
+
+    for ( idx = 0; idx < m_constraintList->GetCount(); idx++ ) {
+        FdoPtr<FdoDataValue> listValue = m_constraintList->GetItem( idx );
+
+        FdoCompareType compareType = FdoInternalDataValue::Compare(listValue, pValue);
+        if ( (compareType == FdoCompareType_Equal) || (compareType == FdoCompareType_PartlyEqual) )
+            // Found the value in the constraint list.
+            return true;
+    }
+
+    // List does not contain the value.
+    return false;
 }
 
 

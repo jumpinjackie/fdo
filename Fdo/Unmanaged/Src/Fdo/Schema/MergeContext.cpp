@@ -24,6 +24,17 @@
 #include <Fdo/Commands/CommandType.h>
 #include <Fdo/Commands/Feature/ISelect.h>
 
+#include <Fdo/Expression/BooleanValue.h>
+#include <Fdo/Expression/ByteValue.h>
+#include <Fdo/Expression/DateTimeValue.h>
+#include <Fdo/Expression/DecimalValue.h>
+#include <Fdo/Expression/DoubleValue.h>
+#include <Fdo/Expression/Int16Value.h>
+#include <Fdo/Expression/Int32Value.h>
+#include <Fdo/Expression/Int64Value.h>
+#include <Fdo/Expression/SingleValue.h>
+
+
 FdoSchemaMergeContext::FdoSchemaMergeContext( FdoFeatureSchemaCollection* schemas, bool defaultCapability ) :
     mIgnoreStates(true),
     mDefaultCapability(defaultCapability),
@@ -54,6 +65,7 @@ FdoSchemaMergeContext::FdoSchemaMergeContext( FdoFeatureSchemaCollection* schema
     mAssocIdPropRefs = StringsRefs::Create();
     mAssocIdReversePropRefs = StringsRefs::Create();
     mGeomPropRefs = StringsRefs::Create();
+    mDataRestrictToCheck = StringsRefs::Create();
 
     mClassHasObjects = FdoDictionary::Create();
 
@@ -167,6 +179,8 @@ void FdoSchemaMergeContext::CommitSchemas()
     ResolveUniqueConstraints();
 
     CheckReferences();
+
+    CheckSchemasWData();
 
     // If there are errors, throw them.
     ThrowErrors();
@@ -358,54 +372,18 @@ bool FdoSchemaMergeContext::CheckModDataConstraint( FdoDataPropertyDefinition* o
 
             if ( newConstraint && !oldConstraint ) {
 
-                // Adding constraint to property is not yet supported, since existing 
-                // property values might violate constraint.
-                AddError( 
-                    FdoSchemaExceptionP(
-                        FdoSchemaException::Create(
-                            FdoException::NLSGetMessage(
-                            FDO_NLSID(SCHEMA_147_MODCONSTRAINT),
-                                (FdoString*) oldProp->GetQualifiedName()
-                            )
-                        )
-                    )
-                );
-
-                canMod = false;
+                // Adding constraint to property is effectively adding a more restrictive constraint.
+                canMod = CheckRestrictDataConstraint( oldProp, newProp );
             }
             else if ( newConstraint && oldConstraint ) {
                 if ( newConstraint->GetConstraintType() != oldConstraint->GetConstraintType() ) {
-                    // Changing constraint type not yet supported, since existing 
-                    // property values might violate new constraint.
-                    AddError( 
-                        FdoSchemaExceptionP(
-                            FdoSchemaException::Create(
-                                FdoException::NLSGetMessage(
-                                FDO_NLSID(SCHEMA_148_MODCONSTRAINTTYPE),
-                                    (FdoString*) oldProp->GetQualifiedName()
-                                )
-                            )
-                        )
-                    );
-
-                    canMod = false;
+                    // Changing constraint type might make constraint more restrictive
+                    canMod = CheckRestrictDataConstraint( oldProp, newProp );
                 }
                 else {
                     if ( !newConstraint->Contains( oldConstraint ) ) {
-                        // Making constraint more restrictive not yet supported, since existing 
-                        // property values might violate constraint.
-                        AddError( 
-                            FdoSchemaExceptionP(
-                                FdoSchemaException::Create(
-                                    FdoException::NLSGetMessage(
-                                    FDO_NLSID(SCHEMA_147_MODCONSTRAINT),
-                                        (FdoString*) oldProp->GetQualifiedName()
-                                    )
-                                )
-                            )
-                        );
-
-                        canMod = false;
+                        // Making constraint more restrictive.
+                        canMod = CheckRestrictDataConstraint( oldProp, newProp );
                     }
                 }
             }
@@ -427,6 +405,62 @@ bool FdoSchemaMergeContext::CheckModDataConstraint( FdoDataPropertyDefinition* o
     }
 
     return canMod;
+}
+
+bool FdoSchemaMergeContext::CheckRestrictDataConstraint( FdoDataPropertyDefinition* oldProp, FdoDataPropertyDefinition* newProp )
+{
+    bool canRestrict = false;
+
+    if ( CanRestrictDataConstraint(oldProp) ) {
+        canRestrict = true;
+
+        // Making constraint more restrictive is supported. However, new constraint
+        // might make existing property values invalid. Validation against property 
+        // values are done in a subsequent step so that all constraints for a single class
+        // can be done in one select.
+
+        // For now, just add the constraint to the list of ones to check.
+        AddDataRestrictToCheck( newProp );
+    }
+    else {
+        // Making constraint more restrictive not supported. Log an error depending
+        // on whether the constraint type was changed.
+
+        FdoPtr<FdoPropertyValueConstraint> oldConstraint = oldProp ? oldProp->GetValueConstraint() : (FdoPropertyValueConstraint*) NULL;
+        FdoPtr<FdoPropertyValueConstraint> newConstraint = newProp ? newProp->GetValueConstraint() : (FdoPropertyValueConstraint*) NULL;
+
+        if ( oldConstraint && newConstraint && (newConstraint->GetConstraintType() != oldConstraint->GetConstraintType()) ) {
+            // Changing constraint type not yet supported, since existing 
+            // property values might violate new constraint.
+            AddError( 
+                FdoSchemaExceptionP(
+                    FdoSchemaException::Create(
+                        FdoException::NLSGetMessage(
+                        FDO_NLSID(SCHEMA_148_MODCONSTRAINTTYPE),
+                            (FdoString*) oldProp->GetQualifiedName()
+                        )
+                    )
+                )
+            );
+        }
+        else {
+
+            // Adding constraint to property is not yet supported, since existing 
+            // property values might violate constraint.
+            AddError( 
+                FdoSchemaExceptionP(
+                    FdoSchemaException::Create(
+                        FdoException::NLSGetMessage(
+                        FDO_NLSID(SCHEMA_147_MODCONSTRAINT),
+                            (FdoString*) oldProp->GetQualifiedName()
+                        )
+                    )
+                )
+            );
+        }
+    }
+
+    return canRestrict;
 }
 
 bool FdoSchemaMergeContext::CanModElementDescription( FdoSchemaElement* element )
@@ -588,6 +622,11 @@ bool FdoSchemaMergeContext::CanModDataReadOnly( FdoDataPropertyDefinition* prop 
 }
 
 bool FdoSchemaMergeContext::CanModDataConstraint( FdoDataPropertyDefinition* prop )
+{
+    return mDefaultCapability;
+}
+
+bool FdoSchemaMergeContext::CanRestrictDataConstraint( FdoDataPropertyDefinition* prop )
 {
     return mDefaultCapability;
 }
@@ -1036,6 +1075,23 @@ void FdoSchemaMergeContext::AddGeomPropRef( FdoFeatureClass* pReferencer, FdoStr
     }
 }
 
+void FdoSchemaMergeContext::AddDataRestrictToCheck( FdoDataPropertyDefinition* pDataProp )
+{
+    FdoPtr<FdoSchemaElement> parent = pDataProp->GetParent();    
+
+    FdoPtr<StringsRef> ref = mDataRestrictToCheck->FindItem( parent->GetQualifiedName() );
+    
+    if ( !ref ) {
+        // Item for class does not exist so create it.
+        FdoStringsP strings = FdoStringCollection::Create();
+        ref = StringsRef::Create( parent, strings );
+        mDataRestrictToCheck->Add( ref );
+    }
+
+    // Add property to list of constraints to check for this class. 
+    ref->GetStrings()->Add( pDataProp->GetName() ) ;
+}
+
 void FdoSchemaMergeContext::MergeSchemas()
 {
     if ( mUpdSchema ) {
@@ -1158,6 +1214,149 @@ void FdoSchemaMergeContext::CheckReferences()
             schema->CheckReferences( this );
         }
     }
+}
+
+void FdoSchemaMergeContext::CheckSchemasWData()
+{
+    FdoPtr<FdoIConnection> connection = GetConnection();
+
+    // Skip these checks when there is no connection.
+    if ( connection ) {
+        FdoInt32 idx;
+    
+        // For each class with data constraint that was made more restrictive
+        for ( idx = 0; idx < mDataRestrictToCheck->GetCount(); idx++ ) {
+            FdoPtr<StringsRef> clsRestrict = mDataRestrictToCheck->GetItem(idx);
+            FdoPtr<FdoClassDefinition> classDef = (FdoClassDefinition*)(clsRestrict->GetReferencer());
+
+            // Select all objects for this class, checking for property values that violate any
+            // of the constraints.
+            FdoPtr<FdoISelect>selCmd = (FdoISelect*)connection->CreateCommand( FdoCommandType_Select );
+		    selCmd->SetFeatureClassName( classDef->GetQualifiedName() );
+            FdoPtr<FdoIFeatureReader> rdr = selCmd->Execute();
+
+            // for each object in the class ...
+            while ( rdr->ReadNext() ) {
+                // Get list of properties for constraints to check
+                FdoStringsP props = clsRestrict->GetStrings();
+
+                if ( props->GetCount() == 0 ) 
+                    // No more properties so nothing left to check.
+                    break;
+
+                FdoInt32 idx2;
+
+                // For each constraint ...
+                for ( idx2 = (props->GetCount() - 1); idx2 >= 0; idx2-- ) {
+                    FdoStringP propName = props->GetString(idx2);
+                    FdoDataPropertyP prop = (FdoDataPropertyDefinition*) FindProperty( classDef, propName, false );
+
+                    if ( prop ) {
+                        FdoPtr<FdoPropertyValueConstraint> constraint = prop->GetValueConstraint();
+
+                        if ( constraint ) {
+                            // Skip null property values, they always satisfy the constraint.
+                            if ( !(rdr->IsNull(propName)) ) {
+
+                                // Extract the property into an FdoDataValue 
+                                FdoPtr<FdoDataValue> propValue;
+
+                                switch ( prop->GetDataType() ) {
+                                case FdoDataType_Boolean:
+                                    propValue = FdoBooleanValue::Create( rdr->GetBoolean(propName) );
+                                    break;
+
+                                case FdoDataType_Byte:
+                                    propValue = FdoByteValue::Create( rdr->GetByte(propName) );
+                                    break;
+
+                                case FdoDataType_DateTime:
+                                    propValue = FdoDateTimeValue::Create( rdr->GetDateTime(propName) );
+                                    break;
+
+                                case FdoDataType_Decimal:
+                                    propValue = FdoDecimalValue::Create( rdr->GetDouble(propName) );
+                                    break;
+
+                                case FdoDataType_Double:
+                                    propValue = FdoDoubleValue::Create( rdr->GetDouble(propName) );
+                                    break;
+
+                                case FdoDataType_Int16:
+                                    propValue = FdoInt16Value::Create( rdr->GetInt16(propName) );
+                                    break;
+
+                                case FdoDataType_Int32:
+                                    propValue = FdoInt32Value::Create( rdr->GetInt32(propName) );
+                                    break;
+
+                                case FdoDataType_Int64:
+                                    propValue = FdoInt64Value::Create( rdr->GetInt64(propName) );
+                                    break;
+
+                                case FdoDataType_Single:
+                                    propValue = FdoSingleValue::Create( rdr->GetSingle(propName) );
+                                    break;
+
+                                case FdoDataType_String:
+                                    propValue = FdoStringValue::Create( rdr->GetString(propName) );
+                                    break;
+
+                                default:
+                                    // New data type that we don't yet handle. 
+                                    // Fall back to disallowing constraint modification.
+                                    AddError( 
+                                        FdoSchemaExceptionP(
+                                            FdoSchemaException::Create(
+                                                FdoException::NLSGetMessage(
+                                                FDO_NLSID(SCHEMA_147_MODCONSTRAINT),
+                                                    (FdoString*) prop->GetQualifiedName()
+                                                )
+                                            )
+                                        )
+                                    );
+                                    props->RemoveAt(idx2);
+                                    break;
+                                }
+
+                                if ( propValue ) {
+                                    if ( !constraint->Contains(propValue) ) {
+                                        // Found a value that violates the new constraint. Log an error
+                                        // to prevent constraint modification from going through.
+                                        AddError( 
+                                            FdoSchemaExceptionP(
+                                                FdoSchemaException::Create(
+                                                    FdoException::NLSGetMessage(
+                                                        FDO_NLSID(SCHEMA_149_CONSTRAINTDATAVIOLATION),
+                                                        (FdoString*) prop->GetQualifiedName(),
+                                                        propValue->GetXmlValue()
+                                                    )
+                                                )
+                                            )
+                                        );
+
+                                        // No need to check this constraint against the rest of the objects.
+                                        props->RemoveAt(idx2);
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            // Constraint no longer exists, no need to check it
+                            props->RemoveAt(idx2);
+                        }
+                    }
+                    else {
+                        // Property no longer exists, no need to check its constraint.
+                        props->RemoveAt(idx2);
+                    }
+                }
+            }
+        }
+    }
+
+    // Done checking so clear all classes to check.
+    mDataRestrictToCheck->Clear();
 }
 
 void FdoSchemaMergeContext::ResolveBaseClasses()
