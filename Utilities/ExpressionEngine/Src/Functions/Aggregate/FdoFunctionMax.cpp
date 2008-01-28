@@ -383,7 +383,7 @@ void FdoFunctionMax::CreateFunctionDefinition ()
     FdoPtr<FdoPropertyValueConstraintList>  argument_value_list;
 
     FdoPtr<FdoSignatureDefinition>          signature;
-    FdoSignatureDefinitionCollection        *signatures;
+    FdoPtr<FdoSignatureDefinitionCollection> signatures;
 
     // The function contains signatures that allow an optional first parameter.
     // If used the value of this parameter must be either ALL or DISTINCT. The

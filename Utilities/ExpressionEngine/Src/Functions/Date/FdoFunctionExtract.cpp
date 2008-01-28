@@ -207,7 +207,7 @@ void FdoFunctionExtract::CreateFunctionDefinition ()
     FdoPtr<FdoPropertyValueConstraintList>  argument_value_list;
 
     FdoPtr<FdoSignatureDefinition>          signature;
-    FdoSignatureDefinitionCollection        *signatures;
+    FdoPtr<FdoSignatureDefinitionCollection> signatures;
 
     // The value of the first argument of the supported signatures has to be
     // either YEAR, MONTH, DAY, HOUR, MINUTE or SECOND. The following sets up

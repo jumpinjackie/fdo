@@ -184,7 +184,7 @@ void FdoFunctionLength2D::CreateFunctionDefinition ()
     FdoPtr<FdoArgumentDefinitionCollection> geom_args;
 
     FdoPtr<FdoSignatureDefinition>          signature;
-    FdoSignatureDefinitionCollection        *signatures;
+    FdoPtr<FdoSignatureDefinitionCollection> signatures;
 
     // Get the general descriptions for the arguments.
 

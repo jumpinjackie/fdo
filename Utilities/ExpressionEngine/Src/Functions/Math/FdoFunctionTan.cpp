@@ -260,7 +260,7 @@ void FdoFunctionTan::CreateFunctionDefinition ()
     FdoPtr<FdoArgumentDefinitionCollection> sgl_args;
 
     FdoPtr<FdoSignatureDefinition>          signature;
-    FdoSignatureDefinitionCollection        *signatures;
+    FdoPtr<FdoSignatureDefinitionCollection> signatures;
 
     // Get the general descriptions for the arguments.
 

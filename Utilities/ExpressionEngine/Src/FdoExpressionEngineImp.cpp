@@ -61,16 +61,6 @@ FdoExpressionEngineImp::FdoExpressionEngineImp(FdoIReader* reader, FdoClassDefin
 
     m_AllFunctions = FdoFunctionDefinitionCollection::Create();
 
-    if (userDefinedFunctions)
-    {
-        for (int i=0; i<userDefinedFunctions->GetCount(); i++)
-        {
-            FdoPtr<FdoExpressionEngineIFunction> userDefinedFunction = userDefinedFunctions->GetItem(i);
-            FdoPtr<FdoFunctionDefinition> function = userDefinedFunction->GetFunctionDefinition();
-            m_AllFunctions->Add(function);
-        }
-    }
-
     m_FunctionsPopulated = false;
 	m_UserDefinedFunctions = FDO_SAFE_ADDREF(userDefinedFunctions);
 
@@ -4035,6 +4025,16 @@ void FdoExpressionEngineImp::PopulateFunctions()
             return;
 
         m_FunctionsPopulated = true;
+        if (m_UserDefinedFunctions)
+        {
+            for (int i=0; i<m_UserDefinedFunctions->GetCount(); i++)
+            {
+                FdoPtr<FdoExpressionEngineIFunction> userDefinedFunction = m_UserDefinedFunctions->GetItem(i);
+                FdoPtr<FdoFunctionDefinition> function = userDefinedFunction->GetFunctionDefinition();
+                m_AllFunctions->Add(function);
+            }
+        }
+
         mutex.Enter();
         FdoPtr<FdoExpressionEngineFunctionCollection> functions = initFunction.GetAllFunctions();
         for (int i=0; i<functions->GetCount(); i++)

@@ -284,7 +284,7 @@ void FdoFunctionTrim::CreateFunctionDefinition ()
     FdoPtr<FdoPropertyValueConstraintList>  argument_value_list;
 
     FdoPtr<FdoSignatureDefinition>          signature;
-    FdoSignatureDefinitionCollection        *signatures;
+    FdoPtr<FdoSignatureDefinitionCollection> signatures;
 
     // The function contains signatures that allow an optional parameter. If
     // used the value of this parameter must be either BOTH, LEADING or TRAIL-
