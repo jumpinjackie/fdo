@@ -58,7 +58,7 @@ ShpQueryOptimizer* ShpQueryOptimizer::Create(FdoIReader* reader, FdoIdentifierCo
 	// Create the collection of custom functions.
 	FdoPtr<FdoExpressionEngineFunctionCollection> userDefinedFunctions = GetUserDefinedFunctions( connection, classDef );
 
-    return new ShpQueryOptimizer(reader, classDef, selected, ssi, FDO_SAFE_ADDREF(userDefinedFunctions.p)); 
+    return new ShpQueryOptimizer(reader, classDef, selected, ssi, userDefinedFunctions.p); 
 }
 
 ShpQueryOptimizer::ShpQueryOptimizer(FdoIReader* reader, FdoClassDefinition* classDef, FdoIdentifierCollection* selected, ShpSpatialIndex* rtree, FdoExpressionEngineFunctionCollection *userDefinedFunctions):
@@ -276,8 +276,8 @@ FdoExpressionEngineFunctionCollection* ShpQueryOptimizer::GetUserDefinedFunction
 			else if ( wkt.Contains( L"GEOGCS" ) )
 			{
 				userDefinedFunctions = FdoExpressionEngineFunctionCollection::Create();
-				userDefinedFunctions->Add( FdoFunctionLength2D::Create(true));
-				userDefinedFunctions->Add( FdoFunctionArea2D::Create(true));
+				userDefinedFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionLength2D::Create(true)));
+				userDefinedFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionArea2D::Create(true)));
 			}
 		}
 	}
