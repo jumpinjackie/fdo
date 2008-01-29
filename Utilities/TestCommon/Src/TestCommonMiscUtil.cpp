@@ -144,7 +144,7 @@ FdoPtr<FdoDataValue> TestCommonMiscUtil::ArgsToDataValue( va_list& arguments )
     FdoFloat floatArg;
     FdoDouble doubleArg;
     FdoString* strArg;
-    FdoDateTime dateTimeArg;
+    FdoDateTime* dateTimeArg;
 
     FdoDataType dataType = (FdoDataType) va_arg(arguments,int);
 
@@ -175,8 +175,8 @@ FdoPtr<FdoDataValue> TestCommonMiscUtil::ArgsToDataValue( va_list& arguments )
         dataValue = FdoDataValue::Create(strArg);
         break;
     case FdoDataType_DateTime:
-        dateTimeArg = va_arg(arguments,FdoDateTime);
-        dataValue = FdoDataValue::Create(dateTimeArg);
+        dateTimeArg = va_arg(arguments,FdoDateTime *);
+        dataValue = FdoDataValue::Create(*dateTimeArg);
         break;
     default:
         throw FdoException::Create( L"TestCommonMiscUtil::InsertObject dataType not yet implemented; please implement" );
