@@ -23,7 +23,6 @@
 #include "FdoWfsServiceMetadata.h"
 #include "FdoWfsFeatureType.h"
 
-
 FdoWfsSpatialExtentsAggregateReader::FdoWfsSpatialExtentsAggregateReader(FdoWfsConnection* conn, FdoIdentifier* className, FdoString* aliasName) :
     m_ReaderIndex(-1),
     m_AliasName(aliasName)
@@ -38,8 +37,9 @@ FdoWfsSpatialExtentsAggregateReader::FdoWfsSpatialExtentsAggregateReader(FdoWfsC
     // Get the total extent of the feature type
     FdoOwsGeographicBoundingBoxCollectionP extents = featureType->GetSRSExtents();
 
-    // Build an extents geometry out of the spatial extents;
-    if (extents->GetCount() != 0) 
+    FdoString* srsName = featureType->GetSRS();
+    // Build an extents geometry out of the spatial extents only in case CS of the layer is in default CS (EPSG:4326 or CRS:4326);
+    if (extents->GetCount() != 0 && (FdoCommonOSUtil::wcsicmp(srsName, L"EPSG:4326") == 0 || FdoCommonOSUtil::wcsicmp(srsName, L"CRS:4326") == 0)) 
     {
         // Get the extents from the bounding box collection
         FdoOwsGeographicBoundingBoxP bbox = extents->GetExtents();

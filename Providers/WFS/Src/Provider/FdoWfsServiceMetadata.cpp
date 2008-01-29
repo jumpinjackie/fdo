@@ -181,6 +181,13 @@ void FdoWfsServiceMetadata::_buildUpCRS ()
 		{
 			m_CRSNames->Add (crsName);
 		}
+        FdoOwsGeographicBoundingBoxCollectionP extents = featType->GetSRSExtents (); 
+        // do we have a geographic bounding box? if yes add default CS L"EPSG:4326"
+        if (extents->GetCount() != 0)
+        {
+		    if (m_CRSNames->IndexOf (L"EPSG:4326") == -1)
+			    m_CRSNames->Add (L"EPSG:4326");
+        }
 	}
 
 	// for each CRS, calculate the corresponding extent.
@@ -191,16 +198,22 @@ void FdoWfsServiceMetadata::_buildUpCRS ()
 		m_CRSExtents->Add (bbox);
 		FdoString* crsName = m_CRSNames->GetString (i);
 		bool bFirstMatch = true;
+        bool bCsBasetypes = (FdoCommonOSUtil::wcsicmp(crsName, L"EPSG:4326") == 0 || FdoCommonOSUtil::wcsicmp(crsName, L"CRS:4326") == 0);
 
 		FdoInt32 cntFeatTypes = featTypes->GetCount ();
 		for (FdoInt32 j=0; j<cntFeatTypes; j++)
 		{
 			FdoWfsFeatureTypeP featType = featTypes->GetItem (j);
 			FdoString* name = featType->GetSRS ();
-			if (wcscmp (crsName, name) == 0)
+            // allow only default lat long coordinates to be updated
+			// get the collection of the extents of this feature type, in this collection can be stored only geographic coordinates EPSG:4326/CRS:4326
+			FdoOwsGeographicBoundingBoxCollectionP extents = featType->GetSRSExtents (); 
+            // WFS servers provide extent in geographic coordinates even layers are in diffrent coordinates system
+            // here we should convert geographic coordinates (EPSG:4326/CRS:4326) to layer coordinates in case is possible
+            // but the provider cannot convert coordinates so we will provide 0,0,0,0 for other types of coordinates and 
+            // a bounding box for geographic coordinates, and caller should be able to convert the coordinates.
+            if (bCsBasetypes && extents->GetCount() != 0)
 			{
-				// get the collection of the extents of this feature type
-				FdoOwsGeographicBoundingBoxCollectionP extents = featType->GetSRSExtents ();
 				FdoInt32 cntBoxes = extents->GetCount ();
 				for (FdoInt32 k=0; k<cntBoxes; k++)
 				{
