@@ -3420,6 +3420,7 @@ void TestCommonConstraints::DateTimeConstraints( Context& context )
         pApplyCmd->SetFeatureSchema(pSchema2);
 
         FdoPtr<FdoIInsert> insertCmd;
+        FdoDateTime dateTime = FdoDateTime( 2005, 12, 30, 23, 59, 58.99999 );
         TestCommonMiscUtil::InsertObject(
             context.connection,
             insertCmd,
@@ -3431,7 +3432,7 @@ void TestCommonConstraints::DateTimeConstraints( Context& context )
             PROP_STRING_L,  FdoDataType_String, L"close",
             PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 5000,
             PROP_STRING_R, FdoDataType_String, L"PA",
-            PROP_DATE_R, FdoDataType_DateTime, FdoDateTime( 2005, 12, 30, 23, 59, 58.99999 ),
+            PROP_DATE_R, FdoDataType_DateTime, &dateTime,
             (FdoString*) NULL
         );
 
@@ -3631,6 +3632,7 @@ void TestCommonConstraints::DateTimeConstraints( Context& context )
         }
                 
         pApplyCmd->Execute();
+        FdoDateTime dateTime2 = FdoDateTime( 2005, 05, (FdoInt8) 30 );
 
         TestCommonMiscUtil::InsertObject(
             context.connection,
@@ -3643,7 +3645,7 @@ void TestCommonConstraints::DateTimeConstraints( Context& context )
             PROP_STRING_L,  FdoDataType_String, L"close",
             PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 5000,
             PROP_STRING_R, FdoDataType_String, L"PA",
-            PROP_DATE_R, FdoDataType_DateTime, FdoDateTime( 2005, 05, (FdoInt8) 30 ),
+            PROP_DATE_R, FdoDataType_DateTime, &dateTime2,
             (FdoString*) NULL
         );
 
