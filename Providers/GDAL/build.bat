@@ -129,9 +129,20 @@ echo Copy GdalFile SDK Header Files
 xcopy /S /C /Q /R /Y Inc\GdalFile\*.h "%FDOINCPATHRFP%\GdalFile\"
 
 :generate_docs
-echo No documentation to generate for GDAL Provider
+if "%DOCENABLERFP%"=="skip" goto install_docs
+echo Creating GDAL provider html and chm documentation
+if exist "Docs\HTML\GDAL" rmdir /S /Q "Docs\HTML\GDAL"
+if not exist "Docs\HTMLGDAL" mkdir "Docs\HTML\GDAL"
+if exist Docs\GDAL_Provider_API.chm attrib -r Docs\GDAL_Provider_API.chm
+pushd Docs\doc_src
+doxygen Doxyfile_GDAL
+popd
+
 :install_docs
-echo No documentation to install for GDAL Provider
+if "%TYPEACTIONRFP%"=="build" goto end
+if exist "%FDODOCPATHRFP%\HTML\Providers\GDAL" rmdir /S /Q "%FDODOCPATHRFP%\HTML\Providers\GDAL"
+if exist Docs\HTML\GDAL xcopy/CQEYI Docs\HTML\GDAL\* "%FDODOCPATHRFP%\HTML\Providers\GDAL"
+if exist "Docs\GDAL_Provider_API.chm" copy /y "Docs\GDAL_Provider_API.chm" "%FDODOCPATHRFP%"
 
 :end
 echo End RFP %MSACTIONRFP%
