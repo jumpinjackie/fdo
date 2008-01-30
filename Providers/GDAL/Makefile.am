@@ -17,7 +17,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = Src Inc
+SUBDIRS = Src Inc Docs
 
 DIST_SUBDIRS = Src Docs Inc
 
