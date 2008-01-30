@@ -242,6 +242,8 @@
 #include "FDO\Xml\mgXmlContext.h"
 #include "FDO\Xml\mgXmlFeatureContext.h"
 
+#include "FDO\Schema\mgGeometricType.h"
+
 template <class fdoclas, class clas> 
 inline NAMESPACE_OSGEO_RUNTIME::Disposable* CHECK(FdoIDisposable* p, FdoBoolean autoDispose)
 {
