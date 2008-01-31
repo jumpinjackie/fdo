@@ -148,14 +148,16 @@ fi
 ##output Makefiles##
 AC_CONFIG_FILES(Makefile)
 
-AC_CONFIG_FILES([\
-Inc/Makefile \
-Src/Makefile \
-Src/Message/Makefile \
-Src/Overrides/Makefile \
-Src/Provider/Makefile \
-Src/UnitTest/Makefile])
+AC_CONFIG_FILES([Inc/Makefile \
+                 Src/Makefile \
+                 Src/Message/Makefile \
+                 Src/Overrides/Makefile \
+                 Src/Provider/Makefile \
+                 Src/UnitTest/Makefile])
 
-AC_CONFIG_FILES(Docs/Makefile)
+AC_CONFIG_FILES([Docs/Makefile \
+                 Docs/doc_src/Makefile \
+                 Docs/doc_src/group_and_page_definitions/Makefile \
+                 Docs/doc_src/headers_and_footers/Makefile])
 
 AC_OUTPUT
