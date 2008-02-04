@@ -81,15 +81,21 @@ protected:
 
 	~FdoRdbmsDataStoreReader();
 
+
+    void LoadDescription();
+    void LoadLtLockMode();
+
 private:
     FdoPtr<FdoRdbmsConnection> mConnection;
+    FdoPtr<FdoIConnectionCapabilities> mConnectionCapabilities;
 	FdoSmPhRdOwnerReaderP	mPhOwnerReader;
 	bool					mIncludeNonFdoEnabledDatastores; 
-	bool					mIsFdoEnabled;
 	FdoStringP				mDatastoreName;
 	FdoStringP				mDatastoreDescription;
+    bool                    mDescriptionLoaded;
 	FdoStringP				mLtMode;
 	FdoStringP				mLockMode;	
+    bool                    mLtLockModeLoaded;
 	FdoPtr<FdoIDataStorePropertyDictionary> mDatastoreProperty;
 };
 

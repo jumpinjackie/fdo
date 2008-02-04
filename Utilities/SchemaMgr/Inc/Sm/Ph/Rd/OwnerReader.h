@@ -33,10 +33,7 @@ public:
     }
 
     /// Returns true if current owner has MetaSchema tables.
-    virtual FdoBoolean GetHasMetaSchema()
-    {
-        return ( GetString( L"", L"schemas_table") != L"" );
-    }
+    virtual FdoBoolean GetHasMetaSchema();
 
     /// Returns the description of the current owner from F_SCHEMAINFO
 	virtual FdoStringP GetDescription() = 0;
@@ -67,9 +64,25 @@ protected:
     /// Deactivates the reader.
 	~FdoSmPhRdOwnerReader(void);
 
+    // Creates a reader to retrieve FDO-enabled datastores (ones with MetaSchema)
+    //   database: retrieve datastores from this database instance.
+    //   ownerName: retrieve only this datastore (retrieve nothing if this datastore not FDO-enabled).
+    //              if L"" then retrieve all FDO-enabled datastores for the database.
+    //
+    //   returns NULL if the provider does not support reading the FDO-enabled datastores.
+    //   A provider might never return NULL, return NULL in all cases, or 
+    //   return NULL if ownerName = L"".
+    virtual FdoSmPhReaderP MakeHasMetaSchemaReader(
+        FdoSmPhDatabaseP database,
+        FdoStringP ownerName = L""
+    ) = 0; 
+
     /// Creates a set of rows describing the fields for this
     /// reader. There is one field per database object attribute.
     FdoSmPhRowsP MakeRows( FdoSmPhMgrP mgr );
+
+    // Creates a set of rows describing the fields for the HasMetaSchemaReader.
+    FdoSmPhRowsP MakeHasMetaSchemaRows( FdoSmPhMgrP mgr );
 
     // Get the database from which owners are being read
     FdoSmPhDatabaseP GetDatabase()
@@ -86,6 +99,10 @@ protected:
 
     FdoSmPhDatabaseP mDatabase;
     FdoStringP mOwnerName;
+
+private:
+    FdoDictionaryP mOwnersWithMetaSchema;
+    FdoBoolean mAllOwnersWithMetaSchemaLoaded;
 };
 
 typedef FdoPtr<FdoSmPhRdOwnerReader> FdoSmPhRdOwnerReaderP;

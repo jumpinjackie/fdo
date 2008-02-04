@@ -28,9 +28,10 @@ FdoRdbmsDataStoreReader::FdoRdbmsDataStoreReader( FdoRdbmsConnection *connection
     mPhOwnerReader ( phReader ),
 	mIncludeNonFdoEnabledDatastores ( includeNonFdoDb )
 {
-	mIsFdoEnabled = true;
 	mDatastoreName = L"";
 	mDatastoreDescription = L"";
+
+    mConnectionCapabilities = connection->GetConnectionCapabilities();
 }
 
 FdoRdbmsDataStoreReader::~FdoRdbmsDataStoreReader()
@@ -44,16 +45,24 @@ FdoString* FdoRdbmsDataStoreReader::GetName()
 
 FdoString* FdoRdbmsDataStoreReader::GetDescription()
 {
-	return mDatastoreDescription;
+    // Description can be expensive to retrieve so lazy load when needed
+    LoadDescription();
+	
+    return mDatastoreDescription;
 }
 
 bool FdoRdbmsDataStoreReader::GetIsFdoEnabled()
 {
- 	return mIsFdoEnabled;
+ 	return mPhOwnerReader->GetHasMetaSchema();
 }
 
 FdoIDataStorePropertyDictionary* FdoRdbmsDataStoreReader::GetDataStoreProperties()
 {
+    // Description, Long Transactiona and Lock modes can be expensive to retrieve so lazy load when needed
+    LoadDescription();
+    LoadLtLockMode();
+
+
 	// Create a provider specific datastore dictionary property.
     if (mDatastoreProperty == NULL)
     {
@@ -83,69 +92,18 @@ bool FdoRdbmsDataStoreReader::ReadNext()
 
 	while ( mPhOwnerReader && mPhOwnerReader->ReadNext() )
 	{
-		// We need to know if FDO in order to get the description or not
-		mIsFdoEnabled = mPhOwnerReader->GetHasMetaSchema();
+        // at next row so reset "loaded" statuses
+        mDescriptionLoaded = false;
+        mLtLockModeLoaded = false;
 
 		// Reject the non-fdo datastores if required.
 		if ( mIncludeNonFdoEnabledDatastores ||
-		   (!mIncludeNonFdoEnabledDatastores && mIsFdoEnabled ) )
+		   (!mIncludeNonFdoEnabledDatastores && mPhOwnerReader->GetHasMetaSchema() ) )
 		{
 			found = true;
 
 			mDatastoreName = mPhOwnerReader->GetName();
  
-			mDatastoreDescription = L"";
-			mLtMode = L"NONE";
-			mLockMode = L"NONE";
-
-			if ( mIsFdoEnabled )
-			{
-				try 
-				{
-					mDatastoreDescription = mPhOwnerReader->GetDescription();
-
-					FdoPtr<FdoISQLCommand>	selCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
-					
-					FdoStringP	sqlString = FdoStringP::Format(L"select name, value from %ls.f_options", (FdoString *)mDatastoreName);
-
-					selCmd->SetSQLStatement( sqlString );
-
-					FdoPtr<FdoISQLDataReader> optRdr = selCmd->ExecuteReader();
-
-					// read each option, looking for the long transaction and locking options.
-					while ( optRdr->ReadNext() ) 
-					{
-						FdoStringP	optName = optRdr->GetString(L"name");
-						FdoStringP  optValue;
-
-						if ( optName == L"LT_MODE" )
-						{
-							optValue = optRdr->GetString(L"value");
-							FdoLtLockModeType ltMode = (FdoLtLockModeType) optValue.ToLong();
-
-							if ( ltMode == FdoMode )
-								mLtMode = L"FDO";
-							else if ( ltMode == OWMMode )
-								mLtMode = L"OWM";
-						}
-						else if ( optName == L"LOCKING_MODE" ) 
-						{
-							optValue = optRdr->GetString(L"value");
-							FdoLtLockModeType lckMode = (FdoLtLockModeType)optValue.ToLong();
-							
-							if ( lckMode == FdoMode )
-								mLockMode = L"FDO";
-							else if ( lckMode == OWMMode )
-								mLockMode = L"OWM";
-						}
-					} // while
-				} catch (FdoException *ex) {
-					// Old F_SCHEMAINFO might not contain 'description' field. 
-					// Or the owner might not be "dbo" for the SQL Server.
-					// Return "NONE" and continue.
-					ex->Release();
-				}
-			}
  			break;
 		} 
 	} // while
@@ -162,3 +120,90 @@ void FdoRdbmsDataStoreReader::Dispose()
 {
 	delete this;
 } 
+
+void FdoRdbmsDataStoreReader::LoadDescription()
+{
+    if ( !mDescriptionLoaded ) 
+    {
+		mDatastoreDescription = L"";
+        mDescriptionLoaded = true;
+
+        // No description if no MetaSchema.
+		if ( mPhOwnerReader->GetHasMetaSchema() )
+		{
+			try 
+			{
+				mDatastoreDescription = mPhOwnerReader->GetDescription();
+
+			} catch (FdoException *ex) {
+				// Old F_SCHEMAINFO might not contain 'description' field. 
+				// Or the owner might not be "dbo" for the SQL Server.
+				// Return "NONE" and continue.
+				ex->Release();
+			}
+		}
+    }
+}
+
+void FdoRdbmsDataStoreReader::LoadLtLockMode()
+{
+    if ( !mLtLockModeLoaded ) 
+    {
+    	mLtMode = L"NONE";
+		mLockMode = L"NONE";
+
+        mLtLockModeLoaded = true;
+
+        // No need to check further unless provider supports locking or long transactions.
+        if ( mConnectionCapabilities->SupportsLocking() || mConnectionCapabilities->SupportsLongTransactions() ) 
+		{
+            // f_options table won't be present when no metaschema.
+      	    if ( mPhOwnerReader->GetHasMetaSchema() )
+            {
+                try 
+                {
+		            FdoPtr<FdoISQLCommand>	selCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
+            		
+		            FdoStringP	sqlString = FdoStringP::Format(L"select name, value from %ls.f_options", (FdoString *)mDatastoreName);
+
+		            selCmd->SetSQLStatement( sqlString );
+
+		            FdoPtr<FdoISQLDataReader> optRdr = selCmd->ExecuteReader();
+
+		            // read each option, looking for the long transaction and locking options.
+		            while ( optRdr->ReadNext() ) 
+		            {
+			            FdoStringP	optName = optRdr->GetString(L"name");
+			            FdoStringP  optValue;
+
+			            if ( optName == L"LT_MODE" )
+			            {
+				            optValue = optRdr->GetString(L"value");
+				            FdoLtLockModeType ltMode = (FdoLtLockModeType) optValue.ToLong();
+
+				            if ( ltMode == FdoMode )
+					            mLtMode = L"FDO";
+				            else if ( ltMode == OWMMode )
+					            mLtMode = L"OWM";
+			            }
+			            else if ( optName == L"LOCKING_MODE" ) 
+			            {
+				            optValue = optRdr->GetString(L"value");
+				            FdoLtLockModeType lckMode = (FdoLtLockModeType)optValue.ToLong();
+            				
+				            if ( lckMode == FdoMode )
+					            mLockMode = L"FDO";
+				            else if ( lckMode == OWMMode )
+					            mLockMode = L"OWM";
+			            }
+		            } // while
+
+		        } catch (FdoException *ex) {
+			        // Owner might not be "dbo" for the SQL Server.
+			        // Return "NONE" and continue.
+			        ex->Release();
+		        }
+            }
+        }
+    }
+}

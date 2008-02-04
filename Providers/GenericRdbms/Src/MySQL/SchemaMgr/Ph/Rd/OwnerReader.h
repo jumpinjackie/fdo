@@ -44,6 +44,11 @@ protected:
         FdoStringP ownerName = L""
     ); 
 
+    virtual FdoSmPhReaderP MakeHasMetaSchemaReader(
+        FdoSmPhDatabaseP database,
+        FdoStringP ownerName = L""
+    ); 
+
     FdoSmPhRowP MakeBinds( 
         FdoSmPhMgrP mgr, 
         FdoStringP ownerName 
