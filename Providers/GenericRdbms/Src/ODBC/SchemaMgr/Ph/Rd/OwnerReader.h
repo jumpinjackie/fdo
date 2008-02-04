@@ -45,6 +45,11 @@ public:
 protected:
     bool ReadNext();
 
+    virtual FdoSmPhReaderP MakeHasMetaSchemaReader(
+        FdoSmPhDatabaseP database,
+        FdoStringP ownerName = L""
+    ); 
+
 private:
     rdbi_context_def    *rdbi_context;
 

@@ -1141,7 +1141,7 @@ bool FdoSmPhOwner::CacheObjectIndexes( FdoSmPhRdIndexReaderP indexReader )
 {
     // Get current dbObject name
     FdoStringP objectName = indexReader->GetString( L"", L"table_name" );
-    FdoSmPhTableP table = this->FindDbObject( objectName ).p->SmartCast<FdoSmPhTable>();
+    FdoSmPhTableP table = mDbObjects->FindItem( objectName )->SmartCast<FdoSmPhTable>(true);
  
     if (table )
         // dbObject is cached so load its indexes from the reader.

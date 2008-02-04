@@ -92,6 +92,17 @@ FdoSmPhReaderP FdoSmPhRdSqsOwnerReader::MakeQueryReader(
     return reader;
 }
 
+FdoSmPhReaderP FdoSmPhRdSqsOwnerReader::MakeHasMetaSchemaReader(
+    FdoSmPhDatabaseP database,
+    FdoStringP ownerName 
+)
+{
+    //This function is not used because this class overrides
+    //GetHasMetaSchema.
+
+    return (FdoSmPhReader*) NULL;
+}
+
 FdoBoolean FdoSmPhRdSqsOwnerReader::GetHasMetaSchema()
 {
     FdoStringP           sqlString;

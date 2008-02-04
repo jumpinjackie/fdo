@@ -98,3 +98,13 @@ bool FdoSmPhRdOdbcOwnerReader::ReadNext()
 
     return rc;
 }
+
+FdoSmPhReaderP FdoSmPhRdOdbcOwnerReader::MakeHasMetaSchemaReader(
+    FdoSmPhDatabaseP database,
+    FdoStringP ownerName 
+)
+{
+    // ODBC datastores never have MetaSchema
+    return (FdoSmPhReader*) NULL;
+}
+
