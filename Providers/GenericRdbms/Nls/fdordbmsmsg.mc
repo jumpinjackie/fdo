@@ -150,6 +150,11 @@ SymbolicName=RDBI_35
 Language=English
 RDBMS: Data truncation error.
 .
+MessageId=1789
+SymbolicName=RDBI_36
+Language=English
+RDBMS: Invalid dimensionality for geometry value.
+.
 MessageId=2206
 SymbolicName=FDORDBMS_1
 Language=English
