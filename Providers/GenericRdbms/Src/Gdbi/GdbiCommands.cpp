@@ -626,7 +626,7 @@ int GdbiCommands::geom_to_fgf (
 #ifdef HAVE_GEOM_INFO_TYPE
     RdbmsGeometryValueInfo * geomInfo2 = (RdbmsGeometryValueInfo *) rdbmsGeometryInfo_I;
 
-    int rc = ::rdbi_geom_to_fgf(m_pRdbiContext, sqlid, geomInfo2, (pByteArray_def *)fgfGeometryByteArray_O);
+    int rc = ::rdbi_geom_to_fgf(m_pRdbiContext, sqlid, geomInfo2, -1, (pByteArray_def *)fgfGeometryByteArray_O);
 
     return rc;
 #else
