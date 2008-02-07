@@ -92,7 +92,7 @@ FdoString* ArcSDESpatialContextReader::GetDescription()
         handle_sde_err<FdoException>(lResult, __FILE__, __LINE__, ARCSDE_FAILED_TO_READ_SRS, "Failed to get or set information for this ArcSDE Spatial Reference System.");
 
         wchar_t *wDesc = NULL;
-        multibyte_to_wide(wDesc, desc);
+        sde_multibyte_to_wide(wDesc, desc);
         mDescription = wDesc;
 
         // NOTE: for some unknown scary reason, we get unexpected garbage at the end of the description,
@@ -129,7 +129,7 @@ FdoString* ArcSDESpatialContextReader::GetCoordinateSystem()
 
         // Get coordref's id, then store it in mCoordSysName:
         // ECO 10353b "Specify consistent handling of unknown coordinate systems":
-        if (0==strcmp(coordSysWkt, SPATIALCONTEXT_COORDYS_WKT_UNKNOWN_SDE))
+        if (0==sde_strcmp(sde_pcus2wc(coordSysWkt), SPATIALCONTEXT_COORDYS_WKT_UNKNOWN_SDE))
         {
             mCoordSysName = SPATIALCONTEXT_CORDSYS_NAME_UNKNOWN_FDO;
         }
@@ -170,14 +170,14 @@ FdoString* ArcSDESpatialContextReader::GetCoordinateSystemWkt()
         handle_sde_err<FdoException>(lResult, __FILE__, __LINE__, ARCSDE_FAILED_TO_READ_SRS, "Failed to get or set information for this ArcSDE Spatial Reference System.");
 
         // ECO 10353b "Specify consistent handling of unknown coordinate systems":
-        if (0==strcmp(coordSysWkt, SPATIALCONTEXT_COORDYS_WKT_UNKNOWN_SDE))
+        if (0==sde_strcmp(sde_pcus2wc(coordSysWkt), SPATIALCONTEXT_COORDYS_WKT_UNKNOWN_SDE))
         {
             mCoordSysWkt = SPATIALCONTEXT_CORDSYS_WKT_UNKNOWN_FDO;
         }
         else
         {
             wchar_t *wCoordSys = NULL;
-            multibyte_to_wide(wCoordSys, coordSysWkt);
+            sde_multibyte_to_wide(wCoordSys, coordSysWkt);
             mCoordSysWkt = wCoordSys;
         }
 
@@ -327,5 +327,6 @@ long ArcSDESpatialContextReader::GetSRID()
 
     return lSRID;
 }
+
 
 

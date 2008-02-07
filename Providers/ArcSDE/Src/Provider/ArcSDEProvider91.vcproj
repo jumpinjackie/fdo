@@ -229,7 +229,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\include&quot;;&quot;$(SDEHOME)\include&quot;;..\..\inc;&quot;$(FDOUTILITIES)\Common\inc&quot;"
+				AdditionalIncludeDirectories=".\;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\include&quot;;&quot;$(SDEHOME)\include&quot;;..\..\inc;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ARCSDEPROVIDER_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -323,7 +323,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories=".\;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\include&quot;;&quot;$(SDEHOME)\include&quot;;..\..\inc;&quot;$(FDOUTILITIES)\Common\inc&quot;"
+				AdditionalIncludeDirectories=".\;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\include&quot;;&quot;$(SDEHOME)\include&quot;;..\..\inc;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;ARCSDEPROVIDER_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				RuntimeLibrary="2"

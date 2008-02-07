@@ -72,17 +72,17 @@ void ArcSDEDescribeSchemaCommand::SetSchemaName (const wchar_t* value)
 FdoDataType ArcSDEDescribeSchemaCommand::MetadataValueToFDOType(CHAR* value)
 {
     FdoDataType retVal = (FdoDataType)-1L;
-    if (0==FdoCommonOSUtil::stricmp(value, METADATA_V_DATATYPE_BOOLEAN))
+    if (0==sde_stricmp(sde_pcus2wc(value), sde_pcus2wc(METADATA_V_DATATYPE_BOOLEAN)))
         retVal = FdoDataType_Boolean;
-    else if (0==FdoCommonOSUtil::stricmp(value, METADATA_V_DATATYPE_BYTE))
+    else if (0==sde_stricmp(sde_pcus2wc(value), sde_pcus2wc(METADATA_V_DATATYPE_BYTE)))
         retVal = FdoDataType_Byte;
-    else if (0==FdoCommonOSUtil::stricmp(value, METADATA_V_DATATYPE_INT16))
+    else if (0==sde_stricmp(sde_pcus2wc(value), sde_pcus2wc(METADATA_V_DATATYPE_INT16)))
         retVal = FdoDataType_Int16;
-    else if (0==FdoCommonOSUtil::stricmp(value, METADATA_V_DATATYPE_INT64))
+    else if (0==sde_stricmp(sde_pcus2wc(value), sde_pcus2wc(METADATA_V_DATATYPE_INT64)))
         retVal = FdoDataType_Int64;
-    else if (0==FdoCommonOSUtil::stricmp(value, METADATA_V_DATATYPE_SINGLE))
+    else if (0==sde_stricmp(sde_pcus2wc(value), sde_pcus2wc(METADATA_V_DATATYPE_SINGLE)))
         retVal = FdoDataType_Single;
-    else if (0==FdoCommonOSUtil::stricmp(value, METADATA_V_DATATYPE_DOUBLE))
+    else if (0==sde_stricmp(sde_pcus2wc(value), sde_pcus2wc(METADATA_V_DATATYPE_DOUBLE)))
         retVal = FdoDataType_Double;
     else
         throw FdoSchemaException::Create(NlsMsgGet(ARCSDE_UNSUPPORTED_METADATA_VALUE, "Unsupported metadata value encountered."));
@@ -94,9 +94,9 @@ bool ArcSDEDescribeSchemaCommand::MetadataValueToBoolean(CHAR* value)
 {
     bool retVal = false;
 
-    if (0==FdoCommonOSUtil::stricmp(value, METADATA_V_BOOL_YES))
+    if (0==sde_stricmp(sde_pcus2wc(value), sde_pcus2wc(METADATA_V_BOOL_YES)))
         retVal = true;
-    else if (0==FdoCommonOSUtil::stricmp(value, METADATA_V_BOOL_NO))
+    else if (0==sde_stricmp(sde_pcus2wc(value), sde_pcus2wc(METADATA_V_BOOL_NO)))
         retVal = false;
     else
         throw FdoSchemaException::Create(NlsMsgGet(ARCSDE_UNSUPPORTED_METADATA_VALUE, "Unsupported metadata value encountered."));
@@ -113,11 +113,13 @@ void ArcSDEDescribeSchemaCommand::addClass (ArcSDEConnection* connection, FdoFea
     bool has_geometry = false;
     wchar_t* fdoPropertyName = NULL;
     wchar_t* property_description = NULL;
+#ifdef _DEBUG
     CHAR classname[SE_MAX_METADATA_CLASS_LEN];
     CHAR description[SE_MAX_DESCRIPTION_LEN];
     CHAR property[SE_MAX_METADATA_PROPERTY_LEN];
     CHAR value[SE_MAX_METADATA_VALUE_LEN];
     CHAR metadata_qual_table[SE_MAX_OBJECT_NAME_LEN];
+#endif
     FdoPtr<FdoPropertyDefinition> property_definiton;
     FdoPtr<FdoDataPropertyDefinition> data_definition;
     FdoPtr<FdoGeometricPropertyDefinition> geometry_definition;
@@ -205,7 +207,7 @@ void ArcSDEDescribeSchemaCommand::addClass (ArcSDEConnection* connection, FdoFea
             }
 
             // default to property name same as column name
-            multibyte_to_wide (fdoPropertyName, columns[i].column_name);
+            sde_multibyte_to_wide (fdoPropertyName, columns[i].column_name);
             property_description = L"";
 
             // default data type to -1:
@@ -218,25 +220,25 @@ void ArcSDEDescribeSchemaCommand::addClass (ArcSDEConnection* connection, FdoFea
             {
                 GetArcSDEMetadata(metadata_list[j], classname, property, value, description, metadata_qual_table);
 
-                if ((0 == connection->RdbmsNamesMatch (property, columns[i].column_name))
-                    && (0==strcmp(qualified_table_name, metadata_qual_table))
+                if ((0 == connection->RdbmsNamesMatch (sde_pcus2wc(property), sde_pcus2wc(columns[i].column_name)))
+                    && (0==sde_strcmp(sde_pcus2wc(qualified_table_name), sde_pcus2wc(metadata_qual_table)))
                     )
                 {
-                    if (0 == strcmp (METADATA_CN_PROPNAME, classname))
+                    if (0 == sde_strcmp (sde_pcus2wc(METADATA_CN_PROPNAME), sde_pcus2wc(classname)))
                     {
-                        multibyte_to_wide (fdoPropertyName, value);
+                        sde_multibyte_to_wide (fdoPropertyName, value);
 
                         // store as schema mapping override:
                         FdoPtr<ArcSDEPropertyMapping> propertyMapping = mConnection->GetPropertyMapping(newFdoClass, fdoPropertyName, false);
                         wchar_t* wColumnName = NULL;
-                        multibyte_to_wide (wColumnName, columns[i].column_name);
+                        sde_multibyte_to_wide (wColumnName, columns[i].column_name);
                         propertyMapping->SetColumnName(wColumnName);
                     }
 
-                    if (0 == strcmp (METADATA_CN_PROPDESC, classname))
-                        multibyte_to_wide (property_description, value);
+                    if (0 == sde_strcmp (sde_pcus2wc(METADATA_CN_PROPDESC), sde_pcus2wc(classname)))
+                        sde_multibyte_to_wide (property_description, value);
 
-                    if (0 == strcmp (METADATA_CN_PROPTYPE, classname))
+                    if (0 == sde_strcmp (sde_pcus2wc(METADATA_CN_PROPTYPE), sde_pcus2wc(classname)))
                     {
                         dataType = MetadataValueToFDOType(value);
                         //TODO: validate that underlying ArcSDE type is appropriate for the overriden fdo data type
@@ -246,15 +248,15 @@ void ArcSDEDescribeSchemaCommand::addClass (ArcSDEConnection* connection, FdoFea
                         propertyMapping->SetColumnType(columns[i].sde_type);
                     }
 
-                    if (0 == strcmp (METADATA_CN_PROPREADONLY, classname))
+                    if (0 == sde_strcmp (sde_pcus2wc(METADATA_CN_PROPREADONLY), sde_pcus2wc(classname)))
                     {
                         // Ignore this for identity properties, since they determine whether or not they're read-only:
                         if (SE_REGISTRATION_ROW_ID_COLUMN_TYPE_NONE == columns[i].row_id_type)
                             bReadOnly = MetadataValueToBoolean(value);
                     }
 
-                    if (0 == strcmp (METADATA_CN_PROPDEFAULTVALUE, classname))
-                        multibyte_to_wide(defaultValue, value);
+                    if (0 == sde_strcmp (sde_pcus2wc(METADATA_CN_PROPDEFAULTVALUE), sde_pcus2wc(classname)))
+                        sde_multibyte_to_wide(defaultValue, value);
 
                 }
             }
@@ -406,9 +408,9 @@ void ArcSDEDescribeSchemaCommand::addClass (ArcSDEConnection* connection, FdoFea
 
             for (int j=0; j<indexes[i].num_columns; j++)
             {
-                char* mbColumnName = indexes[i].column_name[j];
+                CHAR* mbColumnName = indexes[i].column_name[j];
                 wchar_t* wColumnName = NULL;
-                multibyte_to_wide(wColumnName, mbColumnName);
+                sde_multibyte_to_wide(wColumnName, mbColumnName);
 
                 FdoString* wPropertyName = connection->ColumnToProperty(newFdoClass, wColumnName, false);
                 classProperty = classProperties->FindItem(wPropertyName);
@@ -489,10 +491,12 @@ void ArcSDEDescribeSchemaCommand::addTable (
     wchar_t* wtable = NULL;
     SE_METADATAINFO *metadata_list = NULL;
     LONG count = 0L;
-    CHAR classname[SE_MAX_METADATA_CLASS_LEN];
-    CHAR description[SE_MAX_DESCRIPTION_LEN];
+#ifdef _DEBUG
+	CHAR classname[SE_MAX_METADATA_CLASS_LEN];
     CHAR property[SE_MAX_METADATA_PROPERTY_LEN];
     CHAR value[SE_MAX_METADATA_VALUE_LEN];
+#endif
+    CHAR description[SE_MAX_DESCRIPTION_LEN];
     FdoStringP fdoSchemaName;
     wchar_t* fdoSchemaDesc = NULL;
     wchar_t* fdoClassName = NULL;
@@ -514,9 +518,9 @@ void ArcSDEDescribeSchemaCommand::addTable (
         result = SE_table_parse_qualified_name(connection->GetConnection(), qualified_table_name, database_name, owner, table_name, NULL, FALSE);
         handle_sde_err<FdoSchemaException> (connection->GetConnection(), result, __FILE__, __LINE__, ARCSDE_REGISTRATION_INFO_ITEM, "Table registration info item '%1$ls' could not be retrieved.", L"qualified_table_name");
 
-        multibyte_to_wide (wdatabase_name, database_name);
-        multibyte_to_wide (wowner, owner);
-        multibyte_to_wide (wtable, table_name);
+        sde_multibyte_to_wide (wdatabase_name, database_name);
+        sde_multibyte_to_wide (wowner, owner);
+        sde_multibyte_to_wide (wtable, table_name);
 
         // Determine default FDO schema name & description:
         bool bHasDBName = false;
@@ -552,11 +556,21 @@ void ArcSDEDescribeSchemaCommand::addTable (
         // Build where clause that will fetch only this table's metadata:
         CHAR whereClause[SE_QUALIFIED_TABLE_NAME + 100];
         if (bHasDBName)
-            sprintf(whereClause, "OBJECT_DATABASE = '%s' AND OBJECT_OWNER = '%s' AND OBJECT_NAME = '%s'",
-                database_name, owner, table_name);
+            sde_sprintf(sde_pus2wc(whereClause), SE_QUALIFIED_TABLE_NAME + 100, 
+#ifdef SDE_UNICODE
+			L"OBJECT_DATABASE = '%ls' AND OBJECT_OWNER = '%ls' AND OBJECT_NAME = '%ls'"
+#else
+			"OBJECT_DATABASE = '%s' AND OBJECT_OWNER = '%s' AND OBJECT_NAME = '%s'"
+#endif
+			, database_name, owner, table_name);
         else
-            sprintf(whereClause, "OBJECT_OWNER = '%s' AND OBJECT_NAME = '%s'",
-                owner, table_name);
+            sde_sprintf(sde_pus2wc(whereClause), SE_QUALIFIED_TABLE_NAME + 100, 
+#ifdef SDE_UNICODE
+			L"OBJECT_OWNER = '%ls' AND OBJECT_NAME = '%ls'"
+#else
+			"OBJECT_OWNER = '%s' AND OBJECT_NAME = '%s'"
+#endif
+			, owner, table_name);
 
 
         // Get this table's metadata (only in debug mode, since this is only required for
@@ -566,22 +580,22 @@ void ArcSDEDescribeSchemaCommand::addTable (
         for (int i = 0; i < count; i++)
         {
             GetArcSDEMetadata(metadata_list[i], classname, property, value, description, metadata_qual_table);
-            if (0==strcmp(metadata_qual_table, qualified_table_name))
+            if (0==sde_strcmp(sde_pcus2wc(metadata_qual_table), sde_pcus2wc(qualified_table_name)))
             {
-                if (0==strcmp(classname, METADATA_CN_CLASSSCHEMA))
+                if (0==sde_strcmp(sde_pcus2wc(classname), sde_pcus2wc(METADATA_CN_CLASSSCHEMA)))
                 {
                     wchar_t* fdoSchemaNameTemp = NULL;
-                    multibyte_to_wide (fdoSchemaNameTemp, value);
+                    sde_multibyte_to_wide (fdoSchemaNameTemp, value);
                     fdoSchemaName = fdoSchemaNameTemp;
                 }
 
-                if (0==strcmp(classname, METADATA_CN_CLASSNAME))
+                if (0==sde_strcmp(sde_pcus2wc(classname), sde_pcus2wc(METADATA_CN_CLASSNAME)))
                 {
-                    multibyte_to_wide (fdoClassName, value);
+                    sde_multibyte_to_wide (fdoClassName, value);
                 }
 
-                if (0==strcmp(classname, METADATA_CN_CLASSDESC))
-                    multibyte_to_wide (fdoClassDesc, value);
+                if (0==sde_strcmp(sde_pcus2wc(classname), sde_pcus2wc(METADATA_CN_CLASSDESC)))
+                    sde_multibyte_to_wide (fdoClassDesc, value);
             }
 
             // TODO: METADATA_CN_CLASSATTRIBUTE, METADATA_CN_CLASSBASE, METADATA_CN_CLASSABSTRACT
@@ -611,7 +625,7 @@ void ArcSDEDescribeSchemaCommand::addTable (
 			{
 				result = SE_reginfo_get_description (registration, description);
 				if (SE_SUCCESS == result)
-					multibyte_to_wide (fdoClassDesc, description);
+					sde_multibyte_to_wide (fdoClassDesc, description);
 				if (NULL == fdoClassDesc)
 					fdoClassDesc = L"Default class description";
 			}
@@ -746,4 +760,5 @@ void ArcSDEDescribeSchemaCommand::GetArcSDEMetadata(const SE_METADATAINFO &metad
         handle_sde_err<FdoSchemaException>(result, __FILE__, __LINE__, ARCSDE_METADATA_MANIPULATE_FAILED, "Failed to get or set ArcSDE metadata.");
     }
 }
+
 

@@ -170,8 +170,8 @@ FdoIFeatureReader* ArcSDEInsertCommand::Execute ()
             FdoPtr<FdoPropertyValue> propertyValue = mValues->GetItem(i);
             FdoPtr<FdoIdentifier> propertyId = propertyValue->GetName();
             connection->PropertyToColumn (column, classDef, propertyId);
-            columns[i] = (CHAR*)alloca (strlen (column) + 1);
-            strcpy (columns[i], column);
+            columns[i] = (CHAR*)alloca (sde_strlen (sde_pcus2wc(column)) + 1);
+            sde_strcpy (sde_pus2wc(columns[i]), sde_pcus2wc(column));
         }
 
         // if necessary, version the table and version enable the stream
@@ -259,4 +259,5 @@ FdoIFeatureReader* ArcSDEInsertCommand::Execute ()
 
     return (FDO_SAFE_ADDREF(idReader.p));
 }
+
 

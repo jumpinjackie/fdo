@@ -71,7 +71,7 @@ bool ArcSDEDataStoreReader::GetIsFdoEnabled()
 FdoIDataStorePropertyDictionary* ArcSDEDataStoreReader::GetDataStoreProperties()
 {
     FdoPtr<FdoCommonDataStorePropDictionary> dict = new FdoCommonDataStorePropDictionary(mConnection);
-    CHAR *mbPropName = NULL;
+    char *mbPropName = NULL;
     FdoInt32 dataStoreCount;
 
     wide_to_multibyte(mbPropName, CONNECTIONPROPERTY_DATASTORE);

@@ -74,7 +74,7 @@ FdoStringP ArcSDESpatialContextUtility::GetSpatialContextName(SE_SPATIALREFINFO 
     handle_sde_err<FdoException>(lResult, __FILE__, __LINE__, ARCSDE_FAILED_TO_READ_SRS, "Failed to get or set information for this ArcSDE Spatial Reference System.");
 
     wchar_t *wAuthName = NULL;
-    multibyte_to_wide(wAuthName, mbAuthName);
+    sde_multibyte_to_wide(wAuthName, mbAuthName);
     if (0==wcsncmp(wAuthName, SPATIALCONTEXT_AUTHNAME_PREFIX, wcslen(SPATIALCONTEXT_AUTHNAME_PREFIX)))
     {
         spatialContextName = (const wchar_t*)(wAuthName + wcslen(SPATIALCONTEXT_AUTHNAME_PREFIX));

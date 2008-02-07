@@ -363,7 +363,11 @@ FdoString* ArcSDEReader::GetString (FdoString* identifier)
             columnDef->mValuePointer = new wchar_t[columnDef->mValuePointerSize];
         }
 
-    multibyte_to_wide_noalloc((wchar_t*)columnDef->mValuePointer, mbValue);
+#ifdef SDE_UNICODE
+	wcscpy((wchar_t*)columnDef->mValuePointer, sde_pcus2wc(mbValue));
+#else
+	multibyte_to_wide_noalloc((wchar_t*)columnDef->mValuePointer, mbValue);
+#endif
 
     return (wchar_t*)(columnDef->mValuePointer);
 }
@@ -593,10 +597,18 @@ bool ArcSDEReader::ReadNext ()
             for (int iColumn=0; iColumn<mColumnCount; iColumn++)
             {
                 ColumnDefinition *columnDef = getColumnDef(iColumn);
-
+#ifdef SDE_UNICODE
+                if (columnDef->mColumnType == SE_NSTRING_TYPE)
+                {
+                    columnDef->mBindVariable._string = (new CHAR[columnDef->mDataLength + 1]);
+                    columnDef->mBindVariableInitialized = true;
+                    result = SE_stream_bind_output_column(mStream, columnDef->mColumnNumber, (void*)(columnDef->mBindVariable._string), &columnDef->mBindIsNull);
+                }
+				else
+#endif
                 if (columnDef->mColumnType == SE_STRING_TYPE)
                 {
-                    columnDef->mBindVariable._string = (new char[columnDef->mDataLength + 1]);
+                    columnDef->mBindVariable._string = (new CHAR[columnDef->mDataLength + 1]);
                     columnDef->mBindVariableInitialized = true;
                     result = SE_stream_bind_output_column(mStream, columnDef->mColumnNumber, (void*)(columnDef->mBindVariable._string), &columnDef->mBindIsNull);
                 }
@@ -683,6 +695,11 @@ ArcSDEReader::ColumnDefinition::~ColumnDefinition ()
 {
     if (mBindVariableInitialized)
     {
+#ifdef SDE_UNICODE
+        if (mColumnType == SE_NSTRING_TYPE)
+            delete[] mBindVariable._string;
+		else
+#endif
         if (mColumnType == SE_STRING_TYPE)
             delete[] mBindVariable._string;
         else if (mColumnType == SE_SHAPE_TYPE)

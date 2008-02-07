@@ -287,11 +287,11 @@ FdoConnectionState ArcSDEConnection::Open ()
     if (parser.HasInvalidProperties(dictionary))
         throw FdoException::Create (NlsMsgGet1(ARCSDE_INVALID_CONNECTION_PROPERTY_NAME, "Invalid connection property name '%1$ls'", parser.GetFirstInvalidPropertyName(dictionary)));
 
-    const char* server = parser.GetPropertyValue (CONNECTIONPROPERTY_SERVER);
-    const char* instance = parser.GetPropertyValue (CONNECTIONPROPERTY_INSTANCE);
-    const char* datastore = parser.GetPropertyValue (CONNECTIONPROPERTY_DATASTORE);
-    const char* username = parser.GetPropertyValue (CONNECTIONPROPERTY_USERNAME);
-    const char* password = parser.GetPropertyValue (CONNECTIONPROPERTY_PASSWORD);
+    const CHAR* server = sde_PropertyValue(parser, CONNECTIONPROPERTY_SERVER);
+    const CHAR* instance = sde_PropertyValue(parser, CONNECTIONPROPERTY_INSTANCE);
+    const CHAR* datastore = sde_PropertyValue(parser, CONNECTIONPROPERTY_DATASTORE);
+    const CHAR* username = sde_PropertyValue(parser, CONNECTIONPROPERTY_USERNAME);
+    const CHAR* password = sde_PropertyValue(parser, CONNECTIONPROPERTY_PASSWORD);
     
     // Validate that all required connection properties are set:
     FdoInt32 propCount = 0;
@@ -306,14 +306,14 @@ FdoConnectionState ArcSDEConnection::Open ()
     // Handle special datastore case (ArcSDEDefaultDataStore --> NULL database):
     FdoStringP datastoreW = parser.GetPropertyValueW(CONNECTIONPROPERTY_DATASTORE);
 	if ((datastoreW.GetLength() != 0) && (0 == wcscmp(datastoreW, ArcSDEDefaultDataStore)))
-        datastore = "";
+        datastore = sde_pcwc2us(_TXT(""));
 
     // Cache datastore & username:
-	if (datastore == NULL || strlen(datastore) == 0)
+	if (datastore == NULL || sde_strlen(sde_pcus2wc(datastore)) == 0)
         m_mbDatabaseName[0] = '\0';
     else
-        strcpy(m_mbDatabaseName, datastore);
-    strcpy(m_mbUserName, username);
+        sde_strcpy(sde_pus2wc(m_mbDatabaseName), sde_pcus2wc(datastore));
+    sde_strcpy(sde_pus2wc(m_mbUserName), sde_pcus2wc(username));
 
     // Attempt to establish initial ArcSDE connection;
     // This is done in a separate method since we need to use __try/__except to catch the delay-loader's
@@ -345,7 +345,7 @@ FdoConnectionState ArcSDEConnection::Open ()
 
     // Update the Datastore connection property's enumerated list of datastores:
     LONG lNumDatabases = 0L;
-    char** strDatabaseNames = NULL;
+    CHAR** strDatabaseNames = NULL;
     result = SE_database_list(mConnection, &lNumDatabases, &strDatabaseNames);
     FdoPtr<ConnectionProperty> datastoreProperty = dictionary->FindProperty(CONNECTIONPROPERTY_DATASTORE);
     if (0L==lNumDatabases)
@@ -363,7 +363,7 @@ FdoConnectionState ArcSDEConnection::Open ()
         for (int i=0; i<lNumDatabases; i++)
         {
             wchar_t *wDatabaseName = NULL;
-            multibyte_to_wide(wDatabaseName, strDatabaseNames[i]);
+            sde_multibyte_to_wide(wDatabaseName, strDatabaseNames[i]);
             enumArray[i] = new wchar_t[wcslen(wDatabaseName)+1];
             wcscpy(enumArray[i], wDatabaseName);
         }
@@ -765,10 +765,10 @@ void ArcSDEConnection::ClassToTable (CHAR* table, FdoClassDefinition* classDef)
     unqualified = classMapping->GetTableName ();
     if ((NULL == unqualified) || (0 == wcslen (unqualified)))
         unqualified = classDef->GetName ();
-    wide_to_multibyte (table_name, unqualified);
+    sde_wide_to_multibyte (table_name, unqualified);
 
     // Validate unqualified table name:
-    if (SE_MAX_TABLE_LEN - 1 < strlen (table_name))
+    if (SE_MAX_TABLE_LEN - 1 < sde_strlen (sde_pcus2wc(table_name)))
         throw FdoException::Create (NlsMsgGet1 (ARCSDE_TABLE_NAME_TOO_LONG, "Table name '%1$ls' is too long.", unqualified));
 
     // Build qualified table name, outputting it to given "table" buffer:
@@ -799,14 +799,14 @@ void ArcSDEConnection::PropertyToColumn (CHAR* column, FdoClassDefinition* defin
     schema = property->GetSchemaName ();
     if (0 != wcslen (schema))
     {
-        wide_to_multibyte (mschema, schema);
-        strcpy (column, mschema);
-        strcat (column, ".");
+        sde_wide_to_multibyte (mschema, schema);
+        sde_strcpy (sde_pus2wc(column), sde_pcus2wc(mschema));
+        sde_strcat (sde_pus2wc(column), _TXT("."));
     }
     else
         column[0] = '\0';
-    wide_to_multibyte (mcol, col);
-    strcat (column, mcol);
+    sde_wide_to_multibyte (mcol, col);
+    sde_strcat (sde_pus2wc(column), sde_pcus2wc(mcol));
 }
 
 FdoClassDefinition* ArcSDEConnection::TableToClass (FdoString* wQualifiedTableName)
@@ -826,15 +826,15 @@ FdoClassDefinition* ArcSDEConnection::TableToClass (FdoString* wQualifiedTableNa
     FdoPtr<FdoClassDefinition> ret;
 
     // Parse given wQualifiedTableName into wSchemaName and wTableName:
-    wide_to_multibyte(mbQualifiedTableName, wQualifiedTableName);
+    sde_wide_to_multibyte(mbQualifiedTableName, wQualifiedTableName);
     mbDatabaseName[0] = '\0';
     mbOwnerName[0] = '\0';
     mbTableName[0] = '\0';
     result = SE_table_parse_qualified_name(mConnection, mbQualifiedTableName, mbDatabaseName, mbOwnerName, mbTableName, NULL, FALSE);
     handle_sde_err<FdoException>(mConnection, result, __FILE__, __LINE__, ARCSDE_PARSE_TABLE_NAME_FAILED, "Failed to parse the qualified name '%1$ls'.", wQualifiedTableName);
-    multibyte_to_wide(wOwnerName, mbOwnerName);
-    multibyte_to_wide(wTableName, mbTableName);
-    multibyte_to_wide(wDatabaseName, mbDatabaseName);
+    sde_multibyte_to_wide(wOwnerName, mbOwnerName);
+    sde_multibyte_to_wide(wTableName, mbTableName);
+    sde_multibyte_to_wide(wDatabaseName, mbDatabaseName);
 
     // Get local cache of all schemas:
     schemas = GetSchemaCollection ();
@@ -953,18 +953,18 @@ void ArcSDEConnection::ClassToUser(CHAR* userName, FdoClassDefinition* classDef)
     if ((NULL == wOwnerName) || (0 == wcslen (wOwnerName)))
         mbOwnerName = m_mbUserName;
     else
-        wide_to_multibyte (mbOwnerName, wOwnerName);
+        sde_wide_to_multibyte (mbOwnerName, wOwnerName);
 
     // Validate owner name length:
-    if (SE_MAX_OWNER_LEN < strlen (mbOwnerName))
+    if (SE_MAX_OWNER_LEN < sde_strlen (sde_pcus2wc(mbOwnerName)))
     {
         wchar_t* wOwnerNameTemp = NULL;
-        multibyte_to_wide(wOwnerNameTemp, mbOwnerName);
+        sde_multibyte_to_wide(wOwnerNameTemp, mbOwnerName);
         throw FdoException::Create (NlsMsgGet1 (ARCSDE_OWNER_NAME_TOO_LONG, "Owner name '%1$ls' is too long.", wOwnerNameTemp));
     }
 
     // Output the user name:
-    strcpy(userName, mbOwnerName);
+    sde_strcpy(sde_pus2wc(userName), sde_pcus2wc(mbOwnerName));
 }
 
 // Returns the database name corresponding to a given FDO class;
@@ -983,18 +983,18 @@ void ArcSDEConnection::ClassToDatabase(CHAR* databaseName, FdoClassDefinition* c
     if ((NULL == wDatabaseName) || (0 == wcslen (wDatabaseName)))
         mbDatabaseName = m_mbDatabaseName;
     else
-        wide_to_multibyte (mbDatabaseName, wDatabaseName);
+        sde_wide_to_multibyte (mbDatabaseName, wDatabaseName);
 
     // Validate database name length:
-    if (SE_MAX_DATABASE_LEN < strlen (mbDatabaseName))
+    if (SE_MAX_DATABASE_LEN < sde_strlen (sde_pcus2wc(mbDatabaseName)))
     {
         wchar_t* wDatabaseNameTemp = NULL;
-        multibyte_to_wide(wDatabaseNameTemp, mbDatabaseName);
+        sde_multibyte_to_wide(wDatabaseNameTemp, mbDatabaseName);
         throw FdoException::Create (NlsMsgGet1 (ARCSDE_DATABASE_NAME_TOO_LONG, "Database name '%1$ls' is too long.", wDatabaseNameTemp));
     }
 
     // Output the database name:
-    strcpy(databaseName, mbDatabaseName);
+    sde_strcpy(sde_pus2wc(databaseName), sde_pcus2wc(mbDatabaseName));
 }
 
 
@@ -1029,8 +1029,8 @@ void ArcSDEConnection::GetRdbmsInfo(void)
                 FdoString* potentialPrefixW = potentialPrefixesW[i];
                 FdoStringP potentialSysTableW = potentialPrefixW;
                 potentialSysTableW += SDE_SYSTEM_TABLE_STATE_LINEAGES;
-                char *potentialSysTableMB = NULL;
-                wide_to_multibyte(potentialSysTableMB, potentialSysTableW);
+                CHAR *potentialSysTableMB = NULL;
+                sde_wide_to_multibyte(potentialSysTableMB, (const wchar_t*)potentialSysTableW);
                 
                 result = SE_table_describe(GetConnection(), potentialSysTableMB, &numColumns, &column_defs);
                 if ((result == SE_SUCCESS) && (numColumns > 0))
@@ -1061,7 +1061,7 @@ long ArcSDEConnection::RdbmsId(void)
 }
 
 
-int ArcSDEConnection::RdbmsNamesMatch(const CHAR* name1, const CHAR* name2)
+int ArcSDEConnection::RdbmsNamesMatch(const char* name1, const char* name2)
 {
     if (RdbmsHasBehaviour(SE_DBMS_IS_CASE_SENSITIVE))
         return strcmp(name1, name2);
@@ -1071,11 +1071,10 @@ int ArcSDEConnection::RdbmsNamesMatch(const CHAR* name1, const CHAR* name2)
 
 int ArcSDEConnection::RdbmsNamesMatch(const wchar_t* name1, const wchar_t* name2)
 {
-    CHAR* mbsName1 = NULL;
-    CHAR* mbsName2 = NULL;
-    wide_to_multibyte(mbsName1, name1);
-    wide_to_multibyte(mbsName2, name2);
-    return RdbmsNamesMatch(mbsName1, mbsName2);
+    if (RdbmsHasBehaviour(SE_DBMS_IS_CASE_SENSITIVE))
+        return wcscmp(name1, name2);
+    else
+        return FdoCommonOSUtil::wcsicmp(name1, name2);
 }
 
 
@@ -1341,7 +1340,7 @@ void ArcSDEConnection::GetArcSDEMetadataList(SE_METADATAINFO** pMetadataList, lo
     if (mCachedMetadataList == NULL)
     {
         long result = SE_metadata_get_info_list (GetConnection (),
-            "NOT CLASS_NAME='SDE internal'", &mCachedMetadataList, &mCachedMetadataListCount);
+            sde_pcwc2us(_TXT("NOT CLASS_NAME='SDE internal'")), &mCachedMetadataList, &mCachedMetadataListCount);
         if (result != SE_SUCCESS)  // NOTE: may get error here due to ArcSDE bugs; better to ignore the error than throw away the whole table
         {
             mCachedMetadataList = NULL;
@@ -1373,8 +1372,8 @@ long ArcSDEConnection::GetArcSDELayerInfo(SE_LAYERINFO &pLayerInfo, const CHAR* 
             result = SE_layerinfo_get_spatial_column(mCachedLayerList[i], cachedTableName, cachedColumnName);
 
             if ((result==SE_SUCCESS) && 
-                (0==FdoCommonOSUtil::stricmp(tableName, cachedTableName)) && 
-                (0==FdoCommonOSUtil::stricmp(columnName, cachedColumnName)))
+                (0==sde_stricmp(sde_pcus2wc(tableName), sde_pcus2wc(cachedTableName))) && 
+                (0==sde_stricmp(sde_pcus2wc(columnName), sde_pcus2wc(cachedColumnName))))
             {
                 pLayerInfo = mCachedLayerList[i];
                 break;
@@ -1438,7 +1437,7 @@ void ArcSDEConnection::GetArcSDESpatialRefList(SE_SPATIALREFINFO** pSpatialRefIn
                 FdoStringP wAuthName;
                 if (!sqlReader->IsNull(AdjustSystemColumnName(L"auth_name")))
                     wAuthName = sqlReader->GetString(AdjustSystemColumnName(L"auth_name"));
-                lResult = SE_spatialrefinfo_set_auth_name(mCachedSpatialRefList[mCachedSpatialRefListCount], (const char*)wAuthName);
+                lResult = SE_spatialrefinfo_set_auth_name(mCachedSpatialRefList[mCachedSpatialRefListCount], sde_pcwc2us(wAuthName));
                 handle_sde_err<FdoException>(lResult, __FILE__, __LINE__, ARCSDE_FAILED_TO_READ_SRS, "Failed to get or set information for this ArcSDE Spatial Reference System.");
 
                 // Read SRID:
@@ -1457,7 +1456,7 @@ void ArcSDEConnection::GetArcSDESpatialRefList(SE_SPATIALREFINFO** pSpatialRefIn
                 // NOTE: if FdoStringP::Left() doesnt find the given suffix (e.g. in the case of a natively-created spatial reference system),
                 //    it returns the entire string unchanged.
                 FdoStringP fixedDesc = desc.Left(SPATIALCONTEXT_DESC_SUFFIX);
-                lResult = SE_spatialrefinfo_set_description(mCachedSpatialRefList[mCachedSpatialRefListCount], (const char*)fixedDesc);
+                lResult = SE_spatialrefinfo_set_description(mCachedSpatialRefList[mCachedSpatialRefListCount], sde_pcwc2us(fixedDesc));
                 handle_sde_err<FdoException>(lResult, __FILE__, __LINE__, ARCSDE_FAILED_TO_READ_SRS, "Failed to get or set information for this ArcSDE Spatial Reference System.");
 
                 // Create new empty coordref:
@@ -1469,7 +1468,7 @@ void ArcSDEConnection::GetArcSDESpatialRefList(SE_SPATIALREFINFO** pSpatialRefIn
                 FdoStringP coordsysWkt;
                 if (!sqlReader->IsNull(AdjustSystemColumnName(L"srtext")))
                     coordsysWkt = sqlReader->GetString(AdjustSystemColumnName(L"srtext"));
-                lResult = SE_coordref_set_by_description(coordref, coordsysWkt);
+                lResult = SE_coordref_set_by_description(coordref, sde_pcwc2us(coordsysWkt));
 
                 // Ignore corrupted WKTs
                 if (lResult != SE_SUCCESS)

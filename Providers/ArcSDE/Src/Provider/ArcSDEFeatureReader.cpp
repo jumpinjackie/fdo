@@ -176,7 +176,7 @@ void ArcSDEFeatureReader::PrepareStream ()
 					FdoStringP	func2 = func.Right(L"WHERE "); // trim
 
 					CHAR *mbName = NULL;
-					wide_to_multibyte (mbName, (FdoString *) func2);  
+					sde_wide_to_multibyte (mbName, (FdoString *) func2);  
 					
 					columnNames[i] = mbName;				
 
@@ -190,12 +190,12 @@ void ArcSDEFeatureReader::PrepareStream ()
 					CHAR *columnName = NULL;
 					if (wcslen(propertyMapping->GetColumnName()) > 0)
 					{
-						wide_to_multibyte(columnName, propertyMapping->GetColumnName());
+						sde_wide_to_multibyte(columnName, propertyMapping->GetColumnName());
 						columnNames[i] = columnName;
 					}
 					else
 					{
-						wide_to_multibyte(columnName, fdoPropertyDef->GetName());
+						sde_wide_to_multibyte(columnName, fdoPropertyDef->GetName());
 						columnNames[i] = columnName;
 					}
 				}
@@ -243,13 +243,13 @@ void ArcSDEFeatureReader::PrepareStream ()
                     SetLockType (FdoLockType_None);
 
                     // apply attribute and spatial query to stream
-                    ApplyFilterInfoToStream(mConnection, mStream, table, whereClause, numProperties, (const char**)columnNames, numSpatialFilters, pSpatialFilters);
+                    ApplyFilterInfoToStream(mConnection, mStream, table, whereClause, numProperties, (const CHAR**)columnNames, numSpatialFilters, pSpatialFilters);
                 }
             }
             else
             {
                 // Apply attribute and spatial query to stream:
-                ApplyFilterInfoToStream(mConnection, mStream, table, whereClause, numProperties, (const char**)columnNames, numSpatialFilters, pSpatialFilters);
+                ApplyFilterInfoToStream(mConnection, mStream, table, whereClause, numProperties, (const CHAR**)columnNames, numSpatialFilters, pSpatialFilters);
             }
 
             // Actually execute the query:
@@ -339,7 +339,7 @@ void ArcSDEFeatureReader::PrepareStream ()
 
                 // get the list of row ids from the log file, but include all requested columns in the query
                 ArcSDELockUtility::GetLogFile (logfile, mConnection->GetConnection (), mLog);
-                result = SE_stream_query_logfile (mStream, logfile, numProperties, (const char**)columnNames, &sql_construct);
+                result = SE_stream_query_logfile (mStream, logfile, numProperties, (const CHAR**)columnNames, &sql_construct);
                 handle_sde_err<FdoCommandException>(mStream, result, __FILE__, __LINE__, ARCSDE_LOG_FILE_QUERY, "Unable to query log file.");
 
                 // execute the query that returns full rows
@@ -403,7 +403,7 @@ ArcSDEFeatureReader::ColumnDefinition* ArcSDEFeatureReader::createColumnDef (int
     // Set column name/number:
     retColumnDef->mColumnNumber = columnIndex;
     wchar_t* wColumnName = NULL;
-    multibyte_to_wide(wColumnName, columnDef->column_name);
+    sde_multibyte_to_wide(wColumnName, columnDef->column_name);
     wcscpy(retColumnDef->mColumnName, wColumnName);
     retColumnDef->mColumnType = columnDef->sde_type;
 
@@ -577,5 +577,6 @@ FdoLockType ArcSDEFeatureReader::GetLockType ()
 {
     return (mLockType);
 }
+
 
 

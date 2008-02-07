@@ -42,7 +42,7 @@ bool ArcSDELockUtility::IsLockable (SE_CONNECTION connection, const CHAR* table,
         // get the table's rowid column name and rowid column type
         result = SE_reginfo_get_rowid_column (registration, column, &type);
         handle_sde_err<FdoCommandException> (connection, result, __FILE__, __LINE__, ARCSDE_REGISTRATION_INFO_ITEM, "Table registration info item '%1$ls' could not be retrieved.", L"rowid column");
-        strcpy (row_id_column, column);
+        sde_strcpy (sde_pus2wc(row_id_column), sde_pcus2wc(column));
     }
     else
         row_id_column[0] = '\0';
@@ -102,7 +102,7 @@ void ArcSDELockUtility::LockEnable (SE_CONNECTION connection, const CHAR* table,
 
     // Grab the row id column name, for output to caller:
     if (NULL != row_id_column)
-        strcpy (row_id_column, column);
+        sde_strcpy (sde_pus2wc(row_id_column), sde_pcus2wc(column));
 
     SE_reginfo_free (registration);
 }
@@ -117,7 +117,7 @@ void ArcSDELockUtility::GatherConflicts (SE_STREAM stream, const CHAR* column, i
     {
         if (SE_SUCCESS != (result = SE_stream_get_integer (stream, column_number, &id)))
         {
-            multibyte_to_wide (wcolumn, column);
+            sde_multibyte_to_wide (wcolumn, column);
             handle_sde_err<FdoCommandException> (stream, result, __FILE__, __LINE__, ARCSDE_STREAM_GET, "Stream get ('%1$ls') failed for column '%2$ls'.", L"SE_stream_get_integer", wcolumn);
         }
         else
@@ -147,14 +147,14 @@ void ArcSDELockUtility::LockTableName (CHAR* locktable, ArcSDEConnection* connec
     result = SE_reginfo_get_id (registration, &id);
     handle_sde_err<FdoCommandException>(conn, result, __FILE__, __LINE__, ARCSDE_REGISTRATION_INFO_ITEM, "Table registration info item '%1$ls' could not be retrieved.", L"id");
     SE_reginfo_free (registration);
-    sprintf (lname, "L%d", id);
+    sde_sprintf (sde_pus2wc(lname), SE_MAX_SCHEMA_TABLE_LEN+1, _TXT("L%d"), id);
     db[0] = '\0';
     owner[0] = '\0';
     name[0] = '\0';
     col[0] = '\0';
     result = SE_table_parse_qualified_name (conn, table, db, owner, name, col, FALSE);
     wchar_t* wTable = NULL;
-    multibyte_to_wide(wTable, table);
+    sde_multibyte_to_wide(wTable, table);
     handle_sde_err<FdoCommandException>(conn, result, __FILE__, __LINE__, ARCSDE_PARSE_TABLE_NAME_FAILED, "Failed to parse the qualified name '%1$ls'.", wTable);
     result = SE_table_make_qualified_name (conn, db, owner, lname, NULL, locktable);
     handle_sde_err<FdoCommandException>(conn, result, __FILE__, __LINE__, ARCSDE_MAKE_TABLE_NAME_FAILED, "Failed to make qualified name.");
@@ -175,7 +175,7 @@ FdoISQLDataReader* ArcSDELockUtility::LockLockTable (ArcSDEConnection* connectio
     try
     {
         LockTableName (locktable, connection, table);
-        multibyte_to_wide (lt, locktable);
+        sde_multibyte_to_wide (lt, locktable);
         FdoCommonOSUtil::swprintf (select, ELEMENTS (select), L"select * from %ls for update", lt);
         sql = (FdoISQLCommand*)connection->CreateCommand (FdoCommandType_SQLCommand);
         sql->SetSQLStatement (select);
@@ -257,4 +257,5 @@ LONG* ArcSDELockUtility::GetRowIdList (SE_CONNECTION connection, CHAR* logfile, 
 
     return (ret);
 }
+
 

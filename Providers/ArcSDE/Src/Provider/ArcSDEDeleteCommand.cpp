@@ -87,7 +87,7 @@ FdoInt32 ArcSDEDeleteCommand::Execute ()
     // Get the name of the table we are updating:
     connection->ClassToTable(table, classDef);
     wchar_t *wtable = NULL;
-    multibyte_to_wide(wtable, table);
+    sde_multibyte_to_wide(wtable, table);
 
     result = SE_stream_create (connection->GetConnection (), &stream);
     handle_sde_err<FdoCommandException> (connection->GetConnection (), result, __FILE__, __LINE__, ARCSDE_STREAM_ALLOC, "Cannot initialize SE_STREAM structure.");
@@ -102,7 +102,7 @@ FdoInt32 ArcSDEDeleteCommand::Execute ()
     if (lockable)
     {
         // get the property name that is the row_id
-        multibyte_to_wide (wcolumn, column);
+        sde_multibyte_to_wide (wcolumn, column);
         property = connection->ColumnToProperty (classDef, wcolumn);
         tables[0] = table;
         columnNames[0] = column;
@@ -273,11 +273,11 @@ FdoInt32 ArcSDEDeleteCommand::Execute ()
                 FdoPtr<ArcSDEFilterToSql> f2s = new ArcSDEFilterToSql (connection, classDef);
                 f2s->HandleFilter (updateFilter);
                 CHAR* tempWhereClause = NULL;
-                wide_to_multibyte (tempWhereClause, f2s->GetSql ());  // volatile, since memory is on stack
-                if (0 == strcmp (tempWhereClause, " WHERE "))
+                sde_wide_to_multibyte (tempWhereClause, f2s->GetSql ());  // volatile, since memory is on stack
+                if (0 == sde_strcmp (sde_pcus2wc(tempWhereClause), _TXT(" WHERE ")))
                     whereClause[0] = '\0';
                 else
-                    strcpy (whereClause, tempWhereClause);
+                    sde_strcpy (sde_pus2wc(whereClause), sde_pcus2wc(tempWhereClause));
 
                 // Update the row in the table, based on this id value:
                 result = SE_stream_delete_from_table(deleteStream, table, whereClause);
@@ -375,4 +375,5 @@ FdoILockConflictReader* ArcSDEDeleteCommand::GetLockConflicts ()
 {
     return (FDO_SAFE_ADDREF (mConflictReader.p));
 }
+
 

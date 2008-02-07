@@ -79,14 +79,14 @@ void ArcSDELongTransactionReader::validate ()
 /// <returns>Returns the name of the long transaction.</returns> 
 FdoString* ArcSDELongTransactionReader::GetName ()
 {
-    char name[2*SE_MAX_VERSION_LEN];
+    CHAR name[2*SE_MAX_VERSION_LEN];
     wchar_t* temp;
 
     validate ();
     if (NULL == mName)
         if (SE_SUCCESS == SE_versioninfo_get_name (mInfo[mIndex], name))
         {
-            multibyte_to_wide (temp, name);
+            sde_multibyte_to_wide (temp, name);
             mName = new wchar_t[wcslen (temp) + 1];
             wcscpy ((wchar_t*)mName, temp);
         }
@@ -98,14 +98,14 @@ FdoString* ArcSDELongTransactionReader::GetName ()
 /// <returns>Returns the description of the long transaction.</returns> 
 FdoString* ArcSDELongTransactionReader::GetDescription ()
 {
-    char description[SE_MAX_DESCRIPTION_LEN];
+    CHAR description[SE_MAX_DESCRIPTION_LEN];
     wchar_t* temp;
 
     validate ();
     if (NULL == mDescription)
         if (SE_SUCCESS == SE_versioninfo_get_description (mInfo[mIndex], description))
         {
-            multibyte_to_wide (temp, description);
+            sde_multibyte_to_wide (temp, description);
             mDescription = new wchar_t[wcslen (temp) + 1];
             wcscpy ((wchar_t*)mDescription, temp);
         }
@@ -117,8 +117,8 @@ FdoString* ArcSDELongTransactionReader::GetDescription ()
 /// <returns>Returns the owner name.</returns> 
 FdoString* ArcSDELongTransactionReader::GetOwner ()
 {
-    char owner[2*SE_MAX_VERSION_LEN];
-    char* q;
+    CHAR owner[2*SE_MAX_VERSION_LEN];
+    CHAR* q;
     wchar_t* temp;
 
     validate ();
@@ -126,12 +126,12 @@ FdoString* ArcSDELongTransactionReader::GetOwner ()
         if (SE_SUCCESS == SE_versioninfo_get_name (mInfo[mIndex], owner))
         {
             // truncate after the owner
-            q = strchr (owner, '.');
+            q = sde_pwc2us(sde_strchr (sde_pus2wc(owner), '.'));
             if (NULL == q)
-                strcpy (owner, "");
+                sde_strcpy (sde_pus2wc(owner), _TXT(""));
             else
                 *q = '\0';
-            multibyte_to_wide (temp, owner);
+            sde_multibyte_to_wide (temp, owner);
             mOwner = new wchar_t[wcslen (temp) + 1];
             wcscpy ((wchar_t*)mOwner, temp);
         }
@@ -181,7 +181,7 @@ bool ArcSDELongTransactionReader::IsActive ()
 /// <returns>Returns true if the long transaction is locked by anybody.</returns> 
 bool ArcSDELongTransactionReader::IsFrozen ()
 {
-    char name[SE_MAX_VERSION_LEN];
+    CHAR name[SE_MAX_VERSION_LEN];
     LONG lock_count;
     SE_VERSION_LOCK *locks;
     bool ret;
@@ -244,7 +244,7 @@ FdoILongTransactionReader* ArcSDELongTransactionReader::GetChildren ()
     conn = mConnection->GetConnection ();
     result = SE_versioninfo_get_id (mInfo[mIndex], &id);
     handle_sde_err<FdoCommandException> (conn, result, __FILE__, __LINE__, ARCSDE_VERSION_INFO_ITEM, "Version info item '%1$ls' could not be retrieved.", L"Id");
-    sprintf (where, "PARENT_VERSION_ID = %ld", id);
+    sde_sprintf (sde_pus2wc(where), 50, _TXT("PARENT_VERSION_ID = %ld"), id);
     result = SE_version_get_info_list (conn, where, &info, &count);
     handle_sde_err<FdoCommandException> (conn, result, __FILE__, __LINE__, ARCSDE_VERSION_INFO_LIST, "Version info list could not be retrieved.");
 
@@ -275,7 +275,7 @@ FdoILongTransactionReader* ArcSDELongTransactionReader::GetParents ()
     handle_sde_err<FdoCommandException> (conn, result, __FILE__, __LINE__, ARCSDE_VERSION_INFO_ITEM, "Version info item '%1$ls' could not be retrieved.", L"ParentId");
     if (0 != id)
     {
-        sprintf (where, "VERSION_ID = %ld", id);
+        sde_sprintf (sde_pus2wc(where), 50, _TXT("VERSION_ID = %ld"), id);
         result = SE_version_get_info_list (conn, where, &info, &count);
         handle_sde_err<FdoCommandException> (conn, result, __FILE__, __LINE__, ARCSDE_VERSION_INFO_LIST, "Version info list could not be retrieved.");
         ret = new ArcSDELongTransactionReader (mConnection, count, info);
@@ -285,4 +285,5 @@ FdoILongTransactionReader* ArcSDELongTransactionReader::GetParents ()
 
     return (FDO_SAFE_ADDREF (ret.p));
 }
+
 

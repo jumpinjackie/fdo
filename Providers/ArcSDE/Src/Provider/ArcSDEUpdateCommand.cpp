@@ -158,8 +158,8 @@ FdoInt32 ArcSDEUpdateCommand::Execute ()
 
             FdoPtr<FdoIdentifier> identifier = FdoIdentifier::Create (property->GetName ());
             connection->PropertyToColumn(column, classDef, identifier);
-            columns[j] = (CHAR*)alloca (strlen (column) + 1);
-            strcpy (columns[j], column);
+            columns[j] = (CHAR*)alloca (sde_strlen (sde_pcus2wc(column)) + 1);
+            sde_strcpy (sde_pus2wc(columns[j]), sde_pcus2wc(column));
             j++;
         }
     }
@@ -168,7 +168,7 @@ FdoInt32 ArcSDEUpdateCommand::Execute ()
     if (lockable)
     {
         // get the property name that is the row_id
-        multibyte_to_wide (wcolumn, column);
+        sde_multibyte_to_wide (wcolumn, column);
         property = connection->ColumnToProperty (classDef, wcolumn);
         tables[0] = table;
         columnNames[0] = column;
@@ -192,7 +192,7 @@ FdoInt32 ArcSDEUpdateCommand::Execute ()
         if (SE_REGISTRATION_ROW_ID_COLUMN_TYPE_NONE == type)
         {
             wchar_t *wTable = NULL;
-            multibyte_to_wide(wTable, table);
+            sde_multibyte_to_wide(wTable, table);
             throw FdoException::Create (NlsMsgGet1(ARCSDE_SPATIAL_QUERY_ON_NONROWID_TABLE, "Cannot perform a spatial query (for insert, update, or delete) against ArcSDE table '%1$ls' since it has no rowid column.", wTable));
         }
         SE_reginfo_free (registration);
@@ -350,11 +350,11 @@ FdoInt32 ArcSDEUpdateCommand::Execute ()
                 FdoPtr<ArcSDEFilterToSql> f2s = new ArcSDEFilterToSql (connection, classDef);
                 f2s->HandleFilter (updateFilter);
                 CHAR* tempWhereClause = NULL;
-                wide_to_multibyte (tempWhereClause, f2s->GetSql ());  // volatile, since memory is on stack
-                if (0 == strcmp (tempWhereClause, " WHERE "))
+                sde_wide_to_multibyte (tempWhereClause, f2s->GetSql ());  // volatile, since memory is on stack
+                if (0 == sde_strcmp (sde_pcus2wc(tempWhereClause), _TXT(" WHERE ")))
                     whereClause[0] = '\0';
                 else
-                    strcpy (whereClause, tempWhereClause);
+                    sde_strcpy (sde_pus2wc(whereClause), sde_pcus2wc(tempWhereClause));
 
                 // Update the row in the table, based on this id value:
                 result = SE_stream_update_table(updateStream, table, count, (const CHAR**)columns, whereClause);
@@ -460,4 +460,5 @@ FdoILockConflictReader* ArcSDEUpdateCommand::GetLockConflicts ()
 {
     return (FDO_SAFE_ADDREF (mConflictReader.p));
 }
+
 

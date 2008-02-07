@@ -35,7 +35,7 @@ class ArcSDELockedObjectReader :
         
         LockList (CHAR* table)
         {
-            strcpy (mTableName, table);
+            sde_strcpy (sde_pus2wc(mTableName), sde_pcus2wc(table));
             mIds = IdArray::Create ();
         }
 
@@ -132,4 +132,5 @@ public:
 };
 
 #endif // ARCSDELOCKEDOBJECTREADER_H
+
 

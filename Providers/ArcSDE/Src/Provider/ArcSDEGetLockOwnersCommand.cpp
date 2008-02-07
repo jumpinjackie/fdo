@@ -71,11 +71,11 @@ FdoILockOwnersReader* ArcSDEGetLockOwnersCommand::Execute ()
             handle_sde_err<FdoCommandException>(connection->GetConnection(), result, __FILE__, __LINE__, ARCSDE_GET_ROW_LOCK_LIST_FAILED, "Failed to get the row lock list.");
             for (int j = 0; j < number; j++)
             {
-                if (0 != strcmp (user_name, users[j]))
+                if (0 != sde_strcmp (sde_pcus2wc(user_name), sde_pcus2wc(users[j])))
                 {
                     wchar_t* owner;
-                    strcpy (user_name, users[j]);
-                    multibyte_to_wide (owner, user_name);
+                    sde_strcpy (sde_pus2wc(user_name), sde_pcus2wc(users[j]));
+                    sde_multibyte_to_wide (owner, user_name);
                     ret->AddOwner (owner);
                 }
             }
@@ -85,4 +85,5 @@ FdoILockOwnersReader* ArcSDEGetLockOwnersCommand::Execute ()
 
     return (FDO_SAFE_ADDREF (ret.p));
 }
+
 

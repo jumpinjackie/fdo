@@ -200,8 +200,8 @@ void ArcSDEDataReader::PrepareStream ()
 					FdoPtr<FdoExpression> fdoExpr = computedId->GetExpression();
 					FdoFunction *fdoFunction = dynamic_cast<FdoFunction*>(fdoExpr.p);
 					CHAR *mbName = NULL;
-					wide_to_multibyte(mbName, GetAggregateFunctionPropertyName(fdoFunction));
-					strcpy(columnNames[i], mbName);
+					sde_wide_to_multibyte(mbName, GetAggregateFunctionPropertyName(fdoFunction));
+					sde_strcpy(sde_pus2wc(columnNames[i]), sde_pcus2wc(mbName));
                 }
                 else
                     mConnection->PropertyToColumn(columnNames[i], mClassDef, FdoPtr<FdoIdentifier>(FdoIdentifier::Create(fdoPropertyDef->GetName())));
@@ -243,7 +243,7 @@ void ArcSDEDataReader::PrepareStream ()
                 handle_sde_err<FdoCommandException>(mConnection->GetConnection (), result, __FILE__, __LINE__, ARCSDE_QUERYINFO_MANIPULATION_FAILED, "Unexpected error while manipulating an ArcSDE SE_QUERYINFO object.");
 
                 // Apply the attribute filter to SE_QUERYINFO object:
-                ApplyFilterInfoToQueryInfo(mConnection, query_info, table, whereClause, numProperties, (const char**)columnNames, mOrderingOption, mOrderingIds);
+                ApplyFilterInfoToQueryInfo(mConnection, query_info, table, whereClause, numProperties, (const CHAR**)columnNames, mOrderingOption, mOrderingIds);
 
                 // Apply spatial filters to the stream:
                 result = SE_stream_set_spatial_constraints (mStream, SE_OPTIMIZE, FALSE, numSpatialFilters, pSpatialFilters);
@@ -261,7 +261,7 @@ void ArcSDEDataReader::PrepareStream ()
                     else // (mDistinct)
                         lStatsMask = SE_DISTINCT_STATS;
 
-                    result = SE_stream_calculate_table_statistics(mStream, (const char*)columnNames[i], lStatsMask, query_info, 0 /*max_distinct*/, &(col->mStreamStats));
+                    result = SE_stream_calculate_table_statistics(mStream, (const CHAR*)columnNames[i], lStatsMask, query_info, 0 /*max_distinct*/, &(col->mStreamStats));
                     if (SE_TOO_MANY_DISTINCTS == result)
                         handle_sde_err<FdoCommandException>(mStream, result, __FILE__, __LINE__, ARCSDE_SELECT_DISTINCT_TOO_MANY_RESULTS, "The number of distinct results exceeds the maximum imposed by ArcSDE Server; please update the value of MAXDISTINCT in the ArcSDE Server's GioMgr.defs file accordingly.");
                     else
@@ -276,7 +276,7 @@ void ArcSDEDataReader::PrepareStream ()
             else
             {
                 // Apply attribute and spatial query to stream:
-                ApplyFilterInfoToStream(mConnection, mStream, table, whereClause, numProperties, (const char**)columnNames, numSpatialFilters, pSpatialFilters, mOrderingOption, mOrderingIds);
+                ApplyFilterInfoToStream(mConnection, mStream, table, whereClause, numProperties, (const CHAR**)columnNames, numSpatialFilters, pSpatialFilters, mOrderingOption, mOrderingIds);
 
                 // Actually execute the query:
                 result = SE_stream_execute (mStream);
@@ -322,7 +322,7 @@ ArcSDEDataReader::ColumnDefinition* ArcSDEDataReader::createColumnDef(int column
     // Set column name/number:
     retColumnDef->mColumnNumber = columnIndex;
     wchar_t* wColumnName = NULL;
-    multibyte_to_wide(wColumnName, columnName);
+    sde_multibyte_to_wide(wColumnName, columnName);
     wcscpy(retColumnDef->mColumnName, wColumnName);
     retColumnDef->mColumnType = columnType;
 
@@ -441,7 +441,7 @@ void ArcSDEDataReader::getColumnDefs ()
 
                 // Get the single "column" 's name (as the computed identifier alias):
                 CHAR *colName = NULL;
-                wide_to_multibyte(colName, computedId->GetName());
+                sde_wide_to_multibyte(colName, computedId->GetName());
 
                 // Get the single "column" 's type (as the resulting type of the function):
                 LONG colType = GetFunctionSdeType(mConnection, fdoFunction->GetName());
@@ -475,4 +475,5 @@ void ArcSDEDataReader::getColumnDefs ()
         mColumnCount = numColumns;
     }
 }
+
 

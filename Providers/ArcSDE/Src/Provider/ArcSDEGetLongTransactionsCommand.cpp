@@ -61,7 +61,7 @@ FdoILongTransactionReader* ArcSDEGetLongTransactionsCommand::Execute ()
     SE_VERSIONINFO* info;
     SE_VERSIONINFO version;
     CHAR *where;
-    char temp[SE_MAX_VERSION_LEN + SE_MAX_OWNER_LEN + 25];
+    CHAR temp[SE_MAX_VERSION_LEN + SE_MAX_OWNER_LEN + 25];
     CHAR user_name [SE_MAX_OWNER_LEN];
     LONG id;
     LONG count;
@@ -101,14 +101,14 @@ FdoILongTransactionReader* ArcSDEGetLongTransactionsCommand::Execute ()
                 // the above is a lot of work, we could just use the constant '1' since SDE.DEFAULT is version 1
                 id = SDE_DEFAULT;
 
-            sprintf (temp, "VERSION_ID = %d", id);
+            sde_sprintf (sde_pus2wc(temp), SE_MAX_VERSION_LEN + SE_MAX_OWNER_LEN + 25, _TXT("VERSION_ID = %d"), id);
             where = temp;
         }
         else if (0 == wcscmp (GetName (), FDO_ACTIVELONGTRANSACTION))
         {
             // if set to FDO_ACTIVELONGTRANSACTION, get only the active long transaction
             // Note: this returns no versions if the active version is not set (i.e. has a value of -1)
-            sprintf (temp, "VERSION_ID = %d", connection->GetActiveVersion ());
+            sde_sprintf (sde_pus2wc(temp), SE_MAX_VERSION_LEN + SE_MAX_OWNER_LEN + 25, _TXT("VERSION_ID = %d"), connection->GetActiveVersion ());
             where = temp;
         }
         else
@@ -118,8 +118,8 @@ FdoILongTransactionReader* ArcSDEGetLongTransactionsCommand::Execute ()
             CHAR* version_owner;
             CHAR* version_name;
 
-            wide_to_multibyte (version_owner, (wchar_t*)GetName ());
-            version_name = strchr (version_owner, '.');
+            sde_wide_to_multibyte (version_owner, (wchar_t*)GetName ());
+            version_name = sde_pwc2us(sde_strchr (sde_pus2wc(version_owner), '.'));
             if (NULL != version_name)
             {
                 *version_name = '\0';
@@ -132,7 +132,13 @@ FdoILongTransactionReader* ArcSDEGetLongTransactionsCommand::Execute ()
                 handle_sde_err<FdoCommandException> (conn, result, __FILE__, __LINE__, ARCSDE_USER_UNKNOWN, "Cannot determine current user.");
                 version_owner = user_name;
             }
-            sprintf (temp, "NAME = '%s' and OWNER = '%s'", version_name, version_owner);
+            sde_sprintf (sde_pus2wc(temp), SE_MAX_VERSION_LEN + SE_MAX_OWNER_LEN + 25,
+#ifdef SDE_UNICODE
+				L"NAME = '%ls' and OWNER = '%ls'"
+#else
+				"NAME = '%s' and OWNER = '%s'"
+#endif
+				, version_name, version_owner);
             where = temp;
         }
     }
@@ -142,4 +148,5 @@ FdoILongTransactionReader* ArcSDEGetLongTransactionsCommand::Execute ()
 
     return (new ArcSDELongTransactionReader (connection, count, info));
 }
+
 

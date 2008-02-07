@@ -43,7 +43,7 @@ protected:
     virtual ~ArcSDEApplySchemaCommand (void);
 
     void generateUniqueTableName (FdoClassDefinition* cls, bool bStrict, CHAR* name);
-    void generateUniqueColumnNames (FdoPropertyDefinitionCollection* properties, bool bStrict, std::vector<std::string> &columnNames);
+    void generateUniqueColumnNames (FdoPropertyDefinitionCollection* properties, bool bStrict, std::vector<sde_std_string> &columnNames);
     void getDataType (FdoPropertyDefinition* property, SE_COLUMN_DEF& column_definition);
     LONG getGeometryMask (FdoGeometricPropertyDefinition* geometry);
     void add_class (FdoFeatureSchema* schema, FdoClassDefinition* cls);
@@ -110,4 +110,5 @@ public:
 };
 
 #endif // ARCSDEAPPLYSCHEMACOMMAND_H
+
 
