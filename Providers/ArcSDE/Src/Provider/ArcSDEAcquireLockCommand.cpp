@@ -128,7 +128,7 @@ FdoILockConflictReader* ArcSDEAcquireLockCommand::Execute ()
         ArcSDELockUtility::LockEnable (connection->GetConnection (), table, column);
 
         // get the property name that is the row_id
-        multibyte_to_wide (wcolumn, column);
+        sde_multibyte_to_wide (wcolumn, column);
         property = connection->ColumnToProperty (definition, wcolumn);
 
         // get SQL query's "where" clause & spatial filters
@@ -212,4 +212,5 @@ FdoILockConflictReader* ArcSDEAcquireLockCommand::Execute ()
 
     return (FDO_SAFE_ADDREF (ret.p));
 }
+
 

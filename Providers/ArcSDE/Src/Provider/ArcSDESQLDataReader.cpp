@@ -39,7 +39,7 @@ ArcSDESQLDataReader::ColumnDefinition* ArcSDESQLDataReader::createColumnDef (int
 
     // Set column name/number/type:
     wchar_t* wColumnName = NULL;
-    multibyte_to_wide(wColumnName, columnDef->column_name);
+    sde_multibyte_to_wide(wColumnName, columnDef->column_name);
     wcscpy (retColumnDef->mColumnName, wColumnName);
     retColumnDef->mColumnNumber = column;
     retColumnDef->mColumnType = columnDef->sde_type;
@@ -151,5 +151,6 @@ FdoPropertyType ArcSDESQLDataReader::GetPropertyType(FdoString* columnName)
     // we only support Data property types in ArcSDESQLDataReader:
     return FdoPropertyType_DataProperty;
 }
+
 
 

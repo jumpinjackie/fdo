@@ -88,7 +88,7 @@ FdoInt32 ArcSDESQLCommand::ExecuteNonQuery ()
         throw FdoException::Create (NlsMsgGet(ARCSDE_SQL_COMMAND_MISSING_STATEMENT, "No SQL statement specified for execution by the SQL Command."));
 
     // convert the SQL statement
-    wide_to_multibyte (buffer, (wchar_t*)sql);
+    sde_wide_to_multibyte (buffer, (wchar_t*)sql);
 
     result = SE_stream_create (connection->GetConnection (), &stream);
     handle_sde_err<FdoCommandException> (connection->GetConnection (), result, __FILE__, __LINE__, ARCSDE_STREAM_ALLOC, "Cannot initialize SE_STREAM structure.");
@@ -135,7 +135,7 @@ FdoISQLDataReader* ArcSDESQLCommand::ExecuteReader ()
         throw FdoException::Create (NlsMsgGet(ARCSDE_SQL_COMMAND_MISSING_STATEMENT, "No SQL statement specified for execution by the SQL Command."));
 
     // convert the SQL statement
-    wide_to_multibyte (buffer, (wchar_t*)sql);
+    sde_wide_to_multibyte (buffer, (wchar_t*)sql);
 
     result = SE_stream_create (connection->GetConnection (), &stream);
     handle_sde_err<FdoCommandException> (connection->GetConnection (), result, __FILE__, __LINE__, ARCSDE_STREAM_ALLOC, "Cannot initialize SE_STREAM structure.");
@@ -156,4 +156,5 @@ FdoISQLDataReader* ArcSDESQLCommand::ExecuteReader ()
 
     return (new ArcSDESQLDataReader (connection, stream));
 }
+
 

@@ -35,6 +35,9 @@ public:
     /// format a wide-char string to a wide-char string:
     static int swprintf(wchar_t* buffer, size_t bufferSize, const wchar_t* format, ...);
 
+    /// format a char string to a char string:
+    static int scprintf(char* buffer, size_t bufferSize, const char* format, ...);
+
     /// convert a double to an ascii string:
     static char* gcvt(double number, size_t ndigit, char *buf);
 
@@ -100,5 +103,6 @@ public:
 };
 
 #endif // FdoCommonOSUtil___H
+
 
 

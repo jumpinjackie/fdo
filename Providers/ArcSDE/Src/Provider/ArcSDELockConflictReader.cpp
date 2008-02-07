@@ -22,11 +22,7 @@
 ArcSDELockConflictReader::ArcSDELockConflictReader (ArcSDEConnection* connection, FdoString* cls, CHAR* table, FdoString* property) :
     mConnection (connection),
     mClassName (cls),
-#ifdef _WIN32
-    mTable (_strdup (table)),
-#else
-    mTable (strdup (table)),
-#endif
+    mTable (sde_pwc2us(sde_strdup (sde_pcus2wc(table)))),
     mIdProperty (property),
     mIds (IdArray::Create ()),
     mIndex (-1),
@@ -215,7 +211,7 @@ FdoString* ArcSDELockConflictReader::GetLockOwner ()
         for (int i = 0; i < mNumLocks; i++)
             if (id == mRowIds[i])
             {
-                multibyte_to_wide (user, mUserNames[i]);
+                sde_multibyte_to_wide (user, mUserNames[i]);
                 mUser = user;
                 break; // TODO: only first lock? what about multiple read locks?
             }
@@ -277,4 +273,5 @@ void ArcSDELockConflictReader::Close ()
 {
     mIndex = -2;
 }
+
 

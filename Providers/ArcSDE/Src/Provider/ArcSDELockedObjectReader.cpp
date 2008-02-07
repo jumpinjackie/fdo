@@ -51,7 +51,7 @@ void ArcSDELockedObjectReader::AddIdentity (CHAR* table, LONG id)
 
     index = -1;
     for (int i = 0; ((i < mLocks->GetCount ()) && (-1 == index)); i++)
-        if (0 == strcmp ((*mLocks)[i]->mTableName, table))
+        if (0 == sde_strcmp (sde_pcus2wc((*mLocks)[i]->mTableName), sde_pcus2wc(table)))
             index = i;
     if (-1 != index)
     {
@@ -84,7 +84,7 @@ FdoClassDefinition* ArcSDELockedObjectReader::GetFeatureClass ()
     FdoPtr<FdoClassDefinition> ret;
 
     table = (*mLocks)[mListIndex]->mTableName;
-    multibyte_to_wide (wtable, table);
+    sde_multibyte_to_wide (wtable, table);
     ret = mConnection->TableToClass (wtable);
 
     return (FDO_SAFE_ADDREF(ret.p));
@@ -163,7 +163,7 @@ FdoPropertyValueCollection* ArcSDELockedObjectReader::GetIdentity ()
         result = SE_reginfo_get_rowid_column (registration, column, &type);
         handle_sde_err<FdoCommandException> (mConnection->GetConnection (), result, __FILE__, __LINE__, ARCSDE_REGISTRATION_INFO_ITEM, "Table registration info item '%1$ls' could not be retrieved.", L"rowid column");
         SE_reginfo_free (registration);
-        multibyte_to_wide (column_name, column);
+        sde_multibyte_to_wide (column_name, column);
         definition = GetFeatureClass ();
         property_name = mConnection->ColumnToProperty (definition, column_name);
         mIdentity = FdoPropertyValueCollection::Create ();
@@ -210,7 +210,7 @@ FdoString* ArcSDELockedObjectReader::GetLockOwner ()
         for (int i = 0; i < mNumLocks; i++)
             if (id == mRowIds[i])
             {
-                multibyte_to_wide (user, mUserNames[i]);
+                sde_multibyte_to_wide (user, mUserNames[i]);
                 mUser = user;
                 break; // TODO: only first lock? what about multiple read locks?
             }
@@ -287,4 +287,5 @@ void ArcSDELockedObjectReader::Close ()
     mIndex = -2;
     mListIndex = -2;
 }
+
 

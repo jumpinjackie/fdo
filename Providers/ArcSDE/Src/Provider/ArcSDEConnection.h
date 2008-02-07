@@ -96,12 +96,12 @@ protected:
     /*
      * Cached database (empty if database not provided) at connection time.
      */
-    char m_mbDatabaseName[SE_MAX_DATABASE_LEN];
+    CHAR m_mbDatabaseName[SE_MAX_DATABASE_LEN];
 
     /*
      * Cached user name at connection time.
      */
-    char m_mbUserName[SE_MAX_DATABASE_LEN];
+    CHAR m_mbUserName[SE_MAX_DATABASE_LEN];
 
 public:
 
@@ -306,7 +306,7 @@ public:
     void GetRdbmsInfo(void);
     bool RdbmsHasBehaviour(LONG lBehaviour);
     long RdbmsId(void);
-    int RdbmsNamesMatch(const CHAR* name1, const CHAR* name2);
+    int RdbmsNamesMatch(const char* name1, const char* name2);
     int RdbmsNamesMatch(const wchar_t* name1, const wchar_t* name2);
     FdoString* RdbmsSystemTablePrefix();
 
@@ -336,4 +336,5 @@ public:
 };
 
 #endif // ARCSDECONNECTION_H
+
 

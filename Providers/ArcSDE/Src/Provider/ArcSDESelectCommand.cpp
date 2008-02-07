@@ -241,7 +241,7 @@ FdoIFeatureReader* ArcSDESelectCommand::ExecuteWithLock ()
     ArcSDELockUtility::LockEnable (connection->GetConnection (), table, column);
 
     // get the property name that is the row_id
-    multibyte_to_wide (wcolumn, column);
+    sde_multibyte_to_wide (wcolumn, column);
     property = connection->ColumnToProperty (definition, wcolumn);
 
     // establish an empty conflict reader
@@ -351,4 +351,5 @@ FdoExpressionEngineFunctionCollection* ArcSDESelectCommand::GetUserDefinedFuncti
 
 	return FDO_SAFE_ADDREF(userDefinedFunctions.p);
 }
+
 

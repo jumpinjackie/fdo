@@ -296,11 +296,11 @@ void ArcSDEFilterToSql::ProcessFunction (FdoFunction& func)
 		throw FdoException::Create(NlsMsgGet1(ARCSDE_FUNCTION_NOT_FOUND_OR_WRONG_TYPE, "The given function '%1$ls' was not found or is of the wrong type.", func.GetName()));
 
 	// Get the function name. This depends on the underlying rdbms.
-	char sdeFuncName[SE_MAX_FUNCTION_LEN];
+	CHAR sdeFuncName[SE_MAX_FUNCTION_LEN];
 	long result = SE_connection_get_sql_info(m_Connection->GetConnection (), sdeFuncId, sdeFuncName);
 	handle_sde_err<FdoCommandException> (m_Connection->GetConnection (), result, __FILE__, __LINE__, ARCSDE_STREAM_ALLOC, "Cannot find function.");
 
-	FdoStringP	sdeName = FdoStringP(sdeFuncName);
+	FdoStringP	sdeName = FdoStringP(sde_pcus2wc(sdeFuncName));
 
     AppendString (sdeName);
     AppendString (OPEN_PAREN);
@@ -340,7 +340,7 @@ void ArcSDEFilterToSql::ProcessIdentifier (FdoIdentifier& expr)
 	CHAR column[SE_QUALIFIED_COLUMN_LEN];
 	m_Connection->PropertyToColumn(column, mDefinition, &expr);
 	
-	FdoStringP	colName = FdoStringP(column);
+	FdoStringP	colName = FdoStringP(sde_pcus2wc(column));
     AppendString (colName);
 }
 
@@ -1039,5 +1039,6 @@ ArcSDEFilterTypeEnum ArcSDEFilterToSql::GetFilterType(FdoFilter *filter)
 
     return filterType;
 }
+
 
 

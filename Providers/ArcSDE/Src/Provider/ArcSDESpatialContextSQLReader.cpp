@@ -99,8 +99,8 @@ FdoString* ArcSDESpatialContextSQLReader::GetCoordinateSystem()
             // Get coordref:
             lResult = SE_coordref_create (&coordref);
             handle_sde_err<FdoException>(lResult, __FILE__, __LINE__, ARCSDE_UNEXPECTED_ERROR, "Unexpected error encountered in ArcSDE Provider.");
-            char* mbCoordSysWkt = NULL;
-            wide_to_multibyte(mbCoordSysWkt, coordSysWkt);
+            CHAR* mbCoordSysWkt = NULL;
+            sde_wide_to_multibyte(mbCoordSysWkt, coordSysWkt);
             lResult = SE_coordref_set_by_description (coordref, mbCoordSysWkt);
             handle_sde_err<FdoException>(lResult, __FILE__, __LINE__, ARCSDE_UNEXPECTED_ERROR, "Unexpected error encountered in ArcSDE Provider.");
             lResult = SE_coordref_get_id(coordref, &id);
@@ -130,7 +130,7 @@ FdoString* ArcSDESpatialContextSQLReader::GetCoordinateSystemWkt()
             mCoordSysWkt = L"";
 
         // ECO 10353b "Specify consistent handling of unknown coordinate systems":
-        if (0==strcmp((const char*)mCoordSysWkt, SPATIALCONTEXT_COORDYS_WKT_UNKNOWN_SDE))
+        if (0==sde_strcmp(sde_cstwc(mCoordSysWkt), SPATIALCONTEXT_COORDYS_WKT_UNKNOWN_SDE))
         {
             mCoordSysWkt = SPATIALCONTEXT_CORDSYS_WKT_UNKNOWN_FDO;
         }
@@ -243,4 +243,5 @@ FdoStringP ArcSDESpatialContextSQLReader::AdjustColumnName(FdoString *name)
     else
         return nameCorrected.Upper();
 }
+
 

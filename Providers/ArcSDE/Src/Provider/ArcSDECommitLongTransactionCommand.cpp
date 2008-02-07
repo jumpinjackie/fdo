@@ -82,7 +82,7 @@ void ArcSDECommitLongTransactionCommand::checkConflict (
     handle_sde_err<FdoCommandException> (connection, result, __FILE__, __LINE__, ARCSDE_STREAM_QUERY, "Stream query failed.");
     result = SE_stream_bind_output_column (stream, 1, &row, &row_ind);
     wchar_t *wRowId = NULL;
-    multibyte_to_wide(wRowId, rowid);
+    sde_multibyte_to_wide(wRowId, rowid);
     handle_sde_err<FdoCommandException>(stream, result, __FILE__, __LINE__, ARCSDE_BIND_COLUMN_FAILED, "Failed to bind column '%1$ls'.", wRowId);
     result = SE_stream_execute (stream);
     handle_sde_err<FdoCommandException>(stream, result, __FILE__, __LINE__, ARCSDE_STREAM_EXECUTE, "Stream execute failed.");
@@ -118,8 +118,8 @@ void ArcSDECommitLongTransactionCommand::checkTable (
     conn = connection->GetConnection ();
     result = SE_reginfo_get_table_name (table, name);
     result = SE_reginfo_get_rowid_column (table, rowid, &type);
-    multibyte_to_wide (wname, name);
-    multibyte_to_wide (wrowid, rowid);
+    sde_multibyte_to_wide (wname, name);
+    sde_multibyte_to_wide (wrowid, rowid);
     definition = connection->TableToClass (wname);
     property = connection->ColumnToProperty (definition, wrowid);
     list = new ArcSDELongTransactionConflictDirectiveEnumerator::ConflictList (definition->GetQualifiedName (), property);
@@ -204,7 +204,7 @@ void ArcSDECommitLongTransactionCommand::copyRows (
     handle_sde_err<FdoCommandException> (connection, result, __FILE__, __LINE__, ARCSDE_STREAM_QUERY, "Stream query failed.");
     result = SE_stream_bind_output_column (stream, 1, &row, &row_ind);
     wchar_t* wRowId = NULL;
-    multibyte_to_wide(wRowId, rowid);
+    sde_multibyte_to_wide(wRowId, rowid);
     handle_sde_err<FdoCommandException>(stream, result, __FILE__, __LINE__, ARCSDE_BIND_COLUMN_FAILED, "Failed to bind column '%1$ls'.", wRowId);
     result = SE_stream_execute (stream);
     handle_sde_err<FdoCommandException>(stream, result, __FILE__, __LINE__, ARCSDE_STREAM_EXECUTE, "Stream execute failed.");
@@ -279,7 +279,7 @@ void ArcSDECommitLongTransactionCommand::deleteRows (
     handle_sde_err<FdoCommandException> (connection, result, __FILE__, __LINE__, ARCSDE_STREAM_QUERY, "Stream query failed.");
     result = SE_stream_bind_output_column (stream, 1, &row, &row_ind);
     wchar_t* wRowId = NULL;
-    multibyte_to_wide(wRowId, rowid);
+    sde_multibyte_to_wide(wRowId, rowid);
     handle_sde_err<FdoCommandException>(stream, result, __FILE__, __LINE__, ARCSDE_BIND_COLUMN_FAILED, "Failed to bind column '%1$ls'.", wRowId);
     result = SE_stream_execute (stream);
     handle_sde_err<FdoCommandException>(stream, result, __FILE__, __LINE__, ARCSDE_STREAM_EXECUTE, "Stream execute failed.");
@@ -341,7 +341,7 @@ void ArcSDECommitLongTransactionCommand::commitTable (
     handle_sde_err<FdoCommandException>(conn, result, __FILE__, __LINE__, ARCSDE_REGISTRATION_INFO_ITEM, "Table registration info item '%1$ls' could not be retrieved.", L"table name");
     result = SE_reginfo_get_rowid_column (table, rowid, &type);
     handle_sde_err<FdoCommandException>(conn, result, __FILE__, __LINE__, ARCSDE_REGISTRATION_INFO_ITEM, "Table registration info item '%1$ls' could not be retrieved.", L"rowid column");
-    multibyte_to_wide (wname, name);
+    sde_multibyte_to_wide (wname, name);
     definition = connection->TableToClass (wname);
     list = mDispositions->GetConflictList (definition->GetQualifiedName ());
     if (NULL != list)
@@ -441,7 +441,7 @@ FdoILongTransactionConflictDirectiveEnumerator* ArcSDECommitLongTransactionComma
     handle_sde_err<FdoCommandException> (conn, result, __FILE__, __LINE__, ARCSDE_VERSION_INFO_ITEM, "Version info item '%1$ls' could not be retrieved.", L"id");
 
     // check for dependant versions:
-    sprintf (where, "PARENT_VERSION_ID = %d", id);
+    sde_sprintf (sde_pus2wc(where), 50, _TXT("PARENT_VERSION_ID = %d"), id);
     result = SE_version_get_info_list (conn, where, &info, &count);
     handle_sde_err<FdoCommandException> (conn, result, __FILE__, __LINE__, ARCSDE_VERSION_INFO_LIST, "Version info list could not be retrieved.");
     SE_version_free_info_list (count,info);
@@ -565,4 +565,5 @@ FdoILockConflictReader* ArcSDECommitLongTransactionCommand::GetLockConflictReade
 {
     throw FdoException::Create (NlsMsgGet(ARCSDE_OPERATION_UNSUPPORTED, "This operation is not supported."));
 }
+
 

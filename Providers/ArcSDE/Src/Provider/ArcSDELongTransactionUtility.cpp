@@ -64,8 +64,8 @@ FdoString* ArcSDELongTransactionUtility::CheckName (FdoString* value)
     temp = trim (temp);
     if (0 == wcslen (temp))
         throw FdoException::Create (NlsMsgGet (ARCSDE_VERSION_NULL, "Version name cannot be NULL."));
-    wide_to_multibyte (name, value);
-    //if (strlen (name) > SE_MAX_VERSION_INPUT_LEN)
+    sde_wide_to_multibyte (name, value);
+    //if (sde_strlen (name) > SE_MAX_VERSION_INPUT_LEN)
     //    throw FdoCommandException::Create (NlsMsgGet (ARCSDE_VERSION_NAME_TOO_LONG, "Version name exceeds SE_MAX_VERSION_INPUT_LEN characters."));
 
     return (value);
@@ -81,8 +81,8 @@ FdoString* ArcSDELongTransactionUtility::CheckDescription (FdoString* value)
 
     if (NULL == value)
         value = blank;
-    wide_to_multibyte (description, value);
-    if (strlen (description) > SE_MAX_DESCRIPTION_LEN)
+    sde_wide_to_multibyte (description, value);
+    if (sde_strlen (sde_pcus2wc(description)) > SE_MAX_DESCRIPTION_LEN)
         throw FdoCommandException::Create (NlsMsgGet (ARCSDE_VERSION_DESCRIPTION_TOO_LONG, "Version description exceeds SE_MAX_DESCRIPTION_LEN characters."));
     
     return (value);
@@ -119,10 +119,10 @@ bool ArcSDELongTransactionUtility::IsOurVersion (SE_CONNECTION connection, SE_VE
 
     result = SE_versioninfo_get_name (version, owner);
     handle_sde_err<FdoCommandException> (connection, result, __FILE__, __LINE__, ARCSDE_VERSION_INFO_ITEM, "Version info item '%1$ls' could not be retrieved.", L"name");
-    *(strchr (owner, '.')) = '\0';
+    *(sde_strchr (sde_pus2wc(owner), '.')) = '\0';
     result = SE_connection_get_user_name (connection, user_name);
     handle_sde_err<FdoCommandException> (connection, result, __FILE__, __LINE__, ARCSDE_USER_UNKNOWN, "Cannot determine current user.");
-    ret = (0 == strcmp (owner, user_name));
+    ret = (0 == sde_strcmp (sde_pcus2wc(owner), sde_pcus2wc(user_name)));
 
     return (ret);
 }
@@ -155,7 +155,12 @@ void ArcSDELongTransactionUtility::VersionEnable (SE_CONNECTION connection, CHAR
 /// <returns>Returns nothing.</returns> 
 void ArcSDELongTransactionUtility::GetVersionByName (SE_CONNECTION connection, FdoString* name, SE_VERSIONINFO version)
 {
-    static CHAR query[] = "NAME = '%s' and STATUS = 1";
+    static SDE_CHAR query[] = 
+#ifdef SDE_UNICODE
+		L"NAME = '%ls' and STATUS = 1";
+#else
+		"NAME = '%s' and STATUS = 1";
+#endif
     CHAR* version_owner;
     CHAR* version_name;
     CHAR user_name[SE_MAX_OWNER_LEN];
@@ -164,17 +169,17 @@ void ArcSDELongTransactionUtility::GetVersionByName (SE_CONNECTION connection, F
     SE_VERSIONINFO *list;
     LONG count;
     LONG id;
-    CHAR where[SE_MAX_VERSION_LEN + sizeof(query)];
+    CHAR where[SE_MAX_VERSION_LEN + sizeof(query) + 1];
     LONG result;
 
     if (NULL == name)
         throw FdoException::Create (NlsMsgGet (ARCSDE_VERSION_NULL, "Version name cannot be NULL."));
     version_owner = NULL;
-    wide_to_multibyte (version_owner, name);
+    sde_wide_to_multibyte (version_owner, name);
     if (NULL == version_owner)
         throw FdoException::Create (NlsMsgGet (ARCSDE_VERSION_NULL, "Version name cannot be NULL."));
 
-    version_name = strchr (version_owner, '.');
+    version_name = sde_pwc2us(sde_strchr (sde_pus2wc(version_owner), '.'));
     if (NULL != version_name)
     {
         *version_name = '\0';
@@ -201,7 +206,7 @@ void ArcSDELongTransactionUtility::GetVersionByName (SE_CONNECTION connection, F
             // Note: SE_VERSION_ACCESS_PUBLIC is defined as 0, but the database contains a
             // status of 1 for public versions (0 for private, 2 for protected),
             // so presumably it's bit coded
-            sprintf (where, query, version_name);
+            sde_sprintf (sde_pus2wc(where), SE_MAX_VERSION_LEN + 28, query, version_name);
             result = SE_version_get_info_list (connection, where, &list, &count);
             handle_sde_err<FdoCommandException> (connection, result, __FILE__, __LINE__, ARCSDE_VERSION_INFO_LIST, "Version info list could not be retrieved.");
             if (0 == count)
@@ -222,9 +227,9 @@ void ArcSDELongTransactionUtility::GetVersionByName (SE_CONNECTION connection, F
     }
     else
     {   // try only the exact name
-        strcpy (qualified_name, version_owner);
-        strcat (qualified_name, ".");
-        strcat (qualified_name, version_name);
+        sde_strcpy (sde_pus2wc(qualified_name), sde_pcus2wc(version_owner));
+        sde_strcat (sde_pus2wc(qualified_name), sde_pcus2wc(_TXT(".")));
+        sde_strcat (sde_pus2wc(qualified_name), sde_pcus2wc(version_name));
         result = SE_version_get_info (connection, qualified_name, version);
     }
     handle_sde_err<FdoCommandException> (connection, result, __FILE__, __LINE__, ARCSDE_VERSION_INFO, "Version info for '%1$ls' could not be retrieved.", name);
@@ -238,7 +243,7 @@ void ArcSDELongTransactionUtility::GetDefaultVersion (SE_CONNECTION connection, 
 {
     wchar_t* name;
 
-    multibyte_to_wide (name, SE_QUALIFIED_DEFAULT_VERSION_NAME);
+    sde_multibyte_to_wide (name, SE_QUALIFIED_DEFAULT_VERSION_NAME);
     GetVersionByName (connection, name, version);
 }
 
@@ -256,7 +261,7 @@ void ArcSDELongTransactionUtility::VersionDelete (SE_CONNECTION conn, FdoString*
     if (NULL == name)
         throw FdoException::Create (NlsMsgGet (ARCSDE_VERSION_NULL, "Version name cannot be NULL."));
     version_name = NULL;
-    wide_to_multibyte (version_name, name);
+    sde_wide_to_multibyte (version_name, name);
 
     result = SE_versioninfo_create (&version);
     handle_sde_err<FdoCommandException> (conn, result, __FILE__, __LINE__, ARCSDE_VERSION_INFO_ALLOC, "Cannot initialize SE_VERSIONINFO structure.");
@@ -360,7 +365,7 @@ bool ArcSDELongTransactionUtility::StateHasChildren (ArcSDEConnection* providerC
     FdoCommonOSUtil::swprintf(wcsStateLineagesTable, ELEMENTS(wcsStateLineagesTable), L"%ls%ls", providerConnection->RdbmsSystemTablePrefix(), SDE_SYSTEM_TABLE_STATE_LINEAGES);
 
     // assumes states numbers are allocated in increasing order (Oracle sequence: SDE.STATE_ID_GENERATOR_NC)
-    sprintf (where, "STATE_ID in (select LINEAGE_ID from %ls where LINEAGE_NAME in (select LINEAGE_NAME from %ls where LINEAGE_ID = %ld)) and STATE_ID > %ld", (const wchar_t*)wcsStateLineagesTable, (const wchar_t*)wcsStateLineagesTable, state, state);
+    sde_sprintf (sde_pus2wc(where), 512, _TXT("STATE_ID in (select LINEAGE_ID from %ls where LINEAGE_NAME in (select LINEAGE_NAME from %ls where LINEAGE_ID = %ld)) and STATE_ID > %ld"), (const wchar_t*)wcsStateLineagesTable, (const wchar_t*)wcsStateLineagesTable, state, state);
 
     result = SE_state_get_info_list (connection, where, &infos, &count);
     handle_sde_err<FdoCommandException> (connection, result, __FILE__, __LINE__, ARCSDE_STATE_INFO_LIST, "State info list could not be retrieved.");
@@ -393,7 +398,7 @@ LONG ArcSDELongTransactionUtility::LockVersion (ArcSDEConnection* providerConnec
 
     // get the version name... we need it for error messages
     SE_versioninfo_get_name (version, name);
-    multibyte_to_wide (wname, name);
+    sde_multibyte_to_wide (wname, name);
 
     // get the state
     result = SE_versioninfo_get_state_id (version, &state);
@@ -419,7 +424,7 @@ LONG ArcSDELongTransactionUtility::LockVersion (ArcSDEConnection* providerConnec
     children = StateHasChildren (providerConnection, state);
 
     // if they aren't the same people or the state has children, create a new state for the version
-    if (open && ((0 != strcmp (owner, user_name)) || children))
+    if (open && ((0 != sde_strcmp (sde_pcus2wc(owner), sde_pcus2wc(user_name))) || children))
     {
         // make a new state
         state = ArcSDELongTransactionUtility::CreateChildState (connection, state);
@@ -499,7 +504,7 @@ void ArcSDELongTransactionUtility::UnlockVersion (SE_CONNECTION connection, SE_V
     {
         // get the version name... we need it for error messages
         SE_versioninfo_get_name (version, name);
-        multibyte_to_wide (wname, name);
+        sde_multibyte_to_wide (wname, name);
 
         // close the state
         result = SE_state_close (connection, state);
@@ -602,9 +607,10 @@ void ArcSDELongTransactionUtility::DeleteVersion (SE_CONNECTION conn, CHAR* name
     wchar_t* wname;
     LONG result;
 
-    multibyte_to_wide (wname, name);
+    sde_multibyte_to_wide (wname, name);
     result = SE_version_delete (conn, name);
     handle_sde_err<FdoCommandException> (conn, result, __FILE__, __LINE__, ARCSDE_VERSION_DELETE_FAILED, "Cannot delete version '%1$ls'.", wname);
 }
+
 
 

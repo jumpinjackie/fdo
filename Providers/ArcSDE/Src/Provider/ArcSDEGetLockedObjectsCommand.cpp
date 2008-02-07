@@ -87,7 +87,7 @@ FdoILockedObjectReader* ArcSDEGetLockedObjectsCommand::Execute ()
         wchar_t* name = wcsdup (GetLockOwner ());
 #endif
         FdoCommonOSUtil::wcsupr (name);
-        wide_to_multibyte (user, name);
+        sde_wide_to_multibyte (user, name);
         free (name);
     }
 
@@ -110,4 +110,5 @@ FdoILockedObjectReader* ArcSDEGetLockedObjectsCommand::Execute ()
 
     return (FDO_SAFE_ADDREF (ret.p));
 }
+
 

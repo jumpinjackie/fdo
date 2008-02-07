@@ -53,6 +53,72 @@
 #include <wctype.h>  // for wchar related functions
 #endif
 
+#ifdef SDE_UNICODE
+	#define sde_multibyte_to_wide(w,mb) w = sde_pus2wc(mb);
+	#define sde_wide_to_multibyte(mb,w) mb = sde_pwc2us(w);
+	#define sde_sprintf FdoCommonOSUtil::swprintf
+	#define sde_stricmp FdoCommonOSUtil::wcsicmp
+	#define sde_strlen	wcslen
+	#define sde_strcpy	wcscpy
+	#define sde_strcat	wcscat
+	#define sde_strncpy wcsncpy
+	#define sde_strcmp  wcscmp
+	#define sde_strchr  wcschr
+#ifdef _WIN32
+	#define sde_strdup  _wcsdup
+#else
+	#define sde_strdup  wcsdup
+#endif
+	#define sde_PropertyValue(parser, prop)	sde_pcwc2us(parser.GetPropertyValueW(prop))
+	#define sde_pwc2us(str) (CHAR*)(wchar_t*)(str)
+	#define sde_pcwc2us(str) (const CHAR*)(const wchar_t*)(str)
+	#define sde_pus2wc(str) (wchar_t*)(CHAR*)(str)
+	#define sde_pcus2wc(str) (const wchar_t*)(const CHAR*)(str)
+	#define sde_cstwc(str) (const wchar_t*)(str)
+	#define sde_std_string std::wstring
+	#define sde_ltoa(lSuffix, sSuffix) FdoCommonOSUtil::ltow(lSuffix, sSuffix, 15)
+    #define sde_isalpha(string, stringLength, current) (iswalpha(*((const wchar_t*)string)) ? -1 : 0)
+    #define sde_isalnum(string, stringLength, current) (iswalnum(*((const wchar_t*)string)) ? -1 : 0)
+    #define sde_ismbstrail(str, current) 0
+    #define sde_ismbslead(str, current) 0
+	#define SDE_CHAR wchar_t
+	#ifndef _TXT
+		#define _TXT(x) L## x
+	#endif
+#else
+	#define sde_multibyte_to_wide(w,mb) multibyte_to_wide(w,mb)
+	#define sde_wide_to_multibyte(mb,w) wide_to_multibyte(mb,w)
+	#define sde_sprintf FdoCommonOSUtil::scprintf
+	#define sde_stricmp FdoCommonOSUtil::stricmp
+	#define sde_strlen	strlen
+	#define sde_strcpy	strcpy
+	#define sde_strcat	strcat
+	#define sde_strncpy strncpy
+	#define sde_strcmp  strcmp
+	#define sde_strchr  strchr
+#ifdef _WIN32
+	#define sde_strdup  _strdup
+#else
+	#define sde_strdup  strdup
+#endif
+	#define sde_PropertyValue(parser, prop)	sde_pcwc2us(parser.GetPropertyValue(prop))
+	#define sde_pwc2us(str) str
+	#define sde_pcwc2us(str) (const CHAR*)(str)
+	#define sde_pus2wc(str) str
+	#define sde_pcus2wc(str) (const CHAR*)(str)
+	#define sde_cstwc(str) (const CHAR*)(str)
+	#define sde_std_string std::string
+	#define sde_ltoa(lSuffix, sSuffix) FdoCommonOSUtil::ltoa(lSuffix, sSuffix)
+    #define sde_isalpha(string, stringLength, current) FdoCommonOSUtil::ismbcalpha((const unsigned char*)string, stringLength, (const unsigned char*)current)
+    #define sde_isalnum(string, stringLength, current) FdoCommonOSUtil::ismbcalnum((const unsigned char*)string, stringLength, (const unsigned char*)current)
+    #define sde_ismbstrail(str, current) FdoCommonOSUtil::ismbstrail((const unsigned char*)str, (const unsigned char*)current)
+    #define sde_ismbslead(str, current) FdoCommonOSUtil::ismbslead((const unsigned char*)str, (const unsigned char*)current)
+	#define SDE_CHAR CHAR
+	#ifndef _TXT
+		#define _TXT(x) x
+	#endif
+#endif
+
 // common ArcSDE Provider headers:
 class ArcSDEConnection;
 #include "../Message/Inc/ArcSDEMessage.h"
@@ -115,4 +181,5 @@ class ArcSDEConnection;
 #include <ArcSDEDataStoreReader.h>
 
 #endif // FDOSDE_H
+
 

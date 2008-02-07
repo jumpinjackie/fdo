@@ -54,6 +54,19 @@ int FdoCommonOSUtil::swprintf(wchar_t* buffer, size_t bufferSize, const wchar_t*
     return retVal;
 }
 
+int FdoCommonOSUtil::scprintf(char* buffer, size_t bufferSize, const char* format, ...)
+{
+    int retVal = 0;
+    va_list  varargs;
+    
+    va_start(varargs, format);
+
+    retVal = vsprintf(buffer, format, varargs);
+
+    va_end(varargs);
+
+    return retVal;
+}
 
 char *FdoCommonOSUtil::gcvt(double number, size_t ndigits, char *buf)
 {
@@ -399,4 +412,5 @@ FdoStringP FdoCommonOSUtil::GetCurrentUserName(void)
 
 
 #pragma warning(pop) // Enable warning C4100: 'xxxx' : unreferenced formal parameter
+
 

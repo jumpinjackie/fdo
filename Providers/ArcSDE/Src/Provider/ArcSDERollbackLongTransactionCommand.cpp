@@ -89,10 +89,10 @@ void ArcSDERollbackLongTransactionCommand::Execute ()
     // delete the long transaction if we own it, otherwise move it to the parent version's state
     result = SE_versioninfo_get_name (version, owner);
     handle_sde_err<FdoCommandException> (conn, result, __FILE__, __LINE__, ARCSDE_VERSION_INFO_ITEM, "Version info item '%1$ls' could not be retrieved.", L"Name");
-    *(strchr (owner, '.')) = '\0';
+    *(sde_strchr (sde_pus2wc(owner), '.')) = '\0';
     result = SE_connection_get_user_name (conn, user_name);
     handle_sde_err<FdoCommandException> (conn, result, __FILE__, __LINE__, ARCSDE_USER_UNKNOWN, "Cannot determine current user.");
-    if (0 == strcmp (owner, user_name))
+    if (0 == sde_strcmp (sde_pcus2wc(owner), sde_pcus2wc(user_name)))
         ArcSDELongTransactionUtility::VersionDelete (conn, GetName ());
     else
     {
@@ -117,4 +117,5 @@ FdoILockConflictReader* ArcSDERollbackLongTransactionCommand::GetLockConflictRea
 {
     throw FdoException::Create (NlsMsgGet(ARCSDE_OPERATION_UNSUPPORTED, "This operation is not supported."));
 }
+
 

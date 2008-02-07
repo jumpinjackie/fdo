@@ -96,10 +96,10 @@ void ArcSDECreateLongTransactionCommand::Execute ()
     if (0 == wcslen (GetName ()))
         throw FdoException::Create (NlsMsgGet (ARCSDE_VERSION_NULL, "Version name cannot be NULL."));
     name = NULL;
-    wide_to_multibyte (name, (wchar_t*)GetName ());
+    sde_wide_to_multibyte (name, (wchar_t*)GetName ());
     description = NULL;
     if (NULL != GetDescription ())
-        wide_to_multibyte (description, (wchar_t*)GetDescription ());
+        sde_wide_to_multibyte (description, (wchar_t*)GetDescription ());
 
     // create the empty version object
     result = SE_versioninfo_create (&version);
@@ -119,12 +119,12 @@ void ArcSDECreateLongTransactionCommand::Execute ()
     if (-1 != connection->GetActiveVersion ())
         ArcSDELongTransactionUtility::GetVersionName (conn, connection->GetActiveVersion (), parent_name);
     else
-        strcpy (parent_name, SE_QUALIFIED_DEFAULT_VERSION_NAME);
+        sde_strcpy (sde_pus2wc(parent_name), SE_QUALIFIED_DEFAULT_VERSION_NAME);
 
     // fetch the version info: we need it's state id
     result = SE_version_get_info (conn, parent_name, version);
     wchar_t *wQualifiedDefaultVersionName = NULL;
-    multibyte_to_wide(wQualifiedDefaultVersionName, SE_QUALIFIED_DEFAULT_VERSION_NAME);
+    sde_multibyte_to_wide(wQualifiedDefaultVersionName, SE_QUALIFIED_DEFAULT_VERSION_NAME);
     handle_sde_err<FdoCommandException> (conn, result, __FILE__, __LINE__, ARCSDE_VERSION_INFO, "Version info for '%1$ls' could not be retrieved.", wQualifiedDefaultVersionName);
 
     // create a child state from the state of the parent version
@@ -171,5 +171,6 @@ void ArcSDECreateLongTransactionCommand::Execute ()
 
     SE_versioninfo_free (version);
 }
+
 
 

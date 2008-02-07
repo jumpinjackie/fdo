@@ -42,27 +42,27 @@ char *fdoarcsde_cat = "ArcSDEMessage.dll";
 
 
 // Constants for ArcSDE Metadata:
-const char* METADATA_CN_CLASSSCHEMA = "FdoClass_SchemaName";
-const char* METADATA_CN_CLASSNAME   = "FdoClass_Name";
+const CHAR* METADATA_CN_CLASSSCHEMA = sde_pcwc2us(_TXT("FdoClass_SchemaName"));
+const CHAR* METADATA_CN_CLASSNAME   = sde_pcwc2us(_TXT("FdoClass_Name"));
 const char* METADATA_CN_CLASSTYPE   = "FdoClass_Type";
-const char* METADATA_CN_CLASSDESC   = "FdoClass_Desc";
+const CHAR* METADATA_CN_CLASSDESC   = sde_pcwc2us(_TXT("FdoClass_Desc"));
 const char* METADATA_CN_CLASSATTR   = "FdoClass_Attribute";
 const char* METADATA_CN_CLASSBASE   = "FdoClass_BaseClass";
 const char* METADATA_CN_CLASSABSTRACT = "FdoClass_IsAbstract";
-const char* METADATA_CN_PROPNAME    = "FdoProperty_Name";
-const char* METADATA_CN_PROPTYPE    = "FdoProperty_Type";
-const char* METADATA_CN_PROPDESC    = "FdoProperty_Desc";
-const char* METADATA_CN_PROPREADONLY= "FdoProperty_ReadOnly";
-const char* METADATA_CN_PROPDEFAULTVALUE= "FdoProperty_DefaultValue";
+const CHAR* METADATA_CN_PROPNAME    = sde_pcwc2us(_TXT("FdoProperty_Name"));
+const CHAR* METADATA_CN_PROPTYPE    = sde_pcwc2us(_TXT("FdoProperty_Type"));
+const CHAR* METADATA_CN_PROPDESC    = sde_pcwc2us(_TXT("FdoProperty_Desc"));
+const CHAR* METADATA_CN_PROPREADONLY= sde_pcwc2us(_TXT("FdoProperty_ReadOnly"));
+const CHAR* METADATA_CN_PROPDEFAULTVALUE= sde_pcwc2us(_TXT("FdoProperty_DefaultValue"));
 const char* METADATA_CN_PROPATTR    = "FdoProperty_Attribute";
-const char* METADATA_V_DATATYPE_BOOLEAN = "Boolean";
-const char* METADATA_V_DATATYPE_BYTE    = "Byte";
-const char* METADATA_V_DATATYPE_INT16   = "Int16";
-const char* METADATA_V_DATATYPE_INT64   = "Int64";
-const char* METADATA_V_DATATYPE_SINGLE  = "Single";
-const char* METADATA_V_DATATYPE_DOUBLE  = "Double";
-const char* METADATA_V_BOOL_YES = "Yes";
-const char* METADATA_V_BOOL_NO  = "No";
+const CHAR* METADATA_V_DATATYPE_BOOLEAN = sde_pcwc2us(_TXT("Boolean"));
+const CHAR* METADATA_V_DATATYPE_BYTE    = sde_pcwc2us(_TXT("Byte"));
+const CHAR* METADATA_V_DATATYPE_INT16   = sde_pcwc2us(_TXT("Int16"));
+const CHAR* METADATA_V_DATATYPE_INT64   = sde_pcwc2us(_TXT("Int64"));
+const CHAR* METADATA_V_DATATYPE_SINGLE  = sde_pcwc2us(_TXT("Single"));
+const CHAR* METADATA_V_DATATYPE_DOUBLE  = sde_pcwc2us(_TXT("Double"));
+const CHAR* METADATA_V_BOOL_YES = sde_pcwc2us(_TXT("Yes"));
+const CHAR* METADATA_V_BOOL_NO  = sde_pcwc2us(_TXT("No"));
 
 
 unsigned char* readint (unsigned char* wkb, unsigned char order, int *value)
@@ -442,7 +442,7 @@ void DebugByteArray(unsigned char pByteArray[], long lByteCount, char *strMessag
 
 
 // NOTE: callers must free the returned coordref via SE_coordref_free()
-LONG GetCoordRefFromColumn(ArcSDEConnection* connection, const char *strTable, const char *strColumn, SE_COORDREF &coordref)
+LONG GetCoordRefFromColumn(ArcSDEConnection* connection, const CHAR *strTable, const CHAR *strColumn, SE_COORDREF &coordref)
 {
     SE_LAYERINFO layerinfo;
     LONG result = SE_SUCCESS;
@@ -467,11 +467,11 @@ LONG SetShapeCoordRef(SE_SHAPE &shape, SE_COORDREF &coordref)
     // extract the WKB before resetting the coordsys, to avoid warping cogo data:
     long lWKBSize = 0;
     long lWKBSizeActual = 0;
-    CHAR* wkb = NULL;
+    char* wkb = NULL;
     result = SE_shape_get_WKB_size(shape, &lWKBSize);
     if (SE_SUCCESS == result)
     {
-        wkb = new CHAR[lWKBSize];
+        wkb = new char[lWKBSize];
         result = SE_shape_as_WKB(shape, lWKBSize, &lWKBSizeActual, wkb);
         if (SE_SUCCESS == result)
         {
@@ -497,7 +497,7 @@ LONG SetShapeCoordRef(SE_SHAPE &shape, SE_COORDREF &coordref)
 
 
 
-void AddSpatialFilters(ArcSDEConnection* conn, const FdoSpatialOperations fdoSpatialOperation, const char* sdeColumnName, SE_SHAPE &shape, std::vector<SE_FILTER> &spatialFilters)
+void AddSpatialFilters(ArcSDEConnection* conn, const FdoSpatialOperations fdoSpatialOperation, const CHAR* sdeColumnName, SE_SHAPE &shape, std::vector<SE_FILTER> &spatialFilters)
 {
     //NOTE: see ArcSDE CHM file page "Fetching Data", for details on each ArcSDE spatial operator (e.g. SM_AI_OR_ET, etc)
 
@@ -505,7 +505,7 @@ void AddSpatialFilters(ArcSDEConnection* conn, const FdoSpatialOperations fdoSpa
     SE_CONNECTION connection = conn->GetConnection();
     SE_FILTER newSpatialFilter;
     // NOTE: we don't know the name of the table in here, so let caller set newSpatialFilter.table
-    strcpy (newSpatialFilter.column, sdeColumnName);
+    sde_strcpy (sde_pus2wc(newSpatialFilter.column), sde_pcus2wc(sdeColumnName));
     newSpatialFilter.filter.shape = shape;
     newSpatialFilter.filter_type = SE_SHAPE_FILTER;
 
@@ -1444,6 +1444,11 @@ FdoDataType SDEType2FdoType (LONG sdeType)
             //       For other RDBMS, this may be different -- Documentation is unclear.
             ret = FdoDataType_Double;
             break;
+#ifdef SDE_UNICODE
+        case SE_NSTRING_TYPE:          /* Null term. Character array */
+            ret = FdoDataType_String;
+            break;
+#endif
         case SE_STRING_TYPE:          /* Null term. Character array */
             ret = FdoDataType_String;
             break;
@@ -1588,42 +1593,42 @@ FdoString* NlsMsgGetMain(int msg_num, char* default_msg, ...)
 
 
 
-bool nameInUse(std::vector<std::string> namesInUse, const CHAR* testName)
+bool nameInUse(std::vector<sde_std_string> namesInUse, const CHAR* testName)
 {
     bool bNameInUse = false;
     for (unsigned int i=0; (i<namesInUse.size()) && !bNameInUse; i++)
-        if (0==FdoCommonOSUtil::stricmp(namesInUse.at(i).c_str(), testName))
+        if (0==sde_stricmp(namesInUse.at(i).c_str(), sde_pcus2wc(testName)))
             bNameInUse = true;
 
     return bNameInUse;
 }
 
-void generateUniqueName(ArcSDEConnection *conn, const std::vector<std::string> namesInUse, long lMaxLen, const CHAR* suggestedName, bool bStrict, CHAR* dbName, CHAR* ownerName, CHAR *generatedName)
+void generateUniqueName(ArcSDEConnection *conn, const std::vector<sde_std_string> namesInUse, long lMaxLen, const CHAR* suggestedName, bool bStrict, CHAR* dbName, CHAR* ownerName, CHAR *generatedName)
 {
     LONG lResult = 0;
 
     // Truncate the name to acceptable length, careful with lead/trail bytes:
     CHAR *suggestedNameTruncated = new CHAR[lMaxLen];
-    strncpy(suggestedNameTruncated, suggestedName, lMaxLen-1);
-    if (strlen(suggestedName) >= (unsigned long)lMaxLen-1)
+    sde_strncpy(sde_pus2wc(suggestedNameTruncated), sde_pcus2wc(suggestedName), lMaxLen-1);
+    if (sde_strlen(sde_pcus2wc(suggestedName)) >= (unsigned long)lMaxLen-1)
     {
         suggestedNameTruncated[lMaxLen-1] = '\0';
-        if (FdoCommonOSUtil::ismbslead((unsigned char*)suggestedNameTruncated, (unsigned char*)&(suggestedNameTruncated[lMaxLen-2])))
+        if (sde_ismbslead(suggestedNameTruncated, &(suggestedNameTruncated[lMaxLen-2])))
             suggestedNameTruncated[lMaxLen-2] = '\0';
     }
 
     if (bStrict)
     {
         // Add prefix if first character is not alphabetical, careful with lead/trail bytes:
-        if (!FdoCommonOSUtil::ismbcalpha((unsigned char*)suggestedNameTruncated, lMaxLen, (unsigned char*)&(suggestedNameTruncated[0])))
+        if (!sde_isalpha(suggestedNameTruncated, lMaxLen, &(suggestedNameTruncated[0])))
         {
             //replace last character with NULL's:
-            suggestedNameTruncated[strlen(suggestedNameTruncated)-1] = '\0';
-            if (FdoCommonOSUtil::ismbslead((unsigned char*)suggestedNameTruncated, (unsigned char*)&(suggestedNameTruncated[strlen(suggestedNameTruncated)-2])))
-                suggestedNameTruncated[strlen(suggestedNameTruncated)-2] = '\0';
+            suggestedNameTruncated[sde_strlen(sde_pcus2wc(suggestedNameTruncated))-1] = '\0';
+            if (sde_ismbslead(suggestedNameTruncated, &(suggestedNameTruncated[sde_strlen(sde_pcus2wc(suggestedNameTruncated))-2])))
+                suggestedNameTruncated[sde_strlen(sde_pcus2wc(suggestedNameTruncated))-2] = '\0';
 
             //shift all remaining characters by 1 byte:
-            for (long i=(long)strlen(suggestedNameTruncated); i>0; i--)
+            for (long i=(long)sde_strlen(sde_pcus2wc(suggestedNameTruncated)); i>0; i--)
                 suggestedNameTruncated[i] = suggestedNameTruncated[i-1];
 
             //insert prefix:
@@ -1631,11 +1636,11 @@ void generateUniqueName(ArcSDEConnection *conn, const std::vector<std::string> n
         }
 
         // Replace all non-alphanumeric characters with '_':
-        for (unsigned int i=0; i<strlen(suggestedNameTruncated); i++)
+        for (unsigned int i=0; i<sde_strlen(sde_pcus2wc(suggestedNameTruncated)); i++)
         {
-            if (!FdoCommonOSUtil::ismbcalnum((unsigned char*)suggestedNameTruncated, lMaxLen, (unsigned char*)&(suggestedNameTruncated[i])))
+            if (!sde_isalnum(suggestedNameTruncated, lMaxLen, &(suggestedNameTruncated[i])))
             {
-                if (FdoCommonOSUtil::ismbslead((unsigned char*)suggestedNameTruncated, (unsigned char*)&(suggestedNameTruncated[i])))
+                if (sde_ismbslead(suggestedNameTruncated, &(suggestedNameTruncated[i])))
                 {
                     suggestedNameTruncated[i] = '_';
                     i++;
@@ -1651,7 +1656,7 @@ void generateUniqueName(ArcSDEConnection *conn, const std::vector<std::string> n
     long lSuffix = 0;
     CHAR sSuffix[15];
     CHAR *suggestedNameSuffixed = new CHAR[lMaxLen];
-    strcpy(suggestedNameSuffixed, suggestedNameTruncated);
+    sde_strcpy(sde_pus2wc(suggestedNameSuffixed), sde_pcus2wc(suggestedNameTruncated));
 
     // build qualified name (if an ownerName or dbName was provided):
     CHAR qualifiedSuggestedName[SE_QUALIFIED_TABLE_NAME];
@@ -1662,22 +1667,22 @@ void generateUniqueName(ArcSDEConnection *conn, const std::vector<std::string> n
         handle_sde_err<FdoException>(conn->GetConnection (), lResult, __FILE__, __LINE__, ARCSDE_QUERYINFO_MANIPULATION_FAILED, "Unexpected error while manipulating an ArcSDE SE_QUERYINFO object.");
     }
     else
-        strcpy(qualifiedSuggestedName, suggestedNameSuffixed);
+        sde_strcpy(sde_pus2wc(qualifiedSuggestedName), sde_pcus2wc(suggestedNameSuffixed));
 
     while (nameInUse(namesInUse, qualifiedSuggestedName))
     {
-        strcpy(suggestedNameSuffixed, suggestedNameTruncated);
+        sde_strcpy(sde_pus2wc(suggestedNameSuffixed), sde_pcus2wc(suggestedNameTruncated));
 
         // Add an integer to the end of the name to try to make it unique:
         lSuffix++;
-        FdoCommonOSUtil::ltoa(lSuffix, sSuffix);
+        sde_ltoa(lSuffix, sde_pus2wc(sSuffix));
 
-        long lSuffixStartIndex = (long)strlen(suggestedNameSuffixed) - (long)strlen(sSuffix);
-        if (FdoCommonOSUtil::ismbstrail((unsigned char*)suggestedNameSuffixed, (unsigned char*)&(suggestedNameSuffixed[lSuffixStartIndex])))
+        long lSuffixStartIndex = (long)sde_strlen(sde_pcus2wc(suggestedNameSuffixed)) - (long)sde_strlen(sde_pcus2wc(sSuffix));
+        if (sde_ismbstrail(suggestedNameSuffixed, &(suggestedNameSuffixed[lSuffixStartIndex])))
             lSuffixStartIndex--;
 
-        strcpy(suggestedNameSuffixed+lSuffixStartIndex, sSuffix);
-        suggestedNameSuffixed[lSuffixStartIndex+strlen(sSuffix)] = '\0';
+        sde_strcpy(sde_pus2wc(suggestedNameSuffixed+lSuffixStartIndex), sde_pcus2wc(sSuffix));
+        suggestedNameSuffixed[lSuffixStartIndex+sde_strlen(sde_pcus2wc(sSuffix))] = '\0';
 
         // build qualified name (if an ownerName or dbName was provided):
         if (ownerName != NULL)
@@ -1687,12 +1692,12 @@ void generateUniqueName(ArcSDEConnection *conn, const std::vector<std::string> n
             handle_sde_err<FdoException>(conn->GetConnection (), lResult, __FILE__, __LINE__, ARCSDE_QUERYINFO_MANIPULATION_FAILED, "Unexpected error while manipulating an ArcSDE SE_QUERYINFO object.");
         }
         else
-            strcpy(qualifiedSuggestedName, suggestedNameSuffixed);
+            sde_strcpy(sde_pus2wc(qualifiedSuggestedName), sde_pcus2wc(suggestedNameSuffixed));
     }
 
 
     // Return generated unique name:
-    strcpy (generatedName, qualifiedSuggestedName);
+    sde_strcpy (sde_pus2wc(generatedName), sde_pcus2wc(qualifiedSuggestedName));
 
     // Cleanup:
     delete[] suggestedNameSuffixed;
@@ -1743,13 +1748,13 @@ void GetFilterInfo(ArcSDEConnection *connection, FdoFilter* filter, FdoClassDefi
         f2s = new ArcSDEFilterToSql (connection, classDef);
         f2s->HandleFilter (filter);
         CHAR* tempWhereClause = NULL;
-        wide_to_multibyte (tempWhereClause, f2s->GetSql ());  // volatile, since memory is on stack
-        if (0 == strcmp (tempWhereClause, " WHERE "))
+        sde_wide_to_multibyte (tempWhereClause, f2s->GetSql ());  // volatile, since memory is on stack
+        if (0 == sde_stricmp (sde_pcus2wc(tempWhereClause), _TXT(" WHERE ")))
             whereClause = NULL;
         else
         {
-            whereClause = new CHAR[strlen (tempWhereClause) + 1];
-            strcpy (whereClause, tempWhereClause);
+            whereClause = new CHAR[sde_strlen (sde_pcus2wc(tempWhereClause)) + 1];
+            sde_strcpy (sde_pus2wc(whereClause), sde_pcus2wc(tempWhereClause));
         }
 
         // Get table name from class name:
@@ -1761,7 +1766,7 @@ void GetFilterInfo(ArcSDEConnection *connection, FdoFilter* filter, FdoClassDefi
         for (int i = 0; i < spatialFilterCount; i++)
         {
             // set table name for each spatial filter:
-            strcpy (spatialFilters[i].table, table);
+            sde_strcpy(sde_pus2wc(spatialFilters[i].table), sde_pcus2wc(table));
 
             // set coordinate system for each spatial filter to match the column's coordinate system:
             //TODO: use the active spatial context instead of the column's coordinate system?
@@ -1817,7 +1822,7 @@ void ApplyFilterInfoToQueryInfo(ArcSDEConnection *connection, SE_QUERYINFO query
 
     // Set where clause:
     if (NULL == whereClause)
-        result = SE_queryinfo_set_where_clause(query_info, "");
+        result = SE_queryinfo_set_where_clause(query_info, sde_pcwc2us(_TXT("")));
     else
         result = SE_queryinfo_set_where_clause(query_info, whereClause);
     handle_sde_err<FdoCommandException>(connection->GetConnection (), result, __FILE__, __LINE__, ARCSDE_QUERYINFO_MANIPULATION_FAILED, "Unexpected error while manipulating an ArcSDE SE_QUERYINFO object.");
@@ -1826,13 +1831,13 @@ void ApplyFilterInfoToQueryInfo(ArcSDEConnection *connection, SE_QUERYINFO query
     CHAR **tables = NULL;
     tables = (CHAR**)alloca(1 * sizeof(CHAR*)); // new CHAR*[1];
     tables[0] = (CHAR*)alloca(SE_QUALIFIED_TABLE_NAME); // new CHAR[SE_MAX_TABLE_LEN];
-    strcpy(tables[0], table);
-    result = SE_queryinfo_set_tables(query_info, 1, (const char**)tables, NULL);
+    sde_strcpy(sde_pus2wc(tables[0]), sde_pcus2wc(table));
+    result = SE_queryinfo_set_tables(query_info, 1, (const CHAR**)tables, NULL);
     handle_sde_err<FdoCommandException>(connection->GetConnection (), result, __FILE__, __LINE__, ARCSDE_QUERYINFO_MANIPULATION_FAILED, "Unexpected error while manipulating an ArcSDE SE_QUERYINFO object.");
 
 
     // Set select clause:
-    result = SE_queryinfo_set_columns(query_info, numProperties, (const char**)columnNames);
+    result = SE_queryinfo_set_columns(query_info, numProperties, (const CHAR**)columnNames);
     handle_sde_err<FdoCommandException>(connection->GetConnection (), result, __FILE__, __LINE__, ARCSDE_QUERYINFO_MANIPULATION_FAILED, "Unexpected error while manipulating an ArcSDE SE_QUERYINFO object.");
 
     // Set order by clause:
@@ -1853,7 +1858,7 @@ void ApplyFilterInfoToQueryInfo(ArcSDEConnection *connection, SE_QUERYINFO query
                 orderByClause += ORDERBY_DESCENDING;
         }
         CHAR *mbOrderByClause = NULL;
-        wide_to_multibyte(mbOrderByClause, (const wchar_t*)orderByClause.c_str());
+        sde_wide_to_multibyte(mbOrderByClause, (const wchar_t*)orderByClause.c_str());
         result = SE_queryinfo_set_by_clause(query_info, mbOrderByClause);
         handle_sde_err<FdoCommandException>(connection->GetConnection (), result, __FILE__, __LINE__, ARCSDE_QUERYINFO_MANIPULATION_FAILED, "Unexpected error while manipulating an ArcSDE SE_QUERYINFO object.");
     }
@@ -2104,4 +2109,5 @@ FdoString* RdbmsToString(long lRdbmsID)
         case SE_DBMS_IS_UNKNOWN:   return L"Unknown RDBMS"; break;
     }
 }
+
 

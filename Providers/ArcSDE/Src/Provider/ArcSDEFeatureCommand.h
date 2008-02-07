@@ -405,7 +405,7 @@ void ArcSDEFeatureCommand<FDO_COMMAND>::assignValue (ArcSDEConnection* connectio
                                 if (_string == NULL)
                                     throw FdoException::Create(NlsMsgGet2(ARCSDE_VALUE_TYPE_MISMATCH, "Value type to insert, update or retrieve doesn't match the type (%1$ls) of property '%2$ls'.", L"FdoString", definition->GetName()));
 
-                                wide_to_multibyte (__string, (wchar_t*)_string->GetString ());
+                                sde_wide_to_multibyte (__string, (wchar_t*)_string->GetString ());
                                 ret = SE_stream_set_string (stream, columnIndex, __string);
                             }
                         }
@@ -552,7 +552,7 @@ void ArcSDEFeatureCommand<FDO_COMMAND>::assignValue (ArcSDEConnection* connectio
     }
 
     wchar_t* wTableName = NULL;
-    multibyte_to_wide(wTableName, table);
+    sde_multibyte_to_wide(wTableName, table);
     handle_sde_err<FdoCommandException>(stream, ret, __FILE__, __LINE__, ARCSDE_COULDNT_SET_VALUE,
         "Failed to set value for column %1$d (property %2$ls) on table %3$ls (class %4$ls).", columnIndex, definition->GetName (), wTableName, FdoPtr<FdoSchemaElement>(definition->GetParent ())->GetName ());
 }
@@ -616,13 +616,23 @@ FdoExpression* ArcSDEFeatureCommand<FDO_COMMAND>::GetValueFromStream(SE_STREAM s
             result = SE_stream_get_double(stream, streamColumnIndex, &idFloat64);
             expr = FdoDoubleValue::Create(idFloat64);
         break;
-
+#ifdef SDE_UNICODE
+        case SE_NSTRING_TYPE:
+        {
+            CHAR  *idString = (CHAR*)alloca((fdoDataProperty->GetLength()+1) * sizeof(CHAR));
+            result = SE_stream_get_string(stream, streamColumnIndex, idString);
+            wchar_t *wIdString = NULL;
+            sde_multibyte_to_wide(wIdString, idString);
+            expr = FdoStringValue::Create(wIdString);
+        }
+        break;
+#endif
         case SE_STRING_TYPE:
         {
             CHAR  *idString = (CHAR*)alloca((fdoDataProperty->GetLength()+1) * sizeof(CHAR));
             result = SE_stream_get_string(stream, streamColumnIndex, idString);
             wchar_t *wIdString = NULL;
-            multibyte_to_wide(wIdString, idString);
+            sde_multibyte_to_wide(wIdString, idString);
             expr = FdoStringValue::Create(wIdString);
         }
         break;
@@ -644,4 +654,5 @@ FdoExpression* ArcSDEFeatureCommand<FDO_COMMAND>::GetValueFromStream(SE_STREAM s
 
 
 #endif // ARCSDEFEATURECOMMAND_H
+
 

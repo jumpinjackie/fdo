@@ -277,20 +277,20 @@ void ArcSDECreateSpatialContext::Execute()
     {
         // truncate to appropriate length if necessary, leaving room for suffix:
         CHAR* csDescription = NULL;
-        wide_to_multibyte(csDescription, (const wchar_t*)m_wcsDescription);
-        if (strlen(csDescription) >= (SPATIALCONTEXT_MAX_DESC_LENGTH-wcslen(SPATIALCONTEXT_DESC_SUFFIX)))
+        sde_wide_to_multibyte(csDescription, (const wchar_t*)m_wcsDescription);
+        if (sde_strlen(sde_pcus2wc(csDescription)) >= (SPATIALCONTEXT_MAX_DESC_LENGTH-wcslen(SPATIALCONTEXT_DESC_SUFFIX)))
         {
             long lPos = SPATIALCONTEXT_MAX_DESC_LENGTH-(long)wcslen(SPATIALCONTEXT_DESC_SUFFIX);
-            while (FdoCommonOSUtil::ismbstrail((const unsigned char*)csDescription, (const unsigned char*)csDescription + lPos))
+            while (sde_ismbstrail(csDescription, csDescription + lPos))
                 lPos--;
             csDescription[lPos] = '\0';
         }
 
         // append suffix:
         CHAR* csSpatialContextDescSuffix = NULL;
-        wide_to_multibyte(csSpatialContextDescSuffix, SPATIALCONTEXT_DESC_SUFFIX);
+        sde_wide_to_multibyte(csSpatialContextDescSuffix, SPATIALCONTEXT_DESC_SUFFIX);
         CHAR csSpatialcontextDescWithSuffix[SE_MAX_DESCRIPTION_LEN+1];
-        sprintf(csSpatialcontextDescWithSuffix, "%s%s",csDescription , csSpatialContextDescSuffix);
+        sde_sprintf(sde_pus2wc(csSpatialcontextDescWithSuffix), SE_MAX_DESCRIPTION_LEN+1, _TXT("%s%s"),csDescription , csSpatialContextDescSuffix);
 
         // finally set the description:        
         lResult = SE_spatialrefinfo_set_description(seSpatialRefInfo, csSpatialcontextDescWithSuffix);
@@ -302,7 +302,7 @@ void ArcSDECreateSpatialContext::Execute()
     {
         CHAR *mbAuthName = NULL;
         FdoCommonOSUtil::swprintf(wAuthName, SE_MAX_SPATIALREF_AUTHNAME_LEN, L"%ls%ls%ls", SPATIALCONTEXT_AUTHNAME_PREFIX, (const wchar_t*)m_wcsName, SPATIALCONTEXT_AUTHNAME_SUFFIX);
-        wide_to_multibyte(mbAuthName, wAuthName);
+        sde_wide_to_multibyte(mbAuthName, wAuthName);
         lResult = SE_spatialrefinfo_set_auth_name(seSpatialRefInfo, mbAuthName);
         handle_sde_err<FdoCommandException>(connection->GetConnection(), lResult, __FILE__, __LINE__, ARCSDE_SPATIALREF_ERROR, "Unexpected error encountered while manipulating an ArcSDE spatial reference system.");
     }
@@ -328,7 +328,7 @@ void ArcSDECreateSpatialContext::Execute()
 
         SE_SPATIALREFINFO  seNewSpatialRefInfo;
         LONG lNewSRID = -1;
-        char newAuthName[SE_MAX_SPATIALREF_AUTHNAME_LEN];
+        CHAR newAuthName[SE_MAX_SPATIALREF_AUTHNAME_LEN];
         lResult = SE_spatialrefinfo_get_srid(seSpatialRefInfo, &lNewSRID);
         handle_sde_err<FdoCommandException>(connection->GetConnection(), lResult, __FILE__, __LINE__, ARCSDE_FAILED_TO_READ_SRS, "Failed to get or set information for this ArcSDE Spatial Reference System.");
 
@@ -345,7 +345,7 @@ void ArcSDECreateSpatialContext::Execute()
         SE_spatialrefinfo_free(seNewSpatialRefInfo);
         // Compare the new auth_name to the given auth_name:
         wchar_t *wNewAuthName = NULL;
-        multibyte_to_wide(wNewAuthName, newAuthName);
+        sde_multibyte_to_wide(wNewAuthName, newAuthName);
         if (0 != wcsncmp(wAuthName, wNewAuthName, wcslen(wAuthName)))
             throw FdoException::Create(NlsMsgGet2(ARCSDE_SIMILAR_SPATIAL_CONTEXT_EXISTS, "The spatial context '%1$ls' being created matches the coordinate system, extents, and resolution of existing spatial context '%2$ls'; ArcSDE does not allow this.", (const wchar_t*)m_wcsName, (const wchar_t*)newSpatialContextName));
     }
@@ -353,4 +353,5 @@ void ArcSDECreateSpatialContext::Execute()
     // Clear spatial context cache since the list has now changed:
     mConnection->DecacheSpatialContexts();
 }
+
 

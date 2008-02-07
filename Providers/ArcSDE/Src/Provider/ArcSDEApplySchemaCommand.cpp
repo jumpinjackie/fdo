@@ -111,7 +111,7 @@ void ArcSDEApplySchemaCommand::generateUniqueTableName (FdoClassDefinition* cls,
 
     // Put all (qualified) table names currently in use into tableNames;
     // NOTE: we dont cache this info as it will change every time we call ApplySchema:
-    std::vector<std::string> tableNames;
+    std::vector<sde_std_string> tableNames;
     FdoPtr<FdoFeatureSchemaCollection> cachedSchemas = mConnection->GetSchemaCollection();
     for (FdoInt32 i=0; i<cachedSchemas->GetCount(); i++)
     {
@@ -122,7 +122,7 @@ void ArcSDEApplySchemaCommand::generateUniqueTableName (FdoClassDefinition* cls,
             CHAR table[SE_QUALIFIED_TABLE_NAME];
             FdoPtr<FdoClassDefinition> aClass = classes->GetItem(iClassIndex);
             connection->ClassToTable(table, aClass);
-            tableNames.push_back(table);
+            tableNames.push_back(sde_cstwc(table));
         }
     }
 
@@ -136,12 +136,12 @@ void ArcSDEApplySchemaCommand::generateUniqueTableName (FdoClassDefinition* cls,
 
     // Generate the unique table name:
     CHAR *mbClassName = NULL;
-    wide_to_multibyte(mbClassName, cls->GetName());
+    sde_wide_to_multibyte(mbClassName, cls->GetName());
     generateUniqueName(connection, tableNames, SE_MAX_SCHEMA_TABLE_LEN, mbClassName, bStrict, dbName, ownerName, generatedTableName);
 }
 
 // Generates unique column names for each of the properties in the given property collection;
-void ArcSDEApplySchemaCommand::generateUniqueColumnNames (FdoPropertyDefinitionCollection* properties, bool bStrict, std::vector<std::string> &columnNames)
+void ArcSDEApplySchemaCommand::generateUniqueColumnNames (FdoPropertyDefinitionCollection* properties, bool bStrict, std::vector<sde_std_string> &columnNames)
 {
     CHAR* property_name = NULL;
 
@@ -150,15 +150,15 @@ void ArcSDEApplySchemaCommand::generateUniqueColumnNames (FdoPropertyDefinitionC
     for (int i=0; i<properties->GetCount(); i++)
     {
         FdoPtr<FdoPropertyDefinition> property = properties->GetItem(i);
-        wide_to_multibyte(property_name, property->GetName());
-        columnNames.push_back(property_name);
+        sde_wide_to_multibyte(property_name, property->GetName());
+        columnNames.push_back(sde_pcus2wc(property_name));
     }
 
     // Generate a unique name for each column:
     for (unsigned int i=0; i<columnNames.size(); i++)
     {
         // Store all column names EXCEPT this one in columnNamesInUse:
-        std::vector<std::string> columnNamesInUse;
+        std::vector<sde_std_string> columnNamesInUse;
         for (unsigned int j=0; j<columnNames.size(); j++)
             if (j!=i)
                 columnNamesInUse.push_back(columnNames.at(j));
@@ -166,10 +166,10 @@ void ArcSDEApplySchemaCommand::generateUniqueColumnNames (FdoPropertyDefinitionC
         // Generate a unique name for this column:
         // NOTE: ArcSDE's SE_MAX_COLUMN_LEN is too long for some underlying RDBMS's, so we use our own ARCSDE_MAX_CREATED_COLUMN_LEN isntead.
         CHAR generatedColumnName[ARCSDE_MAX_CREATED_COLUMN_LEN];
-        generateUniqueName(mConnection, columnNamesInUse, ARCSDE_MAX_CREATED_COLUMN_LEN, columnNames.at(i).c_str(), bStrict, NULL, NULL, generatedColumnName);
+        generateUniqueName(mConnection, columnNamesInUse, ARCSDE_MAX_CREATED_COLUMN_LEN, sde_pcwc2us(columnNames.at(i).c_str()), bStrict, NULL, NULL, generatedColumnName);
 
         // Overwrite the original given name:
-        columnNames[i] = generatedColumnName;
+        columnNames[i] = sde_pcus2wc(generatedColumnName);
     }
 }
 
@@ -194,6 +194,7 @@ void ArcSDEApplySchemaCommand::getDataType (FdoPropertyDefinition* property, SE_
                     // SE_FLOAT_TYPE         NUMBER(6,2)
                     // SE_DOUBLE_TYPE        NUMBER(15,4)
                     // SE_STRING_TYPE        VARCHAR2(255)
+                    // SE_NSTRING_TYPE       NVARCHAR2(255)
                     // SE_BLOB_TYPE          LONG RAW
 
                     case FdoDataType_Int16:
@@ -310,7 +311,7 @@ void ArcSDEApplySchemaCommand::add_class (FdoFeatureSchema* schema, FdoClassDefi
     SE_LAYERINFO layer;
     SE_REGINFO registration;
     LONG result = 0L;
-    std::vector<std::string> columnNames;
+    std::vector<sde_std_string> columnNames;
 
     FdoPtr<ArcSDEConnection> connection = static_cast<ArcSDEConnection*>(GetConnection ());
     FdoPtr<FdoPropertyDefinitionCollection> properties = cls->GetProperties ();
@@ -362,9 +363,9 @@ void ArcSDEApplySchemaCommand::add_class (FdoFeatureSchema* schema, FdoClassDefi
         generateUniqueColumnNames(properties, bStrict, columnNames);
 
         // Add table metadata:
-        SetArcSDEMetadata(metadata_records[lActualMetadataCount++], METADATA_CN_CLASSSCHEMA, "", schema->GetName());
-        SetArcSDEMetadata(metadata_records[lActualMetadataCount++], METADATA_CN_CLASSNAME, "", cls->GetName());
-        SetArcSDEMetadata(metadata_records[lActualMetadataCount++], METADATA_CN_CLASSDESC, "", cls->GetDescription());
+        SetArcSDEMetadata(metadata_records[lActualMetadataCount++], METADATA_CN_CLASSSCHEMA, sde_pcwc2us(_TXT("")), schema->GetName());
+        SetArcSDEMetadata(metadata_records[lActualMetadataCount++], METADATA_CN_CLASSNAME, sde_pcwc2us(_TXT("")), cls->GetName());
+        SetArcSDEMetadata(metadata_records[lActualMetadataCount++], METADATA_CN_CLASSDESC, sde_pcwc2us(_TXT("")), cls->GetDescription());
 
         // Add column metadata & populate column definitions:
         column_count = 0;
@@ -373,7 +374,7 @@ void ArcSDEApplySchemaCommand::add_class (FdoFeatureSchema* schema, FdoClassDefi
             FdoPtr<FdoPropertyDefinition> property = properties->GetItem (i);
             if (FdoPropertyType_GeometricProperty != property->GetPropertyType ())
             {
-                strcpy(column_definitions[column_count].column_name, columnNames.at(i).c_str());
+                sde_strcpy(sde_pus2wc(column_definitions[column_count].column_name), columnNames.at(i).c_str());
                 getDataType (property, column_definitions[column_count]);
 
                 // add column metadata:
@@ -402,7 +403,7 @@ void ArcSDEApplySchemaCommand::add_class (FdoFeatureSchema* schema, FdoClassDefi
         }
 
         // Create table:
-        result = SE_table_create (connection->GetConnection (), tableName, column_count, column_definitions, "");
+        result = SE_table_create (connection->GetConnection (), tableName, column_count, column_definitions, sde_pcwc2us(_TXT("")));
         if (result == SE_SUCCESS)
             break;  // exit for loop
         else if (bStrict)
@@ -513,7 +514,7 @@ void ArcSDEApplySchemaCommand::add_class (FdoFeatureSchema* schema, FdoClassDefi
             FdoPtr<FdoGeometricPropertyDefinition> geometry = static_cast<FdoGeometricPropertyDefinition*>(properties->GetItem (i));
 
             // add column metadata:
-            strcpy(column_definitions[column_count].column_name, columnNames.at(i).c_str());
+            sde_strcpy(sde_pus2wc(column_definitions[column_count].column_name), columnNames.at(i).c_str());
             SetArcSDEMetadata(metadata_records[lActualMetadataCount++], METADATA_CN_PROPNAME, column_definitions[column_count].column_name, property->GetName());
             SetArcSDEMetadata(metadata_records[lActualMetadataCount++], METADATA_CN_PROPDESC, column_definitions[column_count].column_name, property->GetDescription());
 
@@ -571,7 +572,7 @@ void ArcSDEApplySchemaCommand::add_class (FdoFeatureSchema* schema, FdoClassDefi
             // Set other important stuff:
             result = SE_layerinfo_set_spatial_column (layer, tableName, column_definitions[column_count].column_name);
             handle_sde_err<FdoSchemaException>(connection->GetConnection(), result, __FILE__, __LINE__, ARCSDE_SCHEMA_ADD_LAYER_FAILED, "Failed to create layer (spatial column) for class '%1$ls'.", cls->GetName());
-            result = SE_layerinfo_set_creation_keyword (layer, "");
+            result = SE_layerinfo_set_creation_keyword (layer, sde_pcwc2us(_TXT("")));
             handle_sde_err<FdoSchemaException>(connection->GetConnection(), result, __FILE__, __LINE__, ARCSDE_SCHEMA_ADD_LAYER_FAILED, "Failed to create layer (spatial column) for class '%1$ls'.", cls->GetName());
             result = SE_layerinfo_set_shape_types (layer, getGeometryMask (geometry));
             handle_sde_err<FdoSchemaException>(connection->GetConnection(), result, __FILE__, __LINE__, ARCSDE_SCHEMA_ADD_LAYER_FAILED, "Failed to create layer (spatial column) for class '%1$ls'.", cls->GetName());
@@ -636,17 +637,17 @@ void ArcSDEApplySchemaCommand::add_class (FdoFeatureSchema* schema, FdoClassDefi
                 bool bUniqueIndexNameFound = false;
                 while (!bUniqueIndexNameFound)
                 {
-                    sprintf(newIndexes[i].index_name, "ARCSDE_UNIQUE_%d", iIndexNameCounter);
+                    sde_sprintf(sde_pus2wc(newIndexes[i].index_name), SE_MAX_INDEX_LEN, _TXT("ARCSDE_UNIQUE_%d"), iIndexNameCounter);
 
                     iIndexNameCounter++;
                     bUniqueIndexNameFound = true;
                     for (int k=0; k<numExistingIndexes && bUniqueIndexNameFound; k++)
-                        if (0==FdoCommonOSUtil::stricmp(existingIndexes[k].index_name, newIndexes[i].index_name))
+                        if (0==sde_stricmp(sde_pus2wc(existingIndexes[k].index_name), sde_pus2wc(newIndexes[i].index_name)))
                             bUniqueIndexNameFound = false;
                 }
             }
             SE_table_free_index_descriptions(numExistingIndexes, existingIndexes);
-            result = SE_table_create_indexes(connection->GetConnection(), tableName, numNewIndexes, newIndexes, "DEFAULTS");
+            result = SE_table_create_indexes(connection->GetConnection(), tableName, numNewIndexes, newIndexes, sde_pcwc2us(_TXT("DEFAULTS")));
 
             if (result == SE_INDEX_EXISTS)
                 CleanUpIndexes(newIndexes, numNewIndexes);
@@ -862,8 +863,8 @@ void ArcSDEApplySchemaCommand::SetArcSDEMetadata(SE_METADATAINFO &metadata, cons
 
 void ArcSDEApplySchemaCommand::SetArcSDEMetadata(SE_METADATAINFO &metadata, const CHAR* classname, const CHAR* property, const wchar_t* value, const CHAR* description)
 {
-    char* valueMultibyte = NULL;
-    wide_to_multibyte (valueMultibyte, value);
+    CHAR* valueMultibyte = NULL;
+    sde_wide_to_multibyte (valueMultibyte, value);
     SetArcSDEMetadata(metadata, classname, property, valueMultibyte, description);
 }
 
@@ -888,5 +889,6 @@ const CHAR* ArcSDEApplySchemaCommand::FDOTypeToMetadataValue(FdoDataType dataTyp
 
     return retVal;
 }
+
 
 

@@ -72,8 +72,8 @@ void ArcSDEReleaseLockCommand::SetLockOwner (FdoString* value)
         value = L"";
     else
     {
-        wide_to_multibyte (owner, value);
-        if (strlen (owner) > SE_MAX_OWNER_LEN - 1)
+        sde_wide_to_multibyte (owner, value);
+        if (sde_strlen (sde_pcus2wc(owner)) > SE_MAX_OWNER_LEN - 1)
             throw FdoException::Create (NlsMsgGet1 (ARCSDE_OWNER_INVALID, "Owner name '%1$ls' is too long.", value));
     }
 
@@ -129,12 +129,12 @@ FdoILockConflictReader* ArcSDEReleaseLockCommand::Execute ()
     if (!ArcSDELockUtility::IsLockable (connection->GetConnection (), table, column))
     {
         wchar_t* wtable;
-        multibyte_to_wide (wtable, table);
+        sde_multibyte_to_wide (wtable, table);
         throw FdoException::Create (NlsMsgGet1 (ARCSDE_LOCKING_NOT_ENABLED, "Table '%1$ls' is not lock enabled.", wtable));
     }
 
     // get the property name that is the row_id
-    multibyte_to_wide (wcolumn, column);
+    sde_multibyte_to_wide (wcolumn, column);
     property = connection->ColumnToProperty (definition, wcolumn);
 
     // get SQL query's "where" clause & spatial filters
@@ -156,7 +156,7 @@ FdoILockConflictReader* ArcSDEReleaseLockCommand::Execute ()
     // release lock, don't return rows
     result = SE_connection_get_user_name (connection->GetConnection (), user_name);
     handle_sde_err<FdoCommandException> (connection->GetConnection (), result, __FILE__, __LINE__, ARCSDE_USER_UNKNOWN, "Cannot determine current user.");
-    multibyte_to_wide (me, user_name);
+    sde_multibyte_to_wide (me, user_name);
     if (0 == wcscmp (GetLockOwner (), L""))
     {
         result = SE_stream_set_rowlocking (stream, SE_ROWLOCKING_UNLOCK_ON_QUERY
@@ -187,11 +187,11 @@ FdoILockConflictReader* ArcSDEReleaseLockCommand::Execute ()
             for (int i = 0; i < number; i++)
             {
                 locks[i].id = ids[i];
-                strcpy (locks[i].user, users[i]);
+                sde_strcpy (sde_pus2wc(locks[i].user), sde_pcus2wc(users[i]));
             }
             qsort (locks, number, sizeof (LONG), compare);
             ArcSDELockUtility::LockTableName (lt, connection, table);
-            multibyte_to_wide (locktable, lt);
+            sde_multibyte_to_wide (locktable, lt);
             SE_table_free_rowlocks_list (number, ids, users);
         }
     }
@@ -235,7 +235,7 @@ FdoILockConflictReader* ArcSDEReleaseLockCommand::Execute ()
 		wchar_t *wLockOwnerUpr = (wchar_t*)alloca( (1+wcslen(wLockOwner)) * sizeof(wchar_t));
 		wcscpy(wLockOwnerUpr, wLockOwner);
 		FdoCommonOSUtil::wcsupr(wLockOwnerUpr);  // ToDo: Oracle-specific
-                wide_to_multibyte (user, wLockOwnerUpr);
+                sde_wide_to_multibyte (user, wLockOwnerUpr);
 
                 // process each row returned (ignoring the log file)
                 sql = (FdoISQLCommand*)connection->CreateCommand (FdoCommandType_SQLCommand);
@@ -243,7 +243,7 @@ FdoILockConflictReader* ArcSDEReleaseLockCommand::Execute ()
                 {
                     if (SE_SUCCESS != (result = SE_stream_get_integer (stream, 1, &id)))
                     {
-                        multibyte_to_wide (wcolumn, column);
+                        sde_multibyte_to_wide (wcolumn, column);
                         handle_sde_err<FdoCommandException> (stream, result, __FILE__, __LINE__, ARCSDE_STREAM_GET, "Stream get ('%1$ls') failed for column '%2$ls'.", L"SE_stream_get_integer", wcolumn);
                     }
                     else
@@ -252,7 +252,7 @@ FdoILockConflictReader* ArcSDEReleaseLockCommand::Execute ()
                         // look it up to see if it's a conflict (i.e. not found)
                         if (NULL != (item = (Lock*)bsearch (&key, locks, number, sizeof (LONG), compare)))
                         {
-                            if (0 == strcmp (user, item->user))
+                            if (0 == sde_strcmp (sde_pcus2wc(user), sde_pcus2wc(item->user)))
                             {
                                 // ToDo: optimize this singleton delete somewhat
                                 //ROW_ID                                    NOT NULL NUMBER(38)
@@ -352,4 +352,5 @@ FdoILockConflictReader* ArcSDEReleaseLockCommand::Execute ()
 
     return (FDO_SAFE_ADDREF (ret.p));
 }
+
 

@@ -20,27 +20,27 @@
 
 
 // Constants for ArcSDE Metadata:
-extern const char* METADATA_CN_CLASSSCHEMA;
-extern const char* METADATA_CN_CLASSNAME;
+extern const CHAR* METADATA_CN_CLASSSCHEMA;
+extern const CHAR* METADATA_CN_CLASSNAME;
 extern const char* METADATA_CN_CLASSTYPE;
-extern const char* METADATA_CN_CLASSDESC;
+extern const CHAR* METADATA_CN_CLASSDESC;
 extern const char* METADATA_CN_CLASSATTR;
 extern const char* METADATA_CN_CLASSBASE;
 extern const char* METADATA_CN_CLASSABSTRACT;
-extern const char* METADATA_CN_PROPNAME;
-extern const char* METADATA_CN_PROPTYPE;
-extern const char* METADATA_CN_PROPDESC;
-extern const char* METADATA_CN_PROPREADONLY;
-extern const char* METADATA_CN_PROPDEFAULTVALUE;
+extern const CHAR* METADATA_CN_PROPNAME;
+extern const CHAR* METADATA_CN_PROPTYPE;
+extern const CHAR* METADATA_CN_PROPDESC;
+extern const CHAR* METADATA_CN_PROPREADONLY;
+extern const CHAR* METADATA_CN_PROPDEFAULTVALUE;
 extern const char* METADATA_CN_PROPATTR;
-extern const char* METADATA_V_DATATYPE_BOOLEAN;
-extern const char* METADATA_V_DATATYPE_BYTE;
-extern const char* METADATA_V_DATATYPE_INT16;
-extern const char* METADATA_V_DATATYPE_INT64;
-extern const char* METADATA_V_DATATYPE_SINGLE;
-extern const char* METADATA_V_DATATYPE_DOUBLE;
-extern const char* METADATA_V_BOOL_YES;
-extern const char* METADATA_V_BOOL_NO;
+extern const CHAR* METADATA_V_DATATYPE_BOOLEAN;
+extern const CHAR* METADATA_V_DATATYPE_BYTE;
+extern const CHAR* METADATA_V_DATATYPE_INT16;
+extern const CHAR* METADATA_V_DATATYPE_INT64;
+extern const CHAR* METADATA_V_DATATYPE_SINGLE;
+extern const CHAR* METADATA_V_DATATYPE_DOUBLE;
+extern const CHAR* METADATA_V_BOOL_YES;
+extern const CHAR* METADATA_V_BOOL_NO;
 
 
 #define ARCSDE_MAX_CREATED_COLUMN_LEN 30  // SE_MAX_COLUMN_LEN is too big for some underlying RDBMS's
@@ -50,7 +50,7 @@ extern const char* METADATA_V_BOOL_NO;
 #define SPATIALCONTEXT_AUTHNAME_PREFIX L"FdoName="  // prefix for spatial reference system AUTH_NAME field
 #define SPATIALCONTEXT_AUTHNAME_SUFFIX L"="  // suffix for spatial reference system AUTH_NAME field
 #define SPATIALCONTEXT_DESC_SUFFIX L"==="  // suffix for spatial reference system DESCRIPTION field
-#define SPATIALCONTEXT_COORDYS_WKT_UNKNOWN_SDE "UNKNOWN"  // the string SDE uses to represent unknown coordinate systems WKT
+#define SPATIALCONTEXT_COORDYS_WKT_UNKNOWN_SDE _TXT("UNKNOWN")  // the string SDE uses to represent unknown coordinate systems WKT
 #define SPATIALCONTEXT_CORDSYS_WKT_UNKNOWN_FDO L""  // the string FDO uses to represent unknown coordinate systems WKT
 #define SPATIALCONTEXT_CORDSYS_NAME_UNKNOWN_FDO L""  // the string FDO uses to represent unknown coordinate systems Name
 #define SPATIALCONTEXT_MAX_DESC_LENGTH 23  // max description length due to defect 639233
@@ -78,7 +78,7 @@ void convert_sde_shape_to_fgf(ArcSDEConnection* connection, SE_SHAPE shape, FdoB
 
 void DebugByteArray(unsigned char pByteArray[], long lByteCount, char *strMessage);
 
-LONG GetCoordRefFromColumn(ArcSDEConnection* connection, const char *strTable, const char *strColumn, SE_COORDREF &coordref);
+LONG GetCoordRefFromColumn(ArcSDEConnection* connection, const CHAR *strTable, const CHAR *strColumn, SE_COORDREF &coordref);
 LONG SetShapeCoordRef(SE_SHAPE &shape, SE_COORDREF &coordref);
 
 
@@ -158,19 +158,19 @@ template<class ERROR_CLASS> static void _handle_sde_err (SE_CONNECTION Connectio
             if (SE_SUCCESS == temp_rc)
             {
                 // Add error for error.err_msg2, if any:
-                if (strlen(error.err_msg2)>0)
+                if (sde_strlen(sde_pcus2wc(error.err_msg2))>0)
                 {
                     error_string[0] = '\0';
-                    sprintf(error_string, "%s (%d)", error.err_msg2, error.ext_error);
-                    multibyte_to_wide(wcsErrorString, error_string);
+                    sde_sprintf(sde_pus2wc(error_string), SE_MAX_SQL_MESSAGE_LENGTH + 15, _TXT("%s (%d)"), error.err_msg2, error.ext_error);
+                    sde_multibyte_to_wide(wcsErrorString, error_string);
                     fdoError = ERROR_CLASS::Create(wcsErrorString, fdoError);  // should be OK even if fdoError==NULL
                     wcsErrorString = NULL;
                 }
 
                 // Add error for error.err_msg1:
                 error_string[0] = '\0';
-                sprintf(error_string, "%s (%d)", error.err_msg1, error.ext_error);
-                multibyte_to_wide(wcsErrorString, error_string);
+                sde_sprintf(sde_pus2wc(error_string), SE_MAX_SQL_MESSAGE_LENGTH + 15, _TXT("%s (%d)"), error.err_msg1, error.ext_error);
+                sde_multibyte_to_wide(wcsErrorString, error_string);
                 fdoError = ERROR_CLASS::Create(wcsErrorString, fdoError);  // should be OK even if fdoError==NULL
                 wcsErrorString = NULL;
             }
@@ -181,13 +181,13 @@ template<class ERROR_CLASS> static void _handle_sde_err (SE_CONNECTION Connectio
         ///////////////////////////////////////////////////////////////////
 
         // get basic error info:
-        strcpy (error_string, "Unknown ArcSDE error code"); // in case SE_error_get_string() fails
+        sde_strcpy (sde_pus2wc(error_string), _TXT("Unknown ArcSDE error code")); // in case SE_error_get_string() fails
         SE_error_get_string (rc, error_string);
-        sprintf(error_string, "%s (%d)", error_string, rc);
+        sde_sprintf(sde_pus2wc(error_string), SE_MAX_SQL_MESSAGE_LENGTH + 15, _TXT("%s (%d)"), error_string, rc);
         // TODO: verify copying from error_string to self is OK
 
         // convert basic info to FDO exception:
-        multibyte_to_wide(wcsErrorString, error_string);
+        sde_multibyte_to_wide(wcsErrorString, error_string);
         fdoError = ERROR_CLASS::Create(wcsErrorString, fdoError);  // should be OK even if fdoError==NULL
         wcsErrorString = NULL;
 
@@ -255,7 +255,7 @@ struct tm FdoDateTime2SdeDateTime(FdoDateTime fdoDateTime);
 // The suggestedName can be any length.
 // The lMaxLen argument represents the maximum number of characters (*including NULL terminator*) that 
 // the generatedName can have.
-void generateUniqueName(ArcSDEConnection *conn, const std::vector<std::string> namesInUse, long lMaxLen, const CHAR* suggestedName, bool bStrict, CHAR* dbName, CHAR* ownerName, CHAR *generatedName);
+void generateUniqueName(ArcSDEConnection *conn, const std::vector<sde_std_string> namesInUse, long lMaxLen, const CHAR* suggestedName, bool bStrict, CHAR* dbName, CHAR* ownerName, CHAR *generatedName);
 
 
 // Returns true if-and-only-if the given collection contains an item with the given name 
@@ -270,7 +270,7 @@ void GetFilterInfo(ArcSDEConnection *connection, FdoFilter* filter, FdoClassDefi
 void ApplyFilterInfoToStream(ArcSDEConnection *connection, SE_STREAM queryStream, const CHAR* table, CHAR* whereClause, const int columnCount, const CHAR** columnNames, const SHORT spatialFilterCount, SE_FILTER* spatialFilters, FdoOrderingOption orderingOption = FdoOrderingOption_Ascending, FdoIdentifierCollection* orderingIds = NULL);
 
 // Add one or more spatial filters that represent the given spatial operation:
-void AddSpatialFilters(ArcSDEConnection* conn, const FdoSpatialOperations fdoSpatialOperation, const char* sdeColumnName, SE_SHAPE &shape, std::vector<SE_FILTER> &spatialFilters);
+void AddSpatialFilters(ArcSDEConnection* conn, const FdoSpatialOperations fdoSpatialOperation, const CHAR* sdeColumnName, SE_SHAPE &shape, std::vector<SE_FILTER> &spatialFilters);
 
 // Apply the given info to the given SE_QUERYINFO object:
 void ApplyFilterInfoToQueryInfo(ArcSDEConnection *connection, SE_QUERYINFO query_info, const CHAR *table, const CHAR *whereClause, FdoInt32 numProperties, const CHAR **columnNames, FdoOrderingOption orderingOption, FdoIdentifierCollection* ids);
@@ -346,4 +346,5 @@ FdoString* RdbmsToString(long lRdbmsID);
 
 
 #endif // ARCSDEUTILS_H
+
 
