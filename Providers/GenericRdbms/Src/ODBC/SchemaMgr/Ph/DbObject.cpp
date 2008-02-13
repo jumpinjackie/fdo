@@ -178,10 +178,13 @@ FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnBool(
 {
 	if (defaultValue.GetLength() > 0)
 	{
-		if (defaultValue.ICompare(NlsMsgGet(FDORDBMS_534, "true")) == 0)
+		bool isBool = defaultValue.ToBoolean();
+		if (isBool == true)
 			defaultValue = L"1";
-		else
+		else if (isBool == false)
 			defaultValue = L"0";
+		else
+			defaultValue = L"";
 	}
     return new FdoSmPhOdbcColumnBool(columnName, elementState, this, bNullable, rootColumnName, defaultValue, colRdr);
 }
