@@ -231,6 +231,16 @@ FdoSmPhColumnP FdoSmPhSqsDbObject::NewColumnBool(
     FdoSmPhRdColumnReader* colRdr
 )
 {
+	if (defaultValue.GetLength() > 0)
+	{
+		bool isBool = defaultValue.ToBoolean();
+		if (isBool == true)
+			defaultValue = L"1";
+		else if (isBool == false)
+			defaultValue = L"0";
+		else
+			defaultValue = L"";
+	}
     return new FdoSmPhSqsColumnBool(columnName, elementState, this, bNullable, rootColumnName, defaultValue, colRdr);
 }
 
