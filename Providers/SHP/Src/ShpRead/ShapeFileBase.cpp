@@ -204,8 +204,11 @@ void ShapeFileBase::GetFileHeaderDetails ()
             (m_nFileShapeType == ePolygonMShape) ||
             (m_nFileShapeType == eMultiPointMShape))
         {
+#if 0
+            // Same issue as with Z values validation. See comment above.
             if (m_nFileLength * WORD_SIZE_IN_BYTES > SHPHeaderSize) // only check if there are shapes
                 CheckBoundingBox(m_dMMin, m_dMMax, eMinMMaxM);
+#endif
             m_bMDataPresent = true; // redundant
         }
     }
