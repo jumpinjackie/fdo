@@ -170,7 +170,7 @@ FdoIFeatureReader* ArcSDEInsertCommand::Execute ()
             FdoPtr<FdoPropertyValue> propertyValue = mValues->GetItem(i);
             FdoPtr<FdoIdentifier> propertyId = propertyValue->GetName();
             connection->PropertyToColumn (column, classDef, propertyId);
-            columns[i] = (CHAR*)alloca (sde_strlen (sde_pcus2wc(column)) + 1);
+            columns[i] = (CHAR*)alloca ((sde_strlen (sde_pcus2wc(column)) + 1) * sizeof(CHAR));
             sde_strcpy (sde_pus2wc(columns[i]), sde_pcus2wc(column));
         }
 
