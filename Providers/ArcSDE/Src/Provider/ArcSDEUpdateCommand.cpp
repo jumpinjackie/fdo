@@ -158,7 +158,7 @@ FdoInt32 ArcSDEUpdateCommand::Execute ()
 
             FdoPtr<FdoIdentifier> identifier = FdoIdentifier::Create (property->GetName ());
             connection->PropertyToColumn(column, classDef, identifier);
-            columns[j] = (CHAR*)alloca (sde_strlen (sde_pcus2wc(column)) + 1);
+            columns[j] = (CHAR*)alloca ((sde_strlen (sde_pcus2wc(column)) + 1)*sizeof(CHAR));
             sde_strcpy (sde_pus2wc(columns[j]), sde_pcus2wc(column));
             j++;
         }

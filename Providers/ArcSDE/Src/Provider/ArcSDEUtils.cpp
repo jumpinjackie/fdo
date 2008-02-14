@@ -1830,7 +1830,7 @@ void ApplyFilterInfoToQueryInfo(ArcSDEConnection *connection, SE_QUERYINFO query
     // Set from clause:
     CHAR **tables = NULL;
     tables = (CHAR**)alloca(1 * sizeof(CHAR*)); // new CHAR*[1];
-    tables[0] = (CHAR*)alloca(SE_QUALIFIED_TABLE_NAME); // new CHAR[SE_MAX_TABLE_LEN];
+    tables[0] = (CHAR*)alloca(SE_QUALIFIED_TABLE_NAME * sizeof(CHAR)); // new CHAR[SE_MAX_TABLE_LEN];
     sde_strcpy(sde_pus2wc(tables[0]), sde_pcus2wc(table));
     result = SE_queryinfo_set_tables(query_info, 1, (const CHAR**)tables, NULL);
     handle_sde_err<FdoCommandException>(connection->GetConnection (), result, __FILE__, __LINE__, ARCSDE_QUERYINFO_MANIPULATION_FAILED, "Unexpected error while manipulating an ArcSDE SE_QUERYINFO object.");
