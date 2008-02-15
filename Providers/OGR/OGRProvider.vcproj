@@ -143,7 +143,7 @@
 				AdditionalDependencies="fdo.lib fdocommon.lib fdogeometry.lib wsock32.lib gdal_i.lib xerces-c_2.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Fdo\Unmanaged\lib\win32\release;&quot;$(FDOGDAL)\lib\win32\Release&quot;;..\..\Thirdparty\gdal\lib\win32\release;&quot;..\..\Thirdparty\apache\xml-xerces\c\Build\Win32\VC8\Release&quot;"
-				GenerateManifest="false"
+				GenerateManifest="true"
 				IgnoreDefaultLibraryNames=""
 				DelayLoadDLLs="fdogeometry.dll"
 				GenerateDebugInformation="true"
