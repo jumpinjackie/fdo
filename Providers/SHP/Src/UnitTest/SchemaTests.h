@@ -43,6 +43,7 @@ class SchemaTests :
     CPPUNIT_TEST (switch_schema);
     CPPUNIT_TEST (destroy_schema);
     CPPUNIT_TEST (non_ascii_property_name);
+    CPPUNIT_TEST (non_ascii_property_name_no_mapping);
     CPPUNIT_TEST (non_ascii_class_name1);
     CPPUNIT_TEST (non_ascii_class_name2);
     CPPUNIT_TEST (non_ascii_schema_name);
@@ -93,6 +94,9 @@ protected:
 
     // Test different characters in property names
     void non_ascii_property_name ();
+
+    // Test different characters in property names but no schema.xml
+    void non_ascii_property_name_no_mapping ();
 
     // Test different characters in class names
     void non_ascii_class_name1 ();

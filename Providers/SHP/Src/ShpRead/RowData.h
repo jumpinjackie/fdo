@@ -58,15 +58,6 @@ protected:
     void* mBuffer; // file i/o buffer
     bool mReading;
 
-#ifdef _WIN32
-	// Convert the .CPG file codepage to Windows codepage
-	static ULONG	ConvertCodePageWin(WCHAR *codepageESRI);
-#else
-	// Convert the .CPG file codepage to system codepage
-	const char* ConvertCodePageLinux(WCHAR *codepageESRI);
-	FdoStringP	mLinuxCpg;
-#endif
-
 public:
     RowData (ColumnInfo* pColumnInfo, void* buffer);
     void* operator new (size_t nSize, ColumnInfo* pColumnInfo, void* buffer);
