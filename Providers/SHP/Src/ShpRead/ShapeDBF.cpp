@@ -124,7 +124,8 @@ ShapeDBF::ShapeDBF (const WCHAR* name, FdoString* codepageCPG) :
 #ifdef _WIN32
 		ULONG codePage = cpg->ConvertCodePageWin((WCHAR*)(FdoString *)codepageESRI);
 #else
-		const char* codePage = cpg->ConvertCodePageLinux((WCHAR*)(FdoString *)codepageESRI);
+		//const char* codePage = cpg->ConvertCodePageLinux((WCHAR*)(FdoString *)codepageESRI);
+        const char* codePage = "";
 #endif
         delete cpg;
 
@@ -142,7 +143,9 @@ ShapeDBF::ShapeDBF (const WCHAR* name, FdoString* codepageCPG) :
 #ifdef _WIN32
 			multibyte_to_wide_cpg (wszColumnName, name, codePage);
 #else
-			multibyte_to_wide_cpg (wszColumnName, name, codePage);
+            // Doesn't work properly
+			//multibyte_to_wide_cpg (wszColumnName, name, codePage);
+            multibyte_to_wide (wszColumnName, name);
 #endif
             // Trim trailing and leading spaces and tabs
             trim (wszColumnName);
@@ -266,7 +269,9 @@ bool ShapeDBF::WriteColumnDef (ColumnInfo* info, int column)
 #ifdef _WIN32
     wide_to_multibyte_cpg (name, info->GetColumnNameAt (column), cpg->ConvertCodePageWin((WCHAR *)(FdoString *)codepage));
 #else
-    wide_to_multibyte_cpg (name, info->GetColumnNameAt (column), cpg->ConvertCodePageLinux((WCHAR *)(FdoString *)codepage));
+    // Doesn't work properly
+    //wide_to_multibyte_cpg (name, info->GetColumnNameAt (column), cpg->ConvertCodePageLinux((WCHAR *)(FdoString *)codepage));
+    wide_to_multibyte (name, info->GetColumnNameAt (column));   
 #endif
 
     delete cpg;
