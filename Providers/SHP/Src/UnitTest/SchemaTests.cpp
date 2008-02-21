@@ -1083,8 +1083,12 @@ void SchemaTests::non_ascii_property_name ()
         apply->SetFeatureSchema (schema);
 
         ///  Very important!!! ///////////
-        setlocale(LC_ALL, "Japanese");
 
+#ifdef _WIN32
+        setlocale(LC_ALL, "Japanese");
+#else
+        setlocale(LC_ALL, "ja_JP.eucjp");
+#endif
         apply->Execute ();
 		SaveSchema(mConnection);
 
@@ -1182,7 +1186,11 @@ void SchemaTests::non_ascii_property_name_no_mapping ()
         apply->SetFeatureSchema (schema);
 
         ///  Very important!!! ///////////
+#ifdef _WIN32
         setlocale(LC_ALL, "Japanese");
+#else
+        setlocale(LC_ALL, "ja_JP.eucjp");
+#endif
 
         apply->Execute ();
 		
@@ -1367,7 +1375,11 @@ void SchemaTests::non_ascii_class_name2 ()
         apply->SetFeatureSchema (schema);
 
         ///  Very important!!! ///////////
+#ifdef _WIN32
         setlocale(LC_ALL, "Japanese");
+#else
+        setlocale(LC_ALL, "ja_JP.eucjp");
+#endif
 
         apply->Execute ();
 		SaveSchema(mConnection);
