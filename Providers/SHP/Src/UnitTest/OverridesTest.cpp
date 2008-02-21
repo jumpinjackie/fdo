@@ -532,7 +532,7 @@ void OverridesTest::TestReadWithOverrides ()
         FdoPtr<FdoClassDefinition> aClass = classes->GetItem(classNameOntario);
         CPPUNIT_ASSERT_MESSAGE("wrong class type", FdoClassType_FeatureClass==aClass->GetClassType());
         FdoPtr<FdoPropertyDefinitionCollection> properties = aClass->GetProperties();
-        CPPUNIT_ASSERT_MESSAGE("wrong property count", 4==properties->GetCount());
+        CPPUNIT_ASSERT_MESSAGE("wrong property count", 6==properties->GetCount());
         FdoPtr<FdoPropertyDefinition> property = properties->GetItem(propOntarioId);
         FdoDataPropertyDefinition* dataProperty = dynamic_cast<FdoDataPropertyDefinition*>(property.p);
         CPPUNIT_ASSERT_MESSAGE("wrong property type", NULL!=dataProperty);

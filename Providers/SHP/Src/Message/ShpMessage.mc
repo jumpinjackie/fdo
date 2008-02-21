@@ -404,7 +404,11 @@ SymbolicName=SHP_INVALID_INDEXOF_PARAM
 Language=English
 Only ordering properties or the identity property are allowed as IndexOf() argument.
 .
-
+MessageId=4042
+SymbolicName=SHP_FIELD_NAME_INVALID
+Language=English
+The field '%1$ls' width is invalid (must be between 1 and 12).
+.
 ;//************************************************************************************
 ;//************************************************************************************
 ;//** VERSION-RELATED MESSAGES 

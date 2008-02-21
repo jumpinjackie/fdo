@@ -105,7 +105,6 @@ void ShpLpPropertyDefinition::ConvertLogicalToPhysical (int physicalColumnIndex,
     FdoString* physicalColumnName;
     FdoDataType logicalPropertyType;
     eDBFColumnType physicalColumnType;
-    bool allascii;
 
     info = m_parentLpClass->GetPhysicalColumnInfo ();
     // Hang on to the logical property:
@@ -124,25 +123,25 @@ void ShpLpPropertyDefinition::ConvertLogicalToPhysical (int physicalColumnIndex,
         physicalColumnName = logicalProperty->GetName ();
     }
 
-    allascii = FdoCommonStringUtil::AllASCII (physicalColumnName);
+    char *mbPhysicalColumnName;
 
-    if (allascii)
-    {
-        char *mbPhysicalColumnName;
-        wide_to_multibyte (mbPhysicalColumnName, physicalColumnName);
-        if (nDBF_COLNAME_LENGTH < strlen (mbPhysicalColumnName))
-            allascii = false;
-        else
-            info->SetColumnName (physicalColumnIndex, (WCHAR*)physicalColumnName);
-    }
+    // Test in advance for the field length (multibyte). 
+    // Get the codepage directly from locale. The CPG file is not created yet. 
+    ShapeCPG    *cpg = new ShapeCPG(); // This constructor doesn't create the file
+    FdoStringP  codepage = cpg->GetCodePage();
 
-    if (!allascii)
-    {
-        // use FIELDnnn
-        wchar_t buffer[20];
-        swprintf (buffer, sizeof(buffer)/sizeof(wchar_t), L"FIELD%d", physicalColumnIndex);
-        info->SetColumnName (physicalColumnIndex, buffer);
-    }
+#ifdef _WIN32
+    wide_to_multibyte_cpg (mbPhysicalColumnName, physicalColumnName, cpg->ConvertCodePageWin((WCHAR *)(FdoString *)codepage));
+#else
+    wide_to_multibyte_cpg (mbPhysicalColumnName, physicalColumnName, cpg->ConvertCodePageLinux((WCHAR *)(FdoString *)codepage));
+#endif
+
+    delete cpg;
+
+    if (nDBF_COLNAME_LENGTH < strlen (mbPhysicalColumnName))
+        throw FdoException::Create (NlsMsgGet(SHP_FIELD_NAME_INVALID, "The field '%1$ls' width is invalid (must be between 1 and 12)", physicalColumnName));
+    else
+        info->SetColumnName (physicalColumnIndex, (WCHAR*)physicalColumnName);
 
     // Convert logical data type to physical column type, and validate it:
     logicalPropertyType = m_logicalProperty->GetDataType ();

@@ -447,6 +447,13 @@ FdoConnectionState ShpConnection::Open ()
     // Connection is now open:
     mConnectionState = FdoConnectionState_Open;
 
+    // Do not count the bare connections.
+    //if (mConnectionString != NULL && wcslen(mConnectionString) != 0)
+    //{
+    //    mMutex.Enter();
+    //    mGlobalRefCount++;
+    //    mMutex.Leave();
+    //}
     return (GetConnectionState ());
 }
 
@@ -474,6 +481,13 @@ void ShpConnection::Close ()
 
     // Connection is now closed:
     mConnectionState = FdoConnectionState_Closed;
+
+    //if (mConnectionString != NULL && wcslen(mConnectionString) != 0)
+    //{
+    //    mMutex.Enter();
+    //    mGlobalRefCount--;
+    //    mMutex.Leave();
+    //}
 }
 
 /// <summary>Begins a transaction and returns an object that realizes

@@ -20,6 +20,7 @@
 #include "stdafx.h"
 #include "Constants.h"
 #include "RowData.h"
+#include "ShapeCPG.h"
 #include <wctype.h>
 #include <FdoCommonOSUtil.h>
 #include <math.h>
@@ -222,11 +223,15 @@ void RowData::SetData (int index, bool bIsNull, WCHAR* value, WCHAR *codepage)
         SetData (index, bIsNull, (char*)NULL);
     else
     {
+        ShapeCPG    *cpg = new ShapeCPG();
+
 #ifdef _WIN32
-        wide_to_multibyte_cpg (chars, value, ConvertCodePageWin(codepage));
+        wide_to_multibyte_cpg (chars, value, cpg->ConvertCodePageWin(codepage));
 #else
-        wide_to_multibyte_cpg (chars, value, ConvertCodePageLinux(codepage));
+        wide_to_multibyte_cpg (chars, value, cpg->ConvertCodePageLinux(codepage));
 #endif
+        delete cpg;
+
         SetData (index, bIsNull, chars);
         // for consistency, we copy the string to the wide character buffer too
         // although this is not strictly needed
@@ -340,11 +345,15 @@ void RowData::GetData (ColumnData* data, int index, eDBFColumnType type, WCHAR* 
             if (!data->bIsNull)
             {
                 *p = '\0';
+
+                ShapeCPG    *cpg = new ShapeCPG();
 #ifdef _WIN32
-                multibyte_to_wide_cpg (str, raw, ConvertCodePageWin(codepage));
+                multibyte_to_wide_cpg (str, raw, cpg->ConvertCodePageWin(codepage));
 #else
-                multibyte_to_wide_cpg (str, raw, ConvertCodePageLinux(codepage));
+                multibyte_to_wide_cpg (str, raw, cpg->ConvertCodePageLinux(codepage));
 #endif
+                delete cpg;
+
                 *p = szSPACE;
                 wcscpy (mStrings[index], str);
                 data->value.wszData = mStrings[index];
@@ -441,75 +450,3 @@ void RowData::GetData (ColumnData* data, int index, eDBFColumnType type, WCHAR* 
     }
     *(raw + width) = temp;
 }
-
-#ifdef _WIN32
-ULONG	RowData::ConvertCodePageWin(WCHAR *codepage)
-{
-	ULONG	sysCpg = CP_THREAD_ACP;
-
-	if ( codepage ) 
-	{
-		FdoStringP	sCpg = FdoStringP( codepage );
-
-		if ( sCpg.IsNumber() )
-		{
-			sysCpg = sCpg.ToLong();
-
-			// ISO 8859-2 is coded by ESRI as 88592 and corresponds to 28592 Windows codepage
-			if ( sysCpg >= 88591 && sysCpg <= 88605 )
-				sysCpg -= 60000;
-		}
-		else if ( sCpg.ICompare(L"UTF-8") == 0)
-			sysCpg = CP_UTF8;
-		else if ( sCpg.ICompare(L"OEM") == 0)
-			sysCpg = CP_OEMCP;
-		else if ( sCpg.ICompare(L"ANSI") == 0)
-			sysCpg = 1252;  // ANSI Latin I
-		else if ( sCpg.ICompare(L"EUC") == 0)
-			sysCpg = 51936; // Simplified chinese
-		else if ( sCpg.ICompare(L"Big5") == 0)
-			sysCpg = 10002;
-		else if ( sCpg.ICompare(L"SJIS") == 0)
-			sysCpg = 932; 
-		else if ( sCpg.ICompare(L"ISO") == 0)
-			sysCpg = 28591; // ISO 8859-1 Latin I
-	}
-	return sysCpg;
-}
-
-#else
-
-const char	*RowData::ConvertCodePageLinux(WCHAR *codepage)
-{
-	FdoStringP	sysCpg = L"";
-	FdoStringP	sCpg = FdoStringP( codepage );
-
-	if ( sCpg.IsNumber() )
-	{
-		long	esriCpg = sCpg.ToLong();
-
-		// ISO 8859-2 is coded by ESRI as 88592 and corresponds to 28592 Windows codepage
-		if ( esriCpg >= 88591 && esriCpg <= 88605 )
-			sysCpg = FdoStringP::Format(L"ISO8859-%ld", esriCpg-88590);
-		else if ( esriCpg >= 437 && esriCpg <= 1258 )
-			sysCpg = FdoStringP::Format(L"CP%ld", esriCpg);
-	}
-	else if ( sCpg.ICompare(L"UTF-8") == 0 )
-		sysCpg = L"UTF-8";
-	else if ( sCpg.ICompare(L"OEM") == 0)
-		sysCpg = L"CP850";   // Multilingual Latin I
-	else if ( sCpg.ICompare(L"ANSI") == 0)
-		sysCpg = L"CP1252";  // ANSI Latin I
-	else if ( sCpg.ICompare(L"EUC") == 0)
-		sysCpg = L"EUC-CN"; // Simplified chinese
-	else if ( sCpg.ICompare(L"Big5") == 0)
-		sysCpg = L"BIG5";
-	else if ( sCpg.ICompare(L"SJIS") == 0)
-		sysCpg = L"SHIFT-JIS"; 
-	else if ( sCpg.ICompare(L"ISO") == 0)
-		sysCpg = L"ISO8859-1"; // ISO 8859-1 Latin I
-
-	mLinuxCpg = sysCpg;
-	return (const char *)mLinuxCpg;
-}
-#endif
