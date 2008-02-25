@@ -102,7 +102,7 @@ void ShpLpPropertyDefinition::ConvertPhysicalToLogical(FdoPropertyDefinition* co
 void ShpLpPropertyDefinition::ConvertLogicalToPhysical (int physicalColumnIndex, FdoPropertyDefinition* logicalProperty, FdoShpOvPropertyDefinition* configPropertyMapping)
 {
     ColumnInfo* info;
-    FdoString* physicalColumnName;
+    FdoStringP physicalColumnName;
     FdoDataType logicalPropertyType;
     eDBFColumnType physicalColumnType;
 
@@ -136,12 +136,31 @@ void ShpLpPropertyDefinition::ConvertLogicalToPhysical (int physicalColumnIndex,
     wide_to_multibyte_cpg (mbPhysicalColumnName, physicalColumnName, cpg->ConvertCodePageLinux((WCHAR *)(FdoString *)codepage));
 #endif
 
+    // Make sure the name is not exceeding the maximum size in which case it will be truncated.
+    int         trim = 0;
+    FdoStringP  trimmed = physicalColumnName;
+    while (nDBF_COLNAME_LENGTH < strlen (mbPhysicalColumnName))
+    {
+        int i = physicalColumnIndex;
+
+		// Truncate the name and tack on a unique number.
+	    trimmed = FdoStringP::Format( L"%ls%d",
+					    (FdoString*) physicalColumnName.Mid(0, nDBF_COLNAME_LENGTH - ((int) log10((double)i)) - 1 - trim, true),
+					    i );
+#ifdef _WIN32
+        wide_to_multibyte_cpg (mbPhysicalColumnName, trimmed, cpg->ConvertCodePageWin((WCHAR *)(FdoString *)codepage));
+#else
+        wide_to_multibyte (mbPhysicalColumnName, trimmed);   
+#endif
+        trim++;
+    }
+
     delete cpg;
 
-    if (nDBF_COLNAME_LENGTH < strlen (mbPhysicalColumnName))
-        throw FdoException::Create (NlsMsgGet(SHP_FIELD_NAME_INVALID, "The field '%1$ls' width is invalid (must be between 1 and 12)", physicalColumnName));
-    else
-        info->SetColumnName (physicalColumnIndex, (WCHAR*)physicalColumnName);
+    // Assign the new name
+    physicalColumnName = trimmed;
+
+    info->SetColumnName (physicalColumnIndex, (WCHAR*)(FdoString *)physicalColumnName);
 
     // Convert logical data type to physical column type, and validate it:
     logicalPropertyType = m_logicalProperty->GetDataType ();
