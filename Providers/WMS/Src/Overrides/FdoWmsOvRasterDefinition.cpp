@@ -29,7 +29,7 @@ FdoWmsOvRasterDefinition::FdoWmsOvRasterDefinition(void) :
     m_hasFormat(false),
     m_hasFormatType(false),
     m_transparent(false),
-    m_useTileCache(true)
+    m_useTileCache(false)
 {
 	m_layers = FdoWmsOvLayerCollection::Create(this);
 }
