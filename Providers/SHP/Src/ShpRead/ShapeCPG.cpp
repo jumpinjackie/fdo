@@ -112,9 +112,13 @@ void ShapeCPG::SetCodePageESRIFromLocale( char *locale )
 	FdoStringP  codePageESRI = L"";
 
     // Save current
-   	char  localeSave[50];
-	strcpy(localeSave, setlocale(LC_ALL, NULL));
-
+	char*  localeSave = NULL;
+	const char* tmpStr = setlocale(LC_ALL, NULL);
+	if( tmpStr != NULL )
+	{
+   		localeSave = (char*)alloca( strlen( tmpStr ) + 1 );
+		strcpy(localeSave, tmpStr);
+	}
     if ( locale == NULL )
     {
         // Just query the locale
@@ -154,8 +158,8 @@ void ShapeCPG::SetCodePageESRIFromLocale( char *locale )
 	}
 
     // Restore
-    if ( !(strlen(localeSave) == 1 && localeSave[0] == 'C' ))
-    setlocale(LC_ALL, localeSave);
+    if ( localeSave != NULL && !(strlen(localeSave) == 1 && localeSave[0] == 'C' ))
+		setlocale(LC_ALL, localeSave);
 
     mCodePageESRI = codePageESRI;
 }
