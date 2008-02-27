@@ -102,10 +102,9 @@ void ShpLpPropertyDefinition::ConvertPhysicalToLogical(FdoPropertyDefinition* co
 void ShpLpPropertyDefinition::ConvertLogicalToPhysical (int physicalColumnIndex, FdoPropertyDefinition* logicalProperty, FdoShpOvPropertyDefinition* configPropertyMapping)
 {
     ColumnInfo* info;
-    FdoString* physicalColumnName;
+    FdoStringP physicalColumnName;
     FdoDataType logicalPropertyType;
     eDBFColumnType physicalColumnType;
-    bool allascii;
 
     info = m_parentLpClass->GetPhysicalColumnInfo ();
     // Hang on to the logical property:
@@ -124,25 +123,44 @@ void ShpLpPropertyDefinition::ConvertLogicalToPhysical (int physicalColumnIndex,
         physicalColumnName = logicalProperty->GetName ();
     }
 
-    allascii = FdoCommonStringUtil::AllASCII (physicalColumnName);
+    char *mbPhysicalColumnName;
 
-    if (allascii)
+    // Test in advance for the field length (multibyte). 
+    // Get the codepage directly from locale. The CPG file is not created yet. 
+    ShapeCPG    *cpg = new ShapeCPG(); // This constructor doesn't create the file
+    FdoStringP  codepage = cpg->GetCodePage();
+
+#ifdef _WIN32
+    wide_to_multibyte_cpg (mbPhysicalColumnName, physicalColumnName, cpg->ConvertCodePageWin((WCHAR *)(FdoString *)codepage));
+#else
+    wide_to_multibyte_cpg (mbPhysicalColumnName, physicalColumnName, cpg->ConvertCodePageLinux((WCHAR *)(FdoString *)codepage));
+#endif
+
+    // Make sure the name is not exceeding the maximum size in which case it will be truncated.
+    int         trim = 0;
+    FdoStringP  trimmed = physicalColumnName;
+    while (nDBF_COLNAME_LENGTH < strlen (mbPhysicalColumnName))
     {
-        char *mbPhysicalColumnName;
-        wide_to_multibyte (mbPhysicalColumnName, physicalColumnName);
-        if (nDBF_COLNAME_LENGTH < strlen (mbPhysicalColumnName))
-            allascii = false;
-        else
-            info->SetColumnName (physicalColumnIndex, (WCHAR*)physicalColumnName);
+        int i = physicalColumnIndex;
+
+		// Truncate the name and tack on a unique number.
+	    trimmed = FdoStringP::Format( L"%ls%d",
+					    (FdoString*) physicalColumnName.Mid(0, nDBF_COLNAME_LENGTH - ((int) log10((double)i)) - 1 - trim, true),
+					    i );
+#ifdef _WIN32
+        wide_to_multibyte_cpg (mbPhysicalColumnName, trimmed, cpg->ConvertCodePageWin((WCHAR *)(FdoString *)codepage));
+#else
+        wide_to_multibyte (mbPhysicalColumnName, trimmed);   
+#endif
+        trim++;
     }
 
-    if (!allascii)
-    {
-        // use FIELDnnn
-        wchar_t buffer[20];
-        swprintf (buffer, sizeof(buffer)/sizeof(wchar_t), L"FIELD%d", physicalColumnIndex);
-        info->SetColumnName (physicalColumnIndex, buffer);
-    }
+    delete cpg;
+
+    // Assign the new name
+    physicalColumnName = trimmed;
+
+    info->SetColumnName (physicalColumnIndex, (WCHAR*)(FdoString *)physicalColumnName);
 
     // Convert logical data type to physical column type, and validate it:
     logicalPropertyType = m_logicalProperty->GetDataType ();

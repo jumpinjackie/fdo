@@ -36,15 +36,29 @@
 
 class ShapeCPG : public FdoCommonFile
 {
+    friend class ShapeDBF;
 
 public:
     ShapeCPG (const wchar_t* name, int& status);
     ShapeCPG (const wchar_t* name, char* locale);
+    ShapeCPG ();
 
     virtual ~ShapeCPG (void);
 
     FdoStringP GetCodePage();
     void       SetCodePage( FdoString* codePage );
+
+
+#ifdef _WIN32
+	// Convert the .CPG file codepage to Windows codepage
+	ULONG	ConvertCodePageWin(WCHAR *codepageESRI);
+#else
+	// Convert the .CPG file codepage to system codepage
+	const char* ConvertCodePageLinux(WCHAR *codepageESRI);
+	FdoStringP	mLinuxCpg;
+#endif
+
+    void SetCodePageESRIFromLocale( char *locale );
 
 private:
     FdoStringP  mCodePageESRI;

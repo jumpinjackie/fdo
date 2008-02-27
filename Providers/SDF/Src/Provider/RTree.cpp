@@ -124,16 +124,22 @@ SdfRTree::~SdfRTree()
 }
 
 
-void SdfRTree::RetrieveNode(Node& node, REC_NO rec)
+bool SdfRTree::RetrieveNode(Node& node, REC_NO rec, bool throwException )
 {
     //retrieve child node we are working with
     SQLiteData dbnode;
     SQLiteData key(&rec, sizeof(REC_NO));
 
     if (m_db->get(0, &key, &dbnode, 0) != 0)
-        throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_19_SPATIAL_INDEX_ERROR)));
+	{
+		if( throwException )
+			throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_19_SPATIAL_INDEX_ERROR)));
+		else
+			return false;
+	}
     _ASSERT(dbnode.get_size() == sizeof(Node));
     node = *(Node*)dbnode.get_data();
+	return true;
 }
 
 
@@ -453,7 +459,8 @@ int SdfRTree::Search(Node& node, Bounds& bounds, SearchHitCallback shcb, void* u
             {
                 //retrieve child node from SQLiteTable...
                 Node child;
-                RetrieveNode(child, node.branch[i].child);
+                if( ! RetrieveNode(child, node.branch[i].child, false ) )
+					continue;
 
                 hitCount += Search(child, bounds, shcb, userData);
             }

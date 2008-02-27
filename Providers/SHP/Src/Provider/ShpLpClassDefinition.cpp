@@ -108,21 +108,28 @@ void ShpLpClassDefinition::ConvertPhysicalToLogical(
         // Get corresponding property mapping (if any):
         FdoPtr<FdoShpOvPropertyDefinition> configPropertyMapping; 
         FdoPtr<FdoPropertyDefinition> configLogicalProperty;
+        bool    isMapped = false;
+
         if (NULL != configClassMapping)
         {
             configPropertyMapping = configClassMapping->FindByColumnName(m_physicalColumns->GetColumnNameAt (i));
-            if ((NULL != configLogicalClass) && (configPropertyMapping != NULL))
+            
+            isMapped = (NULL != configLogicalClass) && (configPropertyMapping != NULL);
+            if (isMapped)
             {
                 FdoPtr<FdoPropertyDefinitionCollection> configLogicalProperties = configLogicalClass->GetProperties();
                 configLogicalProperty = configLogicalProperties->GetItem(configPropertyMapping->GetName());
+            
+                FdoPtr<ShpLpPropertyDefinition> pDataPropertyDefinition =
+                    new ShpLpPropertyDefinition(this, i, configLogicalProperty, configPropertyMapping, true);
             }
         }
-
-        // TODO: this quietly throws away properties that don't have explicit overrides; this seems wrong w.r.t other providers.
-        if (NULL == configClassMapping || (configClassMapping != NULL && configPropertyMapping != NULL))
+        
+        // Do not throw away properties that don't have explicit overrides; this is consistent w.r.t other providers.
+        if (!isMapped)
         {
             FdoPtr<ShpLpPropertyDefinition> pDataPropertyDefinition =
-                new ShpLpPropertyDefinition(this, i, configLogicalProperty, configPropertyMapping, true);
+                new ShpLpPropertyDefinition(this, i, NULL, NULL, true);
         }
     }
     // update the column offsets

@@ -1583,6 +1583,61 @@ void SchemaMgrTests::testGenConfigGeom()
     //TODO: add tests for autogenerating geometric property attributes.
 }
 
+// The following stylesheet handles cases when the order of the reverse-engineered
+// spatial contexts, in an output XML, is not in a consistent order. It pastes
+// the spatial context info onto referencing geometries. Empty spatial contexts
+// are still written out so that we can check that the right number of spatial
+// contexts were generated.
+
+static char* pSortScConfigSheet = 
+"<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\
+<stylesheet version=\"1.0\" \
+xmlns=\"http://www.w3.org/1999/XSL/Transform\" \
+xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" \
+xmlns:gml=\"http://www.opengis.net/gml\" \
+xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" \
+xmlns:fdo=\"http://fdo.osgeo.org/schemas\" \
+xmlns:ora=\"http://www.autodesk.com/isd/fdo/OracleProvider\" \
+xmlns:mql=\"http://fdomysql.osgeo.org/schemas\" \
+xmlns:sqs=\"http://www.autodesk.com/isd/fdo/SQLServerProvider\">\
+<xsl:template match=\"fdo:DataStore\">\
+    <xsl:copy>\
+        <xsl:apply-templates select=\"@*\"/>\
+        <xsl:apply-templates select=\"gml:DerivedCRS\"/>\
+        <xsl:apply-templates select=\"xs:schema\"/>\
+    </xsl:copy>\
+</xsl:template>\
+<xsl:template match=\"gml:DerivedCRS\">\
+    <xsl:copy/>\
+</xsl:template>\
+<xsl:template match=\"xs:schema\">\
+    <xsl:copy>\
+        <xsl:apply-templates select=\"@*\"/>\
+        <xsl:apply-templates select=\"xs:annotation\"/>\
+        <xsl:apply-templates select=\"xs:element\"/>\
+        <xsl:apply-templates select=\"xs:complexType\"/>\
+    </xsl:copy>\
+</xsl:template>\
+<xsl:template match=\"xs:element[@fdo:srsName]\">\
+    <xsl:copy>\
+        <xsl:apply-templates select=\"@*\"/>\
+        <xsl:variable name=\"sc\" select=\"@fdo:srsName\"/>\
+        <xsl:for-each select=\"//fdo:DataStore/gml:DerivedCRS[@gml:id = $sc]\">\
+            <xsl:apply-templates select=\"gml:metaDataProperty\"/>\
+            <xsl:apply-templates select=\"gml:validArea\"/>\
+            <xsl:apply-templates select=\"gml:baseCRS\"/>\
+        </xsl:for-each>\
+    </xsl:copy>\
+</xsl:template>\
+<xsl:template match=\"@fdo:srsName\">\
+</xsl:template>\
+<xsl:template match=\"@*|node()\">\
+  <xsl:copy>\
+    <xsl:apply-templates select=\"@*|node()\"/>\
+  </xsl:copy>\
+  </xsl:template>\
+</stylesheet>";
+
 void SchemaMgrTests::testSpatialContexts()
 {
     StaticConnection* conn = CreateStaticConnection();
@@ -1736,7 +1791,11 @@ void SchemaMgrTests::testSpatialContexts()
             false, 
             FdoStringP(L"Fdo") + datastore
         );
-		UnitTestUtil::Stream2File( stream1, UnitTestUtil::GetOutputFileName( L"spatial_contexts1.xml" ) );
+
+        if ( providerName == L"Oracle" ) 
+    		UnitTestUtil::Config2SortedFile( stream1, UnitTestUtil::GetOutputFileName( L"spatial_contexts1.xml" ), pSortScConfigSheet );
+        else
+    		UnitTestUtil::Stream2File( stream1, UnitTestUtil::GetOutputFileName( L"spatial_contexts1.xml" ) );
 
         UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_SUFFIX );
 
@@ -1772,7 +1831,11 @@ void SchemaMgrTests::testSpatialContexts()
             false, 
             FdoStringP(L"Fdo") + datastore
         );
-		UnitTestUtil::Stream2File( stream1, UnitTestUtil::GetOutputFileName( L"spatial_contexts2.xml" ) );
+
+        if ( providerName == L"Oracle" ) 
+    		UnitTestUtil::Config2SortedFile( stream1, UnitTestUtil::GetOutputFileName( L"spatial_contexts2.xml" ), pSortScConfigSheet );
+        else
+            UnitTestUtil::Stream2File( stream1, UnitTestUtil::GetOutputFileName( L"spatial_contexts2.xml" ) );
 
         UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_SUFFIX );
 

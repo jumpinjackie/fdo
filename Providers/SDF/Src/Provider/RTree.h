@@ -56,7 +56,7 @@ public:
 private:
 
     //database access helper functions
-    void RetrieveNode(Node& node, REC_NO rec);
+    bool RetrieveNode(Node& node, REC_NO rec, bool throwException = true );
     REC_NO SaveNode(Node& node, REC_NO rec, bool isNew);
     void DeleteNode(REC_NO rec);
 

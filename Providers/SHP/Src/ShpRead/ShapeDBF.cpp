@@ -26,6 +26,7 @@
 
 #include "stdafx.h"
 #include "ShapeDBF.h"
+#include "ShapeCPG.h"
 #include "Constants.h"
 #include "ColumnInfo.h"
 #include "RowData.h"
@@ -118,13 +119,15 @@ ShapeDBF::ShapeDBF (const WCHAR* name, FdoString* codepageCPG) :
 		// Get the OEM code page either from the header or CPG
 		FdoStringP	codepageESRI = (mCodePageESRI == L"") ? codepageCPG : (FdoString *)mCodePageESRI;
 
+        ShapeCPG    *cpg = new ShapeCPG();
+
 #ifdef _WIN32
-		ULONG codePage = RowData::ConvertCodePageWin((WCHAR*)(FdoString *)codepageESRI);
+		ULONG codePage = cpg->ConvertCodePageWin((WCHAR*)(FdoString *)codepageESRI);
 #else
-		// This doesn't compile because ConvertCodePageLinux() is static. TO BE FIXED.
-//		const char* codePage = RowData::ConvertCodePageLinux((WCHAR*)(FdoString *)codepageESRI);
-		const char* codePage = "";
+		//const char* codePage = cpg->ConvertCodePageLinux((WCHAR*)(FdoString *)codepageESRI);
+        const char* codePage = "";
 #endif
+        delete cpg;
 
         // Loop through the columns
         coloff = 1;
@@ -140,8 +143,9 @@ ShapeDBF::ShapeDBF (const WCHAR* name, FdoString* codepageCPG) :
 #ifdef _WIN32
 			multibyte_to_wide_cpg (wszColumnName, name, codePage);
 #else
-			// TO BE REMOVED when ConvertCodePageLinux() is fixed.
-			multibyte_to_wide(wszColumnName, name);
+            // Doesn't work properly
+			//multibyte_to_wide_cpg (wszColumnName, name, codePage);
+            multibyte_to_wide (wszColumnName, name);
 #endif
             // Trim trailing and leading spaces and tabs
             trim (wszColumnName);
@@ -257,7 +261,21 @@ bool ShapeDBF::WriteColumnDef (ColumnInfo* info, int column)
     char* name;
 
     memset (&descriptor, 0, sizeof(TableFieldDescriptor));
-    wide_to_multibyte (name, info->GetColumnNameAt (column));
+
+    // Get the codepage directly from locale since .CPG is not created yet.
+    ShapeCPG*   cpg = new ShapeCPG ();
+    FdoStringP  codepage = cpg->GetCodePage(); 
+
+#ifdef _WIN32
+    wide_to_multibyte_cpg (name, info->GetColumnNameAt (column), cpg->ConvertCodePageWin((WCHAR *)(FdoString *)codepage));
+#else
+    // Doesn't work properly
+    //wide_to_multibyte_cpg (name, info->GetColumnNameAt (column), cpg->ConvertCodePageLinux((WCHAR *)(FdoString *)codepage));
+    wide_to_multibyte (name, info->GetColumnNameAt (column));   
+#endif
+
+    delete cpg;
+
     strncpy ((char*)descriptor.cFieldName, name, strlen (name));
     switch (info->GetColumnTypeAt (column))
     {

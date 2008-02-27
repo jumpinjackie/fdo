@@ -1053,7 +1053,7 @@ void SchemaTests::non_ascii_property_name ()
         FdoPtr<FdoDataPropertyDefinition> id = FdoDataPropertyDefinition::Create (L"Id", L"integer");
         id->SetDataType (FdoDataType_Int32);
 // French
-        FdoPtr<FdoDataPropertyDefinition> street = FdoDataPropertyDefinition::Create (L"Str\x00E9et", L"text");
+        FdoPtr<FdoDataPropertyDefinition> street = FdoDataPropertyDefinition::Create (L"Street", L"text");
         street->SetDataType (FdoDataType_String);
         street->SetLength (64);
 // Japanese
@@ -1081,6 +1081,14 @@ void SchemaTests::non_ascii_property_name ()
         // submit the new schema
         classes->Add (feature);
         apply->SetFeatureSchema (schema);
+
+        ///  Very important!!! ///////////
+
+#ifdef _WIN32
+        setlocale(LC_ALL, "Japanese");
+#else
+        setlocale(LC_ALL, "ja_JP.eucjp");
+#endif
         apply->Execute ();
 		SaveSchema(mConnection);
 
@@ -1102,7 +1110,7 @@ void SchemaTests::non_ascii_property_name ()
         properties = cls->GetProperties ();
         FdoPtr<FdoDataPropertyDefinition> featid = (FdoDataPropertyDefinition*)properties->GetItem (L"Id");
         CPPUNIT_ASSERT_MESSAGE ("id wrong type", FdoDataType_Int32 == featid->GetDataType ());
-        street = (FdoDataPropertyDefinition*)properties->GetItem (L"Str\x00E9et");
+        street = (FdoDataPropertyDefinition*)properties->GetItem (L"Street");
         CPPUNIT_ASSERT_MESSAGE ("street wrong type", FdoDataType_String == street->GetDataType ());
         CPPUNIT_ASSERT_MESSAGE ("street wrong size", 64 == street->GetLength ());
         area = (FdoDataPropertyDefinition*)properties->GetItem (L"Area\x5348\x524d");
@@ -1127,6 +1135,108 @@ void SchemaTests::non_ascii_property_name ()
     }
 }
 
+void SchemaTests::non_ascii_property_name_no_mapping ()
+{
+    try
+    {
+        FdoString* NEW_SCHEMA_NAME = L"NewSchema";
+        FdoString* NEW_CLASS_NAME = L"Test3";
+
+        // Clean up leftovers from previous tests:
+        //TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
+
+
+        FdoPtr<FdoIApplySchema> apply = (FdoIApplySchema*)mConnection->CreateCommand (FdoCommandType_ApplySchema);
+        FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create (NEW_SCHEMA_NAME, L"");
+        FdoPtr<FdoClassCollection> classes = schema->GetClasses ();
+
+        FdoPtr<FdoDataPropertyDefinition> id = FdoDataPropertyDefinition::Create (L"Id", L"integer");
+        id->SetDataType (FdoDataType_Decimal);
+        id->SetPrecision(10);
+        id->SetScale(0);
+// English
+        FdoPtr<FdoDataPropertyDefinition> street = FdoDataPropertyDefinition::Create (L"Street", L"text");
+        street->SetDataType (FdoDataType_String);
+        street->SetLength (64);
+// Japanese
+        FdoPtr<FdoDataPropertyDefinition> area = FdoDataPropertyDefinition::Create (L"Area\x5348\x524d", L"double");
+        area->SetDataType (FdoDataType_Decimal);
+        area->SetPrecision (20);
+        area->SetScale (8);
+        // build a location geometry property
+        FdoPtr<FdoGeometricPropertyDefinition> location = FdoGeometricPropertyDefinition::Create (L"Geometry", L"geometry");
+        location->SetGeometryTypes (FdoGeometricType_Point);
+        location->SetHasElevation (true);
+
+        //// assemble the feature class
+        FdoPtr<FdoFeatureClass> feature = FdoFeatureClass::Create (NEW_CLASS_NAME, L"test class created with apply schema");
+        FdoPtr<FdoPropertyDefinitionCollection> properties = feature->GetProperties ();
+        properties->Add (id);
+        properties->Add (street);
+        properties->Add (area);
+        properties->Add (location);
+        feature->SetGeometryProperty (location);
+
+        // No ID properties. It is Featid
+        //FdoPtr<FdoDataPropertyDefinitionCollection> identities = feature->GetIdentityProperties ();
+        //identities->Add (id);
+
+        // submit the new schema
+        classes->Add (feature);
+        apply->SetFeatureSchema (schema);
+
+        ///  Very important!!! ///////////
+#ifdef _WIN32
+        setlocale(LC_ALL, "Japanese");
+#else
+        setlocale(LC_ALL, "ja_JP.eucjp");
+#endif
+
+        apply->Execute ();
+		
+        // NO MAPPING!
+        // SaveSchema(mConnection);
+
+        // close and reopen the connection
+        mConnection->Close ();
+        CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->Open ());
+
+        // check that the new schema shows up in the list
+        FdoPtr<FdoIDescribeSchema> describe = (FdoIDescribeSchema*)mConnection->CreateCommand (FdoCommandType_DescribeSchema);
+        FdoPtr<FdoFeatureSchemaCollection> schemas = describe->Execute ();
+
+        FdoPtr<FdoIDisposableCollection> collection = schemas->FindClass (NEW_CLASS_NAME);
+        CPPUNIT_ASSERT_MESSAGE ("no class found", 1 == collection->GetCount ());
+        FdoPtr<FdoFeatureClass> cls = (FdoFeatureClass *)collection->GetItem (0);
+        CPPUNIT_ASSERT_MESSAGE ("wrong name", 0 == wcscmp (NEW_CLASS_NAME, cls->GetName ()));
+
+        // check it's contents
+        properties = cls->GetProperties ();
+        FdoPtr<FdoDataPropertyDefinition> featid = (FdoDataPropertyDefinition*)properties->GetItem (L"Id");
+        CPPUNIT_ASSERT_MESSAGE ("id wrong type", FdoDataType_Decimal == featid->GetDataType ());
+        street = (FdoDataPropertyDefinition*)properties->GetItem (L"Street");
+        CPPUNIT_ASSERT_MESSAGE ("street wrong type", FdoDataType_String == street->GetDataType ());
+        CPPUNIT_ASSERT_MESSAGE ("street wrong size", 64 == street->GetLength ());
+        area = (FdoDataPropertyDefinition*)properties->GetItem (L"Area\x5348\x524d");
+        CPPUNIT_ASSERT_MESSAGE ("area wrong type", FdoDataType_Decimal == area->GetDataType ());
+        location = (FdoGeometricPropertyDefinition*)properties->GetItem (L"Geometry");
+        CPPUNIT_ASSERT_MESSAGE ("wrong geometry types", FdoGeometricType_Point == location->GetGeometryTypes ());
+        CPPUNIT_ASSERT_MESSAGE ("wrong elevation", location->GetHasElevation ());
+
+        // OK, now delete the class
+        schema = schemas->GetItem (0);
+        classes = schema->GetClasses ();
+        FdoPtr<FdoClassDefinition> definition = classes->GetItem (NEW_CLASS_NAME);
+        definition->Delete ();
+        apply->SetFeatureSchema (schema);
+
+        apply->Execute ();
+    }
+    catch (FdoException* ge) 
+    {
+        TestCommonFail (ge);
+    }
+}
 void SchemaTests::non_ascii_class_name1 ()
 {
     try
@@ -1144,7 +1254,7 @@ void SchemaTests::non_ascii_class_name1 ()
         FdoPtr<FdoDataPropertyDefinition> id = FdoDataPropertyDefinition::Create (L"Id", L"integer");
         id->SetDataType (FdoDataType_Int32);
 // French
-        FdoPtr<FdoDataPropertyDefinition> street = FdoDataPropertyDefinition::Create (L"Str\x00E9et", L"text");
+        FdoPtr<FdoDataPropertyDefinition> street = FdoDataPropertyDefinition::Create (L"Street", L"text");
         street->SetDataType (FdoDataType_String);
         street->SetLength (64);
 // Japanese
@@ -1193,7 +1303,7 @@ void SchemaTests::non_ascii_class_name1 ()
         properties = cls->GetProperties ();
         FdoPtr<FdoDataPropertyDefinition> featid = (FdoDataPropertyDefinition*)properties->GetItem (L"Id");
         CPPUNIT_ASSERT_MESSAGE ("id wrong type", FdoDataType_Int32 == featid->GetDataType ());
-        street = (FdoDataPropertyDefinition*)properties->GetItem (L"Str\x00E9et");
+        street = (FdoDataPropertyDefinition*)properties->GetItem (L"Street");
         CPPUNIT_ASSERT_MESSAGE ("street wrong type", FdoDataType_String == street->GetDataType ());
         CPPUNIT_ASSERT_MESSAGE ("street wrong size", 64 == street->GetLength ());
         area = (FdoDataPropertyDefinition*)properties->GetItem (L"Area\x5348\x524d");
@@ -1235,7 +1345,7 @@ void SchemaTests::non_ascii_class_name2 ()
         FdoPtr<FdoDataPropertyDefinition> id = FdoDataPropertyDefinition::Create (L"Id", L"integer");
         id->SetDataType (FdoDataType_Int32);
 // French
-        FdoPtr<FdoDataPropertyDefinition> street = FdoDataPropertyDefinition::Create (L"Str\x00E9et", L"text");
+        FdoPtr<FdoDataPropertyDefinition> street = FdoDataPropertyDefinition::Create (L"Street", L"text");
         street->SetDataType (FdoDataType_String);
         street->SetLength (64);
 // Japanese
@@ -1263,6 +1373,14 @@ void SchemaTests::non_ascii_class_name2 ()
         // submit the new schema
         classes->Add (feature);
         apply->SetFeatureSchema (schema);
+
+        ///  Very important!!! ///////////
+#ifdef _WIN32
+        setlocale(LC_ALL, "Japanese");
+#else
+        setlocale(LC_ALL, "ja_JP.eucjp");
+#endif
+
         apply->Execute ();
 		SaveSchema(mConnection);
 
@@ -1284,7 +1402,7 @@ void SchemaTests::non_ascii_class_name2 ()
         properties = cls->GetProperties ();
         FdoPtr<FdoDataPropertyDefinition> featid = (FdoDataPropertyDefinition*)properties->GetItem (L"Id");
         CPPUNIT_ASSERT_MESSAGE ("id wrong type", FdoDataType_Int32 == featid->GetDataType ());
-        street = (FdoDataPropertyDefinition*)properties->GetItem (L"Str\x00E9et");
+        street = (FdoDataPropertyDefinition*)properties->GetItem (L"Street");
         CPPUNIT_ASSERT_MESSAGE ("street wrong type", FdoDataType_String == street->GetDataType ());
         CPPUNIT_ASSERT_MESSAGE ("street wrong size", 64 == street->GetLength ());
         area = (FdoDataPropertyDefinition*)properties->GetItem (L"Area\x5348\x524d");
@@ -1326,7 +1444,7 @@ void SchemaTests::non_ascii_schema_name ()
         FdoPtr<FdoDataPropertyDefinition> id = FdoDataPropertyDefinition::Create (L"Id", L"integer");
         id->SetDataType (FdoDataType_Int32);
 // French
-        FdoPtr<FdoDataPropertyDefinition> street = FdoDataPropertyDefinition::Create (L"Str\x00E9et", L"text");
+        FdoPtr<FdoDataPropertyDefinition> street = FdoDataPropertyDefinition::Create (L"Street", L"text");
         street->SetDataType (FdoDataType_String);
         street->SetLength (64);
 // Japanese
@@ -1375,7 +1493,7 @@ void SchemaTests::non_ascii_schema_name ()
         properties = cls->GetProperties ();
         FdoPtr<FdoDataPropertyDefinition> featid = (FdoDataPropertyDefinition*)properties->GetItem (L"Id");
         CPPUNIT_ASSERT_MESSAGE ("id wrong type", FdoDataType_Int32 == featid->GetDataType ());
-        street = (FdoDataPropertyDefinition*)properties->GetItem (L"Str\x00E9et");
+        street = (FdoDataPropertyDefinition*)properties->GetItem (L"Street");
         CPPUNIT_ASSERT_MESSAGE ("street wrong type", FdoDataType_String == street->GetDataType ());
         CPPUNIT_ASSERT_MESSAGE ("street wrong size", 64 == street->GetLength ());
         area = (FdoDataPropertyDefinition*)properties->GetItem (L"Area\x5348\x524d");
@@ -1431,7 +1549,7 @@ void SchemaTests::non_ascii_directory ()
         FdoPtr<FdoDataPropertyDefinition> id = FdoDataPropertyDefinition::Create (L"Id", L"integer");
         id->SetDataType (FdoDataType_Int32);
 // French
-        FdoPtr<FdoDataPropertyDefinition> street = FdoDataPropertyDefinition::Create (L"Str\x00E9et", L"text");
+        FdoPtr<FdoDataPropertyDefinition> street = FdoDataPropertyDefinition::Create (L"Street", L"text");
         street->SetDataType (FdoDataType_String);
         street->SetLength (64);
 // Japanese
@@ -1480,7 +1598,7 @@ void SchemaTests::non_ascii_directory ()
         properties = cls->GetProperties ();
         FdoPtr<FdoDataPropertyDefinition> featid = (FdoDataPropertyDefinition*)properties->GetItem (L"Id");
         CPPUNIT_ASSERT_MESSAGE ("id wrong type", FdoDataType_Int32 == featid->GetDataType ());
-        street = (FdoDataPropertyDefinition*)properties->GetItem (L"Str\x00E9et");
+        street = (FdoDataPropertyDefinition*)properties->GetItem (L"Street");
         CPPUNIT_ASSERT_MESSAGE ("street wrong type", FdoDataType_String == street->GetDataType ());
         CPPUNIT_ASSERT_MESSAGE ("street wrong size", 64 == street->GetLength ());
         area = (FdoDataPropertyDefinition*)properties->GetItem (L"Area\x5348\x524d");
