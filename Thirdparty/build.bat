@@ -218,6 +218,7 @@ if not "%PLATFORMTHR%"=="Win32" goto rebuild_fdo
 
 copy /y "gdal\bin\Win32\%TYPEBUILDTHR%\gdal14.dll" "%FDOBINPATHTHR%"
 copy /y "boost\stage\%PLATFORMTHR%\%TYPEBUILDTHR%\lib\boost_thread-vc80-mt%TYPEBUILDTHRPATH%-1_34_1.dll" "%FDOBINPATHTHR%"
+copy /y "boost\stage\%PLATFORMTHR%\%TYPEBUILDTHR%\lib\boost_date_time-vc80-mt%TYPEBUILDTHRPATH%-1_34_1.dll" "%FDOBINPATHTHR%"
 
 rem # Build FDO API Thirdparty Files
 :rebuild_fdo
@@ -341,6 +342,7 @@ rem # Install PostGIS Provider Thirdparty Files
 
 echo copy %TYPEBUILDTHR% Thirdparty PostGIS dlls
 copy /y "boost\stage\%PLATFORMTHR%\%TYPEBUILDTHR%\lib\boost_thread-vc80-mt%TYPEBUILDTHRPATH%-1_34_1.dll" "%FDOBINPATHTHR%"
+copy /y "boost\stage\%PLATFORMTHR%\%TYPEBUILDTHR%\lib\boost_date_time-vc80-mt%TYPEBUILDTHRPATH%-1_34_1.dll" "%FDOBINPATHTHR%"
 rem # End PostGIS part 
 
 :end
