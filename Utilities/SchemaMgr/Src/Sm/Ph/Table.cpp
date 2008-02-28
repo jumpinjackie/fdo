@@ -786,22 +786,27 @@ void FdoSmPhTable::LoadUkeys( FdoSmPhReaderP ukeyRdr, bool isSkipAdd  )
 		// The subcollection is identified by the common ukeyName.
 		// The columns will be grouped this way.
 		if ( ukeyName != ukeyNameCurr ) {
-			if ( ukeysCurr && ! isSkipAdd )
+			if ( ukeysCurr && !isSkipAdd  )
 		    	mUkeysCollection->Add( ukeysCurr ); // save the last group
 
 			// Start a new subcollection
-			ukeysCurr = new FdoSmPhColumnCollection( ukeyName );
+   			ukeysCurr = new FdoSmPhColumnCollection( ukeyName );
 		}		
 		
-        ukeysCurr->Add( ukeyColumn );
+        if ( ukeyColumn && ukeysCurr ) 
+            ukeysCurr->Add( ukeyColumn );
+        else
+            // Skip the entire unique constraint if any of its columns are missing
+            ukeysCurr = NULL;
 
-		ukeyNameCurr = ukeyName;		
+        ukeyNameCurr = ukeyName;		
     }
 
 	// Add the last group
-	if ( ukeysCurr && ! isSkipAdd )
+	if ( ukeysCurr && !isSkipAdd )
 		mUkeysCollection->Add( ukeysCurr );
 }
+
 
 void FdoSmPhTable::LoadCkeys()
 {
