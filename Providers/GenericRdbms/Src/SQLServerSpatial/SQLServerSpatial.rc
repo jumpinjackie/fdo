@@ -69,13 +69,13 @@ BEGIN
     BEGIN
         BLOCK "100904b0"
         BEGIN
-            VALUE "CompanyName", "Autodesk, Inc."
-            VALUE "FileDescription", "SqlServer Dynamic Link Library"
+            VALUE "CompanyName", "Open Source Geospatial Foundation"
+            VALUE "FileDescription", "SQL Server Spatial Provider Dynamic Link Library"
             VALUE "FileVersion", "3.3.0.0"
-            VALUE "InternalName", "SqlServer"
-            VALUE "LegalCopyright", "Copyright (C) 2007"
-            VALUE "OriginalFilename", "SqlServer.dll"
-            VALUE "ProductName", " SqlServer Dynamic Link Library"
+            VALUE "InternalName", "SQL Server Provider"
+            VALUE "LegalCopyright", "Copyright (C) 2008"
+            VALUE "OriginalFilename", "SQLServerSpatial.dll"
+            VALUE "ProductName", " SQL Server Spatial Provider Dynamic Link Library"
             VALUE "ProductVersion", "3.3.0.0"
         END
     END
