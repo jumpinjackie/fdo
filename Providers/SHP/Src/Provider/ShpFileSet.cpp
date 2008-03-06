@@ -1039,7 +1039,7 @@ void ShpFileSet::ReopenFileset( FdoCommonFile::OpenFlags flags )
 		if (!this->GetShapeIndexFile ()->IsReadOnly ()) 
 			this->GetShapeIndexFile()->Reopen( flags );
 		
-		if (this->GetSpatialIndex() && !this->GetSpatialIndex ()->IsReadOnly ())
+		if (this->GetSpatialIndex(true) && !this->GetSpatialIndex ()->IsReadOnly ())
 		{
 			if ( !this->GetSpatialIndex ()->IsTemporaryFile() ) 
 			{
