@@ -8,6 +8,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExerciseFdoApi", "DevGuideE
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OdbcSample", "OdbcSample\OdbcSample.vcproj", "{115B3D9A-EAE8-4DF2-91B9-FB5F6974AC77}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RasterFile", "RasterFile\RasterFile.vcproj", "{B10B635B-2B48-492A-A035-7AA3E6E83D96}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -30,6 +32,10 @@ Global
 		{115B3D9A-EAE8-4DF2-91B9-FB5F6974AC77}.Debug|Win32.Build.0 = Debug|Win32
 		{115B3D9A-EAE8-4DF2-91B9-FB5F6974AC77}.Release|Win32.ActiveCfg = Release|Win32
 		{115B3D9A-EAE8-4DF2-91B9-FB5F6974AC77}.Release|Win32.Build.0 = Release|Win32
+		{B10B635B-2B48-492A-A035-7AA3E6E83D96}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B10B635B-2B48-492A-A035-7AA3E6E83D96}.Debug|Win32.Build.0 = Debug|Win32
+		{B10B635B-2B48-492A-A035-7AA3E6E83D96}.Release|Win32.ActiveCfg = Release|Win32
+		{B10B635B-2B48-492A-A035-7AA3E6E83D96}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
