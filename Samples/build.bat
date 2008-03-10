@@ -222,8 +222,6 @@ echo           [-o=OutFolder]
 echo           [-c=BuildType]
 echo           [-p=PlatformType]
 echo           [-a=Action]
-echo           [-d=BuildDocs]
-echo           [-py=BuildPythonWrappers]
 echo *
 echo Help:                  -h[elp]
 echo OutFolder:             -o[utpath]=destination folder for binaries
