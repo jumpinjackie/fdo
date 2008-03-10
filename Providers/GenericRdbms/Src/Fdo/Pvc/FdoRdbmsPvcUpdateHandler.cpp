@@ -361,7 +361,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
         else
         {
             bool isGeomProp = (propType == FdoPropertyType_GeometricProperty);
-            updateString += mFdoConnection->GetBindString( bindIndex++, isGeomProp );
+            updateString += mFdoConnection->GetBindString( bindIndex++, propertyDefinition );
 
 			if ( isGeomProp )
 			{

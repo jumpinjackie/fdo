@@ -612,10 +612,53 @@ FdoRdbmsFeatureReader *FdoRdbmsSqlServerConnection::GetOptimizedAggregateReader(
     return new FdoRdbmsSqlServerOptimizedAggregateReader(this, classDef, selAggrList); 
 }
 
-const char *FdoRdbmsSqlServerConnection::GetBindString( int n, bool isGeom )
+FdoStringP FdoRdbmsSqlServerConnection::GetBindString( int n, const FdoSmLpPropertyDefinition* prop )
 { 
-    // TODO: it needs proper SRID handling (instead of harcoded "0")
-    return !isGeom ? "?" : "geometry::STGeomFromWKB(?, 0)"; 
+    bool isGeom = false;
+    FdoInt64 srid = 0;
+    FdoStringP bindStr(L"?", true);
+
+    const FdoSmLpGeometricPropertyDefinition* geomProp =
+        FdoSmLpGeometricPropertyDefinition::Cast(prop);
+
+    if ( geomProp ) 
+    {
+        // For geometric properties, convert from WKB and add SRID.
+
+        // First, get SRID. Try associated spatial context first.
+        FdoStringP scName = geomProp->GetSpatialContextAssociation();
+
+        FdoSchemaManagerP schemaMgr = this->GetSchemaManager();
+
+        FdoSmLpSpatialContextMgrP scMgr = schemaMgr->GetLpSpatialContextMgr();
+        FdoSmLpSpatialContextP sc = scMgr->FindSpatialContext(scName);
+
+        if ( sc )
+        {
+            srid = sc->GetSrid();
+        }
+        else
+        {
+            // Can't find associated spatial context, so fall back to retrieving
+            // from geometric column.
+
+            FdoSmPhColumnP column = ((FdoSmLpGeometricPropertyDefinition*) geomProp)->GetColumn();
+        
+            if ( column ) 
+            {
+                FdoSmPhColumnGeomP geomColumn = column->SmartCast<FdoSmPhColumnGeom>();
+
+                if ( geomColumn ) 
+                    srid = geomColumn->GetSRID();
+            }
+        }
+
+        // TODO: handle geography columns. Need to sort out XY ordering first to 
+        // avoid inserting corrupt coordinates.
+        bindStr = FdoStringP::Format( L"geometry::STGeomFromWKB(?, %ls)", (FdoString*) FdoCommonStringUtil::Int64ToString(srid) );
+    }
+
+    return bindStr; 
 }
 
 bool  FdoRdbmsSqlServerConnection::BindGeometriesLast() 
