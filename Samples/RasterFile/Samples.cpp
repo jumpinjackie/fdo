@@ -23,7 +23,7 @@ FdoIConnection* CreateConnection()
 {
     FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
 	// You must use the proper provider's name here
-    return (manager->CreateConnection (L"OSGeo.GDAL.3.3"));
+    return (manager->CreateConnection (L"OSGeo.Gdal.3.3"));
 }
 
 // OpenConfiguration demonstrates how to open the connection using the specified configuration file
