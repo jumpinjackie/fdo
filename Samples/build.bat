@@ -87,6 +87,7 @@ if not exist "%FDOSAMPLEPATHFDO%\ProviderCapabilities" mkdir "%FDOSAMPLEPATHFDO%
 if not exist "%FDOSAMPLEPATHFDO%\ProviderList" mkdir "%FDOSAMPLEPATHFDO%\ProviderList"
 if not exist "%FDOSAMPLEPATHFDO%\DevGuideExample" mkdir "%FDOSAMPLEPATHFDO%\DevGuideExample"
 if not exist "%FDOSAMPLEPATHFDO%\OdbcSample" mkdir "%FDOSAMPLEPATHFDO%\OdbcSample"
+if not exist "%FDOSAMPLEPATHFDO%\RasterFile" mkdir "%FDOSAMPLEPATHFDO%\RasterFile"
 
 :start_exbuild
 if "%TYPEACTIONFDO%"=="clean" SET MSACTIONFDO=Clean
@@ -168,6 +169,17 @@ copy /y "OdbcSample\stdafx.cpp" "%FDOSAMPLEPATHFDO%\OdbcSample"
 copy /y "OdbcSample\OdbcSample.vcproj" "%FDOSAMPLEPATHFDO%\OdbcSample"
 copy /y "OdbcSample\ReadMe.txt" "%FDOSAMPLEPATHFDO%\OdbcSample"
 copy /y "OdbcSample\providers.xml" "%FDOSAMPLEPATHFDO%\OdbcSample"
+copy /y "RasterFile\airport.xml" "%FDOSAMPLEPATHFDO%\RasterFile"
+copy /y "RasterFile\leftbottom.JPG" "%FDOSAMPLEPATHFDO%\RasterFile"
+copy /y "RasterFile\lefttop.JPG" "%FDOSAMPLEPATHFDO%\RasterFile"
+copy /y "RasterFile\RasterFile.cpp" "%FDOSAMPLEPATHFDO%\RasterFile"
+copy /y "RasterFile\RasterFile.vcproj" "%FDOSAMPLEPATHFDO%\RasterFile"
+copy /y "RasterFile\ReadMe.txt" "%FDOSAMPLEPATHFDO%\RasterFile"
+copy /y "RasterFile\rightbottom.JPG" "%FDOSAMPLEPATHFDO%\RasterFile"
+copy /y "RasterFile\righttop.JPG" "%FDOSAMPLEPATHFDO%\RasterFile"
+copy /y "RasterFile\Samples.cpp" "%FDOSAMPLEPATHFDO%\RasterFile"
+copy /y "RasterFile\stdafx.cpp" "%FDOSAMPLEPATHFDO%\RasterFile"
+copy /y "RasterFile\stdafx.h" "%FDOSAMPLEPATHFDO%\RasterFile"
 copy /y "Sample.sln" "%FDOSAMPLEPATHFDO%"
 
 REM echo Copy FDO Samples %TYPEBUILDFDO% Output Files
@@ -175,6 +187,7 @@ REM copy /y "DevGuideExample\%TYPEBUILDFDO%\ExerciseFdoApi.exe" "%FDOBINPATHFDO%
 REM copy /y "OdbcSample\%TYPEBUILDFDO%\OdbcSample.exe" "%FDOBINPATHFDO%"
 REM copy /y "ProviderCapabilities\%TYPEBUILDFDO%\ProviderCapabilities.exe" "%FDOBINPATHFDO%"
 REM copy /y "ProviderList\%TYPEBUILDFDO%\ProviderList.exe" "%FDOBINPATHFDO%"
+REM copy /y "RasterFile\%TYPEBUILDFDO%\RasterFile.exe" "%FDOBINPATHFDO%"
 
 :end
 echo End FDO %MSACTIONFDO%
