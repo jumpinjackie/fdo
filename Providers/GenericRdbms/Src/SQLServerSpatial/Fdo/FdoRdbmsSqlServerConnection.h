@@ -110,7 +110,7 @@ public:
 	virtual FdoICommandCapabilities* GetCommandCapabilities();
 
     // Returns the bind string. The geometries need a conversion wrapper
-    virtual const char* GetBindString( int n, bool isGeom );
+    virtual FdoStringP GetBindString( int n, const FdoSmLpPropertyDefinition* prop = NULL );
 
     // Workaround for SqlServer spatial bug: on Insert the geometries need to be bound last.
     virtual bool  BindGeometriesLast();

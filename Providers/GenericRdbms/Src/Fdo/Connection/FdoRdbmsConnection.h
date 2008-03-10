@@ -210,7 +210,7 @@ public:
     //
     // Returns the bind string used by the specific database engine; for example :1 for Oracle and ? for MySql.
     // By default ? is returned. If the database engine uses different syntax, then this method need to be ovewritten.
-    virtual const char* GetBindString( int n, bool isGeom = false ) { return "?"; }
+    virtual FdoStringP GetBindString( int n, const FdoSmLpPropertyDefinition* prop = NULL ) { return "?"; }
 
     // Workaround for SqlServer spatial bug: on Insert the geometries need to be bound last.
     virtual bool  BindGeometriesLast() { return false; }

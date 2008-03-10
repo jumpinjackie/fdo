@@ -27,6 +27,21 @@
 CPPUNIT_TEST_SUITE_REGISTRATION( SqlServerSchemaMgrTests );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( SqlServerSchemaMgrTests, "SchemaMgrTests");
 
+static FdoPropertyValue* AddNewProperty( FdoPropertyValueCollection* propertyValues, const wchar_t *name )
+{
+    FdoPropertyValue*  propertyValue = NULL;
+    propertyValue = propertyValues->FindItem( name );
+
+    if ( !propertyValue )
+    {
+        propertyValue =  FdoPropertyValue::Create();
+        propertyValue->SetName( name );
+        propertyValues->Add( propertyValue );
+    }
+    
+    return propertyValue;
+}
+
 void SqlServerSchemaMgrTests::testSpatialContextsGeog()
 {
     StaticConnection* conn = CreateStaticConnection();
@@ -175,12 +190,18 @@ void SqlServerSchemaMgrTests::testSpatialContextsGeog()
         );
 		UnitTestUtil::Stream2File( stream1, UnitTestUtil::GetOutputFileName( L"spatial_contexts3.xml" ) );
 
-        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_SUFFIX );
-
         UnitTestUtil::CheckOutput( 
             FdoStringP::Format(L"spatial_contexts3_%ls_master.txt", (FdoString*) providerName),
             UnitTestUtil::GetOutputFileName( L"spatial_contexts3.xml" )
         );
+
+//        InsertSridRow( fdoConn, L"table1", L"geom_column2", 0, 1 );
+//        InsertSridRow( fdoConn, L"table2", L"geog_column1", 0, 1 );
+        InsertSridRow( fdoConn, L"table3", L"geom_column1", 1, 2 );
+//        InsertSridRow( fdoConn, L"table4", L"geog_column1", 2, 2 );
+//        InsertSridRow( fdoConn, L"table5", L"geog_column1", 1, 2 );
+
+        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_SUFFIX );
 
         printf( "Done\n" );
     }
@@ -198,6 +219,48 @@ void SqlServerSchemaMgrTests::testSpatialContextsGeog()
     }
 }
 
+void SqlServerSchemaMgrTests::InsertSridRow( FdoIConnection* fdoConn, FdoStringP tableName, FdoStringP geomColumnName, int sridIndex, int expectedCount )
+{
+    FdoPtr<FdoIInsert> insertCommand = (FdoIInsert *) fdoConn->CreateCommand(FdoCommandType_Insert);
+    insertCommand->SetFeatureClassName(tableName);
+
+    FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
+
+    FdoPtr<FdoDataValue> dataValue = FdoInt32Value::Create(2);
+    FdoPtr<FdoPropertyValue> propertyValue = AddNewProperty( propertyValues, L"id" );
+    propertyValue->SetValue(dataValue);
+
+    double       coordsBuffer[2];
+    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+
+    coordsBuffer[0] = 1;
+    coordsBuffer[1] = 2;
+
+    propertyValue = AddNewProperty( propertyValues, geomColumnName );
+    FdoPtr<FdoIPoint> point1 = gf->CreatePoint(FdoDimensionality_XY, coordsBuffer);
+    FdoPtr<FdoByteArray> byteArray = gf->GetFgf(point1);
+    FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray); 
+    propertyValue->SetValue(geometryValue);
+
+    FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
+
+    FdoPtr<FdoISQLCommand> sqlCommand = (FdoISQLCommand *) fdoConn->CreateCommand(FdoCommandType_SQLCommand);
+    sqlCommand->SetSQLStatement( 
+        FdoStringP::Format(
+            L"select geom_column1.STSrid as srid from %ls",
+            (FdoString*) tableName
+        )
+    );
+
+    FdoPtr<FdoISQLDataReader> sqlRdr = sqlCommand->ExecuteReader();
+    int count = 0;
+    while ( sqlRdr->ReadNext() ) {
+        CPPUNIT_ASSERT( sqlRdr->GetInt32(L"srid") == GetSrid(sridIndex) );
+        count++;
+    }
+
+    CPPUNIT_ASSERT( count >=expectedCount );
+}
 
 StaticConnection* SqlServerSchemaMgrTests::CreateStaticConnection()
 {
@@ -208,7 +271,7 @@ FdoIoStream* SqlServerSchemaMgrTests::OverrideBend( FdoIoStream* stream1, FdoStr
 {
     FdoIoMemoryStream* stream2 = FdoIoMemoryStream::Create();
     UnitTestUtil::OverrideBend( stream1, stream2, 
-        "Autodesk.SQLServerSpatial.3.3", 
+        "OSGeo.SQLServerSpatial.3.3", 
         "http://www.autodesk.com/isd/fdo/SQLServerSpatialProvider",
         oldOwnerPrefix,newOwnerPrefix);
 
