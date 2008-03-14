@@ -21,6 +21,7 @@ TYPEACTION=buildinstall
 TYPEBUILD=release
 TYPECONFIGURE=configure
 BUILDDOCS=skip
+PREFIXVAL=/usr/local/fdo-3.3.0
 
 DEFMODIFY=no
 FDOCOREENABLE=yes
@@ -63,6 +64,15 @@ do
     else
         echo "$arg Invalid parameter $1"
     exit 1
+    fi
+    shift
+    ;;
+  -p | --p | --prefix)
+    if test "$1" == ""; then
+        echo "$arg Invalid parameter $1"
+        exit 1
+    else
+        PREFIXVAL="$1"
     fi
     shift
     ;;
@@ -213,12 +223,14 @@ if test "$SHOWHELP" == yes; then
    echo "               [--w WithModule]" 
    echo "               [--d BuildDocs]"
    echo "               [--m ConfigMakefiles]"
+   echo "               [--p Prefix]"
    echo "*"
    echo "Help:            --h[elp]"
    echo "BuildType:       --c[onfig] release(default), debug"
    echo "Action:          --a[ction] buildinstall(default), build, install, uninstall, clean"
    echo "BuildDocs:       --d[ocs] skip(default), build"
    echo "ConfigMakefiles: --m[akefile] configure(default), noconfigure"
+   echo "Prefix:          --p[refix] <fdo install location>"
 
    HELPSTRINGWITH="WithModule:      --w[ith] all(default), fdocore, fdo, utilities, providers"
    if test -e "Providers/SHP/build_linux.sh"; then
@@ -268,16 +280,16 @@ if test "$TYPECONFIGURE" == configure ; then
       autoconf
 
       if test "$TYPEBUILD" == release; then
-         ./configure
+         ./configure --prefix="$PREFIXVAL"
       else
-         ./configure --enable-debug=yes
+         ./configure --enable-debug=yes --prefix="$PREFIXVAL"
       fi
    fi
 fi
 
 ### start build ###
 
-CMDEX="--c $TYPEBUILD --a $TYPEACTION --d $BUILDDOCS --m $TYPECONFIGURE"
+CMDEX="--c $TYPEBUILD --a $TYPEACTION --d $BUILDDOCS --m $TYPECONFIGURE --p $PREFIXVAL"
 
 #build all of fdocore
 if test "$FDOCOREENABLE" == yes; then
@@ -323,10 +335,10 @@ if test "$FDOENABLE" == yes; then
    fi
    
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
-      rm -rf "/usr/local/fdo-3.3.0/docs/HTML/FDO_API"
-      mkdir -p "/usr/local/fdo-3.3.0/docs/HTML"
+      rm -rf "$PREFIXVAL/docs/HTML/FDO_API"
+      mkdir -p "$PREFIXVAL/docs/HTML"
       if test -e "Docs/HTML/FDO_API"; then  
-         cp --force --recursive "Docs/HTML/FDO_API" "/usr/local/fdo-3.3.0/docs/HTML"
+         cp --force --recursive "Docs/HTML/FDO_API" "$PREFIXVAL/docs/HTML"
       fi
    fi
    
