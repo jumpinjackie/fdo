@@ -117,6 +117,7 @@ if test "$SHOWHELP" == yes; then
    echo "               [--a Action]"
    echo "               [--d BuildDocs]"
    echo "               [--m ConfigMakefiles]"
+   echo "               [--p Prefix]"
    echo " "
    echo "Help:            --h[elp]"
    echo "BuildType:       --c[onfig] release(default), debug"
