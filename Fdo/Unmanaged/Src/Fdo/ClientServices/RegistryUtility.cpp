@@ -789,7 +789,7 @@ wchar_t *FdoRegistryUtility::GetFileName()
             const char *me;
             char *home;
             char *last;
-            char *install = "/usr/local/fdo-3.3.0/lib";
+            char *install = "/usr/local/fdo-3.3.0";
 
             // Determine the user-specified FDO install location
             char *fdo_home = getenv( "FDOHOME" );
@@ -814,7 +814,7 @@ wchar_t *FdoRegistryUtility::GetFileName()
             if ((0 != stat (_fileName, &my_stat)) || !S_ISREG(my_stat.st_mode))
                 // not found or not a file, try the install location
                 if ((0 == stat (install, &my_stat)) && S_ISDIR(my_stat.st_mode))
-                    sprintf (_fileName, "%s%s", install, "/providers.xml");
+                    sprintf (_fileName, "%s%s", install, "/lib/providers.xml");
 			mbstowcs(fileName, _fileName, 512);        }
 #else
         {
