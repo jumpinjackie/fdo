@@ -589,7 +589,7 @@ II. Build Notes
   6. In order to build the King Oracle Provider, you will need to download 
      and install the 'Oracle 10.2.0.3 Instant Client' for Linux from:
 
-        http://www.oracle.com/technology/software/tech/oci/instantclient/htdocs/winsoft.html
+        http://www.oracle.com/technology/software/tech/oci/instantclient/htdocs/linuxsoft.html
 
      The name of the installation files are:
 
