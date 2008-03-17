@@ -21,6 +21,7 @@ TYPEACTION=buildinstall
 TYPEBUILD=release
 TYPECONFIGURE=configure
 BUILDDOCS=no
+PREFIXVAL=/usr/local/fdo-3.3.0
 
 ### study parameters ###
 while test $# -gt 0
@@ -46,6 +47,15 @@ do
     else
         echo "$arg Invalid parameter $1"
 	exit 1
+    fi
+    shift
+    ;;
+  -p | --p | --prefix)
+    if test "$1" == ""; then
+        echo "$arg Invalid parameter $1"
+        exit 1
+    else
+        PREFIXVAL="$1"
     fi
     shift
     ;;
@@ -101,12 +111,17 @@ done
 
 if test "$SHOWHELP" == yes; then
    echo "************************************************************************************************************"
-   echo "build_linux.sh [--h] [--c BuildType] [--a Action] [--m ConfigMakefiles]"
-   echo "*"
+   echo "build_linux.sh [--h]"
+   echo "               [--c BuildType]" 
+   echo "               [--a Action]" 
+   echo "               [--m ConfigMakefiles]"
+   echo "               [--p Prefix]"
+   echo " "
    echo "Help:            --h[elp]"
    echo "BuildType:       --c[onfig] release(default), debug"
    echo "Action:          --a[ction] buildinstall(default), build, install, uninstall, clean"
    echo "ConfigMakefiles: --m[akefile] configure(default), noconfigure"
+   echo "Prefix:          --p[refix] <fdo install location>"
    echo "************************************************************************************************************"
    exit 0
 fi
@@ -119,9 +134,9 @@ if test "$TYPECONFIGURE" == configure ; then
    autoconf
 
    if test "$TYPEBUILD" == release; then
-      ./configure
+      ./configure --prefix="$PREFIXVAL"
    else
-      ./configure --enable-debug=yes
+      ./configure --enable-debug=yes --prefix="$PREFIXVAL"
    fi
 fi
    
