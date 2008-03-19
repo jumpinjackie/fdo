@@ -32,6 +32,17 @@ NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp::ICommandImp(System::IntPtr unmanaged,
 
 }
 
+NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp::ICommandImp(NAMESPACE_OSGEO_FDO_COMMANDS::ICommand* command, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)
+{
+    if (NULL == command) {
+		return;
+	}
+
+    ICommandImp * impObj = dynamic_cast<ICommandImp*>(command);
+
+	EXCEPTION_HANDLER(Attach(impObj->GetImpObj(), autoDelete))
+}
+
 System::Void NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp::ReleaseUnmanagedObject()
 {
 	if (get_AutoDelete()) 

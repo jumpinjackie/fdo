@@ -128,6 +128,7 @@ public:
 
 /// \cond DOXYGEN-IGNORE
 protected:
+	ICommandImp(NAMESPACE_OSGEO_FDO_COMMANDS::ICommand* command, System::Boolean autoDelete);
 	System::Void ReleaseUnmanagedObject();
 /// \endcond
 
