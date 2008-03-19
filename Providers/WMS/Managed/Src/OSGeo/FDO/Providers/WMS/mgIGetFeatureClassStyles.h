@@ -21,23 +21,31 @@
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_WMS
 
 ///<summary>
-/// This command get the styles list supportted by specified FeatureClass
-/// from WMS service..
+/// This command gets the styles list supportted by specified FeatureClass
+/// from WMS service.
 ///</summary>
 public __gc __interface IGetFeatureClassStyles : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
 {
 public:
-    /// <summary>Sets the name of the FeatureClass in WMS service.
+    /// <summary>
+    /// Sets the name of the FeatureClass in WMS service.
     /// This function is mandatory; if not specified, 
     /// execution of the command will throw exception. 
     /// </summary>
-    /// <param name="name">The FeatureClass name.</param>
-    /// <returns>Returns nothing.</returns> 
+    /// <param name="name">
+    /// The FeatureClass name.
+    /// </param>
+    /// <returns>
+    /// Returns nothing.
+    /// </returns> 
     __property System::Void set_FeatureClassName(System::String* name);
 
-    /// <summary>Gets the name of FeatureClass to get the supportted styles.
+    /// <summary>
+    /// Gets the name of FeatureClass to get the supportted styles.
     /// </summary>
-    /// <returns>Returns the name of the FeatureClass name.</returns> 
+    /// <returns>
+    ///  Returns the name of the FeatureClass name.
+    /// </returns> 
     __property System::String* get_FeatureClassName();
 
     /// <summary>

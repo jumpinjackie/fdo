@@ -22,22 +22,27 @@
 #include "mgIGetFeatureClassCRSNames.h"
 #include "mgIGetFeatureClassCRSNamesImp.h"
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::IGetFeatureClassCRSNamesImp::IGetFeatureClassCRSNamesImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)
+NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::GetFeatureClassCRSNamesCommand::GetFeatureClassCRSNamesCommand(NAMESPACE_OSGEO_FDO_COMMANDS::ICommand* command, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(command, autoDelete)
+{
+}
+
+
+NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::GetFeatureClassCRSNamesCommand::GetFeatureClassCRSNamesCommand(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)
 {
 
 }
 
-FdoWmsIGetFeatureClassCRSNames* NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::IGetFeatureClassCRSNamesImp::GetImpObj()
+FdoWmsIGetFeatureClassCRSNames* NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::GetFeatureClassCRSNamesCommand::GetImpObj()
 {
     return static_cast<FdoWmsIGetFeatureClassCRSNames*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::IGetFeatureClassCRSNamesImp::set_FeatureClassName(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::GetFeatureClassCRSNamesCommand::set_FeatureClassName(System::String* value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetFeatureClassName(StringToUni(value)))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::IGetFeatureClassCRSNamesImp::get_FeatureClassName()
+System::String* NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::GetFeatureClassCRSNamesCommand::get_FeatureClassName()
 {
 	FdoString* result;
 
@@ -46,14 +51,9 @@ System::String* NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::IGetFeatureClassCRSNamesImp::
     return result;
 }
 
-NAMESPACE_OSGEO_COMMON::StringCollection* NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::IGetFeatureClassCRSNamesImp::Execute()
+NAMESPACE_OSGEO_COMMON::StringCollection* NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::GetFeatureClassCRSNamesCommand::Execute()
 {
     FdoStringCollection* result;
 	EXCEPTION_HANDLER(result = GetImpObj()->Execute());
     return (new NAMESPACE_OSGEO_COMMON::StringCollection(result, true));
-}
-
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::IGetFeatureClassCRSNamesImp::Dispose()
-{
-	NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose();
 }

@@ -73,6 +73,7 @@ WARN_LOGFILE           = warning_logfile_managed.txt
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 INPUT                  = group_and_page_definitions \
+                         ../../Managed/Src/OSGeo/FDO/Providers/WMS \
                          ../../Managed/Src/OSGeo/FDO/Providers/WMS/Override
 FILE_PATTERNS          = *.h
 RECURSIVE              = YES

@@ -20,16 +20,18 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_WMS
 
-///<summary>
-/// This command get all supported image format from a specified WMS service
-///</summary>
+/// <summary>
+/// This command gets all the image formats supported by a specified WMS service.
+/// </summary>
 public __gc __interface IGetImageFormats : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
 {
 public:
-    ///<summary>
+    /// <summary>
     /// Executes the command. 
-    ///</summary>
-    /// <returns>Returns a list of image formats supportted by WMS service.</returns>
+    /// </summary>
+    /// <returns>
+    /// Returns a list of image formats supportted by WMS service.
+    /// </returns>
     NAMESPACE_OSGEO_COMMON::StringCollection* Execute();
 };
 
