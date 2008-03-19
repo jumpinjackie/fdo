@@ -18,9 +18,7 @@
 
 #pragma once
 
-// This number is defined so our custom command would not clash with other
-// custom provider commands.
-#define WMS_FIRST_PROVIDER_COMMAND 1800
+#include <WMS\FdoWmsCommandType.h>
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_WMS
 
@@ -30,9 +28,9 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_WMS
 /// <param name="CommandType_GetFeatureClassCRSNames">Represents the FdoWmsIGetFeatureClassCRSNames command.</param> 
 public __value enum CommandType {
 
-    CommandType_GetImageFormats =  NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_FirstProviderCommand +  WMS_FIRST_PROVIDER_COMMAND,
-    CommandType_GetFeatureClassStyles,
-    CommandType_GetFeatureClassCRSNames
+    CommandType_GetImageFormats =  FdoWmsCommandType_GetImageFormats,
+    CommandType_GetFeatureClassStyles = FdoWmsCommandType_GetFeatureClassStyles,
+    CommandType_GetFeatureClassCRSNames = FdoWmsCommandType_GetFeatureClassCRSNames
 
 };
 
