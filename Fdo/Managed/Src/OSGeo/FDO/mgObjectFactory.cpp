@@ -1319,12 +1319,14 @@ NAMESPACE_OSGEO_FDO_COMMANDS::ICommand* NAMESPACE_OSGEO_FDO::ObjectFactory::Crea
         {
             return new NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDestroyDataStoreImp(ptr, autoDispose);
         }
-		case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_ListDataStores:
-			{
-				return new NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IListDataStoresImp(ptr, autoDispose);
-			}
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_ListDataStores:
+        {
+            return new NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IListDataStoresImp(ptr, autoDispose);
+        }
         default:
-            return NULL;
+        {
+            return new NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(ptr, autoDispose);
+        }
     }
 }
 

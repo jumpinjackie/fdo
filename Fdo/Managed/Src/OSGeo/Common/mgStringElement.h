@@ -50,6 +50,18 @@ public:
     /// 
 	StringElement(System::IntPtr unmanaged, System::Boolean autoDelete);
 
+    /// \brief
+    ///     Retrieves the string object contained in the string element
+    /// 
+    /// \param unmanaged 
+    ///     Input A Pointer to the unmanaged string element.
+    /// 
+    /// \param autoDelete 
+    ///     Input Indicates if the constructed element should be automatically deleted 
+    ///     once it no longer referenced.
+    /// 
+    __property System::String* get_String ();
+
 /// \cond DOXYGEN-IGNORE
 protected:
 	System::Void ReleaseUnmanagedObject();
