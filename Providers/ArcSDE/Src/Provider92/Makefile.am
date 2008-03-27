@@ -34,6 +34,8 @@ libArcSDEProvider92_la_SOURCES = \
   ../Provider/ArcSDEDestroySchemaCommand.cpp \
   ../Provider/ArcSDEDestroySpatialContext.cpp \
   ../Provider/ArcSDEFeatureInfoReader.cpp \
+  ../Provider/ArcSDEFunctionLength2D.cpp \
+  ../Provider/ArcSDEFunctionArea2D.cpp \
   ../Provider/ArcSDEGetLongTransactionsCommand.cpp \
   ../Provider/ArcSDEGetSpatialContexts.cpp \
   ../Provider/ArcSDEIndexMapping.cpp \
@@ -107,6 +109,8 @@ noinst_HEADERS = $(libArcSDEProvider92_la_SOURCES) \
    ../Provider/ArcSDEFeatureReader.h \
    ../Provider/ArcSDEFilterCapabilities.h \
    ../Provider/ArcSDEFilterToSql.h \
+   ../Provider/ArcSDEFunctionLength2D.h \
+   ../Provider/ArcSDEFunctionArea2D.h \
    ../Provider/ArcSDEGetLockedObjectsCommand.h \
    ../Provider/ArcSDEGetLockInfoCommand.h \
    ../Provider/ArcSDEGetLockOwnersCommand.h \
@@ -142,13 +146,13 @@ noinst_HEADERS = $(libArcSDEProvider92_la_SOURCES) \
    ../Provider/stdafx.h
 
 INCLUDES = \
+  -I../Provider \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDOTHIRDPARTY)/ESRI/ArcSDEClient92/Linux/include \
   -I$(SDEHOME)/include \
   -I$(FDOUTILITIES)/Common/Inc \
   -I../../Inc \
-  -I$(FDOUTILITIES)/ExpressionEngine/Inc \
-  -I../Provider
+  -I$(FDOUTILITIES)/ExpressionEngine/Inc
 
 libArcSDEProvider92_la_LIBADD =  \
   $(FDO)/Unmanaged/Src/libFDO.la \
