@@ -65,8 +65,21 @@ const FdoSmPhDbObject* FdoSmPhBaseObject::RefDbObject() const
 
 FdoSmPhDbObjectP FdoSmPhBaseObject::GetDbObject()
 {
-    if ( (wcslen(GetName()) > 0) && (!mDbObject) ) 
-        mDbObject = GetManager()->FindDbObject( FdoSmPhDbElement::GetName(), GetOwnerName(), GetDatabaseName() );
+    const FdoSmSchemaElement* parent = GetParent();
+    FdoSmPhOwnerP owner;
+
+    if ( (wcslen(GetName()) > 0) && (!mDbObject) ) {
+        while ( parent && !owner ) {
+            owner = ((FdoSmSchemaElement*)parent)->SmartCast<FdoSmPhOwner>();
+            parent = parent->GetParent();
+        }
+
+        if ( owner ) 
+            // Use FindReferencedDbObject since it sets up base objects to be bulk loaded.
+            mDbObject = owner->FindReferencedDbObject( FdoSmPhDbElement::GetName(), GetOwnerName(), GetDatabaseName() );
+        else
+            mDbObject = GetManager()->FindDbObject( FdoSmPhDbElement::GetName(), GetOwnerName(), GetDatabaseName() );
+    }
 
     return mDbObject;
 }

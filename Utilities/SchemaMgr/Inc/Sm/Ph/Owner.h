@@ -114,6 +114,9 @@ public:
     /// as a read-write smart pointer (exception thrown if not found)
     FdoSmPhDbObjectP GetDbObject(FdoStringP dbObject);
 
+    // Find the given object in the given owner (datastore) and database instance.
+    FdoSmPhDbObjectP FindReferencedDbObject(FdoStringP dbObject, FdoStringP owner = L"", FdoStringP database = L"" );
+
     // Get a currently cached database object at the given 0-based index.
     // Returns NULL if the index is out of range.
     // This function does not add database objects to the cache.
@@ -298,6 +301,12 @@ public:
     // Cache the indexes for the given dbObject along with up to 50 other candidates.
     void CacheCandIndexes( FdoStringP objectName );
 
+    // Gets whether to primary keys are being bulk loaded
+    bool GetBulkLoadPkeys();
+
+    // Sets whether to bulk primary keys
+    void SetBulkLoadPkeys( bool bulkLoad );
+
 protected:
     //Unused constructor needed only to build on Linux
     FdoSmPhOwner() {}
@@ -373,6 +382,13 @@ protected:
     // When done, the index reader is positioned at the next table.
     virtual bool CacheObjectIndexes( FdoPtr<FdoSmPhRdIndexReader> indexReader );
 
+    // Checks each DbObject in this owner and adds its base object (if any) to 
+    // the Candidates list for the base object's owner.
+    // This helps base object retrieval performance when the current owner contains
+    // views on tables in a different owner. It causes the base objects to be 
+    // bulk fetched.
+    virtual void LoadBaseObjectCands();
+
 private:
     /// Load Schema Information
     void LoadSchemaInfo();
@@ -412,8 +428,12 @@ private:
     FdoDictionaryP mCandDbObjects;      // List of candidate objects for fetching from RDBMS. 
     FdoDictionaryP mCandIndexes;      // List of candidate objects for fetching indexes from RDBMS. 
 
-    bool mCandIndexesLoadedTables;
-    bool mCandIndexesLoadedRootTables;
+    // Current indexes for next dbObject to check for index and base object bulk fetching.
+    // Any dbobjects with lower index in the cache have already been checked.
+    int mNextIndexTableCandIdx;
+    int mNextIndexRootTableCandIdx;
+    int mNextBaseCandIdx;
+
 
     // Cache of spatial contexts
     FdoSmPhSpatialContextsP mSpatialContexts;
@@ -436,6 +456,8 @@ private:
     FdoSmPhLockTypesCollectionP mLockTypes;
     bool mSchemaInfoLoaded;
     bool mLtLckLoaded;
+
+    bool mBulkLoadPkeys;
 };
 
 typedef FdoPtr<FdoSmPhOwner> FdoSmPhOwnerP;

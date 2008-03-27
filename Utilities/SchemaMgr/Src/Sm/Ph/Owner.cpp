@@ -82,10 +82,16 @@ FdoSmPhOwner::FdoSmPhOwner(
     AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_spatialcontextgroup") );
 
     mCandIndexes = FdoDictionary::Create();   
-    mCandIndexesLoadedTables = false;
-    mCandIndexesLoadedRootTables = false;
+    mNextIndexTableCandIdx = 0;
+    mNextIndexRootTableCandIdx = 0;
+
+    mNextBaseCandIdx = 0;
 
     mSpatialContextsLoaded = false;
+
+    mNextBaseCandIdx = 0;
+
+    mBulkLoadPkeys = false;
 }
 
 FdoSmPhOwner::~FdoSmPhOwner(void)
@@ -241,6 +247,28 @@ FdoSmPhDbObjectP FdoSmPhOwner::GetDbObject(FdoStringP dbObject)
         );
 
     return(pDbObject);
+}
+
+FdoSmPhDbObjectP FdoSmPhOwner::FindReferencedDbObject(FdoStringP dbObject, FdoStringP owner, FdoStringP database )
+{   
+    FdoSmPhDbObjectP pDbObject;
+
+    // Look for referenced object in the cache for its owner.
+    FdoSmPhOwnerP refOwner = GetManager()->FindOwner( owner, database );
+
+    if ( refOwner ) 
+        pDbObject = refOwner->GetDbObjects()->FindItem( dbObject );
+
+    if ( !pDbObject ) {
+        // Not in cache. Set up base objects for bulk loading
+        LoadBaseObjectCands();
+
+        // Find the object. This causes the bulk loading of it and some other
+        // objects into the schema cache.
+        pDbObject = refOwner->FindDbObject( dbObject );
+    }
+
+    return pDbObject;
 }
 
 FdoSmPhDbObjectP FdoSmPhOwner::GetCachedDbObject(FdoInt32 idx)
@@ -919,6 +947,7 @@ FdoSmPhDbObjectP FdoSmPhOwner::CacheCandDbObjects( FdoStringP objectName )
 
     // Read the candidates.
     FdoSmPhRdDbObjectReaderP objReader;
+    FdoSmPhRdPkeyReaderP pkeyReader;
     FdoSmPhRdConstraintReaderP ukeyReader;
     FdoSmPhRdConstraintReaderP ckeyReader;
     FdoSmPhRdColumnReaderP columnReader;
@@ -944,6 +973,9 @@ FdoSmPhDbObjectP FdoSmPhOwner::CacheCandDbObjects( FdoStringP objectName )
         // The join is used to limit results to those needed for this schema.
 
         if ( first ) {
+            if ( GetBulkLoadPkeys() ) 
+                pkeyReader = CreatePkeyReader();
+
             if ( GetManager()->GetBulkLoadConstraints() ) {
                 ukeyReader = CreateConstraintReader( cands, L"U" );
                 ckeyReader = CreateConstraintReader( cands, L"C" );
@@ -973,6 +1005,9 @@ FdoSmPhDbObjectP FdoSmPhOwner::CacheCandDbObjects( FdoStringP objectName )
 
             if ( columnReader ) 
                 dbObject->CacheColumns( columnReader );
+
+            if ( pkeyReader ) 
+                dbObject->CachePkeys( pkeyReader );
 
             if ( table ) {
                 if ( ukeyReader ) 
@@ -1137,6 +1172,16 @@ void FdoSmPhOwner::CacheCandIndexes( FdoStringP objectName )
     }
 }
 
+bool FdoSmPhOwner::GetBulkLoadPkeys()
+{
+    return mBulkLoadPkeys;
+}
+
+void FdoSmPhOwner::SetBulkLoadPkeys( bool bulkLoad )
+{
+    mBulkLoadPkeys = bulkLoad;
+}
+
 bool FdoSmPhOwner::CacheObjectIndexes( FdoSmPhRdIndexReaderP indexReader )
 {
     // Get current dbObject name
@@ -1150,12 +1195,41 @@ bool FdoSmPhOwner::CacheObjectIndexes( FdoSmPhRdIndexReaderP indexReader )
     return ( table != NULL );
 }
 
+void FdoSmPhOwner::LoadBaseObjectCands()
+{
+    int idx1;
+    int idx2;
+
+    if ( mDbObjects ) {
+        // Check each dbObject not yet checked
+        for ( idx1 = mNextBaseCandIdx; idx1 < mDbObjects->GetCount(); idx1++ ) {
+            FdoSmPhDbObjectP dbObject = mDbObjects->GetItem(idx1);
+
+            FdoSmPhBaseObjectsP baseObjects = dbObject->GetBaseObjects();
+
+            // Add each base object to it's owner's candidates list.
+            for ( idx2 = 0; idx2 < baseObjects->GetCount(); idx2++ ) {
+                FdoSmPhBaseObjectP baseObject = baseObjects->GetItem(idx2);
+
+                FdoSmPhOwnerP baseOwner = GetManager()->FindOwner( baseObject->GetOwnerName(), baseObject->GetDatabaseName() );
+                baseOwner->AddCandDbObject( baseObject->GetObjectName() );
+                // Need primary keys of base objects (to determine view identity properties)
+                // so bulk load them.
+                baseOwner->SetBulkLoadPkeys(true);
+            }
+        }
+
+        mNextBaseCandIdx = mDbObjects->GetCount();
+    }
+}
+
 void FdoSmPhOwner::LoadIndexTableCands()
 {
     FdoInt32 idx;
 
-    if ( !mCandIndexesLoadedTables ) {
-        for ( idx = 0; idx < mDbObjects->GetCount(); idx++ ) {
+    if ( mDbObjects ) {
+        // Check each dbObject not yet checked
+        for ( idx = mNextIndexTableCandIdx; idx < mDbObjects->GetCount(); idx++ ) {
             FdoSmPhDbObjectP dbObject = mDbObjects->GetItem( idx );
             FdoSmPhTableP table = dbObject->SmartCast<FdoSmPhTable>();
 
@@ -1192,7 +1266,7 @@ void FdoSmPhOwner::LoadIndexTableCands()
             }
         }
 
-        mCandIndexesLoadedTables = true;
+        mNextIndexTableCandIdx = mDbObjects->GetCount();
     }
 }
 
@@ -1200,24 +1274,29 @@ void FdoSmPhOwner::LoadIndexRootTableCands()
 {
     FdoInt32 idx;
 
-    if ( !mCandIndexesLoadedRootTables ) {
-        for ( idx = 0; idx < mDbObjects->GetCount(); idx++ ) {
+    if ( mDbObjects ) {
+        // Check each dbObject not yet checked
+        for ( idx = mNextIndexRootTableCandIdx; idx < mDbObjects->GetCount(); idx++ ) {
             FdoSmPhDbObjectP dbObject = mDbObjects->GetItem( idx );
             if ( dbObject->GetPkeyColumns()->GetCount() == 0 ) {
                 FdoSmPhDbObjectP rootObject = dbObject->GetLowestRootObject();
                 
-                if ( rootObject && (dbObject->GetQName() != rootObject->GetQName()) ) {
-                    // Object has no primary key but has a root object. We might 
-                    // use root object's indexes to generate object's identity.
-                    FdoSmPhTableP table = rootObject->SmartCast<FdoSmPhTable>();
+                // Loading indexes into this owner so skip any base objects in 
+                // other owners.
+                if ( GetQName() == rootObject->GetParent()->GetQName() ) {
+                    if ( rootObject && (dbObject->GetQName() != rootObject->GetQName()) ) {
+                        // Object has no primary key but has a root object. We might 
+                        // use root object's indexes to generate object's identity.
+                        FdoSmPhTableP table = rootObject->SmartCast<FdoSmPhTable>();
 
-                    if ( table && !table->IndexesLoaded() )
-                        AddCandIndex( table->GetName() );
+                        if ( table && !table->IndexesLoaded() )
+                            AddCandIndex( table->GetName() );
+                    }
                 }
             }
         }
 
-        mCandIndexesLoadedRootTables = true;
+        mNextIndexRootTableCandIdx = mDbObjects->GetCount();
     }
 }
 
