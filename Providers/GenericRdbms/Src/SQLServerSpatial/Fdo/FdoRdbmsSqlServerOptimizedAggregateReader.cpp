@@ -97,7 +97,7 @@ FdoRdbmsFeatureReader( connection, NULL, false, classDef, NULL)
         if (!rdr->IsNull(L"MBR"))
         {
             FdoPtr<FdoByteArray> ba = rdr->GetGeometry(L"MBR");
-            FdoIGeometry	*geom = gf->CreateGeometryFromFgf(ba);
+            FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(ba);
 
             FdoPtr<FdoIEnvelope>  envelope = geom->GetEnvelope();
             if ( count == 0 )
