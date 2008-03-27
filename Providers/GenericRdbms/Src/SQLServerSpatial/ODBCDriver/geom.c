@@ -585,6 +585,9 @@ geom_convert_S(
                     IGeometry_Release(visionGeom[j]);
                     visionGeom[j] = NULL;
 
+                    IGeometry_Release(l_visionGeom[j]);
+                    l_visionGeom[j] = NULL;
+
                     // Check the status of this geometry.
                     int geomValid = geom_checkFetchStatusRow_S( cursor, j );
 
