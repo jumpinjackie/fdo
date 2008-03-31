@@ -32,6 +32,7 @@
 #define FDORDBMSODBCFILTER_DATETIME_SUFFIX             L"'}"
 
 class FdoRdbmsSqlServerFilterProcessor;
+class FdoRdbmsSqlServerSpatialGeographyConverter;
 
 class FdoRdbmsSqlServerConnection: public FdoRdbmsConnection
 {
@@ -39,6 +40,9 @@ private:
     FdoRdbmsSqlServerFilterProcessor *mFilterProcessor;
 
     FdoIConnectionInfo          *mConnectionInfo;
+
+    FdoRdbmsSqlServerSpatialGeographyConverter
+                                *mGeographyConverter;
 
 	void						logOpen(char access);
 	void						delOpen();
@@ -114,6 +118,15 @@ public:
 
     // Workaround for SqlServer spatial bug: on Insert the geometries need to be bound last.
     virtual bool  BindGeometriesLast();
+
+    // This function exchanges the X and Y coordinates of the given geometry if 
+    // the column is a geography column. SQLServer returns geometries for 
+    // geography columns with X being Latitude and Y Longitude. FDO expects
+    // the reverse.
+    // TransformGeometry is called when ever geometries are sent or retrieved
+    // to or from the RDBMS.
+    virtual FdoIGeometry* TransformGeometry( FdoIGeometry* geom, const FdoSmLpGeometricPropertyDefinition* prop, bool toFdo );
+
 
     //Count() and SpatialExtents()
     virtual FdoRdbmsFeatureReader *GetOptimizedAggregateReader(const FdoSmLpClassDefinition* classDef, aggr_list *selAggrList);

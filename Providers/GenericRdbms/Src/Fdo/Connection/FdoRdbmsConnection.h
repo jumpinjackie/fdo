@@ -215,6 +215,18 @@ public:
     // Workaround for SqlServer spatial bug: on Insert the geometries need to be bound last.
     virtual bool  BindGeometriesLast() { return false; }
 
+    // Perform any required geometry transformations when sending or retrieving geometries to or from the RDBMS.
+    // The default implementation does not modify the geometry.
+    //
+    // geom - the geometry to transform
+    // prop - corresponding geometric property
+    // toFDO -
+    //      true: transforming from RDBMS to FDO format
+    //      false: transforming from FDO to RDBMS format
+    //
+    // Returns the transformed geometry.
+    virtual FdoIGeometry* TransformGeometry( FdoIGeometry* geom, const FdoSmLpGeometricPropertyDefinition* prop, bool toFdo );
+
     // Creates a Long Transaction Manager and its corresponding Long Transaction
     // Manager Service.
     virtual FdoRdbmsLongTransactionManager *CreateLongTransactionManager() = 0;

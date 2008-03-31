@@ -37,6 +37,7 @@
 #include "FdoRdbmsSqlServerConnectionCapabilities.h"
 #include "FdoRdbmsSqlServerGeometryCapabilities.h"
 #include "FdoRdbmsSqlServerOptimizedAggregateReader.h"
+#include "FdoRdbmsSqlServerSpatialGeometryConverter.h"
 
 #include "DbiConnection.h"
 #include "Rdbms/FdoRdbmsCommandType.h"
@@ -51,7 +52,8 @@ wchar_t* getComDir (); // in SqlServer.cpp
 
 FdoRdbmsSqlServerConnection::FdoRdbmsSqlServerConnection():
 mFilterProcessor( NULL ),
-mConnectionInfo(NULL)
+mConnectionInfo(NULL),
+mGeographyConverter(NULL)
 {
 }
 
@@ -59,6 +61,9 @@ FdoRdbmsSqlServerConnection::~FdoRdbmsSqlServerConnection ()
 {
     if( mFilterProcessor )
         delete mFilterProcessor;
+
+    if( mGeographyConverter )
+        delete mGeographyConverter;
 
     FDO_SAFE_RELEASE(mConnectionInfo);
 }
@@ -623,12 +628,32 @@ FdoStringP FdoRdbmsSqlServerConnection::GetBindString( int n, const FdoSmLpPrope
 
     if ( geomProp ) 
     {
+        FdoStringP geomType(L"geometry", true);
+
         // For geometric properties, convert from WKB and add SRID.
 
-        // First, get SRID. Try associated spatial context first.
         FdoStringP scName = geomProp->GetSpatialContextAssociation();
 
         FdoSchemaManagerP schemaMgr = this->GetSchemaManager();
+
+        // First, get SRID. Try column first.
+
+        FdoSmPhColumnP column = ((FdoSmLpGeometricPropertyDefinition*) geomProp)->GetColumn();
+    
+        if ( column ) 
+        {
+            FdoSmPhColumnGeomP geomColumn = column->SmartCast<FdoSmPhColumnGeom>();
+
+            if ( geomColumn ) 
+            {
+                srid = geomColumn->GetSRID();
+                // Also find out if geometry or geography column
+                geomType = geomColumn->GetTypeName();
+            }
+        }
+
+        // If Associated Spatial Context can be reached, get SRID from it
+        // instead
 
         FdoSmLpSpatialContextMgrP scMgr = schemaMgr->GetLpSpatialContextMgr();
         FdoSmLpSpatialContextP sc = scMgr->FindSpatialContext(scName);
@@ -637,25 +662,8 @@ FdoStringP FdoRdbmsSqlServerConnection::GetBindString( int n, const FdoSmLpPrope
         {
             srid = sc->GetSrid();
         }
-        else
-        {
-            // Can't find associated spatial context, so fall back to retrieving
-            // from geometric column.
 
-            FdoSmPhColumnP column = ((FdoSmLpGeometricPropertyDefinition*) geomProp)->GetColumn();
-        
-            if ( column ) 
-            {
-                FdoSmPhColumnGeomP geomColumn = column->SmartCast<FdoSmPhColumnGeom>();
-
-                if ( geomColumn ) 
-                    srid = geomColumn->GetSRID();
-            }
-        }
-
-        // TODO: handle geography columns. Need to sort out XY ordering first to 
-        // avoid inserting corrupt coordinates.
-        bindStr = FdoStringP::Format( L"geometry::STGeomFromWKB(?, %ls)", (FdoString*) FdoCommonStringUtil::Int64ToString(srid) );
+        bindStr = FdoStringP::Format( L"%ls::STGeomFromWKB(?, %ls)", (FdoString*) geomType, (FdoString*) FdoCommonStringUtil::Int64ToString(srid) );
     }
 
     return bindStr; 
@@ -664,5 +672,35 @@ FdoStringP FdoRdbmsSqlServerConnection::GetBindString( int n, const FdoSmLpPrope
 bool  FdoRdbmsSqlServerConnection::BindGeometriesLast() 
 { 
     return true; 
+}
+
+FdoIGeometry* FdoRdbmsSqlServerConnection::TransformGeometry( FdoIGeometry* geom, const FdoSmLpGeometricPropertyDefinition* prop, bool toFdo )
+{
+    FdoStringP geomType;
+    
+    //TODO: check performance impact of looking up geomType for each geometry value and
+    //optimize if necessary.
+    FdoSmPhColumnP column = ((FdoSmLpGeometricPropertyDefinition*) prop)->GetColumn();
+    
+    if ( column ) 
+    {
+        FdoSmPhColumnGeomP geomColumn = column->SmartCast<FdoSmPhColumnGeom>();
+
+        if ( geomColumn ) 
+        {
+            geomType = geomColumn->GetTypeName();
+        }
+    }
+
+    if ( geomType != L"geography" )
+        // No special transformation for geometry columns
+        return FdoRdbmsConnection::TransformGeometry( geom, prop, toFdo );
+
+
+    if ( !mGeographyConverter )
+        mGeographyConverter = new FdoRdbmsSqlServerSpatialGeographyConverter();
+
+    // For geography columns, flip the X and Y.
+    return mGeographyConverter->ConvertOrdinates( geom );
 }
 
