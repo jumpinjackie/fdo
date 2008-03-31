@@ -24,7 +24,7 @@
 #include "SpatialManager/FdoRdbmsSpatialManager.h"
 #include "FdoRdbmsSqlServerConnection.h"
 #include "FdoCommonOSUtil.h"
-#include "FdoRdbmsSpatialGeometryConverter.h"
+#include "FdoRdbmsSqlServerSpatialGeometryConverter.h"
 
 #define SQLSERVER_CONVERT_WKB L".STAsBinary()"
 
@@ -143,7 +143,7 @@ FdoRdbmsSqlServerFilterProcessor::~FdoRdbmsSqlServerFilterProcessor(void)
 {
 }
 
-const FdoSmLpGeometricPropertyDefinition* FdoRdbmsSqlServerFilterProcessor::GetGeometricProperty( const FdoSmLpClassDefinition* currentClass, const wchar_t *geomPropName )
+const FdoSmLpGeometricPropertyDefinition* FdoRdbmsSqlServerFilterProcessor::GetGeometricProperty( const FdoSmLpClassDefinition* currentClass, const wchar_t *geomPropName ) const
 {
     const FdoSmLpGeometricPropertyDefinition* geom = NULL;
 
@@ -221,6 +221,8 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
         throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_230, "Spatial condition can only be used with feature classes"));
 
     const FdoSmLpGeometricPropertyDefinition* geomProp = GetGeometricProperty(classDefinition, FdoPtr<FdoIdentifier>(filter.GetPropertyName())->GetName());
+    const FdoSmPhColumn* geomColumn = geomProp ? geomProp->RefColumn() : (const FdoSmPhColumn*) NULL;
+    FdoStringP geomType = geomColumn ? geomColumn->GetTypeName() : FdoStringP(L"geometry");
     const FdoString* classTableName = classDefinition->GetDbObjectName();
     const FdoString* tableName = geomProp ? geomProp->GetContainingDbObjectName() : L""; // The geometry table name
     FdoStringP columnName = GetGeometryColumnNameForProperty(geomProp, true);
@@ -245,9 +247,14 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
 
     // SqlServer supports only 2D
     FdoPtr<FdoIGeometry> geom2D = geometryObj;
-	if ( geometryObj->GetDimensionality() != FdoDimensionality_XY )
+    if ( (geomType == L"geography") || (geometryObj->GetDimensionality() != FdoDimensionality_XY) )
 	{
-		FdoSpatialGeometryConverter *gc = new FdoRdbmsSqlServerSpatialGeometryConverter();
+		FdoSpatialGeometryConverter *gc = NULL;
+        
+        if ( geomType == L"geography" ) 
+            gc = new FdoRdbmsSqlServerSpatialGeographyConverter();
+        else
+            gc = new FdoRdbmsSqlServerSpatialGeometryConverter();
 
 		geom2D = gc->ConvertOrdinates( geometryObj, true, FdoDimensionality_XY, 0.0, 0.0);
         delete gc;
@@ -298,7 +305,8 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
     } // of switch Operation
 
     buf += "(";
-    buf += "geometry::STGeomFromText('";
+    buf += geomType;
+    buf += "::STGeomFromText('";
     buf += geom2D->GetText();
 
     // Set the SRID
@@ -701,6 +709,7 @@ bool FdoRdbmsSqlServerFilterProcessor::IsAggregateFunctionName(FdoString* wFunct
 
 bool FdoRdbmsSqlServerFilterProcessor::IsNotNativeSupportedFunction(FdoString *wFunctionName) const
 {
+
     for (int i=0; sqlServerUnsupportedFdoFunctions[i]; i++)
         if (FdoCommonOSUtil::wcsicmp(sqlServerUnsupportedFdoFunctions[i], wFunctionName) == 0)
             return true;
@@ -716,7 +725,7 @@ bool FdoRdbmsSqlServerFilterProcessor::HasNativeSupportedFunctionArguments(FdoFu
     // the result back to the calling routine. Otherwise, the arguments are always 
     // deemed valid and the corresponding indication is returned.
 
-    return true;;
+    return true;
 }
 
 

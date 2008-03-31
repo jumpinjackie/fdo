@@ -83,7 +83,7 @@ protected:
 
     virtual void ProcessSpatialCondition(FdoSpatialCondition& filter);
 
-    const FdoSmLpGeometricPropertyDefinition* GetGeometricProperty( const FdoSmLpClassDefinition* currentClass, const wchar_t *geomPropName );
+    const FdoSmLpGeometricPropertyDefinition* GetGeometricProperty( const FdoSmLpClassDefinition* currentClass, const wchar_t *geomPropName ) const;
 	
     FdoStringP GetGeometryColumnNameForProperty( const FdoSmLpGeometricPropertyDefinition *pGeomProp, bool bChangeFilter = false);
 

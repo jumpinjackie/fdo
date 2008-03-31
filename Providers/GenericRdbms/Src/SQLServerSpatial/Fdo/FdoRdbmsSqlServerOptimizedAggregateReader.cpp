@@ -41,8 +41,8 @@ FdoRdbmsFeatureReader( connection, NULL, false, classDef, NULL)
 	bool				countRequired = false;
 	bool				mbrRequired = false;
 	const	char *		columnName = NULL;
-	int					isGeodetic = false;
     const wchar_t       *colNameW = NULL;
+    FdoStringP          geomType;
 
 	for ( size_t i = 0; i < m_SelAggrList->size(); i++ )
 	{ 
@@ -60,7 +60,11 @@ FdoRdbmsFeatureReader( connection, NULL, false, classDef, NULL)
 
 			const FdoSmPhColumn *column = simpleProp->RefColumn();
 			colNameW = column->GetName();
-		}
+
+            FdoSmPhColumnGeomP columnGeom = ((FdoSmPhColumn*) column)->SmartCast<FdoSmPhColumnGeom>();
+            if ( columnGeom )
+                geomType = columnGeom->GetTypeName();
+        }
 		else
 		{
 			countRequired = true;
@@ -102,17 +106,37 @@ FdoRdbmsFeatureReader( connection, NULL, false, classDef, NULL)
             FdoPtr<FdoIEnvelope>  envelope = geom->GetEnvelope();
             if ( count == 0 )
             {
-                minX = envelope->GetMinX();
-                minY = envelope->GetMinY();
-                maxX = envelope->GetMaxX();
-                maxY = envelope->GetMaxY();
+                if ( geomType == L"geography" ) 
+                {
+                    minX = envelope->GetMinY();
+                    minY = envelope->GetMinX();
+                    maxX = envelope->GetMaxY();
+                    maxY = envelope->GetMaxX();
+                }
+                else 
+                {
+                    minX = envelope->GetMinX();
+                    minY = envelope->GetMinY();
+                    maxX = envelope->GetMaxX();
+                    maxY = envelope->GetMaxY();
+                }
             }
             else
             {
-                minX = FdoCommonMin(envelope->GetMinX(), minX);
-                minY = FdoCommonMin(envelope->GetMinY(), minY);
-                maxX = FdoCommonMax(envelope->GetMaxX(), maxX);
-                maxY = FdoCommonMax(envelope->GetMaxY(), maxY);          
+                if ( geomType == L"geography" ) 
+                {
+                    minX = FdoCommonMin(envelope->GetMinY(), minX);
+                    minY = FdoCommonMin(envelope->GetMinX(), minY);
+                    maxX = FdoCommonMax(envelope->GetMaxY(), maxX);
+                    maxY = FdoCommonMax(envelope->GetMaxX(), maxY);          
+                }
+                else
+                {
+                    minX = FdoCommonMin(envelope->GetMinX(), minX);
+                    minY = FdoCommonMin(envelope->GetMinY(), minY);
+                    maxX = FdoCommonMax(envelope->GetMaxX(), maxX);
+                    maxY = FdoCommonMax(envelope->GetMaxY(), maxY);          
+                }
             }
         }
 

@@ -70,6 +70,21 @@ FdoIDataReader *FdoRdbmsSelectAggregates::Execute ()
     if (rdbmsConnection)
         dbiConnection = rdbmsConnection->GetDbiConnection();
 
+    FdoFilter                       *filter = pSelect.p->GetFilterRef();
+    FdoIdentifier                   *cName  = pSelect.p->GetClassNameRef();
+    FdoPtr<FdoIdentifierCollection> idCol   = pSelect.p->GetPropertyNames();
+
+    const FdoSmLpClassDefinition *classDefinition =
+                dbiConnection->GetSchemaUtil()->GetClass(cName->GetText());
+    // Verify if this is a special case we can optimize (no filter, no grouping fitler,
+    // and only aggregate functions Count() and/or SpatialExtents())
+    // Check if we can optimize first, since property list and filter
+    // might be supported in the optimized case but not the non-optimized 
+    // case.
+    FdoPtr<FdoRdbmsFeatureReader> optReader = pSelect->GetOptimizedFeatureReader( classDefinition );
+    if (optReader)
+        return new FdoRdbmsDataReader(optReader);
+
     // Get a filter processor and check the property list and filter.
 
     FdoPtr<FdoRdbmsFilterProcessor>filterProcessor =
@@ -77,10 +92,6 @@ FdoIDataReader *FdoRdbmsSelectAggregates::Execute ()
 
     bool isValidFilter     = true,
          isValidSelectList = true;
-
-    FdoFilter                       *filter = pSelect.p->GetFilterRef();
-    FdoIdentifier                   *cName  = pSelect.p->GetClassNameRef();
-    FdoPtr<FdoIdentifierCollection> idCol   = pSelect.p->GetPropertyNames();
 
     if (filter != NULL )
         isValidFilter = filterProcessor->IsValidExpression(filter);
@@ -97,8 +108,6 @@ FdoIDataReader *FdoRdbmsSelectAggregates::Execute ()
         // current class. If the filter is valid it is used to narrow the
         // selected amount of data.
 
-        const FdoSmLpClassDefinition *classDefinition =
-                    dbiConnection->GetSchemaUtil()->GetClass(cName->GetText());
         bool isFeatureClass =
               ((classDefinition != NULL) &&
                (classDefinition->GetClassType() == FdoClassType_FeatureClass));

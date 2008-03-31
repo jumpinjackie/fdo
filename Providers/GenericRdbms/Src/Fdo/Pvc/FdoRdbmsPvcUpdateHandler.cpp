@@ -674,7 +674,11 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                             if ( ba )
                             {
                                 mConnection->GetSchemaUtil()->SetActiveSpatialContext( classDefinition, name );
-                                geom = gf->CreateGeometryFromFgf( ba );
+                                geom = mFdoConnection->TransformGeometry( 
+                                    FdoPtr<FdoIGeometry>(gf->CreateGeometryFromFgf(ba)), 
+                                    geomPropDef, 
+                                    false 
+                                );
 
                                 // Validate the input geometry
                                 mConnection->GetSchemaUtil()->CheckGeomPropOrdDimensionality( classDefinition, name, geom );

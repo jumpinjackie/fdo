@@ -1676,7 +1676,11 @@ FdoByteArray* FdoRdbmsFeatureReader::GetGeometry(const wchar_t* propertyName, bo
         	FdoIGeometry	*geom = NULL;
             query->GetBinaryValue( mPropertyInfoDefs[cacheIndex].columnPosition, sizeof(FdoIGeometry *), (char*)&geom, &isNull, NULL);
 
-			pgeom = FDO_SAFE_ADDREF(geom);
+            pgeom = mFdoConnection->TransformGeometry( 
+                geom, 
+                pGeometricProperty, 
+                true 
+            );
         }
         else if ( FdoSmOvGeometricColumnType_Double == columnType &&
                   FdoSmOvGeometricContentType_Ordinates == contentType )

@@ -833,6 +833,11 @@ FdoSchemaManagerP FdoRdbmsConnection::CreateSchemaManager()
     return schMgr;
 }
 
+FdoIGeometry* FdoRdbmsConnection::TransformGeometry( FdoIGeometry* geom, const FdoSmLpGeometricPropertyDefinition* prop, bool toFdo )
+{
+    return FDO_SAFE_ADDREF(geom);
+}
+
 // Returns the current Long Transaction Manager.
 FdoRdbmsLongTransactionManager *FdoRdbmsConnection::GetLongTransactionManager()
 {
