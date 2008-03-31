@@ -835,6 +835,7 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
                 CPPUNIT_ASSERT( wcscmp( rdr->GetString(L"Pr\x00f6vince"), UnitTestUtil::GetNlsValue(4) ) == 0 );
                 CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"First N\x00e4me"), L"J.R." ) == 0 );
                 CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"Last Name"), L"Booth" ) == 0 );
+                CPPUNIT_ASSERT( rdr->GetDouble(L"RevisionNumber") == 0 );
                 CheckGeometry( rdr, UnitTestUtil::GetNlsObjectName(L"Geometry"), 5, 10, 0 );
                 rowCount++;
             }
@@ -845,6 +846,7 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
                 CPPUNIT_ASSERT( rdr->GetInt32(L"# employees") == 250 );
                 CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"First N\x00e4me"), L"J.R." ) == 0 );
                 CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"Last Name"), L"Booth" ) == 0 );
+                CPPUNIT_ASSERT( rdr->GetDouble(L"RevisionNumber") == 1 );
                 CheckGeometry( rdr, UnitTestUtil::GetNlsObjectName(L"Geometry"), 5, 10, 0 );
                 rowCount++;
             }
@@ -855,6 +857,7 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
                 CPPUNIT_ASSERT( rdr->GetInt32(L"# employees") == 200 );
                 CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"First N\x00e4me"), L"E.\x00df." ) == 0 );
                 CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"Last Name"), L"Eddy" ) == 0 );
+                CPPUNIT_ASSERT( rdr->GetDouble(L"RevisionNumber") == 0 );
                 CheckGeometry( rdr, UnitTestUtil::GetNlsObjectName(L"Geometry"), 5, 10, 0 );
                 rowCount++;
             }
@@ -865,6 +868,7 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
                 CPPUNIT_ASSERT( rdr->GetInt32(L"# employees") == 250 );
                 CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"First N\x00e4me"), L"E.B." ) == 0 );
                 CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"Last Name"), L"Eddy" ) == 0 );
+                CPPUNIT_ASSERT( rdr->GetDouble(L"RevisionNumber") == 1 );
                 CheckGeometry( rdr, UnitTestUtil::GetNlsObjectName(L"Geometry"), 5, 10, 0 );
                 rowCount++;
             }
@@ -875,6 +879,7 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
                 CPPUNIT_ASSERT( rdr->GetInt32(L"# employees") == 250 );
                 CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"First N\x00e4me"), L"E.B." ) == 0 );
                 CPPUNIT_ASSERT( wcscmp( rdr2->GetString(L"Last Name"), L"Eddy" ) == 0 );
+                CPPUNIT_ASSERT( rdr->GetDouble(L"RevisionNumber") == 1 );
 				CheckGeometry( rdr, UnitTestUtil::GetNlsObjectName(L"Geometry"), 5, 10, 5 );
                 rowCount++;
             }
@@ -2406,7 +2411,7 @@ void FdoUpdateTest::CreateExternalData( FdoPtr<FdoIConnection> connection, FdoSm
         propertyValues = UpdateCommand->GetPropertyValues();
 
         coordsBuffer[1] = 5;
-        propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, phMgr->GetDcColumnName(L"geometry") );
+        propertyValue = AddNewProperty( propertyValues, phMgr->GetDcColumnName(L"geometry") );
         FdoPtr<FdoILineString> line1 = gf->CreateLineString(FdoDimensionality_XY, segCount*2, coordsBuffer);
         FdoPtr<FdoByteArray> byteArray = gf->GetFgf(line1);
         FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);

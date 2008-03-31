@@ -1681,11 +1681,24 @@ void FdoSmLpClassBase::FinalizeProps(
                 // Not found, auto-generated an inherited property. 
                 FdoStringP propName = pBaseProp->GetName();
 
-                // Create the missing class property or nested property from 
-                // the base property.
+                bool skipFeatId = false;
 
-                FdoSmLpPropertyP pInhProp = pBaseProp->CreateInherited( dynamic_cast<FdoSmLpClassDefinition*>(this) );
-                pProps->Add( pInhProp );
+//Uncomment when allowed to break forward compatibility. Suppresses creation of 
+//of unneeded featid column in table with composite or non-int64 primary key
+#if 0 
+                if ( pBaseProp->GetIsFeatId() ) {
+                    if ( wcscmp(pBaseProp->RefLogicalPhysicalSchema()->GetName(), FdoSmPhMgr::mMetaClassSchemaName) == 0 ) 
+                        skipFeatId = true;
+                }
+#endif
+
+                if ( !skipFeatId ) {
+                    // Create the missing class property or nested property from 
+                    // the base property.
+
+                    FdoSmLpPropertyP pInhProp = pBaseProp->CreateInherited( dynamic_cast<FdoSmLpClassDefinition*>(this) );
+                    pProps->Add( pInhProp );
+                }
             }
         }
 	}
