@@ -438,10 +438,26 @@ FdoIDataReader* OgrConnection::SelectAggregates(FdoIdentifier* fcname,
     }
     else
     {
+        //TODO: We need to add support for SpatialExtents() and Count()
+        //in order to speed up initial connection to data in Map3D.
+        //For now, this check will reject such requests and throw Map
+        //into the slow way of getting the information -- a full table scan
+        if (properties->GetCount() > 1)
+            throw FdoCommandException::Create(L"Unsupported aggregate operation.");
+
         //select aggregate -- only one computed identifier expected!
         FdoPtr<FdoIdentifier> id = properties->GetItem(0);
-        FdoPtr<FdoComputedIdentifier> ci = dynamic_cast<FdoComputedIdentifier*>(id.p);
+        FdoComputedIdentifier* ci = dynamic_cast<FdoComputedIdentifier*>(id.p);
         FdoPtr<FdoExpression> expr = ci->GetExpression();
+
+        //TODO: We need to add support for SpatialExtents() and Count()
+        //in order to speed up initial connection to data in Map3D.
+        //For now, this check will reject such requests and throw Map
+        //into the slow way of getting the information -- a full table scan
+        FdoFunction* func = dynamic_cast<FdoFunction*>(expr.p);
+        if (func && (_wcsicmp(func->GetName(),FDO_FUNCTION_SPATIALEXTENTS) == 0))
+            throw FdoCommandException::Create(L"Unsupported aggregate operation.");
+
         FdoString* exprs = expr->ToString();
         W2A(exprs);
         
