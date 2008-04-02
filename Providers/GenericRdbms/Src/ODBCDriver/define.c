@@ -137,19 +137,39 @@ int odbcdr_define(
 	}
 	else
 	{
-        odbcdr_geom_def   **odbcGeom = NULL;   /* Geometries       */
-        odbcdr_geomNI_def **odbcGeomNI = NULL; /* Null indicators  */
-
         ODBCDR_RDBI_ERR( odbcdr_geom_defineColumn(context, c, position, address));
 
         ODBCDR_RDBI_ERR( odbcdr_geom_setNumRows(context, c, ODBCDR_MAX_ARRAY_SIZE));
 
-        ODBCDR_RDBI_ERR( odbcdr_geom_getSqlServerBuffAddr(
-											context,
-                                            c->defined_geometries,
-                                            position,
-                                            &odbcGeom,
-                                            &odbcGeomNI ) );
+        // Allocate the buffers for Geometries and Null indicators
+        int numGeomCols = c->defined_geometries->size;
+        if ( numGeomCols == 1 )
+        {
+            c->odbcdr_geom = (PBYTE)malloc( ODBCDR_MAX_ARRAY_SIZE * ODBCDR_BLOB_CHUNK_SIZE );
+            c->odbcdr_geomNI = (SQLINTEGER *)malloc( ODBCDR_MAX_ARRAY_SIZE * sizeof(SQLINTEGER));
+        }
+        else
+        {  
+            c->odbcdr_geom = (PBYTE)realloc( c->odbcdr_geom, numGeomCols * ODBCDR_MAX_ARRAY_SIZE * ODBCDR_BLOB_CHUNK_SIZE );
+            c->odbcdr_geomNI = (SQLINTEGER *)realloc( c->odbcdr_geomNI, numGeomCols * ODBCDR_MAX_ARRAY_SIZE * sizeof(SQLINTEGER));
+        }
+
+        // Do binds (the previous bound columns will be rebound because of reallocation)
+        for ( int i = 0; i < numGeomCols; i++ )
+        {
+            odbcdr_geom_col_def *column = (odbcdr_geom_col_def *) ut_da_get( c->defined_geometries, i );
+
+            int offset = i * ODBCDR_MAX_ARRAY_SIZE;
+
+	        ODBCDR_ODBC_ERR( SQLBindCol( c->hStmt,
+								        (SQLUSMALLINT) column->position,
+								        (SQLSMALLINT)  odbcdr_datatype,
+                                        (SQLPOINTER)   (char *)&c->odbcdr_geom[offset * ODBCDR_BLOB_CHUNK_SIZE],
+                                        (SQLINTEGER)   ODBCDR_BLOB_CHUNK_SIZE,
+								        (SQLLEN *)     (char *)&c->odbcdr_geomNI[offset]),
+						        SQL_HANDLE_STMT, c->hStmt,
+						        "SQLBindCol", "define" );
+        }
 
     }   /* end if datatype == RDBI_GEOMETRY */
 
