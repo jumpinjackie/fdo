@@ -28,21 +28,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OSGeo.FDO, Version=3.2.6318.0, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="OSGeo.FDO, Version=3.3.8091.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Fdo\Managed\bin\debug\OSGeo.FDO.dll</HintPath>
+      <HintPath>..\..\..\..\Fdo\Managed\bin\win32\debug\OSGeo.FDO.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="OSGeo.FDO.Common, Version=3.2.6318.0, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="OSGeo.FDO.Common, Version=3.3.8091.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Fdo\Managed\bin\debug\OSGeo.FDO.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="OSGeo.FDO.Geometry, Version=3.2.6318.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Fdo\Managed\bin\debug\OSGeo.FDO.Geometry.dll</HintPath>
-    </Reference>
-    <Reference Include="OSGeo.FDO.Spatial, Version=3.2.6318.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Fdo\Managed\bin\debug\OSGeo.FDO.Spatial.dll</HintPath>
+      <HintPath>..\..\..\..\Fdo\Managed\bin\win32\debug\OSGeo.FDO.Common.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -73,6 +67,13 @@ Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.dll .\
 Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll .\
 Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll .\
 Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll .\
+Copy $(FDO)\Managed\bin\win32\debug\OSGeo.FDO.dll .\
+Copy $(FDO)\Managed\bin\win32\debug\OSGeo.FDO.pdb .\
+Copy $(FDO)\Managed\bin\win32\debug\OSGeo.FDO.Common.dll .\
+Copy $(FDO)\Managed\bin\win32\debug\OSGeo.FDO.common.pdb .\
+
+Copy $(FDOUTILITIES)\ExpressionEngine\bin\win32\debug\ExpressionEngine.dll .\
+Copy $(FDOUTILITIES)\ExpressionEngine\bin\win32\debug\ExpressionEngine.pdb .\
 
 Copy ..\..\..\..\..\..\Providers\SDF\Bin\Win32\Debug\SDFProvider.dll .\
 Copy ..\..\..\..\..\..\Providers\SDF\Bin\Win32\Debug\SDFProvider.pdb .\
