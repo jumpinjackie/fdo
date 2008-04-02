@@ -158,6 +158,7 @@ void ArcSDELongTransactionUtility::GetVersionByName (SE_CONNECTION connection, F
     static SDE_CHAR query[] = 
 #ifdef SDE_UNICODE
 		L"NAME = '%ls' and STATUS = 1";
+    FdoStringP version_owner_str;
 #else
 		"NAME = '%s' and STATUS = 1";
 #endif
@@ -182,7 +183,12 @@ void ArcSDELongTransactionUtility::GetVersionByName (SE_CONNECTION connection, F
     version_name = sde_pwc2us(sde_strchr (sde_pus2wc(version_owner), '.'));
     if (NULL != version_name)
     {
+#ifdef SDE_UNICODE
+        version_owner_str = FdoStringP(sde_cstwc(version_owner)).Left(L".");
+        version_owner = (CHAR*)sde_cstwc(version_owner_str);
+#else
         *version_name = '\0';
+#endif
         version_name++;
         qualified = true;
     }

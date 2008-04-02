@@ -55,6 +55,7 @@ FdoILockedObjectReader* ArcSDEGetLockedObjectsCommand::Execute ()
 {
     FdoPtr<ArcSDEConnection> connection;
     CHAR user_name[SE_MAX_OWNER_LEN];
+    FdoStringP user_str;
     CHAR* user;
     LONG result;
     SE_REGINFO *registrations;
@@ -81,14 +82,12 @@ FdoILockedObjectReader* ArcSDEGetLockedObjectsCommand::Execute ()
     }
     else
     {
-#ifdef _WIN32
-        wchar_t* name = _wcsdup (GetLockOwner ());
+        user_str = mLockOwner.Upper();
+#ifdef SDE_UNICODE
+        user = (CHAR*)sde_cstwc(user_str);
 #else
-        wchar_t* name = wcsdup (GetLockOwner ());
+        sde_wide_to_multibyte (user, (FdoString*)user_str);
 #endif
-        FdoCommonOSUtil::wcsupr (name);
-        sde_wide_to_multibyte (user, name);
-        free (name);
     }
 
     // process the list of registered arcsde tables, checking for locks by user (or not)
