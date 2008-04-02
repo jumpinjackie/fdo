@@ -40,7 +40,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="-Zm112"
+				AdditionalOptions="-Zm122"
 				Optimization="0"
 				AdditionalIncludeDirectories=".\;..\..\inc\fdo;../../inc/rdbi;../;../../;../../inc;../Fdo/Connection;../Fdo/Other;../Fdo/FeatureCommands;../Fdo/Custom;../Fdo/Schema;..\Fdo\Capability;..\Fdo\FeatureCommands;../Fdo/Filter;../Fdo/SpatialContext;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOUTILITIES)/SchemaMgr/inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SQLSERVER_EXPORTS;FDORDBMS_EXPORTS;_LIB;_CRT_SECURE_NO_DEPRECATE;FDO_SPATIAL_STATIC"
@@ -130,6 +130,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="-Zm122"
 				AdditionalIncludeDirectories="..\Fdo\Capability;..\..\inc\fdo;../../inc/rdbi;../;../../;../../inc;../Fdo/Connection;../Fdo/Other;../Fdo/FeatureCommands;../Fdo/Custom;../Fdo/Schema;../Fdo/Filter;../Fdo/SpatialContext;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOUTILITIES)/SchemaMgr/inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SQLSERVER_EXPORTS;FDORDBMS_EXPORTS;_LIB;_CRT_SECURE_NO_DEPRECATE;FDO_SPATIAL_STATIC"
 				BasicRuntimeChecks="0"
