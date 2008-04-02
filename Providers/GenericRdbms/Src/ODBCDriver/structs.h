@@ -109,7 +109,10 @@ typedef struct cursor_def {					/* Statement linked list		*/
  
     SDWORD		        lenDataParam;
 
-    PBYTE               odbcdr_blob_tmp;    /* define a working area for fething geoms */
+    PBYTE               odbcdr_geom;    /* define a working area for fething bound geoms */
+    SQLINTEGER          *odbcdr_geomNI;
+
+    PBYTE               odbcdr_blob_tmp;    /* define a working area for fething geoms as Blobs*/
     int                 odbcdr_blob_tmp_size;
 
 } odbcdr_cursor_def;

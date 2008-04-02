@@ -49,12 +49,12 @@
 ** for the buffers. An estimate of array size is used because you do not know
 ** the actual array size until execute time. 
 */
-#define ODBCDR_MAX_ARRAY_SIZE 150//500
+#define ODBCDR_MAX_ARRAY_SIZE 100
 
 /* SQLBindParameter requires the size of data, although data is inserted
  * using SQLPutData() and teoretically this will be redundant.
  */
-#define ODBCDR_BLOB_CHUNK_SIZE       (1024)
+#define ODBCDR_BLOB_CHUNK_SIZE       (1024 * 10) // total: 10KB * ODBCDR_MAX_ARRAY_SIZE 
 
 /* Max buffer length */
 #define ODBCDR_MAX_BUFF_SIZE	RDBI_MSG_SIZE	
