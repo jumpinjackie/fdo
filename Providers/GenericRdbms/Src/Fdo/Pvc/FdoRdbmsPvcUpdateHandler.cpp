@@ -77,7 +77,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
     const FdoSmLpDbObject* table = classDefinition->RefDbObject();
     FdoStringP tableName = table->RefDbObject()->GetDbQName();
 	FdoStringP updateString;
-    const FdoSmLpDataPropertyDefinition *pDef = FdoSmLpDataPropertyDefinition::Cast(classDefinition->RefProperties()->RefItem(L"RevisionNumber"));
+    const FdoSmLpDataPropertyDefinition *pDef = FdoSmLpDataPropertyDefinition::Cast(classDefinition->RefSystemProperty(L"RevisionNumber"));
     if ( (pDef != NULL) && (pDef->RefColumn() == NULL) )
         pDef = NULL;
 
@@ -673,7 +673,6 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                             FdoIGeometry        *geom = NULL;
                             if ( ba )
                             {
-                                mConnection->GetSchemaUtil()->SetActiveSpatialContext( classDefinition, name );
                                 geom = mFdoConnection->TransformGeometry( 
                                     FdoPtr<FdoIGeometry>(gf->CreateGeometryFromFgf(ba)), 
                                     geomPropDef, 

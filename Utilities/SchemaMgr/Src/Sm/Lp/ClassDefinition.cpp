@@ -189,6 +189,19 @@ const FdoSmLpPropertyDefinitionCollection* FdoSmLpClassBase::RefNestedProperties
     return (FdoSmLpPropertyDefinitionCollection*) ((FdoSmLpClassBase*) this)->GetNestedProperties();
 }
 
+const FdoSmLpPropertyDefinition* FdoSmLpClassBase::RefSystemProperty( FdoString* propName ) const
+{
+    const FdoSmLpPropertyDefinition* prop = RefProperties()->RefItem( propName );
+
+    if ( prop ) {
+        if ( !prop->GetIsSystem() ) 
+            prop = NULL;
+    }
+
+    return prop;
+}
+
+
 const FdoSmLpUniqueConstraintCollection* FdoSmLpClassBase::RefUniqueConstraints() const
 {
 	((FdoSmLpClassBase*) this)->Finalize();

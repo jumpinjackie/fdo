@@ -285,13 +285,6 @@ void FdoSmLpGeometricPropertyDefinition::Update(
             {
                 mAssociatedSCName = L"Default";
             }
- /* TODO:             
-            // If the spatial context was not set then pick up the active one
-            if ( mAssociatedSCName.ICompare(L"") == 0 )
-            {
-                mAssociatedSCName = GetActiveSpatialContextName();
-            }
-*/
         }
         else if ( GetElementState() == FdoSchemaElementState_Modified ) {
             // Allow under certain circumstances, all errors reported
@@ -1283,18 +1276,6 @@ int FdoSmLpGeometricPropertyDefinition::GetDimensionality()
     return dimensionality;
 }
 
-FdoStringP FdoSmLpGeometricPropertyDefinition::GetActiveSpatialContextName()
-{
-   	FdoSmPhysicalSchema*	pPhysical = Get_LogicalPhysicalSchema()->Get_PhysicalSchema();
-	DbiConnection*          pConn = pPhysical->GetConnection();
-    dbi_plan_info_def       plan_info;
-    int                     found;
-
-    dbi_pn_id_t plan_num = ((DbiConnection*) pConn)->dbi_plan_active_get();
-    ((DbiConnection*) pConn)->dbi_plan_get( plan_num, &plan_info, &found );
-            
-    return FdoStringP( plan_info.name );
-}
 */
 bool FdoSmLpGeometricPropertyDefinition::CheckSupportedGeometricTypes( FdoGeometricPropertyDefinition* pFdoGeomProp )
 {

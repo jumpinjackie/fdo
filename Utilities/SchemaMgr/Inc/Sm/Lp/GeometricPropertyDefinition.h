@@ -349,9 +349,6 @@ protected:
     FdoSmPhScInfoP CreateSpatialContextInfo();
 
 private:
-/*
-    FdoStringP  GetActiveSpatialContextName();
-*/
     void FixSpatialContextAssociation();
     bool CheckSupportedGeometricTypes( FdoGeometricPropertyDefinition* pFdoGeomProp );
     bool CheckSupportedGeometryTypes( FdoGeometricPropertyDefinition* pFdoGeomProp );
