@@ -125,7 +125,7 @@ FdoIFeatureReader* FdoRdbmsInsertCommand::Execute ()
 
         if( classDefinition != NULL && classDefinition->GetClassType() == FdoClassType_FeatureClass )
         {			
-            const FdoSmLpDataPropertyDefinition *lpSystemProp = FdoSmLpDataPropertyDefinition::Cast(classDefinition->RefProperties()->RefItem(L"ClassId"));
+            const FdoSmLpDataPropertyDefinition *lpSystemProp = FdoSmLpDataPropertyDefinition::Cast(classDefinition->RefSystemProperty(L"ClassId"));
             if ( lpSystemProp && lpSystemProp->RefColumn() ) {
                 FdoPtr<FdoPropertyValue>classId = FdoPropertyValue::Create();
                 FdoPtr<FdoDataValue>clidValue = FdoDataValue::Create(classDefinition->GetId());
@@ -135,7 +135,7 @@ FdoIFeatureReader* FdoRdbmsInsertCommand::Execute ()
                 addedIndentProperties = true;
             }
 
-            lpSystemProp = FdoSmLpDataPropertyDefinition::Cast(classDefinition->RefProperties()->RefItem(L"RevisionNumber"));
+            lpSystemProp = FdoSmLpDataPropertyDefinition::Cast(classDefinition->RefSystemProperty(L"RevisionNumber"));
             if ( lpSystemProp && lpSystemProp->RefColumn() ) {
                 FdoPtr<FdoPropertyValue>revNum = FdoPropertyValue::Create();
                 FdoPtr<FdoDataValue>revValue = FdoDataValue::Create((FdoInt64) 0 );

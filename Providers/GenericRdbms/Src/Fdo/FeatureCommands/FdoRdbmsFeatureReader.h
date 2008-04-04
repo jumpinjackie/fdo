@@ -66,6 +66,7 @@ typedef struct {
 	wchar_t           columnNameW[GDBI_SCHEMA_ELEMENT_NAME_SIZE * sizeof(wchar_t) + 1]; // Not table qualified
 	wchar_t           columnPosition[3 * sizeof(wchar_t) + 1];  // 1- based
     FdoPropertyType   propertyType;
+    bool              isSystem;
 } FdoRdbmsPropertyInfoDef;
 
 typedef std::map<std::string, ValueDef *> StrMap;
@@ -153,9 +154,9 @@ class FdoRdbmsFeatureReader: public FdoIFeatureReader
 
       FdoRdbmsFeatureReader & operator=(const FdoRdbmsFeatureReader &right);
 
-      const char*	 Property2ColName( const wchar_t *propName, FdoPropertyType *type, bool *found = NULL, int *index = NULL );
-      const wchar_t* Property2ColNameW( const wchar_t *propName, FdoPropertyType *type, bool *found = NULL, int *index = NULL );
-      const char*	 Property2ColNameChar( const wchar_t *propName, FdoPropertyType *type, bool *found = NULL, int *index = NULL );
+      const char*	 Property2ColName( const wchar_t *propName, FdoPropertyType *type, bool systemOnly, bool *found = NULL, int *index = NULL );
+      const wchar_t* Property2ColNameW( const wchar_t *propName, FdoPropertyType *type, bool systemOnly, bool *found = NULL, int *index = NULL );
+      const char*	 Property2ColNameChar( const wchar_t *propName, FdoPropertyType *type, bool systemOnly, bool *found = NULL, int *index = NULL );
 
       const char* GetDbAliasName( const wchar_t *propName, FdoPropertyType *type = NULL );
 
@@ -186,9 +187,6 @@ private:
     // This is an internal method to support the DataReader
     FdoPropertyType GetPropertyType(FdoString* propertyName);
 
-    // Methods in aid of overriding the Active spatial context
-    void ChangeActiveSpatialContext();
-    void RestoreActiveSpatialContext();
     // Method in aid of GetGeometry()
     FdoByteArray* GetGeometry(const wchar_t* propertyName, bool checkIsNullOnly);
     FdoByteArray* GetGeometry(const wchar_t* propertyName, bool checkIsNullOnly, GdbiQueryResult *query);

@@ -37,9 +37,9 @@ using namespace std;
 
 //#define FDORDBMS_SHOW_CACHE_PERF
 
-#define  PROPERTY2COLNAME( p1, p2 ) (Property2ColName( p1, p2))
-#define  PROPERTY2COLNAME_IDX( p1, p2, p3, p4 ) (Property2ColName( p1, p2, p3, p4))
-#define  PROPERTY2COLNAME_IDX_W( p1, p2, p3, p4 ) (Property2ColNameW( p1, p2, p3, p4))
+#define  PROPERTY2COLNAME( p1, p2 ) (Property2ColName( p1, p2, false))
+#define  PROPERTY2COLNAME_IDX( p1, p2, p3, p4 ) (Property2ColName( p1, p2, false, p3, p4))
+#define  PROPERTY2COLNAME_IDX_W( p1, p2, p3, p4 ) (Property2ColNameW( p1, p2, false, p3, p4))
 
 static  char  *strEndOfRecordExp = "End of feature data or NextFeature not called";
 static  char  *strObjPropetryExp = "Property '%1$ls' is an object property and cannot be returned through a basic type; use GetFeatureObject";
@@ -189,11 +189,8 @@ FdoRdbmsFeatureReader::FdoRdbmsFeatureReader( FdoIConnection *connection, GdbiQu
 	m_cacheMissed2 = 0;
 
     // TODO: push down to Schema Manager, rather than hard-code property names.
-    mClassIdColName = Property2ColName( L"ClassId", NULL );
-    mRevNumColName = Property2ColName( L"RevisionNumber", NULL );
-
-    // Change the active SC if contains geometries
-    ChangeActiveSpatialContext();
+    mClassIdColName = Property2ColName( L"ClassId", NULL, true );
+    mRevNumColName = Property2ColName( L"RevisionNumber", NULL, true );
 
     mSecondarySpatialFilters = FDO_SAFE_ADDREF(secondarySpatialFilters);
 
@@ -226,9 +223,6 @@ FdoRdbmsFeatureReader::~FdoRdbmsFeatureReader()
   if ( mPropertyInfoDefs != NULL )
       delete[] mPropertyInfoDefs;
 
-  // Restore the active Spatial Context.
-  RestoreActiveSpatialContext();
-
 #ifdef	FDORDBMS_SHOW_CACHE_PERF
   printf("[Columns cache: Hits=%ld Missed1==%ld Missed2==%ld]\n", m_cacheHits, m_cacheMissed1, m_cacheMissed2);
 #endif
@@ -237,18 +231,18 @@ FdoRdbmsFeatureReader::~FdoRdbmsFeatureReader()
     mFdoConnection->Release();
 }
 
-const char* FdoRdbmsFeatureReader::Property2ColName( const wchar_t *propName, FdoPropertyType *type, bool *found, int *index )
+const char* FdoRdbmsFeatureReader::Property2ColName( const wchar_t *propName, FdoPropertyType *type, bool systemOnly, bool *found, int *index )
 {
-	return Property2ColNameChar( propName, type, found, index );
+	return Property2ColNameChar( propName, type, systemOnly, found, index );
 }
 
-const wchar_t* FdoRdbmsFeatureReader::Property2ColNameW( const wchar_t *propName, FdoPropertyType *type, bool *found, int *index )
+const wchar_t* FdoRdbmsFeatureReader::Property2ColNameW( const wchar_t *propName, FdoPropertyType *type, bool systemOnly, bool *found, int *index )
 {
-	const char*  col = Property2ColNameChar( propName, type, found, index );
+	const char*  col = Property2ColNameChar( propName, type, systemOnly, found, index );
 	return ( col ? mPropertyInfoDefs[*index].columnNameW : (const wchar_t*)NULL );
 }
 
-const char* FdoRdbmsFeatureReader::Property2ColNameChar( const wchar_t *propName, FdoPropertyType *type, bool *found, int *index )
+const char* FdoRdbmsFeatureReader::Property2ColNameChar( const wchar_t *propName, FdoPropertyType *type, bool systemOnly, bool *found, int *index )
 {
     const char*             string = NULL;
 	FdoStringP				colName;
@@ -278,7 +272,10 @@ const char* FdoRdbmsFeatureReader::Property2ColNameChar( const wchar_t *propName
     {
         cacheElem = &mPropertyInfoDefs[i];
 	
-       found2 = ( FdoCommonOSUtil::wcsicmp( propName, cacheElem->propertyName ) == 0);
+       found2 = 
+           ( FdoCommonOSUtil::wcsicmp( propName, cacheElem->propertyName ) == 0) &&
+           ( cacheElem->isSystem || (!systemOnly) );
+
        cacheIndex = i;	
     }
 
@@ -286,8 +283,11 @@ const char* FdoRdbmsFeatureReader::Property2ColNameChar( const wchar_t *propName
     {
         cacheElem = &mPropertyInfoDefs[i];
 
-		found2 = ( FdoCommonOSUtil::wcsicmp( propName, cacheElem->propertyName ) == 0);
-        cacheIndex = i;
+       found2 = 
+           ( FdoCommonOSUtil::wcsicmp( propName, cacheElem->propertyName ) == 0) &&
+           ( cacheElem->isSystem || (!systemOnly) );
+
+       cacheIndex = i;
     }
 
     // Fast return if property found in the cache 
@@ -350,17 +350,25 @@ const char* FdoRdbmsFeatureReader::Property2ColNameChar( const wchar_t *propName
             strcpy( cacheElem->columnQName, string );
 			wcscpy( cacheElem->columnNameW, colName );
             cacheElem->propertyType = propType;
+            cacheElem->isSystem = propertyDefinition->GetIsSystem();
 			wcscpy(cacheElem->columnPosition, L""); 
 
 			cacheIndex = mNumPropertyInfoDefs;
-
-            if ( index )
-                *index = cacheIndex;
 
             // Remember this
             mLastPropertyInfoDef = mNumPropertyInfoDefs;
 
             mNumPropertyInfoDefs++;
+
+            if ( cacheElem->isSystem || (!systemOnly)) 
+            {
+                if ( index )
+                    *index = cacheIndex;
+            }
+            else
+            {
+                return NULL;
+            }
 		}
 		else // Object, Association properties etc.
 		{
@@ -2143,54 +2151,5 @@ int FdoRdbmsFeatureReader::GetAttributeQuery( wchar_t* className )
         mAttrQueryCache[nextIdx].class_name[GDBI_SCHEMA_ELEMENT_NAME_SIZE - 1] = '\0';
         return (mLastAttrQueryIdx = nextIdx );
     }
-}
-
-void  FdoRdbmsFeatureReader::ChangeActiveSpatialContext()
-{
-#pragma message ("ToDo: FdoRdbmsFeatureReader::ChangeActiveSpatialContext")
-/* TODO
-    dbi_plan_info_def       plan_info;
-    int                     found = false;
-
-    mOldActiveSC = -1;
-    mNewActiveSC = -1;
-
-    if (!mIsFeatureQuery)
-        return;
-
-    const FdoSmLpFeatureClass*  feat = static_cast<const FdoSmLpFeatureClass *>( mClassDefinition );
-    const FdoSmLpGeometricPropertyDefinition *geom = feat->RefGeometryProperty();
-
-    if ( geom == NULL)
-        return;
-
-    FdoStringP  assocSC = geom->GetSpatialContextAssociation();
-
-    // Find the plan number by name
-    mConnection->dbi_plan_find( (char*)(const char*)assocSC, &plan_info, &found );
-
-    if ( !found )
-        throw FdoSpatialContextMismatchException::Create(
-            NlsMsgGet1( FDORDBMS_322,
-                "Spatial context '%1$ls' not found", (FdoString *) assocSC)
-            );
-
-    mOldActiveSC = mConnection->dbi_plan_active_get();
-    mNewActiveSC = plan_info.plan;
-
-    if (  mOldActiveSC != mNewActiveSC )
-        mConnection->dbi_plan_active_set( mNewActiveSC );
-*/
-}
-
-void  FdoRdbmsFeatureReader::RestoreActiveSpatialContext()
-{
-#pragma message ("ToDo: FdoRdbmsFeatureReader::RestoreActiveSpatialContext")
-//TODO
-/*
-    // Restore the original active spatial context
-    if ( mOldActiveSC != -1 && mOldActiveSC != mNewActiveSC )
-        mConnection->dbi_plan_active_set( mOldActiveSC );
-*/
 }
 

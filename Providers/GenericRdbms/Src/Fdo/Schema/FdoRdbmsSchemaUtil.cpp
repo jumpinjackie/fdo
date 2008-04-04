@@ -586,64 +586,6 @@ void FdoRdbmsSchemaUtil::AssociatedSpatialContextCheck( const FdoSmLpClassDefini
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void FdoRdbmsSchemaUtil::SetActiveSpatialContext( const FdoSmLpClassDefinition *pClassDefinition,
-                                                  const wchar_t *geomPropName )
-{
-    if ( pClassDefinition == NULL ||
-         ( pClassDefinition && pClassDefinition->GetClassType() != FdoClassType_FeatureClass ))
-        return;
-
-    const FdoSmLpPropertyDefinitionCollection *propertyDefinitions = pClassDefinition->RefProperties();
-    const FdoSmLpPropertyDefinition *pGeomPropertyDefinition;
-
-    if ( geomPropName == NULL )
-    {
-        const FdoSmLpFeatureClass*  pFeatClass = static_cast<const FdoSmLpFeatureClass *>( pClassDefinition );
-        pGeomPropertyDefinition = pFeatClass->RefGeometryProperty();
-    }
-    else
-    {
-        pGeomPropertyDefinition = propertyDefinitions->RefItem(geomPropName);
-    }
-
-    // May be missing
-    if( pGeomPropertyDefinition == NULL )
-        return;
-
-    const FdoSmLpGeometricPropertyDefinition* pGeometricProperty =
-                            dynamic_cast<const FdoSmLpGeometricPropertyDefinition*>(pGeomPropertyDefinition);
-
-    // Change the active plan
-    if ( pGeometricProperty )
-    {
-/* TODO:
-        DbiConnection       *pDbiConn = mSchemaMgr->GetConnection();
-        dbi_plan_info_def   plan_info;
-        int                 found = false;
-        long                oldActiveSC;
-        long                newActiveSC;
-
-        FdoStringP          assocSC = pGeometricProperty->GetSpatialContextAssociation();
-
-        // Find the plan number by name
-        pDbiConn->dbi_plan_find( (char*)(const char*)assocSC, &plan_info, &found );
-
-        if ( !found )
-            throw FdoSpatialContextMismatchException::Create(
-                NlsMsgGet1( FDORDBMS_322,
-                    "Spatial context '%1$ls' not found", (FdoString *) assocSC)
-                );
-
-        oldActiveSC = pDbiConn->dbi_plan_active_get();
-        newActiveSC = plan_info.plan;
-
-        if ( oldActiveSC != newActiveSC )
-            pDbiConn->dbi_plan_active_set( newActiveSC );
-*/
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void FdoRdbmsSchemaUtil::CheckGeomPropShapeType( const FdoSmLpClassDefinition *classDefinition,
                                                       const wchar_t*    geomPropName,
                                                       FdoIGeometry      *pGeomValue )

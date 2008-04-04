@@ -764,8 +764,6 @@ void FdoRdbmsPvcInsertHandler::SetBindValues(const FdoSmLpClassDefinition *class
                     FdoIGeometry *newGeomValue = NULL;
                     if ( ba )
                     {
-                        mConnection->GetSchemaUtil()->SetActiveSpatialContext( classDefinition, name );
-
                         newGeomValue = mFdoConnection->TransformGeometry( 
                             FdoPtr<FdoIGeometry>(gf->CreateGeometryFromFgf(ba)), 
                             geomPropDef, 
