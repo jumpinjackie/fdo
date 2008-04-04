@@ -176,14 +176,24 @@ FdoConnectionState OgrConnection::Open()
     const wchar_t* dsw = GetProperty(PROP_NAME_DATASOURCE);
     bool readonly = _wcsnicmp(GetProperty(PROP_NAME_READONLY), L"TRUE", 4) == 0;
     
-    W2A(dsw);
+    size_t slen = wcslen(dsw);
+    if (dsw[slen - 1] == '\\')
+       slen--;
+
+    wchar_t* tmp = new wchar_t[slen + 1];
+    wcsncpy(tmp, dsw, slen);
+    tmp[slen] = 0;
+
+    W2A(tmp);
+
+    delete tmp;
     
 #if DEBUG
-    printf ("Attempt OGR connect to %s \n", mbdsw);
+    printf ("Attempt OGR connect to %s \n", mbtmp);
     printf ("ReadOnly %d\n", (int)readonly);
 #endif
     
-    m_poDS = OGRSFDriverRegistrar::Open(mbdsw, !readonly);
+    m_poDS = OGRSFDriverRegistrar::Open(mbtmp, !readonly);
     if( m_poDS == NULL )
     {
         std::string str = "Connect failed: "; 
