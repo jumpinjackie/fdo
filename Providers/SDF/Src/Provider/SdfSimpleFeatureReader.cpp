@@ -164,37 +164,7 @@ SdfSimpleFeatureReader::SdfSimpleFeatureReader( SdfSimpleFeatureReader& reader )
 // default destructor
 SdfSimpleFeatureReader::~SdfSimpleFeatureReader()
 {
-    Close();
-
-    FDO_SAFE_RELEASE(m_class);
-    FDO_SAFE_RELEASE(m_connection);
-    FDO_SAFE_RELEASE(m_filter);
-    FDO_SAFE_RELEASE(m_classDefPruned);
-
-    //need to do this because of multiple inheritance in SdfFilterExecutor
-    FdoIFilterProcessor* asfilter = (FdoIFilterProcessor*)m_filterExec;
-    FDO_SAFE_RELEASE(asfilter);
-//    FdoIExpressionProcessor* asexpr = (FdoIExpressionProcessor*)m_filterExec;
-//    FDO_SAFE_RELEASE(asexpr);
-
-    //it is our responsibility to free the feature recno list here
-    if (m_features)
-        delete m_features;
-
-    delete m_currentKey;
-    delete m_currentData;
-    delete m_dataReader;
-
-    if (!m_stringPropsCache.empty())
-    {
-        std::map<std::wstring, wchar_t*>::iterator iter = m_stringPropsCache.begin();
-
-        for (; iter != m_stringPropsCache.end(); iter++)
-            delete [] iter->second;
-
-        m_stringPropsCache.clear();
-    }
-
+    Close();  
 }
 
 //-------------------------------------------------------
@@ -227,6 +197,9 @@ FdoClassDefinition* SdfSimpleFeatureReader::GetClassDefinition()
     }
     else
     {
+		if( m_class == NULL )
+			return NULL;
+
         if (m_lastClassDefinition == NULL)
             m_lastClassDefinition = FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(m_class);
 
@@ -755,7 +728,7 @@ bool SdfSimpleFeatureReader::IsNullObject( PropertyStub* ps )
 	// the association, then len = 0 but the IsNUll should return false as the association is set(not necesary associated
 	// to anything as the name can be associated to non-existing objects).
 	int len = PositionReader( ps->m_recordIndex );
-	if ( len != 0  )
+	if ( len != 0  || m_class == NULL )
 		return false;
 
 	FdoPtr<FdoPropertyDefinitionCollection> properties = m_class->GetProperties();
@@ -816,7 +789,7 @@ FdoIFeatureReader* SdfSimpleFeatureReader::GetFeatureObject(FdoString* propertyN
     if (ps->m_propertyType != FdoPropertyType_AssociationProperty )
         throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_36_INCORRECT_PROPERTY_TYPE)));
 
-    if ( IsNullObject( ps ) )
+    if ( IsNullObject( ps ) || m_class == NULL )
         throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_51_NULL_VALUE), "Property value is null."));
  
 	FdoPtr<FdoPropertyDefinitionCollection> properties = m_class->GetProperties();
@@ -1016,6 +989,9 @@ FdoIRaster* SdfSimpleFeatureReader::GetRaster(FdoString* propertyName)
 // must call ReadNext to begin accessing any data.
 bool SdfSimpleFeatureReader::ReadNext()
 {   
+	if( m_class == NULL )
+		return false;
+
     if (m_filter || m_features)
     {
         //filter could have been optimized away by query optimizer
@@ -1144,26 +1120,72 @@ bool SdfSimpleFeatureReader::ReadNext()
 // holding.
 void SdfSimpleFeatureReader::Close()
 {
-    DataDb *dataDb = this->m_connection->GetDataDb(m_class);
-    if (dataDb)
+	if( m_class != NULL )
 	{
-		m_dbData->SetTag( (void*) this );
-        dataDb->CloseCursor();
+		DataDb *dataDb = this->m_connection->GetDataDb(m_class);
+		if (dataDb)
+		{
+			m_dbData->SetTag( (void*) this );
+			dataDb->CloseCursor();
+		}
+
+		KeyDb *keyDb = this->m_connection->GetKeyDb(m_class);
+		if (keyDb)
+			keyDb->CloseCursor();
+
+		SdfRTree *rtree = this->m_connection->GetRTree(m_class);
+		if (rtree)
+			rtree->CloseCursor();
 	}
-    KeyDb *keyDb = this->m_connection->GetKeyDb(m_class);
-    if (keyDb)
-        keyDb->CloseCursor();
-    SdfRTree *rtree = this->m_connection->GetRTree(m_class);
-    if (rtree)
-        rtree->CloseCursor();
-    SchemaDb *schemaDb = this->m_connection->GetSchemaDb();
-    if (schemaDb)
-        schemaDb->CloseCursor();
+	if( m_connection != NULL )
+	{
+		SchemaDb *schemaDb = this->m_connection->GetSchemaDb();
+		if (schemaDb)
+			schemaDb->CloseCursor();
+	}
+	FDO_SAFE_RELEASE(m_class);
+    FDO_SAFE_RELEASE(m_connection);
+    FDO_SAFE_RELEASE(m_filter);
+    FDO_SAFE_RELEASE(m_classDefPruned);
+
+    //need to do this because of multiple inheritance in SdfFilterExecutor
+    FdoIFilterProcessor* asfilter = (FdoIFilterProcessor*)m_filterExec;
+    FDO_SAFE_RELEASE(asfilter);
+
+    //it is our responsibility to free the feature recno list here
+    if (m_features)
+        delete m_features;
+	m_features = NULL;
+
+	if( m_currentKey )
+		delete m_currentKey;
+	m_currentKey = NULL;
+
+	if( m_currentData )
+		delete m_currentData;
+	m_currentData = NULL;
+
+	if( m_dataReader )
+		delete m_dataReader;
+	m_dataReader = NULL;
+
+    if (!m_stringPropsCache.empty())
+    {
+        std::map<std::wstring, wchar_t*>::iterator iter = m_stringPropsCache.begin();
+
+        for (; iter != m_stringPropsCache.end(); iter++)
+            delete [] iter->second;
+
+        m_stringPropsCache.clear();
+    }
 }
 
 
 int SdfSimpleFeatureReader::PositionReader(int recordIndex)
 {
+	if( m_dataReader == NULL )
+		return 0;
+
     //position where offset to property value is stored
     //remember: we have a 2 byte FCID at the beginning
     //and then offsets for each property
