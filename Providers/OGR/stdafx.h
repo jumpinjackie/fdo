@@ -51,6 +51,7 @@
 
 #ifndef _WIN32
 #define _wcsnicmp wcsncasecmp
+#define _wcsicmp wcscasecmp
 #endif
 
 #include <ogrsf_frmts.h>
