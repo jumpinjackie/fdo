@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\Fdo\Unmanaged\Inc;&quot;..\..\..\Thirdparty\sqlite-3.5.4&quot;;..\..\..\Utilities\Common\Inc;..\SDX"
+				AdditionalIncludeDirectories="..\..\..\Fdo\Unmanaged\Inc;&quot;..\..\..\Thirdparty\sqlite-3.5.4&quot;;..\..\..\Utilities\Common\Inc;..\Provider"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -63,7 +63,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="Fdo.lib sqlite.lib FdoCommon.lib SQLiteProvider.lib ProvidersCommon.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\Fdo\Unmanaged\Lib\win32\release;&quot;..\..\..\Thirdparty\sqlite-3.5.4\Debug&quot;;..\SDX\Debug;..\..\..\Utilities\Common\lib\win32\debug"
+				AdditionalLibraryDirectories="..\..\..\Fdo\Unmanaged\Lib\win32\release;&quot;..\..\..\Thirdparty\sqlite-3.5.4\Debug&quot;;..\Provider\Debug;..\..\..\Utilities\Common\lib\win32\debug"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
