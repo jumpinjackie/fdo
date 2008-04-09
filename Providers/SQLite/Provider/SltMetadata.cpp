@@ -206,7 +206,7 @@ FdoClassDefinition* SltMetadata::ToClass()
 
             int fgtype = (FdoGeometryType)gtypes[gi];
 
-            if (fgtype != -1)
+            if (fgtype > 0)
                 gpd->SetSpecificGeometryTypes((FdoGeometryType*)&fgtype, 1);
             else
                 gpd->SetGeometryTypes(FdoGeometricType_All); //unsure... set all.
