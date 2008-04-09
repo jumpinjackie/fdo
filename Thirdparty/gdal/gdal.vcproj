@@ -11,6 +11,9 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -39,6 +42,29 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="."
+			IntermediateDirectory="."
+			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="mkdir bin\win64\debug&#x0D;&#x0A;mkdir lib\win64\debug&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO BUILD_DEBUG=yes PLATFORM_BITS=64 clean&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO BUILD_DEBUG=yes PLATFORM_BITS=64&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO BUILD_DEBUG=yes PLATFORM_BITS=64 devinstall"
+				ReBuildCommandLine="mkdir bin\win64\debug&#x0D;&#x0A;mkdir lib\win64\debug&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO BUILD_DEBUG=yes PLATFORM_BITS=64 clean&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO BUILD_DEBUG=yes PLATFORM_BITS=64&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO BUILD_DEBUG=yes PLATFORM_BITS=64 devinstall"
+				CleanCommandLine="nmake /f &quot;makefile.vc&quot; /NOLOGO BUILD_DEBUG=yes PLATFORM_BITS=64 clean&#x0D;&#x0A;"
+				Output="gdal"
+				PreprocessorDefinitions="_WIN64"
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="."
 			IntermediateDirectory="."
@@ -52,6 +78,29 @@
 				BuildCommandLine="mkdir bin\win32\release&#x0D;&#x0A;mkdir lib\win32\release&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO clean&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO devinstall"
 				ReBuildCommandLine="mkdir bin\win32\release&#x0D;&#x0A;mkdir lib\win32\release&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO clean&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO devinstall"
 				CleanCommandLine="nmake /f &quot;makefile.vc&quot; /NOLOGO clean"
+				Output="gdal"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="."
+			IntermediateDirectory="."
+			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="mkdir bin\win64\release&#x0D;&#x0A;mkdir lib\win64\release&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO PLATFORM_BITS=64 clean&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO PLATFORM_BITS=64&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO PLATFORM_BITS=64 devinstall"
+				ReBuildCommandLine="mkdir bin\win64\release&#x0D;&#x0A;mkdir lib\win64\release&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO PLATFORM_BITS=64 clean&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO PLATFORM_BITS=64&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO PLATFORM_BITS=64 devinstall"
+				CleanCommandLine="nmake /f &quot;makefile.vc&quot; /NOLOGO PLATFORM_BITS=64 clean"
 				Output="gdal"
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
