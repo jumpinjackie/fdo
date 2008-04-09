@@ -147,7 +147,7 @@ public:
         }
     }
 
-    int /*__forceinline*/ GetIndex(const wchar_t* name)
+    int __forceinline GetIndex(const wchar_t* name)
     {
         NameIndexPair* list = m_sorted;
         int hi = m_len;

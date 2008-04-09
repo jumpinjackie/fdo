@@ -172,7 +172,7 @@ protected:
         //things cached/precomputed for speed
         FdoClassDefinition*         m_class;
         std::vector<std::wstring>   m_propNames;
-        PropertyNameIndex2          m_mNameToIndex;
+        PropertyNameIndex           m_mNameToIndex;
 
         //things we need for reissuing the sql query while incrementally
         //building a list of properties that the caller accesses, in case
