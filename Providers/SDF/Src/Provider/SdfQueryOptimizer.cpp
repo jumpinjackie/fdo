@@ -406,8 +406,16 @@ void SdfQueryOptimizer::ProcessSpatialCondition(FdoSpatialCondition& filter)
             }
             else 
             {
-                m_retvals.push_back(NULL);
-
+                recno_list* rl = NULL;
+                if (!(bounds.maxx == bounds.maxy && bounds.minx == bounds.miny && bounds.maxx == bounds.minx && bounds.maxy == 0.0))
+                {
+                    recno_list* rl = new recno_list;
+                    //search the R-Tree for records whose bounds overlap
+                    //the given IEnvelope
+                    m_rtree->Search(bounds, (SearchHitCallback)SearchCallback, rl);
+                }
+                //push the matched feature record numbers on the result stack
+                m_retvals.push_back(rl);
                 //cannot optimize filter away, push back on filter result stack
                 m_filters.push_back(FDO_SAFE_ADDREF(&filter));
             }
@@ -660,6 +668,8 @@ recno_list* SdfQueryOptimizer::RecnoFromKey()
 //which can be used for R-Tree searches
 bool SdfQueryOptimizer::IsAxisAlignedRectangle(FdoByteArray* fgf, Bounds& bounds)
 {
+    bounds.minx = bounds.miny = bounds.maxx = bounds.maxy = 0.0;
+
     FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
     FdoPtr<FdoIGeometry> fgfgeom = gf->CreateGeometryFromFgf(fgf);
 
@@ -716,8 +726,14 @@ bool SdfQueryOptimizer::IsAxisAlignedRectangle(FdoByteArray* fgf, Bounds& bounds
     }
 
     if (!isRect)
+    {
+        FdoPtr<FdoIEnvelope> env = fgfgeom->GetEnvelope();
+        bounds.minx = env->GetMinX();
+        bounds.miny = env->GetMinY();
+        bounds.maxx = env->GetMaxX();
+        bounds.maxy = env->GetMaxY();
         return false;
-
+    }
     if (firstSegHorizontal)
     {
         bounds.minx = min(p0->GetX(), p1->GetX());
