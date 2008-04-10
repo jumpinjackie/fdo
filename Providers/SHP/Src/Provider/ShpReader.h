@@ -491,7 +491,6 @@ public:
     {
         FdoPtr<FdoIdentifier> id;
         FdoComputedIdentifier* computed;
-        float ret;
 
         id = validate (identifier);
         computed = (id == NULL) ? NULL : dynamic_cast<FdoComputedIdentifier*>(id.p);

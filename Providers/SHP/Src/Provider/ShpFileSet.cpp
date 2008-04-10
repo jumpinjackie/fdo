@@ -723,7 +723,7 @@ void ShpFileSet::SetObjectAt (RowData* row, Shape* shape, bool batch, bool useCo
     }
 
     // handle the switch to M valued Z type files
-    if (0 == shx->GetNumObjects ())
+    if (eNullShape != shape_type)
     {
         shp->SetHasMData (shape->HasMeasure ());
         shx->SetHasMData (shape->HasMeasure ());
