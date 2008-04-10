@@ -20,6 +20,7 @@
 #include "stdafx.h"
 #include <ShpLpPropertyDefinition.h>
 #include <ShpSchemaUtilities.h>
+#include <wctype.h>
 
 
 ShpLpPropertyDefinition::ShpLpPropertyDefinition(ShpLpClassDefinition *parentLpClass, int iPhysicalColumnIndex, FdoPropertyDefinition *configLogicalProperty, FdoShpOvPropertyDefinition* configPropertyMapping, bool bPhysicalToLogical)
@@ -102,7 +103,7 @@ void ShpLpPropertyDefinition::ConvertPhysicalToLogical(FdoPropertyDefinition* co
 void ShpLpPropertyDefinition::ConvertLogicalToPhysical (int physicalColumnIndex, FdoPropertyDefinition* logicalProperty, FdoShpOvPropertyDefinition* configPropertyMapping)
 {
     ColumnInfo* info;
-    FdoStringP physicalColumnName;
+    std::wstring physicalColumnName;
     FdoDataType logicalPropertyType;
     eDBFColumnType physicalColumnType;
 
@@ -125,42 +126,74 @@ void ShpLpPropertyDefinition::ConvertLogicalToPhysical (int physicalColumnIndex,
 
     char *mbPhysicalColumnName;
 
+    // check for invalid characters
+    for(size_t idx = 0; idx < physicalColumnName.size(); idx++)
+    {
+        wchar_t ch = physicalColumnName.at(idx);
+        if (iswcntrl(ch) || iswspace(ch) || iswpunct(ch))
+            physicalColumnName[idx] = L'_';
+    }
+
     // Test in advance for the field length (multibyte). 
     // Get the codepage directly from locale. The CPG file is not created yet. 
     ShapeCPG    *cpg = new ShapeCPG(); // This constructor doesn't create the file
     FdoStringP  codepage = cpg->GetCodePage();
-
 #ifdef _WIN32
-    wide_to_multibyte_cpg (mbPhysicalColumnName, physicalColumnName, cpg->ConvertCodePageWin((WCHAR *)(FdoString *)codepage));
+    ULONG realCodepage = cpg->ConvertCodePageWin((WCHAR *)(FdoString *)codepage);
 #else
-    wide_to_multibyte_cpg (mbPhysicalColumnName, physicalColumnName, cpg->ConvertCodePageLinux((WCHAR *)(FdoString *)codepage));
+    const char* realCodepage = cpg->ConvertCodePageLinux((WCHAR *)(FdoString *)codepage);
 #endif
+
+    wide_to_multibyte_cpg (mbPhysicalColumnName, physicalColumnName.c_str(), realCodepage);
 
     // Make sure the name is not exceeding the maximum size in which case it will be truncated.
-    int         trim = 0;
-    FdoStringP  trimmed = physicalColumnName;
-    while (nDBF_COLNAME_LENGTH < strlen (mbPhysicalColumnName))
-    {
-        int i = physicalColumnIndex;
+    size_t lenPhyCol = physicalColumnName.size();
+    // we start with a max 11 Unicode characters since we must fit in the name in 11 bytes
+    lenPhyCol = lenPhyCol > nDBF_COLNAME_LENGTH ? nDBF_COLNAME_LENGTH : lenPhyCol;
+    std::wstring  trimmed = physicalColumnName;
+    size_t propLen = strlen (mbPhysicalColumnName);
+    const WCHAR** pNames = info->GetColumnNames();
+    int cntCols = info->GetNumColumns();
 
+    bool colNameIsUnique = true;
+    // see if the column is unique
+    if (nDBF_COLNAME_LENGTH < propLen)
+    {
+        for (int y = 0; y < cntCols && colNameIsUnique; y++)
+            colNameIsUnique = !(trimmed == pNames[y]);
+    }
+    //the index used as suffix for truncated columns
+    int i = 0;
+    while (nDBF_COLNAME_LENGTH < propLen || !colNameIsUnique)
+    {
 		// Truncate the name and tack on a unique number.
-	    trimmed = FdoStringP::Format( L"%ls%d",
-					    (FdoString*) physicalColumnName.Mid(0, nDBF_COLNAME_LENGTH - ((int) log10((double)i)) - 1 - trim, true),
-					    i );
-#ifdef _WIN32
-        wide_to_multibyte_cpg (mbPhysicalColumnName, trimmed, cpg->ConvertCodePageWin((WCHAR *)(FdoString *)codepage));
-#else
-        wide_to_multibyte (mbPhysicalColumnName, trimmed);   
-#endif
-        trim++;
+        if (i == 0)
+            trimmed = physicalColumnName.substr(0, lenPhyCol);
+        else
+            trimmed = (FdoString*)FdoStringP::Format( L"%ls%d", physicalColumnName.substr(0, lenPhyCol - ((int) log10((double)i))).c_str(), i);
+
+        wide_to_multibyte_cpg (mbPhysicalColumnName, trimmed.c_str(), realCodepage);
+        lenPhyCol--;
+        propLen = strlen (mbPhysicalColumnName);
+        if (nDBF_COLNAME_LENGTH >= propLen)
+        {
+            colNameIsUnique = true;
+            // see if the column is unique
+            for (int y = 0; y < cntCols && colNameIsUnique; y++)
+                colNameIsUnique = !(trimmed == pNames[y]);
+            // keep trim at the same count but increment index name
+            if (!colNameIsUnique)
+            {
+                lenPhyCol++;
+                i++;
+            }
+        }
     }
 
     delete cpg;
 
     // Assign the new name
-    physicalColumnName = trimmed;
-
-    info->SetColumnName (physicalColumnIndex, (WCHAR*)(FdoString *)physicalColumnName);
+    info->SetColumnName (physicalColumnIndex, (WCHAR*)trimmed.c_str());
 
     // Convert logical data type to physical column type, and validate it:
     logicalPropertyType = m_logicalProperty->GetDataType ();
