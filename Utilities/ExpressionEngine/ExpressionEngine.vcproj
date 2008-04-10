@@ -148,8 +148,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib"
+				OutputFile="$(OutDir)\ExpressionEngine.dll"
 				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win64\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Debug&quot;"
+				GenerateDebugInformation="true"
 				ImportLibrary="Lib\Win64\Debug\ExpressionEngine.lib"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -175,6 +178,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\SubDoc\Providers.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\ExpressionEngine.dll"
+				ExcludedFromBuild="true"
 			/>
 		</Configuration>
 		<Configuration
@@ -303,8 +307,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib FDOSpatial.lib"
-				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\release&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win64\release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\release&quot;"
 				ImportLibrary="Lib\Win64\Release\ExpressionEngine.lib"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -330,6 +335,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\SubDoc\Providers.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\ExpressionEngine.dll"
+				ExcludedFromBuild="true"
 			/>
 		</Configuration>
 	</Configurations>
