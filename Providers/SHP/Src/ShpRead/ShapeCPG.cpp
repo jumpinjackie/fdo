@@ -55,7 +55,7 @@ ShapeCPG::ShapeCPG (const wchar_t* name, int& status)
             else
             {
                 buffer[size] = '\0'; // EOF
-                mCodePageESRI = FdoStringP( buffer );
+                mCodePageESRI = FdoStringP( buffer ).Left(L";");
             }
             delete [] buffer;
         }
@@ -103,7 +103,7 @@ FdoStringP ShapeCPG::GetCodePage()
 
 void ShapeCPG::SetCodePage( FdoString* codePage )
 {
-    mCodePageESRI = FdoStringP( codePage );
+    mCodePageESRI = FdoStringP( codePage ).Left(L";");
 }
 
 void ShapeCPG::SetCodePageESRIFromLocale( char *locale )
@@ -148,6 +148,7 @@ void ShapeCPG::SetCodePageESRIFromLocale( char *locale )
 		codePageESRI = L"SJIS";  // ja_JP.ujis
 	
 #endif
+    codePageESRI = codePageESRI.Left(L";");
 	// ESRI ISO codes are shifted by 50000
 	if (codePageESRI.IsNumber())
 	{
