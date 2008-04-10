@@ -1154,15 +1154,83 @@ void SchemaTests::non_ascii_property_name_no_mapping ()
         id->SetDataType (FdoDataType_Decimal);
         id->SetPrecision(10);
         id->SetScale(0);
+
 // English
-        FdoPtr<FdoDataPropertyDefinition> street = FdoDataPropertyDefinition::Create (L"Street", L"text");
-        street->SetDataType (FdoDataType_String);
-        street->SetLength (64);
+        FdoPtr<FdoDataPropertyDefinition> streetA = FdoDataPropertyDefinition::Create (L"StreetTooLongA", L"text");
+        streetA->SetDataType (FdoDataType_String);
+        streetA->SetLength (64);
+
+// English
+        FdoPtr<FdoDataPropertyDefinition> streetB = FdoDataPropertyDefinition::Create (L"StreetTooLongB", L"text");
+        streetB->SetDataType (FdoDataType_String);
+        streetB->SetLength (64);
+
 // Japanese
-        FdoPtr<FdoDataPropertyDefinition> area = FdoDataPropertyDefinition::Create (L"Area\x5348\x524d", L"double");
-        area->SetDataType (FdoDataType_Decimal);
-        area->SetPrecision (20);
-        area->SetScale (8);
+        FdoPtr<FdoDataPropertyDefinition> area1 = FdoDataPropertyDefinition::Create (L"Area\x30FC\x5186W\x5F27\x306E", L"double");
+        area1->SetDataType (FdoDataType_Decimal);
+        area1->SetPrecision (20);
+        area1->SetScale (8);
+
+// Japanese
+        FdoPtr<FdoDataPropertyDefinition> area2 = FdoDataPropertyDefinition::Create (L"Area\x30FC\x5186W\x5F27\x5EA6\x7D42", L"double");
+        area2->SetDataType (FdoDataType_Decimal);
+        area2->SetPrecision (20);
+        area2->SetScale (8);
+
+// Japanese
+        FdoPtr<FdoDataPropertyDefinition> area3 = FdoDataPropertyDefinition::Create (L"Area\x30FC\x5186W\x5F27\x306E\x5186\x5F27", L"double");
+        area3->SetDataType (FdoDataType_Decimal);
+        area3->SetPrecision (20);
+        area3->SetScale (8);
+
+// Japanese
+        FdoPtr<FdoDataPropertyDefinition> area4 = FdoDataPropertyDefinition::Create (L"Area\x30FC\x5186W\x5F27\x306E_test", L"double");
+        area4->SetDataType (FdoDataType_Decimal);
+        area4->SetPrecision (20);
+        area4->SetScale (8);
+
+// Japanese
+        FdoPtr<FdoDataPropertyDefinition> area5 = FdoDataPropertyDefinition::Create (L"Area\x30FC\x5186W\x5F27\x306E_\x5186\x5F27_Test", L"double");
+        area5->SetDataType (FdoDataType_Decimal);
+        area5->SetPrecision (20);
+        area5->SetScale (8);
+
+// Japanese
+        FdoPtr<FdoDataPropertyDefinition> area6 = FdoDataPropertyDefinition::Create (L"Area\x30FC\x5186W\x5F27\x306E_\x5186\x5F27_Test_22", L"double");
+        area6->SetDataType (FdoDataType_Decimal);
+        area6->SetPrecision (20);
+        area6->SetScale (8);
+
+// Japanese
+        FdoPtr<FdoDataPropertyDefinition> area7 = FdoDataPropertyDefinition::Create (L"Area\x30FC\x5186W\x5F27\x306E_\x5186\x5F27_Test_33", L"double");
+        area7->SetDataType (FdoDataType_Decimal);
+        area7->SetPrecision (20);
+        area7->SetScale (8);
+
+// Japanese
+        FdoPtr<FdoDataPropertyDefinition> area8 = FdoDataPropertyDefinition::Create (L"Area\x30FC\x5186W\x5F27\x306E_\x5186\x5F27_Test_Test", L"double");
+        area8->SetDataType (FdoDataType_Decimal);
+        area8->SetPrecision (20);
+        area8->SetScale (8);
+
+// Japanese
+        FdoPtr<FdoDataPropertyDefinition> area9 = FdoDataPropertyDefinition::Create (L"Area\x30FC\x5186W\x5F27\x306E_\x5186\x5F27_Test_App", L"double");
+        area9->SetDataType (FdoDataType_Decimal);
+        area9->SetPrecision (20);
+        area9->SetScale (8);
+
+// Japanese
+        FdoPtr<FdoDataPropertyDefinition> area10 = FdoDataPropertyDefinition::Create (L"Area\x30FC\x5186W\x5F27\x306E_\x5186\x5F27_Test_New", L"double");
+        area10->SetDataType (FdoDataType_Decimal);
+        area10->SetPrecision (20);
+        area10->SetScale (8);
+
+// Japanese
+        FdoPtr<FdoDataPropertyDefinition> area11 = FdoDataPropertyDefinition::Create (L"Area\x30FC\x5186W\x5F27\x306E_\x5186\x5F27_Test_Win", L"double");
+        area11->SetDataType (FdoDataType_Decimal);
+        area11->SetPrecision (20);
+        area11->SetScale (8);
+
         // build a location geometry property
         FdoPtr<FdoGeometricPropertyDefinition> location = FdoGeometricPropertyDefinition::Create (L"Geometry", L"geometry");
         location->SetGeometryTypes (FdoGeometricType_Point);
@@ -1172,8 +1240,20 @@ void SchemaTests::non_ascii_property_name_no_mapping ()
         FdoPtr<FdoFeatureClass> feature = FdoFeatureClass::Create (NEW_CLASS_NAME, L"test class created with apply schema");
         FdoPtr<FdoPropertyDefinitionCollection> properties = feature->GetProperties ();
         properties->Add (id);
-        properties->Add (street);
-        properties->Add (area);
+        properties->Add (streetA);
+        properties->Add (streetB);
+        properties->Add (area1);
+        properties->Add (area2);
+        properties->Add (area3);
+        properties->Add (area4);
+        properties->Add (area5);
+        properties->Add (area6);
+        properties->Add (area7);
+        properties->Add (area8);
+        properties->Add (area9);
+        properties->Add (area10);
+        properties->Add (area11);
+
         properties->Add (location);
         feature->SetGeometryProperty (location);
 
@@ -1214,11 +1294,59 @@ void SchemaTests::non_ascii_property_name_no_mapping ()
         properties = cls->GetProperties ();
         FdoPtr<FdoDataPropertyDefinition> featid = (FdoDataPropertyDefinition*)properties->GetItem (L"Id");
         CPPUNIT_ASSERT_MESSAGE ("id wrong type", FdoDataType_Decimal == featid->GetDataType ());
-        street = (FdoDataPropertyDefinition*)properties->GetItem (L"Street");
-        CPPUNIT_ASSERT_MESSAGE ("street wrong type", FdoDataType_String == street->GetDataType ());
-        CPPUNIT_ASSERT_MESSAGE ("street wrong size", 64 == street->GetLength ());
-        area = (FdoDataPropertyDefinition*)properties->GetItem (L"Area\x5348\x524d");
-        CPPUNIT_ASSERT_MESSAGE ("area wrong type", FdoDataType_Decimal == area->GetDataType ());
+
+        streetA = (FdoDataPropertyDefinition*)properties->GetItem (L"StreetTooLo");
+        CPPUNIT_ASSERT_MESSAGE ("street wrong type", FdoDataType_String == streetA->GetDataType ());
+        CPPUNIT_ASSERT_MESSAGE ("street wrong size", 64 == streetA->GetLength ());
+
+        streetB = (FdoDataPropertyDefinition*)properties->GetItem (L"StreetTooL1");
+        CPPUNIT_ASSERT_MESSAGE ("street wrong type", FdoDataType_String == streetB->GetDataType ());
+        CPPUNIT_ASSERT_MESSAGE ("street wrong size", 64 == streetB->GetLength ());
+
+        FdoStringP name2 = L"Area\x30FC\x5186W\x5F27";
+        area2 = (FdoDataPropertyDefinition*)properties->GetItem (name2);
+        CPPUNIT_ASSERT_MESSAGE ("area wrong type", FdoDataType_Decimal == area2->GetDataType ());
+
+        FdoStringP name3 = L"Area\x30FC\x5186W\x0031";
+        area2 = (FdoDataPropertyDefinition*)properties->GetItem (name3);
+        CPPUNIT_ASSERT_MESSAGE ("area wrong type", FdoDataType_Decimal == area2->GetDataType ());
+
+        FdoStringP name4 = L"Area\x30FC\x5186W\x0032";
+        area2 = (FdoDataPropertyDefinition*)properties->GetItem (name4);
+        CPPUNIT_ASSERT_MESSAGE ("area wrong type", FdoDataType_Decimal == area2->GetDataType ());
+
+        FdoStringP name5 = L"Area\x30FC\x5186W\x0033";
+        area2 = (FdoDataPropertyDefinition*)properties->GetItem (name5);
+        CPPUNIT_ASSERT_MESSAGE ("area wrong type", FdoDataType_Decimal == area2->GetDataType ());
+
+        FdoStringP name6 = L"Area\x30FC\x5186W\x0034";
+        area2 = (FdoDataPropertyDefinition*)properties->GetItem (name6);
+        CPPUNIT_ASSERT_MESSAGE ("area wrong type", FdoDataType_Decimal == area2->GetDataType ());
+
+        FdoStringP name7 = L"Area\x30FC\x5186W\x0035";
+        area2 = (FdoDataPropertyDefinition*)properties->GetItem (name7);
+        CPPUNIT_ASSERT_MESSAGE ("area wrong type", FdoDataType_Decimal == area2->GetDataType ());
+
+        FdoStringP name8 = L"Area\x30FC\x5186W\x0036";
+        area2 = (FdoDataPropertyDefinition*)properties->GetItem (name8);
+        CPPUNIT_ASSERT_MESSAGE ("area wrong type", FdoDataType_Decimal == area2->GetDataType ());
+
+        FdoStringP name9 = L"Area\x30FC\x5186W\x0037";
+        area2 = (FdoDataPropertyDefinition*)properties->GetItem (name9);
+        CPPUNIT_ASSERT_MESSAGE ("area wrong type", FdoDataType_Decimal == area2->GetDataType ());
+
+        FdoStringP name10 = L"Area\x30FC\x5186W\x0038";
+        area2 = (FdoDataPropertyDefinition*)properties->GetItem (name10);
+        CPPUNIT_ASSERT_MESSAGE ("area wrong type", FdoDataType_Decimal == area2->GetDataType ());
+
+        FdoStringP name11 = L"Area\x30FC\x5186W\x0039";
+        area2 = (FdoDataPropertyDefinition*)properties->GetItem (name11);
+        CPPUNIT_ASSERT_MESSAGE ("area wrong type", FdoDataType_Decimal == area2->GetDataType ());
+
+        FdoStringP name12 = L"Area\x30FC\x5186\x0031\x0030";
+        area2 = (FdoDataPropertyDefinition*)properties->GetItem (name12);
+        CPPUNIT_ASSERT_MESSAGE ("area wrong type", FdoDataType_Decimal == area2->GetDataType ());
+
         location = (FdoGeometricPropertyDefinition*)properties->GetItem (L"Geometry");
         CPPUNIT_ASSERT_MESSAGE ("wrong geometry types", FdoGeometricType_Point == location->GetGeometryTypes ());
         CPPUNIT_ASSERT_MESSAGE ("wrong elevation", location->GetHasElevation ());

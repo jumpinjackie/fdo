@@ -612,6 +612,7 @@ BYTE ShapeDBF::GetLDIDFromLocale()
 	else if ( pLocale.Contains(L"ujis") )
 		mCodePageESRI = L"932";  // ja_JP.ujis		
 #endif
+    mCodePageESRI = mCodePageESRI.Left(L";");
 	if (mCodePageESRI.IsNumber())
 	{
 		cpg = mCodePageESRI.ToLong();
