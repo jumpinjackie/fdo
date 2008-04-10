@@ -61,7 +61,7 @@ inline void PolygonMShape::GetBoundingBoxEx (BoundingBoxEx& box, bool hasM)
 
 inline void PolygonMShape::GetBoundingBoxEx (BoundingBoxEx& box)
 {
-    GetBoundingBoxEx (box, true);
+    GetBoundingBoxEx (box, (GetNumParts () >= 1 && GetNumPoints () >= 1));
 }
 
 inline int PolygonMShape::GetSize (int nParts, int nPoints)
