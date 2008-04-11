@@ -108,6 +108,8 @@ public:
 
 	virtual FdoIFilterCapabilities* GetFilterCapabilities();
 
+    virtual FdoIExpressionCapabilities* GetExpressionCapabilities();
+
 	//Lock Manager
 	FdoRdbmsLockManager *CreateLockManager();
 

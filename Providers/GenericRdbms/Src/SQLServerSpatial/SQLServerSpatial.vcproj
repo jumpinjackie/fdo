@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-Zm122"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\;..\..\inc\fdo;../../inc/rdbi;../;../../;../../inc;../Fdo/Connection;../Fdo/Other;../Fdo/FeatureCommands;../Fdo/Custom;../Fdo/Schema;..\Fdo\Capability;..\Fdo\FeatureCommands;../Fdo/Filter;../Fdo/SpatialContext;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOUTILITIES)/SchemaMgr/inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi"
+				AdditionalIncludeDirectories=".\;..\..\inc\fdo;../../inc/rdbi;../;../../;../../inc;../Fdo/Connection;../Fdo/Other;../Fdo/FeatureCommands;../Fdo/Custom;../Fdo/Schema;..\Fdo\Capability;..\Fdo\FeatureCommands;../Fdo/Filter;../Fdo/SpatialContext;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOUTILITIES)/SchemaMgr/inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SQLSERVER_EXPORTS;FDORDBMS_EXPORTS;_LIB;_CRT_SECURE_NO_DEPRECATE;FDO_SPATIAL_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="0"
@@ -130,8 +130,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="-Zm122"
-				AdditionalIncludeDirectories="..\Fdo\Capability;..\..\inc\fdo;../../inc/rdbi;../;../../;../../inc;../Fdo/Connection;../Fdo/Other;../Fdo/FeatureCommands;../Fdo/Custom;../Fdo/Schema;../Fdo/Filter;../Fdo/SpatialContext;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOUTILITIES)/SchemaMgr/inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi"
+				AdditionalOptions="-Zm112"
+				AdditionalIncludeDirectories="..\Fdo\Capability;..\..\inc\fdo;../../inc/rdbi;../;../../;../../inc;../Fdo/Connection;../Fdo/Other;../Fdo/FeatureCommands;../Fdo/Custom;../Fdo/Schema;../Fdo/Filter;../Fdo/SpatialContext;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOUTILITIES)/SchemaMgr/inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SQLSERVER_EXPORTS;FDORDBMS_EXPORTS;_LIB;_CRT_SECURE_NO_DEPRECATE;FDO_SPATIAL_STATIC"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="2"
@@ -226,11 +226,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Fdo\FdoRdbmsSqlServerExpressionCapabilities.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Fdo\FdoRdbmsSqlServerFilterCapabilities.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\Fdo\FdoRdbmsSqlServerFilterProcessor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Fdo\FdoRdbmsSqlServerFunctionIsValid.cpp"
 				>
 			</File>
 			<File
@@ -304,11 +312,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Fdo\FdoRdbmsSqlServerExpressionCapabilities.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Fdo\FdoRdbmsSqlServerFilterCapabilities.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Fdo\FdoRdbmsSqlServerFilterProcessor.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Fdo\FdoRdbmsSqlServerFunctionIsValid.h"
 				>
 			</File>
 			<File
