@@ -136,7 +136,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(FDO)\Unmanaged\inc;..\Utils\;$(FDO)\Unmanaged\src\NLS;..\..\Inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\SQLiteInterface"
+				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;..\Utils\;&quot;$(FDO)\Unmanaged\src\NLS&quot;;..\..\Inc;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOUTILITIES)\SQLiteInterface&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;_WIN64;_DEBUG;_WINDOWS;_USRDLL;SDF_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="0"
@@ -329,7 +329,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="$(FDO)\Unmanaged\inc;..\Utils\;$(FDO)\Unmanaged\src\NLS;..\..\Inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\SQLiteInterface"
+				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;..\Utils\;&quot;$(FDO)\Unmanaged\src\NLS&quot;;..\..\Inc;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOUTILITIES)\SQLiteInterface&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;_WIN64;NDEBUG;_WINDOWS;_USRDLL;SDF_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				RuntimeLibrary="2"
