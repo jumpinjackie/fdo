@@ -1930,3 +1930,13 @@ SymbolicName=FDORDBMS_535
 Language=English
 false
 .
+MessageId=2761
+SymbolicName=FDORDBMS_536
+Language=English
+Determines the validity of a given geometry
+.
+MessageId=2762
+SymbolicName=FDORDBMS_537
+Language=English
+Function IsValid() is executed only on the server side
+.

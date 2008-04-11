@@ -25,6 +25,7 @@
 #include "FdoRdbmsSqlServerConnection.h"
 #include "FdoCommonOSUtil.h"
 #include "FdoRdbmsSqlServerSpatialGeometryConverter.h"
+#include "FdoRdbmsSqlServerFunctionIsValid.h"
 
 #define SQLSERVER_CONVERT_WKB L".STAsBinary()"
 
@@ -263,6 +264,13 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
     buf += columnName;
     buf += ".";
  
+    // Skip the invalid geometries otherwise any spatial query will fail.
+    // The user should run "Select * where IsValid() = 0" in order to find out the offending geometries.
+    buf += SQLSERVER_FUNCTION_ISVALID; 
+    buf += L"() = 1 AND ";
+    buf += columnName;
+    buf += ".";
+
     // What operation
     FdoSpatialOperations  spatialOp = filter.GetOperation();
     switch( spatialOp )
@@ -298,7 +306,9 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
             buf += "STOverlaps"; // REALLY?
             break;
         case FdoSpatialOperations_EnvelopeIntersects:
-            buf += "STRelate";
+            // TODO: No mapping function available. Filter() is a good candidate but it requires
+            // secondary filtering.
+            throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_111, "Unsupported spatial operation"));
             break;
         default:
             throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_111, "Unsupported spatial operation"));
@@ -374,6 +384,9 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessFunction(FdoFunction& expr)
     if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_SPATIALEXTENTS) == 0)
         return ProcessSpatialExtentsFunction(expr);
 
+    if (FdoCommonOSUtil::wcsicmp(funcName, FDORDBMSSQLSERVER_FUNCTION_ISVALID) == 0)
+        return ProcessIsValidFunction(expr);
+
     // The functions that do not require special handling use the
     // standard processing
     FdoRdbmsFilterProcessor::ProcessFunction(expr);
@@ -436,6 +449,28 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialExtentsFunction (FdoFunctio
 
     AppendString(SQLSERVER_CONVERT_WKB);
 }
+
+void FdoRdbmsSqlServerFilterProcessor::ProcessIsValidFunction (FdoFunction& expr)
+{
+    // SQL Server uses a different native function name for the expression function
+    // IsValid. 
+    FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+
+    // There are problems processing booleans. Use integers instead.
+    AppendString(L"ABS(");
+
+    // Assume just one argument. TODO throw exception if not geometry column.
+    FdoPtr<FdoIdentifier>   id = (FdoIdentifier *)(exprCol->GetItem(0));
+    
+    AppendString( PropertyNameToColumnName( id->GetName() ) );
+    AppendString(L".");
+    AppendString(SQLSERVER_FUNCTION_ISVALID);
+    AppendString(OPEN_PARENTH);
+    AppendString(CLOSE_PARENTH);
+
+    AppendString(CLOSE_PARENTH);
+}
+
 
 void FdoRdbmsSqlServerFilterProcessor::ProcessToDoubleFunction (FdoFunction& expr)
 {
@@ -686,6 +721,8 @@ FdoString *FdoRdbmsSqlServerFilterProcessor::MapFdoFunction2SqlServerFunction (F
         return SQLSERVER_FUNCTION_CEIL;
 	if (FdoCommonOSUtil::wcsicmp(f_name, FDO_FUNCTION_LENGTH) == 0 )
         return SQLSERVER_FUNCTION_LENGTH;
+	if (FdoCommonOSUtil::wcsicmp(f_name, L"IsValid") == 0 )
+        return SQLSERVER_FUNCTION_ISVALID;
 
     return f_name;
 }

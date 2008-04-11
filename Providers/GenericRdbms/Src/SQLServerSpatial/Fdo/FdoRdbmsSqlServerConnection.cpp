@@ -28,6 +28,7 @@
 #include "FdoRdbmsSqlServerDeleteCommand.h"
 #include "FdoRdbmsSqlServerCommandCapabilities.h"
 #include "FdoRdbmsSqlServerFilterCapabilities.h"
+#include "FdoRdbmsSqlServerExpressionCapabilities.h"
 
 #include "../SchemaMgr/SchemaManager.h"
 #include "../SchemaMgr/Ph/Mgr.h"
@@ -610,6 +611,14 @@ FdoIFilterCapabilities *FdoRdbmsSqlServerConnection::GetFilterCapabilities()
         mFilterCapabilities = new FdoRdbmsSqlServerFilterCapabilities();
     FDO_SAFE_ADDREF(mFilterCapabilities);
     return mFilterCapabilities;	
+}
+
+FdoIExpressionCapabilities* FdoRdbmsSqlServerConnection::GetExpressionCapabilities()
+{
+	if (mExpressionCapabilities == NULL)
+		mExpressionCapabilities = new FdoRdbmsSqlServerExpressionCapabilities();
+	FDO_SAFE_ADDREF(mExpressionCapabilities);
+	return mExpressionCapabilities;
 }
 
 FdoRdbmsFeatureReader *FdoRdbmsSqlServerConnection::GetOptimizedAggregateReader(const FdoSmLpClassDefinition* classDef, aggr_list *selAggrList)

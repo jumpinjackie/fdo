@@ -61,6 +61,11 @@
 //
 #define  SQLSERVER_FUNCTION_LENGTH         L"LEN"            // Returns the length of a string expression.
 
+//
+// VALIDATION FUNCTIONS
+//
+#define  SQLSERVER_FUNCTION_ISVALID        L"STIsValid"
+
 
 class FdoRdbmsSqlServerFilterProcessor: public FdoRdbmsFilterProcessor
 {
@@ -99,6 +104,8 @@ protected:
     void ProcessRoundFunction (FdoFunction& expr);
     void ProcessConcatFunction(FdoFunction& expr);
     void ProcessSpatialExtentsFunction(FdoFunction& expr);
+    void ProcessIsValidFunction(FdoFunction& expr);
+
     FdoString *MapFdoFunction2SqlServerFunction (FdoString *f_name);
     virtual void ProcessFunctionName(FdoFunction& expr);
 
