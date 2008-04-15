@@ -2090,6 +2090,7 @@ case OP_Column: {
     u32 offset;      /* Offset into the data */
     int szHdrSz;     /* Size of the header size field at start of record */
     int avail;       /* Number of bytes of available data */
+    int lastField;   /* Up to which field should we compute the row offsets */
 
     aType = pC->aType;
     if( aType==0 ){
@@ -2105,6 +2106,8 @@ case OP_Column: {
     /* Figure out how many bytes are in the header */
     if( zRec ){
       zData = zRec;
+      lastField = p2; /* If the row does not span pages, we will compute offsets only up
+                         to the row that is currently needed, deferring any subsequent ones */
     }else{
       if( pC->isIndex ){
         zData = (char*)sqlite3BtreeKeyFetch(pCrsr, &avail);
@@ -2119,8 +2122,12 @@ case OP_Column: {
       if( avail>=payloadSize ){
         zRec = zData;
         pC->aRow = (u8*)zData;
+        lastField = p2; /* If the row does not span pages, we will compute offsets only up
+                           to the row that is currently needed, deferring any subsequent ones */
       }else{
         pC->aRow = 0;
+        lastField = nField-1; /* If the header spans multiple pages, we will compute all row offsets
+                               in one go, in order to save fetching the header again */
       }
     }
     /* The following assert is true in all cases accept when
@@ -2141,6 +2148,7 @@ case OP_Column: {
       }
       zData = sMem.z;
     }
+
     zEndHdr = (u8 *)&zData[offset];
     zIdx = (u8 *)&zData[szHdrSz];
 
@@ -2149,7 +2157,7 @@ case OP_Column: {
     ** column and aOffset[i] will contain the offset from the beginning
     ** of the record to the start of the data for the i-th column
     */
-    for(i=0; i<=p2/*i<nField*/; i++){
+    for(i=0; i<=lastField; i++){
       if( zIdx<zEndHdr ){
         aOffset[i] = offset;
         zIdx += GetVarint(zIdx, aType[i]);
@@ -2165,7 +2173,7 @@ case OP_Column: {
       }
     }
 
-    pC->lastcolIdx = p2;
+    pC->lastcolIdx = lastField;
     pC->lastzIdx = zIdx;
     pC->lastOffset = offset;
 
@@ -2190,7 +2198,6 @@ case OP_Column: {
   u8 *zEndHdr;
   u8 *zIdx; 
 
-  /* TODO: zData is not zRec when the header spans more than one page */
   zData = zRec; 
   szHdrSz = GetVarint((u8*)zData, offset);
   zEndHdr = (u8 *)&zData[offset];
