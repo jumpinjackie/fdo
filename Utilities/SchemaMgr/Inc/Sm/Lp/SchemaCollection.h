@@ -45,6 +45,33 @@ public:
 
 	~FdoSmLpSchemaCollection(void);
 
+    // returns true if allowed to create tables and columns from added elements
+    // in this feature schema collection. 
+    // returns true only if both of the following are true:
+    //
+    //  - Provider supports applying schema to non-FDO datastore.
+    //  See CanApplySchemaWithoutMetaSchema().
+    //  - Physical object creation has been turned on
+    //  See SetCreatePhysicalObjects().
+
+    virtual bool CanCreatePhysicalObjects() const;
+
+    // Returns true if the current provider supports applying feature
+    // schemas to datastores without FDO MetaSchema.
+    // Returns false by default. Providers that support apply to non-FDO
+    // datastore must override this function in their specific implementation.
+    virtual bool CanApplySchemaWithoutMetaSchema() const;
+
+    // Sets whether tables and columns can be created from elements in this
+    // Feature Schema collection. The main purpose of this function is to 
+    // ensure that LogicalPhysical schema collection only modifies the 
+    // physical schema when an ApplySchema command is in progress.
+    void SetCreatePhysicalObjects( bool createPhysicalObjects );
+
+    // Returns true if  tables and columns can be created from elements in 
+    // this Feature Schema collection.
+    bool GetCreatePhysicalObjects() const;
+
     FdoSmPhMgrP GetPhysicalSchema()
     {
         return mPhysicalSchema;
@@ -256,6 +283,8 @@ private:
     bool        mSchemasLoaded;
 	FdoSmPhMgrP mPhysicalSchema;
     FdoSmLpSpatialContextMgrP mSpatialContextMgr;
+
+    bool        mCreatePhysicalObjects;
 };
 
 typedef FdoPtr<FdoSmLpSchemaCollection> FdoSmLpSchemasP;

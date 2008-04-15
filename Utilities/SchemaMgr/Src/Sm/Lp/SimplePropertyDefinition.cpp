@@ -218,7 +218,7 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
                 isFixedColumn = false;
         }
         else {
-            if ( (!owner->GetHasMetaSchema()) || ((!ColumnIsForeign()) && (!table)) ) 
+            if ( (!RefLogicalPhysicalSchema()->RefSchemas()->CanCreatePhysicalObjects()) || ((!ColumnIsForeign()) && (!table)) ) 
                 // The column name has been designated as non fixed but, the datastore is not FDO-enabled
                 // or the column will be in a non-foreign non-table. In these cases, it is really fixed.
                 // This ensures we do not adjust non-foreign view column names.
@@ -271,7 +271,7 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
             // Create the column in the datastore if all of the following are true ...
 
             // datastore is fdo-enabled and column does not yet exist
-            if ( owner->GetHasMetaSchema() && (!foundColumn) ) {
+            if ( RefLogicalPhysicalSchema()->RefSchemas()->CanCreatePhysicalObjects() && (!foundColumn) ) {
                 // column is in a table or a foreign schema wrapping view
                 if ( ColumnIsForeign() || table ) {
                     // column is not a system column in a foreign schema wrapping view.
