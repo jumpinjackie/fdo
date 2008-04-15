@@ -166,6 +166,11 @@ SymbolicName=FDOSM_30
 Language=English
 Cannot add foreign key '%1$ls' to '%2$ls'; adding foreign key to this type of object is not supported
 .
+MessageId=2236
+SymbolicName=FDOSM_31
+Language=English
+Cannot apply feature schema '%1$ls' to datastore '%2$ls'; datastore has no FDO metadata tables (f_schemainfo, etc.)
+.
 MessageId=2327
 SymbolicName=FDOSM_122
 Language=English
