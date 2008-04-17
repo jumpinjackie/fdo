@@ -22,7 +22,7 @@
 #include "SltProvider.h"
 #include "SltMetadata.h"
 #include "FdoCommonSchemaUtil.h"
-#include "SpatialIndex.h"
+#include "DiskSpatialIndex.h"
 #include "SltConversionUtils.h"
 
 #include "vdbeInt.h"
