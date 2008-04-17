@@ -99,9 +99,29 @@ void SltQueryTranslator::ProcessSpatialCondition(FdoSpatialCondition& filter)
     //indicate that the rewriter can completely remove
     //the operation from the where clause (if possible)
     //since it can be directly satisfied by the spatial
-    //index query.
+    //index query. Also skip all the slow code below
+    //by setting the correct bbox and leaving early.
+    //TODO: this may be bad if there is a negation around the BBOX
+    //filter and it needs to be restored, but let's not worry
+    //about such case right now.
     if (op == FdoSpatialOperations_EnvelopeIntersects)
+    {
+        //TODO: another assumption here is that the
+        //geometry property tested with this operation
+        //is *the* geometry property of the feature class
+        //and not another geometry property
         ret.canOmit = true;
+
+        FdoPtr<FdoExpression> geom = filter.GetGeometry();
+
+        //more bold assmuptions never hurt anybody.
+        FdoGeometryValue* gv = (FdoGeometryValue*)(geom.p);
+        FdoPtr<FdoByteArray> fgf = gv->GetGeometry();
+        GetFgfExtents(fgf->GetData(), fgf->GetCount(), (double*)&ret.bounds);
+
+        m_evalStack.push_back(ret);
+        return;        
+    }
 
     //process the geometry value -- we need it
     //to be either a constant or an identifier
