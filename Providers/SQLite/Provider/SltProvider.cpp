@@ -25,9 +25,12 @@
 #include "SltReader.h"
 #include "SltConversionUtils.h"
 #include "SltMetadata.h"
-#include "SpatialIndex.h"
 #include "SltExprExtensions.h"
+#include "SltGeomUtils.h"
 #include "SltQueryTranslator.h"
+
+//#include "SpatialIndex.h"
+#include "DiskSpatialIndex.h"
 
 using namespace std;
 
@@ -251,7 +254,15 @@ FdoConnectionState SltConnection::Open()
 
 void SltConnection::Close()
 {
-    //TODO: get rid of metadata objects
+    //free the spatial indexes
+    for (std::map<std::string, SpatialIndex*>::iterator iter = m_mNameToSpatialIndex.begin();
+         iter != m_mNameToSpatialIndex.end(); iter++)
+         delete iter->second;
+
+    //clear the cached schema metadata
+    for (std::map<std::string, SltMetadata*>::iterator iter = m_mNameToMetadata.begin();
+         iter != m_mNameToMetadata.end(); iter++)
+         delete iter->second;
 
     ClearQueryCache();
 
@@ -667,7 +678,7 @@ SpatialIndex* SltConnection::GetSpatialIndex(const char* table)
 #if 0
     clock_t t0 = clock();
 #endif
-    si = new SpatialIndex();
+    si = new SpatialIndex(GetProperty(PROP_NAME_FILENAME));
 
     SltReader* rdr = new SltReader(this, NULL, table, "", NULL, true);
     m_mNameToSpatialIndex[table] = si;
@@ -692,6 +703,7 @@ SpatialIndex* SltConnection::GetSpatialIndex(const char* table)
 
     rdr->Close();
     delete rdr;
+    si->ReOpenForRead();
 #if 0
     clock_t t1 = clock();
     printf("Spatial index build time: %d\n", t1 - t0);

@@ -186,6 +186,22 @@
 	</References>
 	<Files>
 		<File
+			RelativePath=".\DiskSpatialIndex.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\DiskSpatialIndex.h"
+			>
+		</File>
+		<File
+			RelativePath=".\MappedFile.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\MappedFile.h"
+			>
+		</File>
+		<File
 			RelativePath=".\PropertyNameIndex.h"
 			>
 		</File>
@@ -287,14 +303,6 @@
 		</File>
 		<File
 			RelativePath=".\SltSpatialContextReader.h"
-			>
-		</File>
-		<File
-			RelativePath=".\SpatialIndex.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\SpatialIndex.h"
 			>
 		</File>
 		<File
