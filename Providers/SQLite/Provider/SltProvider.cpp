@@ -517,7 +517,7 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
         sql = "SELECT " + mbexprs + " FROM " + mbfc;
     }
 
-    return new SltReader(this, sql.c_str(), false);
+    return new SltReader(this, sql.c_str());
 }
 
 
@@ -619,7 +619,7 @@ FdoInt32 SltConnection::ExecuteNonQuery(FdoString* sql)
 FdoISQLDataReader* SltConnection::ExecuteReader(FdoString* sql)
 {
     string mbsql = W2A_SLOW(sql);
-    return new SltReader(this, mbsql.c_str(), false);
+    return new SltReader(this, mbsql.c_str());
 }
 
 
@@ -980,7 +980,14 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
 
     sql = "SELECT * FROM SpatialExtentsResult;";
 
-    return new SltReader(this, sql.c_str(), true);        
+    stmt = NULL;
+    tail = NULL;
+    rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, &tail);
+
+    if (rc == SQLITE_OK)
+        return new SltReader(this, stmt);        
+    else
+        throw FdoException::Create(L"Failed to generate Count() or SpatialExtents() reader.");
 }
 
 

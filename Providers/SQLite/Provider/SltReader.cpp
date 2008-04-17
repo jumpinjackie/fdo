@@ -60,8 +60,8 @@ static Mem *columnMem(sqlite3_stmt *pStmt, int i){
 }
 
 
-//constructor taking a generel sql statement, which we will step through
-SltReader::SltReader(SltConnection* connection, const char* sql, bool closeDB)
+//constructor taking a general sql statement, which we will step through
+SltReader::SltReader(SltConnection* connection, const char* sql)
 : m_refCount(1),
 m_sql(sql),
 m_class(NULL),
@@ -72,7 +72,7 @@ m_nMaxProps(0),
 m_eGeomFormat(eFGF),
 m_wkbBuffer(NULL),
 m_wkbBufferLen(0),
-m_closeDB(closeDB),
+m_closeDB(false),
 m_bUseTransaction(true),
 m_useFastStepping(false)
 {
@@ -85,6 +85,36 @@ m_useFastStepping(false)
 
 	InitPropIndex(m_pStmt);
 }
+
+//constructor taking a general sql statement, which we will step through
+//Same as above, but this one takes a sqlite3 statement pointer rather than
+//a string. This means that it is a statement based on an ephemeral database
+//which this reader will close once it is done being read.
+SltReader::SltReader(SltConnection* connection, sqlite3_stmt* stmt)
+: m_refCount(1),
+m_sql(""),
+m_class(NULL),
+m_sprops(NULL),
+m_closeOpcode(-1),
+m_si(NULL),
+m_nMaxProps(0),
+m_eGeomFormat(eFGF),
+m_wkbBuffer(NULL),
+m_wkbBufferLen(0),
+m_closeDB(true),
+m_bUseTransaction(true),
+m_useFastStepping(false)
+{
+	m_connection = FDO_SAFE_ADDREF(connection);
+
+    m_pStmt = stmt;
+
+    //start the transaction we'll use for this reader
+    int rc = sqlite3_exec(sqlite3_db_handle(m_pStmt), "BEGIN;", NULL, NULL, NULL);
+
+	InitPropIndex(m_pStmt);
+}
+
 
 //constructor tailored for an FDO Select command -- in cases where the
 //requested columns collection is empty, it will start out with a query
@@ -570,20 +600,21 @@ void SltReader::Close()
 
     sqlite3* db = sqlite3_db_handle(m_pStmt);
 
-	m_connection->ReleaseParsedStatement(m_sql, m_pStmt);
-
     int rc;
 
     if (m_bUseTransaction)
         rc = sqlite3_exec(db, "COMMIT;", NULL, NULL, NULL);
 
-	if (rc != SQLITE_OK)
-		throw FdoException::Create(L"Failed to close sqlite statement.");
-
     //Close the database as well, if it was an ephemeral database
     //used to return computed data
     if (m_closeDB)
+    {
+        sqlite3_finalize(m_pStmt);
         sqlite3_close(db);
+    }
+    else //otherwise just release the cached statement we were using
+        m_connection->ReleaseParsedStatement(m_sql, m_pStmt);
+
 
 	m_pStmt = NULL;
 }

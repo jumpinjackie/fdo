@@ -57,8 +57,10 @@ class SltReader :   public FdoIFeatureReader,
 {
     public:
         SltReader(  SltConnection*              connection, 
-                    const char*                 sql,     
-                    bool                        closeDB);
+                    const char*                 sql);
+
+        SltReader(  SltConnection*              connection, 
+                    sqlite3_stmt*               stmt);
 
 		SltReader(  SltConnection*              connection, 
                     FdoIdentifierCollection*    props, 
