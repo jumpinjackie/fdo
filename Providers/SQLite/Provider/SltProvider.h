@@ -174,6 +174,10 @@ public:
     SltMetadata*    GetMetadata(const char* table);
     SltReader*      CheckForSpatialExtents(FdoIdentifierCollection* props, FdoFeatureClass* fc);
     
+    sqlite3_stmt*   GetCachedParsedStatement(const std::string& sql);
+    void            ReleaseParsedStatement(const std::string& sql, sqlite3_stmt* stmt);
+    void            ClearQueryCache();
+    
 
 private :
     
@@ -186,6 +190,7 @@ private :
 
     std::map<std::string, SltMetadata*>     m_mNameToMetadata;
     std::map<std::string, SpatialIndex*>    m_mNameToSpatialIndex;
+    std::map<std::string, sqlite3_stmt*>    m_mCachedQueries;
 
     SltCapabilities*                         m_caps;
 };

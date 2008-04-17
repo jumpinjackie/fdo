@@ -253,6 +253,8 @@ void SltConnection::Close()
 {
     //TODO: get rid of metadata objects
 
+    ClearQueryCache();
+
     if (m_db)
     {
         int rc = sqlite3_close(m_db);
@@ -515,17 +517,7 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
         sql = "SELECT " + mbexprs + " FROM " + mbfc;
     }
 
-    const char* zErr = NULL;
-    sqlite3_stmt* pStmt = NULL;
-    int rc = sqlite3_prepare_v2(m_db, sql.c_str(), -1, &pStmt, &zErr);
-
-    if (rc != SQLITE_OK)
-    {
-        wstring err = L"SelectAggregates failed, due to the following internal error: " + A2W_SLOW(zErr);
-        throw FdoCommandException::Create(err.c_str());
-    }
-
-    return new SltReader(this, pStmt, false);
+    return new SltReader(this, sql.c_str(), false);
 }
 
 
@@ -609,21 +601,14 @@ FdoInt32 SltConnection::ExecuteNonQuery(FdoString* sql)
 {
     string mbsql = W2A_SLOW(sql);
 
-    const char* zErr = NULL;
-    sqlite3_stmt* pStmt = NULL;
-    int rc = sqlite3_prepare_v2(m_db, mbsql.c_str(), -1, &pStmt, &zErr);
-
-    if (rc != SQLITE_OK)
-    {
-        wstring err = L"Sql command execution failed, due to the following internal error: " + A2W_SLOW(zErr);
-        throw FdoCommandException::Create(err.c_str());
-    }
+    sqlite3_stmt* pStmt = GetCachedParsedStatement(mbsql);
 
     int count = 0;
+    int rc;
 
     while ((rc = sqlite3_step(pStmt)) == SQLITE_ROW) count++;
 
-    sqlite3_finalize(pStmt);
+    ReleaseParsedStatement(mbsql, pStmt);
 
     if (rc == SQLITE_DONE)
         return count;
@@ -634,18 +619,7 @@ FdoInt32 SltConnection::ExecuteNonQuery(FdoString* sql)
 FdoISQLDataReader* SltConnection::ExecuteReader(FdoString* sql)
 {
     string mbsql = W2A_SLOW(sql);
-
-    const char* zErr = NULL;
-    sqlite3_stmt* pStmt = NULL;
-    int rc = sqlite3_prepare_v2(m_db, mbsql.c_str(), -1, &pStmt, &zErr);
-
-    if (rc != SQLITE_OK)
-    {
-        wstring err = L"Sql command execution failed, due to the following internal error: " + A2W_SLOW(zErr);
-        throw FdoCommandException::Create(err.c_str());
-    }
-
-    return new SltReader(this, pStmt, false);
+    return new SltReader(this, mbsql.c_str(), false);
 }
 
 
@@ -1005,8 +979,63 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
     rc = sqlite3_finalize(stmt);
 
     sql = "SELECT * FROM SpatialExtentsResult;";
-    rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, &tail);
 
-    return new SltReader(this, stmt, true);        
+    return new SltReader(this, sql.c_str(), true);        
 }
 
+
+sqlite3_stmt* SltConnection::GetCachedParsedStatement(const std::string& sql)
+{
+    //Don't let too many queries get cached.
+    //There are legitimate cases where lots of different
+    //queries can be issued on the same connection.
+    if (m_mCachedQueries.size() > 1000)
+    {
+        ClearQueryCache();
+    }
+
+    sqlite3_stmt* ret = m_mCachedQueries[sql];
+
+    if (!ret)
+    {
+        const char* tail = NULL;
+        int rc = sqlite3_prepare_v2(m_db, sql.c_str(), -1, &ret, &tail);
+
+        if (rc != SQLITE_OK)
+        {
+            throw FdoException::Create(L"Failed to parse SQL statement");
+        }
+    }
+    else
+    {
+        m_mCachedQueries[sql] = NULL;
+    }
+
+    return ret;
+}
+
+
+void SltConnection::ReleaseParsedStatement(const std::string& sql, sqlite3_stmt* stmt)
+{
+    sqlite3_stmt* exists = m_mCachedQueries[sql];
+
+    if (!exists)
+    {
+        sqlite3_reset(stmt);
+        m_mCachedQueries[sql] = stmt;
+    }
+    else
+    {
+        sqlite3_finalize(stmt);
+    }
+}
+
+
+void SltConnection::ClearQueryCache()
+{
+    for (std::map<std::string, sqlite3_stmt*>::iterator iter = m_mCachedQueries.begin(); 
+        iter != m_mCachedQueries.end(); iter++)
+        sqlite3_finalize(iter->second);
+
+    m_mCachedQueries.clear();
+}
