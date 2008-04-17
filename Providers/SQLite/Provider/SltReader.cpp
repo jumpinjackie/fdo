@@ -61,9 +61,9 @@ static Mem *columnMem(sqlite3_stmt *pStmt, int i){
 
 
 //constructor taking a generel sql statement, which we will step through
-SltReader::SltReader(SltConnection* connection, sqlite3_stmt* stmt, bool closeDB)
+SltReader::SltReader(SltConnection* connection, const char* sql, bool closeDB)
 : m_refCount(1),
-m_pStmt(stmt),
+m_sql(sql),
 m_class(NULL),
 m_sprops(NULL),
 m_closeOpcode(-1),
@@ -78,10 +78,12 @@ m_useFastStepping(false)
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
 
-    //start the transaction we'll use for this reader
-    int rc = sqlite3_exec(sqlite3_db_handle(stmt), "BEGIN;", NULL, NULL, NULL);
+    m_pStmt = m_connection->GetCachedParsedStatement(m_sql);
 
-	InitPropIndex(stmt);
+    //start the transaction we'll use for this reader
+    int rc = sqlite3_exec(sqlite3_db_handle(m_pStmt), "BEGIN;", NULL, NULL, NULL);
+
+	InitPropIndex(m_pStmt);
 }
 
 //constructor tailored for an FDO Select command -- in cases where the
@@ -295,22 +297,25 @@ int SltReader::AddColumnToQuery(const wchar_t* name)
 
 void SltReader::Requery2()
 {
-    string sql = "SELECT ";
+    if (m_pStmt) 
+        m_connection->ReleaseParsedStatement(m_sql, m_pStmt);
+
+    m_sql = "SELECT ";
 
     if (m_reissueProps.empty())
     {
-        sql += "*";
+        m_sql += "*";
     }
     else
     {
         for (size_t i=0; i<m_reissueProps.size(); i++)
         {
-		    if (i) sql += ",";
-		    sql += m_reissueProps[i];
+		    if (i) m_sql += ",";
+		    m_sql += m_reissueProps[i];
         }
     }
 
-    sql += m_fromwhere;
+    m_sql += m_fromwhere;
 
     m_curfid = 1;
     m_closeOpcode = -1;
@@ -321,15 +326,7 @@ void SltReader::Requery2()
         m_si->Reset();
     }
 
-    const char* zErr = NULL;
-
-    if (m_pStmt) sqlite3_finalize(m_pStmt);
-    int rc = sqlite3_prepare_v2(m_connection->GetDB(), sql.c_str(), -1, &m_pStmt, &zErr);
-
-    if (rc != SQLITE_OK)
-    {
-	    throw FdoCommandException::Create(L"SQL Select failed.");
-    }
+    m_pStmt = m_connection->GetCachedParsedStatement(m_sql);
 
     //If the reader was constructed for a Select that is known
     //to be safe for fast SQLite reading (no null termination
@@ -573,7 +570,9 @@ void SltReader::Close()
 
     sqlite3* db = sqlite3_db_handle(m_pStmt);
 
-	int rc = sqlite3_finalize(m_pStmt);
+	m_connection->ReleaseParsedStatement(m_sql, m_pStmt);
+
+    int rc;
 
     if (m_bUseTransaction)
         rc = sqlite3_exec(db, "COMMIT;", NULL, NULL, NULL);
