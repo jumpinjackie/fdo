@@ -397,7 +397,7 @@ FdoFeatureSchemaCollection* SltConnection::DescribeSchema()
         return NULL;
 
     m_pSchema = FdoFeatureSchemaCollection::Create(NULL);
-    FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create(L"SLSchema", L"");
+    FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create(L"Default", L"");
     
     m_pSchema->Add(schema.p);
     
