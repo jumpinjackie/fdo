@@ -168,9 +168,12 @@ FdoInt32 SchemaCapabilities::GetNameSizeLimit(FdoSchemaElementNameType name)
     case FdoSchemaElementNameType_Property:
         // It's length of 'name' data type that is defined
         // as 64 bytes (including \0 terminator)
-        // The value should be referenced using the constant NAMEDATALEN.
 
-        limit = NAMEDATALEN - 1;
+#if defined(PG_VERSION_NUM) && (PG_VERSION_NUM >= 80301)
+		limit = 64 - 1;
+#else
+        limit = NAMEDATALEN - 1; // declared in postgres_ext.h
+#endif
         break;
     case FdoSchemaElementNameType_Description:
         // Description is stored as a COMMENT associated with database object.
