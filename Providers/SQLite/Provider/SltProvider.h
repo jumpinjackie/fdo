@@ -171,6 +171,7 @@ public:
 
     sqlite3*        GetDB() { return m_db; }
     SpatialIndex*   GetSpatialIndex(const char* table);
+    void            GetExtents(const wchar_t* fcname, double ext[4]);
     SltMetadata*    GetMetadata(const char* table);
     SltReader*      CheckForSpatialExtents(FdoIdentifierCollection* props, FdoFeatureClass* fc);
     
