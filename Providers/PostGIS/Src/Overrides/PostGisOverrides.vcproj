@@ -60,7 +60,7 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
-				CommandLine="if not exist ..\..\Lib\Win32\Debug mkdir ..\..\Lib\Win32\Debug&#x0D;&#x0A;if not exist ..\..\Bin\Win32\Debug mkdir ..\..\Bin\Win32\Debug"
+				CommandLine="if not exist ..\..\Lib\Win32\Debug mkdir ..\..\Lib\Win32\Debug&#x0D;&#x0A;if not exist ..\..\Bin\Win32\Debug mkdir ..\..\Bin\Win32\Debug&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCLinkerTool"
@@ -142,7 +142,7 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
-				CommandLine="if not exist ..\..\Lib\Win32\Release mkdir ..\..\Lib\Win32\Release&#x0D;&#x0A;if not exist ..\..\Bin\Win32\Release mkdir ..\..\Bin\Win32\Release"
+				CommandLine="if not exist ..\..\Lib\Win32\Release mkdir ..\..\Lib\Win32\Release&#x0D;&#x0A;if not exist ..\..\Bin\Win32\Release mkdir ..\..\Bin\Win32\Release&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCLinkerTool"

@@ -12,12 +12,12 @@
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		AdditionalLibraryDirectories="$(FDOPOSTGRESQL)\lib\ms"
+		AdditionalLibraryDirectories="&quot;$(FDOPOSTGRESQL)\lib&quot;;&quot;$(FDOPOSTGRESQL)\lib\ms&quot;"
 		ManifestFile="$(IntDir)\$(TargetFileName).intermediate.manifest"
 	/>
 	<UserMacro
 		Name="FDOPOSTGRESQL"
-		Value="$(FDOTHIRDPARTY)\pgsql"
+		Value="C:\Program Files\PostgreSQL\8.3"
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
