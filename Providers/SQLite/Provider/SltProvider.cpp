@@ -521,8 +521,8 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
         //select aggregate -- only one computed identifier expected!
         FdoPtr<FdoIdentifier> id = properties->GetItem(0);
         FdoPtr<FdoComputedIdentifier> ci = dynamic_cast<FdoComputedIdentifier*>(id.p);
-        FdoPtr<FdoExpression> expr = ci->GetExpression();
-        FdoString* exprs = expr->ToString();
+
+        FdoString* exprs = ci->ToString();
         string mbexprs = W2A_SLOW(exprs);
 
         sql = "SELECT " + mbexprs + " FROM " + mbfc;
@@ -735,18 +735,34 @@ void SltConnection::AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_
     char sdim[16];
 
     int len = 0;
+    int gtype = 0;
     FdoGeometryType* gtypes = gpd->GetSpecificGeometryTypes(len);
     if (len == 1)
     {
-        int gtype = *gtypes;
-        sprintf(sdim, "%d", gtype);
+        gtype = *gtypes;
     }
     else
     {
-        //more than one geometry type in the source,
-        //so we cannot be specific
-        sprintf(sdim, "%d", 0);
+        //Try to get less specific geometric type indicator.
+        //Here, the returned value is a mask of FdoGeometricTypes, 
+        //which also do not distinguish between regular and multi- geometries
+        //i.e. FdoGeometricType_Point is for both Points and MultiPoints.
+        FdoGeometricType gictype = (FdoGeometricType)gpd->GetGeometryTypes();
+
+        //Attempt some reasonable mapping to actual geometry type
+        //-- simply picks the non-multi geometry type that corresponds
+        //to the geometry type. Confusing, huh?
+        switch (gictype)
+        {
+        case FdoGeometricType_Point: gtype = FdoGeometryType_Point; break;
+        case FdoGeometricType_Curve: gtype = FdoGeometryType_LineString; break;
+        case FdoGeometricType_Surface: gtype = FdoGeometryType_Polygon; break;
+        }
     }
+
+    //if gtype remains 0 at this points, it will be treated as "All" types
+    //of geometry
+    sprintf(sdim, "%d", gtype);
 
     gci_sql += sdim + string(",");
 
@@ -920,6 +936,10 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
                 else if (func && (_wcsicmp(func->GetName(), FDO_FUNCTION_COUNT) == 0))
                 {
                     countname = W2A_SLOW(computedIdentifier->GetName());
+                }
+                else
+                {
+                    return NULL;
                 }
             }
             else
