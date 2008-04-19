@@ -165,6 +165,11 @@ void BindPropVals(FdoPropertyValueCollection* props, sqlite3_stmt* stmt)
                     }
                     break;
                 case FdoDataType_Decimal:
+                    {
+                        FdoDoubleValue* v = (FdoDoubleValue*)dv;
+                        double d = v->GetDouble();
+                        rc = sqlite3_bind_int(stmt, i, (int)d);
+                    }
                 case FdoDataType_Double:
                     {
                         FdoDoubleValue* v = (FdoDoubleValue*)dv;
