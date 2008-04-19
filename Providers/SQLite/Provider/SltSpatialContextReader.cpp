@@ -85,28 +85,57 @@ FdoSpatialContextExtentType SltSpatialContextReader::GetExtentType()
 
 FdoByteArray* SltSpatialContextReader::GetExtent()
 {
-    double ext[4];
+    //Get the spatial context's extent by 
+    //going via the spatial index for the 
+    //feature class that owns the geometry property
+    //corresponding to this spatial context.
+    FdoPtr<FdoFeatureSchemaCollection> fsc = m_connection->DescribeSchema();
+    FdoPtr<FdoFeatureSchema> schema = fsc->GetItem(0);
+    FdoPtr<FdoClassCollection> cc = schema->GetClasses();
 
-    //TODO: is this even needed anymore? I think SpatialExtents() has superseded it.
+    FdoFeatureClass* fc;
+    FdoString* myname = GetName();
+
+    //do the search...
+    for (int i=cc->GetCount()-1; i>=0; i--)
+    {
+        FdoPtr<FdoClassDefinition> cd = cc->GetItem(i);
+
+        if (cd->GetClassType() == FdoClassType_FeatureClass)
+        {
+            fc = (FdoFeatureClass*)cd.p;
+
+            FdoPtr<FdoGeometricPropertyDefinition> gpd = fc->GetGeometryProperty();
+
+            FdoString* sca = gpd->GetSpatialContextAssociation();
+
+            if (wcscmp(sca, myname) == 0)
+                break;
+
+            fc = NULL;
+        }
+    }
+
+    double ext[4];
     ext[0] = -DBL_MAX;
     ext[1] = -DBL_MAX;
     ext[2] = DBL_MAX;
     ext[3] = DBL_MAX;
-    //m_connection->GetExtents(GetName(), &ext[0], &ext[1], &ext[2], &ext[3]);
-    
+
+    //if we found a feature class, get its extents
+    if (fc)
+    {
+        m_connection->GetExtents(fc->GetName(), ext);
+    }
+        
     FgfPolygon p;
 
     //generate FGF polygon and return as refcounted byte array
-    p.p[0] = ext[0];
-    p.p[1] = ext[1];
-    p.p[2] = ext[2];
-    p.p[3] = ext[1];
-    p.p[4] = ext[2];
-    p.p[5] = ext[3];
-    p.p[6] = ext[0];
-    p.p[7] = ext[3];
-    p.p[8] = ext[0];
-    p.p[9] = ext[1];
+    p.p[0] = ext[0];    p.p[1] = ext[1];
+    p.p[2] = ext[2];    p.p[3] = ext[1];
+    p.p[4] = ext[2];    p.p[5] = ext[3];
+    p.p[6] = ext[0];    p.p[7] = ext[3];
+    p.p[8] = ext[0];    p.p[9] = ext[1];
 
     return FdoByteArray::Create((const unsigned char*)&p, sizeof(p));
 }

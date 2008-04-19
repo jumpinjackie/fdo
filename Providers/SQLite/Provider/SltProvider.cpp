@@ -1078,3 +1078,22 @@ void SltConnection::ClearQueryCache()
 
     m_mCachedQueries.clear();
 }
+
+
+void SltConnection::GetExtents(const wchar_t* fcname, double ext[4])
+{
+    std::string table = W2A_SLOW(fcname);
+
+    SpatialIndex* si = GetSpatialIndex(table.c_str());
+
+    if (si)
+    {
+        DBounds dext;
+        si->GetTotalExtent(dext);
+
+        ext[0] = dext.min[0];
+        ext[1] = dext.min[1];
+        ext[2] = dext.max[0];
+        ext[3] = dext.max[1];
+    }
+}
