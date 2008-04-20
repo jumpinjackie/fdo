@@ -304,7 +304,6 @@ class SltInsert : public SltCommand<FdoIInsert>
         {
             if (!m_pCompiledSQL)
             {
-                int rc = sqlite3_exec(m_db, "BEGIN;", NULL, NULL, NULL);
                 PrepareSQL();
             }
 
