@@ -2245,8 +2245,12 @@ case OP_Column: {
       zData = sMem.z;
     }
     sqlite3VdbeSerialGet((u8*)zData, aType[p2], pTos);
-    if (p->fdo) 
+
+    /* If the data does not span page boundary, and we are calling from FDO
+       we can skip allocating memory and copying the data */
+    if (p->fdo && zRec) 
       pTos->flags &= ~MEM_Ephem;
+
     pTos->enc = encoding;
   }else{
     if( pOp->p3type==P3_MEM ){
