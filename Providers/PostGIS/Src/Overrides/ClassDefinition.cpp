@@ -105,17 +105,14 @@ void ClassDefinition::SetSchemaName(FdoString* value)
 
 FdoStringP ClassDefinition::GetSchemaName() const
 {
-    // NOTE: We need this dirty const_cast hack due to lack of
-    // const-correctness in FdoPhysicalClassMapping::GetName() class.
-    // This note also applies to functions below.
-
-    FdoStringP name(const_cast<ClassDefinition*>(this)->GetName());
-
     return m_schema;
 }
 
 FdoStringP ClassDefinition::GetTableName() const
 {
+    // NOTE: We need this dirty const_cast hack due to lack of
+    // const-correctness in FdoPhysicalClassMapping::GetName() class.
+    // This note also applies to functions below. 
     FdoStringP name(const_cast<ClassDefinition*>(this)->GetName());
 
     return name;
