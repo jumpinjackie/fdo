@@ -187,7 +187,7 @@ FdoIFeatureReader* InsertCommand::Execute()
         {
             FdoValueExpression *expr=propVal->GetValue();
             expr->Process(expProc);
-            std::string value = expProc->ReleaseBuffer();
+            std::string value;
             if (propDef)
             {
                 if (FdoPropertyType_DataProperty == propDef->GetPropertyType())
@@ -206,15 +206,24 @@ FdoIFeatureReader* InsertCommand::Execute()
                             value = static_cast<char const*>(FdoStringP(dateValuePtr->ToString()));
                         }
                     }
+                    else
+                    {
+                        value = expProc->ReleaseBuffer();
+                    }
                 } 
                 else
                 {
-                    // TODO - Bruno Scott: geom is not used anywhere, maybe we should delete this line.
                     if (FdoPropertyType_GeometricProperty == propDef->GetPropertyType())
                     {
-                        // TODO: It won't work with multiple-geometric properties
-                        FdoGeometricPropertyDefinition* geom = NULL;
-                        geom = static_cast<FdoGeometricPropertyDefinition*>(propDef.p);
+                        if (currentSrid != -1) 
+                        {
+                            value = str(boost::format("setsrid(Geometry(%s),%d)")
+                                % expProc->ReleaseBuffer() % currentSrid);
+                        }
+                        else
+                        {
+                            value = expProc->ReleaseBuffer();
+                        }
                     }
                 }
             }

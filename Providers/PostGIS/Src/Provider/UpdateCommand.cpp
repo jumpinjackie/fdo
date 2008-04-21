@@ -110,7 +110,7 @@ FdoInt32 UpdateCommand::Execute()
 
         FdoPtr<FdoValueExpression> expr(propVal->GetValue());
         expr->Process(expProc);
-        std::string value = expProc->ReleaseBuffer();
+        std::string value;
         if (propDef)
         {
             if (FdoPropertyType_DataProperty == propDef->GetPropertyType())
@@ -128,16 +128,24 @@ FdoInt32 UpdateCommand::Execute()
                         value = static_cast<char const*>(FdoStringP(dateValuePtr->ToString()));
                     }
                 }
-            } 
-
-            // TODO - bscott: this geom is not needed,maybe we should delete these lines 
+                else
+                {
+                    value = expProc->ReleaseBuffer();
+                }
+            }
             else
             {
                 if (FdoPropertyType_GeometricProperty == propDef->GetPropertyType())
                 {
-                    // TODO: Eric Barby - It won't work with multiple-geometric properties
-                    FdoGeometricPropertyDefinition* geom = NULL;
-                    geom = static_cast<FdoGeometricPropertyDefinition*>(propDef.p);
+                    if (currentSrid != -1)
+                    {
+                        value = str(boost::format("setsrid(Geometry(%s),%d)")
+                            % expProc->ReleaseBuffer() % currentSrid); 
+                    }
+                    else
+                    {
+                        value = expProc->ReleaseBuffer();
+                    }
                 }
             }
         }
