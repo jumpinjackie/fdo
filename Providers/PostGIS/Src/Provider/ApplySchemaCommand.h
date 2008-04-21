@@ -133,6 +133,27 @@ private:
     // Private operations
     //
 
+    // Test if table exist before creating it.
+    bool TestingCreateTable(ov::ClassDefinition* phClass) const;
+
+    // Test if table exist before removing it.
+    bool TestingDropTable(ov::ClassDefinition* phClass) const;
+
+    // This function creates a feature table
+    // It is a simple proxy around SQL command:
+    // CREATE TABLE <table_name> ( <column_name> <type>, ... [, <primary key>])
+    // \param
+    // classDef - definition of feature class
+    //
+    void CreateTable(FdoPtr<FdoClassDefinition> classDef) const;
+
+    // This function drop a feature table, sequence and update geometry_columns
+    // It is a simple proxy around SQL command:
+    // DROP TABLE <table_name> 
+    // classDef - definition of feature class
+    //
+    void DropTable(FdoPtr<FdoClassDefinition> classDef) const;
+
 
     // This function registers geometry column in PostGIS meta-schema.
     // It is a simple proxy around SQL command:
@@ -154,6 +175,9 @@ private:
     void CreateSpatialIndex(std::string const& table, FdoPtr<FdoGeometricPropertyDefinition> prop) const;
 
     void CreateSequence(std::string const& table, FdoPtr<FdoDataPropertyDefinition> prop) const;
+
+    ov::ClassDefinition* GetClassDefinition(FdoStringP className) const;
+
 };
 
 }} // namespace fdo::postgis

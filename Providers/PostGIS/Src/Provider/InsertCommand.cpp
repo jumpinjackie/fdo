@@ -111,16 +111,22 @@ FdoIFeatureReader* InsertCommand::Execute()
     //
     // Collect schema details required to build SQL command
     //
-    SchemaDescription::Ptr schemaDesc(SchemaDescription::Create());
-    schemaDesc->DescribeSchema(mConn, NULL);
-
-    FdoPtr<FdoClassDefinition> classDef(schemaDesc->FindClassDefinition(mClassIdentifier));
-    if (!classDef) 
+    
+    // NOTE - Eric Barby: faster with mConn->DescribeSchema() , uses cache
+    // XXX - mloskot: Why not wrapped with FdoPtr, SchemaDescription::Ptr?
+    SchemaDescription*  schemaDesc = mConn->DescribeSchema();
+    if (!schemaDesc || !schemaDesc->IsDescribed()) 
     {
-        throw FdoCommandException::Create(L"[PostGIS] InsertCommand can not find class definition");
+        throw FdoCommandException::Create(L"[PostGIS] InsertCommand can not find schema definition");
     }
 
+    FdoPtr<FdoClassDefinition> classDef(schemaDesc->FindClassDefinition(mClassIdentifier));
     ov::ClassDefinition::Ptr phClass(schemaDesc->FindClassMapping(mClassIdentifier));
+    if (!classDef || !phClass) 
+    {
+        throw FdoCommandException::Create(L"[PostGIS] InsertCommand can not find class definition or class mapping!");
+    }
+
 
     std::string sep;
     std::string columns;
@@ -133,7 +139,9 @@ FdoIFeatureReader* InsertCommand::Execute()
     // Check auto-generated PRIMARY KEY and configure sequence
     //
     FdoStringP pkColumn;
+    FdoPtr<FdoPropertyDefinitionCollection>     propsDefinition(classDef->GetProperties());
     FdoPtr<FdoDataPropertyDefinitionCollection> propsIdentity(classDef->GetIdentityProperties());
+    FdoInt32 currentSrid = GetSRID(propsDefinition);
     if (1 == propsIdentity->GetCount())
     {
         FdoPtr<FdoDataPropertyDefinition> prop(propsIdentity->GetItem(0));
@@ -157,19 +165,60 @@ FdoIFeatureReader* InsertCommand::Execute()
     for (FdoInt32 i = 0; i < propsSize; i++)
     {
         FdoPtr<FdoPropertyValue> propVal(mProperties->GetItem(i));
-        FdoPtr<FdoIdentifier> propId(propVal->GetName());
+        FdoStringP   pName(propVal->GetName()->GetName());
+        FdoPtr<FdoPropertyDefinition> propDef(GetPropDefinition(propsDefinition, pName));
+        if (propDef)
+        {
+            pName = propDef->GetName();
+        }
+        else
+        {
+            FDOLOG_WRITE(L"can not find porpertyDefinition '%s'",
+                static_cast<FdoString*>(propVal->GetName()->GetName()));        
+        }
 
-        columns += sep + static_cast<char const*>(FdoStringP(propId->GetName()));
+        columns += sep + static_cast<char const*>(pName);
 
-        if (0 == pkColumn.ICompare(propId->GetName()))
+        if (0 == pkColumn.ICompare(pName))
         {
             values += sep + "nextval(\'" + sequence + "\')";
         }
         else
         {
-            FdoPtr<FdoValueExpression> expr(propVal->GetValue());
+            FdoValueExpression *expr=propVal->GetValue();
             expr->Process(expProc);
-            values += sep + expProc->ReleaseBuffer();
+            std::string value = expProc->ReleaseBuffer();
+            if (propDef)
+            {
+                if (FdoPropertyType_DataProperty == propDef->GetPropertyType())
+                {
+                    FdoDataPropertyDefinition* dataDef = static_cast<FdoDataPropertyDefinition*>(propDef.p);
+
+
+                    // NOTE - Eric Barby: Need to parse date properly
+                    // XXX - mloskot: Is the code below the solution?
+                    if (FdoDataType_DateTime == dataDef->GetDataType())
+                    {
+                        FdoDateTimeValue *dateValuePtr=dynamic_cast<FdoDateTimeValue*>(propVal->GetValue());
+                        if (!dateValuePtr->IsNull())
+                        {
+                            FDOLOG_WRITE(L"convert Date:", dateValuePtr->ToString());
+                            value = static_cast<char const*>(FdoStringP(dateValuePtr->ToString()));
+                        }
+                    }
+                } 
+                else
+                {
+                    // TODO - Bruno Scott: geom is not used anywhere, maybe we should delete this line.
+                    if (FdoPropertyType_GeometricProperty == propDef->GetPropertyType())
+                    {
+                        // TODO: It won't work with multiple-geometric properties
+                        FdoGeometricPropertyDefinition* geom = NULL;
+                        geom = static_cast<FdoGeometricPropertyDefinition*>(propDef.p);
+                    }
+                }
+            }
+            values += sep + value;            
         }
         sep = ",";
     }

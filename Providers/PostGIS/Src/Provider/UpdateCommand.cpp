@@ -64,17 +64,22 @@ FdoInt32 UpdateCommand::Execute()
     //
     // Collect schema details required to build SQL command
     //
-    SchemaDescription::Ptr schemaDesc(SchemaDescription::Create());
-    schemaDesc->DescribeSchema(mConn, NULL);
+    // NOTE - Eric Barby: Faster way of describing schema.
+    // XXX - mloskot: Why not wrapped with FdoPtr, SchemaDescription::Ptr?
+    SchemaDescription*  schemaDesc = mConn->DescribeSchema();
+    if (!schemaDesc || !schemaDesc->IsDescribed()) 
+    {
+        throw FdoCommandException::Create(L"[PostGIS] InsertCommand can not find schema definition");
+    }
 
     FdoPtr<FdoIdentifier> classIdentifier(GetFeatureClassName());
     FdoPtr<FdoClassDefinition> classDef(schemaDesc->FindClassDefinition(mClassIdentifier));    
-    if (!classDef) 
+    ov::ClassDefinition::Ptr phClass(schemaDesc->FindClassMapping(mClassIdentifier));
+    if (!classDef || !phClass) 
     {
         throw FdoCommandException::Create(L"[PostGIS] UpdateCommand can not find class definition");
     }
 
-    ov::ClassDefinition::Ptr phClass(schemaDesc->FindClassMapping(mClassIdentifier));
     FdoStringP tablePath(phClass->GetTablePath());
 
     //
@@ -84,19 +89,62 @@ FdoInt32 UpdateCommand::Execute()
     std::string sqlValues;
 
     ExpressionProcessor::Ptr expProc(new ExpressionProcessor());
+    FdoPtr<FdoPropertyDefinitionCollection>     propsDefinition(classDef->GetProperties());
+    FdoPtr<FdoDataPropertyDefinitionCollection> propsIdentity(classDef->GetIdentityProperties());
+    FdoInt32 currentSrid = GetSRID(propsDefinition);
 
     FdoInt32 const propsSize = mPropertyValues->GetCount();
     for (FdoInt32 i = 0; i < propsSize; i++)
     {
-        FdoPtr<FdoPropertyValue> propValue(mPropertyValues->GetItem(i));
-        FdoPtr<FdoIdentifier> propId(propValue->GetName());
+        FdoPtr<FdoPropertyValue> propVal(mPropertyValues->GetItem(i));
+        FdoStringP   pName(propVal->GetName()->GetName());
+        FdoPtr<FdoPropertyDefinition> propDef(GetPropDefinition(propsDefinition, pName));
+        if (propDef)
+        {
+            pName = propDef->GetName();
+        }
+        else
+        {
+            FDOLOG_WRITE(L"can not find porpertyDefinition '%s'", static_cast<FdoString*>(propVal->GetName()->GetName()));
+        }
 
-        FdoPtr<FdoValueExpression> expr(propValue->GetValue());
+        FdoPtr<FdoValueExpression> expr(propVal->GetValue());
         expr->Process(expProc);
+        std::string value = expProc->ReleaseBuffer();
+        if (propDef)
+        {
+            if (FdoPropertyType_DataProperty == propDef->GetPropertyType())
+            {
+                FdoDataPropertyDefinition* dataDef = static_cast<FdoDataPropertyDefinition*>(propDef.p);
 
-        sqlValues += sep + static_cast<char const*>(FdoStringP(propId->GetName()));
+                // NOTE - Eric Barby: Need to parse date properly
+                // XXX - mloskot: Is the code below the solution?
+                if (FdoDataType_DateTime == dataDef->GetDataType())
+                {
+                    FdoDateTimeValue* dateValuePtr = dynamic_cast<FdoDateTimeValue*>(propVal->GetValue());
+                    if (!dateValuePtr->IsNull())
+                    {
+                        FDOLOG_WRITE(L"convert Date:", dateValuePtr->ToString());
+                        value = static_cast<char const*>(FdoStringP(dateValuePtr->ToString()));
+                    }
+                }
+            } 
+
+            // TODO - bscott: this geom is not needed,maybe we should delete these lines 
+            else
+            {
+                if (FdoPropertyType_GeometricProperty == propDef->GetPropertyType())
+                {
+                    // TODO: Eric Barby - It won't work with multiple-geometric properties
+                    FdoGeometricPropertyDefinition* geom = NULL;
+                    geom = static_cast<FdoGeometricPropertyDefinition*>(propDef.p);
+                }
+            }
+        }
+
+        sqlValues += sep + static_cast<char const*>(pName);
         sqlValues += " = ";
-        sqlValues += expProc->ReleaseBuffer();
+        sqlValues += value;
 
         sep = ",";
     }
@@ -104,7 +152,7 @@ FdoInt32 UpdateCommand::Execute()
     //
     // Build WHERE clause
     //
-    FilterProcessor::Ptr filterProc(new FilterProcessor());
+    FilterProcessor::Ptr filterProc(new FilterProcessor(currentSrid));
     std::string sqlWhere;
 
     if (NULL != mFilter)

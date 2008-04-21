@@ -76,7 +76,7 @@ FdoClassDefinition* FeatureReader::GetClassDefinition()
           for(long ind2 =0;ind2<m_Props->GetCount();ind2++)
           {
             FdoPtr<FdoIdentifier> prop2 = m_Props->GetItem(ind2);
-            if( wcscmp(classprop->GetName(),prop2->GetName()) == 0 )
+            if(0 == FdoCommonOSUtil::wcsicmp(classprop->GetName(), prop2->GetName()))
             {
               found=true;
               break;

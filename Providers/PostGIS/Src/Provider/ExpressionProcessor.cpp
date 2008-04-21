@@ -280,17 +280,17 @@ void ExpressionProcessor::ProcessDateTimeValue(FdoDateTimeValue& expr)
         
         if (dt.IsTime())
         {
-            value = str(boost::format("'%d:%d:%d'") % dt.hour % dt.minute % dt.seconds);
+            value = str(boost::format("'%d:%d:%d'") % (int)dt.hour % (int)dt.minute % (int)dt.seconds);
             format = "'HH24:MI:SS'";
         }
         else if (dt.IsDate())
         {
-            value = str(boost::format("'%d-%d-%d'") % dt.month % dt.day % dt.year);
+            value = str(boost::format("'%d-%d-%d'") % (int)dt.month % (int)dt.day % (int)dt.year);
             format = "'MM-DD-YYYY'";
         }
         else if (dt.IsDateTime())
         {
-            value = str(boost::format("'%d-%d-%d %d:%d:%d'") % dt.month % dt.day % dt.year % dt.month % dt.day % dt.year);
+            value = str(boost::format("'%d-%d-%d %d:%d:%d'") % (int)dt.month % (int)dt.day % (int)dt.year % (int)dt.month % (int)dt.day % (int)dt.year);
             format = "'MM-DD-YYYY HH24:MI:SS'";
         }
         else

@@ -63,8 +63,9 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
-
+//ticket #312 - remove BoostDateTime dependency - eric barby
+// #include <boost/date_time/posix_time/posix_time.hpp>
+#include <time.h> 
 
 // External access to connection for client services
 extern "C" FDOPOSTGIS_API FdoIConnection* CreateConnection()
@@ -372,7 +373,8 @@ FdoICommand* Connection::CreateCommand(FdoInt32 type)
 
     // TODO: Verify what connection state is required for what commands
     //        || FdoConnectionState_Pending == GetConnectionState())
-    if (FdoConnectionState_Closed == GetConnectionState())
+    if (FdoCommandType_CreateDataStore != type
+        && FdoConnectionState_Closed == GetConnectionState())
     {
         FDOLOG_WRITE("ERROR: Connection is closed or invalid");
         throw FdoConnectionException::Create(
@@ -499,10 +501,9 @@ void Connection::PgExecuteCommand(char const* sql, FdoSize& affected)
     FDOLOG_MARKER("Connection::+PgExecuteCommand");
     FDOLOG_WRITE("SQL:\n\t%s", sql);
 
-    ValidateConnectionState();
+    ValidateConnectionStateAndNotClosed();
 
     affected = 0;
-
     boost::shared_ptr<PGresult> pgRes(PQexec(mPgConn, sql), PQclear);
 
     ExecStatusType pgStatus = PQresultStatus(pgRes.get());
@@ -510,7 +511,6 @@ void Connection::PgExecuteCommand(char const* sql, FdoSize& affected)
     {
         FdoStringP errCode(PQresStatus(pgStatus));
         FdoStringP errMsg(PQresultErrorMessage(pgRes.get()));
-
         FDOLOG_WRITE(L"SQL command failed: [%s] %s",
             static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg));
 
@@ -663,9 +663,19 @@ fdo::postgis::PgCursor* Connection::PgCreateCursor(char const* name)
     //
     // Generate random suffix for cursor name to make name more unique
     //
-    using boost::posix_time::ptime;
-    ptime pt = boost::date_time::microsec_clock<ptime::time_type>::local_time();
-    std::string ptstr(boost::posix_time::to_iso_string(pt));
+    char        buf[256] = { 0 };
+    clock_t     cl = clock();
+    time_t      rtime = 0;
+    struct tm* timeinfo = NULL;
+    time(&rtime);
+    timeinfo = localtime(&rtime);
+    strftime(buf, 255, "%Y-%m-%d %H:%M:%S", timeinfo);
+
+    std::string ptstr = str(boost::format("%04d%02d%02dT%02f%02d%02d.%04d") 
+        % (int)(1900+timeinfo->tm_year) %(int)(1+timeinfo->tm_mon) %(int)timeinfo->tm_mday 
+        % (int)timeinfo->tm_hour %(int)timeinfo->tm_min %(int)timeinfo->tm_sec
+        % (int)cl);
+
     fdo::postgis::md5 md5sum(ptstr.c_str());
     std::string suffix(md5sum.digest().hex_str_value());
    
@@ -870,6 +880,31 @@ void Connection::ValidateConnectionState()
         FDOLOG_WRITE("ERROR: Invalid state of PostgreSQL connection.");
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_INVALID_PGSQL_CONNECTION_STATE,
             "Invalid state of PostgreSQL connection."));
+    }
+}
+
+void Connection::ValidateConnectionStateAndNotClosed()
+{
+    bool valid = false;
+
+    if (NULL != mPgConn
+        && (FdoConnectionState_Open == GetConnectionState()
+            || FdoConnectionState_Pending == GetConnectionState()
+            || FdoConnectionState_Busy == GetConnectionState()))
+    {
+        // Check PostgreSQL connection status
+        if (CONNECTION_OK == PQstatus(mPgConn))
+        {
+            valid = true;
+        }
+    }
+
+    if (!valid)
+    {
+        FDOLOG_WRITE("ERROR: PostgreSQL connection not opened!");
+        throw FdoException::Create(NlsMsgGet(
+            MSG_POSTGIS_INVALID_PGSQL_CONNECTION_STATE,
+            "PostgreSQL connection do not opend!"));
     }
 }
 

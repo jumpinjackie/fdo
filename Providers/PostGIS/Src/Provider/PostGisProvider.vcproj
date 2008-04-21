@@ -580,19 +580,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\PgSpatialTablesReader.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\PgSpatialTablesReader.h"
-				>
-			</File>
-			<File
 				RelativePath=".\PgTableColumnsReader.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\PgTableColumnsReader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PgTablesReader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PgTablesReader.h"
 				>
 			</File>
 			<File

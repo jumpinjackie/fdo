@@ -20,7 +20,7 @@
 #include "SchemaDescription.h"
 #include "SpatialContextCollection.h"
 #include "PgGeometryColumn.h"
-#include "PgSpatialTablesReader.h"
+#include "PgTablesReader.h"
 #include "PgTableColumnsReader.h"
 #include "PgUtility.h"
 // std
@@ -187,99 +187,114 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
     //
     // Process every table to FDO class
     //
-    PgSpatialTablesReader::Ptr stReader(new PgSpatialTablesReader(mConn.p));
+    PgTablesReader::Ptr stReader(new PgTablesReader(mConn.p));
     stReader->Open();
 
     while (stReader->ReadNext())
     {
-        // TODO: Fetch all geometries, but not only the first one - default
-
-        PgSpatialTablesReader::columns_t::size_type const geometryIdx = 0;
-        PgSpatialTablesReader::columns_t geometryColumns(stReader->GetGeometryColumns());
-        PgGeometryColumn::Ptr geomColumn = geometryColumns[geometryIdx];
-
-        ////////////////// GENERATE SPATIAL CONTEXT //////////////////
-
-        FdoStringP spContextName(SpatialContextDefaultName);
-        FdoInt32 srid = geomColumn->GetSRID();
-        if (srid >= 0)
-        {
-            spContextName = FdoStringP::Format(L"PostGIS_%d", srid);
-        }
-        
-        SpatialContext::Ptr spContext;
-        spContext = spContexts->FindItem(spContextName);
-        if (NULL == spContext)
-        {
-            spContext = CreateSpatialContext(mConn, spContextName, geomColumn);
-            spContexts->Add(spContext);
-
-            FDOLOG_WRITE(L"Created spatial context: %s",
-                static_cast<FdoString*>(spContextName));
-        }
-
         ////////////////// CALCULATE SPATIAL EXTENT //////////////////
 
         // TODO: Do we want to calculate bbox at all?
+        // already in stReader->GetGeometryColumns() {
+        //     PgSpatialTablesReader::EstimateColumnExtent()
+        //  or PgSpatialTablesReader::SelectColumnExtent()
+        // }
 
         ////////////////// GENERATE CLASS DEFINITION //////////////////
 
-        // TODO: Do we need to have geometry column name in FDO class name?
-        FdoStringP fdoClassName = FdoStringP::Format(L"%s~%s",
-            static_cast<FdoString*>(stReader->GetSchemaName()),
-            static_cast<FdoString*>(stReader->GetTableName()));
+        FdoStringP fdoClassName = stReader->GetTableName();
         assert(!featClasses->FindItem(fdoClassName));
 
         // TODO: Use table COMMENT as a class description
-        FdoPtr<FdoFeatureClass> featClass = FdoFeatureClass::Create(fdoClassName, L"");      
-
+        FdoPtr<FdoClassDefinition> xClass;
+        if (stReader->IsSpatialTable())
+        {
+            xClass = FdoFeatureClass::Create(fdoClassName, L"");      
+            FDOLOG_WRITE(L"Created feature class: %s", static_cast<FdoString*>(fdoClassName));
+        }
+        else
+        {
+            xClass = FdoClass::Create(fdoClassName, L"");      
+            FDOLOG_WRITE(L"Created class: %s", static_cast<FdoString*>(fdoClassName));
+        }
+        
         // Physical mapping for the feature class
         ov::ClassDefinition::Ptr classDef = ov::ClassDefinition::Create();
         classDef->SetName(fdoClassName);
+        classDef->SetSchemaName(stReader->GetSchemaName());
 
-        FdoPtr<FdoPropertyDefinitionCollection> pdc = featClass->GetProperties();
+        FdoPtr<FdoPropertyDefinitionCollection> pdc = xClass->GetProperties();
 
-        FDOLOG_WRITE(L"Created feature class: %s", static_cast<FdoString*>(fdoClassName));
-
-        ////////////////// CREATE GEOMETRY PROPERTY //////////////////
-
-        FdoGeometryType geomType = geomColumn->GetGeometryType();
-
-        FdoPtr<FdoGeometricPropertyDefinition> geomPropDef;
-        geomPropDef = FdoGeometricPropertyDefinition::Create(
-            geomColumn->GetName(), geomColumn->GetDescription());                        
-
-        // General geometry type mask
-        FdoInt32 geometricType = 
-            FdoGeometricType_Point|FdoGeometricType_Curve|FdoGeometricType_Surface;
-
-        // Try to match specific geometry type
-        if (FdoGeometryType_Point == geomType
-            || FdoGeometryType_MultiPoint == geomType)
+        if (stReader->IsSpatialTable()) 
         {
-            geometricType = FdoGeometricType_Point;
-        }
-        else if (FdoGeometryType_LineString == geomType
-                 || FdoGeometryType_MultiLineString == geomType)
-        {
-            geometricType = FdoGeometricType_Curve;
-        }
-        else if (FdoGeometryType_Polygon == geomType
-                 || FdoGeometryType_MultiPolygon == geomType)
-        {
-            geometricType = FdoGeometricType_Surface;
-        }
+          // TODO: Fetch all geometries, but not only the first one - default
 
-        geomPropDef->SetGeometryTypes(geometricType);  
-        if (NULL != spContext)
-        {
-            geomPropDef->SetSpatialContextAssociation(spContext->GetName());
-        }
-        pdc->Add(geomPropDef);
-        featClass->SetGeometryProperty(geomPropDef);
+          PgTablesReader::columns_t::size_type const geometryIdx = 0;
+          PgTablesReader::columns_t geometryColumns(stReader->GetGeometryColumns());
+          PgGeometryColumn::Ptr geomColumn = geometryColumns[geometryIdx];
 
-        FDOLOG_WRITE(L"+ geometric property: %s",
-            static_cast<FdoString*>(geomColumn->GetName()));
+          ////////////////// GENERATE SPATIAL CONTEXT //////////////////
+
+          FdoStringP spContextName(SpatialContextDefaultName);
+          FdoInt32 srid = geomColumn->GetSRID();
+          if (srid >= 0)
+          {
+              spContextName = FdoStringP::Format(L"PostGIS_%d", srid);
+          }
+          
+          SpatialContext::Ptr spContext;
+          spContext = spContexts->FindItem(spContextName);
+          if (NULL == spContext)
+          {
+              spContext = CreateSpatialContext(mConn, spContextName, geomColumn);
+              spContext->SetExtent(static_cast<FdoEnvelopeImpl*>(geomColumn->GetEnvelope()));
+              spContexts->Add(spContext);
+
+              FDOLOG_WRITE(L"Created spatial context: %s",
+                  static_cast<FdoString*>(spContextName));
+          }
+
+          ////////////////// CREATE GEOMETRY PROPERTY //////////////////
+
+          FdoGeometryType geomType = geomColumn->GetGeometryType();
+
+          FdoPtr<FdoGeometricPropertyDefinition> geomPropDef;
+          geomPropDef = FdoGeometricPropertyDefinition::Create(
+              geomColumn->GetName(), geomColumn->GetDescription());                        
+
+          // General geometry type mask
+          FdoInt32 geometricType = 
+              FdoGeometricType_Point|FdoGeometricType_Curve|FdoGeometricType_Surface;
+
+          // Try to match specific geometry type
+          if (FdoGeometryType_Point == geomType
+              || FdoGeometryType_MultiPoint == geomType)
+          {
+              geometricType = FdoGeometricType_Point;
+          }
+          else if (FdoGeometryType_LineString == geomType
+                   || FdoGeometryType_MultiLineString == geomType)
+          {
+              geometricType = FdoGeometricType_Curve;
+          }
+          else if (FdoGeometryType_Polygon == geomType
+                   || FdoGeometryType_MultiPolygon == geomType)
+          {
+              geometricType = FdoGeometricType_Surface;
+          }
+
+          geomPropDef->SetGeometryTypes(geometricType);  
+          if (NULL != spContext)
+          {
+              geomPropDef->SetSpatialContextAssociation(spContext->GetName());
+          }
+          pdc->Add(geomPropDef);
+          (dynamic_cast<FdoFeatureClass*>(xClass.p))->SetGeometryProperty(geomPropDef);
+
+          FDOLOG_WRITE(L"+ geometric property: %s",
+              static_cast<FdoString*>(geomColumn->GetName()));
+
+        } //if stReader->IsSpatialTable()
 
         ////////////////// CREATE DATA PROPERTIES //////////////////
 
@@ -288,96 +303,94 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
                 mConn, stReader->GetSchemaName(), stReader->GetTableName());
         tcReader->Open();
         
-        while(tcReader->ReadNext())
+        while (tcReader->ReadNext())
         {
-            FdoPtr<FdoDataPropertyDefinition> datPropDef;
-            datPropDef = FdoDataPropertyDefinition::Create(
-                tcReader->GetColumnName(), tcReader->GetColumnDescription());
-
-            FDOLOG_WRITE(L"+ data property: %s",
-                static_cast<FdoString*>(tcReader->GetColumnName()));
-
-            FdoDataType const dataType = tcReader->GetColumnType();
-            datPropDef->SetDataType(dataType);
-            int const size = tcReader->GetColumnSize();
-            datPropDef->SetLength(size);
-            int const precision = tcReader->GetColumnPrecision();
-            datPropDef->SetPrecision(precision);
-            int const scale = tcReader->GetColumnScale();
-            datPropDef->SetScale(scale);
-            bool const isNullable = tcReader->GetColumnNullability();
-            datPropDef->SetNullable(isNullable);
-
-            // First, it's required to add property to the base collection.
-            // So, it can be add to the identity properties in next step,
-            // if required.
-            pdc->Add(datPropDef);
-
-            // Retrieve definition of PRIMARY KEY constraint
-            if (tcReader->IsPrimaryKey())
+            FdoStringP colName(tcReader->GetColumnName());
+            if (pdc->FindItem(colName)) 
+            { 
+                // NOTE - Eric Barby: Because is out of date after a remove thisTable 'DROP TABLE...'
+                FDOLOG_WRITE("ERROR: Table '%s' PropertyDefinition '%s' is already in the PropertyDefinitionCollection",
+                    stReader->GetTableName(), colName);
+            } 
+            else 
             {
-                FDOLOG_WRITE(" - PRIMARY KEY");
+                FdoPtr<FdoDataPropertyDefinition> datPropDef;
+                datPropDef = FdoDataPropertyDefinition::Create(
+                    colName, tcReader->GetColumnDescription());
 
-                FdoPtr<FdoDataPropertyDefinitionCollection> propsIdentity;
-                propsIdentity = featClass->GetIdentityProperties();
-                assert(NULL != propsIdentity);
+                FDOLOG_WRITE(L"+ data property: %s",
+                    static_cast<FdoString*>(tcReader->GetColumnName()));
 
-                datPropDef->SetNullable(false);
-                propsIdentity->Add(datPropDef);
+                FdoDataType const dataType = tcReader->GetColumnType();
+                datPropDef->SetDataType(dataType);
+                int const size = tcReader->GetColumnSize();
+                datPropDef->SetLength(size);
+                int const precision = tcReader->GetColumnPrecision();
+                datPropDef->SetPrecision(precision);
+                int const scale = tcReader->GetColumnScale();
+                datPropDef->SetScale(scale);
+                bool const isNullable = tcReader->GetColumnNullability();
+                datPropDef->SetNullable(isNullable);
+
+                // Add default value.
+                if (tcReader->IsDefault())
+                {
+                    FdoStringP defaultVal(tcReader->GetDefault());
+                    if (defaultVal.GetLength())
+                        datPropDef->SetDefaultValue(defaultVal);
+                }
+
+                // First, it's required to add property to the base collection.
+                // So, it can be add to the identity properties in next step,
+                // if required.
+                pdc->Add(datPropDef);
+
+                // Retrieve definition of PRIMARY KEY constraint
+                if (tcReader->IsPrimaryKey())
+                {
+                    FDOLOG_WRITE(" - PRIMARY KEY");
+
+                    FdoPtr<FdoDataPropertyDefinitionCollection> propsIdentity;
+                    propsIdentity = xClass->GetIdentityProperties();
+                    assert(NULL != propsIdentity);
+
+                    datPropDef->SetNullable(false);
+                    propsIdentity->Add(datPropDef);
+
+                    // NOTE - Eric Barby: 2008-02 add correct sequence information. 
+                    // XXX - mloskot: Is this a TODO or just comment for the code below?
+                    bool const isSequence = tcReader->IsSequence();
+                    datPropDef->SetIsAutoGenerated(isSequence);
+                }
             }
-        }
+        
+        } // while (tcReader->ReadNext())
+
         tcReader->Close();
-
-        ////////////////// SET AUTO-GENERATED TO SINGLE COLUMN PK OF INTEGRAL TYPE //////////////////
-
-        // TODO: It is possible, that user connects to a datastore that was not created
-        // with FDO, using ApplySchema command, so single column PRIMARY KEY
-        // of integral type, may not have associated sequence named according scheme:
-        // <tablename>_<columnname>_seq
-        // The PostGIS provider uses such scheme to bind a sequence to PK column.
-
-        // TODO: In future, it would be a good idea to automatically
-        // replace PK of integral type with serial data type, in ApplySchema command.
-
-        FdoPtr<FdoDataPropertyDefinitionCollection> propsIdentity;
-        propsIdentity = featClass->GetIdentityProperties();
-        if (1 == propsIdentity->GetCount())
-        {
-            FdoPtr<FdoDataPropertyDefinition> propId = propsIdentity->GetItem(0);
-            assert(NULL != propId);
-
-            if (FdoDataType_Int16 == propId->GetDataType() 
-                || FdoDataType_Int32 == propId->GetDataType()
-                || FdoDataType_Int64 == propId->GetDataType())
-            {
-                propId->SetIsAutoGenerated(true);
-            }
-        }
 
         //
         // Add Feature Class and Class Definition to collections
         //
-        featClasses->Add(featClass);
+        featClasses->Add(xClass);
         phClasses->Add(classDef);
 
     } // while
 
     stReader->Close();
 
-
     //
     // Compose the Schema Description aggregation
     //
     assert(NULL != logicalSchemas);
     assert(NULL != phClasses);
+    featSchema->AcceptChanges();
 
     SetLogicalSchemas(logicalSchemas);
     SetSchemaMapping(schemaMapping);
     SetSpatialContexts(spContexts);
-    
+
     mIsDescribed = true;
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // Private operations interface

@@ -46,17 +46,23 @@ FdoInt32 DeleteCommand::Execute()
     //
     // Collect schema details required to build SQL command
     //
-    SchemaDescription::Ptr schemaDesc(SchemaDescription::Create());
-    schemaDesc->DescribeSchema(mConn, NULL);
+    
+    // NOTE - Eric Barby: Faster way of describing schema.
+    // XXX - mloskot: Why not wrapped with FdoPtr, SchemaDescription::Ptr?
+    SchemaDescription *schemaDesc = mConn->DescribeSchema();
+    if (!schemaDesc || !schemaDesc->IsDescribed()) 
+    {
+        throw FdoCommandException::Create(L"[PostGIS] DeleteCommand can not find schema definition");
+    }
 
     FdoPtr<FdoIdentifier> classIdentifier(GetFeatureClassName());
     FdoPtr<FdoClassDefinition> classDef(schemaDesc->FindClassDefinition(mClassIdentifier));    
-    if (!classDef) 
+    ov::ClassDefinition::Ptr phClass(schemaDesc->FindClassMapping(mClassIdentifier));
+    if (!classDef || !phClass) 
     {
-        throw FdoCommandException::Create(L"[PostGIS] DeleteCommand can not find class definition");
+        throw FdoCommandException::Create(L"[PostGIS] DeleteCommand can not find class definition or class mapping!");
     }
 
-    ov::ClassDefinition::Ptr phClass(schemaDesc->FindClassMapping(mClassIdentifier));
     FdoStringP tablePath(phClass->GetTablePath());
 
     //
