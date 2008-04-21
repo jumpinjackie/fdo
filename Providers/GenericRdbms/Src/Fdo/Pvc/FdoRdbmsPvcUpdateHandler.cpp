@@ -521,7 +521,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                         break;
 
                     case FdoDataType_Byte:
-                        bindValue += mConnection->GetUtility()->Utf8ToUnicode( ut_itoa( (dynamic_cast<FdoByteValue*>(dataValue))->GetByte(), buffer ) );
+                        bindValue += mConnection->GetUtility()->Utf8ToUnicode( FdoCommonOSUtil::itoa( (dynamic_cast<FdoByteValue*>(dataValue))->GetByte(), buffer ) );
                         break;
 
                     case FdoDataType_DateTime:
@@ -539,11 +539,11 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                         break;
 
                     case FdoDataType_Int16:
-                        bindValue +=  mConnection->GetUtility()->Utf8ToUnicode( ut_itoa( (dynamic_cast<FdoInt16Value*>(dataValue))->GetInt16(), buffer ) );
+                        bindValue +=  mConnection->GetUtility()->Utf8ToUnicode( FdoCommonOSUtil::itoa( (dynamic_cast<FdoInt16Value*>(dataValue))->GetInt16(), buffer ) );
                         break;
 
                     case FdoDataType_Int32:
-                        bindValue +=  mConnection->GetUtility()->Utf8ToUnicode( ut_itoa( (dynamic_cast<FdoInt32Value*>(dataValue))->GetInt32(),buffer ) );
+                        bindValue +=  mConnection->GetUtility()->Utf8ToUnicode( FdoCommonOSUtil::itoa( (dynamic_cast<FdoInt32Value*>(dataValue))->GetInt32(),buffer ) );
                         break;
 
                     case FdoDataType_Int64:

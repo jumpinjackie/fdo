@@ -230,15 +230,16 @@ FdoConnectionState FdoRdbmsConnection::Open ()
     return Open(false);
 }
 
-void FdoRdbmsConnection::DbiOpen(bool skipPending)
+FdoConnectionState FdoRdbmsConnection::DbiOpen(bool skipPending)
 {
+    FdoConnectionState theState;
 #ifdef _WIN32
     wchar_t errorMessage[1024];
     errorMessage[0] = L'';
     __try
     {
 #endif
-        mState = mDbiConnection->Open(skipPending);
+        theState = mDbiConnection->Open(skipPending);
         
 #ifdef _WIN32
     }
@@ -247,6 +248,8 @@ void FdoRdbmsConnection::DbiOpen(bool skipPending)
         throw FdoException::Create (errorMessage);
     }
 #endif
+
+    return theState;
 }
 
 FdoConnectionState FdoRdbmsConnection::Open (
@@ -320,7 +323,7 @@ FdoConnectionState FdoRdbmsConnection::Open (
 
         // This is done in a separate method since we need to use __try/__except to catch the delay-loader's
         // Structured Exceptions, which is incompatible with having destructible objects on the stack:
-        DbiOpen(skipPending);
+        mState = DbiOpen(skipPending);
     }
 
     if( mState == FdoConnectionState_Open )
@@ -362,7 +365,6 @@ FdoConnectionState FdoRdbmsConnection::Open (
     if( mState == FdoConnectionState_Open )
     {
         mLongTransactionManager = CreateLongTransactionManager();
-        SetDefaultActiveSpatialContextName();
 		mLockManager = CreateLockManager();
         if (mLongTransactionManager != NULL)
             mLongTransactionManager->SetLockManager(mLockManager);
@@ -373,7 +375,7 @@ FdoConnectionState FdoRdbmsConnection::Open (
 
 FdoStringP FdoRdbmsConnection::GetUser()
 {
-    return (mDbiConnection == NULL) ? FdoStringP() : mDbiConnection->GetUser();
+    return (mDbiConnection == NULL) ? FdoStringP() : FdoStringP(mDbiConnection->GetUser());
 }
 
 // The function returns the unique user number for the current user.
@@ -870,6 +872,9 @@ FdoRdbmsConnection::GetSpatialManager()
 
 FdoString * FdoRdbmsConnection::GetActiveSpatialContextName()
 {
+    if ( mActiveSpatialContextName == L"" ) 
+        SetDefaultActiveSpatialContextName();
+
     return mActiveSpatialContextName;
 }
 
@@ -884,35 +889,23 @@ void FdoRdbmsConnection::SetDefaultActiveSpatialContextName()
     mActiveSpatialContextName = L"";
 
     FdoSchemaManagerP smgr = GetSchemaManager();
-    FdoSmLpSpatialContextsP scs = smgr->GetLpSpatialContexts();
+    FdoSmLpSpatialContextP sc = smgr->FindSpatialContext(0);
 
-    // We only set an active spatial context if one with numeric ID #0 exists.
-    // That is the initial one created with a datastore, or intuited from
-    // a foreign schema.
-    bool found = false;
-    FdoInt32 count = scs->GetCount();
-    for (FdoInt32 i=0;  !found && i < count;  i++)
+    if (sc)
     {
-        FdoSmLpSpatialContextP sc = scs->GetItem(i);
-        if (sc->GetId() == 0)
-        {
-            found = true;
-            mActiveSpatialContextName = sc->GetName();
-        }
+        mActiveSpatialContextName = sc->GetName();
     }
-
+    else {
 #pragma message ("TODO: Address MySql default spatial context # of 1.")
     // Kludge:  Unfortunately, MySQL seems to have a defect wherein the
     // initial value of an "auto-increment" type must be 1.  The documented
     // override does not work.  So, we'll try for that too, if there is no
     // spatial context #0.
-    for (FdoInt32 i=0;  !found && i < count;  i++)
-    {
-        FdoSmLpSpatialContextP sc = scs->GetItem(i);
-        if (sc->GetId() == 1)
+        FdoSmLpSpatialContextP sc = smgr->FindSpatialContext(1);
+        if (sc)
         {
-            found = true;
             mActiveSpatialContextName = sc->GetName();
         }
     }
 }
+

@@ -678,13 +678,13 @@ void FdoRdbmsFilterProcessor::ProcessDecimalValue(FdoDecimalValue& expr)
 void FdoRdbmsFilterProcessor::ProcessInt16Value(FdoInt16Value& expr)
 {
     char    tmpValue[124];
-    AppendString( ut_itoa( (int)expr.GetInt16(),tmpValue) );
+    AppendString( FdoCommonOSUtil::itoa( (int)expr.GetInt16(),tmpValue) );
 }
 
 void FdoRdbmsFilterProcessor::ProcessInt32Value(FdoInt32Value& expr)
 {
     char    tmpValue[124];
-    AppendString( ut_itoa( (int)expr.GetInt32(),tmpValue) );
+    AppendString( FdoCommonOSUtil::itoa( (int)expr.GetInt32(),tmpValue) );
 }
 
 void FdoRdbmsFilterProcessor::ProcessInt64Value(FdoInt64Value& expr)

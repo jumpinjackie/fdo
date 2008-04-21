@@ -20,7 +20,7 @@
 
 #include "FdoRdbmsLobUtility.h"
 #include "FdoRdbmsSchemaUtil.h"
-#include "Inc/ut.h"
+#include <FdoCommonOSUtil.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 bool  FdoRdbmsLobUtility::ContainsLobs( const FdoSmLpClassDefinition *classDefinition )
@@ -122,7 +122,7 @@ void  FdoRdbmsLobUtility::FetchLobLocators( DbiConnection *connection,
                 {
                     whereString += propertyName;
                     whereString += L"=:";
-                    whereString += ut_itoa( indexBind, buffer );
+                    whereString += FdoCommonOSUtil::itoa( indexBind, buffer );
                     bindArray[j].pos = indexBind++;
                     break;
                 }
@@ -143,7 +143,7 @@ void  FdoRdbmsLobUtility::FetchLobLocators( DbiConnection *connection,
                         whereString += first? L"" : L" AND ";
                         whereString += propertyName;
                         whereString += L"=:";
-                        whereString += ut_itoa( indexBind, buffer );
+                        whereString += FdoCommonOSUtil::itoa( indexBind, buffer );
                         bindArray[j].pos = indexBind++;
                         break;
                     }
@@ -182,13 +182,13 @@ void  FdoRdbmsLobUtility::FetchLobLocators( DbiConnection *connection,
 
             if ( bindArray[j].type == FdoDataType_BLOB && propertyValue->GetStreamReader() )
             {
-                (void) connection->dbi_define( qid, (char*)connection->GetUtility()->UnicodeToUtf8(bindArray[j].propertyName), RDBI_BLOB_REF, sizeof(void *), (char*)&bindArray[j].value.strvalue, NULL, NULL);
+                (void) connection->dbi_define( qid, (char*)connection->GetUtility()->UnicodeToUtf8(bindArray[j].propertyName), RDBI_BLOB_REF, sizeof(void *), (char*)&bindArray[j].value.strvalue, (char*) NULL, NULL);
             }
             else if ( bindArray[j].pos != -1)
             {
                 connection->dbi_set_nnull((char *)&bindArray[j].null_ind, 0,0);
 
-                connection->dbi_bind( qid, ut_itoa(bindArray[j].pos, buffer), RDBI_STRING, (int)strlen((char*)bindArray[j].value.strvalue)+1,
+                connection->dbi_bind( qid, FdoCommonOSUtil::itoa(bindArray[j].pos, buffer), RDBI_STRING, (int)strlen((char*)bindArray[j].value.strvalue)+1,
                                     (char *)bindArray[j].value.strvalue, (char *)&bindArray[j].null_ind, NULL );
             }
         }
@@ -207,7 +207,7 @@ void  FdoRdbmsLobUtility::FetchLobLocators( DbiConnection *connection,
             for ( int j = 0; j < bindCount; j++ )
             {
                 if ( bindArray[j].type == FdoDataType_BLOB && bindArray[j].reader != NULL )
-                    (void) connection->dbi_get_val_b( qid, (char*)connection->GetUtility()->UnicodeToUtf8(bindArray[j].propertyName), sizeof(void *), (char*)&bindArray[j].value.strvalue, NULL, NULL);
+                    (void) connection->dbi_get_val_b( qid, (char*)connection->GetUtility()->UnicodeToUtf8(bindArray[j].propertyName), sizeof(void *), (char*)&bindArray[j].value.strvalue, (char*) NULL, NULL);
             }
         }
 

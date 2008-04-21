@@ -185,8 +185,8 @@ public:
     DbiConnection    *GetDbiConnection() { return mDbiConnection; }
 
 	void CreateSysDb( FdoString *dbName, FdoString *dbPassword, FdoString *connectString);
-	void CreateDb( FdoString *dbName, FdoString *dbDescription, FdoString *dbPassword, FdoString *connectString, FdoString *ltMode, FdoString *lckMode );
-	void DeleteDb( FdoString *dbName, FdoString *dbPassword, FdoString *connectString );
+	virtual void CreateDb( FdoString *dbName, FdoString *dbDescription, FdoString *dbPassword, FdoString *connectString, FdoString *ltMode, FdoString *lckMode );
+	virtual void DeleteDb( FdoString *dbName, FdoString *dbPassword, FdoString *connectString );
 
     // Gets the current Schema Manager for this connection
     FdoSchemaManagerP GetSchemaManager();
@@ -247,7 +247,7 @@ public:
     virtual FdoRdbmsSpatialManager *GetSpatialManager();
 
     FdoString * GetActiveSpatialContextName();
-    void SetActiveSpatialContextName(FdoString * spatialContextName);
+    virtual void SetActiveSpatialContextName(FdoString * spatialContextName);
     void SetDefaultActiveSpatialContextName();
 
     virtual FdoRdbmsFeatureReader *GetOptimizedAggregateReader(const FdoSmLpClassDefinition* classDef, aggr_list *selAggrList) { return NULL; }
@@ -262,6 +262,8 @@ protected:
         FdoStringP currSchema
     ) = 0;
 
+    virtual FdoConnectionState DbiOpen(bool skipPending);
+
 private:
 
     //
@@ -274,7 +276,6 @@ private:
     // DO NOT IMPLEMENT
     FdoRdbmsConnection & operator=(const FdoRdbmsConnection &right);
 
-    void DbiOpen(bool skipPending);
 };
 
 #endif // FDORDBMSCONNECTION_H
