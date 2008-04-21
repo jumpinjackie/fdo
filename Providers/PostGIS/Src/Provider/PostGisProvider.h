@@ -22,6 +22,7 @@
 // FDO Core API
 #include <Fdo.h>
 #include <FdoCommon.h>
+#include <FdoCommonOSUtil.h>
 #include <FdoCommonMiscUtil.h>
 #include <FdoCommonConnPropDictionary.h>
 #include <FdoCommonConnStringParser.h>

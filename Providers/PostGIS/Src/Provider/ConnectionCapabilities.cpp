@@ -88,7 +88,9 @@ bool ConnectionCapabilities::SupportsTimeout()
 
 bool ConnectionCapabilities::SupportsTransactions()
 {
-    return true;
+    // TODO: We should investigate on why transaction crashes Autodesk Map (#314)
+
+    return false;
 }
 
 bool ConnectionCapabilities::SupportsLongTransactions()

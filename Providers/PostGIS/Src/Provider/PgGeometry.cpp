@@ -103,7 +103,7 @@ FdoGeometryType FdoGeometryTypeFromPgType(std::string const& pgType)
         {
             fdoType = FdoGeometryType_MultiPolygon;
         }
-        else if (0 == pgType.compare(0, 18, "GEOMETRYCOLLECTION"))
+        else if (0 == pgType.compare(0, 18, "GEOMETRY")) // "GEOMETRYCOLLECTION"
         {
             fdoType = FdoGeometryType_MultiGeometry;
         }
@@ -169,32 +169,80 @@ FdoInt32 FdoDimensionTypeFromPgType(FdoInt32 const& pgDim, std::string const& pg
     return fdoDim;
 }
 
+std::string PgGeometryTypeFromFdoType(FdoGeometryType* fdoTypes, FdoInt32 length, bool isXYM)
+{
+    bool point = false;
+    bool line = false;
+    bool pgone = false;
+    bool multipoint = false;
+    bool multiline = false;
+    bool multipgone = false;
+    FdoGeometryType typeMax = FdoGeometryType_None;
+    std::string pgType("GEOMETRY");
+
+    if (fdoTypes && length)
+    {
+        // TODO - Bruno Scott: FdoCommonMiscUtil::ContainsGeomType() do not use a const arguments!
+
+        point = FdoCommonMiscUtil::ContainsGeomType(fdoTypes, length, FdoGeometryType_Point);
+        
+        line  = (FdoCommonMiscUtil::ContainsGeomType(fdoTypes, length, FdoGeometryType_LineString)
+                 || FdoCommonMiscUtil::ContainsGeomType(fdoTypes, length, FdoGeometryType_CurveString));
+        
+        pgone = (FdoCommonMiscUtil::ContainsGeomType(fdoTypes, length, FdoGeometryType_Polygon)
+                 || FdoCommonMiscUtil::ContainsGeomType(fdoTypes, length, FdoGeometryType_CurvePolygon));
+        
+        multipoint = FdoCommonMiscUtil::ContainsGeomType(fdoTypes, length, FdoGeometryType_MultiPoint);
+        
+        multiline = (FdoCommonMiscUtil::ContainsGeomType(fdoTypes, length, FdoGeometryType_MultiLineString)
+                      || FdoCommonMiscUtil::ContainsGeomType(fdoTypes, length, FdoGeometryType_MultiCurveString));
+        
+        multipgone =(FdoCommonMiscUtil::ContainsGeomType(fdoTypes, length, FdoGeometryType_MultiPolygon)
+                     || FdoCommonMiscUtil::ContainsGeomType(fdoTypes, length, FdoGeometryType_MultiCurvePolygon));
+
+        if (point + line + pgone + multipoint + multiline + multipgone == 1) 
+        {
+            if (point)
+                pgType = "POINT";
+            else if (line)
+                pgType = "LINESTRING";
+            else if (pgone)
+                pgType = "POLYGON";
+            else if (multipoint)
+                pgType = "MULTIPOINT";
+            else if (multiline)
+                pgType = "MULTILINESTRING";
+            else if (multipgone)
+                pgType = "MULTIPOLYGON";
+            // TODO: else (!!) pgType = "GEOMETRYCOLLECTION";
+        }
+    }
+
+    if (isXYM && pgType != "GEOMETRY")
+    {
+        pgType.push_back('M');
+    }
+
+    return pgType;
+}
+
 std::string PgGeometryTypeFromFdoType(FdoInt32 const& fdoType)
 {
     std::string pgType;
 
     switch (fdoType)
     {
-    case FdoGeometryType_Point:
+    case FdoGeometricType_Point:
         pgType = "POINT";
         break;
-    case FdoGeometryType_LineString:
+    case FdoGeometricType_Curve:
         pgType = "LINESTRING";
         break;
-    case FdoGeometryType_Polygon:
+    case FdoGeometricType_Surface:
         pgType = "POLYGON";
         break;
-    case FdoGeometryType_MultiPoint:
-        pgType = "MULTIPOINT";
-        break;
-    case FdoGeometryType_MultiLineString:
-        pgType = "MULTILINESTRING";
-        break;
-    case FdoGeometryType_MultiPolygon:
-        pgType = "MULTIPOLYGON";
-        break;
-    case FdoGeometryType_MultiGeometry:
-        pgType = "GEOMETRYCOLLECTION";
+    case FdoGeometricType_Solid:
+        pgType = "GEOMETRY";
         break;
     default:
         // Also handles FdoGeometryType_None
