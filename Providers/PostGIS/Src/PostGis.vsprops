@@ -17,7 +17,7 @@
 	/>
 	<UserMacro
 		Name="FDOPOSTGRESQL"
-		Value="C:\Program Files\PostgreSQL\8.3"
+		Value="$(FDOTHIRDPARTY)\pgsql"
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
