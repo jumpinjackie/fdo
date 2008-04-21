@@ -461,8 +461,8 @@ FdoString* SltReader::GetString(FdoString* propertyName)
             return NULL;
 
 	    int len = (int)strlen(text);
-	    m_sprops[i].EnsureSize(len);
-	    A2W_FAST(m_sprops[i].data, len, text);
+	    m_sprops[i].EnsureSize(len+1);
+	    A2W_FAST(m_sprops[i].data, len+1, text);
 	    m_sprops[i].valid = 1;
     }
 
