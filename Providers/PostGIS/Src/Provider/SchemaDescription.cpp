@@ -196,8 +196,8 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
 
         // TODO: Do we want to calculate bbox at all?
         // already in stReader->GetGeometryColumns() {
-        //     PgSpatialTablesReader::EstimateColumnExtent()
-        //  or PgSpatialTablesReader::SelectColumnExtent()
+        //     PgTablesReader::EstimateColumnExtent()
+        //  or PgTablesReader::SelectColumnExtent()
         // }
 
         ////////////////// GENERATE CLASS DEFINITION //////////////////
