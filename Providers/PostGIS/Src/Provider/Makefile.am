@@ -52,7 +52,7 @@ SQLDataReader.cpp \
 DescribeSchemaCommand.cpp \
 PgSpatialRefSysReader.cpp \
 DestroyDataStore.cpp \
-PgSpatialTablesReader.cpp \
+PgTablesReader.cpp \
 TopologyCapabilities.cpp \
 ExpressionCapabilities.cpp \
 PgTableColumnsReader.cpp \
@@ -99,7 +99,7 @@ DescribeSchemaCommand.h \
 PgSpatialRefSysReader.h \
 SQLDataReader.h \
 DestroyDataStore.h \
-PgSpatialTablesReader.h \
+PgTablesReader.h \
 stdafx.h \
 ExpressionCapabilities.h \
 PgTableColumnsReader.h \
