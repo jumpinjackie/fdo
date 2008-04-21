@@ -70,7 +70,7 @@ public:
     
     /// Open tables reader.
     /// This operation mimics FDO command usually creating instance of a reader.
-    /// There is no command dedicated for PgSpatialTableReader instantiation,
+    /// There is no command dedicated for PgTablesReader instantiation,
     /// so this function behaves like a command preparing reader instance.
     void Open();
 
