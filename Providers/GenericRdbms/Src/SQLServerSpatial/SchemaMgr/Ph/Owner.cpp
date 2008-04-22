@@ -75,9 +75,9 @@ FdoInt64 FdoSmPhSqsOwner::SampleColumnSrid( FdoStringP dbObjectName, FdoStringP 
     FdoInt64 srid = -1;
     FdoStringP fmtObjectName = FdoStringP(L"\"") + dbObjectName.Replace(L".", L"\".\"") + L"\"";
 
-    // Note, column not quote-delimited since this does not work with column member extraction.
+    // Delimit column name with []. Can't use " when part of function.
 	FdoStringP sqlStmt = FdoStringP::Format(
-		L"select %ls.STSrid as srid from %ls.%ls", 
+		L"select [%ls].STSrid as srid from %ls.%ls", 
         (FdoString*) columnName,
         (FdoString*) this->GetDbName(),
         (FdoString*) fmtObjectName
@@ -231,7 +231,7 @@ FdoPtr<FdoSmPhRdSpatialContextReader> FdoSmPhSqsOwner::CreateRdSpatialContextRea
 
 FdoPtr<FdoSmPhRdSpatialContextReader> FdoSmPhSqsOwner::CreateRdSpatialContextReader( FdoStringP dbObjectName )
 {
-    return new FdoSmPhRdSqsSpatialContextReader(FDO_SAFE_ADDREF(this) );
+    return new FdoSmPhRdSqsSpatialContextReader(FDO_SAFE_ADDREF(this), dbObjectName );
 }
 
 FdoSmPhRdCoordSysReaderP FdoSmPhSqsOwner::CreateCoordSysReader( FdoInt64 srid ) const

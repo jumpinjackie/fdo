@@ -32,7 +32,7 @@ class MySqlDataTypeTests :	public DataTypeTests
     void set_provider();
     int do_rdbi_init ();
     int do_rdbi_connect (const char* dataStoreName, const char* userName, const char* userPassword);
-    char *get_bind_var (int n)
+    char *get_bind_var (int n, int rdbiType)
 	{
 		return ("?");
 	}

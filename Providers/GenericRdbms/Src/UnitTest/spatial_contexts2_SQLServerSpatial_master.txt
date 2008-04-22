@@ -27,9 +27,9 @@ SC_1</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
--2001.000000 -1002.000000</gml:pos>
+-1001.000000 -1002.000000</gml:pos>
 <gml:pos>
-1001.000000 1002.000000</gml:pos>
+1001.000000 2002.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
@@ -46,9 +46,9 @@ SC_2</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
--1001.000000 -2002.000000</gml:pos>
+-1001.000000 -1002.000000</gml:pos>
 <gml:pos>
-1001.000000 1002.000000</gml:pos>
+1001.000000 3002.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
@@ -65,9 +65,9 @@ SC_3</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
--1001.000000 -1002.000000</gml:pos>
+-2001.000000 -1002.000000</gml:pos>
 <gml:pos>
-2001.000000 1002.000000</gml:pos>
+1001.000000 1002.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
@@ -84,9 +84,9 @@ SC_4</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
--1001.000000 -1002.000000</gml:pos>
+-1001.000000 -2002.000000</gml:pos>
 <gml:pos>
-1001.000000 2002.000000</gml:pos>
+1001.000000 1002.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
@@ -105,7 +105,7 @@ SC_5</gml:srsName>
 <gml:pos>
 -1001.000000 -1002.000000</gml:pos>
 <gml:pos>
-1001.000000 3002.000000</gml:pos>
+2001.000000 1002.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
@@ -179,12 +179,12 @@ geographic</gml:derivedCRSType>
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="GEOM_COLUMN1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="SC_4" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:element name="GEOM_COLUMN1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="SC_1" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="GEOM_COLUMN2" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="SC_5" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:element name="GEOM_COLUMN2" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="SC_2" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -229,22 +229,22 @@ geographic</gml:derivedCRSType>
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="GEOM_COLUMN4" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="SC_1" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:element name="GEOM_COLUMN4" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="SC_3" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="GEOM_COLUMN5" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="SC_2" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:element name="GEOM_COLUMN5" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="SC_4" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="GEOM_COLUMN6" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="SC_3" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:element name="GEOM_COLUMN6" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="SC_5" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="GEOM_COLUMN7" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="SC_4" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:element name="GEOM_COLUMN7" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="SC_1" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>

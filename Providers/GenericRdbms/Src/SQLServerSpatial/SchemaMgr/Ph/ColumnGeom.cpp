@@ -156,9 +156,7 @@ void FdoSmPhSqsColumnGeom::PostFinalize()
         FdoSmPhOwner* owner         = (FdoSmPhOwner*)(FdoSmSchemaElement*)(GetParent()->GetParent());
         FdoStringP    dbObjectName  = GetParent()->GetName();
 
-        FdoSmPhSpatialContextGeomsP scGeoms = owner->GetSpatialContextGeoms();
-
-        FdoSmPhSpatialContextGeomP scGeom = scGeoms->FindItem( FdoSmPhSpatialContextGeom::MakeName(dbObjectName, GetName()) );
+        FdoSmPhSpatialContextGeomP scGeom = owner->FindSpatialContextGeom(dbObjectName, GetName());
 
         if ( scGeom ) {
             foundMetaData = true;

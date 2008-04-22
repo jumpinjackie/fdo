@@ -610,7 +610,6 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
         propertyValue->SetValue(dataValue);
 
         double       coordsBuffer[3];
-        int          segCount = 1;
 
         coordsBuffer[0] = 5;
         coordsBuffer[1] = 10;
@@ -620,14 +619,14 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
         FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
 
         bool supportsZ = (FdoPtr<FdoIGeometryCapabilities>(connection->GetGeometryCapabilities())->GetDimensionalities() & FdoDimensionality_Z);
-		FdoPtr<FdoILineString> line1;
+		FdoPtr<FdoIPoint> point1;
 
 		if ( supportsZ )
-			line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, segCount*3, coordsBuffer);
+			point1 = gf->CreatePoint(FdoDimensionality_XY|FdoDimensionality_Z, coordsBuffer);
 		else
-			line1 = gf->CreateLineString(FdoDimensionality_XY, segCount*2, coordsBuffer);
+			point1 = gf->CreatePoint(FdoDimensionality_XY, coordsBuffer);
 
-        FdoPtr<FdoByteArray> byteArray = gf->GetFgf(line1);
+        FdoPtr<FdoByteArray> byteArray = gf->GetFgf(point1);
         FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
         propertyValue->SetValue(geometryValue);
 
@@ -771,11 +770,11 @@ void FdoUpdateTest::UpdateMultiIdFeatureClass()
         propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, UnitTestUtil::GetNlsObjectName(L"Geometry"));
 
 		if ( supportsZ )
-			line1 = gf->CreateLineString(FdoDimensionality_XY|FdoDimensionality_Z, segCount*3, coordsBuffer);
+			point1 = gf->CreatePoint(FdoDimensionality_XY|FdoDimensionality_Z, coordsBuffer);
 		else
-			line1 = gf->CreateLineString(FdoDimensionality_XY, segCount*2, coordsBuffer);
+			point1 = gf->CreatePoint(FdoDimensionality_XY, coordsBuffer);
 
-        byteArray = gf->GetFgf(line1);
+        byteArray = gf->GetFgf(point1);
         geometryValue = FdoGeometryValue::Create(byteArray);
         propertyValue->SetValue(geometryValue);
 
@@ -1504,13 +1503,13 @@ void FdoUpdateTest::CheckGeometry(FdoPtr<FdoIFeatureReader> rdr, FdoString* prop
     FdoPtr<FdoByteArray> sGeom = rdr->GetGeometry( propName );
     CPPUNIT_ASSERT( sGeom );
 
-    FdoPtr<FdoILineString> line1 = (FdoILineString*) gf->CreateGeometryFromFgf( sGeom );
-    FdoPtr<FdoIDirectPosition> pos = line1->GetItem(0);
+    FdoPtr<FdoIPoint> point1 = (FdoIPoint*) gf->CreateGeometryFromFgf( sGeom );
+    FdoPtr<FdoIDirectPosition> pos = point1->GetPosition();
 
     CPPUNIT_ASSERT( expectedX == pos->GetX() );
     CPPUNIT_ASSERT( expectedY == pos->GetY() );
 
-    if ( line1->GetDimensionality() == 3 ) 
+    if ( point1->GetDimensionality() == 3 ) 
         CPPUNIT_ASSERT( expectedZ == pos->GetZ() );
 }
 
@@ -2035,10 +2034,12 @@ void FdoUpdateTest::UpdateNoMeta()
             if ( m_hasGeom ) {
                 UnitTestUtil::Sql2Db( 
                     FdoStringP::Format(
-                        L"insert into table_noid_geom ( key1, \"%ls\", geometry, \"%ls\" ) select key1, \"%ls\", geometry, \"%ls\" from \"%ls\"",
+                        L"insert into table_noid_geom ( key1, \"%ls\", \"%ls\", \"%ls\" ) select key1, \"%ls\", \"%ls\", \"%ls\" from \"%ls\"",
                         (FdoString*) phMgr->GetDcColumnName( Key2ColName() ),
+                        (FdoString*) phMgr->GetDcColumnName( GeomColName() ),
                         (FdoString*) phMgr->GetDcColumnName( ValueColName() ),
                         (FdoString*) phMgr->GetDcColumnName( Key2ColName() ),
+                        (FdoString*) phMgr->GetDcColumnName( GeomColName() ),
                         (FdoString*) phMgr->GetDcColumnName( ValueColName() ),
                         (FdoString*) phMgr->GetDcDbObjectName( table_id_geom )
                     ),
@@ -2163,7 +2164,7 @@ void FdoUpdateTest::CreateExternalTable( FdoSmPhOwnerP owner, FdoStringP tableNa
         table->AddPkeyCol( fkColumn->GetName() );
 
     if ( hasGeom )
-        column = table->CreateColumnGeom( phMgr->GetDcColumnName(L"geometry"), CreateScInfo(tableName), true, false );
+        column = table->CreateColumnGeom( phMgr->GetDcColumnName(GeomColName()), CreateScInfo(tableName), true, false );
 
     column = table->CreateColumnChar( phMgr->GetDcColumnName(ValueColName()), true, 20 );
 
@@ -2199,7 +2200,7 @@ void FdoUpdateTest::CreateExternalView( FdoSmPhOwnerP owner, FdoStringP viewName
     FdoSmPhColumnP fkColumn = view->CreateColumnChar( columnName, false, 10, columnName );
 
     if ( hasGeom ) {
-        columnName = phMgr->GetDcColumnName(L"geometry");
+        columnName = phMgr->GetDcColumnName(GeomColName());
         column = view->CreateColumnGeom( columnName, CreateScInfo(tableName), true, false, false, columnName );
     }
 
@@ -2337,7 +2338,7 @@ void FdoUpdateTest::CreateExternalData( FdoPtr<FdoIConnection> connection, FdoSm
         coordsBuffer[2] = 15;
         coordsBuffer[3] = 20;
 
-        propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, phMgr->GetDcColumnName(L"geometry") );
+        propertyValue = FdoUpdateTest::AddNewProperty( propertyValues, phMgr->GetDcColumnName(GeomColName()) );
         FdoPtr<FdoILineString> line1 = gf->CreateLineString(FdoDimensionality_XY, segCount*2, coordsBuffer);
         FdoPtr<FdoByteArray> byteArray = gf->GetFgf(line1);
         FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray); 
@@ -2411,7 +2412,7 @@ void FdoUpdateTest::CreateExternalData( FdoPtr<FdoIConnection> connection, FdoSm
         propertyValues = UpdateCommand->GetPropertyValues();
 
         coordsBuffer[1] = 5;
-        propertyValue = AddNewProperty( propertyValues, phMgr->GetDcColumnName(L"geometry") );
+        propertyValue = AddNewProperty( propertyValues, phMgr->GetDcColumnName(GeomColName()) );
         FdoPtr<FdoILineString> line1 = gf->CreateLineString(FdoDimensionality_XY, segCount*2, coordsBuffer);
         FdoPtr<FdoByteArray> byteArray = gf->GetFgf(line1);
         FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
@@ -2560,7 +2561,7 @@ void FdoUpdateTest::SelectNoMetaSpatial( FdoPtr<FdoIConnection> connection, FdoS
     FdoPtr<FdoILinearRing> extRing = gf->CreateLinearRing(FdoDimensionality_XY|FdoDimensionality_Z, 15, ordsXYExt);
     FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(extRing, NULL );
     FdoPtr<FdoGeometryValue> geomValue = FdoGeometryValue::Create(FdoPtr<FdoByteArray>(gf->GetFgf(poly)));
-    FdoPtr<FdoSpatialCondition> spatialFilter = FdoPtr<FdoSpatialCondition>(FdoSpatialCondition::Create(phMgr->GetDcColumnName(L"geometry"),
+    FdoPtr<FdoSpatialCondition> spatialFilter = FdoPtr<FdoSpatialCondition>(FdoSpatialCondition::Create(phMgr->GetDcColumnName(GeomColName()),
                                                                       FdoSpatialOperations_Intersects,
                                                                       geomValue));
 
@@ -2617,7 +2618,7 @@ void FdoUpdateTest::VldNoMetaRow(
         CPPUNIT_ASSERT( wcscmp( FixStringVal(rdr->GetString(phMgr->GetDcColumnName(ValueColName()))), L"A" ) == 0 );
 
         if ( hasGeom & !propsPruned )         
-            CheckGeometry( rdr, phMgr->GetDcColumnName(L"geometry"), 5, 5, 0 );
+            CheckGeometry( rdr, phMgr->GetDcColumnName(GeomColName()), 5, 5, 0 );
     }
 
     if ( wcscmp(key1val, L"KEY1_3" ) == 0 )
@@ -2636,7 +2637,7 @@ void FdoUpdateTest::VldNoMetaRow(
         CPPUNIT_ASSERT( wcscmp( FixStringVal(rdr->GetString(phMgr->GetDcColumnName(ValueColName()))), L"M\x00f6"L"dified" ) == 0 );
 
         if ( hasGeom && !propsPruned ) 
-            CheckGeometry( rdr, phMgr->GetDcColumnName(L"geometry"), 5, 10, 0 );
+            CheckGeometry( rdr, phMgr->GetDcColumnName(GeomColName()), 5, 10, 0 );
     }
 
     if ( hasNullcol ) {
@@ -2691,6 +2692,11 @@ FdoStringP FdoUpdateTest::Key2ColName()
 FdoStringP FdoUpdateTest::ValueColName()
 {
     return L"value \x00e4";
+}
+
+FdoStringP FdoUpdateTest::GeomColName()
+{
+    return UnitTestUtil::GetNlsObjectName(L"Geometry");
 }
 
 FdoStringP FdoUpdateTest::FixStringVal( FdoString* val )
