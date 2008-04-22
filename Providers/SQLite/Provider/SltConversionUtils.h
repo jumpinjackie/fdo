@@ -26,8 +26,6 @@ SLT_API std::string W2A_SLOW(const wchar_t* input);
 
 SLT_API std::wstring A2W_SLOW(const char* input);
 
-SLT_API void A2W_FAST(wchar_t* dst, int wlen, const char* src);
-
 SLT_API void A2W_FAST(wchar_t* dst, int wlen, const char* src, int clen);
 
 SLT_API int W2A_FAST(char* dst, int clen, const wchar_t* src, int wlen);
