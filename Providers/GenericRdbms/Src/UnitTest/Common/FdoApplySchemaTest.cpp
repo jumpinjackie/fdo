@@ -28,6 +28,7 @@ FdoString*    FdoApplySchemaTest::DB_NAME_OVERRIDE_SUFFIX           = L"_apply_o
 FdoString*    FdoApplySchemaTest::DB_NAME_OVERRIDE_DEFAULT_SUFFIX   = L"_apply_overridedef";
 FdoString*    FdoApplySchemaTest::DB_NAME_FOREIGN_SUFFIX            = L"_apply_foreign";
 FdoString*    FdoApplySchemaTest::DB_NAME_CONFIG_SUFFIX             = L"_apply_config";
+FdoString*    FdoApplySchemaTest::DB_NAME_NO_META_SUFFIX            = L"_apply_no_meta";
 
 FdoString*    FdoApplySchemaTest::LT_NAME                           = L"ApplyTest";
 FdoString*    FdoApplySchemaTest::DB_NAME_LT_SUFFIX                 = L"_apply_lt";
@@ -1744,6 +1745,99 @@ void FdoApplySchemaTest::TestConfigDoc ()
 
 	printf( "Done\n" );
 }
+
+void FdoApplySchemaTest::TestNoMeta ()
+{
+    StaticConnection* staticConn = NULL;
+	FdoPtr<FdoIConnection> connection;
+
+	try {
+        staticConn = UnitTestUtil::NewStaticConnection();
+        staticConn->connect();
+        UnitTestUtil::CreateDBNoMeta( 
+            staticConn->CreateSchemaManager(),
+            UnitTestUtil::GetEnviron("datastore", DB_NAME_NO_META_SUFFIX)
+        );
+
+
+        // delete, re-create and open the datastore
+		printf( "Initializing Connection ... \n" );
+		connection = UnitTestUtil::CreateConnection(
+			false,
+			false,
+            DB_NAME_NO_META_SUFFIX
+		);
+
+        bool succeeded = false;
+
+        try {
+            CreateAcadSchema(connection);
+            succeeded = true;
+        }
+		catch ( FdoSchemaException* e )
+		{
+            FdoStringP msg = FdoStringP(e->GetExceptionMessage()).Lower();
+ 
+            FdoPtr<FdoException> e2 = FdoException::Create(msg, FdoPtr<FdoException>(e->GetCause()));
+
+			UnitTestUtil::PrintException(
+                e2, 
+                UnitTestUtil::GetOutputFileName( SchemaNoMetaErrFile(1,false) ), 
+                true 
+            );
+			FDO_SAFE_RELEASE(e);
+		}
+
+		if ( succeeded ) 
+			CPPUNIT_FAIL( "ApplySchema to non-FDO datastore was supposed to fail" );
+
+
+        printf( "Closing Connection ... \n" );
+		UnitTestUtil::CloseConnection(
+			connection,
+			false,
+            DB_NAME_SUFFIX
+		);
+
+        delete staticConn;
+        staticConn = NULL;
+
+#ifdef _WIN32
+   		UnitTestUtil::CheckOutput( 
+            SchemaNoMetaErrFile(1,true),
+            UnitTestUtil::GetOutputFileName( SchemaNoMetaErrFile(1,false) )
+        );
+#endif
+
+	}
+	catch ( FdoException* e ) 
+	{
+		try {
+            if ( staticConn ) delete staticConn;
+			if (connection) connection->Close(); 
+		}
+		catch ( ... ) 
+		{
+		}
+		UnitTestUtil::FailOnException( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+        if ( staticConn ) delete staticConn;
+		if (connection) connection->Close(); 
+		throw;
+	}
+   	catch (...)
+   	{
+        if ( staticConn ) delete staticConn;
+		if (connection) connection->Close(); 
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+		
+	printf( "Done\n" );
+
+}
+
 
 void FdoApplySchemaTest::ModMetaClassSchema( FdoIConnection* connection )
 {
@@ -6257,6 +6351,14 @@ FdoStringP FdoApplySchemaTest::SchemaTestErrFile( int fileNum, bool isMaster )
 		return FdoStringP::Format( L"apply_schema_err%d%ls.txt", fileNum, L"_master");
 	else
 		return UnitTestUtil::GetOutputFileName( FdoStringP::Format( L"apply_schema_err%d.txt", fileNum) );
+}
+
+FdoStringP FdoApplySchemaTest::SchemaNoMetaErrFile( int fileNum, bool isMaster )
+{
+	if (isMaster)
+		return FdoStringP::Format( L"apply_no_meta_err%d%ls.txt", fileNum, L"_master");
+	else
+		return UnitTestUtil::GetOutputFileName( FdoStringP::Format( L"apply_no_meta_err%d.txt", fileNum) );
 }
 
 FdoStringP FdoApplySchemaTest::SchemaOvErrFile( int fileNum, bool isMaster )

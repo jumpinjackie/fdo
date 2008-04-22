@@ -85,7 +85,8 @@ public:
 	static wchar_t *GetConnectionString(StringConnTypeRequest pTypeReq = Connection_WithDatastore, FdoString *suffix = L"", bool bAddExtraneousSpaces = false);
     static void CreateDB(bool addSchema = true, bool useBaseMapping=false, FdoString *suffix = L"", int lt_method = 0, bool lt_method_fixed = false );
 	static void CreateDB( FdoIConnection* connection, FdoString *datastore, FdoString *description, FdoString *password, char *schemaType, int local_lt_method );   
-	static FdoStringP GetEnviron(const char *name, FdoString *suffix = L"");
+    static FdoSmPhOwnerP CreateDBNoMeta( FdoSchemaManagerP sm, FdoString *datastore, FdoString *password = L"test" );
+    static FdoStringP GetEnviron(const char *name, FdoString *suffix = L"");
 	static void SetProvider( const char *providerName );
 
     // Set up and open a connection to a Database.

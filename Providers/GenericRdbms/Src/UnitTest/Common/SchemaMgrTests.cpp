@@ -83,19 +83,7 @@ void SchemaMgrTests::testGenDefault ()
             UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX)
         );
 
-        FdoSmPhOwnerP owner = phMgr->FindOwner( datastore, L"", false );
-        if ( owner ) {
-            owner->SetElementState( FdoSchemaElementState_Deleted );
-            owner->Commit();
-        }
-
-        printf( "Creating schema ...\n" );
-
-        owner = database->CreateOwner(
-            datastore, 
-            false
-        );
-        owner->SetPassword( L"test" );
+        FdoSmPhOwnerP owner = UnitTestUtil::CreateDBNoMeta( mgr, datastore );
 
         FdoSmPhTableP table = owner->CreateTable( phMgr->GetDcDbObjectName(L"RTABLE1" ));
         SetLtLck(table, lt_mode);

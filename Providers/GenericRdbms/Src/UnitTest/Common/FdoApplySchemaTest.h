@@ -37,6 +37,7 @@ class FdoApplySchemaTest : public CppUnit::TestCase
   CPPUNIT_TEST( TestOverrideErrors );
   CPPUNIT_TEST( TestLT );
   CPPUNIT_TEST( TestConfigDoc );
+  CPPUNIT_TEST( TestNoMeta );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -54,6 +55,7 @@ protected:
     virtual void TestOverrideErrors ();
     virtual void TestLT();
     virtual void TestConfigDoc();
+    virtual void TestNoMeta();
 
     void DeleteAcadSchema( FdoIConnection* connection );
 	void DeleteLandSchema( FdoIConnection* connection );
@@ -169,6 +171,8 @@ protected:
 
     virtual FdoStringP SchemaTestErrFile( int fileNum, bool isMaster );
 
+    virtual FdoStringP SchemaNoMetaErrFile( int fileNum, bool isMaster );
+
     virtual FdoStringP SchemaOvErrFile( int fileNum, bool isMaster );
 
     void WriteXmlOverrides(
@@ -203,6 +207,7 @@ protected:
     static FdoString*      DB_NAME_OVERRIDE_DEFAULT_SUFFIX;
     static FdoString*      DB_NAME_FOREIGN_SUFFIX;
     static FdoString*      DB_NAME_CONFIG_SUFFIX;
+    static FdoString*      DB_NAME_NO_META_SUFFIX;
 
     static FdoString*      LT_NAME;
     static FdoString*      DB_NAME_LT_SUFFIX;
