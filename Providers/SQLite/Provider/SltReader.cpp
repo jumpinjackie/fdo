@@ -462,7 +462,7 @@ FdoString* SltReader::GetString(FdoString* propertyName)
 
 	    int len = (int)strlen(text);
 	    m_sprops[i].EnsureSize(len+1);
-	    A2W_FAST(m_sprops[i].data, len+1, text);
+	    A2W_FAST(m_sprops[i].data, len+1, text, len);
 	    m_sprops[i].valid = 1;
     }
 
@@ -767,6 +767,27 @@ const FdoByte* SltReader::GetGeometry(int i, FdoInt32* len)
         }
 
         *len = Wkb2Fgf(geom, m_wkbBuffer);
+        return m_wkbBuffer;
+    }
+    else if (m_eGeomFormat == eWKT)
+    {
+        wchar_t* tmp = (wchar_t*)alloca(sizeof(wchar_t)*(*len+1));
+        A2W_FAST(tmp, *len+1, (const char*)geom, *len);
+
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+
+        FdoPtr<FdoIGeometry> geom = gf->CreateGeometry((FdoString*)tmp);
+        FdoPtr<FdoByteArray> fgf = gf->GetFgf(geom);
+        
+        *len = fgf->GetCount();
+        if (m_wkbBufferLen < *len)
+        {
+            delete[] m_wkbBuffer;
+            m_wkbBufferLen = *len;
+            m_wkbBuffer = new unsigned char[m_wkbBufferLen];
+        }
+
+        memcpy(m_wkbBuffer, fgf->GetData(), *len);
         return m_wkbBuffer;
     }
     else
