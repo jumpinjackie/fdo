@@ -1177,6 +1177,32 @@ void UnitTestUtil::CreateDB( FdoIConnection* connection, FdoString *datastore, F
 
 }
 
+FdoSmPhOwnerP UnitTestUtil::CreateDBNoMeta( FdoSchemaManagerP sm, FdoString *datastore, FdoString *password )
+{
+    FdoSmPhMgrP phMgr = sm->GetPhysicalSchema();
+
+    FdoSmPhDatabaseP database = phMgr->GetDatabase();
+
+    printf( "Predeleting schema ...\n" );
+
+    FdoSmPhOwnerP owner = phMgr->FindOwner( datastore, L"", false );
+    if ( owner ) {
+        owner->SetElementState( FdoSchemaElementState_Deleted );
+        owner->Commit();
+    }
+
+    printf( "Creating schema ...\n" );
+
+    owner = database->CreateOwner(
+        datastore, 
+        false
+    );
+    owner->SetPassword( password );
+    owner->Commit();
+
+    return owner;
+}
+
 void UnitTestUtil::FailOnException( FdoException* e )
 {
     char buffer[5000];
@@ -1414,7 +1440,6 @@ FdoIConnection* UnitTestUtil::CreateConnection(
     connection->Close();
     connection->SetConnectionString ( dbConnectString);
     connection->Open();
-   // connection->GetDbiConnection()->dbi_set_lt_method(local_lt_method);
 
     return(connection);
 }
