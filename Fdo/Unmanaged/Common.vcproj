@@ -600,7 +600,7 @@
 						>
 						<Tool
 							Name="VCCustomBuildTool"
-							CommandLine="Bin\Win64\Release\FileToHdr Src/Common/Gml212/feature.xsd Src/Common\Gml212\feature.h feature&#x0D;&#x0A;"
+							CommandLine="Bin\Win32\Release\FileToHdr Src/Common/Gml212/feature.xsd Src/Common\Gml212\feature.h feature&#x0D;&#x0A;"
 							Outputs="Src/Common/Gml212/feature.h"
 						/>
 					</FileConfiguration>
@@ -618,7 +618,7 @@
 						>
 						<Tool
 							Name="VCCustomBuildTool"
-							CommandLine="Bin\Win64\Debug\FileToHdr Src/Common/Gml212/feature.xsd Src/Common\Gml212\feature.h feature&#x0D;&#x0A;"
+							CommandLine="Bin\Win32\Debug\FileToHdr Src/Common/Gml212/feature.xsd Src/Common\Gml212\feature.h feature&#x0D;&#x0A;"
 							Outputs="Src/Common/Gml212/feature.h"
 						/>
 					</FileConfiguration>
@@ -640,7 +640,7 @@
 						>
 						<Tool
 							Name="VCCustomBuildTool"
-							CommandLine="Bin\Win64\Release\FileToHdr Src/Common/Gml212/geometry.xsd Src/Common\Gml212\geometry.h geometry&#x0D;&#x0A;"
+							CommandLine="Bin\Win32\Release\FileToHdr Src/Common/Gml212/geometry.xsd Src/Common\Gml212\geometry.h geometry&#x0D;&#x0A;"
 							Outputs="Src/Common/Gml212/geometry.h"
 						/>
 					</FileConfiguration>
@@ -658,7 +658,7 @@
 						>
 						<Tool
 							Name="VCCustomBuildTool"
-							CommandLine="Bin\Win64\Debug\FileToHdr Src/Common/Gml212/geometry.xsd Src/Common\Gml212\geometry.h geometry&#x0D;&#x0A;"
+							CommandLine="Bin\Win32\Debug\FileToHdr Src/Common/Gml212/geometry.xsd Src/Common\Gml212\geometry.h geometry&#x0D;&#x0A;"
 							Outputs="Src/Common/Gml212/geometry.h"
 						/>
 					</FileConfiguration>
@@ -688,7 +688,7 @@
 						>
 						<Tool
 							Name="VCCustomBuildTool"
-							CommandLine="Bin\Win64\Release\FileToHdr Src/Common/Gml212/xlinks.xsd Src/Common\Gml212\xlinks.h xlinks&#x0D;&#x0A;"
+							CommandLine="Bin\Win32\Release\FileToHdr Src/Common/Gml212/xlinks.xsd Src/Common\Gml212\xlinks.h xlinks&#x0D;&#x0A;"
 							Outputs="Src/Common/Gml212/xlinks.h"
 						/>
 					</FileConfiguration>
@@ -706,7 +706,7 @@
 						>
 						<Tool
 							Name="VCCustomBuildTool"
-							CommandLine="Bin\Win64\Debug\FileToHdr Src/Common/Gml212/xlinks.xsd Src/Common\Gml212\xlinks.h xlinks&#x0D;&#x0A;"
+							CommandLine="Bin\Win32\Debug\FileToHdr Src/Common/Gml212/xlinks.xsd Src/Common\Gml212\xlinks.h xlinks&#x0D;&#x0A;"
 							Outputs="Src/Common/Gml212/xlinks.h"
 						/>
 					</FileConfiguration>

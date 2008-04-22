@@ -760,7 +760,7 @@
 						>
 						<Tool
 							Name="VCCustomBuildTool"
-							CommandLine="Bin\Win64\Debug\FileToHdr Src/Fdo/Schema/SchemaFromExternal.xslt Src/Fdo/Schema/SchemaFromExternal.h schemaFromExternal&#x0D;&#x0A;"
+							CommandLine="Bin\Win32\Debug\FileToHdr Src/Fdo/Schema/SchemaFromExternal.xslt Src/Fdo/Schema/SchemaFromExternal.h schemaFromExternal&#x0D;&#x0A;"
 							Outputs="Src/Fdo/Schema/SchemaFromExternal.h"
 						/>
 					</FileConfiguration>
@@ -769,7 +769,7 @@
 						>
 						<Tool
 							Name="VCCustomBuildTool"
-							CommandLine="Bin\Win64\Release\FileToHdr Src/Fdo/Schema/SchemaFromExternal.xslt Src/Fdo/Schema/SchemaFromExternal.h schemaFromExternal&#x0D;&#x0A;"
+							CommandLine="Bin\Win32\Release\FileToHdr Src/Fdo/Schema/SchemaFromExternal.xslt Src/Fdo/Schema/SchemaFromExternal.h schemaFromExternal&#x0D;&#x0A;"
 							Outputs="Src/Fdo/Schema/SchemaFromExternal.h"
 						/>
 					</FileConfiguration>
@@ -800,7 +800,7 @@
 						>
 						<Tool
 							Name="VCCustomBuildTool"
-							CommandLine="Bin\Win64\Debug\FileToHdr Src/Fdo/Schema/SchemaFromInternal.xslt Src/Fdo/Schema/SchemaFromInternal.h schemaFromInternal&#x0D;&#x0A;"
+							CommandLine="Bin\Win32\Debug\FileToHdr Src/Fdo/Schema/SchemaFromInternal.xslt Src/Fdo/Schema/SchemaFromInternal.h schemaFromInternal&#x0D;&#x0A;"
 							Outputs="Src/Fdo/Schema/SchemaFromInternal.h"
 						/>
 					</FileConfiguration>
@@ -809,7 +809,7 @@
 						>
 						<Tool
 							Name="VCCustomBuildTool"
-							CommandLine="Bin\Win64\Release\FileToHdr Src/Fdo/Schema/SchemaFromInternal.xslt Src/Fdo/Schema/SchemaFromInternal.h schemaFromInternal&#x0D;&#x0A;"
+							CommandLine="Bin\Win32\Release\FileToHdr Src/Fdo/Schema/SchemaFromInternal.xslt Src/Fdo/Schema/SchemaFromInternal.h schemaFromInternal&#x0D;&#x0A;"
 							Outputs="Src/Fdo/Schema/SchemaFromInternal.h"
 						/>
 					</FileConfiguration>
