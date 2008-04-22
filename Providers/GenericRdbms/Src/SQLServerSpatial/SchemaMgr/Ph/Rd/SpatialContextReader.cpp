@@ -227,9 +227,9 @@ FdoSmPhReaderP FdoSmPhRdSqsSpatialContextReader::MakeQueryReader( FdoSmPhOwnerP 
     if ( !reader ) {
         FdoSmPhRdSqsDbObjectBindsP binds = new FdoSmPhRdSqsDbObjectBinds(
             mgr,
-            L"a.TABLE_SCHEMA",
+            L"c.name",
             L"user_name",
-            L"a.TABLE_NAME",
+            L"a.name",
             L"object_name",
             objectNames
         );

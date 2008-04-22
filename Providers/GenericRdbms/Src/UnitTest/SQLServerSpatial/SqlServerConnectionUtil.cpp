@@ -244,12 +244,6 @@ FdoStringP SqlServerConnectionUtil::GetOutputFileName (FdoString* pBaseFileName)
 
 FdoStringP SqlServerConnectionUtil::GetNlsObjectName( FdoStringP inName )
 {
-    if ( inName == L"Geometry") 
-        return inName;
-
-    if ( inName == L"Industrial Parcel" ) 
-        return L"Industrial_Parcel";
-
     return ConnectionUtil::GetNlsObjectName(inName);
 }
 

@@ -82,8 +82,9 @@ FdoRdbmsFeatureReader( connection, NULL, false, classDef, NULL)
     FdoPtr<FdoISQLCommand> selCmd = (FdoISQLCommand*)mFdoConnection->CreateCommand( FdoCommandType_SQLCommand );
 
     // Apparently strait select is 3x faster.
-    //    FdoStringP sql = FdoStringP::Format(L"select %ls.STEnvelope().STAsBinary() as MBR from %ls", colNameW, tableNameW);
-    FdoStringP sql = FdoStringP::Format(L"select %ls.STAsBinary() as MBR from %ls", colNameW, tableNameW);
+    //    FdoStringP sql = FdoStringP::Format(L"select [%ls].STEnvelope().STAsBinary() as MBR from %ls", colNameW, tableNameW);
+    // Delimit column name with []. Can't use " when part of function.
+    FdoStringP sql = FdoStringP::Format(L"select [%ls].STAsBinary() as MBR from \"%ls\"", colNameW, tableNameW);
 
     selCmd->SetSQLStatement( (FdoString *)sql );
     FdoPtr<FdoISQLDataReader>  rdr = selCmd->ExecuteReader();

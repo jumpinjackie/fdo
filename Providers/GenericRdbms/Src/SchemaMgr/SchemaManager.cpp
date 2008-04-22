@@ -41,16 +41,20 @@ void FdoGrdSchemaManager::ApplySchema(
 		pConn->GetCommands()->tran_begin( transName );
 		tranBegun = true;
 
-		// Lock one of the schema tables. This prevents 2 concurrent applySchema
-		// operations from messing each other up.
+		// If the datastore has MetaSchema then lock one of the schema tables. 
+        // This prevents 2 concurrent applySchema operations from messing each other up.
 
-        GdbiStatement* lockStmt = pConn->Prepare( (const wchar_t*) GetSchemaLockStmt() );
-        GdbiQueryResult* results = lockStmt->ExecuteQuery();
+        FdoSmPhOwnerP owner = GetPhysicalSchema()->FindOwner();
 
-        results->End();
-        delete results;
-        lockStmt->Free();
-        delete lockStmt;
+        if ( owner && owner->GetHasMetaSchema() ) {
+            GdbiStatement* lockStmt = pConn->Prepare( (const wchar_t*) GetSchemaLockStmt() );
+            GdbiQueryResult* results = lockStmt->ExecuteQuery();
+
+            results->End();
+            delete results;
+            lockStmt->Free();
+            delete lockStmt;
+        }
 
         // Apply the schema.
         FdoSchemaManager::ApplySchema( pFeatSchema, pOverrides, bIgnoreStates ); 
@@ -92,16 +96,20 @@ void FdoGrdSchemaManager::SynchPhysical( const wchar_t* schemaName, bool bRollba
 		    pConn->GetCommands()->tran_begin( transName );
 		    tranBegun = true;
 
-		    // Lock one of the schema tables. This prevents 2 concurrent applySchema
-		    // operations from messing each other up.
+		    // If the datastore has MetaSchema then lock one of the schema tables. 
+            // This prevents 2 concurrent applySchema operations from messing each other up.
 
-            GdbiStatement* lockStmt = pConn->Prepare( (const wchar_t*) GetSchemaLockStmt() );
-            GdbiQueryResult* results = lockStmt->ExecuteQuery();
+            FdoSmPhOwnerP owner = GetPhysicalSchema()->FindOwner();
 
-            results->End();
-            delete results;
-            lockStmt->Free();
-            delete lockStmt;
+            if ( owner && owner->GetHasMetaSchema() ) {
+                GdbiStatement* lockStmt = pConn->Prepare( (const wchar_t*) GetSchemaLockStmt() );
+                GdbiQueryResult* results = lockStmt->ExecuteQuery();
+
+                results->End();
+                delete results;
+                lockStmt->Free();
+                delete lockStmt;
+            }
 
             // Synchronize the schemas
             FdoSchemaManager::SynchPhysical( schemaName, bRollbackOnly ); 

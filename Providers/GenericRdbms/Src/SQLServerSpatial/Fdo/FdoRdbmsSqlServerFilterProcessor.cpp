@@ -261,15 +261,17 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
         delete gc;
 	}
 
+    // Delimit column name with []. Can't use " when part of function.
+    buf += "[";
     buf += columnName;
-    buf += ".";
+    buf += "].";
  
     // Skip the invalid geometries otherwise any spatial query will fail.
     // The user should run "Select * where IsValid() = 0" in order to find out the offending geometries.
     buf += SQLSERVER_FUNCTION_ISVALID; 
-    buf += L"() = 1 AND ";
+    buf += L"() = 1 AND [";
     buf += columnName;
-    buf += ".";
+    buf += "].";
 
     // What operation
     FdoSpatialOperations  spatialOp = filter.GetOperation();
@@ -441,8 +443,10 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialExtentsFunction (FdoFunctio
     // Assume just one argument. TODO trow exception.
     FdoPtr<FdoIdentifier>   id = (FdoIdentifier *)(exprCol->GetItem(0));
     
+    // Delimit column name with []. Can't use " when part of function.
+    AppendString(L"[");
     AppendString( PropertyNameToColumnName( id->GetName() ) );
-    AppendString(L".");
+    AppendString(L"].");
     AppendString(SQLSERVER_FUNCTION_SPATIALEXTENTS);
     AppendString(OPEN_PARENTH);
     AppendString(CLOSE_PARENTH);
@@ -849,13 +853,17 @@ FdoStringP FdoRdbmsSqlServerFilterProcessor::GetGeometryString( FdoString* dbCol
 
     FdoStringP   wrappedName = FdoStringP();
 
+    // Delimit column name with []. Can't use " when part of function.
+    wrappedName += L"[";
     wrappedName += columnName;
+    wrappedName += L"]";
 
     wrappedName += FdoStringP(SQLSERVER_CONVERT_WKB);
     
     // Use the column name as alias 
-    wrappedName += L" as ";
+    wrappedName += L" as \"";
     wrappedName += columnName;
+    wrappedName += L"\"";
 
     return wrappedName;
 }

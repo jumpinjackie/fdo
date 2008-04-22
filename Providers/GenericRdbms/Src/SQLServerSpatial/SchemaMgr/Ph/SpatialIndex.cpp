@@ -205,7 +205,7 @@ bool FdoSmPhSqsSpatialIndex::Add()
             
             if ( column->GetTypeName().ICompare(L"geometry") == 0 ) {
                 sqlStmt = FdoStringP::Format(
-                    L"CREATE SPATIAL INDEX %ls ON %ls(%ls) USING GEOMETRY_GRID WITH ( BOUNDING_BOX = (%ls, %ls, %ls, %ls), %ls %ls);",
+                    L"CREATE SPATIAL INDEX \"%ls\" ON %ls (\"%ls\") USING GEOMETRY_GRID WITH ( BOUNDING_BOX = (%ls, %ls, %ls, %ls), %ls %ls);",
                     (FdoString*) indexName,
                     (FdoString*) tableDbQName, // no dbo. prefix etc.
                     column->GetName(),
@@ -217,7 +217,7 @@ bool FdoSmPhSqsSpatialIndex::Add()
             else {
                 // Bounds cannot be specified for geography column.
                 sqlStmt = FdoStringP::Format(
-                    L"CREATE SPATIAL INDEX %ls ON %ls(%ls) USING GEOGRAPHY_GRID WITH ( %ls %ls);",
+                    L"CREATE SPATIAL INDEX \"%ls\" ON %ls (\"%ls\") USING GEOGRAPHY_GRID WITH ( %ls %ls);",
                     (FdoString*) indexName,
                     (FdoString*) tableDbQName, // no dbo. prefix etc.
                     column->GetName(),
