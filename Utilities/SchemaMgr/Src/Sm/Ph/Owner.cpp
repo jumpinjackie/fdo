@@ -256,16 +256,17 @@ FdoSmPhDbObjectP FdoSmPhOwner::FindReferencedDbObject(FdoStringP dbObject, FdoSt
     // Look for referenced object in the cache for its owner.
     FdoSmPhOwnerP refOwner = GetManager()->FindOwner( owner, database );
 
-    if ( refOwner ) 
+    if ( refOwner ) {
         pDbObject = refOwner->GetDbObjects()->FindItem( dbObject );
 
-    if ( !pDbObject ) {
-        // Not in cache. Set up base objects for bulk loading
-        LoadBaseObjectCands();
+        if ( !pDbObject ) {
+            // Not in cache. Set up base objects for bulk loading
+            LoadBaseObjectCands();
 
-        // Find the object. This causes the bulk loading of it and some other
-        // objects into the schema cache.
-        pDbObject = refOwner->FindDbObject( dbObject );
+            // Find the object. This causes the bulk loading of it and some other
+            // objects into the schema cache.
+            pDbObject = refOwner->FindDbObject( dbObject );
+        }
     }
 
     return pDbObject;
@@ -1212,10 +1213,13 @@ void FdoSmPhOwner::LoadBaseObjectCands()
                 FdoSmPhBaseObjectP baseObject = baseObjects->GetItem(idx2);
 
                 FdoSmPhOwnerP baseOwner = GetManager()->FindOwner( baseObject->GetOwnerName(), baseObject->GetDatabaseName() );
-                baseOwner->AddCandDbObject( baseObject->GetObjectName() );
-                // Need primary keys of base objects (to determine view identity properties)
-                // so bulk load them.
-                baseOwner->SetBulkLoadPkeys(true);
+
+                if ( baseOwner ) {
+                    baseOwner->AddCandDbObject( baseObject->GetObjectName() );
+                    // Need primary keys of base objects (to determine view identity properties)
+                    // so bulk load them.
+                    baseOwner->SetBulkLoadPkeys(true);
+                }
             }
         }
 
