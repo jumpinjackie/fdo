@@ -11,6 +11,9 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -182,6 +185,177 @@
 				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.WMS.Overrides.dll"
 			/>
 		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="..\Bin\Debug64"
+			IntermediateDirectory="..\Obj\MgFdoWmsOverrides\Debug64"
+			ConfigurationType="2"
+			CharacterSet="0"
+			ManagedExtensions="4"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				Description="Updating Assembly Version Information for $(OutDir)\OSGeo.FDO.Providers.WMS.Overrides.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\UpdateVersion\bin\UpdateVersion.exe -b BuildDay -r Fixed -i ..\Src\OSGeo\FDO\Providers\WMS\Override\AssemblyVersion.cpp -o ..\Src\OSGeo\FDO\Providers\WMS\Override\AssemblyVersion.cpp"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="$(FDO)\Unmanaged\inc;$(FDO)\Managed\Src;$(FDO)\Managed\Src\OSGeo;..\..\inc;..\..\inc\WMS\Override;..\Src\OSGeo"
+				AdditionalUsingDirectories="$(FDO)\Managed\Bin\Win64\Debug"
+				PreprocessorDefinitions="WIN32;_DEBUG"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="WMSOverrides.lib FDO.lib FDOCommon.lib"
+				OutputFile="$(OutDir)\OSGeo.FDO.Providers.WMS.Overrides.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win64\Debug&quot;;..\..\Lib\Win64\Debug"
+				GenerateDebugInformation="true"
+				AssemblyDebug="1"
+				ProgramDatabaseFile="$(OutDir)\OSGeo.FDO.Providers.WMS.Overrides.pdb"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Versioning OSGeo.FDO.Providers.WMS.Overrides.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.WMS.Overrides.dll"
+				ExcludedFromBuild="true"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="..\Bin\Release64"
+			IntermediateDirectory="..\Obj\MgFdoWmsOverrides\Release64"
+			ConfigurationType="2"
+			CharacterSet="0"
+			ManagedExtensions="4"
+			WholeProgramOptimization="0"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				Description="Updating Assembly Version Information for $(OutDir)\OSGeo.FDO.Providers.WMS.Overrides.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\UpdateVersion\bin\UpdateVersion.exe -b BuildDay -r Fixed -i ..\Src\OSGeo\FDO\Providers\WMS\Override\AssemblyVersion.cpp -o ..\Src\OSGeo\FDO\Providers\WMS\Override\AssemblyVersion.cpp"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="$(FDO)\Unmanaged\inc;$(FDO)\Managed\Src;$(FDO)\Managed\Src\OSGeo;..\..\inc;..\..\inc\WMS\Override;..\Src\OSGeo"
+				AdditionalUsingDirectories="$(FDO)\Managed\Bin\Win64\Release"
+				PreprocessorDefinitions="WIN32;NDEBUG"
+				RuntimeLibrary="2"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="WMSOverrides.lib FDO.lib FDOCommon.lib"
+				OutputFile="$(OutDir)\OSGeo.FDO.Providers.WMS.Overrides.dll"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win64\Release&quot;;..\..\Lib\Win64\Release"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)\OSGeo.FDO.Providers.WMS.Overrides.pdb"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Versioning OSGeo.FDO.Providers.WMS.Overrides.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.WMS.Overrides.dll"
+				ExcludedFromBuild="true"
+			/>
+		</Configuration>
 	</Configurations>
 	<References>
 		<AssemblyReference
@@ -342,6 +516,22 @@
 								</FileConfiguration>
 								<FileConfiguration
 									Name="Release|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										UsePrecompiledHeader="1"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Debug|x64"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										UsePrecompiledHeader="1"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|x64"
 									>
 									<Tool
 										Name="VCCLCompilerTool"
