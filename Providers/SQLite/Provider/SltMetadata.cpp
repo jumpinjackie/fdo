@@ -30,9 +30,22 @@ static FdoDataType ConvertDataType(const char* type)
         return FdoDataType_String;
     else if (sqlite3StrICmp("INTEGER", type) == 0)
         return FdoDataType_Int64;
+    else if (sqlite3StrICmp("INT", type) == 0)
+        return FdoDataType_Int64;
     else if (sqlite3StrICmp("REAL", type) == 0)
         return FdoDataType_Double;
+    else if (sqlite3StrICmp("FLOAT", type) == 0)
+        return FdoDataType_Double;
+    else if (sqlite3StrICmp("DOUBLE", type) == 0)
+        return FdoDataType_Double;
+    else if (sqlite3StrICmp("VARCHAR", type) == 0)
+        return FdoDataType_String;
+    else if (sqlite3StrICmp("CLOB", type) == 0)
+        return FdoDataType_String;
 
+    //If we don't know the type, return -1,
+    //which is an invalid data type -- hopefully
+    //the client would skip over the column in such a case.
     return (FdoDataType)-1;
 }
 
