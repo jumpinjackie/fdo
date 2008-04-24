@@ -182,31 +182,92 @@ static void spatialOpFunc(sqlite3_context *context, int argc, sqlite3_value **ar
 {
     assert(argc == 2);
 
-    //args must be both blobs -- else fail.
-    if (sqlite3_value_type(argv[0]) != SQLITE_BLOB
-        || sqlite3_value_type(argv[1]) != SQLITE_BLOB)
+    //args must be both blobs or text -- else fail.
+    int type[] = { sqlite3_value_type(argv[0]), sqlite3_value_type(argv[1]) };
+
+    if (  ((type[0] != SQLITE_BLOB) && (type[0] != SQLITE_TEXT))
+        ||((type[1] != SQLITE_BLOB) && (type[1] != SQLITE_TEXT)) )
     {
         sqlite3_result_int(context, 0);
         return;
     }
 
+    FdoPtr<FdoIGeometry> fg[2];
     FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-    
-    //left arg
-    const unsigned char* g1 = (const unsigned char*)sqlite3_value_blob(argv[0]);
-    int len1 = sqlite3_value_bytes(argv[0]);
-    FdoPtr<FdoIGeometry> fg1 = gf->CreateGeometryFromFgf(g1, len1);
 
-    //right arg
-    const unsigned char* g2 = (const unsigned char*)sqlite3_value_blob(argv[1]);
-    int len2 = sqlite3_value_bytes(argv[1]);
-    FdoPtr<FdoIGeometry> fg2 = gf->CreateGeometryFromFgf(g2, len2);
+    try
+    {
+        for (int i=0; i<2; i++)
+        {
+            //We need to figure out what type of geometry format we are dealing with.
+            //I am not sure whether to be disgusted or delighted, but there is a way
+            //to do this without drilling a giant hole in the code back to the 
+            //FDO connection/schema. We can (with high confidence) determine the encoding by
+            //(1) checking if the length of the stream is even or odd -- FGF is always even
+            //while WKB is odd in the case of simple geometries, and (2) if the length
+            //is even, by looking if the first 4 bytes in the stream, when treated as an 
+            //integer are below 256 (due to the byte order byte resulting in a shift by 8 bits
+            //of the geometry type in the case of WKB. This is only valid on little endian
+            //machines (but works for both Intel and Motorla WKB streams).
+            //The rest of this provider is not endian-safe anyway. If it is 
+            //necessary that this work on big-endian, the solution would be to try to parse
+            //using the FDO geometry factory, catch the resulting exception and try again
+            //with the alternate encoding type.
+            if (type[i] == SQLITE_BLOB)
+            {
+                const unsigned char* g1 = (const unsigned char*)sqlite3_value_blob(argv[i]);
+                int len1 = sqlite3_value_bytes(argv[i]);
+
+                bool isFGF = true;
+
+                //even length check
+                if (len1 % 2)
+                    isFGF = false;
+                else
+                {
+                    int type = *(int*)g1;
+
+                    //check if first 4 bytes are out of range
+                    //of FDO geometry types, due to there being
+                    //a WKB byte order marker.
+                    if (type > 255)
+                        isFGF = false;
+                }
+
+                if (isFGF)
+                {
+                    fg[i] = gf->CreateGeometryFromFgf(g1, len1);
+                }
+                else
+                {
+                    FdoPtr<FdoByteArray> baba = FdoByteArray::Create(g1, len1);
+                    fg[i] = gf->CreateGeometryFromWkb(baba);
+                }
+            }
+            else
+            {
+                //WKT case
+                const char* wkt = (const char*)sqlite3_value_text(argv[i]);
+                int len = strlen(wkt) + 1;
+                wchar_t* wwkt = (wchar_t*)alloca(sizeof(wchar_t) * len);
+                mbstowcs(wwkt, wkt, len);
+                fg[i] = gf->CreateGeometry(wwkt);        
+            }
+        }
+    }
+    catch (FdoException * e)
+    {
+        //geometry failed to parse -- return false for this spatial op
+        e->Release();
+        sqlite3_result_int(context, 0);
+        return;
+    }
 
     //retrieve the spatial op
     FdoSpatialOperations spatialOp = (FdoSpatialOperations)(int)sqlite3_user_data(context);
 
     //call the spatial utility to eval the spatial op
-    bool res = FdoSpatialUtility::Evaluate(fg1, spatialOp, fg2);
+    bool res = FdoSpatialUtility::Evaluate(fg[0], spatialOp, fg[1]);
 
     sqlite3_result_int(context, res ? 1 : 0);
 }
