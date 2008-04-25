@@ -76,6 +76,10 @@
             #define _X86_
         #endif
 
+        #if defined(_WIN64)
+        #include <windows.h>
+        #endif
+
         #include <windef.h>
 
         #define MS_WINDOWS_32
