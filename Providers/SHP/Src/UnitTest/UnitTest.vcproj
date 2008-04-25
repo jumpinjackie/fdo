@@ -884,8 +884,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying FDO files"
-						CommandLine="copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.pdb $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll"
+						CommandLine="copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDO.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDO.pdb $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOMessage.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOMessage.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDO)\Unmanaged\Bin\Win64\Debug\FDO.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOMessage.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll"
 						Outputs="$(OutDir)\CopyFdo.ilk"
 					/>
 				</FileConfiguration>
@@ -906,8 +906,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying FDO files"
-						CommandLine="copy $(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOMessage.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOMessage.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOMessage.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll"
+						CommandLine="copy $(FDO)\Unmanaged\Bin\Win64\Release\FDO.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win64\Release\FDOMessage.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win64\Release\FDOMessage.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDO)\Unmanaged\Bin\Win64\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOMessage.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.dll"
 						Outputs="$(OutDir)\CopyFdo.ilk"
 					/>
 				</FileConfiguration>
@@ -933,7 +933,7 @@
 						Name="VCCustomBuildTool"
 						Description="Copying provider files"
 						CommandLine="copy ShpOverridesConfig.xml $(OutDir)&#x0D;&#x0A;copy ShpSchemaConfig.xml $(OutDir)&#x0D;&#x0A;copy ShpEmptySchemaConfig.xml $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyProvider.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="..\Provider\Dbg\ShpProvider.dll;..\Message\Dbg\ShpMessage.dll"
+						AdditionalDependencies="..\bin\Win64\ShpProvider.dll;..\bin\Win64\ShpMessage.dll"
 						Outputs="$(OutDir)\CopyProvider.ilk"
 					/>
 				</FileConfiguration>
@@ -955,7 +955,7 @@
 						Name="VCCustomBuildTool"
 						Description="Copying provider files"
 						CommandLine="copy ShpOverridesConfig.xml $(OutDir)&#x0D;&#x0A;copy ShpSchemaConfig.xml $(OutDir)&#x0D;&#x0A;copy ShpEmptySchemaConfig.xml $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyProvider.ilk&#x0D;&#x0A;&#x0D;&#x0A;&#x0D;&#x0A;"
-						AdditionalDependencies="..\Provider\Rel\ShpProvider.dll;..\Message\Rel\ShpMessage.dll"
+						AdditionalDependencies="..\bin\win64\ShpProvider.dll;..\bin\win64\ShpMessage.dll"
 						Outputs="$(OutDir)\CopyProvider.ilk"
 					/>
 				</FileConfiguration>
@@ -970,7 +970,7 @@
 						Name="VCCustomBuildTool"
 						Description="Copying thirdparty dlls"
 						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Debug\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC7\Debug\Xalan-C_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC7\Debug\XalanMessages_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC7\Debug\xerces-c_2_5_0D.dll"
+						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\Xalan-C_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\XalanMessages_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Debug\xerces-c_2_5_0D.dll"
 						Outputs="$(OutDir)\CopyThirdparty.ilk"
 					/>
 				</FileConfiguration>
@@ -980,8 +980,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying thirdparty dlls"
-						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Debug\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC7\Debug\Xalan-C_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC7\Debug\XalanMessages_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC7\Debug\xerces-c_2_5_0D.dll"
+						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC8\Debug\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC8\Debug\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC8\Debug\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC8\Debug\Xalan-C_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC8\Debug\XalanMessages_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC8\Debug\xerces-c_2_5_0D.dll"
 						Outputs="$(OutDir)\CopyThirdparty.ilk"
 					/>
 				</FileConfiguration>
@@ -1002,8 +1002,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying thirdparty dlls"
-						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Release\xerces-c_2_5_0.dll"
+						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\Lib\Win364\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC8\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC8\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC8\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC8\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC8\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC8\Release\xerces-c_2_5_0.dll"
 						Outputs="$(OutDir)\CopyThirdparty.ilk"
 					/>
 				</FileConfiguration>
@@ -1028,8 +1028,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
-						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\bin\win32\debug\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;"
-						AdditionalDependencies="providers.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win32\debug\ExpressionEngine.dll"
+						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\bin\win64\debug\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;"
+						AdditionalDependencies="providers.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win64\debug\ExpressionEngine.dll"
 						Outputs="$(OutDir)\providers.xml"
 					/>
 				</FileConfiguration>
@@ -1050,8 +1050,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
-						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\bin\win32\release\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;"
-						AdditionalDependencies="providers.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win32\release\ExpressionEngine.dll"
+						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\bin\win64\release\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;"
+						AdditionalDependencies="providers.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win64\release\ExpressionEngine.dll"
 						Outputs="$(OutDir)\providers.xml"
 					/>
 				</FileConfiguration>
