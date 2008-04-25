@@ -85,7 +85,7 @@ int local_odbcdr_execute_direct(
 	}
 	else
 	{
-		SQLRowCount(hStmt, (SQLINTEGER*)rows_processed);
+		SQLRowCount(hStmt, (SQLLEN*)rows_processed);
         rdbi_status = RDBI_SUCCESS;
 		debug0( "SQLExecuteDirect." );
 	}

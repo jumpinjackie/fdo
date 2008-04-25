@@ -11,6 +11,9 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -192,6 +195,189 @@
 				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\..\SubDoc\Providers.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll"
 			/>
 		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="../../../Bin/Win64/Debug"
+			IntermediateDirectory="Debug64/OdbcOverrides"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged;..\..\..\;..\..\..\inc;..\..\..\inc\fdo;..\..\Fdo\Other;$(FDOUTILITIES)\Common\Inc;$(FDOUTILITIES)\SchemaMgr\Inc"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FDOODBC_OV_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="0"
+				RuntimeLibrary="3"
+				TreatWChar_tAsBuiltInType="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="2"
+				ProgramDataBaseFileName="$(IntDir)/vc70.pdb"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+				DisableSpecificWarnings="4250"
+				ShowIncludes="false"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+				CommandLine="if not exist ..\..\..\Lib\Win64\Debug mkdir ..\..\..\Lib\Win64\Debug"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/fixed:no"
+				AdditionalDependencies="$(FDO)\Unmanaged\Lib\Win64\Debug\FDO.lib FDOGeometry.lib FDOSpatial.lib FDOCommon.lib"
+				OutputFile="$(OutDir)\ODBCOverrides.dll"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win64\Debug"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/ODBCOverrides.pdb"
+				ImportLibrary="../../../Lib/Win64/Debug/ODBCOverrides.lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Versioning $(ProjectName).dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\..\SubDoc\Providers.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll"
+				ExcludedFromBuild="true"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="../../../Bin/Win64/Release"
+			IntermediateDirectory="Release64/OdbcOverrides"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				OmitFramePointers="true"
+				AdditionalIncludeDirectories="$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged;..\..\..\;..\..\..\inc;..\..\..\inc\fdo;..\..\Fdo\Other;$(FDOUTILITIES)\Common\Inc;$(FDOUTILITIES)\SchemaMgr\Inc"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;FDOODBC_OV_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				TreatWChar_tAsBuiltInType="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="2"
+				ProgramDataBaseFileName="$(IntDir)/vc70.pdb"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+				DisableSpecificWarnings="4250"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+				CommandLine="if not exist ..\..\..\Lib\Win64\Release mkdir ..\..\..\Lib\Win64\Release"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="$(FDO)\Unmanaged\Lib\Win64\Release\FDO.lib FDOGeometry.lib FDOSpatial.lib FDOCommon.lib"
+				OutputFile="$(OutDir)\ODBCOverrides.dll"
+				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win64\Release"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/ODBCOverrides.pdb"
+				ImportLibrary="../../../Lib/Win64/Release/ODBCOverrides.lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Versioning $(ProjectName).dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\..\SubDoc\Providers.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll"
+				ExcludedFromBuild="true"
+			/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -252,6 +438,22 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"

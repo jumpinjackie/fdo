@@ -10,6 +10,9 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -74,6 +77,93 @@
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				SubSystem="1"
 				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="Dbg64"
+			IntermediateDirectory="Dbg64\MySql"
+			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\LockManager;..\LongTransactionManager;..\Gdbi;..\..\inc;..\..;..\Fdo\Connection;..\Fdo\SpatialContext;..\Fdo\Other;..\Fdo\FeatureCommands;../;Common;$(FDOUTILITIES)\TestCommon\inc"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE"
+				BasicRuntimeChecks="0"
+				RuntimeLibrary="3"
+				TreatWChar_tAsBuiltInType="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="Pch.h"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+				DisableSpecificWarnings="4250"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/fixed:no"
+				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FdoGeneric.lib libmySQL.lib Rdbi.lib gdbi.lib schemamgrnew.lib MySQLDriver.lib mysqloverrides.lib mysqlschemamgr.lib ProvidersCommon.lib rdbmsoverrides.lib mysql.lib schemamgr_lpnew.lib schemamgr_phnew.lib SchemaMgr_OVNew.lib grdschemamgr.lib util.lib Advapi32.lib TestCommon.lib"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="..\..\Lib\Win64\Debug;&quot;$(FDO)\Unmanaged\Lib\Win64\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Debug&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win64&quot;;&quot;$(FDOMYSQL)\lib\Debug&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Lib\Win64\Debug&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win64\Debug&quot;"
+				IgnoreDefaultLibraryNames="libcmtd.lib"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
+				SubSystem="1"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -175,6 +265,83 @@
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="Rel64"
+			IntermediateDirectory="Rel64\MySql"
+			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\LockManager;..\LongTransactionManager;..\Gdbi;..\..\inc;..\..;..\Fdo\Connection;..\Fdo\SpatialContext;..\Fdo\Other;..\Fdo\FeatureCommands;../;Common;$(FDOUTILITIES)\TestCommon\inc"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE"
+				RuntimeLibrary="2"
+				TreatWChar_tAsBuiltInType="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="Pch.h"
+				DisableSpecificWarnings="4250"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FdoGeneric.lib libmySQL.lib Rdbi.lib gdbi.lib schemamgrnew.lib MySQLDriver.lib mysqloverrides.lib mysqlschemamgr.lib ProvidersCommon.lib rdbmsoverrides.lib mysql.lib schemamgr_lpnew.lib schemamgr_phnew.lib SchemaMgr_OVNew.lib grdschemamgr.lib util.lib Advapi32.lib TestCommon.lib"
+				AdditionalLibraryDirectories="..\..\Lib\Win64\Release;&quot;$(FDO)\Unmanaged\Lib\Win64\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Release&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win64&quot;;&quot;$(FDOMYSQL)\lib\opt&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Lib\Win64\Release&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win64\Release&quot;"
+				IgnoreDefaultLibraryNames="libc.lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -196,7 +363,27 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -224,7 +411,27 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -252,7 +459,27 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -280,7 +507,27 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -312,7 +559,27 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -340,7 +607,27 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -377,6 +664,17 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying FDO files"
+						CommandLine="copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDO.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOMessage.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDO)\Unmanaged\Bin\Win64\Debug\FDO.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOMessage.dll"
+						Outputs="$(OutDir)\CopyFdo.ilk"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -384,6 +682,17 @@
 						Description="Copying FDO files"
 						CommandLine="copy $(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOMessage.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
 						AdditionalDependencies="$(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.dll"
+						Outputs="$(OutDir)\CopyFdo.ilk"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying FDO files"
+						CommandLine="copy $(FDO)\Unmanaged\Bin\Win64\Release\FDO.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy $(FDO)\Unmanaged\Bin\Win64\Release\FDOMessage.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDO)\Unmanaged\Bin\Win64\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOMessage.dll"
 						Outputs="$(OutDir)\CopyFdo.ilk"
 					/>
 				</FileConfiguration>
@@ -403,6 +712,17 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying thirdparty dlls"
+						CommandLine="copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC8\Debug\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC8\Debug\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC8\Debug\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOMYSQL)\lib\debug\libmySQL.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win64\cppunitd_dll.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC7\Debug\Xalan-C_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC7\Debug\XalanMessages_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC7\Debug\xerces-c_2_5_0D.dll;$(FDOMYSQL)\lib\debug\libmySQL.dll;$(FDOTHIRDPARTY)\cppunit\lib\Win64\cppunitd_dll.dll"
+						Outputs="$(OutDir)\CopyThirdparty.ilk"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -410,6 +730,17 @@
 						Description="Copying thirdparty dlls"
 						CommandLine="copy $(FDOMYSQL)\lib\opt\libmySQL.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win32\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
 						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\lib\Win32\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC7\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC7\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC7\Release\xerces-c_2_5_0.dll"
+						Outputs="$(OutDir)\CopyThirdparty.ilk"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying thirdparty dlls"
+						CommandLine="copy $(FDOMYSQL)\lib\opt\libmySQL.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win64\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC8\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC8\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC8\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\lib\Win64\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC7\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC7\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC7\Release\xerces-c_2_5_0.dll"
 						Outputs="$(OutDir)\CopyThirdparty.ilk"
 					/>
 				</FileConfiguration>
@@ -429,6 +760,17 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing fake install"
+						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy MySqlInit.txt $(OutDir)&#x0D;&#x0A;copy g_coords.txt $(OutDir)&#x0D;&#x0A;copy polyAttr.txt $(OutDir)&#x0D;&#x0A;mkdir $(OutDir)\com&#x0D;&#x0A;copy ..\..\com\fdo_sys.sql $(OutDir)\com&#x0D;&#x0A;copy ..\..\com\fdo_sys_idx.sql $(OutDir)\com&#x0D;&#x0A;copy ..\..\com\fdosys_sys.sql $(OutDir)\com&#x0D;&#x0A;copy *.xml $(OutDir)&#x0D;&#x0A;del /F $(OutDir)\*_master.txt&#x0D;&#x0A;copy *_master.txt $(OutDir)&#x0D;&#x0A;del /F $(OutDir)\*_in.xml&#x0D;&#x0A;copy *_in.xml $(OutDir)&#x0D;&#x0A;del /F $(OutDir)\*.xslt&#x0D;&#x0A;copy *.xslt $(OutDir)&#x0D;&#x0A;copy ..\..\Bin\Win64\Debug\RdbmsOverrides.dll $(OutDir)&#x0D;&#x0A;copy ..\..\Bin\Win64\Debug\MySQLOverrides.dll $(OutDir)&#x0D;&#x0A;copy ..\..\Bin\Win64\Debug\MySQLProvider.dll $(OutDir)&#x0D;&#x0A;copy $(FDOUTILITIES)\SchemaMgr\Bin\Win64\Debug\SmMessage.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\bin\win64\debug\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\FakeInstall.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="providers.xml;MySqlInit.txt;g_coords.txt;polyAttr.txt;..\..\com\fdo_sys.sql;..\..\com\fdo_sys_idx.sql;..\..\com\fdosys_sys.sql;describeSchemas.xml;FdoSchemaTest_SqlServerOutput.xml;SchemaOverrideAll.xml;SchemaOverrideAll2.xml;SchemaOverrideErr.xml;smtables_logical.xml;smtables_physical.xml;temp_out.xml;apply_schema_err1_master.txt;apply_schema_err2_master.txt;apply_schema_err2M_master.txt;apply_schema_err3_master.txt;apply_schema_err3S_master.txt;apply_schema_err3M_master.txt;apply_schema_err4_master.txt;apply_schema_err5_master.txt;apply_schema_err5M_master.txt;apply_schema_err6_master.txt;apply_schema_err6S_master.txt;apply_schema_err7_master.txt;apply_schema_err8_master.txt;apply_schema_err8M_master.txt;apply_schema_err9_master.txt;apply_schema_overrides_out1.xml;apply_schema_overrides_out2.xml;apply_schema_test1_master.txt;apply_schema_test2_master.txt;apply_schema_test3_master.txt;apply_schema_test_ov1_master.txt;apply_schema_test_ov2_master.txt;apply_schema_test_ov3_master.txt;gen_default1_MySQL_master.txt;gen_default1_Oracle_master.txt;gen_default1_SqlServer_master.txt;impexp_err1_master.txt;impexp_err7_master.txt;impexp2a_master.txt;impexp2b_master.txt;SchemaOverrideAll2_master.txt;SchemaOverrideErrHigh_master.txt;SchemaOverrideErrLow_master.txt;SchemaOverrideErrNormal_master.txt;apply_schema_overrides3_master.txt;apply_schema_overrides_out1_master.txt;apply_schema_overrides_out2_master.txt;schemaGenConfig1_master.txt;apply_schema_overrides1_master.txt;apply_schema_overrides2_master.txt;temp_in.xml;config1_in.xml;schema_rb_nnyn_master.txt;..\..\Bin\Win64\Debug\RdbmsOverrides.dll;..\..\Bin\Win64\Debug\MySQLOverrides.dll;..\..\Bin\Win64\Debug\MySQLProvider.dll;$(FDOUTILITIES)\SchemaMgr\Bin\Win64\Debug\SmMessage.dll;OverrideBender.xslt;..\..\..\..\Utilities\ExpressionEngine\bin\win64\debug\ExpressionEngine.dll"
+						Outputs="$(OutDir)\FakeInstall.ilk"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -436,6 +778,17 @@
 						Description="Performing fake install"
 						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy MySqlInit.txt $(OutDir)&#x0D;&#x0A;copy g_coords.txt $(OutDir)&#x0D;&#x0A;copy polyAttr.txt $(OutDir)&#x0D;&#x0A;mkdir $(OutDir)\com&#x0D;&#x0A;copy ..\..\com\fdo_sys.sql $(OutDir)\com&#x0D;&#x0A;copy ..\..\com\fdo_sys_idx.sql $(OutDir)\com&#x0D;&#x0A;copy ..\..\com\fdosys_sys.sql $(OutDir)\com&#x0D;&#x0A;copy ..\..\..\Oracle\com\storage.sql $(OutDir)\com&#x0D;&#x0A;copy *.xml $(OutDir)&#x0D;&#x0A;del /F $(OutDir)\*_master.txt&#x0D;&#x0A;copy *_master.txt $(OutDir)&#x0D;&#x0A;del /F $(OutDir)\*_in.xml&#x0D;&#x0A;copy *_in.xml $(OutDir)&#x0D;&#x0A;del /F $(OutDir)\*.xslt&#x0D;&#x0A;copy *.xslt $(OutDir)&#x0D;&#x0A;copy ..\..\Bin\Win32\Release\RdbmsOverrides.dll $(OutDir)&#x0D;&#x0A;copy ..\..\Bin\Win32\Release\MySQLOverrides.dll $(OutDir)&#x0D;&#x0A;copy ..\..\Bin\Win32\Release\MySQLProvider.dll $(OutDir)&#x0D;&#x0A;copy $(FDOUTILITIES)\SchemaMgr\Bin\Win32\Release\SmMessage.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\bin\win32\release\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\FakeInstall.ilk&#x0D;&#x0A;"
 						AdditionalDependencies="providers.xml;MySqlInit.txt;g_coords.txt;polyAttr.txt;..\..\com\fdo_sys.sql;..\..\com\fdo_sys_idx.sql;..\..\com\fdosys_sys.sql;..\..\..\Oracle\com\storage.sql;describeSchemas.xml;FdoSchemaTest_SqlServerOutput.xml;impexp_err1_master.txt;impexp_err7_master.txt;impexp2a_master.txt;impexp2b_master.txt;SchemaOverrideAll.xml;SchemaOverrideAll2.xml;SchemaOverrideErr.xml;smtables_logical.xml;smtables_physical.xml;temp_out.xml;apply_schema_err1_master.txt;apply_schema_err2_master.txt;apply_schema_err2M_master.txt;apply_schema_err3_master.txt;apply_schema_err3S_master.txt;apply_schema_err3M_master.txt;apply_schema_err4_master.txt;apply_schema_err5_master.txt;apply_schema_err5M_master.txt;apply_schema_err6_master.txt;apply_schema_err6S_master.txt;apply_schema_err7_master.txt;apply_schema_err8_master.txt;apply_schema_err8M_master.txt;apply_schema_err9_master.txt;apply_schema_overrides_out1.xml;apply_schema_overrides_out2.xml;apply_schema_test1_master.txt;apply_schema_test2_master.txt;apply_schema_test3_master.txt;apply_schema_test_ov1_master.txt;apply_schema_test_ov2_master.txt;apply_schema_test_ov3_master.txt;SchemaOverrideAll2_master.txt;SchemaOverrideErrHigh_master.txt;SchemaOverrideErrLow_master.txt;SchemaOverrideErrNormal_master.txt;apply_schema_overrides3_master.txt;apply_schema_overrides_out1_master.txt;apply_schema_overrides_out2_master.txt;schemaGenConfig1_master.txt;apply_schema_overrides1_master.txt;apply_schema_overrides2_master.txt;temp_in.xml;config1_in.xml;schema_rb_nnyn_master.txt;..\..\Bin\Win32\Release\RdbmsOverrides.dll;..\..\Bin\Win32\Release\MySQLOverrides.dll;..\..\Bin\Win32\Release\MySQLProvider.dll;$(FDOUTILITIES)\SchemaMgr\Bin\Win32\Release\SmMessage.dll;OverrideBender.xslt;..\..\..\..\Utilities\ExpressionEngine\bin\win32\release\ExpressionEngine.dll"
+						Outputs="$(OutDir)\FakeInstall.ilk"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing fake install"
+						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy MySqlInit.txt $(OutDir)&#x0D;&#x0A;copy g_coords.txt $(OutDir)&#x0D;&#x0A;copy polyAttr.txt $(OutDir)&#x0D;&#x0A;mkdir $(OutDir)\com&#x0D;&#x0A;copy ..\..\com\fdo_sys.sql $(OutDir)\com&#x0D;&#x0A;copy ..\..\com\fdo_sys_idx.sql $(OutDir)\com&#x0D;&#x0A;copy ..\..\com\fdosys_sys.sql $(OutDir)\com&#x0D;&#x0A;copy ..\..\..\Oracle\com\storage.sql $(OutDir)\com&#x0D;&#x0A;copy *.xml $(OutDir)&#x0D;&#x0A;del /F $(OutDir)\*_master.txt&#x0D;&#x0A;copy *_master.txt $(OutDir)&#x0D;&#x0A;del /F $(OutDir)\*_in.xml&#x0D;&#x0A;copy *_in.xml $(OutDir)&#x0D;&#x0A;del /F $(OutDir)\*.xslt&#x0D;&#x0A;copy *.xslt $(OutDir)&#x0D;&#x0A;copy ..\..\Bin\Win64\Release\RdbmsOverrides.dll $(OutDir)&#x0D;&#x0A;copy ..\..\Bin\Win64\Release\MySQLOverrides.dll $(OutDir)&#x0D;&#x0A;copy ..\..\Bin\Win64\Release\MySQLProvider.dll $(OutDir)&#x0D;&#x0A;copy $(FDOUTILITIES)\SchemaMgr\Bin\Win64\Release\SmMessage.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\bin\win64\release\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\FakeInstall.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="providers.xml;MySqlInit.txt;g_coords.txt;polyAttr.txt;..\..\com\fdo_sys.sql;..\..\com\fdo_sys_idx.sql;..\..\com\fdosys_sys.sql;..\..\..\Oracle\com\storage.sql;describeSchemas.xml;FdoSchemaTest_SqlServerOutput.xml;impexp_err1_master.txt;impexp_err7_master.txt;impexp2a_master.txt;impexp2b_master.txt;SchemaOverrideAll.xml;SchemaOverrideAll2.xml;SchemaOverrideErr.xml;smtables_logical.xml;smtables_physical.xml;temp_out.xml;apply_schema_err1_master.txt;apply_schema_err2_master.txt;apply_schema_err2M_master.txt;apply_schema_err3_master.txt;apply_schema_err3S_master.txt;apply_schema_err3M_master.txt;apply_schema_err4_master.txt;apply_schema_err5_master.txt;apply_schema_err5M_master.txt;apply_schema_err6_master.txt;apply_schema_err6S_master.txt;apply_schema_err7_master.txt;apply_schema_err8_master.txt;apply_schema_err8M_master.txt;apply_schema_err9_master.txt;apply_schema_overrides_out1.xml;apply_schema_overrides_out2.xml;apply_schema_test1_master.txt;apply_schema_test2_master.txt;apply_schema_test3_master.txt;apply_schema_test_ov1_master.txt;apply_schema_test_ov2_master.txt;apply_schema_test_ov3_master.txt;SchemaOverrideAll2_master.txt;SchemaOverrideErrHigh_master.txt;SchemaOverrideErrLow_master.txt;SchemaOverrideErrNormal_master.txt;apply_schema_overrides3_master.txt;apply_schema_overrides_out1_master.txt;apply_schema_overrides_out2_master.txt;schemaGenConfig1_master.txt;apply_schema_overrides1_master.txt;apply_schema_overrides2_master.txt;temp_in.xml;config1_in.xml;schema_rb_nnyn_master.txt;..\..\Bin\Win64\Release\RdbmsOverrides.dll;..\..\Bin\Win64\Release\MySQLOverrides.dll;..\..\Bin\Win64\Release\MySQLProvider.dll;$(FDOUTILITIES)\SchemaMgr\Bin\Win64\Release\SmMessage.dll;OverrideBender.xslt;..\..\..\..\Utilities\ExpressionEngine\bin\win64\release\ExpressionEngine.dll"
 						Outputs="$(OutDir)\FakeInstall.ilk"
 					/>
 				</FileConfiguration>
@@ -993,7 +1346,23 @@
 				/>
 			</FileConfiguration>
 			<FileConfiguration
+				Name="Debug|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="1"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
 				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="1"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|x64"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
