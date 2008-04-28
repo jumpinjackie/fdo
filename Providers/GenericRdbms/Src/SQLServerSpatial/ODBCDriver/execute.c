@@ -228,7 +228,7 @@ int odbcdr_execute(						/* execute an SQL statement		  */
 	if ((rc == SQL_SUCCESS) || (rc == SQL_SUCCESS_WITH_INFO) )
 	{
 		SQLNumResultCols(c->hStmt, (SQLSMALLINT*) &num_cols);
-		SQLRowCount(c->hStmt, (SQLINTEGER*)rows_processed);
+		SQLRowCount(c->hStmt, (SQLLEN*)rows_processed);
 		if (num_cols > 0) { // if the statement was a select
 			*rows_processed	= 0;
 		}

@@ -214,14 +214,14 @@ int local_odbcdr_col_act(
     SQLSMALLINT         cbColumnName = 0;
     SQLWCHAR            szColumnNameBuf[ODBCDR_MAX_BUFF_SIZE];
     rdbi_string_def     szColumnName;
-    SQLSMALLINT         ssDataType = 0;
-    SQLSMALLINT         ssDataType2 = -1;
-    SQLSMALLINT         ssDataTypeDateTimeSubcode = 0;
-    SQLSMALLINT         ssIsAutoIncrement = -1;
-    SQLSMALLINT         ssLength = -1;
-    SQLSMALLINT         ssIsNullable = -1;
-    SQLSMALLINT         ssScale = -1;
-    SQLSMALLINT         ssBinarySize = -1;
+    SQLLEN              ssDataType = 0;
+    SQLLEN              ssDataType2 = -1;
+    SQLLEN              ssDataTypeDateTimeSubcode = 0;
+    SQLLEN              ssIsAutoIncrement = -1;
+    SQLLEN              ssLength = -1;
+    SQLLEN              ssIsNullable = -1;
+    SQLLEN              ssScale = -1;
+    SQLLEN              ssBinarySize = -1;
     SQLINTEGER          ssSybaseTableId = -1;
     SQLINTEGER          ssSybaseColumnStatus = -1;
     SQLRETURN           ret = SQL_SUCCESS;
@@ -611,7 +611,7 @@ int local_odbcdr_col_act(
                 !connData->skip_sybase_autogen_id_workaround &&
                 -1 == ssSybaseTableId)
             {
-                SQLINTEGER          dummy = 0;
+                SQLLEN          dummy = 0;
 	            if (sybase_columns_cursor == (odbcdr_cursor_def *)NULL)
                 {
             		rdbi_status = odbcdr_est_cursor( context, (char **)&sybase_columns_cursor);
@@ -647,7 +647,7 @@ int local_odbcdr_col_act(
             if (ODBCDriverType_Sybase == connData->driver_type &&
                 !connData->skip_sybase_autogen_id_workaround)
             {
-                SQLINTEGER          dummy = 0;
+                SQLLEN          dummy = 0;
 	            if (sybase_columns_cursor == (odbcdr_cursor_def *)NULL)
                 {
             		rdbi_status = odbcdr_est_cursor( context, (char **)&sybase_columns_cursor);
@@ -760,35 +760,35 @@ static int odbcdr_col_act_SQLColumns(
     odbcdr_connData_def	*connData;
     int 				rdbi_status = RDBI_GENERIC_ERROR;
     int 				owner_set = TRUE;
-    SQLINTEGER          cbColumnName = 0;
+    SQLLEN              cbColumnName = 0;
     SQLWCHAR            szColumnNameBuf[ODBCDR_MAX_BUFF_SIZE];
     rdbi_string_def     szColumnName;
-    SQLINTEGER          cbDataType = 0;
+    SQLLEN              cbDataType = 0;
     SQLSMALLINT         ssDataType = 0;
-    SQLINTEGER          cbTypeName = 0;
+    SQLLEN              cbTypeName = 0;
     SQLWCHAR            szTypeNameBuf[ODBCDR_MAX_BUFF_SIZE];
     rdbi_string_def     szTypeName;
-    SQLINTEGER          cbColumnSize = 0;
+    SQLLEN              cbColumnSize = 0;
     SQLINTEGER          iColumnSize = 0;
-    SQLINTEGER          cbBufferLen = 0;
+    SQLLEN              cbBufferLen = 0;
     SQLINTEGER          iBufferLen = 0;
-    SQLINTEGER          cbDecimalDigits = 0;
+    SQLLEN              cbDecimalDigits = 0;
     SQLINTEGER          iDecimalDigits = 0;
-    SQLINTEGER          cbNumPrecRadix = 0;
+    SQLLEN              cbNumPrecRadix = 0;
     SQLINTEGER          iNumPrecRadix = 0;
-    SQLINTEGER          cbNullable = 0;
+    SQLLEN              cbNullable = 0;
     SQLINTEGER          iNullable = 0;
-    SQLINTEGER          cbRemarks = 0;
+    SQLLEN              cbRemarks = 0;
     SQLWCHAR            szRemarksBuf[ODBCDR_MAX_BUFF_SIZE];
     rdbi_string_def     szRemarks;
-    SQLINTEGER          cbColumnDefault = 0;
+    SQLLEN              cbColumnDefault = 0;
     SQLWCHAR            szColumnDefaultBuf[ODBCDR_MAX_BUFF_SIZE];
     rdbi_string_def     szColumnDefault;
-    SQLINTEGER          cbSQLDataType = 0;
+    SQLLEN              cbSQLDataType = 0;
     SQLSMALLINT         ssSQLDataType = 0;
-    SQLINTEGER          cbOrdinalPosition = 0;
+    SQLLEN              cbOrdinalPosition = 0;
     SQLINTEGER          iOrdinalPosition = 0;
-    SQLINTEGER          cbIsNullable = 0;
+    SQLLEN              cbIsNullable = 0;
     SQLWCHAR            szIsNullableBuf[ODBCDR_MAX_BUFF_SIZE];
     rdbi_string_def     szIsNullable;
     SQLRETURN           ret = SQL_SUCCESS;

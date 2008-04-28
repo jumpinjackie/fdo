@@ -957,7 +957,7 @@ geom_convertFromSqlServer_S(
     PBYTE                   pData = NULL;
     BYTE                    test[1];
     pByteArray_def          wkb = NULL;
-    SQLINTEGER              count;
+    SQLLEN                  count;
     SQLRETURN               rc;
 
     debug_on( "odbcdr_geom:geom_convertFromSqlServer_S" );
@@ -1017,22 +1017,24 @@ geom_convertFromSqlServer_S(
             allocMore = false;
 
         if ( allocMore )
-            cursor->odbcdr_blob_tmp_size = count;
+            cursor->odbcdr_blob_tmp_size = (int) count;
 
         pData = cursor->odbcdr_blob_tmp;
 
+        SQLLEN lenOrIndex;
         ODBCDR_ODBC_ERR( SQLGetData( cursor->hStmt, 
                                         position, 
                                         SQL_C_BINARY, 
                                         pData,
                                         count, 
-                                        &cursor->odbcdr_geomNI[offset]),
+                                        &lenOrIndex),
                             SQL_HANDLE_STMT, cursor->hStmt,
                             "SQLGetData", "getData");
+        cursor->odbcdr_geomNI[offset] = (SQLINTEGER) lenOrIndex;
     }
 
     // Create a byte array from the array of bytes. Note 'count' is an initial size.
-    if ( NULL == ( wkb = IByteArray_Create( pData, count) ) )
+    if ( NULL == ( wkb = IByteArray_Create( pData, (int) count) ) )
         goto the_exit;
 
     // Create the geometry
