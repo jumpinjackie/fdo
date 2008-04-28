@@ -23,21 +23,31 @@ class FdoWmsIGetImagefromats;
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_WMS
 
 ///<summary>
-/// This command get all supported image format from a specified WMS service
+/// This command gets all the image formats supported by a specified WMS service.
 ///</summary>
-private __gc class IGetImageFormatsImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::IGetImageFormats
+public __gc class GetImageFormatsCommand : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::IGetImageFormats
 {
 public:
-    ///<summary>
+    /// <summary>
+    /// Constructs a WMS GetImageFormats command using the result
+    /// returned from IConnection::CreateCommand(). This constructor is provided 
+    /// in order that clients are provided a mechanism to downcast from the FDO 
+    /// ICommand interface to an FDO Provider specific interface that derives from ICommand. 
+    /// This constructor is the only mechanism provided by the FDO Managed API that will 
+    /// allow the client to correctly construct a provider specific ICommand instance. 
+    /// </summary>
+    GetImageFormatsCommand(NAMESPACE_OSGEO_FDO_COMMANDS::ICommand* command, System::Boolean autoDelete);
+
+    /// <summary>
     /// Executes the command. An exception is thrown if the feature class is NULL.
-    ///</summary>
-    /// <returns>Returns a list of image formats supportted by WMS service.</returns>
+    /// </summary>
+    /// <returns>
+    /// Returns a list of image formats supportted by WMS service.
+    /// </returns>
     NAMESPACE_OSGEO_COMMON::StringCollection* Execute();
 
-	System::Void Dispose();
-
 public private:
-	IGetImageFormatsImp(System::IntPtr unmanaged, System::Boolean autoDelete);
+	GetImageFormatsCommand(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoWmsIGetImagefromats* GetImpObj();
 };
