@@ -186,6 +186,7 @@ void WmsTestCustomCommands::testInvalidParamForStyle ()
     }
     catch (FdoException* e)
     {
+        e->Release();
         connection->Close ();
     }
 }
@@ -212,6 +213,7 @@ void WmsTestCustomCommands::testInvalidParamForCRS ()
     }
     catch (FdoException* e)
     {
+        e->Release();
 		connection->Close ();
     }
 }

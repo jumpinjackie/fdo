@@ -23,16 +23,28 @@ class FdoWmsIGetFeatureClassStyles;
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_WMS
 
 ///<summary>
-/// This command get the styles list supportted by specified FeatureClass
+/// This command gets the styles list supportted by specified FeatureClass
 /// from WMS service.
 ///</summary>
-private __gc class IGetFeatureClassStylesImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::IGetFeatureClassStyles
+public __gc class GetFeatureClassStylesCommand : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::IGetFeatureClassStyles
 {
 public:
-    ///<summary>
+    /// <summary>
+    /// Constructs a WMS GetFeatureClassStyles command using the result
+    /// returned from IConnection::CreateCommand(). This constructor is provided 
+    /// in order that clients are provided a mechanism to downcast from the FDO 
+    /// ICommand interface to an FDO Provider specific interface that derives from ICommand. 
+    /// This constructor is the only mechanism provided by the FDO Managed API that will 
+    /// allow the client to correctly construct a provider specific ICommand instance. 
+    /// </summary>
+    GetFeatureClassStylesCommand(NAMESPACE_OSGEO_FDO_COMMANDS::ICommand* command, System::Boolean autoDelete);
+
+    /// <summary>
     /// Executes the command. An exception is thrown if the feature class is NULL.
-    ///</summary>
-    /// <returns>Returns a list of styles supportted by specific featureclass.</returns>
+    /// </summary>
+    /// <returns>
+    /// Returns a list of styles supportted by specific featureclass.
+    /// </returns>
     NAMESPACE_OSGEO_COMMON::StringCollection* Execute();
 
     /// <summary>
@@ -40,20 +52,24 @@ public:
     /// This function is mandatory; if not specified, 
     /// execution of the command will throw exception. 
     /// </summary>
-    /// <param name="name">Input the FeatureClass name.</param> 
-    /// <returns>Returns nothing.</returns> 
+    /// <param name="name">
+    /// Input the FeatureClass name.
+    /// </param> 
+    /// <returns>
+    /// Returns nothing.
+    /// </returns> 
     System::Void set_FeatureClassName(System::String* value);
     
     /// <summary>
     /// Gets the name of the FeatureClass to get all supported styles.
     /// </summary>
-    /// <returns>Returns the FeatureClass name.</returns> 
+    /// <returns>
+    /// Returns the FeatureClass name.
+    /// </returns> 
     System::String* get_FeatureClassName();
 
-	System::Void Dispose();
-
 public private:
-	IGetFeatureClassStylesImp(System::IntPtr unmanaged, System::Boolean autoDelete);
+	GetFeatureClassStylesCommand(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoWmsIGetFeatureClassStyles* GetImpObj();
 };
