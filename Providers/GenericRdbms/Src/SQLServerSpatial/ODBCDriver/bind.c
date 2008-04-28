@@ -113,7 +113,7 @@ int odbcdr_bind(
 	int					bindnum;
 
 	SQLSMALLINT			sql_type;
-	SQLUINTEGER			col_size;
+	SQLULEN    			col_size;
 	SQLSMALLINT			decimal_digits;
 	SQLSMALLINT			nullable; 
 
@@ -211,6 +211,7 @@ int odbcdr_bind(
 
         c->lenDataParam = SQL_LEN_DATA_AT_EXEC(0);
 
+        SQLLEN tmpLen;
         rc = SQLBindParameter(
 						c->hStmt,
 						(SQLUSMALLINT)bindnum,
@@ -221,7 +222,8 @@ int odbcdr_bind(
 						(SQLSMALLINT) 0,
 						(SQLPOINTER) bindnum,
 						(SQLINTEGER) 0, 
-						&c->lenDataParam);
+						&tmpLen);
+        c->lenDataParam = (SDWORD) tmpLen;
 
         if ( rc != SQL_SUCCESS_WITH_INFO ) {
             ODBCDR_ODBC_ERR( rc,

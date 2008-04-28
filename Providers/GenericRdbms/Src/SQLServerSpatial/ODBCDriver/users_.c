@@ -75,7 +75,7 @@ int local_odbcdr_users_act(
     wchar_t    schemaToGet[10];
     SQLWCHAR    szSchemaBuf[ODBCDR_MAX_BUFF_SIZE];
     rdbi_string_def szSchema;
-    SQLINTEGER  cbSchema = 0;
+    SQLLEN      cbSchema = 0;
     SQLRETURN   ret = SQL_SUCCESS;
     long        i;
     int         found;
