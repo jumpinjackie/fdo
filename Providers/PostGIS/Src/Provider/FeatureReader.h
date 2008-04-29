@@ -42,7 +42,8 @@ public:
     typedef FdoPtr<FeatureReader> Ptr;
 
     /// Default constructor.
-    FeatureReader(Connection* conn, PgCursor* cursor, FdoClassDefinition* classDef,FdoIdentifierCollection* PropDef);
+    FeatureReader(Connection* conn, PgCursor* cursor, FdoClassDefinition* classDef,
+                  FdoIdentifierCollection* PropDef);
 
     //
     // FdoIFeatureReader interface
@@ -88,7 +89,7 @@ private:
 	
     FdoPtr<FdoClassDefinition> mClassDef;
     
-    FdoPtr<FdoIdentifierCollection> m_Props;
+    FdoPtr<FdoIdentifierCollection> mProps;
 };
 
 }} // namespace fdo::postgis
