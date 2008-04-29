@@ -60,50 +60,48 @@ void FeatureReader::Dispose()
 
 FdoClassDefinition* FeatureReader::GetClassDefinition()
 {
-  
-    if( mProps && (mProps->GetCount() > 0 ) )
+    if (mProps && (mProps->GetCount() > 0))
     {
-      FdoClassDefinition* newclass = FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(mClassDef);
-      if( newclass )
-      {
-        FdoPtr<FdoPropertyDefinitionCollection> ids = newclass->GetProperties();
-        long count = ids->GetCount();
-        long ind =0;
-        while(ind<count)
+        FdoClassDefinition* newclass = 
+            FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(mClassDef);
+        if (NULL != newclass)
         {
-          FdoPtr<FdoPropertyDefinition> classprop = ids->GetItem(ind);
-          bool found=false;
-          for(long ind2 =0;ind2<mProps->GetCount();ind2++)
-          {
-            FdoPtr<FdoIdentifier> prop2 = mProps->GetItem(ind2);
-            if(0 == FdoCommonOSUtil::wcsicmp(classprop->GetName(), prop2->GetName()))
-            {
-              found=true;
-              break;
-            }
-          }
-          if( !found )
-          {
-            ids->RemoveAt(ind);
-            count = ids->GetCount();
-          }
-          else
-          {
-            ind++;
-          }                          
-        }
-      }
+            FdoPtr<FdoPropertyDefinitionCollection> ids(newclass->GetProperties());
+            long count = ids->GetCount();
+            long ind = 0;
 
-      return newclass;
+            while (ind < count)
+            {
+                FdoPtr<FdoPropertyDefinition> classprop(ids->GetItem(ind));
+                bool found = false;
+
+                for (long ind2 = 0; ind2 < mProps->GetCount(); ++ind2)
+                {
+                    FdoPtr<FdoIdentifier> prop2(mProps->GetItem(ind2));
+                    if (0 == FdoCommonOSUtil::wcsicmp(classprop->GetName(), prop2->GetName()))
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                {
+                    ids->RemoveAt(ind);
+                    count = ids->GetCount();
+                }
+                else
+                {
+                    ind++;
+                }                          
+            }
+        }
+        return newclass;
     }
     else
     {
-      return FDO_SAFE_ADDREF(mClassDef.p);
+        return FDO_SAFE_ADDREF(mClassDef.p);
     }
-  
-
-  
-   
 }
 
 FdoInt32 FeatureReader::GetDepth()
