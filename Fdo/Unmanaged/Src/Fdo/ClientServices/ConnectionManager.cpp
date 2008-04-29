@@ -107,9 +107,9 @@ extern wchar_t module[];
 typedef FdoIConnection* (*DLLCREATEOBJECT)();
 typedef FdoModuleMap::iterator FdoModuleMapIterator;
 #ifdef _WIN32
-typedef std::pair <const std::wstring, HMODULE> FdoNamedModulePair;
+typedef std::pair <std::wstring, HMODULE> FdoNamedModulePair;
 #else
-typedef std::pair <const std::wstring, void *> FdoNamedModulePair;
+typedef std::pair <std::wstring, void *> FdoNamedModulePair;
 #endif
 
 // Constructs a default instance of a FdoProviderRegistry object.
@@ -121,20 +121,19 @@ FdoConnectionManager::FdoConnectionManager()
 FdoConnectionManager::~FdoConnectionManager()
 {
     FdoModuleMapIterator moduleIterator = m_moduleMap.begin();
-    while (moduleIterator != m_moduleMap.end()) {
+    while (moduleIterator != m_moduleMap.end()) 
+    {
 #ifdef _WIN32
         HMODULE library = moduleIterator->second;
-        if (library != NULL) {
+        if (library != NULL) 
             ::FreeLibrary(moduleIterator->second);
 #else
         void * library = moduleIterator->second;
-        if (library != NULL) {
+        if (library != NULL) 
 			dlclose(moduleIterator->second);	
 #endif
         moduleIterator++;
-        }
     }
-
 }
 
 void FdoConnectionManager::Dispose()
@@ -226,7 +225,7 @@ FdoIConnection* FdoConnectionManager::CreateConnection(const wchar_t* providerNa
 			throw ex;
         }
 
-        m_moduleMap.insert(FdoNamedModulePair(providerName, providerLibrary));
+        m_moduleMap.insert(FdoNamedModulePair(std::wstring(providerName), providerLibrary));
     }
     else {
         providerLibrary = moduleIterator->second;
@@ -274,7 +273,7 @@ FdoIConnection* FdoConnectionManager::CreateConnection(const wchar_t* providerNa
             throw FdoClientServiceException::Create(FdoClientServiceException::NLSGetMessage(FDO_NLSID(CLNT_8_UNABLE_TO_LOAD_LIBRARY), dlerror()));
         }
 
-        m_moduleMap.insert(FdoNamedModulePair(providerName, providerLibrary));
+        m_moduleMap.insert(FdoNamedModulePair(std::wstring(providerName), providerLibrary));
     }
     else {
         providerLibrary = moduleIterator->second;
