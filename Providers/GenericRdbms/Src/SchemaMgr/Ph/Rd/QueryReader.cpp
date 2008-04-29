@@ -69,6 +69,10 @@ bool FdoSmPhRdGrdQueryReader::ReadNext()
     if ( this->IsEOF() || mResults == NULL)
         return false;
 
+    // Derived read may have modified some field values after they have been read.
+    // Clear these modifications so they don't override the next values that are read.
+    Clear();
+
     if ( !mResults->ReadNext() ) {
         SetEOF(true);
         return false;
@@ -83,6 +87,11 @@ FdoStringP FdoSmPhRdGrdQueryReader::GetString( FdoStringP tableName, FdoStringP 
     // Make sure there is a current row.
     CheckGet();
 
+    // Derived reader may have modified some field values after they have been read.
+    // Get value directly from modified field, instead of value fetched from RDBMS.
+    if ( FieldIsModified(tableName, fieldName) ) 
+        return FdoSmPhReader::GetString( tableName, fieldName );
+
     FdoSmPhRdGrdFieldArrayP fetch = GetFieldArray(tableName, fieldName);
     return fetch->GetString();
 }
@@ -91,6 +100,11 @@ int FdoSmPhRdGrdQueryReader::GetInteger( FdoStringP tableName, FdoStringP fieldN
 {
     // Make sure there is a current row.
     CheckGet();
+
+    // Derived reader may have modified some field values after they have been read.
+    // Get value directly from modified field, instead of value fetched from RDBMS.
+    if ( FieldIsModified(tableName, fieldName) ) 
+        return FdoSmPhReader::GetInteger( tableName, fieldName );
 
     FdoSmPhRdGrdFieldArrayP fetch = GetFieldArray(tableName, fieldName);
     return fetch->GetInteger();
@@ -101,6 +115,11 @@ long FdoSmPhRdGrdQueryReader::GetLong( FdoStringP tableName, FdoStringP fieldNam
     // Make sure there is a current row.
     CheckGet();
 
+    // Derived reader may have modified some field values after they have been read.
+    // Get value directly from modified field, instead of value fetched from RDBMS.
+    if ( FieldIsModified(tableName, fieldName) ) 
+        return FdoSmPhReader::GetLong( tableName, fieldName );
+
     FdoSmPhRdGrdFieldArrayP fetch = GetFieldArray(tableName, fieldName);
     return fetch->GetLong();
 }
@@ -110,6 +129,11 @@ double FdoSmPhRdGrdQueryReader::GetDouble( FdoStringP tableName, FdoStringP fiel
     // Make sure there is a current row.
     CheckGet();
 
+    // Derived reader may have modified some field values after they have been read.
+    // Get value directly from modified field, instead of value fetched from RDBMS.
+    if ( FieldIsModified(tableName, fieldName) ) 
+        return FdoSmPhReader::GetDouble( tableName, fieldName );
+
     FdoSmPhRdGrdFieldArrayP fetch = GetFieldArray(tableName, fieldName);
     return fetch->GetDouble();
 }
@@ -118,6 +142,11 @@ bool FdoSmPhRdGrdQueryReader::GetBoolean( FdoStringP tableName, FdoStringP field
 {
     // Make sure there is a current row.
     CheckGet();
+
+    // Derived reader may have modified some field values after they have been read.
+    // Get value directly from modified field, instead of value fetched from RDBMS.
+    if ( FieldIsModified(tableName, fieldName) ) 
+        return FdoSmPhReader::GetBoolean( tableName, fieldName );
 
     FdoSmPhRdGrdFieldArrayP fetch = GetFieldArray(tableName, fieldName);
     return fetch->GetBoolean();
@@ -207,6 +236,18 @@ void FdoSmPhRdGrdQueryReader::Execute()
 		}
     }
 }
+
+bool FdoSmPhRdGrdQueryReader::FieldIsModified( FdoStringP tableName, FdoStringP fieldName )
+{
+    bool isModified = false;
+    FdoSmPhFieldP field = FdoSmPhRdQueryReader::GetField( tableName, fieldName );
+
+    if ( field ) 
+        isModified = field->GetIsModified();
+
+    return isModified;
+}
+
 
 FdoSmPhRdGrdFieldArrayP FdoSmPhRdGrdQueryReader::GetFieldArray( FdoStringP tableName, FdoStringP fieldName)
 {

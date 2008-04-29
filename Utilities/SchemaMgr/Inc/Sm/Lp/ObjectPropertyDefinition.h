@@ -328,6 +328,7 @@ private:
         const FdoSmLpClassDefinition* pContainingClass,
         const FdoSmLpDataPropertyDefinition* pDataProp
     );
+    void AddCreateNoMetaError( FdoSmPhOwnerP owner );
 
 	FdoObjectType mObjectType;
 

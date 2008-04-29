@@ -114,6 +114,8 @@ public:
 
     virtual FdoSize ColNameMaxLen();
 
+    virtual bool SupportsMixedCase();
+
     // No case conversion for SqlServer. 
     virtual FdoStringP GetDcRdbmsObjectName( FdoStringP objectName );
 

@@ -65,7 +65,7 @@ public:
     // that are good for building other names such as for object property
     // tables and columns. 
     // The db object or root name minus the user name part is returned.
-    virtual FdoStringP  GetSubstDbObjectName() const;
+    virtual FdoStringP  GetSubstDbObjectName( FdoStringP dbObjectName = L"" ) const;
     virtual FdoStringP  GetSubstRootDbObjectName() const;
 
 protected:
@@ -109,6 +109,8 @@ protected:
         FdoSmPhDbObjectP table,
         FdoSchemaElementState elementState
     );
+
+    virtual FdoStringP DefaultDbObjectName();
 
     // Add the physical mappings for this class to the given schema override set
     virtual bool AddSchemaMappings( FdoPhysicalSchemaMappingP schemaMapping, bool bIncludeDefaults ) const;

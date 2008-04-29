@@ -55,7 +55,7 @@ void FdoSmPhGrdCommandWriter::Add()
 	            NlsMsgGet1 (
 		            FDORDBMS_364,
 		            "Table %1$ls is not in the current datastore; datastore schema needs to be upgraded.",
-		            (FdoString*) FdoSmPhDbObjectP(GetRow()->GetDbObject())->GetQName() 
+		            GetRow()->GetName()
 	            )
             );
 

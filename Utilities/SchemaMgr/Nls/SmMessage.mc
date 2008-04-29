@@ -171,6 +171,41 @@ SymbolicName=FDOSM_31
 Language=English
 Cannot apply feature schema '%1$ls' to datastore '%2$ls'; datastore has no FDO metadata tables (f_schemainfo, etc.)
 .
+MessageId=2237
+SymbolicName=FDOSM_32
+Language=English
+Cannot add spatial context '%1$ls' to datastore '%2$ls'; datastore has no FDO metadata tables (f_spatialcontext, etc.)
+.
+MessageId=2238
+SymbolicName=FDOSM_33
+Language=English
+Cannot add feature schema '%1$ls' to datastore '%2$ls'; datastore has no FDO metadata tables (f_schemainfo)
+.
+MessageId=2239
+SymbolicName=FDOSM_34
+Language=English
+Cannot delete default feature schema '%1$ls' from datastore '%2$ls'
+.
+MessageId=2240
+SymbolicName=FDOSM_35
+Language=English
+Cannot add object property '%1$ls' to datastore '%2$ls'; datastore has no FDO metadata tables
+.
+MessageId=2241
+SymbolicName=FDOSM_36
+Language=English
+Cannot set Schema Attribute Dictionary for element '%1$ls' in datastore '%2$ls'; datastore has no FDO metadata tables
+.
+MessageId=2242
+SymbolicName=FDOSM_37
+Language=English
+Cannot apply table name override to '%1$ls' for class '%2$ls'; datastore has no FDO metadata tables so override causes class name to change
+.
+MessageId=2243
+SymbolicName=FDOSM_38
+Language=English
+Cannot apply column name override to '%1$ls' for property '%2$ls'; datastore has no FDO metadata tables so override causes property name to change
+.
 MessageId=2327
 SymbolicName=FDOSM_122
 Language=English
@@ -479,7 +514,7 @@ Error in Object Property '%1$ls.%2$ls': Class Table mapping not supported
 MessageId=2394
 SymbolicName=FDOSM_189
 Language=English
-Cannot override object property '%1$ls' prefix to name that exceeds %2$d characters: '%3$ls'
+Cannot set object property '%1$ls' prefix to name that exceeds %2$d characters: '%3$ls'
 .
 MessageId=2395
 SymbolicName=FDOSM_190
@@ -844,17 +879,17 @@ Cannot specify single table mapping for collection object property '%1$ls'.
 MessageId=2517
 SymbolicName=FDOSM_302
 Language=English
-Cannot override property '%1$ls' column to invalid name '%2$ls' (must contain only ([a-z][A-Z][0-9]_$))
+Cannot set property '%1$ls' column to invalid name '%2$ls' (must contain only ([a-z][A-Z][0-9]_$))
 .
 MessageId=2518
 SymbolicName=FDOSM_303
 Language=English
-Cannot override property '%1$ls' column to name that exceeds %2$d characters: '%3$ls'
+Cannot set property '%1$ls' column to name that exceeds %2$d characters: '%3$ls'
 .
 MessageId=2519
 SymbolicName=FDOSM_304
 Language=English
-Cannot override property '%1$ls' column to RDBMS reserved name '%2$ls'
+Cannot set property '%1$ls' column to RDBMS reserved name '%2$ls'
 .
 MessageId=2520
 SymbolicName=FDOSM_305
@@ -879,7 +914,7 @@ Cannot generate column name for %1$ls
 MessageId=2524
 SymbolicName=FDOSM_309
 Language=English
-Field '%1$ls.%2$ls' is not handled by this command writer
+Field '%1$ls' is not handled by this reader or writer
 .
 MessageId=2525
 SymbolicName=FDOSM_310
@@ -899,17 +934,17 @@ Column %1$ls is not in the current datastore; datastore schema needs to be upgra
 MessageId=2528
 SymbolicName=FDOSM_313
 Language=English
-Cannot override class '%1$ls' table to invalid name '%2$ls' (must contain only ([a-z][A-Z][0-9]_$))
+Cannot set class '%1$ls' table to invalid name '%2$ls' (must contain only ([a-z][A-Z][0-9]_$))
 .
 MessageId=2529
 SymbolicName=FDOSM_314
 Language=English
-Cannot override class '%1$ls' table to name that exceeds %2$d characters: '%3$ls'
+Cannot set class '%1$ls' table to name that exceeds %2$d characters: '%3$ls'
 .
 MessageId=2530
 SymbolicName=FDOSM_315
 Language=English
-Cannot override class '%1$ls' table to RDBMS reserved name '%2$ls'
+Cannot set class '%1$ls' table to RDBMS reserved name '%2$ls'
 .
 MessageId=2531
 SymbolicName=FDOSM_316

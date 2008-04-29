@@ -174,38 +174,101 @@ void FdoSmLpSpatialContext::Commit( bool fromParent )
     // Here is where we split a logical/physical spatial context
     // into physical spatial context and spatial context group.
 
-	switch ( GetElementState() ) {
-  	case FdoSchemaElementState_Added:
+    if ( mPhysicalSchema->FindOwner()->GetHasMetaSchema() ) {
+	    switch ( GetElementState() ) {
+  	    case FdoSchemaElementState_Added:
 
-		// Do not duplicate SC group definitions. Find an existing one.
-		if ( (mScgId = GetMatchingScgid()) == -1 ) {
-			scgWriter = GetPhysicalScgAddWriter();
-			scgWriter->Add();
-			mScgId = scgWriter->GetId();
-		}
-        scWriter = GetPhysicalScAddWriter();
-        scWriter->Add();
-		mId = scWriter->GetId();
+		    // Do not duplicate SC group definitions. Find an existing one.
+		    if ( (mScgId = GetMatchingScgid()) == -1 ) {
+			    scgWriter = GetPhysicalScgAddWriter();
+			    scgWriter->Add();
+			    mScgId = scgWriter->GetId();
+		    }
+            scWriter = GetPhysicalScAddWriter();
+            scWriter->Add();
+		    mId = scWriter->GetId();
 
-		break;
+		    break;
 
-	case FdoSchemaElementState_Deleted:
-		// ToDo: remove a SCG if and only if there is not SC associated with it
-        //scgWriter = GetPhysicalScgAddWriter();
-        //scgWriter->Delete( mScgId );
-        scWriter = GetPhysicalScAddWriter();
-        scWriter->Delete( GetId() );
+	    case FdoSchemaElementState_Deleted:
+		    // ToDo: remove a SCG if and only if there is not SC associated with it
+            //scgWriter = GetPhysicalScgAddWriter();
+            //scgWriter->Delete( mScgId );
+            scWriter = GetPhysicalScAddWriter();
+            scWriter->Delete( GetId() );
 
-		break;
+		    break;
 
-	case FdoSchemaElementState_Modified:
-        scgWriter = GetPhysicalScgModifyWriter();
-        scgWriter->Modify( mScgId );
-        scWriter = GetPhysicalScModifyWriter();
-        scWriter->Modify( mId );
+	    case FdoSchemaElementState_Modified:
+            scgWriter = GetPhysicalScgModifyWriter();
+            scgWriter->Modify( mScgId );
+            scWriter = GetPhysicalScModifyWriter();
+            scWriter->Modify( mId );
 
-        break;
-	}
+            break;
+	    }
+    }
+    else {
+        // Datastore has no MetaSchema, so there is a chicken and egg situation:
+        //  - spatial contexts is reverse-engineered from geometric columns so spatial context
+        //    can't exist if not referenced by a geometric column.
+        //  - spatial context must exist before it can be associated with a geometric column.
+        //
+        // This is resolved by creating a special table with one geometric column per spatial 
+        // context that was created by FDO.
+
+        // TODO: centralize the special table handling in the Physical Schema Manager.
+
+        FdoSmPhOwnerP owner = mPhysicalSchema->FindOwner();
+
+	    switch ( GetElementState() ) {
+  	    case FdoSchemaElementState_Added:
+
+            {
+                FdoSmPhDbObjectP dbObject = owner->FindDbObject(L"f_scinfo");
+
+                if ( !dbObject ) {
+                    // Special table doesn't yet exist, create it.
+                    dbObject = owner->CreateTable(L"f_scinfo");
+                    FdoSmPhColumnP column = dbObject->CreateColumnInt64(L"f_scinfo_id", false);
+                    dbObject->AddPkeyCol(column->GetName());
+                }
+
+                // Add a column that is associated with this Spatial Context.
+                FdoSmPhScInfoP scinfo = FdoSmPhScInfo::Create();
+                scinfo->mSrid = GetSrid();
+                scinfo->mCoordSysName = GetCoordinateSystem();
+                scinfo->mExtent = GetExtent();
+                scinfo->mXYTolerance = GetXYTolerance();
+                scinfo->mZTolerance = GetZTolerance();
+
+                dbObject->CreateColumnGeom( GetName(), scinfo );
+                dbObject->Commit();
+            }
+
+            break;
+
+	    case FdoSchemaElementState_Deleted:
+            {
+                FdoSmPhDbObjectP dbObject = owner->FindDbObject(L"f_scinfo");
+
+                if ( dbObject ) {
+                    // Remove this spatial context's column from the special table.
+                    FdoSmPhColumnP column = dbObject->GetColumns()->FindItem(GetName());
+                    column->SetElementState( FdoSchemaElementState_Deleted );
+                    column->Commit();
+                }
+            }
+
+		    break;
+
+	    case FdoSchemaElementState_Modified:
+            //TODO: Best way is to drop and re-add the geometric column. Need to modularize
+            //the add and delete cases first.
+
+            break;
+	    }
+    }
 }
 
 FdoSchemaExceptionP FdoSmLpSpatialContext::Errors2Exception(FdoSchemaException* pFirstException ) const

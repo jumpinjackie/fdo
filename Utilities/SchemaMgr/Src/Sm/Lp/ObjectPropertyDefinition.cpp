@@ -341,6 +341,17 @@ void FdoSmLpObjectPropertyDefinition::Update(
 	// Superclass Update logs property type conflict so just silently skip validation
 	// at this level.
 	if ( pFdoProp->GetPropertyType() == FdoPropertyType_ObjectProperty ) {
+
+        if ( GetLogicalPhysicalSchema()->GetSchemas()->CanCreatePhysicalObjects() ) {
+            FdoSmPhOwnerP owner = GetLogicalPhysicalSchema()->GetPhysicalSchema()->GetOwner();
+            if ( (!owner) || !(owner->GetHasMetaSchema()) ) {
+                if ( elementState == FdoSchemaElementState_Added ) 
+                    // Need metaschema to store object property definition.
+                    AddCreateNoMetaError( owner );
+            }
+        }
+
+
 		FdoObjectPropertyDefinition*		pFdoObjProp = 
 			(FdoObjectPropertyDefinition*) pFdoProp;
 
@@ -1248,6 +1259,19 @@ void FdoSmLpObjectPropertyDefinition::AddSubPropNotNullError(
 			    (FdoString*) (GetQName() + L"." + pDataProp->GetName()),
                 (FdoString*) pContainingClass->GetQName()
             )
+		)
+	);
+}
+
+void FdoSmLpObjectPropertyDefinition::AddCreateNoMetaError( FdoSmPhOwnerP owner )
+{
+	GetErrors()->Add( FdoSmErrorType_Other, 
+        FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+				FDO_NLSID(FDOSM_35),
+				(FdoString*) GetQName(),
+                owner ? owner->GetName() : L""
+			)
 		)
 	);
 }

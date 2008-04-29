@@ -48,6 +48,9 @@ public:
 
 	// Get the name of function to retrieve current database name
 	FdoString* GetDbNameClause(bool isEqual);
+
+    virtual FdoStringP GetBestSchemaName() const;
+
 	void CreateMetaClass();
 
     // Make this owner the current schema

@@ -502,6 +502,11 @@ public:
     /// Gets the provider-specific maximum length of a column name.
     virtual FdoSize ColNameMaxLen() = 0;
 
+    // Returns true if the current RDBMS handles mixed case object names well.
+    // Returns false if the RDBMS does not handle mixed case or if it is 
+    // not safe to create objects with mixed case names.
+    virtual bool SupportsMixedCase();
+
     // The following functions take various types of object names and 
     // convert them to the default case for the current RDBMS
     // (e.g. upper case for Oracle, lower for most others).

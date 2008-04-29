@@ -48,7 +48,7 @@ protected:
     void Cmd_ListDatastores ();
 	void Cmd_CreateDatastore ();
 	void Cmd_DestroyDatastore ();
-    void TestReservedName();
+    virtual void TestReservedName();
 	int  ListDatastores( bool include );
     void CreateDatastore(FdoIConnection* connection, FdoString* dsName);
 	void DestroyDatastore(bool ignoreEx);

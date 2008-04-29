@@ -59,12 +59,17 @@ bool FdoSmPhMergeReader::ReadNext()
     return !IsEOF();
 }
 
+FdoSmPhFieldP FdoSmPhMergeReader::GetField( FdoStringP tableName, FdoStringP fieldName )
+{
+    // Read field from current reader
+    return GetCurrentReader()->GetField( tableName, fieldName );
+}
+
 FdoStringP FdoSmPhMergeReader::GetString( FdoStringP tableName, FdoStringP fieldName )
 {
     // Read row from current reader
     return GetCurrentReader()->GetString( tableName, fieldName );
 }
-
 
 FdoSmPhReaderP FdoSmPhMergeReader::GetCurrentReader()
 {

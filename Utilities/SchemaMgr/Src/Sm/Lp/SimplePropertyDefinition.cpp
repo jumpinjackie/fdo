@@ -227,10 +227,10 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
 
 		try {
     		// Column name is property name adjusted to be RDBMS-friendly.
-	    	FdoStringP columnNameGen = ((FdoSmLpClassDefinition*)RefParentClass())->UniqueColumnName( 
+	    	FdoStringP columnNameGen = GenColumnName( 
                 dbObject, 
-                this, 
-                columnName.GetLength() > 0 ? (FdoString*) columnName : GetName(), 
+                columnName, 
+                owner->GetHasMetaSchema(),
                 isFixedColumn 
             );
 
@@ -255,10 +255,11 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
                     // of default case is done if such a column exists.
                     FdoStringP CiColumnName = pPhysical->GetDcColumnName(columnNameGen);
                     if ( CiColumnName != columnNameGen ) {
-                        // Matched to default case so change case of
-                        // property's column name.
-                        columnNameGen = CiColumnName;
-                        foundColumn = columns->FindItem(columnNameGen);
+                        foundColumn = columns->FindItem(CiColumnName);
+                        if ( foundColumn || !pPhysical->SupportsMixedCase() ) 
+                            // Matched to default case so change case of
+                            // property's column name.
+                            columnNameGen = CiColumnName;
                     }
                 }
             }
@@ -292,10 +293,10 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
 			SetColumn( (FdoSmPhColumn*) NULL );
 
             SetColumnName( 
-                ((FdoSmLpClassDefinition*)RefParentClass())->UniqueColumnName( 
+                GenColumnName( 
                     dbObject, 
-                    this, 
-                    columnName.GetLength() > 0 ? (FdoString*) columnName : GetName(), 
+                    columnName,
+                    owner->GetHasMetaSchema(),
                     isFixedColumn 
                 ) 
             );
@@ -310,10 +311,10 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
         FdoSmPhOwnerP owner = pPhysical->GetOwner();
 		SetColumn( (FdoSmPhColumn*) NULL );
         SetColumnName( 
-            ((FdoSmLpClassDefinition*)RefParentClass())->UniqueColumnName( 
+            GenColumnName( 
                 dbObject, 
-                this, 
-                columnName.GetLength() > 0 ? (FdoString*) columnName : GetName(), 
+                columnName, 
+                owner->GetHasMetaSchema(),
                 GetIsFixedColumn() && (!ColumnIsForeign() || !owner->GetHasMetaSchema()) 
             ) 
         );
@@ -322,6 +323,33 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
     // Mark this property as being changed if not already.
     if ( GetElementState() == FdoSchemaElementState_Unchanged ) 
         SetElementState( FdoSchemaElementState_Modified );
+}
+
+FdoStringP FdoSmLpSimplePropertyDefinition::GenColumnName( 
+    FdoSmPhDbObjectP dbObject, 
+    FdoStringP columnName,
+    bool hasMetaSchema,
+    bool bFixed
+)
+{
+    FdoStringP outColumnName = columnName.GetLength() > 0 ? (FdoString*) columnName : GetName();
+
+    if ( hasMetaSchema ) {
+        // Has MetaSchema so generate unique column name.
+        outColumnName = ((FdoSmLpClassDefinition*)RefParentClass())->UniqueColumnName( 
+            dbObject, 
+            this, 
+            outColumnName, 
+            bFixed 
+        );
+    }
+    else {
+        // No MetaSchema, can't adjust column name since this leads to property name changing.
+        // Just report any problems with the column name.
+        VldColumnName( outColumnName );
+    }
+
+    return outColumnName;
 }
 
 bool FdoSmLpSimplePropertyDefinition::ColumnIsForeign()
@@ -367,3 +395,102 @@ void FdoSmLpSimplePropertyDefinition::Finalize()
             ((FdoSmPhColumn*) mColumn)->SetRootName( rootColumnName );
     }
 }
+
+bool FdoSmLpSimplePropertyDefinition::VldColumnName( FdoStringP columnName )
+{
+    bool bValid = true;
+    FdoSmPhMgrP pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
+    FdoSize iNameMaxLen = pPhysical->ColNameMaxLen();;
+
+
+    // Censor out characters not acceptable to RDBMS
+	FdoStringP workName = pPhysical->CensorDbObjectName(columnName);
+
+    // When workName is different, column name has an invalid character.
+    if ( workName != columnName && !GetIsFromConfig() ) {
+       AddColCharError( columnName );
+       bValid = false;
+    }
+
+    if ( (int)strlen(workName) > iNameMaxLen ) {
+        AddColLengthError( columnName );
+        bValid = false;
+    }
+
+    if ( pPhysical->IsDbObjectNameReserved( workName) && !GetIsFromConfig() ) {
+        AddColReservedError( columnName );
+        bValid = false;
+    }
+
+    // If the datastore has no metaschema and the column name is overridden, the override
+    // must come from a config doc. If it came from ApplySchema then the override will 
+    // cause the property name to change on round-trip Apply/Describe.
+    if ( !GetIsFromConfig() && !GetHasMetaSchema() && (columnName != GetName()) ) {
+        AddPropNameChangeError( columnName );
+        bValid = false;
+    }
+
+    return( bValid );
+}
+
+void FdoSmLpSimplePropertyDefinition::AddColCharError( 
+    FdoString* columnName
+)
+{
+	GetErrors()->Add( FdoSmErrorType_Other, 
+        FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+				FDO_NLSID(FDOSM_302),
+                (FdoString*)GetQName(),
+				columnName
+			)
+		)
+	);
+}
+
+void FdoSmLpSimplePropertyDefinition::AddColLengthError( 
+    FdoString* columnName
+)
+{
+	GetErrors()->Add( FdoSmErrorType_Other, 
+        FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+				FDO_NLSID(FDOSM_303),
+                (FdoString*)GetQName(),
+                GetLogicalPhysicalSchema()->GetPhysicalSchema()->ColNameMaxLen(),
+				columnName
+			)
+		)
+	);
+}
+
+void FdoSmLpSimplePropertyDefinition::AddColReservedError( 
+    FdoString* columnName
+)
+{
+	GetErrors()->Add( FdoSmErrorType_Other, 
+        FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+				FDO_NLSID(FDOSM_304),
+                (FdoString*)GetQName(),
+				columnName
+			)
+		)
+	);
+}
+
+void FdoSmLpSimplePropertyDefinition::AddPropNameChangeError( 
+    FdoString* columnName
+)
+{
+	GetErrors()->Add( FdoSmErrorType_Other, 
+        FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+				FDO_NLSID(FDOSM_38),
+				columnName,
+                (FdoString*)GetQName()
+			)
+		)
+	);
+}
+
