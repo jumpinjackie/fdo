@@ -103,6 +103,7 @@ FdoDateTime c_KgMssFeatureReaderInsert::GetDateTime( const wchar_t *PropName )
   
   FdoDataValue* dataval = (dynamic_cast<FdoDataValue*>(val.p));
   
+  // FIXME - mloskot: The following condition may lead to NULL pointer dereferencing
   if( !dataval && dataval->GetDataType() != FdoDataType_DateTime)
     throw FdoCommandException::Create( L"c_KgMssFeatureReaderInsert::GetDateTime DataType not FdoDataType_DateTime!" );
 
