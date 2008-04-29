@@ -104,7 +104,7 @@ FdoDateTime c_KgMssFeatureReaderInsert::GetDateTime( const wchar_t *PropName )
   FdoDataValue* dataval = (dynamic_cast<FdoDataValue*>(val.p));
   
   if( !dataval && dataval->GetDataType() != FdoDataType_DateTime)
-    throw FdoCommandException::Create( L"c_KgMssFeatureReaderInsert::GetDateTime DataType not FdoDataType_Int64!" );
+    throw FdoCommandException::Create( L"c_KgMssFeatureReaderInsert::GetDateTime DataType not FdoDataType_DateTime!" );
 
   FdoDateTimeValue *dval = (static_cast<FdoDateTimeValue*>(dataval));
   
