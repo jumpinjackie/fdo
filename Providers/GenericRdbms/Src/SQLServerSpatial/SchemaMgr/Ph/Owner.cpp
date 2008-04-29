@@ -426,6 +426,11 @@ FdoString* FdoSmPhSqsOwner::GetDbNameClause(bool isEqual)
 		return L"schemaname != db_name()";
 }
 
+FdoStringP FdoSmPhSqsOwner::GetBestSchemaName() const
+{
+    return L"dbo";
+}
+
 void FdoSmPhSqsOwner::CreateMetaClass()
 {
 	FdoSmPhSqsMgrP mgr = GetManager()->SmartCast<FdoSmPhSqsMgr>();

@@ -587,6 +587,11 @@ FdoSize FdoSmPhMgr::TableNameMaxLen()
     return DbObjectNameMaxLen();
 }
 
+bool FdoSmPhMgr::SupportsMixedCase()
+{
+    return false;
+}
+
 FdoStringP FdoSmPhMgr::GetDcDatabaseName( FdoStringP databaseName )
 {
     return GetDcRdbmsObjectName( databaseName );

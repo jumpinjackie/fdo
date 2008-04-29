@@ -310,6 +310,8 @@ private:
     /// Various error logging functions.
     void AddClassExistsError( FdoClassDefinition* pFdoClass );
     void AddClassNotExistsError( FdoString* className );
+    void AddCreateNoMetaError( FdoSmPhOwnerP owner );
+    void AddDeleteNoMetaError( FdoSmPhOwnerP owner );
 
     FdoSmLpClassesP                mClasses;
 

@@ -61,6 +61,16 @@ public:
         return( field );
     }
 
+    // Clears the field values for all rows in this collection.
+    void Clear()
+    {
+        FdoInt32 cidx;
+        for ( cidx = 0; cidx < GetCount(); cidx++ ) {
+            FdoSmPhRowP row = GetItem(cidx);
+            row->Clear();
+        }
+    }
+
 };
 
 typedef FdoPtr<FdoSmPhRowCollection> FdoSmPhRowsP;

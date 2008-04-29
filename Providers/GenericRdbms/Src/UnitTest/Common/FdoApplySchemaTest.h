@@ -57,19 +57,23 @@ protected:
     virtual void TestConfigDoc();
     virtual void TestNoMeta();
 
+    void ApplyNoMetaSuccess( FdoIConnection* connection, StaticConnection* staticConn );
+    void ApplyNoMetaFailure( FdoIConnection* connection, StaticConnection* staticConn );
+
     void DeleteAcadSchema( FdoIConnection* connection );
 	void DeleteLandSchema( FdoIConnection* connection );
+	void DeleteDefaultSchema( FdoIConnection* connection, bool update );
 	void CreateSystemSchema( FdoIConnection* connection );
-	void CreateAcadSchema( FdoIConnection* connection );
-	void CreateElectricSchema( FdoIConnection* connection );
-	void CreateLandSchema( FdoIConnection* connection );
-    void CreateLandSchema( FdoFeatureSchemaCollection* pSchemas );
+	void CreateAcadSchema( FdoIConnection* connection, bool hasMetaSchema = true, bool addSAD = false );
+	void CreateElectricSchema( FdoIConnection* connection, bool hasMetaSchema = true );
+	void CreateLandSchema( FdoIConnection* connection, bool hasMetaSchema = true );
+    void CreateLandSchema( FdoFeatureSchemaCollection* pSchemas, bool hasMetaSchema = true );
     void CreateLTSchema( FdoIConnection* connection );
 	void CreateErrorSchema( FdoIConnection* connection );
-	virtual void CreateNLSSchema( FdoIConnection* connection, StaticConnection* staticConn );
+	virtual void CreateNLSSchema( FdoIConnection* connection, StaticConnection* staticConn, bool hasMetaSchema = true );
 
-	void CreateLongStringSchema( FdoIConnection* connection );
-	void CreateOverrideSchema( FdoIConnection* connection, FdoRdbmsOvPhysicalSchemaMapping* pOverrides = NULL, bool nnull = false, bool addConstraints = true );
+	void CreateLongStringSchema( FdoIConnection* connection, bool hasMetaSchema = true  );
+	void CreateOverrideSchema( FdoIConnection* connection, FdoRdbmsOvPhysicalSchemaMapping* pOverrides = NULL, bool nnull = false, bool addConstraints = true, bool hasMetaSchema = true );
     void CreateForeignBasedSchema( FdoIConnection* connection, FdoFeatureSchema* pBaseSchema, FdoRdbmsOvPhysicalSchemaMapping* pOverrides = NULL );
 /*
     void CreateForeignErrorSchema( FdoIConnection* connection );
@@ -78,21 +82,22 @@ protected:
 	void ModOverrideSchema2( FdoIConnection* connection, FdoRdbmsOvPhysicalSchemaMapping* pOverrides = NULL );
 	void ModOverrideSchemaForeign( FdoFeatureSchema* pSchema, FdoRdbmsOvPhysicalSchemaMapping* pOverrides = NULL );
 	void ModOverrideSchemaForeign2( FdoIConnection* connection, FdoRdbmsOvPhysicalSchemaMapping* pOverrides = NULL );
-	void ModElectricSchema( FdoIConnection* connection );
-    void ModElectricSchema( FdoFeatureSchemaCollection* pSchemas );
-	void ModLandSchema( FdoIConnection* connection );
+	void ModElectricSchema( FdoIConnection* connection, bool hasMetaSchema = true  );
+    void ModElectricSchema( FdoFeatureSchemaCollection* pSchemas, bool hasMetaSchema = true  );
+	void ModLandSchema( FdoIConnection* connection, bool hasMetaSchema = true );
 	void ModLTSchema( FdoIConnection* connection );
 	void RedefineGeometry( FdoIConnection* connection );
 	void DelPropertyError( FdoIConnection* connection );
-	void ModDelSchemas( FdoIConnection* connection );
-    void ModDelElectricSchema( FdoFeatureSchemaCollection* pSchemas );
-    void ModDelAcadSchema( FdoFeatureSchemaCollection* pSchemas );
-	void ReAddElements( FdoIConnection* connection );
+	void ModDelSchemas( FdoIConnection* connection, bool hasMetaSchema = true );
+    void ModDelElectricSchema( FdoFeatureSchemaCollection* pSchemas, bool hasMetaSchema = true );
+    void ModDelAcadSchema( FdoFeatureSchemaCollection* pSchemas, bool hasMetaSchema = true );
+	void ReAddElements( FdoIConnection* connection, bool hasMetaSchema = true );
 
 	void ModErrors( FdoIConnection* connection );
 	void ModErrors2( FdoIConnection* connection );
 
 	void ModMetaClassSchema( FdoIConnection* connection );
+
 /*
 	void GetJoinTree( FdoRdbmsSchemaManager* sm );
 */
@@ -169,6 +174,12 @@ protected:
         return 0;
     }
 
+    virtual bool CanApplyWithoutMetaSchema();
+
+    virtual bool CanAddNotNullCol();
+
+    virtual bool CanDropCol();
+
     virtual FdoStringP SchemaTestErrFile( int fileNum, bool isMaster );
 
     virtual FdoStringP SchemaNoMetaErrFile( int fileNum, bool isMaster );
@@ -197,7 +208,8 @@ protected:
     virtual FdoStringP LogicalPhysicalBend( FdoString* inFile );
     virtual FdoStringP LogicalPhysicalFormat( FdoString* inFile );
 
-    bool mCanAddNotNullCol;
+    FdoPtr<FdoFeatureSchema> GetDefaultSchema( FdoIConnection* connection );
+
     FdoStringP mDatastore;
 	bool mIsLowerDatastoreName;
 

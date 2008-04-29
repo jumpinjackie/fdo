@@ -162,13 +162,16 @@ bool FdoSmPhRdClassReader::ReadNext()
                         else
                             pField->SetFieldValue( mOwner->GetName() );
 
-                        // No MetaSchema so table is fixed and was not created by
-                        // Schema Manager.
+                        // No MetaSchema so table is fixed
                         pField = pFields->GetItem(L"isfixedtable");
                         pField->SetFieldValue( L"1" );
 
+                        // Table may have been created by Schema Manager,
+                        // there is no way of knowing for sure.
+                        // However, since there is no MetaSchema, assume
+                        // that Schema Manager can take ownership of it.
                         pField = pFields->GetItem(L"istablecreator");
-                        pField->SetFieldValue( L"0" );
+                        pField->SetFieldValue( L"1" );
 
                         pField = pFields->GetItem(L"geometryproperty");
                         if ( geomPropName.GetLength() > 0 )

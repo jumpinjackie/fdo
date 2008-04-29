@@ -200,10 +200,48 @@ protected:
     /// 	columnName: the name for the new column.
 	virtual FdoSmPhColumnP NewColumn( FdoSmPhDbObjectP dbObject, FdoStringP columnName ) = 0;
 
+    // Generates a new column name for this property and the given db object.
+    // Parameters:
+    // 	dbObject: put the column in this database object.
+    // 	columnName: initial name for the new column. Usually a schema override
+    //         if not L"". If L"" the initial column name is the property name.
+    //  hasMetaSchema: if false, overrides bFixed to not adjust the column name.
+    //  bFixed: if true, column name is fixed. This function does not alter it 
+    //          to be unique. If false then column name is adjusted to be unique
+    //          and compatible with the current RDBMS.
+	FdoStringP GenColumnName( 
+        FdoSmPhDbObjectP dbObject, 
+        FdoStringP columnName,
+        bool hasMetaSchema = false,
+        bool bFixed = false
+    );
+
+
+
     /// Finalize this property by generating its column.
     virtual void Finalize();
 
+    // Verify that this column name is valid for the current RDBMS.
+    bool VldColumnName( FdoStringP columnName );
+
 private:
+
+    void AddColCharError( 
+        FdoString* columnName
+    );
+
+    void AddColLengthError( 
+        FdoString* columnName
+    );
+
+    void AddColReservedError( 
+        FdoString* columnName
+    );
+
+    void AddPropNameChangeError( 
+        FdoString* columName 
+    );
+
 	FdoStringP mColumnName;
 
     FdoStringP mRootColumnName;

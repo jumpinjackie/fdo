@@ -54,34 +54,24 @@ FdoSmPhMgrP FdoSmPhReadWrite::GetManager()
 
 void FdoSmPhReadWrite::Clear()
 {
-    FdoInt32 cidx1, cidx2;
-
-    if ( mSubReadWrite ) {
+    // Clear field values for any sub Reader/Writer
+    if ( mSubReadWrite )
         mSubReadWrite->Clear();
-    }
-    else {
-        if ( mRows ) {
-            for ( cidx1 = 0; cidx1 < mRows->GetCount(); cidx1++ ) {
-                FdoSmPhRowP row = mRows->GetItem(cidx1);
-                FdoSmPhFieldsP	pFields = row->GetFields();
 
-                // Clear each field.
-                for ( cidx2 = 0; cidx2 < pFields->GetCount(); cidx2++ ) {
-                    FdoSmPhFieldP field = pFields->GetItem(cidx2);
-                    field->Clear();
-                }
-            }
-        }
-    }
+    // Clear field values for this Reader/Writer
+    if ( mRows )
+        mRows->Clear();
 }
 
 FdoStringP FdoSmPhReadWrite::GetString( FdoStringP tableName, FdoStringP fieldName )
 {
-    if ( mSubReadWrite ) {
+    // Check the sub ReadWrite first. Get values from the innermost Reader/Writer
+    if ( mSubReadWrite && mSubReadWrite->GetField(tableName, fieldName) ) {
         return mSubReadWrite->GetString( tableName, fieldName );
     }
     else {
-        FdoSmPhFieldP field = GetField(tableName, fieldName);
+        // No sub or field not in sub so get from this Reader/Writer
+        FdoSmPhFieldP field = mRows ? mRows->GetField(tableName, fieldName) : FdoSmPhFieldP();
 
         if ( !field ) 
             throw FdoSchemaException::Create (
@@ -139,13 +129,14 @@ FdoSmPhFieldP FdoSmPhReadWrite::GetField( FdoStringP tableName, FdoStringP field
 {
     FdoSmPhFieldP field;
 
+    // Check the sub ReadWrite first. Get fields from the innermost Reader/Writer
     if ( mSubReadWrite ) {
         field = mSubReadWrite->GetField( tableName, fieldName );
     }
-    else {
-        if ( mRows ) {
-            field = mRows->GetField( tableName, fieldName );
-        }
+
+    if ( mRows && !field ) {
+        // No sub or not in sub so get field from this Reader/Writer
+        field = mRows->GetField( tableName, fieldName );
     }
 
     return( field );
@@ -153,11 +144,13 @@ FdoSmPhFieldP FdoSmPhReadWrite::GetField( FdoStringP tableName, FdoStringP field
 
 void FdoSmPhReadWrite::SetString( FdoStringP tableName, FdoStringP fieldName, FdoStringP sValue )
 {
-    if ( mSubReadWrite ) {
+    // Check the sub ReadWrite first. Get fields from the innermost Reader/Writer
+    if ( mSubReadWrite && mSubReadWrite->GetField(tableName, fieldName) ) {
         return mSubReadWrite->SetString( tableName, fieldName, sValue );
     }
     else {
-        FdoSmPhFieldP field = GetField(tableName, fieldName);
+        // No sub or not in sub so set field in this Reader/Writer
+        FdoSmPhFieldP field = mRows ? mRows->GetField(tableName, fieldName) : FdoSmPhFieldP();
 
         if ( !field ) 
             throw FdoSchemaException::Create (

@@ -146,7 +146,7 @@ FdoSmLpClassDefinitionP FdoSmLpClassBase::GetBaseClass()
 const FdoSmLpClassDefinition* FdoSmLpClassBase::RefMetaClass() const
 {
 	// MetaClasses currently do not have a MetaClass 
-	if ( ! ((FdoSmLpClassBase*)this)->GetLogicalPhysicalSchema()->GetPhysicalSchema()->GetOwner()->GetHasMetaSchema() ||
+	if ( !GetHasMetaSchema() ||
            wcscmp( RefLogicalPhysicalSchema()->GetName(), FdoSmPhMgr::mMetaClassSchemaName ) == 0 )
 		return(NULL);
 
@@ -238,7 +238,7 @@ FdoSmPhDbObjectP FdoSmLpClassBase::FindPhDbObject()
 
     FdoStringP ownerName;
 
-    if (!FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
+    if (!GetHasMetaSchema())
         ownerName = mOwner;
 
     if ( mDbObjectName.GetLength() > 0 ) {
@@ -278,9 +278,9 @@ FdoString* FdoSmLpClassBase::GetDbObjectName() const
 	return mDbObjectName;
 }
 
-FdoStringP FdoSmLpClassBase::GetSubstDbObjectName() const
+FdoStringP FdoSmLpClassBase::GetSubstDbObjectName(  FdoStringP dbObjectName ) const
 {
-	return GetDbObjectName();
+    return (dbObjectName == L"") ? GetDbObjectName() : dbObjectName;
 }
 
 FdoString* FdoSmLpClassBase::GetRootDbObjectName() const
@@ -556,6 +556,8 @@ void FdoSmLpClassBase::Update(
 
 	int i;
 
+    bool hasMetaSchema = GetHasMetaSchema();
+
 	// Find the lowest base class. The lowest base class defines the identity 
 	// properties, if any.
 
@@ -564,12 +566,17 @@ void FdoSmLpClassBase::Update(
 	FdoClassDefinitionP pBaseClass = pFdoClass->GetBaseClass();
 	FdoClassDefinitionP pRootClass = FDO_SAFE_ADDREF(pFdoClass);
 
-    // Check for class conflict type conflict. Not safe to apply class changes if
-	// FDO and datastore versions have different class type.
-	if ( GetClassType() != pFdoClass->GetClassType() ) {
-		AddClassTypeChangeError( pFdoClass->GetClassType() );
-		return;
-	}
+    // When the datastore has no metaschema, feature classes without geometric properties
+    // end up becoming non-feature classes. Class type conflicts are allowed 
+    // in this case to reduces chances of bulk copy failing.
+    if ( hasMetaSchema ) {
+        // Check for class conflict type conflict. Not safe to apply class changes if
+	    // FDO and datastore versions have different class type.
+	    if ( GetClassType() != pFdoClass->GetClassType() ) {
+		    AddClassTypeChangeError( pFdoClass->GetClassType() );
+		    return;
+	    }
+    }
 
     while ( FdoClassDefinitionP(pRootClass->GetBaseClass()) ) {
 		pRootClass = pRootClass->GetBaseClass();
@@ -588,17 +595,26 @@ void FdoSmLpClassBase::Update(
 			fdoBaseClassName = FdoStringP( FdoSchemaElementP(pBaseClass->GetParent())->GetName()) +
 							L":" + pBaseClass->GetName();
 
-		// Adding, removing or changing base class not yet supported.
-		// Todo: look into supporting this.
-		if ( wcscmp ( mBaseClassName, fdoBaseClassName ) != 0 )
-			AddBaseClassChangeError( fdoBaseClassName );
+        // When datastore has no MetaSchema, skip these checks since base class and
+        // abstract setting are not persisted. 
+        if ( hasMetaSchema ) {
+		    // Adding, removing or changing base class not yet supported.
+		    // Todo: look into supporting this.
+		    if ( wcscmp ( mBaseClassName, fdoBaseClassName ) != 0 )
+			    AddBaseClassChangeError( fdoBaseClassName );
 
-		// Abstract status change not yet supported.
-		// Todo: look into supporting this. We'd have to disallow changing
-		// a class to abstract when it has objects ( its table has rows ).
-		if ( pFdoClass->GetIsAbstract() != GetIsAbstract() ) {
-			AddAbstractChangeError();
-		}
+		    // Abstract status change not yet supported.
+		    // Todo: look into supporting this. We'd have to disallow changing
+		    // a class to abstract when it has objects ( its table has rows ).
+		    if ( pFdoClass->GetIsAbstract() != GetIsAbstract() ) {
+			    AddAbstractChangeError();
+		    }
+        }
+        else {
+            // Base class must be set so that inherited properties are moved 
+            // up to this class.
+            mBaseClassName = fdoBaseClassName;
+        }
 
         break;
 	}
@@ -765,7 +781,7 @@ void FdoSmLpClassBase::SynchPhysical(bool bRollbackOnly)
 				if ( !mPhDbObject ) {
 
                     // Class has id but no table. If table exists, attach to it.
-                    if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
+                    if ( GetHasMetaSchema() )
     					mPhDbObject = pPhysical->FindDbObject(mDbObjectName);
                     else
     					mPhDbObject = pPhysical->FindDbObject(mDbObjectName, mOwner);
@@ -1101,18 +1117,17 @@ bool FdoSmLpClassBase::Is_DbObjectCreator() const
     return isDbObjectCreator;
 }
 
-bool FdoSmLpClassBase::VldDbObjectName( FdoStringP objectName, bool bFromConfigFile )
+bool FdoSmLpClassBase::VldDbObjectName( FdoStringP objectName )
 {
     bool bValid = true;
     FdoSmPhMgrP pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
     FdoSize iNameMaxLen = pPhysical->DbObjectNameMaxLen();
 
-
     // Censor out characters not acceptable to RDBMS
 	FdoStringP workName = pPhysical->CensorDbObjectName(objectName);
 
-    // When workName is different, column name has an invalid character.
-    if ( workName != objectName && !bFromConfigFile) {
+    // When workName is different, dbObject name has an invalid character.
+    if ( workName != objectName && !GetIsFromConfig()) {
        AddTableCharError( objectName );
        bValid = false;
     }
@@ -1122,8 +1137,16 @@ bool FdoSmLpClassBase::VldDbObjectName( FdoStringP objectName, bool bFromConfigF
         bValid = false;
     }
 
-    if ( pPhysical->IsDbObjectNameReserved( workName) && !bFromConfigFile ) {
+    if ( pPhysical->IsDbObjectNameReserved( workName) && !GetIsFromConfig() ) {
         AddTableReservedError( objectName );
+        bValid = false;
+    }
+
+    // If the datastore has no metaschema and the db object name is overridden, the override
+    // must come from a config doc. If it came from ApplySchema then the override will 
+    // cause the class name to change on round-trip Apply/Describe.
+    if ( !GetIsFromConfig() && !GetHasMetaSchema() && (GetSubstDbObjectName(objectName) != GetName()) ) {
+        AddClassNameChangeError( objectName );
         bValid = false;
     }
 
@@ -1457,6 +1480,7 @@ void FdoSmLpClassBase::SetOwner( FdoString* owner )
 void FdoSmLpClassBase::SetDbObjectName( FdoStringP objectName )
 {
     FdoSmPhMgrP pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
+    bool hasMetaSchema = GetHasMetaSchema();
 
     if ( mOwner.GetLength() > 0 ) {
         // Owner specified, table is foreign.
@@ -1470,12 +1494,14 @@ void FdoSmLpClassBase::SetDbObjectName( FdoStringP objectName )
             ValidateForeignObjectName( mRootDbObjectName );
         }
 
-        if ( FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema() ) {
+        if ( hasMetaSchema ) {
             // Generate name for view that will be put around the foreign table.
             mDbObjectName =FdoSmPhOwnerP(pPhysical->GetOwner())->UniqueDbObjectName( mRootDbObjectName );
         }
         else {
-            mDbObjectName = mRootDbObjectName;
+            // No metaschema. Must use default name for view. Otherwise class name
+            // will change on next DescribeSchema.
+            mDbObjectName = DefaultDbObjectName();
         }
     }
     else {
@@ -1490,12 +1516,27 @@ void FdoSmLpClassBase::SetDbObjectName( FdoStringP objectName )
             // No overrides so generate a table name for the new class. The table name is the class name
             // adjusted to be RDBMS-friendly.
 
-           mDbObjectName = FdoSmPhOwnerP(pPhysical->GetOwner())->UniqueDbObjectName( GetName() );
+            if ( hasMetaSchema ) {
+                mDbObjectName = FdoSmPhOwnerP(pPhysical->GetOwner())->UniqueDbObjectName( GetName() );
+            }
+            else {
+                // No metaschema. Must use default name for table. Otherwise class name
+                // will change on next DescribeSchema.
+                mDbObjectName = DefaultDbObjectName();
+            }
         }
+
+        // Report any problems with the final db object name.
+        VldDbObjectName(mDbObjectName);
 
         // TODO: set classification for foreign table.
         pPhysical->SetDbObjectClassification( mDbObjectName, GetQName() );
     }
+}
+
+FdoStringP FdoSmLpClassBase::DefaultDbObjectName()
+{
+    return GetName();
 }
 
 void FdoSmLpClassBase::Finalize()
@@ -1555,7 +1596,9 @@ void FdoSmLpClassBase::Finalize()
 								AddBaseClassDeleteError(mBaseClass);
 
 							// Error if base class has different class type.
-							if ( mBaseClass->GetClassType() != GetClassType() ) 
+                            // Error not reported if datastore has no metaschema since class types
+                            // can flip on next DescribeSchema.
+							if ( GetHasMetaSchema() && (mBaseClass->GetClassType() != GetClassType()) ) 
 								AddBaseClassTypeError(mBaseClass);
 						}
 					}
@@ -2255,6 +2298,7 @@ void FdoSmLpClassBase::FinalizePhDbObject()
         }
         else {
             mDbObjectName = mBaseClass->GetDbObjectName();
+            VldDbObjectName( mDbObjectName );
             mOwner = mBaseClass->GetOwner();
             mDatabase = mBaseClass->GetDatabase();
             FdoSmLpDbObjectP lpObject = mBaseClass->GetDbObject();
@@ -2272,14 +2316,15 @@ void FdoSmLpClassBase::FinalizePhDbObject()
                 // Skip table name creation only if already exists and was 
                 // specified through an override. 
                 FdoSmPhDbObjectP dbObject;
-                if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
+
+                if (GetHasMetaSchema())
                     dbObject = pPhysical->FindDbObject( mDbObjectName, L"", L"", false );
                 else
                     dbObject = pPhysical->FindDbObject( mDbObjectName, mOwner, L"", false );
 
                 if ( dbObject )
                     mDbObjectName = dbObject->GetName();
-                else
+                else if ( !(pPhysical->SupportsMixedCase()) ) 
                     mDbObjectName = pPhysical->GetDcDbObjectName( mDbObjectName );
 
                 if ( mbIsFixedDbObject &&  dbObject ) {
@@ -2493,7 +2538,7 @@ FdoSmLpDbObjectP FdoSmLpClassBase::FinalizeNewDbObject(
 			// Get the primary key table and Finalize it.
             FdoSmPhMgrP      pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
             FdoSmPhDbObjectP pDepDbObject;
-            if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
+            if (GetHasMetaSchema())
 			    pDepDbObject = pPhysical->FindDbObject( pDep->GetPkTableName() );
             else
 			    pDepDbObject = pPhysical->FindDbObject( pDep->GetPkTableName(), mOwner );
@@ -3135,6 +3180,19 @@ void FdoSmLpClassBase::AddTableReservedError( FdoString* tableName )
 	);
 }
 
+void FdoSmLpClassBase::AddClassNameChangeError( FdoString* tableName )
+{
+	GetErrors()->Add( FdoSmErrorType_Other, 
+        FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+				FDO_NLSID(FDOSM_37),
+				tableName,
+                (FdoString*) GetQName()
+			)
+		)
+	);
+}
+
 void FdoSmLpClassBase::AddColCharError( 
     const FdoSmLpPropertyDefinition* pProp, 
     FdoString* columnName
@@ -3161,7 +3219,7 @@ void FdoSmLpClassBase::AddColLengthError(
             FdoSmError::NLSGetMessage(
 				FDO_NLSID(FDOSM_303),
                 pProp ? (FdoString*)(pProp->GetQName()) : L"{none}",
-                GetLogicalPhysicalSchema()->GetPhysicalSchema()->DbObjectNameMaxLen(),
+                GetLogicalPhysicalSchema()->GetPhysicalSchema()->ColNameMaxLen(),
 				columnName
 			)
 		)

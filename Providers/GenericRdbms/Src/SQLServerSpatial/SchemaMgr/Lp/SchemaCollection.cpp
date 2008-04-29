@@ -27,6 +27,12 @@ FdoSmLpSqsSchemaCollection::FdoSmLpSqsSchemaCollection(FdoSmPhMgrP physicalSchem
 FdoSmLpSqsSchemaCollection::~FdoSmLpSqsSchemaCollection(void)
 {
 }
+
+bool FdoSmLpSqsSchemaCollection::CanApplySchemaWithoutMetaSchema() const
+{
+    return true;
+}
+
 FdoSmLpSchemaP FdoSmLpSqsSchemaCollection::NewSchema( FdoSmPhSchemaReaderP rdr )
 {
     return new FdoSmLpSqsSchema(rdr, GetPhysicalSchema(), this);

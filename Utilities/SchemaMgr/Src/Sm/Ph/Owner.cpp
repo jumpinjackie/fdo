@@ -197,7 +197,9 @@ const FdoSmPhDbObject* FdoSmPhOwner::RefDbObject(FdoStringP dbObject) const
 
 FdoSmPhDbObjectP FdoSmPhOwner::FindDbObject(FdoStringP dbObject)
 {
-    if ( dbObject == L"" ) 
+    // If Db Object name is too short or too long then we know right away that it
+    // does not exist.
+    if ( (dbObject == L"") || (dbObject.GetLength() > GetManager()->DbObjectNameMaxLen()) )
         return (FdoSmPhDbObject*) NULL;
 
     // Check cache for database object

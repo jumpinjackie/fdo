@@ -41,7 +41,7 @@ public:
         FdoSmPhRdColumnReader* reader = NULL
     ) :
         FdoSmPhSqsColumn (reader),
-        FdoSmPhColumn    ( columnName, L"TINYINT", elementState, parentObject, bNullable, rootColumnName, defaultValue)
+        FdoSmPhColumn    ( columnName, L"BIT", elementState, parentObject, bNullable, rootColumnName, defaultValue)
     {}
 
     virtual ~FdoSmPhSqsColumnBool(void) {}

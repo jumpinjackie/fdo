@@ -30,19 +30,4 @@ void SqlServerFdoDatastoreTest::set_provider()
 
 void SqlServerFdoDatastoreTest::ReservedName(FdoIConnection* connection)
 {
-    bool failed = false;
-
-    try
-	{
-		CreateDatastore(connection, L"image");
-    }
-    catch (FdoException *ex)
-    {
-        if ( wcscmp(ex->GetExceptionMessage(),L"Cannot create datastore, name 'image' is a reserved word") != 0 )
-            throw;
-        failed = true;
-    }
-
-    if ( !failed ) 
-        CPPUNIT_FAIL("Create datastore with reserved name was supposed to fail");
 }

@@ -364,6 +364,21 @@ void FdoSchemaManager::CreateSpatialContext(
 	bool   update
 )
 {
+	FdoSmPhMgrP physMgr = GetPhysicalSchema();
+
+    FdoSmPhOwnerP owner = physMgr->FindOwner();
+
+    if ( owner && !GetLogicalPhysicalSchemas()->CanApplySchemaWithoutMetaSchema() ) {
+        if ( !owner->GetHasMetaSchema() )
+            throw FdoSchemaException::Create(
+                FdoSmError::NLSGetMessage(
+                    FDO_NLSID(FDOSM_32),
+    			    name,
+			        owner->GetName()
+			    )
+            );
+    }
+
 	// Nothing to do if the name is not set
 	if ( wcscmp( name, L"" ) == 0 )
         throw FdoSchemaException::Create( 
@@ -371,8 +386,6 @@ void FdoSchemaManager::CreateSpatialContext(
 				FDO_NLSID(FDOSM_412)
 			)
         );
-
-	FdoSmPhMgrP physMgr = GetPhysicalSchema();
 
     FdoSmLpSpatialContextsP scs = GetLpSpatialContexts();
 
@@ -426,7 +439,7 @@ void FdoSchemaManager::CreateSpatialContext(
     // Post the changes.
     scs->Commit();
 
-	// Flag the change to force re-loads by all Schema Managers.
+    // Flag the change to force re-loads by all Schema Managers.
     mMutex.Enter();
     mCurrRevision++;
     mMutex.Leave();
