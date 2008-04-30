@@ -280,7 +280,7 @@ FdoString* FdoSmLpClassBase::GetDbObjectName() const
 
 FdoStringP FdoSmLpClassBase::GetSubstDbObjectName(  FdoStringP dbObjectName ) const
 {
-    return (dbObjectName == L"") ? GetDbObjectName() : dbObjectName;
+    return (dbObjectName == L"") ? (FdoStringP) GetDbObjectName() : dbObjectName;
 }
 
 FdoString* FdoSmLpClassBase::GetRootDbObjectName() const
