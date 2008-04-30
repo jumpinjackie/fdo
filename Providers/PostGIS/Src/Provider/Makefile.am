@@ -33,6 +33,7 @@ GetSpatialContextsCommand.cpp \
 SelectAggregatesCommand.cpp \
 Connection.cpp \
 InsertCommand.cpp \
+InsertFeatureReader.cpp \
 SelectCommand.cpp \
 ConnectionInfo.cpp \
 ListDataStores.cpp \
@@ -79,6 +80,7 @@ GetSpatialContextsCommand.h \
 SchemaDescription.h \
 Connection.h \
 InsertCommand.h \
+InsertFeatureReader.h \
 SelectAggregatesCommand.h \
 ConnectionInfo.h \
 ListDataStores.h \
