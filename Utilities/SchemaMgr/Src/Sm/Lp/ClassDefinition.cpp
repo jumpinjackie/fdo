@@ -1499,9 +1499,7 @@ void FdoSmLpClassBase::SetDbObjectName( FdoStringP objectName )
             mDbObjectName =FdoSmPhOwnerP(pPhysical->GetOwner())->UniqueDbObjectName( mRootDbObjectName );
         }
         else {
-            // No metaschema. Must use default name for view. Otherwise class name
-            // will change on next DescribeSchema.
-            mDbObjectName = DefaultDbObjectName();
+            mDbObjectName = mRootDbObjectName;
         }
     }
     else {
