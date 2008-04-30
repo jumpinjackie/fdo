@@ -211,7 +211,6 @@ int odbcdr_bind(
 
         c->lenDataParam = SQL_LEN_DATA_AT_EXEC(0);
 
-        SQLLEN tmpLen;
         rc = SQLBindParameter(
 						c->hStmt,
 						(SQLUSMALLINT)bindnum,
@@ -222,8 +221,7 @@ int odbcdr_bind(
 						(SQLSMALLINT) 0,
 						(SQLPOINTER) bindnum,
 						(SQLINTEGER) 0, 
-						&tmpLen);
-        c->lenDataParam = (SDWORD) tmpLen;
+						&c->lenDataParam);
 
         if ( rc != SQL_SUCCESS_WITH_INFO ) {
             ODBCDR_ODBC_ERR( rc,
