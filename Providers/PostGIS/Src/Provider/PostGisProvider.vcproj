@@ -520,6 +520,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\InsertFeatureReader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\InsertFeatureReader.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SelectAggregatesCommand.cpp"
 				>
 			</File>

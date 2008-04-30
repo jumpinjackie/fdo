@@ -17,6 +17,7 @@
 #include "stdafx.h"
 
 #include "InsertCommand.h"
+#include "InsertFeatureReader.h"
 #include "Connection.h"
 #include "ExpressionProcessor.h"
 #include "PgUtility.h"
@@ -243,8 +244,8 @@ FdoIFeatureReader* InsertCommand::Execute()
     FdoSize affected = 0;
     mConn->PgExecuteCommand(sql.c_str(), affected);
 
-    // TODO: What are we supposed to send out from here?
-    return NULL;
+    InsertFeatureReader* reader = new InsertFeatureReader(mProperties, classDef);
+    return reader;
 }
 
 }} // namespace fdo::postgis
