@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\Fdo\Unmanaged\Inc;&quot;$(FDOGDAL)\ogr&quot;;&quot;$(FDOGDAL)\ogr\ogrsf_frmts&quot;;&quot;$(FDOGDAL)\port&quot;;..\..\Thirdparty\gdal\ogr;..\..\Thirdparty\gdal\ogr\ogrsf_frmts;..\..\Thirdparty\gdal\port"
+				AdditionalIncludeDirectories="..\..\Fdo\Unmanaged\Inc;&quot;$(FDOGDAL)\include&quot;;&quot;$(FDOGDAL)\ogr&quot;;&quot;$(FDOGDAL)\ogr\ogrsf_frmts&quot;;&quot;$(FDOGDAL)\port&quot;;..\..\Thirdparty\gdal\include;..\..\Thirdparty\gdal\ogr;..\..\Thirdparty\gdal\ogr\ogrsf_frmts;..\..\Thirdparty\gdal\port"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;OGRPROVIDER_EXPORTS,_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -121,7 +121,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\..\Fdo\Unmanaged\Inc;&quot;$(FDOGDAL)\ogr&quot;;&quot;$(FDOGDAL)\ogr\ogrsf_frmts&quot;;&quot;$(FDOGDAL)\port&quot;;..\..\Thirdparty\gdal\ogr;..\..\Thirdparty\gdal\ogr\ogrsf_frmts;..\..\Thirdparty\gdal\port"
+				AdditionalIncludeDirectories="..\..\Fdo\Unmanaged\Inc;&quot;$(FDOGDAL)\include&quot;;&quot;$(FDOGDAL)\ogr&quot;;&quot;$(FDOGDAL)\ogr\ogrsf_frmts&quot;;&quot;$(FDOGDAL)\port&quot;;..\..\Thirdparty\gdal\include;..\..\Thirdparty\gdal\ogr;..\..\Thirdparty\gdal\ogr\ogrsf_frmts;..\..\Thirdparty\gdal\port"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;OGRPROVIDER_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
