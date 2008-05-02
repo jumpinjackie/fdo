@@ -452,6 +452,24 @@ void ApplySchemaCommand::AddGeometryColumn(std::string const& table,
     {
         srid = spContext->GetSRID();
     }
+    else if(scName.GetLength() > 0)
+    { 
+        // No spatial context has been created but
+        // we got spatial association either PostGIS_srid or srid
+        if(scName.Contains(FdoStringP("PostGIS_"))) 
+        { 
+            scName = scName.Mid(8,-1); 
+        }
+
+        if(scName.IsNumber()) 
+        { 
+            srid = (FdoInt32)scName.ToLong(); 
+        } 
+        else 
+        { 
+            FDOLOG_WRITE("ERROR: invalid SpatialContextAssociation %s, should be PostGIS_srid or srid", scName); 
+        } 
+    } 
 
     // Find spatial dimension and geometry type name
     int dimension = 2;
