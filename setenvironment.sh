@@ -132,7 +132,12 @@ if test ! -e "$PYTHON_INCLUDE_PATH"; then
    echo ""
 fi
 
-mkdir -p "/usr/local/fdo-3.3.0/lib"
+# Buildbot hack (mloskot): if the script is called with single dummy
+# parameter no installation directory is created, ie.:
+# $ source ./setenvironment.sh --noinstall
+if test ! $# -eq 1; then
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-3.3.0/lib:$SDEHOME/lib
+	mkdir -p "/usr/local/fdo-3.3.0/lib"
 
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-3.3.0/lib:$SDEHOME/lib
+fi
