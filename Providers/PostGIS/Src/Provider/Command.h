@@ -374,9 +374,9 @@ template <typename T>
 FdoInt32 Command<T>::GetSRID(FdoPropertyDefinitionCollection *propsDef)
 {
     if (NULL == propsDef)
-        return 0;
+        return -1;
 
-   FdoInt32 currentSrid = 0;
+   FdoInt32 currentSrid = -1;
    FdoPropertyDefinition* propDef = NULL;
 
     for (FdoInt32 i = 0; !currentSrid && i < propsDef->GetCount(); i++)
@@ -391,11 +391,13 @@ FdoInt32 Command<T>::GetSRID(FdoPropertyDefinitionCollection *propsDef)
 
                 FdoString* csName = geom->GetSpatialContextAssociation();
                 SpatialContextCollection::Ptr spContexts(mConn->GetSpatialContexts());
-                SpatialContext::Ptr spc(spContexts->FindItem(csName));
-                if (NULL != spc)
+                if (NULL != csName)
                 {
-                    currentSrid = spc->GetSRID();
-                    currentSrid;
+                    SpatialContext::Ptr spc(spContexts->FindItem(csName));
+                    if (NULL != spc)
+                    { 
+                        currentSrid = spc->GetSRID();
+                    }
                 }
 
                 FDOLOG_WRITE(L"\t+ %s (SRID=%d)", propDef->GetName(), currentSrid);
