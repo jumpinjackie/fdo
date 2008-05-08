@@ -218,7 +218,7 @@ void FdoDatastoreTest::Cmd_CreateDatastore()
     }
 }
 
-void FdoDatastoreTest::CreateDatastore( FdoIConnection* connection, FdoString* dsName )
+void FdoDatastoreTest::CreateDatastore( FdoIConnection* connection, FdoString* dsName, bool setHasMetaSchema, bool hasMetaSchema )
 {
     int				count = 0;
 	int				countDb = 0;
@@ -249,6 +249,10 @@ void FdoDatastoreTest::CreateDatastore( FdoIConnection* connection, FdoString* d
 			dictionary->SetProperty( name,  get_lt_mode()); // The same
 		else if ( wcscmp( name, L"TableSpace" ) == 0 )
 			dictionary->SetProperty( name,   UNIT_TEST_DB_TABLESPACE); // The same
+        else if ( wcscmp( name, L"IsFdoEnabled" ) == 0 ) {
+            if ( setHasMetaSchema ) 
+                dictionary->SetProperty( name,   hasMetaSchema ? L"true" : L"false"); // The same
+        }
 		else {
 			CPPUNIT_ASSERT_MESSAGE("Unknown property name", false);
 		}

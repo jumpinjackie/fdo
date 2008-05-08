@@ -266,12 +266,16 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
     buf += columnName;
     buf += "].";
  
-    // Skip the invalid geometries otherwise any spatial query will fail.
-    // The user should run "Select * where IsValid() = 0" in order to find out the offending geometries.
-    buf += SQLSERVER_FUNCTION_ISVALID; 
-    buf += L"() = 1 AND [";
-    buf += columnName;
-    buf += "].";
+    // Geography type does not have an STIsValid() function.
+    if ( geomType == L"geometry" ) 
+    {
+        // Skip the invalid geometries otherwise any spatial query will fail.
+        // The user should run "Select * where IsValid() = 0" in order to find out the offending geometries.
+        buf += SQLSERVER_FUNCTION_ISVALID; 
+        buf += L"() = 1 AND [";
+        buf += columnName;
+        buf += "].";
+    }
 
     // What operation
     FdoSpatialOperations  spatialOp = filter.GetOperation();

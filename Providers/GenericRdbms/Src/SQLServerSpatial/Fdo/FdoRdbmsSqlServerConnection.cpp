@@ -580,6 +580,15 @@ FdoIDataStorePropertyDictionary*  FdoRdbmsSqlServerConnection::CreateDataStorePr
 
         newProp = new ConnectionProperty (FDO_RDBMS_DATASTORE_DESCRIPTION, NlsMsgGet(FDORDBMS_448, "Description"), L"", false, false, false, false, false, false, false, 0, NULL);
         mDataStorePropertyDictionary->AddProperty(newProp);
+
+        wchar_t** enabledValues = new wchar_t*[2];
+        enabledValues[0] = new wchar_t[10];
+        wcscpy( enabledValues[0], L"false" );
+        enabledValues[1] = new wchar_t[10];
+        wcscpy( enabledValues[1], L"true" );
+
+        newProp = new ConnectionProperty (FDO_RDBMS_DATASTORE_FDO_ENABLED, NlsMsgGet(FDORDBMS_9, "IsFdoEnabled"), L"false", false, false, true, false, false, false, false, 2, (const wchar_t**) enabledValues);
+        mDataStorePropertyDictionary->AddProperty(newProp);
 	}
 	else if ( action == FDO_RDBMS_DATASTORE_FOR_DELETE )
 	{
@@ -672,7 +681,7 @@ FdoStringP FdoRdbmsSqlServerConnection::GetBindString( int n, const FdoSmLpPrope
             srid = sc->GetSrid();
         }
 
-        bindStr = FdoStringP::Format( L"%ls::STGeomFromWKB(?, %ls)", (FdoString*) geomType, (FdoString*) FdoCommonStringUtil::Int64ToString(srid) );
+        bindStr = FdoStringP::Format( L"%ls::STGeomFromWKB(?, %ls)", (FdoString*) geomType, (FdoString*) FdoCommonStringUtil::Int64ToString(srid) );    
     }
 
     return bindStr; 

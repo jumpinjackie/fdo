@@ -44,6 +44,25 @@ FdoSmPhCoordinateSystemP FdoSmPhCoordinateSystemCollection::FindItemById( FdoInt
     return coordSys;
 }
 
+FdoSmPhCoordinateSystemP FdoSmPhCoordinateSystemCollection::FindItemByWkt( FdoStringP wkt )
+{
+    // TODO: try putting wkt's in a map to see if performance improves. However, 
+    // wkt's are long strings so needs to be tried to see if helps performance.
+
+    FdoInt32 idx;
+    FdoSmPhCoordinateSystemP coordSys;
+
+    for ( idx = 0; idx < GetCount(); idx++ ) {
+        FdoSmPhCoordinateSystemP item = GetItem( idx );
+        if ( wkt == item->GetWkt() ) {
+            coordSys = item;
+            break;
+        }
+    }
+
+    return coordSys;
+}
+
 FdoInt32 FdoSmPhCoordinateSystemCollection::Add( FdoSmPhCoordinateSystem* value)
 {
     FdoInt32 ret = FdoSmNamedCollection<FdoSmPhCoordinateSystem>::Add(value);

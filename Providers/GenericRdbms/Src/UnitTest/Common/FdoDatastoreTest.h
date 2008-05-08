@@ -50,7 +50,7 @@ protected:
 	void Cmd_DestroyDatastore ();
     virtual void TestReservedName();
 	int  ListDatastores( bool include );
-    void CreateDatastore(FdoIConnection* connection, FdoString* dsName);
+    void CreateDatastore(FdoIConnection* connection, FdoString* dsName, bool setHasMetaSchema = true, bool hasMetaSchema = true);
 	void DestroyDatastore(bool ignoreEx);
 	void ListDatabaseProperties(FdoIDataStorePropertyDictionary* dictionary);
 	void DropAllMyDatastores();

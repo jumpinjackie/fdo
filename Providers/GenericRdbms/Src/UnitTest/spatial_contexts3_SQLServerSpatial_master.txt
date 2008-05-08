@@ -26,11 +26,11 @@ GEOGCS[&quot;WGS 84&quot;, DATUM[&quot;World Geodetic System 1984&quot;, ELLIPSO
 geographic</gml:derivedCRSType>
 <gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
 </gml:DerivedCRS>
-<gml:DerivedCRS gml:id="SC_1">
+<gml:DerivedCRS gml:id="sc_1">
 <gml:remarks>
 Spatial context from SqlServer metadata</gml:remarks>
 <gml:srsName>
-SC_1</gml:srsName>
+sc_1</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
@@ -45,11 +45,11 @@ SC_1</gml:srsName>
 geographic</gml:derivedCRSType>
 <gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
 </gml:DerivedCRS>
-<gml:DerivedCRS gml:id="SC_2">
+<gml:DerivedCRS gml:id="sc_2">
 <gml:remarks>
 Spatial context from SqlServer metadata</gml:remarks>
 <gml:srsName>
-SC_2</gml:srsName>
+sc_2</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
@@ -71,11 +71,11 @@ GEOGCS[&quot;Greek&quot;, DATUM[&quot;Greek&quot;, ELLIPSOID[&quot;Bessel 1841&q
 geographic</gml:derivedCRSType>
 <gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
 </gml:DerivedCRS>
-<gml:DerivedCRS gml:id="SC_3">
+<gml:DerivedCRS gml:id="sc_3">
 <gml:remarks>
 Spatial context from SqlServer metadata</gml:remarks>
 <gml:srsName>
-SC_3</gml:srsName>
+sc_3</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
@@ -97,11 +97,11 @@ GEOGCS[&quot;Hu Tzu Shan&quot;, DATUM[&quot;Hu Tzu Shan&quot;, ELLIPSOID[&quot;I
 geographic</gml:derivedCRSType>
 <gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
 </gml:DerivedCRS>
-<gml:DerivedCRS gml:id="SC_4">
+<gml:DerivedCRS gml:id="sc_4">
 <gml:remarks>
 Spatial context from SqlServer metadata</gml:remarks>
 <gml:srsName>
-SC_4</gml:srsName>
+sc_4</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
@@ -153,7 +153,7 @@ geographic</gml:derivedCRSType>
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="geom_column2" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="SC_1" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:element name="geom_column2" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="sc_1" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -213,7 +213,7 @@ geographic</gml:derivedCRSType>
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="geom_column1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="SC_2" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:element name="geom_column1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="sc_2" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -243,7 +243,7 @@ geographic</gml:derivedCRSType>
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="geog_column1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="SC_3" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:element name="geog_column1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="sc_3" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -273,7 +273,7 @@ geographic</gml:derivedCRSType>
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="geog_column1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="SC_4" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:element name="geog_column1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="sc_4" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>

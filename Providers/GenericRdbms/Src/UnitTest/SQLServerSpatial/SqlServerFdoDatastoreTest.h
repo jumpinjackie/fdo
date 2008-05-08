@@ -24,9 +24,12 @@
 class SqlServerFdoDatastoreTest : public FdoDatastoreTest
 {
     CPPUNIT_TEST_SUB_SUITE (SqlServerFdoDatastoreTest, FdoDatastoreTest);
+  	CPPUNIT_TEST( Cmd_CreateNoMeta );
     CPPUNIT_TEST_SUITE_END ();
 
     void  set_provider();
+
+    void Cmd_CreateNoMeta();
 
 	virtual FdoStringP get_lt_mode()
 	{

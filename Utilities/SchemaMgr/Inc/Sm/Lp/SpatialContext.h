@@ -131,10 +131,20 @@ protected:
 	/// Get a matching spatial context group definition.
 	FdoInt64  GetMatchingScgid();
 
+    // The following add or delete the spatial context in the datastore, when 
+    // the datastore has no MetaSchema.
+    virtual void AddNoMeta();
+    virtual void DeleteNoMeta();
+
     /// Finalize this spatial context.
 	virtual void Finalize();
 
 private:
+    void AddNoMetaNameChangeError( FdoSmPhOwnerP owner );
+    void AddNoMetaNameLengthError( FdoSmPhOwnerP owner, FdoSize maxLen );
+    void AddNoCsysError();
+    void AddNoWktError();
+	void AddMismatchedWktError();
 
 	FdoSmPhMgrP                 mPhysicalSchema;
     FdoInt64                    mId;            // Spatial Context ID

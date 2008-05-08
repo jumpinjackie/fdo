@@ -185,7 +185,7 @@ public:
     DbiConnection    *GetDbiConnection() { return mDbiConnection; }
 
 	void CreateSysDb( FdoString *dbName, FdoString *dbPassword, FdoString *connectString);
-	virtual void CreateDb( FdoString *dbName, FdoString *dbDescription, FdoString *dbPassword, FdoString *connectString, FdoString *ltMode, FdoString *lckMode );
+	virtual void CreateDb( FdoString *dbName, FdoString *dbDescription, FdoString *dbPassword, FdoString *connectString, FdoString *ltMode, FdoString *lckMode, bool isFdoEnabled = true );
 	virtual void DeleteDb( FdoString *dbName, FdoString *dbPassword, FdoString *connectString );
 
     // Gets the current Schema Manager for this connection

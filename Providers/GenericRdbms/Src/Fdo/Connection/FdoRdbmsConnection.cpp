@@ -655,7 +655,7 @@ void FdoRdbmsConnection::CreateSysDb( FdoString *dbName, FdoString *dbPassword, 
 }
 
 
-void FdoRdbmsConnection::CreateDb( FdoString *dbName, FdoString *dbDescription, FdoString *dbPassword, FdoString *connectString, FdoString *ltMode, FdoString *lckMode )
+void FdoRdbmsConnection::CreateDb( FdoString *dbName, FdoString *dbDescription, FdoString *dbPassword, FdoString *connectString, FdoString *ltMode, FdoString *lckMode, bool isFdoEnabled )
 {
     FdoSmPhMgrP physicalMgr = GetSchemaManager()->GetPhysicalSchema();
 
@@ -665,7 +665,7 @@ void FdoRdbmsConnection::CreateDb( FdoString *dbName, FdoString *dbDescription, 
         );
 
 // Create a new Owner (physical schema) in the current database instance
-	FdoSmPhOwnerP newSchema = physicalMgr->GetDatabase()->CreateOwner( dbName );
+	FdoSmPhOwnerP newSchema = physicalMgr->GetDatabase()->CreateOwner( dbName, isFdoEnabled );
     newSchema->SetPassword( dbPassword );
 	newSchema->SetDescription( dbDescription );
 

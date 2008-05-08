@@ -49,6 +49,8 @@ public:
     // only used by the unit tests.
     FdoStringP GetDbVersion();
 
+    virtual CoordinateSystemMatchLevel GetCoordinateSystemMatchLevel();
+
     // Temporary object creator implementation
     virtual FdoSmPhDbObjectP CreateTempObject();
 
@@ -133,6 +135,8 @@ public:
     // MetaSchema tables. For forward datastore compatibility, the user
     // name prefix is removed if the user is dbo.
     virtual FdoStringP DbObject2MetaSchemaName( FdoStringP objectName );
+
+    FdoInt64 IndexName2Srid( FdoStringP indexName );
 
     // Utility function for various readers that bind in owner and object name.
     // Sets up binds for owner plus user and local object name parts of object name.
