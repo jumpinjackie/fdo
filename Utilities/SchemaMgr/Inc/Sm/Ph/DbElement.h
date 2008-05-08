@@ -47,6 +47,10 @@ public:
     /// operation.
     FdoSchemaElementState GetCommitState();
 
+    /// Handles case where Added element is Deleted. In this case no RDBMS
+    /// operation is required so this element is discarded.
+	virtual void SetElementState(FdoSchemaElementState elementState);
+
 /* TODO
     /// Gather all errors for this element and child elements into a chain of exceptions.
     /// Adds each error as an exception, to the given exception chain and returns

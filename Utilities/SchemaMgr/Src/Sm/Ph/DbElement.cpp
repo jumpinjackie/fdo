@@ -180,3 +180,15 @@ FdoSchemaElementState FdoSmPhDbElement::GetCommitState()
     return mCommitState;
 }
 
+void FdoSmPhDbElement::SetElementState(FdoSchemaElementState elementState)
+{
+    if ( (GetElementState() == FdoSchemaElementState_Added) && (elementState == FdoSchemaElementState_Deleted) ) {
+        // element is not yet in the datastore, so to delete it we simply need to 
+        // discard it.
+        FdoSmPhSchemaElement::SetElementState( FdoSchemaElementState_Detached );
+        Discard();
+    }
+    else {
+        FdoSmPhSchemaElement::SetElementState( elementState );
+    }
+}

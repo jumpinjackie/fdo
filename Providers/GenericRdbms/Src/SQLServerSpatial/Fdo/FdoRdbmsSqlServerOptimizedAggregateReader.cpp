@@ -37,6 +37,10 @@ FdoRdbmsFeatureReader( connection, NULL, false, classDef, NULL)
 
 	// Get the table name
 	FdoStringP	tableNameW	= mClassDefinition->GetDbObjectName();
+    const FdoSmPhDbObject* dbObject = mClassDefinition->RefDbObject()->RefDbObject();
+    // When table object reachable, make sure table name "" delimited.
+    if ( dbObject ) 
+        tableNameW = dbObject->GetDbName();
 
 	bool				countRequired = false;
 	bool				mbrRequired = false;
@@ -84,7 +88,7 @@ FdoRdbmsFeatureReader( connection, NULL, false, classDef, NULL)
     // Apparently strait select is 3x faster.
     //    FdoStringP sql = FdoStringP::Format(L"select [%ls].STEnvelope().STAsBinary() as MBR from %ls", colNameW, tableNameW);
     // Delimit column name with []. Can't use " when part of function.
-    FdoStringP sql = FdoStringP::Format(L"select [%ls].STAsBinary() as MBR from \"%ls\"", colNameW, tableNameW);
+    FdoStringP sql = FdoStringP::Format(L"select [%ls].STAsBinary() as MBR from %ls", colNameW, tableNameW);
 
     selCmd->SetSQLStatement( (FdoString *)sql );
     FdoPtr<FdoISQLDataReader>  rdr = selCmd->ExecuteReader();

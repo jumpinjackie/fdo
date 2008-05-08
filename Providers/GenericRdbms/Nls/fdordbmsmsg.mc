@@ -195,6 +195,11 @@ SymbolicName=FDORDBMS_8
 Language=English
 Character Sets can only be retrieved from current MySQL server
 .
+MessageId=2214
+SymbolicName=FDORDBMS_9
+Language=English
+IsFdoEnabled
+.
 MessageId=2215
 SymbolicName=FDORDBMS_10
 Language=English
@@ -289,6 +294,11 @@ MessageId=2235
 SymbolicName=FDORDBMS_30
 Language=English
 Unknown expression
+.
+MessageId=2236
+SymbolicName=FDORDBMS_31
+Language=English
+Error creating spatial context %1$ls, coordinate system catalog does not contain entry for WKT \"%2$ls\"
 .
 MessageId=2238
 SymbolicName=FDORDBMS_33
@@ -784,11 +794,6 @@ MessageId=2340
 SymbolicName=FDORDBMS_135
 Language=English
 Column '%1$ls' for Spatial Index '%2$ls' is not geometric.
-.
-MessageId=2341
-SymbolicName=FDORDBMS_136
-Language=English
-Error creating spatial context %1$ls, coordinate system %2$ls is not in current datastore.
 .
 MessageId=2342
 SymbolicName=FDORDBMS_137
@@ -1639,11 +1644,6 @@ MessageId=2701
 SymbolicName=FDORDBMS_477
 Language=English
 Read/write access to ODBC-based data store. Supports XYZ point features.
-.
-MessageId=2702
-SymbolicName=FDORDBMS_478
-Language=English
-Error creating spatial context %1$ls (SRID=%2$ld), the WKT provided does not match the catalog.
 .
 MessageId=2703
 SymbolicName=FDORDBMS_479

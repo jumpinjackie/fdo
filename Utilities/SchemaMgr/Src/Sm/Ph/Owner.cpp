@@ -89,6 +89,8 @@ FdoSmPhOwner::FdoSmPhOwner(
 
     mSpatialContextsLoaded = false;
 
+    mCoordinateSystemsLoaded = false;
+
     mNextBaseCandIdx = 0;
 
     mBulkLoadPkeys = false;
@@ -341,7 +343,7 @@ FdoSmPhCoordinateSystemP FdoSmPhOwner::FindCoordinateSystem( FdoInt64 srid )
     if ( mCoordinateSystems ) 
         coordSys = mCoordinateSystems->FindItemById( srid );
 
-    if ( !coordSys ) {
+    if ( !coordSys && !mCoordinateSystemsLoaded ) {
         // Not in the cache, load from the RDBMS and try again.
         LoadCoordinateSystems( CreateCoordSysReader(srid) );
         coordSys = mCoordinateSystems->FindItemById( srid );
@@ -358,10 +360,28 @@ FdoSmPhCoordinateSystemP FdoSmPhOwner::FindCoordinateSystem( FdoStringP csName )
     if ( mCoordinateSystems ) 
         coordSys = mCoordinateSystems->FindItem( csName );
 
-    if ( !coordSys ) {
+    if ( !coordSys && !mCoordinateSystemsLoaded ) {
         // Not in the cache, load from the RDBMS and try again.
         LoadCoordinateSystems( CreateCoordSysReader(csName) );
         coordSys = mCoordinateSystems->FindItem( csName );
+    }
+
+    return coordSys;
+}
+
+FdoSmPhCoordinateSystemP FdoSmPhOwner::FindCoordinateSystemByWkt( FdoStringP wkt )
+{
+    FdoSmPhCoordinateSystemP coordSys;
+
+    // Check the cache first
+    if ( mCoordinateSystems ) 
+        coordSys = mCoordinateSystems->FindItemByWkt( wkt );
+
+    if ( !coordSys && !mCoordinateSystemsLoaded ) {
+        // Not in the cache, load from the RDBMS and try again.
+        mCoordinateSystemsLoaded = true;
+        LoadCoordinateSystems( CreateCoordSysReader() );
+        coordSys = mCoordinateSystems->FindItemByWkt( wkt );
     }
 
     return coordSys;
@@ -1390,17 +1410,31 @@ FdoSmPhLockTypesCollection* FdoSmPhOwner::GetLockTypesCollection()
 
 void FdoSmPhOwner::LoadSpatialContexts( FdoStringP dbObjectName )
 {
+    FdoStringP  scInfoTable = GetManager()->GetRealDbObjectName( FdoSmPhMgr::ScInfoNoMetaTable );
+
     if ( !mSpatialContexts ) {
         mSpatialContexts = new FdoSmPhSpatialContextCollection();
         mSpatialContextGeoms = new FdoSmPhSpatialContextGeomCollection();
+        // Make sure ScInfo table is loaded first, since real spatial 
+        // context names can be determined from the columns in this table.
+        DoLoadSpatialContexts( FdoSmPhMgr::ScInfoNoMetaTable );
     }
 
+    if ( GetManager()->GetBulkLoadSpatialContexts() || (dbObjectName != scInfoTable) ) 
+        DoLoadSpatialContexts( GetManager()->GetBulkLoadSpatialContexts() ? FdoStringP() : dbObjectName );
+}
+
+void FdoSmPhOwner::DoLoadSpatialContexts( FdoStringP dbObjectName )
+{        
+    if ( GetElementState() == FdoSchemaElementState_Added ) 
+        return;
+
     if ( !mSpatialContextsLoaded ) {
-		// reverse-engineering. The PH schema object will return the appropiate reader or
-		// the default one.
+        // reverse-engineering. The PH schema object will return the appropiate reader or
+	    // the default one.
         FdoSmPhRdSpatialContextReaderP scReader;
         
-        if ( GetManager()->GetBulkLoadSpatialContexts() || (dbObjectName == L"") ) {
+        if ( dbObjectName == L"") {
             // We're either asked to or forced to load all spatial contexts.
             scReader = CreateRdSpatialContextReader();
             mSpatialContextsLoaded = true;
@@ -1409,15 +1443,22 @@ void FdoSmPhOwner::LoadSpatialContexts( FdoStringP dbObjectName )
             // Incremental loading (SC's associated with given dbObject).
             scReader = CreateRdSpatialContextReader(dbObjectName);
         }
-			
-		FdoInt32	currSC = mSpatialContexts->GetCount();
-
+    		
         while (scReader->ReadNext())
         {
-			FdoStringP	scName = L"Default";
+            FdoStringP  scInfoTable = GetManager()->GetRealDbObjectName( FdoSmPhMgr::ScInfoNoMetaTable );
 
-            if ( currSC != 0 )
-				scName = FdoStringP::Format(L"%ls_%ld", scReader->GetName(), currSC);
+		    FdoStringP	scName;
+            if ( scReader->GetGeomTableName() == scInfoTable ) 
+            {
+                // For column in ScInfo table, the spatial context name is the
+                // column name.
+                scName = scReader->GetGeomColumnName();
+            }
+            else
+            {
+                scName = mSpatialContexts->AutoGenName();
+            }
 
             // Generate physical spatial context from current SpatialContextGeom
             FdoPtr<FdoByteArray> scExtent = scReader->GetExtent();
@@ -1435,35 +1476,42 @@ void FdoSmPhOwner::LoadSpatialContexts( FdoStringP dbObjectName )
             );
 
             if (NULL == sc.p)
-        		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
+    		    throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
-			int indexSC = mSpatialContexts->FindExistingSC( sc );
+		    int indexSC = mSpatialContexts->FindExistingSC( sc );
 
-			// New Spatial context definition, add it to collection
-			if ( indexSC == -1 )
-			{
-				sc->SetId( currSC ); 
-				mSpatialContexts->Add( sc );
-				currSC++;
-			}
+            if ( (indexSC >= 0) && (scReader->GetGeomTableName() == scInfoTable ) ) 
+            {
+                // Don't coalesce spatial contexts from the ScInfo table; each
+                // column represents a different spatial context even if the
+                // spatial context attributes are the same.
+                FdoSmPhSpatialContextP existingSC = mSpatialContexts->GetItem( indexSC );
+                if ( FdoStringP(sc->GetName()) != existingSC->GetName() ) 
+                    indexSC = -1;
+            }
+
+		    // New Spatial context definition, add it to collection
+		    if ( indexSC == -1 )
+		    {
+			    mSpatialContexts->Add( sc );
+		    }
 
             // Create Spatial context geometry object and associate it with this scId
-		    FdoSmPhSpatialContextGeomP  scgeom = new FdoSmPhSpatialContextGeom(
+	        FdoSmPhSpatialContextGeomP  scgeom = new FdoSmPhSpatialContextGeom(
                                                             GetManager(),
-			  											    ( indexSC != -1 )? indexSC : currSC - 1,
-															scReader->GetGeomTableName(),
-															scReader->GetGeomColumnName(),
-															scReader->GetHasElevation(),
+		  											        ( indexSC != -1 )? indexSC : sc->GetId(),
+														    scReader->GetGeomTableName(),
+														    scReader->GetGeomColumnName(),
+														    scReader->GetHasElevation(),
                                                             scReader->GetHasMeasure()
             );
 
             if (NULL == scgeom.p)
-				throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
+			    throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
             if ( mSpatialContextGeoms->IndexOf(scgeom->GetName()) < 0 ) 
                 mSpatialContextGeoms->Add( scgeom );	
         }
-
     }
 }
 

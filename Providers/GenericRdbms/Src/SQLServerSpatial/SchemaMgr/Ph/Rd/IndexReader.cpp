@@ -44,6 +44,18 @@ FdoSmPhRdSqsIndexReader::~FdoSmPhRdSqsIndexReader(void)
 {
 }
 
+FdoSmPhIndexType FdoSmPhRdSqsIndexReader::GetIndexType()
+{
+    FdoSmPhIndexType ixType = FdoSmPhIndexType_Scalar;
+    
+    if ( GetString( L"", L"index_type" ) != L"" ) 
+        // When index_type not blank, index is in sys.spatial_indexes
+        ixType = FdoSmPhIndexType_Spatial;
+
+    return ixType;
+}
+
+
 FdoStringP FdoSmPhRdSqsIndexReader::GetString( FdoStringP tableName, FdoStringP fieldName )
 {
     FdoStringP fieldValue;
@@ -75,29 +87,27 @@ FdoSmPhReaderP FdoSmPhRdSqsIndexReader::MakeReader(
     // "indid between 1 and 250" filters out heap table and text column entries.
     FdoStringP sql = FdoStringP::Format(
         L"select b.name as index_name, a.name as table_name, d.name as column_name,\n"
-        L"   CASE INDEXPROPERTY(b.id, b.name, 'IsUnique') \n"
+        L"   CASE INDEXPROPERTY(b.object_id, b.name, 'IsUnique') \n"
         L"     WHEN 1 THEN 'UNIQUE' \n"
         L"     ELSE 'NONUNIQUE' \n"
         L"   END as uniqueness, \n"
-        L"   e.name as table_schema \n"
-        L"   from %ls.dbo.sysobjects a, \n"
-        L"        %ls.dbo.sysindexes b, \n"
-        L"        %ls.dbo.sysindexkeys c, \n"
-        L"        %ls.dbo.syscolumns d, \n"
-        L"        %ls.dbo.sysusers e \n"
-        L"    where b.id = a.id \n"
-        L"%ls"
-        L"      and (b.indid between 1 and 250) \n"
-        L"      and b.id = c.id and b.indid = c.indid\n"
-        L"      and c.id = d.id and c.colid = d.colid\n"
-        L"      and a.uid = e.uid\n"
-        L"        order by e.name collate latin1_general_bin asc, a.name collate latin1_general_bin asc, b.name collate latin1_general_bin asc, c.keyno asc",
+        L"   e.name as table_schema, \n"
+        L"   f.name as index_type \n"
+        L"   from %ls.dbo.sysobjects a \n"
+        L"   INNER JOIN %ls.sys.indexes b on (b.object_id = a.id)\n"
+        L"   INNER JOIN %ls.sys.index_columns c on (b.object_id = c.object_id and b.index_id = c.index_id)\n"
+        L"   INNER JOIN %ls.sys.columns d on (c.object_id = d.object_id and c.column_id = d.column_id)\n"
+        L"   INNER JOIN %ls.dbo.sysusers e on (a.uid = e.uid)\n"
+        L"   LEFT OUTER JOIN %ls.sys.spatial_indexes f on (b.object_id = f.object_id and b.index_id = f.index_id)\n"
+        L"   %ls \n"
+        L"   order by e.name collate latin1_general_bin asc, a.name collate latin1_general_bin asc, b.name collate latin1_general_bin asc, c.index_column_id asc",
         (FdoString*)ownerName,
         (FdoString*)ownerName,
         (FdoString*)ownerName,
         (FdoString*)ownerName,
         (FdoString*)ownerName,
-        dbObject ? L"      and e.name = ? and a.name = ?\n" : L""
+        (FdoString*)ownerName,
+        dbObject ? L"where e.name = ? and a.name = ?" : L""
     );
 
     // Create a field object for each field in the select list

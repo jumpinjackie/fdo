@@ -42,7 +42,8 @@ FdoSmLpGeometricPropertyDefinition::FdoSmLpGeometricPropertyDefinition(
     mGeometryTypes(propReader->GetGeometryType().ToLong()),
 	mbHasElevation(propReader->GetHasElevation()),
 	mbHasMeasure(propReader->GetHasMeasure()),
-    mAssociatedScId(-1)
+    mAssociatedScId(-1),
+    mbIsPrimary(false)
 {
 }
 
@@ -58,7 +59,8 @@ FdoSmLpGeometricPropertyDefinition::FdoSmLpGeometricPropertyDefinition(
     mGeometricColumnType(FdoSmOvGeometricColumnType_Default),
     mGeometricContentType(FdoSmOvGeometricContentType_Default),
     mAssociatedScId(-1),
-    mAssociatedSCName(pFdoProp->GetSpatialContextAssociation())
+    mAssociatedSCName(pFdoProp->GetSpatialContextAssociation()),
+    mbIsPrimary(false)
 {
 }
 
@@ -82,7 +84,8 @@ FdoSmLpGeometricPropertyDefinition::FdoSmLpGeometricPropertyDefinition(
     mAssociatedSCName(pFdoProp->GetSpatialContextAssociation()),
     mColumnNameX(columnNameX),
     mColumnNameY(columnNameY),
-    mColumnNameZ(columnNameZ)
+    mColumnNameZ(columnNameZ),
+    mbIsPrimary(false)
 {
 }
 
@@ -110,7 +113,8 @@ FdoSmLpGeometricPropertyDefinition::FdoSmLpGeometricPropertyDefinition(
 	mbHasElevation( pBaseProperty->GetHasElevation() ),
 	mbHasMeasure( pBaseProperty->GetHasMeasure() ),
     mAssociatedScId(-1),
-    mAssociatedSCName( pBaseProperty->GetSpatialContextAssociation() )
+    mAssociatedSCName( pBaseProperty->GetSpatialContextAssociation() ),
+    mbIsPrimary(false)
 {
 }
 
@@ -241,6 +245,17 @@ void FdoSmLpGeometricPropertyDefinition::SetInherited( const FdoSmLpPropertyDefi
 
 	if ( same ) 
 		FdoSmLpSimplePropertyDefinition::SetInherited( pBaseProp );
+}
+
+void FdoSmLpGeometricPropertyDefinition::SetPrimary( bool isPrimary )
+{
+    mbIsPrimary = isPrimary;
+
+    FdoSmPhColumnGeomP geomCol = GetColumn().p->SmartCast<FdoSmPhColumnGeom>();
+
+    if ( geomCol ) 
+        geomCol->SetPrimary( isPrimary );
+    // If column not yet generated, we'll set its isPrimary status in Finalize().
 }
 
 void FdoSmLpGeometricPropertyDefinition::Update(
@@ -587,8 +602,10 @@ void FdoSmLpGeometricPropertyDefinition::Finalize()
                 FdoSmPhScInfoP scInfo = CreateSpatialContextInfo();
                 
                 FdoSmPhColumnGeomP pPhColumnGeom = pPhColumn->SmartCast<FdoSmPhColumnGeom>();
-                if (pPhColumnGeom != NULL)
+                if (pPhColumnGeom != NULL) {
                     pPhColumnGeom->SetSpatialContextInfo( scInfo );
+                    pPhColumnGeom->SetPrimary( mbIsPrimary );
+                }
             }
         }
         else {

@@ -223,49 +223,16 @@ void FdoSmLpSpatialContext::Commit( bool fromParent )
 
 	    switch ( GetElementState() ) {
   	    case FdoSchemaElementState_Added:
-
-            {
-                FdoSmPhDbObjectP dbObject = owner->FindDbObject(L"f_scinfo");
-
-                if ( !dbObject ) {
-                    // Special table doesn't yet exist, create it.
-                    dbObject = owner->CreateTable(L"f_scinfo");
-                    FdoSmPhColumnP column = dbObject->CreateColumnInt64(L"f_scinfo_id", false);
-                    dbObject->AddPkeyCol(column->GetName());
-                }
-
-                // Add a column that is associated with this Spatial Context.
-                FdoSmPhScInfoP scinfo = FdoSmPhScInfo::Create();
-                scinfo->mSrid = GetSrid();
-                scinfo->mCoordSysName = GetCoordinateSystem();
-                scinfo->mExtent = GetExtent();
-                scinfo->mXYTolerance = GetXYTolerance();
-                scinfo->mZTolerance = GetZTolerance();
-
-                dbObject->CreateColumnGeom( GetName(), scinfo );
-                dbObject->Commit();
-            }
-
+            AddNoMeta();
             break;
 
 	    case FdoSchemaElementState_Deleted:
-            {
-                FdoSmPhDbObjectP dbObject = owner->FindDbObject(L"f_scinfo");
-
-                if ( dbObject ) {
-                    // Remove this spatial context's column from the special table.
-                    FdoSmPhColumnP column = dbObject->GetColumns()->FindItem(GetName());
-                    column->SetElementState( FdoSchemaElementState_Deleted );
-                    column->Commit();
-                }
-            }
-
-		    break;
+            DeleteNoMeta();
+            break;
 
 	    case FdoSchemaElementState_Modified:
-            //TODO: Best way is to drop and re-add the geometric column. Need to modularize
-            //the add and delete cases first.
-
+            DeleteNoMeta();
+            AddNoMeta();
             break;
 	    }
     }
@@ -431,6 +398,66 @@ void FdoSmLpSpatialContext::SetSrid( FdoInt64 srid )
 	mSrid = srid;
 }
 
+void FdoSmLpSpatialContext::AddNoMeta()
+{
+    FdoSmPhOwnerP owner = mPhysicalSchema->FindOwner();
+
+    if ( owner ) 
+    {
+        // When datastore has no MetaSchema, a spatial context cannot exist without
+        // a referencing column. The following adds this column. These columns are 
+        // kept in a special ScInfo table.
+
+        // First find the special table.
+        FdoSmPhDbObjectP dbObject = owner->FindDbObject(FdoSmPhMgr::ScInfoNoMetaTable);
+
+        if ( !dbObject ) 
+        {
+            // Special table doesn't yet exist, create it.
+            dbObject = owner->CreateTable(FdoSmPhMgr::ScInfoNoMetaTable);
+            FdoSmPhColumnP column = dbObject->CreateColumnInt64(FdoSmPhMgr::ScInfoNoMetaPKey, false);
+            dbObject->AddPkeyCol(column->GetName());
+        }
+
+        // Add a column that is associated with this Spatial Context.
+        FdoSmPhScInfoP scinfo = FdoSmPhScInfo::Create();
+        scinfo->mSrid = GetSrid();
+        scinfo->mCoordSysName = GetCoordinateSystem();
+        scinfo->mExtent = GetExtent();
+        scinfo->mXYTolerance = GetXYTolerance();
+        scinfo->mZTolerance = GetZTolerance();
+
+        dbObject->CreateColumnGeom( GetName(), scinfo );
+        dbObject->Commit();
+    }
+}
+
+void FdoSmLpSpatialContext::DeleteNoMeta()
+{
+    FdoSmPhOwnerP owner = mPhysicalSchema->FindOwner();
+
+    if ( owner ) 
+    {
+        FdoSmPhDbObjectP dbObject = owner->FindDbObject(mPhysicalSchema->GetRealDbObjectName(FdoSmPhMgr::ScInfoNoMetaTable));
+
+        if ( dbObject ) 
+        {
+            // Remove this spatial context's column from the special table.
+            FdoSmPhColumnP column = dbObject->GetColumns()->FindItem(GetName());
+
+            if ( column  ) {
+                FdoSmPhColumnGeomP columnGeom = column->SmartCast<FdoSmPhColumnGeom>();
+
+                if ( columnGeom ) {
+                    column->SetElementState( FdoSchemaElementState_Deleted );
+                    dbObject->Commit();
+                }
+            }
+        }
+    }
+}
+
+
 void FdoSmLpSpatialContext::Finalize()
 {
 	// Finalize is not re-entrant.
@@ -446,6 +473,174 @@ void FdoSmLpSpatialContext::Finalize()
 	if ( GetState() == FdoSmObjectState_Initial )
     {
 		SetState( FdoSmObjectState_Final);
-	}
 
+        if ( GetElementState() == FdoSchemaElementState_Added ) {
+            FdoSmPhOwnerP owner = mPhysicalSchema->FindOwner();
+        
+            if ( owner ) 
+            {
+                if ( !owner->GetHasMetaSchema() )
+                {
+                    // When datastore has no MetaSchema a referencing column is 
+                    // created for this spatial context (see AddNoMeta()).
+                    // The column is named after the spatial context.
+                    //
+                    // Log errors if the spatial context name is not a valid column
+                    // and or is too long. We cannot mangle the column name because that
+                    // would effectively change the spatial context name.
+
+                    if ( owner->GetManager()->CensorDbObjectName(GetName()) != GetName() ) 
+            			AddNoMetaNameChangeError( owner );
+                
+                    if ( wcslen(GetName()) > owner->GetManager()->ColNameMaxLen() ) 
+            			AddNoMetaNameLengthError( owner, owner->GetManager()->ColNameMaxLen() );
+                }
+
+                // Match Spatial Context coordinate system to coordinate system in datastore.
+
+                FdoSmPhCoordinateSystemP csys;
+
+                FdoSmPhMgr::CoordinateSystemMatchLevel matchLevel = mPhysicalSchema->GetCoordinateSystemMatchLevel(); 
+                bool nameMatched = false;
+                bool matchError = false;
+
+                // Try match by name first.
+                if ( mCoordSysName != L"" ) 
+                {
+                    csys = owner->FindCoordinateSystem( mCoordSysName );
+
+                    if ( csys )
+                    {
+                        nameMatched = true;
+
+                        if ( mCoordSysWkt == L"" ) 
+                        {
+                            // WKT not specified so set it from matched coordinate system.
+                            SetCoordinateSystemWkt( csys->GetWkt() );
+                        }
+                        else if ( mCoordSysWkt != csys->GetWkt() )
+                        {
+                            // WKT mismatch so this is not the right coordinate system.
+                            // This is an error when strict matching is enforced by the provider.
+                            // Otherwise, try to match by WKT.
+                            nameMatched = false;
+                            if ( matchLevel == FdoSmPhMgr::CoordinateSystemMatchLevel_Strict )
+                            {
+                                AddMismatchedWktError();
+                                matchError = true;
+                            }
+                        }
+
+                        if ( nameMatched ) 
+                            SetSrid( csys->GetSrid() );
+                    }
+                    else 
+                    {
+                        if ( matchLevel == FdoSmPhMgr::CoordinateSystemMatchLevel_Strict ) 
+                        {
+                            // When strict matching is enforced by the provider,
+                            // log error if name specified but doesn't match a 
+                            // datastore coordinate system.
+                            // Otherwise, try to match by WKT.
+                            AddNoCsysError();
+                            matchError = true;
+                        }
+                    }
+                }
+
+                if ( !nameMatched && !matchError ) 
+                {
+                    if ( mCoordSysWkt != L"" )
+                    {
+                        csys = owner->FindCoordinateSystemByWkt( mCoordSysWkt );
+                        if ( csys )
+                        {
+                            SetSrid( csys->GetSrid() );
+                            SetCoordinateSystemName( csys->GetName() );
+                        }
+                        else 
+                        {
+                            // WKT match failure is an error unless the provider doesn't mind.
+                            if ( (matchLevel == FdoSmPhMgr::CoordinateSystemMatchLevel_Strict) ||
+                                 (matchLevel == FdoSmPhMgr::CoordinateSystemMatchLevel_Wkt)
+                            ) 
+                                AddNoWktError();
+                        }
+                    }
+                    else
+                    {
+                        // Name match failed and no wkt specified. This is an error unless provider doesn't mind.
+                        if ( !nameMatched && (mCoordSysName != L"") && (matchLevel != FdoSmPhMgr::CoordinateSystemMatchLevel_Lax) ) 
+                            AddNoCsysError();
+                    }
+                }
+            }
+        }
+	}
+}
+
+void FdoSmLpSpatialContext::AddNoMetaNameChangeError( FdoSmPhOwnerP owner)
+{
+	GetErrors()->Add( FdoSmErrorType_Other, 
+        FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+				FDO_NLSID(FDOSM_39),
+				(FdoString*) GetName(),
+                owner ? owner->GetName() : L""
+			)
+		)
+	);
+}
+
+void FdoSmLpSpatialContext::AddNoMetaNameLengthError( FdoSmPhOwnerP owner, FdoSize maxLen)
+{
+	GetErrors()->Add( FdoSmErrorType_Other, 
+        FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+				FDO_NLSID(FDOSM_40),
+				(FdoString*) GetName(),
+                owner ? owner->GetName() : L"",
+                maxLen
+			)
+		)
+	);
+}
+
+void FdoSmLpSpatialContext::AddNoCsysError()
+{
+	GetErrors()->Add( FdoSmErrorType_Other, 
+        FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+				FDO_NLSID(FDOSM_41),
+                GetName(), 
+                (FdoString*) mCoordSysName
+			)
+		)
+	);
+}
+
+void FdoSmLpSpatialContext::AddNoWktError()
+{
+	GetErrors()->Add( FdoSmErrorType_Other, 
+        FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+				FDO_NLSID(FDOSM_42),
+                GetName(), 
+                (FdoString*) mCoordSysWkt
+			)
+		)
+	);
+}
+
+void FdoSmLpSpatialContext::AddMismatchedWktError()
+{
+	GetErrors()->Add( FdoSmErrorType_Other, 
+        FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+				FDO_NLSID(FDOSM_43),
+                GetName(), 
+                GetSrid()
+			)
+		)
+	);
 }

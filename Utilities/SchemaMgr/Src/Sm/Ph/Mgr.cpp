@@ -55,6 +55,10 @@ const FdoStringP FdoSmPhMgr::SchemaType(L"schema", true);
 const FdoStringP FdoSmPhMgr::ClassType(L"class", true);
 const FdoStringP FdoSmPhMgr::PropertyType(L"property", true);
 
+const FdoStringP FdoSmPhMgr::ScInfoNoMetaTable(L"f_scinfo", true);
+const FdoStringP FdoSmPhMgr::ScInfoNoMetaPKey(L"f_scinfo_id", true);
+
+
 const FdoStringP FdoSmPhMgr::ObjPrefix( L"A", true);
 const FdoStringP FdoSmPhMgr::RdSchemaPrefix(L"Fdo", true);
 
@@ -570,6 +574,11 @@ void FdoSmPhMgr::Commit()
 {
 	for ( int i = 0; i < mDatabases->GetCount(); i++ ) 
 		FdoSmPhDatabaseP(mDatabases->GetItem(i))->Commit();
+}
+
+FdoSmPhMgr::CoordinateSystemMatchLevel FdoSmPhMgr::GetCoordinateSystemMatchLevel()
+{
+    return CoordinateSystemMatchLevel_Lax;
 }
 
 bool FdoSmPhMgr::SupportsAnsiQuotes()

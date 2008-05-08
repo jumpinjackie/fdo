@@ -224,6 +224,10 @@ FdoStringP FdoSmPhRdClassReader::ClassifyObject( FdoSmPhDbObjectP dbObject )
             // DbObject is for a different feature schema.
             classifiedObjectName = L"";
         }
+
+        // Don't reverse-engineer the special spatial context referencer table.
+        if ( classifiedObjectName == GetManager()->GetRealDbObjectName(FdoSmPhMgr::ScInfoNoMetaTable) )
+            classifiedObjectName = L"";
     }
 
     SetBoolean( L"", L"hasKey", hasKey  );
@@ -277,8 +281,16 @@ FdoStringP FdoSmPhRdClassReader::FindGeometryProperty( FdoSmPhColumnsP cols, boo
 
                     // When multiple geometric columns, try to select the one
                     // with spatial index (give it a high score).
-                    if ( colGeom->GetSpatialIndex() ) 
+                    FdoSmPhSpatialIndexP spatialIndex = colGeom->GetSpatialIndex();
+                    if ( spatialIndex ) {
                         propScore += 100;
+
+                        // Extra points if the index name is marked as being the index
+                        // for the main geometry column.
+
+                        if ( spatialIndex->GetIsPrimary() ) 
+                            propScore += 1000;
+                    }
 
                     // If spatial index presence doesn't break the tie
                     // give priority to not nullable columns.

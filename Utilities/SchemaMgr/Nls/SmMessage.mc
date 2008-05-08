@@ -206,6 +206,31 @@ SymbolicName=FDOSM_38
 Language=English
 Cannot apply column name override to '%1$ls' for property '%2$ls'; datastore has no FDO metadata tables so override causes property name to change
 .
+MessageId=2244
+SymbolicName=FDOSM_39
+Language=English
+Cannot create spatial context '%1$ls' in datastore '%2$ls'; datastore has no FDO metadata tables so spatial context name must be a valid column name
+.
+MessageId=2245
+SymbolicName=FDOSM_40
+Language=English
+Cannot create spatial context '%1$ls' in datastore '%2$ls'; datastore has no FDO metadata tables amd spatial context name exceeds %3$d characters
+.
+MessageId=2246
+SymbolicName=FDOSM_41
+Language=English
+Error creating spatial context %1$ls, coordinate system %2$ls is not in current datastore.
+.
+MessageId=2247
+SymbolicName=FDOSM_42
+Language=English
+Error creating spatial context %1$ls, coordinate system catalog does not contain entry for WKT '%2$ls'
+.
+MessageId=2248
+SymbolicName=FDOSM_43
+Language=English
+Error creating spatial context %1$ls (SRID=%2$ld), the WKT provided does not match the catalog.
+.
 MessageId=2327
 SymbolicName=FDOSM_122
 Language=English
