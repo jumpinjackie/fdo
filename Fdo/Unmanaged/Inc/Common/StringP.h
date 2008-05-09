@@ -437,6 +437,11 @@ public:
     /// 
     FDO_API_COMMON static const wchar_t* mEmptyString;
 
+    /// \brief
+    /// Constant representing a null string.
+    /// 
+    FDO_API_COMMON static const wchar_t* mNullString;
+
 /// \cond DOXYGEN-IGNORE
 
     /// Utility function for converting from unicode to utf8.
@@ -548,5 +553,6 @@ private:
 };
 
 #endif
+
 
 
