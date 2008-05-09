@@ -274,6 +274,9 @@ class SltInsert : public SltCommand<FdoIInsert>
         virtual ~SltInsert()
         {
             int rc = sqlite3_exec(m_db, "COMMIT;", NULL, NULL, NULL);
+            if (m_pCompiledSQL)
+                rc = sqlite3_finalize(m_pCompiledSQL);
+
             FDO_SAFE_RELEASE(m_className);
             FDO_SAFE_RELEASE(m_properties);
         }
