@@ -39,6 +39,7 @@ FdoStringP::Tab FdoStringP::tab[] =
 };
 
 const wchar_t* FdoStringP::mEmptyString = L"";
+const wchar_t* FdoStringP::mNullString = L"(null)";
 
 static const long* GetAttachedRefCount()
 {
