@@ -530,6 +530,37 @@ FdoFilter* CreateBoundingBoxFilter(const wchar_t* gpname, double minx, double mi
 	return NULL;
 }
 
+FdoFilter* CreateIntersectsFilter(const wchar_t* gpname, double minx, double miny, double maxx, double maxy)
+{
+    //the FGF polygon for the spatial query
+    FgfPolygon empty;
+
+    try
+    {
+		empty.p[0] = minx; empty.p[1] = miny;
+		empty.p[2] = maxx; empty.p[3] = miny;
+		empty.p[4] = maxx; empty.p[5] = maxy;
+		empty.p[6] = minx; empty.p[7] = maxy;
+		empty.p[8] = minx; empty.p[9] = miny;
+
+		FdoPtr<FdoByteArray> fgf = FdoByteArray::Create((FdoByte*)&empty, sizeof(empty));
+
+		//set up the spatial filter
+		FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(fgf);
+		FdoSpatialCondition* cond = FdoSpatialCondition::Create(
+			gpname, FdoSpatialOperations_Intersects, gv);
+
+		return cond;
+	}
+    catch (FdoException* e)
+    {
+		FdoString* message = e->GetExceptionMessage();
+        printf("%ls\n", message);
+        exit(1);
+    }
+
+	return NULL;
+}
 
 void TestPerformance(const wchar_t* filename)
 {
@@ -638,24 +669,32 @@ void TestPerformance(const wchar_t* filename)
    
    drdr->Close();
 */
-/*
+
     FdoPtr<FdoISelect> sss = (FdoISelect*)con->CreateCommand(FdoCommandType_Select);
-    sss->SetFeatureClassName(fcname.c_str());
-    FdoPtr<FdoIdentifierCollection> ssprops = sss->GetPropertyNames();
-    FdoPtr<FdoIdentifier> sid = FdoIdentifier::Create(L"GENUS");
-    ssprops->Add(sid);
+    sss->SetFeatureClassName(L"canhiway");
+    //FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"OGC_FID=1 OR OGC_FID=2");
+    FdoPtr<FdoFilter> filter = CreateIntersectsFilter(geomname.c_str(), -180, -90, 180, 90);
+    sss->SetFilter(filter);
+
+    //FdoPtr<FdoIdentifierCollection> ssprops = sss->GetPropertyNames();
+    //FdoPtr<FdoIdentifier> sid = FdoIdentifier::Create(L"LEGAL_PID");
+    //ssprops->Add(sid);
     FdoPtr<FdoIFeatureReader> rdr = sss->Execute();
 
     FILE* fp = fopen ("c:\\props.txt", "w");
     while (rdr->ReadNext())
     {
-        if (!rdr->IsNull(L"GENUS"))
+        if (!rdr->IsNull(L"highway"))
         {
-            fprintf(fp, "%ls\n", rdr->GetString(L"GENUS"));
+            FdoString* val = rdr->GetString(L"highway");
+            int len;
+            const FdoByte* geom = rdr->GetGeometry(L"GEOMETRY", &len);
+            //FgfPolygon* poly = (FgfPolygon*)geom;
+            fprintf(fp, "%ls\n", val);
         }
     }
     fclose(fp);
-*/
+
 
     //get the overall extent
     double minx = DBL_MAX;
@@ -696,7 +735,7 @@ void TestPerformance(const wchar_t* filename)
 
     double min[2];
     double max[2];
-    double factor = 0.49;
+    double factor = 0.1;
     min[0] = minx + (maxx - minx)*factor;
     min[1] = miny + (maxy - miny)*factor;
     max[0] = maxx - (maxx - minx)*factor;
@@ -783,9 +822,17 @@ void TestPerformance(const wchar_t* filename)
 
 
 
-
-
-
+void Usage()
+{
+    printf ("\n FDO SQLite Converter \n");
+    printf ("~~~~~~~~~~~~~~~~~~~~~~\n");
+    printf ("Usage: \n");
+    printf ("SQLiteConverter [optimize] source.xxx destination.xxx\n\n");
+    printf ("source      : Full path to source file (sdf, shp or sqlite db)\n");
+    printf ("destination : Full path to destination file (must be sqlite db)\n");
+    printf ("optimize    : Optional flag, indicating whether to optimize spatial order\n");
+    printf ("              of features, for faster BBOX query\n");
+}
 
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -798,7 +845,15 @@ int _tmain(int argc, _TCHAR* argv[])
         }
         else
         {
-            ConvertFDOToSDFX(argv[1], argv[2], false);
+            try 
+            {
+                ConvertFDOToSDFX(argv[1], argv[2], false);
+            }
+            catch (FdoException* e)
+            {
+                printf ("Conversion failed : %ls\n", e->GetExceptionMessage());
+                return 1;
+            }
         }
 
         return 0;
@@ -807,7 +862,16 @@ int _tmain(int argc, _TCHAR* argv[])
     {
         if (wcscmp(argv[1], L"optimize") == 0)
         {
-            ConvertFDOToSDFX(argv[2], argv[3], true);
+            try
+            {
+                ConvertFDOToSDFX(argv[2], argv[3], true);
+            }
+            catch (FdoException* e)
+            {
+                printf ("Conversion failed : %ls\n", e->GetExceptionMessage());
+                return 1;
+            }
+            
             return 0;
         }
         else
@@ -815,6 +879,10 @@ int _tmain(int argc, _TCHAR* argv[])
             printf("Unknown command line parameters.\n");
             exit(1);
         }
+    }
+    else
+    {
+        Usage();
     }
 
     return 1;
