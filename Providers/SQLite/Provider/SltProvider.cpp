@@ -192,7 +192,7 @@ void SltConnection::CreateDatabase()
     string srs_sql = "CREATE TABLE spatial_ref_sys\
         (srid INTEGER UNIQUE,\
         auth_name TEXT,\
-        auth_srid TEXT,\
+        auth_srid INTEGER,\
         srtext TEXT);";
 
     char* zerr = NULL;
@@ -776,7 +776,8 @@ void SltConnection::AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_
     //TODO: we assume the spatial context association is
     //a string representing the SRID (integer id) of a coordinate
     //system that already exists in our spatial_ref_sys table.
-    gci_sql += W2A_SLOW(gpd->GetSpatialContextAssociation()); //srid
+    FdoString* sca = gpd->GetSpatialContextAssociation();
+    gci_sql += sca ? W2A_SLOW(sca) : "0"; //srid
 
     gci_sql += ");";
 
