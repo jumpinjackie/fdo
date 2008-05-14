@@ -121,7 +121,7 @@ protected:
 
     virtual int do_rdbi_init ();
     virtual int do_rdbi_connect (const char* dataStoreName, const char* userName, const char* userPassword);
-    virtual char *get_bind_var (int n);
+    virtual char *get_bind_var (int n, int rdbiType);
 	virtual char *get_geometry_type() {return ""; };
 	virtual char *get_geometry_storage() { return ""; }
     virtual char *get_date_time (const struct tm *when);
@@ -129,6 +129,7 @@ protected:
     virtual bool allow_timestamp_notnull() { return true; };
     virtual bool is_datatype_equal(int rdbi_type, int type) { return (rdbi_type == type); };
     virtual char *get_bigint_data_type () { return "BIGINT"; };
+    virtual char *get_select_statement(int rdbiType) {return "select * from bar";}
 
 };
 

@@ -28,6 +28,7 @@
 #include "FdoRdbmsSqlServerDeleteCommand.h"
 #include "FdoRdbmsSqlServerCommandCapabilities.h"
 #include "FdoRdbmsSqlServerFilterCapabilities.h"
+#include "FdoRdbmsSqlServerExpressionCapabilities.h"
 
 #include "../SchemaMgr/SchemaManager.h"
 #include "../SchemaMgr/Ph/Mgr.h"
@@ -37,6 +38,7 @@
 #include "FdoRdbmsSqlServerConnectionCapabilities.h"
 #include "FdoRdbmsSqlServerGeometryCapabilities.h"
 #include "FdoRdbmsSqlServerOptimizedAggregateReader.h"
+#include "FdoRdbmsSqlServerSpatialGeometryConverter.h"
 
 #include "DbiConnection.h"
 #include "Rdbms/FdoRdbmsCommandType.h"
@@ -51,7 +53,8 @@ wchar_t* getComDir (); // in SqlServer.cpp
 
 FdoRdbmsSqlServerConnection::FdoRdbmsSqlServerConnection():
 mFilterProcessor( NULL ),
-mConnectionInfo(NULL)
+mConnectionInfo(NULL),
+mGeographyConverter(NULL)
 {
 }
 
@@ -59,6 +62,9 @@ FdoRdbmsSqlServerConnection::~FdoRdbmsSqlServerConnection ()
 {
     if( mFilterProcessor )
         delete mFilterProcessor;
+
+    if( mGeographyConverter )
+        delete mGeographyConverter;
 
     FDO_SAFE_RELEASE(mConnectionInfo);
 }
@@ -574,6 +580,17 @@ FdoIDataStorePropertyDictionary*  FdoRdbmsSqlServerConnection::CreateDataStorePr
 
         newProp = new ConnectionProperty (FDO_RDBMS_DATASTORE_DESCRIPTION, NlsMsgGet(FDORDBMS_448, "Description"), L"", false, false, false, false, false, false, false, 0, NULL);
         mDataStorePropertyDictionary->AddProperty(newProp);
+
+        wchar_t** enabledValues = new wchar_t*[2];
+        enabledValues[0] = new wchar_t[10];
+        wcscpy( enabledValues[0], L"false" );
+        enabledValues[1] = new wchar_t[10];
+        wcscpy( enabledValues[1], L"true" );
+
+        // TODO: Set IsFdoEnabled default to false when projected coordinate system 
+        // support added.
+        newProp = new ConnectionProperty (FDO_RDBMS_DATASTORE_FDO_ENABLED, L"IsFdoEnabled", L"true", false, false, true, false, false, false, false, 2, (const wchar_t**) enabledValues);
+        mDataStorePropertyDictionary->AddProperty(newProp);
 	}
 	else if ( action == FDO_RDBMS_DATASTORE_FOR_DELETE )
 	{
@@ -607,19 +624,103 @@ FdoIFilterCapabilities *FdoRdbmsSqlServerConnection::GetFilterCapabilities()
     return mFilterCapabilities;	
 }
 
+FdoIExpressionCapabilities* FdoRdbmsSqlServerConnection::GetExpressionCapabilities()
+{
+	if (mExpressionCapabilities == NULL)
+		mExpressionCapabilities = new FdoRdbmsSqlServerExpressionCapabilities();
+	FDO_SAFE_ADDREF(mExpressionCapabilities);
+	return mExpressionCapabilities;
+}
+
 FdoRdbmsFeatureReader *FdoRdbmsSqlServerConnection::GetOptimizedAggregateReader(const FdoSmLpClassDefinition* classDef, aggr_list *selAggrList)
 { 
     return new FdoRdbmsSqlServerOptimizedAggregateReader(this, classDef, selAggrList); 
 }
 
-const char *FdoRdbmsSqlServerConnection::GetBindString( int n, bool isGeom )
+FdoStringP FdoRdbmsSqlServerConnection::GetBindString( int n, const FdoSmLpPropertyDefinition* prop )
 { 
-    // TODO: it needs proper SRID handling (instead of harcoded "0")
-    return !isGeom ? "?" : "geometry::STGeomFromWKB(?, 0)"; 
+    bool isGeom = false;
+    FdoInt64 srid = 0;
+    FdoStringP bindStr(L"?", true);
+
+    const FdoSmLpGeometricPropertyDefinition* geomProp =
+        FdoSmLpGeometricPropertyDefinition::Cast(prop);
+
+    if ( geomProp ) 
+    {
+        FdoStringP geomType(L"geometry", true);
+
+        // For geometric properties, convert from WKB and add SRID.
+
+        FdoStringP scName = geomProp->GetSpatialContextAssociation();
+
+        FdoSchemaManagerP schemaMgr = this->GetSchemaManager();
+
+        // First, get SRID. Try column first.
+
+        FdoSmPhColumnP column = ((FdoSmLpGeometricPropertyDefinition*) geomProp)->GetColumn();
+    
+        if ( column ) 
+        {
+            FdoSmPhColumnGeomP geomColumn = column->SmartCast<FdoSmPhColumnGeom>();
+
+            if ( geomColumn ) 
+            {
+                srid = geomColumn->GetSRID();
+                // Also find out if geometry or geography column
+                geomType = geomColumn->GetTypeName();
+            }
+        }
+
+        // If Associated Spatial Context can be reached, get SRID from it
+        // instead
+
+        FdoSmLpSpatialContextMgrP scMgr = schemaMgr->GetLpSpatialContextMgr();
+        FdoSmLpSpatialContextP sc = scMgr->FindSpatialContext(scName);
+
+        if ( sc )
+        {
+            srid = sc->GetSrid();
+        }
+
+        bindStr = FdoStringP::Format( L"%ls::STGeomFromWKB(?, %ls)", (FdoString*) geomType, (FdoString*) FdoCommonStringUtil::Int64ToString(srid) );    
+    }
+
+    return bindStr; 
 }
 
 bool  FdoRdbmsSqlServerConnection::BindGeometriesLast() 
 { 
     return true; 
+}
+
+FdoIGeometry* FdoRdbmsSqlServerConnection::TransformGeometry( FdoIGeometry* geom, const FdoSmLpGeometricPropertyDefinition* prop, bool toFdo )
+{
+    FdoStringP geomType;
+    
+    //TODO: check performance impact of looking up geomType for each geometry value and
+    //optimize if necessary.
+    FdoSmPhColumnP column = ((FdoSmLpGeometricPropertyDefinition*) prop)->GetColumn();
+    
+    if ( column ) 
+    {
+        FdoSmPhColumnGeomP geomColumn = column->SmartCast<FdoSmPhColumnGeom>();
+
+        if ( geomColumn ) 
+        {
+            geomType = geomColumn->GetTypeName();
+        }
+    }
+
+    if ( geomType != L"geography" )
+        // No special transformation for geometry columns
+        return FdoRdbmsConnection::TransformGeometry( geom, prop, toFdo );
+
+
+    if ( !mGeographyConverter )
+        mGeographyConverter = new FdoRdbmsSqlServerSpatialGeographyConverter();
+
+    // For geography columns, flip the X and Y.
+    return mGeographyConverter->ConvertOrdinates( geom );
 }
 

@@ -92,6 +92,8 @@ protected:
     virtual FdoStringP TableNoIdNoGeomName();
     virtual FdoStringP Key2ColName();
     virtual FdoStringP ValueColName();
+    virtual FdoStringP GeomColName();
+
     virtual FdoStringP FixStringVal( FdoString* val );
 
 protected:

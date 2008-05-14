@@ -40,6 +40,7 @@ public:
 
     ~FdoSmLpSqsSchemaCollection(void);
 
+    virtual bool CanApplySchemaWithoutMetaSchema() const;
 
 protected:
     // Create a new schema from a schema reader

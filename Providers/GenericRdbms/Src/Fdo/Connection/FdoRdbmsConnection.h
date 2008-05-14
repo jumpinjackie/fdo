@@ -185,8 +185,8 @@ public:
     DbiConnection    *GetDbiConnection() { return mDbiConnection; }
 
 	void CreateSysDb( FdoString *dbName, FdoString *dbPassword, FdoString *connectString);
-	void CreateDb( FdoString *dbName, FdoString *dbDescription, FdoString *dbPassword, FdoString *connectString, FdoString *ltMode, FdoString *lckMode );
-	void DeleteDb( FdoString *dbName, FdoString *dbPassword, FdoString *connectString );
+	virtual void CreateDb( FdoString *dbName, FdoString *dbDescription, FdoString *dbPassword, FdoString *connectString, FdoString *ltMode, FdoString *lckMode, bool isFdoEnabled = true );
+    void DeleteDb( FdoString *dbName, FdoString *dbPassword, FdoString *connectString );
 
     // Gets the current Schema Manager for this connection
     FdoSchemaManagerP GetSchemaManager();
@@ -210,10 +210,22 @@ public:
     //
     // Returns the bind string used by the specific database engine; for example :1 for Oracle and ? for MySql.
     // By default ? is returned. If the database engine uses different syntax, then this method need to be ovewritten.
-    virtual const char* GetBindString( int n, bool isGeom = false ) { return "?"; }
+    virtual FdoStringP GetBindString( int n, const FdoSmLpPropertyDefinition* prop = NULL ) { return "?"; }
 
     // Workaround for SqlServer spatial bug: on Insert the geometries need to be bound last.
     virtual bool  BindGeometriesLast() { return false; }
+
+    // Perform any required geometry transformations when sending or retrieving geometries to or from the RDBMS.
+    // The default implementation does not modify the geometry.
+    //
+    // geom - the geometry to transform
+    // prop - corresponding geometric property
+    // toFDO -
+    //      true: transforming from RDBMS to FDO format
+    //      false: transforming from FDO to RDBMS format
+    //
+    // Returns the transformed geometry.
+    virtual FdoIGeometry* TransformGeometry( FdoIGeometry* geom, const FdoSmLpGeometricPropertyDefinition* prop, bool toFdo );
 
     // Creates a Long Transaction Manager and its corresponding Long Transaction
     // Manager Service.

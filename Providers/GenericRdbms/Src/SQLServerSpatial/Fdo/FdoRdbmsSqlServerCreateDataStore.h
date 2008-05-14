@@ -70,14 +70,19 @@ public:
 							   mDataStorePropertyDictionary->GetPropertyDefault(FDO_RDBMS_DATASTORE_LTMODE));
 		}
         */
+		FdoStringP fdoEnabledStr = mDataStorePropertyDictionary->GetProperty(FDO_RDBMS_DATASTORE_FDO_ENABLED);
+
+        bool isFdoEnabled =  ( fdoEnabledStr == L"false" ) ? false : true;        
+
 		mConnection->CreateDb( 	
 						 mDataStorePropertyDictionary->GetProperty(FDO_RDBMS_CONNECTION_DATASTORE),
 						 mDataStorePropertyDictionary->GetProperty(FDO_RDBMS_DATASTORE_DESCRIPTION),      
 						 L"",     // password
 						 L"",	  // service 
 						 L"NONE", // mDataStorePropertyDictionary->GetProperty(FDO_RDBMS_DATASTORE_LTMODE),
-						 L"NONE"  // mDataStorePropertyDictionary->GetProperty(FDO_RDBMS_DATASTORE_LOCKMODE)
-						 );
+						 L"NONE",  // mDataStorePropertyDictionary->GetProperty(FDO_RDBMS_DATASTORE_LOCKMODE)
+						 isFdoEnabled
+                         );
 	} 
 };
 #endif

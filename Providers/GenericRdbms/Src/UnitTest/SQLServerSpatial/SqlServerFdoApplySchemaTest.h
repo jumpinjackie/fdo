@@ -48,6 +48,10 @@ public:
         return 0;
     }
 
+    virtual bool CanApplyWithoutMetaSchema();
+    virtual bool CanAddNotNullCol();
+    virtual bool CanDropCol();
+
     virtual FdoStringP SchemaTestErrFile( int fileNum, bool isMaster );
     virtual FdoStringP SchemaOvErrFile( int fileNum, bool isMaster );
     virtual FdoStringP LogicalPhysicalBend( FdoString* inFile );

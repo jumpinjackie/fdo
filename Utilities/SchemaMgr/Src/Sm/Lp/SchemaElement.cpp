@@ -127,6 +127,13 @@ void FdoSmLpSchemaElement::LoadSAD( FdoSmPhISADReader* pSADReader )
 	}
 }
 
+bool FdoSmLpSchemaElement::GetHasMetaSchema() const
+{
+    FdoSmPhOwnerP owner = ((FdoSmLpSchemaElement*) this)->GetLogicalPhysicalSchema()->GetPhysicalSchema()->FindOwner();
+
+    return owner ? owner->GetHasMetaSchema() : false;
+}
+
 void FdoSmLpSchemaElement::Update(
     FdoSchemaElement* pFdoElement,
     FdoSchemaElementState elementState,
@@ -180,6 +187,15 @@ void FdoSmLpSchemaElement::Update(
         // or loaded from config doc.
 
 		FdoSADP pFdoSAD = pFdoElement->GetAttributes();
+
+        if ( GetLogicalPhysicalSchema()->GetSchemas()->CanCreatePhysicalObjects() ) {
+            FdoSmPhOwnerP owner = GetLogicalPhysicalSchema()->GetPhysicalSchema()->GetOwner();
+            if ( (!owner) || !(owner->GetHasMetaSchema()) ) {
+                if ( pFdoSAD->GetCount() > 0 )
+                    // Need metaschema to store Schema Attribute Dictionary
+                    AddSADNoMetaError( owner );
+            }
+        }
 
         if ( bIgnoreStates ) {
             // Ignoring element states so do an additive merge
@@ -316,6 +332,19 @@ void FdoSmLpSchemaElement::ValidateStringLength(
         // Exception is thrown when string too long.
     	GetErrors()->Add( FdoSmErrorType_Other, e );
     }
+}
+
+void FdoSmLpSchemaElement::AddSADNoMetaError( FdoSmPhOwnerP owner )
+{
+	GetErrors()->Add( FdoSmErrorType_Other, 
+        FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+				SM_NLSID(0x000008C1L, "Cannot set Schema Attribute Dictionary for element '%1$ls' in datastore '%2$ls'; datastore has no FDO metadata tables"),
+				(FdoString*) GetQName(),
+                owner ? owner->GetName() : L""
+			)
+		)
+	);
 }
 
 

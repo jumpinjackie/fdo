@@ -17,6 +17,7 @@
  */
 
 #include "stdafx.h"
+#include <FdoCommonStringUtil.h>
 #include "Mgr.h"
 #include "Database.h"
 #include "TempObject.h"
@@ -82,6 +83,22 @@ FdoStringP FdoSmPhSqsMgr::GetDbVersion()
     FdoStringP retVersion = mDbVersion.Right( L"- " ).Left( L" " );
 
     return retVersion;
+}
+
+FdoSmPhMgr::CoordinateSystemMatchLevel FdoSmPhSqsMgr::GetCoordinateSystemMatchLevel()
+{
+    // When datastore has MetaSchema, allow creating spatial contexts even if
+    // their coordinate system is not valid for SQL Server.
+    CoordinateSystemMatchLevel level = CoordinateSystemMatchLevel_Lax;
+    FdoSmPhOwnerP owner = FindOwner();
+
+    if ( (!owner) || !(owner->GetHasMetaSchema()) ) 
+        // When no MetaSchema, there is no place to put WKT when spatial context
+        // coordinate system not valid for SQL Server. Therefore, reject any
+        // spatial contexts with these coordinate systems.
+        level = CoordinateSystemMatchLevel_Wkt;
+
+    return level;
 }
 
 FdoSmPhDatabaseP FdoSmPhSqsMgr::CreateDatabase(FdoStringP database)
@@ -249,7 +266,9 @@ FdoStringP FdoSmPhSqsMgr::FormatBindField( int pos)
 
 FdoBoolean FdoSmPhSqsMgr::IsDbObjectNameReserved( FdoStringP objName )
 {
-    return mSqsReservedDbObjectNames.IsReserved( objName );
+    // This provider double-quote delimits all db object names in SQL statements so
+    // no need to reserve names.
+    return false;
 }
 
 bool FdoSmPhSqsMgr::IsRdbObjNameAscii7()
@@ -288,6 +307,11 @@ FdoSize FdoSmPhSqsMgr::ColNameMaxLen()
     return 128;
 }
 
+bool FdoSmPhSqsMgr::SupportsMixedCase()
+{
+    return true;
+}
+
 FdoStringP FdoSmPhSqsMgr::GetDcRdbmsObjectName( FdoStringP objectName )
 {
     // TODO: remove lower case conversion when forward compatibility with FDO 3.2
@@ -320,6 +344,21 @@ FdoStringP FdoSmPhSqsMgr::DbObject2MetaSchemaName( FdoStringP objectName )
         return objectName.Mid(4,99999);
 
     return objectName;
+}
+
+FdoInt64 FdoSmPhSqsMgr::IndexName2Srid( FdoStringP indexName )
+{
+    FdoStringP sridString;
+    FdoInt64 srid = -1;
+
+    if ( indexName.Contains(L"_srid=") ) 
+        sridString = indexName.Right( L"_srid=" );
+
+    if ( (sridString.GetLength() > 0) && sridString.IsNumber() ) {
+        srid = FdoCommonStringUtil::StringToInt64(sridString);
+    }
+
+    return srid;
 }
 
 FdoSmPhRowP FdoSmPhSqsMgr::MakeByDbObjectBinds (FdoStringP object_owner, FdoStringP object_name)
@@ -377,25 +416,7 @@ void FdoSmPhSqsMgr::SetByDbObjectBinds (FdoSmPhRowP binds, FdoStringP object_own
 
 FdoSmPhSqsMgr::SqsStringMap::SqsStringMap()
 {
-    // The following are reserved words specific to SqlServer.
-    // Base constructor adds general reserved words to this list.
-    Insert( L"bigint" ); 
-    Insert( L"binary" ); 
-    Insert( L"image" ); 
-    Insert( L"datetime" ); 
-    Insert( L"double" ); 
-    Insert( L"numeric" ); 
-    Insert( L"decimal" ); 
-    Insert( L"int" ); 
-    Insert( L"bit" ); 
-    Insert( L"real" ); 
-    Insert( L"float" ); 
-    Insert( L"smallint" ); 
-    Insert( L"text" ); 
-    Insert( L"time" ); 
-    Insert( L"timestamp" ); 
-    Insert( L"tinyint" ); 
-    Insert( L"varbinary" ); 
+    // No reserved words for SqlServer
 };
 
 

@@ -37,12 +37,16 @@ FdoRdbmsFeatureReader( connection, NULL, false, classDef, NULL)
 
 	// Get the table name
 	FdoStringP	tableNameW	= mClassDefinition->GetDbObjectName();
+    const FdoSmPhDbObject* dbObject = mClassDefinition->RefDbObject()->RefDbObject();
+    // When table object reachable, make sure table name "" delimited.
+    if ( dbObject ) 
+        tableNameW = dbObject->GetDbName();
 
 	bool				countRequired = false;
 	bool				mbrRequired = false;
 	const	char *		columnName = NULL;
-	int					isGeodetic = false;
     const wchar_t       *colNameW = NULL;
+    FdoStringP          geomType;
 
 	for ( size_t i = 0; i < m_SelAggrList->size(); i++ )
 	{ 
@@ -60,7 +64,11 @@ FdoRdbmsFeatureReader( connection, NULL, false, classDef, NULL)
 
 			const FdoSmPhColumn *column = simpleProp->RefColumn();
 			colNameW = column->GetName();
-		}
+
+            FdoSmPhColumnGeomP columnGeom = ((FdoSmPhColumn*) column)->SmartCast<FdoSmPhColumnGeom>();
+            if ( columnGeom )
+                geomType = columnGeom->GetTypeName();
+        }
 		else
 		{
 			countRequired = true;
@@ -78,8 +86,9 @@ FdoRdbmsFeatureReader( connection, NULL, false, classDef, NULL)
     FdoPtr<FdoISQLCommand> selCmd = (FdoISQLCommand*)mFdoConnection->CreateCommand( FdoCommandType_SQLCommand );
 
     // Apparently strait select is 3x faster.
-    //    FdoStringP sql = FdoStringP::Format(L"select %ls.STEnvelope().STAsBinary() as MBR from %ls", colNameW, tableNameW);
-    FdoStringP sql = FdoStringP::Format(L"select %ls.STAsBinary() as MBR from %ls", colNameW, tableNameW);
+    //    FdoStringP sql = FdoStringP::Format(L"select [%ls].STEnvelope().STAsBinary() as MBR from %ls", colNameW, tableNameW);
+    // Delimit column name with []. Can't use " when part of function.
+    FdoStringP sql = FdoStringP::Format(L"select [%ls].STAsBinary() as MBR from %ls", colNameW, tableNameW);
 
     selCmd->SetSQLStatement( (FdoString *)sql );
     FdoPtr<FdoISQLDataReader>  rdr = selCmd->ExecuteReader();
@@ -97,22 +106,42 @@ FdoRdbmsFeatureReader( connection, NULL, false, classDef, NULL)
         if (!rdr->IsNull(L"MBR"))
         {
             FdoPtr<FdoByteArray> ba = rdr->GetGeometry(L"MBR");
-            FdoIGeometry	*geom = gf->CreateGeometryFromFgf(ba);
+            FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(ba);
 
             FdoPtr<FdoIEnvelope>  envelope = geom->GetEnvelope();
             if ( count == 0 )
             {
-                minX = envelope->GetMinX();
-                minY = envelope->GetMinY();
-                maxX = envelope->GetMaxX();
-                maxY = envelope->GetMaxY();
+                if ( geomType == L"geography" ) 
+                {
+                    minX = envelope->GetMinY();
+                    minY = envelope->GetMinX();
+                    maxX = envelope->GetMaxY();
+                    maxY = envelope->GetMaxX();
+                }
+                else 
+                {
+                    minX = envelope->GetMinX();
+                    minY = envelope->GetMinY();
+                    maxX = envelope->GetMaxX();
+                    maxY = envelope->GetMaxY();
+                }
             }
             else
             {
-                minX = FdoCommonMin(envelope->GetMinX(), minX);
-                minY = FdoCommonMin(envelope->GetMinY(), minY);
-                maxX = FdoCommonMax(envelope->GetMaxX(), maxX);
-                maxY = FdoCommonMax(envelope->GetMaxY(), maxY);          
+                if ( geomType == L"geography" ) 
+                {
+                    minX = FdoCommonMin(envelope->GetMinY(), minX);
+                    minY = FdoCommonMin(envelope->GetMinX(), minY);
+                    maxX = FdoCommonMax(envelope->GetMaxY(), maxX);
+                    maxY = FdoCommonMax(envelope->GetMaxX(), maxY);          
+                }
+                else
+                {
+                    minX = FdoCommonMin(envelope->GetMinX(), minX);
+                    minY = FdoCommonMin(envelope->GetMinY(), minY);
+                    maxX = FdoCommonMax(envelope->GetMaxX(), maxX);
+                    maxY = FdoCommonMax(envelope->GetMaxY(), maxY);          
+                }
             }
         }
 

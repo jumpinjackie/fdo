@@ -142,10 +142,18 @@ void FdoSchemaManager::SynchPhysical( const wchar_t* schemaName, bool bRollbackO
 	bool            bDidSomething = false;
 
 	try {
+        FdoSmPhOwnerP owner = GetPhysicalSchema()->FindOwner();
+
+        // Nothing to do if no MetaSchema
+        if ( owner && !owner->GetHasMetaSchema() )
+            return;
+
         // Proceed if synchronizing everything or the connection has rollback entries.
 		if ( !bRollbackOnly || mPhysicalSchema->HasRollbackEntries() ) {
             // Clear schema manager cache in order to get the latest metaschema information.
             Clear();
+
+            GetLogicalPhysicalSchemas()->SetCreatePhysicalObjects(true);
 
             // Synchronize each feature schema in the DataStore, except for the special 
             // read-only MetaClass schema.
@@ -165,10 +173,10 @@ void FdoSchemaManager::SynchPhysical( const wchar_t* schemaName, bool bRollbackO
 
 			if ( bDidSomething ) {
 				// Check if there were errors and thow exception if any.
-				FdoSchemaException* pException = mLpSchemas->Errors2Exception();
+				FdoSchemaExceptionP pException = mLpSchemas->Errors2Exception();
 
-				if ( pException ) 
-					throw pException;
+		        if ( pException ) 
+			        throw FDO_SAFE_ADDREF((FdoSchemaException*) pException);
 
                 // Post the schema changes.
 		        mLpSchemas->Commit();
@@ -237,7 +245,21 @@ void FdoSchemaManager::ApplySchema(
 			)
 		);
 
+    FdoSmPhOwnerP owner = GetPhysicalSchema()->FindOwner();
+
+    if ( owner && !GetLogicalPhysicalSchemas()->CanApplySchemaWithoutMetaSchema() ) {
+        if ( !owner->GetHasMetaSchema() )
+            throw FdoSchemaException::Create(
+                FdoSmError::NLSGetMessage(
+                    SM_NLSID(0x000008BCL, "Cannot apply feature schema '%1$ls' to datastore '%2$ls'; datastore has no FDO metadata tables (f_schemainfo, etc.)"),
+    			    pFeatSchema->GetName(),
+			        owner->GetName()
+			    )
+            );
+    }
+
 	try {
+        GetLogicalPhysicalSchemas()->SetCreatePhysicalObjects(true);
         GetPhysicalSchema()->SetBulkLoadConstraints(true);
         GetPhysicalSchema()->SetBulkLoadSpatialContexts(true);
 
@@ -277,12 +299,14 @@ void FdoSchemaManager::ApplySchema(
 			throw FDO_SAFE_ADDREF((FdoSchemaException*) pException);
 
 		// No errors, post the schema changes.
-		mLpSchemas->Commit();
-		// Post the database table changes. Table changes can't be rolled
+		if ( owner && owner->GetHasMetaSchema() ) 
+            mLpSchemas->Commit();
+
+        // Post the database table changes. Table changes can't be rolled
 		// back so it's best to do them last.
 		mPhysicalSchema->Commit();
 
-		// Flag the fact that a schema was changed. This forces all Schema Managers
+        // Flag the fact that a schema was changed. This forces all Schema Managers
 		// to reload their LogicalPhysical and Physical schemas.
         mMutex.Enter();
 		mCurrRevision++;
@@ -340,6 +364,21 @@ void FdoSchemaManager::CreateSpatialContext(
 	bool   update
 )
 {
+	FdoSmPhMgrP physMgr = GetPhysicalSchema();
+
+    FdoSmPhOwnerP owner = physMgr->FindOwner();
+
+    if ( owner && !GetLogicalPhysicalSchemas()->CanApplySchemaWithoutMetaSchema() ) {
+        if ( !owner->GetHasMetaSchema() )
+            throw FdoSchemaException::Create(
+                FdoSmError::NLSGetMessage(
+                    SM_NLSID(0x000008BDL, "Cannot add spatial context '%1$ls' to datastore '%2$ls'; datastore has no FDO metadata tables (f_spatialcontext, etc.)"),
+    			    name,
+			        owner->GetName()
+			    )
+            );
+    }
+
 	// Nothing to do if the name is not set
 	if ( wcscmp( name, L"" ) == 0 )
         throw FdoSchemaException::Create( 
@@ -347,8 +386,6 @@ void FdoSchemaManager::CreateSpatialContext(
 				FDO_NLSID(FDOSM_412)
 			)
         );
-
-	FdoSmPhMgrP physMgr = GetPhysicalSchema();
 
     FdoSmLpSpatialContextsP scs = GetLpSpatialContexts();
 
@@ -402,7 +439,7 @@ void FdoSchemaManager::CreateSpatialContext(
     // Post the changes.
     scs->Commit();
 
-	// Flag the change to force re-loads by all Schema Managers.
+    // Flag the change to force re-loads by all Schema Managers.
     mMutex.Enter();
     mCurrRevision++;
     mMutex.Leave();
@@ -560,7 +597,6 @@ void FdoSchemaManager::Clear(bool bClearAll)
     }
 
 }
-
 
 FdoSmLpSchemasP FdoSchemaManager::GetLogicalPhysicalSchemas()
 {

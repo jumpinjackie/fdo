@@ -64,12 +64,16 @@ FdoInt64 FdoSmPhSqsColumnGeom::GetSRID()
 {
     if (mSRID == -1)
     {
+        // Check if SRID was encoded into spatial index name,
+        mSRID = IndexName2Srid();
+
+        // If not in SI name then sample 1st geometry value.
         // SqlServer SRIDs are associated with geometry values, rather than entire column.
         // The following gets the srid from the first row.
         // The other rows might have different srids but FDO currently does not have
         // a way of handling this. 
         
-        if ( GetElementState() != FdoSchemaElementState_Added ) {
+        if ( (mSRID == -1 ) && (GetElementState() != FdoSchemaElementState_Added) ) {
             FdoSmPhSqsOwner* owner = (FdoSmPhSqsOwner*)(this->GetParent()->GetParent());
             mSRID = owner->SampleColumnSrid( GetParent()->GetName(), GetName() );
         }
@@ -93,7 +97,7 @@ FdoSmPhSpatialIndexP FdoSmPhSqsColumnGeom::CreateSpatialIndex( FdoStringP indexN
     // Error if column already indexed
     FdoSmPhSpatialIndexP currIndex = GetSpatialIndex();
 
-    if ( currIndex ) 
+    if ( currIndex && (currIndex->GetElementState() != FdoSchemaElementState_Deleted) ) 
         throw FdoSchemaException::Create( 
 			NlsMsgGet1(
 				FDORDBMS_131,
@@ -118,6 +122,19 @@ FdoSmPhSpatialIndexP FdoSmPhSqsColumnGeom::CreateSpatialIndex( FdoStringP indexN
 
     return currIndex;
 }
+
+void FdoSmPhSqsColumnGeom::RegenSpatialIndex()
+{
+    FdoSmPhSpatialIndexP currIndex = GetSpatialIndex();
+
+    // If spatial index exists, delete and re-create it.
+    if ( currIndex && (currIndex->GetElementState() != FdoSchemaElementState_Deleted) ) {
+        currIndex->SetElementState( FdoSchemaElementState_Deleted );
+
+        CreateSpatialIndex();
+    }
+}
+
 
 
 bool FdoSmPhSqsColumnGeom::Add() 
@@ -146,6 +163,37 @@ void FdoSmPhSqsColumnGeom::SetElementState(FdoSchemaElementState elementState)
     }
 }
 
+FdoStringP FdoSmPhSqsColumnGeom::UniqueIndexName()
+{
+    FdoStringP indexName = FdoSmPhColumnGeom::UniqueIndexName();
+    
+    FdoInt64 srid = GetSpatialContextInfo() ? GetSpatialContextInfo()->mSrid : 0L;
+
+    // Encode srid into spatial index name. This allows us to remember the srid
+    // when no geometry values have yet been added to this column.
+    // Skip this step if resulting name would be too long. This should rarely
+    // happen since the limit is 128 characters.
+
+    if ( (srid > 0) && indexName.GetLength() < GetManager()->ColNameMaxLen() - ((int) log10((double)srid)) - 7 ) {
+        indexName += FdoStringP(L"_srid=") + FdoCommonStringUtil::Int64ToString(srid);
+    }
+
+    return indexName;
+}
+
+FdoInt64 FdoSmPhSqsColumnGeom::IndexName2Srid()
+{
+    FdoInt64 srid = -1;
+    FdoSmPhSpatialIndexP si = GetSpatialIndex();
+
+    if ( si )
+        // Processing centralized on Physical Manager so Spatial Context Reader can 
+        // also get srid from index name.
+        srid = static_cast<FdoSmPhSqsMgr*>(GetManager().p)->IndexName2Srid( si->GetName() );
+
+    return srid;
+}
+
 void FdoSmPhSqsColumnGeom::PostFinalize()
 {
     if ( GetElementState() != FdoSchemaElementState_Added ) {
@@ -156,9 +204,7 @@ void FdoSmPhSqsColumnGeom::PostFinalize()
         FdoSmPhOwner* owner         = (FdoSmPhOwner*)(FdoSmSchemaElement*)(GetParent()->GetParent());
         FdoStringP    dbObjectName  = GetParent()->GetName();
 
-        FdoSmPhSpatialContextGeomsP scGeoms = owner->GetSpatialContextGeoms();
-
-        FdoSmPhSpatialContextGeomP scGeom = scGeoms->FindItem( FdoSmPhSpatialContextGeom::MakeName(dbObjectName, GetName()) );
+        FdoSmPhSpatialContextGeomP scGeom = owner->FindSpatialContextGeom(dbObjectName, GetName());
 
         if ( scGeom ) {
             foundMetaData = true;

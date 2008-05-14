@@ -169,7 +169,7 @@ void FdoSmLpGrdClassDefinition::UpdateTable( FdoStringP database, FdoStringP own
     // Check for a mapping override for table name.
     if ( Get_TableMapping() != FdoSmOvTableMappingType_BaseTable ) {
 
-        bool bFromConfigFile = (GetElementState() == FdoSchemaElementState_Unchanged) && GetIsFromFdo();
+        bool bFromConfigFile = GetIsFromConfig();
 
         if ( tableOverrides && (wcslen(tableOverrides->GetName()) > 0) ) {
             ovTableName = tableOverrides->GetName();
@@ -182,7 +182,7 @@ void FdoSmLpGrdClassDefinition::UpdateTable( FdoStringP database, FdoStringP own
         }
 
         if ( ovTableName != L"" ) {
-            if ( !VldDbObjectName(ovTableName, bFromConfigFile) ) {
+            if ( !VldDbObjectName(ovTableName) ) {
                 ovTableName = L"";
             }
         }

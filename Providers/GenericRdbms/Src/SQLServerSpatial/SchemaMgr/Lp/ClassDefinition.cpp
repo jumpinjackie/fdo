@@ -97,6 +97,22 @@ FdoSmLpSqsClassDefinition::~FdoSmLpSqsClassDefinition(void)
 {
 }
 
+FdoStringP FdoSmLpSqsClassDefinition::DefaultDbObjectName()
+{
+    FdoSmPhMgrP pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
+    FdoSmPhOwnerP pOwner = pPhysical->GetOwner();
+    bool hasMetaSchema = pOwner ? pOwner->GetHasMetaSchema() : false;
+
+    // Qualify default db object name by user.
+
+    if ( hasMetaSchema ) 
+        // When datastore has MetaSchema, default user is dbo.
+        return FdoStringP(L"dbo.") + GetName();
+    else
+        // Otherwise, default user is the feature schema name.
+        return FdoStringP(GetLogicalPhysicalSchema()->GetName()) + L"." + GetName();
+}
+
 bool FdoSmLpSqsClassDefinition::AddSchemaMappings( FdoPhysicalSchemaMappingP schemaMapping, bool bIncludeDefaults ) const
 {
     bool bHasMappings = false;
@@ -266,9 +282,9 @@ void FdoSmLpSqsClassDefinition::Update(
     //TODO: do we support modifying any of the SQL Server-specific overrides (filegroups, etc) ?
 }
 
-FdoStringP FdoSmLpSqsClassDefinition::GetSubstDbObjectName() const
+FdoStringP FdoSmLpSqsClassDefinition::GetSubstDbObjectName( FdoStringP dbObjectName ) const
 {
-    FdoStringP substObjName = FdoSmLpClassBase::GetSubstDbObjectName();
+    FdoStringP substObjName = FdoSmLpClassBase::GetSubstDbObjectName( dbObjectName );
 
     if ( substObjName.Contains(L".") )
         return substObjName.Right(L".");

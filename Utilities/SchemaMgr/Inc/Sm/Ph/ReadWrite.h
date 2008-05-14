@@ -86,7 +86,7 @@ public:
 	virtual bool GetBoolean( FdoStringP tableName, FdoStringP fieldName );
 
     /// Get the column's field definition.
-    FdoSmPhFieldP GetField( FdoStringP tableName, FdoStringP fieldName );
+    virtual FdoSmPhFieldP GetField( FdoStringP tableName, FdoStringP fieldName );
 
     FdoSmPhMgrP GetManager();
 

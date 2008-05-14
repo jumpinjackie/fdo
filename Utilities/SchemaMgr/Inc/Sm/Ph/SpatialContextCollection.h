@@ -41,6 +41,11 @@ public:
 
 	FdoInt32 FindExistingSC( FdoSmPhSpatialContextP sc );
 
+    // Generates a name for the next spatial context
+    // to add to this collection. Ensures that the name is 
+    // not already used by an item in this collection.
+    FdoStringP AutoGenName();
+
 private:
     // Functions for maintaining the lookup by id map.
     void AddToIdMap( FdoSmPhSpatialContext* sc );
@@ -48,6 +53,8 @@ private:
 
     // MAP for fast lookup of spatial contexts by id.
     FdoDictionaryP mIdMap;
+
+    FdoInt32 mNextAutoNum;
 };
 
 typedef FdoPtr<FdoSmPhSpatialContextCollection> FdoSmPhSpatialContextsP;

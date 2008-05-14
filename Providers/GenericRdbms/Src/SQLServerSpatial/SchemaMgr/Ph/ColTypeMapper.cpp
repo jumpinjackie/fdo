@@ -32,7 +32,7 @@ static FdoSmPhSqsColTypeMapEntry numericEntry( FdoSmPhColType_Decimal, L"numeric
 static FdoSmPhSqsColTypeMapEntry moneyEntry( FdoSmPhColType_Decimal, L"money" );
 static FdoSmPhSqsColTypeMapEntry smallMoneyEntry( FdoSmPhColType_Decimal, L"smallmoney" );
 static FdoSmPhSqsColTypeMapEntry doubleEntry( FdoSmPhColType_Double, L"float" );
-static FdoSmPhSqsColTypeMapEntry realEntry( FdoSmPhColType_Double, L"real" );
+static FdoSmPhSqsColTypeMapEntry realEntry( FdoSmPhColType_Single, L"real" );
 static FdoSmPhSqsColTypeMapEntry geomEntry( FdoSmPhColType_Geom, L"geometry" );
 static FdoSmPhSqsColTypeMapEntry geogEntry( FdoSmPhColType_Geom, L"geography" );
 static FdoSmPhSqsColTypeMapEntry stringEntry( FdoSmPhColType_String, L"varchar" );

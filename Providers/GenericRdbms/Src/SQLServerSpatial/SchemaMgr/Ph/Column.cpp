@@ -72,11 +72,18 @@ FdoStringP FdoSmPhSqsColumn::GetAddSql()
         addSql = FdoSmPhColumn::GetAddSql();
     else
         addSql = FdoStringP::Format(
-            L"%ls as %ls", 
+            L"%ls as %ls %ls", 
             (FdoString*) GetDbName(), 
-            (FdoString*)m_computedExpression
+            (FdoString*)m_computedExpression,
+    		(FdoString*) GetAutoincrementSql()
         );
 
+    return addSql;
+}
+
+
+FdoStringP FdoSmPhSqsColumn::GetAutoincrementSql()
+{
     // Add identity column information:
     const FdoSmPhSqsDbObject* parent = dynamic_cast<const FdoSmPhSqsDbObject*>(this->GetParent());
     FdoStringP idColumn = parent->GetIdentityColumn();
@@ -84,21 +91,17 @@ FdoStringP FdoSmPhSqsColumn::GetAddSql()
     if (0==wcscmp((FdoString*)idColumn, this->GetName()))
     {
         if (parent->GetIdentityIsGloballyUnique())
-            addSql += L" ROWGUIDCOL ";
+            return FdoStringP(L" ROWGUIDCOL ");
         else
-            addSql += FdoStringP::Format(L" IDENTITY (%d,%d) ", parent->GetIdentitySeed(), parent->GetIdentityIncrement());
+            return FdoStringP::Format(L" IDENTITY (%d,%d) ", parent->GetIdentitySeed(), parent->GetIdentityIncrement());
     }
-   
-    return addSql;
-}
-
-
-FdoStringP FdoSmPhSqsColumn::GetAutoincrementSql()
-{
-    if ( FdoSmPhColumn::GetAutoincrement() )
-        return L" IDENTITY (1,1) ";
-    else
-        return L"";
+    else 
+    {
+        if ( FdoSmPhColumn::GetAutoincrement() )
+            return L" IDENTITY (1,1) ";
+        else
+            return L"";
+    }
 }
 
 

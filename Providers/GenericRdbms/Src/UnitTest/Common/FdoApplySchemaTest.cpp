@@ -28,6 +28,7 @@ FdoString*    FdoApplySchemaTest::DB_NAME_OVERRIDE_SUFFIX           = L"_apply_o
 FdoString*    FdoApplySchemaTest::DB_NAME_OVERRIDE_DEFAULT_SUFFIX   = L"_apply_overridedef";
 FdoString*    FdoApplySchemaTest::DB_NAME_FOREIGN_SUFFIX            = L"_apply_foreign";
 FdoString*    FdoApplySchemaTest::DB_NAME_CONFIG_SUFFIX             = L"_apply_config";
+FdoString*    FdoApplySchemaTest::DB_NAME_NO_META_SUFFIX            = L"_apply_no_meta";
 
 FdoString*    FdoApplySchemaTest::LT_NAME                           = L"ApplyTest";
 FdoString*    FdoApplySchemaTest::DB_NAME_LT_SUFFIX                 = L"_apply_lt";
@@ -49,7 +50,7 @@ FdoPropertyValue* FdoApplySchemaTest::AddNewProperty( FdoPropertyValueCollection
 
 
 FdoApplySchemaTest::FdoApplySchemaTest(void) :
-    mCanAddNotNullCol(true), mIsLowerDatastoreName(false)
+    mIsLowerDatastoreName(false)
 {
 }
 
@@ -68,11 +69,6 @@ void FdoApplySchemaTest::TestSchema ()
 //	FdoPtr<FdoIConnection> copyConnection;
     StaticConnection* staticConn = NULL;
 
-    // SqlServer does not allow not null columns to be added to existing tables,
-    // even if they are empty.
-#ifdef RDBI_DEF_SSQL
-    mCanAddNotNullCol = false;
-#endif
 	try {
         FdoSchemaManagerP mgr;
         const FdoSmLpSchemaCollection* lp = NULL;
@@ -348,10 +344,6 @@ void FdoApplySchemaTest::TestOverrides ()
     FdoPtr<FdoIConnection> connection;
     StaticConnection* staticConn = NULL;
 	
-#ifdef RDBI_DEF_SSQL
-    mCanAddNotNullCol = false;
-#endif
-
     mDatastore = UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX);
 
     try {
@@ -519,7 +511,7 @@ void FdoApplySchemaTest::TestOverrides ()
         column = table->CreateColumnInt64( ph->GetDcColumnName(L"ID"), false );
         column = table->CreateColumnChar( ph->GetDcColumnName(L"Storage"), true, 50 );
         column = table->CreateColumnGeom( ph->GetDcColumnName(L"Floor"), (FdoSmPhScInfo*) NULL );
-        column = table->CreateColumnInt16( ph->GetDcColumnName(L"Extra"), !mCanAddNotNullCol );
+        column = table->CreateColumnInt16( ph->GetDcColumnName(L"Extra"), !CanAddNotNullCol() );
 
         table = owner->CreateTable( ph->GetDcDbObjectName(L"oneforeign") );
         column = table->CreateColumnInt64( ph->GetDcColumnName(L"ID"), false );
@@ -1295,11 +1287,6 @@ void FdoApplySchemaTest::TestConfigDoc ()
     FdoXmlSpatialContextFlagsP scFlags = FdoXmlSpatialContextFlags::Create();
     scFlags->SetIncludeDefault( true );
 
-    // SqlServer does not allow not null columns to be added to existing tables,
-    // even if they are empty.
-#ifdef RDBI_DEF_SSQL
-    mCanAddNotNullCol = false;
-#endif
 	try {
         FdoSchemaManagerP mgr;
         const FdoSmLpSchemaCollection* lp = NULL;
@@ -1745,6 +1732,277 @@ void FdoApplySchemaTest::TestConfigDoc ()
 	printf( "Done\n" );
 }
 
+void FdoApplySchemaTest::TestNoMeta ()
+{
+    StaticConnection* staticConn = NULL;
+	FdoPtr<FdoIConnection> connection;
+
+	try {
+        staticConn = UnitTestUtil::NewStaticConnection();
+        staticConn->connect();
+        UnitTestUtil::CreateDBNoMeta( 
+            staticConn->CreateSchemaManager(),
+            UnitTestUtil::GetEnviron("datastore", DB_NAME_NO_META_SUFFIX)
+        );
+
+
+        // delete, re-create and open the datastore
+		printf( "Initializing Connection ... \n" );
+		connection = UnitTestUtil::CreateConnection(
+			false,
+			false,
+            DB_NAME_NO_META_SUFFIX
+		);
+
+        if ( CanApplyWithoutMetaSchema() ) 
+            ApplyNoMetaSuccess( connection, staticConn );
+        else
+            ApplyNoMetaFailure( connection, staticConn );
+
+
+        printf( "Closing Connection ... \n" );
+		UnitTestUtil::CloseConnection(
+			connection,
+			false,
+            DB_NAME_SUFFIX
+		);
+
+        delete staticConn;
+        staticConn = NULL;
+
+	}
+	catch ( FdoException* e ) 
+	{
+		try {
+            if ( staticConn ) delete staticConn;
+			if (connection) connection->Close(); 
+		}
+		catch ( ... ) 
+		{
+		}
+		UnitTestUtil::FailOnException( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+        if ( staticConn ) delete staticConn;
+		if (connection) connection->Close(); 
+		throw;
+	}
+   	catch (...)
+   	{
+        if ( staticConn ) delete staticConn;
+		if (connection) connection->Close(); 
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+		
+	printf( "Done\n" );
+}
+
+void FdoApplySchemaTest::ApplyNoMetaSuccess( FdoIConnection* connection, StaticConnection* staticConn )
+{
+    FdoPtr<FdoIGetSpatialContexts> gscCmd = (FdoIGetSpatialContexts*) connection->CreateCommand( FdoCommandType_GetSpatialContexts );
+    gscCmd->SetActiveOnly(false);
+
+    FdoPtr<FdoISpatialContextReader> reader = gscCmd->Execute();
+
+    if  ( !reader->ReadNext() ) {
+        UnitTestUtil::CreateSpatialContext( connection, L"Default", L"", -1000, -1000, 1000, 1000 );
+    }
+
+    printf( "Creating Non-Default Schema ... \n" );
+    bool succeeded = false;
+    try {
+        CreateAcadSchema(connection, true, true);
+        succeeded = true;
+    }
+	catch ( FdoSchemaException* e )
+	{
+		UnitTestUtil::PrintException(
+            e, 
+            UnitTestUtil::GetOutputFileName( SchemaNoMetaErrFile(2,false) ), 
+            true 
+        );
+		FDO_SAFE_RELEASE(e);
+	}
+
+	if ( succeeded ) 
+		CPPUNIT_FAIL( "Creating non-default schema was supposed to fail" );
+
+    printf( "Creating Acad Schema ... \n" );
+    CreateAcadSchema(connection, false);
+
+    printf( "Creating Electric Schema ... \n" );
+    CreateElectricSchema(connection, false);
+
+    printf( "Modifying Electric Schema ... \n" );
+	ModElectricSchema( connection, false );
+
+    printf( "Creating Land Schema ... \n" );
+    CreateLandSchema( connection, false );
+
+    printf( "Applying mixed updates and deletes ... \n" );
+    ModDelSchemas( connection, false );
+
+    printf( "Re-Adding some elements ... \n" );
+    ReAddElements(connection, false);
+
+    printf( "Modifying Land Schema ... \n" );
+    ModLandSchema(connection, false);
+
+    printf( "Testing non-ASCII7 element names ... \n" );
+    CreateNLSSchema( connection, staticConn, false );
+
+    printf( "Deleting Default Schema by DestroySchema ... \n" );
+    succeeded = false;
+    try {
+        DeleteDefaultSchema(connection, false);
+        succeeded = true;
+    }
+	catch ( FdoSchemaException* e )
+	{
+		UnitTestUtil::PrintException(
+            e, 
+            UnitTestUtil::GetOutputFileName( SchemaNoMetaErrFile(3,false) ), 
+            true 
+        );
+		FDO_SAFE_RELEASE(e);
+	}
+
+	if ( succeeded ) 
+		CPPUNIT_FAIL( "Deleting default schema was supposed to fail" );
+
+    printf( "Deleting Default Schema by ApplySchema ... \n" );
+    succeeded = false;
+    try {
+        DeleteDefaultSchema(connection, true);
+        succeeded = true;
+    }
+	catch ( FdoSchemaException* e )
+	{
+		UnitTestUtil::PrintException(
+            e, 
+            UnitTestUtil::GetOutputFileName( SchemaNoMetaErrFile(4,false) ), 
+            true 
+        );
+		FDO_SAFE_RELEASE(e);
+	}
+
+	if ( succeeded ) 
+		CPPUNIT_FAIL( "Deleting default schema was supposed to fail" );
+
+    printf( "Creating Long String Schema ... \n" );
+    succeeded = false;
+    try {
+        CreateLongStringSchema(connection, false);
+        succeeded = true;
+    }
+	catch ( FdoSchemaException* e )
+	{
+		UnitTestUtil::PrintException(
+            e, 
+            UnitTestUtil::GetOutputFileName( SchemaNoMetaErrFile(5,false) ), 
+            true 
+        );
+		FDO_SAFE_RELEASE(e);
+	}
+
+	if ( succeeded ) 
+		CPPUNIT_FAIL( "Creating long string schema was supposed to fail" );
+
+    printf( "Creating  Schema with Overrides ... \n" );
+    succeeded = false;
+    try {
+		CreateOverrideSchema( 
+            connection, 
+            FdoRdbmsOvSchemaMappingP(CreateOverrides(connection, 1)),
+            false,
+            true,
+            false
+        );
+
+        succeeded = true;
+    }
+	catch ( FdoSchemaException* e )
+	{
+		UnitTestUtil::PrintException(
+            e, 
+            UnitTestUtil::GetOutputFileName( SchemaNoMetaErrFile(6,false) ), 
+            true 
+        );
+		FDO_SAFE_RELEASE(e);
+	}
+
+	if ( succeeded ) 
+		CPPUNIT_FAIL( "Creating long string schema was supposed to fail" );
+
+    FdoIoMemoryStreamP stream = FdoIoMemoryStream::Create();
+    GetDefaultSchema(connection)->WriteXml(stream);
+    stream->Reset();
+
+    FdoStringP resultsFile = UnitTestUtil::GetOutputFileName( L"apply_no_meta_test1.xml" );
+
+    UnitTestUtil::Config2SortedFile(stream, resultsFile );
+    UnitTestUtil::CheckOutput( "apply_no_meta_test1_master.xml",(const char*) resultsFile );
+
+#ifdef _WIN32
+	UnitTestUtil::CheckOutput( 
+        SchemaNoMetaErrFile(2,true),
+        UnitTestUtil::GetOutputFileName( SchemaNoMetaErrFile(2,false) )
+    );
+	UnitTestUtil::CheckOutput( 
+        SchemaNoMetaErrFile(3,true),
+        UnitTestUtil::GetOutputFileName( SchemaNoMetaErrFile(3,false) )
+    );
+	UnitTestUtil::CheckOutput( 
+        SchemaNoMetaErrFile(3,true),
+        UnitTestUtil::GetOutputFileName( SchemaNoMetaErrFile(4,false) )
+    );
+	UnitTestUtil::CheckOutput( 
+        SchemaNoMetaErrFile(5,true),
+        UnitTestUtil::GetOutputFileName( SchemaNoMetaErrFile(5,false) )
+    );
+	UnitTestUtil::CheckOutput( 
+        SchemaNoMetaErrFile(6,true),
+        UnitTestUtil::GetOutputFileName( SchemaNoMetaErrFile(6,false) )
+    );
+#endif
+
+}
+
+void FdoApplySchemaTest::ApplyNoMetaFailure( FdoIConnection* connection, StaticConnection* staticConn )
+{
+    bool succeeded = false;
+
+    try {
+        CreateAcadSchema(connection);
+        succeeded = true;
+    }
+	catch ( FdoSchemaException* e )
+	{
+        FdoStringP msg = FdoStringP(e->GetExceptionMessage()).Lower();
+
+        FdoPtr<FdoException> e2 = FdoException::Create(msg, FdoPtr<FdoException>(e->GetCause()));
+
+		UnitTestUtil::PrintException(
+            e2, 
+            UnitTestUtil::GetOutputFileName( SchemaNoMetaErrFile(1,false) ), 
+            true 
+        );
+		FDO_SAFE_RELEASE(e);
+	}
+
+	if ( succeeded ) 
+		CPPUNIT_FAIL( "ApplySchema to non-FDO datastore was supposed to fail" );
+
+#ifdef _WIN32
+	UnitTestUtil::CheckOutput( 
+        SchemaNoMetaErrFile(1,true),
+        UnitTestUtil::GetOutputFileName( SchemaNoMetaErrFile(1,false) )
+    );
+#endif
+
+}
+
 void FdoApplySchemaTest::ModMetaClassSchema( FdoIConnection* connection )
 {
 
@@ -1815,6 +2073,30 @@ void FdoApplySchemaTest::DeleteLandSchema( FdoIConnection* connection )
 	pCmd->Execute();
 }
 
+void FdoApplySchemaTest::DeleteDefaultSchema( FdoIConnection* connection, bool update )
+{
+    FdoFeatureSchemaP schema = GetDefaultSchema( connection );
+
+#if 0
+    DeleteObjects( connection, L"Land", L"1-8 School" );
+    DeleteObjects( connection, L"Land", L"Driveway" );
+#endif
+
+    if ( update ) {
+	    FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
+        schema->Delete();
+        pCmd->SetFeatureSchema( schema );
+        pCmd->Execute();
+    }
+    else {
+	    FdoPtr<FdoIDestroySchema>  pCmd = (FdoIDestroySchema*) connection->CreateCommand(FdoCommandType_DestroySchema);
+
+	    pCmd->SetSchemaName( schema->GetName() );
+	    pCmd->Execute();
+    }
+}
+
+
 void FdoApplySchemaTest::CreateSystemSchema( FdoIConnection* connection )
 {
 	FdoStringP datastoreName;
@@ -1849,14 +2131,16 @@ void FdoApplySchemaTest::CreateSystemSchema( FdoIConnection* connection )
 		CPPUNIT_FAIL( "System schema create was supposed to fail" );
 }
 
-void FdoApplySchemaTest::CreateAcadSchema( FdoIConnection* connection )
+void FdoApplySchemaTest::CreateAcadSchema( FdoIConnection* connection, bool hasMetaSchema, bool addSAD )
 {
 	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
 
-	FdoFeatureSchemasP pSchemas = FdoFeatureSchemaCollection::Create(NULL);
-
-	FdoPtr<FdoFeatureSchema> pSchema = FdoFeatureSchema::Create( L"Acad", L"AutoCAD schema" );
-	pSchemas->Add( pSchema );
+	FdoPtr<FdoFeatureSchema> pSchema;
+    
+    if ( hasMetaSchema ) 
+        pSchema = FdoFeatureSchema::Create( L"Acad", L"AutoCAD schema" );
+    else
+        pSchema = GetDefaultSchema( connection );
 
 	// Id'less class for Object Properties only
 
@@ -1874,7 +2158,8 @@ void FdoApplySchemaTest::CreateAcadSchema( FdoIConnection* connection )
 	pProp->SetNullable(false);
 	FdoPropertiesP(pXData->GetProperties())->Add( pProp );
 
-	FdoClassesP(pSchema->GetClasses())->Add( pXData );
+    if ( hasMetaSchema ) 
+    	FdoClassesP(pSchema->GetClasses())->Add( pXData );
 
 	// More Id'less classes used to test unique table name generation
 
@@ -1891,7 +2176,8 @@ void FdoApplySchemaTest::CreateAcadSchema( FdoIConnection* connection )
 	pProp->SetNullable(false);
 	FdoPropertiesP(pCoordVal->GetProperties())->Add( pProp  );
 
-	FdoClassesP(pSchema->GetClasses())->Add( pCoordVal );
+    if ( hasMetaSchema ) 
+    	FdoClassesP(pSchema->GetClasses())->Add( pCoordVal );
 
 	FdoPtr<FdoClass> pVertex = FdoClass::Create( L"AcDbVertexData", L"" );
 	pVertex->SetIsAbstract(false);
@@ -1907,7 +2193,8 @@ void FdoApplySchemaTest::CreateAcadSchema( FdoIConnection* connection )
 	pObjProp->SetObjectType( FdoObjectType_Collection );
 	FdoPropertiesP(pVertex->GetProperties())->Add( pObjProp );
 
-	FdoClassesP(pSchema->GetClasses())->Add( pVertex );
+    if ( hasMetaSchema ) 
+    	FdoClassesP(pSchema->GetClasses())->Add( pVertex );
 
 	// A non-abstract base class
 
@@ -1915,6 +2202,9 @@ void FdoApplySchemaTest::CreateAcadSchema( FdoIConnection* connection )
 	pEntClass->SetIsAbstract(false);
     // Test unsetting geometry for class with no geometric properties - should have no effect.
     pEntClass->SetGeometryProperty(NULL);
+
+    if ( addSAD ) 
+       	FdoSADP(pEntClass->GetAttributes())->Add( L"classbadsad", L"error" );
 
 	pProp = FdoDataPropertyDefinition::Create( L"FeatId", L"id" );
 	pProp->SetDataType( FdoDataType_Int64 );
@@ -1928,20 +2218,24 @@ void FdoApplySchemaTest::CreateAcadSchema( FdoIConnection* connection )
 	pProp->SetLength(10);
 	pProp->SetNullable(true);
 	FdoPropertiesP(pEntClass->GetProperties())->Add( pProp );
+    if ( addSAD ) 
+       	FdoSADP(pProp->GetAttributes())->Add( L"propbadsad", L"error" );
 
 	pProp = FdoDataPropertyDefinition::Create( L"ColourIndex", L"Acad Colour" );
 	pProp->SetDataType( FdoDataType_Byte );
 	pProp->SetNullable(true);
 	FdoPropertiesP(pEntClass->GetProperties())->Add( pProp );
 
-	pObjProp = FdoObjectPropertyDefinition::Create( L"xdata", L"xdata" );
-	pObjProp->SetClass( pXData );
-	pObjProp->SetIdentityProperty( pXDataSeq );
-	pObjProp->SetObjectType( FdoObjectType_OrderedCollection );
-	pObjProp->SetOrderType( FdoOrderType_Ascending );
-	FdoPropertiesP(pEntClass->GetProperties())->Add( pObjProp );
+    if ( hasMetaSchema ) {
+	    pObjProp = FdoObjectPropertyDefinition::Create( L"xdata", L"xdata" );
+	    pObjProp->SetClass( pXData );
+	    pObjProp->SetIdentityProperty( pXDataSeq );
+	    pObjProp->SetObjectType( FdoObjectType_OrderedCollection );
+	    pObjProp->SetOrderType( FdoOrderType_Ascending );
+	    FdoPropertiesP(pEntClass->GetProperties())->Add( pObjProp );
+    }
 
-	FdoClassesP(pSchema->GetClasses())->Add( pEntClass );
+    FdoClassesP(pSchema->GetClasses())->Add( pEntClass );
 
 	FdoPtr<FdoClass> pEntRefClass = FdoClass::Create( L"Entity", L"Embedded entity base class" );
 	pEntRefClass->SetIsAbstract(false);
@@ -1963,12 +2257,14 @@ void FdoApplySchemaTest::CreateAcadSchema( FdoIConnection* connection )
 	pProp->SetNullable(true);
 	FdoPropertiesP(pEntRefClass->GetProperties())->Add( pProp );
 
-	pObjProp = FdoObjectPropertyDefinition::Create( L"xdata", L"xdata" );
-	pObjProp->SetClass( pXData );
-	pObjProp->SetIdentityProperty( pXDataSeq );
-	pObjProp->SetObjectType( FdoObjectType_OrderedCollection );
-	pObjProp->SetOrderType( FdoOrderType_Ascending );
-	FdoPropertiesP(pEntRefClass->GetProperties())->Add( pObjProp );
+    if ( hasMetaSchema ) {
+	    pObjProp = FdoObjectPropertyDefinition::Create( L"xdata", L"xdata" );
+	    pObjProp->SetClass( pXData );
+	    pObjProp->SetIdentityProperty( pXDataSeq );
+	    pObjProp->SetObjectType( FdoObjectType_OrderedCollection );
+	    pObjProp->SetOrderType( FdoOrderType_Ascending );
+	    FdoPropertiesP(pEntRefClass->GetProperties())->Add( pObjProp );
+    }
 
     FdoClassesP(pSchema->GetClasses())->Add( pEntRefClass );
 
@@ -1989,16 +2285,18 @@ void FdoApplySchemaTest::CreateAcadSchema( FdoIConnection* connection )
 	pCmd->SetFeatureSchema( pSchema );
 	pCmd->Execute();
 
-	pProp = FdoDataPropertyDefinition::Create( L"Closed", L"is first and last points the same" );
+    pProp = FdoDataPropertyDefinition::Create( L"Closed", L"is first and last points the same" );
 	pProp->SetDataType( FdoDataType_Boolean );
-	pProp->SetNullable(!mCanAddNotNullCol);
+	pProp->SetNullable(!CanAddNotNullCol());
 	FdoPropertiesP(pPlineClass->GetProperties())->Add( pProp );
 
-	pObjProp = FdoObjectPropertyDefinition::Create( L"vertices", L"" );
-	pObjProp->SetClass( pVertex );
-	pObjProp->SetIdentityProperty( pVertexSeq );
-	pObjProp->SetObjectType( FdoObjectType_Collection );
-	FdoPropertiesP(pPlineClass->GetProperties())->Add( pObjProp );
+    if ( hasMetaSchema ) {
+	    pObjProp = FdoObjectPropertyDefinition::Create( L"vertices", L"" );
+	    pObjProp->SetClass( pVertex );
+	    pObjProp->SetIdentityProperty( pVertexSeq );
+	    pObjProp->SetObjectType( FdoObjectType_Collection );
+	    FdoPropertiesP(pPlineClass->GetProperties())->Add( pObjProp );
+    }
 
 	FdoPtr<FdoClass> pPlineRefClass = FdoClass::Create( L"Polyline", L"Embedded 3d polyline" );
 	pPlineRefClass->SetIsAbstract(false);
@@ -2017,11 +2315,13 @@ void FdoApplySchemaTest::CreateAcadSchema( FdoIConnection* connection )
 	pProp->SetNullable(false);
 	FdoPropertiesP(pPlineRefClass->GetProperties())->Add( pProp );
 
-	pObjProp = FdoObjectPropertyDefinition::Create( L"vertices", L"" );
-	pObjProp->SetClass( pVertex );
-	pObjProp->SetIdentityProperty( pVertexSeq );
-	pObjProp->SetObjectType( FdoObjectType_Collection );
-	FdoPropertiesP(pPlineRefClass->GetProperties())->Add( pObjProp );
+    if ( hasMetaSchema ) {
+	    pObjProp = FdoObjectPropertyDefinition::Create( L"vertices", L"" );
+	    pObjProp->SetClass( pVertex );
+	    pObjProp->SetIdentityProperty( pVertexSeq );
+	    pObjProp->SetObjectType( FdoObjectType_Collection );
+	    FdoPropertiesP(pPlineRefClass->GetProperties())->Add( pObjProp );
+    }
 
 	// The following tests object property nesting to 3 levels.
 
@@ -2029,10 +2329,12 @@ void FdoApplySchemaTest::CreateAcadSchema( FdoIConnection* connection )
 	pHatchClass->SetIsAbstract(false);
 	pHatchClass->SetBaseClass( pEntClass );
 
-	pObjProp = FdoObjectPropertyDefinition::Create( L"edges", L"" );
-	pObjProp->SetClass( pPlineRefClass );
-	pObjProp->SetObjectType( FdoObjectType_Collection );
-	FdoPropertiesP(pHatchClass->GetProperties())->Add( pObjProp );
+    if ( hasMetaSchema ) {
+	    pObjProp = FdoObjectPropertyDefinition::Create( L"edges", L"" );
+	    pObjProp->SetClass( pPlineRefClass );
+	    pObjProp->SetObjectType( FdoObjectType_Collection );
+	    FdoPropertiesP(pHatchClass->GetProperties())->Add( pObjProp );
+    }
 
 	FdoClassesP(pSchema->GetClasses())->Add( pHatchClass );
 
@@ -2041,28 +2343,35 @@ void FdoApplySchemaTest::CreateAcadSchema( FdoIConnection* connection )
 
   	// Insert a row with null colour. Subsequent removal of colour property should succeed.
 
-    InsertObject( connection, false, L"Acad", L"AcDbEntity", L"Layer", L"default", NULL );
-    InsertObject( connection, false, L"Acad", L"Entity", L"FeatId", L"1", L"Layer", L"default", NULL );
+    InsertObject( connection, false, pSchema->GetName(), L"AcDbEntity", L"Layer", L"default", NULL );
+    InsertObject( connection, false, pSchema->GetName(), L"Entity", L"FeatId", L"1", L"Layer", L"default", NULL );
 }
 
-void FdoApplySchemaTest::CreateElectricSchema( FdoIConnection* connection )
+void FdoApplySchemaTest::CreateElectricSchema( FdoIConnection* connection, bool hasMetaSchema )
 {
-	FdoPtr<FdoIDescribeSchema> pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
+    FdoPtr<FdoFeatureSchemaCollection> pAcadSchema;
+    FdoPtr<FdoFeatureSchema> pSchema;
+    FdoPtr<FdoClassDefinition> pEntClass;
 
-	pDescCmd->SetSchemaName( L"Acad" );
-    
-	FdoPtr<FdoFeatureSchemaCollection> pAcadSchema = pDescCmd->Execute();
+    if ( hasMetaSchema ) {
+	    FdoPtr<FdoIDescribeSchema> pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
 
-	FdoPtr<FdoClassDefinition> pEntClass = FdoClassesP(FdoFeatureSchemaP(pAcadSchema->GetItem( L"Acad" ))->GetClasses())->GetItem( L"Entity" );
+	    pDescCmd->SetSchemaName( L"Acad" );
+        
+	    pAcadSchema = pDescCmd->Execute();
+
+	    pEntClass = FdoClassesP(FdoFeatureSchemaP(pAcadSchema->GetItem( L"Acad" ))->GetClasses())->GetItem( L"Entity" );
+
+    	/* A schema with dictionary */
+        pSchema = FdoFeatureSchema::Create( L"Electric'l", L"Electrical '' schema'" );
+    	FdoSADP(pSchema->GetAttributes())->Add( L"'Author", L"Thomas O'Edison" );
+    }
+    else {
+        pSchema = GetDefaultSchema( connection );
+	    pEntClass = FdoClassesP(pSchema->GetClasses())->GetItem( L"Entity" );
+    }
 
 	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
-
-	/* A schema with dictionary */
-
-	FdoPtr<FdoFeatureSchema> pSchema = FdoFeatureSchema::Create( L"Electric'l", L"Electrical '' schema'" );
-	pAcadSchema->Add( pSchema );
-
-	FdoSADP(pSchema->GetAttributes())->Add( L"'Author", L"Thomas O'Edison" );
 
 	/* An abstract base class */
 
@@ -2076,12 +2385,14 @@ void FdoApplySchemaTest::CreateElectricSchema( FdoIConnection* connection )
 	FdoPropertiesP(pDevClass->GetProperties())->Add( pProp );
 	FdoDataPropertiesP(pDevClass->GetIdentityProperties())->Add( pProp );
 
-	// Test nested object properties (ElectricDevice.graphic.xdata) where graphic's class has an id.
+    if ( hasMetaSchema ) {
+	    // Test nested object properties (ElectricDevice.graphic.xdata) where graphic's class has an id.
 
-	FdoPtr<FdoObjectPropertyDefinition> pObjProp = FdoObjectPropertyDefinition::Create( L"graphic", L"Acad entity" );
-	pObjProp->SetObjectType( FdoObjectType_Value );
-	pObjProp->SetClass( pEntClass );
-	FdoPropertiesP(pDevClass->GetProperties())->Add( pObjProp );
+	    FdoPtr<FdoObjectPropertyDefinition> pObjProp = FdoObjectPropertyDefinition::Create( L"graphic", L"Acad entity" );
+	    pObjProp->SetObjectType( FdoObjectType_Value );
+	    pObjProp->SetClass( pEntClass );
+	    FdoPropertiesP(pDevClass->GetProperties())->Add( pObjProp );
+    }
 
 	// Test geometry property
 
@@ -2103,13 +2414,16 @@ void FdoApplySchemaTest::CreateElectricSchema( FdoIConnection* connection )
 	pClass->SetIsAbstract(false);
 	pClass->SetBaseClass( pDevClass );
 
- 	FdoSADP(pClass->GetAttributes())->Add( L"Rules' DLL", L"transformer.dll" );
-	FdoSADP(pClass->GetAttributes())->Add( L"Entrypoint", L"start_transformer" );
+    if ( hasMetaSchema ) {
+     	FdoSADP(pClass->GetAttributes())->Add( L"Rules' DLL", L"transformer.dll" );
+	    FdoSADP(pClass->GetAttributes())->Add( L"Entrypoint", L"start_transformer" );
+    }
 
 	// Add data properties of various types
 
 	pProp = FdoDataPropertyDefinition::Create( L"Voltage", L"voltage" );
-	FdoSADP(pProp->GetAttributes())->Add( L"Calculable", L"yes" );
+    if ( hasMetaSchema ) 
+    	FdoSADP(pProp->GetAttributes())->Add( L"Calculable", L"yes" );
 	pProp->SetDataType( FdoDataType_Decimal );
 	pProp->SetPrecision(10);
 
@@ -2164,13 +2478,17 @@ void FdoApplySchemaTest::CreateElectricSchema( FdoIConnection* connection )
 	pCmd->Execute();
 }
 
-void FdoApplySchemaTest::CreateLongStringSchema( FdoIConnection* connection )
+void FdoApplySchemaTest::CreateLongStringSchema( FdoIConnection* connection, bool hasMetaSchema )
 {
 	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
 
     /* Test various long schema, class and property names. */
 
-	FdoPtr<FdoFeatureSchema> pSchema = FdoFeatureSchema::Create( L"abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789", L"abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789" );
+	FdoPtr<FdoFeatureSchema> pSchema;
+    if ( hasMetaSchema ) 
+        pSchema = FdoFeatureSchema::Create( L"abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789", L"abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789" );
+    else
+        pSchema = GetDefaultSchema( connection );
 
     /* Create some id'less object property classes. */
 
@@ -2185,21 +2503,26 @@ void FdoApplySchemaTest::CreateLongStringSchema( FdoIConnection* connection )
 
 	FdoClassesP(pSchema->GetClasses())->Add( pNestedObjClass );
 
-	FdoPtr<FdoClass> pObjClass = FdoClass::Create( L"obcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789", L"abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789" );
-	pObjClass->SetIsAbstract(false);
+    FdoPtr<FdoObjectPropertyDefinition> pObjProp;
+    FdoPtr<FdoClass> pObjClass;
 
-	pProp = FdoDataPropertyDefinition::Create( L"abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789", L"abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789" );
-	pProp->SetDataType( FdoDataType_String );
-	pProp->SetNullable(false);
-	pProp->SetLength(50);
-	FdoPropertiesP(pObjClass->GetProperties())->Add( pProp );
+    if ( hasMetaSchema ) {
+	    pObjClass = FdoClass::Create( L"obcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789", L"abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789" );
+	    pObjClass->SetIsAbstract(false);
 
-    FdoPtr<FdoObjectPropertyDefinition> pObjProp = FdoObjectPropertyDefinition::Create( L"cbcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789", L"abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789" );
-    pObjProp->SetObjectType( FdoObjectType_Value );
-    pObjProp->SetClass( pNestedObjClass );
-	FdoPropertiesP(pObjClass->GetProperties())->Add( pObjProp );
+	    pProp = FdoDataPropertyDefinition::Create( L"abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789", L"abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789" );
+	    pProp->SetDataType( FdoDataType_String );
+	    pProp->SetNullable(false);
+	    pProp->SetLength(50);
+	    FdoPropertiesP(pObjClass->GetProperties())->Add( pProp );
 
-	FdoClassesP(pSchema->GetClasses())->Add( pObjClass );
+        pObjProp = FdoObjectPropertyDefinition::Create( L"cbcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789", L"abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789" );
+        pObjProp->SetObjectType( FdoObjectType_Value );
+        pObjProp->SetClass( pNestedObjClass );
+	    FdoPropertiesP(pObjClass->GetProperties())->Add( pObjProp );
+
+	    FdoClassesP(pSchema->GetClasses())->Add( pObjClass );
+    }
 
 	FdoPtr<FdoFeatureClass> pBaseClass = FdoFeatureClass::Create( L"abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789", L"abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789" );
 	pBaseClass->SetIsAbstract(false);
@@ -2209,32 +2532,36 @@ void FdoApplySchemaTest::CreateLongStringSchema( FdoIConnection* connection )
 	pProp->SetNullable(false);
 	pProp->SetLength(50);
 
-    // Create a SAD entry with long name and value
-    FdoSADP(pProp->GetAttributes())->Add( L"abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789", 
-        L"1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
-        L"12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012the-end" 
-    );
+    if ( hasMetaSchema ) {
+        // Create a SAD entry with long name and value
+        FdoSADP(pProp->GetAttributes())->Add( L"abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789", 
+            L"1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
+            L"12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012the-end" 
+        );
+    }
 
 	FdoPropertiesP(pBaseClass->GetProperties())->Add( pProp );
 	FdoDataPropertiesP(pBaseClass->GetIdentityProperties())->Add( pProp );
 
-    pObjProp = FdoObjectPropertyDefinition::Create( L"cbcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789", L"abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789" );
-    pObjProp->SetObjectType( FdoObjectType_Value );
-    pObjProp->SetClass( pObjClass );
-	FdoPropertiesP(pBaseClass->GetProperties())->Add( pObjProp );
+    if ( hasMetaSchema ) {
+        pObjProp = FdoObjectPropertyDefinition::Create( L"cbcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789", L"abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789" );
+        pObjProp->SetObjectType( FdoObjectType_Value );
+        pObjProp->SetClass( pObjClass );
+	    FdoPropertiesP(pBaseClass->GetProperties())->Add( pObjProp );
 
-    // For object properties, f_attributedefinition.columnname is set to 'n/a'. Make sure property 'n/a' doesn't conflict
+        // For object properties, f_attributedefinition.columnname is set to 'n/a'. Make sure property 'n/a' doesn't conflict
 
-	pProp = FdoDataPropertyDefinition::Create( L"n/a", L"" );
-	pProp->SetDataType( FdoDataType_String );
-	pProp->SetNullable(false);
-	pProp->SetLength(50);
-	FdoPropertiesP(pBaseClass->GetProperties())->Add( pProp );
-	
-    pObjProp = FdoObjectPropertyDefinition::Create( L"cbcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456788", L"abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789" );
-    pObjProp->SetObjectType( FdoObjectType_Value );
-    pObjProp->SetClass( pObjClass );
-	FdoPropertiesP(pBaseClass->GetProperties())->Add( pObjProp );
+	    pProp = FdoDataPropertyDefinition::Create( L"n/a", L"" );
+	    pProp->SetDataType( FdoDataType_String );
+	    pProp->SetNullable(false);
+	    pProp->SetLength(50);
+	    FdoPropertiesP(pBaseClass->GetProperties())->Add( pProp );
+    	
+        pObjProp = FdoObjectPropertyDefinition::Create( L"cbcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456788", L"abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789" );
+        pObjProp->SetObjectType( FdoObjectType_Value );
+        pObjProp->SetClass( pObjClass );
+	    FdoPropertiesP(pBaseClass->GetProperties())->Add( pObjProp );
+    }
 
     FdoPtr<FdoGeometricPropertyDefinition> pGeomProp = FdoGeometricPropertyDefinition::Create( L"gbcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789", L"abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789" );
     pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve );
@@ -2256,46 +2583,65 @@ void FdoApplySchemaTest::CreateLongStringSchema( FdoIConnection* connection )
 	pCmd->Execute();
 }
 
-void FdoApplySchemaTest::CreateLandSchema( FdoIConnection* connection )
+void FdoApplySchemaTest::CreateLandSchema( FdoIConnection* connection, bool hasMetaSchema )
 {
 	FdoPtr<FdoIDescribeSchema> pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
 
-	pDescCmd->SetSchemaName( L"Acad" );
+    if ( hasMetaSchema ) 
+    	pDescCmd->SetSchemaName( L"Acad" );
 
 	FdoPtr<FdoFeatureSchemaCollection> pSchemas = pDescCmd->Execute();
 
-    CreateLandSchema( pSchemas );
+    CreateLandSchema( pSchemas, hasMetaSchema );
 
 	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
 
-	FdoPtr<FdoFeatureSchema> pSchema = pSchemas->GetItem(L"Land");
+	FdoPtr<FdoFeatureSchema> pSchema;
+    if ( hasMetaSchema ) 
+        pSchema = pSchemas->GetItem(L"Land");
+    else
+        pSchema = pSchemas->GetItem(0);
 
     pCmd->SetFeatureSchema( pSchema );
 	pCmd->Execute();
 
-	// Test GetFeatureSchema
-    CPPUNIT_ASSERT(wcscmp(FdoFeatureSchemaP(pCmd->GetFeatureSchema())->GetName(), L"Land") == 0);
+    // Test GetFeatureSchema
+    if ( hasMetaSchema ) 
+        CPPUNIT_ASSERT(wcscmp(FdoFeatureSchemaP(pCmd->GetFeatureSchema())->GetName(), L"Land") == 0);
 
-    InsertObject(connection, false, L"Land", L"1-8 School", L"# Rooms", L"20", NULL );
-    InsertObject(connection, false, L"Land", L"Driveway", L"Pav'd", L"1", NULL );
+    InsertObject(connection, false, pSchema->GetName(), L"1-8 School", L"# Rooms", L"20", NULL );
+    InsertObject(connection, false, pSchema->GetName(), L"Driveway", L"Pav'd", L"1", NULL );
+
+    if ( hasMetaSchema ) {
 #ifdef RDBI_DEF_SSQL
-    UnitTestUtil::Sql2Db( L"insert into \"parcel_person\" ( \"first name\", \"last name\", \"parcel_province\", \"parcel_pin\" ) values ( 'Fraser', 'Simon', 'Ontario', '1234-5678' )", connection );
+        UnitTestUtil::Sql2Db( L"insert into \"parcel_person\" ( \"first name\", \"last name\", \"parcel_province\", \"parcel_pin\" ) values ( 'Fraser', 'Simon', 'Ontario', '1234-5678' )", connection );
 #else
-    UnitTestUtil::Sql2Db( L"insert into parcel_person ( first_name, last_name, parcel_province, parcel_pin ) values ( 'Fraser', 'Simon', 'Ontario', '1234-5678' )", connection );
+        UnitTestUtil::Sql2Db( L"insert into parcel_person ( first_name, last_name, parcel_province, parcel_pin ) values ( 'Fraser', 'Simon', 'Ontario', '1234-5678' )", connection );
 #endif
+    }
 }
 
-void FdoApplySchemaTest::CreateLandSchema( FdoFeatureSchemaCollection* pSchemas )
+void FdoApplySchemaTest::CreateLandSchema( FdoFeatureSchemaCollection* pSchemas, bool hasMetaSchema )
 {
-	FdoPtr<FdoFeatureSchema> pAcadSchema = pSchemas->GetItem(L"Acad");
-	FdoPtr<FdoClassDefinition> pEntityClass = FdoClassesP(pAcadSchema->GetClasses())->GetItem(L"AcDbEntity");
+	FdoPtr<FdoFeatureSchema> pAcadSchema;
+    FdoPtr<FdoFeatureSchema> pSchema;
+    
+    if ( hasMetaSchema ) {
+	    pAcadSchema = pSchemas->GetItem(L"Acad");
 
-    /* Create a schema to test successful schema deletion */
+        /* Create a schema to test successful schema deletion */
 
-	FdoPtr<FdoFeatureSchema> pSchema = FdoFeatureSchema::Create( L"Land", L"Property schema" );
-	pSchemas->Add( pSchema );
+	    pSchema = FdoFeatureSchema::Create( L"Land", L"Property schema" );
+	    pSchemas->Add( pSchema );
+    }
+    else {
+	    pAcadSchema = pSchemas->GetItem(0);
+	    pSchema = pAcadSchema;
+    }
 
-	FdoPtr<FdoClass> pPersonClass = FdoClass::Create( L"Person", L"" );
+    FdoPtr<FdoClassDefinition> pEntityClass = FdoClassesP(pAcadSchema->GetClasses())->GetItem(L"AcDbEntity");
+
+    FdoPtr<FdoClass> pPersonClass = FdoClass::Create( L"Person", L"" );
 	pPersonClass->SetIsAbstract(false);
 
 	FdoPtr<FdoDataPropertyDefinition> pProp = FdoDataPropertyDefinition::Create( L"First Name", L"" );
@@ -2374,10 +2720,13 @@ void FdoApplySchemaTest::CreateLandSchema( FdoFeatureSchemaCollection* pSchemas 
 	pProp->SetScale( 0 );
 	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
 
-	FdoPtr<FdoObjectPropertyDefinition> pObjProp = FdoObjectPropertyDefinition::Create( L"owner", L"" );
-	pObjProp->SetObjectType( FdoObjectType_Value );
-	pObjProp->SetClass( pPersonClass );
-	FdoPropertiesP(pClass->GetProperties())->Add( pObjProp );
+	FdoPtr<FdoObjectPropertyDefinition> pObjProp;
+    if ( hasMetaSchema ) {
+	    pObjProp = FdoObjectPropertyDefinition::Create( L"owner", L"" );
+	    pObjProp->SetObjectType( FdoObjectType_Value );
+	    pObjProp->SetClass( pPersonClass );
+	    FdoPropertiesP(pClass->GetProperties())->Add( pObjProp );
+    }
 
     // Test adding geometric property that is not the geometry property.
 	pGeomProp = FdoGeometricPropertyDefinition::Create( L"Grading", L"secondary geometry" );
@@ -2388,13 +2737,15 @@ void FdoApplySchemaTest::CreateLandSchema( FdoFeatureSchemaCollection* pSchemas 
 
 	FdoClassesP(pSchema->GetClasses())->Add( pClass );
 
-	/* Create class with base class in different schema */
-
-	pClass = FdoFeatureClass::Create( L"Cogo Point", L"'Surveyor's point" );
-	pClass->SetIsAbstract(false);
-	pClass->SetBaseClass( pEntityClass );
-
-	FdoClassesP(pSchema->GetClasses())->Add( pClass );
+    if ( hasMetaSchema ) {
+    	/* Create class with base class in different schema */
+	    
+        pClass = FdoFeatureClass::Create( L"Cogo Point", L"'Surveyor's point" );
+	    pClass->SetIsAbstract(false);
+	    pClass->SetBaseClass( pEntityClass );
+    
+	    FdoClassesP(pSchema->GetClasses())->Add( pClass );
+    }
 
     FdoPtr<FdoFeatureClass> pBldgClass = FdoFeatureClass::Create( L"Build'g", L"'" );
 	pBldgClass->SetIsAbstract(true);
@@ -2493,6 +2844,50 @@ void FdoApplySchemaTest::CreateLandSchema( FdoFeatureSchemaCollection* pSchemas 
 	pProp->SetDataType( FdoDataType_Int32 );
 	pProp->SetNullable(false);
 	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+
+	FdoClassesP(pSchema->GetClasses())->Add( pClass );
+
+	pClass = FdoFeatureClass::Create( L"Township", L"" );
+	pClass->SetIsAbstract(false);
+
+	pProp = FdoDataPropertyDefinition::Create( L"FeatureId", L"" );
+	pProp->SetDataType( FdoDataType_Int64 );
+	pProp->SetNullable(false);
+    pProp->SetIsAutoGenerated(true);
+	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+	FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
+
+	pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"location's" );
+	pGeomProp->SetGeometryTypes( FdoGeometricType_Curve );
+ 	FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
+	pClass->SetGeometryProperty(pGeomProp);
+
+    // Test adding second geometric property.
+	pGeomProp = FdoGeometricPropertyDefinition::Create( L"LabelPoint", L"secondary geometry" );
+	pGeomProp->SetGeometryTypes( FdoGeometricType_Point  );
+	FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
+
+	FdoClassesP(pSchema->GetClasses())->Add( pClass );
+
+	pClass = FdoFeatureClass::Create( L"County", L"" );
+	pClass->SetIsAbstract(false);
+
+	pProp = FdoDataPropertyDefinition::Create( L"FeatureId", L"" );
+	pProp->SetDataType( FdoDataType_Int64 );
+	pProp->SetNullable(false);
+    pProp->SetIsAutoGenerated(true);
+	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+	FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
+
+	pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"location's" );
+	pGeomProp->SetGeometryTypes( FdoGeometricType_Curve );
+ 	FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
+	pClass->SetGeometryProperty(pGeomProp);
+
+    // Test adding second geometric property.
+	pGeomProp = FdoGeometricPropertyDefinition::Create( L"LabelPoint", L"secondary geometry" );
+	pGeomProp->SetGeometryTypes( FdoGeometricType_Point  );
+	FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
 
 	FdoClassesP(pSchema->GetClasses())->Add( pClass );
 }
@@ -2943,17 +3338,24 @@ void FdoApplySchemaTest::CreateErrorSchema( FdoIConnection* connection )
 
 }
 
-void FdoApplySchemaTest::CreateNLSSchema( FdoIConnection* connection, StaticConnection* /*staticConn*/ )
+void FdoApplySchemaTest::CreateNLSSchema( FdoIConnection* connection, StaticConnection* /*staticConn*/, bool hasMetaSchema )
 {
-	FdoPtr<FdoFeatureSchema> pSchema = FdoFeatureSchema::Create( 
-        FdoStringP::Format(
-            L"%lc%lc%lc", 
-            UnitTestUtil::GetNlsChar(1),
-            UnitTestUtil::GetNlsChar(2),
-            UnitTestUtil::GetNlsChar(3)
-        ),
-        L"NLS Schema"
-    );
+	FdoPtr<FdoFeatureSchema> pSchema;
+
+    if ( hasMetaSchema ) {
+	    pSchema = FdoFeatureSchema::Create( 
+            FdoStringP::Format(
+                L"%lc%lc%lc", 
+                UnitTestUtil::GetNlsChar(1),
+                UnitTestUtil::GetNlsChar(2),
+                UnitTestUtil::GetNlsChar(3)
+            ),
+            L"NLS Schema"
+        );
+    }
+    else {
+        pSchema = GetDefaultSchema( connection );
+    }
 
     /* Name completely non-ASCII7 */
 	FdoPtr<FdoClass> pPersonClass = FdoClass::Create( 
@@ -3178,103 +3580,123 @@ void FdoApplySchemaTest::CreateNLSSchema( FdoIConnection* connection, StaticConn
 
     FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
     pCmd->SetFeatureSchema( pSchema );
+
 	pCmd->Execute();
 }
 
-void FdoApplySchemaTest::ModElectricSchema( FdoIConnection* connection )
+void FdoApplySchemaTest::ModElectricSchema( FdoIConnection* connection, bool hasMetaSchema )
 {
 	/* Test modifying an existing schema */
 
 	FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
-	pDescCmd->SetSchemaName( L"Electric'l" );
+    if ( hasMetaSchema ) 
+        pDescCmd->SetSchemaName( L"Electric'l" );
 	FdoFeatureSchemasP pSchemas = pDescCmd->Execute();
 
-    ModElectricSchema( pSchemas );
+    ModElectricSchema( pSchemas, hasMetaSchema );
 
 	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
 
-	FdoPtr<FdoFeatureSchema> pSchema = pSchemas->GetItem( L"Electric'l" );
+	FdoPtr<FdoFeatureSchema> pSchema;
+    
+    if ( hasMetaSchema ) 
+        pSchema = pSchemas->GetItem( L"Electric'l" );
+    else
+        pSchema = pSchemas->GetItem(0);
+
 	pCmd->SetFeatureSchema( pSchema );
-	pCmd->Execute();
+    pCmd->Execute();
 }
 
-void FdoApplySchemaTest::ModElectricSchema( FdoFeatureSchemaCollection* pSchemas )
+void FdoApplySchemaTest::ModElectricSchema( FdoFeatureSchemaCollection* pSchemas, bool hasMetaSchema )
 {
 	/* Test modifying an existing schema */
 
-	FdoPtr<FdoFeatureSchema> pSchema = pSchemas->GetItem( L"Electric'l" );
+	FdoPtr<FdoFeatureSchema> pSchema;
+    FdoPtr<FdoClass> pMaintHist;
+    FdoPtr<FdoDataPropertyDefinition> pHistId;    
+    FdoPtr<FdoDataPropertyDefinition> pProp;
+    FdoObjectPropertyP pObjProp;
+
+    if ( hasMetaSchema ) 
+        pSchema = pSchemas->GetItem( L"Electric'l" );
+    else
+        pSchema = pSchemas->GetItem(0);
 
 	// Modify schema dictionary
 
-	FdoSADP(pSchema->GetAttributes())->SetAttributeValue( L"'Author", L"Nikola Tesla" );
-	FdoSADP(pSchema->GetAttributes())->Add( L"Status", L"Draft" );
 
-	/* The following 3 classes allow testing of adding nested object properties, where both object
-	 * property classes have no id properties.
-	 */
+    if ( hasMetaSchema ) {
+	    FdoSADP(pSchema->GetAttributes())->SetAttributeValue( L"'Author", L"Nikola Tesla" );
+	    FdoSADP(pSchema->GetAttributes())->Add( L"Status", L"Draft" );
 
-	// Set up a base class for testing an inherited object property class.
-	FdoPtr<FdoClass> pWorkItem = FdoClass::Create( L"Work Item", L"Work Item" );
-	pWorkItem->SetIsAbstract(true);
+	    /* The following 3 classes allow testing of adding nested object properties, where both object
+	     * property classes have no id properties.
+	     */
 
-	FdoPtr<FdoDataPropertyDefinition> pItemId = FdoDataPropertyDefinition::Create( L"It'm #", L"sequence identifier" );
-	pItemId->SetDataType( FdoDataType_Int16 );
-	pItemId->SetNullable(false);
-	FdoPropertiesP(pWorkItem->GetProperties())->Add( pItemId );
+	    // Set up a base class for testing an inherited object property class.
+	    FdoPtr<FdoClass> pWorkItem = FdoClass::Create( L"Work Item", L"Work Item" );
+	    pWorkItem->SetIsAbstract(true);
 
-	// Add a property with same name as a system property except for capitalization.
-	// Since columns are case-insensitve, this property's column should end up being
-	// named "CLASSNAME1" so that the column doesn't get accidently matched to the 
-	// "ClassName" system property as well.
+	    FdoPtr<FdoDataPropertyDefinition> pItemId = FdoDataPropertyDefinition::Create( L"It'm #", L"sequence identifier" );
+	    pItemId->SetDataType( FdoDataType_Int16 );
+	    pItemId->SetNullable(false);
+	    FdoPropertiesP(pWorkItem->GetProperties())->Add( pItemId );
 
-	FdoPtr<FdoDataPropertyDefinition> pProp = FdoDataPropertyDefinition::Create( L"classname", L"" );
-	pProp->SetDataType( FdoDataType_String );
-	pProp->SetLength(255);
-	pProp->SetNullable(true);
-	FdoPropertiesP(pWorkItem->GetProperties())->Add( pProp  );
+	    // Add a property with same name as a system property except for capitalization.
+	    // Since columns are case-insensitve, this property's column should end up being
+	    // named "CLASSNAME1" so that the column doesn't get accidently matched to the 
+	    // "ClassName" system property as well.
 
-	FdoClassesP(pSchema->GetClasses())->Add( pWorkItem );
+	    pProp = FdoDataPropertyDefinition::Create( L"classname", L"" );
+	    pProp->SetDataType( FdoDataType_String );
+	    pProp->SetLength(255);
+	    pProp->SetNullable(true);
+	    FdoPropertiesP(pWorkItem->GetProperties())->Add( pProp  );
 
-	// Set up an inherited object property class.
-	FdoPtr<FdoClass> pMaintHistItem = FdoClass::Create( L"Maint History Item", L"Maintenance History Item" );
-	pMaintHistItem->SetIsAbstract(false);
-	pMaintHistItem->SetBaseClass(pWorkItem);
+	    FdoClassesP(pSchema->GetClasses())->Add( pWorkItem );
 
-	pProp = FdoDataPropertyDefinition::Create( L"Work Description", L"Description of work performed" );
-	pProp->SetDataType( FdoDataType_String );
-	pProp->SetLength(4000);
-	pProp->SetNullable(false);
-	FdoPropertiesP(pMaintHistItem->GetProperties())->Add( pProp );
+	    // Set up an inherited object property class.
+	    FdoPtr<FdoClass> pMaintHistItem = FdoClass::Create( L"Maint History Item", L"Maintenance History Item" );
+	    pMaintHistItem->SetIsAbstract(false);
+	    pMaintHistItem->SetBaseClass(pWorkItem);
 
-	pProp = FdoDataPropertyDefinition::Create( L"Part #", L"Part used in work item" );
-	pProp->SetDataType( FdoDataType_Int32 );
-	pProp->SetNullable(true);
-	FdoPropertiesP(pMaintHistItem->GetProperties())->Add( pProp );
+	    pProp = FdoDataPropertyDefinition::Create( L"Work Description", L"Description of work performed" );
+	    pProp->SetDataType( FdoDataType_String );
+	    pProp->SetLength(4000);
+	    pProp->SetNullable(false);
+	    FdoPropertiesP(pMaintHistItem->GetProperties())->Add( pProp );
 
-	FdoClassesP(pSchema->GetClasses())->Add( pMaintHistItem );
+	    pProp = FdoDataPropertyDefinition::Create( L"Part #", L"Part used in work item" );
+	    pProp->SetDataType( FdoDataType_Int32 );
+	    pProp->SetNullable(true);
+	    FdoPropertiesP(pMaintHistItem->GetProperties())->Add( pProp );
 
-	FdoPtr<FdoClass> pMaintHist = FdoClass::Create( L"Maint History", L"Maintenance History" );
-	pMaintHist->SetIsAbstract(false);
+	    FdoClassesP(pSchema->GetClasses())->Add( pMaintHistItem );
 
-	FdoPtr<FdoDataPropertyDefinition> pHistId = FdoDataPropertyDefinition::Create( L"Date", L"Date of work done" );
-	pHistId ->SetDataType( FdoDataType_DateTime );
-	pHistId ->SetNullable(false);
-	FdoPropertiesP(pMaintHist->GetProperties())->Add( pHistId );
+	    pMaintHist = FdoClass::Create( L"Maint History", L"Maintenance History" );
+	    pMaintHist->SetIsAbstract(false);
 
-	pProp = FdoDataPropertyDefinition::Create( L"Maintenance History Description", L"datavalue" );
-	pProp->SetDataType( FdoDataType_String );
-	pProp->SetLength(50);
-	pProp->SetNullable(true);
-	FdoPropertiesP(pMaintHist->GetProperties())->Add( pProp );
+	    pHistId = FdoDataPropertyDefinition::Create( L"Date", L"Date of work done" );
+	    pHistId ->SetDataType( FdoDataType_DateTime );
+	    pHistId ->SetNullable(false);
+	    FdoPropertiesP(pMaintHist->GetProperties())->Add( pHistId );
 
-	FdoPtr<FdoObjectPropertyDefinition> pObjProp = FdoObjectPropertyDefinition::Create( L"work items", L"tasks performed on this date" );
-	pObjProp->SetClass( pMaintHistItem );
-	pObjProp->SetIdentityProperty( pItemId );
-	pObjProp->SetObjectType( FdoObjectType_OrderedCollection );
-	pObjProp->SetOrderType( FdoOrderType_Descending );
-	FdoPropertiesP(pMaintHist->GetProperties())->Add( pObjProp );
+	    pProp = FdoDataPropertyDefinition::Create( L"Maintenance History Description", L"datavalue" );
+	    pProp->SetDataType( FdoDataType_String );
+	    pProp->SetLength(50);
+	    pProp->SetNullable(true);
+	    FdoPropertiesP(pMaintHist->GetProperties())->Add( pProp );
 
-	FdoClassesP(pSchema->GetClasses())->Add( pMaintHist );
+	    pObjProp = FdoObjectPropertyDefinition::Create( L"work items", L"tasks performed on this date" );
+	    pObjProp->SetClass( pMaintHistItem );
+	    pObjProp->SetIdentityProperty( pItemId );
+	    pObjProp->SetObjectType( FdoObjectType_OrderedCollection );
+	    pObjProp->SetOrderType( FdoOrderType_Descending );
+	    FdoPropertiesP(pMaintHist->GetProperties())->Add( pObjProp );
+
+	    FdoClassesP(pSchema->GetClasses())->Add( pMaintHist );
+    }
 
 	// Update Geometry property
 
@@ -3283,13 +3705,15 @@ void FdoApplySchemaTest::ModElectricSchema( FdoFeatureSchemaCollection* pSchemas
     FdoPtr<FdoGeometricPropertyDefinition> pGeomProp = (FdoGeometricPropertyDefinition*) FdoPropertiesP(pDevClass->GetProperties())->GetItem(L"Geometry");
 	pGeomProp->SetDescription( L"updated geometry description" );
 
-	// Add the nested object property. Since added to base class, this also tests inheritance.
+    if ( hasMetaSchema ) {
+	    // Add the nested object property. Since added to base class, this also tests inheritance.
 
-	pObjProp = FdoObjectPropertyDefinition::Create( L"maintenance history", L"maintenance history for this device" );
-	pObjProp->SetClass( pMaintHist );
-	pObjProp->SetIdentityProperty( pHistId );
-	pObjProp->SetObjectType( FdoObjectType_Collection );
-	FdoPropertiesP(pDevClass->GetProperties())->Add( pObjProp );
+	    FdoObjectPropertyP pObjProp = FdoObjectPropertyDefinition::Create( L"maintenance history", L"maintenance history for this device" );
+	    pObjProp->SetClass( pMaintHist );
+	    pObjProp->SetIdentityProperty( pHistId );
+	    pObjProp->SetObjectType( FdoObjectType_Collection );
+	    FdoPropertiesP(pDevClass->GetProperties())->Add( pObjProp );
+    }
 
     // Add properties already defined on subclass (Transformer)
 
@@ -3311,9 +3735,11 @@ void FdoApplySchemaTest::ModElectricSchema( FdoFeatureSchemaCollection* pSchemas
 
 	FdoPtr<FdoFeatureClass> pClass = (FdoFeatureClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"Transformer"));
 	
-	// Delete property that is also being added to base class ( property should stay but become inherited )
-	pProp = (FdoDataPropertyDefinition*) FdoPropertiesP( pClass->GetProperties() )->GetItem( L"InstallDate" );
-	pProp->Delete();
+    if ( CanDropCol() ) {
+	    // Delete property that is also being added to base class ( property should stay but become inherited )
+	    pProp = (FdoDataPropertyDefinition*) FdoPropertiesP( pClass->GetProperties() )->GetItem( L"InstallDate" );
+	    pProp->Delete();
+    }
 
 	// Modify property that is also being added to base class.
 	pProp = (FdoDataPropertyDefinition*) FdoPropertiesP( pClass->GetProperties() )->GetItem( L"LastRepairDate" );
@@ -3356,71 +3782,73 @@ void FdoApplySchemaTest::ModElectricSchema( FdoFeatureSchemaCollection* pSchemas
 
 	FdoClassesP(pSchema->GetClasses())->Add( pClass );
 
-	/* The following 3 classes tests adding nested object properties to an FdoClass,
-	 * instead of an FdoFeatureClass.
-	 */
+    if ( hasMetaSchema ) {
+	    /* The following 3 classes tests adding nested object properties to an FdoClass,
+	     * instead of an FdoFeatureClass.
+	     */
 
-	// class for nested object property
+	    // class for nested object property
 
-	FdoPtr<FdoClass> pStClass = FdoClass::Create( L"Street", L"" );
-	pStClass->SetIsAbstract(false);
+	    FdoPtr<FdoClass> pStClass = FdoClass::Create( L"Street", L"" );
+	    pStClass->SetIsAbstract(false);
 
-	pProp = FdoDataPropertyDefinition::Create( L"Name", L"" );
-	pProp->SetDataType( FdoDataType_String );
-	pProp->SetLength( 30 );
-	pProp->SetNullable(false);
-	FdoPropertiesP(pStClass->GetProperties())->Add( pProp );
+	    pProp = FdoDataPropertyDefinition::Create( L"Name", L"" );
+	    pProp->SetDataType( FdoDataType_String );
+	    pProp->SetLength( 30 );
+	    pProp->SetNullable(false);
+	    FdoPropertiesP(pStClass->GetProperties())->Add( pProp );
 
-	pProp = FdoDataPropertyDefinition::Create( L"Type", L"" );
-	pProp->SetDataType( FdoDataType_String );
-	pProp->SetLength( 30 );
-	pProp->SetNullable(false);
-	FdoPropertiesP(pStClass->GetProperties())->Add( pProp );
+	    pProp = FdoDataPropertyDefinition::Create( L"Type", L"" );
+	    pProp->SetDataType( FdoDataType_String );
+	    pProp->SetLength( 30 );
+	    pProp->SetNullable(false);
+	    FdoPropertiesP(pStClass->GetProperties())->Add( pProp );
 
-	FdoClassesP(pSchema->GetClasses())->Add( pStClass );
+	    FdoClassesP(pSchema->GetClasses())->Add( pStClass );
 
-	// Class for top object property ( includes nested property )
+	    // Class for top object property ( includes nested property )
 
-	FdoPtr<FdoClass> pAddrClass = FdoClass::Create( L"'Address", L"" );
-	pAddrClass->SetIsAbstract(false);
+	    FdoPtr<FdoClass> pAddrClass = FdoClass::Create( L"'Address", L"" );
+	    pAddrClass->SetIsAbstract(false);
 
-	pProp = FdoDataPropertyDefinition::Create( L"Number", L"" );
-	pProp->SetDataType( FdoDataType_Int32 );
-	pProp->SetNullable(false);
-	FdoPropertiesP(pAddrClass->GetProperties())->Add( pProp );
+	    pProp = FdoDataPropertyDefinition::Create( L"Number", L"" );
+	    pProp->SetDataType( FdoDataType_Int32 );
+	    pProp->SetNullable(false);
+	    FdoPropertiesP(pAddrClass->GetProperties())->Add( pProp );
 
-	pObjProp = FdoObjectPropertyDefinition::Create( L"street", L"" );
-	pObjProp->SetClass( pStClass );
-	pObjProp->SetObjectType( FdoObjectType_Value );
-	FdoPropertiesP(pAddrClass->GetProperties())->Add( pObjProp );
+	    pObjProp = FdoObjectPropertyDefinition::Create( L"street", L"" );
+	    pObjProp->SetClass( pStClass );
+	    pObjProp->SetObjectType( FdoObjectType_Value );
+	    FdoPropertiesP(pAddrClass->GetProperties())->Add( pObjProp );
 
-	FdoClassesP(pSchema->GetClasses())->Add( pAddrClass );
+	    FdoClassesP(pSchema->GetClasses())->Add( pAddrClass );
 
-	// Class that contains top object property
+	    // Class that contains top object property
 
-	FdoPtr<FdoClass> pEmpClass = FdoClass::Create( L"Employee", L"" );
-	pEmpClass->SetIsAbstract(false);
+	    FdoPtr<FdoClass> pEmpClass = FdoClass::Create( L"Employee", L"" );
+	    pEmpClass->SetIsAbstract(false);
 
-	pProp = FdoDataPropertyDefinition::Create( L"First Name", L"" );
-	pProp->SetDataType( FdoDataType_String );
-	pProp->SetLength( 30 );
-	pProp->SetNullable(false);
-	FdoPropertiesP(pEmpClass->GetProperties())->Add( pProp );
-	FdoDataPropertiesP(pEmpClass->GetIdentityProperties())->Add( pProp );
+	    pProp = FdoDataPropertyDefinition::Create( L"First Name", L"" );
+	    pProp->SetDataType( FdoDataType_String );
+	    pProp->SetLength( 30 );
+	    pProp->SetNullable(false);
+	    FdoPropertiesP(pEmpClass->GetProperties())->Add( pProp );
+	    FdoDataPropertiesP(pEmpClass->GetIdentityProperties())->Add( pProp );
 
-	pProp = FdoDataPropertyDefinition::Create( L"Last Name", L"" );
-	pProp->SetDataType( FdoDataType_String );
-	pProp->SetLength( 30 );
-	pProp->SetNullable(false);
-	FdoPropertiesP(pEmpClass->GetProperties())->Add( pProp );
-	FdoDataPropertiesP(pEmpClass->GetIdentityProperties())->Add( pProp );
+	    pProp = FdoDataPropertyDefinition::Create( L"Last Name", L"" );
+	    pProp->SetDataType( FdoDataType_String );
+	    pProp->SetLength( 30 );
+	    pProp->SetNullable(false);
+	    FdoPropertiesP(pEmpClass->GetProperties())->Add( pProp );
+	    FdoDataPropertiesP(pEmpClass->GetIdentityProperties())->Add( pProp );
 
-	pObjProp = FdoObjectPropertyDefinition::Create( L"home' address", L"" );
-	pObjProp->SetClass( pAddrClass );
-	pObjProp->SetObjectType( FdoObjectType_Value );
-	FdoPropertiesP(pEmpClass->GetProperties())->Add( pObjProp );
+	    pObjProp = FdoObjectPropertyDefinition::Create( L"home' address", L"" );
+	    pObjProp->SetClass( pAddrClass );
+	    pObjProp->SetObjectType( FdoObjectType_Value );
+	    FdoPropertiesP(pEmpClass->GetProperties())->Add( pObjProp );
 
-	FdoClassesP(pSchema->GetClasses())->Add( pEmpClass );
+	    FdoClassesP(pSchema->GetClasses())->Add( pEmpClass );
+    }
 
     // Create customer plus sub-classes, used later on for id property modification
     // tests
@@ -3460,23 +3888,33 @@ void FdoApplySchemaTest::ModElectricSchema( FdoFeatureSchemaCollection* pSchemas
 	FdoClassesP(pSchema->GetClasses())->Add( pBusClass );
 }
 
-void FdoApplySchemaTest::ModLandSchema( FdoIConnection* connection )
+void FdoApplySchemaTest::ModLandSchema( FdoIConnection* connection, bool hasMetaSchema )
 {
+	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
+	FdoPtr<FdoFeatureSchema> pSchema;
+
 	/* 
      * Test deleting a geometric property that is the geometry property of a 
      * subclass
      */
 
-	FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
-	pDescCmd->SetSchemaName( L"Land" );
-	FdoFeatureSchemasP pSchemas = pDescCmd->Execute();
+    if ( hasMetaSchema ) {
+	    FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
+	    pDescCmd->SetSchemaName( L"Land" );
+	    FdoFeatureSchemasP pSchemas = pDescCmd->Execute();
 
-	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
-
-	FdoPtr<FdoFeatureSchema> pSchema = pSchemas->GetItem( L"Land" );
+	    pSchema = pSchemas->GetItem( L"Land" );
+    }
+    else {
+        pSchema = GetDefaultSchema( connection );
+    }
 
 	FdoPtr<FdoFeatureClass> pClass = (FdoFeatureClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"Driveway"));
 	pClass->SetGeometryProperty(NULL);
+
+	pClass = (FdoFeatureClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"Township"));
+    FdoGeometricPropertyP pGeomProp = (FdoGeometricPropertyDefinition*) FdoPropertiesP(pClass->GetProperties())->FindItem(L"LabelPoint");
+    pClass->SetGeometryProperty(pGeomProp);
 
     pCmd->SetFeatureSchema( pSchema );
   	pCmd->Execute();
@@ -3623,7 +4061,7 @@ void FdoApplySchemaTest::DelPropertyError( FdoIConnection* connection )
 
 }
 
-void FdoApplySchemaTest::ModDelSchemas( FdoIConnection* connection )
+void FdoApplySchemaTest::ModDelSchemas( FdoIConnection* connection, bool hasMetaSchema )
 {
 	/* Test some more modifications plus deletions. */
 
@@ -3632,26 +4070,36 @@ void FdoApplySchemaTest::ModDelSchemas( FdoIConnection* connection )
 
 	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
 
-	FdoPtr<FdoFeatureSchema> pSchema = pSchemas->GetItem( L"Electric'l" );
-    ModDelElectricSchema( pSchemas );
+	FdoPtr<FdoFeatureSchema> pSchema;
+    if ( hasMetaSchema ) 
+    	pSchema = pSchemas->GetItem( L"Electric'l" );
+    else
+    	pSchema = pSchemas->GetItem(0);
+    ModDelElectricSchema( pSchemas, hasMetaSchema );
 
 	pCmd->SetFeatureSchema( pSchema );
 	pCmd->Execute();
 
-	pSchema = pSchemas->GetItem( L"Acad" );
+    if ( hasMetaSchema ) 
+    	pSchema = pSchemas->GetItem( L"Acad" );
 
-    ModDelAcadSchema( pSchemas );
+    ModDelAcadSchema( pSchemas, hasMetaSchema );
 	pCmd->SetFeatureSchema( pSchema );
 	pCmd->Execute();
 }
 
-void FdoApplySchemaTest::ModDelElectricSchema( FdoFeatureSchemaCollection* pSchemas )
+void FdoApplySchemaTest::ModDelElectricSchema( FdoFeatureSchemaCollection* pSchemas, bool hasMetaSchema )
 {
-	FdoPtr<FdoFeatureSchema> pSchema = pSchemas->GetItem( L"Electric'l" );
+	FdoPtr<FdoFeatureSchema> pSchema;
+    if ( hasMetaSchema ) 
+	    pSchema = pSchemas->GetItem( L"Electric'l" );
+    else
+        pSchema = pSchemas->GetItem( 0 );
 
 	// Dictionary elemetn delete
 
-	FdoSADP(pSchema->GetAttributes())->Remove( L"'Author" );
+    if ( hasMetaSchema ) 
+    	FdoSADP(pSchema->GetAttributes())->Remove( L"'Author" );
 
 	// Class delete
 
@@ -3662,30 +4110,35 @@ void FdoApplySchemaTest::ModDelElectricSchema( FdoFeatureSchemaCollection* pSche
 
 	pClass = (FdoFeatureClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"ElectricDevice"));
 	FdoPtr<FdoGeometricPropertyDefinition> pGeomProp = (FdoGeometricPropertyDefinition*) FdoPropertiesP(pClass->GetProperties())->GetItem(L"Geometry");
-	pGeomProp->Delete();
+    if ( CanDropCol() ) 
+        pGeomProp->Delete();
     pClass->SetGeometryProperty(NULL);
 
-	FdoPtr<FdoObjectPropertyDefinition> pObjProp = (FdoObjectPropertyDefinition*) (FdoPropertiesP(pClass->GetProperties())->GetItem(L"maintenance history"));
-	pObjProp->Delete();
+  	FdoPtr<FdoObjectPropertyDefinition> pObjProp;
+    if ( hasMetaSchema ) {
+    	pObjProp = (FdoObjectPropertyDefinition*) (FdoPropertiesP(pClass->GetProperties())->GetItem(L"maintenance history"));
+	    pObjProp->Delete();
 
-	// Complex deletions. Delete top class plus class for nested object property while leaving
-	// class for top object property
+        // Complex deletions. Delete top class plus class for nested object property while leaving
+        // class for top object property
+    
+        FdoPtr<FdoClass> pClsClass = (FdoClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"Employee"));
+	    pClsClass->Delete();
 
-    FdoPtr<FdoClass> pClsClass = (FdoClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"Employee"));
-	pClsClass->Delete();
+	    pClsClass = (FdoClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"'Address"));
 
-	pClsClass = (FdoClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"'Address"));
+        pObjProp = (FdoObjectPropertyDefinition*) (FdoPropertiesP(pClsClass->GetProperties())->GetItem(L"street"));
+	    pObjProp->Delete();
 
-    pObjProp = (FdoObjectPropertyDefinition*) (FdoPropertiesP(pClsClass->GetProperties())->GetItem(L"street"));
-	pObjProp->Delete();
-
-	pClsClass = (FdoClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"Street"));
-	pClsClass->Delete();
+	    pClsClass = (FdoClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"Street"));
+	    pClsClass->Delete();
+    }
 
 	pClass = (FdoFeatureClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"Transformer"));
 
     FdoPtr<FdoDataPropertyDefinition> pProp = (FdoDataPropertyDefinition*) FdoPropertiesP(pClass->GetProperties())->GetItem( L"Volume" );
-	pProp->Delete();
+    if ( CanDropCol() ) 
+        pProp->Delete();
 
 	pProp = FdoDataPropertyDefinition::Create( L"Temperature", L"" );
 	pProp->SetDataType( FdoDataType_Double );
@@ -3693,10 +4146,15 @@ void FdoApplySchemaTest::ModDelElectricSchema( FdoFeatureSchemaCollection* pSche
 	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
 }
 
-void FdoApplySchemaTest::ModDelAcadSchema( FdoFeatureSchemaCollection* pSchemas )
+void FdoApplySchemaTest::ModDelAcadSchema( FdoFeatureSchemaCollection* pSchemas, bool hasMetaSchema )
 {
-	FdoFeatureSchemaP pSchema = pSchemas->GetItem( L"Acad" );
-	pSchema->SetDescription( L"A'CAD Entity Schema" );
+	FdoFeatureSchemaP pSchema;
+    if ( hasMetaSchema ) 
+        pSchema = pSchemas->GetItem( L"Acad" );
+    else
+	    pSchema = pSchemas->GetItem( 0 );
+
+    pSchema->SetDescription( L"A'CAD Entity Schema" );
 
 	FdoFeatureClassP pClass = (FdoFeatureClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"AcDbEntity"));
 	FdoPtr<FdoClass> pRefClass = (FdoClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"Entity"));
@@ -3704,10 +4162,12 @@ void FdoApplySchemaTest::ModDelAcadSchema( FdoFeatureSchemaCollection* pSchemas 
 	// Test delete of property that has values but all values are null.
 
     FdoDataPropertyP pProp = (FdoDataPropertyDefinition*) (FdoPropertiesP(pClass->GetProperties())->GetItem(L"ColourIndex"));
-	pProp->Delete();
+    if ( CanDropCol() ) 
+        pProp->Delete();
 
 	pProp = (FdoDataPropertyDefinition*) (FdoPropertiesP(pRefClass->GetProperties())->GetItem(L"ColourIndex"));
-	pProp->Delete();
+    if ( CanDropCol() ) 
+        pProp->Delete();
 
 	// Test adding data property to existing class.
 
@@ -3731,60 +4191,68 @@ void FdoApplySchemaTest::ModDelAcadSchema( FdoFeatureSchemaCollection* pSchemas 
 	pProp = (FdoDataPropertyDefinition*) (FdoPropertiesP(pRefClass->GetProperties())->GetItem(L"Layer"));
 	pProp->SetDescription( L"Entity's Classification" );
 
-	// Modify object property
-	FdoObjectPropertyP pObjProp = (FdoObjectPropertyDefinition*) (FdoPropertiesP(pClass->GetProperties())->GetItem(L"xdata"));
-	pObjProp->SetDescription( L"new xdata description" );
+    if ( hasMetaSchema ) {
+	    // Modify object property
+	    FdoObjectPropertyP pObjProp = (FdoObjectPropertyDefinition*) (FdoPropertiesP(pClass->GetProperties())->GetItem(L"xdata"));
+	    pObjProp->SetDescription( L"new xdata description" );
 
-	pObjProp = (FdoObjectPropertyDefinition*) (FdoPropertiesP(pRefClass->GetProperties())->GetItem(L"xdata"));
-	pObjProp->SetDescription( L"new xdata description" );
+	    pObjProp = (FdoObjectPropertyDefinition*) (FdoPropertiesP(pRefClass->GetProperties())->GetItem(L"xdata"));
+	    pObjProp->SetDescription( L"new xdata description" );
 
-	// Modify class description
+	    // Modify class description
 
-	FdoPtr<FdoClass> pXData = (FdoClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"AcXData"));
-	pXData->SetDescription( L"Application's Data" );
+	    FdoPtr<FdoClass> pXData = (FdoClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"AcXData"));
+	    pXData->SetDescription( L"Application's Data" );
 
-	// The following verifies that the unique table name generator does not generated a table name
-	// for an existing table, or one referenced by the metaschema.
+	    // The following verifies that the unique table name generator does not generated a table name
+	    // for an existing table, or one referenced by the metaschema.
 
-	FdoPtr<FdoClass> pCoordVal = (FdoClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"AcDbVertexCoordinateValue"));
-	FdoPtr<FdoClass> pVertex = (FdoClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"AcDbVertexData"));
-	FdoPtr<FdoDataPropertyDefinition> pCoordValSeq = (FdoDataPropertyDefinition*) (FdoPropertiesP(pCoordVal->GetProperties())->GetItem(L"Seq"));
+	    FdoPtr<FdoClass> pCoordVal = (FdoClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"AcDbVertexCoordinateValue"));
+	    FdoPtr<FdoClass> pVertex = (FdoClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"AcDbVertexData"));
+	    FdoPtr<FdoDataPropertyDefinition> pCoordValSeq = (FdoDataPropertyDefinition*) (FdoPropertiesP(pCoordVal->GetProperties())->GetItem(L"Seq"));
 
-	pObjProp = FdoObjectPropertyDefinition::Create( L"normal", L"" );
-	pObjProp->SetClass( pCoordVal );
-	pObjProp->SetIdentityProperty( pCoordValSeq );
-	pObjProp->SetObjectType( FdoObjectType_Collection );
-	FdoPropertiesP(pVertex->GetProperties())->Add( pObjProp );
+	    pObjProp = FdoObjectPropertyDefinition::Create( L"normal", L"" );
+	    pObjProp->SetClass( pCoordVal );
+	    pObjProp->SetIdentityProperty( pCoordValSeq );
+	    pObjProp->SetObjectType( FdoObjectType_Collection );
+	    FdoPropertiesP(pVertex->GetProperties())->Add( pObjProp );
 
-	// Add an id-less class with same spelling ( but different case ) than
-	// an existing id-less class. This class should get a different table
-	// name than the other class.
+	    // Add an id-less class with same spelling ( but different case ) than
+	    // an existing id-less class. This class should get a different table
+	    // name than the other class.
 
-    // TODO: the SqlServer instance on seconds is case insensitive, so skip the 
-    // case sensitive class name test since it will fail with duplicate index error
-    // on f_classdefinition. 
+        // TODO: the SqlServer instance on seconds is case insensitive, so skip the 
+        // case sensitive class name test since it will fail with duplicate index error
+        // on f_classdefinition. 
 #ifndef RDBI_DEF_SSQL
-    FdoPtr<FdoClass> pCaseClass = FdoClass::Create( L"aCxdATA", L"Xdata" );
-    pCaseClass->SetIsAbstract(false);
+        FdoPtr<FdoClass> pCaseClass = FdoClass::Create( L"aCxdATA", L"Xdata" );
+        pCaseClass->SetIsAbstract(false);
 
-    pProp = FdoDataPropertyDefinition::Create( L"Seq", L"seq" );
-    pProp->SetDataType( FdoDataType_Int32 );
-    pProp->SetNullable(false);
-    FdoPropertiesP(pCaseClass->GetProperties())->Add( pProp  );
+        pProp = FdoDataPropertyDefinition::Create( L"Seq", L"seq" );
+        pProp->SetDataType( FdoDataType_Int32 );
+        pProp->SetNullable(false);
+        FdoPropertiesP(pCaseClass->GetProperties())->Add( pProp  );
 
-    FdoClassesP(pSchema->GetClasses())->Add( pCaseClass );
+        FdoClassesP(pSchema->GetClasses())->Add( pCaseClass );
 #endif
+    }
 }
 
-void FdoApplySchemaTest::ReAddElements( FdoIConnection* connection )
+void FdoApplySchemaTest::ReAddElements( FdoIConnection* connection, bool hasMetaSchema )
 {
-    FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
-	pDescCmd->SetSchemaName( L"Electric'l" );
-	FdoPtr<FdoFeatureSchemaCollection> pSchemas = pDescCmd->Execute();
-
+    FdoPtr<FdoFeatureSchema> pSchema;
 	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
 
-	FdoPtr<FdoFeatureSchema> pSchema = pSchemas->GetItem( L"Electric'l" );
+    if ( hasMetaSchema ) {
+        FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
+	    pDescCmd->SetSchemaName( L"Electric'l" );
+	    FdoPtr<FdoFeatureSchemaCollection> pSchemas = pDescCmd->Execute();
+
+	    pSchema = pSchemas->GetItem( L"Electric'l" );
+    }
+    else {
+        pSchema = GetDefaultSchema( connection );
+    }
 
 	// Re-add a feature class that was previously deleted. This tests that the Pole class delete actually
 	// did remove the Pole table.
@@ -3807,23 +4275,25 @@ void FdoApplySchemaTest::ReAddElements( FdoIConnection* connection )
 
 	FdoClassesP(pSchema->GetClasses())->Add( pClass );
 
-	// re-add a non-feature class.
+    if ( hasMetaSchema ) {
+	    // re-add a non-feature class.
 
-	FdoPtr<FdoClass> pStClass = FdoClass::Create( L"Street", L"" );
-	pStClass->SetIsAbstract(false);
+	    FdoPtr<FdoClass> pStClass = FdoClass::Create( L"Street", L"" );
+	    pStClass->SetIsAbstract(false);
 
-	pProp = FdoDataPropertyDefinition::Create( L"Name", L"" );
-	pProp->SetDataType( FdoDataType_String );
-	pProp->SetLength( 30 );
-	pProp->SetNullable(false);
-	FdoPropertiesP(pStClass->GetProperties())->Add( pProp );
+	    pProp = FdoDataPropertyDefinition::Create( L"Name", L"" );
+	    pProp->SetDataType( FdoDataType_String );
+	    pProp->SetLength( 30 );
+	    pProp->SetNullable(false);
+	    FdoPropertiesP(pStClass->GetProperties())->Add( pProp );
 
-	pProp = FdoDataPropertyDefinition::Create( L"Type", L"" );
-	pProp->SetDataType( FdoDataType_Int32 );
-	pProp->SetNullable(false);
-	FdoPropertiesP(pStClass->GetProperties())->Add( pProp );
+	    pProp = FdoDataPropertyDefinition::Create( L"Type", L"" );
+	    pProp->SetDataType( FdoDataType_Int32 );
+	    pProp->SetNullable(false);
+	    FdoPropertiesP(pStClass->GetProperties())->Add( pProp );
 
-	FdoClassesP(pSchema->GetClasses())->Add( pStClass );
+	    FdoClassesP(pSchema->GetClasses())->Add( pStClass );
+    }
 
 	pClass = (FdoFeatureClass*) FdoClassesP(pSchema->GetClasses())->GetItem( L"Transformer" );
 
@@ -3831,35 +4301,50 @@ void FdoApplySchemaTest::ReAddElements( FdoIConnection* connection )
 
 	FdoPtr<FdoGeometricPropertyDefinition> pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"location and shape" );
 	pGeomProp->SetGeometryTypes( FdoGeometricType_Surface );
-	FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
-	pClass->SetGeometryProperty( pGeomProp );
+    if ( CanDropCol() ) {
+	    FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
+    }
+    else {
+        FdoClassDefinitionP baseClass = pClass->GetBaseClass();
+        if ( baseClass )
+            pGeomProp = (FdoGeometricPropertyDefinition*) FdoPropertiesP(baseClass->GetProperties())->FindItem(L"Geometry");
+        else
+            pGeomProp = (FdoGeometricPropertyDefinition*) FdoPropertiesP(pClass->GetProperties())->FindItem(L"Geometry");
+    }
+    pClass->SetGeometryProperty( pGeomProp );
 
-    // Try geometry with similar name but different case (should get different column.
-    // Skip sqlserver since seconds is data case-insensitive.
+    if ( hasMetaSchema ) {
+        // Try geometry with similar name but different case (should get different column.
+        // Skip sqlserver since seconds is data case-insensitive.
 #ifndef RDBI_DEF_SSQL
-    pGeomProp = FdoGeometricPropertyDefinition::Create( L"GEOMETRY", L"location and shape" );
-    pGeomProp->SetGeometryTypes( FdoGeometricType_Surface );
-    FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
+        pGeomProp = FdoGeometricPropertyDefinition::Create( L"GEOMETRY", L"location and shape" );
+        pGeomProp->SetGeometryTypes( FdoGeometricType_Surface );
+        FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
 #endif
+    }
 
 	// Re-add deleted data property. Give it different type and nullibility than before. 
 
-	pProp = FdoDataPropertyDefinition::Create( L"Volume", L"" );
-	pProp->SetDataType( FdoDataType_Int64 );
-	pProp->SetNullable(true);
-	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+    if ( CanDropCol() ) {
+	    pProp = FdoDataPropertyDefinition::Create( L"Volume", L"" );
+	    pProp->SetDataType( FdoDataType_Int64 );
+	    pProp->SetNullable(true);
+	    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+    }
 
-	// Re-add a nested object property. Since added to base class, this also tests inheritance.
+    if ( hasMetaSchema ) {
+	    // Re-add a nested object property. Since added to base class, this also tests inheritance.
 
-	FdoPtr<FdoClassDefinition> pMaintHist = FdoClassesP(pSchema->GetClasses())->GetItem( L"Maint History" );
-	FdoPtr<FdoDataPropertyDefinition> pHistId = (FdoDataPropertyDefinition*) FdoPropertiesP(pMaintHist->GetProperties())->GetItem( L"Date" );
-	pClass = (FdoFeatureClass*) FdoClassesP(pSchema->GetClasses())->GetItem( L"ElectricDevice" );
+	    FdoPtr<FdoClassDefinition> pMaintHist = FdoClassesP(pSchema->GetClasses())->GetItem( L"Maint History" );
+	    FdoPtr<FdoDataPropertyDefinition> pHistId = (FdoDataPropertyDefinition*) FdoPropertiesP(pMaintHist->GetProperties())->GetItem( L"Date" );
+	    pClass = (FdoFeatureClass*) FdoClassesP(pSchema->GetClasses())->GetItem( L"ElectricDevice" );
 
-	FdoPtr<FdoObjectPropertyDefinition> pObjProp = FdoObjectPropertyDefinition::Create( L"maintenance history", L"maintenance history for this device" );
-	pObjProp->SetClass( pMaintHist );
-	pObjProp->SetIdentityProperty( pHistId );
-	pObjProp->SetObjectType( FdoObjectType_Collection );
-	FdoPropertiesP(pClass->GetProperties())->Add( pObjProp );
+	    FdoPtr<FdoObjectPropertyDefinition> pObjProp = FdoObjectPropertyDefinition::Create( L"maintenance history", L"maintenance history for this device" );
+	    pObjProp->SetClass( pMaintHist );
+	    pObjProp->SetIdentityProperty( pHistId );
+	    pObjProp->SetObjectType( FdoObjectType_Collection );
+	    FdoPropertiesP(pClass->GetProperties())->Add( pObjProp );
+    }
 
 	pCmd->SetFeatureSchema( pSchema );
 	pCmd->Execute();
@@ -4536,19 +5021,24 @@ void FdoApplySchemaTest::CopySchemas(FdoFeatureSchemaCollection* pSchemas, FdoFe
 
 }
 
-void FdoApplySchemaTest::CreateOverrideSchema( FdoIConnection* connection, FdoRdbmsOvPhysicalSchemaMapping* pOverrides, bool nnull, bool addConstraints )
+void FdoApplySchemaTest::CreateOverrideSchema( FdoIConnection* connection, FdoRdbmsOvPhysicalSchemaMapping* pOverrides, bool nnull, bool addConstraints, bool hasMetaSchema )
 {
 	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
-	FdoFeatureSchemaP                   pSchema = FdoFeatureSchema::Create( L"OverridesA", L"AutoCAD schema" );
+	FdoFeatureSchemaP                   pSchema;
     FdoFeatureClassP                    pFeatClass;
     FdoFeatureClassP                    pBaseClass;
     FdoDataPropertyP                    pProp;
     FdoGeometricPropertyP               pGeomProp;
 
     FdoInt32                            idx;
+    FdoInt32                            classCount = hasMetaSchema ? 10 : 5;
 
+    if ( hasMetaSchema ) 
+        pSchema = FdoFeatureSchema::Create( L"OverridesA", L"AutoCAD schema" );
+    else
+        pSchema = GetDefaultSchema( connection );
 
-    for ( idx = 0; idx < 10; idx++ ) {
+    for ( idx = 0; idx < classCount; idx++ ) {
 	    pFeatClass = FdoFeatureClass::Create( 
             FdoStringP::Format( L"OvClass%c", 'A' + idx ), 
             L"a class" 
@@ -4815,7 +5305,8 @@ void FdoApplySchemaTest::ModOverrideSchema1( FdoIConnection* connection, FdoRdbm
     pFeatClass = (FdoFeatureClass*) (FdoClassesP(pSchema->GetClasses())->GetItem( L"OvClassH" ));
 
     pProp = (FdoDataPropertyDefinition*) (FdoPropertiesP(pFeatClass->GetProperties())->GetItem( L"DataH" ));
-    pProp->Delete();
+    if ( CanDropCol() )
+        pProp->Delete();
 
     pProp = FdoDataPropertyDefinition::Create( L"DataNew", L"a data property" );
     pProp->SetDataType( FdoDataType_Double );
@@ -4823,7 +5314,8 @@ void FdoApplySchemaTest::ModOverrideSchema1( FdoIConnection* connection, FdoRdbm
     FdoPropertiesP(pFeatClass->GetProperties())->Add( pProp );
 
     pObProp = (FdoObjectPropertyDefinition*) (FdoPropertiesP(pFeatClass->GetProperties())->GetItem( L"ObjectA" ));
-    pObProp->Delete();
+    if ( CanDropCol() )
+        pObProp->Delete();
 
     pObProp = (FdoObjectPropertyDefinition*) (FdoPropertiesP(pFeatClass->GetProperties())->GetItem( L"ObjectC" ));
     pObProp->Delete();
@@ -4866,16 +5358,18 @@ void FdoApplySchemaTest::ModOverrideSchema2( FdoIConnection* connection, FdoRdbm
 
     pFeatClass = (FdoFeatureClass*) (FdoClassesP(pSchema->GetClasses())->GetItem( L"OvClassH" ));
 
-    pProp = FdoDataPropertyDefinition::Create( L"DataH", L"a data property" );
-	pProp->SetDataType( FdoDataType_String );
-	pProp->SetLength(10);
-	pProp->SetNullable(true);
-    FdoPropertiesP(pFeatClass->GetProperties())->Add( pProp );
+    if ( CanDropCol() ) {
+        pProp = FdoDataPropertyDefinition::Create( L"DataH", L"a data property" );
+	    pProp->SetDataType( FdoDataType_String );
+	    pProp->SetLength(10);
+	    pProp->SetNullable(true);
+        FdoPropertiesP(pFeatClass->GetProperties())->Add( pProp );
 
-    pObProp = FdoObjectPropertyDefinition::Create( L"ObjectA", L"" );
-    pObProp->SetClass( pOpClass );
-    pObProp->SetObjectType( FdoObjectType_Value );
-	FdoPropertiesP(pFeatClass->GetProperties())->Add( pObProp );
+        pObProp = FdoObjectPropertyDefinition::Create( L"ObjectA", L"" );
+        pObProp->SetClass( pOpClass );
+        pObProp->SetObjectType( FdoObjectType_Value );
+	    FdoPropertiesP(pFeatClass->GetProperties())->Add( pObProp );
+    }
 
     pBaseClass = pFeatClass;
 
@@ -4899,11 +5393,13 @@ void FdoApplySchemaTest::ModOverrideSchema2( FdoIConnection* connection, FdoRdbm
 
     pFeatClass = (FdoFeatureClass*) (FdoClassesP(pSchema->GetClasses())->GetItem( L"OvClassE11" ));
 
-    pObProp = (FdoObjectPropertyDefinition*) (FdoPropertiesP(pFeatClass->GetProperties())->GetItem( L"Object A" ));
-    pObProp->Delete();
+    if ( CanDropCol() ) {
+        pObProp = (FdoObjectPropertyDefinition*) (FdoPropertiesP(pFeatClass->GetProperties())->GetItem( L"Object A" ));
+        pObProp->Delete();
 
-    pFeatClass = (FdoFeatureClass*) (FdoClassesP(pSchema->GetClasses())->GetItem( L"OvClassI" ));
-    pFeatClass->Delete();
+        pFeatClass = (FdoFeatureClass*) (FdoClassesP(pSchema->GetClasses())->GetItem( L"OvClassI" ));
+        pFeatClass->Delete();
+    }
 
     // OvClassK tests setting a (main) geometry property to being in the class
     // table, but with same column name as the property name.
@@ -5121,11 +5617,12 @@ void FdoApplySchemaTest::ModOverrideSchemaForeign2( FdoIConnection* connection, 
     pFeatClass = (FdoFeatureClass*) (FdoClassesP(pSchema->GetClasses())->GetItem( L"Storage" ));
 
     pProp = (FdoDataPropertyDefinition*) (FdoPropertiesP(pFeatClass->GetProperties())->GetItem(L"Storage"));
-    pProp->Delete();
+    if ( CanDropCol() ) 
+        pProp->Delete();
         
     pProp = FdoDataPropertyDefinition::Create( L"Extra", L"a new data property" );
     pProp->SetDataType( FdoDataType_Int16 );
-    pProp->SetNullable(!mCanAddNotNullCol);
+    pProp->SetNullable(!CanAddNotNullCol());
     FdoPropertiesP(pFeatClass->GetProperties())->Add( pProp );
 
     pCmd->SetFeatureSchema( pSchema );
@@ -5885,7 +6382,7 @@ FdoRdbmsOvPhysicalSchemaMapping* FdoApplySchemaTest::CreateErrorOverrides( FdoIC
     );
     PropertiesOvAdd(pClass, pGeomProp);
     pGeomCol = CreateOvGeometricColumn( 
-        L"geomtoolong23456789012345678901"
+        L"geomtoolong234567890123456789"
     );
     GeometricPropOvSetColumn(pGeomProp, pGeomCol);
 
@@ -6251,12 +6748,35 @@ FdoStringP FdoApplySchemaTest::LogicalPhysicalFormat( FdoString* inFile )
     return inFile;
 }
 
+bool FdoApplySchemaTest::CanApplyWithoutMetaSchema()
+{
+    return false;
+}
+
+bool FdoApplySchemaTest::CanAddNotNullCol()
+{
+    return true;
+}
+
+bool FdoApplySchemaTest::CanDropCol()
+{
+    return true;
+}
+
 FdoStringP FdoApplySchemaTest::SchemaTestErrFile( int fileNum, bool isMaster )
 {
 	if (isMaster)
 		return FdoStringP::Format( L"apply_schema_err%d%ls.txt", fileNum, L"_master");
 	else
 		return UnitTestUtil::GetOutputFileName( FdoStringP::Format( L"apply_schema_err%d.txt", fileNum) );
+}
+
+FdoStringP FdoApplySchemaTest::SchemaNoMetaErrFile( int fileNum, bool isMaster )
+{
+	if (isMaster)
+		return FdoStringP::Format( L"apply_no_meta_err%d%ls.txt", fileNum, L"_master");
+	else
+		return UnitTestUtil::GetOutputFileName( FdoStringP::Format( L"apply_no_meta_err%d.txt", fileNum) );
 }
 
 FdoStringP FdoApplySchemaTest::SchemaOvErrFile( int fileNum, bool isMaster )
@@ -6360,4 +6880,20 @@ void FdoApplySchemaTest::PropertyMappingOvSetInternalClass(FdoRdbmsOvPropertyMap
 void FdoApplySchemaTest::SchemaOvSetOwner(FdoRdbmsOvPhysicalSchemaMapping *mapping, FdoString* owner)
 {
     UnitTestUtil::NewSchemaOverrideUtil()->SchemaOvSetOwner(mapping, owner);
+}
+
+FdoFeatureSchemaP FdoApplySchemaTest::GetDefaultSchema( FdoIConnection* connection )
+{
+    FdoFeatureSchemaP defSchema;
+
+	FdoPtr<FdoIDescribeSchema> cmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
+	FdoFeatureSchemasP schemas = cmd->Execute();
+
+    CPPUNIT_ASSERT( schemas->GetCount() > 0 );
+
+    defSchema = schemas->FindItem(L"dbo");
+    if ( !defSchema ) 
+        defSchema = schemas->GetItem(0);
+
+    return defSchema;
 }

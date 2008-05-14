@@ -141,7 +141,11 @@ public:
 
     // Return the coordinate system info for the given coordinate system name.
     // Returns NULL if coordinate system not found.
-    FdoSmPhCoordinateSystemP FindCoordinateSystem( FdoStringP csName );
+    virtual FdoSmPhCoordinateSystemP FindCoordinateSystem( FdoStringP csName );
+
+    // Return the coordinate system info for the given well-known text.
+    // Returns NULL if coordinate system not found.
+    FdoSmPhCoordinateSystemP FindCoordinateSystemByWkt( FdoStringP wkt );
 
     // Reverse-engineers an FDO feature schema name from this datastore.
     // Default implementation returns datastore name prepended by "Fdo".
@@ -385,6 +389,7 @@ private:
     // otherwise only the spatial contexts associated with the geometric columns
     // in the given db object are loaded.
     void LoadSpatialContexts( FdoStringP dbObjectName = L"" );
+    void DoLoadSpatialContexts( FdoStringP dbObjectName );
 
     // Caches the coordinate systems retrieved by the given reader.
     void LoadCoordinateSystems( FdoPtr<FdoSmPhRdCoordSysReader> rdr );
@@ -423,6 +428,7 @@ private:
 
     // Cache of coordinate systems.
     FdoSmPhCoordinateSystemsP mCoordinateSystems;
+    bool mCoordinateSystemsLoaded;
 
     FdoStringP mPassword;
     bool mHasMetaSchema;

@@ -167,6 +167,36 @@ class FdoSmPhMgr : public FdoSmDisposable
 {
 public:
 
+    // Coordinate System Matching levels applied to the coordinate systems
+    // for new spatial contexts. A Spatial Contexts can reference a coordinate
+    // system by name, wkt, neither or both.
+    //
+    // Determines what happens when the coordinate system is not in the RDBMS's
+    // catalogue.
+    enum CoordinateSystemMatchLevel {
+        CoordinateSystemMatchLevel_Lax,
+            // Allow adding Spatial Context even if match by name or wkt fails 
+            // to match to an RDBMS coordinate system.
+        CoordinateSystemMatchLevel_Name,
+            // Disallow adding Spatial Context in either the following two cases:
+            //      - coordinate system name specified, match by name failed.
+            //      - both name and wkt specified, match by name succeeded but
+            //          matched coordinate system has different wkt.
+            //        .
+        CoordinateSystemMatchLevel_Wkt,
+            // Disallow adding Spatial Context in either the following two cases:
+            //      - coordinate system name and wkt specified, match by wkt failed.
+            //          (match by name failure allowed in this case)
+            //      - coordinate system name specified, wkt not specified, match by name failed.
+        CoordinateSystemMatchLevel_Strict
+            // Disallow adding Spatial Context when:
+            //      - coordinate system name specified, match by name failed.
+            //      - wkt specified, match by wkt failed.
+            //      - both name and wkt specified, match by name failed.
+            //      - both name and wkt specified, match by name succeeded but
+            //          matched coordinate system has different wkt.
+    };
+
     /// Create a Physical Schema Manager
 
 	~FdoSmPhMgr(void);
@@ -483,6 +513,10 @@ public:
     /// pos is 0-based.
     virtual FdoStringP FormatBindField( int pos ) = 0;    
 
+    // Returns the provider-specific Coordinate system match level.
+    // The default is Lax.
+    virtual CoordinateSystemMatchLevel GetCoordinateSystemMatchLevel();
+
     virtual bool SupportsAnsiQuotes();
 
     virtual bool IsRdbUnicode() = 0;
@@ -501,6 +535,11 @@ public:
 
     /// Gets the provider-specific maximum length of a column name.
     virtual FdoSize ColNameMaxLen() = 0;
+
+    // Returns true if the current RDBMS handles mixed case object names well.
+    // Returns false if the RDBMS does not handle mixed case or if it is 
+    // not safe to create objects with mixed case names.
+    virtual bool SupportsMixedCase();
 
     // The following functions take various types of object names and 
     // convert them to the default case for the current RDBMS
@@ -610,6 +649,18 @@ public:
 	static const FdoStringP SchemaType;
 	static const FdoStringP ClassType;
 	static const FdoStringP PropertyType;
+
+    // Name of Spatial Context Info table.
+    // This table is created when a spatial context is added to a datastore
+    // without MetaSchema. In these datastores, a spatial context cannot exist
+    // unless it is referenced by a geometric column. This table contains a
+    // referencing geometric column for each spatial context.
+    static const FdoStringP ScInfoNoMetaTable;
+
+    // Name of primary key column for Spatial Context Info table.
+    // Some RDBMS's require a primary key in order to spatially index
+    // the geometric columns.
+    static const FdoStringP ScInfoNoMetaPKey;
 
     /// Various Schema Element attribute value length limits. 1 is subtracted to 
     /// account for null terminator. 

@@ -56,6 +56,9 @@ public:
     /// Returns the database object represented by this Row.
     FdoSmPhDbObjectP GetDbObject();
 
+    // Clears the values of all fields for this row.
+    void Clear();
+
     /// Various functions for creating columns.
     /// These functions are used to create field columns
     /// for columns that do not actually reside in the database

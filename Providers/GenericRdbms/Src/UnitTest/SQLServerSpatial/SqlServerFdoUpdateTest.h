@@ -30,6 +30,7 @@ class SqlServerFdoUpdateTest : public FdoUpdateTest
     // SqlServer 2000 has a bug where the information_schema does not list 
     // primary key columns for non-dbo tables.
     CPPUNIT_TEST( UpdateNonDbo );
+    CPPUNIT_TEST( UpdateGeogColumn );
     CPPUNIT_TEST(testDefect810181);
     CPPUNIT_TEST_SUITE_END ();
 
@@ -41,8 +42,26 @@ public:
     virtual FdoStringP TableIdGeomName();
     virtual void testDefect810181();
     virtual void UpdateSingleIdFeatureClass();
+    virtual void UpdateGeogColumn();
 
 protected:
+    virtual void CreateGeogTable( FdoSmPhOwnerP owner, FdoStringP tableName );
+    virtual void CreateGeogData( FdoPtr<FdoIConnection> connection, FdoSmPhMgrP phMgr, FdoStringP tableName );
+    virtual FdoIGeometry* CreateGeogGeom( int idx );
+    virtual void SelectGeogAll( FdoPtr<FdoIConnection> connection, FdoSmPhMgrP phMgr, FdoStringP tableName );
+    virtual void SelectGeogSpatial( FdoPtr<FdoIConnection> connection, FdoSmPhMgrP phMgr, FdoStringP tableName );
+    virtual void VldGeogRow( 
+        FdoSmPhMgrP phMgr, 
+        FdoPtr<FdoIFeatureReader> rdr, 
+        FdoPtr<FdoIdentifierCollection> props,
+        bool byExtents = false
+    );
+    virtual void VldGeogGeom( 
+        FdoPtr<FdoIFeatureReader> rdr, 
+        FdoStringP propName,
+        int idx,
+        bool byExtents = false
+    );
     virtual FdoStringP FixStringVal( FdoString* val );
 
     void TestRectangleFilter(

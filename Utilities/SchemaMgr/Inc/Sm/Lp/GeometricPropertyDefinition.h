@@ -220,10 +220,15 @@ public:
 						(const FdoSmLpGeometricPropertyDefinition*) src  : NULL 
 					  ) : NULL );
 	}
-/*
-    /// Called when this property is the main geometry for its feature class.
-	void SetPrimary();
-*/
+
+    // Change the primary geometry status
+    //
+    // Parameters
+    //      isPrimary:
+    //          true: this property is the main geometry for its feature class
+    //          false: this property is not the main geometry
+	void SetPrimary( bool isPrimary );
+
     /// Copy updates from corresponding FDO property. 
     //
     /// Parameters
@@ -410,6 +415,8 @@ private:
     FdoStringP mRootColumnNameSi2;
     FdoStringP mCandRootColumnNameSi2;
 	FdoSmPhColumnP mColumnSi2;
+
+    bool mbIsPrimary;
 };
 
 typedef FdoPtr<FdoSmLpGeometricPropertyDefinition> FdoSmLpGeometricPropertyP;

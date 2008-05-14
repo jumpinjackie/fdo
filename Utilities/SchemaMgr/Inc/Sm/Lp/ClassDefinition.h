@@ -142,7 +142,7 @@ public:
     // Returns a class table name substring that can be used to build other
     // names, such as object property table names.
     // Returns GetDbObjectName() by default.
-    virtual FdoStringP GetSubstDbObjectName() const;
+    virtual FdoStringP GetSubstDbObjectName( FdoStringP dbObjectName = L"" ) const;
 
     /// Returns the foreign table name when class table is actually a view
     /// on a foreign table.
@@ -476,9 +476,7 @@ protected:
     virtual bool Is_DbObjectCreator() const;
  
     /// Returns true if objectName is a valid object name in the current datastore.
-    /// The bFromConfigFile input argument should be set to true iff the 
-    /// given object was originally defined from a configuration file.
-	bool VldDbObjectName( FdoStringP objectName, bool bFromConfigFile );
+	bool VldDbObjectName( FdoStringP objectName );
 
     /// Add a primary key to the class table if it doesn't already have one.
     /// The primary key columns are set to the identity property columns.
@@ -528,6 +526,10 @@ protected:
 
     /// Set name class table
     virtual void SetDbObjectName( FdoStringP objectName );
+
+    // Returns the default class table name for this class.
+    // Base implementation simply returns the class name.
+    virtual FdoStringP DefaultDbObjectName();
 
     /// Set class table primary key name (new classes only).
     void SetNewPkeyName( FdoStringP newPkeyName )
@@ -683,6 +685,7 @@ private:
     void AddTableCharError( const wchar_t* tableName );
     void AddTableLengthError( const wchar_t* tableName, FdoSize tableMaxSize ); 
     void AddTableReservedError( const wchar_t* tableName ); 
+    void AddClassNameChangeError( FdoString* tableName );
     void AddColCharError( 
         const FdoSmLpPropertyDefinition* pProp, 
         const wchar_t* columnName

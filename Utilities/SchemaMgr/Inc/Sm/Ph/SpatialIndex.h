@@ -26,6 +26,12 @@ class FdoSmPhSpatialIndex : public FdoSmPhIndex
 {
 public:
 
+    // Returns true if this spatial index's column is the primary geometry 
+    // for its table.
+    // This is encoded into the spatial index name; returns true if the name
+    // contains "_gsi_" or ends with "_gsi".
+    bool GetIsPrimary();
+
     /// Serialize the Spatial Index to an XML file.
     /// Mainly for unit testing.
 	virtual void XMLSerialize( FILE* xmlFp, int ref ) const;

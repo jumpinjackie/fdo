@@ -93,16 +93,24 @@ public:
     }
 
     /// returns the associated Spatial Context info
-    FdoSmPhScInfoP	GetSpatialContextInfo()
-    {
-        return mScInfo;
-    }
+    FdoSmPhScInfoP	GetSpatialContextInfo();
 
     /// Sets the associated Spatial Context info
     void	SetSpatialContextInfo(FdoSmPhScInfoP scInfo)
     {
         mScInfo = scInfo;
     }
+
+    // Returns:
+    //  true: if this column is the main geometry for its table or view
+    //  false: if it is not the main geometry
+    bool    GetPrimary()
+    {
+        return mbIsPrimary;
+    }
+
+    // Modifies the main geometry status for this column
+    void    SetPrimary( bool isPrimary );
 
     /// returns DBI-format column dimensionality, based on whether the column
     /// has elevation or measure dimensions.
@@ -134,6 +142,10 @@ public:
     /// Remove current spatial index without deleting it from datastore.
     void DiscardSpatialIndex( FdoSmPhSpatialIndex* index );
 
+    // Regenerates this column's spatial index. Actual processing is provider-specific
+    // so default implementation does nothing.
+    virtual void    RegenSpatialIndex();
+
 	virtual FdoInt64 GetSRID()
 	{
 		return 0;
@@ -162,7 +174,7 @@ protected:
     }
 
     /// Generate a unique spatial index name for this column
-    FdoStringP UniqueIndexName();
+    virtual FdoStringP UniqueIndexName();
 
     void Finalize();
 
@@ -172,6 +184,7 @@ private:
 
     bool mbHasElevation;
     bool mbHasMeasure;
+    bool mbIsPrimary;
     FdoSmPhScInfoP mScInfo;
     FdoSmPhSpatialIndex* mSpatialIndex;
 };

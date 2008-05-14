@@ -23,6 +23,13 @@
 #include <Sm/SchemaElement.h>
 #include <Sm/Collection.h>
 
+#ifdef  _DEBUG
+#define SM_NLSID(x,m)  x, m, __FILE__, __LINE__
+#else
+#define SM_NLSID(x,m)  x, m
+#endif
+
+
 enum FdoSmErrorType
 {
     /// Tried to re-entrantly finalize a class

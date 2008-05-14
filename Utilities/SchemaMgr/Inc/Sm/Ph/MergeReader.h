@@ -51,6 +51,9 @@ public:
 	// End of select
 	virtual void EndSelect();
 
+    /// Get the column's field definition.
+    virtual FdoSmPhFieldP GetField( FdoStringP tableName, FdoStringP fieldName );
+
     // Get a string column value by name.
     // Value for current row is returned.
     // Returns L"" if value is null. 
