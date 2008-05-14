@@ -59,6 +59,9 @@ class FdoSmLpSchemaElement : public FdoSmSchemaElement
         return GetIsFromFdo() && (GetElementState() == FdoSchemaElementState_Unchanged);
     }
 
+    // Returns true if the current datastore has MetaSchema, false otherwise.
+    bool GetHasMetaSchema() const;
+
     /// Copy updates from corresponding FDO element. 
     //
     /// Parameters
@@ -151,6 +154,7 @@ protected:
     );
 
 private:
+    void AddSADNoMetaError( FdoSmPhOwnerP owner );
 
     /// Containing schema.
 	FdoSmLpSchema* mSchema;

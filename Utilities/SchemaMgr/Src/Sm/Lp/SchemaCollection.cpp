@@ -35,13 +35,41 @@
 FdoSmLpSchemaCollection::FdoSmLpSchemaCollection(FdoSmPhMgrP physicalSchema, FdoSmLpSpatialContextMgrP scMgr) :
 	mPhysicalSchema(physicalSchema),
     mSpatialContextMgr(scMgr),
-    mSchemasLoaded(false)
+    mSchemasLoaded(false),
+    mCreatePhysicalObjects(false)
 {
 }
 
 FdoSmLpSchemaCollection::~FdoSmLpSchemaCollection(void)
 {
 }
+
+bool FdoSmLpSchemaCollection::CanCreatePhysicalObjects() const
+{
+    bool hasMetaSchema = false;
+
+    FdoSmPhOwnerP owner = ((FdoSmLpSchemaCollection*) this)->GetPhysicalSchema()->FindOwner();
+    if ( owner )
+        hasMetaSchema = owner->GetHasMetaSchema();
+
+    return ( GetCreatePhysicalObjects() && (hasMetaSchema || CanApplySchemaWithoutMetaSchema()) );
+}
+
+bool FdoSmLpSchemaCollection::CanApplySchemaWithoutMetaSchema() const
+{
+    return false;
+}
+
+void FdoSmLpSchemaCollection::SetCreatePhysicalObjects( bool createPhysicalObjects )
+{
+    mCreatePhysicalObjects = createPhysicalObjects;
+}
+
+bool FdoSmLpSchemaCollection::GetCreatePhysicalObjects() const
+{
+    return mCreatePhysicalObjects;
+}
+
 /*
 FdoSmLpSchemaP CreateSchema( FdoSmPhSchemaReaderP rdr )
 {

@@ -16,8 +16,8 @@
  *
  */
 
-#ifndef FDORDBMSSPATIALGEOMETRYCONVERTER_H
-#define FDORDBMSSPATIALGEOMETRYCONVERTER_H
+#ifndef FDORDBMSSQLSERVERSPATIALGEOMETRYCONVERTER_H
+#define FDORDBMSSQLSERVERSPATIALGEOMETRYCONVERTER_H
 
 #ifdef _WIN32
 #pragma once
@@ -28,17 +28,44 @@
 
 // Implementation class for abstract FdoSpatialGeometryConverter class.
 // No X and Y ordinates swapping.
-class FdoRdbmsSpatialGeometryConverter : public FdoSpatialGeometryConverter
+class FdoRdbmsSqlServerSpatialGeometryConverter : public FdoSpatialGeometryConverter
 {
 public:
    FDO_SPATIAL_API void ConvertPosition(
         double &x,
-		double &y) {}
+		double &y) 
+   {
+   }
 
     FDO_SPATIAL_API virtual void ConvertPosition(
         double &x,
         double &y,
-		double &z) {}
+		double &z) 
+    {
+    }
+};
+
+// Implementation class for converting geography column values.
+// Swaps X and Y ordinates.
+class FdoRdbmsSqlServerSpatialGeographyConverter : public FdoSpatialGeometryConverter
+{
+public:
+   FDO_SPATIAL_API void ConvertPosition(
+        double &x,
+		double &y) 
+   {
+       double temp = y;
+       y = x;
+       x = temp;
+   }
+
+    FDO_SPATIAL_API virtual void ConvertPosition(
+        double &x,
+        double &y,
+		double &z) 
+    {
+        ConvertPosition( x, y );
+    }
 };
 
 #endif

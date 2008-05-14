@@ -1170,11 +1170,42 @@ void UnitTestUtil::CreateDB( FdoIConnection* connection, FdoString *datastore, F
 			FdoStringP value(L""); // TODO
 			dictionary->SetProperty( name, value );
 		}			
+		else if ( wcscmp( name, L"IsFdoEnabled" ) == 0 )
+		{
+			FdoStringP value(L"true"); // TODO
+			dictionary->SetProperty( name, value );
+		}			
 	}
 
 	if( createCmd )
 		createCmd->Execute();// datastore, password, service, false, local_lt_method, local_lt_method );
 
+}
+
+FdoSmPhOwnerP UnitTestUtil::CreateDBNoMeta( FdoSchemaManagerP sm, FdoString *datastore, FdoString *password )
+{
+    FdoSmPhMgrP phMgr = sm->GetPhysicalSchema();
+
+    FdoSmPhDatabaseP database = phMgr->GetDatabase();
+
+    printf( "Predeleting schema ...\n" );
+
+    FdoSmPhOwnerP owner = phMgr->FindOwner( datastore, L"", false );
+    if ( owner ) {
+        owner->SetElementState( FdoSchemaElementState_Deleted );
+        owner->Commit();
+    }
+
+    printf( "Creating schema ...\n" );
+
+    owner = database->CreateOwner(
+        datastore, 
+        false
+    );
+    owner->SetPassword( password );
+    owner->Commit();
+
+    return owner;
 }
 
 void UnitTestUtil::FailOnException( FdoException* e )
@@ -1414,7 +1445,6 @@ FdoIConnection* UnitTestUtil::CreateConnection(
     connection->Close();
     connection->SetConnectionString ( dbConnectString);
     connection->Open();
-   // connection->GetDbiConnection()->dbi_set_lt_method(local_lt_method);
 
     return(connection);
 }
@@ -1483,6 +1513,36 @@ bool UnitTestUtil::DatastoreExists(FdoString *suffix)
     delete staticConn;
 
     return(found);
+}
+
+void UnitTestUtil::CreateSpatialContext( FdoIConnection* connection, FdoStringP scName, FdoStringP csysName, double xmin, double ymin, double xmax, double ymax, FdoStringP csysWKT, double xyTol, double zTol )
+{
+    FdoPtr<FdoICreateSpatialContext> cscCmd = (FdoICreateSpatialContext *)connection->CreateCommand( FdoCommandType_CreateSpatialContext );
+
+    cscCmd->SetName(scName); 
+    cscCmd->SetDescription(L"For testing only");
+    cscCmd->SetCoordinateSystem(csysName);
+
+    // envelope as Polygon
+    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoIEnvelope> env = gf->CreateEnvelopeXY(xmin, ymin, xmax, ymax);
+    FdoPtr<FdoIGeometry> geom = gf->CreateGeometry(env); 
+    FdoPtr<FdoByteArray> ext = gf->GetFgf( geom );
+    cscCmd->SetExtent( ext );
+    cscCmd->SetCoordinateSystemWkt(csysWKT);
+
+    cscCmd->SetXYTolerance(xyTol);
+    cscCmd->SetZTolerance(zTol);
+        
+    cscCmd->Execute();
+}
+
+void UnitTestUtil::DeleteSpatialContext( FdoIConnection* connection, FdoStringP scName )
+{
+    FdoPtr<FdoIDestroySpatialContext> dscCmd = (FdoIDestroySpatialContext *)connection->CreateCommand( FdoCommandType_DestroySpatialContext );
+
+    dscCmd->SetName(scName);         
+    dscCmd->Execute();
 }
 
 FdoIConnection* UnitTestUtil::GetConnection(FdoString *suffix, bool bCreate, bool bRecreateData, StringConnTypeRequest pTypeReq, int lt_method, bool lt_method_fixed)
@@ -1665,10 +1725,11 @@ void UnitTestUtil::ExportDb(
     FdoXmlSpatialContextFlags* flags, 
     bool includeDefaultMappings, 
     FdoString* oldDsSchemaName,
-    FdoString* newDsSchemaName
+    FdoString* newDsSchemaName,
+    bool includeFeatures
 )
 {
-    FdoInt32 i;
+    FdoInt32 i, j;
 
     stream->Reset();
     FdoXmlWriterP writer = FdoXmlWriter::Create(stream);
@@ -1710,8 +1771,36 @@ void UnitTestUtil::ExportDb(
         }
     }
 
-    // Serialize the feature schemas.
+    // Serialize the schema overrides.
     mappings->WriteXml( writer );
+
+    if ( includeFeatures ) {
+
+        for ( i = 0; i < schemas->GetCount(); i++ ) {
+            FdoFeatureSchemaP schema = schemas->GetItem( i );
+            FdoClassesP classes = schema->GetClasses();
+
+            for ( j = 0; j < classes->GetCount(); j++ ) {
+                FdoClassDefinitionP classDef = classes->GetItem( j );
+
+                if ( !classDef->GetIsAbstract() ) {
+                    if ( (FdoDataPropertiesP(classDef->GetIdentityProperties())->GetCount() > 0) ||
+                         (FdoPtr<FdoReadOnlyDataPropertyDefinitionCollection>(classDef->GetBaseIdentityProperties())->GetCount() > 0)
+                    ) {
+
+                        FdoPtr<FdoISelect> selCmd = (FdoISelect*) connection->CreateCommand( FdoCommandType_Select );
+                        selCmd->SetFeatureClassName(classDef->GetQualifiedName());
+                        FdoPtr<FdoIFeatureReader> rdr = selCmd->Execute();
+
+                        FdoXmlFeatureWriterP featureWriter = FdoXmlFeatureWriter::Create(writer);
+                        FdoXmlFeatureFlagsP featureFlags = FdoXmlFeatureFlags::Create();
+                        FdoXmlFeatureSerializer::XmlSerialize( rdr, featureWriter, featureFlags );
+                    }
+                }
+            }
+        }
+    }
+
 }
 
 // The following stylesheet sorts the output XML files so that the Spatial 
@@ -2348,5 +2437,22 @@ FdoStringP UnitTestUtil::GetNlsObjectName( FdoStringP inName )
 {
 	return UnitTestUtil::InfoUtilConnection->GetNlsObjectName( inName );
 }
+
+FdoSmPhScInfoP UnitTestUtil::CreateScInfo( FdoInt64 srid, double minx, double miny, double maxx, double maxy, double xtol, double ztol )
+{
+    FdoSmPhScInfoP scinfo = FdoSmPhScInfo::Create();
+    scinfo->mSrid = srid;
+    scinfo->mCoordSysName = L"";
+
+   	FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoIEnvelope>          env = gf->CreateEnvelopeXY( minx, miny, maxx, maxy );
+       FdoPtr<FdoIGeometry>		  geom = gf->CreateGeometry(env); 
+    scinfo->mExtent = gf->GetFgf(geom);
+    scinfo->mXYTolerance = xtol;
+    scinfo->mZTolerance = ztol;
+
+    return scinfo;
+}
+
 
 

@@ -361,7 +361,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
         else
         {
             bool isGeomProp = (propType == FdoPropertyType_GeometricProperty);
-            updateString += mFdoConnection->GetBindString( bindIndex++, isGeomProp );
+            updateString += mFdoConnection->GetBindString( bindIndex++, propertyDefinition );
 
 			if ( isGeomProp )
 			{
@@ -674,7 +674,11 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                             if ( ba )
                             {
                                 mConnection->GetSchemaUtil()->SetActiveSpatialContext( classDefinition, name );
-                                geom = gf->CreateGeometryFromFgf( ba );
+                                geom = mFdoConnection->TransformGeometry( 
+                                    FdoPtr<FdoIGeometry>(gf->CreateGeometryFromFgf(ba)), 
+                                    geomPropDef, 
+                                    false 
+                                );
 
                                 // Validate the input geometry
                                 mConnection->GetSchemaUtil()->CheckGeomPropOrdDimensionality( classDefinition, name, geom );

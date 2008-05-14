@@ -24,7 +24,8 @@
 #include "SpatialManager/FdoRdbmsSpatialManager.h"
 #include "FdoRdbmsSqlServerConnection.h"
 #include "FdoCommonOSUtil.h"
-#include "FdoRdbmsSpatialGeometryConverter.h"
+#include "FdoRdbmsSqlServerSpatialGeometryConverter.h"
+#include "FdoRdbmsSqlServerFunctionIsValid.h"
 
 #define SQLSERVER_CONVERT_WKB L".STAsBinary()"
 
@@ -143,7 +144,7 @@ FdoRdbmsSqlServerFilterProcessor::~FdoRdbmsSqlServerFilterProcessor(void)
 {
 }
 
-const FdoSmLpGeometricPropertyDefinition* FdoRdbmsSqlServerFilterProcessor::GetGeometricProperty( const FdoSmLpClassDefinition* currentClass, const wchar_t *geomPropName )
+const FdoSmLpGeometricPropertyDefinition* FdoRdbmsSqlServerFilterProcessor::GetGeometricProperty( const FdoSmLpClassDefinition* currentClass, const wchar_t *geomPropName ) const
 {
     const FdoSmLpGeometricPropertyDefinition* geom = NULL;
 
@@ -221,6 +222,8 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
         throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_230, "Spatial condition can only be used with feature classes"));
 
     const FdoSmLpGeometricPropertyDefinition* geomProp = GetGeometricProperty(classDefinition, FdoPtr<FdoIdentifier>(filter.GetPropertyName())->GetName());
+    const FdoSmPhColumn* geomColumn = geomProp ? geomProp->RefColumn() : (const FdoSmPhColumn*) NULL;
+    FdoStringP geomType = geomColumn ? geomColumn->GetTypeName() : FdoStringP(L"geometry");
     const FdoString* classTableName = classDefinition->GetDbObjectName();
     const FdoString* tableName = geomProp ? geomProp->GetContainingDbObjectName() : L""; // The geometry table name
     FdoStringP columnName = GetGeometryColumnNameForProperty(geomProp, true);
@@ -245,17 +248,35 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
 
     // SqlServer supports only 2D
     FdoPtr<FdoIGeometry> geom2D = geometryObj;
-	if ( geometryObj->GetDimensionality() != FdoDimensionality_XY )
+    if ( (geomType == L"geography") || (geometryObj->GetDimensionality() != FdoDimensionality_XY) )
 	{
-		FdoSpatialGeometryConverter *gc = new FdoRdbmsSqlServerSpatialGeometryConverter();
+		FdoSpatialGeometryConverter *gc = NULL;
+        
+        if ( geomType == L"geography" ) 
+            gc = new FdoRdbmsSqlServerSpatialGeographyConverter();
+        else
+            gc = new FdoRdbmsSqlServerSpatialGeometryConverter();
 
 		geom2D = gc->ConvertOrdinates( geometryObj, true, FdoDimensionality_XY, 0.0, 0.0);
         delete gc;
 	}
 
+    // Delimit column name with []. Can't use " when part of function.
+    buf += "[";
     buf += columnName;
-    buf += ".";
+    buf += "].";
  
+    // Geography type does not have an STIsValid() function.
+    if ( geomType == L"geometry" ) 
+    {
+        // Skip the invalid geometries otherwise any spatial query will fail.
+        // The user should run "Select * where IsValid() = 0" in order to find out the offending geometries.
+        buf += SQLSERVER_FUNCTION_ISVALID; 
+        buf += L"() = 1 AND [";
+        buf += columnName;
+        buf += "].";
+    }
+
     // What operation
     FdoSpatialOperations  spatialOp = filter.GetOperation();
     switch( spatialOp )
@@ -291,18 +312,25 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
             buf += "STOverlaps"; // REALLY?
             break;
         case FdoSpatialOperations_EnvelopeIntersects:
-            buf += "STRelate";
+            // TODO: No mapping function available. Filter() is a good candidate but it requires
+            // secondary filtering.
+            throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_111, "Unsupported spatial operation"));
             break;
         default:
             throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_111, "Unsupported spatial operation"));
     } // of switch Operation
 
     buf += "(";
-    buf += "geometry::STGeomFromText('";
+    buf += geomType;
+    buf += "::STGeomFromText('";
     buf += geom2D->GetText();
-    buf += "', 0)"; // TODO: SRID=0. 
-    buf += ")";
 
+    // Set the SRID
+	const FdoSmPhColumnP gColumn = ((FdoSmLpSimplePropertyDefinition*)geomProp)->GetColumn();
+    FdoSmPhColumnGeomP geomCol = gColumn.p->SmartCast<FdoSmPhColumnGeom>();
+    buf += FdoStringP::Format(L"', %ld)", geomCol->GetSRID());  
+
+    buf += ")";
     buf += "=1";
 
     AppendString((const wchar_t*)buf);
@@ -362,6 +390,9 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessFunction(FdoFunction& expr)
     if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_SPATIALEXTENTS) == 0)
         return ProcessSpatialExtentsFunction(expr);
 
+    if (FdoCommonOSUtil::wcsicmp(funcName, FDORDBMSSQLSERVER_FUNCTION_ISVALID) == 0)
+        return ProcessIsValidFunction(expr);
+
     // The functions that do not require special handling use the
     // standard processing
     FdoRdbmsFilterProcessor::ProcessFunction(expr);
@@ -416,14 +447,38 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialExtentsFunction (FdoFunctio
     // Assume just one argument. TODO trow exception.
     FdoPtr<FdoIdentifier>   id = (FdoIdentifier *)(exprCol->GetItem(0));
     
+    // Delimit column name with []. Can't use " when part of function.
+    AppendString(L"[");
     AppendString( PropertyNameToColumnName( id->GetName() ) );
-    AppendString(L".");
+    AppendString(L"].");
     AppendString(SQLSERVER_FUNCTION_SPATIALEXTENTS);
     AppendString(OPEN_PARENTH);
     AppendString(CLOSE_PARENTH);
 
     AppendString(SQLSERVER_CONVERT_WKB);
 }
+
+void FdoRdbmsSqlServerFilterProcessor::ProcessIsValidFunction (FdoFunction& expr)
+{
+    // SQL Server uses a different native function name for the expression function
+    // IsValid. 
+    FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+
+    // There are problems processing booleans. Use integers instead.
+    AppendString(L"ABS(");
+
+    // Assume just one argument. TODO throw exception if not geometry column.
+    FdoPtr<FdoIdentifier>   id = (FdoIdentifier *)(exprCol->GetItem(0));
+    
+    AppendString( PropertyNameToColumnName( id->GetName() ) );
+    AppendString(L".");
+    AppendString(SQLSERVER_FUNCTION_ISVALID);
+    AppendString(OPEN_PARENTH);
+    AppendString(CLOSE_PARENTH);
+
+    AppendString(CLOSE_PARENTH);
+}
+
 
 void FdoRdbmsSqlServerFilterProcessor::ProcessToDoubleFunction (FdoFunction& expr)
 {
@@ -674,6 +729,8 @@ FdoString *FdoRdbmsSqlServerFilterProcessor::MapFdoFunction2SqlServerFunction (F
         return SQLSERVER_FUNCTION_CEIL;
 	if (FdoCommonOSUtil::wcsicmp(f_name, FDO_FUNCTION_LENGTH) == 0 )
         return SQLSERVER_FUNCTION_LENGTH;
+	if (FdoCommonOSUtil::wcsicmp(f_name, L"IsValid") == 0 )
+        return SQLSERVER_FUNCTION_ISVALID;
 
     return f_name;
 }
@@ -697,6 +754,7 @@ bool FdoRdbmsSqlServerFilterProcessor::IsAggregateFunctionName(FdoString* wFunct
 
 bool FdoRdbmsSqlServerFilterProcessor::IsNotNativeSupportedFunction(FdoString *wFunctionName) const
 {
+
     for (int i=0; sqlServerUnsupportedFdoFunctions[i]; i++)
         if (FdoCommonOSUtil::wcsicmp(sqlServerUnsupportedFdoFunctions[i], wFunctionName) == 0)
             return true;
@@ -712,7 +770,7 @@ bool FdoRdbmsSqlServerFilterProcessor::HasNativeSupportedFunctionArguments(FdoFu
     // the result back to the calling routine. Otherwise, the arguments are always 
     // deemed valid and the corresponding indication is returned.
 
-    return true;;
+    return true;
 }
 
 
@@ -799,13 +857,17 @@ FdoStringP FdoRdbmsSqlServerFilterProcessor::GetGeometryString( FdoString* dbCol
 
     FdoStringP   wrappedName = FdoStringP();
 
+    // Delimit column name with []. Can't use " when part of function.
+    wrappedName += L"[";
     wrappedName += columnName;
+    wrappedName += L"]";
 
     wrappedName += FdoStringP(SQLSERVER_CONVERT_WKB);
     
     // Use the column name as alias 
-    wrappedName += L" as ";
+    wrappedName += L" as \"";
     wrappedName += columnName;
+    wrappedName += L"\"";
 
     return wrappedName;
 }

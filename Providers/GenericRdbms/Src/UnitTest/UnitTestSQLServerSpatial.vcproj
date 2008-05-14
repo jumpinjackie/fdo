@@ -642,6 +642,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Common\FdoSpatialContextTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\FdoSpatialContextTest.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Common\FdoSqlCmdTest.cpp"
 				>
 			</File>
@@ -935,6 +943,14 @@
 			</File>
 			<File
 				RelativePath=".\SQLServerSpatial\SqlServerFdoSelectTest.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SQLServerSpatial\SqlServerFdoSpatialContextTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SQLServerSpatial\SqlServerFdoSpatialContextTest.h"
 				>
 			</File>
 			<File

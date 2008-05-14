@@ -52,6 +52,17 @@ FdoSmPhDbObjectP FdoSmPhRow::GetDbObject()
 	return mDbObject;
 }
 
+void FdoSmPhRow::Clear()
+{
+    FdoSmPhFieldsP fields = GetFields();
+    FdoInt32 cidx;
+    for ( cidx = 0; cidx < fields->GetCount(); cidx++ ) {
+        FdoSmPhFieldP field = fields->GetItem(cidx);
+        field->Clear();
+    }
+
+}
+
 // These functions first check if the column exists. Existing columns are simply
 // returned. If the column does not exist then a temporary column (not added to 
 // the database object) is created.

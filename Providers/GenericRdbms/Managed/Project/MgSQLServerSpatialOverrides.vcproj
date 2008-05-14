@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="MgSQLServerSpatialOverrides"
-	ProjectGUID="{544B6B73-CB5F-46A8-964B-B484A99B921E}"
+	ProjectGUID="{D6CC3692-F82F-46DF-B13F-FA0FD72B95C9}"
 	RootNamespace="SQLServerSpatialOverrides"
 	Keyword="ManagedCProj"
 	>

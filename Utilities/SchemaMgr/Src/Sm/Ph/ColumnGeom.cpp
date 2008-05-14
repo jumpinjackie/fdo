@@ -30,11 +30,69 @@ FdoSmPhColumnGeom::FdoSmPhColumnGeom(
     mbHasElevation(bHasElevation),
     mbHasMeasure(bHasMeasure),
     mScInfo(AssociatedSCInfo),
-    mSpatialIndex(NULL)
+    mSpatialIndex(NULL),
+    mbIsPrimary(false)
 {
 }
 
 FdoSmPhColumnGeom::~FdoSmPhColumnGeom(void)
+{
+}
+
+FdoSmPhScInfoP	FdoSmPhColumnGeom::GetSpatialContextInfo()
+{
+    if ( !mScInfo ) {
+        // No Spatial context info set yet so set it from the associated spatial context.
+        // TODO: merge FdoSmPhScInfo and FdoSmPhSpatialContext since they provide
+        // similar information.
+
+        FdoSmSchemaElement* dbObject = (FdoSmSchemaElement*)(GetParent());
+        
+        if ( dbObject ) {
+            FdoSmPhOwner* owner         = (FdoSmPhOwner*)(dbObject->GetParent());
+        
+            if ( owner ) {
+                FdoStringP    dbObjectName  = dbObject->GetName();
+
+                // Get Spatial Context Geometry assocation, use it to get the spatial context
+                FdoSmPhSpatialContextGeomP scGeom = owner->FindSpatialContextGeom(dbObjectName, GetName());
+
+                if ( scGeom ) {
+                    FdoSmPhSpatialContextP sc = owner->FindSpatialContext( scGeom->GetScId() );
+
+                    if ( sc ) {
+                        // Associated Spatial Context was found.
+                        mScInfo = FdoSmPhScInfo::Create();
+                        mScInfo->mSrid = sc->GetSrid();
+                        mScInfo->mCoordSysName = sc->GetCoordinateSystem();
+                        mScInfo->mExtent = sc->GetExtent();
+                        mScInfo->mXYTolerance = sc->GetXYTolerance();
+                        mScInfo->mZTolerance = sc->GetZTolerance();            
+                    }
+                }
+            }
+        }
+    }
+
+    return mScInfo;
+}
+
+void FdoSmPhColumnGeom::SetPrimary( bool isPrimary )
+{
+    mbIsPrimary = isPrimary;
+
+    // Is-primary status is persisted in the spatial index name.
+    FdoSmPhSpatialIndexP si = GetSpatialIndex();
+
+    if ( si ) {
+        if ( isPrimary != si->GetIsPrimary() )
+            // New status and status on current spatial index are different.
+            // Regenerate the spatial index. This causes the spatial index name to change.
+            RegenSpatialIndex();
+    }
+}
+
+void FdoSmPhColumnGeom::RegenSpatialIndex()
 {
 }
 
@@ -156,9 +214,12 @@ FdoStringP FdoSmPhColumnGeom::UniqueIndexName()
         dynamic_cast<const FdoSmPhOwner*>(table->GetParent());
 
     // Start with a name that is a concatenation of the table and column
-    // names plus "_SI" suffix.
+    // names plus a suffix. The primary status of this column is encoded by
+    // the suffix:
+    //      gsi - is primary
+    //      is - is not primary
 
-    FdoStringP suffix( L"_SI", true );
+    FdoStringP suffix = mbIsPrimary ? FdoStringP( L"_gsi", true ): FdoStringP( L"_si", true );
     FdoStringP tableName = table->GetName();
     FdoStringP colName = GetName();
     FdoSize tableLen = tableName.GetLength();
@@ -187,7 +248,7 @@ FdoStringP FdoSmPhColumnGeom::UniqueIndexName()
         (FdoString*) suffix
     );
 
-    // Adjust it to be unique.
+    // Adjust it to be unique if the datastore has MetaSchema.
     indexName = ((FdoSmPhOwner*)owner)->UniqueDbObjectName( indexName );
 
     return indexName;

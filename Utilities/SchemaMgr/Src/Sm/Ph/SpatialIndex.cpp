@@ -34,6 +34,21 @@ FdoSmPhSpatialIndex::~FdoSmPhSpatialIndex(void)
 {
 }
 
+bool FdoSmPhSpatialIndex::GetIsPrimary()
+{
+    bool isPrimary = false;
+
+    FdoStringP indexName = FdoStringP(GetName()).Lower();
+    FdoSize nameLength = indexName.GetLength();
+
+    // IsPrimary setting encoded in spatial context name; true if contains "_gsi_" 
+    // or ends with "_gsi".
+    if ( indexName.Contains(L"_gsi_") || (indexName.Mid(nameLength - 4, 4) == L"_gsi") ) 
+        isPrimary = true;
+
+    return isPrimary;
+}
+
 void FdoSmPhSpatialIndex::XMLSerialize( FILE* xmlFp, int ref ) const
 {
 	fprintf( xmlFp, "<SpatialIndex name=\"%s\" unique=\"%s\" table=\"%s\">\n",

@@ -83,19 +83,7 @@ void SchemaMgrTests::testGenDefault ()
             UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX)
         );
 
-        FdoSmPhOwnerP owner = phMgr->FindOwner( datastore, L"", false );
-        if ( owner ) {
-            owner->SetElementState( FdoSchemaElementState_Deleted );
-            owner->Commit();
-        }
-
-        printf( "Creating schema ...\n" );
-
-        owner = database->CreateOwner(
-            datastore, 
-            false
-        );
-        owner->SetPassword( L"test" );
+        FdoSmPhOwnerP owner = UnitTestUtil::CreateDBNoMeta( mgr, datastore );
 
         FdoSmPhTableP table = owner->CreateTable( phMgr->GetDcDbObjectName(L"RTABLE1" ));
         SetLtLck(table, lt_mode);
@@ -1792,10 +1780,7 @@ void SchemaMgrTests::testSpatialContexts()
             FdoStringP(L"Fdo") + datastore
         );
 
-        if ( providerName == L"Oracle" ) 
-    		UnitTestUtil::Config2SortedFile( stream1, UnitTestUtil::GetOutputFileName( L"spatial_contexts1.xml" ), pSortScConfigSheet );
-        else
-    		UnitTestUtil::Stream2File( stream1, UnitTestUtil::GetOutputFileName( L"spatial_contexts1.xml" ) );
+   		UnitTestUtil::Config2SortedFile( stream1, UnitTestUtil::GetOutputFileName( L"spatial_contexts1.xml" ), pSortScConfigSheet );
 
         UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_SUFFIX );
 
@@ -1832,10 +1817,7 @@ void SchemaMgrTests::testSpatialContexts()
             FdoStringP(L"Fdo") + datastore
         );
 
-        if ( providerName == L"Oracle" ) 
-    		UnitTestUtil::Config2SortedFile( stream1, UnitTestUtil::GetOutputFileName( L"spatial_contexts2.xml" ), pSortScConfigSheet );
-        else
-            UnitTestUtil::Stream2File( stream1, UnitTestUtil::GetOutputFileName( L"spatial_contexts2.xml" ) );
+  		UnitTestUtil::Config2SortedFile( stream1, UnitTestUtil::GetOutputFileName( L"spatial_contexts2.xml" ), pSortScConfigSheet );
 
         UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_SUFFIX );
 
@@ -2175,18 +2157,7 @@ bool SchemaMgrTests::SupportsViewPkey()
 
 FdoSmPhScInfoP SchemaMgrTests::CreateSc( FdoInt64 srid, double minx, double miny, double maxx, double maxy, double xtol, double ztol )
 {
-    FdoSmPhScInfoP scinfo = FdoSmPhScInfo::Create();
-    scinfo->mSrid = srid;
-    scinfo->mCoordSysName = L"";
-
-   	FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-    FdoPtr<FdoIEnvelope>          env = gf->CreateEnvelopeXY( minx, miny, maxx, maxy );
-       FdoPtr<FdoIGeometry>		  geom = gf->CreateGeometry(env); 
-    scinfo->mExtent = gf->GetFgf(geom);
-    scinfo->mXYTolerance = xtol;
-    scinfo->mZTolerance = ztol;
-
-    return scinfo;
+    return UnitTestUtil::CreateScInfo( srid, minx, miny, maxx, maxy, xtol, ztol );
 }
 
 FdoInt64 SchemaMgrTests::GetSrid( int index )

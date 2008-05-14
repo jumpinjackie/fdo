@@ -165,6 +165,27 @@ FdoRdbmsOvColumn* SqlServerFdoApplySchemaTest::CreateOvColumn(FdoString* name)
     return FDO_SAFE_ADDREF(ovCol.p);
 }
 
+bool SqlServerFdoApplySchemaTest::CanApplyWithoutMetaSchema()
+{
+    return true;
+}
+
+bool SqlServerFdoApplySchemaTest::CanAddNotNullCol()
+{
+    // SqlServer does not allow not null columns to be added to existing tables,
+    // even if they are empty.
+    return false;
+}
+
+bool SqlServerFdoApplySchemaTest::CanDropCol()
+{
+    // Workaround for SQL Server 2008 problem where "alter table ... drop column ..."
+    // stops the server.
+    return false;
+}
+
+
+
 FdoStringP SqlServerFdoApplySchemaTest::LogicalPhysicalBend( FdoString* inFile )
 {
     FdoStringP outFile = UnitTestUtil::GetOutputFileName( inFile );

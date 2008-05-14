@@ -120,7 +120,7 @@ int DataTypeTests::do_rdbi_connect (const char* dataStoreName, const char* userN
     return (0);
 }
 
-char *DataTypeTests::get_bind_var (int n)
+char *DataTypeTests::get_bind_var (int n, int rdbiType)
 {
     CPPUNIT_FAIL ("naked get_bind_var");
     return ("");
@@ -194,7 +194,7 @@ void DataTypeTests::roundtrip_insert (
         CPPUNIT_ASSERT_MESSAGE ("rdbi_execute failed", RDBI_SUCCESS == rdbi_execute (mRdbiContext, cursor, 1, 0));		
 
         // insert a row with the data
-        sprintf (statement, "insert into bar values (%s, %s)", get_bind_var (1), get_bind_var (2));
+        sprintf (statement, "insert into bar values (%s, %s)", get_bind_var (1,rdbi_type), get_bind_var (2,rdbi_type));
 
         // Set the null indicators
         (void) rdbi_set_nnull (mRdbiContext, (void *)&null_ind1, 0, 0 );
@@ -211,7 +211,7 @@ void DataTypeTests::roundtrip_insert (
         }
 
         // describe the select
-        sprintf (statement, "select * from bar");
+        sprintf (statement, get_select_statement(rdbi_type));
 
         CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, statement));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct_Ex (mRdbiContext, cursor, 1, sizeof (statement), statement, &type, &bytes, &null_ok));
@@ -328,7 +328,7 @@ void DataTypeTests::roundtrip_update (
         CPPUNIT_ASSERT_MESSAGE ("rdbi_est_cursor failed", RDBI_SUCCESS == rdbi_est_cursor (mRdbiContext, &cursor));
 
         // insert a row with the data
-        sprintf (statement, "update bar set xyz1= %s, xyz2 = %s", get_bind_var (1), get_bind_var (2));
+        sprintf (statement, "update bar set xyz1= %s, xyz2 = %s", get_bind_var (1,rdbi_type), get_bind_var (2,rdbi_type));
 
         // Set the null indicators
         (void) rdbi_set_nnull (mRdbiContext, (void *)&null_ind1, 0, 0 );

@@ -14,10 +14,10 @@
  Cannot override object property 'OverridesA:OvClassH.ObjectB' prefix to invalid name 'Bad Prefix Name' (must contain only ([a-z][A-Z][0-9]_$)) 
  Cannot override object property 'OverridesA:OvClassH.ObjectA' prefix to name that exceeds 30 characters: 'PrefixTooLong456789012345678901' 
  Cannot override class 'OverridesA:OvClassH' table to invalid name 'GermänTableName' (must contain only ([a-z][A-Z][0-9]_$)) 
- Cannot override property 'OverridesA:OvClassF.GeomF' column to name that exceeds 30 characters: 'geomtoolong23456789012345678901' 
+ Cannot override property 'OverridesA:OvClassF.GeomF' column to name that exceeds 28 characters: 'geomtoolong234567890123456789' 
  Column name 'dataa' is already used by another property, cannot assign to property 'OverridesA:OvClassF.DataF' 
  Cannot override property 'OverridesA:OvClassE.DataE' column to RDBMS reserved name 'initial' 
- Cannot override property 'OverridesA:OvClassD.DataD' column to name that exceeds 30 characters: 'toolong890123456789012345678901' 
+ Cannot override property 'OverridesA:OvClassD.DataD' column to name that exceeds 28 characters: 'toolong890123456789012345678901' 
  Cannot override class 'OverridesA:OvClassD' table to RDBMS reserved name 'exclusive' 
  Cannot override property 'OverridesA:OvClassC.DataC' column to invalid name 'GermänColumnName' (must contain only ([a-z][A-Z][0-9]_$)) 
  Cannot override class 'OverridesA:OvClassC' table to name that exceeds 30 characters: 'toolong890123456789012345678901' 

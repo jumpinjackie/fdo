@@ -272,7 +272,7 @@
 </xs:element>
 <xs:element name="BOOL_COLUMN" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="fdo:byte"/>
+<xs:restriction base="xs:boolean"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -456,7 +456,7 @@
 </xs:element>
 <xs:element name="REAL_COLUMN" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="xs:double"/>
+<xs:restriction base="xs:float"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -464,7 +464,7 @@
 </xs:element>
 <xs:element name="SINGLE_COLUMN" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="xs:double"/>
+<xs:restriction base="xs:float"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>

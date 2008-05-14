@@ -130,7 +130,15 @@ bool FdoSmPhRdPropertyReader::ReadNext()
                         field = pFields->GetItem(L"isnullable");
                         field->SetFieldValue( column->GetNullable() ? L"1" : L"0" );
 
+                        // No MetaSchema so column is fixed
                         field = pFields->GetItem(L"isfixedcolumn");
+                        field->SetFieldValue( L"1" );
+
+                        // Column may have been created by Schema Manager,
+                        // there is no way of knowing for sure.
+                        // However, since there is no MetaSchema, assume
+                        // that Schema Manager can take ownership of it.
+                        field = pFields->GetItem(L"iscolumncreator");
                         field->SetFieldValue( L"1" );
 
                         field = pFields->GetItem(L"idposition");

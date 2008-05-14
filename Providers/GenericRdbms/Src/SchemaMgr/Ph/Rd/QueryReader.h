@@ -78,7 +78,7 @@ public:
     // Get an double precision column value by name.
     // Value for current row is returned.
     // Returns 0.0 if value is null.
-    double GetDouble( FdoStringP tableName, FdoStringP fieldNamee );
+    double GetDouble( FdoStringP tableName, FdoStringP fieldName );
 
     // Get a boolean column value by name.
     // Value for current row is returned.
@@ -95,6 +95,10 @@ public:
 protected:
     // unused constructor needed only to build on Linux
     FdoSmPhRdGrdQueryReader() {}
+
+    // Returns true if the value for the given field was overridden after
+    // it was fetched from the RDBMS.
+    bool FieldIsModified( FdoStringP tableName, FdoStringP fieldName );
 
     FdoSmPhRdGrdRowArraysP mFetches;
 

@@ -23,7 +23,7 @@
 #include <Sm/Ph/CoordinateSystem.h>
 #include <Sm/NamedCollection.h>
 
-// Represents a collection of Spatial Contexts in Physical form.
+// Represents a collection of Coordinate Systems.
 class FdoSmPhCoordinateSystemCollection : public FdoSmNamedCollection<FdoSmPhCoordinateSystem>
 {
 public:
@@ -32,11 +32,15 @@ public:
 
 	virtual ~FdoSmPhCoordinateSystemCollection(void);
 
-    // Given a Spatial Context ID, return the spatial context.
-    // Returns NULL if spatial context not found.
+    // Given a  Spatial Reference ID, return the coordinate system.
+    // Returns NULL if coordinate system not found.
     FdoSmPhCoordinateSystemP FindItemById( FdoInt64 srid );
 
-    // Overridden to update spatial context id to name map.
+    // Given a  well-known text string, return the coordinate system.
+    // Returns NULL if coordinate system not found.
+    FdoSmPhCoordinateSystemP FindItemByWkt( FdoStringP wkt );
+
+    // Overridden to update coordinate system id to name map.
     virtual FdoInt32 Add( FdoSmPhCoordinateSystem* value);
 
 private:
@@ -44,7 +48,7 @@ private:
     void AddToIdMap( FdoSmPhCoordinateSystem* coordSys );
     void RemoveFromIdMap( FdoSmPhCoordinateSystem* coordSys );
 
-    // MAP for fast lookup of spatial contexts by id.
+    // MAP for fast lookup of coordinate systems by id.
     FdoDictionaryP mIdMap;
 };
 

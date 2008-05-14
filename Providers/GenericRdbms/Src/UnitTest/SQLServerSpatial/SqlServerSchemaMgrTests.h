@@ -31,6 +31,7 @@ class SqlServerSchemaMgrTests : public SchemaMgrTests
     void testSpatialContextsGeog();
 
     virtual StaticConnection* CreateStaticConnection();
+    virtual void InsertSridRow( FdoIConnection* fdoConn, FdoStringP tableName, FdoStringP geomColumnName, int sridIndex, int expectedCount );
     virtual FdoIoStream* OverrideBend( FdoIoStream* stream1, FdoStringP oldOwnerPrefix, FdoStringP newOwnerPrefix );
     virtual void AddProviderColumns( FdoSmPhTableP table );
     virtual FdoStringP table2class( FdoSmPhGrdMgrP mgr, FdoStringP tableName );

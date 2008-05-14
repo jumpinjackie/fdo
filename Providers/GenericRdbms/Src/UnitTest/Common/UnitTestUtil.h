@@ -85,7 +85,8 @@ public:
 	static wchar_t *GetConnectionString(StringConnTypeRequest pTypeReq = Connection_WithDatastore, FdoString *suffix = L"", bool bAddExtraneousSpaces = false);
     static void CreateDB(bool addSchema = true, bool useBaseMapping=false, FdoString *suffix = L"", int lt_method = 0, bool lt_method_fixed = false );
 	static void CreateDB( FdoIConnection* connection, FdoString *datastore, FdoString *description, FdoString *password, char *schemaType, int local_lt_method );   
-	static FdoStringP GetEnviron(const char *name, FdoString *suffix = L"");
+    static FdoSmPhOwnerP CreateDBNoMeta( FdoSchemaManagerP sm, FdoString *datastore, FdoString *password = L"test" );
+    static FdoStringP GetEnviron(const char *name, FdoString *suffix = L"");
 	static void SetProvider( const char *providerName );
 
     // Set up and open a connection to a Database.
@@ -148,11 +149,25 @@ public:
     //      false - otherwise.
     static bool DatastoreExists(FdoString *suffix = L"");
     
+    static void CreateSpatialContext( 
+        FdoIConnection* connection,
+        FdoStringP scName, 
+        FdoStringP csysName, 
+        double xmin, double ymin, double xmax, double ymax, 
+        FdoStringP csysWKT = L"", 
+        double xyTol = 0.001, double zTol = 0.001 
+    );
+
+    static void DeleteSpatialContext( 
+        FdoIConnection* connection,
+        FdoStringP scName
+    );
+
 	static FdoIConnection* GetConnection(FdoString *suffix = L"", bool bCreate = false, bool bRecreateData = false, StringConnTypeRequest pTypeReq = Connection_WithDatastore, int lt_method = 0, bool lt_method_fixed = false );
     static StaticConnection* NewStaticConnection();
     static SchemaOverrideUtilP NewSchemaOverrideUtil();
 
-	// compares two doubles for *approximate* equality:
+    // compares two doubles for *approximate* equality:
     static bool fuzzyEqual (const double d1, const double d2);
 
 	// Compare an output file against its master (expected) copy.
@@ -187,7 +202,8 @@ public:
         // These schemas often have a user name in their names, which must be
         // removed.
         FdoString* oldDsSchemaName = NULL,
-        FdoString* newDsSchemaName = L"AutoGen"
+        FdoString* newDsSchemaName = L"AutoGen",
+        bool includeFeatures = false
     );
 
     static void Config2SortedFile( FdoIoStream* stream, FdoString* fileName, char* styleSheetString = NULL );
@@ -232,6 +248,8 @@ public:
     static wchar_t GetNlsChar( int index );
     static FdoStringP GetNlsValue( int index );
     static FdoStringP GetNlsObjectName( FdoStringP inName );
+
+    static FdoSmPhScInfoP CreateScInfo( FdoInt64 srid, double minx, double miny, double maxx, double maxy, double xtol, double ztol );
 
 private:
 	static char* pSortConfigSheet;

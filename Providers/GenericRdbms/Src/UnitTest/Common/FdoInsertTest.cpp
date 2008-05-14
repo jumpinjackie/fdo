@@ -1867,7 +1867,8 @@ void FdoInsertTest::featureReaderTest()
     catch (FdoException *exp)
     {
         printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
-        connection->Close ();
+        if ( connection ) 
+            connection->Close ();
         FDO_SAFE_RELEASE(classes);
         FDO_SAFE_RELEASE(schema);
         FDO_SAFE_RELEASE(applySchemaCmd);

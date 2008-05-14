@@ -47,6 +47,7 @@ public:
     // Deactivates the index reader
     ~FdoSmPhRdSqsIndexReader(void);
 
+    virtual FdoSmPhIndexType GetIndexType();
     FdoStringP GetString( FdoStringP tableName, FdoStringP fieldName );
 
 protected:

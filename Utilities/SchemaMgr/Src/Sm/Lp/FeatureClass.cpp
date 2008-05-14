@@ -195,9 +195,6 @@ void FdoSmLpFeatureClass::PostFinalize()
                 geomProp = GetProperties()->FindItem( mGeometryPropertyName )->SmartCast<FdoSmLpGeometricPropertyDefinition>(true);
     				
 			    if ( geomProp ) {
-				    // Set the table and column to indicate that this is the main
-				    // geometry for the class.
-//TODO: 		    pGeomProp->SetPrimary();
 				    mGeometryProperty = geomProp;
 
                     if ( mGeometryProperty->GetElementState() == FdoSchemaElementState_Deleted ) {
@@ -214,6 +211,17 @@ void FdoSmLpFeatureClass::PostFinalize()
 				    AddGeomPropNotFoundError( mGeometryPropertyName );
 			    }
 			}
+            if ( GetElementState() != FdoSchemaElementState_Unchanged ) {
+
+                // Update the is-primary (main) geometry status for all geometric properties
+                // in case the main geometry for this feature class has changed.
+                for ( i = 0; i < GetProperties()->GetCount(); i++ ) {
+                    FdoSmLpGeometricPropertyP currGeomProp = GetProperties()->GetItem( i )->SmartCast<FdoSmLpGeometricPropertyDefinition>(true);
+
+                    if ( currGeomProp )
+                        currGeomProp->SetPrimary( wcscmp(currGeomProp->GetName(), mGeometryPropertyName) == 0 );
+                }
+            }
         }
         else {
             for ( i = 0; i < GetProperties()->GetCount(); i++ ) {
@@ -303,6 +311,7 @@ void FdoSmLpFeatureClass::PostFinalize()
 	    if ( GetIdentityProperties()->GetCount() == 0 ) 
 		    AddNoIdError();
 	}
+
 }
 
 void FdoSmLpFeatureClass::AddMultiGeomPropError( 

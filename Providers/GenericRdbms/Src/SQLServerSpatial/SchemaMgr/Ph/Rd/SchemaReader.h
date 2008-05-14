@@ -46,11 +46,6 @@ public:
 
     bool ReadNext();
 
-    // Get a string column value by name.
-	// Value for current row is returned.
-	// Returns L"" if value is null. 
-	virtual FdoStringP GetString( FdoStringP tableName, FdoStringP fieldName );
-
 protected:
     //Unused constructor needed only to build on Linux
     FdoSmPhRdSqsSchemaReader() {}
@@ -58,7 +53,7 @@ protected:
 private:
     FdoSmPhRowsP    mRows;
     FdoSmPhOwnerP   mOwner;
-    bool            mDsInfo;
+    bool            mDsEmpty;
 };
 
 typedef FdoPtr<FdoSmPhRdSqsSchemaReader> FdoSmPhRdSqsSchemaReaderP;
