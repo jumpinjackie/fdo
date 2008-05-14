@@ -1,0 +1,19 @@
+ Schema dbo has errors; cannot apply it 
+ Column {USER_DS}_apply_no_meta.dbo.Entity.FeatId has conditional rows or rows with non-null values, cannot delete its property 
+ Column {USER_DS}_apply_no_meta.dbo.Entity.Layer has conditional rows or rows with non-null values, cannot delete its property 
+ Column {USER_DS}_apply_no_meta.dbo.Entity.FeatId has conditional rows or rows with non-null values, cannot delete its property 
+ Cannot delete table "dbo"."Entity" because it has rows 
+ Column {USER_DS}_apply_no_meta.dbo.Driveway.FeatureId has conditional rows or rows with non-null values, cannot delete its property 
+ Column {USER_DS}_apply_no_meta.dbo.Driveway.Pav'd has conditional rows or rows with non-null values, cannot delete its property 
+ Column {USER_DS}_apply_no_meta.dbo.Driveway.FeatureId has conditional rows or rows with non-null values, cannot delete its property 
+ Cannot delete table "dbo"."Driveway" because it has rows 
+ Column {USER_DS}_apply_no_meta.dbo.AcDbEntity.FeatId has conditional rows or rows with non-null values, cannot delete its property 
+ Column {USER_DS}_apply_no_meta.dbo.AcDbEntity.Layer has conditional rows or rows with non-null values, cannot delete its property 
+ Column {USER_DS}_apply_no_meta.dbo.AcDbEntity.FeatId has conditional rows or rows with non-null values, cannot delete its property 
+ Cannot delete table "dbo"."AcDbEntity" because it has rows 
+ Column {USER_DS}_apply_no_meta.dbo.1-8 School.FeatureId has conditional rows or rows with non-null values, cannot delete its property 
+ Column {USER_DS}_apply_no_meta.dbo.1-8 School.FeatureId has conditional rows or rows with non-null values, cannot delete its property 
+ Column {USER_DS}_apply_no_meta.dbo.1-8 School.# Rooms has conditional rows or rows with non-null values, cannot delete its property 
+ Column {USER_DS}_apply_no_meta.dbo.1-8 School.FeatureId has conditional rows or rows with non-null values, cannot delete its property 
+ Cannot delete table "dbo"."1-8 School" because it has rows 
+ Cannot delete default feature schema 'dbo' from datastore '{USER_DS}_apply_no_meta'
