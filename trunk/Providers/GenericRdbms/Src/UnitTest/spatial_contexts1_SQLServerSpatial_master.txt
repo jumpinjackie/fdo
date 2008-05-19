@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
+<gml:DerivedCRS/>
+<gml:DerivedCRS/>
+<gml:DerivedCRS/>
+<gml:DerivedCRS/>
+<gml:DerivedCRS/>
+<gml:DerivedCRS/>
+<gml:DerivedCRS/>
+<xs:schema xmlns:dbo="http://fdo.osgeo.org/schemas/feature/dbo" targetNamespace="http://fdo.osgeo.org/schemas/feature/dbo" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:element name="table1" type="dbo:table1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table1Key">
+<xs:selector xpath=".//table1"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="table2" type="dbo:table2Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table2Key">
+<xs:selector xpath=".//table2"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="table3" type="dbo:table3Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table3Key">
+<xs:selector xpath=".//table3"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="table4" type="dbo:table4Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table4Key">
+<xs:selector xpath=".//table4"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="table5" type="dbo:table5Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table5Key">
+<xs:selector xpath=".//table5"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="table1Type" abstract="false" fdo:hasGeometry="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="ID">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="GEOM_COLUMN1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-1001.000000 -1002.000000</gml:pos>
+<gml:pos>
+1001.000000 1002.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
+</xs:element>
+<xs:element name="GEOM_COLUMN2" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-1001.000000 -1002.000000</gml:pos>
+<gml:pos>
+1001.000000 1002.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
+</xs:element>
+<xs:element name="GEOM_COLUMN3" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-1001.000000 -1002.000000</gml:pos>
+<gml:pos>
+1001.000000 1002.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="Greek">
+<gml:srsName>
+Greek</gml:srsName>
+<fdo:WKT>
+GEOGCS["Greek", DATUM["Greek", ELLIPSOID["Bessel 1841", 6377397.155, 299.1528128]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.0174532925199433]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
+</xs:element>
+<xs:element name="GEOM_COLUMN4" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-2001.000000 -1002.000000</gml:pos>
+<gml:pos>
+1001.000000 1002.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
+</xs:element>
+<xs:element name="GEOM_COLUMN5" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-1001.000000 -2002.000000</gml:pos>
+<gml:pos>
+1001.000000 1002.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
+</xs:element>
+<xs:element name="GEOM_COLUMN6" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-1001.000000 -1002.000000</gml:pos>
+<gml:pos>
+2001.000000 1002.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
+</xs:element>
+<xs:element name="GEOM_COLUMN7" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-1001.000000 -1002.000000</gml:pos>
+<gml:pos>
+1001.000000 2002.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
+</xs:element>
+<xs:element name="GEOM_COLUMN8" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-1001.000000 -1002.000000</gml:pos>
+<gml:pos>
+1001.000000 1002.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="table2Type" abstract="false" fdo:hasGeometry="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="ID">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="GEOM_COLUMN1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-1001.000000 -1002.000000</gml:pos>
+<gml:pos>
+1001.000000 1002.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
+</xs:element>
+<xs:element name="GEOM_COLUMN2" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-1001.000000 -1002.000000</gml:pos>
+<gml:pos>
+1001.000000 1002.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
+</xs:element>
+<xs:element name="GEOM_COLUMN3" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-1001.000000 -1002.000000</gml:pos>
+<gml:pos>
+1001.000000 1002.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="Greek">
+<gml:srsName>
+Greek</gml:srsName>
+<fdo:WKT>
+GEOGCS["Greek", DATUM["Greek", ELLIPSOID["Bessel 1841", 6377397.155, 299.1528128]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.0174532925199433]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="table3Type" abstract="false" fdo:hasGeometry="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="ID">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="GEOM_COLUMN1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-1001.000000 -1002.000000</gml:pos>
+<gml:pos>
+1001.000000 1002.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
+</xs:element>
+<xs:element name="GEOM_COLUMN2" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-1001.000000 -1002.000000</gml:pos>
+<gml:pos>
+1001.000000 1002.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="Greek">
+<gml:srsName>
+Greek</gml:srsName>
+<fdo:WKT>
+GEOGCS["Greek", DATUM["Greek", ELLIPSOID["Bessel 1841", 6377397.155, 299.1528128]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.0174532925199433]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="table4Type" abstract="false" fdo:hasGeometry="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="ID">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="GEOM_COLUMN1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-1001.000000 -1002.000000</gml:pos>
+<gml:pos>
+1001.000000 2002.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
+</xs:element>
+<xs:element name="GEOM_COLUMN2" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-1001.000000 -1002.000000</gml:pos>
+<gml:pos>
+1001.000000 3002.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="Greek">
+<gml:srsName>
+Greek</gml:srsName>
+<fdo:WKT>
+GEOGCS["Greek", DATUM["Greek", ELLIPSOID["Bessel 1841", 6377397.155, 299.1528128]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.0174532925199433]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="table5Type" abstract="false" fdo:geometryName="GEOM_COLUMN1">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="ID">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="GEOM_COLUMN1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-1001.000000 -1002.000000</gml:pos>
+<gml:pos>
+1001.000000 1002.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+</xs:schema>
+</fdo:DataStore>

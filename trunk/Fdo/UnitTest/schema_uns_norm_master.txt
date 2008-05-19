@@ -1,0 +1,22 @@
+Error reading schema 'unsupported' from XML, element 'attributeGroup' in xs:schema not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'attribute' in xs:schema not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'redefine' in xs:schema not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'notation' in xs:schema not supported by FDO. 
+Error reading schema 'unsupported' from XML, global element xs:schema/xs:element[@name=BadElement] type is from a different schema: 'http://www.w3.org/2001/XMLSchema'. 
+Error reading schema 'unsupported' from XML, global element xs:schema/xs:element[@name=BadElement] type must be 'BadElement' or 'BadElementType'. 
+Error reading schema 'unsupported' from XML, global element xs:schema/xs:element[@name=BadElement2] type must be 'BadElement2' or 'BadElement2Type'. 
+Error reading schema 'unsupported' from XML, global element xs:schema/xs:element[@name=CrossSchema] type is from a different schema: 'http://fdo.osgeo.org/schemas/feature/other'. 
+Error reading schema 'unsupported' from XML, xs:schema/xs:complexType[@name=BadWithSimpleContent]/@mixed value 'true' not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'attributeGroup' in xs:schema/xs:complexType[@name=BadWithGroup] not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'attribute' in xs:schema/xs:complexType[@name=BadWithGroup] not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'anyAttribute' in xs:schema/xs:complexType[@name=BadWithGroup] not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'all' in xs:schema/xs:complexType[@name=BadWithAll] not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'choice' in xs:schema/xs:complexType[@name=BadWithChoice] not supported by FDO. 
+Error reading schema 'unsupported' from XML, xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=BadCount]/@maxOccurs value '5' not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'union' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=DataProp]/xs:simpleType not supported by FDO. 
+Error reading schema 'unsupported' from XML, xs:schema/xs:complexType[@name=BadSubClass]/xs:complexContent/@mixed value 'true' not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'attributeGroup' in xs:schema/xs:complexType[@name=BadSubClassWithGroup]/xs:complexContent/xs:extension not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'attribute' in xs:schema/xs:complexType[@name=BadSubClassWithGroup]/xs:complexContent/xs:extension not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'anyAttribute' in xs:schema/xs:complexType[@name=BadSubClassWithGroup]/xs:complexContent/xs:extension not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'all' in xs:schema/xs:complexType[@name=BadSubClassWithAll]/xs:complexContent/xs:extension not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'choice' in xs:schema/xs:complexType[@name=BadSubClassWithChoice]/xs:complexContent/xs:extension not supported by FDO. 

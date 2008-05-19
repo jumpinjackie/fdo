@@ -1,0 +1,27 @@
+Error resolving Feature Schema references; base class 'Reference Schema 3:Reference Class' for class 'Reference Schema 5:Reference Class' not found.  
+Error resolving Feature Schema references; base class 'Reference Schema 3:Reference Class' for class 'Reference Schema 4:Reference Class' not found.  
+Error resolving Feature Schema references; base class 'Reference Schema 3:TestLayer' for class 'Reference Schema 4:TestLayer' not found.  
+Error resolving Feature Schema references; base class 'Reference Schema 3:TestNetwork' for class 'Reference Schema 4:TestNetwork' not found.  
+Error resolving Feature Schema references; base class 'Reference Schema 3:TestNetworkParentNode' for class 'Reference Schema 4:TestNetworkParentNode' not found.  
+Error resolving Feature Schema references; base class 'Reference Schema 3:TestNetworkNode' for class 'Reference Schema 4:TestNetworkNode' not found.  
+Error resolving Feature Schema references; base class 'Reference Schema 3:TestNetworkLink' for class 'Reference Schema 4:TestNetworkLink' not found.  
+Error reading Feature Schemas from XML; class 'Reference Schema 3:Object Property Class' for object property 'Reference Schema 4:Concrete Class.Object Property 4' not found.  
+Error reading Feature Schemas from XML; class 'Reference Schema 4:Reference Class' for association property 'Reference Schema 5:Concrete Class.Association Property 5' not found. 
+Error reading Feature Schemas from XML; class 'Reference Schema 4:Reference Class' for association property 'Reference Schema 5:TestNetworkNode.Feature Association Prop' not found. 
+Error reading Feature Schemas from XML; class 'Reference Schema 4:Reference Class' for association property 'Reference Schema 5:TestNetworkLink.Feature Association Prop' not found. 
+Error reading Feature Schemas from XML; class 'Reference Schema 3:Reference Class' for association property 'Reference Schema 4:Concrete Class.Association Property 4' not found. 
+Error reading Feature Schemas from XML; class 'Reference Schema 3:TestNetwork' for association property 'Reference Schema 4:TestNetworkParentNode.Network Association Prop' not found. 
+Error reading Feature Schemas from XML; class 'Reference Schema 3:TestLayer' for association property 'Reference Schema 4:TestNetworkParentNode.Layer Association Prop' not found. 
+Error reading Feature Schemas from XML; class 'Reference Schema 3:TestNetwork' for association property 'Reference Schema 4:TestNetworkNode.Network Association Prop' not found. 
+Error reading Feature Schemas from XML; class 'Reference Schema 3:Reference Class' for association property 'Reference Schema 4:TestNetworkNode.Feature Association Prop' not found. 
+Error reading Feature Schemas from XML; class 'Reference Schema 3:TestNetworkParentNode' for association property 'Reference Schema 4:TestNetworkNode.Parent Association Prop' not found. 
+Error reading Feature Schemas from XML; class 'Reference Schema 3:TestLayer' for association property 'Reference Schema 4:TestNetworkNode.Layer Association Prop' not found. 
+Error reading Feature Schemas from XML; class 'Reference Schema 3:TestNetwork' for association property 'Reference Schema 4:TestNetworkLink.Network Association Prop' not found. 
+Error reading Feature Schemas from XML; class 'Reference Schema 3:Reference Class' for association property 'Reference Schema 4:TestNetworkLink.Feature Association Prop' not found. 
+Error reading Feature Schemas from XML; class 'Reference Schema 3:TestNetworkNode' for association property 'Reference Schema 4:TestNetworkLink.Network node Association Prop' not found. 
+Error reading Feature Schemas from XML; identity property 'LayerProperty1' is not a property in class 'Reference Schema 4:TestLayer'. 
+Error reading Feature Schemas from XML; identity property 'NetworkProperty1' is not a property in class 'Reference Schema 4:TestNetwork'. 
+Error reading Feature Schemas from XML; identity property 'NodeProperty1' is not a property in class 'Reference Schema 4:TestNetworkNode'. 
+Error reading Feature Schemas from XML; identity property 'LinkProperty1' is not a property in class 'Reference Schema 4:TestNetworkLink'. 
+Error reading Feature Schemas from XML; object property 'Reference Schema 4:Concrete Class.Object Property 4' has no class; cannot resolve its identity property. 
+Error reading Feature Schemas from XML; class 'Reference Schema 3:TestLayer' for network layer property 'Reference Schema 4:TestNetwork' not found. 
