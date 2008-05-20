@@ -25,6 +25,7 @@
 #include "OgrProvider.h"
 #include "OgrFdoUtil.h"
 #include "ProjConverter.h"
+#include "FdoSpatial.h"
 
 
 #define PROP_NAME_DATASOURCE L"DataSource"
@@ -178,7 +179,7 @@ FdoConnectionState OgrConnection::Open()
     
     size_t slen = wcslen(dsw);
     if (dsw[slen - 1] == '\\')
-       slen--;
+        slen--;
 
     wchar_t* tmp = new wchar_t[slen + 1];
     wcsncpy(tmp, dsw, slen);
@@ -315,11 +316,17 @@ bool OgrConnection::IsPropertyProtected(FdoString* name)
 
 bool OgrConnection::IsPropertyFileName(FdoString* name)
 {
+    if (wcscmp(name, PROP_NAME_DATASOURCE) == 0)
+        return true;
+
     return false;
 }
 
 bool OgrConnection::IsPropertyFilePath(FdoString* name)
 {
+    if (wcscmp(name, PROP_NAME_DATASOURCE) == 0)
+        return true;
+
     return false;
 }
 
@@ -412,9 +419,9 @@ FdoIFeatureReader* OgrConnection::Select(FdoIdentifier* fcname, FdoFilter* filte
     
     OGRLayer* layer = m_poDS->GetLayerByName(mbfc);
 
-    OgrFdoUtil::ApplyFilter(layer, filter, &bbox);
+    OgrFdoUtil::ApplyFilter(layer, filter);
 
-    return new OgrFeatureReader(this, layer, props, bbox);
+    return new OgrFeatureReader(this, layer, props, filter);
 }
 
 FdoIDataReader* OgrConnection::SelectAggregates(FdoIdentifier* fcname, 
@@ -501,7 +508,7 @@ FdoInt32 OgrConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
     if (!canDo)
         throw FdoCommandException::Create(L"Current OGR connection does not support update of existing features.");
     
-    OgrFdoUtil::ApplyFilter(layer, filter, NULL);
+    OgrFdoUtil::ApplyFilter(layer, filter);
 
     OGRFeature* feature = NULL;
     
@@ -535,7 +542,7 @@ FdoInt32 OgrConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
     if (!canDo)
         throw FdoCommandException::Create(L"Current OGR connection does not support delete.");
 
-    OgrFdoUtil::ApplyFilter(layer, filter, NULL);
+    OgrFdoUtil::ApplyFilter(layer, filter);
 
     std::vector<long> ids; //list of FIDs of features to delete
     
@@ -732,7 +739,7 @@ bool OgrSpatialContextReader::ReadNext()
 //
 //---------------------------------------------------------------------
 
-OgrFeatureReader::OgrFeatureReader(OgrConnection* connection, OGRLayer* layer, FdoIdentifierCollection* props, bool bboxquery)
+OgrFeatureReader::OgrFeatureReader(OgrConnection* connection, OGRLayer* layer, FdoIdentifierCollection* props, FdoFilter* filter)
 {
     m_connection = connection;
     ((FdoIConnection*)m_connection)->AddRef();
@@ -747,7 +754,20 @@ OgrFeatureReader::OgrFeatureReader(OgrConnection* connection, OGRLayer* layer, F
     m_fgflen = 64;
     m_fgf = new unsigned char[m_fgflen*2];
     m_wkb = new unsigned char[m_fgflen];
-    m_bboxquery = bboxquery;
+    
+    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+
+    m_geomFilter = NULL;
+    if (dynamic_cast<FdoSpatialCondition*>(filter))
+    {
+        FdoSpatialCondition* sc = (FdoSpatialCondition*)filter;
+        m_spatialOperation = sc->GetOperation();
+        if (m_spatialOperation != FdoSpatialOperations_EnvelopeIntersects)
+        {
+             FdoPtr<FdoExpression> geomExpr = sc->GetGeometry();
+             m_geomFilter = gf->CreateGeometryFromFgf(((FdoGeometryValue*)(geomExpr.p))->GetGeometry());
+        }
+    }
 }
 
 OgrFeatureReader::~OgrFeatureReader()
@@ -757,6 +777,8 @@ OgrFeatureReader::~OgrFeatureReader()
     ((FdoIConnection*)m_connection)->Release();
     delete [] m_fgf;
     delete [] m_wkb;
+    
+    FDO_SAFE_RELEASE(m_geomFilter);
 }
 
 void OgrFeatureReader::Dispose()
@@ -876,10 +898,8 @@ FdoByteArray* OgrFeatureReader::GetGeometry(FdoString* propertyName)
     return FdoByteArray::Create((unsigned char*)ptr, len);
 }
 
-const FdoByte* OgrFeatureReader::GetGeometry(FdoString* propertyName, FdoInt32* len)
+const FdoByte* OgrFeatureReader::GetGeometry(OGRGeometry* geom, FdoInt32* len)
 {
-    OGRGeometry* geom = m_poFeature->GetGeometryRef();
-
     if (geom)
     {    
         size_t wkblen = geom->WkbSize();
@@ -903,6 +923,11 @@ const FdoByte* OgrFeatureReader::GetGeometry(FdoString* propertyName, FdoInt32* 
     throw FdoException::Create(L"Geometry is null.");
 }
 
+const FdoByte* OgrFeatureReader::GetGeometry(FdoString* propertyName, FdoInt32* len)
+{
+    return this->GetGeometry(m_poFeature->GetGeometryRef(), len);
+}
+
 FdoIRaster* OgrFeatureReader::GetRaster(FdoString* propertyName)
 {
     return NULL;
@@ -919,17 +944,26 @@ bool OgrFeatureReader::ReadNext()
         
         m_poFeature = m_poLayer->GetNextFeature();
 
-        //Ugly hack to fix broken providers, with BBOX only testing
-        if (!m_bboxquery)
-        {
-            OGRGeometry* spfilter = m_poLayer->GetSpatialFilter();
-            if (spfilter != NULL)
-                while (m_poFeature != NULL && m_poFeature->GetGeometryRef() != NULL && !spfilter->Intersects(m_poFeature->GetGeometryRef()))
+        //OGR uses envelope intersection testing only, this breaks tooltips and selection
+        //If the actual selection was not for envelope intersection, the geometry filtering is done here instead
+        if (m_geomFilter != NULL)
+            while (m_poFeature != NULL && m_poFeature->GetGeometryRef() != NULL)
+            {
+                FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+                FdoInt32 fgfLen;
+                const FdoByte* fgf = this->GetGeometry(m_poFeature->GetGeometryRef(), &fgfLen);
+                FdoPtr<FdoIGeometry> featureGeom = gf->CreateGeometryFromFgf(fgf, fgfLen);
+
+                //call on the geometry utility to evaluate the spatial operation
+                if (FdoSpatialUtility::Evaluate(m_geomFilter, m_spatialOperation, featureGeom))
+                    break;
+                else
                 {
+                    //Goto next
                     OGRFeature::DestroyFeature(m_poFeature);
                     m_poFeature = m_poLayer->GetNextFeature();
                 }
-        }
+            }
 
         return (m_poFeature != NULL);
     }

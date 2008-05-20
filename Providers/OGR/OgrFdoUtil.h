@@ -27,7 +27,7 @@ public:
 
     static FdoClassDefinition* ConvertClass(OGRLayer* layer, FdoIdentifierCollection* requestedProps = NULL);
     static void ConvertFeature(FdoPropertyValueCollection* src, OGRFeature* dst, OGRLayer* layer);
-    static void ApplyFilter(OGRLayer* layer, FdoFilter* filter, bool* isbbox);
+    static void ApplyFilter(OGRLayer* layer, FdoFilter* filter);
     static int Fgf2Wkb(const unsigned char* fgf, unsigned char* wkb);
     static int Wkb2Fgf(const unsigned char* wkb, unsigned char* fgf);
 

@@ -507,7 +507,7 @@ public:
     //TODO: in the OGR case this varies -- we could find out the correct answer
     //once the connection properties are set
     OGR_API virtual FdoProviderDatastoreType GetProviderDatastoreType() 
-        { return FdoProviderDatastoreType_Unknown; } 
+        { return FdoProviderDatastoreType_File; } 
 #endif
     //TODO: in the OGR case this varies -- we could find out the correct answer
     //once the connection properties are set
@@ -997,7 +997,7 @@ class OgrFeatureReader : public FdoIFeatureReader
 {
     public:
         OGR_API OgrFeatureReader(OgrConnection* connection,
-                                 OGRLayer* layer, FdoIdentifierCollection* props, bool bboxquery);
+                                 OGRLayer* layer, FdoIdentifierCollection* props, FdoFilter* filter);
 
     protected:
         OGR_API virtual ~OgrFeatureReader();
@@ -1038,18 +1038,22 @@ class OgrFeatureReader : public FdoIFeatureReader
         virtual FdoDataType GetDataType( FdoString* propertyName ); 
 
     private:
+
+        virtual const FdoByte* GetGeometry(OGRGeometry* geom, FdoInt32* len);
+
         OgrConnection* m_connection;
         FdoIdentifierCollection* m_props;
 
         OGRLayer* m_poLayer;
         OGRFeature* m_poFeature;
+        FdoIGeometry* m_geomFilter;
+        FdoSpatialOperations m_spatialOperation;
 
         std::map<long, std::wstring> m_sprops;
         
         unsigned char* m_fgf;
         unsigned char* m_wkb;
         size_t m_fgflen;
-        bool m_bboxquery;
 };
 
 
