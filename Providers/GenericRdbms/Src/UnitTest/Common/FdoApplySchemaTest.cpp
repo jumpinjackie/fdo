@@ -492,14 +492,15 @@ void FdoApplySchemaTest::TestOverrides ()
         FdoSchemaMappingsP mappings = pDescMappingCmd->Execute();
         CPPUNIT_ASSERT( mappings->GetCount() == 0 );
 
-#ifdef RDBI_DEF_SSQL
-        const FdoSmLpGeometricPropertyDefinition* geomProp = FdoSmLpGeometricPropertyDefinition::Cast(
-            lp->RefItem(L"OverridesA")->RefClasses()->RefItem(L"OvClassA")->RefProperties()->RefItem(L"GeomA")
-        );
+		if (CompareGeometrySI())
+		{
+			const FdoSmLpGeometricPropertyDefinition* geomProp = FdoSmLpGeometricPropertyDefinition::Cast(
+				lp->RefItem(L"OverridesA")->RefClasses()->RefItem(L"OvClassA")->RefProperties()->RefItem(L"GeomA")
+			);
 
-        CPPUNIT_ASSERT( wcscmp(geomProp->GetColumnNameSi1(), L"GEOMA_SI_1") == 0 );
-        CPPUNIT_ASSERT( wcscmp(geomProp->GetColumnNameSi2(), L"GEOMA_SI_2") == 0 );
-#endif
+			CPPUNIT_ASSERT( wcscmp(geomProp->GetColumnNameSi1(), L"GEOMA_SI_1") == 0 );
+			CPPUNIT_ASSERT( wcscmp(geomProp->GetColumnNameSi2(), L"GEOMA_SI_2") == 0 );
+		}
 
 #ifdef RDBI_DEF_ORA
 		// grant access to foreign datastore.
@@ -509,6 +510,7 @@ void FdoApplySchemaTest::TestOverrides ()
         owner = ph->GetOwner();
         table = owner->CreateTable( ph->GetDcDbObjectName(L"Storage") );
         column = table->CreateColumnInt64( ph->GetDcColumnName(L"ID"), false );
+		table->AddPkeyCol(column->GetName());
         column = table->CreateColumnChar( ph->GetDcColumnName(L"Storage"), true, 50 );
         column = table->CreateColumnGeom( ph->GetDcColumnName(L"Floor"), (FdoSmPhScInfo*) NULL );
         column = table->CreateColumnInt16( ph->GetDcColumnName(L"Extra"), !CanAddNotNullCol() );
@@ -570,12 +572,15 @@ void FdoApplySchemaTest::TestOverrides ()
 
         table = owner->CreateTable( ph->GetDcDbObjectName(L"NOFEATID") );
         column = table->CreateColumnChar( ph->GetDcColumnName(L"ID"), false, 20 );
+		table->AddPkeyCol(column->GetName());
         column = table->CreateColumnChar( ph->GetDcColumnName(L"DATA"), true, 50 );
         column = table->CreateColumnGeom( ph->GetDcColumnName(L"GEOMETRY"), (FdoSmPhScInfo*) NULL );
-#ifdef RDBI_DEF_SSQL
-        column = table->CreateColumnChar( L"GEOMETRY_SI_1", true, 255 );
-        column = table->CreateColumnChar( L"GEOMETRY_SI_2", true, 255 );
-#endif
+		if (CreateGeometrySICol())
+		{
+			column = table->CreateColumnChar( L"GEOMETRY_SI_1", true, 255 );
+			column = table->CreateColumnChar( L"GEOMETRY_SI_2", true, 255 );
+		}
+
         table->Commit();
 
 #ifdef RDBI_DEF_ORA
@@ -1488,7 +1493,6 @@ void FdoApplySchemaTest::TestConfigDoc ()
         FdoSmPhGrdOwner* grdOwner = (FdoSmPhGrdOwner*)(FdoSmPhOwner*) owner;
         FdoSmPhTableP table;
         FdoSmPhCheckConstraintP constraint;
-
         if ( supportsRange ) {
             table = owner->GetDbObject( ph->GetDcDbObjectName(L"Parcel") )->SmartCast<FdoSmPhTable>();
             constraint = new FdoSmPhCheckConstraint( 
@@ -1501,7 +1505,7 @@ void FdoApplySchemaTest::TestConfigDoc ()
                 FdoStringP::Format(
                     L"alter table %ls add constraint value_check check ( %ls < 10000000 )",
                     (FdoString*)(ph->GetDcDbObjectName(L"Parcel")),
-                    (FdoString*)(ph->GetDcColumnName(L"Value1"))
+                    (FdoString*)(ph->GetDcColumnName(GetValueColumnName()))
                 )
             );
         }
@@ -6896,4 +6900,21 @@ FdoFeatureSchemaP FdoApplySchemaTest::GetDefaultSchema( FdoIConnection* connecti
         defSchema = schemas->GetItem(0);
 
     return defSchema;
+}
+
+bool FdoApplySchemaTest::CompareGeometrySI()
+{
+	return false;
+}
+
+
+bool FdoApplySchemaTest::CreateGeometrySICol()
+{
+	return false;
+}
+
+
+FdoStringP FdoApplySchemaTest::GetValueColumnName()
+{
+	return L"Value1";
 }

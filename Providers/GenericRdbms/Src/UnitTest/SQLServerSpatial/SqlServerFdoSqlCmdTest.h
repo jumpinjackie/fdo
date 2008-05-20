@@ -29,6 +29,7 @@ class SqlServerFdoSqlCmdTest : public FdoSqlCmdTest
 
     void  set_provider();
 	void CreateAndDrop8bitTable ();
+	virtual FdoString *GetGeometrySelectStatement();
 
 	wchar_t *get_datetime_type() 
     { 

@@ -65,11 +65,13 @@ protected:
     virtual wchar_t *get_number_type() { return L"number"; };
 
     virtual void  set_provider() {};
+	virtual FdoString *GetGeometrySelectStatement();
 
     FdoPtr<FdoIConnection> mConnection;
 
     void ReadQueryResult( FdoISQLDataReader *myReader );
     char* FdoTypeToStr( FdoDataType type );
+
 };
 
 #endif // CPP_UNIT_FDOSQLCMDTEST_H

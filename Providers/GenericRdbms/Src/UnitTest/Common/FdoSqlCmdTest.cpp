@@ -454,7 +454,7 @@ void FdoSqlCmdTest::QueryGeometry()
 
             FdoStringP  geomColName = L"geometry";
 
-            selCmd->SetSQLStatement(L"select geometry from acdb3dpolyline");
+            selCmd->SetSQLStatement(GetGeometrySelectStatement());
 
             myReader = selCmd->ExecuteReader();
             if( myReader != NULL  )
@@ -529,4 +529,9 @@ char* FdoSqlCmdTest::FdoTypeToStr( FdoDataType type )
         default:
             return "Unknown fdo data type"; // pass type as parameter
     }
+}
+
+FdoString *FdoSqlCmdTest::GetGeometrySelectStatement()
+{
+	return L"select geometry from acdb3dpolyline";
 }
