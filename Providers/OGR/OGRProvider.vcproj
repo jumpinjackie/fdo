@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="fdo.lib fdocommon.lib fdogeometry.lib wsock32.lib gdal_i.lib xerces-c_2D.lib"
+				AdditionalDependencies="fdo.lib fdocommon.lib fdogeometry.lib wsock32.lib gdal_i.lib xerces-c_2D.lib fdospatial.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Fdo\Unmanaged\lib\win32\Debug;&quot;$(FDOGDAL)\lib\win32\Debug&quot;;..\..\Thirdparty\gdal\lib\win32\Debug;&quot;..\..\Thirdparty\apache\xml-xerces\c\Build\Win32\VC8\Debug&quot;"
 				GenerateDebugInformation="true"
@@ -140,9 +140,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="fdo.lib fdocommon.lib fdogeometry.lib wsock32.lib gdal_i.lib xerces-c_2.lib"
+				AdditionalDependencies="fdo.lib fdocommon.lib fdogeometry.lib wsock32.lib gdal_i.lib xerces-c_2.lib fdospatial.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\Fdo\Unmanaged\lib\win32\release;&quot;$(FDOGDAL)\lib\win32\Release&quot;;..\..\Thirdparty\gdal\lib\win32\release;&quot;..\..\Thirdparty\apache\xml-xerces\c\Build\Win32\VC8\Release&quot;"
+				AdditionalLibraryDirectories="..\..\Fdo\Unmanaged\lib\win32\release;&quot;$(FDOGDAL)\lib\win32\Release&quot;;&quot;gdal\gdal-1.5.1&quot;;&quot;..\..\Thirdparty\apache\xml-xerces\c\Build\Win32\VC8\Release&quot;"
 				GenerateManifest="true"
 				IgnoreDefaultLibraryNames=""
 				DelayLoadDLLs="fdogeometry.dll"
