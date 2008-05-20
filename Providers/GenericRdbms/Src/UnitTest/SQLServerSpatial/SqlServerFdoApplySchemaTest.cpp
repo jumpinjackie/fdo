@@ -219,7 +219,12 @@ FdoStringP SqlServerFdoApplySchemaTest::SchemaTestErrFile( int fileNum, bool isM
 FdoStringP SqlServerFdoApplySchemaTest::SchemaOvErrFile( int fileNum, bool isMaster )
 {
 	if (isMaster)
-		return FdoStringP::Format( L"apply_schema_overrides_err%dS%ls.txt", fileNum, L"_master");
+		return FdoStringP::Format( L"apply_schema_overrides_err%dSP%ls.txt", fileNum, L"_master");
 	else
-		return UnitTestUtil::GetOutputFileName( FdoStringP::Format( L"apply_schema_overrides_err%dS.txt", fileNum) );
+		return UnitTestUtil::GetOutputFileName( FdoStringP::Format( L"apply_schema_overrides_err%dSP.txt", fileNum) );
+}
+
+FdoStringP SqlServerFdoApplySchemaTest::GetValueColumnName()
+{
+	return L"Value";
 }
