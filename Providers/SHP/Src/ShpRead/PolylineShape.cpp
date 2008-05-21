@@ -50,11 +50,6 @@ PolylineShape::PolylineShape (int nRecordNumber, void* pMemory, bool bOverlay, i
             points[i].y = 0.0;
         }
     }
-    else
-    {
-        _ASSERT(GetNumParts () >= 1);
-        _ASSERT(GetNumPoints () >= 1);
-    }
 }
 
 PolylineShape* PolylineShape::NewPolylineShape (int nRecordNumber, int nParts, int nPoints, BoundingBoxEx *box)

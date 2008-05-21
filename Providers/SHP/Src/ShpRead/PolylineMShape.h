@@ -57,7 +57,7 @@ inline void PolylineMShape::GetBoundingBoxEx (BoundingBoxEx& box, bool hasM)
 
 inline void PolylineMShape::GetBoundingBoxEx (BoundingBoxEx& box)
 {
-    GetBoundingBoxEx (box, true);
+    GetBoundingBoxEx (box, (GetNumPoints () >= 1 && GetNumPoints () >= 1));
 }
 
 inline int PolylineMShape::GetSize (int nParts, int nPoints)

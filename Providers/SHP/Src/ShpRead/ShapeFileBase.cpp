@@ -22,6 +22,7 @@
 #include "BoundingBox.h"
 #include "Constants.h"
 #include "ShapeFileBase.h"
+#include <FdoCommonOSUtil.h>
 
 #include <limits>
 #ifndef _WIN32
@@ -188,8 +189,6 @@ void ShapeFileBase::GetFileHeaderDetails ()
             if (m_nFileLength * WORD_SIZE_IN_BYTES > SHPHeaderSize) // only check if there are shapes
                 CheckBoundingBox(m_dZMin, m_dZMax, eMinZMaxZ);
 #endif
-            m_dMMin = shpHeader.cMMin;
-            m_dMMax = shpHeader.cMMax;
             if ((m_dMMin > fNO_DATA) && (m_dMMax > fNO_DATA))
             {
                 m_bMDataPresent = true;
@@ -284,12 +283,11 @@ void ShapeFileBase::CheckBoundingBox(double dMinValue, double dMaxValue, eMinMax
     //       even if the SHP/DBF file contain 1+ rows.
 
     if((dMinValue < fNO_DATA) ||
+       (FdoCommonOSUtil::_isnan(dMinValue)) ||
 #ifdef _WIN32
-            (dMinValue == numeric_limits<double>::infinity()) ||
-            (dMinValue == numeric_limits<double>::signaling_NaN()))
+       (dMinValue == numeric_limits<double>::infinity()))
 #else
-            (dMinValue == INFINITY) ||
-            (dMinValue == NAN))
+       (dMinValue == INFINITY))
 #endif
     {
         // Check to see if data values are "No Data"
@@ -313,12 +311,11 @@ void ShapeFileBase::CheckBoundingBox(double dMinValue, double dMaxValue, eMinMax
         }
     }
     else if((dMaxValue < fNO_DATA) ||
+            (FdoCommonOSUtil::_isnan(dMaxValue)) ||
 #ifdef _WIN32
-            (dMaxValue == numeric_limits<double>::infinity()) ||
-            (dMaxValue == numeric_limits<double>::signaling_NaN()))
+            (dMaxValue == numeric_limits<double>::infinity()))
 #else
-            (dMaxValue == INFINITY) ||
-            (dMaxValue == NAN))
+            (dMaxValue == INFINITY))
 #endif
     {
         // Check to see if data values are "No Data"
