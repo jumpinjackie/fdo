@@ -253,6 +253,8 @@ Shape* ShapeFile::GetObjectAt (ULONG nOffset, eShapeTypes& nShapeType)
 
 			nShapeType = eNullShape;
 			ret = new NullShape (nRecordNumber, p, true);
+
+            ret->SetShapeType(eNullShape); // Properly set the memory.
 		}
 	}
 
