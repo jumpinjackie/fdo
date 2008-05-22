@@ -535,3 +535,4 @@ FdoString *FdoSqlCmdTest::GetGeometrySelectStatement()
 {
 	return L"select geometry from acdb3dpolyline";
 }
+

@@ -7027,3 +7027,4 @@ FdoStringP FdoApplySchemaTest::GetValueColumnName()
 {
 	return L"Value1";
 }
+
