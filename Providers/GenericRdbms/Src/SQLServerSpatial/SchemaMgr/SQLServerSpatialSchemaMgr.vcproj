@@ -511,6 +511,46 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Ph\Schema.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
 					RelativePath=".\Ph\SpatialIndex.cpp"
 					>
 				</File>
@@ -583,6 +623,10 @@
 					</File>
 					<File
 						RelativePath=".\Ph\Rd\DbObjectReader.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Ph\Rd\DbSchemaReader.cpp"
 						>
 					</File>
 					<File
@@ -757,6 +801,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Ph\Schema.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Ph\SchemaCollection.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Ph\SpatialIndex.h"
 					>
 				</File>
@@ -797,6 +849,10 @@
 					</File>
 					<File
 						RelativePath=".\Ph\Rd\DbObjectReader.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Ph\Rd\DbSchemaReader.h"
 						>
 					</File>
 					<File

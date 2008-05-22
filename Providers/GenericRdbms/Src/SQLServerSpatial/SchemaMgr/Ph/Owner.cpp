@@ -30,6 +30,7 @@
 #include "Rd/PkeyReader.h"
 #include "Rd/SpatialContextReader.h"
 #include "Rd/CoordSysReader.h"
+#include "Rd/DbSchemaReader.h"
 #include "Rdbi/proto.h"
 #include <FdoCommonStringUtil.h>
 
@@ -55,6 +56,66 @@ FdoSmPhSqsOwner::FdoSmPhSqsOwner(
 FdoSmPhSqsOwner::~FdoSmPhSqsOwner(void)
 {
 }
+
+FdoSmPhSqsSchemaP FdoSmPhSqsOwner::FindSchema( FdoStringP schemaName )
+{
+    FdoSmPhSqsSchemaP schema = GetSchemas()->FindItem( schemaName );
+
+    return schema;
+}
+
+FdoSmPhSqsSchemasP FdoSmPhSqsOwner::GetSchemas()
+{
+    LoadSchemas();
+
+    return mSchemas;
+}
+
+void FdoSmPhSqsOwner::DiscardSchema( FdoSmPhSqsSchema* schema )
+{
+    if ( mSchemas )
+        mSchemas->Remove( schema );
+}
+
+void FdoSmPhSqsOwner::CommitChildren( bool isBeforeParent )
+{
+    int i;
+
+    if ( isBeforeParent ) 
+        // This ensures that the tables to delete are deleted before 
+        // their containing schemas.
+        FdoSmPhOwner::CommitChildren( isBeforeParent );
+
+    if ( mSchemas ) {
+
+        // Commit the schemas.
+        for ( i = (mSchemas->GetCount() - 1); i >= 0; i-- ) {
+            FdoSmPhSqsSchemaP schema = mSchemas->GetItem(i);
+            schema->Commit( true, isBeforeParent );
+        }
+    }
+
+    if ( !isBeforeParent ) 
+        // This ensures that tables to create are created 
+        // after their containing schemas.
+        FdoSmPhOwner::CommitChildren( isBeforeParent );
+}
+
+FdoSchemaExceptionP FdoSmPhSqsOwner::Errors2Exception(FdoSchemaException* pFirstException ) const
+{
+	// Tack on errors for this element
+	FdoSchemaExceptionP pException = FdoSmPhOwner::Errors2Exception(pFirstException);
+
+    if ( mSchemas) {
+    	// Add errors for the owner's database objects.
+	    for ( int i = 0; i < mSchemas->GetCount(); i++ )
+    		pException = mSchemas->RefItem(i)->Errors2Exception(pException);
+    }
+
+	return pException;
+}
+
+
 
 void FdoSmPhSqsOwner::SetCurrent()
 {
@@ -96,6 +157,14 @@ FdoInt64 FdoSmPhSqsOwner::SampleColumnSrid( FdoStringP dbObjectName, FdoStringP 
     delete gdbiResult;
 
     return srid;
+}
+
+FdoSmPhSqsSchemaP FdoSmPhSqsOwner::CreateSchema( FdoStringP schemaName )
+{
+    FdoSmPhSqsSchemaP schema = new FdoSmPhSqsSchema( schemaName, this );
+    GetSchemas()->Add( schema );
+
+    return schema;
 }
 
 FdoSmPhDbObjectP FdoSmPhSqsOwner::NewTable(
@@ -502,4 +571,27 @@ void FdoSmPhSqsOwner::CreateMetaClass()
 			L"SYSTEM_USER,%ls,0,0)",
 			(FdoString *) GetManager()->FormatSQLVal(NlsMsgGet(FDORDBMS_503, "Bounding box for the feature"), FdoSmPhColType_String));
 	gdbiConn->ExecuteNonQuery( (const char*) sql_stmt);
+}
+
+void FdoSmPhSqsOwner::LoadSchemas()
+{
+    if ( !mSchemas ) {
+        mSchemas = new FdoSmPhSqsSchemaCollection( this );
+
+        FdoSmPhSqsOwner* pOwner = (FdoSmPhSqsOwner*) this;
+        
+        FdoSmPhRdSqsDbSchemaReaderP rdr = new FdoSmPhRdSqsDbSchemaReader(
+            FDO_SAFE_ADDREF(pOwner)
+        );
+
+        while ( rdr->ReadNext() ) {
+            FdoSmPhSqsSchemaP schema = new FdoSmPhSqsSchema(
+                rdr->GetString( L"", L"schema_name"),
+                this,
+                rdr
+            );
+
+            mSchemas->Add( schema );
+        }
+    }
 }
