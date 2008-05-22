@@ -981,6 +981,11 @@ SymbolicName=FDOSM_317
 Language=English
 Circular reference detected for property '%1$ls'
 .
+MessageId=2533
+SymbolicName=FDOSM_318
+Language=English
+Cannot add schema with name that exceeds %1$d characters: '%2$ls'
+.
 MessageId=2534
 SymbolicName=FDOSM_319
 Language=English

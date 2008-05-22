@@ -61,8 +61,10 @@ protected:
     void ApplyNoMetaFailure( FdoIConnection* connection, StaticConnection* staticConn );
 
     void DeleteAcadSchema( FdoIConnection* connection );
-	void DeleteLandSchema( FdoIConnection* connection );
+	void DeleteLandSchema( FdoIConnection* connection, bool hasMetaSchema = true );
 	void DeleteDefaultSchema( FdoIConnection* connection, bool update );
+    virtual void DeletePhSystemSchemas( StaticConnection* staticConn );
+    virtual void CreatePhSystemSchemas( FdoIConnection* connection );
 	void CreateSystemSchema( FdoIConnection* connection );
 	void CreateAcadSchema( FdoIConnection* connection, bool hasMetaSchema = true, bool addSAD = false );
 	void CreateElectricSchema( FdoIConnection* connection, bool hasMetaSchema = true );
@@ -175,6 +177,8 @@ protected:
     }
 
     virtual bool CanApplyWithoutMetaSchema();
+
+    virtual bool CanCreateSchemaWithoutMetaSchema();
 
     virtual bool CanAddNotNullCol();
 

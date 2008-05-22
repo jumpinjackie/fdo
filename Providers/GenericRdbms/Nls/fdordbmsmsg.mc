@@ -230,6 +230,11 @@ SymbolicName=FDORDBMS_15
 Language=English
 Feature ID does not exist
 .
+MessageId=2221
+SymbolicName=FDORDBMS_16
+Language=English
+Cannot delete system schema '%1$ls' from datastore.
+.
 MessageId=2222
 SymbolicName=FDORDBMS_17
 Language=English

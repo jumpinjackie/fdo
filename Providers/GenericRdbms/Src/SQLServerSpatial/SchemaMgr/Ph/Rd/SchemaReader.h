@@ -20,14 +20,14 @@
 #include <Sm/Ph/Rd/SchemaReader.h>
 
 // This reader reads all of the feature schemas for the current datastore, when no MetaSchema
-// information is present. It returns a schema for each user that owns objects
-// in the datatore.
+// information is present. It returns a feature schema for each non-system
+// Sql Server schema in the datastore.
 //
 
 class FdoSmPhRdSqsSchemaReader : public FdoSmPhRdSchemaReader
 {
 public:
-    /// Create a reader to autogenerate feature schemas from the physical schema.
+    /// Create a reader to autogenerate feature schemas from the physical schemas.
 	//
     /// Parameters:
     /// 	rows: rows and fields to retrieve.
@@ -51,9 +51,8 @@ protected:
     FdoSmPhRdSqsSchemaReader() {}
 
 private:
-    FdoSmPhRowsP    mRows;
     FdoSmPhOwnerP   mOwner;
-    bool            mDsEmpty;
+    FdoInt32        mCurrSchema;
 };
 
 typedef FdoPtr<FdoSmPhRdSqsSchemaReader> FdoSmPhRdSqsSchemaReaderP;

@@ -124,6 +124,7 @@ public:
         FdoSmLpClassDefinition* parent
     );
 
+    virtual FdoSchemaExceptionP Errors2Exception(FdoSchemaException* pFirstException ) const;
 
 protected:
     virtual ~FdoSmLpSqsSchema(void);
@@ -142,6 +143,18 @@ protected:
     virtual FdoSmLpClassDefinitionP CreateClass(
         FdoClass* pFdoClass, 
         bool bIgnoreStates
+    );
+
+    // Creates a corresponding SQLServer schema for this 
+    // Feature Schema
+    virtual void CreatePhysicalSchema(
+        FdoSmPhOwnerP owner
+    );
+
+    // Deletes the corresponding SQLServer schema for this 
+    // Feature Schema. Silent if the schema does not exist.
+    virtual void DeletePhysicalSchema(
+        FdoSmPhOwnerP owner
     );
 
 private:

@@ -341,4 +341,9 @@ GEOGCS["Greek", DATUM["Greek", ELLIPSOID["Bessel 1841", 6377397.155, 299.1528128
 </xs:complexContent>
 </xs:complexType>
 </xs:schema>
+<xs:schema xmlns:guest="http://fdo.osgeo.org/schemas/feature/guest" targetNamespace="http://fdo.osgeo.org/schemas/feature/guest" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:schema>
 </fdo:DataStore>

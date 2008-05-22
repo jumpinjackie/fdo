@@ -273,6 +273,22 @@ protected:
         bool bIgnoreStates
     ) = 0;
 
+    // Creates this feature schema in the RDBMS. 
+    // Supported only by providers that can physically represent 
+    // feature schemas.
+    // Default implementation logs an error.
+    virtual void CreatePhysicalSchema(
+        FdoSmPhOwnerP owner
+    );
+
+    // Deletes this feature schema in the RDBMS. 
+    // Supported only by providers that can physically represent 
+    // feature schemas.
+    // Default implementation logs an error.
+    virtual void DeletePhysicalSchema(
+        FdoSmPhOwnerP owner
+    );
+
     /// Set the default database for class tables.
     void SetDatabase( FdoString* database )
     {
@@ -294,6 +310,9 @@ protected:
 protected:
     FdoSmLpSchema();
     /// Loads the classes and SAD for this schema
+
+    void AddSchemaExistsError();
+    void AddSchemaNameLengthError( FdoString* schemaName, FdoSize maxLen );
 
 private:
     void LoadSchema();
