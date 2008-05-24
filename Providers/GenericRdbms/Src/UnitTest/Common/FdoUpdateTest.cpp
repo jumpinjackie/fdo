@@ -1989,6 +1989,7 @@ void FdoUpdateTest::UpdateNoMeta()
             false
         );
         owner->SetPassword( L"test" );
+        owner->Commit();
 
         CreateExternalTable( owner, table_id_geom, true, m_hasGeom, m_hasAssoc );
         CreateExternalView( owner, L"view_id_geom", table_id_geom, true, m_hasGeom, false );

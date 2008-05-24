@@ -45,10 +45,7 @@ public:
                                             FdoGeometryType_MultiLineString,
                                             FdoGeometryType_MultiPolygon,
                                          //   FdoGeometryType_MultiGeometry,
-                                            FdoGeometryType_CurveString,
-                                            FdoGeometryType_CurvePolygon,
-                                            FdoGeometryType_MultiCurveString,
-                                            FdoGeometryType_MultiCurvePolygon};
+                                            };
         length = sizeof(rdbmGeomTypes)/sizeof(FdoGeometryType);
         return rdbmGeomTypes;
     }

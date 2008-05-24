@@ -678,6 +678,7 @@ void SchemaMgrTests::testGenConfig1 ()
             false
         );
         owner->SetPassword( L"test" );
+        owner->Commit();
 
         FdoSmPhOwnerP fOwner = phMgr->FindOwner( fDatastore, L"", false );
         if ( fOwner ) {
@@ -690,6 +691,7 @@ void SchemaMgrTests::testGenConfig1 ()
             false
         );
         fOwner->SetPassword( L"test" );
+        owner->Commit();
 
         CreateTableGroup( owner, L"AB_", 3, lt_mode );
         CreateTableGroup( owner, L"CD_", 5, lt_mode );
@@ -811,6 +813,7 @@ void SchemaMgrTests::testGenKeys ()
             false
         );
         owner->SetPassword( L"test" );
+        owner->Commit();
     
         // Tests choosing primary key over index as the identity    
         FdoSmPhTableP table = CreateIxTable(owner, L"TABLE_IX1", lt_mode );
@@ -1388,6 +1391,7 @@ void SchemaMgrTests::testViews ()
             false
         );
         owner->SetPassword( L"test" );
+        owner->Commit();
     
         FdoSmPhOwnerP fowner = phMgr->FindOwner( fdatastore, L"", false );
         if ( fowner ) {
@@ -1400,6 +1404,7 @@ void SchemaMgrTests::testViews ()
             false
         );
         fowner->SetPassword( L"test" );
+        owner->Commit();
     
         FdoSmPhTableP tableA = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE1") );
         FdoSmPhColumnP column = tableA->CreateColumnInt32( phMgr->GetDcColumnName(L"ID"), false );
@@ -1677,6 +1682,7 @@ void SchemaMgrTests::testSpatialContexts()
             false
         );
         owner->SetPassword( L"test" );
+        owner->Commit();
 
 
         FdoSmPhTableP table = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE1" ));

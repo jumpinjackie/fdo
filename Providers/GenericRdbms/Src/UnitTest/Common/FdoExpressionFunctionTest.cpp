@@ -282,6 +282,7 @@ void FdoExpressionFunctionTest::RunAllExpFctTests ()
 
     printf(" >>> ... Testing Aggregate Functions \n");
     printf("\n");
+
     TestAvgFunction();
     TestCountFunction();
     TestMaxFunction();
@@ -16053,7 +16054,7 @@ void FdoExpressionFunctionTest::AddFeature (
 
       geometry_factory = FdoFgfGeometryFactory::GetInstance();
       line_str         = geometry_factory->CreateLineString(dimension_type,
-                                                            i+1, 
+                                                            i, 
                                                             coordinate_buffer);
       byte_array       = geometry_factory->GetFgf(line_str);
       geometry_value   = FdoGeometryValue::Create(byte_array);

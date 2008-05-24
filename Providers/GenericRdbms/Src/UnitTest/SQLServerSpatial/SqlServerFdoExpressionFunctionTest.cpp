@@ -72,7 +72,7 @@ FdoDouble SqlServerFdoExpressionFunctionTest::GetExpectedValue (
 
     switch (test_case_id) {
 
-      case COUNT_TEST_CASE_CODE_1: return 30; break;
+      case COUNT_TEST_CASE_CODE_1: return 31; break;
       case COUNT_TEST_CASE_CODE_2: return 28; break;
       case COUNT_TEST_CASE_CODE_3: return 31; break;
 

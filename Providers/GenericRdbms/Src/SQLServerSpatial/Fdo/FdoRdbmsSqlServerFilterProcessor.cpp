@@ -26,6 +26,7 @@
 #include "FdoCommonOSUtil.h"
 #include "FdoRdbmsSqlServerSpatialGeometryConverter.h"
 #include "FdoRdbmsSqlServerFunctionIsValid.h"
+#include "../SchemaMgr/Ph/SpatialIndex.h"
 
 #define SQLSERVER_CONVERT_WKB L".STAsBinary()"
 
@@ -312,9 +313,7 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
             buf += "STOverlaps"; // REALLY?
             break;
         case FdoSpatialOperations_EnvelopeIntersects:
-            // TODO: No mapping function available. Filter() is a good candidate but it requires
-            // secondary filtering.
-            throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_111, "Unsupported spatial operation"));
+            buf += "Filter"; 
             break;
         default:
             throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_111, "Unsupported spatial operation"));
@@ -328,10 +327,33 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
     // Set the SRID
 	const FdoSmPhColumnP gColumn = ((FdoSmLpSimplePropertyDefinition*)geomProp)->GetColumn();
     FdoSmPhColumnGeomP geomCol = gColumn.p->SmartCast<FdoSmPhColumnGeom>();
+
     buf += FdoStringP::Format(L"', %ld)", geomCol->GetSRID());  
 
     buf += ")";
     buf += "=1";
+
+	if ( spatialOp == FdoSpatialOperations_EnvelopeIntersects)
+	{
+		buf += L" AND ";
+		buf += columnName;
+		buf += ".MakeValid().STEnvelope().STIntersects";
+		buf += "(";
+		buf += geomType;
+		buf += "::STGeomFromText('";
+		buf += geom2D->GetText();
+
+		buf += FdoStringP::Format(L"', %ld)", geomCol->GetSRID());  
+		buf += ")";
+		buf += "=1";
+
+		// store only the first spatial index name
+		if (mSpatialIndexName == L"")
+		{
+			FdoPtr<FdoSmPhSpatialIndex> si = geomCol->GetSpatialIndex();
+			mSpatialIndexName = si->GetName();
+		}
+	}
 
     AppendString((const wchar_t*)buf);
 }
@@ -339,13 +361,33 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
 void FdoRdbmsSqlServerFilterProcessor::AppendTablesHints( SqlCommandType cmdType, bool forUpdate )
 {
 
+	FdoStringP buf(L"");
+	bool bAdded = false;
+
     if( cmdType == SqlCommandType_Select && forUpdate )
     {
-        PrependString(L" with (UPDLOCK) ");
+		buf = L" with (UPDLOCK ";
+		bAdded = true;
     }
 
-    //... other cases here.
+    if(mSpatialIndexName != L"")
+    {
+		if (bAdded)
+			buf += L", INDEX(";
+		else
+			buf =  L" with (INDEX(";
+		buf += mSpatialIndexName;
+		buf += L") ";
+		bAdded = true;
+    }
+
+	if (bAdded)
+	{
+		buf += L")";
+        PrependString((FdoString *)buf);
+	}
 }
+
 
 void FdoRdbmsSqlServerFilterProcessor::ProcessFunction(FdoFunction& expr)
 {
@@ -878,40 +920,24 @@ void FdoRdbmsSqlServerFilterProcessor::PrependSelectStar(FdoString *tableName)
     DbiConnection  *mDbiConnection = mFdoConnection->GetDbiConnection();
     const FdoSmLpClassDefinition *classDefinition = mDbiConnection->GetSchemaUtil()->GetClass(mCurrentClassName);
 
-    const FdoSmLpPropertyDefinitionCollection *properties = classDefinition->RefProperties();
+	const FdoSmPhDbObject *dbObject = classDefinition->RefDbObject()->RefDbObject();
+	const FdoSmPhColumnCollection* columns = dbObject->RefColumns();
     bool    first = true;
 
-    for (int i = 0; i < properties->GetCount(); i++)
+    for (int i = 0; i < columns->GetCount(); i++)
     {
-        const FdoSmLpPropertyDefinition *pPropertyDefinition = properties->RefItem(i);
+		const FdoSmPhColumn* column = columns->RefItem(i);
+		FdoStringP colNameTmp = column->GetName();
+		FdoString *colName = colNameTmp;
 
-        FdoString* x = pPropertyDefinition->GetName();
-
-        if ( wcscmp(pPropertyDefinition->GetName(), L"Bounds") == 0 || 
-             wcscmp(pPropertyDefinition->GetName(), L"SchemaName") == 0 ||
-             wcscmp(pPropertyDefinition->GetName(), L"ClassName") == 0)
-            continue;
-
-        // Ignore the association/object properties since they not supported.
-        FdoPropertyType propType = pPropertyDefinition->GetPropertyType();
-        if ( propType != FdoPropertyType_DataProperty && 
-             propType != FdoPropertyType_GeometricProperty )
-             continue;
-
-
-        FdoString *colName = PropertyNameToColumnName(pPropertyDefinition->GetName());
-
-        
-        const FdoSmLpGeometricPropertyDefinition* pGeometricProperty =
-                            dynamic_cast<const FdoSmLpGeometricPropertyDefinition*>(pPropertyDefinition);
+		bool bGeometry = ((FdoSmPhColumn *)column)->GetType() == FdoSmPhColType_Geom;
 
         if (!first )
             PrependString( L"," );
 
-        if( pGeometricProperty ) 
+        if( bGeometry ) 
         {
-            const FdoSmPhColumn *column = pGeometricProperty->RefColumn();
-            FdoStringP  colName = GetGeometryString( (FdoString*)(column->GetDbName()) );
+	        FdoStringP  colName = GetGeometryString( (FdoString*)(column->GetDbName()) );
             PrependString( (FdoString*)colName );
         }
         else
@@ -925,7 +951,7 @@ void FdoRdbmsSqlServerFilterProcessor::PrependSelectStar(FdoString *tableName)
 
         // 'dbo.acdb3dpolyline.geometry.STAsBinary()' syntax is not allowed.
         // Drop the database name.
-        if ( pGeometricProperty )
+        if ( bGeometry )
         {
             FdoStringP  tableName2 = FdoStringP(tableName);
             if ( tableName2.Contains(L".") )
@@ -933,7 +959,7 @@ void FdoRdbmsSqlServerFilterProcessor::PrependSelectStar(FdoString *tableName)
             else
                 PrependString(tableName);
         }
-        else
+		else
             PrependString(tableName);
 
         first = false;
