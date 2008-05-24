@@ -90,7 +90,7 @@ void SqlServerSchemaMgrTests::testSpatialContextsGeog()
             false
         );
         owner->SetPassword( L"test" );
-
+        owner->Commit();
 
         FdoSmPhTableP table = owner->CreateTable( phMgr->GetDcDbObjectName(L"table1" ));
         FdoSmPhColumnP column = table->CreateColumnInt32( L"id", false );

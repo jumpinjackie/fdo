@@ -8,9 +8,9 @@ Bermuda</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
-0.000000 0.000000</gml:pos>
+-180.000000 -90.000000</gml:pos>
 <gml:pos>
-10.000000 10.000000</gml:pos>
+180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS>
@@ -34,9 +34,9 @@ Bermuda Duplicate</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
-0.000000 0.000000</gml:pos>
+-180.000000 -90.000000</gml:pos>
 <gml:pos>
-10.000000 10.000000</gml:pos>
+180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS>
@@ -60,9 +60,9 @@ Liberia by WKT</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
-0.000000 0.000000</gml:pos>
+-180.000000 -90.000000</gml:pos>
 <gml:pos>
-10.000000 10.000000</gml:pos>
+180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS>
@@ -86,9 +86,9 @@ Qatar wrong name</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
-0.000000 0.000000</gml:pos>
+-180.000000 -90.000000</gml:pos>
 <gml:pos>
-10.000000 10.000000</gml:pos>
+180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS>
@@ -131,9 +131,9 @@ South</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
-0.000000 0.000000</gml:pos>
+-180.000000 -90.000000</gml:pos>
 <gml:pos>
-10.000000 10.000000</gml:pos>
+180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS>
@@ -157,9 +157,9 @@ South Duplicate</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
-0.000000 0.000000</gml:pos>
+-180.000000 -90.000000</gml:pos>
 <gml:pos>
-10.000000 10.000000</gml:pos>
+180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS>
@@ -183,9 +183,9 @@ sc_1</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
-0.000000 0.000000</gml:pos>
+-180.000000 -90.000000</gml:pos>
 <gml:pos>
-10.000000 10.000000</gml:pos>
+180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS>
@@ -209,9 +209,9 @@ sc_2</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
-0.000000 0.000000</gml:pos>
+-180.000000 -90.000000</gml:pos>
 <gml:pos>
-10.000000 10.000000</gml:pos>
+180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS>
@@ -235,9 +235,9 @@ sc_3</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
-0.000000 0.000000</gml:pos>
+-180.000000 -90.000000</gml:pos>
 <gml:pos>
-10.000000 10.000000</gml:pos>
+180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS>
@@ -261,35 +261,9 @@ sc_4</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
-0.000000 0.000000</gml:pos>
+-180.000000 -90.000000</gml:pos>
 <gml:pos>
-20.000000 20.000000</gml:pos>
-</gml:boundingBox>
-</gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="Madrid-x20-1870-x20--x28-Madrid-x29-">
-<gml:srsName>
-Madrid 1870 (Madrid)</gml:srsName>
-<fdo:WKT>
-GEOGCS["Madrid 1870 (Madrid)", DATUM["Madrid 1870 (Madrid)", ELLIPSOID["Struve 1860", 6378298.3, 294.73]], PRIMEM["Madrid", -3.6879388889], UNIT["Degree", 0.0174532925199433]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
-<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
-<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
-geographic</gml:derivedCRSType>
-<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
-</gml:DerivedCRS>
-<gml:DerivedCRS gml:id="sc_5">
-<gml:remarks>
-Spatial context from SqlServer metadata</gml:remarks>
-<gml:srsName>
-sc_5</gml:srsName>
-<gml:validArea>
-<gml:boundingBox>
-<gml:pos>
-0.000000 0.000000</gml:pos>
-<gml:pos>
-10.000000 10.000000</gml:pos>
+180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS>
@@ -383,7 +357,7 @@ geographic</gml:derivedCRSType>
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="geometry2" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="sc_4" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:element name="geometry2" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="sc_3" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -407,7 +381,7 @@ geographic</gml:derivedCRSType>
 <xs:complexContent>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
-<xs:element name="geometry1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="sc_5" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:element name="geometry1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="sc_4" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -417,7 +391,7 @@ geographic</gml:derivedCRSType>
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="geometry3" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="sc_5" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:element name="geometry3" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="sc_4" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>

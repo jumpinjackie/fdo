@@ -78,6 +78,7 @@ void SqlServerFdoUpdateTest::UpdateNonDbo()
             false
         );
         owner->SetPassword( L"test" );
+        owner->Commit();
 
         FdoStringP tableName = FdoStringP::Format(
             L"%hs.table1",
@@ -404,6 +405,7 @@ void SqlServerFdoUpdateTest::UpdateGeogColumn()
             false
         );
         owner->SetPassword( L"test" );
+        owner->Commit();
 
         CreateGeogTable( owner, table_id_geom );
         owner->Commit();
