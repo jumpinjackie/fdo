@@ -16046,7 +16046,7 @@ void FdoExpressionFunctionTest::AddFeature (
       coordinate_buffer[i++] = 101.0 + index;
       coordinate_buffer[i++] = 101.0 + index;
       if (dimensionality == 3)
-          coordinate_buffer[i] = 0;
+          coordinate_buffer[i++] = 0;
 
       dimension_type = (dimensionality == 3)
                      ? FdoDimensionality_XY|FdoDimensionality_Z
