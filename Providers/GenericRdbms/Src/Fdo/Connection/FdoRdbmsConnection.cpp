@@ -835,9 +835,77 @@ FdoSchemaManagerP FdoRdbmsConnection::CreateSchemaManager()
     return schMgr;
 }
 
+FdoByteArray* FdoRdbmsConnection::GetGeometryValue( 
+    GdbiQueryResult* query, 
+    const FdoSmLpGeometricPropertyDefinition* pGeometricProperty,
+    FdoString* columnName,
+    bool checkIsNullOnly,
+    bool& unsupportedTypeExp
+)
+{
+    FdoIGeometry* geom = NULL;
+    FdoPtr<FdoIGeometry> pgeom;
+    FdoByteArray	*byteArray = NULL;
+    bool            isSupportedType = false;
+    bool            isNull;
+
+    query->GetBinaryValue( columnName, sizeof(FdoIGeometry *), (char*)&geom, &isNull, NULL);
+
+    pgeom = TransformGeometry( 
+        geom, 
+        pGeometricProperty, 
+        true 
+    );
+
+    if ( pgeom && pgeom->GetDerivedType() != FdoGeometryType_None )
+        isSupportedType = true;
+
+    if ( pgeom != NULL )
+    {
+        if ( isSupportedType )
+        {
+			FdoPtr<FdoFgfGeometryFactory>  gf = FdoFgfGeometryFactory::GetInstance();
+			byteArray = gf->GetFgf( pgeom );
+        }
+        else
+        {
+            if ( checkIsNullOnly )
+            {
+                byteArray = FdoByteArray::Create( (FdoInt32) 1);
+            }
+            else
+            {
+                unsupportedTypeExp = true;
+                throw FdoCommandException::Create( NlsMsgGet(FDORDBMS_116, "Unsupported geometry type" ) );
+            }
+        }
+    }
+    else if (!checkIsNullOnly)// isNull indicator is not set by GDBI for geometry columns
+    {
+        throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_385, "Property '%1$ls' value is NULL; use IsNull method before trying to access the property value", pGeometricProperty->GetName() ));
+    }
+
+    return byteArray;
+}
+
 FdoIGeometry* FdoRdbmsConnection::TransformGeometry( FdoIGeometry* geom, const FdoSmLpGeometricPropertyDefinition* prop, bool toFdo )
 {
     return FDO_SAFE_ADDREF(geom);
+}
+
+void* FdoRdbmsConnection::BindSpatialGeometry( 
+    GdbiStatement* statement, 
+    FdoRdbmsFilterProcessor::BoundGeometry* geom,
+    int bindIndex
+)
+{
+    throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_21, "Provider does not support bound geometries in spatial conditions"));
+    return NULL;
+}
+
+void FdoRdbmsConnection::BindSpatialGeometryFree( void*& buffer )
+{
+    throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_21, "Provider does not support bound geometries in spatial conditions"));
 }
 
 // Returns the current Long Transaction Manager.
@@ -909,3 +977,7 @@ void FdoRdbmsConnection::SetDefaultActiveSpatialContextName()
     }
 }
 
+bool FdoRdbmsConnection::NeedsSecondaryFiltering( FdoRdbmsSpatialSecondaryFilter* filter )
+{
+	return ( filter->GetOperation() != FdoSpatialOperations_EnvelopeIntersects );
+}

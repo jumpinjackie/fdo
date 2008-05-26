@@ -49,7 +49,9 @@
 FdoRdbmsSelectCommand::FdoRdbmsSelectCommand (): mConnection( NULL ), mIdentifiers(NULL),
   mGroupingCol(NULL),
   mGroupingFilter(NULL),
-  mOrderingIdentifiers(NULL)
+  mOrderingIdentifiers(NULL),
+  mBoundGeometries(NULL),
+  mBoundGeometryCount(0)
 {
   mLockType           = FdoLockType_Exclusive;
   mLockStrategy       = FdoLockStrategy_Partial;
@@ -64,7 +66,9 @@ FdoRdbmsSelectCommand::FdoRdbmsSelectCommand (FdoIConnection *connection) :
     mIdentifiers(NULL),
     mGroupingCol(NULL),
     mGroupingFilter(NULL),
-    mOrderingIdentifiers(NULL)
+    mOrderingIdentifiers(NULL),
+    mBoundGeometries(NULL),
+    mBoundGeometryCount(0)
 {
   mConn = static_cast<FdoRdbmsConnection*>(connection);
   if( mConn )
@@ -83,6 +87,7 @@ FdoRdbmsSelectCommand::~FdoRdbmsSelectCommand()
     FDO_SAFE_RELEASE(mGroupingFilter);
     FDO_SAFE_RELEASE(mGroupingCol);
     FDO_SAFE_RELEASE(mOrderingIdentifiers);
+    FreeBoundSpatialGeoms();
 }
 
 FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 callerId  )
@@ -107,7 +112,7 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
         filterConstrain.groupByProperties = mGroupingCol;
         filterConstrain.orderByProperties = mOrderingIdentifiers;
 
-   		// Verify if this is a special case we can optimize (no filter, no grouping fitler,
+   		// Verify if this is a special case we can optimize (no filter, no grouping filter,
 		// and only aggregate functions Count() and/or SpatialExtents())
         FdoRdbmsFeatureReader *reader = GetOptimizedFeatureReader( classDefinition );
         if ( reader )
@@ -187,6 +192,7 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
                                                              isForUpdate,
                                                              callerId );
 
+        FdoPtr<FdoRdbmsFilterProcessor::BoundGeometryCollection> boundGeometries = flterProcessor->GetBoundGeometryValues();
         FdoPtr<FdoRdbmsSecondarySpatialFilterCollection> geometricConditions = flterProcessor->GetGeometricConditions();
    		vector<int> * logicalOps = flterProcessor->GetFilterLogicalOps();
 
@@ -243,7 +249,13 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
 		// Test the spatial queries validity. Not all filters are currently supported.
 		CheckSpatialFilters( geometricConditions, logicalOps );
 
-        GdbiQueryResult *queryRslt = mConnection->GetGdbiConnection()->ExecuteQuery( sqlString );
+        GdbiStatement* statement = mConnection->GetGdbiConnection()->Prepare( sqlString );
+
+        BindSpatialGeoms( statement, boundGeometries );
+
+        GdbiQueryResult *queryRslt = statement->ExecuteQuery();
+
+        delete statement;
 
         if (( mIdentifiers && mIdentifiers->GetCount() > 0) )
             return new FdoRdbmsFeatureSubsetReader( FdoPtr<FdoIConnection>(GetConnection()), queryRslt, isFeatureClass, classDefinition, NULL, mIdentifiers, geometricConditions, logicalOps );
@@ -506,14 +518,14 @@ FdoExpressionEngineFunctionCollection* FdoRdbmsSelectCommand::GetUserDefinedFunc
 FdoRdbmsFeatureReader *FdoRdbmsSelectCommand::GetOptimizedFeatureReader( const FdoSmLpClassDefinition *classDefinition )
 {
 
-	// Verify if this is a special case we can optimize (no filter, no grouping fitler,
+	// Verify if this is a special case we can optimize (no grouping filter,
 	// and only aggregate functions Count() and/or SpatialExtents())
     FdoRdbmsFeatureReader *reader = NULL;
 	bool        bOtherAggrSelected = false;
 	aggr_list   *selAggrList = new aggr_list;
 
 	if ( (classDefinition->GetClassType() == FdoClassType_FeatureClass ) && mIdentifiers && 
-		!GetFilterRef() && !mGroupingCol)
+		!mGroupingCol)
 	{
         for (int i = 0; i < mIdentifiers->GetCount() && !bOtherAggrSelected; i++ )
         {
@@ -525,7 +537,7 @@ FdoRdbmsFeatureReader *FdoRdbmsSelectCommand::GetOptimizedFeatureReader( const F
 				FdoPtr<FdoExpression> expr = computedIdentifier->GetExpression();
                 FdoFunction* func = dynamic_cast<FdoFunction*>(expr.p);
 
-                if (func && 0==wcscmp(func->GetName(), FDO_FUNCTION_SPATIALEXTENTS))
+                if (func && 0==FdoCommonOSUtil::wcsicmp(func->GetName(), FDO_FUNCTION_SPATIALEXTENTS))
                 {
 					FdoPtr<FdoExpressionCollection> args = func->GetArguments();
                     FdoPtr<FdoExpression> arg = args->GetItem(0);
@@ -538,10 +550,11 @@ FdoRdbmsFeatureReader *FdoRdbmsSelectCommand::GetOptimizedFeatureReader( const F
 
                     selAggrList->push_back( id );
 				}
-                else if (func && 0 == wcscmp(func->GetName(), FDO_FUNCTION_COUNT))
+                else if (func && 0 == FdoCommonOSUtil::wcsicmp(func->GetName(), FDO_FUNCTION_COUNT))
                 {
                     // Only if the argument count for the function is 1 do some
                     // special handling.
+
                     FdoPtr<FdoExpressionCollection> exprArgColl = func->GetArguments();
                     if (exprArgColl->GetCount() == 1)
 					{
@@ -559,7 +572,7 @@ FdoRdbmsFeatureReader *FdoRdbmsSelectCommand::GetOptimizedFeatureReader( const F
 
                         delete selAggrList;
                         bOtherAggrSelected = true;
-                    }			
+                    }
                 }
                 else
                 {
@@ -576,7 +589,7 @@ FdoRdbmsFeatureReader *FdoRdbmsSelectCommand::GetOptimizedFeatureReader( const F
 
 	// Now perform the actual select aggregates and return the data reader:
 	if ( !bOtherAggrSelected && ( selAggrList->size() > 0 ))  
-		reader = mFdoConnection->GetOptimizedAggregateReader( classDefinition, selAggrList ); // The reader takes ownership of the selAggrList
+		reader = mFdoConnection->GetOptimizedAggregateReader( classDefinition, selAggrList, GetFilterRef() ); // The reader takes ownership of the selAggrList
     
     return reader;
 }
@@ -601,3 +614,38 @@ void FdoRdbmsSelectCommand::CheckSpatialFilters( FdoRdbmsSecondarySpatialFilterC
 			throw FdoCommandException::Create( NlsMsgGet(FDORDBMS_532, "AND and OR not supported in a query when mixing property with spatial filters" ) );
 	}
 }
+
+void  FdoRdbmsSelectCommand::BindSpatialGeoms( GdbiStatement* statement, FdoRdbmsFilterProcessor::BoundGeometryCollection* geometries )
+{
+    if ( geometries->GetCount() > 0 )
+    {
+        FdoInt32 idx;
+
+        FreeBoundSpatialGeoms();
+
+        mBoundGeometryCount = geometries->GetCount();
+        mBoundGeometries = new void*[mBoundGeometryCount];
+
+        for ( idx = 0; idx < mBoundGeometryCount; idx++ ) 
+        {
+            FdoPtr<FdoRdbmsFilterProcessor::BoundGeometry> boundGeometry = geometries->GetItem(idx);
+            mBoundGeometries[idx] = NULL;   // in case BindSpatialGeometry throws an exception.
+            mBoundGeometries[idx] = mFdoConnection->BindSpatialGeometry( statement, boundGeometry, idx + 1 ); 
+        }
+    }
+}
+
+void  FdoRdbmsSelectCommand::FreeBoundSpatialGeoms()
+{
+    FdoInt32 idx;
+
+    if ( mBoundGeometries )
+    {
+        for ( idx = 0; idx < mBoundGeometryCount; idx++ ) 
+            mFdoConnection->BindSpatialGeometryFree( mBoundGeometries[idx] );
+
+        delete[] mBoundGeometries;
+        mBoundGeometryCount = 0;
+        mBoundGeometries = NULL;
+    }
+ }

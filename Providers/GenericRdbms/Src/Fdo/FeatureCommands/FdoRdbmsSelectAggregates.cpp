@@ -76,7 +76,7 @@ FdoIDataReader *FdoRdbmsSelectAggregates::Execute ()
 
     const FdoSmLpClassDefinition *classDefinition =
                 dbiConnection->GetSchemaUtil()->GetClass(cName->GetText());
-    // Verify if this is a special case we can optimize (no filter, no grouping fitler,
+    // Verify if this is a special case we can optimize (no filter, no grouping filter,
     // and only aggregate functions Count() and/or SpatialExtents())
     // Check if we can optimize first, since property list and filter
     // might be supported in the optimized case but not the non-optimized 

@@ -255,6 +255,11 @@ SymbolicName=FDORDBMS_20
 Language=English
 Case not handled yet
 .
+MessageId=2226
+SymbolicName=FDORDBMS_21
+Language=English
+Provider does not support bound geometries in spatial conditions
+.
 MessageId=2227
 SymbolicName=FDORDBMS_22
 Language=English
