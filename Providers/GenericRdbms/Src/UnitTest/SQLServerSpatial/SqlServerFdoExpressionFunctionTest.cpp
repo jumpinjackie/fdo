@@ -72,9 +72,10 @@ FdoDouble SqlServerFdoExpressionFunctionTest::GetExpectedValue (
 
     switch (test_case_id) {
 
-      case COUNT_TEST_CASE_CODE_1: return 31; break;
+      case COUNT_TEST_CASE_CODE_1: return 30; break;
       case COUNT_TEST_CASE_CODE_2: return 28; break;
       case COUNT_TEST_CASE_CODE_3: return 31; break;
+      case COUNT_TEST_CASE_CODE_4: return 4; break;
 
       case EXP_TEST_CASE_CODE_1  : return 1.3733829795401761e+032; break;
 
@@ -89,43 +90,37 @@ FdoDouble SqlServerFdoExpressionFunctionTest::GetExpectedValue (
 
 }  //  GetExpectedCountValue ()
 
+// ===========================================================================
+// ==                    TESTING THE CONVERSION FUNCTIONS                   ==
+// ===========================================================================
+
 
 // ----------------------------------------------------------------------------
 // --                      Standard Unit Test Functions                      --
 // ----------------------------------------------------------------------------
-
-// ===========================================================================
-// ==                    TESTING THE AGGREGATE FUNCTIONS                    ==
-// ===========================================================================
 
 void SqlServerFdoExpressionFunctionTest::TestSpatialExtents ()
 
 // +---------------------------------------------------------------------------
 // | The function executes the test for the expression engine function SPATIAL-
 // | EXTENTS when used as a select-parameter.
-// | NOTE: The common unit test function is overwritten because due to some MAP
-// |       related optimizations, the first test that works on a single object
-// |       will return incorrect information because it actually determines the
-// |       extents of all objects of the test class rather than just the one it
-// |       is asked to do.
 // +---------------------------------------------------------------------------
 
 {
+    FdoExpressionFunctionTest::TestSpatialExtents();
 
     // Declare and initialize all necessary local vatiables.
 
-    FdoInt32                      count,
-                                  dimensionality;
+    FdoInt32                      count = 0;
 
     FdoDouble	                  min_x,
                                   min_y,
-                                  min_z,
                                   max_x,
-                                  max_y,
-                                  max_z;
+                                  max_y;
 
     FdoStringP                    func_call;
 
+    FdoPtr<FdoFilter>             filter;
     FdoPtr<FdoByteArray>          byte_array;
     FdoPtr<FdoIGeometry>          geometry;
     FdoPtr<FdoIEnvelope>          envelope;
@@ -133,17 +128,12 @@ void SqlServerFdoExpressionFunctionTest::TestSpatialExtents ()
     FdoPtr<FdoIFeatureReader>     feature_reader;
     FdoPtr<FdoFgfGeometryFactory> gf;
 
-    printf("\n");
-    printf("========================================================== \n");
-    printf(" Current Unit Test Suite: SPATIALEXTENTS Function Testing  \n");
-    printf("========================================================== \n");
-    printf("\n");
-
     // Test Case Setup:
     // The following retrieves the geometry data for all objects and calcu-
     // lates the spatial extent. This is later used to cross-check the result
     // returned by the expression function call.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("Test Case Setup:                                           \n");
     printf("  The following retrieves the geometry data for all ob-    \n");
@@ -156,8 +146,6 @@ void SqlServerFdoExpressionFunctionTest::TestSpatialExtents ()
 
       printf(" >>> Retrieve the requested information \n");
 
-      count          = 0;
-      dimensionality = GetDimensionality();
       gf             = FdoFgfGeometryFactory::GetInstance();
       feature_reader =
                     ExecuteSelectCommand(L"exfct_c1", NULL, L"RDBMS_GEOM");
@@ -179,13 +167,6 @@ void SqlServerFdoExpressionFunctionTest::TestSpatialExtents ()
             max_x      = envelope->GetMaxX();
             max_y      = envelope->GetMaxY();
 
-            if (dimensionality == 3) {
-
-                min_z = envelope->GetMinZ();
-                max_z = envelope->GetMaxZ();
-
-            }  //  if (dimensionality == 3) ...
-
         }  //  if (count == 0) ...
         else {
 
@@ -193,14 +174,6 @@ void SqlServerFdoExpressionFunctionTest::TestSpatialExtents ()
           min_y = min(min_y, envelope->GetMinY());
           max_x = max(max_x, envelope->GetMaxX());
           max_y = max(max_y, envelope->GetMaxY());
-
-          if (dimensionality == 3) {
-
-              min_z = min(min_z, envelope->GetMinZ());
-              max_z = max(max_z, envelope->GetMaxZ());
-
-          }  //  if (dimensionality == 3) ...
-
         }  //  else ...
 
         count++;
@@ -224,11 +197,9 @@ void SqlServerFdoExpressionFunctionTest::TestSpatialExtents ()
 
     }  //  catch ( ... ) ...
 
-    // Execute the test cases.
-
     printf("\n");
     printf("---------------------------------------------------------- \n");
-    printf("1. Test Case:                                              \n");
+    printf("10. Test Case:                                              \n");
     printf("  The test executes a select-aggregate command to select   \n");
     printf("  the value of a computed property that is defined by us-  \n");
     printf("  ing the function SPATIALEXTENTS on all the values of a   \n");
@@ -243,68 +214,42 @@ void SqlServerFdoExpressionFunctionTest::TestSpatialExtents ()
       // being identical to the setting of the mbr values set in the test
       // setup.
 
-      func_call   = L"(SpatialExtents(RDBMS_GEOM) as cmp_id)";
-      data_reader =
-                ExecuteSelAggrCommand(L"exfct_c1", NULL, false, func_call);
-      CheckReaderGeometry(data_reader,
-                          1,
-                          dimensionality,
+      func_call   = L"(SpatialExtents(RDBMS_GEOM) as cmp_id, Count(byte_val) as feat_count)";
+
+      FdoPtr<FdoISelectAggregates>    sel_aggreg_cmd;
+      FdoPtr<FdoComputedIdentifier>   cmp_id;
+      FdoPtr<FdoIdentifierCollection> id_col;
+
+      // Create a select-aggregate function and set the class name and filter.
+
+      printf(" >>> Setup the aggregate command \n");
+
+      sel_aggreg_cmd =
+            (FdoISelectAggregates*)m_connection->CreateCommand(
+                                            FdoCommandType_SelectAggregates);
+      sel_aggreg_cmd->SetFeatureClassName(L"exfct_c1");
+      id_col = sel_aggreg_cmd->GetPropertyNames();
+ 
+      // Define the computed identity to be selected in this test if required.
+
+      cmp_id = (FdoComputedIdentifier*)FdoExpression::Parse(L"(SpatialExtents(RDBMS_GEOM) as cmp_id)");
+      id_col->Add(cmp_id);
+      cmp_id = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Count(byte_val) as feat_count)");
+      id_col->Add(cmp_id);
+
+      // Execute the request and return the data reader back to the calling pro-
+      // cedure.
+
+      printf(" >>> Execute test \n");
+
+      data_reader = sel_aggreg_cmd->Execute();
+
+      CheckReaderGeometryAndCount(data_reader,
+                          (FdoInt32)(GetExpectedValue(COUNT_TEST_CASE_CODE_3)),
                           min_x,
                           min_y,
-                          min_z,
                           max_x,
-                          max_y,
-                          max_z);
-      printf(" >>> Test succeeded \n");
-
-    }  //  try ...
-
-    catch (FdoException *exp) {
-
-      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
-      printf(" >>> Test failed \n");
-      throw exp;
-
-    }  //  catch (FdoException *ex) ...
-
-    catch ( ... ) {
-
-      printf(" >>> Test failed for an unknown reason \n");
-      throw;
-
-    }  //  catch ( ... ) ...
-
-    printf("\n");
-    printf("---------------------------------------------------------- \n");
-    printf("2. Test Case:                                              \n");
-    printf("  The test executes a select-aggregate command to select   \n");
-    printf("  the value of a computed property that is defined by us-  \n");
-    printf("  ing the function SPATIALEXTENTS on all the values of a   \n");
-    printf("  different property of type GEOMETRY where the function   \n");
-    printf("  name differs from the expected function name ('SpAtIaL-  \n");
-    printf("  eXtEnTs' rather than 'SpatialExtents'). No exceptions    \n");
-    printf("  are expected.                                            \n");
-    printf("---------------------------------------------------------- \n");
-
-    try {
-
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row with the value of the computed property
-      // being identical to the setting of the mbr values set in the test
-      // setup.
-
-      func_call   = L"(SpAtIaLeXtEnTs(RDBMS_GEOM) as cmp_id)";
-      data_reader =
-                ExecuteSelAggrCommand(L"exfct_c1", NULL, false, func_call);
-      CheckReaderGeometry(data_reader,
-                          1,
-                          dimensionality,
-                          min_x,
-                          min_y,
-                          min_z,
-                          max_x,
-                          max_y,
-                          max_z);
+                          max_y);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -325,6 +270,7 @@ void SqlServerFdoExpressionFunctionTest::TestSpatialExtents ()
     }  //  catch ( ... ) ...
 
 }  //  TestSpatialExtents ()
+
 
 
 // ===========================================================================
@@ -1522,4 +1468,86 @@ void SqlServerFdoExpressionFunctionTest::
       printf(" >>> ... All expected data found\n");
 
 }  //  CheckReaderStddev ()
+
+void SqlServerFdoExpressionFunctionTest::CheckReaderGeometryAndCount (
+                                        FdoIDataReader *data_reader,
+                                        FdoInt32       expected_count,
+                                        FdoDouble      expected_min_x,
+                                        FdoDouble      expected_min_y,
+                                        FdoDouble      expected_max_x,
+                                        FdoDouble      expected_max_y)
+
+// +---------------------------------------------------------------------------
+// | The function checks whether or not the provided reader contains the ex-
+// | pected data and throws an exception if this is not the case.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    bool                          is_valid_result = false;
+
+    FdoPtr<FdoByteArray>          byte_array;
+    FdoPtr<FdoIGeometry>          geometry;
+    FdoPtr<FdoIEnvelope>          envelope;
+    FdoPtr<FdoFgfGeometryFactory> gf;
+
+    gf = FdoFgfGeometryFactory::GetInstance();
+
+    // Navigate through the reader and perform the necessary checks.
+
+    printf(" >>> Cross check result \n");
+
+    if (!data_reader->ReadNext()) {
+         throw FdoException::Create(
+                        L"Unexpected result(s), no returned data");
+    }
+
+    if (data_reader->IsNull(L"cmp_id") ) {
+         throw FdoException::Create(
+                        L"Unexpected result(s), null extents");
+    }
+
+    byte_array = data_reader->GetGeometry(L"cmp_id");
+    geometry   = gf->CreateGeometryFromFgf(byte_array);
+    envelope   = geometry->GetEnvelope();
+    if (envelope->GetIsEmpty())
+        is_valid_result = false;
+    else {
+        is_valid_result = ((fabs(expected_min_x - envelope->GetMinX()) < 0.001) &&
+               (fabs(expected_min_y - envelope->GetMinY()) < 0.001) &&
+               (fabs(expected_max_x - envelope->GetMaxX()) < 0.001) &&
+               (fabs(expected_max_y - envelope->GetMaxY()) < 0.001)    );
+
+
+    }  //  else ...
+
+    if ( is_valid_result ) {
+        if (data_reader->IsNull(L"feat_count") ) {
+             throw FdoException::Create(
+                            L"Unexpected result(s), null count");
+        }
+
+        is_valid_result = data_reader->GetInt64(L"feat_count") == expected_count;
+    }
+
+    if (data_reader->ReadNext()) {
+         throw FdoException::Create(
+                        L"Unexpected result(s), multiple rows");
+    }
+
+    // Close the reader.
+
+    data_reader->Close();
+
+    // Issue an exception if the expected result is not met.
+
+    if (!is_valid_result)
+         throw FdoException::Create(
+                        L"Unexpected result(s) when checking returned data");
+    else
+      printf(" >>> ... All expected data found\n");
+
+}  //  CheckReaderGeometry ()
 

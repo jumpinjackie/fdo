@@ -630,9 +630,23 @@ FdoIExpressionCapabilities* FdoRdbmsSqlServerConnection::GetExpressionCapabiliti
 	return mExpressionCapabilities;
 }
 
-FdoRdbmsFeatureReader *FdoRdbmsSqlServerConnection::GetOptimizedAggregateReader(const FdoSmLpClassDefinition* classDef, aggr_list *selAggrList)
+FdoRdbmsFeatureReader *FdoRdbmsSqlServerConnection::GetOptimizedAggregateReader(const FdoSmLpClassDefinition* classDef, aggr_list *selAggrList, FdoFilter* filter)
 { 
-    return new FdoRdbmsSqlServerOptimizedAggregateReader(this, classDef, selAggrList); 
+    bool optimize = false;
+
+    // Optimization needed only when SpatialExtents function present.
+    for ( size_t i = 0; i < selAggrList->size(); i++ )
+	{ 
+		AggregateElement	*id = selAggrList->at(i);
+		if ( id->type == FdoPropertyType_GeometricProperty )
+			optimize = true;
+    }
+        
+    FdoRdbmsSqlServerOptimizedAggregateReader* rdr = NULL;
+    if ( optimize ) 
+        rdr = new FdoRdbmsSqlServerOptimizedAggregateReader(this, classDef, selAggrList, filter); 
+
+    return rdr;
 }
 
 FdoStringP FdoRdbmsSqlServerConnection::GetBindString( int n, const FdoSmLpPropertyDefinition* prop )

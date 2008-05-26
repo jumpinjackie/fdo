@@ -619,131 +619,149 @@ FdoInt32 FdoRdbmsDeleteCommand::DeleteRelatedObjects( const wchar_t* scope, cons
         }
     }
 
+    bool useTableAlias = flterProcessor->GetUseTableAlias();
 	// disable table aliases since some RDBMSs do not handle it with delete command
 	flterProcessor->SetUseTableAlias( false );
 
-    const wchar_t *sqlBuffer = flterProcessor->FilterToSql( newFilter, this->GetClassNameRef()->GetText(), SqlCommandType_Update, FdoCommandType_Delete, NULL, false );
-    // The buffer contains a query of the form: "select classTab.id from classTab,assocTab,objTab where ...."
-    int idx, size;
-
-    size = (int)wcslen( sqlBuffer );
-    if ( scope == NULL )
+    const wchar_t *sqlBuffer = NULL;
+    
+    try 
     {
-        // Deleting from class for command, just need the where clause
-        for( idx=0; idx<size && FdoCommonOSUtil::wcsnicmp(&sqlBuffer[idx],L" WHERE ",7); idx++ );
-    }
-    else
-        // Deleting associated feature or object properties, also need from clause
-        // for inner select
-        for( idx=0; idx<size && FdoCommonOSUtil::wcsnicmp(&sqlBuffer[idx],L" FROM ",6); idx++ );
+        sqlBuffer = flterProcessor->FilterToSql( newFilter, this->GetClassNameRef()->GetText(), SqlCommandType_Update, FdoCommandType_Delete, NULL, false );
 
-    if( idx == size )
-        return deletedObjects;
+        // The buffer contains a query of the form: "select classTab.id from classTab,assocTab,objTab where ...."
+        int idx, size;
 
-    FdoStringP  tableName = mConnection->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
-
-    FdoStringP  delStmt = L"delete from ";
-
-	// No object property or association
-    if ( scope == NULL ) 
-	{
-		// MySql doesn't allow inner select to operate on same table as delete statement.
-        // In this case just tack on where clause from sqlbuffer to generate:
-        // "delete from tab where ..."
-		delStmt += tableName;
-		// Not using table aliases 
-        delStmt += &sqlBuffer[idx];
-
-		count = mConnection->GetGdbiConnection()->ExecuteNonQuery( (const wchar_t*)delStmt );
-		return (count+deletedObjects);
-	}
-
-	// RDBMS support inner select; let's do the delete in a single statement
-	if( mFdoConnection->SupportsInnerQuery() )
-	{
-        // For deleting an associated feature or object property
-        // We replace the column spec (classTab.id) from sqlbuffer with assocTab.id1,assocTab.id2,... and use that select as an inner select for a delete similar to:
-        // "delete from assocTab where (assocTab.id1,assocTab.id2,..) in (select assocTab.id1,assocTab.id2,.. from classTab,assocTab,objTab where ....)"
-        delStmt += tableName;
-		delStmt += L" where ";
-
-		if( fkProps->GetCount() > 1 )
-			delStmt += L"(";
-        for( int k=0;k<fkProps->GetCount();k++)
+        size = (int)wcslen( sqlBuffer );
+        if ( scope == NULL )
         {
-            if( k != 0 )
-            {
-                delStmt += L",";
-            }
+            // Deleting from class for command, just need the where clause
+            for( idx=0; idx<size && FdoCommonOSUtil::wcsnicmp(&sqlBuffer[idx],L" WHERE ",7); idx++ );
+        }
+        else
+            // Deleting associated feature or object properties, also need from clause
+            // for inner select
+            for( idx=0; idx<size && FdoCommonOSUtil::wcsnicmp(&sqlBuffer[idx],L" FROM ",6); idx++ );
+
+        if( idx == size )
+        {
+            flterProcessor->SetUseTableAlias( useTableAlias );
+            return deletedObjects;
+        }
+
+        FdoStringP  tableName = mConnection->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
+
+        FdoStringP  delStmt = L"delete from ";
+
+	    // No object property or association
+        if ( scope == NULL ) 
+	    {
+		    // MySql doesn't allow inner select to operate on same table as delete statement.
+            // In this case just tack on where clause from sqlbuffer to generate:
+            // "delete from tab where ..."
+		    delStmt += tableName;
+		    // Not using table aliases 
+            delStmt += &sqlBuffer[idx];
+
+		    count = mConnection->GetGdbiConnection()->ExecuteNonQuery( (const wchar_t*)delStmt );
+            flterProcessor->SetUseTableAlias( useTableAlias );
+		    return (count+deletedObjects);
+	    }
+
+	    // RDBMS support inner select; let's do the delete in a single statement
+	    if( mFdoConnection->SupportsInnerQuery() )
+	    {
+            // For deleting an associated feature or object property
+            // We replace the column spec (classTab.id) from sqlbuffer with assocTab.id1,assocTab.id2,... and use that select as an inner select for a delete similar to:
+            // "delete from assocTab where (assocTab.id1,assocTab.id2,..) in (select assocTab.id1,assocTab.id2,.. from classTab,assocTab,objTab where ....)"
             delStmt += tableName;
-            delStmt += L".";
-            delStmt += mConnection->GetSchemaUtil()->GetColumnSqlName(fkProps->RefItem(k));
-        }
-		if( fkProps->GetCount() > 1 )
-			delStmt += L")";
-        delStmt += L" in ( select ";
-        for( int k=0;k<fkProps->GetCount();k++)
+		    delStmt += L" where ";
+
+		    if( fkProps->GetCount() > 1 )
+			    delStmt += L"(";
+            for( int k=0;k<fkProps->GetCount();k++)
+            {
+                if( k != 0 )
+                {
+                    delStmt += L",";
+                }
+                delStmt += tableName;
+                delStmt += L".";
+                delStmt += mConnection->GetSchemaUtil()->GetColumnSqlName(fkProps->RefItem(k));
+            }
+		    if( fkProps->GetCount() > 1 )
+			    delStmt += L")";
+            delStmt += L" in ( select ";
+            for( int k=0;k<fkProps->GetCount();k++)
+            {
+                if( k != 0 )
+                {
+                    delStmt += L",";
+                }
+                delStmt += flterProcessor->GetTableAlias(tableName);
+                delStmt += L".";
+                delStmt += mConnection->GetSchemaUtil()->GetColumnSqlName(fkProps->RefItem(k));
+            }
+
+            delStmt += &sqlBuffer[idx];
+            delStmt += L" )";
+
+		    count = mConnection->GetGdbiConnection()->ExecuteNonQuery( (const wchar_t*)delStmt );
+
+            flterProcessor->SetUseTableAlias( useTableAlias );
+		    return (count+deletedObjects);
+	    }
+
+	    // If we get here then we are deleting object data and the RDBMS does not support inner select.
+	    // Let's delete one row at a time
+	    // First we build the delete string using bind variable
+        delStmt += tableName;
+	    delStmt += L" where ";
+
+	    FdoStringP queryStmt = L"select ";
+	    for( int k=0;k<fkProps->GetCount();k++)
         {
             if( k != 0 )
             {
-                delStmt += L",";
+                queryStmt += L",";
             }
-            delStmt += flterProcessor->GetTableAlias(tableName);
-            delStmt += L".";
-            delStmt += mConnection->GetSchemaUtil()->GetColumnSqlName(fkProps->RefItem(k));
+            queryStmt += flterProcessor->GetTableAlias(tableName);
+            queryStmt += L".";
+            queryStmt += mConnection->GetSchemaUtil()->GetColumnSqlName(fkProps->RefItem(k));
         }
 
-        delStmt += &sqlBuffer[idx];
-        delStmt += L" )";
+        queryStmt += &sqlBuffer[idx];
+	    GdbiQueryResult *result = mConnection->GetGdbiConnection()->ExecuteQuery( (const wchar_t*)queryStmt );
+	    count = 0;
 
-		count = mConnection->GetGdbiConnection()->ExecuteNonQuery( (const wchar_t*)delStmt );
+        FdoSchemaManagerP pschemaManager = mConnection->GetSchemaUtil()->GetSchemaManager();
+        FdoSmPhMgrP phMgr = pschemaManager->GetPhysicalSchema();
 
-		return (count+deletedObjects);
-	}
-
-	// If we get here then we are deleting object data and the RDBMS does not support inner select.
-	// Let's delete one row at a time
-	// First we build the delete string using bind variable
-    delStmt += tableName;
-	delStmt += L" where ";
-
-	FdoStringP queryStmt = L"select ";
-	for( int k=0;k<fkProps->GetCount();k++)
-    {
-        if( k != 0 )
-        {
-            queryStmt += L",";
-        }
-        queryStmt += flterProcessor->GetTableAlias(tableName);
-        queryStmt += L".";
-        queryStmt += mConnection->GetSchemaUtil()->GetColumnSqlName(fkProps->RefItem(k));
+	    while( result && result->ReadNext() )
+	    {
+		    FdoStringP subDelStmt = delStmt;
+		    for( int k=0;k<fkProps->GetCount();k++)
+		    {
+			    if( k != 0 )
+			    {
+				    subDelStmt += L" and ";
+			    }
+			    subDelStmt += tableName;
+			    subDelStmt += L".";
+			    subDelStmt += mConnection->GetSchemaUtil()->GetColumnSqlName(fkProps->RefItem(k));
+			    subDelStmt += L"=";
+			    subDelStmt += phMgr->FormatSQLVal(result->GetString( k+1, NULL, NULL ), FdoSmPhColType_String);
+		    }
+		    count += mConnection->GetGdbiConnection()->ExecuteNonQuery( (const wchar_t*)subDelStmt );
+	    }
+	    delete result;
     }
-
-    queryStmt += &sqlBuffer[idx];
-	GdbiQueryResult *result = mConnection->GetGdbiConnection()->ExecuteQuery( (const wchar_t*)queryStmt );
-	count = 0;
-
-    FdoSchemaManagerP pschemaManager = mConnection->GetSchemaUtil()->GetSchemaManager();
-    FdoSmPhMgrP phMgr = pschemaManager->GetPhysicalSchema();
-
-	while( result && result->ReadNext() )
-	{
-		FdoStringP subDelStmt = delStmt;
-		for( int k=0;k<fkProps->GetCount();k++)
-		{
-			if( k != 0 )
-			{
-				subDelStmt += L" and ";
-			}
-			subDelStmt += tableName;
-			subDelStmt += L".";
-			subDelStmt += mConnection->GetSchemaUtil()->GetColumnSqlName(fkProps->RefItem(k));
-			subDelStmt += L"=";
-			subDelStmt += phMgr->FormatSQLVal(result->GetString( k+1, NULL, NULL ), FdoSmPhColType_String);
-		}
-		count += mConnection->GetGdbiConnection()->ExecuteNonQuery( (const wchar_t*)subDelStmt );
-	}
-	delete result;
+    catch (...)
+    {
+        flterProcessor->SetUseTableAlias( useTableAlias );
+        throw;
+    }
+    flterProcessor->SetUseTableAlias( useTableAlias );
 
 	return (count+deletedObjects);
 }

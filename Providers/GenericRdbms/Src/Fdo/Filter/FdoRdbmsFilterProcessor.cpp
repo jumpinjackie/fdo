@@ -86,6 +86,9 @@ void FdoRdbmsFilterProcessor::ResetBuffer( SqlCommandType cmdType )
         mSecondarySpatialFilters->Clear();
 
    	mFilterLogicalOps.clear();
+
+    if (mBoundGeometryValues != NULL)
+        mBoundGeometryValues->Clear();
 }
 
 //
@@ -277,6 +280,9 @@ const wchar_t * FdoRdbmsFilterProcessor::PropertyNameToColumnName( const wchar_t
     currentClass = mDbiConnection->GetSchemaUtil()->GetClass(mCurrentClassName);
 
     const FdoSmLpPropertyDefinition *propertyDefinition = currentClass->RefProperties()->RefItem( propName );
+    if (propertyDefinition == NULL)
+        throw FdoFilterException::Create(NlsMsgGet1(FDORDBMS_28, "Property '%1$ls' is not found", propName));
+
     switch( propertyDefinition->GetPropertyType()  )
     {
         case FdoPropertyType_DataProperty:
@@ -919,6 +925,9 @@ void FdoRdbmsFilterProcessor::FollowRelation( FdoStringP    &relationColumns, co
                 (const wchar_t*)assocProp->GetReverseIdentityColumns()->GetDbString(j),
                 (const wchar_t*)fkTableName,
                 (const wchar_t*)assocProp->GetIdentityColumns()->GetDbString(j), true );
+
+           FdoStringP fkAliasName = mUseTableAliases ? FdoStringP(GetTableAlias(fkTableName)) : fkTableName;
+
             if( j == 0 )
             {
                 bool skip = false;
@@ -926,7 +935,7 @@ void FdoRdbmsFilterProcessor::FollowRelation( FdoStringP    &relationColumns, co
                 if( relationColumns.GetLength() != 0 )
                 {
                     const wchar_t* allTabs = (const wchar_t*)relationColumns;
-                    const wchar_t* newTab = (const wchar_t*)fkTableName;
+                    const wchar_t* newTab = (const wchar_t*)fkAliasName;
                     for(int i=0; allTabs[i]!='\0';i++)
                     {
                         if( i==0 || allTabs[i-1]==',' )
@@ -942,7 +951,7 @@ void FdoRdbmsFilterProcessor::FollowRelation( FdoStringP    &relationColumns, co
                 }
                 if( !skip )
                 {
-                    relationColumns += fkTableName;
+                    relationColumns += fkAliasName;
                     relationColumns += L".*,";
                 }
             }
@@ -1948,4 +1957,27 @@ void FdoRdbmsFilterProcessor::PrependSelectStar( FdoString* tableName)
     PrependString ( L"*" ); 
     PrependString ( L"." ); 
     PrependString (tableName); 
+}
+
+FdoRdbmsFilterProcessor::BoundGeometry::BoundGeometry(
+    FdoIGeometry* geometry,
+    FdoInt64 srid
+)
+{
+    mGeometry = FDO_SAFE_ADDREF(geometry);
+    mSrid = srid;
+}
+
+FdoIGeometry* FdoRdbmsFilterProcessor::BoundGeometry::GetGeometry()
+{
+    return FDO_SAFE_ADDREF(mGeometry.p);
+}
+
+FdoInt64 FdoRdbmsFilterProcessor::BoundGeometry::GetSrid()
+{
+    return mSrid;
+}
+
+FdoRdbmsFilterProcessor::BoundGeometry::~BoundGeometry(void)
+{
 }
