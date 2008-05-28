@@ -12,8 +12,8 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 <xsl:param name="providerName"/>
   
 <xsl:template match="lp:schema[@name='F_MetaClass' or (not($providerName='Oracle') and starts-with(@name,'abcdef1234567890'))]"/>
-<xsl:template match="lp:schema[@description='NLS Schema' and $providerName='SqlServer']"/>
-<xsl:template match="lp:class[@name='aCxdATA' and $providerName='SqlServer']"/>
+<xsl:template match="lp:schema[@description='NLS Schema' and ($providerName='SqlServer' or $providerName='SQLServerSpatial')]"/>
+<xsl:template match="lp:class[@name='aCxdATA' and ($providerName='SqlServer' or $providerName='SQLServerSpatial')]"/>
 <xsl:template match="lp:class[@name='Zoning']">
   <xsl:copy>
     <xsl:apply-templates select="@*"/>
@@ -149,7 +149,7 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 										</xsl:otherwise>
 									</xsl:choose>
 								</xsl:when>
-								<xsl:when test="$providerName = 'SqlServer'">
+								<xsl:when test="$providerName = 'SqlServer' or $providerName = 'SQLServerSpatial'">
 									<xsl:choose>
                     <xsl:when test="@length &lt; 4001">
                       <xsl:attribute name="dataType">nvarchar</xsl:attribute>
@@ -179,7 +179,7 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 										</xsl:otherwise>
 									</xsl:choose>
 								</xsl:when>
-							</xsl:choose>
+              </xsl:choose>
 						</xsl:when>
 						<xsl:when test="$propNode/@dataType = 'decimal'" >
 							<xsl:attribute name="dataType">DECIMAL</xsl:attribute>	
@@ -205,7 +205,10 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 								<xsl:when test="$providerName = 'SqlServer'">
 									<xsl:attribute name="dataType">TINYINT</xsl:attribute>	
 								</xsl:when>
-							</xsl:choose>
+                <xsl:when test="$providerName = 'SQLServerSpatial'">
+                  <xsl:attribute name="dataType">BIT</xsl:attribute>
+                </xsl:when>
+              </xsl:choose>
 							<xsl:attribute name="length">0</xsl:attribute>	
 							<xsl:attribute name="scale">0</xsl:attribute>	
 						</xsl:when>
@@ -214,7 +217,7 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 								<xsl:when test="$providerName = 'MySql'">
 									<xsl:attribute name="dataType">TINYINT UNSIGNED</xsl:attribute>	
 								</xsl:when>
-								<xsl:when test="$providerName = 'SqlServer'">
+								<xsl:when test="$providerName = 'SqlServer' or $providerName = 'SQLServerSpatial'">
 									<xsl:attribute name="dataType">TINYINT</xsl:attribute>	
 								</xsl:when>
 							</xsl:choose>
@@ -231,7 +234,7 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 								<xsl:when test="$providerName = 'MySql'">
 									<xsl:attribute name="dataType">DOUBLE</xsl:attribute>	
 								</xsl:when>
-								<xsl:when test="$providerName = 'SqlServer'">
+								<xsl:when test="$providerName = 'SqlServer' or $providerName = 'SQLServerSpatial'">
 									<xsl:attribute name="dataType">FLOAT</xsl:attribute>	
 								</xsl:when>
 							</xsl:choose>
@@ -248,7 +251,7 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 								<xsl:when test="$providerName = 'MySql'">
 									<xsl:attribute name="dataType">INT</xsl:attribute>	
 								</xsl:when>
-								<xsl:when test="$providerName = 'SqlServer'">
+								<xsl:when test="$providerName = 'SqlServer' or $providerName = 'SQLServerSpatial'">
 									<xsl:attribute name="dataType">INTEGER</xsl:attribute>	
 								</xsl:when>
 							</xsl:choose>
@@ -269,6 +272,9 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 									<!-- logged as defect 772006 <xsl:attribute name="dataType">REAL</xsl:attribute>	-->
 									<xsl:attribute name="dataType">FLOAT</xsl:attribute>
 								</xsl:when>
+                <xsl:when test="$providerName = 'SQLServerSpatial'">
+                  <xsl:attribute name="dataType">REAL</xsl:attribute>
+                </xsl:when>                
 							</xsl:choose>
 							<xsl:attribute name="length">0</xsl:attribute>	
 							<xsl:attribute name="scale">0</xsl:attribute>	
@@ -278,7 +284,7 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 								<xsl:when test="$providerName = 'MySql'">
 									<xsl:attribute name="dataType">LONGBLOB</xsl:attribute>	
 								</xsl:when>
-								<xsl:when test="$providerName = 'SqlServer'">
+								<xsl:when test="$providerName = 'SqlServer' or $providerName = 'SQLServerSpatial'">
 									<xsl:attribute name="dataType">IMAGE</xsl:attribute>	
 								</xsl:when>
 							</xsl:choose>
@@ -287,10 +293,10 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 						</xsl:when>
 					</xsl:choose>
 					<xsl:choose>
-						<xsl:when test="$providerName='SqlServer' and (($propNode/@name = 'Closed' and $propNode/../../@name='AcDb3dPolyline') or ($propNode/@name='Extra'))">
+						<xsl:when test="($providerName='SqlServer' or $providerName = 'SQLServerSpatial') and (($propNode/@name = 'Closed' and $propNode/../../@name='AcDb3dPolyline') or ($propNode/@name='Extra'))">
 							<xsl:attribute name="nullable">True</xsl:attribute>
 						</xsl:when>
-						<xsl:otherwise>
+            <xsl:otherwise>
 							<xsl:attribute name="nullable">
 								<xsl:value-of select="@nullable"/>
 							</xsl:attribute>
@@ -302,7 +308,7 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 					<xsl:when test="$providerName = 'SqlServer'">
 						<xsl:attribute name="dataType">IMAGE</xsl:attribute>	
 					</xsl:when>
-					<xsl:when test="$providerName = 'MySql'">
+					<xsl:when test="$providerName = 'MySql' or $providerName = 'SQLServerSpatial'">
 						<xsl:attribute name="dataType">geometry</xsl:attribute>	
 					</xsl:when>
 				</xsl:choose>
@@ -350,10 +356,10 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 </xsl:template>
 <xsl:template match="@nullable">
 	<xsl:choose>
-		<xsl:when test="$providerName = 'SqlServer' and ((../@name = 'Closed' and ../../../@name='AcDb3dPolyline') or (../@name='Extra'))">
+		<xsl:when test="($providerName = 'SqlServer' or $providerName = 'SQLServerSpatial') and ((../@name = 'Closed' and ../../../@name='AcDb3dPolyline') or (../@name='Extra'))">
 			<xsl:attribute name="nullable">True</xsl:attribute>
 		</xsl:when>
-		<xsl:otherwise>
+    <xsl:otherwise>
 			<xsl:attribute name="nullable">
 				<xsl:value-of select="."/>
 			</xsl:attribute>
@@ -482,7 +488,80 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
         </xsl:otherwise>
       </xsl:choose>
     </xsl:when>
-		<xsl:otherwise>
+    <xsl:when test="$providerName='SQLServerSpatial'">
+      <xsl:choose>
+        <xsl:when test="local-name() = 'idColumn'">
+          <xsl:variable name="propName" select="../@name"/>
+          <xsl:choose>
+            <xsl:when test="$inName='DATE1'">date</xsl:when>
+            <xsl:when test="ancestor::lp:class/lp:properties/lp:property[@name=$propName]/lp:idProperty/lp:property">
+              <xsl:call-template name="tolower">
+                <xsl:with-param name="inString" select="ancestor::lp:class/lp:properties/lp:property[@name=$propName]/lp:idProperty/lp:property/@name"/>
+              </xsl:call-template>
+            </xsl:when>
+          </xsl:choose>
+        </xsl:when>
+        <xsl:when test="$inName='ACDBENTITY_FEATID'">acdbentity_featid</xsl:when>
+        <xsl:when test="$inName='ENTITY_FEATID'">entity_featid</xsl:when>
+        <xsl:when test="$inName='ACDBPOLYLINE_FEATID'">acdbpolyline_featid</xsl:when>
+        <xsl:when test="$inName='ACDBHATCH_POLYLINE_FEATID'">acdbhatch_polyline_featid</xsl:when>
+        <xsl:when test="$inName='ACDB3DPOLYLINE_ACDBVE1_ACDB1'">acdb3dpolyline_acdbvertexdata_acdb3dpolyline_featid</xsl:when>
+        <xsl:when test="$inName='ACDB3DPOLYLINE_ACDBVE1_SEQ'">acdb3dpolyline_acdbvertexdata_seq</xsl:when>
+        <xsl:when test="$inName='ACDBHATCH_POLYLINE_AC1_ACDB1'">acdbhatch_polyline_acdbvertexdata_acdbhatch_polyline_featid</xsl:when>
+        <xsl:when test="$inName='ACDBHATCH_POLYLINE_AC1_SEQ'">acdbhatch_polyline_acdbvertexdata_seq</xsl:when>
+        <xsl:when test="$inName='POLYLINE_ACDBVERTEXDA1_POLY1'">polyline_acdbvertexdata_polyline_featid</xsl:when>
+        <xsl:when test="$inName='POLYLINE_ACDBVERTEXDA1_SEQ'">polyline_acdbvertexdata_seq</xsl:when>
+        <xsl:when test="$inName='MAINTENANCE_HISTORY_DESCRIP1'">maintenance history description</xsl:when>
+        <xsl:when test="$inName='ELECTRICDEVICE_FEATID'">electricdevice_featid</xsl:when>
+        <xsl:when test="$inName='ELECTRICDEVICE_ENTITY_FEATID'">electricdevice_entity_featid</xsl:when>
+        <xsl:when test="$inName='ELECTRICDEVICE_MAINT_1_ELEC1'">electricdevice_maint history_electricdevice_featid</xsl:when>
+        <xsl:when test="$inName='ELECTRICDEVICE_MAINT_1_DATE1'">electricdevice_maint history_date</xsl:when>
+        <xsl:when test="$inName='EMPLOYEE_A_ADDRESS_EMPLOYEE1'">employee_'address_employee_first name</xsl:when>
+        <xsl:when test="$inName='EMPLOYEE_A_ADDRESS_EMPLOYEE2'">employee_'address_employee_last name</xsl:when>
+        <xsl:when test="$inName='EMPLOYEE_FIRST_NAME'">employee_first name</xsl:when>
+        <xsl:when test="$inName='EMPLOYEE_LAST_NAME'">employee_last name</xsl:when>
+        <xsl:when test="$inName='REFIXA_PREFIXA_PREFIXA_OPA'">prefixa_prefixa_prefixa_opa</xsl:when>
+        <xsl:when test="$inName='REFIXA_PREFIXA_PREFIXA_OPB'">prefixa_prefixa_prefixa_opb</xsl:when>
+        <xsl:when test="$inName='BJECTA_PREFIXA_PREFIXA_OPA'">objecta_prefixa_prefixa_opa</xsl:when>
+        <xsl:when test="$inName='BJECTA_PREFIXA_PREFIXA_OPB'">objecta_prefixa_prefixa_opb</xsl:when>
+        <xsl:when test="$inName='A012345_PREFIXA_PREFIXA_OPA'">testverylongprefix012345_prefixa_prefixa_opa</xsl:when>
+        <xsl:when test="$inName='A012345_PREFIXA_PREFIXA_OPB'">testverylongprefix012345_prefixa_prefixa_opb</xsl:when>
+        <xsl:when test="$inName='NGPREFIX012345_PREFIXA_OPA'">testverylongprefix012345_prefixa_opa</xsl:when>
+        <xsl:when test="$inName='NGPREFIX012345_PREFIXA_OPB'">testverylongprefix012345_prefixa_opb</xsl:when>
+        <xsl:when test="$inName='STVERYLONGPREFIX012345_OPA'">testverylongprefix012345_opa</xsl:when>
+        <xsl:when test="$inName='STVERYLONGPREFIX012345_OPB'">testverylongprefix012345_opb</xsl:when>
+        <xsl:when test="$inName='OVCLASSC111_OPC_TABLE1_OVCL1'">ovclassc111_opc_table_hd_ovclassc111_featid</xsl:when>
+        <xsl:when test="$inName='OVCLASSC111_OPC_TABLE1_OPID1'">ovclassc111_opc_table_hd_opid1</xsl:when>
+        <xsl:when test="$inName='OVCLASSH_FTABLED_OVCLASSH_F1'">ovclassh_ftabled_ovclassh_featid</xsl:when>
+        <xsl:when test="$inName='CLASSNAME1'">classname1</xsl:when>
+        <xsl:when test="$inName='DATE1'">date</xsl:when>
+        <xsl:when test="$inName='GEOMETRY'">geometry</xsl:when>
+        <xsl:when test="$inName='NUMBER1'">number</xsl:when>
+        <xsl:when test="$inName='VALUE1'">value</xsl:when>
+        <xsl:when test="$inName='n/a'">n/a</xsl:when>
+        <xsl:when test="$inName='CLASSID'">classid</xsl:when>
+        <xsl:when test="$inName='CLASSNAME'">classname</xsl:when>
+        <xsl:when test="$inName='FEATID' and ancestor::lp:class[@name='Parcel' or @name='Zoning']">featid</xsl:when>
+        <xsl:when test="$inName='SCHEMANAME'">schemaname</xsl:when>
+        <xsl:when test="$inName='REVISIONNUMBER'">revisionnumber</xsl:when>
+        <xsl:when test="local-name(..) = 'property'">
+          <xsl:call-template name="tolower">
+            <xsl:with-param name="inString" select="../@name"/>
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:when test="ancestor::lp:class/lp:properties/lp:property[@columnName=$inName]">
+          <xsl:call-template name="tolower">
+            <xsl:with-param name="inString" select="ancestor::lp:class/lp:properties/lp:property[@columnName=$inName]/@name"/>
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="tolower">
+            <xsl:with-param name="inString" select="$inName"/>
+          </xsl:call-template>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>    
+ 		<xsl:otherwise>
 			<xsl:choose>
 				<xsl:when test="$inName='ACDB3DPOLYLINE_ACDBVE1_ACDB1'">acdb3dpolyline_acdbvertexdata_acdb3dpolyline_featid</xsl:when>
 				<xsl:when test="$inName='ACDB3DPOLYLINE_ACDBVE1_SEQ'">acdb3dpolyline_acdbvertexdata_seq</xsl:when>
@@ -522,7 +601,7 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 	<xsl:param name="inName"/>
 	<xsl:variable name="prefix">
 		<xsl:choose>
-			<xsl:when test="$providerName='SqlServer'">dbo.</xsl:when>
+			<xsl:when test="$providerName='SqlServer' or $providerName='SQLServerSpatial'">dbo.</xsl:when>
 		</xsl:choose>
 	</xsl:variable>
 	<xsl:variable name="bentName">
@@ -572,7 +651,7 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:when>
-    <xsl:when test="$providerName='SqlServer'">
+    <xsl:when test="$providerName='SqlServer' or $providerName='SQLServerSpatial'">
       <xsl:choose>
         <xsl:when test="$inName='ACDBENTITY_ACXDATA'">acdbentity_acxdata</xsl:when>
         <xsl:when test="$inName='ENTITY_ACXDATA'">entity_acxdata</xsl:when>

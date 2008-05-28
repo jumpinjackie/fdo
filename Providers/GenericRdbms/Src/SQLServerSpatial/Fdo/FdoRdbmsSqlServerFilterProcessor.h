@@ -119,6 +119,9 @@ protected:
 
     virtual FdoStringP GetGeometryString( FdoString* columnName );
     virtual void PrependSelectStar(FdoString* tableName);
+
+private:
+	FdoStringP mSpatialIndexName;
 };
 
 #endif

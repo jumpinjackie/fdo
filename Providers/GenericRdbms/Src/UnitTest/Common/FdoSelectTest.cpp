@@ -553,6 +553,25 @@ void FdoSelectTest::spatial_query()
                 }
             }
 
+			pSpatialFilter = FdoPtr<FdoSpatialCondition>(FdoSpatialCondition::Create(L"Geometry",
+                                                                      FdoSpatialOperations_EnvelopeIntersects,
+                                                                      geomValue));
+
+            // This AND filter is bogus since filterPtr is empty.
+            filter = FdoFilter::Combine( filterPtr, FdoBinaryLogicalOperations_And, pSpatialFilter);
+            //selCmd->SetFilter(filter);
+            
+            selCmd->SetFilter(pSpatialFilter);
+
+            myReader = selCmd->Execute();
+            if( myReader != NULL  )
+            {
+                while ( myReader->ReadNext() )
+                {
+                    read_feature_data( myReader );
+                }
+            }
+
         }
         catch( FdoException *ex )
         {

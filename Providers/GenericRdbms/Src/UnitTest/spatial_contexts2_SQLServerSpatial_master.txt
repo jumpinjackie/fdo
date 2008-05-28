@@ -6,7 +6,6 @@
 <gml:DerivedCRS/>
 <gml:DerivedCRS/>
 <gml:DerivedCRS/>
-<gml:DerivedCRS/>
 <xs:schema xmlns:dbo="http://fdo.osgeo.org/schemas/feature/dbo" targetNamespace="http://fdo.osgeo.org/schemas/feature/dbo" elementFormDefault="qualified" attributeFormDefault="unqualified">
 <xs:annotation>
 <xs:documentation/>
@@ -82,9 +81,9 @@
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
--1001.000000 -1002.000000</gml:pos>
+-180.000000 -90.000000</gml:pos>
 <gml:pos>
-1001.000000 1002.000000</gml:pos>
+180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS>
@@ -130,9 +129,9 @@ GEOGCS["Greek", DATUM["Greek", ELLIPSOID["Bessel 1841", 6377397.155, 299.1528128
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
--1001.000000 -1002.000000</gml:pos>
+-180.000000 -90.000000</gml:pos>
 <gml:pos>
-1001.000000 3002.000000</gml:pos>
+180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS>
@@ -189,9 +188,9 @@ GEOGCS["Greek", DATUM["Greek", ELLIPSOID["Bessel 1841", 6377397.155, 299.1528128
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
--1001.000000 -1002.000000</gml:pos>
+-180.000000 -90.000000</gml:pos>
 <gml:pos>
-1001.000000 1002.000000</gml:pos>
+180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS>
@@ -292,9 +291,9 @@ GEOGCS["Greek", DATUM["Greek", ELLIPSOID["Bessel 1841", 6377397.155, 299.1528128
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
--1001.000000 -1002.000000</gml:pos>
+-180.000000 -90.000000</gml:pos>
 <gml:pos>
-1001.000000 1002.000000</gml:pos>
+180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS>
