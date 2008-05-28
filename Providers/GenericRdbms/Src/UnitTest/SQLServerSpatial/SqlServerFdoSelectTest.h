@@ -29,6 +29,8 @@ class SqlServerFdoSelectTest : public FdoSelectTest
 
     void  set_provider();
     void TestDateFilter();
+
+	void spatial_query_defect813611();
 };
 
 #endif // SQLSERVER_FDOSELECTTEST_H

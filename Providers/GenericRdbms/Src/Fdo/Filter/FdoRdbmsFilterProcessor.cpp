@@ -1909,7 +1909,10 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter     *filter,
 			if ( geomPropertyDef != NULL )
 			{
 				if ( FdoCommonOSUtil::wcsicmp( geomPropertyDef->GetColumnName(), L"n/a" )  != 0 )
-					all->Add( geomPropertyDef->GetColumnName() );
+				{
+					const FdoSmPhColumn* column = geomPropertyDef->RefColumn();
+					all->Add(GetGeometryString(column->GetDbName()));
+				}
 			}
 		}
     }
@@ -1946,4 +1949,3 @@ void FdoRdbmsFilterProcessor::PrependSelectStar( FdoString* tableName)
     PrependString ( L"." ); 
     PrependString (tableName); 
 }
-

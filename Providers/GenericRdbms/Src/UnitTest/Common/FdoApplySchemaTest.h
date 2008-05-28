@@ -186,6 +186,12 @@ protected:
 
     virtual FdoStringP SchemaOvErrFile( int fileNum, bool isMaster );
 
+    virtual bool CompareGeometrySI();
+
+    virtual bool CreateGeometrySICol();
+
+    virtual FdoStringP GetValueColumnName();
+
     void WriteXmlOverrides(
         FdoIConnection* connection,
         bool includeDefaults,

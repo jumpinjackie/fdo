@@ -53,6 +53,24 @@ FdoSmPhSqsColumnGeom::FdoSmPhSqsColumnGeom(
         if ( !currIndex ) {
             CreateSpatialIndex();
         }
+
+		if (AssociatedSCInfo && parentObject)
+		{
+			FdoSmPhSqsOwner* owner = (FdoSmPhSqsOwner*)(parentObject->GetParent());
+			if (!owner)
+				owner = (FdoSmPhSqsOwner*) GetContainingDbObject()->GetParent();
+
+			if (owner)
+			{
+				FdoSmPhCoordinateSystemP coordSystem = owner->FindCoordinateSystem(AssociatedSCInfo->mSrid);
+				if (coordSystem)
+				{
+					FdoStringP wkt = coordSystem->GetWkt();
+					if (wkt.Contains(L"GEOGCS" ))
+						SetTypeName(L"geography");
+				}
+			}
+		}
     }
 }
 

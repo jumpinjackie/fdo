@@ -105,3 +105,9 @@ void SqlServerFdoSelectTest::TestDateFilter()
         }
     }
 }
+
+
+void SqlServerFdoSelectTest::spatial_query_defect813611()
+{
+
+}

@@ -8,9 +8,9 @@ Bermuda</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
-0.000000 0.000000</gml:pos>
+-180.000000 -90.000000</gml:pos>
 <gml:pos>
-10.000000 10.000000</gml:pos>
+180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS>
@@ -34,9 +34,9 @@ Bermuda Duplicate</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
-0.000000 0.000000</gml:pos>
+-180.000000 -90.000000</gml:pos>
 <gml:pos>
-10.000000 10.000000</gml:pos>
+180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS>
@@ -60,9 +60,9 @@ Liberia by WKT</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
-0.000000 0.000000</gml:pos>
+-180.000000 -90.000000</gml:pos>
 <gml:pos>
-10.000000 10.000000</gml:pos>
+180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS>
@@ -86,9 +86,9 @@ Qatar wrong name</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
-0.000000 0.000000</gml:pos>
+-180.000000 -90.000000</gml:pos>
 <gml:pos>
-10.000000 10.000000</gml:pos>
+180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS>
@@ -131,9 +131,9 @@ South</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
-0.000000 0.000000</gml:pos>
+-180.000000 -90.000000</gml:pos>
 <gml:pos>
-10.000000 10.000000</gml:pos>
+180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS>
@@ -157,9 +157,9 @@ South Duplicate</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
-0.000000 0.000000</gml:pos>
+-180.000000 -90.000000</gml:pos>
 <gml:pos>
-10.000000 10.000000</gml:pos>
+180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS>
@@ -183,9 +183,9 @@ sc_1</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
-0.000000 0.000000</gml:pos>
+-180.000000 -90.000000</gml:pos>
 <gml:pos>
-10.000000 10.000000</gml:pos>
+180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS>
@@ -209,9 +209,9 @@ sc_2</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
-0.000000 0.000000</gml:pos>
+-180.000000 -90.000000</gml:pos>
 <gml:pos>
-10.000000 10.000000</gml:pos>
+180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS>
