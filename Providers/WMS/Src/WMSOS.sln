@@ -1,13 +1,13 @@
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "%FDOUTILITIES%\Common\FdoCommon.vcproj", "{9037A345-04EB-418C-98D0-3D5B19FC9D55}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "..\..\..\Utilities\Common\FdoCommon.vcproj", "{9037A345-04EB-418C-98D0-3D5B19FC9D55}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MgOverrides", "..\Managed\Project\MgWmsOverrides.vcproj", "{3A11B933-EE17-4076-AE14-262AC11D6906}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C7FE8A9B-4CD0-475F-A675-4C230F7A3783} = {C7FE8A9B-4CD0-475F-A675-4C230F7A3783}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OWS", "%FDOUTILITIES%\OWS\OWS.vcproj", "{1FB43343-5E93-4EBA-8CAE-8A713F5F3702}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OWS", "..\..\..\Utilities\OWS\OWS.vcproj", "{1FB43343-5E93-4EBA-8CAE-8A713F5F3702}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9037A345-04EB-418C-98D0-3D5B19FC9D55} = {9037A345-04EB-418C-98D0-3D5B19FC9D55}
 	EndProjectSection

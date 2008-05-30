@@ -30,7 +30,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Fdo", "..\Fdo\Fdo.vcproj", 
 		{9037A345-04EB-418C-98D0-3D5B19FC9D55} = {9037A345-04EB-418C-98D0-3D5B19FC9D55}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "%FDOUTILITIES%\Common\FdoCommon.vcproj", "{9037A345-04EB-418C-98D0-3D5B19FC9D55}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "..\..\..\..\Utilities\Common\FdoCommon.vcproj", "{9037A345-04EB-418C-98D0-3D5B19FC9D55}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fdordbmsmsg", "..\..\Nls\fdordbms.vcproj", "{9BF08D0E-CD3B-4687-86E2-6DB8270E94E9}"
 EndProject
@@ -84,24 +84,24 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RdbmsOverrides", "..\Schema
 		{2CFF7B5C-2CC5-435B-8E8E-C4AC3ACFEF83} = {2CFF7B5C-2CC5-435B-8E8E-C4AC3ACFEF83}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SchemaMgr", "%FDOUTILITIES%\SchemaMgr\SchemaMgr.vcproj", "{F5346F00-C869-4B51-A947-FC097288C625}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SchemaMgr", "..\..\..\..\Utilities\SchemaMgr\SchemaMgr.vcproj", "{F5346F00-C869-4B51-A947-FC097288C625}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9BF08D0E-CD3B-4687-86E2-6DB8270E94E9} = {9BF08D0E-CD3B-4687-86E2-6DB8270E94E9}
 		{11793E23-75E5-4407-AF82-BE0FC6994EBD} = {11793E23-75E5-4407-AF82-BE0FC6994EBD}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmLogicalPhysical", "%FDOUTILITIES%\SchemaMgr\LogicalPhysical.vcproj", "{67068A2A-B8E3-4206-AD5E-4CE1CD881AC4}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmLogicalPhysical", "..\..\..\..\Utilities\SchemaMgr\LogicalPhysical.vcproj", "{67068A2A-B8E3-4206-AD5E-4CE1CD881AC4}"
 	ProjectSection(ProjectDependencies) = postProject
 		{11793E23-75E5-4407-AF82-BE0FC6994EBD} = {11793E23-75E5-4407-AF82-BE0FC6994EBD}
 		{9037A345-04EB-418C-98D0-3D5B19FC9D55} = {9037A345-04EB-418C-98D0-3D5B19FC9D55}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmPhysical", "%FDOUTILITIES%\SchemaMgr\Physical.vcproj", "{80E04928-D74C-441C-8851-09B8BD281D5F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmPhysical", "..\..\..\..\Utilities\SchemaMgr\Physical.vcproj", "{80E04928-D74C-441C-8851-09B8BD281D5F}"
 	ProjectSection(ProjectDependencies) = postProject
 		{11793E23-75E5-4407-AF82-BE0FC6994EBD} = {11793E23-75E5-4407-AF82-BE0FC6994EBD}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmMessage", "%FDOUTILITIES%\SchemaMgr\SmMessage.vcproj", "{11793E23-75E5-4407-AF82-BE0FC6994EBD}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmMessage", "..\..\..\..\Utilities\SchemaMgr\SmMessage.vcproj", "{11793E23-75E5-4407-AF82-BE0FC6994EBD}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "util", "..\Util\util.vcproj", "{001B698F-66FF-4486-AD57-53318CF47A4A}"
 EndProject
@@ -121,7 +121,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MgRdbmsOverrides", "..\..\M
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MgRdbms", "..\..\Managed\Project\MgRdbms.vcproj", "{D672727A-C93B-42CB-9B06-7A1638EFA7E4}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmOverrides", "%FDOUTILITIES%\SchemaMgr\Overrides.vcproj", "{2CFF7B5C-2CC5-435B-8E8E-C4AC3ACFEF83}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmOverrides", "..\..\..\..\Utilities\SchemaMgr\Overrides.vcproj", "{2CFF7B5C-2CC5-435B-8E8E-C4AC3ACFEF83}"
 	ProjectSection(ProjectDependencies) = postProject
 		{11793E23-75E5-4407-AF82-BE0FC6994EBD} = {11793E23-75E5-4407-AF82-BE0FC6994EBD}
 	EndProjectSection
@@ -148,7 +148,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTestOdbc", "..\UnitTest
 		{531AC4EE-B2BF-4FC9-8A03-EF272DCAEAB3} = {531AC4EE-B2BF-4FC9-8A03-EF272DCAEAB3}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestCommon", "%FDOUTILITIES%\TestCommon\TestCommon.vcproj", "{31607A09-F8CA-43B3-9195-C1D5FB18E0D7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestCommon", "..\..\..\..\Utilities\TestCommon\TestCommon.vcproj", "{31607A09-F8CA-43B3-9195-C1D5FB18E0D7}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9037A345-04EB-418C-98D0-3D5B19FC9D55} = {9037A345-04EB-418C-98D0-3D5B19FC9D55}
 	EndProjectSection

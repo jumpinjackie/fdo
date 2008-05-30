@@ -26,7 +26,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Reader", "ShpRead\ShpRead.v
 		{EFE86138-FF68-4ACD-8BAC-0D2A97AF0B95} = {EFE86138-FF68-4ACD-8BAC-0D2A97AF0B95}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "%FDOUTILITIES%\Common\FdoCommon.vcproj", "{9037A345-04EB-418C-98D0-3D5B19FC9D55}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "..\..\..\Utilities\Common\FdoCommon.vcproj", "{9037A345-04EB-418C-98D0-3D5B19FC9D55}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Overrides", "Overrides\ShpOverrides.vcproj", "{0A982097-4896-4F2B-81EC-43100004311D}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -44,7 +44,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MgOverrides", "..\Managed\P
 		{0A982097-4896-4F2B-81EC-43100004311D} = {0A982097-4896-4F2B-81EC-43100004311D}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestCommon", "%FDOUTILITIES%\TestCommon\TestCommon.vcproj", "{31607A09-F8CA-43B3-9195-C1D5FB18E0D7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestCommon", "..\..\..\Utilities\TestCommon\TestCommon.vcproj", "{31607A09-F8CA-43B3-9195-C1D5FB18E0D7}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExpressionEngine", "..\..\..\Utilities\ExpressionEngine\ExpressionEngine.vcproj", "{34FF1437-0853-44D4-B786-48ACB3AACBB5}"
 	ProjectSection(ProjectDependencies) = postProject
