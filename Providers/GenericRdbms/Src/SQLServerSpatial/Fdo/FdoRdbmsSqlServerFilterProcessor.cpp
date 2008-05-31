@@ -379,6 +379,7 @@ void FdoRdbmsSqlServerFilterProcessor::AppendTablesHints( SqlCommandType cmdType
 		buf += mSpatialIndexName;
 		buf += L") ";
 		bAdded = true;
+		mSpatialIndexName = "";
     }
 
 	if (bAdded)
