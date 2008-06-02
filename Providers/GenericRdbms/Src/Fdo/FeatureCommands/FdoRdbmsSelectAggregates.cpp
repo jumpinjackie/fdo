@@ -139,10 +139,10 @@ FdoIDataReader *FdoRdbmsSelectAggregates::Execute ()
         FdoFeatureSchemasP fdoFeatureSchemas =
                 rdbmsConnection->GetSchemaManager()->GetFdoSchemas(
                                                             schema->GetName());
-        FdoClassCollection *classCol =
+        FdoClassesP classCol =
             (FdoClassCollection *)fdoFeatureSchemas->FindClass(
                                                             cName->GetText());
-        FdoClassDefinition *classDef = classCol->GetItem(0);
+        FdoClassDefinitionP classDef = classCol->GetItem(0);
 
         // Create a list of the aggregate functions.
 
@@ -161,7 +161,7 @@ FdoIDataReader *FdoRdbmsSelectAggregates::Execute ()
                                                      classDef,
                                                      idCol,
                                                      mbDistinct,
-                                                     GetOrdering(),
+                                                     FdoPtr<FdoIdentifierCollection>(GetOrdering()),
                                                      GetOrderingOption(),
                                                      idCol,
                                                      aggrIdents);

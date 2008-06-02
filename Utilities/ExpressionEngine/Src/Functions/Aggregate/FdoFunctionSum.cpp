@@ -286,8 +286,8 @@ void FdoFunctionSum::CreateFunctionDefinition ()
 
     argument_value_list = FdoPropertyValueConstraintList::Create();
     values              = argument_value_list->GetConstraintList();
-    values->Add(FdoStringValue::Create(L"ALL"));
-    values->Add(FdoStringValue::Create(L"DISTINCT"));
+    values->Add(FdoPtr<FdoStringValue>(FdoStringValue::Create(L"ALL")));
+    values->Add(FdoPtr<FdoStringValue>(FdoStringValue::Create(L"DISTINCT")));
 
     // Get the general descriptions for the arguments.
 

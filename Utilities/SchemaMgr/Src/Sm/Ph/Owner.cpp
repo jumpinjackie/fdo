@@ -1530,7 +1530,7 @@ void FdoSmPhOwner::LoadCoordinateSystems( FdoSmPhRdCoordSysReaderP rdr )
         );
 
         // Add the coordinate system to the cache if not already present.
-        if ( !mCoordinateSystems->FindItem(coordSys->GetName()) )
+        if ( mCoordinateSystems->IndexOf(coordSys->GetName()) < 0 )
             mCoordinateSystems->Add( coordSys );
     }
 }

@@ -221,6 +221,7 @@ void FdoSpatialContextTest::DoTest( bool hasMetaSchema )
                 if (pMessage) pMessage++;
                 CPPUNIT_ASSERT( pMessage && expectedMessage.ICompare(pMessage) == 0 );
 #endif
+                FDO_SAFE_RELEASE(e);
             }
 
             try {
@@ -234,6 +235,7 @@ void FdoSpatialContextTest::DoTest( bool hasMetaSchema )
                 if (pMessage) pMessage++;
                 CPPUNIT_ASSERT( pMessage && expectedMessage.ICompare(pMessage) == 0 );
 #endif
+                FDO_SAFE_RELEASE(e);
             }
         }
         else {
@@ -259,6 +261,9 @@ void FdoSpatialContextTest::DoTest( bool hasMetaSchema )
             );
 
         }
+
+        delete staticConn;
+        connection->Close();
     }
     catch ( ... )
     {

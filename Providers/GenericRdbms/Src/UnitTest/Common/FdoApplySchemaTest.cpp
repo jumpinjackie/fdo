@@ -865,6 +865,10 @@ void FdoApplySchemaTest::TestOverrideDefaults ()
 			UnitTestUtil::GetOutputFileName( L"apply_schema_overrides_defout1.xml" ) );
 #endif
 
+        lp = NULL;
+        mgr = NULL;
+        delete staticConn;
+        staticConn = NULL;
 	}
 	catch ( FdoException* e ) 
 	{

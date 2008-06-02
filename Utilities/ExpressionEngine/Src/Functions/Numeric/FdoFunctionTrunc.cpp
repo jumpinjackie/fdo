@@ -269,11 +269,11 @@ void FdoFunctionTrunc::CreateFunctionDefinition ()
 
     argument_value_list = FdoPropertyValueConstraintList::Create();
     values              = argument_value_list->GetConstraintList();
-    values->Add(FdoStringValue::Create(L"YEAR"));
-    values->Add(FdoStringValue::Create(L"MONTH"));
-    values->Add(FdoStringValue::Create(L"DAY"));
-    values->Add(FdoStringValue::Create(L"HOUR"));
-    values->Add(FdoStringValue::Create(L"MINUTE"));
+    values->Add(FdoPtr<FdoStringValue>(FdoStringValue::Create(L"YEAR")));
+    values->Add(FdoPtr<FdoStringValue>(FdoStringValue::Create(L"MONTH")));
+    values->Add(FdoPtr<FdoStringValue>(FdoStringValue::Create(L"DAY")));
+    values->Add(FdoPtr<FdoStringValue>(FdoStringValue::Create(L"HOUR")));
+    values->Add(FdoPtr<FdoStringValue>(FdoStringValue::Create(L"MINUTE")));
 
     // Get the descriptions for the arguments.
 

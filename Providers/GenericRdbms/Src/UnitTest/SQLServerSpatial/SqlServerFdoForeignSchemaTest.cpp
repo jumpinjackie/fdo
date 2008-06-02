@@ -33,7 +33,7 @@ void SqlServerFdoForeignSchemaTest::create_foreign_datastore()
 {
 	bool dbExists = UnitTestUtil::DatastoreExists(DB_NAME_SUFFIX);
 	FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
-	FdoIConnection* connection = UnitTestUtil::GetProviderConnectionObject();
+	FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
 
     connection->SetConnectionString ( userConnectString);
     connection->Open();
@@ -63,9 +63,12 @@ void SqlServerFdoForeignSchemaTest::create_foreign_datastore()
 void SqlServerFdoForeignSchemaTest::insert()
 {
 	FdoPtr<FdoIConnection> connection = UnitTestUtil::GetConnection(DB_NAME_SUFFIX, false);
-	try
+    FdoPtr<FdoIInsert> insertCommand;
+    FdoPtr<FdoIFeatureReader> myReader;
+
+    try
 	{
-		FdoIInsert *insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
+		insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
         insertCommand->SetFeatureClassName(L"device_tbl");
         FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
 
@@ -97,7 +100,7 @@ void SqlServerFdoForeignSchemaTest::insert()
         propertyValue->SetValue(dataValue);
 
 		{
-		FdoIFeatureReader *myReader = insertCommand->Execute();
+		myReader = insertCommand->Execute();
 
 		CPPUNIT_ASSERT(myReader != NULL);
 		// verify that the identity properties have the right values

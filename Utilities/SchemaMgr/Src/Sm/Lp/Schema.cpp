@@ -100,7 +100,7 @@ const FdoSmLpSchemaCollection* FdoSmLpSchema::RefSchemas() const
     return mpSchemas;
 }
 
-FdoSmLpSchemaCollection* FdoSmLpSchema::GetSchemas()
+FdoSmLpSchemasP FdoSmLpSchema::GetSchemas()
 {
     return FDO_SAFE_ADDREF(mpSchemas);
 }
