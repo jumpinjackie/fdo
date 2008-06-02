@@ -293,9 +293,9 @@ void FdoFunctionTrim::CreateFunctionDefinition ()
 
     argument_value_list = FdoPropertyValueConstraintList::Create();
     values              = argument_value_list->GetConstraintList();
-    values->Add(FdoStringValue::Create(L"BOTH"));
-    values->Add(FdoStringValue::Create(L"LEADING"));
-    values->Add(FdoStringValue::Create(L"TRAILING"));
+    values->Add(FdoPtr<FdoStringValue>(FdoStringValue::Create(L"BOTH")));
+    values->Add(FdoPtr<FdoStringValue>(FdoStringValue::Create(L"LEADING")));
+    values->Add(FdoPtr<FdoStringValue>(FdoStringValue::Create(L"TRAILING")));
 
     // Get the general descriptions for the arguments.
 

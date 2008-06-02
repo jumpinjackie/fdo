@@ -145,7 +145,7 @@ void FdoSmLpSqsGeometricPropertyDefinition::Update(
     FdoSqlServerOvGeometricPropertyDefinition* sqsGeomPropOverrides = dynamic_cast<FdoSqlServerOvGeometricPropertyDefinition*>(pPropOverrides);
     if (sqsGeomPropOverrides)
     {
-        FdoSqlServerOvGeometricColumn* sqsGeomColOverrides = sqsGeomPropOverrides->GetColumn();
+        FdoSqlServerOvGeometricColumnP sqsGeomColOverrides = sqsGeomPropOverrides->GetColumn();
         if (sqsGeomColOverrides)
         {
             if ( (elementState == FdoSchemaElementState_Added) || GetIsFromFdo() ) {

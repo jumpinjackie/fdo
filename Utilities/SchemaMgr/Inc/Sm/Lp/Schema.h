@@ -58,7 +58,7 @@ public:
 
     /// Get the collection that contains this schema.
     const FdoSmLpSchemaCollection* RefSchemas() const;
-    FdoSmLpSchemaCollection* GetSchemas();
+    FdoPtr<FdoSmLpSchemaCollection> GetSchemas();
 
     /// Get the Schema Attribute Dictionary.
     virtual const FdoSmLpSAD* RefSAD() const;

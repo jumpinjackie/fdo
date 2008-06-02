@@ -65,9 +65,9 @@ FdoSmPhDbObjType FdoSmPhRdSqsDbObjectReader::GetType()
     FdoSmPhDbObjType ret;
 
     type = GetString (L"", L"type");
-    if (type == L"base table")
+    if (type == L"u ")
         ret = FdoSmPhDbObjType_Table;
-    else if (type == L"view")
+    else if (type == L"v ")
         ret = FdoSmPhDbObjType_View;
     else
         ret = FdoSmPhDbObjType_Unknown;
@@ -150,9 +150,9 @@ FdoSmPhReaderP FdoSmPhRdSqsDbObjectReader::MakeQueryReader(
             // Create binds for owner and optional object names
             FdoSmPhRdSqsDbObjectBindsP binds = new FdoSmPhRdSqsDbObjectBinds(
                 mgr,
-                L"a.TABLE_SCHEMA",
+                L"e.name",
                 L"user_name",
-                L"a.TABLE_NAME",
+                L"a.name",
                 L"object_name",
                 objectNames
             );
@@ -168,7 +168,7 @@ FdoSmPhReaderP FdoSmPhRdSqsDbObjectReader::MakeQueryReader(
             if ( join != NULL ) {
                 // If joining to another table, add join clause.
                 qualification = FdoStringP::Format( 
-                    L"  %ls and ((a.TABLE_SCHEMA = 'dbo' and a.TABLE_NAME = %ls) or ((a.TABLE_SCHEMA + '.' + a.TABLE_NAME) = %ls))\n", 
+                    L"  %ls and ((e.name = 'dbo' and a.name = %ls) or ((e.name + '.' + a.name) = %ls))\n", 
                     (FdoString*) ((FdoSmPhRdJoin*)(join.p))->GetWhere(),
                     (FdoString*) join->GetJoinColumn(),
                     (FdoString*) join->GetJoinColumn()
@@ -195,31 +195,31 @@ FdoSmPhReaderP FdoSmPhRdSqsDbObjectReader::MakeQueryReader(
             // (sysconstraints, syssegments). These seem to be only present for SqlServer 2000.
 
             sqlString = FdoStringP::Format(
-                L"select %ls a.TABLE_NAME collate latin1_general_bin as name, lower(a.TABLE_TYPE) as type, a.TABLE_SCHEMA collate latin1_general_bin as table_schema, \n"
+                L"select %ls a.name collate latin1_general_bin as name, lower(a.type) as type, e.name collate latin1_general_bin as table_schema, \n"
                 L"  FILEGROUP_NAME(b.groupid) as tablefilegroup_name, \n"
                 L"  FILEGROUP_NAME(c.groupid) as textfilegroup_name, \n"
-                L"  d.name as idcolumn_name, IDENT_SEED(a.TABLE_NAME) as idcolumn_seed, IDENT_INCR(a.TABLE_NAME) as idcolumn_increment, \n"
+                L"  d.name as idcolumn_name, IDENT_SEED(a.name) as idcolumn_seed, IDENT_INCR(a.name) as idcolumn_increment, \n"
                 L"  COLUMNPROPERTY(b.id, d.name, 'IsRowGuidCol') as idcolumn_isrowguid, \n"
                 L"  OBJECTPROPERTY(b.id, 'TableTextInRowLimit') as textinrow \n"
-                L"  from %ls.INFORMATION_SCHEMA.TABLES a\n"
-                L"  LEFT OUTER JOIN %ls.dbo.sysindexes b ON (b.indid in (0,1) and object_id(a.TABLE_CATALOG + '.' + a.TABLE_SCHEMA + '.' + a.TABLE_NAME) = b.id) \n"
+                L"   from %ls.sys.objects a \n"
+                L"  LEFT OUTER JOIN %ls.dbo.sysindexes b ON (b.indid in (0,1) and a.object_id = b.id) \n"
                 L"  LEFT OUTER JOIN %ls.dbo.sysindexes c ON (c.indid = 255 AND c.id = b.id) \n"
                 L"  LEFT OUTER JOIN %ls.dbo.syscolumns d ON (b.id = d.id and COLUMNPROPERTY(d.id, d.name, 'IsIdentity') = 1) \n"
+                L"   INNER JOIN %ls.sys.schemas e on (a.schema_id = e.schema_id)\n"
                 L"%ls\n"
                 L" where\n"
-                L" %ls %ls %ls %ls\n"
-                L" order by a.TABLE_SCHEMA collate latin1_general_bin asc, a.TABLE_NAME collate latin1_general_bin asc",
+                L" %ls %ls %ls \n"
+                L" order by e.name collate latin1_general_bin asc, a.name collate latin1_general_bin asc",
                 join ? L"distinct" : L"",
                 (FdoString*)ownerName,
                 (FdoString*)ownerName,
                 (FdoString*)ownerName,
                 (FdoString*)ownerName,
+                (FdoString*)ownerName,
                 (FdoString*)joinFrom,
-                L"a.TABLE_TYPE in ('BASE TABLE', 'VIEW')", //This was done because format string got too long.
+                L"a.type in ('U', 'V')", //This was done because format string got too long.
                 (qualification == L"") ? L"" : L" and ",
-                (FdoString*) qualification,
-
-                (objectNames->GetCount() == 1) ? L"" : L" and (TABLE_SCHEMA != 'dbo' or TABLE_NAME not in ( 'sysconstraints', 'syssegments')) "
+                (FdoString*) qualification
             );
 
             reader = new FdoSmPhRdGrdQueryReader(row, sqlString, mgr, binds->GetBinds() );
@@ -241,9 +241,9 @@ FdoSmPhReaderP FdoSmPhRdSqsDbObjectReader::MakeQueryReader(
 
             FdoSmPhRdSqsDbObjectBindsP binds = new FdoSmPhRdSqsDbObjectBinds(
                 mgr,
-                L"a.TABLE_SCHEMA",
+                L"e.name",
                 L"user_name",
-                L"a.TABLE_NAME",
+                L"a.name",
                 L"object_name",
                 objectNames,
                 bindRow,

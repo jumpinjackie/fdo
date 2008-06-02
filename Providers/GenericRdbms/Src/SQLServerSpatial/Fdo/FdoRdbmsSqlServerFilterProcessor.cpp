@@ -231,13 +231,15 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
     FdoStringP columnName2 = GetGeometryColumnNameForProperty(geomProp, false);
 
     FdoStringP spatialClause;
-    FdoGeometryValue *geom = dynamic_cast<FdoGeometryValue*>(filter.GetGeometry());
+    FdoPtr<FdoExpression> geomExpr = filter.GetGeometry();
+    FdoGeometryValue *geom = dynamic_cast<FdoGeometryValue*>(geomExpr.p);
     FdoByteArray            *geomfgf = NULL;
     FdoIGeometry            *geometryObj = NULL;
 
     FdoStringP buf(L"");
 
-    geomfgf = geom->GetGeometry();
+    if ( geom ) 
+        geomfgf = geom->GetGeometry();
 
     if (geomfgf == NULL)
         throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_46, "No geometry value"));

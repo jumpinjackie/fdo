@@ -157,8 +157,8 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
 
             const FdoSmLpSchema* schema = mConnection->GetSchema( this->GetClassNameRef()->GetText() );
             FdoFeatureSchemasP fdoFeatureSchemas = mFdoConnection->GetSchemaManager()->GetFdoSchemas( schema->GetName() );
-            FdoClassCollection *classCol = (FdoClassCollection *)fdoFeatureSchemas->FindClass( this->GetClassNameRef()->GetText() );
-            FdoClassDefinition *classDef = classCol->GetItem(0);
+            FdoClassesP classCol = (FdoClassCollection *)fdoFeatureSchemas->FindClass( this->GetClassNameRef()->GetText() );
+            FdoClassDefinitionP classDef = classCol->GetItem(0);
 
 			// Create the collection of custom functions.
 			FdoSmLpSchemasP	schemas = ((FdoSmLpSchema *) schema)->GetSchemas();
@@ -273,7 +273,8 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
     catch (FdoException *ex)
     {
         SELECT_CLEANUP;
-        throw FdoCommandException::Create(ex->GetExceptionMessage(), ex);
+        // Wrap in FdoPtr to remove original reference to original exception
+        throw FdoCommandException::Create(ex->GetExceptionMessage(), FdoPtr<FdoException>(ex));
     }
 
     catch ( ... )
@@ -566,21 +567,11 @@ FdoRdbmsFeatureReader *FdoRdbmsSelectCommand::GetOptimizedFeatureReader( const F
                     }
                     else
                     {
-					    // Sorry, no optimization. Clean up.
-                        for ( size_t j = 0; j < selAggrList->size(); j++ )
-						    delete selAggrList->at(j);
-
-                        delete selAggrList;
                         bOtherAggrSelected = true;
                     }
                 }
                 else
                 {
-					// Sorry, no optimization. Clean up.
-                    for ( size_t j = 0; j < selAggrList->size(); j++ )
-						delete selAggrList->at(j);
-
-                    delete selAggrList;
                     bOtherAggrSelected = true;
                 }			
 			}
@@ -588,9 +579,19 @@ FdoRdbmsFeatureReader *FdoRdbmsSelectCommand::GetOptimizedFeatureReader( const F
 	}
 
 	// Now perform the actual select aggregates and return the data reader:
-	if ( !bOtherAggrSelected && ( selAggrList->size() > 0 ))  
+	if ( !bOtherAggrSelected && ( selAggrList->size() > 0 ))
+    {
 		reader = mFdoConnection->GetOptimizedAggregateReader( classDefinition, selAggrList, GetFilterRef() ); // The reader takes ownership of the selAggrList
-    
+    }
+    else
+    {
+		// Sorry, no optimization. Clean up.
+        for ( size_t j = 0; j < selAggrList->size(); j++ )
+			delete selAggrList->at(j);
+
+        delete selAggrList;
+    }
+
     return reader;
 }
 

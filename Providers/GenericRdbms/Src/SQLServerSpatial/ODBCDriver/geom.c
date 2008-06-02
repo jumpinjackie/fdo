@@ -1080,6 +1080,7 @@ geom_convertToSqlServer_S(
     odbcdr_connData_def	    *connData = NULL;
     pIGeometry_def          gissdoGeom = NULL;
 	pByteArray_def          fgf = NULL;
+	pByteArray_def          wkb = NULL;
     PBYTE                   pData; // It's the "data" not the FdoByteArray
     int                     rdbi_status = RDBI_GENERIC_ERROR;
     SQLSMALLINT             boundParmID;
@@ -1109,7 +1110,13 @@ geom_convertToSqlServer_S(
 		}
 
         // Get the data, as a regular array of bytes
-        if ( !IGeometry_GetWkbData( fgf,  &pData, (int*)&count) )
+        if ( !IGeometry_GetWkb( visionGeom_I,  &wkb ) )
+		{
+			rdbi_status = RDBI_GEOMETRY_CONVERION_ERROR;
+            goto the_exit;
+		}
+
+        if ( !IGeometry_GetWkbData( wkb, &pData, (int*)&count ) )
 		{
 			rdbi_status = RDBI_GEOMETRY_CONVERION_ERROR;
             goto the_exit;
@@ -1142,6 +1149,7 @@ geom_convertToSqlServer_S(
 
 	// Release intermediate data
 	IByteArray_Release( fgf );
+	IByteArray_Release( wkb );
 
     rdbi_status = RDBI_SUCCESS;
 

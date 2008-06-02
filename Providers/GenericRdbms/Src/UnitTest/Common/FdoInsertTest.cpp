@@ -1695,14 +1695,14 @@ void FdoInsertTest::featureReaderTest()
 {
 
     bool                                featureReaderError  = false;
-    FdoIConnection                      *connection         = NULL;
-	FdoIApplySchema                     *applySchemaCmd     = NULL;
-    FdoPtr<FdoFeatureSchemaCollection>  schemas;
-	FdoFeatureSchema                    *schema             = NULL;
-    FdoClass                            *schemaClass        = NULL;
-    FdoFeatureClass                     *schemaFeatureClass = NULL;
-    FdoClassCollection                  *classes            = NULL;
-    FdoIFeatureReader                   *featureReader      = NULL;
+    FdoPtr<FdoIConnection>              connection;
+	FdoPtr<FdoIApplySchema>             applySchemaCmd;
+    FdoFeatureSchemasP                  schemas;
+	FdoFeatureSchemaP                   schema ;
+    FdoClassP                           schemaClass;
+    FdoFeatureClassP                    schemaFeatureClass;
+    FdoClassesP                         classes;
+    FdoPtr<FdoIFeatureReader>           featureReader;
 
     try
     {
@@ -1729,44 +1729,34 @@ void FdoInsertTest::featureReaderTest()
         printf(" >>> ...... adding class FRC_SSFIDC \n");
         schemaFeatureClass = CreateFdoFeatureClass(L"FRC_SSFIDC", L"FeatId", NULL, 1);
         classes->Add(schemaFeatureClass);
-        FDO_SAFE_RELEASE(schemaFeatureClass);
 
         // Add a class with the feature id property as its sole identity property. In this case
         // use the identifier FeatureId for the feature id property.
         printf(" >>> ...... adding class FRC_SCFIDC \n");
         schemaFeatureClass = CreateFdoFeatureClass(L"FRC_SCFIDC", L"FeatureId", NULL, 1);
         classes->Add(schemaFeatureClass);
-        FDO_SAFE_RELEASE(schemaFeatureClass);
 
         // Add a class with two identity properties. The identity properties do not
         // include the feature id property.
         printf(" >>> ...... adding class FRC_MIDC \n");
         schemaFeatureClass = CreateFdoFeatureClass(L"FRC_MIDC", L"Id1", L"Id2", 2);
         classes->Add(schemaFeatureClass);
-        FDO_SAFE_RELEASE(schemaFeatureClass);
 
         // Add a class with two identity properties. The identity properties do include
         // the feature id property.
         printf(" >>> ...... adding class FRC_MIDWFIDC \n");
         schemaFeatureClass =  CreateFdoFeatureClass(L"FRC_MIDWFIDC", L"Id1", L"FeatureId", 3);
         classes->Add(schemaFeatureClass);
-        FDO_SAFE_RELEASE(schemaFeatureClass);
 
         // Add a non-feature class.
         printf(" >>> ...... adding class FRC_NFC \n");
         schemaClass = CreateFdoClass(L"FRC_NFC");
         classes->Add(schemaClass);
-        FDO_SAFE_RELEASE(schemaClass);
 
         schemas->Add(schema);
         applySchemaCmd->SetFeatureSchema(schema);
         printf(" >>> ...... applying schema \n");
         applySchemaCmd->Execute();
-
-        FDO_SAFE_RELEASE(classes);
-        FDO_SAFE_RELEASE(schema);
-        FDO_SAFE_RELEASE(applySchemaCmd);
-
 
         printf(" >>> ... insert data and check the returned feature reader \n");
         printf(" >>> ...... processing class FRC_SSFIDC \n");
@@ -1781,7 +1771,6 @@ void FdoInsertTest::featureReaderTest()
             printf(" >>> ......... Feature Reader Error for class FRC_SSFIDC \n");
             featureReaderError = true;
         }
-        FDO_SAFE_RELEASE(featureReader);
 
         printf(" >>> ...... processing class FRC_SCFIDC \n");
         featureReader = AddFeature(connection, L"FRC_SCFIDC", true, 1);
@@ -1795,7 +1784,6 @@ void FdoInsertTest::featureReaderTest()
             printf(" >>> ......... Feature Reader Error for class FRC_SCFIDC \n");
             featureReaderError = true;
         }
-        FDO_SAFE_RELEASE(featureReader);
 
         printf(" >>> ...... processing class FRC_MIDC \n");
         featureReader = AddFeature(connection, L"FRC_MIDC", true, 2);
@@ -1813,7 +1801,6 @@ void FdoInsertTest::featureReaderTest()
             featureReaderError = true;
         }
 #endif
-        FDO_SAFE_RELEASE(featureReader);
 
         printf(" >>> ...... processing class FRC_MIDWFIDC \n");
         featureReader = AddFeature(connection, L"FRC_MIDWFIDC", true, 3);
@@ -1831,7 +1818,6 @@ void FdoInsertTest::featureReaderTest()
             featureReaderError = true;
         }
 #endif
-        FDO_SAFE_RELEASE(featureReader);
 
         printf(" >>> ...... processing class FRC_NFC \n");
         featureReader = AddFeature(connection, L"FRC_NFC", false, 0);
@@ -1848,7 +1834,7 @@ void FdoInsertTest::featureReaderTest()
             featureReaderError = true;
         }
 #endif
-        FDO_SAFE_RELEASE(featureReader);
+        featureReader = NULL;
 
 		connection->Close();
         if (featureReaderError)
@@ -1861,18 +1847,12 @@ void FdoInsertTest::featureReaderTest()
         printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
         if ( connection ) 
             connection->Close ();
-        FDO_SAFE_RELEASE(classes);
-        FDO_SAFE_RELEASE(schema);
-        FDO_SAFE_RELEASE(applySchemaCmd);
         TestCommonFail(exp);
     }
 
 	catch (...)
     {
         if ( connection ) connection->Close ();
-        FDO_SAFE_RELEASE(classes);
-        FDO_SAFE_RELEASE(schema);
-        FDO_SAFE_RELEASE(applySchemaCmd);
         throw;
     }
 }
