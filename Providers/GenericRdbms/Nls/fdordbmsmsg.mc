@@ -1950,3 +1950,18 @@ SymbolicName=FDORDBMS_537
 Language=English
 Function IsValid() is executed only on the server side
 .
+MessageId=2763
+SymbolicName=FDORDBMS_538
+Language=English
+First item must be numeric EPSG number; error at line %1$d in file '%2$ls'
+.
+MessageId=2764
+SymbolicName=FDORDBMS_539
+Language=English
+Invalid WKT string; error at line %1$d in file '%2$ls'
+.
+MessageId=2765
+SymbolicName=FDORDBMS_540
+Language=English
+At least one of coordinate system name or WKT must be specified; error at line %1$d in file '%2$ls'
+.

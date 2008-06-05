@@ -1258,7 +1258,7 @@ try
             if( count != 15 )
             {
                 printf("Unexpected number(%d) of returned objects\n", count);
-                throw "Unexpected number of returned objects";
+                CPPUNIT_FAIL( "Unexpected number of returned objects" );
             }
 
             featureTransaction->Commit();

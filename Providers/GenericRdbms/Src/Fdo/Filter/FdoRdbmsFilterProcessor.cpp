@@ -461,8 +461,8 @@ void FdoRdbmsFilterProcessor::ProcessIdentifier( FdoIdentifier& expr, bool useOu
                     // This is required to avoid returning multiple copies of the same feature when the filter contains a condition using
                     // one or more properties of the collection.
 
-                   // if( objProp->GetObjectType() == FdoObjectType_OrderedCollection || objProp->GetObjectType() == FdoObjectType_Collection )
-                   //     mRequiresDistinct = true;
+//                    if( objProp->GetObjectType() == FdoObjectType_OrderedCollection || objProp->GetObjectType() == FdoObjectType_Collection )
+//                        mRequiresDistinct = true;
 
                     FdoStringP pkTable = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
                     FdoStringP fkTable = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(objProp);
@@ -1606,7 +1606,8 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
 
                 if( ! tabRelation.duplicatefkTable )
                 {
-                    PrependSelectStar( mUseTableAliases ? tabRelation.fk_TabAlias : tabRelation.fk_TableName ); // i.e. ".*" or expand the list of properties 
+                    const FdoSmLpClassDefinition *classDefinition = mDbiConnection->GetSchemaUtil()->GetClass(mCurrentClassName);
+                    PrependSelectStar( classDefinition->GetDbObjectQName(true), mUseTableAliases ? tabRelation.fk_TabAlias : tabRelation.fk_TableName ); // i.e. ".*" or expand the list of properties 
                 }
                 if( relationColumns.GetLength() != 0 )
                     PrependString( (const wchar_t*)relationColumns );
@@ -1952,11 +1953,57 @@ FdoStringP FdoRdbmsFilterProcessor::GetGeometryString( FdoString* columnName )
     return columnName; 
 }
 
-void FdoRdbmsFilterProcessor::PrependSelectStar( FdoString* tableName)
+FdoStringP FdoRdbmsFilterProcessor::GetGeometryTableString( FdoString* tableName )
 { 
-    PrependString ( L"*" ); 
-    PrependString ( L"." ); 
-    PrependString (tableName); 
+    return tableName; 
+}
+
+void FdoRdbmsFilterProcessor::PrependSelectStar( FdoStringP tableName, FdoString* tableAlias )
+{ 
+
+    DbiConnection  *mDbiConnection = mFdoConnection->GetDbiConnection();
+    FdoSchemaManagerP sm = mDbiConnection->GetSchemaManager();
+    FdoSmPhMgrP phMgr = sm->GetPhysicalSchema();
+    FdoSmPhDbObjectP dbObject = phMgr->FindDbObject( tableName.Right(L"."), tableName.Left(L".") );
+	const FdoSmPhColumnCollection* columns = dbObject->RefColumns();
+    bool    first = true;
+
+    for (int i = 0; i < columns->GetCount(); i++)
+    {
+		const FdoSmPhColumn* column = columns->RefItem(i);
+		FdoStringP colNameTmp = column->GetName();
+		FdoString *colName = colNameTmp;
+        FdoSmPhColType colType = ((FdoSmPhColumn *)column)->GetType();
+
+        if ( colType != FdoSmPhColType_Unknown ) 
+        {
+		    bool bGeometry = colType == FdoSmPhColType_Geom;
+
+            if (!first )
+                PrependString( L"," );
+
+            if( bGeometry ) 
+            {
+	            FdoStringP  colName = GetGeometryString( (FdoString*)(column->GetDbName()) );
+                PrependString( (FdoString*)colName );
+            }
+            else
+            {
+                PrependString(L"\"");
+                PrependString(colName);
+                PrependString(L"\"");
+            }
+
+            PrependString(L".");
+
+            if ( bGeometry )
+                PrependString( (FdoString*) GetGeometryTableString(tableAlias));
+            else
+                PrependString(tableAlias);
+
+            first = false;
+        }
+     }
 }
 
 FdoRdbmsFilterProcessor::BoundGeometry::BoundGeometry(

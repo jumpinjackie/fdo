@@ -257,7 +257,7 @@ protected:
 
     virtual void AppendTablesHints( SqlCommandType cmdType, bool forUpdate ) { };
 
-    virtual void PrependSelectStar( const wchar_t *tableName);
+    virtual void PrependSelectStar( FdoStringP tableName, FdoString* tableAlias );
 
     void AddNewTableRelation( const wchar_t *pkTab, const wchar_t *pkCol, const wchar_t *fkTab, const wchar_t *fkCol, bool userOuterJoin=false );
 
@@ -332,6 +332,7 @@ protected:
     virtual bool IsNotNativeSupportedFunction(FdoString* wFunctionName) const = 0;
     virtual bool HasNativeSupportedFunctionArguments(FdoFunction& expr) const = 0;
     virtual FdoStringP GetGeometryString( FdoString* columnName );
+    virtual FdoStringP GetGeometryTableString( FdoString* tableName );
 
 public:
 	virtual void GetLtTableExpression( const FdoSmLpClassDefinition *classDefinition, FdoStringP &ltJoin, FdoStringP &ltTableExp, FdoCommandType callerFdoCommand );

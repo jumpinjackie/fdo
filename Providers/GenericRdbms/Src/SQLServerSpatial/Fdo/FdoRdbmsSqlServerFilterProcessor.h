@@ -118,7 +118,7 @@ protected:
     void ProcessDateTimeValue(FdoDateTimeValue& expr);
 
     virtual FdoStringP GetGeometryString( FdoString* columnName );
-    virtual void PrependSelectStar(FdoString* tableName);
+    virtual FdoStringP GetGeometryTableString( FdoString* tableName );
 
 private:
 	FdoStringP mSpatialIndexName;
