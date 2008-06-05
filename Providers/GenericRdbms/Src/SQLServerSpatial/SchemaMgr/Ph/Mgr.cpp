@@ -101,6 +101,11 @@ FdoSmPhMgr::CoordinateSystemMatchLevel FdoSmPhSqsMgr::GetCoordinateSystemMatchLe
     return level;
 }
 
+FdoStringP FdoSmPhSqsMgr::GetExtendedCsysFilename()
+{
+    return FdoStringP(GetHomeDir()) + L"extendedCoordSys.txt";
+}
+
 FdoSmPhDatabaseP FdoSmPhSqsMgr::CreateDatabase(FdoStringP database)
 {
     //TODO: when database not L"", verify that it exists.

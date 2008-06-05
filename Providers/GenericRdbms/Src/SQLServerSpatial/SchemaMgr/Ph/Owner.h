@@ -55,6 +55,18 @@ public:
     // Caches them if not already cached
     FdoSmPhSqsSchemasP GetSchemas();
 
+    // Given a Spatial Reference ID, return the coordinate system info
+    // Returns NULL if coordinate system not found.
+    virtual FdoSmPhCoordinateSystemP FindCoordinateSystem( FdoInt64 srid );
+
+    // Return the coordinate system info for the given coordinate system name.
+    // Returns NULL if coordinate system not found.
+    virtual FdoSmPhCoordinateSystemP FindCoordinateSystem( FdoStringP csName );
+
+    // Return the coordinate system info for the given well-known text.
+    // Returns NULL if coordinate system not found.
+    virtual FdoSmPhCoordinateSystemP FindCoordinateSystemByWkt( FdoStringP wkt );
+
 	// Get the name of function to retrieve current database name
 	FdoString* GetDbNameClause(bool isEqual);
 
@@ -162,7 +174,24 @@ private:
     // Loads all schemas into this owner's cache.
     void LoadSchemas();
 
+    // Loads all extended coordinate systems. 
+    // SQL Server's coordinate system catalogue (sys.spatial_reference_systems)
+    // contains only geodetic systems. However, SQL Server allows geometries
+    // to have coordinate systems not in this catalogue. In this case, the only info
+    // on these coordinate systems, that can be retrieved from the RDBMS, is the SRID
+    // (usually an EPSG number). The provider also needs the WKT 
+    // so it can give enough information about the coordinate system, via 
+    // FdoIGetSpatialContexts, to applications such as Map and MapGuide.
+    //
+    // The WKT's for non-catalogued coordinate systems can be specified in a file called
+    // extendedCoordSys.txt", in the "com" subdirectory of the directory where the provider DLL
+    // resides. If this file is found, 
+    // this function loads the extended coordinate systems from it.    
+    void LoadExtendedCoordinateSystems();
+
     FdoSmPhSqsSchemasP mSchemas;
+
+    FdoSmPhCoordinateSystemsP mExtendedCoordinateSystems;
 };
 
 typedef FdoPtr<FdoSmPhSqsOwner> FdoSmPhSqsOwnerP;

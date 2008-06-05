@@ -71,6 +71,66 @@ FdoSmPhSqsSchemasP FdoSmPhSqsOwner::GetSchemas()
     return mSchemas;
 }
 
+FdoSmPhCoordinateSystemP FdoSmPhSqsOwner::FindCoordinateSystem( FdoInt64 srid )
+{
+    // First check the RDBMS catalogue
+    FdoSmPhCoordinateSystemP coordSys = FdoSmPhOwner::FindCoordinateSystem( srid );
+
+    if ( !coordSys ) {
+        // Not in catalogue, load extra coordinate systems from file
+        LoadExtendedCoordinateSystems();
+        // Check if it's an extended (extra) coordinate system
+        coordSys = mExtendedCoordinateSystems->FindItemById( srid );
+    }
+
+    return coordSys;
+}
+
+FdoSmPhCoordinateSystemP FdoSmPhSqsOwner::FindCoordinateSystem( FdoStringP csName )
+{
+    // See comments in FdoSmPhSqsOwner::FindCoordinateSystem( FdoInt64 )
+    FdoSmPhCoordinateSystemP coordSys = FdoSmPhOwner::FindCoordinateSystem( csName );
+
+    if ( !coordSys ) {
+        LoadExtendedCoordinateSystems();
+        coordSys = mExtendedCoordinateSystems->FindItem( csName );
+
+        if ( coordSys ) {
+            // The coordinate system name is not in the RDBMS catalogue but is in
+            // the extended list. However, it's EPSG number (SRID) might be in the catalogue.
+            // If it is then retrieve the catalogued coordinate system instead.
+            FdoSmPhCoordinateSystemP coordSys2 = FdoSmPhOwner::FindCoordinateSystem( coordSys->GetSrid() ) ;
+            if ( coordSys2 ) 
+                coordSys = coordSys2;
+        }
+    }
+
+    return coordSys;
+}
+
+FdoSmPhCoordinateSystemP FdoSmPhSqsOwner::FindCoordinateSystemByWkt( FdoStringP wkt )
+{
+    // See comments in FdoSmPhSqsOwner::FindCoordinateSystem( FdoInt64 )
+    FdoSmPhCoordinateSystemP coordSys = FdoSmPhOwner::FindCoordinateSystemByWkt( wkt );
+
+    if ( !coordSys ) {
+        LoadExtendedCoordinateSystems();
+        coordSys = mExtendedCoordinateSystems->FindItemByWkt( wkt );
+
+        if ( coordSys ) {
+            // The coordinate system wkt is not in the RDBMS catalogue but is in
+            // the extended list. However, its EPSG number (SRID) might be in the catalogue.
+            // If it is then retrieve the catalogued coordinate system instead.
+            FdoSmPhCoordinateSystemP coordSys2 = FdoSmPhOwner::FindCoordinateSystem( coordSys->GetSrid() ) ;
+            if ( coordSys2 ) 
+                coordSys = coordSys2;
+        }
+    }
+
+    return coordSys;
+}
+
+
 void FdoSmPhSqsOwner::DiscardSchema( FdoSmPhSqsSchema* schema )
 {
     if ( mSchemas )
@@ -595,3 +655,177 @@ void FdoSmPhSqsOwner::LoadSchemas()
         }
     }
 }
+
+void FdoSmPhSqsOwner::LoadExtendedCoordinateSystems()
+{
+    // Nothing to do if already loaded
+    if ( !mExtendedCoordinateSystems ) {
+        mExtendedCoordinateSystems = new FdoSmPhCoordinateSystemCollection();
+        FdoSmPhSqsMgrP mgr = GetManager()->SmartCast<FdoSmPhSqsMgr>();
+
+        FdoStringP fileName = mgr->GetExtendedCsysFilename();
+        FILE* fp = _wfopen( fileName, L"rt" );
+
+        // Not an error if file not found. 
+        // No extended coordinate systems in this case.
+        if ( fp ) {
+            FdoInt32 lineNum = 0;
+            wchar_t buffer[5000];
+
+            // Load each coordinate system from the file
+            while ( fgetws(buffer, 4999, fp) ) {
+                lineNum++;
+
+                // Skip empty and comment lines.
+                if ( (buffer[0] == 0) || (buffer[0] == '\n') || (wcsncmp(buffer, L"//", 2) == 0) )
+                    continue;
+
+
+                // Process current line
+                // Some basic validation is done but it is not comprehensive.
+
+                FdoInt32 bufLen = (FdoInt32) wcslen(buffer);
+
+                FdoInt32 idx;
+                wchar_t* sridPtr = NULL;
+                wchar_t* namePtr = NULL;
+                wchar_t* wktPtr = NULL;
+
+                FdoInt64 srid = -1;
+                FdoStringP csysName;
+
+                // Skip leading blanks
+                for ( idx = 0; (idx < bufLen) && (buffer[idx] == ' '); idx++ );
+
+                if ( buffer[idx] ) 
+                    // First word is the SRID (EPSG number)
+                    sridPtr = &(buffer[idx]);
+
+                // Skip to next blank.
+                for ( ; (idx < bufLen) && (buffer[idx] != ' '); idx++ );
+                
+                // Chop out srid and parse it.
+                buffer[idx] = 0;
+                if ( idx < bufLen ) 
+                    idx++;
+
+                if ( sridPtr ) 
+                    srid = FdoCommonStringUtil::StringToInt64( sridPtr );
+               
+                // Error if invalid srid.
+                if ( srid <= 0 ) {
+                    fclose(fp);
+
+                    throw FdoSchemaException::Create( 
+	   	                NlsMsgGet2(
+			                FDORDBMS_538,
+			                "First item must be numeric EPSG number; error at line %1$d in file '%2$ls'",
+                            lineNum,
+                            (FdoString*) fileName
+    	                )
+                    );
+                }
+
+                // Skip to next word.
+                for ( ; (idx < bufLen) && (buffer[idx] == ' '); idx++ );
+
+                if ( wcsncmp(&(buffer[idx]),L"PROJCS[", 7) == 0 ||
+                     wcsncmp(&(buffer[idx]),L"GEOGCS[", 7) == 0
+                ) {
+                    // Next word is the start of WKT string.
+                    // Note we currently only support geodetic or 
+                    // projected coordinate systems in extended list.
+                    wktPtr = &(buffer[idx]);
+                }
+                else {
+                    // Next word not WKT, must be coordinate system name.
+                    if ( buffer[idx] )
+                        namePtr = &(buffer[idx]);
+
+                    // Find the start of the WKT string.
+                    for ( ; (idx < bufLen) &&(wcsncmp(&(buffer[idx]),L" PROJCS[", 8) != 0) && (wcsncmp(&(buffer[idx]),L" GEOGCS[", 8) != 0); idx++ );
+
+                    // Split the name and the WKT.
+                    if ( buffer[idx] ) {
+                        buffer[idx++] = 0;
+                        wktPtr = &(buffer[idx]);
+                    }
+                }
+
+                if ( wktPtr ) {
+                    // Trim any eol and trailing blanks from WKT.
+                    for ( idx = (FdoInt32) wcslen(wktPtr) - 1; idx >= 0; idx-- ) {
+                        if ( wktPtr[idx] == ']' ) { 
+                            wktPtr[idx + 1] = 0;
+                            break;
+                        }
+                    }
+
+                    // The WKT string is not validated but we do a quick sanity check
+                    // on the length. 
+                    if ( wcslen(wktPtr) < 12 ) {
+                        fclose(fp);
+
+                        throw FdoSchemaException::Create( 
+	   	                    NlsMsgGet2(
+			                    FDORDBMS_539,
+			                    "Invalid WKT string; error at line %1$d in file '%2$ls'",
+                                lineNum,
+                                (FdoString*) fileName
+    	                    )
+                        );
+                    }
+                }
+
+                if ( namePtr ) {
+                    // Trim trailing blanks from name
+                    for ( idx = (FdoInt32) wcslen(namePtr) - 1; idx >= 0; idx-- ) {
+                        if ( namePtr[idx] == ' ' ) 
+                            namePtr[idx] = 0;
+                        else
+                            break;
+                    }
+                    csysName = namePtr;
+                }
+                else {
+                    // Name not specified, extract it from the WKT.
+                    if ( wktPtr ) {
+                        csysName = &(wktPtr[9]);
+                        csysName = csysName.Left(L"\"");
+                    }
+                }
+
+                if ( csysName == L"" ) {
+                    fclose(fp);
+
+                    // Name still blank, meaning neither name no WKT were supplied.
+                    // Report as an error.
+                    throw FdoSchemaException::Create( 
+	   	                NlsMsgGet2(
+			                FDORDBMS_540,
+			                "At least one of coordinate system name or WKT must be specified; error at line %1$d in file '%2$ls'",
+                            lineNum,
+                            (FdoString*) fileName
+    	                )
+                    );
+                }
+
+                // Create the coordinate system and add to the extended list
+                FdoSmPhCoordinateSystemP coordSys = new FdoSmPhCoordinateSystem(
+                    GetManager(),
+                    csysName,
+                    L"",
+                    srid,
+                    wktPtr
+                );
+
+                if ( mExtendedCoordinateSystems->IndexOf( coordSys->GetName() ) < 0 ) 
+                    mExtendedCoordinateSystems->Add( coordSys );
+
+            }
+
+            fclose(fp);
+        }
+    }
+}
+
