@@ -87,7 +87,6 @@ SltConnection::SltConnection() : m_refCount(1)
 
 SltConnection::~SltConnection()
 {
-    FDO_SAFE_RELEASE(m_pSchema);
     Close();
     delete m_mProps;
     delete m_caps;
@@ -259,10 +258,14 @@ void SltConnection::Close()
          iter != m_mNameToSpatialIndex.end(); iter++)
          delete iter->second;
 
+    m_mNameToSpatialIndex.clear();
+
     //clear the cached schema metadata
     for (std::map<std::string, SltMetadata*>::iterator iter = m_mNameToMetadata.begin();
          iter != m_mNameToMetadata.end(); iter++)
          delete iter->second;
+
+    m_mNameToMetadata.clear();
 
     ClearQueryCache();
 
@@ -272,6 +275,8 @@ void SltConnection::Close()
         m_db = NULL;
     }
     
+    FDO_SAFE_RELEASE(m_pSchema);
+
     m_connState = FdoConnectionState_Closed;
 }
 
@@ -888,11 +893,14 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema)
 
         sql += ");"; //close the create table command
 
-        printf ("SQLite Feature class: %s\n", sql.c_str());
+        //printf ("SQLite Feature class: %s\n", sql.c_str());
 
         //create the database table for this feature class
         int rc = sqlite3_exec(m_db, sql.c_str(), NULL, NULL, NULL);
     }
+
+    //the cached FDO schema will need to be refreshed
+    FDO_SAFE_RELEASE(m_pSchema);
 }
 
 
