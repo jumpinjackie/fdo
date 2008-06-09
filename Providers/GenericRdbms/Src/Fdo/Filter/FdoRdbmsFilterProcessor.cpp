@@ -1960,50 +1960,66 @@ FdoStringP FdoRdbmsFilterProcessor::GetGeometryTableString( FdoString* tableName
 
 void FdoRdbmsFilterProcessor::PrependSelectStar( FdoStringP tableName, FdoString* tableAlias )
 { 
-
     DbiConnection  *mDbiConnection = mFdoConnection->GetDbiConnection();
     FdoSchemaManagerP sm = mDbiConnection->GetSchemaManager();
     FdoSmPhMgrP phMgr = sm->GetPhysicalSchema();
-    FdoSmPhDbObjectP dbObject = phMgr->FindDbObject( tableName.Right(L"."), tableName.Left(L".") );
-	const FdoSmPhColumnCollection* columns = dbObject->RefColumns();
-    bool    first = true;
+    FdoSmPhDbObjectP dbObject;
+    
+    if ( tableName.Contains(L"." ) )
+        dbObject = phMgr->FindDbObject( tableName.Right(L"."), tableName.Left(L".") );
+    else
+        dbObject = phMgr->FindDbObject( tableName );
 
-    for (int i = 0; i < columns->GetCount(); i++)
-    {
-		const FdoSmPhColumn* column = columns->RefItem(i);
-		FdoStringP colNameTmp = column->GetName();
-		FdoString *colName = colNameTmp;
-        FdoSmPhColType colType = ((FdoSmPhColumn *)column)->GetType();
+    if ( dbObject ) {
+	    const FdoSmPhColumnCollection* columns = dbObject->RefColumns();
+        bool    first = true;
 
-        if ( colType != FdoSmPhColType_Unknown ) 
+        for (int i = 0; i < columns->GetCount(); i++)
         {
-		    bool bGeometry = colType == FdoSmPhColType_Geom;
+		    const FdoSmPhColumn* column = columns->RefItem(i);
+		    FdoStringP colNameTmp = column->GetName();
+		    FdoString *colName = colNameTmp;
+            FdoSmPhColType colType = ((FdoSmPhColumn *)column)->GetType();
 
-            if (!first )
-                PrependString( L"," );
-
-            if( bGeometry ) 
+            if ( colType != FdoSmPhColType_Unknown ) 
             {
-	            FdoStringP  colName = GetGeometryString( (FdoString*)(column->GetDbName()) );
-                PrependString( (FdoString*)colName );
+		        bool bGeometry = colType == FdoSmPhColType_Geom;
+
+                if (!first )
+                    PrependString( L"," );
+
+                if( bGeometry ) 
+                {
+	                FdoStringP  colName = GetGeometryString( (FdoString*)(column->GetDbName()) );
+                    PrependString( (FdoString*)colName );
+                }
+                else
+                {
+                    PrependString(L"\"");
+                    PrependString(colName);
+                    PrependString(L"\"");
+                }
+
+                PrependString(L".");
+
+                if ( bGeometry )
+                    PrependString( (FdoString*) GetGeometryTableString(tableAlias));
+                else
+                    PrependString(tableAlias);
+
+                first = false;
             }
-            else
-            {
-                PrependString(L"\"");
-                PrependString(colName);
-                PrependString(L"\"");
-            }
-
-            PrependString(L".");
-
-            if ( bGeometry )
-                PrependString( (FdoString*) GetGeometryTableString(tableAlias));
-            else
-                PrependString(tableAlias);
-
-            first = false;
-        }
-     }
+         }
+    }
+    else
+    {
+        // Schema Manager can't find table. Fall back to selecting
+        // everything and hope it works. If not, the RDBMS will generate
+        // error message indicating the cause of the problem.
+        PrependString ( L"*" ); 
+        PrependString ( L"." ); 
+        PrependString (tableAlias);     
+    }
 }
 
 FdoRdbmsFilterProcessor::BoundGeometry::BoundGeometry(
