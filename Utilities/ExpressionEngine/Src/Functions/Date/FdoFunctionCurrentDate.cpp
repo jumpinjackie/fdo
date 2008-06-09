@@ -176,7 +176,7 @@ void FdoFunctionCurrentDate::CreateFunctionDefinition ()
     FdoString                        *desc          = NULL;
 
     FdoPtr<FdoSignatureDefinition>   signature;
-    FdoSignatureDefinitionCollection *signatures;
+    FdoPtr<FdoSignatureDefinitionCollection> signatures;
 
     // Create the signature collection.
 

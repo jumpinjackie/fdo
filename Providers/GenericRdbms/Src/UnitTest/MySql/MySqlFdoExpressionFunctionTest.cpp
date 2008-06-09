@@ -84,6 +84,7 @@ FdoDouble MySqlFdoExpressionFunctionTest::GetExpectedValue (
       case COUNT_TEST_CASE_CODE_1: return 30; break;
       case COUNT_TEST_CASE_CODE_2: return 28; break;
       case COUNT_TEST_CASE_CODE_3: return 31; break;
+      case COUNT_TEST_CASE_CODE_4: return 4; break;
 
       case EXP_TEST_CASE_CODE_1  : return 1.3733829795401790e+032; break;
 

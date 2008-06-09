@@ -28,7 +28,7 @@ class FdoRdbmsSqlServerOptimizedAggregateReader : public FdoRdbmsFeatureReader
 	friend class FdoRdbmsSelectCommand;
 public:
 
-    FdoRdbmsSqlServerOptimizedAggregateReader(FdoIConnection* conn, const FdoSmLpClassDefinition* originalClass, aggr_list *selAggrList);
+    FdoRdbmsSqlServerOptimizedAggregateReader(FdoIConnection* conn, const FdoSmLpClassDefinition* originalClass, aggr_list *selAggrList, FdoFilter* filter);
     ~FdoRdbmsSqlServerOptimizedAggregateReader();
 
 protected:

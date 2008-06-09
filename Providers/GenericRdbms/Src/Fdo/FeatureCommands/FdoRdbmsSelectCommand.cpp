@@ -107,7 +107,7 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
         filterConstrain.groupByProperties = mGroupingCol;
         filterConstrain.orderByProperties = mOrderingIdentifiers;
 
-   		// Verify if this is a special case we can optimize (no filter, no grouping fitler,
+   		// Verify if this is a special case we can optimize (no filter, no grouping filter,
 		// and only aggregate functions Count() and/or SpatialExtents())
         FdoRdbmsFeatureReader *reader = GetOptimizedFeatureReader( classDefinition );
         if ( reader )
@@ -152,8 +152,8 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
 
             const FdoSmLpSchema* schema = mConnection->GetSchema( this->GetClassNameRef()->GetText() );
             FdoFeatureSchemasP fdoFeatureSchemas = mFdoConnection->GetSchemaManager()->GetFdoSchemas( schema->GetName() );
-            FdoClassCollection *classCol = (FdoClassCollection *)fdoFeatureSchemas->FindClass( this->GetClassNameRef()->GetText() );
-            FdoClassDefinition *classDef = classCol->GetItem(0);
+            FdoClassesP classCol = (FdoClassCollection *)fdoFeatureSchemas->FindClass( this->GetClassNameRef()->GetText() );
+            FdoClassDefinitionP classDef = classCol->GetItem(0);
 
 			// Create the collection of custom functions.
 			FdoSmLpSchemasP	schemas = ((FdoSmLpSchema *) schema)->GetSchemas();
@@ -261,7 +261,8 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
     catch (FdoException *ex)
     {
         SELECT_CLEANUP;
-        throw FdoCommandException::Create(ex->GetExceptionMessage(), ex);
+        // Wrap in FdoPtr to remove original reference to original exception
+        throw FdoCommandException::Create(ex->GetExceptionMessage(), FdoPtr<FdoException>(ex));
     }
 
     catch ( ... )
@@ -506,14 +507,14 @@ FdoExpressionEngineFunctionCollection* FdoRdbmsSelectCommand::GetUserDefinedFunc
 FdoRdbmsFeatureReader *FdoRdbmsSelectCommand::GetOptimizedFeatureReader( const FdoSmLpClassDefinition *classDefinition )
 {
 
-	// Verify if this is a special case we can optimize (no filter, no grouping fitler,
+	// Verify if this is a special case we can optimize (no grouping filter,
 	// and only aggregate functions Count() and/or SpatialExtents())
     FdoRdbmsFeatureReader *reader = NULL;
 	bool        bOtherAggrSelected = false;
 	aggr_list   *selAggrList = new aggr_list;
 
 	if ( (classDefinition->GetClassType() == FdoClassType_FeatureClass ) && mIdentifiers && 
-		!GetFilterRef() && !mGroupingCol)
+		!mGroupingCol)
 	{
         for (int i = 0; i < mIdentifiers->GetCount() && !bOtherAggrSelected; i++ )
         {
@@ -525,7 +526,7 @@ FdoRdbmsFeatureReader *FdoRdbmsSelectCommand::GetOptimizedFeatureReader( const F
 				FdoPtr<FdoExpression> expr = computedIdentifier->GetExpression();
                 FdoFunction* func = dynamic_cast<FdoFunction*>(expr.p);
 
-                if (func && 0==wcscmp(func->GetName(), FDO_FUNCTION_SPATIALEXTENTS))
+                if (func && 0==FdoCommonOSUtil::wcsicmp(func->GetName(), FDO_FUNCTION_SPATIALEXTENTS))
                 {
 					FdoPtr<FdoExpressionCollection> args = func->GetArguments();
                     FdoPtr<FdoExpression> arg = args->GetItem(0);
@@ -538,10 +539,11 @@ FdoRdbmsFeatureReader *FdoRdbmsSelectCommand::GetOptimizedFeatureReader( const F
 
                     selAggrList->push_back( id );
 				}
-                else if (func && 0 == wcscmp(func->GetName(), FDO_FUNCTION_COUNT))
+                else if (func && 0 == FdoCommonOSUtil::wcsicmp(func->GetName(), FDO_FUNCTION_COUNT))
                 {
                     // Only if the argument count for the function is 1 do some
                     // special handling.
+
                     FdoPtr<FdoExpressionCollection> exprArgColl = func->GetArguments();
                     if (exprArgColl->GetCount() == 1)
 					{
@@ -553,21 +555,11 @@ FdoRdbmsFeatureReader *FdoRdbmsSelectCommand::GetOptimizedFeatureReader( const F
                     }
                     else
                     {
-					    // Sorry, no optimization. Clean up.
-                        for ( size_t j = 0; j < selAggrList->size(); j++ )
-						    delete selAggrList->at(j);
-
-                        delete selAggrList;
                         bOtherAggrSelected = true;
-                    }			
+                    }
                 }
                 else
                 {
-					// Sorry, no optimization. Clean up.
-                    for ( size_t j = 0; j < selAggrList->size(); j++ )
-						delete selAggrList->at(j);
-
-                    delete selAggrList;
                     bOtherAggrSelected = true;
                 }			
 			}
@@ -575,9 +567,19 @@ FdoRdbmsFeatureReader *FdoRdbmsSelectCommand::GetOptimizedFeatureReader( const F
 	}
 
 	// Now perform the actual select aggregates and return the data reader:
-	if ( !bOtherAggrSelected && ( selAggrList->size() > 0 ))  
-		reader = mFdoConnection->GetOptimizedAggregateReader( classDefinition, selAggrList ); // The reader takes ownership of the selAggrList
-    
+	if ( !bOtherAggrSelected && ( selAggrList->size() > 0 ))
+    {
+		reader = mFdoConnection->GetOptimizedAggregateReader( classDefinition, selAggrList, GetFilterRef() ); // The reader takes ownership of the selAggrList
+    }
+    else
+    {
+		// Sorry, no optimization. Clean up.
+        for ( size_t j = 0; j < selAggrList->size(); j++ )
+			delete selAggrList->at(j);
+
+        delete selAggrList;
+    }
+
     return reader;
 }
 

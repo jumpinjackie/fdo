@@ -236,6 +236,10 @@ void FdoSchemaRollbackTest::DoTest ( bool bPreClear, const wchar_t* schemaName, 
 	        OutFileName(bPreClear, schemaName, bRollbackOnly, bCommit)
         );
 #endif
+        phMgr = NULL;
+        mgr = NULL;
+
+        delete staticConn;
 	}
 	catch ( FdoException* e ) 
 	{

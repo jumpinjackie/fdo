@@ -51,6 +51,19 @@ public:
 
     virtual CoordinateSystemMatchLevel GetCoordinateSystemMatchLevel();
 
+    // Gets the extended coordinate system file name.
+    // SQL Server's coordinate system catalogue (sys.spatial_reference_systems)
+    // contains only geodetic systems. However, SQL Server allows geometries
+    // to have coordinate systems not in this catalogue. In this case, the only info
+    // on these coordinate systems, that can be retrieved from the RDBMS, is the SRID
+    // (usually an EPSG number). The provider also needs the WKT 
+    // so it can give enough information about the coordinate system, via 
+    // FdoIGetSpatialContexts, to applications such as Map and MapGuide.
+    //
+    // The WKT's for non-catalogued coordinate systems can be specified the file returned
+    // by this function.
+    FdoStringP GetExtendedCsysFilename();
+
     // Temporary object creator implementation
     virtual FdoSmPhDbObjectP CreateTempObject();
 

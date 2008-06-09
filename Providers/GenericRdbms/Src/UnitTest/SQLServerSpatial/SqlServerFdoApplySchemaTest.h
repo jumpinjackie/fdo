@@ -33,6 +33,10 @@ public:
     void  set_provider();
 
 	virtual void CreateNLSSchema( FdoIConnection* connection, StaticConnection* staticConn );
+    virtual void DeletePhSystemSchemas( StaticConnection* staticConn );
+    void DeletePhSystemSchema( StaticConnection* staticConn, FdoStringP schemaName );
+    virtual void CreatePhSystemSchemas( FdoIConnection* connection );
+    void CreatePhSystemSchema( FdoIConnection* connection, FdoStringP schemaName );
 
     // Helper methods for overrides tests; overriden by each provider:
    	virtual FdoRdbmsOvPhysicalSchemaMapping* CreateOverrideDefaults( FdoIConnection* connection, int passNum );
@@ -49,6 +53,7 @@ public:
     }
 
     virtual bool CanApplyWithoutMetaSchema();
+    virtual bool CanCreateSchemaWithoutMetaSchema();
     virtual bool CanAddNotNullCol();
     virtual bool CanDropCol();
 

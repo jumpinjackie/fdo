@@ -250,7 +250,7 @@ public:
     void SetActiveSpatialContextName(FdoString * spatialContextName);
     void SetDefaultActiveSpatialContextName();
 
-    virtual FdoRdbmsFeatureReader *GetOptimizedAggregateReader(const FdoSmLpClassDefinition* classDef, aggr_list *selAggrList) { return NULL; }
+    virtual FdoRdbmsFeatureReader *GetOptimizedAggregateReader(const FdoSmLpClassDefinition* classDef, aggr_list *selAggrList, FdoFilter* filter = NULL) { return NULL; }
 
     virtual void Flush() {}
 

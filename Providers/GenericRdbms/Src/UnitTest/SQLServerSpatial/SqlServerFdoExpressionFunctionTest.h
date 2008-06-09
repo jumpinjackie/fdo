@@ -50,13 +50,13 @@ public:
     //                           Unit Test Functions
     //-------------------------------------------------------------------------
 
-    // ========================= AGGREGATE FUNCTIONS =========================
+    // ======================== OPTIMIZED READER TESTS =========================
 
     //  TestSpatialExtents:
     //      The function executes the test for the expression engine function
     //      SPATIALEXTENTS when used as a select-parameter.
 
-    void TestSpatialExtents ();
+    virtual void TestSpatialExtents ();
 
 
     // ======================== CONVERSION FUNCTIONS =========================
@@ -120,6 +120,13 @@ public:
 
     FdoDouble GetExpectedValue (FdoInt16 test_case_id);
 
+    void CheckReaderGeometryAndCount (
+                                      FdoIDataReader *data_reader,
+                                      FdoInt32       expected_count,
+                                      FdoDouble      expected_min_x,
+                                      FdoDouble      expected_min_y,
+                                      FdoDouble      expected_max_x,
+                                      FdoDouble      expected_max_y);
 
 };  //  class SqlServerFdoExpressionFunctionTest
 

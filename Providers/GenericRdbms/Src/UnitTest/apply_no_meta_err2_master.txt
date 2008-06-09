@@ -6,4 +6,3 @@
  Cannot set Schema Attribute Dictionary for element 'Acad:AcDbEntity.Layer' in datastore '{USER_DS}_apply_no_meta'; datastore has no FDO metadata tables
  Cannot set Schema Attribute Dictionary for element 'Acad:AcDbEntity' in datastore '{USER_DS}_apply_no_meta'; datastore has no FDO metadata tables
  Cannot add object property 'Acad:AcDbVertexData.point' to datastore '{USER_DS}_apply_no_meta'; datastore has no FDO metadata tables
- Cannot add feature schema 'Acad' to datastore '{USER_DS}_apply_no_meta'; datastore has no FDO metadata tables (f_schemainfo)

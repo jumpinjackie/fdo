@@ -587,9 +587,7 @@ FdoIDataStorePropertyDictionary*  FdoRdbmsSqlServerConnection::CreateDataStorePr
         enabledValues[1] = new wchar_t[10];
         wcscpy( enabledValues[1], L"true" );
 
-        // TODO: Set IsFdoEnabled default to false when projected coordinate system 
-        // support added.
-        newProp = new ConnectionProperty (FDO_RDBMS_DATASTORE_FDO_ENABLED, L"IsFdoEnabled", L"true", false, false, true, false, false, false, false, 2, (const wchar_t**) enabledValues);
+        newProp = new ConnectionProperty (FDO_RDBMS_DATASTORE_FDO_ENABLED, L"IsFdoEnabled", L"false", false, false, true, false, false, false, false, 2, (const wchar_t**) enabledValues);
         mDataStorePropertyDictionary->AddProperty(newProp);
 	}
 	else if ( action == FDO_RDBMS_DATASTORE_FOR_DELETE )
@@ -632,9 +630,23 @@ FdoIExpressionCapabilities* FdoRdbmsSqlServerConnection::GetExpressionCapabiliti
 	return mExpressionCapabilities;
 }
 
-FdoRdbmsFeatureReader *FdoRdbmsSqlServerConnection::GetOptimizedAggregateReader(const FdoSmLpClassDefinition* classDef, aggr_list *selAggrList)
+FdoRdbmsFeatureReader *FdoRdbmsSqlServerConnection::GetOptimizedAggregateReader(const FdoSmLpClassDefinition* classDef, aggr_list *selAggrList, FdoFilter* filter)
 { 
-    return new FdoRdbmsSqlServerOptimizedAggregateReader(this, classDef, selAggrList); 
+    bool optimize = false;
+
+    // Optimization needed only when SpatialExtents function present.
+    for ( size_t i = 0; i < selAggrList->size(); i++ )
+	{ 
+		AggregateElement	*id = selAggrList->at(i);
+		if ( id->type == FdoPropertyType_GeometricProperty )
+			optimize = true;
+    }
+        
+    FdoRdbmsSqlServerOptimizedAggregateReader* rdr = NULL;
+    if ( optimize ) 
+        rdr = new FdoRdbmsSqlServerOptimizedAggregateReader(this, classDef, selAggrList, filter); 
+
+    return rdr;
 }
 
 FdoStringP FdoRdbmsSqlServerConnection::GetBindString( int n, const FdoSmLpPropertyDefinition* prop )

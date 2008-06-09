@@ -20,6 +20,7 @@
 #include "SqlServerFdoApplySchemaTest.h"
 #include "UnitTestUtil.h"
 #include "ConnectionUtil.h"
+#include "../../SQLServerSpatial/SchemaMgr/Ph/Owner.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION( SqlServerFdoApplySchemaTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( SqlServerFdoApplySchemaTest, "FdoApplySchemaTest");
@@ -67,6 +68,87 @@ void SqlServerFdoApplySchemaTest::CreateNLSSchema( FdoIConnection* connection, S
     }
 }
 
+void SqlServerFdoApplySchemaTest::DeletePhSystemSchemas( StaticConnection* staticConn )
+{
+    DeletePhSystemSchema( staticConn, L"INFORMATION_SCHEMA" );
+    DeletePhSystemSchema( staticConn, L"guest" );
+    DeletePhSystemSchema( staticConn, L"db_datareader" );
+}
+
+void SqlServerFdoApplySchemaTest::DeletePhSystemSchema( StaticConnection* staticConn, FdoStringP schemaName )
+{
+    bool succeeded = false;
+    FdoSchemaManagerP sm = staticConn->CreateSchemaManager();
+    FdoSmPhMgrP phMgr = sm->GetPhysicalSchema();
+
+    FdoStringP datastore = UnitTestUtil::GetEnviron("datastore", DB_NAME_NO_META_SUFFIX);
+    FdoSmPhSqsOwnerP owner = phMgr->FindOwner(datastore)->SmartCast<FdoSmPhSqsOwner>();
+
+    FdoSmPhSqsSchemaP schema = owner->GetSchemas()->FindItem( schemaName );
+    CPPUNIT_ASSERT( schema );
+
+    try {
+        schema->SetElementState( FdoSchemaElementState_Deleted );
+        owner->Commit();
+        succeeded = true;
+    }
+	catch ( FdoSchemaException* e )
+	{
+        FdoStringP expected = FdoStringP::Format( L"Cannot delete system schema '%ls' from datastore.", (FdoString*) schemaName );
+        FdoString* pMessage = e->GetExceptionMessage();
+#ifdef _WIN32
+	    CPPUNIT_ASSERT( pMessage && wcscmp(pMessage, expected) == 0);
+#else
+        CPPUNIT_ASSERT( pMessage && wcscmp(pMessage, expected) == 0);
+#endif
+        FDO_SAFE_RELEASE(e);
+	}
+
+    if ( succeeded ) {
+        FdoStringP msg = FdoStringP::Format( L"Deleting system schema '%ls' was supposed to fail", (FdoString*) schemaName );
+		CPPUNIT_FAIL( (const char*) msg );
+    }
+}
+
+void SqlServerFdoApplySchemaTest::CreatePhSystemSchemas( FdoIConnection* connection )
+{
+    CreatePhSystemSchema( connection, L"INFORMATION_SCHEMA" );
+    CreatePhSystemSchema( connection, L"guest" );
+    CreatePhSystemSchema( connection, L"db_datareader" );
+}
+
+void SqlServerFdoApplySchemaTest::CreatePhSystemSchema( FdoIConnection* connection, FdoStringP schemaName )
+{
+    bool succeeded = false;
+	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
+
+	FdoPtr<FdoFeatureSchema> pSchema = FdoFeatureSchema::Create( schemaName, L"" );
+    pCmd->SetFeatureSchema( pSchema );
+
+    try {
+        pCmd->Execute();    
+    }
+	catch ( FdoSchemaException* e )
+	{
+        FdoStringP expected = FdoStringP::Format( L"Cannot add schema %ls to database; it already exists ", (FdoString*) schemaName );
+        FdoPtr<FdoException> cause = e->GetRootCause();
+        CPPUNIT_ASSERT( cause );
+        FdoString* pMessage = wcschr( cause->GetExceptionMessage(), ')' );
+        if (pMessage) pMessage += 2;
+#ifdef _WIN32
+	    CPPUNIT_ASSERT( pMessage && wcscmp(pMessage, expected) == 0);
+#else
+        CPPUNIT_ASSERT( pMessage && wcscmp(pMessage, expected) == 0);
+#endif
+        FDO_SAFE_RELEASE(e);
+	}
+
+    if ( succeeded ) {
+        FdoStringP msg = FdoStringP::Format( L"Creating system schema '%ls' was supposed to fail", (FdoString*) schemaName );
+		CPPUNIT_FAIL( (const char*) msg );
+    }
+}
+
 FdoRdbmsOvPhysicalSchemaMapping* SqlServerFdoApplySchemaTest::CreateOverrideDefaults( FdoIConnection* connection, int passNum )
 { 
 	FdoRdbmsOvPhysicalSchemaMapping* pOverrides = FdoApplySchemaTest::CreateOverrideDefaults( connection, passNum );
@@ -93,8 +175,9 @@ void SqlServerFdoApplySchemaTest::CreateRdbmsSpecificElements(FdoIConnection* co
     	sqlCommand->SetSQLStatement(FdoStringP::Format(L"ALTER DATABASE %ls ADD FILE (NAME=TestFile1, FILENAME='%hs\\%ls_file1.ndf', SIZE=2MB, MAXSIZE=100MB, FILEGROWTH=5MB) TO FILEGROUP TestFileGroup1", wDatastore, mbSqlServerRootPath, wDatastore));
 		sqlCommand->ExecuteNonQuery();
 	}
-	catch (...)
+	catch (FdoException* ex)
 	{
+        FDO_SAFE_RELEASE(ex);
 		sqlCommand->SetSQLStatement(FdoStringP::Format(L"ALTER DATABASE %ls ADD FILE (NAME=TestFile1, FILENAME='C:\\Program Files\\Microsoft SQL Server\\MSSQL.1\\MSSQL\\data\\%ls_file1.ndf', SIZE=2MB, MAXSIZE=100MB, FILEGROWTH=5MB) TO FILEGROUP TestFileGroup1", wDatastore, wDatastore));
 		sqlCommand->ExecuteNonQuery();
 	}
@@ -106,8 +189,9 @@ void SqlServerFdoApplySchemaTest::CreateRdbmsSpecificElements(FdoIConnection* co
     	sqlCommand->SetSQLStatement(FdoStringP::Format(L"ALTER DATABASE %ls ADD FILE (NAME=TestFile2, FILENAME='%hs\\%ls_file2.ndf', SIZE=2MB, MAXSIZE=100MB, FILEGROWTH=5MB) TO FILEGROUP TestFileGroup2", wDatastore, mbSqlServerRootPath, wDatastore));
 		sqlCommand->ExecuteNonQuery();
 	}
-	catch (...)
+	catch (FdoException* ex)
 	{
+        FDO_SAFE_RELEASE(ex);
 		sqlCommand->SetSQLStatement(FdoStringP::Format(L"ALTER DATABASE %ls ADD FILE (NAME=TestFile2, FILENAME='C:\\Program Files\\Microsoft SQL Server\\MSSQL.1\\MSSQL\\data\\%ls_file2.ndf', SIZE=2MB, MAXSIZE=100MB, FILEGROWTH=5MB) TO FILEGROUP TestFileGroup2", wDatastore, wDatastore));
 		sqlCommand->ExecuteNonQuery();
     }
@@ -166,6 +250,11 @@ FdoRdbmsOvColumn* SqlServerFdoApplySchemaTest::CreateOvColumn(FdoString* name)
 }
 
 bool SqlServerFdoApplySchemaTest::CanApplyWithoutMetaSchema()
+{
+    return true;
+}
+
+bool SqlServerFdoApplySchemaTest::CanCreateSchemaWithoutMetaSchema()
 {
     return true;
 }

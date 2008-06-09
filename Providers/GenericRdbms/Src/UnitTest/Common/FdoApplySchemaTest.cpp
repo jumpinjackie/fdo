@@ -865,6 +865,10 @@ void FdoApplySchemaTest::TestOverrideDefaults ()
 			UnitTestUtil::GetOutputFileName( L"apply_schema_overrides_defout1.xml" ) );
 #endif
 
+        lp = NULL;
+        mgr = NULL;
+        delete staticConn;
+        staticConn = NULL;
 	}
 	catch ( FdoException* e ) 
 	{
@@ -1802,6 +1806,25 @@ void FdoApplySchemaTest::TestNoMeta ()
 	printf( "Done\n" );
 }
 
+static char* delLandSheet = 
+"<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\
+<stylesheet version=\"1.0\" \
+xmlns=\"http://www.w3.org/1999/XSL/Transform\" \
+xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" \
+xmlns:gml=\"http://www.opengis.net/gml\" \
+xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" \
+xmlns:fdo=\"http://fdo.osgeo.org/schemas\" \
+xmlns:ora=\"http://www.autodesk.com/isd/fdo/OracleProvider\" \
+xmlns:mql=\"http://fdomysql.osgeo.org/schemas\" \
+xmlns:sqs=\"http://www.autodesk.com/isd/fdo/SQLServerProvider\">\
+<xsl:template match=\"xs:schema[@targetNamespace='http://fdo.osgeo.org/schemas/feature/Land']\"/>\
+<xsl:template match=\"@*|node()\">\
+  <xsl:copy>\
+    <xsl:apply-templates select=\"@*|node()\"/>\
+  </xsl:copy>\
+</xsl:template>\
+</stylesheet>";
+
 void FdoApplySchemaTest::ApplyNoMetaSuccess( FdoIConnection* connection, StaticConnection* staticConn )
 {
     FdoPtr<FdoIGetSpatialContexts> gscCmd = (FdoIGetSpatialContexts*) connection->CreateCommand( FdoCommandType_GetSpatialContexts );
@@ -1831,6 +1854,9 @@ void FdoApplySchemaTest::ApplyNoMetaSuccess( FdoIConnection* connection, StaticC
 
 	if ( succeeded ) 
 		CPPUNIT_FAIL( "Creating non-default schema was supposed to fail" );
+
+    printf( "Creating System Schemas ... \n" );
+    CreatePhSystemSchemas( connection );
 
     printf( "Creating Acad Schema ... \n" );
     CreateAcadSchema(connection, false);
@@ -1878,7 +1904,7 @@ void FdoApplySchemaTest::ApplyNoMetaSuccess( FdoIConnection* connection, StaticC
     printf( "Deleting Default Schema by ApplySchema ... \n" );
     succeeded = false;
     try {
-        DeleteDefaultSchema(connection, true);
+        DeleteDefaultSchema(connection, false);
         succeeded = true;
     }
 	catch ( FdoSchemaException* e )
@@ -1893,6 +1919,30 @@ void FdoApplySchemaTest::ApplyNoMetaSuccess( FdoIConnection* connection, StaticC
 
 	if ( succeeded ) 
 		CPPUNIT_FAIL( "Deleting default schema was supposed to fail" );
+
+    printf( "Deleting provider-specific system Schemas ... \n" );
+    DeletePhSystemSchemas( staticConn );
+
+    if ( CanCreateSchemaWithoutMetaSchema() ) {
+        printf( "Deleting schema with features ... \n" );
+        succeeded = false;
+        try {
+            DeleteAcadSchema(connection);
+            succeeded = true;
+        }
+	    catch ( FdoSchemaException* e )
+	    {
+		    UnitTestUtil::PrintException(
+                e, 
+                UnitTestUtil::GetOutputFileName( SchemaNoMetaErrFile(7,false) ), 
+                true 
+            );
+		    FDO_SAFE_RELEASE(e);
+	    }
+
+	    if ( succeeded ) 
+		    CPPUNIT_FAIL( "Deleting Acad schema was supposed to fail" );
+    }
 
     printf( "Creating Long String Schema ... \n" );
     succeeded = false;
@@ -1940,13 +1990,52 @@ void FdoApplySchemaTest::ApplyNoMetaSuccess( FdoIConnection* connection, StaticC
 		CPPUNIT_FAIL( "Creating long string schema was supposed to fail" );
 
     FdoIoMemoryStreamP stream = FdoIoMemoryStream::Create();
-    GetDefaultSchema(connection)->WriteXml(stream);
+	FdoPtr<FdoIDescribeSchema> cmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
+	FdoFeatureSchemasP schemas = cmd->Execute();
+
+    schemas->WriteXml(stream);
     stream->Reset();
 
     FdoStringP resultsFile = UnitTestUtil::GetOutputFileName( L"apply_no_meta_test1.xml" );
+    FdoStringP masterFile2 = UnitTestUtil::GetOutputFileName( L"apply_no_meta_test2_master.xml" );
+    FdoStringP resultsFile2 = UnitTestUtil::GetOutputFileName( L"apply_no_meta_test2.xml" );
 
     UnitTestUtil::Config2SortedFile(stream, resultsFile );
+
+    if ( CanCreateSchemaWithoutMetaSchema() ) {
+        printf( "Deleting Land Schema ... \n" );
+        DeleteLandSchema( connection, false );
+    
+        FdoIoMemoryStreamP stylesheetStream = FdoIoMemoryStream::Create();
+        stylesheetStream->Write( (FdoByte*) delLandSheet, strlen(delLandSheet) );
+        stylesheetStream->Reset();
+
+        stream = FdoIoMemoryStream::Create();
+
+        FdoXslTransformerP tfmr = FdoXslTransformer::Create(
+            FdoXmlReaderP( FdoXmlReader::Create(L"apply_no_meta_test1_master.xml") ),
+            FdoXmlReaderP( FdoXmlReader::Create(stylesheetStream) ),
+            FdoXmlWriterP( FdoXmlWriter::Create(stream, false) )
+        );
+
+        tfmr->Transform();
+
+        stream->Reset();
+        UnitTestUtil::Config2SortedFile(stream, masterFile2 );
+
+	    schemas = cmd->Execute();
+
+        stream = FdoIoMemoryStream::Create();
+        schemas->WriteXml(stream);
+        stream->Reset();
+
+        UnitTestUtil::Config2SortedFile(stream, resultsFile2 );
+    }
+
     UnitTestUtil::CheckOutput( "apply_no_meta_test1_master.xml",(const char*) resultsFile );
+
+    if ( CanCreateSchemaWithoutMetaSchema() )
+        UnitTestUtil::CheckOutput( (const char*) masterFile2,(const char*) resultsFile2 );
 
 #ifdef _WIN32
 	UnitTestUtil::CheckOutput( 
@@ -1969,6 +2058,12 @@ void FdoApplySchemaTest::ApplyNoMetaSuccess( FdoIConnection* connection, StaticC
         SchemaNoMetaErrFile(6,true),
         UnitTestUtil::GetOutputFileName( SchemaNoMetaErrFile(6,false) )
     );
+    if ( CanCreateSchemaWithoutMetaSchema() ) {
+	    UnitTestUtil::CheckOutput( 
+            SchemaNoMetaErrFile(7,true),
+            UnitTestUtil::GetOutputFileName( SchemaNoMetaErrFile(7,false) )
+        );
+    }
 #endif
 
 }
@@ -2059,15 +2154,18 @@ void FdoApplySchemaTest::DeleteAcadSchema( FdoIConnection* connection )
 	pCmd->Execute();
 }
 
-void FdoApplySchemaTest::DeleteLandSchema( FdoIConnection* connection )
+void FdoApplySchemaTest::DeleteLandSchema( FdoIConnection* connection, bool hasMetaSchema )
 {
     DeleteObjects( connection, L"Land", L"1-8 School" );
     DeleteObjects( connection, L"Land", L"Driveway" );
+
+    if ( hasMetaSchema ) {
 #ifdef RDBI_DEF_SSQL
-    UnitTestUtil::Sql2Db( L"delete from \"parcel_person\"", connection );
+        UnitTestUtil::Sql2Db( L"delete from \"parcel_person\"", connection );
 #else
-	UnitTestUtil::Sql2Db( L"delete from parcel_person", connection );
+	    UnitTestUtil::Sql2Db( L"delete from parcel_person", connection );
 #endif
+    }
 
 	FdoPtr<FdoIDestroySchema>  pCmd = (FdoIDestroySchema*) connection->CreateCommand(FdoCommandType_DestroySchema);
 
@@ -2135,13 +2233,21 @@ void FdoApplySchemaTest::CreateSystemSchema( FdoIConnection* connection )
 		CPPUNIT_FAIL( "System schema create was supposed to fail" );
 }
 
+void FdoApplySchemaTest::DeletePhSystemSchemas( StaticConnection* staticConn )
+{
+}
+
+void FdoApplySchemaTest::CreatePhSystemSchemas( FdoIConnection* connection )
+{
+}
+
 void FdoApplySchemaTest::CreateAcadSchema( FdoIConnection* connection, bool hasMetaSchema, bool addSAD )
 {
 	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
 
 	FdoPtr<FdoFeatureSchema> pSchema;
     
-    if ( hasMetaSchema ) 
+    if ( hasMetaSchema || CanCreateSchemaWithoutMetaSchema() ) 
         pSchema = FdoFeatureSchema::Create( L"Acad", L"AutoCAD schema" );
     else
         pSchema = GetDefaultSchema( connection );
@@ -2357,7 +2463,7 @@ void FdoApplySchemaTest::CreateElectricSchema( FdoIConnection* connection, bool 
     FdoPtr<FdoFeatureSchema> pSchema;
     FdoPtr<FdoClassDefinition> pEntClass;
 
-    if ( hasMetaSchema ) {
+    if ( hasMetaSchema || CanCreateSchemaWithoutMetaSchema() ) {
 	    FdoPtr<FdoIDescribeSchema> pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
 
 	    pDescCmd->SetSchemaName( L"Acad" );
@@ -2368,7 +2474,9 @@ void FdoApplySchemaTest::CreateElectricSchema( FdoIConnection* connection, bool 
 
     	/* A schema with dictionary */
         pSchema = FdoFeatureSchema::Create( L"Electric'l", L"Electrical '' schema'" );
-    	FdoSADP(pSchema->GetAttributes())->Add( L"'Author", L"Thomas O'Edison" );
+
+        if ( hasMetaSchema ) 
+        	FdoSADP(pSchema->GetAttributes())->Add( L"'Author", L"Thomas O'Edison" );
     }
     else {
         pSchema = GetDefaultSchema( connection );
@@ -2489,7 +2597,7 @@ void FdoApplySchemaTest::CreateLongStringSchema( FdoIConnection* connection, boo
     /* Test various long schema, class and property names. */
 
 	FdoPtr<FdoFeatureSchema> pSchema;
-    if ( hasMetaSchema ) 
+    if ( hasMetaSchema || CanCreateSchemaWithoutMetaSchema() ) 
         pSchema = FdoFeatureSchema::Create( L"abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789", L"abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789" );
     else
         pSchema = GetDefaultSchema( connection );
@@ -2591,7 +2699,7 @@ void FdoApplySchemaTest::CreateLandSchema( FdoIConnection* connection, bool hasM
 {
 	FdoPtr<FdoIDescribeSchema> pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
 
-    if ( hasMetaSchema ) 
+    if ( hasMetaSchema || CanCreateSchemaWithoutMetaSchema() ) 
     	pDescCmd->SetSchemaName( L"Acad" );
 
 	FdoPtr<FdoFeatureSchemaCollection> pSchemas = pDescCmd->Execute();
@@ -2601,7 +2709,7 @@ void FdoApplySchemaTest::CreateLandSchema( FdoIConnection* connection, bool hasM
 	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
 
 	FdoPtr<FdoFeatureSchema> pSchema;
-    if ( hasMetaSchema ) 
+    if ( hasMetaSchema || CanCreateSchemaWithoutMetaSchema() ) 
         pSchema = pSchemas->GetItem(L"Land");
     else
         pSchema = pSchemas->GetItem(0);
@@ -2610,7 +2718,7 @@ void FdoApplySchemaTest::CreateLandSchema( FdoIConnection* connection, bool hasM
 	pCmd->Execute();
 
     // Test GetFeatureSchema
-    if ( hasMetaSchema ) 
+    if ( hasMetaSchema || CanCreateSchemaWithoutMetaSchema() ) 
         CPPUNIT_ASSERT(wcscmp(FdoFeatureSchemaP(pCmd->GetFeatureSchema())->GetName(), L"Land") == 0);
 
     InsertObject(connection, false, pSchema->GetName(), L"1-8 School", L"# Rooms", L"20", NULL );
@@ -2630,7 +2738,7 @@ void FdoApplySchemaTest::CreateLandSchema( FdoFeatureSchemaCollection* pSchemas,
 	FdoPtr<FdoFeatureSchema> pAcadSchema;
     FdoPtr<FdoFeatureSchema> pSchema;
     
-    if ( hasMetaSchema ) {
+    if ( hasMetaSchema || CanCreateSchemaWithoutMetaSchema() ) {
 	    pAcadSchema = pSchemas->GetItem(L"Acad");
 
         /* Create a schema to test successful schema deletion */
@@ -3346,7 +3454,7 @@ void FdoApplySchemaTest::CreateNLSSchema( FdoIConnection* connection, StaticConn
 {
 	FdoPtr<FdoFeatureSchema> pSchema;
 
-    if ( hasMetaSchema ) {
+    if ( hasMetaSchema || CanCreateSchemaWithoutMetaSchema() ) {
 	    pSchema = FdoFeatureSchema::Create( 
             FdoStringP::Format(
                 L"%lc%lc%lc", 
@@ -3593,7 +3701,7 @@ void FdoApplySchemaTest::ModElectricSchema( FdoIConnection* connection, bool has
 	/* Test modifying an existing schema */
 
 	FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
-    if ( hasMetaSchema ) 
+    if ( hasMetaSchema || CanCreateSchemaWithoutMetaSchema() ) 
         pDescCmd->SetSchemaName( L"Electric'l" );
 	FdoFeatureSchemasP pSchemas = pDescCmd->Execute();
 
@@ -3603,7 +3711,7 @@ void FdoApplySchemaTest::ModElectricSchema( FdoIConnection* connection, bool has
 
 	FdoPtr<FdoFeatureSchema> pSchema;
     
-    if ( hasMetaSchema ) 
+    if ( hasMetaSchema || CanCreateSchemaWithoutMetaSchema() ) 
         pSchema = pSchemas->GetItem( L"Electric'l" );
     else
         pSchema = pSchemas->GetItem(0);
@@ -3622,7 +3730,7 @@ void FdoApplySchemaTest::ModElectricSchema( FdoFeatureSchemaCollection* pSchemas
     FdoPtr<FdoDataPropertyDefinition> pProp;
     FdoObjectPropertyP pObjProp;
 
-    if ( hasMetaSchema ) 
+    if ( hasMetaSchema || CanCreateSchemaWithoutMetaSchema() ) 
         pSchema = pSchemas->GetItem( L"Electric'l" );
     else
         pSchema = pSchemas->GetItem(0);
@@ -3902,7 +4010,7 @@ void FdoApplySchemaTest::ModLandSchema( FdoIConnection* connection, bool hasMeta
      * subclass
      */
 
-    if ( hasMetaSchema ) {
+    if ( hasMetaSchema || CanCreateSchemaWithoutMetaSchema() ) {
 	    FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
 	    pDescCmd->SetSchemaName( L"Land" );
 	    FdoFeatureSchemasP pSchemas = pDescCmd->Execute();
@@ -4075,7 +4183,7 @@ void FdoApplySchemaTest::ModDelSchemas( FdoIConnection* connection, bool hasMeta
 	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
 
 	FdoPtr<FdoFeatureSchema> pSchema;
-    if ( hasMetaSchema ) 
+    if ( hasMetaSchema || CanCreateSchemaWithoutMetaSchema() ) 
     	pSchema = pSchemas->GetItem( L"Electric'l" );
     else
     	pSchema = pSchemas->GetItem(0);
@@ -4084,7 +4192,7 @@ void FdoApplySchemaTest::ModDelSchemas( FdoIConnection* connection, bool hasMeta
 	pCmd->SetFeatureSchema( pSchema );
 	pCmd->Execute();
 
-    if ( hasMetaSchema ) 
+    if ( hasMetaSchema || CanCreateSchemaWithoutMetaSchema() ) 
     	pSchema = pSchemas->GetItem( L"Acad" );
 
     ModDelAcadSchema( pSchemas, hasMetaSchema );
@@ -4095,7 +4203,7 @@ void FdoApplySchemaTest::ModDelSchemas( FdoIConnection* connection, bool hasMeta
 void FdoApplySchemaTest::ModDelElectricSchema( FdoFeatureSchemaCollection* pSchemas, bool hasMetaSchema )
 {
 	FdoPtr<FdoFeatureSchema> pSchema;
-    if ( hasMetaSchema ) 
+    if ( hasMetaSchema || CanCreateSchemaWithoutMetaSchema() ) 
 	    pSchema = pSchemas->GetItem( L"Electric'l" );
     else
         pSchema = pSchemas->GetItem( 0 );
@@ -4153,7 +4261,7 @@ void FdoApplySchemaTest::ModDelElectricSchema( FdoFeatureSchemaCollection* pSche
 void FdoApplySchemaTest::ModDelAcadSchema( FdoFeatureSchemaCollection* pSchemas, bool hasMetaSchema )
 {
 	FdoFeatureSchemaP pSchema;
-    if ( hasMetaSchema ) 
+    if ( hasMetaSchema || CanCreateSchemaWithoutMetaSchema() ) 
         pSchema = pSchemas->GetItem( L"Acad" );
     else
 	    pSchema = pSchemas->GetItem( 0 );
@@ -4247,7 +4355,7 @@ void FdoApplySchemaTest::ReAddElements( FdoIConnection* connection, bool hasMeta
     FdoPtr<FdoFeatureSchema> pSchema;
 	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
 
-    if ( hasMetaSchema ) {
+    if ( hasMetaSchema || CanCreateSchemaWithoutMetaSchema() ) {
         FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
 	    pDescCmd->SetSchemaName( L"Electric'l" );
 	    FdoPtr<FdoFeatureSchemaCollection> pSchemas = pDescCmd->Execute();
@@ -5037,7 +5145,7 @@ void FdoApplySchemaTest::CreateOverrideSchema( FdoIConnection* connection, FdoRd
     FdoInt32                            idx;
     FdoInt32                            classCount = hasMetaSchema ? 10 : 5;
 
-    if ( hasMetaSchema ) 
+    if ( hasMetaSchema || CanCreateSchemaWithoutMetaSchema() ) 
         pSchema = FdoFeatureSchema::Create( L"OverridesA", L"AutoCAD schema" );
     else
         pSchema = GetDefaultSchema( connection );
@@ -6753,6 +6861,11 @@ FdoStringP FdoApplySchemaTest::LogicalPhysicalFormat( FdoString* inFile )
 }
 
 bool FdoApplySchemaTest::CanApplyWithoutMetaSchema()
+{
+    return false;
+}
+
+bool FdoApplySchemaTest::CanCreateSchemaWithoutMetaSchema()
 {
     return false;
 }
