@@ -282,6 +282,11 @@ geographic</gml:derivedCRSType>
 </xs:complexContent>
 </xs:complexType>
 </xs:schema>
+<xs:schema xmlns:guest="http://fdo.osgeo.org/schemas/feature/guest" targetNamespace="http://fdo.osgeo.org/schemas/feature/guest" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:schema>
 <SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/SQLServerSpatialProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" textInRow="NotInRow" provider="OSGeo.SQLServerSpatial.3.3" name="dbo">
 <complexType name="ClassB1Type" identityIsGloballyUnique="false" identitySeed="1" identityIncrement="1" identityPropertyName="Prop1">
 <Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_classb1" name="dbo.ClassB1"/>

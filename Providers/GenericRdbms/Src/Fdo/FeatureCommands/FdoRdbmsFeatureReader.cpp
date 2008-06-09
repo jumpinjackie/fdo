@@ -391,7 +391,7 @@ const char* FdoRdbmsFeatureReader::Property2ColNameChar( const wchar_t *propName
 		strcpy( cacheElem->columnQName, string );
 		wcscpy( cacheElem->columnNameW, colName );
 
-        cacheElem->propertyType = FdoPropertyType_DataProperty;
+        cacheElem->propertyType = propType;
 		wcscpy(cacheElem->columnPosition, L""); 
 
 		cacheIndex = mNumPropertyInfoDefs;
@@ -433,7 +433,18 @@ const char* FdoRdbmsFeatureReader::GetDbAliasName( const wchar_t *propName, FdoP
         FdoComputedIdentifier  *compIdent = dynamic_cast<FdoComputedIdentifier *>(ident.p);
         if( compIdent != NULL )
         {
-            return mConnection->GetSchemaUtil()->MakeDBValidName(propName);
+            const char* colName = mConnection->GetSchemaUtil()->MakeDBValidName(propName);
+
+            // Get the type from the function type 
+			if ( type != NULL ) 
+			{
+				FdoPtr<FdoExpression>   expr = compIdent->GetExpression();
+                FdoPtr<FdoClassDefinition> classDef = GetClassDefinition();
+                FdoDataType tempDataType;
+                GetExpressionType(mFdoConnection, classDef, colName, expr, *type, tempDataType);
+			}
+			
+            return colName;
         }
     }
     return NULL;
@@ -891,9 +902,23 @@ FdoClassDefinition *FdoRdbmsFeatureReader::FilterClassDefinition(
                         // Property was added for child class so no need
                         // to add computed properties to base classes.
                         if ( !isBaseClass ) {
-                            FdoPtr<FdoDataPropertyDefinition>pProp = FdoDataPropertyDefinition::Create( id->GetText(), L"Computed Property" );
-                            pProp->SetDataType( FdoRdbmsUtil::DbiToFdoType( mColList[k].datatype ) );
-                            subsetProperties->Add( pProp );
+                            FdoComputedIdentifier* compIdent = static_cast<FdoComputedIdentifier *>( id.p );
+				            FdoPtr<FdoExpression>   expr = compIdent->GetExpression();
+                            FdoPropertyType propType;
+                            FdoDataType dataType;
+                            GetExpressionType(mFdoConnection, classDef, mColList[k].c_alias, expr, propType, dataType);
+
+                            if (propType == FdoPropertyType_GeometricProperty)
+                            {
+                                FdoPtr<FdoGeometricPropertyDefinition> pProp = FdoGeometricPropertyDefinition::Create( id->GetText(), L"Computed Property" );
+                                subsetProperties->Add( pProp );
+                            }
+                            else
+                            {
+                                FdoPtr<FdoDataPropertyDefinition>pProp = FdoDataPropertyDefinition::Create( id->GetText(), L"Computed Property" );
+                                pProp->SetDataType( dataType );
+                                subsetProperties->Add( pProp );
+                            }
                         }
                     }
                 }

@@ -231,13 +231,15 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
     FdoStringP columnName2 = GetGeometryColumnNameForProperty(geomProp, false);
 
     FdoStringP spatialClause;
-    FdoGeometryValue *geom = dynamic_cast<FdoGeometryValue*>(filter.GetGeometry());
+    FdoPtr<FdoExpression> geomExpr = filter.GetGeometry();
+    FdoGeometryValue *geom = dynamic_cast<FdoGeometryValue*>(geomExpr.p);
     FdoByteArray            *geomfgf = NULL;
     FdoIGeometry            *geometryObj = NULL;
 
     FdoStringP buf(L"");
 
-    geomfgf = geom->GetGeometry();
+    if ( geom ) 
+        geomfgf = geom->GetGeometry();
 
     if (geomfgf == NULL)
         throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_46, "No geometry value"));
@@ -915,54 +917,13 @@ FdoStringP FdoRdbmsSqlServerFilterProcessor::GetGeometryString( FdoString* dbCol
     return wrappedName;
 }
 
-void FdoRdbmsSqlServerFilterProcessor::PrependSelectStar(FdoString *tableName) 
+FdoStringP FdoRdbmsSqlServerFilterProcessor::GetGeometryTableString( FdoString* tableName )
 {
+    FdoStringP  tableName2 = tableName;
+    // 'dbo.acdb3dpolyline.geometry.STAsBinary()' syntax is not allowed.
+    // Drop the schema name.
+    if ( tableName2.Contains(L".") )
+        tableName2 = tableName2.Right(L".");
 
-    DbiConnection  *mDbiConnection = mFdoConnection->GetDbiConnection();
-    const FdoSmLpClassDefinition *classDefinition = mDbiConnection->GetSchemaUtil()->GetClass(mCurrentClassName);
-
-	const FdoSmPhDbObject *dbObject = classDefinition->RefDbObject()->RefDbObject();
-	const FdoSmPhColumnCollection* columns = dbObject->RefColumns();
-    bool    first = true;
-
-    for (int i = 0; i < columns->GetCount(); i++)
-    {
-		const FdoSmPhColumn* column = columns->RefItem(i);
-		FdoStringP colNameTmp = column->GetName();
-		FdoString *colName = colNameTmp;
-
-		bool bGeometry = ((FdoSmPhColumn *)column)->GetType() == FdoSmPhColType_Geom;
-
-        if (!first )
-            PrependString( L"," );
-
-        if( bGeometry ) 
-        {
-	        FdoStringP  colName = GetGeometryString( (FdoString*)(column->GetDbName()) );
-            PrependString( (FdoString*)colName );
-        }
-        else
-        {
-            PrependString(L"\"");
-            PrependString(colName);
-            PrependString(L"\"");
-        }
-
-        PrependString(L".");
-
-        // 'dbo.acdb3dpolyline.geometry.STAsBinary()' syntax is not allowed.
-        // Drop the database name.
-        if ( bGeometry )
-        {
-            FdoStringP  tableName2 = FdoStringP(tableName);
-            if ( tableName2.Contains(L".") )
-                PrependString((FdoString *)tableName2.Right(L"."));
-            else
-                PrependString(tableName);
-        }
-		else
-            PrependString(tableName);
-
-        first = false;
-     }
+    return tableName2;
 }

@@ -137,7 +137,7 @@ public:
 
     // Given a Spatial Reference ID, return the coordinate system info
     // Returns NULL if coordinate system not found.
-    FdoSmPhCoordinateSystemP FindCoordinateSystem( FdoInt64 srid );
+    virtual FdoSmPhCoordinateSystemP FindCoordinateSystem( FdoInt64 srid );
 
     // Return the coordinate system info for the given coordinate system name.
     // Returns NULL if coordinate system not found.
@@ -145,7 +145,7 @@ public:
 
     // Return the coordinate system info for the given well-known text.
     // Returns NULL if coordinate system not found.
-    FdoSmPhCoordinateSystemP FindCoordinateSystemByWkt( FdoStringP wkt );
+    virtual FdoSmPhCoordinateSystemP FindCoordinateSystemByWkt( FdoStringP wkt );
 
     // Reverse-engineers an FDO feature schema name from this datastore.
     // Default implementation returns datastore name prepended by "Fdo".

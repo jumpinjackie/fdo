@@ -128,26 +128,18 @@ int IGeometry_GetWkb( pIGeometry_def geometry, pByteArray_def *baOut )
 ///////////////////////////////////////////////////////////////////////
 int IGeometry_GetWkbData( pByteArray_def ba, unsigned char **data, int *size )
 {
-    FdoFgfGeometryFactory*  gf = 0;
 
     int  rc = IGeometry_CheckNullArg2( (void **)data, true ) &&
               IGeometry_CheckNullArg( (void *)size, true );  
 
     *data = 0;
+    *size = 0;
+
     if ( rc && ba != 0 )
     {
-        FdoByteArray *ba2 = (FdoByteArray *) ba;
-
-        gf = FdoFgfGeometryFactory::GetInstance();
-        FdoIGeometry*   g = gf->CreateGeometryFromFgf( ba2 );
-
-        FdoByteArray *wkb = gf->GetWkb( g ); 
-        
+        FdoByteArray* wkb = (FdoByteArray*) ba;
         *data = wkb->GetData();
         *size = wkb->GetCount();
-
-        gf->Release();
-        g->Release();
     }
 
     return rc;

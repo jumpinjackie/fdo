@@ -24,10 +24,10 @@
 	RESULT_TYPE	ret; \
 	if ( IsComputedProperty( propertyName ) ) \
 	{ \
-		FdoLiteralValue *results = m_filterExec->Evaluate(propertyName); \
+		FdoPtr<FdoLiteralValue> results = m_filterExec->Evaluate(propertyName); \
 		if (results->GetLiteralValueType() == FdoLiteralValueType_Data) \
 		{ \
-			FdoDataValue *dataValue = static_cast<FdoDataValue *> (results); \
+			FdoDataValue *dataValue = static_cast<FdoDataValue *> (results.p); \
 			if (dataValue->GetDataType() == FdoDataType_##OBJECT_TYPE) \
 			{ \
 				Fdo##OBJECT_TYPE##Value *value = static_cast<Fdo##OBJECT_TYPE##Value *>(dataValue); \

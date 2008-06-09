@@ -28,6 +28,7 @@
 #include <Rdbms/Override/SQLServerSpatial/SqlServerOvPhysicalSchemaMapping.h>
 #include <FdoCommonNlsUtil.h>
 #include "../../../Gdbi/GdbiException.h"
+#include "../Ph/Owner.h"
 
 static  char  *strNotSupportedExp = "Creating geometric properties from ordinate columns is not supported.";
 
@@ -243,3 +244,49 @@ FdoSmLpPropertyP FdoSmLpSqsSchema::CreateAssociationProperty(
 {
     return new FdoSmLpSqsAssociationPropertyDefinition( pFdoProp, bIgnoreStates, parent );
 }
+
+void FdoSmLpSqsSchema::CreatePhysicalSchema(
+    FdoSmPhOwnerP owner
+)
+{
+    if ( wcslen(GetName()) > owner->GetManager()->DbObjectNameMaxLen() ) {
+        AddSchemaNameLengthError( GetName(), owner->GetManager()->DbObjectNameMaxLen() );
+        return;
+    }
+
+    FdoSmPhSqsOwnerP sqsOwner = owner->SmartCast<FdoSmPhSqsOwner>();
+    if ( sqsOwner->FindSchema(GetName()) )
+        AddSchemaExistsError();
+    else
+        sqsOwner->CreateSchema( GetName() );
+}
+
+void FdoSmLpSqsSchema::DeletePhysicalSchema(
+    FdoSmPhOwnerP owner
+)
+{
+    FdoSmPhSqsOwnerP sqsOwner = owner->SmartCast<FdoSmPhSqsOwner>();
+    FdoSmPhSqsSchemaP phSchema = sqsOwner->FindSchema( GetName() );
+
+    if ( phSchema )
+        phSchema->SetElementState( FdoSchemaElementState_Deleted );
+}
+
+FdoSchemaExceptionP FdoSmLpSqsSchema::Errors2Exception(FdoSchemaException* pFirstException ) const
+{
+	FdoSchemaExceptionP pException = FdoSmLpSchema::Errors2Exception(pFirstException);
+
+    FdoSmPhOwnerP owner = ((FdoSmLpSqsSchema*) this)->GetPhysicalSchema()->FindOwner();
+
+    if ( owner ) {
+        FdoSmPhSqsOwnerP sqsOwner = owner->SmartCast<FdoSmPhSqsOwner>();
+        FdoSmPhSqsSchemaP phSchema = sqsOwner->FindSchema( GetName() );
+
+        if ( phSchema )
+            pException = phSchema->Errors2Exception( pException );
+    }
+
+    return pException;
+}
+
+

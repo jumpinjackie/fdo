@@ -1004,7 +1004,7 @@ void FdoAdvancedSelectTest::checkDataReaderContentOnSelAggRequestWithAggrFunctio
 
         selAggr = (FdoISelectAggregates*)(mConnection->CreateCommand(FdoCommandType_SelectAggregates));
         selAggr->SetFeatureClassName(GetSchemaName() + L":" + AcDb3dPolylineName());
-        FdoFilter *aFilter = FdoComparisonCondition::Create(
+        FdoPtr<FdoFilter> aFilter = FdoComparisonCondition::Create(
                                 FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"segcount")),
                                 FdoComparisonOperations_EqualTo, 
                                 FdoPtr<FdoDataValue>(FdoDataValue::Create(10)));
@@ -1030,6 +1030,10 @@ void FdoAdvancedSelectTest::checkDataReaderContentOnSelAggRequestWithAggrFunctio
             {
                 FdoInt64 myid = rdr->GetInt64(L"FeatId");
                 idPropertyFound = true;
+            }
+            catch ( FdoException* ex ) 
+            {
+                FDO_SAFE_RELEASE(ex);
             }
             catch ( ... )
             {
@@ -1085,7 +1089,7 @@ void FdoAdvancedSelectTest::checkDataReaderContentOnSelAggRequestWithNumCharFunc
 
         selAggr = (FdoISelectAggregates*)(mConnection->CreateCommand(FdoCommandType_SelectAggregates));
         selAggr->SetFeatureClassName(GetSchemaName() + L":" + AcDb3dPolylineName());
-        FdoFilter *aFilter = FdoComparisonCondition::Create(
+        FdoPtr<FdoFilter> aFilter = FdoComparisonCondition::Create(
                                 FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"segcount")),
                                 FdoComparisonOperations_EqualTo, 
                                 FdoPtr<FdoDataValue>(FdoDataValue::Create(10)));
@@ -1110,6 +1114,10 @@ void FdoAdvancedSelectTest::checkDataReaderContentOnSelAggRequestWithNumCharFunc
             {
                 FdoInt64 myid = rdr->GetInt64(L"FeatId");
                 idPropertyFound = true;
+            }
+            catch ( FdoException* ex ) 
+            {
+                FDO_SAFE_RELEASE(ex);
             }
             catch ( ... )
             {
@@ -1181,12 +1189,16 @@ void FdoAdvancedSelectTest::checkFeatureReaderContentOnSelRequestWithAggrFunctio
         while (rdr->ReadNext())
         {
             FdoInt64 myMaxSegcount = rdr->GetInt32(L"MyMaxSegcount");
-            FdoStringP className = rdr->GetClassDefinition()->GetName();
+            FdoStringP className = FdoClassDefinitionP(rdr->GetClassDefinition())->GetName();
 
             try
             {
                 FdoInt64 myid = rdr->GetInt64(L"FeatId");
                 idPropertyFound = true;
+            }
+            catch ( FdoException* ex ) 
+            {
+                FDO_SAFE_RELEASE(ex);
             }
             catch ( ... )
             {
@@ -1244,7 +1256,7 @@ void FdoAdvancedSelectTest::checkFeatureReaderContentOnSelRequestWithNumCharFunc
 
         selCmd = (FdoISelect*)(mConnection->CreateCommand(FdoCommandType_Select));
         selCmd->SetFeatureClassName(GetSchemaName() + L":" + AcDb3dPolylineName());
-        FdoFilter *aFilter = FdoComparisonCondition::Create(
+        FdoPtr<FdoFilter> aFilter = FdoComparisonCondition::Create(
                                 FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"segcount")),
                                 FdoComparisonOperations_EqualTo, 
                                 FdoPtr<FdoDataValue>(FdoDataValue::Create(10)));
@@ -1268,6 +1280,10 @@ void FdoAdvancedSelectTest::checkFeatureReaderContentOnSelRequestWithNumCharFunc
             {
                 FdoInt64 myid = rdr->GetInt64(L"FeatId");
                 idPropertyFound = true;
+            }
+            catch ( FdoException* ex ) 
+            {
+                FDO_SAFE_RELEASE(ex);
             }
             catch ( ... )
             {

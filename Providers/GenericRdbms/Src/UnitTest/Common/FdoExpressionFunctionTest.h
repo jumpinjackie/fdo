@@ -44,6 +44,7 @@
 #define COUNT_TEST_CASE_CODE_1       1
 #define COUNT_TEST_CASE_CODE_2       2
 #define COUNT_TEST_CASE_CODE_3       3
+#define COUNT_TEST_CASE_CODE_4       4
 
 #define EXP_TEST_CASE_CODE_1        10
 
@@ -63,7 +64,7 @@ class FdoExpressionFunctionTest : public CppUnit::TestCase
     // CPPUNIT_TEST(TestMaxFunction);
     // CPPUNIT_TEST(TestMedianFunction);
     // CPPUNIT_TEST(TestMinFunction);
-    // CPPUNIT_TEST(TestSpatialExtents);
+    //CPPUNIT_TEST(TestSpatialExtents);
     // CPPUNIT_TEST(TestStddevFunction);
     // CPPUNIT_TEST(TestSumFunction);
     // =========================================

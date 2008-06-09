@@ -122,7 +122,7 @@ class FdoRdbmsFilterProcessor:
     public FdoRdbmsBaseFilterProcessor
 {
    friend class DbiConnection;
-private:
+    private:
 
     wchar_t*            mSqlFilterText;  // Buffer used to encode the filter SQL conversion
     size_t              mSqlTextSize;    // The size of the SQL buffer
@@ -206,7 +206,7 @@ protected:
 
     virtual void AppendTablesHints( SqlCommandType cmdType, bool forUpdate ) { };
 
-    virtual void PrependSelectStar( const wchar_t *tableName);
+    virtual void PrependSelectStar( FdoStringP tableName, FdoString* tableAlias );
 
     void AddNewTableRelation( const wchar_t *pkTab, const wchar_t *pkCol, const wchar_t *fkTab, const wchar_t *fkCol, bool userOuterJoin=false );
 
@@ -281,12 +281,18 @@ protected:
     virtual bool IsNotNativeSupportedFunction(FdoString* wFunctionName) const = 0;
     virtual bool HasNativeSupportedFunctionArguments(FdoFunction& expr) const = 0;
     virtual FdoStringP GetGeometryString( FdoString* columnName );
+    virtual FdoStringP GetGeometryTableString( FdoString* tableName );
 
 public:
 	virtual void GetLtTableExpression( const FdoSmLpClassDefinition *classDefinition, FdoStringP &ltJoin, FdoStringP &ltTableExp, FdoCommandType callerFdoCommand );
 	virtual void GetLtQualificationClause( const FdoSmLpClassDefinition *classDefinition, FdoStringP &ltQualificationClause );
     bool IsValidExpression( FdoFilter *filter );
     bool IsValidExpression( FdoIdentifierCollection *identifiers );
+
+    bool  GetUseTableAlias() 
+    {
+        return mUseTableAliases;
+    }
 
 	void  SetUseTableAlias( bool useFlag ) { mUseTableAliases = useFlag; };
 

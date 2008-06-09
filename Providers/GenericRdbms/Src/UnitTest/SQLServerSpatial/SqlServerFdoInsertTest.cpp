@@ -159,7 +159,10 @@ void SqlServerFdoInsertTest::insertDate ()
                 throw ex;
             }
             else
+            {
                 wprintf(L"    Expected Exception: %ls\n", ex->GetExceptionMessage());
+                FDO_SAFE_RELEASE(ex);
+            }
         }
         catch ( ... )
         {

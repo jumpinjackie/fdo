@@ -272,7 +272,7 @@ void FdoSelectTest::feature_object_query ()
         {
             selCmd = (FdoISelect*)mConnection->CreateCommand( FdoCommandType_Select );
             selCmd->SetFeatureClassName(L"Acad:AcDbEntity.xdata2");
-            FdoComparisonCondition* filterPtr = FdoComparisonCondition::Create(
+            FdoPtr<FdoComparisonCondition> filterPtr = FdoComparisonCondition::Create(
                         FdoPtr<FdoIdentifier> (FdoIdentifier::Create(L"seq")),
                         FdoComparisonOperations_GreaterThan,
                         FdoPtr<FdoDataValue>(FdoDataValue::Create((int)0)));

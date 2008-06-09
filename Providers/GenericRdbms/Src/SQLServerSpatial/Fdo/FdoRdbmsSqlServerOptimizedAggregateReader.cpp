@@ -23,7 +23,7 @@
 
 #include <float.h>
 
-FdoRdbmsSqlServerOptimizedAggregateReader::FdoRdbmsSqlServerOptimizedAggregateReader(FdoIConnection* connection, const FdoSmLpClassDefinition* classDef, aggr_list *selAggrList) :
+FdoRdbmsSqlServerOptimizedAggregateReader::FdoRdbmsSqlServerOptimizedAggregateReader(FdoIConnection* connection, const FdoSmLpClassDefinition* classDef, aggr_list *selAggrList, FdoFilter* filter) :
 FdoRdbmsFeatureReader( connection, NULL, false, classDef, NULL)
 {
 	m_ReaderIndex = -1;
@@ -35,18 +35,9 @@ FdoRdbmsFeatureReader( connection, NULL, false, classDef, NULL)
 	FdoSmPhOwnerP		owner = mgr->GetOwner();
 	FdoString*			wdatastore = owner->GetName();
 
-	// Get the table name
-	FdoStringP	tableNameW	= mClassDefinition->GetDbObjectName();
-    const FdoSmPhDbObject* dbObject = mClassDefinition->RefDbObject()->RefDbObject();
-    // When table object reachable, make sure table name "" delimited.
-    if ( dbObject ) 
-        tableNameW = dbObject->GetDbName();
-
 	bool				countRequired = false;
 	bool				mbrRequired = false;
-	const	char *		columnName = NULL;
-    const wchar_t       *colNameW = NULL;
-    FdoStringP          geomType;
+    const wchar_t       *propName = NULL;
 
 	for ( size_t i = 0; i < m_SelAggrList->size(); i++ )
 	{ 
@@ -54,20 +45,7 @@ FdoRdbmsFeatureReader( connection, NULL, false, classDef, NULL)
 		if ( id->type == FdoPropertyType_GeometricProperty )
 		{
 			mbrRequired = true;
-
-			// Get the column name via property name
-			const FdoSmLpFeatureClass*  feat = static_cast<const FdoSmLpFeatureClass *>( mClassDefinition );
-			const FdoSmLpPropertyDefinitionCollection *props = feat->RefProperties();
-			const FdoSmLpPropertyDefinition *prop = props->RefItem( id->propName );
-		
-			const FdoSmLpSimplePropertyDefinition* simpleProp = static_cast<const FdoSmLpSimplePropertyDefinition*>(prop);
-
-			const FdoSmPhColumn *column = simpleProp->RefColumn();
-			colNameW = column->GetName();
-
-            FdoSmPhColumnGeomP columnGeom = ((FdoSmPhColumn*) column)->SmartCast<FdoSmPhColumnGeom>();
-            if ( columnGeom )
-                geomType = columnGeom->GetTypeName();
+            propName = id->propName;
         }
 		else
 		{
@@ -78,119 +56,92 @@ FdoRdbmsFeatureReader( connection, NULL, false, classDef, NULL)
 
 	// Get the extents and count
 
+	if (mbrRequired)
+	{
     // Future optimization.
 	//mConnection->dbi_get_geoms_ext( (char *)tableName, (char *)columnName, isGeodetic,
 	//							mbrRequired? &(ba.p) : NULL, 
 	//							countRequired? &count : NULL );
 
-    FdoPtr<FdoISQLCommand> selCmd = (FdoISQLCommand*)mFdoConnection->CreateCommand( FdoCommandType_SQLCommand );
+        // Apparently strait select is 3x faster.
+        //    FdoStringP sql = FdoStringP::Format(L"select [%ls].STEnvelope().STAsBinary() as MBR from %ls", colNameW, tableNameW);
 
-	if (mbrRequired)
-	{
-		// Apparently strait select is 3x faster.
-		//    FdoStringP sql = FdoStringP::Format(L"select [%ls].STEnvelope().STAsBinary() as MBR from %ls", colNameW, tableNameW);
-		// Delimit column name with []. Can't use " when part of function.
-		FdoStringP sql = FdoStringP::Format(L"select [%ls].STAsBinary() as MBR from %ls", colNameW, tableNameW);
+        FdoPtr<FdoISelect> selCmd = (FdoISelect*)(mFdoConnection->CreateCommand(FdoCommandType_Select));
+        selCmd->SetFeatureClassName( classDef->GetQName() );
+        selCmd->SetFilter( filter );
+        FdoPtr<FdoIdentifierCollection> propNames = selCmd->GetPropertyNames();
+        FdoPtr<FdoIdentifier> propIdent = FdoIdentifier::Create( propName );
+        propNames->Add( propIdent );
 
-		selCmd->SetSQLStatement( (FdoString *)sql );
-		FdoPtr<FdoISQLDataReader>  rdr = selCmd->ExecuteReader();
+        FdoPtr<FdoIFeatureReader>  rdr = selCmd->Execute();
 
-		long    count = 0;
-		double  minX = 0;
-		double  minY = 0;
-		double  maxX = 0;
-		double  maxY = 0;
+	    long    count = 0;
+        double  minX = 0;
+        double  minY = 0;
+        double  maxX = 0;
+        double  maxY = 0;
 
 		FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
 
-		while (rdr->ReadNext())
-		{
-			if (!rdr->IsNull(L"MBR"))
-			{
-				FdoPtr<FdoByteArray> ba = rdr->GetGeometry(L"MBR");
-				FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(ba);
+        while (rdr->ReadNext())
+        {
+            if (!rdr->IsNull(propName))
+            {
+                FdoPtr<FdoByteArray> ba = rdr->GetGeometry(propName);
+                FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(ba);
 
-				FdoPtr<FdoIEnvelope>  envelope = geom->GetEnvelope();
-				if ( count == 0 )
-				{
-					if ( geomType == L"geography" ) 
-					{
-						minX = envelope->GetMinY();
-						minY = envelope->GetMinX();
-						maxX = envelope->GetMaxY();
-						maxY = envelope->GetMaxX();
-					}
-					else 
-					{
-						minX = envelope->GetMinX();
-						minY = envelope->GetMinY();
-						maxX = envelope->GetMaxX();
-						maxY = envelope->GetMaxY();
-					}
-				}
-				else
-				{
-					if ( geomType == L"geography" ) 
-					{
-						minX = FdoCommonMin(envelope->GetMinY(), minX);
-						minY = FdoCommonMin(envelope->GetMinX(), minY);
-						maxX = FdoCommonMax(envelope->GetMaxY(), maxX);
-						maxY = FdoCommonMax(envelope->GetMaxX(), maxY);          
-					}
-					else
-					{
+                FdoPtr<FdoIEnvelope>  envelope = geom->GetEnvelope();
+                if ( count == 0 )
+                {
+                    minX = envelope->GetMinX();
+                    minY = envelope->GetMinY();
+                    maxX = envelope->GetMaxX();
+                    maxY = envelope->GetMaxY();
+                }
+                else
+                {
 						minX = FdoCommonMin(envelope->GetMinX(), minX);
 						minY = FdoCommonMin(envelope->GetMinY(), minY);
 						maxX = FdoCommonMax(envelope->GetMaxX(), maxX);
 						maxY = FdoCommonMax(envelope->GetMaxY(), maxY);          
 					}
 				}
-			}
 
-			count++;
-		}
-	    
-		FdoIGeometry	*geom = NULL;
+            count++;
+        }
+        
+        FdoIGeometry	*geom = NULL;
 
-		if (count != 0 )
-		{
-			double ordinates[5 * 2]; // 5 2D points
-			int     i = 0;
-			ordinates[i++] = minX;
-			ordinates[i++] = minY;
+        if (count != 0 )
+        {
+            double ordinates[5 * 2]; // 5 2D points
+            int     i = 0;
+            ordinates[i++] = minX;
+            ordinates[i++] = minY;
 
-			ordinates[i++] = minX;
-			ordinates[i++] = maxY;
-
-			ordinates[i++] = maxX;
-			ordinates[i++] = maxY;
+            ordinates[i++] = minX;
+            ordinates[i++] = maxY;
 
 			ordinates[i++] = maxX;
-			ordinates[i++] = minY;
+			ordinates[i++] = maxY;
 
-			ordinates[i++] = minX;
-			ordinates[i]   = minY;
+            ordinates[i++] = maxX;
+            ordinates[i++] = minY;
 
-			FdoPtr<FdoILinearRing> ring = gf->CreateLinearRing(FdoDimensionality_XY, // geometry->GetDimensionality() ??
-														10, ordinates);
+            ordinates[i++] = minX;
+            ordinates[i]   = minY;
 
-			geom = gf->CreatePolygon(ring, NULL);
-		}
+            FdoPtr<FdoILinearRing> ring = gf->CreateLinearRing(FdoDimensionality_XY, // geometry->GetDimensionality() ??
+                                                        10, ordinates);
 
-		if ( countRequired )
-			m_Count = count;
+            geom = gf->CreatePolygon(ring, NULL);
+        }
 
-		if ( mbrRequired )
-			m_Extents = (FdoIPolygon *)geom;
-	}
-	else if (countRequired)
-	{
-		FdoStringP sql = FdoStringP::Format(L"select count(1) from %ls", tableNameW);
-	    selCmd->SetSQLStatement( (FdoString *)sql );
-		FdoPtr<FdoISQLDataReader>  rdr = selCmd->ExecuteReader();
-		if (rdr->ReadNext())
-			m_Count = rdr->GetInt64(L"1");
-	}
+	    if ( countRequired )
+		    m_Count = count;
+
+	    m_Extents = (FdoIPolygon *)geom;
+    }
 }
 
 FdoRdbmsSqlServerOptimizedAggregateReader::~FdoRdbmsSqlServerOptimizedAggregateReader()
