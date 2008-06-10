@@ -198,7 +198,7 @@ public:
     /// Input Source geometry
     /// 
     /// \return
-    /// Returns an envelope
+    /// Returns a geometry
     /// 
     FDO_GEOM_API virtual FdoIGeometry * CreateGeometry(
         FdoIGeometry * geometry);
