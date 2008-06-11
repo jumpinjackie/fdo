@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="UnitTest"
 	ProjectGUID="{EF390144-9C36-4AD8-B4B1-8571E1518F3F}"
 	RootNamespace="unit_test"
 	Keyword="Win32Proj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -54,7 +55,6 @@
 				PrecompiledHeaderThrough="Pch.h"
 				PrecompiledHeaderFile="$(IntDir)/Pch.pch"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -74,6 +74,8 @@
 				AdditionalLibraryDirectories="$(FDOTHIRDPARTY)\cppunit\lib\Win32;..\Unmanaged\Lib\Win32\Debug"
 				GenerateDebugInformation="true"
 				SubSystem="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -95,11 +97,8 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy gml_*.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1a.xml $(OutDir)&#x0D;&#x0A;copy *_master.txt $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy schema_all_v2.xml $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy sc_v2.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1b.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1b.xml $(OutDir)&#x0D;&#x0A;copy schema_unsupported.xsd $(OutDir)&#x0D;&#x0A;copy sc_error.xml $(OutDir)&#x0D;&#x0A;copy g_coords.txt $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win32\testrunnerd.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win32\cppunitd_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Debug\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;"
+				CommandLine="copy gml_*.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1a.xml $(OutDir)&#x0D;&#x0A;copy *_master.txt $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy schema_all_v2.xml $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy sc_v2.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1b.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1b.xml $(OutDir)&#x0D;&#x0A;copy schema_unsupported.xsd $(OutDir)&#x0D;&#x0A;copy sc_error.xml $(OutDir)&#x0D;&#x0A;copy g_coords.txt $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win32\testrunnerd.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win32\cppunitd_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -139,7 +138,6 @@
 				PrecompiledHeaderThrough="Pch.h"
 				PrecompiledHeaderFile="$(IntDir)/Pch.pch"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -159,6 +157,8 @@
 				AdditionalLibraryDirectories="$(FDOTHIRDPARTY)\cppunit\lib\Win64;..\Unmanaged\Lib\Win64\Debug"
 				GenerateDebugInformation="true"
 				SubSystem="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -180,11 +180,8 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy gml_*.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1a.xml $(OutDir)&#x0D;&#x0A;copy *_master.txt $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy schema_all_v2.xml $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy sc_v2.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1b.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1b.xml $(OutDir)&#x0D;&#x0A;copy schema_unsupported.xsd $(OutDir)&#x0D;&#x0A;copy sc_error.xml $(OutDir)&#x0D;&#x0A;copy g_coords.txt $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win64\testrunnerd.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win64\cppunitd_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC8\Debug\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC8\Debug\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC8\Debug\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;"
+				CommandLine="copy gml_*.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1a.xml $(OutDir)&#x0D;&#x0A;copy *_master.txt $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy schema_all_v2.xml $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy sc_v2.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1b.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1b.xml $(OutDir)&#x0D;&#x0A;copy schema_unsupported.xsd $(OutDir)&#x0D;&#x0A;copy sc_error.xml $(OutDir)&#x0D;&#x0A;copy g_coords.txt $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win64\testrunnerd.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win64\cppunitd_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC9\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC9\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC9\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -221,7 +218,6 @@
 				PrecompiledHeaderThrough="Pch.h"
 				PrecompiledHeaderFile="$(IntDir)/Pch.pch"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -244,6 +240,8 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				EntryPointSymbol=""
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -265,11 +263,8 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy gml_*.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1a.xml $(OutDir)&#x0D;&#x0A;copy *_master.txt $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy schema_all_v2.xml $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy sc_v2.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1b.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1b.xml $(OutDir)&#x0D;&#x0A;copy schema_unsupported.xsd $(OutDir)&#x0D;&#x0A;copy sc_error.xml $(OutDir)&#x0D;&#x0A;copy g_coords.txt $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win32\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win32\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;"
+				CommandLine="copy gml_*.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1a.xml $(OutDir)&#x0D;&#x0A;copy *_master.txt $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy schema_all_v2.xml $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy sc_v2.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1b.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1b.xml $(OutDir)&#x0D;&#x0A;copy schema_unsupported.xsd $(OutDir)&#x0D;&#x0A;copy sc_error.xml $(OutDir)&#x0D;&#x0A;copy g_coords.txt $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win32\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win32\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -307,7 +302,6 @@
 				PrecompiledHeaderThrough="Pch.h"
 				PrecompiledHeaderFile="$(IntDir)/Pch.pch"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -330,6 +324,8 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				EntryPointSymbol=""
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -351,11 +347,8 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy gml_*.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1a.xml $(OutDir)&#x0D;&#x0A;copy *_master.txt $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy schema_all_v2.xml $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy sc_v2.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1b.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1b.xml $(OutDir)&#x0D;&#x0A;copy schema_unsupported.xsd $(OutDir)&#x0D;&#x0A;copy sc_error.xml $(OutDir)&#x0D;&#x0A;copy g_coords.txt $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win64\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win64\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC8\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC8\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC8\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;"
+				CommandLine="copy gml_*.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1a.xml $(OutDir)&#x0D;&#x0A;copy *_master.txt $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy schema_all_v2.xml $(OutDir)&#x0D;&#x0A;&#x0D;&#x0A;copy sc_v2.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1.xml $(OutDir)&#x0D;&#x0A;copy schema_ext1b.xml $(OutDir)&#x0D;&#x0A;copy schema_merge1b.xml $(OutDir)&#x0D;&#x0A;copy schema_unsupported.xsd $(OutDir)&#x0D;&#x0A;copy sc_error.xml $(OutDir)&#x0D;&#x0A;copy g_coords.txt $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win64\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\lib\Win64\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC9\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC9\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC9\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>

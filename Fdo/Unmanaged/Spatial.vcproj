@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="Spatial"
 	ProjectGUID="{44CABB29-0B72-48E7-8383-DB4B040F3731}"
 	RootNamespace="Spatial"
 	Keyword="Win32Proj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -55,7 +56,6 @@
 				PrecompiledHeaderFile=""
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 				CompileAs="0"
 			/>
@@ -78,6 +78,8 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/FDOSpatial.pdb"
 				SubSystem="0"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="Lib\Win32\Release/FDOSpatial.lib"
 				TargetMachine="0"
 			/>
@@ -98,9 +100,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -146,7 +145,6 @@
 				PrecompiledHeaderFile=""
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 				CompileAs="0"
 			/>
@@ -169,6 +167,8 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/FDOSpatial.pdb"
 				SubSystem="0"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="Lib\Win64\Release/FDOSpatial.lib"
 				TargetMachine="17"
 			/>
@@ -189,9 +189,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -235,7 +232,6 @@
 				PrecompiledHeaderFile=""
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 				CompileAs="0"
 			/>
@@ -260,6 +256,8 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/FDOSpatial.pdb"
 				SubSystem="0"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="Lib\Win32\Debug/FDOSpatial.lib"
 				TargetMachine="0"
 			/>
@@ -280,9 +278,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -326,7 +321,6 @@
 				PrecompiledHeaderFile=""
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 				CompileAs="0"
 			/>
@@ -351,6 +345,8 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/FDOSpatial.pdb"
 				SubSystem="0"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="Lib\Win64\Debug/FDOSpatial.lib"
 				TargetMachine="17"
 			/>
@@ -371,9 +367,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"

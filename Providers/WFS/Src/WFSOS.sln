@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Provider", "Provider\WFSProvider.vcproj", "{F82F3825-6C35-49E4-8753-6C14B3E42056}"
 	ProjectSection(ProjectDependencies) = postProject
 		{92975AD6-7504-44AB-85B9-87237095098A} = {92975AD6-7504-44AB-85B9-87237095098A}

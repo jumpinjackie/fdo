@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="TestRunner"
 	ProjectGUID="{667FBBFF-9067-4AD7-A36C-E579EB2C7E28}"
 	RootNamespace="TestRunner"
 	Keyword="MFCProj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -86,6 +87,8 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="..\..\..\lib\Win32\testrunner.pdb"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="..\..\..\lib\Win32\testrunner.lib"
 				TargetMachine="1"
 			/>
@@ -108,9 +111,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -161,7 +161,6 @@
 				PrecompiledHeaderFile="$(OutDir)\TestRunner.pch"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="true"
 				DisableSpecificWarnings="4430"
 			/>
 			<Tool
@@ -185,6 +184,8 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="..\..\..\lib\Win64\testrunner.pdb"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="..\..\..\lib\Win64\testrunner.lib"
 				TargetMachine="17"
 			/>
@@ -207,9 +208,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -282,6 +280,8 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="..\..\..\lib\Win32\testrunnerd.pdb"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="..\..\..\lib\Win32\testrunnerd.lib"
 				TargetMachine="1"
 			/>
@@ -304,9 +304,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -355,7 +352,6 @@
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="0"
 				DisableSpecificWarnings="4430"
 			/>
@@ -380,6 +376,8 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="..\..\..\lib\Win64\testrunnerd.pdb"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="..\..\..\lib\Win64\testrunnerd.lib"
 				TargetMachine="17"
 			/>
@@ -402,9 +400,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -1499,11 +1494,11 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\include\cppunitui\mfc\TestRunner.h"
+				RelativePath="..\..\..\include\msvc6\testrunner\TestRunner.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\include\msvc6\testrunner\TestRunner.h"
+				RelativePath="..\..\..\include\cppunitui\mfc\TestRunner.h"
 				>
 			</File>
 			<File

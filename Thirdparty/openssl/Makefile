@@ -11,11 +11,11 @@ SHLIB_VERSION_NUMBER=0.9.8
 SHLIB_VERSION_HISTORY=
 SHLIB_MAJOR=0
 SHLIB_MINOR=9.8
-SHLIB_EXT=.so.$(SHLIB_MAJOR).$(SHLIB_MINOR)
-PLATFORM=linux-elf
+SHLIB_EXT=
+PLATFORM=VC-WIN32
 OPTIONS= no-camellia no-gmp no-krb5 no-mdc2 no-rc5 no-rfc3779 no-shared no-zlib no-zlib-dynamic
-CONFIGURE_ARGS=linux-elf
-SHLIB_TARGET=linux-shared
+CONFIGURE_ARGS=VC-WIN32
+SHLIB_TARGET=
 
 # HERE indicates where this Makefile lives.  This can be used to indicate
 # where sub-Makefiles are expected to be.  Currently has very limited usage,
@@ -59,19 +59,19 @@ OPENSSLDIR=/usr/local/ssl
 # equal 4.
 # PKCS1_CHECK - pkcs1 tests.
 
-CC= gcc
-CFLAG= -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall -DOPENSSL_BN_ASM_PART_WORDS -DOPENSSL_IA32_SSE2 -DSHA1_ASM -DMD5_ASM -DRMD160_ASM -DAES_ASM
+CC= cl
+CFLAG= -DOPENSSL_THREADS  -DDSO_WIN32 
 DEPFLAG= -DOPENSSL_NO_CAMELLIA -DOPENSSL_NO_GMP -DOPENSSL_NO_MDC2 -DOPENSSL_NO_RC5 -DOPENSSL_NO_RFC3779 
 PEX_LIBS= 
-EX_LIBS= -ldl
+EX_LIBS= 
 EXE_EXT= 
 ARFLAGS= 
 AR=ar $(ARFLAGS) r
-RANLIB= /usr/bin/ranlib
-PERL= /usr/bin/perl
+RANLIB= true
+PERL= perl
 TAR= tar
 TARFLAGS= --no-recursion
-MAKEDEPPROG= gcc
+MAKEDEPPROG=makedepend
 
 # We let the C compiler driver to take care of .s files. This is done in
 # order to be excused from maintaining a separate set of architecture
@@ -86,17 +86,17 @@ ASFLAG=$(CFLAG)
 PROCESSOR= 
 
 # CPUID module collects small commonly used assembler snippets
-CPUID_OBJ= x86cpuid-elf.o
-BN_ASM= bn86-elf.o co86-elf.o
-DES_ENC= dx86-elf.o yx86-elf.o
-AES_ASM_OBJ= ax86-elf.o
-BF_ENC= bx86-elf.o
-CAST_ENC= cx86-elf.o
-RC4_ENC= rx86-elf.o
-RC5_ENC= r586-elf.o
-MD5_ASM_OBJ= mx86-elf.o
-SHA1_ASM_OBJ= sx86-elf.o s512sse2-elf.o
-RMD160_ASM_OBJ= rm86-elf.o
+CPUID_OBJ= 
+BN_ASM= bn_asm.o
+DES_ENC= des_enc.o fcrypt_b.o
+AES_ASM_OBJ= aes_core.o aes_cbc.o
+BF_ENC= bf_enc.o
+CAST_ENC= c_enc.o
+RC4_ENC= rc4_enc.o
+RC5_ENC= rc5_enc.o
+MD5_ASM_OBJ= 
+SHA1_ASM_OBJ= 
+RMD160_ASM_OBJ= 
 
 # KRB5 stuff
 KRB5_INCLUDES=
@@ -141,7 +141,7 @@ LIBS=   libcrypto.a libssl.a
 SHARED_CRYPTO=libcrypto$(SHLIB_EXT)
 SHARED_SSL=libssl$(SHLIB_EXT)
 SHARED_LIBS=
-SHARED_LIBS_LINK_EXTS=.so.$(SHLIB_MAJOR) .so
+SHARED_LIBS_LINK_EXTS=
 SHARED_LDFLAGS=
 
 GENERAL=        Makefile

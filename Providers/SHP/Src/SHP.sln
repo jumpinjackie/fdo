@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "UnitTest\UnitTest.vcproj", "{02AF5684-A940-41EE-A372-E1639768414A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{7C94A70E-9E83-4553-90B1-B47C1961EDBB} = {7C94A70E-9E83-4553-90B1-B47C1961EDBB}

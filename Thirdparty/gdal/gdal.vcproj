@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="gdal"
 	ProjectGUID="{F0B80E4B-FD5B-4371-9E47-7B82424EBA53}"
 	RootNamespace="Localization"
 	Keyword="MakeFileProj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -29,8 +30,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="mkdir bin\win32\debug&#x0D;&#x0A;mkdir lib\win32\debug&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO BUILD_DEBUG=yes clean&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO BUILD_DEBUG=yes&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO BUILD_DEBUG=yes devinstall"
-				ReBuildCommandLine="mkdir bin\win32\debug&#x0D;&#x0A;mkdir lib\win32\debug&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO BUILD_DEBUG=yes clean&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO BUILD_DEBUG=yes&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO BUILD_DEBUG=yes devinstall"
+				BuildCommandLine="mkdir bin\win32\debug&#x0D;&#x0A;mkdir lib\win32\debug&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO BUILD_DEBUG=yes VC2008PORT=yes&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO BUILD_DEBUG=yes VC2008PORT=yes devinstall"
+				ReBuildCommandLine="mkdir bin\win32\debug&#x0D;&#x0A;mkdir lib\win32\debug&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO BUILD_DEBUG=yes VC2008PORT=yes clean&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO BUILD_DEBUG=yes VC2008PORT=yes&#x0D;&#x0A;nmake /f &quot;makefile.vc&quot; /NOLOGO BUILD_DEBUG=yes VC2008PORT=yes devinstall"
 				CleanCommandLine="nmake /f &quot;makefile.vc&quot; /NOLOGO BUILD_DEBUG=yes clean&#x0D;&#x0A;"
 				Output="gdal"
 				PreprocessorDefinitions=""
@@ -115,6 +116,4 @@
 	</References>
 	<Files>
 	</Files>
-	<Globals>
-	</Globals>
 </VisualStudioProject>

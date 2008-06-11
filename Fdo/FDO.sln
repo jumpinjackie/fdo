@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Fdo", "Unmanaged\Fdo.vcproj", "{0A3FF448-33ED-435F-8376-B28001F83391}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A28ACA9A-8258-4169-B554-4F5D214055FB} = {A28ACA9A-8258-4169-B554-4F5D214055FB}

@@ -9,6 +9,8 @@
 /*                          HEADER FILES                            */
 /* ---------------------------------------------------------------- */
 
+#define _WIN32_WINNT   0x0502
+
 /* Define if you have the <arpa/inet.h> header file.  */
 /* #define HAVE_ARPA_INET_H 1 */
 

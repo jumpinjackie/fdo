@@ -42,10 +42,10 @@ RELEASE=Release
 RELEASE=Release.symbols
 !ENDIF
 
-OUTDIR=.\..\..\..\..\..\Build\Win32\VC8\$(RELEASE)\Util\MsgCreator
-INTDIR=.\..\..\..\..\..\Build\Win32\VC8\$(RELEASE)\Util\MsgCreator
+OUTDIR=.\..\..\..\..\..\Build\Win32\VC9\$(RELEASE)\Util\MsgCreator
+INTDIR=.\..\..\..\..\..\Build\Win32\VC9\$(RELEASE)\Util\MsgCreator
 
-ALL : "..\..\..\..\..\Build\Win32\VC8\$(RELEASE)\MsgCreator.exe"
+ALL : "..\..\..\..\..\Build\Win32\VC9\$(RELEASE)\MsgCreator.exe"
 CLEAN :
 	-@erase "$(INTDIR)\ICUResHandler.obj"
 	-@erase "$(INTDIR)\InMemHandler.obj"
@@ -53,8 +53,8 @@ CLEAN :
 	-@erase "$(INTDIR)\MsgFileOutputStream.obj"
 	-@erase "$(INTDIR)\NLSHandler.obj"
 	-@erase "$(INTDIR)\SAX2Handler.obj"
-	-@erase "$(INTDIR)\VC80.idb"
-	-@erase "..\..\..\..\..\Build\Win32\VC8\$(RELEASE)\MsgCreator.exe"
+	-@erase "$(INTDIR)\VC90.idb"
+	-@erase "..\..\..\..\..\Build\Win32\VC9\$(RELEASE)\MsgCreator.exe"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -65,7 +65,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\MsgCreator.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib $(XERCESCROOT)\Build\Win32\VC8\Release\xerces-c_2.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\MsgCreator.pdb" /machine:I386 /out:"..\..\..\..\..\Build\Win32\VC8\$(RELEASE)\MsgCreator.exe" 
+LINK32_FLAGS=kernel32.lib user32.lib $(XERCESCROOT)\Build\Win32\VC9\Release\xerces-c_2.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\MsgCreator.pdb" /machine:I386 /out:"..\..\..\..\..\Build\Win32\VC9\$(RELEASE)\MsgCreator.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\ICUResHandler.obj" \
 	"$(INTDIR)\InMemHandler.obj" \
@@ -74,20 +74,20 @@ LINK32_OBJS= \
 	"$(INTDIR)\SAX2Handler.obj" \
 	"$(INTDIR)\MsgFileOutputStream.obj"
 
-"..\..\..\..\..\Build\Win32\VC8\$(RELEASE)\MsgCreator.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+"..\..\..\..\..\Build\Win32\VC9\$(RELEASE)\MsgCreator.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
 
 !ELSEIF  "$(CFG)" == "MsgCreator - Win32 Debug"
 
-OUTDIR=.\..\..\..\..\..\Build\Win32\VC8\Debug\Util\MsgCreator
-INTDIR=.\..\..\..\..\..\Build\Win32\VC8\Debug\Util\MsgCreator
+OUTDIR=.\..\..\..\..\..\Build\Win32\VC9\Debug\Util\MsgCreator
+INTDIR=.\..\..\..\..\..\Build\Win32\VC9\Debug\Util\MsgCreator
 # Begin Custom Macros
-OutDir=.\..\..\..\..\..\Build\Win32\VC8\Debug\Util\MsgCreator
+OutDir=.\..\..\..\..\..\Build\Win32\VC9\Debug\Util\MsgCreator
 # End Custom Macros
 
-ALL : "..\..\..\..\..\Build\Win32\VC8\Debug\MsgCreator.exe" "$(OUTDIR)\MsgCreator.bsc"
+ALL : "..\..\..\..\..\Build\Win32\VC9\Debug\MsgCreator.exe" "$(OUTDIR)\MsgCreator.bsc"
 
 
 CLEAN :
@@ -103,12 +103,12 @@ CLEAN :
 	-@erase "$(INTDIR)\NLSHandler.sbr"
 	-@erase "$(INTDIR)\SAX2Handler.obj"
 	-@erase "$(INTDIR)\SAX2Handler.sbr"
-	-@erase "$(INTDIR)\VC80.idb"
-	-@erase "$(INTDIR)\VC80.pdb"
+	-@erase "$(INTDIR)\VC90.idb"
+	-@erase "$(INTDIR)\VC90.pdb"
 	-@erase "$(OUTDIR)\MsgCreator.bsc"
 	-@erase "$(OUTDIR)\MsgCreator.pdb"
-	-@erase "..\..\..\..\..\Build\Win32\VC8\Debug\MsgCreator.exe"
-	-@erase "..\..\..\..\..\Build\Win32\VC8\Debug\MsgCreator.ilk"
+	-@erase "..\..\..\..\..\Build\Win32\VC9\Debug\MsgCreator.exe"
+	-@erase "..\..\..\..\..\Build\Win32\VC9\Debug\MsgCreator.ilk"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -130,7 +130,7 @@ BSC32_SBRS= \
 <<
 
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib $(XERCESCROOT)\Build\Win32\VC8\Debug\xerces-c_2D.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\MsgCreator.pdb" /debug /machine:I386 /out:"..\..\..\..\..\Build\Win32\VC8\Debug\MsgCreator.exe"
+LINK32_FLAGS=kernel32.lib user32.lib $(XERCESCROOT)\Build\Win32\VC9\Debug\xerces-c_2D.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\MsgCreator.pdb" /debug /machine:I386 /out:"..\..\..\..\..\Build\Win32\VC9\Debug\MsgCreator.exe"
 LINK32_OBJS= \
 	"$(INTDIR)\ICUResHandler.obj" \
 	"$(INTDIR)\InMemHandler.obj" \
@@ -139,20 +139,20 @@ LINK32_OBJS= \
 	"$(INTDIR)\SAX2Handler.obj" \
 	"$(INTDIR)\MsgFileOutputStream.obj" 
 
-"..\..\..\..\..\Build\Win32\VC8\Debug\MsgCreator.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+"..\..\..\..\..\Build\Win32\VC9\Debug\MsgCreator.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
 
 !ELSEIF  "$(CFG)" == "MsgCreator - Win64 Debug"
 
-OUTDIR=.\..\..\..\..\..\Build\Win64\VC8\Debug\Util\MsgCreator
-INTDIR=.\..\..\..\..\..\Build\Win64\VC8\Debug\Util\MsgCreator
+OUTDIR=.\..\..\..\..\..\Build\Win64\VC9\Debug\Util\MsgCreator
+INTDIR=.\..\..\..\..\..\Build\Win64\VC9\Debug\Util\MsgCreator
 # Begin Custom Macros
-OutDir=.\..\..\..\..\..\Build\Win64\VC8\Debug\Util\MsgCreator
+OutDir=.\..\..\..\..\..\Build\Win64\VC9\Debug\Util\MsgCreator
 # End Custom Macros
 
-ALL : "..\..\..\..\..\Build\Win64\VC8\Debug\MsgCreator.exe" "$(OUTDIR)\MsgCreator.bsc"
+ALL : "..\..\..\..\..\Build\Win64\VC9\Debug\MsgCreator.exe" "$(OUTDIR)\MsgCreator.bsc"
 
 
 CLEAN :
@@ -168,12 +168,12 @@ CLEAN :
 	-@erase "$(INTDIR)\NLSHandler.sbr"
 	-@erase "$(INTDIR)\SAX2Handler.obj"
 	-@erase "$(INTDIR)\SAX2Handler.sbr"
-	-@erase "$(INTDIR)\VC80.idb"
-	-@erase "$(INTDIR)\VC80.pdb"
+	-@erase "$(INTDIR)\VC90.idb"
+	-@erase "$(INTDIR)\VC90.pdb"
 	-@erase "$(OUTDIR)\MsgCreator.bsc"
 	-@erase "$(OUTDIR)\MsgCreator.pdb"
-	-@erase "..\..\..\..\..\Build\Win64\VC8\Debug\MsgCreator.exe"
-	-@erase "..\..\..\..\..\Build\Win64\VC8\Debug\MsgCreator.ilk"
+	-@erase "..\..\..\..\..\Build\Win64\VC9\Debug\MsgCreator.exe"
+	-@erase "..\..\..\..\..\Build\Win64\VC9\Debug\MsgCreator.ilk"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -195,7 +195,7 @@ BSC32_SBRS= \
 <<
 
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib $(XERCESCROOT)\Build\Win64\VC8\Debug\xerces-c_2D.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\MsgCreator.pdb" /debug /machine:X64 /out:"..\..\..\..\..\Build\Win64\VC8\Debug\MsgCreator.exe" /pdbtype:sept /machine:X64
+LINK32_FLAGS=kernel32.lib user32.lib $(XERCESCROOT)\Build\Win64\VC9\Debug\xerces-c_2D.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\MsgCreator.pdb" /debug /machine:X64 /out:"..\..\..\..\..\Build\Win64\VC9\Debug\MsgCreator.exe" /pdbtype:sept /machine:X64
 LINK32_OBJS= \
 	"$(INTDIR)\ICUResHandler.obj" \
 	"$(INTDIR)\InMemHandler.obj" \
@@ -204,17 +204,17 @@ LINK32_OBJS= \
 	"$(INTDIR)\SAX2Handler.obj" \
 	"$(INTDIR)\MsgFileOutputStream.obj"
 
-"..\..\..\..\..\Build\Win64\VC8\Debug\MsgCreator.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+"..\..\..\..\..\Build\Win64\VC9\Debug\MsgCreator.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
 
 !ELSEIF  "$(CFG)" == "MsgCreator - Win64 Release" 
 
-OUTDIR=.\..\..\..\..\..\Build\Win64\VC8\Release\Util\MsgCreator
-INTDIR=.\..\..\..\..\..\Build\Win64\VC8\Release\Util\MsgCreator
+OUTDIR=.\..\..\..\..\..\Build\Win64\VC9\Release\Util\MsgCreator
+INTDIR=.\..\..\..\..\..\Build\Win64\VC9\Release\Util\MsgCreator
 
-ALL : "..\..\..\..\..\Build\Win64\VC8\Release\MsgCreator.exe"
+ALL : "..\..\..\..\..\Build\Win64\VC9\Release\MsgCreator.exe"
 
 CLEAN :
 	-@erase "$(INTDIR)\ICUResHandler.obj"
@@ -223,8 +223,8 @@ CLEAN :
 	-@erase "$(INTDIR)\MsgFileOutputStream.obj"
 	-@erase "$(INTDIR)\NLSHandler.obj"
 	-@erase "$(INTDIR)\SAX2Handler.obj"
-	-@erase "$(INTDIR)\VC80.idb"
-	-@erase "..\..\..\..\..\Build\Win64\VC8\Release\MsgCreator.exe"
+	-@erase "$(INTDIR)\VC90.idb"
+	-@erase "..\..\..\..\..\Build\Win64\VC9\Release\MsgCreator.exe"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -235,7 +235,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\MsgCreator.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib $(XERCESCROOT)\Build\Win64\VC8\Release\xerces-c_2.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\MsgCreator.pdb" /machine:x64 /out:"..\..\..\..\..\Build\Win64\VC8\Release\MsgCreator.exe" /machine:X64
+LINK32_FLAGS=kernel32.lib user32.lib $(XERCESCROOT)\Build\Win64\VC9\Release\xerces-c_2.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\MsgCreator.pdb" /machine:x64 /out:"..\..\..\..\..\Build\Win64\VC9\Release\MsgCreator.exe" /machine:X64
 LINK32_OBJS= \
 	"$(INTDIR)\ICUResHandler.obj" \
 	"$(INTDIR)\InMemHandler.obj" \
@@ -244,7 +244,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\SAX2Handler.obj" \
 	"$(INTDIR)\MsgFileOutputStream.obj" 
 
-"..\..\..\..\..\Build\Win64\VC8\Release\MsgCreator.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+"..\..\..\..\..\Build\Win64\VC9\Release\MsgCreator.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<

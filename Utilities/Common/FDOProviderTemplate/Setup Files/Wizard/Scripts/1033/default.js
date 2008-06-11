@@ -793,24 +793,24 @@ function AddFilesToCustomUnitTestProj(proj, strProjectName, strProjectPath, fdo_
         tool.CommandLine =
             'copy $(FDOTHIRDPARTY)\\cppunit\\lib\\testrunnerd.dll $(OutDir)\n' +
             'copy $(FDOTHIRDPARTY)\\cppunit\\lib\\cppunitd_dll.dll $(OutDir)\n' +
-            'copy $(FDOTHIRDPARTY)\\apache\\xml-xalan\\c\\Build\\Win32\\VC8\\Debug\\Xalan-C_1_7_0D.dll $(OutDir)\n' +
-            'copy $(FDOTHIRDPARTY)\\apache\\xml-xalan\\c\\Build\\Win32\\VC8\\Debug\\XalanMessages_1_7_0D.dll $(OutDir)\n' +
-            'copy $(FDOTHIRDPARTY)\\apache\\xml-xerces\\c\\Build\\Win32\\VC8\\Debug\\xerces-c_2_5_0D.dll $(OutDir)\n' +
+            'copy $(FDOTHIRDPARTY)\\apache\\xml-xalan\\c\\Build\\Win32\\VC9\\Release\\Xalan-C_1_7_0.dll $(OutDir)\n' +
+            'copy $(FDOTHIRDPARTY)\\apache\\xml-xalan\\c\\Build\\Win32\\VC9\\Release\\XalanMessages_1_7_0.dll $(OutDir)\n' +
+            'copy $(FDOTHIRDPARTY)\\apache\\xml-xerces\\c\\Build\\Win32\\VC9\\Release\\xerces-c_2_5_0.dll $(OutDir)\n' +
             'echo "delete me please">$(OutDir)\\CopyThirdparty.ilk';
         tool.Description = 'Copying thirdparty dlls';
         tool.Outputs = '$(OutDir)\\CopyThirdparty.ilk';
-        tool.AdditionalDependencies = '$(FDOTHIRDPARTY)\\cppunit\\lib\\testrunnerd.dll;$(FDOTHIRDPARTY)\\cppunit\\lib\\cppunitd_dll.dll;$(FDOTHIRDPARTY)\\apache\\xml-xalan\\c\\Build\\Win32\\VC8\\Debug\\Xalan-C_1_7_0D.dll;$(FDOTHIRDPARTY)\\apache\\xml-xalan\\c\\Build\\Win32\\VC8\\Debug\\XalanMessages_1_7_0D.dll;$(FDOTHIRDPARTY)\\apache\\xml-xerces\\c\\Build\\Win32\\VC8\\Debug\\xerces-c_2_5_0D.dll';
+        tool.AdditionalDependencies = '$(FDOTHIRDPARTY)\\cppunit\\lib\\testrunnerd.dll;$(FDOTHIRDPARTY)\\cppunit\\lib\\cppunitd_dll.dll;$(FDOTHIRDPARTY)\\apache\\xml-xalan\\c\\Build\\Win32\\VC9\\Release\\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\\apache\\xml-xalan\\c\\Build\\Win32\\VC9\\Release\\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\\apache\\xml-xerces\\c\\Build\\Win32\\VC9\\Release\\xerces-c_2_5_0.dll';
         tool2 = file.FileConfigurations.Item("Release|Win32").Tool;
         tool2.CommandLine =
             'copy $(FDOTHIRDPARTY)\\cppunit\\lib\\testrunner.dll $(OutDir)\n' +
             'copy $(FDOTHIRDPARTY)\\cppunit\\lib\\cppunit_dll.dll $(OutDir)\n' +
-            'copy $(FDOTHIRDPARTY)\\apache\\xml-xalan\\c\\Build\\Win32\\VC8\\Release\\Xalan-C_1_7_0.dll $(OutDir)\n' +
-            'copy $(FDOTHIRDPARTY)\\apache\\xml-xalan\\c\\Build\\Win32\\VC8\\Release\\XalanMessages_1_7_0.dll $(OutDir)\n' +
-            'copy $(FDOTHIRDPARTY)\\apache\\xml-xerces\\c\\Build\\Win32\\VC8\\Release\\xerces-c_2_5_0.dll $(OutDir)\n' +
+            'copy $(FDOTHIRDPARTY)\\apache\\xml-xalan\\c\\Build\\Win32\\VC9\\Release\\Xalan-C_1_7_0.dll $(OutDir)\n' +
+            'copy $(FDOTHIRDPARTY)\\apache\\xml-xalan\\c\\Build\\Win32\\VC9\\Release\\XalanMessages_1_7_0.dll $(OutDir)\n' +
+            'copy $(FDOTHIRDPARTY)\\apache\\xml-xerces\\c\\Build\\Win32\\VC9\\Release\\xerces-c_2_5_0.dll $(OutDir)\n' +
             'echo "delete me please">$(OutDir)\\CopyThirdparty.ilk';
         tool2.Description = tool.Description;
         tool2.Outputs = tool.Outputs;
-        tool2.AdditionalDependencies = '$(FDOTHIRDPARTY)\\cppunit\\lib\\testrunnerd.dll;$(FDOTHIRDPARTY)\\cppunit\\lib\\cppunitd_dll.dll;$(FDOTHIRDPARTY)\\apache\\xml-xalan\\c\\Build\\Win32\\VC8\\Release\\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\\apache\\xml-xalan\\c\\Build\\Win32\\VC8\\Release\\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\\apache\\xml-xerces\\c\\Build\\Win32\\VC8\\Release\\xerces-c_2_5_0.dll';
+        tool2.AdditionalDependencies = '$(FDOTHIRDPARTY)\\cppunit\\lib\\testrunnerd.dll;$(FDOTHIRDPARTY)\\cppunit\\lib\\cppunitd_dll.dll;$(FDOTHIRDPARTY)\\apache\\xml-xalan\\c\\Build\\Win32\\VC9\\Release\\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\\apache\\xml-xalan\\c\\Build\\Win32\\VC9\\Release\\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\\apache\\xml-xerces\\c\\Build\\Win32\\VC9\\Release\\xerces-c_2_5_0.dll';
 
         // fake install
         file = group.AddFile ('FakeInstall');
