@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="geometry_fgf_lib"
 	ProjectGUID="{29CDD5C2-B733-4B6A-B92A-FD3DCD0D57B5}"
 	RootNamespace="geometry_fgf_lib"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform

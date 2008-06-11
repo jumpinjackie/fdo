@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SQLServerSpatial", "SQLServerSpatial.vcproj", "{769007F6-7840-44D7-9416-45F3D9BB0243}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F5346F00-C869-4B51-A947-FC097288C625} = {F5346F00-C869-4B51-A947-FC097288C625}

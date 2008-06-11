@@ -28,6 +28,7 @@ import toolset : using ;
 #  Configure msvc (default version, searched in standard location
 #  and PATH).
 #  using msvc ;
+using msvc : 9.0 ;
 
 #  Borland configuration
 #  using borland ;

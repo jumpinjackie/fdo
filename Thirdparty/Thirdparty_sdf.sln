@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sqlite3", "Sqlite3.3.13\Sqlite3.vcproj", "{F3910EB6-1756-46F4-8143-C6725ED91935}"
 EndProject
 Global

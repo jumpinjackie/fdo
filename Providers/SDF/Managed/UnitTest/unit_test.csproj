@@ -1,4 +1,4 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -9,6 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>mgUnitTest</RootNamespace>
     <AssemblyName>mgUnitTest</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -62,40 +67,41 @@
   </Target>
   -->
   <PropertyGroup>
-    <PreBuildEvent>Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll .\
-Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.dll .\
-Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll .\
-Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll .\
-Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll .\
-Copy $(FDO)\Managed\bin\win32\debug\OSGeo.FDO.dll .\
-Copy $(FDO)\Managed\bin\win32\debug\OSGeo.FDO.pdb .\
-Copy $(FDO)\Managed\bin\win32\debug\OSGeo.FDO.Common.dll .\
-Copy $(FDO)\Managed\bin\win32\debug\OSGeo.FDO.common.pdb .\
+    <PreBuildEvent>
+      Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll .\
+      Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.dll .\
+      Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll .\
+      Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll .\
+      Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll .\
+      Copy $(FDO)\Managed\bin\win32\debug\OSGeo.FDO.dll .\
+      Copy $(FDO)\Managed\bin\win32\debug\OSGeo.FDO.pdb .\
+      Copy $(FDO)\Managed\bin\win32\debug\OSGeo.FDO.Common.dll .\
+      Copy $(FDO)\Managed\bin\win32\debug\OSGeo.FDO.common.pdb .\
 
-Copy $(FDOUTILITIES)\ExpressionEngine\bin\win32\debug\ExpressionEngine.dll .\
-Copy $(FDOUTILITIES)\ExpressionEngine\bin\win32\debug\ExpressionEngine.pdb .\
+      Copy $(FDOUTILITIES)\ExpressionEngine\bin\win32\debug\ExpressionEngine.dll .\
+      Copy $(FDOUTILITIES)\ExpressionEngine\bin\win32\debug\ExpressionEngine.pdb .\
 
-Copy ..\..\..\..\..\..\Providers\SDF\Bin\Win32\Debug\SDFProvider.dll .\
-Copy ..\..\..\..\..\..\Providers\SDF\Bin\Win32\Debug\SDFProvider.pdb .\
+      Copy ..\..\..\..\..\..\Providers\SDF\Bin\Win32\Debug\SDFProvider.dll .\
+      Copy ..\..\..\..\..\..\Providers\SDF\Bin\Win32\Debug\SDFProvider.pdb .\
 
-Copy ..\..\..\..\..\..\Providers\SDF\Bin\Win32\Debug\SDFMessage.dll .\
+      Copy ..\..\..\..\..\..\Providers\SDF\Bin\Win32\Debug\SDFMessage.dll .\
 
-Copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Debug\xerces-c_2_5_0D.dll .\
-Copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Debug\xerces-c_2_5_0D.pdb .\
+      Copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.dll .\
+      Copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.pdb .\
 
-Copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc8\debug\Xalan-C_1_7_0D.dll .\
-Copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc8\debug\Xalan-C_1_7_0D.pdb .\
+      Copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc9\Release\Xalan-C_1_7_0.dll .\
+      Copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc9\Release\Xalan-C_1_7_0.pdb .\
 
-Copy  $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc8\debug\XalanMessages_1_7_0D.dll .\
-Copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc8\debug\XalanMessages_1_7_0D.pdb .\
+      Copy  $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc9\Release\XalanMessages_1_7_0.dll .\
+      Copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc9\Release\XalanMessages_1_7_0.pdb .\
 
-Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.pdb .\
-Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.pdb .\
-Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb .\
-Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb .\
-Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdb .\
+      Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.pdb .\
+      Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.pdb .\
+      Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb .\
+      Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb .\
+      Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdb .\
 
-Copy  ..\..\..\..\..\..\Providers\SDF\Src\UnitTest\providers.xml .\
-</PreBuildEvent>
+      Copy  ..\..\..\..\..\..\Providers\SDF\Src\UnitTest\providers.xml .\
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>

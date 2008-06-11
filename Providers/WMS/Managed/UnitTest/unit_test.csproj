@@ -1,4 +1,4 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -9,6 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>unit_test</RootNamespace>
     <AssemblyName>unit_test</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -72,46 +77,47 @@
   </Target>
   -->
   <PropertyGroup>
-    <PreBuildEvent>Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll .\
-Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.dll .\
-Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll .\
-Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll .\
-Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll .\
+    <PreBuildEvent>
+      Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll .\
+      Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.dll .\
+      Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll .\
+      Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll .\
+      Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll .\
 
-Copy ..\..\..\..\..\..\Providers\WMS\Bin\Win32\Debug\WMSProvider.dll .\
-Copy ..\..\..\..\..\..\Providers\WMS\Bin\Win32\Debug\WMSProvider.pdb .\
+      Copy ..\..\..\..\..\..\Providers\WMS\Bin\Win32\Debug\WMSProvider.dll .\
+      Copy ..\..\..\..\..\..\Providers\WMS\Bin\Win32\Debug\WMSProvider.pdb .\
 
-Copy ..\..\..\..\..\..\Providers\WMS\Bin\Win32\Debug\WMSMessage.dll .\
+      Copy ..\..\..\..\..\..\Providers\WMS\Bin\Win32\Debug\WMSMessage.dll .\
 
-Copy ..\..\..\..\..\..\Providers\WMS\Bin\Win32\Debug\WMSOverrides.dll .\
-Copy ..\..\..\..\..\..\Providers\WMS\Bin\Win32\Debug\WMSOverrides.pdb .\
+      Copy ..\..\..\..\..\..\Providers\WMS\Bin\Win32\Debug\WMSOverrides.dll .\
+      Copy ..\..\..\..\..\..\Providers\WMS\Bin\Win32\Debug\WMSOverrides.pdb .\
 
-Copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Debug\xerces-c_2_5_0D.dll .\
-Copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Debug\xerces-c_2_5_0D.pdb .\
+      Copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.dll .\
+      Copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.pdb .\
 
-Copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc8\debug\Xalan-C_1_7_0D.dll .\
-Copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc8\debug\Xalan-C_1_7_0D.pdb .\
+      Copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc9\Release\Xalan-C_1_7_0.dll .\
+      Copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc9\Release\Xalan-C_1_7_0.pdb .\
 
-Copy  $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc8\debug\XalanMessages_1_7_0D.dll .\
-Copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc8\debug\XalanMessages_1_7_0D.pdb .\
+      Copy  $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc9\Release\XalanMessages_1_7_0.dll .\
+      Copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc9\Release\XalanMessages_1_7_0.pdb .\
 
-Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc80-mt-gd-1_34_1.dll .\
-Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc80-mt-gd-1_34_1.pdb .\
+      Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc90-mt-gd-1_34_1.dll .\
+      Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc90-mt-gd-1_34_1.pdb .\
 
-Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc80-mt-gd-1_34_1.dll .\
-Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc80-mt-gd-1_34_1.pdb .\
+      Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc90-mt-gd-1_34_1.dll .\
+      Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc90-mt-gd-1_34_1.pdb .\
 
-Copy $(FDOTHIRDPARTY)\gdal\bin\win32\debug\gdal14.dll .\
+      Copy $(FDOTHIRDPARTY)\gdal\bin\win32\debug\gdal14.dll .\
 
-Copy  ..\..\..\..\..\..\Utilities\OWS\bin\win32\debug\OWS.dll .\
+      Copy  ..\..\..\..\..\..\Utilities\OWS\bin\win32\debug\OWS.dll .\
 
-Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.pdb .\
-Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.pdb .\
-Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb .\
-Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb .\
-Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdb .\
+      Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.pdb .\
+      Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.pdb .\
+      Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb .\
+      Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb .\
+      Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdb .\
 
-Copy  ..\..\..\..\..\..\Providers\WMS\Managed\UnitTest\*.xml .\
-</PreBuildEvent>
+      Copy  ..\..\..\..\..\..\Providers\WMS\Managed\UnitTest\*.xml .\
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>

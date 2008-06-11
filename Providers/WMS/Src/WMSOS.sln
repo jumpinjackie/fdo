@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "..\..\..\Utilities\Common\FdoCommon.vcproj", "{9037A345-04EB-418C-98D0-3D5B19FC9D55}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MgOverrides", "..\Managed\Project\MgWmsOverrides.vcproj", "{3A11B933-EE17-4076-AE14-262AC11D6906}"
@@ -93,7 +93,6 @@ Global
 		{BE1C32E9-2FDB-43F1-85CC-02708B6D33C3}.Debug|Win32.Build.0 = Debug|Win32
 		{BE1C32E9-2FDB-43F1-85CC-02708B6D33C3}.Debug|x64.ActiveCfg = Debug|x64
 		{BE1C32E9-2FDB-43F1-85CC-02708B6D33C3}.Debug|x64.Build.0 = Debug|x64
-		{BE1C32E9-2FDB-43F1-85CC-02708B6D33C3}.Debug|x64.Build.2 = DebugInternal|x64
 		{BE1C32E9-2FDB-43F1-85CC-02708B6D33C3}.Release|Win32.ActiveCfg = Release|Win32
 		{BE1C32E9-2FDB-43F1-85CC-02708B6D33C3}.Release|Win32.Build.0 = Release|Win32
 		{BE1C32E9-2FDB-43F1-85CC-02708B6D33C3}.Release|x64.ActiveCfg = Release|x64

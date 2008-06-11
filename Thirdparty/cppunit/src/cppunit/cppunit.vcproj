@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="cppunit"
 	ProjectGUID="{A405DD58-4EB3-43A5-AFD6-508417A57CF7}"
 	RootNamespace="cppunit"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -126,7 +127,6 @@
 				PrecompiledHeaderFile="$(OutDir)\cppunit.pch"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="0"
 			/>
 			<Tool
@@ -275,7 +275,6 @@
 				PrecompiledHeaderFile="$(OutDir)\cppunit.pch"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="true"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -1796,11 +1795,11 @@
 			>
 		</File>
 		<File
-			RelativePath="Makefile.am"
+			RelativePath="..\..\include\cppunit\Makefile.am"
 			>
 		</File>
 		<File
-			RelativePath="..\..\include\cppunit\Makefile.am"
+			RelativePath="Makefile.am"
 			>
 		</File>
 	</Files>

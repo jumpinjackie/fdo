@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="Common"
 	ProjectGUID="{A28ACA9A-8258-4169-B554-4F5D214055FB}"
 	RootNamespace="Common"
 	Keyword="Win32Proj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -72,11 +73,13 @@
 				AdditionalDependencies="Xalan-C_1.lib Xerces-C_2.lib FDONLS.lib"
 				OutputFile="$(OutDir)/FDOCommon.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)/apache/xml-xalan/c/build/win32/VC8/Release&quot;;&quot;$(FDOTHIRDPARTY)/apache/xml-xerces/c/build/win32/VC8/Release&quot;;.\Lib\Win32\Release\"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)/apache/xml-xalan/c/build/win32/VC9/Release&quot;;&quot;$(FDOTHIRDPARTY)/apache/xml-xerces/c/build/win32/VC9/Release&quot;;.\Lib\Win32\Release\"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/FDOCommon.pdb"
 				SubSystem="0"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="Lib/Win32/Release/FDOCommon.lib"
 				TargetMachine="0"
 			/>
@@ -97,9 +100,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -162,11 +162,13 @@
 				AdditionalDependencies="Xalan-C_1.lib Xerces-C_2.lib FDONLS.lib"
 				OutputFile="$(OutDir)/FDOCommon.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)/apache/xml-xalan/c/build/Win64/VC8/Release&quot;;&quot;$(FDOTHIRDPARTY)/apache/xml-xerces/c/build/Win64/VC8/Release&quot;;.\Lib\Win64\Release\"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)/apache/xml-xalan/c/build/Win64/VC9/Release&quot;;&quot;$(FDOTHIRDPARTY)/apache/xml-xerces/c/build/Win64/VC9/Release&quot;;.\Lib\Win64\Release\"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/FDOCommon.pdb"
 				SubSystem="0"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="Lib/Win64/Release/FDOCommon.lib"
 				TargetMachine="17"
 			/>
@@ -187,9 +189,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -249,15 +248,17 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/fixed:no"
-				AdditionalDependencies="Xalan-C_1D.lib Xerces-C_2D.lib FDONLS.lib"
+				AdditionalDependencies="Xalan-C_1.lib Xerces-C_2.lib FDONLS.lib"
 				OutputFile="$(OutDir)/FDOCommon.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)/apache/xml-xalan/c/build/win32/VC8/Debug&quot;;&quot;$(FDOTHIRDPARTY)/apache/xml-xerces/c/build/win32/VC8/Debug&quot;;.\Lib\Win32\Debug"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)/apache/xml-xalan/c/build/win32/VC9/Release&quot;;&quot;$(FDOTHIRDPARTY)/apache/xml-xerces/c/build/win32/VC9/Release&quot;;.\Lib\Win32\Debug"
 				IgnoreDefaultLibraryNames="MSVCRT"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/FDOCommon.pdb"
 				SubSystem="0"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="Lib/Win32/Debug/FDOCommon.lib"
 				TargetMachine="0"
 			/>
@@ -278,9 +279,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -343,12 +341,14 @@
 				AdditionalDependencies="Xalan-C_1D.lib Xerces-C_2D.lib FDONLS.lib"
 				OutputFile="$(OutDir)/FDOCommon.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)/apache/xml-xalan/c/build/Win64/VC8/Debug&quot;;&quot;$(FDOTHIRDPARTY)/apache/xml-xerces/c/build/Win64/VC8/Debug&quot;;.\Lib\Win64\Debug"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)/apache/xml-xalan/c/build/Win64/VC9/Release&quot;;&quot;$(FDOTHIRDPARTY)/apache/xml-xerces/c/build/Win64/VC9/Release&quot;;.\Lib\Win64\Debug"
 				IgnoreDefaultLibraryNames="MSVCRT"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/FDOCommon.pdb"
 				SubSystem="0"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="Lib/Win64/Debug/FDOCommon.lib"
 				TargetMachine="17"
 			/>
@@ -369,9 +369,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"

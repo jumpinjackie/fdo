@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Odbc", "Odbc.vcproj", "{FFEABF23-6BD8-4377-BD4C-66EA94F63134}"
 	ProjectSection(ProjectDependencies) = postProject
 		{34FF1437-0853-44D4-B786-48ACB3AACBB5} = {34FF1437-0853-44D4-B786-48ACB3AACBB5}

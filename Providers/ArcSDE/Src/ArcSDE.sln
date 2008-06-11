@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Provider", "Provider\ArcSDEProvider.vcproj", "{6C04EF62-A3C2-4C4C-9BAB-30BE6AFC5762}"
 	ProjectSection(ProjectDependencies) = postProject
 		{B840E617-C94F-4E23-BEBA-4A9F3FBD92DB} = {B840E617-C94F-4E23-BEBA-4A9F3FBD92DB}

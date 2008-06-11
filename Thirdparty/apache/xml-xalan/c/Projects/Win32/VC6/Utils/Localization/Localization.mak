@@ -60,7 +60,7 @@ PKGNAME=$(LIBNAME)_$(VER)S
 PKGNAME=$(LIBNAME)_$(VER)
 !ENDIF
 
-PATH=$(PATH);$(XERCESCROOT)\Build\$(BITS)\VC8\Release;$(XERCESCROOT)\Build\$(BITS)\VC8\Debug
+PATH=$(PATH);$(XERCESCROOT)\Build\$(BITS)\VC9\Release;$(XERCESCROOT)\Build\$(BITS)\VC9\Debug
 
 #====================== INMEM part =================================================================
 
