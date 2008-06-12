@@ -75,7 +75,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "FdoWmsOv Dynamic Link Library"
-            VALUE "FileVersion", "3.3.0.0"
+            VALUE "FileVersion", "3.4.0.00"
             VALUE "InternalName", "FdoWmsOv"
             VALUE "LegalCopyright", "Copyright (C) 2007"
             VALUE "OriginalFilename", "FdoWmsOv.dll"

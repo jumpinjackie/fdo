@@ -71,7 +71,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Autodesk, Inc."
             VALUE "FileDescription", "FDO SQLServer Managed Overrides API Component"
-            VALUE "FileVersion", "3.2.2.0"
+            VALUE "FileVersion", "3.4.0.00"
             VALUE "InternalName", "Autodesk.Gis.Fdo.Providers.SQLServer.Overrides"
             VALUE "LegalCopyright", "Copyright (C) 2007"
             VALUE "OriginalFilename", "Autodesk.Gis.Fdo.Providers.SQLServer.Overrides.dll"

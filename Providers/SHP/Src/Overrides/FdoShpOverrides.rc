@@ -71,7 +71,7 @@ BEGIN
         BEGIN
             VALUE "Comments", "FDO Shape File Overrides API"
             VALUE "FileDescription", "FDO API for Shp Overrides"
-            VALUE "FileVersion", "3.3.0.0"
+            VALUE "FileVersion", "3.4.0.00"
             VALUE "InternalName", "SHPOverrides"
             VALUE "LegalCopyright", "Copyright © 2007"
             VALUE "OriginalFilename", "ShpOverrides.dll"
