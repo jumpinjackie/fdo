@@ -72,7 +72,7 @@ BEGIN
             VALUE "Comments", "FDO PostGIS Overrides API"
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "FDO API for PostGIS Overrides"
-            VALUE "FileVersion", "3.2.0.0"
+            VALUE "FileVersion", "3.4.0.00"
             VALUE "InternalName", "PostGisOverrides"
             VALUE "LegalCopyright", "Copyright © 2007"
             VALUE "OriginalFilename", "PostGisOverrides.dll"

@@ -72,7 +72,7 @@ BEGIN
             VALUE "Comments", "Resource Only Dynamic Link Library"
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "FDO PostGIS Provider Message"
-            VALUE "FileVersion", "3.2.0.0"
+            VALUE "FileVersion", "3.4.0.00"
             VALUE "InternalName", "PostGisMessage"
             VALUE "LegalCopyright", "Copyright © 2007"
             VALUE "OriginalFilename", "PostGisMessage.dll"
