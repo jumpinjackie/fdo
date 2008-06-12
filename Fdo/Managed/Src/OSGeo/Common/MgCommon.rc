@@ -72,7 +72,7 @@ BEGIN
             VALUE "Comments", "FDO Common Managed Dynamic Link Library"
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "FDO Common Utility Manged API Component"
-            VALUE "FileVersion", "3.3.0.0"
+            VALUE "FileVersion", "3.4.0.00"
             VALUE "InternalName", "OSGeo.FDO.Common"
             VALUE "LegalCopyright", "Copyright (C) 2007"
             VALUE "OriginalFilename", "OSGeo.FDO.Common.dll"

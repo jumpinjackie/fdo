@@ -84,7 +84,7 @@ BEGIN
             VALUE "Comments", "FDO Dynamic Link Library"
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "FDO API Component"
-            VALUE "FileVersion", "3.3.0.0"
+            VALUE "FileVersion", "3.4.0.00"
             VALUE "InternalName", "FDO"
             VALUE "LegalCopyright", "Copyright © 2007"
             VALUE "OriginalFilename", "FDO.dll"
