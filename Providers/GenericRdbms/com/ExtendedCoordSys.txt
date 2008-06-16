@@ -1,0 +1,61 @@
+// Copyright (C) 2004-2006  Autodesk, Inc.
+// 
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of version 2.1 of the GNU Lesser
+// General Public License as published by the Free Software Foundation.
+// 
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
+//----------------------------------------------------------------------------
+//
+// This file is used by the SQLServerSpatial provider and serves 2 purposes:
+//
+//    1. It gets WKT for coordinate systems that are not in SQL Server's sys.spatial_reference_systems catalogue.
+//       This catalogue only contains Geodetic coordinate systems. However, SQL Server geometry column
+//       values can be associated with coordinate systems that are not in the catalogue. These coordinate systems
+//       are referenced by SRID (usually EPSG number). The SQLServerSpatial provider generates a spatial
+//       context for each of these coordinate systems. It also needs to determine the WKT 
+//       (Well-Known Text) for each coordinate system, since that information is needed by FDO API consumers such as
+//       AutoCAD Map 3D and Autodesk MapGuide. This file provides a supplemental place to retrieve the WKT by mapping 
+//	 SRIDs to WKTs. The SQL Server catalogue is checked first, and then this file, so for SRID's in 
+//       sys.spatial_reference_systems, the WKT is retrieved from sys.spatial_reference_systems, and not this file.
+//        
+//
+//    2. This file allows the provider to handle coordinate system names specified via the FdoICreateSpatialContext 
+//       command. If the coordinate system name is not in the SQL Server catalogue, the SQLServerSpatial provider 
+//       stores its SRID in the new datastore. This file is needed to translate the coordinate system name to SRID. 
+//
+// This file provides a starter set of coordinate systems, but you can add more as needed. Store this file 
+// in the FDO com directory (A sub-directory named 'com' that is in the same directory as the SQLServerSpatial 
+// provider DLL). The starter file does not define the WKT strings. You will have to add the WKT for any 
+// coordinate systems that you use. 
+//
+// The format for each line in this file is:
+//
+//     <SRID> <Coordinate System Name> <WKT>
+//
+// where:
+//     SRID: The SRID for each coordinate system. For the initial coordinate system entries, the SRID
+//         is the coordinate system's EPSG number.
+//
+//     Coordinate System Name: The name that appears on the Map Create Datastore Plugin for SQLServerSpatial. 
+//         You can omit this if it is not one of the coordinate systems available from the Plugin.
+//
+//     WKT: A string in Open Geospatial Well-Known Text format. You can omit this if the coordinate system is in 
+//         sys.spatial_reference_systems. If you omit it, you must specify the Coordinate System Name.
+//
+// Each field must be separated by spaces (not tabs). 
+//
+// The Coordinate System Name can have embedded spaces. All words after the EPSG number and before the WKT are treated 
+// as part of the Coordinate System name. Any space separation between these words is maintained, but the name cannot 
+// have leading or trailing spaces.
+//
+
+1 ExampleCoordSysName LOCAL_CS["Sample WKT",TODO["Replace with your coordinate systems"]]
