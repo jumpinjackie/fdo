@@ -130,6 +130,11 @@ FdoSmPhCoordinateSystemP FdoSmPhSqsOwner::FindCoordinateSystemByWkt( FdoStringP 
     return coordSys;
 }
 
+FdoSmPhCoordinateSystemP FdoSmPhSqsOwner::FindCataloguedCoordinateSystem( FdoInt64 srid )
+{
+    // Check only the RDBMS catalogue
+    return FdoSmPhOwner::FindCoordinateSystem( srid );
+}
 
 void FdoSmPhSqsOwner::DiscardSchema( FdoSmPhSqsSchema* schema )
 {
@@ -198,7 +203,7 @@ FdoInt64 FdoSmPhSqsOwner::SampleColumnSrid( FdoStringP dbObjectName, FdoStringP 
 
     // Delimit column name with []. Can't use " when part of function.
 	FdoStringP sqlStmt = FdoStringP::Format(
-		L"select [%ls].STSrid as srid from %ls.%ls", 
+		L"select top 1 [%ls].STSrid as srid from %ls.%ls", 
         (FdoString*) columnName,
         (FdoString*) this->GetDbName(),
         (FdoString*) fmtObjectName
@@ -730,7 +735,8 @@ void FdoSmPhSqsOwner::LoadExtendedCoordinateSystems()
                 for ( ; (idx < bufLen) && (buffer[idx] == ' '); idx++ );
 
                 if ( wcsncmp(&(buffer[idx]),L"PROJCS[", 7) == 0 ||
-                     wcsncmp(&(buffer[idx]),L"GEOGCS[", 7) == 0
+                     wcsncmp(&(buffer[idx]),L"GEOGCS[", 7) == 0 ||
+                     wcsncmp(&(buffer[idx]),L"LOCAL_CS[", 9) == 0 
                 ) {
                     // Next word is the start of WKT string.
                     // Note we currently only support geodetic or 
@@ -743,7 +749,11 @@ void FdoSmPhSqsOwner::LoadExtendedCoordinateSystems()
                         namePtr = &(buffer[idx]);
 
                     // Find the start of the WKT string.
-                    for ( ; (idx < bufLen) &&(wcsncmp(&(buffer[idx]),L" PROJCS[", 8) != 0) && (wcsncmp(&(buffer[idx]),L" GEOGCS[", 8) != 0); idx++ );
+                    for ( ; (idx < bufLen) &&
+                            (wcsncmp(&(buffer[idx]),L" PROJCS[", 8) != 0) && 
+                            (wcsncmp(&(buffer[idx]),L" GEOGCS[", 8) != 0) &&
+                            (wcsncmp(&(buffer[idx]),L" LOCAL_CS[", 10) != 0);
+                          idx++ );
 
                     // Split the name and the WKT.
                     if ( buffer[idx] ) {
@@ -780,7 +790,7 @@ void FdoSmPhSqsOwner::LoadExtendedCoordinateSystems()
                 if ( namePtr ) {
                     // Trim trailing blanks from name
                     for ( idx = (FdoInt32) wcslen(namePtr) - 1; idx >= 0; idx-- ) {
-                        if ( namePtr[idx] == ' ' ) 
+                        if ( (namePtr[idx] == ' ') || (namePtr[idx] == '\n') ) 
                             namePtr[idx] = 0;
                         else
                             break;

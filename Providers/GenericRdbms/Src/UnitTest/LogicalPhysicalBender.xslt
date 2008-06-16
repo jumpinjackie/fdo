@@ -73,11 +73,11 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 	</xsl:if>
   </xsl:copy>
 </xsl:template>
-<xsl:template match="lp:property[@name='GEOMETRY' and $providerName='SqlServer']"/>
+<xsl:template match="lp:property[@name='GEOMETRY' and ($providerName='SqlServer' or $providerName='SQLServerSpatial')]"/>
 <xsl:template match="lp:sequence[not($providerName = 'Oracle')]|lp:sequenceSynonym[not($providerName = 'Oracle')]"/>
 <xsl:template match="lp:column[@name = 'CLASSNAME' or @name = 'SCHEMANAME']"/>
-<xsl:template match="lp:column[$providerName  = 'SqlServer' and @name = 'GEOMETRY1' and  local-name(..) = 'table']"/>
-<xsl:template match="lp:column[@dataType and not(@name = 'CLASSNAME' or @name = 'SCHEMANAME') and not($providerName  = 'SqlServer' and @name = 'GEOMETRY1' and  local-name(..) = 'table')]">
+<xsl:template match="lp:column[($providerName='SqlServer' or $providerName='SQLServerSpatial') and @name = 'GEOMETRY1' and  local-name(..) = 'table']"/>
+<xsl:template match="lp:column[@dataType and not(@name = 'CLASSNAME' or @name = 'SCHEMANAME') and not(($providerName='SqlServer' or $providerName='SQLServerSpatial') and @name = 'GEOMETRY1' and  local-name(..) = 'table')]">
 	<xsl:variable name="colName" select="@name"/>
 	<xsl:choose>
 		<xsl:when test="local-name(..) = 'property'">

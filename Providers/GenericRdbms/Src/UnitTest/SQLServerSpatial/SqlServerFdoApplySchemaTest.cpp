@@ -270,7 +270,7 @@ bool SqlServerFdoApplySchemaTest::CanDropCol()
 {
     // Workaround for SQL Server 2008 problem where "alter table ... drop column ..."
     // stops the server.
-    return false;
+    return true;
 }
 
 

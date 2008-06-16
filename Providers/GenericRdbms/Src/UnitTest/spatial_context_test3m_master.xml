@@ -68,7 +68,7 @@ GEOGCS["Bermuda 1957", DATUM["Bermuda 1957", ELLIPSOID["Clarke 1866", 6378206.4,
 geographic</gml:derivedCRSType>
 <gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
 </gml:DerivedCRS>
-<gml:DerivedCRS gml:id="California1">
+<gml:DerivedCRS gml:id="Bermuda-x20-Mentor">
 <gml:metaDataProperty>
 <gml:GenericMetaData>
 <fdo:XYTolerance>
@@ -80,7 +80,7 @@ geographic</gml:derivedCRSType>
 <gml:remarks>
 For testing only</gml:remarks>
 <gml:srsName>
-California1</gml:srsName>
+Bermuda Mentor</gml:srsName>
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
@@ -89,7 +89,48 @@ California1</gml:srsName>
 10.000000 10.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
-<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#CA-I"/>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="Bermuda.LL">
+<gml:srsName>
+Bermuda.LL</gml:srsName>
+<fdo:WKT>
+GEOGCS["Bermuda 1957", DATUM["Bermuda 1957", ELLIPSOID["Clarke 1866", 6378206.4, 294.978698213898]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.0174532925199433]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="California">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.001000</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.001000</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:remarks>
+For testing only</gml:remarks>
+<gml:srsName>
+California</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+10.000000 10.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="CA-I">
+<gml:srsName>
+CA-I</gml:srsName>
+<fdo:WKT>
+PROJCS["California test",GEOGCS["For testing only",DATUM["Test",SPHEROID["NAD 27",6300000,123.465,]]]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
 <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
 <gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
 geographic</gml:derivedCRSType>
@@ -121,7 +162,7 @@ California2</gml:srsName>
 <gml:srsName>
 CA_I</gml:srsName>
 <fdo:WKT>
-PROJCS["CA-I",GEOGCS["LL27",DATUM["NAD27",SPHEROID["CLRK66",6378206.400,294.97869821]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["false_easting",2000000.000],PARAMETER["false_northing",0.000],PARAMETER["central_meridian",-122.00000000000000],PARAMETER["latitude_of_origin",39.33333333333333],PARAMETER["standard_parallel_1",41.66666666666666],PARAMETER["standard_parallel_2",40.00000000000000],UNIT["Foot_US",0.30480060960122]]</fdo:WKT>
+PROJCS["CA-I",GEOGCS["LL27",DATUM["NAD27",SPHEROID["CLRK66",60.400,294.97869821]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["false_easting",2000000.000],PARAMETER["false_northing",0.000],PARAMETER["central_meridian",-122.00000000000000],PARAMETER["latitude_of_origin",39.33333333333333],PARAMETER["standard_parallel_1",41.66666666666666],PARAMETER["standard_parallel_2",40.00000000000000],UNIT["Foot_US",0.30480060960122]]</fdo:WKT>
 </fdo:WKTCRS>
 </gml:baseCRS>
 <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
@@ -190,6 +231,67 @@ GEOGCS["Liberia 1964", DATUM["Liberia 1964", ELLIPSOID["Clarke 1880 (RGS)", 6378
 geographic</gml:derivedCRSType>
 <gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
 </gml:DerivedCRS>
+<gml:DerivedCRS gml:id="Mentor-x20-by-x20-WKT">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.001000</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.001000</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:remarks>
+For testing only</gml:remarks>
+<gml:srsName>
+Mentor by WKT</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+10.000000 10.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="CANQ-M5">
+<gml:srsName>
+CANQ-M5</gml:srsName>
+<fdo:WKT>
+PROJCS["Quebec test",GEOGCS["For testing only",DATUM["Test",SPHEROID["NAD 27",6300000,123.465,]]]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="Nowhere">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.001000</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.001000</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:remarks>
+For testing only</gml:remarks>
+<gml:srsName>
+Nowhere</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+10.000000 10.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#JunkCS"/>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
 <gml:DerivedCRS gml:id="Qatar-x20-wrong-x20-name">
 <gml:metaDataProperty>
 <gml:GenericMetaData>
@@ -246,6 +348,67 @@ Rectangular</gml:srsName>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="Rectangular-x20--x28-Feet-x29-">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.001000</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.001000</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:remarks>
+For testing only</gml:remarks>
+<gml:srsName>
+Rectangular (Feet)</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+10.000000 10.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#XY-FT"/>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="Rectangular-x20--x28-Metre-x29-">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.001000</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.001000</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:remarks>
+For testing only</gml:remarks>
+<gml:srsName>
+Rectangular (Metre)</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+10.000000 10.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="XY-M">
+<gml:srsName>
+XY-M</gml:srsName>
+<fdo:WKT>
+LOCAL_CS["Non-Earth Metre",UNIT["Metre",1]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
 <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
 <gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
 geographic</gml:derivedCRSType>
