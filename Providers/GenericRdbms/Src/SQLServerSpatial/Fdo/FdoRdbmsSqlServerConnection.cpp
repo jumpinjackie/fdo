@@ -709,7 +709,8 @@ bool  FdoRdbmsSqlServerConnection::BindGeometriesLast()
 FdoIGeometry* FdoRdbmsSqlServerConnection::TransformGeometry( FdoIGeometry* geom, const FdoSmLpGeometricPropertyDefinition* prop, bool toFdo )
 {
     FdoStringP geomType;
-    
+    bool       geogLatLong = false;
+
     //TODO: check performance impact of looking up geomType for each geometry value and
     //optimize if necessary.
     FdoSmPhColumnP column = ((FdoSmLpGeometricPropertyDefinition*) prop)->GetColumn();
@@ -721,10 +722,12 @@ FdoIGeometry* FdoRdbmsSqlServerConnection::TransformGeometry( FdoIGeometry* geom
         if ( geomColumn ) 
         {
             geomType = geomColumn->GetTypeName();
+            FdoSmPhSqsMgrP phMgr = geomColumn->GetManager()->SmartCast<FdoSmPhSqsMgr>();
+            geogLatLong = phMgr->IsGeogLatLong();
         }
     }
 
-    if ( geomType != L"geography" )
+    if ( (!geogLatLong) || (geomType != L"geography") )
         // No special transformation for geometry columns
         return FdoRdbmsConnection::TransformGeometry( geom, prop, toFdo );
 

@@ -134,7 +134,13 @@ void SqlServerSchemaMgrTests::testSpatialContextsGeog()
         column = table->CreateColumnGeom( L"geog_column1", scinfo, true, true );
         column->SetTypeName(L"geography");
         
+        table = owner->CreateTable( phMgr->GetDcDbObjectName(L"table6" ));
+        column = table->CreateColumnInt32( L"id", false );
+        table->AddPkeyCol( column->GetName() );
         
+        scinfo = CreateSc( GetSrid(4), -1001, -1002, 1001, 1002, 0.0333, 0.0111 );
+        column = table->CreateColumnGeom( L"geom_column1", scinfo, true, true );
+               
         owner->Commit();
 
 
@@ -142,7 +148,7 @@ void SqlServerSchemaMgrTests::testSpatialContextsGeog()
 
         FdoStringP sqlStmt = FdoStringP::Format( 
             L"insert into table3 ( id, geom_column1 ) values ( 1, geometry::STGeomFromText('POINT ( 10 15 )', %I64d) )", 
-            GetSrid(1)
+            GetSrid(3)
         );
         grdOwner->ActivateAndExecute( (FdoString*) sqlStmt );
 
@@ -197,9 +203,10 @@ void SqlServerSchemaMgrTests::testSpatialContextsGeog()
 
 //        InsertSridRow( fdoConn, L"table1", L"geom_column2", 0, 1 );
 //        InsertSridRow( fdoConn, L"table2", L"geog_column1", 0, 1 );
-        InsertSridRow( fdoConn, L"table3", L"geom_column1", 1, 2 );
+        InsertSridRow( fdoConn, L"table3", L"geom_column1", 3, 2 );
 //        InsertSridRow( fdoConn, L"table4", L"geog_column1", 2, 2 );
 //        InsertSridRow( fdoConn, L"table5", L"geog_column1", 1, 2 );
+        InsertSridRow( fdoConn, L"table6", L"geom_column1", 4, 0 );
 
         UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_SUFFIX );
 
@@ -529,6 +536,12 @@ FdoInt64 SqlServerSchemaMgrTests::GetSrid( int index )
         break;
     case 2: 
         srid = 4236;
+        break;
+    case 3: 
+        srid = 2001;
+        break;
+    case 4: 
+        srid = 1000;
         break;
     }
 

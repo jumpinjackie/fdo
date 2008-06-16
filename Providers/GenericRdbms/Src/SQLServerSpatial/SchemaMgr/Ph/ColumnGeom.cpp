@@ -62,11 +62,11 @@ FdoSmPhSqsColumnGeom::FdoSmPhSqsColumnGeom(
 
 			if (owner)
 			{
-				FdoSmPhCoordinateSystemP coordSystem = owner->FindCoordinateSystem(AssociatedSCInfo->mSrid);
+				FdoSmPhCoordinateSystemP coordSystem = owner->FindCataloguedCoordinateSystem(AssociatedSCInfo->mSrid);
 				if (coordSystem)
 				{
 					FdoStringP wkt = coordSystem->GetWkt();
-					if (wkt.Contains(L"GEOGCS" ))
+					if (wkt.Left(L"[").Contains(L"GEOGCS" ))
 						SetTypeName(L"geography");
 				}
 			}

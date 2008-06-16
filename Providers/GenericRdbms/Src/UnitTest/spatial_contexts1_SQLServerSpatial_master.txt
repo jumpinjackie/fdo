@@ -6,6 +6,7 @@
 <gml:DerivedCRS/>
 <gml:DerivedCRS/>
 <gml:DerivedCRS/>
+<gml:DerivedCRS/>
 <xs:schema xmlns:dbo="http://fdo.osgeo.org/schemas/feature/dbo" targetNamespace="http://fdo.osgeo.org/schemas/feature/dbo" elementFormDefault="qualified" attributeFormDefault="unqualified">
 <xs:annotation>
 <xs:documentation/>
@@ -309,7 +310,7 @@ GEOGCS["Greek", DATUM["Greek", ELLIPSOID["Bessel 1841", 6377397.155, 299.1528128
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:complexType name="table5Type" abstract="false" fdo:geometryName="GEOM_COLUMN1">
+<xs:complexType name="table5Type" abstract="false" fdo:hasGeometry="false">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -325,6 +326,17 @@ GEOGCS["Greek", DATUM["Greek", ELLIPSOID["Bessel 1841", 6377397.155, 299.1528128
 </xs:annotation>
 </xs:element>
 <xs:element name="GEOM_COLUMN1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-1001.000000 -1002.000000</gml:pos>
+<gml:pos>
+1001.000000 1002.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
+</xs:element>
+<xs:element name="GEOM_COLUMN2" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <gml:validArea>
 <gml:boundingBox>
 <gml:pos>
