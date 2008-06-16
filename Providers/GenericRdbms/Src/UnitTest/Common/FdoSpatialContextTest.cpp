@@ -120,6 +120,11 @@ void FdoSpatialContextTest::DoTest( bool hasMetaSchema )
         UnitTestUtil::CreateSpatialContext( connection, L"South Duplicate", L"Australian Antarctic", 0, 0, 10, 10 ); 
         UnitTestUtil::CreateSpatialContext( connection, L"Liberia by WKT", L"", 0, 0, 10, 10, L"GEOGCS[\"Liberia 1964\", DATUM[\"Liberia 1964\", ELLIPSOID[\"Clarke 1880 (RGS)\", 6378249.145, 293.465]], PRIMEM[\"Greenwich\", 0], UNIT[\"Degree\", 0.0174532925199433]]" ); 
         UnitTestUtil::CreateSpatialContext( connection, L"Qatar wrong name", L"Bermuda 1957", 0, 0, 10, 10, L"GEOGCS[\"Qatar 1974\", DATUM[\"Qatar 1974\", ELLIPSOID[\"International 1924\", 6378388, 297]], PRIMEM[\"Greenwich\", 0], UNIT[\"Degree\", 0.0174532925199433]]" ); 
+        UnitTestUtil::CreateSpatialContext( connection, L"California", L"CA-I", 0, 0, 10, 10 ); 
+        UnitTestUtil::CreateSpatialContext( connection, L"Bermuda Mentor", L"Bermuda.LL", 0, 0, 10, 10 ); 
+        UnitTestUtil::CreateSpatialContext( connection, L"Mentor by WKT", L"", 0, 0, 10, 10, L"PROJCS[\"Quebec test\",GEOGCS[\"For testing only\",DATUM[\"Test\",SPHEROID[\"NAD 27\",6300000,123.465,]]]]" ); 
+        UnitTestUtil::CreateSpatialContext( connection, L"Rectangular (Metre)", L"XY-M", 0, 0, 10, 10); 
+        UnitTestUtil::CreateSpatialContext( connection, L"Rectangular (Feet)", L"XY-FT", 0, 0, 10, 10); 
 
         connection->Close();
         connection->Open();
@@ -211,12 +216,12 @@ void FdoSpatialContextTest::DoTest( bool hasMetaSchema )
 
 
             try {
-                UnitTestUtil::CreateSpatialContext( connection, L"California", L"CA-I", 0, 0, 10, 10 ); 
+                UnitTestUtil::CreateSpatialContext( connection, L"Nowhere", L"JunkCS", 0, 0, 10, 10 ); 
                 CPPUNIT_FAIL( "Setting unsupported coordinate system by name supposed to fail" );
             }
             catch (FdoException* e ) {
 #ifdef _WIN32
-                FdoStringP expectedMessage = L" Error creating spatial context California, coordinate system CA-I is not in current datastore. ";
+                FdoStringP expectedMessage = L" Error creating spatial context Nowhere, coordinate system JunkCS is not in current datastore. ";
                 FdoString* pMessage = wcschr( e->GetExceptionMessage(), ')' );
                 if (pMessage) pMessage++;
                 CPPUNIT_ASSERT( pMessage && expectedMessage.ICompare(pMessage) == 0 );
@@ -225,12 +230,12 @@ void FdoSpatialContextTest::DoTest( bool hasMetaSchema )
             }
 
             try {
-                UnitTestUtil::CreateSpatialContext( connection, L"California", L"", 0, 0, 10, 10, L"PROJCS[\"CA-I\",GEOGCS[\"LL27\",DATUM[\"NAD27\",SPHEROID[\"CLRK66\",6378206.400,294.97869821]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Lambert_Conformal_Conic_2SP\"],PARAMETER[\"false_easting\",2000000.000],PARAMETER[\"false_northing\",0.000],PARAMETER[\"central_meridian\",-122.00000000000000],PARAMETER[\"latitude_of_origin\",39.33333333333333],PARAMETER[\"standard_parallel_1\",41.66666666666666],PARAMETER[\"standard_parallel_2\",40.00000000000000],UNIT[\"Foot_US\",0.30480060960122]]" ); 
+                UnitTestUtil::CreateSpatialContext( connection, L"California2", L"", 0, 0, 10, 10, L"PROJCS[\"CA-I\",GEOGCS[\"LL27\",DATUM[\"NAD27\",SPHEROID[\"CLRK66\",60.400,294.97869821]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Lambert_Conformal_Conic_2SP\"],PARAMETER[\"false_easting\",2000000.000],PARAMETER[\"false_northing\",0.000],PARAMETER[\"central_meridian\",-122.00000000000000],PARAMETER[\"latitude_of_origin\",39.33333333333333],PARAMETER[\"standard_parallel_1\",41.66666666666666],PARAMETER[\"standard_parallel_2\",40.00000000000000],UNIT[\"Foot_US\",0.30480060960122]]" ); 
                 CPPUNIT_FAIL( "Setting unsupported coordinate system by wkt supposed to fail" );
             }
             catch (FdoException* e ) {
 #ifdef _WIN32
-                FdoStringP expectedMessage = L" Error creating spatial context California, coordinate system catalog does not contain entry for WKT 'PROJCS[\"CA-I\",GEOGCS[\"LL27\",DATUM[\"NAD27\",SPHEROID[\"CLRK66\",6378206.400,294.97869821]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Lambert_Conformal_Conic_2SP\"],PARAMETER[\"false_easting\",2000000.000],PARAMETER[\"false_northing\",0.000],PARAMETER[\"central_meridian\",-122.00000000000000],PARAMETER[\"latitude_of_origin\",39.33333333333333],PARAMETER[\"standard_parallel_1\",41.66666666666666],PARAMETER[\"standard_parallel_2\",40.00000000000000],UNIT[\"Foot_US\",0.30480060960122]]' ";
+                FdoStringP expectedMessage = L" Error creating spatial context California2, coordinate system catalog does not contain entry for WKT 'PROJCS[\"CA-I\",GEOGCS[\"LL27\",DATUM[\"NAD27\",SPHEROID[\"CLRK66\",60.400,294.97869821]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Lambert_Conformal_Conic_2SP\"],PARAMETER[\"false_easting\",2000000.000],PARAMETER[\"false_northing\",0.000],PARAMETER[\"central_meridian\",-122.00000000000000],PARAMETER[\"latitude_of_origin\",39.33333333333333],PARAMETER[\"standard_parallel_1\",41.66666666666666],PARAMETER[\"standard_parallel_2\",40.00000000000000],UNIT[\"Foot_US\",0.30480060960122]]' ";
                 FdoString* pMessage = wcschr( e->GetExceptionMessage(), ')' );
                 if (pMessage) pMessage++;
                 CPPUNIT_ASSERT( pMessage && expectedMessage.ICompare(pMessage) == 0 );
@@ -239,8 +244,8 @@ void FdoSpatialContextTest::DoTest( bool hasMetaSchema )
             }
         }
         else {
-            UnitTestUtil::CreateSpatialContext( connection, L"California1", L"CA-I", 0, 0, 10, 10 ); 
-            UnitTestUtil::CreateSpatialContext( connection, L"California2", L"CA_I", 0, 0, 10, 10, L"PROJCS[\"CA-I\",GEOGCS[\"LL27\",DATUM[\"NAD27\",SPHEROID[\"CLRK66\",6378206.400,294.97869821]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Lambert_Conformal_Conic_2SP\"],PARAMETER[\"false_easting\",2000000.000],PARAMETER[\"false_northing\",0.000],PARAMETER[\"central_meridian\",-122.00000000000000],PARAMETER[\"latitude_of_origin\",39.33333333333333],PARAMETER[\"standard_parallel_1\",41.66666666666666],PARAMETER[\"standard_parallel_2\",40.00000000000000],UNIT[\"Foot_US\",0.30480060960122]]" ); 
+            UnitTestUtil::CreateSpatialContext( connection, L"Nowhere", L"JunkCS", 0, 0, 10, 10 ); 
+            UnitTestUtil::CreateSpatialContext( connection, L"California2", L"CA_I", 0, 0, 10, 10, L"PROJCS[\"CA-I\",GEOGCS[\"LL27\",DATUM[\"NAD27\",SPHEROID[\"CLRK66\",60.400,294.97869821]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Lambert_Conformal_Conic_2SP\"],PARAMETER[\"false_easting\",2000000.000],PARAMETER[\"false_northing\",0.000],PARAMETER[\"central_meridian\",-122.00000000000000],PARAMETER[\"latitude_of_origin\",39.33333333333333],PARAMETER[\"standard_parallel_1\",41.66666666666666],PARAMETER[\"standard_parallel_2\",40.00000000000000],UNIT[\"Foot_US\",0.30480060960122]]" ); 
 
             stream1 = FdoIoMemoryStream::Create();
             UnitTestUtil::ExportDb( 

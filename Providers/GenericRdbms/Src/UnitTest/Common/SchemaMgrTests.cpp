@@ -1753,6 +1753,9 @@ void SchemaMgrTests::testSpatialContexts()
         scinfo = CreateSc( GetSrid(0), -1001, -1002, 1001, 1002, 0.0333, 0.0111 );
         column = table->CreateColumnGeom( L"GEOM_COLUMN1", scinfo, true, true );
         
+        scinfo = CreateSc( GetSrid(4), -1001, -1002, 1001, 1002, 0.0333, 0.0111 );
+        column = table->CreateColumnGeom( L"GEOM_COLUMN2", scinfo, true, true );
+        
         owner->Commit();
 
         phMgr = NULL;

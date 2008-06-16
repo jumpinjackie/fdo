@@ -10,6 +10,7 @@
 <gml:DerivedCRS/>
 <gml:DerivedCRS/>
 <gml:DerivedCRS/>
+<gml:DerivedCRS/>
 <xs:schema xmlns:AutoGen="http://fdo.osgeo.org/schemas/feature/AutoGen" targetNamespace="http://fdo.osgeo.org/schemas/feature/AutoGen" elementFormDefault="qualified" attributeFormDefault="unqualified">
 <xs:annotation>
 <xs:documentation/>
@@ -520,7 +521,7 @@ GEOGCS [ "Longitude / Latitude (NAD 83) Datum 33", DATUM ["GRS 80", SPHEROID ["G
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:complexType name="TABLE5Type" abstract="false" fdo:geometryName="GEOM_COLUMN1">
+<xs:complexType name="TABLE5Type" abstract="false" fdo:hasGeometry="false">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -563,6 +564,25 @@ Quebec MTM Zone 4 (NAD 83)</gml:srsName>
 PROJCS["Quebec MTM Zone 4 (NAD 83)", GEOGCS ["NAD 83 (Continental US)", DATUM ["NAD 83 (Continental US)", SPHEROID ["GRS 80", 6378137, 298.257222101]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999900], PARAMETER ["Central_Meridian", -61.500000], PARAMETER ["False_Easting", 304800.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
 </fdo:WKTCRS>
 </gml:baseCRS>
+</xs:element>
+<xs:element name="GEOM_COLUMN2" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.033300</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.011100</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-1001.000000 -1002.000000</gml:pos>
+<gml:pos>
+1001.000000 1002.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
 </xs:element>
 </xs:sequence>
 </xs:extension>

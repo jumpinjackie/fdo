@@ -27,6 +27,7 @@
 #include "FdoRdbmsSqlServerSpatialGeometryConverter.h"
 #include "FdoRdbmsSqlServerFunctionIsValid.h"
 #include "../SchemaMgr/Ph/SpatialIndex.h"
+#include "../SchemaMgr/Ph/Mgr.h"
 
 #define SQLSERVER_CONVERT_WKB L".STAsBinary()"
 
@@ -225,6 +226,7 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
     const FdoSmLpGeometricPropertyDefinition* geomProp = GetGeometricProperty(classDefinition, FdoPtr<FdoIdentifier>(filter.GetPropertyName())->GetName());
     const FdoSmPhColumn* geomColumn = geomProp ? geomProp->RefColumn() : (const FdoSmPhColumn*) NULL;
     FdoStringP geomType = geomColumn ? geomColumn->GetTypeName() : FdoStringP(L"geometry");
+    bool geogLatLong = false;
     const FdoString* classTableName = classDefinition->GetDbObjectName();
     const FdoString* tableName = geomProp ? geomProp->GetContainingDbObjectName() : L""; // The geometry table name
     FdoStringP columnName = GetGeometryColumnNameForProperty(geomProp, true);
@@ -249,13 +251,19 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
 
     geometryObj = gf->CreateGeometryFromFgf(geomfgf);
 
+    if ( geomColumn ) 
+    {
+        FdoSmPhSqsMgrP phMgr = ((FdoSmPhColumn*) geomColumn)->GetManager()->SmartCast<FdoSmPhSqsMgr>();
+        geogLatLong = phMgr->IsGeogLatLong();
+    }
+
     // SqlServer supports only 2D
     FdoPtr<FdoIGeometry> geom2D = geometryObj;
-    if ( (geomType == L"geography") || (geometryObj->GetDimensionality() != FdoDimensionality_XY) )
+    if ( ((geomType == L"geography") && geogLatLong) || (geometryObj->GetDimensionality() != FdoDimensionality_XY) )
 	{
 		FdoSpatialGeometryConverter *gc = NULL;
         
-        if ( geomType == L"geography" ) 
+        if ( (geomType == L"geography" ) && geogLatLong ) 
             gc = new FdoRdbmsSqlServerSpatialGeographyConverter();
         else
             gc = new FdoRdbmsSqlServerSpatialGeometryConverter();
