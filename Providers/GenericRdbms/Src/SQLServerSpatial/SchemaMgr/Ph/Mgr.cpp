@@ -101,6 +101,18 @@ FdoSmPhMgr::CoordinateSystemMatchLevel FdoSmPhSqsMgr::GetCoordinateSystemMatchLe
     return level;
 }
 
+bool FdoSmPhSqsMgr::IsGeogLatLong()
+{
+    FdoVectorP verTokens = FdoVector::Create( GetDbVersion(), L"." );
+    FdoVectorP minLongLat = FdoVector::Create();
+    minLongLat->Add( 10 );
+    minLongLat->Add( 0 );
+    minLongLat->Add( 1442 );
+
+    return verTokens < minLongLat;
+}
+
+
 FdoStringP FdoSmPhSqsMgr::GetExtendedCsysFilename()
 {
     return FdoStringP(GetHomeDir()) + L"extendedCoordSys.txt";

@@ -1987,7 +1987,7 @@ void FdoApplySchemaTest::ApplyNoMetaSuccess( FdoIConnection* connection, StaticC
 	}
 
 	if ( succeeded ) 
-		CPPUNIT_FAIL( "Creating long string schema was supposed to fail" );
+		CPPUNIT_FAIL( "Creating override schema was supposed to fail" );
 
     FdoIoMemoryStreamP stream = FdoIoMemoryStream::Create();
 	FdoPtr<FdoIDescribeSchema> cmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
@@ -4413,7 +4413,11 @@ void FdoApplySchemaTest::ReAddElements( FdoIConnection* connection, bool hasMeta
 
 	FdoPtr<FdoGeometricPropertyDefinition> pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"location and shape" );
 	pGeomProp->SetGeometryTypes( FdoGeometricType_Surface );
-    if ( CanDropCol() ) {
+
+    // When MetaSchema, delete of ElectricDevice.Geometry causes delete of Transformer.Geometry.
+    // When no MetaSchema, inheritance not preserved so Transformer.Geometry not deleted and
+    // still exists at this point.
+    if ( hasMetaSchema && CanDropCol() ) {
 	    FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
     }
     else {

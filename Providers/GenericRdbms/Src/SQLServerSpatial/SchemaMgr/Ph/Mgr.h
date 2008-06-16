@@ -51,6 +51,8 @@ public:
 
     virtual CoordinateSystemMatchLevel GetCoordinateSystemMatchLevel();
 
+    bool IsGeogLatLong();
+
     // Gets the extended coordinate system file name.
     // SQL Server's coordinate system catalogue (sys.spatial_reference_systems)
     // contains only geodetic systems. However, SQL Server allows geometries

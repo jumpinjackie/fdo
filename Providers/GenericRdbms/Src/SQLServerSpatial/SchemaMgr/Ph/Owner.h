@@ -67,6 +67,11 @@ public:
     // Returns NULL if coordinate system not found.
     virtual FdoSmPhCoordinateSystemP FindCoordinateSystemByWkt( FdoStringP wkt );
 
+    // Same as FindCoordinateSystem except that NULL is returned if the coordinate
+    // system is not in sys.spatial_reference_systems. In other words, the extended
+    // coordinate systems are not checked.
+    virtual FdoSmPhCoordinateSystemP FindCataloguedCoordinateSystem( FdoInt64 srid );
+
 	// Get the name of function to retrieve current database name
 	FdoString* GetDbNameClause(bool isEqual);
 
