@@ -664,6 +664,8 @@ SltMetadata* SltConnection::GetMetadata(const char* table)
                 delete ret;
                 ret = REALLY_BAD_POINTER;
             }
+            else //if we got a table, also create the cached FDO feature class corresponding to it
+                ret->ToClass()->Release();
         }
 
         m_mNameToMetadata[stable] = ret;
