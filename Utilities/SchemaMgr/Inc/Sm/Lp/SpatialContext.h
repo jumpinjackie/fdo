@@ -128,7 +128,10 @@ protected:
     /// Set the SRID.
     void SetSrid( FdoInt64 srid );
 
-	/// Get a matching spatial context group definition.
+    /// Set the extents
+    void SetExtent( FdoByteArray* ext );
+
+    /// Get a matching spatial context group definition.
 	FdoInt64  GetMatchingScgid();
 
     // The following add or delete the spatial context in the datastore, when 
@@ -138,6 +141,14 @@ protected:
 
     /// Finalize this spatial context.
 	virtual void Finalize();
+
+    // Called by Finalize() just before it does its processing. Base function does
+    // nothing but it can be overridden to add provider specific finalizations
+    virtual void PreFinalize();
+
+    // Called by Finalize() just after it does its processing. Base function does
+    // nothing but it can be overridden to add provider specific finalizations
+    virtual void PostFinalize();
 
 private:
     void AddNoMetaNameChangeError( FdoSmPhOwnerP owner );

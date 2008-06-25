@@ -395,6 +395,18 @@
 					RelativePath=".\Lp\SchemaCollection.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\Lp\SpatialContext.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Lp\SpatialContextCollection.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Lp\SpatialContextMgr.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Ph"
@@ -707,6 +719,18 @@
 				</File>
 				<File
 					RelativePath=".\Lp\SchemaCollection.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Lp\SpatialContext.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Lp\SpatialContextCollection.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Lp\SpatialContextMgr.h"
 					>
 				</File>
 			</Filter>
