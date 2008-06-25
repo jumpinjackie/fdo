@@ -39,6 +39,9 @@ protected:
     // Create SqlServer Provider's LogicalPhysical Schema collection.
     virtual FdoSmLpSchemasP CreateLogicalPhysicalSchemas(FdoSmPhMgrP physMgr, FdoSmLpSpatialContextMgrP scMgr);
 
+    // Create SqlServer Provider's Spatial Context Manager
+    virtual FdoSmLpSpatialContextMgrP CreateLpSpatialContextMgr(FdoSmPhMgrP physMgr);
+
     // Create SqlServer Provider's Physical Schema Manager.
     virtual FdoSmPhMgrP CreatePhysicalSchema();
 
