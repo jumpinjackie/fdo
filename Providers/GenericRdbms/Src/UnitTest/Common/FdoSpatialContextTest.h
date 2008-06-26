@@ -53,6 +53,9 @@ protected:
     virtual void CreateTables( StaticConnection* staticConn, FdoStringP datastore );
 
     FdoStringP GenFileName( int fileNum, bool hasMetaSchema, bool isMaster );
+
+    static FdoString* FdoSpatialContextTest::DB_NAME_SUFFIX;
+
 };
 
 #endif // CPP_UNIT_FDOSPATIALCONTEXTTEST_H

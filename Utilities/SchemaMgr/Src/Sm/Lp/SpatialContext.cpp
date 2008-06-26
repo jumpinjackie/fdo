@@ -63,8 +63,7 @@ FdoSmLpSpatialContext::FdoSmLpSpatialContext(
     FdoPtr<FdoIGeometry> geom = gf->CreateGeometry(env); 
     
     FdoPtr<FdoByteArray>ext = gf->GetFgf(geom);
-    if( ext ) // make a copy of the byte array as the one obtained from the factory is not thread safe.
-        mExtent = FdoByteArray::Create( ext->GetData(), ext->GetCount() );
+    SetExtent(ext);
 
     ext = NULL;
 }
@@ -398,6 +397,12 @@ void FdoSmLpSpatialContext::SetSrid( FdoInt64 srid )
 	mSrid = srid;
 }
 
+void FdoSmLpSpatialContext::SetExtent( FdoByteArray* ext )
+{
+    if( ext ) // make a copy of the byte array as the one obtained from the factory is not thread safe.
+        mExtent = FdoByteArray::Create( ext->GetData(), ext->GetCount() );
+}
+
 void FdoSmLpSpatialContext::AddNoMeta()
 {
     FdoSmPhOwnerP owner = mPhysicalSchema->FindOwner();
@@ -473,6 +478,8 @@ void FdoSmLpSpatialContext::Finalize()
 	if ( GetState() == FdoSmObjectState_Initial )
     {
 		SetState( FdoSmObjectState_Final);
+
+        PreFinalize();
 
         if ( GetElementState() == FdoSchemaElementState_Added ) {
             FdoSmPhOwnerP owner = mPhysicalSchema->FindOwner();
@@ -576,7 +583,17 @@ void FdoSmLpSpatialContext::Finalize()
                 }
             }
         }
+
+        PostFinalize();
 	}
+}
+
+void FdoSmLpSpatialContext::PreFinalize()
+{
+}
+
+void FdoSmLpSpatialContext::PostFinalize()
+{
 }
 
 void FdoSmLpSpatialContext::AddNoMetaNameChangeError( FdoSmPhOwnerP owner)

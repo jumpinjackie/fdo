@@ -243,7 +243,7 @@ FdoRdbmsOvColumn* SqlServerFdoApplySchemaTest::CreateOvColumn(FdoString* name)
 
     if (0==wcscmp(name, L"ov_col_D"))
     {
-        ovCol->SetFormula(L"substring(\"ov_col_b\",1,1)");
+        ovCol->SetFormula(L"substring(\"ov_col_B\",1,1)");
     }
 
     return FDO_SAFE_ADDREF(ovCol.p);
