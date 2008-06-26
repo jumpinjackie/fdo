@@ -21,7 +21,7 @@
 #include "XmlFormatter.h"
 #include "../SchemaMgr/Ph/Owner.h"
 
-#define DB_NAME_SUFFIX L"_spatialcontext"
+FdoString* FdoSpatialContextTest::DB_NAME_SUFFIX = L"_spatialcontext";
 
 FdoSpatialContextTest::FdoSpatialContextTest(void)
 {

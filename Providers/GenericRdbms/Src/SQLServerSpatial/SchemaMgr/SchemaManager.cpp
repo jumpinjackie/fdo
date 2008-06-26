@@ -18,6 +18,7 @@
 
 #include "stdafx.h"
 #include "SchemaManager.h"
+#include "Lp/SpatialContextMgr.h"
 #include "Lp/SchemaCollection.h"
 #include "Ph/Mgr.h"
 
@@ -34,6 +35,11 @@ FdoSqsSchemaManager::~FdoSqsSchemaManager(void)
 FdoSmLpSchemasP FdoSqsSchemaManager::CreateLogicalPhysicalSchemas(FdoSmPhMgrP physMgr, FdoSmLpSpatialContextMgrP scMgr)
 {
     return new FdoSmLpSqsSchemaCollection(physMgr, scMgr);
+}
+
+FdoSmLpSpatialContextMgrP FdoSqsSchemaManager::CreateLpSpatialContextMgr( FdoSmPhMgrP physMgr)
+{
+	return new FdoSmLpSqsSpatialContextMgr(physMgr);
 }
 
 FdoSmPhMgrP FdoSqsSchemaManager::CreatePhysicalSchema()

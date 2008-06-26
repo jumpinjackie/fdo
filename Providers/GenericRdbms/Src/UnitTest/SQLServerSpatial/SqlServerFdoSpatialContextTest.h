@@ -24,9 +24,16 @@
 class SqlServerFdoSpatialContextTest : public FdoSpatialContextTest
 {
     CPPUNIT_TEST_SUB_SUITE (SqlServerFdoSpatialContextTest, FdoSpatialContextTest);
+    CPPUNIT_TEST( testAdjustExtents );
     CPPUNIT_TEST_SUITE_END ();
 
+protected:
     virtual void set_provider();
+
+    // Unit test methods:
+    virtual void testAdjustExtents ();
+
+    void VldAdjustedExtent( FdoStringP scName, FdoByteArray* ba, double minx, double miny, double maxx, double maxy );
 };
 
 #endif // SQLSERVER_FDOSPATIALCONTEXTTEST_H
