@@ -276,9 +276,12 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
     buf += "[";
     buf += columnName;
     buf += "].";
- 
+
+    // What operation
+    FdoSpatialOperations  spatialOp = filter.GetOperation();
+
     // Geography type does not have an STIsValid() function.
-    if ( geomType == L"geometry" ) 
+    if ( (geomType == L"geometry") && (spatialOp != FdoSpatialOperations_EnvelopeIntersects)) 
     {
         // Skip the invalid geometries otherwise any spatial query will fail.
         // The user should run "Select * where IsValid() = 0" in order to find out the offending geometries.
@@ -288,8 +291,6 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
         buf += "].";
     }
 
-    // What operation
-    FdoSpatialOperations  spatialOp = filter.GetOperation();
     switch( spatialOp )
     {
         case FdoSpatialOperations_Contains:
@@ -345,9 +346,9 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
 
 	if ( spatialOp == FdoSpatialOperations_EnvelopeIntersects)
 	{
-		buf += L" AND ";
+		buf += L" AND [";
 		buf += columnName;
-		buf += ".MakeValid().STEnvelope().STIntersects";
+		buf += "].MakeValid().STEnvelope().STIntersects";
 		buf += "(";
 		buf += geomType;
 		buf += "::STGeomFromText('";
@@ -386,8 +387,9 @@ void FdoRdbmsSqlServerFilterProcessor::AppendTablesHints( SqlCommandType cmdType
 			buf += L", INDEX(";
 		else
 			buf =  L" with (INDEX(";
+		buf += "[";
 		buf += mSpatialIndexName;
-		buf += L") ";
+		buf += L"]) ";
 		bAdded = true;
 		mSpatialIndexName = "";
     }
