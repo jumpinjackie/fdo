@@ -1965,3 +1965,13 @@ SymbolicName=FDORDBMS_540
 Language=English
 At least one of coordinate system name or WKT must be specified; error at line %1$d in file '%2$ls'
 .
+MessageId=2766
+SymbolicName=FDORDBMS_541
+Language=English
+OSGeo FDO Provider for SQL Server Spatial
+.
+MessageId=2767
+SymbolicName=FDORDBMS_542
+Language=English
+Read/write access to feature data in a MS SQL Server Spatial data store. Supports geospatial and nongeospatial data and schema R/W access.
+.
