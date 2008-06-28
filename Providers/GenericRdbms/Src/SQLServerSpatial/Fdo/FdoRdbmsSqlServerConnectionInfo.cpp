@@ -39,12 +39,12 @@ const wchar_t* FdoRdbmsSqlServerConnectionInfo::GetProviderName()
 
 const wchar_t* FdoRdbmsSqlServerConnectionInfo::GetProviderDisplayName()
 {
-    return NlsMsgGet(FDORDBMS_474, RDBMS_SQLSERVER_PROVIDER_DEFAULT_DISPLAY_NAME);
+    return NlsMsgGet(FDORDBMS_541, RDBMS_SQLSERVER_PROVIDER_DEFAULT_DISPLAY_NAME);
 }
 
 const wchar_t* FdoRdbmsSqlServerConnectionInfo::GetProviderDescription()
 {
-    return NlsMsgGet(FDORDBMS_475, RDBMS_SQLSERVER_PROVIDER_DEFAULT_DESCRIPTION);
+    return NlsMsgGet(FDORDBMS_542, RDBMS_SQLSERVER_PROVIDER_DEFAULT_DESCRIPTION);
 }
 
 const wchar_t* FdoRdbmsSqlServerConnectionInfo::GetProviderVersion()
