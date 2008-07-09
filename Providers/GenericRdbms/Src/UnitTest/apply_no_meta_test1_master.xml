@@ -126,12 +126,12 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:complexType name="AcDbHatchType" abstract="false">
+<xs:complexType name="AcDbHatchType" abstract="false" fdo:geometryName="Geometry">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
 <xs:complexContent>
-<xs:extension base="fdo:ClassType">
+<xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
 <xs:element name="ColourIndex" minOccurs="0">
 <xs:simpleType>
@@ -145,6 +145,11 @@
 <xs:simpleType>
 <xs:restriction base="fdo:int64"/>
 </xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="Geometry" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>

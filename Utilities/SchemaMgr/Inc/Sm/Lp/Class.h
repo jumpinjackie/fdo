@@ -48,6 +48,12 @@ class FdoSmLpClass : public FdoSmLpClassDefinition
 		);
 	}
 
+    // Non-feature classes can have only have geometry where there is no MetaSchema,
+    // in which case, they turn into feature classes if geometric properties are added
+    // to them.
+    virtual bool SupportsGeometry() const { return !GetHasMetaSchema();} 
+
+
 protected:
     //Unused constructor needed only to build on Linux
     FdoSmLpClass() {}
