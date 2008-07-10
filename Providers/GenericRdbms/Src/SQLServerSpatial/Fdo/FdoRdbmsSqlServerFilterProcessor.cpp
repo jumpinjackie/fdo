@@ -702,7 +702,10 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessLogFunction (FdoFunction& expr)
         AppendString(CLOSE_PARENTH);
         AppendString(ARITHMETIC_DIV);
         AppendString(OPEN_PARENTH);
+        AppendString(SQLSERVER_FUNCTION_LOG);
+        AppendString(OPEN_PARENTH);
         HandleExpr(exp0);
+        AppendString(CLOSE_PARENTH);
         AppendString(CLOSE_PARENTH);
     }
     AppendString(CLOSE_PARENTH);
