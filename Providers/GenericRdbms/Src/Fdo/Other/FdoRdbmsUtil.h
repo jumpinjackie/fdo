@@ -29,7 +29,7 @@ extern char *fdordbms_cat;
 /*
 typedef struct {
         int     type; // FdoDataType
-        char    name[GDBI_DB_NAME_SIZE];
+        char    name[GDBI_COLUMN_NAME_SIZE];
 		union {
 			void	*strvalue; // can be char* or wchar_t*
 			double  dvalue;

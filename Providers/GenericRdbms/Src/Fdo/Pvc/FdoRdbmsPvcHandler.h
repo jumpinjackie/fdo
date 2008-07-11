@@ -25,7 +25,7 @@
 
 typedef struct {
         int     type; // FdoDataType
-        wchar_t    name[GDBI_DB_NAME_SIZE];
+        wchar_t    name[GDBI_COLUMN_NAME_SIZE];
 		union {
 			void		*strvalue; // can be char* or wchar_t*
 			double		gvalue;
