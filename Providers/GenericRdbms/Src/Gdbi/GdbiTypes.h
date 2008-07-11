@@ -26,13 +26,13 @@
 
 #define         GDBI_NI_TYPE    long
 
-#define         GDBI_DB_NAME_SIZE               32
+#define         GDBI_DB_NAME_SIZE               129
 #define         GDBI_COLUMN_NAME_SIZE           RDBI_COLUMN_NAME_SIZE
 #define         GDBI_TABLE_NAME_SIZE            RDBI_TABLE_NAME_SIZE
 #define         GDBI_SCHEMA_ELEMENT_NAME_SIZE   256         /* size of a schema, class or property name */
 #define         GDBI_MAXIMUM_TEXT_SIZE          4000
 #define         GDBI_DATE_TIME                  63
-#define	        GDBI_MAXIMUM_STRING_SIZE		4000
+#define	        GDBI_MAXIMUM_STRING_SIZE		16000
 /* define reserved identifiers */
 
 

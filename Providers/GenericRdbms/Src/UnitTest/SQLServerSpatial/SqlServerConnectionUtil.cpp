@@ -244,7 +244,12 @@ FdoStringP SqlServerConnectionUtil::GetOutputFileName (FdoString* pBaseFileName)
 
 FdoStringP SqlServerConnectionUtil::GetNlsObjectName( FdoStringP inName )
 {
-    return ConnectionUtil::GetNlsObjectName(inName);
+    FdoStringP outName = ConnectionUtil::GetNlsObjectName(inName);
+
+    if ( inName == L"Geometry" ) 
+        outName += L"abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy";
+
+    return outName;
 }
 
 wchar_t SqlServerConnectionUtil::GetNlsChar( int index )
