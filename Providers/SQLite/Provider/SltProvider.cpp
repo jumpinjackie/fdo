@@ -802,6 +802,8 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema)
 
     FdoPtr<FdoClassCollection> inclasses = schema->GetClasses();
 
+    int rc = sqlite3_exec(m_db, "BEGIN;", NULL, NULL, NULL);
+
     for (int i=0; i<inclasses->GetCount(); i++)
     {
         FdoPtr<FdoClassDefinition> fc = inclasses->GetItem(i);
@@ -901,6 +903,8 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema)
         int rc = sqlite3_exec(m_db, sql.c_str(), NULL, NULL, NULL);
     }
 
+    rc = sqlite3_exec(m_db, "COMMIT;", NULL, NULL, NULL);
+
     //the cached FDO schema will need to be refreshed
     FDO_SAFE_RELEASE(m_pSchema);
 }
@@ -911,7 +915,7 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
     //Checks for a SpatialExtents or Count request
     std::string fcname = W2A_SLOW(fc->GetName());
     std::string gname;
-    std::string extname = "TheExtents";
+    std::string extname = ""; //if this remains empty, we know extents is not needed
     std::string countname = "TheCount";
 
     int propsCount = props->GetCount();
@@ -958,44 +962,21 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
         return NULL;
     }
 
-    //get the extents and convert to blob
-    SpatialIndex* si = GetSpatialIndex(fcname.c_str());
-
-    DBounds ext;
-    si->GetTotalExtent(ext);
-
     //ok this is a spatial extents or count computed property.
     //Look up the extents and count and return a reader with them.
-    //We will always return both, for now.
+    //We will always return count, but not extents, if they are not needed.
 
+    //create a temporary table to hold return result
     sqlite3* db = NULL;
     int rc = sqlite3_open(":memory:", &db);
-    std::string sql = "CREATE TABLE SpatialExtentsResult (" + extname + " BLOB," + countname + " INTEGER);";
-
-    char* err;
-    rc = sqlite3_exec(db, sql.c_str(), NULL, NULL, &err);
-
-    if (rc)
-    {
-        sqlite3_free(err);
-    }
-
-    //convert to FGF byte array
-    FgfPolygon poly;
-    poly.np = 5;
-
-    poly.p[0] = ext.min[0];   poly.p[1] = ext.min[1];
-    poly.p[2] = ext.max[0];   poly.p[3] = ext.min[1];
-    poly.p[4] = ext.max[0];   poly.p[5] = ext.max[1];
-    poly.p[6] = ext.min[0];   poly.p[7] = ext.max[1];
-    poly.p[8] = ext.min[0];   poly.p[9] = ext.min[1];
-
-    sqlite3_stmt* stmt;
-    const char* tail = NULL;
 
     //now get the count -- this is approximate since
     //a real count would take a long time (table scan)
-    sql = "SELECT MAX(ROWID) FROM " + fcname + ";";
+    //we always use the count, whether we compute extents or not
+    sqlite3_stmt* stmt;
+    const char* tail = NULL;
+
+    std::string sql = "SELECT MAX(ROWID) FROM " + fcname + ";";
     rc = sqlite3_prepare_v2(m_db, sql.c_str(), -1, &stmt, &tail);
     rc = sqlite3_step(stmt);
     int count = sqlite3_column_int(stmt, 0);
@@ -1003,17 +984,64 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
     stmt = NULL;
     tail = NULL;
 
-    //insert into the temporary table
-    sql = "INSERT INTO SpatialExtentsResult VALUES(?,?);";
+    //case where we only need count
+    if (extname.empty())
+    {
+        sql = "CREATE TABLE SpatialExtentsResult (" + countname + " INTEGER);";
+
+        char* err;
+        rc = sqlite3_exec(db, sql.c_str(), NULL, NULL, &err);
+
+        if (rc)
+            sqlite3_free(err);
+
+        //insert into the temporary table
+        sql = "INSERT INTO SpatialExtentsResult VALUES(?);";
+
+        //TODO: some day we should check the error codes...
+        //but really, failure is not an option here.
+        rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, &tail);
+        rc = sqlite3_bind_int(stmt, 1, count);
+        rc = sqlite3_step(stmt);
+        rc = sqlite3_finalize(stmt);
+    }
+    else
+    {
+        //get the extents and convert to blob
+        SpatialIndex* si = GetSpatialIndex(fcname.c_str());
+        DBounds ext;
+        si->GetTotalExtent(ext);
+
+        //convert to FGF byte array
+        FgfPolygon poly;
+        poly.np = 5;
+
+        poly.p[0] = ext.min[0];   poly.p[1] = ext.min[1];
+        poly.p[2] = ext.max[0];   poly.p[3] = ext.min[1];
+        poly.p[4] = ext.max[0];   poly.p[5] = ext.max[1];
+        poly.p[6] = ext.min[0];   poly.p[7] = ext.max[1];
+        poly.p[8] = ext.min[0];   poly.p[9] = ext.min[1];
 
 
-    //TODO: some day we should check the error codes...
-    //but really, failure is not an option here.
-    rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, &tail);
-    rc = sqlite3_bind_blob(stmt, 1, &poly, sizeof(FgfPolygon), SQLITE_TRANSIENT);
-    rc = sqlite3_bind_int(stmt, 2, count);
-    rc = sqlite3_step(stmt);
-    rc = sqlite3_finalize(stmt);
+        std::string sql = "CREATE TABLE SpatialExtentsResult (" + extname + " BLOB," + countname + " INTEGER);";
+
+        char* err;
+        rc = sqlite3_exec(db, sql.c_str(), NULL, NULL, &err);
+
+        if (rc)
+            sqlite3_free(err);
+
+        //insert into the temporary table
+        sql = "INSERT INTO SpatialExtentsResult VALUES(?,?);";
+
+        //TODO: some day we should check the error codes...
+        //but really, failure is not an option here.
+        rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, &tail);
+        rc = sqlite3_bind_blob(stmt, 1, &poly, sizeof(FgfPolygon), SQLITE_TRANSIENT);
+        rc = sqlite3_bind_int(stmt, 2, count);
+        rc = sqlite3_step(stmt);
+        rc = sqlite3_finalize(stmt);
+    }
 
     sql = "SELECT * FROM SpatialExtentsResult;";
 
