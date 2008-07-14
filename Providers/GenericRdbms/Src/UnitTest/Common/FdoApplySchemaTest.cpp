@@ -4348,6 +4348,17 @@ void FdoApplySchemaTest::ModDelAcadSchema( FdoFeatureSchemaCollection* pSchemas,
         FdoClassesP(pSchema->GetClasses())->Add( pCaseClass );
 #endif
     }
+    else {
+        // When no metaschema, adding geometry to nonfeature class is allowed. Class type simply
+        // changes to feature class.
+
+        FdoPtr<FdoClass> pHatchClass = (FdoClass*) (FdoClassesP(pSchema->GetClasses())->GetItem(L"AcDbHatch"));
+
+        FdoPtr<FdoGeometricPropertyDefinition> pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"location and shape" );
+	    pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve );
+
+        FdoPropertiesP(pHatchClass->GetProperties())->Add( pGeomProp );
+    }
 }
 
 void FdoApplySchemaTest::ReAddElements( FdoIConnection* connection, bool hasMetaSchema )
