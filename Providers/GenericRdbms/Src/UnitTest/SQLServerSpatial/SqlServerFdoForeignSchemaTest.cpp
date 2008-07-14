@@ -54,7 +54,7 @@ void SqlServerFdoForeignSchemaTest::create_foreign_datastore()
     connection->Open ();
 
 	sqlStmt = FdoStringP::Format(
-		L"create table device_tbl (id decimal(20), string varchar(64), install_date datetime, int32 int, constraint device_tbl_pk primary key (id, string, install_date))");
+		L"create table device_tbl (id decimal(20), string varchar(64), install_date datetime, int32 int, bigstring nvarchar(max), bigchars varchar(max) constraint device_tbl_pk primary key (id, string, install_date))");
 	UnitTestUtil::Sql2Db(sqlStmt, connection);
 
 	connection->Close();
@@ -64,6 +64,7 @@ void SqlServerFdoForeignSchemaTest::insert()
 {
 	FdoPtr<FdoIConnection> connection = UnitTestUtil::GetConnection(DB_NAME_SUFFIX, false);
     FdoPtr<FdoIInsert> insertCommand;
+    FdoPtr<FdoISelect> selectCommand;
     FdoPtr<FdoIFeatureReader> myReader;
 
     try
@@ -99,7 +100,22 @@ void SqlServerFdoForeignSchemaTest::insert()
         propertyValue = AddNewProperty( propertyValues,L"int32"); 
         propertyValue->SetValue(dataValue);
 
-		{
+        FdoStringP bigSubString = L"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
+        FdoStringP bigStringValue;
+
+        int idx;
+        for ( idx = 0; idx < 250; idx++ ) 
+            bigStringValue += bigSubString;
+
+		dataValue = FdoDataValue::Create(bigStringValue);
+        propertyValue = AddNewProperty( propertyValues,L"bigstring"); 
+        propertyValue->SetValue(dataValue);
+
+		dataValue = FdoDataValue::Create(bigStringValue);
+        propertyValue = AddNewProperty( propertyValues,L"bigchars"); 
+        propertyValue->SetValue(dataValue);
+
+        {
 		myReader = insertCommand->Execute();
 
 		CPPUNIT_ASSERT(myReader != NULL);
@@ -118,6 +134,21 @@ void SqlServerFdoForeignSchemaTest::insert()
 		}
 		myReader->Close();
 		}
+
+        {
+        selectCommand = (FdoISelect *) connection->CreateCommand(FdoCommandType_Select);
+        selectCommand->SetFeatureClassName(L"device_tbl");
+
+        myReader = selectCommand->Execute();
+		// verify that bigstring has the right values
+		while (myReader->ReadNext())
+		{
+			CPPUNIT_ASSERT( FdoStringP(myReader->GetString(L"bigstring")).ICompare(bigStringValue) == 0);
+			CPPUNIT_ASSERT( FdoStringP(myReader->GetString(L"bigchars")).ICompare(bigStringValue) == 0);
+		}
+		myReader->Close();
+        }
+
 		connection->Close();
 	}
 	catch (FdoCommandException *ex)

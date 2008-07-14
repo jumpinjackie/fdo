@@ -189,11 +189,11 @@ int local_odbcdr_desc_slct(
 			break;
         case SQL_LONGVARCHAR:
 			*rdbi_type	= RDBI_STRING;
-			*binary_size = 255;  // 'text': Arbitrary for now.
+			*binary_size = 16000;  // 'text': Arbitrary for now.
 			break;
         case SQL_WLONGVARCHAR:
 			*rdbi_type	= RDBI_WSTRING;
-			*binary_size = 255;  // 'text': Arbitrary for now.
+			*binary_size = 32000;  // 'text': Arbitrary for now.
 			break;
 		case SQL_TYPE_TIMESTAMP :
             *rdbi_type	 = RDBI_DATE;

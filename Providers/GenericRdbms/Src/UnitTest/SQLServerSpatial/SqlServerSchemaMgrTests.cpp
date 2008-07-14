@@ -361,6 +361,22 @@ void SqlServerSchemaMgrTests::AddProviderColumns( FdoSmPhTableP table )
     );
 
     table->CreateColumnUnknown(
+        L"NVARCHAR_MAX_COLUMN",
+        L"nvarchar(max)",
+        true,
+        0,
+        0
+    );
+
+    table->CreateColumnUnknown(
+        L"VARCHAR_MAX_COLUMN",
+        L"varchar(max)",
+        true,
+        0,
+        0
+    );
+
+    table->CreateColumnUnknown(
         L"INT_COLUMN",
         L"int",
         true,

@@ -1187,7 +1187,14 @@ void FdoRdbmsPvcInsertHandler::SetBindVariables(const FdoSmLpClassDefinition *cu
                 if (dataType == FdoDataType_String)
                 {
                     // Increase the length if necessary
-                    int size = column->GetLength()+1;
+                    int size = column->GetLength();
+
+                    if ( size > GDBI_MAXIMUM_STRING_SIZE )
+                        // Limit the string size to avoid running out of memory
+                        size = GDBI_MAXIMUM_STRING_SIZE + 1;
+                    else
+                        size += 1;
+
                     if (size > bind[bind_no].len)
                         bind[bind_no].len = size;
                 }

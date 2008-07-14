@@ -444,6 +444,16 @@
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
+<xs:element name="NVARCHAR_MAX_COLUMN" minOccurs="0">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="1073741823"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
 <xs:element name="OBJECT_NAME" minOccurs="0">
 <xs:annotation>
 <xs:documentation/>
@@ -542,6 +552,16 @@
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
+</xs:element>
+<xs:element name="VARCHAR_MAX_COLUMN" minOccurs="0">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="2147483647"/>
+</xs:restriction>
+</xs:simpleType>
 </xs:element>
 </xs:sequence>
 </xs:extension>
