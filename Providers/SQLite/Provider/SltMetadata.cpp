@@ -190,7 +190,7 @@ FdoClassDefinition* SltMetadata::ToClass()
         //is it a geometry property
         if (gi != -1)
         {
-            FdoGeometricPropertyDefinition* gpd = FdoGeometricPropertyDefinition::Create(wpname.c_str(), NULL);
+            FdoPtr<FdoGeometricPropertyDefinition> gpd = FdoGeometricPropertyDefinition::Create(wpname.c_str(), NULL);
             gpd->SetReadOnly(false);
 
             //if it is the first geometry property, make it THE geometry
