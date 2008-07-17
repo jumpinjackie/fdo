@@ -335,10 +335,20 @@ SymbolicName=FDORDBMS_37
 Language=English
 Feature class does not have a Geometric property
 .
+MessageId=2243
+SymbolicName=FDORDBMS_38
+Language=English
+Cannot open datastore '%1$ls' with the OSGeo.SQLServerSpatial provider; it was created by the Autodesk.SqlServer provider. You will need to migrate this datastore first.
+.
 MessageId=2244
 SymbolicName=FDORDBMS_39
 Language=English
 Property value is NULL
+.
+MessageId=2245
+SymbolicName=FDORDBMS_40
+Language=English
+Cannot open datastore '%1$ls' with the Autodesk.SqlServer provider; it has geometry or geography columns so it must be accessed by the OSGeo.SQLServerSpatial provider.
 .
 MessageId=2246
 SymbolicName=FDORDBMS_41
