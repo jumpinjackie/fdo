@@ -51,6 +51,12 @@ protected:
     virtual ~FdoRdbmsSqlServerConnection ();
     FdoRdbmsSqlServerConnection ();
 
+    // Checks for FDO-style geometries. If any are present, an
+    // exception is thrown. These geometries are created by the SqlServer
+    // provider, meaning they cannot be handled by the SQLServerSpatial
+    // provider.
+    void CheckForFdoGeometries();
+
 public:
 	static FdoRdbmsSqlServerConnection* Create();
     
