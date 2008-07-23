@@ -350,21 +350,22 @@ FdoConnectionState FdoRdbmsSqlServerConnection::Open()
   	    state = FdoRdbmsConnection::Open();
 	    if( state == FdoConnectionState_Open )
 	    {
-		    try
-		    {
-			    logOpen('s');
-		    }
-		    catch (FdoException *ex)
-		    {
-			    try
-			    {
-				    Close();
-			    }
-			    catch(...)
-			    {
-			    }
-			    throw ex;
-		    }
+	        try
+	        {
+                CheckForFdoGeometries();
+		        logOpen('s');
+	        }
+	        catch (FdoException *ex)
+	        {
+		        try
+		        {
+			        Close();
+		        }
+		        catch(...)
+		        {
+		        }
+		        throw ex;
+	        }
 	    }
     }
     return state;
@@ -383,6 +384,44 @@ void FdoRdbmsSqlServerConnection::Close()
 		
 	FdoRdbmsConnection::Close();
 }
+
+void FdoRdbmsSqlServerConnection::CheckForFdoGeometries()
+{
+    FdoSmPhSqsMgrP phMgr = GetSchemaManager()->GetPhysicalSchema()->SmartCast<FdoSmPhSqsMgr>();
+    FdoSmPhOwnerP owner = phMgr->FindOwner();
+
+    // non-FDO datastores not supported by Autodesk.SqlServer provider so 
+    // assume these can be opened by this provider
+    if ( !owner->GetHasMetaSchema() ) 
+        return;
+
+    // Geometric properties have numeric attributetype. Following query find
+    // geometric properties with image type columns. If any exist then
+    // this datastore was created by the Autodesk.SqlServer provider.
+	FdoStringP sqlStmt = L"select top 1 tablename from f_attributedefinition where lower(columntype) = 'image' and isnumeric(attributetype) = 1";
+
+	GdbiConnection* gdbiConn = phMgr->GetGdbiConnection();
+	GdbiQueryResult *gdbiResult = gdbiConn->ExecuteQuery((const wchar_t*)sqlStmt);
+
+	if (gdbiResult->ReadNext())
+	{
+        // Image type geometry found, can't use this datastore from this provider.
+        gdbiResult->End();
+        delete gdbiResult;
+
+        throw FdoConnectionException::Create(
+            FdoStringP::Format(
+                L"Cannot open datastore '%ls' with the OSGeo.SQLServerSpatial provider; it was created by the Autodesk.SqlServer provider. You will need to migrate this datastore first.",
+                owner->GetName()
+            )
+        );
+    }
+
+    gdbiResult->End();
+    delete gdbiResult;
+
+}
+
 
 // TODO: externalize messages in logOpen
 void FdoRdbmsSqlServerConnection::logOpen(char accessMode)
