@@ -365,6 +365,11 @@ SymbolicName=FDORDBMS_43
 Language=English
 Query ended
 .
+MessageId=2249
+SymbolicName=FDORDBMS_44
+Language=English
+Geometry property '%1$ls' has geodetic coordinate system; cannot use EnvelopeIntersects spatial operator in filter
+.
 MessageId=2250
 SymbolicName=FDORDBMS_45
 Language=English
