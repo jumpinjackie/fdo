@@ -203,6 +203,16 @@ void SpatialIndex::ReOpenForRead()
 
 void SpatialIndex::GetTotalExtent(DBounds& ext)
 {
+    //Is the spatial index empty? Return some default
+    //extent.
+    //TODO: what exactly is a good empty extent? Perhaps
+    //it is coord sys dependent
+    if (_counts[0] == 0)
+    {
+        ext.SetEmpty();
+        return;
+    }
+
     //TODO: handle case where root level has
     //more than one node -- this is theoretically
     //possible with our data structure
