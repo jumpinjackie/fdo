@@ -311,6 +311,8 @@ const char* FdoRdbmsSqlServerConnection::FdoToDbiTimeFilter( FdoDateTime  when )
 
 FdoConnectionState FdoRdbmsSqlServerConnection::Open()
 {
+    mIsGeogLatLongSet = false;
+
     FdoConnectionState  state = GetConnectionState();
 	if( state != FdoConnectionState_Open )
 	{
@@ -350,6 +352,7 @@ FdoConnectionState FdoRdbmsSqlServerConnection::Open()
   	    state = FdoRdbmsConnection::Open();
 	    if( state == FdoConnectionState_Open )
 	    {
+
 	        try
 	        {
                 CheckForFdoGeometries();
@@ -751,6 +754,10 @@ FdoIGeometry* FdoRdbmsSqlServerConnection::TransformGeometry( FdoIGeometry* geom
     FdoStringP geomType;
     bool       geogLatLong = false;
 
+    if ( !IsGeogLatLong() )
+        // No special transformation for geometry columns
+        return FdoRdbmsConnection::TransformGeometry( geom, prop, toFdo );
+
     //TODO: check performance impact of looking up geomType for each geometry value and
     //optimize if necessary.
     FdoSmPhColumnP column = ((FdoSmLpGeometricPropertyDefinition*) prop)->GetColumn();
@@ -762,12 +769,10 @@ FdoIGeometry* FdoRdbmsSqlServerConnection::TransformGeometry( FdoIGeometry* geom
         if ( geomColumn ) 
         {
             geomType = geomColumn->GetTypeName();
-            FdoSmPhSqsMgrP phMgr = geomColumn->GetManager()->SmartCast<FdoSmPhSqsMgr>();
-            geogLatLong = phMgr->IsGeogLatLong();
         }
     }
 
-    if ( (!geogLatLong) || (geomType != L"geography") )
+    if ( geomType != L"geography" )
         // No special transformation for geometry columns
         return FdoRdbmsConnection::TransformGeometry( geom, prop, toFdo );
 
@@ -779,3 +784,14 @@ FdoIGeometry* FdoRdbmsSqlServerConnection::TransformGeometry( FdoIGeometry* geom
     return mGeographyConverter->ConvertOrdinates( geom );
 }
 
+bool FdoRdbmsSqlServerConnection::IsGeogLatLong()
+{
+    if ( !mIsGeogLatLongSet ) 
+    {
+        FdoSmPhSqsMgrP phMgr = GetSchemaManager()->GetPhysicalSchema()->SmartCast<FdoSmPhSqsMgr>();
+        mIsGeogLatLong = phMgr->IsGeogLatLong();
+        mIsGeogLatLongSet = true;
+    }
+
+    return mIsGeogLatLong;
+}

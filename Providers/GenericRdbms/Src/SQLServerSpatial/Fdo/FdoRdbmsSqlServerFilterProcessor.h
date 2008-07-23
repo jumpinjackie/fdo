@@ -109,6 +109,8 @@ protected:
     FdoString *MapFdoFunction2SqlServerFunction (FdoString *f_name);
     virtual void ProcessFunctionName(FdoFunction& expr);
 
+    virtual bool CanOptimizeRelationQuery( const FdoSmLpClassDefinition* pClass, const FdoSmLpPropertyDefinition* propertyDefinition );
+
     virtual bool IsAggregateFunctionName(FdoString* wFunctionName) const;
     bool IsDataValue (FdoExpression *expr);
     virtual bool IsNotNativeSupportedFunction(FdoString* wFunctionName) const;
