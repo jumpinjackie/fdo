@@ -298,7 +298,7 @@ public:
 
 	const wchar_t* GetTableAlias( const wchar_t* tabName );
 
-    bool CanOptimizeRelationQuery( const FdoSmLpClassDefinition* pClass, const FdoSmLpPropertyDefinition* propertyDefinition );
+    virtual bool CanOptimizeRelationQuery( const FdoSmLpClassDefinition* pClass, const FdoSmLpPropertyDefinition* propertyDefinition );
 
     virtual const wchar_t* FilterToSql( FdoFilter *filter,
                                         const wchar_t *className,

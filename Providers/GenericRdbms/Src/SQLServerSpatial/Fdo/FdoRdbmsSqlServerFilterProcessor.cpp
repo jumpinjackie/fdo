@@ -324,7 +324,21 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
             buf += "STOverlaps"; // REALLY?
             break;
         case FdoSpatialOperations_EnvelopeIntersects:
-            buf += "Filter"; 
+            if ( geomType == L"geography" )
+            {
+                // SQL Server does not support STEnvelope for geography columns so cannot
+                // support this spatial operator in this case.
+                throw FdoFilterException::Create(
+                    FdoStringP::Format(
+                        L"Geometry property '%ls' has geodetic coordinate system; cannot use EnvelopeIntersects spatial operator in filter",
+                        (FdoString*) geomProp->GetQName()
+                    )
+                );
+            }
+            else 
+            {
+                buf += "Filter"; 
+            }
             break;
         default:
             throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_111, "Unsupported spatial operation"));
@@ -800,6 +814,29 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessFunctionName(FdoFunction& expr)
     FdoString* functionName = MapFdoFunction2SqlServerFunction (expr.GetName());
     AppendString(functionName);
 }
+
+bool FdoRdbmsSqlServerFilterProcessor::CanOptimizeRelationQuery( const FdoSmLpClassDefinition* pClass, const FdoSmLpPropertyDefinition* propertyDefinition )
+{
+    // Although the base function checks if two association properties on select class 
+    // point to the same table, it doesn't cascade through all association properties
+    // on associated classes. Therefore the base can still return true if another
+    // association property references the same class as this one.
+    //
+    // There is also a problem when the select class and an association class 
+    // each have a property of the same name. In this case the Feature Reader
+    // retrieves the value for the associated class property when asked for the
+    // select class's property
+    //
+    // A full fix would require some effort so temporarily return false for the
+    // SQLServerSpatial provider. This prevents the generated SQL statement from 
+    // doing any joins to associated tables. This impacts performance. Each time
+    // the Feature Reader has to retrieve an Association Property sub-property, it 
+    // must generate a separate SQL statement. However, assocation properties are
+    // not used very often yet so this should not be a problem for now. 
+
+    return false;
+}
+
 
 bool FdoRdbmsSqlServerFilterProcessor::IsAggregateFunctionName(FdoString* wFunctionName) const
 {
