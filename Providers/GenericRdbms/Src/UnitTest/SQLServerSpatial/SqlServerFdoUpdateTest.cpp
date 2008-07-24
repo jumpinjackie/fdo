@@ -421,6 +421,7 @@ void SqlServerFdoUpdateTest::UpdateGeogColumn()
         // Select and verify all data (post-update state).
         SelectGeogAll( connection, phMgr, table_id_geom );
 	    SelectGeogSpatial( connection, phMgr, table_id_geom );
+	    SelectGeogEnvelope( connection, phMgr, table_id_geom );
 
         connection->Close ();
 
@@ -858,7 +859,57 @@ void SqlServerFdoUpdateTest::SelectGeogSpatial( FdoPtr<FdoIConnection> connectio
     CPPUNIT_ASSERT( extRdr->GetInt64(L"total") == 5 );
     CPPUNIT_ASSERT( !extRdr->ReadNext() );
 }
- 
+
+void SqlServerFdoUpdateTest::SelectGeogEnvelope( FdoPtr<FdoIConnection> connection, FdoSmPhMgrP phMgr, FdoStringP tableName )
+{
+    FdoPtr<FdoISelect> selectCommand = (FdoISelect *) connection->CreateCommand(FdoCommandType_Select);
+
+    // Try select with filter
+
+
+    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+
+    double ordsXYExt[10];
+    ordsXYExt[0] = -97; ordsXYExt[1] = 53; 
+    ordsXYExt[2] = -93; ordsXYExt[3] = 53; 
+    ordsXYExt[4] = -93; ordsXYExt[5] = 57; 
+    ordsXYExt[6] = -97; ordsXYExt[7] = 57; 
+    ordsXYExt[8] = -97; ordsXYExt[9] = 53; 
+
+    FdoPtr<FdoILinearRing> extRing = gf->CreateLinearRing(FdoDimensionality_XY, 10, ordsXYExt);
+    FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(extRing, NULL );
+    FdoPtr<FdoGeometryValue> geomValue = FdoGeometryValue::Create(FdoPtr<FdoByteArray>(gf->GetFgf(poly)));
+    FdoPtr<FdoSpatialCondition> spatialFilter = FdoPtr<FdoSpatialCondition>(FdoSpatialCondition::Create(phMgr->GetDcColumnName(L"geometry"),
+                                                                      FdoSpatialOperations_EnvelopeIntersects,
+                                                                      geomValue));
+
+    selectCommand = (FdoISelect *) connection->CreateCommand(FdoCommandType_Select);
+
+    selectCommand->SetFeatureClassName( phMgr->GetDcDbObjectName(tableName).Replace(L".",L":") );
+    selectCommand->SetFilter(spatialFilter);
+
+    bool succeeded = true;
+    try {
+        FdoPtr<FdoIFeatureReader> rdr = selectCommand->Execute();
+    }
+    catch ( FdoException* ex ) {
+#ifdef _WIN32
+        FdoStringP expectedMessage = FdoStringP::Format(
+            L"Geometry property 'dbo:t%cble_id_geom.geometry' has geodetic coordinate system; cannot use EnvelopeIntersects spatial operator in filter",
+            0xe4
+        );
+
+        FdoString* pMessage = ex->GetExceptionMessage();
+        CPPUNIT_ASSERT( pMessage && expectedMessage.ICompare(pMessage) == 0 );
+#endif
+    
+        succeeded = false;
+        FDO_SAFE_RELEASE(ex);
+    }
+
+    CPPUNIT_ASSERT( !succeeded );
+}
+
 void SqlServerFdoUpdateTest::VldGeogRow( 
     FdoSmPhMgrP phMgr, 
     FdoPtr<FdoIFeatureReader> rdr, 

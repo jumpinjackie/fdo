@@ -44,8 +44,12 @@ private:
     FdoRdbmsSqlServerSpatialGeographyConverter
                                 *mGeographyConverter;
 
+    bool                        mIsGeogLatLongSet;
+    bool                        mIsGeogLatLong;
+
 	void						logOpen(char access);
 	void						delOpen();
+
 
 protected:
     virtual ~FdoRdbmsSqlServerConnection ();
@@ -138,6 +142,10 @@ public:
 
     //Count() and SpatialExtents()
     virtual FdoRdbmsFeatureReader *GetOptimizedAggregateReader(const FdoSmLpClassDefinition* classDef, aggr_list *selAggrList, FdoFilter* filter = NULL);
+
+    // Returns true if SQL Server handles geographic column coordinates in Latitude first order.
+    // True only for beta versions of SQL Server 2008
+    bool IsGeogLatLong();
 };
 
 
