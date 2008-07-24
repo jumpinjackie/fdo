@@ -598,6 +598,22 @@ int GdbiCommands::lob_destroy_ref( int sqlid, void *lob_ref )
 
 	return RDBI_GENERIC_ERROR;
 }
+int GdbiCommands::lob_get_size(int sqlid, void *lob_ref, unsigned int *size)
+{
+	int rc = ::rdbi_lob_get_size(m_pRdbiContext, sqlid, lob_ref, size);
+	if (rc == RDBI_SUCCESS)
+		return rc;
+
+	return RDBI_GENERIC_ERROR;
+}
+int GdbiCommands::lob_read_next(int sqlid, void *lob_ref, int rdbi_lob_type, unsigned int block_size, char *block, unsigned int *block_size_out, int *eol)
+{
+	int rc = ::rdbi_lob_read_next(m_pRdbiContext, sqlid, lob_ref, rdbi_lob_type, block_size, block, block_size_out, eol);
+	if (rc == RDBI_SUCCESS)
+		return rc;
+
+	return RDBI_GENERIC_ERROR;
+}
 int GdbiCommands::autocommit_on()
 {
 	int rc = ::rdbi_autocommit_on(m_pRdbiContext);
@@ -621,12 +637,32 @@ int GdbiCommands::autocommit_mode()
 int GdbiCommands::geom_to_fgf ( 
     int             sqlid,
     void *          rdbmsGeometryInfo_I,
+    int             defaultDim,
     void **         fgfGeometryByteArray_O )
 {
 #ifdef HAVE_GEOM_INFO_TYPE
     RdbmsGeometryValueInfo * geomInfo2 = (RdbmsGeometryValueInfo *) rdbmsGeometryInfo_I;
 
-    int rc = ::rdbi_geom_to_fgf(m_pRdbiContext, sqlid, geomInfo2, -1, (pByteArray_def *)fgfGeometryByteArray_O);
+    int rc = ::rdbi_geom_to_fgf(m_pRdbiContext, sqlid, geomInfo2, defaultDim, (pByteArray_def *)fgfGeometryByteArray_O);
+
+    return rc;
+#else
+    return FALSE;
+#endif
+}
+
+int GdbiCommands::geom_from_fgf ( 
+    int             sqlid,
+    long            srid,
+    void *          fgfGeometryByteArray_I,
+    void **         rdbmsGeometryInfo_O)
+{
+#ifdef HAVE_GEOM_INFO_TYPE
+    RdbmsGeometryValueInfo ** geomInfo2 = (RdbmsGeometryValueInfo **) rdbmsGeometryInfo_O;
+
+    (*geomInfo2) = new RdbmsGeometryValueInfo;
+
+    int rc = ::rdbi_geom_from_fgf(m_pRdbiContext, sqlid, srid, (pByteArray_def)fgfGeometryByteArray_I, (*geomInfo2));
 
     return rc;
 #else

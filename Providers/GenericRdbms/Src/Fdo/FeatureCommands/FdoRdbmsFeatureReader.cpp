@@ -1404,8 +1404,7 @@ FdoIStreamReader* FdoRdbmsFeatureReader::GetLOBStreamReader(const wchar_t* prope
         if( isNull )
             throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_385, strNUllPropetryExp, propertyName ));
         // Look up the LOB type based on the property name - assume FdoDataType_BLOB for now
-        //lobReader = FdoRdbmsBLOBStreamReader::Create( mFdoConnection, mAttrQueryCache[mAttrsQidIdx].qid, lobLocator );
-        assert(false); // FIXME
+        lobReader = FdoRdbmsBLOBStreamReader::Create( mFdoConnection, mAttrQueryCache[mAttrsQidIdx].query, lobLocator );
     }
     catch ( char * )
     {
@@ -1443,9 +1442,8 @@ FdoLOBValue* FdoRdbmsFeatureReader::GetLOB(const wchar_t* propertyName)
             throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_385, strNUllPropetryExp, propertyName ));
 
         // Look up the LOB type based on the property name - assume FdoDataType_BLOB for now
-        //FdoRdbmsBLOBStreamReader *blobReader = FdoRdbmsBLOBStreamReader::Create( mFdoConnection, mAttrQueryCache[mAttrsQidIdx].qid, lobLocator );
-        assert(false); // FIXME
-#if 0 // FIXME
+        FdoRdbmsBLOBStreamReader *blobReader = FdoRdbmsBLOBStreamReader::Create( mFdoConnection, mAttrQueryCache[mAttrsQidIdx].query, lobLocator );
+
         FdoInt64 lob_size = blobReader->GetLength();
         FdoByteArray * byteArray = FdoByteArray::Create( (FdoInt32)lob_size );
         blobReader->ReadNext( byteArray, 0, (FdoInt32)lob_size );
@@ -1453,7 +1451,7 @@ FdoLOBValue* FdoRdbmsFeatureReader::GetLOB(const wchar_t* propertyName)
         blobReader->Release();
 
         pLobVal = FdoBLOBValue::Create( byteArray );
-#endif
+
     }
     catch ( char * )
     {

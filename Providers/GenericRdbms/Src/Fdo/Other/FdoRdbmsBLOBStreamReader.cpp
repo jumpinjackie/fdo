@@ -20,15 +20,15 @@
 #include "FdoRdbmsException.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-FdoRdbmsBLOBStreamReader* FdoRdbmsBLOBStreamReader::Create( FdoIConnection *conn, int sqlid, void* value, const FdoInt32 blockSize )
+FdoRdbmsBLOBStreamReader* FdoRdbmsBLOBStreamReader::Create( FdoIConnection *conn, GdbiQueryResult* gdbiResult, void* value, const FdoInt32 blockSize )
 {
-    return new FdoRdbmsBLOBStreamReader( conn, sqlid, value, blockSize );
+    return new FdoRdbmsBLOBStreamReader( conn, gdbiResult, value, blockSize );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-FdoRdbmsBLOBStreamReader::FdoRdbmsBLOBStreamReader( FdoIConnection *conn, int sqlid, void *value, const FdoInt32 blockSize )
+FdoRdbmsBLOBStreamReader::FdoRdbmsBLOBStreamReader( FdoIConnection *conn, GdbiQueryResult* gdbiResult, void *value, const FdoInt32 blockSize )
 {
-    if (conn == NULL || sqlid < 0 || value == NULL || blockSize <= 0 )
+    if (conn == NULL || gdbiResult == NULL || value == NULL || blockSize <= 0 )
     {
         throw FdoRdbmsException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
     }
@@ -40,7 +40,7 @@ FdoRdbmsBLOBStreamReader::FdoRdbmsBLOBStreamReader( FdoIConnection *conn, int sq
         m_DbiConn = mFdoConnection->GetDbiConnection();
     }
     m_BlockSize = blockSize;
-    m_Sqlid = sqlid;
+    m_GdbiResult = gdbiResult;
     m_LOBlocator = value;
     m_EndOfLOB = FALSE;
     m_LOBLength = -1;
@@ -50,10 +50,10 @@ FdoRdbmsBLOBStreamReader::FdoRdbmsBLOBStreamReader( FdoIConnection *conn, int sq
 ///////////////////////////////////////////////////////////////////////////////
 FdoRdbmsBLOBStreamReader::~FdoRdbmsBLOBStreamReader()
 {
-    if ( m_DbiConn != NULL && m_Sqlid >= 0 && m_LOBlocator != NULL )
+    if ( m_DbiConn != NULL && m_GdbiResult != NULL && m_LOBlocator != NULL )
     {
         // Needs more investigation
-        //m_DbiConn->dbi_lob_destroy_ref( m_Sqlid, m_LOBlocator );
+        //gdbiResult->lob_destroy_ref( m_LOBlocator );
     }
     if( mFdoConnection )
         mFdoConnection->Release();
@@ -115,7 +115,7 @@ FdoInt64 FdoRdbmsBLOBStreamReader::GetLength()
     if ( m_LOBLength == -1 )
     {
         unsigned int size;
-        m_DbiConn->dbi_lob_get_size( m_Sqlid, m_LOBlocator, (unsigned int *)&size);
+        m_GdbiResult->LobGetSize( m_LOBlocator, (unsigned int *)&size);
         m_LOBLength = (FdoInt64) size;
     }
     return m_LOBLength;
@@ -140,16 +140,13 @@ FdoInt32  FdoRdbmsBLOBStreamReader::ReadNext(   FdoByte * buffer,
     if ( buffer2 == NULL )
         buffer2 = new FdoByte[chunk_size];
 
-    #pragma message ("ToDo: FdoRdbmsBLOBStreamReader::ReadNext")
-
- /*   m_DbiConn->dbi_lob_read_next(
-                        m_Sqlid,
+    m_GdbiResult->LobReadNext(
                         m_LOBlocator,
-                        DBI_T_BLOB,
+                        RDBI_BLOB,
                         chunk_size,
                         (char *) &buffer2[offset],
                         (unsigned int*) &chunk_size_out,
-                        (int *) &m_EndOfLOB );*/
+                        (int *) &m_EndOfLOB );
 
     if ( buffer == NULL )
         delete[] buffer2;
@@ -201,8 +198,7 @@ FdoInt32  FdoRdbmsBLOBStreamReader::ReadNext(   FdoByteArray * &value,
     buffer = value->GetData();
 
     // Read from LOB
-    m_DbiConn->dbi_lob_read_next(
-                        m_Sqlid,
+    m_GdbiResult->LobReadNext(
                         m_LOBlocator,
                         RDBI_BLOB,
                         chunk_size,
