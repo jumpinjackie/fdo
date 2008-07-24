@@ -157,3 +157,15 @@ int GdbiStatement::geom_srid_set(
 		                                  FdoCommonOSUtil::itoa(parmIndex, buffer),
 										  srid);
 }
+
+char * GdbiStatement::GetGeomInfoFromFgf( long srid, FdoByteArray * fgf )
+{
+#ifdef HAVE_GEOM_INFO_TYPE
+    char * geomInfo = NULL;
+    (void) m_pGdbiCommands->geom_from_fgf( m_QueryId->GetQueryId(), srid, (void *)fgf, (void**) &geomInfo );
+    return geomInfo;
+#else
+    return NULL;
+#endif
+}
+

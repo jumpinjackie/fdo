@@ -59,6 +59,7 @@ private:
     int               mAsciiValBufferSize;
 	GdbiQueryIdentifier	*m_QueryId;
 	int				  m_missed;
+    bool              mHasLobs;
 
 private:
     GdbiQueryResult( GdbiCommands* command, int qid, bool ownsQid = true  );
@@ -138,6 +139,10 @@ public:
 
     FdoString* GetString( int colIndex, bool *isnull, int *ccode );
 
+    FdoBoolean LobGetSize(void *lob_ref, unsigned int *size);
+
+    FdoBoolean LobReadNext(void *lob_ref, int rdbi_lob_type, unsigned int block_size, char *block, unsigned int *block_size_out, int *eol);
+
     int ReadNext();
 
     void Close();
@@ -148,7 +153,7 @@ public:
 
     int GetColumnDesc( int colIdx, GdbiColumnDesc &desc );
 
-    FdoByteArray * GetFgfFromGeomInfo( char * geomInfo );
+    FdoByteArray * GetFgfFromGeomInfo( char * geomInfo, int defaultDim = -1 );
 };
 
 #endif
