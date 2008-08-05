@@ -172,6 +172,8 @@ private:
     size_t              mNextTxtIndex;   // The index of the next empty string
 	short				mNextTabAliasId;
 	bool				mUseTableAliases;
+    bool                mUseNesting;
+    bool                mAddNegationBracket;
 
     // List of geometry values that are bound in spatial filters.
     FdoPtr<BoundGeometryCollection>       mBoundGeometryValues;
@@ -214,11 +216,19 @@ private:
 
     void ProcessIdentifier(FdoIdentifier& expr, bool useOuterJoin );
 
+    // Analyzes the filter and set flags that control the generation of the
+    // corresponding SQL statement.
+    // void AnalyzeFilter (FdoFilter *filter);
+
     // Checks an identifier collection for the existance of aggregate functions.
     bool ContainsAggregateFunctions( FdoIdentifierCollection *identifiers );
 
 
 protected:
+
+    // Analyzes the filter and set flags that control the generation of the
+    // corresponding SQL statement.
+    void AnalyzeFilter (FdoFilter *filter);
 
     // This method is used to follow a value type object property or an m:1 association
     // and add the necessary column spec and table mappings for joining them later.
