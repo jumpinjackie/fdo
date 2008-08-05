@@ -107,6 +107,8 @@ ArcSDEFilterToSql::ArcSDEFilterToSql (ArcSDEConnection *conn, FdoClassDefinition
     m_Connection = FDO_SAFE_ADDREF(conn);
     mDefinition = FDO_SAFE_ADDREF(definition);
     mSpatialFilters.clear();
+    mFilterAnalyzed = false;
+    mUseNesting = true;
 }
 
 ArcSDEFilterToSql::~ArcSDEFilterToSql (void)
@@ -663,6 +665,119 @@ void ArcSDEFilterToSql::ProcessGeometryValue (FdoGeometryValue& expr)
 // FdoFilterProcessor
 //
 
+void ArcSDEFilterToSql::AnalyzeFilter (FdoFilter *filter)
+{
+
+    // The following defines the filter analyzer. The filter analyzer is used
+    // to scan the filter for its content and set flags that control the
+    // process of converting the filter into the corresponding SQL statement.
+    // For example, it checks whether or not nesting of filter elememts is
+    // required. 
+
+    class FilterAnalyzer : public FdoIFilterProcessor
+    {
+
+    public:
+
+        //  containsBinaryLogicalOperatorAnd:
+        //      The flag is set to TRUE if the filter contains the binary
+        //      logical operator AND.
+        bool containsBinaryLogicalOperatorAnd;
+
+        //  containsBinaryLogicalOperatorOr:
+        //      The flag is set to TRUE if the filter contains the binary
+        //      logical operator OR.
+		bool containsBinaryLogicalOperatorOr;
+
+        //  containsUnaryLogicalOperatorNot:
+        //      The flag is set to TRUE if the filter contains the unary
+        //      logical operator NOT.
+        bool containsUnaryLogicalOperatorNot;
+
+        // Constructor.
+        FilterAnalyzer() 
+        { 
+            containsBinaryLogicalOperatorAnd = false;
+			containsBinaryLogicalOperatorOr  = false;
+            containsUnaryLogicalOperatorNot  = false;
+        }  
+
+        // Processes a binary logical operator node. Depending on the used
+        // operator, it sets the corresponding flag and then continues
+        // analyzing the tree.
+        virtual void ProcessBinaryLogicalOperator(
+                                            FdoBinaryLogicalOperator& filter)
+        {
+            FdoBinaryLogicalOperations binaryLogicalOperator;
+            binaryLogicalOperator = filter.GetOperation();
+
+            if (binaryLogicalOperator == FdoBinaryLogicalOperations_And)
+                containsBinaryLogicalOperatorAnd = true;
+            if (binaryLogicalOperator == FdoBinaryLogicalOperations_Or)
+                containsBinaryLogicalOperatorOr = true;
+
+            if (filter.GetLeftOperand() != NULL)
+                filter.GetLeftOperand()->Process(this);
+            if (filter.GetRightOperand() != NULL)
+                filter.GetRightOperand()->Process(this);
+        }
+
+        virtual void ProcessUnaryLogicalOperator(
+                                            FdoUnaryLogicalOperator& filter)
+        {
+            containsUnaryLogicalOperatorNot = true;
+            if (filter.GetOperand() != NULL)
+                filter.GetOperand()->Process(this);
+        }
+
+        virtual void ProcessComparisonCondition(FdoComparisonCondition& filter)
+        {
+        }
+
+        virtual void ProcessInCondition(FdoInCondition& filter)
+        {
+        }
+
+        virtual void ProcessNullCondition(FdoNullCondition& filter)
+        {
+        }
+
+        virtual void ProcessSpatialCondition(FdoSpatialCondition& filter)
+        {
+        }
+
+        virtual void ProcessDistanceCondition(FdoDistanceCondition& filter)
+        {
+        }
+
+        virtual void Dispose() { delete this; }
+
+    };
+
+    // Initialize the member variables that are set by this routine. The default
+    // value should reflect the current behavior.
+    mUseNesting         = true;
+
+    // Analyze the filter.
+    FilterAnalyzer filterAnalyzer;
+    filter->Process(&filterAnalyzer);
+
+    // Check the result of the analyzing process and set the corresponding
+    // member variables that control the generation of the SQL statement
+    // from the given filter.
+    if ((filterAnalyzer.containsBinaryLogicalOperatorAnd) ||
+        (filterAnalyzer.containsBinaryLogicalOperatorOr)     )
+    {
+        mUseNesting = filterAnalyzer.containsBinaryLogicalOperatorAnd &&
+                      filterAnalyzer.containsBinaryLogicalOperatorOr;
+    }
+}
+
+void ArcSDEFilterToSql::SetFilterAnalyzedFlag (bool value)
+{
+    mFilterAnalyzed = value;
+}
+
 ///<summary>Processes the FdoBinaryLogicalOperator passed in as an argument.</summary>
 /// <param name="filter">Input the FdoBinaryLogicalOperator</param> 
 /// <returns>Returns nothing</returns> 
@@ -700,9 +815,17 @@ void ArcSDEFilterToSql::ProcessBinaryLogicalOperator (FdoBinaryLogicalOperator& 
     {
         // Both operands are "attribute"-style filters, process them both (append both to query string):
 
-        AppendString (OPEN_PAREN);
+        if (!mFilterAnalyzed)
+            AppendString (OPEN_PAREN);
+        else
+            if ((mFilterAnalyzed) && (mUseNesting))
+                AppendString (OPEN_PAREN);
         HandleFilter (FdoPtr<FdoFilter>(filter.GetLeftOperand ()));
-        AppendString (CLOSE_PAREN);
+        if (!mFilterAnalyzed)
+            AppendString (OPEN_PAREN);
+        else
+            if ((mFilterAnalyzed) && (mUseNesting))
+                AppendString (OPEN_PAREN);
         switch (filter.GetOperation ())
         {
             case FdoBinaryLogicalOperations_And:
@@ -714,9 +837,11 @@ void ArcSDEFilterToSql::ProcessBinaryLogicalOperator (FdoBinaryLogicalOperator& 
             default:
                 throw FdoFilterException::Create (NlsMsgGet(ARCSDE_UNSUPPORTED_BINARY_LOGICAL_OPERATOR, "The given binary logical operator is not supported."));
         }
-        AppendString (OPEN_PAREN);
+        if ((mFilterAnalyzed) && (mUseNesting))
+            AppendString (OPEN_PAREN);
         HandleFilter (FdoPtr<FdoFilter>(filter.GetRightOperand ()));
-        AppendString (CLOSE_PAREN);
+        if ((mFilterAnalyzed) && (mUseNesting))
+            AppendString (CLOSE_PAREN);
     }
     else if ((leftOpType == ArcSDEFilterType_Spatial) && (rightOpType == ArcSDEFilterType_Spatial))
     {
