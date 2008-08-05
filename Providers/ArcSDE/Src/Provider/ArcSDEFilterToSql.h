@@ -40,12 +40,21 @@ protected:
     std::vector<SE_FILTER> mSpatialFilters;
     FdoPtr<ArcSDEConnection> m_Connection;
     FdoPtr<FdoClassDefinition> mDefinition;
+    bool mFilterAnalyzed;
+    bool mUseNesting;
 
 public:
     ArcSDEFilterToSql() { ArcSDEFilterToSql(NULL, NULL); }  // 0-argument constructor to please FdoPtr::operator->
     ArcSDEFilterToSql (ArcSDEConnection *conn, FdoClassDefinition* definition);
     virtual ~ArcSDEFilterToSql (void);
     void Dispose ();
+
+    // The function analyzes the filter and sets flag used during the generation of
+    // the corresponding SQL statement to avoid unnecessary nesting.
+    void AnalyzeFilter (FdoFilter *filter);
+
+    // Helper function to set a flag.
+    void SetFilterAnalyzedFlag (bool value);
 
     /// <summary>Increase the reference count.</summary>
     /// <returns>Returns the new reference count (value for debugging use only).</returns> 
