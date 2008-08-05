@@ -40,7 +40,9 @@ FdoRdbmsFilterProcessor::FdoRdbmsFilterProcessor():
  mFirstTxtIndex( 0 ),
  mNextTxtIndex( 0 ),
  mNextTabAliasId ( 0 ),
- mUseTableAliases( true )
+ mUseTableAliases( true ),
+ mUseNesting( true ),
+ mAddNegationBracket( false )
 {
 
 }
@@ -53,7 +55,9 @@ FdoRdbmsFilterProcessor::FdoRdbmsFilterProcessor(FdoRdbmsConnection *connection)
  mFirstTxtIndex( 0 ),
  mNextTxtIndex( 0 ),
  mNextTabAliasId ( 0 ),
- mUseTableAliases( true )
+ mUseTableAliases( true ),
+ mUseNesting( true ),
+ mAddNegationBracket( false )
 {
 
 }
@@ -751,7 +755,8 @@ void FdoRdbmsFilterProcessor::ProcessBinaryLogicalOperator(FdoBinaryLogicalOpera
     const FdoSmLpClassDefinition *classDefinition = mDbiConnection->GetSchemaUtil()->GetClass(mCurrentClassName);
     const FdoSmLpDataPropertyDefinitionCollection *properties = classDefinition->RefIdentityProperties();
 
-    AppendString(OPEN_PARENTH);
+    if (mUseNesting)
+        AppendString(OPEN_PARENTH);
     if( filter.GetOperation() == FdoBinaryLogicalOperations_And )
     {
         HandleFilter( leftOperand );
@@ -766,7 +771,8 @@ void FdoRdbmsFilterProcessor::ProcessBinaryLogicalOperator(FdoBinaryLogicalOpera
         HandleFilter( rightOperand );
     }
 
-    AppendString(CLOSE_PARENTH);
+    if (mUseNesting)
+        AppendString(CLOSE_PARENTH);
 
   	// Save 
 	mFilterLogicalOps.push_back( filter.GetOperation() );
@@ -868,7 +874,11 @@ void FdoRdbmsFilterProcessor::ProcessUnaryLogicalOperator(FdoUnaryLogicalOperato
     else
         throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_251, "FdoUnaryLogicalOperator supports only the 'Not' operation"));
 
+    if (mAddNegationBracket)
+        AppendString(OPEN_PARENTH);
     HandleFilter( unaryOp );
+    if (mAddNegationBracket)
+        AppendString(CLOSE_PARENTH);
     AppendString(CLOSE_PARENTH);
 
 	// Save 
@@ -1009,6 +1019,97 @@ void FdoRdbmsFilterProcessor::AppendGroupBy( FdoRdbmsFilterUtilConstrainDef *fil
             AppendString( L", " );
         FdoPtr<FdoIdentifier>ident = filterConstraint->groupByProperties->GetItem( i );
         ProcessIdentifier( *ident, true );
+    }
+}
+
+// Analyzes the filter and set flags that control the generation of the
+// corresponding SQL statement.
+void FdoRdbmsFilterProcessor::AnalyzeFilter (FdoFilter *filter)
+{
+
+    // The following defines the filter analyzer. The filter analyzer is used
+    // to scan the filter for its content and set flags that control the
+    // process of converting the filter into the corresponding SQL statement.
+    // For example, it checks whether or not nesting of filter elememts is
+    // required. 
+
+    class FilterAnalyzer : public FdoRdbmsBaseFilterProcessor
+    {
+
+    public:
+
+        //  containsBinaryLogicalOperatorAnd:
+        //      The flag is set to TRUE if the filter contains the binary
+        //      logical operator AND.
+        bool containsBinaryLogicalOperatorAnd;
+
+        //  containsBinaryLogicalOperatorOr:
+        //      The flag is set to TRUE if the filter contains the binary
+        //      logical operator OR.
+		bool containsBinaryLogicalOperatorOr;
+
+        //  containsUnaryLogicalOperatorNot:
+        //      The flag is set to TRUE if the filter contains the unary
+        //      logical operator NOT.
+        bool containsUnaryLogicalOperatorNot;
+
+        // Constructor.
+        FilterAnalyzer() 
+        { 
+            containsBinaryLogicalOperatorAnd = false;
+			containsBinaryLogicalOperatorOr  = false;
+            containsUnaryLogicalOperatorNot  = false;
+        }  
+
+        // Processes a binary logical operator node. Depending on the used
+        // operator, it sets the corresponding flag and then continues
+        // analyzing the tree.
+        virtual void ProcessBinaryLogicalOperator(
+                                            FdoBinaryLogicalOperator& filter)
+        {
+            FdoBinaryLogicalOperations binaryLogicalOperator;
+            binaryLogicalOperator = filter.GetOperation();
+
+            if (binaryLogicalOperator == FdoBinaryLogicalOperations_And)
+                containsBinaryLogicalOperatorAnd = true;
+            if (binaryLogicalOperator == FdoBinaryLogicalOperations_Or)
+                containsBinaryLogicalOperatorOr = true;
+
+            if (filter.GetLeftOperand() != NULL)
+                filter.GetLeftOperand()->Process(this);
+            if (filter.GetRightOperand() != NULL)
+                filter.GetRightOperand()->Process(this);
+        }
+
+        virtual void ProcessUnaryLogicalOperator(
+                                            FdoUnaryLogicalOperator& filter)
+        {
+            containsUnaryLogicalOperatorNot = true;
+            if (filter.GetOperand() != NULL)
+                filter.GetOperand()->Process(this);
+        }
+    };
+
+    // Initialize the member variables that are set by this routine. The default
+    // value should reflect the current behavior.
+    mUseNesting         = true;
+    mAddNegationBracket = false;
+
+    // Analyze the filter.
+    FilterAnalyzer filterAnalyzer;
+    filter->Process(&filterAnalyzer);
+
+    // Check the result of the analyzing process and set the corresponding
+    // member variables that control the generation of the SQL statement
+    // from the given filter.
+    if ((filterAnalyzer.containsBinaryLogicalOperatorAnd) ||
+        (filterAnalyzer.containsBinaryLogicalOperatorOr)     )
+    {
+        mUseNesting = filterAnalyzer.containsBinaryLogicalOperatorAnd &&
+                      filterAnalyzer.containsBinaryLogicalOperatorOr;
+        mAddNegationBracket =
+                        !mUseNesting &&
+                        filterAnalyzer.containsUnaryLogicalOperatorNot;
     }
 }
 
@@ -1328,6 +1429,17 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
                                                      FdoInt16                       callerId )
 
 {
+    // Before generating the SQL statement for the provided filter, it is
+    // required to analyze the filter first. This basically checks the content
+    // of the filter and sets flags which will later control the generation
+    // of the SQL statement out of the filter. For example, if the filter
+    // contains a list of elements that are combined by binary logical 
+    // operators, it is not required to nest those elements in the generated
+    // SQL statement unless different operators are used. 
+    if (filter != NULL)
+        AnalyzeFilter(filter);
+
+    // Process the request.
     int j;
     bool ltQueryQualAdded = false;
     DbiConnection  *mDbiConnection = mFdoConnection->GetDbiConnection();
