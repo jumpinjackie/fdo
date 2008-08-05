@@ -937,6 +937,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Common\FdoFilterTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\FdoFilterTest.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Common\FdoForeignSchemaTest.cpp"
 				>
 			</File>
@@ -1230,6 +1238,14 @@
 			</File>
 			<File
 				RelativePath=".\MySql\MySqlFdoExpressionFunctionTest.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MySql\MySqlFdoFilterTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MySql\MySqlFdoFilterTest.h"
 				>
 			</File>
 			<File

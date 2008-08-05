@@ -932,6 +932,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Common\FdoFilterTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\FdoFilterTest.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Common\FdoForeignSchemaTest.cpp"
 				>
 			</File>
@@ -1233,6 +1241,14 @@
 			</File>
 			<File
 				RelativePath=".\SQLServerSpatial\SqlServerFdoExpressionFunctionTest.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SQLServerSpatial\SqlServerFdoFilterTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SQLServerSpatial\SqlServerFdoFilterTest.h"
 				>
 			</File>
 			<File
