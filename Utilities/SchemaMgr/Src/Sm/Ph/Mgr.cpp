@@ -262,7 +262,8 @@ FdoSmPhOwnerP FdoSmPhMgr::FindOwner(FdoStringP ownerName, FdoStringP database, b
     }
 
 
-	return( pOwner );
+
+    return( pOwner );
 }
 
 FdoSmPhOwnerP FdoSmPhMgr::GetOwner(FdoStringP ownerName, FdoStringP database, bool caseSensitive)
@@ -584,6 +585,11 @@ FdoSmPhMgr::CoordinateSystemMatchLevel FdoSmPhMgr::GetCoordinateSystemMatchLevel
 bool FdoSmPhMgr::SupportsAnsiQuotes()
 {
     return true;
+}
+
+bool FdoSmPhMgr::SupportsMultipleAutoIncrementColumns() const
+{
+    return false;
 }
 
 bool FdoSmPhMgr::IsRdbObjNameAscii7()

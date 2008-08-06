@@ -170,8 +170,7 @@ location and shape</xs:documentation>
 <xs:restriction base="fdo:int64"/>
 </xs:simpleType>
 <xs:annotation>
-<xs:documentation>
-Feature id number (uniquely identifies a feature)</xs:documentation>
+<xs:documentation/>
 </xs:annotation>
 </xs:element>
 <xs:element name="Prop2" minOccurs="0">
@@ -218,8 +217,8 @@ Feature id number (uniquely identifies a feature)</xs:documentation>
 </xs:complexContent>
 </xs:complexType>
 </xs:schema>
-<SchemaMapping xmlns="http://fdomysql.osgeo.org/schemas" xmlns:rdb="http://fdordbms.osgeo.org/schemas" tableMapping="Base" provider="OSGeo.MySQL.3.3" name="Schema1"/>
-<SchemaMapping xmlns="http://fdomysql.osgeo.org/schemas" xmlns:rdb="http://fdordbms.osgeo.org/schemas" tableMapping="Base" provider="OSGeo.MySQL.3.3" name="Schema2"/>
+<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" tablespace="USERS" tableMapping="Base" provider="Autodesk.Oracle.3.3" name="Schema1"/>
+<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" tablespace="USERS" tableMapping="Base" provider="Autodesk.Oracle.3.3" name="Schema2"/>
 <gml:FeatureCollection>
 <gml:featureMember>
 <ClassB1>

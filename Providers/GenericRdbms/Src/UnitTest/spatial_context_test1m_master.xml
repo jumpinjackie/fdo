@@ -536,8 +536,7 @@ geographic</gml:derivedCRSType>
 <xs:restriction base="fdo:int64"/>
 </xs:simpleType>
 <xs:annotation>
-<xs:documentation>
-Feature id number (uniquely identifies a feature)</xs:documentation>
+<xs:documentation/>
 </xs:annotation>
 </xs:element>
 </xs:sequence>
