@@ -21,7 +21,7 @@
 #include "UnitTestUtil.h"
 #include "FdoRdbmsConnection.h"
 #include "../../MySQL/Fdo/FdoRdbmsMySqlConnection.h"
-#include "../../MySQL\Fdo/FdoRdbmsMySqlFilterProcessor.h"
+#include "../../MySQL/Fdo/FdoRdbmsMySqlFilterProcessor.h"
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION(MySqlFdoFilterTest);
@@ -113,14 +113,14 @@ void MySqlFdoFilterTest::TranslateFilter (FdoFilter   *filter,
 
     if ((is_nested ) && (!is_nesting_expected)) {
 
-        printf(" ... generated SQL statement >>%s<< \n", generated_sql);
+        printf(" ... generated SQL statement >>%s<< \n", (FdoString*) generated_sql);
         throw FdoException::Create(L"Unexpected nesting of filter in SQL");
 
     }  //  if ((is_nested ) && (!is_nesting_expected)) ...
 
     if ((!is_nested) && (is_nesting_expected )) {
 
-        printf(" ... generated SQL statement >>%s<< \n", generated_sql);
+        printf(" ... generated SQL statement >>%s<< \n", (FdoString *)generated_sql);
         throw FdoException::Create(L"Unexpected not-nesting of filter in SQL");
 
     }  //  ((!is_nested) && (is_nesting_expected )) ...
