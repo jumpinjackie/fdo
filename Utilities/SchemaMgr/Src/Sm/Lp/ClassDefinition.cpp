@@ -1737,14 +1737,10 @@ void FdoSmLpClassBase::FinalizeProps(
 
                 bool skipFeatId = false;
 
-//Uncomment when allowed to break forward compatibility. Suppresses creation of 
-//of unneeded featid column in table with composite or non-int64 primary key
-#if 0 
                 if ( pBaseProp->GetIsFeatId() ) {
                     if ( wcscmp(pBaseProp->RefLogicalPhysicalSchema()->GetName(), FdoSmPhMgr::mMetaClassSchemaName) == 0 ) 
                         skipFeatId = true;
                 }
-#endif
 
                 if ( !skipFeatId ) {
                     // Create the missing class property or nested property from 
