@@ -1821,7 +1821,7 @@ void MySqlFdoExpressionFunctionTest::TestConcatFunction ()
 
       func_call   = L"(Concat(bool_val, sgl_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderString(data_reader, 9, L"03.0901287");
+      CheckReaderString(data_reader, 9, L"03.09013");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...

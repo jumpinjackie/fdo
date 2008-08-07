@@ -266,7 +266,7 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 						<xsl:when test="$propNode/@dataType = 'single'" >
 							<xsl:choose>
 								<xsl:when test="$providerName = 'MySql'">
-									<xsl:attribute name="dataType">DOUBLE</xsl:attribute>	
+									<xsl:attribute name="dataType">FLOAT</xsl:attribute>	
 								</xsl:when>
 								<xsl:when test="$providerName = 'SqlServer'">
 									<!-- logged as defect 772006 <xsl:attribute name="dataType">REAL</xsl:attribute>	-->
