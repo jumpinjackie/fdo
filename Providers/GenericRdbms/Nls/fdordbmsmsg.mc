@@ -1775,11 +1775,6 @@ SymbolicName=FDORDBMS_499
 Language=English
 Feature metaclass
 .
-MessageId=2725
-SymbolicName=FDORDBMS_500
-Language=English
-Feature id number (uniquely identifies a feature)
-.
 MessageId=2726
 SymbolicName=FDORDBMS_501
 Language=English
