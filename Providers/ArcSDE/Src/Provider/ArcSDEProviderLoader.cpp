@@ -178,7 +178,7 @@ public:
         m_hArcSDE = NULL;
         try
         {
-            void* hmod = dlopen("libsde.so", RTLD_NOW);
+            void* hmod = dlopen("libsde.so", RTLD_LAZY);
             if (hmod != NULL)
             {
                 dlclose(hmod);
