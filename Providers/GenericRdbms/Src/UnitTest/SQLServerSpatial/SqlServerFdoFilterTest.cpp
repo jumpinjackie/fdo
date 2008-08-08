@@ -20,8 +20,8 @@
 #include "SqlServerFdoFilterTest.h"
 #include "UnitTestUtil.h"
 #include "FdoRdbmsConnection.h"
-#include "../../SqlServer/Fdo/FdoRdbmsSqlServerConnection.h"
-#include "../../SqlServer/Fdo/FdoRdbmsSqlServerFilterProcessor.h"
+#include "../../SqlServerSpatial/Fdo/FdoRdbmsSqlServerConnection.h"
+#include "../../SqlServerSpatial/Fdo/FdoRdbmsSqlServerFilterProcessor.h"
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION(SqlServerFdoFilterTest);
