@@ -1850,3 +1850,24 @@ void WmsTestSelect::testOpenmaps ()
         fail(e);
     }
 }
+
+void WmsTestSelect::testquestionmarkend ()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
+
+        FdoStringP sServer = L"FeatureServer=http://www.karttakone.fi/wms/200f2fd3f687aa1f05f1fe5c47cf80af/ykj/rs06_suomi_5m?";
+        connection->SetConnectionString((FdoString*)sServer);
+        FdoConnectionState state = connection->Open ();
+
+        FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*>(connection->CreateCommand (FdoCommandType_Select));
+        cmdSelect->SetFeatureClassName(L"WMS_Schema:Karttakone");
+
+        FdoPtr<FdoIFeatureReader> rasterReader = cmdSelect->Execute();
+    }
+    catch (FdoException* e)
+    {
+        fail(e);
+    }
+}
