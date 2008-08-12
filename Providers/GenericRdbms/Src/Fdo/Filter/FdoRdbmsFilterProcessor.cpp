@@ -1915,7 +1915,7 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter     *filter,
 								FdoSmLpGeometricPropertyDefinition::Cast(classDefinition->RefProperties()->RefItem(i));
 			if ( geomPropertyDef != NULL )
 			{
-				if ( FdoCommonOSUtil::wcsicmp( geomPropertyDef->GetColumnName(), L"n/a" )  != 0 )
+				if ( geomPropertyDef->RefColumn() )
 				{
 					const FdoSmPhColumn* column = geomPropertyDef->RefColumn();
 					all->Add(GetGeometryString(column->GetDbName()));
