@@ -195,3 +195,87 @@ void SqlServerFdoSpatialContextTest::VldAdjustedExtent( FdoStringP scName, FdoBy
     sprintf( message, "Wrong maxy for %ls", (FdoString*) scName );
     CPPUNIT_ASSERT_MESSAGE( message, maxy == env->GetMaxY() );
 }
+
+void SqlServerFdoSpatialContextTest::testNumericCoordinateSystemNames( )
+{
+    FdoPtr<FdoIConnection> connection;
+    StaticConnection* staticConn = NULL;
+
+    try {
+        staticConn = UnitTestUtil::NewStaticConnection();
+        staticConn->connect();
+        UnitTestUtil::CreateDBNoMeta( 
+            staticConn->CreateSchemaManager(),
+            UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX)
+        );
+
+        // open the datastore
+		printf( "Initializing Connection ... \n" );
+		connection = UnitTestUtil::CreateConnection(
+			false,
+			false,
+            DB_NAME_SUFFIX,
+            0,
+            NULL,
+            0
+		);
+
+		printf( "Creating Spatial Contexts ... \n" );
+        UnitTestUtil::CreateSpatialContext( connection, L"NumCordSysName", L"11", 10, 0, 0, 10 ); 
+
+        connection->Close();
+        connection->Open();
+
+        // Check if the coordinate system is created.
+		printf( "Cross-checking Spatial Contexts ... \n" );
+        FdoPtr<FdoIGetSpatialContexts> cmd = (FdoIGetSpatialContexts*) connection->CreateCommand( FdoCommandType_GetSpatialContexts );
+        cmd->SetActiveOnly(false);
+
+        FdoPtr<FdoISpatialContextReader> reader = cmd->Execute();
+        bool found = false;
+
+        while ( reader->ReadNext() )
+        {
+            FdoStringP scName = reader->GetName();
+            FdoStringP scCoordSysName = reader->GetCoordinateSystem();
+            if ( ( scName == L"NumCordSysName" ) && ( scCoordSysName == L"11" ) )
+                found = true;
+        }
+
+        // Process cross-check result.
+        if ( !found )
+            throw FdoException::Create(L"Expected spatial context not found");
+        else
+		    printf( " ... Expected spatial context found \n" );
+
+        // Close connections.
+        delete staticConn;
+        connection->Close();
+
+    }
+    catch (FdoException *exp)
+    {
+        try
+        {
+            if ( staticConn ) delete staticConn;
+            if ( connection ) connection->Close();
+        }
+        catch ( ... )
+        {
+        }
+		UnitTestUtil::FailOnException( exp );
+    }
+    catch ( ... )
+    {
+        try
+        {
+            if ( staticConn ) delete staticConn;
+            if ( connection ) connection->Close();
+        }
+        catch ( ... )
+        {
+        }
+
+        throw;
+    }
+}
