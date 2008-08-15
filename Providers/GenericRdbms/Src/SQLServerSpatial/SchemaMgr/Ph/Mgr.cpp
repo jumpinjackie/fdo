@@ -101,6 +101,11 @@ FdoSmPhMgr::CoordinateSystemMatchLevel FdoSmPhSqsMgr::GetCoordinateSystemMatchLe
     return level;
 }
 
+bool FdoSmPhSqsMgr::SupportsNumericCoordinateSystemName()
+{
+    return true;
+}
+
 bool FdoSmPhSqsMgr::IsGeogLatLong()
 {
     FdoVectorP verTokens = FdoVector::Create( GetDbVersion(), L"." );

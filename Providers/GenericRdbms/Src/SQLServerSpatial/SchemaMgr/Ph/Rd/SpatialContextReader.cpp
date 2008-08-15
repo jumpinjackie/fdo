@@ -24,6 +24,7 @@
 #include "DbObjectBinds.h"
 #include "../Mgr.h"
 #include "../Database.h"
+#include "FdoCommonStringUtil.h"
 
 FdoSmPhRdSqsSpatialContextReader::FdoSmPhRdSqsSpatialContextReader( )
 {
@@ -150,13 +151,18 @@ bool FdoSmPhRdSqsSpatialContextReader::ReadNext()
         mCSname = L"";
 
         if ( srid >= 0 ) {
-            // We have a SRID, get the coordinate system.
+            // We have a SRID, get the coordinate system. If not found return the
+            // SRID number as the coordinate system name.
             mSrid = srid;
             FdoSmPhCoordinateSystemP coordSys = mOwner->FindCoordinateSystem(mSrid);
             if ( coordSys ) {
                 // Extract name and wkt from coordinate system.
                 mCSname = coordSys->GetName();
                 mWKT = coordSys->GetWkt();
+            }
+            else {
+                if ( srid > 0)
+                    mCSname = FdoCommonStringUtil::Int64ToString(srid);
             }
         }
         else {

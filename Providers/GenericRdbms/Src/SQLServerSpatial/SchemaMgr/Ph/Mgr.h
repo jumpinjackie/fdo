@@ -50,6 +50,7 @@ public:
     FdoStringP GetDbVersion();
 
     virtual CoordinateSystemMatchLevel GetCoordinateSystemMatchLevel();
+    virtual bool SupportsNumericCoordinateSystemName();
 
     bool IsGeogLatLong();
 
