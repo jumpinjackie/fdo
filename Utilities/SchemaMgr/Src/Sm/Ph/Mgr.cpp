@@ -582,6 +582,11 @@ FdoSmPhMgr::CoordinateSystemMatchLevel FdoSmPhMgr::GetCoordinateSystemMatchLevel
     return CoordinateSystemMatchLevel_Lax;
 }
 
+bool FdoSmPhMgr::SupportsNumericCoordinateSystemName()
+{
+    return false;
+}
+
 bool FdoSmPhMgr::SupportsAnsiQuotes()
 {
     return true;
