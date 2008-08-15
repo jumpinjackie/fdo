@@ -514,43 +514,56 @@ void FdoSmLpSpatialContext::Finalize()
                 // Try match by name first.
                 if ( mCoordSysName != L"" ) 
                 {
-                    csys = owner->FindCoordinateSystem( mCoordSysName );
+                    // There is a special case handling in case the name is a numeric value. In this
+                    // case, if the provider supports this, the process just sets the SRID number.
+                    // If the provider does not suuport numeric coordinate system names, an error
+                    // must be reported.
 
-                    if ( csys )
+                    if (( mCoordSysName.IsNumber() ) && ( mPhysicalSchema->SupportsNumericCoordinateSystemName() ) )
                     {
+                        SetSrid( mCoordSysName.ToLong() );
                         nameMatched = true;
+                    }
+                    else
+                    {
+                        csys = owner->FindCoordinateSystem( mCoordSysName );
 
-                        if ( mCoordSysWkt == L"" ) 
+                        if ( csys )
                         {
-                            // WKT not specified so set it from matched coordinate system.
-                            SetCoordinateSystemWkt( csys->GetWkt() );
-                        }
-                        else if ( mCoordSysWkt != csys->GetWkt() )
-                        {
-                            // WKT mismatch so this is not the right coordinate system.
-                            // This is an error when strict matching is enforced by the provider.
-                            // Otherwise, try to match by WKT.
-                            nameMatched = false;
-                            if ( matchLevel == FdoSmPhMgr::CoordinateSystemMatchLevel_Strict )
+                            nameMatched = true;
+
+                            if ( mCoordSysWkt == L"" ) 
                             {
-                                AddMismatchedWktError();
+                                // WKT not specified so set it from matched coordinate system.
+                                SetCoordinateSystemWkt( csys->GetWkt() );
+                            }
+                            else if ( mCoordSysWkt != csys->GetWkt() )
+                            {
+                                // WKT mismatch so this is not the right coordinate system.
+                                // This is an error when strict matching is enforced by the provider.
+                                // Otherwise, try to match by WKT.
+                                nameMatched = false;
+                                if ( matchLevel == FdoSmPhMgr::CoordinateSystemMatchLevel_Strict )
+                                {
+                                    AddMismatchedWktError();
+                                    matchError = true;
+                                }
+                            }
+
+                            if ( nameMatched ) 
+                                SetSrid( csys->GetSrid() );
+                        }
+                        else 
+                        {
+                            if ( matchLevel == FdoSmPhMgr::CoordinateSystemMatchLevel_Strict ) 
+                            {
+                                // When strict matching is enforced by the provider,
+                                // log error if name specified but doesn't match a 
+                                // datastore coordinate system.
+                                // Otherwise, try to match by WKT.
+                                AddNoCsysError();
                                 matchError = true;
                             }
-                        }
-
-                        if ( nameMatched ) 
-                            SetSrid( csys->GetSrid() );
-                    }
-                    else 
-                    {
-                        if ( matchLevel == FdoSmPhMgr::CoordinateSystemMatchLevel_Strict ) 
-                        {
-                            // When strict matching is enforced by the provider,
-                            // log error if name specified but doesn't match a 
-                            // datastore coordinate system.
-                            // Otherwise, try to match by WKT.
-                            AddNoCsysError();
-                            matchError = true;
                         }
                     }
                 }

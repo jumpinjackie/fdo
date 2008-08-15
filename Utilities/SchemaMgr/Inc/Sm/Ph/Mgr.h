@@ -517,6 +517,10 @@ public:
     // The default is Lax.
     virtual CoordinateSystemMatchLevel GetCoordinateSystemMatchLevel();
 
+    // Returns whether or not the provider supports numeric coordinate system
+    // names.
+    virtual bool SupportsNumericCoordinateSystemName();
+
     virtual bool SupportsAnsiQuotes();
 
     // Default implementation returns false (one autoincrement column per table).
