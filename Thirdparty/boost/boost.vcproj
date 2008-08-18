@@ -53,10 +53,10 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="bjam toolset=msvc variant=debug link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/debug stage"
+				BuildCommandLine="bjam toolset=msvc-9.0 variant=debug link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/debug stage --with-date_time --with-program_options --with-thread"
 				ReBuildCommandLine="bjam toolset=msvc variant=debug link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/debug clean&#x0D;&#x0A;bjam toolset=msvc variant=debug link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/debug stage"
 				CleanCommandLine="bjam toolset=msvc variant=debug link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/debug clean&#x0D;&#x0A;"
-				Output="boost_1_32_0"
+				Output="boost_1_34_1"
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
 				ForcedIncludes=""
@@ -116,4 +116,6 @@
 	</References>
 	<Files>
 	</Files>
+	<Globals>
+	</Globals>
 </VisualStudioProject>

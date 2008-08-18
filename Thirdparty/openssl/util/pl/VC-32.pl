@@ -135,7 +135,6 @@ if ($FLAVOR =~ /CE/)
 else
 	{
 	$ex_libs.=' gdi32.lib advapi32.lib user32.lib';
-	$ex_libs.=' bufferoverflowu.lib' if ($FLAVOR =~ /WIN64/);
 	}
 
 # As native NT API is pure UNICODE, our WIN-NT build defaults to UNICODE,
@@ -261,7 +260,6 @@ sub do_lib_rule
 		local($ex)=($target =~ /O_CRYPTO/)?'':' $(L_CRYPTO)';
 		if ($name eq "")
 			{
-			$ex.=' bufferoverflowu.lib' if ($FLAVOR =~ /WIN64/);
 			}
 		elsif ($FLAVOR =~ /CE/)
 			{
@@ -271,7 +269,6 @@ sub do_lib_rule
 			{
 			$ex.=' unicows.lib' if ($FLAVOR =~ /NT/);
 			$ex.=' wsock32.lib gdi32.lib advapi32.lib user32.lib';
-			$ex.=' bufferoverflowu.lib' if ($FLAVOR =~ /WIN64/);
 			}
 		$ex.=" $zlib_lib" if $zlib_opt == 1 && $target =~ /O_CRYPTO/;
 		$ret.="\t\$(LINK) \$(MLFLAGS) $efile$target $name @<<\n  \$(SHLIB_EX_OBJ) $objs $ex\n<<\n";
