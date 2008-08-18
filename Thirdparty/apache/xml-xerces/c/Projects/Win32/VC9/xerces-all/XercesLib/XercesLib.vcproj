@@ -344,16 +344,16 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib"
-				OutputFile="$(OutDir)\xerces-c_2_5_0D.dll"
+				OutputFile="$(OutDir)\xerces-c_2_5_0.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(OutDir)"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)\xerces-c_2_5_0D.pdb"
+				ProgramDatabaseFile="$(OutDir)\xerces-c_2_5_0.pdb"
 				SubSystem="2"
 				BaseAddress="0x12000000"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="$(OutDir)\xerces-c_2D.lib"
+				ImportLibrary="$(OutDir)\xerces-c_2.lib"
 				TargetMachine="17"
 			/>
 			<Tool
