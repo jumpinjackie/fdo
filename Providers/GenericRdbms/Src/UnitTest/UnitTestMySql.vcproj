@@ -156,7 +156,7 @@
 				AdditionalOptions="/fixed:no"
 				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FdoGeneric.lib libmySQL.lib Rdbi.lib gdbi.lib schemamgrnew.lib MySQLDriver.lib mysqloverrides.lib mysqlschemamgr.lib ProvidersCommon.lib rdbmsoverrides.lib mysql.lib schemamgr_lpnew.lib schemamgr_phnew.lib SchemaMgr_OVNew.lib grdschemamgr.lib util.lib Advapi32.lib TestCommon.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\Lib\Win64\Debug;&quot;$(FDO)\Unmanaged\Lib\Win64\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Debug&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win64&quot;;&quot;$(FDOMYSQL)\lib\Debug&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Lib\Win64\Debug&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win64\Debug&quot;"
+				AdditionalLibraryDirectories="..\..\Lib\Win64\Debug;&quot;$(FDO)\Unmanaged\Lib\Win64\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Debug&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win64&quot;;&quot;$(FDOMYSQL)\lib\Debug&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Lib\Win64\Debug&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win64\Debug&quot;;..\;..\..\..\Lib\Win64\Debug"
 				IgnoreDefaultLibraryNames="libcmtd.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
@@ -309,7 +309,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FdoGeneric.lib libmySQL.lib Rdbi.lib gdbi.lib schemamgrnew.lib MySQLDriver.lib mysqloverrides.lib mysqlschemamgr.lib ProvidersCommon.lib rdbmsoverrides.lib mysql.lib schemamgr_lpnew.lib schemamgr_phnew.lib SchemaMgr_OVNew.lib grdschemamgr.lib util.lib Advapi32.lib TestCommon.lib"
-				AdditionalLibraryDirectories="..\..\Lib\Win64\Release;&quot;$(FDO)\Unmanaged\Lib\Win64\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Release&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win64&quot;;&quot;$(FDOMYSQL)\lib\opt&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Lib\Win64\Release&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win64\Release&quot;"
+				AdditionalLibraryDirectories="..\..\Lib\Win64\Release;&quot;$(FDO)\Unmanaged\Lib\Win64\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Release&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win64&quot;;&quot;$(FDOMYSQL)\lib\opt&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Lib\Win64\Release&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win64\Release&quot;;..\;..\..\..\Lib\Win64\Release"
 				IgnoreDefaultLibraryNames="libc.lib"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
