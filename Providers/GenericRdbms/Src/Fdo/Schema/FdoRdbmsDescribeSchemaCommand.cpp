@@ -33,9 +33,10 @@ FdoRdbmsDescribeSchemaCommand::FdoRdbmsDescribeSchemaCommand(const FdoRdbmsDescr
 FdoRdbmsDescribeSchemaCommand::FdoRdbmsDescribeSchemaCommand() :
     mRdbmsConnection( NULL )
 {
+    mClassNames = FdoStringCollection::Create();
 }
 
-FdoRdbmsDescribeSchemaCommand::FdoRdbmsDescribeSchemaCommand(FdoIConnection *connection)
+FdoRdbmsDescribeSchemaCommand::FdoRdbmsDescribeSchemaCommand(FdoIConnection *connection) 
 {
 	mFdoConnection = connection;
 	FDO_SAFE_ADDREF(mFdoConnection.p);
@@ -43,11 +44,14 @@ FdoRdbmsDescribeSchemaCommand::FdoRdbmsDescribeSchemaCommand(FdoIConnection *con
     FdoRdbmsConnection *conn  = static_cast<FdoRdbmsConnection*>(connection);
     if( conn )
         mRdbmsConnection = conn->GetDbiConnection();
+
+    mClassNames = FdoStringCollection::Create();
 }
 
-FdoRdbmsDescribeSchemaCommand::FdoRdbmsDescribeSchemaCommand(DbiConnection *connection)
+FdoRdbmsDescribeSchemaCommand::FdoRdbmsDescribeSchemaCommand(DbiConnection *connection) 
 {
     mRdbmsConnection = connection;
+    mClassNames = FdoStringCollection::Create();
 }
 
 FdoRdbmsDescribeSchemaCommand::~FdoRdbmsDescribeSchemaCommand()
@@ -65,6 +69,16 @@ void FdoRdbmsDescribeSchemaCommand::SetSchemaName(const wchar_t* value)
     mSchemaName = value;
 }
 
+FdoStringCollection* FdoRdbmsDescribeSchemaCommand::GetClassNames()
+{
+    return FDO_SAFE_ADDREF(mClassNames.p);
+}
+
+void FdoRdbmsDescribeSchemaCommand::SetClassNames(FdoStringCollection* value)
+{
+    mClassNames = FDO_SAFE_ADDREF(value);
+}
+
 FdoFeatureSchemaCollection* FdoRdbmsDescribeSchemaCommand::Execute()
 {
     if( NULL == mRdbmsConnection )
@@ -73,8 +87,9 @@ FdoFeatureSchemaCollection* FdoRdbmsDescribeSchemaCommand::Execute()
     }
 
     FdoSchemaManagerP     pschemaManager = mRdbmsConnection->GetSchemaUtil()->GetSchemaManager();
-    FdoFeatureSchemasP pfscResult = pschemaManager->GetFdoSchemas(GetSchemaName());
+    FdoFeatureSchemasP pfscResult = pschemaManager->GetFdoSchemasEx(GetSchemaName(), GetClassNames());
 
     return FDO_SAFE_ADDREF((FdoFeatureSchemaCollection*) pfscResult);
 }
+
 

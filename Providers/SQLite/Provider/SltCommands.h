@@ -46,6 +46,8 @@ class SltDescribeSchema : public SltCommand<FdoIDescribeSchema>
     public:
         virtual FdoString* GetSchemaName()                      { return L"SQLiteSchema"; }
         virtual void SetSchemaName(FdoString* value)            { ; }
+        virtual FdoStringCollection* GetClassNames()            { return NULL; }
+        virtual void SetClassNames(FdoStringCollection* value)  { ; }
         virtual FdoFeatureSchemaCollection* Execute()   
         { 
             return m_connection->DescribeSchema(); 

@@ -493,6 +493,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Schema\FdoRdbmsGetClassNamesCommand.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Schema\FdoRdbmsGetSchemaNamesCommand.cpp"
+					>
+				</File>
+				<File
 					RelativePath="Schema\FdoRdbmsSchemaUtil.cpp"
 					>
 				</File>
@@ -815,6 +823,14 @@
 				</File>
 				<File
 					RelativePath="Schema\FdoRdbmsDestroySchemaCommand.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Schema\FdoRdbmsGetClassNamesCommand.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Schema\FdoRdbmsGetSchemaNamesCommand.h"
 					>
 				</File>
 				<File

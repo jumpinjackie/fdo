@@ -28,6 +28,7 @@ class FdoWfsDescribeSchemaCommand :
     friend class FdoWfsConnection;
 
     FdoStringP mSchemaName;
+    FdoStringCollection* mClassNames;
 
 private:
     //
@@ -58,6 +59,27 @@ public:
     /// <param name="value">Input the schema name</param> 
     /// <returns>Returns nothing</returns> 
     virtual void SetSchemaName (const wchar_t* value);
+
+    /// <summary>Gets the names of the classes to retrieve. This is optional,
+    /// if not specified execution of the command will describe all classes.
+    /// If the class name is not qualified, and the schema name is not specified,
+    /// the requested class from all schemas will be described.
+    /// The class names specified serve only as a hint.  Use of the hint
+    /// during command execution is provider dependent.  Providers that 
+    /// will not use the hint will describe the schema for all classes.</summary>
+    /// <returns>Returns the collection of class names</returns>
+    virtual FdoStringCollection* GetClassNames();
+
+    /// <summary>Sets the name of the classes to retrieve. This is optional, if not
+    /// specified execution of the command will describe all classes.
+    /// If the class name is not qualified, and the schema name is not specified,
+    /// the requested class from all schemas will be described.
+    /// The class names specified serve only as a hint.  Use of the hint
+    /// during command execution is provider dependent.  Providers that 
+    /// will not use the hint will describe the schema for all classes.</summary>
+    /// <param name="value">Input the collection of class names</parm>
+    /// <returns>Returns nothing</returns>
+    virtual void SetClassNames(FdoStringCollection* value);
 
     /// <summary>Executes the DescribeSchema command and returns a 
     /// FdoFeatureSchemaCollection. If a schema name is given that has 

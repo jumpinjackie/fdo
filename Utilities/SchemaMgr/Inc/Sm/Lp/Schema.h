@@ -99,7 +99,7 @@ public:
     /// 	className: the class to find. When this is a qualified name
     /// 		( [<schemaname]:[classname] ) then this schema passes it
     /// 		on to the indicated schema. 
-    const FdoSmLpClassDefinition* FindClass( FdoStringP className ) const;
+    const FdoSmLpClassDefinition* FindClass( FdoStringP className, bool searchAllSchemas = true ) const;
 
     /// Given a table, retrieves the list of classes for which this table
     /// is the class table.
@@ -350,5 +350,6 @@ private:
 typedef FdoPtr<FdoSmLpSchema> FdoSmLpSchemaP;
 
 #endif
+
 
 

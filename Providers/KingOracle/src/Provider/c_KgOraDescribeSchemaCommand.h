@@ -27,6 +27,7 @@ class c_KgOraDescribeSchemaCommand :    public FdoIDescribeSchema
 protected:
   FdoPtr<c_KgOraConnection> m_KgOraConnection;
   FdoStringP m_SchemaName;
+  FdoStringCollection* m_ClassNames;
 
 private:
    
@@ -66,6 +67,38 @@ public:
     /// Returns nothing
     /// 
     FDOKGORA_API virtual void SetSchemaName(FdoString* SchemaName);
+
+    /// \brief
+    /// Gets the names of the classes to retrieve. This is optional,
+    /// if not specified execution of the command will describe all classes.
+    /// If the class name is not qualified, and the schema name is not specified,
+    /// the requested class from all schemas will be described.
+    /// The class names specified serve only as a hint.  Use of the hint
+    /// during command execution is provider dependent.  Providers that 
+    /// will not use the hint will describe the schema for all classes.
+    ///
+    /// \return
+    /// Returns the collection of class names
+    ///
+    FDOKGORA_API virtual FdoStringCollection* GetClassNames();
+
+    /// \brief
+    ///
+    /// Sets the name of the classes to retrieve. This is optional, if not
+    /// specified execution of the command will describe all classes.
+    /// If the class name is not qualified, and the schema name is not specified,
+    /// the requested class from all schemas will be described.
+    /// The class names specified serve only as a hint.  Use of the hint
+    /// during command execution is provider dependent.  Providers that 
+    /// will not use the hint will describe the schema for all classes.
+    ///
+    /// \param value
+    /// Input the collection of class names</parm>
+    ///
+    /// \returns
+    /// \Returns nothing
+    ///
+    FDOKGORA_API virtual void SetClassNames(FdoStringCollection* value);
 
     /// \brief
     /// Executes the DescribeSchema command and returns a 
@@ -172,4 +205,5 @@ public:
 };
 
 #endif 
+
 

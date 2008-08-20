@@ -379,6 +379,7 @@
 			CopyLocal="false"
 			CopyLocalDependencies="false"
 			CopyLocalSatelliteAssemblies="false"
+			RelativePathToProject=".\Managed\Project\MgCommon.vcproj"
 		/>
 	</References>
 	<Files>
@@ -1336,6 +1337,30 @@
 						</File>
 						<File
 							RelativePath="..\Src\OSGeo\FDO\Commands\Schema\mgIDestroySchemaImp.h"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\Schema\mgIGetClassNames.h"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\Schema\mgIGetClassNamesImp.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\Schema\mgIGetClassNamesImp.h"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\Schema\mgIGetSchemaNames.h"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\Schema\mgIGetSchemaNamesImp.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\Schema\mgIGetSchemaNamesImp.h"
 							>
 						</File>
 						<File

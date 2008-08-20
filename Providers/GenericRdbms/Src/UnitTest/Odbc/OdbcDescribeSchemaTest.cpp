@@ -306,4 +306,137 @@ void OdbcAccessDescribeSchemaTest::describe()
 
 }
 
+void OdbcAccessDescribeSchemaTest::getSchemaNames()
+{
+    try
+    {
+        // call the static method
+        FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
+        if (connection == NULL)
+            CPPUNIT_FAIL("FAILED - CreateConnection returned NULL\n");
+
+        // Now open the database with the given 
+        connection->SetConnectionString(GetConnectString());
+        connection->Open();
+
+        // Get the schema names
+        FdoPtr<FdoIGetSchemaNames> cmd =
+            (FdoIGetSchemaNames*)connection->CreateCommand(FdoCommandType_GetSchemaNames);
+        FdoPtr<FdoStringCollection> schemaNames = cmd->Execute();
+
+        if (schemaNames == NULL)
+            CPPUNIT_FAIL("FAILED - GetSchemaNames returned NULL collection\n");
+
+        FdoInt32 numSchemas = schemaNames->GetCount();
+        CPPUNIT_ASSERT(numSchemas == 1);
+        for (int i=0; i<numSchemas; i++)
+        {
+            FdoStringP schemaName = schemaNames->GetItem(i)->GetString();
+
+			wprintf(L"Current schema '%ls'\n", schemaName);
+            CPPUNIT_ASSERT(schemaName == L"Fdo");
+        }
+    }
+    catch (FdoException *ex)
+    {
+		TestCommonFail (ex);
+    }
+
+}
+
+void OdbcAccessDescribeSchemaTest::getClassNames()
+{
+    try
+    {
+        // call the static method
+        FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
+        if (connection == NULL)
+            CPPUNIT_FAIL("FAILED - CreateConnection returned NULL\n");
+
+        // Now open the database with the given 
+        connection->SetConnectionString(GetConnectString());
+        connection->Open();
+
+        // Get the schema names
+        FdoPtr<FdoIGetClassNames> cmd =
+            (FdoIGetClassNames*)connection->CreateCommand(FdoCommandType_GetClassNames);
+        FdoPtr<FdoStringCollection> classNames = cmd->Execute();
+
+        if (classNames == NULL)
+            CPPUNIT_FAIL("FAILED - GetClassNames returned NULL collection\n");
+
+        FdoInt32 numClasses = classNames->GetCount();
+        CPPUNIT_ASSERT(numClasses == 12);
+        for (int i=0; i<numClasses; i++)
+        {
+            FdoStringP className = classNames->GetItem(i)->GetString();
+
+			wprintf(L"Current class name '%ls'\n", className);
+        }
+        CPPUNIT_ASSERT(classNames->GetItem(0)->GetString() == L"Fdo:Cities");
+        CPPUNIT_ASSERT(classNames->GetItem(11)->GetString() == L"Fdo:VIEW2");
+    }
+    catch (FdoException *ex)
+    {
+		TestCommonFail (ex);
+    }
+
+}
+
+void OdbcAccessDescribeSchemaTest::describeWithClassNames()
+{
+    try
+    {
+        // call the static method
+        FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
+        if (connection == NULL)
+            CPPUNIT_FAIL("FAILED - CreateConnection returned NULL\n");
+
+        // Now open the database with the given 
+        connection->SetConnectionString(GetConnectString());
+        connection->Open();
+
+        // Now analyse the schema with the mappings in place.
+        // This is a modified version of DescribeSchemaTest::SchemaTest().
+        FdoPtr<FdoIDescribeSchema> describeSchemaCmd =
+            (FdoIDescribeSchema*)connection->CreateCommand(FdoCommandType_DescribeSchema);
+        FdoPtr<FdoStringCollection> classNames = FdoStringCollection::Create();
+        classNames->Add(L"Cities");
+        classNames->Add(L"VIEW1");
+        describeSchemaCmd->SetClassNames(classNames);
+        FdoPtr<FdoFeatureSchemaCollection> schemas = describeSchemaCmd->Execute();
+
+        if (schemas == NULL)
+            CPPUNIT_FAIL("FAILED - DescribeSchema returned NULL collection\n");
+
+        FdoInt32 numSchemas = schemas->GetCount();
+        for (int i=0; i<numSchemas; i++)
+        {
+            FdoPtr<FdoFeatureSchema> schema = schemas->GetItem(i);
+
+            FdoString* schemaName = schema->GetName();
+			wprintf(L"Current schema '%ls'\n", schemaName);
+            FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+
+            FdoInt32 numClasses = classes->GetCount();
+            CPPUNIT_ASSERT(numClasses == 2);
+            for (int j=0; j<numClasses; j++)
+            {
+                // Note the assumption here that it is a feature class (it is set up so
+                // in the test data).
+                FdoPtr<FdoClassDefinition> classDef = classes->GetItem(j);
+
+                // analyze the feature class
+                FdoString* className = classDef->GetName();
+    			wprintf(L"Current class '%ls'\n", className);
+            }
+        }
+    }
+    catch (FdoException *ex)
+    {
+		TestCommonFail (ex);
+    }
+
+}
+
 #endif

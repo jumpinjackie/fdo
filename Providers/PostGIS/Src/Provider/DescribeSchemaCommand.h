@@ -95,6 +95,26 @@ public:
     /// \param name [in] - name of schema to describe by the command.
     void SetSchemaName(FdoString* name);
  	
+    /// Gets the names of the classes to retrieve. This is optional,
+    /// if not specified execution of the command will describe all classes.
+    /// If the class name is not qualified, and the schema name is not specified,
+    /// the requested class from all schemas will be described.
+    /// The class names specified serve only as a hint.  Use of the hint
+    /// during command execution is provider dependent.  Providers that 
+    /// will not use the hint will describe the schema for all classes.
+    /// \return Collection of class names.
+    FdoStringCollection* GetClassNames();
+
+    /// Sets the name of the classes to retrieve. This is optional, if not
+    /// specified execution of the command will describe all classes.
+    /// If the class name is not qualified, and the schema name is not specified,
+    /// the requested class from all schemas will be described.
+    /// The class names specified serve only as a hint.  Use of the hint
+    /// during command execution is provider dependent.  Providers that 
+    /// will not use the hint will describe the schema for all classes.
+    /// param value [in] - collection of class names.
+    void SetClassNames(FdoStringCollection* value);
+
     /// Execute the DescribeSchema command and return collection of
     /// feature schemas available from the connection.
     FdoFeatureSchemaCollection* Execute();
@@ -110,6 +130,9 @@ protected:
 
     /// Name of schema being described.
     FdoStringP mSchemaName;
+
+    /// Collection of class names to describe.
+    FdoStringCollection* mClassNames;
 
     //
     // Protected operations

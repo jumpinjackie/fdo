@@ -1211,3 +1211,13 @@ SymbolicName=FDOSM_422
 Language=English
 Unknown property type discovered.
 .
+MessageId=2647
+SymbolicName=FDOSM_423
+Language=English
+Schema name '%1$ls' mismatch with fully qualified class name '%2$ls'.
+.
+MessageId=2648
+SymbolicName=FDOSM_424
+Language=English
+Unable to find class '%1$ls'
+.

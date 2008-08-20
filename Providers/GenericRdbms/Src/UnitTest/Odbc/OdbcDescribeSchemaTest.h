@@ -88,6 +88,9 @@ class OdbcAccessDescribeSchemaTest : public DescribeSchemaTest
 
     void  set_provider();
     virtual void describe ();
+    virtual void getSchemaNames();
+    virtual void getClassNames();
+    virtual void describeWithClassNames();
 
     FdoString * GetConfigFile() {return L"MsTestConfig.xml";}
 	FdoString * GetConnectString() {return L"DataSourceName=MsTest;UserId=;Password=;";}

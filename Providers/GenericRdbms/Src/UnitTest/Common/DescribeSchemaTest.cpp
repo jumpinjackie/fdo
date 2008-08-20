@@ -196,6 +196,257 @@ void DescribeSchemaTest::describe()
     }
 }
 
+void DescribeSchemaTest::getSchemaNames()
+{
+    FdoPtr<FdoIConnection> connection;
+    try
+    {
+        printf( "Initializing Connection ... \n" );
+        connection = UnitTestUtil::CreateConnection(
+            true,
+            true,
+            L"_getSchemaNames",
+            NULL,
+            NULL,
+            0
+        );
+
+        printf( "Loading test data ... \n" );
+
+        // Load data into newly created datastore
+//      FdoSchemaManagerP sm = connection->GetSchemaManager();
+        LoadTestData(connection /*, sm*/ );
+
+        printf( "Closing Connection ... \n" );
+        UnitTestUtil::CloseConnection(
+            connection,
+            false,
+            L"_getSchemaNames"
+        );
+
+        printf( "Re-opening Connection ... \n" );
+        connection = UnitTestUtil::CreateConnection(
+            false,
+            false,
+            L"_getSchemaNames",
+            NULL,
+            NULL,
+            0
+        );
+
+        FdoPtr<FdoIConnectionCapabilities> conCap = connection->GetConnectionCapabilities();
+
+        printf( "Performing GetSchemaNames ... \n" );
+        FdoPtr<FdoIGetSchemaNames>  pCmd = (FdoIGetSchemaNames*) connection->CreateCommand(FdoCommandType_GetSchemaNames);
+        FdoPtr<FdoStringCollection> schemaNames = pCmd->Execute();
+
+        CPPUNIT_ASSERT( schemaNames->GetCount() == 5 );
+
+        for (int i = 0; i < schemaNames->GetCount(); i++)
+        {
+            printf("SchemaName = %ls\n", schemaNames->GetItem(i)->GetString());
+        }
+
+        printf( "Closing Connection ... \n" );
+        UnitTestUtil::CloseConnection(
+            connection,
+            false,
+            L"_getSchemaNames"
+        );
+
+    }
+    catch ( FdoException* e )
+    {
+        try {
+            if (connection)
+                connection->Close();
+        }
+        catch ( ... )
+        {
+        }
+        UnitTestUtil::FailOnException( e );
+    }
+    catch (...)
+    {
+        if (connection)
+            connection->Close();
+        throw;
+    }
+}
+
+void DescribeSchemaTest::getClassNames()
+{
+    FdoPtr<FdoIConnection> connection;
+    try
+    {
+        printf( "Initializing Connection ... \n" );
+        connection = UnitTestUtil::CreateConnection(
+            true,
+            true,
+            L"_getClassNames",
+            NULL,
+            NULL,
+            0
+        );
+
+        printf( "Loading test data ... \n" );
+
+        // Load data into newly created datastore
+//      FdoSchemaManagerP sm = connection->GetSchemaManager();
+        LoadTestData(connection /*, sm*/ );
+
+        printf( "Closing Connection ... \n" );
+        UnitTestUtil::CloseConnection(
+            connection,
+            false,
+            L"_getClassNames"
+        );
+
+        printf( "Re-opening Connection ... \n" );
+        connection = UnitTestUtil::CreateConnection(
+            false,
+            false,
+            L"_getClassNames",
+            NULL,
+            NULL,
+            0
+        );
+
+        FdoPtr<FdoIConnectionCapabilities> conCap = connection->GetConnectionCapabilities();
+
+        printf( "Performing GetClassNames ... \n" );
+        FdoPtr<FdoIGetClassNames>  pCmd = (FdoIGetClassNames*) connection->CreateCommand(FdoCommandType_GetClassNames);
+        FdoPtr<FdoStringCollection> classNames = pCmd->Execute();
+
+        CPPUNIT_ASSERT( classNames->GetCount() == 25 );
+
+        for (int i = 0; i < classNames->GetCount(); i++)
+        {
+            printf("ClassName = %ls\n", classNames->GetItem(i)->GetString());
+        }
+
+        printf( "Closing Connection ... \n" );
+        UnitTestUtil::CloseConnection(
+            connection,
+            false,
+            L"_getClassNames"
+        );
+
+    }
+    catch ( FdoException* e )
+    {
+        try {
+            if (connection)
+                connection->Close();
+        }
+        catch ( ... )
+        {
+        }
+        UnitTestUtil::FailOnException( e );
+    }
+    catch (...)
+    {
+        if (connection)
+            connection->Close();
+        throw;
+    }
+}
+
+void DescribeSchemaTest::describeWithClassNames()
+{
+    FdoPtr<FdoIConnection> connection;
+    try
+    {
+        printf( "Initializing Connection ... \n" );
+        connection = UnitTestUtil::CreateConnection(
+            true,
+            true,
+            L"_describeclasses",
+            NULL,
+            NULL,
+            0
+        );
+
+        printf( "Loading test data ... \n" );
+
+        // Load data into newly created datastore
+//      FdoSchemaManagerP sm = connection->GetSchemaManager();
+        LoadTestData(connection /*, sm*/ );
+
+        printf( "Closing Connection ... \n" );
+        UnitTestUtil::CloseConnection(
+            connection,
+            false,
+            L"_describeclasses"
+        );
+
+        printf( "Re-opening Connection ... \n" );
+        connection = UnitTestUtil::CreateConnection(
+            false,
+            false,
+            L"_describeclasses",
+            NULL,
+            NULL,
+            0
+        );
+
+        FdoPtr<FdoIConnectionCapabilities> conCap = connection->GetConnectionCapabilities();
+
+        printf( "Performing Describe with class names... \n" );
+        FdoPtr<FdoIDescribeSchema>  pDescSchemaCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
+        FdoPtr<FdoStringCollection> classNames = FdoStringCollection::Create();
+        classNames->Add(L"Acad:AcDbLine");
+        classNames->Add(L"Acad:AcDbHatch");
+        classNames->Add(L"Electric:Transformer");
+        classNames->Add(L"Postal:Customer");
+        pDescSchemaCmd->SetClassNames(classNames);
+        FdoFeatureSchemasP                     fsc = pDescSchemaCmd->Execute();
+
+        CPPUNIT_ASSERT( fsc->GetCount() == 3 );
+
+        for (FdoInt32 i = 0; i < fsc->GetCount(); i++)
+        {
+            FdoPtr<FdoFeatureSchema> schema = fsc->GetItem(i);
+            FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+            for (FdoInt32 j = 0; j < classes->GetCount(); j++)
+            {
+                FdoPtr<FdoClassDefinition> classDef = classes->GetItem(j);
+                printf("ClassName = %ls\n", classDef->GetQualifiedName());
+                FdoPtr<FdoClassDefinition> baseClass = classDef->GetBaseClass();
+                if (baseClass)
+                {
+                    printf("BaseClassName = %ls\n", baseClass->GetQualifiedName());
+                }
+            }
+        }
+
+        printf( "Closing Connection ... \n" );
+        UnitTestUtil::CloseConnection(
+            connection,
+            false,
+            L"_describeclasses"
+        );
+
+    }
+    catch ( FdoException* e )
+    {
+        try {
+            if (connection)
+                connection->Close();
+        }
+        catch ( ... )
+        {
+        }
+        UnitTestUtil::FailOnException( e );
+    }
+    catch (...)
+    {
+        if (connection)
+            connection->Close();
+        throw;
+    }
+}
+
 FdoInt32 DescribeSchemaTest::GetLockTypeCount()
 {
     return 1;
