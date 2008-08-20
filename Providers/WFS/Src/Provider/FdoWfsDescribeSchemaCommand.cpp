@@ -26,6 +26,7 @@
 FdoWfsDescribeSchemaCommand::FdoWfsDescribeSchemaCommand (FdoIConnection *connection) :
     FdoCommonCommand<FdoIDescribeSchema, FdoWfsConnection> (connection)
 {
+    mClassNames = NULL;
 }
 
 /** Do not implement the copy constructor. **/
@@ -54,6 +55,35 @@ const wchar_t* FdoWfsDescribeSchemaCommand::GetSchemaName ()
 void FdoWfsDescribeSchemaCommand::SetSchemaName (const wchar_t* value)
 {
     mSchemaName = value;
+}
+
+/// <summary>Gets the names of the classes to retrieve. This is optional,
+/// if not specified execution of the command will describe all classes.
+/// If the class name is not qualified, and the schema name is not specified,
+/// the requested class from all schemas will be described.
+/// The class names specified serve only as a hint.  Use of the hint
+/// during command execution is provider dependent.  Providers that 
+/// will not use the hint will describe the schema for all classes.</summary>
+/// <returns>Returns the collection of class names</returns>
+FdoStringCollection* FdoWfsDescribeSchemaCommand::GetClassNames()
+{
+    return mClassNames;
+}
+
+/// <summary>Sets the name of the classes to retrieve. This is optional, if not
+/// specified execution of the command will describe all classes.
+/// If the class name is not qualified, and the schema name is not specified,
+/// the requested class from all schemas will be described.
+/// The class names specified serve only as a hint.  Use of the hint
+/// during command execution is provider dependent.  Providers that 
+/// will not use the hint will describe the schema for all classes.</summary>
+/// <param name="value">Input the collection of class names</parm>
+/// <returns>Returns nothing</returns>
+void FdoWfsDescribeSchemaCommand::SetClassNames(FdoStringCollection* value)
+{
+    // Do nothing.
+    // This method is not implemented.  DescribeSchema command
+    // will describe all classes.
 }
 
 /// <summary>Executes the DescribeSchema command and returns a 

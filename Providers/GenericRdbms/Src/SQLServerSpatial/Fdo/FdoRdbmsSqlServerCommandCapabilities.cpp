@@ -60,6 +60,8 @@ int* FdoRdbmsSqlServerCommandCapabilities::GetCommands(int& size)
         //FdoCommandType_DeactivateLongTransaction,
         //FdoCommandType_GetLongTransactions,
         //FdoCommandType_RollbackLongTransaction,
+        FdoCommandType_GetSchemaNames,
+        FdoCommandType_GetClassNames,
         
 
 		// Custom commands
@@ -70,4 +72,5 @@ int* FdoRdbmsSqlServerCommandCapabilities::GetCommands(int& size)
     size = sizeof(commands)/sizeof(int);
     return (int*) commands;
 }
+
 

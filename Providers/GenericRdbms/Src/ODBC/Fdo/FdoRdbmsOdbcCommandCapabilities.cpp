@@ -40,7 +40,9 @@ int* FdoRdbmsOdbcCommandCapabilities::GetCommands(int& size)
         FdoCommandType_Insert,
         FdoCommandType_Delete,
         FdoCommandType_Update,
-        FdoCommandType_GetSpatialContexts
+        FdoCommandType_GetSpatialContexts,
+        FdoCommandType_GetClassNames,
+        FdoCommandType_GetSchemaNames
     };
     size = sizeof(commands)/sizeof(int);
     return (int*) commands;
@@ -60,4 +62,5 @@ void FdoRdbmsOdbcCommandCapabilities::Dispose()
 {
     delete this;
 }
+
 

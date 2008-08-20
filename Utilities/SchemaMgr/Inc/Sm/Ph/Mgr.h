@@ -688,6 +688,8 @@ public:
 	virtual void SetStaticReader( FdoStringP readerName, FdoPtr<FdoSmPhReader> reader ) = 0;
 	virtual FdoPtr<FdoSmPhReader> GetStaticReader( FdoStringP readerName ) = 0;
 
+    virtual FdoStringP ClassName2DbObjectName(FdoStringP schemaName, FdoStringP className);
+
 protected:
     void SetDefaultOwnerName( FdoStringP name)
     {
@@ -761,5 +763,6 @@ private:
 
 
 #endif
+
 
 

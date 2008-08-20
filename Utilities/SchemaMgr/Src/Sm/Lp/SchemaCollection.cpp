@@ -23,6 +23,8 @@
 #include <Sm/Lp/AssociationPropertyDefinition.h>
 #include <Sm/Error.h>
 
+#include <Src/Common/StringUtility.h>
+
 #ifndef ASSERT
 #ifdef _DEBUG
     #include <CrtDbg.h>
@@ -36,7 +38,8 @@ FdoSmLpSchemaCollection::FdoSmLpSchemaCollection(FdoSmPhMgrP physicalSchema, Fdo
 	mPhysicalSchema(physicalSchema),
     mSpatialContextMgr(scMgr),
     mSchemasLoaded(false),
-    mCreatePhysicalObjects(false)
+    mCreatePhysicalObjects(false),
+    mFoundCount(0)
 {
 }
 
@@ -142,74 +145,7 @@ const FdoSmLpClassDefinition* FdoSmLpSchemaCollection::FindClass(FdoInt64 classI
 
 FdoFeatureSchemasP FdoSmLpSchemaCollection::GetFdoSchemas( FdoStringP schemaName)
 {
-    SchemaCollection            aTodo;
-
-    /////////////////////////////////////////////
-    // Setup
-
-    mMappingClass.Clear();
-    mMappingPropDef.Clear();
-
-    if (schemaName != L"")
-    {
-        // Just want a specific schema (and referenced schemas)
-        const FdoSmLpSchema*     pLpSchema = RefItem(schemaName);
-
-        if (pLpSchema)
-        {
-            aTodo.Add((FdoSmLpSchema*)pLpSchema);    // drop const
-        }
-        else
-        {
-            throw FdoSchemaException::Create( 
-                FdoSmError::NLSGetMessage(
-                    FDO_NLSID(FDOSM_26), 
-					(FdoString*) schemaName
-                )
-            );
-        }
-    }
-    else
-    {
-        // Want all schemas
-        for (int iSchema=0; iSchema < GetCount(); iSchema++)
-        {
-            const FdoSmLpSchema*     pLpSchema = RefItem(iSchema);
-            // retrieve metaclass schema only if explicitly asked for.
-            if ( wcscmp(pLpSchema->GetName(), FdoSmPhMgr::mMetaClassSchemaName) != 0 )
-                aTodo.Add((FdoSmLpSchema*)pLpSchema);    // drop const
-        }
-    }
-
-    /////////////////////////////////////////////
-    // Process schemas
-
-    FdoFeatureSchemasP pfscResult = FdoFeatureSchemaCollection::Create(NULL);
-    for (int iSchema=0; iSchema < aTodo.GetCount(); iSchema++)
-    {
-        SchemaCollection    aReferenced;
-        FdoPtr<FdoSmLpSchema> pLpSchema = aTodo.GetItem(iSchema);
-        FdoFeatureSchema*   pFdoFeatureSchema = ConvertSchema(pLpSchema, aReferenced);
-
-        if (pFdoFeatureSchema)
-        {
-            pfscResult->Add(pFdoFeatureSchema);
-            pFdoFeatureSchema->AcceptChanges(); // resets all ElementStates to Unchanged
-
-            // Add any new schema's referenced by this 
-            // one to the list of schemas to convert.
-            // NOTE: New schemas are added to the end 
-            //       of the list, so this is safe 
-            //       during a for-loop.
-            aTodo.Merge(aReferenced);
-        }
-        pFdoFeatureSchema->Release();
-    }
-
-    /////////////////////////////////////////////
-    // Done!
-
-    return pfscResult;    // returned with refcount == 1
+    return GetFdoSchemasEx(schemaName, NULL);
 }
 
 /*
@@ -353,7 +289,7 @@ void FdoSmLpSchemaCollection::XMLSerialize( FdoString* sFileName ) const
 
 //TODO: The following functions should be moved to the schema element class that they operate on.
 
-FdoFeatureSchema* FdoSmLpSchemaCollection::ConvertSchema(const FdoSmLpSchema* pLpSchema, SchemaCollection& aReferenced)
+FdoFeatureSchema* FdoSmLpSchemaCollection::ConvertSchema(const FdoSmLpSchema* pLpSchema, SchemaElementCollection& aReferenced)
 {
     ASSERT(pLpSchema);
     FdoFeatureSchema*                   pFdoFeatureSchema = FdoFeatureSchema::Create(pLpSchema->GetName(), pLpSchema->GetDescription());
@@ -379,10 +315,13 @@ FdoFeatureSchema* FdoSmLpSchemaCollection::ConvertSchema(const FdoSmLpSchema* pL
     return pFdoFeatureSchema;
 }
 
-FdoClassDefinition* FdoSmLpSchemaCollection::ConvertClassDefinition(const FdoSmLpClassDefinition* pLpClassDef, SchemaCollection& aReferenced)
+FdoClassDefinition* FdoSmLpSchemaCollection::ConvertClassDefinition(const FdoSmLpClassDefinition* pLpClassDef, SchemaElementCollection& aReferenced)
 {
     ASSERT(pLpClassDef);
     FdoClassDefinition* pFdoClassDef = (FdoClassDefinition*) mMappingClass.Map(pLpClassDef);
+
+    if (!aReferenced.classes.Contains(pLpClassDef))
+        aReferenced.classes   .AddReference((FdoSmLpClassDefinition*)pLpClassDef);
 
     if (!pFdoClassDef)
     {
@@ -404,7 +343,7 @@ FdoClassDefinition* FdoSmLpSchemaCollection::ConvertClassDefinition(const FdoSmL
             pLpFeatureClass = (FdoSmLpFeatureClass*)pLpClassDef;
             if (pLpFeatureClass->RefGeometryProperty())
             {
-                FdoGeometricPropertyDefinition*     pGeomProp = ConvertGeometricPropertyDefinition(pLpFeatureClass->RefGeometryProperty(), aReferenced);
+                FdoGeometricPropertyDefinition*     pGeomProp = ConvertGeometricPropertyDefinition(pLpFeatureClass->RefGeometryProperty(), aReferenced.schemas);
                 pFdoFeatureClass->SetGeometryProperty(pGeomProp);
                 pGeomProp->Release();
             }
@@ -502,7 +441,7 @@ FdoClassDefinition* FdoSmLpSchemaCollection::ConvertClassDefinition(const FdoSmL
                 switch (pLpPropDef->GetPropertyType())
                 {
                 case FdoPropertyType_DataProperty:
-                    pFdoPropDef = ConvertDataPropertyDefinition((const FdoSmLpDataPropertyDefinition*)pLpPropDef, aReferenced);
+                    pFdoPropDef = ConvertDataPropertyDefinition((const FdoSmLpDataPropertyDefinition*)pLpPropDef, aReferenced.schemas);
                     break;
 
                 case FdoPropertyType_ObjectProperty:
@@ -510,7 +449,7 @@ FdoClassDefinition* FdoSmLpSchemaCollection::ConvertClassDefinition(const FdoSmL
                     break;
 
                 case FdoPropertyType_GeometricProperty:
-                    pFdoPropDef = ConvertGeometricPropertyDefinition((const FdoSmLpGeometricPropertyDefinition*)pLpPropDef, aReferenced);
+                    pFdoPropDef = ConvertGeometricPropertyDefinition((const FdoSmLpGeometricPropertyDefinition*)pLpPropDef, aReferenced.schemas);
                     break;
 
                 case FdoPropertyType_AssociationProperty:
@@ -565,7 +504,7 @@ FdoClassDefinition* FdoSmLpSchemaCollection::ConvertClassDefinition(const FdoSmL
 
                             // Add a reference in case the class (inherited or not) comes
                             // from is in a different schema.
-                            aReferenced.AddReference(pLpPropDef->RefDefiningClass()->RefLogicalPhysicalSchema());
+                            aReferenced.schemas.AddReference(pLpPropDef->RefDefiningClass()->RefLogicalPhysicalSchema());
                         }
                     }
 
@@ -592,7 +531,7 @@ FdoClassDefinition* FdoSmLpSchemaCollection::ConvertClassDefinition(const FdoSmL
             {
                 const FdoSmLpDataPropertyDefinition* pLpIdPropDef = pLpIdPropDefColl->RefItem(iProp);
 
-                FdoDataPropertyDefinition*  pIdProp = ConvertDataPropertyDefinition(pLpIdPropDef, aReferenced);
+                FdoDataPropertyDefinition*  pIdProp = ConvertDataPropertyDefinition(pLpIdPropDef, aReferenced.schemas);
                 pFdoIdentityProperties->Add(pIdProp);
                 pIdProp->Release();
             }
@@ -621,7 +560,7 @@ FdoClassDefinition* FdoSmLpSchemaCollection::ConvertClassDefinition(const FdoSmL
 		// Populate constraints
 		ConvertConstraints(pLpClassDef, pFdoClassDef);
 
-        aReferenced.AddReference(pLpClassDef->RefLogicalPhysicalSchema());
+        aReferenced.schemas.AddReference(pLpClassDef->RefLogicalPhysicalSchema());
     }
     else {
         pFdoClassDef->AddRef();
@@ -662,7 +601,7 @@ FdoDataPropertyDefinition* FdoSmLpSchemaCollection::ConvertDataPropertyDefinitio
     return pFdoDataPropDef;
 }
 
-FdoObjectPropertyDefinition* FdoSmLpSchemaCollection::ConvertObjectPropertyDefinition(const FdoSmLpObjectPropertyDefinition* pLpObjPropDef, SchemaCollection& aReferenced)
+FdoObjectPropertyDefinition* FdoSmLpSchemaCollection::ConvertObjectPropertyDefinition(const FdoSmLpObjectPropertyDefinition* pLpObjPropDef, SchemaElementCollection& aReferenced)
 {
     ASSERT(pLpObjPropDef);
     ASSERT(pLpObjPropDef->GetPropertyType() == FdoPropertyType_ObjectProperty);
@@ -684,7 +623,7 @@ FdoObjectPropertyDefinition* FdoSmLpSchemaCollection::ConvertObjectPropertyDefin
         {
             // TODO: Should the following ASSERT become a part of the if()?
             ASSERT(pFdoObjPropDef->GetObjectType() == FdoObjectType_Collection || pFdoObjPropDef->GetObjectType() == FdoObjectType_OrderedCollection);
-            FdoDataPropertyDefinition*  pIdentProp = ConvertDataPropertyDefinition(pLpObjPropDef->RefIdentityProperty(), aReferenced);
+            FdoDataPropertyDefinition*  pIdentProp = ConvertDataPropertyDefinition(pLpObjPropDef->RefIdentityProperty(), aReferenced.schemas);
             pFdoObjPropDef->SetIdentityProperty(pIdentProp);
             pIdentProp->Release();
         }
@@ -693,7 +632,7 @@ FdoObjectPropertyDefinition* FdoSmLpSchemaCollection::ConvertObjectPropertyDefin
 
         ConvertSAD(pLpObjPropDef, pFdoObjPropDef);
 
-        aReferenced.AddReference(pLpObjPropDef->RefLogicalPhysicalSchema());
+        aReferenced.schemas.AddReference(pLpObjPropDef->RefLogicalPhysicalSchema());
         mMappingPropDef.Add(pLpObjPropDef, pFdoObjPropDef);
     }
     else
@@ -739,7 +678,7 @@ FdoGeometricPropertyDefinition* FdoSmLpSchemaCollection::ConvertGeometricPropert
     return pFdoGeomPropDef;
 }
 
-FdoAssociationPropertyDefinition* FdoSmLpSchemaCollection::ConvertAssociationPropertyDefinition(const FdoSmLpAssociationPropertyDefinition* pLpAssocPropDef, SchemaCollection& aReferenced )
+FdoAssociationPropertyDefinition* FdoSmLpSchemaCollection::ConvertAssociationPropertyDefinition(const FdoSmLpAssociationPropertyDefinition* pLpAssocPropDef, SchemaElementCollection& aReferenced )
 {
     ASSERT(pLpAssocPropDef);
     ASSERT(pLpAssocPropDef->GetPropertyType() == FdoPropertyType_AssociationProperty);
@@ -783,7 +722,7 @@ FdoAssociationPropertyDefinition* FdoSmLpSchemaCollection::ConvertAssociationPro
                 const FdoSmLpPropertyDefinition* pLpPropDef = pLpAssocPropDef->RefParentClass()->RefProperties()->RefItem( (const wchar_t *)identProps->GetString(i) );
                 if( pLpPropDef == NULL || pLpPropDef->GetPropertyType() !=  FdoPropertyType_DataProperty )
                     continue;
-                FdoPtr<FdoDataPropertyDefinition> fdoProp = ConvertDataPropertyDefinition( (const FdoSmLpDataPropertyDefinition*)pLpPropDef, aReferenced);
+                FdoPtr<FdoDataPropertyDefinition> fdoProp = ConvertDataPropertyDefinition( (const FdoSmLpDataPropertyDefinition*)pLpPropDef, aReferenced.schemas);
                 if( fdoProp )
                     FdoPtr<FdoDataPropertyDefinitionCollection>(pFdoAssocPropDef->GetReverseIdentityProperties())->Add( fdoProp );
             }
@@ -792,7 +731,7 @@ FdoAssociationPropertyDefinition* FdoSmLpSchemaCollection::ConvertAssociationPro
         FDO_SAFE_RELEASE(pFdoAssocClassDef);
         ConvertSAD(pLpAssocPropDef, pFdoAssocPropDef );
 
-        aReferenced.AddReference(pLpAssocPropDef->RefLogicalPhysicalSchema());
+        aReferenced.schemas.AddReference(pLpAssocPropDef->RefLogicalPhysicalSchema());
         mMappingPropDef.Add(pLpAssocPropDef, pFdoAssocPropDef);
     }
     else
@@ -1091,3 +1030,373 @@ FdoPtr<FdoDataValue> FdoSmLpSchemaCollection::FixDataValueType( FdoPtr<FdoDataVa
 	}
 	return ret;
 }
+
+FdoStringCollection* FdoSmLpSchemaCollection::GetClassNames(FdoStringP schemaName)
+{
+    SchemaCollection            aTodo;
+
+    /////////////////////////////////////////////
+    // Setup
+
+    mMappingClass.Clear();
+    mMappingPropDef.Clear();
+
+    if (schemaName != L"")
+    {
+        // Just want a specific schema (and referenced schemas)
+        const FdoSmLpSchema*     pLpSchema = RefItem(schemaName);
+
+        if (pLpSchema)
+        {
+            aTodo.Add((FdoSmLpSchema*)pLpSchema);    // drop const
+        }
+        else
+        {
+            throw FdoSchemaException::Create( 
+                FdoSmError::NLSGetMessage(
+                    FDO_NLSID(FDOSM_26), 
+					(FdoString*) schemaName
+                )
+            );
+        }
+    }
+    else
+    {
+        // Want all schemas
+        for (int iSchema=0; iSchema < GetCount(); iSchema++)
+        {
+            const FdoSmLpSchema*     pLpSchema = RefItem(iSchema);
+            // retrieve metaclass schema only if explicitly asked for.
+            if ( wcscmp(pLpSchema->GetName(), FdoSmPhMgr::mMetaClassSchemaName) != 0 )
+                aTodo.Add((FdoSmLpSchema*)pLpSchema);    // drop const
+        }
+    }
+
+    /////////////////////////////////////////////
+    // Process schemas
+
+    FdoPtr<FdoStringCollection> featureClasses = FdoStringCollection::Create();
+
+    FdoFeatureSchemasP pfscResult = FdoFeatureSchemaCollection::Create(NULL);
+    for (int iSchema=0; iSchema < aTodo.GetCount(); iSchema++)
+    {
+        FdoPtr<FdoSmLpSchema> pLpSchema = aTodo.GetItem(iSchema);
+        const FdoSmLpClassCollection* pLpClassDefColl = pLpSchema->RefClasses();
+        
+        for (FdoInt32 index = 0; index < pLpClassDefColl->GetCount(); index++)
+        {
+            const FdoSmLpClassDefinition* pLpClassDefinition = (FdoSmLpClassDefinition*)pLpClassDefColl->RefItem(index);
+            FdoStringP qname = pLpClassDefinition->GetQName();
+            featureClasses->Add(qname);
+        }
+
+    }
+
+    /////////////////////////////////////////////
+    // Done!
+
+    return FDO_SAFE_ADDREF(featureClasses.p);
+}
+
+FdoFeatureSchemasP FdoSmLpSchemaCollection::GetFdoSchemasEx(FdoStringP schemaName, FdoStringCollection* featureClassNames)
+{
+    SchemaElementCollection   aTodo;
+
+    /////////////////////////////////////////////
+    // Setup
+
+    mMappingClass.Clear();
+    mMappingPropDef.Clear();
+    mMappingSchema.Clear();
+
+    // Get the schemas to look at from the input parameters 
+    bool bIncludeAllSchemas = false;
+    FdoPtr<FdoStringCollection> schemaNames = FdoStringCollection::Create();
+
+    if (schemaName != L"")
+    {
+        schemaNames->Add(schemaName);
+    }
+
+    if (featureClassNames != NULL)
+    {
+        for (int iClassName = 0; iClassName < featureClassNames->GetCount(); iClassName++)
+        {
+            FdoStringP className = featureClassNames->GetItem(iClassName)->GetString();
+
+            FdoStringP delimiter = L":";
+            FdoStringP parsedSchemaName = className.Left(delimiter);
+
+            if (parsedSchemaName.GetLength() < className.GetLength())
+            {
+                // Check that the schema name from the fully qualified class name matches the
+                // passed in schema name (if any)
+                if (schemaName != L"" && (schemaName != parsedSchemaName))
+                {
+                    // Throw exception.  Input schema name mismatch
+                    throw FdoSchemaException::Create( 
+                        FdoSmError::NLSGetMessage(
+                            FDO_NLSID(FDOSM_423), 
+					        (FdoString*) schemaName,
+                            (FdoString*) className
+                        )
+                    );
+                }
+
+                if (schemaNames->IndexOf(parsedSchemaName) == -1)
+                {
+                    schemaNames->Add(parsedSchemaName);
+                }
+
+                // Get the unqualifed classname
+                className = className.Right(delimiter);
+
+                // Add table to the fetch candidates list
+                FdoStringP tableName = GetPhysicalSchema()->ClassName2DbObjectName(parsedSchemaName, className);
+                GetPhysicalSchema()->GetOwner()->AddCandDbObject(tableName);
+            }
+            else if (parsedSchemaName == className && schemaName.GetLength() > 0)
+            {
+                // The classname is not qualified, so we'll use the passed in schema name and the passed in classname.
+                FdoStringP tableName = GetPhysicalSchema()->ClassName2DbObjectName(schemaName, className);
+                GetPhysicalSchema()->GetOwner()->AddCandDbObject(tableName);
+            }
+            else
+            {
+                // The schema name is not specified, so need to look at all schemas
+                bIncludeAllSchemas = true;
+            }
+        }
+    }
+
+
+    FdoInt32 schemaCount = schemaNames->GetCount();
+    for (int iSchema=0; iSchema < GetCount(); iSchema++)
+    {
+        const FdoSmLpSchema*     pLpSchema = RefItem(iSchema);
+
+        if (featureClassNames)
+        {
+            for (int iClassNames = 0; iClassNames < featureClassNames->GetCount(); iClassNames++)
+            {
+                const FdoSmLpClassDefinition* pLpClassDef = pLpSchema->FindClass(featureClassNames->GetItem(iClassNames)->GetString(), false);
+                if (pLpClassDef)
+                {
+                    mFoundCount++;
+                    aTodo.classes.Add((FdoSmLpClassDefinition*)pLpClassDef);
+                }
+            }
+        }
+
+        if (schemaCount > 0 && !bIncludeAllSchemas)
+        {
+            // Only look at specific schemas
+            for (int iSchemaName = 0; iSchemaName < schemaCount; iSchemaName++)
+            {
+                if (aTodo.schemas.GetCount() == schemaCount)
+                {
+                    continue;
+                }
+                if (FdoStringUtility::StringCompare(pLpSchema->GetName(), schemaNames->GetItem(iSchemaName)->GetString()) == 0)
+                {
+                    aTodo.schemas.Add((FdoSmLpSchema*)pLpSchema);
+                }
+            }
+        }
+        else
+        {
+            // Want all schemas but retrieve metaclass schema only if explicitly asked for.
+            if ( wcscmp(pLpSchema->GetName(), FdoSmPhMgr::mMetaClassSchemaName) != 0 )
+                aTodo.schemas.Add((FdoSmLpSchema*)pLpSchema);   // drop const
+        }
+    }
+
+    if ( (schemaCount > 0) && (aTodo.schemas.GetCount() != schemaCount) )
+    {
+        // A requested schema does not exist in the feature source
+        // Identify the invalid schema name and throw an exception
+
+        FdoPtr<FdoStringCollection> foundSchemaNames = FdoStringCollection::Create();
+
+        // Gather the schema names that were found into a string collection
+        int schemaIndex = 0;
+        for (schemaIndex = 0; schemaIndex < aTodo.schemas.GetCount(); schemaIndex++)
+        {
+            FdoPtr<FdoSmLpSchema> pLpSchema  = aTodo.schemas.GetItem(schemaIndex);
+            FdoStringP foundName = pLpSchema->GetName();
+            foundSchemaNames->Add(foundName);
+        }
+
+        // Compare the collection of found names with the requested schema names
+        for (schemaIndex = 0; schemaIndex < schemaNames->GetCount(); schemaIndex++)
+        {
+            FdoStringP requestedSchemaName = schemaNames->GetItem(schemaIndex)->GetString();
+            if (foundSchemaNames->IndexOf(requestedSchemaName) == -1)
+            {
+                // The requested schema does not exist
+                // Throw exception
+                throw FdoSchemaException::Create( 
+                    FdoSmError::NLSGetMessage(
+                        FDO_NLSID(FDOSM_26), 
+			            (FdoString*) requestedSchemaName
+                    )
+                );
+            }
+        }
+    }
+
+    /////////////////////////////////////////////
+    // Process schemas
+
+    FdoFeatureSchemasP pfscResult = FdoFeatureSchemaCollection::Create(NULL);
+    SchemaElementCollection aReferenced;
+
+    if (!featureClassNames || featureClassNames->GetCount() == 0)
+    {
+        for (int iSchema = 0; iSchema < aTodo.schemas.GetCount(); iSchema++)
+        {
+            FdoPtr<FdoSmLpSchema> pLpSchema = aTodo.schemas.GetItem(iSchema);
+            FdoFeatureSchema* pFdoFeatureSchema = ConvertSchema(pLpSchema, NULL, aReferenced);
+            if (pFdoFeatureSchema)
+            {
+                pfscResult->Add(pFdoFeatureSchema);
+                pFdoFeatureSchema->AcceptChanges();
+            }
+
+            // Add any new schemas referenced by this
+            // one to the list of schemas to convert.
+            aTodo.Merge(aReferenced);
+            pFdoFeatureSchema->Release();
+        }
+    }
+    else
+    {
+        for (int iClass = 0; iClass < aTodo.classes.GetCount(); iClass++)
+        {
+            const FdoSmLpClassDefinition* pLpClassDef = aTodo.classes.GetItem(iClass);
+            FdoFeatureSchema* pFdoFeatureSchema = ConvertSchema(pLpClassDef->RefLogicalPhysicalSchema(), pLpClassDef, aReferenced);
+
+            if (pFdoFeatureSchema)
+            {
+                if (!pfscResult->Contains(pFdoFeatureSchema))
+                {
+                    pfscResult->Add(pFdoFeatureSchema);
+                    pFdoFeatureSchema->AcceptChanges(); // resets all ElementStates to Unchanged
+                }
+
+                // Add any new schema's referenced by this 
+                // one to the list of schemas to convert.
+                // NOTE: New schemas are added to the end 
+                //       of the list, so this is safe 
+                //       during a for-loop.
+                aTodo.Merge(aReferenced);
+            }
+            pFdoFeatureSchema->Release();
+        }
+    }
+
+    if (featureClassNames && (featureClassNames->GetCount() != mFoundCount))
+    {
+        // A requested class does not exist in the schema
+        // Identify the invalid class and throw an exception
+
+        FdoPtr<FdoStringCollection> foundClassNames = FdoStringCollection::Create();
+        FdoPtr<FdoStringCollection> foundQClassNames = FdoStringCollection::Create();
+
+        int classIndex = 0;
+        // Gather the class names that were found into a string collection.
+        for (int schemaIndex = 0; schemaIndex < pfscResult->GetCount(); schemaIndex++)
+        {
+            FdoPtr<FdoFeatureSchema> foundSchema = pfscResult->GetItem(schemaIndex);
+            FdoPtr<FdoClassCollection> foundClasses = foundSchema->GetClasses();
+
+            for (classIndex = 0; classIndex < foundClasses->GetCount(); classIndex++)
+            {
+                FdoPtr<FdoClassDefinition> foundClassDef = foundClasses->GetItem(classIndex);
+                FdoStringP foundQname = foundClassDef->GetQualifiedName();
+                FdoStringP foundName = foundClassDef->GetName();
+                foundQClassNames->Add(foundQname);
+                foundClassNames->Add(foundName);
+            }
+        }
+
+        // Compare the collection of found names with the requested classnames.
+        for (classIndex = 0; classIndex < featureClassNames->GetCount(); classIndex++)
+        {
+            FdoStringP requestedClassName = featureClassNames->GetItem(classIndex)->GetString();
+            if (foundQClassNames->IndexOf(requestedClassName) == -1 &&
+                foundClassNames->IndexOf(requestedClassName) == -1)
+            {
+                // The requested class does not exist
+                // Throw exception.
+                throw FdoSchemaException::Create( 
+                    FdoSmError::NLSGetMessage(
+                        FDO_NLSID(FDOSM_424), 
+				        (FdoString*) requestedClassName
+                    )
+                );
+            }
+        }
+    }
+    
+    /////////////////////////////////////////////
+    // Done!
+
+    return pfscResult;    // returned with refcount == 1
+
+}
+
+FdoStringCollection* FdoSmLpSchemaCollection::GetSchemaNames()
+{
+    FdoPtr<FdoStringCollection> schemaNames = FdoStringCollection::Create();
+
+    for (int iSchema=0; iSchema < GetCount(); iSchema++)
+    {
+        const FdoSmLpSchema*     pLpSchema = RefItem(iSchema);
+        // retrieve metaclass schema only if explicitly asked for.
+        if ( wcscmp(pLpSchema->GetName(), FdoSmPhMgr::mMetaClassSchemaName) != 0 )
+            schemaNames->Add(pLpSchema->GetName());
+    }
+
+    return FDO_SAFE_ADDREF(schemaNames.p);
+}
+
+FdoFeatureSchema* FdoSmLpSchemaCollection::ConvertSchema(const FdoSmLpSchema *pLpSchema, const FdoSmLpClassDefinition *pLpClassDef, SchemaElementCollection &aReferenced)
+{
+    ASSERT(pLpSchema);
+
+    if (!pLpClassDef)
+    {
+        return ConvertSchema(pLpSchema, aReferenced);
+    }
+
+    FdoFeatureSchema* pFdoFeatureSchema = (FdoFeatureSchema*) mMappingSchema.Map(pLpSchema);
+    FdoClassCollection* pFdoClassCollection;
+
+    if (!pFdoFeatureSchema)
+    {
+        pFdoFeatureSchema = FdoFeatureSchema::Create(pLpSchema->GetName(), pLpSchema->GetDescription());
+        ConvertSAD(pLpSchema, pFdoFeatureSchema);    
+        mMappingSchema.Add(pLpSchema, pFdoFeatureSchema);
+    }
+    else
+    {
+        pFdoFeatureSchema->AddRef();
+    }
+
+    pFdoClassCollection = pFdoFeatureSchema->GetClasses();
+
+    // Add the single class to the schema.
+    // The requested classes must exist in the schema.  Otherwise a class not found exception is thrown.
+    if (pLpClassDef)
+    {
+        FdoClassDefinition* pFdoClassDef = ConvertClassDefinition(pLpClassDef, aReferenced);
+        pFdoClassCollection->Add(pFdoClassDef);
+        pFdoClassDef->Release();
+    }
+
+    FDO_SAFE_RELEASE(pFdoClassCollection);
+
+    return pFdoFeatureSchema;
+}
+

@@ -951,7 +951,7 @@ void OdbcAccessFdoConnectTest::CapabilitiesTest()
             CPPUNIT_FAIL("FAILED - GetCommandCapabilities returned NULL\n");
         FdoInt32 numCommands = 0;
         FdoInt32 * commands = capCommand->GetCommands(numCommands);
-        CPPUNIT_ASSERT_MESSAGE("Incorrect number of commands.", numCommands == 9);
+        CPPUNIT_ASSERT_MESSAGE("Incorrect number of commands.", numCommands == 11);
         CPPUNIT_ASSERT_MESSAGE("Incorrect commands.",
             commands[0] == FdoCommandType_Select &&
             commands[1] == FdoCommandType_SelectAggregates &&
@@ -961,7 +961,9 @@ void OdbcAccessFdoConnectTest::CapabilitiesTest()
             commands[5] == FdoCommandType_Insert &&
             commands[6] == FdoCommandType_Delete &&
             commands[7] == FdoCommandType_Update &&
-            commands[8] == FdoCommandType_GetSpatialContexts);
+            commands[8] == FdoCommandType_GetSpatialContexts &&
+            commands[9] == FdoCommandType_GetClassNames &&
+            commands[10] == FdoCommandType_GetSchemaNames);
         CPPUNIT_ASSERT_MESSAGE("Wrong SupportsParameters capability.", capCommand->SupportsParameters() == false);
         CPPUNIT_ASSERT_MESSAGE("Wrong SupportsTimeout capability.", capCommand->SupportsTimeout() == false);
 

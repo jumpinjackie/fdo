@@ -2104,6 +2104,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Inc\Fdo\Commands\Schema\IGetClassNames.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Fdo\Commands\Schema\IGetSchemaNames.h"
+						>
+					</File>
+					<File
 						RelativePath="Inc\Fdo\Commands\Schema\PhysicalClassMapping.h"
 						>
 					</File>

@@ -30,6 +30,7 @@
 FdoRfpDescribeSchemaCommand::FdoRfpDescribeSchemaCommand(FdoIConnection *connection) :
 	FdoRfpCommand<FdoIDescribeSchema>(connection)
 {
+    m_classNames = NULL;
 }
 
 FdoRfpDescribeSchemaCommand::~FdoRfpDescribeSchemaCommand(void)
@@ -44,6 +45,18 @@ void FdoRfpDescribeSchemaCommand::SetSchemaName(const wchar_t* value)
 const wchar_t* FdoRfpDescribeSchemaCommand::GetSchemaName()
 {
 	return m_schemaName;
+}
+
+FdoStringCollection* FdoRfpDescribeSchemaCommand::GetClassNames()
+{
+    return m_classNames;
+}
+
+void FdoRfpDescribeSchemaCommand::SetClassNames(FdoStringCollection* value)
+{
+    // Do nothing.
+    // This method is not implemented.  DescribeSchema command
+    // will describe all classes.
 }
 
 FdoFeatureSchemaCollection* FdoRfpDescribeSchemaCommand::Execute()
@@ -204,6 +217,7 @@ FdoPtr<FdoFeatureSchema> FdoRfpDescribeSchemaCommand::_cloneSchema(const FdoPtr<
 
     return (ret);
 }
+
 
 
 

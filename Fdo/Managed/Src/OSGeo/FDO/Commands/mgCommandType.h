@@ -179,12 +179,20 @@ public __value enum CommandType {
     /// Represents the ListDataStores command.
 	CommandType_ListDataStores = FdoCommandType_ListDataStores,
 
+    /// Represents the GetSchemaNames command.
+    CommandType_GetSchemaNames = FdoCommandType_GetSchemaNames,
+
+    /// Represents the GetClassNames command.
+    CommandType_GetClassNames = FdoCommandType_GetClassNames,
+
     /// Represents the index of the first provider specific command.
 	CommandType_FirstProviderCommand = FdoCommandType_FirstProviderCommand
+
 };
 
 /// \cond DOXYGEN-IGNORE
 END_NAMESPACE_OSGEO_FDO_COMMANDS
 /// \endcond
+
 
 

@@ -43,6 +43,24 @@ public:
     // specified execution of the command will describe all schemas.
     SDF_API virtual void SetSchemaName(FdoString* value);
 
+    // Gets the names of the classes to retrieve. This is optional,
+    // if not specified execution of the command will describe all classes.
+    // If the class name is not qualified, and the schema name is not specified,
+    // the requested class from all schemas will be described.
+    // The class names specified serve only as a hint.  Use of the hint
+    // during command execution is provider dependent.  Providers that 
+    // will not use the hint will describe the schema for all classes.
+    SDF_API virtual FdoStringCollection* GetClassNames();
+
+    // Sets the name of the classes to retrieve. This is optional, if not
+    // specified execution of the command will describe all classes.
+    // If the class name is not qualified, and the schema name is not specified,
+    // the requested class from all schemas will be described.
+    // The class names specified serve only as a hint.  Use of the hint
+    // during command execution is provider dependent.  Providers that 
+    // will not use the hint will describe the schema for all classes.
+    SDF_API virtual void SetClassNames(FdoStringCollection* value);
+
     // Executes the describe schema command and returns a FeatureSchemaCollection.
     // If a schema name is given that has references to another schema, the dependent
     // schemas will be returned as well.  If the specified schema name does not exist
@@ -55,5 +73,7 @@ public:
 
 private:
     wchar_t* m_schemaName;
+    FdoStringCollection* m_classNames;
 };
+
 

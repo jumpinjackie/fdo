@@ -44,6 +44,27 @@ System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaImp::set_Schema
 	EXCEPTION_HANDLER(GetImpObj()->SetSchemaName(StringToUni(value)))
 }
 
+NAMESPACE_OSGEO_COMMON::StringCollection* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaImp::get_ClassNames()
+{
+    FdoStringCollection* result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetClassNames())
+
+	return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateStringCollection(result, true);
+}
+
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaImp::set_ClassNames(NAMESPACE_OSGEO_COMMON::StringCollection* value)
+{
+    FdoStringCollection* classNames = FdoStringCollection::Create();
+
+    for (int i = 0; i < value->Count; i++)
+    {
+        FdoStringP className = StringToUni(value->get_Item(i)->get_String());
+        classNames->Add(className);
+    }
+    EXCEPTION_HANDLER(GetImpObj()->SetClassNames(classNames))
+}
+
 NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchemaCollection* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaImp::Execute()
 {
 	FdoFeatureSchemaCollection* result;

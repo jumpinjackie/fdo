@@ -33,6 +33,8 @@
 #include "FdoRdbmsDescribeSchemaMappingCommand.h"
 #include "FdoRdbmsDestroySchemaCommand.h"
 #include "FdoRdbmsUpdateCommand.h"
+#include "FdoRdbmsGetSchemaNamesCommand.h"
+#include "FdoRdbmsGetClassNamesCommand.h"
 
 #include "FdoRdbmsConnectionCapabilities.h"
 #include "FdoRdbmsCommandCapabilities.h"
@@ -636,6 +638,14 @@ FdoICommand *FdoRdbmsConnection::CreateCommand (FdoInt32 commandType)
          case FdoCommandType_ListDataStores:
             ret = new FdoRdbmsGetDataStores( this );
             break;
+
+         case FdoCommandType_GetSchemaNames:
+             ret = new FdoRdbmsGetSchemaNamesCommand( this );
+             break;
+
+         case FdoCommandType_GetClassNames:
+             ret = new FdoRdbmsGetClassNamesCommand( this );
+             break;
 
          default:
              throw FdoConnectionException::Create(NlsMsgGet(FDORDBMS_10, "Command not supported"));

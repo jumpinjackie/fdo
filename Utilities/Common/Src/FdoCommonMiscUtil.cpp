@@ -298,6 +298,12 @@ FdoStringP FdoCommonMiscUtil::FdoCommandTypeToString (FdoInt32 command)
         case FdoCommandType_ListDataStores:
             ret = L"FdoCommandType_ListDataStores";
             break;
+        case FdoCommandType_GetSchemaNames:
+            ret = L"FdoCommandType_GetSchemaNames";
+            break;
+        case FdoCommandType_GetClassNames:
+            ret = L"FdoCommandType_GetClassNames";
+            break;
         default:
             {
                 wchar_t buffer[9];

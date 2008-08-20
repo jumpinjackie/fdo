@@ -74,6 +74,8 @@ int* FdoRdbmsCommandCapabilities::GetCommands(int& size)
         // FdoCommandType_GetLongTransactionPrivileges,
         // FdoCommandType_ChangeLongTransactionSet,
         // FdoCommandType_GetLongTransactionsInSet,
+        FdoCommandType_GetSchemaNames,
+        FdoCommandType_GetClassNames,
 
 		// Custom commands
         FdoRdbmsCommandType_CreateSpatialIndex,
@@ -98,5 +100,6 @@ void FdoRdbmsCommandCapabilities::Dispose()
 {
     delete this;
 }
+
 
 

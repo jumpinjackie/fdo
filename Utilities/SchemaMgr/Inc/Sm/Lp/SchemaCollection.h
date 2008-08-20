@@ -173,6 +173,15 @@ public:
     /// Mainly for unit testing.
 	void XMLSerialize( FdoString* sFileName ) const;
 
+    /// Retrieve the collection of available feature class names
+    FdoStringCollection* GetClassNames(FdoStringP schemaName);
+
+    /// Retrieve the schema collection for containg the requested schema and feature classes
+    FdoFeatureSchemasP GetFdoSchemasEx(FdoStringP schemaName, FdoStringCollection* classNames);
+
+    /// Retrieve the collection of available schema names
+    FdoStringCollection* GetSchemaNames();
+
 protected:
     /// LogicalPhysical Feature Schema constructors,
     /// Each provider must implement.
@@ -225,6 +234,55 @@ private:
         }
     };
 
+    class ClassCollection : public FdoSmNamedCollection<FdoSmLpClassDefinition>
+    {
+    public:
+        ClassCollection():FdoSmNamedCollection<FdoSmLpClassDefinition>() {;}
+
+        virtual void Dispose() {delete this; }
+
+        void AddReference(const FdoSmLpClassDefinition* pClassDef)
+        {
+            if (!Contains(pClassDef))
+                Add((FdoSmLpClassDefinition*)pClassDef);
+        }
+
+        void Merge(ClassCollection& x)
+        {
+            for (int i = 0; i < x.GetCount(); i++)
+            {
+                FdoPtr<FdoSmLpClassDefinition> pItem = x.GetItem(i);
+
+                // see if this item is already in this collection
+                bool bFound = false;
+                for (int j = 0; j < GetCount(); j++)
+                {
+                    FdoPtr<FdoSmLpClassDefinition> pCurrItem = GetItem(j);
+                    if ( (FdoSmLpClassDefinition*) pCurrItem == (FdoSmLpClassDefinition*) pItem )
+                    {
+                        bFound = true;
+                        break;
+                    }
+                }
+                
+                if (!bFound)
+                    Add(pItem);
+            }
+        }
+    };
+
+    class SchemaElementCollection
+    {
+    public:
+        SchemaCollection schemas;
+        ClassCollection classes;
+        void Merge(SchemaElementCollection& x)
+        {
+            schemas.Merge(x.schemas);
+            classes.Merge(x.classes);
+        }
+    };
+
     class MapItem : public FdoSmDisposable
     {
     public:
@@ -267,28 +325,34 @@ private:
 		std::map<const FdoSmLpSchemaElement*,const FdoSchemaElement*> mMap;
     };
 
-    FdoFeatureSchema*               ConvertSchema(const FdoSmLpSchema* pLpSchema, SchemaCollection& aReferenced);
-    FdoClassDefinition*             ConvertClassDefinition(const FdoSmLpClassDefinition* pLpClassDef, SchemaCollection& aReferenced);
+    FdoFeatureSchema*               ConvertSchema(const FdoSmLpSchema* pLpSchema, SchemaElementCollection& aReferenced);
     FdoDataPropertyDefinition*      ConvertDataPropertyDefinition(const FdoSmLpDataPropertyDefinition* pLpDataPropDef, SchemaCollection& aReferenced);
-    FdoObjectPropertyDefinition*    ConvertObjectPropertyDefinition(const FdoSmLpObjectPropertyDefinition* pLpObjPropDef, SchemaCollection& aReferenced);
+    FdoObjectPropertyDefinition*    ConvertObjectPropertyDefinition(const FdoSmLpObjectPropertyDefinition* pLpObjPropDef, SchemaElementCollection& aReferenced);
     FdoGeometricPropertyDefinition* ConvertGeometricPropertyDefinition(const FdoSmLpGeometricPropertyDefinition* pLpGeomPropDef, SchemaCollection& aReferenced);
-    FdoAssociationPropertyDefinition* ConvertAssociationPropertyDefinition(const FdoSmLpAssociationPropertyDefinition* pLpAssocPropDef, SchemaCollection& aReferenced );
+    FdoAssociationPropertyDefinition* ConvertAssociationPropertyDefinition(const FdoSmLpAssociationPropertyDefinition* pLpAssocPropDef, SchemaElementCollection& aReferenced);
     void                            ConvertSAD(const FdoSmLpSchemaElement* pLpElement, FdoSchemaElement* pFdoElement);
 	void							ConvertConstraints(const FdoSmLpClassDefinition* pLpClassDef, FdoClassDefinition* pFdoClassDef);
 	FdoPtr<FdoDataValue>			FixDataValueType( FdoPtr<FdoDataValue> sourceVal, FdoDataType destType );
 
+    FdoFeatureSchema*               ConvertSchema(const FdoSmLpSchema* pLpSchema, const FdoSmLpClassDefinition* pLpClassDef, SchemaElementCollection& aReferenced);
+    FdoClassDefinition*              ConvertClassDefinition(const FdoSmLpClassDefinition* pLpClassDef, SchemaElementCollection& aReferenced);
+
     MappingCollection               mMappingClass;
     MappingCollection               mMappingPropDef;
+    MappingCollection               mMappingSchema;
 
     bool        mSchemasLoaded;
 	FdoSmPhMgrP mPhysicalSchema;
     FdoSmLpSpatialContextMgrP mSpatialContextMgr;
 
     bool        mCreatePhysicalObjects;
+
+    int        mFoundCount;
 };
 
 typedef FdoPtr<FdoSmLpSchemaCollection> FdoSmLpSchemasP;
 
 #endif
+
 
 

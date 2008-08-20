@@ -28,7 +28,7 @@
 namespace fdo { namespace postgis {
 
 DescribeSchemaCommand::DescribeSchemaCommand(Connection* conn)
-    : mConn(conn), mSchemaName(L"FdoPostGIS")
+    : mConn(conn), mSchemaName(L"FdoPostGIS"), mClassNames(NULL)
 {
     FDO_SAFE_ADDREF(mConn.p);
 }
@@ -122,6 +122,18 @@ void DescribeSchemaCommand::SetSchemaName(FdoString* name)
 {
     assert(NULL != name);
     mSchemaName = name;
+}
+
+FdoStringCollection* DescribeSchemaCommand::GetClassNames()
+{
+    return mClassNames;
+}
+
+void DescribeSchemaCommand::SetClassNames(FdoStringCollection* value)
+{
+    // Do nothing.
+    // This method is not implemented.  DescribeSchema command
+    // will describe all classes.
 }
 
 FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()

@@ -134,6 +134,8 @@
 #include "FDO\Commands\SpatialContext\mgIDestroySpatialContextImp.h"
 #include "FDO\Commands\SpatialContext\mgIGetSpatialContextsImp.h"
 #include "FDO\Commands\Schema\mgIApplySchemaImp.h"
+#include "FDO\Commands\Schema\mgIGetClassNamesImp.h"
+#include "FDO\Commands\Schema\mgIGetSchemaNamesImp.h"
 #include "FDO\Commands\Schema\mgIDescribeSchemaImp.h"
 #include "FDO\Commands\Schema\mgIDescribeSchemaMappingImp.h"
 #include "FDO\Commands\Schema\mgIDestroySchemaImp.h"
@@ -1322,6 +1324,14 @@ NAMESPACE_OSGEO_FDO_COMMANDS::ICommand* NAMESPACE_OSGEO_FDO::ObjectFactory::Crea
         case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_ListDataStores:
         {
             return new NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IListDataStoresImp(ptr, autoDispose);
+        }
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_GetClassNames:
+        {
+            return new NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IGetClassNamesImp(ptr, autoDispose);
+        }
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_GetSchemaNames:
+        {
+            return new NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IGetSchemaNamesImp(ptr, autoDispose);
         }
         default:
         {
