@@ -156,7 +156,7 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
-				CommandLine="if not exist ..\..\Lib\Win32\Debug mkdir ..\..\Lib\Win32\Debug"
+				CommandLine="if not exist ..\..\Lib\Win64\Debug mkdir ..\..\Lib\Win64\Debug"
 			/>
 			<Tool
 				Name="VCLinkerTool"
@@ -171,7 +171,7 @@
 				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="..\..\Lib\Win32\Debug\SDFProvider.lib"
+				ImportLibrary="..\..\Lib\Win64\Debug\SDFProvider.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -345,7 +345,7 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
-				CommandLine="if not exist ..\..\Lib\Win32\Release mkdir ..\..\Lib\Win32\Release"
+				CommandLine="if not exist ..\..\Lib\Win64\Release mkdir ..\..\Lib\Win64\Release"
 			/>
 			<Tool
 				Name="VCLinkerTool"
@@ -361,7 +361,7 @@
 				EnableCOMDATFolding="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="..\..\Lib\Win32\Release\SDFProvider.lib"
+				ImportLibrary="..\..\Lib\Win64\Release\SDFProvider.lib"
 				TargetMachine="17"
 			/>
 			<Tool
