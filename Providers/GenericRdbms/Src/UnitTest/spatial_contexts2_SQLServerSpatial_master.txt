@@ -345,7 +345,7 @@ GEOGCS["Greek", DATUM["Greek", ELLIPSOID["Bessel 1841", 6377397.155, 299.1528128
 1001.000000 1002.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
-<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#-x31-000"/>
 </xs:element>
 </xs:sequence>
 </xs:extension>
