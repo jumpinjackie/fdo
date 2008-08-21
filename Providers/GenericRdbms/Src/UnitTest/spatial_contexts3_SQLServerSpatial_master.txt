@@ -136,7 +136,7 @@ sc_5</gml:srsName>
 1001.000000 1002.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
-<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#-x31-000"/>
 <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
 <gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
 geographic</gml:derivedCRSType>
