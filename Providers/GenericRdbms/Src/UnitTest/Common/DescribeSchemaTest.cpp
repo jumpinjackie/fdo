@@ -244,7 +244,7 @@ void DescribeSchemaTest::getSchemaNames()
 
         for (int i = 0; i < schemaNames->GetCount(); i++)
         {
-            printf("SchemaName = %ls\n", schemaNames->GetItem(i)->GetString());
+            printf("SchemaName = %ls\n", (FdoString*) schemaNames->GetItem(i)->GetString());
         }
 
         printf( "Closing Connection ... \n" );
@@ -322,7 +322,7 @@ void DescribeSchemaTest::getClassNames()
 
         for (int i = 0; i < classNames->GetCount(); i++)
         {
-            printf("ClassName = %ls\n", classNames->GetItem(i)->GetString());
+            printf("ClassName = %ls\n", (FdoString *) classNames->GetItem(i)->GetString());
         }
 
         printf( "Closing Connection ... \n" );
@@ -411,11 +411,11 @@ void DescribeSchemaTest::describeWithClassNames()
             for (FdoInt32 j = 0; j < classes->GetCount(); j++)
             {
                 FdoPtr<FdoClassDefinition> classDef = classes->GetItem(j);
-                printf("ClassName = %ls\n", classDef->GetQualifiedName());
+                printf("ClassName = %ls\n", (FdoString *) classDef->GetQualifiedName());
                 FdoPtr<FdoClassDefinition> baseClass = classDef->GetBaseClass();
                 if (baseClass)
                 {
-                    printf("BaseClassName = %ls\n", baseClass->GetQualifiedName());
+                    printf("BaseClassName = %ls\n", (FdoString *) baseClass->GetQualifiedName());
                 }
             }
         }
