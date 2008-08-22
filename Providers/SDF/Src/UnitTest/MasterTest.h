@@ -101,6 +101,7 @@ class MasterTest : public CppUnit::TestFixture
 	CPPUNIT_TEST(noGeomObject); 
 	CPPUNIT_TEST(numberFilter); 
 	CPPUNIT_TEST(inFilter); 
+	CPPUNIT_TEST(inFilterOptimize); 
 	CPPUNIT_TEST(likeFilter);
 	CPPUNIT_TEST(orFilter);
 	CPPUNIT_TEST(dateFilter); 
@@ -153,6 +154,9 @@ public:
 	void noGeomObject();
 	void numberFilter();
 	void inFilter();
+
+    // Tests that the query optimizer handles in conditions properly.
+	void inFilterOptimize();
 	void likeFilter();
 	void orFilter();
 	void dateFilter();
@@ -160,6 +164,24 @@ public:
 	void selectAggregatesSpatialExtentsTest();
 
 	void CreateEmptyShpFileWithConstraints(FdoIConnection* conn);
+
+    void inFilterOptimize_CreateData( FdoIConnection* conn );
+    void inFilterOptimize_Select( 
+        FdoIConnection* conn,
+        FdoString* className, 
+        FdoString* filterString, 
+        FdoString* id1, 
+        FdoDataType type1,
+        FdoString** expected1,
+        FdoString* id2 = NULL, 
+        FdoDataType type2 = FdoDataType_String,
+        FdoString** expected2 = NULL 
+    );
+    FdoStringP MasterTest::inFilterOptimize_GetIdValue( 
+        FdoIFeatureReader* rdr,
+        FdoString* propName, 
+        FdoDataType propType
+    );
 };
 
 #endif
