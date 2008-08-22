@@ -129,7 +129,7 @@ public:
 private:
 
     //helper functions
-    recno_list* RecnoFromKey();
+    recno_list* RecnoFromKey(FdoPropertyValueCollection* keyvals = NULL);
     bool IsAxisAlignedRectangle(FdoByteArray* fgf, Bounds& bounds);
     bool IsAllDataEnclosed( Bounds& bounds );
     recno_list* recno_list_union(recno_list* left, recno_list* right);
