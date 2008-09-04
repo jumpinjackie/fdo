@@ -586,10 +586,14 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
     
     //TODO: currently ignores spatial filter in delete
     string sql = "DELETE FROM " + mbfc;
-    sql += " WHERE ";
 
-    string where = W2A_SLOW(filter->ToString());
-    sql += where;
+    if (filter)
+    {
+        sql += " WHERE ";
+        string where = W2A_SLOW(filter->ToString());
+        sql += where;
+    }
+
     sql += ";";
 
     sqlite3_stmt* stmt = NULL;
