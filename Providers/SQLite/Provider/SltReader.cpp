@@ -524,13 +524,12 @@ bool SltReader::ReadNext()
             //we have had at least once successful hit
             if (m_closeOpcode != -1)
             {
-                //in order to bind a value to the execution engine
-                //it must think that it is not in the middle of executing
-                //so we set its program counter to -1 in order to directly
-                //set the next row ID we need into the live compiled bytecode.
-                v->pc = -1;
+                //Set the next row ID we need into the live compiled bytecode.
+                //Note that this is not the same as sqlite_bind_int64, because
+                //the execution engine copies the variables from the statement into
+                //internal memory, which we are setting directly here.
+                v->aMem[1].u.i = m_curfid;
 
-                sqlite3_bind_int64(m_pStmt, 1, m_curfid);
 
                 //now set the VDBE program counter to the instruction that
                 //fetches the row we set above -- this is to skip initialization
@@ -539,7 +538,7 @@ bool SltReader::ReadNext()
                 //to skip the initialization as well (it would lock the table again without
                 //it being freed, since we are not going to finish the previous step
                 //which would have freed the previous lock.
-                v->pc = 4;
+                v->pc = 5;
             }
             else
             {
