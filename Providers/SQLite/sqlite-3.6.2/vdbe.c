@@ -2128,7 +2128,7 @@ case OP_Column: {
     ** column and aOffset[i] will contain the offset from the beginning
     ** of the record to the start of the data for the i-th column
     */
-    for(i=0; i<lastField; i++){
+    for(i=0; i<=lastField; i++){
       if( zIdx<zEndHdr ){
         aOffset[i] = offset;
         zIdx += getVarint32(zIdx, aType[i]);
