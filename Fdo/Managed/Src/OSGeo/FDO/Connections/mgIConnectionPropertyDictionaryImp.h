@@ -47,7 +47,7 @@ public:
     /// \return
     /// Returns the list of parameter names
     /// 
-	__property System::String* get_PropertyNames() [];
+    __property System::String* get_PropertyNames() [];
 
     /// \brief
     /// Gets the value of the specified property.
@@ -58,7 +58,7 @@ public:
     /// \return
     /// Returns the property value.
     /// 
-	System::String* GetProperty(System::String* name);
+    System::String* GetProperty(System::String* name);
 
     /// \brief
     /// Sets the value of the specified property. An exception is thrown if the connection is currently open.
@@ -71,7 +71,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void SetProperty( System::String* name,  System::String* value);
+    System::Void SetProperty( System::String* name,  System::String* value);
 
     /// \brief
     /// Gets the default value for the specified property.
@@ -82,7 +82,7 @@ public:
     /// \return
     /// Returns the property default value
     /// 
-	System::String* GetPropertyDefault( System::String* name);
+    System::String* GetPropertyDefault( System::String* name);
 
     /// \brief
     /// Determines if the specified property is required.
@@ -93,7 +93,7 @@ public:
     /// \return
     /// Returns true if the specified property is required
     /// 
-	System::Boolean IsPropertyRequired( System::String* name);
+    System::Boolean IsPropertyRequired( System::String* name);
 
     /// \brief
     ///  Indicates if the property is a password or other protected field
@@ -106,7 +106,7 @@ public:
     /// Returns true if the property is a password or other protected field
     /// that should be kept secure.
     /// 
-	System::Boolean IsPropertyProtected(System::String* name);
+    System::Boolean IsPropertyProtected(System::String* name);
 
     /// \brief
     /// Determines if the possible values for the specified property can be enumerated via the EnumeratePropertyValues method.
@@ -117,7 +117,7 @@ public:
     /// \return
     /// Returns true if the possible values for the specified property can be enumerated.
     /// 
-	System::Boolean IsPropertyEnumerable(System::String* name);
+    System::Boolean IsPropertyEnumerable(System::String* name);
 
     /// \brief
     ///  Returns an array of possible values for the specified property.
@@ -128,7 +128,7 @@ public:
     /// \return
     /// Returns the list of values for this property.
     /// 
-	System::String* EnumeratePropertyValues(System::String* name) [];
+    System::String* EnumeratePropertyValues(System::String* name) [];
 
     /// \brief
     ///  Gets a localized name for the property (for NLS purposes).
@@ -139,17 +139,39 @@ public:
     /// \return
     /// Returns the localized name for the property (for NLS purposes).
     /// 
-	System::String* GetLocalizedName(System::String* name);
+    System::String* GetLocalizedName(System::String* name);
+
+    /// \brief
+    /// Determines if the specified property represents a file name.
+    /// 
+    /// \param name 
+    /// Input the property name
+    /// 
+    /// \return
+    /// Returns true if the specified property is a file name
+    /// 
+    System::Boolean IsPropertyFileName(System::String* name);
+
+    /// \brief
+    /// Determines if the specified property represents a path name.
+    /// 
+    /// \param name 
+    /// Input the property name
+    /// 
+    /// \return
+    /// Returns true if the specified property is a path name
+    /// 
+    System::Boolean IsPropertyFilePath(System::String* name);
 
 /// \cond DOXYGEN-IGNORE
 protected:
-	System::Void ReleaseUnmanagedObject();
+    System::Void ReleaseUnmanagedObject();
 /// \endcond
 
 public private:
-	IConnectionPropertyDictionaryImp(System::IntPtr unmanaged, System::Boolean autoDelete);
+    IConnectionPropertyDictionaryImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-	inline FdoIConnectionPropertyDictionary* GetImpObj();
+    inline FdoIConnectionPropertyDictionary* GetImpObj();
 };
 
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS
