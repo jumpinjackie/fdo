@@ -584,10 +584,16 @@ bool SltReader::ReadNext()
 
 done:
     //execute the instructions that end the VDBE execution loop
+    //This is analogous as the ending in ReadNext() when we run
+    //out of rows
     if (m_closeOpcode != -1)
     {
         v->pc = m_closeOpcode;
         int rc = sqlite3_step(m_pStmt);
+
+        //must set this back so that Close() does not
+        //reattempt to end the VDBE execution
+        m_closeOpcode = -1;
     }
 
 	return false;
@@ -598,23 +604,42 @@ void SltReader::Close()
 	if (!m_pStmt)
 		return;
 
-    sqlite3* db = sqlite3_db_handle(m_pStmt);
+    //execute the instructions that end the VDBE execution loop
+    //in case the reader is being closed prematurely
+    if (m_closeOpcode != -1)
+    {
+        Vdbe* v = (Vdbe*)m_pStmt;
+        v->pc = m_closeOpcode;
+        int rc = sqlite3_step(m_pStmt);
+
+        //must set this back so that a second call to Close() does not
+        //reattempt to end the VDBE execution
+        m_closeOpcode = -1;
+    }
+
+    //remember the underlying ephemeral database, 
+    //before killing the statement, so that we can free it,
+    //after we commit it... Phew.
+    sqlite3* db = sqlite3_db_handle(m_pStmt); 
+
+    //Finalize the statemenet, in case of ephemeral db, or release it to cache otherwise
+    //We must do this before committing the transaction, in case we are being Closed()
+    //before we were done calling ReadNext()
+    if (m_closeDB)
+    {
+        sqlite3_finalize(m_pStmt);
+    }
+    else //otherwise just release the cached statement we were using
+        m_connection->ReleaseParsedStatement(m_sql, m_pStmt);
 
     int rc;
-
     if (m_bUseTransaction)
         rc = sqlite3_exec(db, "COMMIT;", NULL, NULL, NULL);
 
     //Close the database as well, if it was an ephemeral database
     //used to return computed data
     if (m_closeDB)
-    {
-        sqlite3_finalize(m_pStmt);
         sqlite3_close(db);
-    }
-    else //otherwise just release the cached statement we were using
-        m_connection->ReleaseParsedStatement(m_sql, m_pStmt);
-
 
 	m_pStmt = NULL;
 }
