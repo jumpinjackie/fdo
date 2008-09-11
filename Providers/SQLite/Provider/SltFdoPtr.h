@@ -51,7 +51,7 @@ public:
 
     //Copy constructor. Type U must be convertible to type T.
     template <class U>
-    SltFdoPtr(const FdoPtr<U>& lp) throw()
+    SltFdoPtr(const SltFdoPtr<U>& lp) throw()
     {
         p = lp.p;
         if (p)
