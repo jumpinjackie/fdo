@@ -42,15 +42,15 @@ static Mem *columnMem(sqlite3_stmt *pStmt, int i){
   Mem *pOut;
 
   pVm = (Vdbe *)pStmt;
-  if( pVm && pVm->resOnStack && i<pVm->nResColumn && i>=0 ){
-      //we compile SQLite without thread safety...
+  if( pVm && pVm->pResultSet!=0 && i<pVm->nResColumn && i>=0 ){
+      //We compile without thread safety anyway...
     //sqlite3_mutex_enter(pVm->db->mutex);
     vals = sqlite3_data_count(pStmt);
-    pOut = &pVm->pTos[(1-vals)+i];
+    pOut = &pVm->pResultSet[i];
   }else{
-    static const Mem nullMem = {{0}, 0.0, 0, "", 0, MEM_Null, SQLITE_NULL };
+    static const Mem nullMem = {{0}, 0.0, 0, "", 0, MEM_Null, SQLITE_NULL, 0, 0, 0 };
     if( pVm->db ){
-        //we compile SQLite without thread safety...
+        //We compile without thread safety anyway...
       //sqlite3_mutex_enter(pVm->db->mutex);
       sqlite3Error(pVm->db, SQLITE_RANGE, 0);
     }
@@ -58,6 +58,7 @@ static Mem *columnMem(sqlite3_stmt *pStmt, int i){
   }
   return pOut;
 }
+
 
 
 //constructor taking a general sql statement, which we will step through
