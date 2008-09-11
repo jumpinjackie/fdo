@@ -11,7 +11,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SQLiteConverter", "..\Conve
 		{8F5CFBEE-539A-4054-8A76-1BF85DD1A716} = {8F5CFBEE-539A-4054-8A76-1BF85DD1A716}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sqlite", "..\sqlite-3.5.4\sqlite.vcproj", "{D94D9A17-A6AE-45DA-A1F9-443BD3A76FC6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sqlite", "..\sqlite-3.6.2\sqlite.vcproj", "{D94D9A17-A6AE-45DA-A1F9-443BD3A76FC6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
