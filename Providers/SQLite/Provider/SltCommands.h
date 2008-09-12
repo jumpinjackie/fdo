@@ -608,12 +608,11 @@ class SltApplySchema : public SltCommand<FdoIApplySchema>
 
 public:
     SltApplySchema(SltConnection* connection)
-        : SltCommand<FdoIApplySchema>(connection)
+        : SltCommand<FdoIApplySchema>(connection),
+          m_schema(NULL)
                                                                             { }
 
-    virtual ~SltApplySchema()
-                                                                            { }
-
+    virtual ~SltApplySchema()                                               { FDO_SAFE_RELEASE(m_schema); }
    
     //-------------------------------------------------------------------------
     // FdoIApplySchema
@@ -621,11 +620,18 @@ public:
 
     virtual FdoFeatureSchema*           GetFeatureSchema()                  { return FDO_SAFE_ADDREF(m_schema); }
     virtual void                        SetFeatureSchema(FdoFeatureSchema* value) 
-                                                                            { m_schema = FDO_SAFE_ADDREF(value); }
+    {
+        FDO_SAFE_RELEASE(m_schema);
+        m_schema = FDO_SAFE_ADDREF(value); 
+    }
+
     virtual FdoPhysicalSchemaMapping*   GetPhysicalMapping()                { return NULL; }
+    
     virtual void                        SetPhysicalMapping(FdoPhysicalSchemaMapping* value) 
                                                                             { }
+    
     virtual FdoBoolean                  GetIgnoreStates()                   { return true; } 
+    
     virtual void                        SetIgnoreStates( FdoBoolean ignoreStates ) 
                                                                             { }
     
