@@ -3278,6 +3278,267 @@ FdoFilter* FdoExpressionEngineImp::OptimizeFilter( FdoFilter *filter )
         {
             filter->Process( this );
         }
+        enum FdoOptimizeResultType
+        {
+            FdoOptimizeResultType_Invalid        = 0,  // query is invalid
+            FdoOptimizeResultType_NoOptimize     = 1,  // query cannot be optimized
+            FdoOptimizeResultType_UseSmSpatial   = 2,  // use smaller geom filter
+            FdoOptimizeResultType_UseBgSpatial   = 3,  // use bigger geom filter
+        };
+        static FdoOptimizeResultType GetOptimizeOperation(FdoSpatialOperations smallOperation, FdoSpatialOperations bigOperation)
+        {
+            // by default query cannot be optimized
+            FdoOptimizeResultType retVal = FdoOptimizeResultType_NoOptimize;
+            switch(bigOperation)
+            {
+                case FdoSpatialOperations_Contains:
+                    switch (smallOperation)
+                    {
+                        case FdoSpatialOperations_Contains:
+                            retVal = FdoOptimizeResultType_UseBgSpatial;
+                            break;
+                        case FdoSpatialOperations_Equals:
+                        case FdoSpatialOperations_CoveredBy:
+                        case FdoSpatialOperations_Inside:
+                        case FdoSpatialOperations_Within:
+                        case FdoSpatialOperations_Touches:
+                        case FdoSpatialOperations_Crosses:
+                        case FdoSpatialOperations_Overlaps:
+                        case FdoSpatialOperations_Disjoint:
+                            retVal = FdoOptimizeResultType_Invalid;
+                            break;
+                        default:
+                            retVal = FdoOptimizeResultType_NoOptimize;
+                            break;
+                    }
+                    break;
+                case FdoSpatialOperations_Crosses:
+                    switch (smallOperation)
+                    {
+                        case FdoSpatialOperations_Equals:
+                        case FdoSpatialOperations_Within:
+                        case FdoSpatialOperations_CoveredBy:
+                        case FdoSpatialOperations_Inside:
+                            retVal = FdoOptimizeResultType_Invalid;
+                            break;
+                        default:
+                            retVal = FdoOptimizeResultType_NoOptimize;
+                            break;
+                    }
+                    break;
+                case FdoSpatialOperations_Overlaps:
+                    switch (smallOperation)
+                    {
+                        case FdoSpatialOperations_Inside:
+                        case FdoSpatialOperations_Within:
+                        case FdoSpatialOperations_CoveredBy:
+                        case FdoSpatialOperations_Equals:
+                            retVal = FdoOptimizeResultType_Invalid;
+                            break;
+                        default:
+                            retVal = FdoOptimizeResultType_NoOptimize;
+                            break;
+                    }
+                    break;
+                case FdoSpatialOperations_Touches:
+                    switch (smallOperation)
+                    {
+                        case FdoSpatialOperations_Equals:
+                        case FdoSpatialOperations_Within:
+                        case FdoSpatialOperations_CoveredBy:
+                        case FdoSpatialOperations_Inside:
+                        case FdoSpatialOperations_Crosses:
+                        case FdoSpatialOperations_Overlaps:
+                        case FdoSpatialOperations_Contains:
+                        case FdoSpatialOperations_Intersects:
+                            retVal = FdoOptimizeResultType_Invalid;
+                            break;
+                        default:
+                            retVal = FdoOptimizeResultType_NoOptimize;
+                            break;
+                    }
+                    break;
+                case FdoSpatialOperations_Equals:
+                    switch (smallOperation)
+                    {
+                        case FdoSpatialOperations_Equals:
+                        case FdoSpatialOperations_Within:
+                        case FdoSpatialOperations_CoveredBy:
+                        case FdoSpatialOperations_Inside:
+                        case FdoSpatialOperations_Crosses:
+                        case FdoSpatialOperations_Overlaps:
+                            retVal = FdoOptimizeResultType_Invalid;
+                            break;
+                        default:
+                            retVal = FdoOptimizeResultType_NoOptimize;
+                            break;
+                    }
+                    break;
+                case FdoSpatialOperations_Disjoint:
+                    switch (smallOperation)
+                    {
+                        case FdoSpatialOperations_Equals:
+                        case FdoSpatialOperations_Within:
+                        case FdoSpatialOperations_CoveredBy:
+                        case FdoSpatialOperations_Inside:
+                        case FdoSpatialOperations_Touches:
+                        case FdoSpatialOperations_Crosses:
+                        case FdoSpatialOperations_Overlaps:
+                        case FdoSpatialOperations_Contains:
+                        case FdoSpatialOperations_Intersects:
+                            retVal = FdoOptimizeResultType_Invalid;
+                            break;
+                        default:
+                            retVal = FdoOptimizeResultType_NoOptimize;
+                            break;
+                    }
+                    break;
+                case FdoSpatialOperations_CoveredBy:
+                    switch (smallOperation)
+                    {
+                        case FdoSpatialOperations_Equals:
+                        case FdoSpatialOperations_Within:
+                        case FdoSpatialOperations_CoveredBy:
+                        case FdoSpatialOperations_Inside:
+                            retVal = FdoOptimizeResultType_UseSmSpatial;
+                            break;
+                        default:
+                            retVal = FdoOptimizeResultType_NoOptimize;
+                            break;
+                    }
+                    break;
+                case FdoSpatialOperations_Within:
+                    switch(smallOperation)
+                    {
+                        case FdoSpatialOperations_Equals:
+                        case FdoSpatialOperations_Within:
+                        case FdoSpatialOperations_CoveredBy:
+                        case FdoSpatialOperations_Inside:
+                            retVal = FdoOptimizeResultType_UseSmSpatial;
+                            break;
+                        default:
+                            retVal = FdoOptimizeResultType_NoOptimize;
+                            break;
+                    }
+                    break;
+                case FdoSpatialOperations_Inside:
+                    switch(smallOperation)
+                    {
+                        case FdoSpatialOperations_Equals:
+                        case FdoSpatialOperations_Within:
+                        case FdoSpatialOperations_CoveredBy:
+                        case FdoSpatialOperations_Inside:
+                            retVal = FdoOptimizeResultType_UseSmSpatial;
+                            break;
+                        default:
+                            retVal = FdoOptimizeResultType_NoOptimize;
+                            break;
+                    }
+                    break;
+                case FdoSpatialOperations_Intersects:
+                    switch(smallOperation)
+                    {
+                        case FdoSpatialOperations_Touches:
+                        case FdoSpatialOperations_Equals:
+                        case FdoSpatialOperations_Within:
+                        case FdoSpatialOperations_CoveredBy:
+                        case FdoSpatialOperations_Inside:
+                        case FdoSpatialOperations_Crosses:
+                        case FdoSpatialOperations_Overlaps:
+                        case FdoSpatialOperations_Intersects:
+                        case FdoSpatialOperations_Contains:
+                            retVal = FdoOptimizeResultType_UseSmSpatial;
+                            break;
+                        default:
+                            retVal = FdoOptimizeResultType_NoOptimize;
+                            break;
+                    }
+                    break;
+                case FdoSpatialOperations_EnvelopeIntersects:
+                    switch(smallOperation)
+                    {
+                        case FdoSpatialOperations_Touches:
+                        case FdoSpatialOperations_Equals:
+                        case FdoSpatialOperations_Within:
+                        case FdoSpatialOperations_CoveredBy:
+                        case FdoSpatialOperations_Inside:
+                        case FdoSpatialOperations_Crosses:
+                        case FdoSpatialOperations_Overlaps:
+                        case FdoSpatialOperations_Intersects:
+                        case FdoSpatialOperations_EnvelopeIntersects:
+                        case FdoSpatialOperations_Contains:
+                            retVal = FdoOptimizeResultType_UseSmSpatial;
+                            break;
+                        default:
+                            retVal = FdoOptimizeResultType_NoOptimize;
+                            break;
+                    }
+                    break;
+            }
+            return retVal;
+        }
+        void CombineActiveFilter(FdoSpatialCondition& filter)
+        {
+            // Otherwise we make sure that the condition with the FdoSpatialOperations_EnvelopeIntersects is the left condition
+            if( filter.GetOperation() == FdoSpatialOperations_EnvelopeIntersects )
+            {
+	            // Let's re-arrage the filter to favor evaluating the envelope intersect first.
+	            m_newFilter = FdoFilter::Combine( &filter  , FdoBinaryLogicalOperations_And,  m_newFilter );
+	            m_isOptimized = true;
+            }
+            else // keep the old filter sinve we could have multiple spatial filters which can be optimized
+                m_newFilter = FdoFilter::Combine( m_newFilter, FdoBinaryLogicalOperations_And, &filter );
+        }
+
+        static FdoFilter* TryOptimize(FdoSpatialCondition& leftFilter, FdoSpatialCondition& rightFilter)
+        {
+            FdoPtr<FdoFilter> retVal;
+			try
+            {
+                FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance ();
+			    FdoPtr<FdoExpression> lExpr = leftFilter.GetGeometry ();
+			    FdoPtr<FdoExpression> rExpr = rightFilter.GetGeometry ();
+			    FdoGeometryValue* lGv = dynamic_cast<FdoGeometryValue*>(lExpr.p);
+			    FdoGeometryValue* rGv = dynamic_cast<FdoGeometryValue*>(rExpr.p);
+    			
+			    if (lGv != NULL && rGv != NULL)
+                {
+                    FdoPtr<FdoByteArray> lba = lGv->GetGeometry ();
+                    FdoPtr<FdoByteArray> rba = rGv->GetGeometry ();
+                    
+                    FdoSpatialOperations leftOp = leftFilter.GetOperation();
+                    FdoSpatialOperations rightOp = rightFilter.GetOperation();
+
+                    FdoPtr<FdoIGeometry> geomRight = gf->CreateGeometryFromFgf (rba);
+                    FdoPtr<FdoIGeometry> geomLeft = gf->CreateGeometryFromFgf (lba);
+                    
+                    FdoOptimizeResultType retOpt = FdoOptimizeResultType_NoOptimize;
+				    if( FdoSpatialUtility::Evaluate (geomLeft, FdoSpatialOperations_Inside, geomRight) )
+                    {
+                        FdoOptimizeResultType opOptim = FdoCommonFilterOptimizer::GetOptimizeOperation(leftOp, rightOp);
+                        if( opOptim == FdoOptimizeResultType_UseSmSpatial)
+                            retVal = FDO_SAFE_ADDREF(&leftFilter);
+                        else if( opOptim == FdoOptimizeResultType_UseBgSpatial)
+                            retVal = FDO_SAFE_ADDREF(&rightFilter);
+                    }
+                    else if( FdoSpatialUtility::Evaluate (geomRight, FdoSpatialOperations_Inside, geomLeft ) )
+			        {
+                        FdoOptimizeResultType opOptim = FdoCommonFilterOptimizer::GetOptimizeOperation(rightOp, leftOp);
+                        if ( opOptim == FdoOptimizeResultType_UseSmSpatial)
+                            retVal = FDO_SAFE_ADDREF(&rightFilter);
+                        else if( opOptim == FdoOptimizeResultType_UseBgSpatial)
+                            retVal = FDO_SAFE_ADDREF(&leftFilter);
+			        }
+                }
+            }
+            catch(FdoException* exc)
+            {
+                exc->Release();
+                retVal = NULL;
+            }
+            return FDO_SAFE_ADDREF(retVal.p);
+        }
+
     public:
 
 		FdoCommonFilterOptimizer( ): m_isOptimized(false)
@@ -3323,17 +3584,11 @@ FdoFilter* FdoExpressionEngineImp::OptimizeFilter( FdoFilter *filter )
         }
         virtual void ProcessSpatialCondition(FdoSpatialCondition& filter)
 		{  
-			bool isleft = ( m_geomLeft == NULL );
+			bool isleft = ( m_newFilter == NULL );
 			
 			FdoPtr<FdoExpression> exprRight = filter.GetGeometry ();
 			FdoGeometryValue* gv = dynamic_cast<FdoGeometryValue*>(exprRight.p);
 			if (!gv)
-			{
-				m_isOptimized = false;
-				return;
-			}
-
-			if( filter.GetOperation() == FdoSpatialOperations_Disjoint )
 			{
 				m_isOptimized = false;
 				return;
@@ -3348,24 +3603,93 @@ FdoFilter* FdoExpressionEngineImp::OptimizeFilter( FdoFilter *filter )
 			}
 			else
 			{
+                if (m_geomLeft == NULL)
+                {
+                    // There are more than 2 spatial condiions in a row SC1 AND SC2 AND SC3 ...
+                    FdoBinaryLogicalOperator* lgRightCond = dynamic_cast<FdoBinaryLogicalOperator*>(m_newFilter.p);
+                    if (lgRightCond != NULL && lgRightCond->GetOperation() == FdoBinaryLogicalOperations_And)
+                    {
+                        // check if is a spatial one
+                        FdoPtr<FdoFilter> rCond = lgRightCond->GetRightOperand();
+                        FdoSpatialCondition* lgSpRightCond = dynamic_cast<FdoSpatialCondition*>(rCond.p);
+                        if (lgSpRightCond != NULL)
+                        {
+                            // try optimize previous spatial condition with active one
+                            FdoPtr<FdoFilter> newRightCond = FdoCommonFilterOptimizer::TryOptimize(*lgSpRightCond, filter);
+                            if (newRightCond != NULL)
+                            {
+                                lgRightCond->SetRightOperand(newRightCond);
+                                m_isOptimized = true;
+                                return;
+                            }
+                        }
+                    }
+                    // just combine spatial conditions since no optimization can be done
+                    CombineActiveFilter(filter);
+                    return;
+                }
+
+                FdoSpatialOperations rightOp = filter.GetOperation();
+                FdoSpatialOperations leftOp = (FdoSpatialOperations)-1;
+                FdoSpatialCondition* spLeftCond = dynamic_cast<FdoSpatialCondition*>(m_newFilter.p);
+                if (spLeftCond != NULL)
+                    leftOp = spLeftCond->GetOperation();
+
 				m_geomRight = gf->CreateGeometryFromFgf (ba);
 
-			
-				bool ret = FdoSpatialUtility::Evaluate (m_geomLeft, FdoSpatialOperations_Inside, m_geomRight);
-				if( ret )
+                FdoOptimizeResultType retOpt = FdoOptimizeResultType_NoOptimize;
+				if( FdoSpatialUtility::Evaluate (m_geomLeft, FdoSpatialOperations_Inside, m_geomRight) )
 				{
-					m_isOptimized = true;
-					return;
+                    retOpt = FdoCommonFilterOptimizer::GetOptimizeOperation(leftOp, rightOp);
+                    switch(retOpt)
+                    {
+                        case FdoOptimizeResultType_NoOptimize:
+                            // left geom cannot be used anymore since in left side we have 2 spatial cond
+                            m_geomLeft = NULL;
+                            CombineActiveFilter(filter);
+					        return;
+                        case FdoOptimizeResultType_UseSmSpatial:
+                            // keep left geom since we keept left spatial condition
+					        m_isOptimized = true;
+					        return;
+                        case FdoOptimizeResultType_UseBgSpatial:
+                            // get right geom since we kept right spatial cond
+                            m_geomLeft = gf->CreateGeometryFromFgf (ba);
+                            m_newFilter = FDO_SAFE_ADDREF(&filter);
+				            m_isOptimized = true;
+				            return;
+                        case FdoOptimizeResultType_Invalid:
+                            // invalid spatial condition combination
+                            break;
+                    }
 				}
-				ret = FdoSpatialUtility::Evaluate (m_geomRight, FdoSpatialOperations_Inside, m_geomLeft );
-				if( ret )
-				{
-					m_isOptimized = true;
-					m_newFilter = FDO_SAFE_ADDREF(&filter);
-					return;
-				}
-				ret = FdoSpatialUtility::Evaluate (m_geomRight, FdoSpatialOperations_Disjoint, m_geomLeft );
-				if( ret )
+                else if( FdoSpatialUtility::Evaluate (m_geomRight, FdoSpatialOperations_Inside, m_geomLeft ) )
+			    {
+                    retOpt = FdoCommonFilterOptimizer::GetOptimizeOperation(rightOp, leftOp);
+                    switch(retOpt)
+                    {
+                        case FdoOptimizeResultType_NoOptimize:
+                            // left geom cannot be used anymore since in left side we have 2 spatial cond
+                            m_geomLeft = NULL;
+                            CombineActiveFilter(filter);
+				            return;
+                        case FdoOptimizeResultType_UseBgSpatial:
+                            // keep left geom since we keept left spatial condition
+					        m_isOptimized = true;
+					        return;
+                        case FdoOptimizeResultType_UseSmSpatial:
+                            // get right geom since we kept right spatial cond
+                            m_geomLeft = gf->CreateGeometryFromFgf (ba);
+                            m_newFilter = FDO_SAFE_ADDREF(&filter);
+				            m_isOptimized = true;
+				            return;
+                        case FdoOptimizeResultType_Invalid:
+                            // invalid spatial condition combination
+                            break;
+                    }
+			    }
+				
+                if( (retOpt == FdoOptimizeResultType_Invalid ) || FdoSpatialUtility::Evaluate (m_geomRight, FdoSpatialOperations_Disjoint, m_geomLeft ))
 				{
 					// If the condition do not overlap, then replace it with a filter that returns 0 features.
 #ifdef _WIN32
@@ -3392,14 +3716,7 @@ FdoFilter* FdoExpressionEngineImp::OptimizeFilter( FdoFilter *filter )
 					return;
 				}
 
-				// Otherwise we make sure that the condition with the FdoSpatialOperations_EnvelopeIntersects is the left condition
-				if( filter.GetOperation() == FdoSpatialOperations_EnvelopeIntersects )
-				{
-					// Let's re-arrage the filter to favor evaluating the envelope intersect first.
-					m_newFilter = FdoFilter::Combine( &filter  , FdoBinaryLogicalOperations_And,  m_newFilter );
-					m_isOptimized = true;
-					return;
-				}
+                CombineActiveFilter(filter);
 			}
 		}
 
