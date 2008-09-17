@@ -67,6 +67,11 @@ namespace unit_test.Framework
             return m_ConnectProvider.GetLocation() ;
         }
 
+        public void SetLocation(string loc)
+        {
+            m_ConnectProvider.SetLocation(loc);
+        }
+
         public void unit_test_assert(string smsg, bool b)
         {
             Debug.Assert(b, smsg);

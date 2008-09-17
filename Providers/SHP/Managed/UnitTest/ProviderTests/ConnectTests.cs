@@ -73,7 +73,7 @@ namespace unit_test.ProviderTests
 
                 Console.WriteLine("Test_connection runs successfully !");
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -146,7 +146,7 @@ namespace unit_test.ProviderTests
 
                 Console.WriteLine("Test_dual_connect runs successfully !");
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -183,7 +183,7 @@ namespace unit_test.ProviderTests
 
                 Console.WriteLine("Test_no_slash runs successfully !");
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -220,7 +220,7 @@ namespace unit_test.ProviderTests
 
                 Console.WriteLine("Test_back_slash runs successfully !");
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -250,14 +250,14 @@ namespace unit_test.ProviderTests
                 FeatureSchema schema = schemas[0];
                 Debug.Assert(schema.Name == "Default", "Expecting 'Default' schema");
                 ClassCollection classes = schema.Classes;
-                Debug.Assert(classes.Count == 4, "Expecting 4 classes");
+                Debug.Assert(classes.Count == 6, "Expecting 6 classes");
 
                 mConnection.Close();
                 Debug.Assert(mConnection.ConnectionState == ConnectionState.ConnectionState_Closed, "connection state not closed");
 
                 Console.WriteLine("Test_double_slash runs successfully !");
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }

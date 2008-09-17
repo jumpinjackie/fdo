@@ -40,10 +40,6 @@ FdoFgfLinearRing::FdoFgfLinearRing(
                                                                L"FdoFgfLinearRing",
                                                                L"ordinates/factory"));
 
-	// Should be closed
-	if (!IsClosed(dimensionType, numOrdinates, ordinates))
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_OPEN_RING), L"FdoFgfLinearRing::FdoFgfLinearRing"));
-
 	m_lineString = factory->CreateLineString(dimensionType, numOrdinates, ordinates);
 
 #ifdef EXTRA_DEBUG
@@ -61,10 +57,6 @@ void FdoFgfLinearRing::Reset(FdoInt32 dimensionType, FdoInt32 numOrdinates, doub
 		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
                                                                L"FdoFgfLinearRing::Reset",
                                                                L"ordinates"));
-
-	// Should be closed
-	if (!IsClosed(dimensionType, numOrdinates, ordinates))
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_OPEN_RING), L"FdoFgfLinearRing::Reset"));
 
     FdoFgfLineString * ls = static_cast<FdoFgfLineString *>(m_lineString.p);
     ls->Reset(dimensionType, numOrdinates, ordinates);

@@ -42,7 +42,7 @@ namespace unit_test.ProviderTests
         public IConnection GetConnection()
         {
             IConnectionManager connectionManager = FeatureAccessManager.GetConnectionManager();
-            IConnection conn = connectionManager.CreateConnection("OSGeo.SHP.3.2");
+            IConnection conn = connectionManager.CreateConnection("OSGeo.SHP.3.3");
             conn.ConnectionString = @"DefaultFileLocation=" + location;
             return conn;
         }
@@ -50,6 +50,11 @@ namespace unit_test.ProviderTests
         public string GetLocation()
         {
             return this.location ;
+        }
+
+        public void SetLocation(string loc)
+        {
+            this.location = loc;
         }
     }
 }

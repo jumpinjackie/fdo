@@ -25,8 +25,8 @@ using OSGeo.FDO.Commands.Feature;
 using OSGeo.FDO.Commands.SpatialContext;
 using OSGeo.FDO.Schema;
 using OSGeo.FDO.Expression;
-using OSGeo.Geometry;
-using OSGeo.Common;
+using OSGeo.FDO.Geometry;
+using OSGeo.FDO.Common;
 
 using unit_test.Framework;
 
@@ -105,7 +105,59 @@ namespace unit_test.ProviderTests
                 }
                 Debug.Assert(count != 0, "no lakes features selected");
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
+            {
+                Debug.Fail(ex.Message);
+            }
+            catch (System.Exception ex)
+            {
+                Debug.Fail(ex.Message);
+            }
+        }
+
+        public void Test_selectInvalidGeometry()
+        {
+            int count = 0;
+
+            base.SetLocation(@"..\..\..\..\TestData\Sheboygan\");
+
+            IConnection mConnection = base.ConnectionNew;
+            try
+            {
+                FgfGeometryFactory factory = new FgfGeometryFactory();
+                Debug.Assert(mConnection.Open() == ConnectionState.ConnectionState_Open, "connection state not open");
+                ISelect select = (ISelect)mConnection.CreateCommand(CommandType.CommandType_Select);
+                select.SetFeatureClassName("Parcels");
+                select.SetFilter("FeatId=97");
+                IFeatureReader reader = select.Execute();
+                count = 0;
+                while (reader.ReadNext())
+                {
+                    count++;
+
+                    reader.GetInt32("FeatId");
+                    byte[] bytes = reader.GetGeometry("Geometry");
+                    IGeometry geometry = factory.CreateGeometryFromFgf(bytes);
+                    
+                    GeometryType type = geometry.DerivedType;
+                    Debug.Assert(type == GeometryType.GeometryType_Polygon, "Not a polygon");
+
+                    IPolygon poly = (IPolygon)geometry;
+                    ILinearRing ring = poly.ExteriorRing;
+                    IEnvelope envelope = ring.Envelope;
+
+                    for (int i = 0; i < poly.InteriorRingCount; i++)
+                    {
+                        ring = poly.GetInteriorRing(i);
+                        envelope = ring.Envelope;
+                    }
+
+                    string geomText = geometry.Text;
+
+                    ShpTests.AnalyzeGeometry("Parcels", count, bytes, 0, 0);
+                }
+            }
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -133,7 +185,7 @@ namespace unit_test.ProviderTests
 
                 connection.Close();
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -183,7 +235,7 @@ namespace unit_test.ProviderTests
                 Debug.Assert(count != 0, "no spatial context");
                 Debug.Assert(count == 1, "too many spatial contexts");
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -237,7 +289,7 @@ namespace unit_test.ProviderTests
                 }
                 Debug.Assert(count1 == count2, "feature counts differ");
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -269,7 +321,7 @@ namespace unit_test.ProviderTests
                 d = reader.GetDouble("AREA");
                 bad = true;
             }
-            catch (OSGeo.Common.Exception)
+            catch (OSGeo.FDO.Common.Exception)
             {
                 bad = false;
             }
@@ -326,7 +378,7 @@ namespace unit_test.ProviderTests
                 }
                 Debug.Assert(count != 0, "no features selected");
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -366,7 +418,7 @@ namespace unit_test.ProviderTests
                     }
                 }
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -409,13 +461,13 @@ namespace unit_test.ProviderTests
                         reader.GetInt32("FeatId");
                         Debug.Fail("FeatId present");
                     }
-                    catch (OSGeo.Common.Exception)
+                    catch (OSGeo.FDO.Common.Exception)
                     {
                     }
                 }
                 Debug.Assert(count != 0, "no lakes features selected");
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -525,7 +577,7 @@ namespace unit_test.ProviderTests
                 }
                 Debug.Assert(count != 0, "no coast_n83 features selected");
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -563,7 +615,7 @@ namespace unit_test.ProviderTests
                 }
                 Debug.Assert (count != 0, "no ontario features selected");
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -602,7 +654,7 @@ namespace unit_test.ProviderTests
                 Debug.Assert(25 == nonnull, "Wrong non.null record count");
                 reader.Close();
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }

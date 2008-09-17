@@ -24,9 +24,9 @@ using OSGeo.FDO.Commands.Schema;
 using OSGeo.FDO.Commands;
 using OSGeo.FDO.Schema;
 using OSGeo.FDO.Commands.Feature;
-using OSGeo.Geometry;
-using OSGeo.Spatial;
-using OSGeo.Common;
+using OSGeo.FDO.Geometry;
+using OSGeo.FDO.Spatial;
+using OSGeo.FDO.Common;
 
 namespace unit_test.ProviderTests
 {
@@ -91,7 +91,7 @@ namespace unit_test.ProviderTests
                 if (!bFound && (schema_name != null) && (schema_name.Length > 0))
                     CleanUpClass(connection, null, class_name);
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -101,7 +101,7 @@ namespace unit_test.ProviderTests
             }
         }
 
-        public static void Fail(OSGeo.Common.Exception e)
+        public static void Fail(OSGeo.FDO.Common.Exception e)
         {
             Fail(e.Message) ;
         }
