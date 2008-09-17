@@ -230,6 +230,10 @@ private:
             ret = new constructorCall_I; \
             if ( NULL == ret ) throw; \
         } \
+        catch (FdoException *ex) \
+        { \
+            throw ex; \
+        } \
         catch (...) \
         { \
             throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC))); \

@@ -138,7 +138,7 @@ namespace unit_test.ProviderTests
                 Debug.Assert(!reader.ReadNext(), "still features left");
                 reader.Close ();
             }
-             catch (OSGeo.Common.Exception ex)
+             catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Assert(false, ex.Message);
             }

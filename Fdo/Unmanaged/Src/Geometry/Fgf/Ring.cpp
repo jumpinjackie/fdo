@@ -38,12 +38,6 @@ FdoFgfRing::FdoFgfRing(
                                                                L"curveSegs/factory"));
 
 	m_curveString = factory->CreateCurveString(curveSegs);
-
-	// Check closure
-	if (!m_curveString->GetIsClosed())
-	{
-		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_OPEN_RING), L"FdoFgfRing::FdoFgfRing"));
-	}
 }
 
 

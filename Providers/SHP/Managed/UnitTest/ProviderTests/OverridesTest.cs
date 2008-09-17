@@ -26,9 +26,9 @@ using OSGeo.FDO.Commands.Feature;
 using OSGeo.FDO.Schema;
 using OSGeo.FDO.Expression;
 using OSGeo.FDO.Xml;
-using OSGeo.Geometry;
-using OSGeo.Common.Io;
-using OSGeo.Common.Xml;
+using OSGeo.FDO.Geometry;
+using OSGeo.FDO.Common.Io;
+using OSGeo.FDO.Common.Xml;
 
 //
 using ShpObjectFactory = OSGeo.FDO.Providers.SHP.Override.ObjectFactory;
@@ -166,7 +166,7 @@ namespace unit_test.ProviderTests
                     TestNewConfiguration(config, i);
                 }
             }
-	        catch (OSGeo.Common.Exception ex)
+	        catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -211,7 +211,7 @@ namespace unit_test.ProviderTests
                     }
                 }
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -235,7 +235,7 @@ namespace unit_test.ProviderTests
                     }
                 }
             }
-	        catch (OSGeo.Common.Exception ex)
+	        catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -253,7 +253,7 @@ namespace unit_test.ProviderTests
                 PhysicalElementMapping parentMapping = (PhysicalElementMapping)elementMapping.Parent ;
                 PhysicalSchemaMapping schemaMapping = elementMapping.SchemaMapping ;
             }
-	        catch (OSGeo.Common.Exception ex)
+	        catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -289,7 +289,7 @@ namespace unit_test.ProviderTests
                 {
                     connection.Configuration = (fileStream);
                 }
-                catch (OSGeo.Common.Exception/* ex*/)
+                catch (OSGeo.FDO.Common.Exception/* ex*/)
                 {
                     bFail = true;
                     //Debug.Fail(ex.Message);
@@ -301,7 +301,7 @@ namespace unit_test.ProviderTests
 
                 connection.Close();
             }
-	        catch (OSGeo.Common.Exception ex)
+	        catch (OSGeo.FDO.Common.Exception ex)
                 {
                     Debug.Fail(ex.Message);
                 }
@@ -333,7 +333,7 @@ namespace unit_test.ProviderTests
                     schemas = describe.Execute();
                     Debug.Fail("no exception asking for a nonexistant schema in an empty configuration");
                 }
-                catch (OSGeo.Common.Exception ex)
+                catch (OSGeo.FDO.Common.Exception ex)
                 {
                     //Debug.Fail(ex.Message);
                     // check for expected message
@@ -342,7 +342,7 @@ namespace unit_test.ProviderTests
 
                 connection.Close();
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -507,7 +507,7 @@ namespace unit_test.ProviderTests
                 ////////////////////////////////////////////////////////////////
                 conn.Close();
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -692,7 +692,7 @@ namespace unit_test.ProviderTests
                 connection.ConnectionString = ("DefaultFileLocation=" + location);
                 connection.Open();
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -712,7 +712,7 @@ namespace unit_test.ProviderTests
             ClassDefinition aClass = classes[classes.IndexOf(classNameOntario)] ;
             Debug.Assert(ClassType.ClassType_FeatureClass == aClass.ClassType, "wrong class type");
             PropertyDefinitionCollection properties = aClass.Properties;
-            Debug.Assert(4 == properties.Count, "wrong property count");
+            Debug.Assert(6 == properties.Count, "wrong property count");
             PropertyDefinition property = properties[properties.IndexOf(propOntarioId)] ;
             DataPropertyDefinition dataProperty = (DataPropertyDefinition)property;
             Debug.Assert(null!=dataProperty, "wrong property type");
@@ -784,7 +784,7 @@ namespace unit_test.ProviderTests
                     reader.GetGeometry(propNanbokuGeom);
                     Debug.Fail("Didn't get expected exception when fetching property not in select set");
                 }
-                catch (OSGeo.Common.Exception ex)
+                catch (OSGeo.FDO.Common.Exception ex)
                 {
                     // We expect to get here, so don't re-throw exception
                 }

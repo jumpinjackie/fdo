@@ -25,7 +25,7 @@ using OSGeo.FDO.Commands.Schema;
 using OSGeo.FDO.Commands.Feature;
 using OSGeo.FDO.Schema;
 using OSGeo.FDO.Expression;
-using OSGeo.Geometry;
+using OSGeo.FDO.Geometry;
 
 using unit_test.Framework;
 
@@ -78,7 +78,7 @@ namespace unit_test.ProviderTests
                 }
                 Debug.Assert(1 == count, "not 1 feature selected");
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -107,7 +107,7 @@ namespace unit_test.ProviderTests
                 }
                 Debug.Assert(1 == count, "not 1 feature selected");
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -156,7 +156,7 @@ namespace unit_test.ProviderTests
                 count = Featid_roads_query_test(query, 1);
                 Debug.Assert(2 == count, "3. not 2 feature selected");
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -188,7 +188,7 @@ namespace unit_test.ProviderTests
         Console.WriteLine(WholeSpan.Seconds.ToString() + " seconds\n");
 #endif
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }

@@ -25,7 +25,7 @@ using OSGeo.FDO.Commands.Schema;
 using OSGeo.FDO.Commands.Feature;
 using OSGeo.FDO.Schema;
 using OSGeo.FDO.Expression;
-using OSGeo.Geometry;
+using OSGeo.FDO.Geometry;
 
 using unit_test.Framework;
 
@@ -118,7 +118,7 @@ namespace unit_test.ProviderTests
                 datareader.Close();
                 datareader = null;
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -162,7 +162,7 @@ namespace unit_test.ProviderTests
                 datareader.Close();
                 datareader = null;
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -303,7 +303,7 @@ namespace unit_test.ProviderTests
                 datareader.Close();
                 datareader = null;
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -353,7 +353,7 @@ namespace unit_test.ProviderTests
                 datareader.Close();
                 datareader = null;
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -396,7 +396,7 @@ namespace unit_test.ProviderTests
                 datareader.Close();
                 datareader = null;
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -446,7 +446,7 @@ namespace unit_test.ProviderTests
                 datareader.Close();
                 datareader = null;
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -512,7 +512,7 @@ namespace unit_test.ProviderTests
                     count++;
                 }
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }
@@ -570,7 +570,7 @@ namespace unit_test.ProviderTests
                 datareader.Close();
                 datareader = null;
             }
-            catch (OSGeo.Common.Exception ex)
+            catch (OSGeo.FDO.Common.Exception ex)
             {
                 Debug.Fail(ex.Message);
             }

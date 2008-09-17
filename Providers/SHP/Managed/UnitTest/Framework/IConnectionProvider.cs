@@ -25,6 +25,7 @@ namespace unit_test.Framework
     {
         IConnection GetConnection();
         string GetLocation() ;
+        void SetLocation(string loc);
     }
 }
 

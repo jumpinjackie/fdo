@@ -25,7 +25,7 @@ using OSGeo.FDO.Commands.Schema;
 using OSGeo.FDO.Commands.Feature;
 using OSGeo.FDO.Schema;
 using OSGeo.FDO.Expression;
-using OSGeo.Geometry;
+using OSGeo.FDO.Geometry;
 
 using unit_test.Framework;
 

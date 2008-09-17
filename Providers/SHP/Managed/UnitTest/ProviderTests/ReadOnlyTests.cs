@@ -25,7 +25,7 @@ using OSGeo.FDO.Commands.Schema;
 using OSGeo.FDO.Commands.Feature;
 using OSGeo.FDO.Schema;
 using OSGeo.FDO.Expression;
-using OSGeo.Geometry;
+using OSGeo.FDO.Geometry;
 
 using unit_test.Framework;
 
@@ -147,7 +147,7 @@ namespace unit_test.ProviderTests
                 }
                 unit_test_assert ("no ontario features selected", 0 != count);
             }
-            catch (OSGeo.Common.Exception ge)
+            catch (OSGeo.FDO.Common.Exception ge)
             {
                 ShpTests.Fail(ge);
             }
@@ -165,7 +165,7 @@ namespace unit_test.ProviderTests
                 create_schema(GeometricType.GeometricType_Point, true, true);
                 Debug.Fail ("apply schema worked on a read-only volume");
             }
-            catch (OSGeo.Common.Exception ge)
+            catch (OSGeo.FDO.Common.Exception ge)
             {
                 // check for 'read-only' somwehere in the message
                 bool ok = ge.Message.Contains("read-only");
@@ -209,7 +209,7 @@ namespace unit_test.ProviderTests
                 reader.Close ();
                 Debug.Fail ("insert worked on a read-only volume");
             }
-            catch (OSGeo.Common.Exception ge)
+            catch (OSGeo.FDO.Common.Exception ge)
             {
                 // check for 'read-only' somwehere in the message
                 bool ok = ge.Message.Contains("read-only");
@@ -231,7 +231,7 @@ namespace unit_test.ProviderTests
                     Debug.Fail ("update really worked on a read-only volume");
                 Debug.Fail ("update worked on a read-only volume");
             }
-            catch (OSGeo.Common.Exception ge)
+            catch (OSGeo.FDO.Common.Exception ge)
             {
                 // check for 'read-only' somwehere in the message
                 bool ok = ge.Message.Contains("read-only");
@@ -250,7 +250,7 @@ namespace unit_test.ProviderTests
                     Debug.Fail ("delete really worked on a read-only volume");
                 Debug.Fail ("delete worked on a read-only volume");
             }
-            catch (OSGeo.Common.Exception ge)
+            catch (OSGeo.FDO.Common.Exception ge)
             {
                 // check for 'read-only' somwehere in the message
                 bool ok = ge.Message.Contains("read-only");
