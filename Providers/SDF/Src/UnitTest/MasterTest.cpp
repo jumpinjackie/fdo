@@ -75,6 +75,7 @@ const wchar_t* AGGR_PATH = L"../../TestData/TestAggregates.sdf";
 const wchar_t* DEST_PATH2 = L"../../TestData/TestSdf.sdf";
 
 static const wchar_t* IN_FILTER_OPTIMIZE_TEST_FILE = L"../../TestData/InFilterOptimize.sdf";
+static const wchar_t* DATA_TYPE_FILTER_TEST_FILE = L"../../TestData/DataTypeFilter.sdf";
 
 
 // Replace the text "TestExample" with your own class name
@@ -397,6 +398,144 @@ void MasterTest::keyFilterAfterDelete()
     catch ( FdoException* ex ) {
         TestCommonFail( ex );
     }
+}
+
+void MasterTest::dataTypeKeyFilter()
+{
+	FdoPtr<FdoIConnection> connection;
+
+    try {
+		// delete, re-create and open the datastore
+		printf( "Initializing Connection ... \n" );
+		connection = UnitTestUtil::OpenConnection( DATA_TYPE_FILTER_TEST_FILE, true );
+	
+        dataTypeFilter_CreateData( connection );
+
+        FdoString* expected1[] = { L"D", NULL };
+        inFilterOptimize_Select( 
+            connection,
+            L"dataTypeFilter:ClassByte", 
+            L"Id = 4", 
+            L"Prop1", 
+            FdoDataType_String, 
+            expected1 
+        );
+
+        FdoString* expected2[] = { L"C", NULL };
+        inFilterOptimize_Select( 
+            connection,
+            L"dataTypeFilter:ClassInt16", 
+            L"Id = 3", 
+            L"Prop1", 
+            FdoDataType_String, 
+            expected2 
+        );
+
+        FdoString* expected3[] = { L"B", NULL };
+        inFilterOptimize_Select( 
+            connection,
+            L"dataTypeFilter:ClassInt32", 
+            L"Id = 2", 
+            L"Prop1", 
+            FdoDataType_String, 
+            expected3 
+        );
+
+        FdoString* expected4[] = { L"E", NULL };
+        inFilterOptimize_Select( 
+            connection,
+            L"dataTypeFilter:ClassInt64", 
+            L"Id = 5", 
+            L"Prop1", 
+            FdoDataType_String, 
+            expected4 
+        );
+
+        FdoString* expected5[] = { L"B", NULL };
+        inFilterOptimize_Select( 
+            connection,
+            L"dataTypeFilter:ClassSingle", 
+            L"Id = 1.25", 
+            L"Prop1", 
+            FdoDataType_String, 
+            expected5 
+        );
+
+        FdoString* expected6[] = { L"C", NULL };
+        inFilterOptimize_Select( 
+            connection,
+            L"dataTypeFilter:ClassDouble", 
+            L"Id = 1.5", 
+            L"Prop1", 
+            FdoDataType_String, 
+            expected6 
+        );
+
+        FdoString* expected7[] = { L"A", NULL };
+        inFilterOptimize_Select( 
+            connection,
+            L"dataTypeFilter:ClassDateTime", 
+            L"Id = TIMESTAMP '2008-9-17 12:13:45.2'", 
+            L"Prop1", 
+            FdoDataType_String, 
+            expected7
+        );
+
+        FdoString* expected8[] = { L"B", NULL };
+        inFilterOptimize_Select( 
+            connection,
+            L"dataTypeFilter:ClassDateTime", 
+            L"Id = DATE '2008-9-17'", 
+            L"Prop1", 
+            FdoDataType_String, 
+            expected8
+        );
+
+        FdoString* expected9[] = { L"C", NULL };
+        inFilterOptimize_Select( 
+            connection,
+            L"dataTypeFilter:ClassDateTime", 
+            L"Id = TIME '12:13:45.2'", 
+            L"Prop1", 
+            FdoDataType_String, 
+            expected9
+        );
+
+        FdoString* expected10[] = { L"A", L"D", NULL };
+        inFilterOptimize_Select( 
+            connection,
+            L"dataTypeFilter:ClassInt16", 
+            L"Id = 1 or Id = 4", 
+            L"Prop1", 
+            FdoDataType_String, 
+            expected10
+        );
+
+        FdoString* expected11[] = { L"D", NULL };
+        inFilterOptimize_Select( 
+            connection,
+            L"dataTypeFilter:ClassComp", 
+            L"Id1 = 20 and Id2 = 1", 
+            L"Prop1", 
+            FdoDataType_String, 
+            expected11
+        );
+
+    }
+    catch ( CppUnit::Exception e ) 
+	{
+		throw e;
+	}
+	catch ( FdoException* e ) 
+	{
+		TestCommonFail( e );
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+		
+	printf( "Done\n" );
 }
 
 
@@ -2870,4 +3009,144 @@ FdoStringP MasterTest::inFilterOptimize_GetIdValue(
     }
 
     return value;
+}
+
+void MasterTest::dataTypeFilter_CreateData( FdoIConnection* conn )
+{
+	FdoFeatureSchemaP pSchema = FdoFeatureSchema::Create( L"DataTypeFilter", L"" );
+    FdoClassesP pClasses = pSchema->GetClasses();
+
+    dataTypeFilter_CreateClass( pClasses, L"ClassByte", FdoDataType_Byte );
+    dataTypeFilter_CreateClass( pClasses, L"ClassInt16", FdoDataType_Int16 );
+    dataTypeFilter_CreateClass( pClasses, L"ClassInt32", FdoDataType_Int32 );
+    dataTypeFilter_CreateClass( pClasses, L"ClassInt64", FdoDataType_Int64 );
+    dataTypeFilter_CreateClass( pClasses, L"ClassSingle", FdoDataType_Single );
+    dataTypeFilter_CreateClass( pClasses, L"ClassDouble", FdoDataType_Double );
+    dataTypeFilter_CreateClass( pClasses, L"ClassDateTime", FdoDataType_DateTime );
+
+    // Feature Class with composite id.
+
+	FdoFeatureClassP pClass = FdoFeatureClass::Create( L"ClassComp", L"" );
+	pClass->SetIsAbstract(false);
+    pClasses->Add(pClass);
+
+	FdoDataPropertyP pProp = FdoDataPropertyDefinition::Create( L"Id1", L"" );
+	pProp->SetDataType( FdoDataType_Int32 );
+	pProp->SetNullable(false);
+	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+	FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
+
+	pProp = FdoDataPropertyDefinition::Create( L"Id2", L"" );
+	pProp->SetDataType( FdoDataType_Int64 );
+    pProp->SetLength(20);
+	pProp->SetNullable(false);
+	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+	FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
+
+	pProp = FdoDataPropertyDefinition::Create( L"Prop1", L"" );
+	pProp->SetDataType( FdoDataType_String );
+    pProp->SetLength(20);
+	pProp->SetNullable(true);
+	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+
+	FdoGeometricPropertyP pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"" );
+	FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
+	pClass->SetGeometryProperty(pGeomProp);
+
+	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) conn->CreateCommand(FdoCommandType_ApplySchema);
+    pCmd->SetFeatureSchema(pSchema);
+    pCmd->Execute();
+
+    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+
+    double coord[2];
+
+    coord[0] = 1.1;
+    coord[1] = 2.2;
+
+    FdoPtr<FdoIPoint> point1 = gf->CreatePoint( FdoDimensionality_XY, coord );
+    FdoPtr<FdoByteArray> byteArray = gf->GetFgf(point1);
+    FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
+
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassByte", L"Id", FdoDataType_Byte, (FdoByte) 1, L"Prop1", FdoDataType_String, L"A", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassByte", L"Id", FdoDataType_Byte, (FdoByte) 2, L"Prop1", FdoDataType_String, L"B", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassByte", L"Id", FdoDataType_Byte, (FdoByte) 3, L"Prop1", FdoDataType_String, L"C", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassByte", L"Id", FdoDataType_Byte, (FdoByte) 4, L"Prop1", FdoDataType_String, L"D", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassByte", L"Id", FdoDataType_Byte, (FdoByte) 5, L"Prop1", FdoDataType_String, L"E", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+ 
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassInt16", L"Id", FdoDataType_Int16, (FdoInt16) 1, L"Prop1", FdoDataType_String, L"A", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassInt16", L"Id", FdoDataType_Int16, (FdoInt16) 2, L"Prop1", FdoDataType_String, L"B", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassInt16", L"Id", FdoDataType_Int16, (FdoInt16) 3, L"Prop1", FdoDataType_String, L"C", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassInt16", L"Id", FdoDataType_Int16, (FdoInt16) 4, L"Prop1", FdoDataType_String, L"D", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassInt16", L"Id", FdoDataType_Int16, (FdoInt16) 5, L"Prop1", FdoDataType_String, L"E", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+ 
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassInt32", L"Id", FdoDataType_Int32, (FdoInt32) 1, L"Prop1", FdoDataType_String, L"A", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassInt32", L"Id", FdoDataType_Int32, (FdoInt32) 2, L"Prop1", FdoDataType_String, L"B", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassInt32", L"Id", FdoDataType_Int32, (FdoInt32) 3, L"Prop1", FdoDataType_String, L"C", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassInt32", L"Id", FdoDataType_Int32, (FdoInt32) 4, L"Prop1", FdoDataType_String, L"D", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassInt32", L"Id", FdoDataType_Int32, (FdoInt32) 5, L"Prop1", FdoDataType_String, L"E", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+ 
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassInt64", L"Id", FdoDataType_Int64, (FdoInt64) 1, L"Prop1", FdoDataType_String, L"A", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassInt64", L"Id", FdoDataType_Int64, (FdoInt64) 2, L"Prop1", FdoDataType_String, L"B", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassInt64", L"Id", FdoDataType_Int64, (FdoInt64) 3, L"Prop1", FdoDataType_String, L"C", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassInt64", L"Id", FdoDataType_Int64, (FdoInt64) 4, L"Prop1", FdoDataType_String, L"D", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassInt64", L"Id", FdoDataType_Int64, (FdoInt64) 5, L"Prop1", FdoDataType_String, L"E", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+ 
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassSingle", L"Id", FdoDataType_Single, (FdoFloat) 1.0, L"Prop1", FdoDataType_String, L"A", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassSingle", L"Id", FdoDataType_Single, (FdoFloat) 1.25, L"Prop1", FdoDataType_String, L"B", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassSingle", L"Id", FdoDataType_Single, (FdoFloat) 1.5, L"Prop1", FdoDataType_String, L"C", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassSingle", L"Id", FdoDataType_Single, (FdoFloat) 1.75, L"Prop1", FdoDataType_String, L"D", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassSingle", L"Id", FdoDataType_Single, (FdoFloat) 2.0, L"Prop1", FdoDataType_String, L"E", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+ 
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassDouble", L"Id", FdoDataType_Double, (FdoDouble) 1.0, L"Prop1", FdoDataType_String, L"A", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassDouble", L"Id", FdoDataType_Double, (FdoDouble) 1.25, L"Prop1", FdoDataType_String, L"B", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassDouble", L"Id", FdoDataType_Double, (FdoDouble) 1.5, L"Prop1", FdoDataType_String, L"C", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassDouble", L"Id", FdoDataType_Double, (FdoDouble) 1.75, L"Prop1", FdoDataType_String, L"D", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassDouble", L"Id", FdoDataType_Double, (FdoDouble) 2.0, L"Prop1", FdoDataType_String, L"E", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+ 
+    FdoDateTime dt1(2008, 9, 17, 12, 13, (FdoFloat)45.2);
+    FdoDateTime dt2((FdoInt16)2008, 9, 17);
+    FdoDateTime dt3(12, 13, (FdoFloat)45.2);
+    FdoDateTime dt4(2008, 9, 18, 12, 13, (FdoFloat)45.2);
+    FdoDateTime dt5(2008, 9, 19, 12, 13, (FdoFloat)45.2);
+
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassDateTime", L"Id", FdoDataType_DateTime, &dt1, L"Prop1", FdoDataType_String, L"A", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassDateTime", L"Id", FdoDataType_DateTime, &dt2, L"Prop1", FdoDataType_String, L"B", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassDateTime", L"Id", FdoDataType_DateTime, &dt3, L"Prop1", FdoDataType_String, L"C", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassDateTime", L"Id", FdoDataType_DateTime, &dt4, L"Prop1", FdoDataType_String, L"D", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassDateTime", L"Id", FdoDataType_DateTime, &dt5, L"Prop1", FdoDataType_String, L"E", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+ 
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"InFilter", L"ClassComp", L"Id1", FdoDataType_Int32, (FdoInt32) 10, L"Id2", FdoDataType_Int64, (FdoInt64) 1, L"Prop1", FdoDataType_String, L"A", L"Geometry", -1, geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"InFilter", L"ClassComp", L"Id1", FdoDataType_Int32, (FdoInt32) 10, L"Id2", FdoDataType_Int64, (FdoInt64) 2, L"Prop1", FdoDataType_String, L"B", L"Geometry", -1, geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"InFilter", L"ClassComp", L"Id1", FdoDataType_Int32, (FdoInt32) 10, L"Id2", FdoDataType_Int64, (FdoInt64) 3, L"Prop1", FdoDataType_String, L"C", L"Geometry", -1, geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"InFilter", L"ClassComp", L"Id1", FdoDataType_Int32, (FdoInt32) 20, L"Id2", FdoDataType_Int64, (FdoInt64) 1, L"Prop1", FdoDataType_String, L"D", L"Geometry", -1, geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"InFilter", L"ClassComp", L"Id1", FdoDataType_Int32, (FdoInt32) 20, L"Id2", FdoDataType_Int64, (FdoInt64) 2, L"Prop1", FdoDataType_String, L"E", L"Geometry", -1, geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"InFilter", L"ClassComp", L"Id1", FdoDataType_Int32, (FdoInt32) 20, L"Id2", FdoDataType_Int64, (FdoInt64) 3, L"Prop1", FdoDataType_String, L"F", L"Geometry", -1, geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"InFilter", L"ClassComp", L"Id1", FdoDataType_Int32, (FdoInt32) 30, L"Id2", FdoDataType_Int64, (FdoInt64) 1, L"Prop1", FdoDataType_String, L"G", L"Geometry", -1, geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"InFilter", L"ClassComp", L"Id1", FdoDataType_Int32, (FdoInt32) 30, L"Id2", FdoDataType_Int64, (FdoInt64) 2, L"Prop1", FdoDataType_String, L"H", L"Geometry", -1, geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"InFilter", L"ClassComp", L"Id1", FdoDataType_Int32, (FdoInt32) 30, L"Id2", FdoDataType_Int64, (FdoInt64) 3, L"Prop1", FdoDataType_String, L"I", L"Geometry", -1, geometryValue.p, NULL );
+}
+
+void MasterTest::dataTypeFilter_CreateClass( FdoClassesP pClasses, FdoString* className, FdoDataType idType )
+{
+	FdoFeatureClassP pClass = FdoFeatureClass::Create( className, L"" );
+	pClass->SetIsAbstract(false);
+    pClasses->Add(pClass);
+
+	FdoDataPropertyP pProp = FdoDataPropertyDefinition::Create( L"Id", L"" );
+	pProp->SetDataType( idType );
+	pProp->SetNullable(false);
+    pProp->SetIsAutoGenerated(false);
+	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+	FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
+
+	pProp = FdoDataPropertyDefinition::Create( L"Prop1", L"" );
+	pProp->SetDataType( FdoDataType_String );
+    pProp->SetLength(20);
+	pProp->SetNullable(true);
+	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+
+	FdoGeometricPropertyP pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"" );
+	FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
+	pClass->SetGeometryProperty(pGeomProp);
 }

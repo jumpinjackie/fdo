@@ -311,7 +311,9 @@ void SdfQueryOptimizer::ProcessComparisonCondition(FdoComparisonCondition& filte
         {
             FdoPtr<FdoDataPropertyDefinition> dpd = m_idprops->GetItem(i);
 
-            if (wcscmp(dpd->GetName(), ident->GetName()) == 0)
+            if ((wcscmp(dpd->GetName(), ident->GetName()) == 0) &&
+                 (val->GetDataType() == dpd->GetDataType())
+            )
             {
                 FdoPropertyValue* pv = FdoPropertyValue::Create(ident, val);
                 m_keyvals->Add(pv);

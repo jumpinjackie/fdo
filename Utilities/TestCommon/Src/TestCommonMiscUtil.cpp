@@ -140,7 +140,9 @@ FdoPtr<FdoLiteralValue> TestCommonMiscUtil::ArgsToLiteral( va_list& arguments )
     FdoPtr<FdoLiteralValue> literalValue;
     FdoBoolean boolArg;
     FdoByte byteArg;
+    FdoInt16 int16Arg;
     FdoInt32 int32Arg;
+    FdoInt64 int64Arg;
     FdoFloat floatArg;
     FdoDouble doubleArg;
     FdoString* strArg;
@@ -157,9 +159,17 @@ FdoPtr<FdoLiteralValue> TestCommonMiscUtil::ArgsToLiteral( va_list& arguments )
         byteArg = (FdoByte) va_arg(arguments,int);
         literalValue = FdoDataValue::Create(byteArg);
         break;
+    case FdoDataType_Int16:
+        int16Arg = va_arg(arguments,FdoInt16);
+        literalValue = FdoDataValue::Create(int16Arg);
+        break;
     case FdoDataType_Int32:
         int32Arg = va_arg(arguments,FdoInt32);
         literalValue = FdoDataValue::Create(int32Arg);
+        break;
+    case FdoDataType_Int64:
+        int64Arg = va_arg(arguments,FdoInt64);
+        literalValue = FdoDataValue::Create(int64Arg);
         break;
     case FdoDataType_Single:
         floatArg = (FdoFloat) va_arg(arguments,double);
