@@ -160,7 +160,7 @@ FdoPtr<FdoLiteralValue> TestCommonMiscUtil::ArgsToLiteral( va_list& arguments )
         literalValue = FdoDataValue::Create(byteArg);
         break;
     case FdoDataType_Int16:
-        int16Arg = va_arg(arguments,FdoInt16);
+        int16Arg = va_arg(arguments,int);
         literalValue = FdoDataValue::Create(int16Arg);
         break;
     case FdoDataType_Int32:
