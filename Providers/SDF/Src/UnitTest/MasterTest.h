@@ -92,6 +92,7 @@ class MasterTest : public CppUnit::TestFixture
     CPPUNIT_TEST(keyFilterBeforeDelete);
     CPPUNIT_TEST(deleteTest);
     CPPUNIT_TEST(keyFilterAfterDelete);
+    CPPUNIT_TEST(dataTypeKeyFilter);
     CPPUNIT_TEST(coordSysTest);
     CPPUNIT_TEST(selectDistinctTests);
     CPPUNIT_TEST(selectAggregatesTest);
@@ -133,6 +134,7 @@ public:
     void updateTest();
     void keyFilterBeforeDelete();
     void keyFilterAfterDelete();
+    void dataTypeKeyFilter();
     void stringFilter();
     void rtreeFilter();
     void spatialFilter();
@@ -182,6 +184,9 @@ public:
         FdoString* propName, 
         FdoDataType propType
     );
+
+    void dataTypeFilter_CreateData( FdoIConnection* conn );
+    void dataTypeFilter_CreateClass( FdoClassesP pClasses, FdoString* className, FdoDataType idType );
 };
 
 #endif
