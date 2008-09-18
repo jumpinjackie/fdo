@@ -124,6 +124,7 @@ void FilterParseTest::test()
 	ParseFilter(L"colourIndex < -5");
 	ParseFilter(L"colourIndex >= -5");
 	ParseFilter(L"colourIndex <= -5");
+	ParseFilter(L"\"colour$Index\" > -a", L"\"colour$Index\" > -(a)");
 	ParseFilter(L"(Id = 1 and Name = 'Fred') or (Id = 2 and Name = 'John')",
 		L"Id = 1 AND Name = 'Fred' OR Id = 2 AND Name = 'John'");
 
