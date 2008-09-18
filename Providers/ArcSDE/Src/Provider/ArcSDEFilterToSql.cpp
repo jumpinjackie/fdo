@@ -1063,6 +1063,14 @@ void ArcSDEFilterToSql::ProcessGeometricCondition (FdoIdentifier* fdoPropertyNam
             // Free original shape, as it is no longer needed:
             SE_shape_free(shape);
 
+            void* valuePointer = NULL;
+            convert_sde_shape_to_fgf(m_Connection, shapeWithBuffer, (FdoByteArray*&)valuePointer);
+            // free the old shape
+            SE_shape_free(shapeWithBuffer);
+            FdoPtr<FdoByteArray> regfgf = (FdoByteArray*)valuePointer;
+            // rebuild the shape
+            convert_fgf_to_sde_shape(m_Connection, regfgf, coordRef, shapeWithBuffer, true);
+            
             // Debug:
             LONG lNumPointsBuffered = 0L;
             SE_shape_get_num_points(shapeWithBuffer,0,0,&lNumPointsBuffered);
