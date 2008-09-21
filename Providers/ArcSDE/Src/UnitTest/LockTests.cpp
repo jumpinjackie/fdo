@@ -342,6 +342,13 @@ void LockTests::release_only ()
 /* Test locking an object as one user and locking it as another user. */
 void LockTests::two_user_exclusion ()
 {
+    FdoStringP val = getenv("rdbms");
+    if (val.ICompare(L"oracle") == 0)
+    {
+        // Disable test since it currently crashes against an ArcSDE 92 server.
+        CPPUNIT_FAIL("LockTests::two_user_exclusion disable");
+    }
+
     if (!ArcSDETestConfig::SupportsLocking())   return;
     if (CreateSchemaOnly())  return;
 
