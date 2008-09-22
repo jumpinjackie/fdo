@@ -29,9 +29,9 @@
 #include "FDO\Connections\Capabilities\mgReadOnlyArgDefColl.h"
 #include "FDO\mgObjectFactory.h"
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::FunctionDefinition(IntPtr unmanaged, Boolean autoDelete) : Disposable(unmanaged, autoDelete)
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::FunctionDefinition(IntPtr unmanaged, Boolean autoDelete) : Disposable(IntPtr::Zero, autoDelete)
 {
-
+     EXCEPTION_HANDLER(Attach(unmanaged,autoDelete));
 }
 
 FdoFunctionDefinition* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition::GetImpObj()
