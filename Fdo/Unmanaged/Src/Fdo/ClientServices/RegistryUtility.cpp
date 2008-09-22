@@ -789,7 +789,7 @@ wchar_t *FdoRegistryUtility::GetFileName()
             const char *me;
             char *home;
             char *last;
-            char *install = "/usr/local/fdo-3.3.0";
+            char *install = "/usr/local/fdo-3.4.0";
 
             // Determine the user-specified FDO install location
             char *fdo_home = getenv( "FDOHOME" );
