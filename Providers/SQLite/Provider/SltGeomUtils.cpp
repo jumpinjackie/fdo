@@ -389,6 +389,30 @@ void GetFgfExtents(const unsigned char* fgf, int len, double ext[4])
         }
         break;
     case FdoGeometryType_Polygon :
+        {
+            ireader++;
+            ext[0] =  DBL_MAX;
+            ext[1] =  DBL_MAX;
+            ext[2] = -DBL_MAX;
+            ext[3] = -DBL_MAX;
+
+            //read cordinate type
+            int tmp = (FdoDimensionality) *ireader++;
+            int dim = dim_lookup[tmp];
+
+            // the number of contours in current polygon/linestring
+            int contour_count = *ireader++;
+
+            for (int i=0; i<contour_count; i++)
+            {
+                int point_count = *ireader++;
+                
+                double* dreader = (double*) ireader;
+                AddToExtent(point_count, dim, dreader, ext);
+                ireader = (int*)(dreader + point_count * dim);
+            }
+        }
+        break;
     case FdoGeometryType_MultiLineString :
     case FdoGeometryType_MultiPolygon :
     case FdoGeometryType_MultiPoint :
@@ -399,9 +423,9 @@ void GetFgfExtents(const unsigned char* fgf, int len, double ext[4])
             ext[2] = -DBL_MAX;
             ext[3] = -DBL_MAX;
 
-            bool is_multi = (geom_type == FdoGeometryType_MultiLineString)
+            bool is_multi = true; /*(geom_type == FdoGeometryType_MultiLineString)
                 || (geom_type == FdoGeometryType_MultiPolygon
-                || (geom_type == FdoGeometryType_MultiPoint));
+                || (geom_type == FdoGeometryType_MultiPoint));*/
 
             //temp variables used inside the loop
             int num_geoms = 1;
@@ -427,7 +451,7 @@ void GetFgfExtents(const unsigned char* fgf, int len, double ext[4])
 
                 switch (geom_type)
                 {
-                case FdoGeometryType_Polygon:
+                //case FdoGeometryType_Polygon:
                 case FdoGeometryType_MultiPolygon:
                     contour_count = *ireader++;
                 default: break;
