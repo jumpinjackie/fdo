@@ -99,7 +99,7 @@ FdoPtr<FdoIInsert>  TestCommonMiscUtil::InsertObject( FdoIConnection* connection
 
         propertyValue = AddNewProperty( propertyValues, propName);
         
-        propertyValue->SetValue( ArgsToDataValue(arguments) );
+        propertyValue->SetValue( ArgsToLiteral(arguments) );
 
         propName = va_arg(arguments,FdoString*);
     }
@@ -125,7 +125,7 @@ void TestCommonMiscUtil::DeleteObjects( FdoIConnection* connection, FdoStringP s
     if ( propName != NULL ) {
 
         FdoPtr<FdoIdentifier> pIdent = FdoIdentifier::Create( propName );
-        FdoPtr<FdoComparisonCondition> pCompare = FdoComparisonCondition::Create(pIdent, FdoComparisonOperations_EqualTo, ArgsToDataValue(arguments) );
+        FdoPtr<FdoComparisonCondition> pCompare = FdoComparisonCondition::Create(pIdent, FdoComparisonOperations_EqualTo, ArgsToLiteral(arguments) );
        
         deleteCommand->SetFilter( pCompare );
     }
@@ -135,12 +135,14 @@ void TestCommonMiscUtil::DeleteObjects( FdoIConnection* connection, FdoStringP s
     deleteCommand->Execute();
 }
 
-FdoPtr<FdoDataValue> TestCommonMiscUtil::ArgsToDataValue( va_list& arguments )
+FdoPtr<FdoLiteralValue> TestCommonMiscUtil::ArgsToLiteral( va_list& arguments )
 {
-    FdoPtr<FdoDataValue> dataValue;
+    FdoPtr<FdoLiteralValue> literalValue;
     FdoBoolean boolArg;
     FdoByte byteArg;
+    FdoInt16 int16Arg;
     FdoInt32 int32Arg;
+    FdoInt64 int64Arg;
     FdoFloat floatArg;
     FdoDouble doubleArg;
     FdoString* strArg;
@@ -151,39 +153,51 @@ FdoPtr<FdoDataValue> TestCommonMiscUtil::ArgsToDataValue( va_list& arguments )
     switch ( dataType ) {
     case FdoDataType_Boolean:
         boolArg = (FdoBoolean) va_arg(arguments,int);
-        dataValue = FdoDataValue::Create(boolArg);
+        literalValue = FdoDataValue::Create(boolArg);
         break;
     case FdoDataType_Byte:
         byteArg = (FdoByte) va_arg(arguments,int);
-        dataValue = FdoDataValue::Create(byteArg);
+        literalValue = FdoDataValue::Create(byteArg);
+        break;
+    case FdoDataType_Int16:
+        int16Arg = va_arg(arguments,int);
+        literalValue = FdoDataValue::Create(int16Arg);
         break;
     case FdoDataType_Int32:
         int32Arg = va_arg(arguments,FdoInt32);
-        dataValue = FdoDataValue::Create(int32Arg);
+        literalValue = FdoDataValue::Create(int32Arg);
+        break;
+    case FdoDataType_Int64:
+        int64Arg = va_arg(arguments,FdoInt64);
+        literalValue = FdoDataValue::Create(int64Arg);
         break;
     case FdoDataType_Single:
         floatArg = (FdoFloat) va_arg(arguments,double);
-        dataValue = FdoDataValue::Create(floatArg);
+        literalValue = FdoDataValue::Create(floatArg);
         break;
     case FdoDataType_Double:
     case FdoDataType_Decimal:
         doubleArg = (FdoDouble) va_arg(arguments,double);
-        dataValue = FdoDataValue::Create(doubleArg, dataType);
+        literalValue = FdoDataValue::Create(doubleArg, dataType);
         break;
     case FdoDataType_String:
         strArg = va_arg(arguments,FdoString*);
-        dataValue = FdoDataValue::Create(strArg);
+        literalValue = FdoDataValue::Create(strArg);
         break;
     case FdoDataType_DateTime:
         dateTimeArg = va_arg(arguments,FdoDateTime *);
-        dataValue = FdoDataValue::Create(*dateTimeArg);
+        literalValue = FdoDataValue::Create(*dateTimeArg);
+        break;
+    case -1:
+        literalValue = va_arg(arguments,FdoGeometryValue *);
+        FDO_SAFE_ADDREF(literalValue.p);
         break;
     default:
         throw FdoException::Create( L"TestCommonMiscUtil::InsertObject dataType not yet implemented; please implement" );
         break;
     }
 
-    return dataValue;
+    return literalValue;
 }
 
 #ifdef _WIN32
@@ -206,14 +220,14 @@ int TestCommonMiscUtil::LeakReportHook( int reportType, char *message, int *retu
         sscanf( message, "{%d}", &allocNum );
     }
     else if ( strncmp(message, "normal block at", 15) == 0 ) {
-        long addr;
+        LONG_PTR addr;
         bool isClass = false;
         sscanf( message, "normal block at %x", &addr );
         FdoIDisposable* disp = NULL;
         FdoSchemaElement* elem = NULL;
         try {
             const type_info& info = typeid( *((FdoIDisposable*)(addr)) );
-            if ( (((long)(&info)) & 0x00ffffff) != 0x00cccccc ) {
+            if ( (((LONG_PTR)(&info)) & 0x00ffffff) != 0x00cccccc ) {
                 // BUG: this sometimes generates a segv. Need a better way to validate
                 // the info returned by typeid().
                 className = typeid( *((FdoIDisposable*)(addr)) ).name();
