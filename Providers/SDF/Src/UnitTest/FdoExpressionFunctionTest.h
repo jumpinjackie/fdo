@@ -139,6 +139,10 @@ class FdoExpressionFunctionTest : public CppUnit::TestCase
     // CPPUNIT_TEST(SoundexFilter);
     // CPPUNIT_TEST(SubstrOperation);
     // CPPUNIT_TEST(ToDateOperation);
+    // =========================================
+    // ====         OPTIMIZER TEST          ====
+    // =========================================
+    CPPUNIT_TEST(RunOptimizerTest);
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -614,6 +618,9 @@ protected:
 
     void ToDateOperation ();
 
+    //  RunOptimizerTest:
+    //      The function tests the expression optimizer for filters
+    void RunOptimizerTest();
 
     //-------------------------------------------------------------------------
     //                       General Supporting Functions
@@ -773,6 +780,11 @@ protected:
                          FdoString *property_name,
                          FdoFilter *filter);
 
+    // optimizer util functions
+    // inser test geometries
+    void InsertTestFeatures(FdoIConnection* conn);
+    // evaluate results from optimizer with direct evaluation
+    bool EvaluateResults(FdoSpatialCondition* bigGeomCond, FdoSpatialCondition* smallGeomCond, FdoIFeatureReader* dataProv, FdoIFeatureReader* result);
 
     //-------------------------------------------------------------------------
     //                                Variables

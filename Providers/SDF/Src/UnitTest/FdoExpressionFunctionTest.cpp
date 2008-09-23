@@ -20,11 +20,20 @@
 #include "FdoExpressionFunctionTest.h"
 #include "UnitTestUtil.h"
 #include <math.h>
-
+#include <Spatial/SpatialStd.h>
+#include <Spatial/SpatialUtility.h>
+#include <FdoCommonMiscUtil.h>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(FdoExpressionFunctionTest);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(FdoExpressionFunctionTest, "FdoExpressionFunctionTest");
 
+#ifdef _WIN32
+static const wchar_t* EE_OPT_TEST_FILE = L"..\\..\\TestData\\OptimizerTest.sdf";
+#else
+static const wchar_t* EE_OPT_TEST_FILE = L"../../TestData/OptimizerTest.sdf";
+#endif
+typedef std::pair< FdoSpatialOperations, FdoSpatialOperations > TestOperationsPair;
+typedef std::pair< int, TestOperationsPair > TestIdxOperationsPair;
 
 
 // ----------------------------------------------------------------------------
@@ -16020,4 +16029,296 @@ void FdoExpressionFunctionTest::SetupUnitTestEnvironment (
    }  //  catch ...
 
 }  //  SetupUnitTestEnvironment ()
+
+void FdoExpressionFunctionTest::InsertTestFeatures(FdoIConnection* conn)
+{
+    std::vector<FdoSpatialCondition*> allCond;
+    printf("\nInsert features");
+    try
+    {
+        // Note:
+        // EB = envelope Big geometry; ES = envelope Small geometry
+        // B = Big geometry; S = Small geometry
+        // NI = no intersection
+        // TO = touche outside of the geometry
+        // TI = touche inside of the geometry
+
+        FdoSpatialCondition* cond = NULL;
+        // geom - out EB, out ES - NI
+        cond = static_cast<FdoSpatialCondition*>(FdoFilter::Parse(L"SHPGEOM INTERSECTS GeomFromText('POLYGON ((5536366.97310883 1964015.95271029, 5618464.31544299 1927535.52167126, 5866059.47432348 1950987.22770124, 5536366.97310883 1964015.95271029))')"));
+        allCond.push_back(cond);
+
+        // geom - in EB, out ES - NI
+        cond = static_cast<FdoSpatialCondition*>(FdoFilter::Parse(L"SHPGEOM INTERSECTS GeomFromText('POLYGON ((5527679.42371172 2264545.2193847, 5527679.42371172 2220681.84366703, 5594573.55513252 2220681.84366703, 5565035.88505614 2263242.34739065, 5527679.42371172 2264545.2193847))')"));
+        allCond.push_back(cond);
+
+        // geom - in EB, in ES - NI
+        cond = static_cast<FdoSpatialCondition*>(FdoFilter::Parse(L"SHPGEOM INTERSECTS GeomFromText('POLYGON ((5672117.79766474 2133761.8362255, 5639252.139427 2037628.58952983, 5719107.54066284 2007485.11266832, 5672117.79766474 2133761.8362255))')"));
+        allCond.push_back(cond);
+
+        // geom - in EB, out ES - TO.B - NI
+        cond = static_cast<FdoSpatialCondition*>(FdoFilter::Parse(L"SHPGEOM INTERSECTS GeomFromText('POLYGON ((5816766.1271512 2262328.88622243, 5735027.92795496 2179902.49038579, 5803867.44957874 2179902.49038579, 5816766.1271512 2262328.88622243))')"));
+        allCond.push_back(cond);
+
+        // geom - in EB, in ES - TO.B - NI
+        cond = static_cast<FdoSpatialCondition*>(FdoFilter::Parse(L"SHPGEOM INTERSECTS GeomFromText('POLYGON ((5816766.1271512 2262328.88622243, 5735027.92795496 2179902.49038579, 5838419.22614045 2165830.30743391, 5816766.1271512 2262328.88622243))')"));
+        allCond.push_back(cond);
+
+        // geom - in EB, out ES - TI.B - NI
+        cond = static_cast<FdoSpatialCondition*>(FdoFilter::Parse(L"SHPGEOM INTERSECTS GeomFromText('POLYGON ((5534910.27144644 2174970.99624234, 5629331.98126834 2207377.9551015, 5650470.1478844 2182389.96947706, 5534910.27144644 2174970.99624234))')"));
+        allCond.push_back(cond);
+
+        // geom - in B, out ES - NI
+        cond = static_cast<FdoSpatialCondition*>(FdoFilter::Parse(L"SHPGEOM INTERSECTS GeomFromText('POLYGON ((5695850.38275576 2225006.95144691, 5662882.8202307 2203553.48628294, 5704168.60432706 2199480.04451405, 5721823.71187219 2215773.81496862, 5695850.38275576 2225006.95144691))')"));
+        allCond.push_back(cond);
+
+        // geom - in B, in ES - NI
+        cond = static_cast<FdoSpatialCondition*>(FdoFilter::Parse(L"SHPGEOM INTERSECTS GeomFromText('POLYGON ((5715848.13648738 2173410.01111093, 5721552.09326288 2167164.06515053, 5688958.05363445 2161189.68411475, 5679994.69055723 2176125.64008319, 5715848.13648738 2173410.01111093))')"));
+        allCond.push_back(cond);
+
+        // geom - intersect B, out ES
+        cond = static_cast<FdoSpatialCondition*>(FdoFilter::Parse(L"SHPGEOM INTERSECTS GeomFromText('POLYGON ((5545488.90050734 2131652.22023764, 5620636.20332382 2115149.16822162, 5491626.09211908 2080405.89984133, 5545488.90050734 2131652.22023764))')"));
+        allCond.push_back(cond);
+
+        // geom - intersect B, intersect ES, TO.S
+        cond = static_cast<FdoSpatialCondition*>(FdoFilter::Parse(L"SHPGEOM INTERSECTS GeomFromText('POLYGON ((5695850.38275576 2116555.74670371, 5662970.07317681 1975615.54612141, 5767354.11879699 2012972.41972645, 5695850.38275576 2116555.74670371))')"));
+        allCond.push_back(cond);
+
+        // geom - intersect B, intersect S
+        cond = static_cast<FdoSpatialCondition*>(FdoFilter::Parse(L"SHPGEOM INTERSECTS GeomFromText('POLYGON ((5757465.1057966 2064771.42915467, 5902547.1817913 2086051.68186123, 5932084.85186769 1996587.76607765, 5757465.1057966 2064771.42915467))')"));
+        allCond.push_back(cond);
+
+        // geom - intersect B, intersect ES
+        cond = static_cast<FdoSpatialCondition*>(FdoFilter::Parse(L"SHPGEOM INTERSECTS GeomFromText('POLYGON ((5730821.11604607 1991114.52578425, 5802483.85746115 2029157.47939835, 5848988.4522226 1971388.55089996, 5730821.11604607 1991114.52578425))')"));
+        allCond.push_back(cond);
+
+        // geom - in B, intersect S
+        cond = static_cast<FdoSpatialCondition*>(FdoFilter::Parse(L"SHPGEOM INTERSECTS GeomFromText('POLYGON ((5643240.8518349 2210213.75303545, 5704542.36311135 2133423.34857475, 5655219.30873943 2241211.71405062, 5643240.8518349 2210213.75303545))')"));
+        allCond.push_back(cond);
+
+        // geom - in B, TO.S
+        cond = static_cast<FdoSpatialCondition*>(FdoFilter::Parse(L"SHPGEOM INTERSECTS GeomFromText('POLYGON ((5774147.82229251 2166139.89621237, 5708065.43711587 2182738.28663024, 5695850.38275576 2160706.01616614, 5774147.82229251 2166139.89621237))')"));
+        allCond.push_back(cond);
+
+        // geom - in B, in S
+        cond = static_cast<FdoSpatialCondition*>(FdoFilter::Parse(L"SHPGEOM INTERSECTS GeomFromText('POLYGON ((5734318.09348169 2143809.66071967, 5721552.09326288 2106605.55157138, 5757133.92270997 2096286.16384209, 5734318.09348169 2143809.66071967))')"));
+        allCond.push_back(cond);
+
+        // geom - in B, TI.S
+        cond = static_cast<FdoSpatialCondition*>(FdoFilter::Parse(L"SHPGEOM INTERSECTS GeomFromText('POLYGON ((5695850.38275576 2160706.01616614, 5730821.11604607 2149221.37454525, 5774147.82229251 2166139.89621237, 5695850.38275576 2160706.01616614))')"));
+        allCond.push_back(cond);
+
+        // geom - contains B & S - NI
+        cond = static_cast<FdoSpatialCondition*>(FdoFilter::Parse(L"SHPGEOM INTERSECTS GeomFromText('POLYGON XYZ ((5485357.60096315 2371545.41859256 0, 5906012.79496403 2371545.41859256 0, 6072002.10683594 2267376.24251062 0, 6051163.49846932 1854443.06455299 0, 5611483.69752058 1831194.59505873 0, 5443080.69663456 1955186.43911943 0, 5443080.69663456 2344774.45279884 0, 5485357.60096315 2371545.41859256 0))')"));
+        allCond.push_back(cond);
+
+        // geom - contains B & S, TO.B
+        cond = static_cast<FdoSpatialCondition*>(FdoFilter::Parse(L"SHPGEOM INTERSECTS GeomFromText('POLYGON ((5629331.98126834 2207377.9551015, 5534910.27144644 2174970.99624234, 5440966.85141813 2092563.76776649, 5484652.98453481 1905871.50106395, 5803138.99578732 1854443.06455299, 6069658.83183594 2017573.62051062, 6033548.12234384 2310958.4944062, 5865145.12145782 2410997.37005064, 5481834.52492434 2397611.88546429, 5502268.36269459 2287005.52430045, 5629331.98126834 2207377.9551015))')"));
+        allCond.push_back(cond);
+
+        // geom - contains S, intersect B
+        cond = static_cast<FdoSpatialCondition*>(FdoFilter::Parse(L"SHPGEOM INTERSECTS GeomFromText('POLYGON XYZ ((5541726.80537841 2303913.50349677 0, 5700265.19661062 2329275.4714465 0, 6030025.04630503 2329275.4714465 0, 5958858.92537476 1917143.48719483 0, 5726335.95360182 1836126.08751268 0, 5468446.83923171 1880509.53311422 0, 5457877.61314957 2272915.54248159 0, 5541726.80537841 2303913.50349677 0))')"));
+        allCond.push_back(cond);
+
+        // geom - contains B & S, intersect EB
+        cond = static_cast<FdoSpatialCondition*>(FdoFilter::Parse(L"SHPGEOM INTERSECTS GeomFromText('POLYGON XYZ ((5529748.35050817 2396202.8876203 0, 5708720.57747633 2303209.00457478 0, 5951108.15890309 2283483.02800098 0, 5962382.00141358 1967162.92417231 0, 5820754.3719128 1864306.05283989 0, 5496631.44143934 1907280.49890794 0, 5444489.92745695 2054520.81584189 0, 5461400.68918838 2369431.92182658 0, 5529748.35050817 2396202.8876203 0))')"));
+        allCond.push_back(cond);
+
+        // geom - contains B & S, intersect EB & ES
+        cond = static_cast<FdoSpatialCondition*>(FdoFilter::Parse(L"SHPGEOM INTERSECTS GeomFromText('POLYGON XYZ ((5462105.30358243 2417337.86203808 0, 5462105.30358243 1855852.06408648 0, 5956745.08015833 1869237.54698334 0, 5798911.30535446 2084814.27793507 0, 6083575.79110981 2318707.98423761 0, 5593163.70496676 2458903.30857264 0, 5462105.30358243 2417337.86203808 0))')"));
+        allCond.push_back(cond);
+
+        // geom - intersect B & S
+        cond = static_cast<FdoSpatialCondition*>(FdoFilter::Parse(L"SHPGEOM INTERSECTS GeomFromText('POLYGON XYZ ((5645305.22098345 2472288.793159 0, 5830618.98360091 1834012.59074671 0, 6170948.05937746 2470879.79362552 0, 5645305.22098345 2472288.793159 0))')"));
+        allCond.push_back(cond);
+
+        FdoPtr<FdoIInsert>insertCommand = (FdoIInsert *) conn->CreateCommand(FdoCommandType_Insert);
+        insertCommand->SetFeatureClassName(L"bayarea_county");
+
+        FdoPtr<FdoPropertyValueCollection> propertyValues;
+        FdoPtr<FdoPropertyValue>propertyValue;
+        FdoPtr<FdoIFeatureReader> reader;
+        for (size_t i = 0; i < allCond.size(); i++)
+        {
+            FdoSpatialCondition* spCond = allCond.at(i);
+            FdoPtr<FdoGeometryValue> geomVal = static_cast<FdoGeometryValue*>(spCond->GetGeometry());
+            propertyValues = insertCommand->GetPropertyValues();
+            
+            propertyValue = propertyValues->FindItem( L"SHPGEOM" );
+            if( propertyValue == NULL )
+            {
+                propertyValue =  FdoPropertyValue::Create();
+                propertyValue->SetName( L"SHPGEOM" );
+                propertyValues->Add( propertyValue );
+            }
+            
+            propertyValue->SetValue(geomVal);
+            reader = insertCommand->Execute();
+            if (reader != NULL)
+                reader->Close();
+        }
+    }
+    catch(FdoException* exc)
+    {
+        printf ("\nException: %ls", exc->GetExceptionMessage());
+        exc->Release();
+    }
+    for(size_t i = 0; i < allCond.size(); i++)
+    {
+        FdoSpatialCondition* ptr = allCond.at(i);
+        FDO_SAFE_RELEASE(ptr);
+    }
+    printf("...Ready");
+}
+
+bool FdoExpressionFunctionTest::EvaluateResults(FdoSpatialCondition* bigGeomCond, FdoSpatialCondition* smallGeomCond, FdoIFeatureReader* dataProv, FdoIFeatureReader* result)
+{
+    bool retVal = true;
+    std::vector<int> idxResultOpt;
+    std::vector<int> idxResultNoOpt;
+    std::vector< std::pair< int, std::pair< FdoSpatialOperations, FdoSpatialOperations > > > operResult;
+    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance ();
+
+    while(result->ReadNext())
+        idxResultOpt.push_back(result->GetInt32(L"Autogenerated_SDF_ID"));
+    
+    FdoPtr<FdoExpression> bExpr = bigGeomCond->GetGeometry ();
+    FdoPtr<FdoExpression> sExpr = smallGeomCond->GetGeometry ();
+    FdoGeometryValue* bGv = static_cast<FdoGeometryValue*>(bExpr.p);
+    FdoGeometryValue* sGv = static_cast<FdoGeometryValue*>(sExpr.p);
+    FdoPtr<FdoByteArray> bba = bGv->GetGeometry ();
+    FdoPtr<FdoByteArray> sba = sGv->GetGeometry ();
+    FdoPtr<FdoIGeometry> geomBig = gf->CreateGeometryFromFgf (bba);
+    FdoPtr<FdoIGeometry> geomSmall = gf->CreateGeometryFromFgf (sba);
+
+    FdoSpatialOperations firstOp = bigGeomCond->GetOperation();
+    FdoSpatialOperations secOp = smallGeomCond->GetOperation();
+
+    while(dataProv->ReadNext())
+    {
+        FdoPtr<FdoByteArray> bGeom = dataProv->GetGeometry(L"SHPGEOM");
+        int idxGen = dataProv->GetInt32(L"Autogenerated_SDF_ID");
+        FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf (bGeom);
+        bool retFirstOp = FdoSpatialUtility::Evaluate (geom, firstOp, geomBig);
+        bool retSecondOp = FdoSpatialUtility::Evaluate (geom, secOp, geomSmall);
+        if (retFirstOp && retSecondOp)
+        {
+            idxResultNoOpt.push_back(idxGen);
+            operResult.push_back(TestIdxOperationsPair(idxGen, TestOperationsPair(firstOp, secOp)));
+        }
+    }
+    if (idxResultOpt.size() != idxResultNoOpt.size())
+        retVal = false;
+    
+    std::vector<int>* op1 = &idxResultOpt;
+    std::vector<int>* op2 = &idxResultNoOpt;
+    if (idxResultOpt.size() == 0)
+    {
+        op1 = &idxResultNoOpt;
+        op2 = &idxResultOpt;
+    }
+    for (size_t i = 0; i < op1->size(); i++)
+    {
+        int objId = op1->at(i);
+        bool valFound = false;
+        for (size_t y = 0; y < op2->size(); y++)
+        {
+            if ( objId == op2->at(y))
+            {
+                valFound = true;
+                break;
+            }
+        }
+        if (!valFound)
+        {
+            retVal = false;
+            for (size_t y = 0; y < operResult.size(); y++)
+            {
+                TestIdxOperationsPair opRes = operResult.at(y);
+                if (opRes.first == objId)
+                {
+                    FdoStringP txtOp1 = FdoCommonMiscUtil::FdoSpatialOperationsToString(opRes.second.first).Right(L"_");
+                    FdoStringP txtOp2 = FdoCommonMiscUtil::FdoSpatialOperationsToString(opRes.second.second).Right(L"_");
+                    printf("\nFail at: %d (%ls, %ls)", opRes.first, (FdoString*)txtOp1, (FdoString*)txtOp2);
+                    break;
+                }
+            }
+        }
+    }
+    return retVal;
+}
+
+void FdoExpressionFunctionTest::RunOptimizerTest()
+{
+    bool testResult = true;
+    FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
+    FdoPtr<FdoIConnection> conn = manager->CreateConnection (L"OSGeo.SDF.3.3");
+    try
+    {
+#ifdef EE_TEST_INS_FEATURES
+        std::wstring connStr = std::wstring(L"File=") + std::wstring(EE_OPT_TEST_FILE);
+        connStr += std::wstring(L";ReadOnly=FALSE");
+        conn->SetConnectionString(connStr.c_str());
+        conn->Open();
+        InsertTestFeatures(conn);
+#else
+        std::wstring connStr = std::wstring(L"File=") + std::wstring(EE_OPT_TEST_FILE);
+        connStr += std::wstring(L";ReadOnly=TRUE");
+        conn->SetConnectionString(connStr.c_str());
+        conn->Open();
+#endif
+        FdoPtr<FdoIFilterCapabilities> fltCapab = conn->GetFilterCapabilities();
+        int szCap = 0;
+        FdoSpatialOperations* spConds = fltCapab->GetSpatialOperations(szCap);
+        
+        // big geometry
+        FdoPtr<FdoSpatialCondition> bigGeomCond = static_cast<FdoSpatialCondition*>(FdoFilter::Parse(L"SHPGEOM INSIDE GeomFromText('POLYGON ((5726572.25349578 2244716.40810411, 5583530.40649704 2337005.79391714, 5629331.98126834 2207377.9551015, 5534910.27144644 2174970.99624234, 5657517.56705144 2163699.01011146, 5490517.97256231 2048865.65372617, 5632150.54154764 2039707.16436127, 5672315.00001281 2146086.53199315, 5768850.63004419 2006595.70658011, 5787171.26122845 2093953.5965602, 5828040.35976345 2153131.52290257, 5735027.92795496 2179902.49038579, 5816766.1271512 2262328.88622243, 5726572.25349578 2244716.40810411))')"));
+        // small geometry inside the big geometry
+        FdoPtr<FdoSpatialCondition> smallGeomCond = static_cast<FdoSpatialCondition*>(FdoFilter::Parse(L"SHPGEOM INTERSECTS GeomFromText('POLYGON ((5767354.11879699 2012972.41972645, 5695850.38275576 2116555.74670371, 5695850.38275576 2160706.01616614, 5774147.82229251 2166139.89621237, 5824081.54819392 2151706.15381787, 5782639.9532566 2095499.46405879, 5767354.11879699 2012972.41972645))')"));
+        
+        for(int i = 0; i < szCap; i++)
+        {
+            for(int y = 0; y < szCap; y++)
+            {
+                FdoStringP txtOp1 = FdoCommonMiscUtil::FdoSpatialOperationsToString(spConds[i]).Right(L"_");
+                FdoStringP txtOp2 = FdoCommonMiscUtil::FdoSpatialOperationsToString(spConds[y]).Right(L"_");
+                printf("\n\nRun[%ls, %ls]", (FdoString*)txtOp1, (FdoString*)txtOp2);
+
+                // generate the filter
+                bigGeomCond->SetOperation(spConds[i]);
+                smallGeomCond->SetOperation(spConds[y]);
+                FdoPtr<FdoFilter> pFilter = FdoBinaryLogicalOperator::Create(bigGeomCond, FdoBinaryLogicalOperations_And, smallGeomCond);
+
+                // run query which will be optimized
+                FdoPtr<FdoISelect> selCmd = (FdoISelect*)conn->CreateCommand( FdoCommandType_Select );
+                selCmd->SetFeatureClassName(L"bayarea_county");
+                selCmd->SetFilter( pFilter );
+                FdoPtr<FdoIFeatureReader> optReader = selCmd->Execute();
+
+                // get all data
+                selCmd = (FdoISelect*)conn->CreateCommand( FdoCommandType_Select );
+                selCmd->SetFeatureClassName(L"bayarea_county");
+                selCmd->SetOrderingOption(FdoOrderingOption_Ascending);
+                FdoPtr<FdoIFeatureReader> allReader = selCmd->Execute();
+                if (!EvaluateResults(bigGeomCond, smallGeomCond, allReader, optReader))
+                {
+                    testResult = true;
+                    printf("...Failed");
+                }
+                else
+                    printf("...Succeeded");
+                allReader->Close();
+                optReader->Close();
+            }
+        }
+    }
+    catch(FdoException* ex)
+    {
+        FdoStringP msg = ex->GetExceptionMessage();
+        ex->Release();
+        CPPUNIT_FAIL ((const char*)msg);
+    }
+    if (!testResult)
+        CPPUNIT_FAIL ("Evaluation failed see above text!");
+}
 
