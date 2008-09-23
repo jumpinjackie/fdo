@@ -8,6 +8,7 @@ using OSGeo.FDO;
 using OSGeo.FDO.Schema;
 using OSGeo.FDO.Expression;
 using OSGeo.FDO.Commands;
+using OSGeo.FDO.Commands.Feature;
 using OSGeo.FDO.Commands.DataStore;
 using OSGeo.FDO.Connections;
 using OSGeo.FDO.Xml;

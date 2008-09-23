@@ -311,7 +311,9 @@ void SdfQueryOptimizer::ProcessComparisonCondition(FdoComparisonCondition& filte
         {
             FdoPtr<FdoDataPropertyDefinition> dpd = m_idprops->GetItem(i);
 
-            if (wcscmp(dpd->GetName(), ident->GetName()) == 0)
+            if ((wcscmp(dpd->GetName(), ident->GetName()) == 0) &&
+                 (val->GetDataType() == dpd->GetDataType())
+            )
             {
                 FdoPropertyValue* pv = FdoPropertyValue::Create(ident, val);
                 m_keyvals->Add(pv);
@@ -332,13 +334,86 @@ void SdfQueryOptimizer::ProcessComparisonCondition(FdoComparisonCondition& filte
 
 void SdfQueryOptimizer::ProcessInCondition(FdoInCondition& filter)
 {
-    //cannot optimize filter away, push back on filter result stack
+    //get optimized Filter from the stack
+    //just push the old filter on the result stack...
     m_filters.push_back(FDO_SAFE_ADDREF(&filter));
 
-    //pushing NULL on return stack means no features are excluded for this 
-    //condition
-    m_retvals.push_back(NULL);
+    //here we check if the in condition is on key values, in which case we can
+    //use the key index table to get feature record numbers.
     
+    //start by pushing NULL on return stack, meaning no features are excluded for this 
+    //search condition -- however, if the values in this in condition can be 
+    //mapped to record numbers, then this NULL will be replaced by the features.
+    m_retvals.push_back(NULL);
+
+    //Key can be comprised of several identity properties, which complicates things.
+    //For now, don't try to optimize this case.
+    if ( m_idprops->GetCount() != 1 )
+        return;
+
+    // Check if in condition is on the key property. If not then can't optimize
+    FdoPtr<FdoIdentifier> ident = filter.GetPropertyName();
+
+    FdoPtr<FdoDataPropertyDefinition> dpd = m_idprops->FindItem(ident->GetName());
+
+    if ( !dpd )
+        return;
+
+
+    // Try to convert all condition values to record numbers.
+
+    recno_list* reclist = NULL;
+
+    FdoPtr<FdoValueExpressionCollection> values = filter.GetValues();
+
+    for ( int i = 0; i < values->GetCount(); i++ ) 
+    {
+        FdoPtr<FdoValueExpression> value = values->GetItem(i);
+
+        FdoDataValue* dv = dynamic_cast<FdoDataValue*>(value.p);
+
+        if (!dv ) 
+        {
+            // Value not a data value, can't optimize. 
+            delete reclist;
+            return;
+        }
+
+        if ( dv->GetDataType() != dpd->GetDataType() ) 
+        {
+            // KeyDb::FindRecno() will always find nothing when value types
+            // do not match property data type. FindRecno() could be fixed to 
+            // convert the value data types, but for now, can't optimize in 
+            // this case.
+            delete reclist;
+            return;
+        }
+
+        // Convert value to record number. Use our own key values list, instead
+        // of m_keyvals, in order to not mess up comparison condition handling.
+        // Not sure if possible to mess it up, but just in case ...
+        FdoPtr<FdoPropertyValueCollection> keyvals = FdoPropertyValueCollection::Create();
+        FdoPtr<FdoPropertyValue> keyval = FdoPropertyValue::Create(ident, dv);
+        keyvals->Add(keyval);
+
+        recno_list* recno = RecnoFromKey(keyvals);
+
+        if (!recno)
+        {
+            // This happens when record number retrieval failed, rather then when
+            // feature does not exist. Possible reason for failure is an index
+            // that needs rebuilding. Cannot optimize.
+            delete reclist;
+            return;
+        }
+
+        reclist = reclist ? recno_list_union(reclist, recno) : recno;
+    }
+
+    // Got here so can optimize in condition. Put features on the stack.
+
+    m_retvals.pop_back();
+    m_retvals.push_back(reclist);
 }
 
 void SdfQueryOptimizer::ProcessNullCondition(FdoNullCondition& filter)
@@ -628,17 +703,20 @@ void SdfQueryOptimizer::ProcessGeometryValue(FdoGeometryValue& expr)
 //tries to obtain a feature record number from a given collection 
 //of features -- used when checking if a query contains 
 //filters on feature key values
-recno_list* SdfQueryOptimizer::RecnoFromKey()
+recno_list* SdfQueryOptimizer::RecnoFromKey(FdoPropertyValueCollection* keyvals)
 {
+    if ( !keyvals ) 
+        keyvals = m_keyvals;
+
     //don't have enough property values to generate a key
-    if (m_keyvals->GetCount() < m_idprops->GetCount())
+    if (keyvals->GetCount() < m_idprops->GetCount())
         return NULL;
 
     try 
     {
         //this will throw stuff if it can't find the key
-        //or could not generate one from the m_keyvals collection
-        REC_NO recno = m_keys->FindRecno(m_class, m_keyvals);
+        //or could not generate one from the keyvals collection
+        REC_NO recno = m_keys->FindRecno(m_class, keyvals);
 
 		// If the index is corrupt; then we should fall back on a table scan untill
 		// we get a chance to re-gen the index table.
@@ -646,7 +724,7 @@ recno_list* SdfQueryOptimizer::RecnoFromKey()
 			return NULL;
 
         //reset the id property value accumulation collection
-        m_keyvals->Clear();
+        keyvals->Clear();
         
         recno_list* ret = new recno_list;
         ret->push_back(recno);
