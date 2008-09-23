@@ -101,7 +101,7 @@ public:
 
 protected:
 
-    static FdoPtr<FdoDataValue> ArgsToDataValue( va_list& arguments );
+    static FdoPtr<FdoLiteralValue> ArgsToLiteral( va_list& arguments );
 
 private:
 #ifdef _WIN32
