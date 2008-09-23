@@ -102,7 +102,7 @@ BEGIN
             VALUE "Comments", "FDO Provider for MySql"
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "FDO Provider for MySql Component"
-            VALUE "FileVersion", "3.4.0.00"
+            VALUE "FileVersion", "3.3.0.0"
             VALUE "InternalName", "MySQLProvider"
             VALUE "LegalCopyright", "Copyright © 2007"
             VALUE "OriginalFilename", "MySQLProvider.dll"

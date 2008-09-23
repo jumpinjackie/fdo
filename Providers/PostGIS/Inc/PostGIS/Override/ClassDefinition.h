@@ -67,9 +67,6 @@ public:
     // ClassDefinition custom interface
     //
 
-    /// Set schema name (physical schame of postgres).
-    FDOPOSTGIS_API void SetSchemaName(FdoString* value);
-
     /// Get name of schema (FDO datastore).
     /// The name is NOT wrapped with quotes here.
     FDOPOSTGIS_API FdoStringP GetSchemaName() const;
@@ -107,9 +104,6 @@ protected:
 private:
 
     typedef FdoPhysicalClassMapping BaseType;
-
-    /// The schema of this element
-    FdoStringP m_schema;
     
     PropertyDefinitionCollection::Ptr mProperties;
 };

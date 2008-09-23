@@ -395,7 +395,7 @@ void FdoOwsHttpHandler::Proc()
 				url += '?';
 			else
 			{
-                if (url[url.size() - 1] != '&' && url[url.size() - 1] != '?')
+				if (url[url.size() - 1] != '&')
 					url += '&';
 			}
             url += m_parameters;

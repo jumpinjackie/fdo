@@ -98,24 +98,20 @@ FdoBoolean ClassDefinition::XmlEndElement(FdoXmlSaxContext* saxContext,
 // ClassDefinition custom interface
 ///////////////////////////////////////////////////////////////////////////////
 
-void ClassDefinition::SetSchemaName(FdoString* value)
-{
-  m_schema = value;
-}
-
 FdoStringP ClassDefinition::GetSchemaName() const
 {
-    return m_schema;
+    // NOTE: We need this dirty const_cast hack due to lack of
+    // const-correctness in FdoPhysicalClassMapping::GetName() class.
+    // This note also applies to functions below.
+
+    FdoStringP name(const_cast<ClassDefinition*>(this)->GetName());
+    return name.Left(L"~");
 }
 
 FdoStringP ClassDefinition::GetTableName() const
 {
-    // NOTE: We need this dirty const_cast hack due to lack of
-    // const-correctness in FdoPhysicalClassMapping::GetName() class.
-    // This note also applies to functions below. 
     FdoStringP name(const_cast<ClassDefinition*>(this)->GetName());
-
-    return name;
+    return name.Right(L"~");
 }
 
 FdoStringP ClassDefinition::GetTablePath() const
@@ -123,17 +119,9 @@ FdoStringP ClassDefinition::GetTablePath() const
     FdoStringP schema(const_cast<ClassDefinition*>(this)->GetSchemaName());
     FdoStringP table(const_cast<ClassDefinition*>(this)->GetTableName());
 
-    /// just in case schema is empty
-    FdoStringP path;
-    if (schema.GetLength() && table.GetLength()) 
-    {
-      path = FdoStringP::Format(L"\"%s\".\"%s\"",
-          static_cast<FdoString*>(schema), static_cast<FdoString*>(table));
-    } 
-    else
-    {
-      path = table;
-    }
+    FdoStringP path = FdoStringP::Format(L"\"%s\".\"%s\"",
+        static_cast<FdoString*>(schema), static_cast<FdoString*>(table));
+
     return path;
 }
 

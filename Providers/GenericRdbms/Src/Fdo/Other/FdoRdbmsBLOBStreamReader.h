@@ -33,7 +33,7 @@ class FdoRdbmsBLOBStreamReader : public FdoBLOBStreamReader
 protected:
 
     // Constructs an instance of an FdoRdbmsBLOBStreamReader using the specified arguments.
-    FdoRdbmsBLOBStreamReader( FdoIConnection *conn, GdbiQueryResult* gdbiResult, void* value, const FdoInt32 blockSize);
+    FdoRdbmsBLOBStreamReader( FdoIConnection *conn, int sqlid, void* value, const FdoInt32 blockSize);
 
     ~FdoRdbmsBLOBStreamReader();
 
@@ -43,7 +43,7 @@ public:
 
     // Constructs an instance of an FdoBLOB Stream Reader using the specified arguments.
 
-    static FdoRdbmsBLOBStreamReader* Create( FdoIConnection *conn, GdbiQueryResult* gdbiResult, void* value, const FdoInt32 blockSize = 2048 );
+    static FdoRdbmsBLOBStreamReader* Create( FdoIConnection *conn, int sqlid, void* value, const FdoInt32 blockSize = 2048 );
 
     // FdoIStreamReader implementation
 
@@ -95,7 +95,7 @@ private:
     DbiConnection*      m_DbiConn;
     FdoRdbmsConnection* mFdoConnection;
     void*               m_LOBlocator;
-    GdbiQueryResult*    m_GdbiResult;
+    int                 m_Sqlid;
     bool                m_EndOfLOB;
     FdoInt64            m_LOBLength;
     FdoInt64            m_CurrentIndex;

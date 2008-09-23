@@ -12,7 +12,7 @@
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		AdditionalLibraryDirectories="&quot;$(FDOPOSTGRESQL)\lib&quot;;&quot;$(FDOPOSTGRESQL)\lib\ms&quot;"
+		AdditionalLibraryDirectories="$(FDOPOSTGRESQL)\lib\ms"
 		ManifestFile="$(IntDir)\$(TargetFileName).intermediate.manifest"
 	/>
 	<UserMacro

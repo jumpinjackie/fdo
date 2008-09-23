@@ -40,9 +40,7 @@ FdoRdbmsFilterProcessor::FdoRdbmsFilterProcessor():
  mFirstTxtIndex( 0 ),
  mNextTxtIndex( 0 ),
  mNextTabAliasId ( 0 ),
- mUseTableAliases( true ),
- mUseNesting( true ),
- mAddNegationBracket( false )
+ mUseTableAliases( true )
 {
 
 }
@@ -55,9 +53,7 @@ FdoRdbmsFilterProcessor::FdoRdbmsFilterProcessor(FdoRdbmsConnection *connection)
  mFirstTxtIndex( 0 ),
  mNextTxtIndex( 0 ),
  mNextTabAliasId ( 0 ),
- mUseTableAliases( true ),
- mUseNesting( true ),
- mAddNegationBracket( false )
+ mUseTableAliases( true )
 {
 
 }
@@ -90,9 +86,6 @@ void FdoRdbmsFilterProcessor::ResetBuffer( SqlCommandType cmdType )
         mSecondarySpatialFilters->Clear();
 
    	mFilterLogicalOps.clear();
-
-    if (mBoundGeometryValues != NULL)
-        mBoundGeometryValues->Clear();
 }
 
 //
@@ -688,13 +681,13 @@ void FdoRdbmsFilterProcessor::ProcessDecimalValue(FdoDecimalValue& expr)
 void FdoRdbmsFilterProcessor::ProcessInt16Value(FdoInt16Value& expr)
 {
     char    tmpValue[124];
-    AppendString( FdoCommonOSUtil::itoa( (int)expr.GetInt16(),tmpValue) );
+    AppendString( ut_itoa( (int)expr.GetInt16(),tmpValue) );
 }
 
 void FdoRdbmsFilterProcessor::ProcessInt32Value(FdoInt32Value& expr)
 {
     char    tmpValue[124];
-    AppendString( FdoCommonOSUtil::itoa( (int)expr.GetInt32(),tmpValue) );
+    AppendString( ut_itoa( (int)expr.GetInt32(),tmpValue) );
 }
 
 void FdoRdbmsFilterProcessor::ProcessInt64Value(FdoInt64Value& expr)
@@ -755,8 +748,7 @@ void FdoRdbmsFilterProcessor::ProcessBinaryLogicalOperator(FdoBinaryLogicalOpera
     const FdoSmLpClassDefinition *classDefinition = mDbiConnection->GetSchemaUtil()->GetClass(mCurrentClassName);
     const FdoSmLpDataPropertyDefinitionCollection *properties = classDefinition->RefIdentityProperties();
 
-    if (mUseNesting)
-        AppendString(OPEN_PARENTH);
+    AppendString(OPEN_PARENTH);
     if( filter.GetOperation() == FdoBinaryLogicalOperations_And )
     {
         HandleFilter( leftOperand );
@@ -771,8 +763,7 @@ void FdoRdbmsFilterProcessor::ProcessBinaryLogicalOperator(FdoBinaryLogicalOpera
         HandleFilter( rightOperand );
     }
 
-    if (mUseNesting)
-        AppendString(CLOSE_PARENTH);
+    AppendString(CLOSE_PARENTH);
 
   	// Save 
 	mFilterLogicalOps.push_back( filter.GetOperation() );
@@ -874,11 +865,7 @@ void FdoRdbmsFilterProcessor::ProcessUnaryLogicalOperator(FdoUnaryLogicalOperato
     else
         throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_251, "FdoUnaryLogicalOperator supports only the 'Not' operation"));
 
-    if (mAddNegationBracket)
-        AppendString(OPEN_PARENTH);
     HandleFilter( unaryOp );
-    if (mAddNegationBracket)
-        AppendString(CLOSE_PARENTH);
     AppendString(CLOSE_PARENTH);
 
 	// Save 
@@ -1019,97 +1006,6 @@ void FdoRdbmsFilterProcessor::AppendGroupBy( FdoRdbmsFilterUtilConstrainDef *fil
             AppendString( L", " );
         FdoPtr<FdoIdentifier>ident = filterConstraint->groupByProperties->GetItem( i );
         ProcessIdentifier( *ident, true );
-    }
-}
-
-// Analyzes the filter and set flags that control the generation of the
-// corresponding SQL statement.
-void FdoRdbmsFilterProcessor::AnalyzeFilter (FdoFilter *filter)
-{
-
-    // The following defines the filter analyzer. The filter analyzer is used
-    // to scan the filter for its content and set flags that control the
-    // process of converting the filter into the corresponding SQL statement.
-    // For example, it checks whether or not nesting of filter elememts is
-    // required. 
-
-    class FilterAnalyzer : public FdoRdbmsBaseFilterProcessor
-    {
-
-    public:
-
-        //  containsBinaryLogicalOperatorAnd:
-        //      The flag is set to TRUE if the filter contains the binary
-        //      logical operator AND.
-        bool containsBinaryLogicalOperatorAnd;
-
-        //  containsBinaryLogicalOperatorOr:
-        //      The flag is set to TRUE if the filter contains the binary
-        //      logical operator OR.
-		bool containsBinaryLogicalOperatorOr;
-
-        //  containsUnaryLogicalOperatorNot:
-        //      The flag is set to TRUE if the filter contains the unary
-        //      logical operator NOT.
-        bool containsUnaryLogicalOperatorNot;
-
-        // Constructor.
-        FilterAnalyzer() 
-        { 
-            containsBinaryLogicalOperatorAnd = false;
-			containsBinaryLogicalOperatorOr  = false;
-            containsUnaryLogicalOperatorNot  = false;
-        }  
-
-        // Processes a binary logical operator node. Depending on the used
-        // operator, it sets the corresponding flag and then continues
-        // analyzing the tree.
-        virtual void ProcessBinaryLogicalOperator(
-                                            FdoBinaryLogicalOperator& filter)
-        {
-            FdoBinaryLogicalOperations binaryLogicalOperator;
-            binaryLogicalOperator = filter.GetOperation();
-
-            if (binaryLogicalOperator == FdoBinaryLogicalOperations_And)
-                containsBinaryLogicalOperatorAnd = true;
-            if (binaryLogicalOperator == FdoBinaryLogicalOperations_Or)
-                containsBinaryLogicalOperatorOr = true;
-
-            if (filter.GetLeftOperand() != NULL)
-                filter.GetLeftOperand()->Process(this);
-            if (filter.GetRightOperand() != NULL)
-                filter.GetRightOperand()->Process(this);
-        }
-
-        virtual void ProcessUnaryLogicalOperator(
-                                            FdoUnaryLogicalOperator& filter)
-        {
-            containsUnaryLogicalOperatorNot = true;
-            if (filter.GetOperand() != NULL)
-                filter.GetOperand()->Process(this);
-        }
-    };
-
-    // Initialize the member variables that are set by this routine. The default
-    // value should reflect the current behavior.
-    mUseNesting         = true;
-    mAddNegationBracket = false;
-
-    // Analyze the filter.
-    FilterAnalyzer filterAnalyzer;
-    filter->Process(&filterAnalyzer);
-
-    // Check the result of the analyzing process and set the corresponding
-    // member variables that control the generation of the SQL statement
-    // from the given filter.
-    if ((filterAnalyzer.containsBinaryLogicalOperatorAnd) ||
-        (filterAnalyzer.containsBinaryLogicalOperatorOr)     )
-    {
-        mUseNesting = filterAnalyzer.containsBinaryLogicalOperatorAnd &&
-                      filterAnalyzer.containsBinaryLogicalOperatorOr;
-        mAddNegationBracket =
-                        !mUseNesting &&
-                        filterAnalyzer.containsUnaryLogicalOperatorNot;
     }
 }
 
@@ -1429,17 +1325,6 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
                                                      FdoInt16                       callerId )
 
 {
-    // Before generating the SQL statement for the provided filter, it is
-    // required to analyze the filter first. This basically checks the content
-    // of the filter and sets flags which will later control the generation
-    // of the SQL statement out of the filter. For example, if the filter
-    // contains a list of elements that are combined by binary logical 
-    // operators, it is not required to nest those elements in the generated
-    // SQL statement unless different operators are used. 
-    if (filter != NULL)
-        AnalyzeFilter(filter);
-
-    // Process the request.
     int j;
     bool ltQueryQualAdded = false;
     DbiConnection  *mDbiConnection = mFdoConnection->GetDbiConnection();
@@ -2030,7 +1915,7 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter     *filter,
 								FdoSmLpGeometricPropertyDefinition::Cast(classDefinition->RefProperties()->RefItem(i));
 			if ( geomPropertyDef != NULL )
 			{
-				if ( FdoCommonOSUtil::wcsicmp( geomPropertyDef->GetColumnName(), L"n/a" )  != 0 )
+				if ( geomPropertyDef->RefColumn() )
 				{
 					const FdoSmPhColumn* column = geomPropertyDef->RefColumn();
 					all->Add(GetGeometryString(column->GetDbName()));
@@ -2072,6 +1957,7 @@ FdoStringP FdoRdbmsFilterProcessor::GetGeometryTableString( FdoString* tableName
 
 void FdoRdbmsFilterProcessor::PrependSelectStar( FdoStringP tableName, FdoString* tableAlias )
 { 
+
     DbiConnection  *mDbiConnection = mFdoConnection->GetDbiConnection();
     FdoSchemaManagerP sm = mDbiConnection->GetSchemaManager();
     FdoSmPhMgrP phMgr = sm->GetPhysicalSchema();
@@ -2134,25 +2020,3 @@ void FdoRdbmsFilterProcessor::PrependSelectStar( FdoStringP tableName, FdoString
     }
 }
 
-FdoRdbmsFilterProcessor::BoundGeometry::BoundGeometry(
-    FdoIGeometry* geometry,
-    FdoInt64 srid
-)
-{
-    mGeometry = FDO_SAFE_ADDREF(geometry);
-    mSrid = srid;
-}
-
-FdoIGeometry* FdoRdbmsFilterProcessor::BoundGeometry::GetGeometry()
-{
-    return FDO_SAFE_ADDREF(mGeometry.p);
-}
-
-FdoInt64 FdoRdbmsFilterProcessor::BoundGeometry::GetSrid()
-{
-    return mSrid;
-}
-
-FdoRdbmsFilterProcessor::BoundGeometry::~BoundGeometry(void)
-{
-}

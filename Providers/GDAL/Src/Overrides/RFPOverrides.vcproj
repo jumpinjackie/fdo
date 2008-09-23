@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="gb2312"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="8.00"
 	Name="Overrides"
 	ProjectGUID="{0A982097-4896-4F2B-81EC-43100004311D}"
 	RootNamespace="RFPOverrides"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -53,6 +52,7 @@
 				PrecompiledHeaderThrough="Overrides.h"
 				BrowseInformation="1"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -73,8 +73,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/GRFPOverrides.pdb"
 				SubSystem="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="..\..\Lib\Win32\Debug\GRFPOverrides.lib"
 			/>
 			<Tool
@@ -95,6 +93,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -141,6 +142,7 @@
 				PrecompiledHeaderThrough="Overrides.h"
 				BrowseInformation="1"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -163,8 +165,6 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="..\..\Lib\Win32\Release\GRFPOverrides.lib"
 			/>
 			<Tool
@@ -185,6 +185,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"

@@ -329,9 +329,8 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
                 // SQL Server does not support STEnvelope for geography columns so cannot
                 // support this spatial operator in this case.
                 throw FdoFilterException::Create(
-                    NlsMsgGet1(
-                        FDORDBMS_44, 
-                        "Geometry property '%1$ls' has geodetic coordinate system; cannot use EnvelopeIntersects spatial operator in filter",
+                    FdoStringP::Format(
+                        L"Geometry property '%ls' has geodetic coordinate system; cannot use EnvelopeIntersects spatial operator in filter",
                         (FdoString*) geomProp->GetQName()
                     )
                 );

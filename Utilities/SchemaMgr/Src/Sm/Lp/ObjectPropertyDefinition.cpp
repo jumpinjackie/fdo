@@ -1268,7 +1268,7 @@ void FdoSmLpObjectPropertyDefinition::AddCreateNoMetaError( FdoSmPhOwnerP owner 
 	GetErrors()->Add( FdoSmErrorType_Other, 
         FdoSchemaException::Create(
             FdoSmError::NLSGetMessage(
-				FDO_NLSID(FDOSM_35),
+				SM_NLSID(0x000008C0L, "Cannot add object property '%1$ls' to datastore '%2$ls'; datastore has no FDO metadata tables"),
 				(FdoString*) GetQName(),
                 owner ? owner->GetName() : L""
 			)

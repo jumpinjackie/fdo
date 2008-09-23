@@ -251,7 +251,7 @@ void FdoSchemaManager::ApplySchema(
         if ( !owner->GetHasMetaSchema() )
             throw FdoSchemaException::Create(
                 FdoSmError::NLSGetMessage(
-                    FDO_NLSID(FDOSM_31),
+                    SM_NLSID(0x000008BCL, "Cannot apply feature schema '%1$ls' to datastore '%2$ls'; datastore has no FDO metadata tables (f_schemainfo, etc.)"),
     			    pFeatSchema->GetName(),
 			        owner->GetName()
 			    )
@@ -372,7 +372,7 @@ void FdoSchemaManager::CreateSpatialContext(
         if ( !owner->GetHasMetaSchema() )
             throw FdoSchemaException::Create(
                 FdoSmError::NLSGetMessage(
-                    FDO_NLSID(FDOSM_32),
+                    SM_NLSID(0x000008BDL, "Cannot add spatial context '%1$ls' to datastore '%2$ls'; datastore has no FDO metadata tables (f_spatialcontext, etc.)"),
     			    name,
 			        owner->GetName()
 			    )

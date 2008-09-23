@@ -461,14 +461,6 @@ void LockTests::two_user_exclusion ()
 /* Test getting the owner list. */
 void LockTests::get_owner ()
 {
-
-    FdoStringP val = getenv("rdbms");
-    if (val.ICompare(L"oracle") == 0)
-    {
-        // Disable test since it currently crashes against an ArcSDE 92 server.
-        CPPUNIT_FAIL("LockTests::get_owner disable");
-    }
-
     if (!ArcSDETestConfig::SupportsLocking())   return;
     if (CreateSchemaOnly())  return;
 

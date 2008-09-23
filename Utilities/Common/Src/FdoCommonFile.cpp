@@ -649,7 +649,7 @@ bool FdoCommonFile::FileExists (const wchar_t* filePath)
 
     conv_wide_to_utf8 (file, filePath);
     size_t length = strlen (file);
-    if (length > 0 && FILE_PATH_DELIMITER2 == file[length - 1])
+    if (FILE_PATH_DELIMITER2 == file[length - 1])
         file[length - 1] = FILE_PATH_DELIMITER;
     f = open (file, O_RDONLY, 0);
     ret = (-1 != f);

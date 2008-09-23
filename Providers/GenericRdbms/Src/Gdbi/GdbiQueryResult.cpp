@@ -28,13 +28,6 @@
 #ifdef HAVE_GEOM_INFO_TYPE
 #include <inc/geometry/fgf/AllGeometry_c.h>
 #endif
-#ifndef _LLONG_MAX
-#   define LLONG_MAX    9223372036854775807LL
-#endif
-#ifndef LLONG_MIN
-#   define LLONG_MIN    (-LLONG_MAX - 1LL)
-#endif
-
 
 // Arbitrary size which should be more than enough for the 
 // the ASCII or UNICODE representation of any numeric value.
@@ -72,8 +65,7 @@ mAsciiValBuffer( NULL),
 mAsciiValBufferSize(0),
 mArrayPos( 0 ),
 mArrayCCount( 0 ),
-mArrayTCount( 0 ),
-mHasLobs(false)
+mArrayTCount( 0 )
 {
 	m_QueryId = new GdbiQueryIdentifier(command, qid);
 	define_exec();
@@ -87,8 +79,7 @@ mAsciiValBuffer( NULL),
 mAsciiValBufferSize(0),
 mArrayPos( 0 ),
 mArrayCCount( 0 ),
-mArrayTCount( 0 ),
-mHasLobs(false)
+mArrayTCount( 0 )
 {
 	m_QueryId = FDO_SAFE_ADDREF(queryObj);
 	define_exec();
@@ -155,9 +146,10 @@ void GdbiQueryResult::define_exec()
 
 			if (colInfo->type == RDBI_BLOB_REF)
 			{
-                colInfo->value = NULL;
-    			m_pGdbiCommands->lob_create_ref( m_QueryId->GetQueryId(), (void **)&(colInfo->value));
-                mHasLobs = true;
+				for (int i = 0; i < m_pGdbiCommands->get_array_size(); i++)
+				{
+					m_pGdbiCommands->lob_create_ref( m_QueryId->GetQueryId(), (void **)&(colInfo->value));
+				}
 			}
 			else 
 			{
@@ -242,7 +234,7 @@ int GdbiQueryResult::ReadNext()
 
 	if (mArrayPos == mArrayCCount)
 	{
-        rc = m_pGdbiCommands->fetch( m_QueryId->GetQueryId(), mHasLobs ? 1 : m_pGdbiCommands->get_array_size(), &rows );
+		rc = m_pGdbiCommands->fetch( m_QueryId->GetQueryId(), m_pGdbiCommands->get_array_size(), &rows );
 		if (rc != RDBI_GENERIC_ERROR)
 		{
 			// adjust counters
@@ -310,11 +302,7 @@ int GdbiQueryResult::GetBinaryValue( const wchar_t *colName, int length, char *a
 
 	if (isNull == false)
 	{
-		if (colInfo->type == RDBI_BLOB_REF)
-        {
-			memcpy(address, (char*)&(colInfo->value), sizeof(char*));
-        }
-		else if (colInfo->type == RDBI_CHAR || colInfo->type == RDBI_BOOLEAN)
+		if (colInfo->type == RDBI_CHAR || colInfo->type == RDBI_BOOLEAN)
 		{
 			memcpy(address, (char*)(colInfo->value) + mArrayPos*colInfo->size, 1);
 			if (length != 1)
@@ -512,28 +500,6 @@ FdoInt8 GdbiQueryResult::GetInt8( const wchar_t *ColName, bool *isnull, int *cco
 
 FdoInt64 GdbiQueryResult::GetInt64( const wchar_t *ColName, bool *isnull, int *ccode )
 {
-	GdbiColumnInfoType *colInfo = FindColumnCache(ColName);
-
-    if ( colInfo->type == RDBI_DOUBLE ) 
-    {
-        bool isnull2;
-        double dblVal = GetNumber<FdoDouble>(ColName, &isnull2, ccode);
-
-        if ( isnull )
-            (*isnull) = isnull2;
-
-        if ( isnull2 )
-            return (FdoInt64) dblVal;
-
-        if ( dblVal >= (FdoDouble) LLONG_MAX ) 
-            return LLONG_MAX;
-
-        if ( dblVal <= (FdoDouble) LLONG_MIN ) 
-            return LLONG_MIN;
-
-        return (FdoInt64) dblVal;
-    }
-
     return GetNumber<FdoInt64>(ColName, isnull, ccode);
 }
 
@@ -676,26 +642,16 @@ FdoBoolean GdbiQueryResult::GetBoolean( const char *ColName, bool *isnull, int *
 	return GetBoolean( (const wchar_t*) FdoStringP( ColName ), isnull, ccode );
 }
 
-FdoBoolean GdbiQueryResult::LobGetSize(void *lob_ref, unsigned int *size)
-{
-    return (m_pGdbiCommands->lob_get_size( m_QueryId->GetQueryId(), lob_ref, size ) != 0 );
-}
-
-FdoBoolean GdbiQueryResult::LobReadNext(void *lob_ref, int rdbi_lob_type, unsigned int block_size, char *block, unsigned int *block_size_out, int *eol)
-{
-    return (m_pGdbiCommands->lob_read_next( m_QueryId->GetQueryId(), lob_ref, rdbi_lob_type, block_size, block, block_size_out, eol ) != 0 );
-}
-
 bool GdbiQueryResult::GetIsNull( const char *ColName )
 {
 	return GetIsNull( (const wchar_t*) FdoStringP( ColName ) );
 }
 
-FdoByteArray * GdbiQueryResult::GetFgfFromGeomInfo( char * geomInfo, int defaultDim )
+FdoByteArray * GdbiQueryResult::GetFgfFromGeomInfo( char * geomInfo )
 {
 #ifdef HAVE_GEOM_INFO_TYPE
     FdoByteArray * byteArray = NULL;
-    (void) m_pGdbiCommands->geom_to_fgf( m_QueryId->GetQueryId(), geomInfo, defaultDim, (void **)(&byteArray) );
+    (void) m_pGdbiCommands->geom_to_fgf( m_QueryId->GetQueryId(), geomInfo, (void **)(&byteArray) );
     return byteArray;
 #else
     return NULL;

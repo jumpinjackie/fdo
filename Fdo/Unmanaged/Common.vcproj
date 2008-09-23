@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="8.00"
 	Name="Common"
 	ProjectGUID="{A28ACA9A-8258-4169-B554-4F5D214055FB}"
 	RootNamespace="Common"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -73,13 +72,11 @@
 				AdditionalDependencies="Xalan-C_1.lib Xerces-C_2.lib FDONLS.lib"
 				OutputFile="$(OutDir)/FDOCommon.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)/apache/xml-xalan/c/build/win32/VC9/Release&quot;;&quot;$(FDOTHIRDPARTY)/apache/xml-xerces/c/build/win32/VC9/Release&quot;;.\Lib\Win32\Release\"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)/apache/xml-xalan/c/build/win32/VC8/Release&quot;;&quot;$(FDOTHIRDPARTY)/apache/xml-xerces/c/build/win32/VC8/Release&quot;;.\Lib\Win32\Release\"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/FDOCommon.pdb"
 				SubSystem="0"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="Lib/Win32/Release/FDOCommon.lib"
 				TargetMachine="0"
 			/>
@@ -100,6 +97,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -167,8 +167,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/FDOCommon.pdb"
 				SubSystem="0"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="Lib/Win64/Release/FDOCommon.lib"
 				TargetMachine="17"
 			/>
@@ -189,6 +187,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -248,17 +249,15 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/fixed:no"
-				AdditionalDependencies="Xalan-C_1.lib Xerces-C_2.lib FDONLS.lib"
+				AdditionalDependencies="Xalan-C_1D.lib Xerces-C_2D.lib FDONLS.lib"
 				OutputFile="$(OutDir)/FDOCommon.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)/apache/xml-xalan/c/build/win32/VC9/Release&quot;;&quot;$(FDOTHIRDPARTY)/apache/xml-xerces/c/build/win32/VC9/Release&quot;;.\Lib\Win32\Debug"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)/apache/xml-xalan/c/build/win32/VC8/Debug&quot;;&quot;$(FDOTHIRDPARTY)/apache/xml-xerces/c/build/win32/VC8/Debug&quot;;.\Lib\Win32\Debug"
 				IgnoreDefaultLibraryNames="MSVCRT"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/FDOCommon.pdb"
 				SubSystem="0"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="Lib/Win32/Debug/FDOCommon.lib"
 				TargetMachine="0"
 			/>
@@ -279,6 +278,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -347,8 +349,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/FDOCommon.pdb"
 				SubSystem="0"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="Lib/Win64/Debug/FDOCommon.lib"
 				TargetMachine="17"
 			/>
@@ -369,6 +369,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -597,7 +600,7 @@
 						>
 						<Tool
 							Name="VCCustomBuildTool"
-							CommandLine="Bin\Win32\Release\FileToHdr Src/Common/Gml212/feature.xsd Src/Common\Gml212\feature.h feature&#x0D;&#x0A;"
+							CommandLine="Bin\Win64\Release\FileToHdr Src/Common/Gml212/feature.xsd Src/Common\Gml212\feature.h feature&#x0D;&#x0A;"
 							Outputs="Src/Common/Gml212/feature.h"
 						/>
 					</FileConfiguration>
@@ -615,7 +618,7 @@
 						>
 						<Tool
 							Name="VCCustomBuildTool"
-							CommandLine="Bin\Win32\Debug\FileToHdr Src/Common/Gml212/feature.xsd Src/Common\Gml212\feature.h feature&#x0D;&#x0A;"
+							CommandLine="Bin\Win64\Debug\FileToHdr Src/Common/Gml212/feature.xsd Src/Common\Gml212\feature.h feature&#x0D;&#x0A;"
 							Outputs="Src/Common/Gml212/feature.h"
 						/>
 					</FileConfiguration>
@@ -637,7 +640,7 @@
 						>
 						<Tool
 							Name="VCCustomBuildTool"
-							CommandLine="Bin\Win32\Release\FileToHdr Src/Common/Gml212/geometry.xsd Src/Common\Gml212\geometry.h geometry&#x0D;&#x0A;"
+							CommandLine="Bin\Win64\Release\FileToHdr Src/Common/Gml212/geometry.xsd Src/Common\Gml212\geometry.h geometry&#x0D;&#x0A;"
 							Outputs="Src/Common/Gml212/geometry.h"
 						/>
 					</FileConfiguration>
@@ -655,7 +658,7 @@
 						>
 						<Tool
 							Name="VCCustomBuildTool"
-							CommandLine="Bin\Win32\Debug\FileToHdr Src/Common/Gml212/geometry.xsd Src/Common\Gml212\geometry.h geometry&#x0D;&#x0A;"
+							CommandLine="Bin\Win64\Debug\FileToHdr Src/Common/Gml212/geometry.xsd Src/Common\Gml212\geometry.h geometry&#x0D;&#x0A;"
 							Outputs="Src/Common/Gml212/geometry.h"
 						/>
 					</FileConfiguration>
@@ -685,7 +688,7 @@
 						>
 						<Tool
 							Name="VCCustomBuildTool"
-							CommandLine="Bin\Win32\Release\FileToHdr Src/Common/Gml212/xlinks.xsd Src/Common\Gml212\xlinks.h xlinks&#x0D;&#x0A;"
+							CommandLine="Bin\Win64\Release\FileToHdr Src/Common/Gml212/xlinks.xsd Src/Common\Gml212\xlinks.h xlinks&#x0D;&#x0A;"
 							Outputs="Src/Common/Gml212/xlinks.h"
 						/>
 					</FileConfiguration>
@@ -703,7 +706,7 @@
 						>
 						<Tool
 							Name="VCCustomBuildTool"
-							CommandLine="Bin\Win32\Debug\FileToHdr Src/Common/Gml212/xlinks.xsd Src/Common\Gml212\xlinks.h xlinks&#x0D;&#x0A;"
+							CommandLine="Bin\Win64\Debug\FileToHdr Src/Common/Gml212/xlinks.xsd Src/Common\Gml212\xlinks.h xlinks&#x0D;&#x0A;"
 							Outputs="Src/Common/Gml212/xlinks.h"
 						/>
 					</FileConfiguration>

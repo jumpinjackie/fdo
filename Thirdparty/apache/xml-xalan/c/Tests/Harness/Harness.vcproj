@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="8.00"
 	Name="Harness"
 	ProjectGUID="{EE49A25A-4097-41B7-A1C7-7D7514940742}"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -85,8 +84,6 @@
 				AdditionalLibraryDirectories="..\..\..\..\xml-xerces\c\Build\Win32\VC6\Debug"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\..\..\Build\Win32\VC6\Debug/Harness_1_7_0D.pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="..\..\Build\Win32\VC6\Debug/Harness_1D.lib"
 			/>
 			<Tool
@@ -106,6 +103,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -177,8 +177,6 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\..\..\xml-xerces\c\Build\Win32\VC6\Release"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="..\..\Build\Win32\VC6\Release/Harness_1.lib"
 			/>
 			<Tool
@@ -198,6 +196,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -272,8 +273,6 @@
 				AdditionalLibraryDirectories="..\..\..\..\xml-xerces\c\Build\Win32\VC6\Release"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\..\..\Build\Win32\VC6\Release.symbols/Harness_1_7_0S.pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="..\..\Build\Win32\VC6\Release.symbols/Harness_1S.lib"
 			/>
 			<Tool
@@ -293,6 +292,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"

@@ -354,7 +354,7 @@ FdoRdbmsLockConflictReader *FdoRdbmsReleaseLock::ExecuteUnlockRequest (bool is_a
 
       current_lock = (lock_owner != NULL)
                    ? FdoStringP(lock_owner)
-                   : FdoStringP(dbi_connection->GetUser());
+                   : dbi_connection->GetUser();
 
       current_user = dbi_connection->GetUser();
 

@@ -25,13 +25,6 @@
 #pragma once
 
 #define WIN32_LEAN_AND_MEAN        // Exclude rarely-used stuff from Windows headers
-#include <windows.h>
-#ifdef UNICODE
-#define GetClassNameW  GetClassName
-#else
-#define GetClassNameA  GetClassName
-#endif // !UNICODE
-
 
 // The following ifdef block is the standard way of creating macros which make exporting 
 // from a DLL simpler. All files within this DLL are compiled with the WFS_EXPORTS

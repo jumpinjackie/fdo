@@ -137,8 +137,7 @@ void md5::init()
 
 void md5::update(const char* a_str)
 {
-    // Optimization possible but not worth it.
-    update(a_str, static_cast<uint32_t>(strlen(a_str)));
+    update(a_str, strlen(a_str));  // Optimization possible but not worth it.
 }
 
 void md5::update(const void* a_data, uint32_t a_data_size)

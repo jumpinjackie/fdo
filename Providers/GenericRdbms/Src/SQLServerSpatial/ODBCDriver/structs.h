@@ -107,7 +107,7 @@ typedef struct cursor_def {					/* Statement linked list		*/
     odbcdr_geom_col_list_def *bound_geometries;   /* odbcdr -->SqlServer buffer  */
     odbcdr_geom_col_list_def *defined_geometries; /* SqlServer-->odbcdr buffer  */
  
-    SQLLEN		        lenDataParam;
+    SDWORD		        lenDataParam;
 
     PBYTE               odbcdr_geom;    /* define a working area for fething bound geoms */
     SQLINTEGER          *odbcdr_geomNI;

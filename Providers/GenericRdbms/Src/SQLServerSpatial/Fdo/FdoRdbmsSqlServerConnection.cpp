@@ -413,9 +413,8 @@ void FdoRdbmsSqlServerConnection::CheckForFdoGeometries()
         delete gdbiResult;
 
         throw FdoConnectionException::Create(
-            NlsMsgGet1(
-                FDORDBMS_38, 
-                "Cannot open datastore '%1$ls' with the OSGeo.SQLServerSpatial provider; it was created by the Autodesk.SqlServer provider. You will need to migrate this datastore first.",
+            FdoStringP::Format(
+                L"Cannot open datastore '%ls' with the OSGeo.SQLServerSpatial provider; it was created by the Autodesk.SqlServer provider. You will need to migrate this datastore first.",
                 owner->GetName()
             )
         );
@@ -630,7 +629,7 @@ FdoIDataStorePropertyDictionary*  FdoRdbmsSqlServerConnection::CreateDataStorePr
         enabledValues[1] = new wchar_t[10];
         wcscpy( enabledValues[1], L"true" );
 
-        newProp = new ConnectionProperty (FDO_RDBMS_DATASTORE_FDO_ENABLED, NlsMsgGet(FDORDBMS_9, "IsFdoEnabled"), L"false", false, false, true, false, false, false, false, 2, (const wchar_t**) enabledValues);
+        newProp = new ConnectionProperty (FDO_RDBMS_DATASTORE_FDO_ENABLED, L"IsFdoEnabled", L"false", false, false, true, false, false, false, false, 2, (const wchar_t**) enabledValues);
         mDataStorePropertyDictionary->AddProperty(newProp);
 	}
 	else if ( action == FDO_RDBMS_DATASTORE_FOR_DELETE )

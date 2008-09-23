@@ -486,7 +486,7 @@ void FdoSmLpSimplePropertyDefinition::AddPropNameChangeError(
 	GetErrors()->Add( FdoSmErrorType_Other, 
         FdoSchemaException::Create(
             FdoSmError::NLSGetMessage(
-				FDO_NLSID(FDOSM_38),
+				SM_NLSID(0x000008C3L, "Cannot apply column name override to '%1$ls' for property '%2$ls'; datastore has no FDO metadata tables so override causes property name to change"),
 				columnName,
                 (FdoString*)GetQName()
 			)

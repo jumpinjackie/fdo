@@ -80,8 +80,7 @@ protected:
         FdoString* outFile, 
         FdoStringP providerName, 
         FdoStringP xmlns,
-        FdoStringP tablespace = L"",
-        bool oneAutoIncrement = true
+        FdoStringP tablespace = L""
     );
     
     virtual void AddMapping( FdoXmlWriter* writer, FdoString* name, FdoInt32 providerVersion );

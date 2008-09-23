@@ -229,6 +229,33 @@ bool FdoRdbmsFilterUtil::FeatIdsFromFilter( const wchar_t *featIdName, FdoFilter
     return false;
 }
 
+FdoIdentifierCollection* FdoRdbmsFilterUtil::GetFeatIdSelList( DbiConnection *dbi_connection, const wchar_t *className )
+{
+    const FdoSmLpClassDefinition *classDefinition = dbi_connection->GetSchemaUtil()->GetClass(className);
+
+    return( GetFeatIdSelList( classDefinition ) );
+}
+
+FdoIdentifierCollection* FdoRdbmsFilterUtil::GetFeatIdSelList( const FdoSmLpClassDefinition* classDefinition )
+{
+    FdoIdentifierCollection* selProps = NULL;
+
+    // Only Feature Classes have feature id.
+    if ( classDefinition->GetClassType() == FdoClassType_FeatureClass )
+    {
+        const FdoSmLpDataPropertyDefinition* pFeatIdProp = classDefinition->RefFeatIdProperty();
+
+        if ( pFeatIdProp && pFeatIdProp->RefColumn() )
+        {
+            selProps = FdoIdentifierCollection::Create();
+            FdoIdentifier* selProp = FdoIdentifier::Create( pFeatIdProp->GetName() );
+            selProps->Add( selProp );
+            FDO_SAFE_RELEASE( selProp );
+        }
+    }
+
+    return( selProps );
+}
 FdoIdentifierCollection* FdoRdbmsFilterUtil::GetIdentPropList( const FdoSmLpClassDefinition* classDefinition )
 {
 	bool isFeatId = false;

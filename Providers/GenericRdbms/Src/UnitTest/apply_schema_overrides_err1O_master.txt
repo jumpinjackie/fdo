@@ -10,16 +10,16 @@
  Data Property OverridesA:OvClassI.ObjectF.OpId1 must be nullable; class OverridesA:OvClassI uses the BaseTable physical mapping type. 
  Data Property OverridesA:OvClassI.DataI must be nullable; class OverridesA:OvClassI uses the BaseTable physical mapping type. 
  Column name 'datab' is already used by another property, cannot assign to property 'OverridesA:OvClassI.GeomI' 
- Cannot set property 'OverridesA:OvClassI.DataI' column to invalid name 'Bad Column Name' (must contain only ([a-z][A-Z][0-9]_$)) 
+ Cannot override property 'OverridesA:OvClassI.DataI' column to invalid name 'Bad Column Name' (must contain only ([a-z][A-Z][0-9]_$)) 
  Cannot override object property 'OverridesA:OvClassH.ObjectB' prefix to invalid name 'Bad Prefix Name' (must contain only ([a-z][A-Z][0-9]_$)) 
- Cannot set object property 'OverridesA:OvClassH.ObjectA' prefix to name that exceeds 30 characters: 'PrefixTooLong456789012345678901' 
- Cannot set class 'OverridesA:OvClassH' table to invalid name 'GermänTableName' (must contain only ([a-z][A-Z][0-9]_$)) 
- Cannot set property 'OverridesA:OvClassF.GeomF' column to name that exceeds 28 characters: 'geomtoolong234567890123456789' 
+ Cannot override object property 'OverridesA:OvClassH.ObjectA' prefix to name that exceeds 30 characters: 'PrefixTooLong456789012345678901' 
+ Cannot override class 'OverridesA:OvClassH' table to invalid name 'GermänTableName' (must contain only ([a-z][A-Z][0-9]_$)) 
+ Cannot override property 'OverridesA:OvClassF.GeomF' column to name that exceeds 28 characters: 'geomtoolong234567890123456789' 
  Column name 'dataa' is already used by another property, cannot assign to property 'OverridesA:OvClassF.DataF' 
- Cannot set property 'OverridesA:OvClassE.DataE' column to RDBMS reserved name 'initial' 
- Cannot set property 'OverridesA:OvClassD.DataD' column to name that exceeds 28 characters: 'toolong890123456789012345678901' 
- Cannot set class 'OverridesA:OvClassD' table to RDBMS reserved name 'exclusive' 
- Cannot set property 'OverridesA:OvClassC.DataC' column to invalid name 'GermänColumnName' (must contain only ([a-z][A-Z][0-9]_$)) 
- Cannot set class 'OverridesA:OvClassC' table to name that exceeds 30 characters: 'toolong890123456789012345678901' 
- Cannot set class 'OverridesA:OvClassB' table to invalid name 'Bad Table Name' (must contain only ([a-z][A-Z][0-9]_$)) 
- Cannot set property 'OverridesA:OvClassA.GeomA' column to invalid name 'Bad Geom Col Name' (must contain only ([a-z][A-Z][0-9]_$)) 
+ Cannot override property 'OverridesA:OvClassE.DataE' column to RDBMS reserved name 'initial' 
+ Cannot override property 'OverridesA:OvClassD.DataD' column to name that exceeds 28 characters: 'toolong890123456789012345678901' 
+ Cannot override class 'OverridesA:OvClassD' table to RDBMS reserved name 'exclusive' 
+ Cannot override property 'OverridesA:OvClassC.DataC' column to invalid name 'GermänColumnName' (must contain only ([a-z][A-Z][0-9]_$)) 
+ Cannot override class 'OverridesA:OvClassC' table to name that exceeds 30 characters: 'toolong890123456789012345678901' 
+ Cannot override class 'OverridesA:OvClassB' table to invalid name 'Bad Table Name' (must contain only ([a-z][A-Z][0-9]_$)) 
+ Cannot override property 'OverridesA:OvClassA.GeomA' column to invalid name 'Bad Geom Col Name' (must contain only ([a-z][A-Z][0-9]_$)) 

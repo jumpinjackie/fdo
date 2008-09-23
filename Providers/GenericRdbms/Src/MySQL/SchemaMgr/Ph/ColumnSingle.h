@@ -36,7 +36,7 @@ public:
         FdoSmPhRdColumnReader* reader = NULL
     ) :
         FdoSmPhMySqlColumn (reader),
-        FdoSmPhColumn      ( columnName, L"FLOAT", elementState, parentObject, bNullable, rootColumnName, defaultValue)
+        FdoSmPhColumn      ( columnName, L"DOUBLE", elementState, parentObject, bNullable, rootColumnName, defaultValue)
     {}
 
     virtual ~FdoSmPhMySqlColumnSingle(void) {}

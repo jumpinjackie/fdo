@@ -19,7 +19,6 @@
 
 TYPEACTION=buildinstall
 TYPECONFIGURE=configure
-PREFIXVAL=/usr/local/fdo-3.3.0
 
 DEFMODIFY=no
 ALLENABLE=yes
@@ -39,15 +38,6 @@ do
   -h |--h | --help)
     SHOWHELP=yes
     break
-    ;;
-  -p | --p | --prefix)
-    if test "$1" == ""; then
-        echo "$arg Invalid parameter $1"
-        exit 1
-    else
-        PREFIXVAL="$1"
-    fi
-    shift
     ;;
   -m | --m | --makefile)
     if test "$1" == configure; then
@@ -141,7 +131,6 @@ if test "$SHOWHELP" == yes; then
    echo "                    [--a Action]"
    echo "                    [--w WithModule]"
    echo "                    [--m ConfigMakefiles]"
-   echo "                    [--p Prefix]"
    echo " "
    echo "Help:            --h[elp]"
    echo "Action:          --a[ction] buildinstall(default), "
@@ -157,7 +146,6 @@ if test "$SHOWHELP" == yes; then
    echo "                          gdal"
    echo "                          ogr"
    echo "ConfigMakefiles: --m[akefile] configure(default), noconfigure"
-   echo "Prefix:          --p[refix] <fdo install location>"
    echo "*******************************************************************"
 
    exit 0
@@ -169,7 +157,7 @@ if test "$TYPECONFIGURE" == configure ; then
   libtoolize --force
   automake --add-missing --copy
   autoconf
-  ./configure --prefix="$PREFIXVAL"
+  ./configure
 fi
 
 if test ! -e "Thirdparty/Thirdparty.sh"; then

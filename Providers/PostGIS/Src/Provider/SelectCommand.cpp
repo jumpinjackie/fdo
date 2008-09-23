@@ -152,13 +152,8 @@ FdoIFeatureReader* SelectCommand::Execute()
         //
         // Get Logical Schema
         //
-        // TODO - Eric Barby: Why not use mConn->DescribeSchema() / mConn->GetLogicalSchema()
-        //     and use mConn->GetPhysicalSchemaMapping() ?
-        FdoFeatureSchemaCollection *logicalSchemas = mConn->GetLogicalSchema();
-        if (!logicalSchemas) 
-        {
-            throw FdoCommandException::Create(L"[PostGIS] SelectCommand can not find schema definition");
-        }
+        FdoPtr<FdoFeatureSchemaCollection> logicalSchemas;
+        logicalSchemas = mConn->GetLogicalSchema();
 
         FDOLOG_WRITE(L"Number of logical schemas: %d", logicalSchemas->GetCount());
 
@@ -231,7 +226,6 @@ FdoIFeatureReader* SelectCommand::Execute()
         // Read properties definition to SQL columns
         //
         FdoInt32 currentSrid = 0;
-        std::string sep;
         std::string sqlColumns("");
         FdoPtr<FdoPropertyDefinitionCollection> props = classDef->GetProperties();
         
@@ -266,11 +260,15 @@ FdoIFeatureReader* SelectCommand::Execute()
             // Add property to columns list
             FdoStringP propName(propDef->GetName());
 
-            sqlColumns.append(sep + tablePath + '.' + static_cast<char const*>(propName));
+            if (propIdx > 0)
+            {
+                sqlColumns += ',';
+            }
+            sqlColumns += tablePath;
+            sqlColumns += '.';
+            sqlColumns += static_cast<char const*>(propName);
 
             FDOLOG_WRITE("\t- %s", static_cast<char const*>(propName));
-    
-            sep = ",";
         }
 
         //

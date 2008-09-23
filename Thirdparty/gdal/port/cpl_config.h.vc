@@ -6,8 +6,8 @@
 #define HAVE_VPRINTF 1
 #define HAVE_VSNPRINTF 1
 #define HAVE_SNPRINTF 1
-//#define vsnprintf _vsnprintf // sjd vc2008 port
-#define snprintf _snprintf // sjd vc2008 port
+#define vsnprintf _vsnprintf
+#define snprintf _snprintf
 
 /* Define to 1 if you have the `copysign' function. */
 #define HAVE_COPYSIGN

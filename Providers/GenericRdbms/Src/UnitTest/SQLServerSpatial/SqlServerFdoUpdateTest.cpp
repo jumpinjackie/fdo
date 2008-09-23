@@ -186,6 +186,7 @@ void SqlServerFdoUpdateTest::testDefect810181 ()
         FdoString * pin = NULL;
         while ( myReader->ReadNext() )
 		{
+            featId = myReader->GetInt64(L"FeatId");
             province = myReader->GetString(L"Prövince");
             pin = myReader->GetString(L"PIN");
             bool isNull = myReader->IsNull(UnitTestUtil::GetNlsObjectName(L"Geometry"));
@@ -201,6 +202,10 @@ void SqlServerFdoUpdateTest::testDefect810181 ()
                 FdoPtr<FdoITransaction> featureTransaction = connection->BeginTransaction();
                 FdoPtr<FdoIUpdate> updateCommand = (FdoIUpdate *) connection->CreateCommand(FdoCommandType_Update);
                 updateCommand->SetFeatureClassName(L"Länd:Parcel");
+		        FdoPtr<FdoFilter> primaryKeyFilter1 = FdoComparisonCondition::Create(
+	                FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"FeatId")),
+	                FdoComparisonOperations_EqualTo, 
+	                FdoPtr<FdoDataValue>(FdoDataValue::Create(featId)));
 		        FdoPtr<FdoFilter> primaryKeyFilter2 = FdoComparisonCondition::Create(
 	                FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Prövince")),
 	                FdoComparisonOperations_EqualTo, 
@@ -209,7 +214,8 @@ void SqlServerFdoUpdateTest::testDefect810181 ()
 	                FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"PIN")),
 	                FdoComparisonOperations_EqualTo, 
 	                FdoPtr<FdoDataValue>(FdoDataValue::Create(pin)));
-                FdoPtr<FdoFilter> filterAll = FdoFilter::Combine( primaryKeyFilter2, FdoBinaryLogicalOperations_And, primaryKeyFilter3);
+                FdoPtr<FdoFilter> filter1 = FdoFilter::Combine( primaryKeyFilter1, FdoBinaryLogicalOperations_And, primaryKeyFilter2);
+                FdoPtr<FdoFilter> filterAll = FdoFilter::Combine( filter1, FdoBinaryLogicalOperations_And, primaryKeyFilter3);
                 updateCommand->SetFilter(filterAll);
 
                 FdoPtr<FdoPropertyValueCollection> propertyValues = updateCommand->GetPropertyValues();

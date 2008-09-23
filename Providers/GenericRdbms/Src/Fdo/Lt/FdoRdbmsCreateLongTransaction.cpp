@@ -31,6 +31,7 @@
 #include "FdoRdbmsCreateLongTransaction.h"
 #include "LockUtility.h"
 #include "FdoRdbmsException.h"
+#include "../Lt/version_info.h"
 #include "FdoRdbmsLongTransactionReader.h"
 
 // ----------------------------------------------------------------------------

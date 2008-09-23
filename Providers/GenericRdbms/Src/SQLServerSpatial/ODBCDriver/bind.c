@@ -113,7 +113,7 @@ int odbcdr_bind(
 	int					bindnum;
 
 	SQLSMALLINT			sql_type;
-	SQLULEN    			col_size;
+	SQLUINTEGER			col_size;
 	SQLSMALLINT			decimal_digits;
 	SQLSMALLINT			nullable; 
 

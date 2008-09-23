@@ -84,7 +84,7 @@ BEGIN
             VALUE "Comments", "FDO Provider for ArcSDE 9.2 Client"
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "FDO Provider for ArcSDE 9.2 Component"
-            VALUE "FileVersion", "3.4.0.00"
+            VALUE "FileVersion", "3.3.0.0"
             VALUE "InternalName", "ArcSDEProvider92"
             VALUE "LegalCopyright", "Copyright © 2007"
             VALUE "OriginalFilename", "ArcSDEProvider92.dll"

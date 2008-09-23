@@ -14,8 +14,8 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 //
-#ifndef FDOPOSTGIS_PGTABLESREADER_H_INCLUDED
-#define FDOPOSTGIS_PGTABLESREADER_H_INCLUDED
+#ifndef FDOPOSTGIS_PGSPATIALTABLESREADER_H_INCLUDED
+#define FDOPOSTGIS_PGSPATIALTABLESREADER_H_INCLUDED
 
 #include "Connection.h"
 #include "SQLDataReader.h"
@@ -30,35 +30,31 @@
 
 namespace fdo { namespace postgis {
 
-/// Implementation of reader for PostGIS spatial tables and alpha table.
+/// Implementation of reader for PostGIS-enabled spatial tables.
 /// Tables are read using current connection established to a FDO datastore.
 /// This class is dedicated for <strong>internal use only</strong> and
 /// it's <strong>not</strong> exposed to FDO clients.
 ///
-class PgTablesReader :
+class PgSpatialTablesReader :
     public FdoIDisposable,
     private boost::noncopyable
 {
 public:
 
     /// Type of FDO smart pointer for the class.
-    typedef FdoPtr<PgTablesReader> Ptr;
+    typedef FdoPtr<PgSpatialTablesReader> Ptr;
     
     /// Type of geometry columns collection
     typedef std::vector<PgGeometryColumn::Ptr> columns_t;
     
     /// Constructor creates new reader instance associated with given connection.
-    PgTablesReader(Connection* conn);
+    PgSpatialTablesReader(Connection* conn);
 
-    /// Get name of schema to which table belongs.
+    /// Get name of schema to which a spatial table belongs.
     FdoStringP GetSchemaName() const;
     
-    /// Get name of table.
+    /// Get name of a spatial table.
     FdoStringP GetTableName() const;
-
-    // check if the table has a spatial column
-    bool CheckSpatialTable() const;
-    bool IsSpatialTable() const { return mTableSpatialCached; }
 
     /// Get collection of geometry columns.
     /// Every column is described by following elements:
@@ -68,9 +64,9 @@ public:
     ///  - SRID
     columns_t GetGeometryColumns() const;
     
-    /// Open tables reader.
+    /// Open spatial tables reader.
     /// This operation mimics FDO command usually creating instance of a reader.
-    /// There is no command dedicated for PgTablesReader instantiation,
+    /// There is no command dedicated for PgSpatialTableReader instantiation,
     /// so this function behaves like a command preparing reader instance.
     void Open();
 
@@ -86,10 +82,10 @@ public:
 protected:
 
 	/// Default constructor (DO NOT USE -- Only defined to make Linux Build Happy).
-    PgTablesReader();
+    PgSpatialTablesReader();
 
 	/// Destructor closes reader on destroy.
-    virtual ~PgTablesReader();
+    virtual ~PgSpatialTablesReader();
 
     //
     // FdoIDisposable interface
@@ -108,7 +104,7 @@ private:
     Connection::Ptr mConn;
     
     // Handle to result reader used internally.
-    // The PgTablesReader forwards calls to the SQLDataReader.
+    // The PgSpatialTablesReader forwards calls to the SQLDataReader.
     //SQLDataReader::Ptr mReader;
     FdoPtr<FdoISQLDataReader> mReader;
     
@@ -120,10 +116,7 @@ private:
     
     // Name of a table currently read and cached.
     std::string mTableCached;
-
-    // table currently read is type spatial
-    bool mTableSpatialCached;
-
+    
     //
     // Private operations
     //
@@ -136,14 +129,8 @@ private:
     // Table is used with full path: schema.table.
     FdoPtr<FdoEnvelopeImpl> EstimateColumnExtent(
         std::string const& column) const;
-
-    // Executes query to select spatial extent of features
-    // in given geometry column in a table.
-    // Table is used with full path: schema.table.
-    FdoPtr<FdoEnvelopeImpl> SelectColumnExtent(
-        std::string const& column) const;
 };
 
 }} // namespace fdo::postgis
 
-#endif // FDOPOSTGIS_PGTABLESREADER_H_INCLUDED
+#endif // FDOPOSTGIS_PGSPATIALTABLESREADER_H_INCLUDED

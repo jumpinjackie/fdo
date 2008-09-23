@@ -16,7 +16,7 @@
 //
 #include "stdafx.h"
 #include "PostGisProvider.h"
-#include "PgTablesReader.h"
+#include "PgSpatialTablesReader.h"
 #include "PgGeometry.h"
 #include "PgUtility.h"
 #include "Connection.h"
@@ -46,12 +46,12 @@ T StringConv(char const* value)
 
 namespace fdo { namespace postgis {
 
-PgTablesReader::PgTablesReader()
+PgSpatialTablesReader::PgSpatialTablesReader()
 {
 	assert(false);
 }
 
-PgTablesReader::PgTablesReader(Connection* conn)
+PgSpatialTablesReader::PgSpatialTablesReader(Connection* conn)
     : mConn(conn)
 {
     FDO_SAFE_ADDREF(mConn.p);
@@ -82,7 +82,7 @@ PgTablesReader::PgTablesReader(Connection* conn)
     }
 }
 
-PgTablesReader::~PgTablesReader()
+PgSpatialTablesReader::~PgSpatialTablesReader()
 {
 }
 
@@ -90,7 +90,7 @@ PgTablesReader::~PgTablesReader()
 // FdoIDisposable interface
 ///////////////////////////////////////////////////////////////////////////////
 
-void PgTablesReader::Dispose()
+void PgSpatialTablesReader::Dispose()
 {
     // This function might throw, do NOT call from the destructor!
     Close();
@@ -99,87 +99,29 @@ void PgTablesReader::Dispose()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// PgTablesReader interface
+// PgSpatialTablesReader interface
 ///////////////////////////////////////////////////////////////////////////////
 
-FdoStringP PgTablesReader::GetSchemaName() const
+FdoStringP PgSpatialTablesReader::GetSchemaName() const
 {
     return mReader->GetString(L"schemaname");
 }
 
-FdoStringP PgTablesReader::GetTableName() const
+FdoStringP PgSpatialTablesReader::GetTableName() const
 {
     return mReader->GetString(L"tablename");
 }
 
-    // check if the table has a spatial column
-bool PgTablesReader::CheckSpatialTable() const
+PgSpatialTablesReader::columns_t PgSpatialTablesReader::GetGeometryColumns() const
 {
-    FDOLOG_MARKER("PgTablesReader::+CheckSpatialTable");
+    FDOLOG_MARKER("PgSpatialTablesReader::+GetGeometryColumns");
 
-    assert(!mCurrentSchema.empty() && !mTableCached.empty());
-
-    std::string sql("SELECT n.nspname AS schemaname, c.relname AS tablename"
-                    " FROM pg_class c, pg_namespace n, geometry_columns g"
-                    " WHERE c.relkind IN ('r','v') AND c.relname !~ '^(pg_|sql_)'"
-                    " AND c.relnamespace = n.oid AND n.nspname = g.f_table_schema"
-                    " AND c.relname::TEXT = g.f_table_name::TEXT"
-                    " AND n.nspname = '" + mCurrentSchema + "'"
-                    " AND c.relname = '" + mTableCached + "'"
-                    " GROUP BY schemaname, tablename");
-    //BUG ! utiliser QUE des varriable locale
-    // Query spatial tables and attach results to the SQL data reader
-/*--  FdoPtr<FdoISQLCommand> Cmd = static_cast<FdoISQLCommand*>(mConn->CreateCommand(FdoCommandType_SQLCommand));
-    assert(NULL != Cmd);
-    
-    FdoStringP tmp(sql.c_str());
-    Cmd->SetSQLStatement(tmp);
-    
-    FdoPtr<FdoISQLDataReader> reader = Cmd->ExecuteReader();
-    assert(NULL != reader);
-
-    bool hasTuples = reader->ReadNext();
-//  if (NULL != reader) reader->Close();  --*/        
-
-    boost::shared_ptr<PGresult> pgRes(mConn->PgExecuteQuery(sql.c_str()), PQclear);
-    assert(PGRES_TUPLES_OK == PQresultStatus(pgRes.get()));
-    int nb = PQntuples(pgRes.get());
-    bool hasTuples = (nb > 0);
-
-    return hasTuples;
-}
-
-PgTablesReader::columns_t PgTablesReader::GetGeometryColumns() const
-{
-    FDOLOG_MARKER("PgTablesReader::+GetGeometryColumns");
-
-    columns_t columns;
-
-    if (!mTableSpatialCached) {
-      FDOLOG_WRITE("PgTablesReader::-SelectColumnExtent '%s' is not a geometrie table!", mTableCached);
-      return columns;
-    }
-/* 2008/02
     std::string sql("SELECT g.f_geometry_column, g.type, g.coord_dimension, g.srid "
                     "FROM geometry_columns g "
                     "WHERE  g.f_table_schema = '"
                     + mCurrentSchema +
                     "' AND g.f_table_name = '"
                     + mTableCached + "'");
--*/
-    // because geometry_columns table is out of date after a 'DROP TABLE...' !
-    std::string sql("SELECT g.f_geometry_column, g.type, g.coord_dimension, g.srid"
-	                  " FROM geometry_columns g, pg_attribute a, pg_class c, pg_type t, pg_namespace n"
-                    " WHERE  g.f_table_schema = '" + mCurrentSchema + "'"
-                    " AND g.f_table_name = '" + mTableCached + "'"
-                  	" AND g.f_geometry_column = a.attname "
-	                  " AND a.attnum > 0 "
-	                  " AND a.attrelid = c.oid "
-	                  " AND a.atttypid = t.oid "
-	                  " AND c.relnamespace = n.oid "
-	                  " AND c.relname = g.f_table_name "
-	                  " AND n.nspname = g.f_table_schema "
-	                  " ORDER BY a.attnum");
 
     // Here, we intentionally DO NOT use FdoISQLCommand to eliminate
     // unnecessary overhead. It's faster to work as close to libpq API as possible.
@@ -193,6 +135,7 @@ PgTablesReader::columns_t PgTablesReader::GetGeometryColumns() const
     int const ntuples = PQntuples(pgRes.get());
 
     // Prepare collection for geometry columns
+    columns_t columns;
     columns.reserve(ntuples);
     
     //
@@ -226,14 +169,6 @@ PgTablesReader::columns_t PgTablesReader::GetGeometryColumns() const
             // Estimate bounding box of geometries in given column
             FdoPtr<FdoEnvelopeImpl> bbox;
             bbox = EstimateColumnExtent(static_cast<char const*>(name));
-            if (bbox->GetIsEmpty()) 
-            {
-              bbox = SelectColumnExtent(static_cast<char const*>(name));
-              if (bbox->GetIsEmpty()) 
-              {
-                bbox = FdoEnvelopeImpl::Create(0.0, 0.0, 0.0, 0.0);
-              }
-            }
 
             // Describe geometry column and add to the collection
             PgGeometryColumn::Ptr col(new PgGeometryColumn(name, type, dim, srid, bbox));
@@ -252,19 +187,20 @@ PgTablesReader::columns_t PgTablesReader::GetGeometryColumns() const
     return columns;
 }
 
-void PgTablesReader::Open()
+void PgSpatialTablesReader::Open()
 {
-    FDOLOG_MARKER("PgTablesReader::+Open");
+    FDOLOG_MARKER("PgSpatialTablesReader::+Open");
 
     assert(!mCurrentSchema.empty());
 
-    std::string sql("SELECT schemaname, tablename FROM pg_tables"
-				            " WHERE  schemaname='" + mCurrentSchema + "'"
-                    " AND (tablename NOT LIKE 'pg_%')"
-				            " AND (tablename NOT LIKE 'spatial_ref_sys%')"
-				            " AND (tablename NOT LIKE 'sql_%')"
-				            " AND (tablename NOT LIKE 'geom%')"
-				            " ORDER BY tablename");
+    std::string sql("SELECT n.nspname AS schemaname, c.relname AS tablename "
+                    "FROM pg_class c, pg_namespace n, geometry_columns g "
+                    "WHERE c.relkind IN ('r','v') AND c.relname !~ '^(pg_|sql_)' "
+                    "AND c.relnamespace = n.oid AND n.nspname = g.f_table_schema "
+                    "AND c.relname::TEXT = g.f_table_name::TEXT "
+                    "AND n.nspname = '"
+                    + mCurrentSchema +
+                    "' GROUP BY schemaname, tablename");
     
     // Query spatial tables and attach results to the SQL data reader
     mCmd = static_cast<FdoISQLCommand*>(mConn->CreateCommand(FdoCommandType_SQLCommand));
@@ -277,7 +213,7 @@ void PgTablesReader::Open()
     assert(NULL != mReader);
 }
 
-bool PgTablesReader::ReadNext()
+bool PgSpatialTablesReader::ReadNext()
 {
     bool hasTuples = mReader->ReadNext();
     
@@ -285,13 +221,12 @@ bool PgTablesReader::ReadNext()
     if (hasTuples)
     {
         mTableCached = static_cast<char const*>(GetTableName());
-        mTableSpatialCached = CheckSpatialTable();
     }
     
     return hasTuples;
 }
 
-void PgTablesReader::Close()
+void PgSpatialTablesReader::Close()
 {
     if (NULL != mReader)
         mReader->Close();        
@@ -301,7 +236,7 @@ void PgTablesReader::Close()
 // Private operations
 ///////////////////////////////////////////////////////////////////////////////
 
-void PgTablesReader::ValidateConnectionState() const
+void PgSpatialTablesReader::ValidateConnectionState() const
 {
     if (FdoConnectionState_Closed == mConn->GetConnectionState())
     {
@@ -312,18 +247,10 @@ void PgTablesReader::ValidateConnectionState() const
     }
 }
 
-FdoPtr<FdoEnvelopeImpl> PgTablesReader::EstimateColumnExtent(
+FdoPtr<FdoEnvelopeImpl> PgSpatialTablesReader::EstimateColumnExtent(
     std::string const& column) const
 {
-    FDOLOG_MARKER("PgTablesReader::-EstimateColumnExtent");
-    assert(!mCurrentSchema.empty() && !mTableCached.empty());
-
-    if (!mTableSpatialCached) {
-      FDOLOG_WRITE("PgTablesReader::-SelectColumnExtent '%s' is not a geometrie table!", mTableCached );
-      FdoPtr<FdoEnvelopeImpl> extent;
-      FDO_SAFE_ADDREF(extent.p);
-      return extent.p;
-    }
+    FDOLOG_MARKER("PgSpatialTablesReader::-EstimateColumnExtent");
 
     FDOLOG_WRITE("Geometry column: %s.%s.%s", mCurrentSchema.c_str(), 
         mTableCached.c_str(), column.c_str());
@@ -344,41 +271,30 @@ FdoPtr<FdoEnvelopeImpl> PgTablesReader::EstimateColumnExtent(
     boost::shared_ptr<PGresult> pgRes(mConn->PgExecuteQuery(sql.c_str()), PQclear);
     assert(PGRES_TUPLES_OK == PQresultStatus(pgRes.get()));
     assert(1 == PQntuples(pgRes.get()));
+
     try
     {
-        bool    nullVal = false;
         char const* cval = NULL;
         
         // X MIN
         cval = PQgetvalue(pgRes.get(), 0, 0);
-        if (!cval || !strlen(cval)) nullVal = true;
         double xmin = StringConv<double>(cval);
         // Y MIN
         cval = PQgetvalue(pgRes.get(), 0, 1);
-        if (!cval || !strlen(cval)) nullVal = true;
         double ymin = StringConv<double>(cval);
         // X MAX
         cval = PQgetvalue(pgRes.get(), 0, 2);
-        if (!cval || !strlen(cval)) nullVal = true;
         double xmax = StringConv<double>(cval);
         // Y MAX
         cval = PQgetvalue(pgRes.get(), 0, 3);
-        if (!cval || !strlen(cval)) nullVal = true;
         double ymax = StringConv<double>(cval);
 
         // Build spatial envelope object
         FdoPtr<FdoEnvelopeImpl> extent;
-        if (!nullVal) 
-        {
-          extent = FdoEnvelopeImpl::Create(xmin, ymin, xmax, ymax);
-          FDOLOG_WRITE("Extent:\n\txmin = %.8f\n\tymin = %.8f\n\txmax = %.8f\n\tymax = %.8f",
-              xmin, ymin, xmax, ymax);
-        } 
-        else 
-        {
-          extent = FdoEnvelopeImpl::Create(); // create empty envelope!
-          FDOLOG_WRITE("Warning! estimated_extent is empty! use VACUUM or ANALYZE");
-        }
+        extent = FdoEnvelopeImpl::Create(xmin, ymin, xmax, ymax);
+
+        FDOLOG_WRITE("Extent:\n\txmin = %.8f\n\tymin = %.8f\n\txmax = %.8f\n\tymax = %.8f",
+            xmin, ymin, xmax, ymax);
 
         FDO_SAFE_ADDREF(extent.p);
         return extent.p;
@@ -387,81 +303,6 @@ FdoPtr<FdoEnvelopeImpl> PgTablesReader::EstimateColumnExtent(
     {
         FDOLOG_WRITE("Extent coordinate value conversion failed: %s", e.what());
         throw FdoException::Create(L"Error occured while reading coordinate of estimated extent");
-    }
-}
-
-FdoPtr<FdoEnvelopeImpl> PgTablesReader::SelectColumnExtent(
-    std::string const& column) const
-{
-    FDOLOG_MARKER("PgTablesReader::-SelectColumnExtent");
-    assert(!mCurrentSchema.empty() && !mTableCached.empty());
-
-    if (!mTableSpatialCached) {
-      FDOLOG_WRITE("PgTablesReader::-SelectColumnExtent '%s' is not a geometrie table!", mTableCached );
-      FdoPtr<FdoEnvelopeImpl> extent;
-      FDO_SAFE_ADDREF(extent.p);
-      return extent.p;
-    }
-
-    FDOLOG_WRITE("Geometry column: %s.%s.%s", mCurrentSchema.c_str(), 
-        mTableCached.c_str(), column.c_str());
-
-    // Query estimating spatial extent for given geometry column using table statistics.
-    // For PostgreSQL>=8.0.0 statistics are gathered by VACUUM ANALYZE and resulting
-    // extent will be about 95% of the real one.
-
-    std::string sql("SELECT xmin(box.extent), xmin(box.extent), xmax(box.extent), ymax(box.extent) "
-                     "FROM ( SELECT extent(" + column + ") FROM "
-                     + mCurrentSchema + "."+ mTableCached // TODO add mBaseName
-                     + ") AS box");
-
-    // NOTE: The PgExecuteQuery throws on error, but if no exception occurs,
-    //       valid query result is assumed.
-
-    boost::shared_ptr<PGresult> pgRes(mConn->PgExecuteQuery(sql.c_str()), PQclear);
-    assert(PGRES_TUPLES_OK == PQresultStatus(pgRes.get()));
-    assert(1 == PQntuples(pgRes.get()));
-    try
-    {
-        bool    nullVal = false;
-        char const* cval = NULL;
-        
-        // X MIN
-        cval = PQgetvalue(pgRes.get(), 0, 0);
-        if (!cval || !strlen(cval)) nullVal = true;
-        double xmin = StringConv<double>(cval);
-        // Y MIN
-        cval = PQgetvalue(pgRes.get(), 0, 1);
-        if (!cval || !strlen(cval)) nullVal = true;
-        double ymin = StringConv<double>(cval);
-        // X MAX
-        cval = PQgetvalue(pgRes.get(), 0, 2);
-        if (!cval || !strlen(cval)) nullVal = true;
-        double xmax = StringConv<double>(cval);
-        // Y MAX
-        cval = PQgetvalue(pgRes.get(), 0, 3);
-        if (!cval || !strlen(cval)) nullVal = true;
-        double ymax = StringConv<double>(cval);
-
-        // Build spatial envelope object
-        FdoPtr<FdoEnvelopeImpl> extent;
-        if (!nullVal)
-        {
-          FDOLOG_WRITE("Extent:\n\txmin = %.8f\n\tymin = %.8f\n\txmax = %.8f\n\tymax = %.8f",
-            xmin, ymin, xmax, ymax);
-          extent = FdoEnvelopeImpl::Create(xmin, ymin, xmax, ymax);
-        } else  {
-          extent = FdoEnvelopeImpl::Create(); // create empty envelope!
-          FDOLOG_WRITE("Warning! No Extent selectd!");
-        }
-
-        FDO_SAFE_ADDREF(extent.p);
-        return extent.p;
-    }
-    catch (boost::bad_lexical_cast& e)
-    {
-        FDOLOG_WRITE("Extent coordinate value conversion failed: %s", e.what());
-        throw FdoException::Create(L"Error occured while select coordinate of extent");
     }
 }
 

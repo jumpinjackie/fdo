@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="8.00"
 	Name="Provider92"
 	ProjectGUID="{F427CD47-243B-4770-B25B-366445061E35}"
 	RootNamespace="ArcSDEProvider92"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -53,6 +52,7 @@
 				UsePrecompiledHeader="2"
 				ProgramDataBaseFileName="$(IntDir)/ArcSDEProvider92.pdb"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -77,8 +77,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/ArcSDEProvider92.pdb"
 				SubSystem="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="..\..\Lib\Win32\Debug\ArcSDEProvider92.lib"
 				TargetMachine="1"
 			/>
@@ -99,6 +97,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -144,6 +145,7 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -170,8 +172,6 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="..\..\Lib\Win32\Release\ArcSDEProvider92.lib"
 				TargetMachine="1"
 			/>
@@ -192,6 +192,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -235,6 +238,7 @@
 				UsePrecompiledHeader="2"
 				ProgramDataBaseFileName="$(IntDir)/ArcSDEProvider92.pdb"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -259,8 +263,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/ArcSDEProvider92.pdb"
 				SubSystem="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="..\..\Lib\Win32\Debug\ArcSDEProvider92.lib"
 				TargetMachine="1"
 			/>
@@ -281,6 +283,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -325,6 +330,7 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -351,8 +357,6 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="..\..\Lib\Win32\Release\ArcSDEProvider92.lib"
 				TargetMachine="1"
 			/>
@@ -373,6 +377,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -417,6 +424,7 @@
 				UsePrecompiledHeader="2"
 				ProgramDataBaseFileName="$(IntDir)/ArcSDEProvider92.pdb"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -441,8 +449,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/ArcSDEProvider92.pdb"
 				SubSystem="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="..\..\Lib\Win32\Debug\ArcSDEProvider92.lib"
 				TargetMachine="1"
 			/>
@@ -463,6 +469,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -508,6 +517,7 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -534,8 +544,6 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="..\..\Lib\Win32\Release\ArcSDEProvider92.lib"
 				TargetMachine="1"
 			/>
@@ -556,6 +564,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"

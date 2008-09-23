@@ -4,10 +4,6 @@
 # but this particular relative organization is not mandatory.
 # But the paths *should* be absolute (relative paths mess up in submakefiles).
 
-!IFNDEF PLATFORM_BITS
-PLATFORM_BITS=32
-!ENDIF
-
 !IFNDEF GDAL_HOME
 GDAL_HOME = $(FDOTHIRDPARTY)\gdal
 !ENDIF
@@ -16,11 +12,11 @@ INCDIR = $(GDAL_HOME)\include
 DATADIR = $(GDAL_HOME)\data
 HTMLDIR = $(GDAL_HOME)\html
 !IFDEF BUILD_DEBUG
-BINDIR = $(GDAL_HOME)\bin\win$(PLATFORM_BITS)\debug
-LIBDIR = $(GDAL_HOME)\lib\win$(PLATFORM_BITS)\debug
+BINDIR = $(GDAL_HOME)\bin\win32\debug
+LIBDIR = $(GDAL_HOME)\lib\win32\debug
 !ELSE
-BINDIR = $(GDAL_HOME)\bin\win$(PLATFORM_BITS)\release
-LIBDIR = $(GDAL_HOME)\lib\win$(PLATFORM_BITS)\release
+BINDIR = $(GDAL_HOME)\bin\win32\release
+LIBDIR = $(GDAL_HOME)\lib\win32\release
 !ENDIF
 
 # Set this to the installed directory containing python.  If you don't
@@ -60,9 +56,7 @@ OPTFLAGS=	/nologo /MD /EHsc /Ox
 # Uncomment the following if you are building for 64-bit windows
 # (x64). You'll need to have PATH, INCLUDE and LIB set up for 64-bit
 # compiles.
-!IF $(PLATFORM_BITS) == 64
-WIN64=YES
-!ENDIF
+#WIN64=YES
 
 # If you don't want some entry points to have STDCALL conventions, 
 # comment out the following and add -DCPL_DISABLE_STDCALL in OPTFLAGS.

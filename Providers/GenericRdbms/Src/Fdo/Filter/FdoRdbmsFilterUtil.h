@@ -43,6 +43,15 @@ public:
     // Only 2 filter forms can be used so far: "featidcol=<val>" and "featidcol in (val1,val2,...,valn)"
     static  bool FeatIdsFromFilter( const wchar_t *featIdName, FdoFilter  *filter, int **FeatIdArray, int *count );
 
+    // The following two functions return the feature id property for the given class.
+    // If the class is a feature class, then the returned collection has a single element
+    // which is the feature id column.
+    // The caller is responsible for releasing this list.
+    // If the class is not a feature class then NULL is returned.
+    static FdoIdentifierCollection* GetFeatIdSelList( DbiConnection *dbi_connection, const wchar_t *className );
+
+    static FdoIdentifierCollection* GetFeatIdSelList( const FdoSmLpClassDefinition* classDefinition );
+
 	static FdoIdentifierCollection* GetIdentPropList( const FdoSmLpClassDefinition* classDefinition );
 };
 

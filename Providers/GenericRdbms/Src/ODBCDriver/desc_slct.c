@@ -110,7 +110,7 @@ int local_odbcdr_desc_slct(
 	)
 {
 	odbcdr_cursor_def	*c;
-	SQLULEN      		odbc_precision;
+	SQLUINTEGER 		odbc_precision;
 	SQLSMALLINT			odbc_scale, odbc_type, odbc_nullable;
 
 	int 				rdbi_status = RDBI_GENERIC_ERROR;
@@ -163,16 +163,16 @@ int local_odbcdr_desc_slct(
 		case SQL_CHAR :
             if (odbc_precision == 1 ) {
                 *rdbi_type	= RDBI_CHAR;
-                *binary_size = (int)odbc_precision + 1;
+                *binary_size = odbc_precision + 1;
             } else {
                 *rdbi_type	= RDBI_FIXED_CHAR;
-                *binary_size = (int)odbc_precision;
+                *binary_size = odbc_precision;
             }
 
             break;
 		case SQL_WCHAR :
             *rdbi_type	= RDBI_WSTRING;
-            *binary_size = (int)odbc_precision;
+            *binary_size = odbc_precision;
             break;
         case SQL_BIT:
             /* Handle much like a CHAR. */
@@ -181,11 +181,11 @@ int local_odbcdr_desc_slct(
             break;
 		case SQL_WVARCHAR:  // ex: INFORMATION_SCHEAMA.SCHEMATA.SCHEMA_NAME
 			*rdbi_type	= RDBI_WSTRING;
-			*binary_size = (int)odbc_precision;
+			*binary_size = odbc_precision;
 			break;
 		case SQL_VARCHAR :
 			*rdbi_type	= RDBI_STRING;
-			*binary_size = (int)odbc_precision;
+			*binary_size = odbc_precision;
 			break;
         case SQL_LONGVARCHAR:
 			*rdbi_type	= RDBI_STRING;
@@ -258,7 +258,7 @@ int local_odbcdr_desc_slct(
             // work-around. If a solution can be identified this code can be
             // modified 
 			*rdbi_type	= RDBI_STRING;
-			*binary_size = (int)odbc_precision+1;
+			*binary_size = odbc_precision+1;
             break;
         case SQL_LONGVARBINARY:
 			*rdbi_type = RDBI_GEOMETRY;

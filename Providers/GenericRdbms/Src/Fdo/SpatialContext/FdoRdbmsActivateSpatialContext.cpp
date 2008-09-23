@@ -43,6 +43,14 @@ void FdoRdbmsActivateSpatialContext::SetName(FdoString* value)
 
 void FdoRdbmsActivateSpatialContext::Execute()
 {
-    mFdoConnection->SetActiveSpatialContextName(mSCName);
+    int                found = false;
+    try
+    {
+        mFdoConnection->SetActiveSpatialContextName(mSCName);
+    }
+    catch (FdoRdbmsException *ex)
+    {
+        throw ex;
+    }
 }
 

@@ -72,7 +72,7 @@ BEGIN
             VALUE "Comments", "FDO Provider for Raster Files"
             VALUE "CompanyName", "Open Geospatial Foundation"
             VALUE "FileDescription", "FDO Provider for Raster Files Component"
-            VALUE "FileVersion", "3.4.0.000"
+            VALUE "FileVersion", "3.3.0.0"
             VALUE "InternalName", "GRFPProvider"
             VALUE "LegalCopyright", "Copyright © 2007"
             VALUE "OriginalFilename", "GRFPProvider.dll"

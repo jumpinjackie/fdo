@@ -206,14 +206,14 @@ int TestCommonMiscUtil::LeakReportHook( int reportType, char *message, int *retu
         sscanf( message, "{%d}", &allocNum );
     }
     else if ( strncmp(message, "normal block at", 15) == 0 ) {
-        LONG_PTR addr;
+        long addr;
         bool isClass = false;
         sscanf( message, "normal block at %x", &addr );
         FdoIDisposable* disp = NULL;
         FdoSchemaElement* elem = NULL;
         try {
             const type_info& info = typeid( *((FdoIDisposable*)(addr)) );
-            if ( (((LONG_PTR)(&info)) & 0x00ffffff) != 0x00cccccc ) {
+            if ( (((long)(&info)) & 0x00ffffff) != 0x00cccccc ) {
                 // BUG: this sometimes generates a segv. Need a better way to validate
                 // the info returned by typeid().
                 className = typeid( *((FdoIDisposable*)(addr)) ).name();

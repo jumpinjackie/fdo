@@ -71,7 +71,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "FDO RDBMS Managed Overrides API Component"
-            VALUE "FileVersion", "3.4.0.00"
+            VALUE "FileVersion", "3.3.0.0"
             VALUE "InternalName", "OSGeo.FDO.Providers.Rdbms.Overrides"
             VALUE "LegalCopyright", "Copyright (C) 2007"
             VALUE "OriginalFilename", "OSGeo.FDO.Providers.Rdbms.Overrides.dll"

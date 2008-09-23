@@ -2871,11 +2871,7 @@ bool LockUtility::LockExists (FdoRdbmsConnection *dbi_connection,
       // Therefore the given lock name must be converted into an uppercase string.
 
       lock_name_copy = LockUtility::SetValue(lock_name);
-      {
-	    char* ptr;
-		for (ptr = lock_name_copy; *ptr != '\0'; ptr++)
-			*ptr = ut_toupper(*ptr); 
-  	  }
+      ut_to_upper(lock_name_copy);
 
       // Construct the command to be executed.
 

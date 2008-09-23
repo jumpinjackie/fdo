@@ -43,26 +43,15 @@ int SqlServerStaticConnection::do_rdbi_init (rdbi_context_def** rdbi_context)
 int SqlServerStaticConnection::do_rdbi_connect (rdbi_context_def* rdbi_context, int& id)
 {
 	FdoStringP pService = UnitTestUtil::GetEnviron("service");
-    FdoStringP username = UnitTestUtil::GetEnviron( "username" );
-    FdoStringP password = UnitTestUtil::GetEnviron( "password" );
-    FdoStringP connectString;
-
-    if ( username.GetLength() > 0 ) 
-        connectString = FdoStringP::Format(L"DRIVER={SQL Server}; SERVER=%ls; UID=%ls; PWD=%ls", 
-            (FdoString*)pService,
-            (FdoString*)username,
-            (FdoString*)password
-        );
-    else
-        connectString = FdoStringP::Format(L"DRIVER={SQL Server}; SERVER=%ls", (FdoString*)pService);
+    FdoStringP connectString = FdoStringP::Format(L"DRIVER={SQL Server}; SERVER=%ls", (FdoString*)pService);
 
     if (rdbi_context->dispatch.capabilities.supports_unicode == 1)
     {
         return (rdbi_connectW (
             rdbi_context,
             connectString,
-            username,
-            password,
+            UnitTestUtil::GetEnviron( "username" ),
+            UnitTestUtil::GetEnviron( "password" ),
             &id));
     }
     else
@@ -70,8 +59,8 @@ int SqlServerStaticConnection::do_rdbi_connect (rdbi_context_def* rdbi_context, 
         return (rdbi_connect (
             rdbi_context,
             connectString,
-            username,
-            password,
+            UnitTestUtil::GetEnviron( "username" ),
+            UnitTestUtil::GetEnviron( "password" ),
             &id));
     }
 }

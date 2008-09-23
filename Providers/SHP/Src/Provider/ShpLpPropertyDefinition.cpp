@@ -269,3 +269,4 @@ FdoShpOvPropertyDefinition* ShpLpPropertyDefinition::GetSchemaMappings(bool bInc
     return bHasMappings ? FDO_SAFE_ADDREF(propertyMapping.p) : NULL;
 }
 
+

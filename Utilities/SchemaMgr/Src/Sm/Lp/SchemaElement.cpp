@@ -339,7 +339,7 @@ void FdoSmLpSchemaElement::AddSADNoMetaError( FdoSmPhOwnerP owner )
 	GetErrors()->Add( FdoSmErrorType_Other, 
         FdoSchemaException::Create(
             FdoSmError::NLSGetMessage(
-				FDO_NLSID(FDOSM_36),
+				SM_NLSID(0x000008C1L, "Cannot set Schema Attribute Dictionary for element '%1$ls' in datastore '%2$ls'; datastore has no FDO metadata tables"),
 				(FdoString*) GetQName(),
                 owner ? owner->GetName() : L""
 			)

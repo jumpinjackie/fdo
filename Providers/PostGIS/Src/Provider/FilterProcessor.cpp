@@ -254,33 +254,20 @@ void FilterProcessor::ProcessInCondition(FdoInCondition& cond)
 
     mStatement.append(sql::sepLeftTerm);
     propName->Process(mExprProc);
-    
-    // left operande name
-    std::string columnName, value;
-    mExprProc->ReleaseExpressionText(columnName);
-    mStatement.append(columnName);
     mStatement.append(sql::opIn);
     mStatement.append(sql::sepLeftTerm);
 
     FdoPtr<FdoExpression> expr;
-    FdoInt32 const count = exprCol->GetCount();
+    FdoInt32 const count = exprCol->GetCount() - 1;
     FdoInt32 i = 0;
-    for (i = 0; i < count - 1; i++)
+    for (i = 0; i < count; i++)
     {
         expr = exprCol->GetItem(i);
         expr->Process(mExprProc);
-
-        // add values
-        mExprProc->ReleaseExpressionText(value);
-        mStatement.append(value);
         mStatement.append(sql::sepComma);
     }
     expr = exprCol->GetItem(i);
     expr->Process(mExprProc);
-
-    // add values
-    mExprProc->ReleaseExpressionText(value);
-    mStatement.append(value);
 
     mStatement.append(sql::sepRightTerm);
     mStatement.append(sql::sepRightTerm);
@@ -296,11 +283,6 @@ void FilterProcessor::ProcessNullCondition(FdoNullCondition& cond)
 
     mStatement.append(sql::sepLeftTerm);
     propId->Process(mExprProc);
-
-    // left operande name
-    std::string columnName;
-    mExprProc->ReleaseExpressionText(columnName);
-    mStatement.append(columnName);
     mStatement.append(sql::opIsNull);
     mStatement.append(sql::sepRightTerm);
 

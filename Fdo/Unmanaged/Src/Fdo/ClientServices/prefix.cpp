@@ -121,7 +121,7 @@ br_locate (void *symbol)
 
 	while (!feof (f))
 	{
-		unsigned long start, end;
+		unsigned int start, end;
 
 		if (!fgets (line, sizeof (line), f))
 			continue;
@@ -129,7 +129,7 @@ br_locate (void *symbol)
 			continue;
 
 		sscanf (line, "%x-%x ", &start, &end);
-		if (((unsigned long) symbol) >= start && ((unsigned long) symbol) < end)
+		if (((unsigned int) symbol) >= start && ((unsigned int) symbol) < end)
 		{
 			char *tmp;
 			size_t len;

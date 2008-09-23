@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="gb2312"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="8.00"
 	Name="MgRdbmsOverrides"
 	ProjectGUID="{AE480E7A-BD42-4C15-83C6-13E486A6AC94}"
 	RootNamespace="RdbmsOverrides"
 	Keyword="ManagedCProj"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
 			Name="Win32"
-		/>
-		<Platform
-			Name="x64"
 		/>
 	</Platforms>
 	<ToolFiles>
@@ -54,6 +50,7 @@
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 				DisableSpecificWarnings="4250"
 			/>
@@ -75,8 +72,6 @@
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				ProgramDatabaseFile="$(TargetDir)\OSGeo.FDO.Providers.Rdbms.Overrides.pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -98,96 +93,12 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Versioning MgFdoRdbmsOverrides.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.Rdbms.Overrides.dll"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug|x64"
-			OutputDirectory="..\Bin\Debug64"
-			IntermediateDirectory="..\Obj\MgFdoRdbmsOverrides\Debug64"
-			ConfigurationType="2"
-			CharacterSet="0"
-			ManagedExtensions="4"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-				Description="Updating Assembly Version Information for $(OutDir)\OSGeo.FDO.Providers.Rdbms.Overrides.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\UpdateVersion\bin\UpdateVersion.exe -b BuildDay -r Fixed -i ..\Src\OSGeo\FDO\Providers\Rdbms\Override\AssemblyVersion.cpp -o ..\Src\OSGeo\FDO\Providers\Rdbms\Override\AssemblyVersion.cpp"
-				ExcludedFromBuild="true"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalOptions="/AI&quot;$(FDO)\Managed\output&quot;"
-				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDO)\Managed\Src&quot;;&quot;$(FDO)\Managed\Src\OSGeo&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Inc&quot;;..\..\Inc;..\..\Inc\Rdbms\Override;..\Src;..\Src\Autodesk\Gis"
-				AdditionalUsingDirectories="&quot;$(FDO)\Managed\Bin\Win64\Debug&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG"
-				RuntimeLibrary="3"
-				UsePrecompiledHeader="2"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-				DisableSpecificWarnings="4250"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="RdbmsOverrides.lib $(FDO)\Unmanaged\Lib\Win64\Debug\FDO.lib FDOCommon.lib"
-				OutputFile="$(OutDir)\OSGeo.FDO.Providers.Rdbms.Overrides.dll"
-				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win64\Debug&quot;;..\..\Lib\Win64\Debug"
-				GenerateDebugInformation="true"
-				AssemblyDebug="1"
-				ProgramDatabaseFile="$(TargetDir)\OSGeo.FDO.Providers.Rdbms.Overrides.pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				TargetMachine="17"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning MgFdoRdbmsOverrides.dll"
 				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.Rdbms.Overrides.dll"
-				ExcludedFromBuild="true"
 			/>
 		</Configuration>
 		<Configuration
@@ -244,8 +155,6 @@
 				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Release;..\..\Lib\Win32\Release"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(TargetDir)\OSGeo.FDO.Providers.Rdbms.Overrides.pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -267,94 +176,12 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Versioning MgFdoRdbmsOverrides.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.Rdbms.Overrides.dll"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|x64"
-			OutputDirectory="..\Bin\Release64"
-			IntermediateDirectory="..\Obj\MgFdoRdbmsOverrides\Release64"
-			ConfigurationType="2"
-			CharacterSet="0"
-			ManagedExtensions="4"
-			WholeProgramOptimization="0"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-				Description="Updating Assembly Version Information for $(OutDir)\OSGeo.FDO.Providers.Rdbms.Overrides.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\UpdateVersion\bin\UpdateVersion.exe -b BuildDay -r Fixed -i ..\Src\OSGeo\FDO\Providers\Rdbms\Override\AssemblyVersion.cpp -o ..\Src\OSGeo\FDO\Providers\Rdbms\Override\AssemblyVersion.cpp"
-				ExcludedFromBuild="true"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDO)\Managed\Src&quot;;&quot;$(FDO)\Managed\Src\OSGeo&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Inc&quot;;..\..\Inc;..\..\Inc\Rdbms\Override;..\Src;..\Src\Autodesk\Gis"
-				AdditionalUsingDirectories="&quot;$(FDO)\Managed\Bin\Win64\Release&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG"
-				RuntimeLibrary="2"
-				UsePrecompiledHeader="2"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-				DisableSpecificWarnings="4250"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="RdbmsOverrides.lib $(FDO)\Unmanaged\Lib\Win64\Release\FDO.lib FDOCommon.lib"
-				OutputFile="$(OutDir)\OSGeo.FDO.Providers.Rdbms.Overrides.dll"
-				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win64\Release&quot;;..\..\Lib\Win64\Release"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(TargetDir)\OSGeo.FDO.Providers.Rdbms.Overrides.pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				TargetMachine="17"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning MgFdoRdbmsOverrides.dll"
 				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.Rdbms.Overrides.dll"
-				ExcludedFromBuild="true"
 			/>
 		</Configuration>
 	</Configurations>
@@ -362,17 +189,14 @@
 		<AssemblyReference
 			RelativePath="System.dll"
 			AssemblyName="System, Version=2.0.0.0, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
-			MinFrameworkVersion="131072"
 		/>
 		<AssemblyReference
 			RelativePath="System.Data.dll"
 			AssemblyName="System.Data, Version=2.0.0.0, PublicKeyToken=b77a5c561934e089, processorArchitecture=x86"
-			MinFrameworkVersion="131072"
 		/>
 		<AssemblyReference
 			RelativePath="System.XML.dll"
 			AssemblyName="System.Xml, Version=2.0.0.0, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
-			MinFrameworkVersion="131072"
 		/>
 	</References>
 	<Files>
@@ -607,23 +431,7 @@
 									/>
 								</FileConfiguration>
 								<FileConfiguration
-									Name="Debug|x64"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										UsePrecompiledHeader="1"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
 									Name="Release|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										UsePrecompiledHeader="1"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Release|x64"
 									>
 									<Tool
 										Name="VCCLCompilerTool"

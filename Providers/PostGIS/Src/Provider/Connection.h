@@ -49,14 +49,6 @@ class SpatialContextCollection;
 ///
 class Connection : public FdoIConnection
 {
-    // NOTE - Eric Barby: Give access to schema description cache.
-    // XXX - mloskot: Is it necessary? Why not to provide read-only accessor to cache?
-    friend class InsertCommand;
-    friend class DeleteCommand;
-    friend class ApplySchemaCommand;
-    friend class UpdateCommand;
-    friend class SelectCommand;
-
 public:
 
     /// Type of FDO smart pointer for Connection class.
@@ -263,9 +255,6 @@ private:
 
     // Check internal state of connection to PostgreSQL server.
     void ValidateConnectionState();
-
-    // Validate state of connection is not closed.
-    void ValidateConnectionStateAndNotClosed();
 
     // Validate connection string assigned to current connection instance.
     // The function throws exception on errors detected.

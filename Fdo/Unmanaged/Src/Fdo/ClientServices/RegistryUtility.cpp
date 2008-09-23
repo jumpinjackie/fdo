@@ -784,18 +784,12 @@ wchar_t *FdoRegistryUtility::GetFileName()
         first = false;
 #ifndef _WIN32
         {
-            char _fileName[512];
+		    char _fileName[512];
             struct stat my_stat;
             const char *me;
             char *home;
             char *last;
-            char *install = "/usr/local/fdo-3.3.0";
-
-            // Determine the user-specified FDO install location
-            char *fdo_home = getenv( "FDOHOME" );
-            if ( NULL != fdo_home ) { 
-                install = fdo_home;
-            }
+            char *install = "/usr/local/fdo-3.3.0/lib/";
 
             // try where we are
             me = SELFPATH;
@@ -809,12 +803,11 @@ wchar_t *FdoRegistryUtility::GetFileName()
             }
             else
                 home = "./";
-            
             sprintf (_fileName, "%s%s", home, "providers.xml");
             if ((0 != stat (_fileName, &my_stat)) || !S_ISREG(my_stat.st_mode))
                 // not found or not a file, try the install location
                 if ((0 == stat (install, &my_stat)) && S_ISDIR(my_stat.st_mode))
-                    sprintf (_fileName, "%s%s", install, "/lib/providers.xml");
+                    sprintf (_fileName, "%s%s", install, "providers.xml");
 			mbstowcs(fileName, _fileName, 512);        }
 #else
         {

@@ -279,17 +279,6 @@ const wchar_t* FdoRdbmsOdbcFilterProcessor::FilterToSql(
     FdoInt16 callerId )
 
 {
-    // Before generating the SQL statement for the provided filter, it is
-    // required to analyze the filter first. This basically checks the content
-    // of the filter and sets flags which will later control the generation
-    // of the SQL statement out of the filter. For example, if the filter
-    // contains a list of elements that are combined by binary logical 
-    // operators, it is not required to nest those elements in the generated
-    // SQL statement unless different operators are used. 
-    if (filter != NULL)
-        AnalyzeFilter(filter);
-
-    // Process the request.
     const wchar_t * ret = NULL;
 
     // If no properties are selected (meaning the user wants them all),

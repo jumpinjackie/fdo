@@ -77,7 +77,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
     const FdoSmLpDbObject* table = classDefinition->RefDbObject();
     FdoStringP tableName = table->RefDbObject()->GetDbQName();
 	FdoStringP updateString;
-    const FdoSmLpDataPropertyDefinition *pDef = FdoSmLpDataPropertyDefinition::Cast(classDefinition->RefSystemProperty(L"RevisionNumber"));
+    const FdoSmLpDataPropertyDefinition *pDef = FdoSmLpDataPropertyDefinition::Cast(classDefinition->RefProperties()->RefItem(L"RevisionNumber"));
     if ( (pDef != NULL) && (pDef->RefColumn() == NULL) )
         pDef = NULL;
 
@@ -521,7 +521,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                         break;
 
                     case FdoDataType_Byte:
-                        bindValue += mConnection->GetUtility()->Utf8ToUnicode( FdoCommonOSUtil::itoa( (dynamic_cast<FdoByteValue*>(dataValue))->GetByte(), buffer ) );
+                        bindValue += mConnection->GetUtility()->Utf8ToUnicode( ut_itoa( (dynamic_cast<FdoByteValue*>(dataValue))->GetByte(), buffer ) );
                         break;
 
                     case FdoDataType_DateTime:
@@ -539,11 +539,11 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                         break;
 
                     case FdoDataType_Int16:
-                        bindValue +=  mConnection->GetUtility()->Utf8ToUnicode( FdoCommonOSUtil::itoa( (dynamic_cast<FdoInt16Value*>(dataValue))->GetInt16(), buffer ) );
+                        bindValue +=  mConnection->GetUtility()->Utf8ToUnicode( ut_itoa( (dynamic_cast<FdoInt16Value*>(dataValue))->GetInt16(), buffer ) );
                         break;
 
                     case FdoDataType_Int32:
-                        bindValue +=  mConnection->GetUtility()->Utf8ToUnicode( FdoCommonOSUtil::itoa( (dynamic_cast<FdoInt32Value*>(dataValue))->GetInt32(),buffer ) );
+                        bindValue +=  mConnection->GetUtility()->Utf8ToUnicode( ut_itoa( (dynamic_cast<FdoInt32Value*>(dataValue))->GetInt32(),buffer ) );
                         break;
 
                     case FdoDataType_Int64:
@@ -673,6 +673,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                             FdoIGeometry        *geom = NULL;
                             if ( ba )
                             {
+                                mConnection->GetSchemaUtil()->SetActiveSpatialContext( classDefinition, name );
                                 geom = mFdoConnection->TransformGeometry( 
                                     FdoPtr<FdoIGeometry>(gf->CreateGeometryFromFgf(ba)), 
                                     geomPropDef, 

@@ -42,7 +42,9 @@ SQLCommand::~SQLCommand()
 
 FdoString* SQLCommand::GetSQLStatement()
 {
-    return mSql;
+    FDOLOG_MARKER("SQLCommand::+GetSQLStatement");
+
+    return NULL;
 }
 
 void SQLCommand::SetSQLStatement(FdoString* sql)

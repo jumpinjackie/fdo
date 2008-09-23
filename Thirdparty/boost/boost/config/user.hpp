@@ -68,9 +68,7 @@
 // BOOST_DISABLE_ABI_HEADERS: Stops boost headers from including any 
 // prefix/suffix headers that normally control things like struct 
 // packing and alignment. 
-#ifdef _WIN64
-#define BOOST_DISABLE_ABI_HEADERS
-#endif
+// #define BOOST_DISABLE_ABI_HEADERS
 
 // BOOST_ABI_PREFIX: A prefix header to include in place of whatever
 // boost.config would normally select, any replacement should set up 

@@ -557,7 +557,7 @@
 </xs:element>
 <xs:element name="SINGLE_COLUMN" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="xs:float"/>
+<xs:restriction base="xs:double"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>

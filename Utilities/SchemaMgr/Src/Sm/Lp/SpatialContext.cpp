@@ -601,7 +601,7 @@ void FdoSmLpSpatialContext::AddNoMetaNameChangeError( FdoSmPhOwnerP owner)
 	GetErrors()->Add( FdoSmErrorType_Other, 
         FdoSchemaException::Create(
             FdoSmError::NLSGetMessage(
-				FDO_NLSID(FDOSM_39),
+				SM_NLSID(0x000008C4L, "Cannot create spatial context '%1$ls' in datastore '%2$ls'; datastore has no FDO metadata tables so spatial context name must be a valid column name"),
 				(FdoString*) GetName(),
                 owner ? owner->GetName() : L""
 			)
@@ -614,7 +614,7 @@ void FdoSmLpSpatialContext::AddNoMetaNameLengthError( FdoSmPhOwnerP owner, FdoSi
 	GetErrors()->Add( FdoSmErrorType_Other, 
         FdoSchemaException::Create(
             FdoSmError::NLSGetMessage(
-				FDO_NLSID(FDOSM_40),
+				SM_NLSID(0x000008C5L, "Cannot create spatial context '%1$ls' in datastore '%2$ls'; datastore has no FDO metadata tables amd spatial context name exceeds %3$d characters"),
 				(FdoString*) GetName(),
                 owner ? owner->GetName() : L"",
                 maxLen
@@ -628,7 +628,7 @@ void FdoSmLpSpatialContext::AddNoCsysError()
 	GetErrors()->Add( FdoSmErrorType_Other, 
         FdoSchemaException::Create(
             FdoSmError::NLSGetMessage(
-				FDO_NLSID(FDOSM_41),
+				SM_NLSID(0x000008C6L, "Error creating spatial context %1$ls, coordinate system %2$ls is not in current datastore."),
                 GetName(), 
                 (FdoString*) mCoordSysName
 			)
@@ -641,7 +641,7 @@ void FdoSmLpSpatialContext::AddNoWktError()
 	GetErrors()->Add( FdoSmErrorType_Other, 
         FdoSchemaException::Create(
             FdoSmError::NLSGetMessage(
-				FDO_NLSID(FDOSM_42),
+				SM_NLSID(0x000008C7L, "Error creating spatial context %1$ls, coordinate system catalog does not contain entry for WKT '%2$ls'"),
                 GetName(), 
                 (FdoString*) mCoordSysWkt
 			)
@@ -654,7 +654,7 @@ void FdoSmLpSpatialContext::AddMismatchedWktError()
 	GetErrors()->Add( FdoSmErrorType_Other, 
         FdoSchemaException::Create(
             FdoSmError::NLSGetMessage(
-				FDO_NLSID(FDOSM_43),
+				SM_NLSID(0x000008C8L, "Error creating spatial context %1$ls (SRID=%2$ld), the WKT provided does not match the catalog."),
                 GetName(), 
                 GetSrid()
 			)

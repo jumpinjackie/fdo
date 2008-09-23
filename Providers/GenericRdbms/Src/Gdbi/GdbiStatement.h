@@ -85,9 +85,6 @@ public:
 	int geom_srid_set(
 			int				parmIndex,
 			long			srid );
-
-    char * GetGeomInfoFromFgf( long srid, FdoByteArray * fgf );
-
 };
 
 #endif //_GDBISTATEMENT_

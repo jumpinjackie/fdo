@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="8.00"
 	Name="ParsedSourceWrappers"
 	ProjectGUID="{4A355B39-5CE3-4CF5-8CB8-67F736F25988}"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -80,8 +79,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\..\..\Build\Win32\VC6\Debug/ParsedSourceWrappers.pdb"
 				SubSystem="1"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -100,6 +97,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -169,8 +169,6 @@
 				AdditionalLibraryDirectories="..\..\..\..\xml-xerces\c\Build\Win32\VC6\Release"
 				ProgramDatabaseFile=".\..\..\Build\Win32\VC6\Release/ParsedSourceWrappers.pdb"
 				SubSystem="1"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -189,6 +187,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"

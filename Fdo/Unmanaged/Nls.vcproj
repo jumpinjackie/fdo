@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="8.00"
 	Name="NLS"
 	ProjectGUID="{D01E5461-1FAC-4F5F-870A-0CF5B5528E14}"
 	RootNamespace="Nls"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform

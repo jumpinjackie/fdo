@@ -519,10 +519,6 @@ public:
 
     virtual bool SupportsAnsiQuotes();
 
-    // Default implementation returns false (one autoincrement column per table).
-    // Providers that support multiple autoincrement columns per table must override.
-    virtual bool SupportsMultipleAutoIncrementColumns() const;
-
     virtual bool IsRdbUnicode() = 0;
 
     // Returns true if database element names must be ASCII7 plus 

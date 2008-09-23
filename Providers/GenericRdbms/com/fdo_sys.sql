@@ -70,23 +70,23 @@ create table /* system */  f_schemainfo(
 /* SchemaType is set initially to NON_FDO type. It will be updated after the schema is created. */
 #ifdef Oracle
 insert into f_schemainfo (schemaname, description, creationdate, owner, schemaversionid )
-values (sys_context('userenv', 'current_schema'), 'System Metaschema', SYSDATE, user, 4.000);
+values (sys_context('userenv', 'current_schema'), 'System Metaschema', SYSDATE, user, 3.000);
 /* F_MetaClass is a special schema with a class for each FDO Feature schema class type */
 insert into f_schemainfo  (schemaname, description, creationdate, owner, schemaversionid )
-values ('F_MetaClass', 'Special classes for FDO Feature metaclasses', SYSDATE, user, 4.000);
+values ('F_MetaClass', 'Special classes for FDO Feature metaclasses', SYSDATE, user, 2.000);
 #else
 #ifdef SQLServer
 insert into f_schemainfo (schemaname, description, creationdate, owner, schemaversionid )
-values (DB_NAME(), 'System Metaschema', GETDATE(), SYSTEM_USER, 4.000);
+values (DB_NAME(), 'System Metaschema', GETDATE(), SYSTEM_USER, 3.000);
 /* F_MetaClass is a special schema with a class for each FDO Feature schema class type */
 insert into f_schemainfo  (schemaname, description, creationdate, owner, schemaversionid )
-values ('F_MetaClass', 'Special classes for FDO Feature metaclasses', GETDATE(), SYSTEM_USER, 4.000);
+values ('F_MetaClass', 'Special classes for FDO Feature metaclasses', GETDATE(), SYSTEM_USER, 2.000);
 #else
 insert into f_schemainfo (schemaname, description, creationdate, owner, schemaversionid )
-values (database(), 'System Metaschema', current_date(), substring_index(current_user(), _utf8'@', 1), 4.000);
+values (database(), 'System Metaschema', current_date(), substring_index(current_user(), _utf8'@', 1), 3.000);
 /* F_MetaClass is a special schema with a class for each FDO Feature schema class type */
 insert into f_schemainfo  (schemaname, description, creationdate, owner, schemaversionid )
-values ('F_MetaClass', 'Special classes for FDO Feature metaclasses', current_date(), substring_index(current_user(), _utf8'@', 1), 4.000);
+values ('F_MetaClass', 'Special classes for FDO Feature metaclasses', current_date(), substring_index(current_user(), _utf8'@', 1), 3.000);
 #endif
 #endif
 

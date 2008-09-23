@@ -134,7 +134,7 @@ void FdoSmPhSqsSchema::AddDeleteSystemSchemaError()
 	GetErrors()->Add( FdoSmErrorType_Other, 
         FdoSchemaException::Create(
             NlsMsgGet1(
-                FDORDBMS_16,
+                0x000008ADL,
                 "Cannot delete system schema '%1$ls' from datastore.",
                 GetName()
             )

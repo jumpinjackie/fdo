@@ -264,8 +264,6 @@ void XmlTest::testXsl()
             FdoXmlWriterP( FdoXmlWriter::Create(outStream, false) )
         );
 
-// Temporary disable the next two tests on Windows
-#ifndef _WIN32
         bFailed = false;
         try {
            tfmr->Transform();   
@@ -296,7 +294,6 @@ void XmlTest::testXsl()
             FdoXmlWriterP( FdoXmlWriter::Create(outStream, false) )
         );
         tfmr->Transform();
-#endif
     }
     catch ( FdoException* e ) {
 		UnitTestUtil::FailOnException( e );

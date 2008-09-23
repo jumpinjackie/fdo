@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="8.00"
 	Name="Provider"
 	ProjectGUID="{C8A43164-7819-4EDE-805F-7C02097B3B99}"
 	RootNamespace="SDFProvider"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -56,6 +55,7 @@
 				UsePrecompiledHeader="1"
 				ProgramDataBaseFileName="$(IntDir)/SDFProvider.pdb"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -79,8 +79,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/SDFProvider.pdb"
 				SubSystem="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="..\..\Lib\Win32\Debug\SDFProvider.lib"
 				TargetMachine="1"
 			/>
@@ -101,6 +99,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -135,7 +136,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;..\Utils\;&quot;$(FDO)\Unmanaged\src\NLS&quot;;..\..\Inc;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOUTILITIES)\SQLiteInterface&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
+				AdditionalIncludeDirectories="$(FDO)\Unmanaged\inc;..\Utils\;$(FDO)\Unmanaged\src\NLS;..\..\Inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\SQLiteInterface"
 				PreprocessorDefinitions="WIN32;_WIN64;_DEBUG;_WINDOWS;_USRDLL;SDF_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="0"
@@ -146,6 +147,7 @@
 				UsePrecompiledHeader="1"
 				ProgramDataBaseFileName="$(IntDir)/SDFProvider.pdb"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -169,8 +171,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/SDFProvider.pdb"
 				SubSystem="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="..\..\Lib\Win32\Debug\SDFProvider.lib"
 				TargetMachine="17"
 			/>
@@ -191,6 +191,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -240,6 +243,7 @@
 				UsePrecompiledHeader="1"
 				ProgramDataBaseFileName="$(IntDir)/SDFProvider.pdb"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -264,8 +268,6 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="..\..\Lib\Win32\Release\SDFProvider.lib"
 				TargetMachine="1"
 			/>
@@ -286,6 +288,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -324,7 +329,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;..\Utils\;&quot;$(FDO)\Unmanaged\src\NLS&quot;;..\..\Inc;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOUTILITIES)\SQLiteInterface&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
+				AdditionalIncludeDirectories="$(FDO)\Unmanaged\inc;..\Utils\;$(FDO)\Unmanaged\src\NLS;..\..\Inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\SQLiteInterface"
 				PreprocessorDefinitions="WIN32;_WIN64;NDEBUG;_WINDOWS;_USRDLL;SDF_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -335,6 +340,7 @@
 				UsePrecompiledHeader="1"
 				ProgramDataBaseFileName="$(IntDir)/SDFProvider.pdb"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -359,8 +365,6 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="..\..\Lib\Win32\Release\SDFProvider.lib"
 				TargetMachine="17"
 			/>
@@ -381,6 +385,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"

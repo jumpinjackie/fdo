@@ -17,7 +17,6 @@
 #include "stdafx.h"
 
 #include "InsertCommand.h"
-#include "InsertFeatureReader.h"
 #include "Connection.h"
 #include "ExpressionProcessor.h"
 #include "PgUtility.h"
@@ -112,22 +111,16 @@ FdoIFeatureReader* InsertCommand::Execute()
     //
     // Collect schema details required to build SQL command
     //
-    
-    // NOTE - Eric Barby: faster with mConn->DescribeSchema() , uses cache
-    // XXX - mloskot: Why not wrapped with FdoPtr, SchemaDescription::Ptr?
-    SchemaDescription*  schemaDesc = mConn->DescribeSchema();
-    if (!schemaDesc || !schemaDesc->IsDescribed()) 
-    {
-        throw FdoCommandException::Create(L"[PostGIS] InsertCommand can not find schema definition");
-    }
+    SchemaDescription::Ptr schemaDesc(SchemaDescription::Create());
+    schemaDesc->DescribeSchema(mConn, NULL);
 
     FdoPtr<FdoClassDefinition> classDef(schemaDesc->FindClassDefinition(mClassIdentifier));
-    ov::ClassDefinition::Ptr phClass(schemaDesc->FindClassMapping(mClassIdentifier));
-    if (!classDef || !phClass) 
+    if (!classDef) 
     {
-        throw FdoCommandException::Create(L"[PostGIS] InsertCommand can not find class definition or class mapping!");
+        throw FdoCommandException::Create(L"[PostGIS] InsertCommand can not find class definition");
     }
 
+    ov::ClassDefinition::Ptr phClass(schemaDesc->FindClassMapping(mClassIdentifier));
 
     std::string sep;
     std::string columns;
@@ -140,9 +133,7 @@ FdoIFeatureReader* InsertCommand::Execute()
     // Check auto-generated PRIMARY KEY and configure sequence
     //
     FdoStringP pkColumn;
-    FdoPtr<FdoPropertyDefinitionCollection>     propsDefinition(classDef->GetProperties());
     FdoPtr<FdoDataPropertyDefinitionCollection> propsIdentity(classDef->GetIdentityProperties());
-    FdoInt32 currentSrid = GetSRID(propsDefinition);
     if (1 == propsIdentity->GetCount())
     {
         FdoPtr<FdoDataPropertyDefinition> prop(propsIdentity->GetItem(0));
@@ -166,70 +157,19 @@ FdoIFeatureReader* InsertCommand::Execute()
     for (FdoInt32 i = 0; i < propsSize; i++)
     {
         FdoPtr<FdoPropertyValue> propVal(mProperties->GetItem(i));
-        FdoStringP   pName(propVal->GetName()->GetName());
-        FdoPtr<FdoPropertyDefinition> propDef(GetPropDefinition(propsDefinition, pName));
-        if (propDef)
-        {
-            pName = propDef->GetName();
-        }
-        else
-        {
-            FDOLOG_WRITE(L"can not find porpertyDefinition '%s'",
-                static_cast<FdoString*>(propVal->GetName()->GetName()));        
-        }
+        FdoPtr<FdoIdentifier> propId(propVal->GetName());
 
-        columns += sep + static_cast<char const*>(pName);
+        columns += sep + static_cast<char const*>(FdoStringP(propId->GetName()));
 
-        if (0 == pkColumn.ICompare(pName))
+        if (0 == pkColumn.ICompare(propId->GetName()))
         {
             values += sep + "nextval(\'" + sequence + "\')";
         }
         else
         {
-            FdoValueExpression *expr=propVal->GetValue();
+            FdoPtr<FdoValueExpression> expr(propVal->GetValue());
             expr->Process(expProc);
-            std::string value;
-            if (propDef)
-            {
-                if (FdoPropertyType_DataProperty == propDef->GetPropertyType())
-                {
-                    FdoDataPropertyDefinition* dataDef = static_cast<FdoDataPropertyDefinition*>(propDef.p);
-
-
-                    // NOTE - Eric Barby: Need to parse date properly
-                    // XXX - mloskot: Is the code below the solution?
-                    if (FdoDataType_DateTime == dataDef->GetDataType())
-                    {
-                        FdoDateTimeValue *dateValuePtr=dynamic_cast<FdoDateTimeValue*>(propVal->GetValue());
-                        if (!dateValuePtr->IsNull())
-                        {
-                            FDOLOG_WRITE(L"convert Date:", dateValuePtr->ToString());
-                            value = static_cast<char const*>(FdoStringP(dateValuePtr->ToString()));
-                        }
-                        expProc->ReleaseBuffer();
-                    }
-                    else
-                    {
-                        value = expProc->ReleaseBuffer();
-                    }
-                } 
-                else
-                {
-                    if (FdoPropertyType_GeometricProperty == propDef->GetPropertyType())
-                    {
-                        if (currentSrid != -1) 
-                        {
-                            value = str(boost::format("setsrid(Geometry(%s),%d)")
-                                % expProc->ReleaseBuffer() % currentSrid);
-                        }
-                        else
-                        {
-                            value = expProc->ReleaseBuffer();
-                        }
-                    }
-                }
-            }
-            values += sep + value;            
+            values += sep + expProc->ReleaseBuffer();
         }
         sep = ",";
     }
@@ -244,8 +184,8 @@ FdoIFeatureReader* InsertCommand::Execute()
     FdoSize affected = 0;
     mConn->PgExecuteCommand(sql.c_str(), affected);
 
-    InsertFeatureReader* reader = new InsertFeatureReader(mProperties, classDef);
-    return reader;
+    // TODO: What are we supposed to send out from here?
+    return NULL;
 }
 
 }} // namespace fdo::postgis

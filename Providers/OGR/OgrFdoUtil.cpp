@@ -305,10 +305,13 @@ void OgrFdoUtil::ConvertFeature(FdoPropertyValueCollection* src, OGRFeature* dst
 //This function assumes MapGuide style queries -- either 
 //an attribute filter or a simple spatial filter or a binary
 //combination of the two
-void OgrFdoUtil::ApplyFilter(OGRLayer* layer, FdoFilter* filter)
+void OgrFdoUtil::ApplyFilter(OGRLayer* layer, FdoFilter* filter, bool* isbbox)
 {
     FdoFilter* spatial = NULL;
     FdoFilter* attr = NULL;
+
+    if (isbbox != NULL)
+        (*isbbox) = false;
 
     //zero out the filters
     layer->SetAttributeFilter(NULL);
@@ -369,6 +372,7 @@ void OgrFdoUtil::ApplyFilter(OGRLayer* layer, FdoFilter* filter)
                     envelope->GetMinY(),
                     envelope->GetMaxX(),
                     envelope->GetMaxY());
+                (*isbbox) = true;
             }
         }
         else if (sc->GetOperation() == FdoSpatialOperations_Intersects)

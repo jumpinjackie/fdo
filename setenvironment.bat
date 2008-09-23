@@ -29,13 +29,9 @@ if "%1" == "x86_ia64"  goto setvcvarsall
 goto usage
 
 :setvcvarsall
-SET ACTIVENAMECHECK="Microsoft Visual Studio 9"
-SET ACTIVEPATHCHECK="C:\Program Files\Microsoft Visual Studio 9.0\VC"
-if exist %ACTIVEPATHCHECK% goto VSExist
-SET ACTIVEPATHCHECK="D:\Program Files\Microsoft Visual Studio 9.0\VC"
-if not exist %ACTIVEPATHCHECK% goto error 
-
-:VSExist
+SET ACTIVENAMECHECK="Microsoft Visual Studio 8"
+SET ACTIVEPATHCHECK="C:\Program Files\Microsoft Visual Studio 8\VC"
+if not exist %ACTIVEPATHCHECK% goto error
 call %ACTIVEPATHCHECK%\vcvarsall.bat %1
 
 :setfdovars

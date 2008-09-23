@@ -54,7 +54,7 @@ void MySqlFdoForeignSchemaTest::create_foreign_datastore()
     connection->Open ();
 
 	sqlStmt = FdoStringP::Format(
-		L"create table device_tbl (id decimal(20), string varchar(64), install_date datetime, int32 integer(5), single float, constraint device_tbl_pk primary key (id, string, install_date))");
+		L"create table device_tbl (id decimal(20), string varchar(64), install_date datetime, int32 integer(5), constraint device_tbl_pk primary key (id, string, install_date))");
 	UnitTestUtil::Sql2Db(sqlStmt, connection);
 
 	sqlStmt = FdoStringP::Format(
@@ -88,10 +88,6 @@ void MySqlFdoForeignSchemaTest::insert()
 
 		dataValue = FdoDataValue::Create(L"CANADA");
         propertyValue = AddNewProperty( propertyValues,L"string"); 
-        propertyValue->SetValue(dataValue);
-		
-		dataValue = FdoDataValue::Create((FdoFloat) 3.1415901);
-        propertyValue = AddNewProperty( propertyValues,L"single"); 
         propertyValue->SetValue(dataValue);
 		
 		FdoDateTime       currentDateTime;
@@ -129,20 +125,6 @@ void MySqlFdoForeignSchemaTest::insert()
 		}
 		myReader->Close();
 		}
-
-        {
-        FdoPtr<FdoISelect> selectCommand = (FdoISelect *) connection->CreateCommand(FdoCommandType_Select);
-        selectCommand->SetFeatureClassName(L"device_tbl");
-
-        FdoPtr<FdoIFeatureReader> myReader = selectCommand->Execute();
-		// verify that bigstring has the right values
-		while (myReader->ReadNext())
-		{
-			CPPUNIT_ASSERT( myReader->GetSingle(L"single") == (FdoFloat) 3.1415901);
-		}
-		myReader->Close();
-        }
-
 		connection->Close();
 	}
 	catch (FdoCommandException *ex)

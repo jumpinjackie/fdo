@@ -20,7 +20,6 @@ rem
 SET TYPEACTIONSHP=build
 SET MSACTIONSHP=Build
 SET TYPEBUILDSHP=release
-SET TYPEPLATFORMSHP=Win32
 SET FDOORGPATHSHP=%cd%
 SET FDOINSPATHSHP=%cd%\Fdo
 SET FDOBINPATHSHP=%cd%\Fdo\Bin
@@ -41,9 +40,6 @@ if "%1"=="-outpath" goto get_path
 
 if "%1"=="-c"       goto get_conf
 if "%1"=="-config"  goto get_conf
-
-if "%1"=="-p"       	goto get_platform
-if "%1"=="-platform"    goto get_platform
 
 if "%1"=="-a"       goto get_action
 if "%1"=="-action"  goto get_action
@@ -72,12 +68,6 @@ if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
 if "%2"=="clean" goto next_param
 goto custom_error 
-
-:get_platform
-SET TYPEPLATFORMSHP=%2
-if "%2"=="Win32" goto next_param
-if "%2"=="x64" goto next_param
-goto custom_error
 
 :get_path
 if (%2)==() goto custom_error
@@ -120,7 +110,7 @@ echo %MSACTIONSHP% %TYPEBUILDSHP% SHP provider dlls
 SET FDOACTIVEBUILD=%cd%\Src\SHP
 cscript //Nologo //job:prepare preparebuilds.wsf
 pushd Src
-msbuild SHP_temp.sln /t:%MSACTIONSHP% /p:Configuration=%TYPEBUILDSHP% /p:Platform=%TYPEPLATFORMSHP% /nologo /consoleloggerparameters:NoSummary
+msbuild SHP_temp.sln /t:%MSACTIONSHP% /p:Configuration=%TYPEBUILDSHP% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if exist SHP_temp.sln del /Q /F SHP_temp.sln
 popd
@@ -195,12 +185,11 @@ echo The command is not recognized.
 echo Please use the format:
 :help_show
 echo **************************************************************************
-echo build.bat [-h] [-o=OutFolder] [-c=BuildType] [-a=Action] [-p=PlatformType] [-d=BuildDocs]
+echo build.bat [-h] [-o=OutFolder] [-c=BuildType] [-a=Action] [-d=BuildDocs]
 echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
-echo PlatformType:   -p[latform]=Win32(default), x64
 echo Action:         -a[ction]=build(default), buildinstall, install, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************

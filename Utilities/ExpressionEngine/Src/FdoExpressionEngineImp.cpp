@@ -72,8 +72,6 @@ FdoExpressionEngineImp::FdoExpressionEngineImp(FdoIReader* reader, FdoClassDefin
 	m_ExpressionCacheSize = 10;
 	m_ExpressionCacheCurrent = 0;
 	m_ExpressionCache = new ExpressionCache[m_ExpressionCacheSize];
-
-    m_processingAggregate = false;
 }
 
 FdoExpressionEngineImp::FdoExpressionEngineImp()
@@ -1441,110 +1439,94 @@ void FdoExpressionEngineImp::ProcessFunction (FdoFunction& expr)
 		}
 		else
 		{
-            bool aggrFuncFound = false;
-
-            if ( mAggrIdents ) 
+            for (int i=0; i<mAggrIdents->GetCount(); i++)
             {
-                for (int i=0; i<mAggrIdents->GetCount(); i++)
+                FdoFunction* aggrFunc = (*mAggrIdents)[i]; 
+                if (aggrFunc == &expr)
                 {
-                    FdoFunction* aggrFunc = (*mAggrIdents)[i]; 
-                    if (aggrFunc == &expr)
+			        FdoExpressionEngineIAggregateFunction *func = m_AggregateFunctions.at(i);
+   			        FdoPtr<FdoLiteralValue> value;
+                    
+                    if (m_dataRead)
+                         value = func->GetResult();
+                    else
                     {
-                        aggrFuncFound = true;
 
-			            FdoExpressionEngineIAggregateFunction *func = m_AggregateFunctions.at(i);
-   			            FdoPtr<FdoLiteralValue> value;
+                        FdoPropertyType propType;
+                        FdoDataType dataType;
                         
-                        if (m_dataRead)
-                             value = func->GetResult();
-                        else
+                        PopulateFunctions();
+					    FdoCommonMiscUtil::GetExpressionType(m_AllFunctions, m_classDefinition,  aggrFunc, propType, dataType);
+
+                        switch (propType)
                         {
+                            case FdoPropertyType_DataProperty:
+                                switch (dataType)
+                                {
+                                    case FdoDataType_Boolean:
+                                        value = FdoBooleanValue::Create(); 
+                                        break;
 
-                            FdoPropertyType propType;
-                            FdoDataType dataType;
-                            
-                            PopulateFunctions();
-					        FdoCommonMiscUtil::GetExpressionType(m_AllFunctions, m_classDefinition,  aggrFunc, propType, dataType);
+                                    case FdoDataType_Byte:
+                                        value = FdoByteValue::Create(); 
+                                        break;
 
-                            switch (propType)
-                            {
-                                case FdoPropertyType_DataProperty:
-                                    switch (dataType)
-                                    {
-                                        case FdoDataType_Boolean:
-                                            value = FdoBooleanValue::Create(); 
-                                            break;
+                                    case FdoDataType_DateTime:
+                                        value = FdoDateTimeValue::Create();
+                                        break;
 
-                                        case FdoDataType_Byte:
-                                            value = FdoByteValue::Create(); 
-                                            break;
+                                    case FdoDataType_Decimal:
+                                        value = FdoDecimalValue::Create();
+                                        break;
 
-                                        case FdoDataType_DateTime:
-                                            value = FdoDateTimeValue::Create();
-                                            break;
+                                    case FdoDataType_Double:
+                                        value = FdoDoubleValue::Create();
+                                        break;
 
-                                        case FdoDataType_Decimal:
-                                            value = FdoDecimalValue::Create();
-                                            break;
+                                    case FdoDataType_Int16:
+                                        value = FdoInt16Value::Create();
+                                        break;
 
-                                        case FdoDataType_Double:
-                                            value = FdoDoubleValue::Create();
-                                            break;
+                                    case FdoDataType_Int32:
+                                        value = FdoInt32Value::Create();
+                                        break;
 
-                                        case FdoDataType_Int16:
-                                            value = FdoInt16Value::Create();
-                                            break;
+                                    case FdoDataType_Int64:
+                                        value = FdoInt64Value::Create();
+                                        break;
 
-                                        case FdoDataType_Int32:
-                                            value = FdoInt32Value::Create();
-                                            break;
+                                    case FdoDataType_Single:
+                                        value = FdoSingleValue::Create();
+                                        break;
 
-                                        case FdoDataType_Int64:
-                                            value = FdoInt64Value::Create();
-                                            break;
+                                    case FdoDataType_String:
+                                        value = FdoStringValue::Create();
+                                        break;
 
-                                        case FdoDataType_Single:
-                                            value = FdoSingleValue::Create();
-                                            break;
+                                    case FdoDataType_BLOB:
+                                        value = FdoBLOBValue::Create();
+                                        break;
 
-                                        case FdoDataType_String:
-                                            value = FdoStringValue::Create();
-                                            break;
+                                    case FdoDataType_CLOB:
+                                        value = FdoCLOBValue::Create();
+                                        break;
 
-                                        case FdoDataType_BLOB:
-                                            value = FdoBLOBValue::Create();
-                                            break;
-
-                                        case FdoDataType_CLOB:
-                                            value = FdoCLOBValue::Create();
-                                            break;
-
-                                        default:
-                                            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_57_UNEXPECTEDERROR)));
-                                    }
-                                    break;
-
-                                case FdoPropertyType_GeometricProperty:
-                                    value = FdoGeometryValue::Create();
+                                    default:
+                                        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_57_UNEXPECTEDERROR)));
+                                }
                                 break;
 
-                            default:
-                                throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_57_UNEXPECTEDERROR)));
-                            }
-                        }
-                        PushLiteralValue(value);
-                        break;
-                    }
-                }
-            }
+                            case FdoPropertyType_GeometricProperty:
+                                value = FdoGeometryValue::Create();
+                            break;
 
-            if ( !aggrFuncFound ) 
-            {
-                // This aggregate function was not processed, which is an error condition.
-                // This can happen if ProcessAggregateFunctions() was never called, or 
-                // more specifically, an expression with aggregate function was passed
-                // to an FdoISelect.
-                throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_184_UNINITIALIZED_AGGREGATE)));
+                        default:
+                            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_57_UNEXPECTEDERROR)));
+                        }
+                    }
+                    PushLiteralValue(value);
+                    break;
+                }
             }
 		}
 	}

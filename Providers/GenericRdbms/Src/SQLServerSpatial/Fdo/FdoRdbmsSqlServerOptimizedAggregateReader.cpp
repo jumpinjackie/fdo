@@ -54,14 +54,14 @@ FdoRdbmsFeatureReader( connection, NULL, false, classDef, NULL)
 	}
 
 
-    // Get the extents and count
+	// Get the extents and count
 
-    if ( mbrRequired ) 
-    {
-        // Future optimization.
-	    //mConnection->dbi_get_geoms_ext( (char *)tableName, (char *)columnName, isGeodetic,
-	    //							mbrRequired? &(ba.p) : NULL, 
-	    //							countRequired? &count : NULL );
+	if (mbrRequired)
+	{
+    // Future optimization.
+	//mConnection->dbi_get_geoms_ext( (char *)tableName, (char *)columnName, isGeodetic,
+	//							mbrRequired? &(ba.p) : NULL, 
+	//							countRequired? &count : NULL );
 
         // Apparently strait select is 3x faster.
         //    FdoStringP sql = FdoStringP::Format(L"select [%ls].STEnvelope().STAsBinary() as MBR from %ls", colNameW, tableNameW);
@@ -100,12 +100,12 @@ FdoRdbmsFeatureReader( connection, NULL, false, classDef, NULL)
                 }
                 else
                 {
-                    minX = FdoCommonMin(envelope->GetMinX(), minX);
-                    minY = FdoCommonMin(envelope->GetMinY(), minY);
-                    maxX = FdoCommonMax(envelope->GetMaxX(), maxX);
-                    maxY = FdoCommonMax(envelope->GetMaxY(), maxY);          
-                }
-            }
+						minX = FdoCommonMin(envelope->GetMinX(), minX);
+						minY = FdoCommonMin(envelope->GetMinY(), minY);
+						maxX = FdoCommonMax(envelope->GetMaxX(), maxX);
+						maxY = FdoCommonMax(envelope->GetMaxY(), maxY);          
+					}
+				}
 
             count++;
         }

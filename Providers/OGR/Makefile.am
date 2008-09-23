@@ -48,11 +48,9 @@ libOGRProvider_la_LDFLAGS = \
 
 INCLUDES = \
   -I../../Fdo/Unmanaged/Inc \
-  -I$(FDOGDAL)/include \
   -I$(FDOGDAL)/ogr \
   -I$(FDOGDAL)/ogr/ogrsf_frmts \
   -I$(FDOGDAL)/port \
-  -I../../Thirdparty/gdal/include \
   -I../../Thirdparty/gdal/ogr \
   -I../../Thirdparty/gdal/ogr/ogrsf_frmts \
   -I../../Thirdparty/gdal/port

@@ -356,8 +356,6 @@ void SelectTest::select_aggregates_should_fail()
         try
         {
             FdoPtr<FdoIFeatureReader> reader = select->Execute ();
-            CPPUNIT_ASSERT(reader->ReadNext());
-            double avg = reader->GetDouble(L"AVG_ID");
             CPPUNIT_FAIL("Expected an exception due to using aggregate functions in select command, but didn't get one");
         }
         catch(FdoException *e)

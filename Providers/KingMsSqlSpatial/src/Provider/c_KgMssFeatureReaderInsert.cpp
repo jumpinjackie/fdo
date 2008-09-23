@@ -92,20 +92,19 @@ FdoDateTime c_KgMssFeatureReaderInsert::GetDateTime( const wchar_t *PropName )
   {
       propvalue =  m_FeatureValues->GetItem( PropName );
       if( propvalue == NULL )
-          throw FdoCommandException::Create( L"c_KgMssFeatureReaderInsert::GetDateTime Property not found!" );
+          throw FdoCommandException::Create( L"c_KgMssFeatureReaderInsert::GetDouble Property not found!" );
   }
   catch ( FdoException * e)
   {
     FDO_SAFE_RELEASE(e);
-    throw FdoCommandException::Create( L"c_KgMssFeatureReaderInsert::GetDateTime Property not found!" );
+    throw FdoCommandException::Create( L"c_KgMssFeatureReaderInsert::GetDouble Property not found!" );
   }
   FdoPtr<FdoValueExpression> val = propvalue->GetValue();
   
   FdoDataValue* dataval = (dynamic_cast<FdoDataValue*>(val.p));
   
-  // FIXME - mloskot: The following condition may lead to NULL pointer dereferencing
   if( !dataval && dataval->GetDataType() != FdoDataType_DateTime)
-    throw FdoCommandException::Create( L"c_KgMssFeatureReaderInsert::GetDateTime DataType not FdoDataType_DateTime!" );
+    throw FdoCommandException::Create( L"c_KgMssFeatureReaderInsert::GetDouble DataType not FdoDataType_Int64!" );
 
   FdoDateTimeValue *dval = (static_cast<FdoDateTimeValue*>(dataval));
   

@@ -212,8 +212,9 @@ FdoDataType FdoExpressionEngineUtilDataReader::GetDataType(FdoString* propertyNa
 
 FdoPropertyType FdoExpressionEngineUtilDataReader::GetPropertyType(FdoString* propertyName)
 {
-    FdoCommonPropertyStub* ps = m_propIndex->GetPropInfo(propertyName);
-    return ps->m_propertyType;         
+    (void)propertyName;  // to avoid compile-time warning of unreferenced parameter
+
+    return (FdoPropertyType)0;         
 }
 
 FdoCommonBinaryReader* FdoExpressionEngineUtilDataReader::perform_checks (

@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="8.00"
 	Name="Message"
 	ProjectGUID="{EFE86138-FF68-4ACD-8BAC-0D2A97AF0B95}"
 	RootNamespace="ShpMessage"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
 			Name="Win32"
-		/>
-		<Platform
-			Name="x64"
 		/>
 	</Platforms>
 	<ToolFiles>
@@ -66,8 +62,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/SHPMessage.pdb"
 				ResourceOnlyDLL="true"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -89,87 +83,12 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Versioning SHPMessage.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SHPMessage.dll"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug|x64"
-			OutputDirectory="..\..\Bin\Win64\Debug"
-			IntermediateDirectory=".\Debug64"
-			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
-				MinimalRebuild="true"
-				RuntimeLibrary="3"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				IgnoreImportLibrary="true"
-				AdditionalOptions="/fixed:no"
-				OutputFile="$(OutDir)\SHPMessage.dll"
-				LinkIncremental="1"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/SHPMessage.pdb"
-				ResourceOnlyDLL="true"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				TargetMachine="17"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning SHPMessage.dll"
 				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SHPMessage.dll"
-				ExcludedFromBuild="true"
 			/>
 		</Configuration>
 		<Configuration
@@ -217,8 +136,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/SHPMessage.pdb"
 				ResourceOnlyDLL="true"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -240,84 +157,12 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Versioning SHPMessage.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SHPMessage.dll"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|x64"
-			OutputDirectory="..\..\Bin\Win64\Release"
-			IntermediateDirectory=".\Release64"
-			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
-				MinimalRebuild="true"
-				RuntimeLibrary="2"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				IgnoreImportLibrary="true"
-				OutputFile="$(OutDir)\SHPMessage.dll"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/SHPMessage.pdb"
-				ResourceOnlyDLL="true"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				TargetMachine="17"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning SHPMessage.dll"
 				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SHPMessage.dll"
-				ExcludedFromBuild="true"
 			/>
 		</Configuration>
 	</Configurations>
@@ -343,29 +188,7 @@
 				/>
 			</FileConfiguration>
 			<FileConfiguration
-				Name="Debug|x64"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Performing Custom Build Step:  Creating ShpEMessage.h and ShpMessage.rc from ShpMessage.mc"
-					CommandLine="mc -U -h Inc\ -r .\ ./ShpMessage.mc&#x0D;&#x0A;ren .\ShpMessage.rc ShpMessageDynamic.rc&#x0D;&#x0A;copy .\ShpMessageStatic.rc+.\ShpMessageDynamic.rc .\ShpMessage.rc&#x0D;&#x0A;del .\ShpMessageDynamic.rc&#x0D;&#x0A;ren Inc\ShpMessage.h ShpMessageDynamic.h&#x0D;&#x0A;copy ShpMessageStatic.h+Inc\ShpMessageDynamic.h Inc\ShpMessage.h&#x0D;&#x0A;del Inc\ShpMessageDynamic.h&#x0D;&#x0A;"
-					AdditionalDependencies="ShpMessage.mc;ShpMessageStatic.h"
-					Outputs="Inc\ShpMessage.h;.\ShpMessage.rc"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
 				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Performing Custom Build Step:  Creating ShpEMessage.h and ShpMessage.rc from ShpMessage.mc"
-					CommandLine="mc -U -h Inc\ -r .\ ./ShpMessage.mc&#x0D;&#x0A;ren .\ShpMessage.rc ShpMessageDynamic.rc&#x0D;&#x0A;copy .\ShpMessageStatic.rc+.\ShpMessageDynamic.rc .\ShpMessage.rc&#x0D;&#x0A;del .\ShpMessageDynamic.rc&#x0D;&#x0A;ren Inc\ShpMessage.h ShpMessageDynamic.h&#x0D;&#x0A;copy ShpMessageStatic.h+Inc\ShpMessageDynamic.h Inc\ShpMessage.h&#x0D;&#x0A;del Inc\ShpMessageDynamic.h&#x0D;&#x0A;&#x0D;&#x0A;"
-					AdditionalDependencies="ShpMessage.mc;ShpMessageStatic.h"
-					Outputs="Inc\ShpMessage.h;.\ShpMessage.rc"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|x64"
 				>
 				<Tool
 					Name="VCCustomBuildTool"

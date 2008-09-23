@@ -75,8 +75,6 @@ private:
 	FdoSmPhReaderP mReader;
 };
 
-typedef FdoPtr<FdoSmPhGroupReader> FdoSmPhGroupReaderP;
-
 #endif
 
 

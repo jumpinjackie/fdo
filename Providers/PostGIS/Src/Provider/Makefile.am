@@ -33,7 +33,6 @@ GetSpatialContextsCommand.cpp \
 SelectAggregatesCommand.cpp \
 Connection.cpp \
 InsertCommand.cpp \
-InsertFeatureReader.cpp \
 SelectCommand.cpp \
 ConnectionInfo.cpp \
 ListDataStores.cpp \
@@ -53,7 +52,7 @@ SQLDataReader.cpp \
 DescribeSchemaCommand.cpp \
 PgSpatialRefSysReader.cpp \
 DestroyDataStore.cpp \
-PgTablesReader.cpp \
+PgSpatialTablesReader.cpp \
 TopologyCapabilities.cpp \
 ExpressionCapabilities.cpp \
 PgTableColumnsReader.cpp \
@@ -80,7 +79,6 @@ GetSpatialContextsCommand.h \
 SchemaDescription.h \
 Connection.h \
 InsertCommand.h \
-InsertFeatureReader.h \
 SelectAggregatesCommand.h \
 ConnectionInfo.h \
 ListDataStores.h \
@@ -101,7 +99,7 @@ DescribeSchemaCommand.h \
 PgSpatialRefSysReader.h \
 SQLDataReader.h \
 DestroyDataStore.h \
-PgTablesReader.h \
+PgSpatialTablesReader.h \
 stdafx.h \
 ExpressionCapabilities.h \
 PgTableColumnsReader.h \

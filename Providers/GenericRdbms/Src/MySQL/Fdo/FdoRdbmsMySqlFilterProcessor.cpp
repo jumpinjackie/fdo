@@ -270,7 +270,7 @@ void FdoRdbmsMySqlFilterProcessor::ProcessSpatialCondition (FdoSpatialCondition 
     // as advertised.  Plus, some clients pass in geometry conditions with extra dimensions.
     // For now, we'll take advantage of MySQL's limitations and reduce all geometry types
     // and dimensionalities to a 2D polygon with one ring, and just use the MBRIntersects operator.
-    FdoStringP buf = FdoStringP::Format(L"MBRIntersects(GeomFromText('Polygon((%ls %ls,%ls %ls,%ls %ls,%ls %ls,%ls %ls))'),\"%ls\")",
+    FdoStringP buf = FdoStringP::Format(L"MBRIntersects(GeomFromText('Polygon((%ls %ls,%ls %ls,%ls %ls,%ls %ls,%ls %ls))'),%ls)",
             minxStr, minyStr,
             maxxStr, minyStr,
             maxxStr, maxyStr,

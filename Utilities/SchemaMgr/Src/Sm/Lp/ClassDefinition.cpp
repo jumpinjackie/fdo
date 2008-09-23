@@ -189,19 +189,6 @@ const FdoSmLpPropertyDefinitionCollection* FdoSmLpClassBase::RefNestedProperties
     return (FdoSmLpPropertyDefinitionCollection*) ((FdoSmLpClassBase*) this)->GetNestedProperties();
 }
 
-const FdoSmLpPropertyDefinition* FdoSmLpClassBase::RefSystemProperty( FdoString* propName ) const
-{
-    const FdoSmLpPropertyDefinition* prop = RefProperties()->RefItem( propName );
-
-    if ( prop ) {
-        if ( !prop->GetIsSystem() ) 
-            prop = NULL;
-    }
-
-    return prop;
-}
-
-
 const FdoSmLpUniqueConstraintCollection* FdoSmLpClassBase::RefUniqueConstraints() const
 {
 	((FdoSmLpClassBase*) this)->Finalize();
@@ -1735,20 +1722,11 @@ void FdoSmLpClassBase::FinalizeProps(
                 // Not found, auto-generated an inherited property. 
                 FdoStringP propName = pBaseProp->GetName();
 
-                bool skipFeatId = false;
+                // Create the missing class property or nested property from 
+                // the base property.
 
-                if ( pBaseProp->GetIsFeatId() ) {
-                    if ( wcscmp(pBaseProp->RefLogicalPhysicalSchema()->GetName(), FdoSmPhMgr::mMetaClassSchemaName) == 0 ) 
-                        skipFeatId = true;
-                }
-
-                if ( !skipFeatId ) {
-                    // Create the missing class property or nested property from 
-                    // the base property.
-
-                    FdoSmLpPropertyP pInhProp = pBaseProp->CreateInherited( dynamic_cast<FdoSmLpClassDefinition*>(this) );
-                    pProps->Add( pInhProp );
-                }
+                FdoSmLpPropertyP pInhProp = pBaseProp->CreateInherited( dynamic_cast<FdoSmLpClassDefinition*>(this) );
+                pProps->Add( pInhProp );
             }
         }
 	}
@@ -3179,7 +3157,7 @@ void FdoSmLpClassBase::AddClassNameChangeError( FdoString* tableName )
 	GetErrors()->Add( FdoSmErrorType_Other, 
         FdoSchemaException::Create(
             FdoSmError::NLSGetMessage(
-				FDO_NLSID(FDOSM_37),
+				SM_NLSID(0x000008C2L, "Cannot apply table name override to '%1$ls' for class '%2$ls'; datastore has no FDO metadata tables so override causes class name to change"),
 				tableName,
                 (FdoString*) GetQName()
 			)

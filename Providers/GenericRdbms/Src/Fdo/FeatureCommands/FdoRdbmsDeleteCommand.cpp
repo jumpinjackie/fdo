@@ -340,7 +340,7 @@ FdoInt32 FdoRdbmsDeleteCommand::InternalExecute ()
         // For feature classes, the sqlFilter is embedded in an IN clause that must
         // select the feature id.
         // For non-feature classes, selecting the identity properties is fine.
-        FdoIdentifierCollection* sqlFilterProps = (FdoIdentifierCollection*) NULL;
+        FdoIdentifierCollection* sqlFilterProps = FdoRdbmsFilterUtil::GetFeatIdSelList( classDefinition );
         FdoRdbmsFilterUtilConstrainDef  filterConstrain;
         filterConstrain.selectedProperties = sqlFilterProps;
         const wchar_t *tmpSelect = flterProcessor->FilterToSql( this->GetFilterRef(), className->GetText(), sqlFilterProps ? SqlCommandType_Select : SqlCommandType_Update, FdoCommandType_Delete, &filterConstrain );

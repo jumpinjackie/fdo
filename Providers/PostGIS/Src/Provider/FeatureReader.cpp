@@ -15,10 +15,10 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 //
 // 22.Aug.2007 modified by Haris Kurtagic
-//    1. Added mProps as member and changed constructor to accept input for it
+//    1. Added m_Props as member and changed constructor to accept input for it
 //       It is used to set which properties are requested from Class - if empty reader is returning all properties
 //    2. Changed FeatureReader::GetClassDefinition so it will return subset of properties of a Class (mClassDef).
-//       Properties to return are set in a mProps; if mProps is empty all properties are return ( class is returned as It is)
+//       Properties to return are set in a m_Props; if m_Props is empty all properties are return ( class is returned as It is)
 //
 #include "stdafx.h"
 
@@ -32,13 +32,13 @@
 namespace fdo { namespace postgis {
 
 FeatureReader::FeatureReader(Connection* conn, PgCursor* cursor, FdoClassDefinition* classDef,FdoIdentifierCollection* PropDef)
-    : Base(conn, cursor), mClassDef(classDef), mProps(PropDef)
+    : Base(conn, cursor), mClassDef(classDef), m_Props(PropDef)
 {
     FDOLOG_MARKER("FeatureReader::FeatureReader");
 
     FDO_SAFE_ADDREF(mClassDef.p);
     
-    FDO_SAFE_ADDREF(mProps.p);
+    FDO_SAFE_ADDREF(m_Props.p);
 }
 
 FeatureReader::~FeatureReader()
@@ -60,48 +60,50 @@ void FeatureReader::Dispose()
 
 FdoClassDefinition* FeatureReader::GetClassDefinition()
 {
-    if (mProps && (mProps->GetCount() > 0))
+  
+    if( m_Props && (m_Props->GetCount() > 0 ) )
     {
-        FdoClassDefinition* newclass = 
-            FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(mClassDef);
-        if (NULL != newclass)
+      FdoClassDefinition* newclass = FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(mClassDef);
+      if( newclass )
+      {
+        FdoPtr<FdoPropertyDefinitionCollection> ids = newclass->GetProperties();
+        long count = ids->GetCount();
+        long ind =0;
+        while(ind<count)
         {
-            FdoPtr<FdoPropertyDefinitionCollection> ids(newclass->GetProperties());
-            long count = ids->GetCount();
-            long ind = 0;
-
-            while (ind < count)
+          FdoPtr<FdoPropertyDefinition> classprop = ids->GetItem(ind);
+          bool found=false;
+          for(long ind2 =0;ind2<m_Props->GetCount();ind2++)
+          {
+            FdoPtr<FdoIdentifier> prop2 = m_Props->GetItem(ind2);
+            if( wcscmp(classprop->GetName(),prop2->GetName()) == 0 )
             {
-                FdoPtr<FdoPropertyDefinition> classprop(ids->GetItem(ind));
-                bool found = false;
-
-                for (long ind2 = 0; ind2 < mProps->GetCount(); ++ind2)
-                {
-                    FdoPtr<FdoIdentifier> prop2(mProps->GetItem(ind2));
-                    if (0 == FdoCommonOSUtil::wcsicmp(classprop->GetName(), prop2->GetName()))
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found)
-                {
-                    ids->RemoveAt(ind);
-                    count = ids->GetCount();
-                }
-                else
-                {
-                    ind++;
-                }                          
+              found=true;
+              break;
             }
+          }
+          if( !found )
+          {
+            ids->RemoveAt(ind);
+            count = ids->GetCount();
+          }
+          else
+          {
+            ind++;
+          }                          
         }
-        return newclass;
+      }
+
+      return newclass;
     }
     else
     {
-        return FDO_SAFE_ADDREF(mClassDef.p);
+      return FDO_SAFE_ADDREF(mClassDef.p);
     }
+  
+
+  
+   
 }
 
 FdoInt32 FeatureReader::GetDepth()

@@ -11,5 +11,5 @@
  Data Property OverridesA:OvClassI.DataI must be nullable; class OverridesA:OvClassI uses the BaseTable physical mapping type. 
  Column name 'datab' is already used by another property, cannot assign to property 'OverridesA:OvClassI.GeomI' 
  Column name 'dataa' is already used by another property, cannot assign to property 'OverridesA:OvClassF.DataF' 
- Cannot set property 'OverridesA:OvClassE.DataE' column to RDBMS reserved name 'initial' 
- Cannot set class 'OverridesA:OvClassD' table to RDBMS reserved name 'exclusive' 
+ Cannot override property 'OverridesA:OvClassE.DataE' column to RDBMS reserved name 'initial' 
+ Cannot override class 'OverridesA:OvClassD' table to RDBMS reserved name 'exclusive' 

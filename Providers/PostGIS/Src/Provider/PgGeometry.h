@@ -113,15 +113,6 @@ std::string PgGeometryTypeFromFdoType(FdoInt32 const& fdoType);
 // This version accepts flag indicating if XYM dimension is requested.
 std::string PgGeometryTypeFromFdoType(FdoInt32 const& fdoType, bool isXYM);
 
-// Translate FDO geometry type enumeration to name of PostGIS geometry type.
-// This version accepts flag indicating if XYM dimension is requested.
-// In order to restrict the spatial column to a single type, use one of:
-// POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, MULTIPOLYGON, GEOMETRYCOLLECTION 
-// or corresponding XYM versions
-// POINTM, LINESTRINGM, POLYGONM, MULTIPOINTM, MULTILINESTRINGM, MULTIPOLYGONM, GEOMETRYCOLLECTIONM.
-// For heterogeneous (mixed-type) collections, you can use "GEOMETRY" as the type.
-std::string PgGeometryTypeFromFdoType(FdoGeometryType* fdoTypes, FdoInt32 length, bool isXYM);
-
 /// Calculate number of ordinates based on given dimensionality.
 ///
 /// \param

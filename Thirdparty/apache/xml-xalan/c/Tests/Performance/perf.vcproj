@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="8.00"
 	Name="perf"
 	ProjectGUID="{AE7D421A-CD82-4B73-9809-CE1AC2309163}"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -78,8 +77,6 @@
 				AdditionalLibraryDirectories="..\..\..\..\xml-xerces\c\Build\Win32\VC6\Release"
 				SubSystem="1"
 				StackReserveSize="2048000"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -98,6 +95,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -172,8 +172,6 @@
 				ProgramDatabaseFile=".\..\..\Build\Win32\VC6\Debug/perf.pdb"
 				SubSystem="1"
 				StackReserveSize="2048000"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -192,6 +190,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -264,8 +265,6 @@
 				ProgramDatabaseFile=".\..\..\Build\Win32\VC6\Release.symbols/perf.pdb"
 				SubSystem="1"
 				StackReserveSize="2048000"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -284,6 +283,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"

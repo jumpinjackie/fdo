@@ -25,6 +25,9 @@
 #include <cstdio> // scanf()
 #include <sstream>
 #include <string>
+// boost
+#include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 namespace fdo { namespace postgis {
 
@@ -229,9 +232,6 @@ FdoString* SQLDataReader::GetString(FdoString* columnName)
 
 FdoDateTime SQLDataReader::GetDateTime(FdoString* columnName)
 {
-    // TODO - mloskot: Consider refactoring to make this function less bloated
-    // and reuse some variables.
-
     try
     {
         PgCursor::ResultPtr pgRes = mCursor->GetFetchResult();
@@ -241,8 +241,12 @@ FdoDateTime SQLDataReader::GetDateTime(FdoString* columnName)
         {
             return FdoDateTime();
         }
+
         try
         {
+            using namespace boost::gregorian;
+            using namespace boost::posix_time;
+            
             // NOTE: We expect the default SQL date and time output defined in ISO 8601.
             //       http://en.wikipedia.org/wiki/ISO_8601
 
@@ -254,10 +258,8 @@ FdoDateTime SQLDataReader::GetDateTime(FdoString* columnName)
             if (std::string::npos != sval.find_first_of('-')
                 && std::string::npos != sval.find_first_of(':'))
             {
-                // Accepted format is:
-                // [YYYY]-[MM]-[DD] [hh]:[mm]:[ss]
+                // Accepted forma is:
                 // [YYYY]-[MM]-[DD]T[hh]:[mm]:[ss]±[hh]:[mm]
-                // for tolerate T use *[Tt ]
 
                 int y, m, d, hh, mm, ss;
                 y = m = d = hh = mm = ss = 0;
@@ -271,43 +273,35 @@ FdoDateTime SQLDataReader::GetDateTime(FdoString* columnName)
                 fdt.hour = static_cast<FdoInt8>(hh);
                 fdt.minute = static_cast<FdoInt8>(mm);
                 fdt.seconds = static_cast<FdoFloat>(ss);
-
+     
                 assert(fdt.IsDateTime());
             }
             else if (std::string::npos != sval.find_first_of('-') && sval.size() <= 12)
             {
-                // Accepted format is:
-                // [YYYY]-[MM]-[DD]
-                int y, m, d;
-                y = m = d = 0;
-                int const count = std::sscanf(sval.c_str(), "%4d-%02d-%02d", &y, &m, &d);
-                assert(3 == count);
+                date d(from_simple_string(sval));
 
-                fdt.year = static_cast<FdoInt16>(y);
-                fdt.month = static_cast<FdoInt8>(m);
-                fdt.day = static_cast<FdoInt8>(d);                
+                fdt.year = static_cast<FdoInt16>(d.year());
+                fdt.month = static_cast<FdoInt8>(d.month());
+                fdt.day = static_cast<FdoInt8>(d.day());
+
                 assert(fdt.IsDate());
             }
             else if (std::string::npos != sval.find_first_of(':'))
             {
-                // Accepted format is:
-                // [hh]:[mm]:[ss]
-                int y, m, d, hh, mm, ss;
-                y = m = d = hh = mm = ss = 0;
-                int const count = std::sscanf(sval.c_str(),
-                    "%02d:%02d:%02d", &hh, &mm, &ss);
-                assert(3 == count);
+                ptime t(time_from_string(sval));
+                time_duration td(t.time_of_day());
 
-                fdt.hour = static_cast<FdoInt8>(hh);
-                fdt.minute = static_cast<FdoInt8>(mm);
-                fdt.seconds = static_cast<FdoFloat>(ss);
+                fdt.hour = static_cast<FdoInt8>(td.hours());
+                fdt.minute = static_cast<FdoInt8>(td.minutes());
+                fdt.seconds = static_cast<FdoFloat>(td.seconds());
+
                 assert(fdt.IsTime());
             }
             else
             {
                 assert(!"NEVER SHOULD GET HERE");
             }
-
+            
             return fdt;
         }
         catch (std::exception& e)

@@ -115,12 +115,12 @@
 		    continue = true
     	    Set WshShell = CreateObject("WScript.Shell")
 			If not fsc.FolderExist(destProject) Then
-                destProject = fsc.RemoveSeparator (WshShell.ExpandEnvironmentStrings("%VS90COMNTOOLS%")) & "\..\..\VC\VCProjects"
+                destProject = fsc.RemoveSeparator (WshShell.ExpandEnvironmentStrings("%VS80COMNTOOLS%")) & "\..\..\VC\VCProjects"
                 If not fsc.FolderExist(destProject) Then
-                    WScript.Echo ("Unable to find Microsoft Visual Studio 9\VCProjects folder!")
+                    WScript.Echo ("Unable to find Microsoft Visual Studio 8\VCProjects folder!")
                     WScript.Echo ("To fix the problem please choose from options: ")
                     WScript.Echo ("1) Update VC_NET_PATH in methods.vbs")
-                    WScript.Echo ("2) Set %VS90COMNTOOLS% with the right VC9 tools path!")
+                    WScript.Echo ("2) Set %VS80COMNTOOLS% with the right VC8 tools path!")
                     continue = false
     			End If
 			End If
@@ -166,13 +166,13 @@
 		    continue = true
 			If not fsc.FolderExist(pathProject) Then
 			    Set WshShell = CreateObject("WScript.Shell")
-                pathProject = fsc.RemoveSeparator (WshShell.ExpandEnvironmentStrings("%VS90COMNTOOLS%")) & "\..\..\VC\VCProjects"			
+                pathProject = fsc.RemoveSeparator (WshShell.ExpandEnvironmentStrings("%VS80COMNTOOLS%")) & "\..\..\VC\VCProjects"			
                 Set WshShell = nothing
                 If not fsc.FolderExist(pathProject) Then
                     WScript.Echo ("Unable to find Microsoft Visual Studio 8\VCProjects folder!")
                     WScript.Echo ("To fix the problem please choose from options: ")
                     WScript.Echo ("1) Update VC_NET_PATH in methods.vbs")
-                    WScript.Echo ("2) Set %VS90COMNTOOLS% with the right VC9 tools path!")
+                    WScript.Echo ("2) Set %VS80COMNTOOLS% with the right VC8 tools path!")
                     continue = false
     			End If
 			End If

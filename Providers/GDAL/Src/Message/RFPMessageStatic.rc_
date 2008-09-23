@@ -102,7 +102,7 @@ BEGIN
             VALUE "Comments", "Resource Only Dynamic Link Library"
             VALUE "CompanyName", "Open Geospatial Foundation"
             VALUE "FileDescription", "GdalFile Message Library"
-            VALUE "FileVersion", "3.4.0.00"
+            VALUE "FileVersion", "3.2.0.0"
             VALUE "InternalName", "GRFPMessage"
             VALUE "LegalCopyright", "Copyright © 2005"
             VALUE "OriginalFilename", "GRFPMessage.dll"

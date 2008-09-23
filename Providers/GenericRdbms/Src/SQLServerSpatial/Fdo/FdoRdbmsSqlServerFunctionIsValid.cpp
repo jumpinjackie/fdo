@@ -51,7 +51,7 @@ FdoFunctionDefinition *FdoRdbmsSqlServerFunctionIsValid::GetFunctionDefinition (
 FdoLiteralValue *FdoRdbmsSqlServerFunctionIsValid::Evaluate (
                                     FdoLiteralValueCollection *literal_values)
 {
-    throw FdoException::Create(NlsMsgGet(FDORDBMS_537, "Function IsValid() is executed only on the server side"));
+    throw FdoException::Create(NlsMsgGet(0x00000AC9L, "Function IsValid() is executed only on the server side"));
 
     return NULL;
 } 
@@ -95,7 +95,7 @@ void FdoRdbmsSqlServerFunctionIsValid::CreateFunctionDefinition ()
     // Create the function definition.
     function_definition = FdoFunctionDefinition::Create(
                                         FDORDBMSSQLSERVER_FUNCTION_ISVALID,
-                                        NlsMsgGet(FDORDBMS_536, "Determines the validity of a given geometry" ),
+                                        NlsMsgGet(0x00000ACAL, "Determines the validity of a given geometry" ),
                                         false,
                                         signatures,
                                         FdoFunctionCategoryType_Geometry);

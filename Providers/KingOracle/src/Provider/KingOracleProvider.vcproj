@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="8.00"
 	Name="KingOracleProvider"
 	ProjectGUID="{A8CAD4E4-5C05-4D3F-B8CC-96D862110278}"
 	RootNamespace="KingOracleProvider"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -50,6 +49,7 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -67,8 +67,6 @@
 				AdditionalLibraryDirectories="d:\oracle\product\10.2.0\client_1\oci\lib\msvc\vc8;d:\oracle\product\10.2.0\client_1\oci\lib\msvc;..\..\..\..\Fdo\Unmanaged\Lib\Win32\Debug\;..\..\..\..\Utilities\Common\Lib\Win32\Debug;..\Overrides\Debug_Fdo_3_2"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -88,6 +86,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -144,8 +145,6 @@
 				AdditionalLibraryDirectories="d:\oracle\product\10.2.0\client_1\oci\lib\msvc\vc8;..\..\..\..\Fdo\Unmanaged\Lib\Win32\Release\;..\..\..\..\Utilities\Common\Lib\Win32\Release\;&quot;..\Overrides\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -165,6 +164,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -220,8 +222,6 @@
 				AdditionalLibraryDirectories="d:\oracle\product\10.2.0\client_1\oci\lib\msvc\vc8;d:\oracle\product\10.2.0\client_1\oci\lib\msvc;..\..\..\..\Fdo\Unmanaged\Lib\Win32\Release\;..\..\..\..\Utilities\Common\Lib\Win32\Release\;&quot;..\Overrides\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -241,6 +241,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -283,6 +286,7 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -300,8 +304,6 @@
 				AdditionalLibraryDirectories="d:\oracle\product\10.2.0\client_1\oci\lib\msvc\vc8;D:\oracle\product\10.2.0\client_1\oci\lib\msvc;&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\fdo\Unmanaged\lib\iwins\debug&quot;;&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\providers\FdoCommon\lib\iwins\debug&quot;;..\Overrides\Debug_Fdo_3_1"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -321,6 +323,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -377,8 +382,6 @@
 				AdditionalLibraryDirectories="d:\oracle\product\10.2.0\client_1\oci\lib\msvc\vc8;&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\fdo\Unmanaged\lib\iwins\release&quot;;&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\providers\FdoCommon\lib\iwins\release&quot;;..\Overrides\Release_Fdo_3_1"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -398,6 +401,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -453,8 +459,6 @@
 				AdditionalLibraryDirectories="D:\oracle\product\10.2.0\client_1\instantclient_10_2\sdk\lib\msvc;&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\fdo\Unmanaged\lib\iwins\release&quot;;&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\providers\FdoCommon\lib\iwins\release&quot;;..\Overrides\Release_Fdo_3_1"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -474,6 +478,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -516,6 +523,7 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -533,8 +541,6 @@
 				AdditionalLibraryDirectories="D:\oracle\product\10.2.0\client_1\instantclient_10_2\sdk\lib\msvc;..\..\..\..\Fdo\Unmanaged\Lib\Win32\Debug\;..\..\..\..\Utilities\Common\Lib\Win32\Debug;&quot;..\Overrides\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -554,6 +560,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -610,8 +619,6 @@
 				AdditionalLibraryDirectories="d:\oracle\product\10.2.0\client_1\oci\lib\msvc\vc8;&quot;D:\Development\MapGuide_OS\mapguide-1.2.0beta2\mapguide-1.2.0\OpenSource_FDO\Fdo\Unmanaged\lib\win32\release&quot;;&quot;D:\Development\MapGuide_OS\mapguide-1.2.0beta2\mapguide-1.2.0\OpenSource_FDO\Utilities\Common\lib\win32\release&quot;;..\Overrides\R_Fdo_3_2_2"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -631,6 +638,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -686,8 +696,6 @@
 				AdditionalLibraryDirectories="d:\oracle\product\10.2.0\client_1\oci\lib\msvc\vc8;d:\oracle\product\10.2.0\client_1\oci\lib\msvc;&quot;D:\Development\MapGuide_OS\mapguide-1.2.0beta2\mapguide-1.2.0\OpenSource_FDO\Fdo\Unmanaged\lib\win32\release&quot;;&quot;D:\Development\MapGuide_OS\mapguide-1.2.0beta2\mapguide-1.2.0\OpenSource_FDO\Utilities\Common\lib\win32\release&quot;;..\Overrides\R_Instant_Fdo_3_2_2"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -707,6 +715,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -749,6 +760,7 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -766,8 +778,6 @@
 				AdditionalLibraryDirectories="d:\oracle\product\10.2.0\client_1\oci\lib\msvc\vc8;d:\oracle\product\10.2.0\client_1\oci\lib\msvc;&quot;D:\Development\MapGuide_OS\mapguide-1.2.0beta2\mapguide-1.2.0\OpenSource_FDO\Fdo\Unmanaged\lib\win32\debug&quot;;&quot;D:\Development\MapGuide_OS\mapguide-1.2.0beta2\mapguide-1.2.0\OpenSource_FDO\Utilities\Common\lib\win32\debug&quot;;&quot;..\Overrides\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -787,6 +797,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -830,6 +843,7 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -847,8 +861,6 @@
 				AdditionalLibraryDirectories="&quot;$(FDOORACLE)\lib\msvc&quot;;..\..\..\..\Fdo\Unmanaged\lib\win32\debug;..\..\..\..\Utilities\Common\lib\win32\debug;..\..\lib\Win32\Debug"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="..\..\lib\Win32\$(ConfigurationName)\$(TargetName).lib"
 				TargetMachine="1"
 			/>
@@ -869,6 +881,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -926,8 +941,6 @@
 				AdditionalLibraryDirectories="&quot;$(FDOORACLE)\lib\msvc&quot;;..\..\..\..\Fdo\Unmanaged\Lib\Win32\Release\;..\..\..\..\Utilities\Common\Lib\Win32\Release\;..\..\lib\Win32\Release"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="..\..\lib\Win32\$(ConfigurationName)\$(TargetName).lib"
 				TargetMachine="1"
 			/>
@@ -948,6 +961,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"

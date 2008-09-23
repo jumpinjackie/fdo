@@ -39,12 +39,12 @@ const wchar_t* FdoRdbmsSqlServerConnectionInfo::GetProviderName()
 
 const wchar_t* FdoRdbmsSqlServerConnectionInfo::GetProviderDisplayName()
 {
-    return NlsMsgGet(FDORDBMS_541, RDBMS_SQLSERVER_PROVIDER_DEFAULT_DISPLAY_NAME);
+    return L"OSGeo FDO Provider for SQL Server Spatial";
 }
 
 const wchar_t* FdoRdbmsSqlServerConnectionInfo::GetProviderDescription()
 {
-    return NlsMsgGet(FDORDBMS_542, RDBMS_SQLSERVER_PROVIDER_DEFAULT_DESCRIPTION);
+    return L"Read/write access to feature data in a MS SQL Server Spatial data store. Supports geospatial and nongeospatial data and schema R/W access.";
 }
 
 const wchar_t* FdoRdbmsSqlServerConnectionInfo::GetProviderVersion()

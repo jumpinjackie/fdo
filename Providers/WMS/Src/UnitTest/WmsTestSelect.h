@@ -65,7 +65,6 @@ class WmsTestSelect : public WmsTests
     CPPUNIT_TEST (testStoboWms);
     CPPUNIT_TEST (testLinuxgurrl);
     CPPUNIT_TEST (testOpenmaps);
-    CPPUNIT_TEST (testquestionmarkend);
 
 	CPPUNIT_TEST_SUITE_END ();
 
@@ -110,8 +109,6 @@ public:
     void testStoboWms ();
     void testLinuxgurrl ();
 	void testOpenmaps ();
-    void testquestionmarkend ();
-
 
 };
 

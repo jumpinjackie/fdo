@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="8.00"
 	Name="UnitTest"
 	ProjectGUID="{BE1C32E9-2FDB-43F1-85CC-02708B6D33C3}"
 	RootNamespace="UnitTest"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
 			Name="Win32"
-		/>
-		<Platform
-			Name="x64"
 		/>
 	</Platforms>
 	<ToolFiles>
@@ -55,6 +51,7 @@
 				PrecompiledHeaderThrough="Pch.h"
 				BrowseInformation="1"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -72,8 +69,6 @@
 				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;$(FDOTHIRDPARTY)\cppunit\lib\Win32;..\..\Lib\Win32\Debug"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -94,85 +89,7 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug|x64"
-			OutputDirectory="..\..\Bin\Win64\Debug"
-			IntermediateDirectory="Debug64"
-			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			UseOfMFC="0"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories=".\;..\Provider;$(FDO)\Unmanaged\inc;$(FDOUTILITIES)\Common\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE"
-				BasicRuntimeChecks="0"
-				RuntimeLibrary="3"
-				BufferSecurityCheck="true"
-				TreatWChar_tAsBuiltInType="true"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="Pch.h"
-				BrowseInformation="1"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib WMSOverrides.lib cppunitd.lib"
-				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win64\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Debug&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win64&quot;;..\..\Lib\Win64\Debug"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				TargetMachine="17"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -226,8 +143,6 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib WMSOverrides.lib cppunit.lib"
 				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;$(FDOTHIRDPARTY)\cppunit\lib\Win32;..\..\Lib\Win32\Release"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -248,79 +163,7 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|x64"
-			OutputDirectory="..\..\Bin\Win64\Release"
-			IntermediateDirectory="Release64"
-			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			UseOfMFC="0"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories=".\;..\Provider;$(FDO)\Unmanaged\inc;$(FDOUTILITIES)\Common\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE"
-				RuntimeLibrary="2"
-				BufferSecurityCheck="true"
-				TreatWChar_tAsBuiltInType="true"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="Pch.h"
-				BrowseInformation="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib WMSOverrides.lib cppunit.lib"
-				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win64\Release;$(FDOUTILITIES)\Common\Lib\Win64\Release;$(FDOTHIRDPARTY)\cppunit\lib\Win64;..\..\Lib\Win64\Release"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				TargetMachine="17"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -354,7 +197,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".\;..\Provider;$(FDO)\Unmanaged\inc;$(FDOUTILITIES)\Common\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_FDO_RUN_INTERNAL_TEST"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_FDO_RUN_INTERNAL_TEST;__CPPUNIT_MFC_APP"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
 				BufferSecurityCheck="true"
@@ -363,6 +206,7 @@
 				PrecompiledHeaderThrough="Pch.h"
 				BrowseInformation="1"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -380,8 +224,6 @@
 				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;$(FDOTHIRDPARTY)\cppunit\lib\Win32;..\..\Lib\Win32\Debug"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -402,85 +244,7 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="DebugInternal|x64"
-			OutputDirectory="..\..\Bin\Win64\Debug"
-			IntermediateDirectory="Debug64"
-			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			UseOfMFC="0"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories=".\;..\Provider;$(FDO)\Unmanaged\inc;$(FDOUTILITIES)\Common\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_FDO_RUN_INTERNAL_TEST"
-				BasicRuntimeChecks="0"
-				RuntimeLibrary="3"
-				BufferSecurityCheck="true"
-				TreatWChar_tAsBuiltInType="true"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="Pch.h"
-				BrowseInformation="1"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib WMSOverrides.lib cppunitd.lib testrunnerd.lib"
-				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win64\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Debug&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win64&quot;;..\..\Lib\Win64\Debug"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				TargetMachine="17"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -513,7 +277,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=".\;..\Provider;$(FDO)\Unmanaged\inc;$(FDOUTILITIES)\Common\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_FDO_RUN_INTERNAL_TEST"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_FDO_RUN_INTERNAL_TEST;__CPPUNIT_MFC_APP"
 				RuntimeLibrary="2"
 				BufferSecurityCheck="true"
 				TreatWChar_tAsBuiltInType="true"
@@ -534,8 +298,6 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib WMSOverrides.lib cppunit.lib testrunner.lib"
 				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;$(FDOTHIRDPARTY)\cppunit\lib\Win32;..\..\Lib\Win32\Release"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -556,79 +318,7 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="ReleaseInternal|x64"
-			OutputDirectory="..\..\Bin\Win64\Release"
-			IntermediateDirectory="Release64"
-			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			UseOfMFC="0"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories=".\;..\Provider;$(FDO)\Unmanaged\inc;$(FDOUTILITIES)\Common\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_FDO_RUN_INTERNAL_TEST"
-				RuntimeLibrary="2"
-				BufferSecurityCheck="true"
-				TreatWChar_tAsBuiltInType="true"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="Pch.h"
-				BrowseInformation="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDONLS.lib ProvidersCommon.lib WMSOverrides.lib cppunit.lib testrunner.lib"
-				AdditionalLibraryDirectories="$(FDO)\Unmanaged\Lib\Win64\Release;$(FDOUTILITIES)\Common\Lib\Win64\Release;$(FDOTHIRDPARTY)\cppunit\lib\Win64;..\..\Lib\Win64\Release"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				TargetMachine="17"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -655,27 +345,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-						PrecompiledHeaderThrough="Pch.h"
-						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-						PrecompiledHeaderThrough="Pch.h"
-						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -695,27 +365,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="DebugInternal|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-						PrecompiledHeaderThrough="Pch.h"
-						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="ReleaseInternal|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-						PrecompiledHeaderThrough="Pch.h"
-						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseInternal|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -743,27 +393,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-						PrecompiledHeaderThrough="Pch.h"
-						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-						PrecompiledHeaderThrough="Pch.h"
-						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -783,27 +413,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="DebugInternal|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-						PrecompiledHeaderThrough="Pch.h"
-						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="ReleaseInternal|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-						PrecompiledHeaderThrough="Pch.h"
-						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseInternal|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -831,27 +441,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-						PrecompiledHeaderThrough="Pch.h"
-						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-						PrecompiledHeaderThrough="Pch.h"
-						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -871,27 +461,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="DebugInternal|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-						PrecompiledHeaderThrough="Pch.h"
-						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="ReleaseInternal|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-						PrecompiledHeaderThrough="Pch.h"
-						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseInternal|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -919,27 +489,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-						PrecompiledHeaderThrough="Pch.h"
-						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-						PrecompiledHeaderThrough="Pch.h"
-						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -959,27 +509,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="DebugInternal|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-						PrecompiledHeaderThrough="Pch.h"
-						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="ReleaseInternal|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-						PrecompiledHeaderThrough="Pch.h"
-						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseInternal|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1007,27 +537,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-						PrecompiledHeaderThrough="Pch.h"
-						PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-						PrecompiledHeaderThrough="Pch.h"
-						PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1047,27 +557,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="DebugInternal|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-						PrecompiledHeaderThrough="Pch.h"
-						PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="ReleaseInternal|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-						PrecompiledHeaderThrough="Pch.h"
-						PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseInternal|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1099,27 +589,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-						PrecompiledHeaderThrough="Pch.h"
-						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-						PrecompiledHeaderThrough="Pch.h"
-						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1139,27 +609,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="DebugInternal|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-						PrecompiledHeaderThrough="Pch.h"
-						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="ReleaseInternal|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-						PrecompiledHeaderThrough="Pch.h"
-						PrecompiledHeaderFile="$(IntDir)/StdAfx.pch"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseInternal|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1196,17 +646,6 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying FDO files"
-						CommandLine="copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDO.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDO.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDOUTILITIES)\OWS\Bin\Win64\Debug\OWS.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDOUTILITIES)\OWS\Bin\Win64\Debug\OWS.pdb $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDO)\Unmanaged\Bin\Win64\Debug\FDO.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll;$(FDOUTILITIES)\OWS\Bin\Win64\Debug\OWS.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDO.pdb;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.pdbl;$(FDOUTILITIES)\OWS\Bin\Win64\Debug\OWS.pdb"
-						Outputs="$(OutDir)\CopyFdo.ilk"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -1214,17 +653,6 @@
 						Description="Copying FDO files"
 						CommandLine="copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDO.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.pdb $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
 						AdditionalDependencies="$(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDO.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb;$(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.dll;$(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.pdb"
-						Outputs="$(OutDir)\CopyFdo.ilk"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying FDO files"
-						CommandLine="copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDO.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDOUTILITIES)\OWS\Bin\Win64\Release\OWS.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDO.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDOUTILITIES)\OWS\Bin\Win64\Release\OWS.pdb $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDO)\Unmanaged\Bin\Win64\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDO.pdb;$(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.pdb;$(FDOUTILITIES)\OWS\Bin\Win64\Release\OWS.dll;$(FDOUTILITIES)\OWS\Bin\Win64\Release\OWS.pdb"
 						Outputs="$(OutDir)\CopyFdo.ilk"
 					/>
 				</FileConfiguration>
@@ -1240,17 +668,6 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="DebugInternal|x64"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying FDO files"
-						CommandLine="copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDO.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDO.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDOUTILITIES)\OWS\Bin\Win64\Debug\OWS.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDOUTILITIES)\OWS\Bin\Win64\Debug\OWS.pdb $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDO)\Unmanaged\Bin\Win64\Debug\FDO.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll;$(FDOUTILITIES)\OWS\Bin\Win64\Debug\OWS.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDO.pdb;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.pdbl;$(FDOUTILITIES)\OWS\Bin\Win64\Debug\OWS.pdb"
-						Outputs="$(OutDir)\CopyFdo.ilk"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="ReleaseInternal|Win32"
 					>
 					<Tool
@@ -1258,17 +675,6 @@
 						Description="Copying FDO files"
 						CommandLine="copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDO.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.pdb $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
 						AdditionalDependencies="$(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDO.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb;$(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.dll;$(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.pdb"
-						Outputs="$(OutDir)\CopyFdo.ilk"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseInternal|x64"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying FDO files"
-						CommandLine="copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDO.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDOUTILITIES)\OWS\Bin\Win64\Release\OWS.dll $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDO.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;copy /Y $(FDOUTILITIES)\OWS\Bin\Win64\Release\OWS.pdb $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDO)\Unmanaged\Bin\Win64\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDO.pdb;$(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.pdb;$(FDOUTILITIES)\OWS\Bin\Win64\Release\OWS.dll;$(FDOUTILITIES)\OWS\Bin\Win64\Release\OWS.pdb"
 						Outputs="$(OutDir)\CopyFdo.ilk"
 					/>
 				</FileConfiguration>
@@ -1282,19 +688,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying thirdparty dlls"
-						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc90-mt-gd-1_34_1.dll $(OutDir)&#x0D;&#x0A;copy $(FDOGDAL)\bin\win32\debug\gdal14.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.dll;$(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc90-mt-gd-1_34_1.dll;$(FDOGDAL)\bin\win32\debug\gdal14.dll"
-						Outputs="$(OutDir)\CopyThirdparty.ilk"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying thirdparty dlls"
-						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC9\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC9\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC9\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_thread-vc90-mt-gd-1_34_1.dll $(OutDir)&#x0D;&#x0A;copy $(FDOGDAL)\bin\win64\debug\gdal14.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC9\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC9\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC9\Release\xerces-c_2_5_0.dll;$(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_thread-vc90-mt-gd-1_34_1.dll;$(FDOGDAL)\bin\win32\debug\gdal14.dll"
+						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Debug\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc80-mt-gd-1_34_1.dll $(OutDir)&#x0D;&#x0A;copy $(FDOGDAL)\bin\win32\debug\gdal14.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\Xalan-C_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\XalanMessages_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Debug\xerces-c_2_5_0D.dll;$(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc80-mt-gd-1_34_1.dll;$(FDOGDAL)\bin\win32\debug\gdal14.dll"
 						Outputs="$(OutDir)\CopyThirdparty.ilk"
 					/>
 				</FileConfiguration>
@@ -1304,19 +699,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying thirdparty dlls"
-						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_thread-vc90-mt-1_34_1.dll $(OutDir)&#x0D;&#x0A;copy $(FDOGDAL)\bin\win32\release\gdal14.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.dll;$(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_thread-vc90-mt-1_34_1.dll;$(FDOGDAL)\bin\win32\release\gdal14.dll"
-						Outputs="$(OutDir)\CopyThirdparty.ilk"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying thirdparty dlls"
-						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC9\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC9\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC9\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_thread-vc90-mt-1_34_1.dll $(OutDir)&#x0D;&#x0A;copy $(FDOGDAL)\bin\win64\release\gdal14.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC9\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC9\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC9\Release\xerces-c_2_5_0.dll;$(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_thread-vc90-mt-1_34_1.dll;$(FDOGDAL)\bin\win64\release\gdal14.dll"
+						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_thread-vc80-mt-1_34_1.dll $(OutDir)&#x0D;&#x0A;copy $(FDOGDAL)\bin\win32\release\gdal14.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Release\xerces-c_2_5_0.dll;$(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_thread-vc80-mt-1_34_1.dll;$(FDOGDAL)\bin\win32\release\gdal14.dll"
 						Outputs="$(OutDir)\CopyThirdparty.ilk"
 					/>
 				</FileConfiguration>
@@ -1326,19 +710,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying thirdparty dlls"
-						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll  $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc90-mt-gd-1_34_1.dll $(OutDir)&#x0D;&#x0A;copy $(FDOGDAL)\bin\win32\debug\gdal14.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.dll;$(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc90-mt-gd-1_34_1.dll;$(FDOGDAL)\bin\win32\debug\gdal14.dll"
-						Outputs="$(OutDir)\CopyThirdparty.ilk"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="DebugInternal|x64"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying thirdparty dlls"
-						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll  $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC9\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC9\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC9\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_thread-vc90-mt-gd-1_34_1.dll $(OutDir)&#x0D;&#x0A;copy $(FDOGDAL)\bin\win64\debug\gdal14.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC9\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC9\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC9\Release\xerces-c_2_5_0.dll;$(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_thread-vc90-mt-gd-1_34_1.dll;$(FDOGDAL)\bin\win64\debug\gdal14.dll"
+						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll  $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Debug\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc80-mt-gd-1_34_1.dll $(OutDir)&#x0D;&#x0A;copy $(FDOGDAL)\bin\win32\debug\gdal14.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\Xalan-C_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Debug\XalanMessages_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Debug\xerces-c_2_5_0D.dll;$(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc80-mt-gd-1_34_1.dll;$(FDOGDAL)\bin\win32\debug\gdal14.dll"
 						Outputs="$(OutDir)\CopyThirdparty.ilk"
 					/>
 				</FileConfiguration>
@@ -1348,19 +721,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying thirdparty dlls"
-						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_thread-vc90-mt-1_34_1.dll $(OutDir)&#x0D;&#x0A;copy $(FDOGDAL)\bin\win32\release\gdal14.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.dll;$(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_thread-vc90-mt-1_34_1.dll;$(FDOGDAL)\bin\win32\release\gdal14.dll"
-						Outputs="$(OutDir)\CopyThirdparty.ilk"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseInternal|x64"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying thirdparty dlls"
-						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC9\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC9\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC9\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_thread-vc90-mt-1_34_1.dll $(OutDir)&#x0D;&#x0A;copy $(FDOGDAL)\bin\win64\release\gdal14.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC9\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC9\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC9\Release\xerces-c_2_5_0.dll;$(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_thread-vc90-mt-1_34_1.dll;$(FDOGDAL)\bin\win64\release\gdal14.dll"
+						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_thread-vc80-mt-1_34_1.dll $(OutDir)&#x0D;&#x0A;copy $(FDOGDAL)\bin\win32\release\gdal14.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC8\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC8\Release\xerces-c_2_5_0.dll;$(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_thread-vc80-mt-1_34_1.dll;$(FDOGDAL)\bin\win32\release\gdal14.dll"
 						Outputs="$(OutDir)\CopyThirdparty.ilk"
 					/>
 				</FileConfiguration>
@@ -1380,29 +742,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Performing fake install"
-						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy WmsOverridesConfig.xml $(OutDir)&#x0D;&#x0A;copy WmsSchemaConfig.xml $(OutDir)&#x0D;&#x0A;copy WmsSchemaConfig_Jake_MapServer.xml $(OutDir)&#x0D;&#x0A;copy NASA_WMS_Config.xml $(OutDir)&#x0D;&#x0A;copy WMSOverrideClass2.xml $(OutDir)&#x0D;&#x0A;copy CubeServer_WMS_Config.xml $(OutDir)&#x0D;&#x0A;copy MultiLayers_Config.xml $(OutDir)&#x0D;&#x0A;"
-						AdditionalDependencies="providers.xml;WmsOverridesConfig.xml;WmsSchemaConfig.xml;WmsSchemaConfig_Jake_MapServer.xml;NASA_WMS_Config.xml;WMSOverrideClass2.xml;CubeServer_WMS_Config.xml;MultiLayers_Config.xml"
-						Outputs="$(OutDir)\providers.xml"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Performing fake install"
-						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy WmsOverridesConfig.xml $(OutDir)&#x0D;&#x0A;copy WmsSchemaConfig.xml $(OutDir)&#x0D;&#x0A;copy WmsSchemaConfig_Jake_MapServer.xml $(OutDir)&#x0D;&#x0A;copy NASA_WMS_Config.xml $(OutDir)&#x0D;&#x0A;copy WMSOverrideClass2.xml $(OutDir)&#x0D;&#x0A;copy CubeServer_WMS_Config.xml $(OutDir)&#x0D;&#x0A;copy MultiLayers_Config.xml $(OutDir)&#x0D;&#x0A;"
-						AdditionalDependencies="providers.xml;WmsOverridesConfig.xml;WmsSchemaConfig.xml;WmsSchemaConfig_Jake_MapServer.xml;NASA_WMS_Config.xml;WMSOverrideClass2.xml;CubeServer_WMS_Config.xml;MultiLayers_Config.xml"
-						Outputs="$(OutDir)\providers.xml"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1424,29 +764,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="DebugInternal|x64"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Performing fake install"
-						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy WmsOverridesConfig.xml $(OutDir)&#x0D;&#x0A;copy WmsSchemaConfig.xml $(OutDir)&#x0D;&#x0A;copy WmsSchemaConfig_Jake_MapServer.xml $(OutDir)&#x0D;&#x0A;copy NASA_WMS_Config.xml $(OutDir)&#x0D;&#x0A;copy WMSOverrideClass2.xml $(OutDir)&#x0D;&#x0A;copy CubeServer_WMS_Config.xml $(OutDir)&#x0D;&#x0A;copy MultiLayers_Config.xml $(OutDir)&#x0D;&#x0A;"
-						AdditionalDependencies="providers.xml;WmsOverridesConfig.xml;WmsSchemaConfig.xml;WmsSchemaConfig_Jake_MapServer.xml;NASA_WMS_Config.xml;WMSOverrideClass2.xml;CubeServer_WMS_Config.xml;MultiLayers_Config.xml"
-						Outputs="$(OutDir)\providers.xml"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="ReleaseInternal|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Performing fake install"
-						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy WmsOverridesConfig.xml $(OutDir)&#x0D;&#x0A;copy WmsSchemaConfig.xml $(OutDir)&#x0D;&#x0A;copy WmsSchemaConfig_Jake_MapServer.xml $(OutDir)&#x0D;&#x0A;copy NASA_WMS_Config.xml $(OutDir)&#x0D;&#x0A;copy WMSOverrideClass2.xml $(OutDir)&#x0D;&#x0A;copy CubeServer_WMS_Config.xml $(OutDir)&#x0D;&#x0A;copy MultiLayers_Config.xml $(OutDir)&#x0D;&#x0A;"
-						AdditionalDependencies="providers.xml;WmsOverridesConfig.xml;WmsSchemaConfig.xml;WmsSchemaConfig_Jake_MapServer.xml;NASA_WMS_Config.xml;WMSOverrideClass2.xml;CubeServer_WMS_Config.xml;MultiLayers_Config.xml"
-						Outputs="$(OutDir)\providers.xml"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseInternal|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1473,23 +791,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="Pch.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="Pch.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1505,23 +807,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="DebugInternal|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="Pch.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="ReleaseInternal|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="Pch.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseInternal|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1545,23 +831,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="Pch.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="Pch.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1577,23 +847,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="DebugInternal|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="Pch.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="ReleaseInternal|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="Pch.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseInternal|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1617,23 +871,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="Pch.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="Pch.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1649,23 +887,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="DebugInternal|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="Pch.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="ReleaseInternal|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="Pch.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseInternal|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1689,23 +911,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="Pch.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="Pch.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1721,23 +927,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="DebugInternal|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="Pch.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="ReleaseInternal|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="Pch.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseInternal|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1777,23 +967,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="Pch.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="Pch.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1809,23 +983,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="DebugInternal|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="Pch.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="ReleaseInternal|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="Pch.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseInternal|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1865,23 +1023,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="Pch.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="Pch.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1897,23 +1039,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="DebugInternal|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="Pch.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="ReleaseInternal|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="Pch.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseInternal|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1941,23 +1067,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -1973,23 +1083,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="DebugInternal|x64"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="ReleaseInternal|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseInternal|x64"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -2009,23 +1103,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -2041,23 +1119,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="DebugInternal|x64"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="ReleaseInternal|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseInternal|x64"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -2077,23 +1139,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -2109,23 +1155,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="DebugInternal|x64"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="ReleaseInternal|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseInternal|x64"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -2145,23 +1175,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -2177,23 +1191,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="DebugInternal|x64"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="ReleaseInternal|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseInternal|x64"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -2213,23 +1211,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -2245,23 +1227,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="DebugInternal|x64"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="ReleaseInternal|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseInternal|x64"
 					ExcludedFromBuild="true"
 					>
 					<Tool

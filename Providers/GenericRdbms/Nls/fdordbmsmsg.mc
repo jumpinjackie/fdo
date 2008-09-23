@@ -195,11 +195,6 @@ SymbolicName=FDORDBMS_8
 Language=English
 Character Sets can only be retrieved from current MySQL server
 .
-MessageId=2214
-SymbolicName=FDORDBMS_9
-Language=English
-IsFdoEnabled
-.
 MessageId=2215
 SymbolicName=FDORDBMS_10
 Language=English
@@ -230,11 +225,6 @@ SymbolicName=FDORDBMS_15
 Language=English
 Feature ID does not exist
 .
-MessageId=2221
-SymbolicName=FDORDBMS_16
-Language=English
-Cannot delete system schema '%1$ls' from datastore.
-.
 MessageId=2222
 SymbolicName=FDORDBMS_17
 Language=English
@@ -254,11 +244,6 @@ MessageId=2225
 SymbolicName=FDORDBMS_20
 Language=English
 Case not handled yet
-.
-MessageId=2226
-SymbolicName=FDORDBMS_21
-Language=English
-Provider does not support bound geometries in spatial conditions
 .
 MessageId=2227
 SymbolicName=FDORDBMS_22
@@ -305,11 +290,6 @@ SymbolicName=FDORDBMS_30
 Language=English
 Unknown expression
 .
-MessageId=2236
-SymbolicName=FDORDBMS_31
-Language=English
-Error creating spatial context %1$ls, coordinate system catalog does not contain entry for WKT \"%2$ls\"
-.
 MessageId=2238
 SymbolicName=FDORDBMS_33
 Language=English
@@ -335,20 +315,10 @@ SymbolicName=FDORDBMS_37
 Language=English
 Feature class does not have a Geometric property
 .
-MessageId=2243
-SymbolicName=FDORDBMS_38
-Language=English
-Cannot open datastore '%1$ls' with the OSGeo.SQLServerSpatial provider; it was created by the Autodesk.SqlServer provider. You will need to migrate this datastore first.
-.
 MessageId=2244
 SymbolicName=FDORDBMS_39
 Language=English
 Property value is NULL
-.
-MessageId=2245
-SymbolicName=FDORDBMS_40
-Language=English
-Cannot open datastore '%1$ls' with the Autodesk.SqlServer provider; it has geometry or geography columns so it must be accessed by the OSGeo.SQLServerSpatial provider.
 .
 MessageId=2246
 SymbolicName=FDORDBMS_41
@@ -364,11 +334,6 @@ MessageId=2248
 SymbolicName=FDORDBMS_43
 Language=English
 Query ended
-.
-MessageId=2249
-SymbolicName=FDORDBMS_44
-Language=English
-Geometry property '%1$ls' has geodetic coordinate system; cannot use EnvelopeIntersects spatial operator in filter
 .
 MessageId=2250
 SymbolicName=FDORDBMS_45
@@ -819,6 +784,11 @@ MessageId=2340
 SymbolicName=FDORDBMS_135
 Language=English
 Column '%1$ls' for Spatial Index '%2$ls' is not geometric.
+.
+MessageId=2341
+SymbolicName=FDORDBMS_136
+Language=English
+Error creating spatial context %1$ls, coordinate system %2$ls is not in current datastore.
 .
 MessageId=2342
 SymbolicName=FDORDBMS_137
@@ -1670,6 +1640,11 @@ SymbolicName=FDORDBMS_477
 Language=English
 Read/write access to ODBC-based data store. Supports XYZ point features.
 .
+MessageId=2702
+SymbolicName=FDORDBMS_478
+Language=English
+Error creating spatial context %1$ls (SRID=%2$ld), the WKT provided does not match the catalog.
+.
 MessageId=2703
 SymbolicName=FDORDBMS_479
 Language=English
@@ -1774,6 +1749,11 @@ MessageId=2724
 SymbolicName=FDORDBMS_499
 Language=English
 Feature metaclass
+.
+MessageId=2725
+SymbolicName=FDORDBMS_500
+Language=English
+Feature id number (uniquely identifies a feature)
 .
 MessageId=2726
 SymbolicName=FDORDBMS_501
@@ -1949,39 +1929,4 @@ MessageId=2760
 SymbolicName=FDORDBMS_535
 Language=English
 false
-.
-MessageId=2761
-SymbolicName=FDORDBMS_536
-Language=English
-Determines the validity of a given geometry
-.
-MessageId=2762
-SymbolicName=FDORDBMS_537
-Language=English
-Function IsValid() is executed only on the server side
-.
-MessageId=2763
-SymbolicName=FDORDBMS_538
-Language=English
-First item must be numeric EPSG number; error at line %1$d in file '%2$ls'
-.
-MessageId=2764
-SymbolicName=FDORDBMS_539
-Language=English
-Invalid WKT string; error at line %1$d in file '%2$ls'
-.
-MessageId=2765
-SymbolicName=FDORDBMS_540
-Language=English
-At least one of coordinate system name or WKT must be specified; error at line %1$d in file '%2$ls'
-.
-MessageId=2766
-SymbolicName=FDORDBMS_541
-Language=English
-OSGeo FDO Provider for SQL Server Spatial
-.
-MessageId=2767
-SymbolicName=FDORDBMS_542
-Language=English
-Read/write access to feature data in a MS SQL Server Spatial data store. Supports geospatial and nongeospatial data and schema R/W access.
 .

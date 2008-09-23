@@ -49,9 +49,7 @@
 FdoRdbmsSelectCommand::FdoRdbmsSelectCommand (): mConnection( NULL ), mIdentifiers(NULL),
   mGroupingCol(NULL),
   mGroupingFilter(NULL),
-  mOrderingIdentifiers(NULL),
-  mBoundGeometries(NULL),
-  mBoundGeometryCount(0)
+  mOrderingIdentifiers(NULL)
 {
   mLockType           = FdoLockType_Exclusive;
   mLockStrategy       = FdoLockStrategy_Partial;
@@ -66,9 +64,7 @@ FdoRdbmsSelectCommand::FdoRdbmsSelectCommand (FdoIConnection *connection) :
     mIdentifiers(NULL),
     mGroupingCol(NULL),
     mGroupingFilter(NULL),
-    mOrderingIdentifiers(NULL),
-    mBoundGeometries(NULL),
-    mBoundGeometryCount(0)
+    mOrderingIdentifiers(NULL)
 {
   mConn = static_cast<FdoRdbmsConnection*>(connection);
   if( mConn )
@@ -87,7 +83,6 @@ FdoRdbmsSelectCommand::~FdoRdbmsSelectCommand()
     FDO_SAFE_RELEASE(mGroupingFilter);
     FDO_SAFE_RELEASE(mGroupingCol);
     FDO_SAFE_RELEASE(mOrderingIdentifiers);
-    FreeBoundSpatialGeoms();
 }
 
 FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 callerId  )
@@ -192,7 +187,6 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
                                                              isForUpdate,
                                                              callerId );
 
-        FdoPtr<FdoRdbmsFilterProcessor::BoundGeometryCollection> boundGeometries = flterProcessor->GetBoundGeometryValues();
         FdoPtr<FdoRdbmsSecondarySpatialFilterCollection> geometricConditions = flterProcessor->GetGeometricConditions();
    		vector<int> * logicalOps = flterProcessor->GetFilterLogicalOps();
 
@@ -249,13 +243,7 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
 		// Test the spatial queries validity. Not all filters are currently supported.
 		CheckSpatialFilters( geometricConditions, logicalOps );
 
-        GdbiStatement* statement = mConnection->GetGdbiConnection()->Prepare( sqlString );
-
-        BindSpatialGeoms( statement, boundGeometries );
-
-        GdbiQueryResult *queryRslt = statement->ExecuteQuery();
-
-        delete statement;
+        GdbiQueryResult *queryRslt = mConnection->GetGdbiConnection()->ExecuteQuery( sqlString );
 
         if (( mIdentifiers && mIdentifiers->GetCount() > 0) )
             return new FdoRdbmsFeatureSubsetReader( FdoPtr<FdoIConnection>(GetConnection()), queryRslt, isFeatureClass, classDefinition, NULL, mIdentifiers, geometricConditions, logicalOps );
@@ -615,38 +603,3 @@ void FdoRdbmsSelectCommand::CheckSpatialFilters( FdoRdbmsSecondarySpatialFilterC
 			throw FdoCommandException::Create( NlsMsgGet(FDORDBMS_532, "AND and OR not supported in a query when mixing property with spatial filters" ) );
 	}
 }
-
-void  FdoRdbmsSelectCommand::BindSpatialGeoms( GdbiStatement* statement, FdoRdbmsFilterProcessor::BoundGeometryCollection* geometries )
-{
-    if ( geometries->GetCount() > 0 )
-    {
-        FdoInt32 idx;
-
-        FreeBoundSpatialGeoms();
-
-        mBoundGeometryCount = geometries->GetCount();
-        mBoundGeometries = new void*[mBoundGeometryCount];
-
-        for ( idx = 0; idx < mBoundGeometryCount; idx++ ) 
-        {
-            FdoPtr<FdoRdbmsFilterProcessor::BoundGeometry> boundGeometry = geometries->GetItem(idx);
-            mBoundGeometries[idx] = NULL;   // in case BindSpatialGeometry throws an exception.
-            mBoundGeometries[idx] = mFdoConnection->BindSpatialGeometry( statement, boundGeometry, idx + 1 ); 
-        }
-    }
-}
-
-void  FdoRdbmsSelectCommand::FreeBoundSpatialGeoms()
-{
-    FdoInt32 idx;
-
-    if ( mBoundGeometries )
-    {
-        for ( idx = 0; idx < mBoundGeometryCount; idx++ ) 
-            mFdoConnection->BindSpatialGeometryFree( mBoundGeometries[idx] );
-
-        delete[] mBoundGeometries;
-        mBoundGeometryCount = 0;
-        mBoundGeometries = NULL;
-    }
- }

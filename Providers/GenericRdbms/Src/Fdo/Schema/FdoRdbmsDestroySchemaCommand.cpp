@@ -56,12 +56,14 @@ void FdoRdbmsDestroySchemaCommand::Execute()
 
     if( ((FdoRdbmsConnection*) NULL) == mRdbmsConnection )
     {   
-        throw FdoSchemaException::Create(NlsMsgGet(FDORDBMS_13, "Connection not established"));
+        throw FdoSchemaException::Create();
+        //TODO: proper message: throw FdoSchemaException::Create(NlsMsgGet(FDORDBMS_13, "Connection not established"));
     }
 
     if ( L"" == mSchemaName )
     {
-        throw FdoSchemaException::Create( NlsMsgGet( FDORDBMS_163, "Cannot destroy schema; no schema name specified") );
+        throw FdoSchemaException::Create();
+        //TODO: proper message: throw FdoSchemaException::Create( NlsMsgGet( FDORDBMS_163, "Cannot destroy schema; no schema name specified") );
     }
 
     FdoSchemaManagerP      pSchemaManager = mRdbmsConnection->CreateSchemaManager();

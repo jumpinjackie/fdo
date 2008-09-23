@@ -230,16 +230,15 @@ FdoConnectionState FdoRdbmsConnection::Open ()
     return Open(false);
 }
 
-FdoConnectionState FdoRdbmsConnection::DbiOpen(bool skipPending)
+void FdoRdbmsConnection::DbiOpen(bool skipPending)
 {
-    FdoConnectionState theState;
 #ifdef _WIN32
     wchar_t errorMessage[1024];
     errorMessage[0] = L'';
     __try
     {
 #endif
-        theState = mDbiConnection->Open(skipPending);
+        mState = mDbiConnection->Open(skipPending);
         
 #ifdef _WIN32
     }
@@ -248,8 +247,6 @@ FdoConnectionState FdoRdbmsConnection::DbiOpen(bool skipPending)
         throw FdoException::Create (errorMessage);
     }
 #endif
-
-    return theState;
 }
 
 FdoConnectionState FdoRdbmsConnection::Open (
@@ -323,7 +320,7 @@ FdoConnectionState FdoRdbmsConnection::Open (
 
         // This is done in a separate method since we need to use __try/__except to catch the delay-loader's
         // Structured Exceptions, which is incompatible with having destructible objects on the stack:
-        mState = DbiOpen(skipPending);
+        DbiOpen(skipPending);
     }
 
     if( mState == FdoConnectionState_Open )
@@ -365,6 +362,7 @@ FdoConnectionState FdoRdbmsConnection::Open (
     if( mState == FdoConnectionState_Open )
     {
         mLongTransactionManager = CreateLongTransactionManager();
+        SetDefaultActiveSpatialContextName();
 		mLockManager = CreateLockManager();
         if (mLongTransactionManager != NULL)
             mLongTransactionManager->SetLockManager(mLockManager);
@@ -375,7 +373,7 @@ FdoConnectionState FdoRdbmsConnection::Open (
 
 FdoStringP FdoRdbmsConnection::GetUser()
 {
-    return (mDbiConnection == NULL) ? FdoStringP() : FdoStringP(mDbiConnection->GetUser());
+    return (mDbiConnection == NULL) ? FdoStringP() : mDbiConnection->GetUser();
 }
 
 // The function returns the unique user number for the current user.
@@ -654,7 +652,6 @@ void FdoRdbmsConnection::CreateSysDb( FdoString *dbName, FdoString *dbPassword, 
 	newSchema->Commit();
 }
 
-
 void FdoRdbmsConnection::CreateDb( FdoString *dbName, FdoString *dbDescription, FdoString *dbPassword, FdoString *connectString, FdoString *ltMode, FdoString *lckMode, bool isFdoEnabled )
 {
     FdoSmPhMgrP physicalMgr = GetSchemaManager()->GetPhysicalSchema();
@@ -835,77 +832,9 @@ FdoSchemaManagerP FdoRdbmsConnection::CreateSchemaManager()
     return schMgr;
 }
 
-FdoByteArray* FdoRdbmsConnection::GetGeometryValue( 
-    GdbiQueryResult* query, 
-    const FdoSmLpGeometricPropertyDefinition* pGeometricProperty,
-    FdoString* columnName,
-    bool checkIsNullOnly,
-    bool& unsupportedTypeExp
-)
-{
-    FdoIGeometry* geom = NULL;
-    FdoPtr<FdoIGeometry> pgeom;
-    FdoByteArray	*byteArray = NULL;
-    bool            isSupportedType = false;
-    bool            isNull;
-
-    query->GetBinaryValue( columnName, sizeof(FdoIGeometry *), (char*)&geom, &isNull, NULL);
-
-    pgeom = TransformGeometry( 
-        geom, 
-        pGeometricProperty, 
-        true 
-    );
-
-    if ( pgeom && pgeom->GetDerivedType() != FdoGeometryType_None )
-        isSupportedType = true;
-
-    if ( pgeom != NULL )
-    {
-        if ( isSupportedType )
-        {
-			FdoPtr<FdoFgfGeometryFactory>  gf = FdoFgfGeometryFactory::GetInstance();
-			byteArray = gf->GetFgf( pgeom );
-        }
-        else
-        {
-            if ( checkIsNullOnly )
-            {
-                byteArray = FdoByteArray::Create( (FdoInt32) 1);
-            }
-            else
-            {
-                unsupportedTypeExp = true;
-                throw FdoCommandException::Create( NlsMsgGet(FDORDBMS_116, "Unsupported geometry type" ) );
-            }
-        }
-    }
-    else if (!checkIsNullOnly)// isNull indicator is not set by GDBI for geometry columns
-    {
-        throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_385, "Property '%1$ls' value is NULL; use IsNull method before trying to access the property value", pGeometricProperty->GetName() ));
-    }
-
-    return byteArray;
-}
-
 FdoIGeometry* FdoRdbmsConnection::TransformGeometry( FdoIGeometry* geom, const FdoSmLpGeometricPropertyDefinition* prop, bool toFdo )
 {
     return FDO_SAFE_ADDREF(geom);
-}
-
-void* FdoRdbmsConnection::BindSpatialGeometry( 
-    GdbiStatement* statement, 
-    FdoRdbmsFilterProcessor::BoundGeometry* geom,
-    int bindIndex
-)
-{
-    throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_21, "Provider does not support bound geometries in spatial conditions"));
-    return NULL;
-}
-
-void FdoRdbmsConnection::BindSpatialGeometryFree( void*& buffer )
-{
-    throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_21, "Provider does not support bound geometries in spatial conditions"));
 }
 
 // Returns the current Long Transaction Manager.
@@ -940,9 +869,6 @@ FdoRdbmsConnection::GetSpatialManager()
 
 FdoString * FdoRdbmsConnection::GetActiveSpatialContextName()
 {
-    if ( mActiveSpatialContextName == L"" ) 
-        SetDefaultActiveSpatialContextName();
-
     return mActiveSpatialContextName;
 }
 
@@ -957,27 +883,35 @@ void FdoRdbmsConnection::SetDefaultActiveSpatialContextName()
     mActiveSpatialContextName = L"";
 
     FdoSchemaManagerP smgr = GetSchemaManager();
-    FdoSmLpSpatialContextP sc = smgr->FindSpatialContext(0);
+    FdoSmLpSpatialContextsP scs = smgr->GetLpSpatialContexts();
 
-    if (sc)
+    // We only set an active spatial context if one with numeric ID #0 exists.
+    // That is the initial one created with a datastore, or intuited from
+    // a foreign schema.
+    bool found = false;
+    FdoInt32 count = scs->GetCount();
+    for (FdoInt32 i=0;  !found && i < count;  i++)
     {
-        mActiveSpatialContextName = sc->GetName();
+        FdoSmLpSpatialContextP sc = scs->GetItem(i);
+        if (sc->GetId() == 0)
+        {
+            found = true;
+            mActiveSpatialContextName = sc->GetName();
+        }
     }
-    else {
+
 #pragma message ("TODO: Address MySql default spatial context # of 1.")
     // Kludge:  Unfortunately, MySQL seems to have a defect wherein the
     // initial value of an "auto-increment" type must be 1.  The documented
     // override does not work.  So, we'll try for that too, if there is no
     // spatial context #0.
-        FdoSmLpSpatialContextP sc = smgr->FindSpatialContext(1);
-        if (sc)
+    for (FdoInt32 i=0;  !found && i < count;  i++)
+    {
+        FdoSmLpSpatialContextP sc = scs->GetItem(i);
+        if (sc->GetId() == 1)
         {
+            found = true;
             mActiveSpatialContextName = sc->GetName();
         }
     }
-}
-
-bool FdoRdbmsConnection::NeedsSecondaryFiltering( FdoRdbmsSpatialSecondaryFilter* filter )
-{
-	return ( filter->GetOperation() != FdoSpatialOperations_EnvelopeIntersects );
 }

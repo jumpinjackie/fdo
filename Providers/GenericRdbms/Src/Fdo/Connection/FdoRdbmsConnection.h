@@ -186,7 +186,7 @@ public:
 
 	void CreateSysDb( FdoString *dbName, FdoString *dbPassword, FdoString *connectString);
 	virtual void CreateDb( FdoString *dbName, FdoString *dbDescription, FdoString *dbPassword, FdoString *connectString, FdoString *ltMode, FdoString *lckMode, bool isFdoEnabled = true );
-	virtual void DeleteDb( FdoString *dbName, FdoString *dbPassword, FdoString *connectString );
+    void DeleteDb( FdoString *dbName, FdoString *dbPassword, FdoString *connectString );
 
     // Gets the current Schema Manager for this connection
     FdoSchemaManagerP GetSchemaManager();
@@ -215,32 +215,6 @@ public:
     // Workaround for SqlServer spatial bug: on Insert the geometries need to be bound last.
     virtual bool  BindGeometriesLast() { return false; }
 
-    // Retrieves the value for a geometric column from a query. 
-    // Default implementation retrieves the value as an FdoIGeometry
-    // and converts it to a binary fgf array.
-    //
-    // Providers that retrieve geometries differently can override this
-    // function
-    //
-    // Parameters
-    //      query: retrieve value from current row in this results set.
-    //      pGeometricProperty: property definition for geometric column
-    //      columnName: columnName for geometry as per results set. Can be 
-    //          name or 1-based position
-    //      checkIsNullOnly: 
-    //          true: retrieving value only for checking if it is null.
-    //          false: throw exception if value is null
-    //      unsupportedTypeExp: output
-    //          true: if the value is of an unsupported geometry type
-    //          false: geometry type is supported.
-    virtual FdoByteArray* GetGeometryValue( 
-        GdbiQueryResult* query, 
-        const FdoSmLpGeometricPropertyDefinition* pGeometricProperty,
-        FdoString* columnName,
-        bool checkIsNullOnly,
-        bool& unsupportedTypeExp
-    );
-
     // Perform any required geometry transformations when sending or retrieving geometries to or from the RDBMS.
     // The default implementation does not modify the geometry.
     //
@@ -252,38 +226,6 @@ public:
     //
     // Returns the transformed geometry.
     virtual FdoIGeometry* TransformGeometry( FdoIGeometry* geom, const FdoSmLpGeometricPropertyDefinition* prop, bool toFdo );
-
-    // Binds a geometry value to a variable in a query's where clause. 
-    // Allows spatial conditions to be specified by bind variables.
-    //
-    // Default implementation throws an exception. Providers that 
-    // support binding spatial condition geometries must override 
-    // this function.
-    //
-    // Parameters
-    //      statement: the query with the bind variable(s) for spatial condition.
-    //      srid: spatial reference id for the geometry value
-    //      geom: the geometry value.
-    //      BindIndex: 1-based position of variable to bind to.
-    //
-    // Returns
-    //      The bind value allocated by this function. Exact type
-    //      depends on the provider. Caller is responsible for freeing
-    //      this value after the query is finished, by calling 
-    //      BindSpatialGeometryFree().
-    virtual void* BindSpatialGeometry( 
-        GdbiStatement* statement, 
-        FdoRdbmsFilterProcessor::BoundGeometry* geom,
-        int bindIndex
-    );
-
-    // Frees a bind value previously returned by BindSpatialGeometry().
-    // Providers that support bounding spatial condition geometries
-    // must override this function.
-    //
-    // Parameters
-    //      buffer: the bind value. Type is provider-specific.
-    virtual void BindSpatialGeometryFree( void*& buffer );
 
     // Creates a Long Transaction Manager and its corresponding Long Transaction
     // Manager Service.
@@ -305,12 +247,10 @@ public:
     virtual FdoRdbmsSpatialManager *GetSpatialManager();
 
     FdoString * GetActiveSpatialContextName();
-    virtual void SetActiveSpatialContextName(FdoString * spatialContextName);
+    void SetActiveSpatialContextName(FdoString * spatialContextName);
     void SetDefaultActiveSpatialContextName();
 
     virtual FdoRdbmsFeatureReader *GetOptimizedAggregateReader(const FdoSmLpClassDefinition* classDef, aggr_list *selAggrList, FdoFilter* filter = NULL) { return NULL; }
-
-    virtual bool NeedsSecondaryFiltering( FdoRdbmsSpatialSecondaryFilter* filter );
 
     virtual void Flush() {}
 
@@ -321,8 +261,6 @@ protected:
         FdoStringP currUser,
         FdoStringP currSchema
     ) = 0;
-
-    virtual FdoConnectionState DbiOpen(bool skipPending);
 
 private:
 
@@ -336,6 +274,7 @@ private:
     // DO NOT IMPLEMENT
     FdoRdbmsConnection & operator=(const FdoRdbmsConnection &right);
 
+    void DbiOpen(bool skipPending);
 };
 
 #endif // FDORDBMSCONNECTION_H

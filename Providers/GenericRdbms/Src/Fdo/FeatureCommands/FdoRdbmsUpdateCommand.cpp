@@ -108,6 +108,7 @@ FdoInt32 FdoRdbmsUpdateCommand::Execute ()
     int                 numberOfRows = 0;
     bool                bBeginTransaction = false;
     bool                isFeatClass = false;
+    char                buffer[16];
     bool                lockConflictsChecked = false;
     bool                throw_exception      = true;
     bool                containsObjectProperties = false;
@@ -143,7 +144,7 @@ FdoInt32 FdoRdbmsUpdateCommand::Execute ()
     // For feature classes, the innerSelect is embedded in an IN clause that must
     // select the feature id.
     // For non-feature classes, selecting the identity properties is fine.
-    FdoPtr<FdoIdentifierCollection>innerSelProps = (FdoIdentifierCollection*) NULL;
+    FdoPtr<FdoIdentifierCollection>innerSelProps = FdoRdbmsFilterUtil::GetFeatIdSelList( classDefinition );
     FdoRdbmsFilterUtilConstrainDef  filterConstrain;
     filterConstrain.selectedProperties = innerSelProps;
     wchar_t *tmpSelect = (wchar_t*)flterProcessor->FilterToSql( this->GetFilterRef(), className->GetText(), innerSelProps ? SqlCommandType_Select : SqlCommandType_Update, FdoCommandType_Update, &filterConstrain );
@@ -192,6 +193,7 @@ FdoInt32 FdoRdbmsUpdateCommand::Execute ()
 
         query = mConnection->GetGdbiConnection()->ExecuteQuery( flterProcessor->FilterToSql( this->GetFilterRef(), className->GetText(), SqlCommandType_Update, FdoCommandType_Update ) );
 
+        int  featId;
         bool addedIndentProperties = false;  // Used to indicate if we added any property to the user populated property value collection
 		
 		// Initialize the long transaction manager if we have one

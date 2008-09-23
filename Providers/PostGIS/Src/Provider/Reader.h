@@ -205,6 +205,7 @@ template <typename T>
 FdoDateTime Reader<T>::GetDateTime(FdoString* propertyName)
 {
     return mSQLReader->GetDateTime(propertyName);
+    return FdoDateTime();
 }
 
 template <typename T>

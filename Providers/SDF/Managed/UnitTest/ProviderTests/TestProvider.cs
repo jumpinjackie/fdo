@@ -42,7 +42,7 @@ namespace unit_test.ProviderTests
         public IConnection GetConnection()
         {
             IConnectionManager connectionManager = FeatureAccessManager.GetConnectionManager();
-            IConnection conn = connectionManager.CreateConnection("OSGeo.SDF.3.3");
+            IConnection conn = connectionManager.CreateConnection("OSGeo.SDF.3.2");
             conn.ConnectionString = @"DefaultFileLocation=" + location;
             return conn;
         }

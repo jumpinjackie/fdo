@@ -115,12 +115,6 @@ public:
     /// Return value is always valid (never null).
     const FdoSmLpPropertyDefinitionCollection* RefProperties() const;
 
-    /// Given a system property name, returns the property defintion.
-    /// Returns NULL if this class does not have the property.
-    /// Also returns NULL if the class has the property but it is not 
-    /// a system property.
-    const FdoSmLpPropertyDefinition* RefSystemProperty( FdoString* propName ) const;
-
     /// Returns the collection of nested properties. These are the sub-properties
     /// for object properties for this class.
     /// Return value is always valid (never null).

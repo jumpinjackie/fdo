@@ -82,7 +82,7 @@ int local_odbcdr_pkeys_act(
 	odbcdr_cursor_def	*c;
 	odbcdr_connData_def	*connData = NULL;
 	int 		rdbi_status = RDBI_GENERIC_ERROR;
-    SQLLEN      cbColumnName = 0;
+    SQLINTEGER  cbColumnName = 0;
     SQLRETURN   ret = SQL_SUCCESS;
     long        i;
     int         found;

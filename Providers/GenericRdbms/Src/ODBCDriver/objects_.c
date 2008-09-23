@@ -91,8 +91,8 @@ int local_odbcdr_objects_act(
 	int 				rdbi_status = RDBI_GENERIC_ERROR;
     int                 owner_set = !ODBCDRV_STRING_EMPTY(owner);
 	int 				target_set = !ODBCDRV_STRING_EMPTY(target);
-    SQLLEN      cbTable = 0;
-    SQLLEN      cbTable2 = 0;
+    SQLINTEGER  cbTable = 0;
+    SQLINTEGER  cbTable2 = 0;
     SQLRETURN   ret = SQL_SUCCESS;
     long        i;
     int         found;

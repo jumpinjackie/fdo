@@ -214,7 +214,7 @@ void FdoRdbmsDestroySpatialIndex::getPhysicalTableColumn( char *tbl_name, char *
 void FdoRdbmsDestroySpatialIndex::dropSpatialIndex( char *table_name, char * si_name )
 {
 
-//    mConnection->dbi_index_drop_sptl( table_name, NULL, si_name );
+    mConnection->dbi_index_drop_sptl( table_name, NULL, si_name );
 
 }
 
@@ -274,19 +274,18 @@ throw "TODO";
 bool FdoRdbmsDestroySpatialIndex::findSpatialIndexTableName( char *db_name, char *si_name, char *table_name )
 {
     int     qid = -1;
-//    char    column_name[GDBI_COLUMN_NAME_SIZE];
+    char    column_name[GDBI_COLUMN_NAME_SIZE];
     bool    found = false;
-//    int                         outType;
-//    int                      start;
-//    int                       eof;
-/*
+    int                         outType;
+    int                      start;
+    int                       eof;
+
     mConnection->dbi_index_act(si_name, DBI_INDEX_NAME_TYPE);
     mConnection->dbi_index_get(si_name, table_name, column_name, &outType, &start, &eof );
     if (eof == 0)
         found = true;
 
     mConnection->dbi_index_deac();
-*/
     return found;
 }
 

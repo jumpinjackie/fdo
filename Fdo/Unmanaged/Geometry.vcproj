@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="8.00"
 	Name="Geometry"
 	ProjectGUID="{963BD148-9446-4600-BBBC-F37257278D1D}"
 	RootNamespace="Geometry"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -78,8 +77,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/FDOGeometry.pdb"
 				SubSystem="0"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="Lib\Win32\Release/FDOGeometry.lib"
 				TargetMachine="0"
 			/>
@@ -100,6 +97,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -167,8 +167,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/FDOGeometry.pdb"
 				SubSystem="0"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="Lib\Win64\Release/FDOGeometry.lib"
 				TargetMachine="17"
 			/>
@@ -189,6 +187,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -256,8 +257,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/FDOGeometry.pdb"
 				SubSystem="0"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="Lib\Win32\Debug/FDOGeometry.lib"
 				TargetMachine="0"
 			/>
@@ -278,6 +277,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -345,8 +347,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/FDOGeometry.pdb"
 				SubSystem="0"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="Lib\Win64\Debug/FDOGeometry.lib"
 				TargetMachine="17"
 			/>
@@ -367,6 +367,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -432,11 +435,11 @@
 				>
 			</File>
 			<File
-				RelativePath="Src\Geometry\GeometryImpl.h"
+				RelativePath="Src\Geometry\Fgf\GeometryImpl.h"
 				>
 			</File>
 			<File
-				RelativePath="Src\Geometry\Fgf\GeometryImpl.h"
+				RelativePath="Src\Geometry\GeometryImpl.h"
 				>
 			</File>
 			<File

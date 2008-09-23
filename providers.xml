@@ -7,7 +7,7 @@
     <IsManaged>False</IsManaged>
     <Version>3.3.0.0</Version>
     <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
-    <LibraryPath>libSDFProvider.so</LibraryPath>
+    <LibraryPath>/usr/local/fdo-3.3.0/lib/libSDFProvider.so</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
     <Name>OSGeo.SHP.3.3</Name>
@@ -16,7 +16,7 @@
     <IsManaged>False</IsManaged>
     <Version>3.3.0.0</Version>
     <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
-    <LibraryPath>libSHPProvider.so</LibraryPath>
+    <LibraryPath>/usr/local/fdo-3.3.0/lib/libSHPProvider.so</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
     <Name>OSGeo.ArcSDE.3.3</Name>
@@ -25,7 +25,7 @@
     <IsManaged>False</IsManaged>
     <Version>3.3.0.0</Version>
     <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
-    <LibraryPath>libArcSDEProvider.so</LibraryPath>
+    <LibraryPath>/usr/local/fdo-3.3.0/lib/libArcSDEProvider.so</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
     <Name>OSGeo.WFS.3.3</Name>
@@ -34,7 +34,7 @@
     <IsManaged>False</IsManaged>
     <Version>3.3.0.0</Version>
     <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
-    <LibraryPath>libWFSProvider.so</LibraryPath>
+    <LibraryPath>/usr/local/fdo-3.3.0/lib/libWFSProvider.so</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
     <Name>OSGeo.WMS.3.3</Name>
@@ -43,7 +43,7 @@
     <IsManaged>False</IsManaged>
     <Version>3.3.0.0</Version>
     <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
-    <LibraryPath>libWMSProvider.so</LibraryPath>
+    <LibraryPath>/usr/local/fdo-3.3.0/lib/libWMSProvider.so</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
     <Name>OSGeo.ODBC.3.3</Name> 
@@ -52,7 +52,7 @@
     <IsManaged>False</IsManaged> 
     <Version>3.3.0.0</Version> 
     <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion> 
-    <LibraryPath>libFdoODBC.so</LibraryPath> 
+    <LibraryPath>/usr/local/fdo-3.3.0/lib/libFdoODBC.so</LibraryPath> 
   </FeatureProvider>
   <FeatureProvider>
     <Name>OSGeo.MySQL.3.3</Name> 
@@ -61,7 +61,7 @@
     <IsManaged>False</IsManaged> 
     <Version>3.3.0.0</Version> 
     <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion> 
-    <LibraryPath>libFdoMySQL.so</LibraryPath> 
+    <LibraryPath>/usr/local/fdo-3.3.0/lib/libFdoMySQL.so</LibraryPath> 
   </FeatureProvider>
   <FeatureProvider>
     <Name>OSGeo.Gdal.3.3</Name>
@@ -70,7 +70,7 @@
     <IsManaged>False</IsManaged>
     <Version>3.3.0.0</Version>
     <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
-    <LibraryPath>libGRFPProvider.so</LibraryPath>
+    <LibraryPath>/usr/local/fdo-3.3.0/lib/libGRFPProvider.so</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
     <Name>OSGeo.OGR.3.3</Name> 
@@ -79,7 +79,7 @@
     <IsManaged>False</IsManaged> 
     <Version>3.3.0.0</Version> 
     <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion> 
-    <LibraryPath>libOGRProvider.so</LibraryPath> 
+    <LibraryPath>/usr/local/fdo-3.3.0/lib/libOGRProvider.so</LibraryPath> 
  </FeatureProvider>
  <FeatureProvider>
     <Name>OSGeo.PostGIS.3.3</Name>
@@ -88,6 +88,6 @@
     <IsManaged>False</IsManaged>
     <Version>3.3.0.0</Version>
     <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
-    <LibraryPath>libPostGISProvider.so</LibraryPath>
+    <LibraryPath>/usr/local/fdo-3.3.0/lib/libPostGISProvider.so</LibraryPath>
   </FeatureProvider>
 </FeatureProviderRegistry>

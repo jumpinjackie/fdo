@@ -31,7 +31,7 @@ static FdoSmPhMySqlColTypeMapEntry dateEntry( FdoSmPhColType_Date, L"date" );
 static FdoSmPhMySqlColTypeMapEntry timeStampEntry( FdoSmPhColType_Date, L"timestamp" );
 static FdoSmPhMySqlColTypeMapEntry timeEntry( FdoSmPhColType_Date, L"time" );
 static FdoSmPhMySqlColTypeMapEntry decimalEntry( FdoSmPhColType_Decimal, L"decimal" );
-static FdoSmPhMySqlColTypeMapEntry singleEntry( FdoSmPhColType_Single, L"float" );
+static FdoSmPhMySqlColTypeMapEntry singleEntry( FdoSmPhColType_Single, L"single" );
 static FdoSmPhMySqlColTypeMapEntry doubleEntry( FdoSmPhColType_Double, L"double" );
 static FdoSmPhMySqlColTypeMapEntry geomEntry( FdoSmPhColType_Geom, L"geometry", FdoGeometryType_MultiGeometry, FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface);
 static FdoSmPhMySqlColTypeMapEntry pointEntry( FdoSmPhColType_Geom, L"point", FdoGeometryType_Point, FdoGeometricType_Point);

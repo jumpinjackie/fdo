@@ -71,7 +71,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "SQL Server Spatial Overrides Dynamic Link Library"
-            VALUE "FileVersion", "3.4.0.00"
+            VALUE "FileVersion", "3.3.0.0"
             VALUE "InternalName", "SQL Server Spatial Overrides"
             VALUE "LegalCopyright", "Copyright (C) 2008"
             VALUE "OriginalFilename", "SQLServerSpatialOverrides.dll"

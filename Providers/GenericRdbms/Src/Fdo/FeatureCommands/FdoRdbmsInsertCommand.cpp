@@ -89,13 +89,17 @@ FdoRdbmsInsertCommand::~FdoRdbmsInsertCommand()
 
 FdoIFeatureReader* FdoRdbmsInsertCommand::Execute ()
 {
+    gdbi_feat_info_def   feat_info;
     int                 insert_position = -1; // end of feature
     int                 gid = -1;
     FdoIdentifier*      className;
+    int                 feat_open = FALSE;
+    int                 feat_created = FALSE;
     FdoPtr<FdoPropertyValueCollection>featInfoCol = FdoPropertyValueCollection::Create(); // Used to create the FeatureIndoReader
     bool                bBeginTransaction = false;
     const FdoSmLpClassDefinition *classDefinition = NULL;
     bool                containsObjectProperties = false;
+    bool                isFeatIdAutoincremented = false;
     bool                handleForeignAutoincrementedId = false;
 
     if( NULL == mConnection )
@@ -124,36 +128,84 @@ FdoIFeatureReader* FdoRdbmsInsertCommand::Execute ()
         }
 
         if( classDefinition != NULL && classDefinition->GetClassType() == FdoClassType_FeatureClass )
-        {			
-            const FdoSmLpDataPropertyDefinition *lpSystemProp = FdoSmLpDataPropertyDefinition::Cast(classDefinition->RefSystemProperty(L"ClassId"));
-            if ( lpSystemProp && lpSystemProp->RefColumn() ) {
-                FdoPtr<FdoPropertyValue>classId = FdoPropertyValue::Create();
-                FdoPtr<FdoDataValue>clidValue = FdoDataValue::Create(classDefinition->GetId());
-                classId->SetValue( clidValue );
-                classId->SetName( lpSystemProp->GetName() );
-                mPropertyValues->Add( classId );
-                addedIndentProperties = true;
-            }
+        {
+            // check Feat Id property
+            const FdoSmLpDataPropertyDefinition *lpFeatIdProp = classDefinition->RefFeatIdProperty();
+            if ( (lpFeatIdProp != NULL) && (lpFeatIdProp->RefColumn() == NULL) ) 
+                lpFeatIdProp = NULL;
 
-            lpSystemProp = FdoSmLpDataPropertyDefinition::Cast(classDefinition->RefSystemProperty(L"RevisionNumber"));
-            if ( lpSystemProp && lpSystemProp->RefColumn() ) {
-                FdoPtr<FdoPropertyValue>revNum = FdoPropertyValue::Create();
-                FdoPtr<FdoDataValue>revValue = FdoDataValue::Create((FdoInt64) 0 );
-                revNum->SetValue( revValue );
-                revNum->SetName( lpSystemProp->GetName() );
-                mPropertyValues->Add( revNum );
+            if( lpFeatIdProp != NULL ) {
 
-	            FdoPtr<FdoPropertyValue>chgSeqProp = FdoPropertyValue::Create();
-                FdoPtr<FdoDataValue>chgSeqValue = FdoDataValue::Create((FdoInt64) 0 );
-                chgSeqProp->SetValue( chgSeqValue );
-                chgSeqProp->SetName( lpSystemProp->GetName() );
-                featInfoCol->Add(chgSeqProp);
+                const wchar_t *featId = lpFeatIdProp->GetName();
+                if ( (featId == NULL) || (wcslen(featId) ==0) )
+                    throw FdoCommandException::Create( NlsMsgGet( FDORDBMS_15, "Feature ID does not exist") );
 
-                addedIndentProperties = true;
+                FdoPtr<FdoPropertyValue>FeatIdProp =  mPropertyValues->FindItem( featId );
+                if (FeatIdProp == NULL)
+                {
+                    FdoStringP sequenceName = GetSequenceName(featId, L"", classDefinition);
+                    feat_info.feat_num = 0L;
+                    feat_info.classid = (long)classDefinition->GetId();
+                    feat_info.changeseq = 0L;
+
+			        // If Featid not autoincremented, then generate a number for it.
+			        isFeatIdAutoincremented = IsFeatIdAutoincremented( classDefinition );
+
+			        if( !isFeatIdAutoincremented )
+				        feat_info.feat_num = mConnection->GetGdbiCommands()->NextSequenceNumber( sequenceName);
+        			
+                    const FdoSmLpFeatureClass*  feat = static_cast<const FdoSmLpFeatureClass *>( classDefinition );
+
+                    feat_created = TRUE;
+
+                    FeatIdProp = FdoPropertyValue::Create(  );
+                    FeatIdProp->SetName( featId );
+
+                    mPropertyValues->Add( FeatIdProp );
+                    
+                    addedIndentProperties = true;
+
+                    const FdoSmLpDataPropertyDefinition *lpSystemProp = FdoSmLpDataPropertyDefinition::Cast(classDefinition->RefProperties()->RefItem(L"ClassId"));
+                    if ( lpSystemProp && lpSystemProp->RefColumn() ) {
+                        FdoPtr<FdoPropertyValue>classId = FdoPropertyValue::Create();
+                        FdoPtr<FdoDataValue>clidValue = FdoDataValue::Create((FdoInt64) feat_info.classid );
+                        classId->SetValue( clidValue );
+                        classId->SetName( lpSystemProp->GetName() );
+                        mPropertyValues->Add( classId );
+                    }
+
+			        FdoPtr<FdoPropertyValue>featIdProp = FdoPropertyValue::Create();
+                    FdoPtr<FdoIdentifier>featIdIdentifier = FeatIdProp->GetName();
+                    featIdProp->SetName( featIdIdentifier );
+			        featInfoCol->Add(featIdProp);
+
+                    lpSystemProp = FdoSmLpDataPropertyDefinition::Cast(classDefinition->RefProperties()->RefItem(L"RevisionNumber"));
+                    if ( lpSystemProp && lpSystemProp->RefColumn() ) {
+                        FdoPtr<FdoPropertyValue>revNum = FdoPropertyValue::Create();
+                        FdoPtr<FdoDataValue>revValue = FdoDataValue::Create((FdoInt64) 0 );
+                        revNum->SetValue( revValue );
+                        revNum->SetName( lpSystemProp->GetName() );
+                        mPropertyValues->Add( revNum );
+
+			            FdoPtr<FdoPropertyValue>chgSeqProp = FdoPropertyValue::Create();
+                        FdoPtr<FdoDataValue>chgSeqValue = FdoDataValue::Create((FdoInt64) feat_info.changeseq );
+                        chgSeqProp->SetValue( chgSeqValue );
+                        chgSeqProp->SetName( lpSystemProp->GetName() );
+                        featInfoCol->Add(chgSeqProp);
+                    }
+                    //
+                    // Set the featID value in the Property value collections
+                    if( FeatIdProp.p != NULL && !isFeatIdAutoincremented)
+                    {
+                        FdoPtr<FdoDataValue>featNum = FdoDataValue::Create((FdoInt64) feat_info.feat_num );
+                        FeatIdProp->SetValue( featNum );
+				        featIdProp->SetValue( featNum );
+                    }
+                }
             }
         }
 
-        if( classDefinition != NULL)
+        if( featInfoCol->GetCount() == 0 && classDefinition != NULL)
         {
             // The above processing did not find any information to return.  This
             // would be because either the class isn't a feature class, or there 
@@ -176,10 +228,10 @@ FdoIFeatureReader* FdoRdbmsInsertCommand::Execute ()
                 const FdoSmLpDataPropertyDefinition * idPropDef = idPropDefs->RefItem(i);
                 if (idPropDef->GetIsAutoGenerated())
                 {
-		            FdoPtr<FdoPropertyValue> idPropValue = FdoPropertyValue::Create();
+			        FdoPtr<FdoPropertyValue>autoIdProp = FdoPropertyValue::Create();
                     FdoString * idPropName = idPropDef->GetName();
-                    idPropValue->SetName( idPropName );
-		            featInfoCol->Add(idPropValue);
+                    autoIdProp->SetName( idPropName );
+			        featInfoCol->Add(autoIdProp);
                     found = true;
                     handleForeignAutoincrementedId = true;
                 }
@@ -212,7 +264,7 @@ FdoIFeatureReader* FdoRdbmsInsertCommand::Execute ()
             {
 				// Need to initialize the object properties id property.
 				// In the case the feature id is not autoincremented, the feat id would have been initialized by RefactorPvc
-				if ( i != 0 )
+				if ( isFeatIdAutoincremented && i != 0 )
 					InitObjectPropertyAutoGenProp(oneClass->GetClass(), properties, featInfoCol  );
 				
                 if( ltPvcProcessor == NULL )
@@ -229,7 +281,7 @@ FdoIFeatureReader* FdoRdbmsInsertCommand::Execute ()
 						FdoPtr<FdoRdbmsPvcOperation>ltPvcOp = ltOps->GetItem(j);
 						FdoPtr<FdoPropertyValueCollection>ltProperties = ltPvcOp->GetProperties();
 						// for the second and subsequent pvcs, set the id value for the autogenerated property. The id was generated by the first pvc
-						if( j!= 0 )
+						if( isFeatIdAutoincremented && j!= 0 )
 							InitObjectPropertyAutoGenProp(ltPvcOp->GetClass(), ltProperties, featInfoCol  );
 						
 						FdoRdbmsPvcHandler	*ltPvcHandler = (FdoRdbmsPvcHandler	*)ltPvcOp->GetPvcHandler();
@@ -237,6 +289,12 @@ FdoIFeatureReader* FdoRdbmsInsertCommand::Execute ()
 						{
 							FdoPtr<FdoRdbmsLongTransactionInfo>ltInfo;
 							ltPvcHandler->Execute( ltPvcOp->GetClass(), ltProperties, false, false );
+							if( featInfoCol->GetCount() != 0 && !handleForeignAutoincrementedId )
+							{
+								FdoPtr<FdoValueExpression>exp = FdoPtr<FdoPropertyValue>(featInfoCol->GetItem(0))->GetValue();
+								if( exp.p == NULL )
+									FetchAutoincrementedFeatIdValues( ltPvcOp->GetClass(), featInfoCol );
+							}
 							ltManager->GetActive( &ltInfo );
 							if( ltInfo && ltInfo->GetLtId() != 0 /* root LT */ )
 							{
@@ -251,7 +309,12 @@ FdoIFeatureReader* FdoRdbmsInsertCommand::Execute ()
                // Get the autoincremented Id values if not already set
 				if( featInfoCol->GetCount() != 0 )
 				{
-					FetchAutoincrementedIdValues( oneClass->GetClass(), featInfoCol );
+					FdoPtr<FdoValueExpression>exp = FdoPtr<FdoPropertyValue>(featInfoCol->GetItem(0))->GetValue();
+					if( exp.p == NULL )
+                        if (handleForeignAutoincrementedId)
+    						FetchAutoincrementedIdValues( oneClass->GetClass(), featInfoCol );
+                        else
+    						FetchAutoincrementedFeatIdValues( oneClass->GetClass(), featInfoCol );
 				}
             }
             catch( FdoRdbmsException *exp )
@@ -277,7 +340,11 @@ FdoIFeatureReader* FdoRdbmsInsertCommand::Execute ()
         // Remove the identity properties we added internally
         if( addedIndentProperties )
         {
-            FdoPtr<FdoPropertyValue>propVal = mPropertyValues->FindItem( L"RevisionNumber" );
+            const FdoSmLpDataPropertyDefinition *lpFeatIdProp = classDefinition->RefFeatIdProperty();
+            FdoPtr<FdoPropertyValue>propVal = mPropertyValues->FindItem( lpFeatIdProp->GetName() );
+            if( propVal != NULL )
+                mPropertyValues->Remove( propVal );
+            propVal = mPropertyValues->FindItem( L"RevisionNumber" );
             if( propVal != NULL )
                 mPropertyValues->Remove( propVal );
             propVal = mPropertyValues->FindItem( L"ClassId" );
@@ -308,116 +375,114 @@ FdoIFeatureReader* FdoRdbmsInsertCommand::Execute ()
     }
 
     FdoRdbmsFeatureInfoReader *reader = NULL;
-
-    FdoSmLpDataPropertyDefinitionCollection* idProperties = 
-		((FdoSmLpClassBase *)classDefinition)->GetIdentityProperties();
-	FdoPtr<FdoSmLpDataPropertyDefinition> idPropDef;
-	FdoPtr<FdoPropertyValue> idProp;
-	for (int i=0; i < idProperties->GetCount(); i++)
+    if( classDefinition != NULL &&  
+        classDefinition->GetClassType() == FdoClassType_FeatureClass &&
+        featInfoCol->GetCount() > 0 
+    )
+        reader = new FdoRdbmsFeatureInfoReader( featInfoCol, classDefinition );
+	else
 	{
-		idPropDef = idProperties->GetItem(i);
-		idProp = mPropertyValues->FindItem(idPropDef->GetName());
-		if (!idProp)
+		FdoSmLpDataPropertyDefinitionCollection* idProperties = 
+			((FdoSmLpClassBase *)classDefinition)->GetIdentityProperties();
+		FdoPtr<FdoSmLpDataPropertyDefinition> idPropDef;
+		FdoPtr<FdoPropertyValue> idProp;
+		for (int i=0; i < idProperties->GetCount(); i++)
 		{
-			if (mAutoGenPropertyValues)
-				// Check auto-generated values
-				idProp = mAutoGenPropertyValues->FindItem(idPropDef->GetName());
-		}
-		FdoPtr<FdoPropertyValue> newIdProp = featInfoCol->FindItem(idPropDef->GetName());
-        if ( !newIdProp ) 
-        {
-            newIdProp = FdoPropertyValue::Create();
+			idPropDef = idProperties->GetItem(i);
+			idProp = mPropertyValues->FindItem(idPropDef->GetName());
+			if (!idProp)
+			{
+				if (mAutoGenPropertyValues)
+					// Check auto-generated values
+					idProp = mAutoGenPropertyValues->FindItem(idPropDef->GetName());
+			}
+			FdoPropertyValue *newIdProp = FdoPropertyValue::Create();
 			newIdProp->SetName( idPropDef->GetName() );
-            featInfoCol->Add(newIdProp);
-        }
+			FdoDataValue *newValue = FdoDataValue::Create(idPropDef->GetDataType());
+			if (idProp)
+			{
+				FdoPtr<FdoValueExpression> literalExpression = idProp->GetValue();
+				FdoDataValue *idDataValue = (dynamic_cast<FdoDataValue*>(literalExpression.p));
+				if (!idDataValue->IsNull())
+				{
+					FdoString *stringValue;
+					if (idDataValue->GetDataType() == FdoDataType_String)
+						stringValue = (static_cast<FdoStringValue*>(idDataValue))->GetString();
+					else
+						stringValue = idDataValue->ToString();
 
-		FdoPtr<FdoValueExpression> oldValue = newIdProp->GetValue();
-        
-        if ( !oldValue )
-        {
-            FdoPtr<FdoDataValue> newValue = FdoDataValue::Create(idPropDef->GetDataType());
-		    if (idProp)
-		    {
-			    FdoPtr<FdoValueExpression> literalExpression = idProp->GetValue();
-			    FdoDataValue *idDataValue = (dynamic_cast<FdoDataValue*>(literalExpression.p));
-			    if (!idDataValue->IsNull())
-			    {
-				    FdoString *stringValue;
-				    if (idDataValue->GetDataType() == FdoDataType_String)
-					    stringValue = (static_cast<FdoStringValue*>(idDataValue))->GetString();
-				    else
-					    stringValue = idDataValue->ToString();
+					switch (idPropDef->GetDataType())
+					{
+						case FdoDataType_Boolean:
+							(static_cast<FdoBooleanValue*>(newValue))->SetBoolean(FdoStringP(stringValue).ToBoolean());
+							newIdProp->SetValue(newValue);
+							break;
 
-				    switch (idPropDef->GetDataType())
-				    {
-					    case FdoDataType_Boolean:
-						    (static_cast<FdoBooleanValue*>(newValue.p))->SetBoolean(FdoStringP(stringValue).ToBoolean());
-						    newIdProp->SetValue(newValue);
-						    break;
+						case FdoDataType_Byte:
+							(static_cast<FdoByteValue*>(newValue))->SetByte((FdoByte)FdoStringP(stringValue).ToLong());
+							newIdProp->SetValue(newValue);
+							break;
 
-					    case FdoDataType_Byte:
-						    (static_cast<FdoByteValue*>(newValue.p))->SetByte((FdoByte)FdoStringP(stringValue).ToLong());
-						    newIdProp->SetValue(newValue);
-						    break;
+						case FdoDataType_DateTime:
+							if (idDataValue->GetDataType() == FdoDataType_DateTime)
+								(static_cast<FdoDateTimeValue*>(newValue))->SetDateTime((static_cast<FdoDateTimeValue*>(idDataValue))->GetDateTime());
+							else
+								(static_cast<FdoDateTimeValue*>(newValue))->SetDateTime(mFdoConnection->DbiToFdoTime(mConnection->GetUtility()->UnicodeToUtf8(stringValue)));
+							newIdProp->SetValue(newValue);
+							break;
 
-					    case FdoDataType_DateTime:
-						    if (idDataValue->GetDataType() == FdoDataType_DateTime)
-							    (static_cast<FdoDateTimeValue*>(newValue.p))->SetDateTime((static_cast<FdoDateTimeValue*>(idDataValue))->GetDateTime());
-						    else
-							    (static_cast<FdoDateTimeValue*>(newValue.p))->SetDateTime(mFdoConnection->DbiToFdoTime(mConnection->GetUtility()->UnicodeToUtf8(stringValue)));
-						    newIdProp->SetValue(newValue);
-						    break;
+						case FdoDataType_String:
+							(static_cast<FdoStringValue*>(newValue))->SetString(stringValue);
+							newIdProp->SetValue(newValue);
+							break;
 
-					    case FdoDataType_String:
-						    (static_cast<FdoStringValue*>(newValue.p))->SetString(stringValue);
-						    newIdProp->SetValue(newValue);
-						    break;
+						case FdoDataType_Decimal:
+							(static_cast<FdoDecimalValue*>(newValue))->SetDecimal(FdoStringP(stringValue).ToDouble());
+							newIdProp->SetValue( newValue );
+							break;
 
-					    case FdoDataType_Decimal:
-						    (static_cast<FdoDecimalValue*>(newValue.p))->SetDecimal(FdoStringP(stringValue).ToDouble());
-						    newIdProp->SetValue( newValue );
-						    break;
+						case FdoDataType_Double:
+							(static_cast<FdoDoubleValue*>(newValue))->SetDouble(FdoStringP(stringValue).ToDouble());
+							newIdProp->SetValue(newValue);
+							break;
 
-					    case FdoDataType_Double:
-						    (static_cast<FdoDoubleValue*>(newValue.p))->SetDouble(FdoStringP(stringValue).ToDouble());
-						    newIdProp->SetValue(newValue);
-						    break;
+						case FdoDataType_Int16:
+							(static_cast<FdoInt16Value*>(newValue))->SetInt16((FdoInt16)FdoStringP(stringValue).ToLong());
+							newIdProp->SetValue(newValue);
+							break;
 
-					    case FdoDataType_Int16:
-						    (static_cast<FdoInt16Value*>(newValue.p))->SetInt16((FdoInt16)FdoStringP(stringValue).ToLong());
-						    newIdProp->SetValue(newValue);
-						    break;
+						case FdoDataType_Int32:
+							(static_cast<FdoInt32Value*>(newValue))->SetInt32(FdoStringP(stringValue).ToLong());
+							newIdProp->SetValue(newValue);
+							break;
 
-					    case FdoDataType_Int32:
-						    (static_cast<FdoInt32Value*>(newValue.p))->SetInt32(FdoStringP(stringValue).ToLong());
-						    newIdProp->SetValue(newValue);
-						    break;
+						case FdoDataType_Int64:
+							(static_cast<FdoInt64Value*>(newValue))->SetInt64(FdoStringP(stringValue).ToLong());
+							newIdProp->SetValue(newValue);
+							break;
 
-					    case FdoDataType_Int64:
-						    (static_cast<FdoInt64Value*>(newValue.p))->SetInt64(FdoStringP(stringValue).ToLong());
-						    newIdProp->SetValue(newValue);
-						    break;
+						case FdoDataType_Single:
+							(static_cast<FdoSingleValue*>(newValue))->SetSingle((FdoFloat)FdoStringP(stringValue).ToDouble());
+							newIdProp->SetValue(newValue);
+							break;
 
-					    case FdoDataType_Single:
-						    (static_cast<FdoSingleValue*>(newValue.p))->SetSingle((FdoFloat)FdoStringP(stringValue).ToDouble());
-						    newIdProp->SetValue(newValue);
-						    break;
-
-					    default:
-						    // It should not happen. Prim key column cannot be BLOB, GEOMETRY etc.
-						    throw FdoCommandException::Create(NlsMsgGet1(FDORDBMS_54, "Unhandled type: %1$d", idPropDef->GetDataType()));
-						    break;
-				    }
-			    }
-			    else
-				    newIdProp->SetValue((FdoDataValue*)NULL);
-		    }
-		    else
-			    newIdProp->SetValue((FdoDataValue*)NULL);
-        }
+						default:
+							// It should not happen. Prim key column cannot be BLOB, GEOMETRY etc.
+							throw FdoCommandException::Create(NlsMsgGet1(FDORDBMS_54, "Unhandled type: %1$d", idPropDef->GetDataType()));
+							break;
+					}
+				}
+				else
+					newIdProp->SetValue((FdoDataValue*)NULL);
+			}
+			else
+				newIdProp->SetValue((FdoDataValue*)NULL);
+			featInfoCol->Add(newIdProp);
+			newValue->Release();
+			newIdProp->Release();
+		}
+		reader = new FdoRdbmsFeatureInfoReader( featInfoCol, classDefinition );
 	}
-	reader = new FdoRdbmsFeatureInfoReader( featInfoCol, classDefinition );
-
     return reader;
 }
 
@@ -439,19 +504,15 @@ void FdoRdbmsInsertCommand::InitObjectPropertyAutoGenProp(const FdoSmLpClassDefi
 		if( tmpProp->GetIsAutoGenerated() )
 		{
 			FdoPtr<FdoPropertyValue>prop = propValCollection->FindItem( smLpDataProp->GetName() );
-			FdoPtr<FdoPropertyValue>baseProp = featInfoCol->FindItem( tmpProp->GetName() );
-			
-            if ( baseProp ) {
-                if( prop != NULL )
-				    prop->SetValue( FdoPtr<FdoValueExpression>(baseProp->GetValue()) );
-			    else
-			    {
-				    FdoPtr<FdoPropertyValue>propertyValue = FdoPropertyValue::Create();
-				    propertyValue->SetName( smLpDataProp->GetName() );
-				    propertyValue->SetValue( FdoPtr<FdoValueExpression>(baseProp->GetValue()) );
-				    propValCollection->Add( propertyValue );
-			    }
-            }
+			if( prop != NULL )
+				prop->SetValue( FdoPtr<FdoValueExpression>(FdoPtr<FdoPropertyValue>(featInfoCol->GetItem(0))->GetValue()) );
+			else
+			{
+				FdoPtr<FdoPropertyValue>propertyValue = FdoPropertyValue::Create();
+				propertyValue->SetName( smLpDataProp->GetName() );
+				propertyValue->SetValue( FdoPtr<FdoValueExpression>(FdoPtr<FdoPropertyValue>(featInfoCol->GetItem(0))->GetValue()) );
+				propValCollection->Add( propertyValue );
+			}
 		}
 	}
 }
@@ -613,6 +674,36 @@ FdoPropertyValueCollection* FdoRdbmsInsertCommand::GetAutoGeneratedPropertyValue
     return mAutoGenPropertyValues;
 }
 
+bool FdoRdbmsInsertCommand::IsFeatIdAutoincremented( const FdoSmLpClassDefinition *classDefinition )
+{
+	bool featIdAutoincremented = false;
+
+    const FdoSmLpPropertyDefinition *featIdProp = classDefinition->RefFeatIdProperty();
+
+	if ( featIdProp ) 
+	{
+		const FdoSmLpSimplePropertyDefinition* simpleProp =
+			static_cast<const FdoSmLpSimplePropertyDefinition*>(featIdProp);
+
+		const FdoSmPhColumn *column = simpleProp->RefColumn();
+		featIdAutoincremented = (column && column->GetAutoincrement() );
+	}
+	return featIdAutoincremented;
+}
+
+void FdoRdbmsInsertCommand::FetchAutoincrementedFeatIdValues( const FdoSmLpClassDefinition *classDefinition, FdoPropertyValueCollection* featInfoCol )
+{
+	if ( !IsFeatIdAutoincremented( classDefinition ) )
+		return;
+
+	FdoPtr<FdoPropertyValue>featIdInfoProp = featInfoCol->GetItem(0);
+
+	FdoInt64  newNumber = mConnection->GetGdbiCommands()->NextSequenceNumber( DBI_FEATURE_SEQUENCEW );
+ 
+	FdoPtr<FdoDataValue>featIdValue = FdoDataValue::Create( newNumber );
+	featIdInfoProp->SetValue( featIdValue );
+}
+
 bool FdoRdbmsInsertCommand::IsPropertyValueAutoincremented( const FdoSmLpClassDefinition *classDefinition, FdoPropertyValue * propertyValue )
 {
 	bool isAutoincremented = false;
@@ -632,22 +723,17 @@ bool FdoRdbmsInsertCommand::IsPropertyValueAutoincremented( const FdoSmLpClassDe
 }
 
 void FdoRdbmsInsertCommand::FetchAutoincrementedIdValues( const FdoSmLpClassDefinition *classDefinition, FdoPropertyValueCollection* featInfoCol )
-{   
-    int idx;
+{
+    // Only a single autogenerated identity column is supported.
+	FdoPtr<FdoPropertyValue>infoProp = featInfoCol->GetItem(0);
+  
+    if ( !IsPropertyValueAutoincremented( classDefinition, infoProp ) )
+        return;
 
-    for ( idx = 0; idx < featInfoCol->GetCount(); idx++ ) {
-        // Only a single autogenerated identity column is supported.
-	    FdoPtr<FdoPropertyValue>infoProp = featInfoCol->GetItem(idx);
-      
-        if ( IsPropertyValueAutoincremented( classDefinition, infoProp ) )
-        {
-	        FdoInt64  newNumber = mConnection->GetGdbiCommands()->NextSequenceNumber( DBI_FEATURE_SEQUENCEW );
-         
-	        FdoPtr<FdoDataValue>idValue = FdoDataValue::Create( newNumber );
-	        infoProp->SetValue( idValue );
-            break;
-        }
-    }
+	FdoInt64  newNumber = mConnection->GetGdbiCommands()->NextSequenceNumber( DBI_FEATURE_SEQUENCEW );
+ 
+	FdoPtr<FdoDataValue>idValue = FdoDataValue::Create( newNumber );
+	infoProp->SetValue( idValue );
 }
 
 FdoPropertyValueCollection* FdoRdbmsInsertCommand::GetAllPropertyValues()

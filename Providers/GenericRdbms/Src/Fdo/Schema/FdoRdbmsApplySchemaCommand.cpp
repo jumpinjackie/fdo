@@ -88,14 +88,16 @@ void FdoRdbmsApplySchemaCommand::SetPhysicalMapping(FdoPhysicalSchemaMapping* va
         if ( !( mappingTokens <= connectionTokens ) ) {
             // mapping overrides version is later than that of this connection so
             // this connection cannot handle them.
-            throw FdoCommandException::Create( 
-	   	        NlsMsgGet2(
-			        FDORDBMS_299,
-			        "Connection for provider '%1$ls' cannot process Schema Mapping Set for provider '%2$ls' since it has a future version",
-			        connectionProvider,
+            throw FdoCommandException::Create();
+/* TODO proper message
+            NlsMsgGet2(
+                    FDORDBMS_299,
+                    "Connection for provider '%1$ls' cannot process Schema Mapping Set for provider '%2$ls' since it has a future version",
+                    connectionProvider,
                     mappingProvider
-		        )
+                )
             );
+*/
         }
     }
 

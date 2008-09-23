@@ -165,43 +165,6 @@ bool PgTableColumnsReader::GetColumnNullability() const
     return isNullable;
 }
 
-bool PgTableColumnsReader::IsDefault() const
-{
-    bool isDefault = false;
-    if (mReader->GetBoolean(L"hasdefault"))
-        isDefault = true;
-
-    return isDefault;
-}
-
-FdoStringP PgTableColumnsReader::GetDefault() const
-{
-    FdoStringP defaultVal(L"");
-    if (IsDefault())
-        defaultVal = mReader->GetString(L"defaultVal");
-    
-    return defaultVal;
-}
-
-bool PgTableColumnsReader::IsSequence() const
-{
-    if (IsDefault())
-    {
-        FdoStringP sequence(GetDefault());
-        if (sequence.GetLength() > 0)
-        {
-            FdoStringP const sequenceLow(sequence.Lower());
-            FdoStringP sequenceLeft(sequence.Mid(0,7));
-            if (!sequenceLeft.ICompare("nextval"))
-                return true;
-            if (sequenceLow.Contains(L"nextval")) 
-                return true;
-        }
-    }
-
-    return false;
-}
-
 bool PgTableColumnsReader::IsPrimaryKey() const
 {
     bool isKey = false;
@@ -232,18 +195,16 @@ void PgTableColumnsReader::Open()
     //       a.attnum = ANY (i.indkey)
 
     std::string sql(
-        "SELECT a.attnum AS ordinal_position, a.attname AS column_name"
-        ",t.typname AS data_type, a.attlen AS character_maximum_length"
-        ",a.atttypmod AS modifier, a.attnotnull AS notnull"
-        ",a.atthasdef AS hasdefault, d.adsrc AS defaultVal"
-        ",a.attnum = ANY (i.indkey) AS isprimarykey, i.indkey AS primKey, i.indisprimary AS indisprimary"
-        " FROM pg_attribute a LEFT OUTER JOIN pg_attrdef d ON a.attrelid = d.adrelid"
-        ", pg_type t, pg_namespace n"
-        ", pg_class c LEFT OUTER JOIN pg_index i ON i.indrelid = c.oid"
-        " WHERE a.attnum > 0 AND a.attrelid = c.oid"
-        " AND a.atttypid = t.oid AND c.relnamespace = n.oid"
-        " AND t.typname !~ '^geom'"
-        " AND c.relname = '" + table + "' AND n.nspname = '" + schema + "' ORDER BY a.attnum;");
+        "SELECT a.attnum AS ordinal_position,a.attname AS column_name,"
+        "t.typname AS data_type,a.attlen AS character_maximum_length,"
+        "a.atttypmod AS modifier,a.attnotnull AS notnull,a.atthasdef AS hasdefault, "
+        "a.attnum = ANY (i.indkey) AS isprimarykey "
+        "FROM pg_class c,pg_attribute a,pg_type t,pg_namespace n,pg_index i "
+        "WHERE a.attnum > 0 AND a.attrelid = c.oid "
+        "AND a.atttypid = t.oid AND c.relnamespace = n.oid "
+        "AND c.oid = i.indrelid AND i.indisprimary = 't' "
+        "AND t.typname !~ '^geom' "
+        "AND c.relname = '" + table + "' AND n.nspname = '" + schema + "' ORDER BY a.attnum;");
 
     try
     {

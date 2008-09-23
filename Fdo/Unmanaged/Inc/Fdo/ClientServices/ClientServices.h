@@ -26,11 +26,7 @@
 
 #define WIN32_LEAN_AND_MEAN
 
-#ifdef _WIN64
-#include <windows.h>
-#else
 #define _X86_
-#endif
 #include <windef.h>
 #include <winnt.h>
 #include <winbase.h>
@@ -40,9 +36,5 @@
 
 
 #endif
-
-
-
-
 
 

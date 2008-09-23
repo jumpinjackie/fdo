@@ -48,10 +48,6 @@ class FdoRdbmsSelectCommand : public FdoRdbmsFeatureCommand<FdoISelect>
       FdoFilter                  *mGroupingFilter;
 
       FdoIdentifierCollection*   mGroupingCol;
-
-      void**                     mBoundGeometries;
-      FdoInt32                   mBoundGeometryCount;
-
       //
       // Prevent the use of the copy constructor by definning it and not implemeting it.
       // DO NOT IMPLEMENT
@@ -101,13 +97,6 @@ class FdoRdbmsSelectCommand : public FdoRdbmsFeatureCommand<FdoISelect>
 
 	  // Internal method added in support for processing spatial conditions.
 	  void CheckSpatialFilters( FdoRdbmsSecondarySpatialFilterCollection * geometricConditions, vector<int> *logicalOps );
-
-      // Binds spatial condition geometries to the query statement
-      // (if provider supports bound spatial condition geometries)
-      void  BindSpatialGeoms( GdbiStatement* statement, FdoRdbmsFilterProcessor::BoundGeometryCollection* geometries );
-
-      // Frees all bound spatial condition geometries.
-      void  FreeBoundSpatialGeoms();
 
   public:
 

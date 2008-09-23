@@ -21,7 +21,6 @@ TYPEACTION=buildinstall
 TYPEBUILD=release
 TYPECONFIGURE=configure
 BUILDDOCS=no
-PREFIXVAL=/usr/local/fdo-3.3.0
 
 ### study parameters ###
 while test $# -gt 0
@@ -47,15 +46,6 @@ do
     else
         echo "$arg Invalid parameter $1"
 	exit 1
-    fi
-    shift
-    ;;
-  -p | --p | --prefix)
-    if test "$1" == ""; then
-        echo "$arg Invalid parameter $1"
-        exit 1
-    else
-        PREFIXVAL="$1"
     fi
     shift
     ;;
@@ -112,19 +102,13 @@ done
 
 if test "$SHOWHELP" == yes; then
    echo "************************************************************************************************************"
-   echo "build_linux.sh [--h]"
-   echo "               [--c BuildType]"
-   echo "               [--a Action]"
-   echo "               [--d BuildDocs]"
-   echo "               [--m ConfigMakefiles]"
-   echo "               [--p Prefix]"
-   echo " "
+   echo "build_linux.sh [--h] [--c BuildType] [--a Action] [--d BuildDocs] [--m ConfigMakefiles]"
+   echo "*"
    echo "Help:            --h[elp]"
    echo "BuildType:       --c[onfig] release(default), debug"
    echo "Action:          --a[ction] buildinstall(default), build, install, uninstall, clean"
    echo "BuildDocs:       --d[ocs] skip(default), build"
    echo "ConfigMakefiles: --m[akefile] configure(default), noconfigure"
-   echo "Prefix:          --p[refix] <fdo install location>"
    echo "************************************************************************************************************"
    exit 0
 fi
@@ -137,9 +121,9 @@ if test "$TYPECONFIGURE" == configure ; then
    autoconf
 
    if test "$TYPEBUILD" == release; then
-      ./configure --prefix="$PREFIXVAL"
+      ./configure
    else
-      ./configure --enable-debug=yes --prefix="$PREFIXVAL"
+      ./configure --enable-debug=yes
    fi
 fi
    
@@ -179,16 +163,16 @@ if test "$BUILDDOCS" == yes ; then
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
-   rm -rf "$PREFIXVAL/docs/HTML/Providers/MySQL"
-   rm -rf "$PREFIXVAL/docs/HTML/Providers/ODBC"
-   mkdir -p "$PREFIXVAL/docs/HTML/Providers"
+   rm -rf "/usr/local/fdo-3.3.0/docs/HTML/Providers/MySQL"
+   rm -rf "/usr/local/fdo-3.3.0/docs/HTML/Providers/ODBC"
+   mkdir -p "/usr/local/fdo-3.3.0/docs/HTML/Providers"
    if test -e "Docs/HTML/MySQL"; then
-      cp --force --recursive "Docs/HTML/MySQL" "$PREFIXVAL/docs/HTML/Providers"
-      cp --force --recursive "Docs/HTML/MySQL_managed" "$PREFIXVAL/docs/HTML/Providers"
+      cp --force --recursive "Docs/HTML/MySQL" "/usr/local/fdo-3.3.0/docs/HTML/Providers"
+      cp --force --recursive "Docs/HTML/MySQL_managed" "/usr/local/fdo-3.3.0/docs/HTML/Providers"
    fi
    if test -e "Docs/HTML/ODBC"; then
-      cp --force --recursive "Docs/HTML/ODBC" "$PREFIXVAL/docs/HTML/Providers"
-      cp --force --recursive "Docs/HTML/ODBC_managed" "$PREFIXVAL/docs/HTML/Providers"
+      cp --force --recursive "Docs/HTML/ODBC" "/usr/local/fdo-3.3.0/docs/HTML/Providers"
+      cp --force --recursive "Docs/HTML/ODBC_managed" "/usr/local/fdo-3.3.0/docs/HTML/Providers"
    fi
 fi
 

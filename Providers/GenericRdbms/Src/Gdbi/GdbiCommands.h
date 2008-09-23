@@ -230,20 +230,11 @@ public:
 	// this is relevant for Oracle only
 	int lob_create_ref(int sqlid, void **lob_ref);
 	int lob_destroy_ref(int sqlid, void *lob_ref);
-    int lob_get_size(int sqlid, void *lob_ref, unsigned int *size);
-    int lob_read_next(int sqlid, void *lob_ref, int rdbi_lob_type, unsigned int block_size, char *block, unsigned int *block_size_out, int *eol);
 
     int geom_to_fgf ( 
             int             sqlid,
             void *          rdbmsGeometryInfo_I,
-            int             defaultDim,
             void **         fgfGeometryByteArray_O );
-
-    int geom_from_fgf ( 
-            int             sqlid,
-            long            srid,
-            void *          fgfGeometryByteArray_I,
-            void **         rdbmsGeometryInfo_O );
 
 	int geom_srid_set(
 			int				sqlid,

@@ -1,16 +1,17 @@
 
+#pragma warning( disable: 4049 )  /* more than 64k source lines */
 
 /* this ALWAYS GENERATED file contains the IIDs and CLSIDs */
 
 /* link this file in with the server and any clients */
 
 
- /* File created by MIDL compiler version 7.00.0500 */
-/* at Fri Jun 06 10:41:47 2008
+ /* File created by MIDL compiler version 6.00.0347 */
+/* at Fri Mar 05 13:28:56 2004
  */
-/* Compiler settings for ..\..\..\..\..\src\xercesc\com\xml4com.idl:
-    Oicf, W1, Zp8, env=Win32 (32b run)
-    protocol : dce , ms_ext, c_ext, robust
+/* Compiler settings for \transient\xerces-c-src_2_5_0\src\xercesc\com\xml4com.idl:
+    Os, W1, Zp8, env=Win32 (32b run)
+    protocol : dce , ms_ext, c_ext
     error checks: allocation ref bounds_check enum stub_data 
     VC __declspec() decoration level: 
          __declspec(uuid()), __declspec(selectany), __declspec(novtable)
@@ -18,8 +19,7 @@
 */
 //@@MIDL_FILE_HEADING(  )
 
-#pragma warning( disable: 4049 )  /* more than 64k source lines */
-
+#if !defined(_M_IA64) && !defined(_M_AMD64)
 
 #ifdef __cplusplus
 extern "C"{
@@ -85,4 +85,6 @@ MIDL_DEFINE_GUID(CLSID, CLSID_XMLHTTPRequest,0x3A725053,0x15FB,0x4065,0x91,0x71,
 #endif
 
 
+
+#endif /* !defined(_M_IA64) && !defined(_M_AMD64)*/
 

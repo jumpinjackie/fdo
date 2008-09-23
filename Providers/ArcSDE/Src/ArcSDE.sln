@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Provider", "Provider\ArcSDEProvider.vcproj", "{6C04EF62-A3C2-4C4C-9BAB-30BE6AFC5762}"
 	ProjectSection(ProjectDependencies) = postProject
 		{B840E617-C94F-4E23-BEBA-4A9F3FBD92DB} = {B840E617-C94F-4E23-BEBA-4A9F3FBD92DB}
@@ -11,7 +11,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Provider", "Provider\ArcSDE
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Message", "Message\ArcSDEMessage.vcproj", "{B840E617-C94F-4E23-BEBA-4A9F3FBD92DB}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "..\..\..\Utilities\Common\FdoCommon.vcproj", "{9037A345-04EB-418C-98D0-3D5B19FC9D55}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "%FDOUTILITIES%\Common\FdoCommon.vcproj", "{9037A345-04EB-418C-98D0-3D5B19FC9D55}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "UnitTest\UnitTest.vcproj", "{02AF5684-A940-41EE-A372-E1639768414A}"
 	ProjectSection(ProjectDependencies) = postProject

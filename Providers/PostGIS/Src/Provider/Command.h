@@ -109,13 +109,6 @@ protected:
     // cursor declaration.
     void PgGenerateExecParams(details::pgexec_params_t& pgParams);
 
-    // Find Property definition in collection...
-    FdoPropertyDefinition *GetPropDefinition(FdoPropertyDefinitionCollection *propsDef, FdoStringP name);
-
-    // Find SRID in propertydef
-    FdoInt32 GetSRID(FdoPropertyDefinitionCollection *propsDef);
-
-
 }; // class Command
 
 template <typename T>
@@ -343,69 +336,6 @@ void Command<T>::PgGenerateExecParams(details::pgexec_params_t& pgParams)
     }
 
     FDOLOG_WRITE("Number of parameters: %u", pgParams.size());
-}
-
-// Find Property definition in collection...
-template <typename T>
-FdoPropertyDefinition* Command<T>::GetPropDefinition(FdoPropertyDefinitionCollection* propsDef, FdoStringP name)
-{
-    if (NULL == propsDef || !name.GetLength())
-        return NULL;
-
-    FdoPropertyDefinition* propDef = NULL;
-    FdoPropertyDefinition* propDefRt = NULL;
-
-    for (FdoInt32 i = 0; i < propsDef->GetCount(); i++)
-    {
-        if ((propDef = propsDef->GetItem(i)))
-        {
-            if (name == propDef->GetName())
-                return propDef;
-            if (!name.ICompare(propDef->GetName()))
-                propDefRt = propDef;
-        }
-    }
-
-    return propDefRt;
-}
-
-// Find SRID in propertydef
-template <typename T>
-FdoInt32 Command<T>::GetSRID(FdoPropertyDefinitionCollection *propsDef)
-{
-    if (NULL == propsDef)
-        return -1;
-
-   FdoInt32 currentSrid = -1;
-   FdoPropertyDefinition* propDef = NULL;
-
-    for (FdoInt32 i = 0; !currentSrid && i < propsDef->GetCount(); i++)
-    {
-        if ((propDef = propsDef->GetItem(i)))
-        {
-            if (FdoPropertyType_GeometricProperty == propDef->GetPropertyType())
-            {
-                // TODO: It won't work with multiple-geometric properties
-                FdoGeometricPropertyDefinition* geom = NULL;
-                geom = static_cast<FdoGeometricPropertyDefinition*>(propDef);
-
-                FdoString* csName = geom->GetSpatialContextAssociation();
-                SpatialContextCollection::Ptr spContexts(mConn->GetSpatialContexts());
-                if (NULL != csName)
-                {
-                    SpatialContext::Ptr spc(spContexts->FindItem(csName));
-                    if (NULL != spc)
-                    { 
-                        currentSrid = spc->GetSRID();
-                    }
-                }
-
-                FDOLOG_WRITE(L"\t+ %s (SRID=%d)", propDef->GetName(), currentSrid);
-            }
-        }
-    }
-
-    return currentSrid;
 }
 
 }} // namespace fdo::postgis

@@ -214,14 +214,14 @@ int local_odbcdr_col_act(
     SQLSMALLINT         cbColumnName = 0;
     SQLWCHAR            szColumnNameBuf[ODBCDR_MAX_BUFF_SIZE];
     rdbi_string_def     szColumnName;
-    SQLLEN              ssDataType = 0;
-    SQLLEN              ssDataType2 = -1;
-    SQLLEN              ssDataTypeDateTimeSubcode = 0;
-    SQLLEN              ssIsAutoIncrement = -1;
-    SQLLEN              ssLength = -1;
-    SQLLEN              ssIsNullable = -1;
-    SQLLEN              ssScale = -1;
-    SQLLEN              ssBinarySize = -1;
+    SQLSMALLINT         ssDataType = 0;
+    SQLSMALLINT         ssDataType2 = -1;
+    SQLSMALLINT         ssDataTypeDateTimeSubcode = 0;
+    SQLSMALLINT         ssIsAutoIncrement = -1;
+    SQLSMALLINT         ssLength = -1;
+    SQLSMALLINT         ssIsNullable = -1;
+    SQLSMALLINT         ssScale = -1;
+    SQLSMALLINT         ssBinarySize = -1;
     SQLINTEGER          ssSybaseTableId = -1;
     SQLINTEGER          ssSybaseColumnStatus = -1;
     SQLRETURN           ret = SQL_SUCCESS;
@@ -377,7 +377,7 @@ int local_odbcdr_col_act(
                 &ssDataTypeDateTimeSubcode );
             if (ret != ODBCDR_SUCCESS)
                 ssDataTypeDateTimeSubcode = -1; /* Some drivers do not support this subcode. */
-            (void) wcscpy(newNle.typeW, typeNumberToNameW(connData->driver_type, (int)ssDataType2, (int)ssDataTypeDateTimeSubcode, NULL));
+            (void) wcscpy(newNle.typeW, typeNumberToNameW(connData->driver_type, (int)ssDataType2, ssDataTypeDateTimeSubcode, NULL));
 
             ODBCDR_ODBC_ERR( SQLColAttributeW(
                 c->hStmt,
@@ -388,7 +388,7 @@ int local_odbcdr_col_act(
                 NULL, 
                 &ssLength  ),
                 SQL_HANDLE_STMT, c->hStmt, "SQLColAttribute", "Getting length" );
-            newNle.length = (int)ssLength;
+            newNle.length = ssLength;
 
             if (ssLength <= 0)
             {
@@ -402,7 +402,7 @@ int local_odbcdr_col_act(
                     NULL, 
                     &ssBinarySize  ),
                     SQL_HANDLE_STMT, c->hStmt, "SQLColAttribute", "Getting binary size" );
-                newNle.length = (int)ssBinarySize;
+                newNle.length = ssBinarySize;
             }
             if (newNle.length <=0 && isLongType)
             {
@@ -420,7 +420,7 @@ int local_odbcdr_col_act(
                 NULL, 
                 &ssScale  ),
                 SQL_HANDLE_STMT, c->hStmt, "SQLColAttribute", "Getting scale" );
-            newNle.scale = (int)ssScale;
+            newNle.scale = ssScale;
 
             if (newNle.length <=0 && ssDataType2 == SQL_DECIMAL)
             {
@@ -500,7 +500,7 @@ int local_odbcdr_col_act(
                 &ssDataTypeDateTimeSubcode );
             if (ret != ODBCDR_SUCCESS)
                 ssDataTypeDateTimeSubcode = -1; /* Some drivers do not support this subcode. */
-            (void) strcpy(newNle.type, typeNumberToName(connData->driver_type,(int)ssDataType2, (int)ssDataTypeDateTimeSubcode, NULL));
+            (void) strcpy(newNle.type, typeNumberToName(connData->driver_type,(int)ssDataType2, ssDataTypeDateTimeSubcode, NULL));
 
             ODBCDR_ODBC_ERR( SQLColAttribute(
                 c->hStmt,
@@ -511,7 +511,7 @@ int local_odbcdr_col_act(
                 NULL, 
                 &ssLength  ),
                 SQL_HANDLE_STMT, c->hStmt, "SQLColAttribute", "Getting length" );
-            newNle.length = (int)ssLength;
+            newNle.length = ssLength;
 
             if (ssLength <= 0)
             {
@@ -525,7 +525,7 @@ int local_odbcdr_col_act(
                     NULL, 
                     &ssBinarySize),
                     SQL_HANDLE_STMT, c->hStmt, "SQLColAttribute", "Getting binary size" );
-                newNle.length = (int)ssBinarySize;
+                newNle.length = ssBinarySize;
             }
             if (newNle.length <=0 && isLongType)
             {
@@ -543,7 +543,7 @@ int local_odbcdr_col_act(
                 NULL, 
                 &ssScale  ),
                 SQL_HANDLE_STMT, c->hStmt, "SQLColAttribute", "Getting scale" );
-            newNle.scale = (int)ssScale;
+            newNle.scale = ssScale;
 
             if (newNle.length <=0 && ssDataType2 == SQL_DECIMAL)
             {
@@ -611,7 +611,7 @@ int local_odbcdr_col_act(
                 !connData->skip_sybase_autogen_id_workaround &&
                 -1 == ssSybaseTableId)
             {
-                SQLLEN          dummy = 0;
+                SQLINTEGER          dummy = 0;
 	            if (sybase_columns_cursor == (odbcdr_cursor_def *)NULL)
                 {
             		rdbi_status = odbcdr_est_cursor( context, (char **)&sybase_columns_cursor);
@@ -647,7 +647,7 @@ int local_odbcdr_col_act(
             if (ODBCDriverType_Sybase == connData->driver_type &&
                 !connData->skip_sybase_autogen_id_workaround)
             {
-                SQLLEN          dummy = 0;
+                SQLINTEGER          dummy = 0;
 	            if (sybase_columns_cursor == (odbcdr_cursor_def *)NULL)
                 {
             		rdbi_status = odbcdr_est_cursor( context, (char **)&sybase_columns_cursor);
@@ -760,35 +760,35 @@ static int odbcdr_col_act_SQLColumns(
     odbcdr_connData_def	*connData;
     int 				rdbi_status = RDBI_GENERIC_ERROR;
     int 				owner_set = TRUE;
-    SQLLEN              cbColumnName = 0;
+    SQLINTEGER          cbColumnName = 0;
     SQLWCHAR            szColumnNameBuf[ODBCDR_MAX_BUFF_SIZE];
     rdbi_string_def     szColumnName;
-    SQLLEN              cbDataType = 0;
+    SQLINTEGER          cbDataType = 0;
     SQLSMALLINT         ssDataType = 0;
-    SQLLEN              cbTypeName = 0;
+    SQLINTEGER          cbTypeName = 0;
     SQLWCHAR            szTypeNameBuf[ODBCDR_MAX_BUFF_SIZE];
     rdbi_string_def     szTypeName;
-    SQLLEN              cbColumnSize = 0;
+    SQLINTEGER          cbColumnSize = 0;
     SQLINTEGER          iColumnSize = 0;
-    SQLLEN              cbBufferLen = 0;
+    SQLINTEGER          cbBufferLen = 0;
     SQLINTEGER          iBufferLen = 0;
-    SQLLEN              cbDecimalDigits = 0;
+    SQLINTEGER          cbDecimalDigits = 0;
     SQLINTEGER          iDecimalDigits = 0;
-    SQLLEN              cbNumPrecRadix = 0;
+    SQLINTEGER          cbNumPrecRadix = 0;
     SQLINTEGER          iNumPrecRadix = 0;
-    SQLLEN              cbNullable = 0;
+    SQLINTEGER          cbNullable = 0;
     SQLINTEGER          iNullable = 0;
-    SQLLEN              cbRemarks = 0;
+    SQLINTEGER          cbRemarks = 0;
     SQLWCHAR            szRemarksBuf[ODBCDR_MAX_BUFF_SIZE];
     rdbi_string_def     szRemarks;
-    SQLLEN              cbColumnDefault = 0;
+    SQLINTEGER          cbColumnDefault = 0;
     SQLWCHAR            szColumnDefaultBuf[ODBCDR_MAX_BUFF_SIZE];
     rdbi_string_def     szColumnDefault;
-    SQLLEN              cbSQLDataType = 0;
+    SQLINTEGER          cbSQLDataType = 0;
     SQLSMALLINT         ssSQLDataType = 0;
-    SQLLEN              cbOrdinalPosition = 0;
+    SQLINTEGER          cbOrdinalPosition = 0;
     SQLINTEGER          iOrdinalPosition = 0;
-    SQLLEN              cbIsNullable = 0;
+    SQLINTEGER          cbIsNullable = 0;
     SQLWCHAR            szIsNullableBuf[ODBCDR_MAX_BUFF_SIZE];
     rdbi_string_def     szIsNullable;
     SQLRETURN           ret = SQL_SUCCESS;
