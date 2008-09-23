@@ -158,18 +158,40 @@ static void convFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
     {
     case 1: //todate
         {
-            
+            //assumes date is stored in ISO 8601 string format
+            const char* s = (const char*)sqlite3_value_text(argv[0]);
+            sqlite3_result_text(context, s, -1, SQLITE_TRANSIENT);
         }
         break;
     case 2: //todouble
+        {
+            double d = sqlite3_value_double(argv[0]);
+            sqlite3_result_double(context, d);
+        }
         break;
     case 3: //tofloat
+        {
+            float f = (float)sqlite3_value_double(argv[0]);
+            sqlite3_result_double(context, f);
+        }
         break;
     case 4: //toint32
+        {
+            int i = sqlite3_value_int(argv[0]);
+            sqlite3_result_int(context, i);
+        }
         break;
     case 5: //toint64
+        {
+            sqlite_int64 i = sqlite3_value_int64(argv[0]);
+            sqlite3_result_int64(context, i);
+        }
         break;
     case 6: //tostring
+        {
+            const char* s = (const char*)sqlite3_value_text(argv[0]);
+            sqlite3_result_text(context, s, -1, SQLITE_TRANSIENT);
+        }
         break;
     }
 }
