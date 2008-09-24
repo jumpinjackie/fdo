@@ -1416,9 +1416,14 @@ void ShapeFile::ReadRecordInfo(SHPRecordInfo *pRecordInfo )
         pRecordInfo->nRecordNumber = SWAPLONG(shpRecordHeader.nRecordNumber);
         pRecordInfo->nContentLength = SWAPLONG(shpRecordHeader.nContentLength);
         
-        // in case pRecordInfo->nRecordNumber == 0 the header is emty and will be handled later as a null shape object
-        if(pRecordInfo->nRecordNumber < 0)
-            throw FdoException::Create (NlsMsgGet(SHP_INVALID_RECORD_NUMBER_ERROR, "Invalid record number %1$ld for file '%2$ls'.", pRecordInfo->nRecordNumber, FileName ()));
+        // in case nRecordNumber == 0 the header is empty and will be handled later as a null shape object.
+		// in case the record is corrupted then set it to sane values (empty header).
+        if(pRecordInfo->nRecordNumber < 0 || pRecordInfo->nContentLength < 0)
+        {
+            pRecordInfo->nRecordNumber = 0;
+            pRecordInfo->nContentLength = 0;
+//            throw FdoException::Create (NlsMsgGet(SHP_INVALID_RECORD_NUMBER_ERROR, "Invalid record number %1$ld for file '%2$ls'.", pRecordInfo->nRecordNumber, FileName ()));
+        }
     }
     else
         throw FdoCommonFile::LastErrorToException (L"ShapeFile::ReadRecordInfo()");
