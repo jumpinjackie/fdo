@@ -146,12 +146,12 @@ int odbcdr_define(
         if ( numGeomCols == 1 )
         {
             c->odbcdr_geom = (PBYTE)malloc( ODBCDR_MAX_ARRAY_SIZE * ODBCDR_BLOB_CHUNK_SIZE );
-            c->odbcdr_geomNI = (SQLINTEGER *)malloc( ODBCDR_MAX_ARRAY_SIZE * sizeof(SQLINTEGER));
+            c->odbcdr_geomNI = (SQLLEN *)malloc( ODBCDR_MAX_ARRAY_SIZE * sizeof(SQLLEN));
         }
         else
         {  
             c->odbcdr_geom = (PBYTE)realloc( c->odbcdr_geom, numGeomCols * ODBCDR_MAX_ARRAY_SIZE * ODBCDR_BLOB_CHUNK_SIZE );
-            c->odbcdr_geomNI = (SQLINTEGER *)realloc( c->odbcdr_geomNI, numGeomCols * ODBCDR_MAX_ARRAY_SIZE * sizeof(SQLINTEGER));
+            c->odbcdr_geomNI = (SQLLEN *)realloc( c->odbcdr_geomNI, numGeomCols * ODBCDR_MAX_ARRAY_SIZE * sizeof(SQLLEN));
         }
 
         // Do binds (the previous bound columns will be rebound because of reallocation)
@@ -166,7 +166,7 @@ int odbcdr_define(
 								        (SQLSMALLINT)  odbcdr_datatype,
                                         (SQLPOINTER)   (char *)&c->odbcdr_geom[offset * ODBCDR_BLOB_CHUNK_SIZE],
                                         (SQLINTEGER)   ODBCDR_BLOB_CHUNK_SIZE,
-								        (SQLLEN *)     (char *)&c->odbcdr_geomNI[offset]),
+								        &c->odbcdr_geomNI[offset]),
 						        SQL_HANDLE_STMT, c->hStmt,
 						        "SQLBindCol", "define" );
         }

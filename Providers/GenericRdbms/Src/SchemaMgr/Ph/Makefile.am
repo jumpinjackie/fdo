@@ -29,6 +29,7 @@ libSmPhGrd_la_SOURCES = \
   Fkey.cpp \
   Index.cpp \
   Mgr.cpp \
+  NullIndicator.cpp \
   Owner.cpp \
   SpatialContextGroupWriter.cpp \
   SpatialContextWriter.cpp \
@@ -41,6 +42,7 @@ noinst_HEADERS = $(libSmPhGrd_la_SOURCES) \
   Fkey.h \
   Index.h \
   Mgr.h \
+  NullIndicator.h \
   Owner.h \
   SpatialContextGroupWriter.h \
   SpatialContextWriter.h \

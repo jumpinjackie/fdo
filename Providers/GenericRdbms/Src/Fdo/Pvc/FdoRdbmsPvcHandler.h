@@ -37,7 +37,7 @@ typedef struct {
 		} value;
 		bool			 valueNeedsFree;
         int				 len;
-        GDBI_NI_TYPE	 null_ind;
+        GDBI_NI_TYPE	 *null_ind;
         wchar_t			 propertyName[GDBI_SCHEMA_ELEMENT_NAME_SIZE];
         FdoIStreamReader *reader;
         int				 pos;

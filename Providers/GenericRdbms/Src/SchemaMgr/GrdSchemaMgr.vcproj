@@ -703,6 +703,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\Ph\NullIndicator.cpp"
+					>
+				</File>
+				<File
 					RelativePath="Ph\Owner.cpp"
 					>
 				</File>
@@ -825,6 +829,10 @@
 				</File>
 				<File
 					RelativePath="Ph\Mgr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Ph\NullIndicator.h"
 					>
 				</File>
 				<File

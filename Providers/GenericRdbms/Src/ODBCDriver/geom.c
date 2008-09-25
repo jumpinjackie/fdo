@@ -1031,7 +1031,7 @@ geom_convertFromSqlServer_S(
                                         &lenOrIndex),
                             SQL_HANDLE_STMT, cursor->hStmt,
                             "SQLGetData", "getData");
-        cursor->odbcdr_geomNI[offset] = (SQLINTEGER) lenOrIndex;
+        cursor->odbcdr_geomNI[offset] = lenOrIndex;
     }
 
     // Create a byte array from the array of bytes.
@@ -1158,7 +1158,7 @@ geom_checkFetchStatusRow_S (
     )
 {
     int             status = true;
-    SQLINTEGER      nullInd = cursor->odbcdr_geomNI[ idxGeom_I * ODBCDR_MAX_ARRAY_SIZE + numRow_I];
+    SQLLEN      nullInd = cursor->odbcdr_geomNI[ idxGeom_I * ODBCDR_MAX_ARRAY_SIZE + numRow_I];
 
     if ( nullInd == SQL_NULL_DATA)
         status = true;

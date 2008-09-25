@@ -104,6 +104,8 @@ public:
                                     // If NULL, then this is not a bound query.
     );
 
+    virtual FdoPtr<FdoSmPhNullIndicator> CreateNullIndicator();
+
 	// Create generic writer for writing to a database table.
     virtual FdoPtr<FdoSmPhCommandWriter> CreateCommandWriter( FdoPtr<FdoSmPhRow> row );
 

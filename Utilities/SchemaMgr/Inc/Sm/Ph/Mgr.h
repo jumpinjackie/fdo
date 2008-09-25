@@ -153,6 +153,7 @@ class FdoSmPhSpatialContextWriter;
 class FdoSmPhSpatialContextGroupWriter;
 class FdoSmPhSpatialContextGeomWriter;
 class FdoSmPhReader;
+class FdoSmPhNullIndicator;
 
 /* TODO
 class FdoSmPhIndexWriter;
@@ -305,11 +306,10 @@ public:
     );
     virtual FdoPtr<FdoSmPhRdPropertyReader> CreateRdPropertyReader( FdoSmPhDbObjectP dbObject );
 
-    /// The following functions retrieve a database from the current connection.
-    //
-    /// Parameters:
-    ///  database: the name of the database to retrieve. If L"" then the default 
-    ///      database is retrieved.
+    /// Creates a Null indicator object, which hides the provider specific
+    /// details about null indicators
+
+    virtual FdoPtr<FdoSmPhNullIndicator> CreateNullIndicator() = 0;
 
     /// Get read-only pointer to database, NULL if database not found
     const FdoSmPhDatabase* RefDatabase(FdoStringP database = L"") const;

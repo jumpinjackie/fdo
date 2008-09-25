@@ -1615,11 +1615,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\inc\Sm\Ph\ColumnList.h"
+				RelativePath=".\Inc\Sm\Ph\ColumnList.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Inc\Sm\Ph\ColumnList.h"
+				RelativePath=".\inc\Sm\Ph\ColumnList.h"
 				>
 			</File>
 			<File
@@ -1752,6 +1752,10 @@
 			</File>
 			<File
 				RelativePath="Inc\Sm\Ph\Mgr.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\Sm\Ph\NullIndicator.h"
 				>
 			</File>
 			<File

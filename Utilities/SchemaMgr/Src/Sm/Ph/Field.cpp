@@ -38,8 +38,7 @@ FdoSmPhField::FdoSmPhField(
     mDefaultValue( defaultValue ),
     mbIsModified(false),
     mbCanBind(bCanBind),
-    mpBindString(NULL),
-	mNullInd(false)
+    mpBindString(NULL)
 {
     // Auto-add the field to its parent row
 	FdoSmPhFieldsP pFields = pRow->GetFields();
@@ -229,12 +228,12 @@ void FdoSmPhField::BindValue( )
         // Null indicators are provider specific. They will be properly set in GdbiCommands::Bind()
         if ( fieldValue.GetLength() == 0 ) {
             // set bind value to null
-            mNullInd = true; 
+            GetNullInd()->SetNull(); 
             mpBindString[0] = 0;
         }
         else {
             // set bind value to field value.
-            mNullInd = false; 
+            GetNullInd()->SetNNull(); 
             if ( GetManager()->IsRdbUnicode() )
                 wcscpy( (wchar_t*) mpBindString, fieldValue );
             else
