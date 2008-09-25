@@ -32,7 +32,7 @@ FdoSmPhGrdNullIndicator::FdoSmPhGrdNullIndicator(
 
 FdoSmPhGrdNullIndicator::~FdoSmPhGrdNullIndicator(void)
 {
-    delete mNullInd;
+    free(mNullInd);
 }
 
 _NI_TYPE* FdoSmPhGrdNullIndicator::GetDbIndicator()
