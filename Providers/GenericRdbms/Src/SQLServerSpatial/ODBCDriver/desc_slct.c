@@ -262,7 +262,7 @@ int local_odbcdr_desc_slct(
             break;
         case SQL_LONGVARBINARY:
 			*rdbi_type = RDBI_GEOMETRY;
-			*binary_size = sizeof(long);
+			*binary_size = sizeof(void*);
             break;
 		default:
             // ODBC doesn't return an error. This is better than a generic error.

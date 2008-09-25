@@ -24,7 +24,7 @@
 #include <Inc/rdbi.h>
 #endif
 
-#define         GDBI_NI_TYPE    long
+#define         GDBI_NI_TYPE    void
 
 #define         GDBI_DB_NAME_SIZE               129
 #define         GDBI_COLUMN_NAME_SIZE           RDBI_COLUMN_NAME_SIZE

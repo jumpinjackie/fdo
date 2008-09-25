@@ -23,6 +23,7 @@
 #include "Rd/QueryReader.h"
 #include "CommandWriter.h"
 #include "ClassWriter.h"
+#include "NullIndicator.h"
 #include "SpatialContextWriter.h"
 #include "SpatialContextGroupWriter.h"
 
@@ -65,6 +66,11 @@ FdoPtr<FdoSmPhRdQueryReader> FdoSmPhGrdMgr::CreateQueryReader(
 FdoPtr<FdoSmPhCommandWriter> FdoSmPhGrdMgr::CreateCommandWriter( FdoPtr<FdoSmPhRow> row )
 {
     return new FdoSmPhGrdCommandWriter(row, FDO_SAFE_ADDREF(this) );
+}
+
+FdoPtr<FdoSmPhNullIndicator> FdoSmPhGrdMgr::CreateNullIndicator()
+{
+    return new FdoSmPhGrdNullIndicator(mGdbiConnection);
 }
 
 FdoStringP FdoSmPhGrdMgr::ClassifyDbObject( FdoStringP tableName, FdoRdbmsOvSchemaMappingP mapping, FdoBoolean hasKey )

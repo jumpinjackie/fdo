@@ -57,6 +57,9 @@ FdoRdbmsPvcInsertHandler::~FdoRdbmsPvcInsertHandler()
         {
             for (int j=0; j<mInsertQueryCache[i].count; j++)
             {
+                if ( mInsertQueryCache[i].bind[j].null_ind ) 
+                    delete mInsertQueryCache[i].bind[j].null_ind;
+
                 if (NULL != mInsertQueryCache[i].bind[j].value.strvalue)
                     // the BLOB value was not allocated
                     if (mInsertQueryCache[i].bind[j].type != FdoDataType_BLOB)
@@ -72,6 +75,7 @@ FdoRdbmsPvcInsertHandler::~FdoRdbmsPvcInsertHandler()
 							mInsertQueryCache[i].bind[j].valueNeedsFree = false;
 						}
             }
+
             delete [] mInsertQueryCache[i].bind;
 			mInsertQueryCache[i].bind = NULL;
         }
@@ -150,7 +154,7 @@ long FdoRdbmsPvcInsertHandler::Execute( const FdoSmLpClassDefinition *classDefin
         FdoStringP colSpecString(L"");
 		FdoStringP insertStartString(L"");
 		FdoStringP whereString(L"");
-		int bindCount = 0;
+        int        bindCount = 0;
         // Reparse each time in the LOBs are involved
         // (the insert stm. may be different depending on the current values)
         if(insertQuery->qid != -1 && !FdoRdbmsLobUtility::ContainsLobs( classDefinition ) )
@@ -217,6 +221,10 @@ long FdoRdbmsPvcInsertHandler::Execute( const FdoSmLpClassDefinition *classDefin
             if (!bind)
                 throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_11, "Memory error"));
             memset (bind, 0, sizeof(FdoRdbmsPvcBindDef) * bindCount);
+
+            for ( int i = 0; i < bindCount; i++ ) 
+                mConnection->GetGdbiCommands()->alcnullind(1, &(bind[i].null_ind));
+
             int bind_no = 0;
             SetBindVariables(classDefinition, L"", bind_no, propValCollection, bind, gid);
 			
@@ -238,7 +246,7 @@ long FdoRdbmsPvcInsertHandler::Execute( const FdoSmLpClassDefinition *classDefin
 			else if (bind[i].type != FdoDataType_BLOB && bind[i].type != FdoDataType_String && bind[i].value.strvalue )
                 memset(bind[i].value.strvalue, 0, bind[i].len );
 
-            mConnection->GetGdbiCommands()->set_null( &bind[i].null_ind, 0, 0 );
+            mConnection->GetGdbiCommands()->set_null( bind[i].null_ind, 0, 0 );
         }
 
         SetBindValues(classDefinition, propValCollection, insertQuery, handleForeignAutoincrementedId);
@@ -255,6 +263,11 @@ long FdoRdbmsPvcInsertHandler::Execute( const FdoSmLpClassDefinition *classDefin
         {
             mConnection->GetGdbiCommands()->free_cursor( insertQuery->qid );
             insertQuery->qid = -1;
+            for ( int i = 0; i < insertQuery->count; i++ ) 
+            {
+                if ( insertQuery->bind[i].null_ind )
+                    delete insertQuery->bind[i].null_ind;
+            }
             delete [] insertQuery->bind;
             insertQuery->bind = NULL;
         }
@@ -755,7 +768,7 @@ void FdoRdbmsPvcInsertHandler::SetBindValues(const FdoSmLpClassDefinition *class
         {
             if (wcscmp(name, bind[j].propertyName) == 0)
             {
-                mConnection->GetGdbiCommands()->set_nnull( &bind[j].null_ind, 0, 0 );
+                mConnection->GetGdbiCommands()->set_nnull( bind[j].null_ind, 0, 0 );
 
                 if (bind[j].type == FdoRdbmsDataType_Geometry) {
 
@@ -784,7 +797,7 @@ void FdoRdbmsPvcInsertHandler::SetBindValues(const FdoSmLpClassDefinition *class
                         }
                     }
                     else
-                        mConnection->GetGdbiCommands()->set_null( &bind[j].null_ind, 0, 0 );
+                        mConnection->GetGdbiCommands()->set_null( bind[j].null_ind, 0, 0 );
 
                     FdoIGeometry *oldGeomValue = (FdoIGeometry*) bind[j].value.strvalue;
                     FDO_SAFE_RELEASE( oldGeomValue );
@@ -992,7 +1005,7 @@ void FdoRdbmsPvcInsertHandler::SetBindValues(const FdoSmLpClassDefinition *class
                                     bind[j].len = byteArr->GetCount();
 
                                     mConnection->GetGdbiCommands()->bind(insertQuery->qid, temp, RDBI_BLOB, bind[j].len,
-                                                        (char*)bind[j].value.strvalue, &bind[j].null_ind );
+                                                        (char*)bind[j].value.strvalue, bind[j].null_ind );
                                 }
                             }
                             break;
@@ -1031,7 +1044,7 @@ void FdoRdbmsPvcInsertHandler::SetBindValues(const FdoSmLpClassDefinition *class
 				strncpy((char*)bind[index].value.strvalue, charVal, bind[index].len);
 				((char*)bind[index].value.strvalue)[bind[index].len-1] = '\0';
 			}
-            mConnection->GetGdbiCommands()->set_nnull( &bind[index].null_ind, 0, 0 );
+            mConnection->GetGdbiCommands()->set_nnull( bind[index].null_ind, 0, 0 );
 
             if (geomSiKeys->GetCount() > 1)
             {
@@ -1048,7 +1061,7 @@ void FdoRdbmsPvcInsertHandler::SetBindValues(const FdoSmLpClassDefinition *class
 				    strncpy((char*)bind[index].value.strvalue, charVal, bind[index].len);
 				    ((char*)bind[index].value.strvalue)[bind[index].len-1] = '\0';
 			    }
-                mConnection->GetGdbiCommands()->set_nnull( &bind[index].null_ind, 0, 0 );
+                mConnection->GetGdbiCommands()->set_nnull( bind[index].null_ind, 0, 0 );
             }
         }
     }
@@ -1200,7 +1213,7 @@ void FdoRdbmsPvcInsertHandler::SetBindVariables(const FdoSmLpClassDefinition *cu
 						bind[bind_no].valueNeedsFree = true;
 					}
                     mConnection->GetGdbiCommands()->bind(gid, temp, rdbi_type, bind[bind_no].len,
-                                        (char*)bind[bind_no].value.strvalue, &bind[bind_no].null_ind);
+                                        (char*)bind[bind_no].value.strvalue, bind[bind_no].null_ind);
                 }
                 bind_no++;
 
@@ -1240,7 +1253,7 @@ void FdoRdbmsPvcInsertHandler::SetBindVariables(const FdoSmLpClassDefinition *cu
                         bind[bind_no].len = sizeof(FdoIGeometry *);
                         sprintf(temp, "%d", bind_no+1); // Parm name are one based
                         mConnection->GetGdbiCommands()->bind(gid, temp, RDBI_GEOMETRY, bind[bind_no].len,
-                                            (char *)&bind[bind_no].value.strvalue, &bind[bind_no].null_ind);
+                                            (char *)&bind[bind_no].value.strvalue, bind[bind_no].null_ind);
                         bind_no++;
 						const FdoSmPhColumnP gColumn = ((FdoSmLpSimplePropertyDefinition*)geomProp)->GetColumn();
 						FdoSmPhColumnGeomP geomCol = gColumn.p->SmartCast<FdoSmPhColumnGeom>();
@@ -1269,7 +1282,7 @@ void FdoRdbmsPvcInsertHandler::SetBindVariables(const FdoSmLpClassDefinition *cu
 					        bind[bind_no].value.strvalue = new char[bind[bind_no].len];
 					        bind[bind_no].valueNeedsFree = true;
                             mConnection->GetGdbiCommands()->bind(gid, temp, rdbi_type, bind[bind_no].len,
-                                                (char*)bind[bind_no].value.strvalue, &bind[bind_no].null_ind);
+                                                (char*)bind[bind_no].value.strvalue, bind[bind_no].null_ind);
                             bind_no++;
 
                             // Handle Y ordinate column.
@@ -1284,7 +1297,7 @@ void FdoRdbmsPvcInsertHandler::SetBindVariables(const FdoSmLpClassDefinition *cu
 					        bind[bind_no].value.strvalue = new char[bind[bind_no].len];
 					        bind[bind_no].valueNeedsFree = true;
                             mConnection->GetGdbiCommands()->bind(gid, temp, rdbi_type, bind[bind_no].len,
-                                                (char*)bind[bind_no].value.strvalue, &bind[bind_no].null_ind);
+                                                (char*)bind[bind_no].value.strvalue, bind[bind_no].null_ind);
                             bind_no++;
 
                             // Handle Z ordinate column.
@@ -1301,7 +1314,7 @@ void FdoRdbmsPvcInsertHandler::SetBindVariables(const FdoSmLpClassDefinition *cu
     					        bind[bind_no].value.strvalue = new char[bind[bind_no].len];
 					            bind[bind_no].valueNeedsFree = true;
                                 mConnection->GetGdbiCommands()->bind(gid, temp, rdbi_type, bind[bind_no].len,
-                                                    (char*)bind[bind_no].value.strvalue, &bind[bind_no].null_ind);
+                                                    (char*)bind[bind_no].value.strvalue, bind[bind_no].null_ind);
                                 bind_no++;
                             }
                         }
@@ -1336,7 +1349,7 @@ void FdoRdbmsPvcInsertHandler::SetBindVariables(const FdoSmLpClassDefinition *cu
 					}
 					bind[bind_no].valueNeedsFree = true;
                     mConnection->GetGdbiCommands()->bind(gid, temp, rdbi_type, bind[bind_no].len,
-                                        (char*)bind[bind_no].value.strvalue, &bind[bind_no].null_ind);
+                                        (char*)bind[bind_no].value.strvalue, bind[bind_no].null_ind);
                     bind_no++;
 
                     colName = columnSi2->GetName();
@@ -1358,7 +1371,7 @@ void FdoRdbmsPvcInsertHandler::SetBindVariables(const FdoSmLpClassDefinition *cu
 					}
 					bind[bind_no].valueNeedsFree = true;
                     mConnection->GetGdbiCommands()->bind(gid, temp, rdbi_type, bind[bind_no].len,
-                                        (char*)bind[bind_no].value.strvalue, &bind[bind_no].null_ind);
+                                        (char*)bind[bind_no].value.strvalue, bind[bind_no].null_ind);
                     bind_no++;
                 }
                 break;
@@ -1405,7 +1418,7 @@ void FdoRdbmsPvcInsertHandler::SetBindVariables(const FdoSmLpClassDefinition *cu
                         bind[bind_no].value.strvalue = new char[bind[bind_no].len];
                         bind[bind_no].valueNeedsFree = true;
                         mConnection->GetGdbiCommands()->bind(gid, temp, RDBI_STRING, bind[bind_no].len,
-                                          (char*)bind[bind_no].value.strvalue, &bind[bind_no].null_ind);
+                                          (char*)bind[bind_no].value.strvalue, bind[bind_no].null_ind);
 
                         bind_no++;
                     }

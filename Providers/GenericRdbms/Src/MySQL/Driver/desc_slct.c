@@ -100,7 +100,7 @@ int mysql_desc_slct (
 										*binary_size = sizeof(long);
 										break;
 									case RDBI_GEOMETRY:
-										*binary_size = sizeof(long); // geometry address
+										*binary_size = sizeof(void*); // geometry address
 										break;
                                     case RDBI_LONGLONG:
 #ifdef _WIN32

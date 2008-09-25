@@ -258,25 +258,10 @@ void FdoSmPhGrdCommandWriter::Bind( GdbiStatement* stmt, FdoSmPhFieldsP binds, b
         for ( cidx = 0; cidx < binds->GetCount(); cidx++ ) {
             FdoSmPhFieldP pField = binds->GetItem(cidx);
             if ( GetManager()->IsRdbUnicode() )
-                stmt->Bind( cidx + 1, pField->GetBindSize(), (wchar_t*) pField->GetBindString(), pField->GetNullInd() );                
+                stmt->Bind( cidx + 1, pField->GetBindSize(), (wchar_t*) pField->GetBindString(), pField->GetNullInd()->GetDbIndicator() );                
             else
-                stmt->Bind( cidx + 1, pField->GetBindSize(), (char*) pField->GetBindString(), pField->GetNullInd() );                
+                stmt->Bind( cidx + 1, pField->GetBindSize(), (char*) pField->GetBindString(), pField->GetNullInd()->GetDbIndicator() );                
         }
     } 
-
-    // Set the value for the NI. It is provider specific.
-    for ( cidx = 0; cidx < binds->GetCount(); cidx++ ) {
-        FdoSmPhGrdMgrP mgr = GetManager().p->SmartCast<FdoSmPhGrdMgr>();
-        GdbiConnection* connection = mgr->GetGdbiConnection();
-        GdbiCommands* cmds = connection->GetCommands();
-        FdoSmPhFieldP pField = binds->GetItem(cidx);
-
-        if ( pField->GetCanBind() ) {
-            if ( pField->GetFieldValue().GetLength() != 0)
-                cmds->set_nnull(pField->GetNullInd(), 0, 0);
-            else
-                cmds->set_null(pField->GetNullInd(), 0, 0);
-        }
-    }
 }
 
