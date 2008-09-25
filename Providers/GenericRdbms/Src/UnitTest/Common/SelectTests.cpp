@@ -407,15 +407,15 @@ void SelectTests::describe ()
     int type;
     int size;
     int null_ok;
-    int null_name;
-    int null_initial;
-    int null_grade;
-    int null_salutation;
-    int null_employee;
-    int null_height;
-    int null_salary;
-    int null_birthday;
-    int null_phone;
+    FdoInt64 null_name;
+    FdoInt64 null_initial;
+    FdoInt64 null_grade;
+    FdoInt64 null_salutation;
+    FdoInt64 null_employee;
+    FdoInt64 null_height;
+    FdoInt64 null_salary;
+    FdoInt64 null_birthday;
+    FdoInt64 null_phone;
     int rows;
 
     cursor = -1;
