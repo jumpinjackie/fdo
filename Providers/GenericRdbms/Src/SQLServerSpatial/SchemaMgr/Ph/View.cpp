@@ -59,7 +59,7 @@ bool FdoSmPhSqsView::Delete()
 {
     FdoStringP sqlStmt = FdoStringP::Format(
         L"drop view %ls",
-        GetDbName()
+        (FdoString*) GetDbName()
     );
 
     ActivateOwnerAndExecute( sqlStmt );

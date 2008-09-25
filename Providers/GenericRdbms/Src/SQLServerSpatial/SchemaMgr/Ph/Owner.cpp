@@ -391,7 +391,7 @@ bool FdoSmPhSqsOwner::Add()
 
     FdoStringP sqlStmt = FdoStringP::Format(
         L"create database %ls",
-        GetDbName()
+        (FdoString*) GetDbName()
     );
 
     // Create the owner (datastore)
@@ -489,7 +489,7 @@ bool FdoSmPhSqsOwner::Delete()
 
     FdoStringP sqlStmt = FdoStringP::Format(
         L"drop database %ls",
-        GetDbName()
+        (FdoString*) GetDbName()
     );
 
     // The SqlServer "drop database must be in it's own transaction
