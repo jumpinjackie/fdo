@@ -101,7 +101,7 @@ size_t FdoOwsHttpHandler::_headerCallback( void *ptr, size_t size, size_t nmemb)
         // parse the HTTP return code and find out 
         // whether current document is valid
         if (len > FdoOwsGlobals::MIN_LEN_HTTP_RESPONSE_FIRST_LINE && 
-            strncmp((const char*)ptr, FdoOwsGlobals::HTTP_SLASH, sizeof(FdoOwsGlobals::HTTP_SLASH) - 1) == 0)
+            strncmp((const char*)ptr, FdoOwsGlobals::HTTP_SLASH, FdoOwsGlobals::HTTP_SLASH_LEN) == 0)
         {
             char retCodeStr[FdoOwsGlobals::LEN_HTTP_RET_CODE+1];
             strncpy(retCodeStr, 
@@ -565,7 +565,7 @@ void FdoOwsHttpHandler::SetLength( FdoInt64 length )
 
 FdoInt64 FdoOwsHttpHandler::GetLength()
 {
-    return (FdoInt64)0xffffffff;
+    return (FdoInt64)-1;
 }
 
 FdoInt64 FdoOwsHttpHandler::GetIndex()
