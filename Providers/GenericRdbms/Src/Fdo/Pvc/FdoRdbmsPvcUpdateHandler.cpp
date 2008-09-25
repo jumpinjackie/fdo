@@ -416,7 +416,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
         for ( int i = 0; i < count; i++ ) 
         {
             if ( values[i].null_ind )
-                delete values[i].null_ind;
+                free(values[i].null_ind);
         }
         delete [] values;
         return numberOfRows;
@@ -927,7 +927,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
         for( i = 0; i < count; i++ )
         {
             if ( values[i].null_ind )
-                delete values[i].null_ind;
+                free(values[i].null_ind);
 
             if ( values[i].valueNeedsFree && 
 				values[i].value.strvalue && 
