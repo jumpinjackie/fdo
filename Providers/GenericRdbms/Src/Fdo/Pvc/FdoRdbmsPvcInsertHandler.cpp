@@ -58,7 +58,7 @@ FdoRdbmsPvcInsertHandler::~FdoRdbmsPvcInsertHandler()
             for (int j=0; j<mInsertQueryCache[i].count; j++)
             {
                 if ( mInsertQueryCache[i].bind[j].null_ind ) 
-                    delete mInsertQueryCache[i].bind[j].null_ind;
+                    free(mInsertQueryCache[i].bind[j].null_ind);
 
                 if (NULL != mInsertQueryCache[i].bind[j].value.strvalue)
                     // the BLOB value was not allocated
@@ -266,7 +266,7 @@ long FdoRdbmsPvcInsertHandler::Execute( const FdoSmLpClassDefinition *classDefin
             for ( int i = 0; i < insertQuery->count; i++ ) 
             {
                 if ( insertQuery->bind[i].null_ind )
-                    delete insertQuery->bind[i].null_ind;
+                    free(insertQuery->bind[i].null_ind);
             }
             delete [] insertQuery->bind;
             insertQuery->bind = NULL;
