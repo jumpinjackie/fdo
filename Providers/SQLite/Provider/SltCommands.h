@@ -91,7 +91,7 @@ class SltExtendedSelect: public SltFeatureCommand<FdoIExtendedSelect>
         virtual void SetLockStrategy(FdoLockStrategy value) { };
         virtual FdoIFeatureReader* Execute() 
         {
-            return m_connection->Select(m_className, m_filter, m_properties);
+            return m_connection->Select(m_className, m_filter, m_properties, false);
         }
         virtual FdoIFeatureReader* ExecuteWithLock()        { return NULL; }
         virtual FdoILockConflictReader* GetLockConflicts()  { return NULL; }
@@ -111,7 +111,7 @@ class SltExtendedSelect: public SltFeatureCommand<FdoIExtendedSelect>
 
         virtual FdoIScrollableFeatureReader* ExecuteScrollable()
         {
-            return NULL;
+            return m_connection->Select(m_className, m_filter, m_properties, true);
         }
 
         //-------------------------------------------------------

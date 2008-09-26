@@ -221,6 +221,12 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
 
     m_fromwhere = tmpstr;
 
+    if (m_bScrollable)
+    {
+        //in case we are scrollable, get the feature count, we will need it for ReadLast() and Count()
+        m_count = m_connection->GetFeatureCount(fcname);
+    }
+
     //remember the geometry encoding format
     SltMetadata* md = m_connection->GetMetadata(fcname);
     m_eGeomFormat = md->GetGeomFormat();
@@ -351,7 +357,7 @@ void SltReader::Requery2()
 
     m_sql += m_fromwhere;
 
-    m_curfid = 1;
+    m_curfid = 0; //position prior to first record 
     m_closeOpcode = -1;
 
     if (m_si)
@@ -504,14 +510,14 @@ bool SltReader::ReadNext()
     Vdbe* v = (Vdbe*)m_pStmt;
 
     //use spatial iterator if any
-    if (m_si)
+    if (m_si || m_bScrollable)
     {
         while (1)
         {
             m_curfid ++;
 
             //are we at the end of the current spatial iterator batch?
-            if (m_curfid >= m_siEnd)
+            if (m_si && m_curfid >= m_siEnd)
             {
                 int start;
                 bool ret = m_si->NextRange(start, m_siEnd);
@@ -522,8 +528,13 @@ bool SltReader::ReadNext()
 
                 m_curfid = (sqlite3_int64)start;
             }
+            else if (m_bScrollable && m_curfid > m_count)
+            {
+                //If we are useing scrollable, have we scrolled past the end of the 
+                //data?
+                return false;
+            }
             
-
             //we have had at least once successful hit
             if (m_closeOpcode != -1)
             {
@@ -553,7 +564,7 @@ bool SltReader::ReadNext()
 
             if (sqlite3_step(m_pStmt) == SQLITE_ROW)
             {
-                //the opcode that will be execute after a step
+                //the opcode that will be executed after a step
                 //closes off the table locks, etc. We want to skip
                 //that for speed -- here we remember the program counter
                 //necessary for closing off the query, and we will
@@ -888,38 +899,113 @@ FdoDataType SltReader::GetColumnType(FdoString* columnName)
 // FdoIScrollableFeatureReader implementation
 //-------------------------------------------------------
 
+//Helper that moves the scrollable reader to the next requested
+//record ID. It returns true if the record exists and false if it
+//has been deleted
+bool SltReader::PositionScrollable(sqlite_int64 fid)
+{
+    m_curfid = fid - 1; //initialize to one before the one we need
+
+    //move to the record we want by simply calling ReadNext() 
+    // -- it will sort out the mess.
+    bool res = ReadNext();
+
+    //If the record exists, m_curfid is set to it,
+    //otherwise it will get incremented to the next available.
+    //This way we can infer whether the record we wanted was empty.
+    if (m_curfid == fid)
+        return true;
+
+    m_curfid = 0;
+    return false;
+}
+
+
 int SltReader::Count()
 {
-    return 0;
+    return m_count;
 }
 
 bool SltReader::ReadFirst()
 {
-    return false;
+    return PositionScrollable(1);
 }
 
 bool SltReader::ReadLast()
 {
-    return false;
+    //TODO: if ReadLast is called a lot, this will get slow,
+    //we could remember the count over the lifetime of the reader
+    //to optimize.
+    return PositionScrollable(m_count);
 }
 
 bool SltReader::ReadPrevious()
 {
-    return false;
+    if (m_curfid > 1)
+    {
+        m_curfid--;
+        return PositionScrollable(m_curfid);
+    }
+    else
+    {
+        //unset the reader if we scroll past the beginning
+        m_curfid = 0;
+        return false;
+    }
 }
 
 bool SltReader::ReadAt(FdoPropertyValueCollection* key)
 {
+    //Assumes a single integer ID
+    FdoPtr<FdoPropertyValue> pv = key->GetItem(0);
+    FdoPtr<FdoValueExpression> expr = pv->GetValue();
+    FdoLiteralValue* lv = (FdoLiteralValue*)expr.p;
+
+    if (lv->GetLiteralValueType() == FdoLiteralValueType_Data)
+    {
+        FdoDataValue* dv = (FdoDataValue*)lv;
+        sqlite_int64 want_fid = 0;
+
+        if (dv->GetDataType() == FdoDataType_Int64)
+            want_fid = ((FdoInt64Value*)dv)->GetInt64();
+        else if (dv->GetDataType() == FdoDataType_Int32)
+            want_fid = ((FdoInt32Value*)dv)->GetInt32();
+
+        if (want_fid == 0)
+            return false;
+
+        return PositionScrollable(want_fid);
+    }
+
     return false;
 }
 
-bool SltReader::ReadAtIndex(unsigned int recordindex)
+bool SltReader::ReadAtIndex(unsigned int recordIndex)
 {
-    return false;
+    return PositionScrollable(recordIndex);
 }
 
 unsigned int SltReader::IndexOf(FdoPropertyValueCollection* key)
 {
+    //Assumes a single integer ID and simply returns the number back
+    //as equal to the requested record index
+    FdoPtr<FdoPropertyValue> pv = key->GetItem(0);
+    FdoPtr<FdoValueExpression> expr = pv->GetValue();
+    FdoLiteralValue* lv = (FdoLiteralValue*)expr.p;
+
+    if (lv->GetLiteralValueType() == FdoLiteralValueType_Data)
+    {
+        FdoDataValue* dv = (FdoDataValue*)lv;
+
+        if (dv->GetDataType() == FdoDataType_Int64)
+            return ((FdoInt64Value*)dv)->GetInt64();
+        else if (dv->GetDataType() == FdoDataType_Int32)
+            return ((FdoInt32Value*)dv)->GetInt32();
+    }
+
+    
+    //TODO: also return 0 if record is empty -- need to move the reader to 
+    //this record to check, and then move it back ...
     return 0;
 }
 

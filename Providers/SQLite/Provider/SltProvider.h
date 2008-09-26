@@ -141,9 +141,10 @@ public:
     
     void                CreateDatabase          ();
 
-    FdoIFeatureReader*  Select                 (FdoIdentifier*          fcname, 
+    SltReader*  Select                         (FdoIdentifier*          fcname, 
                                                 FdoFilter*              filter, 
-                                                FdoIdentifierCollection* props);
+                                                FdoIdentifierCollection* props,
+                                                bool                    scrollable);
 
     FdoIDataReader*     SelectAggregates       (FdoIdentifier*             fcname, 
                                                 FdoIdentifierCollection*   properties,
@@ -174,6 +175,7 @@ public:
     void            GetExtents(const wchar_t* fcname, double ext[4]);
     SltMetadata*    GetMetadata(const char* table);
     SltReader*      CheckForSpatialExtents(FdoIdentifierCollection* props, FdoFeatureClass* fc);
+    int             GetFeatureCount(const char* table);
     
     sqlite3_stmt*   GetCachedParsedStatement(const std::string& sql);
     void            ReleaseParsedStatement(const std::string& sql, sqlite3_stmt* stmt);
