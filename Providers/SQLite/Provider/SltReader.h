@@ -20,6 +20,7 @@
 #define SLT_READER_H
 
 #include "PropertyNameIndex.h"
+#include "FdoIScrollableFeatureReader.h"
 
 class SltConnection;
 class SpatialIterator;
@@ -51,7 +52,7 @@ struct StringRec
 };
 
 //feature reader -- returned when executing a select command
-class SltReader :   public FdoIFeatureReader, 
+class SltReader :   public FdoIScrollableFeatureReader, 
                     public FdoIDataReader, 
                     public FdoISQLDataReader
 {
@@ -67,7 +68,8 @@ class SltReader :   public FdoIFeatureReader,
                     const char*                 fcname, 
                     const char*                 where, 
                     SpatialIterator*            si,
-                    bool                        useFastStepping);
+                    bool                        useFastStepping,
+                    bool                        scrollable);
 
         virtual ~SltReader();
 
@@ -131,6 +133,17 @@ protected:
          virtual FdoDataType         GetColumnType   (FdoString* columnName);
 
     //-------------------------------------------------------
+    // FdoIScrollableFeatureReader implementation
+    //-------------------------------------------------------
+        virtual int                  Count();
+        virtual bool                 ReadFirst();
+        virtual bool                 ReadLast();
+        virtual bool                 ReadPrevious();
+        virtual bool                 ReadAt(FdoPropertyValueCollection* key);
+        virtual bool                 ReadAtIndex( unsigned int recordindex );
+        virtual unsigned int         IndexOf(FdoPropertyValueCollection* key);
+
+    //-------------------------------------------------------
     // Access values by index
     //-------------------------------------------------------
 
@@ -188,6 +201,7 @@ protected:
         int                 m_siEnd;
         sqlite3_int64       m_curfid;
         bool                m_bUseTransaction;
+        bool                m_bScrollable;
 };
 
 

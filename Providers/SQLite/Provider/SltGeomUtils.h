@@ -256,16 +256,16 @@ static __forceinline void AddToExtent(int npts, int dim, double* __restrict pts,
     __m128d MIN = _mm_loadu_pd((double*)ext);
     __m128d MAX = _mm_loadu_pd((double*)(ext+2));
     double * ptr = pts;
-    double * end = pts + (npts * dim);
+    int n = npts;
 
+    __m128d PT;
     do
     {
-        __m128d PT = _mm_loadu_pd((double*)ptr);
+        PT = _mm_loadu_pd((double*)ptr);
         MIN = _mm_min_pd(MIN, PT);
         MAX = _mm_max_pd(MAX, PT);
         ptr += dim;
-    } while (ptr != end);
-
+    } while (--n > 0);
 
     _mm_storeu_pd((double*)ext, MIN);
     _mm_storeu_pd((double*)(ext+2), MAX);

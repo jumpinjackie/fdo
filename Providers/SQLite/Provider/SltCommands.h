@@ -1,3 +1,4 @@
+#pragma once
 // 
 //  
 //  Copyright (C) 2008 Autodesk Inc.
@@ -19,6 +20,7 @@
 #include "SltCommandTemplates.h"
 #include "SltReader.h"
 #include "SltConversionUtils.h"
+#include "FdoIExtendedSelect.h"
 
 ///Now featuring lasagna comments!
 
@@ -46,34 +48,30 @@ class SltDescribeSchema : public SltCommand<FdoIDescribeSchema>
     public:
         virtual FdoString* GetSchemaName()                      { return L"SQLiteSchema"; }
         virtual void SetSchemaName(FdoString* value)            { ; }
-        virtual FdoStringCollection* GetClassNames()            { return NULL; }
-        virtual void SetClassNames(FdoStringCollection* value)  { ; }
         virtual FdoFeatureSchemaCollection* Execute()   
         { 
             return m_connection->DescribeSchema(); 
         }
 };
 
-
 ///\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ///\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ///\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
-///                                   SELECT
+///                                   SELECT (Regular and Extended)
 ///\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ///\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ///\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
-class SltSelect : public SltFeatureCommand<FdoISelect>
+class SltExtendedSelect: public SltFeatureCommand<FdoIExtendedSelect>
 {
-
     public:
-        SltSelect(SltConnection* connection)
-            : SltFeatureCommand<FdoISelect>(connection)
+        SltExtendedSelect(SltConnection* connection)
+            : SltFeatureCommand<FdoIExtendedSelect>(connection)
         {
             m_properties = FdoIdentifierCollection::Create();
         }
 
     protected:
-        virtual ~SltSelect()
+        virtual ~SltExtendedSelect()
         {
             m_properties->Release();
         }
@@ -94,17 +92,33 @@ class SltSelect : public SltFeatureCommand<FdoISelect>
         }
         virtual FdoIFeatureReader* ExecuteWithLock()        { return NULL; }
         virtual FdoILockConflictReader* GetLockConflicts()  { return NULL; }
-        virtual FdoIdentifierCollection* GetOrdering()      { return NULL; }
+        virtual FdoIdentifierCollection* GetOrdering()      { return FdoIdentifierCollection::Create(); }
         virtual void SetOrderingOption(FdoOrderingOption option) {}
         virtual FdoOrderingOption GetOrderingOption()       { return (FdoOrderingOption)0; }
 
-    //-------------------------------------------------------
-    // Variables
-    //-------------------------------------------------------
+    public:
 
-    private:
-        FdoIdentifierCollection* m_properties;
+        //-------------------------------------------------------
+        // FdoIExtendedSelect implementation
+        //-------------------------------------------------------
+
+        virtual void SetOrderingOption(FdoString* propertyName, FdoOrderingOption  option)  { /*TODO:*/ }
+        virtual FdoOrderingOption GetOrderingOption(FdoString* propertyName)                { return (FdoOrderingOption)0;/*TODO:*/ }
+        virtual void ClearOrderingOptions()                                                 { /*TODO:*/ }
+
+        virtual FdoIScrollableFeatureReader* ExecuteScrollable()
+        {
+            return NULL;
+        }
+
+        //-------------------------------------------------------
+        // Variables
+        //-------------------------------------------------------
+
+        private:
+            FdoIdentifierCollection* m_properties;
 };
+
 
 
 ///\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
@@ -353,7 +367,13 @@ class SltInsert : public SltCommand<FdoIInsert>
 
         void PrepareSQL()
         {
-            std::string sql = "INSERT INTO " + m_fcname + " (";
+            std::string fcNameWithoutSchema = m_fcname;
+            int indexOf = fcNameWithoutSchema.find(":");
+            if (indexOf > 0)
+            {
+                fcNameWithoutSchema = fcNameWithoutSchema.substr(indexOf + 1, fcNameWithoutSchema.length() - indexOf - 1);
+            }
+            std::string sql = "INSERT INTO " + fcNameWithoutSchema + " (";
 
             for (int i=0; i<m_properties->GetCount(); i++)
             {
@@ -523,8 +543,10 @@ public:
         //TODO: this is kind of dubious -- we map the SC name
         //to the SRID column. The assumption here is that the
         //spatial context name is a string that maps to an integer,
-        tmp = W2A_SLOW(m_scName.c_str());
-        sc_sql += tmp.empty() ? "NULL": "'" + tmp + "'";
+        //tmp = W2A_SLOW(m_scName.c_str());
+        //sc_sql += tmp.empty() ? "NULL": "'" + tmp + "'";
+        //tmp = W2A_SLOW(m_scName.c_str());
+        sc_sql += "'0'";
         sc_sql += ",";
 
         tmp = W2A_SLOW(m_coordSysName.c_str());
@@ -608,11 +630,12 @@ class SltApplySchema : public SltCommand<FdoIApplySchema>
 
 public:
     SltApplySchema(SltConnection* connection)
-        : SltCommand<FdoIApplySchema>(connection),
-          m_schema(NULL)
+        : SltCommand<FdoIApplySchema>(connection)
                                                                             { }
 
-    virtual ~SltApplySchema()                                               { FDO_SAFE_RELEASE(m_schema); }
+    virtual ~SltApplySchema()
+                                                                            { }
+
    
     //-------------------------------------------------------------------------
     // FdoIApplySchema
@@ -620,18 +643,11 @@ public:
 
     virtual FdoFeatureSchema*           GetFeatureSchema()                  { return FDO_SAFE_ADDREF(m_schema); }
     virtual void                        SetFeatureSchema(FdoFeatureSchema* value) 
-    {
-        FDO_SAFE_RELEASE(m_schema);
-        m_schema = FDO_SAFE_ADDREF(value); 
-    }
-
+                                                                            { m_schema = FDO_SAFE_ADDREF(value); }
     virtual FdoPhysicalSchemaMapping*   GetPhysicalMapping()                { return NULL; }
-    
     virtual void                        SetPhysicalMapping(FdoPhysicalSchemaMapping* value) 
                                                                             { }
-    
     virtual FdoBoolean                  GetIgnoreStates()                   { return true; } 
-    
     virtual void                        SetIgnoreStates( FdoBoolean ignoreStates ) 
                                                                             { }
     

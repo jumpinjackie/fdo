@@ -19,6 +19,8 @@
 #ifndef SLCAPABILITIES_H
 #define SLCAPABILITIES_H
 
+#include "SltCommandType.h"
+
 class SltCapabilities  : public FdoIConnectionCapabilities,
                          public FdoISchemaCapabilities,
                          public FdoICommandCapabilities,
@@ -215,6 +217,7 @@ class SltCapabilities  : public FdoIConnectionCapabilities,
                                                                             FdoCommandType_SelectAggregates,
                                                                             FdoCommandType_CreateDataStore,
                                                                 //          FdoCommandType_DestroyDataStore,
+                                                                            SltCommandType_ExtendedSelect,
         };
 
         size = sizeof(commandsReadWrite) / sizeof(FdoCommandType);

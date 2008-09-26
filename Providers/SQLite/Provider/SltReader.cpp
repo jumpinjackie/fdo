@@ -75,7 +75,8 @@ m_wkbBuffer(NULL),
 m_wkbBufferLen(0),
 m_closeDB(false),
 m_bUseTransaction(true),
-m_useFastStepping(false)
+m_useFastStepping(false),
+m_bScrollable(false)
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
 
@@ -104,7 +105,8 @@ m_wkbBuffer(NULL),
 m_wkbBufferLen(0),
 m_closeDB(true),
 m_bUseTransaction(true),
-m_useFastStepping(false)
+m_useFastStepping(false),
+m_bScrollable(false)
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
 
@@ -121,7 +123,7 @@ m_useFastStepping(false)
 //requested columns collection is empty, it will start out with a query
 //for just featid and geometry, then redo the query if caller asks for other
 //property values
-SltReader::SltReader(SltConnection* connection, FdoIdentifierCollection* props, const char* fcname, const char* where, SpatialIterator* si, bool useFastStepping)
+SltReader::SltReader(SltConnection* connection, FdoIdentifierCollection* props, const char* fcname, const char* where, SpatialIterator* si, bool useFastStepping, bool scrollable)
 : m_refCount(1),
 m_pStmt(0),
 m_class(NULL),
@@ -134,7 +136,8 @@ m_wkbBuffer(NULL),
 m_wkbBufferLen(0),
 m_closeDB(false),
 m_bUseTransaction(true),
-m_useFastStepping(useFastStepping)
+m_useFastStepping(useFastStepping),
+m_bScrollable(scrollable)
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
     DelayedInit(props, fcname, where);
@@ -179,6 +182,11 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
 {
     int rc = 0;
 
+    //remove schema name from feature class name (if it's there)
+    const char* tmp = strchr(fcname, ':');
+    if (tmp)
+        fcname = tmp + 1;
+
     if (m_bUseTransaction)
         rc = sqlite3_exec(m_connection->GetDB(), "BEGIN;", NULL, NULL, NULL);
 
@@ -202,7 +210,7 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
     //like when we have a spatial iterator
     if (*where==0)
     {
-        if (m_si)
+        if (m_si || m_bScrollable)
             sprintf(tmpstr, " FROM %s WHERE ROWID=?;", fcname);
         else
             sprintf(tmpstr, " FROM %s;", fcname);
@@ -210,7 +218,7 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
     }
     else
     {
-        if (m_si)
+        if (m_si || m_bScrollable)
             sprintf(tmpstr, " FROM %s WHERE (%s) AND ROWID=?;", fcname, where);
         else
             sprintf(tmpstr, " FROM %s WHERE (%s);", fcname, where);
@@ -861,9 +869,9 @@ FdoPropertyType SltReader::GetPropertyType(FdoString* propertyName)
 }
 
 
-	//-------------------------------------------------------
-	// FdoISQLDataReader implementation
-	//-------------------------------------------------------
+//-------------------------------------------------------
+// FdoISQLDataReader implementation
+//-------------------------------------------------------
 
 FdoInt32 SltReader::GetColumnCount()
 {
@@ -882,7 +890,48 @@ FdoDataType SltReader::GetColumnType(FdoString* columnName)
 
 
 //-------------------------------------------------------
-// FdoISQLDataReader implementation
+// FdoIScrollableFeatureReader implementation
+//-------------------------------------------------------
+
+int SltReader::Count()
+{
+    return 0;
+}
+
+bool SltReader::ReadFirst()
+{
+    return false;
+}
+
+bool SltReader::ReadLast()
+{
+    return false;
+}
+
+bool SltReader::ReadPrevious()
+{
+    return false;
+}
+
+bool SltReader::ReadAt(FdoPropertyValueCollection* key)
+{
+    return false;
+}
+
+bool SltReader::ReadAtIndex(unsigned int recordindex)
+{
+    return false;
+}
+
+unsigned int SltReader::IndexOf(FdoPropertyValueCollection* key)
+{
+    return 0;
+}
+
+
+
+//-------------------------------------------------------
+// DelayedReader implementation
 //-------------------------------------------------------
 
 
@@ -924,3 +973,4 @@ FdoClassDefinition* DelayedInitReader::GetClassDefinition()
 
     return SltReader::GetClassDefinition();
 }
+
