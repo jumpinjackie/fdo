@@ -140,7 +140,7 @@ protected:
         virtual bool                 ReadLast();
         virtual bool                 ReadPrevious();
         virtual bool                 ReadAt(FdoPropertyValueCollection* key);
-        virtual bool                 ReadAtIndex( unsigned int recordindex );
+        virtual bool                 ReadAtIndex( unsigned int recordIndex );
         virtual unsigned int         IndexOf(FdoPropertyValueCollection* key);
 
     //-------------------------------------------------------
@@ -159,6 +159,8 @@ protected:
 		void InitPropIndex(sqlite3_stmt* pStmt);
         int AddColumnToQuery(const wchar_t* name);
         void Requery2();
+
+        bool PositionScrollable(sqlite_int64 index);
 
         int NameToIndex(const wchar_t* name) 
         { 
@@ -196,12 +198,15 @@ protected:
         std::vector<std::string> m_reissueProps;
         std::string m_fromwhere;
 
-        bool                m_hasSpatialFilter;
+        //stuff related to spatial filters
         SpatialIterator*    m_si;
         int                 m_siEnd;
         sqlite3_int64       m_curfid;
         bool                m_bUseTransaction;
+
+        //stuff related to scrollable readers
         bool                m_bScrollable;
+        sqlite_int64        m_count;
 };
 
 

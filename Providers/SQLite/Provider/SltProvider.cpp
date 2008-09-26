@@ -455,10 +455,15 @@ FdoISpatialContextReader* SltConnection::GetSpatialContexts()
     return new SltSpatialContextReader(this);
 }
 
-FdoIFeatureReader* SltConnection::Select(FdoIdentifier* fcname, FdoFilter* filter, FdoIdentifierCollection* props)
+SltReader* SltConnection::Select(FdoIdentifier* fcname, FdoFilter* filter, FdoIdentifierCollection* props, bool scrollable)
 {
     if (m_connState != FdoConnectionState_Open)
         throw FdoCommandException::Create(L"Connection must be open in order to Select.");
+
+    if (filter && scrollable)
+    {
+        throw FdoCommandException::Create(L"Scrollable reader cannot yet be created with filters! TODO.");
+    }
 
     string mbfc = W2A_SLOW(fcname->GetName());
 
@@ -488,7 +493,7 @@ FdoIFeatureReader* SltConnection::Select(FdoIdentifier* fcname, FdoFilter* filte
         siter = new SpatialIterator(bbox, si);
     }
    
-    return new SltReader(this, props, mbfc.c_str(), where.c_str(), siter, canFastStep, false);
+    return new SltReader(this, props, mbfc.c_str(), where.c_str(), siter, canFastStep, scrollable);
 }
 
 FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcname, 
@@ -1003,19 +1008,13 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
     sqlite3* db = NULL;
     int rc = sqlite3_open(":memory:", &db);
 
-    //now get the count -- this is approximate since
-    //a real count would take a long time (table scan)
-    //we always use the count, whether we compute extents or not
     sqlite3_stmt* stmt;
     const char* tail = NULL;
+    std::string sql;
 
-    std::string sql = "SELECT MAX(ROWID) FROM " + fcname + ";";
-    rc = sqlite3_prepare_v2(m_db, sql.c_str(), -1, &stmt, &tail);
-    rc = sqlite3_step(stmt);
-    int count = sqlite3_column_int(stmt, 0);
-    sqlite3_finalize(stmt);
-    stmt = NULL;
-    tail = NULL;
+    //get the count
+    //we always use the count, whether we compute extents or not
+    int count = GetFeatureCount(fcname.c_str());
 
     //case where we only need count
     if (extname.empty())
@@ -1088,6 +1087,22 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
         throw FdoException::Create(L"Failed to generate Count() or SpatialExtents() reader.");
 }
 
+
+int SltConnection::GetFeatureCount(const char* table)
+{
+    //get the feature count -- this is approximate since
+    //a real count would take a long time (table scan)
+
+    sqlite3_stmt* stmt;
+    const char* tail = NULL;
+
+    std::string sql = std::string("SELECT MAX(ROWID) FROM ") + table + ";";
+    int rc = sqlite3_prepare_v2(m_db, sql.c_str(), -1, &stmt, &tail);
+    rc = sqlite3_step(stmt);
+    int count = sqlite3_column_int(stmt, 0);
+    sqlite3_finalize(stmt);
+    return count;
+}
 
 sqlite3_stmt* SltConnection::GetCachedParsedStatement(const std::string& sql)
 {
