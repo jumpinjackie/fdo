@@ -46,8 +46,11 @@ class SltDescribeSchema : public SltCommand<FdoIDescribeSchema>
     //-------------------------------------------------------
 
     public:
-        virtual FdoString* GetSchemaName()                      { return L"SQLiteSchema"; }
+        virtual FdoString* GetSchemaName()                      { return L"Default"; }
         virtual void SetSchemaName(FdoString* value)            { ; }
+        virtual FdoStringCollection* GetClassNames()            { return NULL; }
+        virtual void SetClassNames(FdoStringCollection* value)  { ; }
+
         virtual FdoFeatureSchemaCollection* Execute()   
         { 
             return m_connection->DescribeSchema(); 
@@ -367,13 +370,7 @@ class SltInsert : public SltCommand<FdoIInsert>
 
         void PrepareSQL()
         {
-            std::string fcNameWithoutSchema = m_fcname;
-            int indexOf = fcNameWithoutSchema.find(":");
-            if (indexOf > 0)
-            {
-                fcNameWithoutSchema = fcNameWithoutSchema.substr(indexOf + 1, fcNameWithoutSchema.length() - indexOf - 1);
-            }
-            std::string sql = "INSERT INTO " + fcNameWithoutSchema + " (";
+            std::string sql = "INSERT INTO " + m_fcname + " (";
 
             for (int i=0; i<m_properties->GetCount(); i++)
             {
@@ -543,10 +540,8 @@ public:
         //TODO: this is kind of dubious -- we map the SC name
         //to the SRID column. The assumption here is that the
         //spatial context name is a string that maps to an integer,
-        //tmp = W2A_SLOW(m_scName.c_str());
-        //sc_sql += tmp.empty() ? "NULL": "'" + tmp + "'";
-        //tmp = W2A_SLOW(m_scName.c_str());
-        sc_sql += "'0'";
+        tmp = W2A_SLOW(m_scName.c_str());
+        sc_sql += tmp.empty() ? "NULL": "'" + tmp + "'";
         sc_sql += ",";
 
         tmp = W2A_SLOW(m_coordSysName.c_str());
@@ -630,12 +625,11 @@ class SltApplySchema : public SltCommand<FdoIApplySchema>
 
 public:
     SltApplySchema(SltConnection* connection)
-        : SltCommand<FdoIApplySchema>(connection)
+        : SltCommand<FdoIApplySchema>(connection),
+          m_schema(NULL)
                                                                             { }
 
-    virtual ~SltApplySchema()
-                                                                            { }
-
+    virtual ~SltApplySchema()                                               { FDO_SAFE_RELEASE(m_schema); }
    
     //-------------------------------------------------------------------------
     // FdoIApplySchema
@@ -643,11 +637,18 @@ public:
 
     virtual FdoFeatureSchema*           GetFeatureSchema()                  { return FDO_SAFE_ADDREF(m_schema); }
     virtual void                        SetFeatureSchema(FdoFeatureSchema* value) 
-                                                                            { m_schema = FDO_SAFE_ADDREF(value); }
+    {
+        FDO_SAFE_RELEASE(m_schema);
+        m_schema = FDO_SAFE_ADDREF(value); 
+    }
+
     virtual FdoPhysicalSchemaMapping*   GetPhysicalMapping()                { return NULL; }
+    
     virtual void                        SetPhysicalMapping(FdoPhysicalSchemaMapping* value) 
                                                                             { }
+    
     virtual FdoBoolean                  GetIgnoreStates()                   { return true; } 
+    
     virtual void                        SetIgnoreStates( FdoBoolean ignoreStates ) 
                                                                             { }
     
