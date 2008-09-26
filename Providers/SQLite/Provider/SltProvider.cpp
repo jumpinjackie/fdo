@@ -462,11 +462,6 @@ FdoIFeatureReader* SltConnection::Select(FdoIdentifier* fcname, FdoFilter* filte
 
     string mbfc = W2A_SLOW(fcname->GetName());
 
-    const char* fcNameWithoutSchema = mbfc.c_str();
-    const char* tmp = strchr(fcNameWithoutSchema, ':');
-    if (tmp)
-        fcNameWithoutSchema = tmp + 1;
-
     DBounds bbox;
     string where;
     bool canFastStep = true;
@@ -489,7 +484,7 @@ FdoIFeatureReader* SltConnection::Select(FdoIdentifier* fcname, FdoFilter* filte
     //if we have a BBOX filter, we need to get the spatial index
     if (!bbox.IsEmpty())
     {
-        SpatialIndex* si = GetSpatialIndex(fcNameWithoutSchema);
+        SpatialIndex* si = GetSpatialIndex(mbfc.c_str());
         siter = new SpatialIterator(bbox, si);
     }
    

@@ -182,11 +182,6 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
 {
     int rc = 0;
 
-    //remove schema name from feature class name (if it's there)
-    const char* tmp = strchr(fcname, ':');
-    if (tmp)
-        fcname = tmp + 1;
-
     if (m_bUseTransaction)
         rc = sqlite3_exec(m_connection->GetDB(), "BEGIN;", NULL, NULL, NULL);
 
