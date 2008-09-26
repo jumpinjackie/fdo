@@ -28,6 +28,8 @@
 #include "SltExprExtensions.h"
 #include "SltGeomUtils.h"
 #include "SltQueryTranslator.h"
+#include "FdoIExtendedSelect.h"
+#include "SltCommandType.h"
 
 //#include "SpatialIndex.h"
 #include "DiskSpatialIndex.h"
@@ -172,7 +174,7 @@ void SltConnection::CreateDatabase()
     const wchar_t* dsw = GetProperty(PROP_NAME_FILENAME);
     
     string file = W2A_SLOW(dsw);
-    
+
     //create the database
     //TODO: this will also work if the database exists -- in which 
     //case it will open it.
@@ -236,7 +238,7 @@ FdoConnectionState SltConnection::Open()
     const wchar_t* dsw = GetProperty(PROP_NAME_FILENAME);
     
     string file = W2A_SLOW(dsw);
-    
+
     if( sqlite3_open(file.c_str(), &m_db) != SQLITE_OK )
     {
         m_db = NULL;
@@ -286,7 +288,7 @@ FdoICommand* SltConnection::CreateCommand(FdoInt32 commandType)
     {
         case FdoCommandType_DescribeSchema :        return new SltDescribeSchema(this);
         case FdoCommandType_GetSpatialContexts :    return new SltGetSpatialContexts(this);
-        case FdoCommandType_Select :                return new SltSelect(this);
+        case FdoCommandType_Select :                return new SltExtendedSelect(this);
         case FdoCommandType_SelectAggregates :      return new SltSelectAggregates(this);
         case FdoCommandType_Update:                 return new SltUpdate(this);
         case FdoCommandType_Delete:                 return new SltDelete(this);
@@ -295,6 +297,7 @@ FdoICommand* SltConnection::CreateCommand(FdoInt32 commandType)
         case FdoCommandType_CreateDataStore:        return new SltCreateDataStore(this);
         case FdoCommandType_CreateSpatialContext:   return new SltCreateSpatialContext(this);
         case FdoCommandType_ApplySchema:            return new SltApplySchema(this);
+        case SltCommandType_ExtendedSelect:         return new SltExtendedSelect(this);
         default: break;
     }
     
@@ -458,6 +461,12 @@ FdoIFeatureReader* SltConnection::Select(FdoIdentifier* fcname, FdoFilter* filte
         throw FdoCommandException::Create(L"Connection must be open in order to Select.");
 
     string mbfc = W2A_SLOW(fcname->GetName());
+
+    const char* fcNameWithoutSchema = mbfc.c_str();
+    const char* tmp = strchr(fcNameWithoutSchema, ':');
+    if (tmp)
+        fcNameWithoutSchema = tmp + 1;
+
     DBounds bbox;
     string where;
     bool canFastStep = true;
@@ -480,11 +489,11 @@ FdoIFeatureReader* SltConnection::Select(FdoIdentifier* fcname, FdoFilter* filte
     //if we have a BBOX filter, we need to get the spatial index
     if (!bbox.IsEmpty())
     {
-        SpatialIndex* si = GetSpatialIndex(mbfc.c_str());
+        SpatialIndex* si = GetSpatialIndex(fcNameWithoutSchema);
         siter = new SpatialIterator(bbox, si);
     }
    
-    return new SltReader(this, props, mbfc.c_str(), where.c_str(), siter, canFastStep);
+    return new SltReader(this, props, mbfc.c_str(), where.c_str(), siter, canFastStep, false);
 }
 
 FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcname, 
@@ -691,7 +700,7 @@ SpatialIndex* SltConnection::GetSpatialIndex(const char* table)
 #endif
     si = new SpatialIndex(GetProperty(PROP_NAME_FILENAME));
 
-    SltReader* rdr = new SltReader(this, NULL, table, "", NULL, true);
+    SltReader* rdr = new SltReader(this, NULL, table, "", NULL, true, false);
     m_mNameToSpatialIndex[table] = si;
     DBounds ext;
 
@@ -811,61 +820,97 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema)
     for (int i=0; i<inclasses->GetCount(); i++)
     {
         FdoPtr<FdoClassDefinition> fc = inclasses->GetItem(i);
-        
+
         if (myclasses->Contains(fc->GetName()))
             continue; //Warning! -- class already exists... Skip it.
 
-        //create the sql to create a SQLite table corresponding to the feature class
         string sql = "CREATE TABLE " + W2A_SLOW(fc->GetName()) + "(";
 
-        FdoPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
-        FdoPtr<FdoDataPropertyDefinitionCollection> idpdc = fc->GetIdentityProperties();
-        FdoPtr<FdoGeometricPropertyDefinition> gpd;
-        
-        if (fc->GetClassType() == FdoClassType_FeatureClass)
-            gpd = ((FdoFeatureClass*)fc.p)->GetGeometryProperty();
+        CollectBaseClassProperties(myclasses, fc, sql, 1);
+        CollectBaseClassProperties(myclasses, fc, sql, 2);
+        CollectBaseClassProperties(myclasses, fc, sql, 3);
 
-        FdoPtr<FdoDataPropertyDefinition> idp = idpdc->GetItem(0);
+        sql.resize(sql.size() - 2);
+        sql += ");"; //close the create table command
 
-        if (idpdc->GetCount() > 1)
+        //printf ("SQLite Feature class: %s\n", sql.c_str());
+
+        //create the database table for this feature class
+        int rc = sqlite3_exec(m_db, sql.c_str(), NULL, NULL, NULL);
+    }
+
+    rc = sqlite3_exec(m_db, "COMMIT;", NULL, NULL, NULL);
+
+    //the cached FDO schema will need to be refreshed
+    FDO_SAFE_RELEASE(m_pSchema);
+}
+
+
+void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, FdoClassDefinition* fc, string& sql, int mode)
+{
+    FdoPtr<FdoClassDefinition> baseFc = fc->GetBaseClass();
+    if (NULL != baseFc)
+    {
+        CollectBaseClassProperties(myclasses, baseFc, sql, mode);
+    }
+
+    FdoPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
+    FdoPtr<FdoDataPropertyDefinitionCollection> idpdc = fc->GetIdentityProperties();
+    FdoPtr<FdoGeometricPropertyDefinition> gpd;
+    
+    if (fc->GetClassType() == FdoClassType_FeatureClass)
+        gpd = ((FdoFeatureClass*)fc)->GetGeometryProperty();
+
+    if (mode == 1)
+    {
+        if (idpdc->GetCount() > 0)
         {
-            printf ("Source class has more than one identity property -- the converter does not support that.");
-            continue;
-        }
-        else
-        {
-            string name = W2A_SLOW(idp->GetName());
-            
-            FdoDataType dt = idp->GetDataType();
-            if (idp->GetIsAutoGenerated() 
-                || dt == FdoDataType_Int32 
-                || dt == FdoDataType_Int64)
+            FdoPtr<FdoDataPropertyDefinition> idp = idpdc->GetItem(0);
+
+            if (idpdc->GetCount() > 1)
             {
-                //autogenerated ID -- we will have SQLite generate a new one for us
-                sql += name + " INTEGER PRIMARY KEY";
+                printf ("Source class has more than one identity property -- the converter does not support that.");
+                return;
             }
             else
             {
-                sql += name;
-                sql += " ";
-                sql += g_fdo2sql_map[idp->GetDataType()];
-                sql += " UNIQUE";
+                std::string name = W2A_SLOW(idp->GetName());
+                
+                FdoDataType dt = idp->GetDataType();
+                if (idp->GetIsAutoGenerated() 
+                    || dt == FdoDataType_Int32 
+                    || dt == FdoDataType_Int64)
+                {
+                    //autogenerated ID -- we will have SQLite generate a new one for us
+                    sql += name + " INTEGER PRIMARY KEY";
+                }
+                else
+                {
+                    sql += name;
+                    sql += " ";
+                    sql += g_fdo2sql_map[idp->GetDataType()];
+                    sql += " UNIQUE";
+                }
+                sql += ", ";
             }
         }
-
+    }
+    else if (mode == 2)
+    {
         //now do the geometry property -- we want that to be near the 
         //beginning of the list for better performance when reading
         if (gpd.p)
         {
             string gpname = W2A_SLOW(gpd->GetName());
-            sql += ", ";
             sql +=  gpname + " BLOB";
+            sql += ", ";
 
             //also add to the geometry_columns table
             AddGeomCol(gpd.p, fc->GetName());
         }
-
-
+    }
+    else
+    {
         //add the remaining properties
         for (int i=0; i<pdc->GetCount(); i++)
         {
@@ -881,36 +926,25 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema)
                 if (idpdc->Contains(dpd->GetName()))
                     continue;
 
-                sql += ", ";
                 sql += W2A_SLOW(dpd->GetName());
                 sql += " ";
                 sql += g_fdo2sql_map[dpd->GetDataType()];
+                sql += ", ";
+
             }
             else if (ptype == FdoPropertyType_GeometricProperty)
             {
                 //make sure it is not THE geometry property which we already did
-                if (wcscmp(gpd->GetName(), pd->GetName()) == 0)
+                if (gpd != NULL && wcscmp(gpd->GetName(), pd->GetName()) == 0)
                     continue;
 
-                sql += ", ";
                 sql += W2A_SLOW(pd->GetName()) + " BLOB";
+                sql += ", ";
 
                 AddGeomCol((FdoGeometricPropertyDefinition*)pd.p, fc->GetName());
             }
         }
-
-        sql += ");"; //close the create table command
-
-        //printf ("SQLite Feature class: %s\n", sql.c_str());
-
-        //create the database table for this feature class
-        int rc = sqlite3_exec(m_db, sql.c_str(), NULL, NULL, NULL);
     }
-
-    rc = sqlite3_exec(m_db, "COMMIT;", NULL, NULL, NULL);
-
-    //the cached FDO schema will need to be refreshed
-    FDO_SAFE_RELEASE(m_pSchema);
 }
 
 

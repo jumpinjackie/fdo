@@ -1,3 +1,4 @@
+#pragma once
 // 
 //  
 //  Copyright (C) 2008 Autodesk Inc.
@@ -96,7 +97,7 @@ public:
     virtual FdoString* GetProviderDisplayName()         { return L"OSGeo FDO Provider for SQLite (spatial)"; }
     virtual FdoString* GetProviderDescription()         { return L"FDO Access to SQLite Data Sources"; }
     virtual FdoString* GetProviderVersion()             { return L"1.0.0.0"; }
-    virtual FdoString* GetFeatureDataObjectsVersion()   { return L"3.3.0.0"; }
+    virtual FdoString* GetFeatureDataObjectsVersion()   { return L"3.4.0.0"; }
     
     virtual FdoIConnectionPropertyDictionary*   GetConnectionProperties()
                                                         { return FDO_SAFE_ADDREF(this); }
@@ -168,7 +169,6 @@ public:
     void                AddGeomCol             (FdoGeometricPropertyDefinition* gpd, 
                                                 const wchar_t*                  fcname);
 
-
     sqlite3*        GetDB() { return m_db; }
     SpatialIndex*   GetSpatialIndex(const char* table);
     void            GetExtents(const wchar_t* fcname, double ext[4]);
@@ -181,7 +181,9 @@ public:
     
 
 private :
-    
+
+    void CollectBaseClassProperties(FdoClassCollection* myclasses, FdoClassDefinition* fc, std::string& sql, int mode);
+
     sqlite3*                                m_db;
 
     std::map<std::wstring, std::wstring>*   m_mProps;
