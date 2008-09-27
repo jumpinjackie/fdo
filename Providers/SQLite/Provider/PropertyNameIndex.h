@@ -68,7 +68,7 @@ public:
 
         for (size_t i=start; i<sz; i++)
         {
-            const NameIndexPair& p = sublist->at(i);
+            const NameIndexPair& p = (*sublist)[i];
             if (wcscmp(name, p.name) == 0)
             {
                 m_lastChar = hash;
@@ -79,7 +79,7 @@ public:
 
         for (int i=0; i<start; i++)
         {
-            const NameIndexPair& p = sublist->at(i);
+            const NameIndexPair& p = (*sublist)[i];
             if (wcscmp(name, p.name) == 0)
             {
                 m_lastChar = hash;

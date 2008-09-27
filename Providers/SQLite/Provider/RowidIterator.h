@@ -30,7 +30,7 @@ public:
     RowidIterator(__int64 count, std::vector<__int64>* list = NULL)
         : m_count(count),
           m_list(list),
-          m_current(1) //uses 1-based indexing
+          m_current(0) //position one before the first item (1-based indexing)
     {
         if (m_list)
             m_count = m_list->size();
@@ -44,6 +44,11 @@ public:
     __int64 Count() 
     { 
         return m_count; 
+    }
+
+    __int64 CurrentIndex() 
+    {
+        return m_current;
     }
 
     __int64 LastRowid() 
@@ -109,7 +114,7 @@ public:
     { 
         m_current++;
 
-        if (m_current > m_count + 1)
+        if (m_current > m_count)
         {
             m_current = m_count + 1;
             return false;

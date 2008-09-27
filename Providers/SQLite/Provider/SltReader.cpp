@@ -182,9 +182,6 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
 {
     int rc = 0;
 
-    if (m_bUseTransaction)
-        rc = sqlite3_exec(m_connection->GetDB(), "BEGIN;", NULL, NULL, NULL);
-
 	//first, issue the full statement, and create the FDO feature class from it -- we will present that to the caller
 	//so that he sees the properties he asked for. 
 	if (props && props->GetCount())
@@ -223,7 +220,14 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
 
     //remember the geometry encoding format
     SltMetadata* md = m_connection->GetMetadata(fcname);
+
+    if (!md)
+        FdoCommandException::Create(L"Requested feature class does not exist in the database.");
+
     m_eGeomFormat = md->GetGeomFormat();
+
+    if (m_bUseTransaction)
+        rc = sqlite3_exec(m_connection->GetDB(), "BEGIN;", NULL, NULL, NULL);
 
 	//if there were properties passed in the identifier collection, assume 
 	//the caller knows what they want and we will use the exact query
@@ -302,7 +306,7 @@ int SltReader::AddColumnToQuery(const wchar_t* name)
     int cur_id = sqlite3_column_int(m_pStmt, 0);
 
     if (!m_class)
-        throw FdoException::Create(L"Attempted to access a property which was not listed in the Select command. Fix your code!");
+        throw FdoException::Create(L"Attempted to access a property which was not listed in the Select command. API misuse by the caller!");
 
     //make sure the property exists in the feature class
     FdoPtr<FdoPropertyDefinitionCollection> pdc = m_class->GetProperties();
@@ -357,10 +361,22 @@ void SltReader::Requery2()
     m_curfid = 0; //position prior to first record 
     m_closeOpcode = -1;
 
+    //reset the spatial iterator, if any
     if (m_si)
     {
         m_siEnd = -1;
         m_si->Reset();
+    }
+
+    //reset the rowid iterator, if any
+    //TODO: reading forward can be really slow in the case when someone 
+    //is doing reverse scrolling through the result set. In such a case 
+    //it is better to reset the rowid iterator to its last item and iterate 
+    //backwards. However, it is not easy to detect when someone is reading 
+    //backwards or indeed just reading randomly.
+    if (m_ri)
+    {
+        m_ri->MoveToIndex(0);
     }
 
     m_pStmt = m_connection->GetCachedParsedStatement(m_sql);
@@ -902,11 +918,16 @@ FdoDataType SltReader::GetColumnType(FdoString* columnName)
 //which does all the hard SQLite work.
 bool SltReader::PositionScrollable(__int64 index)
 {
-    m_ri->MoveToIndex(index - 1);
-    m_curfid = m_ri->CurrentRowid(); //initialize to one before the one we need
-    __int64 tmp = m_curfid;
+    //remember which rowid we are looking for,
+    //we will later check if that's what we got when
+    //we stepped sqlite forward.
+    m_ri->MoveToIndex(index);
+    __int64 tmp = m_ri->CurrentRowid(); 
 
-    //move to the record we want by simply calling ReadNext() 
+    //move to one rowid before the one we need
+    m_ri->MoveToIndex(index-1);
+
+    //move forward to the record we want by simply calling ReadNext() 
     // -- it will sort out the mess.
     bool res = ReadNext();
 
@@ -940,7 +961,7 @@ bool SltReader::ReadPrevious()
 {
     if (m_ri->Previous())
     {
-        return PositionScrollable(m_ri->CurrentRowid());
+        return PositionScrollable(m_ri->CurrentIndex());
     }
     else
     {
