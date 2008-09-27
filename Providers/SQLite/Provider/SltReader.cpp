@@ -24,10 +24,9 @@
 #include "FdoCommonSchemaUtil.h"
 #include "DiskSpatialIndex.h"
 #include "SltConversionUtils.h"
+#include "RowidIterator.h"
 
 #include "vdbeInt.h"
-
-using namespace std;
 
 
 /*
@@ -76,7 +75,7 @@ m_wkbBufferLen(0),
 m_closeDB(false),
 m_bUseTransaction(true),
 m_useFastStepping(false),
-m_bScrollable(false)
+m_ri(NULL)
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
 
@@ -106,7 +105,7 @@ m_wkbBufferLen(0),
 m_closeDB(true),
 m_bUseTransaction(true),
 m_useFastStepping(false),
-m_bScrollable(false)
+m_ri(NULL)
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
 
@@ -123,7 +122,7 @@ m_bScrollable(false)
 //requested columns collection is empty, it will start out with a query
 //for just featid and geometry, then redo the query if caller asks for other
 //property values
-SltReader::SltReader(SltConnection* connection, FdoIdentifierCollection* props, const char* fcname, const char* where, SpatialIterator* si, bool useFastStepping, bool scrollable)
+SltReader::SltReader(SltConnection* connection, FdoIdentifierCollection* props, const char* fcname, const char* where, SpatialIterator* si, bool useFastStepping, RowidIterator* ri)
 : m_refCount(1),
 m_pStmt(0),
 m_class(NULL),
@@ -137,7 +136,7 @@ m_wkbBufferLen(0),
 m_closeDB(false),
 m_bUseTransaction(true),
 m_useFastStepping(useFastStepping),
-m_bScrollable(scrollable)
+m_ri(ri)
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
     DelayedInit(props, fcname, where);
@@ -172,6 +171,7 @@ SltReader::~SltReader()
 	Close();
     FDO_SAFE_RELEASE(m_class);
     delete m_si;
+    delete m_ri;
 	m_connection->Release();
 	delete[] m_sprops;
     delete[] m_wkbBuffer;
@@ -193,7 +193,7 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
 		for (int i=0; i<nProps; i++)
 		{
 			FdoPtr<FdoIdentifier> id = props->GetItem(i);
-			string mbnm = W2A_SLOW(id->GetName());
+            std::string mbnm = W2A_SLOW(id->GetName());
 			m_reissueProps.push_back(mbnm);
 		}
 	}
@@ -205,7 +205,7 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
     //like when we have a spatial iterator
     if (*where==0)
     {
-        if (m_si || m_bScrollable)
+        if (m_si || m_ri)
             sprintf(tmpstr, " FROM %s WHERE ROWID=?;", fcname);
         else
             sprintf(tmpstr, " FROM %s;", fcname);
@@ -213,19 +213,13 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
     }
     else
     {
-        if (m_si || m_bScrollable)
+        if (m_si || m_ri)
             sprintf(tmpstr, " FROM %s WHERE (%s) AND ROWID=?;", fcname, where);
         else
             sprintf(tmpstr, " FROM %s WHERE (%s);", fcname, where);
     }
 
     m_fromwhere = tmpstr;
-
-    if (m_bScrollable)
-    {
-        //in case we are scrollable, get the feature count, we will need it for ReadLast() and Count()
-        m_count = m_connection->GetFeatureCount(fcname);
-    }
 
     //remember the geometry encoding format
     SltMetadata* md = m_connection->GetMetadata(fcname);
@@ -252,14 +246,14 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
     //add the id
     FdoPtr<FdoDataPropertyDefinitionCollection> idpdc = m_class->GetIdentityProperties();
     FdoPtr<FdoDataPropertyDefinition> idp = idpdc->GetItem(0);
-    string idname = W2A_SLOW(idp->GetName());
+    std::string idname = W2A_SLOW(idp->GetName());
     m_reissueProps.push_back(idname);
 
     if (m_class->GetClassType() == FdoClassType_FeatureClass)
     {
         //add the geom by doing a requery
         FdoPtr<FdoGeometricPropertyDefinition> gpd = ((FdoFeatureClass*)m_class)->GetGeometryProperty();
-        string gpname = W2A_SLOW(gpd->GetName());
+        std::string gpname = W2A_SLOW(gpd->GetName());
         m_reissueProps.push_back(gpname);
     }
 
@@ -307,13 +301,16 @@ int SltReader::AddColumnToQuery(const wchar_t* name)
     //we placed it there
     int cur_id = sqlite3_column_int(m_pStmt, 0);
 
+    if (!m_class)
+        throw FdoException::Create(L"Attempted to access a property which was not listed in the Select command. Fix your code!");
+
     //make sure the property exists in the feature class
     FdoPtr<FdoPropertyDefinitionCollection> pdc = m_class->GetProperties();
     FdoPtr<FdoPropertyDefinition> pd = pdc->FindItem(name);
 
     if (pd.p)
     {
-        string mbname = W2A_SLOW(pd->GetName());
+        std::string mbname = W2A_SLOW(pd->GetName());
         m_reissueProps.push_back(mbname);
 
         Requery2();
@@ -509,30 +506,36 @@ bool SltReader::ReadNext()
     //yes, we know what we are doing (hopefully)...
     Vdbe* v = (Vdbe*)m_pStmt;
 
-    //use spatial iterator if any
-    if (m_si || m_bScrollable)
+    //use spatial iterator or rowid iterator if any
+    //Note that we will not get both a spatial and rowid iterator.
+    //The SltConntection::Select() function will pre-process data so that
+    //we get either a rowid iterator or a spatial iterator, but not both.
+    if (m_si || m_ri)
     {
         while (1)
         {
-            m_curfid ++;
-
             //are we at the end of the current spatial iterator batch?
             if (m_si && m_curfid >= m_siEnd)
             {
+                m_curfid ++;
+
                 int start;
                 bool ret = m_si->NextRange(start, m_siEnd);
 
                 //spatial reader is done, so we are done
                 if (!ret)
-                    goto done;
+                    return false;
 
                 m_curfid = (sqlite3_int64)start;
             }
-            else if (m_bScrollable && m_curfid > m_count)
+            else if (m_ri) //or are we using a rowid iterator?
             {
-                //If we are useing scrollable, have we scrolled past the end of the 
-                //data?
-                return false;
+                bool res = m_ri->Next();
+
+                if (res)
+                    m_curfid = m_ri->CurrentRowid();
+                else
+                    return false; //scrolled past the end of the data
             }
             
             //we have had at least once successful hit
@@ -596,21 +599,7 @@ bool SltReader::ReadNext()
         }
     }
 
-done:
-    //execute the instructions that end the VDBE execution loop
-    //This is analogous as the ending in ReadNext() when we run
-    //out of rows
-    if (m_closeOpcode != -1)
-    {
-        v->pc = m_closeOpcode;
-        int rc = sqlite3_step(m_pStmt);
-
-        //must set this back so that Close() does not
-        //reattempt to end the VDBE execution
-        m_closeOpcode = -1;
-    }
-
-	return false;
+    return false;
 }
 
 void SltReader::Close()
@@ -618,8 +607,13 @@ void SltReader::Close()
 	if (!m_pStmt)
 		return;
 
-    //execute the instructions that end the VDBE execution loop
-    //in case the reader is being closed prematurely
+    //Execute the instructions that end the VDBE execution loop.
+    //This puts VDBE back into a sane state after us having messed with
+    //its bytecode in ReadNext().
+    //NOTE: If Close() does not get called and the reader is left
+    //dangling in this state, it spells CERTAIN DOOM for anybody trying to 
+    //use the database connection thereafter!
+    //So for the love of Pete, Close() your readers people!
     if (m_closeOpcode != -1)
     {
         Vdbe* v = (Vdbe*)m_pStmt;
@@ -834,7 +828,7 @@ const FdoByte* SltReader::GetGeometry(int i, FdoInt32* len)
         throw FdoException::Create(L"Unsupported geometry format.");
     }
 
-    //return NULL;//can't get here.
+    //return NULL;//can't get here from there.
 }
 
 
@@ -901,10 +895,16 @@ FdoDataType SltReader::GetColumnType(FdoString* columnName)
 
 //Helper that moves the scrollable reader to the next requested
 //record ID. It returns true if the record exists and false if it
-//has been deleted
-bool SltReader::PositionScrollable(sqlite_int64 fid)
+//has been deleted.
+//This helper is used for positioning the reader for all of the
+//"scrollable" functions and its general strategy is to position
+//us at one item before the one we want and then call ReadNext(),
+//which does all the hard SQLite work.
+bool SltReader::PositionScrollable(__int64 index)
 {
-    m_curfid = fid - 1; //initialize to one before the one we need
+    m_ri->MoveToIndex(index - 1);
+    m_curfid = m_ri->CurrentRowid(); //initialize to one before the one we need
+    __int64 tmp = m_curfid;
 
     //move to the record we want by simply calling ReadNext() 
     // -- it will sort out the mess.
@@ -913,7 +913,7 @@ bool SltReader::PositionScrollable(sqlite_int64 fid)
     //If the record exists, m_curfid is set to it,
     //otherwise it will get incremented to the next available.
     //This way we can infer whether the record we wanted was empty.
-    if (m_curfid == fid)
+    if (m_curfid == tmp)
         return true;
 
     m_curfid = 0;
@@ -923,7 +923,7 @@ bool SltReader::PositionScrollable(sqlite_int64 fid)
 
 int SltReader::Count()
 {
-    return m_count;
+    return m_ri->Count();
 }
 
 bool SltReader::ReadFirst()
@@ -933,30 +933,30 @@ bool SltReader::ReadFirst()
 
 bool SltReader::ReadLast()
 {
-    //TODO: if ReadLast is called a lot, this will get slow,
-    //we could remember the count over the lifetime of the reader
-    //to optimize.
-    return PositionScrollable(m_count);
+    return PositionScrollable(m_ri->Count());
 }
 
 bool SltReader::ReadPrevious()
 {
-    if (m_curfid > 1)
+    if (m_ri->Previous())
     {
-        m_curfid--;
-        return PositionScrollable(m_curfid);
+        return PositionScrollable(m_ri->CurrentRowid());
     }
     else
     {
-        //unset the reader if we scroll past the beginning
-        m_curfid = 0;
+        //scrolled past the beginning
         return false;
     }
 }
 
+bool SltReader::ReadAtIndex(unsigned int recordIndex)
+{
+    return PositionScrollable(recordIndex);
+}
+
 bool SltReader::ReadAt(FdoPropertyValueCollection* key)
 {
-    //Assumes a single integer ID
+    //Assumes a single integer ID comes inside the input prop val collection
     FdoPtr<FdoPropertyValue> pv = key->GetItem(0);
     FdoPtr<FdoValueExpression> expr = pv->GetValue();
     FdoLiteralValue* lv = (FdoLiteralValue*)expr.p;
@@ -974,15 +974,15 @@ bool SltReader::ReadAt(FdoPropertyValueCollection* key)
         if (want_fid == 0)
             return false;
 
-        return PositionScrollable(want_fid);
+        //map the ID to an index in our ID iterator
+        __int64 index = m_ri->FindIndex(want_fid);
+        if (index == -1)
+            return false;
+
+        return PositionScrollable(index);
     }
 
     return false;
-}
-
-bool SltReader::ReadAtIndex(unsigned int recordIndex)
-{
-    return PositionScrollable(recordIndex);
 }
 
 unsigned int SltReader::IndexOf(FdoPropertyValueCollection* key)
@@ -997,12 +997,21 @@ unsigned int SltReader::IndexOf(FdoPropertyValueCollection* key)
     {
         FdoDataValue* dv = (FdoDataValue*)lv;
 
-        if (dv->GetDataType() == FdoDataType_Int64)
-            return ((FdoInt64Value*)dv)->GetInt64();
-        else if (dv->GetDataType() == FdoDataType_Int32)
-            return ((FdoInt32Value*)dv)->GetInt32();
-    }
+        __int64 want_fid = 0;
 
+        if (dv->GetDataType() == FdoDataType_Int64)
+            want_fid = ((FdoInt64Value*)dv)->GetInt64();
+        else if (dv->GetDataType() == FdoDataType_Int32)
+            want_fid = ((FdoInt32Value*)dv)->GetInt32();
+
+        //map the ID to an index in our ID iterator
+        __int64 index = m_ri->FindIndex(want_fid);
+
+        if (index < 1)
+            return 0;
+
+        return index;
+    }
     
     //TODO: also return 0 if record is empty -- need to move the reader to 
     //this record to check, and then move it back ...

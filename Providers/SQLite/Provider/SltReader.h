@@ -24,6 +24,7 @@
 
 class SltConnection;
 class SpatialIterator;
+class RowidIterator;
 
 struct StringRec
 {
@@ -69,7 +70,7 @@ class SltReader :   public FdoIScrollableFeatureReader,
                     const char*                 where, 
                     SpatialIterator*            si,
                     bool                        useFastStepping,
-                    bool                        scrollable);
+                    RowidIterator*              ri);
 
         virtual ~SltReader();
 
@@ -160,7 +161,7 @@ protected:
         int AddColumnToQuery(const wchar_t* name);
         void Requery2();
 
-        bool PositionScrollable(sqlite_int64 index);
+        bool PositionScrollable(__int64 index);
 
         int NameToIndex(const wchar_t* name) 
         { 
@@ -205,8 +206,7 @@ protected:
         bool                m_bUseTransaction;
 
         //stuff related to scrollable readers
-        bool                m_bScrollable;
-        sqlite_int64        m_count;
+        RowidIterator*      m_ri;
 };
 
 

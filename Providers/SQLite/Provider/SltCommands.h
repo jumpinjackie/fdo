@@ -46,10 +46,10 @@ class SltDescribeSchema : public SltCommand<FdoIDescribeSchema>
     //-------------------------------------------------------
 
     public:
-        virtual FdoString* GetSchemaName()                      { return L"Default"; }
-        virtual void SetSchemaName(FdoString* value)            { ; }
-        virtual FdoStringCollection* GetClassNames()            { return NULL; }
-        virtual void SetClassNames(FdoStringCollection* value)  { ; }
+        virtual FdoString*              GetSchemaName()                             { return L"Default"; }
+        virtual void                    SetSchemaName(FdoString* value)             { }
+        virtual FdoStringCollection*    GetClassNames()                             { return NULL; }
+        virtual void                    SetClassNames(FdoStringCollection* value)   { }
 
         virtual FdoFeatureSchemaCollection* Execute()   
         { 
@@ -64,11 +64,26 @@ class SltDescribeSchema : public SltCommand<FdoIDescribeSchema>
 ///\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ///\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ///\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+
+//helper used for passing ordering options to the connection
+struct NameOrderingPair
+{
+    NameOrderingPair(FdoIdentifier* nm, FdoOrderingOption opt)
+        : name(nm), option(opt)
+    {}
+
+    FdoIdentifier* name;
+    FdoOrderingOption option;
+};
+
+
 class SltExtendedSelect: public SltFeatureCommand<FdoIExtendedSelect>
 {
     public:
+
         SltExtendedSelect(SltConnection* connection)
-            : SltFeatureCommand<FdoIExtendedSelect>(connection)
+            : SltFeatureCommand<FdoIExtendedSelect>(connection),
+              m_orderingProps(NULL)
         {
             m_properties = FdoIdentifierCollection::Create();
         }
@@ -77,6 +92,7 @@ class SltExtendedSelect: public SltFeatureCommand<FdoIExtendedSelect>
         virtual ~SltExtendedSelect()
         {
             m_properties->Release();
+            FDO_SAFE_RELEASE(m_orderingProps);
         }
 
     //-------------------------------------------------------
@@ -84,20 +100,42 @@ class SltExtendedSelect: public SltFeatureCommand<FdoIExtendedSelect>
     //-------------------------------------------------------
 
     public:
-        virtual FdoIdentifierCollection* GetPropertyNames() { return FDO_SAFE_ADDREF(m_properties); }
-        virtual FdoLockType GetLockType()                   { return FdoLockType_Exclusive;};
-        virtual void SetLockType(FdoLockType value)         { };
-        virtual FdoLockStrategy GetLockStrategy()           { return FdoLockStrategy_All;};
-        virtual void SetLockStrategy(FdoLockStrategy value) { };
-        virtual FdoIFeatureReader* Execute() 
+        virtual FdoIdentifierCollection*    GetPropertyNames()              { return FDO_SAFE_ADDREF(m_properties); }
+        
+        //Regular select -- not scrollable
+        virtual FdoIFeatureReader*          Execute() 
         {
-            return m_connection->Select(m_className, m_filter, m_properties, false);
+            std::vector<NameOrderingPair> ordering;
+
+            if (m_orderingProps)
+            {
+                for (int i=0; i<m_orderingProps->GetCount(); i++)
+                {
+                    FdoPtr<FdoIdentifier> id = m_orderingProps->GetItem(i);
+                    ordering.push_back(NameOrderingPair(id.p, m_orderingOptions[id->GetName()])); 
+                }
+            }
+
+            return m_connection->Select(m_className, m_filter, m_properties, false, ordering);
         }
-        virtual FdoIFeatureReader* ExecuteWithLock()        { return NULL; }
-        virtual FdoILockConflictReader* GetLockConflicts()  { return NULL; }
-        virtual FdoIdentifierCollection* GetOrdering()      { return FdoIdentifierCollection::Create(); }
-        virtual void SetOrderingOption(FdoOrderingOption option) {}
-        virtual FdoOrderingOption GetOrderingOption()       { return (FdoOrderingOption)0; }
+               
+        virtual FdoIdentifierCollection*    GetOrdering()       
+        { 
+            if (!m_orderingProps)
+                m_orderingProps = FdoIdentifierCollection::Create(); 
+
+            return FDO_SAFE_ADDREF(m_orderingProps);
+        }
+
+        //irrelevant stuff
+        virtual FdoLockType                 GetLockType()                   { return FdoLockType_Exclusive;};
+        virtual void                        SetLockType(FdoLockType value)  { };
+        virtual FdoLockStrategy             GetLockStrategy()               { return FdoLockStrategy_All;};
+        virtual void                        SetLockStrategy(FdoLockStrategy value) { };
+        virtual FdoIFeatureReader*          ExecuteWithLock()               { return NULL; }
+        virtual FdoILockConflictReader*     GetLockConflicts()              { return NULL; }
+        virtual void                        SetOrderingOption(FdoOrderingOption option) {}
+        virtual FdoOrderingOption           GetOrderingOption()             { return FdoOrderingOption_Ascending; }
 
     public:
 
@@ -105,13 +143,40 @@ class SltExtendedSelect: public SltFeatureCommand<FdoIExtendedSelect>
         // FdoIExtendedSelect implementation
         //-------------------------------------------------------
 
-        virtual void SetOrderingOption(FdoString* propertyName, FdoOrderingOption  option)  { /*TODO:*/ }
-        virtual FdoOrderingOption GetOrderingOption(FdoString* propertyName)                { return (FdoOrderingOption)0;/*TODO:*/ }
-        virtual void ClearOrderingOptions()                                                 { /*TODO:*/ }
+        virtual void SetOrderingOption(FdoString* propertyName, FdoOrderingOption option)  
+        {
+            if (m_orderingProps->Contains(propertyName))
+                m_orderingOptions[propertyName] = option;
+        }
+
+        virtual FdoOrderingOption GetOrderingOption(FdoString* propertyName)                
+        { 
+            if (m_orderingProps->Contains(propertyName))
+                return m_orderingOptions[propertyName];
+
+            throw FdoCommandException::Create(L"Property is not in the order list.");
+        }
+
+        virtual void ClearOrderingOptions() 
+        { 
+            m_orderingProps->Clear();
+            m_orderingOptions.clear();
+        }
 
         virtual FdoIScrollableFeatureReader* ExecuteScrollable()
         {
-            return m_connection->Select(m_className, m_filter, m_properties, true);
+            std::vector<NameOrderingPair> ordering;
+
+            if (m_orderingProps)
+            {
+                for (int i=0; i<m_orderingProps->GetCount(); i++)
+                {
+                    FdoPtr<FdoIdentifier> id = m_orderingProps->GetItem(i);
+                    ordering.push_back(NameOrderingPair(id.p, m_orderingOptions[id->GetName()])); 
+                }
+            }
+
+            return m_connection->Select(m_className, m_filter, m_properties, true, ordering);
         }
 
         //-------------------------------------------------------
@@ -119,7 +184,9 @@ class SltExtendedSelect: public SltFeatureCommand<FdoIExtendedSelect>
         //-------------------------------------------------------
 
         private:
+            FdoIdentifierCollection* m_orderingProps;
             FdoIdentifierCollection* m_properties;
+            std::map<std::wstring, FdoOrderingOption> m_orderingOptions;
 };
 
 
@@ -170,19 +237,18 @@ class SltSelectAggregates : public SltFeatureCommand<FdoISelectAggregates>
                                                     m_grfilter, 
                                                     m_grouping); 
         }
-        virtual void SetDistinct( bool value )              { m_bDistinct = value; }
-        virtual bool GetDistinct( )                         { return m_bDistinct; }
-        virtual FdoIdentifierCollection* GetGrouping()      { return FDO_SAFE_ADDREF(m_grouping); }
-        virtual void SetGroupingFilter( FdoFilter* filter ) 
+        virtual void                     SetDistinct( bool value )              { m_bDistinct = value; }
+        virtual bool                     GetDistinct( )                         { return m_bDistinct; }
+        virtual FdoIdentifierCollection* GetGrouping()                          { return FDO_SAFE_ADDREF(m_grouping); }
+        virtual void                     SetGroupingFilter( FdoFilter* filter ) 
         {
             FDO_SAFE_RELEASE(m_grfilter);
-            m_grfilter = filter;
-            FDO_SAFE_ADDREF(m_grfilter);
+            m_grfilter = FDO_SAFE_ADDREF(filter);
         } 
-        virtual FdoFilter* GetGroupingFilter( )             { return FDO_SAFE_ADDREF(m_filter); }
-        virtual FdoIdentifierCollection* GetOrdering()      { return FDO_SAFE_ADDREF(m_ordering); }
-        virtual void SetOrderingOption( FdoOrderingOption option) { m_eOrderingOption = option; }
-        virtual FdoOrderingOption GetOrderingOption( )      { return m_eOrderingOption; }
+        virtual FdoFilter*               GetGroupingFilter( )                   { return FDO_SAFE_ADDREF(m_filter); }
+        virtual FdoIdentifierCollection* GetOrdering()                          { return FDO_SAFE_ADDREF(m_ordering); }
+        virtual void                     SetOrderingOption( FdoOrderingOption option) { m_eOrderingOption = option; }
+        virtual FdoOrderingOption        GetOrderingOption( )                   { return m_eOrderingOption; }
 
     private:
         FdoIdentifierCollection*    m_properties;

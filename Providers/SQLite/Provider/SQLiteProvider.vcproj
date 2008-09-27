@@ -219,6 +219,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\RowidIterator.h"
+			>
+		</File>
+		<File
 			RelativePath=".\slt.cpp"
 			>
 			<FileConfiguration

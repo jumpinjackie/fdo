@@ -24,6 +24,8 @@
 class SltMetadata;
 class SpatialIndex;
 class SltReader;
+class SltExtendedSelect;
+struct NameOrderingPair;
 
 class SltConnection : public FdoIConnection, 
                       public FdoIConnectionInfo,
@@ -141,10 +143,11 @@ public:
     
     void                CreateDatabase          ();
 
-    SltReader*  Select                         (FdoIdentifier*          fcname, 
-                                                FdoFilter*              filter, 
+    SltReader*  Select                         (FdoIdentifier*           fcname, 
+                                                FdoFilter*               filter, 
                                                 FdoIdentifierCollection* props,
-                                                bool                    scrollable);
+                                                bool                     scrollable,
+                                                const std::vector<NameOrderingPair>& ordering);
 
     FdoIDataReader*     SelectAggregates       (FdoIdentifier*             fcname, 
                                                 FdoIdentifierCollection*   properties,
