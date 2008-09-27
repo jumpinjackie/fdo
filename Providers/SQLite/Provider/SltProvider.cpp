@@ -30,6 +30,7 @@
 #include "SltQueryTranslator.h"
 #include "FdoIExtendedSelect.h"
 #include "SltCommandType.h"
+#include "RowidIterator.h"
 
 //#include "SpatialIndex.h"
 #include "DiskSpatialIndex.h"
@@ -455,7 +456,11 @@ FdoISpatialContextReader* SltConnection::GetSpatialContexts()
     return new SltSpatialContextReader(this);
 }
 
-SltReader* SltConnection::Select(FdoIdentifier* fcname, FdoFilter* filter, FdoIdentifierCollection* props, bool scrollable)
+SltReader* SltConnection::Select(FdoIdentifier* fcname, 
+                                 FdoFilter* filter, 
+                                 FdoIdentifierCollection* props, 
+                                 bool scrollable, 
+                                 const std::vector<NameOrderingPair>& ordering)
 {
     if (m_connState != FdoConnectionState_Open)
         throw FdoCommandException::Create(L"Connection must be open in order to Select.");
@@ -472,7 +477,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname, FdoFilter* filter, FdoId
     bool canFastStep = true;
 
     //Translate the filter from FDO to SQLite where clause.
-    //Also detext if there is a BBOX query that we can accelerate
+    //Also detect if there is a BBOX query that we can accelerate
     //by using the spatial index.
     if (filter)
     {
@@ -492,8 +497,121 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname, FdoFilter* filter, FdoId
         SpatialIndex* si = GetSpatialIndex(mbfc.c_str());
         siter = new SpatialIterator(bbox, si);
     }
+
+    //Now process any ordering options .
+    //Our strategy here is to perform any ordering without evaluating the where
+    //clause. Then we will pass the ordered list of IDs to the feature reader
+    //which will process the where clause (filter) in the same way regardless of ordering,
+    //or at least we hope it does.
+    //This approach may or may not be slower, it needs some experimentation to see if
+    //it's better to also perform the where clause here.
+    RowidIterator* ri = NULL;
+
+    if (!ordering.empty())
+    {
+        std::string sql = "SELECT ROWID FROM " + mbfc + " ORDER BY ";
+
+        for (size_t i=0; i<ordering.size(); i++)
+        {
+            if (i)
+                sql += ",";
+
+            //NOTE: We are using ToString() here in order to convert
+            //any computed identifiers/expression that may have been specified for sorting by.
+            sql += W2A_SLOW(ordering[i].name->ToString());
+           
+            if (ordering[i].option == FdoOrderingOption_Ascending)
+                sql += " ASC";
+            else
+                sql += " DESC";
+        }
+
+        sql += ";";
+
+        sqlite3_stmt* stmt = NULL;
+        const char* tail = NULL;
+        std::vector<__int64>* rows = new std::vector<__int64>(); //accumulate ordered row ids here
+
+        int rc = sqlite3_prepare_v2(m_db, sql.c_str(), -1, &stmt, &tail);
+
+        while ((rc = sqlite3_step(stmt)) == SQLITE_ROW)
+            rows->push_back(sqlite3_column_int64(stmt, 0));
+
+        rc = sqlite3_finalize(stmt);
+
+        //If there is also a spatial filter, we need to compute the intersection
+        //of the ordering with the spatial filter -- the SltReader cannot handle both
+        //a row id iterator and a spatial iterator, so we have to precompute this
+        //and pass it the intersected row id iterator.
+        
+        //First, read the spatial iterator fully -- it will return results in sorted order
+        if (siter)
+        {
+            std::vector<int> srows;
+            int start = -1;
+            int end = -1;
+
+            while (siter->NextRange(start, end))
+            {
+                for (int i=start; i<=end; i++)
+                    srows.push_back(i);
+            }
+
+            //Second, we will check for each result of the ordering query, if
+            //it exists in the spatial query results, and add it to a new list 
+            //if it does
+
+            std::vector<__int64>* nrows = new std::vector<__int64>;
+
+            for (size_t i=0; i<rows->size(); i++)
+            {
+                __int64 id = rows->at(i);
+
+                //TODO: resolve rowid type issue (__int64 vs. int)
+                if (std::binary_search(srows.begin(), srows.end(), (int)id))
+                    nrows->push_back(id);
+            }
+
+            //switch over to the new spatially filtered row list
+            delete rows;
+            rows = nrows;
+
+            //get rid of the spatial iterator -- we are done with it here
+            delete siter;
+            siter = NULL;
+        }
+
+        ri = new RowidIterator(-1, rows);
+    }
+    else if (scrollable) //if we want the reader to be scrollable without ordering, we also need a rowid iterator
+    {
+        //again, if we also have a spatial iterator, we need
+        //to eliminate it from the picture by intersecting the 
+        //row list with the spatial result list
+        if (siter)
+        {
+            std::vector<__int64>* rows = new std::vector<__int64>;
+            int start = -1;
+            int end = -1;
+
+            while (siter->NextRange(start, end))
+            {
+                for (int i=start; i<=end; i++)
+                    rows->push_back(i);
+            }
+
+            delete siter;
+            siter = NULL;
+
+            ri = new RowidIterator(-1, rows);
+        }
+        else
+        {
+            ri = new RowidIterator(GetFeatureCount(mbfc.c_str()), NULL);
+        }
+    }
    
-    return new SltReader(this, props, mbfc.c_str(), where.c_str(), siter, canFastStep, scrollable);
+    return new SltReader(this, props, mbfc.c_str(), where.c_str(), siter, canFastStep, ri);
 }
 
 FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcname, 
@@ -697,6 +815,9 @@ SpatialIndex* SltConnection::GetSpatialIndex(const char* table)
     {
 #if 0
     clock_t t0 = clock();
+    for (int i=0; i<1000; i++)
+    {
+    delete si;
 #endif
     si = new SpatialIndex(GetProperty(PROP_NAME_FILENAME));
 
@@ -725,6 +846,7 @@ SpatialIndex* SltConnection::GetSpatialIndex(const char* table)
     delete rdr;
     si->ReOpenForRead();
 #if 0
+    }
     clock_t t1 = clock();
     printf("Spatial index build time: %d\n", t1 - t0);
 #endif
