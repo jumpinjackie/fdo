@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://fdordbms.osgeo.org/schemas" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns:fdo="http://fdo.osgeo.org/schemas" targetNamespace="http://fdordbms.osgeo.org/schemas" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://fdo.osgeo.org/schemas" schemaLocation="../../../../Fdo/Docs/XmlSchema/FdoOverride.xsd"/>
+	<xs:element name="AutoGeneration" type="AutoGenerationType" abstract="false">
+		<xs:annotation>
+			<xs:documentation>Settings for AutoGenerating feature schemas from physical schema.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="TableMapping" type="TableMappingType" abstract="false">
+		<xs:annotation>
+			<xs:documentation>Class Table Mapping override</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="complexType" type="complexTypeType" abstract="false">
+		<xs:annotation>
+			<xs:documentation>Class override.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="SchemaMappingType" abstract="true">
+		<xs:annotation>
+			<xs:documentation>Base type for RDBMS Provider Schema Override sets.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="fdo:PhysicalSchemaMappingType">
+				<xs:sequence>
+					<xs:element ref="AutoGeneration" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Settings for AutoGenerating feature schemas from physical schema.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="tableMapping" type="TableMappingType">
+					<xs:annotation>
+						<xs:documentation>Default Class table mapping type for classes in this schema.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AutoGenerationType" abstract="false">
+		<xs:annotation>
+			<xs:documentation>Settings for AutoGenerating feature schemas from physical schema.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TableList" type="fdo:NameCollectionType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>AutoGenerate a class for each table whose name appears in this list.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="tablePrefix" type="xs:token" use="optional">
+			<xs:annotation>
+				<xs:documentation>AutoGenerate a class for each table whose name starts with this prefix.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="removeTablePrefix" type="xs:boolean" use="optional" default="true">
+			<xs:annotation>
+				<xs:documentation>Affects the naming of classes generated from tables matching the tablePrefix. When true, the class name is the table name with prefix removed. When false, the class name is the table name. If the table also appears in the TableList then the class name is always the table name (prefix is not removed), even when removeTablePrefix is true.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="maxSampleRows" type="fdo:int32" use="optional" default="-1">
+			<xs:annotation>
+				<xs:documentation>Gets the maximum number of rows to sample when table datamust be examined to determine schema information. The situations where this must be done depend on the provider. For example, when a geometric property is generated from a geometric column, the geomety types might be determined by examining some of the geometry values in the column.
+</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="complexTypeType" abstract="false">
+		<xs:complexContent>
+			<xs:extension base="fdo:SchemaMappingElement">
+				<xs:attribute name="tableMapping" type="TableMappingType"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TableType" abstract="false">
+		<xs:annotation>
+			<xs:documentation>Base type for RDBMS Provider Schema Table Mapping override.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="fdo:SchemaMappingElement">
+				<xs:attribute name="pkeyName" type="xs:token">
+					<xs:annotation>
+						<xs:documentation>Primary key name override.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ColumnType" abstract="false">
+		<xs:annotation>
+			<xs:documentation>Base type for RDBMS Provider column overrides.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="fdo:SchemaMappingElement"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="TableMappingType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="Concrete"/>
+			<xs:enumeration value="Base"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

@@ -1,0 +1,107 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D443020E-6642-46D0-8AAB-6465A0F574BA}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>mgUnitTest</RootNamespace>
+    <AssemblyName>mgUnitTest</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="OSGeo.FDO, Version=3.3.8091.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Fdo\Managed\bin\win32\debug\OSGeo.FDO.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OSGeo.FDO.Common, Version=3.3.8091.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Fdo\Managed\bin\win32\debug\OSGeo.FDO.Common.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Framework\BaseTest.cs" />
+    <Compile Include="Framework\BaseTestWithConnection.cs" />
+    <Compile Include="Framework\IConnectionProvider.cs" />
+    <Compile Include="Framework\TestSuite.cs" />
+    <Compile Include="Framework\XmlFormatter.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProviderTests\SchemaTests.cs" />
+    <Compile Include="ProviderTests\TestProvider.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PreBuildEvent>
+      Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll .\
+      Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.dll .\
+      Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll .\
+      Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll .\
+      Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll .\
+      Copy $(FDO)\Managed\bin\win32\debug\OSGeo.FDO.dll .\
+      Copy $(FDO)\Managed\bin\win32\debug\OSGeo.FDO.pdb .\
+      Copy $(FDO)\Managed\bin\win32\debug\OSGeo.FDO.Common.dll .\
+      Copy $(FDO)\Managed\bin\win32\debug\OSGeo.FDO.common.pdb .\
+
+      Copy $(FDOUTILITIES)\ExpressionEngine\bin\win32\debug\ExpressionEngine.dll .\
+      Copy $(FDOUTILITIES)\ExpressionEngine\bin\win32\debug\ExpressionEngine.pdb .\
+
+      Copy ..\..\..\..\..\..\Providers\SDF\Bin\Win32\Debug\SDFProvider.dll .\
+      Copy ..\..\..\..\..\..\Providers\SDF\Bin\Win32\Debug\SDFProvider.pdb .\
+
+      Copy ..\..\..\..\..\..\Providers\SDF\Bin\Win32\Debug\SDFMessage.dll .\
+
+      Copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.dll .\
+      Copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.pdb .\
+
+      Copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc9\Release\Xalan-C_1_7_0.dll .\
+      Copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc9\Release\Xalan-C_1_7_0.pdb .\
+
+      Copy  $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc9\Release\XalanMessages_1_7_0.dll .\
+      Copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc9\Release\XalanMessages_1_7_0.pdb .\
+
+      Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.pdb .\
+      Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.pdb .\
+      Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb .\
+      Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb .\
+      Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdb .\
+
+      Copy  ..\..\..\..\..\..\Providers\SDF\Src\UnitTest\providers.xml .\
+    </PreBuildEvent>
+  </PropertyGroup>
+</Project>

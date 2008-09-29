@@ -1,0 +1,16 @@
+*~
+*.swp
+.deps
+.libs
+autogen.sh
+autom4te.cache
+config.log
+config.guess
+config.sub
+ID
+ltmain.sh
+Makefile
+Makefile.in
+rtest
+tags
+UnitTest

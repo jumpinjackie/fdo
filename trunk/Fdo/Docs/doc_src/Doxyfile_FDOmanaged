@@ -1,0 +1,325 @@
+# Doxyfile 1.5.1-p1
+
+#---------------------------------------------------------------------------
+# Project related configuration options
+#---------------------------------------------------------------------------
+PROJECT_NAME           = "FDO API Reference - Managed"
+PROJECT_NUMBER         = 
+OUTPUT_DIRECTORY       = 
+CREATE_SUBDIRS         = YES
+OUTPUT_LANGUAGE        = English
+USE_WINDOWS_ENCODING   = NO
+BRIEF_MEMBER_DESC      = YES
+REPEAT_BRIEF           = YES
+ABBREVIATE_BRIEF       = 
+ALWAYS_DETAILED_SEC    = NO
+INLINE_INHERITED_MEMB  = NO
+FULL_PATH_NAMES        = NO
+STRIP_FROM_PATH        = 
+STRIP_FROM_INC_PATH    = 
+SHORT_NAMES            = NO
+JAVADOC_AUTOBRIEF      = NO
+MULTILINE_CPP_IS_BRIEF = NO
+DETAILS_AT_TOP         = YES
+INHERIT_DOCS           = YES
+SEPARATE_MEMBER_PAGES  = YES
+TAB_SIZE               = 4
+ALIASES                = 
+OPTIMIZE_OUTPUT_FOR_C  = NO
+OPTIMIZE_OUTPUT_JAVA   = NO
+BUILTIN_STL_SUPPORT    = NO
+DISTRIBUTE_GROUP_DOC   = NO
+SUBGROUPING            = YES
+#---------------------------------------------------------------------------
+# Build related configuration options
+#---------------------------------------------------------------------------
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = YES
+EXTRACT_LOCAL_CLASSES  = YES
+EXTRACT_LOCAL_METHODS  = NO
+HIDE_UNDOC_MEMBERS     = NO
+HIDE_UNDOC_CLASSES     = NO
+HIDE_FRIEND_COMPOUNDS  = NO
+HIDE_IN_BODY_DOCS      = NO
+INTERNAL_DOCS          = NO
+CASE_SENSE_NAMES       = NO
+HIDE_SCOPE_NAMES       = NO
+SHOW_INCLUDE_FILES     = NO
+INLINE_INFO            = YES
+SORT_MEMBER_DOCS       = YES
+SORT_BRIEF_DOCS        = YES
+SORT_BY_SCOPE_NAME     = NO
+GENERATE_TODOLIST      = NO
+GENERATE_TESTLIST      = NO
+GENERATE_BUGLIST       = NO
+GENERATE_DEPRECATEDLIST= NO
+ENABLED_SECTIONS       = 
+MAX_INITIALIZER_LINES  = 30
+SHOW_USED_FILES        = NO
+SHOW_DIRECTORIES       = NO
+FILE_VERSION_FILTER    = 
+#---------------------------------------------------------------------------
+# configuration options related to warning and progress messages
+#---------------------------------------------------------------------------
+QUIET                  = NO
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = YES
+WARN_IF_DOC_ERROR      = YES
+WARN_NO_PARAMDOC       = YES
+WARN_FORMAT            = "$file:$line: $text"
+WARN_LOGFILE           = warning_logfile_managed.txt
+#---------------------------------------------------------------------------
+# configuration options related to the input files
+#---------------------------------------------------------------------------
+INPUT                  = ../../Managed/src \
+                         group_and_page_definitions/chm_usage_notes \
+                         group_and_page_definitions/define_pages_managed.h
+FILE_PATTERNS          = *.h
+RECURSIVE              = YES
+EXCLUDE                = 
+EXCLUDE_SYMLINKS       = NO
+EXCLUDE_PATTERNS       = stdafx.h \
+                         VirtualSaxHandler.h \
+                         VirtualFdoIoStream.h \
+                         resource.h \
+                         ProtocolExt.h \
+                         define_pages_managed.h
+EXAMPLE_PATH           = headers_and_footers
+EXAMPLE_PATTERNS       = *
+EXAMPLE_RECURSIVE      = YES
+IMAGE_PATH             = other_graphics
+INPUT_FILTER           = 
+FILTER_PATTERNS        = 
+FILTER_SOURCE_FILES    = NO
+#---------------------------------------------------------------------------
+# configuration options related to source browsing
+#---------------------------------------------------------------------------
+SOURCE_BROWSER         = NO
+INLINE_SOURCES         = NO
+STRIP_CODE_COMMENTS    = NO
+REFERENCED_BY_RELATION = YES
+REFERENCES_RELATION    = YES
+REFERENCES_LINK_SOURCE = YES
+USE_HTAGS              = NO
+VERBATIM_HEADERS       = NO
+#---------------------------------------------------------------------------
+# configuration options related to the alphabetical class index
+#---------------------------------------------------------------------------
+ALPHABETICAL_INDEX     = YES
+COLS_IN_ALPHA_INDEX    = 1
+IGNORE_PREFIX          = Fdo \
+                         Mg
+#---------------------------------------------------------------------------
+# configuration options related to the HTML output
+#---------------------------------------------------------------------------
+GENERATE_HTML          = YES
+HTML_OUTPUT            = ../HTML/FDO_API_managed
+HTML_FILE_EXTENSION    = .htm
+HTML_HEADER            = headers_and_footers/header_managed.html
+HTML_FOOTER            = headers_and_footers/footer_managed.html
+HTML_STYLESHEET        = headers_and_footers/custom.css
+HTML_ALIGN_MEMBERS     = YES
+GENERATE_HTMLHELP      = YES
+CHM_FILE               = ../../FDO_API_managed.chm
+HHC_LOCATION           = "C:/Program Files/HTML Help Workshop/hhc.exe"
+GENERATE_CHI           = NO
+BINARY_TOC             = YES
+TOC_EXPAND             = YES
+DISABLE_INDEX          = NO
+ENUM_VALUES_PER_LINE   = 1
+GENERATE_TREEVIEW      = YES
+TREEVIEW_WIDTH         = 250
+#---------------------------------------------------------------------------
+# configuration options related to the LaTeX output
+#---------------------------------------------------------------------------
+GENERATE_LATEX         = NO
+LATEX_OUTPUT           = latex
+LATEX_CMD_NAME         = latex
+MAKEINDEX_CMD_NAME     = makeindex
+COMPACT_LATEX          = NO
+PAPER_TYPE             = a4wide
+EXTRA_PACKAGES         = 
+LATEX_HEADER           = 
+PDF_HYPERLINKS         = NO
+USE_PDFLATEX           = NO
+LATEX_BATCHMODE        = NO
+LATEX_HIDE_INDICES     = NO
+#---------------------------------------------------------------------------
+# configuration options related to the RTF output
+#---------------------------------------------------------------------------
+GENERATE_RTF           = NO
+RTF_OUTPUT             = rtf
+COMPACT_RTF            = NO
+RTF_HYPERLINKS         = NO
+RTF_STYLESHEET_FILE    = 
+RTF_EXTENSIONS_FILE    = 
+#---------------------------------------------------------------------------
+# configuration options related to the man page output
+#---------------------------------------------------------------------------
+GENERATE_MAN           = NO
+MAN_OUTPUT             = man
+MAN_EXTENSION          = .3
+MAN_LINKS              = NO
+#---------------------------------------------------------------------------
+# configuration options related to the XML output
+#---------------------------------------------------------------------------
+GENERATE_XML           = NO
+XML_OUTPUT             = xml
+XML_SCHEMA             = 
+XML_DTD                = 
+XML_PROGRAMLISTING     = YES
+#---------------------------------------------------------------------------
+# configuration options for the AutoGen Definitions output
+#---------------------------------------------------------------------------
+GENERATE_AUTOGEN_DEF   = NO
+#---------------------------------------------------------------------------
+# configuration options related to the Perl module output
+#---------------------------------------------------------------------------
+GENERATE_PERLMOD       = NO
+PERLMOD_LATEX          = NO
+PERLMOD_PRETTY         = YES
+PERLMOD_MAKEVAR_PREFIX = 
+#---------------------------------------------------------------------------
+# Configuration options related to the preprocessor   
+#---------------------------------------------------------------------------
+ENABLE_PREPROCESSING   = YES
+MACRO_EXPANSION        = YES
+EXPAND_ONLY_PREDEF     = YES
+SEARCH_INCLUDES        = YES
+INCLUDE_PATH           = 
+INCLUDE_FILE_PATTERNS  = 
+PREDEFINED             = "BEGIN_NAMESPACE_OSGEO=namespace OSGeo {" \
+                         "END_NAMESPACE_OSGEO=}" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO=BEGIN_NAMESPACE_OSGEO namespace FDO {" \
+                         "END_NAMESPACE_OSGEO_FDO=END_NAMESPACE_OSGEO }" \
+                         "BEGIN_NAMESPACE_OSGEO_RUNTIME=BEGIN_NAMESPACE_OSGEO_FDO namespace Runtime {" \
+                         "END_NAMESPACE_OSGEO_RUNTIME=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_COMMON=BEGIN_NAMESPACE_OSGEO_FDO namespace Common {" \
+                         "END_NAMESPACE_OSGEO_COMMON=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_COMMON_IO=BEGIN_NAMESPACE_OSGEO_COMMON namespace Io {" \
+                         "END_NAMESPACE_OSGEO_COMMON_IO=END_NAMESPACE_OSGEO_COMMON }" \
+                         "BEGIN_NAMESPACE_OSGEO_COMMON_XML=BEGIN_NAMESPACE_OSGEO_COMMON namespace Xml {" \
+                         "END_NAMESPACE_OSGEO_COMMON_XML=END_NAMESPACE_OSGEO_COMMON }" \
+                         "BEGIN_NAMESPACE_OSGEO_COMMON_XSL=BEGIN_NAMESPACE_OSGEO_COMMON namespace Xsl {" \
+                         "END_NAMESPACE_OSGEO_COMMON_XSL=END_NAMESPACE_OSGEO_COMMON }" \
+                         "BEGIN_NAMESPACE_OSGEO_COMMON_GML212=BEGIN_NAMESPACE_OSGEO_COMMON namespace Gml212 {" \
+                         "END_NAMESPACE_OSGEO_COMMON_GML212=END_NAMESPACE_OSGEO_COMMON }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_XML=BEGIN_NAMESPACE_OSGEO_FDO namespace Xml {" \
+                         "END_NAMESPACE_OSGEO_FDO_XML=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS=BEGIN_NAMESPACE_OSGEO_FDO namespace Connections {" \
+                         "END_NAMESPACE_OSGEO_FDO_CONNECTIONS=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS=BEGIN_NAMESPACE_OSGEO_FDO namespace Commands {" \
+                         "END_NAMESPACE_OSGEO_FDO_COMMANDS=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA=BEGIN_NAMESPACE_OSGEO_FDO namespace Schema {" \
+                         "END_NAMESPACE_OSGEO_FDO_SCHEMA=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA=BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS namespace Schema {" \
+                         "END_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA=END_NAMESPACE_OSGEO_FDO_COMMANDS }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION=BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS namespace LongTransaction {" \
+                         "END_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION=END_NAMESPACE_OSGEO_FDO_COMMANDS }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE=BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS namespace Feature {" \
+                         "END_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE=END_NAMESPACE_OSGEO_FDO_COMMANDS }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING=BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS namespace Locking {" \
+                         "END_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING=END_NAMESPACE_OSGEO_FDO_COMMANDS }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SQL=BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS namespace SQL {" \
+                         "END_NAMESPACE_OSGEO_FDO_COMMANDS_SQL=END_NAMESPACE_OSGEO_FDO_COMMANDS }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE=BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS namespace UnitOfMeasure {" \
+                         "END_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE=END_NAMESPACE_OSGEO_FDO_COMMANDS }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT=BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS namespace SpatialContext {" \
+                         "END_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT=END_NAMESPACE_OSGEO_FDO_COMMANDS }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_NETWORK=BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS namespace Network {" \
+                         "END_NAMESPACE_OSGEO_FDO_COMMANDS_NETWORK=END_NAMESPACE_OSGEO_FDO_COMMANDS }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_TOPOLOGY=BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS namespace Topology {" \
+                         "END_NAMESPACE_OSGEO_FDO_COMMANDS_TOPOLOGY=END_NAMESPACE_OSGEO_FDO_COMMANDS }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE=BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS namespace DataStore {" \
+                         "END_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE=END_NAMESPACE_OSGEO_FDO_COMMANDS }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION=BEGIN_NAMESPACE_OSGEO_FDO namespace Expression {" \
+                         "END_NAMESPACE_OSGEO_FDO_EXPRESSION=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS=BEGIN_NAMESPACE_OSGEO_FDO namespace Connections {" \
+                         "END_NAMESPACE_OSGEO_FDO_CONNECTIONS=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES=BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS namespace Capabilities {" \
+                         "END_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES=END_NAMESPACE_OSGEO_FDO_CONNECTIONS }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_FILTER=BEGIN_NAMESPACE_OSGEO_FDO namespace Filter {" \
+                         "END_NAMESPACE_OSGEO_FDO_FILTER=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_RASTER=BEGIN_NAMESPACE_OSGEO_FDO namespace Raster {" \
+                         "END_NAMESPACE_OSGEO_FDO_RASTER=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_CLIENTSERVICES=BEGIN_NAMESPACE_OSGEO_FDO namespace ClientServices {" \
+                         "END_NAMESPACE_OSGEO_FDO_CLIENTSERVICES=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS=BEGIN_NAMESPACE_OSGEO_FDO namespace Providers {" \
+                         "END_NAMESPACE_OSGEO_FDO_PROVIDERS=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_GEOMETRY=BEGIN_NAMESPACE_OSGEO_FDO namespace Geometry {" \
+                         "END_NAMESPACE_OSGEO_GEOMETRY=END_NAMESPACE_OSGEO_FDO }" \
+                         "BEGIN_NAMESPACE_OSGEO_SPATIAL=BEGIN_NAMESPACE_OSGEO_FDO namespace Spatial {" \
+                         "END_NAMESPACE_OSGEO_SPATIAL=END_NAMESPACE_OSGEO_FDO }" \
+                         "NAMESPACE_OSGEO=OSGeo" \
+                         "NAMESPACE_OSGEO_FDO=NAMESPACE_OSGEO::FDO" \
+                         "NAMESPACE_OSGEO_RUNTIME=NAMESPACE_OSGEO_FDO::Runtime" \
+                         "NAMESPACE_OSGEO_COMMON=NAMESPACE_OSGEO_FDO::Common" \
+                         "NAMESPACE_OSGEO_COMMON_IO=NAMESPACE_OSGEO_COMMON::Io" \
+                         "NAMESPACE_OSGEO_COMMON_XML=NAMESPACE_OSGEO_COMMON::Xml" \
+                         "NAMESPACE_OSGEO_COMMON_XSL=NAMESPACE_OSGEO_COMMON::Xsl" \
+                         "NAMESPACE_OSGEO_COMMON_GML212=NAMESPACE_OSGEO_COMMON::Gml212" \
+                         "NAMESPACE_OSGEO_FDO_XML=NAMESPACE_OSGEO_FDO::Xml" \
+                         "NAMESPACE_OSGEO_FDO_SCHEMA=NAMESPACE_OSGEO_FDO::Schema" \
+                         "NAMESPACE_OSGEO_FDO_COMMANDS=NAMESPACE_OSGEO_FDO::Commands" \
+                         "NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA=NAMESPACE_OSGEO_FDO_COMMANDS::Schema" \
+                         "NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION=NAMESPACE_OSGEO_FDO_COMMANDS::LongTransaction" \
+                         "NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE=NAMESPACE_OSGEO_FDO_COMMANDS::Feature" \
+                         "NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING=NAMESPACE_OSGEO_FDO_COMMANDS::Locking" \
+                         "NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE=NAMESPACE_OSGEO_FDO_COMMANDS::UnitOfMeasure" \
+                         "NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT=NAMESPACE_OSGEO_FDO_COMMANDS::SpatialContext" \
+                         "NAMESPACE_OSGEO_FDO_COMMANDS_TOPOLOGY=NAMESPACE_OSGEO_FDO_COMMANDS::Topology" \
+                         "NAMESPACE_OSGEO_FDO_COMMANDS_NETWORK=NAMESPACE_OSGEO_FDO_COMMANDS::Network" \
+                         "NAMESPACE_OSGEO_FDO_COMMANDS_SQL=NAMESPACE_OSGEO_FDO_COMMANDS::SQL" \
+                         "NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE=NAMESPACE_OSGEO_FDO_COMMANDS::DataStore" \
+                         "NAMESPACE_OSGEO_FDO_EXPRESSION=NAMESPACE_OSGEO_FDO::Expression" \
+                         "NAMESPACE_OSGEO_FDO_CONNECTIONS=NAMESPACE_OSGEO_FDO::Connections" \
+                         "NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES=NAMESPACE_OSGEO_FDO_CONNECTIONS::Capabilities" \
+                         "NAMESPACE_OSGEO_FDO_FILTER=NAMESPACE_OSGEO_FDO::Filter" \
+                         "NAMESPACE_OSGEO_FDO_RASTER=NAMESPACE_OSGEO_FDO::Raster" \
+                         "NAMESPACE_OSGEO_FDO_CLIENTSERVICES=NAMESPACE_OSGEO_FDO::ClientServices" \
+                         "NAMESPACE_OSGEO_FDO_PROVIDERS=NAMESPACE_OSGEO_FDO::Providers" \
+                         "NAMESPACE_OSGEO_GEOMETRY=NAMESPACE_OSGEO_FDO::Geometry" \
+                         "NAMESPACE_OSGEO_SPATIAL=NAMESPACE_OSGEO_FDO::Spatial"
+
+EXPAND_AS_DEFINED      = 
+SKIP_FUNCTION_MACROS   = YES
+#---------------------------------------------------------------------------
+# Configuration::additions related to external references   
+#---------------------------------------------------------------------------
+TAGFILES               = 
+GENERATE_TAGFILE       = 
+ALLEXTERNALS           = NO
+EXTERNAL_GROUPS        = YES
+PERL_PATH              = /usr/bin/perl
+#---------------------------------------------------------------------------
+# Configuration options related to the dot tool   
+#---------------------------------------------------------------------------
+CLASS_DIAGRAMS         = NO
+HIDE_UNDOC_RELATIONS   = YES
+HAVE_DOT               = YES
+CLASS_GRAPH            = YES
+COLLABORATION_GRAPH    = NO
+GROUP_GRAPHS           = NO
+UML_LOOK               = YES
+TEMPLATE_RELATIONS     = NO
+INCLUDE_GRAPH          = YES
+INCLUDED_BY_GRAPH      = YES
+CALL_GRAPH             = YES
+CALLER_GRAPH           = NO
+GRAPHICAL_HIERARCHY    = YES
+DIRECTORY_GRAPH        = YES
+DOT_IMAGE_FORMAT       = png
+DOT_PATH               = 
+DOTFILE_DIRS           = 
+MAX_DOT_GRAPH_WIDTH    = 1024
+MAX_DOT_GRAPH_HEIGHT   = 1024
+MAX_DOT_GRAPH_DEPTH    = 1000
+DOT_TRANSPARENT        = NO
+DOT_MULTI_TARGETS      = NO
+GENERATE_LEGEND        = YES
+DOT_CLEANUP            = YES
+#---------------------------------------------------------------------------
+# Configuration::additions related to the search engine   
+#---------------------------------------------------------------------------
+SEARCHENGINE           = NO

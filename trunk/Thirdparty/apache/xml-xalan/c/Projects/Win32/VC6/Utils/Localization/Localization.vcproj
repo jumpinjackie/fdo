@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="9.00"
+	Name="Localization"
+	ProjectGUID="{7FB56BC6-A12C-4EC3-A08A-EB39F399F92E}"
+	RootNamespace="Localization"
+	Keyword="MakeFileProj"
+	TargetFrameworkVersion="131072"
+	>
+	<Platforms>
+		<Platform
+			Name="Win32"
+		/>
+		<Platform
+			Name="x64"
+		/>
+	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="."
+			IntermediateDirectory="."
+			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake    /f &quot;Localization.mak&quot; /NOLOGO CFG=Debug TYPE=inmem LOCALE=en_US BITS=Win32 LIBNAME=XalanMessages XALANROOT=..\..\..\..\.. NLSDIR=..\..\..\..\..\src\xalanc\NLS MSGFILENAME=XalanMsg_ XIFFEXT=.xlf OUTPUTDIR=..\..\..\..\..\Build\Win32\VC9\Debug INTDIR=..\..\..\..\..\Build\Win32\VC9\Debug\Nls  TMPINCLUDESDIR=..\..\..\..\..\Build\Win32\VC9\Debug\Nls\Include XALANMSGLIB_SRC=..\..\..\..\..\src\xalanc\Utils\XalanMsgLib&#x0D;&#x0A;"
+				ReBuildCommandLine="nmake    /f &quot;Localization.mak&quot; /NOLOGO CFG=Debug TYPE=inmem LOCALE=en_US BITS=Win32 LIBNAME=XalanMessages XALANROOT=..\..\..\..\.. NLSDIR=..\..\..\..\..\src\xalanc\NLS MSGFILENAME=XalanMsg_ XIFFEXT=.xlf OUTPUTDIR=..\..\..\..\..\Build\Win32\VC9\Debug INTDIR=..\..\..\..\..\Build\Win32\VC9\Debug\Nls  TMPINCLUDESDIR=..\..\..\..\..\Build\Win32\VC9\Debug\Nls\Include XALANMSGLIB_SRC=..\..\..\..\..\src\xalanc\Utils\XalanMsgLib&#x0D;&#x0A;"
+				CleanCommandLine="echo :"
+				Output="Localization"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="."
+			IntermediateDirectory="."
+			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake    /f &quot;Localization.mak&quot; /NOLOGO CFG=Debug TYPE=inmem LOCALE=en_US BITS=Win64 LIBNAME=XalanMessages XALANROOT=..\..\..\..\.. NLSDIR=..\..\..\..\..\src\xalanc\NLS MSGFILENAME=XalanMsg_ XIFFEXT=.xlf OUTPUTDIR=..\..\..\..\..\Build\Win64\VC9\Debug INTDIR=..\..\..\..\..\Build\Win64\VC9\Debug\Nls  TMPINCLUDESDIR=..\..\..\..\..\Build\Win64\VC9\Debug\Nls\Include XALANMSGLIB_SRC=..\..\..\..\..\src\xalanc\Utils\XalanMsgLib&#x0D;&#x0A;"
+				ReBuildCommandLine="nmake    /f &quot;Localization.mak&quot; /NOLOGO CFG=Debug TYPE=inmem LOCALE=en_US BITS=Win64 LIBNAME=XalanMessages XALANROOT=..\..\..\..\.. NLSDIR=..\..\..\..\..\src\xalanc\NLS MSGFILENAME=XalanMsg_ XIFFEXT=.xlf OUTPUTDIR=..\..\..\..\..\Build\Win64\VC9\Debug INTDIR=..\..\..\..\..\Build\Win64\VC9\Debug\Nls  TMPINCLUDESDIR=..\..\..\..\..\Build\Win64\VC9\Debug\Nls\Include XALANMSGLIB_SRC=..\..\..\..\..\src\xalanc\Utils\XalanMsgLib&#x0D;&#x0A;"
+				CleanCommandLine="echo :"
+				Output="Localization"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="."
+			IntermediateDirectory="."
+			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake    /f &quot;Localization.mak&quot;  CFG=Release TYPE=inmem LOCALE=en_US BITS=Win32 LIBNAME=XalanMessages XALANROOT=..\..\..\..\.. NLSDIR=..\..\..\..\..\src\xalanc\NLS MSGFILENAME=XalanMsg_ XIFFEXT=.xlf OUTPUTDIR=..\..\..\..\..\Build\Win32\VC9\Release INTDIR=..\..\..\..\..\Build\Win32\VC9\Release\Nls  TMPINCLUDESDIR=..\..\..\..\..\Build\Win32\VC9\Release\Nls\Include XALANMSGLIB_SRC=..\..\..\..\..\src\xalanc\Utils\XalanMsgLib&#x0D;&#x0A;"
+				ReBuildCommandLine="nmake    /f &quot;Localization.mak&quot; CFG=Release  TYPE=inmem LOCALE=en_US BITS=Win32 LIBNAME=XalanMessages XALANROOT=..\..\..\..\.. NLSDIR=..\..\..\..\..\src\xalanc\NLS MSGFILENAME=XalanMsg_ XIFFEXT=.xlf OUTPUTDIR=..\..\..\..\..\Build\Win32\VC9\Release INTDIR=..\..\..\..\..\Build\Win32\VC9\Release\Nls  TMPINCLUDESDIR=..\..\..\..\..\Build\Win32\VC9\Release\Nls\Include XALANMSGLIB_SRC=..\..\..\..\..\src\xalanc\Utils\XalanMsgLib&#x0D;&#x0A;"
+				CleanCommandLine="echo :"
+				Output="Localization"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="."
+			IntermediateDirectory="."
+			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake    /f &quot;Localization.mak&quot; CFG=Release  TYPE=inmem LOCALE=en_US BITS=Win64 LIBNAME=XalanMessages XALANROOT=..\..\..\..\.. NLSDIR=..\..\..\..\..\src\xalanc\NLS MSGFILENAME=XalanMsg_ XIFFEXT=.xlf OUTPUTDIR=..\..\..\..\..\Build\Win64\VC9\Release INTDIR=..\..\..\..\..\Build\Win64\VC9\Release\Nls  TMPINCLUDESDIR=..\..\..\..\..\Build\Win64\VC9\Release\Nls\Include XALANMSGLIB_SRC=..\..\..\..\..\src\xalanc\Utils\XalanMsgLib&#x0D;&#x0A;"
+				ReBuildCommandLine="nmake    /f &quot;Localization.mak&quot; CFG=Release  TYPE=inmem LOCALE=en_US BITS=Win64 LIBNAME=XalanMessages XALANROOT=..\..\..\..\.. NLSDIR=..\..\..\..\..\src\xalanc\NLS MSGFILENAME=XalanMsg_ XIFFEXT=.xlf OUTPUTDIR=..\..\..\..\..\Build\Win64\VC9\Release INTDIR=..\..\..\..\..\Build\Win64\VC9\Release\Nls  TMPINCLUDESDIR=..\..\..\..\..\Build\Win64\VC9\Release\Nls\Include XALANMSGLIB_SRC=..\..\..\..\..\src\xalanc\Utils\XalanMsgLib&#x0D;&#x0A;"
+				CleanCommandLine="echo :"
+				Output="Localization"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<File
+			RelativePath="..\..\..\..\..\src\xalanc\NLS\en_US\XalanMsg_en_US.xlf"
+			>
+		</File>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>
