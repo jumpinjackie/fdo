@@ -439,7 +439,13 @@ int local_odbcdr_col_act(
                 NULL, 
                 &ssIsNullable  ),
                 SQL_HANDLE_STMT, c->hStmt, "SQLColAttribute", "Getting isnullable" );
-            newNle.isnullable = (ssIsNullable == SQL_NULLABLE);
+            newNle.isnullable = (ssIsNullable == SQL_NULLABLE)
+#ifdef _WIN64
+				// Workaround for what might be a MySQL bug. On 64bit, the MySQL ODBC driver
+				// seems to stuff a 32bit integer into ssIsNullable.
+				|| ((ODBCDriverType_MySQL == connData->driver_type) && (ssIsNullable != SQL_NO_NULLS) && (ssIsNullable != SQL_NULLABLE_UNKNOWN) && (*(long*)(&ssIsNullable) == SQL_NULLABLE))
+#endif
+		    ;
 
             ODBCDR_ODBC_ERR( SQLColAttributeW(
                 c->hStmt,
