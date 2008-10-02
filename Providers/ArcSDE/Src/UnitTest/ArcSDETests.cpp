@@ -1320,7 +1320,14 @@ void ArcSDETests::CreateOrUpdateSpatialContext(FdoIConnection *conn, FdoString* 
     set_extent(createSC, dXMin, dYMin, dXMax, dYMax);
     createSC->SetCoordinateSystem(scCoordSys);
     createSC->SetUpdateExisting(bExists);
-    createSC->Execute();
+    try 
+    {
+        createSC->Execute();
+    }
+    catch (FdoException *ex)
+    {
+        ex->Release();
+    }
 }
 
 
