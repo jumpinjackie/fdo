@@ -566,7 +566,14 @@ void SpatialContextTests::create_spatial_context (void)
     set_extent(cmdCreateSpatialContext, spatial_context_minx, spatial_context_miny, spatial_context_maxx, spatial_context_maxy);
 
     // Perform the create operation:
-    cmdCreateSpatialContext->Execute();
+    try
+    {
+        cmdCreateSpatialContext->Execute();
+    }
+    catch (FdoException *ex)
+    {
+        ex->Release();
+    }
 }
 
 
@@ -584,7 +591,14 @@ void SpatialContextTests::create_spatial_context2 (void)
     set_extent(cmdCreateSpatialContext, spatial_context_minx2, spatial_context_miny2, spatial_context_maxx2, spatial_context_maxy2);
 
     // Perform the create operation:
-    cmdCreateSpatialContext->Execute();
+    try
+    {
+        cmdCreateSpatialContext->Execute();
+    }
+    catch (FdoException *ex)
+    {
+        ex->Release();
+    }
 }
 
 
