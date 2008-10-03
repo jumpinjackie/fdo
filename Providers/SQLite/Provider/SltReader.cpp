@@ -532,18 +532,23 @@ bool SltReader::ReadNext()
         while (1)
         {
             //are we at the end of the current spatial iterator batch?
-            if (m_si && m_curfid >= m_siEnd)
+            if (m_si)
             {
-                m_curfid ++;
+                if (m_curfid < m_siEnd)
+                {
+                    m_curfid ++;
+                }
+                else
+                {
+                    int start;
+                    bool ret = m_si->NextRange(start, m_siEnd);
 
-                int start;
-                bool ret = m_si->NextRange(start, m_siEnd);
+                    //spatial reader is done, so we are done
+                    if (!ret)
+                        return false;
 
-                //spatial reader is done, so we are done
-                if (!ret)
-                    return false;
-
-                m_curfid = (sqlite3_int64)start;
+                    m_curfid = (sqlite3_int64)(start ? start : 1); //make sure we skip fid=0, which is not valid
+                }
             }
             else if (m_ri) //or are we using a rowid iterator?
             {
