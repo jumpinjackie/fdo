@@ -495,7 +495,14 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
     if (!bbox.IsEmpty())
     {
         SpatialIndex* si = GetSpatialIndex(mbfc.c_str());
-        siter = new SpatialIterator(bbox, si);
+
+        DBounds total_ext;
+        si->GetTotalExtent(total_ext);
+
+        //only use spatial iterator if the search bounds does not
+        //fully contain the data bounds
+        if (!bbox.Contains(total_ext))
+            siter = new SpatialIterator(bbox, si);
     }
 
     //Now process any ordering options .

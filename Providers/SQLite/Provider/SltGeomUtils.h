@@ -121,6 +121,19 @@ struct DBounds
             res->max[i] = std::min<double>(b1->max[i], b2->max[i]);
         }
     }
+
+    bool Contains(const DBounds& b)
+    {
+        for (int i=0; i<SI_DIM; i++)
+            if (min[i] > b.min[i])
+                return false;
+
+        for (int i=0; i<SI_DIM; i++)
+            if (max[i] < b.max[i])
+                return false;
+       
+        return true; 
+    }
 };
 
 _declspec(align(16)) struct Bounds
