@@ -23,12 +23,14 @@ enum GeomFormat
     eWKT = 2
 };
 
+class SltConnection;
+
 //Data structure containing FDO metadata for an SQLite table
 class SltMetadata
 {
 public:
 
-    SltMetadata(sqlite3* db, const char* name);
+    SltMetadata(SltConnection* connection, const char* name);
     ~SltMetadata();
 
     FdoClassDefinition*     ToClass(); 
@@ -39,7 +41,9 @@ public:
 
 private:
 
-    sqlite3*            m_db;
+    void FindSpatialContextName(int srid, std::wstring& ret);
+
+    SltConnection*      m_connection;
     FdoClassDefinition* m_fc;
     Table*              m_table;
     Table*              m_mdtable;
