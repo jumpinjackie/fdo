@@ -601,11 +601,8 @@ public:
     {
         std::string tmp;
 
-        std::string sc_sql = "INSERT INTO spatial_ref_sys (srid,auth_name,srtext) VALUES(";
+        std::string sc_sql = "INSERT INTO spatial_ref_sys (sr_name,auth_name,srtext) VALUES(";
 
-        //TODO: this is kind of dubious -- we map the SC name
-        //to the SRID column. The assumption here is that the
-        //spatial context name is a string that maps to an integer,
         tmp = W2A_SLOW(m_scName.c_str());
         sc_sql += tmp.empty() ? "NULL": "'" + tmp + "'";
         sc_sql += ",";

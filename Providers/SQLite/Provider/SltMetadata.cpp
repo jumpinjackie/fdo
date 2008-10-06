@@ -19,6 +19,7 @@
 #include "stdafx.h"
 #include "SltMetadata.h"
 #include "SltConversionUtils.h"
+#include "SltProvider.h"
 
 using namespace std;
 
@@ -50,13 +51,14 @@ static FdoDataType ConvertDataType(const char* type)
 }
 
 
-SltMetadata::SltMetadata(sqlite3* db, const char* name)
+SltMetadata::SltMetadata(SltConnection* connection, const char* name)
 : m_table(NULL),
   m_mdtable(NULL),
   m_fc(NULL),
-  m_db(db),
+  m_connection(connection), //No addref -- it owns us.
   m_iGeom(-1)
 {
+    sqlite3* db = m_connection->GetDB();
 
     /* Ensure the database schema has been loaded */
     if( sqlite3SafetyOn(db) )
@@ -106,6 +108,8 @@ FdoClassDefinition* SltMetadata::ToClass()
     if (!m_table)
         return NULL;
 
+    sqlite3* db = m_connection->GetDB();
+
     //find geometry properties by querying the geometry_columns table
     string gsql = "SELECT f_geometry_column,coord_dimension,srid,geometry_format,geometry_type FROM geometry_columns WHERE f_table_name='";
     gsql += m_table->zName;
@@ -119,7 +123,7 @@ FdoClassDefinition* SltMetadata::ToClass()
 
     sqlite3_stmt* pstmt = NULL;
     const char* pzTail = NULL;
-    if (sqlite3_prepare_v2(m_db, gsql.c_str(), -1, &pstmt, &pzTail) == SQLITE_OK)
+    if (sqlite3_prepare_v2(db, gsql.c_str(), -1, &pstmt, &pzTail) == SQLITE_OK)
     {
         while (sqlite3_step(pstmt) == SQLITE_ROW)
         {
@@ -208,9 +212,10 @@ FdoClassDefinition* SltMetadata::ToClass()
                     m_geomFormat = eFGF;
             }
 
-            wchar_t wsrid[16];
-            swprintf(wsrid, 16, L"%d", srids[gi]); 
-            gpd->SetSpatialContextAssociation(wsrid);
+            int srid = srids[gi];
+            std::wstring scname;
+            FindSpatialContextName(srid, scname);            
+            gpd->SetSpatialContextAssociation(scname.c_str());
 
             if (gdims[gi] > 2)
                 gpd->SetHasElevation(true);
@@ -251,3 +256,36 @@ FdoClassDefinition* SltMetadata::ToClass()
 }
 
 
+//Given an SRID of a spatial_ref_sys record, returns
+//its sr_name (if it exists) or a string representation of the SRID.
+void SltMetadata::FindSpatialContextName(int srid, std::wstring& ret)
+{
+    ret.clear();
+
+    std::string sql = "SELECT sr_name FROM spatial_ref_sys WHERE srid=?";
+
+    int rc;
+    sqlite3_stmt* stmt = NULL;
+    const char* tail = NULL;
+   
+    //NOTE: This should fail around here if the column sr_name
+    //does not exist -- we'll deal with that 
+    if ((rc = sqlite3_prepare_v2(m_connection->GetDB(), sql.c_str(), -1, &stmt, &tail)) == SQLITE_OK)
+    {
+        rc = sqlite3_bind_int(stmt, 1, srid);
+        if ((rc = sqlite3_step(stmt)) == SQLITE_ROW )
+        {
+            const char* txt = (const char*)sqlite3_column_text(stmt, 0);
+            ret = A2W_SLOW(txt);
+        }
+
+        sqlite3_finalize(stmt);
+    }
+
+    //No sr_name -- use the SRID as the name
+    if (ret.empty())
+    {
+        wchar_t tmp[64];
+        ret = _itow(srid, tmp, 10);
+    }
+}

@@ -25,15 +25,23 @@
 
 SltSpatialContextReader::SltSpatialContextReader(SltConnection* conn)
 {
+    m_bHasScName = false;
     m_connection = conn;
     m_connection->AddRef();
 
     sqlite3* db = m_connection->GetDB();
 
-    const char* sql = "SELECT srid,auth_srid,srtext FROM spatial_ref_sys;";
+    //We will attempt two ways to get the info -- one is in case
+    //there is an sr_name column (i.e. data was created by FDO),
+    //and the other in case there is no sr_name column
+    const char* sql1 = "SELECT srid,auth_srid,srtext,sr_name FROM spatial_ref_sys;";
+    const char* sql2 = "SELECT srid,auth_srid,srtext FROM spatial_ref_sys;";
+
     m_pStmt = NULL;
     const char* zTail = NULL;
-    if (sqlite3_prepare_v2(db, sql, -1, &m_pStmt, &zTail) != SQLITE_OK)
+    if (sqlite3_prepare_v2(db, sql1, -1, &m_pStmt, &zTail) == SQLITE_OK)
+        m_bHasScName = true;
+    else if (sqlite3_prepare_v2(db, sql2, -1, &m_pStmt, &zTail) != SQLITE_OK)
         throw FdoException::Create(L"Query of spatial_ref_sys table failed.");
 }
 
@@ -51,11 +59,28 @@ void SltSpatialContextReader::Dispose()
 
 FdoString* SltSpatialContextReader::GetName()
 {
-    int name = sqlite3_column_int(m_pStmt, 0);
+    //First, check if we stored an FDO name for spatial context
+    //in the sr_name column. If not, we will fall back to using
+    //the SRID as the name.
+    const char* srname = NULL;
+    
+    if (m_bHasScName)
+        srname = (const char*)sqlite3_column_text(m_pStmt, 3);
+    
+    if (srname && *srname)
+    {
+        //sr_name is non-empty, use it.
+        m_name = A2W_SLOW(srname);
+    }
+    else
+    {
+        //sr_name is empty, use SRID as name instead
+        int name = sqlite3_column_int(m_pStmt, 0);
+        wchar_t wname[16];
+        swprintf(wname, 16, L"%d", name);
+        m_name = wname;
+    }
 
-    wchar_t wname[16];
-    swprintf(wname, 16, L"%d", name);
-    m_name = wname;
     return m_name.c_str();
 }
 

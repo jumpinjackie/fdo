@@ -191,11 +191,16 @@ void SltConnection::CreateDatabase()
     int rc = sqlite3_exec(m_db, "PRAGMA page_size=32768;", NULL, NULL, NULL);
     
     //create the spatial_ref_sys table
+    //Note the sr_name field is not in the spec, we are adding it in order to 
+    //match fdo feature class geometry properties to rows in the spatial_ref_sys table.
+    //This is because geometry properties use a string spatial context association.
     string srs_sql = "CREATE TABLE spatial_ref_sys\
-        (srid INTEGER UNIQUE,\
-        auth_name TEXT,\
-        auth_srid INTEGER,\
-        srtext TEXT);";
+        (srid INTEGER PRIMARY KEY,\
+         sr_name TEXT, \
+         auth_name TEXT,\
+         auth_srid INTEGER,\
+         srtext TEXT \
+        );";
 
     char* zerr = NULL;
     rc = sqlite3_exec(m_db, srs_sql.c_str(), NULL, NULL, &zerr);
@@ -795,7 +800,7 @@ SltMetadata* SltConnection::GetMetadata(const char* table)
             ret = REALLY_BAD_POINTER;
         else
         {
-            ret = new SltMetadata(m_db, table);
+            ret = new SltMetadata(this, table);
 
             if (ret->Failed())
             {
@@ -922,15 +927,51 @@ void SltConnection::AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_
     gci_sql += sdim; //coord_dimension
     gci_sql += ",";
     
-    //TODO: we assume the spatial context association is
-    //a string representing the SRID (integer id) of a coordinate
-    //system that already exists in our spatial_ref_sys table.
-    FdoString* sca = gpd->GetSpatialContextAssociation();
-    gci_sql += sca ? W2A_SLOW(sca) : "0"; //srid
+    //find a record in spatial_ref_sys whose sr_name matches
+    //the name of the spatial context association.
+    //Then, assign that record's SRID as the SRID for this
+    //geometry table. This way we remove the FDO-idiosyncratic
+    //spatial context name from the picture.
+    int srid = FindSpatialContext(gpd->GetSpatialContextAssociation());
+    sprintf(sdim, "%d", srid);
+    gci_sql += sdim;//srid
 
     gci_sql += ");";
 
     int rc = sqlite3_exec(m_db, gci_sql.c_str(), NULL, NULL, NULL);
+}
+
+//Returns the SRID of an entry in the spatial_ref_sys table,
+//whose sr_name column matches the input.
+int SltConnection::FindSpatialContext(const wchar_t* name)
+{
+    if (!name)
+        return 0;
+
+    std::string mbname = W2A_SLOW(name);
+
+    //We will attempt two ways to get the SRID -- first
+    //in case there is an sr_name column, we will get it by name.
+    //Otherwise, we will interpret the given name as an SRID integer
+    //and make sure it exists in the spatial_ref_sys table
+    std::string sql1 = "SELECT srid FROM spatial_ref_sys WHERE sr_name='" + mbname + "';";
+    std::string sql2 = "SELECT srid FROM spatial_ref_sys WHERE srid=" + mbname + ";";
+
+    int rc;
+    int ret = 0;
+    sqlite3_stmt* stmt = NULL;
+    const char* tail = NULL;
+   
+    if ((rc = sqlite3_prepare_v2(m_db, sql1.c_str(), -1, &stmt, &tail)) != SQLITE_OK)
+        if ((rc = sqlite3_prepare_v2(m_db, sql2.c_str(), -1, &stmt, &tail)) != SQLITE_OK)
+            return 0;
+
+    if ((rc = sqlite3_step(stmt)) == SQLITE_ROW)
+        ret = sqlite3_column_int(stmt, 0);
+
+    sqlite3_finalize(stmt);
+
+    return ret; //returns 0 if not found
 }
 
 
@@ -973,7 +1014,6 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema)
     //the cached FDO schema will need to be refreshed
     FDO_SAFE_RELEASE(m_pSchema);
 }
-
 
 void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, FdoClassDefinition* fc, string& sql, int mode)
 {

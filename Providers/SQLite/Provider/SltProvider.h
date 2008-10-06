@@ -184,8 +184,9 @@ public:
     void            ReleaseParsedStatement(const std::string& sql, sqlite3_stmt* stmt);
     void            ClearQueryCache();
     
-
 private :
+
+    int FindSpatialContext(const wchar_t* name);
 
     void CollectBaseClassProperties(FdoClassCollection* myclasses, FdoClassDefinition* fc, std::string& sql, int mode);
 
