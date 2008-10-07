@@ -58,8 +58,8 @@ and filters/expressions are all provider-independent packages
 that connect directly to the FDO API.
 </p>
 <p>
-For more information, see <i>The Essential FDO</i> (FET_TheEssentialFDO.pdf) 
-and the <i>FDO Developer's Guide</i> (FDG_FDODevGuide.pdf).
+For more information, see <i>The Essential FDO</i> 
+and the <i>FDO Developer's Guide</i>.
 </p>
 \image html FDO_architecture.png
 <br>

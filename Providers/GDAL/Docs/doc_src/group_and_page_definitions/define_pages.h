@@ -10,8 +10,8 @@ Provider for GDAL provides FDO with access to an GDAL-based data store.
 <p>The FDO Provider for GDAL uses the GDAL library for reading a variety 
 of raster formats.
 </p>
-For more information, see <i>The Essential FDO</i> (FET_TheEssentialFDO.pdf),
-the <i>FDO Developer's Guide</i> (FDG_FDODevGuide.pdf) and the GDAL web 
+For more information, see <i>The Essential FDO</i>,
+the <i>FDO Developer's Guide</i> and the GDAL web 
 site (<a href="http://www.gdal.org/">www.gdal.org</a>).
 </p>
 
