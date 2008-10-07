@@ -15,8 +15,8 @@ revision number for optimistic concurrency.
 </p>
 
 <p>SQL Server authentication is supported for SQL Server data stores. The FDO 
-User is mapped to the SQL Server login. Grant access to the databases whose data 
-you want to use.
+User is mapped to the SQL Server login. Grant access to the databases
+whose data you want to use.
 </p>
 
 <p>
@@ -60,8 +60,8 @@ A SQL Server schema can support the following:
 scale must be between 0 and 38 inclusive.
 </p>
 
-<p>For more information, see <i>The Essential FDO</i> (FET_TheEssentialFDO.pdf) 
-and the <i>FDO Developer's Guide</i> (FDG_FDODevGuide.pdf).
+<p>For more information, see <i>The Essential FDO</i> 
+and the <i>FDO Developer's Guide</i>.
 </p>
 
 <br>

@@ -20,7 +20,7 @@ revision number for optimistic concurrency.
 \note
 If you cannot connect to your MySQL data source and you receive the error 
 message, "Specified credentials are not valid or the provider is unable to 
-establish a connection," copy the libmySQL.dll file into the \FDO\bin folder 
+establish a connection," copy the libmySQL.dll file into the \\FDO\\bin folder 
 under the Autodesk product install folder to resolve the problem.
 
 <p>
@@ -93,8 +93,8 @@ engine as needed, depending on its characteristics and capabilities, such as the
     all tables have the same columns, column types, indexes, and so on.</li>
 </ul>
 <p>
-For more information, see <i>The Essential FDO</i> (FET_TheEssentialFDO.pdf) 
-and the <i>FDO Developer's Guide</i> (FDG_FDODevGuide.pdf).
+For more information, see <i>The Essential FDO</i> 
+and the <i>FDO Developer's Guide</i>.
 </p>
 
 <br>

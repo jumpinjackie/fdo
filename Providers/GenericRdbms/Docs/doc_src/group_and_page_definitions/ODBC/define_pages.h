@@ -76,8 +76,8 @@ For MySQL, make sure you have installed the MySQL driver from MyODBC 3.51.
 You can find it at http://dev.mysql.com/downloads/connector/odbc/3.51.html.
 
 <p>
-For more information, see <i>The Essential FDO</i> (FET_TheEssentialFDO.pdf) 
-and the <i>FDO Developer's Guide</i> (FDG_FDODevGuide.pdf).
+For more information, see <i>The Essential FDO</i> 
+and the <i>FDO Developer's Guide</i>.
 </p>
 
 <br>

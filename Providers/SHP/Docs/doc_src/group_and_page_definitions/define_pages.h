@@ -40,8 +40,8 @@ containing SHP files.
 </ul>
  
 <p>
-For more information, see <i>The Essential FDO</i> (FET_TheEssentialFDO.pdf) 
-and the <i>FDO Developer's Guide</i> (FDG_FDODevGuide.pdf).
+For more information, see <i>The Essential FDO</i> 
+and the <i>FDO Developer's Guide</i>.
 </p>
 
 <br>
