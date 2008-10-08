@@ -194,13 +194,13 @@ void SltConnection::CreateDatabase()
     //Note the sr_name field is not in the spec, we are adding it in order to 
     //match fdo feature class geometry properties to rows in the spatial_ref_sys table.
     //This is because geometry properties use a string spatial context association.
-    string srs_sql = "CREATE TABLE spatial_ref_sys\
-        (srid INTEGER PRIMARY KEY,\
-         sr_name TEXT, \
-         auth_name TEXT,\
-         auth_srid INTEGER,\
-         srtext TEXT \
-        );";
+    string srs_sql = "CREATE TABLE spatial_ref_sys"
+                     "(srid INTEGER PRIMARY KEY,"
+                      "sr_name TEXT, "
+                      "auth_name TEXT,"
+                      "auth_srid INTEGER,"
+                      "srtext TEXT "
+                      ");";
 
     char* zerr = NULL;
     rc = sqlite3_exec(m_db, srs_sql.c_str(), NULL, NULL, &zerr);
@@ -212,13 +212,13 @@ void SltConnection::CreateDatabase()
     }
 
     //create the geometry_columns table
-    string gc_sql = "CREATE TABLE geometry_columns \
-                    (f_table_name TEXT,\
-                    f_geometry_column TEXT,\
-                    geometry_type INTEGER,\
-                    coord_dimension INTEGER,\
-                    srid INTEGER,\
-                    geometry_format TEXT);";  
+    string gc_sql = "CREATE TABLE geometry_columns "
+                    "(f_table_name TEXT,"
+                    "f_geometry_column TEXT,"
+                    "geometry_type INTEGER,"
+                    "coord_dimension INTEGER,"
+                    "srid INTEGER,"
+                    "geometry_format TEXT);";  
 
     int rc2 = sqlite3_exec(m_db, gc_sql.c_str(), NULL, NULL, &zerr);
 
