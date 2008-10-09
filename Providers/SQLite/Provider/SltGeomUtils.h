@@ -37,7 +37,7 @@
 #include <emmintrin.h>
 #endif
 
-#if MSVCPP
+#ifdef _MSC_VER
   #define ALGNW __declspec(align(16))
   #define ALGNL
 #else
