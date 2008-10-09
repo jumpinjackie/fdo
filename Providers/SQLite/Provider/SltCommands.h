@@ -383,8 +383,10 @@ class SltInsert : public SltCommand<FdoIInsert>
             FDO_SAFE_RELEASE(m_className);
             m_className = NULL;
             if (value)
+            {
                 m_className = FdoIdentifier::Create(value);
-            m_fcname = W2A_SLOW(value);
+                m_fcname = W2A_SLOW(m_className->GetName());
+            }
         }
         virtual FdoPropertyValueCollection* GetPropertyValues()             { return FDO_SAFE_ADDREF(m_properties); }
         virtual FdoBatchParameterValueCollection* GetBatchParameterValues() { return NULL; }
