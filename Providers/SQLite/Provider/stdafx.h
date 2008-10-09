@@ -32,6 +32,7 @@
 #define _SECURE_SCL 0
 
 #include <string>
+#include <wchar.h>
 
 //FDO headers
 #include "Fdo.h"
@@ -69,29 +70,14 @@ extern "C"
 *
 * Your agreement to this contract is implied by use of the restrict keyword. 
 */
-#ifdef _MSC_VER
-#define __restrict __restrict
-#else
-#define __restrict __restrict__
-#endif
-
-#ifdef _MSC_VER
-#else 
+#ifndef _MSC_VER
+  #define __restrict __restrict__
   #define __forceinline __inline__
   #define __fastcall 
-#endif
-
-#ifndef __int64
-typedef long long int __int64;
-#endif
-
-#include <wchar.h>
-#ifndef _wcsicmp
-#define _wcsicmp wcscasecmp
-#endif
-
-#ifndef _wcsdup
-#define _wcsdup wcsdup
+  #define _wcsdup wcsdup
+  #define _snprintf snprintf
+  #define _wcsicmp wcscasecmp
+  typedef long long int __int64;
 #endif
 
 #include "slt.h"

@@ -21,11 +21,10 @@
 #include "DiskSpatialIndex.h"
 #include "MappedFile.h"
 
-#ifndef _aligned_free
-#define _aligned_free free
-#endif
+#ifndef _MSC_VER
 
-#ifndef _aligned_realloc
+#define _aligned_free free
+
 void* _aligned_realloc(void* ptr, size_t size, size_t alignment)
 {
     _aligned_free(ptr);
@@ -33,6 +32,7 @@ void* _aligned_realloc(void* ptr, size_t size, size_t alignment)
     int res = posix_memalign(&ret, alignment, size);
     return ret;
 }
+
 #endif
 
 //====================================================================
