@@ -3,7 +3,7 @@
 struct sqlite3;
 
 //mapping of FdoSpatialOperations to extension function names
-static char* g_spatial_op_map[] = 
+static const char* g_spatial_op_map[] = 
 {
 "geom_contains",
 "geom_crosses",

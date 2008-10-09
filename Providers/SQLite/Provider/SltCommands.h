@@ -724,3 +724,4 @@ private:
 
     FdoFeatureSchema* m_schema;
 };
+

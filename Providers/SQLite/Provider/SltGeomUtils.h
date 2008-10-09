@@ -37,6 +37,15 @@
 #include <emmintrin.h>
 #endif
 
+#if MSVCPP
+  #define ALGNW __declspec(align(16))
+  #define ALGNL
+#else
+  #define ALGNW
+  #define ALGNL __attribute__((aligned(16)))
+#endif
+
+
 #if USE_FLOAT_BOUNDS
 typedef float Real;
 #define REAL_MAX FLT_MAX;
@@ -136,7 +145,7 @@ struct DBounds
     }
 };
 
-_declspec(align(16)) struct Bounds
+ALGNW struct Bounds
 {
     Real min[SI_DIM];
     Real max[SI_DIM];
@@ -228,7 +237,7 @@ _declspec(align(16)) struct Bounds
         return 0;
 #endif
     }
-};
+} ALGNL;
 
 
 static __forceinline void FillMem(Bounds* __restrict dst, const Bounds* __restrict src, int count)

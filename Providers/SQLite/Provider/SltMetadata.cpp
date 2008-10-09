@@ -286,6 +286,7 @@ void SltMetadata::FindSpatialContextName(int srid, std::wstring& ret)
     if (ret.empty())
     {
         wchar_t tmp[64];
-        ret = _itow(srid, tmp, 10);
+        swprintf(tmp, 64, L"%d", srid);
+        ret = tmp;
     }
 }

@@ -88,7 +88,7 @@ void SltQueryTranslator::ProcessSpatialCondition(FdoSpatialCondition& filter)
     FdoSpatialOperations op = filter.GetOperation();
 
     //map the spatial op to the corresponding SQLite extension function name
-    char* sfunc = g_spatial_op_map[op];
+    const char* sfunc = g_spatial_op_map[op];
     size_t len = strlen(sfunc) + 1;
     wchar_t* wfunc = (wchar_t*)alloca(sizeof(wchar_t)*len);
     mbstowcs(wfunc, sfunc, len);

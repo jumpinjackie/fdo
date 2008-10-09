@@ -50,3 +50,4 @@ private:
     int                 m_iGeom;
     int                 m_geomFormat;
 };
+

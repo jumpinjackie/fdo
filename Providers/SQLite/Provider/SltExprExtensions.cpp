@@ -16,7 +16,7 @@ static void mathFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
         return;
     }
 
-    int funcId = (int)sqlite3_user_data(context);
+    long funcId = (long)sqlite3_user_data(context);
 
     double rVal = sqlite3_value_double(argv[0]);
     double rVal2;
@@ -67,7 +67,7 @@ static void numFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
         }
     }
 
-    int funcId = (int)sqlite3_user_data(context);
+    long funcId = (long)sqlite3_user_data(context);
 
     if (funcId == 1) //integer modulo
     {
@@ -126,7 +126,7 @@ static void strFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
     const char* a1 = (const char*)sqlite3_value_text(argv[0]);
     const char* a2 = (const char*)sqlite3_value_text(argv[1]);
     
-    int funcId = (int)sqlite3_user_data(context);
+    long funcId = (long)sqlite3_user_data(context);
 
     if (funcId == 1)
     {
@@ -152,7 +152,7 @@ static void convFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
 {
     assert(argc == 1);
     
-    int optype = (int)sqlite3_user_data(context);
+    long optype = (long)sqlite3_user_data(context);
 
     switch(optype)
     {
@@ -286,7 +286,7 @@ static void spatialOpFunc(sqlite3_context *context, int argc, sqlite3_value **ar
     }
 
     //retrieve the spatial op
-    FdoSpatialOperations spatialOp = (FdoSpatialOperations)(int)sqlite3_user_data(context);
+    FdoSpatialOperations spatialOp = (FdoSpatialOperations)(long)sqlite3_user_data(context);
 
     //call the spatial utility to eval the spatial op
     bool res = FdoSpatialUtility::Evaluate(fg[0], spatialOp, fg[1]);
@@ -461,7 +461,7 @@ static void medFinalize(sqlite3_context *context)
 void RegisterExtensions (sqlite3* db)
 {
     static const struct {
-        char *zName;
+        const char *zName;
         signed char nArg;
         u8 argType;           /* ff: db   1: 0, 2: 1, 3: 2,...  N:  N-1. */
         u8 eTextRep;          /* 1: UTF-16.  0: UTF-8 */
@@ -514,7 +514,7 @@ void RegisterExtensions (sqlite3* db)
     };
    
     static const struct {
-        char *zName;
+        const char *zName;
         signed char nArg;
         u8 argType;
         u8 needCollSeq;

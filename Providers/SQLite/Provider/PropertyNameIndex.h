@@ -35,7 +35,7 @@ struct NameIndexPair
         : name((wchar_t*)name_), index(index_)
     {}
 
-    bool operator< (const NameIndexPair& r)
+    bool operator< (const NameIndexPair& r) const
     {
         return wcscmp(name, r.name) < 0;
     }
