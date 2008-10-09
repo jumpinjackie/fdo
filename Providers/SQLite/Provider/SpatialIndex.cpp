@@ -20,6 +20,20 @@
 #include "SltGeomUtils.h"
 #include "SpatialIndex.h"
 
+#ifndef _aligned_free
+#define _aligned_free free
+#endif
+
+#ifndef _aligned_realloc
+void* _aligned_realloc(void* ptr, size_t size, size_t alignment)
+{
+    _aligned_free(ptr);
+    void* ret = 0;
+    int res = posix_memalign(&ret, alignment, size);
+    return ret;
+}
+#endif
+
 //====================================================================
 // This is a spatial skip list structure. 
 // It is built on the fly, and makes the assumption that
@@ -173,6 +187,9 @@ bool SpatialIterator::NextRange(int& start, int& end)
     int sz = _si->_counts[0];
     Bounds* mb = _b;
     
+    Bounds* b;
+    int intres;
+        
     //build up a new continuous range of matches
     while(1)
     {
@@ -194,9 +211,8 @@ bool SpatialIterator::NextRange(int& start, int& end)
         }
 
         //get next node we need to check
-        Bounds* b = &((&_si->_levels[prevStopLevel][prevStopIndex])->b);
-
-        int intres = Bounds::Disjoint(mb, b);
+        b = &((&_si->_levels[prevStopLevel][prevStopIndex])->b);
+        intres = Bounds::Disjoint(mb, b);
 
         if (intres) 
         {

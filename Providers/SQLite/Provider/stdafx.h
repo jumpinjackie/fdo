@@ -19,10 +19,12 @@
 #ifndef STDAFX_H
 #define STDAFX_H
 
-
+#ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
 // Windows Header Files:
 #include <windows.h>
+#endif
+
 #include <float.h>
 #include <time.h>
 
@@ -67,10 +69,29 @@ extern "C"
 *
 * Your agreement to this contract is implied by use of the restrict keyword. 
 */
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #define __restrict __restrict
 #else
 #define __restrict __restrict__
+#endif
+
+#ifdef _MSC_VER
+#else 
+  #define __forceinline __inline__
+  #define __fastcall 
+#endif
+
+#ifndef __int64
+typedef long long int __int64;
+#endif
+
+#include <wchar.h>
+#ifndef _wcsicmp
+#define _wcsicmp wcscasecmp
+#endif
+
+#ifndef _wcsdup
+#define _wcsdup wcsdup
 #endif
 
 #include "slt.h"

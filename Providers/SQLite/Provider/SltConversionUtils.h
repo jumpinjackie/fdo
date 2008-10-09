@@ -38,3 +38,4 @@ SLT_API void BindPropVals(FdoPropertyValueCollection* props, sqlite3_stmt* stmt)
 
 
 #endif
+

@@ -21,6 +21,20 @@
 #include "DiskSpatialIndex.h"
 #include "MappedFile.h"
 
+#ifndef _aligned_free
+#define _aligned_free free
+#endif
+
+#ifndef _aligned_realloc
+void* _aligned_realloc(void* ptr, size_t size, size_t alignment)
+{
+    _aligned_free(ptr);
+    void* ret = 0;
+    int res = posix_memalign(&ret, alignment, size);
+    return ret;
+}
+#endif
+
 //====================================================================
 // This is a spatial skip list structure. 
 // It is built on the fly, and makes the assumption that
@@ -93,7 +107,8 @@ void SpatialIndex::Insert(unsigned fid, DBounds& ext)
             
             MappedFile* mf = new MappedFile(sizeof(Bounds), sizeof(Bounds)*1024*64, 20);
             wchar_t tmp[16];
-            std::wstring name = _seedName + _itow(i, tmp, 10);
+            swprintf(tmp, sizeof(tmp), L"%d", i);
+            std::wstring name = _seedName + tmp;
             mf->create(name.c_str());
 
             for (unsigned int j=0; j<counts[i]; j++)
@@ -265,6 +280,10 @@ bool SpatialIterator::NextRange(int& start, int& end)
     int sz = _si->_counts[0];
     Bounds* mb = _b;
     
+    Node* n;
+    Bounds* b;
+    int intres;
+    
     //build up a new continuous range of matches
     while(1)
     {
@@ -286,10 +305,9 @@ bool SpatialIterator::NextRange(int& start, int& end)
         }
 
         //get next node we need to check
-        Node* n = _si->GetNode(prevStopLevel, prevStopIndex);
-        Bounds* b = &n->b;
-
-        int intres = Bounds::Disjoint(mb, b);
+        n = _si->GetNode(prevStopLevel, prevStopIndex);
+        b = &n->b;
+        intres = Bounds::Disjoint(mb, b);
 
         if (intres) 
         {

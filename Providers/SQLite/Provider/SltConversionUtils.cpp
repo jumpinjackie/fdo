@@ -67,7 +67,7 @@ void DateToString(FdoDateTime* dt, char* s, int nBytes)
 {
     if (dt->IsDate())
     {
-        _snprintf(s, nBytes, "%04d-%02d-%02d", dt->year, dt->month, dt->day);
+        snprintf(s, nBytes, "%04d-%02d-%02d", dt->year, dt->month, dt->day);
     }
     else if (dt->IsTime())
     {
@@ -75,14 +75,14 @@ void DateToString(FdoDateTime* dt, char* s, int nBytes)
         int sec = (int)dt->seconds;
         float fsec = dt->seconds - sec;
         int ifsec = (int)(fsec * 1e6f);
-        _snprintf(s, nBytes, "%02d:%02d:%02d.%03d", dt->hour, dt->minute, sec, ifsec);
+        snprintf(s, nBytes, "%02d:%02d:%02d.%03d", dt->hour, dt->minute, sec, ifsec);
     }
     else
     {
         int sec = (int)dt->seconds;
         float fsec = dt->seconds - sec;
         int ifsec = (int)(fsec * 1e6f);
-        _snprintf(s, nBytes, "%04d-%02d-%02dT%02d:%02d:%02d.%03d", dt->year, dt->month, dt->day, dt->hour, dt->minute, sec, ifsec);
+        snprintf(s, nBytes, "%04d-%02d-%02dT%02d:%02d:%02d.%03d", dt->year, dt->month, dt->day, dt->hour, dt->minute, sec, ifsec);
     }
 }
 
