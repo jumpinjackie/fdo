@@ -70,4 +70,18 @@ walker.c
 where.c
 ) 
 
+ADD_DEFINITIONS(-DSQLITE_ENABLE_COLUMN_METADATA 
+                -DSQLITE_OMIT_TRACE 
+                -DSQLITE_OMIT_EXPLAIN 
+                -DSQLITE_OMIT_PROGRESS_CALLBACK 
+                -DSQLITE_OMIT_AUTHORIZATION 
+                -DSQLITE_OMIT_UTF16 
+                -DSQLITE_OMIT_SHARED_CACHEXXX 
+                -DSQLITE_THREADSAFE=0 
+                -DSQLITE_ENABLE_RTREE 
+                -DSQLITE_CORE
+                )
+
 SET_TARGET_PROPERTIES( sqlite-fdo PROPERTIES COMPILE_FLAGS -fPIC)
+
+

@@ -42,7 +42,7 @@ void* _aligned_realloc(void* ptr, size_t size, size_t alignment)
 // query incrementally, and ordered by FID for faster
 // scan through the feature data file.
 //====================================================================
-SpatialIndex::SpatialIndex()
+SpatialIndex::SpatialIndex(const wchar_t*)
 {
     _haveOffset = false;
     _rootLevel = 0;
@@ -147,6 +147,11 @@ void SpatialIndex::GetTotalExtent(DBounds& ext)
         ext.max[i] = (double)b->max[i] + _offset[i];
     }
 }
+
+//for API compatibility with disk-backed index
+void SpatialIndex::ReOpenForRead()
+{
+} 
 
 //====================================================================
 // The skip list search structure...

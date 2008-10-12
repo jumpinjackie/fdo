@@ -41,9 +41,10 @@ class SpatialIndex
 friend class SpatialIterator;
 
 public:
-    SpatialIndex();
+    SpatialIndex(const wchar_t*); //argument unused, for compatibility with disk backed implementation only
     ~SpatialIndex();
-
+    
+    void ReOpenForRead(); //for API compatibility with disk-backed index
     void Insert(unsigned fid, DBounds& ext);
     void GetTotalExtent(DBounds& ext);
 
