@@ -471,6 +471,11 @@ void ShpFileSet::PopulateRTree ()
     for (int i = 0; i < GetShapeIndexFile ()->GetNumObjects (); i++)
     {
         GetShapeIndexFile ()->GetObjectAt (i, offset, length);
+
+        // Ignore corrupted entries.
+        if (length < 0)
+            continue;
+
         shape = GetShapeFile ()->GetObjectAt (offset, type);
         if (eNullShape != type)
         {
@@ -492,7 +497,11 @@ void ShpFileSet::GetObjectAt (RowData** row, eShapeTypes& type, Shape** shape, i
     {
         // seek to the shape offset
         GetShapeIndexFile ()->GetObjectAt (nRecordNumber, offset, length);
-        *shape = GetShapeFile ()->GetObjectAt (offset, type);
+		
+        if (length < 0 )
+            *shape = NullShape::NewNullShape (nRecordNumber);
+        else
+            *shape = GetShapeFile ()->GetObjectAt (offset, type);
     }
 }
 
