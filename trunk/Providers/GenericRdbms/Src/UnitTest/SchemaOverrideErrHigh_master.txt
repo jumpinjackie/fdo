@@ -1,0 +1,27 @@
+ Element 'badType' not allowed inside  Schema Mapping element SchemaMapping[@name='Acad']. 
+Invalid Oracle Schema Mapping table mapping type 'BadMapping'
+ Element 'UniqueKey' not allowed inside Oracle Schema Mapping element complexType[@name='AcDbEntity']. 
+ Element 'Index' not allowed inside Oracle Schema Mapping element complexType[@name='AcDbEntity']. 
+ Element 'GeometricColumn' not allowed inside Oracle Schema Mapping element complexType[@name='AcDbEntity']. 
+ Multiple instances of Element 'Table' not allowed inside Oracle Schema Mapping element complexType[@name='AcDbEntity']. 
+ Element 'BadSubComplex' not allowed inside Oracle Schema Mapping element complexType[@name='AcDbEntity']. 
+ Element 'GeometricColumn' not allowed inside Oracle Schema Mapping element complexType[@name='AcDbEntity']. 
+ Element 'Table' not allowed inside Oracle Schema Mapping element element[@name='Colour']. 
+ Element 'BadSingleSub' not allowed inside Oracle Schema Mapping element PropertyMappingSingle[@name='']. 
+ Only one of 'Column, GeometricColumn, PropertyMapping' allowed inside Oracle Schema Mapping element element[@name='Colour']. 
+ Element 'element' not allowed inside Oracle Schema Mapping element Column[@name='AC_LAYER']. 
+ Element 'Table' not allowed inside Oracle Schema Mapping element element[@name='Layer']. 
+ Element 'elephant' not allowed inside Oracle Schema Mapping element complexType[@name='AcDbEntity']. 
+ Element 'Table' not allowed inside Oracle Schema Mapping element element[@name='Colour']. 
+ Only one of 'element[@name=Colour]' allowed inside Oracle Schema Mapping element complexType[@name='AcDbEntity']. 
+ Only one of 'Column, GeometricColumn, PropertyMapping' allowed inside Oracle Schema Mapping element element[@name='Colour']. 
+ Multiple instances of Element 'Table' not allowed inside Oracle Schema Mapping element PropertyMapping[@name='']. 
+ Element 'GeometricColumn' not allowed inside Oracle Schema Mapping element PropertyMapping[@name='']. 
+ Element 'BadElementSub' not allowed inside Oracle Schema Mapping element element[@name='value']. 
+ Element 'elephant' not allowed inside Oracle Schema Mapping element PropertyMapping[@name='']. 
+ Element 'anotherBadType' not allowed inside  Schema Mapping element SchemaMapping[@name='Acad']. 
+ Element 'BadTableSub' not allowed inside Oracle Schema Mapping element Table[@name='']. 
+ Multiple instances of Element 'GeometricColumn' not allowed inside Oracle Schema Mapping element element[@name='Geometry']. 
+ Multiple instances of Element 'Column' not allowed inside Oracle Schema Mapping element element[@name='InstallDate']. 
+ Multiple instances of Element 'PropertyMapping' not allowed inside Oracle Schema Mapping element element[@name='Casing']. 
+ Only one of 'complexType[@name=Conductor]' allowed inside  Schema Mapping element SchemaMapping[@name='Electric']. 

@@ -1,0 +1,673 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fdo.osgeo.org/schemas/feature/Reference-x20-Schema-x20-2" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:Reference-x20-Schema-x20-2="http://fdo.osgeo.org/schemas/feature/Reference-x20-Schema-x20-2" xmlns:Reference-x20-Schema-x20-1="http://fdo.osgeo.org/schemas/feature/Reference-x20-Schema-x20-1" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:element name="AssociatedClass_Concrete-x20-Class_Association-x20-Property-x20-2" type="Reference-x20-Schema-x20-1:Reference-x20-ClassType" abstract="true"/>
+<xs:complexType name="Object-x20-Property-x20-ClassType" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:sequence>
+<xs:element name="Prop-x20-1">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value="2"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+<xs:element name="Reference-x20-Class" type="Reference-x20-Schema-x20-2:Reference-x20-ClassType" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="Reference-x20-ClassKey">
+<xs:selector xpath=".//Reference-x20-Class"/>
+<xs:field xpath="Prop-x20-1"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="Reference-x20-ClassType" abstract="false" fdo:hasGeometry="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="Reference-x20-Schema-x20-1:Reference-x20-ClassType">
+<xs:sequence>
+<xs:element name="Prop-x20-2">
+<xs:simpleType>
+<xs:restriction base="fdo:int64"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="Object-x20-Property-x20-2" type="Reference-x20-Schema-x20-1:Object-x20-Property-x20-ClassType" minOccurs="0" maxOccurs="unbounded" fdo:identityProperty="Prop-x20-1">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="Concrete-x20-Class" type="Reference-x20-Schema-x20-2:Concrete-x20-ClassType" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="Concrete-x20-ClassKey">
+<xs:selector xpath=".//Concrete-x20-Class"/>
+<xs:field xpath="Prop-x20-2"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="Concrete-x20-ClassType" abstract="false" fdo:hasGeometry="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="Prop-x20-2">
+<xs:simpleType>
+<xs:restriction base="fdo:int64"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="Object-x20-Property-x20-2" type="Reference-x20-Schema-x20-1:Object-x20-Property-x20-ClassType" minOccurs="0" maxOccurs="unbounded" fdo:identityProperty="Prop-x20-1">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="Association-x20-Property-x20-2" minOccurs="0" maxOccurs="1" fdo:deleteRule="Cascade">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexType>
+<xs:complexContent>
+<xs:restriction base="gml:FeatureAssociationType">
+<xs:sequence>
+<xs:element ref="Reference-x20-Schema-x20-2:AssociatedClass_Concrete-x20-Class_Association-x20-Property-x20-2" minOccurs="0"/>
+</xs:sequence>
+<xs:attributeGroup ref="xlink:simpleLink"/>
+<xs:attribute ref="gml:remoteSchema" use="prohibited"/>
+</xs:restriction>
+</xs:complexContent>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="TestLayer" type="Reference-x20-Schema-x20-2:TestLayerType" abstract="false" substitutionGroup="fdo:NetworkLayer">
+<xs:key name="TestLayerKey">
+<xs:selector xpath=".//TestLayer"/>
+<xs:field xpath="LayerProperty1"/>
+</xs:key>
+</xs:element>
+<xs:element name="TestLayer_Primitive" type="gml:AbstractTopoPrimitiveType" abstract="true" substitutionGroup="gml:_TopoPrimitive"/>
+<xs:element name="TestLayer_PrimitiveMember" type="Reference-x20-Schema-x20-2:TestLayer_PrimitiveMemberType" abstract="false"/>
+<xs:complexType name="TestLayer_PrimitiveMemberType" abstract="false">
+<xs:complexContent>
+<xs:restriction base="gml:topoPrimitiveMemberType">
+<xs:sequence>
+<xs:element ref="Reference-x20-Schema-x20-2:TestLayer_Primitive"/>
+</xs:sequence>
+<xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+</xs:restriction>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TestLayer_Restriction">
+<xs:complexContent>
+<xs:restriction base="Reference-x20-Schema-x20-1:TestLayerType">
+<xs:sequence>
+<xs:element ref="gml:metaDataProperty" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:description" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:name" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:maximalComplex"/>
+<xs:element ref="gml:superComplex" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element ref="gml:subComplex" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="Reference-x20-Schema-x20-2:TestLayer_PrimitiveMember" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element ref="gml:topoPrimitiveMembers" minOccurs="0" maxOccurs="0"/>
+<xs:element name="LayerProperty1">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="50"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:restriction>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TestLayerType" abstract="false">
+<xs:annotation>
+<xs:documentation>
+A network test Layer class</xs:documentation>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="Reference-x20-Schema-x20-2:TestLayer_Restriction"/>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="TestNetwork" type="Reference-x20-Schema-x20-2:TestNetworkType" abstract="false" substitutionGroup="gml:TopoComplex">
+<xs:key name="TestNetworkKey">
+<xs:selector xpath=".//TestNetwork"/>
+<xs:field xpath="NetworkProperty1"/>
+</xs:key>
+</xs:element>
+<xs:element name="TestNetwork_LayerMember" type="Reference-x20-Schema-x20-2:TestNetwork_LayerMemberType" abstract="false"/>
+<xs:complexType name="TestNetwork_LayerMemberType" abstract="false">
+<xs:complexContent>
+<xs:restriction base="gml:TopoComplexMemberType">
+<xs:sequence>
+<xs:element ref="Reference-x20-Schema-x20-1:TestLayer"/>
+</xs:sequence>
+<xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+</xs:restriction>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="TestNetwork_Primitive" type="gml:AbstractTopoPrimitiveType" abstract="true" substitutionGroup="gml:_TopoPrimitive"/>
+<xs:element name="TestNetwork_PrimitiveMember" type="Reference-x20-Schema-x20-2:TestNetwork_PrimitiveMemberType" abstract="false"/>
+<xs:complexType name="TestNetwork_PrimitiveMemberType" abstract="false">
+<xs:complexContent>
+<xs:restriction base="gml:topoPrimitiveMemberType">
+<xs:sequence>
+<xs:element ref="Reference-x20-Schema-x20-2:TestNetwork_Primitive"/>
+</xs:sequence>
+<xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+</xs:restriction>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TestNetwork_Restriction">
+<xs:complexContent>
+<xs:restriction base="Reference-x20-Schema-x20-1:TestNetworkType">
+<xs:sequence>
+<xs:element ref="gml:metaDataProperty" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:description" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:name" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:maximalComplex"/>
+<xs:element ref="gml:superComplex" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="Reference-x20-Schema-x20-2:TestNetwork_LayerMember" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element ref="Reference-x20-Schema-x20-2:TestNetwork_PrimitiveMember" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element ref="gml:topoPrimitiveMembers" minOccurs="0" maxOccurs="0"/>
+<xs:element name="NetworkProperty1">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="100"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:restriction>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TestNetworkType" abstract="false">
+<xs:annotation>
+<xs:documentation>
+A network test class</xs:documentation>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="Reference-x20-Schema-x20-2:TestNetwork_Restriction"/>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="TestNetworkParentNode" type="Reference-x20-Schema-x20-2:TestNetworkParentNodeType" abstract="false" substitutionGroup="Reference-x20-Schema-x20-1:TestNetwork_Primitive" fdo:assocPropName="Network-x20-Association-x20-Prop" fdo:deleteRule="Cascade"/>
+<xs:element name="NodeLayer_TestNetworkParentNode" type="Reference-x20-Schema-x20-2:TestNetworkParentNodeType" abstract="false" substitutionGroup="Reference-x20-Schema-x20-1:TestLayer_Primitive" fdo:assocPropName="Layer-x20-Association-x20-Prop" fdo:deleteRule="Cascade"/>
+<xs:complexType name="TestNetworkParentNode_Restriction">
+<xs:complexContent>
+<xs:restriction base="Reference-x20-Schema-x20-1:TestNetworkParentNodeType">
+<xs:sequence>
+<xs:element ref="gml:metaDataProperty" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:description" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:name" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:isolated" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:container" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:directedEdge" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:pointProperty" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:featureProperty" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:topoPrimitiveMember" minOccurs="0" maxOccurs="0"/>
+</xs:sequence>
+</xs:restriction>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TestNetworkParentNodeType" abstract="false" fdo:hasGeometry="false">
+<xs:annotation>
+<xs:documentation>
+A parent network node test class</xs:documentation>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="Reference-x20-Schema-x20-2:TestNetworkParentNode_Restriction"/>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="TestNetworkNode" type="Reference-x20-Schema-x20-2:TestNetworkNodeType" abstract="false" substitutionGroup="Reference-x20-Schema-x20-1:TestNetwork_Primitive" fdo:assocPropName="Network-x20-Association-x20-Prop" fdo:deleteRule="Cascade">
+<xs:key name="TestNetworkNodeKey">
+<xs:selector xpath=".//TestNetworkNode"/>
+<xs:field xpath="NodeProperty1"/>
+</xs:key>
+</xs:element>
+<xs:element name="NodeLayer_TestNetworkNode" type="Reference-x20-Schema-x20-2:TestNetworkNodeType" abstract="false" substitutionGroup="Reference-x20-Schema-x20-1:TestLayer_Primitive" fdo:assocPropName="Layer-x20-Association-x20-Prop" fdo:deleteRule="Cascade"/>
+<xs:element name="ReferenceFeature_TestNetworkNode" type="Reference-x20-Schema-x20-2:TestNetworkNode_Feature-x20-Association-x20-Prop" abstract="false"/>
+<xs:complexType name="TestNetworkNode_Feature-x20-Association-x20-Prop" abstract="false" fdo:deleteRule="Cascade">
+<xs:complexContent>
+<xs:restriction base="gml:FeaturePropertyType">
+<xs:sequence>
+<xs:element ref="Reference-x20-Schema-x20-1:Reference-x20-Class"/>
+</xs:sequence>
+<xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+</xs:restriction>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="ParentPrimitive_TestNetworkNode" type="Reference-x20-Schema-x20-2:TestNetworkNode_Parent-x20-Association-x20-Prop" abstract="false"/>
+<xs:complexType name="TestNetworkNode_Parent-x20-Association-x20-Prop" abstract="false" fdo:deleteRule="Cascade">
+<xs:complexContent>
+<xs:restriction base="gml:topoPrimitiveMemberType">
+<xs:sequence>
+<xs:element ref="Reference-x20-Schema-x20-1:TestNetworkParentNode"/>
+</xs:sequence>
+<xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+</xs:restriction>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TestNetworkNode_Restriction">
+<xs:complexContent>
+<xs:restriction base="Reference-x20-Schema-x20-1:TestNetworkNodeType">
+<xs:sequence>
+<xs:element ref="gml:metaDataProperty" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:description" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:name" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:isolated" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:container" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:directedEdge" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:pointProperty" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="Reference-x20-Schema-x20-2:ReferenceFeature_TestNetworkNode" minOccurs="0"/>
+<xs:element ref="Reference-x20-Schema-x20-2:ParentPrimitive_TestNetworkNode" minOccurs="0"/>
+<xs:element name="NodeProperty1">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:restriction>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TestNetworkNodeType" abstract="false" fdo:hasGeometry="false">
+<xs:annotation>
+<xs:documentation>
+A network node test class</xs:documentation>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="Reference-x20-Schema-x20-2:TestNetworkNode_Restriction"/>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="TestNetworkLink" type="Reference-x20-Schema-x20-2:TestNetworkLinkType" abstract="false" substitutionGroup="Reference-x20-Schema-x20-1:TestNetwork_Primitive" fdo:assocPropName="Network-x20-Association-x20-Prop" fdo:deleteRule="Cascade">
+<xs:key name="TestNetworkLinkKey">
+<xs:selector xpath=".//TestNetworkLink"/>
+<xs:field xpath="LinkProperty1"/>
+</xs:key>
+</xs:element>
+<xs:element name="ReferenceFeature_TestNetworkLink" type="Reference-x20-Schema-x20-2:TestNetworkLink_Feature-x20-Association-x20-Prop" abstract="false"/>
+<xs:complexType name="TestNetworkLink_Feature-x20-Association-x20-Prop" abstract="false" fdo:deleteRule="Cascade">
+<xs:complexContent>
+<xs:restriction base="gml:FeaturePropertyType">
+<xs:sequence>
+<xs:element ref="Reference-x20-Schema-x20-1:Reference-x20-Class"/>
+</xs:sequence>
+<xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+</xs:restriction>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="DirectedNode_TestNetworkLink" type="Reference-x20-Schema-x20-2:TestNetworkLink_Network-x20-node-x20-Association-x20-Prop" abstract="false"/>
+<xs:complexType name="TestNetworkLink_Network-x20-node-x20-Association-x20-Prop" abstract="false" fdo:deleteRule="Cascade">
+<xs:complexContent>
+<xs:restriction base="gml:topoPrimitiveMemberType">
+<xs:sequence>
+<xs:element ref="Reference-x20-Schema-x20-1:TestNetworkNode"/>
+</xs:sequence>
+<xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+</xs:restriction>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TestNetworkLink_Restriction">
+<xs:complexContent>
+<xs:restriction base="Reference-x20-Schema-x20-1:TestNetworkLinkType">
+<xs:sequence>
+<xs:element ref="gml:metaDataProperty" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:description" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:name" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:isolated" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:container" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="Reference-x20-Schema-x20-2:DirectedNode_TestNetworkLink" minOccurs="2" maxOccurs="2"/>
+<xs:element ref="gml:directedFace" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:curveProperty" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="Reference-x20-Schema-x20-2:ReferenceFeature_TestNetworkLink" minOccurs="0"/>
+<xs:element ref="gml:topoPrimitiveMember" minOccurs="0" maxOccurs="0"/>
+<xs:element name="LinkProperty1">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:restriction>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TestNetworkLinkType" abstract="false" fdo:hasGeometry="false">
+<xs:annotation>
+<xs:documentation>
+A network link test class</xs:documentation>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="Reference-x20-Schema-x20-2:TestNetworkLink_Restriction"/>
+</xs:complexContent>
+</xs:complexType>
+</xs:schema>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fdo.osgeo.org/schemas/feature/Reference-x20-Schema-x20-1" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:Reference-x20-Schema-x20-1="http://fdo.osgeo.org/schemas/feature/Reference-x20-Schema-x20-1" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexType name="Object-x20-Property-x20-ClassType" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:sequence>
+<xs:element name="Prop-x20-1">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value="2"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+<xs:element name="Reference-x20-Class" type="Reference-x20-Schema-x20-1:Reference-x20-ClassType" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="Reference-x20-ClassKey">
+<xs:selector xpath=".//Reference-x20-Class"/>
+<xs:field xpath="Prop-x20-1"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="Reference-x20-ClassType" abstract="false" fdo:hasGeometry="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="Prop-x20-1">
+<xs:simpleType>
+<xs:restriction base="fdo:int64"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="Concrete-x20-Class" type="Reference-x20-Schema-x20-1:Concrete-x20-ClassType" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="Concrete-x20-ClassKey">
+<xs:selector xpath=".//Concrete-x20-Class"/>
+<xs:field xpath="Prop-x20-1"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="Concrete-x20-ClassType" abstract="false" fdo:hasGeometry="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="Prop-x20-1">
+<xs:simpleType>
+<xs:restriction base="fdo:int64"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="TestLayer" type="Reference-x20-Schema-x20-1:TestLayerType" abstract="false" substitutionGroup="fdo:NetworkLayer">
+<xs:key name="TestLayerKey">
+<xs:selector xpath=".//TestLayer"/>
+<xs:field xpath="LayerProperty1"/>
+</xs:key>
+</xs:element>
+<xs:element name="TestLayer_Primitive" type="gml:AbstractTopoPrimitiveType" abstract="true" substitutionGroup="gml:_TopoPrimitive"/>
+<xs:element name="TestLayer_PrimitiveMember" type="Reference-x20-Schema-x20-1:TestLayer_PrimitiveMemberType" abstract="false"/>
+<xs:complexType name="TestLayer_PrimitiveMemberType" abstract="false">
+<xs:complexContent>
+<xs:restriction base="gml:topoPrimitiveMemberType">
+<xs:sequence>
+<xs:element ref="Reference-x20-Schema-x20-1:TestLayer_Primitive"/>
+</xs:sequence>
+<xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+</xs:restriction>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TestLayer_Restriction">
+<xs:complexContent>
+<xs:restriction base="fdo:NetworkLayerType">
+<xs:sequence>
+<xs:element ref="gml:metaDataProperty" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:description" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:name" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:maximalComplex"/>
+<xs:element ref="gml:superComplex" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element ref="gml:subComplex" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="Reference-x20-Schema-x20-1:TestLayer_PrimitiveMember" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element ref="gml:topoPrimitiveMembers" minOccurs="0" maxOccurs="0"/>
+</xs:sequence>
+</xs:restriction>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TestLayerType" abstract="false">
+<xs:annotation>
+<xs:documentation>
+A network test Layer class</xs:documentation>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="Reference-x20-Schema-x20-1:TestLayer_Restriction">
+<xs:sequence>
+<xs:element name="LayerProperty1">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="50"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="TestNetwork" type="Reference-x20-Schema-x20-1:TestNetworkType" abstract="false" substitutionGroup="gml:TopoComplex">
+<xs:key name="TestNetworkKey">
+<xs:selector xpath=".//TestNetwork"/>
+<xs:field xpath="NetworkProperty1"/>
+</xs:key>
+</xs:element>
+<xs:element name="TestNetwork_Primitive" type="gml:AbstractTopoPrimitiveType" abstract="true" substitutionGroup="gml:_TopoPrimitive"/>
+<xs:element name="TestNetwork_PrimitiveMember" type="Reference-x20-Schema-x20-1:TestNetwork_PrimitiveMemberType" abstract="false"/>
+<xs:complexType name="TestNetwork_PrimitiveMemberType" abstract="false">
+<xs:complexContent>
+<xs:restriction base="gml:topoPrimitiveMemberType">
+<xs:sequence>
+<xs:element ref="Reference-x20-Schema-x20-1:TestNetwork_Primitive"/>
+</xs:sequence>
+<xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+</xs:restriction>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TestNetwork_Restriction">
+<xs:complexContent>
+<xs:restriction base="fdo:TopoComplexType">
+<xs:sequence>
+<xs:element ref="gml:metaDataProperty" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:description" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:name" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:maximalComplex"/>
+<xs:element ref="gml:superComplex" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:subComplex" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="Reference-x20-Schema-x20-1:TestNetwork_PrimitiveMember" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element ref="gml:topoPrimitiveMembers" minOccurs="0" maxOccurs="0"/>
+</xs:sequence>
+</xs:restriction>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TestNetworkType" abstract="false">
+<xs:annotation>
+<xs:documentation>
+A network test class</xs:documentation>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="Reference-x20-Schema-x20-1:TestNetwork_Restriction">
+<xs:sequence>
+<xs:element name="NetworkProperty1">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="100"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="TestNetworkParentNode" type="Reference-x20-Schema-x20-1:TestNetworkParentNodeType" abstract="false" substitutionGroup="fdo:NetworkPrimitiveMember"/>
+<xs:complexType name="TestNetworkParentNode_Restriction">
+<xs:complexContent>
+<xs:restriction base="fdo:NodeType">
+<xs:sequence>
+<xs:element ref="gml:metaDataProperty" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:description" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:name" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:isolated" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:container" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:directedEdge" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:pointProperty" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:featureProperty" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:topoPrimitiveMember" minOccurs="0" maxOccurs="0"/>
+</xs:sequence>
+</xs:restriction>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TestNetworkParentNodeType" abstract="false" fdo:hasGeometry="false">
+<xs:annotation>
+<xs:documentation>
+A parent network node test class</xs:documentation>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="Reference-x20-Schema-x20-1:TestNetworkParentNode_Restriction"/>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="TestNetworkNode" type="Reference-x20-Schema-x20-1:TestNetworkNodeType" abstract="false" substitutionGroup="fdo:NetworkPrimitiveMember">
+<xs:key name="TestNetworkNodeKey">
+<xs:selector xpath=".//TestNetworkNode"/>
+<xs:field xpath="NodeProperty1"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="TestNetworkNode_Restriction">
+<xs:complexContent>
+<xs:restriction base="fdo:NodeType">
+<xs:sequence>
+<xs:element ref="gml:metaDataProperty" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:description" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:name" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:isolated" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:container" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:directedEdge" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:pointProperty" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:featureProperty" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:topoPrimitiveMember" minOccurs="0" maxOccurs="0"/>
+</xs:sequence>
+</xs:restriction>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TestNetworkNodeType" abstract="false" fdo:hasGeometry="false">
+<xs:annotation>
+<xs:documentation>
+A network node test class</xs:documentation>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="Reference-x20-Schema-x20-1:TestNetworkNode_Restriction">
+<xs:sequence>
+<xs:element name="NodeProperty1">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="TestNetworkLink" type="Reference-x20-Schema-x20-1:TestNetworkLinkType" abstract="false" substitutionGroup="fdo:NetworkPrimitiveMember">
+<xs:key name="TestNetworkLinkKey">
+<xs:selector xpath=".//TestNetworkLink"/>
+<xs:field xpath="LinkProperty1"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="TestNetworkLink_Restriction">
+<xs:complexContent>
+<xs:restriction base="fdo:EdgeType">
+<xs:sequence>
+<xs:element ref="gml:metaDataProperty" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:description" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:name" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:isolated" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:container" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:directedNode" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:directedFace" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:curveProperty" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:featureProperty" minOccurs="0" maxOccurs="0"/>
+<xs:element ref="gml:topoPrimitiveMember" minOccurs="0" maxOccurs="0"/>
+</xs:sequence>
+</xs:restriction>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TestNetworkLinkType" abstract="false" fdo:hasGeometry="false">
+<xs:annotation>
+<xs:documentation>
+A network link test class</xs:documentation>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="Reference-x20-Schema-x20-1:TestNetworkLink_Restriction">
+<xs:sequence>
+<xs:element name="LinkProperty1">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+</xs:schema>
+</fdo:DataStore>

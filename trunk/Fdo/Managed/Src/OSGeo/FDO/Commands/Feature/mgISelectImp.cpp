@@ -1,0 +1,91 @@
+/*
+* 
+* Copyright (C) 2004-2006  Autodesk, Inc.
+* 
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of version 2.1 of the GNU Lesser
+* General Public License as published by the Free Software Foundation.
+* 
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+* 
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+*
+*/
+
+#include "stdafx.h"
+#include <Fdo\Commands\Feature\ISelect.h>
+#include <Fdo\Commands\Locking\LockType.h>
+#include <Fdo\Commands\Locking\LockStrategy.h>
+#include <Fdo\Commands\CommandType.h>
+
+#include "FDO\Commands\Feature\mgISelectImp.h"
+#include "FDO\mgObjectFactory.h"
+#include "FDO\Commands\Locking\mgLockType.h"
+#include "FDO\Commands\Locking\mgLockStrategy.h"
+#include "FDO\Commands\Locking\mgILockConflictReaderImp.h"
+#include "FDO\Commands\Feature\mgIFeatureReaderImp.h"
+
+FdoISelect* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::GetImpObj()
+{
+    return static_cast<FdoISelect*>(__super::UnmanagedObject.ToPointer());
+}
+
+NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::get_LockType()
+{
+	FdoLockType result;
+
+	EXCEPTION_HANDLER(result = GetImpObj()->GetLockType())
+
+	return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType>(result);
+}
+
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::set_LockType(NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType value)
+{
+	EXCEPTION_HANDLER(GetImpObj()->SetLockType(static_cast<FdoLockType>(value)))
+}
+
+NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockStrategy NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::get_LockStrategy()
+{
+	FdoLockStrategy result;
+
+	EXCEPTION_HANDLER(result = GetImpObj()->GetLockStrategy())
+
+	return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockStrategy>(result);
+}
+
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::set_LockStrategy(NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockStrategy value)
+{
+	EXCEPTION_HANDLER(GetImpObj()->SetLockStrategy(static_cast<FdoLockStrategy>(value)))
+}
+
+NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::Execute()
+{
+	FdoIFeatureReader* result;
+
+	EXCEPTION_HANDLER(result = GetImpObj()->Execute())
+
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIFeatureReader(result, true);
+}
+
+NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::ExecuteWithLock()
+{
+	FdoIFeatureReader* result;
+
+	EXCEPTION_HANDLER(result = GetImpObj()->ExecuteWithLock())
+
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIFeatureReader(result, true);
+}
+
+NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::get_LockConflicts()
+{
+	FdoILockConflictReader* result;
+
+	EXCEPTION_HANDLER(result = GetImpObj()->GetLockConflicts())
+
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILockConflictReader(result, true);
+}
