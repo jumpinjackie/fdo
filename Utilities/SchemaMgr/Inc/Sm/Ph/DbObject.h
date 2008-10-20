@@ -160,6 +160,8 @@ public:
     // to '_'.
     virtual FdoStringP GetBestClassName() const;
 
+    virtual FdoStringP GetBestClassName(FdoStringP schemaName) const;
+
     /// Returns true this database object has data.
 	virtual bool GetHasData();
 
@@ -367,6 +369,19 @@ public:
 	virtual FdoSchemaExceptionP Errors2Exception( FdoSchemaException* pFirstException = NULL ) const;
 
     virtual FdoStringP XMLSerializeProviderAtts() const;
+
+    // Returns true if the object is a table or view. Sub-classes can override this function
+    // to allow RDBMS-specific types to be classified.
+    // The classifyDefaultTypes parameter has no effect in this function. However, specific 
+    // RDBMS's might have some types that can be classified but are not classified by default.
+    // When classifyDefaultTypes is true then this function must return true only for types
+    // that can be classified by default. 
+    // 
+    virtual bool ClassifyObjectType(FdoBoolean classifyDefaultTypes );
+
+    // Returns the name of the database object if it corresponds to a class is in the given Feature Schema.
+    // No checking is done against the object's type. This is performed by ClassifyObjectType().
+    virtual FdoStringP GetClassifiedObjectName( FdoStringP schemaName );
 
 protected:
     /// unused constructor needed only to build on Linux
@@ -655,5 +670,6 @@ private:
 typedef FdoPtr<FdoSmPhDbObject> FdoSmPhDbObjectP;
 
 #endif
+
 
 

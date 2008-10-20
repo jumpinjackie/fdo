@@ -270,6 +270,19 @@ FdoStringP FdoSmPhDbObject::GetBestClassName() const
     return FdoStringP(GetName()).Replace(L":",L"_").Replace(L".",L"_");
 }
 
+FdoStringP FdoSmPhDbObject::GetBestClassName(FdoStringP schemaName) const
+{
+    FdoStringP classifiedObjectName;
+    // Only tables and views are supported
+    if ( ((FdoSmPhDbObject*)this)->ClassifyObjectType(true) )
+    {
+        classifiedObjectName = ((FdoSmPhDbObject*)this)->GetClassifiedObjectName(schemaName);
+    }
+
+    // Filter out characters not allowed in schema element names.
+    return FdoStringP(classifiedObjectName).Replace(L":",L"_").Replace(L".",L"_");
+}
+
 bool FdoSmPhDbObject::GetHasData()
 {
 	if ( GetElementState() == FdoSchemaElementState_Added ) 
@@ -1563,4 +1576,32 @@ void FdoSmPhDbObject::AddReferenceLoopError(void)
 }
 
 */
+
+bool FdoSmPhDbObject::ClassifyObjectType(FdoBoolean classifyDefaultTypes )
+{
+    FdoSmPhTableP pTable = SmartCast<FdoSmPhTable>();
+    FdoSmPhViewP pView = SmartCast<FdoSmPhView>();
+
+    return ( pTable || pView );
+}
+
+FdoStringP FdoSmPhDbObject::GetClassifiedObjectName( FdoStringP schemaName )
+{
+    FdoStringP classifiedObjectName = GetName();
+
+    if ( classifiedObjectName.GetLength() > 0 ) {
+        if ( (schemaName != L"") && (GetBestSchemaName() != schemaName) )
+        {
+            // DbObject is for a different feature schema.
+            classifiedObjectName = L"";
+        }
+
+        // Don't reverse-engineer the special spatial context referencer table.
+        if ( classifiedObjectName == GetManager()->GetRealDbObjectName(FdoSmPhMgr::ScInfoNoMetaTable) )
+            classifiedObjectName = L"";
+    }
+
+    return classifiedObjectName;
+}
+
 

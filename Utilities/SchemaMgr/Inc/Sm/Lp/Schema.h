@@ -344,12 +344,14 @@ private:
     FdoSmOvTableMappingType         mTableMapping;
 
     bool                            mbSchemaLoaded;
+    bool                            mbSADLoaded;
 
 };
 
 typedef FdoPtr<FdoSmLpSchema> FdoSmLpSchemaP;
 
 #endif
+
 
 
 

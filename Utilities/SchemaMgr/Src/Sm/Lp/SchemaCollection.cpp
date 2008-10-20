@@ -1078,16 +1078,74 @@ FdoStringCollection* FdoSmLpSchemaCollection::GetClassNames(FdoStringP schemaNam
     FdoPtr<FdoStringCollection> featureClasses = FdoStringCollection::Create();
 
     FdoFeatureSchemasP pfscResult = FdoFeatureSchemaCollection::Create(NULL);
+    bool bProcessFromRdClassReader = false;
     for (int iSchema=0; iSchema < aTodo.GetCount(); iSchema++)
     {
         FdoPtr<FdoSmLpSchema> pLpSchema = aTodo.GetItem(iSchema);
-        const FdoSmLpClassCollection* pLpClassDefColl = pLpSchema->RefClasses();
-        
-        for (FdoInt32 index = 0; index < pLpClassDefColl->GetCount(); index++)
+
+        // Determine the type of the inner class reader
+        FdoSmPhMgrP pPhSchemaMgr = pLpSchema->GetPhysicalSchema();
+        FdoFeatureSchemasP configSchemas = pPhSchemaMgr->GetConfigSchemas();
+        FdoSchemaMappingsP configMappings = pPhSchemaMgr->GetConfigMappings();
+        FdoSmPhOwnerP pOwner = pPhSchemaMgr->GetOwner();
+        if ( configMappings || configSchemas )
         {
-            const FdoSmLpClassDefinition* pLpClassDefinition = (FdoSmLpClassDefinition*)pLpClassDefColl->RefItem(index);
-            FdoStringP qname = pLpClassDefinition->GetQName();
-            featureClasses->Add(qname);
+            // Inner reader is a FdoSmPhCfgClassReader.
+            bProcessFromRdClassReader = false;
+        }
+        else
+        {
+            if (pOwner->GetHasMetaSchema())
+            {
+                // Inner reader is a FdoSmPhMtClassReader.
+                bProcessFromRdClassReader = false;
+            }
+            else
+            {
+                // Inner reader is a FdoSmPhRdClassReader.
+                bProcessFromRdClassReader = true;
+            }
+        }
+
+        if (bProcessFromRdClassReader)
+        {
+            // Bulk fetch the table and views, but skip bulk loading of columns and keys.
+            pOwner->CacheDbObjects(false);
+
+            FdoInt32 indexDbObject = 0;
+            FdoSmPhDbObjectP pDbObject = pOwner->GetCachedDbObject(indexDbObject);
+            FdoStringP className = L"";
+            FdoStringP schemaName = L"";
+            FdoStringP qname = L"";
+            while (pDbObject != NULL)
+            {
+                className = pDbObject->GetBestClassName(pLpSchema->GetName());
+                if (className.GetLength() > 0)
+                {
+                    schemaName = pDbObject->GetBestSchemaName();
+                    if (schemaName.GetLength() > 0)
+                    {
+                        qname = schemaName + L":" + className;
+                    }
+                    else
+                    {
+                        qname = className;
+                    }
+                    featureClasses->Add(qname);
+                }
+                pDbObject = pOwner->GetCachedDbObject(++indexDbObject);
+            }
+        }
+        else
+        {
+            const FdoSmLpClassCollection* pLpClassDefColl = pLpSchema->RefClasses();
+            
+            for (FdoInt32 index = 0; index < pLpClassDefColl->GetCount(); index++)
+            {
+                const FdoSmLpClassDefinition* pLpClassDefinition = (FdoSmLpClassDefinition*)pLpClassDefColl->RefItem(index);
+                FdoStringP qname = pLpClassDefinition->GetQName();
+                featureClasses->Add(qname);
+            }
         }
 
     }
@@ -1399,4 +1457,5 @@ FdoFeatureSchema* FdoSmLpSchemaCollection::ConvertSchema(const FdoSmLpSchema *pL
 
     return pFdoFeatureSchema;
 }
+
 

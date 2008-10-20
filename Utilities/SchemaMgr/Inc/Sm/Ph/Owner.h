@@ -424,8 +424,16 @@ private:
     // rare so this refinement would not likely help performance much.
     void LoadIndexRootTableCands();
 
+    // Helper method to read and cache all objects for this owner.
+    //
+    // Parameters:
+    //  cacheComponents: if true, cache each object's components (primary key, foreign
+    //  keys, indexes).
+    void ReadAndCacheDbObjects(bool cacheComponents);
+
 
     bool mDbObjectsCached;              // true if all db objects have been cached.
+    bool mDbComponentsCached;           // true if all db components (columns and keys) have been cached.
 	FdoSmPhDbObjectsP mDbObjects;       // collection of cached objects
     FdoDictionaryP mNotFoundObjects;    // collection of object which were queried from the RDBMS but not
                                         // found. Use to prevent repeated attempts to fetch these objects.
@@ -469,5 +477,6 @@ private:
 typedef FdoPtr<FdoSmPhOwner> FdoSmPhOwnerP;
 
 #endif
+
 
 
