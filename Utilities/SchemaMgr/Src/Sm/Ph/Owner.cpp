@@ -44,7 +44,7 @@ FdoSmPhOwner::FdoSmPhOwner(
 	FdoSchemaElementState elementState
 ) : 
     FdoSmPhDbElement(name, (FdoSmPhMgr*) NULL, pDatabase, elementState ),
-    mDbObjectsCached(false)
+    mDbObjectsCached(false), mDbComponentsCached(false)
 {
     SetHasMetaSchema( hasMetaSchema );
     mLtMode = NoLtLock;
@@ -590,83 +590,96 @@ FdoSmPhDbObjectsP FdoSmPhOwner::CacheDbObjects( bool cacheComponents )
     // skip if all objects already cached.
     if ( !mDbObjectsCached ) {
         mDbObjectsCached = true;
+        mDbComponentsCached = cacheComponents;
 
-        // No need for fetch candidates since this function caches all object for this owner.
-        mCandDbObjects->Clear();
+        ReadAndCacheDbObjects(cacheComponents);
 
-        FdoSmPhRdDbObjectReaderP objReader;
-        FdoSmPhRdViewReaderP viewReader;
-        FdoSmPhRdColumnReaderP columnReader;
-        FdoSmPhRdBaseObjectReaderP baseObjectReader;
-        FdoSmPhRdConstraintReaderP ukeyReader;
-        FdoSmPhRdConstraintReaderP ckeyReader;
-        FdoSmPhRdFkeyReaderP fkeyReader;
-        FdoSmPhRdPkeyReaderP pkeyReader;
+    }
+    else if (cacheComponents && !mDbComponentsCached) {
+        mDbComponentsCached = true;
 
-       // Create reader for owner's db objects
-        objReader = CreateDbObjectReader();
-
-        if ( cacheComponents ) {
-            // Caching db object components so create readers for components.
-            // This function does interleaved fetches from each reader so all readers
-            // (including dbObject reader) must return rows ordered by dbObject name.
-            //
-            // Doing a single query per owner for each component is more efficient than
-            // a query per dbObject.
-            viewReader = CreateViewReader();
-            columnReader = CreateColumnReader();
-            baseObjectReader = CreateBaseObjectReader();
-            ukeyReader = CreateConstraintReader( L"", L"U" );
-            ckeyReader = CreateConstraintReader( L"", L"C" );
-            fkeyReader = CreateFkeyReader();
-            pkeyReader = CreatePkeyReader();
-        }
-
-        while ( objReader->ReadNext() ) {
-            // Cache the current dbObject
-            FdoSmPhDbObjectP dbObject = CacheDbObject( objReader );
-
-            if ( dbObject && cacheComponents ) {
-
-                if ( columnReader ) 
-                    dbObject->CacheColumns( columnReader );
-
-                if ( baseObjectReader ) 
-                    dbObject->CacheBaseObjects( baseObjectReader );
-
-                if ( fkeyReader ) 
-                    dbObject->CacheFkeys( fkeyReader );
-
-                if ( pkeyReader ) 
-                    dbObject->CachePkeys( pkeyReader );
-
-                // Load the components into the db object.
-                FdoSmPhTableP table = dbObject->SmartCast<FdoSmPhTable>();
-
-                if ( table ) {
-                    if ( ukeyReader ) 
-                        table->CacheUkeys( ukeyReader );
-
-                    if ( ckeyReader ) 
-                        table->CacheCkeys( ckeyReader );
-                }
-
-                // Load the components into the db object.
-                FdoSmPhViewP view = dbObject->SmartCast<FdoSmPhView>();
-
-                if ( view ) {
-                    if ( viewReader ) 
-                        view->CacheView( viewReader );
-                }
-            }
-        }
-
-        // At this point, all geometric columns have been bulk loaded so need
-        // to bulk load spatial contexts as well.
-        GetManager()->SetBulkLoadSpatialContexts(true);
+        ReadAndCacheDbObjects(cacheComponents);
     }
 
+
     return GetDbObjects();
+}
+
+void FdoSmPhOwner::ReadAndCacheDbObjects(bool cacheComponents)
+{
+    // No need for fetch candidates since this function caches all object for this owner.
+    mCandDbObjects->Clear();
+
+    FdoSmPhRdDbObjectReaderP objReader;
+    FdoSmPhRdViewReaderP viewReader;
+    FdoSmPhRdColumnReaderP columnReader;
+    FdoSmPhRdBaseObjectReaderP baseObjectReader;
+    FdoSmPhRdConstraintReaderP ukeyReader;
+    FdoSmPhRdConstraintReaderP ckeyReader;
+    FdoSmPhRdFkeyReaderP fkeyReader;
+    FdoSmPhRdPkeyReaderP pkeyReader;
+
+   // Create reader for owner's db objects
+    objReader = CreateDbObjectReader();
+
+    if ( cacheComponents ) {
+        // Caching db object components so create readers for components.
+        // This function does interleaved fetches from each reader so all readers
+        // (including dbObject reader) must return rows ordered by dbObject name.
+        //
+        // Doing a single query per owner for each component is more efficient than
+        // a query per dbObject.
+        viewReader = CreateViewReader();
+        columnReader = CreateColumnReader();
+        baseObjectReader = CreateBaseObjectReader();
+        ukeyReader = CreateConstraintReader( L"", L"U" );
+        ckeyReader = CreateConstraintReader( L"", L"C" );
+        fkeyReader = CreateFkeyReader();
+        pkeyReader = CreatePkeyReader();
+    }
+
+    while ( objReader->ReadNext() ) {
+        // Cache the current dbObject
+        FdoSmPhDbObjectP dbObject = CacheDbObject( objReader );
+
+        if ( dbObject && cacheComponents ) {
+
+            if ( columnReader ) 
+                dbObject->CacheColumns( columnReader );
+
+            if ( baseObjectReader ) 
+                dbObject->CacheBaseObjects( baseObjectReader );
+
+            if ( fkeyReader ) 
+                dbObject->CacheFkeys( fkeyReader );
+
+            if ( pkeyReader ) 
+                dbObject->CachePkeys( pkeyReader );
+
+            // Load the components into the db object.
+            FdoSmPhTableP table = dbObject->SmartCast<FdoSmPhTable>();
+
+            if ( table ) {
+                if ( ukeyReader ) 
+                    table->CacheUkeys( ukeyReader );
+
+                if ( ckeyReader ) 
+                    table->CacheCkeys( ckeyReader );
+            }
+
+            // Load the components into the db object.
+            FdoSmPhViewP view = dbObject->SmartCast<FdoSmPhView>();
+
+            if ( view ) {
+                if ( viewReader ) 
+                    view->CacheView( viewReader );
+            }
+        }
+    }
+
+    // At this point, all geometric columns have been bulk loaded so need
+    // to bulk load spatial contexts as well.
+    GetManager()->SetBulkLoadSpatialContexts(true);
 }
 
 FdoSmPhDbObjectP FdoSmPhOwner::CacheDbObject(

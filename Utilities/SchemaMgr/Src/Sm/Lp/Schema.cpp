@@ -32,6 +32,7 @@ FdoSmLpSchema::FdoSmLpSchema(FdoSmPhSchemaReaderP rdr,  FdoSmPhMgrP physicalSche
 	mPhysicalSchema(physicalSchema),
 	mpSchemas(schemas),
 	mbSchemaLoaded(false),
+    mbSADLoaded(false),
 	mTableMapping(FdoSmOvTableMappingType_Default)
 {
 	// this is the schema 
@@ -53,6 +54,7 @@ FdoSmLpSchema::FdoSmLpSchema(
 	mPhysicalSchema(physicalSchema),
 	mpSchemas(schemas),
 	mbSchemaLoaded(false),
+    mbSADLoaded(false),
     mTableMapping(FdoSmOvTableMappingType_Default)
 {
 	// this is the schema 
@@ -80,7 +82,13 @@ const FdoSmLpClassDefinition* FdoSmLpSchema::RefClass(FdoStringP className) cons
 
 const FdoSmLpSAD* FdoSmLpSchema::RefSAD() const
 {
-	((FdoSmLpSchema*) this)->LoadSchema();
+    if ( !mbSADLoaded )
+    {
+        FdoSmPhSADReaderP pSADReader = new FdoSmPhSADReader( FdoSmPhMgr::SchemaType, mPhysicalSchema, GetName() );
+	    ((FdoSmLpSchema*)this)->LoadSAD(pSADReader);
+
+        (bool) mbSADLoaded = true;
+    }
 
 	return FdoSmLpSchemaElement::RefSAD();
 }
@@ -466,11 +474,16 @@ void FdoSmLpSchema::LoadSchema()
 	if ( !mbSchemaLoaded ) {
 		LoadClasses();
 
-		FdoSmPhSADReaderP pSADReader = new FdoSmPhSADReader( FdoSmPhMgr::SchemaType, mPhysicalSchema, GetName() );
-		LoadSAD(pSADReader);
-
 		mbSchemaLoaded = true;
 	}
+    if ( !mbSADLoaded ) {
+        FdoSmPhSADReaderP pSADReader = new FdoSmPhSADReader( FdoSmPhMgr::SchemaType, mPhysicalSchema, GetName() );
+		LoadSAD(pSADReader);
+
+        mbSADLoaded = true;
+    }
+
+
 }
 
 FdoSmLpClassDefinitionP FdoSmLpSchema::LoadClass(FdoStringP className, FdoString* schemaName )
@@ -509,6 +522,7 @@ void FdoSmLpSchema::DeleteSchema()
 	DeleteSAD();
 
 	mbSchemaLoaded = false;
+    mbSADLoaded = false;
 }
 
 void FdoSmLpSchema::AddSchemaExistsError()
@@ -606,5 +620,6 @@ void FdoSmLpSchema::XMLSerialize( FILE* xmlFp, int ref ) const
 
 	fprintf( xmlFp, "</schema >\n" );
 }
+
 
 
