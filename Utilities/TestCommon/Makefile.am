@@ -26,6 +26,7 @@ EXTRA_DIST = \
 libTestCommon_la_SOURCES = \
   Src/TestCommonConstraints.cpp \
   Src/TestCommonFeatureCommands.cpp \
+  Src/TestCommonInsert.cpp \
   Src/TestCommonMiscUtil.cpp \
   Src/TestCommonFileUtil.cpp \
   Src/TestCommonGeomUtil.cpp \
@@ -35,6 +36,7 @@ libTestCommon_la_SOURCES = \
 noinst_HEADERS = $(libTestCommon_la_SOURCES) \
   Inc/TestCommonConstraints.h \
   Inc/TestCommonFeatureCommands.h \
+  Inc/TestCommonInsert.h \
   Inc/TestCommonMiscUtil.h \
   Inc/TestCommonFileUtil.h \
   Inc/TestCommonGeomUtil.h \

@@ -716,7 +716,10 @@ void FdoCommonMiscUtil::HandleReadOnlyAndDefaultValues(FdoClassDefinition *class
                 {
                     propValue = FdoPropertyValue::Create();
                     propValue->SetName(dataPropertyDef->GetName());
-                    propValue->SetValue(defaultValue);
+                    if ( dataPropertyDef->GetDataType() == FdoDataType_String ) 
+                        propValue->SetValue( FdoPtr<FdoStringValue>(FdoStringValue::Create(defaultValue)) );
+                    else
+                        propValue->SetValue(defaultValue);
                     propValues->Add(propValue);
                 }
             }

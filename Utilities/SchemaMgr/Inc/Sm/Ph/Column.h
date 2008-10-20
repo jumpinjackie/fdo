@@ -58,7 +58,7 @@ public:
     virtual int GetLength() const;
 
 	/// Gets the default column value
-	virtual FdoStringP GetDefaultValue() const;
+	virtual FdoPtr<FdoDataValue> GetDefaultValue() const;
 
     /// The following Min/Max length functions can be overridden to provide RDBMS-specific
     /// settings.
@@ -206,6 +206,9 @@ public:
     /// Mainly for unit testing.
 	virtual void XMLSerialize( FILE* xmlFp, int ref ) const;
 
+    // Converts FDO Property Data Type to Schema Manager column type.
+    static FdoSmPhColType FdoDataType2ColType( FdoDataType fdoType );
+
 protected:
     /// Creates a new Column Definition.
 	//
@@ -228,7 +231,7 @@ protected:
 		FdoSmPhDbObject* parentObject,
 		bool bNullable,
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L"",
+		FdoPtr<FdoDataValue> defaultValue = (FdoDataValue*) NULL,
         FdoSmPhRdColumnReader* reader = NULL
 	);
 
@@ -268,7 +271,7 @@ private:
 
     int miDimensionality;
 
-	FdoStringP mDefaultValue;
+	FdoPtr<FdoDataValue> mDefaultValue;
 };
 
 typedef FdoPtr<FdoSmPhColumn> FdoSmPhColumnP;

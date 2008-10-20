@@ -1268,6 +1268,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\InsertTest.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\InsertTest.h"
+			>
+		</File>
+		<File
 			RelativePath=".\MasterTest.cpp"
 			>
 			<FileConfiguration

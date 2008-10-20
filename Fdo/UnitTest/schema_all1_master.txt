@@ -817,7 +817,7 @@ yes</fdo:attribute>
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
-<xs:element name="Phase">
+<xs:element name="Phase" default="A">
 <xs:annotation>
 <xs:documentation>
 A, B or C</xs:documentation>
@@ -831,7 +831,7 @@ A, B or C</xs:documentation>
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
-<xs:element name="InstallDate" minOccurs="0">
+<xs:element name="InstallDate" minOccurs="0" default="2008-10-16T13:57:15">
 <xs:simpleType>
 <xs:restriction base="xs:dateTime"/>
 </xs:simpleType>
@@ -839,7 +839,7 @@ A, B or C</xs:documentation>
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="PartNum" minOccurs="0">
+<xs:element name="PartNum" minOccurs="0" default="5">
 <xs:simpleType>
 <xs:restriction base="fdo:int16"/>
 </xs:simpleType>

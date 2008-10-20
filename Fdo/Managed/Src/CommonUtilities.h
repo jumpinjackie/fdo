@@ -126,7 +126,10 @@ inline FdoString** UnwrapStringArray(System::String* mgArray[])
 
 inline System::DateTime FdoDateTimeToDateTime(FdoDateTime& date)
 {
-	return System::DateTime(date.year, date.month, date.day, date.hour, date.minute, System::Int32(date.seconds));;
+    if ( date.hour == -1 ) 
+    	return System::DateTime(date.year, date.month, date.day);
+    else
+        return System::DateTime(date.year, date.month, date.day, date.hour, date.minute, System::Int32(date.seconds));
 }
 
 inline FdoDateTime SystemDateToFdoDateTime(System::DateTime date)

@@ -726,6 +726,50 @@ FdoStringP FdoSmPhMgr::CensorDbObjectName( FdoStringP objName, bool forceAscii7,
     return(outName);
 }
 
+FdoStringP FdoSmPhMgr::FormatSQLVal( FdoDataValue* value )
+{
+    // Performs default formatting expected for most RDBMS's. Each provider
+    // can override and customize this formatting if necessary.
+
+    // Convert null values to empty string.
+    if ( (value == NULL) || (value->IsNull()) ) 
+        return FormatSQLVal( 
+            L"", 
+            FdoSmPhColumn::FdoDataType2ColType(value->GetDataType()) 
+        );
+
+	FdoStringP valString;
+    
+    switch ( value->GetDataType() ) {
+    case FdoDataType_Boolean:
+        {
+        // All current supported RDBMS's specify boolean values as numeric.
+        FdoBooleanValue* boolVal = static_cast<FdoBooleanValue*>(value);
+        valString = (boolVal->GetBoolean()) ? L"1" : L"0";
+        }
+        break;
+
+    case FdoDataType_String:
+        {
+            // Avoid calling ToString() for string types to prevent single
+            // quote delimiters from being added.
+            // FormatSQLVal(FdoStringP, FdoSmPhColType) will add the delimiters
+            FdoStringValue* stringVal = static_cast<FdoStringValue*>(value);
+		    valString = stringVal->GetString();
+        }
+        break;
+
+    default:
+        valString = value->ToString();
+        break;
+    }
+
+	return FormatSQLVal( 
+        valString, 
+        FdoSmPhColumn::FdoDataType2ColType(value->GetDataType())
+    );
+}
+
 
 FdoStringP FdoSmPhMgr::FormatSQLVal( FdoStringP value, FdoSmPhColType valueType )
 {
@@ -733,6 +777,9 @@ FdoStringP FdoSmPhMgr::FormatSQLVal( FdoStringP value, FdoSmPhColType valueType 
     
     if ( value.GetLength() > 0 ) {
         if ( valueType == FdoSmPhColType_String || valueType == FdoSmPhColType_Date )
+            // Strings and DateTimes need single quote delimiting.
+            // Escape embedded quotes by doubling them up. Providers that need a 
+            // different method must override this function.
             sqlString = FdoStringP(L"'") + FdoStringP(value).Replace( L"'", L"''" ) + FdoStringP(L"'");
         else
             sqlString = value;
@@ -742,6 +789,29 @@ FdoStringP FdoSmPhMgr::FormatSQLVal( FdoStringP value, FdoSmPhColType valueType 
     }
 
 	return sqlString;
+}
+
+FdoPtr<FdoDataValue> FdoSmPhMgr::ParseSQLVal( FdoStringP stringValue ) 
+{
+    // Default implementation assumes values are in FDO expression string format.
+
+    FdoPtr<FdoDataValue> parsedValue;
+
+    if ( stringValue != L"" ) { 
+        try {
+            FdoPtr<FdoExpression> expr = FdoExpression::Parse( stringValue );
+
+            // Expression must specifically be an FDO data value.
+            parsedValue = FDO_SAFE_ADDREF(dynamic_cast<FdoDataValue*>(expr.p));
+
+            if ( !parsedValue ) 
+                parsedValue = FdoStringValue::Create( stringValue );
+        }
+        catch ( ... ) {
+        }
+    }
+
+    return parsedValue;
 }
 
 FdoStringP FdoSmPhMgr::FormatOrderCol( FdoStringP colName, FdoSmPhColType colType )

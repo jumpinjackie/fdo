@@ -3388,7 +3388,21 @@ void FdoApplySchemaTest::CreateErrorSchema( FdoIConnection* connection )
 	
     FdoPropertiesP(pDescTooLong->GetProperties())->Add( pProp );
 
-	FdoClassesP(pGhostSchema->GetClasses())->Add( pEntity );
+	FdoPtr<FdoFeatureClass> pBadDefaults = FdoFeatureClass::Create( L"BadDefaults", L"" );
+
+    pProp = FdoDataPropertyDefinition::Create( L"int32", L"" );
+	pProp->SetDataType( FdoDataType_Int32 );
+	pProp->SetNullable(false);
+	FdoPropertiesP(pBadDefaults->GetProperties())->Add( pProp );
+	FdoDataPropertiesP(pBadDefaults->GetIdentityProperties())->Add( pProp );
+
+    pProp = FdoDataPropertyDefinition::Create( L"datetime", L"" );
+	pProp->SetDataType( FdoDataType_DateTime );
+	pProp->SetNullable(false);
+    pProp->SetDefaultValue(L"TIME '11:00:15'");
+	FdoPropertiesP(pBadDefaults->GetProperties())->Add( pProp );
+
+    FdoClassesP(pGhostSchema->GetClasses())->Add( pEntity );
 	FdoClassesP(pGhostSchema->GetClasses())->Add( pGhostClass);
 	FdoClassesP(pSchema->GetClasses())->Add( pFeatClass);
 	FdoClassesP(pSchema->GetClasses())->Add( pAbstract );
@@ -3405,7 +3419,7 @@ void FdoApplySchemaTest::CreateErrorSchema( FdoIConnection* connection )
 	FdoClassesP(pSchema->GetClasses())->Add( pSubFeatNoId );
 	FdoClassesP(pSchema->GetClasses())->Add( pNameTooLong );
 	FdoClassesP(pSchema->GetClasses())->Add( pDescTooLong );
-
+	FdoClassesP(pSchema->GetClasses())->Add( pBadDefaults );
 
 	pCmd->SetFeatureSchema( pSchema );
 

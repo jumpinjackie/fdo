@@ -100,6 +100,9 @@ private:
 	// Adjust CHECK clause syntax
     FdoStringP ConvertCkey( FdoDataValue *val );
 
+    // Removes N (unicode ) specifiers.
+    FdoStringP FixCkeyClause( FdoStringP checkClause );
+
 	// Returns a CHECK() clause
 	FdoStringP GetCkeyClause( FdoStringP columnName, FdoDataPropertyP fdoProp );
 

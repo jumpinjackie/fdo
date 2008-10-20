@@ -191,20 +191,68 @@ FdoStringP FdoSmPhSqsTable::GetAddSql()
 
 FdoStringP FdoSmPhSqsTable::ConvertCkey( FdoDataValue *val )
 {
-	FdoStringP	ckey;
-	FdoDataType	type = val->GetDataType();
+	FdoStringP	ckey = GetManager()->FormatSQLVal(val);
 
-	if ( type == FdoDataType_DateTime ) 
-	{		
-		FdoStringP	date = val->ToString();  // Returns "TIMESTAMP 'YYY-MM-DD HH24:MI:SS'"
-		FdoStringP	date1 = date.Replace(L"TIMESTAMP", L"");
+    return ckey;
+}
 
-		ckey = FdoStringP::Format(L"%ls", (FdoString *)date1);
-	}
-	else
-		ckey = ( val->ToString() );	
+FdoStringP FdoSmPhSqsTable::FixCkeyClause( FdoStringP ckey)
+{
+    // This function removes the N (unicode) specifiers from strings, so that the 
+    // constraint parser can handle them.
+    FdoSize len = ckey.GetLength();
+    wchar_t*  buffer = new wchar_t[len + 1];
+    wcscpy( buffer, ckey );
+    FdoInt32 state = 0;
+    
+    for ( FdoSize i = 0; i < len; i++ )
+    {
+        switch (state) 
+        {
+        case 0:    // outside single quote delimiters
+            if ( buffer[i] == 'N' )
+                // encountered Unicode specifier
+                state = 1;
+            else if ( buffer[i] == '\'' ) 
+                // encountered opening delimiter
+                state = 2;
+            break;
+        
+        case 1:     // N (Unicode specifier) encountered
+            if ( buffer[i] == '\'' ) 
+            {
+                // N followed by single quote so it is a unicode specifier.
+                // Blank it out.
+                buffer[i-1] = ' ';
+                // we're now inside delimited part.
+                state = 2;
+            }
+            else 
+            {
+                // N not followed by single quote; need to keep it.
+                // Still outside delimited part.
+                state = 0;
+            }
+            break;
 
-	return ckey;
+        case 2:         // inside quote delimited part
+            // This state ensures that no N that is inside the delimited part is 
+            // deleted. E.G: ensures that "N'OPEN'" becomes "'OPEN'" instead of "'OPE'"
+            if ( buffer[i] == '\'' ) 
+                // encountered next single quote. Now outside delimited part.
+                state = 0;
+            break;
+
+        default:
+            state = 0;
+            break;
+        }
+    }
+
+	FdoStringP	clause = buffer;
+    delete[] buffer;
+
+    return clause;
 }
 
 FdoStringP FdoSmPhSqsTable::GetCkeyClause( FdoStringP columnName, FdoDataPropertyP fdoProp )

@@ -38,7 +38,7 @@ public:
         bool bNullable,
         int length,
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L"",
+		FdoPtr<FdoDataValue> defaultValue = (FdoDataValue*) NULL,
         FdoSmPhRdColumnReader* reader = NULL
     ) :
         FdoSmPhSqsColumn (reader),

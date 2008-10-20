@@ -81,6 +81,8 @@ public:
     // Otherwise "<value>" is returned
 	virtual FdoStringP FormatSQLVal( FdoStringP value, FdoSmPhColType valueType );
 
+    virtual FdoPtr<FdoDataValue> ParseSQLVal( FdoStringP stringValue );
+
     virtual FdoStringP FormatCurrentDateField();    
 
     virtual FdoStringP FormatBindField( int pos );    

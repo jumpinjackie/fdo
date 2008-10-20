@@ -243,10 +243,21 @@ FdoStringP FdoSmPhSqsMgr::FormatDefaultedField( FdoStringP fieldName, FdoStringP
 FdoStringP FdoSmPhSqsMgr::FormatSQLVal( FdoStringP value, FdoSmPhColType valueType )
 {
 	FdoStringP sqlString;
-    
+
     if ( value.GetLength() > 0 ) {
-        if ( valueType == FdoSmPhColType_String || valueType == FdoSmPhColType_Date )
-            sqlString = FdoStringP(L"N'") + FdoStringP(value).Replace( L"'", L"''" ) + FdoStringP(L"'");
+        if ( valueType == FdoSmPhColType_Date ) {
+            FdoStringP leftPart = value.Left(L" ");
+            if ( (leftPart == L"TIMESTAMP") || (leftPart == L"DATE") || (leftPart == L"TIME") ) 
+                // SQLServer recognizes the YYYY-MM-DD HH24:MM:SS format so just 
+                // remove format keyword and prepend unicode string specifier.
+                sqlString = FdoStringP(L"N") + value.Right(L" ");
+            else
+                // Value not in FDO format. Try it anyway. SQL Server will reject it if 
+                // not valid.
+                sqlString = FdoStringP(L"N'") + value + FdoStringP(L"'");
+        } 
+        else if ( valueType == FdoSmPhColType_String  )
+            sqlString = FdoStringP(L"N'") + value.Replace( L"'", L"''" ) + FdoStringP(L"'");
         else
             sqlString = value;
     }
@@ -255,6 +266,72 @@ FdoStringP FdoSmPhSqsMgr::FormatSQLVal( FdoStringP value, FdoSmPhColType valueTy
     }
 
 	return sqlString;
+}
+
+FdoPtr<FdoDataValue> FdoSmPhSqsMgr::ParseSQLVal( FdoStringP stringValue )
+{
+    FdoDateTime dt;
+    int start = 0;
+    int length = stringValue.GetLength();
+
+    // Numeric default values can be enclosed in (()). Remove these brackets
+    if ( (wcsncmp(stringValue, L"((", 2) == 0) &&
+         (wcscmp(&(((FdoString*)stringValue)[length-2]), L"))") == 0) 
+    ) {
+        start = 2;
+        length = length - 4;
+    }
+    // Remove brackets and Unicode specifier from string values
+    else if ( (wcsncmp(stringValue, L"(N'", 3) == 0) &&
+         (wcscmp(&(((FdoString*)stringValue)[length-2]), L"')") == 0) 
+    ) {
+        start = 2;
+        length = length - 3;
+    }
+
+    if ( start > 0 ) 
+        stringValue = stringValue.Mid(start, length);
+
+    // SQLServer recognizes a variety of datetime, date and timestamp formats. For now,
+    // just recognize SQLServerSpatial provider supports formats.
+    // TODO: Expand to other formats.
+    if ( swscanf( 
+             stringValue, 
+             L"'%d-%d-%d %d:%d:%f'",
+             &dt.year,
+             &dt.month,
+             &dt.day,
+             &dt.hour,
+             &dt.minute,
+             &dt.seconds
+         ) == 6
+    ) {
+        return FdoDateTimeValue::Create( dt );
+    }
+    else if ( swscanf( 
+             stringValue, 
+             L"'%d-%d-%d'",
+             &dt.year,
+             &dt.month,
+             &dt.day
+         ) == 3
+    ) {
+        dt.hour = -1;
+        return FdoDateTimeValue::Create( dt );
+    }
+    else if ( swscanf( 
+             stringValue, 
+             L"'%d:%d:%f'",
+             &dt.hour,
+             &dt.minute,
+             &dt.seconds
+         ) == 3
+    ) {
+        dt.year = -1;
+        return FdoDateTimeValue::Create( dt );
+    }
+
+    return FdoSmPhMgr::ParseSQLVal( stringValue );
 }
 
 FdoStringP FdoSmPhSqsMgr::FormatOrderCol( FdoStringP colName, FdoSmPhColType colType )

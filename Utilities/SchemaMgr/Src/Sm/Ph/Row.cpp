@@ -92,7 +92,7 @@ FdoSmPhColumnP FdoSmPhRow::CreateColumnChar(
     if (column)
         return column;
 
-    return mDbObject->CreateColumnChar( columnName, bNullable, length, rootColumnName, L"", false );
+    return mDbObject->CreateColumnChar( columnName, bNullable, length, rootColumnName, (FdoDataValue*) NULL, false );
 }
 
 FdoSmPhColumnP FdoSmPhRow::CreateColumnDate(
@@ -105,7 +105,7 @@ FdoSmPhColumnP FdoSmPhRow::CreateColumnDate(
     if (column)
         return column;
 
-    return mDbObject->CreateColumnDate( columnName, bNullable, rootColumnName, L"", false );
+    return mDbObject->CreateColumnDate( columnName, bNullable, rootColumnName, (FdoDataValue*) NULL, false );
 }
 
 FdoSmPhColumnP FdoSmPhRow::CreateColumnDecimal(
@@ -120,7 +120,7 @@ FdoSmPhColumnP FdoSmPhRow::CreateColumnDecimal(
     if (column)
         return column;
 
-    return mDbObject->CreateColumnDecimal( columnName, bNullable, length, scale, rootColumnName, L"", false );
+    return mDbObject->CreateColumnDecimal( columnName, bNullable, length, scale, rootColumnName, (FdoDataValue*) NULL, false );
 }
 
 FdoSmPhColumnP FdoSmPhRow::CreateColumnSingle(
@@ -133,7 +133,7 @@ FdoSmPhColumnP FdoSmPhRow::CreateColumnSingle(
     if (column)
         return column;
 
-    return mDbObject->CreateColumnSingle( columnName, bNullable, rootColumnName, L"", false );
+    return mDbObject->CreateColumnSingle( columnName, bNullable, rootColumnName, (FdoDataValue*) NULL, false );
 }
 
 FdoSmPhColumnP FdoSmPhRow::CreateColumnDouble(
@@ -146,7 +146,7 @@ FdoSmPhColumnP FdoSmPhRow::CreateColumnDouble(
     if (column)
         return column;
 
-    return mDbObject->CreateColumnDouble( columnName, bNullable, rootColumnName, L"", false );
+    return mDbObject->CreateColumnDouble( columnName, bNullable, rootColumnName, (FdoDataValue*) NULL, false );
 }
 
 FdoSmPhColumnP FdoSmPhRow::CreateColumnGeom(
@@ -175,7 +175,7 @@ FdoSmPhColumnP FdoSmPhRow::CreateColumnBool(
     if (column)
         return column;
 
-    return mDbObject->CreateColumnBool( columnName, bNullable, rootColumnName, L"", false );
+    return mDbObject->CreateColumnBool( columnName, bNullable, rootColumnName, (FdoDataValue*) NULL, false );
 }
 
 FdoSmPhColumnP FdoSmPhRow::CreateColumnByte(
@@ -188,7 +188,7 @@ FdoSmPhColumnP FdoSmPhRow::CreateColumnByte(
     if (column)
         return column;
 
-    return mDbObject->CreateColumnByte( columnName, bNullable, rootColumnName, L"", false );
+    return mDbObject->CreateColumnByte( columnName, bNullable, rootColumnName, (FdoDataValue*) NULL, false );
 }
 
 FdoSmPhColumnP FdoSmPhRow::CreateColumnInt16(
@@ -201,7 +201,7 @@ FdoSmPhColumnP FdoSmPhRow::CreateColumnInt16(
     if (column)
         return column;
 
-    return mDbObject->CreateColumnInt16( columnName, bNullable, false, rootColumnName, L"", false );
+    return mDbObject->CreateColumnInt16( columnName, bNullable, false, rootColumnName, (FdoDataValue*) NULL, false );
 }
 
 FdoSmPhColumnP FdoSmPhRow::CreateColumnInt32(
@@ -214,7 +214,7 @@ FdoSmPhColumnP FdoSmPhRow::CreateColumnInt32(
     if (column)
         return column;
 
-    return mDbObject->CreateColumnInt32( columnName, bNullable, false, rootColumnName, L"", false );
+    return mDbObject->CreateColumnInt32( columnName, bNullable, false, rootColumnName, (FdoDataValue*) NULL, false );
 }
 
 FdoSmPhColumnP FdoSmPhRow::CreateColumnInt64(
@@ -227,7 +227,7 @@ FdoSmPhColumnP FdoSmPhRow::CreateColumnInt64(
     if (column)
         return column;
 
-    return mDbObject->CreateColumnInt64( columnName, bNullable, false, rootColumnName, L"", false );
+    return mDbObject->CreateColumnInt64( columnName, bNullable, false, rootColumnName, (FdoDataValue*) NULL, false );
 }
 
 FdoSmPhColumnP FdoSmPhRow::CreateColumnUnknown(

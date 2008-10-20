@@ -203,7 +203,7 @@ public:
 		bool bNullable, 
         int length,
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L"",
+		FdoPtr<FdoDataValue> defaultValue = (FdoDataValue*) NULL,
         bool bAttach = true
 	);
 
@@ -211,7 +211,7 @@ public:
 		FdoStringP columnName, 
 		bool bNullable, 
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L"",
+		FdoPtr<FdoDataValue> defaultValue = (FdoDataValue*) NULL,
         bool bAttach = true
     );
 
@@ -221,7 +221,7 @@ public:
         int length,
         int scale,
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L"",
+		FdoPtr<FdoDataValue> defaultValue = (FdoDataValue*) NULL,
         bool bAttach = true
 	);
 
@@ -229,7 +229,7 @@ public:
 		FdoStringP columnName, 
 		bool bNullable, 
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L"",
+		FdoPtr<FdoDataValue> defaultValue = (FdoDataValue*) NULL,
         bool bAttach = true
     );
 
@@ -237,7 +237,7 @@ public:
 		FdoStringP columnName, 
 		bool bNullable, 
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L"",
+		FdoPtr<FdoDataValue> defaultValue = (FdoDataValue*) NULL,
         bool bAttach = true
     );
 
@@ -255,7 +255,7 @@ public:
 		FdoStringP columnName, 
 		bool bNullable, 
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L"",
+		FdoPtr<FdoDataValue> defaultValue = (FdoDataValue*) NULL,
         bool bAttach = true
 	);
 
@@ -263,7 +263,7 @@ public:
 		FdoStringP columnName, 
 		bool bNullable, 
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L"",
+		FdoPtr<FdoDataValue> defaultValue = (FdoDataValue*) NULL,
         bool bAttach = true
 	);
 
@@ -272,7 +272,7 @@ public:
 		bool bNullable, 
 		bool bIsAutoincremented = false,
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L"",
+		FdoPtr<FdoDataValue> defaultValue = (FdoDataValue*) NULL,
         bool bAttach = true
 	);
 
@@ -281,7 +281,7 @@ public:
 		bool bNullable, 
 		bool bIsAutoincremented = false,
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L"",
+		FdoPtr<FdoDataValue> defaultValue = (FdoDataValue*) NULL,
         bool bAttach = true
 	);
 
@@ -290,7 +290,7 @@ public:
 		bool bNullable, 
 		bool bIsAutoincremented = false,
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L"",
+		FdoPtr<FdoDataValue> defaultValue = (FdoDataValue*) NULL,
         bool bAttach = true
 	);
 
@@ -471,7 +471,7 @@ protected:
 		bool bNullable, 
         int length,
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L"",
+		FdoPtr<FdoDataValue> defaultValue = (FdoDataValue*) NULL,
         FdoSmPhRdColumnReader* colRdr = NULL
 	) = 0;
 
@@ -480,7 +480,7 @@ protected:
 		FdoSchemaElementState elementState,
 		bool bNullable, 
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L"",
+		FdoPtr<FdoDataValue> defaultValue = (FdoDataValue*) NULL,
         FdoSmPhRdColumnReader* colRdr = NULL
     ) = 0;
 
@@ -491,7 +491,7 @@ protected:
         int length,
         int scale,
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L"",
+		FdoPtr<FdoDataValue> defaultValue = (FdoDataValue*) NULL,
         FdoSmPhRdColumnReader* colRdr = NULL
 	) = 0;
 
@@ -500,7 +500,7 @@ protected:
 		FdoSchemaElementState elementState,
 		bool bNullable, 
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L"",
+		FdoPtr<FdoDataValue> defaultValue = (FdoDataValue*) NULL,
         FdoSmPhRdColumnReader* colRdr = NULL
     ) = 0;
 
@@ -509,7 +509,7 @@ protected:
 		FdoSchemaElementState elementState,
 		bool bNullable, 
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L"",
+		FdoPtr<FdoDataValue> defaultValue = (FdoDataValue*) NULL,
         FdoSmPhRdColumnReader* colRdr = NULL
     ) = 0;
 
@@ -529,7 +529,7 @@ protected:
 		FdoSchemaElementState elementState,
 		bool bNullable, 
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L"",
+		FdoPtr<FdoDataValue> defaultValue = (FdoDataValue*) NULL,
         FdoSmPhRdColumnReader* colRdr = NULL
 	) = 0;
 
@@ -538,7 +538,7 @@ protected:
 		FdoSchemaElementState elementState,
 		bool bNullable, 
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L"",
+		FdoPtr<FdoDataValue> defaultValue = (FdoDataValue*) NULL,
         FdoSmPhRdColumnReader* colRdr = NULL
 	) = 0;
 
@@ -548,7 +548,7 @@ protected:
 		bool bNullable, 
 		bool bIsAutoincremented = false,
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L"",
+		FdoPtr<FdoDataValue> defaultValue = (FdoDataValue*) NULL,
         FdoSmPhRdColumnReader* colRdr = NULL
 	) = 0;
 
@@ -558,7 +558,7 @@ protected:
 		bool bNullable, 
 		bool bIsAutoincremented = false,
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L"",
+		FdoPtr<FdoDataValue> defaultValue = (FdoDataValue*) NULL,
         FdoSmPhRdColumnReader* colRdr = NULL
 	) = 0;
 
@@ -568,7 +568,7 @@ protected:
 		bool bNullable,
 		bool bIsAutoincremented = false,
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L"",
+		FdoPtr<FdoDataValue> defaultValue = (FdoDataValue*) NULL,
         FdoSmPhRdColumnReader* colRdr = NULL
 	) = 0;
 
