@@ -87,7 +87,7 @@ const FdoSmLpSAD* FdoSmLpSchema::RefSAD() const
         FdoSmPhSADReaderP pSADReader = new FdoSmPhSADReader( FdoSmPhMgr::SchemaType, mPhysicalSchema, GetName() );
 	    ((FdoSmLpSchema*)this)->LoadSAD(pSADReader);
 
-        (bool) mbSADLoaded = true;
+        mbSADLoaded = true;
     }
 
 	return FdoSmLpSchemaElement::RefSAD();
