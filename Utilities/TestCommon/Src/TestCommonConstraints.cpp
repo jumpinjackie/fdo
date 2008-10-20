@@ -74,7 +74,7 @@ static FdoInt16   INT16_RANGE[2]          = {-100, 200};
 static FdoInt32   INT32_RANGE[2]          = {10, 20};
 static FdoInt64   INT64_RANGE[2]          = {100, 200};
 static FdoFloat   SINGLE_RANGE[1]         = { (float) 0.000001};
-static FdoString* STRING_RANGE[2]         = {L"MOM", L"PA'PA"};
+static FdoString* STRING_RANGE[2]         = {L"MOM", L"NN'PA"};
 static FdoString* DATETIME_RANGE[2]       = { L"2005-05-15-00-02-01", L"2006-02-01-18-00-00"};
 
 static FdoByte    BYTE_LIST[3]            = {1, 2, 3};
@@ -83,7 +83,7 @@ static FdoDouble  DOUBLE_LIST[3]          = {0.123456789012345678901234567890, 1
 static FdoInt32   INT32_LIST[5]           = {10, 20, 30, LONG_MIN, LONG_MAX};
 static FdoInt64   INT64_LIST[4]           = {LLONG_MIN, 52, LLONG_MAX - 1, LLONG_MAX};
 static FdoFloat   SINGLE_LIST[3]          = { (float) 0.1234567, (float) 100, (float) 1.12345678};
-static FdoString* STRING_LIST[]           = { L"op'en", L"close" };
+static FdoString* STRING_LIST[]           = { L"op'eN", L"close" };
 static wchar_t    LARGE_STRING_LIST[395][20];
 
 static FdoByte    UPD_BYTE_RANGE[2]       = {11, 23};
@@ -1127,9 +1127,9 @@ void TestCommonConstraints::CreateConstraintsSchema( Context& context )
             PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
             PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
             PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
-            PROP_STRING_L,  FdoDataType_String, L"op'en",
+            PROP_STRING_L,  FdoDataType_String, L"op'eN",
             PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 1000,
-            PROP_STRING_R, FdoDataType_String, L"PA",
+            PROP_STRING_R, FdoDataType_String, L"NN",
             PROP_SINGLE_R, FdoDataType_Single, (FdoFloat) 0.000002,
             (FdoString*) NULL
         );
@@ -1165,7 +1165,7 @@ void TestCommonConstraints::CreateConstraintsSchema( Context& context )
             PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
             PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
             PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
-            PROP_STRING_L,  FdoDataType_String, L"op'en",
+            PROP_STRING_L,  FdoDataType_String, L"op'eN",
             PROP_UNIQUE2_1,  FdoDataType_Int32,  (FdoInt32) 1000,
             PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 2000,
             PROP_UNIQUE3_1,  FdoDataType_Int32,  (FdoInt32) 1000,
@@ -1210,7 +1210,7 @@ void TestCommonConstraints::CreateConstraintsSchema( Context& context )
                 PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
                 PROP_INT32_R , FdoDataType_Int32,  INT32_RANGE[1],
                 PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
-                PROP_STRING_L,  FdoDataType_String, L"op'en",
+                PROP_STRING_L,  FdoDataType_String, L"op'eN",
                 PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 3000,
                 PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 3000,
                 PROP_UNIQUE3_1,  FdoDataType_Int32,  (FdoInt32) 3000,
@@ -1233,7 +1233,7 @@ void TestCommonConstraints::CreateConstraintsSchema( Context& context )
                 PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
                 PROP_INT32_R , FdoDataType_Int32,  INT32_RANGE[0] - 1,
                 PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
-                PROP_STRING_L,  FdoDataType_String, L"op'en",
+                PROP_STRING_L,  FdoDataType_String, L"op'eN",
                 PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 4000,
                 PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 4000,
                 PROP_UNIQUE3_1,  FdoDataType_Int32,  (FdoInt32) 4000,
@@ -1257,7 +1257,7 @@ void TestCommonConstraints::CreateConstraintsSchema( Context& context )
                 PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
                 PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
                 PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 40,
-                PROP_STRING_L,  FdoDataType_String, L"op'en",
+                PROP_STRING_L,  FdoDataType_String, L"op'eN",
                 PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 5000,
                 PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 5000,
                 PROP_UNIQUE3_1,  FdoDataType_Int32,  (FdoInt32) 5000,
@@ -1302,7 +1302,7 @@ void TestCommonConstraints::CreateConstraintsSchema( Context& context )
             PROP_FEATID, FdoDataType_Int32, 99999999,
             PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
             PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
-            PROP_STRING_L,  FdoDataType_String, L"op'en",
+            PROP_STRING_L,  FdoDataType_String, L"op'eN",
             PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 8000,
             PROP_UNIQUE2_1,  FdoDataType_Int32,  (FdoInt32) 8000,
             PROP_UNIQUE3_1,  FdoDataType_Int32,  (FdoInt32) 8000,
@@ -1487,7 +1487,7 @@ void TestCommonConstraints::UpdateRangeStringValues(
     goodValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(L"MOMA")) );
     goodValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(STRING_RANGE[1])) );
     badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(STRING_RANGE[0])) );
-    badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(L"PAPAA")) );
+    badValues->Add( FdoPtr<FdoDataValue>(FdoDataValue::Create(L"NNPAA")) );
 
     UpdateRangeValues( connection, pClassName, pIdName, idValue, PROP_STRING_R, goodValues, badValues );
 }
@@ -1969,7 +1969,7 @@ void TestCommonConstraints::UpdateUniqueConstraints( Context& context )
             PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
             PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
             PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
-            PROP_STRING_L,  FdoDataType_String, L"op'en",
+            PROP_STRING_L,  FdoDataType_String, L"op'eN",
             PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 1000,
             PROP_UNIQUE2_1,  FdoDataType_Int32,  (FdoInt32) 1000,
             PROP_UNIQUE2_2,  FdoDataType_Int32,  value,
@@ -2110,7 +2110,7 @@ void TestCommonConstraints::UpdateCheckConstraints( Context& context )
                     PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
                     PROP_INT32_R , FdoDataType_Int32,  value,
                     PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
-                    PROP_STRING_L,  FdoDataType_String, L"op'en",
+                    PROP_STRING_L,  FdoDataType_String, L"op'eN",
                     PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 6666,
                     PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 8888,
                     (FdoString*) NULL
@@ -2168,7 +2168,7 @@ void TestCommonConstraints::UpdateCheckConstraints( Context& context )
                     PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
                     PROP_INT32_R , FdoDataType_Int32,  value,
                     PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
-                    PROP_STRING_L,  FdoDataType_String, L"op'en",
+                    PROP_STRING_L,  FdoDataType_String, L"op'eN",
                     PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 6667,
                     PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 8889,
                     (FdoString*) NULL
@@ -2190,7 +2190,7 @@ void TestCommonConstraints::UpdateCheckConstraints( Context& context )
                         PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
                         PROP_BYTE_R, FdoDataType_Byte,  value,
                         PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
-                        PROP_STRING_L,  FdoDataType_String, L"op'en",
+                        PROP_STRING_L,  FdoDataType_String, L"op'eN",
                         PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 8000,
                         PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 9000,
                         (FdoString*) NULL
@@ -2220,7 +2220,7 @@ void TestCommonConstraints::UpdateCheckConstraints( Context& context )
                     PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
                     PROP_BYTE_R, FdoDataType_Int32,  value,
                     PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
-                    PROP_STRING_L,  FdoDataType_String, L"op'en",
+                    PROP_STRING_L,  FdoDataType_String, L"op'eN",
                     PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 6677,
                     PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 8899,
                     (FdoString*) NULL
@@ -2251,7 +2251,7 @@ void TestCommonConstraints::UpdateCheckConstraints( Context& context )
                     PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
                     PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
                     PROP_INT32_L,  FdoDataType_Int32,  newValue,
-                    PROP_STRING_L,  FdoDataType_String, L"op'en",
+                    PROP_STRING_L,  FdoDataType_String, L"op'eN",
                     PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 6668,
                     PROP_UNIQUE2_2,  FdoDataType_Int32,  (FdoInt32) 8890,
                     (FdoString*) NULL
@@ -2274,7 +2274,7 @@ void TestCommonConstraints::UpdateCheckConstraints( Context& context )
                 for ( i = 0; i < pList->GetCount(); i++ ) 
                 {
                     FdoPtr<FdoDataValue> val = pList->GetItem(i);
-                    if ( wcscmp(((FdoStringValue*)(FdoDataValue*)val)->GetString(),L"op'en") == 0 ) 
+                    if ( wcscmp(((FdoStringValue*)(FdoDataValue*)val)->GetString(),L"op'eN") == 0 ) 
                     {
                         pList->RemoveAt(i);
                         break;
@@ -2303,7 +2303,7 @@ void TestCommonConstraints::UpdateCheckConstraints( Context& context )
                     CLASS_NAME,
                     PROP_STRING_L,
                     FdoDataType_String,
-                    L"op'en",
+                    L"op'eN",
                     NULL
                 );
 
@@ -2376,7 +2376,7 @@ void TestCommonConstraints::RestrictCheckConstraints( Context& context )
             PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
             PROP_STRING_L,  FdoDataType_String, L"close",
             PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 5000,
-            PROP_STRING_R, FdoDataType_String, L"PA",
+            PROP_STRING_R, FdoDataType_String, L"NN",
             (FdoString*) NULL
         );
 
@@ -2479,7 +2479,7 @@ void TestCommonConstraints::RestrictCheckConstraints( Context& context )
                 if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_STRING_L) > -1 )
                     CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.StringList'; existing data value 'close' violates new constraint" ) );
                 if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_STRING_R) > -1 )
-                    CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.StringRange'; existing data value 'PA' violates new constraint" ) );
+                    CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.StringRange'; existing data value 'NN' violates new constraint" ) );
                 CPPUNIT_ASSERT( !messages.Contains(PROP_INT64_L) );
             }
             else {
@@ -2805,7 +2805,7 @@ void TestCommonConstraints::RestrictCheckConstraints( Context& context )
             constrR->SetMaxInclusive(false);
             FdoPtr<FdoDataValue> val = constrR->GetMaxValue();
             FdoStringValue* stringVal = (FdoStringValue*) val.p;
-            stringVal->SetString( L"PAPAA" );
+            stringVal->SetString( L"NNPAA" );
             dataProp->SetValueConstraint(constr);
             pApplyCmd->Execute();
 
@@ -3149,7 +3149,7 @@ void TestCommonConstraints::RestrictCheckConstraints( Context& context )
                     CPPUNIT_ASSERT( !messages.Contains(PROP_INT16_R) );
                     CPPUNIT_ASSERT( !messages.Contains(PROP_DOUBLE_R) );
                     if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_STRING_R) > -1 )
-                        CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.StringRange'; existing data value 'PA' violates new constraint" ) );
+                        CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.StringRange'; existing data value 'NN' violates new constraint" ) );
                 }
                 else {
                     if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_BYTE_R) > -1 )
@@ -3211,7 +3211,7 @@ void TestCommonConstraints::CheckConstraintsData( Context& context )
                 PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
                 PROP_STRING_L,  FdoDataType_String, L"close",
                 PROP_UNIQUE1,  FdoDataType_Int32,  (unique1val++),
-                PROP_STRING_R, FdoDataType_String, L"PA",
+                PROP_STRING_R, FdoDataType_String, L"NN",
                 (FdoString*) NULL
             );
         }
@@ -3224,9 +3224,9 @@ void TestCommonConstraints::CheckConstraintsData( Context& context )
             PROP_FEATID, FdoDataType_Int32, GetNextFeatId(context.connection, CLASS_NAME),
             PROP_INT32_R , FdoDataType_Int32,  (FdoInt32) 10,
             PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
-            PROP_STRING_L,  FdoDataType_String, L"op'en",
+            PROP_STRING_L,  FdoDataType_String, L"op'eN",
             PROP_UNIQUE1,  FdoDataType_Int32,  (unique1val++),
-            PROP_STRING_R, FdoDataType_String, L"PA",
+            PROP_STRING_R, FdoDataType_String, L"NN",
             (FdoString*) NULL
         );
 
@@ -3241,7 +3241,7 @@ void TestCommonConstraints::CheckConstraintsData( Context& context )
                 PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
                 PROP_STRING_L,  FdoDataType_String, L"close",
                 PROP_UNIQUE1,  FdoDataType_Int32,  (unique1val++),
-                PROP_STRING_R, FdoDataType_String, L"PA",
+                PROP_STRING_R, FdoDataType_String, L"NN",
                 (FdoString*) NULL
             );
         }
@@ -3256,7 +3256,7 @@ void TestCommonConstraints::CheckConstraintsData( Context& context )
             PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 30,
             PROP_STRING_L,  FdoDataType_String, L"close",
             PROP_UNIQUE1,  FdoDataType_Int32,  (unique1val++),
-            PROP_STRING_R, FdoDataType_String, L"PA",
+            PROP_STRING_R, FdoDataType_String, L"NN",
             (FdoString*) NULL
         );
 
@@ -3271,7 +3271,7 @@ void TestCommonConstraints::CheckConstraintsData( Context& context )
                 PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 30,
                 PROP_STRING_L,  FdoDataType_String, L"close",
                 PROP_UNIQUE1,  FdoDataType_Int32,  (unique1val++),
-                PROP_STRING_R, FdoDataType_String, L"PA",
+                PROP_STRING_R, FdoDataType_String, L"NN",
                 (FdoString*) NULL
             );
         }
@@ -3287,7 +3287,7 @@ void TestCommonConstraints::CheckConstraintsData( Context& context )
                 PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
                 PROP_STRING_L,  FdoDataType_String, L"close",
                 PROP_UNIQUE1,  FdoDataType_Int32,  (unique1val++),
-                PROP_STRING_R, FdoDataType_String, L"PA",
+                PROP_STRING_R, FdoDataType_String, L"NN",
                 (FdoString*) NULL
             );
         }
@@ -3362,7 +3362,7 @@ void TestCommonConstraints::CheckConstraintsData( Context& context )
 
                 FdoPtr<FdoPropertyValueConstraintList> constrL = FdoPropertyValueConstraintList::Create();
                 FdoPtr<FdoDataValueCollection> listL = constrL->GetConstraintList();
-                listL->Add( FdoPtr<FdoDataValue>(FdoStringValue::Create(L"PA")) );                
+                listL->Add( FdoPtr<FdoDataValue>(FdoStringValue::Create(L"NN")) );                
  
                 dataProp->SetValueConstraint( (FdoPropertyValueConstraint*) constrL.p);
             }
@@ -3395,7 +3395,7 @@ void TestCommonConstraints::CheckConstraintsData( Context& context )
             if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_INT32_R) > -1 )
                 CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.Int32Range'; existing data value '10' violates new constraint" ) );
             if ( FdoPropertiesP(pClass2->GetProperties())->IndexOf(PROP_STRING_L) > -1 )
-                CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.StringList'; existing data value 'op'en' violates new constraint" ) );
+                CPPUNIT_ASSERT( messages.Contains( L"Cannot modify constraint for property 'constraints:CDataBaseClass.StringList'; existing data value 'op'eN' violates new constraint" ) );
             CPPUNIT_ASSERT( !messages.Contains(PROP_STRING_R) );
             CPPUNIT_ASSERT( !messages.Contains(PROP_INT64_L) );
         }
@@ -3431,7 +3431,7 @@ void TestCommonConstraints::DateTimeConstraints( Context& context )
             PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
             PROP_STRING_L,  FdoDataType_String, L"close",
             PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 5000,
-            PROP_STRING_R, FdoDataType_String, L"PA",
+            PROP_STRING_R, FdoDataType_String, L"NN",
             PROP_DATE_R, FdoDataType_DateTime, &dateTime,
             (FdoString*) NULL
         );
@@ -3644,7 +3644,7 @@ void TestCommonConstraints::DateTimeConstraints( Context& context )
             PROP_INT32_L,  FdoDataType_Int32,  (FdoInt32) 20,
             PROP_STRING_L,  FdoDataType_String, L"close",
             PROP_UNIQUE1,  FdoDataType_Int32,  (FdoInt32) 5000,
-            PROP_STRING_R, FdoDataType_String, L"PA",
+            PROP_STRING_R, FdoDataType_String, L"NN",
             PROP_DATE_R, FdoDataType_DateTime, &dateTime2,
             (FdoString*) NULL
         );

@@ -341,7 +341,7 @@ void FdoRdbmsPvcInsertHandler::CreateInsertString(const FdoSmLpClassDefinition *
                     if( column == NULL || ( ! mInsertAutoIncrementProperties && column->GetAutoincrement() ) )
                         continue;
 					// Check for property that has a default value defined
-					if (column->GetDefaultValue() != L"")
+					if (column->GetDefaultValue() && !(column->GetDefaultValue()->IsNull()))
 					{
 						//check if the column value is in propValCollection
 						// Try to find this property in the input values
@@ -1144,7 +1144,7 @@ void FdoRdbmsPvcInsertHandler::SetBindVariables(const FdoSmLpClassDefinition *cu
                     continue;
 
 				//Check if property has a default value
-				if (column->GetDefaultValue() != L"")
+				if (column->GetDefaultValue() && !(column->GetDefaultValue()->IsNull()))
 				{
 					// Try to find this property in the input values
 					bool found = false;

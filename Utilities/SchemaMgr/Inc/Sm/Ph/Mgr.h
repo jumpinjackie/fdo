@@ -482,10 +482,23 @@ public:
     /// Given a field value, returns the formatted equivalent that can be 
     /// embedded in a SQL statement.
 	//
+    /// If value is null then "null" is returned.
+    /// Otherwise if valueType is string then "'[value]'" is returned.
+    /// Otherwise if valueType is datetime then "'YYYY-MM-DD-HH-MI-SS.SSSSS'" is returned.
+    /// Otherwise "[value]" is returned
+	virtual FdoStringP FormatSQLVal( FdoDataValue* value );
+
+    /// Given a field value, returns the formatted equivalent that can be 
+    /// embedded in a SQL statement.
+	//
     /// If value is zero length then "null" is returned.
     /// Otherwise if valueType is string or date then "'[value]'" is returned.
     /// Otherwise "[value]" is returned
 	virtual FdoStringP FormatSQLVal( FdoStringP value, FdoSmPhColType valueType ) = 0;
+
+    // Converts value, retrieved from RDBMS, from string to Data Value.
+    // Is able to handle data constraint and default values.
+    virtual FdoPtr<FdoDataValue> ParseSQLVal( FdoStringP stringValue );
 
     /// Given a column name, returns the name formatted for inclusion in 
     /// a SQL order by clause.

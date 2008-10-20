@@ -31,7 +31,7 @@ FdoSmPhColumn::FdoSmPhColumn(
 	FdoSmPhDbObject* parentObject,
 	bool bNullable, 
     FdoStringP rootColumnName,
-	FdoStringP defaultValue,
+	FdoPtr<FdoDataValue> defaultValue,
     FdoSmPhRdColumnReader* reader
 ) : 
     FdoSmPhDbElement( 
@@ -45,10 +45,12 @@ FdoSmPhColumn::FdoSmPhColumn(
     mTypeName( reader ? reader->GetString(L"",L"type_string") : typeName ),
 	mbNullable(bNullable),
     miDimensionality(-1),
-	mbAutoIncrement(false),
-	mDefaultValue(defaultValue)
+    mDefaultValue(defaultValue),
+	mbAutoIncrement(false)
 {
 	SetElementState(elementState);
+
+    mDefaultValue = defaultValue;
 }
 
 FdoSmPhColumn::~FdoSmPhColumn(void)
@@ -100,7 +102,7 @@ bool FdoSmPhColumn::GetAutoincrement() const
 	return mbAutoIncrement;
 }
 
-FdoStringP FdoSmPhColumn::GetDefaultValue() const
+FdoPtr<FdoDataValue> FdoSmPhColumn::GetDefaultValue() const
 {
 	return mDefaultValue;
 }
@@ -242,22 +244,16 @@ FdoStringP FdoSmPhColumn::GetAutoincrementSql()
 
 FdoStringP FdoSmPhColumn::GetDefaultValueSql()
 {
-	if (GetDefaultValue() != L"")
-	{
-		bool addQuote = false;
-		if (wcscmp (GetBestFdoType(), L"datetime") == 0 ||
-			wcscmp (GetBestFdoType(), L"string") == 0)
-			addQuote = true;
-		
-		FdoStringP	defaultValueSql = FdoStringP::Format(
-				L" DEFAULT %ls%ls%ls ", 
-				(addQuote == true) ? L"'":L"",
-				(FdoString*)(GetDefaultValue()),
-				(addQuote == true) ? L"'":L""
-				);
+    FdoPtr<FdoDataValue> defaultValue = GetDefaultValue();
+
+    if ( defaultValue && !(defaultValue->IsNull()) )
+	{		
+		FdoStringP	defaultValueSql = FdoStringP(L"DEFAULT ") +
+                GetManager()->FormatSQLVal( defaultValue );
 		return defaultValueSql;
 	}
-	return L"";
+
+    return L"";
 }
 
 
@@ -432,6 +428,53 @@ void FdoSmPhColumn::XMLSerialize( FILE* xmlFp, int ref ) const
 		);
 	}
 }
+
+FdoSmPhColType FdoSmPhColumn::FdoDataType2ColType( FdoDataType fdoType )
+{
+    FdoSmPhColType colType;
+
+    switch ( fdoType ) {
+	case FdoDataType_Boolean:
+        colType = FdoSmPhColType_Bool;
+        break;
+	case FdoDataType_Byte:
+        colType = FdoSmPhColType_Byte;
+		break;
+	case FdoDataType_DateTime:
+        colType = FdoSmPhColType_Date;
+		break;
+	case FdoDataType_Decimal:
+        colType = FdoSmPhColType_Decimal;
+		break;
+	case FdoDataType_Single:
+        colType = FdoSmPhColType_Single;
+		break;
+	case FdoDataType_Double:
+        colType = FdoSmPhColType_Double;
+		break;
+	case FdoDataType_Int16:
+        colType = FdoSmPhColType_Int16;
+		break;
+	case FdoDataType_Int32:
+        colType = FdoSmPhColType_Int32;
+		break;
+	case FdoDataType_Int64:
+        colType = FdoSmPhColType_Int64;
+		break;
+	case FdoDataType_String:
+        colType = FdoSmPhColType_String;
+		break;
+	case FdoDataType_BLOB:
+        colType = FdoSmPhColType_BLOB;
+		break;
+	default:
+        colType = FdoSmPhColType_Unknown;
+		break;
+	}
+
+    return colType;
+}
+
 
 void FdoSmPhColumn::AddColHasRowsDelError()
 {

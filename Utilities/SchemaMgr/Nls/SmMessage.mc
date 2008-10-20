@@ -754,7 +754,12 @@ Property %1$ls redefines the characteristics of base property %2$ls.%3$ls
 MessageId=2453
 SymbolicName=FDOSM_244
 Language=English
-Data Property %1$ls has a default value; default values are not supported by this provider
+Data Property %1$ls default value '%2$ls' is not a valid %3$ls
+.
+MessageId=2454
+SymbolicName=FDOSM_245
+Language=English
+Data Property %1$ls default value '%2$ls' is not an FDO datetime or date; must be "TIMESTAMP 'YYYY-MM-DD HH24:MI:SS'" or "DATE 'YYYY-MM-DD'"
 .
 MessageId=2458
 SymbolicName=FDOSM_246
@@ -885,6 +890,11 @@ MessageId=2502
 SymbolicName=FDOSM_288
 Language=English
 The associated class %1$ls is an abstract class
+.
+MessageId=2513
+SymbolicName=FDOSM_298
+Language=English
+Cannot change default value for property %1$ls from %2$ls to %3$ls
 .
 MessageId=2514
 SymbolicName=FDOSM_299

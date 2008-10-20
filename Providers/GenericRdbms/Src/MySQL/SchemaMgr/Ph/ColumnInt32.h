@@ -38,7 +38,7 @@ public:
         bool bNullable,
 		bool bIsAutoincremented,
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L"",
+		FdoPtr<FdoDataValue> defaultValue = (FdoDataValue*) NULL,
         FdoSmPhRdColumnReader* reader = NULL
     ) :
         FdoSmPhMySqlColumn (reader),

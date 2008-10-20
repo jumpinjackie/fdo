@@ -36,7 +36,7 @@ public:
         FdoSmPhDbObject* parentObject,
         bool bNullable,
         FdoStringP rootColumnName = L"",
-		FdoStringP defaultValue = L"",
+		FdoPtr<FdoDataValue> defaultValue = (FdoDataValue*) NULL,
         FdoSmPhRdColumnReader* reader = NULL
     ) :
         FdoSmPhMySqlColumn (reader),

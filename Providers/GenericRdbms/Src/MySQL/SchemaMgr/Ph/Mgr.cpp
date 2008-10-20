@@ -139,7 +139,19 @@ FdoStringP FdoSmPhMySqlMgr::FormatSQLVal( FdoStringP value, FdoSmPhColType value
 	FdoStringP sqlString;
     
     if ( value.GetLength() > 0 ) {
-        if ( valueType == FdoSmPhColType_String || valueType == FdoSmPhColType_Date )
+        if ( valueType == FdoSmPhColType_Date ) {
+            FdoStringP leftPart = value.Left(L" ");
+
+            // MySQL date format identical to FDO format except for leading format keyword
+            if ( (leftPart == L"TIMESTAMP") || (leftPart == L"DATE") || (leftPart == L"TIME") ) 
+                sqlString = value.Right(L" ");
+            else
+                // Value not in FDO format. Try it anyway. MySQL will reject it if 
+                // not valid.
+                sqlString = FdoStringP(L"'") + value + FdoStringP(L"'");
+        } 
+        else if ( valueType == FdoSmPhColType_String  )
+            // Enclose string value in quotes and escape embedded quotes.
             sqlString = FdoStringP(L"'") + FdoStringP(value).Replace( L"'", L"\\'" ) + FdoStringP(L"'");
         else
             sqlString = value;
@@ -149,6 +161,56 @@ FdoStringP FdoSmPhMySqlMgr::FormatSQLVal( FdoStringP value, FdoSmPhColType value
     }
 
 	return sqlString;
+}
+
+FdoPtr<FdoDataValue> FdoSmPhMySqlMgr::ParseSQLVal( FdoStringP stringValue )
+{
+    FdoDateTime dt;
+
+    if ( swscanf( 
+             stringValue, 
+             L"%d-%d-%d %d:%d:%f",
+             &dt.year,
+             &dt.month,
+             &dt.day,
+             &dt.hour,
+             &dt.minute,
+             &dt.seconds
+         ) == 6
+    ) {
+        // String follows MySQL DateTime format.
+        return FdoDateTimeValue::Create( dt );
+    }
+    else if ( swscanf( 
+             stringValue, 
+             L"%d-%d-%d",
+             &dt.year,
+             &dt.month,
+             &dt.day
+         ) == 3
+    ) {
+        // String follows MySQL Date format.
+        dt.hour = -1;
+        return FdoDateTimeValue::Create( dt );
+    }
+    else if ( swscanf( 
+             stringValue, 
+             L"%d:%d:%f",
+             &dt.hour,
+             &dt.minute,
+             &dt.seconds
+         ) == 3
+    ) {
+        // String follows MySQL Time format.
+        dt.year = -1;
+        return FdoDateTimeValue::Create( dt );
+    }
+
+    if ( stringValue.Contains(L"'") )
+        // Not a date or time but has embedded single quotes; must be a string
+        return FdoStringValue::Create(stringValue);
+
+    return FdoSmPhMgr::ParseSQLVal( stringValue );
 }
 
 FdoStringP FdoSmPhMySqlMgr::FormatCurrentDateField()

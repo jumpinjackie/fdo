@@ -364,6 +364,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Src\TestCommonInsert.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Src\TestCommonMiscUtil.cpp"
 				>
 			</File>
@@ -394,6 +398,10 @@
 			</File>
 			<File
 				RelativePath=".\Inc\TestCommonGeomUtil.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\TestCommonInsert.h"
 				>
 			</File>
 			<File

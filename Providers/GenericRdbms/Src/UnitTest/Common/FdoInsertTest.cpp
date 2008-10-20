@@ -839,6 +839,15 @@ void FdoInsertTest::insertBoundaryCleanup( FdoIConnection* connection )
     deleteCmd->Execute();
 }
 
+void FdoInsertTest::CreateConnection( Context& context, FdoBoolean recreateDb )
+{
+	context.connection = UnitTestUtil::CreateConnection(
+		recreateDb,
+		recreateDb,
+        context.mSuffix
+    );
+}
+
 void FdoInsertTest::insertDate (FdoIConnection *connection, FdoDateTime dateTime, FdoString*colorIndex)
 {
     double                    coordsBuffer[400];
@@ -2202,6 +2211,11 @@ FdoGeometricPropertyDefinition *FdoInsertTest::CreateGeometricProperty (FdoStrin
                                                   FdoGeometricType_Solid     );
     geometricPropertyDefinition->SetHasElevation(false);
     return geometricPropertyDefinition;
+}
+
+bool FdoInsertTest::DefaultsTime()
+{
+    return true;
 }
 
 

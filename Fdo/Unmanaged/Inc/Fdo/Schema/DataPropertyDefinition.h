@@ -225,7 +225,12 @@ public:
     /// for this property.
     /// 
     /// \param value 
-    /// Input the default value
+    /// Input the default value. Required format depends on the DataType for this 
+    /// property. If FdoDataType_String then it can be any string. All single and
+    /// double quote characters are treated as literals, rather than delimiters.
+    /// For other data types, it must be in FDO Expression format. For example, 
+    /// DateTime default values must be "TIMESTAMP 'YYYY-MM-DD HH24:MM:SS'" or 
+    /// "DATE 'YYYY-MM-DD'". 
     /// 
     /// \return
     /// Returns nothing
@@ -306,6 +311,10 @@ public:
     virtual void _writeXml( FdoSchemaXmlContext* pContext );
 
 private:
+    // Called when a default value failed validation
+    void ThrowDefaultValueError( FdoString* defaultValue );
+
+
     FdoDataType m_dataType;
     bool        m_readOnly;
     FdoInt32    m_length;

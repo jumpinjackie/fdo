@@ -428,6 +428,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\InsertTests2.cpp"
+				>
+			</File>
+			<File
 				RelativePath="OverridesTest.cpp"
 				>
 			</File>
@@ -554,6 +558,10 @@
 			</File>
 			<File
 				RelativePath="InsertTests.h"
+				>
+			</File>
+			<File
+				RelativePath=".\InsertTests2.h"
 				>
 			</File>
 			<File

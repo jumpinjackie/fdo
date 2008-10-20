@@ -821,6 +821,16 @@ SymbolicName=SCHEMA_149_CONSTRAINTDATAVIOLATION
 Language=English
 Cannot modify constraint for property '%1$ls'; existing data value '%2$ls' violates new constraint
 .
+MessageId=1150
+SymbolicName=SCHEMA_150_DEFAULTVALUEVIOLATION
+Language=English
+Data Property %1$ls default value '%2$ls' is not a valid %3$ls
+.
+MessageId=1151
+SymbolicName=SCHEMA_151_DEFAULTDATEVIOLATION
+Language=English
+Data Property %1$ls default value '%2$ls' is not an FDO datetime; must be "TIMESTAMP 'YYYY-MM-DD HH24:MI:SS'", "DATE 'YYYY-MM-DD'" or "TIME 'HH24:MM:SS'"
+.
 
 MessageId=2001
 SymbolicName=EXPRESSION_1_BLOBVALUENULL

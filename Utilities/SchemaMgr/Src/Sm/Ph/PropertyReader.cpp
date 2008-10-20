@@ -159,7 +159,7 @@ int FdoSmPhPropertyReader::GetScale()
 	return(GetInteger(L"", L"columnscale"));
 }
 
-FdoStringP FdoSmPhPropertyReader::GetDefaultValue()
+FdoPtr<FdoDataValue> FdoSmPhPropertyReader::GetDefaultValue()
 {
 	FdoSmPhDbObjectP dbObject = GetManager()->FindDbObject( GetTableName() );
     if ( dbObject) {
@@ -167,9 +167,9 @@ FdoStringP FdoSmPhPropertyReader::GetDefaultValue()
 		if (column)
 			return column->GetDefaultValue();
 		else
-			return(L"");
+			return((FdoDataValue*) NULL);
 	}
-	return(L"");
+	return((FdoDataValue*) NULL);
 }
 
 FdoStringP FdoSmPhPropertyReader::GetTableName()

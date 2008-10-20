@@ -38,6 +38,7 @@ UnitTest_SOURCES = \
   ExtendedSelectTest.cpp \
   FdoExpressionFunctionTest.cpp \
   FdoMultiThreadTest.cpp \
+  InsertTest.cpp \
   SelectTest.cpp \
   SchemaTest.cpp \
   SpatialContextTest.cpp \
@@ -57,6 +58,7 @@ noinst_HEADERS = $(UnitTest_SOURCES) \
   FdoExpressionFunctionTest.h \
   FdoMultiThreadTest.h \
   FgfStreamWriter.h \
+  InsertTest.h \
   MasterTest.h \
   SelectTest.h \
   SchemaTest.h \
