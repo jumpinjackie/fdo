@@ -344,7 +344,7 @@ private:
     FdoSmOvTableMappingType         mTableMapping;
 
     bool                            mbSchemaLoaded;
-    bool                            mbSADLoaded;
+    mutable bool                    mbSADLoaded;
 
 };
 
