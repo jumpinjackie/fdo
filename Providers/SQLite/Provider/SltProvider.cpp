@@ -245,6 +245,9 @@ FdoConnectionState SltConnection::Open()
     
     string file = W2A_SLOW(dsw);
 
+    if (_access(file.c_str(), 0) == -1)
+        throw FdoConnectionException::Create(L"File does not exist!");
+
     if( sqlite3_open(file.c_str(), &m_db) != SQLITE_OK )
     {
         m_db = NULL;
@@ -839,7 +842,7 @@ SpatialIndex* SltConnection::GetSpatialIndex(const char* table)
 
     while (rdr->ReadNext())
     {
-        int len;
+        int len = 0;
 
         //With a default SltReader we know that rowID will
         //be returned in column 0 and geometry in column 1
@@ -848,10 +851,13 @@ SpatialIndex* SltConnection::GetSpatialIndex(const char* table)
         FdoInt32 id = rdr->GetInt32(0);
         const FdoByte* geom = rdr->GetGeometry(1, &len);
 
-        //TODO: assumes DBounds is 2D since GetFgfExtents is 2D
-        GetFgfExtents((unsigned char*)geom, len, (double*)&ext);
+        if (len)
+        {
+            //TODO: assumes DBounds is 2D since GetFgfExtents is 2D
+            GetFgfExtents((unsigned char*)geom, len, (double*)&ext);
 
-        si->Insert(id, ext);
+            si->Insert(id, ext);
+        }
     }
 
     rdr->Close();

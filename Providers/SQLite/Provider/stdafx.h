@@ -27,6 +27,7 @@
 
 #include <float.h>
 #include <time.h>
+#include <io.h>
 
 //disable STL bounds checking
 #define _SECURE_SCL 0

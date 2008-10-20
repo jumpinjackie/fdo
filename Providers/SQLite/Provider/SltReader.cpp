@@ -809,6 +809,9 @@ const FdoByte* SltReader::GetGeometry(int i, FdoInt32* len)
     	geom = (unsigned char*)ptr;    
     }
 
+    //is geometry null?
+    if (!len) return NULL;
+
     if (m_eGeomFormat == eFGF)
         return geom;
     else if (m_eGeomFormat == eWKB)
