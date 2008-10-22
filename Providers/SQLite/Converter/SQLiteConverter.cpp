@@ -37,17 +37,17 @@ FdoIConnection* GetFdoCon(const wchar_t* srcfile, bool open)
 
     std::wstring ext = fname.substr(index);
 
-    if (wcscmp(ext.c_str(), L".sdf") == 0)
+    if (_wcsicmp(ext.c_str(), L".sdf") == 0)
     {
         h = LoadLibrary(L"SdfProvider.dll");
-        connstr = std::wstring(L"File=") + srcfile + std::wstring(L"; ReadOnly=false;");
+        connstr = std::wstring(L"File=") + srcfile + std::wstring(L";ReadOnly=false;");
     }
-    else if (wcscmp(ext.c_str(), L".shp") == 0)
+    else if (_wcsicmp(ext.c_str(), L".shp") == 0)
     {
         h = LoadLibrary(L"ShpProvider.dll");
         connstr = std::wstring(L"DefaultFileLocation=") + srcfile + std::wstring(L";");
     }
-    else if (wcscmp(ext.c_str(), L".sdx") == 0 || wcscmp(ext.c_str(), L".db") == 0)
+    else if (_wcsicmp(ext.c_str(), L".sdx") == 0 || wcscmp(ext.c_str(), L".db") == 0)
     {
         h = LoadLibrary(L"SQLiteProvider.dll");
         connstr = std::wstring(L"File=") + srcfile + std::wstring(L";");
@@ -61,10 +61,11 @@ FdoIConnection* GetFdoCon(const wchar_t* srcfile, bool open)
     FARPROC f = GetProcAddress(h, "CreateConnection");
     FdoIConnection* conn_ = ((createFunc)f)();
 
+    //open an FDO connection to the file
+    conn_->SetConnectionString(connstr.c_str());
+
     if (open)
     {
-        //open an FDO connection to the file
-        conn_->SetConnectionString(connstr.c_str());
         conn_->Open();
     }
 
@@ -390,12 +391,13 @@ void ConvertFDOToSDFX(const wchar_t* src, const wchar_t* dst, bool optimize)
         FdoPtr<FdoFeatureClass> fc = (FdoFeatureClass*)classes->GetItem(q);
 
         FdoPtr<FdoIInsert> insert = (FdoIInsert*)dcon->CreateCommand(FdoCommandType_Insert);
-        FdoPtr<FdoPropertyValueCollection> pvc = insert->GetPropertyValues();
-        insert->SetFeatureClassName(fc->GetName());
-        
+
         //add class to the schema
         int autoGenIndex;
         CreateFeatureTable(dcon, fc, srs_name_id, insert, autoGenIndex);
+
+        FdoPtr<FdoPropertyValueCollection> pvc = insert->GetPropertyValues();
+        insert->SetFeatureClassName(fc->GetName());
 
         const wchar_t* idname = NULL;
 
@@ -670,6 +672,7 @@ void TestPerformance(const wchar_t* filename)
    drdr->Close();
 */
 
+/*
     FdoPtr<FdoISelect> sss = (FdoISelect*)con->CreateCommand(FdoCommandType_Select);
     sss->SetFeatureClassName(L"canhiway");
     //FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"OGC_FID=1 OR OGC_FID=2");
@@ -694,7 +697,7 @@ void TestPerformance(const wchar_t* filename)
         }
     }
     fclose(fp);
-
+*/
 
     //get the overall extent
     double minx = DBL_MAX;
@@ -735,7 +738,7 @@ void TestPerformance(const wchar_t* filename)
 
     double min[2];
     double max[2];
-    double factor = 0.1;
+    double factor = 0.49;
     min[0] = minx + (maxx - minx)*factor;
     min[1] = miny + (maxy - miny)*factor;
     max[0] = maxx - (maxx - minx)*factor;
@@ -745,7 +748,7 @@ void TestPerformance(const wchar_t* filename)
     select->SetFeatureClassName(fcname.c_str());
 
     FdoPtr<FdoFilter> bbox0 = CreateBoundingBoxFilter(geomname.c_str(), min[0], min[1],max[0], max[1]);
-    select->SetFilter(bbox0);
+    //select->SetFilter(bbox0);
 
     //FdoPtr<FdoFilter> somefilter = FdoFilter::Parse(L"GENUS=CONCAT('hello', 7)");
     //FdoPtr<FdoBinaryLogicalOperator> op = FdoBinaryLogicalOperator::Create(
@@ -787,14 +790,14 @@ void TestPerformance(const wchar_t* filename)
     fcount = 0;
     t0 = clock();
 
-    for (int i=0; i<10000; i++)
+    for (int i=0; i<1; i++)
     {
         FdoPtr<FdoIFeatureReader> rdr = (FdoIFeatureReader*)(select->Execute());
         
-        while (rdr->ReadNext())
+        while (rdr.p->ReadNext())
         {
             int count = 0;
-            const unsigned char* geom = rdr->GetGeometry(geomname.c_str(), &count);
+            const unsigned char* geom = rdr.p->GetGeometry(geomname.c_str(), &count);
 
           // printf ("%d,", rdr->GetInt32(L"FeatId"));
 /*
@@ -821,6 +824,30 @@ void TestPerformance(const wchar_t* filename)
 }
 
 
+void TestDelete()
+{
+    FdoPtr<FdoIConnection> con = GetFdoCon(L"E:\\carbon\\p4\\GBU\\Metropolis_0\\Output\\Release\\Bin\\Data\\Cache\\test9999\\CityDatabase.db", true);
+
+    FdoPtr<FdoISelect> sel = (FdoISelect*)con->CreateCommand(FdoCommandType_Select);
+
+    sel->SetFeatureClassName(L"TerrainPoints");
+
+    FdoPtr<FdoIFeatureReader> rdr = sel->Execute();
+
+    rdr->ReadNext();
+    rdr->Close();
+
+    FdoPtr<FdoIDelete> del = (FdoIDelete*)con->CreateCommand(FdoCommandType_Delete);
+
+    del->SetFeatureClassName(L"TerrainPoints");
+
+    del->SetFilter(L"DATA_SOURCE_ID=1");
+
+    int items = del->Execute();
+
+    printf ("delete : %d\n", items);
+}
+
 
 void Usage()
 {
@@ -841,13 +868,17 @@ int _tmain(int argc, _TCHAR* argv[])
     {
         if (wcscmp(argv[1], L"test") == 0)
         {
+            //TestDelete();
             TestPerformance(argv[2]);
         }
         else
         {
             try 
             {
+                clock_t t0 = clock();
                 ConvertFDOToSDFX(argv[1], argv[2], false);
+                clock_t t1 = clock();
+                printf ("Conversion time: %d\n", t1 - t0);
             }
             catch (FdoException* e)
             {
@@ -864,7 +895,10 @@ int _tmain(int argc, _TCHAR* argv[])
         {
             try
             {
+                clock_t t0 = clock();
                 ConvertFDOToSDFX(argv[2], argv[3], true);
+                clock_t t1 = clock();
+                printf ("Conversion time: %d\n", t1 - t0);
             }
             catch (FdoException* e)
             {
