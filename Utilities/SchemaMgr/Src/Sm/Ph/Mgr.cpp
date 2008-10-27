@@ -233,7 +233,7 @@ FdoSmPhOwnerP FdoSmPhMgr::FindOwner(FdoStringP ownerName, FdoStringP database, b
     if ( pDatabase ) {
         // If this is the default database and owner is blank then retrieve the 
         // default owner.
-        if ( (wcslen(pDatabase->GetName()) == 0) && (ownerName.GetLength() == 0) ) {
+        if ( ((const wchar_t*)pDatabase->GetName())[0] == '\0' && ((const wchar_t*)ownerName)[0] == '\0' ) {
             dfltdOwner = GetDefaultOwnerName();
             ownerDefaulted = true;
         }

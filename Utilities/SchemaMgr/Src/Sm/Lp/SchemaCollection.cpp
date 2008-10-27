@@ -84,7 +84,7 @@ const FdoSmLpClassDefinition* FdoSmLpSchemaCollection::FindClass( FdoStringP sch
 	const FdoSmLpSchema* pSchema = NULL;
 	const FdoSmLpClassDefinition* pFoundClass = NULL;
 
-	if ( schemaName.GetLength() > 0 ) {
+    if ( ((const wchar_t*)schemaName)[0] != '\0' )  {
 		// Check the given schema if schema name specified
 		pSchema = RefItem(schemaName);
 		if ( pSchema ) 
@@ -1120,7 +1120,7 @@ FdoStringCollection* FdoSmLpSchemaCollection::GetClassNames(FdoStringP schemaNam
             while (pDbObject != NULL)
             {
                 className = pDbObject->GetBestClassName(pLpSchema->GetName());
-                if (className.GetLength() > 0)
+                if ( ((const wchar_t*)className)[0] != '\0' )
                 {
                     schemaName = pDbObject->GetBestSchemaName();
                     if (schemaName.GetLength() > 0)
@@ -1213,7 +1213,7 @@ FdoFeatureSchemasP FdoSmLpSchemaCollection::GetFdoSchemasEx(FdoStringP schemaNam
                 FdoStringP tableName = GetPhysicalSchema()->ClassName2DbObjectName(parsedSchemaName, className);
                 GetPhysicalSchema()->GetOwner()->AddCandDbObject(tableName);
             }
-            else if (parsedSchemaName == className && schemaName.GetLength() > 0)
+            else if ( ((const wchar_t*)schemaName)[0] != '\0' && parsedSchemaName == className )
             {
                 // The classname is not qualified, so we'll use the passed in schema name and the passed in classname.
                 FdoStringP tableName = GetPhysicalSchema()->ClassName2DbObjectName(schemaName, className);
@@ -1232,12 +1232,25 @@ FdoFeatureSchemasP FdoSmLpSchemaCollection::GetFdoSchemasEx(FdoStringP schemaNam
     for (int iSchema=0; iSchema < GetCount(); iSchema++)
     {
         const FdoSmLpSchema*     pLpSchema = RefItem(iSchema);
+        FdoStringP schemaName = pLpSchema->GetName();
 
         if (featureClassNames)
         {
             for (int iClassNames = 0; iClassNames < featureClassNames->GetCount(); iClassNames++)
             {
-                const FdoSmLpClassDefinition* pLpClassDef = pLpSchema->FindClass(featureClassNames->GetItem(iClassNames)->GetString(), false);
+                FdoStringP className = featureClassNames->GetItem(iClassNames)->GetString();
+                FdoStringP delimiter = L":";
+                FdoStringP tempName = className.Right(delimiter);
+
+                if ( ((const wchar_t*)tempName)[0] == '\0' )
+                {
+                    if ( ((const wchar_t*)className)[0] != '\0' && ((const wchar_t*)schemaName)[0] != '\0' )
+                    {
+                        className = schemaName + L":" + className;
+                    }
+                }
+
+                const FdoSmLpClassDefinition* pLpClassDef = pLpSchema->FindClass(className, false);
                 if (pLpClassDef)
                 {
                     mFoundCount++;
@@ -1457,5 +1470,6 @@ FdoFeatureSchema* FdoSmLpSchemaCollection::ConvertSchema(const FdoSmLpSchema *pL
 
     return pFdoFeatureSchema;
 }
+
 
 

@@ -132,7 +132,7 @@ const FdoSmLpClassDefinition* FdoSmLpSchema::FindClass( FdoStringP className, bo
 	}
 	else {
 		// Qualified so split into schema name and class name
-		if ( leftString.GetLength() > 0 ) 
+        if ( ((const wchar_t*)leftString)[0] != '\0' )
 			schemaName = leftString;
 
 		localClassName = className.Right( L":" );
@@ -620,6 +620,7 @@ void FdoSmLpSchema::XMLSerialize( FILE* xmlFp, int ref ) const
 
 	fprintf( xmlFp, "</schema >\n" );
 }
+
 
 
 
