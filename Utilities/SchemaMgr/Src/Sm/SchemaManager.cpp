@@ -651,7 +651,14 @@ FdoFeatureSchemasP FdoSchemaManager::GetFdoSchemasEx( FdoStringP schemaName, Fdo
     {
         // Load all constraints in one select, for performance.
         GetPhysicalSchema()->SetBulkLoadConstraints(true);
-        GetPhysicalSchema()->SetBulkLoadSpatialContexts(true);
+        if (classNames->GetCount() > 0)
+        {
+            GetPhysicalSchema()->SetBulkLoadSpatialContexts(false);
+        }
+        else
+        {
+            GetPhysicalSchema()->SetBulkLoadSpatialContexts(true);
+        }
 
         FdoSmLpSchemasP pLpSchemaColl = GetLogicalPhysicalSchemas();
 
@@ -692,4 +699,5 @@ FdoStringCollection* FdoSchemaManager::GetSchemaNames()
         throw FdoSchemaException::Create(ex->GetExceptionMessage(), ex);
     }
 }
+
 

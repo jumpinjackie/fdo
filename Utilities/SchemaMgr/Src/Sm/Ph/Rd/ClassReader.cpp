@@ -119,7 +119,7 @@ bool FdoSmPhRdClassReader::ReadNext()
             if ( ClassifyObjectType(pObject, mClassifyDefaultTypes) ) {
                 // Check if class can be generated from this table or view.
                 classifiedObjectName = ClassifyObject( pObject );
-                if ( classifiedObjectName.GetLength() > 0 ) {
+                if ( ((const wchar_t*)classifiedObjectName)[0] != '\0' )  {
                     found = true;
 
                     FdoSmPhColumnsP cols = pObject->GetColumns();
@@ -174,7 +174,7 @@ bool FdoSmPhRdClassReader::ReadNext()
                         pField->SetFieldValue( L"1" );
 
                         pField = pFields->GetItem(L"geometryproperty");
-                        if ( geomPropName.GetLength() > 0 )
+                        if ( ((const wchar_t*)geomPropName)[0] != '\0' )
                             pField->SetFieldValue( geomPropName );
                         else
                             pField->SetFieldValue( L"" );
@@ -212,7 +212,7 @@ FdoStringP FdoSmPhRdClassReader::ClassifyObject( FdoSmPhDbObjectP dbObject )
     FdoStringP classifiedObjectName = dbObject->GetClassifiedObjectName(mSchemaName);
 
     bool hasKey =false;
-    if ( classifiedObjectName.GetLength() > 0)
+    if ( ((const wchar_t*)classifiedObjectName)[0] != '\0' )
     {
         if ( (mSchemaName == L"") || (dbObject->GetBestSchemaName() == mSchemaName) )
         {
