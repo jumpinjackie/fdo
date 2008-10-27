@@ -168,7 +168,7 @@ void FdoSmPhRdGrdQueryReader::Execute()
 
     // Execute only if select statement was generated. Select statement generation
     // is skipped when the from tables do not exist.
-    if ( mStatement.GetLength() > 0 ) {
+    if ( ((const wchar_t*)mStatement)[0] != '\0' )  {
         if ( mQuery == NULL ) {
             // Create a collection to hold field values for all rows.
             mFetches = new FdoSmPhRdGrdRowArrayCollection();
@@ -288,4 +288,5 @@ void FdoSmPhRdGrdQueryReader::EndSelect()
 	if ( mResults )
 		mResults->End();
 }
+
 
