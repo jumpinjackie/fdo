@@ -578,8 +578,8 @@ void ArcSDEDescribeSchemaCommand::addTable (
         }
         fdoSchemaDesc = NULL;
 
-        // ignore the GDB_ tables that SDE owns
-        if (0 == wcscmp (wowner, SDE_USER) && (4 <= wcslen (wtable)) && (0 == wcsncmp (wtable, ARCOBJECT_PREFIX, 4)))
+        // ignore the GDB_ tables that SDE/DBO owns
+        if ((0 == wcscmp (wowner, SDE_USER) || 0 == wcscmp (wowner, DBO_USER)) && (4 <= wcslen (wtable)) && (0 == wcsncmp (wtable, ARCOBJECT_PREFIX, 4)))
             return;
 
         // default to class name being the table name
