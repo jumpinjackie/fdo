@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\Fdo\Unmanaged\Inc;&quot;..\sqlite-3.5.4&quot;;..\..\..\Utilities\Common\Inc;..\Provider"
+				AdditionalIncludeDirectories="..\..\..\Fdo\Unmanaged\Inc;..\..\..\Utilities\Common\Inc;..\Provider;..\SpatialIndex"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib sqlite.lib FdoCommon.lib SQLiteProvider.lib ProvidersCommon.lib"
+				AdditionalDependencies="Fdo.lib sqlite.lib FdoCommon.lib FdoSpatial.lib ProvidersCommon.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\Fdo\Unmanaged\Lib\win32\release;&quot;..\sqlite-3.5.4\Debug&quot;;..\Provider\Debug;..\..\..\Utilities\Common\lib\win32\debug"
 				GenerateDebugInformation="true"
@@ -117,11 +117,12 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="0"
+				Optimization="2"
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\..\..\Fdo\Unmanaged\Inc;&quot;..\..\..\Thirdparty\sqlite-3.5.4&quot;;..\..\..\Utilities\Common\Inc;..\Provider"
+				OmitFramePointers="true"
+				AdditionalIncludeDirectories="..\..\..\Fdo\Unmanaged\Inc;..\..\..\Utilities\Common\Inc;..\Provider;..\SpatialIndex"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -139,7 +140,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib sqlite.lib FdoCommon.lib SQLiteProvider.lib ProvidersCommon.lib"
+				AdditionalDependencies="Fdo.lib sqlite.lib FdoCommon.lib FdoSpatial.lib ProvidersCommon.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\Fdo\Unmanaged\lib\win32\release;&quot;..\sqlite-3.5.4\Release&quot;;..\Provider\Release;..\..\..\Utilities\Common\lib\win32\release"
 				GenerateDebugInformation="true"
@@ -187,14 +188,6 @@
 		<File
 			RelativePath=".\SQLiteConverter.cpp"
 			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="0"
-				/>
-			</FileConfiguration>
 		</File>
 	</Files>
 	<Globals>
