@@ -361,10 +361,10 @@ struct FgfPolygon
 
 //FGF utility routines
 
-SLT_API void GetFgfExtents(const unsigned char* fgf, int len, double ext[4]);
+bool GetFgfExtents(const unsigned char* fgf, int len, double ext[4]);
 
-SLT_API int Fgf2Wkb(const unsigned char* fgf, unsigned char* wkb);
+int Fgf2Wkb(const unsigned char* fgf, unsigned char* wkb);
 
-SLT_API int Wkb2Fgf(const unsigned char* wkb, unsigned char* fgf);
+int Wkb2Fgf(const unsigned char* wkb, unsigned char* fgf);
 
 #endif

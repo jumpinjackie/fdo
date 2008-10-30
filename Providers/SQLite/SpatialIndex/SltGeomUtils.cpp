@@ -357,7 +357,7 @@ int Fgf2Wkb(const unsigned char* fgf, unsigned char* wkb)
     return dst.GetLength();
 }
 
-void GetFgfExtents(const unsigned char* fgf, int len, double ext[4])
+bool GetFgfExtents(const unsigned char* fgf, int len, double ext[4])
 { 
     //Converts FdoDimensionality value to # of coordinates per point
     static int dim_lookup[] = { 2, 3, 3, 4 };
@@ -478,9 +478,17 @@ void GetFgfExtents(const unsigned char* fgf, int len, double ext[4])
     default:
    
         //all other geometry types -- punt it to the Fdo Spatial utility
+        //return false;
+#ifdef SLT_USE_FDO_SPATIAL        
         FdoPtr<FdoByteArray> ba = FdoByteArray::Create(fgf, len);
         FdoSpatialUtility::GetExtents(ba, ext[0], ext[1], ext[2], ext[3]);
         break;
+#else
+        return false;
+#endif
+        
     }
+
+    return true;
 }
 
