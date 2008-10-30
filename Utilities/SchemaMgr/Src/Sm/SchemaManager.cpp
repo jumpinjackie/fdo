@@ -651,7 +651,7 @@ FdoFeatureSchemasP FdoSchemaManager::GetFdoSchemasEx( FdoStringP schemaName, Fdo
     {
         // Load all constraints in one select, for performance.
         GetPhysicalSchema()->SetBulkLoadConstraints(true);
-        if (classNames->GetCount() > 0)
+        if (classNames != NULL && classNames->GetCount() > 0)
         {
             GetPhysicalSchema()->SetBulkLoadSpatialContexts(false);
         }
