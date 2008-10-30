@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\Fdo\Unmanaged\Inc;&quot;..\sqlite-3.6.2&quot;;..\..\..\Utilities\Common\Inc"
+				AdditionalIncludeDirectories="..\..\..\Fdo\Unmanaged\Inc;&quot;..\sqlite-3.6.2&quot;;..\..\..\Utilities\Common\Inc;..\SpatialIndex"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SLT_EXPORTS;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -123,7 +123,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\..\Fdo\Unmanaged\Inc;&quot;..\sqlite-3.6.2&quot;;..\..\..\Utilities\Common\Inc"
+				AdditionalIncludeDirectories="..\..\..\Fdo\Unmanaged\Inc;&quot;..\sqlite-3.6.2&quot;;..\..\..\Utilities\Common\Inc;..\SpatialIndex"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SLT_EXPORTS;_CRT_SECURE_NO_WARNINGS"
 				RuntimeLibrary="2"
 				BufferSecurityCheck="false"
@@ -199,22 +199,6 @@
 			</File>
 		</Filter>
 		<File
-			RelativePath=".\DiskSpatialIndex.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\DiskSpatialIndex.h"
-			>
-		</File>
-		<File
-			RelativePath=".\MappedFile.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\MappedFile.h"
-			>
-		</File>
-		<File
 			RelativePath=".\PropertyNameIndex.h"
 			>
 		</File>
@@ -272,14 +256,6 @@
 		</File>
 		<File
 			RelativePath=".\SltExprExtensions.h"
-			>
-		</File>
-		<File
-			RelativePath=".\SltGeomUtils.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\SltGeomUtils.h"
 			>
 		</File>
 		<File
