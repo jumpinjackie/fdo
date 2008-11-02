@@ -48,7 +48,21 @@ protected:
 
 protected:
     
-    OGR_API virtual void Dispose();
+    //Overload refcouning, since we have multiple inheritance
+    //which is non-virtual from FdoIDisposable
+
+public:                                                                      
+    virtual void                Dispose()           { delete this; }         
+    virtual FdoInt32            AddRef()            { return ++m_refCount; } 
+    virtual FdoInt32            Release()                                    
+    {                                                                        
+        if (--m_refCount )                                                   
+            return m_refCount;                                               
+        Dispose();                                                           
+        return 0;                                                            
+    }                                                                        
+    virtual FdoInt32            GetRefCount()       { return m_refCount; }   
+private:                        int m_refCount;
 
     //-------------------------------------------------------
     // FdoIConnection implementation
@@ -67,23 +81,23 @@ public:
     
     //FdoIConnection simple function implementations
     OGR_API virtual FdoIConnectionCapabilities* GetConnectionCapabilities() 
-        { return FDO_SAFE_ADDREF((FdoIConnectionCapabilities*)this); }
+        { return FDO_SAFE_ADDREF(this); }
     OGR_API virtual FdoISchemaCapabilities* GetSchemaCapabilities()
-        { return FDO_SAFE_ADDREF((FdoISchemaCapabilities*)this); }
+        { return FDO_SAFE_ADDREF(this); }
     OGR_API virtual FdoICommandCapabilities* GetCommandCapabilities()
-        { return FDO_SAFE_ADDREF((FdoICommandCapabilities*)this); }
+        { return FDO_SAFE_ADDREF(this); }
     OGR_API virtual FdoIFilterCapabilities* GetFilterCapabilities()
-        { return FDO_SAFE_ADDREF((FdoIFilterCapabilities*)this); }
+        { return FDO_SAFE_ADDREF(this); }
     OGR_API virtual FdoIExpressionCapabilities* GetExpressionCapabilities()
-        { return FDO_SAFE_ADDREF((FdoIExpressionCapabilities*)this); }
+        { return FDO_SAFE_ADDREF(this); }
     OGR_API virtual FdoIRasterCapabilities* GetRasterCapabilities()
-        { return FDO_SAFE_ADDREF((FdoIRasterCapabilities*)this); }
+        { return FDO_SAFE_ADDREF(this); }
     OGR_API virtual FdoITopologyCapabilities* GetTopologyCapabilities()
-        { return FDO_SAFE_ADDREF((FdoITopologyCapabilities*)this); }
+        { return FDO_SAFE_ADDREF(this); }
     OGR_API virtual FdoIGeometryCapabilities* GetGeometryCapabilities()
-        { return FDO_SAFE_ADDREF((FdoIGeometryCapabilities*)this); }
+        { return FDO_SAFE_ADDREF(this); }
     OGR_API virtual FdoIConnectionInfo* GetConnectionInfo()
-        { return FDO_SAFE_ADDREF((FdoIConnectionInfo*)this); }
+        { return FDO_SAFE_ADDREF(this); }
     OGR_API virtual FdoConnectionState GetConnectionState() 
         { return m_connState; }
     OGR_API virtual FdoInt32 GetConnectionTimeout() 
@@ -501,14 +515,13 @@ public:
     OGR_API virtual FdoString* GetFeatureDataObjectsVersion()
         { return L"3.3.0.0"; }
     OGR_API virtual FdoIConnectionPropertyDictionary* GetConnectionProperties()
-        { return FDO_SAFE_ADDREF((FdoIConnectionPropertyDictionary*)this); }
+        { return FDO_SAFE_ADDREF(this); }
 
-#ifndef FDO_31
     //TODO: in the OGR case this varies -- we could find out the correct answer
     //once the connection properties are set
     OGR_API virtual FdoProviderDatastoreType GetProviderDatastoreType() 
         { return FdoProviderDatastoreType_File; } 
-#endif
+
     //TODO: in the OGR case this varies -- we could find out the correct answer
     //once the connection properties are set
     OGR_API virtual FdoStringCollection* GetDependentFileNames()
