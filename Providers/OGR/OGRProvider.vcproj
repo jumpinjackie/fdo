@@ -140,7 +140,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="fdo.lib fdocommon.lib fdogeometry.lib wsock32.lib gdal_i.lib xerces-c_2.lib fdospatial.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\Fdo\Unmanaged\lib\win32\release;&quot;$(FDOGDAL)\lib\win32\Release&quot;;&quot;gdal\gdal-1.5.1&quot;;&quot;..\..\Thirdparty\apache\xml-xerces\c\Build\Win32\VC9\Release&quot;"
+				AdditionalLibraryDirectories="..\..\Fdo\Unmanaged\lib\win32\release;&quot;$(FDOGDAL)\lib\win32\Release&quot;;&quot;gdal\gdal-1.5.1&quot;;&quot;..\..\Thirdparty\apache\xml-xerces\c\Build\Win32\VC9\Release&quot;;..\..\Thirdparty\gdal\"
 				GenerateManifest="true"
 				IgnoreDefaultLibraryNames=""
 				DelayLoadDLLs="fdogeometry.dll"

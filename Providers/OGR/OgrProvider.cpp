@@ -83,24 +83,6 @@ OgrConnection::~OgrConnection()
     delete m_mProps;
 }
 
-void OgrConnection::Dispose()
-{
-    //only delete ourselves when we are being disposed of
-    //as a connection, rather than any of the other classes
-    //we inherit in the OgrConnection object
-    if (((FdoIConnection*)this)->GetRefCount() == 0)
-    {
-#if DEBUG
-        printf("destroying connection\n");
-#endif
-        delete this;
-    }
-#if DEBUG
-    else
-        printf("Dispose() called by multiply inherited object\n");
-#endif
-}
-
 //----------------------------------------------------------------
 //
 //                          FdoIConnection
