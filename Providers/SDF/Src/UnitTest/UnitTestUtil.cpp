@@ -110,7 +110,7 @@ FdoFeatureSchema* CreateSDFSchema()
 FdoIConnection* UnitTestUtil::CreateConnection()
 {
     FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
-    return (manager->CreateConnection (L"OSGeo.SDF.3.3"));
+    return (manager->CreateConnection (L"OSGeo.SDF"));
 }
 
 FdoIConnection* UnitTestUtil::OpenConnection(  FdoString* fileName, bool re_create, FdoIConnection  *inConn)

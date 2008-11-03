@@ -74,7 +74,7 @@ void SchemaTest::TestMultipleGeom()
     try
     {
         FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
-        FdoPtr<FdoIConnection> conn = manager->CreateConnection (L"OSGeo.SDF.3.3");
+        FdoPtr<FdoIConnection> conn = manager->CreateConnection (L"OSGeo.SDF");
 
         OpenConnection(conn, SDF_FILE_MG);
         

@@ -16252,7 +16252,7 @@ void FdoExpressionFunctionTest::RunOptimizerTest()
 {
     bool testResult = true;
     FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
-    FdoPtr<FdoIConnection> conn = manager->CreateConnection (L"OSGeo.SDF.3.3");
+    FdoPtr<FdoIConnection> conn = manager->CreateConnection (L"OSGeo.SDF");
     try
     {
 #ifdef EE_TEST_INS_FEATURES
