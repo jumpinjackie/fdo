@@ -99,7 +99,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.3.0.0&quot; -p&quot;3.3.0.0&quot; $(TargetPath)&#x0D;&#x0A;xcopy /R /Y /E /Q Src\Fdo\FDO.py Lib\Win32\&#x0D;&#x0A;"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.4.0.0&quot; -p&quot;3.4.0.0&quot; $(TargetPath)&#x0D;&#x0A;xcopy /R /Y /E /Q Src\Fdo\FDO.py Lib\Win32\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -190,7 +190,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.3.0.0&quot; -p&quot;3.3.0.0&quot; $(TargetPath)&#x0D;&#x0A;xcopy /R /Y /E /Q Src\Fdo\FDO.py Lib\Win32\&#x0D;&#x0A;"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.4.0.0&quot; -p&quot;3.4.0.0&quot; $(TargetPath)&#x0D;&#x0A;xcopy /R /Y /E /Q Src\Fdo\FDO.py Lib\Win32\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>

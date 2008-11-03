@@ -104,7 +104,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning FDOSpatial.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.3.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\FDOSpatial.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.4.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\FDOSpatial.dll"
 			/>
 		</Configuration>
 		<Configuration
@@ -193,7 +193,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning FDOSpatial.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.3.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\FDOSpatial.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.4.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\FDOSpatial.dll"
 				ExcludedFromBuild="true"
 			/>
 		</Configuration>
@@ -282,7 +282,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning FDOSpatial.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.3.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\FDOSpatial.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.4.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\FDOSpatial.dll"
 			/>
 		</Configuration>
 		<Configuration
@@ -371,7 +371,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning FDOSpatial.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.3.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\FDOSpatial.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.4.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\FDOSpatial.dll"
 				ExcludedFromBuild="true"
 			/>
 		</Configuration>
