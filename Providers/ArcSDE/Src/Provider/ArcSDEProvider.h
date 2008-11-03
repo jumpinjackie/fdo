@@ -44,6 +44,8 @@ const wchar_t CONNECTIONPROPERTY_PASSWORD[] = L"Password";
 #define SDE_USER_MULTIBYTE                         "SDE"
 #define OPTIONAL_SYSTEM_TABLE_PREFIX              L"SDE_"
 #define OPTIONAL_SYSTEM_TABLE_PREFIX_MULTIBYTE     "SDE_"
+#define DBO_USER                                  L"DBO"
+#define DBO_USER_MULTIBYTE                         "DBO"
 #define ARCOBJECT_PREFIX                          L"GDB_"
 #define SDE_SYSTEM_TABLE_STATE_LINEAGES           L"STATE_LINEAGES"
 #define SDE_SYSTEM_TABLE_STATE_LINEAGES_MULTIBYTE  "STATE_LINEAGES"

@@ -280,7 +280,7 @@ FdoConnectionState ArcSDEConnection::Open ()
     FdoPtr<FdoCommonConnPropDictionary> dictionary = dynamic_cast<FdoCommonConnPropDictionary*>(info->GetConnectionProperties ());
 
     FdoCommonConnStringParser parser (NULL, connection_string);
-    // check the validity of the connection string, i.e. it doesn’t contain unknown properties
+    // check the validity of the connection string, i.e. it doesn't contain unknown properties
     // e.g. DefaultFLocation instead of DefaultFileLocation
     if (!parser.IsConnStringValid())
         throw FdoException::Create (NlsMsgGet1(ARCSDE_INVALID_CONNECTION_STRING, "Invalid connection string '%1$ls'", connection_string));
@@ -1020,7 +1020,11 @@ void ArcSDEConnection::GetRdbmsInfo(void)
                 SDE_USER L".",  //without "SDE_" prefix within current database
                 SDE_USER L"." OPTIONAL_SYSTEM_TABLE_PREFIX,  //with "SDE_" prefix within current database
                 SDE_USER L"." SDE_USER L".",  //without "SDE_" prefix within central "sde" database
-                SDE_USER L"." SDE_USER L"." OPTIONAL_SYSTEM_TABLE_PREFIX  //with "SDE_" prefix within central "sde" database
+                SDE_USER L"." SDE_USER L"." OPTIONAL_SYSTEM_TABLE_PREFIX,  //with "SDE_" prefix within central "sde" database
+                DBO_USER L".",  //without "SDE_" prefix within current database
+                DBO_USER L"." OPTIONAL_SYSTEM_TABLE_PREFIX,  //with "SDE_" prefix within current database
+                DBO_USER L"." SDE_USER L".",  //without "SDE_" prefix within central "sde" database
+                DBO_USER L"." SDE_USER L"." OPTIONAL_SYSTEM_TABLE_PREFIX  //with "SDE_" prefix within central "sde" database
             };
 
             m_sCachedRdbmsSystemTablePrefix = SDE_USER L"."; // default to no prefix if any problem is encountered
