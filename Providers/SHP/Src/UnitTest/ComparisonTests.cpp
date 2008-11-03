@@ -64,7 +64,7 @@ void ComparisonTests::compare1 ()
         {
             // sdf
             FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
-            FdoPtr<FdoIConnection> connection = manager->CreateConnection (L"OSGeo.SDF.3.3");
+            FdoPtr<FdoIConnection> connection = manager->CreateConnection (L"OSGeo.SDF");
             connection->SetConnectionString (L"File=" LOCATION CLASS1);
             CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == connection->Open ());
             start = clock ();
@@ -120,7 +120,7 @@ void ComparisonTests::compare2 ()
         {
             // sdf
             FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
-            FdoPtr<FdoIConnection> connection = manager->CreateConnection (L"OSGeo.SDF.3.3");
+            FdoPtr<FdoIConnection> connection = manager->CreateConnection (L"OSGeo.SDF");
             connection->SetConnectionString (L"File=" LOCATION CLASS2);
             CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == connection->Open ());
             start = clock ();
