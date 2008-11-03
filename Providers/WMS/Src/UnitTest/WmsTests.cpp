@@ -30,14 +30,14 @@ WmsTests::~WmsTests(void)
 void WmsTests::setUp ()
 {
     FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
-    mConnection = manager->CreateConnection (L"OSGeo.WMS.3.3");
+    mConnection = manager->CreateConnection (L"OSGeo.WMS");
 }
 
 void WmsTests::tearDown ()
 {
     mConnection = NULL;
     FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
-    manager->FreeLibrary(L"OSGeo.WMS.3.3");
+    manager->FreeLibrary(L"OSGeo.WMS");
 }
 
 FdoIConnection* WmsTests::GetConnection ()

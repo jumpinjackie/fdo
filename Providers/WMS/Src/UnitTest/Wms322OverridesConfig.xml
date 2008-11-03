@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<SchemaMapping provider="OSGeo.WMS.3.3" name="JPL_World_Map" xmlns="http://fdowms.osgeo.org/schemas">
+<SchemaMapping provider="OSGeo.WMS.3.4" name="JPL_World_Map" xmlns="http://fdowms.osgeo.org/schemas">
   <complexType name="worldwindType">
     <RasterDefinition name="Raster">
       <Format>TIF</Format>

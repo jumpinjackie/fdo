@@ -22,11 +22,11 @@
 #pragma once
 #endif //_WIN32
 
-#define WMS_PROVIDER_NAME					L"OSGeo.WMS.3.3"
+#define WMS_PROVIDER_NAME					L"OSGeo.WMS.3.4"
 #define WMS_PROVIDER_DEFAULT_DISPLAY_NAME	"OSGeo FDO Provider for WMS"
 #define WMS_PROVIDER_DEFAULT_DESCRIPTION	"Read access to OGC WMS-based data store."
-#define WMS_PROVIDER_VERSION				L"3.3.0.0"
-#define WMS_FDO_VERSION						L"3.3.0.0"
+#define WMS_PROVIDER_VERSION				L"3.4.0.0"
+#define WMS_FDO_VERSION						L"3.4.0.0"
 
 namespace FdoWmsGlobals
 {
