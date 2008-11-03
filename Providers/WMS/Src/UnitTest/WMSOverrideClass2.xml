@@ -45,7 +45,7 @@
       </xs:complexContent>
     </xs:complexType>
   </xs:schema>
-  <SchemaMapping provider="OSGeo.WMS.3.3" name="WMSLayers" xmlns="http://fdowms.osgeo.org/schemas">
+  <SchemaMapping provider="OSGeo.WMS.3.4" name="WMSLayers" xmlns="http://fdowms.osgeo.org/schemas">
     <complexType name="us_landsat_wgs84_1Type">
       <RasterDefinition name="Image">
         <Format>PNG</Format>

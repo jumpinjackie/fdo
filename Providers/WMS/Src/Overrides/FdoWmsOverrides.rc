@@ -57,8 +57,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,3,0,0
- PRODUCTVERSION 3,3,0,0
+ FILEVERSION 3,4,0,0
+ PRODUCTVERSION 3,4,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -80,7 +80,7 @@ BEGIN
             VALUE "LegalCopyright", "Copyright (C) 2007"
             VALUE "OriginalFilename", "FdoWmsOv.dll"
             VALUE "ProductName", " FdoWmsOv Dynamic Link Library"
-            VALUE "ProductVersion", "3.3.0.0"
+            VALUE "ProductVersion", "3.4.0.0"
         END
     END
     BLOCK "VarFileInfo"
