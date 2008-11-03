@@ -86,7 +86,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning WFSMessage.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\WFSMessage.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\WFSMessage.dll"
 			/>
 		</Configuration>
 		<Configuration
@@ -159,7 +159,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning WFSMessage.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\WFSMessage.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\WFSMessage.dll"
 				ExcludedFromBuild="true"
 			/>
 		</Configuration>
@@ -230,7 +230,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning WFSMessage.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\WFSMessage.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\WFSMessage.dll"
 			/>
 		</Configuration>
 		<Configuration
@@ -302,7 +302,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning WFSMessage.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\WFSMessage.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\WFSMessage.dll"
 				ExcludedFromBuild="true"
 			/>
 		</Configuration>
