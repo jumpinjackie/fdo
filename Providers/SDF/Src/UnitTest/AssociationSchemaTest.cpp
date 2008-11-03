@@ -64,7 +64,7 @@ FdoIConnection* AssociationSchemaTest::openConnection( bool re_create )
 #endif
 
     FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
-    FdoIConnection *conn = manager->CreateConnection (L"OSGeo.SDF.3.3");
+    FdoIConnection *conn = manager->CreateConnection (L"OSGeo.SDF");
 	if( re_create )
 	{
 		size_t len = wcstombs(NULL, TEST_FILE, 0);

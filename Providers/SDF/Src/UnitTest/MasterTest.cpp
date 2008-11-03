@@ -96,7 +96,7 @@ MasterTest::~MasterTest()
 FdoIConnection* MasterTest::CreateConnection()
 {
     FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
-    return (manager->CreateConnection (L"OSGeo.SDF.3.3"));
+    return (manager->CreateConnection (L"OSGeo.SDF"));
 }
 
 // This method is executed at the beginning of each test case.
