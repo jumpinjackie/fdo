@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
-<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" provider="Autodesk.Oracle.3.3" name="ForeignBased">
+<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" provider="Autodesk.Oracle.3.4" name="ForeignBased">
 <complexType name="OneForeignType" tableMapping="Concrete">
 <Table name="ONEFOREIGN" owner="(fdo_user_prefix)_apply_override"/>
 <element name="Data">
@@ -94,7 +94,7 @@
 </element>
 </complexType>
 </SchemaMapping>
-<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" provider="Autodesk.Oracle.3.3" name="OverridesA" owner="(fdo_user_prefix)_apply_override">
+<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" provider="Autodesk.Oracle.3.4" name="OverridesA" owner="(fdo_user_prefix)_apply_override">
 <complexType name="OvClassC11Type" tableMapping="Base">
 <Table name="OV_TABLE_C1"/>
 <element name="DataC11">

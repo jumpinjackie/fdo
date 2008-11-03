@@ -99,7 +99,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning MgFdoSQLServerSpatialOverrides.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.SQLServerSpatial.Overrides.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.SQLServerSpatial.Overrides.dll"
 			/>
 		</Configuration>
 		<Configuration
@@ -184,7 +184,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning MgFdoSQLServerSpatialOverrides.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.SQLServerSpatial.Overrides.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.SQLServerSpatial.Overrides.dll"
 				ExcludedFromBuild="true"
 			/>
 		</Configuration>
@@ -267,7 +267,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning MgFdoSQLServerSpatialOverrides.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.SQLServerSpatial.Overrides.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.SQLServerSpatial.Overrides.dll"
 			/>
 		</Configuration>
 		<Configuration
@@ -351,7 +351,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning MgFdoSQLServerSpatialOverrides.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.3.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.SQLServerSpatial.Overrides.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.SQLServerSpatial.Overrides.dll"
 				ExcludedFromBuild="true"
 			/>
 		</Configuration>

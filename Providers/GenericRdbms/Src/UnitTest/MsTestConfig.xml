@@ -74,7 +74,7 @@
 	</xs:schema>
 
 	<!-- Schema Overrides for Hydrographic Feature Schema -->
-	<SchemaMapping name="hydro" provider="OSGeo.ODBC.3.3" physicalSchemaName="" 
+	<SchemaMapping name="hydro" provider="OSGeo.ODBC.3.4" physicalSchemaName="" 
 	 xmlns="http://fdoodbc.osgeo.org/schemas"
 	>
 		<!-- Schema Overrides for Sounding Feature Class -->

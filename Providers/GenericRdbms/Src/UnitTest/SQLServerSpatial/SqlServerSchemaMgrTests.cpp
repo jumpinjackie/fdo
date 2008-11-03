@@ -278,7 +278,7 @@ FdoIoStream* SqlServerSchemaMgrTests::OverrideBend( FdoIoStream* stream1, FdoStr
 {
     FdoIoMemoryStream* stream2 = FdoIoMemoryStream::Create();
     UnitTestUtil::OverrideBend( stream1, stream2, 
-        "OSGeo.SQLServerSpatial.3.3", 
+        "OSGeo.SQLServerSpatial.3.4", 
         "http://www.autodesk.com/isd/fdo/SQLServerSpatialProvider",
         oldOwnerPrefix,newOwnerPrefix);
 
