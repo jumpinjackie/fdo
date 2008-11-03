@@ -40,7 +40,7 @@ ShpTests::~ShpTests(void)
 FdoIConnection* ShpTests::GetConnection ()
 {
     FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
-    return (manager->CreateConnection (L"OSGeo.SHP.3.3"));
+    return (manager->CreateConnection (L"OSGeo.SHP"));
 }
 
 
