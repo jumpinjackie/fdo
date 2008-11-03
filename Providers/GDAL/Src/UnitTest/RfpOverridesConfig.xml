@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<SchemaMapping provider="OSGeo.Gdal.3.3" name="photos" xmlns="http://fdogrfp.osgeo.org/schemas">
+<SchemaMapping provider="OSGeo.Gdal.3.4" name="photos" xmlns="http://fdogrfp.osgeo.org/schemas">
 	<complexType name="PhotoType">
 		<RasterDefinition name="photos">
 			<Location name="../../TestData/area1">

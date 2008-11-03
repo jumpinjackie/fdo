@@ -35,11 +35,11 @@ namespace FdoGrfpGlobals
     static double DefaultSpatialContextXYTolerance		= 0.001;
     static double DefaultSpatialContextZTolerance		= 0.001;
 
-    static FdoString* GRFPProviderName				    = L"OSGeo.Gdal.3.3";
+    static FdoString* GRFPProviderName				    = L"OSGeo.Gdal.3.4";
     static FdoString* GRFPProviderDisplayName			= L"OSGeo FDO Provider for Raster";
     static FdoString* GRFPProviderDescription			= L"Read access to various raster-based file formats. Supports georeferenced file-based raster images.";
-    static FdoString* GRFPProviderVersion			    = L"3.3.0.0";
-    static FdoString* GRFPFeatureDataObjectsVersion		= L"3.3.0.0";
+    static FdoString* GRFPProviderVersion			    = L"3.4.0.0";
+    static FdoString* GRFPFeatureDataObjectsVersion		= L"3.4.0.0";
 
     static FdoString* DefaultRasterFileLocation			= L"DefaultRasterFileLocation";
 	
