@@ -31,7 +31,7 @@ ArcSDETests::~ArcSDETests(void)
 FdoIConnection* ArcSDETests::GetConnection ()
 {
     FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
-    return (manager->CreateConnection (L"OSGeo.ArcSDE.3.3"));
+    return (manager->CreateConnection (L"OSGeo.ArcSDE"));
 }
 
 void ArcSDETests::fail (FdoException* ge)

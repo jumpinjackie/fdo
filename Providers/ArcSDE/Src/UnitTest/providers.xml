@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <FeatureProviderRegistry>
   <FeatureProvider>
-    <Name>OSGeo.ArcSDE.3.3</Name>
+    <Name>OSGeo.ArcSDE</Name>
     <DisplayName>OSGeo FDO Provider for ArcSDE</DisplayName>
     <Description>FDO Provider for ESRI ArcSDE</Description>
     <IsManaged>False</IsManaged>
