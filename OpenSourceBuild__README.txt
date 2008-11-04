@@ -506,7 +506,7 @@ II. Build Notes
      directory must be set as writeable by the user, otherwise the user 
      will have to log in and build FDO as the ROOT user. This requirement
      is due to the fact that the FDO Libraries will be built and installed 
-     in /usr/local/fdo-3.3.0/lib
+     in /usr/local/fdo-3.4.0/lib
 
   2. Ensure that the following FDO Environment Variables are set as follows:
 
@@ -640,11 +640,11 @@ II. Build Notes
      In order to build the FDO Python Wrappers, build and install the FDO 
      libraries. Once the install is complete, run the 
      [FDO OpenSource]/Fdo/Python/build_linux.sh script. 
-     The Python components will be installed in /usr/local/fdo-3.3.0/lib
+     The Python components will be installed in /usr/local/fdo-3.4.0/lib
 
   9. NOTE: To run the unit test, you must set LD_LIBRARY_PATH as follows:
 
-       export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-3.3.0/lib
+       export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-3.4.0/lib
        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SDEHOME/lib:$FDOTHIRDPARTY/ESRI/ArcSDEClient91/Linux/lib
  
  10. NOTE: Several known problems exist if auto-mounted drives are used as 

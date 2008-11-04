@@ -19,7 +19,7 @@
 
 TYPEACTION=buildinstall
 TYPECONFIGURE=configure
-PREFIXVAL=/usr/local/fdo-3.3.0
+PREFIXVAL=/usr/local/fdo-3.4.0
 
 DEFMODIFY=no
 ALLENABLE=yes
