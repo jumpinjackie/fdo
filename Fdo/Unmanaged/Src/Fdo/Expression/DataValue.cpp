@@ -466,3 +466,7 @@ void FdoDataValue::VldShift( FdoDataValue* origValue, FdoDataValue* newValue, bo
     }
 }
 
+FdoStringP FdoDataValue::DataTypeToString( FdoDataType dataType )
+{
+    return FdoDataTypeMapper::Type2String(dataType);
+}
