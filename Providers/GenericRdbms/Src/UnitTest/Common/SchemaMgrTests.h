@@ -109,6 +109,8 @@ protected:
 
     virtual FdoInt64 GetSrid( int index );
 
+    FdoPtr<FdoIConnection> GetDirectConnection (FdoIConnection *currentConnection);
+
     static FdoString* DB_NAME_SUFFIX;
     static FdoString* DB_NAME_COPY_SUFFIX;
     static FdoString* DB_NAME_FOREIGN_SUFFIX;

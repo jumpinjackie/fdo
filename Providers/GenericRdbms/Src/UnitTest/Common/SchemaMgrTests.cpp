@@ -1404,7 +1404,7 @@ void SchemaMgrTests::testViews ()
             false
         );
         fowner->SetPassword( L"test" );
-        owner->Commit();
+        fowner->Commit();
     
         FdoSmPhTableP tableA = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE1") );
         FdoSmPhColumnP column = tableA->CreateColumnInt32( phMgr->GetDcColumnName(L"ID"), false );
@@ -1421,8 +1421,15 @@ void SchemaMgrTests::testViews ()
         database->Commit();
 
         FdoSmPhGrdOwnerP grdOwner = fowner->SmartCast<FdoSmPhGrdOwner>();
+
 #ifdef RDBI_DEF_ORA
-        grdOwner->ActivateAndExecute( L"grant select on table1 to public" );
+        fdoConn = UnitTestUtil::CreateConnection( false, false, DB_NAME_SUFFIX);
+        FdoPtr<FdoIConnection> directConnection = GetDirectConnection(fdoConn);
+        directConnection->Open();
+        UnitTestUtil::Sql2Db( L"grant select on table1 to public",
+                              directConnection );
+        directConnection->Close();
+        fdoConn->Close();
 #endif
 
         FdoStringP createViewSql = FdoStringP::Format( 
@@ -2188,5 +2195,29 @@ SchemaMgrTests::ExpectedClassGeometricProperty::ExpectedClassGeometricProperty (
 
 SchemaMgrTests::ExpectedClassGeometricProperty::~ExpectedClassGeometricProperty ()
 {
+}
+
+FdoPtr<FdoIConnection> SchemaMgrTests::GetDirectConnection (FdoIConnection *currentConnection)
+{
+    FdoPtr<FdoIConnection> directConnection;
+
+    FdoStringP dataStoreUser = UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX);
+    dataStoreUser = dataStoreUser.Replace(L"_mgr", L"_mgr_f");
+    FdoPtr<FdoIConnectionInfo> connectionInfo = currentConnection->GetConnectionInfo();
+    FdoPtr<FdoIConnectionPropertyDictionary> connectionInfoProperties = connectionInfo->GetConnectionProperties();
+    FdoStringP serviceProperty = connectionInfoProperties->GetProperty(L"service");
+    FdoStringP providerName = connectionInfo->GetProviderName();
+    FdoStringP connectionString = FdoStringP::Format(
+                                        L"service=%ls;username=%ls;password=%ls;datastore=%ls",
+                                        (FdoString *)serviceProperty,
+                                        (FdoString *)dataStoreUser,
+                                        L"test",
+                                        (FdoString *)dataStoreUser);
+
+    FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager();
+    directConnection = manager->CreateConnection(providerName);
+    directConnection->SetConnectionString(connectionString);
+
+    return directConnection;
 }
 

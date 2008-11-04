@@ -503,8 +503,15 @@ void FdoApplySchemaTest::TestOverrides ()
 		}
 
 #ifdef RDBI_DEF_ORA
-		// grant access to foreign datastore.
-		UnitTestUtil::GrantDatastore( connection, mgr, L"select", UnitTestUtil::GetEnviron("datastore", DB_NAME_FOREIGN_SUFFIX) );
+		// For the test it is necessary to execute the following grant:
+        //  grant select on "<db_prefix>_APPLY_OVERRIDE"."FNESTED_DA" to <db_prefix>_apply_foreign
+        // For this to work, it is necessary to connect to the data store "<db_prefix>_APPLY_OVERRIDE"
+        // directly and execute the statement. Afterwards the connection must be revoked to the 
+        // current FDO user again.
+        FdoPtr<FdoIConnection> directConnection = GetDirectConnection(connection);
+        directConnection->Open();
+		UnitTestUtil::GrantDatastore( directConnection, mgr, L"select", UnitTestUtil::GetEnviron("datastore", DB_NAME_FOREIGN_SUFFIX) );
+        directConnection->Close();
 #endif
 
         owner = ph->GetOwner();
@@ -534,13 +541,16 @@ void FdoApplySchemaTest::TestOverrides ()
 #endif
 
 #ifdef RDBI_DEF_ORA
+        directConnection = GetDirectConnection(connection);
+        directConnection->Open();
+
         UnitTestUtil::Sql2Db( 
             FdoStringP::Format( 
                         L"grant select on %ls.storage to %ls",
                         (FdoString*) UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX),
                         (FdoString*) UnitTestUtil::GetEnviron("datastore", DB_NAME_FOREIGN_SUFFIX)
                     ),
-                    connection
+                    directConnection
                 );
 
         UnitTestUtil::Sql2Db( 
@@ -549,8 +559,9 @@ void FdoApplySchemaTest::TestOverrides ()
                         (FdoString*) UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX),
                         (FdoString*) UnitTestUtil::GetEnviron("datastore", DB_NAME_FOREIGN_SUFFIX)
                     ),
-                    connection
+                    directConnection
                 );
+        directConnection->Close();
 #endif
 
         table = owner->CreateTable( ph->GetDcDbObjectName(L"Storage_Floor") );
@@ -560,14 +571,18 @@ void FdoApplySchemaTest::TestOverrides ()
         table->Commit();
 
 #ifdef RDBI_DEF_ORA
+        directConnection = GetDirectConnection(connection);
+        directConnection->Open();
+
         UnitTestUtil::Sql2Db( 
             FdoStringP::Format( 
                         L"grant select on %ls.storage_floor to %ls",
                         (FdoString*) UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX),
                         (FdoString*) UnitTestUtil::GetEnviron("datastore", DB_NAME_FOREIGN_SUFFIX)
             ),
-            connection
+            directConnection
         );
+        directConnection->Close();
 #endif
 
         table = owner->CreateTable( ph->GetDcDbObjectName(L"NOFEATID") );
@@ -584,14 +599,18 @@ void FdoApplySchemaTest::TestOverrides ()
         table->Commit();
 
 #ifdef RDBI_DEF_ORA
+        directConnection = GetDirectConnection(connection);
+        directConnection->Open();
+
         UnitTestUtil::Sql2Db( 
             FdoStringP::Format( 
                         L"grant select, insert, update, delete on %ls.nofeatid to %ls",
                         (FdoString*) UnitTestUtil::GetEnviron("datastore", DB_NAME_OVERRIDE_SUFFIX),
                         (FdoString*) UnitTestUtil::GetEnviron("datastore", DB_NAME_FOREIGN_SUFFIX)
             ),
-            connection
+            directConnection
         );
+        directConnection->Close();
 #endif
 
         // Grab schemas and overrides to apply to foreign datastore
@@ -7057,4 +7076,30 @@ FdoStringP FdoApplySchemaTest::GetValueColumnName()
 {
 	return L"Value1";
 }
+
+FdoPtr<FdoIConnection> FdoApplySchemaTest::GetDirectConnection (FdoIConnection *currentConnection)
+{
+    FdoPtr<FdoIConnection> directConnection;
+
+    FdoStringP dataStoreUser = UnitTestUtil::GetEnviron("datastore", DB_NAME_FOREIGN_SUFFIX);
+    dataStoreUser = dataStoreUser.Replace(L"_foreign", L"_override");
+    FdoPtr<FdoIConnectionInfo> connectionInfo = currentConnection->GetConnectionInfo();
+    FdoPtr<FdoIConnectionPropertyDictionary> connectionInfoProperties = connectionInfo->GetConnectionProperties();
+    FdoStringP serviceProperty = connectionInfoProperties->GetProperty(L"service");
+    FdoStringP providerName = connectionInfo->GetProviderName();
+    FdoStringP connectionString = FdoStringP::Format(
+                                        L"service=%ls;username=%ls;password=%ls;datastore=%ls",
+                                        (FdoString *)serviceProperty,
+                                        (FdoString *)dataStoreUser,
+                                        L"test",
+                                        (FdoString *)dataStoreUser);
+
+    FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager();
+    directConnection = manager->CreateConnection(providerName);
+    directConnection->SetConnectionString(connectionString);
+
+    return directConnection;
+}
+
+
 

@@ -234,6 +234,10 @@ protected:
     static FdoString*      LT_NAME;
     static FdoString*      DB_NAME_LT_SUFFIX;
 
+
+private:
+    FdoPtr<FdoIConnection> GetDirectConnection (FdoIConnection *currentConnection);
+
 };
 
 #endif // CPP_UNIT_FDOAPPLYSCHEMATEST_H
