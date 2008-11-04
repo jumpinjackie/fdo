@@ -305,11 +305,11 @@ FdoCompareType FdoInt64Value::DoCompare( FdoDataValue* other )
         if ( compare == FdoCompareType_Equal ) {
             // Convert rounded value back to Int64
 
-            if ( doubleValue > (FdoDouble) LLONG_MAX ) {
+            if ( doubleValue > (FdoDouble) FdoInt64Max ) {
                 // Value rounded above int64 range, so it is less than single value
                 compare = FdoCompareType_Less;
             }
-            else if ( doubleValue < (FdoDouble) LLONG_MIN ) {
+            else if ( doubleValue < (FdoDouble) FdoInt64Min ) {
                 // Value rounded below int64 range, so it is greater than single value
                 compare = FdoCompareType_Greater;
             }
