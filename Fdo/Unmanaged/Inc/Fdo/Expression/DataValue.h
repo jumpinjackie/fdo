@@ -26,6 +26,7 @@
 #include <FdoStd.h>
 #include <Fdo/Expression/LiteralValue.h>
 #include <Fdo/Schema/DataType.h>
+#include <Fdo/Expression/ExpressionException.h>
 
 /// \brief
 /// The FdoDataValue class derives from FdoLiteralValue and represents a literal
