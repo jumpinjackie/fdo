@@ -209,7 +209,7 @@ protected:
                     FdoException::NLSGetMessage(
                         FDO_NLSID(EXPRESSION_22_INCOMPATIBLEDATATYPES),
                         this->ToString(),
-                        DataTypeToString(GetDataType()),
+                        (FdoString *) DataTypeToString(GetDataType()),
                         sTO
                     )
                 );
