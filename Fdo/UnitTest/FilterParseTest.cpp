@@ -247,7 +247,7 @@ void FilterParseTest::testBoundaryValues()
 
         FdoPtr<FdoValueExpressionCollection> expressions = FdoValueExpressionCollection::Create();
 
-        expressions->Add( FdoByteValue::Create(0) );
+        expressions->Add( FdoByteValue::Create((FdoByte) 0) );
         expressions->Add( FdoByteValue::Create(UCHAR_MAX) );
         expressions->Add( FdoInt16Value::Create(SHRT_MIN) );
         expressions->Add( FdoInt16Value::Create(SHRT_MAX) );

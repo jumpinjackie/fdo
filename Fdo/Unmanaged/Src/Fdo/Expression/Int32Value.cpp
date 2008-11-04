@@ -18,8 +18,10 @@
 #include <Fdo/Expression/Int32Value.h>
 #include <Fdo/Expression/ExpressionException.h>
 #include <Fdo/Expression/IExpressionProcessor.h>
+#include "../Schema/DataTypeMapper.h"
 #include "StringUtility.h"
 
+#include <math.h>
 #include <time.h>
 
 // Constructs a default instance of a DataValue with data type string and a
@@ -117,25 +119,136 @@ FdoString* FdoInt32Value::ToString()
 
 FdoInt32Value* FdoInt32Value::Create(
     FdoDataValue* src, 
-    FdoBoolean truncate, 
-    FdoBoolean nullIfIncompatible
+    FdoBoolean nullIfIncompatible,
+    FdoBoolean shift, 
+    FdoBoolean truncate
 )
 {
     FdoInt32Value* ret = NULL;
 
-    switch ( src->GetDataType() ) {
-    case FdoDataType_Byte:
-        ret = FdoInt32Value::Create( (FdoInt32)(static_cast<FdoByteValue*>(src)->GetByte()) );
-        break;
+    if ( !src->IsNull() ) 
+    {
+        switch ( src->GetDataType() ) 
+        {
+        case FdoDataType_Boolean:
+            // Convert to numeric
+            ret = FdoInt32Value::Create( static_cast<FdoBooleanValue*>(src)->GetBoolean() ? 1 : 0 );
+            break;
 
-    case FdoDataType_Int16:
-        ret = FdoInt32Value::Create( (FdoInt32)(static_cast<FdoInt16Value*>(src)->GetInt16()) );
-        break;
+        case FdoDataType_Byte:
+            // copy without truncation or shifting
+            ret = FdoInt32Value::Create( (FdoInt32)(static_cast<FdoByteValue*>(src)->GetByte()) );
+            break;
 
-    case FdoDataType_Int32:
-        ret = FdoInt32Value::Create( static_cast<FdoInt32Value*>(src)->GetInt32() );
-        break;
+        case FdoDataType_Decimal:
+            // Copy with possible truncation and rounding
+            {
+                FdoDecimalValue* src2 = static_cast<FdoDecimalValue*>(src);
+
+                ret = Convert<FdoDecimalValue, FdoInt32Value, FdoDouble, FdoInt32>(
+                    src2,
+                    src2->GetDecimal(), 
+                    LONG_MIN, 
+                    LONG_MAX, 
+                    0.5,
+                    nullIfIncompatible, 
+                    shift,
+                    truncate, 
+                    FdoDataTypeMapper::Type2String(FdoDataType_Int32)
+                );
+            }
+            break;
+
+        case FdoDataType_Double:
+            // Copy with possible truncation and rounding
+            {
+                FdoDoubleValue* src2 = static_cast<FdoDoubleValue*>(src);
+
+                ret = Convert<FdoDoubleValue, FdoInt32Value, FdoDouble, FdoInt32>(
+                    src2,
+                    src2->GetDouble(), 
+                    LONG_MIN, 
+                    LONG_MAX,
+                    0.5,
+                    nullIfIncompatible, 
+                    shift,
+                    truncate, 
+                    FdoDataTypeMapper::Type2String(FdoDataType_Int32)
+                );
+            }
+            break;
+
+        case FdoDataType_Int16:
+            // copy without truncation or shifting
+            ret = FdoInt32Value::Create( (FdoInt32)(static_cast<FdoInt16Value*>(src)->GetInt16()) );
+            break;
+
+        case FdoDataType_Int32:
+            // Same types, simple copy.
+            ret = FdoInt32Value::Create( static_cast<FdoInt32Value*>(src)->GetInt32() );
+            break;
+
+        case FdoDataType_Int64:
+            // Copy with possible truncation
+            ret = Convert<FdoInt32Value, FdoInt64, FdoInt32>( 
+                static_cast<FdoInt64Value*>(src)->GetInt64(), 
+                LONG_MIN, 
+                LONG_MAX, 
+                nullIfIncompatible, 
+                truncate, 
+                FdoDataTypeMapper::Type2String(FdoDataType_Int32)
+            );
+            break;
+
+        case FdoDataType_Single:
+            // Copy with possible truncation and rounding
+            {
+                FdoSingleValue* src2 = static_cast<FdoSingleValue*>(src);
+
+                ret = Convert<FdoSingleValue, FdoInt32Value, FdoFloat, FdoInt32>(
+                    src2,
+                    src2->GetSingle(), 
+                    LONG_MIN, 
+                    LONG_MAX,
+                    (FdoFloat) 0.5,
+                    nullIfIncompatible, 
+                    shift,
+                    truncate, 
+                    FdoDataTypeMapper::Type2String(FdoDataType_Int32)
+                );
+            }
+            break;
+
+        case FdoDataType_String:
+            // convert to numeric with possible truncation and rounding.
+            ret = static_cast<FdoStringValue*>(src)->ConvertFrom<FdoInt32Value>
+            (
+                nullIfIncompatible, 
+                shift,
+                truncate, 
+                FdoDataTypeMapper::Type2String(FdoDataType_Int32)
+            );
+            break;
+
+        default:
+            // src and dest types incompatible
+            if ( !nullIfIncompatible )
+                throw FdoExpressionException::Create(
+                    FdoException::NLSGetMessage(
+                        FDO_NLSID(EXPRESSION_22_INCOMPATIBLEDATATYPES),
+                        src->ToString(),
+                        (FdoString*) FdoDataTypeMapper::Type2String(src->GetDataType()),
+                        (FdoString*) FdoDataTypeMapper::Type2String(FdoDataType_Int32)
+                    )
+                );
+            // else return null value 
+            break;
+        }
     }
+
+    if ( !ret ) 
+        // return null data value instead of NULL pointer.
+        ret = FdoInt32Value::Create();
 
     return ret;
 }

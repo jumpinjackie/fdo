@@ -18,6 +18,7 @@
 #include <Fdo/Expression/DateTimeValue.h>
 #include <Fdo/Expression/ExpressionException.h>
 #include <Fdo/Expression/IExpressionProcessor.h>
+#include "../Schema/DataTypeMapper.h"
 #include "StringUtility.h"
 
 #include <time.h>
@@ -139,6 +140,63 @@ FdoString* FdoDateTimeValue::ToString()
     m_toString = FdoStringUtility::MakeString(szBuf);
     return m_toString;
 }
+
+FdoDateTimeValue* FdoDateTimeValue::Create(
+    FdoDataValue* src, 
+    FdoBoolean nullIfIncompatible,
+    FdoBoolean shift, 
+    FdoBoolean truncate
+)
+{
+    FdoDateTimeValue* ret = NULL;
+
+    if ( !src->IsNull() ) 
+    {
+        switch ( src->GetDataType() ) 
+        {
+        case FdoDataType_DateTime:
+            // Same types, simple copy.
+            ret = FdoDateTimeValue::Create( static_cast<FdoDateTimeValue*>(src)->GetDateTime() );
+            break;
+
+        case FdoDataType_String:
+            // Parse string into DateTime
+            {
+                FdoDataValue* dv = static_cast<FdoStringValue*>(src)->Parse();
+
+                if ( dv->GetDataType() == FdoDataType_DateTime )
+                    ret = static_cast<FdoDateTimeValue*>(dv);
+                else
+                    FDO_SAFE_RELEASE(dv);
+            }
+            // no break, falls through to default case to handle null dv
+            // as incompatible types case.
+        default:
+            if ( !ret ) 
+            {
+                // src and dest types incompatible
+                if ( !nullIfIncompatible )
+                    throw FdoExpressionException::Create(
+                        FdoException::NLSGetMessage(
+                            FDO_NLSID(EXPRESSION_22_INCOMPATIBLEDATATYPES),
+                            src->ToString(),
+                            (FdoString*) FdoDataTypeMapper::Type2String(src->GetDataType()),
+                            (FdoString*) FdoDataTypeMapper::Type2String(FdoDataType_DateTime)
+                        )
+                    );
+                // else return null value 
+            }
+            break;
+        }
+   }
+
+    if ( !ret ) 
+        // return null data value instead of NULL pointer.
+        ret = FdoDateTimeValue::Create();
+
+    return ret;
+}
+
 
 FdoCompareType FdoDateTimeValue::DoCompare( FdoDataValue* other )
 {

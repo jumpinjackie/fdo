@@ -18,6 +18,7 @@
 #include <Fdo/Expression/BooleanValue.h>
 #include <Fdo/Expression/ExpressionException.h>
 #include <Fdo/Expression/IExpressionProcessor.h>
+#include "../Schema/DataTypeMapper.h"
 #include "StringUtility.h"
 
 #include <time.h>
@@ -107,5 +108,126 @@ FdoString* FdoBooleanValue::ToString()
     m_toString = FdoStringUtility::MakeString(GetBoolean() ? L"TRUE" : L"FALSE");
     return m_toString;
 
+}
+
+FdoBooleanValue* FdoBooleanValue::Create(
+    FdoDataValue* src, 
+    FdoBoolean nullIfIncompatible,
+    FdoBoolean shift, 
+    FdoBoolean truncate
+)
+{
+    FdoBooleanValue* ret = NULL;
+
+    if ( !src->IsNull() ) 
+    {
+        switch ( src->GetDataType() ) {
+        case FdoDataType_Boolean:
+            // Same types, simple copy.
+            ret = FdoBooleanValue::Create( static_cast<FdoBooleanValue*>(src)->GetBoolean() );
+            break;
+
+        case FdoDataType_Byte:
+            // Copy with possible truncation
+            ret = FdoBooleanValue::Convert<FdoByte>(
+                src,
+                static_cast<FdoByteValue*>(src)->GetByte(), 
+                nullIfIncompatible, 
+                truncate
+            );
+            break;
+
+        case FdoDataType_Decimal:
+            // Copy with possible truncation
+            ret = FdoBooleanValue::Convert<FdoDouble>(
+                src,
+                static_cast<FdoDecimalValue*>(src)->GetDecimal(), 
+                nullIfIncompatible, 
+                truncate
+            );
+            break;
+
+        case FdoDataType_Double:
+            // Copy with possible truncation
+            ret = FdoBooleanValue::Convert<FdoDouble>(
+                src,
+                static_cast<FdoDoubleValue*>(src)->GetDouble(), 
+                nullIfIncompatible, 
+                truncate
+            );
+            break;
+
+        case FdoDataType_Int16:
+            // Copy with possible truncation
+            ret = FdoBooleanValue::Convert<FdoInt16>(
+                src,
+                static_cast<FdoInt16Value*>(src)->GetInt16(), 
+                nullIfIncompatible, 
+                truncate
+            );
+            break;
+
+        case FdoDataType_Int32:
+            // Copy with possible truncation
+            ret = FdoBooleanValue::Convert<FdoInt32>(
+                src,
+                static_cast<FdoInt32Value*>(src)->GetInt32(), 
+                nullIfIncompatible, 
+                truncate
+            );
+            break;
+
+        case FdoDataType_Int64:
+            // Copy with possible truncation
+            ret = FdoBooleanValue::Convert<FdoInt64>(
+                src,
+                static_cast<FdoInt64Value*>(src)->GetInt64(), 
+                nullIfIncompatible, 
+                truncate
+            );
+            break;
+
+        case FdoDataType_Single:
+            // Copy with possible truncation
+            ret = FdoBooleanValue::Convert<FdoFloat>(
+                src,
+                static_cast<FdoSingleValue*>(src)->GetSingle(), 
+                nullIfIncompatible, 
+                truncate
+            );
+            break;
+
+        case FdoDataType_String:
+            // Convert with possible truncation
+            ret = static_cast<FdoStringValue*>(src)->ConvertFrom<FdoBooleanValue>
+            (
+                nullIfIncompatible, 
+                shift,
+                truncate, 
+                FdoDataTypeMapper::Type2String(FdoDataType_Boolean)
+            );
+            break;
+
+        default:
+            // src and dest types incompatible
+            if ( !nullIfIncompatible )
+                throw FdoExpressionException::Create(
+                    FdoException::NLSGetMessage(
+                        FDO_NLSID(EXPRESSION_22_INCOMPATIBLEDATATYPES),
+                        src->ToString(),
+                        (FdoString*) FdoDataTypeMapper::Type2String(src->GetDataType()),
+                        (FdoString*) FdoDataTypeMapper::Type2String(FdoDataType_Boolean)
+                    )
+                );
+            // else return null value 
+            break;
+        }
+    }
+
+    if ( !ret )
+        // return null data value instead of NULL pointer.
+        ret = FdoBooleanValue::Create();
+
+    return ret;
 }
 

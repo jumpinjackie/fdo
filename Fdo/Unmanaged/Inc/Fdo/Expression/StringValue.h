@@ -31,6 +31,16 @@
 /// The FdoStringValue class derives from FdoDataValue and represents a literal string.
 class FdoStringValue : public FdoDataValue
 {
+    friend class FdoBooleanValue;
+    friend class FdoByteValue;
+    friend class FdoDateTimeValue;
+    friend class FdoDecimalValue;
+    friend class FdoDoubleValue;
+    friend class FdoInt16Value;
+    friend class FdoInt32Value;
+    friend class FdoInt64Value;
+    friend class FdoSingleValue;
+    friend class FdoDataValue;
 /// \cond DOXYGEN-IGNORE
 protected:
     /// \brief
@@ -142,8 +152,80 @@ public:
     }
 
 protected:
+    /// \brief
+    /// Constructs an instance of an FdoStringValue from another FdoDataValue.
+    /// 
+    /// \param src 
+    /// Input the other FdoDataValue. Must be of one of the following types:
+    ///     FdoDataType_Boolean
+    ///     FdoDataType_Byte
+    ///     FdoDataType_Decimal
+    ///     FdoDataType_Double
+    ///     FdoDataType_Int16
+    ///     FdoDataType_Int32
+    ///     FdoDataType_Int64
+    ///     FdoDataType_Single
+    ///     FdoDataType_String
+    ///
+    /// In all other cases, the src type is considered incompatible with this type.
+    /// \param nullIfIncompatible 
+    /// Input will determine what to do if the source value cannot be converted to 
+    /// this type:
+    ///     true - return NULL.
+    ///     false - throw an exception
+    /// 
+    /// \param shift 
+    /// Input determines whether FdoFloat or FdoDouble values are allowed to shift 
+    /// when conversion to strings causes loss of precision.
+    ///     true - convert values allowing them to shift.
+    ///     false - behaviour depends on nullIfIncompatible:
+    ///         true - return NULL.
+    ///         false - throw an exception
+    /// \param truncate 
+    /// Input for future use. There are currently no possible out of range
+    /// src values.
+    /// \return
+    /// Returns an FdoStringValue, whose value is converted from the src value. 
+    /// If src is an FdoStringValue then its value is simply copied to the 
+    /// returned FdoStringValue. Otherwise, the value is converted by calling
+    /// src->ToString().
+    ///
+    static FdoStringValue* Create(
+        FdoDataValue* src, 
+        FdoBoolean nullIfIncompatible = false,
+        FdoBoolean shift = true, 
+        FdoBoolean truncate = false 
+    );
+
+    template <class C> C* ConvertFrom( bool nullIfIncompatible, bool shift, bool truncate, FdoString* sTO )
+    {
+        C*   ret = NULL;
+        FdoPtr<FdoDataValue> parsed = Parse();
+        
+        if ( (parsed == NULL) || (parsed->IsNull()) || (parsed->GetDataType() == FdoDataType_String) ) 
+        {
+            if ( !nullIfIncompatible )
+                throw FdoExpressionException::Create(
+                    FdoException::NLSGetMessage(
+                        FDO_NLSID(EXPRESSION_22_INCOMPATIBLEDATATYPES),
+                        this->ToString(),
+                        FdoDataTypeMapper::Type2String(GetDataType()),
+                        sTO
+                    )
+                );
+        }
+        else
+        {
+            ret = C::Create(parsed, nullIfIncompatible, shift, truncate);
+        };
+
+        return ret;
+    };
+
     // See FdoDataValue::DoCompare()
     virtual FdoCompareType DoCompare( FdoDataValue* other );
+
+    FdoDataValue* Parse();
 
     wchar_t*    m_data;
     size_t      m_allocatedSize;

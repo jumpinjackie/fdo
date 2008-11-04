@@ -18,6 +18,7 @@
 #include <Fdo/Expression/Int16Value.h>
 #include <Fdo/Expression/ExpressionException.h>
 #include <Fdo/Expression/IExpressionProcessor.h>
+#include "../Schema/DataTypeMapper.h"
 #include "StringUtility.h"
 
 #include <time.h>
@@ -118,21 +119,142 @@ FdoString* FdoInt16Value::ToString()
 
 FdoInt16Value* FdoInt16Value::Create(
     FdoDataValue* src, 
-    FdoBoolean truncate, 
-    FdoBoolean nullIfIncompatible
+    FdoBoolean nullIfIncompatible,
+    FdoBoolean shift, 
+    FdoBoolean truncate
 )
 {
     FdoInt16Value* ret = NULL;
 
-    switch ( src->GetDataType() ) {
-    case FdoDataType_Byte:
-        ret = FdoInt16Value::Create( (FdoInt16)(static_cast<FdoByteValue*>(src)->GetByte()) );
-        break;
+    if ( !src->IsNull() ) 
+    {
+        switch ( src->GetDataType() ) {
+        case FdoDataType_Boolean:
+            // Convert to numeric
+            ret = FdoInt16Value::Create( static_cast<FdoBooleanValue*>(src)->GetBoolean() ? 1 : 0 );
+            break;
 
-    case FdoDataType_Int16:
-        ret = FdoInt16Value::Create( static_cast<FdoInt16Value*>(src)->GetInt16() );
-        break;
+        case FdoDataType_Byte:
+            // copy without truncation or shifting
+            ret = FdoInt16Value::Create( (FdoInt16)(static_cast<FdoByteValue*>(src)->GetByte()) );
+            break;
+
+        case FdoDataType_Decimal:
+            // Copy with possible truncation and rounding
+            {
+                FdoDecimalValue* src2 = static_cast<FdoDecimalValue*>(src);
+
+                ret = Convert<FdoDecimalValue, FdoInt16Value, FdoDouble, FdoInt16>(
+                    src2,
+                    src2->GetDecimal(), 
+                    SHRT_MIN, 
+                    SHRT_MAX, 
+                    0.5,
+                    nullIfIncompatible, 
+                    shift,
+                    truncate, 
+                    FdoDataTypeMapper::Type2String(FdoDataType_Int16)
+                );
+            }
+            break;
+
+        case FdoDataType_Double:
+            // Copy with possible truncation and rounding
+            {
+                FdoDoubleValue* src2 = static_cast<FdoDoubleValue*>(src);
+
+                ret = Convert<FdoDoubleValue, FdoInt16Value, FdoDouble, FdoInt16>(
+                    src2,
+                    src2->GetDouble(), 
+                    SHRT_MIN, 
+                    SHRT_MAX, 
+                    0.5,
+                    nullIfIncompatible, 
+                    shift,
+                    truncate, 
+                    FdoDataTypeMapper::Type2String(FdoDataType_Int16)
+                );
+            }
+            break;
+
+        case FdoDataType_Int16:
+            // Same types, simple copy.
+            ret = FdoInt16Value::Create( static_cast<FdoInt16Value*>(src)->GetInt16() );
+            break;
+
+        case FdoDataType_Int32:
+            // Copy with possible truncation
+            ret = Convert<FdoInt16Value, FdoInt32, FdoInt16>( 
+                static_cast<FdoInt32Value*>(src)->GetInt32(), 
+                SHRT_MIN, 
+                SHRT_MAX, 
+                nullIfIncompatible, 
+                truncate, 
+                FdoDataTypeMapper::Type2String(FdoDataType_Int16)
+            );
+            break;
+
+        case FdoDataType_Int64:
+            // Copy with possible truncation
+            ret = Convert<FdoInt16Value, FdoInt64, FdoInt16>( 
+                static_cast<FdoInt64Value*>(src)->GetInt64(), 
+                SHRT_MIN, 
+                SHRT_MAX, 
+                nullIfIncompatible, 
+                truncate, 
+                FdoDataTypeMapper::Type2String(FdoDataType_Int16)
+            );
+            break;
+
+        case FdoDataType_Single:
+            // Copy with possible truncation and rounding
+            {
+                FdoSingleValue* src2 = static_cast<FdoSingleValue*>(src);
+
+                ret = Convert<FdoSingleValue, FdoInt16Value, FdoFloat, FdoInt16>(
+                    src2,
+                    src2->GetSingle(), 
+                    SHRT_MIN, 
+                    SHRT_MAX, 
+                    (FdoFloat) 0.5,
+                    nullIfIncompatible, 
+                    shift,
+                    truncate, 
+                    FdoDataTypeMapper::Type2String(FdoDataType_Int16)
+                );
+            }
+            break;
+
+        case FdoDataType_String:
+            // convert to numeric with possible truncation and rounding.
+            ret = static_cast<FdoStringValue*>(src)->ConvertFrom<FdoInt16Value>
+            (
+                nullIfIncompatible, 
+                shift,
+                truncate, 
+                FdoDataTypeMapper::Type2String(FdoDataType_Int16)
+            );
+            break;
+
+        default:
+            // src and dest types incompatible
+            if ( !nullIfIncompatible )
+                throw FdoExpressionException::Create(
+                    FdoException::NLSGetMessage(
+                        FDO_NLSID(EXPRESSION_22_INCOMPATIBLEDATATYPES),
+                        src->ToString(),
+                        (FdoString*) FdoDataTypeMapper::Type2String(src->GetDataType()),
+                        (FdoString*) FdoDataTypeMapper::Type2String(FdoDataType_Int16)
+                    )
+                );
+            // else return null value 
+            break;
+        }
     }
+
+    if ( !ret ) 
+        // return null data value instead of NULL pointer.
+        ret = FdoInt16Value::Create();
 
     return ret;
 }

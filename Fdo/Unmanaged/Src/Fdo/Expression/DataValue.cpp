@@ -18,6 +18,7 @@
 #include <Fdo/Expression/DataValue.h>
 #include <Fdo/Expression/ExpressionException.h>
 #include <Fdo/Expression/IExpressionProcessor.h>
+#include "../Schema/DataTypeMapper.h"
 #include "StringUtility.h"
 
 #include <time.h>
@@ -149,6 +150,74 @@ FdoDataValue* FdoDataValue::Create(FdoString* value, FdoDataType dataType)
 
     return (FdoDataValue*) NULL; //to suppress compiler warning.
 }
+
+FdoDataValue* FdoDataValue::Create( FdoDouble value )
+{
+	return FdoDoubleValue::Create(value);
+}
+
+FdoDataValue* FdoDataValue::Create(
+    FdoDataType dataType,
+    FdoDataValue* src, 
+    FdoBoolean nullIfIncompatible,
+    FdoBoolean shift,
+    FdoBoolean truncate
+)
+{
+    FdoDataValue* ret = NULL;
+
+    if ( src ) 
+    {
+        switch ( dataType ) 
+        {
+        case FdoDataType_Boolean:
+            ret = FdoBooleanValue::Create( src, nullIfIncompatible, shift, truncate );
+            break;
+
+        case FdoDataType_Byte:
+            ret = FdoByteValue::Create( src, nullIfIncompatible, shift, truncate );
+            break;
+
+        case FdoDataType_DateTime:
+            ret = FdoDateTimeValue::Create( src, nullIfIncompatible, shift, truncate );
+            break;
+
+        case FdoDataType_Decimal:
+            ret = FdoDecimalValue::Create( src, nullIfIncompatible, shift, truncate );
+            break;
+
+        case FdoDataType_Double:
+            ret = FdoDoubleValue::Create( src, nullIfIncompatible, shift, truncate );
+            break;
+
+        case FdoDataType_Int16:
+            ret = FdoInt16Value::Create( src, nullIfIncompatible, shift, truncate );
+            break;
+
+        case FdoDataType_Int32:
+            ret = FdoInt32Value::Create( src, nullIfIncompatible, shift, truncate );
+            break;
+
+        case FdoDataType_Int64:
+            ret = FdoInt64Value::Create( src, nullIfIncompatible, shift, truncate );
+            break;
+
+        case FdoDataType_Single:
+            ret = FdoSingleValue::Create( src, nullIfIncompatible, shift, truncate );
+            break;
+
+        case FdoDataType_String:
+            ret = FdoStringValue::Create( src, nullIfIncompatible, shift, truncate );
+            break;
+        }
+    }
+
+    if ( !ret ) 
+        ret = FdoDataValue::Create(dataType);
+
+    return ret;
+}
+
 
 FdoString* FdoDataValue::GetXmlValue()
 {
@@ -376,3 +445,24 @@ FdoLiteralValueType FdoDataValue::GetLiteralValueType() const
 {
     return FdoLiteralValueType_Data;
 }
+
+void FdoDataValue::VldShift( FdoDataValue* origValue, FdoDataValue* newValue, bool nullIfIncompatible, bool shift )
+{
+    if ( !shift && !newValue->IsNull() ) 
+    {
+        if ( origValue->Compare(newValue) != FdoCompareType_Equal )
+        {
+            newValue->SetNull();
+            
+            if ( !nullIfIncompatible)
+                throw FdoExpressionException::Create(
+                    FdoException::NLSGetMessage(
+                        FDO_NLSID(EXPRESSION_23_VALUESHIFTED),
+                        origValue->ToString(),
+                        (FdoString*) FdoDataTypeMapper::Type2String(newValue->GetDataType())
+                    )
+                );
+        }
+    }
+}
+

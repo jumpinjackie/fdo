@@ -18,6 +18,7 @@
 #include <Fdo/Expression/StringValue.h>
 #include <Fdo/Expression/ExpressionException.h>
 #include <Fdo/Expression/IExpressionProcessor.h>
+#include "../Schema/DataTypeMapper.h"
 #include "StringUtility.h"
 
 #include <time.h>
@@ -146,6 +147,88 @@ FdoString* FdoStringValue::ToString()
     return m_toString;
 }
 
+FdoStringValue* FdoStringValue::Create(
+    FdoDataValue* src, 
+    FdoBoolean nullIfIncompatible,
+    FdoBoolean shift, 
+    FdoBoolean truncate
+)
+{
+    FdoStringValue* ret = NULL;
+
+    if ( !src->IsNull() ) 
+    {
+        switch ( src->GetDataType() ) 
+        {
+        case FdoDataType_Decimal:
+            // Convert to string with possible shifting
+            ret = FdoStringValue::Create( src->ToString() );
+            if ( !shift ) 
+            {
+                FdoPtr<FdoDecimalValue> check = FdoDecimalValue::Create( ret );
+                VldShift(src, check, nullIfIncompatible, shift );
+                if ( check->IsNull() )
+                    ret->SetNull();
+            }
+            break;
+
+        case FdoDataType_Double:
+            // Convert to string with possible shifting
+            ret = FdoStringValue::Create( src->ToString() );
+            if ( !shift ) 
+            {
+                FdoPtr<FdoDoubleValue> check = FdoDoubleValue::Create( ret );
+                VldShift(src, check, nullIfIncompatible, shift );
+                if ( check->IsNull() )
+                    ret->SetNull();
+            }
+            break;
+
+        case FdoDataType_Single:
+            // Convert to string with possible shifting
+            ret = FdoStringValue::Create( src->ToString() );
+            if ( !shift ) 
+            {
+                FdoPtr<FdoSingleValue> check = FdoSingleValue::Create( ret );
+                VldShift(src, check, nullIfIncompatible, shift );
+                if ( check->IsNull() )
+                    ret->SetNull();
+            }
+            break;
+
+        case FdoDataType_String:
+            // same types, simple copy
+            ret = FdoStringValue::Create( (static_cast<FdoStringValue*>(src)->GetString()) );
+            break;
+
+        case FdoDataType_BLOB:
+        case FdoDataType_CLOB:
+            // FDO has yet to define string representation for BLOB and CLOB
+            if ( !nullIfIncompatible )
+                throw FdoExpressionException::Create(
+                    FdoException::NLSGetMessage(
+                        FDO_NLSID(EXPRESSION_22_INCOMPATIBLEDATATYPES),
+                        src->ToString(),
+                        (FdoString*) FdoDataTypeMapper::Type2String(src->GetDataType()),
+                        (FdoString*) FdoDataTypeMapper::Type2String(FdoDataType_String)
+                    )
+                );
+            // else return null value 
+            break;
+
+        default:
+            // For other types, just call ToString()
+            ret = FdoStringValue::Create( src->ToString() );
+            break;
+        }
+    }
+
+    if ( !ret ) 
+        ret = FdoStringValue::Create();
+
+    return ret;
+}
+
 FdoCompareType FdoStringValue::DoCompare( FdoDataValue* other )
 {
     FdoCompareType compare = FdoCompareType_Undefined;
@@ -160,3 +243,20 @@ FdoCompareType FdoStringValue::DoCompare( FdoDataValue* other )
 
     return compare;
 }
+
+FdoDataValue* FdoStringValue::Parse()
+{
+    FdoDataValue* ret = NULL;
+        
+    try 
+    {
+        FdoPtr<FdoExpression> expr = FdoExpression::Parse( GetString() );
+        
+        ret = FDO_SAFE_ADDREF(dynamic_cast<FdoDataValue*>(expr.p));
+    }
+    catch ( FdoException* /*ex*/ ) {
+    }
+
+    return ret;
+}
+

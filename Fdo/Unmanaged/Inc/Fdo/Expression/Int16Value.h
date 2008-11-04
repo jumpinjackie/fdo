@@ -32,7 +32,9 @@
 class FdoInt16Value : public FdoDataValue
 {
 /// \cond DOXYGEN-IGNORE
+    friend class FdoDataValue;
     friend class FdoByteValue;
+    friend class FdoStringValue;
 protected:
     /// \brief
     /// Constructs a default instance of an FdoInt16Value with a
@@ -148,26 +150,48 @@ protected:
     /// 
     /// \param src 
     /// Input the other FdoDataValue. Must be of one of the following types:
+    ///     FdoDataType_Boolean
     ///     FdoDataType_Byte
+    ///     FdoDataType_Decimal
+    ///     FdoDataType_Double
     ///     FdoDataType_Int16
-    /// \param truncate 
-    /// Input in the future, will determine what to do if source value does not fit in the int16
-    /// number range:
-    ///     true - truncate the value to fit.
-    ///     false - throw an exception
+    ///     FdoDataType_Int32
+    ///     FdoDataType_Int64
+    ///     FdoDataType_Single
+    ///     FdoDataType_String
+    ///         - value must be numeric.
+    ///
+    /// In all other cases, the src type is considered incompatible with this type.
     /// \param nullIfIncompatible 
-    /// Input in the future, will determine what to do if source value type is not compatible with the 
-    /// FDO int16 type:
+    /// Input will determine what to do if the source value cannot be converted to 
+    /// this type:
     ///     true - return NULL.
     ///     false - throw an exception
     /// 
+    /// \param shift 
+    /// Input determines whether non integer values can be converted:
+    ///     true - convert values by rounding them.
+    ///     false - behaviour depends on nullIfIncompatible:
+    ///         true - return NULL.
+    ///         false - throw an exception
+    /// \param truncate 
+    /// Input determines what to do if source value is outside the FdoInt16 range
+    //  ( -32768 to 32767 ):
+    ///     true - convert values less than -32768 to -32768, convert values greater than 32767 to 32767
+    ///     false - behaviour depends on nullIfIncompatible:
+    ///         true - return NULL.
+    ///         false - throw an exception
     /// \return
-    /// Returns an FdoInt16Value
-    /// 
+    /// Returns an FdoInt16Value, whose value is converted from the src value. 
+    /// If src is an FdoBooleanValue:
+    ///     false is converted to 0
+    ///     true is converted to 1
+    ///
     static FdoInt16Value* Create(
         FdoDataValue* src, 
-        FdoBoolean truncate = false, 
-        FdoBoolean nullIfIncompatible = false
+        FdoBoolean nullIfIncompatible = false,
+        FdoBoolean shift = true, 
+        FdoBoolean truncate = false 
     );
 
     // See FdoDataValue::DoCompare()
