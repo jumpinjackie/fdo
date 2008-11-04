@@ -25,6 +25,8 @@
 
 #ifndef _WIN32
 #include <stdint.h>
+#else
+#include <limits.h>
 #endif
 
 /// \ingroup (typedefs)
