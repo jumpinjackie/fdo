@@ -238,10 +238,10 @@ if test "$FDOCOREENABLECHK" == yes; then
    svn export "$FDOSVNROOT"/Utilities "$FDOTARZIPFOLDER"/Utilities --force
    svn export "$FDOSVNROOT"/Thirdparty "$FDOTARZIPFOLDER"/Thirdparty --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
-   rm -f fdo-3.3.0_"$FDOBUILDNUMBER".tar
-   tar -cf fdo-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
-   rm -f fdo-3.3.0_"$FDOBUILDNUMBER".tar.gz
-   gzip -9 fdo-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -f fdo-3.4.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdo-3.4.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdo-3.4.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdo-3.4.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
 fi
 if test "$SHPENABLECHK" == yes; then
@@ -249,10 +249,10 @@ if test "$SHPENABLECHK" == yes; then
    svn export "$FDOSVNROOT"/Providers/SHP "$FDOTARZIPFOLDER"/Providers/SHP --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
    rm -rf "$FDOTARZIPFOLDER"/Providers/SHP/TestData
-   rm -f fdoshp-3.3.0_"$FDOBUILDNUMBER".tar
-   tar -cf fdoshp-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
-   rm -f fdoshp-3.3.0_"$FDOBUILDNUMBER".tar.gz
-   gzip -9 fdoshp-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -f fdoshp-3.4.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdoshp-3.4.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdoshp-3.4.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdoshp-3.4.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
 fi
 if test "$SDFENABLECHK" == yes; then
@@ -260,30 +260,30 @@ if test "$SDFENABLECHK" == yes; then
    svn export "$FDOSVNROOT"/Providers/SDF "$FDOTARZIPFOLDER"/Providers/SDF --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
    rm -rf "$FDOTARZIPFOLDER"/Providers/SDF/TestData
-   rm -f fdosdf-3.3.0_"$FDOBUILDNUMBER".tar
-   tar -cf fdosdf-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
-   rm -f fdosdf-3.3.0_"$FDOBUILDNUMBER".tar.gz
-   gzip -9 fdosdf-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -f fdosdf-3.4.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdosdf-3.4.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdosdf-3.4.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdosdf-3.4.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
 fi
 if test "$WFSENABLECHK" == yes; then
    mkdir -p "$FDOTARZIPFOLDER"/Providers/WFS
    svn export "$FDOSVNROOT"/Providers/WFS "$FDOTARZIPFOLDER"/Providers/WFS --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
-   rm -f fdowfs-3.3.0_"$FDOBUILDNUMBER".tar
-   tar -cf fdowfs-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
-   rm -f fdowfs-3.3.0_"$FDOBUILDNUMBER".tar.gz
-   gzip -9 fdowfs-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -f fdowfs-3.4.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdowfs-3.4.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdowfs-3.4.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdowfs-3.4.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
 fi
 if test "$WMSENABLECHK" == yes; then
    mkdir -p "$FDOTARZIPFOLDER"/Providers/WMS
    svn export "$FDOSVNROOT"/Providers/WMS "$FDOTARZIPFOLDER"/Providers/WMS --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
-   rm -f fdowms-3.3.0_"$FDOBUILDNUMBER".tar
-   tar -cf fdowms-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
-   rm -f fdowms-3.3.0_"$FDOBUILDNUMBER".tar.gz
-   gzip -9 fdowms-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -f fdowms-3.4.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdowms-3.4.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdowms-3.4.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdowms-3.4.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
 fi
 if test "$ARCENABLECHK" == yes; then
@@ -291,20 +291,20 @@ if test "$ARCENABLECHK" == yes; then
    svn export "$FDOSVNROOT"/Providers/ArcSDE "$FDOTARZIPFOLDER"/Providers/ArcSDE --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
    rm -rf "$FDOTARZIPFOLDER"/Providers/ArcSDE/TestData
-   rm -f fdoarcsde-3.3.0_"$FDOBUILDNUMBER".tar
-   tar -cf fdoarcsde-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
-   rm -f fdoarcsde-3.3.0_"$FDOBUILDNUMBER".tar.gz
-   gzip -9 fdoarcsde-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -f fdoarcsde-3.4.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdoarcsde-3.4.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdoarcsde-3.4.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdoarcsde-3.4.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
 fi
 if test "$RDBMSENABLECHK" == yes; then
    mkdir -p "$FDOTARZIPFOLDER"/Providers/GenericRdbms
    svn export "$FDOSVNROOT"/Providers/GenericRdbms "$FDOTARZIPFOLDER"/Providers/GenericRdbms --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
-   rm -f fdordbms-3.3.0_"$FDOBUILDNUMBER".tar
-   tar -cf fdordbms-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
-   rm -f fdordbms-3.3.0_"$FDOBUILDNUMBER".tar.gz
-   gzip -9 fdordbms-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -f fdordbms-3.4.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdordbms-3.4.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdordbms-3.4.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdordbms-3.4.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
 fi
 if test "$GDALENABLECHK" == yes; then
@@ -312,50 +312,50 @@ if test "$GDALENABLECHK" == yes; then
    svn export "$FDOSVNROOT"/Providers/GDAL "$FDOTARZIPFOLDER"/Providers/GDAL --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
    rm -rf "$FDOTARZIPFOLDER"/Providers/GDAL/TestData
-   rm -f fdogdal-3.3.0_"$FDOBUILDNUMBER".tar
-   tar -cf fdogdal-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
-   rm -f fdogdal-3.3.0_"$FDOBUILDNUMBER".tar.gz
-   gzip -9 fdogdal-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -f fdogdal-3.4.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdogdal-3.4.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdogdal-3.4.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdogdal-3.4.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
 fi
 if test "$KINGORACLEENABLECHK" == yes; then
    mkdir -p "$FDOTARZIPFOLDER"/Providers/KingOracle
    svn export "$FDOSVNROOT"/Providers/KingOracle "$FDOTARZIPFOLDER"/Providers/KingOracle --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
-   rm -f fdokingoracle-3.3.0_"$FDOBUILDNUMBER".tar
-   tar -cf fdokingoracle-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
-   rm -f fdokingoracle-3.3.0_"$FDOBUILDNUMBER".tar.gz
-   gzip -9 fdokingoracle-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -f fdokingoracle-3.4.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdokingoracle-3.4.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdokingoracle-3.4.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdokingoracle-3.4.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
 fi
 if test "$KINGSPATIALENABLECHK" == yes; then
    mkdir -p "$FDOTARZIPFOLDER"/Providers/KingMsSqlSpatial
    svn export "$FDOSVNROOT"/Providers/KingMsSqlSpatial "$FDOTARZIPFOLDER"/Providers/KingMsSqlSpatial --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
-   rm -f fdokingspatial-3.3.0_"$FDOBUILDNUMBER".tar
-   tar -cf fdokingspatial-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
-   rm -f fdokingspatial-3.3.0_"$FDOBUILDNUMBER".tar.gz
-   gzip -9 fdokingspatial-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -f fdokingspatial-3.4.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdokingspatial-3.4.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdokingspatial-3.4.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdokingspatial-3.4.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
 fi
 if test "$OGRENABLECHK" == yes; then
    mkdir -p "$FDOTARZIPFOLDER"/Providers/OGR
    svn export "$FDOSVNROOT"/Providers/OGR "$FDOTARZIPFOLDER"/Providers/OGR --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
-   rm -f fdoogr-3.3.0_"$FDOBUILDNUMBER".tar
-   tar -cf fdoogr-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
-   rm -f fdoogr-3.3.0_"$FDOBUILDNUMBER".tar.gz
-   gzip -9 fdoogr-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -f fdoogr-3.4.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdoogr-3.4.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdoogr-3.4.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdoogr-3.4.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
 fi
 if test "$POSTGISENABLECHK" == yes; then
    mkdir -p "$FDOTARZIPFOLDER"/Providers/PostGIS
    svn export "$FDOSVNROOT"/Providers/PostGIS "$FDOTARZIPFOLDER"/Providers/PostGIS --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
-   rm -f fdopostgis-3.3.0_"$FDOBUILDNUMBER".tar
-   tar -cf fdopostgis-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
-   rm -f fdopostgis-3.3.0_"$FDOBUILDNUMBER".tar.gz
-   gzip -9 fdopostgis-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -f fdopostgis-3.4.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdopostgis-3.4.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdopostgis-3.4.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdopostgis-3.4.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
 fi
 if test "$TESTDATAENABLECHK" == yes; then
@@ -363,40 +363,40 @@ if test "$TESTDATAENABLECHK" == yes; then
    svn export "$FDOSVNROOT"/Providers/ArcSDE/TestData "$FDOTARZIPFOLDER"/Providers/ArcSDE/TestData --force
 
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
-   rm -f fdoarcsde-testdata-3.3.0_"$FDOBUILDNUMBER".tar
-   tar -cf fdoarcsde-testdata-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
-   rm -f fdoarcsde-testdata-3.3.0_"$FDOBUILDNUMBER".tar.gz
-   gzip -9 fdoarcsde-testdata-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -f fdoarcsde-testdata-3.4.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdoarcsde-testdata-3.4.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdoarcsde-testdata-3.4.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdoarcsde-testdata-3.4.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
    
    mkdir -p "$FDOTARZIPFOLDER"/Providers/GDAL/TestData
    svn export "$FDOSVNROOT"/Providers/GDAL/TestData "$FDOTARZIPFOLDER"/Providers/GDAL/TestData --force
    
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
-   rm -f fdogdal-testdata-3.3.0_"$FDOBUILDNUMBER".tar
-   tar -cf fdogdal-testdata-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
-   rm -f fdogdal-testdata-3.3.0_"$FDOBUILDNUMBER".tar.gz
-   gzip -9 fdogdal-testdata-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -f fdogdal-testdata-3.4.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdogdal-testdata-3.4.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdogdal-testdata-3.4.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdogdal-testdata-3.4.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
 
    mkdir -p "$FDOTARZIPFOLDER"/Providers/SDF/TestData
    svn export "$FDOSVNROOT"/Providers/SDF/TestData "$FDOTARZIPFOLDER"/Providers/SDF/TestData --force
    
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
-   rm -f fdosdf-testdata-3.3.0_"$FDOBUILDNUMBER".tar
-   tar -cf fdosdf-testdata-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
-   rm -f fdosdf-testdata-3.3.0_"$FDOBUILDNUMBER".tar.gz
-   gzip -9 fdosdf-testdata-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -f fdosdf-testdata-3.4.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdosdf-testdata-3.4.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdosdf-testdata-3.4.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdosdf-testdata-3.4.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
 
    mkdir -p "$FDOTARZIPFOLDER"/Providers/SHP/TestData
    svn export "$FDOSVNROOT"/Providers/SHP/TestData "$FDOTARZIPFOLDER"/Providers/SHP/TestData --force
    
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
-   rm -f fdoshp-testdata-3.3.0_"$FDOBUILDNUMBER".tar
-   tar -cf fdoshp-testdata-3.3.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
-   rm -f fdoshp-testdata-3.3.0_"$FDOBUILDNUMBER".tar.gz
-   gzip -9 fdoshp-testdata-3.3.0_"$FDOBUILDNUMBER".tar
+   rm -f fdoshp-testdata-3.4.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdoshp-testdata-3.4.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdoshp-testdata-3.4.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdoshp-testdata-3.4.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
 fi
 
