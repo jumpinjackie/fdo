@@ -32,6 +32,15 @@ class FdoInternalDataValue
 public:
     // Compares two FdoDataValue values (see FdoDataValue::Compare).
     static FdoCompareType Compare( FdoDataValue* thisVal, FdoDataValue* other );
+
+    static FdoDataValue* Create(
+        FdoDataType dataType,
+        FdoDataValue* src, 
+        FdoBoolean nullIfIncompatible = false,
+        FdoBoolean shift = true,
+        FdoBoolean truncate = false
+    );
+
 };
 /// \endcond
 

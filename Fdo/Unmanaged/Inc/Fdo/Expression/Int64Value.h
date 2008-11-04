@@ -35,6 +35,8 @@ class FdoInt64Value : public FdoDataValue
     friend class FdoByteValue;
     friend class FdoInt16Value;
     friend class FdoInt32Value;
+    friend class FdoStringValue;
+    friend class FdoDataValue;
 protected:
     /// \brief
     /// Constructs a default instance of an FdoInt64Value with a
@@ -147,28 +149,48 @@ protected:
     /// 
     /// \param src 
     /// Input the other FdoDataValue. Must be of one of the following types:
+    ///     FdoDataType_Boolean
     ///     FdoDataType_Byte
+    ///     FdoDataType_Decimal
+    ///     FdoDataType_Double
     ///     FdoDataType_Int16
     ///     FdoDataType_Int32
     ///     FdoDataType_Int64
-    /// \param truncate 
-    /// Input in the future, will determine what to do if source value does not fit in the int64
-    /// number range:
-    ///     true - truncate the value to fit.
-    ///     false - throw an exception
+    ///     FdoDataType_Single
+    ///     FdoDataType_String
+    ///         - value must be numeric.
+    ///
+    /// In all other cases, the src type is considered incompatible with this type.
     /// \param nullIfIncompatible 
-    /// Input in the future, will determine what to do if source value type is not compatible with the 
-    /// FDO int64 type:
+    /// Input will determine what to do if the source value cannot be converted to 
+    /// this type:
     ///     true - return NULL.
     ///     false - throw an exception
     /// 
+    /// \param shift 
+    /// Input determines whether non integer values can be converted:
+    ///     true - convert values by rounding them.
+    ///     false - behaviour depends on nullIfIncompatible:
+    ///         true - return NULL.
+    ///         false - throw an exception
+    /// \param truncate 
+    /// Input determines what to do if source value is outside the FdoInt64 range
+    //  ( FdoInt64Min to FdoInt64Max):
+    ///     true - convert values less than FdoInt64Min to FdoInt64Min, convert values greater than FdoInt64Max to FdoInt64Max
+    ///     false - behaviour depends on nullIfIncompatible:
+    ///         true - return NULL.
+    ///         false - throw an exception
     /// \return
-    /// Returns an FdoInt64Value
-    /// 
+    /// Returns an FdoInt64Value, whose value is converted from the src value. 
+    /// If src is an FdoBooleanValue:
+    ///     false is converted to 0
+    ///     true is converted to 1
+    ///
     static FdoInt64Value* Create(
         FdoDataValue* src, 
-        FdoBoolean truncate = false, 
-        FdoBoolean nullIfIncompatible = false
+        FdoBoolean nullIfIncompatible = false,
+        FdoBoolean shift = true, 
+        FdoBoolean truncate = false 
     );
 
     // See FdoDataValue::DoCompare()

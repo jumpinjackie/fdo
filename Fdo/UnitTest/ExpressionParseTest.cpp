@@ -387,7 +387,7 @@ void ExpressionParseTest::testBoundaryValues()
     {
         // Test boundary value in binary expression
 
-        FdoPtr<FdoDataValue> pVal = FdoByteValue::Create(0);
+        FdoPtr<FdoDataValue> pVal = FdoByteValue::Create((FdoByte) 0);
         FdoPtr<FdoDataValue> pVal2 = roundTripBoundaryValue(pVal);
         FdoInt32Value* pLVal2 = dynamic_cast<FdoInt32Value*>((FdoDataValue*) pVal2);
         CPPUNIT_ASSERT(pLVal2 != NULL);   

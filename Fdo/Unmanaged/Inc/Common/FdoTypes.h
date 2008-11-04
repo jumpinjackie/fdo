@@ -208,6 +208,20 @@ public:
     FdoInt8     minute;
     float       seconds;
 };
+
+// Max/Min values
+
+#ifndef _WIN32
+static const FdoInt64 FdoInt64Max = 9223372036854775807LL;
+static const FdoInt64 FdoInt64Min = (-9223372036854775807 - 1LL);
+#else
+static const FdoInt64 FdoInt64Max = LLONG_MAX;
+static const FdoInt64 FdoInt64Min = LLONG_MIN;
+#endif
+
+static const FdoFloat FdoFloatMax = (FdoFloat) 3.4e38;
+static const FdoFloat FdoFloatMin = (FdoFloat) -3.4e38;
+
 #endif // _FDOTYPES_H_
 
 

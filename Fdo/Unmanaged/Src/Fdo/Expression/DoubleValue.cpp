@@ -18,6 +18,7 @@
 #include <Fdo/Expression/DoubleValue.h>
 #include <Fdo/Expression/ExpressionException.h>
 #include <Fdo/Expression/IExpressionProcessor.h>
+#include "../Schema/DataTypeMapper.h"
 #include "StringUtility.h"
 
 #include <time.h>
@@ -113,41 +114,88 @@ FdoString* FdoDoubleValue::ToString()
 
 FdoDoubleValue* FdoDoubleValue::Create(
     FdoDataValue* src, 
-    FdoBoolean truncate, 
-    FdoBoolean nullIfIncompatible
+    FdoBoolean nullIfIncompatible,
+    FdoBoolean shift, 
+    FdoBoolean truncate
 )
 {
     FdoDoubleValue* ret = NULL;
 
-    switch ( src->GetDataType() ) {
-    case FdoDataType_Byte:
-        ret = FdoDoubleValue::Create( (double)(static_cast<FdoByteValue*>(src)->GetByte()) );
-        break;
+    if ( !src->IsNull() ) 
+    {
+        switch ( src->GetDataType() ) 
+        {
+        case FdoDataType_Boolean:
+            // Convert to numeric
+            ret = FdoDoubleValue::Create( static_cast<FdoBooleanValue*>(src)->GetBoolean() ? 1 : 0 );
+            break;
 
-    case FdoDataType_Decimal:
-        ret = FdoDoubleValue::Create( static_cast<FdoDecimalValue*>(src)->GetDecimal() );
-        break;
+        case FdoDataType_Byte:
+            // copy without truncation or shifting
+            ret = FdoDoubleValue::Create( (double)(static_cast<FdoByteValue*>(src)->GetByte()) );
+            break;
 
-    case FdoDataType_Double:
-        ret = FdoDoubleValue::Create( static_cast<FdoDoubleValue*>(src)->GetDouble() );
-        break;
+        case FdoDataType_Decimal:
+            // Same value types, simple copy.
+            ret = FdoDoubleValue::Create( static_cast<FdoDecimalValue*>(src)->GetDecimal() );
+            break;
 
-    case FdoDataType_Int16:
-        ret = FdoDoubleValue::Create( (double)(static_cast<FdoInt16Value*>(src)->GetInt16()) );
-        break;
+        case FdoDataType_Double:
+            // Same types, simple copy.
+            ret = FdoDoubleValue::Create( static_cast<FdoDoubleValue*>(src)->GetDouble() );
+            break;
 
-    case FdoDataType_Int32:
-        ret = FdoDoubleValue::Create( (double)(static_cast<FdoInt32Value*>(src)->GetInt32()) );
-        break;
+        case FdoDataType_Int16:
+            // copy without truncation or shifting
+            ret = FdoDoubleValue::Create( (double)(static_cast<FdoInt16Value*>(src)->GetInt16()) );
+            break;
 
-    case FdoDataType_Int64:
-        ret = FdoDoubleValue::Create( (double)(static_cast<FdoInt64Value*>(src)->GetInt64()) );
-        break;
+        case FdoDataType_Int32:
+            // copy without truncation or shifting
+            ret = FdoDoubleValue::Create( (double)(static_cast<FdoInt32Value*>(src)->GetInt32()) );
+            break;
 
-    case FdoDataType_Single:
-        ret = FdoDoubleValue::Create( (double)(static_cast<FdoSingleValue*>(src)->GetSingle()) );
-        break;
+        case FdoDataType_Int64:
+            // copy with possible shifting
+            ret = FdoDoubleValue::Create( (double)(static_cast<FdoInt64Value*>(src)->GetInt64()) );
+            VldShift( src, (FdoDataValue*) ret, nullIfIncompatible, shift );
+            break;
+
+        case FdoDataType_Single:
+            // copy without truncation or shifting
+            ret = FdoDoubleValue::Create( (double)(static_cast<FdoSingleValue*>(src)->GetSingle()) );
+            break;
+
+        case FdoDataType_String:
+            // convert to numeric with possible shifting
+            ret = static_cast<FdoStringValue*>(src)->ConvertFrom<FdoDoubleValue>
+            (
+                nullIfIncompatible, 
+                shift,
+                truncate, 
+                FdoDataTypeMapper::Type2String(FdoDataType_Double)
+            );
+            break;
+
+        default:
+            // src and dest types incompatible
+            if ( !nullIfIncompatible )
+                throw FdoExpressionException::Create(
+                    FdoException::NLSGetMessage(
+                        FDO_NLSID(EXPRESSION_22_INCOMPATIBLEDATATYPES),
+                        src->ToString(),
+                        (FdoString*) FdoDataTypeMapper::Type2String(src->GetDataType()),
+                        (FdoString*) FdoDataTypeMapper::Type2String(FdoDataType_Double)
+                    )
+                );
+            // else return null value 
+            break;
+        }
     }
+
+    if ( !ret ) 
+        // return null data value instead of NULL pointer.
+        ret = FdoDoubleValue::Create();
 
     return ret;
 }

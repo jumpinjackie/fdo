@@ -27,3 +27,15 @@ FdoCompareType FdoInternalDataValue::Compare( FdoDataValue* thisVal, FdoDataValu
     return thisVal->Compare( other );
 }
 
+FdoDataValue* FdoInternalDataValue::Create(
+    FdoDataType dataType,
+    FdoDataValue* src, 
+    FdoBoolean nullIfIncompatible,
+    FdoBoolean shift,
+    FdoBoolean truncate
+)
+{
+    return FdoDataValue::Create(dataType, src, nullIfIncompatible, shift, truncate );
+}
+
+
