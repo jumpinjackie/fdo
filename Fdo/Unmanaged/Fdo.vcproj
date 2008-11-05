@@ -2060,6 +2060,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Inc\Fdo\Commands\Feature\IExtendedSelect.h"
+						>
+					</File>
+					<File
 						RelativePath="Inc\Fdo\Commands\Feature\IFeatureReader.h"
 						>
 					</File>
@@ -2069,6 +2073,10 @@
 					</File>
 					<File
 						RelativePath="Inc\Fdo\Commands\Feature\IReader.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Fdo\Commands\Feature\IScrollableFeatureReader.h"
 						>
 					</File>
 					<File

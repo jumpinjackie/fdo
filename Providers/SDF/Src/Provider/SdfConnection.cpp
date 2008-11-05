@@ -365,11 +365,13 @@ FdoICommand* SdfConnection::CreateCommand(FdoInt32 commandType)
     case FdoCommandType_DestroyDataStore:
         return new SdfDeleteDataStore(this);
 
+    case FdoCommandType_ExtendedSelect:
+    case SdfCommandType_ExtendedSelect:
+        return new SdfExtendedSelect( new SdfImpExtendedSelect( this ) );
+
     case SdfCommandType_CreateSDFFile:
         return new SdfCreateSDFFile(this);
 
-    case SdfCommandType_ExtendedSelect:
-        return new SdfExtendedSelect( new SdfImpExtendedSelect( this ) );
     default:
         throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_3_COMMAND_NOT_SUPPORTED)));
     }

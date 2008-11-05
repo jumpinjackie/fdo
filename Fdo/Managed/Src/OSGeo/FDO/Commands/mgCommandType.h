@@ -185,6 +185,9 @@ public __value enum CommandType {
     /// Represents the GetClassNames command.
     CommandType_GetClassNames = FdoCommandType_GetClassNames,
 
+    /// Represents the Extended Select command
+	CommandType_ExtendedSelect = FdoCommandType_ExtendedSelect,
+
     /// Represents the index of the first provider specific command.
 	CommandType_FirstProviderCommand = FdoCommandType_FirstProviderCommand
 

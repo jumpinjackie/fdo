@@ -52,10 +52,10 @@
 #include <Fdo/Commands/Feature/IBaseSelect.h>
 #include <Fdo/Commands/Feature/IDataReader.h>
 #include <Fdo/Commands/Feature/IDelete.h>
-#include <Fdo/Commands/Feature/IFeatureReader.h>
+#include <Fdo/Commands/Feature/IScrollableFeatureReader.h>
 #include <Fdo/Commands/Feature/IInsert.h>
 #include <Fdo/Commands/Feature/IReader.h>
-#include <Fdo/Commands/Feature/ISelect.h>
+#include <Fdo/Commands/Feature/IExtendedSelect.h>
 #include <Fdo/Commands/Feature/ISelectAggregates.h>
 #include <Fdo/Commands/Feature/IUpdate.h>
 

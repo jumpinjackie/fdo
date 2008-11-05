@@ -132,6 +132,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 public __gc __interface IReader;
 public __gc __interface IDataReader;
 public __gc __interface IFeatureReader;
+public __gc __interface IScrollableFeatureReader;
 END_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
@@ -216,6 +217,7 @@ public:
     
     static NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDataReader* CreateIDataReader(System::IntPtr ptr, System::Boolean autoDispose);
     static NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader* CreateIFeatureReader(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IScrollableFeatureReader* CreateIScrollableFeatureReader(System::IntPtr ptr, System::Boolean autoDispose);
    
     static NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinition* CreateArgumentDefinition(System::IntPtr ptr, System::Boolean autoDispose);
     static NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition* CreateFunctionDefinition(System::IntPtr ptr, System::Boolean autoDispose);
