@@ -99,9 +99,11 @@ EXTRA_DIST = \
     Fdo/Commands/Feature/IBaseSelect.h \
     Fdo/Commands/Feature/IDataReader.h \
     Fdo/Commands/Feature/IDelete.h \
+    Fdo/Commands/Feature/IExtendedSelect.h \
     Fdo/Commands/Feature/IFeatureReader.h \
     Fdo/Commands/Feature/IInsert.h \
     Fdo/Commands/Feature/IReader.h \
+    Fdo/Commands/Feature/IScrollableFeatureReader.h \
     Fdo/Commands/Feature/ISelect.h \
     Fdo/Commands/Feature/ISelectAggregates.h \
     Fdo/Commands/Feature/IUpdate.h \

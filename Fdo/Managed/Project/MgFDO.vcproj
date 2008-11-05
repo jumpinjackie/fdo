@@ -840,6 +840,18 @@
 							>
 						</File>
 						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\Feature\mgIExtendedSelect.h"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\Feature\mgIExtendedSelectImp.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\Feature\mgIExtendedSelectImp.h"
+							>
+						</File>
+						<File
 							RelativePath="..\Src\OSGeo\FDO\Commands\Feature\mgIFeatureReader.h"
 							>
 						</File>
@@ -873,6 +885,18 @@
 						</File>
 						<File
 							RelativePath="..\Src\OSGeo\FDO\Commands\Feature\mgIReaderImp.h"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\Feature\mgIScrollableFeatureReader.h"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\Feature\mgIScrollableFeatureReaderImp.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\Src\OSGeo\FDO\Commands\Feature\mgIScrollableFeatureReaderImp.h"
 							>
 						</File>
 						<File

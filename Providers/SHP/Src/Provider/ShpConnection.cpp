@@ -543,6 +543,7 @@ FdoICommand* ShpConnection::CreateCommand (FdoInt32 commandType)
         case FdoCommandType_DestroySchema:
             ret = new ShpDestroySchemaCommand (this);
             break;
+		case FdoCommandType_ExtendedSelect:
 		case ShpCommandType_ExtendedSelect:
 			return new ShpExtendedSelect( new ShpImpExtendedSelect( this ) );
 

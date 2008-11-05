@@ -45,7 +45,7 @@ void ExtendedSelectTests::WorldTest()
         connection->SetConnectionString (L"DefaultFileLocation=" LOCATION);
         CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == connection->Open ());
 
-        FdoPtr<ShpIExtendedSelect> select = (ShpIExtendedSelect*)connection->CreateCommand(ShpCommandType_ExtendedSelect); 
+        FdoPtr<FdoIExtendedSelect> select = (FdoIExtendedSelect*)connection->CreateCommand(FdoCommandType_ExtendedSelect); 
         select->SetFeatureClassName (CLASS_NAME);
 
         FdoPtr<FdoIdentifierCollection>selecProperties = select->GetPropertyNames();
@@ -59,7 +59,7 @@ void ExtendedSelectTests::WorldTest()
         clock_t finish;
         start = clock ();
 
-        FdoPtr<ShpIScrollableFeatureReader>	reader = select->ExecuteScrollable();
+        FdoPtr<FdoIScrollableFeatureReader>	reader = select->ExecuteScrollable();
 
         finish = clock ();
         printf ("Creation  time: %2.3f seconds\n", (double)(finish - start) / CLOCKS_PER_SEC);

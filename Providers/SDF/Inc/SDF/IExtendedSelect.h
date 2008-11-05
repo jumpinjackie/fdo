@@ -22,63 +22,16 @@
 #include "SDF/IScrollableFeatureReader.h"
 #include "SDF/SdfCompareHandler.h"
 
-class SdfIExtendedSelect : public FdoISelect
+class SdfIExtendedSelect : public FdoIExtendedSelect
 {		
-	
 public:
 	// Expose the FdoISelect hidden functions
 	using FdoISelect::GetOrderingOption;
 	using FdoISelect::SetOrderingOption;
-
-	/// \brief
-	/// Set the ordering option of the selection.
-	/// 
-	/// \remarks
-	/// This is only used if the ordering collection is not empty.
-	///
-	/// \param propertyName
-	/// Is the property name for which the ordering should be applied. This property should be in the ordering collection.
-	///
-    /// \param option
-	 /// Is the ordering option and should be set to one of FdoOrderingOption_Ascending or FdoOrderingOption_Descending.
-    /// FdoOrderingOption_Ascending is the default value.
-	virtual void SetOrderingOption( FdoString* propertyName, FdoOrderingOption  option ) = 0;
-
-    /// \brief
-	 /// Gets the ordering option for a given property.
-	 ///
-	/// \param propertyName
-	//Is the property name for which the ordering should be applied. This property should be in the ordering collection.
-	///
-    /// \return
-	 /// Returns the ordering option.
-	virtual FdoOrderingOption GetOrderingOption( FdoString* propertyName ) = 0;
-
-	/// \brief
-	/// Clears the internal list of property/ordering option list and re-sets the ordering option for all 
-	/// the ordering properties to the default FdoOrderingOption_Ascending or to the ordering option specified by the 
-	/// FdoIBaseSelect interface.
-	virtual void ClearOrderingOptions( ) = 0;
-
-	/// \brief
-	/// Sets the compare handler.
-	///
-	/// \remarks
-	/// This method is used to override the default sdf compare handler.
-	///
-    /// \param handler
-	 /// The compare handle that should be derived from the SdfCompareHandler class.
-	virtual void SetCompareHandler( SdfCompareHandler*  handler ) = 0;
-
-	/// \brief
-	/// Executes the select command and returns an SdfIScrollableFeatureReader.
-	///
-	/// \remarks  
-	/// If ordering is enabled, then the returned reader is sorted according to 
-	/// the ordering collection. This method perform sorting in memory and allocates an integer value for each row.
-    /// \return
-	 /// Returns a SdfIScrollableFeatureReader object
-	virtual SdfIScrollableFeatureReader* ExecuteScrollable() = 0;
+	// Expose the FdoIExtendedSelect hidden function
+	using FdoIExtendedSelect::ExecuteScrollable;
+	using FdoIExtendedSelect::GetOrderingOption;
+	using FdoIExtendedSelect::SetOrderingOption;
 
 	/// \brief
 	/// Executes the select command and returns a SdfIScrollableFeatureReader.

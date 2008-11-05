@@ -187,6 +187,9 @@ enum FdoCommandType{
     /// Represents the GetClassNames command.
     FdoCommandType_GetClassNames,
 
+    /// Represents the Extended Select Command.
+    FdoCommandType_ExtendedSelect,
+
     /// Represents the index of the first provider specific command.
     FdoCommandType_FirstProviderCommand
 
