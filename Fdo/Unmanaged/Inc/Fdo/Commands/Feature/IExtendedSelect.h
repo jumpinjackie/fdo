@@ -24,7 +24,7 @@
 #endif
  
 #include <Fdo/Commands/Feature/ISelect.h>
-#include <Fdo/Commands/Feature/IscrollableFeatureReader.h>
+#include <Fdo/Commands/Feature/IScrollableFeatureReader.h>
 
 /// \brief
 /// The FdoIExtendedSelect interface defines a Select command with extended 
