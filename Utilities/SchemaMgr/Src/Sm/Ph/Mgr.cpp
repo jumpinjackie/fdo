@@ -803,12 +803,12 @@ FdoPtr<FdoDataValue> FdoSmPhMgr::ParseSQLVal( FdoStringP stringValue )
 
             // Expression must specifically be an FDO data value.
             parsedValue = FDO_SAFE_ADDREF(dynamic_cast<FdoDataValue*>(expr.p));
-
-            if ( !parsedValue ) 
-                parsedValue = FdoStringValue::Create( stringValue );
         }
         catch ( ... ) {
         }
+
+        if ( !parsedValue ) 
+            parsedValue = FdoStringValue::Create( stringValue );
     }
 
     return parsedValue;
