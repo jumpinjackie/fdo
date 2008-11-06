@@ -521,6 +521,111 @@ void MasterTest::dataTypeKeyFilter()
             expected11
         );
 
+        // The following Tests (12-21) exercise cases where data type for filter value
+        // differs from that of corresponding identity property. These are cases
+        // where the SDF provider converts the value to the property's type in
+        // order to do an indexed lookup.
+
+        FdoString* expected12[] = { L"A", NULL };
+        inFilterOptimize_Select( 
+            connection,
+            L"dataTypeFilter:ClassDouble", 
+            L"Id = 1", 
+            L"Prop1", 
+            FdoDataType_String, 
+            expected12 
+        );
+
+        FdoString* expected13[] = { NULL };
+        inFilterOptimize_Select( 
+            connection,
+            L"dataTypeFilter:ClassInt32", 
+            L"Id = 4294967297", 
+            L"Prop1", 
+            FdoDataType_String, 
+            expected13 
+        );
+
+        FdoString* expected14[] = { NULL };
+        inFilterOptimize_Select( 
+            connection,
+            L"dataTypeFilter:ClassInt32", 
+            L"Id = 1.2", 
+            L"Prop1", 
+            FdoDataType_String, 
+            expected14 
+        );
+
+        FdoString* expected15[] = { L"A", NULL };
+        inFilterOptimize_Select( 
+            connection,
+            L"dataTypeFilter:ClassInt32", 
+            L"Id = 1.0", 
+            L"Prop1", 
+            FdoDataType_String, 
+            expected15 
+        );
+
+        FdoString* expected16[] = { NULL };
+        inFilterOptimize_Select( 
+            connection,
+            L"dataTypeFilter:ClassInt64", 
+            L"Id = 1.55", 
+            L"Prop1", 
+            FdoDataType_String, 
+            expected16 
+        );
+
+        FdoString* expected17[] = { L"B", L"C", NULL };
+        inFilterOptimize_Select( 
+            connection,
+            L"dataTypeFilter:ClassInt64", 
+            L"Id = 2.0 or Id = 3.0", 
+            L"Prop1", 
+            FdoDataType_String, 
+            expected17 
+        );
+
+        FdoString* expected18[] = { NULL };
+        inFilterOptimize_Select( 
+            connection,
+            L"dataTypeFilter:ClassDouble", 
+            L"Id = 9223372036854773761", 
+            L"Prop1", 
+            FdoDataType_String, 
+            expected18 
+        );
+
+        FdoString* expected19[] = { NULL };
+        inFilterOptimize_Select( 
+            connection,
+            L"dataTypeFilter:ClassDouble", 
+            L"Id in ( 9223372036854775807 )", 
+            L"Prop1", 
+            FdoDataType_String, 
+            expected19 
+        );
+
+        FdoString* expected20[] = { L"F", NULL };
+        inFilterOptimize_Select( 
+            connection,
+            L"dataTypeFilter:ClassDouble", 
+            L"Id = 9223372036854773760", 
+            L"Prop1", 
+            FdoDataType_String, 
+            expected20 
+        );
+
+        FdoString* expected21[] = { L"B", L"C", NULL };
+        inFilterOptimize_Select( 
+            connection,
+            L"dataTypeFilter:ClassInt64", 
+            L"Id in ( 2.0, 3.0 )", 
+            L"Prop1", 
+            FdoDataType_String, 
+            expected21 
+        );
+
     }
     catch ( CppUnit::Exception e ) 
 	{
@@ -3103,6 +3208,8 @@ void MasterTest::dataTypeFilter_CreateData( FdoIConnection* conn )
     TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassDouble", L"Id", FdoDataType_Double, (FdoDouble) 1.5, L"Prop1", FdoDataType_String, L"C", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
     TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassDouble", L"Id", FdoDataType_Double, (FdoDouble) 1.75, L"Prop1", FdoDataType_String, L"D", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
     TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassDouble", L"Id", FdoDataType_Double, (FdoDouble) 2.0, L"Prop1", FdoDataType_String, L"E", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassDouble", L"Id", FdoDataType_Double, (pow((FdoDouble)2, (FdoDouble)52) - 1) * pow((FdoDouble)2, (FdoDouble)11), L"Prop1", FdoDataType_String, L"F", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
+    TestCommonMiscUtil::InsertObject( conn, (FdoIInsert*) NULL, L"DataTypeFilter", L"ClassDouble", L"Id", FdoDataType_Double, pow((FdoDouble)2, (FdoDouble)63), L"Prop1", FdoDataType_String, L"G", L"Geometry", -1, (FdoGeometryValue*) geometryValue.p, NULL );
  
     FdoDateTime dt1(2008, 9, 17, 12, 13, (FdoFloat)45.2);
     FdoDateTime dt2((FdoInt16)2008, 9, 17);

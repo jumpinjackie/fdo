@@ -301,9 +301,9 @@ void SdfQueryOptimizer::ProcessComparisonCondition(FdoComparisonCondition& filte
     //This could be optimized by a struct similar to the
     //PropertyIndex used for the full property collection
     FdoIdentifier* ident = dynamic_cast<FdoIdentifier*>(left.p);
-    FdoDataValue* val = dynamic_cast<FdoDataValue*>(right.p);
+    FdoPtr<FdoDataValue> val = FDO_SAFE_ADDREF(dynamic_cast<FdoDataValue*>(right.p));
 
-    if (ident && val)
+    if (ident && val && !val->IsNull())
     {
         //look for the identifier in the ID property collection
         //and add it to the list of accumulated key values if it is
@@ -311,22 +311,36 @@ void SdfQueryOptimizer::ProcessComparisonCondition(FdoComparisonCondition& filte
         {
             FdoPtr<FdoDataPropertyDefinition> dpd = m_idprops->GetItem(i);
 
-            if ((wcscmp(dpd->GetName(), ident->GetName()) == 0) &&
-                 (val->GetDataType() == dpd->GetDataType())
-            )
+            if (wcscmp(dpd->GetName(), ident->GetName()) == 0)
             {
-                FdoPropertyValue* pv = FdoPropertyValue::Create(ident, val);
-                m_keyvals->Add(pv);
-                pv->Release();
-
-                //check to see if we have enough to 
-                recno_list* recno = RecnoFromKey();
-                
-                if (recno)
+                if ( val->GetDataType() != dpd->GetDataType() )
                 {
-                    m_retvals.pop_back();
-                    m_retvals.push_back(recno);
+                    // KeyDb::FindRecno() will always find nothing when value types
+                    // do not match property data type. Try converting  value to 
+                    // property data type.
+
+                    // TODO: replace this cloned code with call to 
+                    // FdoDataValue::Create( dpd->GetDataType(), val, true, false, false )
+                    // When this function is added to FDO API.
+                    val = ConvertDataValue( dpd->GetDataType(), val, true, false, false );
                 }
+
+                if ( val && !val->IsNull() ) 
+                {
+                    FdoPropertyValue* pv = FdoPropertyValue::Create(ident, val);
+                    m_keyvals->Add(pv);
+                    pv->Release();
+
+                    //check to see if we have enough to 
+                    recno_list* recno = RecnoFromKey();
+                    
+                    if (recno)
+                    {
+                        m_retvals.pop_back();
+                        m_retvals.push_back(recno);
+                    }
+                }
+                //else: possible data type conversion failure, can't optimize.
             }
         }
     }
@@ -370,7 +384,7 @@ void SdfQueryOptimizer::ProcessInCondition(FdoInCondition& filter)
     {
         FdoPtr<FdoValueExpression> value = values->GetItem(i);
 
-        FdoDataValue* dv = dynamic_cast<FdoDataValue*>(value.p);
+        FdoPtr<FdoDataValue> dv = FDO_SAFE_ADDREF(dynamic_cast<FdoDataValue*>(value.p));
 
         if (!dv ) 
         {
@@ -382,11 +396,20 @@ void SdfQueryOptimizer::ProcessInCondition(FdoInCondition& filter)
         if ( dv->GetDataType() != dpd->GetDataType() ) 
         {
             // KeyDb::FindRecno() will always find nothing when value types
-            // do not match property data type. FindRecno() could be fixed to 
-            // convert the value data types, but for now, can't optimize in 
-            // this case.
-            delete reclist;
-            return;
+            // do not match property data type. Try converting  value to 
+            // property data type.
+
+            // TODO: replace this cloned function with call to 
+            // FdoDataValue::Create( dpd->GetDataType(), val, true, false, false )
+            // When this function is added to FDO API.
+            dv = ConvertDataValue( dpd->GetDataType(), dv, true, false, false );
+
+            if ( !dv ) 
+            {
+                // data type conversion failed so can't optimize.
+                delete reclist;
+                return;
+            }
         }
 
         // Convert value to record number. Use our own key values list, instead
@@ -939,4 +962,102 @@ bool SdfQueryOptimizer::AreEqual(double/*&*/ d1, double/*&*/ d2)
         return true;
 
     return false;
+}
+
+FdoDataValue* SdfQueryOptimizer::ConvertDataValue(
+    FdoDataType dataType,
+    FdoDataValue* src, 
+    FdoBoolean nullIfIncompatible,
+    FdoBoolean shift,
+    FdoBoolean truncate
+)
+{
+    FdoDataValue* ret = NULL;
+
+    // For now, just handle conversions between the more common data types
+    // for identity properties (double, int32, int64). More types will be 
+    // handled when data type conversion is exposed in the FDO API.
+    switch ( dataType ) 
+    {
+    case FdoDataType_Double:
+        switch ( src->GetDataType() ) 
+        {
+             case FdoDataType_Int32:
+                ret = FdoDoubleValue::Create( (double)(static_cast<FdoInt32Value*>(src)->GetInt32()) );
+                break;
+
+            case FdoDataType_Int64:
+                {
+                    FdoInt64Value* src2 = static_cast<FdoInt64Value*>(src);
+                    ret = FdoDoubleValue::Create( (double) (src2->GetInt64()) );
+                    if ( src2->GetInt64() != static_cast<FdoDoubleValue*>(ret)->GetDouble() )
+                        ret->SetNull();
+                }
+                break;
+        }
+        break;
+
+    case FdoDataType_Int32:
+        switch ( src->GetDataType() )
+        {
+        case FdoDataType_Double:
+            {
+                FdoDoubleValue* src2 = static_cast<FdoDoubleValue*>(src);
+
+                ret = Convert<FdoDoubleValue, FdoInt32Value, FdoDouble, FdoInt32>(
+                    src2,
+                    src2->GetDouble(), 
+                    LONG_MIN, 
+                    LONG_MAX,
+                    0.5,
+                    nullIfIncompatible, 
+                    shift,
+                    truncate, 
+                    L"int32"
+                );
+            }
+            break;
+
+        case FdoDataType_Int64:
+            ret = Convert<FdoInt32Value, FdoInt64, FdoInt32>( 
+                static_cast<FdoInt64Value*>(src)->GetInt64(), 
+                LONG_MIN, 
+                LONG_MAX, 
+                nullIfIncompatible, 
+                truncate, 
+                L"int32"
+            );
+            break;
+        }
+        break;
+
+    case FdoDataType_Int64:
+        switch ( src->GetDataType() ) 
+        {
+        case FdoDataType_Double:
+            {
+                FdoDoubleValue* src2 = static_cast<FdoDoubleValue*>(src);
+
+                ret = Convert<FdoDoubleValue, FdoInt64Value, FdoDouble, FdoInt64>(
+                    src2,
+                    src2->GetDouble(), 
+                    FdoInt64Min, 
+                    FdoInt64Max,
+                    0.5,
+                    nullIfIncompatible, 
+                    shift,
+                    truncate, 
+                    L"int64"
+                );
+            }
+            break;
+
+        case FdoDataType_Int32:
+            ret = FdoInt64Value::Create( (FdoInt64)(static_cast<FdoInt32Value*>(src)->GetInt32()) );
+            break;
+        }
+        break;
+    }
+
+    return ret;
 }
