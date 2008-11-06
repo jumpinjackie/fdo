@@ -136,6 +136,174 @@ private:
     recno_list* recno_list_intersection(recno_list* left, recno_list* right);
     bool AreEqual(double d1, double d2);
 
+/* Data Type conversion (FdoDataValue::Create()) clone. Can be removed when data type
+   conversion is added to the FDO API
+*/
+    FdoDataValue* SdfQueryOptimizer::ConvertDataValue(
+        FdoDataType dataType,
+        FdoDataValue* src, 
+        FdoBoolean nullIfIncompatible,
+        FdoBoolean shift,
+        FdoBoolean truncate
+    );
+/* End Data Type conversion */
+
+/* Data Type conversion template clones. Can be removed when data type
+   conversion is added to the FDO API
+*/
+
+    // Converts values that may need shifting to other values.
+    template <class CI,             // input FdoDataValue 
+              class CO,             // output FdoDataValue
+              class TI,             // input FDO type - must correspond to CI
+              class TO              // output FDO type - must correspond to CO
+    > 
+    static CO* Convert( 
+        CI* obj,                            // input FdoDataValue
+        TI val,                             // input scalar value for obj
+        TO min,                             // minimum value for TO type
+        TO max,                             // maximum value for TO type
+        TI round,                           // amount for rounding 
+        FdoBoolean nullIfIncompatible,      // see FdoDataValue::Create()
+        FdoBoolean shift,                   // see FdoDataValue::Create()
+        FdoBoolean truncate,                // see FdoDataValue::Create()
+        FdoString* sTO                       // TO in string format; for exception messages.
+    )
+    {
+        CO*         ret = NULL;
+        FdoBoolean  isNull = false;
+        TO          out;
+
+        // First, truncate the value to be between output type min and max.
+        Truncate<TI,TO>( val, out, isNull, min, max, nullIfIncompatible, truncate, sTO );
+                
+        if ( isNull ) 
+        {
+            // Output determined to be null
+            ret = CO::Create();
+        }
+        else if ( (val < min) || (val > max) ) 
+        {
+            // value was truncated. Wrap it in FdoDataValue.
+            ret = CO::Create(out);
+        }
+        else
+        {
+            // Round the value and convert it
+            out = (TO) ((val < 0) ? (val - round) : (val + round));
+
+            if ( (out != val) && !shift ) 
+                ret = CO::Create();
+            else
+                ret = CO::Create(out);
+        }
+
+        return ret;
+    };
+
+    // Converts values that don't need shifting, but may need truncation,
+    // to other values.
+    template <
+        class C,                    // output FdoDataValue
+        class TI,                   // input FDO type 
+        class TO                    // output FDO type - must correspond to CO
+    > 
+    static C* Convert( 
+        TI val,                             // input scalar value for obj
+        TO min,                             // minimum value for TO type
+        TO max,                             // maximum value for TO type
+        FdoBoolean nullIfIncompatible,      // see FdoDataValue::Create()
+        FdoBoolean truncate,                // see FdoDataValue::Create()
+        FdoString* sTO                      // TO in string format; for exception messages.
+    )
+    {
+        C*          ret    = NULL;
+        FdoBoolean  isNull = false;
+        TO          out;
+
+        // First, truncate the value to be between output type min and max.
+        Truncate<TI, TO>( val, out, isNull, min, max, nullIfIncompatible, truncate, sTO );
+                
+        if ( isNull ) 
+            // Output determined to be null
+            ret = C::Create();
+        else
+            // Wrap output in an FdoDataValue.
+            ret = C::Create( out );
+
+        return ret;
+    };
+
+    // Truncates a value to be between a minimum and maximum value.
+    template <
+        class TI,                   // input FDO type 
+        class TO                    // output FDO type
+    > 
+    static bool Truncate( 
+        TI in,                      // original value
+        TO& out,                    // truncated value
+        bool& isNull,               // set to true if value truncated and
+                                    // truncate=false and nullIfIncompatible=true
+        TO min,                     // minimum value for TO type
+        TO max,                     // maximum value for TO type
+        bool nullIfIncompatible,    // see FdoDataValue::Create()
+        bool truncate,              // see FdoDataValue::Create()
+        FdoString* sTO              // TO in string format; for exception messages.
+    )
+    {
+        bool success = true;
+
+        // no truncation by default. However, it is up to the caller to 
+        // determine if casting shifted the value.
+        out = (TO) in;
+
+        if ( in < min ) 
+            success = Truncate<TI, TO>( in, out, isNull, min, nullIfIncompatible, truncate );   
+        else if ( in > max ) 
+            success = Truncate<TI, TO>( in, out, isNull, max, nullIfIncompatible, truncate );
+
+        if ( !success )
+            isNull = true;
+
+        return true;
+    };
+
+    // Truncates a value to a range endpoint
+    template <
+        class TI,                   // input FDO type 
+        class TO                    // output FDO type
+    > 
+    static bool Truncate( 
+        TI in,                      // input value
+        TO& out,                    // output value
+        bool& isNull,               // set to true truncate=false and 
+                                    // nullIfIncompatible=true 
+        TO bound,                   // the range endpoint
+        bool nullIfIncompatible,    // see FdoDataValue::Create() 
+        bool truncate               // see FdoDataValue::Create()
+    )
+    {
+        bool ret = true;
+        
+        if ( truncate ) 
+        {
+            // Truncation allowed so set output to the range endpoint
+            out = bound;
+        }
+        else
+        {
+            if ( nullIfIncompatible ) 
+                // Truncation not allowed so set output to null
+                isNull = true;
+            else
+                // Truncation not allowed so raise an error
+                ret = false;
+        }
+
+        return ret;
+    };
+/* End of Data Type conversion template clones. */
+
     //working set of features and key property values
     qo_retval_stack m_retvals;
     FdoPropertyValueCollection* m_keyvals;
