@@ -431,7 +431,7 @@ void FdoRdbmsFilterProcessor::ProcessComputedIdentifier(FdoComputedIdentifier& e
     AppendString( CLOSE_PARENTH );
 }
 
-void FdoRdbmsFilterProcessor::ProcessIdentifier( FdoIdentifier& expr, bool useOuterJoin )
+void FdoRdbmsFilterProcessor::ProcessIdentifier( FdoIdentifier& expr, bool useOuterJoin, bool inSelectList )
 {
     int     scopeLen;
     const FdoSmLpPropertyDefinition *propertyDefinition = NULL;
@@ -626,7 +626,7 @@ void FdoRdbmsFilterProcessor::ProcessIdentifier( FdoIdentifier& expr, bool useOu
                     AppendString( tableAlias );
                     AppendString( L"." );
                     
-                    FdoStringP  colName = GetGeometryString( (FdoString*)(column->GetDbName()) );
+                    FdoStringP  colName = GetGeometryString( (FdoString*)(column->GetDbName()), inSelectList );
                     AppendString( (FdoString*)colName );
                 }
             }
@@ -998,7 +998,7 @@ void FdoRdbmsFilterProcessor::AppendOrderBy( FdoRdbmsFilterUtilConstrainDef *fil
         if( i != 0 )
             AppendString( L", " );
         FdoPtr<FdoIdentifier>ident = filterConstraint->orderByProperties->GetItem( i );
-        ProcessIdentifier( *ident, true );
+        ProcessIdentifier( *ident, true, false );
         if( filterConstraint->orderingOption == FdoOrderingOption_Descending )
             AppendString( L" DESC " );
         else
@@ -1018,7 +1018,7 @@ void FdoRdbmsFilterProcessor::AppendGroupBy( FdoRdbmsFilterUtilConstrainDef *fil
         if( i != 0 )
             AppendString( L", " );
         FdoPtr<FdoIdentifier>ident = filterConstraint->groupByProperties->GetItem( i );
-        ProcessIdentifier( *ident, true );
+        ProcessIdentifier( *ident, true, false );
     }
 }
 
@@ -1190,7 +1190,7 @@ void FdoRdbmsFilterProcessor::PrependTables()
     }
 }
 
-void FdoRdbmsFilterProcessor::PrependProperty( FdoIdentifier* property, bool scanForTableOnly )
+void FdoRdbmsFilterProcessor::PrependProperty( FdoIdentifier* property, bool scanForTableOnly, bool inSelectList )
 {
     // If it's a computed identifier, then we dump the translated content in the from clause.
     // There may be alot of weird and wonderfull stuff in that expression that does not make sense. We'll leave it
@@ -1212,7 +1212,7 @@ void FdoRdbmsFilterProcessor::PrependProperty( FdoIdentifier* property, bool sca
     }
     else
     {
-        ProcessIdentifier( *property );
+        ProcessIdentifier( *property, false, inSelectList );
     }
     wchar_t* compIdentPseudoCol = &mSqlFilterText[mFirstTxtIndex];
     wchar_t* tmp = mSqlFilterText;
@@ -1755,7 +1755,7 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
                 {
                     PrependString( L"," );
                 }
-                PrependProperty( property );
+                PrependProperty( property, false, true );
 
                 first = false;
                 for (j=0; j<identProperties->GetCount(); j++)
@@ -1911,7 +1911,7 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
                 {
                     PrependString(L",");
                 }
-                PrependProperty( property );
+                PrependProperty( property, false, true );
 
                 first = false;
             }
@@ -2033,7 +2033,7 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter     *filter,
 				if ( geomPropertyDef->RefColumn() )
 				{
 					const FdoSmPhColumn* column = geomPropertyDef->RefColumn();
-					all->Add(GetGeometryString(column->GetDbName()));
+					all->Add(GetGeometryString(column->GetDbName(), true));
 				}
 			}
 		}
@@ -2060,7 +2060,7 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter     *filter,
     return &mSqlFilterText[mFirstTxtIndex];
 }
 
-FdoStringP FdoRdbmsFilterProcessor::GetGeometryString( FdoString* columnName )
+FdoStringP FdoRdbmsFilterProcessor::GetGeometryString( FdoString* columnName, bool inSelectList )
 { 
     return columnName; 
 }
@@ -2102,7 +2102,7 @@ void FdoRdbmsFilterProcessor::PrependSelectStar( FdoStringP tableName, FdoString
 
                 if( bGeometry ) 
                 {
-	                FdoStringP  colName = GetGeometryString( (FdoString*)(column->GetDbName()) );
+	                FdoStringP  colName = GetGeometryString( (FdoString*)(column->GetDbName()), true );
                     PrependString( (FdoString*)colName );
                 }
                 else

@@ -214,7 +214,7 @@ public:
 
 private:
 
-    void ProcessIdentifier(FdoIdentifier& expr, bool useOuterJoin );
+    void ProcessIdentifier(FdoIdentifier& expr, bool useOuterJoin, bool inSelectList );
 
     // Analyzes the filter and set flags that control the generation of the
     // corresponding SQL statement.
@@ -236,7 +236,7 @@ protected:
 
     const FdoSmLpDataPropertyDefinitionCollection* GetIdentityProperties(const wchar_t *className, const FdoSmLpClassDefinition **identClass );
 
-    void PrependProperty( FdoIdentifier* property, bool scanForTableOnly=false );
+    void PrependProperty( FdoIdentifier* property, bool scanForTableOnly=false, bool inSelectList=false );
 
     void PrependTables();
 
@@ -292,7 +292,7 @@ protected:
 
     virtual void ProcessIdentifier(FdoIdentifier& expr)
     {
-        return ProcessIdentifier( expr, false );
+        return ProcessIdentifier( expr, false, false );
     }
 
     virtual void ProcessParameter(FdoParameter& expr);
@@ -341,7 +341,7 @@ protected:
     virtual bool IsAggregateFunctionName(FdoString* wFunctionName) const = 0;
     virtual bool IsNotNativeSupportedFunction(FdoString* wFunctionName) const = 0;
     virtual bool HasNativeSupportedFunctionArguments(FdoFunction& expr) const = 0;
-    virtual FdoStringP GetGeometryString( FdoString* columnName );
+    virtual FdoStringP GetGeometryString( FdoString* columnName, bool inSelectList );
     virtual FdoStringP GetGeometryTableString( FdoString* tableName );
 
 public:

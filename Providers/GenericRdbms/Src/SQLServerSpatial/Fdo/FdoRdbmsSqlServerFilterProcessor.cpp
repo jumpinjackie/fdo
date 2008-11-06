@@ -944,7 +944,7 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessDateTimeValue(FdoDateTimeValue& ex
     AppendString( ((FdoRdbmsSqlServerConnection*)mFdoConnection)->FdoToDbiTimeFilter( expr.GetDateTime() ) );
 }
 
-FdoStringP FdoRdbmsSqlServerFilterProcessor::GetGeometryString( FdoString* dbColumnName )
+FdoStringP FdoRdbmsSqlServerFilterProcessor::GetGeometryString( FdoString* dbColumnName, bool inSelectList )
 { 
     FdoStringP   dbColumnNameP = FdoStringP(dbColumnName);
 
@@ -958,12 +958,17 @@ FdoStringP FdoRdbmsSqlServerFilterProcessor::GetGeometryString( FdoString* dbCol
     wrappedName += columnName;
     wrappedName += L"]";
 
-    wrappedName += FdoStringP(SQLSERVER_CONVERT_WKB);
-    
-    // Use the column name as alias 
-    wrappedName += L" as \"";
-    wrappedName += columnName;
-    wrappedName += L"\"";
+    // Add conversion to WKB only if this is a column in a select list.
+    // For other cases (e.g. column is function argument), must not convert. 
+    if ( inSelectList ) 
+    {
+        wrappedName += FdoStringP(SQLSERVER_CONVERT_WKB);
+        
+        // Use the column name as alias 
+        wrappedName += L" as \"";
+        wrappedName += columnName;
+        wrappedName += L"\"";
+    }
 
     return wrappedName;
 }

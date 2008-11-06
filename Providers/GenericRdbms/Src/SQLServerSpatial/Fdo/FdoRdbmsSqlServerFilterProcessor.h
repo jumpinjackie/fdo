@@ -119,7 +119,7 @@ protected:
     virtual void ProcessStringValue(FdoStringValue& expr);
     void ProcessDateTimeValue(FdoDateTimeValue& expr);
 
-    virtual FdoStringP GetGeometryString( FdoString* columnName );
+    virtual FdoStringP GetGeometryString( FdoString* columnName, bool inSelectList );
     virtual FdoStringP GetGeometryTableString( FdoString* tableName );
 
 private:

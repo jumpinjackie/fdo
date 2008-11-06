@@ -994,6 +994,10 @@ void FdoSelectTest::feature_geom_query ()
     {
         try
         {
+            int rowCount = 0;
+            int nullCount = 0;
+            int nnullCount = 0;
+
             selCmd = (FdoISelect*)mConnection->CreateCommand( FdoCommandType_Select );
             selCmd->SetFeatureClassName(L"Acad:AcDb3dPolyline");
             FdoPtr<FdoIdentifierCollection> names = selCmd->GetPropertyNames();
@@ -1007,7 +1011,9 @@ void FdoSelectTest::feature_geom_query ()
             if( myReader != NULL  )
             {
                 while ( myReader->ReadNext() )
-                {
+                {   
+                    rowCount++;
+
                     FdoPtr<FdoClassDefinition>classDef = myReader->GetClassDefinition();
                     if( classDef )
                     {
@@ -1072,6 +1078,24 @@ void FdoSelectTest::feature_geom_query ()
                     DBG( printf("\n") );
                 }
             }
+
+            selCmd->SetFilter( FdoPtr<FdoFilter>(FdoFilter::Parse(L"Geometry NULL")) );
+            myReader = selCmd->Execute();
+            if( myReader != NULL  )
+            {
+                while ( myReader->ReadNext() )
+                    nullCount++;
+            }
+
+            selCmd->SetFilter( FdoPtr<FdoFilter>(FdoFilter::Parse(L"not(Geometry NULL)")) );
+            myReader = selCmd->Execute();
+            if( myReader != NULL  )
+            {
+                while ( myReader->ReadNext() )
+                    nnullCount++;
+            }
+
+            CPPUNIT_ASSERT( (rowCount > 0) && (rowCount == nullCount + nnullCount) );
         }
         catch( FdoException *ex )
         {
