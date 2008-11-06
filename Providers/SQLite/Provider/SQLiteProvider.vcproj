@@ -349,22 +349,6 @@
 	<References>
 	</References>
 	<Files>
-		<Filter
-			Name="ScrollableReader"
-			>
-			<File
-				RelativePath=".\FdoIExtendedSelect.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FdoIScrollableFeatureReader.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SltCommandType.h"
-				>
-			</File>
-		</Filter>
 		<File
 			RelativePath=".\PropertyNameIndex.h"
 			>

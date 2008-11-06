@@ -20,7 +20,6 @@
 #define SLT_READER_H
 
 #include "PropertyNameIndex.h"
-#include "FdoIScrollableFeatureReader.h"
 
 class SltConnection;
 class SpatialIterator;

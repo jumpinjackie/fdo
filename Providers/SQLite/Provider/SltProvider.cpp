@@ -28,8 +28,6 @@
 #include "SltExprExtensions.h"
 #include "SltGeomUtils.h"
 #include "SltQueryTranslator.h"
-#include "FdoIExtendedSelect.h"
-#include "SltCommandType.h"
 #include "RowidIterator.h"
 
 //#include "SpatialIndex.h"
@@ -306,7 +304,7 @@ FdoICommand* SltConnection::CreateCommand(FdoInt32 commandType)
         case FdoCommandType_CreateDataStore:        return new SltCreateDataStore(this);
         case FdoCommandType_CreateSpatialContext:   return new SltCreateSpatialContext(this);
         case FdoCommandType_ApplySchema:            return new SltApplySchema(this);
-        case SltCommandType_ExtendedSelect:         return new SltExtendedSelect(this);
+        case FdoCommandType_ExtendedSelect:         return new SltExtendedSelect(this);
         default: break;
     }
     
