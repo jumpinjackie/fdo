@@ -72,7 +72,7 @@ FdoIConnection* GetFdoCon(const wchar_t* srcfile, bool open)
     return conn_;
 }
 
-void PopulateSRSTable(FdoIConnection* dcon, FdoIConnection* con, map<wstring, wstring>& srs_name_id)
+void PopulateSRSTable(FdoIConnection* dcon, FdoIConnection* con)
 {
     //populate the spatial_ref_sys table
     FdoPtr<FdoIGetSpatialContexts> sc = (FdoIGetSpatialContexts*) con->CreateCommand(FdoCommandType_GetSpatialContexts);
@@ -95,7 +95,7 @@ void PopulateSRSTable(FdoIConnection* dcon, FdoIConnection* con, map<wstring, ws
 
 typedef std::pair<std::wstring, int> NameType;
 
-void CreateFeatureTable(FdoIConnection* dcon, FdoFeatureClass* fc, map<wstring,wstring>& srs_name_id, FdoIInsert* insert, int& autoGenIndex)
+void CreateFeatureTable(FdoIConnection* dcon, FdoFeatureClass* fc, FdoIInsert* insert, int& autoGenIndex)
 {
     autoGenIndex = -1;
 
@@ -113,7 +113,7 @@ void CreateFeatureTable(FdoIConnection* dcon, FdoFeatureClass* fc, map<wstring,w
     if (cloned->GetClassType() == FdoClassType_FeatureClass)
     {
         FdoPtr<FdoGeometricPropertyDefinition> gpd = ((FdoFeatureClass*)cloned.p)->GetGeometryProperty();
-        gpd->SetSpatialContextAssociation(srs_name_id[gpd->GetSpatialContextAssociation()].c_str());
+        gpd->SetSpatialContextAssociation(gpd->GetSpatialContextAssociation());
     }
 
     as->SetFeatureSchema(schema);
@@ -365,10 +365,7 @@ void ConvertFDOToSDFX(const wchar_t* src, const wchar_t* dst, bool optimize)
     dcon->Open();
 
     //make the spatial_ref_sys table
-    //the function will populate a map of spatial context name to SRID
-    //for later use when creating the geometry_columns table
-    map<wstring, wstring> srs_name_id;
-    PopulateSRSTable(dcon, con, srs_name_id);
+    PopulateSRSTable(dcon, con);
 
     //get the feature class
     //TODO: make this a loop over all feature classes
@@ -385,7 +382,7 @@ void ConvertFDOToSDFX(const wchar_t* src, const wchar_t* dst, bool optimize)
 
         //add class to the schema
         int autoGenIndex;
-        CreateFeatureTable(dcon, fc, srs_name_id, insert, autoGenIndex);
+        CreateFeatureTable(dcon, fc, insert, autoGenIndex);
 
         FdoPtr<FdoPropertyValueCollection> pvc = insert->GetPropertyValues();
         insert->SetFeatureClassName(fc->GetName());
