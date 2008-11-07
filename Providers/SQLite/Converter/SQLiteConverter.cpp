@@ -86,16 +86,7 @@ void PopulateSRSTable(FdoIConnection* dcon, FdoIConnection* con, map<wstring, ws
     {
         csc->SetCoordinateSystem(scr->GetCoordinateSystem());
         csc->SetCoordinateSystemWkt(scr->GetCoordinateSystemWkt());
-        
-        //the Name will map to an SRID in the SQLite table, so
-        //map the name to an integer, which we will then use as the
-        //spatial context association for the geom property
-        wchar_t sid[16];
-        _snwprintf(sid, 16, L"%d", id);
-        srs_name_id[scr->GetName()] = sid;
-        id++;
-
-        csc->SetName(sid);
+        csc->SetName(scr->GetName());
 
         csc->Execute();
     }
@@ -774,7 +765,7 @@ void TestPerformance(const wchar_t* filename)
     id = FdoIdentifier::Create(L"CROWN_AREA");
     idprops->Add(id);
     id = FdoIdentifier::Create(L"CROWN_VOL");
-    idprops->Add(id);
+    idprops->Add(id); 
     id = FdoIdentifier::Create(L"CRN_RAD");
     idprops->Add(id);
 */
