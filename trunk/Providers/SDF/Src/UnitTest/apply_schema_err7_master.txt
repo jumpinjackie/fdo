@@ -1,0 +1,1 @@
+ Unsupported Schema modification; Cannot modify GeometryProperty for feature class 'Acad:Conductor' 

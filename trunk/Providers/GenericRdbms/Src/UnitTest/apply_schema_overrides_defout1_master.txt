@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
+<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" tablespace="SYSTEM" tableMapping="Base" provider="Autodesk.Oracle.3.4" name="OverridesA">
+<complexType name="OvClassAType" tableMapping="Base">
+<element name="GeomA">
+<GeometricColumn name="OV_GEOMCOL_A"/>
+</element>
+</complexType>
+<complexType name="OvClassBType" tableMapping="Concrete">
+<element name="DataB">
+<Column name="OV_COL_B" sequenceName="OV_SEQ_1"/>
+</element>
+</complexType>
+<complexType name="OvClassCType" tableMapping="Concrete">
+<Table tablespace="USERS" pkeyName="PK_OV_TABLE_C" name="OV_TABLE_C"/>
+</complexType>
+<complexType name="OvClassDType" tableMapping="Base">
+<element name="DataD">
+<Column name="OV_COL_D" sequenceName="OV_SEQ_1"/>
+</element>
+</complexType>
+<complexType name="OvClassEType" tableMapping="Base"/>
+<complexType name="OvClassFType" tableMapping="Base">
+<element name="DataF">
+<Column name="OV_COL_F"/>
+</element>
+<element name="GeomF">
+<GeometricColumn name="OV_GEOMCOL_F"/>
+</element>
+</complexType>
+<complexType name="OvClassHType" tableMapping="Concrete">
+<element name="DataH">
+<Column name="OV_COL_H" sequenceName="OV_SEQ_2"/>
+</element>
+<element name="ObjectA">
+<PropertyMappingSingle prefix="prefixA"/>
+</element>
+<element name="ObjectB">
+<PropertyMappingSingle prefix="prefixB"/>
+</element>
+<element name="ObjectC">
+<PropertyMappingConcrete>
+<Table pkeyName="PK_OVCLASSH_FTABLEC" name="OVCLASSH_FTABLEC"/>
+<element name="ObjectA">
+<PropertyMappingSingle prefix="prefixA"/>
+</element>
+<element name="OpB">
+<Column name="OP_COL_B"/>
+</element>
+<element name="OvClassH_FeatId">
+<Column name="PARENTID"/>
+</element>
+</PropertyMappingConcrete>
+</element>
+<element name="ObjectD">
+<PropertyMappingConcrete>
+<Table pkeyName="PK_OVCLASSH_FTABLED" name="OVCLASSH_FTABLED"/>
+<element name="ObjectA">
+<PropertyMappingConcrete>
+<Table pkeyName="PK_FNESTED_DA" name="FNESTED_DA"/>
+<element name="ObjectA">
+<PropertyMappingSingle prefix="prefixA"/>
+</element>
+<element name="OpA">
+<Column name="NESTED_COL_A"/>
+</element>
+<element name="OpB">
+<Column name="OP_COL_B"/>
+</element>
+</PropertyMappingConcrete>
+</element>
+<element name="OpB">
+<Column name="OP_COL_B"/>
+</element>
+</PropertyMappingConcrete>
+</element>
+</complexType>
+<complexType name="OvClassIType" tableMapping="Base">
+<element name="GeomI">
+<GeometricColumn name="GEOMI"/>
+</element>
+<element name="ObjectE">
+<PropertyMappingSingle prefix="prefixE"/>
+</element>
+<element name="ObjectF">
+<PropertyMappingConcrete>
+<Table pkeyName="PK_OVCLASSI_FTABLEF" name="OVCLASSI_FTABLEF"/>
+<element name="OpA">
+<Column name="OP_PROP_A"/>
+</element>
+<element name="OvClassI_FeatId">
+<Column name="PARENTID"/>
+</element>
+</PropertyMappingConcrete>
+</element>
+</complexType>
+<complexType name="OvClassJType">
+<element name="DataJ">
+<Column name="OV_COL_J"/>
+</element>
+</complexType>
+<complexType name="OvOpClassHAType">
+<Table name="OPS_TABLE_HA"/>
+<element name="ObjectA">
+<PropertyMappingSingle prefix="prefixA"/>
+</element>
+</complexType>
+<complexType name="OvOpClassHAAType">
+<Table name="OPS_TABLE_HAA"/>
+<element name="ObjectA">
+<PropertyMappingSingle prefix="prefixA"/>
+</element>
+</complexType>
+<complexType name="OvOpClassHAAAType">
+<Table name="OPS_TABLE_HAAA"/>
+</complexType>
+<complexType name="OvOpClassHBType">
+<Table name="OPS_TABLE_HB"/>
+<element name="ObjectA">
+<PropertyMappingConcrete>
+<Table name="OVOPCLASSHB_FTABLEA"/>
+</PropertyMappingConcrete>
+</element>
+</complexType>
+<complexType name="OvOpClassHBAType">
+<Table pkeyName="PK_OPC_TABLE_HBA" name="OPC_TABLE_HBA"/>
+</complexType>
+<complexType name="OvOpClassHCType">
+<Table pkeyName="PK_OPC_TABLE_HC" name="OPC_TABLE_HC"/>
+<element name="ObjectA">
+<PropertyMappingSingle prefix="prefixA"/>
+</element>
+<element name="OpB">
+<Column name="OP_COL_B"/>
+</element>
+</complexType>
+<complexType name="OvOpClassHCAType">
+<Table name="OPS_TABLE_HCA"/>
+</complexType>
+<complexType name="OvOpClassHDType">
+<Table name="OPC_TABLE_HD"/>
+<element name="ObjectA">
+<PropertyMappingConcrete>
+<Table name="OVOPCLASSHD_FTABLEA"/>
+<element name="ObjectA">
+<PropertyMappingSingle prefix="prefixA"/>
+</element>
+<element name="OpB">
+<Column name="OP_COL_B"/>
+</element>
+</PropertyMappingConcrete>
+</element>
+<element name="OpB">
+<Column name="op_col_b"/>
+</element>
+</complexType>
+<complexType name="OvOpClassHDAType">
+<Table pkeyName="PK_OPC_TABLE_HDA" name="OPC_TABLE_HDA"/>
+<element name="ObjectA">
+<PropertyMappingSingle prefix="prefixA"/>
+</element>
+<element name="OpB">
+<Column name="OP_COL_B"/>
+</element>
+</complexType>
+<complexType name="OvOpClassHDAAType">
+<Table name="OPS_TABLE_HDAA"/>
+</complexType>
+<complexType name="OvOpClassIEType">
+<Table name="OPS_TABLE_IE"/>
+</complexType>
+<complexType name="OvOpClassIFType">
+<Table name="OPC_TABLE_IF"/>
+</complexType>
+</SchemaMapping>
+</fdo:DataStore>

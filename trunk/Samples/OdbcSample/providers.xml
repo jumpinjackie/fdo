@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<FeatureProviderRegistry>
+  <FeatureProvider>
+    <Name>OSGeo.ODBC.3.3</Name>
+    <DisplayName>OSGeo FDO Provider for ODBC</DisplayName>
+    <Description>Read/write access to ODBC-based data store. Supports XYZ point features.</Description>
+    <IsManaged>False</IsManaged>
+    <Version>3.3.0.0</Version>
+    <FeatureDataObjectsVersion>3.3.0.0</FeatureDataObjectsVersion>
+    <LibraryPath>.\ODBCProvider.dll</LibraryPath>
+  </FeatureProvider>
+</FeatureProviderRegistry>
