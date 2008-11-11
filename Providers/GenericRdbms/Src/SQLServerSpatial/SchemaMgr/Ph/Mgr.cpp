@@ -281,12 +281,19 @@ FdoPtr<FdoDataValue> FdoSmPhSqsMgr::ParseSQLVal( FdoStringP stringValue )
         start = 2;
         length = length - 4;
     }
-    // Remove brackets and Unicode specifier from string values
+    // If Unicode string, remove brackets and Unicode specifier
     else if ( (wcsncmp(stringValue, L"(N'", 3) == 0) &&
          (wcscmp(&(((FdoString*)stringValue)[length-2]), L"')") == 0) 
     ) {
         start = 2;
         length = length - 3;
+    }
+    // If non-Unicode string, just remove brackets
+    else if ( (wcsncmp(stringValue, L"('", 2) == 0) &&
+         (wcscmp(&(((FdoString*)stringValue)[length-2]), L"')") == 0) 
+    ) {
+        start = 1;
+        length = length - 2;
     }
 
     if ( start > 0 ) 

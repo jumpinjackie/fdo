@@ -189,24 +189,6 @@ void FdoDataPropertyDefinition::SetDefaultValue(FdoString* value)
 {
     _StartChanges();
 
-    if ( value && (value[0] != 0) && (GetDataType() != FdoDataType_String) ) 
-    {
-        // Basic check to see if default value is a data value.
-        // TODO: check if data value type compatible with data type for this property.
-        try 
-        {
-            FdoPtr<FdoExpression> expr = FdoExpression::Parse( value );
-            if ( !dynamic_cast<FdoDataValue*>(expr.p) )
-                ThrowDefaultValueError( value );
-        }
-        catch ( FdoException* ex ) {
-            // Parse exception message too general for this case
-            // so not incorporated into error message.
-            ThrowDefaultValueError( value );
-            FDO_SAFE_RELEASE(ex);
-        }
-    }
-
     if (m_defaultValue != NULL)
     {
         if (m_defaultValueCHANGED != m_defaultValue)
