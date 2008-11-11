@@ -63,18 +63,22 @@ void MySqlFdoFilterTest::SetProvider ()
 
 void MySqlFdoFilterTest::TranslateFilter (FdoFilter   *filter,
                                           bool        is_nesting_expected,
+                                          bool        is_grouping_expected,
                                           UnitTestIds unit_test_id)
 
 // +---------------------------------------------------------------------------
-// | The function executes the nested filter SQL tests and checks if nesting of
-// | a filter statement is applied only if necessary.
+// | The function requests the SQL representation of the given filter and
+// | checks the result whether or not nesting or grouping has been used. If
+// | nesting or grouping has been used where none is expected or nesting or
+// | grouping has not been used when expected an exception is issued.
 // +---------------------------------------------------------------------------
 
 {
 
     // Declare and initialize all necessary local vatiables.
 
-    bool                         is_nested         = false;
+    bool                         is_nested         = false,
+                                 is_grouped        = false;
 
     FdoStringP                   generated_sql;
 
@@ -97,33 +101,70 @@ void MySqlFdoFilterTest::TranslateFilter (FdoFilter   *filter,
                                                     SqlCommandType_Select,
                                                     FdoCommandType_Select);
 
-    // Check whether or not the generated SQL statement is nested. An exception
-    // is issued if it is nested but not expected or vise versa.
+    // The generated SQL statement is checked for nesting in all cases. An
+    // exception is issued if it is nested but not expected or vise versa.
 
     printf(" >>> Checking whether or not the SQL statement is nested. \n");
 
-    is_nested = CheckForNesting(GetValidationString(generated_sql,
-                                                    unit_test_id));
+    is_nested = CheckForNesting(GetValidationStringNesting(generated_sql,
+                                                           unit_test_id));
 
-    if ((is_nested ) && (is_nesting_expected ))
+    if ((is_nested) && (is_nesting_expected))
         printf(" >>> ... SQL statement is nested as expected. \n");
 
     if ((!is_nested) && (!is_nesting_expected))
         printf(" >>> ... SQL statement is not nested as expected. \n");
 
-    if ((is_nested ) && (!is_nesting_expected)) {
+    if ((is_nested) && (!is_nesting_expected)) {
 
         printf(" ... generated SQL statement >>%s<< \n", (FdoString*) generated_sql);
         throw FdoException::Create(L"Unexpected nesting of filter in SQL");
 
     }  //  if ((is_nested ) && (!is_nesting_expected)) ...
 
-    if ((!is_nested) && (is_nesting_expected )) {
+    if ((!is_nested) && (is_nesting_expected)) {
 
         printf(" ... generated SQL statement >>%s<< \n", (FdoString *)generated_sql);
         throw FdoException::Create(L"Unexpected not-nesting of filter in SQL");
 
-    }  //  ((!is_nested) && (is_nesting_expected )) ...
+    }  //  ((!is_nested) && (is_nesting_expected)) ...
+
+    // Some SQL statements are checked for grouping. An exception is issued if
+    // grouping is expected but not present or vise versa.
+
+    if (unit_test_id == SPATIALOBJECTFILTERCASE_1) {
+
+       printf(" >>> Checking whether or not the SQL statement is grouped. \n");
+       is_grouped =
+                CheckForGrouping(GetValidationStringGrouping(generated_sql,
+                                                             unit_test_id),
+                                 unit_test_id);
+
+        if ((is_grouped) && (is_grouping_expected))
+        printf(" >>> ... SQL statement is grouped as expected. \n");
+
+        if ((!is_grouped) && (!is_grouping_expected))
+        printf(" >>> ... SQL statement is not grouped as expected. \n");
+
+        if ((is_grouped) && (!is_grouping_expected)) {
+
+            printf(" ... generated SQL statement >>%s<< \n",
+                   (FdoString*) generated_sql);
+            throw FdoException::Create(
+                                L"Unexpected groupinging of filter in SQL");
+
+        }  //  if ((is_grouped) && (!is_grouping_expected)) ...
+
+        if ((!is_grouped) && (is_grouping_expected)) {
+
+            printf(" ... generated SQL statement >>%s<< \n",
+                   (FdoString *)generated_sql);
+            throw FdoException::Create(
+                                L"Unexpected not-grouping of filter in SQL");
+
+        }  //  ((!is_grouped) && (is_grouping_expected)) ...
+
+    }  //  if (unit_test_id == SPATIALOBJECTFILTERCASE_1) ...
 
 }  //  TranslateFilter ()
 
@@ -132,7 +173,36 @@ void MySqlFdoFilterTest::TranslateFilter (FdoFilter   *filter,
 // --                            Helper Functions                            --
 // ----------------------------------------------------------------------------
 
-FdoStringP MySqlFdoFilterTest::GetValidationString (
+FdoStringP MySqlFdoFilterTest::GetValidationStringGrouping (
+                                                FdoStringP  sql_statement,
+                                                UnitTestIds unit_test_id)
+
+// +---------------------------------------------------------------------------
+// | The generated SQL statement is a select-statement. This function deter-
+// | mines the part that represents the filter and returns it back to the
+// | calling routine.
+// +---------------------------------------------------------------------------
+
+{
+
+    // The generated SQL statement contains a SQL statement that contains more
+    // than just the filter SQL representation. The following separates the
+    // filter SQL representation and returns it back to the caller. The pro-
+    // cess of getting that part depends on the executed test.
+
+    switch (unit_test_id) {
+
+      case SPATIALOBJECTFILTERCASE_1:
+        return sql_statement.Right(L"WHERE"); 
+
+      default:
+        return L"";
+
+    }  //  switch ...
+
+}  // GetValidationStringGrouping ()
+
+FdoStringP MySqlFdoFilterTest::GetValidationStringNesting (
                                                 FdoStringP  sql_statement,
                                                 UnitTestIds unit_test_id)
 
@@ -154,6 +224,7 @@ FdoStringP MySqlFdoFilterTest::GetValidationString (
       case MAXORFILTERSELECTTEST:
       case NEGATIONORFILTERSELECTTEST_2:
       case NESTEDFILTERSQLTEST:
+      case SPATIALOBJECTFILTERCASE_2:
         return sql_statement.Right(L"WHERE"); 
 
       case NEGATIONORFILTERSELECTTEST_1:
@@ -164,6 +235,6 @@ FdoStringP MySqlFdoFilterTest::GetValidationString (
 
     }  //  switch ...
 
-}  // GetValidationString ()
+}  // GetValidationStringNesting ()
 
 

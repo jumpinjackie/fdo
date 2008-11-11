@@ -61,12 +61,14 @@ protected:
 
     //  TranslateFilter:
     //      The function requests the SQL representation of the given filter
-    //      and checks the result whether or not nesting has been used. If
-    //      nesting has been used where none is expected or nesting has not
-    //      been used when expected an exception is issued.
+    //      and checks the result whether or not nesting or grouping has been
+    //      used. If nesting or grouping has been used where none is expected
+    //      or nesting or grouping has not been used when expected an exception
+    //      is issued.
 
     void TranslateFilter (FdoFilter   *filter,
                           bool        is_nesting_expected,
+                          bool        is_grouping_expected,
                           UnitTestIds unit_test_id);
 
 
@@ -76,13 +78,21 @@ private:
     //                               Helper Functions
     //-------------------------------------------------------------------------
 
-    //  GetValidationString:
+    //  GetValidationStringGrouping:
     //      The generated SQL statement is a select-statement. This function
     //      determines the part that represents the filter and returns it back
     //      to the calling routine.
 
-    FdoStringP GetValidationString (FdoStringP  sql_statement,
-                                    UnitTestIds unit_test_id);   
+    FdoStringP GetValidationStringGrouping (FdoStringP  sql_statement,
+                                            UnitTestIds unit_test_id);   
+
+    //  GetValidationStringNesting:
+    //      The generated SQL statement is a select-statement. This function
+    //      determines the part that represents the filter and returns it back
+    //      to the calling routine.
+
+    FdoStringP GetValidationStringNesting (FdoStringP  sql_statement,
+                                           UnitTestIds unit_test_id);   
 
 
 
