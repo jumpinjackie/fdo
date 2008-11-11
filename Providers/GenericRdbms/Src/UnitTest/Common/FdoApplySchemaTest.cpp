@@ -3415,7 +3415,37 @@ void FdoApplySchemaTest::CreateErrorSchema( FdoIConnection* connection )
 	FdoPropertiesP(pBadDefaults->GetProperties())->Add( pProp );
 	FdoDataPropertiesP(pBadDefaults->GetIdentityProperties())->Add( pProp );
 
-    pProp = FdoDataPropertyDefinition::Create( L"datetime", L"" );
+    pProp = FdoDataPropertyDefinition::Create( L"int64a", L"" );
+	pProp->SetDataType( FdoDataType_Int64 );
+	pProp->SetNullable(false);
+    pProp->SetDefaultValue(L"ABC");
+	FdoPropertiesP(pBadDefaults->GetProperties())->Add( pProp );
+
+    pProp = FdoDataPropertyDefinition::Create( L"datetime1", L"" );
+	pProp->SetDataType( FdoDataType_DateTime );
+	pProp->SetNullable(false);
+    pProp->SetDefaultValue(L"15-OCT-2001");
+	FdoPropertiesP(pBadDefaults->GetProperties())->Add( pProp );
+
+    pProp = FdoDataPropertyDefinition::Create( L"datetime2", L"" );
+	pProp->SetDataType( FdoDataType_DateTime );
+	pProp->SetNullable(false);
+    pProp->SetDefaultValue(L"string");
+	FdoPropertiesP(pBadDefaults->GetProperties())->Add( pProp );
+
+    pProp = FdoDataPropertyDefinition::Create( L"datetime3", L"" );
+	pProp->SetDataType( FdoDataType_DateTime );
+	pProp->SetNullable(false);
+    pProp->SetDefaultValue(L"TIMESTAMP '12345'");
+	FdoPropertiesP(pBadDefaults->GetProperties())->Add( pProp );
+
+    pProp = FdoDataPropertyDefinition::Create( L"datetime4", L"" );
+	pProp->SetDataType( FdoDataType_DateTime );
+	pProp->SetNullable(false);
+    pProp->SetDefaultValue(L"TIMESTAMP '2001-05-12 00'");
+	FdoPropertiesP(pBadDefaults->GetProperties())->Add( pProp );
+
+    pProp = FdoDataPropertyDefinition::Create( L"datetime5", L"" );
 	pProp->SetDataType( FdoDataType_DateTime );
 	pProp->SetNullable(false);
     pProp->SetDefaultValue(L"TIME '11:00:15'");
