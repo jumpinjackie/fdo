@@ -42,6 +42,7 @@ FdoRdbmsFilterProcessor::FdoRdbmsFilterProcessor():
  mNextTabAliasId ( 0 ),
  mUseTableAliases( true ),
  mUseNesting( true ),
+ mUseGrouping( false ),
  mAddNegationBracket( false )
 {
 
@@ -57,6 +58,7 @@ FdoRdbmsFilterProcessor::FdoRdbmsFilterProcessor(FdoRdbmsConnection *connection)
  mNextTabAliasId ( 0 ),
  mUseTableAliases( true ),
  mUseNesting( true ),
+ mUseGrouping( false ),
  mAddNegationBracket( false )
 {
 
@@ -744,6 +746,8 @@ void FdoRdbmsFilterProcessor::ProcessGeometryValue(FdoGeometryValue& expr)
 ///////////////////////////////////////////////////////////////
 void FdoRdbmsFilterProcessor::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& filter)
 {
+    bool useGrouping = false;
+
     FdoPtr<FdoFilter>leftOperand = filter.GetLeftOperand();
     FdoPtr<FdoFilter>rightOperand = filter.GetRightOperand();
     if( leftOperand == NULL  )
@@ -759,9 +763,19 @@ void FdoRdbmsFilterProcessor::ProcessBinaryLogicalOperator(FdoBinaryLogicalOpera
         AppendString(OPEN_PARENTH);
     if( filter.GetOperation() == FdoBinaryLogicalOperations_And )
     {
+        useGrouping  = mUseGrouping;
+        mUseGrouping = false;
+        if (useGrouping)
+            AppendString(OPEN_PARENTH);
         HandleFilter( leftOperand );
+        if (useGrouping)
+            AppendString(CLOSE_PARENTH);
         AppendString( LOGICAL_AND );
+        if (useGrouping)
+            AppendString(OPEN_PARENTH);
         HandleFilter( rightOperand );
+        if (useGrouping)
+            AppendString(CLOSE_PARENTH);
     }
     else
     {
@@ -1053,12 +1067,25 @@ void FdoRdbmsFilterProcessor::AnalyzeFilter (FdoFilter *filter)
         //      logical operator NOT.
         bool containsUnaryLogicalOperatorNot;
 
+        //  firstBinaryLogicalOperatorFound:
+        //      A flag to identify the first node of a binary logical operator
+        bool firstBinaryLogicalOperatorFound;
+
+        //  isSpatialObjectFilter:
+        //      A flag to indicate whether or not the filter represents a
+        //      spatial-object filter. A spatial object filter is given if
+        //      the left and right operand of a binary logical operator AND
+        //      consists of a single binary logical operator only.
+        bool isSpatialObjectFilter;
+
         // Constructor.
         FilterAnalyzer() 
         { 
             containsBinaryLogicalOperatorAnd = false;
 			containsBinaryLogicalOperatorOr  = false;
             containsUnaryLogicalOperatorNot  = false;
+            isSpatialObjectFilter            = false;
+            firstBinaryLogicalOperatorFound  = false;
         }  
 
         // Processes a binary logical operator node. Depending on the used
@@ -1067,18 +1094,117 @@ void FdoRdbmsFilterProcessor::AnalyzeFilter (FdoFilter *filter)
         virtual void ProcessBinaryLogicalOperator(
                                             FdoBinaryLogicalOperator& filter)
         {
-            FdoBinaryLogicalOperations binaryLogicalOperator;
+            bool isTopBinaryLogicalOperator   = false,
+                 hasBinaryLogicalOperatorAnd  = false,
+                 hasBinaryLogicalOperatorOr   = false,
+                 isSingleLeftOperandOperator  = false,
+                 isSingleRightOperandOperator = false,
+                 isBinaryLogicalOperatorAnd   = false,
+                 isBinaryLogicalOperatorOr    = false;
+
+            FdoBinaryLogicalOperations leftOperandOperator  = FdoBinaryLogicalOperations_And,
+                                       rightOperandOperator = FdoBinaryLogicalOperations_And,
+                                       binaryLogicalOperator;
+
             binaryLogicalOperator = filter.GetOperation();
 
-            if (binaryLogicalOperator == FdoBinaryLogicalOperations_And)
-                containsBinaryLogicalOperatorAnd = true;
-            if (binaryLogicalOperator == FdoBinaryLogicalOperations_Or)
-                containsBinaryLogicalOperatorOr = true;
+            // If this is the top level binary logical operator, remember it
+            // as this means that specific checks need to be done at the end
+            // of the routine.
+            if (!firstBinaryLogicalOperatorFound)
+            {
+                isTopBinaryLogicalOperator      = true;
+                firstBinaryLogicalOperatorFound = true;
+            }
 
+            // If this is the top level binary logical operator, remember the
+            // operator type in a local variable first. Otherwise, use the
+            // global variables.
+            if (isTopBinaryLogicalOperator)
+            {
+                if (binaryLogicalOperator == FdoBinaryLogicalOperations_And)
+                    isBinaryLogicalOperatorAnd = true;
+                if (binaryLogicalOperator == FdoBinaryLogicalOperations_Or)
+                    isBinaryLogicalOperatorOr = true;
+            }
+            else
+            {
+                if (binaryLogicalOperator == FdoBinaryLogicalOperations_And)
+                    containsBinaryLogicalOperatorAnd = true;
+                if (binaryLogicalOperator == FdoBinaryLogicalOperations_Or)
+                    containsBinaryLogicalOperatorOr = true;
+            }
+
+            // Parse the left operand of the binary logical operation.
             if (filter.GetLeftOperand() != NULL)
                 filter.GetLeftOperand()->Process(this);
+
+            // If this is the top level binary logical operator node, check
+            // if there was a single binary logical operator used in the left
+            // operand and if this is the case, remember the operator.
+            if (isTopBinaryLogicalOperator)
+            {
+                isSingleLeftOperandOperator = (((containsBinaryLogicalOperatorAnd ) &&
+                                                (!containsBinaryLogicalOperatorOr ) &&
+                                                (!containsUnaryLogicalOperatorNot )    ) ||
+                                               ((containsBinaryLogicalOperatorOr  ) &&
+                                                (!containsBinaryLogicalOperatorAnd) &&
+                                                (!containsUnaryLogicalOperatorNot )    )    );
+                if (isSingleLeftOperandOperator)
+                    if (containsBinaryLogicalOperatorAnd)
+                        leftOperandOperator = FdoBinaryLogicalOperations_And;
+                    else
+                        leftOperandOperator = FdoBinaryLogicalOperations_Or;
+
+                // Remember the settings of the flags and reset them to the
+                // inital value for the processing of the right operand of
+                // the node.
+                hasBinaryLogicalOperatorAnd      = containsBinaryLogicalOperatorAnd;
+                hasBinaryLogicalOperatorOr       = containsBinaryLogicalOperatorOr;
+                containsBinaryLogicalOperatorAnd = false;
+                containsBinaryLogicalOperatorOr  = false;
+            }
+
+            // Process the right tree of the node.
             if (filter.GetRightOperand() != NULL)
                 filter.GetRightOperand()->Process(this);
+
+            // If this is the top level binary logical operator node, check
+            // if there was a single binary logical operator used in the right
+            // operand and if this is the case, remember the operator.
+            if (isTopBinaryLogicalOperator)
+            {
+                isSingleRightOperandOperator = (((containsBinaryLogicalOperatorAnd ) &&
+                                                 (!containsBinaryLogicalOperatorOr ) &&
+                                                 (!containsUnaryLogicalOperatorNot )    ) ||
+                                                ((containsBinaryLogicalOperatorOr  ) &&
+                                                 (!containsBinaryLogicalOperatorAnd) &&
+                                                 (!containsUnaryLogicalOperatorNot )    )    );
+                if (isSingleRightOperandOperator)
+                    if (containsBinaryLogicalOperatorAnd)
+                        rightOperandOperator = FdoBinaryLogicalOperations_And;
+                    else
+                        rightOperandOperator = FdoBinaryLogicalOperations_Or;
+
+                // Determine if this is a spatial-object filter.
+                if ((isSingleLeftOperandOperator) && (isSingleRightOperandOperator))
+                    isSpatialObjectFilter =
+                        ((((leftOperandOperator  == FdoBinaryLogicalOperations_And) &&
+                           (rightOperandOperator == FdoBinaryLogicalOperations_Or )    ) ||
+                          ((leftOperandOperator  == FdoBinaryLogicalOperations_Or) &&
+                           (rightOperandOperator == FdoBinaryLogicalOperations_And)    )    ) &&
+                         (isBinaryLogicalOperatorAnd                                        )    );
+
+                // Reset the public flags.
+                containsBinaryLogicalOperatorOr  =
+                                        containsBinaryLogicalOperatorOr  || 
+                                        hasBinaryLogicalOperatorOr ||
+                                        isBinaryLogicalOperatorOr;
+                containsBinaryLogicalOperatorAnd =
+                                        containsBinaryLogicalOperatorAnd ||
+                                        hasBinaryLogicalOperatorAnd ||
+                                        isBinaryLogicalOperatorAnd;
+            }
         }
 
         virtual void ProcessUnaryLogicalOperator(
@@ -1093,6 +1219,7 @@ void FdoRdbmsFilterProcessor::AnalyzeFilter (FdoFilter *filter)
     // Initialize the member variables that are set by this routine. The default
     // value should reflect the current behavior.
     mUseNesting         = true;
+    mUseGrouping        = false;
     mAddNegationBracket = false;
 
     // Analyze the filter.
@@ -1105,8 +1232,14 @@ void FdoRdbmsFilterProcessor::AnalyzeFilter (FdoFilter *filter)
     if ((filterAnalyzer.containsBinaryLogicalOperatorAnd) ||
         (filterAnalyzer.containsBinaryLogicalOperatorOr)     )
     {
-        mUseNesting = filterAnalyzer.containsBinaryLogicalOperatorAnd &&
-                      filterAnalyzer.containsBinaryLogicalOperatorOr;
+        if (filterAnalyzer.isSpatialObjectFilter)
+        {
+            mUseNesting  = false;
+            mUseGrouping = true;
+        }
+        else
+            mUseNesting = filterAnalyzer.containsBinaryLogicalOperatorAnd &&
+                          filterAnalyzer.containsBinaryLogicalOperatorOr;
         mAddNegationBracket =
                         !mUseNesting &&
                         filterAnalyzer.containsUnaryLogicalOperatorNot;
