@@ -270,14 +270,63 @@ void FdoFilterTest::RunAllFltTests ()
 
 {
 
+    // Declare and initialize all necessary local variables.
+
+    int error_count = 0;
+
     // Executing all test functions.
 
     printf(" >>> ... Testing Nesting \n");
     printf("\n");
 
-    NestedFilterSQLTest();
-    MaxORFilterSelectTest();
-    NegationORFilterSelectTest();
+    try {
+
+      NestedFilterSQLTest();
+
+    }  //  try ...
+    catch ( ... ) {
+
+      error_count++;
+
+    }  //  catch ...
+
+    try {
+
+      MaxORFilterSelectTest();
+
+    }  //  try ...
+    catch ( ... ) {
+
+      error_count++;
+
+    }  //  catch ...
+
+    try {
+
+      NegationORFilterSelectTest();
+
+    }  //  try ...
+    catch ( ... ) {
+
+      error_count++;
+
+    }  //  catch ...
+
+    try {
+
+        SpatialObjectFilterTest();
+
+    }  //  try ...
+    catch ( ... ) {
+
+      error_count++;
+
+    }  //  catch ...
+
+    if (error_count > 0)
+        throw FdoException::Create(
+                            L">>> Unit tests executed with errors");
+
 
 }  //  RunAllFltTests ()
 
@@ -334,7 +383,7 @@ void FdoFilterTest::MaxORFilterSelectTest ()
       // generated SQL statement is nested. In this case, no nesting should
       // be present.
 
-      TranslateFilter(filter, false, MAXORFILTERSELECTTEST);
+      TranslateFilter(filter, false, false, MAXORFILTERSELECTTEST);
 
       // Execute the request.
 
@@ -403,7 +452,7 @@ void FdoFilterTest::NegationORFilterSelectTest ()
       // Translate the filter into a SQL statement and check whether or not
       // nesting is used. In this case, no nesting should be present.
 
-      TranslateFilter(filter, false, NEGATIONORFILTERSELECTTEST_1);
+      TranslateFilter(filter, false, false, NEGATIONORFILTERSELECTTEST_1);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -443,7 +492,7 @@ void FdoFilterTest::NegationORFilterSelectTest ()
       // Translate the filter into a SQL statement and check whether or not
       // nesting is used. In this case, no nesting should be present.
 
-      TranslateFilter(filter, false, NEGATIONORFILTERSELECTTEST_2);
+      TranslateFilter(filter, false, false, NEGATIONORFILTERSELECTTEST_2);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -504,7 +553,7 @@ void FdoFilterTest::NestedFilterSQLTest ()
       // Translate the filter into a SQL statement and check whether or not
       // nesting is used. In this case, no nesting should be present.
 
-      TranslateFilter(filter, false, NESTEDFILTERSQLTEST);
+      TranslateFilter(filter, false, false, NESTEDFILTERSQLTEST);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -543,7 +592,7 @@ void FdoFilterTest::NestedFilterSQLTest ()
       // Translate the filter into a SQL statement and check whether or not
       // nesting is used. In this case, no nesting should be present.
 
-      TranslateFilter(filter, false, NESTEDFILTERSQLTEST);
+      TranslateFilter(filter, false, false, NESTEDFILTERSQLTEST);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -584,7 +633,7 @@ void FdoFilterTest::NestedFilterSQLTest ()
       // Translate the filter into a SQL statement and check whether or not
       // nesting is used. In this case, nesting should be present.
 
-      TranslateFilter(filter, true, NESTEDFILTERSQLTEST);
+      TranslateFilter(filter, true, false, NESTEDFILTERSQLTEST);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -625,7 +674,7 @@ void FdoFilterTest::NestedFilterSQLTest ()
       // Translate the filter into a SQL statement and check whether or not
       // nesting is used. In this case, nesting should be present.
 
-      TranslateFilter(filter, true, NESTEDFILTERSQLTEST);
+      TranslateFilter(filter, true, false, NESTEDFILTERSQLTEST);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -646,6 +695,278 @@ void FdoFilterTest::NestedFilterSQLTest ()
     }  //  catch ( ... ) ...
 
 }  //  NestedFilterSQLTest ()
+
+void FdoFilterTest::SpatialObjectFilterTest ()
+
+// +---------------------------------------------------------------------------
+// | The function executes tests that check if the filter processor correctly
+// | identifies a filter case where a spatial and an object filter are combined
+// | with a binary logical operation as this kind of filter has a specific
+// | optimization.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    FdoPtr<FdoFilter>         filter,
+                              object_filter,
+                              spatial_filter,
+                              tc4_filter_left,
+                              tc4_filter_right;
+
+    FdoPtr<FdoIFeatureReader> feature_reader;
+
+    printf("\n");
+    printf("========================================================== \n");
+    printf(" Current Unit Test Suite: Spatial/Object Filter Test       \n");
+    printf("========================================================== \n");
+    printf("\n");
+
+    // Test Setup.
+
+    printf("---------------------------------------------------------- \n");
+    printf("Test Setup:                                                \n");
+    printf("   Define filters that are commonly used in the tests.     \n"); 
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      spatial_filter =
+            FdoFilter::Parse(
+                    L"(id > -180 and id < 180) and (id > -90 and id < 90)");
+      object_filter  =
+            FdoFilter::Parse(
+                        L"id = 1 or id = 2 or id = 3 or id = 4 or id = 5");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test setup failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test setup failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    // Execute the test cases.
+
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select command with a filter that    \n");
+    printf("  is constructed of a spatial and object filter combined   \n");
+    printf("  by the binary logical operator AND where the spatial     \n");
+    printf("  filter is the left and the object filter the right       \n");
+    printf("  operand. The generated SQL statement should not be       \n");
+    printf("  nested. However, the two filters should each be grouped  \n");
+    printf("  (included in opening and closing brackets). No exception \n");
+    printf("  is expected.                                             \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Build the filter.
+
+      filter = FdoFilter::Combine(spatial_filter,
+                                  FdoBinaryLogicalOperations_And,
+                                  object_filter);
+
+      // As part of the test, the function also checks whether or not the
+      // generated SQL statement is nested. In this case, no nesting should
+      // be present.
+
+      TranslateFilter(filter, false, true, SPATIALOBJECTFILTERCASE_1);
+
+      // Execute the request.
+
+      printf(" >>> Execute the request \n");
+      feature_reader = ExecuteSelectCommand(L"flt_c1", filter);
+      CheckReader(feature_reader, 5);
+
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
+    printf("  The test executes a select command with a filter that    \n");
+    printf("  is constructed of a spatial and object filter combined   \n");
+    printf("  by the binary logical operator AND where the spatial     \n");
+    printf("  filter is the right and the object filter the left       \n");
+    printf("  operand. The generated SQL statement should not be       \n");
+    printf("  nested. However, the two filters should each be grouped  \n");
+    printf("  (included in opening and closing brackets). No exception \n");
+    printf("  is expected.                                             \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Build the filter.
+
+      filter = FdoFilter::Combine(object_filter,
+                                  FdoBinaryLogicalOperations_And,
+                                  spatial_filter);
+
+      // As part of the test, the function also checks whether or not the
+      // generated SQL statement is nested. In this case, no nesting should
+      // be present.
+
+      TranslateFilter(filter, false, true, SPATIALOBJECTFILTERCASE_1);
+
+      // Execute the request.
+
+      printf(" >>> Execute the request \n");
+      feature_reader = ExecuteSelectCommand(L"flt_c1", filter);
+      CheckReader(feature_reader, 5);
+
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("---------------------------------------------------------- \n");
+    printf("3. Test Case:                                              \n");
+    printf("  The test executes a select command with a filter that    \n");
+    printf("  is constructed of a spatial and object filter combined   \n");
+    printf("  by the binary logical operator OR where the spatial      \n");
+    printf("  filter is the right and the object filter the left       \n");
+    printf("  operand. The generated SQL statement should be nested    \n");
+    printf("  and not grouped (included opening and closing brackets). \n");
+    printf("  No exceptions are expected.                              \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Build the filter.
+
+      filter = FdoFilter::Combine(object_filter,
+                                  FdoBinaryLogicalOperations_Or,
+                                  spatial_filter);
+
+      // As part of the test, the function also checks whether or not the
+      // generated SQL statement is nested. In this case, no nesting should
+      // be present.
+
+      TranslateFilter(filter, true, false, SPATIALOBJECTFILTERCASE_2);
+
+      // Execute the request.
+
+      printf(" >>> Execute the request \n");
+      feature_reader = ExecuteSelectCommand(L"flt_c1", filter);
+      CheckReader(feature_reader, 90);
+
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("---------------------------------------------------------- \n");
+    printf("4. Test Case:                                              \n");
+    printf("  The test executes a select command with a filter that    \n");
+    printf("  consists of two of the spatial/object filters combined   \n");
+    printf("  by a binary logical operator AND. The generated SQL      \n");
+    printf("  statement should be nested and not grouped (included     \n");
+    printf("  opening and closing brackets). No exceptions are         \n");
+    printf("  expected.                                                \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Build the filter.
+
+      tc4_filter_left  = FdoFilter::Combine(object_filter,
+                                            FdoBinaryLogicalOperations_And,
+                                            spatial_filter);
+      tc4_filter_right = FdoFilter::Combine(object_filter,
+                                            FdoBinaryLogicalOperations_And,
+                                            spatial_filter);
+
+      filter = FdoFilter::Combine(tc4_filter_left,
+                                  FdoBinaryLogicalOperations_And,
+                                  tc4_filter_right);
+
+      // As part of the test, the function also checks whether or not the
+      // generated SQL statement is nested. In this case, no nesting should
+      // be present.
+
+      TranslateFilter(filter, true, false, SPATIALOBJECTFILTERCASE_2);
+
+      // Execute the request.
+
+      printf(" >>> Execute the request \n");
+      feature_reader = ExecuteSelectCommand(L"flt_c1", filter);
+      CheckReader(feature_reader, 5);
+
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+}  //  SpatialObjectFilterTest ()
 
 
 // ----------------------------------------------------------------------------
@@ -750,6 +1071,91 @@ FdoFilter *FdoFilterTest::BuildSingleOperationFilter (
 
 }  //  BuildSingleOperationFilter ()
 
+bool FdoFilterTest::CheckForGrouping (FdoStringP  sql_statement,
+                                      UnitTestIds unit_test_id)
+
+// +---------------------------------------------------------------------------
+// | The function checks whether or not two filter elements linked by a binary
+// | logical operator are grouped (surrounded by brackets).
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local variables.
+
+    bool       op_processed      = false,
+               invalid_operator  = true;
+
+    FdoInt32   i,
+               op_pos            = 0,
+               bracket_count     = 0,
+               sql_string_length = (FdoInt32)sql_statement.GetLength();
+
+    FdoStringP curr_char,
+               curr_word;
+
+    // Navigate through the provided SQL string and count the brackets. The
+    // string contains grouping if a structure like this is found:
+    //
+    // ( <filter values> ) OPERATOR ( <filter values> )
+    //
+    // where <filter values> consists of any number of terms combined by binary
+    // logical operators of any kind. The check counts the bracket pairs and
+    // checks for the presence of the expected structure.
+
+    for (i = 1; i < (sql_string_length - 1); i++) {
+
+      curr_char = sql_statement.Mid(i, 1);
+      if ((curr_char.ICompare(L"(") != 0) &&
+          (curr_char.ICompare(L")") != 0)    )
+          continue;
+
+      if (curr_char.ICompare(L"(") == 0)
+          bracket_count++;
+
+      if (curr_char.ICompare(L")") == 0)
+          bracket_count--;
+
+      // If the bracket count is 0 and the operator has not yet been processed,
+      // then the left operand has been validated. Next, get the operand and
+      // check it the one that is expected.
+
+      if ((bracket_count == 0) && (!op_processed)) {
+
+          op_processed = true;
+          i++;
+          while ((curr_char = sql_statement.Mid(i, 1)).ICompare(L" ") == 0)
+            i++;
+          op_pos = i;
+          while ((curr_char = sql_statement.Mid(i+1, 1)).ICompare(L" ") != 0)
+            i++;
+          curr_word = sql_statement.Mid(op_pos, (i-op_pos+1));
+          i++;
+
+          switch (unit_test_id) {
+
+            case SPATIALOBJECTFILTERCASE_1:
+              invalid_operator = (curr_word.ICompare(L"AND") != 0);
+              break;
+
+            default:
+              invalid_operator = true;
+              break;
+
+          }  //  switch ...
+
+      }  //  if ((bracket_count == 0) && ( ...
+
+    }  //  for (i = 1; i < (sql_string_length - 1); i++) ...
+
+    if (invalid_operator)
+        throw FdoException::Create(
+                            L"Unexpected operator in generated SQL filter");
+
+    return (bracket_count == 0);
+
+}  //  CheckForGrouping ()
+
 bool FdoFilterTest::CheckForNesting (FdoStringP sql_statement)
 
 // +---------------------------------------------------------------------------
@@ -796,7 +1202,7 @@ bool FdoFilterTest::CheckForNesting (FdoStringP sql_statement)
       if (bracket_count > 2)
           break;
 
-    }  //  for (i = 1; i < 3; i++) ...
+    }  //  for (i = 1; i < (sql_string_length - 1); i++) ...
 
     return (bracket_count > 2);
 
@@ -890,13 +1296,14 @@ FdoInt32 FdoFilterTest::GetMaxFilterElementNumber ()
 
 void FdoFilterTest::TranslateFilter (FdoFilter   *filter,
                                      bool        is_nesting_expected,
+                                     bool        is_grouping_expected,
                                      UnitTestIds unit_test_id)
 
 // +---------------------------------------------------------------------------
 // | The function requests the SQL representation of the given filter and
-// | checks the result whether or not nesting has been used. If nesting has
-// | been used where none is expected or nesting has not been used when
-// | expected an exception is issued.
+// | checks the result whether or not nesting or grouping has been used. If
+// | nesting or grouping has been used where none is expected or nesting or
+// | grouping has not been used when expected an exception is issued.
 // +---------------------------------------------------------------------------
 
 {

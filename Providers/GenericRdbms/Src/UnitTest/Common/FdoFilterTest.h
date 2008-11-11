@@ -47,6 +47,7 @@ class FdoFilterTest : public CppUnit::TestCase
 	// CPPUNIT_TEST(NestedFilterSQLTest);
 	// CPPUNIT_TEST(MaxORFilterSelectTest);
 	// CPPUNIT_TEST(NegationORFilterSelectTest);
+	// CPPUNIT_TEST(SpatialObjectFilterTest);
     // =========================================
     // ====       RUN ALL UNIT TESTS        ====
     // =========================================
@@ -80,7 +81,9 @@ protected:
         MAXORFILTERSELECTTEST,
         NEGATIONORFILTERSELECTTEST_1,
         NEGATIONORFILTERSELECTTEST_2,
-        NESTEDFILTERSQLTEST
+        NESTEDFILTERSQLTEST,
+        SPATIALOBJECTFILTERCASE_1,
+        SPATIALOBJECTFILTERCASE_2
 
     };  //  enum UnitTestIds
 
@@ -203,6 +206,14 @@ protected:
 
     virtual void NestedFilterSQLTest ();
 
+    //  SpatialObjectFilterTest:
+    //      The function executes tests that check if the filter processor
+    //      correctly identifies a filter case where a spatial and an object
+    //      filter are combined with a binary logical operation as this kind
+    //      of filter has a specific optimization.
+
+    virtual void SpatialObjectFilterTest ();
+
 
     //-------------------------------------------------------------------------
     //                       General Supporting Functions
@@ -228,6 +239,13 @@ protected:
                                     FdoInt32                   start_index,
                                     FdoInt32                   end_index,
                                     FdoBinaryLogicalOperations operation);
+
+    //  CheckForGrouping:
+    //      The function checks whether or not two filter elements linked by
+    //      a binary logical operator are grouped (surrounded by brackets).
+
+    bool CheckForGrouping (FdoStringP  sql_statement,
+                           UnitTestIds unit_test_id);
 
     //  CheckForNesting:
     //      The function checks whether or not the given SQL string contains
@@ -259,12 +277,14 @@ protected:
 
     //  TranslateFilter:
     //      The function requests the SQL representation of the given filter
-    //      and checks the result whether or not nesting has been used. If
-    //      nesting has been used where none is expected or nesting has not
-    //      been used when expected an exception is issued.
+    //      and checks the result whether or not nesting or grouping has been
+    //      used. If nesting or grouping has been used where none is expected
+    //      or nesting or grouping has not been used when expected an exception
+    //      is issued.
 
     virtual void TranslateFilter (FdoFilter   *filter,
                                   bool        is_nesting_expected,
+                                  bool        is_grouping_expected,
                                   UnitTestIds unit_test_id);
 
 
