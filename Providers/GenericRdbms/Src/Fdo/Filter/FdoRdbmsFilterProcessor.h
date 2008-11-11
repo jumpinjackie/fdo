@@ -173,6 +173,7 @@ private:
 	short				mNextTabAliasId;
 	bool				mUseTableAliases;
     bool                mUseNesting;
+    bool                mUseGrouping;
     bool                mAddNegationBracket;
 
     // List of geometry values that are bound in spatial filters.
