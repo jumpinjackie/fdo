@@ -476,6 +476,11 @@ void SchemaMgrTests::testGenDefault ()
             UnitTestUtil::GetOutputFileName( L"gen_default2.xml" )
         );
 #endif
+
+        printf( "Performing GetClassList test \n" );
+
+        GenDefaultClassList();
+
         printf( "Done\n" );
     }
     catch (FdoException* e ) 
@@ -1856,6 +1861,54 @@ void SchemaMgrTests::testSpatialContexts()
     {
         CPPUNIT_FAIL ("unexpected exception encountered");
     }
+}
+
+void SchemaMgrTests::GenDefaultClassList()
+{
+    FdoStringsP expectedClassNames = FdoStringCollection::Create();
+    int i,j;
+
+    FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateConnection(
+            false,
+            false,
+            DB_NAME_SUFFIX
+        );
+
+    {
+        FdoPtr<FdoIDescribeSchema> descCmd = (FdoIDescribeSchema*)(conn->CreateCommand( FdoCommandType_DescribeSchema )); 
+        FdoFeatureSchemasP schemas = descCmd->Execute();
+
+        for ( i = 0; i < schemas->GetCount(); i++ ) 
+        {
+            FdoFeatureSchemaP schema = schemas->GetItem(i);
+            FdoClassesP classes = schema->GetClasses();
+
+            for ( j = 0; j < classes->GetCount(); j++ ) 
+            {
+                FdoClassDefinitionP classDef = classes->GetItem(j);
+                expectedClassNames->Add( classDef->GetQualifiedName() );
+            }
+        }
+    }
+    UnitTestUtil::CloseConnection(conn, false, DB_NAME_SUFFIX);
+
+    conn = UnitTestUtil::CreateConnection(
+            false,
+            false,
+            DB_NAME_SUFFIX
+        );
+
+    FdoPtr<FdoIGetClassNames> getCmd = (FdoIGetClassNames*)(conn->CreateCommand( FdoCommandType_GetClassNames )); 
+    FdoStringsP classNames = getCmd->Execute();
+
+    CPPUNIT_ASSERT( classNames->GetCount() == expectedClassNames->GetCount() );
+
+    for ( i = 0; i < expectedClassNames->GetCount(); i++ ) 
+    {
+        CPPUNIT_ASSERT( classNames->IndexOf(expectedClassNames->GetString(i)) >= 0 );
+    }
+
+    UnitTestUtil::CloseConnection(conn, false, DB_NAME_SUFFIX);
 }
 
 void SchemaMgrTests::CreateTableGroup( FdoSmPhOwnerP owner, FdoStringP prefix, FdoInt32 count, int lt_mode )

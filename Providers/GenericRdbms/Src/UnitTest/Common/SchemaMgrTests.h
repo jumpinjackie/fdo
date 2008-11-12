@@ -60,6 +60,7 @@ protected:
 
     void testSpatialContexts();
 
+    void GenDefaultClassList();
     void constraints ();
     void delFdoBr ();
     virtual FdoIoStream* OverrideBend( FdoIoStream* stream1, FdoStringP oldOwnerPrefix, FdoStringP newOwnerPrefix )
