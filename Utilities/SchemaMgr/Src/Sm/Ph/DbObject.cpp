@@ -1589,18 +1589,20 @@ bool FdoSmPhDbObject::ClassifyObjectType(FdoBoolean classifyDefaultTypes )
 
 FdoStringP FdoSmPhDbObject::GetClassifiedObjectName( FdoStringP schemaName )
 {
-    FdoStringP classifiedObjectName = GetName();
+    FdoStringP classifiedObjectName;
 
-    if ( classifiedObjectName.GetLength() > 0 ) {
-        if ( (schemaName != L"") && (GetBestSchemaName() != schemaName) )
-        {
-            // DbObject is for a different feature schema.
-            classifiedObjectName = L"";
+    // Don't reverse-engineer the special spatial context referencer table.
+    if ( GetManager()->GetRealDbObjectName(FdoSmPhMgr::ScInfoNoMetaTable) != GetName() ) {
+        classifiedObjectName = GetBestClassName();
+
+        if ( classifiedObjectName.GetLength() > 0 ) {
+            if ( (schemaName != L"") && (GetBestSchemaName() != schemaName) )
+            {
+                // DbObject is for a different feature schema.
+                classifiedObjectName = L"";
+            }
+
         }
-
-        // Don't reverse-engineer the special spatial context referencer table.
-        if ( classifiedObjectName == GetManager()->GetRealDbObjectName(FdoSmPhMgr::ScInfoNoMetaTable) )
-            classifiedObjectName = L"";
     }
 
     return classifiedObjectName;
