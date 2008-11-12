@@ -31,6 +31,8 @@ public:
 	using FdoISelect::SetOrderingOption;
 	// Expose the FdoIExtendedSelect hidden function
 	using FdoIExtendedSelect::ExecuteScrollable;
+	using FdoIExtendedSelect::GetOrderingOption;
+	using FdoIExtendedSelect::SetOrderingOption;
 
 
 	/// <summary>Set the compare handler. This method is used to override the default Shp compare handler.</summary>
