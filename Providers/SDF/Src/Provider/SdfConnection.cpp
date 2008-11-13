@@ -69,6 +69,16 @@
 #include "PropertyIndex.h"
 
 
+#include <FdoExpressionEngine.h>
+#include <FdoExpressionEngineFunctionCollection.h>
+#include <Functions/Geometry/FdoFunctionX.h>
+#include <Functions/Geometry/FdoFunctionY.h>
+#include <Functions/Geometry/FdoFunctionZ.h>
+#include <Functions/Geometry/FdoFunctionM.h>
+
+bool SdfConnection::m_bInitFunctions = false;
+
+
 SdfConnection::SdfConnection()
 : m_mbsFullPath(NULL),
   mConnectionString ((wchar_t*)NULL),
@@ -80,6 +90,8 @@ SdfConnection::SdfConnection()
   m_dbExtendedInfo(NULL)
 {
     m_bCreate = false;
+	InitFunctions();
+
 }
 
 SdfConnection::~SdfConnection()
@@ -102,6 +114,53 @@ SdfConnection* SdfConnection::Create()
 {
     return new SdfConnection();
 }
+
+void SdfConnection::InitFunctions()
+{
+
+	FdoCommonThreadMutex mutex;
+
+	try {
+		mutex.Enter();
+		if (!m_bInitFunctions)
+		{
+			FdoPtr<FdoExpressionEngineFunctionCollection> customFuncs = FdoExpressionEngineFunctionCollection::Create();
+
+			// Add function X to the list of supported function
+			FdoPtr<FdoExpressionEngineIFunction> funcX = FdoFunctionX::Create();
+			customFuncs->Add( funcX );
+
+			// Add function Y to the list of supported function
+			FdoPtr<FdoExpressionEngineIFunction> funcY = FdoFunctionY::Create();
+			customFuncs->Add( funcY );
+
+			// Add function Z to the list of supported function
+			FdoPtr<FdoExpressionEngineIFunction> funcZ = FdoFunctionZ::Create();
+			customFuncs->Add( funcZ );
+
+			// Add function M to the list of supported function
+			FdoPtr<FdoExpressionEngineIFunction> funcM = FdoFunctionM::Create();
+			customFuncs->Add( funcM );
+
+			FdoExpressionEngine::RegisterFunctions(customFuncs);
+
+			m_bInitFunctions = true;
+		}
+		mutex.Leave();
+	}
+	catch (FdoException *)
+    {
+        mutex.Leave();
+        throw;
+    }
+    catch (...)
+    {
+        mutex.Leave();
+        throw;
+    }
+
+}
+
 
 
 FdoIConnectionCapabilities* SdfConnection::GetConnectionCapabilities()
