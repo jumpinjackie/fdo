@@ -40,6 +40,18 @@ public __gc class FunctionDefinition : public NAMESPACE_OSGEO_RUNTIME::Disposabl
 public:
 
     /// \brief
+    /// Constructs a FunctionDefinition object based on an unmanaged instance of the object
+    /// 
+    /// \param unmanaged 
+    /// Input A Pointer to the unmanaged object.
+    /// 
+    /// \param autoDelete 
+    /// Input Indicates if the constructed object should be automatically deleted 
+    /// once it no longer referenced.
+    /// 
+    FunctionDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
+
+    /// \brief
     /// Constructs an instance of a FunctionDefinition using the specified arguments.
     /// 
     /// \param name 
@@ -253,8 +265,6 @@ protected:
 /// \endcond
 
 public private:
-
-	FunctionDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoFunctionDefinition* GetImpObj();
 
