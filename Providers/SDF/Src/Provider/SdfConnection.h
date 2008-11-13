@@ -23,6 +23,7 @@
 #include "RTree.h"
 #include "SDF/SdfCompareHandler.h"
 #include "SdfSchemaMergeContext.h"
+#include <FdoCommonThreadMutex.h>
 
 //forward declare
 class SdfConnectionInfo;
@@ -230,6 +231,10 @@ private:
     stdext::hash_map<void*, void*> m_hPropertyIndices;
     stdext::hash_map<void*, void*> m_hDataDbs;
     stdext::hash_map<void*, void*> m_hKeyDbs;
+
+	static bool m_bInitFunctions;
+	void InitFunctions();
+
 protected:
     /**
      * The connection string containing details about how to connect to Shp.
