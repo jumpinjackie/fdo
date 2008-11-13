@@ -3071,3 +3071,23 @@ SymbolicName=FDO_184_UNINITIALIZED_AGGREGATE
 Language=English
 Aggregate function referenced by expression engine before being processed. If using function in Select command; use the SelectAggregates command instead.
 .
+MessageId=9185
+SymbolicName=FUNCTION_X
+Language=English
+Determines the X ordinate of a given point geometry
+.
+MessageId=9186
+SymbolicName=FUNCTION_Y
+Language=English
+Determines the Y ordinate of a given point geometry
+.
+MessageId=9187
+SymbolicName=FUNCTION_Z
+Language=English
+Determines the Z ordinate of a given point geometry
+.
+MessageId=9188
+SymbolicName=FUNCTION_M
+Language=English
+Determines the M ordinate of a given point geometry
+.
