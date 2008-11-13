@@ -73,59 +73,36 @@ FdoSmPhSqsSchemasP FdoSmPhSqsOwner::GetSchemas()
 
 FdoSmPhCoordinateSystemP FdoSmPhSqsOwner::FindCoordinateSystem( FdoInt64 srid )
 {
-    // First check the RDBMS catalogue
-    FdoSmPhCoordinateSystemP coordSys = FdoSmPhOwner::FindCoordinateSystem( srid );
-
-    if ( !coordSys ) {
-        // Not in catalogue, load extra coordinate systems from file
-        LoadExtendedCoordinateSystems();
-        // Check if it's an extended (extra) coordinate system
-        coordSys = mExtendedCoordinateSystems->FindItemById( srid );
-    }
+    // First check the extended coordinate system file (if present). If the
+    // information is listed there use it, otherwise check the RDBMS catalogue.
+    LoadExtendedCoordinateSystems();
+    FdoSmPhCoordinateSystemP coordSys = mExtendedCoordinateSystems->FindItemById( srid );
+    if ( !coordSys )
+        coordSys = FdoSmPhOwner::FindCoordinateSystem( srid );
 
     return coordSys;
 }
 
 FdoSmPhCoordinateSystemP FdoSmPhSqsOwner::FindCoordinateSystem( FdoStringP csName )
 {
-    // See comments in FdoSmPhSqsOwner::FindCoordinateSystem( FdoInt64 )
-    FdoSmPhCoordinateSystemP coordSys = FdoSmPhOwner::FindCoordinateSystem( csName );
-
-    if ( !coordSys ) {
-        LoadExtendedCoordinateSystems();
-        coordSys = mExtendedCoordinateSystems->FindItem( csName );
-
-        if ( coordSys ) {
-            // The coordinate system name is not in the RDBMS catalogue but is in
-            // the extended list. However, it's EPSG number (SRID) might be in the catalogue.
-            // If it is then retrieve the catalogued coordinate system instead.
-            FdoSmPhCoordinateSystemP coordSys2 = FdoSmPhOwner::FindCoordinateSystem( coordSys->GetSrid() ) ;
-            if ( coordSys2 ) 
-                coordSys = coordSys2;
-        }
-    }
+    // First check the extended coordinate system file (if present). If the
+    // information is listed there use it, otherwise check the RDBMS catalogue.
+    LoadExtendedCoordinateSystems();
+    FdoSmPhCoordinateSystemP coordSys = mExtendedCoordinateSystems->FindItem( csName );
+    if ( !coordSys )
+        coordSys = FdoSmPhOwner::FindCoordinateSystem( csName );
 
     return coordSys;
 }
 
 FdoSmPhCoordinateSystemP FdoSmPhSqsOwner::FindCoordinateSystemByWkt( FdoStringP wkt )
 {
-    // See comments in FdoSmPhSqsOwner::FindCoordinateSystem( FdoInt64 )
-    FdoSmPhCoordinateSystemP coordSys = FdoSmPhOwner::FindCoordinateSystemByWkt( wkt );
-
-    if ( !coordSys ) {
-        LoadExtendedCoordinateSystems();
-        coordSys = mExtendedCoordinateSystems->FindItemByWkt( wkt );
-
-        if ( coordSys ) {
-            // The coordinate system wkt is not in the RDBMS catalogue but is in
-            // the extended list. However, its EPSG number (SRID) might be in the catalogue.
-            // If it is then retrieve the catalogued coordinate system instead.
-            FdoSmPhCoordinateSystemP coordSys2 = FdoSmPhOwner::FindCoordinateSystem( coordSys->GetSrid() ) ;
-            if ( coordSys2 ) 
-                coordSys = coordSys2;
-        }
-    }
+    // First check the extended coordinate system file (if present). If the
+    // information is listed there use it, otherwise check the RDBMS catalogue.
+    LoadExtendedCoordinateSystems();
+    FdoSmPhCoordinateSystemP coordSys = mExtendedCoordinateSystems->FindItemByWkt( wkt );
+    if ( !coordSys )
+        coordSys = FdoSmPhOwner::FindCoordinateSystemByWkt( wkt );
 
     return coordSys;
 }
