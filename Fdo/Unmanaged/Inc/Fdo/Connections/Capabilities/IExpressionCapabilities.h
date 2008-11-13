@@ -103,7 +103,10 @@
 //  - Geometry function names
 #define  FDO_FUNCTION_AREA2D    L"Area2D"    // Returns the area of a geometry expression
 #define  FDO_FUNCTION_LENGTH2D  L"Length2D"  // Returns the length of a geometry expression
-
+#define  FDO_FUNCTION_X  L"X"  // Returns the X coordinate of a point geometry
+#define  FDO_FUNCTION_Y  L"Y"  // Returns the Y coordinate of a point geometry
+#define  FDO_FUNCTION_Z  L"Z"  // Returns the Z coordinate of a point geometry
+#define  FDO_FUNCTION_M  L"M"  // Returns the M coordinate of a point geometry
 
 /// \brief
 /// The FdoIExpressionCapbilities interface declares the feature provider's level
