@@ -30,6 +30,7 @@ SET KINGORACLEENABLE=yes
 SET KINGSPATILENABLE=yes
 SET OGRENABLE=yes
 SET POSTGISENABLE=yes
+SET SQLITEENABLE=yes
 SET ZIPTESTDATA=yes
 SET SHOWHELP=no
 SET FDOTARZIPFOLDER=OpenSource_FDO
@@ -73,6 +74,7 @@ if "%DEFMODIFY%"=="yes" goto stp1_get_with
     SET KINGSPATILENABLE=no
     SET OGRENABLE=no
     SET POSTGISENABLE=no
+	SET SQLITEENABLE=no
 	SET ZIPTESTDATA=no
 :stp1_get_with
 if not "%2"=="sdf" goto stp2_get_with
@@ -119,7 +121,11 @@ if not "%2"=="kingspatial" goto stp12_get_with
 	SET KINGSPATILENABLE=yes
 	goto next_param
 :stp12_get_with
-if not "%2"=="providers" goto stp13_get_with
+if not "%2"=="sqlite" goto stp13_get_with
+	SET SQLITEENABLE=yes
+	goto next_param
+:stp13_get_with
+if not "%2"=="providers" goto stp14_get_with
     SET FDOCOREENABLE=no
     SET SHPENABLE=yes
     SET SDFENABLE=yes
@@ -132,12 +138,13 @@ if not "%2"=="providers" goto stp13_get_with
     SET KINGSPATILENABLE=yes
     SET OGRENABLE=yes
     SET POSTGISENABLE=yes
-    goto next_param
-:stp13_get_with
-if not "%2"=="testdata" goto stp14_get_with
-	set ZIPTESTDATA=yes
+	SET SQLITEENABLE=yes
     goto next_param
 :stp14_get_with
+if not "%2"=="testdata" goto stp15_get_with
+	set ZIPTESTDATA=yes
+    goto next_param
+:stp15_get_with
 if not "%2"=="all" goto custom_error
     SET FDOCOREENABLE=yes
     SET SHPENABLE=yes
@@ -151,6 +158,7 @@ if not "%2"=="all" goto custom_error
     SET KINGSPATILENABLE=yes
     SET OGRENABLE=yes
     SET POSTGISENABLE=yes
+	SET SQLITEENABLE=yes
 	set ZIPTESTDATA=yes
     goto next_param
 
@@ -290,7 +298,7 @@ if "%POSTGISENABLE%"=="no" goto start_zip_ogr
    7z a -airy -bd -tzip "fdopostgis-3.4.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_ogr
-if "%OGRENABLE%"=="no" goto start_zip_testdata
+if "%OGRENABLE%"=="no" goto start_zip_sqlite
    mkdir "%FDOTARZIPFOLDER%\Providers\OGR"
    svn export "%FDOSVNROOT%\Providers\OGR" "%FDOTARZIPFOLDER%\Providers\OGR" --force
    pushd "%FDOTARZIPFOLDER%"
@@ -298,6 +306,16 @@ if "%OGRENABLE%"=="no" goto start_zip_testdata
    popd
    if exist "fdoogr-3.4.0_%FDOBUILDNUMBER%.zip" del /q /f "fdoogr-3.4.0_%FDOBUILDNUMBER%.zip"
    7z a -airy -bd -tzip "fdoogr-3.4.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   deltree /Y "%FDOTARZIPFOLDER%"
+:start_zip_sqlite
+if "%SQLITEENABLE%"=="no" goto start_zip_testdata
+   mkdir "%FDOTARZIPFOLDER%\Providers\SQLite"
+   svn export "%FDOSVNROOT%\Providers\SQLite" "%FDOTARZIPFOLDER%\Providers\SQLite" --force
+   pushd "%FDOTARZIPFOLDER%"
+   if exist .svn del /q /f /s .svn
+   popd
+   if exist "fdosqlite-3.4.0_%FDOBUILDNUMBER%.zip" del /q /f "fdosqlite-3.4.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdosqlite-3.4.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_testdata
 if "%ZIPTESTDATA%"=="no" goto end
@@ -378,6 +396,7 @@ echo                         kingoracle,
 echo                         kingspatial, 
 echo                         ogr,
 echo                         postgis,
+echo                         sqlite,
 echo                         testdata
 echo BuildNumber:    -b[uild]=User-Defined build number appended to the end of the tar.gz files
 echo **************************************************************************

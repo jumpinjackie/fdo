@@ -25,6 +25,7 @@ SET FDOORGPATH=
 SET DEFMODIFY=no
 SET SHPENABLE=yes
 SET SDFENABLE=yes
+SET SQLITEENABLE=yes
 SET WFSENABLE=yes
 SET WMSENABLE=yes
 SET ARCENABLE=yes
@@ -75,6 +76,7 @@ if (%2)==() goto custom_error
 if "%DEFMODIFY%"=="yes" goto stp1_get_with
 	SET DEFMODIFY=yes
 	SET SHPENABLE=no
+	SET SQLITEENABLE=no
 	SET SDFENABLE=no
 	SET WFSENABLE=no
 	SET WMSENABLE=no
@@ -140,9 +142,14 @@ if not "%2"=="fdo" goto stp14_get_with
 	SET FDOENABLE=yes
 	goto next_param
 :stp14_get_with
-if not "%2"=="providers" goto stp15_get_with
+if not "%2"=="sqlite" goto stp15_get_with
+	SET SQLITEENABLE=yes
+	goto next_param
+:stp15_get_with
+if not "%2"=="providers" goto stp16_get_with
 	SET SHPENABLE=yes
 	SET SDFENABLE=yes
+	SET SQLITEENABLE=yes
 	SET WFSENABLE=yes
 	SET WMSENABLE=yes
 	SET ARCENABLE=yes
@@ -154,10 +161,11 @@ if not "%2"=="providers" goto stp15_get_with
 	SET KINGORACLEENABLE=yes
 	SET SQLSPATIALENABLE=yes
 	goto next_param
-:stp15_get_with
+:stp16_get_with
 if not "%2"=="all" goto custom_error
 	SET SHPENABLE=yes
 	SET SDFENABLE=yes
+	SET SQLITEENABLE=yes
 	SET WFSENABLE=yes
 	SET WMSENABLE=yes
 	SET ARCENABLE=yes
@@ -333,10 +341,18 @@ popd
 if "%FDOERROR%"=="1" goto error
 
 :rebuild_sqlspatial
-if "%SQLSPATIALENABLE%"=="no" goto end
-if not exist Providers\GenericRdbms\Src\SQLServerSpatial\build.bat goto end
+if "%SQLSPATIALENABLE%"=="no" goto rebuild_sqlite
+if not exist Providers\GenericRdbms\Src\SQLServerSpatial\build.bat goto rebuild_sqlite
 pushd Providers\GenericRdbms\Src\SQLServerSpatial
 call build.bat %PROVCALLCMDEX%
+popd
+if "%FDOERROR%"=="1" goto error
+
+:rebuild_sqlite
+if "%SQLITEENABLE%"=="no" goto end
+if not exist Providers\SQLite\build.bat goto end
+pushd Providers\SQLite
+call build.bat %PROVCALLCMDEXSDF%
 popd
 if "%FDOERROR%"=="1" goto error
 
@@ -408,7 +424,10 @@ if not exist Providers\PostGIS\build.bat goto kingoracle_check
 if not exist Providers\KingOracle\build.bat goto sqlspatial_check
 	SET MROVBYPROVP=%MROVBYPROVP%, kingoracle
 :sqlspatial_check
-if not exist Providers\GenericRdbms\Src\SQLServerSpatial\build.bat goto providers_show
+if not exist Providers\GenericRdbms\Src\SQLServerSpatial\build.bat goto sqlite_check
+	SET MROVBYPROVP=%MROVBYPROVP%, sqlspatial
+:sqlite_check
+if not exist Providers\SQLite\build.bat goto providers_show
 	SET MROVBYPROVP=%MROVBYPROVP%, sqlspatial
 :providers_show
 if ("%MROVBYPROVP%")==("") goto show_capabilities

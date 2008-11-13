@@ -35,6 +35,7 @@ SET KINGORACLEENABLECHK=no
 SET KINGSPATIALENABLECHK=no
 SET OGRENABLECHK=no
 SET POSTGISENABLECHK=no
+SET SQLITEENABLECHK=no
 
 if (%FDO_SVN_SOURCEDIR%)==() SET FDO_SVN_SOURCEDIR=trunk
 if (%FDO_SVN_DESTDIR%)==() SET FDO_SVN_DESTDIR=%cd%
@@ -92,6 +93,7 @@ if "%DEFMODIFYCHK%"=="yes" goto stp0_get_with
 	SET KINGSPATIALENABLECHK=no
 	SET OGRENABLECHK=no
 	SET POSTGISENABLECHK=no
+	SET SQLITEENABLECHK=no
 :stp0_get_with
 if not "%2"=="providers" goto stp1_get_with
 	SET FDOPROVIDERSENABLECHK=yes
@@ -115,6 +117,7 @@ if not "%2"=="all" goto stp2_get_with
 	SET KINGSPATIALENABLECHK=no
 	SET OGRENABLECHK=no
 	SET POSTGISENABLECHK=no
+	SET SQLITEENABLECHK=no
 	goto next_param
 :stp2_get_with
 if not "%2"=="fdocore" goto stp3_get_with
@@ -176,8 +179,12 @@ if not "%2"=="kingspatial" goto stp16_get_with
 	SET KINGSPATIALENABLECHK=yes
     goto next_param
 :stp16_get_with
-if not "%2"=="postgis" goto custom_error
+if not "%2"=="postgis" goto stp17_get_with
 	SET POSTGISENABLECHK=yes
+    goto next_param
+:stp17_get_with
+if not "%2"=="sqlite" goto custom_error
+	SET SQLITEENABLECHK=yes
     goto next_param
 
 :get_source
@@ -315,9 +322,15 @@ svn checkout https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers/KingMsSqlSp
 if errorlevel 1 goto error
 
 :checkout_postgis
-if "%POSTGISENABLECHK%"=="no" goto end
+if "%POSTGISENABLECHK%"=="no" goto checkout_sqlite
 echo Checking out https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers/PostGIS
 svn checkout https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers/PostGIS "%FDO_SVN_DESTDIR%\Providers\PostGIS" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
+if errorlevel 1 goto error
+
+:checkout_sqlite
+if "%SQLITEENABLECHK%"=="no" goto end
+echo Checking out https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers/SQLite
+svn checkout https://svn.osgeo.org/fdo/%FDO_SVN_SOURCEDIR%/Providers/SQLite "%FDO_SVN_DESTDIR%\Providers\SQLite" --username %FDO_SVN_USERNAME% --password %FDO_SVN_PASSWORD%
 if errorlevel 1 goto error
 
 :end
@@ -359,7 +372,8 @@ echo                         gdal,
 echo                         kingoracle,
 echo                         kingspatial,
 echo                         ogr,
-echo                         postgis
+echo                         postgis,
+echo                         sqlite
 echo User:           -u[ser]=user id
 echo Password:       -p[assword]=user password
 echo **************************************************************
