@@ -45,7 +45,7 @@ static const wchar_t* DATASTORE_EXTENSION = L"..\\..\\TestData\\ExpressionEngine
 static const wchar_t* DATASTORE_EXTENSION = L"../../TestData/ExpressionEngineFunctionTest.SDX";
 #endif
 
-
+static const wchar_t* XYZM_POINT_CLASS = L"xyzm_point";
 
 class FdoExpressionFunctionTest : public CppUnit::TestCase
 {
@@ -129,6 +129,10 @@ class FdoExpressionFunctionTest : public CppUnit::TestCase
     // CPPUNIT_TEST(NumberToStringComparison);
     // CPPUNIT_TEST(RoundNumberToStringComparison);
     // =========================================
+    // ====         XYZM UNIT TESTS         ====
+    // =========================================
+	// CPPUNIT_TEST(TestXYZMFunction);
+	// =========================================
     // ====       RUN ALL UNIT TESTS        ====
     // =========================================
     CPPUNIT_TEST(RunAllExpFctTests);
@@ -588,6 +592,13 @@ protected:
 
     void RoundNumberToStringComparison ();
 
+	//-------------------------------------------------------------------------
+    //                     XYZM function Unit Test Functions
+    //-------------------------------------------------------------------------
+	void TestXYZMFunction ();
+	void AddXYZMFeature ( FdoIConnection *current_connection,
+                          FdoString      *class_name
+                         );
 
     //-------------------------------------------------------------------------
     //                       Special Unit Test Functions
