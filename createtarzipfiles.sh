@@ -54,6 +54,7 @@ KINGORACLEENABLECHK=yes
 KINGSPATIALENABLECHK=yes
 OGRENABLECHK=yes
 POSTGISENABLECHK=yes
+SQLITEENABLECHK=yes
 TESTDATAENABLECHK=yes
 
 SHOWHELP=no
@@ -116,6 +117,7 @@ do
 	    KINGSPATIALENABLECHK=no
 	    OGRENABLECHK=no
 	    POSTGISENABLECHK=no
+	    SQLITEENABLECHK=no
 	    TESTDATAENABLECHK=no
      fi
      if test -z "$1"; then
@@ -133,6 +135,7 @@ do
 	    KINGSPATIALENABLECHK=yes
 	    OGRENABLECHK=yes
 	    POSTGISENABLECHK=yes
+	    SQLITEENABLECHK=yes
      elif test "$1" == all; then
 	    FDOCOREENABLECHK=yes
 	    SHPENABLECHK=yes
@@ -146,6 +149,7 @@ do
 	    KINGSPATIALENABLECHK=yes
 	    OGRENABLECHK=yes
 	    POSTGISENABLECHK=yes
+	    SQLITEENABLECHK=yes
 	    TESTDATAENABLECHK=yes
      elif test "$1" == fdo; then
 	    FDOCOREENABLECHK=yes
@@ -174,6 +178,8 @@ do
         OGRENABLECHK=yes
      elif test "$1" == postgis; then
         POSTGISENABLECHK=yes
+     elif test "$1" == sqlite; then
+        SQLITEENABLECHK=yes
      elif test "$1" == testdata; then
         TESTDATAENABLECHK=yes
      else
@@ -224,6 +230,7 @@ if test "$SHOWHELP" == yes; then
    echo "                         kingspatial"
    echo "                         ogr"
    echo "                         postgis"
+   echo "                         sqlite"
    echo "                         testdata"
    echo "BuildNumber:    --b[uild]=User-Defined build number appended"
    echo "                          to the end of the tar.gz files"
@@ -356,6 +363,16 @@ if test "$POSTGISENABLECHK" == yes; then
    tar -cf fdopostgis-3.4.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
    rm -f fdopostgis-3.4.0_"$FDOBUILDNUMBER".tar.gz
    gzip -9 fdopostgis-3.4.0_"$FDOBUILDNUMBER".tar
+   rm -rf "$FDOTARZIPFOLDER"
+fi
+if test "$SQLITEENABLECHK" == yes; then
+   mkdir -p "$FDOTARZIPFOLDER"/Providers/SQLite
+   svn export "$FDOSVNROOT"/Providers/SQLite "$FDOTARZIPFOLDER"/Providers/SQLite --force
+   find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
+   rm -f fdosqlite-3.4.0_"$FDOBUILDNUMBER".tar
+   tar -cf fdosqlite-3.4.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
+   rm -f fdosqlite-3.4.0_"$FDOBUILDNUMBER".tar.gz
+   gzip -9 fdosqlite-3.4.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
 fi
 if test "$TESTDATAENABLECHK" == yes; then

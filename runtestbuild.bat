@@ -101,6 +101,7 @@ goto study_params
    copy /Y "%FDOSOURCEZIP%\fdoogr-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
    copy /Y "%FDOSOURCEZIP%\fdopostgis-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
    copy /Y "%FDOSOURCEZIP%\fdokingoracle-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdosqlite-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
    
 :start_unzip
    echo *start unzip files
@@ -116,6 +117,7 @@ goto study_params
    7z x -ry "fdoogr-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
    7z x -ry "fdopostgis-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
    7z x -ry "fdokingoracle-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdosqlite-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
    
    7z x -ry "fdo-3.4.0_%FDOBUILDNUMBERRTB%.tar" >>nul
    7z x -ry "fdoshp-3.4.0_%FDOBUILDNUMBERRTB%.tar" >>nul
@@ -128,6 +130,7 @@ goto study_params
    7z x -ry "fdoogr-3.4.0_%FDOBUILDNUMBERRTB%.tar" >>nul
    7z x -ry "fdopostgis-3.4.0_%FDOBUILDNUMBERRTB%.tar" >>nul
    7z x -ry "fdokingoracle-3.4.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdosqlite-3.4.0_%FDOBUILDNUMBERRTB%.tar" >>nul
    
    del /Q /F "*.tar"
    echo unzip files done...
