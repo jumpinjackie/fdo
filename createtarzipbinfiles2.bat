@@ -185,6 +185,7 @@ goto next_param
 
 :get_output
 SET FDOTARZIPFOLDER=%2
+mkdir %FDOTARZIPFOLDER%
 goto next_param
 
 :get_input
