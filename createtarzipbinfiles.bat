@@ -78,66 +78,66 @@ if "%DEFMODIFY%"=="yes" goto stp1_get_with
     SET KINGORACLEENABLE=no
     SET OGRENABLE=no
     SET POSTGISENABLE=no
-	SET SQLITEENABLE=no
-	SET MYSQLENABLE=no
-	SET ODBCENABLE=no
-	SET SQLSPATIALENABLE=no
+    SET SQLITEENABLE=no
+    SET MYSQLENABLE=no
+    SET ODBCENABLE=no
+    SET SQLSPATIALENABLE=no
 :stp1_get_with
 if not "%2"=="sdf" goto stp2_get_with
-	SET SDFENABLE=yes
-	goto next_param
+    SET SDFENABLE=yes
+    goto next_param
 :stp2_get_with
 if not "%2"=="shp" goto stp3_get_with
-	SET SHPENABLE=yes
-	goto next_param
+    SET SHPENABLE=yes
+    goto next_param
 :stp3_get_with
 if not "%2"=="wfs" goto stp4_get_with
-	SET WFSENABLE=yes
-	goto next_param
+    SET WFSENABLE=yes
+    goto next_param
 :stp4_get_with
 if not "%2"=="wms" goto stp5_get_with
-	SET WMSENABLE=yes
-	goto next_param
+    SET WMSENABLE=yes
+    goto next_param
 :stp5_get_with
 if not "%2"=="fdo" goto stp6_get_with
-	SET FDOCOREENABLE=yes
-	goto next_param
+    SET FDOCOREENABLE=yes
+    goto next_param
 :stp6_get_with
 if not "%2"=="rdbms" goto stp7_get_with
-	SET RDBMSENABLE=yes
-	goto next_param
+    SET RDBMSENABLE=yes
+    goto next_param
 :stp7_get_with
 if not "%2"=="gdal" goto stp8_get_with
-	SET GDALENABLE=yes
-	goto next_param
+    SET GDALENABLE=yes
+    goto next_param
 :stp8_get_with
 if not "%2"=="kingoracle" goto stp9_get_with
-	SET KINGORACLEENABLE=yes
-	goto next_param
+    SET KINGORACLEENABLE=yes
+    goto next_param
 :stp9_get_with
 if not "%2"=="ogr" goto stp10_get_with
-	SET OGRENABLE=yes
-	goto next_param
+    SET OGRENABLE=yes
+    goto next_param
 :stp10_get_with
 if not "%2"=="postgis" goto stp11_get_with
-	SET POSTGISENABLE=yes
-	goto next_param
+    SET POSTGISENABLE=yes
+    goto next_param
 :stp11_get_with
 if not "%2"=="sqlite" goto stp12_get_with
-	SET SQLITEENABLE=yes
-	goto next_param
+    SET SQLITEENABLE=yes
+    goto next_param
 :stp12_get_with
 if not "%2"=="mysql" goto stp13_get_with
-	SET MYSQLENABLE=yes
-	goto next_param
+    SET MYSQLENABLE=yes
+    goto next_param
 :stp13_get_with
 if not "%2"=="odbc" goto stp14_get_with
-	SET ODBCENABLE=yes
-	goto next_param
+    SET ODBCENABLE=yes
+    goto next_param
 :stp14_get_with
 if not "%2"=="sqlspatial" goto stp15_get_with
-	SET SQLSPATIALENABLE=yes
-	goto next_param
+    SET SQLSPATIALENABLE=yes
+    goto next_param
 :stp15_get_with
 if not "%2"=="providers" goto stp16_get_with
     SET FDOCOREENABLE=no
@@ -151,10 +151,10 @@ if not "%2"=="providers" goto stp16_get_with
     SET KINGORACLEENABLE=yes
     SET OGRENABLE=yes
     SET POSTGISENABLE=yes
-	SET SQLITEENABLE=yes
-	SET MYSQLENABLE=yes
-	SET ODBCENABLE=yes
-	SET SQLSPATIALENABLE=yes
+    SET SQLITEENABLE=yes
+    SET MYSQLENABLE=yes
+    SET ODBCENABLE=yes
+    SET SQLSPATIALENABLE=yes
     goto next_param
 :stp16_get_with
 if not "%2"=="all" goto custom_error
@@ -169,10 +169,10 @@ if not "%2"=="all" goto custom_error
     SET KINGORACLEENABLE=yes
     SET OGRENABLE=yes
     SET POSTGISENABLE=yes
-	SET SQLITEENABLE=yes
-	SET MYSQLENABLE=yes
-	SET ODBCENABLE=yes
-	SET SQLSPATIALENABLE=yes
+    SET SQLITEENABLE=yes
+    SET MYSQLENABLE=yes
+    SET ODBCENABLE=yes
+    SET SQLSPATIALENABLE=yes
     goto next_param
 
 :get_release
