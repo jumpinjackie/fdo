@@ -109,11 +109,11 @@ FdoLiteralValue *FdoFunctionX::Evaluate (
 
     // Declare and initialize all necessary local variables.
     FdoDouble						area        = 0.0;
-	FdoIGeometry *					geom;
+	FdoPtr<FdoIGeometry>    		geom;
     FdoPtr<FdoFgfGeometryFactory>	gf;
     FdoPtr<FdoGeometryValue>        geom_value;
 	FdoIPoint *						p;
-	FdoIDirectPosition *			pos;
+	FdoPtr<FdoIDirectPosition>		pos;
 
     gf = FdoFgfGeometryFactory::GetInstance();
 
@@ -149,7 +149,7 @@ FdoLiteralValue *FdoFunctionX::Evaluate (
     }
 	
 	// Get the position and return the value
-	p = static_cast<FdoIPoint *> (geom);
+	p = static_cast<FdoIPoint *> (geom.p);
 	pos = p->GetPosition();
     return_double_value->SetDouble(pos->GetX());
     return FDO_SAFE_ADDREF(return_double_value.p);
