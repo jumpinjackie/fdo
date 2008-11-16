@@ -27,7 +27,6 @@
 
 #include <float.h>
 #include <time.h>
-#include <io.h>
 #include <malloc.h>
 
 //disable STL bounds checking

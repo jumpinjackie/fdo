@@ -53,6 +53,31 @@ edit_cache:
 # Special rule for the target edit_cache
 edit_cache/fast: edit_cache
 
+# Special rule for the target install
+install: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	cd /home/traian/work/fdo/Providers/SQLite/Provider && /usr/bin/cmake -P cmake_install.cmake
+
+# Special rule for the target install
+install/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	cd /home/traian/work/fdo/Providers/SQLite/Provider && /usr/bin/cmake -P cmake_install.cmake
+
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	cd /home/traian/work/fdo/Providers/SQLite/Provider && /usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+
+# Special rule for the target install/local
+install/local/fast: install/local
+
+# Special rule for the target list_install_components
+list_install_components:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Only default component available"
+
+# Special rule for the target list_install_components
+list_install_components/fast: list_install_components
+
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
@@ -122,18 +147,6 @@ SltExprExtensions.s:
 	cd /home/traian/work/fdo/Providers/SQLite && $(MAKE) -f Provider/CMakeFiles/SQLiteProvider.dir/build.make Provider/CMakeFiles/SQLiteProvider.dir/SltExprExtensions.s
 
 # target to build an object file
-SltGeomUtils.o:
-	cd /home/traian/work/fdo/Providers/SQLite && $(MAKE) -f Provider/CMakeFiles/SQLiteProvider.dir/build.make Provider/CMakeFiles/SQLiteProvider.dir/SltGeomUtils.o
-
-# target to preprocess a source file
-SltGeomUtils.i:
-	cd /home/traian/work/fdo/Providers/SQLite && $(MAKE) -f Provider/CMakeFiles/SQLiteProvider.dir/build.make Provider/CMakeFiles/SQLiteProvider.dir/SltGeomUtils.i
-
-# target to generate assembly for a file
-SltGeomUtils.s:
-	cd /home/traian/work/fdo/Providers/SQLite && $(MAKE) -f Provider/CMakeFiles/SQLiteProvider.dir/build.make Provider/CMakeFiles/SQLiteProvider.dir/SltGeomUtils.s
-
-# target to build an object file
 SltMetadata.o:
 	cd /home/traian/work/fdo/Providers/SQLite && $(MAKE) -f Provider/CMakeFiles/SQLiteProvider.dir/build.make Provider/CMakeFiles/SQLiteProvider.dir/SltMetadata.o
 
@@ -194,18 +207,6 @@ SltSpatialContextReader.s:
 	cd /home/traian/work/fdo/Providers/SQLite && $(MAKE) -f Provider/CMakeFiles/SQLiteProvider.dir/build.make Provider/CMakeFiles/SQLiteProvider.dir/SltSpatialContextReader.s
 
 # target to build an object file
-SpatialIndex.o:
-	cd /home/traian/work/fdo/Providers/SQLite && $(MAKE) -f Provider/CMakeFiles/SQLiteProvider.dir/build.make Provider/CMakeFiles/SQLiteProvider.dir/SpatialIndex.o
-
-# target to preprocess a source file
-SpatialIndex.i:
-	cd /home/traian/work/fdo/Providers/SQLite && $(MAKE) -f Provider/CMakeFiles/SQLiteProvider.dir/build.make Provider/CMakeFiles/SQLiteProvider.dir/SpatialIndex.i
-
-# target to generate assembly for a file
-SpatialIndex.s:
-	cd /home/traian/work/fdo/Providers/SQLite && $(MAKE) -f Provider/CMakeFiles/SQLiteProvider.dir/build.make Provider/CMakeFiles/SQLiteProvider.dir/SpatialIndex.s
-
-# target to build an object file
 slt.o:
 	cd /home/traian/work/fdo/Providers/SQLite && $(MAKE) -f Provider/CMakeFiles/SQLiteProvider.dir/build.make Provider/CMakeFiles/SQLiteProvider.dir/slt.o
 
@@ -225,6 +226,9 @@ help::
 	@echo "... depend"
 	@echo "... SQLiteProvider"
 	@echo "... edit_cache"
+	@echo "... install"
+	@echo "... install/local"
+	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... SltConversionUtils.o"
 	@echo "... SltConversionUtils.i"
@@ -232,9 +236,6 @@ help::
 	@echo "... SltExprExtensions.o"
 	@echo "... SltExprExtensions.i"
 	@echo "... SltExprExtensions.s"
-	@echo "... SltGeomUtils.o"
-	@echo "... SltGeomUtils.i"
-	@echo "... SltGeomUtils.s"
 	@echo "... SltMetadata.o"
 	@echo "... SltMetadata.i"
 	@echo "... SltMetadata.s"
@@ -250,9 +251,6 @@ help::
 	@echo "... SltSpatialContextReader.o"
 	@echo "... SltSpatialContextReader.i"
 	@echo "... SltSpatialContextReader.s"
-	@echo "... SpatialIndex.o"
-	@echo "... SpatialIndex.i"
-	@echo "... SpatialIndex.s"
 	@echo "... slt.o"
 	@echo "... slt.i"
 	@echo "... slt.s"
