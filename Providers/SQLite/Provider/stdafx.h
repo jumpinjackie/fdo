@@ -27,7 +27,6 @@
 
 #include <float.h>
 #include <time.h>
-#include <io.h>
 
 //disable STL bounds checking
 #define _SECURE_SCL 0
@@ -78,6 +77,7 @@ extern "C"
   #define _wcsdup wcsdup
   #define _snprintf snprintf
   #define _wcsicmp wcscasecmp
+  #define _access(x,y) access(x,y)
   typedef long long int __int64;
 #endif
 

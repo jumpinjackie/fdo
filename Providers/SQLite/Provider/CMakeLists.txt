@@ -1,5 +1,6 @@
 
 include_directories (${SQLiteProvider_SOURCE_DIR}/sqlite-3.6.2 
+                     ${SQLiteProvider_SOURCE_DIR}/SpatialIndex
                      ${SQLiteProvider_SOURCE_DIR}/../../Fdo/Unmanaged/Inc
                      ${SQLiteProvider_SOURCE_DIR}/../../Utilities/Common/Inc
                      ) 
@@ -12,13 +13,16 @@ add_library (SQLiteProvider SHARED
 SltConversionUtils.cpp
 slt.cpp
 SltExprExtensions.cpp
-SltGeomUtils.cpp
 SltMetadata.cpp
 SltProvider.cpp
 SltQueryTranslator.cpp
 SltReader.cpp
 SltSpatialContextReader.cpp
-SpatialIndex.cpp
 ) 
 
-target_link_libraries (SQLiteProvider sqlite-fdo ProvidersCommon FDO ) 
+target_link_libraries (SQLiteProvider SpatialIndex sqlite-fdo ProvidersCommon FDO ) 
+
+INSTALL (TARGETS SQLiteProvider
+         RUNTIME DESTINATION /usr/local/fdo-3.4.0/lib
+         LIBRARY DESTINATION /usr/local/fdo-3.4.0/lib
+         )
