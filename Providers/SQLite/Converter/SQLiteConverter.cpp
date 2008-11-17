@@ -4,15 +4,14 @@
 #ifdef _WIN32
 #include <windows.h>
 #else
-#define HMODULE void*
+#include <dlfcn.h>
 #endif
-
 
 #include <time.h>
 #include <float.h>
-
 #include <stdio.h>
-#include <tchar.h>
+#include <vector>
+#include <string>
 
 #include "Fdo.h"
 #include "slt.h"
@@ -67,7 +66,7 @@ FdoIConnection* GetFdoCon(const wchar_t* srcfile, bool open)
 
     if (index == std::wstring::npos)
     {
-        printf ("Invalid filename.");
+        printf ("Invalid input filename.");
         exit(1);
     }
 
@@ -882,21 +881,30 @@ void Usage()
 }
 
 
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, char* argv[])
 {
+    std::vector<std::wstring> wargv;
+
+    for (int i=0; i<argc; i++)
+    {
+        wchar_t tmp[MAX_PATH];
+        mbstowcs(tmp, argv[i], MAX_PATH);
+        wargv.push_back(std::wstring(tmp));
+    }
+
     if (argc == 3)
     {
-        if (wcscmp(argv[1], L"test") == 0)
+        if (wcscmp(wargv[1].c_str(), L"test") == 0)
         {
             //TestDelete();
-            TestPerformance(argv[2]);
+            TestPerformance(wargv[2].c_str());
         }
         else
         {
             try 
             {
                 clock_t t0 = clock();
-                ConvertFDOToSDFX(argv[1], argv[2], false);
+                ConvertFDOToSDFX(wargv[1].c_str(), wargv[2].c_str(), false);
                 clock_t t1 = clock();
                 printf ("Conversion time: %d\n", t1 - t0);
             }
@@ -911,12 +919,12 @@ int _tmain(int argc, _TCHAR* argv[])
     }
     else if (argc == 4)
     {
-        if (wcscmp(argv[1], L"optimize") == 0)
+        if (wcscmp(wargv[1].c_str(), L"optimize") == 0)
         {
             try
             {
                 clock_t t0 = clock();
-                ConvertFDOToSDFX(argv[2], argv[3], true);
+                ConvertFDOToSDFX(wargv[2].c_str(), wargv[3].c_str(), true);
                 clock_t t1 = clock();
                 printf ("Conversion time: %d\n", t1 - t0);
             }
