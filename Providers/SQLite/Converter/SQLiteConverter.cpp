@@ -1,7 +1,13 @@
 // SLConverter.cpp : Defines the entry point for the console application.
 //
 
+#ifdef _WIN32
 #include <windows.h>
+#else
+#define HMODULE void*
+#endif
+
+
 #include <time.h>
 #include <float.h>
 
@@ -10,18 +16,48 @@
 
 #include "Fdo.h"
 #include "slt.h"
+#include "si_api.h"
 #include "SltConversionUtils.h"
 #include "SltGeomUtils.h"
 #include "SpatialOptimizer.h"
 #include "FdoCommonSchemaUtil.h"
 
-using namespace std;
-
 typedef FdoIConnection* (*createFunc)();
+
+FdoIConnection* CreateConnection(const wchar_t* provider)
+{
+#ifdef _WIN32
+    HMODULE h = LoadLibrary(provider);
+    if (!h) goto fail_load;
+
+    FARPROC f = GetProcAddress(h, "CreateConnection");
+    if (!f) goto fail_entry;
+
+    return ((createFunc)f)();
+#else
+    char mbsprov[PATH_MAX];
+    wcstombs(mbsprov, provider);
+    
+    void* h = dlopen(mbsprov, RTLD_LAZY);
+    if (!h) goto fail_load;
+    
+    void* f = dlsym(h, "CreateConnection");
+    if (!f) goto fail_entry;    
+
+    return ((createFunc)f)();
+#endif
+
+fail_load:
+    printf("Failed to load provider: %ls\n", provider);
+    exit(1);
+
+fail_entry:
+    printf("Failed to find FDO entry point: %ls\n", provider);
+    exit(1);
+}
 
 FdoIConnection* GetFdoCon(const wchar_t* srcfile, bool open)
 {
-    HMODULE h;
     std::wstring connstr;
 
     _ASSERT(wcslen(srcfile) > 4);
@@ -29,27 +65,28 @@ FdoIConnection* GetFdoCon(const wchar_t* srcfile, bool open)
     std::wstring fname = srcfile;
     size_t index = fname.find_last_of(L'.');
 
-    if (index == wstring::npos)
+    if (index == std::wstring::npos)
     {
         printf ("Invalid filename.");
         exit(1);
     }
 
     std::wstring ext = fname.substr(index);
+    std::wstring provider;
 
     if (_wcsicmp(ext.c_str(), L".sdf") == 0)
     {
-        h = LoadLibrary(L"SdfProvider.dll");
+        provider = L"SdfProvider"; 
         connstr = std::wstring(L"File=") + srcfile + std::wstring(L";ReadOnly=false;");
     }
     else if (_wcsicmp(ext.c_str(), L".shp") == 0)
     {
-        h = LoadLibrary(L"ShpProvider.dll");
+        provider = L"ShpProvider";
         connstr = std::wstring(L"DefaultFileLocation=") + srcfile + std::wstring(L";");
     }
     else if (_wcsicmp(ext.c_str(), L".sdx") == 0 || wcscmp(ext.c_str(), L".db") == 0)
     {
-        h = LoadLibrary(L"SQLiteProvider.dll");
+        provider = L"SQLiteProvider";
         connstr = std::wstring(L"File=") + srcfile + std::wstring(L";");
     }
     else
@@ -58,18 +95,15 @@ FdoIConnection* GetFdoCon(const wchar_t* srcfile, bool open)
         exit(1); //ouch
     }
 
-    FARPROC f = GetProcAddress(h, "CreateConnection");
-    FdoIConnection* conn_ = ((createFunc)f)();
+    FdoIConnection* conn = CreateConnection(provider.c_str());
 
     //open an FDO connection to the file
-    conn_->SetConnectionString(connstr.c_str());
+    conn->SetConnectionString(connstr.c_str());
 
     if (open)
-    {
-        conn_->Open();
-    }
+        conn->Open();
 
-    return conn_;
+    return conn;
 }
 
 void PopulateSRSTable(FdoIConnection* dcon, FdoIConnection* con)
@@ -92,8 +126,6 @@ void PopulateSRSTable(FdoIConnection* dcon, FdoIConnection* con)
     }
 }
 
-
-typedef std::pair<std::wstring, int> NameType;
 
 void CreateFeatureTable(FdoIConnection* dcon, FdoFeatureClass* fc, FdoIInsert* insert, int& autoGenIndex)
 {
