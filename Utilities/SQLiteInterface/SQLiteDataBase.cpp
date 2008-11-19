@@ -27,7 +27,10 @@ SQLiteDataBase::SQLiteDataBase()
     mDbOpen = false;
     mSartedTransaction = false;
     m_pBtree = NULL; 
+
+    SetMaxCacheSize(-1);
 }
+
 SQLiteDataBase::~SQLiteDataBase() 
 { 
     if( mDbOpen )
@@ -180,3 +183,22 @@ int SQLiteDataBase::ExecuteNonQuery( const char* sqlStr, int *changes )
 }
 
 
+long SQLiteDataBase::GetMaxCacheSize()
+{
+    return mMaxCacheSize;
+}
+
+void SQLiteDataBase::SetMaxCacheSize( long maxCacheSize )
+{
+    if ( maxCacheSize > 0 ) 
+    {
+        mMaxCacheSize = maxCacheSize;
+    }
+    else {
+        // Default to value set by environment variable,
+        // or fall back to defined value if environment variable not set.
+        char* p = getenv("SDF_MAXCACHESIZE");
+        long envMaxCacheSize = p ? atol(p) : -1;
+        mMaxCacheSize = (envMaxCacheSize > 0) ? envMaxCacheSize : SQLiteDB_MAXCACHESIZE;
+    }
+}

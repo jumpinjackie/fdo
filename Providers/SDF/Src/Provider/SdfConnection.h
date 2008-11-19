@@ -208,6 +208,8 @@ private:
   
     bool m_bReadOnly;
 
+    long m_lMaxCacheSize;
+
     FdoConnectionState m_connState;
     SdfConnectionInfo* m_connInfo;
 

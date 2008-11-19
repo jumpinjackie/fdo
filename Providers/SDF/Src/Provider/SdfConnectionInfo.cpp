@@ -119,6 +119,14 @@ FdoIConnectionPropertyDictionary* SdfConnectionInfo::GetConnectionProperties()
                 RDONLY_TRUE, false, false, true, false, false, false, false, false, 2, (const wchar_t**)pReadOnlyVals);
         newProp->SetValue(RDONLY_TRUE);
         mPropertyDictionary->AddProperty(newProp);
+
+        // Maximum cache size in # of features
+        // Default is SQLiteDB_MAXCACHESIZE
+        wide_to_multibyte(mbPropName, PROP_NAME_MAXCACHESIZE);
+        newProp = new ConnectionProperty (PROP_NAME_MAXCACHESIZE,
+                NlsMsgGetMain(SDFPROVIDER_99_PROP_NAME_MAXCACHESIZE, mbPropName),
+                EMPTY_VALUE, false, false, false, false, false, false, false, false, 0, NULL);
+        mPropertyDictionary->AddProperty(newProp);
     }
     return (FDO_SAFE_ADDREF(mPropertyDictionary.p));
 }
