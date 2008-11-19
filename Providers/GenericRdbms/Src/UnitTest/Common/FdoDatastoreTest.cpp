@@ -38,6 +38,16 @@ FdoDatastoreTest::~FdoDatastoreTest(void)
 void FdoDatastoreTest::setUp ()
 {
     set_provider();
+
+    // The following checks on the availability of lock/LT support. It is
+    // required to know this before actually executing the tests so the
+    // tests work in any environment.
+    SetLtMode();
+}
+
+void FdoDatastoreTest::SetLtMode ()
+{
+    // There is nothing to do here - ORACLE only
 }
 
 void FdoDatastoreTest::predelete()

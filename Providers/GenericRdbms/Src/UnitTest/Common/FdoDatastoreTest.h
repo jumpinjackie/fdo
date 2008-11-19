@@ -43,6 +43,7 @@ public:
 protected:
 	virtual void  set_provider() {}   
 	virtual FdoStringP  get_lt_mode() { return L"";} 
+    virtual void SetLtMode();
 
 	void predelete();
     void Cmd_ListDatastores ();
