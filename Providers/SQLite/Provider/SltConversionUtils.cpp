@@ -204,8 +204,11 @@ void BindPropVals(FdoPropertyValueCollection* props, sqlite3_stmt* stmt)
                     {
                         FdoStringValue* v = (FdoStringValue*)dv;
                         FdoString* s = v->GetString();
-                        std::string mbs = W2A_SLOW(s);
-                        rc = sqlite3_bind_text(stmt, i, mbs.c_str(), -1, SQLITE_TRANSIENT);
+                        size_t wlen = wcslen(s);
+                        size_t clen = wlen*4+1;
+                        char* mbs = (char*)alloca(clen);
+                        W2A_FAST(mbs, clen, s, wlen);
+                        rc = sqlite3_bind_text(stmt, i, mbs, -1, SQLITE_TRANSIENT);
                     }
                     break;
             }
