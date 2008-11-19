@@ -186,6 +186,8 @@ void SdfRTree::DeleteNode(REC_NO rec)
 int SdfRTree::Insert(Bounds& bounds, int level, SQLiteData& featureKey, REC_NO recnoForNode)
 {
     Node* root = &m_rootNode;
+    Node oldRoot;
+    memcpy( (void*) &oldRoot, (void*) &m_rootNode, sizeof(Node) );
     REC_NO* rootRecno = &m_rootRecno;
     
     Node newroot;
@@ -218,7 +220,8 @@ int SdfRTree::Insert(Bounds& bounds, int level, SQLiteData& featureKey, REC_NO r
         AddBranch(b, newroot, dummy);
 
         //save changes to old root
-        SaveNode(*root, *rootRecno, false);
+        if ( (*root) != oldRoot ) 
+            SaveNode(*root, *rootRecno, false);
        
         //save new root node and reinit class member pointers
         *root = newroot;
@@ -231,7 +234,8 @@ int SdfRTree::Insert(Bounds& bounds, int level, SQLiteData& featureKey, REC_NO r
     else
     {
         //save changes to old root
-        SaveNode(*root, *rootRecno, false);
+        if ( (*root) != oldRoot ) 
+            SaveNode(*root, *rootRecno, false);
 
         result = 0;
     }
@@ -257,6 +261,8 @@ int SdfRTree::InsertRect2(Bounds& bounds, Node& n, Node& newNode, int level, SQL
             //retrieve child node we are working with
             Node child;
             RetrieveNode(child, n.branch[i].child);
+            Node oldChild;
+            memcpy( (void*)&oldChild, (void*)&child, sizeof(Node) );
 
             if (InsertRect2(bounds, child, n2, level, featureKey, recnoForNode) == 0)
             {
@@ -264,14 +270,16 @@ int SdfRTree::InsertRect2(Bounds& bounds, Node& n, Node& newNode, int level, SQL
                 n.branch[i].bounds = Bounds::CombineBounds(bounds, n.branch[i].bounds);
 
                 //now save changes to child...
-                SaveNode(child, n.branch[i].child, false);
+                if ( child != oldChild ) 
+                    SaveNode(child, n.branch[i].child, false);
 
                 return 0;
             }
             else    // child was split
             {
                 //now save changes to child...
-                SaveNode(child, n.branch[i].child, false);
+                if ( child != oldChild ) 
+                    SaveNode(child, n.branch[i].child, false);
 
                 //save newly created node
                 n2Recno = SaveNode(n2, 0, true);

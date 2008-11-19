@@ -86,6 +86,7 @@ SdfConnection::SdfConnection()
   m_connState(FdoConnectionState_Closed),
   m_connInfo(NULL),
   m_bReadOnly(false),
+  m_lMaxCacheSize(-1),
   m_dbSchema(NULL),
   m_dbExtendedInfo(NULL)
 {
@@ -319,7 +320,10 @@ FdoConnectionState SdfConnection::Open( SdfCompareHandler* cmpHandler )
         m_env = NULL;
         throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_2_ALLOCATE_ENV_HANDLE_FAILED)));
     }
-    
+ 
+    if ( m_lMaxCacheSize > 0 ) 
+        m_env->SetMaxCacheSize(m_lMaxCacheSize);
+
     try
     {
         //get the SDF schema. It could be empty..., but we still have an object for it
@@ -531,6 +535,13 @@ void SdfConnection::UpdateConnectionString()
         m_bReadOnly = true;
     else
         m_bReadOnly = false;
+
+    const wchar_t* strMaxCacheSize = dict->GetProperty(PROP_NAME_MAXCACHESIZE);
+
+    if ( strMaxCacheSize && (strMaxCacheSize[0] != 0) ) 
+        m_lMaxCacheSize = FdoStringP(strMaxCacheSize).ToLong();
+    else
+        m_lMaxCacheSize = -1;
 
     FdoCommonConnStringParser parser (NULL, GetConnectionString ());
     // check the validity of the connection string, i.e. it doesn’t contain unknown properties

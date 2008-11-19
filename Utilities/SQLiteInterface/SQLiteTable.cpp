@@ -27,7 +27,7 @@
 SQLiteTable::SQLiteTable(SQLiteDataBase*  db) 
 { 
     mCacheSize = 0;
-    mMaxCacheSize = SQLiteDB_MAXCACHESIZE;
+    mMaxCacheSize = db->GetMaxCacheSize();
     m_pDb = db;
     mTableName = NULL;
     mIsOpen = false;
@@ -337,7 +337,7 @@ int SQLiteTable::open( SQLiteTransaction *txnid,
         delete mCur;
     }
     if( strncmp(utf8NewTabName,"RTREE", 5 ) == 0 )
-        mMaxCacheSize = SQLiteDB_MAXCACHESIZE*5;
+        mMaxCacheSize = m_pDb->GetMaxCacheSize()*5;
  	
 	mUseIntKey = ! useNoIntKey;
 	

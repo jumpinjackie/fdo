@@ -177,6 +177,11 @@ struct Node
         count = 0;
         level = 0;
     }
+
+    bool operator!=( const Node& other ) 
+    {
+        return ( memcmp((const void*) this, (const void*) &other, sizeof(Node)) != 0 );
+    }
 };
 
 
