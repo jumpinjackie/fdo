@@ -344,7 +344,13 @@ ShpFileSet::~ShpFileSet (void)
 {
 	if ( mFilesExist )
 	{
-		ReopenFileset( FdoCommonFile::IDF_OPEN_READ );
+		try{
+             ReopenFileset( FdoCommonFile::IDF_OPEN_READ );
+        }
+        catch( FdoException* e)  // Here eat all exceptions, to eliminate throwing exceptions in destructor
+        {
+             e->Release();
+        }
 	}
 
 	// Remember to compress this file set (on final connection Close())
@@ -428,7 +434,29 @@ ShpSpatialIndex* ShpFileSet::GetSpatialIndex ( bool populateRtree )
 	// Create the Spatial index object 
 	if ( mSSI == NULL && populateRtree )
 	{
-        mSSI = new ShpSpatialIndex (mSSIFileName, mTmpDir, GetShapeIndexFile ()->GetFileShapeType (), GetShapeIndexFile ()->HasMData ());
+        try
+        {
+            mSSI = new ShpSpatialIndex (mSSIFileName, mTmpDir, GetShapeIndexFile ()->GetFileShapeType (), GetShapeIndexFile ()->HasMData ());
+        }
+        catch( FdoException* e)
+        {
+           // Remove the corrupted spatial index file and rebuild spatial index.
+           // Note: For read-only file, the tempory file will be used in ShpSpatialIndex Constructor so that it wouldn't get here.
+           FdoStringP  exceptionMsg =  NlsMsgGet(SHP_SI_NOT_AN_SSI, "Corrupted Spatial Index file '%1$ls'.", mSSIFileName);
+           if( exceptionMsg == e->GetExceptionMessage() && FdoCommonFile::Delete (mSSIFileName))
+           {
+                mSSI = NULL;
+                e->Release();
+           }
+           else  // Only handle the corrupted IDX file case.
+           {
+                throw e;
+           }
+        }
+        if( NULL==mSSI)  // Rebuild the spatial index
+        {
+            mSSI = new ShpSpatialIndex (mSSIFileName, mTmpDir, GetShapeIndexFile ()->GetFileShapeType (), GetShapeIndexFile ()->HasMData ());
+        }
         mSSI->SetTemporaryFile (mIsSSITempFile);
 
 		if (!mSSI->IsNew())
