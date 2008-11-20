@@ -1,4 +1,3 @@
-#pragma once
 // 
 //  
 //  Copyright (C) 2008 Autodesk Inc.
