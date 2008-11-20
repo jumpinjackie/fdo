@@ -16,15 +16,18 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  
 
+typedef std::vector<__int64> recno_list;
+
 struct TCtx
 {
-    TCtx() : canOmit(false)
+    TCtx() : canOmit(false), ids(NULL)
     {
     }
 
     std::wstring expr;
     DBounds      bounds;
     bool         canOmit;
+    recno_list* ids;
 };
 
 
@@ -87,6 +90,7 @@ public:
     void GetBBOX(DBounds& ext);
     const wchar_t* GetFilter();
     bool CanUseFastStepping();
+    recno_list* DetachIDList();
 
 private:
     

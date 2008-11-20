@@ -479,6 +479,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
     string mbfc = W2A_SLOW(fcname->GetName());
 
     DBounds bbox;
+    std::vector<__int64>* rowids = NULL;
     string where;
     bool canFastStep = true;
 
@@ -487,19 +488,28 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
     //by using the spatial index.
     if (filter)
     {
-        SltQueryTranslator qt(NULL);
+        FdoPtr<FdoClassDefinition> fc = GetMetadata(mbfc.c_str())->ToClass();
+        SltQueryTranslator qt(fc);
         filter->Process(&qt);
 
         where = W2A_SLOW(qt.GetFilter());
         qt.GetBBOX(bbox);
+        rowids = qt.DetachIDList();
         canFastStep = qt.CanUseFastStepping();
     }
 
     SpatialIterator* siter = NULL;
+    RowidIterator* ri = NULL;
 
-    //if we have a BBOX filter, we need to get the spatial index
-    if (!bbox.IsEmpty())
+
+    //if we have a query by specific ID, it will take precedence over spatial query
+    if (rowids && ordering.empty())
     {
+        ri = new RowidIterator(-1, rowids);
+    }
+    else if (!bbox.IsEmpty())
+    {
+        //if we have a BBOX filter, we need to get the spatial index
         SpatialIndex* si = GetSpatialIndex(mbfc.c_str());
 
         DBounds total_ext;
@@ -518,7 +528,6 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
     //or at least we hope it does.
     //This approach may or may not be slower, it needs some experimentation to see if
     //it's better to also perform the where clause here.
-    RowidIterator* ri = NULL;
 
     if (!ordering.empty())
     {
@@ -618,7 +627,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
 
             ri = new RowidIterator(-1, rows);
         }
-        else
+        else if (!ri)
         {
             ri = new RowidIterator(GetFeatureCount(mbfc.c_str()), NULL);
         }
@@ -687,7 +696,7 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
 
     for (int i=0; i<propvals->GetCount(); i++)
     {
-        if (!i) sql += ",";
+        if (i) sql += ",";
 
         FdoPtr<FdoPropertyValue> pv = propvals->GetItem(i);
         FdoPtr<FdoIdentifier> id = pv->GetName();

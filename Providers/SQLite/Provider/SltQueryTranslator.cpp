@@ -21,6 +21,96 @@
 #include "SltQueryTranslator.h"
 #include "SltExprExtensions.h"
 
+#include <algorithm>
+
+
+recno_list* recno_list_union(recno_list* left, recno_list* right)
+{
+    //if one of the lists is null it means it iterates over all features...
+    //so return that list as the union of the two
+    if (left == NULL)
+        return left;
+
+    if (right == NULL)
+        return right;
+
+    std::sort(left->begin(), left->end(), std::less<__int64>());
+    std::sort(right->begin(), right->end(), std::less<__int64>());
+
+    recno_list::iterator iter1 = left->begin();
+    recno_list::iterator iter2 = right->begin();
+
+    recno_list* ret = new recno_list;
+
+    while (iter1 != left->end() || iter2 != right->end())
+    {
+        if (iter1 == left->end())
+            ret->push_back(*iter2++);
+        else if (iter2 == right->end())
+            ret->push_back(*iter1++);
+        else if (*iter2 < *iter1)
+            ret->push_back(*iter2++);
+        else if (*iter2 > *iter1)
+            ret->push_back(*iter1++);
+        else
+        {
+            ret->push_back(*iter1);
+            iter1++;
+            iter2++;
+        }
+    }
+
+    //dispose of inputs and return newly allocated list
+    delete left;
+    delete right;
+
+    return ret;
+}
+
+recno_list* recno_list_intersection(recno_list* left, recno_list* right)
+{
+    //if one of the lists is null it means it iterates over all features...
+    //so return the non-null list as the intersection of the two, if one is non-null
+    if (left == NULL)
+        return right;
+
+    if (right == NULL)
+        return left;
+
+    std::sort(left->begin(), left->end(), std::less<__int64>());
+    std::sort(right->begin(), right->end(), std::less<__int64>());
+
+    recno_list::iterator iter1 = left->begin();
+    recno_list::iterator iter2 = right->begin();
+
+    recno_list* ret = new recno_list;
+
+    while(iter1 != left->end() || iter2 != right->end())
+    {
+        if (iter1 == left->end())
+            return ret;
+        else if (iter2 == right->end())
+            return ret;
+        else if (*iter2 < *iter1)
+            iter2++;
+        else if (*iter2 > *iter1)
+            iter1++;
+        else
+        {
+            ret->push_back(*iter1);
+            iter1++;
+            iter2++;
+        }
+    }
+
+    //dispose of inputs and return newly allocated list
+    delete left;
+    delete right;
+
+    return ret;
+}
+
+
 SltQueryTranslator::SltQueryTranslator(FdoClassDefinition* fc)
 : m_refCount(1),
 m_canUseFastStepping(true)
@@ -30,6 +120,11 @@ m_canUseFastStepping(true)
 
 SltQueryTranslator::~SltQueryTranslator()
 {
+    //just in case, delete any ID list that is on top of the stack.
+    //This should not happen under normal operation.
+    if (!m_evalStack.empty())
+        delete m_evalStack[0].ids;
+
     FDO_SAFE_RELEASE(m_fc);
 }
 
@@ -61,12 +156,14 @@ void SltQueryTranslator::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& 
         {
             ops = L") AND ("; 
             DBounds::Intersection(&ret.bounds, &lefts.bounds, &rights.bounds);
+            ret.ids = recno_list_intersection(lefts.ids, rights.ids);
         }
         break;
     case FdoBinaryLogicalOperations_Or:
         {
             ops = L") OR (";
             DBounds::Union(&ret.bounds, &lefts.bounds, &rights.bounds);
+            ret.ids = recno_list_union(lefts.ids, rights.ids);
         }
         break;
     }
@@ -174,6 +271,10 @@ void SltQueryTranslator::ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& fi
     //case, se we won't.
     cxt.bounds.SetEmpty();
 
+    //also clear any specific IDs we are looking for
+    delete cxt.ids;
+    cxt.ids = NULL;
+
     cxt.expr = L"NOT (" + cxt.expr + L")";
 
     m_evalStack.push_back(cxt);
@@ -182,6 +283,28 @@ void SltQueryTranslator::ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& fi
 void SltQueryTranslator::ProcessComparisonCondition(FdoComparisonCondition& filter)
 {
     TCtx ret;
+
+    //check if we are looking for a specific row ID -- we will special case that query
+    FdoPtr<FdoExpression> left = filter.GetLeftExpression();
+    FdoPtr<FdoExpression> right = filter.GetRightExpression();
+
+    FdoPtr<FdoDataPropertyDefinitionCollection> idpdc = m_fc->GetIdentityProperties();
+    FdoPtr<FdoDataPropertyDefinition> idpd = idpdc->GetItem(0);
+    
+    if (wcscmp(left->ToString(), idpd->GetName()) == 0)
+    {
+        __int64 idval = -1;
+        size_t len = 0;
+        int res = swscanf(right->ToString(), L"%lld%n", &idval, &len);
+
+        if (res == 1 && len == wcslen(right->ToString()))
+        {
+            ret.ids = new recno_list;
+            ret.ids->push_back(idval);
+            ret.canOmit = true;
+        }
+    }
+
     ret.expr = filter.ToString();
     m_evalStack.push_back(ret);
 }
@@ -384,6 +507,20 @@ void SltQueryTranslator::GetBBOX(DBounds& ext)
         ext = m_evalStack[0].bounds;
     else
         ext.SetEmpty();
+}
+
+//caller is responsible for deleting the return value once this 
+//function is called
+std::vector<__int64>* SltQueryTranslator::DetachIDList()
+{
+    if (m_evalStack.size() > 0)
+    {
+        std::vector<__int64>* ret = m_evalStack[0].ids;
+        m_evalStack[0].ids = NULL; //clear out our pointer since caller now owns this
+        return ret;
+    }
+    else
+        return NULL;
 }
 
 const wchar_t* SltQueryTranslator::GetFilter()
