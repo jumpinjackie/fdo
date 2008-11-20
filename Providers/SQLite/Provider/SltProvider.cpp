@@ -30,6 +30,8 @@
 #include "SltQueryTranslator.h"
 #include "RowidIterator.h"
 
+#include "FdoCommonSchemaUtil.h"
+
 //#include "SpatialIndex.h"
 #include "DiskSpatialIndex.h"
 
@@ -406,7 +408,10 @@ FdoString* SltConnection::GetLocalizedName(FdoString* name)
 FdoFeatureSchemaCollection* SltConnection::DescribeSchema()
 {
     if (m_pSchema)
-        return FDO_SAFE_ADDREF(m_pSchema);
+    {
+        //We need to clone the schema, because the caller may modify it and mess us up.
+        return FdoCommonSchemaUtil::DeepCopyFdoFeatureSchemas(m_pSchema, NULL);
+    }
 
     if (!m_db)
         return NULL;
@@ -453,7 +458,8 @@ FdoFeatureSchemaCollection* SltConnection::DescribeSchema()
         }
     }
 
-    return FDO_SAFE_ADDREF(m_pSchema);
+    //We need to clone the schema, because the caller may modify it and mess us up.
+    return FdoCommonSchemaUtil::DeepCopyFdoFeatureSchemas(m_pSchema, NULL);
 }
 
 
