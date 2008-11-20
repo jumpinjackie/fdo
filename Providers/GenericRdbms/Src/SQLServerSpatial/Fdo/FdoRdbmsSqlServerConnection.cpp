@@ -431,14 +431,15 @@ void FdoRdbmsSqlServerConnection::logOpen(char accessMode)
 {
 	int					i;
 	FdoStringP			sql_stmt;
-	int					new_user_num;
+	int					new_user_num = -1;
 	int					user_num;
 	char				lower_access[2];
 	int					rc;
 	GdbiStatement*		insertStmt = NULL;
 	GdbiStatement*		gdbiStmt = NULL;
 	GdbiQueryResult*	gdbiResult = NULL;
-		
+	bool                write_privs = true;
+
     FdoSmPhMgrP phMgr = GetSchemaManager()->GetPhysicalSchema();
 
 	if (!phMgr->FindDbObject(phMgr->GetDcDbObjectName(FDO_DBOPEN_TABLE)))
@@ -454,119 +455,135 @@ void FdoRdbmsSqlServerConnection::logOpen(char accessMode)
 		(FdoString*)FDO_DBOPEN_TABLE, (FdoString*)FDO_DBOPEN_TABLE,(FdoString*)FDO_SESSION_COLUMN, (FdoString*)FDO_DBOPEN_TABLE,(FdoString*)FDO_PROCESS_COLUMN);
 	
 	gdbiStmt = GetDbiConnection()->GetGdbiConnection()->Prepare((const wchar_t*)sql_stmt);
-	rc = gdbiStmt->ExecuteNonQuery();
+    try {
+	    rc = gdbiStmt->ExecuteNonQuery();
+    }
+    catch (FdoException *ex)	{
+		rc = GetDbiConnection()->GetGdbiCommands()->err_stat();	
+		if (rc == RDBI_INSUFFICIENT_PRIVS) {
+			ex->Release();
+            write_privs = false;
+        }
+        else    {
+            gdbiStmt->Free();
+	        delete gdbiStmt;
+	        gdbiStmt = NULL;
+            throw ex;
+        }
+    }
 	gdbiStmt->Free();
 	delete gdbiStmt;
 	gdbiStmt = NULL;
 
-	GetDbiConnection()->GetGdbiCommands()->tran_begin("update_db_open_table");
+    if (write_privs)    {
+	    GetDbiConnection()->GetGdbiCommands()->tran_begin("update_db_open_table");
 
-	// get thread id of the current session
-	for (i = 0; i < OD_MAX_RETRY_COUNT; i++) {
-		new_user_num = -1;
-		if (i == 0)
-		{
-			sql_stmt =
-			FdoStringP::Format(L"select %ls, %ls, %ls from %ls with (UPDLOCK) where %ls = (select max(%ls) from %ls )",
-				(FdoString*)FDO_DBUSER_COLUMN, (FdoString*)FDO_ACCESS_MODE_COLUMN, (FdoString*)FDO_USER_NUM_COLUMN,
-				(FdoString*)FDO_DBOPEN_TABLE, (FdoString*)FDO_USER_NUM_COLUMN, (FdoString*)FDO_USER_NUM_COLUMN, 
-				(FdoString*)FDO_DBOPEN_TABLE);
-			gdbiStmt = GetDbiConnection()->GetGdbiConnection()->Prepare((const wchar_t*)sql_stmt);
-		}
-		gdbiResult = gdbiStmt->ExecuteQuery();
-		gdbiResult->ReadNext();
-		rc = GetDbiConnection()->GetGdbiCommands()->err_stat();
-		if (rc == RDBI_END_OF_FETCH)
-			new_user_num = 0;
-		else	{
-			if (gdbiResult->GetIsNull((char *)GetDbiConnection()->GetUtility()->UnicodeToUtf8(FDO_ACCESS_MODE_COLUMN)) == false)	{
-					FdoInt8 s_access;
-					s_access = gdbiResult->GetInt8( (const wchar_t*)FDO_ACCESS_MODE_COLUMN, NULL, NULL );
-					if (s_access == 'e' || lower_access[0] == 'e')	{
-						gdbiResult->Close();
-						GetDbiConnection()->GetGdbiCommands()->tran_end("update_db_open_table");
-						throw FdoConnectionException::Create(L"Database is exclusively locked");
-					}
-			}
-			user_num = 
-				(int)gdbiResult->GetInt64((char *)GetDbiConnection()->GetUtility()->UnicodeToUtf8(FDO_USER_NUM_COLUMN), 
-						                    NULL, NULL);
-			/*user_num = 
-				gdbiResult->GetInt32((char *)GetDbiConnection()->GetUtility()->UnicodeToUtf8(FDO_USER_NUM_COLUMN), 
-						                    NULL, NULL);*/
-			new_user_num = user_num +1;
-		
-		}
-		// end select
-		if( gdbiResult )
-		{
-			gdbiResult->End();
-			delete gdbiResult;
-			gdbiResult = NULL;
-		}
-		if (i == 0)	{
-			sql_stmt = FdoStringP::Format(L"insert into %ls (%ls, %ls, %ls, %ls, %ls, %ls) values (?, ?, ?, APP_NAME(), GETDATE(), @@SPID)",
-				(FdoString*)FDO_DBOPEN_TABLE, (FdoString*)FDO_DBUSER_COLUMN, (FdoString*)FDO_ACCESS_MODE_COLUMN, (FdoString*)FDO_USER_NUM_COLUMN, 
-				(FdoString*)FDO_PROCESS_COLUMN, (FdoString*)FDO_OPENDATE_COLUMN, (FdoString*)FDO_SESSION_COLUMN);
-			insertStmt = GetDbiConnection()->GetGdbiConnection()->Prepare((const wchar_t*)sql_stmt);
-		}
-		FdoStringP user = GetDbiConnection()->GetUser();
-		insertStmt->Bind(1, RDBI_DB_NAME_SIZE, (const wchar_t *)user, NULL);
-		insertStmt->Bind(2, sizeof(char), (const char *)&lower_access, NULL);
-		insertStmt->Bind(3, &new_user_num, NULL);
-		try	{
-			insertStmt->ExecuteNonQuery();
-			break;
-		}
-		catch (FdoException *ex)	{
-			rc = GetDbiConnection()->GetGdbiCommands()->err_stat();	
-			if (rc == RDBI_DUPLICATE_INDEX) {
-				ex->Release();
-				//debug1("Retrying... tried to insert usernum: %d",new_user_num);
-				continue;
-			}
-			else	{
-				GetDbiConnection()->GetGdbiCommands()->tran_end("update_db_open_table");
-				if( gdbiResult )
-				{
-					gdbiResult->Close();
-					delete gdbiResult;
-					gdbiResult = NULL;
-				}
-				if( insertStmt )
-				{
-					insertStmt->Free();
-					delete insertStmt;
-					insertStmt = NULL;
-				}
-				throw ex;
-			}
-		}
-	}
+	    // get thread id of the current session
+	    for (i = 0; i < OD_MAX_RETRY_COUNT; i++) {
+		    new_user_num = -1;
+		    if (i == 0)
+		    {
+			    sql_stmt =
+			    FdoStringP::Format(L"select %ls, %ls, %ls from %ls with (UPDLOCK) where %ls = (select max(%ls) from %ls )",
+				    (FdoString*)FDO_DBUSER_COLUMN, (FdoString*)FDO_ACCESS_MODE_COLUMN, (FdoString*)FDO_USER_NUM_COLUMN,
+				    (FdoString*)FDO_DBOPEN_TABLE, (FdoString*)FDO_USER_NUM_COLUMN, (FdoString*)FDO_USER_NUM_COLUMN, 
+				    (FdoString*)FDO_DBOPEN_TABLE);
+			    gdbiStmt = GetDbiConnection()->GetGdbiConnection()->Prepare((const wchar_t*)sql_stmt);
+		    }
+		    gdbiResult = gdbiStmt->ExecuteQuery();
+		    gdbiResult->ReadNext();
+		    rc = GetDbiConnection()->GetGdbiCommands()->err_stat();
+		    if (rc == RDBI_END_OF_FETCH)
+			    new_user_num = 0;
+		    else	{
+			    if (gdbiResult->GetIsNull((char *)GetDbiConnection()->GetUtility()->UnicodeToUtf8(FDO_ACCESS_MODE_COLUMN)) == false)	{
+					    FdoInt8 s_access;
+					    s_access = gdbiResult->GetInt8( (const wchar_t*)FDO_ACCESS_MODE_COLUMN, NULL, NULL );
+					    if (s_access == 'e' || lower_access[0] == 'e')	{
+						    gdbiResult->Close();
+						    GetDbiConnection()->GetGdbiCommands()->tran_end("update_db_open_table");
+						    throw FdoConnectionException::Create(L"Database is exclusively locked");
+					    }
+			    }
+			    user_num = 
+				    (int)gdbiResult->GetInt64((char *)GetDbiConnection()->GetUtility()->UnicodeToUtf8(FDO_USER_NUM_COLUMN), 
+						                        NULL, NULL);
+			    /*user_num = 
+				    gdbiResult->GetInt32((char *)GetDbiConnection()->GetUtility()->UnicodeToUtf8(FDO_USER_NUM_COLUMN), 
+						                        NULL, NULL);*/
+			    new_user_num = user_num +1;
+    		
+		    }
+		    // end select
+		    if( gdbiResult )
+		    {
+			    gdbiResult->End();
+			    delete gdbiResult;
+			    gdbiResult = NULL;
+		    }
+		    if (i == 0)	{
+			    sql_stmt = FdoStringP::Format(L"insert into %ls (%ls, %ls, %ls, %ls, %ls, %ls) values (?, ?, ?, APP_NAME(), GETDATE(), @@SPID)",
+				    (FdoString*)FDO_DBOPEN_TABLE, (FdoString*)FDO_DBUSER_COLUMN, (FdoString*)FDO_ACCESS_MODE_COLUMN, (FdoString*)FDO_USER_NUM_COLUMN, 
+				    (FdoString*)FDO_PROCESS_COLUMN, (FdoString*)FDO_OPENDATE_COLUMN, (FdoString*)FDO_SESSION_COLUMN);
+			    insertStmt = GetDbiConnection()->GetGdbiConnection()->Prepare((const wchar_t*)sql_stmt);
+		    }
+		    FdoStringP user = GetDbiConnection()->GetUser();
+		    insertStmt->Bind(1, RDBI_DB_NAME_SIZE, (const wchar_t *)user, NULL);
+		    insertStmt->Bind(2, sizeof(char), (const char *)&lower_access, NULL);
+		    insertStmt->Bind(3, &new_user_num, NULL);
+		    try	{
+			    insertStmt->ExecuteNonQuery();
+			    break;
+		    }
+		    catch (FdoException *ex)	{
+			    rc = GetDbiConnection()->GetGdbiCommands()->err_stat();	
+			    if (rc == RDBI_DUPLICATE_INDEX) {
+				    ex->Release();
+				    //debug1("Retrying... tried to insert usernum: %d",new_user_num);
+				    continue;
+			    }
+			    else	{
+				    GetDbiConnection()->GetGdbiCommands()->tran_end("update_db_open_table");
+				    if( gdbiResult )
+				    {
+					    gdbiResult->Close();
+					    delete gdbiResult;
+					    gdbiResult = NULL;
+				    }
+				    if( insertStmt )
+				    {
+					    insertStmt->Free();
+					    delete insertStmt;
+					    insertStmt = NULL;
+				    }
+				    throw ex;
+			    }
+		    }
+	    }
 
-	GetDbiConnection()->GetGdbiCommands()->tran_end("update_db_open_table");
-	if( insertStmt )
-	{
-		insertStmt->Free();
-		delete insertStmt;
-		insertStmt = NULL;
-	}
-	if( gdbiStmt )
-	{
-		gdbiStmt->Free();
-		delete gdbiStmt;
-		gdbiStmt = NULL;
-	}
-	if( gdbiResult )
-	{
-		gdbiResult->End();
-		delete gdbiResult;
-		gdbiResult = NULL;
-	}
+	    GetDbiConnection()->GetGdbiCommands()->tran_end("update_db_open_table");
+	    if( insertStmt )
+	    {
+		    insertStmt->Free();
+		    delete insertStmt;
+		    insertStmt = NULL;
+	    }
+	    if( gdbiStmt )
+	    {
+		    gdbiStmt->Free();
+		    delete gdbiStmt;
+		    gdbiStmt = NULL;
+	    }
+	    if( gdbiResult )
+	    {
+		    gdbiResult->End();
+		    delete gdbiResult;
+		    gdbiResult = NULL;
+	    }
 
-	if (i == OD_MAX_RETRY_COUNT)
-        throw FdoConnectionException::Create(L"Max retry count (%1$d) exceeded. Open database failed.");
-	
+	    if (i == OD_MAX_RETRY_COUNT)
+            throw FdoConnectionException::Create(L"Max retry count (%1$d) exceeded. Open database failed.");
+    }
 	// Remember user number set in F_DbOpen
 	SetUserNum(new_user_num);
 }
