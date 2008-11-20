@@ -361,6 +361,9 @@ class SltInsert : public SltCommand<FdoIInsert>
             if (m_pCompiledSQL)
                 rc = sqlite3_finalize(m_pCompiledSQL);
 
+            //TODO: here also notify the connection that portions of the
+            //spatial index are dirty and need to be reindexed
+
             FDO_SAFE_RELEASE(m_className);
             FDO_SAFE_RELEASE(m_properties);
         }
@@ -394,6 +397,7 @@ class SltInsert : public SltCommand<FdoIInsert>
             if (!m_pCompiledSQL)
             {
                 PrepareSQL();
+                m_execCount = 0;
             }
 
             sqlite3_reset(m_pCompiledSQL);
@@ -417,13 +421,24 @@ class SltInsert : public SltCommand<FdoIInsert>
                 throw FdoCommandException::Create(L"SQLite insert failed!");
             }
 
+            if (++m_execCount == 10000)
+            {
+                char* err = NULL;
+                int rc = sqlite3_exec(m_db, "COMMIT;BEGIN;", NULL, NULL, &err);
+
+                if (rc != SQLITE_OK)
+                    throw FdoCommandException::Create(L"SQLite commit failed!");
+
+                //TODO: here also notify the connection that portions of the
+                //spatial index are dirty and need to be reindexed
+
+                m_execCount = 0;
+            }
+
             //get the ID of the last inserted feature
             sqlite3_int64 id = sqlite3_last_insert_rowid(m_db);
             char sid[64];
             sprintf(sid, "rowid=%d", id);
-
-            //TODO: update the spatial index here...
-            //si->Insert()...
 
             //return the new feature
             //IMPORTANT: use a transaction-less reader so that
@@ -474,6 +489,7 @@ class SltInsert : public SltCommand<FdoIInsert>
         std::string                 m_fcname;
         sqlite3*                    m_db;
         sqlite3_stmt*               m_pCompiledSQL;
+        int                         m_execCount;
 };
 
 
