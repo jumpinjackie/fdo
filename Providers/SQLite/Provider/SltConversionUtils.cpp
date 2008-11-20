@@ -39,9 +39,9 @@ std::wstring A2W_SLOW(const char* input)
     return std::wstring(ws);
 }
 
-void A2W_FAST(wchar_t* dst, int wlen, const char* src, int clen)
+int A2W_FAST(wchar_t* dst, int wlen, const char* src, int clen)
 {
-    _ut_utf8_to_unicode(src, clen, dst, wlen);
+    return _ut_utf8_to_unicode(src, clen, dst, wlen);
 }
 
 int W2A_FAST(char* dst, int clen, const wchar_t* src, int wlen)
