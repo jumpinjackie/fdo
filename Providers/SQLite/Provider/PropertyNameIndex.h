@@ -49,6 +49,12 @@ class PropertyNameIndex
 {
 public:
 
+    PropertyNameIndex()
+        : m_lastChar(0),
+          m_lastIndex(0)
+    {
+    }
+
     void Add(const wchar_t* name, int index)
     {
         NameIndexPair p(name, index);
