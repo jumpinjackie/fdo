@@ -475,7 +475,7 @@ void FdoRdbmsSqlServerConnection::logOpen(char accessMode)
 	delete gdbiStmt;
 	gdbiStmt = NULL;
 
-    if (write_privs)    {
+    if (write_privs == true)    {
 	    GetDbiConnection()->GetGdbiCommands()->tran_begin("update_db_open_table");
 
 	    // get thread id of the current session
