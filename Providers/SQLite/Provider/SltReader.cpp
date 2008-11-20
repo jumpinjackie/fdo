@@ -75,7 +75,8 @@ m_wkbBufferLen(0),
 m_closeDB(false),
 m_bUseTransaction(true),
 m_useFastStepping(false),
-m_ri(NULL)
+m_ri(NULL),
+m_aPropNames(NULL)
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
 
@@ -105,7 +106,8 @@ m_wkbBufferLen(0),
 m_closeDB(true),
 m_bUseTransaction(true),
 m_useFastStepping(false),
-m_ri(NULL)
+m_ri(NULL),
+m_aPropNames(NULL)
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
 
@@ -136,7 +138,8 @@ m_wkbBufferLen(0),
 m_closeDB(false),
 m_bUseTransaction(true),
 m_useFastStepping(useFastStepping),
-m_ri(ri)
+m_ri(ri),
+m_aPropNames(NULL)
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
     DelayedInit(props, fcname, where);
@@ -161,7 +164,8 @@ m_wkbBuffer(NULL),
 m_wkbBufferLen(0),
 m_closeDB(false),
 m_bUseTransaction(false),
-m_useFastStepping(true)
+m_useFastStepping(true),
+m_aPropNames(NULL)
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
 }
@@ -176,6 +180,7 @@ SltReader::~SltReader()
 	m_connection->Release();
 	delete[] m_sprops;
     delete[] m_wkbBuffer;
+    delete m_aPropNames;
 }
 
 
@@ -280,20 +285,40 @@ void SltReader::InitPropIndex(sqlite3_stmt* pStmt)
         m_nMaxProps = nProps;
 		m_sprops = new StringRec[m_nMaxProps];
     }
+    
+    //cache information about the returned columns
+    //We will store all the property names converted to wide char
+    //into a single string buffer (to save on allocations) and
+    //use pointers into that buffer 
+    delete m_aPropNames;
+    size_t buflen = 0;
 
-	//cache information about the returned columns
+	//find out how big a buffer we need
 	for (int i=0; i<nProps; i++)
 	{
 		const char* cname = sqlite3_column_name(pStmt, i);
-		std::wstring pname = A2W_SLOW(cname);
-		m_propNames.push_back(pname);
+        buflen += strlen(cname) + 1;
 	}
 
-	//we cannot do this in the loop above since pointers may change
-	//in the m_propNames vector while we are still adding to it --
-	//we need the string pointers to remain fixed for use inside this map
+    m_aPropNames = new wchar_t[buflen];
+    wchar_t* dst = m_aPropNames;
+    m_propNames.reserve(nProps);
+
+	//convert column names to wchar and store in our buffer
 	for (int i=0; i<nProps; i++)
-        m_mNameToIndex.Add(m_propNames[i].c_str(), i);
+	{
+		const char* cname = sqlite3_column_name(pStmt, i);
+        
+        //Note buflen is longer than the column name, but the code we call will terminate when it sees the NULL terminator.
+        //We just need to pass in a number that is bigger than the length of the string, and buflen is guaranteed to be.
+        int len = 1 + A2W_FAST(dst, buflen, cname, buflen); 
+
+        m_propNames.push_back(dst);
+        m_mNameToIndex.Add(dst, i);
+
+        dst += len;
+        buflen -= len;
+	}
 
     m_mNameToIndex.Prepare();
 }
@@ -710,9 +735,9 @@ FdoClassDefinition* SltReader::GetClassDefinition()
 				FdoPtr<FdoGeometricPropertyDefinition> geompd = (origfc->GetClassType() == FdoClassType_FeatureClass) 
 					? ((FdoFeatureClass*)origfc.p)->GetGeometryProperty() : NULL;
 
-				const std::wstring& pname = m_propNames[i];
+				const wchar_t* pname = m_propNames[i];
 
-				FdoPtr<FdoPropertyDefinition> srcprop = pdc->FindItem(pname.c_str());
+				FdoPtr<FdoPropertyDefinition> srcprop = pdc->FindItem(pname);
 
                 if (!srcprop.p)
                     continue; //TODO: really in this case we need to jump to the else statement that handles generic columns
@@ -721,17 +746,17 @@ FdoClassDefinition* SltReader::GetClassDefinition()
                 
     			dstpdc->Add(clonedprop);
 
-				if (idpdc->Contains(pname.c_str()))
+				if (idpdc->Contains(pname))
 					dstidpdc->Add((FdoDataPropertyDefinition*)clonedprop.p);
 
-				if (wcscmp(pname.c_str(), geompd->GetName()) == 0)
+				if (wcscmp(pname, geompd->GetName()) == 0)
 					((FdoFeatureClass*)m_class)->SetGeometryProperty((FdoGeometricPropertyDefinition*)clonedprop.p);
 			}
 			else
 			{
 				//case where the reader is a result of arbitrary sql and the
 				//resulting columns do not come from any existing table (is this case possible?)
-				FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(m_propNames[i].c_str(), NULL);
+				FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(m_propNames[i], NULL);
 
 				//NOTE: Unfortunately, the result of calling this function
 				//may vary when called on different rows of the result.
@@ -868,7 +893,7 @@ FdoInt32 SltReader::GetPropertyCount()
 
 FdoString* SltReader::GetPropertyName(FdoInt32 index)
 {
-	return m_propNames[index].c_str();
+	return m_propNames[index];
 }
 
 FdoDataType SltReader::GetDataType(FdoString* propertyName)
