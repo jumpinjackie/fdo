@@ -217,6 +217,11 @@ static int get_error_from_diag_rec(
 					rdbi_status = RDBI_NO_SUCH_TABLE;
 					crit_err_found = TRUE;
 					break;
+                case 229:
+                    // insufficient privileges
+                    rdbi_status = RDBI_INSUFFICIENT_PRIVS;
+                    crit_err_found = TRUE;
+                    break;
 				default :
 					// If we did not identify any specific errors in the 
 					// diagnostic record, use the severity level to 
