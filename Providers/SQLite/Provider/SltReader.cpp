@@ -495,7 +495,7 @@ FdoString* SltReader::GetString(FdoString* propertyName)
 	    Mem* textmem = columnMem(m_pStmt, i);
 
         if (!textmem->n) 
-            return NULL; //or empty string L"" may be better, since callers may not be used to NULL :)
+            return L""; //empty string L"" better than NULL, since callers may not be used to NULL :)
 
 	    int len = (int)textmem->n;
 	    m_sprops[i].EnsureSize(len+1);
