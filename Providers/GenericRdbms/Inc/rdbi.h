@@ -225,7 +225,7 @@
 
 #define RDBI_NOT_VALID_USER_IN_DATABASE			 88879  /* SQL Server: user does not have dbase access */
 
-
+#define RDBI_INSUFFICIENT_PRIVS                  88880  /* SQL Server: user has insufficient privileges */
 
 
 
