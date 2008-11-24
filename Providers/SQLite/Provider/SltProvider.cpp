@@ -715,7 +715,7 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
     const char* tail = NULL;
     sqlite3_stmt* stmt = NULL;
     
-    if (sqlite3_prepare_v2(m_db, sql.c_str(), -1, &stmt, &tail) != SQLITE_OK)
+    if (sqlite3_prepare_v2(m_db, sql.c_str(), -1, &stmt, &tail) == SQLITE_OK)
     {
         BindPropVals(propvals, stmt);
         
