@@ -1231,3 +1231,8 @@ SymbolicName=FDOSM_424
 Language=English
 Unable to find class '%1$ls'
 .
+MessageId=2649
+SymbolicName=FDOSM_425
+Language=English
+Cannot add schema %1$ls to database; it has the same name as the system schema
+.

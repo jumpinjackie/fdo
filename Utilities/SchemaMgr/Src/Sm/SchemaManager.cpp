@@ -441,6 +441,19 @@ void FdoSchemaManager::NewSchema(
 			)
 		);
 
+    // Catch any attempts to create the system feature schema
+    FdoSmPhOwnerP owner = GetPhysicalSchema()->GetOwner();
+    if ( owner && owner->GetHasMetaSchema() ) {
+        if ( FdoStringP(pFeatSchema->GetName()).ICompare(owner->GetName()) == 0 ) 
+		    throw FdoSchemaException::Create(
+                FdoSmError::NLSGetMessage(
+				    FDO_NLSID(FDOSM_425),
+				    pFeatSchema->GetName()
+			    )
+		    );
+    }
+
+
 	FdoSmLpSchemaP pLpSchema = mLpSchemas->CreateSchema( 
         pFeatSchema, 
         pOverrides, 

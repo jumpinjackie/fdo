@@ -297,6 +297,10 @@ void FdoApplySchemaTest::TestSchema ()
 		    UnitTestUtil::CheckOutput( SchemaTestErrFile(8,true), SchemaTestErrFile(8,false) );
         if ( SchemaTestErrFile(9,true).GetLength() > 0 )
 		    UnitTestUtil::CheckOutput( SchemaTestErrFile(9,true), SchemaTestErrFile(9,false) );
+        if ( SchemaTestErrFile(10,true).GetLength() > 0 )
+		    UnitTestUtil::CheckOutput( SchemaTestErrFile(10,true), SchemaTestErrFile(10,false) );
+        if ( SchemaTestErrFile(11,true).GetLength() > 0 )
+		    UnitTestUtil::CheckOutput( SchemaTestErrFile(11,true), SchemaTestErrFile(11,false) );
 #endif
 
     }
@@ -2227,9 +2231,8 @@ void FdoApplySchemaTest::CreateSystemSchema( FdoIConnection* connection )
 	   with this name.
      */
 
-    datastoreName = UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX ).Upper();
-    if ( mIsLowerDatastoreName ) 
-        datastoreName = datastoreName.Lower();
+    datastoreName = UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX );
+    datastoreName = datastoreName.Lower();
 
 	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
 	FdoPtr<FdoFeatureSchema> pSchema = FdoFeatureSchema::Create( datastoreName, L"System schema" );
@@ -2244,12 +2247,29 @@ void FdoApplySchemaTest::CreateSystemSchema( FdoIConnection* connection )
 	}
 	catch ( FdoSchemaException* e )
 	{
-		UnitTestUtil::PrintException(e, SchemaTestErrFile(100,false), true);
+		UnitTestUtil::PrintException(e, SchemaTestErrFile(10,false), true);
 		FDO_SAFE_RELEASE(e);
 	}
 
 	if ( succeeded ) 
-		CPPUNIT_FAIL( "System schema create was supposed to fail" );
+		CPPUNIT_FAIL( "System schema create (lower name) was supposed to fail" );
+
+    pSchema->SetName( datastoreName.Upper() );
+    succeeded = false;
+
+    try {
+		pCmd->Execute();
+		succeeded = true;
+	}
+	catch ( FdoSchemaException* e )
+	{
+		UnitTestUtil::PrintException(e, SchemaTestErrFile(11,false), true);
+		FDO_SAFE_RELEASE(e);
+	}
+
+	if ( succeeded ) 
+		CPPUNIT_FAIL( "System schema create (upper name) was supposed to fail" );
+
 }
 
 void FdoApplySchemaTest::DeletePhSystemSchemas( StaticConnection* staticConn )
