@@ -57,7 +57,7 @@ ColumnInfo::ColumnInfo (int nColumns)
         m_pColumnScale[i] = 0;
         m_pColumnType[i] = kColumnUnsupportedType;
         m_pwszColumnNames[i] = (WCHAR*)p;
-        *p = L'\0';
+		memset(p, '\0', sizeof(WCHAR*));
         p += (sizeof (WCHAR) * (nDBF_COLNAME_LENGTH + 1));
     }
 }
