@@ -339,7 +339,7 @@ bool ArcSDELongTransactionUtility::VersionStream (ArcSDEConnection* connection, 
             result = SE_versioninfo_get_state_id (info, &state);
             handle_sde_err<FdoCommandException> (connection->GetConnection (), result, __FILE__, __LINE__, ARCSDE_VERSION_INFO_ITEM, "Version info item '%1$ls' could not be retrieved.", L"StateId");
 
-            if (bLockVersion && (0 != state)) // if state = 0, SE_stream_set_state doesn't work
+            if (bLockVersion)
             {
                 connection->SetActiveState (LockVersion (connection, info, true));
                 state = connection->GetActiveState ();
