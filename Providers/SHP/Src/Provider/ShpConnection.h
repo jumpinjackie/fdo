@@ -125,6 +125,10 @@ private:
 	/// <returns>Returns nothing</returns> 
 	void CompressFileSet (const wchar_t* baseName);
 
+	/// <summary>Initialize the list of function in the Expr Engine</summary>
+	/// <returns>Returns nothing</returns> 
+	void InitFunctions();
+
 public:
     ShpConnection (void);
     virtual ~ShpConnection(void);

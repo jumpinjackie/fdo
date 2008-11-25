@@ -25,6 +25,11 @@
 #include <FdoCommonFile.h>
 #include "ShpTests.h"
 
+static const wchar_t* XY_POINT_CLASS = L"xy_point";
+static const wchar_t* XYZ_POINT_CLASS = L"xyz_point";
+static const wchar_t* XYZM_POINT_CLASS = L"xyzm_point";
+static const wchar_t* XYM_POINT_CLASS = L"xym_point";
+static const wchar_t* XYZM_LINE_CLASS = L"xyzm_line";
 
 // =============================================================================
 // | The file contains the definition of the class FdoExpressionFunctionTest. It
@@ -124,6 +129,10 @@ class FdoExpressionFunctionTest : public CppUnit::TestCase
     // CPPUNIT_TEST(TestTrimFunction);
     // CPPUNIT_TEST(TestUpperFunction);
     // =========================================
+    // ====         XYZM UNIT TESTS         ====
+    // =========================================
+	// CPPUNIT_TEST(TestXYZMFunction);
+    // =========================================
     // ====       RUN ALL UNIT TESTS        ====
     // =========================================
     CPPUNIT_TEST(RunAllExpFctTests);
@@ -191,6 +200,7 @@ protected:
     //      identifying the class name.
 
     FdoFeatureClass *CreateFdoFeatureClass (FdoString *class_name);
+	FdoFeatureClass *CreateFdoFeatureClass (FdoString *class_name, FdoInt32 geometry_type, bool has_elevation, bool has_measure);
 
     //  CreateGeometricProperty:
     //      The function creates the named geometry property and returns it
@@ -545,6 +555,12 @@ protected:
 
     void TestUpperFunction ();
 
+	//-------------------------------------------------------------------------
+    //                     XYZM function Unit Test Functions
+    //-------------------------------------------------------------------------
+	void TestXYZMFunction ();
+	void AddXYZMFeature ( FdoIConnection *current_connection );
+	void TestXYZMClass( FdoString *class_name );
 
     //-------------------------------------------------------------------------
     //                       Special Unit Test Functions
