@@ -10321,25 +10321,25 @@ void FdoExpressionFunctionTest::AddTestSchema (
 
 	  // Create class with XY point geometry
       printf(" >>> ...... adding class xy_point \n");
-	  schema_feature_class = CreateFdoFeatureClass(XY_POINT_CLASS, FdoGeometryType::FdoGeometryType_Point, false, false);
+	  schema_feature_class = CreateFdoFeatureClass(XY_POINT_CLASS, FdoGeometryType_Point, false, false);
       classes->Add(schema_feature_class);
       FDO_SAFE_RELEASE(schema_feature_class);
 
 	  // Create class with XYZ point geometry
       printf(" >>> ...... adding class xyz_point \n");
-	  schema_feature_class = CreateFdoFeatureClass(XYZ_POINT_CLASS, FdoGeometryType::FdoGeometryType_Point, true, false);
+	  schema_feature_class = CreateFdoFeatureClass(XYZ_POINT_CLASS, FdoGeometryType_Point, true, false);
       classes->Add(schema_feature_class);
       FDO_SAFE_RELEASE(schema_feature_class);
 
 	  // Create class with XYZM point geometry
       printf(" >>> ...... adding class xyzm_point \n");
-	  schema_feature_class = CreateFdoFeatureClass(XYZM_POINT_CLASS, FdoGeometryType::FdoGeometryType_Point, true, true);
+	  schema_feature_class = CreateFdoFeatureClass(XYZM_POINT_CLASS, FdoGeometryType_Point, true, true);
       classes->Add(schema_feature_class);
       FDO_SAFE_RELEASE(schema_feature_class);
 
 	  // Create class with XYM point geometry
       printf(" >>> ...... adding class xym_point \n");
-	  schema_feature_class = CreateFdoFeatureClass(XYM_POINT_CLASS, FdoGeometryType::FdoGeometryType_Point, false, true);
+	  schema_feature_class = CreateFdoFeatureClass(XYM_POINT_CLASS, FdoGeometryType_Point, false, true);
       classes->Add(schema_feature_class);
       FDO_SAFE_RELEASE(schema_feature_class);
 
