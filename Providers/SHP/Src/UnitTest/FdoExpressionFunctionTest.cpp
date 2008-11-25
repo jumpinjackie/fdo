@@ -177,6 +177,12 @@ void FdoExpressionFunctionTest::tearDown ()
 
       printf(" >>> Cleaning up \n");
       TestCommonSchemaUtil::CleanUpClass(m_connection, NULL, L"exfct_c1");
+	  TestCommonSchemaUtil::CleanUpClass(m_connection, NULL, XY_POINT_CLASS);
+	  TestCommonSchemaUtil::CleanUpClass(m_connection, NULL, XYZ_POINT_CLASS);
+	  TestCommonSchemaUtil::CleanUpClass(m_connection, NULL, XYZM_POINT_CLASS);
+	  TestCommonSchemaUtil::CleanUpClass(m_connection, NULL, XYM_POINT_CLASS);
+	  TestCommonSchemaUtil::CleanUpClass(m_connection, NULL, XYZM_LINE_CLASS);
+
 
       printf(" >>> Disconnecting \n");
       is_disconnected = true;
@@ -249,7 +255,8 @@ void FdoExpressionFunctionTest::RunAllExpFctTests ()
 
 {
 
-    // Testing the aggregate functions.
+
+	// Testing the aggregate functions.
 
     printf(" >>> ... Testing Aggregate Functions \n");
     printf("\n");
@@ -339,6 +346,14 @@ void FdoExpressionFunctionTest::RunAllExpFctTests ()
     TestTranslateFunction();
     TestTrimFunction();
     TestUpperFunction();
+
+	// Executing the XYZM tests.
+	printf("\n");
+    printf("\n");
+    printf(" >>> ... Testing Z,Y,Z and M Functions \n");
+    printf("\n");
+    TestXYZMFunction();
+
 
 }  //  RunAllExpFctTests ()
 
@@ -9977,7 +9992,8 @@ void FdoExpressionFunctionTest::AddFeature (
       byte_array       = geometry_factory->GetFgf(line_str);
       geometry_value   = FdoGeometryValue::Create(byte_array);
 
-      property_value = AddNewProperty(property_values, L"RDBMS_GEOM");
+      // property_value = AddNewProperty(property_values, L"RDBMS_GEOM");
+	  property_value = AddNewProperty(property_values, L"Geometry");
       property_value->SetValue(geometry_value);
       FDO_SAFE_RELEASE(geometry_value);
       FDO_SAFE_RELEASE(line_str);
@@ -10105,6 +10121,150 @@ void FdoExpressionFunctionTest::AddFeature (
 
 }  //  AddFeature ()
 
+void FdoExpressionFunctionTest::AddXYZMFeature (
+                                        FdoIConnection *current_connection
+                                        )
+
+// +---------------------------------------------------------------------------
+// | The function adds a new object for the specified class. The values being
+// | added are predefined based on the predefined schema.
+// +---------------------------------------------------------------------------
+
+{
+   // Declare and initialize all necessary local variables.
+
+    double                     coordinate_2D_buffer[2];
+	double                     coordinate_3D_buffer[4];
+	double                     coordinate_4D_buffer[5];
+	double                     coordinate_line_buffer[9];
+    FdoIInsert                 *insert_command      = NULL;
+    FdoILineString             *line_str            = NULL;
+	FdoIPoint				   *point               = NULL;
+    FdoGeometryValue           *geometry_value      = NULL;
+	FdoPropertyValue           *property_value      = NULL;
+    FdoFgfGeometryFactory      *geometry_factory    = NULL;
+    FdoPropertyValueCollection *property_values     = NULL;
+    FdoByteArray               *byte_array          = NULL;
+	FdoIFeatureReader          *feature_reader      = NULL;
+
+    try {
+
+      // Create the FdoIInsert command and set the necessary command properties.
+
+      insert_command = 
+            (FdoIInsert *) current_connection->CreateCommand(
+                                                        FdoCommandType_Insert);
+      // Add the geometry information for the new object.
+      coordinate_2D_buffer[0] = 201.0;
+      coordinate_2D_buffer[1] = 202.0;
+	  
+	  coordinate_3D_buffer[0] = 301.0;
+      coordinate_3D_buffer[1] = 302.0;
+      coordinate_3D_buffer[2] = 303.0;
+
+	  coordinate_4D_buffer[0] = 400.0;
+      coordinate_4D_buffer[1] = 401.0;
+      coordinate_4D_buffer[2] = 402.0;
+      coordinate_4D_buffer[3] = 403.0;
+
+	  coordinate_line_buffer[0] = 301.0;
+      coordinate_line_buffer[1] = 302.0;
+      coordinate_line_buffer[2] = 303.0;
+      coordinate_line_buffer[3] = 304.0;
+	  coordinate_line_buffer[4] = 311.0;
+      coordinate_line_buffer[5] = 312.0;
+      coordinate_line_buffer[6] = 313.0;
+      coordinate_line_buffer[7] = 314.0;
+
+      geometry_factory = FdoFgfGeometryFactory::GetInstance();
+	// Add a point XY geometry
+      insert_command->SetFeatureClassName(XY_POINT_CLASS);
+	  property_values = insert_command->GetPropertyValues();
+      point         = geometry_factory->CreatePoint(
+                                    FdoDimensionality_XY,
+                                    coordinate_2D_buffer);
+      byte_array       = geometry_factory->GetFgf(point);
+      geometry_value   = FdoGeometryValue::Create(byte_array);
+      property_value = AddNewProperty(property_values, L"Geometry");
+      property_value->SetValue(geometry_value);
+	  feature_reader = insert_command->Execute();
+
+
+	// Add a point XYZ geometry
+      insert_command->SetFeatureClassName(XYZ_POINT_CLASS);
+	  property_values = insert_command->GetPropertyValues();
+	  point         = geometry_factory->CreatePoint(
+                                    FdoDimensionality_XY | FdoDimensionality_Z,
+                                    coordinate_3D_buffer);
+      byte_array       = geometry_factory->GetFgf(point);
+      geometry_value   = FdoGeometryValue::Create(byte_array);
+      property_value = AddNewProperty(property_values, L"Geometry");
+      property_value->SetValue(geometry_value);
+	  feature_reader = insert_command->Execute();
+
+	  // Add a point XYZM geometry
+      insert_command->SetFeatureClassName(XYZM_POINT_CLASS);
+	  property_values = insert_command->GetPropertyValues();
+      point         = geometry_factory->CreatePoint(
+                                    FdoDimensionality_XY | FdoDimensionality_Z | FdoDimensionality_M,
+                                    coordinate_4D_buffer);
+      byte_array       = geometry_factory->GetFgf(point);
+      geometry_value   = FdoGeometryValue::Create(byte_array);
+      property_value = AddNewProperty(property_values, L"Geometry");
+      property_value->SetValue(geometry_value);
+	  feature_reader = insert_command->Execute();
+
+
+	  // Add a point XYM geometry
+      insert_command->SetFeatureClassName(XYM_POINT_CLASS);
+	  property_values = insert_command->GetPropertyValues();
+      point         = geometry_factory->CreatePoint(
+                                    FdoDimensionality_XY |  FdoDimensionality_M,
+                                    coordinate_3D_buffer);
+      byte_array       = geometry_factory->GetFgf(point);
+      geometry_value   = FdoGeometryValue::Create(byte_array);
+      property_value = AddNewProperty(property_values, L"Geometry");
+      property_value->SetValue(geometry_value);
+	  feature_reader = insert_command->Execute();
+
+  	  // Add a non-point (line) geometry
+      insert_command->SetFeatureClassName(XYZM_LINE_CLASS);
+	  property_values = insert_command->GetPropertyValues();
+      line_str         = geometry_factory->CreateLineString(
+                                    FdoDimensionality_XY|FdoDimensionality_Z|FdoDimensionality_M,
+                                    8, 
+                                    coordinate_line_buffer);
+      byte_array       = geometry_factory->GetFgf(line_str);
+      geometry_value   = FdoGeometryValue::Create(byte_array);
+      property_value = AddNewProperty(property_values, L"Geometry");
+      property_value->SetValue(geometry_value);
+
+	  feature_reader = insert_command->Execute();
+
+	// Clean up
+	  FDO_SAFE_RELEASE(point);
+	  FDO_SAFE_RELEASE(line_str);
+      FDO_SAFE_RELEASE(byte_array);
+	  FDO_SAFE_RELEASE(geometry_value);
+      FDO_SAFE_RELEASE(property_value);
+      FDO_SAFE_RELEASE(feature_reader);
+	  FDO_SAFE_RELEASE(insert_command);
+
+	}  //  try ...
+    catch (FdoException *exp) {
+
+     printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+     throw exp;
+	}
+    catch ( ... ) {
+
+      throw FdoException::Create(L"Failed to add XYZM a feature");
+
+    }  //  catch ...
+
+} // AddXYZMFeature()
+
+
 void FdoExpressionFunctionTest::AddTestSchema (
                                         FdoIConnection *current_connection,
                                         FdoString      *schema_name)
@@ -10158,6 +10318,36 @@ void FdoExpressionFunctionTest::AddTestSchema (
       // Add the test schema to the schema collection.
 
       schemas->Add(schema);
+
+	  // Create class with XY point geometry
+      printf(" >>> ...... adding class xy_point \n");
+	  schema_feature_class = CreateFdoFeatureClass(XY_POINT_CLASS, FdoGeometryType::FdoGeometryType_Point, false, false);
+      classes->Add(schema_feature_class);
+      FDO_SAFE_RELEASE(schema_feature_class);
+
+	  // Create class with XYZ point geometry
+      printf(" >>> ...... adding class xyz_point \n");
+	  schema_feature_class = CreateFdoFeatureClass(XYZ_POINT_CLASS, FdoGeometryType::FdoGeometryType_Point, true, false);
+      classes->Add(schema_feature_class);
+      FDO_SAFE_RELEASE(schema_feature_class);
+
+	  // Create class with XYZM point geometry
+      printf(" >>> ...... adding class xyzm_point \n");
+	  schema_feature_class = CreateFdoFeatureClass(XYZM_POINT_CLASS, FdoGeometryType::FdoGeometryType_Point, true, true);
+      classes->Add(schema_feature_class);
+      FDO_SAFE_RELEASE(schema_feature_class);
+
+	  // Create class with XYM point geometry
+      printf(" >>> ...... adding class xym_point \n");
+	  schema_feature_class = CreateFdoFeatureClass(XYM_POINT_CLASS, FdoGeometryType::FdoGeometryType_Point, false, true);
+      classes->Add(schema_feature_class);
+      FDO_SAFE_RELEASE(schema_feature_class);
+
+	  // Create class with XYZM line geometry
+      printf(" >>> ...... adding class xyzm_line \n");
+      schema_feature_class = CreateFdoFeatureClass(XYZM_LINE_CLASS);
+      classes->Add(schema_feature_class);
+      FDO_SAFE_RELEASE(schema_feature_class);
 
       // Set the active schema and create it.
 
@@ -10267,8 +10457,21 @@ FdoDataPropertyDefinition *FdoExpressionFunctionTest::CreateDataProperty (
 
 }  //  CreateDataProperty ()
 
+
 FdoFeatureClass *FdoExpressionFunctionTest::CreateFdoFeatureClass (
-                                                    FdoString *class_name)
+                                                    FdoString *class_name 
+													)
+{
+	
+	return FdoExpressionFunctionTest::CreateFdoFeatureClass (class_name, -1, true,false);
+
+}
+FdoFeatureClass *FdoExpressionFunctionTest::CreateFdoFeatureClass (
+                                                    FdoString *class_name,
+													FdoInt32 geometry_type,
+													bool has_elevation,
+													bool has_measure
+													)
 
 // +---------------------------------------------------------------------------
 // | The function creates a predefined feature class with the caller identify-
@@ -10355,7 +10558,17 @@ FdoFeatureClass *FdoExpressionFunctionTest::CreateFdoFeatureClass (
 	  data_property_definitions->Add(data_property_definition);
 	  FDO_SAFE_RELEASE(data_property_definition);
 
-      geometric_property_definition = CreateGeometricProperty(L"RDBMS_GEOM");
+      geometric_property_definition = CreateGeometricProperty(L"Geometry");
+	  // Set the geometry type,elevation and measure only if it was passed. 
+	  // To preserve existing default behavior during apply schema, we don't 
+	  // pass it all the time as other test might rely on this.
+	  if (geometry_type != -1 )
+	  {
+	       geometric_property_definition->SetGeometryTypes(geometry_type); 	   	       		
+		   geometric_property_definition->SetHasElevation(has_elevation);
+		   geometric_property_definition->SetHasMeasure(has_measure);
+	  }
+
 	  data_property_definitions->Add(geometric_property_definition);
       the_class->SetGeometryProperty(geometric_property_definition);
 	  FDO_SAFE_RELEASE(geometric_property_definition);
@@ -10440,6 +10653,11 @@ void FdoExpressionFunctionTest::SetupUnitTestEnvironment (
       for (int i = 0; i < 31; i++)
         AddFeature(current_connection, L"exfct_c1", i);
 
+      printf(" >>> ...... for class %s,%s \n", XYZM_POINT_CLASS, XYZM_LINE_CLASS);
+
+	  AddXYZMFeature(current_connection); 	
+
+
    }  //  try ...
 
    catch (FdoException *exp) {
@@ -10457,3 +10675,142 @@ void FdoExpressionFunctionTest::SetupUnitTestEnvironment (
 
 }  //  SetupUnitTestEnvironment ()
 
+void FdoExpressionFunctionTest::TestXYZMFunction()
+{
+	  FdoIExpressionCapabilities *    exp_cap;
+	  FdoFunctionDefinitionCollection * func_col; 
+	  FdoFunctionDefinition *         this_func;
+
+      CloseConnection();
+	  
+	  //FdoExpressionFunctionTest::setUp();
+	  Connect();
+
+      // Check the list of functions
+	  exp_cap = m_connection->GetExpressionCapabilities();
+	  func_col = exp_cap->GetFunctions();
+
+	  //// Check if each function exists
+      this_func = (FdoFunctionDefinition *) func_col->FindItem(L"X");
+	  printf("Function %ls found\n", this_func->GetName());	
+	  
+      this_func = (FdoFunctionDefinition *) func_col->FindItem(L"Y");
+	  printf("Function %ls found\n", this_func->GetName());	
+
+	  this_func = (FdoFunctionDefinition *) func_col->FindItem(L"Z");
+	  printf("Function %ls found\n", this_func->GetName());	
+
+	  this_func = (FdoFunctionDefinition *) func_col->FindItem(L"M");
+	  printf("Function %ls found\n", this_func->GetName());	
+
+
+	  TestXYZMClass(XY_POINT_CLASS);
+	  TestXYZMClass(XYZ_POINT_CLASS);
+	  TestXYZMClass(XYZM_POINT_CLASS);
+	  TestXYZMClass(XYM_POINT_CLASS);
+	  TestXYZMClass(XYZM_LINE_CLASS);
+
+      //CloseConnection();
+	
+}
+void FdoExpressionFunctionTest::TestXYZMClass(
+				   FdoString      *class_name
+				   )
+{
+	  FdoPtr<FdoComputedIdentifier>   x_value;
+	  FdoPtr<FdoComputedIdentifier>   y_value;
+	  FdoPtr<FdoComputedIdentifier>   z_value;
+	  FdoPtr<FdoComputedIdentifier>   m_value;
+	  FdoPtr<FdoISelect>              sel_cmd;
+	  FdoPtr<FdoIdentifierCollection> id_col;
+	  FdoPtr<FdoIFeatureReader>       feat_read;
+	  int							  i;
+
+      // Execute the request that is to be tested with this test case.
+	  sel_cmd = (FdoISelect*) m_connection->CreateCommand(FdoCommandType_Select);
+	  sel_cmd->SetFeatureClassName(class_name);
+
+      id_col = sel_cmd->GetPropertyNames();
+
+	  // Test X() 
+      x_value = (FdoComputedIdentifier*)FdoExpression::Parse(L"(X(Geometry) as x_value)");
+      id_col->Add(x_value);
+	  feat_read = sel_cmd->Execute();
+	  i = 0;
+	  while (feat_read->ReadNext() )
+	  {
+			i++;
+			if ( feat_read->IsNull(L"x_value") ) 
+			{
+				printf("Feature(%d) X=null\n", i );
+			}
+			else 	
+			{
+				FdoDouble x_value_ret = feat_read->GetDouble(L"x_value");
+				printf("Feature(%d) X=%f\n", i, x_value_ret);
+			}
+	  }
+	  printf(" >>> Test succeeded \n");
+	  
+	  // Test Y() 
+      y_value = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Y(Geometry) as y_value)");
+	  id_col->Clear();
+      id_col->Add(y_value);
+	  feat_read = sel_cmd->Execute();
+	  i = 0;
+	  while (feat_read->ReadNext() )
+	  {
+			i++;
+			if ( feat_read->IsNull(L"y_value") ) 
+			{
+				printf("Feature(%d) Y=null\n", i );
+			}
+			else 
+			{
+				FdoDouble x_value_ret = feat_read->GetDouble(L"y_value");
+				printf("Feature(%d) Y=%f\n", i, x_value_ret);
+	        }
+	  }
+	  printf(" >>> Test succeeded \n");
+
+	  // Test Z() 
+      z_value = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Z(Geometry) as z_value)");
+	  id_col->Clear();
+      id_col->Add(z_value);
+	  feat_read = sel_cmd->Execute();
+	  i = 0;
+	  while (feat_read->ReadNext() )
+	  {
+			i++;
+			if ( feat_read->IsNull(L"z_value") ) 
+			{
+				printf("Feature(%d) Z=null\n", i );
+			}
+			else 
+			{
+				FdoDouble x_value_ret = feat_read->GetDouble(L"z_value");
+				printf("Feature(%d) Z=%f\n", i, x_value_ret);
+	        }	  }
+	  printf(" >>> Test succeeded \n");
+
+	  // Test M() 
+      m_value = (FdoComputedIdentifier*)FdoExpression::Parse(L"(M(Geometry) as m_value)");
+	  id_col->Clear();
+      id_col->Add(m_value);
+	  feat_read = sel_cmd->Execute();
+	  i = 0;
+	  while (feat_read->ReadNext() )
+	  {
+		i++;
+			if ( feat_read->IsNull(L"m_value") ) 
+			{
+				printf("Feature(%d) M=null\n", i );
+			}
+			else 
+			{
+				FdoDouble x_value_ret = feat_read->GetDouble(L"m_value");
+				printf("Feature(%d) M=%f\n", i, x_value_ret);
+	        }	  }
+	  printf(" >>> Test succeeded \n");
+
+}
