@@ -291,59 +291,79 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
         buf += "].";
     }
 
-    switch( spatialOp )
+    if ( geomType == L"geography" ) 
     {
-        case FdoSpatialOperations_Contains:
-            buf += "STContains";
-            break;
-        case FdoSpatialOperations_Crosses:
-            buf += "STCrosses";
-            break;
-        case FdoSpatialOperations_Disjoint:
-            buf += "STDisjoint";
-            break;
-        case FdoSpatialOperations_Equals:
-            buf += "STEquals";
-            break;
-        case FdoSpatialOperations_Intersects:
-            buf += "STIntersects";
-            break;
-        case FdoSpatialOperations_Overlaps:
-            buf += "STOverlaps";
-            break;
-        case FdoSpatialOperations_Touches:
-            buf += "STTouches";
-            break;
-        case FdoSpatialOperations_Within:
-            buf += "STWithin";
-            break;
-        case FdoSpatialOperations_Inside:
-            buf += "STWithin";  // REALLY?
-            break;
-        case FdoSpatialOperations_CoveredBy:
-            buf += "STOverlaps"; // REALLY?
-            break;
-        case FdoSpatialOperations_EnvelopeIntersects:
-            if ( geomType == L"geography" )
-            {
-                // SQL Server does not support STEnvelope for geography columns so cannot
-                // support this spatial operator in this case.
+        switch( spatialOp )
+        {
+            case FdoSpatialOperations_Disjoint:
+                buf += "STDisjoint";
+                break;
+            case FdoSpatialOperations_Intersects:
+                buf += "STIntersects";
+                break;
+            case FdoSpatialOperations_Contains:
+            case FdoSpatialOperations_Crosses:
+            case FdoSpatialOperations_CoveredBy:
+            case FdoSpatialOperations_Equals:
+            case FdoSpatialOperations_Inside:
+            case FdoSpatialOperations_Overlaps:
+            case FdoSpatialOperations_Touches:
+            case FdoSpatialOperations_Within:
+            case FdoSpatialOperations_EnvelopeIntersects:
                 throw FdoFilterException::Create(
-                    NlsMsgGet1(
+                    NlsMsgGet2(
                         FDORDBMS_44, 
-                        "Geometry property '%1$ls' has geodetic coordinate system; cannot use EnvelopeIntersects spatial operator in filter",
-                        (FdoString*) geomProp->GetQName()
+                        "Geometry property '%1$ls' has geodetic coordinate system; cannot use %2$ls spatial operator in filter",
+                        (FdoString*) geomProp->GetQName(),
+                        (FdoString*) FdoCommonMiscUtil::FdoSpatialOperationsToString(spatialOp)
                     )
                 );
-            }
-            else 
-            {
+                break;
+            default:
+                throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_111, "Unsupported spatial operation"));
+        } // of switch Operation
+    }
+    else
+    {
+        switch( spatialOp )
+        {
+            case FdoSpatialOperations_Contains:
+                buf += "STContains";
+                break;
+            case FdoSpatialOperations_Crosses:
+                buf += "STCrosses";
+                break;
+            case FdoSpatialOperations_Disjoint:
+                buf += "STDisjoint";
+                break;
+            case FdoSpatialOperations_Equals:
+                buf += "STEquals";
+                break;
+            case FdoSpatialOperations_Intersects:
+                buf += "STIntersects";
+                break;
+            case FdoSpatialOperations_Overlaps:
+                buf += "STOverlaps";
+                break;
+            case FdoSpatialOperations_Touches:
+                buf += "STTouches";
+                break;
+            case FdoSpatialOperations_Within:
+                buf += "STWithin";
+                break;
+            case FdoSpatialOperations_Inside:
+                buf += "STWithin";  // REALLY?
+                break;
+            case FdoSpatialOperations_CoveredBy:
+                buf += "STOverlaps"; // REALLY?
+                break;
+            case FdoSpatialOperations_EnvelopeIntersects:
                 buf += "Filter"; 
-            }
-            break;
-        default:
-            throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_111, "Unsupported spatial operation"));
-    } // of switch Operation
+                break;
+            default:
+                throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_111, "Unsupported spatial operation"));
+        } // of switch Operation
+    }
 
     buf += "(";
     buf += geomType;
