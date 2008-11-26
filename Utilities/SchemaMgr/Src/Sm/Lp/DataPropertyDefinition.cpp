@@ -25,6 +25,7 @@
 #include <Sm/Error.h>
 #include <Sm/Ph/PropertyWriter.h>
 #include <Utilities/SchemaMgr/Overrides/TableMappingType.h>
+#include <FdoCommonSchemaUtil.h>
 
 const FdoStringP FdoSmLpDataPropertyDefinition::mClassNamePropName(L"ClassName", true);
 
@@ -739,32 +740,14 @@ FdoPtr<FdoDataValue> FdoSmLpDataPropertyDefinition::ParseDefaultValue( FdoString
             }
         }
 
-        switch ( GetDataType() ) {
-        case FdoDataType_String:
-            // String handled specially, no enclosing single quotes
-            ret = FdoStringValue::Create(defaultStr);
-            break;
-
-        case FdoDataType_Boolean:
-            // For backward compatibility, boolean handled specially
-            // ToBoolean() less strict than expression parser.
-            ret = FdoBooleanValue::Create(defaultStr.ToBoolean());
-            break;
-
-        default:
-            try {
-                FdoPtr<FdoExpression> expr = FdoExpression::Parse( defaultStr );
-                ret = FDO_SAFE_ADDREF(dynamic_cast<FdoDataValue*>(expr.p));
-
-                if ( !ret ) 
-                    AddDefaultValueError( defaultStr );
-            }
-            catch ( FdoException* ex ) {
-                // Parse exception message too general for this case
-                // so not incorporated into error message.
-                AddDefaultValueError( defaultStr );
-                FDO_SAFE_RELEASE(ex);
-            }
+        try {
+            ret = FdoCommonSchemaUtil::ParseDefaultValue( GetQName(), GetDataType(), defaultStr );
+        }
+        catch ( FdoException* ex ) {
+            // GenericRdbms Parse error message for DateType a bit 
+            // different since Time values rejected. 
+            AddDefaultValueError( defaultStr );
+            FDO_SAFE_RELEASE(ex);
         }
     }
 

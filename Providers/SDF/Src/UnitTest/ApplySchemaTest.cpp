@@ -85,6 +85,9 @@ void ApplySchemaTest::TestSchema ()
 		printf( "Creating Error Schema ... \n" );
 		CreateErrorSchema( connection );
 
+		printf( "Creating Default Value Error Schema ... \n" );
+		CreateDefaultErrorSchema( connection );
+
 		bool succeeded = false;
 
 		printf( "Bad Acad schema create (already exists) ... \n" );
@@ -201,31 +204,6 @@ void ApplySchemaTest::TestSchema ()
 
         CopySchemas( pCopySchemas, pCopySchemas2 );
 
-		// Compare output files with expected results.
-
-
-        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_test1_master.xml", "apply_schema_test1.xml" );
-        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_test2_master.xml", "apply_schema_test2.xml" );
-        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_test3_master.xml", "apply_schema_test3.xml" );
-        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_test4_master.xml", "apply_schema_test4.xml" );
-        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_test5_master.xml", "apply_schema_test5.xml" );
-
-        // Next do the error messages. Some checks are not done for some providers
-        // since their expect output is different from the master
-        // TODO: create special masters for these cases.
-
-#ifdef _WIN32
-        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err1_master.txt", "apply_schema_err1.txt" );
-        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err2_master.txt", "apply_schema_err2.txt" );
-        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err3_imaster.txt", "apply_schema_err3.txt" );
-        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err4_master.txt", "apply_schema_err4.txt" );
-        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err5_imaster.txt", "apply_schema_err5.txt" );
-        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err6_imaster.txt", "apply_schema_err6.txt" );
-        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err7_master.txt", "apply_schema_err7.txt" );
-		TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err8_master.txt", "apply_schema_err8.txt" );
-        TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err10_master.txt", "apply_schema_err10.txt" );
-#endif
-
     }
 	catch ( FdoException* e ) 
 	{
@@ -236,6 +214,32 @@ void ApplySchemaTest::TestSchema ()
    		CPPUNIT_FAIL ("caught unexpected exception");
    	}
 		
+	// Compare output files with expected results.
+
+
+    TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_test1_master.xml", "apply_schema_test1.xml" );
+    TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_test2_master.xml", "apply_schema_test2.xml" );
+    TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_test3_master.xml", "apply_schema_test3.xml" );
+    TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_test4_master.xml", "apply_schema_test4.xml" );
+    TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_test5_master.xml", "apply_schema_test5.xml" );
+
+    // Next do the error messages. Some checks are not done for some providers
+    // since their expect output is different from the master
+    // TODO: create special masters for these cases.
+
+#ifdef _WIN32
+    TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err1_master.txt", "apply_schema_err1.txt" );
+    TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err2_master.txt", "apply_schema_err2.txt" );
+    TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err3_imaster.txt", "apply_schema_err3.txt" );
+    TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err4_master.txt", "apply_schema_err4.txt" );
+    TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err5_imaster.txt", "apply_schema_err5.txt" );
+    TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err6_imaster.txt", "apply_schema_err6.txt" );
+    TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err7_master.txt", "apply_schema_err7.txt" );
+    TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err8_master.txt", "apply_schema_err8.txt" );
+    TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err10_master.txt", "apply_schema_err10.txt" );
+    TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err11_master.txt", "apply_schema_err11.txt" );
+#endif
+
 	printf( "Done\n" );
 }
 
@@ -995,6 +999,52 @@ void ApplySchemaTest::CreateErrorSchema( FdoIConnection* connection )
 
 	CPPUNIT_ASSERT( !succeeded );
 
+}
+
+void ApplySchemaTest::CreateDefaultErrorSchema( FdoIConnection* connection )
+{
+    bool succeeded = false;
+	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
+
+	/* Create schema with errors */
+
+	/* First create a schema with some bad base classes */
+
+	FdoPtr<FdoFeatureSchema> pDefaultErrorSchema = FdoFeatureSchema::Create( L"DefaultError", L"" );
+
+	FdoPtr<FdoFeatureClass> pClass = FdoFeatureClass::Create( L"BadDateFormat", L"" );
+	pClass->SetIsAbstract(false);
+
+	// Add data properties of various types
+
+	FdoPtr<FdoDataPropertyDefinition> pProp = FdoDataPropertyDefinition::Create( L"FeatId", L"id" );
+	pProp->SetDataType( FdoDataType_Int32 );
+	pProp->SetNullable(false);
+    pProp->SetIsAutoGenerated(true);
+	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+	FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
+
+	pProp = FdoDataPropertyDefinition::Create( L"InstallDate", L"" );
+	pProp->SetDataType( FdoDataType_DateTime );
+    pProp->SetDefaultValue( L"01/01/2006" );
+	pProp->SetNullable(true);
+	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+
+	FdoClassesP(pDefaultErrorSchema->GetClasses())->Add( pClass );
+
+    pCmd->SetFeatureSchema( pDefaultErrorSchema );
+
+	try {
+		pCmd->Execute();
+		succeeded = true;
+	}
+	catch ( FdoSchemaException* e )
+	{
+		UnitTestUtil::PrintException(e, "apply_schema_err11.txt", true);
+		FDO_SAFE_RELEASE(e);
+	}
+
+	CPPUNIT_ASSERT( !succeeded );
 }
 
 void ApplySchemaTest::CreateDlteSchema( FdoIConnection* connection )

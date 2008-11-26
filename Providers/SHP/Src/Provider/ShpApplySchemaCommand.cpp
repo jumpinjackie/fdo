@@ -183,6 +183,9 @@ void ShpApplySchemaCommand::Execute ()
     if (NULL != mConnection->GetFile ())
         throw FdoException::Create (NlsMsgGet(SHP_APPLY_SINGLE_SHP, "Apply schema on a single shp is not allowed."));
 
+    // Make sure all data property default values are valid.
+    FdoCommonSchemaUtil::ValidateFdoFeatureSchema (mSchema);
+
     // Handle IgnoreStates flag:
     state = mSchema->GetElementState ();
     if (GetIgnoreStates ())
