@@ -356,9 +356,7 @@ class SltInsert : public SltCommand<FdoIInsert>
     protected:
         virtual ~SltInsert()
         {
-            int rc = sqlite3_exec(m_db, "COMMIT;", NULL, NULL, NULL);
-            if (m_pCompiledSQL)
-                rc = sqlite3_finalize(m_pCompiledSQL);
+            FlushSQL();
 
             //TODO: here also notify the connection that portions of the
             //spatial index are dirty and need to be reindexed
@@ -378,6 +376,9 @@ class SltInsert : public SltCommand<FdoIInsert>
             FDO_SAFE_RELEASE(m_className);
             m_className = FDO_SAFE_ADDREF(value);
             m_fcname = W2A_SLOW(m_className->GetName());
+
+            //if the feature class changes, any precompiled SQL is no longer valid
+            FlushSQL();
         }
         virtual void SetFeatureClassName(FdoString* value)
         {
@@ -388,6 +389,9 @@ class SltInsert : public SltCommand<FdoIInsert>
                 m_className = FdoIdentifier::Create(value);
                 m_fcname = W2A_SLOW(m_className->GetName());
             }
+
+            //if the feature class changes, any precompiled SQL is no longer valid
+            FlushSQL();
         }
         virtual FdoPropertyValueCollection* GetPropertyValues()             { return FDO_SAFE_ADDREF(m_properties); }
         virtual FdoBatchParameterValueCollection* GetBatchParameterValues() { return NULL; }
@@ -448,6 +452,17 @@ class SltInsert : public SltCommand<FdoIInsert>
         }
 
     private:
+
+        void FlushSQL()
+        {
+            if (m_pCompiledSQL)
+            {
+                int rc = sqlite3_exec(m_db, "COMMIT;", NULL, NULL, NULL);
+                rc = sqlite3_finalize(m_pCompiledSQL);
+            }
+
+            m_pCompiledSQL = NULL;
+        }
 
         void PrepareSQL()
         {
