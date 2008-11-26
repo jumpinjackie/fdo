@@ -171,6 +171,29 @@ public:
     /// Adds all the FdoComputedIdentifiers found in selectedIds to destClass as property definitions :
     static void AddComputedIdentifiersAsProperties(FdoIConnection* connection, FdoClassDefinition* destClass, FdoClassDefinition* originalClass, FdoIdentifierCollection* selectedIds);
 
+    // Perform validation on a feature schema collection.
+    // Currently, just checks that all Data Property default values are valid.
+    static void ValidateFdoFeatureSchemas(FdoFeatureSchemaCollection * schemas);
+
+    // Perform validation on a feature schema.
+    // Currently, just checks that all Data Property default values are valid.
+    static void ValidateFdoFeatureSchema(FdoFeatureSchema * schema);
+
+    // Perform validation on a class definition.
+    // Currently, just checks that all Data Property default values are valid.
+    static void ValidateFdoClassDefinition(FdoClassDefinition * classDef);
+
+    // Perform validation on a property definition.
+    // Currently, just checks that Data Property default values are valid.
+    static void ValidateFdoPropertyDefinition(FdoPropertyDefinition * propDef);
+
+    // Perform validation on a dataproperty definition.
+    // Currently, just checks that default values are valid.
+    static void ValidateFdoDataPropertyDefinition(FdoDataPropertyDefinition * propDef);
+
+    // Parse a data property default value string into an FdoDataValue.
+    // Also validates the default value and throws exception if invalid.
+    static FdoPtr<FdoDataValue> ParseDefaultValue(FdoString* propName, FdoDataType dataType, FdoStringP defaultStr);
 
 protected:
 
@@ -188,6 +211,9 @@ protected:
 
     /// Copy references to FDO named Data property identified by name in sourceProperties and contained in newProperties into the destionation collection.
     static void CopyFdoNamedDataProperties(FdoDataPropertyDefinitionCollection *sourceProperties, FdoPropertyDefinitionCollection *newProperties, FdoReadOnlyPropertyDefinitionCollection *newBaseProperties, FdoDataPropertyDefinitionCollection *destProperties, FdoCommonSchemaCopyContext * schemaContext = NULL);
+
+    // Utility function for throwing data property default value errors.
+    static void ThrowDefaultValueError(FdoString* propName, FdoDataType dataType, FdoString* defaultValue);
 
 };
 

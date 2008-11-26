@@ -233,6 +233,9 @@ void SchemaDb::SetSchema(SdfISchemaMergeContextFactory* mergeFactory, FdoFeature
 
     bool transactionStarted = false;
 
+    // Make sure all data property default values are valid.
+    FdoCommonSchemaUtil::ValidateFdoFeatureSchema( schema );
+
     // Work on copy of current schema in case we hit an error and mess them up.
     FdoFeatureSchemaP oldSchema = GetSchema() ? FdoCommonSchemaUtil::DeepCopyFdoFeatureSchema( GetSchema() ) : (FdoFeatureSchema*) NULL;
     

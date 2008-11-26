@@ -1453,3 +1453,125 @@ void FdoCommonSchemaUtil::AddComputedIdentifiersAsProperties(FdoIConnection* con
         }
     }
 }
+
+void FdoCommonSchemaUtil::ValidateFdoFeatureSchemas(FdoFeatureSchemaCollection * schemas)
+{
+    if ( schemas != NULL ) {
+        for (FdoInt32 i=0;  i<schemas->GetCount(); i++) {
+            FdoPtr<FdoFeatureSchema> pSchema = schemas->GetItem(i);
+            if (pSchema != NULL)
+                ValidateFdoFeatureSchema(pSchema.p);
+        }
+    }
+}
+
+void FdoCommonSchemaUtil::ValidateFdoFeatureSchema(FdoFeatureSchema * schema)
+{
+    if (schema != NULL) {
+        FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+        if (classes != NULL) {
+            for (FdoInt32 i=0; i<classes->GetCount(); i++) {
+                FdoPtr<FdoClassDefinition> pClass = classes->GetItem(i);
+                if (pClass != NULL)
+                    ValidateFdoClassDefinition(pClass);
+            }
+        }
+    }
+}
+
+void FdoCommonSchemaUtil::ValidateFdoClassDefinition(FdoClassDefinition * classDef)
+{
+    if (classDef != NULL) {
+        FdoPtr<FdoPropertyDefinitionCollection> props = classDef->GetProperties();
+        if (props != NULL) {
+            for (FdoInt32 i=0; i<props->GetCount(); i++) {
+                FdoPtr<FdoPropertyDefinition> propDef = props->GetItem(i);
+                if (propDef != NULL)
+                    ValidateFdoPropertyDefinition(propDef);
+            }
+        }
+    }
+}
+
+void FdoCommonSchemaUtil::ValidateFdoPropertyDefinition(FdoPropertyDefinition * propDef)
+{
+    if (propDef != NULL) {
+        switch ( propDef->GetPropertyType() ) {
+        case FdoPropertyType_DataProperty:
+            {
+                FdoDataPropertyDefinition* dataProp = static_cast<FdoDataPropertyDefinition*>(propDef);
+                ValidateFdoDataPropertyDefinition(dataProp);
+            }
+            break;
+
+        default:
+            break;
+        }
+    }
+}
+
+void FdoCommonSchemaUtil::ValidateFdoDataPropertyDefinition(FdoDataPropertyDefinition * propDef)
+{
+    if ( propDef != NULL ) 
+        FdoPtr<FdoDataValue> dv = ParseDefaultValue( propDef->GetQualifiedName(), propDef->GetDataType(), propDef->GetDefaultValue() );
+}
+
+FdoPtr<FdoDataValue> FdoCommonSchemaUtil::ParseDefaultValue( FdoString* propName, FdoDataType dataType, FdoStringP defaultStr )
+{
+    FdoPtr<FdoDataValue> ret;
+
+    if ( defaultStr != L"" ) {
+        switch ( dataType ) {
+        case FdoDataType_String:
+            // String handled specially, no enclosing single quotes
+            ret = FdoStringValue::Create(defaultStr);
+            break;
+
+        case FdoDataType_Boolean:
+            // For backward compatibility, boolean handled specially
+            // ToBoolean() less strict than expression parser.
+            ret = FdoBooleanValue::Create(defaultStr.ToBoolean());
+            break;
+
+        default:
+            try {
+                FdoPtr<FdoExpression> expr = FdoExpression::Parse( defaultStr );
+                ret = FDO_SAFE_ADDREF(dynamic_cast<FdoDataValue*>(expr.p));
+
+                if ( !ret ) 
+                    ThrowDefaultValueError( propName, dataType, defaultStr );
+            }
+            catch ( FdoException* ex ) {
+                FDO_SAFE_RELEASE(ex);
+                // Parse exception message too general for this case
+                // so not incorporated into error message.
+                ThrowDefaultValueError( propName, dataType, defaultStr );
+            }
+        }
+    }
+
+    return ret;
+}
+
+void FdoCommonSchemaUtil::ThrowDefaultValueError( FdoString* propName, FdoDataType dataType, FdoString* defaultValue )
+{
+    if ( dataType == FdoDataType_DateTime ) {
+        throw FdoSchemaException::Create(
+            FdoException::NLSGetMessage(
+                FDO_NLSID(SCHEMA_151_DEFAULTDATEVIOLATION),
+                propName,
+                defaultValue
+            )
+        );
+    }
+    else {
+        throw FdoSchemaException::Create(
+            FdoException::NLSGetMessage(
+                FDO_NLSID(SCHEMA_150_DEFAULTVALUEVIOLATION),
+                propName,
+                defaultValue,
+                FdoCommonMiscUtil::FdoDataTypeToString(dataType)
+            )
+        );
+    }
+}
