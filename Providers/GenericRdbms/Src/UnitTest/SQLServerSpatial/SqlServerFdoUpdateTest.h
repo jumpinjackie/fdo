@@ -50,7 +50,7 @@ protected:
     virtual FdoIGeometry* CreateGeogGeom( int idx );
     virtual void SelectGeogAll( FdoPtr<FdoIConnection> connection, FdoSmPhMgrP phMgr, FdoStringP tableName );
     virtual void SelectGeogSpatial( FdoPtr<FdoIConnection> connection, FdoSmPhMgrP phMgr, FdoStringP tableName );
-    virtual void SelectGeogEnvelope( FdoPtr<FdoIConnection> connection, FdoSmPhMgrP phMgr, FdoStringP tableName );
+    virtual void SelectGeogSpatialError( FdoPtr<FdoIConnection> connection, FdoSmPhMgrP phMgr, FdoStringP tableName );
     virtual void VldGeogRow( 
         FdoSmPhMgrP phMgr, 
         FdoPtr<FdoIFeatureReader> rdr, 
