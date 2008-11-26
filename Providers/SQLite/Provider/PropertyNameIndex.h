@@ -61,16 +61,16 @@ public:
         m_nametable[(unsigned char)*name & 0xF].push_back(p);
     }
 
-    int __forceinline GetIndex(const wchar_t* name)
+    int GetIndex(const wchar_t* name)
     {
         //TODO: this is not fully optimized
 
         unsigned char hash = (unsigned char)*name & 0xF;
         const std::vector<NameIndexPair>* sublist = &m_nametable[hash];
+        size_t sz = m_vecsizes[hash];
 
         //start with the last returned index?
-        int start = (m_lastChar == hash) ? m_lastIndex : 0;
-        size_t sz = sublist->size();
+        size_t start = (m_lastChar == hash) ? m_lastIndex : 0;
 
         for (size_t i=start; i<sz; i++)
         {
@@ -78,18 +78,18 @@ public:
             if (wcscmp(name, p.name) == 0)
             {
                 m_lastChar = hash;
-                m_lastIndex = (int)i;
+                m_lastIndex = i;
                 return p.index;
             }
         }
 
-        for (int i=0; i<start; i++)
+        for (size_t i=0; i<start; i++)
         {
             const NameIndexPair& p = (*sublist)[i];
             if (wcscmp(name, p.name) == 0)
             {
                 m_lastChar = hash;
-                m_lastIndex = (int)i;
+                m_lastIndex = i;
                 return p.index;
             }
         }
@@ -99,6 +99,8 @@ public:
 
     void Prepare()
     {
+        for (int i=0; i<16; i++)
+            m_vecsizes[i] = m_nametable[i].size();
     }
 
     void Clear()
@@ -110,8 +112,9 @@ public:
 private:
 
     unsigned char m_lastChar;
-    int m_lastIndex;
+    size_t m_lastIndex;
     std::vector<NameIndexPair> m_nametable[16];
+    size_t m_vecsizes[16];
 
 };
 
@@ -153,7 +156,7 @@ public:
         }
     }
 
-    int __forceinline GetIndex(const wchar_t* name)
+    int GetIndex(const wchar_t* name)
     {
         NameIndexPair* list = m_sorted;
         int hi = m_len;
@@ -208,6 +211,167 @@ private:
     NameIndexPair* m_sorted;
 
     std::vector<NameIndexPair> m_list;
+
+};
+
+
+//Suffix Trie (note: Trie, not Tree) - like approach 
+class PropertyNameIndex3
+{
+public:
+
+    struct Node
+    {
+        Node() : c(0), p(NULL)
+        {}
+
+        void InitSize()
+        {
+            sz = children.size();
+
+            for (int i=0; i<sz; i++)
+                children[i].InitSize();
+
+            if (sz)
+            {
+                first = &children[0];
+                last = &children[sz - 1];
+            }
+        }
+
+        wchar_t c;
+        NameIndexPair* p;
+        std::vector<Node> children;
+        size_t sz;
+        Node* first;
+        Node* last;
+    };
+
+    PropertyNameIndex3()
+    {
+    }
+
+    ~PropertyNameIndex3()
+    {
+        Clear();
+    }
+
+    void Add(const wchar_t* name, int index)
+    {
+        NameIndexPair p(name, index);
+        m_list.push_back(p);
+    }
+   
+    //Builds the tree structure
+    void Prepare()
+    {
+        m_root.c = -1; // dummy used to not trip the Search algorithm (which trips at 0)
+
+        for (size_t i=0; i<m_list.size(); i++)
+        {
+            Insert(&m_root, &m_list[i], 0);
+        }
+
+        m_root.InitSize();
+    }
+
+    int __forceinline GetIndex(const wchar_t* name)
+    {
+        Node* n = &m_root;
+        const wchar_t* tmp = name;
+
+        while (1)
+        {
+            Node* nchild = n->first;
+            Node* last = n->last;
+
+            while (nchild <= last)
+            {
+                if (nchild->c == *tmp)
+                {
+                    n = nchild;
+                    goto keep_going;
+                }
+
+                nchild++;
+            }
+
+            return n->c ? -1 : n->p->index;
+
+keep_going: tmp++;
+        }
+    }
+
+    void Clear()
+    {
+        m_list.clear();
+
+        m_root.p = NULL;
+        m_root.c = -1;
+        m_root.children.clear();
+    }
+
+
+private:
+
+    void Insert(Node* n, NameIndexPair* p, int cur_char_index)
+    {
+        wchar_t c = p->name[cur_char_index];
+
+        //search for the current character in the list of child nodes
+        Node* child = SearchChildren(n, c);
+
+        if (!child)
+        {
+            //there is not yet a child which matches
+            //so we create a new leaf node containing the given string
+            Node newnode;
+            newnode.c = c;
+            newnode.p = c ? NULL : p;
+            n->children.push_back(newnode);
+            child = &n->children[n->children.size() - 1];
+        }
+        else
+        {
+            //there is a child which matches the current character
+            //Here we have to see if our string terminates earlier than the
+            //existing string which created this node
+
+            //If the child is a leaf node, we have to split it
+            /*
+            if (child->p)
+            {
+                //reinsert the leaf data as a child of the node which we are splitting
+                NameIndexPair* pold = child->p;
+                child->p = NULL; //zero out the leaf pointer -- this makes it an inner node!
+                Insert(child, pold, cur_char_index + 1);
+            }
+            */
+        }
+
+        //insert the new node as another child
+        if (c)
+            Insert(child, p, cur_char_index + 1);
+    }
+
+    //Helper to search a list of child nodes for the given character
+    Node* SearchChildren(Node* n, wchar_t c)
+    {
+        size_t sz = n->children.size();
+        for (size_t i=0; i<sz; i++)
+        {
+            Node* nchild = &n->children[i];
+            if (nchild->c == c)
+            {
+                return nchild;
+            }
+        }
+
+        return NULL;
+    }
+
+    std::vector<NameIndexPair> m_list;
+    Node m_root;
 
 };
 
