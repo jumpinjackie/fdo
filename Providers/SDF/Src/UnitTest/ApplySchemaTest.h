@@ -59,7 +59,6 @@ protected:
     void CreateLandSchema( FdoFeatureSchemaCollection* pSchemas );
 	void CreateLongStringSchema( FdoIConnection* connection );
 	void CreateErrorSchema( FdoIConnection* connection );
-	void CreateDefaultErrorSchema( FdoIConnection* connection );
 	void CreateDlteSchema( FdoIConnection* connection );
 	void CreateRefmtSchema( FdoIConnection* connection );
 
