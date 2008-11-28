@@ -515,7 +515,7 @@ WARN_LOGFILE           = warning_logfile.txt
 
 INPUT                  = ../../Unmanaged/Inc \
                          group_and_page_definitions/define_pages.h \
-                         group_and_page_definitions/usage_notes
+                         group_and_page_definitions/chm_usage_notes
 
 # This tag can be used to specify the character encoding of the source files 
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is 

@@ -514,7 +514,7 @@ WARN_LOGFILE           = warning_logfile_managed.txt
 # with spaces.
 
 INPUT                  = ../../Managed/src \
-                         group_and_page_definitions/usage_notes \
+                         group_and_page_definitions/chm_usage_notes \
                          group_and_page_definitions/define_pages_managed.h
 
 # This tag can be used to specify the character encoding of the source files 
