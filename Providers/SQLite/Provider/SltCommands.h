@@ -466,7 +466,11 @@ class SltInsert : public SltCommand<FdoIInsert>
 
         void PrepareSQL()
         {
-            std::string sql = "INSERT INTO " + m_fcname + " (";
+            std::string sql;
+            sql.reserve(256);
+            sql += "INSERT INTO \"";
+            sql += m_fcname;
+            sql += "\" (";
 
             for (int i=0; i<m_properties->GetCount(); i++)
             {
@@ -475,7 +479,7 @@ class SltInsert : public SltCommand<FdoIInsert>
                 
                 FdoPtr<FdoPropertyValue> pv = m_properties->GetItem(i);
                 FdoPtr<FdoIdentifier> id = pv->GetName();
-                sql += W2A_SLOW(id->GetName());
+                sql += "\"" + W2A_SLOW(id->GetName()) + "\"";
             }
 
             //set up parametrized insert values

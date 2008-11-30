@@ -201,7 +201,7 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
 		}
 	}
     
-    char* tmpstr = (char*)alloca(strlen(fcname) + strlen(where) + 40);
+    char* tmpstr = (char*)alloca(strlen(fcname) + strlen(where) + 42);
 
     //construct the where clause and 
     //if necessary add FeatId filter -- in case we know which features we want
@@ -209,17 +209,17 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
     if (*where==0)
     {
         if (m_si || m_ri)
-            sprintf(tmpstr, " FROM %s WHERE ROWID=?;", fcname);
+            sprintf(tmpstr, " FROM \"%s\" WHERE ROWID=?;", fcname);
         else
-            sprintf(tmpstr, " FROM %s;", fcname);
+            sprintf(tmpstr, " FROM \"%s\";", fcname);
 
     }
     else
     {
         if (m_si || m_ri)
-            sprintf(tmpstr, " FROM %s WHERE (%s) AND ROWID=?;", fcname, where);
+            sprintf(tmpstr, " FROM \"%s\" WHERE (%s) AND ROWID=?;", fcname, where);
         else
-            sprintf(tmpstr, " FROM %s WHERE (%s);", fcname, where);
+            sprintf(tmpstr, " FROM \"%s\" WHERE (%s);", fcname, where);
     }
 
     m_fromwhere = tmpstr;
