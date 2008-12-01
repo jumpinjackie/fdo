@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 #include "SltExprExtensions.h"
+#include "SltGeomUtils.h"
 #include <math.h>
 #include <algorithm>
 
@@ -294,6 +295,73 @@ static void spatialOpFunc(sqlite3_context *context, int argc, sqlite3_value **ar
     sqlite3_result_int(context, res ? 1 : 0);
 }
 
+//Implementation of the X(), Y(), Z() and M() functions for point geometries
+static void xyzmFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
+{
+    assert(argc == 1);
+
+    double ret = 0;
+
+    //extract operation type 1 = X, 2 = Y, 3 = Z, 4 = M
+    long optype = (long)sqlite3_user_data(context);
+
+    FgfPoint pt;
+    bool valid = false;
+
+    //data type of argument -- must be BLOB (FGF) or text.
+    //TODO: support for WKB as in spatialOpFunc
+    int type = sqlite3_value_type(argv[0]);
+
+    //extract the point
+    if (type == SQLITE_BLOB)
+    {
+        const unsigned char* g1 = (const unsigned char*)sqlite3_value_blob(argv[0]);
+        int len1 = sqlite3_value_bytes(argv[0]);
+
+        pt = *(FgfPoint*)g1;
+
+        if (pt.geom_type == FdoGeometryType_Point)
+            valid = true;
+    }
+    else if (type == SQLITE_TEXT)
+    {
+        const char* wkt = (const char*)sqlite3_value_text(argv[0]);
+        int len = strlen(wkt) + 1;
+        wchar_t* wwkt = (wchar_t*)alloca(sizeof(wchar_t) * len);
+        mbstowcs(wwkt, wkt, len);
+
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+        FdoPtr<FdoIGeometry> fg = gf->CreateGeometry(wwkt);        
+        
+        if (fg->GetDerivedType() == FdoGeometryType_Point)
+        {
+            valid = true;
+            FdoPtr<FdoByteArray> ba = gf->GetFgf(fg);
+            pt = *(FgfPoint*)ba->GetData();
+        }
+    }
+
+    //if we have a valid geometry, extract the value we need to return
+    if (valid)
+    {
+        switch (optype)
+        {
+        case 1: ret = pt.coords[0]; break;
+        case 2: ret = pt.coords[1]; break;
+        case 3: if (pt.dim & FdoDimensionality_Z) 
+                    ret = pt.coords[2]; break;
+        case 4: if (pt.dim & FdoDimensionality_M)
+                    if (pt.dim & FdoDimensionality_Z)
+                        ret = pt.coords[3];
+                    else 
+                        ret = pt.coords[2];
+                break;
+        }
+    }
+
+    sqlite3_result_double(context, ret);
+}
+
 static void GeomFromText(sqlite3_context *context, int argc, sqlite3_value **argv)
 {
     assert(argc == 1);
@@ -501,6 +569,11 @@ void RegisterExtensions (sqlite3* db)
         { g_spatial_op_map[FdoSpatialOperations_CoveredBy], 2, FdoSpatialOperations_CoveredBy,  SQLITE_UTF8,    0, spatialOpFunc },
         { g_spatial_op_map[FdoSpatialOperations_Inside],    2, FdoSpatialOperations_Inside,     SQLITE_UTF8,    0, spatialOpFunc },
         { g_spatial_op_map[FdoSpatialOperations_EnvelopeIntersects],  2, FdoSpatialOperations_EnvelopeIntersects, SQLITE_UTF8, 0, spatialOpFunc },
+
+        { "X",                  1, 1, SQLITE_UTF8,     0, xyzmFunc },
+        { "Y",                  1, 2, SQLITE_UTF8,     0, xyzmFunc },
+        { "Z",                  1, 3, SQLITE_UTF8,     0, xyzmFunc },
+        { "M",                  1, 4, SQLITE_UTF8,     0, xyzmFunc },
 
         { "GeomFromText",       1, 0, SQLITE_UTF8, 0, GeomFromText },
 
