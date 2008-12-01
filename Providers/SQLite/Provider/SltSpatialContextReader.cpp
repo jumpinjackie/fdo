@@ -118,7 +118,7 @@ FdoByteArray* SltSpatialContextReader::GetExtent()
     FdoPtr<FdoFeatureSchema> schema = fsc->GetItem(0);
     FdoPtr<FdoClassCollection> cc = schema->GetClasses();
 
-    FdoFeatureClass* fc;
+    FdoFeatureClass* fc = NULL;
     FdoString* myname = GetName();
 
     //do the search...
