@@ -48,6 +48,9 @@ class FdoAssociationSelectTest : public CppUnit::TestCase
   CPPUNIT_TEST( select_NoIdentObj );
   CPPUNIT_TEST( select_WithIdentObj );
   CPPUNIT_TEST( select_NoIdentObjNested );
+  CPPUNIT_TEST( select_NoIdentFeatClassCirc );
+  CPPUNIT_TEST( select_NoIdentNoFeatClassCirc );
+  CPPUNIT_TEST( select_NoIdentBothClassCirc );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -64,9 +67,12 @@ public:
     void select_NoIdentObj();
     void select_WithIdentObj();
     void select_NoIdentObjNested(); 
+    void select_NoIdentFeatClassCirc(); 
+    void select_NoIdentNoFeatClassCirc(); 
+    void select_NoIdentBothClassCirc(); 
 
 private:
-    void masterTestNoObj( AssociationSelectType type, bool assocIsFeat = false, bool ownerIsFeat = true );
+    void masterTestNoObj( AssociationSelectType type, bool assocIsFeat = false, bool ownerIsFeat = true, int circularType = 0 );
     void masterTestNoObjReverse( AssociationSelectType type  );
     void masterTestWithObj( AssociationSelectType type );
     FdoAssociationInsertTest   *mInsertUtil;
