@@ -257,7 +257,7 @@ void SltQueryTranslator::ProcessSpatialCondition(FdoSpatialCondition& filter)
 
 void SltQueryTranslator::ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& filter)
 {
-    FdoPtr<FdoFilter> arg = filter.GetOperation();
+    FdoPtr<FdoFilter> arg = filter.GetOperand();
 
     arg->Process(this);
 
