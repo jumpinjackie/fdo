@@ -61,7 +61,7 @@ void FdoAssociationSchemaTest::createFreshDb()
 	UnitTestUtil::CreateDB(false, false, DB_SUFFIX);
 }
 
-void FdoAssociationSchemaTest::TestCreate ( bool useIdent, bool useObjProp, bool useNestedObj, bool useTransaction, bool commitTransaction, bool associatedIsFeat, bool ownerIsFeat, bool addToSubclass )
+void FdoAssociationSchemaTest::TestCreate ( bool useIdent, bool useObjProp, bool useNestedObj, bool useTransaction, bool commitTransaction, bool associatedIsFeat, bool ownerIsFeat, bool addToSubclass, int circularType )
 {
 	createFreshDb();
     FdoPtr<FdoIConnection> connection = UnitTestUtil::GetConnection(DB_SUFFIX, false);
@@ -134,6 +134,11 @@ void FdoAssociationSchemaTest::TestCreate ( bool useIdent, bool useObjProp, bool
 	    pProp->SetNullable(false);
 	    propDefColl = pfeatureclass->GetProperties();
         propDefColl->Add( pProp );
+        pProp = FdoDataPropertyDefinition::Create( L"ParentId", L"FeatId Prop" );
+        pProp->SetDataType( FdoDataType_Int64 );
+        pProp->SetNullable(true);
+        propDefColl = pfeatureclass->GetProperties();
+        propDefColl->Add( pProp );
 
 
         // Create a class
@@ -174,6 +179,11 @@ void FdoAssociationSchemaTest::TestCreate ( bool useIdent, bool useObjProp, bool
 	    pProp->SetNullable(false);
         pProp->SetLength(32);
 	    propDefColl = pclass->GetProperties();
+        propDefColl->Add( pProp );
+        pProp = FdoDataPropertyDefinition::Create( L"ParentId", L"Id Prop" );
+        pProp->SetDataType( FdoDataType_Int64 );
+        pProp->SetNullable(true);
+        propDefColl = pclass->GetProperties();
         propDefColl->Add( pProp );
 
         // Create a class
@@ -278,7 +288,12 @@ void FdoAssociationSchemaTest::TestCreate ( bool useIdent, bool useObjProp, bool
         
 
         
-        if( ! useObjProp )
+        if ( circularType > 0 ) 
+        {
+            propDefColl = pfeatureclass->GetProperties();
+            propDefColl->Add( passprop );
+        }
+        else if( ! useObjProp )
         {
 
             // Add a second association property
@@ -312,10 +327,10 @@ void FdoAssociationSchemaTest::TestCreate ( bool useIdent, bool useObjProp, bool
                 propDefColl = pclassLeafObj->GetProperties();
                 propDefColl->Add( passprop );
                 FdoPtr<FdoObjectPropertyDefinition>pLeafObjPropData = FdoObjectPropertyDefinition::Create( L"LeafObject", L"object property" );
-	            pLeafObjPropData->SetClass( pclassLeafObj );
+                pLeafObjPropData->SetClass( pclassLeafObj );
                 pLeafObjPropData->SetObjectType( FdoObjectType_Value );
                 propDefColl = pclassObj->GetProperties();
-	            propDefColl->Add( pLeafObjPropData );
+                propDefColl->Add( pLeafObjPropData );
             }
             else
             {
@@ -325,10 +340,70 @@ void FdoAssociationSchemaTest::TestCreate ( bool useIdent, bool useObjProp, bool
             }
             // Add an object property that contain an association
             FdoPtr<FdoObjectPropertyDefinition>pObjPropData = FdoObjectPropertyDefinition::Create( L"Object", L"object property" );
-	        pObjPropData->SetClass( pclassObj );
+            pObjPropData->SetClass( pclassObj );
             pObjPropData->SetObjectType( FdoObjectType_Value );
             propDefColl = pfeatureclass->GetProperties();
-	        propDefColl->Add( pObjPropData );
+            propDefColl->Add( pObjPropData );
+        }
+
+        // Create a valid association property
+        FdoPtr<FdoAssociationPropertyDefinition> circprop = FdoAssociationPropertyDefinition::Create(L"Association Circ Prop1", L"Association Prop Desc");
+        circprop->SetMultiplicity(L"m");
+        circprop->SetReverseMultiplicity(L"0");
+        
+        switch ( circularType ) 
+        {
+        // case 0 - no circular references.
+        case 1:
+            {
+                // Circular FeatureClass to itself
+                propDataDefColl = pfeatureclass->GetIdentityProperties();
+                FdoPtr<FdoDataPropertyDefinition> pprop = (FdoDataPropertyDefinition*)propDataDefColl->GetItem( 0 );
+                propDataDefColl = circprop->GetIdentityProperties();
+                propDataDefColl->Add( pprop );
+                propDefColl = pfeatureclass->GetProperties();
+                propDataDefColl = circprop->GetReverseIdentityProperties();
+                pprop = (FdoDataPropertyDefinition*)propDefColl->GetItem( L"ParentId" );
+                propDataDefColl->Add( pprop );
+                circprop->SetAssociatedClass(pfeatureclass);
+                propDefColl = pfeatureclass->GetProperties();
+	            propDefColl->Add( circprop );           
+            }
+            break;
+
+        case 2:
+            {
+                // Circular TestClass to itself
+                propDataDefColl = pclass->GetIdentityProperties();
+                FdoPtr<FdoDataPropertyDefinition> pprop = (FdoDataPropertyDefinition*)propDataDefColl->GetItem( 0 );
+                propDataDefColl = circprop->GetIdentityProperties();
+                propDataDefColl->Add( pprop );
+                propDefColl = pclass->GetProperties();
+                propDataDefColl = circprop->GetReverseIdentityProperties();
+                pprop = (FdoDataPropertyDefinition*)propDefColl->GetItem( L"ParentId" );
+                propDataDefColl->Add( pprop );
+                circprop->SetAssociatedClass(pclass);
+                propDefColl = pclass->GetProperties();
+	            propDefColl->Add( circprop );           
+            }
+            break;
+
+        case 3:
+            {
+                // TestClass to FeatClass - creates circular reference
+                propDataDefColl = pfeatureclass->GetIdentityProperties();
+                FdoPtr<FdoDataPropertyDefinition> pprop = (FdoDataPropertyDefinition*)propDataDefColl->GetItem( 0 );
+                propDataDefColl = circprop->GetIdentityProperties();
+                propDataDefColl->Add( pprop );
+                propDefColl = pclass->GetProperties();
+                propDataDefColl = circprop->GetReverseIdentityProperties();
+                pprop = (FdoDataPropertyDefinition*)propDefColl->GetItem( L"ParentId" );
+                propDataDefColl->Add( pprop );
+                circprop->SetAssociatedClass(pfeatureclass);
+                propDefColl = pclass->GetProperties();
+	            propDefColl->Add( circprop );           
+            }
+            break;
         }
 
         FdoPtr<FdoIApplySchema>pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);

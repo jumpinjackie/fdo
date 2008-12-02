@@ -911,6 +911,10 @@ bool FdoRdbmsFilterProcessor::CanOptimizeRelationQuery( const FdoSmLpClassDefini
         if( assocProp->GetReadOnly() || wcscmp(assocProp->GetReverseMultiplicity(), L"m" ) == 0 || assocProp->RefAssociatedClass()->GetClassType() == FdoClassType_FeatureClass )
             return false;
 
+        // Class references itself. Multiple aliases per table not yet supported
+        // so can't optimize this association.
+        if( assocProp->RefAssociatedClass() == pClass )
+            return false;
         //
         // If one or more association to the same class exist, then it's not possible to optimize this query since more than one row need to
         // be returned for the associated class; One row for each association.
@@ -980,19 +984,25 @@ void FdoRdbmsFilterProcessor::FollowRelation( FdoStringP    &relationColumns, co
                 }
             }
         }
+// Cascading through the relations can cause infinite recursion when there
+// are circular associations. A select statement that handles multiple
+// levels of associations is going to be very complex anyways so, rather
+// than figure out if there are circular associations, don't follow the 
+// next level of assocations.
+#if 0
         // Visit the next level of association
         const FdoSmLpPropertyDefinitionCollection* properties = assocProp->RefAssociatedClass()->RefProperties();
         for(int i=0; i<properties->GetCount(); i++ )
         {
             if( properties->RefItem(i)->GetPropertyType() == FdoPropertyType_AssociationProperty )
             {
-                if( ! CanOptimizeRelationQuery( assocProp->RefAssociatedClass(), properties->RefItem(i) ) )
-                    return;
-                FollowRelation( relationColumns, properties->RefItem(i), selectedProperties);
+                if( CanOptimizeRelationQuery( assocProp->RefAssociatedClass(), properties->RefItem(i) ) )
+                    FollowRelation( relationColumns, properties->RefItem(i), selectedProperties);
             }
         }
+#endif
     }
-    else if ( propertyDefinition->GetPropertyType() == FdoPropertyType_ObjectProperty )
+    if ( propertyDefinition->GetPropertyType() == FdoPropertyType_ObjectProperty )
     {
         const FdoSmLpObjectPropertyDefinition* objProp = (const FdoSmLpObjectPropertyDefinition*) propertyDefinition;
         if( objProp->GetObjectType() != FdoObjectType_Value )
@@ -1656,9 +1666,8 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
         {
             if( properties->RefItem(i)->GetPropertyType() == FdoPropertyType_AssociationProperty )
             {
-                if( ! CanOptimizeRelationQuery( mDbiConnection->GetSchemaUtil()->GetClass(mCurrentClassName), properties->RefItem(i)) )
-                    break;
-                FollowRelation( relationColumns, properties->RefItem(i), selectedProperties);
+                if( CanOptimizeRelationQuery( mDbiConnection->GetSchemaUtil()->GetClass(mCurrentClassName), properties->RefItem(i)) )
+                    FollowRelation( relationColumns, properties->RefItem(i), selectedProperties);
             }
         }
 

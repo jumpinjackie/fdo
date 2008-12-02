@@ -50,10 +50,14 @@ public:
 	void tearDown ();
 
     virtual void TestCreate_NoIdent () { TestCreate( false, false ); }
+    virtual void TestCreate_NoIdentCirc (int circularType) { TestCreate( false, false, false, false, true, false, false, false, circularType ); }
 
     virtual void TestCreate_NoIdentAssocFeatClass () { TestCreate( false, false,false,false,true,true ); }
+    virtual void TestCreate_NoIdentAssocFeatClassCirc (int circularType) { TestCreate( false, false,false,false,true,true,false,false,circularType ); }
     virtual void TestCreate_WithIdent (){ TestCreate( true, false ); }
+    virtual void TestCreate_WithIdentCirc (int circularType){ TestCreate( true, false, false, false, true, false, false, false, circularType ); }
     virtual void TestCreate_WithIdentNoFeatClass (){ TestCreate( true, false, false, false, true, false, false ); }
+    virtual void TestCreate_WithIdentNoFeatClassCirc (int circularType){ TestCreate( true, false, false, false, true, false, false, false, circularType ); }
     virtual void TestCreate_WithIdentNoFeatClassSubClass (){ TestCreate( true, false, false, false, true, false, false, true ); }
     virtual void TestCreate_NoIdentObj () { TestCreate( false, true ); }
     virtual void TestCreate_WithIdentObj (){ TestCreate( true, true ); }
@@ -63,7 +67,7 @@ public:
     virtual void TestLoadWithNoObj() { TestLoad(false); }
 
     void TestCreate (bool useIdent, bool useObjProp, bool useNetstedObj = false, bool useTransaction = false, 
-            bool commitTransaction=true, bool associatedIsFeat=false, bool ownerIsFeat=true, bool addToSubclass=false );
+            bool commitTransaction=true, bool associatedIsFeat=false, bool ownerIsFeat=true, bool addToSubclass=false, int circularType = 0 );
 
     void TestLoad ( bool withOjb );
 

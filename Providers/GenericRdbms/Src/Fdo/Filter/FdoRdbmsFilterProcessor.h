@@ -179,13 +179,7 @@ private:
     // List of geometry values that are bound in spatial filters.
     FdoPtr<BoundGeometryCollection>       mBoundGeometryValues;
 
-protected:
-    bool                mRequiresDistinct; // Used in case a distinct clause is needed for the sql select string
-    bool                mProcessingOrOperator;
-    SqlCommandType      mCurrentCmdType; // Used to build the right sql command(select, delete, update)
-    wchar_t*            mCurrentClassName; // Used to fetch the class properties
-
-
+public:
     typedef struct _filter_tabs_  {
         wchar_t   pk_TableName[GDBI_TABLE_NAME_SIZE];
 		wchar_t	  pk_TabAlias[2];
@@ -196,6 +190,13 @@ protected:
         bool   useOuterJoin;
         bool   duplicatefkTable; // used to avoid adding the same table of the select multiple time as: select tab1.*,tab1.* ...
     } FilterTableRelationDef;
+
+protected:
+    bool                mRequiresDistinct; // Used in case a distinct clause is needed for the sql select string
+    bool                mProcessingOrOperator;
+    SqlCommandType      mCurrentCmdType; // Used to build the right sql command(select, delete, update)
+    wchar_t*            mCurrentClassName; // Used to fetch the class properties
+
 
     vector<FilterTableRelationDef>  mCurrentTableRelationArray;
 

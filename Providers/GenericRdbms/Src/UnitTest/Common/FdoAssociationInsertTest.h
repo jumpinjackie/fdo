@@ -56,9 +56,13 @@ public:
     void setUp () { mSchemaUtil = GetSchemaUtil(); mSchemaUtil->setUp(); }
     void tearDown () { mSchemaUtil->tearDown (); }
     void insert_NoIdent();
+    void insert_NoIdentCirc(int circularType);
     void insert_NoIdentAssocFeatClass ();
+    void insert_NoIdentAssocFeatClassCirc (int circularType);
     void insert_WithIdent();
+    void insert_WithIdentCirc(int circularType);
     void insert_WithIdentNoFeatClass();
+    void insert_WithIdentNoFeatClassCirc(int circularType);
     void insert_ManyWithIdent();
     void insert_WithIdentParent();
     void insert_WithIdentAssociated();
@@ -68,7 +72,7 @@ public:
     void insert_NoIdentObjNested(); 
 
 private:
-    void masterTestNoObj( FdoAssociationInsertType type, const wchar_t* name1, const wchar_t* name2, int id, bool assocIsFeat=false, bool ownerIsFeat=true );
+    void masterTestNoObj( FdoAssociationInsertType type, const wchar_t* name1, const wchar_t* name2, int id, bool assocIsFeat=false, bool ownerIsFeat=true, int circularType = 0 );
     void masterTestWithObj( FdoAssociationInsertType type, const wchar_t* name1, const wchar_t* name2, int id );
 	FdoAssociationSchemaTest   *mSchemaUtil;
 	

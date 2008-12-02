@@ -109,7 +109,7 @@ public:
     // Given a class, returns its table name formated for a SQL statement
     // (Adds enclosing ANSI quotes if RDBMS supports them).
     // Throws exception if table is not in the RDBMS.
-    FdoStringP GetDbObjectSqlName( const FdoSmLpClassDefinition *classDefinition );
+    virtual FdoStringP GetDbObjectSqlName( const FdoSmLpClassDefinition *classDefinition );
 
     // Given an object property, returns its table name formated for a SQL statement
     // (Adds enclosing ANSI quotes if RDBMS supports them.
