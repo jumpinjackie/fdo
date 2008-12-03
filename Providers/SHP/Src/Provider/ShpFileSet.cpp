@@ -443,10 +443,12 @@ ShpSpatialIndex* ShpFileSet::GetSpatialIndex ( bool populateRtree )
            // Remove the corrupted spatial index file and rebuild spatial index.
            // Note: For read-only file, the tempory file will be used in ShpSpatialIndex Constructor so that it wouldn't get here.
            FdoStringP  exceptionMsg =  NlsMsgGet(SHP_SI_NOT_AN_SSI, "Corrupted Spatial Index file '%1$ls'.", (FdoString *) mSSIFileName);
-           if( exceptionMsg == e->GetExceptionMessage() && FdoCommonFile::Delete (mSSIFileName))
+           bool bIsCorrupted = (NULL == e) || (exceptionMsg == e->GetExceptionMessage());
+		   if (bIsCorrupted && (FdoCommonFile::Delete (mSSIFileName)))
            {
                 mSSI = NULL;
-                e->Release();
+                if (e)
+					e->Release();
            }
            else  // Only handle the corrupted IDX file case.
            {
