@@ -23,6 +23,6 @@
 # Description: Executes the unit tests for the Python wrappers on Linux
 #  
 
-export PYTHONPATH=/usr/local/fdo-3.3.0/lib:$FDO/Python/UnitTest/Lib:$PYTHONPATH
+export PYTHONPATH=/usr/local/fdo-3.4.0/lib:$FDO/Python/UnitTest/Lib:$PYTHONPATH
 
 python Src/main.py
