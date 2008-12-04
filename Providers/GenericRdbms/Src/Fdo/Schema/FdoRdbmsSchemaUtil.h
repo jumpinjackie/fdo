@@ -114,12 +114,12 @@ public:
     // Given an object property, returns its table name formated for a SQL statement
     // (Adds enclosing ANSI quotes if RDBMS supports them.
     // Throws exception if table is not in the RDBMS.
-    FdoStringP GetDbObjectSqlName( const FdoSmLpObjectPropertyDefinition *propertyDefinition );
+    virtual FdoStringP GetDbObjectSqlName( const FdoSmLpObjectPropertyDefinition *propertyDefinition );
 
     // Given a property, returns its column name formated for a SQL statement
     // (Adds enclosing ANSI quotes if RDBMS supports them.
     // Throws exception if column is not in the RDBMS.
-    FdoStringP GetColumnSqlName( const FdoSmLpSimplePropertyDefinition *propertyDefinition );
+    virtual FdoStringP GetColumnSqlName( const FdoSmLpSimplePropertyDefinition *propertyDefinition );
 
     // Check the geometry property dimensionality against a geometry value
     void CheckGeomPropOrdDimensionality( const FdoSmLpClassDefinition *classDefinition,
