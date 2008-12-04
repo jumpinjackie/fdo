@@ -179,7 +179,12 @@ private:
     // List of geometry values that are bound in spatial filters.
     FdoPtr<BoundGeometryCollection>       mBoundGeometryValues;
 
-public:
+protected:
+    bool                mRequiresDistinct; // Used in case a distinct clause is needed for the sql select string
+    bool                mProcessingOrOperator;
+    SqlCommandType      mCurrentCmdType; // Used to build the right sql command(select, delete, update)
+    wchar_t*            mCurrentClassName; // Used to fetch the class properties
+
     typedef struct _filter_tabs_  {
         wchar_t   pk_TableName[GDBI_TABLE_NAME_SIZE];
 		wchar_t	  pk_TabAlias[2];
@@ -190,12 +195,6 @@ public:
         bool   useOuterJoin;
         bool   duplicatefkTable; // used to avoid adding the same table of the select multiple time as: select tab1.*,tab1.* ...
     } FilterTableRelationDef;
-
-protected:
-    bool                mRequiresDistinct; // Used in case a distinct clause is needed for the sql select string
-    bool                mProcessingOrOperator;
-    SqlCommandType      mCurrentCmdType; // Used to build the right sql command(select, delete, update)
-    wchar_t*            mCurrentClassName; // Used to fetch the class properties
 
 
     vector<FilterTableRelationDef>  mCurrentTableRelationArray;
@@ -242,6 +241,14 @@ protected:
 
     void PrependTables();
 
+    virtual void AppendDataProperty( const FdoSmLpClassDefinition* currentClass, const FdoSmLpDataPropertyDefinition* dataProp, bool useOuterJoin, bool inSelectList );
+    
+    virtual void AppendObjectProperty( const FdoSmLpClassDefinition* currentClass, const FdoSmLpObjectPropertyDefinition* objProp, bool useOuterJoin, bool inSelectList );
+
+    virtual void AppendGeometricProperty( const FdoSmLpClassDefinition* currentClass, const FdoSmLpGeometricPropertyDefinition* geomProp, bool useOuterJoin, bool inSelectList );
+
+    virtual void AppendAssociationProperty( const FdoSmLpClassDefinition* currentClass, const FdoSmLpAssociationPropertyDefinition* assocProp, bool useOuterJoin, bool inSelectList );
+
     // Add the order by clause if it's required
     void AppendOrderBy( FdoRdbmsFilterUtilConstrainDef *filterConstrain );
 
@@ -277,6 +284,11 @@ protected:
 
     const wchar_t * PropertyNameToColumnName( const wchar_t *propName );
 
+    // Determines whether we can add a "select distinct" to SQL for select with
+    // filter on object properties. Must return false due to 2 problems in GenericRdbms
+    //    - FilterToSql mixes up aliases when "group by" included
+    //    - SqlServer can't do "select distinct" of any image columns are in the select list.
+    virtual bool CanSelectDistinctObjectProperties();
 
 //public:
 

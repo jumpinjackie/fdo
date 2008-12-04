@@ -923,7 +923,7 @@ Function not supported by this reader
 MessageId=2460
 SymbolicName=FDORDBMS_248
 Language=English
-FdoInCondition is missing the property name
+%1$ls is missing the property name
 .
 MessageId=2461
 SymbolicName=FDORDBMS_249
@@ -943,12 +943,12 @@ FdoUnaryLogicalOperator supports only the 'Not' operation
 MessageId=2464
 SymbolicName=FDORDBMS_252
 Language=English
-FdoComparisonCondition is missing the left expression
+%1$ls is missing the left expression
 .
 MessageId=2465
 SymbolicName=FDORDBMS_253
 Language=English
-FdoComparisonCondition is missing the right expression
+%1$ls is missing the right expression
 .
 MessageId=2466
 SymbolicName=FDORDBMS_254

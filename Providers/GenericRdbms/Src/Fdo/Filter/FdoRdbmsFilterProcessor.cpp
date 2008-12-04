@@ -352,6 +352,11 @@ const wchar_t * FdoRdbmsFilterProcessor::PropertyNameToColumnName( const wchar_t
     }
 }
 
+bool FdoRdbmsFilterProcessor::CanSelectDistinctObjectProperties()
+{
+    return false;
+}
+
 void FdoRdbmsFilterProcessor::ProcessBinaryExpression(FdoBinaryExpression& expr)
 {
     FdoPtr<FdoExpression>lftExpr = expr.GetLeftExpression();
@@ -467,8 +472,11 @@ void FdoRdbmsFilterProcessor::ProcessIdentifier( FdoIdentifier& expr, bool useOu
                     // This is required to avoid returning multiple copies of the same feature when the filter contains a condition using
                     // one or more properties of the collection.
 
-//                    if( objProp->GetObjectType() == FdoObjectType_OrderedCollection || objProp->GetObjectType() == FdoObjectType_Collection )
-//                        mRequiresDistinct = true;
+                    if ( CanSelectDistinctObjectProperties() ) 
+                    {
+                        if( objProp->GetObjectType() == FdoObjectType_OrderedCollection || objProp->GetObjectType() == FdoObjectType_Collection )
+                            mRequiresDistinct = true;
+                    }
 
                     FdoStringP pkTable = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
                     FdoStringP fkTable = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(objProp);
@@ -549,13 +557,7 @@ void FdoRdbmsFilterProcessor::ProcessIdentifier( FdoIdentifier& expr, bool useOu
             {
                 const FdoSmLpDataPropertyDefinition* dataProp =
                             static_cast<const FdoSmLpDataPropertyDefinition*>(propertyDefinition);
-                FdoStringP tableName = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
-                const FdoSmPhColumn *column = dataProp->RefColumn();
-                if (NULL == column)
-                    throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error"));
-                AppendString(  GetTableAlias( tableName ) );
-                AppendString( L"." );
-                AppendString( (FdoString*)(column->GetDbName()) );
+                AppendDataProperty( currentClass, dataProp, useOuterJoin, inSelectList ); 
             }
             break;
 
@@ -563,27 +565,7 @@ void FdoRdbmsFilterProcessor::ProcessIdentifier( FdoIdentifier& expr, bool useOu
             {
                 const FdoSmLpObjectPropertyDefinition* objProp =
                             static_cast<const FdoSmLpObjectPropertyDefinition*>(propertyDefinition);
-                const FdoSmLpClassDefinition* pTargetClass = objProp->RefTargetClass();
-                if ( !pTargetClass )
-                    throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error"));
-
-                const FdoSmLpDbObject* pTargetTable = pTargetClass->RefDbObject();
-                if ( !pTargetTable )
-                    throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error"));
-
-                const FdoSmPhColumnCollection* pkCols = pTargetTable->RefTargetColumns();
-
-                if( !pkCols || pkCols->GetCount() == 0 )
-                    throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error"));
-
-                if( pkCols->GetCount() != 1 )
-                    throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_20, "Case not handled yet"));
-
-                FdoStringP sqlTableName = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
-                AppendString( GetTableAlias( sqlTableName ) );
-                AppendString( L"." );
-                AppendString( pkCols->RefItem(0)->GetName() );
-
+                AppendObjectProperty( currentClass, objProp, useOuterJoin, inSelectList ); 
             }
             break;
 
@@ -591,51 +573,16 @@ void FdoRdbmsFilterProcessor::ProcessIdentifier( FdoIdentifier& expr, bool useOu
             {
                 const FdoSmLpGeometricPropertyDefinition* geomProp =
                             static_cast<const FdoSmLpGeometricPropertyDefinition*>(propertyDefinition);
-                FdoSmOvGeometricColumnType columnType = geomProp->GetGeometricColumnType();
-                FdoSmOvGeometricContentType contentType = geomProp->GetGeometricContentType();
-                if (FdoSmOvGeometricColumnType_Double == columnType &&
-                    FdoSmOvGeometricContentType_Ordinates == contentType)
-                {
-                    FdoStringP sqlTableName = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
-                    FdoString * tableAlias = GetTableAlias( sqlTableName );
-                    const FdoSmPhColumn *columnX = geomProp->RefColumnX();
-                    const FdoSmPhColumn *columnY = geomProp->RefColumnY();
-                    const FdoSmPhColumn *columnZ = geomProp->RefColumnZ();
-                    if (NULL == columnX || NULL == columnY)
-                        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error"));
-                    AppendString( tableAlias );
-                    AppendString( L"." );
-                    AppendString( (FdoString*)(columnX->GetDbName()) );
-                    AppendString( L"," );
-                    AppendString( tableAlias );
-                    AppendString( L"." );
-                    AppendString( (FdoString*)(columnY->GetDbName()) );
-                    if (NULL != columnZ)
-                    {
-                        AppendString( L"," );
-                        AppendString( tableAlias );
-                        AppendString( L"." );
-                        AppendString( (FdoString*)(columnZ->GetDbName()) );
-                    }
-                }
-                else // Single-column storage
-                {
-                    const FdoSmPhColumn *column = geomProp->RefColumn();
-                    if (NULL == column)
-                        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error"));
-                    FdoStringP sqlTableName = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
-                    FdoString * tableAlias = GetTableAlias( sqlTableName );
-                    AppendString( tableAlias );
-                    AppendString( L"." );
-                    
-                    FdoStringP  colName = GetGeometryString( (FdoString*)(column->GetDbName()), inSelectList );
-                    AppendString( (FdoString*)colName );
-                }
+                AppendGeometricProperty( currentClass, geomProp, useOuterJoin, inSelectList ); 
             }
             break;
 
         case FdoPropertyType_AssociationProperty:
-            throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_20, "Case not handled yet"));
+            {
+                const FdoSmLpAssociationPropertyDefinition* assocProp =
+                            static_cast<const FdoSmLpAssociationPropertyDefinition*>(propertyDefinition);
+                AppendAssociationProperty( currentClass, assocProp, useOuterJoin, inSelectList ); 
+            }
 
         default:
             throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error"));
@@ -1028,6 +975,88 @@ void FdoRdbmsFilterProcessor::AppendOrderBy( FdoRdbmsFilterUtilConstrainDef *fil
         else
             AppendString( L" ASC " );
     }
+}
+
+void FdoRdbmsFilterProcessor::AppendDataProperty( const FdoSmLpClassDefinition* currentClass, const FdoSmLpDataPropertyDefinition* dataProp, bool useOuterJoin, bool inSelectList )
+{               
+    FdoStringP tableName = mFdoConnection->GetDbiConnection()->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
+    AppendString(  GetTableAlias( tableName ) );
+    AppendString( L"." );
+    AppendString( (FdoString*)(mFdoConnection->GetDbiConnection()->GetSchemaUtil()->GetColumnSqlName(dataProp)) );
+}
+
+void FdoRdbmsFilterProcessor::AppendObjectProperty( const FdoSmLpClassDefinition* currentClass, const FdoSmLpObjectPropertyDefinition* objProp, bool useOuterJoin, bool inSelectList )
+{
+    AppendObjectProperty( currentClass, objProp, useOuterJoin, inSelectList ); 
+    const FdoSmLpClassDefinition* pTargetClass = objProp->RefTargetClass();
+    if ( !pTargetClass )
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error"));
+
+    const FdoSmLpDbObject* pTargetTable = pTargetClass->RefDbObject();
+    if ( !pTargetTable )
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error"));
+
+    const FdoSmPhColumnCollection* pkCols = pTargetTable->RefTargetColumns();
+
+    if( !pkCols || pkCols->GetCount() == 0 )
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error"));
+
+    if( pkCols->GetCount() != 1 )
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_20, "Case not handled yet"));
+
+    FdoStringP sqlTableName = mFdoConnection->GetDbiConnection()->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
+    AppendString( GetTableAlias( sqlTableName ) );
+    AppendString( L"." );
+    AppendString( pkCols->RefItem(0)->GetName() );
+}
+
+void FdoRdbmsFilterProcessor::AppendGeometricProperty( const FdoSmLpClassDefinition* currentClass, const FdoSmLpGeometricPropertyDefinition* geomProp, bool useOuterJoin, bool inSelectList )
+{
+    FdoSmOvGeometricColumnType columnType = geomProp->GetGeometricColumnType();
+    FdoSmOvGeometricContentType contentType = geomProp->GetGeometricContentType();
+    if (FdoSmOvGeometricColumnType_Double == columnType &&
+        FdoSmOvGeometricContentType_Ordinates == contentType)
+    {
+        FdoStringP sqlTableName = mFdoConnection->GetDbiConnection()->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
+        FdoString * tableAlias = GetTableAlias( sqlTableName );
+        const FdoSmPhColumn *columnX = geomProp->RefColumnX();
+        const FdoSmPhColumn *columnY = geomProp->RefColumnY();
+        const FdoSmPhColumn *columnZ = geomProp->RefColumnZ();
+        if (NULL == columnX || NULL == columnY)
+            throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error"));
+        AppendString( tableAlias );
+        AppendString( L"." );
+        AppendString( (FdoString*)(columnX->GetDbName()) );
+        AppendString( L"," );
+        AppendString( tableAlias );
+        AppendString( L"." );
+        AppendString( (FdoString*)(columnY->GetDbName()) );
+        if (NULL != columnZ)
+        {
+            AppendString( L"," );
+            AppendString( tableAlias );
+            AppendString( L"." );
+            AppendString( (FdoString*)(columnZ->GetDbName()) );
+        }
+    }
+    else // Single-column storage
+    {
+        const FdoSmPhColumn *column = geomProp->RefColumn();
+        if (NULL == column)
+            throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error"));
+        FdoStringP sqlTableName = mFdoConnection->GetDbiConnection()->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
+        FdoString * tableAlias = GetTableAlias( sqlTableName );
+        AppendString( tableAlias );
+        AppendString( L"." );
+        
+        FdoStringP  colName = GetGeometryString( (FdoString*)(column->GetDbName()), inSelectList );
+        AppendString( (FdoString*)colName );
+    }
+}
+
+void FdoRdbmsFilterProcessor::AppendAssociationProperty( const FdoSmLpClassDefinition* currentClass, const FdoSmLpAssociationPropertyDefinition* assocProp, bool useOuterJoin, bool inSelectList )
+{
+    throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_20, "Case not handled yet"));
 }
 
 // Add the group by clause if it's required
