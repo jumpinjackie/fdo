@@ -325,12 +325,13 @@ if test "$FDOENABLE" == yes; then
    fi
    
    if test "$BUILDDOCS" == build ; then
-      echo Creating Fdo unmanaged html documentation
+      echo Creating Fdo unmanaged and managed html documentation
       rm -rf Docs/HTML/FDO_API
       mkdir -p Docs/HTML/FDO_API
 
       pushd Docs/doc_src >& /dev/null
       doxygen Doxyfile_FDOunmanaged >& /dev/null
+      doxygen Doxyfile_FDOmanaged >& /dev/null
       popd >& /dev/null
    fi
    
