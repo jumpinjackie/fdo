@@ -238,8 +238,10 @@ AC_CONFIG_FILES([    Docs/doc_src/Makefile \
 		     Docs/doc_src/headers_and_footers/Makefile \
 		     Docs/doc_src/headers_and_footers/MySQL/Makefile \
 		     Docs/doc_src/headers_and_footers/ODBC/Makefile \
+		     Docs/doc_src/headers_and_footers/SQLServerSpatial/Makefile \
 		     Docs/doc_src/group_and_page_definitions/MySQL/Makefile \
-		     Docs/doc_src/group_and_page_definitions/ODBC/Makefile])
+		     Docs/doc_src/group_and_page_definitions/ODBC/Makefile \
+		     Docs/doc_src/group_and_page_definitions/SQLServerSpatial/Makefile])
 
 AC_OUTPUT
 

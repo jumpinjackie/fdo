@@ -19402,7 +19402,7 @@ fi
                                                                                 ac_config_files="$ac_config_files Src/ODBC/Makefile Src/ODBC/Fdo/Makefile Src/ODBC/SchemaMgr/Makefile Src/ODBC/SchemaMgr/Lp/Makefile Src/ODBC/SchemaMgr/Ov/Makefile Src/ODBC/SchemaMgr/Ph/Makefile Src/ODBC/SchemaMgr/Ph/Rd/Makefile Src/UnitTest/Odbc/Makefile"
 
 
-                                                                      ac_config_files="$ac_config_files Docs/doc_src/Makefile Docs/doc_src/group_and_page_definitions/Makefile Docs/doc_src/headers_and_footers/Makefile Docs/doc_src/headers_and_footers/MySQL/Makefile Docs/doc_src/headers_and_footers/ODBC/Makefile Docs/doc_src/group_and_page_definitions/MySQL/Makefile Docs/doc_src/group_and_page_definitions/ODBC/Makefile"
+                                                                                          ac_config_files="$ac_config_files Docs/doc_src/Makefile Docs/doc_src/group_and_page_definitions/Makefile Docs/doc_src/headers_and_footers/Makefile Docs/doc_src/headers_and_footers/MySQL/Makefile Docs/doc_src/headers_and_footers/ODBC/Makefile Docs/doc_src/headers_and_footers/SQLServerSpatial/Makefile Docs/doc_src/group_and_page_definitions/MySQL/Makefile Docs/doc_src/group_and_page_definitions/ODBC/Makefile Docs/doc_src/group_and_page_definitions/SQLServerSpatial/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -20044,8 +20044,10 @@ do
   "Docs/doc_src/headers_and_footers/Makefile" ) CONFIG_FILES="$CONFIG_FILES Docs/doc_src/headers_and_footers/Makefile" ;;
   "Docs/doc_src/headers_and_footers/MySQL/Makefile" ) CONFIG_FILES="$CONFIG_FILES Docs/doc_src/headers_and_footers/MySQL/Makefile" ;;
   "Docs/doc_src/headers_and_footers/ODBC/Makefile" ) CONFIG_FILES="$CONFIG_FILES Docs/doc_src/headers_and_footers/ODBC/Makefile" ;;
+  "Docs/doc_src/headers_and_footers/SQLServerSpatial/Makefile" ) CONFIG_FILES="$CONFIG_FILES Docs/doc_src/headers_and_footers/SQLServerSpatial/Makefile" ;;
   "Docs/doc_src/group_and_page_definitions/MySQL/Makefile" ) CONFIG_FILES="$CONFIG_FILES Docs/doc_src/group_and_page_definitions/MySQL/Makefile" ;;
   "Docs/doc_src/group_and_page_definitions/ODBC/Makefile" ) CONFIG_FILES="$CONFIG_FILES Docs/doc_src/group_and_page_definitions/ODBC/Makefile" ;;
+  "Docs/doc_src/group_and_page_definitions/SQLServerSpatial/Makefile" ) CONFIG_FILES="$CONFIG_FILES Docs/doc_src/group_and_page_definitions/SQLServerSpatial/Makefile" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}

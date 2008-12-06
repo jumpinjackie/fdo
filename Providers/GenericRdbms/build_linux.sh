@@ -162,8 +162,10 @@ fi
 if test "$BUILDDOCS" == yes ; then
    rm -rf Docs/HTML/MySQL
    rm -rf Docs/HTML/ODBC
+   rm -rf Docs/HTML/SQLServerSpatial
    mkdir -p Docs/HTML/MySQL
    mkdir -p Docs/HTML/ODBC
+   mkdir -p Docs/HTML/SQLServerSpatial
 
    echo Creating MySQL Provider HTML documentation
    pushd Docs/doc_src >& /dev/null
@@ -176,11 +178,18 @@ if test "$BUILDDOCS" == yes ; then
    doxygen Doxyfile_ODBC >& /dev/null
    doxygen Doxyfile_ODBC_managed >& /dev/null
    popd >& /dev/null
+
+   echo Creating SQL Server Spatial Provider HTML documentation
+   pushd Docs/doc_src >& /dev/null
+   doxygen Doxyfile_SQLServerSpatial >& /dev/null
+   doxygen Doxyfile_SQLServerSpatial_managed >& /dev/null
+   popd >& /dev/null
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
    rm -rf "$PREFIXVAL/docs/HTML/Providers/MySQL"
    rm -rf "$PREFIXVAL/docs/HTML/Providers/ODBC"
+   rm -rf "$PREFIXVAL/docs/HTML/Providers/SQLServerSpatial"
    mkdir -p "$PREFIXVAL/docs/HTML/Providers"
    if test -e "Docs/HTML/MySQL"; then
       cp --force --recursive "Docs/HTML/MySQL" "$PREFIXVAL/docs/HTML/Providers"
@@ -189,6 +198,10 @@ if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
    if test -e "Docs/HTML/ODBC"; then
       cp --force --recursive "Docs/HTML/ODBC" "$PREFIXVAL/docs/HTML/Providers"
       cp --force --recursive "Docs/HTML/ODBC_managed" "$PREFIXVAL/docs/HTML/Providers"
+   fi
+   if test -e "Docs/HTML/SQLServerSpatial"; then
+      cp --force --recursive "Docs/HTML/SQLServerSpatial" "$PREFIXVAL/docs/HTML/Providers"
+      cp --force --recursive "Docs/HTML/SQLServerSpatial_managed" "$PREFIXVAL/docs/HTML/Providers"
    fi
 fi
 
