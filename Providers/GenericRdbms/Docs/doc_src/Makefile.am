@@ -21,4 +21,4 @@ SUBDIRS = group_and_page_definitions headers_and_footers
 
 DIST_SUBDIRS = group_and_page_definitions headers_and_footers
 
-EXTRA_DIST = Doxyfile_MySQL Doxyfile_ODBC Doxyfile_MySQL_managed Doxyfile_ODBC_managed
+EXTRA_DIST = Doxyfile_MySQL Doxyfile_ODBC Doxyfile_MySQL_managed Doxyfile_ODBC_managed Doxyfile_SQLServerSpatial Doxyfile_SQLServerSpatial_managed
