@@ -328,6 +328,15 @@ if test "$FDOENABLE" == yes; then
       echo Creating Fdo unmanaged and managed html documentation
       rm -rf Docs/HTML/FDO_API
       mkdir -p Docs/HTML/FDO_API
+      cp DocResources/geospatial.js Docs/HTML/FDO_API
+      cp DocResources/osgeo.css Docs/HTML/FDO_API
+      cp DocResources/FDO_architecture.png Docs/HTML/FDO_API
+
+      rm -rf Docs/HTML/FDO_API_managed
+      mkdir -p Docs/HTML/FDO_API_managed
+      cp DocResources/geospatial.js Docs/HTML/FDO_API_managed
+      cp DocResources/osgeo.css Docs/HTML/FDO_API_managed
+      cp DocResources/FDO_architecture.png Docs/HTML/FDO_API_managed
 
       pushd Docs/doc_src >& /dev/null
       doxygen Doxyfile_FDOunmanaged >& /dev/null

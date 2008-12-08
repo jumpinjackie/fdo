@@ -3,7 +3,7 @@
 #---------------------------------------------------------------------------
 # Project related configuration options
 #---------------------------------------------------------------------------
-PROJECT_NAME           = "FDO Provider for WFS"
+PROJECT_NAME           = "OSGeo FDO Provider for WFS API Reference"
 PROJECT_NUMBER         = 
 OUTPUT_DIRECTORY       = 
 CREATE_SUBDIRS         = NO
@@ -109,7 +109,7 @@ HTML_OUTPUT            = ../HTML/WFS
 HTML_FILE_EXTENSION    = .htm
 HTML_HEADER            = headers_and_footers/header.html
 HTML_FOOTER            = headers_and_footers/footer.html
-HTML_STYLESHEET        = headers_and_footers/custom.css
+HTML_STYLESHEET        = ../../../../DocResources/geospatial.css
 HTML_ALIGN_MEMBERS     = YES
 GENERATE_HTMLHELP      = YES
 CHM_FILE               = ../../WFS_Provider_API.chm

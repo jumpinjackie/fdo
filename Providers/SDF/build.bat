@@ -146,6 +146,8 @@ if "%DOCENABLESDF%"=="skip" goto install_docs
 echo Creating SDF provider html and chm documentation
 if exist "Docs\HTML\SDF" rmdir /S /Q "Docs\HTML\SDF"
 if not exist "Docs\HTML\SDF" mkdir "Docs\HTML\SDF"
+copy ..\..\DocResources\geospatial.js Docs\HTML\SDF
+copy ..\..\DocResources\osgeo.css Docs\HTML\SDF
 if exist Docs\SDF_Provider_API.chm attrib -r Docs\SDF_Provider_API.chm
 pushd Docs\doc_src
 doxygen Doxyfile_SDF

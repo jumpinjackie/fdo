@@ -154,9 +154,13 @@ pushd ..\..\
 echo Creating MySQL provider html and chm documentation
 if exist "Docs\HTML\MYSQL" rmdir /S /Q "Docs\HTML\MYSQL"
 if not exist "Docs\HTML\MySQL" mkdir "Docs\HTML\MySQL"
+copy ..\..\DocResources\geospatial.js Docs\HTML\MySQL
+copy ..\..\DocResources\osgeo.css Docs\HTML\MySQL
 if exist Docs\MySQL_Provider_API.chm attrib -r Docs\MySQL_Provider_API.chm
 if exist "Docs\HTML\MYSQL_managed" rmdir /S /Q "Docs\HTML\MYSQL_managed"
 if not exist "Docs\HTML\MySQL_managed" mkdir "Docs\HTML\MySQL_managed"
+copy ..\..\DocResources\geospatial.js Docs\HTML\MySQL_managed
+copy ..\..\DocResources\osgeo.css Docs\HTML\MySQL_managed
 if exist Docs\MySQL_Provider_API_managed.chm attrib -r Docs\MySQL_Provider_API_managed.chm
 pushd Docs\doc_src
 doxygen Doxyfile_MySQL

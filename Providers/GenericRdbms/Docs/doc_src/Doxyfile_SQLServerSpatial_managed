@@ -513,7 +513,7 @@ WARN_LOGFILE           = warning_logfile_SQLServerSpatial_managed.txt
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = group_and_page_definitions/SQLServer \
+INPUT                  = group_and_page_definitions/SQLServerSpatial \
                          ../../Managed/Src/OSGeo/FDO/Providers/Rdbms/Override \
                          ../../Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/SQLServerSpatial
 
@@ -739,7 +739,7 @@ HTML_FOOTER            = headers_and_footers/SQLServerSpatial/footer.html
 # the style sheet file to the HTML output directory, so don't put your own 
 # stylesheet in the HTML output directory as well, or it will be erased!
 
-HTML_STYLESHEET        = headers_and_footers/SQLServerSpatial/custom.css
+HTML_STYLESHEET        = ../../../../DocResources/geospatial.css
 
 # If the HTML_ALIGN_MEMBERS tag is set to YES, the members of classes, 
 # files or namespaces will be aligned in HTML using tables. If set to 

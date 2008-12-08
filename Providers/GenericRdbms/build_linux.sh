@@ -161,11 +161,14 @@ fi
 
 if test "$BUILDDOCS" == yes ; then
    rm -rf Docs/HTML/MySQL
-   rm -rf Docs/HTML/ODBC
-   rm -rf Docs/HTML/SQLServerSpatial
    mkdir -p Docs/HTML/MySQL
-   mkdir -p Docs/HTML/ODBC
-   mkdir -p Docs/HTML/SQLServerSpatial
+   cp ../../DocResources/geospatial.js Docs/HTML/MySQL
+   cp ../../DocResources/osgeo.css Docs/HTML/MySQL
+   
+   rm -rf Docs/HTML/MySQL_managed
+   mkdir -p Docs/HTML/MySQL_managed
+   cp ../../DocResources/geospatial.js Docs/HTML/MySQL_managed
+   cp ../../DocResources/osgeo.css Docs/HTML/MySQL_managed
 
    echo Creating MySQL Provider HTML documentation
    pushd Docs/doc_src >& /dev/null
@@ -173,13 +176,33 @@ if test "$BUILDDOCS" == yes ; then
    doxygen Doxyfile_MySQL_managed >& /dev/null
    popd >& /dev/null
    
+   rm -rf Docs/HTML/ODBC
+   mkdir -p Docs/HTML/ODBC
+   cp ../../DocResources/geospatial.js Docs/HTML/ODBC
+   cp ../../DocResources/osgeo.css Docs/HTML/ODBC
+
+   rm -rf Docs/HTML/ODBC_managed
+   mkdir -p Docs/HTML/ODBC_managed
+   cp ../../DocResources/geospatial.js Docs/HTML/ODBC_managed
+   cp ../../DocResources/osgeo.css Docs/HTML/ODBC_managed
+
    echo Creating ODBC Provider HTML documentation
    pushd Docs/doc_src >& /dev/null
    doxygen Doxyfile_ODBC >& /dev/null
    doxygen Doxyfile_ODBC_managed >& /dev/null
    popd >& /dev/null
 
-   echo Creating SQL Server Spatial Provider HTML documentation
+   rm -rf Docs/HTML/SQLServerSpatial
+   mkdir -p Docs/HTML/SQLServerSpatial
+   cp ../../DocResources/geospatial.js Docs/HTML/SQLServerSpatial
+   cp ../../DocResources/osgeo.css Docs/HTML/SQLServerSpatial
+
+   rm -rf Docs/HTML/SQLServerSpatial_managed
+   mkdir -p Docs/HTML/SQLServerSpatial_managed
+   cp ../../DocResources/geospatial.js Docs/HTMLSQLServerSpatial_managed
+   cp ../../DocResources/osgeo.css Docs/HTMLSQLServerSpatial_managed
+
+   echo Creating SQLServerSpatial Provider HTML documentation
    pushd Docs/doc_src >& /dev/null
    doxygen Doxyfile_SQLServerSpatial >& /dev/null
    doxygen Doxyfile_SQLServerSpatial_managed >& /dev/null
@@ -188,19 +211,32 @@ fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
    rm -rf "$PREFIXVAL/docs/HTML/Providers/MySQL"
-   rm -rf "$PREFIXVAL/docs/HTML/Providers/ODBC"
-   rm -rf "$PREFIXVAL/docs/HTML/Providers/SQLServerSpatial"
-   mkdir -p "$PREFIXVAL/docs/HTML/Providers"
    if test -e "Docs/HTML/MySQL"; then
       cp --force --recursive "Docs/HTML/MySQL" "$PREFIXVAL/docs/HTML/Providers"
+   fi
+
+   rm -rf "$PREFIXVAL/docs/HTML/Providers/MySQL_managed"
+   if test -e "Docs/HTML/MySQL_managed"; then
       cp --force --recursive "Docs/HTML/MySQL_managed" "$PREFIXVAL/docs/HTML/Providers"
    fi
+
+   rm -rf "$PREFIXVAL/docs/HTML/Providers/ODBC"
    if test -e "Docs/HTML/ODBC"; then
       cp --force --recursive "Docs/HTML/ODBC" "$PREFIXVAL/docs/HTML/Providers"
+   fi
+
+   rm -rf "$PREFIXVAL/docs/HTML/Providers/ODBC_managed"
+   if test -e "Docs/HTML/ODBC"; then
       cp --force --recursive "Docs/HTML/ODBC_managed" "$PREFIXVAL/docs/HTML/Providers"
    fi
+
+   rm -rf "$PREFIXVAL/docs/HTML/Providers/SQLServerSpatial"
    if test -e "Docs/HTML/SQLServerSpatial"; then
       cp --force --recursive "Docs/HTML/SQLServerSpatial" "$PREFIXVAL/docs/HTML/Providers"
+   fi
+
+   rm -rf "$PREFIXVAL/docs/HTML/Providers/SQLServerSpatial_managed"
+   if test -e "Docs/HTML/SQLServerSpatial_managed"; then
       cp --force --recursive "Docs/HTML/SQLServerSpatial_managed" "$PREFIXVAL/docs/HTML/Providers"
    fi
 fi

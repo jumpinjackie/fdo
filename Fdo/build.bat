@@ -174,7 +174,13 @@ echo Creating FDO Unmanaged and Managed html and chm API documentation
 if exist "Docs\HTML\FDO_API" rmdir /S /Q "Docs\HTML\FDO_API"
 if exist "Docs\HTML\FDO_API_managed" rmdir /S /Q "Docs\HTML\FDO_API_managed"
 if not exist "Docs\HTML\FDO_API" mkdir "Docs\HTML\FDO_API"
+copy ..\DocResources\geospatial.js Docs\HTML\FDO_API
+copy ..\DocResources\osgeo.css Docs\HTML\FDO_API
+copy ..\DocResources\FDO_architecture.png Docs\HTML\FDO_API
 if not exist "Docs\HTML\FDO_API_managed" mkdir "Docs\HTML\FDO_API_managed"
+copy ..\DocResources\geospatial.js Docs\HTML\FDO_API_managed
+copy ..\DocResources\osgeo.css Docs\HTML\FDO_API_managed
+copy ..\DocResources\FDO_architecture.png Docs\HTML\FDO_API_managed
 if exist Docs\FDO_API.chm attrib -r Docs\FDO_API.chm
 if exist Docs\FDO_API_managed.chm attrib -r Docs\FDO_API_managed.chm
 pushd Docs\doc_src

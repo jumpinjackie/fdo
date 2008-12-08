@@ -152,6 +152,8 @@ if "%DOCENABLEARCSDE%"=="skip" goto install_docs
 echo Creating ArcSDE provider html and chm documentation
 if exist "Docs\HTML\ArcSDE" rmdir /S /Q "Docs\HTML\ArcSDE"
 if not exist "Docs\HTML\ArcSDE" mkdir "Docs\HTML\ArcSDE"
+copy ..\..\DocResources\geospatial.js Docs\HTML\ArcSDE
+copy ..\..\DocResources\osgeo.css Docs\HTML\ArcSDE
 if exist Docs\ArcSDE_Provider_API.chm attrib -r Docs\ArcSDE_Provider_API.chm
 pushd Docs\doc_src
 doxygen Doxyfile_ArcSDE

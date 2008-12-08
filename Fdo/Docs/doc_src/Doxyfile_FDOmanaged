@@ -514,7 +514,6 @@ WARN_LOGFILE           = warning_logfile_managed.txt
 # with spaces.
 
 INPUT                  = ../../Managed/src \
-                         group_and_page_definitions/chm_usage_notes \
                          group_and_page_definitions/define_pages_managed.h
 
 # This tag can be used to specify the character encoding of the source files 
@@ -742,7 +741,7 @@ HTML_FOOTER            = headers_and_footers/footer.html
 # the style sheet file to the HTML output directory, so don't put your own 
 # stylesheet in the HTML output directory as well, or it will be erased!
 
-HTML_STYLESHEET        = headers_and_footers/custom.css
+HTML_STYLESHEET        = ../../../DocResources/geospatial.css
 
 # If the HTML_ALIGN_MEMBERS tag is set to YES, the members of classes, 
 # files or namespaces will be aligned in HTML using tables. If set to 
