@@ -13,14 +13,7 @@ Bermuda</gml:srsName>
 180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="Bermuda-x20-1957">
-<gml:srsName>
-Bermuda 1957</gml:srsName>
-<fdo:WKT>
-GEOGCS["Bermuda 1957", DATUM["Bermuda 1957", ELLIPSOID["Clarke 1866", 6378206.4, 294.978698213898]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.0174532925199433]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#Bermuda.LL"/>
 <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
 <gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
 geographic</gml:derivedCRSType>
@@ -39,14 +32,7 @@ Bermuda Duplicate</gml:srsName>
 180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="Bermuda-x20-1957">
-<gml:srsName>
-Bermuda 1957</gml:srsName>
-<fdo:WKT>
-GEOGCS["Bermuda 1957", DATUM["Bermuda 1957", ELLIPSOID["Clarke 1866", 6378206.4, 294.978698213898]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.0174532925199433]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#Bermuda.LL"/>
 <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
 <gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
 geographic</gml:derivedCRSType>
@@ -65,14 +51,7 @@ Bermuda Mentor</gml:srsName>
 180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="Bermuda-x20-1957">
-<gml:srsName>
-Bermuda 1957</gml:srsName>
-<fdo:WKT>
-GEOGCS["Bermuda 1957", DATUM["Bermuda 1957", ELLIPSOID["Clarke 1866", 6378206.4, 294.978698213898]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.0174532925199433]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#Bermuda.LL"/>
 <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
 <gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
 geographic</gml:derivedCRSType>
@@ -117,14 +96,7 @@ Liberia by WKT</gml:srsName>
 180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="Liberia-x20-1964">
-<gml:srsName>
-Liberia 1964</gml:srsName>
-<fdo:WKT>
-GEOGCS["Liberia 1964", DATUM["Liberia 1964", ELLIPSOID["Clarke 1880 (RGS)", 6378249.145, 293.465]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.0174532925199433]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#Liberia.LL"/>
 <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
 <gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
 geographic</gml:derivedCRSType>
@@ -169,14 +141,7 @@ Qatar wrong name</gml:srsName>
 180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="Qatar-x20-1974">
-<gml:srsName>
-Qatar 1974</gml:srsName>
-<fdo:WKT>
-GEOGCS["Qatar 1974", DATUM["Qatar 1974", ELLIPSOID["International 1924", 6378388, 297]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.0174532925199433]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#Qatar74.LL"/>
 <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
 <gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
 geographic</gml:derivedCRSType>
@@ -259,14 +224,7 @@ South</gml:srsName>
 180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="Australian-x20-Antarctic">
-<gml:srsName>
-Australian Antarctic</gml:srsName>
-<fdo:WKT>
-GEOGCS["Australian Antarctic", DATUM["Australian Antarctic Datum 1998", ELLIPSOID["GRS 1980", 6378137, 298.257222101]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.0174532925199433]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#Antarctic98.LL"/>
 <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
 <gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
 geographic</gml:derivedCRSType>
@@ -285,14 +243,7 @@ South Duplicate</gml:srsName>
 180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="Australian-x20-Antarctic">
-<gml:srsName>
-Australian Antarctic</gml:srsName>
-<fdo:WKT>
-GEOGCS["Australian Antarctic", DATUM["Australian Antarctic Datum 1998", ELLIPSOID["GRS 1980", 6378137, 298.257222101]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.0174532925199433]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#Antarctic98.LL"/>
 <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
 <gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
 geographic</gml:derivedCRSType>
@@ -311,14 +262,7 @@ sc_1</gml:srsName>
 180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="NAD27">
-<gml:srsName>
-NAD27</gml:srsName>
-<fdo:WKT>
-GEOGCS["NAD27", DATUM["North American Datum 1927", ELLIPSOID["Clarke 1866", 6378206.4, 294.978698213898]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.0174532925199433]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#LL27"/>
 <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
 <gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
 geographic</gml:derivedCRSType>
@@ -337,14 +281,7 @@ sc_2</gml:srsName>
 180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="Puerto-x20-Rico">
-<gml:srsName>
-Puerto Rico</gml:srsName>
-<fdo:WKT>
-GEOGCS["Puerto Rico", DATUM["Puerto Rico", ELLIPSOID["Clarke 1866", 6378206.4, 294.978698213898]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.0174532925199433]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#PRVI.LL"/>
 <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
 <gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
 geographic</gml:derivedCRSType>

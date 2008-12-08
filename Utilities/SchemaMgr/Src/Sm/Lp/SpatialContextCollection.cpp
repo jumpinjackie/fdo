@@ -28,6 +28,7 @@ FdoSmLpSpatialContextCollection::FdoSmLpSpatialContextCollection(FdoSmPhMgrP phy
 	mPhysicalSchema(physicalSchema),
     mAreLoaded(false)
 {
+    mSpatialContextGeoms = new FdoSmLpSpatialContextGeomCollection();
     mIdMap = FdoDictionary::Create();
 }
 
@@ -65,30 +66,55 @@ FdoSmLpSpatialContextP FdoSmLpSpatialContextCollection::FindSpatialContext( FdoS
     return(sc);
 }
 
-FdoSmPhSpatialContextGeomP FdoSmLpSpatialContextCollection::FindSpatialContextGeom( FdoStringP dbObjectName, FdoStringP columnName )
+FdoSmLpSpatialContextGeomP FdoSmLpSpatialContextCollection::FindSpatialContextGeom( FdoStringP dbObjectName, FdoStringP columnName )
 {
-    FdoSmPhSpatialContextGeomP scGeom;
+    FdoStringP scGeomName = FdoSmLpSpatialContextGeom::MakeName( dbObjectName, columnName );
 
-  	if ( mPhysicalSchema != NULL ) {
+    // Check if already in cache
+    FdoSmLpSpatialContextGeomP scGeom = mSpatialContextGeoms->FindItem( scGeomName );
+
+    if ( !scGeom ) 
+    {
+        // Not in cache
+
         // Check if there is a config doc
         FdoIoStreamP configDoc = mPhysicalSchema->GetConfigDoc();
         FdoSmPhOwnerP owner = mPhysicalSchema->GetOwner();
 
-        if ( (!configDoc) && (!owner->GetHasMetaSchema()) ) {
-            // Non-FDO datastore without config doc. Get spatial context
-            // association from Physical Schema Manager.
-            scGeom = owner->FindSpatialContextGeom( dbObjectName, columnName );
-        }
-        else {
-            // For other cases, load the spatial contexts and associations and
-            // look for the one we want.
-            Load();
+        if ( (!configDoc) && (!owner->GetHasMetaSchema()) ) 
+        {
+            // Non-FDO datastore without config doc. Get spatial context geom from physical schema
+            // For performance, we don't do full load of SCGeoms here, but leave it to the
+            // physical schema to decide when full load is needed. 
+            FdoSmPhSpatialContextGeomP phScGeom = owner->FindSpatialContextGeom( dbObjectName, columnName );
 
-            if ( mSpatialContextGeoms )
-                scGeom = mSpatialContextGeoms->FindItem( FdoSmPhSpatialContextGeom::MakeName(dbObjectName, columnName) );
-            else
-                // SC assocations not initialized so fall back to physical associations.
-                scGeom = owner->FindSpatialContextGeom( dbObjectName, columnName );
+            if ( phScGeom ) 
+            {
+                // Make sure we can link up this SCGeom with its Spatial Context.
+                FdoSmPhSpatialContextP phSc = phScGeom->GetSpatialContext();
+
+                if ( phSc ) 
+                {
+				    // Physical SCGeom found. Create and cache a corresponding LogicalPhysical SCGeom.
+				    scGeom = new FdoSmLpSpatialContextGeom(
+				        								   phSc->GetId(),               // LogicalPhysical and Physical spatial contexts have same id's
+														   phScGeom->GetGeomTableName(),
+														   phScGeom->GetGeomColumnName(),
+														   phScGeom->GetHasElevation(),
+														   phScGeom->GetHasMeasure());
+			        if (NULL == scGeom.p)
+					    throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
+
+				    mSpatialContextGeoms->Add( scGeom );	
+                }
+            }
+        }
+        else 
+        {
+            // When schema defined in config doc or metaschema, do full load 
+            // try again to find the scgeom.
+            Load();
+            scGeom = mSpatialContextGeoms->FindItem( scGeomName );
         }
     }
 
@@ -224,10 +250,6 @@ void FdoSmLpSpatialContextCollection::Load( FdoInt64 scId )
     FdoSmPhSpatialContextGeomsP scGeoms;
 
 	if ( (mPhysicalSchema != NULL) && !mAreLoaded ) {
-        // Cache the SpatialContextGeomReader info  
-        if ( mSpatialContextGeoms.p == NULL )
-            mSpatialContextGeoms = new FdoSmPhSpatialContextGeomCollection();
-
         // Check if there is a config doc
         FdoIoStreamP configDoc = mPhysicalSchema->GetConfigDoc();
         FdoStringP providerName = mPhysicalSchema->GetProviderName();
@@ -324,8 +346,7 @@ void FdoSmLpSpatialContextCollection::Load( FdoInt64 scId )
 			while (scGeomReader->ReadNext())
 			{
 				// Create Spatial context geometry object and associate it with this scId
-				FdoSmPhSpatialContextGeomP  scgeom = new FdoSmPhSpatialContextGeom(
-                                                                mPhysicalSchema,
+				FdoSmLpSpatialContextGeomP  scgeom = new FdoSmLpSpatialContextGeom(
 																scGeomReader->GetScId(),
 																scGeomReader->GetGeomTableName(),
 																scGeomReader->GetGeomColumnName(),
@@ -339,10 +360,6 @@ void FdoSmLpSpatialContextCollection::Load( FdoInt64 scId )
         }
 		else
 		{
-
-            // Use Physical SpatialContextGeoms.
-            mSpatialContextGeoms = NULL;
-
 			// Create a LogicalPhysical spatial context from each Physical spatial context
 
             if ( scId >= 0) 
@@ -406,12 +423,9 @@ FdoSmLpSpatialContextP FdoSmLpSpatialContextCollection::NewSpatialContext(
     return sc;
 }
 
-FdoSmPhSpatialContextGeomsP FdoSmLpSpatialContextCollection::GetSpatialContextGeoms()
+FdoSmLpSpatialContextGeomsP FdoSmLpSpatialContextCollection::GetSpatialContextGeoms()
 {
-    if ( mSpatialContextGeoms ) 
-        return mSpatialContextGeoms;
-    else
-    	return mPhysicalSchema->GetOwner()->GetSpatialContextGeoms();
+    return mSpatialContextGeoms;
 }
 
 void FdoSmLpSpatialContextCollection::AddToIdMap( FdoSmLpSpatialContext* sc )

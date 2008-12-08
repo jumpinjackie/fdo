@@ -13,14 +13,7 @@ Default</gml:srsName>
 180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="WGS-x20-84">
-<gml:srsName>
-WGS 84</gml:srsName>
-<fdo:WKT>
-GEOGCS[&quot;WGS 84&quot;, DATUM[&quot;World Geodetic System 1984&quot;, ELLIPSOID[&quot;WGS 84&quot;, 6378137, 298.257223563]], PRIMEM[&quot;Greenwich&quot;, 0], UNIT[&quot;Degree&quot;, 0.0174532925199433]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#LL84"/>
 <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
 <gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
 geographic</gml:derivedCRSType>
@@ -84,14 +77,7 @@ sc_3</gml:srsName>
 180.000000 90.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="Hu-x20-Tzu-x20-Shan">
-<gml:srsName>
-Hu Tzu Shan</gml:srsName>
-<fdo:WKT>
-GEOGCS[&quot;Hu Tzu Shan&quot;, DATUM[&quot;Hu Tzu Shan&quot;, ELLIPSOID[&quot;International 1924&quot;, 6378388, 297]], PRIMEM[&quot;Greenwich&quot;, 0], UNIT[&quot;Degree&quot;, 0.0174532925199433]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#HuTzuShan.LL"/>
 <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
 <gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
 geographic</gml:derivedCRSType>

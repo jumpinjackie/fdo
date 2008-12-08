@@ -528,26 +528,19 @@ void SchemaMgrTests::testGenGeom ()
 
         FdoSmPhDatabaseP database = phMgr->GetDatabase();
 
-        printf( "Predeleting schema ...\n" );
+        printf( "Predeleting and creating schema ...\n" );
+
+        FdoStringP fdatastore = phMgr->GetDcOwnerName(
+            UnitTestUtil::GetEnviron("datastore", DB_NAME_FOREIGN_SUFFIX)
+        );
+
+        FdoSmPhOwnerP fowner = UnitTestUtil::CreateDBNoMeta( mgr, fdatastore );
 
         FdoStringP datastore = phMgr->GetDcOwnerName(
             UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX)
         );
 
-        FdoSmPhOwnerP owner = phMgr->FindOwner( datastore, L"", false );
-        if ( owner ) {
-            owner->SetElementState( FdoSchemaElementState_Deleted );
-            owner->Commit();
-        }
-
-        printf( "Creating schema ...\n" );
-
-        owner = database->CreateOwner(
-            datastore, 
-            false
-        );
-        owner->SetPassword( L"test" );
-        owner->Commit();
+        FdoSmPhOwnerP owner = UnitTestUtil::CreateDBNoMeta( mgr, datastore );
 
         CreateMultiGeomTable( owner, L"INDEX_WINS1", 8, 0x01, 0xa3 );
         CreateMultiGeomTable( owner, L"INDEX_WINS2", 3, 0x02, 0x00 );
@@ -561,6 +554,87 @@ void SchemaMgrTests::testGenGeom ()
         CreateMultiGeomTable( owner, L"NNULL_TIE", 3, 0x00, 0x05 );
         CreateMultiGeomTable( owner, L"NO_WIN", 3, 0x00, 0x00 );
         CreateMultiGeomTable( owner, L"ONE_GEOM", 1, 0x00, 0x00 );
+        CreateMultiGeomTable( owner, L"BASE_GEOM", 2, 0x03, 0x00 );
+
+        CreateMultiGeomView( owner, L"AVIEW_INDEX_WINS1", owner, L"INDEX_WINS1", 8 );
+        CreateMultiGeomView( owner, L"VIEW_INDEX_WINS2", owner, L"INDEX_WINS2", 3 );
+
+        CreateMultiGeomView( owner, L"BVIEW_INDEX_WINS3", owner, L"INDEX_WINS3", 3 );
+        CreateMultiGeomView( owner, L"AVIEW_INDEX_WINS3", owner, L"BVIEW_INDEX_WINS3", 3 );
+        CreateMultiGeomView( owner, L"VIEW_INDEX_WINS4", owner, L"INDEX_WINS4", 3 );
+        CreateMultiGeomView( owner, L"VIEWB_INDEX_WINS4", owner, L"VIEW_INDEX_WINS4", 3 );
+
+        {
+            FdoSmPhScInfoP scinfo = CreateSc( GetSrid(3), -1001, -1002, 1001, 1002, 0.0333, 0.0111 );
+
+            FdoSmPhViewP view = owner->CreateView( phMgr->GetDcDbObjectName(L"RVIEW_INDEX_WINS4"), L"", owner->GetName(), phMgr->GetDcDbObjectName(L"INDEX_WINS4"));
+            FdoSmPhColumnP column = view->CreateColumnInt32( phMgr->GetDcColumnName(L"ID"), false, false, phMgr->GetDcColumnName(L"ID") );
+            view->CreateColumnGeom( phMgr->GetDcColumnName(L"GEOM1"), scinfo, true, true, false, phMgr->GetDcColumnName(L"GEOM1")  ); 
+            view->CreateColumnGeom( phMgr->GetDcColumnName(L"GEOMB"), scinfo, true, true, false, phMgr->GetDcColumnName(L"GEOM2")  ); 
+            view->CreateColumnGeom( phMgr->GetDcColumnName(L"GEOM3"), scinfo, true, true, false, phMgr->GetDcColumnName(L"GEOM3")  ); 
+            view->Commit();
+        }
+
+        FdoSmPhGrdOwnerP grdOwner = owner->SmartCast<FdoSmPhGrdOwner>();
+        FdoStringP sqlStmt = FdoStringP::Format( 
+            L"create view %ls ( %ls, %ls, %ls ) as select %ls, %ls, %ls from %ls where %ls = 1", 
+            (FdoString*)(phMgr->GetDcDbObjectName(L"VIEWA_BASE_GEOM")),
+            (FdoString*)(phMgr->GetDcColumnName(L"ID")),
+            (FdoString*)(phMgr->GetDcColumnName(L"GEOM1")),
+            (FdoString*)(phMgr->GetDcColumnName(L"GEOM2")),
+            (FdoString*)(phMgr->GetDcColumnName(L"ID")),
+            (FdoString*)(phMgr->GetDcColumnName(L"GEOM1")),
+            (FdoString*)(phMgr->GetDcColumnName(L"GEOM2")),
+            (FdoString*)(phMgr->GetDcDbObjectName(L"BASE_GEOM")),
+            (FdoString*)(phMgr->GetDcColumnName(L"ID"))
+        );
+        grdOwner->ActivateAndExecute( (FdoString*) sqlStmt );
+        sqlStmt = FdoStringP::Format( 
+            L"create view %ls ( %ls, %ls, %ls ) as select %ls, %ls, %ls from %ls where %ls = 2", 
+            (FdoString*)(phMgr->GetDcDbObjectName(L"VIEWB_BASE_GEOM")),
+            (FdoString*)(phMgr->GetDcColumnName(L"ID")),
+            (FdoString*)(phMgr->GetDcColumnName(L"GEOM1")),
+            (FdoString*)(phMgr->GetDcColumnName(L"GEOM2")),
+            (FdoString*)(phMgr->GetDcColumnName(L"ID")),
+            (FdoString*)(phMgr->GetDcColumnName(L"GEOM1")),
+            (FdoString*)(phMgr->GetDcColumnName(L"GEOM2")),
+            (FdoString*)(phMgr->GetDcDbObjectName(L"BASE_GEOM")),
+            (FdoString*)(phMgr->GetDcColumnName(L"ID"))
+        );
+        grdOwner->ActivateAndExecute( (FdoString*) sqlStmt );
+        sqlStmt = FdoStringP::Format( 
+            L"create view %ls ( %ls, %ls, %ls ) as select %ls, %ls, %ls from %ls where %ls = 3", 
+            (FdoString*)(phMgr->GetDcDbObjectName(L"VIEWC_BASE_GEOM")),
+            (FdoString*)(phMgr->GetDcColumnName(L"ID")),
+            (FdoString*)(phMgr->GetDcColumnName(L"GEOM1")),
+            (FdoString*)(phMgr->GetDcColumnName(L"GEOM2")),
+            (FdoString*)(phMgr->GetDcColumnName(L"ID")),
+            (FdoString*)(phMgr->GetDcColumnName(L"GEOM1")),
+            (FdoString*)(phMgr->GetDcColumnName(L"GEOM2")),
+            (FdoString*)(phMgr->GetDcDbObjectName(L"BASE_GEOM")),
+            (FdoString*)(phMgr->GetDcColumnName(L"ID"))
+        );
+        grdOwner->ActivateAndExecute( (FdoString*) sqlStmt );
+        sqlStmt = FdoStringP::Format( 
+            L"create view %ls ( %ls, %ls, %ls ) as select %ls.%ls, %ls.%ls, %ls.%ls from %ls, %ls where %ls.%ls = %ls.%ls", 
+            (FdoString*)(phMgr->GetDcDbObjectName(L"VIEWM_INDEX_WINS3")),
+            (FdoString*)(phMgr->GetDcColumnName(L"ID")),
+            (FdoString*)(phMgr->GetDcColumnName(L"GEOM1")),
+            (FdoString*)(phMgr->GetDcColumnName(L"GEOMA")),
+            (FdoString*)(phMgr->GetDcDbObjectName(L"INDEX_WINS3")),
+            (FdoString*)(phMgr->GetDcColumnName(L"ID")),
+            (FdoString*)(phMgr->GetDcDbObjectName(L"INDEX_WINS3")),
+            (FdoString*)(phMgr->GetDcColumnName(L"GEOM1")),
+            (FdoString*)(phMgr->GetDcDbObjectName(L"INDEX_WINS4")),
+            (FdoString*)(phMgr->GetDcColumnName(L"GEOM1")),
+            (FdoString*)(phMgr->GetDcDbObjectName(L"INDEX_WINS3")),
+            (FdoString*)(phMgr->GetDcDbObjectName(L"INDEX_WINS4")),
+            (FdoString*)(phMgr->GetDcDbObjectName(L"INDEX_WINS3")),
+            (FdoString*)(phMgr->GetDcColumnName(L"ID")),
+            (FdoString*)(phMgr->GetDcDbObjectName(L"INDEX_WINS4")),
+            (FdoString*)(phMgr->GetDcColumnName(L"ID"))
+        );
+        grdOwner->ActivateAndExecute( (FdoString*) sqlStmt );
 
         owner->Commit();
 
@@ -575,34 +649,187 @@ void SchemaMgrTests::testGenGeom ()
         FdoPtr<FdoIDescribeSchema>  pDescSchemaCmd = (FdoIDescribeSchema*) fdoConn->CreateCommand(FdoCommandType_DescribeSchema);
         FdoFeatureSchemasP                     fsc = pDescSchemaCmd->Execute();
         FdoFeatureSchemaP schema = fsc->GetItem(0);
+        FdoStringP schemaName = schema->GetName();
         FdoClassesP classes = schema->GetClasses();
 
-        FdoClassDefinitionP classDef = classes->FindItem( phMgr->GetDcDbObjectName(L"INDEX_WINS1") );
-        VldGenGeom( classDef );
-        classDef = classes->FindItem( phMgr->GetDcDbObjectName(L"INDEX_WINS2") );
-        VldGenGeom( classDef );
-        classDef = classes->FindItem( phMgr->GetDcDbObjectName(L"INDEX_WINS3") );
-        VldGenGeom( classDef );
-        classDef = classes->FindItem( phMgr->GetDcDbObjectName(L"INDEX_WINS4") );
-        VldGenGeom( classDef );
-        classDef = classes->FindItem( phMgr->GetDcDbObjectName(L"INDEX_TIE1") );
-        VldGenGeom( classDef );
-        classDef = classes->FindItem( phMgr->GetDcDbObjectName(L"INDEX_TIE2") );
-        VldGenGeom( classDef );
-        classDef = classes->FindItem( phMgr->GetDcDbObjectName(L"INDEX_TIE3") );
-        VldGenGeom( classDef );
-        classDef = classes->FindItem( phMgr->GetDcDbObjectName(L"NNULL_WINS1") );
-        VldGenGeom( classDef );
-        classDef = classes->FindItem( phMgr->GetDcDbObjectName(L"NNULL_WINS2") );
-        VldGenGeom( classDef );
-        classDef = classes->FindItem( phMgr->GetDcDbObjectName(L"NNULL_TIE") );
-        VldGenGeom( classDef );
-        classDef = classes->FindItem( phMgr->GetDcDbObjectName(L"NO_WIN") );
-        VldGenGeom( classDef );
-        classDef = classes->FindItem( phMgr->GetDcDbObjectName(L"ONE_GEOM") );
-        VldGenGeom( classDef );
+        FdoClassDefinitionP classDef = classes->FindItem( table2class(phMgr,L"INDEX_WINS1") );
+        VldGenGeom( fdoConn, classDef );
+        classDef = classes->FindItem( table2class(phMgr,L"INDEX_WINS2") );
+        VldGenGeom( fdoConn, classDef );
+        classDef = classes->FindItem( table2class(phMgr,L"INDEX_WINS3") );
+        VldGenGeom( fdoConn, classDef );
+        classDef = classes->FindItem( table2class(phMgr,L"INDEX_WINS4") );
+        VldGenGeom( fdoConn, classDef );
+        classDef = classes->FindItem( table2class(phMgr,L"INDEX_TIE1") );
+        VldGenGeom( fdoConn, classDef );
+        classDef = classes->FindItem( table2class(phMgr,L"INDEX_TIE2") );
+        VldGenGeom( fdoConn, classDef );
+        classDef = classes->FindItem( table2class(phMgr,L"INDEX_TIE3") );
+        VldGenGeom( fdoConn, classDef );
+        classDef = classes->FindItem( table2class(phMgr,L"NNULL_WINS1") );
+        VldGenGeom( fdoConn, classDef );
+        classDef = classes->FindItem( table2class(phMgr,L"NNULL_WINS2") );
+        VldGenGeom( fdoConn, classDef );
+        classDef = classes->FindItem( table2class(phMgr,L"NNULL_TIE") );
+        VldGenGeom( fdoConn, classDef );
+        classDef = classes->FindItem( table2class(phMgr,L"NO_WIN") );
+        VldGenGeom( fdoConn, classDef );
+        classDef = classes->FindItem( table2class(phMgr,L"ONE_GEOM") );
+        VldGenGeom(fdoConn,  classDef );
 
-        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_COPY_SUFFIX );
+        classDef = classes->FindItem( table2class(phMgr,L"AVIEW_INDEX_WINS1") );
+        VldGenGeom( fdoConn, classDef );
+        classDef = classes->FindItem( table2class(phMgr,L"VIEW_INDEX_WINS2") );
+        VldGenGeom( fdoConn, classDef );
+
+        classDef = classes->FindItem( table2class(phMgr,L"AVIEW_INDEX_WINS3") );
+        VldGenGeom( fdoConn, classDef );
+        classDef = classes->FindItem( table2class(phMgr,L"BVIEW_INDEX_WINS3") );
+        VldGenGeom( fdoConn, classDef );
+        classDef = classes->FindItem( table2class(phMgr,L"VIEW_INDEX_WINS4") );
+        VldGenGeom( fdoConn, classDef );
+        classDef = classes->FindItem( table2class(phMgr,L"VIEWB_INDEX_WINS4") );
+        VldGenGeom( fdoConn, classDef );
+
+        classDef = classes->FindItem( table2class(phMgr,L"RVIEW_INDEX_WINS4") );
+        VldGenGeom( fdoConn, classDef );
+        classDef = classes->FindItem( table2class(phMgr,L"VIEWA_BASE_GEOM") );
+        VldGenGeom( fdoConn, classDef );
+        classDef = classes->FindItem( table2class(phMgr,L"VIEWB_BASE_GEOM") );
+        VldGenGeom( fdoConn, classDef );
+        classDef = classes->FindItem( table2class(phMgr,L"VIEWC_BASE_GEOM") );
+        VldGenGeom( fdoConn, classDef );
+        classDef = classes->FindItem( table2class(phMgr,L"VIEWM_INDEX_WINS3") );
+        VldGenGeom( fdoConn, classDef );
+
+        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_SUFFIX );
+
+        printf( "Reverse-engineering datastore one class at a time...\n" );
+
+        fdoConn = UnitTestUtil::CreateConnection(
+            false,
+            false,
+            DB_NAME_SUFFIX
+        );
+
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"VIEW_INDEX_WINS2"), fsc );
+        VldGenGeom( fdoConn, classDef );
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"INDEX_WINS1"), fsc );
+        VldGenGeom( fdoConn, classDef );
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"INDEX_WINS2"), fsc );
+        VldGenGeom( fdoConn, classDef );
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"AVIEW_INDEX_WINS1"), fsc );
+        VldGenGeom( fdoConn, classDef );
+
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"AVIEW_INDEX_WINS3"), fsc );
+        VldGenGeom( fdoConn, classDef );
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"BVIEW_INDEX_WINS3"), fsc );
+        VldGenGeom( fdoConn, classDef );
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"VIEW_INDEX_WINS4"), fsc );
+        VldGenGeom( fdoConn, classDef );
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"VIEWB_INDEX_WINS4"), fsc );
+        VldGenGeom( fdoConn, classDef );
+
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"RVIEW_INDEX_WINS4"), fsc );
+        VldGenGeom( fdoConn, classDef );
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"VIEWA_BASE_GEOM"), fsc );
+        VldGenGeom( fdoConn, classDef );
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"VIEWB_BASE_GEOM"), fsc );
+        VldGenGeom( fdoConn, classDef );
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"VIEWC_BASE_GEOM"), fsc );
+        VldGenGeom( fdoConn, classDef );
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"VIEWM_INDEX_WINS3"), fsc );
+        VldGenGeom( fdoConn, classDef );
+
+        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_SUFFIX );
+
+        fdoConn = UnitTestUtil::CreateConnection(
+            false,
+            false,
+            DB_NAME_SUFFIX
+        );
+
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"AVIEW_INDEX_WINS1"), fsc );
+        VldGenGeom( fdoConn, classDef );
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"INDEX_WINS1"), fsc );
+        VldGenGeom( fdoConn, classDef );
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"INDEX_WINS2"), fsc );
+        VldGenGeom( fdoConn, classDef );
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"VIEW_INDEX_WINS2"), fsc );
+        VldGenGeom( fdoConn, classDef );
+
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"VIEWB_INDEX_WINS4"), fsc );
+        VldGenGeom( fdoConn, classDef );
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"VIEW_INDEX_WINS4"), fsc );
+        VldGenGeom( fdoConn, classDef );
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"BVIEW_INDEX_WINS3"), fsc );
+        VldGenGeom( fdoConn, classDef );
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"AVIEW_INDEX_WINS3"), fsc );
+        VldGenGeom( fdoConn, classDef );
+
+        conn->SetSchema(DB_NAME_SUFFIX);
+        FdoSchemaManagerP mgr2 = conn->CreateSchemaManager();
+        UnitTestUtil::GrantDatastore( fdoConn, mgr2, L"select", fdatastore );
+        mgr2 = NULL;
+
+        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_SUFFIX );
+
+        CreateMultiGeomView( fowner, L"F_INDEX_WINS1", owner, L"INDEX_WINS1", 8 );
+        CreateMultiGeomView( fowner, L"F_INDEX_WINS2", owner, L"INDEX_WINS2", 3 );
+        CreateMultiGeomView( fowner, L"F_INDEX_WINS3", owner, L"INDEX_WINS3", 3 );
+        CreateMultiGeomView( fowner, L"F_INDEX_WINS4", owner, L"INDEX_WINS4", 3 );
+
+        fowner->Commit();
+
+        printf( "Reverse-engineering foreign datastore 1 ...\n" );
+
+        fdoConn = UnitTestUtil::CreateConnection(
+            false,
+            false,
+            DB_NAME_FOREIGN_SUFFIX
+        );
+
+        pDescSchemaCmd = (FdoIDescribeSchema*) fdoConn->CreateCommand(FdoCommandType_DescribeSchema);
+        fsc = pDescSchemaCmd->Execute();
+        schema = fsc->GetItem(0);
+        schemaName = schema->GetName();
+        classes = schema->GetClasses();
+
+        classDef = classes->FindItem( table2class(phMgr,L"F_INDEX_WINS1") );
+        VldGenGeom( fdoConn, classDef );
+        classDef = classes->FindItem( table2class(phMgr,L"F_INDEX_WINS2") );
+        VldGenGeom( fdoConn, classDef );
+        classDef = classes->FindItem( table2class(phMgr,L"F_INDEX_WINS3") );
+        VldGenGeom( fdoConn, classDef );
+        classDef = classes->FindItem( table2class(phMgr,L"F_INDEX_WINS4") );
+        VldGenGeom( fdoConn, classDef );
+
+        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_FOREIGN_SUFFIX );
+
+        printf( "Reverse-engineering foreign datastore 1 one class at a time...\n" );
+
+        fdoConn = UnitTestUtil::CreateConnection(
+            false,
+            false,
+            DB_NAME_FOREIGN_SUFFIX
+        );
+
+        pDescSchemaCmd = (FdoIDescribeSchema*) fdoConn->CreateCommand(FdoCommandType_DescribeSchema);
+        fsc = pDescSchemaCmd->Execute();
+        schema = fsc->GetItem(0);
+        schemaName = schema->GetName();
+        classes = schema->GetClasses();
+
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"F_INDEX_WINS1"), fsc );
+        VldGenGeom( fdoConn, classDef );
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"F_INDEX_WINS2"), fsc );
+        VldGenGeom( fdoConn, classDef );
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"F_INDEX_WINS3"), fsc );
+        VldGenGeom( fdoConn, classDef );
+        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"F_INDEX_WINS4"), fsc );
+        VldGenGeom( fdoConn, classDef );
+
+        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_FOREIGN_SUFFIX );
 
         phMgr = NULL;
         mgr = NULL;
@@ -2137,6 +2364,8 @@ void SchemaMgrTests::CreateMultiGeomTable( FdoSmPhOwnerP owner, FdoStringP table
     FdoInt32 idx;
     FdoInt32 currBit = 1;
 
+    FdoSmPhScInfoP scinfo = CreateSc( GetSrid(3), -1001, -1002, 1001, 1002, 0.0333, 0.0111 );
+
 	owner->FindDbObject( phMgr->GetDcDbObjectName(tableName) );
 
     FdoSmPhTableP table = owner->CreateTable( phMgr->GetDcDbObjectName(tableName) );
@@ -2148,7 +2377,7 @@ void SchemaMgrTests::CreateMultiGeomTable( FdoSmPhOwnerP owner, FdoStringP table
             FdoStringP::Format( L"GEOM%d", idx + 1 )
         );
 
-        table->CreateColumnGeom( colName, (FdoSmPhScInfo*) NULL, !(nnullMask & currBit) ); 
+        table->CreateColumnGeom( colName, scinfo, !(nnullMask & currBit) ); 
 
         currBit = currBit * 2;
     }
@@ -2173,7 +2402,27 @@ void SchemaMgrTests::CreateMultiGeomTable( FdoSmPhOwnerP owner, FdoStringP table
             currBit = currBit * 2;
         }
     }
+}
 
+void SchemaMgrTests::CreateMultiGeomView( FdoSmPhOwnerP owner, FdoStringP viewName, FdoSmPhOwnerP tableOwner, FdoStringP tableName, FdoInt32 colCount )
+{
+    FdoSmPhMgrP phMgr = owner->GetManager();
+    FdoInt32 idx;
+ 
+    FdoSmPhScInfoP scinfo = CreateSc( GetSrid(3), -1001, -1002, 1001, 1002, 0.0333, 0.0111 );
+
+    FdoSmPhViewP view = owner->CreateView( phMgr->GetDcDbObjectName(viewName), L"", tableOwner->GetName(), phMgr->GetDcDbObjectName(tableName));
+    FdoSmPhColumnP column = view->CreateColumnInt32( phMgr->GetDcColumnName(L"ID"), false, false, phMgr->GetDcColumnName(L"ID") );
+
+    for ( idx = 0; idx < colCount; idx++ ) {
+        FdoStringP colName = phMgr->GetDcColumnName(
+            FdoStringP::Format( L"GEOM%d", idx + 1 )
+        );
+
+        view->CreateColumnGeom( colName, scinfo, true, true, false, colName  ); 
+    }
+
+    view->Commit();
 }
 
 FdoSmPhColumnP SchemaMgrTests::CreateColumnCharNonUni( FdoSmPhDbObject* dbObject, FdoStringP colName, bool nullable, int length)

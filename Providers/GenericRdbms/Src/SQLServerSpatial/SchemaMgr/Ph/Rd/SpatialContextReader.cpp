@@ -117,6 +117,11 @@ const bool FdoSmPhRdSqsSpatialContextReader::IsActive()
 	return false;
 }
 
+const bool FdoSmPhRdSqsSpatialContextReader::IsDerived()
+{
+	return mIsDerived;
+}
+
 bool FdoSmPhRdSqsSpatialContextReader::ReadNext()
 {
 	bool	ret = FdoSmPhReader::ReadNext();
@@ -125,6 +130,7 @@ bool FdoSmPhRdSqsSpatialContextReader::ReadNext()
         // SqlServer can store 3D geometries but provider doesn't support yet.
         mHasElevation = false;
         mHasMeasure = false;
+        mIsDerived = false;
         mTolXY = 0.0;
         mTolZ = 0.0;
 
@@ -137,6 +143,11 @@ bool FdoSmPhRdSqsSpatialContextReader::ReadNext()
 		mGeomColumnName = FdoSmPhReader::GetString(L"", L"geomcolumnname");
 
         FdoStringP colType = FdoSmPhReader::GetString(L"", L"type");
+
+        FdoStringP objType = FdoSmPhReader::GetString(L"", L"object_type");
+
+        if ( objType == L"v " )
+            mIsDerived = true;
 
         // Check if SRID was encoded into spatial index name,
         FdoInt64 srid = static_cast<FdoSmPhSqsMgr*>(GetManager().p)->IndexName2Srid( FdoSmPhReader::GetString(L"", L"indexname") );
@@ -179,14 +190,14 @@ bool FdoSmPhRdSqsSpatialContextReader::ReadNext()
         }
 
         // Get bounds from column's spatial index
-        double xmin = FdoSmPhReader::GetDouble(L"", colType == L"geography" ? L"ymin" : L"xmin");
-        double ymin = FdoSmPhReader::GetDouble(L"", colType == L"geography" ? L"xmin" : L"ymin");
-        double xmax = FdoSmPhReader::GetDouble(L"", colType == L"geography" ? L"ymax" : L"xmax");
-        double ymax = FdoSmPhReader::GetDouble(L"", colType == L"geography" ? L"xmax" : L"ymax");
+        double xmin = FdoSmPhReader::GetDouble(L"", L"xmin");
+        double ymin = FdoSmPhReader::GetDouble(L"", L"ymin");
+        double xmax = FdoSmPhReader::GetDouble(L"", L"xmax");
+        double ymax = FdoSmPhReader::GetDouble(L"", L"ymax");
 
         if ( _isnan(xmin) || _isnan(ymin) || _isnan(xmax) || _isnan(ymax) ) {
             // Bounds not set so use defaults.
-            if ( mSrid > 0 ) {
+            if ( colType == L"geography" ) {
                 // lat/long coordinate system so default to whole world
                 xmin = -180;
                 ymin = -90;
@@ -260,15 +271,16 @@ FdoSmPhReaderP FdoSmPhRdSqsSpatialContextReader::MakeQueryReader( FdoSmPhOwnerP 
                     L" e.bounding_box_xmax as xmax, \n"
                     L" e.bounding_box_ymax as ymax, \n"
                     L" f.name as type, \n"
+                    L" lower(a.type) as object_type, \n"
                     L" g.name as indexname \n"
                     L" from %ls.sys.objects  a\n"
                     L"  INNER JOIN %ls.sys.columns b ON ( a.object_id = b.object_id ) \n"
                     L"  INNER JOIN %ls.sys.schemas c ON ( a.schema_id = c.schema_id ) \n"
-                    L"  INNER JOIN %ls.sys.index_columns d ON ( a.object_id = d.object_id and b.column_id = d.column_id ) \n"
-                    L"  INNER JOIN %ls.sys.spatial_index_tessellations e ON ( d.object_id = e.object_id and d.index_id = e.index_id ) \n"
+                    L"  LEFT OUTER JOIN %ls.sys.index_columns d ON ( a.object_id = d.object_id and b.column_id = d.column_id ) \n"
+                    L"  LEFT OUTER JOIN %ls.sys.spatial_index_tessellations e ON ( d.object_id = e.object_id and d.index_id = e.index_id ) \n"
                     L"  INNER JOIN %ls.sys.types  f ON ( b.user_type_id = f.user_type_id ) \n"
-                    L"  INNER JOIN %ls.sys.indexes g ON ( a.object_id = g.object_id and d.index_id = g.index_id ) \n"
-                    L" %ls %ls\n"
+                    L"  LEFT OUTER JOIN %ls.sys.indexes g ON ( a.object_id = g.object_id and d.index_id = g.index_id ) \n"
+                    L" where (f.name in ( 'geometry','geography' ) or e.object_id is not null) %ls %ls\n"
                     L" order by c.name collate latin1_general_bin asc, a.name collate latin1_general_bin asc, b.column_id asc",
                 (FdoString *)ownerName,
                 (FdoString *)ownerName,
@@ -277,7 +289,7 @@ FdoSmPhReaderP FdoSmPhRdSqsSpatialContextReader::MakeQueryReader( FdoSmPhOwnerP 
                 (FdoString *)ownerName,
                 (FdoString *)ownerName,
                 (FdoString *)ownerName,
-                (qualification == L"") ? L"" : L"where",
+                (qualification == L"") ? L"" : L" and ",
                 (FdoString *)qualification
               );
 
@@ -374,6 +386,12 @@ FdoSmPhRowsP FdoSmPhRdSqsSpatialContextReader::MakeRows( FdoSmPhMgrP mgr)
     pField = new FdoSmPhField(
         row, 
         L"type",
+        row->CreateColumnChar(L"type",true, 128)
+    );
+
+    pField = new FdoSmPhField(
+        row, 
+        L"object_type",
         row->CreateColumnChar(L"type",true, 128)
     );
 

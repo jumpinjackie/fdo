@@ -77,9 +77,11 @@ protected:
 
     virtual void AddProviderColumns( FdoSmPhTableP table );
 
-    void CreateMultiGeomTable( FdoSmPhOwnerP owner, FdoStringP tableName, FdoInt32 colCount, FdoInt32 indexMask, FdoInt32 nnullMask );
+    virtual void CreateMultiGeomTable( FdoSmPhOwnerP owner, FdoStringP tableName, FdoInt32 colCount, FdoInt32 indexMask, FdoInt32 nnullMask );
 
-    virtual void VldGenGeom( FdoClassDefinitionP classDef )
+    virtual void CreateMultiGeomView( FdoSmPhOwnerP owner, FdoStringP viewName, FdoSmPhOwnerP tableOwner, FdoStringP tableName, FdoInt32 colCount );
+
+    virtual void VldGenGeom( FdoIConnection* conn, FdoClassDefinitionP classDef )
     {
     }
 

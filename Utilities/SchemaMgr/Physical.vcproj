@@ -504,6 +504,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Src\Sm\Ph\SpatialContextGeom.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Src\Sm\Ph\SpatialContextGeomReader.cpp"
 				>
 			</File>

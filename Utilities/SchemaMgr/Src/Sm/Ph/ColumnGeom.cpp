@@ -42,10 +42,26 @@ FdoSmPhColumnGeom::~FdoSmPhColumnGeom(void)
 FdoSmPhScInfoP	FdoSmPhColumnGeom::GetSpatialContextInfo()
 {
     if ( !mScInfo ) {
-        // No Spatial context info set yet so set it from the associated spatial context.
-        // TODO: merge FdoSmPhScInfo and FdoSmPhSpatialContext since they provide
-        // similar information.
+        FdoSmPhSpatialContextP sc = GetSpatialContext();
 
+        if ( sc ) {
+            // Associated Spatial Context was found.
+            mScInfo = FdoSmPhScInfo::Create();
+            mScInfo->mSrid = sc->GetSrid();
+            mScInfo->mCoordSysName = sc->GetCoordinateSystem();
+            mScInfo->mExtent = sc->GetExtent();
+            mScInfo->mXYTolerance = sc->GetXYTolerance();
+            mScInfo->mZTolerance = sc->GetZTolerance();            
+        }
+    }
+
+    return mScInfo;
+}
+
+FdoSmPhSpatialContextP FdoSmPhColumnGeom::GetSpatialContext()
+{
+    if ( !mSpatialContext ) {
+        // No Spatial context info set yet so set it from the associated spatial context.
         FdoSmSchemaElement* dbObject = (FdoSmSchemaElement*)(GetParent());
         
         if ( dbObject ) {
@@ -57,24 +73,13 @@ FdoSmPhScInfoP	FdoSmPhColumnGeom::GetSpatialContextInfo()
                 // Get Spatial Context Geometry assocation, use it to get the spatial context
                 FdoSmPhSpatialContextGeomP scGeom = owner->FindSpatialContextGeom(dbObjectName, GetName());
 
-                if ( scGeom ) {
-                    FdoSmPhSpatialContextP sc = owner->FindSpatialContext( scGeom->GetScId() );
-
-                    if ( sc ) {
-                        // Associated Spatial Context was found.
-                        mScInfo = FdoSmPhScInfo::Create();
-                        mScInfo->mSrid = sc->GetSrid();
-                        mScInfo->mCoordSysName = sc->GetCoordinateSystem();
-                        mScInfo->mExtent = sc->GetExtent();
-                        mScInfo->mXYTolerance = sc->GetXYTolerance();
-                        mScInfo->mZTolerance = sc->GetZTolerance();            
-                    }
-                }
+                if ( scGeom )
+                    mSpatialContext = scGeom->GetSpatialContext();
             }
         }
     }
 
-    return mScInfo;
+    return mSpatialContext;
 }
 
 void FdoSmPhColumnGeom::SetPrimary( bool isPrimary )

@@ -134,7 +134,7 @@ void FdoSmLpGeometricPropertyDefinition::FixSpatialContextAssociation()
 		// Look up in the collection of SC geometries associations loaded along the Spatial contexts
     	FdoStringP tableName = GetContainingDbObjectName();
 	    FdoStringP columnName = GetColumnName();
-		FdoSmPhSpatialContextGeomP scgeom = scMgr->FindSpatialContextGeom( tableName, columnName );
+		FdoSmLpSpatialContextGeomP scgeom = scMgr->FindSpatialContextGeom( tableName, columnName );
 		if ( scgeom.p != NULL )
 		{
 			mAssociatedScId  = scgeom->GetScId();

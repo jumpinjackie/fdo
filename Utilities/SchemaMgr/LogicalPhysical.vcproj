@@ -694,6 +694,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Inc\Sm\Lp\SpatialContextGeom.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Inc\Sm\Lp\SpatialContextMgr.h"
 				>
 			</File>

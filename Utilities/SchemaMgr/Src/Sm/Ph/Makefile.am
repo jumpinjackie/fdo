@@ -77,6 +77,7 @@ libSmPhysical_la_SOURCES = \
   SOWriter.cpp \
   SpatialContext.cpp \
   SpatialContextCollection.cpp \
+  SpatialContextGeom.cpp \
   SpatialContextGeomReader.cpp \
   SpatialContextGeomWriter.cpp \
   SpatialContextGroupReader.cpp \

@@ -68,17 +68,24 @@ public:
     //          FdoDataType - property type
     //          FdoDataValue - property value. All objects whose given property has this value are deleted.
     static void DeleteObjects( FdoIConnection* connection, FdoStringP schemaName, FdoString* className, ... );
-    //      connection - object is inserted into the datastore for this connection
-    //      insertCmd - updated to the insert command that inserted the object. The same insertCmd can
-    //          be re-used by repeated passing it to InsertObject
-    //      schemaName - schema containing object's class
-    //      className - name of object's class
-    //      ... - 3 properties per property value to insert:
-    //          FdoString* - property name 
-    //          FdoDataType - property type
-    //          FdoDataValue - property value. Specific type must match property type
-    //      Last property value must be following by (FdoString*) NULL to indicate the end of the 
-    //      property list.
+
+    static bool GetSpatialContext( 
+        FdoIConnection* connection,
+        FdoStringP name, 
+        FdoStringP& description,
+        FdoStringP& coordSys,
+        FdoStringP& wkt,
+        FdoPtr<FdoByteArray>& extent,
+        FdoSpatialContextExtentType& extentType,
+        double& xyTol,
+        double& zTol
+    );
+
+    static void ByteArray2Extent( FdoByteArray* ba, double& minx, double& miny, double& maxx, double& maxy );
+
+    static void VldExtent( FdoStringP scName, FdoByteArray* ba, double minx, double miny, double maxx, double maxy );
+
+    static FdoClassDefinition* DescribeClass( FdoIConnection* fdoConn, FdoStringP schemaName, FdoStringP className, FdoFeatureSchemasP& parentHolder );
 
 #ifdef _WIN32
     // Quick and dirty function to use in Visual Studio to report memory leaks. This can be done by

@@ -108,51 +108,51 @@ void SqlServerFdoSpatialContextTest::testAdjustExtents( )
         while ( reader->ReadNext() ) {
             FdoStringP scName = reader->GetName();
             if ( scName == L"SC_XLT" ) {
-                VldAdjustedExtent( scName, reader->GetExtent(), 0, 0, 10, 10 );
+                TestCommonMiscUtil::VldExtent( scName, reader->GetExtent(), 0, 0, 10, 10 );
                 count++;
             }
             else if ( scName == L"SC_YLT" ) {
-                VldAdjustedExtent( scName, reader->GetExtent(), 0, 0, 100, 100 );
+                TestCommonMiscUtil::VldExtent( scName, reader->GetExtent(), 0, 0, 100, 100 );
                 count++;
             }
             else if ( scName == L"SC_XEQ_TOL" ) {
-                VldAdjustedExtent( scName, reader->GetExtent(), 5, 0, 5.001, 10  );
+                TestCommonMiscUtil::VldExtent( scName, reader->GetExtent(), 5, 0, 5.001, 10  );
                 count++;
             }
             else if ( scName == L"SC_XEQ_1" ) {
-                VldAdjustedExtent( scName, reader->GetExtent(), 5, 0, 6, 10 );
+                TestCommonMiscUtil::VldExtent( scName, reader->GetExtent(), 5, 0, 6, 10 );
                 count++;
             }
             else if ( scName == L"SC_XEQ_HT_POS" ) {
-                VldAdjustedExtent( scName, reader->GetExtent(), 5, 1, 5.25, 1.25 );
+                TestCommonMiscUtil::VldExtent( scName, reader->GetExtent(), 5, 1, 5.25, 1.25 );
                 count++;
             }
             else if ( scName == L"SC_XEQ_HT_NEG" ) {
-                VldAdjustedExtent( scName, reader->GetExtent(), 5, 0.3, 5.7, 1 );
+                TestCommonMiscUtil::VldExtent( scName, reader->GetExtent(), 5, 0.3, 5.7, 1 );
                 count++;
             }
             else if ( scName == L"SC_YEQ_TOL" ) {
-                VldAdjustedExtent( scName, reader->GetExtent(), 0, 3, 5, 3.001 );
+                TestCommonMiscUtil::VldExtent( scName, reader->GetExtent(), 0, 3, 5, 3.001 );
                 count++;
             }
             else if ( scName == L"SC_YEQ_1" ) {
-                VldAdjustedExtent( scName, reader->GetExtent(), 0, 25.3, 100, 26.3 );
+                TestCommonMiscUtil::VldExtent( scName, reader->GetExtent(), 0, 25.3, 100, 26.3 );
                 count++;
             }
             else if ( scName == L"SC_YEQ_WD_POS" ) {
-                VldAdjustedExtent( scName, reader->GetExtent(), 5, 1.25, 5.1, 1.35 );
+                TestCommonMiscUtil::VldExtent( scName, reader->GetExtent(), 5, 1.25, 5.1, 1.35 );
                 count++;
             }
             else if ( scName == L"SC_YEQ_WD_NEG" ) {
-                VldAdjustedExtent( scName, reader->GetExtent(), 4.8, 1.25, 5, 1.45 );
+                TestCommonMiscUtil::VldExtent( scName, reader->GetExtent(), 4.8, 1.25, 5, 1.45 );
                 count++;
             }
             else if ( scName == L"SC_XYEQ_TOL" ) {
-                VldAdjustedExtent( scName, reader->GetExtent(), 0, 0, 2.1, 2.1 );
+                TestCommonMiscUtil::VldExtent( scName, reader->GetExtent(), 0, 0, 2.1, 2.1 );
                 count++;
             }
             else if ( scName == L"SC_XYEQ_1" ) {
-                VldAdjustedExtent( scName, reader->GetExtent(), 0, 5, 1, 6 );
+                TestCommonMiscUtil::VldExtent( scName, reader->GetExtent(), 0, 5, 1, 6 );
                 count++;
             }
         }
@@ -173,27 +173,6 @@ void SqlServerFdoSpatialContextTest::testAdjustExtents( )
 
         throw;
     }
-}
-
-void SqlServerFdoSpatialContextTest::VldAdjustedExtent( FdoStringP scName, FdoByteArray* ba, double minx, double miny, double maxx, double maxy )
-{
-    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-    FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(ba);
-    FdoPtr<FdoIEnvelope> env = geom->GetEnvelope();
-
-    char message[1000];
-
-    sprintf( message, "Wrong minx for %ls", (FdoString*) scName );
-    CPPUNIT_ASSERT_MESSAGE( message, minx == env->GetMinX() );
-
-    sprintf( message, "Wrong miny for %ls", (FdoString*) scName );
-    CPPUNIT_ASSERT_MESSAGE( message, miny == env->GetMinY() );
-
-    sprintf( message, "Wrong maxx for %ls", (FdoString*) scName );
-    CPPUNIT_ASSERT_MESSAGE( message, maxx == env->GetMaxX() );
-
-    sprintf( message, "Wrong maxy for %ls", (FdoString*) scName );
-    CPPUNIT_ASSERT_MESSAGE( message, maxy == env->GetMaxY() );
 }
 
 void SqlServerFdoSpatialContextTest::testNumericCoordinateSystemNames( )
