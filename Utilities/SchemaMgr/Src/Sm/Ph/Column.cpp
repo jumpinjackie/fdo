@@ -92,7 +92,7 @@ FdoSmPhColumnP FdoSmPhColumn::GetRootColumn()
         // If Root Column name not set, default to this column name. Column->BaseColumn
         // relationships not retrieved from data dictionary (not available from most RDBMS's)
         // so match by name is the best we can do.
-        FdoStringP rootName = (mRootName.GetLength() > 0) ? mRootName : GetName();
+        FdoStringP rootName = (mRootName.GetLength() > 0) ? (FdoString *) mRootName : GetName();
 
         rootColumn = rootColumns->FindItem( rootName );
 
