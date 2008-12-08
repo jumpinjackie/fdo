@@ -103,6 +103,17 @@ protected:
      */
     CHAR m_mbUserName[SE_MAX_DATABASE_LEN];
 
+
+	/*
+	 * object handle to create uuids used by uuid types
+	 */ 
+	SE_UUIDGENERATOR m_uuidGenerator;
+
+	/*
+	 * Set if the generator object is initialized
+	 */
+	bool m_uuidGeneratorCreated;
+
 public:
 
     /*
@@ -333,6 +344,10 @@ public:
 
     // Returns the proper system column name to use depending on which RDBMS is in use:
     FdoStringP AdjustSystemColumnName(FdoString *name);
+
+
+	void GetUuidGenerator(SE_UUIDGENERATOR &uuidGenerator);
+
 };
 
 #endif // ARCSDECONNECTION_H

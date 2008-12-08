@@ -1461,6 +1461,9 @@ FdoDataType SDEType2FdoType (LONG sdeType)
         case SE_SHAPE_TYPE:           /* Feature structure */
             ret = (FdoDataType)-1;  // NOTE: we use -1 internally to denote a geometry property
             break;
+        case SE_UUID_TYPE:
+            ret = FdoDataType_String;
+			break;
         default:
             ret = (FdoDataType) FDODATATYPE_UNHANDLEDSDETYPE;
             break;

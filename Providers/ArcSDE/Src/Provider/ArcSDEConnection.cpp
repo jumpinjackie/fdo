@@ -65,7 +65,8 @@ ArcSDEConnection::ArcSDEConnection (void) :
 	mGeomBuffer_pointsZ_cursize(0),
     mGeomBuffer_pointsM(NULL),
 	mGeomBuffer_pointsM_cursize(0),
-    mGeomFactory(NULL)
+    mGeomFactory(NULL),
+	m_uuidGeneratorCreated(false)
 {
     mGeomFactory = FdoFgfGeometryFactory::GetInstance();
 }
@@ -102,6 +103,9 @@ ArcSDEConnection::~ArcSDEConnection (void)
         free(mGeomBuffer_pointsZ);
     if (mGeomBuffer_pointsM != NULL)
         free(mGeomBuffer_pointsM);
+	if (m_uuidGeneratorCreated)
+		SE_uuidgenerator_free(m_uuidGenerator);
+
 }
 
 // <summary>Dispose this object.</summary>
@@ -1587,4 +1591,16 @@ FdoStringP ArcSDEConnection::AdjustSystemColumnName(FdoString *name)
         return nameCorrected.Lower();
     else
         return nameCorrected.Upper();
+}
+
+
+void ArcSDEConnection::GetUuidGenerator(SE_UUIDGENERATOR &uuidGenerator)
+{
+	if (m_uuidGeneratorCreated == false)
+	{
+		LONG result = SE_uuidgenerator_create(&m_uuidGenerator);
+		handle_sde_err<FdoException> (GetConnection(), result, __FILE__, __LINE__, ARCSDE_UUIDGENERATOR_CREATE_FAILURE, "Failed to create uuid generator");
+		m_uuidGeneratorCreated = true;
+	}
+	uuidGenerator = m_uuidGenerator;
 }

@@ -933,6 +933,11 @@ SymbolicName=ARCSDE_SELECT_DISTINCT_NOT_SUPPORTED_AS_OPTION
 Language=English
 ArcSDE does not support 'distinct' function option.
 .
+MessageId=6039
+SymbolicName=ARCSDE_INSERT_CANNOT_GET_UUID
+Language=English
+Failed to get uuid.
+.
 
 ;//************************************************************************************
 ;//************************************************************************************
@@ -1074,6 +1079,11 @@ MessageId=7037
 SymbolicName=ARCSDE_DATABASE_NAME_TOO_LONG
 Language=English
 Database name '%1$ls' is too long for ArcSDE.
+.
+MessageId=7038
+SymbolicName=ARCSDE_UUIDGENERATOR_CREATE_FAILURE
+Language=English
+Failed to create uuid generator
 .
 
 

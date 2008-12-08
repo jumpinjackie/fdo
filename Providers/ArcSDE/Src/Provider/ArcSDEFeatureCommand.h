@@ -66,7 +66,8 @@ protected:
 
     // Set one or more values on a given ArcSDE stream:
     void assignValue (ArcSDEConnection* connection, SE_STREAM stream, CHAR* table, int index, FdoPropertyDefinition* definition, FdoPropertyValue* value, bool isUnicode);
-    void assignValues (ArcSDEConnection *connection, SE_STREAM stream, CHAR* table, FdoPropertyDefinitionCollection *properties, FdoPropertyValueCollection *values, bool bAssignNulls = false);
+    void assignValues (ArcSDEConnection *connection, SE_STREAM stream, CHAR* table, FdoPropertyDefinitionCollection *properties, FdoPropertyValueCollection *values, bool bAssignNulls = false, int uuidColumns=0,
+					   CHAR **uuid_list=NULL, FdoString *className=NULL);
 
     // Retrieve one value from an ArcSDE stream:
     FdoExpression* GetValueFromStream(SE_STREAM stream, int streamColumnIndex, FdoPropertyDefinition *fdoProperty);
@@ -112,8 +113,6 @@ protected:
                 {
                     if (bIsSet)
                         throw FdoCommandException::Create(NlsMsgGet1(ARCSDE_CANNOT_SET_READONLY_PROPERTY, "Property '%1$ls' cannot be set because it is read-only.", propertyDef->GetName()));
-                    if (!bHasDefaultValue && !bIsIdentityProperty)
-                        throw FdoCommandException::Create(NlsMsgGet1(ARCSDE_MISSING_DEFAULT_VALUE, "Read-only property '%1$ls' requires a default value.", propertyDef->GetName()));
                     if (bHasDefaultValue && bIsIdentityProperty)
                         throw FdoCommandException::Create(NlsMsgGet1(ARCSDE_CANNOT_DEFAULT_READONLY_PROPERTY, "Read-only identity property '%1$ls' cannot have a default value.", propertyDef->GetName()));
                 }
@@ -579,9 +578,11 @@ void ArcSDEFeatureCommand<FDO_COMMAND>::assignValue (ArcSDEConnection* connectio
 
 
 template <class FDO_COMMAND> 
-void ArcSDEFeatureCommand<FDO_COMMAND>::assignValues (ArcSDEConnection *connection, SE_STREAM stream, CHAR* table, FdoPropertyDefinitionCollection *properties, FdoPropertyValueCollection *values, bool bAssignNulls)
+void ArcSDEFeatureCommand<FDO_COMMAND>::assignValues (ArcSDEConnection *connection, SE_STREAM stream, CHAR* table, FdoPropertyDefinitionCollection *properties, FdoPropertyValueCollection *values, bool bAssignNulls,
+													  int uuidColumns, CHAR **uuid_list, FdoString *className)
 {
     // ToDo: use input bind variables
+	int j = 0;
 #ifdef SDE_UNICODE
     LONG lresult = 0L;
     SHORT lcolumn_count = 0;
@@ -595,7 +596,16 @@ void ArcSDEFeatureCommand<FDO_COMMAND>::assignValues (ArcSDEConnection *connecti
     if (lresult == SE_SUCCESS && lcolumns != NULL)
         SE_table_free_descriptions (lcolumns);
 #endif
-    int j = 0;
+
+	// Set the UUID columns
+	for (int i=0; i<uuidColumns; i++)
+	{
+		LONG ret = SE_stream_set_uuid(stream, j+1, uuid_list[j]);
+	    handle_sde_err<FdoCommandException>(stream, ret, __FILE__, __LINE__, ARCSDE_COULDNT_SET_VALUE,
+			"Failed to set value for column %1$d (property %2$ls) on table %3$ls (class %4$ls).", j+1, sde_pcus2wc(uuid_list[j]), sde_pcus2wc(table), className ? className : L"");
+		j++;
+	}
+
     for (int i = 0; i < values->GetCount (); i++)
     {
         FdoPtr<FdoPropertyValue> value = values->GetItem (i);
@@ -678,6 +688,16 @@ FdoExpression* ArcSDEFeatureCommand<FDO_COMMAND>::GetValueFromStream(SE_STREAM s
             struct tm idDateTime;
             result = SE_stream_get_date(stream, streamColumnIndex, &idDateTime);
             expr = FdoDateTimeValue::Create( SdeDateTime2FdoDateTime(idDateTime) );
+        break;
+
+        case SE_UUID_TYPE:
+        {
+            CHAR  *idString = (CHAR*)alloca((fdoDataProperty->GetLength()+1) * sizeof(CHAR));
+            result = SE_stream_get_uuid(stream, streamColumnIndex, idString);
+            wchar_t *wIdString = NULL;
+            sde_multibyte_to_wide(wIdString, idString);
+            expr = FdoStringValue::Create(wIdString);
+        }
         break;
 
         default:
