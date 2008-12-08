@@ -21,7 +21,7 @@ TYPEACTION=buildinstall
 TYPEBUILD=release
 TYPECONFIGURE=configure
 BUILDDOCS=no
-PREFIXVAL=/usr/local/fdo-3.4.0
+PREFIXVAL=/usr/local/fdo-3.3.0
 
 ### study parameters ###
 while test $# -gt 0
@@ -162,6 +162,8 @@ if test "$BUILDDOCS" == yes ; then
    echo Creating SDF provider html documentation
    rm -rf Docs/HTML/SDF
    mkdir -p Docs/HTML/SDF
+   cp ../../DocResources/geospatial.js Docs/HTML/SDF
+   cp ../../DocResources/osgeo.css Docs/HTML/SDF
 
    pushd Docs/doc_src >& /dev/null
    doxygen Doxyfile_SDF >& /dev/null

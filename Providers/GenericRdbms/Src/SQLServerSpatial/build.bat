@@ -147,9 +147,13 @@ pushd ..\..\
 echo Creating SQLServer Spatial provider html and chm documentation
 if exist "Docs\HTML\SQLServerSpatial" rmdir /S /Q "Docs\HTML\SQLServerSpatial"
 if not exist "Docs\HTML\SQLServerSpatial" mkdir "Docs\HTML\SQLServerSpatial"
+copy ..\..\DocResources\geospatial.js Docs\HTML\SQLServerSpatial
+copy ..\..\DocResources\osgeo.css Docs\HTML\SQLServerSpatial
 if exist Docs\SQLServerSpatial_Provider_API.chm attrib -r Docs\SQLServerSpatial_Provider_API.chm
 if exist "Docs\HTML\SQLServerSpatial_managed" rmdir /S /Q "Docs\HTML\SQLServerSpatial_managed"
 if not exist "Docs\HTML\SQLServerSpatial_managed" mkdir "Docs\HTML\SQLServerSpatial_managed"
+copy ..\..\DocResources\geospatial.js Docs\HTML\SQLServerSpatial_managed
+copy ..\..\DocResources\osgeo.css Docs\HTML\SQLServerSpatial_managed
 if exist Docs\SQLServerSpatial_Provider_API_managed.chm attrib -r Docs\SQLServerSpatial_Provider_API_managed.chm
 pushd Docs\doc_src
 doxygen Doxyfile_SQLServerSpatial

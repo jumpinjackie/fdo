@@ -149,9 +149,13 @@ if "%DOCENABLESHP%"=="skip" goto install_docs
 echo Creating SHP provider html and chm documentation
 if exist "Docs\HTML\SHP" rmdir /S /Q "Docs\HTML\SHP"
 if not exist "Docs\HTML\SHP" mkdir "Docs\HTML\SHP"
+copy ..\..\DocResources\geospatial.js Docs\HTML\SHP
+copy ..\..\DocResources\osgeo.css Docs\HTML\SHP
 if exist Docs\SHP_Provider_API.chm attrib -r Docs\SHP_Provider_API.chm
 if exist "Docs\HTML\SHP_managed" rmdir /S /Q "Docs\HTML\SHP_managed"
 if not exist "Docs\HTML\SHP_managed" mkdir "Docs\HTML\SHP_managed"
+copy ..\..\DocResources\geospatial.js Docs\HTML\SHP_managed
+copy ..\..\DocResources\osgeo.css Docs\HTML\SHP_managed
 if exist Docs\SHP_Provider_API_managed.chm attrib -r Docs\SHP_Provider_API_managed.chm
 pushd Docs\doc_src
 doxygen Doxyfile_SHP

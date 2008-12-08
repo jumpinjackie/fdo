@@ -21,7 +21,7 @@ TYPEACTION=buildinstall
 TYPEBUILD=release
 TYPECONFIGURE=configure
 BUILDDOCS=no
-PREFIXVAL=/usr/local/fdo-3.4.0
+PREFIXVAL=/usr/local/fdo-3.3.0
 
 ### study parameters ###
 while test $# -gt 0
@@ -162,8 +162,13 @@ if test "$BUILDDOCS" == yes ; then
    echo Creating WMS provider html documentation
    rm -rf Docs/HTML/WMS
    mkdir -p Docs/HTML/WMS
+   cp ../../DocResources/geospatial.js Docs/HTML/WMS
+   cp ../../DocResources/osgeo.css Docs/HTML/WMS
+
    rm -rf Docs/HTML/WMS_managed
    mkdir -p Docs/HTML/WMS_managed
+   cp ../../DocResources/geospatial.js Docs/HTML/WMS_managed
+   cp ../../DocResources/osgeo.css Docs/HTML/WMS_managed
 
    pushd Docs/doc_src >& /dev/null
    doxygen Doxyfile_WMS >& /dev/null

@@ -132,6 +132,8 @@ if "%DOCENABLEWFS%"=="skip" goto install_docs
 echo Creating WFS provider html and chm documentation
 if exist "Docs\HTML\WFS" rmdir /S /Q "Docs\HTML\WFS"
 if not exist "Docs\HTML\WFS" mkdir "Docs\HTML\WFS"
+copy ..\..\DocResources\geospatial.js Docs\HTML\WFS
+copy ..\..\DocResources\osgeo.css Docs\HTML\WFS
 if exist Docs\WFS_Provider_API.chm attrib -r Docs\WFS_Provider_API.chm
 pushd Docs\doc_src
 doxygen Doxyfile_WFS

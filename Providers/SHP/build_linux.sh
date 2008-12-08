@@ -22,7 +22,7 @@ TYPEACTION=buildinstall
 TYPEBUILD=release
 TYPECONFIGURE=configure
 BUILDDOCS=no
-PREFIXVAL=/usr/local/fdo-3.4.0
+PREFIXVAL=/usr/local/fdo-3.3.0
 
 ### study parameters ###
 while test $# -gt 0
@@ -163,8 +163,13 @@ if test "$BUILDDOCS" == yes ; then
    echo Creating SHP provider html documentation
    rm -rf Docs/HTML/SHP
    mkdir -p Docs/HTML/SHP
+   cp ../../DocResources/geospatial.js Docs/HTML/SHP
+   cp ../../DocResources/osgeo.css Docs/HTML/SHP
+
    rm -rf Docs/HTML/SHP_managed
    mkdir -p Docs/HTML/SHP_managed
+   cp ../../DocResources/geospatial.js Docs/HTML/SHP_managed
+   cp ../../DocResources/osgeo.css Docs/HTML/SHP_managed
 
    pushd Docs/doc_src >& /dev/null
    doxygen Doxyfile_SHP >& /dev/null

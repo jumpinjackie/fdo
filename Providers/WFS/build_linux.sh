@@ -21,7 +21,7 @@ TYPEACTION=buildinstall
 TYPEBUILD=release
 TYPECONFIGURE=configure
 BUILDDOCS=no
-PREFIXVAL=/usr/local/fdo-3.4.0
+PREFIXVAL=/usr/local/fdo-3.3.0
 
 ### study parameters ###
 while test $# -gt 0
@@ -162,6 +162,8 @@ if test "$BUILDDOCS" == yes ; then
    echo Creating WFS provider html documentation
    rm -rf Docs/HTML/WFS
    mkdir -p Docs/HTML/WFS
+   cp ../../DocResources/geospatial.js Docs/HTML/WFS
+   cp ../../DocResources/osgeo.css Docs/HTML/WFS
 
    pushd Docs/doc_src >& /dev/null
    doxygen Doxyfile_WFS >& /dev/null

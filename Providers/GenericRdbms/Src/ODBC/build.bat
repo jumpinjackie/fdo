@@ -149,9 +149,13 @@ pushd ..\..\
 echo Creating ODBC provider html and chm documentation
 if exist "Docs\HTML\ODBC" rmdir /S /Q "Docs\HTML\ODBC"
 if not exist "Docs\HTML\ODBC" mkdir "Docs\HTML\ODBC"
+copy ..\..\DocResources\geospatial.js Docs\HTML\ODBC
+copy ..\..\DocResources\osgeo.css Docs\HTML\ODBC
 if exist Docs\ODBC_Provider_API.chm attrib -r Docs\ODBC_Provider_API.chm
 if exist "Docs\HTML\ODBC_managed" rmdir /S /Q "Docs\HTML\ODBC_managed"
 if not exist "Docs\HTML\ODBC_managed" mkdir "Docs\HTML\ODBC_managed"
+copy ..\..\DocResources\geospatial.js Docs\HTML\ODBC_managed
+copy ..\..\DocResources\osgeo.css Docs\HTML\ODBC_managed
 if exist Docs\ODBC_Provider_API_managed.chm attrib -r Docs\ODBC_Provider_API_managed.chm
 pushd Docs\doc_src
 doxygen Doxyfile_ODBC
