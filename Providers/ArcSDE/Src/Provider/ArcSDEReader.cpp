@@ -612,6 +612,12 @@ bool ArcSDEReader::ReadNext ()
                     columnDef->mBindVariableInitialized = true;
                     result = SE_stream_bind_output_column(mStream, columnDef->mColumnNumber, (void*)(columnDef->mBindVariable._string), &columnDef->mBindIsNull);
                 }
+                else if (columnDef->mColumnType == SE_UUID_TYPE)
+                {
+                    columnDef->mBindVariable._string = (new CHAR[columnDef->mDataLength + 1]);
+                    columnDef->mBindVariableInitialized = true;
+                    result = SE_stream_bind_output_column(mStream, columnDef->mColumnNumber, (void*)(columnDef->mBindVariable._string), &columnDef->mBindIsNull);
+                }
                 else if (columnDef->mColumnType == SE_SHAPE_TYPE)
                 {
                     result = SE_shape_create (NULL, &columnDef->mBindVariable._shape);
@@ -696,11 +702,11 @@ ArcSDEReader::ColumnDefinition::~ColumnDefinition ()
     if (mBindVariableInitialized)
     {
 #ifdef SDE_UNICODE
-        if (mColumnType == SE_NSTRING_TYPE)
+        if (mColumnType == SE_NSTRING_TYPE || mColumnType == SE_UUID_TYPE)
             delete[] mBindVariable._string;
 		else
 #endif
-        if (mColumnType == SE_STRING_TYPE)
+        if (mColumnType == SE_STRING_TYPE || mColumnType == SE_UUID_TYPE)
             delete[] mBindVariable._string;
         else if (mColumnType == SE_SHAPE_TYPE)
             SE_shape_free (mBindVariable._shape);

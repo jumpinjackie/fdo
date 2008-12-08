@@ -50,7 +50,8 @@ FdoBatchParameterValueCollection* ArcSDEInsertCommand::GetBatchParameterValues (
 }
 
 // insert one row of data into the table corresponding to the given class:
-void ArcSDEInsertCommand::insertOneRow (SE_STREAM &stream, CHAR* table_name, FdoClassDefinition* classDef, FdoPropertyValueCollection* values, FdoPropertyValueCollection *idCollection)
+void ArcSDEInsertCommand::insertOneRow (SE_STREAM &stream, CHAR* table_name, FdoClassDefinition* classDef, FdoPropertyValueCollection* values, FdoPropertyValueCollection *idCollection,
+											int uuidColumns, CHAR **uuid_list)
 {
     FdoPtr<FdoPropertyDefinitionCollection> properties;
     int count = 0;
@@ -63,7 +64,7 @@ void ArcSDEInsertCommand::insertOneRow (SE_STREAM &stream, CHAR* table_name, Fdo
 
     // Set all given property values on the stream;
     // NOTE: some properties may be missing (e.g. for read-only or nullable properties):
-    assignValues (mConnection, stream, table_name, properties, values, true);
+    assignValues (mConnection, stream, table_name, properties, values, true, uuidColumns, uuid_list, classDef->GetName());
 
     // Perform the actual insert:
     result = SE_stream_execute (stream);
@@ -117,6 +118,8 @@ FdoIFeatureReader* ArcSDEInsertCommand::Execute ()
     int count = 0;
     SE_STREAM stream = NULL;
     FdoException *exception = NULL;
+	CHAR **uuid_list = NULL;
+	int uuidColumns = 0;
 
     try
     {
@@ -161,8 +164,57 @@ FdoIFeatureReader* ArcSDEInsertCommand::Execute ()
 
         // get the table_name and column names
         connection->ClassToTable (table, classDef);
+
+		// SE_UUID_TYPE types are mapped as FdoDataType_String
+
+		// Get the number of uuid columns
+		// There should usually be at most 1 uuid column but handle the case if there is more than 1 uuid column
+
+		SHORT lcolumn_count = 0;
+		SE_COLUMN_DEF *lcolumns = NULL;
+		int lresult = SE_table_describe (connection->GetConnection (), table, &lcolumn_count, &lcolumns);
+		if (lresult == SE_SUCCESS)
+		{
+			for (int i=0; i<lcolumn_count; i++)
+			{
+				if (lcolumns[i].sde_type == SE_UUID_TYPE)
+					uuidColumns++;
+			}
+		}
+
         count = mValues->GetCount ();
-        CHAR** columns = new CHAR*[count];
+        CHAR** columns = new CHAR*[count+uuidColumns];
+
+		int index=0;
+
+		if (lresult == SE_SUCCESS)
+		{
+			// Always add the UUID columns first
+			// Then in the method assignValues, we can assume that the UUID columns are always first
+
+			for (int i=0; i<lcolumn_count; i++)
+			{
+				if (lcolumns[i].sde_type == SE_UUID_TYPE)
+				{
+					columns[index] = (CHAR*)alloca ((sde_strlen (sde_pcus2wc(lcolumns[i].column_name)) + 1) * sizeof(CHAR));
+					sde_strcpy (sde_pus2wc(columns[index]), sde_pcus2wc(lcolumns[i].column_name));
+					index++;
+					break;
+				}
+			}
+
+			if (lcolumns != NULL)
+				SE_table_free_descriptions (lcolumns);
+		}
+
+		if (uuidColumns > 0)
+		{
+			SE_UUIDGENERATOR uuid_generator;
+			connection->GetUuidGenerator(uuid_generator);
+			result = SE_uuidgenerator_get_uuids(uuid_generator, uuidColumns, &uuid_list);
+			handle_sde_err<FdoCommandException>(stream, result, __FILE__, __LINE__, ARCSDE_INSERT_CANNOT_GET_UUID, "Failed to get uuid.");
+		}
+
         for (int i = 0; i < count; i++)
         {
             CHAR column[SE_QUALIFIED_COLUMN_LEN];
@@ -170,15 +222,15 @@ FdoIFeatureReader* ArcSDEInsertCommand::Execute ()
             FdoPtr<FdoPropertyValue> propertyValue = mValues->GetItem(i);
             FdoPtr<FdoIdentifier> propertyId = propertyValue->GetName();
             connection->PropertyToColumn (column, classDef, propertyId);
-            columns[i] = (CHAR*)alloca ((sde_strlen (sde_pcus2wc(column)) + 1) * sizeof(CHAR));
-            sde_strcpy (sde_pus2wc(columns[i]), sde_pcus2wc(column));
+            columns[i+uuidColumns] = (CHAR*)alloca ((sde_strlen (sde_pcus2wc(column)) + 1) * sizeof(CHAR));
+            sde_strcpy (sde_pus2wc(columns[i+uuidColumns]), sde_pcus2wc(column));
         }
 
         // if necessary, version the table and version enable the stream
         ArcSDELongTransactionUtility::VersionStream (connection, stream, table, true);
 
         // initialize the stream with table_name and column names
-        result = SE_stream_insert_table (stream, table, count, (const CHAR**)columns);
+        result = SE_stream_insert_table (stream, table, count+uuidColumns, (const CHAR**)columns);
         handle_sde_err<FdoCommandException>(stream, result, __FILE__, __LINE__, ARCSDE_INSERT_UNEXPECTED_ERROR, "Unexpected error while performing insert.");
 
         delete[] columns;  columns=NULL;
@@ -190,7 +242,10 @@ FdoIFeatureReader* ArcSDEInsertCommand::Execute ()
             result = SE_stream_set_write_mode(stream, FALSE);
             handle_sde_err<FdoCommandException>(stream, result, __FILE__, __LINE__, ARCSDE_INSERT_UNEXPECTED_ERROR, "Unexpected error while performing insert.");
 
-            insertOneRow (stream, table, classDef, mValues, idCollection);
+			if (uuidColumns > 0)
+				insertOneRow (stream, table, classDef, mValues, idCollection, uuidColumns, uuid_list);
+			else
+				insertOneRow (stream, table, classDef, mValues, idCollection);
         }
         else
         {
@@ -229,7 +284,10 @@ FdoIFeatureReader* ArcSDEInsertCommand::Execute ()
                 }
 
                 // Insert the row:
-                insertOneRow (stream, table, classDef, propertyValues, idCollection);
+				if (uuidColumns > 0)
+					insertOneRow (stream, table, classDef, propertyValues, idCollection, uuidColumns, uuid_list);
+				else
+				    insertOneRow (stream, table, classDef, propertyValues, idCollection);
             }
 
             // Flush stream:
@@ -245,6 +303,9 @@ FdoIFeatureReader* ArcSDEInsertCommand::Execute ()
     {
         exception = e;
     }
+
+	if (uuidColumns > 0)
+		SE_uuidgenerator_free_uuids(uuid_list, uuidColumns);
 
     // Free the stream:
     if (NULL != stream)
