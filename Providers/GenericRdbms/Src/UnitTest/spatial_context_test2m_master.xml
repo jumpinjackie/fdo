@@ -89,14 +89,7 @@ Bermuda Mentor</gml:srsName>
 10.000000 10.000000</gml:pos>
 </gml:boundingBox>
 </gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="Bermuda.LL">
-<gml:srsName>
-Bermuda.LL</gml:srsName>
-<fdo:WKT>
-GEOGCS["Bermuda 1957", DATUM["Bermuda 1957", ELLIPSOID["Clarke 1866", 6378206.4, 294.978698213898]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.0174532925199433]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#Bermuda.LL"/>
 <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
 <gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
 geographic</gml:derivedCRSType>

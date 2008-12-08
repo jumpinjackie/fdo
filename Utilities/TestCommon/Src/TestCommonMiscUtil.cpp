@@ -327,3 +327,92 @@ bool TestCommonMiscUtil::FuzzyEqual (const double d1, const double d2)
         return 1e-5 > fabs(1.0 - (d2 / d1));
 }
 
+bool TestCommonMiscUtil::GetSpatialContext( 
+    FdoIConnection* connection,
+    FdoStringP name, 
+    FdoStringP& description,
+    FdoStringP& coordSys,
+    FdoStringP& wkt,
+    FdoPtr<FdoByteArray>& extent,
+    FdoSpatialContextExtentType& extentType,
+    double& xyTol,
+    double& zTol
+)
+{
+    bool ret = false;
+
+    FdoPtr<FdoIGetSpatialContexts> cmd = (FdoIGetSpatialContexts*) connection->CreateCommand( FdoCommandType_GetSpatialContexts );
+    FdoPtr<FdoISpatialContextReader> reader = cmd->Execute();
+
+    while ( reader->ReadNext() ) {
+        // Skip default spatial context if not writing it.
+        if ( name == reader->GetName() ) {
+            description = reader->GetDescription();
+            coordSys = reader->GetCoordinateSystem();
+            wkt = reader->GetCoordinateSystemWkt();
+            extent = reader->GetExtent();
+            extentType = reader->GetExtentType();
+            xyTol = reader->GetXYTolerance();
+            zTol = reader->GetZTolerance();
+            ret = true;
+            break;
+        }
+    }
+
+    return ret;
+}
+
+void TestCommonMiscUtil::ByteArray2Extent( FdoByteArray* ba, double& minx, double& miny, double& maxx, double& maxy )
+{
+    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(ba);
+    FdoPtr<FdoIEnvelope> env = geom->GetEnvelope();
+
+    minx = env->GetMinX();
+    miny = env->GetMinY();
+    maxx = env->GetMaxX();
+    maxy = env->GetMaxY();
+}
+
+void TestCommonMiscUtil::VldExtent( FdoStringP scName, FdoByteArray* ba, double minx, double miny, double maxx, double maxy )
+{
+    double baminx, baminy, bamaxx, bamaxy;
+
+    TestCommonMiscUtil::ByteArray2Extent( ba, baminx, baminy, bamaxx, bamaxy ); 
+    char message[1000];
+
+    sprintf( message, "Wrong minx for %ls: got %lf, expected %lf", (FdoString*) scName, baminx, minx );
+    CPPUNIT_ASSERT_MESSAGE( message, minx == baminx );
+
+    sprintf( message, "Wrong miny for %ls: got %lf, expected %lf", (FdoString*) scName, baminy, miny );
+    CPPUNIT_ASSERT_MESSAGE( message, miny == baminy );
+
+    sprintf( message, "Wrong maxx for %ls: got %lf, expected %lf", (FdoString*) scName, bamaxx, maxx );
+    CPPUNIT_ASSERT_MESSAGE( message, maxx == bamaxx);
+
+    sprintf( message, "Wrong maxy for %ls: got %lf, expected %lf", (FdoString*) scName, bamaxy, maxy );
+    CPPUNIT_ASSERT_MESSAGE( message, maxy == bamaxy );
+}
+
+FdoClassDefinition* TestCommonMiscUtil::DescribeClass( FdoIConnection* fdoConn, FdoStringP schemaName, FdoStringP className, FdoFeatureSchemasP& parentHolder )
+{
+    FdoClassDefinition* classDef = NULL;
+
+    FdoPtr<FdoIDescribeSchema>  pDescSchemaCmd = (FdoIDescribeSchema*) fdoConn->CreateCommand(FdoCommandType_DescribeSchema);
+    pDescSchemaCmd->SetSchemaName(schemaName);
+    FdoStringsP classNames = FdoStringCollection::Create();
+    classNames->Add(className);
+    pDescSchemaCmd->SetClassNames( classNames );
+
+    parentHolder = pDescSchemaCmd->Execute();
+    FdoFeatureSchemaP schema = parentHolder->FindItem(schemaName);
+
+    if ( schema )
+    {
+        FdoClassesP classes = schema->GetClasses();
+        classDef = classes->FindItem(className);
+    }
+
+    return classDef;
+}
+

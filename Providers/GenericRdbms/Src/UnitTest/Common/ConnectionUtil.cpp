@@ -471,3 +471,9 @@ wchar_t ConnectionUtil::GetNlsChar( int index )
 
     return ret;
 }
+
+FdoStringP ConnectionUtil::FormatGrant( FdoString* objName, FdoString* grantee, FdoString* privileges )
+{
+    return L"";
+}
+

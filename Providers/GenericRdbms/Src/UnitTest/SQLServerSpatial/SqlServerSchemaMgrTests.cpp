@@ -226,6 +226,47 @@ void SqlServerSchemaMgrTests::testSpatialContextsGeog()
     }
 }
 
+void SqlServerSchemaMgrTests::CreateMultiGeomTable( FdoSmPhOwnerP owner, FdoStringP tableName, FdoInt32 colCount, FdoInt32 indexMask, FdoInt32 nnullMask )
+{
+    SchemaMgrTests::CreateMultiGeomTable( owner, tableName, colCount, indexMask, nnullMask );
+
+    FdoSmPhGrdOwnerP grdOwner = owner->SmartCast<FdoSmPhGrdOwner>();
+    if ( tableName == L"INDEX_WINS2" )
+    {
+        FdoStringP sqlStmt = FdoStringP::Format( 
+            L"insert into index_wins2 ( id, geom3 ) values ( 1, geometry::STGeomFromText('POINT ( 10 15 )', %I64d) )", 
+            GetSrid(5)
+        );
+        grdOwner->ActivateAndExecute( (FdoString*) sqlStmt );
+    }
+
+    if ( tableName == L"BASE_GEOM" )
+    {
+        FdoStringP sqlStmt = FdoStringP::Format( 
+            L"insert into base_geom ( id, geom1, geom2 ) values ( 1, geometry::STGeomFromText('POINT ( 10 15 )', %I64d), geometry::STGeomFromText('POINT ( 10 15 )', %I64d) )", 
+            GetSrid(5),
+            GetSrid(3)
+        );
+        grdOwner->ActivateAndExecute( (FdoString*) sqlStmt );
+        
+        sqlStmt = FdoStringP::Format( 
+            L"insert into base_geom ( id, geom1, geom2 ) values ( 2, geometry::STGeomFromText('POINT ( 10 15 )', %I64d), geometry::STGeomFromText('POINT ( 10 15 )', %I64d) )", 
+            GetSrid(6),
+            GetSrid(3)
+        );
+        grdOwner->ActivateAndExecute( (FdoString*) sqlStmt );
+        
+        sqlStmt = FdoStringP::Format( 
+            L"insert into base_geom ( id, geom1, geom2 ) values ( 3, geometry::STGeomFromText('POINT ( 10 15 )', %I64d), geometry::STGeomFromText('POINT ( 10 15 )', %I64d) )", 
+            GetSrid(3),
+            GetSrid(3)
+        );
+        grdOwner->ActivateAndExecute( (FdoString*) sqlStmt );
+
+    }
+
+}
+
 void SqlServerSchemaMgrTests::InsertSridRow( FdoIConnection* fdoConn, FdoStringP tableName, FdoStringP geomColumnName, int sridIndex, int expectedCount )
 {
     FdoPtr<FdoIInsert> insertCommand = (FdoIInsert *) fdoConn->CreateCommand(FdoCommandType_Insert);
@@ -527,6 +568,165 @@ TODO    table->CreateColumnUnknown(
     }
 }
 
+void SqlServerSchemaMgrTests::VldGenGeom( FdoIConnection* conn, FdoClassDefinitionP classDef )
+{
+    CPPUNIT_ASSERT( classDef->GetClassType() == FdoClassType_FeatureClass );
+    FdoFeatureClass* featClass = static_cast<FdoFeatureClass*>(classDef.p);
+
+    FdoStringP className = featClass->GetName();
+    FdoGeometricPropertyP geomProp = featClass->GetGeometryProperty();
+    FdoStringP geomPropName = geomProp ? geomProp->GetName() : L"";
+
+    CPPUNIT_ASSERT( (className == L"index_wins1") ? (geomPropName == L"geom1" ) : true );
+    CPPUNIT_ASSERT( (className == L"index_wins2") ? (geomPropName == L"geom2" ) : true );
+    CPPUNIT_ASSERT( (className == L"index_wins3") ? (geomPropName == L"geom1" ) : true );
+    CPPUNIT_ASSERT( (className == L"index_wins4") ? (geomPropName == L"geom2" ) : true );
+    CPPUNIT_ASSERT( (className == L"index_tie1") ? (geomPropName == L"" ) : true );
+    CPPUNIT_ASSERT( (className == L"index_tie2") ? (geomPropName == L"" ) : true );
+    CPPUNIT_ASSERT( (className == L"index_tie3") ? (geomPropName == L"" ) : true );
+    CPPUNIT_ASSERT( (className == L"nnull_wins1") ? (geomPropName == L"geom1" ) : true );
+    CPPUNIT_ASSERT( (className == L"nnull_wins2") ? (geomPropName == L"geom2" ) : true );
+    CPPUNIT_ASSERT( (className == L"nnull_tie") ? (geomPropName == L"" ) : true );
+    CPPUNIT_ASSERT( (className == L"no_win") ? (geomPropName == L"" ) : true );
+    CPPUNIT_ASSERT( (className == L"one_geom") ? (geomPropName == L"geom1" ) : true );
+
+// TODO: determine geometryColumn from root table.
+//    CPPUNIT_ASSERT( (className == L"aview_index_wins1") ? (geomPropName == L"geom1" ) : true );
+//    CPPUNIT_ASSERT( (className == L"view_index_wins2") ? (geomPropName == L"geom1" ) : true );
+
+    if ( (className == L"index_wins1") || 
+         (className == L"aview_index_wins1")
+    ) {
+        VldGeomSC(conn, classDef, L"geom1", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
+        VldGeomSC(conn, classDef, L"geom2", L"", 0, 0, 0, 0 );
+    }
+
+    if ( (className == L"index_wins2") || 
+         (className == L"view_index_wins2")
+    ) {
+        VldGeomSC(conn, classDef, L"geom1", L"", 0, 0, 0, 0 );
+        VldGeomSC(conn, classDef, L"geom2", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
+        VldGeomSC(conn, classDef, L"geom3", L"CA-I", -2000000, -2000000, 2000000, 2000000 );
+    }
+
+    if ( (className == L"aview_index_wins3") || 
+         (className == L"bview_index_wins3")
+    ) {
+        VldGeomSC(conn, classDef, L"geom1", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
+        VldGeomSC(conn, classDef, L"geom2", L"", 0, 0, 0, 0 );
+        VldGeomSC(conn, classDef, L"geom3", L"", 0, 0, 0, 0 );
+    }
+
+    if ( (className == L"view_index_wins4") || 
+         (className == L"viewb_index_wins4")
+    ) {
+        VldGeomSC(conn, classDef, L"geom1", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
+        VldGeomSC(conn, classDef, L"geom2", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
+        VldGeomSC(conn, classDef, L"geom3", L"", 0, 0, 0, 0 );
+    }
+
+    if ( className == L"f_index_wins1" ) {
+        //TODO: uncomment when SQLServerSpatial provider supports lookup of view 
+        //dependencies across databases
+        //VldGeomSC(conn, classDef, L"geom1", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
+        VldGeomSC(conn, classDef, L"geom2", L"", 0, 0, 0, 0 );
+    }
+
+    if ( className == L"f_index_wins2" ) {
+        VldGeomSC(conn, classDef, L"geom1", L"", 0, 0, 0, 0 );
+        //TODO: uncomment when SQLServerSpatial provider supports lookup of view 
+        //dependencies across databases
+        //VldGeomSC(conn, classDef, L"geom2", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
+        VldGeomSC(conn, classDef, L"geom3", L"CA-I", -2000000, -2000000, 2000000, 2000000 );
+    }
+
+    if ( className == L"f_index_wins3" ) {
+        //TODO: uncomment when SQLServerSpatial provider supports lookup of view 
+        //dependencies across databases
+        //VldGeomSC(conn, classDef, L"geom1", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
+        VldGeomSC(conn, classDef, L"geom2", L"", 0, 0, 0, 0 );
+        VldGeomSC(conn, classDef, L"geom3", L"", 0, 0, 0, 0 );
+    }
+
+    if ( className == L"f_index_wins4" ) {
+        //TODO: uncomment when SQLServerSpatial provider supports lookup of view 
+        //dependencies across databases
+        //VldGeomSC(conn, classDef, L"geom1", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
+        //VldGeomSC(conn, classDef, L"geom2", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
+        VldGeomSC(conn, classDef, L"geom3", L"", 0, 0, 0, 0 );
+    }
+
+    if ( className == L"rview_index_wins4" ) {
+        VldGeomSC(conn, classDef, L"geom1", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
+        VldGeomSC(conn, classDef, L"geomb", L"", 0, 0, 0, 0 );
+        VldGeomSC(conn, classDef, L"geom3", L"", 0, 0, 0, 0 );
+    }
+
+    if ( className == L"viewa_base_geom" ) {
+        VldGeomSC(conn, classDef, L"geom1", L"CA-I", -2000000, -2000000, 2000000, 2000000 );
+        VldGeomSC(conn, classDef, L"geom2", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
+    }
+
+    if ( className == L"viewb_base_geom" ) {
+        VldGeomSC(conn, classDef, L"geom1", L"CANQ-M5", -2000000, -2000000, 2000000, 2000000 );
+        VldGeomSC(conn, classDef, L"geom2", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
+    }
+
+    if ( className == L"viewc_base_geom" ) {
+        VldGeomSC(conn, classDef, L"geom1", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
+        VldGeomSC(conn, classDef, L"geom2", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
+    }
+
+    if ( className == L"viewm_index_wins3" ) {
+        VldGeomSC(conn, classDef, L"geom1", L"", 0, 0, 0, 0 );
+        VldGeomSC(conn, classDef, L"geoma", L"", 0, 0, 0, 0 );
+    }
+}
+
+void SqlServerSchemaMgrTests::VldGeomSC( 
+    FdoIConnection* conn, 
+    FdoClassDefinitionP classDef,
+    FdoStringP propName,
+    FdoStringP expCoordSys,
+    double expminx,
+    double expminy,
+    double expmaxx,
+    double expmaxy
+)
+{
+    FdoPropertiesP props = classDef->GetProperties();
+    FdoGeometricPropertyP geomProp = static_cast<FdoGeometricPropertyDefinition*>(props->FindItem(propName));
+    FdoStringP scName = geomProp->GetSpatialContextAssociation();
+    CPPUNIT_ASSERT( scName != L"" );
+
+    FdoStringP description;
+    FdoStringP coordSys;
+    FdoStringP wkt;
+    FdoPtr<FdoByteArray> extent;
+    FdoSpatialContextExtentType extentType;
+    double xyTol;
+    double zTol;
+
+    CPPUNIT_ASSERT( 
+        TestCommonMiscUtil::GetSpatialContext(
+            conn,
+            scName,
+            description,
+            coordSys,
+            wkt,
+            extent,
+            extentType,
+            xyTol,
+            zTol
+        )
+    );
+
+    CPPUNIT_ASSERT( coordSys == expCoordSys );
+
+    if ( coordSys != L"" )
+        TestCommonMiscUtil::VldExtent( scName, extent, expminx, expminy, expmaxx, expmaxy );
+}
+
 FdoStringP SqlServerSchemaMgrTests::table2class( FdoSmPhGrdMgrP mgr, FdoStringP tableName )
 {
     return mgr->GetDcDbObjectName( tableName ).Right(L".");
@@ -558,6 +758,12 @@ FdoInt64 SqlServerSchemaMgrTests::GetSrid( int index )
         break;
     case 4: 
         srid = 1000;
+        break;
+    case 5: 
+        srid = 26741;
+        break;
+    case 6: 
+        srid = 32185;
         break;
     }
 

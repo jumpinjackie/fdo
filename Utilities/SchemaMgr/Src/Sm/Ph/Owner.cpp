@@ -1443,6 +1443,8 @@ void FdoSmPhOwner::DoLoadSpatialContexts( FdoStringP dbObjectName )
         return;
 
     if ( !mSpatialContextsLoaded ) {
+        FdoInt32 firstScGeom = mSpatialContextGeoms->GetCount();
+
         // reverse-engineering. The PH schema object will return the appropiate reader or
 	    // the default one.
         FdoSmPhRdSpatialContextReaderP scReader;
@@ -1456,29 +1458,15 @@ void FdoSmPhOwner::DoLoadSpatialContexts( FdoStringP dbObjectName )
             // Incremental loading (SC's associated with given dbObject).
             scReader = CreateRdSpatialContextReader(dbObjectName);
         }
-    		
+    
         while (scReader->ReadNext())
         {
-            FdoStringP  scInfoTable = GetManager()->GetRealDbObjectName( FdoSmPhMgr::ScInfoNoMetaTable );
-
-		    FdoStringP	scName;
-            if ( scReader->GetGeomTableName() == scInfoTable ) 
-            {
-                // For column in ScInfo table, the spatial context name is the
-                // column name.
-                scName = scReader->GetGeomColumnName();
-            }
-            else
-            {
-                scName = mSpatialContexts->AutoGenName();
-            }
-
             // Generate physical spatial context from current SpatialContextGeom
             FdoPtr<FdoByteArray> scExtent = scReader->GetExtent();
             FdoSmPhSpatialContextP sc = new FdoSmPhSpatialContext(
                 GetManager(),
                 scReader->GetSrid(),
-                scName,
+                scReader->GetGeomColumnName(),
                 scReader->GetDescription(),
                 scReader->GetCoordinateSystem(),
                 scReader->GetCoordinateSystemWkt(),
@@ -1491,32 +1479,16 @@ void FdoSmPhOwner::DoLoadSpatialContexts( FdoStringP dbObjectName )
             if (NULL == sc.p)
     		    throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
-		    int indexSC = mSpatialContexts->FindExistingSC( sc );
-
-            if ( (indexSC >= 0) && (scReader->GetGeomTableName() == scInfoTable ) ) 
-            {
-                // Don't coalesce spatial contexts from the ScInfo table; each
-                // column represents a different spatial context even if the
-                // spatial context attributes are the same.
-                FdoSmPhSpatialContextP existingSC = mSpatialContexts->GetItem( indexSC );
-                if ( FdoStringP(sc->GetName()) != existingSC->GetName() ) 
-                    indexSC = -1;
-            }
-
-		    // New Spatial context definition, add it to collection
-		    if ( indexSC == -1 )
-		    {
-			    mSpatialContexts->Add( sc );
-		    }
-
             // Create Spatial context geometry object and associate it with this scId
 	        FdoSmPhSpatialContextGeomP  scgeom = new FdoSmPhSpatialContextGeom(
-                                                            GetManager(),
-		  											        ( indexSC != -1 )? indexSC : sc->GetId(),
+                                                            this,
 														    scReader->GetGeomTableName(),
 														    scReader->GetGeomColumnName(),
 														    scReader->GetHasElevation(),
-                                                            scReader->GetHasMeasure()
+                                                            scReader->GetHasMeasure(),
+                                                            scReader->IsDerived(),
+                                                            sc,
+                                                            mSpatialContexts
             );
 
             if (NULL == scgeom.p)
@@ -1524,6 +1496,21 @@ void FdoSmPhOwner::DoLoadSpatialContexts( FdoStringP dbObjectName )
 
             if ( mSpatialContextGeoms->IndexOf(scgeom->GetName()) < 0 ) 
                 mSpatialContextGeoms->Add( scgeom );	
+        }
+
+        // Resolve the SCGeoms that were loaded to their spatial contexts. This is triggered
+        // by doing a GetSpatialContext on each SCGeom. This does the following:
+        //  - coalesce and cache spatial contexts in mSpatialContexts
+        //  - associates each derived SCGeom to the associated spatial context of its
+        //    root SCGeom. For example, this is done for SQLServerSpatial to associate
+        //    geometry columns in views to their spatial contexts, by associating to the 
+        //    spatial context for the root column.
+
+        FdoInt32 lastScGeom = mSpatialContextGeoms->GetCount() - 1;
+        for ( FdoInt32 i = firstScGeom; i <= lastScGeom; i++ )
+        {
+            FdoSmPhSpatialContextGeomP  scgeom = mSpatialContextGeoms->GetItem(i);
+            FdoSmPhSpatialContextP sc = scgeom->GetSpatialContext();
         }
     }
 }

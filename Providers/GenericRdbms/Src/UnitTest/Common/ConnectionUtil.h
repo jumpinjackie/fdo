@@ -84,6 +84,8 @@ public:
 	virtual const char* GetSuffixTest(){return NULL;};
     virtual FdoStringP GetNlsObjectName( FdoStringP inName );
     virtual wchar_t GetNlsChar( int index );
+    virtual FdoStringP FormatGrant( FdoString* objName, FdoString* grantee, FdoString* privileges );
+
 
 public:
 	virtual ~ConnectionUtil(void);

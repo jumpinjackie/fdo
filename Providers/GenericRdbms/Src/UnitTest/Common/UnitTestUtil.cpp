@@ -1602,6 +1602,29 @@ FdoIConnection* UnitTestUtil::GetConnection(FdoString *suffix, bool bCreate, boo
 
 }
 
+FdoPtr<FdoIConnection> UnitTestUtil::GetDirectConnection (FdoIConnection *currentConnection)
+{
+    FdoPtr<FdoIConnection> directConnection;
+
+    FdoPtr<FdoIConnectionInfo> connectionInfo = currentConnection->GetConnectionInfo();
+    FdoPtr<FdoIConnectionPropertyDictionary> connectionInfoProperties = connectionInfo->GetConnectionProperties();
+    FdoStringP serviceProperty = connectionInfoProperties->GetProperty(L"service");
+    FdoStringP providerName = connectionInfo->GetProviderName();
+    FdoStringP datastoreName = connectionInfoProperties->GetProperty(L"datastore");
+    FdoStringP connectionString = FdoStringP::Format(
+                                        L"service=%ls;username=%ls;password=%ls;datastore=%ls",
+                                        (FdoString *)serviceProperty,
+                                        (FdoString *)datastoreName,
+                                        L"test",
+                                        (FdoString *)datastoreName);
+
+    FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager();
+    directConnection = manager->CreateConnection(providerName);
+    directConnection->SetConnectionString(connectionString);
+
+    return directConnection;
+}
+
 StaticConnection* UnitTestUtil::NewStaticConnection()
 {
 	return UnitTestUtil::InfoUtilConnection->NewStaticConnection();
@@ -1675,6 +1698,12 @@ the_exit:
 
 void UnitTestUtil::GrantDatastore( FdoIConnection* connection, FdoSchemaManagerP mgr, FdoStringP privileges, FdoStringP grantee )
 {
+    if ( UnitTestUtil::InfoUtilConnection->FormatGrant(L"test", grantee, privileges) == L"" )
+        return;
+
+    FdoPtr<FdoIConnection> directConnection = GetDirectConnection(connection);
+    directConnection->Open(); 
+
     FdoSmPhMgrP ph = mgr->GetPhysicalSchema();
 
     FdoSmPhOwnerP owner = ph->GetOwner();
@@ -1687,16 +1716,17 @@ void UnitTestUtil::GrantDatastore( FdoIConnection* connection, FdoSchemaManagerP
             FdoSmPhDbObjectP dbObject = owner->CacheDbObject( rdr );
 
             UnitTestUtil::Sql2Db( 
-                FdoStringP::Format( 
-                    L"grant %ls on %ls to %ls",
-                    (FdoString*) privileges,
-                    (FdoString*) dbObject->GetDbQName(),
-                    (FdoString*) grantee
+                UnitTestUtil::InfoUtilConnection->FormatGrant( 
+                    dbObject->GetDbQName(),
+                    grantee,
+                    privileges
                 ),
-                connection
+                directConnection
             );
         }
     }
+
+    directConnection->Close();
 }
 
 void UnitTestUtil::WriteSortedLp( const FdoSmLpSchemaCollection* lp, FdoString* fileName, char* styleSheetString )

@@ -31,7 +31,8 @@ FdoSmPhRdSpatialContextReader::FdoSmPhRdSpatialContextReader()
 }
 
 FdoSmPhRdSpatialContextReader::FdoSmPhRdSpatialContextReader(FdoSmPhOwnerP owner) :
-	FdoSmPhReader(owner->GetManager(), (FdoSmPhRowCollection*) NULL )  
+	FdoSmPhReader(owner->GetManager(), (FdoSmPhRowCollection*) NULL ),
+    mIsDerived(false)
 {
     // If this class is overridden, one can use "mgr" to access any
     // spatial metaschema information in the datastore.
@@ -112,6 +113,11 @@ const double FdoSmPhRdSpatialContextReader::GetZTolerance()
 }
 
 const bool FdoSmPhRdSpatialContextReader::IsActive()
+{
+	return false;
+}
+
+const bool FdoSmPhRdSpatialContextReader::IsDerived()
 {
 	return false;
 }

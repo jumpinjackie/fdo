@@ -44,7 +44,7 @@ public:
 
     // Given database object and column name, returns the association to spatial context.
     // Returns NULL if the column is not geometric or has no associated spatial context.
-    FdoSmPhSpatialContextGeomP FindSpatialContextGeom( FdoStringP dbObjectName, FdoStringP columnName );
+    FdoSmLpSpatialContextGeomP FindSpatialContextGeom( FdoStringP dbObjectName, FdoStringP columnName );
 
     // Gets all spatial contexts
     FdoSmLpSpatialContextsP GetSpatialContexts();

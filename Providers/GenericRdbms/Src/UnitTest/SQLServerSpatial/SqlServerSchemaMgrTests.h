@@ -31,9 +31,22 @@ class SqlServerSchemaMgrTests : public SchemaMgrTests
     void testSpatialContextsGeog();
 
     virtual StaticConnection* CreateStaticConnection();
+    virtual void CreateMultiGeomTable( FdoSmPhOwnerP owner, FdoStringP tableName, FdoInt32 colCount, FdoInt32 indexMask, FdoInt32 nnullMask );
+
     virtual void InsertSridRow( FdoIConnection* fdoConn, FdoStringP tableName, FdoStringP geomColumnName, int sridIndex, int expectedCount );
     virtual FdoIoStream* OverrideBend( FdoIoStream* stream1, FdoStringP oldOwnerPrefix, FdoStringP newOwnerPrefix );
     virtual void AddProviderColumns( FdoSmPhTableP table );
+    virtual void VldGenGeom( FdoIConnection* conn, FdoClassDefinitionP classDef );
+    void SqlServerSchemaMgrTests::VldGeomSC( 
+        FdoIConnection* conn, 
+        FdoClassDefinitionP classDef,
+        FdoStringP propName,
+        FdoStringP expCoordSys,
+        double expminx,
+        double expminy,
+        double expmaxx,
+        double expmaxy
+    );
     virtual FdoStringP table2class( FdoSmPhGrdMgrP mgr, FdoStringP tableName );
     virtual FdoStringP table2qclass( FdoSmPhGrdMgrP mgr, FdoStringP datastoreName, FdoStringP tableName );
     virtual bool SupportsBaseObjects();

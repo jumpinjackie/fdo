@@ -26,7 +26,7 @@
 #include <FdoCommonGeometryUtil.h>
 
 class FdoSmPhSpatialIndex;
-
+class FdoSmPhSpatialContext;
 
 // Describes spatial context information without depending on
 // logical/physical types.  Some overrides of FdoSmPhColumn may
@@ -100,6 +100,9 @@ public:
     {
         mScInfo = scInfo;
     }
+
+    /// returns the associated Spatial Context
+    FdoPtr<FdoSmPhSpatialContext> GetSpatialContext();
 
     // Returns:
     //  true: if this column is the main geometry for its table or view
@@ -186,6 +189,7 @@ private:
     bool mbHasMeasure;
     bool mbIsPrimary;
     FdoSmPhScInfoP mScInfo;
+    FdoPtr<FdoSmPhSpatialContext> mSpatialContext;
     FdoSmPhSpatialIndex* mSpatialIndex;
 };
 

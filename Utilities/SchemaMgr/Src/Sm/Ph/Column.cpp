@@ -79,6 +79,31 @@ FdoStringP FdoSmPhColumn::GetQName() const
 	return mQName;
 }
 
+FdoSmPhColumnP FdoSmPhColumn::GetRootColumn()
+{
+    FdoSmPhColumnP rootColumn;
+
+    FdoSmPhDbObject* dbObject = static_cast<FdoSmPhDbObject*>((FdoSmSchemaElement*)GetParent());
+    FdoSmPhDbObjectP rootObject = dbObject->GetRootObject();
+
+    if ( rootObject ) {
+        FdoSmPhColumnsP rootColumns = rootObject->GetColumns();
+
+        // If Root Column name not set, default to this column name. Column->BaseColumn
+        // relationships not retrieved from data dictionary (not available from most RDBMS's)
+        // so match by name is the best we can do.
+        FdoStringP rootName = (mRootName.GetLength() > 0) ? mRootName : GetName();
+
+        rootColumn = rootColumns->FindItem( rootName );
+
+        // Sanity check. Found column is not the root column if it has different type.
+        if ( rootColumn && (rootColumn->GetType() != GetType()) ) 
+            rootColumn = NULL;
+    }
+
+    return rootColumn;
+}
+
 FdoStringP FdoSmPhColumn::GetRootName() const
 {
 	return mRootName;

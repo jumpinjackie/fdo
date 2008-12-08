@@ -93,6 +93,13 @@ public:
     /// spatial context.
     virtual const bool IsActive();
 
+    /// Returns true if the geometry column is derived and the spatial 
+    /// context is the same as that of the base column. For example, a 
+    /// geometry column in a view is derived from the corresponding column
+    /// in the base table.
+    /// 
+    virtual const bool IsDerived();
+
     /// Get the next row and make it current.
 	virtual bool ReadNext();
 
