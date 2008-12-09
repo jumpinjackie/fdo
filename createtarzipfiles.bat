@@ -187,6 +187,7 @@ if "%FDOCOREENABLE%"=="no" goto start_zip_shp
    svn export "%FDOSVNROOT%\Fdo" "%FDOTARZIPFOLDER%\Fdo" --force
    svn export "%FDOSVNROOT%\Utilities" "%FDOTARZIPFOLDER%\Utilities" --force
    svn export "%FDOSVNROOT%\Thirdparty" "%FDOTARZIPFOLDER%\Thirdparty" --force
+   svn export "%FDOSVNROOT%\DocResources" "%FDOTARZIPFOLDER%\DocResources" --force
    pushd "%FDOTARZIPFOLDER%"
    if exist .svn del /q /f /s .svn
    popd
