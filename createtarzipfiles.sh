@@ -244,6 +244,7 @@ if test "$FDOCOREENABLECHK" == yes; then
    svn export "$FDOSVNROOT"/Fdo "$FDOTARZIPFOLDER"/Fdo --force
    svn export "$FDOSVNROOT"/Utilities "$FDOTARZIPFOLDER"/Utilities --force
    svn export "$FDOSVNROOT"/Thirdparty "$FDOTARZIPFOLDER"/Thirdparty --force
+   svn export "$FDOSVNROOT"/DocResources "$FDOTARZIPFOLDER"/DocResources --force
    find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
    rm -f fdo-3.4.0_"$FDOBUILDNUMBER".tar
    tar -cf fdo-3.4.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
