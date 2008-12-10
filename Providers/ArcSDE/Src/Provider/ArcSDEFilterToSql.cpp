@@ -52,6 +52,8 @@ static _FunctionNameMapping_ ArcSDEFunctionsMappings [] = {
 	{FDO_FUNCTION_ADDMONTHS,		-1}, 
 	{FDO_FUNCTION_CURRENTDATE,		-1}, 
 	{FDO_FUNCTION_EXTRACT,			-1},
+	{FDO_FUNCTION_EXTRACTTODOUBLE   -1},
+	{FDO_FUNCTION_EXTRACTTOINT,		-1},
 	{FDO_FUNCTION_MONTHSBETWEEN,	-1},
 
 //  - Mathematical Function Names
