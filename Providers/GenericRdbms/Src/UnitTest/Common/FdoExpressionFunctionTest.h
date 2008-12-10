@@ -41,14 +41,43 @@
 //      The constants specify specific test case codes for various test cases
 //      where the returned value for the computed property varies.
 
-#define COUNT_TEST_CASE_CODE_1       1
-#define COUNT_TEST_CASE_CODE_2       2
-#define COUNT_TEST_CASE_CODE_3       3
-#define COUNT_TEST_CASE_CODE_4       4
 
-#define EXP_TEST_CASE_CODE_1        10
+// ========================= AGGREGATE FUNCTIONS =========================
 
-#define POWER_TEST_CASE_CODE_1      20
+#define COUNT_TEST_CASE_CODE_1               1
+#define COUNT_TEST_CASE_CODE_2               2
+#define COUNT_TEST_CASE_CODE_3               3
+#define COUNT_TEST_CASE_CODE_4               4
+
+
+// ======================== CONVERSION FUNCTIONS =========================
+// (start at 100)
+
+
+// =========================== DATE FUNCTIONS ============================
+
+#define EXTRACT_TEST_CASE_CODE_1           200
+#define EXTRACTTODOUBLE_TEST_CASE_CODE_1   201
+#define EXTRACTTOINT_TEST_CASE_CODE_1      202
+
+
+// ========================= GEOMETRY FUNCTIONS ==========================
+// (start at 300)
+
+
+// =========================== MATH FUNCTIONS ============================
+
+#define EXP_TEST_CASE_CODE_1               400
+#define POWER_TEST_CASE_CODE_1             401
+
+
+// ========================== NUMERIC FUNCTIONS ==========================
+// (start at 500)
+
+
+// ========================== STRING FUNCTIONS ===========================
+// (start at 600)
+
 
 
 
@@ -83,6 +112,8 @@ class FdoExpressionFunctionTest : public CppUnit::TestCase
     // CPPUNIT_TEST(TestAddMonthsFunction);
     // CPPUNIT_TEST(TestCurrentDateFunction);
     // CPPUNIT_TEST(TestExtractFunction);
+    // CPPUNIT_TEST(TestExtractToDoubleFunction);
+    // CPPUNIT_TEST(TestExtractToIntFunction);
     // CPPUNIT_TEST(TestMonthsBetweenFunction);
     // =========================================
     // ====    MATH FUNCTION UNIT TESTS     ====
@@ -164,6 +195,7 @@ protected:
 
     virtual void AddFeature (FdoIConnection *current_connection,
                              FdoString      *class_name,
+                             bool           is_spatial,
                              int            index);
 
     //  AddTestSchema:
@@ -196,9 +228,14 @@ protected:
                                                    FdoInt32    scale,
                                                    bool        is_nullable);
 
+    //  CreateFdoClass:
+    //      The function creates a predefined non-feature class of the given
+    //      name.
+
+    virtual FdoClass *CreateFdoClass (FdoString *class_name);
+
     //  CreateFdoFeatureClass:
-    //      The function creates a predefined feature class with the caller
-    //      identifying the class name.
+    //      The function creates a predefined feature class of the given name.
 
     virtual FdoFeatureClass *CreateFdoFeatureClass (FdoString *class_name);
 
@@ -359,10 +396,22 @@ protected:
     virtual void TestCurrentDateFunction ();
 
     //  TestExtractFunction:
-    //      The function executes the test for the expression engine function
-    //      EXTRACT when used as a select-parameter.
+    //      The function controls the execution of the tests for the expression
+    //      engine function EXTRACT when used as a select-parameter.
 
     virtual void TestExtractFunction ();
+
+    //  TestExtractToDoubleFunction:
+    //      The function executes the test for the expression engine function
+    //      EXTRACTTODOUBLE when used as a select-parameter.
+
+    virtual void TestExtractToDoubleFunction ();
+
+    //  TestExtractToIntFunction:
+    //      The function executes the test for the expression engine function
+    //      EXTRACTTOINT when used as a select-parameter.
+
+    virtual void TestExtractToIntFunction ();
 
     //  TestMonthsBetweenFunction:
     //      The function executes the test for the expression engine function
@@ -606,6 +655,29 @@ protected:
 
 
     //-------------------------------------------------------------------------
+    //                      Unit Test Execution Functions
+    //-------------------------------------------------------------------------
+
+    //  ExecuteTestExtractFunction:
+    //      The function executes the tests for the expression engine function
+    //      EXTRACT when used as a select-parameter.
+
+    virtual void ExecuteTestExtractFunction (FdoString *class_name);
+
+    //  ExecuteTestExtractToDoubleFunction:
+    //      The function executes the tests for the expression engine function
+    //      EXTRACTTODOUBLE when used as a select-parameter.
+
+    virtual void ExecuteTestExtractToDoubleFunction (FdoString *class_name);
+
+    //  ExecuteTestExtractToIntFunction:
+    //      The function executes the tests for the expression engine function
+    //      EXTRACTTOINT when used as a select-parameter.
+
+    virtual void ExecuteTestExtractToIntFunction (FdoString *class_name);
+
+
+    //-------------------------------------------------------------------------
     //                         Special Test Functions
     //-------------------------------------------------------------------------
 
@@ -834,12 +906,27 @@ protected:
                                  FdoString *property_name,
                                  FdoFilter *filter);
 
+    //  GetExpectedErrorMessage:
+    //      Unit tests also execute error case testing. The returned error
+    //      message may differ depending of the underlying system. This
+    //      function retrieves the expected error message for those cases.
+
+    virtual FdoStringP GetExpectedErrorMessage (FdoInt16 test_case_id);
+
     //  GetExpectedValue:
     //      The function returns the expected value for a computed identifier
     //      in case the expression function request is treated differently in
     //      MySQL, Oracle, SQL Server and the standard implementation.
 
     virtual FdoDouble GetExpectedValue (FdoInt16 test_case_id);
+
+    //  IsExpectedErrorMessage:
+    //      The function checks whether or not the two given error messages
+    //      'match'. 
+
+    virtual bool IsExpectedErrorMessage (FdoStringP expected_error_message,
+                                         FdoStringP current_error_message,
+                                         FdoInt16   test_case_id);
 
 
     //-------------------------------------------------------------------------

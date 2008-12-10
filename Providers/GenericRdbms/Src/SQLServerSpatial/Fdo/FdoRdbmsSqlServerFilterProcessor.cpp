@@ -122,6 +122,8 @@ static wchar_t* sqlServerUnsupportedFdoFunctions[] = {
     L"TODATE",
     L"TOSTRING",
     L"EXTRACT",
+    L"EXTRACTTODOUBLE",
+    L"EXTRACTTOINT",
     L"MOD",
     L"REMAINDER",
     L"TRUNC",

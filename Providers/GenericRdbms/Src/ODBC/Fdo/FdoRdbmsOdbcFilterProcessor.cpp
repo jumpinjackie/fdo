@@ -68,6 +68,8 @@ static wchar_t* odbcUnsupportedFdoFunctions[] = {
     L"ADDMONTHS",
     L"CURRENTDATE",
     L"EXTRACT",
+    L"EXTRACTTODOUBLE",
+    L"EXTRACTTOINT",
     L"MONTHSBETWEEN",
     L"ABS",
     L"ACOS",
