@@ -615,6 +615,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Src\Functions\Date\FdoFunctionExtractToDouble.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Src\Functions\Date\FdoFunctionExtractToInt.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Src\Functions\Date\FdoFunctionMonthsBetween.cpp"
 						>
 					</File>
@@ -942,6 +950,14 @@
 					</File>
 					<File
 						RelativePath=".\Inc\Functions\Date\FdoFunctionExtract.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Date\FdoFunctionExtractToDouble.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Functions\Date\FdoFunctionExtractToInt.h"
 						>
 					</File>
 					<File

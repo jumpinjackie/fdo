@@ -41,6 +41,8 @@
 #include <Functions/Date/FdoFunctionAddMonths.h>
 #include <Functions/Date/FdoFunctionCurrentDate.h>
 #include <Functions/Date/FdoFunctionExtract.h>
+#include <Functions/Date/FdoFunctionExtractToDouble.h>
+#include <Functions/Date/FdoFunctionExtractToInt.h>
 #include <Functions/Date/FdoFunctionMonthsBetween.h>
 
 #include <Functions/Geometry/FdoFunctionArea2D.h>
@@ -115,6 +117,8 @@ public:
         m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionAddMonths::Create()));
         m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionCurrentDate::Create()));
         m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionExtract::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionExtractToDouble::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionExtractToInt::Create()));
         m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionMonthsBetween::Create()));
 
         m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionArea2D::Create()));
