@@ -52,10 +52,12 @@
 #define  FDO_FUNCTION_TOSTRING   L"ToString"   // Converts a numeric or date expression to a string
 
 //  - Date Function Names
-#define  FDO_FUNCTION_ADDMONTHS      L"AddMonths"      // Adds a specified number of months to a date expression
-#define  FDO_FUNCTION_CURRENTDATE    L"CurrentDate"    // Returns the current date
-#define  FDO_FUNCTION_EXTRACT        L"Extract"        // Extracts a specified portion of a date
-#define  FDO_FUNCTION_MONTHSBETWEEN  L"MonthsBetween"  // Returns the number of months between two date expressions
+#define  FDO_FUNCTION_ADDMONTHS       L"AddMonths"       // Adds a specified number of months to a date expression
+#define  FDO_FUNCTION_CURRENTDATE     L"CurrentDate"     // Returns the current date
+#define  FDO_FUNCTION_EXTRACT         L"Extract"         // Extracts a specified portion of a date
+#define  FDO_FUNCTION_EXTRACTTODOUBLE L"ExtractToDouble" // Extracts a specified portion of a date to a double
+#define  FDO_FUNCTION_EXTRACTTOINT    L"ExtractToInt"    // Extracts a specified portion of a date to an integer
+#define  FDO_FUNCTION_MONTHSBETWEEN   L"MonthsBetween"   // Returns the number of months between two date expressions
 
 //  - Mathematical Function Names
 #define  FDO_FUNCTION_ABS        L"Abs"        // Returns the absolute value of a numeric expression
@@ -103,10 +105,10 @@
 //  - Geometry function names
 #define  FDO_FUNCTION_AREA2D    L"Area2D"    // Returns the area of a geometry expression
 #define  FDO_FUNCTION_LENGTH2D  L"Length2D"  // Returns the length of a geometry expression
-#define  FDO_FUNCTION_X  L"X"  // Returns the X coordinate of a point geometry
-#define  FDO_FUNCTION_Y  L"Y"  // Returns the Y coordinate of a point geometry
-#define  FDO_FUNCTION_Z  L"Z"  // Returns the Z coordinate of a point geometry
-#define  FDO_FUNCTION_M  L"M"  // Returns the M coordinate of a point geometry
+#define  FDO_FUNCTION_X         L"X"  // Returns the X coordinate of a point geometry
+#define  FDO_FUNCTION_Y         L"Y"  // Returns the Y coordinate of a point geometry
+#define  FDO_FUNCTION_Z         L"Z"  // Returns the Z coordinate of a point geometry
+#define  FDO_FUNCTION_M         L"M"  // Returns the M coordinate of a point geometry
 
 /// \brief
 /// The FdoIExpressionCapbilities interface declares the feature provider's level
