@@ -152,9 +152,9 @@ FdoLiteralValue *FdoFunctionExtractToInt::Evaluate (
       case ExtractOperationTokens_Minute: result = dt.minute;  break;
       case ExtractOperationTokens_Second: 
 
-        result = (FdoInt32)((dt.seconds - floor(dt.seconds)) < 0.5)
+        result = (FdoInt16)((FdoInt32)((dt.seconds - floor(dt.seconds)) < 0.5)
                     ? floor(dt.seconds)
-                    : ceil(dt.seconds); 
+                    : ceil(dt.seconds)); 
         break;
 
     }  //  switch ...
