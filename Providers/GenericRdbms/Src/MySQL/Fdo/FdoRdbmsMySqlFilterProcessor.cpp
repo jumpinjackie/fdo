@@ -112,6 +112,8 @@ static wchar_t* mySqlUnsupportedFdoFunctions[] = {
     L"TOSTRING",
     L"ADDMONTHS",
     L"EXTRACT",
+    L"EXTRACTTODOUBLE",
+    L"EXTRACTTOINT",
     L"MONTHSBETWEEN",
     L"REMAINDER",
     L"ROUND",
