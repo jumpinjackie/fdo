@@ -22,6 +22,10 @@ class FdoCommonBinaryReader;
 #include <utility>
 #ifdef _WIN32
 #include <hash_map>
+#else
+#include <ext/hash_map>
+namespace stdext = ::__gnu_cxx;
+using namespace std;
 #endif
 #include "../ExpressionEngine.h"
 
