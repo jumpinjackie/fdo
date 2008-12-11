@@ -34,8 +34,8 @@ static int do_connect(odbcdr_context_def *context, int connect_id, rdbi_string_d
 static int alter_session(void);
 static int get_dbversion(unsigned long *dbversion);
 static int get_drivertype(odbcdr_connData_def * connData, odbcdr_DriverType *driver_type);
-static void DumpError2( SQLSMALLINT eHandleType, SQLHANDLE hodbc);
-static void DumpError2W( SQLSMALLINT eHandleType, SQLHANDLE hodbc);
+static void DumpError2( odbcdr_context_def *context, SQLSMALLINT eHandleType, SQLHANDLE hodbc);
+static void DumpError2W( odbcdr_context_def *context, SQLSMALLINT eHandleType, SQLHANDLE hodbc);
 
 /************************************************************************
 * Name																	*
@@ -410,9 +410,9 @@ int	do_connect(
         if ( rc == SQL_ERROR )
         {
             if (context->odbcdr_UseUnicode)
-                DumpError2W(SQL_HANDLE_DBC, hDbc);
+                DumpError2W(context, SQL_HANDLE_DBC, hDbc);
             else
-                DumpError2(SQL_HANDLE_DBC, hDbc);
+                DumpError2(context, SQL_HANDLE_DBC, hDbc);
         } else {
             rdbi_status = RDBI_SUCCESS;
  		
@@ -440,17 +440,17 @@ int	do_connect(
 		            rc = SQLSetConnectAttrW(hDbc, SQL_ATTR_ROW_ARRAY_SIZE, (SQLPOINTER)1, SQL_IS_INTEGER); 
                     // TODO: investigate "[Microsoft][ODBC Driver Manager] Option type out of range"
                     //if ( rc == SQL_ERROR )
-                    //    DumpError2(SQL_HANDLE_DBC, hDbc);
+                    //    DumpError2(context, SQL_HANDLE_DBC, hDbc);
 
 		            // Operate in syncronous mode
 		            rc = SQLSetConnectAttrW(hDbc, SQL_ATTR_ASYNC_ENABLE, SQL_ASYNC_ENABLE_OFF, SQL_IS_INTEGER);
                     if ( rc == SQL_ERROR )
-                        DumpError2W(SQL_HANDLE_DBC, hDbc);
+                        DumpError2W(context, SQL_HANDLE_DBC, hDbc);
 
 		            // Use autocommit mode
 		            rc = SQLSetConnectAttrW(hDbc, SQL_ATTR_AUTOCOMMIT, (SQLPOINTER)SQL_AUTOCOMMIT_ON, SQL_IS_UINTEGER);
                     if ( rc == SQL_ERROR )
-                        DumpError2W(SQL_HANDLE_DBC, hDbc);
+                        DumpError2W(context, SQL_HANDLE_DBC, hDbc);
 
                 }
                 else
@@ -470,17 +470,17 @@ int	do_connect(
 		            rc = SQLSetConnectAttr(hDbc, SQL_ATTR_ROW_ARRAY_SIZE, (SQLPOINTER)1, SQL_IS_INTEGER); 
                     // TODO: investigate "[Microsoft][ODBC Driver Manager] Option type out of range"
                     //if ( rc == SQL_ERROR )
-                    //    DumpError2(SQL_HANDLE_DBC, hDbc);
+                    //    DumpError2(context, SQL_HANDLE_DBC, hDbc);
 
 		            // Operate in syncronous mode
 		            rc = SQLSetConnectAttr(hDbc, SQL_ATTR_ASYNC_ENABLE, SQL_ASYNC_ENABLE_OFF, SQL_IS_INTEGER);
                     if ( rc == SQL_ERROR )
-                        DumpError2(SQL_HANDLE_DBC, hDbc);
+                        DumpError2(context, SQL_HANDLE_DBC, hDbc);
 
 		            // Use autocommit mode
 		            rc = SQLSetConnectAttr(hDbc, SQL_ATTR_AUTOCOMMIT, (SQLPOINTER)SQL_AUTOCOMMIT_ON, SQL_IS_UINTEGER);
                     if ( rc == SQL_ERROR )
-                        DumpError2(SQL_HANDLE_DBC, hDbc);
+                        DumpError2(context, SQL_HANDLE_DBC, hDbc);
 
                 }
             }
@@ -604,6 +604,7 @@ the_exit:
 
 static void DumpError2
     (
+    odbcdr_context_def *context, 
     SQLSMALLINT eHandleType,
     SQLHANDLE hodbc
     )
@@ -611,6 +612,7 @@ static void DumpError2
 }
 static void DumpError2W
     (
+    odbcdr_context_def *context, 
     SQLSMALLINT eHandleType,
     SQLHANDLE hodbc
     )
@@ -623,6 +625,7 @@ static void DumpError2W
 
 static void DumpError2
     (
+    odbcdr_context_def *context, 
     SQLSMALLINT eHandleType,
     SQLHANDLE hodbc
     )
@@ -646,6 +649,7 @@ static void DumpError2
     }
 static void DumpError2W
     (
+    odbcdr_context_def *context, 
     SQLSMALLINT eHandleType,
     SQLHANDLE hodbc
     )
@@ -655,6 +659,7 @@ static void DumpError2W
     SQLINTEGER  nServerError;
     SQLSMALLINT cbMessage;
     UINT        nRec = 1;
+    int         msgSize = 0;
 
     while (SQL_SUCCEEDED(SQLGetDiagRecW(eHandleType, hodbc, nRec, szState,
         &nServerError, szMessage, SQL_MAX_MESSAGE_LENGTH + 1, &cbMessage)))
@@ -662,9 +667,20 @@ static void DumpError2W
 #ifdef _DEBUG
         wprintf(L"Message: %ls\n", szMessage);
 #endif
+        if ( msgSize < (ODBCDR_MAX_BUFF_SIZE - 2) )
+        {
+            if ( msgSize > 0 ) 
+            {
+                wcsncpy( &(context->odbcdr_last_err_msgW[msgSize]), L"\n", ODBCDR_MAX_BUFF_SIZE - msgSize - 1 );
+                msgSize++;
+            }
+            wcsncpy( &(context->odbcdr_last_err_msgW[msgSize]), (wchar_t*)szMessage, ODBCDR_MAX_BUFF_SIZE - msgSize - 1 );
+        }
+        msgSize += wcslen(szMessage);
         nRec++;
         }
 
+    context->odbcdr_last_err_msgW[msgSize] = L'\0';
     return;
     }
 #endif
