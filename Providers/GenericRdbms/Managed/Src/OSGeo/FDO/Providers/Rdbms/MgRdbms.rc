@@ -69,11 +69,12 @@ BEGIN
     BEGIN
         BLOCK "100904b0"
         BEGIN
+            VALUE "Comments", "Managed FDO RDBMS"
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "FDO RDBMS Managed API Component"
             VALUE "FileVersion", "3.4.0.00"
             VALUE "InternalName", "OSGeo.FDO.Providers.Rdbms"
-            VALUE "LegalCopyright", "Copyright (C) 2007"
+            VALUE "LegalCopyright", "Copyright (C) 2007-2008"
             VALUE "OriginalFilename", "OSGeo.FDO.Providers.Rdbms.dll"
             VALUE "ProductName", "Feature Data Objects"
             VALUE "ProductVersion", "3.4.0.0"
