@@ -69,11 +69,12 @@ BEGIN
     BEGIN
         BLOCK "100904b0"
         BEGIN
+            VALUE "Comments", "FDO Provider for ODBC Overrides"
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "OdbcOverrides Dynamic Link Library"
             VALUE "FileVersion", "3.4.0.00"
             VALUE "InternalName", "OdbcOve"
-            VALUE "LegalCopyright", "Copyright (C) 2007"
+            VALUE "LegalCopyright", "Copyright (C) 2007-2008"
             VALUE "OriginalFilename", "OdbcOverrides.dll"
             VALUE "ProductName", " OdbcOverrides Dynamic Link Library"
             VALUE "ProductVersion", "3.4.0.0"

@@ -69,11 +69,12 @@ BEGIN
     BEGIN
         BLOCK "100904b0"
         BEGIN
+            VALUE "Comments", "FDO Provider for MySQL Overrides"
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "MySQLOverrides Dynamic Link Library"
             VALUE "FileVersion", "3.4.0.00"
             VALUE "InternalName", "MySQLOve"
-            VALUE "LegalCopyright", "Copyright (C) 2007"
+            VALUE "LegalCopyright", "Copyright (C) 2007-2008"
             VALUE "OriginalFilename", "MySQLOverrides.dll"
             VALUE "ProductName", " MySQLOverrides Dynamic Link Library"
             VALUE "ProductVersion", "3.4.0.0"
