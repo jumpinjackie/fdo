@@ -104,7 +104,7 @@ BEGIN
             VALUE "FileDescription", "FDO Provider for FdoWms Message Library"
             VALUE "FileVersion", "3.4.0.00"
             VALUE "InternalName", "FdoWmsMessage"
-            VALUE "LegalCopyright", "Copyright © 2007"
+            VALUE "LegalCopyright", "Copyright (C) 2007-2008"
             VALUE "OriginalFilename", "FdoWmsMessage.dll"
             VALUE "ProductName", "Feature Data Objects"
             VALUE "ProductVersion", "3.4.0.0"
