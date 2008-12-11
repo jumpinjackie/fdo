@@ -104,7 +104,7 @@ BEGIN
             VALUE "FileDescription", "FdoOws Dynamic Link Library"
             VALUE "FileVersion", "3.4.0.00"
             VALUE "InternalName", "FdoOws"
-            VALUE "LegalCopyright", "Copyright (C) 2007"
+            VALUE "LegalCopyright", "Copyright (C) 2007-2008"
             VALUE "OriginalFilename", "OWS.dll"
             VALUE "ProductName", " FdoOws Dynamic Link Library"
             VALUE "ProductVersion", "3.4.0.0"

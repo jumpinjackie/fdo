@@ -72,12 +72,12 @@ BEGIN
             VALUE "Comments", "Expression Engine "
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "Expression Engine Dynamic Link Library"
-            VALUE "FileVersion", "3, 4, 0, 0"
-            VALUE "InternalName", "Expressiion Engine"
-            VALUE "LegalCopyright", "Copyright (C) 2007"
+            VALUE "FileVersion", "3.4.0.00"
+            VALUE "InternalName", "Expression Engine"
+            VALUE "LegalCopyright", "Copyright (C) 2007-2008"
             VALUE "OriginalFilename", "ExpressiionEngine.dll"
             VALUE "ProductName", "Feature Data Objects"
-            VALUE "ProductVersion", "3, 4, 0, 0"
+            VALUE "ProductVersion", "3.4.0.0"
         END
     END
     BLOCK "VarFileInfo"
