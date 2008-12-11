@@ -69,11 +69,12 @@ BEGIN
     BEGIN
         BLOCK "100904b0"
         BEGIN
+            VALUE "Comments", "Managed FDO Provider for SQL Server Spatial Overrides"
             VALUE "CompanyName", "Autodesk, Inc."
             VALUE "FileDescription", "FDO SQLServer Managed Overrides API Component"
             VALUE "FileVersion", "3.4.0.00"
             VALUE "InternalName", "Autodesk.Gis.Fdo.Providers.SQLServer.Overrides"
-            VALUE "LegalCopyright", "Copyright (C) 2007"
+            VALUE "LegalCopyright", "Copyright (C) 2007-2008"
             VALUE "OriginalFilename", "Autodesk.Gis.Fdo.Providers.SQLServer.Overrides.dll"
             VALUE "ProductName", "Feature Data Objects"
             VALUE "ProductVersion", "3.4.0.0"
