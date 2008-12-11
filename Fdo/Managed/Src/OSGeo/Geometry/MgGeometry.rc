@@ -74,7 +74,7 @@ BEGIN
             VALUE "FileDescription", "FDO Geometry Manged API Component"
             VALUE "FileVersion", "3.4.0.00"
             VALUE "InternalName", "OSGeo.FDO.Geometry"
-            VALUE "LegalCopyright", "Copyright (C) 2007"
+            VALUE "LegalCopyright", "Copyright (C) 2007-2008"
             VALUE "OriginalFilename", "OSGeo.FDO.Geometry.dll"
             VALUE "ProductName", "Feature Data Objects"
             VALUE "ProductVersion", "3.4.0.0"
