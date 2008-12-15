@@ -43,7 +43,7 @@ PLATFORM_BITS=32
 !ENDIF
 
 !IFNDEF GDAL_HOME
-GDAL_HOME = $(FDOTHIRDPARTY)\gdal
+GDAL_HOME = $(FDOTHIRDPARTY)\gdal-1.6.0
 !ENDIF
 PY_INST_DIR = $(GDAL_HOME)\pymod
 INCDIR = $(GDAL_HOME)\include
@@ -272,11 +272,11 @@ JPEG_SUPPORTED = 1
 #FITS_LIB =	c:\dev32\usr\lib\cfitsio.lib
 
 # Comment out to disable GRIB support.
-GRIB_SETTING=yes
+GRIB_SETTING=YES
 
 # Uncomment the following to enable NetCDF format.
 #NETCDF_PLUGIN = NO
-#NETCDF_SETTING=yes
+#NETCDF_SETTING=YES
 #NETCDF_LIB=C:\Software\netcdf\lib\netcdf.lib
 #NETCDF_INC_DIR=C:\Software\netcdf\include
 # PROJ.4 stuff
