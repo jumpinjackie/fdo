@@ -216,7 +216,7 @@ copy /y "apache\xml-xerces\c\Build\%PLATFORMTHR%\vc9\Release\xerces-c_2_5_0%TYPE
 rem # Not all components are x64 enabled
 if not "%PLATFORMTHR%"=="Win32" goto rebuild_fdo
 
-copy /y "gdal\bin\Win32\%TYPEBUILDTHR%\gdal14.dll" "%FDOBINPATHTHR%"
+copy /y "gdal\bin\Win32\%TYPEBUILDTHR%\gdal16.dll" "%FDOBINPATHTHR%"
 copy /y "boost\stage\%PLATFORMTHR%\%TYPEBUILDTHR%\lib\boost_thread-vc90-mt%TYPEBUILDTHRPATH%-1_34_1.dll" "%FDOBINPATHTHR%"
 copy /y "boost\stage\%PLATFORMTHR%\%TYPEBUILDTHR%\lib\boost_date_time-vc90-mt%TYPEBUILDTHRPATH%-1_34_1.dll" "%FDOBINPATHTHR%"
 
@@ -301,7 +301,7 @@ if "%TYPEACTIONTHR%"=="clean" goto end
 rem # Install WMS Provider Thirdparty Files
 :install_wms_files
 echo copy %TYPEBUILDTHR% Thirdparty WMS files
-copy /y "gdal\bin\Win32\%TYPEBUILDTHR%\gdal14.dll" "%FDOBINPATHTHR%"
+copy /y "gdal\bin\Win32\%TYPEBUILDTHR%\gdal16.dll" "%FDOBINPATHTHR%"
 copy /y "boost\stage\%PLATFORMTHR%\%TYPEBUILDTHR%\lib\boost_thread-vc90-mt%TYPEBUILDTHRPATH%-1_34_1.dll" "%FDOBINPATHTHR%"
 rem # End WMS part #
 
@@ -321,7 +321,7 @@ if "%TYPEACTIONTHR%"=="clean" goto end
 rem # Install GDAL Provider Thirdparty Files
 :install_gdal_files
 echo copy %TYPEBUILDTHR% Thirdparty GDAL files
-copy /y "gdal\bin\Win32\%TYPEBUILDTHR%\gdal14.dll" "%FDOBINPATHTHR%"
+copy /y "gdal\bin\Win32\%TYPEBUILDTHR%\gdal16.dll" "%FDOBINPATHTHR%"
 rem # End GDAL part #
 
 rem # Build PostGIS Provider Thirdparty Files
