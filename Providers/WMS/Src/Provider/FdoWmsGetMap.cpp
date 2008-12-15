@@ -101,6 +101,13 @@ FdoStringP FdoWmsGetMap::EncodeKVP()
 	// For common request, version and service
     FdoStringP ret = FdoOwsRequest::EncodeKVP();
 
+    // Some WMS servers do not correctly default to
+    // using the xml service exception report.
+    ret += FdoOwsGlobals::And;
+    ret += FdoWmsXmlGlobals::EXCEPTIONS;
+    ret += FdoOwsGlobals::Equal;
+    ret += FdoWmsXmlGlobals::ExceptionType;
+
 	// Add "LAYERS" parameters in the request	
 	ret += FdoOwsGlobals::And;
 	ret += FdoWmsXmlGlobals::WmsRequestLayers;
