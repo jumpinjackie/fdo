@@ -129,7 +129,7 @@ DLLBUILD=1
 
 # Enable all OGR formats, or only raster formats?  Comment out to disable
 # vector formats. 
-INCLUDE_OGR_FRMTS = YES
+INCLUDE_OGR_FRMTS=YES
 
 # Location of Visual C++ directory (only required for following SETARGV stuff)
 VCDIR   = 	D:\Software\VStudio\VC98
