@@ -34,7 +34,7 @@
 #define	SQLiteDB_KEYEMPTY			(-3)	/* Key/data deleted or not created yet. */
 
 #define SQLiteDB_PAGESIZE			40960   /* Page size maximum (65K)  */
-#define SQLiteDB_MAXCACHESIZE		500 // maximium number of feature in the write cache
+#define SQLiteDB_MAXCACHESIZE		10000 // maximium number of feature in the write cache
 
 typedef	unsigned int	SQLiteRecNumbDef;	/* Record number type. */
 
