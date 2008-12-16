@@ -27,9 +27,9 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="mkdir bin\win32\debug&#x0D;&#x0A;mkdir lib\win32\debug&#x0D;&#x0A;cd $(ProjectDir)&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=32 DEBUG=1&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=32 DEBUG=1 devinstall"
-				ReBuildCommandLine="mkdir bin\win32\debug&#x0D;&#x0A;mkdir lib\win64\debug&#x0D;&#x0A;cd $(ProjectDir)&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=32 DEBUG=1 clean&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=32 DEBUG=1&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=32 DEBUG=1 devinstall "
-				CleanCommandLine="cd $(ProjectDir)&#x0D;&#x0A;nmake -f makefile.vc PLATFORM_BITS=32 MSVC_VER=1500 DEBUG=1 clean"
+				BuildCommandLine="mkdir bin\win32\debug&#x0D;&#x0A;mkdir lib\win32\debug&#x0D;&#x0A;cd $(ProjectDir)&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=32 INCLUDE_OGR_FRMTS=YES DEBUG=1&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=32 INCLUDE_OGR_FRMTS=YES DEBUG=1 devinstall"
+				ReBuildCommandLine="mkdir bin\win32\debug&#x0D;&#x0A;mkdir lib\win64\debug&#x0D;&#x0A;cd $(ProjectDir)&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=32 INCLUDE_OGR_FRMTS=YES  DEBUG=1 clean&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=32 INCLUDE_OGR_FRMTS=YES  DEBUG=1&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=32 INCLUDE_OGR_FRMTS=YES  DEBUG=1 devinstall "
+				CleanCommandLine="cd $(ProjectDir)&#x0D;&#x0A;nmake -f makefile.vc PLATFORM_BITS=32 MSVC_VER=1500 INCLUDE_OGR_FRMTS=YES DEBUG=1 clean"
 				Output="gdal16.dll"
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
@@ -47,9 +47,9 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="mkdir bin\win32\release&#x0D;&#x0A;mkdir lib\win32\release&#x0D;&#x0A;cd $(ProjectDir)&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=32&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=32 devinstall"
-				ReBuildCommandLine="mkdir bin\win32\release&#x0D;&#x0A;mkdir lib\win32\release&#x0D;&#x0A;cd $(ProjectDir)&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=32 clean&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=32&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=32 devinstall "
-				CleanCommandLine="cd $(ProjectDir)&#x0D;&#x0A;nmake -f makefile.vc PLATFORM_BITS=32 MSVC_VER=1500 clean"
+				BuildCommandLine="mkdir bin\win32\release&#x0D;&#x0A;mkdir lib\win32\release&#x0D;&#x0A;cd $(ProjectDir)&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 INCLUDE_OGR_FRMTS=YES PLATFORM_BITS=32&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 INCLUDE_OGR_FRMTS=YES PLATFORM_BITS=32 devinstall"
+				ReBuildCommandLine="mkdir bin\win32\release&#x0D;&#x0A;mkdir lib\win32\release&#x0D;&#x0A;cd $(ProjectDir)&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 INCLUDE_OGR_FRMTS=YES PLATFORM_BITS=32 clean&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 INCLUDE_OGR_FRMTS=YES PLATFORM_BITS=32&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 INCLUDE_OGR_FRMTS=YES PLATFORM_BITS=32 devinstall "
+				CleanCommandLine="cd $(ProjectDir)&#x0D;&#x0A;nmake -f makefile.vc PLATFORM_BITS=32 MSVC_VER=1500 INCLUDE_OGR_FRMTS=YES clean"
 				Output="gdal16.dll"
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
@@ -70,9 +70,9 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="mkdir bin\win64\debug&#x0D;&#x0A;mkdir lib\win64\debug&#x0D;&#x0A;cd $(ProjectDir) &amp;&amp; nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=64 DEBUG=1 &amp;&amp; nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=64 DEBUG=1 devinstall"
-				ReBuildCommandLine="mkdir bin\win64\debug&#x0D;&#x0A;mkdir lib\win64\debug&#x0D;&#x0A;cd $(ProjectDir) &amp;&amp; nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=64 DEBUG=1 clean &amp;&amp; nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=64 DEBUG=1 &amp;&amp; nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=64 DEBUG=1 devinstall "
-				CleanCommandLine="cd $(ProjectDir) &amp;&amp; nmake -f makefile.vc PLATFORM_BITS=64 MSVC_VER=1500 DEBUG=1 clean"
+				BuildCommandLine="mkdir bin\win64\debug&#x0D;&#x0A;mkdir lib\win64\debug&#x0D;&#x0A;cd $(ProjectDir) &amp;&amp; nmake -f makefile.vc INCLUDE_OGR_FRMTS=YES MSVC_VER=1500 PLATFORM_BITS=64 DEBUG=1 &amp;&amp; nmake -f makefile.vc INCLUDE_OGR_FRMTS=YES MSVC_VER=1500 PLATFORM_BITS=64 DEBUG=1 devinstall"
+				ReBuildCommandLine="mkdir bin\win64\debug&#x0D;&#x0A;mkdir lib\win64\debug&#x0D;&#x0A;cd $(ProjectDir) &amp;&amp; nmake -f makefile.vc INCLUDE_OGR_FRMTS=YES MSVC_VER=1500 PLATFORM_BITS=64 DEBUG=1 clean &amp;&amp; nmake -f makefile.vc INCLUDE_OGR_FRMTS=YES MSVC_VER=1500 PLATFORM_BITS=64 DEBUG=1 &amp;&amp; nmake -f makefile.vc INCLUDE_OGR_FRMTS=YES MSVC_VER=1500 PLATFORM_BITS=64 DEBUG=1 devinstall "
+				CleanCommandLine="cd $(ProjectDir) &amp;&amp; nmake -f makefile.vc INCLUDE_OGR_FRMTS=YES PLATFORM_BITS=64 MSVC_VER=1500 DEBUG=1 clean"
 				Output="gdal16.dll"
 				PreprocessorDefinitions="_WIN64"
 				IncludeSearchPath=""
@@ -93,9 +93,9 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="mkdir bin\win64\release&#x0D;&#x0A;mkdir lib\win64\release&#x0D;&#x0A;cd $(ProjectDir) &amp;&amp; nmake -f makefile.vc PLATFORM_BITS=64 MSVC_VER=1500 &amp;&amp; nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=64 devinstall"
-				ReBuildCommandLine="mkdir bin\win64\release&#x0D;&#x0A;mkdir lib\win64\release&#x0D;&#x0A;cd $(ProjectDir) &amp;&amp; nmake -f makefile.vc PLATFORM_BITS=64 MSVC_VER=1500 clean &amp;&amp; nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=64 &amp;&amp; nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=64 devinstall"
-				CleanCommandLine="cd $(ProjectDir) &amp;&amp; nmake -f makefile.vc PLATFORM_BITS=64 MSVC_VER=1500 clean"
+				BuildCommandLine="mkdir bin\win64\release&#x0D;&#x0A;mkdir lib\win64\release&#x0D;&#x0A;cd $(ProjectDir) &amp;&amp; nmake -f makefile.vc PLATFORM_BITS=64 INCLUDE_OGR_FRMTS=YES MSVC_VER=1500 &amp;&amp; nmake -f makefile.vc INCLUDE_OGR_FRMTS=YES MSVC_VER=1500 PLATFORM_BITS=64 devinstall"
+				ReBuildCommandLine="mkdir bin\win64\release&#x0D;&#x0A;mkdir lib\win64\release&#x0D;&#x0A;cd $(ProjectDir) &amp;&amp; nmake -f makefile.vc PLATFORM_BITS=64 INCLUDE_OGR_FRMTS=YES MSVC_VER=1500 clean &amp;&amp; nmake -f makefile.vc INCLUDE_OGR_FRMTS=YES MSVC_VER=1500 PLATFORM_BITS=64 &amp;&amp; nmake -f makefile.vc INCLUDE_OGR_FRMTS=YES MSVC_VER=1500 PLATFORM_BITS=64 devinstall"
+				CleanCommandLine="cd $(ProjectDir) &amp;&amp; nmake -f makefile.vc PLATFORM_BITS=64 INCLUDE_OGR_FRMTS=YES MSVC_VER=1500 clean"
 				Output="gdal16.dll"
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
