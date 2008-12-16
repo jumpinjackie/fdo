@@ -28,7 +28,7 @@
 			<Tool
 				Name="VCNMakeTool"
 				BuildCommandLine="mkdir bin\win32\debug&#x0D;&#x0A;mkdir lib\win32\debug&#x0D;&#x0A;cd $(ProjectDir)&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=32 INCLUDE_OGR_FRMTS=YES DEBUG=1&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=32 INCLUDE_OGR_FRMTS=YES DEBUG=1 devinstall"
-				ReBuildCommandLine="mkdir bin\win32\debug&#x0D;&#x0A;mkdir lib\win64\debug&#x0D;&#x0A;cd $(ProjectDir)&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=32 INCLUDE_OGR_FRMTS=YES  DEBUG=1 clean&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=32 INCLUDE_OGR_FRMTS=YES  DEBUG=1&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=32 INCLUDE_OGR_FRMTS=YES  DEBUG=1 devinstall "
+				ReBuildCommandLine="mkdir bin\win32\debug&#x0D;&#x0A;mkdir lib\win32\debug&#x0D;&#x0A;cd $(ProjectDir)&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=32 INCLUDE_OGR_FRMTS=YES  DEBUG=1 clean&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=32 INCLUDE_OGR_FRMTS=YES  DEBUG=1&#x0D;&#x0A;nmake -f makefile.vc MSVC_VER=1500 PLATFORM_BITS=32 INCLUDE_OGR_FRMTS=YES  DEBUG=1 devinstall "
 				CleanCommandLine="cd $(ProjectDir)&#x0D;&#x0A;nmake -f makefile.vc PLATFORM_BITS=32 MSVC_VER=1500 INCLUDE_OGR_FRMTS=YES DEBUG=1 clean"
 				Output="gdal16.dll"
 				PreprocessorDefinitions=""
