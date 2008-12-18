@@ -62,7 +62,7 @@ void WmsTestDescribeSchema::testServer2 ()
 {
     try 
     {
-	    TestServer(L"http://wms.jpl.nasa.gov/wms.cgi", 19);
+	    TestServer(L"http://wms.jpl.nasa.gov/wms.cgi", 20);
     }
     catch (FdoException* e)
     {
@@ -88,7 +88,7 @@ void WmsTestDescribeSchema::testServer4 ()
 {
     try 
     {
-	    TestServer(L"http://fbinter.stadt-berlin.de/fb/wms/oma_ogc_capabilitiesrequest.jsp", 419);
+	    TestServer(L"http://fbinter.stadt-berlin.de/fb/wms/oma_ogc_capabilitiesrequest.jsp", 479);
     }
     catch (FdoException* e)
     {

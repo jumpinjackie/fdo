@@ -616,7 +616,7 @@ void WmsTestSelect::testNASAServerDefaultOverrides ()
             
             FdoWmsOvClassesP ovClasses = ovMapping->GetClasses();
             FdoInt32 numClasses = ovClasses->GetCount();
-            CPPUNIT_ASSERT (numClasses == 18);
+            CPPUNIT_ASSERT (numClasses == 19);
 
             FdoWmsOvClassDefinitionP ovClass = ovClasses->GetItem(0);
             CPPUNIT_ASSERT (FdoStringP(ovClass->GetName()) == L"global_mosaic");
@@ -823,7 +823,7 @@ void WmsTestSelect::testCubeServer ()
 
         CPPUNIT_ASSERT (FdoConnectionState_Open == conn->Open ());
         cmdSelect = static_cast<FdoISelect*>(conn->CreateCommand(FdoCommandType_Select));
-        cmdSelect->SetFeatureClassName(L"WorldFaultLines");
+        cmdSelect->SetFeatureClassName(L"OceanSeas");
         featureReader = cmdSelect->Execute();
         while (featureReader->ReadNext ())
         {
@@ -1338,7 +1338,7 @@ void WmsTestSelect::testNS_TOPO_1000 ()
         FdoConnectionState state = connection->Open ();
 
         FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
-        cmdSelect->SetFeatureClassName (L"1K_BL_LINE");
+        cmdSelect->SetFeatureClassName (L"k1_BL_LINE");
         FdoPtr<FdoIFeatureReader> featReader = cmdSelect->Execute ();
         CPPUNIT_ASSERT (featReader->ReadNext ());	    
         FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Raster");
@@ -1381,7 +1381,7 @@ void WmsTestSelect::testNS_TOPO_5000 ()
         FdoConnectionState state = connection->Open ();
 
         FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
-        cmdSelect->SetFeatureClassName (L"NS_TOPO_5000.5K_DL_LINE");
+        cmdSelect->SetFeatureClassName (L"NS_TOPO_5000.K5_DL_LINE");
         FdoPtr<FdoIFeatureReader> featReader = cmdSelect->Execute ();
         CPPUNIT_ASSERT (featReader->ReadNext ());	    
         FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Raster");
