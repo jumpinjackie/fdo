@@ -17,13 +17,13 @@
 	 elementFormDefault="qualified" 
 	 attributeFormDefault="unqualified"
 	>
-		<xs:element name="WorldFaultLines" type="Itasca_Demo:WorldFaultLinesType" abstract="false" substitutionGroup="gml:_Feature">
-			<xs:key name="WorldFaultLinesKey"> 
-  				<xs:selector xpath=".//WorldFaultLines"/>
+		<xs:element name="OceanSeas" type="Itasca_Demo:OceanSeasType" abstract="false" substitutionGroup="gml:_Feature">
+			<xs:key name="OceanSeasKey"> 
+  				<xs:selector xpath=".//OceanSeas"/>
 				<xs:field xpath="Id"/>
 			</xs:key>
  		</xs:element>
-		<xs:complexType name="WorldFaultLinesType" abstract="false">
+		<xs:complexType name="OceanSeasType" abstract="false">
 			<xs:complexContent>
 				<xs:extension base="gml:AbstractFeatureType">
 					<xs:sequence>
@@ -47,7 +47,7 @@
 		</xs:complexType>
 	</xs:schema>
     <SchemaMapping provider="OSGeo.WMS.3.4" name="Itasca_Demo" xmlns="http://www.autodesk.com/isd/fdo/WmsProvider">
-	    <complexType name="WorldFaultLinesType">
+	    <complexType name="OceanSeasType">
 		    <RasterDefinition name="Image">
 			    <Format>PNG</Format>
 			    <Transparent>true</Transparent>
@@ -55,7 +55,7 @@
 			    <Time>current</Time>
 			    <Elevation>100</Elevation>
 			    <SpatialContext>EPSG:4326</SpatialContext>
-				<Layer name="FAULTS:GSC">
+				<Layer name="OCEANSEA_1M:Foundation">
 				</Layer>
 		    </RasterDefinition>
 	    </complexType>
