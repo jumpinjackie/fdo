@@ -1294,7 +1294,8 @@ FdoClassDefinition* SdfSimpleFeatureReader::CloneAndPruneClass(FdoClassDefinitio
         for (int i=0; i<computedProps->GetCount(); i++)
         {
             FdoPtr<FdoPropertyDefinition> pd = computedProps->GetItem(i);
-            properties->Add(pd);
+            if (!properties->FindItem(pd->GetName()))
+                properties->Add(pd);
         }
     }
 
