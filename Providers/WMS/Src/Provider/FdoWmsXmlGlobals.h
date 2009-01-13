@@ -95,6 +95,8 @@ namespace FdoWmsXmlGlobals
 	static FdoString *WmsRequestElevation                   = L"ELEVATION";	
 	static FdoString *WmsRequestBackgroundColor             = L"BGCOLOR";
 	static FdoString *WmsRequestDefaultStyle				= L"";
+    static FdoString *EXCEPTIONS                            = L"EXCEPTIONS";
+    static FdoString* ExceptionType                         = L"application/vnd.ogc.se_xml";
 };
 
 
