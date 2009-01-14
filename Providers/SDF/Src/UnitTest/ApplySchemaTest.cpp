@@ -234,7 +234,6 @@ void ApplySchemaTest::TestSchema ()
     TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err7_master.txt", "apply_schema_err7.txt" );
     TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err8_master.txt", "apply_schema_err8.txt" );
     TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err10_master.txt", "apply_schema_err10.txt" );
-    TestCommonFileUtil::CompareFilesAndThrow( "apply_schema_err11_master.txt", "apply_schema_err11.txt" );
 #endif
 
 	printf( "Done\n" );
