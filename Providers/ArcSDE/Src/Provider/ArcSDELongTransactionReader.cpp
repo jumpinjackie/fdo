@@ -181,7 +181,7 @@ bool ArcSDELongTransactionReader::IsActive ()
 /// <returns>Returns true if the long transaction is locked by anybody.</returns> 
 bool ArcSDELongTransactionReader::IsFrozen ()
 {
-    CHAR name[SE_MAX_VERSION_LEN];
+    CHAR name[2*SE_MAX_VERSION_LEN];
     LONG lock_count;
     SE_VERSION_LOCK *locks;
     bool ret;
@@ -285,5 +285,6 @@ FdoILongTransactionReader* ArcSDELongTransactionReader::GetParents ()
 
     return (FDO_SAFE_ADDREF (ret.p));
 }
+
 
 
