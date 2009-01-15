@@ -139,7 +139,7 @@ private:
 /* Data Type conversion (FdoDataValue::Create()) clone. Can be removed when data type
    conversion is added to the FDO API
 */
-    FdoDataValue* SdfQueryOptimizer::ConvertDataValue(
+    FdoDataValue* ConvertDataValue(
         FdoDataType dataType,
         FdoDataValue* src, 
         FdoBoolean nullIfIncompatible,
