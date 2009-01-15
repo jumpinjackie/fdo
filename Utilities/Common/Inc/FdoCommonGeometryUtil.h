@@ -114,6 +114,43 @@ public:
 
     static FdoInt32 GetCountGeometryTypesFromHex (FdoInt32 hexType);
 
+    // Modifies the given geometry so that any polyon external rings are
+    // Counterclockwise and internal rings are clockwise. This is done by reversing
+    // the order of ring coordinates if need be. The modified polygon is returned.
+    //
+    // TODO: this function is used to orient polygons to be accepted by SQL Server 2008
+    // when the coordinate system is geodetic. A future enhancement would be to 
+    // support the opposite orientation (exterior rings CW, interior CCW), which is 
+    // what Shape files require.
+    static FdoIGeometry* ModifyRingOrientation(FdoIGeometry *geometry);
+
+    // Same as ModifyRingOrientation except that it only operates on Polygons
+    static FdoIGeometry* ModifyPolygonRingOrientation(FdoIPolygon *polygon);
+
+    // Returns true if all of the following is true for the given polygon:
+    //      - exterior ring is counterclockwise
+    //      - interior rings are clockwise
+    static bool IsPolygonCompatible(FdoIPolygon *polygon);
+    
+    // Returns the number of ordinates for a given FDO dimensionality
+    static inline FdoInt32 DimensionalityToNumOrdinates(FdoInt32 dimensionality);
+
+    // Returns true if the given 3 point linestring bends clockwise
+    static inline bool Clockwise(double x0, double y0, double x1, double y1, double x2, double y2);
+
+    // Returns true if the given coordinate string forms a clockwise ring. 
+    static bool OrdinatesAreClockwise(FdoInt32 dimensionality, FdoInt32 numOrdinates, const double* ordinates);
+
+    // Reverse the order of the given set of coordinates.
+    //
+    // Parameters
+    //      Dimensionality - determines number of ordinates per coordinate
+    //      numOrdinates - total number of ordinates. 
+    //      ordinates - ordinates to reverse
+    //      out_ordinates - reversed ordinates. Caller is responsible for pre-allocating
+    //          enough space to hold all ordinates. 
+    static void ReverseOrdinates(FdoInt32 dimensionality, FdoInt32 numOrdinates, const double* ordinates, double* out_ordinates);
+
 private:
 
     /// The following enumeration defines hex-codes that map to FDO Geometry Types.

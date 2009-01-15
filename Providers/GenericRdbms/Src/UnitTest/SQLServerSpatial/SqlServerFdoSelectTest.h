@@ -25,12 +25,24 @@ class SqlServerFdoSelectTest : public FdoSelectTest
 {
     CPPUNIT_TEST_SUB_SUITE (SqlServerFdoSelectTest, FdoSelectTest);
     CPPUNIT_TEST (TestDateFilter);
+    CPPUNIT_TEST (TestSpatialGeog);
     CPPUNIT_TEST_SUITE_END ();
 
     void  set_provider();
     void TestDateFilter();
+    void TestSpatialGeog();
 
 	void spatial_query_defect813611();
+
+protected:
+    void SpatialGeogSchema( FdoIConnection* connection );
+    void SpatialGeogData( FdoIConnection* connection );
+    void SpatialGeogSelect( FdoIConnection* connection, FdoIGeometry* spatialArea );
+    FdoStringsP SpatialGeogSelectNames( FdoIConnection* connection, FdoIGeometry* spatialArea, FdoStringP propName );
+
+private:
+    static const FdoStringP mSpatialGeogSuffix;
+
 };
 
 #endif // SQLSERVER_FDOSELECTTEST_H
