@@ -274,6 +274,11 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
         delete gc;
 	}
 
+    // When Coordinate System is geodetic, filter polygon outer ring must 
+    // be CounterClockwise, and inner rings Clockwise.
+    if ( geomType == L"geography" )
+        geom2D = FdoCommonGeometryUtil::ModifyRingOrientation( geom2D );
+
     // Delimit column name with []. Can't use " when part of function.
     buf += "[";
     buf += columnName;

@@ -407,3 +407,231 @@ FdoInt32 FdoCommonGeometryUtil::GetCountGeometryTypesFromHex (FdoInt32 hexType)
     }
     return typeCount;
 }
+
+FdoIGeometry* FdoCommonGeometryUtil::ModifyRingOrientation(FdoIGeometry *geometry)
+{
+    FdoIGeometry*          newGeometry = FDO_SAFE_ADDREF(geometry);
+	FdoGeometryType        geometryType = geometry->GetDerivedType();
+
+    switch (geometryType)
+    {
+    case FdoGeometryType_Polygon:
+        {
+            FdoIPolygon * derivedGeom = static_cast<FdoIPolygon *>(geometry);
+            if ( !IsPolygonCompatible(derivedGeom) )
+            {
+                FDO_SAFE_RELEASE(newGeometry);
+                newGeometry = ModifyPolygonRingOrientation(derivedGeom);
+            }
+        }
+        break;
+
+    case FdoGeometryType_MultiPolygon:
+        {
+            FdoIMultiPolygon * derivedGeom = static_cast<FdoIMultiPolygon *>(geometry);
+            FdoInt32 numSubGeometries = derivedGeom->GetCount();
+
+            bool bPolygonCCW = true;
+            for (FdoInt32 i = 0;  i < numSubGeometries;  i++)
+            {
+                FdoPtr<FdoIPolygon> subGeom = derivedGeom->GetItem(i);
+                bPolygonCCW = IsPolygonCompatible(subGeom);
+                if (bPolygonCCW == false)
+                    break;
+            }
+            if (bPolygonCCW == false)
+            {
+                FdoPtr<FdoPolygonCollection> newSubGeometries = FdoPolygonCollection::Create();
+                FdoInt32 numSubGeometries = derivedGeom->GetCount();
+                for (FdoInt32 i = 0; i<numSubGeometries; i++)
+                {
+                    FdoPtr<FdoIPolygon> subGeom = derivedGeom->GetItem(i);
+                    FdoPtr<FdoIGeometry> newSubGeometry = ModifyPolygonRingOrientation(subGeom);
+                    newSubGeometries->Add(static_cast<FdoIPolygon *>(newSubGeometry.p));
+                }
+    			FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+                FDO_SAFE_RELEASE(newGeometry);
+                newGeometry = gf->CreateMultiPolygon(newSubGeometries);
+            }
+        }
+        break;
+    }
+
+    return newGeometry;
+}
+
+
+// modify the polygon so that the exteral ring is ccw and all the interior rings are cw
+FdoIGeometry* FdoCommonGeometryUtil::ModifyPolygonRingOrientation(FdoIPolygon *polygon)
+{
+    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+    FdoIGeometry *geometry;
+    FdoPtr<FdoILinearRing> originalExternalRing = polygon->GetExteriorRing();
+    FdoPtr<FdoILinearRing> newExteriorRing;
+    double *newOrdinates = NULL;
+    FdoInt32 dim = originalExternalRing->GetDimensionality();
+    FdoInt32 numberCoordinates = originalExternalRing->GetCount();
+    FdoInt32 numOrdinates = DimensionalityToNumOrdinates(dim) * numberCoordinates;
+    const double *ordinates = originalExternalRing->GetOrdinates();
+    bool clockwise = OrdinatesAreClockwise(dim, numOrdinates, ordinates);
+
+    if (clockwise)
+    {
+        newOrdinates = new double[numOrdinates];
+        ReverseOrdinates(dim, numOrdinates,ordinates,newOrdinates);
+        newExteriorRing = gf->CreateLinearRing(dim, numOrdinates, newOrdinates);
+        delete [] newOrdinates;
+    }
+    else
+    {
+        newExteriorRing = originalExternalRing;
+    }
+
+    FdoPtr<FdoLinearRingCollection> newInteriorRings = FdoLinearRingCollection::Create();
+    for (int j = 0; j<polygon->GetInteriorRingCount();  j++)
+    {
+        FdoPtr<FdoILinearRing> ring = polygon->GetInteriorRing(j);
+        ordinates = ring->GetOrdinates();
+        dim = ring->GetDimensionality();
+        numberCoordinates = ring->GetCount();
+        numOrdinates = DimensionalityToNumOrdinates(dim) * numberCoordinates;
+        clockwise = OrdinatesAreClockwise(dim, numOrdinates, ordinates);
+        if (clockwise == false)
+        {
+            newOrdinates = new double[numOrdinates];
+            ReverseOrdinates(dim,numOrdinates,ordinates,newOrdinates);
+            FdoPtr<FdoILinearRing> newInteriorRing = gf->CreateLinearRing(dim, numOrdinates, newOrdinates);
+            newInteriorRings->Add(newInteriorRing);
+            delete [] newOrdinates;
+        }
+        else
+        {
+            newInteriorRings->Add(ring);
+        }
+    }
+    geometry = gf->CreatePolygon(newExteriorRing, newInteriorRings.p);  
+    return geometry;
+}
+
+// returns true the external ring is ccw and all the interior rings are cw
+bool FdoCommonGeometryUtil::IsPolygonCompatible(FdoIPolygon *polygon)
+{
+    bool isPolygonCompatible = false;
+    FdoPtr<FdoILinearRing> originalExternalRing = polygon->GetExteriorRing();
+    FdoInt32 dim = originalExternalRing->GetDimensionality();
+    FdoInt32 numberCoordinates = originalExternalRing->GetCount();
+    FdoInt32 numOrdinates = DimensionalityToNumOrdinates(dim) * numberCoordinates;
+    const double *ordinates = originalExternalRing->GetOrdinates();
+    bool clockwise = OrdinatesAreClockwise(dim, numOrdinates, ordinates);
+    if (clockwise == false)
+    {
+        isPolygonCompatible = true;
+        for (int j = 0;  j < polygon->GetInteriorRingCount();  j++)
+        {
+            FdoPtr<FdoILinearRing> ring = polygon->GetInteriorRing(j);
+            ordinates = ring->GetOrdinates();
+            dim = ring->GetDimensionality();
+            numberCoordinates = ring->GetCount();
+            numOrdinates = DimensionalityToNumOrdinates(dim) * numberCoordinates;
+            clockwise = OrdinatesAreClockwise(dim, numOrdinates, ordinates);
+            if (clockwise == false)
+            {
+                isPolygonCompatible = false;
+                break;
+            }
+        }
+    }
+    return isPolygonCompatible;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+// FDO RING ORIENTATION HELPERS
+//
+// The following several routines are for analyzing and reversing polygon loops.
+// They are constructed in such a way as to allow migration to fdo spatial utility.
+//
+
+// detemines the number of ordinates in a particular dimensionality coordinate
+inline FdoInt32 FdoCommonGeometryUtil::DimensionalityToNumOrdinates(FdoInt32 dimensionality)
+{
+    FdoInt32 value = 0;
+
+    if ( dimensionality == FdoDimensionality_XY )
+        value = 2;
+    else if ( dimensionality == ( FdoDimensionality_XY | FdoDimensionality_Z ) )
+        value = 3;
+    else if ( dimensionality == ( FdoDimensionality_XY | FdoDimensionality_M ) )
+        value = 3;
+    else if ( dimensionality == ( FdoDimensionality_XY | FdoDimensionality_Z | FdoDimensionality_M ) )
+        value = 4;
+
+    return value;
+}
+
+// Determines if orientation is clockwise or counterclockwise
+// based on whether x2y2 is to the left of the line defined by x0y0,x1y1
+// if x2y2 is to the left, the orientation is counterclockwise
+// if x2y2 is on the line, the orientation is the degenerate case
+// if x2y2 is to the right, the orientation is clockwise
+inline bool FdoCommonGeometryUtil::Clockwise(double x0, double y0, double x1, double y1, double x2, double y2)
+{
+    return ((x1 - x0) * (y2 - y0) - (x2 - x0) * (y1 - y0)) < 0;
+}
+
+// Determines if the passed array of ordinates is clockwise
+bool FdoCommonGeometryUtil::OrdinatesAreClockwise(FdoInt32 dimensionality, FdoInt32 numOrdinates, const double* ordinates)
+{
+    // we will determine the bottom right corner vertex
+    // and check to see if it is to the left or right
+    // of the next corresponding segment.
+    FdoInt32 dimLen = DimensionalityToNumOrdinates(dimensionality);
+    if( 0 == dimLen )
+        return false;
+    FdoInt32 minOffset = 0;
+    double minX = ordinates[0];
+    double minY = ordinates[1];
+    // leave out the final closing vertex, since it shouldn't be used for
+    // the corner check. It will be confused with the first vertex in the 
+    // first vertex special case check (0 == minOffset) below.
+    FdoInt32 maxOrdinates = numOrdinates-dimLen;
+    for( FdoInt32 i = dimLen; i < maxOrdinates; i += dimLen )
+    {
+        if( ordinates[i+1] > minY )
+            continue;
+        if( ordinates[i+1] == minY )
+            if( ordinates[i] < minX )
+                continue;
+        // if we get here, we found a better min vertex
+        minOffset = i;
+        minX = ordinates[i];
+        minY = ordinates[1 + i];
+    }
+
+    if( 0 == minOffset )
+        return Clockwise(
+            ordinates[maxOrdinates-dimLen], ordinates[1 + maxOrdinates-dimLen],
+            ordinates[0],                   ordinates[1],
+            ordinates[dimLen],              ordinates[1 + dimLen] );
+    else
+        return Clockwise(
+            ordinates[minOffset-dimLen], ordinates[1 + minOffset-dimLen],
+            ordinates[minOffset],        ordinates[1 + minOffset],
+            ordinates[minOffset+dimLen], ordinates[1 + minOffset+dimLen] );
+}
+
+// Reverses the individual coordinates in the passed ordinate array
+void FdoCommonGeometryUtil::ReverseOrdinates(FdoInt32 dimensionality, FdoInt32 numOrdinates, const double* ordinates, double *out_ordinates)
+{
+    FdoInt32 dimLen = DimensionalityToNumOrdinates(dimensionality);
+    if( 0 == dimLen )
+        return;
+
+    for(int i=0,j = numOrdinates-dimLen; i<numOrdinates; i+=dimLen, j-=dimLen)
+    {
+        for( FdoInt32 n = 0; n < dimLen; n++ )
+        {
+            out_ordinates[j+n] = ordinates[i+n];
+        }
+    }
+}
+
