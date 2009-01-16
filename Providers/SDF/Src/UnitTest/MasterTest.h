@@ -179,7 +179,7 @@ public:
         FdoDataType type2 = FdoDataType_String,
         FdoString** expected2 = NULL 
     );
-    FdoStringP MasterTest::inFilterOptimize_GetIdValue( 
+    FdoStringP inFilterOptimize_GetIdValue( 
         FdoIFeatureReader* rdr,
         FdoString* propName, 
         FdoDataType propType
