@@ -839,6 +839,16 @@ protected:
                          FdoString *property_name,
                          FdoFilter *filter);
 
+    //  GetStringValue:
+    //      The function retrieves the value for a string property identified
+    //      by the provided filter and returns it back to the calling pro-
+    //      cedure.
+
+    virtual FdoStringP GetStringValue (FdoString *class_name,
+                                       FdoString *property_name,
+                                       FdoFilter *filter);
+
+
     //-------------------------------------------------------------------------
     //                                Variables
     //-------------------------------------------------------------------------
