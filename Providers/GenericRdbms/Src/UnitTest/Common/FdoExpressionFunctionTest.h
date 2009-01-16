@@ -42,7 +42,7 @@
 //      where the returned value for the computed property varies.
 
 
-// ========================= AGGREGATE FUNCTIONS =========================
+// ====================== AGGREGATE FUNCTIONS (001+) =====================
 
 #define COUNT_TEST_CASE_CODE_1               1
 #define COUNT_TEST_CASE_CODE_2               2
@@ -50,33 +50,33 @@
 #define COUNT_TEST_CASE_CODE_4               4
 
 
-// ======================== CONVERSION FUNCTIONS =========================
-// (start at 100)
+// ===================== CONVERSION FUNCTIONS (100+) =====================
 
 
-// =========================== DATE FUNCTIONS ============================
+
+// ======================== DATE FUNCTIONS (200+) ========================
 
 #define EXTRACT_TEST_CASE_CODE_1           200
 #define EXTRACTTODOUBLE_TEST_CASE_CODE_1   201
 #define EXTRACTTOINT_TEST_CASE_CODE_1      202
 
 
-// ========================= GEOMETRY FUNCTIONS ==========================
-// (start at 300)
+// ====================== GEOMETRY FUNCTIONS (300+) ======================
 
 
-// =========================== MATH FUNCTIONS ============================
+
+// ======================== MATH FUNCTIONS (400+) ========================
 
 #define EXP_TEST_CASE_CODE_1               400
 #define POWER_TEST_CASE_CODE_1             401
 
 
-// ========================== NUMERIC FUNCTIONS ==========================
-// (start at 500)
+// ======================= NUMERIC FUNCTIONS (500+) ======================
 
 
-// ========================== STRING FUNCTIONS ===========================
-// (start at 600)
+
+// ======================= STRING FUNCTIONS (600+) =======================
+
 
 
 
@@ -919,6 +919,15 @@ protected:
     //      MySQL, Oracle, SQL Server and the standard implementation.
 
     virtual FdoDouble GetExpectedValue (FdoInt16 test_case_id);
+
+    //  GetStringValue:
+    //      The function retrieves the value for a string property identified
+    //      by the provided filter and returns it back to the calling pro-
+    //      cedure.
+
+    virtual FdoStringP GetStringValue (FdoString *class_name,
+                                       FdoString *property_name,
+                                       FdoFilter *filter);
 
     //  IsExpectedErrorMessage:
     //      The function checks whether or not the two given error messages
