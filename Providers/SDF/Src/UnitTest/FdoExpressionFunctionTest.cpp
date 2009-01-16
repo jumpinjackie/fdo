@@ -263,704 +263,704 @@ void FdoExpressionFunctionTest::RunAllExpFctTests ()
 
     // Testing the aggregate functions.
 
-    //printf(" >>> ... Testing Aggregate Functions \n");
-    //printf("\n");
-    //try {
+    printf(" >>> ... Testing Aggregate Functions \n");
+    printf("\n");
+    try {
 
-    //    TestAvgFunction();
+        TestAvgFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestCountFunction();
+      TestCountFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestMaxFunction();
+      TestMaxFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestMedianFunction();
+      TestMedianFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestMinFunction();
+      TestMinFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestStddevFunction();
+      TestStddevFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestSumFunction();
+      TestSumFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //// Testing the conversion functions.
+    // Testing the conversion functions.
 
-    //printf("\n");
-    //printf("\n");
-    //printf(" >>> ... Testing Conversion Functions \n");
-    //printf("\n");
+    printf("\n");
+    printf("\n");
+    printf(" >>> ... Testing Conversion Functions \n");
+    printf("\n");
 
-    //try {
+    try {
 
-    //  TestNullValueFunction();
+      TestNullValueFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestToDateFunction();
+      TestToDateFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestToDoubleFunction();
+      TestToDoubleFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestToFloatFunction();
+      TestToFloatFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestToInt32Function();
+      TestToInt32Function();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestToInt64Function();
+      TestToInt64Function();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestToStringFunction();
+      TestToStringFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //// Testing the date functions.
+    // Testing the date functions.
 
-    //printf("\n");
-    //printf("\n");
-    //printf(" >>> ... Testing Date Functions \n");
-    //printf("\n");
+    printf("\n");
+    printf("\n");
+    printf(" >>> ... Testing Date Functions \n");
+    printf("\n");
 
-    //try {
+    try {
 
-    //  TestAddMonthsFunction();
+      TestAddMonthsFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestCurrentDateFunction();
+      TestCurrentDateFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestExtractFunction();
+      TestExtractFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestExtractToDoubleFunction();
+      TestExtractToDoubleFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestExtractToIntFunction();
+      TestExtractToIntFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestMonthsBetweenFunction();
+      TestMonthsBetweenFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //// Testing the mathematical functions.
+    // Testing the mathematical functions.
 
-    //printf("\n");
-    //printf("\n");
-    //printf(" >>> ... Testing Mathematical Functions \n");
-    //printf("\n");
+    printf("\n");
+    printf("\n");
+    printf(" >>> ... Testing Mathematical Functions \n");
+    printf("\n");
 
-    //try {
+    try {
 
-    //  TestAbsFunction();
+      TestAbsFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestAcosFunction();
+      TestAcosFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestAsinFunction();
+      TestAsinFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestAtanFunction();
+      TestAtanFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestAtan2Function();
+      TestAtan2Function();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestCosFunction();
+      TestCosFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestExpFunction();
+      TestExpFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestLnFunction();
+      TestLnFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestLogFunction();
+      TestLogFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestModFunction();
+      TestModFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestPowerFunction();
+      TestPowerFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestRemainderFunction();
+      TestRemainderFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestSinFunction();
+      TestSinFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestSqrtFunction();
+      TestSqrtFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestTanFunction();
+      TestTanFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //// Testing the numeric functions.
+    // Testing the numeric functions.
 
-    //printf("\n");
-    //printf("\n");
-    //printf(" >>> ... Testing Numeric Functions \n");
-    //printf("\n");
+    printf("\n");
+    printf("\n");
+    printf(" >>> ... Testing Numeric Functions \n");
+    printf("\n");
 
-    //try {
+    try {
 
-    //  TestCeilFunction();
+      TestCeilFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestFloorFunction();
+      TestFloorFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestRoundFunction();
+      TestRoundFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestSignFunction();
+      TestSignFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestTruncFunction();
+      TestTruncFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //// Testing the string functions.
+    // Testing the string functions.
 
-    //printf("\n");
-    //printf("\n");
-    //printf(" >>> ... Testing String Functions \n");
-    //printf("\n");
+    printf("\n");
+    printf("\n");
+    printf(" >>> ... Testing String Functions \n");
+    printf("\n");
 
-    //try {
+    try {
 
-    //  TestConcatFunction();
+      TestConcatFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestInstrFunction();
+      TestInstrFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestLengthFunction();
+      TestLengthFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestLowerFunction();
+      TestLowerFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestLpadFunction();
+      TestLpadFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestLtrimFunction();
+      TestLtrimFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestRpadFunction();
+      TestRpadFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestRtrimFunction();
+      TestRtrimFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestSoundexFunction();
+      TestSoundexFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestSubstrFunction();
+      TestSubstrFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestTranslateFunction();
+      TestTranslateFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestTrimFunction();
+      TestTrimFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  TestUpperFunction();
+      TestUpperFunction();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //// Executing the combination tests.
+    // Executing the combination tests.
 
-    //try {
+    try {
 
-    //  NumberToStringComparison();
+      NumberToStringComparison();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
-    //try {
+    try {
 
-    //  RoundNumberToStringComparison();
+      RoundNumberToStringComparison();
 
-    //}  //  try ...
+    }  //  try ...
 
-    //catch ( ... ) {
+    catch ( ... ) {
 
-    //  error_found = true;
+      error_found = true;
 
-    //}  //  catch ...
+    }  //  catch ...
 
     // Executing the geometry functions.
 
@@ -5079,7 +5079,7 @@ void FdoExpressionFunctionTest::TestToStringFunction ()
       func_call   = L"(ToString(dbl_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderString(data_reader, 9, L"30.3");
+      CheckReaderString(data_reader, 20, L"30.3");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -5118,7 +5118,7 @@ void FdoExpressionFunctionTest::TestToStringFunction ()
       func_call   = L"(ToString(sgl_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderString(data_reader, 9, L"30.3");
+      CheckReaderString(data_reader, 20, L"30.3");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -14579,7 +14579,13 @@ void FdoExpressionFunctionTest::TestSubstrFunction ()
 
     // Declare and initialize all necessary local vatiables.
 
-    FdoStringP                func_call;
+    size_t                    src_length;
+
+    FdoStringP                exp_value,
+                              src_value,
+                              func_call,
+                              exp_err_msg,
+                              ret_err_msg;
 
     FdoPtr<FdoFilter>         filter;
     FdoPtr<FdoIFeatureReader> data_reader;
@@ -14594,8 +14600,43 @@ void FdoExpressionFunctionTest::TestSubstrFunction ()
 
     filter = FdoFilter::Parse(L"id = 9");
 
+    // This test suits deals with the processing of strings. To ensure propper
+    // execution at all time, get the string value set for the row used in the
+    // following tests.
+
+    printf("---------------------------------------------------------- \n");
+    printf("Test Case Setup:                                           \n");
+    printf("  The following retrieves the string value used when cross \n");
+    printf("  checking function results. No exceptions are expected.   \n");
+    printf("---------------------------------------------------------- \n");
+    printf("\n");
+
+    try {
+
+      src_value  = GetStringValue(L"exfct_c1", L"str2_val", filter);
+      src_length = src_value.GetLength();
+      printf(" >>> Test setup done \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test setup failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test setup failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
     // Execute the test cases.
 
+    printf("\n");
     printf("---------------------------------------------------------- \n");
     printf("1. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
@@ -14609,13 +14650,13 @@ void FdoExpressionFunctionTest::TestSubstrFunction ()
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row. The value for the selected computed property
-      // is expected to be "Color is: 2118".
+      // Execute the test and check the returned data.
 
       func_call   = L"(Substr(str2_val, 5.6) as cmp_id)";
-      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderString(data_reader, 9, L"Color is: 2118");
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      exp_value   = src_value.Mid(4, src_length);
+      CheckReaderString(data_reader, 9, (FdoString *)exp_value);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -14648,13 +14689,13 @@ void FdoExpressionFunctionTest::TestSubstrFunction ()
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row. The value for the selected computed property
-      // is expected to be "Color".
+      // Execute the test and check the returned data.
 
       func_call   = L"(Substr(str2_val, 5.6, 5.6) as cmp_id)";
-      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderString(data_reader, 9, L"Color");
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      exp_value   = src_value.Mid(4, 5);
+      CheckReaderString(data_reader, 9, (FdoString *)exp_value);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -14680,6 +14721,468 @@ void FdoExpressionFunctionTest::TestSubstrFunction ()
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
     printf("  function SUBSTR on the value of a different property of  \n");
+    printf("  type STRING. In this case, the test requests a sub-      \n");
+    printf("  string from a position calculated from the end of the    \n");
+    printf("  source string to the end by not specifying the optional  \n");
+    printf("  length parameter. No exceptions are expected.            \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data.
+
+      func_call   = L"(Substr(str2_val, -5.6) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      exp_value   = src_value.Mid((src_length - 5), src_length);
+      CheckReaderString(data_reader, 9, (FdoString *)exp_value);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("4. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function SUBSTR on the value of a different property of  \n");
+    printf("  type STRING. In this case, the test requests a sub-      \n");
+    printf("  string from a position calculated from the end of the    \n");
+    printf("  source string of a certain length. No exceptions are     \n");
+    printf("  expected.                                                \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data.
+
+      func_call   = L"(Substr(str2_val, -5.6, 2.6) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      exp_value   = src_value.Mid((src_length - 5), 2);
+      CheckReaderString(data_reader, 9, (FdoString *)exp_value);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("5. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function SUBSTR on the value of a different property of  \n");
+    printf("  type STRING. In this case, the test requests a sub-      \n");
+    printf("  string from position 0 of the source string with no      \n");
+    printf("  specified length. In this case, the expression function  \n");
+    printf("  is expected to increase the start position by 1 (a start \n");
+    printf("  position of 0 is invalid but is treated as an indicator  \n");
+    printf("  that the substring is to be calculated from the beginn-  \n");
+    printf("  ing of the source string) and return the complete source \n");
+    printf("  string as a result. No exceptions are expected.          \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data.
+
+      func_call   = L"(Substr(str2_val, 0) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      exp_value   = src_value.Mid(0, src_length);
+      CheckReaderString(data_reader, 9, (FdoString *)exp_value);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("6. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function SUBSTR on the value of a different property of  \n");
+    printf("  type STRING. In this case, the test requests a sub-      \n");
+    printf("  string from position 0 of the source string with a       \n");
+    printf("  specified length. In this case, the expression function  \n");
+    printf("  is expected to increase the start position by 1 (a start \n");
+    printf("  position of 0 is invalid but is treated as an indicator  \n");
+    printf("  that the substring is to be calculated from the beginn-  \n");
+    printf("  ing of the source string) and return the substring of    \n");
+    printf("  the source string as defined by the provided length. No  \n");
+    printf("  exceptions are expected.                                 \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data.
+
+      func_call   = L"(Substr(str2_val, 0, 5.6) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      exp_value   = src_value.Mid(0, 5);
+      CheckReaderString(data_reader, 9, (FdoString *)exp_value);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("7. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function SUBSTR on the value of a different property of  \n");
+    printf("  type STRING. In this case, the test requests a sub-      \n");
+    printf("  string from a start position that is beyond the size of  \n");
+    printf("  the source string. This should return a NULL string. No  \n");
+    printf("  exceptions are expected.                                 \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data.
+
+      func_call   = L"(Substr(str2_val, 100) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, NULL);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("8. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function SUBSTR on the value of a different property of  \n");
+    printf("  type STRING. In this case, the test requests a sub-      \n");
+    printf("  string from a start position that is calculated from the \n");
+    printf("  source string end and is beyond the beginning of the     \n");
+    printf("  source string. This should return a NULL string. No ex-  \n");
+    printf("  ceptions are expected.                                   \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data.
+
+      func_call   = L"(Substr(str2_val, -100) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, NULL);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("9. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function SUBSTR on the value of a different property of  \n");
+    printf("  type STRING. In this case, the test requests a sub-      \n");
+    printf("  string from a valid start position. However, the length  \n");
+    printf("  parameter is set to a negative value. This should return \n");
+    printf("  a NULL string. No exceptions are expected.               \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data.
+
+      func_call   = L"(Substr(str2_val, 3, -1) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, NULL);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("10. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function SUBSTR on the value of a different property of  \n");
+    printf("  type STRING. In this case, the test requests a sub-      \n");
+    printf("  string from a position calculated from the end of the    \n");
+    printf("  source string to the end by not specifying the optional  \n");
+    printf("  length parameter. The difference to test 3 is that for   \n");
+    printf("  this test, the input for the calculation of the start    \n");
+    printf("  position for the sub-string is the length of the source  \n");
+    printf("  string. It is expected that it returns the complete      \n");
+    printf("  source string as a result. No exceptions are expected.   \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data.
+
+      func_call   = L"(Substr(str2_val, -1*Length(str2_val)) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      exp_value   = src_value.Mid(0, src_length);
+      CheckReaderString(data_reader, 9, (FdoString *) exp_value);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("11. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function SUBSTR on the value of a different property of  \n");
+    printf("  type STRING. In this case, the test requests a sub-      \n");
+    printf("  string from a position calculated from the end of the    \n");
+    printf("  source string for specified length. The difference to    \n");
+    printf("  test 4 is that for this test, the input for the calcula- \n");
+    printf("  tion of the start position for the sub-string is the     \n");
+    printf("  length of the source string. No exceptions are expected. \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data.
+
+      func_call   = L"(Substr(str2_val, -1*Length(str2_val), 2) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      exp_value   = src_value.Mid(0, 2);
+      CheckReaderString(data_reader, 9, (FdoString *) exp_value);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("12. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function SUBSTR on the value of a different property of  \n");
+    printf("  type STRING. In this case, the test requests a sub-      \n");
+    printf("  string from a position calculated from the end of the    \n");
+    printf("  source string to the end by not specifying the optional  \n");
+    printf("  length parameter. This is an extension of test 10 in     \n");
+    printf("  that it tests a case around the use of the source string \n");
+    printf("  length to calculate the beginning of the sub-string. In  \n");
+    printf("  this test it is expected that the function returns the   \n");
+    printf("  source string with the exception of the first character  \n");
+    printf("  as the result. No exceptions are expected.               \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data.
+
+      func_call   = L"(Substr(str2_val, -1*Length(str2_val)+1) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      exp_value   = src_value.Mid(1, src_length);
+      CheckReaderString(data_reader, 9, (FdoString *) exp_value);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("13. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function SUBSTR on the value of a different property of  \n");
+    printf("  type STRING. In this case, the test requests a sub-      \n");
+    printf("  string from a position calculated from the end of the    \n");
+    printf("  source string to the end by not specifying the optional  \n");
+    printf("  length parameter. This is an extension of test 10 in     \n");
+    printf("  that it tests a case around the use of the source string \n");
+    printf("  length to calculate the beginning of the sub-string. In  \n");
+    printf("  this test, the start point should be beyond the 0 and    \n");
+    printf("  hence the function should return a NULL value as the re- \n");
+    printf("  sult. No exceptions are expected.                        \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data.
+
+      func_call   = L"(Substr(str2_val, -1*Length(str2_val)-1) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, NULL);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("14. Test Case:                                             \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function SUBSTR on the value of a different property of  \n");
     printf("  type STRING where the function name differs from the ex- \n");
     printf("  pected function name ('SuBsTr' rather than 'Substr'). In \n");
     printf("  this case, the test requests a sub-string from a posi-   \n");
@@ -14690,13 +15193,13 @@ void FdoExpressionFunctionTest::TestSubstrFunction ()
 
     try {
 
-      // Execute the test and check the returned data. It is expected that
-      // this call returns 1 row. The value for the selected computed property
-      // is expected to be "Color is: 2118".
+      // Execute the test and check the returned data.
 
       func_call   = L"(SuBsTr(str2_val, 5.6) as cmp_id)";
-      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderString(data_reader, 9, L"Color is: 2118");
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      exp_value   = src_value.Mid(4, src_length);
+      CheckReaderString(data_reader, 9, (FdoString *)exp_value);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -14706,6 +15209,62 @@ void FdoExpressionFunctionTest::TestSubstrFunction ()
       printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
       printf(" >>> Test failed \n");
       throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("15. Test Case:                                             \n");
+    printf("  The test executes a select-command on a given class to   \n");
+    printf("  select the value of a computed property that is defined  \n");
+    printf("  by using the function SUBSTR on the value of a property  \n");
+    printf("  of type BYTE. This represents an error case. The test    \n");
+    printf("  checks whether or not the expected error message is re-  \n");
+    printf("  turned.                                                  \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check whether or not the expected error message
+      // is returned.
+
+      func_call   = L"(Substr(byte_val, 2) as cmp_id)";
+      data_reader = ExecuteSelectCommand(
+                                        L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, NULL);
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      exp_err_msg = FdoStringP::Format(
+                       L"%ls '%ls' %ls ",
+                       L"One or more arguments for function",
+                       L"Substr",
+                       L"did not match the expected argument types.");
+      ret_err_msg = exp->GetExceptionMessage();
+
+      if (exp_err_msg.ICompare(ret_err_msg) == 0) {
+
+          printf(" >>> ... Expected error message returned \n");
+          printf(" >>> Test succeeded \n");
+
+      }  //  if (exp_err_msg.ICompare(ret_err_msg) == 0) ...
+      else {
+
+        printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+        printf(" >>> Test failed \n");
+        throw exp;
+
+      }  //  else ...
 
     }  //  catch (FdoException *ex) ...
 
@@ -16598,12 +17157,12 @@ void FdoExpressionFunctionTest::CheckReaderString (
 
     // Declare and initialize all necessary local vatiables.
 
-    bool        is_valid_result = false;
+    bool      is_valid_result = false;
 
-    FdoInt32    data_count      = 0,
-                id_prop_val;
+    FdoInt32  data_count      = 0,
+              id_prop_val;
 
-    FdoString   *cmp_id_val;
+    FdoString *cmp_id_val;
 
     // Navigate through the reader and perform the necessary checks.
 
@@ -16613,9 +17172,16 @@ void FdoExpressionFunctionTest::CheckReaderString (
 
       data_count++;
 
-      id_prop_val     = data_reader->GetInt32(L"id");
-      cmp_id_val      = data_reader->GetString(L"cmp_id");
-      is_valid_result = (wcscmp(cmp_id_val, expected_cmp_id_value) == 0);
+      id_prop_val = data_reader->GetInt32(L"id");
+      cmp_id_val  = (data_reader->IsNull(L"cmp_id"))
+                  ? NULL
+                  : data_reader->GetString(L"cmp_id");
+
+      is_valid_result =
+        ((id_prop_val == expected_id_value) &&
+         (((cmp_id_val == NULL) && (expected_cmp_id_value == NULL)) ||
+          ((cmp_id_val != NULL) && (expected_cmp_id_value != NULL) &&
+                         (wcscmp(cmp_id_val, expected_cmp_id_value) == 0))));
       if (!is_valid_result)
           break;
 
@@ -17052,6 +17618,50 @@ FdoDateTime FdoExpressionFunctionTest::GetDate (FdoString *class_name,
     return dt_data;
 
 }  //  GetDate ()
+
+FdoStringP FdoExpressionFunctionTest::GetStringValue (
+                                                    FdoString *class_name,
+                                                    FdoString *property_name,
+                                                    FdoFilter *filter)
+
+// +---------------------------------------------------------------------------
+// | The function retrieves the value for a string property identified by the
+// | provided filter and returns it back to the calling procedure.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    FdoStringP                      str_data;
+
+    FdoPtr<FdoIdentifier>           id_prop;
+
+    FdoPtr<FdoISelect>              select_cmd;
+    FdoPtr<FdoIFeatureReader>       feature_reader;
+    FdoPtr<FdoIdentifierCollection> id_col;
+
+    // Create the select-command, set the properties and exeute it.
+
+    select_cmd =
+            (FdoISelect*)m_connection->CreateCommand(FdoCommandType_Select);
+
+    select_cmd->SetFeatureClassName(class_name);
+    select_cmd->SetFilter(filter);
+    id_col = select_cmd->GetPropertyNames();
+    id_prop = FdoIdentifier::Create(property_name);
+    id_col->Add(id_prop);
+
+    feature_reader = select_cmd->Execute();
+
+    // Get the necessary information and return it.
+
+    while (feature_reader->ReadNext())
+      str_data = feature_reader->GetString(property_name);
+
+    return str_data;
+
+}  //  GetStringValue ()
 
 
 // ----------------------------------------------------------------------------
