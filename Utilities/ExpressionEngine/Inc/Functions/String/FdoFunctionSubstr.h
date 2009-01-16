@@ -42,6 +42,10 @@
 class FdoFunctionSubstr : public FdoExpressionEngineINonAggregateFunction
 {
 
+    // INIT_ALLOCATE_SIZE:
+    //  The constant defines the initial size for the internal buffer holding
+    //  the function result.
+
     static const FdoInt32 INIT_ALLOCATE_SIZE = 100;
 
     public:
@@ -127,6 +131,14 @@ class FdoFunctionSubstr : public FdoExpressionEngineINonAggregateFunction
 
         FdoFunctionDefinition *function_definition;
 
+        // is_validated:
+        //  For performance reasons the arguments passed to the procedure
+        //  processing the request is done once only for the time of its
+        //  execution. This variable stores whether or not the validation
+        //  has been performed.
+
+        bool is_validated;
+
         // number_of_parameters:
         //  The variable holds the number of parameters provided to the func-
         //  tion.
@@ -151,13 +163,23 @@ class FdoFunctionSubstr : public FdoExpressionEngineINonAggregateFunction
 
         FdoDataType para3_data_type;
 
-        FdoPtr<FdoStringValue> return_string_value;
+        // result:
+        //  The variable represents the object to be returned by the function
+        //  "Evaluate". For performance reasons, this object is allocated only
+        //  once.
+
+        FdoPtr<FdoStringValue> result;
+
+        // tmp_buffer:
+        //  The variable represents the internal buffer used to hold the func-
+        //  tion result.
 
         wchar_t *tmp_buffer;
 
-        size_t tmp_buffer_size;
+        // tmp_buffer_size:
+        //  The variable holds the current size of the internal buffer.
 
-        bool first;
+        size_t tmp_buffer_size;
 
 };  //  class FdoFunctionSubstr
 
