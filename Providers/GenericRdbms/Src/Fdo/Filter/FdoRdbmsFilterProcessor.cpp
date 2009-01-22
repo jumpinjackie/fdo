@@ -761,12 +761,16 @@ void FdoRdbmsFilterProcessor::ProcessBinaryLogicalOperator(FdoBinaryLogicalOpera
         HandleFilter( leftOperand );
         AppendString( LOGICAL_OR );
         HandleFilter( rightOperand );
+        FdoSpatialCondition* leftSpCond = dynamic_cast<FdoSpatialCondition*>(leftOperand.p);
+        FdoSpatialCondition* rightSpCond = dynamic_cast<FdoSpatialCondition*>(rightOperand.p);
+        if ((leftSpCond || rightSpCond) && !(leftSpCond && rightSpCond))
+            throw FdoCommandException::Create( NlsMsgGet(FDORDBMS_532, "OR not supported in a query when mixing property with spatial filters" ) );
     }
+
+    mFilterLogicalOps.push_back(filter.GetOperation());
 
     AppendString(CLOSE_PARENTH);
 
-  	// Save 
-	mFilterLogicalOps.push_back( filter.GetOperation() );
 }
 
 void FdoRdbmsFilterProcessor::ProcessComparisonCondition(FdoComparisonCondition& filter)
@@ -868,8 +872,12 @@ void FdoRdbmsFilterProcessor::ProcessUnaryLogicalOperator(FdoUnaryLogicalOperato
     HandleFilter( unaryOp );
     AppendString(CLOSE_PARENTH);
 
-	// Save 
-	mFilterLogicalOps.push_back( filter.GetOperation() );
+    // Disallow NOT with the spatial filter
+    FdoSpatialCondition* spCond = dynamic_cast<FdoSpatialCondition*>(unaryOp.p);
+    if (spCond)
+        throw FdoCommandException::Create( NlsMsgGet(FDORDBMS_533, "NOT operator not supported with spatial filters" ) );
+
+    mFilterLogicalOps.push_back( -1 /* FdoUnaryLogicalOperations_Not */);
 }
 
 

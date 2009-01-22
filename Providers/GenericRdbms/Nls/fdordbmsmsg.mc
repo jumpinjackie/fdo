@@ -1913,7 +1913,7 @@ Language=English
 MessageId=2757
 SymbolicName=FDORDBMS_532
 Language=English
-AND and OR not supported in a query when mixing property with spatial filters 
+OR not supported in a query when mixing property with spatial filters 
 .
 MessageId=2758
 SymbolicName=FDORDBMS_533
