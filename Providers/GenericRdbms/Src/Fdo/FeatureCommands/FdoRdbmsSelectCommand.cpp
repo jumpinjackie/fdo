@@ -246,9 +246,6 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
             }
         }
 
-		// Test the spatial queries validity. Not all filters are currently supported.
-		CheckSpatialFilters( geometricConditions, logicalOps );
-
         GdbiStatement* statement = mConnection->GetGdbiConnection()->Prepare( sqlString );
 
         BindSpatialGeoms( statement, boundGeometries );
@@ -593,27 +590,6 @@ FdoRdbmsFeatureReader *FdoRdbmsSelectCommand::GetOptimizedFeatureReader( const F
     }
 
     return reader;
-}
-
-void FdoRdbmsSelectCommand::CheckSpatialFilters( FdoRdbmsSecondarySpatialFilterCollection * geometricConditions, vector<int> *logicalOps )
-{
-	// Do this only in the case of spatial filters only
-	FdoInt32	numFilters = geometricConditions ? geometricConditions->GetCount() : 0;
-	FdoInt32	numLogicalOps = logicalOps ? (FdoInt32) logicalOps->size() : 0;
-
-	if ( numFilters > 0 )
-	{	
-		// NOT operators not supported with spatial filters.
-		for ( FdoInt32 i = 0;  i < numLogicalOps;  i++ )
-		{
-			if ( logicalOps->at(i) == -1 /*FdoUnaryLogicalOperations_Not*/ )
-				throw FdoCommandException::Create( NlsMsgGet(FDORDBMS_533, "NOT operator not supported with spatial filters" ) );
-		}
-
-		// The number of binary operators should match the number of spatial filters. 
-		if ( numLogicalOps != (numFilters - 1) )
-			throw FdoCommandException::Create( NlsMsgGet(FDORDBMS_532, "AND and OR not supported in a query when mixing property with spatial filters" ) );
-	}
 }
 
 void  FdoRdbmsSelectCommand::BindSpatialGeoms( GdbiStatement* statement, FdoRdbmsFilterProcessor::BoundGeometryCollection* geometries )
