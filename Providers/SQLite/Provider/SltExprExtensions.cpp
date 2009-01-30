@@ -306,10 +306,11 @@ static void xyzmFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
     long optype = (long)sqlite3_user_data(context);
 
     FgfPoint pt;
+    FdoPtr<FdoIGeometry> fg;
+    FdoPtr<FdoFgfGeometryFactory> gf;
     bool valid = false;
 
     //data type of argument -- must be BLOB (FGF) or text.
-    //TODO: support for WKB as in spatialOpFunc
     int type = sqlite3_value_type(argv[0]);
 
     //extract the point
@@ -318,10 +319,22 @@ static void xyzmFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
         const unsigned char* g1 = (const unsigned char*)sqlite3_value_blob(argv[0]);
         int len1 = sqlite3_value_bytes(argv[0]);
 
-        pt = *(FgfPoint*)g1;
+        if (len1 % 2) //this check is enough to detect WKB in case of simple geometries, but may fail on multi ones
+                      //also see the long explanation in spatialOpFunc.
+        {
+            //case of WKB, not FGF
+            gf = FdoFgfGeometryFactory::GetInstance();
+            FdoPtr<FdoByteArray> ba = FdoByteArray::Create(g1, len1);
+            fg = gf->CreateGeometryFromWkb(ba);
+        }
+        else
+        {
+            //case of FGF, we can directly use the byte array as FgfPoint
+            pt = *(FgfPoint*)g1;
 
-        if (pt.geom_type == FdoGeometryType_Point)
-            valid = true;
+            if (pt.geom_type == FdoGeometryType_Point)
+                valid = true;
+        }
     }
     else if (type == SQLITE_TEXT)
     {
@@ -330,15 +343,15 @@ static void xyzmFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
         wchar_t* wwkt = (wchar_t*)alloca(sizeof(wchar_t) * len);
         mbstowcs(wwkt, wkt, len);
 
-        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-        FdoPtr<FdoIGeometry> fg = gf->CreateGeometry(wwkt);        
-        
-        if (fg->GetDerivedType() == FdoGeometryType_Point)
-        {
-            valid = true;
-            FdoPtr<FdoByteArray> ba = gf->GetFgf(fg);
-            pt = *(FgfPoint*)ba->GetData();
-        }
+        gf = FdoFgfGeometryFactory::GetInstance();
+        fg = gf->CreateGeometry(wwkt);        
+    }
+
+    if (fg.p && fg->GetDerivedType() == FdoGeometryType_Point)
+    {
+        valid = true;
+        FdoPtr<FdoByteArray> ba = gf->GetFgf(fg);
+        pt = *(FgfPoint*)ba->GetData();
     }
 
     //if we have a valid geometry, extract the value we need to return
