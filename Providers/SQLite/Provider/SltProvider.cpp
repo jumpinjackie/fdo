@@ -71,7 +71,7 @@ SltConnection::SltConnection() : m_refCount(1)
         g_fdo2sql_map[FdoDataType_Boolean] =    "INTEGER";
         g_fdo2sql_map[FdoDataType_Byte] =       "INTEGER";
         g_fdo2sql_map[FdoDataType_DateTime] =   "TEXT";
-        g_fdo2sql_map[FdoDataType_Decimal] =    "INTEGER";
+        g_fdo2sql_map[FdoDataType_Decimal] =    "REAL";
         g_fdo2sql_map[FdoDataType_Double] =     "REAL";
         g_fdo2sql_map[FdoDataType_Int16] =      "INTEGER";
         g_fdo2sql_map[FdoDataType_Int32] =      "INTEGER";
