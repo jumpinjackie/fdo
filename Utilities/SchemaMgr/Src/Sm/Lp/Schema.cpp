@@ -103,6 +103,11 @@ FdoSmPhMgrP FdoSmLpSchema::GetPhysicalSchema()
     return mPhysicalSchema;
 }
 
+FdoSmPhOwnerP FdoSmLpSchema::GetPhysicalOwner()
+{
+    return mPhysicalSchema->GetOwner();
+}
+
 const FdoSmLpSchemaCollection* FdoSmLpSchema::RefSchemas() const
 {
     return mpSchemas;

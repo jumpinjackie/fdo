@@ -56,6 +56,11 @@ public:
     /// the Database schema.
     FdoSmPhMgrP GetPhysicalSchema();
 
+    // Gets the owner where this schema's physical objects reside. This is usually
+    // the default owner. However, some providers map each Logical Schema to a different
+    // owner (e.g. ODBC provider with SQL Server data source ).
+    virtual FdoSmPhOwnerP GetPhysicalOwner();
+
     /// Get the collection that contains this schema.
     const FdoSmLpSchemaCollection* RefSchemas() const;
     FdoPtr<FdoSmLpSchemaCollection> GetSchemas();
