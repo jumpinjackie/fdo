@@ -1109,11 +1109,17 @@ FdoStringCollection* FdoSmLpSchemaCollection::GetClassNames(FdoStringP schemaNam
 
         if (bProcessFromRdClassReader)
         {
+            // Some providers (e.g. ODBC with SQL Server data source) map LogicalPhysical
+            // Schemas and Physical Owners to Physical Schemas. In this case, we need to 
+            // get the classes from the owner for LogicalPhysical Schema, rather than
+            // from the default owner. GetPhysicalOwner() takes care of that.
+            FdoSmPhOwnerP pSchemaOwner = pLpSchema->GetPhysicalOwner();
+
             // Bulk fetch the table and views, but skip bulk loading of columns and keys.
-            pOwner->CacheDbObjects(false);
+            pSchemaOwner->CacheDbObjects(false);
 
             FdoInt32 indexDbObject = 0;
-            FdoSmPhDbObjectP pDbObject = pOwner->GetCachedDbObject(indexDbObject);
+            FdoSmPhDbObjectP pDbObject = pSchemaOwner->GetCachedDbObject(indexDbObject);
             FdoStringP className = L"";
             FdoStringP schemaName = L"";
             FdoStringP qname = L"";
@@ -1133,7 +1139,7 @@ FdoStringCollection* FdoSmLpSchemaCollection::GetClassNames(FdoStringP schemaNam
                     }
                     featureClasses->Add(qname);
                 }
-                pDbObject = pOwner->GetCachedDbObject(++indexDbObject);
+                pDbObject = pSchemaOwner->GetCachedDbObject(++indexDbObject);
             }
         }
         else
@@ -1268,7 +1274,7 @@ FdoFeatureSchemasP FdoSmLpSchemaCollection::GetFdoSchemasEx(FdoStringP schemaNam
                 {
                     continue;
                 }
-                if (FdoStringUtility::StringCompare(pLpSchema->GetName(), schemaNames->GetItem(iSchemaName)->GetString()) == 0)
+                if (FdoStringUtility::StringCompare(pLpSchema->GetName(), schemaNames->GetString(iSchemaName)) == 0)
                 {
                     aTodo.schemas.Add((FdoSmLpSchema*)pLpSchema);
                 }

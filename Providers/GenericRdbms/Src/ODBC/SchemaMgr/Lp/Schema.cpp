@@ -63,6 +63,32 @@ FdoPhysicalSchemaMappingP FdoSmLpOdbcSchema::GetSchemaMappings( bool bIncludeDef
     return retSchemaMapping;
 }
 
+FdoSmPhOwnerP FdoSmLpOdbcSchema::GetPhysicalOwner()
+{
+    FdoSmPhOwnerP owner;
+    FdoStringP schemaName = GetName();
+
+    FdoFeatureSchemasP configSchemas = GetPhysicalSchema()->GetConfigSchemas();
+    FdoSchemaMappingsP configMappings = GetPhysicalSchema()->GetConfigMappings();
+
+    // The following is similar to what FdoSmPhOdbcMgr::::CreateRdClassReader() does
+    // to map a logical schema to the owner containing its physical objects.
+    // When no config document was passed to the connection, each non-default schema
+    // maps to an owner of the same name. Each owner maps to a physical schema.
+    if ( (configSchemas == NULL) && (configMappings == NULL ) &&
+         (schemaName.GetLength() > 0) && (schemaName != GetPhysicalSchema()->RdSchemaPrefix) )
+    {
+        owner = GetPhysicalSchema()->GetOwner(schemaName);
+    }
+    else
+    {
+        // Otherwise, the logical schema just maps to the default owner.
+        owner = FdoSmLpSchema::GetPhysicalOwner();
+    }
+
+    return owner;
+}
+
 void FdoSmLpOdbcSchema::Update(
     FdoFeatureSchema* pFeatSchema,
 	FdoSchemaElementState elementState, 
