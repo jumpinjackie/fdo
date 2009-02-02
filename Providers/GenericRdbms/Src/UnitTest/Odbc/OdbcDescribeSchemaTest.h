@@ -66,6 +66,8 @@ public:
     virtual void  set_provider();
 
 protected:
+    virtual void getClassNames();
+
     static const wchar_t* mDataSqlServer[];
 };
 
