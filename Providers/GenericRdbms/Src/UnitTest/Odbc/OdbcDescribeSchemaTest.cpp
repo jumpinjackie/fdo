@@ -139,6 +139,47 @@ void OdbcSqlServerDescribeSchemaTest::set_provider()
     UnitTestUtil::SetProvider( "OdbcSqlServer" );
 }
 
+void OdbcSqlServerDescribeSchemaTest::getClassNames()
+{
+    try
+    {
+        // call the static method
+        FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
+        if (connection == NULL)
+            CPPUNIT_FAIL("FAILED - CreateConnection returned NULL\n");
+
+        // Now open the database with the given 
+        connection->SetConnectionString(UnitTestUtil::GetConnectionString(Connection_WithDSN));
+        connection->Open();
+
+        // Get the schema names
+        FdoPtr<FdoIGetClassNames> cmd =
+            (FdoIGetClassNames*)connection->CreateCommand(FdoCommandType_GetClassNames);
+        FdoPtr<FdoStringCollection> classNames = cmd->Execute();
+
+        if (classNames == NULL)
+            CPPUNIT_FAIL("FAILED - GetClassNames returned NULL collection\n");
+
+        FdoInt32 numClasses = classNames->GetCount();
+        CPPUNIT_ASSERT(numClasses == 4);
+        for (int i=0; i<numClasses; i++)
+        {
+            FdoStringP className = classNames->GetItem(i)->GetString();
+
+			wprintf(L"Current class name '%ls'\n", className);
+        }
+        CPPUNIT_ASSERT(classNames->GetItem(0)->GetString() == L"dbo:acdb3dpolyline");
+        CPPUNIT_ASSERT(classNames->GetItem(1)->GetString() == L"dbo:cities");
+        CPPUNIT_ASSERT(classNames->GetItem(2)->GetString() == L"dbo:table1");
+        CPPUNIT_ASSERT(classNames->GetItem(3)->GetString() == L"dbo:view1");
+    }
+    catch (FdoException *ex)
+    {
+		TestCommonFail (ex);
+    }
+
+}
+
 void OdbcTextDescribeSchemaTest::set_provider()
 {
     UnitTestUtil::SetProvider( "OdbcText" );
