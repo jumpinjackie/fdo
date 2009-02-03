@@ -740,6 +740,27 @@ void UnitTestUtil::CreateLandSchema( FdoIConnection* connection )
 
         FdoClassesP(pSchema->GetClasses())->Add( pCityClass );
 
+        FdoPtr<FdoFeatureClass> pWardClass = FdoFeatureClass::Create( L"Ward", L"" );
+        pWardClass->SetIsAbstract(false);
+
+        pProp = FdoDataPropertyDefinition::Create( L"Name", L"" );
+        pProp->SetDataType( FdoDataType_String );
+        pProp->SetLength(50);
+        pProp->SetNullable(false);
+        FdoPropertiesP(pWardClass->GetProperties())->Add( pProp );
+        FdoDataPropertiesP(pWardClass->GetIdentityProperties())->Add( pProp );
+
+        pProp = FdoDataPropertyDefinition::Create( L"Population", L"" );
+        pProp->SetDataType( FdoDataType_Int32 );
+        pProp->SetNullable(false);
+        FdoPropertiesP(pWardClass->GetProperties())->Add( pProp );
+
+        pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"" );
+        FdoPropertiesP(pWardClass->GetProperties())->Add( pGeomProp );
+        pWardClass->SetGeometryProperty( pGeomProp );
+
+        FdoClassesP(pSchema->GetClasses())->Add( pWardClass );
+
 	    FdoFeatureClassP pZoningClass = FdoFeatureClass::Create( L"Zoning", L"land use zone" );
 	    pZoningClass->SetIsAbstract(false);
 

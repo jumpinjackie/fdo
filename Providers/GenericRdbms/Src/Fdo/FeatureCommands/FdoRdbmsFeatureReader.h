@@ -172,6 +172,14 @@ class FdoRdbmsFeatureReader: public FdoIFeatureReader
 
 	  // Derive the given expression's property type and data type:
 	  void GetExpressionType(FdoIConnection* connection, FdoClassDefinition* classDef, const char* colName, FdoExpression* expr, FdoPropertyType &propType, FdoDataType &dataType);
+    
+      inline FdoRdbmsPropertyInfoDef* GetPropertyInfoDef(int pos)
+      {
+          if (pos >= (int)mPropertyInfoDefs.size())
+              mPropertyInfoDefs.push_back(new FdoRdbmsPropertyInfoDef());
+          return mPropertyInfoDefs.at(pos);
+      }
+
 
 protected:
     virtual ~FdoRdbmsFeatureReader();
@@ -280,12 +288,12 @@ public:
 	vector<int>							mFilterLogicalOps;
 
 	// A cache of property definition names to avoid expensive string conversions
-	FdoRdbmsPropertyInfoDef   *mPropertyInfoDefs;
-	int                       mNumPropertyInfoDefs;
-	int                       mLastPropertyInfoDef;
-	int						  m_cacheHits;
-	int						  m_cacheMissed1;
-	int						  m_cacheMissed2;
+    std::vector<FdoRdbmsPropertyInfoDef*>   mPropertyInfoDefs;
+	int                                     mNumPropertyInfoDefs;
+	int                                     mLastPropertyInfoDef;
+	int						                m_cacheHits;
+	int						                m_cacheMissed1;
+	int						                m_cacheMissed2;
 };
 
 #endif // FDORDBMSFEATUREREADER_H
