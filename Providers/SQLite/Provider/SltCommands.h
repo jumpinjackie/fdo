@@ -402,6 +402,29 @@ class SltInsert : public SltCommand<FdoIInsert>
                 PrepareSQL();
                 m_execCount = 0;
             }
+            else
+            {
+                int count = m_properties->GetCount();
+
+                //detect changes to the property value collection that may have been
+                //done between calls to Execute(). Not recommended to do that, but it happens...
+                if (count != m_propNames.size())
+                {
+                    FlushSQL();
+                    return Execute();
+                }
+
+                for (int i=0; i<count; i++)
+                {
+                    FdoPtr<FdoPropertyValue> pv = m_properties->GetItem(i);
+                    FdoPtr<FdoIdentifier> id = pv->GetName();
+                    if (wcscmp(id->GetName(), m_propNames[i].c_str()) != 0)
+                    {
+                        FlushSQL();
+                        return Execute();
+                    }
+                }
+            }
 
             sqlite3_reset(m_pCompiledSQL);
 
@@ -427,10 +450,23 @@ class SltInsert : public SltCommand<FdoIInsert>
             if (++m_execCount == 10000)
             {
                 char* err = NULL;
-                int rc = sqlite3_exec(m_db, "COMMIT;BEGIN;", NULL, NULL, &err);
+               
+                int rc = sqlite3_exec(m_db, "COMMIT;", NULL, NULL, &err);
 
-                if (rc != SQLITE_OK)
-                    throw FdoCommandException::Create(L"SQLite commit failed!");
+                if (rc == SQLITE_OK)
+                {    
+                    int rc2 = sqlite3_exec(m_db, "BEGIN;", NULL, NULL, &err);
+
+                    if (rc2 != SQLITE_OK)
+                        throw FdoCommandException::Create(L"SQLite begin transaction failed!");
+                }
+
+                //We will accept commit failures at this point, since they are
+                //not critical. It is important that the last COMMIT completes,
+                //and there we do throw an exception (see FlushSQL())
+                if (rc != SQLITE_OK && rc != SQLITE_BUSY)
+                //    throw FdoCommandException::Create(L"SQLite commit failed!");
+                    fprintf(stderr, "%ls\n", L"Transient commit SQLite failure during Insert.");
 
                 //TODO: here also notify the connection that portions of the
                 //spatial index are dirty and need to be reindexed
@@ -458,11 +494,17 @@ class SltInsert : public SltCommand<FdoIInsert>
             if (m_pCompiledSQL)
             {
                 int rc = sqlite3_exec(m_db, "COMMIT;", NULL, NULL, NULL);
-                rc = sqlite3_finalize(m_pCompiledSQL);
+                int rc2 = sqlite3_finalize(m_pCompiledSQL);
+
+                if ((rc != SQLITE_OK && rc != SQLITE_BUSY) || rc2 != SQLITE_OK)
+                //    throw FdoCommandException::Create(L"SQLite commit failed!");
+                    fprintf(stderr, "%ls\n", L"Transient commit SQLite failure during Insert.");
             }
 
             m_pCompiledSQL = NULL;
+            m_propNames.clear();
         }
+
 
         void PrepareSQL()
         {
@@ -479,6 +521,8 @@ class SltInsert : public SltCommand<FdoIInsert>
                 
                 FdoPtr<FdoPropertyValue> pv = m_properties->GetItem(i);
                 FdoPtr<FdoIdentifier> id = pv->GetName();
+
+                m_propNames.push_back(id->GetName()); //build up a list of the property names (see Execute() for why this is needed)
                 sql += "\"" + W2A_SLOW(id->GetName()) + "\"";
             }
 
@@ -508,6 +552,7 @@ class SltInsert : public SltCommand<FdoIInsert>
         sqlite3*                    m_db;
         sqlite3_stmt*               m_pCompiledSQL;
         int                         m_execCount;
+        std::vector<std::wstring>   m_propNames;
 };
 
 
