@@ -102,7 +102,7 @@ BEGIN
             VALUE "Comments", "FDO Provider for SDF"
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "SDF FDO Provider Component"
-            VALUE "FileVersion", "3.4.0.00"
+            VALUE "FileVersion", "3.4.0.0000"
             VALUE "InternalName", "SDFProvider"
             VALUE "LegalCopyright", "Copyright (C) 2007-2009"
             VALUE "OriginalFilename", "SDFProvider.dll"

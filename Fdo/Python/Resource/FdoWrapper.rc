@@ -83,7 +83,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "Python Wrapper for FDO API"
-            VALUE "FileVersion", "3.4.0.00"
+            VALUE "FileVersion", "3.4.0.0000"
             VALUE "InternalName", "FDOpy"
             VALUE "LegalCopyright", "Copyright (C) 2007-2009"
             VALUE "OriginalFilename", "FDOpy"

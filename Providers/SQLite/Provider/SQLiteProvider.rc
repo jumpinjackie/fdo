@@ -69,9 +69,10 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
+            VALUE "Comments", "FDO Provider for SQLite"
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "FDO Access to SQLite Data Sources"
-            VALUE "FileVersion", "3.4.0.00"
+            VALUE "FileVersion", "3.4.0.0000"
             VALUE "InternalName", "SQLiteProvider"
             VALUE "LegalCopyright", "Copyright (C) 2008-2009"
             VALUE "OriginalFilename", "SQLiteProvider.dll"

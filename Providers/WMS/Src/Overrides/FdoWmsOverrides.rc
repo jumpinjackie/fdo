@@ -76,7 +76,7 @@ BEGIN
             VALUE "Comments", "FDO WMS Provider Overrides"
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "WMSOverrides Dynamic Link Library"
-            VALUE "FileVersion", "3.4.0.00"
+            VALUE "FileVersion", "3.4.0.0000"
             VALUE "InternalName", "WMSOverrides"
             VALUE "LegalCopyright", "Copyright (C) 2007-2009"
             VALUE "OriginalFilename", "FdoWmsOv.dll"

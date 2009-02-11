@@ -102,7 +102,7 @@ BEGIN
             VALUE "Comments", "FDO Provider for SHP"
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "FDO Provider for SHP Component"
-            VALUE "FileVersion", "3.4.0.00"
+            VALUE "FileVersion", "3.4.0.0000"
             VALUE "InternalName", "SHPProvider"
             VALUE "LegalCopyright", "Copyright (C) 2007-2009"
             VALUE "OriginalFilename", "SHPProvider.dll"
