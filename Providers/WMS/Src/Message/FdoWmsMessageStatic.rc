@@ -101,10 +101,10 @@ BEGIN
         BEGIN
             VALUE "Comments", "Resource Only Dynamic Link Library"
             VALUE "CompanyName", "Open Source Geospatial Foundation"
-            VALUE "FileDescription", "FDO Provider for FdoWms Message Library"
+            VALUE "FileDescription", "FDO Provider for WMS Message Library"
             VALUE "FileVersion", "3.4.0.00"
-            VALUE "InternalName", "FdoWmsMessage"
-            VALUE "LegalCopyright", "Copyright (C) 2007-2008"
+            VALUE "InternalName", "WMSMessage"
+            VALUE "LegalCopyright", "Copyright (C) 2007-2009"
             VALUE "OriginalFilename", "FdoWmsMessage.dll"
             VALUE "ProductName", "Feature Data Objects"
             VALUE "ProductVersion", "3.4.0.0"

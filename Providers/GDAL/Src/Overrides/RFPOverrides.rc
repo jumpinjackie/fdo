@@ -74,7 +74,7 @@ BEGIN
             VALUE "FileDescription", "FDO Provider for Raster Files Overrides Component"
             VALUE "FileVersion", "3.4.0.00"
             VALUE "InternalName", "GRFPOverrides"
-            VALUE "LegalCopyright", "Copyright © 2007"
+            VALUE "LegalCopyright", "Copyright (C) 2007-2009"
             VALUE "OriginalFilename", "GRFPOverrides.dll"
             VALUE "ProductName", "Feature Data Objects"
             VALUE "ProductVersion", "3.4.0.0"

@@ -99,13 +99,13 @@ BEGIN
     BEGIN
         BLOCK "100904b0"
         BEGIN
-            VALUE "Comments", "FDO Provider for Shp"
+            VALUE "Comments", "FDO Provider for SHP"
             VALUE "CompanyName", "Open Source Geospatial Foundation"
-            VALUE "FileDescription", "FDO Provider for Shp Component"
+            VALUE "FileDescription", "FDO Provider for SHP Component"
             VALUE "FileVersion", "3.4.0.00"
-            VALUE "InternalName", "ShpProvider"
-            VALUE "LegalCopyright", "Copyright (C) 2007-2008"
-            VALUE "OriginalFilename", "ShpProvider.dll"
+            VALUE "InternalName", "SHPProvider"
+            VALUE "LegalCopyright", "Copyright (C) 2007-2009"
+            VALUE "OriginalFilename", "SHPProvider.dll"
             VALUE "ProductName", "Feature Data Objects"
             VALUE "ProductVersion", "3.4.0.0"
         END

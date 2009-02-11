@@ -69,13 +69,14 @@ BEGIN
     BEGIN
         BLOCK "100904b0"
         BEGIN
+            VALUE "Comments", "FDO Provider for SQL Server Spatial"
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "SQL Server Spatial Provider Dynamic Link Library"
             VALUE "FileVersion", "3.4.0.00"
-            VALUE "InternalName", "SQL Server Provider"
-            VALUE "LegalCopyright", "Copyright (C) 2008"
-            VALUE "OriginalFilename", "SQLServerSpatial.dll"
-            VALUE "ProductName", " SQL Server Spatial Provider Dynamic Link Library"
+            VALUE "InternalName", "SQLServerSpatialProvider"
+            VALUE "LegalCopyright", "Copyright (C) 2008-2009"
+            VALUE "OriginalFilename", "SQLServerSpatialProvider.dll"
+            VALUE "ProductName", "Feature Data Objects"
             VALUE "ProductVersion", "3.4.0.0"
         END
     END

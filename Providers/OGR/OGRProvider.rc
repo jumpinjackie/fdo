@@ -72,12 +72,12 @@ BEGIN
             VALUE "Comments", "FDO Provider for OGR"
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "OSGeo FDO Provider for OGR"
-            VALUE "FileVersion", "3, 4, 0, 0"
+            VALUE "FileVersion", "3.4.0.00"
             VALUE "InternalName", "OGRProvider"
-            VALUE "LegalCopyright", "Copyright (C) 2007-2008"
+            VALUE "LegalCopyright", "Copyright (C) 2007-2009"
             VALUE "OriginalFilename", "OGRProvider.dll"
             VALUE "ProductName", "Feature Data Objects"
-            VALUE "ProductVersion", "3, 4, 0, 0"
+            VALUE "ProductVersion", "3.4.0.0
         END
     END
     BLOCK "VarFileInfo"
