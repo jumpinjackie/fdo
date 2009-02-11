@@ -104,7 +104,7 @@ BEGIN
             VALUE "FileDescription", "Fdo Schema Manager Message Library"
             VALUE "FileVersion", "3.4.0.00"
             VALUE "InternalName", "SmMessage"
-            VALUE "LegalCopyright", "Copyright (C) 2007-2008"
+            VALUE "LegalCopyright", "Copyright (C) 2007-2009"
             VALUE "OriginalFilename", "SmMessage.dll"
             VALUE "ProductName", "Feature Data Objects"
             VALUE "ProductVersion", "3.4.0.0"

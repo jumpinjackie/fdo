@@ -74,9 +74,9 @@ BEGIN
             VALUE "FileDescription", "RdbmsOverrides Dynamic Link Library"
             VALUE "FileVersion", "3.4.0.00"
             VALUE "InternalName", "RdbmsOverrides"
-            VALUE "LegalCopyright", "Copyright (C) 2007-2008"
+            VALUE "LegalCopyright", "Copyright (C) 2007-2009"
             VALUE "OriginalFilename", "RdbmsOverrides.dll"
-            VALUE "ProductName", "RdbmsOverrides Dynamic Link Library"
+            VALUE "ProductName", "Feature Data Objects"
             VALUE "ProductVersion", "3.4.0.0"
         END
     END

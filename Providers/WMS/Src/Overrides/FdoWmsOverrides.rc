@@ -73,14 +73,14 @@ BEGIN
     BEGIN
         BLOCK "100904b0"
         BEGIN
-            VALUE "Comments", "FDO Provider for WMS Overrides"
+            VALUE "Comments", "FDO WMS Provider Overrides"
             VALUE "CompanyName", "Open Source Geospatial Foundation"
-            VALUE "FileDescription", "FdoWmsOv Dynamic Link Library"
+            VALUE "FileDescription", "WMSOverrides Dynamic Link Library"
             VALUE "FileVersion", "3.4.0.00"
-            VALUE "InternalName", "FdoWmsOv"
-            VALUE "LegalCopyright", "Copyright (C) 2007-2008"
+            VALUE "InternalName", "WMSOverrides"
+            VALUE "LegalCopyright", "Copyright (C) 2007-2009"
             VALUE "OriginalFilename", "FdoWmsOv.dll"
-            VALUE "ProductName", " FdoWmsOv Dynamic Link Library"
+            VALUE "ProductName", "Feature Data Objects"
             VALUE "ProductVersion", "3.4.0.0"
         END
     END

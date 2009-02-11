@@ -71,10 +71,10 @@ BEGIN
         BEGIN
             VALUE "Comments", "Managed FDO Provider for SHP Overrides"
             VALUE "CompanyName", "Open Source Geospatial Foundation"
-            VALUE "FileDescription", "FDO Shape Managed Overrides API Component"
+            VALUE "FileDescription", "FDO SHP Managed Overrides API Component"
             VALUE "FileVersion", "3.4.0.00"
             VALUE "InternalName", "OSGeo.FDO.Providers.SHP.Overrides"
-            VALUE "LegalCopyright", "Copyright (C) 2007-2008"
+            VALUE "LegalCopyright", "Copyright (C) 2007-2009"
             VALUE "OriginalFilename", "OSGeo.FDO.Providers.SHP.Overrides.dll"
             VALUE "ProductName", "Feature Data Objects"
             VALUE "ProductVersion", "3.4.0.0"

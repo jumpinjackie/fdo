@@ -69,13 +69,14 @@ BEGIN
     BEGIN
         BLOCK "100904b0"
         BEGIN
+            VALUE "Comments", "FDO Provider for SQL Server Spatial Overrides"
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "SQL Server Spatial Overrides Dynamic Link Library"
             VALUE "FileVersion", "3.4.0.00"
-            VALUE "InternalName", "SQL Server Spatial Overrides"
-            VALUE "LegalCopyright", "Copyright (C) 2008"
+            VALUE "InternalName", "SQLServerSpatialOverrides"
+            VALUE "LegalCopyright", "Copyright (C) 2008-2009"
             VALUE "OriginalFilename", "SQLServerSpatialOverrides.dll"
-            VALUE "ProductName", "SQL Server Spatial Overrides Dynamic Link Library"
+            VALUE "ProductName", "Feature Data Objects"
             VALUE "ProductVersion", "3.4.0.0"
         END
     END

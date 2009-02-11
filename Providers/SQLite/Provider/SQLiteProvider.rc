@@ -71,12 +71,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "FDO Access to SQLite Data Sources"
-            VALUE "FileVersion", "3, 4, 0, 0"
+            VALUE "FileVersion", "3.4.0.00"
             VALUE "InternalName", "SQLiteProvider"
-            VALUE "LegalCopyright", "Copyright (C) 2008"
+            VALUE "LegalCopyright", "Copyright (C) 2008-2009"
             VALUE "OriginalFilename", "SQLiteProvider.dll"
             VALUE "ProductName", "Feature Data Objects"
-            VALUE "ProductVersion", "3, 4, 0, 0"
+            VALUE "ProductVersion", "3.4.0.0"
         END
     END
     BLOCK "VarFileInfo"

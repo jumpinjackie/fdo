@@ -101,11 +101,11 @@ BEGIN
         BEGIN
             VALUE "Comments", "Resource Only Dynamic Link Library"
             VALUE "CompanyName", "Open Source Geospatial Foundation"
-            VALUE "FileDescription", "FDO Provider for Shp Message Library"
+            VALUE "FileDescription", "FDO Provider for SHP Message Library"
             VALUE "FileVersion", "3.4.0.00"
-            VALUE "InternalName", "ShpMessage"
-            VALUE "LegalCopyright", "Copyright (C) 2007-2008"
-            VALUE "OriginalFilename", "ShpMessage.dll"
+            VALUE "InternalName", "SHPMessage"
+            VALUE "LegalCopyright", "Copyright (C) 2007-2009"
+            VALUE "OriginalFilename", "SHPMessage.dll"
             VALUE "ProductName", "Feature Data Objects"
             VALUE "ProductVersion", "3.4.0.0"
         END

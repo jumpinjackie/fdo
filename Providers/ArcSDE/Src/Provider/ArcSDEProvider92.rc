@@ -86,7 +86,7 @@ BEGIN
             VALUE "FileDescription", "FDO Provider for ArcSDE 9.2 Component"
             VALUE "FileVersion", "3.4.0.00"
             VALUE "InternalName", "ArcSDEProvider92"
-            VALUE "LegalCopyright", "Copyright (C) 2007-2008"
+            VALUE "LegalCopyright", "Copyright (C) 2007-2009"
             VALUE "OriginalFilename", "ArcSDEProvider92.dll"
             VALUE "ProductName", "Feature Data Objects"
             VALUE "ProductVersion", "3.4.0.0"
