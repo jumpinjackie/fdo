@@ -72,7 +72,7 @@ BEGIN
             VALUE "Comments", "FDO Provider for ODBC Overrides"
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "ODBCOverrides Dynamic Link Library"
-            VALUE "FileVersion", "3.4.0.00"
+            VALUE "FileVersion", "3.4.0.0000"
             VALUE "InternalName", "ODBCOverrides"
             VALUE "LegalCopyright", "Copyright (C) 2007-2009"
             VALUE "OriginalFilename", "ODBCOverrides.dll"

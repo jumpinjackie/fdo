@@ -84,7 +84,7 @@ BEGIN
             VALUE "Comments", "FDO WMS Provider"
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "FDO WMS Provider Dynamic Link Library"
-            VALUE "FileVersion", "3.4.0.00"
+            VALUE "FileVersion", "3.4.0.0000"
             VALUE "InternalName", "WMSProvider"
             VALUE "LegalCopyright", "Copyright (C) 2007-2009"
             VALUE "OriginalFilename", "FdoWmsProvider.dll"

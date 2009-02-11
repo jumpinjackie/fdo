@@ -72,7 +72,7 @@ BEGIN
             VALUE "Comments", "FDO Provider for SHP Overrides"
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "FDO API for SHP Overrides"
-            VALUE "FileVersion", "3.4.0.00"
+            VALUE "FileVersion", "3.4.0.0000"
             VALUE "InternalName", "SHPOverrides"
             VALUE "LegalCopyright", "Copyright (C) 2007-2009"
             VALUE "OriginalFilename", "SHPOverrides.dll"
