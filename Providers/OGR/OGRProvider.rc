@@ -77,7 +77,7 @@ BEGIN
             VALUE "LegalCopyright", "Copyright (C) 2007-2009"
             VALUE "OriginalFilename", "OGRProvider.dll"
             VALUE "ProductName", "Feature Data Objects"
-            VALUE "ProductVersion", "3.4.0.0
+            VALUE "ProductVersion", "3.4.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -100,4 +100,3 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-
