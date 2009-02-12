@@ -86,6 +86,8 @@ inline System::Byte FdoByteArrayToByteArray(const FdoByte* umBuffer, FdoInt32 le
 /// This new buffer should be released when it isn't used.
 inline FdoByteArray* ByteArrayToFdoByteArray(System::Byte mgBuffer __gc[])
 {
+    if (mgBuffer == NULL || mgBuffer->Length == 0)
+        return NULL;
 	FdoByte* umBuffer = new FdoByte[mgBuffer->Length];
 	for (FdoInt32 i = 0; i < mgBuffer->Length; i++)
 	{
