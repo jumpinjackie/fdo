@@ -22,8 +22,8 @@
 #define [!output PREFIX]ProviderName L"Autodesk.[!output PREFIX].3.3"
 #define [!output PREFIX]ProviderDisplayName L"OSGeo FDO Provider for [!output PREFIX]"
 #define [!output PREFIX]ProviderDescription L"OSGeo FDO Provider for [!output PREFIX]"
-#define [!output PREFIX]ProviderVersion L"3.3.0.0"
-#define FeatureDataObjectsVersion L"3.3.0.0"
+#define [!output PREFIX]ProviderVersion L"3.4.0.0"
+#define FeatureDataObjectsVersion L"3.4.0.0"
 
 // Connection property strings:
 const wchar_t CONNECTIONPROPERTY_DATASTORE[] = L"Datastore";
@@ -34,4 +34,3 @@ const wchar_t CONNECTIONPROPERTY_SEPARATOR[] = L"=";
 #include <[!output PREFIX]Connection.h>
 
 #endif // [!output UPPER_PREFIX]PROVIDER_H
-
