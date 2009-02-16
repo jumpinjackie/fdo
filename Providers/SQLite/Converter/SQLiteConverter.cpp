@@ -1,25 +1,30 @@
-// SLConverter.cpp : Defines the entry point for the console application.
-//
+// 
+//  
+//  Copyright (C) 2008 Autodesk Inc.
+//  
+//  This library is free software; you can redistribute it and/or
+//  modify it under the terms of version 2.1 of the GNU Lesser
+//  General Public License as published by the Free Software Foundation.
+//  
+//  This library is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//  Lesser General Public License for more details.
+//  
+//  You should have received a copy of the GNU Lesser General Public
+//  License along with this library; if not, write to the Free Software
+//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//  
 
-#ifdef _WIN32
-#include <windows.h>
-#else
-#include <dlfcn.h>
-#endif
 
-#include <time.h>
-#include <float.h>
-#include <stdio.h>
-#include <vector>
-#include <string>
-
-#include "Fdo.h"
+#include "stdafx.h"
 #include "slt.h"
 #include "si_api.h"
 #include "SltConversionUtils.h"
 #include "SltGeomUtils.h"
 #include "SpatialOptimizer.h"
 #include "FdoCommonSchemaUtil.h"
+#include "FdoDiff.h"
 
 typedef FdoIConnection* (*createFunc)();
 
@@ -535,6 +540,22 @@ void ConvertFDOToSDFX(const wchar_t* src, const wchar_t* dst, bool optimize)
     dcon->Close();
 }
 
+
+bool DiffCB(FdoInt64 id, const wchar_t* attrname, void* userData)
+{
+    printf("ID: %d Attr: %ls different. \n", (int)id, attrname);
+    return true;
+}
+
+
+void CompareFiles(const wchar_t* src, const wchar_t* dst)
+{
+    FdoPtr<FdoIConnection> scon = GetFdoCon(src, true);
+    FdoPtr<FdoIConnection> dcon = GetFdoCon(dst, true);
+
+    int diffs = FdoDiffs(scon, NULL, dcon, NULL, DiffCB, NULL);    
+}
+
 //======================================================================
 //
 //  Performance testing
@@ -953,6 +974,23 @@ int main(int argc, char* argv[])
             catch (FdoException* e)
             {
                 printf ("Conversion failed : %ls\n", e->GetExceptionMessage());
+                return 1;
+            }
+            
+            return 0;
+        }
+        if (wcscmp(wargv[1].c_str(), L"diff") == 0)
+        {
+            try
+            {
+                clock_t t0 = clock();
+                CompareFiles(wargv[2].c_str(), wargv[3].c_str());
+                clock_t t1 = clock();
+                printf ("Comparison time: %d\n", t1 - t0);
+            }
+            catch (FdoException* e)
+            {
+                printf ("Comparison failed : %ls\n", e->GetExceptionMessage());
                 return 1;
             }
             
