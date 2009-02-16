@@ -172,7 +172,8 @@ public:
     void                AddGeomCol             (FdoGeometricPropertyDefinition* gpd, 
                                                 const wchar_t*                  fcname);
 
-    sqlite3*        GetDB() { return m_db; }
+    sqlite3*        GetDbRead() { return m_dbRead; }
+    sqlite3*        GetDbWrite() { return m_dbWrite; }
     SpatialIndex*   GetSpatialIndex(const char* table);
     void            GetExtents(const wchar_t* fcname, double ext[4]);
     SltMetadata*    GetMetadata(const char* table);
@@ -189,7 +190,8 @@ private :
 
     void CollectBaseClassProperties(FdoClassCollection* myclasses, FdoClassDefinition* fc, std::string& sql, int mode);
 
-    sqlite3*                                m_db;
+    sqlite3*                                m_dbRead;
+    sqlite3*                                m_dbWrite;
 
     std::map<std::wstring, std::wstring>*   m_mProps;
     std::wstring                            m_connStr;

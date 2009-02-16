@@ -80,7 +80,8 @@ SltConnection::SltConnection() : m_refCount(1)
         g_fdo2sql_map[FdoDataType_String] =     "TEXT";
     }
 
-    m_db = NULL;
+    m_dbRead = NULL;
+    m_dbWrite = NULL;
     m_pSchema = NULL;
     m_mProps = new std::map<std::wstring, std::wstring>();
     m_connState = FdoConnectionState_Closed;
@@ -167,7 +168,7 @@ void SltConnection::SetConnectionString(FdoString* value)
 //connection string and connection property dictionary.
 void SltConnection::CreateDatabase()
 {
-    if (m_db || m_connState != FdoConnectionState_Closed)
+    if (m_dbRead || m_connState != FdoConnectionState_Closed)
     {
         throw FdoCommandException::Create(L"Cannot create data store while connection is in open state.");
     }
@@ -176,19 +177,20 @@ void SltConnection::CreateDatabase()
     
     string file = W2A_SLOW(dsw);
 
+    sqlite3* tmpdb = NULL;
+
     //create the database
     //TODO: this will also work if the database exists -- in which 
     //case it will open it.
-    if( sqlite3_open(file.c_str(), &m_db) != SQLITE_OK )
+    if( sqlite3_open(file.c_str(), &tmpdb) != SQLITE_OK )
     {
-        m_db = NULL;
         std::wstring err = wstring(L"Failed to open or create: ") + dsw;
         throw FdoCommandException::Create(err.c_str());
     }
 
     //first things first -- set big page size for better
     //performance. Must be done on an empty db to have effect.
-    int rc = sqlite3_exec(m_db, "PRAGMA page_size=32768;", NULL, NULL, NULL);
+    int rc = sqlite3_exec(tmpdb, "PRAGMA page_size=32768;", NULL, NULL, NULL);
     
     //create the spatial_ref_sys table
     //Note the sr_name field is not in the spec, we are adding it in order to 
@@ -203,7 +205,7 @@ void SltConnection::CreateDatabase()
                       ");";
 
     char* zerr = NULL;
-    rc = sqlite3_exec(m_db, srs_sql.c_str(), NULL, NULL, &zerr);
+    rc = sqlite3_exec(tmpdb, srs_sql.c_str(), NULL, NULL, &zerr);
 
     if (rc)
     {
@@ -220,7 +222,7 @@ void SltConnection::CreateDatabase()
                     "srid INTEGER,"
                     "geometry_format TEXT);";  
 
-    int rc2 = sqlite3_exec(m_db, gc_sql.c_str(), NULL, NULL, &zerr);
+    int rc2 = sqlite3_exec(tmpdb, gc_sql.c_str(), NULL, NULL, &zerr);
 
     if (rc2)
     {
@@ -230,8 +232,7 @@ void SltConnection::CreateDatabase()
 
     //close the database -- CreateDataStore itself does not 
     //open the FDO connection, subsequent call to Open() does.
-    sqlite3_close(m_db);
-    m_db = NULL;
+    sqlite3_close(tmpdb);
 
     if (rc || rc2)
     {
@@ -248,16 +249,40 @@ FdoConnectionState SltConnection::Open()
     if (_access(file.c_str(), 0) == -1)
         throw FdoConnectionException::Create(L"File does not exist!");
 
-    if( sqlite3_open(file.c_str(), &m_db) != SQLITE_OK )
+    //We will use two connections to the database -- one for reading and one for writing.
+    //This will help us with concurrent reads and writes (to different tables).
+    //If we use the same SQLite connection, we will get problems with transaction nesting
+    //due to interleaved reads and writes.
+
+    //Allow sharing of memory caches between the reading and writing connections
+    int rc = sqlite3_enable_shared_cache(1);
+
+    if (rc != SQLITE_OK)
+        fprintf(stderr, "Failed to enable shared cache.\n");
+    
+    //Open the Read connection
+    if( sqlite3_open(file.c_str(), &m_dbRead) != SQLITE_OK )
     {
-        m_db = NULL;
+        m_dbRead = NULL;
+        std::wstring err = wstring(L"Failed to open ") + dsw;
+        throw FdoConnectionException::Create(err.c_str());
+    }
+
+    rc = sqlite3_exec(m_dbRead, "PRAGMA read_uncommitted=1;", NULL, NULL, NULL);
+
+    //Open the Write connection
+    if( sqlite3_open(file.c_str(), &m_dbWrite) != SQLITE_OK )
+    {
+        sqlite3_close(m_dbRead);
+        m_dbRead = m_dbWrite = NULL;
         std::wstring err = wstring(L"Failed to open ") + dsw;
         throw FdoConnectionException::Create(err.c_str());
     }
 
     //Register the extra SQL functions we would like to support
-    RegisterExtensions(m_db);
-
+    RegisterExtensions(m_dbRead);
+    RegisterExtensions(m_dbWrite);
+    
     m_connState = FdoConnectionState_Open;
     return m_connState;
 }
@@ -280,10 +305,16 @@ void SltConnection::Close()
 
     ClearQueryCache();
 
-    if (m_db)
+    if (m_dbRead)
     {
-        int rc = sqlite3_close(m_db);
-        m_db = NULL;
+        int rc = sqlite3_close(m_dbRead);
+        m_dbRead = NULL;
+    }
+
+    if (m_dbWrite)
+    {
+        int rc = sqlite3_close(m_dbWrite);
+        m_dbWrite = NULL;
     }
     
     FDO_SAFE_RELEASE(m_pSchema);
@@ -413,7 +444,7 @@ FdoFeatureSchemaCollection* SltConnection::DescribeSchema()
         return FdoCommonSchemaUtil::DeepCopyFdoFeatureSchemas(m_pSchema, NULL);
     }
 
-    if (!m_db)
+    if (!m_dbRead)
         return NULL;
 
     m_pSchema = FdoFeatureSchemaCollection::Create(NULL);
@@ -429,7 +460,7 @@ FdoFeatureSchemaCollection* SltConnection::DescribeSchema()
     string tables_sql = "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;";
     sqlite3_stmt* pstmt = NULL;
     const char* pzTail = NULL;
-    if (sqlite3_prepare_v2(m_db, tables_sql.c_str(), -1, &pstmt, &pzTail) == SQLITE_OK)
+    if (sqlite3_prepare_v2(m_dbRead, tables_sql.c_str(), -1, &pstmt, &pzTail) == SQLITE_OK)
     {
         while (sqlite3_step(pstmt) == SQLITE_ROW)
             tables.push_back((const char*)sqlite3_column_text(pstmt, 0));
@@ -560,7 +591,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
         const char* tail = NULL;
         std::vector<__int64>* rows = new std::vector<__int64>(); //accumulate ordered row ids here
 
-        int rc = sqlite3_prepare_v2(m_db, sql.c_str(), -1, &stmt, &tail);
+        int rc = sqlite3_prepare_v2(m_dbRead, sql.c_str(), -1, &stmt, &tail);
 
         while ((rc = sqlite3_step(stmt)) == SQLITE_ROW)
             rows->push_back(sqlite3_column_int64(stmt, 0));
@@ -715,7 +746,7 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
     const char* tail = NULL;
     sqlite3_stmt* stmt = NULL;
     
-    if (sqlite3_prepare_v2(m_db, sql.c_str(), -1, &stmt, &tail) == SQLITE_OK)
+    if (sqlite3_prepare_v2(m_dbWrite, sql.c_str(), -1, &stmt, &tail) == SQLITE_OK)
     {
         BindPropVals(propvals, stmt);
         
@@ -732,7 +763,7 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
 
     sqlite3_finalize(stmt);
 
-    return sqlite3_changes(m_db);
+    return sqlite3_changes(m_dbWrite);
 }
 
 FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
@@ -754,7 +785,7 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
     sqlite3_stmt* stmt = NULL;
     const char* tail = NULL;
 
-    if (sqlite3_prepare_v2(m_db, sql.c_str(), -1, &stmt, &tail) == SQLITE_OK)
+    if (sqlite3_prepare_v2(m_dbWrite, sql.c_str(), -1, &stmt, &tail) == SQLITE_OK)
     {
         if (sqlite3_step(stmt) != SQLITE_DONE)
         {
@@ -768,7 +799,7 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
     }
 
     sqlite3_finalize(stmt);
-    return sqlite3_changes(m_db);
+    return sqlite3_changes(m_dbWrite);
 }
 
 
@@ -957,7 +988,7 @@ void SltConnection::AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_
 
     gci_sql += ");";
 
-    int rc = sqlite3_exec(m_db, gci_sql.c_str(), NULL, NULL, NULL);
+    int rc = sqlite3_exec(m_dbWrite, gci_sql.c_str(), NULL, NULL, NULL);
 }
 
 //Returns the SRID of an entry in the spatial_ref_sys table,
@@ -981,8 +1012,8 @@ int SltConnection::FindSpatialContext(const wchar_t* name)
     sqlite3_stmt* stmt = NULL;
     const char* tail = NULL;
    
-    if ((rc = sqlite3_prepare_v2(m_db, sql1.c_str(), -1, &stmt, &tail)) != SQLITE_OK)
-        if ((rc = sqlite3_prepare_v2(m_db, sql2.c_str(), -1, &stmt, &tail)) != SQLITE_OK)
+    if ((rc = sqlite3_prepare_v2(m_dbRead, sql1.c_str(), -1, &stmt, &tail)) != SQLITE_OK)
+        if ((rc = sqlite3_prepare_v2(m_dbRead, sql2.c_str(), -1, &stmt, &tail)) != SQLITE_OK)
             return 0;
 
     if ((rc = sqlite3_step(stmt)) == SQLITE_ROW)
@@ -1004,7 +1035,7 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema)
 
     FdoPtr<FdoClassCollection> inclasses = schema->GetClasses();
 
-    int rc = sqlite3_exec(m_db, "BEGIN;", NULL, NULL, NULL);
+    int rc = sqlite3_exec(m_dbWrite, "BEGIN;", NULL, NULL, NULL);
 
     for (int i=0; i<inclasses->GetCount(); i++)
     {
@@ -1025,10 +1056,10 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema)
         //printf ("SQLite Feature class: %s\n", sql.c_str());
 
         //create the database table for this feature class
-        int rc = sqlite3_exec(m_db, sql.c_str(), NULL, NULL, NULL);
+        int rc = sqlite3_exec(m_dbWrite, sql.c_str(), NULL, NULL, NULL);
     }
 
-    rc = sqlite3_exec(m_db, "COMMIT;", NULL, NULL, NULL);
+    rc = sqlite3_exec(m_dbWrite, "COMMIT;", NULL, NULL, NULL);
 
     //the cached FDO schema will need to be refreshed
     FDO_SAFE_RELEASE(m_pSchema);
@@ -1285,7 +1316,7 @@ int SltConnection::GetFeatureCount(const char* table)
     const char* tail = NULL;
 
     std::string sql = std::string("SELECT MAX(ROWID) FROM \"") + table + "\";";
-    int rc = sqlite3_prepare_v2(m_db, sql.c_str(), -1, &stmt, &tail);
+    int rc = sqlite3_prepare_v2(m_dbRead, sql.c_str(), -1, &stmt, &tail);
     rc = sqlite3_step(stmt);
     int count = sqlite3_column_int(stmt, 0);
     sqlite3_finalize(stmt);
@@ -1307,7 +1338,7 @@ sqlite3_stmt* SltConnection::GetCachedParsedStatement(const std::string& sql)
     if (!ret)
     {
         const char* tail = NULL;
-        int rc = sqlite3_prepare_v2(m_db, sql.c_str(), -1, &ret, &tail);
+        int rc = sqlite3_prepare_v2(m_dbRead, sql.c_str(), -1, &ret, &tail);
 
         if (rc != SQLITE_OK)
         {

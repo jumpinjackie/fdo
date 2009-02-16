@@ -350,7 +350,7 @@ class SltInsert : public SltCommand<FdoIInsert>
             m_className = NULL;
             m_properties = FdoPropertyValueCollection::Create();
             m_pCompiledSQL = NULL;
-            m_db = m_connection->GetDB();
+            m_db = m_connection->GetDbWrite();
         }
 
     protected:
@@ -696,7 +696,7 @@ public:
         sc_sql += ");";
 
         char* zerr = NULL;
-        int rc = sqlite3_exec(m_connection->GetDB(), sc_sql.c_str(), NULL, NULL, &zerr);
+        int rc = sqlite3_exec(m_connection->GetDbWrite(), sc_sql.c_str(), NULL, NULL, &zerr);
 
         if (rc)
         {
