@@ -265,7 +265,7 @@ public:
     //Builds the tree structure
     void Prepare()
     {
-        m_root.c = -1; // dummy used to not trip the Search algorithm (which trips at 0)
+        m_root.c = (wchar_t)-1; // dummy used to not trip the Search algorithm (which trips at 0)
 
         for (size_t i=0; i<m_list.size(); i++)
         {
@@ -307,7 +307,7 @@ keep_going: tmp++;
         m_list.clear();
 
         m_root.p = NULL;
-        m_root.c = -1;
+        m_root.c = (wchar_t)-1;
         m_root.children.clear();
     }
 

@@ -29,7 +29,7 @@ SltSpatialContextReader::SltSpatialContextReader(SltConnection* conn)
     m_connection = conn;
     m_connection->AddRef();
 
-    sqlite3* db = m_connection->GetDB();
+    sqlite3* db = m_connection->GetDbRead();
 
     //We will attempt two ways to get the info -- one is in case
     //there is an sr_name column (i.e. data was created by FDO),

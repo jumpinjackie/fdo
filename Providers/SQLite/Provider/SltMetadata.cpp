@@ -58,7 +58,7 @@ SltMetadata::SltMetadata(SltConnection* connection, const char* name)
   m_connection(connection), //No addref -- it owns us.
   m_iGeom(-1)
 {
-    sqlite3* db = m_connection->GetDB();
+    sqlite3* db = m_connection->GetDbRead();
 
     /* Ensure the database schema has been loaded */
     if( sqlite3SafetyOn(db) )
@@ -108,7 +108,7 @@ FdoClassDefinition* SltMetadata::ToClass()
     if (!m_table)
         return NULL;
 
-    sqlite3* db = m_connection->GetDB();
+    sqlite3* db = m_connection->GetDbRead();
 
     //find geometry properties by querying the geometry_columns table
     string gsql = "SELECT f_geometry_column,coord_dimension,srid,geometry_format,geometry_type FROM geometry_columns WHERE f_table_name='";
@@ -270,7 +270,7 @@ void SltMetadata::FindSpatialContextName(int srid, std::wstring& ret)
    
     //NOTE: This should fail around here if the column sr_name
     //does not exist -- we'll deal with that 
-    if ((rc = sqlite3_prepare_v2(m_connection->GetDB(), sql.c_str(), -1, &stmt, &tail)) == SQLITE_OK)
+    if ((rc = sqlite3_prepare_v2(m_connection->GetDbRead(), sql.c_str(), -1, &stmt, &tail)) == SQLITE_OK)
     {
         rc = sqlite3_bind_int(stmt, 1, srid);
         if ((rc = sqlite3_step(stmt)) == SQLITE_ROW )

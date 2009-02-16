@@ -233,7 +233,7 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
     m_eGeomFormat = md->GetGeomFormat();
 
     if (m_bUseTransaction)
-        rc = sqlite3_exec(m_connection->GetDB(), "BEGIN;", NULL, NULL, NULL);
+        rc = sqlite3_exec(m_connection->GetDbRead(), "BEGIN;", NULL, NULL, NULL);
 
 	//if there were properties passed in the identifier collection, assume 
 	//the caller knows what they want and we will use the exact query
