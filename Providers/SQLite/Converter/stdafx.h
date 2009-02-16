@@ -16,15 +16,18 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  
 
-struct FeatRec
-{
-    int id;
-    unsigned mortonid;
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <dlfcn.h>
+#endif
 
-    bool operator< (const FeatRec& fr)
-    {
-        return mortonid < fr.mortonid;
-    }
-};
+#include <time.h>
+#include <float.h>
+#include <stdio.h>
+#include <vector>
+#include <string>
+#include <algorithm>
 
-std::vector<FeatRec>* ComputeMortonOrder(FdoIConnection* con, FdoFeatureClass* fc);
+
+#include "Fdo.h"
