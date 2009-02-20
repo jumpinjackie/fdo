@@ -81,7 +81,7 @@ private:
 
 	void _buildUpCRS ();
 	void _processLayerSRSName (FdoWmsLayer*, FdoStringCollection*);
-	void _processLayerSRSExtent (FdoWmsLayer*, FdoString*, FdoWmsBoundingBox*, bool);
+	void _processLayerSRSExtent (FdoWmsLayer*, FdoString*, FdoWmsBoundingBox*, bool &);
 	void _removeNonReferedSRS ();
 	void _calcAllGeographicBoundingBox (FdoWmsBoundingBox* bbox);
 	void _calcLayerGeographicBoundingBox (FdoWmsLayer* layer, FdoWmsBoundingBox* bbox);
