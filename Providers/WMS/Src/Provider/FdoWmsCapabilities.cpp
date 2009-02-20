@@ -165,7 +165,7 @@ void FdoWmsCapabilities::_processLayerSRSName (FdoWmsLayer* layer, FdoStringColl
 	}
 }
 
-void FdoWmsCapabilities::_processLayerSRSExtent (FdoWmsLayer* layer, FdoString* crsName, FdoWmsBoundingBox* extent, bool bFirstMatch)
+void FdoWmsCapabilities::_processLayerSRSExtent (FdoWmsLayer* layer, FdoString* crsName, FdoWmsBoundingBox* extent, bool& bFirstMatch)
 {
 	FdoPtr<FdoWmsBoundingBoxCollection> bboxes = layer->GetBoundingBoxes ();
 	FdoInt32 cntBoxes = bboxes->GetCount ();
