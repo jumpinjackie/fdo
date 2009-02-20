@@ -185,16 +185,17 @@ protected:
     virtual ~FdoRdbmsFeatureReader();
     virtual void Dispose();
 
-private:
+public:
     // This is an internal method to support the DataReader
-    FdoInt32 GetPropertyCount();
+    virtual FdoInt32 GetPropertyCount();
     // This is an internal method to support the DataReader
-    FdoString* GetPropertyName(FdoInt32 index);
+    virtual FdoString* GetPropertyName(FdoInt32 index);
     // This is an internal method to support the DataReader
-    FdoDataType GetDataType(FdoString* propertyName);
+    virtual FdoDataType GetDataType(FdoString* propertyName);
     // This is an internal method to support the DataReader
-    FdoPropertyType GetPropertyType(FdoString* propertyName);
+    virtual FdoPropertyType GetPropertyType(FdoString* propertyName);
 
+private:
     // Method in aid of GetGeometry()
     FdoByteArray* GetGeometry(const wchar_t* propertyName, bool checkIsNullOnly);
     FdoByteArray* GetGeometry(const wchar_t* propertyName, bool checkIsNullOnly, GdbiQueryResult *query);
