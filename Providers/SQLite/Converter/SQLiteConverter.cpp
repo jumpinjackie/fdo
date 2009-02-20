@@ -24,7 +24,6 @@
 #include "SltGeomUtils.h"
 #include "SpatialOptimizer.h"
 #include "FdoCommonSchemaUtil.h"
-#include "FdoDiff.h"
 
 typedef FdoIConnection* (*createFunc)();
 
@@ -548,14 +547,6 @@ bool DiffCB(FdoInt64 id, const wchar_t* attrname, void* userData)
 }
 
 
-void CompareFiles(const wchar_t* src, const wchar_t* dst)
-{
-    FdoPtr<FdoIConnection> scon = GetFdoCon(src, true);
-    FdoPtr<FdoIConnection> dcon = GetFdoCon(dst, true);
-
-    int diffs = FdoDiffs(scon, NULL, dcon, NULL, DiffCB, NULL);    
-}
-
 //======================================================================
 //
 //  Performance testing
@@ -981,6 +972,7 @@ int main(int argc, char* argv[])
         }
         if (wcscmp(wargv[1].c_str(), L"diff") == 0)
         {
+            /*
             try
             {
                 clock_t t0 = clock();
@@ -995,6 +987,7 @@ int main(int argc, char* argv[])
             }
             
             return 0;
+            */
         }
         else
         {
