@@ -711,7 +711,7 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
 
         //select aggregate -- only one computed identifier expected!
         FdoPtr<FdoIdentifier> id = properties->GetItem(0);
-        FdoPtr<FdoComputedIdentifier> ci = dynamic_cast<FdoComputedIdentifier*>(id.p);
+        FdoComputedIdentifier* ci = dynamic_cast<FdoComputedIdentifier*>(id.p);
 
         FdoString* exprs = ci->ToString();
         string mbexprs = W2A_SLOW(exprs);
