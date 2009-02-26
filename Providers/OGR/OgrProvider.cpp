@@ -427,7 +427,7 @@ FdoIDataReader* OgrConnection::SelectAggregates(FdoIdentifier* fcname,
         FdoString* pname = id->GetName();
         W2A(pname);
         
-        sprintf(sql, "SELECT DISTINCT %s FROM %s", mbpname, mbfc);
+        sprintf(sql, "SELECT DISTINCT %s FROM '%s'", mbpname, mbfc);
 #if DEBUG
         printf (" select distinct: %s\n", sql);
 #endif
@@ -462,7 +462,7 @@ FdoIDataReader* OgrConnection::SelectAggregates(FdoIdentifier* fcname,
         
         char sql[512];
         
-        sprintf(sql, "SELECT %s FROM %s", mbexprs, mbfc);
+        sprintf(sql, "SELECT %s FROM '%s'", mbexprs, mbfc);
 #if DEBUG
         printf (" select distinct: %s\n", sql);
 #endif
