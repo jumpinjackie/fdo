@@ -213,6 +213,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="$(FDO)\Unmanaged\inc;$(FDO)\Managed\Src;$(FDO)\Managed\Src\OSGeo;..\..\inc;..\..\inc\WMS\Override;..\Src\OSGeo"
 				AdditionalUsingDirectories="$(FDO)\Managed\Bin\Win32\Release"
 				PreprocessorDefinitions="WIN32;NDEBUG"
@@ -295,6 +296,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="$(FDO)\Unmanaged\inc;$(FDO)\Managed\Src;$(FDO)\Managed\Src\OSGeo;..\..\inc;..\..\inc\WMS\Override;..\Src\OSGeo"
 				AdditionalUsingDirectories="$(FDO)\Managed\Bin\Win64\Release"
 				PreprocessorDefinitions="WIN32;NDEBUG"

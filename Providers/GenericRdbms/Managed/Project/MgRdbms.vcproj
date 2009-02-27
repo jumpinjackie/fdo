@@ -214,6 +214,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="$(FDO)\Unmanaged\Inc;$(FDO)\Managed\Src;$(FDO)\Managed\Src\OSGeo;..\..\Inc;..\..\Inc\Rdbms"
 				AdditionalUsingDirectories="$(FDO)\Managed\Bin\Win32\Release"
 				PreprocessorDefinitions="WIN32;NDEBUG"
@@ -297,6 +298,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="$(FDO)\Unmanaged\Inc;$(FDO)\Managed\Src;$(FDO)\Managed\Src\OSGeo;..\..\Inc;..\..\Inc\Rdbms"
 				AdditionalUsingDirectories="&quot;$(FDO)\Managed\Bin\Win64\Release&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG"

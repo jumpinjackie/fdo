@@ -220,6 +220,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="..\..\Unmanaged\Inc;..\Src;..\Src\OSGeo;..\Src\OSGeo\Spatial"
 				AdditionalUsingDirectories="$(OutDir)\"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE"
@@ -302,6 +303,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="..\..\Unmanaged\Inc;..\Src;..\Src\OSGeo;..\Src\OSGeo\Spatial"
 				AdditionalUsingDirectories="$(OutDir)\"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WIN64;_CRT_SECURE_NO_DEPRECATE"
