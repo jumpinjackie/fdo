@@ -219,6 +219,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories=".\inc;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOTHIRDPARTY)\boost&quot;;&quot;$(FDOTHIRDPARTY)\libcurl\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOOWS_EXPORTS;_CRT_SECURE_NO_DEPRECATE;CURL_STATICLIB;BOOST_ALL_DYN_LINK"
 				RuntimeLibrary="2"
@@ -303,6 +304,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories=".\inc;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOTHIRDPARTY)\boost&quot;;&quot;$(FDOTHIRDPARTY)\libcurl\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOOWS_EXPORTS;_CRT_SECURE_NO_DEPRECATE;CURL_STATICLIB;BOOST_ALL_DYN_LINK"
 				RuntimeLibrary="2"

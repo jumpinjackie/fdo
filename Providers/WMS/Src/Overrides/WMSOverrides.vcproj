@@ -214,6 +214,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="$(FDO)\Unmanaged\inc;$(FDOUTILITIES)\Common\inc;..\..\inc;..\Message\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOWMS_EXPORTS;;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="2"
@@ -296,6 +297,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="$(FDO)\Unmanaged\inc;$(FDOUTILITIES)\Common\inc;..\..\inc;..\Message\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOWMS_EXPORTS;;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="2"

@@ -175,6 +175,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged;..\..\inc;$(FDOUTILITIES)\Common\inc;..\..\;..\Fdo\Other;..\Gdbi;$(FDOUTILITIES)\SchemaMgr\inc\;..\LockManager\;../"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="2"
@@ -238,6 +239,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged;..\..\inc;$(FDOUTILITIES)\Common\inc;..\..\;..\Fdo\Other;..\Gdbi;$(FDOUTILITIES)\SchemaMgr\inc\;..\LockManager\;../"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="2"

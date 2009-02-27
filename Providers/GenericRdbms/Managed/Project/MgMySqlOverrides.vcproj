@@ -214,6 +214,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDO)\Managed\Src&quot;;&quot;$(FDO)\Managed\Src\OSGeo&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Inc&quot;;..\..\Inc;..\..\Inc\Rdbms\Override;..\..\Inc\Rdbms\Override\MySQL;..\Src;..\Src\OSGeo"
 				AdditionalUsingDirectories="$(FDO)\Managed\Bin\Win32\Release;..\Bin\Release"
 				PreprocessorDefinitions="WIN32;NDEBUG"
@@ -297,6 +298,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDO)\Managed\Src&quot;;&quot;$(FDO)\Managed\Src\OSGeo&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Inc&quot;;..\..\Inc;..\..\Inc\Rdbms\Override;..\..\Inc\Rdbms\Override\MySQL;..\Src;..\Src\OSGeo"
 				AdditionalUsingDirectories="&quot;$(FDO)\Managed\Bin\Win64\Release&quot;;..\Bin\Release64"
 				PreprocessorDefinitions="WIN32;NDEBUG"

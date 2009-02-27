@@ -181,6 +181,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalOptions="-Zm111"
 				AdditionalIncludeDirectories="..\..\..\inc\Fdo;$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged;$(FDOUTILITIES)\SchemaMgr\inc;..\..\..;..\..\..\inc;..\..\..\..\Oracle;$(FDOUTILITIES)\Common\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;FDORDBMS_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
@@ -247,6 +248,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalOptions="-Zm111"
 				AdditionalIncludeDirectories="..\..\..\inc\Fdo;$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged;$(FDOUTILITIES)\SchemaMgr\inc;..\..\..;..\..\..\inc;..\..\..\..\Oracle;$(FDOUTILITIES)\Common\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;FDORDBMS_EXPORTS;_CRT_SECURE_NO_DEPRECATE"

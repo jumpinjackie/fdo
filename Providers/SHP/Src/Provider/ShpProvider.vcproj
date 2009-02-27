@@ -213,6 +213,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="..\ShpRead;..\ShpSpatialIndex;.\;..\..\inc;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDO)\Unmanaged\inc\Fdo\Expression&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOSHP_EXPORTS;FDOSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="2"
@@ -292,6 +293,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="..\ShpRead;..\ShpSpatialIndex;.\;..\..\inc;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDO)\Unmanaged\inc\Fdo\Expression&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOSHP_EXPORTS;FDOSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="2"

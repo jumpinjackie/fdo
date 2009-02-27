@@ -218,6 +218,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDO)\Managed\Src&quot;;&quot;$(FDO)\Managed\Src\OSGeo&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Inc&quot;;..\..\Inc;..\..\Inc\Rdbms\Override;..\Src;..\Src\Autodesk\Gis"
 				AdditionalUsingDirectories="$(FDO)\Managed\Bin\Win32\Release"
 				PreprocessorDefinitions="WIN32;NDEBUG"
@@ -302,6 +303,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDO)\Managed\Src&quot;;&quot;$(FDO)\Managed\Src\OSGeo&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Inc&quot;;..\..\Inc;..\..\Inc\Rdbms\Override;..\Src;..\Src\Autodesk\Gis"
 				AdditionalUsingDirectories="&quot;$(FDO)\Managed\Bin\Win64\Release&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG"
