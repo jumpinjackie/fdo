@@ -730,6 +730,7 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
     string sql="UPDATE \"" + mbfc + "\" SET ";
 
     //TODO: currently ignores spatial filter in delete
+    //TODO: filter needs to be passed through the SltQueryTranslator.
 
     for (int i=0; i<propvals->GetCount(); i++)
     {
@@ -741,7 +742,12 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
         sql += W2A_SLOW(id->GetName()) + "=?";
     }
 
-    sql += " WHERE " + W2A_SLOW(filter->ToString()) + ";";
+    if (filter)
+    {
+        sql += " WHERE " + W2A_SLOW(filter->ToString());
+    }
+
+    sql += ";";
 
     const char* tail = NULL;
     sqlite3_stmt* stmt = NULL;
