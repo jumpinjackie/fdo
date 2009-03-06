@@ -291,7 +291,7 @@ void SltQueryTranslator::ProcessComparisonCondition(FdoComparisonCondition& filt
     FdoPtr<FdoDataPropertyDefinitionCollection> idpdc = m_fc->GetIdentityProperties();
     FdoPtr<FdoDataPropertyDefinition> idpd = idpdc->GetItem(0);
     
-    if (wcscmp(left->ToString(), idpd->GetName()) == 0)
+    if (filter.GetOperation() == FdoComparisonOperations_EqualTo && wcscmp(left->ToString(), idpd->GetName()) == 0)
     {
         __int64 idval = -1;
         size_t len = 0;
