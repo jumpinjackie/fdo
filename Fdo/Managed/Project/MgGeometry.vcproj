@@ -75,6 +75,7 @@
 				OutputFile="$(OutDir)\OSGeo.FDO.Geometry.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Unmanaged\Lib\Win32\Debug"
+				DelayLoadDLLs="FDOCommon.dll; FDOGeometry.dll"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				ProgramDatabaseFile="$(TargetDir)\OSGeo.FDO.Geometry.pdb"
@@ -161,6 +162,7 @@
 				OutputFile="$(OutDir)\OSGeo.FDO.Geometry.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Unmanaged\Lib\Win64\Debug"
+				DelayLoadDLLs="FDOCommon.dll; FDOGeometry.dll"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				ProgramDatabaseFile="$(TargetDir)\OSGeo.FDO.Geometry.pdb"
@@ -245,6 +247,7 @@
 				OutputFile="$(OutDir)\OSGeo.FDO.Geometry.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Unmanaged\Lib\Win32\Release"
+				DelayLoadDLLs="FDOCommon.dll; FDOGeometry.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(TargetDir)\OSGeo.FDO.Geometry.pdb"
 				RandomizedBaseAddress="1"
@@ -327,6 +330,7 @@
 				OutputFile="$(OutDir)\OSGeo.FDO.Geometry.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Unmanaged\Lib\Win64\Release"
+				DelayLoadDLLs="FDOCommon.dll; FDOGeometry.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(TargetDir)\OSGeo.FDO.Geometry.pdb"
 				RandomizedBaseAddress="1"
@@ -379,6 +383,7 @@
 			CopyLocal="false"
 			CopyLocalDependencies="false"
 			CopyLocalSatelliteAssemblies="false"
+			RelativePathToProject=".\Managed\Project\MgCommon.vcproj"
 		/>
 	</References>
 	<Files>
