@@ -72,10 +72,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDOCommon.lib FDO.lib FDOGeometry.lib"
+				AdditionalDependencies="FDOCommon.lib FDO.lib"
 				OutputFile="$(OutDir)\OSGeo.FDO.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Unmanaged\Lib\Win32\Debug"
+				DelayLoadDLLs="FDOCommon.dll;FDO.dll"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				ProgramDatabaseFile="$(TargetDir)\OSGeo.FDO.pdb"
@@ -159,10 +160,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDOCommon.lib FDO.lib FDOGeometry.lib"
+				AdditionalDependencies="FDOCommon.lib FDO.lib"
 				OutputFile="$(OutDir)\OSGeo.FDO.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Unmanaged\Lib\Win64\Debug"
+				DelayLoadDLLs="FDOCommon.dll;FDO.dll"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				ProgramDatabaseFile="$(TargetDir)\OSGeo.FDO.pdb"
@@ -243,10 +245,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDOCommon.lib FDO.lib FDOGeometry.lib"
+				AdditionalDependencies="FDOCommon.lib FDO.lib"
 				OutputFile="$(OutDir)\OSGeo.FDO.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Unmanaged\Lib\Win32\Release"
+				DelayLoadDLLs="FDOCommon.dll;FDO.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(TargetDir)\OSGeo.FDO.pdb"
 				RandomizedBaseAddress="1"
@@ -325,10 +328,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDOCommon.lib FDO.lib FDOGeometry.lib"
+				AdditionalDependencies="FDOCommon.lib FDO.lib"
 				OutputFile="$(OutDir)\OSGeo.FDO.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Unmanaged\Lib\Win64\Release"
+				DelayLoadDLLs="FDOCommon.dll;FDO.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(TargetDir)\OSGeo.FDO.pdb"
 				RandomizedBaseAddress="1"

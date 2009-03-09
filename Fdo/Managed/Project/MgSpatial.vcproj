@@ -71,10 +71,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDOCommon.lib FDO.lib FDOGeometry.lib FDOSpatial.lib"
+				AdditionalDependencies="FDOCommon.lib FDOSpatial.lib"
 				OutputFile="$(OutDir)\OSGeo.FDO.Spatial.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Unmanaged\Lib\Win32\Debug"
+				DelayLoadDLLs="FDOCommon.dll;FDOSpatial.dll"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				ProgramDatabaseFile="$(TargetDir)\OSGeo.FDO.Spatial.pdb"
@@ -157,10 +158,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDOCommon.lib FDO.lib FDOGeometry.lib FDOSpatial.lib"
+				AdditionalDependencies="FDOCommon.lib FDOSpatial.lib"
 				OutputFile="$(OutDir)\OSGeo.FDO.Spatial.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Unmanaged\Lib\Win64\Debug"
+				DelayLoadDLLs="FDOCommon.dll;FDOSpatial.dll"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				ProgramDatabaseFile="$(TargetDir)\OSGeo.FDO.Spatial.pdb"
@@ -242,10 +244,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/noentry"
-				AdditionalDependencies="FDOCommon.lib FDO.lib FDOGeometry.lib FDOSpatial.lib"
+				AdditionalDependencies="FDOCommon.lib FDOSpatial.lib"
 				OutputFile="$(OutDir)\OSGeo.FDO.Spatial.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Unmanaged\Lib\Win32\Release"
+				DelayLoadDLLs="FDOCommon.dll;FDOSpatial.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(TargetDir)\OSGeo.FDO.Spatial.pdb"
 				RandomizedBaseAddress="1"
@@ -325,10 +328,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/noentry"
-				AdditionalDependencies="FDOCommon.lib FDO.lib FDOGeometry.lib FDOSpatial.lib"
+				AdditionalDependencies="FDOCommon.lib FDOSpatial.lib"
 				OutputFile="$(OutDir)\OSGeo.FDO.Spatial.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Unmanaged\Lib\Win64\Release"
+				DelayLoadDLLs="FDOCommon.dll;FDOSpatial.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(TargetDir)\OSGeo.FDO.Spatial.pdb"
 				RandomizedBaseAddress="1"
@@ -381,18 +385,21 @@
 			CopyLocal="false"
 			CopyLocalDependencies="false"
 			CopyLocalSatelliteAssemblies="false"
+			RelativePathToProject=".\Managed\Project\MgCommon.vcproj"
 		/>
 		<ProjectReference
 			ReferencedProjectIdentifier="{FB0F68CD-66A6-404E-A31A-528DBADF7FB8}"
 			CopyLocal="false"
 			CopyLocalDependencies="false"
 			CopyLocalSatelliteAssemblies="false"
+			RelativePathToProject=".\Managed\Project\MgFDO.vcproj"
 		/>
 		<ProjectReference
 			ReferencedProjectIdentifier="{00D27054-5167-4B39-BD0C-BC5D518E4E95}"
 			CopyLocal="false"
 			CopyLocalDependencies="false"
 			CopyLocalSatelliteAssemblies="false"
+			RelativePathToProject=".\Managed\Project\MgGeometry.vcproj"
 		/>
 	</References>
 	<Files>
