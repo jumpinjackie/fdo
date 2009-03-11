@@ -19,15 +19,15 @@
 #include "FDO\Schema\mgDataType.h"
 
 BEGIN_NAMESPACE_OSGEO_COMMON
-public __gc class StringCollection;
+ref class StringCollection;
 END_NAMESPACE_OSGEO_COMMON
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
-public __gc class DataValue;
+ref class DataValue;
 END_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 BEGIN_NAMESPACE_OSGEO_FDO_RASTER
-public __gc class DataValueCollection;
+ref class DataValueCollection;
 
 /// \ingroup (OSGeoFDORaster)
 /// \interface OSGeo::FDO::Raster::IRasterPropertyDictionary
@@ -38,7 +38,7 @@ public __gc class DataValueCollection;
 /// their values can be retrieved and set.  Data values are exchanged
 /// through the DataValue object to accommodate various data types,
 /// boolean, integer, double, string etc.
-public __gc __interface IRasterPropertyDictionary: public System::IDisposable
+public interface class IRasterPropertyDictionary: public System::IDisposable
 {
 public:
     /// \brief
@@ -53,7 +53,10 @@ public:
     /// \return
     /// A collection of the names of properties in this dictionary.
     /// 
-	__property NAMESPACE_OSGEO_COMMON::StringCollection* get_PropertyNames ();
+    property NAMESPACE_OSGEO_COMMON::StringCollection^ PropertyNames
+    {
+        NAMESPACE_OSGEO_COMMON::StringCollection^ get();
+    }
 
     /// \brief
     /// Gets the data type for the specified property.
@@ -64,7 +67,10 @@ public:
     /// \return
     /// The data type of the property.
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_PropertyDataType (System::String* name);
+    property NAMESPACE_OSGEO_FDO_SCHEMA::DataType PropertyDataType[System::String^]
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::DataType get(System::String^ name);
+    }
 
     /// \brief
     /// Gets the value of the specified property (or its default).
@@ -75,8 +81,6 @@ public:
     /// \return
     /// The value of the property.
     /// 
-	__property NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* get_Property (System::String* name);
-
     /// \brief
     /// Sets the value of the specified property.
     /// 
@@ -85,7 +89,11 @@ public:
     /// \param value 
     /// The new value for the property.
     /// 
-	__property System::Void set_Property (System::String* name, NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* value);
+    property NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ Property[System::String^]
+    {
+        NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ get(System::String^ name);
+        System::Void set(System::String^ name, NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ value);
+    }
 
     /// \brief
     /// Gets the default value for the specified property.
@@ -96,7 +104,10 @@ public:
     /// \return
     /// The default value of the property.
     /// 
-	__property  NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* get_PropertyDefault (System::String* name);
+    property NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ PropertyDefault[System::String^]
+    {
+        NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ get(System::String^ name);
+    }
 
     /// \brief
     /// Predicate to determine if the property is required to be set.
@@ -107,7 +118,7 @@ public:
     /// \return
     /// Returns true if the specified property is required, false if it is optional.
     /// 
-	System::Boolean IsPropertyRequired (System::String* name);
+	System::Boolean IsPropertyRequired (System::String^ name);
 
     /// \brief
     /// Predicate to determine if the property is enumerable (has more than one value).
@@ -119,7 +130,7 @@ public:
     /// Returns true if the possible values for the specified property
     /// can be enumerated via the GetPropertyValues method.
     /// 
-	System::Boolean IsPropertyEnumerable (System::String* name);
+	System::Boolean IsPropertyEnumerable (System::String^ name);
 
     /// \brief
     /// Access the values of the specified enumerable property.
@@ -131,8 +142,6 @@ public:
     /// \return
     /// A collection of datavaluesfor the enumerable property.
     /// 
-	__property NAMESPACE_OSGEO_FDO_RASTER::DataValueCollection* get_PropertyValues (System::String* name);
-
     /// \brief
     /// Set the values of the specified enumerable property.
     /// The property must respond TRUE to IsPropertyEnumerable.
@@ -146,7 +155,11 @@ public:
     /// \param collection 
     /// The collection of values for the enumerable property.
     /// 
-	__property System::Void set_PropertyValues (System::String* name, NAMESPACE_OSGEO_FDO_RASTER::DataValueCollection* collection);
+    property NAMESPACE_OSGEO_FDO_RASTER::DataValueCollection^ PropertyValues[System::String^]
+    {
+        NAMESPACE_OSGEO_FDO_RASTER::DataValueCollection^ get(System::String^ name);
+        System::Void set(System::String^ name, NAMESPACE_OSGEO_FDO_RASTER::DataValueCollection^ value);
+    }
 };
 
 END_NAMESPACE_OSGEO_FDO_RASTER

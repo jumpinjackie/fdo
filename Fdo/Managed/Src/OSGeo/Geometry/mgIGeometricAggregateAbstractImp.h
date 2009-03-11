@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_OSGEO_GEOMETRY
 /// IGeometricAggregateAbstract is a single Geometry that is a collection of other geometries.
 /// There is no requirement that the geometries interact spatially.
 /// Non-abstract derived types should have at least one accessor that returns objects of the appropriate contained type.
-private __gc class IGeometricAggregateAbstractImp :
+private ref class IGeometricAggregateAbstractImp :
 	public NAMESPACE_OSGEO_GEOMETRY::IGeometryImp, public NAMESPACE_OSGEO_GEOMETRY::IGeometricAggregateAbstract
 {
 public:
@@ -47,8 +47,8 @@ public:
     /// 
 	IGeometricAggregateAbstractImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
-	FdoIGeometricAggregateAbstract *GetImpObj();
+internal:
+	FdoIGeometricAggregateAbstract* GetImpObj();
 
 public:
 
@@ -58,7 +58,10 @@ public:
     /// \return
     /// Returns the number of Geometries
     /// 
-	__property System::Int32 get_Count();
+    property System::Int32 Count
+    {
+        virtual System::Int32 get();
+    }
 };
 
 END_NAMESPACE_OSGEO_GEOMETRY

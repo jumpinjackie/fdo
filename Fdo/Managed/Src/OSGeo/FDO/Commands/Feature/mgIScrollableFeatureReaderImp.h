@@ -24,7 +24,7 @@
 class FdoIFeatureReader;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
-public __gc class PropertyValueCollection;
+ref class PropertyValueCollection;
 END_NAMESPACE_OSGEO_FDO_COMMANDS
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
@@ -33,7 +33,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 /// \brief
 /// The IScrollableFeatureReaderImp class is a concrete implementation class for 
 /// interface IScrollableFeatureReader.
-private __gc class IScrollableFeatureReaderImp : public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReaderImp, 
+private ref class IScrollableFeatureReaderImp : public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReaderImp, 
                                                  public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IScrollableFeatureReader
 {
 public:
@@ -42,21 +42,21 @@ public:
 	///
     /// \return
 	/// Returns number of records.
-	System::Int32 Count();
+	virtual System::Int32 Count();
 	
 	/// \brief
 	/// Positions the reader at the first record of the query result.
 	///
     /// \return
 	/// Returns true if a record is found or false if the result is empty.
-	System::Boolean ReadFirst();
+	virtual System::Boolean ReadFirst();
 
 	/// \brief
 	/// Position the reader at the last record of the query result.
 	///
     /// \return
 	/// Returns true if a record is found or false if the result is empty.
-	System::Boolean ReadLast();
+	virtual System::Boolean ReadLast();
 
 	/// \brief
 	/// Advances the reader to the previous item.
@@ -68,7 +68,7 @@ public:
 	///
 	/// \return
 	/// Returns true if a record is found or false if reading is complete.
-    System::Boolean ReadPrevious();
+    virtual System::Boolean ReadPrevious();
 
 	/// \brief
 	/// Provides the ad-hoc access to the query result.
@@ -86,7 +86,7 @@ public:
 	///
 	/// \return
 	/// Returns true if a record is found or false otherwise.
-	System::Boolean ReadAt(NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection* key);
+	virtual System::Boolean ReadAt(NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection^ key);
 
 	/// \brief
 	/// Provides an ad-hoc access to the query result.
@@ -100,7 +100,7 @@ public:
 	///
 	/// \return
 	/// Returns true if a record is found or false otherwise.
-    System::Boolean  ReadAtIndex( System::UInt32 recordindex );
+    virtual System::Boolean  ReadAtIndex( System::UInt32 recordindex );
 
 	/// \brief
 	/// Given a key of a feature, IndexOf will return the one based index or 
@@ -116,9 +116,9 @@ public:
 	///
 	/// \return
 	/// Returns true if a record is found or false otherwise.
-    System::UInt32 IndexOf(NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection* key);
+    virtual System::UInt32 IndexOf(NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection^ key);
 
-public private:
+internal:
 	IScrollableFeatureReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReaderImp(unmanaged, autoDelete)
 	{
 

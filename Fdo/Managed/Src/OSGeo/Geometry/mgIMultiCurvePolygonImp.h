@@ -23,7 +23,7 @@
 
 class FdoIMultiCurvePolygon;
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
-public __gc __interface ICurvePolygon;
+interface class ICurvePolygon;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
@@ -31,8 +31,8 @@ BEGIN_NAMESPACE_OSGEO_GEOMETRY
 /// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The IMultiCurvePolygonImp class is a multi-CurvePolygon aggregate Geometry type.
-private __gc class IMultiCurvePolygonImp
-	: public NAMESPACE_OSGEO_GEOMETRY::IGeometricAggregateAbstractImp, public NAMESPACE_OSGEO_GEOMETRY::IMultiCurvePolygon
+private ref class IMultiCurvePolygonImp	:
+    public NAMESPACE_OSGEO_GEOMETRY::IGeometricAggregateAbstractImp, public NAMESPACE_OSGEO_GEOMETRY::IMultiCurvePolygon
 {
 public:
     /// \brief
@@ -47,8 +47,8 @@ public:
     /// 
 	IMultiCurvePolygonImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
-	FdoIMultiCurvePolygon *GetImpObj();
+internal:
+	FdoIMultiCurvePolygon* GetImpObj();
 
 public:
     /// \brief
@@ -60,7 +60,10 @@ public:
     /// \return
     /// Returns a CurvePolygon
     /// 
-	__property NAMESPACE_OSGEO_GEOMETRY::ICurvePolygon *get_Item(System::Int32 index);
+    property NAMESPACE_OSGEO_GEOMETRY::ICurvePolygon^ default[System::Int32]
+    {
+        virtual NAMESPACE_OSGEO_GEOMETRY::ICurvePolygon^ get(System::Int32 index);
+    }
 };
 
 END_NAMESPACE_OSGEO_GEOMETRY

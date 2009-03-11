@@ -27,23 +27,23 @@
 #include "FDO\Xml\mgXmlSpatialContextWriter.h"
 #include "FDO\Xml\mgXmlSpatialContextFlags.h"
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextSerializer::XmlDeserialize(NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* connection, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextReader* reader)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextSerializer::XmlDeserialize(NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection^ connection, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextReader^ reader)
 {
-	EXCEPTION_HANDLER(FdoXmlSpatialContextSerializer::XmlDeserialize(static_cast<NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionImp*>(connection)->GetImpObj(), reader->GetImpObj()))
+	EXCEPTION_HANDLER(FdoXmlSpatialContextSerializer::XmlDeserialize(static_cast<NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionImp^>(connection)->GetImpObj(), reader->GetImpObj()))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextSerializer::XmlDeserialize(NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* connection, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextReader* reader, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags* flags)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextSerializer::XmlDeserialize(NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection^ connection, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextReader^ reader, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags^ flags)
 {
-	EXCEPTION_HANDLER(FdoXmlSpatialContextSerializer::XmlDeserialize(static_cast<NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionImp*>(connection)->GetImpObj(), reader->GetImpObj(), flags->GetImpObj()))
+	EXCEPTION_HANDLER(FdoXmlSpatialContextSerializer::XmlDeserialize(static_cast<NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionImp^>(connection)->GetImpObj(), reader->GetImpObj(), flags->GetImpObj()))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextSerializer::XmlSerialize(NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* connection, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter* writer)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextSerializer::XmlSerialize(NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection^ connection, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter^ writer)
 {
-	EXCEPTION_HANDLER(FdoXmlSpatialContextSerializer::XmlSerialize(static_cast<NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionImp*>(connection)->GetImpObj(), writer->GetImpObj()))
+	EXCEPTION_HANDLER(FdoXmlSpatialContextSerializer::XmlSerialize(static_cast<NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionImp^>(connection)->GetImpObj(), writer->GetImpObj()))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextSerializer::XmlSerialize(NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* connection, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter* writer, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags* flags)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextSerializer::XmlSerialize(NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection^ connection, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter^ writer, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags^ flags)
 {
-	EXCEPTION_HANDLER(FdoXmlSpatialContextSerializer::XmlSerialize(static_cast<NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionImp*>(connection)->GetImpObj(), writer->GetImpObj(), flags->GetImpObj()))
+	EXCEPTION_HANDLER(FdoXmlSpatialContextSerializer::XmlSerialize(static_cast<NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionImp^>(connection)->GetImpObj(), writer->GetImpObj(), flags->GetImpObj()))
 }
 

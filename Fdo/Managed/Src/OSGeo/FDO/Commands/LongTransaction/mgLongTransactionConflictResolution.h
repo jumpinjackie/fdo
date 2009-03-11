@@ -26,7 +26,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 /// \brief
 /// The LongTransactionConflictResolution enumeration defines the list of
 /// available options for resolving conflict.
-public __value enum LongTransactionConflictResolution
+public enum class LongTransactionConflictResolution
 {
     /// Indicates that the conflict cannot be resolved.
 	LongTransactionConflictResolution_Unresolved = FdoLongTransactionConflictResolution_Unresolved,

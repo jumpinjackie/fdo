@@ -30,11 +30,11 @@ FdoIGetMeasureUnits* NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IGetMeasureUnit
     return static_cast<FdoIGetMeasureUnits*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IMeasureUnitReader* NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IGetMeasureUnitsImp::Execute()
+NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IMeasureUnitReader^ NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IGetMeasureUnitsImp::Execute()
 {
 	FdoIMeasureUnitReader* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->Execute())
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIMeasureUnitReader(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIMeasureUnitReader(IntPtr(result), true);
 }

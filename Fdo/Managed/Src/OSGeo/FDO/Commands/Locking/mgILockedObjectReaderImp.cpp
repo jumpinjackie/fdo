@@ -25,43 +25,36 @@
 #include "FDO\mgObjectFactory.h"
 #include "FDO\Commands\mgPropertyValueCollection.h"
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReaderImp::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}
-
 FdoILockedObjectReader* NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReaderImp::GetImpObj()
 {
     return static_cast<FdoILockedObjectReader*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::String* NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReaderImp::GetFeatureClassName()
+System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReaderImp::GetFeatureClassName()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetFeatureClassName())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection* NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReaderImp::GetIdentity()
+NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection^ NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReaderImp::GetIdentity()
 {
 	FdoPropertyValueCollection* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetIdentity())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePropertyValueCollection(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePropertyValueCollection(IntPtr(result), true);
 }
 
-System::String* NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReaderImp::GetLockOwner()
+System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReaderImp::GetLockOwner()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetLockOwner())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
 NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReaderImp::GetLockType()
@@ -73,18 +66,18 @@ NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType NAMESPACE_OSGEO_FDO_COMMANDS_LOCK
 	return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType>(result);
 }
 
-System::String* NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReaderImp::GetLongTransaction()
+System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReaderImp::GetLongTransaction()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetLongTransaction())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReaderImp::ReadNext()
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = !!GetImpObj()->ReadNext())
 

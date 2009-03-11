@@ -24,7 +24,7 @@
 class FdoIPoint;
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
-public __gc __interface IDirectPosition;
+interface class IDirectPosition;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
@@ -32,7 +32,7 @@ BEGIN_NAMESPACE_OSGEO_GEOMETRY
 /// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The IPointImp class is a point Geometry type.
-private __gc class IPointImp : 
+private ref class IPointImp : 
 	public NAMESPACE_OSGEO_GEOMETRY::IGeometryImp, public NAMESPACE_OSGEO_GEOMETRY::IPoint
 {
 public:
@@ -48,8 +48,8 @@ public:
     /// 
 	IPointImp(IntPtr unmanaged, Boolean autoDelete);
 
-public private:
-	FdoIPoint *GetImpObj();
+internal:
+	FdoIPoint* GetImpObj();
 
 public:
     /// \brief
@@ -58,7 +58,10 @@ public:
     /// \return
     /// Returns the position
     /// 
-	__property NAMESPACE_OSGEO_GEOMETRY::IDirectPosition *get_Position();
+    property NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ Position
+    {
+        virtual NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ get();
+    }
 	
     /// \brief
     /// Gets the position of this point Geometry, by values of its member data.
@@ -80,12 +83,12 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void GetPositionByMembers(
-		System::Double &coordinateX,
-		System::Double &coordinateY,
-		System::Double &coordinateZ,
-		System::Double &coordinateM,
-		System::Int32 &dimensionality);
+	virtual System::Void GetPositionByMembers(
+		System::Double% coordinateX,
+		System::Double% coordinateY,
+		System::Double% coordinateZ,
+		System::Double% coordinateM,
+		System::Int32% dimensionality);
 };
 
 END_NAMESPACE_OSGEO_GEOMETRY

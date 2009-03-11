@@ -38,7 +38,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 /// that are used only when reporting lock type information.
 /// These special lock types cannot be used to specify a lock type to be applied 
 /// to an object.
-public __value enum LockType
+public enum class LockType
 {
     /// Indicates that an object is unlocked. 
     /// This type cannot be used with the commands AcquireLock and Select.

@@ -30,152 +30,75 @@
 #include "FDO\Schema\mgSchemaElement.h"
 #include "FDO\Schema\mgDataPropertyDefinitionCollection.h"
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}
-
 FdoReadOnlyDataPropertyDefinitionCollection* NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection::GetImpObj()
 {
 	return static_cast<FdoReadOnlyDataPropertyDefinitionCollection*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection::ReadOnlyDataPropertyDefinitionCollection(NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinitionCollection* parent) : Disposable(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection::ReadOnlyDataPropertyDefinitionCollection(NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinitionCollection^ parent) : NAMESPACE_OSGEO_COMMON::CollectionReadOnlyBase(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoReadOnlyDataPropertyDefinitionCollection::Create(parent->GetImpObj()), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoReadOnlyDataPropertyDefinitionCollection::Create(parent->GetImpObj())), true))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection::ICollection::CopyTo(System::Array* array, System::Int32 index) 
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection::CopyTo(array<DataPropertyDefinition^>^ pArray, System::Int32 index)
 {
-	if (NULL == array)
-	{
-		throw new System::ArgumentNullException();
-	}
-
+	if (nullptr == pArray)
+		throw gcnew System::ArgumentNullException();
 	if (index < 0)
-	{
-		throw new System::ArgumentOutOfRangeException();
-	}
-	if (array->Rank != 1 || index >= array->Length || get_Count() + index > array->Length)
-	{
-		throw new System::ArgumentException();
-	}
+		throw gcnew System::ArgumentOutOfRangeException();
+	if (pArray->Rank != 1 || index >= pArray->Length || this->Count + index > pArray->Length)
+		throw gcnew System::ArgumentException();
 
-	for (System::Int32 i=0;i<this->Count;i++)
-	{
-		array->set_Item(index + i, get_RealTypeItem(i));
-	}
+	for (System::Int32 i = 0; i < this->Count; i++)
+        pArray[index+i] = this->Item[i];
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection::CopyTo(DataPropertyDefinition* array[], System::Int32 index)
+System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection::Count::get(System::Void)
 {
-	if (NULL == array)
-	{
-		throw new System::ArgumentNullException();
-	}
-
-	if (index < 0)
-	{
-		throw new System::ArgumentOutOfRangeException();
-	}
-	if (array->Rank != 1 || index >= array->Length || get_Count() + index > array->Length)
-	{
-		throw new System::ArgumentException();
-	}
-
-	for (System::Int32 i=0;i<this->Count;i++)
-	{
-		array[index+i] = __try_cast<DataPropertyDefinition*>(get_RealTypeItem(i));
-	}
-}
-
-System::Object* NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection::ICollection::get_SyncRoot()
-{
-	return NULL;
-}
-
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection::ICollection::get_IsSynchronized()
-{
-	return false;
-}
-
-
-System::Collections::IEnumerator* NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection::GetEnumerator()
-{
-	return new Enumerator(this);
-}
-
-System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection::get_Count(System::Void)
-{
-	FdoInt32 length;
+	System::Int32 length;
 
 	EXCEPTION_HANDLER(length = GetImpObj()->GetCount())
 
-		return length;
+	return length;
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection::IndexOf(DataPropertyDefinition* value)
+System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection::IndexOf(DataPropertyDefinition^ value)
 {
-	FdoInt32 index;
+	System::Int32 index;
 
-	EXCEPTION_HANDLER(index = GetImpObj()->IndexOf((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(index = GetImpObj()->IndexOf((value == nullptr ? nullptr : value->GetImpObj())))
 
-		return index;
+	return index;
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection::Contains(DataPropertyDefinition* value)
+System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection::Contains(DataPropertyDefinition^ value)
 {
-	FdoBoolean exist;
+	System::Boolean exist;
 
-	EXCEPTION_HANDLER(exist = !!GetImpObj()->Contains(value == NULL ? NULL : value->GetImpObj()))
+	EXCEPTION_HANDLER(exist = !!GetImpObj()->Contains(value == nullptr ? nullptr : value->GetImpObj()))
 
 	return exist;
 }
 
-/*
-Implementation for ReadOnlyDataPropertyDefinitionCollection::Enumerator
-*/ 
-System::Object* NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection::Enumerator::get_Current()
+NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinition^ NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection::Item::get(System::String^ name)
 {
-	if (m_nIdx < 0 || m_nIdx >= m_pCol->Count)
-	{
-		throw new InvalidOperationException();
-	}
+	FdoDataPropertyDefinition* result;
 
-	FdoDataPropertyDefinition* upElement;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetItem(StringToUni(name)))
 
-	EXCEPTION_HANDLER(upElement = m_pCol->GetImpObj()->GetItem(m_nIdx))
-
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataPropertyDefinition(upElement, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataPropertyDefinition(IntPtr(result), true);
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection::Enumerator::MoveNext()
+NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinition^ NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection::Item::get(System::Int32 index)
 {
-	++m_nIdx;
-	return m_nIdx < m_pCol->Count;
+	FdoDataPropertyDefinition* result;
+
+	EXCEPTION_HANDLER(result = GetImpObj()->GetItem(index))
+
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataPropertyDefinition(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection::Enumerator::Reset()
+System::Object^ NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection::IndexInternal::get(System::Int32 index)
 {
-	m_nIdx = -1;
-}
-
-NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinition* NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection::get_RealTypeItem(System::Int32 index)
-{
-	FdoDataPropertyDefinition* upElement;
-
-	EXCEPTION_HANDLER(upElement = GetImpObj()->GetItem(index))
-
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataPropertyDefinition(upElement, true);
-}
-
-NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinition* NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection::get_RealTypeItem(System::String* name)
-{
-	FdoDataPropertyDefinition* upElement;
-
-	EXCEPTION_HANDLER(upElement = GetImpObj()->GetItem(StringToUni(name)))
-
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataPropertyDefinition(upElement, true);
+	return this->Item[index];
 }

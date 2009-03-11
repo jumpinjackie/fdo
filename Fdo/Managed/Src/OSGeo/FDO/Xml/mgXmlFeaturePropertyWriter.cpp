@@ -37,21 +37,14 @@
 #include "FDO\Schema\mgClassDefinition.h"
 #include "FDO\Expression\mgLOBValue.h"
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::ReleaseUnmanagedObject()
+NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::XmlFeaturePropertyWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter^ writer) : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)
 {
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoXmlFeaturePropertyWriter::Create(static_cast<FdoXmlWriter*>(writer->UnmanagedObject.ToPointer()))), true))
 }
 
-NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::XmlFeaturePropertyWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* writer) : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::XmlFeaturePropertyWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter^ writer, NAMESPACE_OSGEO_FDO_XML::XmlFlags^ flags) : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoXmlFeaturePropertyWriter::Create(static_cast<FdoXmlWriter*>(writer->UnmanagedObject.ToPointer())), true))
-}
-
-NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::XmlFeaturePropertyWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* writer, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags) : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)
-{
-	EXCEPTION_HANDLER(Attach(FdoXmlFeaturePropertyWriter::Create(static_cast<FdoXmlWriter*>(writer->UnmanagedObject.ToPointer()), flags->GetImpObj()), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoXmlFeaturePropertyWriter::Create(static_cast<FdoXmlWriter*>(writer->UnmanagedObject.ToPointer()), flags->GetImpObj())), true))
 }
 
 FdoXmlFeaturePropertyWriter* NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::GetImpObj()
@@ -59,30 +52,30 @@ FdoXmlFeaturePropertyWriter* NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::
     return static_cast<FdoXmlFeaturePropertyWriter*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_COMMON_XML::XmlWriter* NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::GetXmlWriter()
+NAMESPACE_OSGEO_COMMON_XML::XmlWriter^ NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::GetXmlWriter()
 {
 	FdoXmlWriter* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetXmlWriter())
 
-    return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateXmlWriter(result, true);
+    return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateXmlWriter(IntPtr(result), true);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::get_ClassDefinition()
+NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition^ NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::ClassDefinition::get()
 {
 	FdoClassDefinition* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetClassDefinition())
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateClassDefinition(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateClassDefinition(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::set_ClassDefinition(NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* classDefinition)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::ClassDefinition::set(NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition^ classDefinition)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetClassDefinition(classDefinition->GetImpObj()))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteFeatureStart(System::String* startTag)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteFeatureStart(System::String^ startTag)
 {
 	EXCEPTION_HANDLER(GetImpObj()->WriteFeatureStart(StringToUni(startTag)))
 }
@@ -92,75 +85,85 @@ System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteFeatureEnd(
 	EXCEPTION_HANDLER(GetImpObj()->WriteFeatureEnd())
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteProperty(System::String* name, NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue* value)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteProperty(System::String^ name, NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->WriteProperty(StringToUni(name), (value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->WriteProperty(StringToUni(name), (value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteProperty(System::String* name, NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue* value, System::Boolean valueOnly)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteProperty(System::String^ name, NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue^ value, System::Boolean valueOnly)
 {
-	EXCEPTION_HANDLER(GetImpObj()->WriteProperty(StringToUni(name), (value == NULL ? NULL : value->GetImpObj()), valueOnly))
+	EXCEPTION_HANDLER(GetImpObj()->WriteProperty(StringToUni(name), (value == nullptr ? nullptr : value->GetImpObj()), valueOnly))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteProperty(System::String* name, System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteProperty(System::String^ name, System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->WriteProperty(StringToUni(name), StringToUni(value)))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteProperty(System::String* name, System::String* value, System::Boolean valueOnly)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteProperty(System::String^ name, System::String^ value, System::Boolean valueOnly)
 {
 	EXCEPTION_HANDLER(GetImpObj()->WriteProperty(StringToUni(name), StringToUni(value), valueOnly))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteProperty(System::String* name, NAMESPACE_OSGEO_FDO_RASTER::IRaster* value)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteProperty(System::String^ name, NAMESPACE_OSGEO_FDO_RASTER::IRaster^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->WriteProperty(StringToUni(name), static_cast<NAMESPACE_OSGEO_FDO_RASTER::IRasterImp*>(value)->GetImpObj()))
+	EXCEPTION_HANDLER(GetImpObj()->WriteProperty(StringToUni(name), static_cast<NAMESPACE_OSGEO_FDO_RASTER::IRasterImp^>(value)->GetImpObj()))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteProperty(System::String* name, NAMESPACE_OSGEO_FDO_RASTER::IRaster* value, System::Boolean valueOnly)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteProperty(System::String^ name, NAMESPACE_OSGEO_FDO_RASTER::IRaster^ value, System::Boolean valueOnly)
 {
-	EXCEPTION_HANDLER(GetImpObj()->WriteProperty(StringToUni(name), static_cast<NAMESPACE_OSGEO_FDO_RASTER::IRasterImp*>(value)->GetImpObj(), valueOnly))
+	EXCEPTION_HANDLER(GetImpObj()->WriteProperty(StringToUni(name), static_cast<NAMESPACE_OSGEO_FDO_RASTER::IRasterImp^>(value)->GetImpObj(), valueOnly))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteProperty(System::String* name, NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue* value)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteProperty(System::String^ name, NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->WriteProperty(StringToUni(name), (value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->WriteProperty(StringToUni(name), (value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteProperty(System::String* name, NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue* value, System::Boolean valueOnly)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteProperty(System::String^ name, NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue^ value, System::Boolean valueOnly)
 {
-	EXCEPTION_HANDLER(GetImpObj()->WriteProperty(StringToUni(name), (value == NULL ? NULL : value->GetImpObj()), valueOnly))
+	EXCEPTION_HANDLER(GetImpObj()->WriteProperty(StringToUni(name), (value == nullptr ? nullptr : value->GetImpObj()), valueOnly))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteProperty(System::String* name, NAMESPACE_OSGEO_COMMON::IStreamReader* lobReader)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteProperty(System::String^ name, NAMESPACE_OSGEO_COMMON::IStreamReader^ lobReader)
 {
-	EXCEPTION_HANDLER(GetImpObj()->WriteProperty(StringToUni(name), static_cast<FdoIStreamReader*>(static_cast<NAMESPACE_OSGEO_COMMON::IStreamReaderImp*>(lobReader)->UnmanagedObject.ToPointer())))
+	EXCEPTION_HANDLER(GetImpObj()->WriteProperty(StringToUni(name), static_cast<FdoIStreamReader*>(static_cast<NAMESPACE_OSGEO_COMMON::IStreamReaderImp^>(lobReader)->UnmanagedObject.ToPointer())))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteProperty(System::String* name, NAMESPACE_OSGEO_COMMON::IStreamReader* lobReader, System::Boolean valueOnly)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteProperty(System::String^ name, NAMESPACE_OSGEO_COMMON::IStreamReader^ lobReader, System::Boolean valueOnly)
 {
-	EXCEPTION_HANDLER(GetImpObj()->WriteProperty(StringToUni(name), static_cast<FdoIStreamReader*>(static_cast<NAMESPACE_OSGEO_COMMON::IStreamReaderImp*>(lobReader)->UnmanagedObject.ToPointer()), valueOnly))
+	EXCEPTION_HANDLER(GetImpObj()->WriteProperty(StringToUni(name), static_cast<FdoIStreamReader*>(static_cast<NAMESPACE_OSGEO_COMMON::IStreamReaderImp^>(lobReader)->UnmanagedObject.ToPointer()), valueOnly))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteGeometricProperty(System::String* name, System::Byte buffer[])
-{
-	FdoByteArray* umBuffer = ByteArrayToFdoByteArray(buffer);
-
-	EXCEPTION_HANDLER(GetImpObj()->WriteGeometricProperty(StringToUni(name), umBuffer->GetData(), buffer->Length))
-
-	umBuffer->Release();
-}
-
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteGeometricProperty(System::String* name, System::Byte buffer[], System::Boolean valueOnly)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteGeometricProperty(System::String^ name, array<System::Byte>^ buffer)
 {
 	FdoByteArray* umBuffer = ByteArrayToFdoByteArray(buffer);
-
-	EXCEPTION_HANDLER(GetImpObj()->WriteGeometricProperty(StringToUni(name), umBuffer->GetData(), buffer->Length, valueOnly))
-
-	umBuffer->Release();
+    try
+    {
+    	EXCEPTION_HANDLER(GetImpObj()->WriteGeometricProperty(StringToUni(name), umBuffer->GetData(), buffer->Length))
+    }
+    finally
+    {
+        if (umBuffer != nullptr)
+	        umBuffer->Release();
+    }
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteObjectPropertyStart(System::String* name)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteGeometricProperty(System::String^ name, array<System::Byte>^ buffer, System::Boolean valueOnly)
+{
+	FdoByteArray* umBuffer = ByteArrayToFdoByteArray(buffer);
+    try
+    {
+	    EXCEPTION_HANDLER(GetImpObj()->WriteGeometricProperty(StringToUni(name), umBuffer->GetData(), buffer->Length, valueOnly))
+    }
+    finally
+    {
+        if (umBuffer != nullptr)
+	        umBuffer->Release();
+    }
+}
+
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::WriteObjectPropertyStart(System::String^ name)
 {
 	EXCEPTION_HANDLER(GetImpObj()->WriteObjectPropertyStart(StringToUni(name)))
 }

@@ -30,7 +30,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_RASTER
 /// of raster data retrieved and stored. Using this class and the image
 /// extents in width and length, the binary format of the image data returned
 /// by and accepted by the IoStreamReader class can be interpreted.
-private __gc class IRasterImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO_RASTER::IRaster
+private ref class IRasterImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO_RASTER::IRaster
 {
 public:
     /// \brief
@@ -39,7 +39,7 @@ public:
     /// \return
     /// Returns true if the IRaster represents a null value.
     /// 
-	System::Boolean IsNull ();
+	virtual System::Boolean IsNull ();
 
     /// \brief
     /// Sets the IRaster to a null value.
@@ -47,7 +47,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void SetNull ();
+	virtual System::Void SetNull ();
 
     /// \brief
     /// Gets the number of bands/channels contained in the raster image.
@@ -55,15 +55,17 @@ public:
     /// \return
     /// Returns the numbers of bands/channels contained in the raster image. 
     /// 
-	__property System::Int32 get_NumberOfBands();
-
     /// \brief
     /// Sets the number of bands/channels contained in the raster image.
     /// 
     /// \return
     /// Returns nothing. 
     /// 
-	__property System::Void set_NumberOfBands (System::Int32 value);
+    virtual property System::Int32 NumberOfBands
+    {
+        System::Int32 get();
+        System::Void set(System::Int32 value);
+    }
 
     /// \brief
     /// Gets the currently active band/channel.
@@ -75,8 +77,6 @@ public:
     /// \return
     /// Returns the current active band/channel. 
     /// 
-	__property System::Int32 get_CurrentBand ();
-
     /// \brief
     /// Sets the currently active band/channel.
     /// 
@@ -88,7 +88,11 @@ public:
     /// \return
     /// Returns nothing. 
     /// 
-	__property System::Void set_CurrentBand (System::Int32 value);
+    virtual property System::Int32 CurrentBand
+    {
+        System::Int32 get();
+        System::Void set(System::Int32 value);
+    }
 
     /// \brief
     /// Get the minimum bounding box around the curent band of the image.
@@ -96,8 +100,6 @@ public:
     /// \return
     /// Returns the bounds of the raster image
     /// 
-	__property System::Byte get_Bounds () [];
-
     /// \brief
     /// Set the minimum bounding box around the image.
     /// For georeferenced images, the coordinate system is specified by the
@@ -109,7 +111,11 @@ public:
     /// \param bounds 
     /// The new bounds of the raster image.
     /// 
-	__property System::Void set_Bounds (System::Byte bounds[]);
+    virtual property array<System::Byte>^ Bounds
+    {
+        array<System::Byte>^ get();
+        System::Void set(array<System::Byte>^ bounds);
+    }
 
     /// \brief
     /// Gets the data model in use by this raster property.
@@ -117,8 +123,6 @@ public:
     /// \return
     /// Returns the current data model.
     /// 
-	__property NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel* get_DataModel ();
-
     /// \brief
     /// Sets the data model used by this raster property.
     /// Allowed values are only those data models that are acceptable to the
@@ -136,7 +140,11 @@ public:
     /// \param dataModel 
     /// The datamodel to be used.
     /// 
-	__property System::Void set_DataModel (NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel* dataModel);
+    virtual property NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel^ DataModel
+    {
+        NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel^ dataModel);
+    }
 
     /// \brief
     /// Gets the size of image file in the horizontal
@@ -146,8 +154,6 @@ public:
     /// Returns the horizontal image size in pixels
     /// (number of columns).
     /// 
-	__property System::Int32 get_ImageXSize ();
-
     /// \brief
     /// Sets the size of image file in the horizontal
     /// direction in pixels (number of columns).
@@ -175,7 +181,11 @@ public:
     /// The desired horizontal image size in pixels
     /// (number of columns).
     /// 
-	__property System::Void set_ImageXSize (System::Int32 size);
+    virtual property System::Int32 ImageXSize
+    {
+        System::Int32 get();
+        System::Void set(System::Int32 size);
+    }
 
     /// \brief
     /// Gets the size of image file in the vertical
@@ -185,8 +195,6 @@ public:
     /// Returns the vertical image size in pixels
     /// (number of rows).
     /// 
-	__property System::Int32 get_ImageYSize ();
-
     /// \brief
     /// Sets the size of image file in the vertical
     /// direction in pixels (number of rows). See SetImageXSize.
@@ -195,7 +203,11 @@ public:
     /// The desired vertical image size in pixels
     /// (number of rows).
     /// 
-	__property System ::Void set_ImageYSize (System ::Int32 size);
+    virtual property System::Int32 ImageYSize
+    {
+        System::Int32 get();
+        System::Void set(System::Int32 size);
+    }
 
     /// \brief
     /// Get a dictionary style interface to the raster properties.
@@ -208,10 +220,10 @@ public:
     /// \return
     /// The dictionary of auxilliary raster properties.
     /// 
-	NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionary* GetAuxiliaryProperties();
+	virtual NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionary^ GetAuxiliaryProperties();
 
     /// \brief
-    /// Gets the pixel value that represents a NULL value in the available raster stream. 
+    /// Gets the pixel value that represents a nullptr value in the available raster stream. 
     /// 
     /// \remarks
     /// The Null Pixel Value is Data Model dependent. The value of the Null pixel
@@ -223,7 +235,10 @@ public:
     /// \return
     /// Returns the DataType value that can be used to identify the Null value. 
     /// 
-	__property NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* get_NullPixelValue ();
+    virtual property NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ NullPixelValue
+    {
+        NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ get();
+    }
 
     /// \brief
     /// Set the source of image data.
@@ -241,8 +256,6 @@ public:
     /// reader for the data, the FDO client application can control the
     /// way data is understood by, the FDO raster subsystem.
     /// 
-	__property System ::Void set_StreamReader (NAMESPACE_OSGEO_COMMON::IStreamReaderImp* reader);
-
     /// \brief
     /// Get the source of image data.
     /// Image data is shipped using a paradigm similar to BLOB I/O.
@@ -265,7 +278,11 @@ public:
     /// left corner of the sub-image).
     /// <p><b>Note:</b> Altering the DataModel may have significant performance issues.
     /// 
-	__property NAMESPACE_OSGEO_COMMON::IStreamReaderImp* get_StreamReader ();
+    virtual property NAMESPACE_OSGEO_COMMON::IStreamReaderImp^ StreamReader
+    {
+        NAMESPACE_OSGEO_COMMON::IStreamReaderImp^ get();
+        System::Void set(NAMESPACE_OSGEO_COMMON::IStreamReaderImp^ value);
+    }
 
     /// \brief
     /// Gets the Vertical Unit of Measure corresponding to the Raster Band.
@@ -276,8 +293,6 @@ public:
     /// \return
     /// Returns the Unit of Measure type of data associated to the Raster Band.
     ///
-	__property System::String* get_VerticalUnits ();
-
     /// \brief
     /// Sets the Vertical Unit of Measure corresponding to the Raster Band.
     ///
@@ -285,7 +300,11 @@ public:
     /// The Unit of Measure type for the current band.
     /// The units string value corresponds to a Unit of Measure supported
     /// through the IGetMeasureUnits command.
-	__property System::Void set_VerticalUnits (System::String* units);
+    virtual property System::String^ VerticalUnits
+    {
+        System::String^ get();
+        System::Void set(System::String^ units);
+    }
 
 public:
     /// \brief
@@ -300,12 +319,7 @@ public:
     /// 
 	IRasterImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-/// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-/// \endcond
-
-public private:
+internal:
 	inline FdoIRaster* GetImpObj();
 };
 

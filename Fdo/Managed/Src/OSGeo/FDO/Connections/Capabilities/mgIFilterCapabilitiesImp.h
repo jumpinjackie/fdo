@@ -27,7 +27,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 /// \ingroup (OSGeoFDOConnectionsCapabilities)
 /// \brief
 /// The IFilterCapabilities interface declares the feature provider's level of support for Filter classes.
-private __gc class IFilterCapabilitiesImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
+private ref class IFilterCapabilitiesImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
                                             public NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IFilterCapabilities
 {
 public:
@@ -37,7 +37,10 @@ public:
     /// \return
     /// Returns the list of condition types
     /// 
-	__property NAMESPACE_OSGEO_FDO_FILTER::ConditionType get_ConditionTypes() [];
+    virtual property array<NAMESPACE_OSGEO_FDO_FILTER::ConditionType>^ ConditionTypes
+    {
+        array<NAMESPACE_OSGEO_FDO_FILTER::ConditionType>^ get();
+    }
 
     /// \brief
     /// Returns an array of SpatialOperation objects the feature provider supports.
@@ -45,7 +48,10 @@ public:
     /// \return
     /// Returns the list of spartial operations
     /// 
-	__property NAMESPACE_OSGEO_FDO_FILTER::SpatialOperations get_SpatialOperations() [];
+    virtual property array<NAMESPACE_OSGEO_FDO_FILTER::SpatialOperations>^ SpatialOperations
+    {
+        array<NAMESPACE_OSGEO_FDO_FILTER::SpatialOperations>^ get();
+    }
 
     /// \brief
     /// Returns an array of DistanceOperation objects the feature provider supports.
@@ -53,7 +59,10 @@ public:
     /// \return
     /// Returns the list of distance operations
     /// 
-	__property NAMESPACE_OSGEO_FDO_FILTER::DistanceOperations get_DistanceOperations() [];
+    virtual property array<NAMESPACE_OSGEO_FDO_FILTER::DistanceOperations>^ DistanceOperations
+    {
+        array<NAMESPACE_OSGEO_FDO_FILTER::DistanceOperations>^ get();
+    }
 
     /// \brief
     /// Determines if the feature provider supports geodesic distance measurement. Returns false if the feature provider supports only linear distance measurement.
@@ -61,7 +70,7 @@ public:
     /// \return
     /// Returns true if the feature provider supports geodesic distance measurement
     /// 
-	System::Boolean SupportsGeodesicDistance();
+	virtual System::Boolean SupportsGeodesicDistance();
 
     /// \brief
     /// Determines if spatial and distance operations can be applied between two 
@@ -71,14 +80,9 @@ public:
     /// \return
     /// Returns true if spatial and distance operations can be applied
     /// 
-	System::Boolean SupportsNonLiteralGeometricOperations();
+	virtual System::Boolean SupportsNonLiteralGeometricOperations();
 
-/// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-/// \endcond
-
-public private:
+internal:
 	IFilterCapabilitiesImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoIFilterCapabilities* GetImpObj();

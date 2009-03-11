@@ -32,7 +32,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 /// The ICreateLongTransactionCheckpoint interface defines the
 /// CreateLongTransactionCheckpoint command, which allows the user to create a
 /// checkpoint for any long transaction to which the user has the access privileges.
-private __gc class ICreateLongTransactionCheckpointImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICreateLongTransactionCheckpoint
+private ref class ICreateLongTransactionCheckpointImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICreateLongTransactionCheckpoint
 {
 public:
     /// \brief
@@ -42,8 +42,6 @@ public:
     /// \return
     /// Returns the long transaction name
     /// 
-	__property System::String* get_LongTransactionName();
-
     /// \brief
     /// Sets the name of the long transaction for which a checkpoint should
     /// be created.
@@ -54,7 +52,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_LongTransactionName(System::String* value);
+    virtual property System::String^ LongTransactionName
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Gets the name of the checkpoint to be created for the named long
@@ -63,8 +65,6 @@ public:
     /// \return
     /// Returns the checkpoint name
     /// 
-	__property System::String* get_CheckpointName();
-
     /// \brief
     /// Sets the name of the checkpoint to be created for the named long
     /// transaction.
@@ -75,7 +75,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_CheckpointName(System::String* value);
+    virtual property System::String^ CheckpointName
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Gets the description of the checkpoint to be created for the named
@@ -84,8 +88,6 @@ public:
     /// \return
     /// Returns the description of the checkpoint
     /// 
-	__property System::String* get_CheckpointDescription();
-
     /// \brief
     /// Sets the description of the checkpoint to be created for the named
     /// long transaction.
@@ -96,7 +98,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_CheckpointDescription(System::String* value);
+    virtual property System::String^ CheckpointDescription
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Executes the CreateLongTransactionCheckpoint command.
@@ -104,9 +110,9 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Execute();
+	virtual System::Void Execute();
 
-public private:
+internal:
 	ICreateLongTransactionCheckpointImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)
 	{
 

@@ -21,15 +21,15 @@
 class FdoXmlFeatureHandler;
 
 BEGIN_NAMESPACE_OSGEO_FDO_RASTER
-public __gc __interface IRaster;
+interface class IRaster;
 END_NAMESPACE_OSGEO_FDO_RASTER
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
-public __gc class ClassDefinition;
+ref class ClassDefinition;
 END_NAMESPACE_OSGEO_FDO_SCHEMA
 
 BEGIN_NAMESPACE_OSGEO_FDO_XML
-public __gc class XmlFeatureContext;
+ref class XmlFeatureContext;
 
 /// \ingroup (OSGeoFDOXml)
 /// \brief
@@ -40,7 +40,7 @@ public __gc class XmlFeatureContext;
 /// Note that the default FeatureProperty implementations log errors in certain circumstances.
 /// Therefore, these functions must be overridden to avoid these errors and indicate that 
 /// these types of properties are being handled by the caller.
-public __gc class XmlFeatureHandler : public NAMESPACE_OSGEO_RUNTIME::Disposable
+public ref class XmlFeatureHandler : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
     /// \brief
@@ -52,9 +52,9 @@ public:
     /// 
     /// \return
     /// Returns the feature Handler for all sub-elements of the element that was current
-    /// when the read started. If NULL, this feature handler remains in effect.
+    /// when the read started. If nullptr, this feature handler remains in effect.
     /// 
-	NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler* FeatureDocumentStart(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context);
+	NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler^ FeatureDocumentStart(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context);
 
     /// \brief
     /// Default feature handler callback that is called when the XmlFeaturePropertyReader 
@@ -63,7 +63,7 @@ public:
     /// \param context 
     /// Input caller specified contextual information
     /// 
-	System::Void FeatureDocumentEnd(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context);
+	System::Void FeatureDocumentEnd(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -78,9 +78,9 @@ public:
     /// 
     /// \return
     /// Returns the feature Handler for the features in this collection.
-    /// If NULL, this feature handler remains in effect.
+    /// If nullptr, this feature handler remains in effect.
     /// 
-	NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler* FeatureCollectionStart(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context, NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* definition);
+	NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler^ FeatureCollectionStart(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context, NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition^ definition);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -95,7 +95,7 @@ public:
     /// to continue. Return value is ignored if the current parse is not an incremental 
     /// parse ( see XmlFeaturePropertyReader::Parse())
     /// 
-	System::Boolean FeatureCollectionEnd(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context);
+	System::Boolean FeatureCollectionEnd(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -108,10 +108,10 @@ public:
     /// etc.
     /// 
     /// \return
-    /// Returns the feature Handler for the feature's properties. If NULL, this feature 
+    /// Returns the feature Handler for the feature's properties. If nullptr, this feature 
     /// handler remains in effect.
     /// 
-	NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler* FeatureStart(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context, NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* definition);
+	NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler^ FeatureStart(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context, NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition^ definition);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -125,7 +125,7 @@ public:
     /// parse to continue. Return value is ignored if the current parse is not an 
     /// incremental parse ( see XmlFeaturePropertyReader::Parse())
     /// 
-	System::Boolean FeatureEnd(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context);
+	System::Boolean FeatureEnd(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -145,7 +145,7 @@ public:
     /// the parse to continue. Return value is ignored if the current parse is not an
     /// incremental parse ( see XmlFeaturePropertyReader::Parse())
     /// 
-	System::Boolean FeatureProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context, System::String* name, System::Boolean value);
+	System::Boolean FeatureProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context, System::String^ name, System::Boolean value);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -165,7 +165,7 @@ public:
     /// the parse to continue. Return value is ignored if the current parse is not an
     /// incremental parse ( see XmlFeaturePropertyReader::Parse())
     /// 
-	System::Boolean FeatureProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context, System::String* name, System::Byte value);
+	System::Boolean FeatureProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context, System::String^ name, System::Byte value);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -185,7 +185,7 @@ public:
     /// the parse to continue. Return value is ignored if the current parse is not an
     /// incremental parse ( see XmlFeaturePropertyReader::Parse())
     /// 
-	System::Boolean FeatureProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context, System::String* name, System::DateTime value);
+	System::Boolean FeatureProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context, System::String^ name, System::DateTime value);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -205,7 +205,7 @@ public:
     /// the parse to continue. Return value is ignored if the current parse is not an
     /// incremental parse ( see XmlFeaturePropertyReader::Parse())
     /// 
-	System::Boolean FeatureProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context, System::String* name, System::Double value);
+	System::Boolean FeatureProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context, System::String^ name, System::Double value);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -225,7 +225,7 @@ public:
     /// the parse to continue. Return value is ignored if the current parse is not an
     /// incremental parse ( see XmlFeaturePropertyReader::Parse())
     /// 
-	System::Boolean FeatureProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context, System::String* name, System::Int16 value);
+	System::Boolean FeatureProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context, System::String^ name, System::Int16 value);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -245,7 +245,7 @@ public:
     /// the parse to continue. Return value is ignored if the current parse is not an
     /// incremental parse ( see XmlFeaturePropertyReader::Parse())
     /// 
-	System::Boolean FeatureProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context, System::String* name, System::Int32 value);
+	System::Boolean FeatureProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context, System::String^ name, System::Int32 value);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -265,7 +265,7 @@ public:
     /// the parse to continue. Return value is ignored if the current parse is not an
     /// incremental parse ( see XmlFeaturePropertyReader::Parse())
     /// 
-	System::Boolean FeatureProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context, System::String* name, System::Int64 value);
+	System::Boolean FeatureProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context, System::String^ name, System::Int64 value);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -285,7 +285,7 @@ public:
     /// the parse to continue. Return value is ignored if the current parse is not an
     /// incremental parse ( see XmlFeaturePropertyReader::Parse())
     /// 
-	System::Boolean FeatureProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context, System::String* name, System::Single value);
+	System::Boolean FeatureProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context, System::String^ name, System::Single value);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -305,7 +305,7 @@ public:
     /// the parse to continue. Return value is ignored if the current parse is not an
     /// incremental parse ( see XmlFeaturePropertyReader::Parse())
     /// 
-	System::Boolean FeatureProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context, System::String* name, System::String* value);
+	System::Boolean FeatureProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context, System::String^ name, System::String^ value);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -319,7 +319,7 @@ public:
     /// \param name 
     /// Input property name
     /// \param value 
-    /// Input raster image properties. This object always has a NULL stream reader. The image is
+    /// Input raster image properties. This object always has a nullptr stream reader. The image is
     /// handled by the FeatureBinaryData() callback.
     /// 
     /// \return
@@ -327,7 +327,7 @@ public:
     /// parse to continue. Return value is ignored if the current parse is not an 
     /// incremental parse ( see XmlFeaturePropertyReader::Parse())
     /// 
-	System::Boolean FeatureStartRasterProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context, System::String* name, NAMESPACE_OSGEO_FDO_RASTER::IRaster* value);
+	System::Boolean FeatureStartRasterProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context, System::String^ name, NAMESPACE_OSGEO_FDO_RASTER::IRaster^ value);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -342,7 +342,7 @@ public:
     /// to continue. Return value is ignored if the current parse is not an incremental 
     /// parse ( see XmlFeaturePropertyReader::Parse())
     /// 
-	System::Boolean FeatureEndRasterProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context);
+	System::Boolean FeatureEndRasterProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -361,7 +361,7 @@ public:
     /// to continue. Return value is ignored if the current parse is not an incremental 
     /// parse ( see XmlFeaturePropertyReader::Parse())
     /// 
-	System::Boolean FeatureStartLobProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context, System::String* name);
+	System::Boolean FeatureStartLobProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context, System::String^ name);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -376,7 +376,7 @@ public:
     /// to continue. Return value is ignored if the current parse is not an incremental 
     /// parse ( see XmlFeaturePropertyReader::Parse())
     /// 
-	System::Boolean FeatureEndLobProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context);
+	System::Boolean FeatureEndLobProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -395,7 +395,7 @@ public:
     /// continue. Return value is ignored if the current parse is not an incremental 
     /// parse ( see XmlFeaturePropertyReader::Parse())
     /// 
-	System::Boolean FeatureGeometricProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context, System::String* name, System::Byte buffer[]);
+	System::Boolean FeatureGeometricProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context, System::String^ name, array<System::Byte>^ buffer);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -411,9 +411,9 @@ public:
     /// 
     /// \return
     /// Returns the feature Handler for the current object property's sub-properties. 
-    /// If NULL, this feature handler remains in effect.
+    /// If nullptr, this feature handler remains in effect.
     /// 
-	NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler* FeatureStartObjectProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context, System::String* name, NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* value);
+	NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler^ FeatureStartObjectProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context, System::String^ name, NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition^ value);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -428,7 +428,7 @@ public:
     /// to continue. Return value is ignored if the current parse is not an incremental 
     /// parse ( see XmlFeaturePropertyReader::Parse())
     /// 
-	System::Boolean FeatureEndObjectProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context);
+	System::Boolean FeatureEndObjectProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -459,9 +459,9 @@ public:
     /// 
     /// \return
     /// Returns the feature Handler for the current association property's sub-properties. 
-    /// If NULL, this feature handler remains in effect.
+    /// If nullptr, this feature handler remains in effect.
     /// 
-	NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler* FeatureStartAssociationProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context, System::String* name, NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* value);
+	NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler^ FeatureStartAssociationProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context, System::String^ name, NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition^ value);
 
     /// \brief
     /// Default feature handler callback that is called when the 
@@ -476,7 +476,7 @@ public:
     /// to continue. Return value is ignored if the current parse is not an incremental 
     /// parse ( see XmlFeaturePropertyReader::Parse())
     /// 
-	System::Boolean FeatureEndAssociationProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context);
+	System::Boolean FeatureEndAssociationProperty(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context);
 
     /// \brief
     /// Default Feature Handle callback that is called when the XmlFeaturePropertyReader 
@@ -495,7 +495,7 @@ public:
     /// to continue. Return value is ignored if the current parse is not an incremental 
     /// parse ( see XmlFeaturePropertyReader::Parse())
     /// 
-	System::Boolean FeatureCharacters(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context, System::String* value);
+	System::Boolean FeatureCharacters(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context, System::String^ value);
 
     /// \brief
     /// Default Feature callback that is called when the XmlFeaturePropertyReader 
@@ -516,17 +516,12 @@ public:
     /// to continue. Return value is ignored if the current parse is not an incremental 
     /// parse ( see XmlFeaturePropertyReader::Parse())
     /// 
-	System::Boolean FeatureBinaryData(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext* context, System::Byte buffer[]);
+	System::Boolean FeatureBinaryData(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context, array<System::Byte>^ buffer);
 
-public private:
+internal:
 	XmlFeatureHandler(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoXmlFeatureHandler* GetImpObj();
-
-/// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_XML

@@ -29,115 +29,57 @@
 #include "FDO\Schema\mgUniqueConstraintCollection.h"
 #include "FDO\mgObjectFactory.h"
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}
-
 FdoUniqueConstraintCollection* NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::GetImpObj()
 {
 	return static_cast<FdoUniqueConstraintCollection*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::ICollection::CopyTo(System::Array* array, System::Int32 index) 
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::CopyTo(array<UniqueConstraint^>^ pArray, System::Int32 index)
 {
-	if (NULL == array)
-	{
-		throw new System::ArgumentNullException();
-	}
-
+	if (nullptr == pArray)
+		throw gcnew System::ArgumentNullException();
 	if (index < 0)
-	{
-		throw new System::ArgumentOutOfRangeException();
-	}
-	if (array->Rank != 1 || index >= array->Length || get_Count() + index > array->Length)
-	{
-		throw new System::ArgumentException();
-	}
+		throw gcnew System::ArgumentOutOfRangeException();
+	if (pArray->Rank != 1 || index >= pArray->Length || this->Count + index > pArray->Length)
+		throw gcnew System::ArgumentException();
 
-	for (System::Int32 i=0;i<this->Count;i++)
-	{
-		array->set_Item(index + i, get_Item(i));
-	}
+	for (System::Int32 i = 0; i < this->Count; i++)
+        pArray[index+i] = this->Item[i];
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::CopyTo(UniqueConstraint* array[], System::Int32 index)
+System::Object^ NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::IndexInternal::get(System::Int32 index)
 {
-	if (NULL == array)
-	{
-		throw new System::ArgumentNullException();
-	}
-
-	if (index < 0)
-	{
-		throw new System::ArgumentOutOfRangeException();
-	}
-	if (array->Rank != 1 || index >= array->Length || get_Count() + index > array->Length)
-	{
-		throw new System::ArgumentException();
-	}
-
-	for (System::Int32 i=0;i<this->Count;i++)
-	{
-		array[index+i] = __try_cast<UniqueConstraint*>(get_Item(i));
-	}
+	return this->Item[index];
 }
 
-System::Object* NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::ICollection::get_SyncRoot()
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::IndexInternal::set(System::Int32 index, System::Object^ value)
 {
-	return NULL;
+	this->Item[index] = dynamic_cast<NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraint^>(value);
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::ICollection::get_IsSynchronized()
+System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::Add(System::Object^ value)
 {
-	return false;
+	return Add(dynamic_cast<NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraint^>(value));
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::IList::get_IsFixedSize() 
-{ 
-	return false;
-}
-
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::IList::get_IsReadOnly() 
-{ 
-	return false;
-}
-
-System::Object* NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::IList::get_Item(System::Int32 index)
+System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::Contains(System::Object^ value)
 {
-	return get_RealTypeItem( index );
+	return Contains(dynamic_cast<NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraint^>(value));
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::IList::set_Item(System::Int32 index, System::Object* value)
+System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::IndexOf(System::Object^ value)
 {
-	set_RealTypeItem(index,  __try_cast<UniqueConstraint*>(value) );
+	return IndexOf(dynamic_cast<NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraint^>(value));
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::IList::Add(System::Object* value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::Insert(System::Int32 index, System::Object^ value)
 {
-	return Add(__try_cast<UniqueConstraint*>(value));
+	Insert(index, dynamic_cast<NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraint^>(value));
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::IList::Contains(System::Object* value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::Remove(System::Object^ value)
 {
-	return Contains(__try_cast<UniqueConstraint*>(value));
-}
-
-System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::IList::IndexOf(System::Object* value)
-{
-	return IndexOf(__try_cast<UniqueConstraint*>(value));
-}
-
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::IList::Insert(System::Int32 index, System::Object* value)
-{
-	Insert(index,__try_cast<UniqueConstraint*>(value));
-}
-
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::IList::Remove(System::Object* value)
-{
-	return Remove(__try_cast<UniqueConstraint*>(value));
+	return Remove(dynamic_cast<NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraint^>(value));
 }
 
 System::Void NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::RemoveAt(System::Int32 index)
@@ -145,53 +87,48 @@ System::Void NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::RemoveAt(Sy
 	EXCEPTION_HANDLER(GetImpObj()->RemoveAt(index))
 }
 
-System::Collections::IEnumerator* NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::GetEnumerator()
+System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::Count::get(System::Void)
 {
-	return new Enumerator(this);
-}
-
-System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::get_Count(System::Void)
-{
-	FdoInt32 length;
+	System::Int32 length;
 
 	EXCEPTION_HANDLER(length = GetImpObj()->GetCount())
 
-		return length;
+	return length;
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::Add(UniqueConstraint* value)
+System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::Add(UniqueConstraint^ value)
 {
-	FdoInt32 index;
+	System::Int32 index;
 
-	EXCEPTION_HANDLER(index = GetImpObj()->Add((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(index = GetImpObj()->Add((value == nullptr ? nullptr : value->GetImpObj())))
 
-		return index;
+	return index;
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::IndexOf(UniqueConstraint* value)
+System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::IndexOf(UniqueConstraint^ value)
 {
-	FdoInt32 index;
+	System::Int32 index;
 
-	EXCEPTION_HANDLER(index = GetImpObj()->IndexOf((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(index = GetImpObj()->IndexOf((value == nullptr ? nullptr : value->GetImpObj())))
 
-		return index;
+	return index;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::Insert(System::Int32 index, UniqueConstraint* value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::Insert(System::Int32 index, UniqueConstraint^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Insert(index, (value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->Insert(index, (value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::Remove(UniqueConstraint* value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::Remove(UniqueConstraint^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Remove((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->Remove((value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::Contains(UniqueConstraint* value)
+System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::Contains(UniqueConstraint^ value)
 {
 	FdoBoolean exist;
 
-	EXCEPTION_HANDLER(exist = !!GetImpObj()->Contains(value == NULL ? NULL : value->GetImpObj()))
+	EXCEPTION_HANDLER(exist = !!GetImpObj()->Contains(value == nullptr ? nullptr : value->GetImpObj()))
 
 	return exist;
 }
@@ -201,54 +138,16 @@ System::Void NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::Clear()
 	EXCEPTION_HANDLER(GetImpObj()->Clear())
 }
 
-/*
-Implementation for UniqueConstraintCollection::Enumerator
-*/ 
-System::Object* NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::Enumerator::get_Current()
+NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraint^ NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::Item::get(System::Int32 index)
 {
-	if (m_nIdx < 0 || m_nIdx >= m_pCol->Count)
-	{
-		throw new InvalidOperationException();
-	}
+	FdoUniqueConstraint* result;
 
-	FdoUniqueConstraint* upElement;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetItem(index))
 
-	EXCEPTION_HANDLER(upElement = m_pCol->GetImpObj()->GetItem(m_nIdx))
-
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateUniqueConstraint(upElement, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateUniqueConstraint(IntPtr(result), true);
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::Enumerator::MoveNext()
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::Item::set(System::Int32 index, NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraint^ value)
 {
-	++m_nIdx;
-	return m_nIdx < m_pCol->Count;
-}
-
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::Enumerator::Reset()
-{
-	m_nIdx = -1;
-}
-
-NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraint* NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::get_RealTypeItem(System::Int32 index)
-{
-	FdoUniqueConstraint* upElement;
-
-	EXCEPTION_HANDLER(upElement = GetImpObj()->GetItem(index))
-
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateUniqueConstraint(upElement, true);
-}
-
-System::Void  NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::set_RealTypeItem(System::Int32 index, UniqueConstraint* value)
-{
-	EXCEPTION_HANDLER(GetImpObj()->SetItem(index, (value == NULL ? NULL : value->GetImpObj())))
-}
-
-NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraint* NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::get_Item(System::Int32 index)
-{
-	return get_RealTypeItem(index);
-}
-
-System::Void  NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::set_Item(System::Int32 index, UniqueConstraint* value)
-{
-	set_RealTypeItem(index, value);
+	EXCEPTION_HANDLER(GetImpObj()->SetItem(index, (value == nullptr ? nullptr : value->GetImpObj())))
 }

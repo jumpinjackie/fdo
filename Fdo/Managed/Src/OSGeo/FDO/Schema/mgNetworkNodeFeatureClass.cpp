@@ -28,12 +28,12 @@
 
 NAMESPACE_OSGEO_FDO_SCHEMA::NetworkNodeFeatureClass::NetworkNodeFeatureClass() : NAMESPACE_OSGEO_FDO_SCHEMA::NetworkFeatureClass(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoNetworkNodeFeatureClass::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoNetworkNodeFeatureClass::Create()), true))
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::NetworkNodeFeatureClass::NetworkNodeFeatureClass(System::String* name, System::String* description) : NAMESPACE_OSGEO_FDO_SCHEMA::NetworkFeatureClass(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_SCHEMA::NetworkNodeFeatureClass::NetworkNodeFeatureClass(System::String^ name, System::String^ description) : NAMESPACE_OSGEO_FDO_SCHEMA::NetworkFeatureClass(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoNetworkNodeFeatureClass::Create(StringToUni(name), StringToUni(description)), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoNetworkNodeFeatureClass::Create(StringToUni(name), StringToUni(description))), true))
 }
 
 FdoNetworkNodeFeatureClass* NAMESPACE_OSGEO_FDO_SCHEMA::NetworkNodeFeatureClass::GetImpObj()
@@ -41,7 +41,7 @@ FdoNetworkNodeFeatureClass* NAMESPACE_OSGEO_FDO_SCHEMA::NetworkNodeFeatureClass:
 	return static_cast<FdoNetworkNodeFeatureClass*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::ClassType NAMESPACE_OSGEO_FDO_SCHEMA::NetworkNodeFeatureClass::get_ClassType()
+NAMESPACE_OSGEO_FDO_SCHEMA::ClassType NAMESPACE_OSGEO_FDO_SCHEMA::NetworkNodeFeatureClass::ClassType::get()
 {
 	FdoClassType result;
 
@@ -50,16 +50,16 @@ NAMESPACE_OSGEO_FDO_SCHEMA::ClassType NAMESPACE_OSGEO_FDO_SCHEMA::NetworkNodeFea
 	return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::ClassType>(result);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition* NAMESPACE_OSGEO_FDO_SCHEMA::NetworkNodeFeatureClass::get_LayerProperty()
+NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition^ NAMESPACE_OSGEO_FDO_SCHEMA::NetworkNodeFeatureClass::LayerProperty::get()
 {
 	FdoAssociationPropertyDefinition* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetLayerProperty())
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateAssociationPropertyDefinition(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateAssociationPropertyDefinition(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::NetworkNodeFeatureClass::set_LayerProperty(NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition* value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::NetworkNodeFeatureClass::LayerProperty::set(NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetLayerProperty((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->SetLayerProperty((value == nullptr ? nullptr : value->GetImpObj())))
 }

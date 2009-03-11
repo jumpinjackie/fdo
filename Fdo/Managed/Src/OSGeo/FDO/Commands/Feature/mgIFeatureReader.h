@@ -21,7 +21,7 @@
 #include "FDO\Commands\Feature\mgIReader.h"
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
-public __gc class ClassDefinition;
+ref class ClassDefinition;
 END_NAMESPACE_OSGEO_FDO_SCHEMA
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
@@ -34,7 +34,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 /// from the Select and SelectAndLock commands. Because the initial position of the
 /// IFeatureReader is prior to the first item, you must call
 /// ReadNext to begin accessing any data.
-public __gc __interface IFeatureReader : public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReader
+public interface class IFeatureReader : public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReader
 {
 public:
     /// \brief
@@ -46,7 +46,7 @@ public:
     /// \return
     /// Returns the class definition object.
     /// 
-	NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* GetClassDefinition();
+	NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition^ GetClassDefinition();
 
     /// \brief
     /// Gets a value indicating the depth of nesting for the current reader.
@@ -74,7 +74,7 @@ public:
     /// \return
     /// Returns a pointer to the byte array in FGF format.
     /// 
-	System::Byte GetGeometry(System::String* name) [];
+	array<System::Byte>^ GetGeometry(System::String^ name);
 
     /// \brief
     /// Gets a reference to an IFeatureReader to read the data contained in
@@ -87,7 +87,7 @@ public:
     /// \return
     /// Returns the nested feature reader
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader* GetFeatureObject(System::String* propertyName);
+	NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader^ GetFeatureObject(System::String^ propertyName);
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE

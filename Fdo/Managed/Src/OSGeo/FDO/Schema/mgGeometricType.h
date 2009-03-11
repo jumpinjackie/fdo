@@ -26,7 +26,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 /// \brief
 /// The GeometricType enumeration categorizes all of the geometry types
 /// supported by FDO based on their geometric dimensionality.
-public __value enum GeometricType
+public enum class GeometricType
 {
     /// Represents 0-dimensional geometric primitives, such as Points.
     GeometricType_Point = 0x01,

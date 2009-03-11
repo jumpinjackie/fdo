@@ -28,7 +28,7 @@ BEGIN_NAMESPACE_OSGEO_GEOMETRY
 /// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The ISurfaceAbstractImp class is a surface (concrete) Geometry type.
-public __gc class ISurfaceAbstractImp :
+public ref class ISurfaceAbstractImp :
 	public NAMESPACE_OSGEO_GEOMETRY::IGeometryImp, public NAMESPACE_OSGEO_GEOMETRY::ISurfaceAbstract
 {
 public:
@@ -44,8 +44,8 @@ public:
     /// 
 	ISurfaceAbstractImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
-	FdoISurfaceAbstract *GetImpObj();
+internal:
+	FdoISurfaceAbstract* GetImpObj();
 
 public:
 };

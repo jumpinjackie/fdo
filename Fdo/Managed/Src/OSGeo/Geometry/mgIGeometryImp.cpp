@@ -24,14 +24,14 @@
 #include "mgIEnvelope.h"
 #include "mgObjectFactory.h"
 
-FdoIGeometry * NAMESPACE_OSGEO_GEOMETRY::IGeometryImp::GetImpObj()
+FdoIGeometry* NAMESPACE_OSGEO_GEOMETRY::IGeometryImp::GetImpObj()
 {
-	return static_cast<FdoIGeometry *>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoIGeometry*>(UnmanagedObject.ToPointer());
 }
 
-FdoGeometryCollection * NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::GetImpObj()
+FdoGeometryCollection* NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::GetImpObj()
 {
-	return static_cast<FdoGeometryCollection *>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoGeometryCollection*>(UnmanagedObject.ToPointer());
 }
 
 NAMESPACE_OSGEO_GEOMETRY::IGeometryImp::IGeometryImp(System::IntPtr unmanaged, System::Boolean autoDelete)
@@ -39,171 +39,131 @@ NAMESPACE_OSGEO_GEOMETRY::IGeometryImp::IGeometryImp(System::IntPtr unmanaged, S
 {
 }
 
-
-System::Void NAMESPACE_OSGEO_GEOMETRY::IGeometryImp::ReleaseUnmanagedObject()
+NAMESPACE_OSGEO_GEOMETRY::IEnvelope^ NAMESPACE_OSGEO_GEOMETRY::IGeometryImp::Envelope::get()
 {
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}
-
-NAMESPACE_OSGEO_GEOMETRY::IEnvelope *NAMESPACE_OSGEO_GEOMETRY::IGeometryImp::get_Envelope()
-{
-	FdoIEnvelope *ret;
+	FdoIEnvelope* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetEnvelope())
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIEnvelope(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIEnvelope(IntPtr(ret), true);
 }
 
-System::Int32 NAMESPACE_OSGEO_GEOMETRY::IGeometryImp::get_Dimensionality()
+System::Int32 NAMESPACE_OSGEO_GEOMETRY::IGeometryImp::Dimensionality::get()
 {
 	System::Int32 ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetDimensionality())
 	return ret;
 }
 
-NAMESPACE_OSGEO_COMMON::GeometryType NAMESPACE_OSGEO_GEOMETRY::IGeometryImp::get_DerivedType()
+NAMESPACE_OSGEO_COMMON::GeometryType NAMESPACE_OSGEO_GEOMETRY::IGeometryImp::DerivedType::get()
 {
 	FdoGeometryType ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetDerivedType())
 	return static_cast<NAMESPACE_OSGEO_COMMON::GeometryType>(ret);
 }
 
-System::String *NAMESPACE_OSGEO_GEOMETRY::IGeometryImp::get_Text()
+System::String^ NAMESPACE_OSGEO_GEOMETRY::IGeometryImp::Text::get()
 {
-	String *ret;
+    FdoString* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetText())
-	return ret;
+	return CHECK_STRING(ret);
 }
 
 //-----------------------------------------------------------------------
 // GeometryCollection
 //-----------------------------------------------------------------------
 NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::GeometryCollection(System::IntPtr unmanaged, System::Boolean autoDelete)
-	: NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)
+	: NAMESPACE_OSGEO_COMMON::CollectionBase(unmanaged, autoDelete)
 {
 }
 
 NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::GeometryCollection()
-	: NAMESPACE_OSGEO_RUNTIME::Disposable(FdoGeometryCollection::Create(), true)
+    : NAMESPACE_OSGEO_COMMON::CollectionBase(IntPtr(FdoGeometryCollection::Create()), true)
 {
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::ReleaseUnmanagedObject()
+System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::CopyTo(array<NAMESPACE_OSGEO_GEOMETRY::IGeometry^>^ pArray, System::Int32 index)
 {
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
+	if (nullptr == pArray)
+		throw gcnew System::ArgumentNullException();
+	if (index < 0)
+		throw gcnew System::ArgumentOutOfRangeException();
+	if (pArray->Rank != 1 || index >= pArray->Length || this->Count + index > pArray->Length)
+		throw gcnew System::ArgumentException();
+
+	for (System::Int32 i = 0; i < this->Count; i++)
+        pArray[index+i] = this->Item[i];
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::ICollection::CopyTo(System::Array *array, System::Int32 index)
+System::Object^ NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::IndexInternal::get(System::Int32 index)
 {
-    if (NULL == array)
-        throw new System::ArgumentNullException();
-    if (index < 0)
-        throw new System::ArgumentOutOfRangeException();
-    if ( array->Rank != 1 || index >= array->Length || get_Count() + index > array->Length)
-        throw new System::ArgumentException();
-	for (System::Int32 i=0;i<this->Count;i++)
-        array->set_Item(index+i,get_Item(i));
+	return this->Item[index];
 }
 
-System::Object* NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::ICollection::get_SyncRoot()
+System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::IndexInternal::set(System::Int32 index, System::Object^ value)
 {
-    return NULL;
+	this->Item[index] = dynamic_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometry^>(value);
 }
 
-System::Boolean NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::ICollection::get_IsSynchronized()
+System::Int32 NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::Add(System::Object^ value)
 {
-    return false;
+	return Add(dynamic_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometry^>(value));
 }
 
-System::Boolean NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::IList::get_IsFixedSize() 
-{ 
-    return false;
-}
-
-System::Boolean NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::IList::get_IsReadOnly() 
-{ 
-    return false;
-}
-
-System::Int32 NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::IList::Add(System::Object *value)
+System::Boolean NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::Contains(System::Object^ value)
 {
-    return Add(__try_cast<IGeometry *>(value));
+	return Contains(dynamic_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometry^>(value));
 }
 
-System::Boolean NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::IList::Contains(System::Object *value)
+System::Int32 NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::IndexOf(System::Object^ value)
 {
-	return Contains(__try_cast<IGeometry *>(value));
+	return IndexOf(dynamic_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometry^>(value));
 }
 
-System::Int32 NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::IList::IndexOf(System::Object *value)
+System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::Insert(System::Int32 index, System::Object^ value)
 {
-    return IndexOf(__try_cast<IGeometry *>(value));
+	Insert(index, dynamic_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometry^>(value));
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::IList::Insert(System::Int32 Index, System::Object *value)
+System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::Remove(System::Object^ value)
 {
-    Insert(Index, __try_cast<IGeometry *>(value));
+	return Remove(dynamic_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometry^>(value));
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::IList::Remove(System::Object *value)
-{
-    Remove(__try_cast<IGeometry *>(value));
-}
-
-System::Object* NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::IList::get_Item(System::Int32 index)
-{
-    return get_RealTypeItem( index );
-}
-
-System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::IList::set_Item(System::Int32 index, System::Object *value)
-{
-    set_RealTypeItem( index, __try_cast<IGeometry *>(value));
-}
-
-
-System::Int32 NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::Add(NAMESPACE_OSGEO_GEOMETRY::IGeometry *value)
+System::Int32 NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::Add(NAMESPACE_OSGEO_GEOMETRY::IGeometry^ value)
 {
 	System::Int32 ret;
-	EXCEPTION_HANDLER(ret = GetImpObj()->Add((value == NULL ? NULL : static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp *>(value)->GetImpObj())))
+	EXCEPTION_HANDLER(ret = GetImpObj()->Add((value == nullptr ? nullptr : static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp^>(value)->GetImpObj())))
 	return ret;
 }
 
-System::Int32 NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::IndexOf(NAMESPACE_OSGEO_GEOMETRY::IGeometry *value)
+System::Int32 NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::IndexOf(NAMESPACE_OSGEO_GEOMETRY::IGeometry^ value)
 {
 	System::Int32 ret;
-	EXCEPTION_HANDLER(ret = GetImpObj()->IndexOf((value == NULL ? NULL : static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp *>(value)->GetImpObj())))
+	EXCEPTION_HANDLER(ret = GetImpObj()->IndexOf((value == nullptr ? nullptr : static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp^>(value)->GetImpObj())))
 	return ret;
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::Insert(System::Int32 index, NAMESPACE_OSGEO_GEOMETRY::IGeometry *value)
+System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::Insert(System::Int32 index, NAMESPACE_OSGEO_GEOMETRY::IGeometry^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Insert(index, (value == NULL ? NULL : static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp *>(value)->GetImpObj())));
+	EXCEPTION_HANDLER(GetImpObj()->Insert(index, (value == nullptr ? nullptr : static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp^>(value)->GetImpObj())));
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::Remove(NAMESPACE_OSGEO_GEOMETRY::IGeometry *value)
+System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::Remove(NAMESPACE_OSGEO_GEOMETRY::IGeometry^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Remove((value == NULL ? NULL : static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp *>(value)->GetImpObj())));
+	EXCEPTION_HANDLER(GetImpObj()->Remove((value == nullptr ? nullptr : static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp^>(value)->GetImpObj())));
 }
 
-System::Boolean NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::Contains(NAMESPACE_OSGEO_GEOMETRY::IGeometry *value)
+System::Boolean NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::Contains(NAMESPACE_OSGEO_GEOMETRY::IGeometry^ value)
 {
 	FdoBoolean ret;
-	EXCEPTION_HANDLER(ret = !!GetImpObj()->Contains((value == NULL ? NULL : static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp *>(value)->GetImpObj())))
+	EXCEPTION_HANDLER(ret = !!GetImpObj()->Contains((value == nullptr ? nullptr : static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp^>(value)->GetImpObj())))
 	return ret;
 }
 
-System::Int32 NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::get_Count()
+System::Int32 NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::Count::get()
 {
 	System::Int32 ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetCount())
 	return ret;
-}
-
-System::Collections::IEnumerator* NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::GetEnumerator(System::Void)
-{
-	return new Enumerator(this);
 }
 
 System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::RemoveAt(System::Int32 index)
@@ -216,58 +176,14 @@ System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::Clear()
 	EXCEPTION_HANDLER(GetImpObj()->Clear());
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::CopyTo(NAMESPACE_OSGEO_GEOMETRY::IGeometry *array[], System::Int32 index)
+NAMESPACE_OSGEO_GEOMETRY::IGeometry^ NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::Item::get(System::Int32 index)
 {
-	if (NULL == array)
-        throw new System::ArgumentNullException();
-    if (index < 0)
-        throw new System::ArgumentOutOfRangeException();
-    if ( array->Rank != 1 || index >= array->Length || get_Count() + index > array->Length)
-        throw new System::ArgumentException();
-    for (System::Int32 i=0;i<this->Count;i++)
-        array[index+i] = get_RealTypeItem(i);
-}
-
-NAMESPACE_OSGEO_GEOMETRY::IGeometry * NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::get_RealTypeItem(System::Int32 index)
-{
-	FdoIGeometry *ret;
+	FdoIGeometry* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetItem(index))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIGeometry(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIGeometry(IntPtr(ret), true);
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::set_RealTypeItem(System::Int32 index, NAMESPACE_OSGEO_GEOMETRY::IGeometry * value)
+System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::Item::set(System::Int32 index, NAMESPACE_OSGEO_GEOMETRY::IGeometry^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetItem(index, (value == NULL ? NULL : static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp *>(value)->GetImpObj())));
+	EXCEPTION_HANDLER(GetImpObj()->SetItem(index, (value == nullptr ? nullptr : static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp^>(value)->GetImpObj())));
 }
-
-NAMESPACE_OSGEO_GEOMETRY::IGeometry * NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::get_Item(System::Int32 index)
-{
-	return get_RealTypeItem(index);
-}
-
-System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::set_Item(System::Int32 index, NAMESPACE_OSGEO_GEOMETRY::IGeometry * value)
-{
-	set_RealTypeItem(index, value);
-}
-
-System::Object *NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::Enumerator::get_Current()
-{
-	if (m_nIdx < 0 || m_nIdx >= m_pCol->Count)
-		throw new InvalidOperationException();
-
-	FdoIGeometry *ret;
-	EXCEPTION_HANDLER(ret = m_pCol->GetImpObj()->GetItem(m_nIdx))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIGeometry(ret, true);
-}
-
-System::Boolean NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::Enumerator::MoveNext()
-{
-	++m_nIdx;
-	return m_nIdx < m_pCol->Count;
-}
-
-System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::Enumerator::Reset()
-{
-	m_nIdx = -1;
-}
-

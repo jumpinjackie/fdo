@@ -23,24 +23,24 @@
 class FdoBooleanValue;
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
-public __value enum DataType;
+enum class DataType;
 END_NAMESPACE_OSGEO_FDO_SCHEMA
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
-public __gc __interface IExpressionProcessor;
+interface class IExpressionProcessor;
 
 /// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The BooleanValue class derives from DataValue and represents a Boolean
 /// value.
-public __gc class BooleanValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue
+public ref class BooleanValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue
 {
 public:
     /// \brief
     /// A cast operator to get the Boolean value.
     /// 
-	static System::Boolean op_Explicit( NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue* value);
+	static operator System::Boolean ( NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue^ value);
 
     /// \brief
     /// Constructs a default instance of an BooleanValue with a value of null.
@@ -67,7 +67,10 @@ public:
     /// \return
     /// Returns an DataType
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
+    property NAMESPACE_OSGEO_FDO_SCHEMA::DataType DataType
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::DataType get();
+    }
 
     /// \brief
     /// Gets the BooleanValue.
@@ -75,8 +78,6 @@ public:
     /// \return
     /// Returns a Boolean value
     /// 
-	__property System::Boolean get_Boolean();
-
     /// \brief
     /// Sets the Boolean value.
     /// 
@@ -86,7 +87,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Boolean(System::Boolean value);
+    property System::Boolean Boolean
+    {
+        System::Boolean get();
+        System::Void set(System::Boolean value);
+    }
 
     /// \brief
     ///  Overrides Expression.Process to pass the BooleanValue to the appropriate
@@ -98,7 +103,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor* processor);
+	virtual System::Void Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor^ processor) override;
 
     /// \brief
     /// Returns the well defined text representation of this expression.
@@ -106,7 +111,7 @@ public:
     /// \return
     /// Returns a character string.
     /// 
-	System::String* ToString();
+	virtual System::String^ ToString() override;
 
     /// \brief
     /// Constructs a BooleanValue object based on an unmanaged instance of the object
@@ -120,7 +125,7 @@ public:
     /// 
 	BooleanValue(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
+internal:
 	inline FdoBooleanValue* GetImpObj();
 };
 END_NAMESPACE_OSGEO_FDO_EXPRESSION

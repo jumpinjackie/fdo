@@ -34,25 +34,25 @@ FdoIFeatureReader* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReaderImp::GetI
     return static_cast<FdoIFeatureReader*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReaderImp::GetClassDefinition()
+NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReaderImp::GetClassDefinition()
 {
 	FdoClassDefinition* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetClassDefinition())
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateClassDefinition(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateClassDefinition(IntPtr(result), true);
 }
 
 System::Int32 NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReaderImp::GetDepth()
 {
-	FdoInt32 result;
+	System::Int32 result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetDepth())
 
 	return result;
 }
 
-System::Byte NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReaderImp::GetGeometry(System::String* propertyName) []
+array<System::Byte>^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReaderImp::GetGeometry(System::String^ propertyName)
 {
 	const FdoByte* result;
 	FdoInt32 count = 0;
@@ -62,11 +62,11 @@ System::Byte NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReaderImp::GetGeometr
 	return FdoByteArrayToByteArray(result, count);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReaderImp::GetFeatureObject(System::String* propertyName)
+NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReaderImp::GetFeatureObject(System::String^ propertyName)
 {
 	FdoIFeatureReader* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetFeatureObject(StringToUni(propertyName)))
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIFeatureReader(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIFeatureReader(IntPtr(result), true);
 }

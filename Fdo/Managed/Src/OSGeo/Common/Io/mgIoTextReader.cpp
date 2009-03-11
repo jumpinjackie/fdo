@@ -23,14 +23,14 @@
 #include "Common\Io\mgIoStream.h"
 #include "Common\Io\mgIoTextReader.h"
 
-NAMESPACE_OSGEO_COMMON_IO::IoTextReader::IoTextReader(System::String* fileName) : Disposable(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_COMMON_IO::IoTextReader::IoTextReader(System::String^ fileName) : Disposable(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoIoTextReader::Create(StringToUni(fileName)), true))
+    EXCEPTION_HANDLER(Attach(IntPtr(FdoIoTextReader::Create(StringToUni(fileName))), true))
 }
 
-NAMESPACE_OSGEO_COMMON_IO::IoTextReader::IoTextReader(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream) : Disposable(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_COMMON_IO::IoTextReader::IoTextReader(NAMESPACE_OSGEO_COMMON_IO::IoStream^ stream) : Disposable(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoIoTextReader::Create((FdoIoStream*)stream->GetImpObj()), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoIoTextReader::Create((FdoIoStream*)stream->GetImpObj())), true))
 }
 
 NAMESPACE_OSGEO_COMMON_IO::IoTextReader::IoTextReader(System::IntPtr unmanaged, System::Boolean autoDelete) : Disposable(unmanaged, autoDelete)
@@ -40,21 +40,14 @@ NAMESPACE_OSGEO_COMMON_IO::IoTextReader::IoTextReader(System::IntPtr unmanaged, 
 
 FdoIoTextReader* NAMESPACE_OSGEO_COMMON_IO::IoTextReader::GetImpObj()
 {
-	return static_cast<FdoIoTextReader*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoIoTextReader*>(UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_COMMON_IO::IoStream* NAMESPACE_OSGEO_COMMON_IO::IoTextReader::get_Stream()
+NAMESPACE_OSGEO_COMMON_IO::IoStream^ NAMESPACE_OSGEO_COMMON_IO::IoTextReader::Stream::get()
 {
 	FdoIoStream* stream;
 
 	EXCEPTION_HANDLER(stream = GetImpObj()->GetStream())
 	
-	return ObjectFactory::CreateIoStream(stream, true);
-}
-
-System::Void NAMESPACE_OSGEO_COMMON_IO::IoTextReader::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
+	return ObjectFactory::CreateIoStream(IntPtr(stream), true);
 }

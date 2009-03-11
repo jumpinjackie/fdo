@@ -34,12 +34,12 @@ FdoPhysicalPropertyMapping* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalPropert
     return static_cast<FdoPhysicalPropertyMapping*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalPropertyMapping::InitFromXml(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection* attributes)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalPropertyMapping::InitFromXml(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ context, NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection^ attributes)
 {
 	EXCEPTION_HANDLER(GetImpObj()->InitFromXml(static_cast<FdoXmlSaxContext*>(context->UnmanagedObject.ToPointer()), static_cast<FdoXmlAttributeCollection*>(attributes->UnmanagedObject.ToPointer())))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalPropertyMapping::WriteXml(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* xmlWriter, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalPropertyMapping::WriteXml(NAMESPACE_OSGEO_COMMON_XML::XmlWriter^ xmlWriter, NAMESPACE_OSGEO_FDO_XML::XmlFlags^ flags)
 {
 	EXCEPTION_HANDLER(GetImpObj()->_writeXml(static_cast<FdoXmlWriter*>(xmlWriter->UnmanagedObject.ToPointer()), flags->GetImpObj()))
 }

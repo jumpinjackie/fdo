@@ -19,53 +19,53 @@
 #pragma once
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
-public __gc class CurveSegmentCollection;
-public __gc __interface ICurveSegmentAbstract;
-public __gc __interface IEnvelope;
-public __gc __interface ILinearRing;
-public __gc __interface IPolygon;
-public __gc __interface IDirectPosition;
-public __gc __interface IPoint;
-public __gc __interface IRing;
-public __gc __interface ILineString;
-public __gc __interface IGeometry;
-public __gc __interface ICurveString;
-public __gc __interface ICurvePolygon;
-public __gc __interface ILineStringSegment;
-public __gc __interface IMultiCurvePolygon;
-public __gc __interface IMultiGeometry;
-public __gc __interface IMultiPoint;
-public __gc __interface IMultiPolygon;
-public __gc __interface IMultiLineString;
-public __gc __interface IMultiCurveString;
-public __gc __interface ICircularArcSegment;
-public __gc __interface ICurveSegmentAbstract;
-public __gc __interface ICurveSegmentAbstract;
+ref class CurveSegmentCollection;
+interface class ICurveSegmentAbstract;
+interface class IEnvelope;
+interface class ILinearRing;
+interface class IPolygon;
+interface class IDirectPosition;
+interface class IPoint;
+interface class IRing;
+interface class ILineString;
+interface class IGeometry;
+interface class ICurveString;
+interface class ICurvePolygon;
+interface class ILineStringSegment;
+interface class IMultiCurvePolygon;
+interface class IMultiGeometry;
+interface class IMultiPoint;
+interface class IMultiPolygon;
+interface class IMultiLineString;
+interface class IMultiCurveString;
+interface class ICircularArcSegment;
+interface class ICurveSegmentAbstract;
+interface class ICurveSegmentAbstract;
 
 /// \ingroup (OSGeoFDOGeometry)
-public __gc __sealed class ObjectFactory
+public ref class ObjectFactory sealed
 {
 public:
-    static NAMESPACE_OSGEO_GEOMETRY::CurveSegmentCollection* CreateCurveSegmentCollection(System::IntPtr ptr, System::Boolean autoDispose);
-    static NAMESPACE_OSGEO_GEOMETRY::ICurveSegmentAbstract* CreateICurveSegmentAbstract(System::IntPtr ptr, System::Boolean autoDispose);
-    static NAMESPACE_OSGEO_GEOMETRY::IEnvelope* CreateIEnvelope(System::IntPtr ptr, System::Boolean autoDispose);
-    static NAMESPACE_OSGEO_GEOMETRY::ILinearRing* CreateILinearRing(System::IntPtr ptr, System::Boolean autoDispose);
-    static NAMESPACE_OSGEO_GEOMETRY::IPolygon* CreateIPolygon(System::IntPtr ptr, System::Boolean autoDispose);
-    static NAMESPACE_OSGEO_GEOMETRY::IDirectPosition* CreateIDirectPosition(System::IntPtr ptr, System::Boolean autoDispose);
-    static NAMESPACE_OSGEO_GEOMETRY::IPoint* CreateIPoint(System::IntPtr ptr, System::Boolean autoDispose);
-    static NAMESPACE_OSGEO_GEOMETRY::IRing* CreateIRing(System::IntPtr ptr, System::Boolean autoDispose);
-    static NAMESPACE_OSGEO_GEOMETRY::ILineString* CreateILineString(System::IntPtr ptr, System::Boolean autoDispose);
-    static NAMESPACE_OSGEO_GEOMETRY::IGeometry* CreateIGeometry(System::IntPtr ptr, System::Boolean autoDispose);
-    static NAMESPACE_OSGEO_GEOMETRY::ICurveString* CreateICurveString(System::IntPtr ptr, System::Boolean autoDispose);
-    static NAMESPACE_OSGEO_GEOMETRY::ICurvePolygon* CreateICurvePolygon(System::IntPtr ptr, System::Boolean autoDispose);
-    static NAMESPACE_OSGEO_GEOMETRY::ILineStringSegment* CreateILineStringSegment(System::IntPtr ptr, System::Boolean autoDispose);
-    static NAMESPACE_OSGEO_GEOMETRY::IMultiCurvePolygon* CreateIMultiCurvePolygon(System::IntPtr ptr, System::Boolean autoDispose);
-    static NAMESPACE_OSGEO_GEOMETRY::IMultiGeometry* CreateIMultiGeometry(System::IntPtr ptr, System::Boolean autoDispose);
-    static NAMESPACE_OSGEO_GEOMETRY::IMultiPoint* CreateIMultiPoint(System::IntPtr ptr, System::Boolean autoDispose);
-    static NAMESPACE_OSGEO_GEOMETRY::IMultiPolygon* CreateIMultiPolygon(System::IntPtr ptr, System::Boolean autoDispose);
-    static NAMESPACE_OSGEO_GEOMETRY::IMultiLineString* CreateIMultiLineString(System::IntPtr ptr, System::Boolean autoDispose);
-    static NAMESPACE_OSGEO_GEOMETRY::IMultiCurveString* CreateIMultiCurveString(System::IntPtr ptr, System::Boolean autoDispose);
-    static NAMESPACE_OSGEO_GEOMETRY::ICircularArcSegment* CreateICircularArcSegment(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_GEOMETRY::CurveSegmentCollection^ CreateCurveSegmentCollection(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_GEOMETRY::ICurveSegmentAbstract^ CreateICurveSegmentAbstract(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_GEOMETRY::IEnvelope^ CreateIEnvelope(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_GEOMETRY::ILinearRing^ CreateILinearRing(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_GEOMETRY::IPolygon^ CreateIPolygon(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ CreateIDirectPosition(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_GEOMETRY::IPoint^ CreateIPoint(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_GEOMETRY::IRing^ CreateIRing(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_GEOMETRY::ILineString^ CreateILineString(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_GEOMETRY::IGeometry^ CreateIGeometry(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_GEOMETRY::ICurveString^ CreateICurveString(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_GEOMETRY::ICurvePolygon^ CreateICurvePolygon(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_GEOMETRY::ILineStringSegment^ CreateILineStringSegment(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_GEOMETRY::IMultiCurvePolygon^ CreateIMultiCurvePolygon(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_GEOMETRY::IMultiGeometry^ CreateIMultiGeometry(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_GEOMETRY::IMultiPoint^ CreateIMultiPoint(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_GEOMETRY::IMultiPolygon^ CreateIMultiPolygon(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_GEOMETRY::IMultiLineString^ CreateIMultiLineString(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_GEOMETRY::IMultiCurveString^ CreateIMultiCurveString(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_GEOMETRY::ICircularArcSegment^ CreateICircularArcSegment(System::IntPtr ptr, System::Boolean autoDispose);
 
 private:
 	ObjectFactory(){};

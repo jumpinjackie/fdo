@@ -39,12 +39,12 @@ NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::PropertyValueConstrain
 
 NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::PropertyValueConstraintRange() : NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraint(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoPropertyValueConstraintRange::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoPropertyValueConstraintRange::Create()), true))
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::PropertyValueConstraintRange(NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* minValue, NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* maxValue )  : NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraint(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::PropertyValueConstraintRange(NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ minValue, NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ maxValue )  : NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraint(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoPropertyValueConstraintRange::Create(static_cast<FdoDataValue*>(minValue->UnmanagedObject.ToPointer()), static_cast<FdoDataValue*>(maxValue->UnmanagedObject.ToPointer())), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoPropertyValueConstraintRange::Create(static_cast<FdoDataValue*>(minValue->UnmanagedObject.ToPointer()), static_cast<FdoDataValue*>(maxValue->UnmanagedObject.ToPointer()))), true))
 }
 
 FdoPropertyValueConstraintRange* NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::GetImpObj()
@@ -52,49 +52,49 @@ FdoPropertyValueConstraintRange* NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstr
     return static_cast<FdoPropertyValueConstraintRange*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::get_MinValue()
+NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::MinValue::get()
 {
 	FdoDataValue* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetMinValue())
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataValue(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataValue(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::set_MinValue(NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::MinValue::set(NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetMinValue(static_cast<FdoDataValue*>(value->UnmanagedObject.ToPointer())))
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::get_MinInclusive()
+System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::MinInclusive::get()
 {
-	bool result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetMinInclusive())
 
 	return result;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::set_MinInclusive(System::Boolean value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::MinInclusive::set(System::Boolean value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetMinInclusive(value))
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::get_MaxValue()
+NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::MaxValue::get()
 {
 	FdoDataValue* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetMaxValue())
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataValue(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataValue(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::set_MaxValue(NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::MaxValue::set(NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetMaxValue(static_cast<FdoDataValue*>(value->UnmanagedObject.ToPointer())))
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::get_MaxInclusive()
+System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::MaxInclusive::get()
 {
 	bool result;
 
@@ -103,7 +103,7 @@ System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::get_Ma
 	return result;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::set_MaxInclusive(System::Boolean value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::MaxInclusive::set(System::Boolean value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetMaxInclusive(value))
 }

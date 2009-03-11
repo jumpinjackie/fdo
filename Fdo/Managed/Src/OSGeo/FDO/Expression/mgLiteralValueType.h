@@ -25,7 +25,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 /// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The LiteralValueType enumeration defines the literal value types available.
-public __value enum LiteralValueType
+public enum class LiteralValueType
 {
     /// Data literal
 	LiteralValueType_Data = FdoLiteralValueType_Data,

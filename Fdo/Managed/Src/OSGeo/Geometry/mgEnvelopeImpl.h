@@ -24,8 +24,8 @@
 class FdoEnvelopeImpl;
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
-public __gc __interface IEnvelope;
-public __gc __interface IDirectPosition;
+interface class IEnvelope;
+interface class IDirectPosition;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
@@ -35,7 +35,7 @@ BEGIN_NAMESPACE_OSGEO_GEOMETRY
 /// The EnvelopeImpl class is a default implementation of IEnvelope.
 /// EnvelopeImpl implements accessors from IEnvelope, matching mutators, and simple data members.
 /// Assignment, exact equality operators, and utility methods are also provided.
-public __gc class EnvelopeImpl : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_GEOMETRY::IEnvelope
+public ref class EnvelopeImpl : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_GEOMETRY::IEnvelope
 {
 public:
     /// \brief
@@ -89,7 +89,7 @@ public:
     /// \param envelopeImpl 
     /// Input envelope to copy
     /// 
-    EnvelopeImpl(EnvelopeImpl* envelopeImpl);
+    EnvelopeImpl(EnvelopeImpl^ envelopeImpl);
 
     /// \brief
     /// Constructs a EnvelopeImpl object from two positions.
@@ -99,7 +99,7 @@ public:
     /// \param upperRight 
     /// Input Upper-right position
     /// 
-	EnvelopeImpl(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition* lowerLeft, NAMESPACE_OSGEO_GEOMETRY::IDirectPosition * upperRight);
+	EnvelopeImpl(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ lowerLeft, NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ upperRight);
 
     /// \brief
     /// Constructs a EnvelopeImpl object by copying from an array of ordinates.
@@ -109,35 +109,7 @@ public:
     /// \param ordinates 
     /// Input ordinate array representing two positions
     /// 
-	EnvelopeImpl(System::Int32 dimensionType, System::Double ordinates __gc[]);
-
-    /// \brief
-    /// Equality function for EnvelopeImpl.
-    /// 
-    /// \param right 
-    /// Input envelope for comparison (right-hand-side of equation)
-    /// 
-    /// \param left 
-    /// Input envelope for comparison (left-hand-side of equation)
-    /// 
-    /// \return
-    /// Returns true if all non-NaN ordinates exactly equal.  All NaN values compare as equal to each other.
-    /// 
-	static System::Boolean op_Equality(EnvelopeImpl *left, EnvelopeImpl* right);
-
-    /// \brief
-    /// InEquality function for EnvelopeImpl.
-    /// 
-    /// \param right 
-    /// Input envelope for comparison (right-hand-side of equation)
-    /// 
-    /// \param left 
-    /// Input envelope for comparison (left-hand-side of equation)
-    /// 
-    /// \return
-    /// Returns true if the envelope ordinates are not equal.
-    /// 
-	static System::Boolean op_Inequality(EnvelopeImpl *left, EnvelopeImpl* right);
+	EnvelopeImpl(System::Int32 dimensionType, array<System::Double>^ ordinates);
 
     /// \brief
     /// Equality function for EnvelopeImpl.
@@ -148,10 +120,10 @@ public:
     /// \return
     /// Returns true if all non-NaN ordinates exactly equal to this instance.  All NaN values compare as equal to each other.
     /// 
-	System::Boolean Equals(System::Object* obj);
+	virtual System::Boolean Equals(System::Object^ obj) override;
 
 /// \cond DOXYGEN-IGNORE
-	System::Int32 GetHashCode();
+	virtual System::Int32 GetHashCode() override;
 /// \endcond
 
     /// \brief
@@ -160,8 +132,6 @@ public:
     /// \return
     /// Returns the minimum X ordinate; numeric_limits::quiet_NaN() by default
     /// 
-	__property System::Double get_MinX();
-
     /// \brief
     /// Sets the minimum X coordinate value.
     /// 
@@ -171,7 +141,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_MinX(System::Double minX);
+    property System::Double MinX
+    {
+        virtual System::Double get();
+        System::Void set(System::Double value);
+    }
 
     /// \brief
     /// Gets the minimum Y coordinate value.
@@ -179,8 +153,6 @@ public:
     /// \return
     /// Returns the minimum Y ordinate; numeric_limits::quiet_NaN() by default
     /// 
-    __property System::Double get_MinY();
-
     /// \brief
     /// Sets the minimum Y coordinate value.
     /// 
@@ -190,7 +162,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-    __property System::Void set_MinY(System::Double minY);
+    property System::Double MinY
+    {
+        virtual System::Double get();
+        System::Void set(System::Double value);
+    }
 
     /// \brief
     /// Gets the minimum Z coordinate value.
@@ -198,8 +174,6 @@ public:
     /// \return
     /// Returns the minimum Z ordinate; numeric_limits::quiet_NaN() by default
     /// 
-	__property System::Double get_MinZ();
-
     /// \brief
     /// Sets the minimum Z coordinate value.
     /// 
@@ -209,7 +183,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-    __property System::Void set_MinZ(System::Double minZ);
+    property System::Double MinZ
+    {
+        virtual System::Double get();
+        System::Void set(System::Double value);
+    }
 
     /// \brief
     /// Gets the maximum X coordinate value.
@@ -217,8 +195,6 @@ public:
     /// \return
     /// Returns the maximum X ordinate; numeric_limits::quiet_NaN() by default
     /// 
-	__property System::Double get_MaxX();
-
     /// \brief
     /// Sets the maximum X coordinate value.
     /// 
@@ -228,7 +204,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-    __property System::Void set_MaxX(System::Double maxX);
+    property System::Double MaxX
+    {
+        virtual System::Double get();
+        System::Void set(System::Double value);
+    }
 
     /// \brief
     /// Gets the maximum Y coordinate value.
@@ -236,8 +216,6 @@ public:
     /// \return
     /// Returns the maximum Y ordinate; numeric_limits::quiet_NaN() by default
     /// 
-	__property System::Double get_MaxY();
-
     /// \brief
     /// Sets the maximum Y coordinate value.
     /// 
@@ -247,7 +225,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-    __property System::Void set_MaxY(System::Double maxY);
+    property System::Double MaxY
+    {
+        virtual System::Double get();
+        System::Void set(System::Double value);
+    }
 
     /// \brief
     /// Gets the maximum Z coordinate value.
@@ -255,8 +237,6 @@ public:
     /// \return
     /// Returns the maximum Z ordinate; numeric_limits::quiet_NaN() by default
     /// 
-	__property System::Double get_MaxZ();
-
     /// \brief
     /// Sets the maximum Z coordinate value.
     /// 
@@ -266,7 +246,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-    __property System::Void set_MaxZ(System::Double maxZ);
+    property System::Double MaxZ
+    {
+        virtual System::Double get();
+        System::Void set(System::Double value);
+    }
 
     /// \brief
     /// Indicates whether the envelope's extents are set.
@@ -274,7 +258,10 @@ public:
     /// \return
     /// Returns 'true' if none of the X, Y and Z extents have been set; 'false' otherwise
     /// 
-	__property System::Boolean get_IsEmpty();
+    property System::Boolean IsEmpty
+    {
+        virtual System::Boolean get();
+    }
 
     /// \brief
     /// Expands the envelope's extents to include a given position.
@@ -285,7 +272,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Expand(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition* position);
+	virtual System::Void Expand(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ position);
 
     /// \brief
     /// Expands the envelope's extents to include another envelope.
@@ -296,7 +283,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Expand(NAMESPACE_OSGEO_GEOMETRY::IEnvelope* envelope);
+	virtual System::Void Expand(NAMESPACE_OSGEO_GEOMETRY::IEnvelope^ envelope);
 
 public:
     /// \brief
@@ -312,10 +299,7 @@ public:
 	EnvelopeImpl(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 /// \cond DOXYGEN-IGNORE
-protected:
-    System::Void ReleaseUnmanagedObject();
-
-public private:
+internal:
 	FdoEnvelopeImpl* GetImpObj();
 /// \endcond
 };

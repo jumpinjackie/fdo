@@ -27,16 +27,16 @@ FdoSchemaAttributeDictionary* NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDiction
 	return static_cast<FdoSchemaAttributeDictionary*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary::get_Count()
+System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary::Count::get()
 {
-	FdoInt32 result;
+	System::Int32 result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetCount())
 
 	return result;
 }
 
-System::String* NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary::get_AttributeNames() []
+array<System::String^>^ NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary::AttributeNames::get()
 {
 	// NEED_TEST
 	FdoString** result;
@@ -47,35 +47,35 @@ System::String* NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary::get_Attri
 	return FdoStringArrayToStringArray(result, len);
 }
 
-System::String* NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary::GetAttributeValue(System::String* name)
+System::String^ NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary::GetAttributeValue(System::String^ name)
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetAttributeValue(StringToUni(name)))
 
-	return CHECK_STRING(result)
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary::SetAttributeValue(System::String* name, System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary::SetAttributeValue(System::String^ name, System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetAttributeValue(StringToUni(name), StringToUni(value)))
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary::ContainsAttribute(System::String* name)
+System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary::ContainsAttribute(System::String^ name)
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = !!GetImpObj()->ContainsAttribute(StringToUni(name)))
 
 	return result;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary::Add(System::String* name, System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary::Add(System::String^ name, System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->Add(StringToUni(name), StringToUni(value)))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary::Remove(System::String* name)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary::Remove(System::String^ name)
 {
 	EXCEPTION_HANDLER(GetImpObj()->Remove(StringToUni(name)))
 }
@@ -83,11 +83,4 @@ System::Void NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary::Remove(Syste
 System::Void NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary::Clear()
 {
 	EXCEPTION_HANDLER(GetImpObj()->Clear())
-}
-
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
 }

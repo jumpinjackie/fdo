@@ -23,17 +23,17 @@
 class FdoInt32Value;
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
-public __value enum DataType;
+enum class DataType;
 END_NAMESPACE_OSGEO_FDO_SCHEMA
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
-public __gc __interface IExpressionProcessor;
+interface class IExpressionProcessor;
 
 /// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The Int32Value class derives from DataValue and represents a 32-bit signed integer value.
-public __gc class Int32Value : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue
+public ref class Int32Value : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue
 {
 public:
     /// \brief
@@ -42,7 +42,7 @@ public:
     /// \return
     /// Returns a 32 bit integer
     /// 
-	static System::Int32 op_Explicit( NAMESPACE_OSGEO_FDO_EXPRESSION::Int32Value* value );
+	static operator System::Int32 ( NAMESPACE_OSGEO_FDO_EXPRESSION::Int32Value^ value );
 
     /// \brief
     /// Constructs a default instance of an Int32Value with a value of null.
@@ -69,7 +69,10 @@ public:
     /// \return
     /// Returns an DataType
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
+    property NAMESPACE_OSGEO_FDO_SCHEMA::DataType DataType
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::DataType get();
+    }
 
     /// \brief
     /// Gets the Int32Value.
@@ -77,8 +80,6 @@ public:
     /// \return
     /// Returns a 32 bit integer
     /// 
-	__property System::Int32 get_Int32();
-
     /// \brief
     /// Sets the Int32Value.
     /// 
@@ -88,7 +89,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Int32(System::Int32 value);
+    property System::Int32 Int32
+    {
+        System::Int32 get();
+        System::Void set(System::Int32 value);
+    }
 
     /// \brief
     /// Overrides Expression.Process to pass the Int32Value to the appropriate
@@ -100,7 +105,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor* processor);
+	virtual System::Void Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor^ processor) override;
 
     /// \brief
     /// Returns the well defined text representation of this expression.
@@ -108,7 +113,7 @@ public:
     /// \return
     /// Returns a character string
     /// 
-	System::String* ToString();
+	virtual System::String^ ToString() override;
 
     /// \brief
     /// Constructs an Int32Value object based on an unmanaged instance of the object
@@ -122,7 +127,7 @@ public:
     /// 
 	Int32Value(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
+internal:
 	inline FdoInt32Value* GetImpObj();
 };
 

@@ -32,30 +32,30 @@ FdoIBaseSelect* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IBaseSelectImp::GetImpObj(
     return static_cast<FdoIBaseSelect*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS::IdentifierCollection* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IBaseSelectImp::get_PropertyNames()
+NAMESPACE_OSGEO_FDO_COMMANDS::IdentifierCollection^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IBaseSelectImp::PropertyNames::get()
 {
 	FdoIdentifierCollection* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetPropertyNames())
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIdentifierCollection(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIdentifierCollection(IntPtr(result), true);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS::IdentifierCollection* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IBaseSelectImp::get_Ordering()
+NAMESPACE_OSGEO_FDO_COMMANDS::IdentifierCollection^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IBaseSelectImp::Ordering::get()
 {
 	FdoIdentifierCollection* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetOrdering())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIdentifierCollection(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIdentifierCollection(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IBaseSelectImp::set_OrderingOption(NAMESPACE_OSGEO_FDO_COMMANDS::OrderingOption value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IBaseSelectImp::OrderingOption::set(NAMESPACE_OSGEO_FDO_COMMANDS::OrderingOption value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetOrderingOption(static_cast<FdoOrderingOption>(value)))
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS::OrderingOption NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IBaseSelectImp::get_OrderingOption()
+NAMESPACE_OSGEO_FDO_COMMANDS::OrderingOption NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IBaseSelectImp::OrderingOption::get()
 {
 	FdoOrderingOption result;
 

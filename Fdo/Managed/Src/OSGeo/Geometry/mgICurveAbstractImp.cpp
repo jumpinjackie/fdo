@@ -24,9 +24,9 @@
 #include "mgIDirectPosition.h"
 #include "mgObjectFactory.h"
 
-FdoICurveAbstract *NAMESPACE_OSGEO_GEOMETRY::ICurveAbstractImp::GetImpObj()
+FdoICurveAbstract* NAMESPACE_OSGEO_GEOMETRY::ICurveAbstractImp::GetImpObj()
 {
-	return static_cast<FdoICurveAbstract *>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoICurveAbstract*>(UnmanagedObject.ToPointer());
 }
 
 NAMESPACE_OSGEO_GEOMETRY::ICurveAbstractImp::ICurveAbstractImp(System::IntPtr unmanaged, System::Boolean autoDelete)
@@ -34,21 +34,21 @@ NAMESPACE_OSGEO_GEOMETRY::ICurveAbstractImp::ICurveAbstractImp(System::IntPtr un
 {
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IDirectPosition *NAMESPACE_OSGEO_GEOMETRY::ICurveAbstractImp::get_StartPosition()
+NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ NAMESPACE_OSGEO_GEOMETRY::ICurveAbstractImp::StartPosition::get()
 {
-	FdoIDirectPosition *ret;
+	FdoIDirectPosition* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetStartPosition())
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIDirectPosition(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIDirectPosition(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IDirectPosition *NAMESPACE_OSGEO_GEOMETRY::ICurveAbstractImp::get_EndPosition()
+NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ NAMESPACE_OSGEO_GEOMETRY::ICurveAbstractImp::EndPosition::get()
 {
-	FdoIDirectPosition *ret;
+	FdoIDirectPosition* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetEndPosition())
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIDirectPosition(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIDirectPosition(IntPtr(ret), true);
 }
 
-System::Boolean NAMESPACE_OSGEO_GEOMETRY::ICurveAbstractImp::get_IsClosed()
+System::Boolean NAMESPACE_OSGEO_GEOMETRY::ICurveAbstractImp::IsClosed::get()
 {
 	System::Boolean ret;
 	EXCEPTION_HANDLER(ret = !!GetImpObj()->GetIsClosed())

@@ -28,7 +28,7 @@ BEGIN_NAMESPACE_OSGEO_COMMON_XML
 /// \brief
 /// XmlAttribute contains the name and value of a single attribute
 /// from an XML document.
-public __gc __sealed class XmlAttribute : public  NAMESPACE_OSGEO_RUNTIME::Disposable
+public ref class XmlAttribute sealed : public  NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
     /// \brief
@@ -56,7 +56,7 @@ public:
     /// Input prefix for the attribute value's namespace. L"" if the attribute
     /// value is not namespace qualified.
     /// 
-	XmlAttribute(System::String* name, System::String* value, System::String* localName, System::String* attributeURI, System::String* prefix, System::String* valueURI, System::String* localValue, System::String* valuePrefix);
+	XmlAttribute(System::String^ name, System::String^ value, System::String^ localName, System::String^ attributeURI, System::String^ prefix, System::String^ valueURI, System::String^ localValue, System::String^ valuePrefix);
 
     /// \brief
     /// Constructs an XML Attribute object
@@ -80,7 +80,7 @@ public:
     /// \param localValue 
     /// Input attribute value without namespace qualification.
     /// 
-	XmlAttribute(System::String* name, System::String* value, System::String* localName, System::String* attributeURI, System::String* prefix, System::String* valueURI, System::String* localValue);
+	XmlAttribute(System::String^ name, System::String^ value, System::String^ localName, System::String^ attributeURI, System::String^ prefix, System::String^ valueURI, System::String^ localValue);
 
     /// \brief
     /// Constructs an XML Attribute object
@@ -102,7 +102,7 @@ public:
     /// Input uri for the attribute value's namespace. L"" if the attribute
     /// value is not namespace qualified.
     /// 
-	XmlAttribute(System::String* name, System::String* value, System::String* localName, System::String* attributeURI, System::String* prefix, System::String* valueURI);
+	XmlAttribute(System::String^ name, System::String^ value, System::String^ localName, System::String^ attributeURI, System::String^ prefix, System::String^ valueURI);
 
     /// \brief
     /// Constructs an XML Attribute object
@@ -121,7 +121,7 @@ public:
     /// Input prefix for the attribute namespace. L"" if the attribute
     /// name is not namespace qualified.
     /// 
-	XmlAttribute(System::String* name, System::String* value, System::String* localName, System::String* attributeURI, System::String* prefix);
+	XmlAttribute(System::String^ name, System::String^ value, System::String^ localName, System::String^ attributeURI, System::String^ prefix);
     /// \brief
     /// Constructs an XML Attribute object
     /// 
@@ -136,7 +136,7 @@ public:
     /// Input uri for the attribute namespace. L"" if the attribute
     /// name is not namespace qualified.
     /// 
-	XmlAttribute(System::String* name, System::String* value, System::String* localName, System::String* attributeURI);
+	XmlAttribute(System::String^ name, System::String^ value, System::String^ localName, System::String^ attributeURI);
     /// \brief
     /// Constructs an XML Attribute object
     /// 
@@ -148,7 +148,7 @@ public:
     /// \param localName 
     /// Input attribute name without namespace qualification.
     /// 
-	XmlAttribute(System::String* name, System::String* value, System::String* localName);
+	XmlAttribute(System::String^ name, System::String^ value, System::String^ localName);
 
     /// \brief
     /// Constructs an XML Attribute object
@@ -159,7 +159,7 @@ public:
     /// \param value 
     /// Input attribute value.
     /// 
-	XmlAttribute(System::String* name, System::String* value);
+	XmlAttribute(System::String^ name, System::String^ value);
 
     /// \brief
     /// Constructs an XmlAttribute based on an unmanaged instance of the object
@@ -174,14 +174,11 @@ public:
 	XmlAttribute(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 /// \cond DOXYGEN-IGNORE
-protected:
-	virtual System::Void ReleaseUnmanagedObject();
-
-public private:
+internal:
 	inline FdoXmlAttribute* GetImpObj();
 
 private:
-	System::Void InitConstruct(String* name, String* value, String* localName, String* uri, String* prefix, String* valueUri, String* localValue, String* valuePrefix);
+	System::Void InitConstruct(String^ name, String^ value, String^ localName, String^ uri, String^ prefix, String^ valueUri, String^ localValue, String^ valuePrefix);
 /// \endcond
 };
 

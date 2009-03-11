@@ -26,14 +26,14 @@
 #include "FDO\Xml\mgXmlElementMappingCollection.h"
 
 
-NAMESPACE_OSGEO_FDO_XML::XmlClassMapping::XmlClassMapping(System::String* name, System::String* schemaName, System::String* wkBaseName) : NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalClassMapping(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_XML::XmlClassMapping::XmlClassMapping(System::String^ name, System::String^ schemaName, System::String^ wkBaseName) : NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalClassMapping(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoXmlClassMapping::Create(StringToUni(name), StringToUni(schemaName), StringToUni(wkBaseName)), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoXmlClassMapping::Create(StringToUni(name), StringToUni(schemaName), StringToUni(wkBaseName))), true))
 }
 
-NAMESPACE_OSGEO_FDO_XML::XmlClassMapping::XmlClassMapping(System::String* name, System::String* schemaName, System::String* wkBaseName, System::String* wkSchemaName) : NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalClassMapping(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_XML::XmlClassMapping::XmlClassMapping(System::String^ name, System::String^ schemaName, System::String^ wkBaseName, System::String^ wkSchemaName) : NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalClassMapping(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoXmlClassMapping::Create(StringToUni(name), StringToUni(schemaName), StringToUni(wkBaseName), StringToUni(wkSchemaName)), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoXmlClassMapping::Create(StringToUni(name), StringToUni(schemaName), StringToUni(wkBaseName), StringToUni(wkSchemaName))), true))
 }
 
 FdoXmlClassMapping* NAMESPACE_OSGEO_FDO_XML::XmlClassMapping::GetImpObj()
@@ -41,38 +41,38 @@ FdoXmlClassMapping* NAMESPACE_OSGEO_FDO_XML::XmlClassMapping::GetImpObj()
     return static_cast<FdoXmlClassMapping*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::String* NAMESPACE_OSGEO_FDO_XML::XmlClassMapping::get_GmlName()
+System::String^ NAMESPACE_OSGEO_FDO_XML::XmlClassMapping::GmlName::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetGmlName())
 	
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::String* NAMESPACE_OSGEO_FDO_XML::XmlClassMapping::get_WkBaseName()
+System::String^ NAMESPACE_OSGEO_FDO_XML::XmlClassMapping::WkBaseName::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetWkBaseName())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::String* NAMESPACE_OSGEO_FDO_XML::XmlClassMapping::get_WkSchemaName()
+System::String^ NAMESPACE_OSGEO_FDO_XML::XmlClassMapping::WkSchemaName::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetWkSchemaName())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
-NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection* NAMESPACE_OSGEO_FDO_XML::XmlClassMapping::get_ElementMappings()
+NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection^ NAMESPACE_OSGEO_FDO_XML::XmlClassMapping::ElementMappings::get()
 {
 	FdoXmlElementMappingCollection* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetElementMappings())
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlElementMappingCollection(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlElementMappingCollection(IntPtr(result), true);
 }

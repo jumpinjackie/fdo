@@ -21,7 +21,7 @@
 #include "FDO\Commands\Locking\mgConflictType.h"
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
-public __gc class PropertyValueCollection;
+ref class PropertyValueCollection;
 END_NAMESPACE_OSGEO_FDO_COMMANDS
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
@@ -38,7 +38,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 /// AcquireLock, Select, ReleaseLock, Update, and Delete commands. The
 /// initial position of the ILockConflictReader is prior to the first item,
 /// thus you must call ReadNext to begin accessing any data.
-public __gc __interface ILockConflictReader : public System::IDisposable
+public interface class ILockConflictReader : public System::IDisposable
 {
 public:
     /// \brief
@@ -53,7 +53,7 @@ public:
     /// \return
     /// Returns the class name.
     /// 
-	System::String* GetFeatureClassName();
+	System::String^ GetFeatureClassName();
 
     /// \brief
     /// Returns an PropertyValueCollection containing the property values
@@ -62,7 +62,7 @@ public:
     /// \return
     /// Returns the property collection identifying the feature.
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection* GetIdentity();
+	NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection^ GetIdentity();
 
     /// \brief
     /// Gets the name of the owner who holds a lock on the feature 
@@ -71,7 +71,7 @@ public:
     /// \return
     /// Returns the name of the owner
     /// 
-	System::String* GetLockOwner();
+	System::String^ GetLockOwner();
 
     /// \brief
     /// Gets the name of the long transaction in which the feature 
@@ -81,7 +81,7 @@ public:
     /// Returns the name of the long transaction in which the feature
     /// currently being read is locked.
     /// 
-	System::String* GetLongTransaction();
+	System::String^ GetLongTransaction();
 
     /// \brief
     /// Gets the conflict type for the conflict currently being read.

@@ -22,45 +22,45 @@
 #include "mgIDirectPositionImp.h"
 #include <FdoGeometry.h>
 
-FdoDirectPositionImpl *NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::GetImpObj()
+FdoDirectPositionImpl* NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::GetImpObj()
 {
-	return static_cast<FdoDirectPositionImpl *>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoDirectPositionImpl*>(UnmanagedObject.ToPointer());
 }
 
 NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::DirectPositionImpl() 
 	: NAMESPACE_OSGEO_RUNTIME::Disposable(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoDirectPositionImpl::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoDirectPositionImpl::Create()), true))
 }
 
 NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::DirectPositionImpl(System::Double coordinateX, System::Double coordinateY) 
 	: NAMESPACE_OSGEO_RUNTIME::Disposable(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoDirectPositionImpl::Create(coordinateX, coordinateY), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoDirectPositionImpl::Create(coordinateX, coordinateY)), true))
 }
 
 NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::DirectPositionImpl(System::Double coordinateX, System::Double coordinateY, System::Double coordinateZ) 
 	: NAMESPACE_OSGEO_RUNTIME::Disposable(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoDirectPositionImpl::Create(coordinateX, coordinateY, coordinateZ), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoDirectPositionImpl::Create(coordinateX, coordinateY, coordinateZ)), true))
 }
 
 NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::DirectPositionImpl(System::Double coordinateX, System::Double coordinateY, System::Double coordinateZ, System::Double coordinateM) 
 	: NAMESPACE_OSGEO_RUNTIME::Disposable(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoDirectPositionImpl::Create(coordinateX, coordinateY, coordinateZ, coordinateM), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoDirectPositionImpl::Create(coordinateX, coordinateY, coordinateZ, coordinateM)), true))
 }
 
-NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::DirectPositionImpl(DirectPositionImpl *position) 
+NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::DirectPositionImpl(DirectPositionImpl^ position) 
 	: NAMESPACE_OSGEO_RUNTIME::Disposable(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoDirectPositionImpl::Create(*(position->GetImpObj())), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoDirectPositionImpl::Create(*(position->GetImpObj()))), true))
 }
 
-NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::DirectPositionImpl(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition *position) 
+NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::DirectPositionImpl(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ position) 
 	: NAMESPACE_OSGEO_RUNTIME::Disposable(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoDirectPositionImpl::Create(static_cast<IDirectPositionImp *>(position)->GetImpObj()), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoDirectPositionImpl::Create(static_cast<IDirectPositionImp^>(position)->GetImpObj())), true))
 }
 
 NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::DirectPositionImpl(System::IntPtr unmanaged, System::Boolean autoDelete) 
@@ -68,110 +68,84 @@ NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::DirectPositionImpl(System::IntPtr 
 {
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::op_Assign(DirectPositionImpl *left, DirectPositionImpl *right)
+NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl^ NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::operator=(IDirectPosition^ right)
 {
-	EXCEPTION_HANDLER((left->GetImpObj())->operator=(*(right->GetImpObj())));
+	EXCEPTION_HANDLER((this->GetImpObj())->operator=(*(static_cast<IDirectPositionImp^>(right)->GetImpObj())));
+    return this;
 }
 
-
-System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::op_Assign(DirectPositionImpl *left, IDirectPosition *right)
+System::Boolean NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::Equals(System::Object^ obj)
 {
-	EXCEPTION_HANDLER((left->GetImpObj())->operator=(*(static_cast<IDirectPositionImp *>(right)->GetImpObj())));
-}
-
-System::Boolean NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::op_Equality(DirectPositionImpl *left, DirectPositionImpl *right)
-{
-	FdoBoolean ret;
-	EXCEPTION_HANDLER(ret = left->GetImpObj()->operator==(*(right->GetImpObj())))
+	NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl^ directPosition = dynamic_cast<NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl^>(obj);
+    
+    if(nullptr == (System::Object^)directPosition)
+        return false;
+	System::Boolean ret;
+	EXCEPTION_HANDLER(ret = this->GetImpObj()->operator==(*(directPosition->GetImpObj())))
 	return ret;
-}
-
-System::Boolean NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::op_Inequality(DirectPositionImpl *left, DirectPositionImpl *right)
-{
-	return !op_Equality(left, right);
-}
-
-System::Boolean NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::Equals(System::Object* obj)
-{
-	NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl* directPosition = dynamic_cast<NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl*>(obj);
-	if (NULL == directPosition)
-	{
-		return false;
-	}
-	else
-	{
-		return op_Equality(this, directPosition);;
-	}
 }
 
 System::Int32 NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::GetHashCode()
 {
-	return (int)X + (int)Y + (int)Z + (int)M;
+    return UnmanagedObject.ToInt32();
 }
 
-System::Double NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::get_X()
+System::Double NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::X::get()
 {
-	FdoDouble ret;
+	System::Double ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetX())
 	return ret;
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::set_X(System::Double value)
+System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::X::set(System::Double value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetX(value));
 }
 
-System::Double NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::get_Y()
+System::Double NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::Y::get()
 {
-	FdoDouble ret;
+	System::Double ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetY())
 	return ret;
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::set_Y(System::Double value)
+System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::Y::set(System::Double value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetY(value));
 }
 
-System::Double NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::get_Z()
+System::Double NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::Z::get()
 {
-	FdoDouble ret;
+	System::Double ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetZ());
 	return ret;
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::set_Z(System::Double value)
+System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::Z::set(System::Double value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetZ(value));
 }
 
-System::Double NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::get_M()
+System::Double NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::M::get()
 {
-	FdoDouble ret;
+	System::Double ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetM())
 	return ret;
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::set_M(System::Double value)
+System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::M::set(System::Double value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetM(value));
 }
 
-System::Int32 NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::get_Dimensionality()
+System::Int32 NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::Dimensionality::get()
 {
 	System::Int32 ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetDimensionality())
 	return ret;
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::set_Dimensionality(System::Int32 value)
+System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::Dimensionality::set(System::Int32 value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetDimensionality(value));
-}
-
-System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
 }

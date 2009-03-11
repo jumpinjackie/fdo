@@ -28,17 +28,10 @@ NAMESPACE_OSGEO_COMMON::IStreamReaderImp::IStreamReaderImp(System::IntPtr unmana
 
 FdoIStreamReader* NAMESPACE_OSGEO_COMMON::IStreamReaderImp::GetImpObj()
 {
-	return static_cast<FdoIStreamReader*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoIStreamReader*>(UnmanagedObject.ToPointer());
 }
 
-System::Void NAMESPACE_OSGEO_COMMON::IStreamReaderImp::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}
-
-NAMESPACE_OSGEO_COMMON::StreamReaderType NAMESPACE_OSGEO_COMMON::IStreamReaderImp::get_Type()
+NAMESPACE_OSGEO_COMMON::StreamReaderType NAMESPACE_OSGEO_COMMON::IStreamReaderImp::Type::get()
 {
 	FdoStreamReaderType type;
 

@@ -26,7 +26,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 /// \brief
 /// The ClassType enumeration lists all of the concrete class types defined in
 /// the Schema package.
-public __value enum ClassType
+public enum class ClassType
 {
     /// Represents the concrete class type Class.
 	ClassType_Class = FdoClassType_Class,

@@ -24,7 +24,7 @@
 class FdoNetworkNodeFeatureClass;
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
-public __gc class AssociationPropertyDefinition;
+ref class AssociationPropertyDefinition;
 
 /// \ingroup (OSGeoFDOSchema)
 /// \brief
@@ -33,7 +33,7 @@ public __gc class AssociationPropertyDefinition;
 /// <p><b>Note:</b> <span class="red_text">This Help topic is provided for informational use only. There is
 /// no interface or support provided. OSGeo reserves the right to change
 /// the software related to the content herein.</span>
-public __gc class NetworkNodeFeatureClass : public NAMESPACE_OSGEO_FDO_SCHEMA::NetworkFeatureClass
+public ref class NetworkNodeFeatureClass : public NAMESPACE_OSGEO_FDO_SCHEMA::NetworkFeatureClass
 {
 public:
     /// \brief
@@ -49,7 +49,7 @@ public:
     /// \param description 
     /// Input description
     /// 
-	NetworkNodeFeatureClass(System::String* name, System::String* description);
+	NetworkNodeFeatureClass(System::String^ name, System::String^ description);
 
     /// \brief
     /// Gets the concrete class type.
@@ -57,7 +57,10 @@ public:
     /// \return
     /// Returns class type
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::ClassType get_ClassType();
+    property NAMESPACE_OSGEO_FDO_SCHEMA::ClassType ClassType
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::ClassType get();
+    }
 
     /// \brief
     /// Gets a reference to the layer property.
@@ -65,8 +68,6 @@ public:
     /// \return
     /// Returns an association property definition
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition* get_LayerProperty();
-
     /// \brief
     /// Sets a reference to the layer property. The associated class of the layer
     /// association property must be an NetworkLayer.
@@ -77,7 +78,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_LayerProperty(NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition* value);
+    property NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition^ LayerProperty
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition^ value);
+    }
 
     /// \brief
     /// Constructs a NetworkNodeFeatureClass object based on an unmanaged instance of the object
@@ -94,7 +99,7 @@ public:
 
 	}
 
-public private:
+internal:
 	inline FdoNetworkNodeFeatureClass* GetImpObj();
 };
 

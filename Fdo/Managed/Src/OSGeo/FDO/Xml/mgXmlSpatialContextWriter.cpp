@@ -22,21 +22,14 @@
 #include <Fdo\Xml\mgXmlSpatialContextWriter.h>
 #include <Fdo\Xml\mgXmlSpatialContextFlags.h>
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::ReleaseUnmanagedObject()
+NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::XmlSpatialContextWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter^ writer) : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)
 {
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoXmlSpatialContextWriter::Create(static_cast<FdoXmlWriter*>(writer->UnmanagedObject.ToPointer()))), true))
 }
 
-NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::XmlSpatialContextWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* writer) : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::XmlSpatialContextWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter^ writer, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags^ flags) : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoXmlSpatialContextWriter::Create(static_cast<FdoXmlWriter*>(writer->UnmanagedObject.ToPointer())), true))
-}
-
-NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::XmlSpatialContextWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* writer, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags* flags) : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)
-{
-	EXCEPTION_HANDLER(Attach(FdoXmlSpatialContextWriter::Create(static_cast<FdoXmlWriter*>(writer->UnmanagedObject.ToPointer()), flags->GetImpObj()), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoXmlSpatialContextWriter::Create(static_cast<FdoXmlWriter*>(writer->UnmanagedObject.ToPointer()), flags->GetImpObj())), true))
 }
 
 FdoXmlSpatialContextWriter* NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::GetImpObj()
@@ -44,63 +37,63 @@ FdoXmlSpatialContextWriter* NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::Ge
     return static_cast<FdoXmlSpatialContextWriter*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::String* NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::get_Name()
+System::String^ NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::Name::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetName())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::set_Name(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::Name::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetName(StringToUni(value)))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::get_Description()
+System::String^ NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::Description::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetDescription())
 
-		return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::set_Description(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::Description::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetDescription(StringToUni(value)))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::get_CoordinateSystem()
+System::String^ NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::CoordinateSystem::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetCoordinateSystem())
 
-		return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::set_CoordinateSystem(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::CoordinateSystem::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetCoordinateSystem(StringToUni(value)))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::get_CoordinateSystemWkt()
+System::String^ NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::CoordinateSystemWkt::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetCoordinateSystemWkt())
 
-		return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::set_CoordinateSystemWkt(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::CoordinateSystemWkt::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetCoordinateSystemWkt(StringToUni(value)))
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::SpatialContextExtentType NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::get_ExtentType()
+NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::SpatialContextExtentType NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::ExtentType::get()
 {
 	FdoSpatialContextExtentType result;
 
@@ -109,55 +102,67 @@ NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::SpatialContextExtentType NAMESPACE_
 	return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::SpatialContextExtentType>(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::set_ExtentType(NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::SpatialContextExtentType value)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::ExtentType::set(NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::SpatialContextExtentType value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetExtentType(static_cast<FdoSpatialContextExtentType>(value)))
 }
 
-System::Byte NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::get_Extent() []
+array<System::Byte>^ NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::Extent::get()
 {
-	FdoByteArray* result;
-
-	EXCEPTION_HANDLER(result = GetImpObj()->GetExtent())
-
-	System::Byte mgBuffer __gc[] = FdoByteArrayToByteArray(result->GetData(), result->GetCount());
-	result->Release();
-	return mgBuffer;
+    FdoByteArray* arr = nullptr;
+    array<System::Byte>^ result;
+    try
+    {
+	    EXCEPTION_HANDLER(arr = GetImpObj()->GetExtent())
+	    result = FdoByteArrayToByteArray(arr->GetData(), arr->GetCount());
+    }
+    finally
+    {
+        if (arr != nullptr)
+            arr->Release();
+    }
+	return result;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::set_Extent(System::Byte buffer [])
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::Extent::set(array<System::Byte>^ buffer)
 {
-	FdoByteArray* umBuffer = ByteArrayToFdoByteArray(buffer);
-
-	EXCEPTION_HANDLER(GetImpObj()->SetExtent(umBuffer))
-
-	umBuffer->Release();
+    FdoByteArray* arr = nullptr;
+    try
+    {
+        arr = ByteArrayToFdoByteArray(buffer);
+    	EXCEPTION_HANDLER(GetImpObj()->SetExtent(arr))
+    }
+    finally
+    {
+        if (arr != nullptr)
+            arr->Release();
+    }
 }
 
-System::Double NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::get_XYTolerance()
+System::Double NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::XYTolerance::get()
 {
-	FdoDouble result;
+	System::Double result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetXYTolerance())
 
 	return result;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::set_XYTolerance(System::Double value)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::XYTolerance::set(System::Double value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetXYTolerance(value))
 }
 
-System::Double NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::get_ZTolerance()
+System::Double NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::ZTolerance::get()
 {
-	FdoDouble result;
+	System::Double result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetZTolerance())
 
-		return result;
+	return result;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::set_ZTolerance(System::Double value)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter::ZTolerance::set(System::Double value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetZTolerance(value))
 }

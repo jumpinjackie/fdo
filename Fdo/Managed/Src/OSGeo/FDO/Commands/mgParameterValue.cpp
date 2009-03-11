@@ -25,21 +25,14 @@
 #include "FDO\mgObjectFactory.h"
 #include "FDO\Expression\mgLiteralValue.h"
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}
-
 NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::ParameterValue() : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoParameterValue::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoParameterValue::Create()), true))
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::ParameterValue(System::String* name) : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::ParameterValue(System::String^ name) : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoParameterValue::Create(StringToUni(name)), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoParameterValue::Create(StringToUni(name))), true))
 }
 
 FdoParameterValue* NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::GetImpObj()
@@ -47,40 +40,40 @@ FdoParameterValue* NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::GetImpObj()
     return static_cast<FdoParameterValue*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::ParameterValue(System::String* name, NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue* value) : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::ParameterValue(System::String^ name, NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue^ value) : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoParameterValue::Create(StringToUni(name), (value == NULL ? NULL : value->GetImpObj())), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoParameterValue::Create(StringToUni(name), (value == nullptr ? nullptr : value->GetImpObj()))), true))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::get_Name()
+System::String^ NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::Name::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetName())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::set_Name(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::Name::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetName(StringToUni(value)))
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue* NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::get_Value()
+NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue^ NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::Value::get()
 {
 	FdoLiteralValue* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetValue())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateLiteralValue(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateLiteralValue(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::set_Value(NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::Value::set(NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetValue((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->SetValue((value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::set_Value(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::value::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetValue(StringToUni(value)))
 }

@@ -23,9 +23,9 @@
 #include "Common\Xml\mgXmlReader.h"
 #include "Common\Xml\mgXmlSaxContext.h"
 
-NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext::XmlSaxContext(XmlReader* reader) : Disposable(IntPtr::Zero, false)
+NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext::XmlSaxContext(XmlReader^ reader) : Disposable(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoXmlSaxContext::Create(reader->GetImpObj()), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoXmlSaxContext::Create(reader->GetImpObj())), true))
 }
 
 NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext::XmlSaxContext(IntPtr unmanaged, Boolean autoDelete) : Disposable(unmanaged, autoDelete)
@@ -35,19 +35,12 @@ NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext::XmlSaxContext(IntPtr unmanaged, Boole
 
 FdoXmlSaxContext* NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext::GetImpObj()
 {
-	return static_cast<FdoXmlSaxContext*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoXmlSaxContext*>(UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}
-
-NAMESPACE_OSGEO_COMMON_XML::XmlReader* NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext::get_Reader()
+NAMESPACE_OSGEO_COMMON_XML::XmlReader^ NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext::Reader::get()
 { 
-    XmlReader* reader;
-	EXCEPTION_HANDLER(reader = ObjectFactory::CreateXmlReader(GetImpObj()->GetReader(), true))
+    NAMESPACE_OSGEO_COMMON_XML::XmlReader^ reader;
+	EXCEPTION_HANDLER(reader = ObjectFactory::CreateXmlReader(IntPtr(GetImpObj()->GetReader()), true))
 	return reader;
 }

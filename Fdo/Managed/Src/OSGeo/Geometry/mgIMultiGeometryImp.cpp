@@ -24,9 +24,9 @@
 #include "mgIGeometry.h"
 #include "mgObjectFactory.h"
 
-FdoIMultiGeometry * NAMESPACE_OSGEO_GEOMETRY::IMultiGeometryImp::GetImpObj()
+FdoIMultiGeometry* NAMESPACE_OSGEO_GEOMETRY::IMultiGeometryImp::GetImpObj()
 {
-	return static_cast<FdoIMultiGeometry *>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoIMultiGeometry*>(UnmanagedObject.ToPointer());
 }
 
 NAMESPACE_OSGEO_GEOMETRY::IMultiGeometryImp::IMultiGeometryImp(System::IntPtr unmanaged, System::Boolean autoDelete)
@@ -34,9 +34,9 @@ NAMESPACE_OSGEO_GEOMETRY::IMultiGeometryImp::IMultiGeometryImp(System::IntPtr un
 {
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IGeometry *NAMESPACE_OSGEO_GEOMETRY::IMultiGeometryImp::get_Item(System::Int32 index)
+NAMESPACE_OSGEO_GEOMETRY::IGeometry^ NAMESPACE_OSGEO_GEOMETRY::IMultiGeometryImp::default::get(System::Int32 index)
 {
-	FdoIGeometry *ret;
+	FdoIGeometry* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetItem(index))
- 	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIGeometry(ret, true);
+ 	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIGeometry(IntPtr(ret), true);
 }

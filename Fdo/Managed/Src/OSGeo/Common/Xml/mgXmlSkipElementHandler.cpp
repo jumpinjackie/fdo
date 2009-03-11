@@ -23,7 +23,7 @@
 
 NAMESPACE_OSGEO_COMMON_XML::XmlSkipElementHandler::XmlSkipElementHandler() : XmlSaxHandler(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoXmlSkipElementHandler::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoXmlSkipElementHandler::Create()), true))
 }
 
 NAMESPACE_OSGEO_COMMON_XML::XmlSkipElementHandler::XmlSkipElementHandler(IntPtr unmanaged, Boolean autoDelete) : XmlSaxHandler(unmanaged, autoDelete)
@@ -33,5 +33,5 @@ NAMESPACE_OSGEO_COMMON_XML::XmlSkipElementHandler::XmlSkipElementHandler(IntPtr 
 
 FdoXmlSkipElementHandler* NAMESPACE_OSGEO_COMMON_XML::XmlSkipElementHandler::GetImpObj()
 {
-	return static_cast<FdoXmlSkipElementHandler*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoXmlSkipElementHandler*>(UnmanagedObject.ToPointer());
 }

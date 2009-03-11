@@ -33,25 +33,25 @@ FdoIReleaseLock* NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IReleaseLockImp::GetImpOb
     return static_cast<FdoIReleaseLock*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::String* NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IReleaseLockImp::get_LockOwner()
+System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IReleaseLockImp::LockOwner::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetLockOwner())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IReleaseLockImp::set_LockOwner(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IReleaseLockImp::LockOwner::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetLockOwner(StringToUni(value)))
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader* NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IReleaseLockImp::Execute()
+NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader^ NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IReleaseLockImp::Execute()
 {
 	FdoILockConflictReader* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->Execute())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILockConflictReader(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILockConflictReader(IntPtr(result), true);
 }

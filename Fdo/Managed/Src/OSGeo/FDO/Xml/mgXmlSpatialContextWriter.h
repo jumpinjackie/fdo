@@ -23,7 +23,7 @@
 class FdoXmlSpatialContextWriter;
 
 BEGIN_NAMESPACE_OSGEO_FDO_XML
-public __gc class XmlSpatialContextFlags;
+ref class XmlSpatialContextFlags;
 
 /// \ingroup (OSGeoFDOXml)
 /// \brief
@@ -32,7 +32,7 @@ public __gc class XmlSpatialContextFlags;
 /// to set the spatial context attributes and then calling 
 /// WriteSpatialContext() to write the spatial context using the current 
 /// attributes. 
-public __gc class XmlSpatialContextWriter : public NAMESPACE_OSGEO_RUNTIME::Disposable
+public ref class XmlSpatialContextWriter : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
     /// \brief
@@ -42,7 +42,7 @@ public:
     /// Input XML document writer. Specifies the XML
     /// document that the Spatial Contexts will be written to.
     /// 
-	XmlSpatialContextWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* writer);
+	XmlSpatialContextWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter^ writer);
 
     /// \brief
     /// creates a Spatial Context Writer.
@@ -52,10 +52,10 @@ public:
     /// document that the Spatial Contexts will be written to.
     /// \param flags 
     /// Input options for controlling the 
-    /// deserializing of the Spatial Contexts. If NULL then the 
+    /// deserializing of the Spatial Contexts. If nullptr then the 
     /// default flags are used.
     /// 
-	XmlSpatialContextWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* writer, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags* flags);
+	XmlSpatialContextWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter^ writer, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags^ flags);
 
     /// \brief
     /// Gets the name of the context to create as a string.
@@ -63,8 +63,6 @@ public:
     /// \return
     /// Returns the name of the spatial context
     /// 
-	__property System::String* get_Name();
-
     /// \brief
     /// Sets the name of the context to create as a string.
     /// 
@@ -74,7 +72,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Name(System::String* value);
+    property System::String^ Name
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Gets the description of the context to create as a string.
@@ -82,8 +84,6 @@ public:
     /// \return
     /// Returns the description of the spatial context
     /// 
-	__property System::String* get_Description();
-
     /// \brief
     /// Sets the description of the context to create as a string.
     /// 
@@ -93,7 +93,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Description(System::String* value);
+    property System::String^ Description
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Gets the name of the coordinate system of the context to create.
@@ -101,8 +105,6 @@ public:
     /// \return
     /// Returns the coordinate system name
     /// 
-	__property System::String* get_CoordinateSystem();
-
     /// \brief
     /// Gets the name of the coordinate system of the context to create.
     /// 
@@ -112,7 +114,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_CoordinateSystem(System::String* value);
+    property System::String^ CoordinateSystem
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Gets the coordinate system of the context to create as a string
@@ -121,8 +127,6 @@ public:
     /// \return
     /// Returns the coordinate system
     /// 
-	__property System::String* get_CoordinateSystemWkt();
-
     /// \brief
     /// Sets the coordinate system of the context to create as a string in
     /// OpenGIS SRS WKT format.
@@ -133,7 +137,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_CoordinateSystemWkt(System::String* value);
+    property System::String^ CoordinateSystemWkt
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Gets the desired extent type of the context to create, either static or dynamic.
@@ -141,8 +149,6 @@ public:
     /// \return
     /// Returns the extent type
     /// 
-	__property NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::SpatialContextExtentType get_ExtentType();
-
     /// \brief
     /// Sets the desired extent type of the context to create, either static or dynamic.
     /// 
@@ -152,7 +158,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_ExtentType(NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::SpatialContextExtentType value);
+    property NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::SpatialContextExtentType ExtentType
+    {
+        NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::SpatialContextExtentType get();
+        System::Void set(NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::SpatialContextExtentType value);
+    }
 
     /// \brief
     /// Gets the extent of the context to create as a byte array in FGF format.
@@ -161,8 +171,6 @@ public:
     /// \return
     /// Returns the extent of the spatial context
     /// 
-	__property System::Byte get_Extent() [];
-
     /// \brief
     /// Sets the extent of the context to create as a byte array in FGF format.
     /// If the extent type is dynamic this is optional and any value specified is ignored.
@@ -173,7 +181,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Extent(System::Byte buffer []);
+    property array<System::Byte>^ Extent
+    {
+        array<System::Byte>^ get();
+        System::Void set(array<System::Byte>^ value);
+    }
 
     /// \brief
     /// Gets the tolerance value to use for X/Y ordinates. Tolerances are used
@@ -185,8 +197,6 @@ public:
     /// \return
     /// Returns the tolerance
     /// 
-	__property System::Double get_XYTolerance();
-
     /// \brief
     /// Sets the tolerance value to use for X/Y ordinates. Tolerances are used
     /// in some geometric tests, mostly for equality between coordinates.  This
@@ -200,7 +210,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_XYTolerance(System::Double value);
+    property System::Double XYTolerance
+    {
+        System::Double get();
+        System::Void set(System::Double value);
+    }
 
     /// \brief
     /// Gets the tolerance value to use for Z ordinates. Tolerances are used in
@@ -212,8 +226,6 @@ public:
     /// \return
     /// Returns the tolerance
     /// 
-	__property System::Double get_ZTolerance();
-
     /// \brief
     /// Sets the tolerance value to use for Z ordinates. Tolerances are used in
     /// some geometric tests, mostly for equality between coordinates.  This
@@ -227,25 +239,24 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_ZTolerance(System::Double value);
+    property System::Double ZTolerance
+    {
+        System::Double get();
+        System::Void set(System::Double value);
+    }
 
     /// \brief
     /// Writes the current Spatial Context to the XML document.
     /// 
 	System::Void WriteSpatialContext();
 
-public private:
+internal:
 	XmlSpatialContextWriter(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)
 	{
 
 	}
 
 	inline FdoXmlSpatialContextWriter* GetImpObj();
-
-/// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_XML

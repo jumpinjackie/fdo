@@ -26,7 +26,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 /// \brief
 /// The PropertyValueConstraintType enumeration categorizes the
 /// supported constraint.
-public __value enum PropertyValueConstraintType
+public enum class PropertyValueConstraintType
 {
     /// This constraint specifies minimum and / or maximum allowed values for a particular property. It can be used for all data property types except for Boolean, BLOB, or CLOB
     PropertyValueConstraintType_Range = 0x01,

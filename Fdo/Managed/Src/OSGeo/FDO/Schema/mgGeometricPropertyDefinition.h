@@ -38,7 +38,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 /// store in the property on insert/update). The client application can
 /// interpret the actual geometry values as it wants, e.g., displaying and
 /// manipulating the vertices of a Polyline as a group of independent points.
-public __gc class GeometricPropertyDefinition : public NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition
+public ref class GeometricPropertyDefinition : public NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition
 {
 public:
     /// \brief
@@ -55,7 +55,7 @@ public:
     /// \param description 
     /// Input description
     /// 
-	GeometricPropertyDefinition(System::String* name, System::String* description);
+	GeometricPropertyDefinition(System::String^ name, System::String^ description);
 
     /// \brief
     /// Constructs an instance of an GeometricPropertyDefinition using the
@@ -69,7 +69,7 @@ public:
     /// Input true if this is a system generated property, false otherwise.
     /// <p><b>Note:</b> A client would never set system to true, only a provider.
     /// 
-	GeometricPropertyDefinition(System::String* name, System::String* description, System::Boolean system);
+	GeometricPropertyDefinition(System::String^ name, System::String^ description, System::Boolean system);
 
     /// \brief
     /// Gets the concrete property type.
@@ -77,7 +77,10 @@ public:
     /// \return
     /// Returns the concrete property type
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType get_PropertyType();
+    property NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType PropertyType
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType get();
+    }
 
     /// \brief
     /// Gets the GeometricTypes that can be stored in this geometric property.
@@ -87,8 +90,6 @@ public:
     /// \return
     /// Returns the GeometricTypes that can be stored in this geometric property
     /// 
-	__property System::Int32 get_GeometryTypes();
-
     /// \brief
     /// Sets the GeometricTypes that can be stored in this geometric property.
     /// The value may be any combination of the values from GeometricType
@@ -97,7 +98,11 @@ public:
     /// \param value 
     /// Input the GeometricTypes that can be stored in this geometric property
     /// 
-	__property System::Void set_GeometryTypes(System::Int32 value);
+    property System::Int32 GeometryTypes
+    {
+        System::Int32 get();
+        System::Void set(System::Int32 value);
+    }
 
     /// \brief
     /// Gets the specific geometry types that can be stored in this geometric
@@ -111,8 +116,6 @@ public:
     /// \return
     /// Returns a list of geometry types that are supported.
     /// 
-    __property NAMESPACE_OSGEO_COMMON::GeometryType get_SpecificGeometryTypes(System::Int32 &length)[];
-
     /// \brief
     /// Sets the specific set of geometry types that can be stored in this
     /// geometric property. The provided value is a list of geometry types
@@ -127,7 +130,11 @@ public:
     /// Indicates the number of geometry types being stored in the provided
     /// set of geometry types.
     /// 
-    __property System::Void set_SpecificGeometryTypes(NAMESPACE_OSGEO_COMMON::GeometryType types[], System::Int32 length);
+    property array<NAMESPACE_OSGEO_COMMON::GeometryType>^ SpecificGeometryTypes[System::Int32%]
+    {
+        array<NAMESPACE_OSGEO_COMMON::GeometryType>^ get(System::Int32% length);
+        System::Void set(System::Int32% length, array<NAMESPACE_OSGEO_COMMON::GeometryType>^ types);
+    }
 
     /// \brief
     /// Returns a Boolean value that indicates if this geometric property is
@@ -137,8 +144,6 @@ public:
     /// Returns a Boolean value that specifies whether this geometric property is
     /// read-only
     /// 
-	__property System::Boolean get_ReadOnly();
-
     /// \brief
     /// Sets a Boolean value that specifies whether this geometric property is
     /// read-only.
@@ -147,7 +152,11 @@ public:
     /// Input a Boolean value that specifies whether this geometric property is
     /// read-only
     /// 
-	__property System::Void set_ReadOnly(System::Boolean value);
+    property System::Boolean ReadOnly
+    {
+        System::Boolean get();
+        System::Void set(System::Boolean value);
+    }
 
     /// \brief
     /// Gets a Boolean value that indicates if the geometry of this property
@@ -157,8 +166,6 @@ public:
     /// Returns a Boolean value that determines if the geometry of this property
     /// includes elevation values
     /// 
-	__property System::Boolean get_HasElevation();
-
     /// \brief
     /// Sets a Boolean value that determines if the geometry of this property
     /// includes elevation values.
@@ -167,7 +174,11 @@ public:
     /// Input a Boolean value that determines if the geometry of this property
     /// includes elevation values
     /// 
-	__property System::Void set_HasElevation(System::Boolean value);
+    property System::Boolean HasElevation
+    {
+        System::Boolean get();
+        System::Void set(System::Boolean value);
+    }
 
     /// \brief
     /// Gets a Boolean value that indicates if the geometry of this property
@@ -177,8 +188,6 @@ public:
     /// Returns a Boolean value that indicates if the geometry of this property
     /// includes measurement values
     /// 
-	__property System::Boolean get_HasMeasure();
-
     /// \brief
     /// Sets a Boolean value that determines if the geometry of this property
     /// includes measurement values that can be used for dynamic segmentation.
@@ -187,7 +196,11 @@ public:
     /// Input a Boolean value that determines if the geometry of this property
     /// includes measurement values
     /// 
-	__property System::Void set_HasMeasure(System::Boolean value);
+    property System::Boolean HasMeasure
+    {
+        System::Boolean get();
+        System::Void set(System::Boolean value);
+    }
 
     /// \brief
     /// Sets/add a Spatial Context association to this geometric property.
@@ -196,18 +209,19 @@ public:
     /// Input the Spatial Context name to be added/set. 
     /// Defaults to the active Spatial Context.
     /// 
-	__property System::Void set_SpatialContextAssociation(System::String *value);
-
     /// \brief
     /// Gets the Spatial Context name associated to this geometric property.
     /// 
     /// \return
     /// Returns a String value representing the Spatial Context name.
-    /// If NULL then the geometric property is associated with all the Spatial Contexts
+    /// If nullptr then the geometric property is associated with all the Spatial Contexts
     /// in the datastore (supports multiple geometric representations via this property).
     /// 
-	__property System::String * get_SpatialContextAssociation();
-
+    property System::String^ SpatialContextAssociation
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
     /// \brief
     /// Constructs a GeometricPropertyDefinition object based on an unmanaged instance of the object
     /// 
@@ -223,7 +237,7 @@ public:
 
 	}
 
-public private:
+internal:
 	inline FdoGeometricPropertyDefinition* GetImpObj();
 };
 

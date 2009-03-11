@@ -30,55 +30,49 @@ NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler::XmlSaxHandler(System::IntPtr unmanage
 
 }
 
-NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler::XmlSaxHandler() : Disposable(new VirtualSaxHandler(), true)
+NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler::XmlSaxHandler() : Disposable(IntPtr(new VirtualSaxHandler()), true)
 {
 	static_cast<VirtualSaxHandler*>(GetImpObj())->SetWrapper(this);
 }
 
 FdoXmlSaxHandler* NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler::GetImpObj()
 {
-	return static_cast<FdoXmlSaxHandler*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoXmlSaxHandler*>(UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler::ReleaseUnmanagedObject()
-{
-	delete GetImpObj();
-	Detach();
-}
-
-NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler::XmlStartDocument(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context)
+NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler^ NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler::XmlStartDocument(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ context)
 {
 	FdoXmlSaxHandler* result;
 
 	EXCEPTION_HANDLER(result= GetImpObj()->XmlStartDocument(context->GetImpObj()))
 
-	return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateIXmlSaxHandler(result, true);
+	return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateIXmlSaxHandler(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler::XmlEndDocument(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context)
+System::Void NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler::XmlEndDocument(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ context)
 {
 	EXCEPTION_HANDLER(GetImpObj()->XmlEndDocument(context->GetImpObj()))
 }
 
-NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler::XmlStartElement(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, System::String* resourceLocation, System::String* name, System::String* qualifiedName, NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection* attributes)
+NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler^ NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler::XmlStartElement(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ context, System::String^ resourceLocation, System::String^ name, System::String^ qualifiedName, NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection^ attributes)
 {
 	FdoXmlSaxHandler* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->XmlStartElement(context->GetImpObj(), StringToUni(resourceLocation), StringToUni(name), StringToUni(qualifiedName), attributes->GetImpObj()))
 
-	return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateIXmlSaxHandler(result, true);
+	return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateIXmlSaxHandler(IntPtr(result), true);
 }
 
-System::Boolean NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler::XmlEndElement(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, System::String* resourceLocation, System::String* name, System::String* qualifiedName)
+System::Boolean NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler::XmlEndElement(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ context, System::String^ resourceLocation, System::String^ name, System::String^ qualifiedName)
 {
 	FdoBoolean rv;
 
-	EXCEPTION_HANDLER(rv = !!GetImpObj()->XmlEndElement(context == NULL ? NULL : context->GetImpObj(), StringToUni(resourceLocation), StringToUni(name), StringToUni(qualifiedName)))
+	EXCEPTION_HANDLER(rv = !!GetImpObj()->XmlEndElement(context == nullptr ? nullptr : context->GetImpObj(), StringToUni(resourceLocation), StringToUni(name), StringToUni(qualifiedName)))
 
 	return rv;
 }
 
-System::Void NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler::XmlCharacters(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, System::String* characters)
+System::Void NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler::XmlCharacters(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ context, System::String^ characters)
 {
 	EXCEPTION_HANDLER(GetImpObj()->XmlCharacters(context->GetImpObj(), StringToUni(characters)))
 }

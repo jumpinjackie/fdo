@@ -24,8 +24,8 @@
 class FdoICurveString;
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
-public __gc __interface ICurveSegmentAbstract;
-public __gc class CurveSegmentCollection;
+interface class ICurveSegmentAbstract;
+ref class CurveSegmentCollection;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
@@ -34,7 +34,7 @@ BEGIN_NAMESPACE_OSGEO_GEOMETRY
 /// \brief
 /// The ICurveStringImp class is a concrete geometric CurveString Geometry type. ICurveString is the most general non-abstract curve type.  
 /// It is defined by an ordered collection of contiguous curve segments.
-private __gc class ICurveStringImp 
+private ref class ICurveStringImp 
 	: public NAMESPACE_OSGEO_GEOMETRY::ICurveAbstractImp, public NAMESPACE_OSGEO_GEOMETRY::ICurveString
 {
 public:
@@ -50,8 +50,8 @@ public:
     /// 
 	ICurveStringImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
-	FdoICurveString *GetImpObj();
+internal:
+	FdoICurveString* GetImpObj();
 
 public:
     /// \brief
@@ -60,7 +60,10 @@ public:
     /// \return
     /// Returns the number of curve segments
     /// 
-	__property System::Int32 get_Count();
+    property System::Int32 Count
+    {
+        virtual System::Int32 get();
+    }
 	
     /// \brief
     /// Gets the curve segment at the given zero-based index.
@@ -71,15 +74,21 @@ public:
     /// \return
     /// Returns the requested curve segment
     /// 
-	__property NAMESPACE_OSGEO_GEOMETRY::ICurveSegmentAbstract *get_Item(System::Int32 index);
-	
+    property NAMESPACE_OSGEO_GEOMETRY::ICurveSegmentAbstract^ default[System::Int32]
+    {
+        virtual NAMESPACE_OSGEO_GEOMETRY::ICurveSegmentAbstract^ get(System::Int32 index);
+    }
+
     /// \brief
     /// Gets all the curve segments.
     /// 
     /// \return
     /// Returns a collection of all the curve segments
     /// 
-	__property NAMESPACE_OSGEO_GEOMETRY::CurveSegmentCollection *get_CurveSegments();
+    property NAMESPACE_OSGEO_GEOMETRY::CurveSegmentCollection^ CurveSegments
+    {
+        virtual NAMESPACE_OSGEO_GEOMETRY::CurveSegmentCollection^ get();
+    }
 };
 
 END_NAMESPACE_OSGEO_GEOMETRY

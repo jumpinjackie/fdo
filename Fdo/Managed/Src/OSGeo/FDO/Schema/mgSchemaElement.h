@@ -23,14 +23,14 @@
 class FdoSchemaElement;
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
-public __gc class FeatureSchema;
-public __gc class SchemaAttributeDictionary;
+ref class FeatureSchema;
+ref class SchemaAttributeDictionary;
 
 /// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// SchemaElement is an abstract class that acts as a base class for all classes
 /// in the Schema package.
-public __gc class SchemaElement : public NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler
+public ref class SchemaElement : public NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler
 {
 public:
     /// \brief
@@ -40,7 +40,10 @@ public:
     /// \return
     /// Returns the SchemaElement of the parent
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement* get_Parent();
+    property NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement^ Parent
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement^ get();
+    }
 
     /// \brief
     /// Gets the FeatureSchema this object is a part of. Returns null if this
@@ -49,7 +52,10 @@ public:
     /// \return
     /// Returns the FeatureSchema this object is a part of
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema* get_FeatureSchema();
+    property NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema^ FeatureSchema
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema^ get();
+    }
 
     /// \brief
     /// Returns the current state of the schema element.
@@ -57,7 +63,10 @@ public:
     /// \return
     /// Returns the current state of the schema element
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElementState get_ElementState();
+    property NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElementState ElementState
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElementState get();
+    }
 
     /// \brief
     /// Gets an SchemaAttributeDictionary that contains the attributes 
@@ -66,23 +75,10 @@ public:
     /// \return
     /// Returns an SchemaAttributeDictionary
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary* get_Attributes();
-
-    /// \brief
-    /// Gets the name of the schema object.
-    /// 
-    /// \return
-    /// Returns the name of the schema object
-    /// 
-	__property System::String* get_Name();
-
-    /// \brief
-    /// Gets the fully qualified name of this schema element
-    /// 
-    /// \return
-    /// Default implementation simply returns the element name
-    /// 
-	__property System::String* get_QualifiedName();
+    property NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary^ Attributes
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary^ get();
+    }
 
     /// \brief
     /// Sets the name of the schema object.
@@ -90,7 +86,28 @@ public:
     /// \param value 
     /// Input the name of the schema object
     /// 
-	__property System::Void set_Name(System::String* value);
+    /// \brief
+    /// Gets the name of the schema object.
+    /// 
+    /// \return
+    /// Returns the name of the schema object
+    /// 
+    property System::String^ Name
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
+
+    /// \brief
+    /// Gets the fully qualified name of this schema element
+    /// 
+    /// \return
+    /// Default implementation simply returns the element name
+    /// 
+    property System::String^ QualifiedName
+    {
+        System::String^ get();
+    }
 
     /// \brief
     /// Indicates whether the name of the Element can be changed once
@@ -99,7 +116,10 @@ public:
     /// \return
     /// Returns true if the Element name can be changed; otherwise false.
     /// 
-	__property System::Boolean get_CanSetName();
+    property System::Boolean CanSetName
+    {
+        System::Boolean get();
+    }
 
     /// \brief
     /// Gets the description of the schema object.
@@ -107,15 +127,17 @@ public:
     /// \return
     /// Returns the description of the schema object
     /// 
-	__property System::String* get_Description();
-
     /// \brief
     /// Sets the description of the schema object.
     /// 
     /// \param value 
     /// Input the description of the schema object
     /// 
-	__property System::Void set_Description(System::String* value);
+    property System::String^ Description
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Marks the schema element for deletion by setting the element state to
@@ -141,12 +163,7 @@ public:
 
 	}
 
-/// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-/// \endcond
-
-public private:
+internal:
 	inline FdoSchemaElement* GetImpObj();
 };
 

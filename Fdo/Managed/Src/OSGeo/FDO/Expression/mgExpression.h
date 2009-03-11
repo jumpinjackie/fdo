@@ -22,7 +22,7 @@ class FdoExpression;
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
-public __gc __interface IExpressionProcessor;
+interface class IExpressionProcessor;
 
 /// \ingroup (OSGeoFDOExpression)
 /// \brief
@@ -30,7 +30,7 @@ public __gc __interface IExpressionProcessor;
 /// tree. The Expression class contains operations for converting between the
 /// well defined text representation and the object representation of an
 /// expression.
-public __gc class Expression : public NAMESPACE_OSGEO_RUNTIME::Disposable
+public ref class Expression : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
     /// \brief
@@ -44,7 +44,7 @@ public:
     /// \return
     /// Returns parse tree root node
     /// 
-	static NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* Parse(System::String* expressionText);
+	static NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ Parse(System::String^ expressionText);
 
     /// \brief
     /// Abstract operation that takes an IExpressionProcessor as an argument.
@@ -58,7 +58,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor* processor);
+	virtual System::Void Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor^ processor);
 
     /// \brief
     /// Abstract operation that returns the well defined text representation of
@@ -67,7 +67,7 @@ public:
     /// \return
     /// Returns the well defined text string
     /// 
-	System::String* ToString();
+	virtual System::String^ ToString() override;
 
     /// \brief
     /// Constructs a Expression object based on an unmanaged instance of the object
@@ -81,12 +81,7 @@ public:
     /// 
 	Expression(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-/// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-/// \endcond
-
-public private:
+internal:
 	inline FdoExpression* GetImpObj();
 };
 

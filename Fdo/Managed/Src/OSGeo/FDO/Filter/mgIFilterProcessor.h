@@ -29,7 +29,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 /// this interface to do something meaningful with a filter hierarchy. For
 /// example, a RDBMS feature provider can implement a processor class to convert a
 /// filter hierarchy to the SQL equivalent syntax.
-public __gc __interface IFilterProcessor : public System::IDisposable
+public interface class IFilterProcessor : public System::IDisposable
 {
 };
 END_NAMESPACE_OSGEO_FDO_FILTER

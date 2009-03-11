@@ -27,37 +27,30 @@
 #include "FDO\Schema\mgFeatureSchema.h"
 #include "FDO\Schema\mgSchemaAttributeDictionary.h"
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}
-
 FdoSchemaElement* NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::GetImpObj()
 {
 	return static_cast<FdoSchemaElement*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement* NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::get_Parent()
+NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement^ NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::Parent::get()
 {
 	FdoSchemaElement* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetParent())
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateSchemaElement(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateSchemaElement(IntPtr(result), true);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema* NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::get_FeatureSchema()
+NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema^ NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::FeatureSchema::get()
 {
 	FdoFeatureSchema* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetFeatureSchema())
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateFeatureSchema(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateFeatureSchema(IntPtr(result), true);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElementState NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::get_ElementState()
+NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElementState NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::ElementState::get()
 {
 	FdoSchemaElementState result;
 
@@ -66,57 +59,57 @@ NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElementState NAMESPACE_OSGEO_FDO_SCHEMA::Schem
 	return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElementState>(result);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary* NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::get_Attributes()
+NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary^ NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::Attributes::get()
 {
 	FdoSchemaAttributeDictionary* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetAttributes())
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateSchemaAttributeDictionary(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateSchemaAttributeDictionary(IntPtr(result), true);
 }
 
-System::String* NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::get_Name()
+System::String^ NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::Name::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetName())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::String* NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::get_QualifiedName()
+System::String^ NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::QualifiedName::get()
 {
 	FdoStringP result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetQualifiedName())
 
-	return (FdoString*)result;
+	return CHECK_STRING((FdoString*)result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::set_Name(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::Name::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetName(StringToUni(value)))
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::get_CanSetName()
+System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::CanSetName::get()
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = !!GetImpObj()->CanSetName())
 
 	return result;	
 }
 
-System::String* NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::get_Description()
+System::String^ NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::Description::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetDescription())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::set_Description(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement::Description::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetDescription(StringToUni(value)))
 }

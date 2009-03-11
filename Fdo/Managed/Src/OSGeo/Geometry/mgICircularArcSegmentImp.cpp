@@ -22,9 +22,9 @@
 #include "mgICircularArcSegmentImp.h"
 #include <FdoGeometry.h>
 
-FdoICircularArcSegment *NAMESPACE_OSGEO_GEOMETRY::ICircularArcSegmentImp::GetImpObj()
+FdoICircularArcSegment* NAMESPACE_OSGEO_GEOMETRY::ICircularArcSegmentImp::GetImpObj()
 {
-	return static_cast<FdoICircularArcSegment *>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoICircularArcSegment*>(UnmanagedObject.ToPointer());
 }
 
 NAMESPACE_OSGEO_GEOMETRY::ICircularArcSegmentImp::ICircularArcSegmentImp(System::IntPtr unmanaged, System::Boolean autoDelete)

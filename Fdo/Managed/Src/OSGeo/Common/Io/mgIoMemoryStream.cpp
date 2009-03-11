@@ -23,12 +23,12 @@
 
 NAMESPACE_OSGEO_COMMON_IO::IoMemoryStream::IoMemoryStream() : NAMESPACE_OSGEO_COMMON_IO::IoStream(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoIoMemoryStream::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoIoMemoryStream::Create()), true))
 }
 
 NAMESPACE_OSGEO_COMMON_IO::IoMemoryStream::IoMemoryStream(System::UInt32 bufferSize) : NAMESPACE_OSGEO_COMMON_IO::IoStream(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoIoMemoryStream::Create(bufferSize), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoIoMemoryStream::Create(bufferSize)), true))
 }
 
 NAMESPACE_OSGEO_COMMON_IO::IoMemoryStream::IoMemoryStream(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_COMMON_IO::IoStream(unmanaged, autoDelete)
@@ -38,5 +38,5 @@ NAMESPACE_OSGEO_COMMON_IO::IoMemoryStream::IoMemoryStream(System::IntPtr unmanag
 
 FdoIoMemoryStream* NAMESPACE_OSGEO_COMMON_IO::IoMemoryStream::GetImpObj()
 {
-	return static_cast<FdoIoMemoryStream*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoIoMemoryStream*>(UnmanagedObject.ToPointer());
 }

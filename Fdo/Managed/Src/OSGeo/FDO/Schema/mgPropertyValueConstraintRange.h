@@ -23,7 +23,7 @@
 class FdoPropertyValueConstraintRange;
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
-public __gc class DataValue;
+ref class DataValue;
 END_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
@@ -38,9 +38,9 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 /// then the maximum possible MaxValue is 9999.
 /// If the data property definition includes a non-null default value, then this constraint is applied to that value as well.
 /// If the data property definition allows nulls, a null value is considered as being valid regardless of the range constraint.
-public __gc class PropertyValueConstraintRange : public NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraint
+public ref class PropertyValueConstraintRange : public NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraint
 {
-public private:
+internal:
 	PropertyValueConstraintRange(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoPropertyValueConstraintRange* GetImpObj();
@@ -65,7 +65,7 @@ public:
     /// \return
     /// Returns an PropertyValueConstraintRange
     /// 
-	PropertyValueConstraintRange(NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* minValue, NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* maxValue );
+	PropertyValueConstraintRange(NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ minValue, NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ maxValue );
 	
     /// \brief
     /// Get the minimum allowed value. The type of this is the same as the type of the property. 
@@ -74,8 +74,6 @@ public:
     /// \return
     /// Returns the minimum value
     /// 
-	__property NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* get_MinValue();
-
     /// \brief
     /// Set the minimum allowed value.
     /// 
@@ -85,7 +83,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_MinValue(NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* value);
+    property NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ MinValue
+    {
+        NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ value);
+    }
 
     /// \brief
     /// Returns a bool to indicate if the minimum value is inclusive or exclusive. This is the difference between ?=?and ?? 
@@ -94,8 +96,6 @@ public:
     /// \return
     /// Returns true if the value is inclusive. false otherwise
     /// 
-	__property System::Boolean get_MinInclusive();
-
     /// \brief
     /// Set the minimum value to inclusive or exclusive. This is the difference between ?=? and ?? 
     /// 
@@ -105,7 +105,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_MinInclusive(System::Boolean value);
+    property System::Boolean MinInclusive
+    {
+        System::Boolean get();
+        System::Void set(System::Boolean value);
+    }
 
     /// \brief
     /// Get the maximum allowed value. The type of this is the same as the type of the property. 
@@ -114,8 +118,6 @@ public:
     /// \return
     /// Returns the maximum value
     /// 
-	__property NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* get_MaxValue();
-
     /// \brief
     /// Set the maximum allowed value.
     /// 
@@ -125,7 +127,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_MaxValue(NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* value);
+    property NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ MaxValue
+    {
+        NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ value);
+    }
 
     /// \brief
     /// Returns a bool to indicate if the maximum value is inclusive or exclusive. This is the difference between ?=?and ?? 
@@ -134,8 +140,6 @@ public:
     /// \return
     /// Returns true if the value is inclusive. false otherwise
     /// 
-	__property System::Boolean get_MaxInclusive();
-
     /// \brief
     /// Returns a bool to indicate if the maximum value is inclusive or exclusive. This is the difference between ?=?and ?? 
     /// This is a boolean type where true means inclusive.
@@ -143,8 +147,11 @@ public:
     /// \return
     /// Returns true if the value is inclusive. false otherwise
     /// 
-	__property System::Void set_MaxInclusive(System::Boolean value);
-
+    property System::Boolean MaxInclusive
+    {
+        System::Boolean get();
+        System::Void set(System::Boolean value);
+    }
 };
 
 END_NAMESPACE_OSGEO_FDO_SCHEMA

@@ -19,7 +19,7 @@
 #pragma once
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
-public __gc __interface IConnection;
+interface class IConnection;
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS
 
 BEGIN_NAMESPACE_OSGEO_FDO
@@ -38,9 +38,9 @@ BEGIN_NAMESPACE_OSGEO_FDO
 /// windows libraries supporting FDO providers will be expected to support the following well-known 
 /// entry point function, which will create and return an unitialized connection object:
 ///
-///        FdoIConnection * CreateConnection();
+///        FdoIConnection ^ CreateConnection();
 ///
-public __gc __interface IConnectionManager : public System::IDisposable
+public interface class IConnectionManager : public System::IDisposable
 {
 public:
     /// \brief
@@ -53,7 +53,7 @@ public:
     /// \return
     /// Returns an instance of an IConnection object. Throws an instance of Exception if an error occurs.
     /// 
-	NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* CreateConnection(String* providerName);
+    virtual NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection^ CreateConnection(System::String^ providerName);
 
     /// \brief
     /// Frees a connection library reference given the provider name.
@@ -65,7 +65,7 @@ public:
     /// \return
     /// Returns nothing. Throws an instance of Exception if an error occurs.
     /// 
-	System::Void FreeLibrary(String* providerName);
+	virtual System::Void FreeLibrary(System::String^ providerName);
 };
 
 END_NAMESPACE_OSGEO_FDO

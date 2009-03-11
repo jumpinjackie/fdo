@@ -29,7 +29,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 /// \brief
 /// ValueExpression is an abstract base class that derives from Expression to
 /// form the root for all value expression types.
-public __gc class ValueExpression : public NAMESPACE_OSGEO_FDO_EXPRESSION::Expression
+public ref class ValueExpression : public NAMESPACE_OSGEO_FDO_EXPRESSION::Expression
 {
 public:
     /// \brief
@@ -44,7 +44,7 @@ public:
     /// 
 	ValueExpression(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
+internal:
 	inline FdoValueExpression* GetImpObj();
 };
 END_NAMESPACE_OSGEO_FDO_EXPRESSION

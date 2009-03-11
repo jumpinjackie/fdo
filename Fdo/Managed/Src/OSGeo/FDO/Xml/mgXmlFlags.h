@@ -21,17 +21,17 @@
 #include <Fdo/Xml/Flags.h>
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
-public __gc class PhysicalSchemaMappingCollection;
+ref class PhysicalSchemaMappingCollection;
 END_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 
 BEGIN_NAMESPACE_OSGEO_FDO_XML
-public __gc class PhysicalElementMapping;
+ref class PhysicalElementMapping;
 
 /// \ingroup (OSGeoFDOXml)
 /// \brief
 /// XmlFlags defines various options for serializing and deserializing
 /// FDO element to and from XML Documents.
-public __gc class XmlFlags : public NAMESPACE_OSGEO_RUNTIME::Disposable
+public ref class XmlFlags : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
     /// \brief
@@ -70,7 +70,7 @@ public:
     /// external sources into FDO when it doesn’t matter how much the schemas are 
     /// altered during the read.
     /// 
-	__value enum ErrorLevel 
+	enum class ErrorLevel 
 	{
 		ErrorLevel_High = FdoXmlFlags::ErrorLevel_High,
 		ErrorLevel_Normal = FdoXmlFlags::ErrorLevel_Normal,
@@ -92,7 +92,7 @@ public:
     /// format for Feature Schemas is OGC GML, so a targetNamespace for the 
     /// xs:schema element is required. This namespace will be http://[url]/[schema_name].
     /// 
-	XmlFlags(System::String* location);
+	XmlFlags(System::String^ location);
 
     /// \brief
     /// Constructs an XmlFlags object.
@@ -105,7 +105,7 @@ public:
     /// \param errorLevel 
     /// Input The error level for reading feature schemas.
     /// 
-	XmlFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel);
+	XmlFlags(System::String^ location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel);
 
     /// \brief
     /// Constructs an XmlFlags object.
@@ -121,7 +121,7 @@ public:
     /// Input true: apply name adjustment to all elements. 
     /// false: apply name adjustment only to elements with fdo:nameAdjust="true"
     /// 
-	XmlFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust);
+	XmlFlags(System::String^ location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust);
 
     /// \brief
     /// Sets the target namespace prefix, see XmlFlags::Create().
@@ -129,7 +129,6 @@ public:
     /// \param location 
     /// Input the target namespace prefix.
     /// 
-    __property System::Void set_Url(System::String* location);
 
     /// \brief
     /// Gets the target namespace prefix, see XmlFlags::Create().
@@ -137,7 +136,11 @@ public:
     /// \return
     /// Returns the target namespace prefix.
     /// 
-	__property System::String* get_Url();
+    property System::String^ Url
+    {
+        System::String^ get();
+        System::Void set(System::String^ location);
+    }
 
     /// \brief
     /// Sets the error level, see XmlFlags::Create().
@@ -145,15 +148,17 @@ public:
     /// \param value 
     /// Input the error level.
     /// 
-	__property System::Void set_Errorlevel(NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel value);
-
     /// \brief
     /// Gets the current error level, see XmlFlags::Create().
     /// 
     /// \return
     /// Returns the error level.
     /// 
-	__property NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel get_Errorlevel();
+    property NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel Errorlevel
+    {
+        NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel get();
+        System::Void set(NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel value);
+    }
 
     /// \brief
     /// Sets the name adjustment flag, see XmlFlags::Create().
@@ -161,15 +166,17 @@ public:
     /// \param nameAdjust 
     /// Input the name adjustment flag.
     /// 
-  	__property System::Void set_NameAdjust(System::Boolean nameAdjust);
-
     /// \brief
     /// Gets the name adjustment flag, see XmlFlags::Create().
     /// 
     /// \return
     /// Returns the name adjustment flag.
     /// 
-	__property System::Boolean get_NameAdjust();
+    property System::Boolean NameAdjust
+    {
+        System::Boolean get();
+        System::Void set(System::Boolean nameAdjust);
+    }
 
     /// \brief
     /// Sets the Schema Name as Prefix flag. This flag controls how
@@ -189,15 +196,17 @@ public:
     /// can occur if a GML Schema uses different prefixes for its 
     /// targetNamespace in different parts of the schema.
     /// 
-  	__property System::Void set_SchemaNameAsPrefix(System::Boolean schemaNameAsPrefix);
-
     /// \brief
     /// Gets the Schema Name as Prefix flag.
     /// 
     /// \return
     /// Returns the Schema Name as Prefix flag.
     /// 
-	__property System::Boolean get_SchemaNameAsPrefix();
+    property System::Boolean SchemaNameAsPrefix
+    {
+        System::Boolean get();
+        System::Void set(System::Boolean schemaNameAsPrefix);
+    }
 
     /// \brief
     /// Sets the Use GML ID flag.
@@ -206,15 +215,17 @@ public:
     /// Input when true, the feature id ( fid in GML 2, gml:id in GML 3)
     /// becomes the identity property of all feature classes.
     /// 
-  	__property System::Void set_UseGmlId(System::Boolean id);
-
     /// \brief
     /// Gets the Use GML ID flag.
     /// 
     /// \return
     /// Returns the Use GML ID flag.
     /// 
-	__property System::Boolean get_UseGmlId();
+    property System::Boolean UseGmlId
+    {
+        System::Boolean get();
+        System::Void set(System::Boolean id);
+    }
 
     /// \brief
     /// Sets the Schema Mapping Overrides for translating schemas 
@@ -231,28 +242,25 @@ public:
     /// can override the default correspondences between feature class names 
     /// and their GML element names.
     /// 
-  	__property System::Void set_SchemaMappings(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMappingCollection* mappings);
-
     /// \brief
     /// Gets the current Schema Mapping Overrides.
     /// 
     /// \return
-    /// Returns XmlSchemaMappingCollection*.
+    /// Returns XmlSchemaMappingCollection^.
     /// 
-    __property NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMappingCollection* get_SchemaMappings();
+    property NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMappingCollection^ SchemaMappings
+    {
+        NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMappingCollection^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMappingCollection^ value);
+    }
 
-public private:
+internal:
 	XmlFlags(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)
 	{
 
 	}
 
 	inline FdoXmlFlags* GetImpObj();
-
-/// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_XML

@@ -33,7 +33,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 /// GetLongTransactionsInSet command. The initial position of the
 /// ILongTransactionSetReader is prior to the first item. Thus, you must
 /// call ReadNext to begin accessing any data.
-private __gc class ILongTransactionSetReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionSetReader
+private ref class ILongTransactionSetReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionSetReader
 {
 public:
     /// \brief
@@ -43,7 +43,7 @@ public:
     /// \return
     /// Returns the long transaction name
     /// 
-	System::String* GetLongTransactionName();
+	virtual System::String^ GetLongTransactionName();
 
     /// \brief
     /// Gets the owner of the long transaction in the selection set currently
@@ -52,7 +52,7 @@ public:
     /// \return
     /// Returns the owner of the long transaction
     /// 
-	System::String* GetOwner();
+	virtual System::String^ GetOwner();
 
     /// \brief
     /// Advances the reader to the next item. The default position of the
@@ -62,7 +62,7 @@ public:
     /// \return
     /// Returns true if there is a next item.
     /// 
-	System::Boolean ReadNext();
+	virtual System::Boolean ReadNext();
 
     /// \brief
     /// Closes the ILongTransactionSetReader object, freeing any resources
@@ -71,14 +71,9 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Close();
+	virtual System::Void Close();
 
-/// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-/// \endcond
-
-public private:
+internal:
 	ILongTransactionSetReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)
 	{
 

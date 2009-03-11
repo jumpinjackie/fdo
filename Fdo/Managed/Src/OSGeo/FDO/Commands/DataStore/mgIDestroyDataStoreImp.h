@@ -24,7 +24,7 @@
 class FdoIDestroyDataStore;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE
-public __gc __interface IDataStorePropertyDictionary;
+interface class IDataStorePropertyDictionary;
 
 /// \brief
 /// \ingroup (OSGeoFDOCommandsDataStore)
@@ -32,7 +32,7 @@ public __gc __interface IDataStorePropertyDictionary;
 /// The IDestroyDataStore class defines the destroy datastore command,
 /// which can be used to create new provider specific datastores. The input is provided
 /// through a dictionary of name value pairs that is provider dependant. 
-private __gc class IDestroyDataStoreImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+private ref class IDestroyDataStoreImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
                                           public NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDestroyDataStore
 {
 public:
@@ -44,7 +44,10 @@ public:
     /// \return
     /// Returns the property dictionary
     /// 
-    __property NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionary* get_DataStoreProperties();
+    property NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionary^ DataStoreProperties
+    {
+        virtual NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionary^ get();
+    }
 
     /// \brief
     /// Executes the IDestroyDataStore command.
@@ -52,9 +55,9 @@ public:
     /// \return
     /// Returns nothing
     /// 
-    System::Void Execute();
+    virtual System::Void Execute();
 
-public private:
+internal:
 	IDestroyDataStoreImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)
 	{
 

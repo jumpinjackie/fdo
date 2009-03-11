@@ -27,12 +27,12 @@
 
 NAMESPACE_OSGEO_FDO_SCHEMA::NetworkClass::NetworkClass() : NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoNetworkClass::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoNetworkClass::Create()), true))
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::NetworkClass::NetworkClass(System::String* name, System::String* description) : NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_SCHEMA::NetworkClass::NetworkClass(System::String^ name, System::String^ description) : NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoNetworkClass::Create(StringToUni(name), StringToUni(description)), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoNetworkClass::Create(StringToUni(name), StringToUni(description))), true))
 }
 
 FdoNetworkClass* NAMESPACE_OSGEO_FDO_SCHEMA::NetworkClass::GetImpObj()
@@ -40,7 +40,7 @@ FdoNetworkClass* NAMESPACE_OSGEO_FDO_SCHEMA::NetworkClass::GetImpObj()
 	return static_cast<FdoNetworkClass*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::ClassType NAMESPACE_OSGEO_FDO_SCHEMA::NetworkClass::get_ClassType()
+NAMESPACE_OSGEO_FDO_SCHEMA::ClassType NAMESPACE_OSGEO_FDO_SCHEMA::NetworkClass::ClassType::get()
 {
 	FdoClassType result;
 
@@ -49,17 +49,17 @@ NAMESPACE_OSGEO_FDO_SCHEMA::ClassType NAMESPACE_OSGEO_FDO_SCHEMA::NetworkClass::
 	return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::ClassType>(result);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::NetworkLayerClass* NAMESPACE_OSGEO_FDO_SCHEMA::NetworkClass::get_LayerClass()
+NAMESPACE_OSGEO_FDO_SCHEMA::NetworkLayerClass^ NAMESPACE_OSGEO_FDO_SCHEMA::NetworkClass::LayerClass::get()
 {
 	FdoNetworkLayerClass* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetLayerClass())
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateNetworkLayerClass(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateNetworkLayerClass(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::NetworkClass::set_LayerClass(NAMESPACE_OSGEO_FDO_SCHEMA::NetworkLayerClass* value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::NetworkClass::LayerClass::set(NAMESPACE_OSGEO_FDO_SCHEMA::NetworkLayerClass^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetLayerClass((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->SetLayerClass((value == nullptr ? nullptr : value->GetImpObj())))
 }
 

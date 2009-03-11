@@ -48,9 +48,9 @@
 
 #include "mgObjectFactory.h"
 
-FdoGeometryFactoryAbstract *NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::GetImpObj()
+FdoGeometryFactoryAbstract* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::GetImpObj()
 {
-	return static_cast<FdoGeometryFactoryAbstract *>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoGeometryFactoryAbstract*>(UnmanagedObject.ToPointer());
 }
 
 NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::GeometryFactoryAbstract(System::IntPtr unmanaged, System::Boolean autoDelete)
@@ -58,80 +58,74 @@ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::GeometryFactoryAbstract(Syste
 {
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::ReleaseUnmanagedObject()
+NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreatePositionXY(System::Double coordinateX, System::Double coordinateY)
 {
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release());
-}
-
-NAMESPACE_OSGEO_GEOMETRY::IDirectPosition* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreatePositionXY(System::Double coordinateX, System::Double coordinateY)
-{
-	FdoIDirectPosition *ret;
+	FdoIDirectPosition* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreatePositionXY(coordinateX, coordinateY))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIDirectPosition(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIDirectPosition(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IDirectPosition* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreatePositionXYZ(System::Double coordinateX, System::Double coordinateY, System::Double coordinateZ)
+NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreatePositionXYZ(System::Double coordinateX, System::Double coordinateY, System::Double coordinateZ)
 {
-	FdoIDirectPosition *ret;
+	FdoIDirectPosition* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreatePositionXYZ(coordinateX, coordinateY, coordinateZ))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIDirectPosition(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIDirectPosition(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IDirectPosition* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreatePositionXYM(System::Double coordinateX, System::Double coordinateY, System::Double coordinateM)
+NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreatePositionXYM(System::Double coordinateX, System::Double coordinateY, System::Double coordinateM)
 {
-	FdoIDirectPosition *ret;
+	FdoIDirectPosition* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreatePositionXYM(coordinateX, coordinateY, coordinateM))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIDirectPosition(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIDirectPosition(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IDirectPosition*  NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreatePositionXYZM(
+NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreatePositionXYZM(
 	System::Double coordinateX, 
 	System::Double coordinateY, 
 	System::Double coordinateZ, 
 	System::Double coordinateM)
 {
-	FdoIDirectPosition *ret;
+	FdoIDirectPosition* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreatePositionXYZM(coordinateX, coordinateY, coordinateZ, coordinateM))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIDirectPosition(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIDirectPosition(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IDirectPosition* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreatePosition(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition * position)
+NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreatePosition(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ position)
 {
-	FdoIDirectPosition *ret;
-	EXCEPTION_HANDLER(ret = GetImpObj()->CreatePosition(static_cast<IDirectPositionImp *>(position)->GetImpObj()))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIDirectPosition(ret, true);
+	FdoIDirectPosition* ret;
+	EXCEPTION_HANDLER(ret = GetImpObj()->CreatePosition(static_cast<IDirectPositionImp^>(position)->GetImpObj()))
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIDirectPosition(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IEnvelope* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateEnvelope(
-	NAMESPACE_OSGEO_GEOMETRY::IDirectPosition * lowerLeft, 
-	NAMESPACE_OSGEO_GEOMETRY::IDirectPosition * upperRight)
+NAMESPACE_OSGEO_GEOMETRY::IEnvelope^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateEnvelope(
+	NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ lowerLeft, 
+	NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ upperRight)
 {
-	FdoIEnvelope *ret;
-	EXCEPTION_HANDLER(ret = GetImpObj()->CreateEnvelope(static_cast<IDirectPositionImp *>(lowerLeft)->GetImpObj(), static_cast<IDirectPositionImp *>(upperRight)->GetImpObj()))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIEnvelope(ret, true);
+	FdoIEnvelope* ret;
+	EXCEPTION_HANDLER(ret = GetImpObj()->CreateEnvelope(static_cast<IDirectPositionImp^>(lowerLeft)->GetImpObj(), static_cast<IDirectPositionImp^>(upperRight)->GetImpObj()))
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIEnvelope(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IEnvelope* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateEnvelope(System::Int32 dimensionType, System::Double ordinates __gc [])
+NAMESPACE_OSGEO_GEOMETRY::IEnvelope^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateEnvelope(System::Int32 dimensionType, array<System::Double>^ ordinates)
 {
-	FdoDouble __pin *tpordinates = &ordinates[0];
-	FdoIEnvelope *ret;
+	pin_ptr<FdoDouble> tpordinates = &ordinates[0];
+	FdoIEnvelope* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreateEnvelope(dimensionType, tpordinates))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIEnvelope(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIEnvelope(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IEnvelope* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateEnvelopeXY(
+NAMESPACE_OSGEO_GEOMETRY::IEnvelope^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateEnvelopeXY(
     System::Double lowerLeftX,
     System::Double lowerLeftY,
     System::Double upperRightX, 
     System::Double upperRightY)
 {
-	FdoIEnvelope *ret;
+	FdoIEnvelope* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreateEnvelopeXY(lowerLeftX, lowerLeftY, upperRightX, upperRightY))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIEnvelope(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIEnvelope(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IEnvelope* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateEnvelopeXYZ(
+NAMESPACE_OSGEO_GEOMETRY::IEnvelope^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateEnvelopeXYZ(
     System::Double lowerLeftX,
     System::Double lowerLeftY,
     System::Double lowerLeftZ,
@@ -139,212 +133,212 @@ NAMESPACE_OSGEO_GEOMETRY::IEnvelope* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAb
     System::Double upperRightY,
     System::Double upperRightZ)
 {
-	FdoIEnvelope *ret;
+	FdoIEnvelope* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreateEnvelopeXYZ(lowerLeftX, lowerLeftY, lowerLeftZ, upperRightX, upperRightY, upperRightZ))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIEnvelope(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIEnvelope(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IEnvelope* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateEnvelope(NAMESPACE_OSGEO_GEOMETRY::IEnvelope * envelope)
+NAMESPACE_OSGEO_GEOMETRY::IEnvelope^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateEnvelope(NAMESPACE_OSGEO_GEOMETRY::IEnvelope^ envelope)
 {
-	FdoIEnvelope *ret;
-	EXCEPTION_HANDLER(ret = GetImpObj()->CreateEnvelope(static_cast<IEnvelopeImp *>(envelope)->GetImpObj()))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIEnvelope(ret, true);
+	FdoIEnvelope* ret;
+	EXCEPTION_HANDLER(ret = GetImpObj()->CreateEnvelope(static_cast<IEnvelopeImp^>(envelope)->GetImpObj()))
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIEnvelope(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::ILineString* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateLineString(NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection* positions)
+NAMESPACE_OSGEO_GEOMETRY::ILineString^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateLineString(NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection^ positions)
 {
-	FdoILineString *ret;
+	FdoILineString* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreateLineString(positions->GetImpObj()))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateILineString(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateILineString(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::ILineString* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateLineString(System::Int32 dimensionType, System::Int32 ordinateNumber, System::Double ordinates __gc [])
+NAMESPACE_OSGEO_GEOMETRY::ILineString^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateLineString(System::Int32 dimensionType, System::Int32 ordinateNumber, array<System::Double>^ ordinates)
 {
-	FdoDouble __pin *tpordinates = &ordinates[0];
-	FdoILineString *ret;
+	pin_ptr<FdoDouble> tpordinates = &ordinates[0];
+	FdoILineString* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreateLineString(dimensionType, ordinateNumber, tpordinates))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateILineString(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateILineString(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IGeometry * NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateGeometry(NAMESPACE_OSGEO_GEOMETRY::IGeometry * geometry)
+NAMESPACE_OSGEO_GEOMETRY::IGeometry^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateGeometry(NAMESPACE_OSGEO_GEOMETRY::IGeometry^ geometry)
 {
-	FdoIGeometry *ret;
-	EXCEPTION_HANDLER(ret = GetImpObj()->CreateGeometry(static_cast<IGeometryImp *>(geometry)->GetImpObj()))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIGeometry(ret, true);
+	FdoIGeometry* ret;
+	EXCEPTION_HANDLER(ret = GetImpObj()->CreateGeometry(static_cast<IGeometryImp^>(geometry)->GetImpObj()))
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIGeometry(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IGeometry * NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateGeometry(System::String* text)
+NAMESPACE_OSGEO_GEOMETRY::IGeometry^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateGeometry(System::String^ text)
 {
-	FdoIGeometry *ret;
+	FdoIGeometry* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreateGeometry(StringToUni(text)))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIGeometry(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIGeometry(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IGeometry * NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateGeometry(NAMESPACE_OSGEO_GEOMETRY::IEnvelope * envelope)
+NAMESPACE_OSGEO_GEOMETRY::IGeometry^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateGeometry(NAMESPACE_OSGEO_GEOMETRY::IEnvelope^ envelope)
 {
-	FdoIGeometry *ret;
-	EXCEPTION_HANDLER(ret = GetImpObj()->CreateGeometry(static_cast<IEnvelopeImp *>(envelope)->GetImpObj()))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIGeometry(ret, true);
+	FdoIGeometry* ret;
+	EXCEPTION_HANDLER(ret = GetImpObj()->CreateGeometry(static_cast<IEnvelopeImp^>(envelope)->GetImpObj()))
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIGeometry(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IPoint* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreatePoint(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition* position)
+NAMESPACE_OSGEO_GEOMETRY::IPoint^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreatePoint(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ position)
 {
-	FdoIPoint *ret;
-	EXCEPTION_HANDLER(ret = GetImpObj()->CreatePoint(static_cast<IDirectPositionImp *>(position)->GetImpObj()))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIPoint(ret, true);
+	FdoIPoint* ret;
+	EXCEPTION_HANDLER(ret = GetImpObj()->CreatePoint(static_cast<IDirectPositionImp^>(position)->GetImpObj()))
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIPoint(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IPoint* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreatePoint(
+NAMESPACE_OSGEO_GEOMETRY::IPoint^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreatePoint(
 	System::Int32 dimensionality, 
-	System::Double ordinates __gc[])
+	array<System::Double>^ ordinates)
 {
-	FdoDouble __pin *tpordinates = &ordinates[0];
-	FdoIPoint *ret;
+	pin_ptr<FdoDouble> tpordinates = &ordinates[0];
+	FdoIPoint* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreatePoint(dimensionality, tpordinates))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIPoint(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIPoint(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::ILinearRing* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateLinearRing(
-	NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection* positions)
+NAMESPACE_OSGEO_GEOMETRY::ILinearRing^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateLinearRing(
+	NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection^ positions)
 {
-	FdoILinearRing *ret;
+	FdoILinearRing* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreateLinearRing(positions->GetImpObj()))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateILinearRing(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateILinearRing(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::ILinearRing* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateLinearRing(
+NAMESPACE_OSGEO_GEOMETRY::ILinearRing^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateLinearRing(
     System::Int32 dimensionality, 
     System::Int32 ordinateNumber,
-    System::Double ordinates __gc [])
+    array<System::Double>^ ordinates)
 {
-	FdoDouble __pin *tpordinates = &ordinates[0];
-	FdoILinearRing *ret;
+	pin_ptr<FdoDouble> tpordinates = &ordinates[0];
+	FdoILinearRing* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreateLinearRing(dimensionality, ordinateNumber, tpordinates))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateILinearRing(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateILinearRing(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::ILineStringSegment* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateLineStringSegment(
-	NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection* positions)
+NAMESPACE_OSGEO_GEOMETRY::ILineStringSegment^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateLineStringSegment(
+	NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection^ positions)
 {
-	FdoILineStringSegment *ret;
+	FdoILineStringSegment* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreateLineStringSegment(positions->GetImpObj()))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateILineStringSegment(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateILineStringSegment(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::ILineStringSegment* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateLineStringSegment(
+NAMESPACE_OSGEO_GEOMETRY::ILineStringSegment^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateLineStringSegment(
     System::Int32 dimType,
     System::Int32 ordinateNumber,
-    System::Double ordinates __gc [])
+    array<System::Double>^ ordinates)
 {
-	FdoDouble __pin *tpordinates = &ordinates[0];
-	FdoILineStringSegment *ret;
+	pin_ptr<FdoDouble> tpordinates = &ordinates[0];
+	FdoILineStringSegment* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreateLineStringSegment(dimType, ordinateNumber, tpordinates))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateILineStringSegment(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateILineStringSegment(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IPolygon* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreatePolygon(
-	NAMESPACE_OSGEO_GEOMETRY::ILinearRing* exteriorRing, 
-	NAMESPACE_OSGEO_GEOMETRY::LinearRingCollection* interiorRings)
+NAMESPACE_OSGEO_GEOMETRY::IPolygon^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreatePolygon(
+	NAMESPACE_OSGEO_GEOMETRY::ILinearRing^ exteriorRing, 
+	NAMESPACE_OSGEO_GEOMETRY::LinearRingCollection^ interiorRings)
 {
-	FdoIPolygon *ret;
+	FdoIPolygon* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreatePolygon(
-		static_cast<ILinearRingImp *>(exteriorRing)->GetImpObj(), 
+		static_cast<ILinearRingImp^>(exteriorRing)->GetImpObj(), 
 		interiorRings->GetImpObj()))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIPolygon(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIPolygon(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IMultiPoint* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateMultiPoint(NAMESPACE_OSGEO_GEOMETRY::PointCollection* points)
+NAMESPACE_OSGEO_GEOMETRY::IMultiPoint^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateMultiPoint(NAMESPACE_OSGEO_GEOMETRY::PointCollection^ points)
 {
-	FdoIMultiPoint *ret;
+	FdoIMultiPoint* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreateMultiPoint(points->GetImpObj()))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIMultiPoint(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIMultiPoint(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IMultiPoint* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateMultiPoint(
+NAMESPACE_OSGEO_GEOMETRY::IMultiPoint^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateMultiPoint(
     System::Int32 dimensionality,
     System::Int32 ordinateNumber, 
-    System::Double ordinates __gc[])
+    array<System::Double>^ ordinates)
 {
-	FdoDouble __pin *tpordinates = &ordinates[0];
-	FdoIMultiPoint *ret;
+	pin_ptr<FdoDouble> tpordinates = &ordinates[0];
+	FdoIMultiPoint* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreateMultiPoint(dimensionality, ordinateNumber, tpordinates))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIMultiPoint(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIMultiPoint(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IMultiLineString* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateMultiLineString(NAMESPACE_OSGEO_GEOMETRY::LineStringCollection* lineStrings)
+NAMESPACE_OSGEO_GEOMETRY::IMultiLineString^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateMultiLineString(NAMESPACE_OSGEO_GEOMETRY::LineStringCollection^ lineStrings)
 {
-	FdoIMultiLineString *ret;
+	FdoIMultiLineString* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreateMultiLineString(lineStrings->GetImpObj()))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIMultiLineString(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIMultiLineString(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IMultiPolygon* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateMultiPolygon(NAMESPACE_OSGEO_GEOMETRY::PolygonCollection* polygons)
+NAMESPACE_OSGEO_GEOMETRY::IMultiPolygon^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateMultiPolygon(NAMESPACE_OSGEO_GEOMETRY::PolygonCollection^ polygons)
 {
-	FdoIMultiPolygon *ret;
+	FdoIMultiPolygon* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreateMultiPolygon(polygons->GetImpObj()))
-    return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIMultiPolygon(ret, true);
+    return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIMultiPolygon(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::ICircularArcSegment* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateCircularArcSegment(
-    NAMESPACE_OSGEO_GEOMETRY::IDirectPosition* startPosition,
-    NAMESPACE_OSGEO_GEOMETRY::IDirectPosition* midPosition,
-    NAMESPACE_OSGEO_GEOMETRY::IDirectPosition* endPosition)
+NAMESPACE_OSGEO_GEOMETRY::ICircularArcSegment^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateCircularArcSegment(
+    NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ startPosition,
+    NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ midPosition,
+    NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ endPosition)
 {
-	FdoICircularArcSegment *ret;
+	FdoICircularArcSegment* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreateCircularArcSegment(
-		static_cast<IDirectPositionImp *>(startPosition)->GetImpObj(), 
-		static_cast<IDirectPositionImp *>(midPosition)->GetImpObj(), 
-		static_cast<IDirectPositionImp *>(endPosition)->GetImpObj()))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateICircularArcSegment(ret, true);
+		static_cast<IDirectPositionImp^>(startPosition)->GetImpObj(), 
+		static_cast<IDirectPositionImp^>(midPosition)->GetImpObj(), 
+		static_cast<IDirectPositionImp^>(endPosition)->GetImpObj()))
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateICircularArcSegment(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::ICurveString* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateCurveString(
-	NAMESPACE_OSGEO_GEOMETRY::CurveSegmentCollection* curveSegments)
+NAMESPACE_OSGEO_GEOMETRY::ICurveString^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateCurveString(
+	NAMESPACE_OSGEO_GEOMETRY::CurveSegmentCollection^ curveSegments)
 {
-	FdoICurveString *ret;
+	FdoICurveString* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreateCurveString(curveSegments->GetImpObj()))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateICurveString(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateICurveString(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IMultiCurveString* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateMultiCurveString(
-	NAMESPACE_OSGEO_GEOMETRY::CurveStringCollection* curveStrings)
+NAMESPACE_OSGEO_GEOMETRY::IMultiCurveString^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateMultiCurveString(
+	NAMESPACE_OSGEO_GEOMETRY::CurveStringCollection^ curveStrings)
 {
-	FdoIMultiCurveString *ret;
+	FdoIMultiCurveString* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreateMultiCurveString(curveStrings->GetImpObj()))
-    return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIMultiCurveString(ret, true);
+    return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIMultiCurveString(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IRing* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateRing(NAMESPACE_OSGEO_GEOMETRY::CurveSegmentCollection* curveSegments)
+NAMESPACE_OSGEO_GEOMETRY::IRing^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateRing(NAMESPACE_OSGEO_GEOMETRY::CurveSegmentCollection^ curveSegments)
 {
-	FdoIRing *ret;
+	FdoIRing* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreateRing(curveSegments->GetImpObj()))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIRing(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIRing(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::ICurvePolygon* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateCurvePolygon(
-	NAMESPACE_OSGEO_GEOMETRY::IRing* exteriorRing,
-	NAMESPACE_OSGEO_GEOMETRY::RingCollection* interiorRings)
+NAMESPACE_OSGEO_GEOMETRY::ICurvePolygon^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateCurvePolygon(
+	NAMESPACE_OSGEO_GEOMETRY::IRing^ exteriorRing,
+	NAMESPACE_OSGEO_GEOMETRY::RingCollection^ interiorRings)
 {
-	FdoICurvePolygon *ret;
+	FdoICurvePolygon* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreateCurvePolygon(
-		static_cast<IRingImp *>(exteriorRing)->GetImpObj(), 
+		static_cast<IRingImp^>(exteriorRing)->GetImpObj(), 
 		interiorRings->GetImpObj()))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateICurvePolygon(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateICurvePolygon(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IMultiCurvePolygon* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateMultiCurvePolygon(
-	NAMESPACE_OSGEO_GEOMETRY::CurvePolygonCollection* curvePolygons)
+NAMESPACE_OSGEO_GEOMETRY::IMultiCurvePolygon^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateMultiCurvePolygon(
+	NAMESPACE_OSGEO_GEOMETRY::CurvePolygonCollection^ curvePolygons)
 {
-	FdoIMultiCurvePolygon *ret;
+	FdoIMultiCurvePolygon* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreateMultiCurvePolygon(curvePolygons->GetImpObj()))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIMultiCurvePolygon(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIMultiCurvePolygon(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IMultiGeometry* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateMultiGeometry(
-	NAMESPACE_OSGEO_GEOMETRY::GeometryCollection* geometries)
+NAMESPACE_OSGEO_GEOMETRY::IMultiGeometry^ NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::CreateMultiGeometry(
+	NAMESPACE_OSGEO_GEOMETRY::GeometryCollection^ geometries)
 {
-	FdoIMultiGeometry *ret;
+	FdoIMultiGeometry* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->CreateMultiGeometry(geometries->GetImpObj()))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIMultiGeometry(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIMultiGeometry(IntPtr(ret), true);
 }
 

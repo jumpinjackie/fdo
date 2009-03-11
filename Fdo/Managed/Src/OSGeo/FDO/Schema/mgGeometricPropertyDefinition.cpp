@@ -26,17 +26,17 @@
 
 NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::GeometricPropertyDefinition() : NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoGeometricPropertyDefinition::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoGeometricPropertyDefinition::Create()), true))
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::GeometricPropertyDefinition(System::String* name, System::String* description) : NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::GeometricPropertyDefinition(System::String^ name, System::String^ description) : NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoGeometricPropertyDefinition::Create(StringToUni(name), StringToUni(description)), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoGeometricPropertyDefinition::Create(StringToUni(name), StringToUni(description))), true))
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::GeometricPropertyDefinition(System::String* name, System::String* description, System::Boolean system) : NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::GeometricPropertyDefinition(System::String^ name, System::String^ description, System::Boolean system) : NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoGeometricPropertyDefinition::Create(StringToUni(name), StringToUni(description), system), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoGeometricPropertyDefinition::Create(StringToUni(name), StringToUni(description), system)), true))
 }
 
 FdoGeometricPropertyDefinition* NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::GetImpObj()
@@ -44,7 +44,7 @@ FdoGeometricPropertyDefinition* NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDef
 	return static_cast<FdoGeometricPropertyDefinition*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::get_PropertyType()
+NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::PropertyType::get()
 {
 	FdoPropertyType result;
 
@@ -53,92 +53,92 @@ NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPr
 	return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType>(result);
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::get_GeometryTypes()
+System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::GeometryTypes::get()
 {
-	FdoInt32 result;
+	System::Int32 result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetGeometryTypes())
 
 	return result;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::set_GeometryTypes(System::Int32 value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::GeometryTypes::set(System::Int32 value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetGeometryTypes(value))
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::get_ReadOnly()
+System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::ReadOnly::get()
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = !!GetImpObj()->GetReadOnly())
 
 	return result;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::set_ReadOnly(System::Boolean value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::ReadOnly::set(System::Boolean value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetReadOnly(value))
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::get_HasElevation()
+System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::HasElevation::get()
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = !!GetImpObj()->GetHasElevation())
 
 	return result;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::set_HasElevation(System::Boolean value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::HasElevation::set(System::Boolean value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetHasElevation(value))
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::get_HasMeasure()
+System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::HasMeasure::get()
 {	
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = !!GetImpObj()->GetHasMeasure())
 
 	return result;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::set_HasMeasure(System::Boolean value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::HasMeasure::set(System::Boolean value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetHasMeasure(value))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::set_SpatialContextAssociation(System::String *value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::SpatialContextAssociation::set(System::String ^value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetSpatialContextAssociation(StringToUni(value)))
 }
 
-System::String * NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::get_SpatialContextAssociation()
+System::String ^ NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::SpatialContextAssociation::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetSpatialContextAssociation())
 
-	return result;
+	return CHECK_STRING(result);
 }
-NAMESPACE_OSGEO_COMMON::GeometryType NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::get_SpecificGeometryTypes(System::Int32 &length)[]
+
+array<NAMESPACE_OSGEO_COMMON::GeometryType>^ NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::SpecificGeometryTypes::get(System::Int32% length)
 {
 	FdoGeometryType* unobj;
 	FdoInt32 unlength;
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetSpecificGeometryTypes(unlength));
-    NAMESPACE_OSGEO_COMMON::GeometryType mtype [] = new NAMESPACE_OSGEO_COMMON::GeometryType[unlength];
+    array<NAMESPACE_OSGEO_COMMON::GeometryType>^ mtype = gcnew array<NAMESPACE_OSGEO_COMMON::GeometryType>(unlength);
 	for(FdoInt32 i = 0; i < unlength; i ++)
-	{
 		mtype[i] = static_cast<NAMESPACE_OSGEO_COMMON::GeometryType>(*(unobj + i));
-	}
-	return mtype;
+	
+    return mtype;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::set_SpecificGeometryTypes(NAMESPACE_OSGEO_COMMON::GeometryType types[], System::Int32 length)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::SpecificGeometryTypes::set(System::Int32% length, array<NAMESPACE_OSGEO_COMMON::GeometryType>^ types)
 {
 	FdoGeometryType *unobj = new FdoGeometryType[length+1];
-	for(FdoInt32 i = 0; i < length; i ++)
+	for(FdoInt32 i = 0; i < length; i++)
 	{
         unobj[i] = static_cast<FdoGeometryType>(types[i]);
 	}

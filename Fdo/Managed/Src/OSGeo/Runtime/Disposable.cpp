@@ -15,75 +15,71 @@
 
 #include "stdafx.h"
 #include "Disposable.h"
+#include <stdio.h>
 
 #include "Common\mgException.h"
 
-System::IntPtr NAMESPACE_OSGEO_RUNTIME::Disposable::get_UnmanagedObject()
+System::IntPtr NAMESPACE_OSGEO_RUNTIME::Disposable::UnmanagedObject::get()
 {
-	System::GC::KeepAlive(this); //make fxcop happy
 	return m_imp;
 }
 
-System::Boolean NAMESPACE_OSGEO_RUNTIME::Disposable::get_Disposed()
+System::Boolean NAMESPACE_OSGEO_RUNTIME::Disposable::Disposed::get()
 {
-	System::GC::KeepAlive(this); //make fxcop happy
 	return m_imp == System::IntPtr::Zero;
 }
 
-System::Boolean NAMESPACE_OSGEO_RUNTIME::Disposable::get_AutoDelete()
+System::Boolean NAMESPACE_OSGEO_RUNTIME::Disposable::AutoDelete::get()
 {
-	return m_bAutoDelete;
+	return (m_bAutoDelete != 0);
 }
 
-System::Void NAMESPACE_OSGEO_RUNTIME::Disposable::set_AutoDelete(System::Boolean value)
+System::Void NAMESPACE_OSGEO_RUNTIME::Disposable::AutoDelete::set(System::Boolean value)
 {
-	if (m_bAutoDelete == value)
+	m_bAutoDelete = value;
 		return;
-	System::IntPtr tmp = m_imp;
-	Detach();
-	Attach(tmp,value);
-	System::GC::KeepAlive(this); //make fxcop happy
 }
 
-NAMESPACE_OSGEO_RUNTIME::Disposable::Disposable() : m_bAutoDelete(true)
+NAMESPACE_OSGEO_RUNTIME::Disposable::Disposable()
 {
-	Detach();
+    m_bAutoDelete = 0;
+    m_imp = IntPtr::Zero;
 }
 
 NAMESPACE_OSGEO_RUNTIME::Disposable::Disposable(System::IntPtr unmanagedPointer, System::Boolean autoDelete)
 {
-	if (unmanagedPointer == IntPtr::Zero)
+    m_bAutoDelete = 0;
+    m_imp = IntPtr::Zero;
+	
+    if (unmanagedPointer == IntPtr::Zero)
 		return;
+    m_imp = unmanagedPointer;
+    m_bAutoDelete = (autoDelete ? 1 : 0);
+}
 
-	m_bAutoDelete = true;
-	Attach(unmanagedPointer,autoDelete);
+NAMESPACE_OSGEO_RUNTIME::Disposable::!Disposable()
+{
+    ReleaseUnmanagedObject();
 }
 
 NAMESPACE_OSGEO_RUNTIME::Disposable::~Disposable()
 {
-	ReleaseUnmanagedObject();
-}
-
-System::Void NAMESPACE_OSGEO_RUNTIME::Disposable::Dispose()
-{
-	ReleaseUnmanagedObject();
-    GC::SuppressFinalize(this);
+	this->!Disposable();
 }
 
 System::Void NAMESPACE_OSGEO_RUNTIME::Disposable::ReleaseUnmanagedObject()
 {
 	if (m_bAutoDelete)
 	    EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
+
+    m_bAutoDelete = false;
+    m_imp = IntPtr::Zero;
 }
 
 System::Void NAMESPACE_OSGEO_RUNTIME::Disposable::Detach()
 {
 	m_imp = System::IntPtr::Zero;
-	if (m_bAutoDelete)
-		System::GC::SuppressFinalize(this);
 	m_bAutoDelete = false;
-	System::GC::KeepAlive(this); //make fxcop happy
 }
 
 System::Void NAMESPACE_OSGEO_RUNTIME::Disposable::Attach(System::IntPtr unmanagedPointer, System::Boolean autoDelete)
@@ -91,35 +87,32 @@ System::Void NAMESPACE_OSGEO_RUNTIME::Disposable::Attach(System::IntPtr unmanage
 	if (unmanagedPointer == System::IntPtr::Zero || 
 		m_imp == unmanagedPointer || 
 		m_imp!= System::IntPtr::Zero )
-		throw new System::InvalidOperationException();
-	m_imp = unmanagedPointer;
-	if (m_bAutoDelete && !autoDelete)
-		System::GC::SuppressFinalize(this);
-	else if (!m_bAutoDelete && autoDelete)
-		System::GC::ReRegisterForFinalize(this);
+		throw gcnew System::InvalidOperationException();
+
+    ReleaseUnmanagedObject();
+	
+    m_imp = unmanagedPointer;
 	m_bAutoDelete = autoDelete;
-	System::GC::KeepAlive(this); //make fxcop happy
 }
 
-System::Boolean NAMESPACE_OSGEO_RUNTIME::Disposable::Equals(System::Object *obj)
+System::Boolean NAMESPACE_OSGEO_RUNTIME::Disposable::Equals(System::Object^ obj)
 {
-	Disposable* other = dynamic_cast<Disposable*>(obj);
-	if (other==NULL)
+	Disposable^ other = dynamic_cast<Disposable^>(obj);
+	if ((System::Object^)other == nullptr)
 		return false;
-	System::GC::KeepAlive(this); //make fxcop happy
 	return m_imp == other->m_imp;
 }
 
-System::Boolean NAMESPACE_OSGEO_RUNTIME::Disposable::op_Inequality(Disposable* leftObject, Disposable* rightObject)
+System::Boolean NAMESPACE_OSGEO_RUNTIME::Disposable::operator!=(Disposable^ leftObject, Disposable^ rightObject)
 {
-    return !Disposable::op_Equality(leftObject, rightObject);
+    return !Disposable::operator==(leftObject, rightObject);
 }
 
-System::Boolean NAMESPACE_OSGEO_RUNTIME::Disposable::op_Equality(Disposable* leftObject, Disposable* rightObject)
+System::Boolean NAMESPACE_OSGEO_RUNTIME::Disposable::operator==(Disposable^ leftObject, Disposable^ rightObject)
 {
-	if (leftObject == NULL)
+    if ((System::Object^)leftObject == nullptr)
 	{
-		if (rightObject == NULL)
+		if ((System::Object^)rightObject == nullptr)
 			return true;
 		return false;
 	}
@@ -128,7 +121,6 @@ System::Boolean NAMESPACE_OSGEO_RUNTIME::Disposable::op_Equality(Disposable* lef
 
 System::Int32 NAMESPACE_OSGEO_RUNTIME::Disposable::GetHashCode()
 {
-	System::GC::KeepAlive(this); //make fxcop happy
 	return m_imp.ToInt32();
 }
 
@@ -137,7 +129,7 @@ FdoIDisposable* NAMESPACE_OSGEO_RUNTIME::Disposable::GetImpObj()
 	return static_cast<FdoIDisposable*>(m_imp.ToPointer());
 }
 
-System::Int32 NAMESPACE_OSGEO_RUNTIME::Disposable::get_RefCount()
+System::Int32 NAMESPACE_OSGEO_RUNTIME::Disposable::RefCount::get()
 {
 	FdoInt32 result;
 

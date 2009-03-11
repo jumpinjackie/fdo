@@ -22,34 +22,27 @@
 
 #include "FDO\Commands\Locking\mgILockOwnersReaderImp.h"
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockOwnersReaderImp::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}
-
 FdoILockOwnersReader* NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockOwnersReaderImp::GetImpObj()
 {
     return static_cast<FdoILockOwnersReader*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::String* NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockOwnersReaderImp::GetLockOwner()
+System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockOwnersReaderImp::GetLockOwner()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetLockOwner())
 
-		return result;
+	return CHECK_STRING(result);
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockOwnersReaderImp::ReadNext()
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = !!GetImpObj()->ReadNext())
 
-		return result;
+	return result;
 }
 
 System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockOwnersReaderImp::Close()

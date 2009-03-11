@@ -22,7 +22,7 @@
 #include "mgIGeometricAggregateAbstract.h"
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
-public __gc __interface ICurvePolygon;
+interface class ICurvePolygon;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_OSGEO_GEOMETRY
 /// \interface OSGeo::FDO::Geometry::IMultiCurvePolygon
 /// \brief
 /// The IMultiCurvePolygon class is a multi-CurvePolygon aggregate Geometry type.
-public __gc __interface IMultiCurvePolygon : public IGeometricAggregateAbstract
+public interface class IMultiCurvePolygon : public IGeometricAggregateAbstract
 {
 public:
     /// \brief
@@ -43,7 +43,10 @@ public:
     /// \return
     /// Returns a CurvePolygon
     /// 
-	__property NAMESPACE_OSGEO_GEOMETRY::ICurvePolygon *get_Item(System::Int32 index);
+    property NAMESPACE_OSGEO_GEOMETRY::ICurvePolygon^ default[System::Int32]
+    {
+        NAMESPACE_OSGEO_GEOMETRY::ICurvePolygon^ get(System::Int32 index);
+    }
 };
 
 END_NAMESPACE_OSGEO_GEOMETRY

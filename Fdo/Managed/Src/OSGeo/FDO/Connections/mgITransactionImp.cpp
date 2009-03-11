@@ -34,18 +34,11 @@ FdoITransaction* NAMESPACE_OSGEO_FDO_CONNECTIONS::ITransactionImp::GetImpObj()
     return static_cast<FdoITransaction*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_FDO_CONNECTIONS::ITransactionImp::ReleaseUnmanagedObject()
+NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection^ NAMESPACE_OSGEO_FDO_CONNECTIONS::ITransactionImp::Connection::get()
 {
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}
-
-NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* NAMESPACE_OSGEO_FDO_CONNECTIONS::ITransactionImp::get_Connection()
-{
-	FdoIConnection* unobj;
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetConnection())
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIConnection(unobj, true);
+	FdoIConnection* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetConnection())
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIConnection(IntPtr(result), true);
 }
 
 System::Void NAMESPACE_OSGEO_FDO_CONNECTIONS::ITransactionImp::Commit()

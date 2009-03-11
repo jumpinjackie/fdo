@@ -30,25 +30,25 @@ FdoIGetSpatialContexts* NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IGetSpatial
     return static_cast<FdoIGetSpatialContexts*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IGetSpatialContextsImp::get_ActiveOnly()
+System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IGetSpatialContextsImp::ActiveOnly::get()
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = !!GetImpObj()->GetActiveOnly())
 
 	return result;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IGetSpatialContextsImp::set_ActiveOnly(System::Boolean value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IGetSpatialContextsImp::ActiveOnly::set(System::Boolean value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetActiveOnly(value))
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::ISpatialContextReader* NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IGetSpatialContextsImp::Execute()
+NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::ISpatialContextReader^ NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IGetSpatialContextsImp::Execute()
 {
 	FdoISpatialContextReader* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->Execute())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateISpatialContextReader(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateISpatialContextReader(IntPtr(result), true);
 }

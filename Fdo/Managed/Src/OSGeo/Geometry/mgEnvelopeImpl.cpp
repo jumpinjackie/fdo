@@ -26,13 +26,13 @@
 
 FdoEnvelopeImpl* NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::GetImpObj()
 {
-	return static_cast<FdoEnvelopeImpl *>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoEnvelopeImpl*>(UnmanagedObject.ToPointer());
 }
 
 NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::EnvelopeImpl() 
 	: NAMESPACE_OSGEO_RUNTIME::Disposable(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoEnvelopeImpl::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoEnvelopeImpl::Create()), true))
 }
 
 NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::EnvelopeImpl(
@@ -40,7 +40,7 @@ NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::EnvelopeImpl(
 	System::Double maxX, System::Double maxY) 
 	: NAMESPACE_OSGEO_RUNTIME::Disposable(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoEnvelopeImpl::Create(minX, minY, maxX, maxY), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoEnvelopeImpl::Create(minX, minY, maxX, maxY)), true))
 }
 
 NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::EnvelopeImpl(
@@ -48,28 +48,28 @@ NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::EnvelopeImpl(
 	System::Double maxX, System::Double maxY, System::Double maxZ) 
 	: NAMESPACE_OSGEO_RUNTIME::Disposable(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoEnvelopeImpl::Create(minX, minY, minZ, maxX, maxY, maxZ), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoEnvelopeImpl::Create(minX, minY, minZ, maxX, maxY, maxZ)), true))
 }
 
-NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::EnvelopeImpl(EnvelopeImpl* envelopeImpl) 
+NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::EnvelopeImpl(EnvelopeImpl^ envelopeImpl) 
 	: NAMESPACE_OSGEO_RUNTIME::Disposable(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoEnvelopeImpl::Create(*(envelopeImpl->GetImpObj())), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoEnvelopeImpl::Create(*(envelopeImpl->GetImpObj()))), true))
 }
 
 NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::EnvelopeImpl(
-	NAMESPACE_OSGEO_GEOMETRY::IDirectPosition *lowerLeft, 
-	NAMESPACE_OSGEO_GEOMETRY::IDirectPosition *upperRight) 
+	NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ lowerLeft, 
+	NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ upperRight) 
 	: NAMESPACE_OSGEO_RUNTIME::Disposable(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoEnvelopeImpl::Create(static_cast<IDirectPositionImp *>(lowerLeft)->GetImpObj(), static_cast<IDirectPositionImp *>(upperRight)->GetImpObj()), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoEnvelopeImpl::Create(static_cast<IDirectPositionImp^>(lowerLeft)->GetImpObj(), static_cast<IDirectPositionImp^>(upperRight)->GetImpObj())), true))
 }
 
-NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::EnvelopeImpl(System::Int32 dimensionType, System::Double ordinates __gc[]) 
+NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::EnvelopeImpl(System::Int32 dimensionType, array<System::Double>^ ordinates) 
 	: NAMESPACE_OSGEO_RUNTIME::Disposable(IntPtr::Zero, false)
 {
-	FdoDouble __pin *tpordinates = &ordinates[0];
-	EXCEPTION_HANDLER(Attach(FdoEnvelopeImpl::Create(dimensionType, tpordinates), true))
+	pin_ptr<FdoDouble> tpordinates = &ordinates[0];
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoEnvelopeImpl::Create(dimensionType, tpordinates)), true))
 }
 
 NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::EnvelopeImpl(System::IntPtr unmanaged, System::Boolean autoDelete)
@@ -77,130 +77,109 @@ NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::EnvelopeImpl(System::IntPtr unmanaged, S
 {
 }
 
-System::Boolean NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::op_Equality(EnvelopeImpl* left, EnvelopeImpl* right)
+System::Boolean NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::Equals(System::Object^ obj)
 {
-	FdoBoolean ret;
-	EXCEPTION_HANDLER(ret = (left->GetImpObj())->operator==(*(right->GetImpObj())))
+	NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl^ envlope = dynamic_cast<NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl^>(obj);
+    if ((System::Object^)envlope == nullptr) 
+        return false;
+	
+    System::Boolean ret;
+	EXCEPTION_HANDLER(ret = (this->GetImpObj())->operator==(*(envlope->GetImpObj())))
 	return ret;
-}
-
-System::Boolean NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::op_Inequality(EnvelopeImpl* left, EnvelopeImpl* right)
-{
-	return !op_Equality(left, right);
-}
-
-System::Boolean NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::Equals(System::Object* obj)
-{
-	NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl* envlope = dynamic_cast<NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl*>(obj);
-	if (NULL == envlope)
-	{
-		return false;
-	}
-	else
-	{
-		return op_Equality(this, envlope);
-	}
 }
 
 System::Int32 NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::GetHashCode()
 {
-	return (int)MinX + (int)MinY + (int)MinZ;
+	return UnmanagedObject.ToInt32();
 }
 
-System::Double NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::get_MinX()
+System::Double NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::MinX::get()
 {
-	FdoDouble ret;
+	System::Double ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetMinX())
 	return ret;
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::set_MinX(System::Double minX)
+System::Void NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::MinX::set(System::Double minX)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetMinX(minX));
 }
 
-System::Double NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::get_MinY()
+System::Double NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::MinY::get()
 {
-	FdoDouble ret;
+	System::Double ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetMinY())
 	return ret;
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::set_MinY(System::Double minY)
+System::Void NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::MinY::set(System::Double minY)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetMinY(minY));
 }
 
-System::Double NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::get_MinZ()
+System::Double NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::MinZ::get()
 {
-	FdoDouble ret;
+	System::Double ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetMinZ())
 	return ret;
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::set_MinZ(System::Double minZ)
+System::Void NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::MinZ::set(System::Double minZ)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetMinZ(minZ));
 }
 
-System::Double NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::get_MaxX()
+System::Double NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::MaxX::get()
 {
-	FdoDouble ret;
+	System::Double ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetMaxX())
 	return ret;
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::set_MaxX(System::Double maxX)
+System::Void NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::MaxX::set(System::Double maxX)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetMaxX(maxX));
 }
 
-System::Double NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::get_MaxY()
+System::Double NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::MaxY::get()
 {
-	FdoDouble ret;
+	System::Double ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetMaxY())
 	return ret;
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::set_MaxY(System::Double maxY)
+System::Void NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::MaxY::set(System::Double maxY)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetMaxY(maxY));
 }
 
-System::Double NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::get_MaxZ()
+System::Double NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::MaxZ::get()
 {
-	FdoDouble ret;
+	System::Double ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetMaxZ())
 	return ret;
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::set_MaxZ(System::Double maxZ)
+System::Void NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::MaxZ::set(System::Double maxZ)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetMaxZ(maxZ));
 }
 
-System::Boolean NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::get_IsEmpty()
+System::Boolean NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::IsEmpty::get()
 {
-	FdoBoolean ret;
+	System::Boolean ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetIsEmpty())
 	return ret;
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::Expand(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition* position)
+System::Void NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::Expand(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ position)
 {
-	FdoIDirectPosition *tpposition = static_cast<IDirectPositionImp *>(position)->GetImpObj();
+	FdoIDirectPosition* tpposition = static_cast<IDirectPositionImp^>(position)->GetImpObj();
 	EXCEPTION_HANDLER(GetImpObj()->Expand(tpposition));
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::Expand(NAMESPACE_OSGEO_GEOMETRY::IEnvelope* envelope)
+System::Void NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::Expand(NAMESPACE_OSGEO_GEOMETRY::IEnvelope^ envelope)
 {
-	FdoIEnvelope *tpenvelope = static_cast<IEnvelopeImp *>(envelope)->GetImpObj();
+	FdoIEnvelope* tpenvelope = static_cast<IEnvelopeImp^>(envelope)->GetImpObj();
 	EXCEPTION_HANDLER(GetImpObj()->Expand(tpenvelope));
-}
-
-System::Void NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
 }

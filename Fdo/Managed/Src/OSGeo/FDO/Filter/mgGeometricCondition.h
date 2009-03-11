@@ -23,7 +23,7 @@
 class FdoGeometricCondition;
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
-public __gc class Identifier;
+ref class Identifier;
 END_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 using namespace NAMESPACE_OSGEO_FDO_EXPRESSION;
@@ -36,7 +36,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 /// be used to test whether the value of a geometric property meets a particular
 /// spatial criteria. GeometricCondition is the base class for DistanceCondition
 /// and SpatialCondition.
-public __gc class GeometricCondition : public NAMESPACE_OSGEO_FDO_FILTER::SearchCondition
+public ref class GeometricCondition : public NAMESPACE_OSGEO_FDO_FILTER::SearchCondition
 {
 public:
     /// \brief
@@ -45,8 +45,6 @@ public:
     /// \return
     /// Returns the name of the geometric property
     /// 
-	__property NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* get_PropertyName();
-
     /// \brief
     /// Sets the name of the geometric property.
     /// 
@@ -56,7 +54,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_PropertyName(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* value);
+    property NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ PropertyName
+    {
+        NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ value);
+    }
 
     /// \brief
     /// Constructs a GeometricCondition object based on an unmanaged instance of the object
@@ -70,7 +72,7 @@ public:
     /// 
 	GeometricCondition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
+internal:
 	inline FdoGeometricCondition* GetImpObj();
 };
 

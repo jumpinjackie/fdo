@@ -23,17 +23,17 @@
 class FdoSingleValue;
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
-public __value enum DataType;
+enum class DataType;
 END_NAMESPACE_OSGEO_FDO_SCHEMA 
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
-public __gc __interface IExpressionProcessor;
+interface class IExpressionProcessor;
 
 /// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The SingleValue class derives from DataValue and represents a single precision floating point number.
-public __gc class SingleValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue
+public ref class SingleValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue
 {
 public:
     /// \brief
@@ -42,7 +42,7 @@ public:
     /// \return
     /// Returns a single precision floating point value
     /// 
-	static System::Single op_Explicit( NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue* value );
+	static operator System::Single( NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue^ value );
 
     /// \brief
     /// Constructs a default instance of an SingleValue with a value of null.
@@ -69,7 +69,10 @@ public:
     /// \return
     /// Returns an DataType
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
+    property NAMESPACE_OSGEO_FDO_SCHEMA::DataType DataType
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::DataType get();
+    }
 
     /// \brief
     /// Gets the SingleValue as a single precision floating point number.
@@ -77,8 +80,6 @@ public:
     /// \return
     /// Returns a single precision floating point value
     /// 
-	__property System::Single get_Single();
-
     /// \brief
     /// Sets the SingleValue as a single precision floating point number.
     /// 
@@ -88,7 +89,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Single(System::Single value);
+    property System::Single Single
+    {
+        System::Single get();
+        System::Void set(System::Single value);
+    }
 
     /// \brief
     /// Overrides Expression.Process to pass the SingleValue to the appropriate
@@ -100,7 +105,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor* processor);
+	virtual System::Void Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor^ processor) override;
 
     /// \brief
     /// Returns the well defined text representation of this expression.
@@ -108,7 +113,7 @@ public:
     /// \return
     /// Returns a character string
     /// 
-	System::String* ToString();
+	virtual System::String^ ToString() override;
 
     /// \brief
     /// Constructs a SingleValue object based on an unmanaged instance of the object
@@ -122,7 +127,7 @@ public:
     /// 
 	SingleValue(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
+internal:
 	inline FdoSingleValue* GetImpObj();
 };
 

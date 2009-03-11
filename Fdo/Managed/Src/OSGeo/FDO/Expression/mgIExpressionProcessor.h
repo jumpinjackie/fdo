@@ -32,7 +32,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 /// Expression hierarchy. For example, an RDBMS feature provider implements a
 /// processor class to convert an Expression hierarchy to the SQL equivalent
 /// syntax.
-public __gc __interface IExpressionProcessor  : public System::IDisposable
+public interface class IExpressionProcessor  : public System::IDisposable
 {
 };
 

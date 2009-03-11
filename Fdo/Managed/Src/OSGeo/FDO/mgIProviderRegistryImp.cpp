@@ -37,24 +37,17 @@ NAMESPACE_OSGEO_FDO::IProviderRegistryImp::IProviderRegistryImp(System::IntPtr u
 	return static_cast<::IProviderRegistry*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Void NAMESPACE_OSGEO_FDO::IProviderRegistryImp::ReleaseUnmanagedObject()
+NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection^ NAMESPACE_OSGEO_FDO::IProviderRegistryImp::GetProviders()
 {
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateProviderCollection(IntPtr(const_cast<FdoProviderCollection *>(GetImpObj()->GetProviders())), true);
 }
 
-NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection* NAMESPACE_OSGEO_FDO::IProviderRegistryImp::GetProviders()
-{
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateProviderCollection(const_cast<FdoProviderCollection *>(GetImpObj()->GetProviders()), true);
-}
-
-System::Void NAMESPACE_OSGEO_FDO::IProviderRegistryImp::RegisterProvider(String * name, 
-													String * displayName, 
-													String * description, 
-													String * version, 
-													String * fdoVersion, 
-													String * libraryPath,
+System::Void NAMESPACE_OSGEO_FDO::IProviderRegistryImp::RegisterProvider(System::String^ name, 
+													System::String^ displayName, 
+													System::String^ description, 
+													System::String^ version, 
+													System::String^ fdoVersion, 
+													System::String^ libraryPath,
 													System::Boolean isManaged)
 {
 	EXCEPTION_HANDLER(GetImpObj()->RegisterProvider(StringToUni(name),
@@ -66,7 +59,7 @@ System::Void NAMESPACE_OSGEO_FDO::IProviderRegistryImp::RegisterProvider(String 
 		isManaged))
 }
 
-System::Void NAMESPACE_OSGEO_FDO::IProviderRegistryImp::UnregisterProvider(String * name)
+System::Void NAMESPACE_OSGEO_FDO::IProviderRegistryImp::UnregisterProvider(System::String^ name)
 {
 	EXCEPTION_HANDLER(GetImpObj()->UnregisterProvider(StringToUni(name)))
 }

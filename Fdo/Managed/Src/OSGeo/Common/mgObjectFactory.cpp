@@ -46,103 +46,103 @@
 #include "Common\Xsl\mgXslTransformer.h"
 
 template <class fdoclas, class clas> 
-inline NAMESPACE_OSGEO_RUNTIME::Disposable* CHECK(FdoIDisposable* p, FdoBoolean autoDispose)
+inline NAMESPACE_OSGEO_RUNTIME::Disposable^ CHECK(FdoIDisposable* p, FdoBoolean autoDispose)
 {
-    return (dynamic_cast<fdoclas *>(p) ?  new clas(p, autoDispose) : NULL);
+    return (dynamic_cast<fdoclas *>(p) ?  gcnew clas(IntPtr(p), autoDispose) : nullptr);
 }
 
-NAMESPACE_OSGEO_COMMON_XML::XmlReader* ObjectFactory::CreateXmlReader(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_COMMON_XML::XmlReader^ ObjectFactory::CreateXmlReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_COMMON_XML::XmlReader(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_COMMON_XML::XmlReader(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_COMMON_XML::XmlWriter* ObjectFactory::CreateXmlWriter(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_COMMON_XML::XmlWriter^ ObjectFactory::CreateXmlWriter(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_COMMON_XML::XmlWriter(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_COMMON_XML::XmlWriter(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_COMMON::DictionaryElementCollection* ObjectFactory::CreateDictionaryElementCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_COMMON::DictionaryElementCollection^ ObjectFactory::CreateDictionaryElementCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_COMMON::DictionaryElementCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_COMMON::DictionaryElementCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* ObjectFactory::CreateXmlSaxContext(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ ObjectFactory::CreateXmlSaxContext(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection* ObjectFactory::CreateXmlAttributeCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection^ ObjectFactory::CreateXmlAttributeCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_COMMON_IO::IoTextWriter* ObjectFactory::CreateIoTextWriter(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_COMMON_IO::IoTextWriter^ ObjectFactory::CreateIoTextWriter(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_COMMON_IO::IoTextWriter(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_COMMON_IO::IoTextWriter(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_COMMON_IO::IoTextReader* ObjectFactory::CreateIoTextReader(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_COMMON_IO::IoTextReader^ ObjectFactory::CreateIoTextReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_COMMON_IO::IoTextReader(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_COMMON_IO::IoTextReader(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_COMMON_XML::XmlAttribute* ObjectFactory::CreateXmlAttribute(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_COMMON_XML::XmlAttribute^ ObjectFactory::CreateXmlAttribute(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_COMMON_XML::XmlAttribute(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_COMMON_XML::XmlAttribute(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_COMMON::StringElement* ObjectFactory::CreateStringElement(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_COMMON::StringElement^ ObjectFactory::CreateStringElement(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_COMMON::StringElement(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_COMMON::StringElement(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_COMMON::DictionaryElement* ObjectFactory::CreateDictionaryElement(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_COMMON::DictionaryElement^ ObjectFactory::CreateDictionaryElement(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_COMMON::DictionaryElement(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_COMMON::DictionaryElement(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_COMMON::StringCollection* ObjectFactory::CreateStringCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_COMMON::StringCollection^ ObjectFactory::CreateStringCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_COMMON::StringCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_COMMON::StringCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_COMMON::IStreamReader* ObjectFactory::CreateIStreamReader(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_COMMON::IStreamReader^ ObjectFactory::CreateIStreamReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
 	FdoIStreamReader* p = static_cast<FdoIStreamReader*>(ptr.ToPointer());
 
@@ -150,48 +150,48 @@ NAMESPACE_OSGEO_COMMON::IStreamReader* ObjectFactory::CreateIStreamReader(System
 	{
 		case FdoStreamReaderType_Byte:
 		{
-			return new NAMESPACE_OSGEO_COMMON_IO::IoByteStreamReader(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_COMMON_IO::IoByteStreamReader(IntPtr(p), autoDispose);
 		}
 		case FdoStreamReaderType_Char:
 		{
-			return new NAMESPACE_OSGEO_COMMON_IO::IoCharStreamReader(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_COMMON_IO::IoCharStreamReader(IntPtr(p), autoDispose);
 		}
 		default:
-			return NULL;
+			return nullptr;
 	}
 }
 
-NAMESPACE_OSGEO_COMMON_IO::IoStream* ObjectFactory::CreateIoStream(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_COMMON_IO::IoStream^ ObjectFactory::CreateIoStream(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
 	FdoIDisposable* p = (FdoIDisposable*)ptr.ToPointer();
 
-	NAMESPACE_OSGEO_RUNTIME::Disposable* wrap;
+	NAMESPACE_OSGEO_RUNTIME::Disposable^ wrap;
 
 	// Note:
 	// Here we need keep dynamic_cast to decide the real type of "ptr"
-	if(wrap = CHECK<FdoIoMemoryStream, NAMESPACE_OSGEO_COMMON_IO::IoMemoryStream>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_IO::IoStream*>(wrap);
-	if(wrap = CHECK<FdoIoFileStream, NAMESPACE_OSGEO_COMMON_IO::IoFileStream>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_IO::IoStream*>(wrap);
+	if(wrap = CHECK<FdoIoMemoryStream, NAMESPACE_OSGEO_COMMON_IO::IoMemoryStream>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_IO::IoStream^>(wrap);
+	if(wrap = CHECK<FdoIoFileStream, NAMESPACE_OSGEO_COMMON_IO::IoFileStream>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_IO::IoStream^>(wrap);
 
-	return new NAMESPACE_OSGEO_COMMON_IO::IoStream(ptr, autoDispose);
+	return gcnew NAMESPACE_OSGEO_COMMON_IO::IoStream(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* ObjectFactory::CreateIXmlSaxHandler(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler^ ObjectFactory::CreateIXmlSaxHandler(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
 	FdoIDisposable* p = (FdoIDisposable*)ptr.ToPointer();
 
-	NAMESPACE_OSGEO_RUNTIME::Disposable* wrap;
+	NAMESPACE_OSGEO_RUNTIME::Disposable^ wrap;
 
 	// Note:
 	// Here we need keep dynamic_cast to decide the real type of "ptr"
-	if(wrap = CHECK<FdoXmlCharDataHandler, NAMESPACE_OSGEO_COMMON_XML::XmlCharDataHandler>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if(wrap = CHECK<FdoXmlCopyHandler, NAMESPACE_OSGEO_COMMON_XML::XmlCopyHandler>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if(wrap = CHECK<FdoXmlSkipElementHandler, NAMESPACE_OSGEO_COMMON_XML::XmlSkipElementHandler>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
+	if(wrap = CHECK<FdoXmlCharDataHandler, NAMESPACE_OSGEO_COMMON_XML::XmlCharDataHandler>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if(wrap = CHECK<FdoXmlCopyHandler, NAMESPACE_OSGEO_COMMON_XML::XmlCopyHandler>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if(wrap = CHECK<FdoXmlSkipElementHandler, NAMESPACE_OSGEO_COMMON_XML::XmlSkipElementHandler>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
 
-	return new NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler(ptr, autoDispose);
+	return gcnew NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler(ptr, autoDispose);
 }

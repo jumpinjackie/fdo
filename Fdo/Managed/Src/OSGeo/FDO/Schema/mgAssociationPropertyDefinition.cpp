@@ -33,17 +33,17 @@
 
 NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::AssociationPropertyDefinition() : NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoAssociationPropertyDefinition::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoAssociationPropertyDefinition::Create()), true))
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::AssociationPropertyDefinition(System::String* name, System::String* description) : NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::AssociationPropertyDefinition(System::String^ name, System::String^ description) : NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoAssociationPropertyDefinition::Create(StringToUni(name), StringToUni(description)), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoAssociationPropertyDefinition::Create(StringToUni(name), StringToUni(description))), true))
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::AssociationPropertyDefinition(System::String* name, System::String* description, System::Boolean system) : NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::AssociationPropertyDefinition(System::String^ name, System::String^ description, System::Boolean system) : NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoAssociationPropertyDefinition::Create(StringToUni(name), StringToUni(description), system), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoAssociationPropertyDefinition::Create(StringToUni(name), StringToUni(description), system)), true))
 }
 
 FdoAssociationPropertyDefinition* NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::GetImpObj()
@@ -51,7 +51,7 @@ FdoAssociationPropertyDefinition* NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropert
 	return static_cast<FdoAssociationPropertyDefinition*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::get_PropertyType()
+NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::PropertyType::get()
 {
 	FdoPropertyType result;
 
@@ -60,53 +60,53 @@ NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType NAMESPACE_OSGEO_FDO_SCHEMA::Association
 	return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType>(result);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::get_AssociatedClass()
+NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition^ NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::AssociatedClass::get()
 {
 	FdoClassDefinition* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetAssociatedClass())
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateClassDefinition(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateClassDefinition(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::set_AssociatedClass(NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::AssociatedClass::set(NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetAssociatedClass((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->SetAssociatedClass((value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinitionCollection* NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::get_IdentityProperties()
+NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinitionCollection^ NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::IdentityProperties::get()
 {
 	FdoDataPropertyDefinitionCollection* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetIdentityProperties())
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataPropertyDefinitionCollection(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataPropertyDefinitionCollection(IntPtr(result), true);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinitionCollection* NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::get_ReverseIdentityProperties()
+NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinitionCollection^ NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::ReverseIdentityProperties::get()
 {
 	FdoDataPropertyDefinitionCollection* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetReverseIdentityProperties())
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataPropertyDefinitionCollection(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataPropertyDefinitionCollection(IntPtr(result), true);
 }
 
-System::String* NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::get_ReverseName()
+System::String^ NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::ReverseName::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetReverseName())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::set_ReverseName(System::String* name)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::ReverseName::set(System::String^ name)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetReverseName(StringToUni(name)))
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::DeleteRule NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::get_DeleteRule()
+NAMESPACE_OSGEO_FDO_SCHEMA::DeleteRule NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::DeleteRule::get()
 {
 	FdoDeleteRule result;
 
@@ -115,63 +115,63 @@ NAMESPACE_OSGEO_FDO_SCHEMA::DeleteRule NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPr
 	return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::DeleteRule>(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::set_DeleteRule(NAMESPACE_OSGEO_FDO_SCHEMA::DeleteRule value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::DeleteRule::set(NAMESPACE_OSGEO_FDO_SCHEMA::DeleteRule value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetDeleteRule(static_cast<FdoDeleteRule>(value)))
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::get_LockCascade()
+System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::LockCascade::get()
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = !!GetImpObj()->GetLockCascade())
 
 	return result;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::set_LockCascade(System::Boolean value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::LockCascade::set(System::Boolean value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetLockCascade(value))
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::get_IsReadOnly()
+System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::IsReadOnly::get()
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = !!GetImpObj()->GetIsReadOnly())
 
 	return result;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::set_IsReadOnly(System::Boolean value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::IsReadOnly::set(System::Boolean value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetIsReadOnly(value))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::get_Multiplicity()
+System::String^ NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::Multiplicity::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetMultiplicity())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::set_Multiplicity(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::Multiplicity::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetMultiplicity(StringToUni(value)))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::get_ReverseMultiplicity()
+System::String^ NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::ReverseMultiplicity::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetReverseMultiplicity())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::set_ReverseMultiplicity(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition::ReverseMultiplicity::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetReverseMultiplicity(StringToUni(value)))
 }

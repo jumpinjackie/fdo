@@ -26,13 +26,13 @@
 #include "FDO\Filter\mgFilter.h"
 #include "FDO\Expression\mgIdentifier.h"
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp::get_FeatureClassName()
+NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp::FeatureClassName::get()
 {
 	FdoIdentifier* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetFeatureClassName())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIdentifier(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIdentifier(IntPtr(result), true);
 }
 
 FdoIFeatureCommand* NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp::GetImpObj()
@@ -40,31 +40,31 @@ FdoIFeatureCommand* NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp::GetImpObj(
     return static_cast<FdoIFeatureCommand*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp::set_FeatureClassName(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp::FeatureClassName::set(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetFeatureClassName((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->SetFeatureClassName((value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp::SetFeatureClassName(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp::SetFeatureClassName(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetFeatureClassName(StringToUni(value)))
 }
 
-NAMESPACE_OSGEO_FDO_FILTER::Filter* NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp::get_Filter()
+NAMESPACE_OSGEO_FDO_FILTER::Filter^ NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp::Filter::get()
 {
 	FdoFilter* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetFilter())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateFilter(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateFilter(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp::set_Filter(NAMESPACE_OSGEO_FDO_FILTER::Filter* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp::Filter::set(NAMESPACE_OSGEO_FDO_FILTER::Filter^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetFilter((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->SetFilter((value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp::SetFilter(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp::SetFilter(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetFilter(StringToUni(value)))
 }

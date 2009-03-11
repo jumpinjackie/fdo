@@ -22,8 +22,8 @@
 #include "mgICurveSegmentAbstract.h"
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
-public __gc __interface IDirectPosition;
-public __gc class DirectPositionCollection;
+interface class IDirectPosition;
+ref class DirectPositionCollection;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
@@ -36,7 +36,7 @@ BEGIN_NAMESPACE_OSGEO_GEOMETRY
 /// plus linear interpolation between consecutive points.
 /// This is a helper type for Geometries in the Geometry package.
 /// Note: It does not derive from IGeometry.
-public __gc __interface ILineStringSegment : public NAMESPACE_OSGEO_GEOMETRY::ICurveSegmentAbstract
+public interface class ILineStringSegment : public NAMESPACE_OSGEO_GEOMETRY::ICurveSegmentAbstract
 {
 public:
     /// \brief
@@ -45,7 +45,10 @@ public:
     /// \return
     /// Returns the number of positions
     /// 
-	__property System::Int32 get_Count();
+    property System::Int32 Count
+    {
+        System::Int32 get();
+    }
 
     /// \brief
     /// Gets the position at the specified (zero-based) index.
@@ -56,7 +59,10 @@ public:
     /// \return
     /// Returns the position
     /// 
-	__property NAMESPACE_OSGEO_GEOMETRY::IDirectPosition *get_Item(System::Int32 index);
+    property NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ default[System::Int32]
+    {
+        NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ get(System::Int32 index);
+    }
 
     /// \brief
     /// Gets a collection of all of the positions in this object.
@@ -64,7 +70,10 @@ public:
     /// \return
     /// Returns the positions
     /// 
-	__property NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection *get_Positions();
+    property NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection^ Positions
+    {
+        NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection^ get();
+    }
 };
 
 END_NAMESPACE_OSGEO_GEOMETRY

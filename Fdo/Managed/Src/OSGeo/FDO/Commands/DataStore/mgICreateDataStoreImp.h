@@ -24,7 +24,7 @@
 class FdoICreateDataStore;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE
-public __gc __interface IDataStorePropertyDictionary;
+interface class IDataStorePropertyDictionary;
 
 /// \ingroup (OSGeoFDOCommandsDataStore)
 /// \brief
@@ -32,7 +32,7 @@ public __gc __interface IDataStorePropertyDictionary;
 /// ICreateDataStore defines the create datastore command, which can be used to create new 
 /// provider specific datastores. The input is provided through a dictionary of name value 
 /// pairs that is provider dependant. 
-private __gc class ICreateDataStoreImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::ICreateDataStore
+private ref class ICreateDataStoreImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::ICreateDataStore
 {
 public:
     /// \brief
@@ -43,7 +43,10 @@ public:
     /// \return
     /// Returns the property dictionary
     /// 
-    __property NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionary* get_DataStoreProperties();
+    property NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionary^ DataStoreProperties
+    {
+        virtual NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionary^ get();
+    }
 
     /// \brief
     /// Executes the ICreateDataStore command.
@@ -51,9 +54,9 @@ public:
     /// \return
     /// Returns nothing
     /// 
-    System::Void Execute();
+    virtual System::Void Execute();
 
-public private:
+internal:
 	ICreateDataStoreImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)
 	{
 

@@ -23,9 +23,9 @@
 #include "mgILineString.h"
 #include "mgObjectFactory.h"
 
-FdoIMultiLineString * NAMESPACE_OSGEO_GEOMETRY::IMultiLineStringImp::GetImpObj()
+FdoIMultiLineString* NAMESPACE_OSGEO_GEOMETRY::IMultiLineStringImp::GetImpObj()
 {
-	return static_cast<FdoIMultiLineString *>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoIMultiLineString*>(UnmanagedObject.ToPointer());
 }
 
 NAMESPACE_OSGEO_GEOMETRY::IMultiLineStringImp::IMultiLineStringImp(System::IntPtr unmanaged, System::Boolean autoDelete)
@@ -33,9 +33,9 @@ NAMESPACE_OSGEO_GEOMETRY::IMultiLineStringImp::IMultiLineStringImp(System::IntPt
 {
 }
 
-NAMESPACE_OSGEO_GEOMETRY::ILineString *NAMESPACE_OSGEO_GEOMETRY::IMultiLineStringImp::get_Item(System::Int32 index)
+NAMESPACE_OSGEO_GEOMETRY::ILineString^ NAMESPACE_OSGEO_GEOMETRY::IMultiLineStringImp::default::get(System::Int32 index)
 {
-	FdoILineString *ret;
+	FdoILineString* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetItem(index))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateILineString(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateILineString(IntPtr(ret), true);
 }

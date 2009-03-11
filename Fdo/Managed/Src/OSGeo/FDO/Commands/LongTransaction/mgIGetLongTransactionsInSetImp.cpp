@@ -30,11 +30,11 @@ FdoIGetLongTransactionsInSet* NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IGet
     return static_cast<FdoIGetLongTransactionsInSet*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionSetReader* NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IGetLongTransactionsInSetImp::Execute()
+NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionSetReader^ NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IGetLongTransactionsInSetImp::Execute()
 {
 	FdoILongTransactionSetReader* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->Execute())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILongTransactionSetReader(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILongTransactionSetReader(IntPtr(result), true);
 }

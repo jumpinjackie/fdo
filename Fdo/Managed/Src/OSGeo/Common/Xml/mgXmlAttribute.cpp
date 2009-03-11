@@ -21,42 +21,42 @@
 #include "Common\mgException.h"
 #include "Common\Xml\mgXmlAttribute.h"
 
-System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttribute::InitConstruct(String* name, String* value, String* localName, String* attributeURI, String* prefix, String* valueURI, String* localValue, String* valuePrefix)
+System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttribute::InitConstruct(String^ name, String^ value, String^ localName, String^ attributeURI, String^ prefix, String^ valueURI, String^ localValue, String^ valuePrefix)
 {	
-	EXCEPTION_HANDLER(Attach(FdoXmlAttribute::Create(StringToUni(name), StringToUni(value), StringToUni(localName), StringToUni(attributeURI), StringToUni(prefix), StringToUni(valueURI), StringToUni(localValue), StringToUni(valuePrefix)), true)) 
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoXmlAttribute::Create(StringToUni(name), StringToUni(value), StringToUni(localName), StringToUni(attributeURI), StringToUni(prefix), StringToUni(valueURI), StringToUni(localValue), StringToUni(valuePrefix))), true)) 
 }
 
-NAMESPACE_OSGEO_COMMON_XML::XmlAttribute::XmlAttribute(String* name, String* value, String* localName, String* attributeURI, String* prefix, String* valueURI, String* localValue, String* valuePrefix) : Disposable(IntPtr::Zero, false)
+NAMESPACE_OSGEO_COMMON_XML::XmlAttribute::XmlAttribute(String^ name, String^ value, String^ localName, String^ attributeURI, String^ prefix, String^ valueURI, String^ localValue, String^ valuePrefix) : Disposable(IntPtr::Zero, false)
 {
 	InitConstruct(name, value, localName, attributeURI, prefix, valueURI, localValue, valuePrefix );
 }
 
-NAMESPACE_OSGEO_COMMON_XML::XmlAttribute::XmlAttribute(System::String* name, System::String* value, System::String* localName, System::String* attributeURI, System::String* prefix, System::String* valueURI, System::String* localValue) : Disposable(IntPtr::Zero, false)
+NAMESPACE_OSGEO_COMMON_XML::XmlAttribute::XmlAttribute(System::String^ name, System::String^ value, System::String^ localName, System::String^ attributeURI, System::String^ prefix, System::String^ valueURI, System::String^ localValue) : Disposable(IntPtr::Zero, false)
 {
 	InitConstruct(name, value, localName, attributeURI, prefix, valueURI, localValue, String::Empty );
 }
 
-NAMESPACE_OSGEO_COMMON_XML::XmlAttribute::XmlAttribute(System::String* name, System::String* value, System::String* localName, System::String* attributeURI, System::String* prefix, System::String* valueURI) : Disposable(IntPtr::Zero, false)
+NAMESPACE_OSGEO_COMMON_XML::XmlAttribute::XmlAttribute(System::String^ name, System::String^ value, System::String^ localName, System::String^ attributeURI, System::String^ prefix, System::String^ valueURI) : Disposable(IntPtr::Zero, false)
 {
 	InitConstruct(name, value, localName, attributeURI, prefix, valueURI, String::Empty, String::Empty );
 }
 
-NAMESPACE_OSGEO_COMMON_XML::XmlAttribute::XmlAttribute(System::String* name, System::String* value, System::String* localName, System::String* attributeURI, System::String* prefix) : Disposable(IntPtr::Zero, false)
+NAMESPACE_OSGEO_COMMON_XML::XmlAttribute::XmlAttribute(System::String^ name, System::String^ value, System::String^ localName, System::String^ attributeURI, System::String^ prefix) : Disposable(IntPtr::Zero, false)
 {
 	InitConstruct(name, value, localName, attributeURI, prefix, String::Empty, String::Empty, String::Empty );
 }
 
-NAMESPACE_OSGEO_COMMON_XML::XmlAttribute::XmlAttribute(System::String* name, System::String* value, System::String* localName, System::String* attributeURI) : Disposable(IntPtr::Zero, false)
+NAMESPACE_OSGEO_COMMON_XML::XmlAttribute::XmlAttribute(System::String^ name, System::String^ value, System::String^ localName, System::String^ attributeURI) : Disposable(IntPtr::Zero, false)
 {
 	InitConstruct(name, value, localName, attributeURI, String::Empty, String::Empty, String::Empty, String::Empty );
 }
 
-NAMESPACE_OSGEO_COMMON_XML::XmlAttribute::XmlAttribute(System::String* name, System::String* value, System::String* localName) : Disposable(IntPtr::Zero, false)
+NAMESPACE_OSGEO_COMMON_XML::XmlAttribute::XmlAttribute(System::String^ name, System::String^ value, System::String^ localName) : Disposable(IntPtr::Zero, false)
 {
 	InitConstruct(name, value, localName, String::Empty, String::Empty, String::Empty, String::Empty, String::Empty );
 }
 
-NAMESPACE_OSGEO_COMMON_XML::XmlAttribute::XmlAttribute(String* name, String* value) : Disposable(IntPtr::Zero, false)
+NAMESPACE_OSGEO_COMMON_XML::XmlAttribute::XmlAttribute(String^ name, String^ value) : Disposable(IntPtr::Zero, false)
 {
 	InitConstruct(name, value, String::Empty, String::Empty, String::Empty, String::Empty, String::Empty, String::Empty );
 }
@@ -68,12 +68,6 @@ NAMESPACE_OSGEO_COMMON_XML::XmlAttribute::XmlAttribute(IntPtr unmanaged, Boolean
 
 FdoXmlAttribute* NAMESPACE_OSGEO_COMMON_XML::XmlAttribute::GetImpObj()
 {
-	return static_cast<FdoXmlAttribute*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoXmlAttribute*>(UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_COMMON_XML::XmlAttribute::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}

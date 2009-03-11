@@ -23,18 +23,18 @@
 class FdoByteValue;
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
-public __value enum DataType;
+enum class DataType;
 END_NAMESPACE_OSGEO_FDO_SCHEMA
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
-public __gc __interface IExpressionProcessor;
+interface class IExpressionProcessor;
 
 /// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The ByteValue class derives from DataValue and represents a literal
 /// byte value.
-public __gc class ByteValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue
+public ref class ByteValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue
 {
 public:
     /// \brief
@@ -43,7 +43,7 @@ public:
     /// \return
     /// Returns a byte
     /// 
-	static System::Byte op_Explicit( NAMESPACE_OSGEO_FDO_EXPRESSION::ByteValue* value);
+	static operator System::Byte( NAMESPACE_OSGEO_FDO_EXPRESSION::ByteValue^ value);
 
     /// \brief
     /// Constructs a default instance of an ByteValue with a value of null.
@@ -70,7 +70,10 @@ public:
     /// \return
     /// Returns an DataType
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
+    property NAMESPACE_OSGEO_FDO_SCHEMA::DataType DataType
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::DataType get();
+    }
 
     /// \brief
     /// Gets the ByteValue.
@@ -78,8 +81,6 @@ public:
     /// \return
     /// Returns a byte
     /// 
-	__property System::Byte get_Byte();
-
     /// \brief
     /// Sets the byte value.
     /// 
@@ -89,7 +90,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Byte(System::Byte value);
+    property System::Byte Byte
+    {
+        System::Byte get();
+        System::Void set(System::Byte value);
+    }
 
     /// \brief
     /// Overrides Expression.Process to pass the ByteValue to the appropriate
@@ -101,7 +106,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor* processor);
+	virtual System::Void Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor^ processor) override;
 
     /// \brief
     /// Returns the well defined text representation of this expression.
@@ -109,7 +114,7 @@ public:
     /// \return
     /// Returns a text string
     /// 
-	System::String* ToString();
+	virtual System::String^ ToString() override;
 
     /// \brief
     /// Constructs a ByteValue object based on an unmanaged instance of the object
@@ -123,7 +128,7 @@ public:
     /// 
 	ByteValue(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
+internal:
 	inline FdoByteValue* GetImpObj();
 };
 END_NAMESPACE_OSGEO_FDO_EXPRESSION

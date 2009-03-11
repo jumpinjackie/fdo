@@ -23,9 +23,9 @@
 #include "mgIPolygon.h"
 #include "mgObjectFactory.h"
 
-FdoIMultiPolygon * NAMESPACE_OSGEO_GEOMETRY::IMultiPolygonImp::GetImpObj()
+FdoIMultiPolygon* NAMESPACE_OSGEO_GEOMETRY::IMultiPolygonImp::GetImpObj()
 {
-	return static_cast<FdoIMultiPolygon *>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoIMultiPolygon*>(UnmanagedObject.ToPointer());
 }
 
 NAMESPACE_OSGEO_GEOMETRY::IMultiPolygonImp::IMultiPolygonImp(System::IntPtr unmanaged, System::Boolean autoDelete)
@@ -33,9 +33,9 @@ NAMESPACE_OSGEO_GEOMETRY::IMultiPolygonImp::IMultiPolygonImp(System::IntPtr unma
 {
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IPolygon *NAMESPACE_OSGEO_GEOMETRY::IMultiPolygonImp::get_Item(System::Int32 index)
+NAMESPACE_OSGEO_GEOMETRY::IPolygon^ NAMESPACE_OSGEO_GEOMETRY::IMultiPolygonImp::default::get(System::Int32 index)
 {
-	FdoIPolygon *ret;
+	FdoIPolygon* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetItem(index))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIPolygon(ret, true);
+        return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIPolygon(IntPtr(ret), true);
 }

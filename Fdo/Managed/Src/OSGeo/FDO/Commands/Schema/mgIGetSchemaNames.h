@@ -21,7 +21,7 @@
 #include "FDO\Commands\mgICommand.h"
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
-public __gc class FeatureSchemaCollection;
+ref class FeatureSchemaCollection;
 END_NAMESPACE_OSGEO_FDO_SCHEMA
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
@@ -32,7 +32,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 /// The IGetSchemaNames interface defines the GetSchemaNames command.
 /// The GetSchemaNames command retrieves a list all schemas available from
 /// the connection. The Execute operation returns a StringCollection object.
-public __gc __interface IGetSchemaNames : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
+public interface class IGetSchemaNames : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
 {
 public:
     /// \brief
@@ -42,7 +42,7 @@ public:
     /// \return
     /// Returns the string collection of the names of the available schemas.
     /// 
-	NAMESPACE_OSGEO_COMMON::StringCollection* Execute();
+	NAMESPACE_OSGEO_COMMON::StringCollection^ Execute();
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA

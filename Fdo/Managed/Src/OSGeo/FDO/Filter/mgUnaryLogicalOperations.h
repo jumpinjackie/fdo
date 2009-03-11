@@ -27,7 +27,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 /// The UnaryLogicalOperations enumeration lists the unary logical operations
 /// available.
 [System::FlagsAttribute]
-public __value enum UnaryLogicalOperations
+public enum class UnaryLogicalOperations
 {
     /// Perform a logical Not of the filter.
 	UnaryLogicalOperations_Not = FdoUnaryLogicalOperations_Not

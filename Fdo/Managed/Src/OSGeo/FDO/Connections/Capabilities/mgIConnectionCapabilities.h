@@ -23,11 +23,11 @@
 #include "FDO\Connections\Capabilities\mgThreadCapability.h"
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
-public __value enum SpatialContextExtentType;
+enum class SpatialContextExtentType;
 END_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
-public __value enum LockType;
+enum class LockType;
 END_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
@@ -36,7 +36,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 /// \interface OSGeo::FDO::Connections::Capabilities::IConnectionCapabilities
 /// \brief
 /// The IConnectionCapabilities interface declares the feature provider's capabilities.
-public __gc __interface IConnectionCapabilities : public System::IDisposable
+public interface class IConnectionCapabilities : public System::IDisposable
 {
 public:
     /// \brief
@@ -45,7 +45,10 @@ public:
     /// \return
     /// Returns the connection thread capability.
     /// 
-	__property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ThreadCapability get_ThreadCapability();
+    property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ThreadCapability ThreadCapability
+    {
+        NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ThreadCapability get();
+    }
 
     /// \brief
     /// Gets the spatial context extent types supported by the feature provider.
@@ -53,7 +56,10 @@ public:
     /// \return
     /// Returns the list of spatial context extent types.
     /// 
-	__property NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::SpatialContextExtentType get_SpatialContextTypes() [];
+    property array<NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::SpatialContextExtentType>^ SpatialContextTypes
+    {
+        array<NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::SpatialContextExtentType>^ get();
+    }
 
     /// \brief
     /// Determines if the feature provider supports persistent locking.
@@ -69,7 +75,10 @@ public:
     /// \return
     /// Returns the list of lock types
     /// 
-	__property NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType get_LockTypes() [];
+    property array<NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType>^ LockTypes
+    {
+        array<NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType>^ get();
+    }
 
     /// \brief
     /// Determines if the feature provider supports connection timeout.

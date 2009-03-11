@@ -30,7 +30,7 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue::GeometryValue(IntPtr unmanaged, B
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue::GeometryValue() : LiteralValue(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoGeometryValue::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoGeometryValue::Create()), true))
 }
 
 FdoGeometryValue* NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue::GetImpObj()
@@ -38,34 +38,58 @@ FdoGeometryValue* NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue::GetImpObj()
 	return static_cast<FdoGeometryValue*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue::GeometryValue(System::Byte geometry []) : LiteralValue(IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue::GeometryValue(array<System::Byte>^ geometry) : LiteralValue(IntPtr::Zero, false)
 {	
-	FdoByteArray* umBuffer = ByteArrayToFdoByteArray(geometry);
-
-	EXCEPTION_HANDLER(Attach(FdoGeometryValue::Create(umBuffer), true))
-
-	umBuffer->Release();
+    FdoByteArray* arr = nullptr;
+    try
+    {
+        arr = ByteArrayToFdoByteArray(geometry);
+	    EXCEPTION_HANDLER(Attach(IntPtr(FdoGeometryValue::Create(arr)), true))
+    }
+    finally
+    {
+        if (arr != nullptr)
+            arr->Release();
+    }
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue::IsNull()
 {
-	FdoBoolean unobj;
+	System::Boolean unobj;
 	EXCEPTION_HANDLER(unobj = !!GetImpObj()->IsNull())
 	return unobj;
 }
 
-System::Byte NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue::get_Geometry() []
+array<System::Byte>^ NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue::Geometry::get()
 {
-	FdoByteArray* unobj;
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetGeometry())
-	System::Byte mgBuffer __gc[] = FdoByteArrayToByteArray(unobj->GetData(), unobj->GetCount());
-	unobj->Release();
-	return mgBuffer;
+    FdoByteArray* arr = nullptr;
+    array<System::Byte>^ result;
+    try
+    {
+	    EXCEPTION_HANDLER(arr = GetImpObj()->GetGeometry())
+	    result = FdoByteArrayToByteArray(arr->GetData(), arr->GetCount());
+    }
+    finally
+    {
+        if (arr != nullptr)
+            arr->Release();
+    }
+	return result;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue::set_Geometry(System::Byte value [])
+System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue::Geometry::set(array<System::Byte>^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetGeometry(ByteArrayToFdoByteArray(value)))
+    FdoByteArray* arr = nullptr;
+    try
+    {
+        arr = ByteArrayToFdoByteArray(value);
+    	EXCEPTION_HANDLER(GetImpObj()->SetGeometry(arr))
+    }
+    finally
+    {
+        if (arr != nullptr)
+            arr->Release();
+    }
 }
 
 System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue::SetNull()
@@ -73,19 +97,19 @@ System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue::SetNull()
 	EXCEPTION_HANDLER(GetImpObj()->SetNullValue())
 }
 
-System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue::Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor* processor)
+System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue::Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor^ processor)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Process((static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessorImp*>(processor))->GetImpObj()))
+	EXCEPTION_HANDLER(GetImpObj()->Process((static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessorImp^>(processor))->GetImpObj()))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue::ToString()
+System::String^ NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue::ToString()
 {
 	FdoString* unstr;
 	EXCEPTION_HANDLER(unstr = GetImpObj()->ToString())
-	return unstr;
+	return CHECK_STRING(unstr);
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValueType NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue::get_LiteralValueType()
+NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValueType NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue::LiteralValueType::get()
 {
 	FdoLiteralValueType unobj;
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetLiteralValueType())

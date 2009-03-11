@@ -24,7 +24,7 @@
 class FdoILongTransactionConflictDirectiveEnumerator;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
-public __gc class PropertyValueCollection;
+ref class PropertyValueCollection;
 END_NAMESPACE_OSGEO_FDO_COMMANDS
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
@@ -35,7 +35,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 /// implementation of ILongTransactionConflictDirectiveEnumerator.
 /// The ILongTransactionConflictDirective interface is used to specify how
 /// conflict should be resolved for a particular object.
-private __gc class ILongTransactionConflictDirectiveEnumeratorImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
+private ref class ILongTransactionConflictDirectiveEnumeratorImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
                                                                     public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionConflictDirectiveEnumerator
 {
 public:
@@ -45,7 +45,10 @@ public:
     /// \return
     /// Returns the class name
     /// 
-	__property System::String* get_FeatureClassName();
+    virtual property System::String^ FeatureClassName
+    {
+        System::String^ get();
+    }
 
     /// \brief
     /// Returns PropertyValueCollection containing the property values that
@@ -54,7 +57,10 @@ public:
     /// \return
     /// Returns PropertyValueCollection
     /// 
-	__property NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection* get_Identity();
+    virtual property NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection^ Identities
+    {
+        NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection^ get();
+    }
 
     /// \brief
     /// Gets the LongTransactionConflictResolution value to use for the current
@@ -63,8 +69,6 @@ public:
     /// \return
     /// Returns LongTransactionConflictResolution value
     /// 
-	__property NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::LongTransactionConflictResolution get_Resolution();
-
     /// \brief
     /// Sets the LongTransactionConflictResolution value to use for the current
     /// feature. The default value is LongTransactionConflictResolution_Child.
@@ -75,7 +79,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Resolution(NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::LongTransactionConflictResolution value);
+    virtual property NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::LongTransactionConflictResolution Resolution
+    {
+        NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::LongTransactionConflictResolution get();
+        System::Void set(NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::LongTransactionConflictResolution value);
+    }
 
     /// \brief
     /// Returns the number of conflicts reported by this enumerator.
@@ -83,7 +91,10 @@ public:
     /// \return
     /// Returns the number of conflicts
     /// 
-	__property System::Int32 get_Count();
+    virtual property System::Int32 Count
+    {
+        System::Int32 get();
+    }
 
     /// \brief
     /// Advances the enumerator to the next conflict. The default position of the
@@ -96,7 +107,7 @@ public:
     /// Returns True until the end of the
     /// directives is reached
     /// 
-	System::Boolean ReadNext();
+	virtual System::Boolean ReadNext();
 
     /// \brief
     /// Sets the enumerator to its initial position, which is before the first
@@ -105,14 +116,9 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Reset();
+	virtual System::Void Reset();
 
-/// \cond DOXYGEN-IGNORE
-protected:
-	__sealed System::Void ReleaseUnmanagedObject();
-/// \endcond
-
-public private:
+internal:
 	ILongTransactionConflictDirectiveEnumeratorImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)
 	{
 

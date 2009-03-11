@@ -37,68 +37,61 @@ FdoIRasterPropertyDictionary* NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDiction
 	return static_cast<FdoIRasterPropertyDictionary*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionaryImp::ReleaseUnmanagedObject()
+NAMESPACE_OSGEO_COMMON::StringCollection^ NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionaryImp::PropertyNames::get()
 {
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
+	FdoStringCollection* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetPropertyNames())
+	return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateStringCollection(IntPtr(result), true);
 }
 
-NAMESPACE_OSGEO_COMMON::StringCollection* NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionaryImp::get_PropertyNames ()
-{
-	FdoStringCollection* unobj;
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetPropertyNames())
-	return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateStringCollection(unobj, true);
-}
-
-NAMESPACE_OSGEO_FDO_SCHEMA::DataType NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionaryImp::get_PropertyDataType (System::String* name)
+NAMESPACE_OSGEO_FDO_SCHEMA::DataType NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionaryImp::PropertyDataType::get(System::String^ name)
 {
 	FdoDataType unobj;
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetPropertyDataType(StringToUni(name)))
 	return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::DataType>(unobj);
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionaryImp::get_Property (System::String* name)
+NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionaryImp::Property::get(System::String^ name)
 {
-	FdoDataValue* unobj;
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetProperty(StringToUni(name)))
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataValue(unobj, true);
+	FdoDataValue* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetProperty(StringToUni(name)))
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataValue(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionaryImp::set_Property (System::String* name, NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* value)
+System::Void NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionaryImp::Property::set(System::String^ name, NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetProperty(StringToUni(name), (value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->SetProperty(StringToUni(name), (value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionaryImp::get_PropertyDefault (System::String* name)
+NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionaryImp::PropertyDefault::get(System::String^ name)
 {
-	FdoDataValue* unobj;
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetPropertyDefault(StringToUni(name)))
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataValue(unobj, true);
+	FdoDataValue* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetPropertyDefault(StringToUni(name)))
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataValue(IntPtr(result), true);
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionaryImp::IsPropertyRequired (System::String* name)
+System::Boolean NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionaryImp::IsPropertyRequired (System::String^ name)
 {
-	FdoBoolean unobj;
+	System::Boolean unobj;
 	EXCEPTION_HANDLER(unobj = !!GetImpObj()->IsPropertyRequired(StringToUni(name)))
 	return unobj;
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionaryImp::IsPropertyEnumerable (System::String* name)
+System::Boolean NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionaryImp::IsPropertyEnumerable (System::String^ name)
 {
-	FdoBoolean unobj;
+	System::Boolean unobj;
 	EXCEPTION_HANDLER(unobj = !!GetImpObj()->IsPropertyEnumerable(StringToUni(name)))
 	return unobj;
 }
 
-NAMESPACE_OSGEO_FDO_RASTER::DataValueCollection* NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionaryImp::get_PropertyValues (System::String* name)
+NAMESPACE_OSGEO_FDO_RASTER::DataValueCollection^ NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionaryImp::PropertyValues::get(System::String^ name)
 {
-	FdoDataValueCollection* unobj;
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetPropertyValues(StringToUni(name)))
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataValueCollection(unobj, true);
+	FdoDataValueCollection* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetPropertyValues(StringToUni(name)))
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataValueCollection(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionaryImp::set_PropertyValues (System::String* name, NAMESPACE_OSGEO_FDO_RASTER::DataValueCollection* collection)
+System::Void NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionaryImp::PropertyValues::set(System::String^ name, NAMESPACE_OSGEO_FDO_RASTER::DataValueCollection^ collection)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetPropertyValues(StringToUni(name), collection->GetImpObj()))
 }

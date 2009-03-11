@@ -24,7 +24,7 @@ class FdoXmlSaxContext;
 
 BEGIN_NAMESPACE_OSGEO_COMMON_XML
 
-public __gc class XmlReader;
+ref class XmlReader;
 
 /// \ingroup (OSGeoFDOCommonXml)
 /// \brief
@@ -33,7 +33,7 @@ public __gc class XmlReader;
 /// is in progress. This class provides very rudimentary functionality such as
 /// error reporting and access to the XmlReader doing the parse. Applications
 /// can pass extra information by sub-classing from this class.
-public __gc class XmlSaxContext :  public NAMESPACE_OSGEO_RUNTIME::Disposable
+public ref class XmlSaxContext :  public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
     /// \brief
@@ -45,7 +45,7 @@ public:
     /// \return
     /// Returns XmlSaxContext
     /// 
-	XmlSaxContext(NAMESPACE_OSGEO_COMMON_XML::XmlReader* reader);
+	XmlSaxContext(NAMESPACE_OSGEO_COMMON_XML::XmlReader^ reader);
 
     /// \brief
     /// Gets the XmlReader that is parsing the XML document.
@@ -53,7 +53,10 @@ public:
     /// \return
     /// Returns XmlReader
     /// 
-	__property NAMESPACE_OSGEO_COMMON_XML::XmlReader* get_Reader();
+    property NAMESPACE_OSGEO_COMMON_XML::XmlReader^ Reader
+    {
+        NAMESPACE_OSGEO_COMMON_XML::XmlReader^ get();
+    }
 
     /// \brief
     /// Constructs an XmlSaxContext object based on an unmanaged instance of the object
@@ -68,10 +71,7 @@ public:
 	XmlSaxContext(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 /// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-
-public private:
+internal:
 	inline FdoXmlSaxContext* GetImpObj();
 };
 /// \endcond

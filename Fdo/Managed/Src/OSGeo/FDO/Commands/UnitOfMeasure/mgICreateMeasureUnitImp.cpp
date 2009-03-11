@@ -27,86 +27,86 @@ FdoICreateMeasureUnit* NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasur
     return static_cast<FdoICreateMeasureUnit*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::String* NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::get_Abbreviation()
+System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::Abbreviation::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetAbbreviation())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::set_Abbreviation(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::Abbreviation::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetAbbreviation(StringToUni(value)))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::get_Name()
+System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::Name::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetName())
 
-		return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::set_Name(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::Name::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetName(StringToUni(value)))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::get_Description()
+System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::Description::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetDescription())
 
-		return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::set_Description(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::Description::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetDescription(StringToUni(value)))
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::BaseUnit NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::get_BaseUnit()
+NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::BaseUnit NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::BaseUnit::get()
 {
 	FdoBaseUnit result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetBaseUnit())
 
-		return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::BaseUnit>(result);
+	return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::BaseUnit>(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::set_BaseUnit(NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::BaseUnit value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::BaseUnit::set(NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::BaseUnit value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetBaseUnit(static_cast<FdoBaseUnit>(value)))
 }
 
-System::Double NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::get_ScaleFactor()
+System::Double NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::ScaleFactor::get()
 {
-	FdoDouble result;
+	System::Double result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetScaleFactor())
 
-		return result;
+	return result;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::set_ScaleFactor(System::Double value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::ScaleFactor::set(System::Double value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetScaleFactor(value))
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::get_UpdateExisting()
+System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::UpdateExisting::get()
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = !!GetImpObj()->GetUpdateExisting())
 
 	return result;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::set_UpdateExisting(System::Boolean value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp::UpdateExisting::set(System::Boolean value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetUpdateExisting(value))
 }

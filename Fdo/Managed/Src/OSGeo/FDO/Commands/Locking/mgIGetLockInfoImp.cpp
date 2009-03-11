@@ -30,11 +30,11 @@ FdoIGetLockInfo* NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IGetLockInfoImp::GetImpOb
     return static_cast<FdoIGetLockInfo*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReader* NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IGetLockInfoImp::Execute()
+NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReader^ NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IGetLockInfoImp::Execute()
 {
 	FdoILockedObjectReader* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->Execute())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILockedObjectReader(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILockedObjectReader(IntPtr(result), true);
 }

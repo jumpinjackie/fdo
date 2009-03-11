@@ -23,14 +23,14 @@
 class FdoXmlSerializable;
 
 BEGIN_NAMESPACE_OSGEO_FDO_XML
-public __gc class XmlFlags;
+ref class XmlFlags;
 
 /// \ingroup (OSGeoFDOXml)
 /// \brief
 /// XmlSerializable provides the ability to serialize an FDO object 
 /// to an XML Document. Serialization support can be added to any class by basing
 /// it on XmlSerializable and implementing the _writeXml callback.
-public __gc class XmlSerializable : public NAMESPACE_OSGEO_RUNTIME:: Disposable, public NAMESPACE_OSGEO_FDO_XML::IXmlSerializable
+public ref class XmlSerializable : public NAMESPACE_OSGEO_RUNTIME:: Disposable, public NAMESPACE_OSGEO_FDO_XML::IXmlSerializable
 {
 public:
     /// \brief
@@ -40,7 +40,7 @@ public:
     /// \param fileName 
     /// Input the file name.
     /// 
-	System::Void WriteXml(String* fileName);
+	virtual System::Void WriteXml(String^ fileName);
 
     /// \brief
     /// Writes this object to a file. A complete XML document,
@@ -50,9 +50,9 @@ public:
     /// Input the file name.
     /// \param flags 
     /// Input controls the writing of the elements to the document.
-    /// If NULL then the default flags are used (see XmlFlags::Create())
+    /// If nullptr then the default flags are used (see XmlFlags::Create())
     /// 
-	System::Void WriteXml(String* fileName, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags);
+	virtual System::Void WriteXml(String^ fileName, NAMESPACE_OSGEO_FDO_XML::XmlFlags^ flags);
 
     /// \brief
     /// Writes to an XML writer. This object is appended to the XML document
@@ -63,7 +63,7 @@ public:
     /// Input the XML writer. When this function completes, the
     /// XML writer's current position will be just after this object.
     /// 
-	System::Void WriteXml(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* xmlWriter);
+	virtual System::Void WriteXml(NAMESPACE_OSGEO_COMMON_XML::XmlWriter^ xmlWriter);
 
     /// \brief
     /// Writes to an XML writer. This object is appended to the XML document
@@ -75,9 +75,9 @@ public:
     /// XML writer's current position will be just after this object.
     /// \param flags 
     /// Input controls the writing of the elements to the writer.
-    /// If NULL then the default flags are used (see XmlFlags::Create())
+    /// If nullptr then the default flags are used (see XmlFlags::Create())
     /// 
-	System::Void WriteXml(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* xmlWriter, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags);
+	virtual System::Void WriteXml(NAMESPACE_OSGEO_COMMON_XML::XmlWriter^ xmlWriter, NAMESPACE_OSGEO_FDO_XML::XmlFlags^ flags);
 
     /// \brief
     /// Writes to a text writer. A complete XML document,
@@ -87,7 +87,7 @@ public:
     /// Input the text writer.When this function completes, the
     /// text writer's current position will be just after this object.
     /// 
-	System::Void WriteXml(NAMESPACE_OSGEO_COMMON_IO::IoTextWriter* textWriter);
+	virtual System::Void WriteXml(NAMESPACE_OSGEO_COMMON_IO::IoTextWriter^ textWriter);
 
     /// \brief
     /// Writes to a text writer. A complete XML document,
@@ -98,9 +98,9 @@ public:
     /// text writer's current position will be just after this object.
     /// \param flags 
     /// Input controls the writing of the elements to the writer.
-    /// If NULL then the default flags are used (see XmlFlags::Create())
+    /// If nullptr then the default flags are used (see XmlFlags::Create())
     /// 
-	System::Void WriteXml(NAMESPACE_OSGEO_COMMON_IO::IoTextWriter* textWriter, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags);
+	virtual System::Void WriteXml(NAMESPACE_OSGEO_COMMON_IO::IoTextWriter^ textWriter, NAMESPACE_OSGEO_FDO_XML::XmlFlags^ flags);
 
     /// \brief
     /// Writes to a stream. A complete XML document,
@@ -110,7 +110,7 @@ public:
     /// Input the stream. When this function completes, the
     /// stream's current position will be just after this object.
     /// 
-	System::Void WriteXml(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream);
+	virtual System::Void WriteXml(NAMESPACE_OSGEO_COMMON_IO::IoStream^ stream);
 
     /// \brief
     /// Writes to a stream. A complete XML document,
@@ -121,9 +121,9 @@ public:
     /// stream's current position will be just after this object.
     /// \param flags 
     /// Input controls the writing of the elements to the stream.
-    /// If NULL then the default flags are used (see XmlFlags::Create())
+    /// If nullptr then the default flags are used (see XmlFlags::Create())
     /// 
-	System::Void WriteXml(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags);
+	virtual System::Void WriteXml(NAMESPACE_OSGEO_COMMON_IO::IoStream^ stream, NAMESPACE_OSGEO_FDO_XML::XmlFlags^ flags);
 
     /// \brief
     /// Gets the stylesheet for converting the XML document from 
@@ -132,19 +132,14 @@ public:
     /// stylesheet that does the conversion.
     /// 
     /// \return
-    /// Returns NULL by default (no internal format defined)
+    /// Returns nullptr by default (no internal format defined)
     /// 
-	NAMESPACE_OSGEO_COMMON_XML::XmlReader* GetFromInternalStylesheet();
+	virtual NAMESPACE_OSGEO_COMMON_XML::XmlReader^ GetFromInternalStylesheet();
 
-public private:
+internal:
     XmlSerializable(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoXmlSerializable* GetImpObj();
-
-/// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_XML

@@ -27,7 +27,7 @@ BEGIN_NAMESPACE_OSGEO_COMMON
 /// Exception is a root class for the exception type thrown from classes. It derives from a language 
 /// level exception class that is environment specific.
 [System::SerializableAttribute]
-public __gc class Exception : public System::Exception
+public ref class Exception : public System::Exception
 {
 public:
     /// \brief
@@ -36,7 +36,7 @@ public:
     /// \param ex 
     /// Input A Pointer to the unmanaged object.
     /// 
-	static NAMESPACE_OSGEO_COMMON::Exception* Create(System::IntPtr ex);
+	static NAMESPACE_OSGEO_COMMON::Exception^ Create(System::IntPtr ex);
 
 public:
     /// \brief
@@ -53,7 +53,7 @@ public:
     /// \param msg 
     /// Input the error message
     /// 
-	NAMESPACE_OSGEO_COMMON::Exception(String* msg) : System::Exception(msg)
+	NAMESPACE_OSGEO_COMMON::Exception(String^ msg) : System::Exception(msg)
 	{
 		
 	}
@@ -67,14 +67,14 @@ public:
     /// \param cause 
     /// Input the cause of the error
     /// 
-	NAMESPACE_OSGEO_COMMON::Exception(System::String* msg, System::Exception* cause) : System::Exception(msg, cause)
+	NAMESPACE_OSGEO_COMMON::Exception(System::String^ msg, System::Exception^ cause) : System::Exception(msg, cause)
 	{
 		
 	}
 
 /// \cond DOXYGEN-IGNORE
 protected:
-	NAMESPACE_OSGEO_COMMON::Exception(System::Runtime::Serialization::SerializationInfo* info, System::Runtime::Serialization::StreamingContext context) : System::Exception(info, context)
+	NAMESPACE_OSGEO_COMMON::Exception(System::Runtime::Serialization::SerializationInfo^ info, System::Runtime::Serialization::StreamingContext context) : System::Exception(info, context)
 	{
 		
 	}

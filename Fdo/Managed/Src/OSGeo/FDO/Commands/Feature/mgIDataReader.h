@@ -33,7 +33,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 /// IDataReader is returned from the ISQLCommands ExecuteReader method.
 /// The initial position of the IDataReader interface is prior to the first item.
 /// Thus, you must call ReadNext to begin accessing any data.
-public __gc __interface IDataReader : public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReader
+public interface class IDataReader : public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReader
 {
 public:
     /// \brief
@@ -53,7 +53,7 @@ public:
     /// \return
     /// Returns the property name
     /// 
-	System::String* GetPropertyName(System::Int32 index);
+	System::String^ GetPropertyName(System::Int32 index);
 
     /// \brief
     /// Gets the data type of the property with the specified name.
@@ -64,7 +64,7 @@ public:
     /// \return
     /// Returns the data type of the property corresponding to the property name.
     /// 
-	NAMESPACE_OSGEO_FDO_SCHEMA::DataType GetDataType(System::String* name);
+	NAMESPACE_OSGEO_FDO_SCHEMA::DataType GetDataType(System::String^ name);
 
     /// \brief
     /// Gets the property type of a given property. This is used
@@ -77,7 +77,7 @@ public:
     /// \return
     /// Returns the property type corresponding to the property name.
     /// 
-	NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType GetPropertyType(System::String* name);
+	NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType GetPropertyType(System::String^ name);
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE

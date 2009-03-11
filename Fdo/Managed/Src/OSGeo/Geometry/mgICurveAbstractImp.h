@@ -24,7 +24,7 @@
 class FdoICurveAbstract;
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
-public __gc __interface IDirectPosition;
+interface class IDirectPosition;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
@@ -32,8 +32,8 @@ BEGIN_NAMESPACE_OSGEO_GEOMETRY
 /// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The ICurveAbstractImp class is a curve Geometry type (concrete). ICurveAbstractImp is the most general curve type.  
-private __gc class ICurveAbstractImp :
-public NAMESPACE_OSGEO_GEOMETRY::ICurveAbstract, public NAMESPACE_OSGEO_GEOMETRY::IGeometryImp
+private ref class ICurveAbstractImp :
+    public NAMESPACE_OSGEO_GEOMETRY::ICurveAbstract, public NAMESPACE_OSGEO_GEOMETRY::IGeometryImp
 {
 public:
     /// \brief
@@ -48,7 +48,7 @@ public:
     /// 
 	ICurveAbstractImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
+internal:
 	FdoICurveAbstract *GetImpObj();
 	
 public:
@@ -63,7 +63,10 @@ public:
     /// \return
     /// Returns the starting position
     /// 
-	__property NAMESPACE_OSGEO_GEOMETRY::IDirectPosition *get_StartPosition();
+    property NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ StartPosition
+    {
+        virtual NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ get();
+    }
 	
     /// \brief
     /// Gets the ending position of this Curve.
@@ -76,7 +79,10 @@ public:
     /// \return
     /// Returns the ending position
     /// 
-	__property NAMESPACE_OSGEO_GEOMETRY::IDirectPosition *get_EndPosition();
+    property NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ EndPosition
+    {
+        virtual NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ get();
+    }
 	
     /// \brief
     /// Gets the closure state for the curve.
@@ -96,7 +102,10 @@ public:
     /// \return
     /// Returns 'true' if the curve is closed, and false otherwise
     /// 
-	__property System::Boolean get_IsClosed();
+    property System::Boolean IsClosed
+    {
+        virtual System::Boolean get();
+    }
 };
 END_NAMESPACE_OSGEO_GEOMETRY
 

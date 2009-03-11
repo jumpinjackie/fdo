@@ -32,12 +32,12 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue::SingleValue(IntPtr unmanaged, Boole
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue::SingleValue() : DataValue(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoSingleValue::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoSingleValue::Create()), true))
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue::SingleValue(System::Single value) : DataValue(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoSingleValue::Create(value), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoSingleValue::Create(value)), true))
 }
 
 FdoSingleValue* NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue::GetImpObj()
@@ -45,38 +45,38 @@ FdoSingleValue* NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue::GetImpObj()
 	return static_cast<FdoSingleValue*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Single NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue::op_Explicit( NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue* value )
+NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue::operator System::Single( NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue^ value )
 {
 	return (value->GetImpObj())->operator FdoFloat();
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::DataType NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue::get_DataType()
+NAMESPACE_OSGEO_FDO_SCHEMA::DataType NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue::DataType::get()
 {
 	FdoDataType unobj;
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetDataType())
 	return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::DataType>(unobj);
 }
 
-System::Single NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue::get_Single()
+System::Single NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue::Single::get()
 {
-	FdoFloat unobj;
+	System::Single unobj;
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetSingle())
 	return unobj;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue::set_Single(System::Single value)
+System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue::Single::set(System::Single value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetSingle(value))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue::Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor* processor)
+System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue::Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor^ processor)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Process((static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessorImp*>(processor))->GetImpObj()))
+	EXCEPTION_HANDLER(GetImpObj()->Process((static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessorImp^>(processor))->GetImpObj()))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue::ToString()
+System::String^ NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue::ToString()
 {
 	FdoString* unstr;
 	EXCEPTION_HANDLER(unstr = GetImpObj()->ToString())
-	return unstr;
+	return CHECK_STRING(unstr);
 }

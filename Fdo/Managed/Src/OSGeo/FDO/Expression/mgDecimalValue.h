@@ -23,17 +23,17 @@
 class FdoDecimalValue;
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
-public __value enum DataType;
+enum class DataType;
 END_NAMESPACE_OSGEO_FDO_SCHEMA
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
-public __gc __interface IExpressionProcessor;
+interface class IExpressionProcessor;
 
 /// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The DecimalValue class derives from DataValue and represents a decimal value.
-public __gc class DecimalValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue
+public ref class DecimalValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue
 {
 public:
     /// \brief
@@ -42,7 +42,7 @@ public:
     /// \return
     /// Returns a double
     /// 
-	static System::Double op_Explicit( NAMESPACE_OSGEO_FDO_EXPRESSION::DecimalValue* value );
+	static operator System::Double ( NAMESPACE_OSGEO_FDO_EXPRESSION::DecimalValue^ value );
 
     /// \brief
     /// Constructs a default instance of an DecimalValue with a value of null.
@@ -69,7 +69,10 @@ public:
     /// \return
     /// Returns an DataType
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
+    property NAMESPACE_OSGEO_FDO_SCHEMA::DataType DataType
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::DataType get();
+    }
 
     /// \brief
     /// Gets the decimal value.
@@ -77,8 +80,6 @@ public:
     /// \return
     /// Returns a double
     /// 
-	__property System::Double get_Decimal();
-
     /// \brief
     /// Sets the decimal value.
     /// 
@@ -88,7 +89,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Decimal(System::Double value);
+    property System::Double Decimal
+    {
+        System::Double get();
+        System::Void set(System::Double value);
+    }
 
     /// \brief
     /// Overrides Expression.Process to pass the DecimalValue to the appropriate
@@ -100,7 +105,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor* processor);
+	virtual System::Void Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor^ processor) override;
 
     /// \brief
     /// Returns the well defined text representation of this expression.
@@ -108,7 +113,7 @@ public:
     /// \return
     /// Returns a character string
     /// 
-	System::String* ToString();
+	virtual System::String^ ToString() override;
 
     /// \brief
     /// Constructs a DecimalValue object based on an unmanaged instance of the object
@@ -122,7 +127,7 @@ public:
     /// 
 	DecimalValue(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
+internal:
 	inline FdoDecimalValue* GetImpObj();
 };
 END_NAMESPACE_OSGEO_FDO_EXPRESSION

@@ -38,7 +38,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 /// the operation to perform. The Execute method performs the specified
 /// operation on the identified long transaction if the user has access
 /// privileges for the indicated long transaction.
-private __gc class IFreezeLongTransactionImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+private ref class IFreezeLongTransactionImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
                                                public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IFreezeLongTransaction
 {
 public:
@@ -48,8 +48,6 @@ public:
     /// \return
     /// Returns the name of the long transaction
     /// 
-	__property System::String* get_Name();
-
     /// \brief
     /// Sets the name of the long transaction to freeze or unfreeze as a string.
     /// 
@@ -59,7 +57,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Name(System::String* value);
+    virtual property System::String^ Name
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     ///  Gets the operation to perform (Freeze or Thaw) on the long transaction.
@@ -67,8 +69,6 @@ public:
     /// \return
     /// Returns the operation to perform
     /// 
-	__property NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::LongTransactionFreezeOperations get_Operation();
-
     /// \brief
     /// Sets the operation to perform (Freeze or Thaw) on the long transaction.
     /// 
@@ -78,7 +78,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Operation(NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::LongTransactionFreezeOperations value);
+    virtual property NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::LongTransactionFreezeOperations Operation
+    {
+        NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::LongTransactionFreezeOperations get();
+        System::Void set(NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::LongTransactionFreezeOperations value);
+    }
 
     /// \brief
     /// Executes the command.
@@ -86,9 +90,9 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Execute();
+	virtual System::Void Execute();
 
-public private:
+internal:
 	IFreezeLongTransactionImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)
 	{
 

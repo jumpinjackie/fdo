@@ -24,7 +24,7 @@
 class FdoIGetSchemaNames;
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
-public __gc class FeatureSchemaCollection;
+ref class FeatureSchemaCollection;
 END_NAMESPACE_OSGEO_FDO_SCHEMA
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
@@ -36,7 +36,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 /// retrieves the list of available schemas.
 /// The Execute operation returns a StringCollection
 /// object.
-private __gc class IGetSchemaNamesImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+private ref class IGetSchemaNamesImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
                                         public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IGetSchemaNames
 {
 public:
@@ -47,9 +47,9 @@ public:
     /// \return
     /// Returns the string collection of the names of the available schemas.
     /// 
-    NAMESPACE_OSGEO_COMMON::StringCollection* Execute();
+    virtual NAMESPACE_OSGEO_COMMON::StringCollection^ Execute();
 
-public private:
+internal:
 	IGetSchemaNamesImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)
 	{
 

@@ -29,9 +29,9 @@ class FdoXmlSaxHandler;
 class FdoXmlSaxContext;
 
 BEGIN_NAMESPACE_OSGEO_COMMON_XML
-public __gc class XmlSaxHandler;
-public __gc class XmlSaxContext;
-public __gc class XmlAttributeCollection;
+ref class XmlSaxHandler;
+ref class XmlSaxContext;
+ref class XmlAttributeCollection;
 END_NAMESPACE_OSGEO_COMMON_XML
 
 using namespace NAMESPACE_OSGEO_COMMON_XML;

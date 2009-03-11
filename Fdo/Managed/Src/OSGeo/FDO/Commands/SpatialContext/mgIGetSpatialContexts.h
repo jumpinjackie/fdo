@@ -21,14 +21,14 @@
 #include "FDO\Commands\mgICommand.h"
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
-public __gc __interface ISpatialContextReader;
+interface class ISpatialContextReader;
 
 /// \ingroup (OSGeoFDOCommandsSpatialContext)
 /// \interface OSGeo::FDO::Commands::SpatialContext::IGetSpatialContexts
 /// \brief
 /// IGetSpatialContexts interface defines the GetSpatialContexts command,
 /// which enumerates the existing spatial contexts.
-public __gc __interface IGetSpatialContexts : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
+public interface class IGetSpatialContexts : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
 {
 public:
     /// \brief
@@ -39,8 +39,6 @@ public:
     /// \return
     /// Returns Boolean value
     /// 
-	__property System::Boolean get_ActiveOnly();
-
     /// \brief
     ///  Sets a Boolean flag that indicates if the GetSpatialContexts command
     /// will return only the active spatial context or all spatial contexts. The
@@ -52,7 +50,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_ActiveOnly(System::Boolean value);
+    property System::Boolean ActiveOnly
+    {
+        System::Boolean get();
+        System::Void set(System::Boolean value);
+    }
 
     /// \brief
     /// Executes the GetSpatialContexts command returning an ISpatialContextReader.
@@ -60,7 +62,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::ISpatialContextReader* Execute();
+	NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::ISpatialContextReader^ Execute();
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT

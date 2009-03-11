@@ -23,21 +23,21 @@
 #include "mgSpatialUtility.h"
 #include "mgSpatialGeometryValidity.h"
 
-NAMESPACE_OSGEO_GEOMETRY::IGeometry * NAMESPACE_OSGEO_SPATIAL::SpatialUtility::ApproximateGeometryWithLineStrings(NAMESPACE_OSGEO_GEOMETRY::IGeometry * geometry, System::Double maxSpacing, System::Double maxOffset, NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract * geometryFactory)
+NAMESPACE_OSGEO_GEOMETRY::IGeometry^ NAMESPACE_OSGEO_SPATIAL::SpatialUtility::ApproximateGeometryWithLineStrings(NAMESPACE_OSGEO_GEOMETRY::IGeometry^ geometry, System::Double maxSpacing, System::Double maxOffset, NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract^ geometryFactory)
 {
 	FdoIGeometry* unobj;
-	EXCEPTION_HANDLER(unobj = FdoSpatialUtility::ApproximateGeometryWithLineStrings((static_cast<FdoIGeometry *>(static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp *>(geometry)->UnmanagedObject.ToPointer())), maxSpacing, maxOffset, static_cast<FdoGeometryFactoryAbstract *>(geometryFactory->UnmanagedObject.ToPointer())))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIGeometry(unobj, true);
+	EXCEPTION_HANDLER(unobj = FdoSpatialUtility::ApproximateGeometryWithLineStrings((static_cast<FdoIGeometry*>(static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp^>(geometry)->UnmanagedObject.ToPointer())), maxSpacing, maxOffset, static_cast<FdoGeometryFactoryAbstract*>(geometryFactory->UnmanagedObject.ToPointer())))
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIGeometry(IntPtr(unobj), true);
 }
 
-NAMESPACE_OSGEO_SPATIAL::SpatialGeometryValidity NAMESPACE_OSGEO_SPATIAL::SpatialUtility::ValidateGeometryByType(NAMESPACE_OSGEO_GEOMETRY::IGeometry * geometry, NAMESPACE_OSGEO_COMMON::GeometryType geometryTypes [], NAMESPACE_OSGEO_COMMON::GeometryComponentType geometryComponentTypes [], System::Int32 dimensionality)
+NAMESPACE_OSGEO_SPATIAL::SpatialGeometryValidity NAMESPACE_OSGEO_SPATIAL::SpatialUtility::ValidateGeometryByType(NAMESPACE_OSGEO_GEOMETRY::IGeometry^ geometry, array<NAMESPACE_OSGEO_COMMON::GeometryType>^ geometryTypes, array<NAMESPACE_OSGEO_COMMON::GeometryComponentType>^ geometryComponentTypes, System::Int32 dimensionality)
 {
     FdoInt32 unTypelength;
     FdoGeometryType* unType;
-    if (NULL == geometryTypes)
+    if (nullptr == geometryTypes)
     {
         unTypelength = 0;
-        unType = NULL;
+        unType = nullptr;
     }
     else
     {
@@ -51,10 +51,10 @@ NAMESPACE_OSGEO_SPATIAL::SpatialGeometryValidity NAMESPACE_OSGEO_SPATIAL::Spatia
 
     FdoInt32 unComponentlength;
     FdoGeometryComponentType* unComponent;
-    if (NULL == geometryComponentTypes)
+    if (nullptr == geometryComponentTypes)
     {
         unComponentlength = 0;
-        unComponent = NULL;
+        unComponent = nullptr;
     }
     else
     {
@@ -67,7 +67,7 @@ NAMESPACE_OSGEO_SPATIAL::SpatialGeometryValidity NAMESPACE_OSGEO_SPATIAL::Spatia
     }
 
 	FdoSpatialGeometryValidity unobj;
-	EXCEPTION_HANDLER(unobj = FdoSpatialUtility::ValidateGeometryByType((static_cast<FdoIGeometry *>(static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp *>(geometry)->UnmanagedObject.ToPointer())), unTypelength, unType, unComponentlength, unComponent, dimensionality))
+	EXCEPTION_HANDLER(unobj = FdoSpatialUtility::ValidateGeometryByType((static_cast<FdoIGeometry*>(static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp^>(geometry)->UnmanagedObject.ToPointer())), unTypelength, unType, unComponentlength, unComponent, dimensionality))
 
     delete[] unType;
     delete[] unComponent;
@@ -75,181 +75,186 @@ NAMESPACE_OSGEO_SPATIAL::SpatialGeometryValidity NAMESPACE_OSGEO_SPATIAL::Spatia
 	return static_cast<NAMESPACE_OSGEO_SPATIAL::SpatialGeometryValidity>(unobj);
 }
 
-System::Boolean NAMESPACE_OSGEO_SPATIAL::SpatialUtility::Evaluate(NAMESPACE_OSGEO_GEOMETRY::IGeometry * g1, NAMESPACE_OSGEO_FDO_FILTER::SpatialOperations op, NAMESPACE_OSGEO_GEOMETRY::IGeometry * g2)
+System::Boolean NAMESPACE_OSGEO_SPATIAL::SpatialUtility::Evaluate(NAMESPACE_OSGEO_GEOMETRY::IGeometry^ g1, NAMESPACE_OSGEO_FDO_FILTER::SpatialOperations op, NAMESPACE_OSGEO_GEOMETRY::IGeometry^ g2)
 {
 	FdoBoolean unobj;
-	EXCEPTION_HANDLER(unobj = FdoSpatialUtility::Evaluate((static_cast<FdoIGeometry *>(static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp *>(g1)->UnmanagedObject.ToPointer())), static_cast<FdoSpatialOperations>(op), (static_cast<FdoIGeometry *>(static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp *>(g2)->UnmanagedObject.ToPointer()))))
+	EXCEPTION_HANDLER(unobj = FdoSpatialUtility::Evaluate((static_cast<FdoIGeometry*>(static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp^>(g1)->UnmanagedObject.ToPointer())), static_cast<FdoSpatialOperations>(op), (static_cast<FdoIGeometry*>(static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp^>(g2)->UnmanagedObject.ToPointer()))))
 	return unobj;
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IGeometry* NAMESPACE_OSGEO_SPATIAL::SpatialUtility::TesselateCurve( NAMESPACE_OSGEO_GEOMETRY::IGeometry* curve)
+NAMESPACE_OSGEO_GEOMETRY::IGeometry^ NAMESPACE_OSGEO_SPATIAL::SpatialUtility::TesselateCurve( NAMESPACE_OSGEO_GEOMETRY::IGeometry^ curve)
 {
 	FdoIGeometry* unobj;
-	EXCEPTION_HANDLER(unobj = FdoSpatialUtility::TesselateCurve((static_cast<FdoIGeometry *>(static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp*>(curve)->UnmanagedObject.ToPointer()))))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIGeometry(unobj, true);	
+	EXCEPTION_HANDLER(unobj = FdoSpatialUtility::TesselateCurve((static_cast<FdoIGeometry*>(static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp^>(curve)->UnmanagedObject.ToPointer()))))
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIGeometry(IntPtr(unobj), true);	
 }
 
-System::Void NAMESPACE_OSGEO_SPATIAL::SpatialUtility::GetExtents(System::Byte bytes[],  System::Double* minX, System::Double* minY,  System::Double* maxX,  System::Double* maxY)
+System::Void NAMESPACE_OSGEO_SPATIAL::SpatialUtility::GetExtents(array<System::Byte>^ bytes,  System::Double% minX, System::Double% minY,  System::Double% maxX,  System::Double% maxY)
 {
     FdoByteArray* umBuffer = ByteArrayToFdoByteArray(bytes);
-	double uminx = *minX;
-	double uminy = *minY;
-	double umaxx = *maxX;
-	double umaxy = *maxY;
-	EXCEPTION_HANDLER(FdoSpatialUtility::GetExtents(umBuffer, uminx, uminy, umaxx, umaxy))
-
-    umBuffer->Release();
-
-    *minX = uminx;
-	*minY = uminy;
-	*maxX = umaxx;
-	*maxY = umaxy;
+	pin_ptr<FdoDouble> uminx = &minX;
+	pin_ptr<FdoDouble> uminy = &minY;
+	pin_ptr<FdoDouble> umaxx = &maxX;
+	pin_ptr<FdoDouble> umaxy = &maxY;
+    try
+    {
+	    EXCEPTION_HANDLER(FdoSpatialUtility::GetExtents(umBuffer, *uminx, *uminy, *umaxx, *umaxy))
+    }
+    finally
+    {
+        if (umBuffer != nullptr)
+            umBuffer->Release();
+    }
 }
 
-System::Void NAMESPACE_OSGEO_SPATIAL::SpatialUtility::GetExtents(System::Byte bytes[],  System::Double* minX, System::Double* minY,  System::Double* minZ, System::Double* maxX,  System::Double* maxY, System::Double* maxZ)
+System::Void NAMESPACE_OSGEO_SPATIAL::SpatialUtility::GetExtents(array<System::Byte>^ bytes,  System::Double% minX, System::Double% minY,  System::Double% minZ, System::Double% maxX,  System::Double% maxY, System::Double% maxZ)
 {
     FdoByteArray* umBuffer = ByteArrayToFdoByteArray(bytes);
-	double uminx = *minX;
-	double uminy = *minY;
-	double uminz = *minZ;
-	double umaxx = *maxX;
-	double umaxy = *maxY;
-	double umaxz = *maxZ;
-	EXCEPTION_HANDLER(FdoSpatialUtility::GetExtents(umBuffer, uminx, uminz, uminy, umaxx, umaxy, umaxz))
-
-    umBuffer->Release();
-
-    *minX = uminx;
-	*minY = uminy;
-	*minZ = uminz;
-	*maxX = umaxx;
-	*maxY = umaxy;
-	*maxZ = umaxz;
+    pin_ptr<FdoDouble> uminx = &minX;
+    pin_ptr<FdoDouble> uminy = &minY;
+    pin_ptr<FdoDouble> uminz = &minZ;
+    pin_ptr<FdoDouble> umaxx = &maxX;
+    pin_ptr<FdoDouble> umaxy = &maxY;
+    pin_ptr<FdoDouble> umaxz = &maxZ;
+    try
+    {
+	    EXCEPTION_HANDLER(FdoSpatialUtility::GetExtents(umBuffer, *uminx, *uminz, *uminy, *umaxx, *umaxy, *umaxz))
+    }
+    finally
+    {
+        if (umBuffer != nullptr)
+            umBuffer->Release();
+    }
 }
 
-System::Boolean NAMESPACE_OSGEO_SPATIAL::SpatialUtility::PointInRing( NAMESPACE_OSGEO_GEOMETRY::ILinearRing* ring, System::Double coordinateX, System::Double coordinateY, System::Boolean* isOnBoundary)
+System::Boolean NAMESPACE_OSGEO_SPATIAL::SpatialUtility::PointInRing( NAMESPACE_OSGEO_GEOMETRY::ILinearRing^ ring, System::Double coordinateX, System::Double coordinateY, System::Boolean% isOnBoundary)
 {
-	FdoBoolean rv;
-    FdoILinearRing* p1 = NULL;
-    if (NULL != ring)
+    System::Boolean ret;
+	pin_ptr<FdoBoolean> uisOnBoundary = &isOnBoundary;
+    FdoILinearRing* p1 = nullptr;
+    if (nullptr != ring)
     {
-        NAMESPACE_OSGEO_RUNTIME::Disposable* dis = dynamic_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(static_cast<NAMESPACE_OSGEO_GEOMETRY::ILinearRingImp*>(ring));
+        NAMESPACE_OSGEO_RUNTIME::Disposable^ dis = dynamic_cast<NAMESPACE_OSGEO_RUNTIME::Disposable^>(static_cast<NAMESPACE_OSGEO_GEOMETRY::ILinearRingImp^>(ring));
         p1 = static_cast<FdoILinearRing*>(dis->UnmanagedObject.ToPointer());
     }
 
-	EXCEPTION_HANDLER(rv = FdoSpatialUtility::PointInRing(p1, coordinateX, coordinateY, BooleanToFdoBool(isOnBoundary)))
-
-	return rv;
+	EXCEPTION_HANDLER(ret = FdoSpatialUtility::PointInRing(p1, coordinateX, coordinateY, uisOnBoundary))
+	
+    return ret;
 }
 
-System::Boolean NAMESPACE_OSGEO_SPATIAL::SpatialUtility::PointInRing( NAMESPACE_OSGEO_GEOMETRY::ILinearRing* ring, System::Double coordinateX, System::Double coordinateY)
+System::Boolean NAMESPACE_OSGEO_SPATIAL::SpatialUtility::PointInRing( NAMESPACE_OSGEO_GEOMETRY::ILinearRing^ ring, System::Double coordinateX, System::Double coordinateY)
 {
-	FdoBoolean rv;
-    FdoILinearRing* p1 = NULL;
-    if (NULL != ring)
+	System::Boolean ret;
+    FdoILinearRing* p1 = nullptr;
+    if (nullptr != ring)
     {
-        NAMESPACE_OSGEO_RUNTIME::Disposable* dis = dynamic_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(static_cast<NAMESPACE_OSGEO_GEOMETRY::ILinearRingImp*>(ring));
+        NAMESPACE_OSGEO_RUNTIME::Disposable^ dis = dynamic_cast<NAMESPACE_OSGEO_RUNTIME::Disposable^>(static_cast<NAMESPACE_OSGEO_GEOMETRY::ILinearRingImp^>(ring));
         p1 = static_cast<FdoILinearRing*>(dis->UnmanagedObject.ToPointer());
     }
 
-	EXCEPTION_HANDLER(rv = FdoSpatialUtility::PointInRing(p1, coordinateX, coordinateY, NULL))
+	EXCEPTION_HANDLER(ret = FdoSpatialUtility::PointInRing(p1, coordinateX, coordinateY, nullptr))
 
-	return rv;
+	return ret;
 }
 
-System::Boolean NAMESPACE_OSGEO_SPATIAL::SpatialUtility::PointInPolygon(NAMESPACE_OSGEO_GEOMETRY::IPolygon* polygon, System::Double coordinateX, System::Double coordinateY, System::Boolean * isOnExtBoundary, System::Boolean * isOnInBoundary)
+System::Boolean NAMESPACE_OSGEO_SPATIAL::SpatialUtility::PointInPolygon(NAMESPACE_OSGEO_GEOMETRY::IPolygon^ polygon, System::Double coordinateX, System::Double coordinateY, System::Boolean% isOnExtBoundary, System::Boolean% isOnInBoundary)
 {
-	FdoBoolean rv;
-    FdoIPolygon* p1 = NULL;
-    if (NULL != polygon)
+	System::Boolean ret;
+    FdoIPolygon* p1 = nullptr;
+    if (nullptr != polygon)
     {
-        NAMESPACE_OSGEO_RUNTIME::Disposable* dis = dynamic_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(static_cast<NAMESPACE_OSGEO_GEOMETRY::IPolygonImp*>(polygon));
+        NAMESPACE_OSGEO_RUNTIME::Disposable^ dis = dynamic_cast<NAMESPACE_OSGEO_RUNTIME::Disposable^>(static_cast<NAMESPACE_OSGEO_GEOMETRY::IPolygonImp^>(polygon));
+        p1 = static_cast<FdoIPolygon*>(dis->UnmanagedObject.ToPointer());
+    }
+	pin_ptr<FdoBoolean> uisOnExtBoundary = &isOnExtBoundary;
+	pin_ptr<FdoBoolean> uisOnInBoundary = &isOnInBoundary;
+
+	EXCEPTION_HANDLER(ret = FdoSpatialUtility::PointInPolygon(p1, coordinateX, coordinateY, uisOnExtBoundary, uisOnInBoundary))
+
+	return ret;
+}
+
+System::Boolean NAMESPACE_OSGEO_SPATIAL::SpatialUtility::PointInPolygon(NAMESPACE_OSGEO_GEOMETRY::IPolygon^ polygon, System::Double coordinateX, System::Double coordinateY, System::Boolean% isOnExtBoundary)
+{
+	System::Boolean ret;
+    FdoIPolygon* p1 = nullptr;
+    if (nullptr != polygon)
+    {
+        NAMESPACE_OSGEO_RUNTIME::Disposable^ dis = dynamic_cast<NAMESPACE_OSGEO_RUNTIME::Disposable^>(static_cast<NAMESPACE_OSGEO_GEOMETRY::IPolygonImp^>(polygon));
         p1 = static_cast<FdoIPolygon*>(dis->UnmanagedObject.ToPointer());
     }
 
-	EXCEPTION_HANDLER(rv= FdoSpatialUtility::PointInPolygon(p1, coordinateX, coordinateY, BooleanToFdoBool(isOnExtBoundary), BooleanToFdoBool(isOnInBoundary)))
+	pin_ptr<FdoBoolean> uisOnExtBoundary = &isOnExtBoundary;
 
-	return rv;
+	EXCEPTION_HANDLER(ret = FdoSpatialUtility::PointInPolygon(p1, coordinateX, coordinateY, uisOnExtBoundary, nullptr))
+
+	return ret;
 }
 
-System::Boolean NAMESPACE_OSGEO_SPATIAL::SpatialUtility::PointInPolygon(NAMESPACE_OSGEO_GEOMETRY::IPolygon* polygon, System::Double coordinateX, System::Double coordinateY, System::Boolean * isOnExtBoundary)
+System::Boolean NAMESPACE_OSGEO_SPATIAL::SpatialUtility::PointInPolygon(NAMESPACE_OSGEO_GEOMETRY::IPolygon^ polygon, System::Double coordinateX, System::Double coordinateY)
 {
-	FdoBoolean rv;
-    FdoIPolygon* p1 = NULL;
-    if (NULL != polygon)
+	System::Boolean ret;
+    FdoIPolygon* p1 = nullptr;
+    if (nullptr != polygon)
     {
-        NAMESPACE_OSGEO_RUNTIME::Disposable* dis = dynamic_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(static_cast<NAMESPACE_OSGEO_GEOMETRY::IPolygonImp*>(polygon));
+        NAMESPACE_OSGEO_RUNTIME::Disposable^ dis = dynamic_cast<NAMESPACE_OSGEO_RUNTIME::Disposable^>(static_cast<NAMESPACE_OSGEO_GEOMETRY::IPolygonImp^>(polygon));
         p1 = static_cast<FdoIPolygon*>(dis->UnmanagedObject.ToPointer());
     }
 
-	EXCEPTION_HANDLER(rv= FdoSpatialUtility::PointInPolygon(p1, coordinateX, coordinateY, BooleanToFdoBool(isOnExtBoundary), NULL))
+	EXCEPTION_HANDLER(ret = FdoSpatialUtility::PointInPolygon(p1, coordinateX, coordinateY, nullptr, nullptr))
 
-	return rv;
+	return ret;
 }
 
-System::Boolean NAMESPACE_OSGEO_SPATIAL::SpatialUtility::PointInPolygon(NAMESPACE_OSGEO_GEOMETRY::IPolygon* polygon, System::Double coordinateX, System::Double coordinateY)
+System::Double NAMESPACE_OSGEO_SPATIAL::SpatialUtility::ComputeLinearRingArea( NAMESPACE_OSGEO_GEOMETRY::ILinearRing^ ring )
 {
-	FdoBoolean rv;
-    FdoIPolygon* p1 = NULL;
-    if (NULL != polygon)
+	System::Double ret;
+    FdoILinearRing* p1 = nullptr;
+    if (nullptr != ring)
     {
-        NAMESPACE_OSGEO_RUNTIME::Disposable* dis = dynamic_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(static_cast<NAMESPACE_OSGEO_GEOMETRY::IPolygonImp*>(polygon));
-        p1 = static_cast<FdoIPolygon*>(dis->UnmanagedObject.ToPointer());
-    }
-
-	EXCEPTION_HANDLER(rv= FdoSpatialUtility::PointInPolygon(p1, coordinateX, coordinateY, NULL, NULL))
-
-	return rv;
-}
-
-System::Double NAMESPACE_OSGEO_SPATIAL::SpatialUtility::ComputeLinearRingArea( NAMESPACE_OSGEO_GEOMETRY::ILinearRing* ring )
-{
-	FdoDouble rv;
-    FdoILinearRing* p1 = NULL;
-    if (NULL != ring)
-    {
-        NAMESPACE_OSGEO_RUNTIME::Disposable* dis = dynamic_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(static_cast<NAMESPACE_OSGEO_GEOMETRY::ILinearRingImp*>(ring));
+        NAMESPACE_OSGEO_RUNTIME::Disposable^ dis = dynamic_cast<NAMESPACE_OSGEO_RUNTIME::Disposable^>(static_cast<NAMESPACE_OSGEO_GEOMETRY::ILinearRingImp^>(ring));
         p1 = static_cast<FdoILinearRing*>(dis->UnmanagedObject.ToPointer());
     }
 
-	EXCEPTION_HANDLER(rv = FdoSpatialUtility::ComputeLinearRingArea(p1))
+	EXCEPTION_HANDLER(ret = FdoSpatialUtility::ComputeLinearRingArea(p1))
 
-	return rv;
+	return ret;
 }
 
-System::Double NAMESPACE_OSGEO_SPATIAL::SpatialUtility::ComputeLinearRingLength( NAMESPACE_OSGEO_GEOMETRY::ILinearRing* ring )
+System::Double NAMESPACE_OSGEO_SPATIAL::SpatialUtility::ComputeLinearRingLength( NAMESPACE_OSGEO_GEOMETRY::ILinearRing^ ring )
 {
-	FdoDouble rv;
-    FdoILinearRing* p1 = NULL;
-    if (NULL != ring)
+	System::Double ret;
+    FdoILinearRing* p1 = nullptr;
+    if (nullptr != ring)
     {
-        NAMESPACE_OSGEO_RUNTIME::Disposable* dis = dynamic_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(static_cast<NAMESPACE_OSGEO_GEOMETRY::ILinearRingImp*>(ring));
+        NAMESPACE_OSGEO_RUNTIME::Disposable^ dis = dynamic_cast<NAMESPACE_OSGEO_RUNTIME::Disposable^>(static_cast<NAMESPACE_OSGEO_GEOMETRY::ILinearRingImp^>(ring));
         p1 = static_cast<FdoILinearRing*>(dis->UnmanagedObject.ToPointer());
     }
 
-	EXCEPTION_HANDLER(rv = FdoSpatialUtility::ComputeLinearRingLength(p1))
+	EXCEPTION_HANDLER(ret = FdoSpatialUtility::ComputeLinearRingLength(p1))
 
-	return rv;
+	return ret;
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IGeometry* NAMESPACE_OSGEO_SPATIAL::SpatialUtility::CreateGeometryFromRings( NAMESPACE_OSGEO_GEOMETRY::LinearRingCollection* rings, System ::Boolean relateRings )
+NAMESPACE_OSGEO_GEOMETRY::IGeometry^ NAMESPACE_OSGEO_SPATIAL::SpatialUtility::CreateGeometryFromRings( NAMESPACE_OSGEO_GEOMETRY::LinearRingCollection^ rings, System ::Boolean relateRings )
 {
 	FdoIGeometry* unobj;
-	EXCEPTION_HANDLER(unobj = FdoSpatialUtility::CreateGeometryFromRings(static_cast<FdoLinearRingCollection *>(rings->UnmanagedObject.ToPointer()), relateRings))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIGeometry(unobj, true);	
+	EXCEPTION_HANDLER(unobj = FdoSpatialUtility::CreateGeometryFromRings(static_cast<FdoLinearRingCollection*>(rings->UnmanagedObject.ToPointer()), relateRings))
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIGeometry(IntPtr(unobj), true);	
 }
 
-Boolean NAMESPACE_OSGEO_SPATIAL::SpatialUtility::IsCircularArcValid( NAMESPACE_OSGEO_GEOMETRY::ICircularArcSegment *arc, System::Double tolerance )
+System::Boolean NAMESPACE_OSGEO_SPATIAL::SpatialUtility::IsCircularArcValid( NAMESPACE_OSGEO_GEOMETRY::ICircularArcSegment^ arc, System::Double tolerance )
 {
-	FdoBoolean rv;
-    FdoICircularArcSegment* p1 = NULL;
-    if (NULL != arc)
+	System::Boolean ret;
+    FdoICircularArcSegment* p1 = nullptr;
+    if (nullptr != arc)
     {
-        NAMESPACE_OSGEO_RUNTIME::Disposable* dis = dynamic_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(static_cast<NAMESPACE_OSGEO_GEOMETRY::ICircularArcSegmentImp*>(arc));
+        NAMESPACE_OSGEO_RUNTIME::Disposable^ dis = dynamic_cast<NAMESPACE_OSGEO_RUNTIME::Disposable^>(static_cast<NAMESPACE_OSGEO_GEOMETRY::ICircularArcSegmentImp^>(arc));
         p1 = static_cast<FdoICircularArcSegment*>(dis->UnmanagedObject.ToPointer());
     }
 
-	EXCEPTION_HANDLER(rv = FdoSpatialUtility::IsCircularArcValid(p1, tolerance))
+	EXCEPTION_HANDLER(ret = FdoSpatialUtility::IsCircularArcValid(p1, tolerance))
 
-	return rv;
+	return ret;
 }

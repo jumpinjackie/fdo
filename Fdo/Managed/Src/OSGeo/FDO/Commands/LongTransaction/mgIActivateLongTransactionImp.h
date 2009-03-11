@@ -34,7 +34,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 /// long transaction command is the long transaction name. The Execute operation
 /// activates the identified long transaction if the user has access privileges
 /// for it.
-private __gc class IActivateLongTransactionImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+private ref class IActivateLongTransactionImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
                                                  public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IActivateLongTransaction
 {
 public:
@@ -44,8 +44,6 @@ public:
     /// \return
     /// Returns the name of the long transaction
     /// 
-	__property System::String* get_Name();
-
     /// \brief
     /// Sets the name of the long transaction to activate as a string.
     /// 
@@ -55,7 +53,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Name(System::String* value);
+    virtual property System::String^ Name
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Executes the activate long transaction command. An exception is
@@ -65,9 +67,9 @@ public:
     /// \return
     /// Returns nothing
     /// 
-    System::Void Execute();
+    virtual System::Void Execute();
 
-public private:
+internal:
 	IActivateLongTransactionImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)
 	{
 

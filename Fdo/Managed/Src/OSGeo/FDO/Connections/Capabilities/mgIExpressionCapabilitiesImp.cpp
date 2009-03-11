@@ -34,29 +34,21 @@ FdoIExpressionCapabilities* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IExpre
     return static_cast<FdoIExpressionCapabilities*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IExpressionCapabilitiesImp::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}
-
-NAMESPACE_OSGEO_FDO_EXPRESSION::ExpressionType NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IExpressionCapabilitiesImp::get_ExpressionTypes() []
+array<NAMESPACE_OSGEO_FDO_EXPRESSION::ExpressionType>^ NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IExpressionCapabilitiesImp::ExpressionTypes::get()
 {
 	FdoExpressionType* unobj;
 	FdoInt32 unlength;
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetExpressionTypes(unlength))
-	NAMESPACE_OSGEO_FDO_EXPRESSION::ExpressionType rv [] = new NAMESPACE_OSGEO_FDO_EXPRESSION::ExpressionType[unlength];
+	array<NAMESPACE_OSGEO_FDO_EXPRESSION::ExpressionType>^ result = gcnew array<NAMESPACE_OSGEO_FDO_EXPRESSION::ExpressionType>(unlength);
 	for(FdoInt32 i = 0; i < unlength; i++)
-	{
-		rv[i] = static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::ExpressionType>(*(unobj + i));
-	}
-	return rv;
+		result[i] = static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::ExpressionType>(*(unobj + i));
+
+    return result;
 }
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinitionCollection* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IExpressionCapabilitiesImp::get_Functions()
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinitionCollection^ NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IExpressionCapabilitiesImp::Functions::get()
 {
-	FdoFunctionDefinitionCollection * unobj;
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetFunctions())
-	return ObjectFactory::CreateFunctionDefinitionCollection(unobj, true);
+	FdoFunctionDefinitionCollection* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetFunctions())
+	return ObjectFactory::CreateFunctionDefinitionCollection(IntPtr(result), true);
 }

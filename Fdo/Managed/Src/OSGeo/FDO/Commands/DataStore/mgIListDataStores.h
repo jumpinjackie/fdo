@@ -21,14 +21,14 @@
 #include "FDO\Commands\mgICommand.h"
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE
-public __gc __interface IDataStoreReader;
+interface class IDataStoreReader;
 
 /// \ingroup (OSGeoFDOCommandsDataStore)
 /// \interface OSGeo::FDO::Commands::DataStore::IListDataStores
 /// \brief
 /// The IListDataStores interface defines the list datastores command,
 /// which provides a way to get a list of datastores at a particular server. 
-public __gc __interface IListDataStores : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
+public interface class IListDataStores : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
 {
 public:
     /// \brief
@@ -39,8 +39,6 @@ public:
     /// \return
     /// Returns the flag
     /// 
-	__property System::Boolean get_IncludeNonFdoEnabledDatastores();
-
     /// \brief
     /// Sets the flag to indicate whether to include or not include
     /// Non-FDO enabled datastores in the returned list. These are also
@@ -49,7 +47,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_IncludeNonFdoEnabledDatastores(System::Boolean include);
+    property System::Boolean IncludeNonFdoEnabledDatastores
+    {
+        System::Boolean get();
+        System::Void set(System::Boolean include);
+    }
 
     /// \brief
     /// Executes the IListDataStores command.
@@ -57,7 +59,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReader* Execute();
+	NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReader^ Execute();
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE

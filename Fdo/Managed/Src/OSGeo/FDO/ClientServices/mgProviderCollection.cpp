@@ -37,126 +37,56 @@ System::Void NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::ReleaseUnma
 	Detach();
 }
 
-System::Void NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::ICollection::CopyTo(System::Array* array, System::Int32 index) 
+System::Void NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::CopyTo(array<System::String^>^ pArray, System::Int32 index)
 {
-	if (NULL == array)
-	{
-		throw new System::ArgumentNullException();
-	}
-
+	if (nullptr == pArray)
+		throw gcnew System::ArgumentNullException();
 	if (index < 0)
-	{
-		throw new System::ArgumentOutOfRangeException();
-	}
-	if (array->Rank != 1 || index >= array->Length || get_Count() + index > array->Length)
-	{
-		throw new System::ArgumentException();
-	}
+		throw gcnew System::ArgumentOutOfRangeException();
+	if (pArray->Rank != 1 || index >= pArray->Length || this->Count + index > pArray->Length)
+		throw gcnew System::ArgumentException();
 
-	for (System::Int32 i=0;i<this->Count;i++)
-	{
-		array->set_Item(index + i, get_RealTypeItem(i));
-	}
+	for (System::Int32 i = 0; i < this->Count; i++)
+        pArray[index+i] = this->Item[i]->Name;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::CopyTo(System::String* array[], System::Int32 index)
+System::Int32 NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::Count::get()
 {
-	if (NULL == array)
-	{
-		throw new System::ArgumentNullException();
-	}
-
-	if (index < 0)
-	{
-		throw new System::ArgumentOutOfRangeException();
-	}
-	if (array->Rank != 1 || index >= array->Length || get_Count() + index > array->Length)
-	{
-		throw new System::ArgumentException();
-	}
-
-	for (System::Int32 i=0;i<this->Count;i++)
-	{
-		array[index+i] = __try_cast<System::String*>(get_RealTypeItem(i));
-	}
-}
-
-System::Object* NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::ICollection::get_SyncRoot()
-{
-	return NULL;
-}
-
-System::Boolean NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::ICollection::get_IsSynchronized()
-{
-	return false;
-}
-
-
-System::Collections::IEnumerator* NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::GetEnumerator()
-{
-	return new Enumerator(this);
-}
-
-System::Int32 NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::get_Count()
-{
-	FdoInt32 ret;
+	System::Int32 ret;
 
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetCount())
 
 	return ret;
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::Contains(System::String* name)
+System::Boolean NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::Contains(System::String^ name)
 {
-	FdoBoolean ret;
+	System::Boolean ret;
 
 	EXCEPTION_HANDLER(ret = !!GetImpObj()->Contains(StringToUni(name)))
 
 	return ret;
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::IndexOf(System::String* name)
+System::Int32 NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::IndexOf(System::String^ name)
 {
-	FdoInt32 ret;
+	System::Int32 ret;
 
 	EXCEPTION_HANDLER(ret = GetImpObj()->IndexOf(StringToUni(name)))
 
 	return ret;
 }
 
-/*
-Implementation for ReadOnlyPropertyDefinitionCollection::Enumerator
-*/ 
-System::Object* NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::Enumerator::get_Current()
-{
-	if (m_nIdx < 0 || m_nIdx >= m_pCol->Count)
-	{
-		throw new InvalidOperationException();
-	}
-
-	FdoProvider* upElement;
-
-	EXCEPTION_HANDLER(upElement = m_pCol->GetImpObj()->GetItem(m_nIdx))
-
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateProvider(upElement, true);
-}
-
-System::Boolean NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::Enumerator::MoveNext()
-{
-	++m_nIdx;
-	return m_nIdx < m_pCol->Count;
-}
-
-System::Void NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::Enumerator::Reset()
-{
-	m_nIdx = -1;
-}
-
-NAMESPACE_OSGEO_FDO_CLIENTSERVICES::Provider *NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::get_RealTypeItem(System::Int32 index)
+NAMESPACE_OSGEO_FDO_CLIENTSERVICES::Provider^ NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::Item::get(System::Int32 index)
 {
 	FdoProvider* ret;
 
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetItem(index))
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateProvider(ret, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateProvider(IntPtr(ret), true);
+}
+
+System::Object^ NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::IndexInternal::get(System::Int32 index)
+{
+	return this->Item[index];
 }

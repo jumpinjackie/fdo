@@ -23,13 +23,13 @@
 class FdoIoTextWriter;
 
 BEGIN_NAMESPACE_OSGEO_COMMON_IO
-public __gc class IoStream;
+ref class IoStream;
 
 /// \ingroup (OSGeoFDOCommonIo)
 /// \brief
 ///     IoTextWriter writes Unicode wide character text to a binary stream.
 ///     The text is written in UTF8 format.
-public __sealed __gc class IoTextWriter : public NAMESPACE_OSGEO_RUNTIME::Disposable
+public ref class IoTextWriter sealed : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
     /// \brief
@@ -44,7 +44,7 @@ public:
     ///     Returns IoTextWriter
     /// 
     ///  
-	IoTextWriter(System::String* fileName);
+	IoTextWriter(System::String^ fileName);
 
     /// \brief
     ///     Constructs a text writer on a stream.
@@ -57,7 +57,7 @@ public:
     ///     Returns IoTextWriter
     /// 
     ///  
-	IoTextWriter(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream);
+	IoTextWriter(NAMESPACE_OSGEO_COMMON_IO::IoStream^ stream);
 
     /// \brief
     ///     Gets the underlying stream. If a stream was passed to this object
@@ -69,7 +69,10 @@ public:
     ///     Returns the underlying stream.
     /// 
     ///  
-	__property NAMESPACE_OSGEO_COMMON_IO::IoStream* get_Stream();
+    property NAMESPACE_OSGEO_COMMON_IO::IoStream^ Stream
+    {
+        NAMESPACE_OSGEO_COMMON_IO::IoStream^ get();
+    }
 
     /// \brief
     ///     Writes to this text writer. The text is written in UTF8 format.
@@ -77,7 +80,7 @@ public:
     /// \param data 
     ///     The text to write.
     /// 
-	System::Void Write(System::String* data);
+	System::Void Write(System::String^ data);
 
     /// \brief
     ///     Same as Write(), except that a carriage return (n) is appended to
@@ -86,7 +89,7 @@ public:
     /// \param data 
     ///     The text to write.
     /// 
-	System::Void WriteLine(System::String* data);
+	System::Void WriteLine(System::String^ data);
 
     /// \brief
     ///     Constructs a text writer based on an unmanaged instance of the object
@@ -101,10 +104,7 @@ public:
 	IoTextWriter(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 /// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-
-public private:
+internal:
 	inline FdoIoTextWriter* GetImpObj();
 /// \endcond
 };

@@ -34,66 +34,59 @@ FdoIConnectionInfo* NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfoImp::GetImpO
     return static_cast<FdoIConnectionInfo*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfoImp::ReleaseUnmanagedObject()
+System::String^ NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfoImp::ProviderName::get()
 {
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
+	FdoString* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetProviderName())
+	return CHECK_STRING(result);
 }
 
-System::String* NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfoImp::get_ProviderName()
+System::String^ NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfoImp::ProviderDisplayName::get()
 {
-	FdoString* unstr;
-	EXCEPTION_HANDLER(unstr = GetImpObj()->GetProviderName())
-	return unstr;
+	FdoString* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetProviderDisplayName())
+	return CHECK_STRING(result);
 }
 
-System::String* NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfoImp::get_ProviderDisplayName()
+System::String^ NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfoImp::ProviderDescription::get()
 {
-	FdoString* unstr;
-	EXCEPTION_HANDLER(unstr = GetImpObj()->GetProviderDisplayName())
-	return unstr;
+	FdoString* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetProviderDescription())
+	return CHECK_STRING(result);
 }
 
-System::String* NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfoImp::get_ProviderDescription()
+System::String^ NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfoImp::ProviderVersion::get()
 {
-	FdoString* unstr;
-	EXCEPTION_HANDLER(unstr = GetImpObj()->GetProviderDescription())
-	return unstr;
+	FdoString* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetProviderVersion())
+	return CHECK_STRING(result);
 }
 
-System::String* NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfoImp::get_ProviderVersion()
+System::String^ NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfoImp::FeatureDataObjectsVersion::get()
 {
-	FdoString* unstr;
-	EXCEPTION_HANDLER(unstr = GetImpObj()->GetProviderVersion())
-	return unstr;
+	FdoString* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetFeatureDataObjectsVersion())
+	return CHECK_STRING(result);
 }
 
-System::String* NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfoImp::get_FeatureDataObjectsVersion()
+NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionPropertyDictionary^ NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfoImp::ConnectionProperties::get()
 {
-	FdoString* unstr;
-	EXCEPTION_HANDLER(unstr = GetImpObj()->GetFeatureDataObjectsVersion())
-	return unstr;
+	FdoIConnectionPropertyDictionary* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetConnectionProperties())
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIConnectionPropertyDictionary(IntPtr(result), true);
 }
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionPropertyDictionary* NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfoImp::get_ConnectionProperties()
-{
-	FdoIConnectionPropertyDictionary* unobj;
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetConnectionProperties())
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIConnectionPropertyDictionary(unobj, true);
-}
-
-NAMESPACE_OSGEO_FDO_CONNECTIONS::ProviderDatastoreType NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfoImp::get_ProviderDatastoreType()
+NAMESPACE_OSGEO_FDO_CONNECTIONS::ProviderDatastoreType NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfoImp::ProviderDatastoreType::get()
 {
     FdoProviderDatastoreType pdsType;
     EXCEPTION_HANDLER(pdsType = GetImpObj()->GetProviderDatastoreType());
     return static_cast<NAMESPACE_OSGEO_FDO_CONNECTIONS::ProviderDatastoreType>(pdsType);
 }
 
-NAMESPACE_OSGEO_COMMON::StringCollection* NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfoImp::get_DependentFileNames()
+NAMESPACE_OSGEO_COMMON::StringCollection^ NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfoImp::DependentFileNames::get()
 {
-	FdoStringCollection* unobj;
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetDependentFileNames())
-	return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateStringCollection(unobj, true);
+	FdoStringCollection* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetDependentFileNames())
+	return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateStringCollection(IntPtr(result), true);
 }
 

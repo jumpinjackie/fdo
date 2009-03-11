@@ -30,7 +30,7 @@ NAMESPACE_OSGEO_COMMON_IO::IoCharStreamReader::IoCharStreamReader(System::IntPtr
 
 FdoIStreamReaderTmpl<FdoCharacter>* NAMESPACE_OSGEO_COMMON_IO::IoCharStreamReader::GetImpObj()
 {
-	return static_cast<FdoIStreamReaderTmpl<FdoCharacter>*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoIStreamReaderTmpl<FdoCharacter>*>(UnmanagedObject.ToPointer());
 }
 
 System::Void NAMESPACE_OSGEO_COMMON_IO::IoCharStreamReader::Skip(System::Int32 offest)
@@ -43,9 +43,9 @@ System::Void NAMESPACE_OSGEO_COMMON_IO::IoCharStreamReader::Reset()
 	EXCEPTION_HANDLER(GetImpObj()->Reset())
 }
 
-System::Int32 NAMESPACE_OSGEO_COMMON_IO::IoCharStreamReader::ReadNext(System::Char buffer[])
+System::Int32 NAMESPACE_OSGEO_COMMON_IO::IoCharStreamReader::ReadNext(array<System::Char>^ buffer)
 {
-	FdoCharacter __pin* upByte = &buffer[0];
+	pin_ptr<FdoCharacter> upByte = &buffer[0];
 	FdoInt32 rCount;
 
 	EXCEPTION_HANDLER(rCount = GetImpObj()->ReadNext(upByte))
@@ -53,9 +53,9 @@ System::Int32 NAMESPACE_OSGEO_COMMON_IO::IoCharStreamReader::ReadNext(System::Ch
 	return rCount;	
 }
 
-System::Int32 NAMESPACE_OSGEO_COMMON_IO::IoCharStreamReader::ReadNext(System::Char buffer[], System::Int32 offest)
+System::Int32 NAMESPACE_OSGEO_COMMON_IO::IoCharStreamReader::ReadNext(array<System::Char>^ buffer, System::Int32 offest)
 {
-	FdoCharacter __pin* upByte = &buffer[0];
+	pin_ptr<FdoCharacter> upByte = &buffer[0];
 	FdoInt32 rCount;
 
 	EXCEPTION_HANDLER(rCount = GetImpObj()->ReadNext(upByte, offest))
@@ -63,9 +63,9 @@ System::Int32 NAMESPACE_OSGEO_COMMON_IO::IoCharStreamReader::ReadNext(System::Ch
 	return rCount;	
 }
 
-System::Int32 NAMESPACE_OSGEO_COMMON_IO::IoCharStreamReader::ReadNext(System::Char buffer[], System::Int32 offest, System::Int32 count)
+System::Int32 NAMESPACE_OSGEO_COMMON_IO::IoCharStreamReader::ReadNext(array<System::Char>^ buffer, System::Int32 offest, System::Int32 count)
 {
-	FdoCharacter __pin* upByte = &buffer[0];
+	pin_ptr<FdoCharacter> upByte = &buffer[0];
 	FdoInt32 rCount;
 
 	EXCEPTION_HANDLER(rCount = GetImpObj()->ReadNext(upByte, offest, count))
@@ -73,7 +73,7 @@ System::Int32 NAMESPACE_OSGEO_COMMON_IO::IoCharStreamReader::ReadNext(System::Ch
 	return rCount;
 }
 
-System::Int64 NAMESPACE_OSGEO_COMMON_IO::IoCharStreamReader::get_Length()
+System::Int64 NAMESPACE_OSGEO_COMMON_IO::IoCharStreamReader::Length::get()
 {
 	FdoInt64 length;
 
@@ -82,7 +82,7 @@ System::Int64 NAMESPACE_OSGEO_COMMON_IO::IoCharStreamReader::get_Length()
 	return length;
 }
 
-System::Int64 NAMESPACE_OSGEO_COMMON_IO::IoCharStreamReader::get_Index()
+System::Int64 NAMESPACE_OSGEO_COMMON_IO::IoCharStreamReader::Index::get()
 {
 	FdoInt64 index;
 

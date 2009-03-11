@@ -26,7 +26,7 @@ BEGIN_NAMESPACE_OSGEO_GEOMETRY
 /// \interface OSGeo::FDO::Geometry::ICircularArcSegment
 /// \brief
 /// The ICircularArcSegment class is a circular arc curve segment
-public __gc __interface ICircularArcSegment : public NAMESPACE_OSGEO_GEOMETRY::IArcSegmentAbstract
+public interface class ICircularArcSegment : public NAMESPACE_OSGEO_GEOMETRY::IArcSegmentAbstract
 {
 
 };

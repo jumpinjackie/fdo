@@ -29,8 +29,8 @@ FdoXmlSaxHandler* VirtualSaxHandler::XmlStartDocument(FdoXmlSaxContext* saxConte
 	if (!WrapperCallWrapper::IsCalling(wrapperCallBits, XmlStartDocumentBit))
 	{
 		WrapperCallWrapper ctx(wrapperCallBits, XmlStartDocumentBit);
-		XmlSaxContext* mgsaxcontext = NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateXmlSaxContext(saxContext, true);
-		XmlSaxHandler* mgreturn = static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(GetWrapper()->XmlStartDocument(mgsaxcontext));
+		XmlSaxContext^ mgsaxcontext = NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateXmlSaxContext(IntPtr(saxContext), true);
+		XmlSaxHandler^ mgreturn = static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(GetWrapper()->XmlStartDocument(mgsaxcontext));
 		return (FdoXmlSaxHandler*)mgreturn->GetImpObj();
 	}
 	else
@@ -44,7 +44,7 @@ System::Void VirtualSaxHandler::XmlEndDocument(FdoXmlSaxContext* saxContext)
 	if (!WrapperCallWrapper::IsCalling(wrapperCallBits, XmlEndDocumentBit))
 	{
 		WrapperCallWrapper ctx(wrapperCallBits, XmlEndDocumentBit);
-		XmlSaxContext* mgsaxcontext = NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateXmlSaxContext(saxContext, true);
+		XmlSaxContext^ mgsaxcontext = NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateXmlSaxContext(IntPtr(saxContext), true);
 		GetWrapper()->XmlEndDocument(mgsaxcontext);
 	}
 	else
@@ -58,10 +58,11 @@ FdoXmlSaxHandler* VirtualSaxHandler::XmlStartElement(FdoXmlSaxContext* saxcontex
 	if (!WrapperCallWrapper::IsCalling(wrapperCallBits, XmlStartElementBit))
 	{
 		WrapperCallWrapper ctx(wrapperCallBits, XmlStartElementBit);
-		XmlSaxContext* mgsaxcontext = NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateXmlSaxContext(saxcontext, true);
-		XmlAttributeCollection* mgatts = NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateXmlAttributeCollection(atts, true);
+		XmlSaxContext^ mgsaxcontext = NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateXmlSaxContext(IntPtr(saxcontext), true);
+		XmlAttributeCollection^ mgatts = NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateXmlAttributeCollection(IntPtr(atts), true);
 
-		XmlSaxHandler* mgreturn = static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(GetWrapper()->XmlStartElement(mgsaxcontext, uri, name, qname, mgatts));
+		XmlSaxHandler^ mgreturn = static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(GetWrapper()->XmlStartElement(mgsaxcontext, 
+            gcnew String(uri), gcnew String(name), gcnew String(qname), mgatts));
 		return (FdoXmlSaxHandler*)mgreturn->GetImpObj();
 	}
 	else
@@ -75,8 +76,8 @@ FdoBoolean VirtualSaxHandler::XmlEndElement(FdoXmlSaxContext* saxContext, FdoStr
 	if (!WrapperCallWrapper::IsCalling(wrapperCallBits, XmlEndElementBit))
 	{
 		WrapperCallWrapper ctx(wrapperCallBits, XmlEndElementBit);
-		XmlSaxContext* mgsaxcontext = NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateXmlSaxContext(saxContext, true);
-		return GetWrapper()->XmlEndElement(mgsaxcontext, uri,  name, qname);
+		XmlSaxContext^ mgsaxcontext = NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateXmlSaxContext(IntPtr(saxContext), true);
+		return GetWrapper()->XmlEndElement(mgsaxcontext, gcnew String(uri),  gcnew String(name), gcnew String(qname));
 	}
 	else
 	{
@@ -89,8 +90,8 @@ System::Void VirtualSaxHandler::XmlCharacters(FdoXmlSaxContext* saxContext, FdoS
 	if (!WrapperCallWrapper::IsCalling(wrapperCallBits, XmlCharactersBit))
 	{
 		WrapperCallWrapper ctx(wrapperCallBits, XmlCharactersBit);
-		XmlSaxContext* mgsaxcontext = NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateXmlSaxContext(saxContext, true);
-		GetWrapper()->XmlCharacters(mgsaxcontext, chars);
+		XmlSaxContext^ mgsaxcontext = NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateXmlSaxContext(IntPtr(saxContext), true);
+        GetWrapper()->XmlCharacters(mgsaxcontext, CHECK_STRING(chars));
 	}
 	else
 	{

@@ -27,7 +27,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 /// The LongTransactionSetOperations enumeration defines the list of
 /// available operations that can be performed by the ChangeLongTransactionSet command.
 [System::FlagsAttribute]
-public __value enum LongTransactionSetOperations
+public enum class LongTransactionSetOperations
 {
     /// Add the specified long transaction to the selection set.
 	LongTransactionSetOperations_Add = FdoLongTransactionSetOperations_Add,

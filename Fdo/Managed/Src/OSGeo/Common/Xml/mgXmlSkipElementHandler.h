@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_OSGEO_COMMON_XML
 /// implementations. Therefore, if another XmlSaxHandler's XmlStartElement
 /// callback returns a XmlSkipElementHandler then there are no more SAX events
 /// until the end of the current element is reached.
-public __gc __sealed class XmlSkipElementHandler : public NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler
+public ref class XmlSkipElementHandler sealed : public NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler
 {
 public:
     /// \brief
@@ -55,7 +55,7 @@ public:
 	XmlSkipElementHandler(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 /// \cond DOXYGEN-IGNORE
-public private:
+internal:
 	inline FdoXmlSkipElementHandler* GetImpObj();
 /// \endcond
 };

@@ -30,34 +30,46 @@ BEGIN_NAMESPACE_OSGEO_RUNTIME
 ///     unmanaged C++ FDO classes. For more information on why this is 
 ///     necessary see "Implementing Finalize and Dispose to Clean Up 
 ///     Unmanaged Resources" in the .Net Framework Reference Help
-public __gc __abstract class Disposable : public System::IDisposable, public System::MarshalByRefObject
+public ref class Disposable abstract : public System::IDisposable, public System::MarshalByRefObject
 {
     System::IntPtr m_imp;
-    System::Boolean m_bAutoDelete;
+    System::Byte m_bAutoDelete;
 
 public:
-    __property System::IntPtr get_UnmanagedObject();
-    __property System::Boolean get_Disposed();
-    __property System::Boolean get_AutoDelete();
-    __property System::Void set_AutoDelete(System::Boolean value);
-	__property System::Int32 get_RefCount();
+        property System::IntPtr UnmanagedObject
+        {
+            System::IntPtr get(void);
+        }
+        property System::Boolean Disposed
+        {
+            System::Boolean get(void);
+        }
+        property System::Boolean AutoDelete
+        {
+            System::Boolean get(void);
+            void set(System::Boolean value);
+        }
+        property System::Int32 RefCount
+        {
+            System::Int32 get(void);
+        }
 
 protected:
     Disposable();
     Disposable(System::IntPtr unmanagedPointer, System::Boolean autoDelete);
+    !Disposable();
     virtual ~Disposable();
     virtual System::Void ReleaseUnmanagedObject();
 
 public:
-    System::Void Dispose();
     System::Void Detach();
+    static System::Boolean operator!=(Disposable^ leftObject, Disposable^ rightObject);
+    static System::Boolean operator==(Disposable^ leftObject, Disposable^ rightObject);
     System::Void Attach(System::IntPtr unmanagedPointer, System::Boolean autoDelete);
-    virtual System::Boolean Equals(System::Object* obj);
-    static System::Boolean op_Inequality(Disposable* leftObject, Disposable* rightObject);
-    static System::Boolean op_Equality(Disposable* leftObject, Disposable* rightObject);
-    System::Int32 GetHashCode();
+    virtual System::Boolean Equals(System::Object^ obj) override;
+    virtual System::Int32 GetHashCode() override;
 
-public private:
+internal:
 	inline FdoIDisposable* GetImpObj();
 };
 

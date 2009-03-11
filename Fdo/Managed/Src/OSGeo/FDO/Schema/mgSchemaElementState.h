@@ -25,7 +25,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 /// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// The SchemaElementState enumeration defines the current state of the schema element
-public __value enum SchemaElementState
+public enum class SchemaElementState
 {
     /// Indicates the schema element has been added.
 	SchemaElementState_Added = FdoSchemaElementState_Added,

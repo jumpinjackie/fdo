@@ -24,7 +24,7 @@
 class FdoIGetLongTransactions;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
-public __gc __interface ILongTransactionReader;
+interface class ILongTransactionReader;
 
 /// \ingroup (OSGeoFDOCommandsLongTransaction)
 /// \brief
@@ -33,31 +33,33 @@ public __gc __interface ILongTransactionReader;
 /// command. It allows a user to retrieve long transaction information for all or
 /// a specific long transaction. The command returns a ILongTransactionReader
 /// object enumerating the identified long transactions.
-private __gc class IGetLongTransactionsImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+private ref class IGetLongTransactionsImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
                                              public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IGetLongTransactions
 {
 public:
     /// \brief
     /// Sets the name of the long transaction for which information
     /// should be retrieved. The function can also be used to nullify the
-    /// property by using a NULL pointer as the function's parameter. If the
+    /// property by using a nullptr pointer as the function's parameter. If the
     /// the property is not set, the function returns information for all
     /// available long transactions.
     /// 
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Name(System::String* value);
-
     /// \brief
     /// Gets the currently set name of the long transaction for which
     /// the long transaction information should be retrieved. If the property
-    /// is not set, the function returns a NULL pointer.
+    /// is not set, the function returns a nullptr pointer.
     /// 
     /// \return
     /// Returns a long transaction name.
     /// 
-	__property System::String* get_Name();
+    virtual property System::String^ Name
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Executes the GetLongTransactions command returning a reference to an
@@ -66,9 +68,9 @@ public:
     /// \return
     /// Returns a long transaction reader
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionReader* Execute();
+	virtual NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionReader^ Execute();
 
-public private:
+internal:
 	IGetLongTransactionsImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)
 	{
 

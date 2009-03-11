@@ -21,7 +21,7 @@
 #include "FDO\Commands\mgICommand.h"
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE
-public __gc __interface IDataStorePropertyDictionary;
+interface class IDataStorePropertyDictionary;
 
 /// \ingroup (OSGeoFDOCommandsDataStore)
 /// \interface OSGeo::FDO::Commands::DataStore::IDataStoreReader
@@ -31,7 +31,7 @@ public __gc __interface IDataStorePropertyDictionary;
 /// from the IListDataStores command. Because the initial position of the
 /// IDataStoreReader is prior to the first item, you must call
 /// ReadNext to begin accessing any data.
-public __gc __interface IDataStoreReader : public System::IDisposable
+public interface class IDataStoreReader : public System::IDisposable
 {
 public:
     /// \brief
@@ -40,7 +40,7 @@ public:
     /// \return
     /// Returns the description of the datastore.
     /// 
-	System::String* GetName();
+	System::String^ GetName();
 
     /// \brief
     /// Gets the description of the datastore currently being read.
@@ -48,7 +48,7 @@ public:
     /// \return
     /// Returns the description of the datastore.
     /// 
-	System::String* GetDescription();
+	System::String^ GetDescription();
 
     /// \brief
     /// Gets the flag that indicates whether the datastore is FDO enabled.
@@ -67,7 +67,7 @@ public:
     /// \return
     /// Returns the property dictionary
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionary* GetDataStoreProperties();
+	NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionary^ GetDataStoreProperties();
 
     /// \brief
     /// Advances the reader to the next item and returns true if there is

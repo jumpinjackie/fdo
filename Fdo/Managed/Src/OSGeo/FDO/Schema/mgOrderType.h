@@ -26,7 +26,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 /// \brief
 /// The OrderType enumeration list contains two values to indicate if the
 /// object collection is to be ordered in ascending or descending fashion.
-public __value enum OrderType
+public enum class OrderType
 {
     /// Specifies the collection is to be ordered from the smallest value to the largest value.
 	OrderType_Ascending = FdoOrderType_Ascending,

@@ -22,26 +22,26 @@
 #include "FDO\Xml\mgXmlFeatureHandler.h"
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
-public __gc class FeatureSchemaCollection;
+ref class FeatureSchemaCollection;
 END_NAMESPACE_OSGEO_FDO_SCHEMA
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
-public __gc __interface IConnection;
+interface class IConnection;
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
-public __gc __interface IFeatureReader;
+interface class IFeatureReader;
 END_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 
 BEGIN_NAMESPACE_OSGEO_FDO_XML
-public __gc class XmlFeatureFlags;
-public __gc class XmlFeatureWriter;
+ref class XmlFeatureFlags;
+ref class XmlFeatureWriter;
 
 /// \ingroup (OSGeoFDOXml)
 /// \brief
 /// This static class provides the ability to serialize and deserialize features
 /// to and from GML.
-public __gc __sealed class XmlFeatureSerializer
+public ref class XmlFeatureSerializer sealed
 {
 public:
     /// \brief
@@ -56,7 +56,7 @@ public:
     /// flags->writeCollection. The name of the collection element can also be 
     /// customized by setting flags->collectionUri and flags->collectionName.
     /// 
-	static System::Void XmlSerialize(NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader* reader, NAMESPACE_OSGEO_FDO_XML::XmlFeatureWriter* writer);
+	static System::Void XmlSerialize(NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader^ reader, NAMESPACE_OSGEO_FDO_XML::XmlFeatureWriter^ writer);
 
     /// \brief
     /// writes the features retrieved by a feature reader to 
@@ -70,10 +70,10 @@ public:
     /// flags->writeCollection. The name of the collection element can also be 
     /// customized by setting flags->collectionUri and flags->collectionName.
     /// \param flags 
-    /// Input options for controlling the serializing of the features. If NULL then the 
+    /// Input options for controlling the serializing of the features. If nullptr then the 
     /// flags passed to the document writer are used.
     /// 
-	static System::Void XmlSerialize(NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader* reader, NAMESPACE_OSGEO_FDO_XML::XmlFeatureWriter* writer, NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags* flags);
+	static System::Void XmlSerialize(NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader^ reader, NAMESPACE_OSGEO_FDO_XML::XmlFeatureWriter^ writer, NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags^ flags);
 
 private:
 	XmlFeatureSerializer(){}

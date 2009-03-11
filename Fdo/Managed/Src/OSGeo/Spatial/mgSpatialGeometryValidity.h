@@ -26,7 +26,7 @@ BEGIN_NAMESPACE_OSGEO_SPATIAL
 /// \brief
 /// SpatialGeometryValidity is an enumeration to denote the validity of a Geometry
 /// during a test of type and dimensionality..
-public __value enum SpatialGeometryValidity
+public enum class SpatialGeometryValidity
 {
     /// Indicates no specific validity; used for unknown or default states.
 	SpatialGeometryValidity_None = FdoSpatialGeometryValidity_None,

@@ -34,12 +34,12 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::BinaryExpression(IntPtr unmana
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::BinaryExpression() : Expression(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoBinaryExpression::Create(), true)) 
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoBinaryExpression::Create()), true)) 
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::BinaryExpression(NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* leftExpression, NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryOperations operation, NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* rightExpression) : Expression(IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::BinaryExpression(NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ leftExpression, NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryOperations operation, NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ rightExpression) : Expression(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoBinaryExpression::Create(leftExpression->GetImpObj(), static_cast<FdoBinaryOperations>(operation), rightExpression->GetImpObj()), true)) 
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoBinaryExpression::Create(leftExpression->GetImpObj(), static_cast<FdoBinaryOperations>(operation), rightExpression->GetImpObj())), true)) 
 }
 
 FdoBinaryExpression* NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::GetImpObj()
@@ -47,50 +47,50 @@ FdoBinaryExpression* NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::GetImpObj
 	return static_cast<FdoBinaryExpression*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryOperations NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::get_Operation()
+NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryOperations NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::Operation::get()
 {
 	FdoBinaryOperations unobj;
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetOperation())
 	return static_cast<BinaryOperations>(unobj);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::set_Operation(NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryOperations value)
+System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::Operation::set(NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryOperations value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetOperation(static_cast<FdoBinaryOperations>(value)))
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::get_LeftExpression()
+NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::LeftExpression::get()
 {
-	FdoExpression* unobj;
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetLeftExpression())
-	return static_cast<Expression*>(ObjectFactory::CreateExpression(unobj, true));
+	FdoExpression* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetLeftExpression())
+	return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^>(ObjectFactory::CreateExpression(IntPtr(result), true));
 }
 
-System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::set_LeftExpression(NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* value)
+System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::LeftExpression::set(NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetLeftExpression((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->SetLeftExpression((value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::get_RightExpression()
+NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::RightExpression::get()
 {
-	FdoExpression* unobj;
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetRightExpression())
-	return static_cast<Expression*>(ObjectFactory::CreateExpression(unobj, true));
+	FdoExpression* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetRightExpression())
+	return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^>(ObjectFactory::CreateExpression(IntPtr(result), true));
 }
 
-System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::set_RightExpression(NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* value)
+System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::RightExpression::set(NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetRightExpression((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->SetRightExpression((value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor* processor)
+System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor^ processor)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Process((static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessorImp*>(processor))->GetImpObj()))
+	EXCEPTION_HANDLER(GetImpObj()->Process((static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessorImp^>(processor))->GetImpObj()))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::ToString()
+System::String^ NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::ToString()
 {
 	FdoString* unstr;
 	EXCEPTION_HANDLER(unstr = GetImpObj()->ToString())
-	return unstr;
+	return CHECK_STRING(unstr);
 }

@@ -30,7 +30,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 /// transaction where feature manipulation commands operate on it. If the 
 /// active long transaction is the root long transaction, then no long
 /// transaction will be deactivated.
-public __gc __interface IDeactivateLongTransaction : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
+public interface class IDeactivateLongTransaction : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
 {
 public:
     /// \brief

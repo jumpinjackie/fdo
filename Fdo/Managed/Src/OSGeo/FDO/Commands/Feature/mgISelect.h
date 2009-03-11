@@ -23,11 +23,11 @@
 #include "FDO\Commands\Locking\mgLockStrategy.h"
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
-public __gc __interface ILockConflictReader;
+interface class ILockConflictReader;
 END_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
-public __gc __interface IFeatureReader;
+interface class IFeatureReader;
 
 /// \ingroup (OSGeoFDOCommandsFeature)
 /// \interface OSGeo::FDO::Commands::Feature::ISelect
@@ -43,7 +43,7 @@ public __gc __interface IFeatureReader;
 /// supports locking, then the select command can optionally lock all of the
 /// features selected, via the ExecuteWithLock method (see "Locking
 /// Commands" for more information on locking features).
-public __gc __interface ISelect : public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IBaseSelect
+public interface class ISelect : public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IBaseSelect
 {
 public:
     /// \brief
@@ -52,8 +52,6 @@ public:
     /// \return
     /// Returns the lock type.
     /// 
-	__property NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType get_LockType();
-
     /// \brief
     /// Sets the LockType value (see "Locking Commands").
     /// 
@@ -63,7 +61,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_LockType(NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType value);
+    property NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType LockType
+    {
+        NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType get();
+        System::Void set(NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType value);
+    }
 
     /// \brief
     /// Gets the LockStrategy value (see "Locking Commands").
@@ -71,8 +73,6 @@ public:
     /// \return
     /// Returns the lock strategy.
     /// 
-	__property NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockStrategy get_LockStrategy();
-
     /// \brief
     /// Sets the LockStrategy value (see "Locking Commands").
     /// 
@@ -82,7 +82,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_LockStrategy(NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockStrategy value);
+    property NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockStrategy LockStrategy
+    {
+        NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockStrategy get();
+        System::Void set(NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockStrategy value);
+    }
 
     /// \brief
     /// Executes the select command and returns a reference to an IFeatureReader.
@@ -90,7 +94,7 @@ public:
     /// \return
     /// Returns the feature reader.
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader* Execute();
+	NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader^ Execute();
 
     /// \brief
     /// Executes the select command and returns a reference to an
@@ -99,7 +103,7 @@ public:
     /// \return
     /// Returns the feature reader.
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader* ExecuteWithLock();
+	NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader^ ExecuteWithLock();
 
     /// \brief
     /// When executing the operation ExecuteWithLock lock 
@@ -111,7 +115,10 @@ public:
     /// \return
     /// Returns a lock conflict reader.
     /// 
-	__property NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader* get_LockConflicts();
+    property NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader^ LockConflicts
+    {
+        NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader^ get();
+    }
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE

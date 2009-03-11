@@ -24,7 +24,7 @@
 class FdoICommitLongTransaction;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
-public __gc __interface ILongTransactionConflictDirectiveEnumerator;
+interface class ILongTransactionConflictDirectiveEnumerator;
 
 /// \ingroup (OSGeoFDOCommandsLongTransaction)
 /// \brief
@@ -45,7 +45,7 @@ public __gc __interface ILongTransactionConflictDirectiveEnumerator;
 /// In addition, a full commit can be performed on a leaf long transaction
 /// only. A long transaction is a leaf long transaction if it does not
 /// have descendent versions.
-private __gc class ICommitLongTransactionImp : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp, 
+private ref class ICommitLongTransactionImp : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp, 
                                                public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICommitLongTransaction
 {
 public:
@@ -55,8 +55,6 @@ public:
     /// \return
     /// Returns the name of the long transaction
     /// 
-	__property System::String* get_Name();
-
     /// \brief
     /// Sets the name of the long transaction to commit as a string.
     /// 
@@ -66,7 +64,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Name(System::String* value);
+    virtual property System::String^ Name
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// Executes the commit long transaction command and returns an
     /// ILongTransactionConflictDirectiveEnumerator.
@@ -74,9 +76,9 @@ public:
     /// no conflicts were detected and the command was executed successfully.
     /// Otherwise conflicts were detected and the user must specify how to
     /// resolve them using the enumerator and call Execute again.
-	ILongTransactionConflictDirectiveEnumerator* Execute();
+	virtual ILongTransactionConflictDirectiveEnumerator^ Execute();
 
-public private:
+internal:
 	ICommitLongTransactionImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp(unmanaged, autoDelete)
 	{
 

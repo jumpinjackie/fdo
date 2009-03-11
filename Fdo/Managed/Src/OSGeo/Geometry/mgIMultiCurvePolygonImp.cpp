@@ -24,9 +24,9 @@
 #include "mgICurvePolygon.h"
 #include "mgObjectFactory.h"
 
-FdoIMultiCurvePolygon * NAMESPACE_OSGEO_GEOMETRY::IMultiCurvePolygonImp::GetImpObj()
+FdoIMultiCurvePolygon* NAMESPACE_OSGEO_GEOMETRY::IMultiCurvePolygonImp::GetImpObj()
 {
-	return static_cast<FdoIMultiCurvePolygon *>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoIMultiCurvePolygon*>(UnmanagedObject.ToPointer());
 }
 
 NAMESPACE_OSGEO_GEOMETRY::IMultiCurvePolygonImp::IMultiCurvePolygonImp(System::IntPtr unmanaged, System::Boolean autoDelete)
@@ -34,9 +34,9 @@ NAMESPACE_OSGEO_GEOMETRY::IMultiCurvePolygonImp::IMultiCurvePolygonImp(System::I
 {
 }
 
-NAMESPACE_OSGEO_GEOMETRY::ICurvePolygon *NAMESPACE_OSGEO_GEOMETRY::IMultiCurvePolygonImp::get_Item(System::Int32 index)
+NAMESPACE_OSGEO_GEOMETRY::ICurvePolygon^ NAMESPACE_OSGEO_GEOMETRY::IMultiCurvePolygonImp::default::get(System::Int32 index)
 {
 	FdoICurvePolygon *ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetItem(index))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateICurvePolygon(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateICurvePolygon(IntPtr(ret), true);
 }

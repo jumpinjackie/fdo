@@ -23,7 +23,7 @@
 class FdoILongTransactionReader;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
-public __gc __interface ILongTransactionReader;
+interface class ILongTransactionReader;
 
 /// \ingroup (OSGeoFDOCommandsLongTransaction)
 /// \brief
@@ -34,7 +34,7 @@ public __gc __interface ILongTransactionReader;
 /// command. The initial position of the ILongTransactionReader is prior
 /// to the first item. Thus, you must call ReadNext to begin accessing any
 /// data.
-private __gc class ILongTransactionReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
+private ref class ILongTransactionReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
                                                public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionReader
 {
 public:
@@ -45,7 +45,7 @@ public:
     /// \return
     /// Returns the name of the long transaction.
     /// 
-	System::String* GetName();
+	virtual System::String^ GetName();
 
     /// \brief
     /// Retrieves the description of the long transaction currently
@@ -54,7 +54,7 @@ public:
     /// \return
     /// Returns the description of the long transaction.
     /// 
-	System::String* GetDescription();
+	virtual System::String^ GetDescription();
 
     /// \brief
     /// Provides access to the direct descendent long transactions 
@@ -67,7 +67,7 @@ public:
     /// Returns a long transaction reader with the direct descendents
     /// for the long transaction currently being read.
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionReader* GetChildren();
+	virtual NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionReader^ GetChildren();
 
     /// \brief
     /// Provides access to the direct ascendant long transactions for
@@ -80,7 +80,7 @@ public:
     /// Returns a long transaction reader with the direct ascendants 
     /// for the long transaction currently being read.
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionReader* GetParents();
+	virtual NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionReader^ GetParents();
 
     /// \brief
     /// Retrieves the owner of the long transaction currently being
@@ -89,7 +89,7 @@ public:
     /// \return
     /// Returns the owner name.
     /// 
-	System::String* GetOwner();
+	virtual System::String^ GetOwner();
 
     /// \brief
     /// Retrieves the creation date of the long transaction currently
@@ -98,7 +98,7 @@ public:
     /// \return
     /// Returns the date when the long transaction was created.
     /// 
-	System::DateTime GetCreationDate();
+	virtual System::DateTime GetCreationDate();
 
     /// \brief
     /// Returns true if the long transaction currently being read is
@@ -107,7 +107,7 @@ public:
     /// \return
     /// Returns true if the long transaction is active.
     /// 
-	System::Boolean IsActive();
+	virtual System::Boolean IsActive();
 
     /// \brief
     /// Returns true if the long transaction currently being read is
@@ -116,7 +116,7 @@ public:
     /// \return
     /// Returns true if the long transaction is frozen.
     /// 
-	System::Boolean IsFrozen();
+	virtual System::Boolean IsFrozen();
 
     /// \brief
     /// Advances the reader to the next item. The default position of
@@ -126,7 +126,7 @@ public:
     /// \return
     /// Returns true if there is a next item.
     /// 
-	System::Boolean ReadNext();
+	virtual System::Boolean ReadNext();
 
     /// \brief
     /// Closes the ILongTransactionReader object, freeing any
@@ -135,14 +135,9 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Close();
+	virtual System::Void Close();
 
-/// \cond DOXYGEN-IGNORE
-protected:
-	__sealed System::Void ReleaseUnmanagedObject();
-/// \endcond
-
-public private:
+internal:
 	ILongTransactionReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)
 	{
 

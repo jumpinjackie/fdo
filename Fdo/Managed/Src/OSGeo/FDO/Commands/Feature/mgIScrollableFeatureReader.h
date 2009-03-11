@@ -21,7 +21,7 @@
 #include "FDO\Commands\Feature\mgIFeatureReader.h"
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
-public __gc class PropertyValueCollection;
+ref class PropertyValueCollection;
 END_NAMESPACE_OSGEO_FDO_COMMANDS
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
@@ -35,7 +35,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 /// from the ExtendedSelect command. Because the initial position of the
 /// IScrollableFeatureReader is prior to the first item, you must call one of the 
 /// Read functions to begin accessing any data.
-public __gc __interface IScrollableFeatureReader : public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader
+public interface class IScrollableFeatureReader : public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader
 {
 public:
 	/// \brief
@@ -87,7 +87,7 @@ public:
 	///
 	/// \return
 	/// Returns true if a record is found or false otherwise.
-	System::Boolean ReadAt(NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection* key);
+	System::Boolean ReadAt(NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection^ key);
 
 	/// \brief
 	/// Provides an ad-hoc access to the query result.
@@ -117,7 +117,7 @@ public:
 	///
 	/// \return
 	/// Returns true if a record is found or false otherwise.
-    System::UInt32 IndexOf(NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection* key);
+    System::UInt32 IndexOf(NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection^ key);
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE

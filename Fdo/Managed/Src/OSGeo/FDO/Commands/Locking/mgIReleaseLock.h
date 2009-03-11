@@ -21,7 +21,7 @@
 #include "FDO\Commands\mgIFeatureCommand.h"
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
-public __gc __interface ILockConflictReader;
+interface class ILockConflictReader;
 
 /// \ingroup (OSGeoFDOCommandsLocking)
 /// \interface OSGeo::FDO::Commands::Locking::IReleaseLock
@@ -34,7 +34,7 @@ public __gc __interface ILockConflictReader;
 /// produced by a query builder). The ability to successfully execute the command 
 /// might be restricted by the datastore security if the lock doesn’t belong to the 
 /// user executing the command.
-public __gc __interface IReleaseLock : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommand
+public interface class IReleaseLock : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommand
 {
 public:
     /// \brief
@@ -43,8 +43,6 @@ public:
     /// \return
     /// Returns name of the lock owner. If the name was not set, it returns the name of the caller.
     /// 
-	__property System::String* get_LockOwner();
-
     /// \brief
     /// Sets the name of the user who owns the lock to release.
     /// 
@@ -54,7 +52,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_LockOwner(System::String* value);
+    property System::String^ LockOwner
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Executes the release lock command, returning an ILockConflictReader.
@@ -62,7 +64,7 @@ public:
     /// \return
     /// Returns a list of feature instances whose lock is owned by someone else.
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader* Execute();
+	NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader^ Execute();
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING

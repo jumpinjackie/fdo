@@ -24,8 +24,8 @@ class FdoComputedIdentifier;
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
-public __gc class Expression;
-public __gc __interface IExpressionProcessor;
+ref class Expression;
+interface class IExpressionProcessor;
 
 /// \ingroup (OSGeoFDOExpression)
 /// \brief
@@ -33,7 +33,7 @@ public __gc __interface IExpressionProcessor;
 /// with alias. The name or alias must be a simple name and should not be scoped or contain the
 /// the schema name. The ComputedIdentifier can be used to provide an alias to an expression. 
 /// 
-public __gc class ComputedIdentifier : public NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier
+public ref class ComputedIdentifier : public NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier
 {
 public:
     /// \brief
@@ -55,7 +55,7 @@ public:
     /// \return
     /// Returns the ComputedIdentifier
     /// 
-	ComputedIdentifier(System::String* name, NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* expression);
+	ComputedIdentifier(System::String^ name, NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ expression);
 
     /// \brief
     /// Gets the full text of the identifier.
@@ -63,8 +63,6 @@ public:
     /// \return
     /// Returns the identifier text
     /// 
-	__property NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* get_Expression();
-
     /// \brief
     /// Sets the full text of the identifier.
     /// 
@@ -74,7 +72,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void set_Expression(NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* value);
+    property NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ Expression
+    {
+        NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ value);
+    }
 
     /// \brief
     /// Overrides Expression.Process to pass the ComputedIdentifier to the appropriate
@@ -86,7 +88,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor* processor);
+	virtual System::Void Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor^ processor) override;
 
     /// \brief
     /// Returns the well defined text representation of this expression.
@@ -94,7 +96,7 @@ public:
     /// \return
     /// Returns the well defined text string
     /// 
-	System::String* ToString();
+	virtual System::String^ ToString() override;
 
     /// \brief
     /// Constructs a ComputedIdentifier object based on an unmanaged instance of the object
@@ -108,7 +110,7 @@ public:
     /// 
 	ComputedIdentifier(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
+internal:
 	inline FdoComputedIdentifier* GetImpObj();
 };
 END_NAMESPACE_OSGEO_FDO_EXPRESSION

@@ -29,7 +29,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 /// \brief
 /// The DataValue class derives from LiteralValue and represents a literal
 /// value such as a string or a number.
-public __gc class DataValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue
+public ref class DataValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue
 {
 public:
     /// \brief
@@ -143,7 +143,7 @@ public:
     /// \return
     /// Returns an StringValue
     /// 
-	DataValue(System::String* value);
+	DataValue(System::String^ value);
 
     /// \brief
     /// Constructs an instance of an BLOBValue or CLOBValue using the specified arguments.
@@ -157,7 +157,7 @@ public:
     /// \return
     /// Returns an BLOBValue or an CLOBValue
     /// 
-	DataValue(System::Byte value [], NAMESPACE_OSGEO_FDO_SCHEMA::DataType dataType);
+	DataValue(array<System::Byte>^ value, NAMESPACE_OSGEO_FDO_SCHEMA::DataType dataType);
 	
     /// \brief
     /// Gets the data type of the DataValue.
@@ -165,7 +165,10 @@ public:
     /// \return
     /// Returns an DataType
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
+    property NAMESPACE_OSGEO_FDO_SCHEMA::DataType DataType
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::DataType get();
+    }
 
     /// \brief
     /// Returns true if the DataValue represents a null value.
@@ -173,7 +176,7 @@ public:
     /// \return
     /// Returns true if the DataValue represents a null value
     /// 
-	System::Boolean IsNull();
+	virtual System::Boolean IsNull();
 
     /// \brief
     /// Sets the DataValue to a null value of the specified type.
@@ -181,7 +184,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void SetNull();
+	virtual System::Void SetNull();
 
     /// \brief
     /// Constructs a DataValue object based on an unmanaged instance of the object
@@ -201,9 +204,12 @@ public:
     /// \return
     /// Returns an LiteralValueType
     /// 
-    __property NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValueType get_LiteralValueType ();
+    property NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValueType LiteralValueType
+    {
+        NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValueType get();
+    }
 
-public private:
+internal:
 	inline FdoDataValue* GetImpObj();
 };
 END_NAMESPACE_OSGEO_FDO_EXPRESSION

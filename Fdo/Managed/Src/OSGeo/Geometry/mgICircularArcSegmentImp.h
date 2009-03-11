@@ -28,7 +28,7 @@ BEGIN_NAMESPACE_OSGEO_GEOMETRY
 /// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The ICircularArcSegment class is a circular arc curve segment
-public __gc class ICircularArcSegmentImp :
+public ref class ICircularArcSegmentImp :
 	public NAMESPACE_OSGEO_GEOMETRY::ICircularArcSegment, public NAMESPACE_OSGEO_GEOMETRY::IArcSegmentAbstractImp
 {
 public:
@@ -44,8 +44,8 @@ public:
     /// 
 	ICircularArcSegmentImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
-	FdoICircularArcSegment *GetImpObj();
+internal:
+	FdoICircularArcSegment* GetImpObj();
 };
 
 END_NAMESPACE_OSGEO_GEOMETRY

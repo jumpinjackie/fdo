@@ -26,17 +26,17 @@
 #include "../mgIProviderRegistryImp.h"
 #include "../mgObjectFactory.h"
 
-NAMESPACE_OSGEO_FDO::IConnectionManager *NAMESPACE_OSGEO_FDO_CLIENTSERVICES::FeatureAccessManager::GetConnectionManager()
+NAMESPACE_OSGEO_FDO::IConnectionManager^ NAMESPACE_OSGEO_FDO_CLIENTSERVICES::FeatureAccessManager::GetConnectionManager()
 {
 	::IConnectionManager *ret;
 	EXCEPTION_HANDLER(ret = FdoFeatureAccessManager::GetConnectionManager());
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIConnectionManager(ret, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIConnectionManager(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_FDO::IProviderRegistry* NAMESPACE_OSGEO_FDO_CLIENTSERVICES::FeatureAccessManager::GetProviderRegistry()
+NAMESPACE_OSGEO_FDO::IProviderRegistry^ NAMESPACE_OSGEO_FDO_CLIENTSERVICES::FeatureAccessManager::GetProviderRegistry()
 {
 	::IProviderRegistry *ret;
 	EXCEPTION_HANDLER(ret = FdoFeatureAccessManager::GetProviderRegistry());
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIProviderRegistry(ret, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIProviderRegistry(IntPtr(ret), true);
 }
 

@@ -28,7 +28,7 @@ BEGIN_NAMESPACE_OSGEO_COMMON
 /// \brief
 ///     DictionaryElement is an element in a DictionaryElementCollection. It consists of a
 ///     name-value pair.
-public __sealed __gc class DictionaryElement : public NAMESPACE_OSGEO_RUNTIME::Disposable
+public ref class DictionaryElement sealed : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
     /// \brief
@@ -40,7 +40,7 @@ public:
     /// \param value 
     ///     The value of the element.
     /// 
-	DictionaryElement(System::String* name, System::String* value);
+	DictionaryElement(System::String^ name, System::String^ value);
 
     /// \brief
     ///     Constructs an elemnet based on an unmanaged instance of the object
@@ -60,7 +60,10 @@ public:
     /// \return
     ///     Returns the dictionary element name
     /// 
-	__property String* get_Name();
+    property System::String^ Name
+    {
+        System::String^ get();
+    }
 
     /// \brief
     ///     Indicates whether the name of the DictionaryElement can be changed once
@@ -69,7 +72,10 @@ public:
     /// \return
     ///     Returns true if the DictionaryElement name can be changed; otherwise false.
     /// 
-	__property System::Boolean get_CanSetName();
+    property System::Boolean CanSetName
+    {
+        System::Boolean get();
+    }
 
     /// \brief
     ///     Gets the value of this dictionary element.
@@ -77,21 +83,20 @@ public:
     /// \return
     ///     Returns the element value
     /// 
-	__property System::String* get_Value();
-
     /// \brief
     ///     Sets the value of this dictionary element
     /// 
     /// \param value 
     ///     Input the value of the dictionary element
     /// 
-	__property System::Void set_Value(String* value);
+    property System::String^ Value
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
 /// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-
-public private:
+internal:
 	inline FdoDictionaryElement* GetImpObj();
 /// \endcond
 };

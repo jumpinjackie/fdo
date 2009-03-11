@@ -33,48 +33,48 @@ FdoIInsert* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IInsertImp::GetImpObj()
     return static_cast<FdoIInsert*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IInsertImp::get_FeatureClassName()
+NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IInsertImp::FeatureClassName::get()
 {
 	FdoIdentifier* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetFeatureClassName())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIdentifier(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIdentifier(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IInsertImp::set_FeatureClassName(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IInsertImp::FeatureClassName::set(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetFeatureClassName((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->SetFeatureClassName((value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IInsertImp::SetFeatureClassName(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IInsertImp::SetFeatureClassName(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetFeatureClassName(StringToUni(value)))
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IInsertImp::get_PropertyValues()
+NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IInsertImp::PropertyValues::get()
 {
 	FdoPropertyValueCollection* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetPropertyValues())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePropertyValueCollection(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePropertyValueCollection(IntPtr(result), true);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS::BatchParameterValueCollection* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IInsertImp::get_BatchParameterValues()
+NAMESPACE_OSGEO_FDO_COMMANDS::BatchParameterValueCollection^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IInsertImp::BatchParameterValues::get()
 {
 	FdoBatchParameterValueCollection* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetBatchParameterValues())
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateBatchParameterValueCollection(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateBatchParameterValueCollection(IntPtr(result), true);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IInsertImp::Execute()
+NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IInsertImp::Execute()
 {
 	FdoIFeatureReader* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->Execute())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIFeatureReader(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIFeatureReader(IntPtr(result), true);
 }

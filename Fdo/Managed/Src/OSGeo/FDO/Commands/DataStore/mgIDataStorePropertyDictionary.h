@@ -28,7 +28,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE
 /// The IDataStorePropertyDictionary exposes a dictionary style interface
 /// to the datastore properties. The properties required to create or destroy a datastore
 /// can be determined and their values can be set through this interface.
-public __gc __interface IDataStorePropertyDictionary : public NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionPropertyDictionary
+public interface class IDataStorePropertyDictionary : public NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionPropertyDictionary
 {
 public:
     /// \brief
@@ -40,7 +40,7 @@ public:
     /// \return
     /// Returns true if the specified property is a file name
     /// 
-    System::Boolean IsPropertyFileName(System::String* name);
+    System::Boolean IsPropertyFileName(System::String^ name);
 
     /// \brief
     /// Determines if the specified property represents a path name.
@@ -51,7 +51,7 @@ public:
     /// \return
     /// Returns true if the specified property is a path name
     /// 
-    System::Boolean IsPropertyFilePath(System::String* name);
+    System::Boolean IsPropertyFilePath(System::String^ name);
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE

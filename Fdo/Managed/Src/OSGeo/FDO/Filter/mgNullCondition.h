@@ -24,18 +24,18 @@
 class FdoNullCondition;
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
-public __gc class Identifier;
+ref class Identifier;
 END_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 
-public __gc __interface IFilterProcessor;
+interface class IFilterProcessor;
 
 /// \ingroup (OSGeoFDOFilter)
 /// \brief
 /// The NullCondition class derives from SearchCondition and can be used to test
 /// if the value of a specified data property is null.
-public __gc class NullCondition : public NAMESPACE_OSGEO_FDO_FILTER::SearchCondition
+public ref class NullCondition : public NAMESPACE_OSGEO_FDO_FILTER::SearchCondition
 {
 public:
     /// \brief
@@ -55,7 +55,7 @@ public:
     /// \return
     /// Returns an NullCondition
     /// 
-	NullCondition(System::String* propertyName);
+	NullCondition(System::String^ propertyName);
 
     /// \brief
     /// Constructs an instance of an NullCondition using the specified arguments.
@@ -66,7 +66,7 @@ public:
     /// \return
     /// Returns an NullCondition
     /// 
-	NullCondition(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* propertyName);
+	NullCondition(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ propertyName);
 
     /// \brief
     /// Gets the name of the data property.
@@ -74,8 +74,6 @@ public:
     /// \return
     /// Returns Identifier
     /// 
-	__property NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* get_PropertyName();
-
     /// \brief
     ///  Sets the name of the data property.
     /// 
@@ -85,7 +83,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_PropertyName(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* value);
+    property NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ PropertyName
+    {
+        NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ value);
+    }
 
     /// \brief
     /// Overrides Filter.Process to pass NullCondition to the
@@ -97,7 +99,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Process(NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessor* processor);
+	System::Void Process(NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessor^ processor);
 
     /// \brief
     /// Constructs a NullCondition object based on an unmanaged instance of the object
@@ -111,7 +113,7 @@ public:
     /// 
 	NullCondition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
+internal:
 	inline FdoNullCondition* GetImpObj();
 };
 

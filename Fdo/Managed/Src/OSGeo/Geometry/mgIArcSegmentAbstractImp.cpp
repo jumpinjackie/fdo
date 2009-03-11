@@ -24,9 +24,9 @@
 #include "mgICurveSegmentAbstractImp.h"
 #include "mgObjectFactory.h"
 
-FdoIArcSegmentAbstract *NAMESPACE_OSGEO_GEOMETRY::IArcSegmentAbstractImp::GetImpObj()
+FdoIArcSegmentAbstract* NAMESPACE_OSGEO_GEOMETRY::IArcSegmentAbstractImp::GetImpObj()
 {
-	return static_cast<FdoIArcSegmentAbstract *>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoIArcSegmentAbstract*>(UnmanagedObject.ToPointer());
 }
 
 NAMESPACE_OSGEO_GEOMETRY::IArcSegmentAbstractImp::IArcSegmentAbstractImp(System::IntPtr unmanaged, System::Boolean autoDelete)
@@ -34,10 +34,10 @@ NAMESPACE_OSGEO_GEOMETRY::IArcSegmentAbstractImp::IArcSegmentAbstractImp(System:
 {
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IDirectPosition *NAMESPACE_OSGEO_GEOMETRY::IArcSegmentAbstractImp::get_MidPoint()
+NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ NAMESPACE_OSGEO_GEOMETRY::IArcSegmentAbstractImp::MidPoint::get()
 {
-	FdoIDirectPosition *ret;
+	FdoIDirectPosition* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetMidPoint())
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIDirectPosition(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIDirectPosition(IntPtr(ret), true);
 }
 

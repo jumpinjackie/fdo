@@ -181,7 +181,7 @@
 } \
 	catch(FdoException* e) \
 { \
-	NAMESPACE_OSGEO_COMMON::Exception* mgE = NAMESPACE_OSGEO_COMMON::Exception::Create(e); \
+    NAMESPACE_OSGEO_COMMON::Exception^ mgE = NAMESPACE_OSGEO_COMMON::Exception::Create(System::IntPtr(e)); \
 	e->Release(); \
 	throw mgE; \
 }
@@ -189,6 +189,6 @@
 //---------------------------------------------------------------
 // Check NULL FdoString* when Convert to System::String*
 //---------------------------------------------------------------
-#define CHECK_STRING(result) NULL == result ? static_cast<System::String*>(NULL) : result;
+#define CHECK_STRING(result) ((nullptr == result) ? nullptr : gcnew System::String(result))
 
 /// \endcond

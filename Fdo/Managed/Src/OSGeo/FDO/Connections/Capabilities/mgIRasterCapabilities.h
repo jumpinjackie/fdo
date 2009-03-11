@@ -20,7 +20,7 @@
 #include "FDO\Raster\mgRasterDataModel.h"
 
 BEGIN_NAMESPACE_OSGEO_FDO_RASTER
-public __gc class RasterDataMode;
+ref class RasterDataMode;
 END_NAMESPACE_OSGEO_FDO_RASTER
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
@@ -29,7 +29,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 /// \interface OSGeo::FDO::Connections::Capabilities::IRasterCapabilities
 /// \brief
 /// The IRasterCapabilities class delineates available support for raster processing from a provider.
-public __gc __interface IRasterCapabilities : public System::IDisposable
+public interface class IRasterCapabilities : public System::IDisposable
 {
 public:
     /// \brief
@@ -82,7 +82,7 @@ public:
     /// IRaster object will dynamically transform an image to the specified data model.
     /// Returns false if the specified data model is not supported.
     /// 
-	System::Boolean SupportsDataModel (NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel* model);
+	System::Boolean SupportsDataModel (NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel^ model);
 
 };
 

@@ -29,7 +29,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 /// \brief
 /// The LogicalOperator is an abstract base class. BinaryLogicalOperator and
 /// UnaryLogicalOperator derive from the LogicalOperator class.
-public __gc class LogicalOperator : public NAMESPACE_OSGEO_FDO_FILTER::Filter
+public ref class LogicalOperator : public NAMESPACE_OSGEO_FDO_FILTER::Filter
 {
 public:
     /// \brief
@@ -44,7 +44,7 @@ public:
     /// 
 	LogicalOperator(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
+internal:
 	inline FdoLogicalOperator* GetImpObj();
 };
 

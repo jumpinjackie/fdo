@@ -21,12 +21,12 @@
 #include "mgSpatialGeometryValidity.h"
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
-public __gc __interface IGeometry;
-public __gc __interface ILinearRing;
-public __gc __interface ICircularArcSegment;
-public __gc class ObjectFactory;
-public __gc class GeometryFactoryAbstract;
-public __gc __interface IPolygon;
+interface class IGeometry;
+interface class ILinearRing;
+interface class ICircularArcSegment;
+ref class ObjectFactory;
+ref class GeometryFactoryAbstract;
+interface class IPolygon;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 class FdoSpatialUtility;
@@ -36,7 +36,7 @@ BEGIN_NAMESPACE_OSGEO_SPATIAL
 /// \ingroup (OSGeoFDOSpatial)
 /// \brief
 /// A Spatial utility class.
-public __gc __sealed class SpatialUtility
+public ref class SpatialUtility sealed
 {
 public:
     /// \brief
@@ -68,7 +68,7 @@ public:
     /// \return
     /// Returns An approximation of the given geometry.
     /// 
-	static NAMESPACE_OSGEO_GEOMETRY::IGeometry * ApproximateGeometryWithLineStrings(NAMESPACE_OSGEO_GEOMETRY::IGeometry * geometry, System::Double maxSpacing, System::Double maxOffset, NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract * geometryFactory);
+	static NAMESPACE_OSGEO_GEOMETRY::IGeometry^ ApproximateGeometryWithLineStrings(NAMESPACE_OSGEO_GEOMETRY::IGeometry^ geometry, System::Double maxSpacing, System::Double maxOffset, NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract^ geometryFactory);
 
     /// \brief
     /// Tests whether a geometry can be supported using the given types and dimensionality.
@@ -85,7 +85,7 @@ public:
     /// \return
     /// Returns An enumeration indicating support for the given geometry.
     /// 
-	static NAMESPACE_OSGEO_SPATIAL::SpatialGeometryValidity ValidateGeometryByType(NAMESPACE_OSGEO_GEOMETRY::IGeometry * geometry, NAMESPACE_OSGEO_COMMON::GeometryType geometryTypes [], NAMESPACE_OSGEO_COMMON::GeometryComponentType geometryComponentTypes [], System::Int32 dimensionality);
+	static NAMESPACE_OSGEO_SPATIAL::SpatialGeometryValidity ValidateGeometryByType(NAMESPACE_OSGEO_GEOMETRY::IGeometry^ geometry, array<NAMESPACE_OSGEO_COMMON::GeometryType>^ geometryTypes, array<NAMESPACE_OSGEO_COMMON::GeometryComponentType>^ geometryComponentTypes, System::Int32 dimensionality);
 
     /// \brief
     /// Evaluates if two FDO geometric objects spatially interact with each other based on a user supplied spatial operator.
@@ -101,7 +101,7 @@ public:
     /// \return
     /// Returns The tesselated Geometry.
     /// 
-	static System::Boolean Evaluate(NAMESPACE_OSGEO_GEOMETRY::IGeometry * g1, NAMESPACE_OSGEO_FDO_FILTER::SpatialOperations op, NAMESPACE_OSGEO_GEOMETRY::IGeometry * g2);
+	static System::Boolean Evaluate(NAMESPACE_OSGEO_GEOMETRY::IGeometry^ g1, NAMESPACE_OSGEO_FDO_FILTER::SpatialOperations op, NAMESPACE_OSGEO_GEOMETRY::IGeometry^ g2);
 
     /// \brief
     /// Tesselates a curve geometry into a set of line strings that approximate the curve geometry.
@@ -112,7 +112,7 @@ public:
     /// \return
     /// Returns The tesselated Geometry.
     /// 
-	static NAMESPACE_OSGEO_GEOMETRY::IGeometry* TesselateCurve( NAMESPACE_OSGEO_GEOMETRY::IGeometry* curve);
+	static NAMESPACE_OSGEO_GEOMETRY::IGeometry^ TesselateCurve( NAMESPACE_OSGEO_GEOMETRY::IGeometry^ curve);
 
     /// \brief
     /// Gets the extents of a geometry contained in a byte array.
@@ -128,7 +128,7 @@ public:
     /// \param maxY 
     /// Output The maximum y position of the geometry
     /// 
-	static System::Void GetExtents(System::Byte bytes [],  System::Double* minX, System::Double* minY, System::Double* maxX,  System::Double* maxY);
+	static System::Void GetExtents(array<System::Byte>^ bytes,  System::Double% minX, System::Double% minY, System::Double% maxX,  System::Double% maxY);
 
     /// \brief
     /// Gets the extents of a geometry contained in a byte array.
@@ -148,7 +148,7 @@ public:
     /// \param maxZ 
     /// Output The maximum z position of the geometry
     /// 
-	static System::Void GetExtents(System::Byte bytes [],  System::Double* minX, System::Double* minY, System::Double* minZ, System::Double* maxX,  System::Double* maxY, System::Double* maxZ);
+	static System::Void GetExtents(array<System::Byte>^ bytes,  System::Double% minX, System::Double% minY, System::Double% minZ, System::Double% maxX,  System::Double% maxY, System::Double% maxZ);
 
     /// \brief
     /// Tests whether a point is within a ring or not.
@@ -165,7 +165,7 @@ public:
     /// \return
     /// Returns TRUE if the point is within ring or on its boundary, FALSE otherwise.
     /// 
-	static System::Boolean PointInRing( NAMESPACE_OSGEO_GEOMETRY::ILinearRing* ring, System::Double coordinateX, System::Double coordinateY, System::Boolean* isOnBoundary);
+	static System::Boolean PointInRing( NAMESPACE_OSGEO_GEOMETRY::ILinearRing^ ring, System::Double coordinateX, System::Double coordinateY, System::Boolean% isOnBoundary);
 
     /// \brief
     /// Tests whether a point is within a ring or not.
@@ -180,7 +180,7 @@ public:
     /// \return
     /// Returns TRUE if the point is within ring or on its boundary, FALSE otherwise.
     /// 
-    static System::Boolean PointInRing( NAMESPACE_OSGEO_GEOMETRY::ILinearRing* ring, System::Double coordinateX, System::Double coordinateY);
+    static System::Boolean PointInRing( NAMESPACE_OSGEO_GEOMETRY::ILinearRing^ ring, System::Double coordinateX, System::Double coordinateY);
 
     /// \brief
     /// Tests whether a point is within a polygon (including its islands) or not.
@@ -199,7 +199,7 @@ public:
     /// \return
     /// Returns TRUE if the point is within polygon or on its boundary, FALSE otherwise.
     /// 
-	static System::Boolean PointInPolygon(NAMESPACE_OSGEO_GEOMETRY::IPolygon* polygon, System::Double coordinateX, System::Double coordinateY, System::Boolean * isOnExtBoundary, System::Boolean * isOnInBoundary);
+	static System::Boolean PointInPolygon(NAMESPACE_OSGEO_GEOMETRY::IPolygon^ polygon, System::Double coordinateX, System::Double coordinateY, System::Boolean% isOnExtBoundary, System::Boolean% isOnInBoundary);
 
     /// \brief
     /// Tests whether a point is within a polygon (including its islands) or not.
@@ -216,7 +216,7 @@ public:
     /// \return
     /// Returns TRUE if the point is within polygon or on its boundary, FALSE otherwise.
     /// 
-    static System::Boolean PointInPolygon(NAMESPACE_OSGEO_GEOMETRY::IPolygon* polygon, System::Double coordinateX, System::Double coordinateY, System::Boolean * isOnExtBoundary);
+    static System::Boolean PointInPolygon(NAMESPACE_OSGEO_GEOMETRY::IPolygon^ polygon, System::Double coordinateX, System::Double coordinateY, System::Boolean% isOnExtBoundary);
 
     /// \brief
     /// Tests whether a point is within a polygon (including its islands) or not.
@@ -231,7 +231,7 @@ public:
     /// \return
     /// Returns TRUE if the point is within polygon or on its boundary, FALSE otherwise.
     /// 
-    static System::Boolean PointInPolygon(NAMESPACE_OSGEO_GEOMETRY::IPolygon* polygon, System::Double coordinateX, System::Double coordinateY);
+    static System::Boolean PointInPolygon(NAMESPACE_OSGEO_GEOMETRY::IPolygon^ polygon, System::Double coordinateX, System::Double coordinateY);
 
     /// \brief
     /// Computes the area of a ring.
@@ -243,7 +243,7 @@ public:
     /// Returns The area. The value may be positive (counterclockwise orientation) or
     /// negative (clockwise orientation) 
     /// 
-	static System::Double ComputeLinearRingArea( NAMESPACE_OSGEO_GEOMETRY::ILinearRing* ring );
+	static System::Double ComputeLinearRingArea( NAMESPACE_OSGEO_GEOMETRY::ILinearRing^ ring );
 
     /// \brief
     /// Computes the length (perimeter) of a ring.
@@ -254,7 +254,7 @@ public:
     /// \return
     /// Returns The length.
     /// 
-	static System::Double ComputeLinearRingLength( NAMESPACE_OSGEO_GEOMETRY::ILinearRing* ring );
+	static System::Double ComputeLinearRingLength( NAMESPACE_OSGEO_GEOMETRY::ILinearRing^ ring );
 
     /// \brief
     /// Creates a Polygon or a MultiPolygon from a collection of rings.
@@ -274,7 +274,7 @@ public:
     /// Returns The geometry containing the input rings.
     /// 
     /// Given a collection of rings the method may return, depending on flag relateRings:
-	static NAMESPACE_OSGEO_GEOMETRY::IGeometry* CreateGeometryFromRings( NAMESPACE_OSGEO_GEOMETRY::LinearRingCollection* rings, System ::Boolean relateRings );
+	static NAMESPACE_OSGEO_GEOMETRY::IGeometry^ CreateGeometryFromRings( NAMESPACE_OSGEO_GEOMETRY::LinearRingCollection^ rings, System::Boolean relateRings );
 
     /// \brief
     /// Checks the geometric validity of a circular arc.
@@ -288,7 +288,7 @@ public:
     /// \return
     /// Returns Flag indicating whether the arc has collinear points.
     /// 
-	static System::Boolean IsCircularArcValid( NAMESPACE_OSGEO_GEOMETRY::ICircularArcSegment *arc, System::Double tolerance );
+	static System::Boolean IsCircularArcValid( NAMESPACE_OSGEO_GEOMETRY::ICircularArcSegment^ arc, System::Double tolerance );
 
 private:
 	SpatialUtility(){}

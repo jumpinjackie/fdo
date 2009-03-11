@@ -30,12 +30,12 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::Parameter::Parameter(IntPtr unmanaged, Boolean a
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::Parameter::Parameter() : ValueExpression(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoParameter::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoParameter::Create()), true))
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::Parameter::Parameter(System::String* name) : ValueExpression(IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_EXPRESSION::Parameter::Parameter(System::String^ name) : ValueExpression(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoParameter::Create(StringToUni(name)), true)) 
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoParameter::Create(StringToUni(name))), true)) 
 }
 
 FdoParameter* NAMESPACE_OSGEO_FDO_EXPRESSION::Parameter::GetImpObj()
@@ -43,26 +43,26 @@ FdoParameter* NAMESPACE_OSGEO_FDO_EXPRESSION::Parameter::GetImpObj()
 	return static_cast<FdoParameter*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::String* NAMESPACE_OSGEO_FDO_EXPRESSION::Parameter::get_Name()
+System::String^ NAMESPACE_OSGEO_FDO_EXPRESSION::Parameter::Name::get()
 {
 	FdoString* unstr;
 	EXCEPTION_HANDLER(unstr = GetImpObj()->GetName())
-	return unstr;
+	return CHECK_STRING(unstr);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::Parameter::set_Name(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::Parameter::Name::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetName(StringToUni(value)))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::Parameter::Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor* processor)
+System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::Parameter::Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor^ processor)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Process((static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessorImp*>(processor))->GetImpObj()))
+	EXCEPTION_HANDLER(GetImpObj()->Process((static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessorImp^>(processor))->GetImpObj()))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_EXPRESSION::Parameter::ToString()
+System::String^ NAMESPACE_OSGEO_FDO_EXPRESSION::Parameter::ToString()
 {
 	FdoString* unstr;
 	EXCEPTION_HANDLER(unstr = GetImpObj()->ToString())
-	return unstr;
+	return CHECK_STRING(unstr);
 }

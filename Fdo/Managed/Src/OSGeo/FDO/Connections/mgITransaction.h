@@ -20,14 +20,14 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
 
-public __gc __interface IConnection;
+interface class IConnection;
 
 /// \ingroup (OSGeoFDOConnections)
 /// \interface OSGeo::FDO::Connections::ITransaction
 /// \brief
 /// The ITransaction interface represents a transaction to be performed in a DataStore, and is implemented
 /// by feature providers that support transactions.
-public __gc __interface ITransaction : public System::IDisposable
+public interface class ITransaction : public System::IDisposable
 {
 public:
     /// \brief
@@ -36,7 +36,10 @@ public:
     /// \return
     /// Returns IConnection object
     /// 
-	__property NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* get_Connection();
+    property NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection^ Connection
+    {
+        NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection^ get();
+    }
 
     /// \brief
     ///  Commits the transaction.

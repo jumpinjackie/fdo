@@ -31,13 +31,13 @@ FdoIDestroyDataStore* NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDestroyDataStoreI
     return static_cast<FdoIDestroyDataStore*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionary* NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDestroyDataStoreImp::get_DataStoreProperties()
+NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionary^ NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDestroyDataStoreImp::DataStoreProperties::get()
 {
 	FdoIDataStorePropertyDictionary* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetDataStoreProperties())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIDataStorePropertyDictionary(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIDataStorePropertyDictionary(IntPtr(result), true);
 }
 
 System::Void NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDestroyDataStoreImp::Execute()

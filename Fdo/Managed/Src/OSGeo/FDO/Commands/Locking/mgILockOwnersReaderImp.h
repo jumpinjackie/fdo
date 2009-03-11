@@ -35,7 +35,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 /// ILockOwnersReader interface is returned from the GetLockOwners command. The initial
 /// position of the ILockOwnersReader interface is prior to the first item. Thus, you
 /// must call ReadNext to begin accessing any data.
-private __gc class ILockOwnersReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
+private ref class ILockOwnersReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
                                           public NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockOwnersReader
 {
 public:
@@ -45,7 +45,7 @@ public:
     /// \return
     /// Returns the name of a user
     /// 
-	System::String* GetLockOwner();
+	virtual System::String^ GetLockOwner();
 
     /// \brief
     /// Advances the reader to the next item. The default position of the 
@@ -55,7 +55,7 @@ public:
     /// \return
     /// Returns true if there is a next item.
     /// 
-	System::Boolean ReadNext();
+	virtual System::Boolean ReadNext();
 
     /// \brief
     /// Closes the ILockOwnersReader object, freeing any resources it may be
@@ -64,14 +64,9 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Close();
+	virtual System::Void Close();
 
-/// \cond DOXYGEN-IGNORE
-protected:
-	__sealed System::Void ReleaseUnmanagedObject();
-/// \endcond
-
-public private:
+internal:
 	ILockOwnersReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)
 	{
 

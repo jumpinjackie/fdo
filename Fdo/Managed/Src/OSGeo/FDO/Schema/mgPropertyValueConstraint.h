@@ -29,17 +29,12 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 /// PropertyValueConstraint is an abstract class that derives from IDisposable.
 /// PropertyValueConstraint is the base class of PropertyValueConstraintRange 
 /// and PropertyValueConstraintList.
-public __gc class PropertyValueConstraint : public NAMESPACE_OSGEO_RUNTIME::Disposable
+public ref class PropertyValueConstraint : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
-public private:
+internal:
 	PropertyValueConstraint(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoPropertyValueConstraint* GetImpObj();
-
-/// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-/// \endcond
 
 public:
     /// \brief
@@ -48,7 +43,10 @@ public:
     /// \return
     /// Returns the constraint type
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintType get_ConstraintType();
+    property NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintType ConstraintType
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintType get();
+    }
 };
 
 END_NAMESPACE_OSGEO_FDO_SCHEMA

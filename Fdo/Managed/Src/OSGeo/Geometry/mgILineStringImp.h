@@ -24,8 +24,8 @@
 class FdoILineString;
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
-public __gc __interface IDirectPosition;
-public __gc class DirectPositionCollection;
+interface class IDirectPosition;
+ref class DirectPositionCollection;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
@@ -35,8 +35,8 @@ BEGIN_NAMESPACE_OSGEO_GEOMETRY
 /// The ILineStringImp class is a LineString Geometry type.  
 /// The shape of ILineStringImp is the set of positions defined by the contained collection, 
 /// plus linear interpolation between consecutive points.
-private __gc class ILineStringImp 
-	: public NAMESPACE_OSGEO_GEOMETRY::ICurveAbstractImp, public NAMESPACE_OSGEO_GEOMETRY::ILineString
+private ref class ILineStringImp : 
+    public NAMESPACE_OSGEO_GEOMETRY::ICurveAbstractImp, public NAMESPACE_OSGEO_GEOMETRY::ILineString
 {
 public:
     /// \brief
@@ -51,8 +51,8 @@ public:
     /// 
 	ILineStringImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
-	FdoILineString *GetImpObj();
+internal:
+	FdoILineString* GetImpObj();
 
 public:
     /// \brief
@@ -61,7 +61,10 @@ public:
     /// \return
     /// Returns the number of positions
     /// 
-	__property System::Int32 get_Count();
+    property System::Int32 Count
+    {
+        virtual System::Int32 get();
+    }
 	
     /// \brief
     /// Gets the position at the specified (zero-based) index.
@@ -72,7 +75,10 @@ public:
     /// \return
     /// Returns the position
     /// 
-	__property NAMESPACE_OSGEO_GEOMETRY::IDirectPosition *get_Item(System::Int32 index);
+    property NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ default[System::Int32]
+    {
+        virtual NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ get(System::Int32 index);
+    }
 
     /// \brief
     /// Gets the position at the specified (zero-based) index, by values of its member data.
@@ -96,13 +102,13 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void GetItemByMembers(
+	virtual System::Void GetItemByMembers(
 		System::Int32 index, 
-		System::Double &coordinateX, 
-		System::Double &coordinateY, 
-		System::Double &coordinateZ, 
-		System::Double &coordinateM, 
-		System::Int32 &dimensionality);
+		System::Double% coordinateX, 
+		System::Double% coordinateY, 
+		System::Double% coordinateZ, 
+		System::Double% coordinateM, 
+		System::Int32% dimensionality);
 	
     /// \brief
     /// Gets a collection of all of the positions in this object.
@@ -110,7 +116,10 @@ public:
     /// \return
     /// Returns the positions
     /// 
-	__property NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection *get_Positions();
+    property NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection^ Positions
+    {
+        virtual NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection^ get();
+    }
 };
 
 END_NAMESPACE_OSGEO_GEOMETRY
