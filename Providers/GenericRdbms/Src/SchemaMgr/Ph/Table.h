@@ -45,21 +45,6 @@ public:
 
     ~FdoSmPhGrdTable(void);
 
-    // Executes a DDL statement that affects this table (e.g. add/delete an index
-    // or foreign key on this table).
-    // The default implementation simply executes the statement. However, providers
-    // that need to do special things can override this function.
-    // For example, the Oracle provider must execute these statements within a 
-    // DDL transaction when this table is OWM-enabled.
-    virtual void ExecuteDDL( 
-        FdoStringP sqlStmt, // the DDL statement
-        FdoSmPhGrdTable* refTable = NULL, // referenced table for foreign key.
-                                          // must be specified if the statement operates
-                                          // on a foreign key.
-        bool isDDL = true                 // true if the statement must be executed
-                                          // as a DDL statement. 
-    );
-
     // Deletes all rows from this table.
     virtual void ClearRows();
 

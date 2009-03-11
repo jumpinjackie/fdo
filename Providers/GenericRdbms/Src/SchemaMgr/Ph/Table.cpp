@@ -35,14 +35,6 @@ FdoSmPhGrdTable::~FdoSmPhGrdTable(void)
 {
 }
 
-void FdoSmPhGrdTable::ExecuteDDL( FdoStringP sqlStmt, FdoSmPhGrdTable* refTable, bool isDDL )
-{
-    FdoSmPhGrdMgrP      mgr = GetManager().p->SmartCast<FdoSmPhGrdMgr>();
-    GdbiConnection*     gdbiConn = mgr->GetGdbiConnection();
-
-    gdbiConn->ExecuteNonQuery( (FdoString*) sqlStmt, isDDL );
-}
-
 void FdoSmPhGrdTable::ClearRows()
 {
     FdoSmPhGrdMgrP      mgr = GetManager().p->SmartCast<FdoSmPhGrdMgr>();

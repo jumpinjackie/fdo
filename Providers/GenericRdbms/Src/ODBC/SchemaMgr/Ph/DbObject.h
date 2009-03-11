@@ -188,12 +188,28 @@ protected:
         FdoSmPhRdColumnReader* colRdr = NULL
     );
 
+    // Index creator implementation
+    virtual FdoSmPhIndexP NewIndex(
+        FdoStringP name,
+        bool isUnique,
+        FdoSchemaElementState elementState = FdoSchemaElementState_Added
+    );
+
+    // Spatial Index creator implementation
+    virtual FdoSmPhIndexP NewSpatialIndex(
+        FdoStringP name,
+        bool isUnique,
+        FdoSchemaElementState elementState = FdoSchemaElementState_Added
+    );
+
     // Column reader creator implementation.
     virtual FdoPtr<FdoSmPhRdColumnReader> CreateColumnReader();
 
     virtual FdoPtr<FdoSmPhRdBaseObjectReader> CreateBaseObjectReader() const;
 
     virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader() const;
+
+    virtual FdoPtr<FdoSmPhRdIndexReader> CreateIndexReader() const;
 
 protected:
 

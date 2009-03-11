@@ -21,12 +21,12 @@
 
 FdoSmPhSpatialIndex::FdoSmPhSpatialIndex(
         FdoStringP name, 
-        const FdoSmPhTable* pTable,
+        FdoSmPhDbObject* pParent,
         bool isUnique,
 		FdoSchemaElementState elementState
 ) : 
-    FdoSmPhIndex( name, pTable, isUnique, elementState ),
-    FdoSmPhDbObject( name, (const FdoSmPhOwner*)(pTable->GetParent()), elementState )
+    FdoSmPhIndex( name, pParent, isUnique, elementState ),
+    FdoSmPhDbObject( name, (const FdoSmPhOwner*)(pParent->GetParent()), elementState )
 {
 }
 
@@ -54,7 +54,7 @@ void FdoSmPhSpatialIndex::XMLSerialize( FILE* xmlFp, int ref ) const
 	fprintf( xmlFp, "<SpatialIndex name=\"%s\" unique=\"%s\" table=\"%s\">\n",
 			(const char*) FdoStringP(GetName()), 
             GetIsUnique() ? "true" : "false",
-            RefTable() ? (const char*) FdoStringP(RefTable()->GetName()) : ""
+            GetDbObject() ? (const char*) FdoStringP(GetDbObject()->GetName()) : ""
 	);
 
     FdoSmPhDbObject::XMLSerialize(xmlFp, ref);

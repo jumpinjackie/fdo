@@ -30,6 +30,9 @@ class SqlServerSchemaMgrTests : public SchemaMgrTests
 
     void testSpatialContextsGeog();
 
+    virtual int GenKeysCreateSpecific( FdoSmPhGrdOwner* grdOwner );
+    virtual void GenKeysVldSpecific( FdoClassCollection* classes );
+
     virtual StaticConnection* CreateStaticConnection();
     virtual void CreateMultiGeomTable( FdoSmPhOwnerP owner, FdoStringP tableName, FdoInt32 colCount, FdoInt32 indexMask, FdoInt32 nnullMask );
 
