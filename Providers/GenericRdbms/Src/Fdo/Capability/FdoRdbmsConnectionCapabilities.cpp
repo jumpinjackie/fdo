@@ -82,7 +82,7 @@ bool FdoRdbmsConnectionCapabilities::SupportsSQL()
 
 bool FdoRdbmsConnectionCapabilities::SupportsConfiguration()
 {
-    return false;
+    return true;
 }
 
 void FdoRdbmsConnectionCapabilities::Dispose()
