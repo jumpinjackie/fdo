@@ -25,12 +25,12 @@ class FdoMySQLOvDataPropertyDefinition;
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL
 
-public __gc class OvColumn;
+ref class OvColumn;
 
 ///<summary>Concrete class defining physical schema overrides for a data property definition.</summary>
-public __gc class OvDataPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvDataPropertyDefinition, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyDefinition
+public ref class OvDataPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvDataPropertyDefinition, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyDefinition
 {
-public private:
+internal:
 	FdoMySQLOvDataPropertyDefinition* GetImpObj();
 	
 	OvDataPropertyDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
@@ -43,16 +43,17 @@ public:
     ///<summary>Constructs an instance of an OvDataPropertyDefinition using the specified arguments</summary>
     /// <param name="name">Input name</param>
     /// <returns>Returns OvDataPropertyDefinition</returns>
-	OvDataPropertyDefinition(System::String* name);
+	OvDataPropertyDefinition(System::String^ name);
 
     ///<summary>Gets the MySQL column</summary>
     /// <returns>Returns the MySQL column</returns>
-	__property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvColumn* get_Column();
-
     ///<summary>Sets the MySQL column</summary>
     /// <returns>Returns nothing</returns>
-	__property System::Void set_Column(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvColumn *column);
-
+    property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvColumn^ Column
+    {
+        NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvColumn^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvColumn^ column);
+    }
 };
 
 END_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL

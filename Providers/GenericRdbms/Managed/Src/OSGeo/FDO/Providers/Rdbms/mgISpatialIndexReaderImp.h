@@ -29,9 +29,9 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS
 /// ISpatialIndexReader is returned from the GetSpatialIndexes command.
 /// The initial position of the ISpatialIndexReader is prior to the
 /// first item. Therefore you must call ReadNext to begin accessing any data.</summary>
-private __gc class ISpatialIndexReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable,  public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ISpatialIndexReader
+private ref class ISpatialIndexReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable,  public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ISpatialIndexReader
 {
-public private:
+internal:
 	FdoISpatialIndexReader* GetImpObj();
 	
 	ISpatialIndexReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete);   
@@ -39,33 +39,45 @@ public private:
 public:
     /// <summary>Gets the name of the spatial index currently being read.</summary>
     /// <returns>Returns the name of the spatial context.</returns>
-	__property System::String* get_Name();
+    virtual property System::String^ Name
+    {
+        System::String^ get();
+    }
 
     /// <summary>Gets the name of the current spatial context as a String.</summary>
     /// <returns>Returns the description of the spatial context </returns>
-	__property System::String* get_SpatialContextName();
+    virtual property System::String^ SpatialContextName
+    {
+        System::String^ get();
+    }
 
     /// <summary>Gets the type of the current spatial Index, either Quad-Tree or R-Tree.</summary>
     /// <returns>Returns the spatial index type</returns>
-	__property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::RdbmsSpatialIndexType get_RdbmsSpatialIndexType();
+    virtual property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::RdbmsSpatialIndexType RdbmsSpatialIndexType
+    {
+        NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::RdbmsSpatialIndexType get();
+    }
 
     /// <summary>Gets the number of dimensions of the current spatial Index.</summary>
     /// <returns>Returns the extent type</returns>
-    __property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::RdbmsSpatialIndexDimensionType get_NumDimensions();
+    virtual property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::RdbmsSpatialIndexDimensionType NumDimensions
+    {
+        NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::RdbmsSpatialIndexDimensionType get();
+    }
 
     /// <summary>Advances the reader to the next item. The default position of the reader
     /// is prior to the first item. Therefore you must call ReadNext to begin
     /// accessing any data.</summary>
     /// <returns>Returns true if there is a next item.</returns>
-	System::Boolean ReadNext();
+	virtual System::Boolean ReadNext();
 
     /// <summary>Closes the ISpatialIndexReader object freeing any resources it may
     /// be holding.</summary>
     /// <returns>Returns nothing</returns>
-	System::Void Dispose();
+	virtual System::Void DisposeReader();
 
 protected:
-	System::Void ReleaseUnmanagedObject();
+    virtual System::Void ReleaseUnmanagedObject() override;
 };
 
 END_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS

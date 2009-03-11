@@ -41,24 +41,24 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvObjectPropertyDefinition::
 
 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvObjectPropertyDefinition::OvObjectPropertyDefinition() : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvObjectPropertyDefinition(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach((FdoIDisposable*)FdoMySQLOvObjectPropertyDefinition::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr((FdoIDisposable*)FdoMySQLOvObjectPropertyDefinition::Create()), true))
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvObjectPropertyDefinition::OvObjectPropertyDefinition(System::String* name) : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvObjectPropertyDefinition(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvObjectPropertyDefinition::OvObjectPropertyDefinition(System::String^ name) : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvObjectPropertyDefinition(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach((FdoIDisposable*)FdoMySQLOvObjectPropertyDefinition::Create(StringToUni(name)), true))
+	EXCEPTION_HANDLER(Attach(IntPtr((FdoIDisposable*)FdoMySQLOvObjectPropertyDefinition::Create(StringToUni(name))), true))
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyMappingDefinition* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvObjectPropertyDefinition::get_MappingDefinition()
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyMappingDefinition^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvObjectPropertyDefinition::MappingDefinition::get()
 {
-	FdoMySQLOvPropertyMappingDefinition * unobj;
+	FdoMySQLOvPropertyMappingDefinition* result;
 
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetMappingDefinition())
+	EXCEPTION_HANDLER(result = GetImpObj()->GetMappingDefinition())
 
-	return ObjectFactory::CreateIOvPropertyMappingDefinition(unobj, true);
+	return ObjectFactory::CreateIOvPropertyMappingDefinition(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvObjectPropertyDefinition::set_MappingDefinition(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyMappingDefinition* propertyMappingDefinition)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvObjectPropertyDefinition::MappingDefinition::set(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyMappingDefinition^ propertyMappingDefinition)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetMappingDefinition(dynamic_cast<FdoMySQLOvPropertyMappingDefinition*>((FdoIDisposable*)(static_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(static_cast<System::IDisposable*>(propertyMappingDefinition)))->UnmanagedObject.ToPointer())))
+	EXCEPTION_HANDLER(GetImpObj()->SetMappingDefinition(dynamic_cast<FdoMySQLOvPropertyMappingDefinition*>((FdoIDisposable*)(static_cast<NAMESPACE_OSGEO_RUNTIME::Disposable^>(static_cast<System::IDisposable^>(propertyMappingDefinition)))->UnmanagedObject.ToPointer())))
 }

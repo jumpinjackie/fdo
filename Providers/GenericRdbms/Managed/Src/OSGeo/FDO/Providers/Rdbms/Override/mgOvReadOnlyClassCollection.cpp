@@ -33,148 +33,70 @@ FdoRdbmsOvReadOnlyClassCollection* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE:
     return static_cast<FdoRdbmsOvReadOnlyClassCollection*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection::OvReadOnlyClassCollection(System::IntPtr unmanaged, System::Boolean autoDelete) : Disposable(unmanaged, autoDelete)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection::OvReadOnlyClassCollection(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_COMMON::CollectionReadOnlyBase(unmanaged, autoDelete)
 {
 
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection::ReleaseUnmanagedObject()
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection::CopyTo(array<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvClassDefinition^>^ pArray, System::Int32 index)
 {
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}
-
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection::ICollection::CopyTo(System::Array* array, System::Int32 index) 
-{
-	if (NULL == array) 
-	{
-		throw new System::ArgumentNullException();
-	}
-
+	if (nullptr == pArray)
+		throw gcnew System::ArgumentNullException();
 	if (index < 0)
-	{
-		throw new System::ArgumentOutOfRangeException();
-	}
+		throw gcnew System::ArgumentOutOfRangeException();
+	if (pArray->Rank != 1 || index >= pArray->Length || this->Count + index > pArray->Length)
+		throw gcnew System::ArgumentException();
 
-	if (array->Rank != 1 || index >= array->Length || get_Count() + index > array->Length)
-	{
-		throw new System::ArgumentException();
-	}
-
-	for (System::Int32 i=0;i<this->Count;i++)
-	{
-		array->set_Item(index + i, get_RealTypeItem(i));
-	}
+	for (System::Int32 i = 0; i < this->Count; i++)
+        pArray[index+i] = this->Item[i];
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection::CopyTo(OvClassDefinition* array[], System::Int32 index)
+System::Int32 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection::Count::get(System::Void)
 {
-	if (NULL == array)
-	{
-		throw new System::ArgumentNullException();
-	}
-
-	if (index < 0)
-	{
-		throw new System::ArgumentOutOfRangeException();
-	}
-	if (array->Rank != 1 || index >= array->Length || get_Count() + index > array->Length)
-	{
-		throw new System::ArgumentException();
-	}
-
-	for (System::Int32 i=0;i<this->Count;i++)
-	{
-		array[index+i] = __try_cast<OvClassDefinition*>(get_RealTypeItem(i));
-	}
-}
-
-System::Object* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection::ICollection::get_SyncRoot()
-{
-	return NULL;
-}
-
-System::Boolean NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection::ICollection::get_IsSynchronized()
-{
-	return false;
-}
-
-
-System::Collections::IEnumerator* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection::GetEnumerator()
-{
-	return new Enumerator(this);
-}
-
-System::Int32 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection::get_Count(System::Void)
-{
-	FdoInt32 length;
+	System::Int32 length;
 
 	EXCEPTION_HANDLER(length = GetImpObj()->GetCount())
 
 	return length;
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection::IndexOf(OvClassDefinition* value)
+System::Int32 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection::IndexOf(OvClassDefinition^ value)
 {
-	FdoInt32 index;
+	System::Int32 index;
 
-	EXCEPTION_HANDLER(index = GetImpObj()->IndexOf((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(index = GetImpObj()->IndexOf((value == nullptr ? nullptr : value->GetImpObj())))
 
 	return index;
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection::Contains(OvClassDefinition* value)
+System::Boolean NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection::Contains(OvClassDefinition^ value)
 {
-	FdoBoolean exist;
+	System::Boolean exist;
 
-	EXCEPTION_HANDLER(exist = (!!GetImpObj()->Contains((value == NULL ? NULL : value->GetImpObj()))))
+	EXCEPTION_HANDLER(exist = (!!GetImpObj()->Contains((value == nullptr ? nullptr : value->GetImpObj()))))
 
 	return exist;
 }
 
-/*
-Implementation for OvReadOnlyClassCollection::Enumerator
-*/ 
-System::Object* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection::Enumerator::get_Current()
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvClassDefinition^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection::Item::get(System::Int32 index)
 {
-	if (m_nIdx < 0 || m_nIdx >= m_pCol->Count)
-	{
-		throw new InvalidOperationException();
-	}
+	FdoRdbmsOvClassDefinition* result;
 
-	FdoRdbmsOvClassDefinition* upElement;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetItem(index))
 
-	EXCEPTION_HANDLER(upElement = m_pCol->GetImpObj()->GetItem(m_nIdx))
-
-	return NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::ObjectFactory::CreateOvClassDefinition(upElement, true);
+	return NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::ObjectFactory::CreateOvClassDefinition(IntPtr(result), true);
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection::Enumerator::MoveNext()
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvClassDefinition^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection::Item::get(System::String^ index)
 {
-	++m_nIdx;
-	return m_nIdx < m_pCol->Count;
+	FdoRdbmsOvClassDefinition* result;
+
+	EXCEPTION_HANDLER(result = GetImpObj()->GetItem(StringToUni(index)))
+
+	return NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::ObjectFactory::CreateOvClassDefinition(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection::Enumerator::Reset()
+System::Object^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection::IndexInternal::get(System::Int32 index)
 {
-	m_nIdx = -1;
-}
-
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvClassDefinition* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection::get_RealTypeItem(System::Int32 index)
-{
-	FdoRdbmsOvClassDefinition* upElement;
-
-	EXCEPTION_HANDLER(upElement = GetImpObj()->GetItem(index))
-
-	return NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::ObjectFactory::CreateOvClassDefinition(upElement, true);
-}
-
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvClassDefinition* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection::get_RealTypeItem(System::String* index)
-{
-	FdoRdbmsOvClassDefinition* upElement;
-
-	EXCEPTION_HANDLER(upElement = GetImpObj()->GetItem(StringToUni(index)))
-
-	return NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::ObjectFactory::CreateOvClassDefinition(upElement, true);
+	return this->Item[index];
 }

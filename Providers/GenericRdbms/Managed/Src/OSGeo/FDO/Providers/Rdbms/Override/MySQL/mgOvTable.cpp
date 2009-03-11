@@ -37,43 +37,43 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable::OvTable(System::Int
 
 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable::OvTable() : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvTable(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoMySQLOvTable::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoMySQLOvTable::Create()), true))
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable::OvTable(System::String* name) : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvTable(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable::OvTable(System::String^ name) : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvTable(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoMySQLOvTable::Create(StringToUni(name)), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoMySQLOvTable::Create(StringToUni(name))), true))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable::get_DataDirectory()
+System::String^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable::DataDirectory::get()
 {
-	FdoString* unobj;
+	FdoString* result;
 
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetDataDirectory())
+	EXCEPTION_HANDLER(result = GetImpObj()->GetDataDirectory())
 
-	return unobj;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable::set_DataDirectory(System::String* dataDirectory)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable::DataDirectory::set(System::String^ dataDirectory)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetDataDirectory(StringToUni(dataDirectory)))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable::set_IndexDirectory(System::String* indexDirectory)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable::IndexDirectory::set(System::String^ indexDirectory)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetIndexDirectory(StringToUni(indexDirectory)))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable::get_IndexDirectory()
+System::String^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable::IndexDirectory::get()
 {
-	FdoString* unobj;
+	FdoString* result;
 
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetIndexDirectory())
+	EXCEPTION_HANDLER(result = GetImpObj()->GetIndexDirectory())
 
-	return unobj;
+	return CHECK_STRING(result);
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvStorageEngineType NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable::get_StorageEngine()
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvStorageEngineType NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable::StorageEngine::get()
 {
 	MySQLOvStorageEngineType unobj;
 	
@@ -82,21 +82,21 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvStorageEngineType NAMESPAC
 	return static_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvStorageEngineType>(unobj);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable::set_StorageEngine(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvStorageEngineType storageEngine)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable::StorageEngine::set(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvStorageEngineType storageEngine)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetStorageEngine(static_cast<MySQLOvStorageEngineType>(storageEngine)))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable::get_Database()
+System::String^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable::Database::get()
 {
-	FdoString* unobj;
+	FdoString* result;
 
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetDatabase())
+	EXCEPTION_HANDLER(result = GetImpObj()->GetDatabase())
 
-	return unobj;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable::set_Database(System::String* database)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable::Database::set(System::String^ database)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetDatabase(StringToUni(database)))
 }

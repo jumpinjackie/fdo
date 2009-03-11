@@ -21,14 +21,14 @@
 class FdoShpOvPhysicalSchemaMapping;
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE
-public __gc class ClassCollection;
-public __gc class ClassDefinition;
+ref class ClassCollection;
+ref class ClassDefinition;
 
 /// <summary>
 /// PhysicalSchemaMapping is the concrete class that  
 /// defines the physical schema mappings for a SHP Provider logical schema. 
 /// </summary>
-public __gc class PhysicalSchemaMapping : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping
+public ref class PhysicalSchemaMapping : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping
 {
 public:
     /// <summary>Constructs a new managed physical schema mapping object.</summary>
@@ -46,22 +46,25 @@ public:
     /// correspond to the provider name of the expected FDO Provider, and InvalidArgumentException
     /// will be thrown.
     /// </summary>
-    PhysicalSchemaMapping(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping* schemaMapping, System::Boolean autoDelete);
+    PhysicalSchemaMapping(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping^ schemaMapping, System::Boolean autoDelete);
 
 public:
     /// <summary>Retrieves the list of classes for whom physical schema mappings have been specified.</summary>
     /// <returns>Returns the set of classes as a Class Collection.</returns> 
-    __property NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassCollection* get_Classes(); 
+    property NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassCollection^ Classes
+    {
+        NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassCollection^ get();
+    }
 
     /// <summary>Helper method to find a class mapping that maps to a given shapefile</summary>
     /// <returns>Returns the Class Definition corresponding to the shape file name.</returns> 
-    NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassDefinition* FindByShapefile(System::String* shapeFilePath);
+    NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassDefinition^ FindByShapefile(System::String^ shapeFilePath);
 
     /// <summary>Helper method to find a class mapping that maps to a given classname </summary>
     /// <returns>Returns the Class Definition corresponding to the class name.</returns> 
-    NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassDefinition* FindByClassName(System::String* class_name);
+    NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassDefinition^ FindByClassName(System::String^ class_name);
 
-public private:
+internal:
     PhysicalSchemaMapping(System::IntPtr unmanaged, System::Boolean autoDelete);
 
     inline FdoShpOvPhysicalSchemaMapping* GetImpObj();

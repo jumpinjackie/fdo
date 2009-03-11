@@ -24,9 +24,9 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE
 
 ///<summary>Abstract class defining physical schema overrides for an association property
 ///definition.</summary>
-public __gc class OvAssociationPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyDefinition
+public ref class OvAssociationPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyDefinition
 {
-public private:
+internal:
 	inline FdoRdbmsOvAssociationPropertyDefinition* GetImpObj();
 
 public protected:
@@ -35,7 +35,10 @@ public protected:
 public:
  ///<summary>Gets a collection of Oracle property definitions</summary>
  ///<returns>Returns the collection of Oracle property definitions</returns>
-	__property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyPropertyDefinitionCollection* get_Properties();
+    property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyPropertyDefinitionCollection^ Properties
+    {
+        NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyPropertyDefinitionCollection^ get();
+    }
 };
 
 END_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE

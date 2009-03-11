@@ -19,18 +19,21 @@
 #pragma once
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
-public __gc class PhysicalElementMapping;
+ref class PhysicalElementMapping;
 END_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE
 
 ///<summary>Abstract class defining physical schema overrides for a property
 ///definition.</summary>
-public __gc __interface IOvPropertyDefinition : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IPhysicalPropertyMapping
+public interface class IOvPropertyDefinition : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IPhysicalPropertyMapping
 {	
 public:
     // Makes SetParent function public
-	__property System::Void set_Parent(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping* value);
+    property NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping^ Parent
+    {
+        System::Void set(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping^ value);
+    }
 };
 
 END_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE

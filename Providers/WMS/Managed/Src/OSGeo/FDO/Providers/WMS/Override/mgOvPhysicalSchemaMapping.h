@@ -22,13 +22,13 @@
 class FdoWmsOvPhysicalSchemaMapping;
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE
-public __gc class OvClassCollection;
+ref class OvClassCollection;
 
 /// <summary>
 /// OvPhysicalSchemaMapping is the concrete class that  
 /// defines the physical schema mappings for a WMS Provider logical schema. 
 /// </summary>
-public __gc class OvPhysicalSchemaMapping : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping
+public ref class OvPhysicalSchemaMapping : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping
 {
 public:
     /// <summary>Constructs a new managed physical schema mapping object.</summary>
@@ -46,13 +46,16 @@ public:
     /// correspond to the provider name of the expected FDO Provider, and InvalidArgumentException
     /// will be thrown.
     /// </summary>
-    OvPhysicalSchemaMapping(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping* schemaMapping, System::Boolean autoDelete);
+    OvPhysicalSchemaMapping(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping^ schemaMapping, System::Boolean autoDelete);
 
     /// <summary>Retrieves the list of classes for whom physical schema mappings have been specified.</summary>
     /// <returns>Returns the set of classes as a Class Collection.</returns> 
-    __property NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvClassCollection* get_Classes(); 
+    property NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvClassCollection^ Classes
+    {
+        NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvClassCollection^ get();
+    }
 
-public private:
+internal:
     OvPhysicalSchemaMapping(System::IntPtr unmanaged, System::Boolean autoDelete);
 
     inline FdoWmsOvPhysicalSchemaMapping* GetImpObj();

@@ -27,31 +27,30 @@
 
 NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvPhysicalSchemaMapping::OvPhysicalSchemaMapping() : NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoWmsOvPhysicalSchemaMapping::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoWmsOvPhysicalSchemaMapping::Create()), true))
 }
 
 NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvPhysicalSchemaMapping::OvPhysicalSchemaMapping(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping(unmanaged, autoDelete)
 {
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvPhysicalSchemaMapping::OvPhysicalSchemaMapping(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping* schemaMapping, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping(schemaMapping, autoDelete)
+NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvPhysicalSchemaMapping::OvPhysicalSchemaMapping(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping^ schemaMapping, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping(schemaMapping, autoDelete)
 {
     // Validate IN Parameter
-    if (NULL == schemaMapping) {
+    if (nullptr == schemaMapping)
         return;
-    }
 
     // Retrieve the provider name for the FdowmsPhysicalSchemaMapping class
     FdoWmsOvPhysicalSchemaMappingP wmsSchemaMapping = FdoWmsOvPhysicalSchemaMapping::Create();
     FdoStringP wmsProviderName = wmsSchemaMapping->GetProvider();
 
     // Retrieve the provider name of the schema mapping object passed into the constructor
-    System::String* sProviderName = schemaMapping->Provider;
+    System::String^ sProviderName = schemaMapping->Provider;
 
     // If the provider names do not match throw an Invalid Argument exception
     if (wmsProviderName != StringToUni(sProviderName)) {
         //Wait for changing again
-		throw new System::ArgumentException();
+		throw gcnew System::ArgumentException();
     }
 }
 
@@ -60,11 +59,11 @@ FdoWmsOvPhysicalSchemaMapping* NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvPhy
 	return static_cast<FdoWmsOvPhysicalSchemaMapping*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvClassCollection* NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvPhysicalSchemaMapping::get_Classes()
+NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvClassCollection^ NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvPhysicalSchemaMapping::Classes::get()
 {
 	FdoWmsOvClassCollection* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetClasses())
 
-	return NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::ObjectFactory::CreateOvClassCollection(result, true);
+	return NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::ObjectFactory::CreateOvClassCollection(IntPtr(result), true);
 }

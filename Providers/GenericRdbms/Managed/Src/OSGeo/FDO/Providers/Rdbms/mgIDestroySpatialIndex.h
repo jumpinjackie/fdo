@@ -19,7 +19,7 @@
 #pragma once
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
-public __gc class GeometricPropertyDefinition;
+ref class GeometricPropertyDefinition;
 END_NAMESPACE_OSGEO_FDO_SCHEMA
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS
@@ -27,26 +27,30 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS
 /// <summary>The IDestroySpatialIndex interface defines the DestroySpatialIndex
 /// command, which drops an existing spatial index. Input to the command is
 /// the name of the index to drop. </summary>
-public __gc __interface IDestroySpatialIndex : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
+public interface class IDestroySpatialIndex : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
 {
 public:
     /// <summary>Gets the name of the spatial index to destroy as a String.</summary>
     /// <returns>Returns the name of the spatial index to be drop</returns>
-    __property System::String* get_Name();
-
     /// <summary>Sets the name of the spatial index to drop as a String.</summary>
     /// <param name="value">Input the name of the spatial index to be drop</param>
     /// <returns>Returns nothing</returns>
-    __property System::Void set_Name(System::String* value);
+    property System::String^ Name
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// <summary>Sets the desired value of the geometric property.</summary>
     /// <param name="value">Input the geometric property definition </param>
     /// <returns>Returns nothing</returns>
-    __property System::Void set_GeometricProperty(NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition *value);
-
     /// <summary>Gets the geometric property previously set, if any.</summary>
     /// <returns>Returns NULL if not set or a pointer to a geometry property definition</returns>
-    __property NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition* get_GeometricProperty();
+    property NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition^ GeometricProperty
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition^ value);
+    }
 
     /// <summary>Executes the DestroySpatialIndex command dropping the specified
     /// spatial index. An exception is thrown if the spatial index does not exist.</summary>

@@ -25,9 +25,9 @@ class FdoOdbcOvPropertyDefinition;
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC
 
 ///<summary>Abstract class defining physical schema overrides for a property definition.</summary>
-public __gc class OvPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyDefinition, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::IOvPropertyDefinition
+public ref class OvPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyDefinition, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::IOvPropertyDefinition
 {
-public private:
+internal:
 	OvPropertyDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoOdbcOvPropertyDefinition* GetImpObj();

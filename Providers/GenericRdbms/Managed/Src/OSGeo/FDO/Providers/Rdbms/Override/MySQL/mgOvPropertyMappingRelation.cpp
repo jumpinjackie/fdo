@@ -38,16 +38,16 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyMappingRelation::O
 {
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvClassDefinition* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyMappingRelation::get_InternalClass()
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvClassDefinition^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyMappingRelation::InternalClass::get()
 {
-	FdoMySQLOvClassDefinition * unobj;
+	FdoMySQLOvClassDefinition* result;
 
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetInternalClass())
+	EXCEPTION_HANDLER(result = GetImpObj()->GetInternalClass())
 
-	return ObjectFactory::CreateOvClassDefinition(unobj, true);
+	return ObjectFactory::CreateOvClassDefinition(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyMappingRelation::set_InternalClass(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvClassDefinition* classDefinition)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyMappingRelation::InternalClass::set(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvClassDefinition^ classDefinition)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetInternalClass(classDefinition->GetImpObj()))
 }

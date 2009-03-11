@@ -26,7 +26,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_WMS
 /// <param name="CommandType_GetImageFormats">Represents the FdoWmsIGetImagefromats command.</param>  
 /// <param name="CommandType_GetFeatureClassStyles">Represents the FdoWmsIGetFeatureClassStyles command.</param> 
 /// <param name="CommandType_GetFeatureClassCRSNames">Represents the FdoWmsIGetFeatureClassCRSNames command.</param> 
-public __value enum CommandType {
+public enum class CommandType {
 
     CommandType_GetImageFormats =  FdoWmsCommandType_GetImageFormats,
     CommandType_GetFeatureClassStyles = FdoWmsCommandType_GetFeatureClassStyles,

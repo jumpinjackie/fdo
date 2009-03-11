@@ -20,22 +20,22 @@
 #pragma once
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE
-public __gc class OvStyleDefinition;
-public __gc class OvLayerCollection;
-public __gc class OvLayerDefinition;
-public __gc class OvRasterDefinition;
-public __gc class OvClassDefinition;
-public __gc class OvClassCollection;
+ref class OvStyleDefinition;
+ref class OvLayerCollection;
+ref class OvLayerDefinition;
+ref class OvRasterDefinition;
+ref class OvClassDefinition;
+ref class OvClassCollection;
 
-public __gc __sealed class ObjectFactory
+public ref class ObjectFactory sealed
 {
 public:
-    static NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvStyleDefinition* CreateOvStyleDefinition(System::IntPtr ptr, System::Boolean autoDispose);
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvLayerCollection* CreateOvLayerCollection(System::IntPtr ptr, System::Boolean autoDispose);
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvLayerDefinition* CreateOvLayerDefinition(System::IntPtr ptr, System::Boolean autoDispose);
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition* CreateOvRasterDefinition(System::IntPtr ptr, System::Boolean autoDispose);
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvClassDefinition* CreateOvClassDefinition(System::IntPtr ptr, System::Boolean autoDispose);
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvClassCollection* CreateOvClassCollection(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvStyleDefinition^ CreateOvStyleDefinition(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvLayerCollection^ CreateOvLayerCollection(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvLayerDefinition^ CreateOvLayerDefinition(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition^ CreateOvRasterDefinition(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvClassDefinition^ CreateOvClassDefinition(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvClassCollection^ CreateOvClassCollection(System::IntPtr ptr, System::Boolean autoDispose);
 private:
 	ObjectFactory(){}
 };

@@ -26,7 +26,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_WMS
 /// This command gets the styles list supportted by specified FeatureClass
 /// from WMS service.
 ///</summary>
-public __gc class GetFeatureClassStylesCommand : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::IGetFeatureClassStyles
+public ref class GetFeatureClassStylesCommand : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::IGetFeatureClassStyles
 {
 public:
     /// <summary>
@@ -37,15 +37,15 @@ public:
     /// This constructor is the only mechanism provided by the FDO Managed API that will 
     /// allow the client to correctly construct a provider specific ICommand instance. 
     /// </summary>
-    GetFeatureClassStylesCommand(NAMESPACE_OSGEO_FDO_COMMANDS::ICommand* command, System::Boolean autoDelete);
+    GetFeatureClassStylesCommand(NAMESPACE_OSGEO_FDO_COMMANDS::ICommand^ command, System::Boolean autoDelete);
 
     /// <summary>
-    /// Executes the command. An exception is thrown if the feature class is NULL.
+    /// Executes the command. An exception is thrown if the feature class is nullptr.
     /// </summary>
     /// <returns>
     /// Returns a list of styles supportted by specific featureclass.
     /// </returns>
-    NAMESPACE_OSGEO_COMMON::StringCollection* Execute();
+    virtual NAMESPACE_OSGEO_COMMON::StringCollection^ Execute();
 
     /// <summary>
     /// Sets the name of the FeatureClass to get all supported styles.
@@ -58,17 +58,18 @@ public:
     /// <returns>
     /// Returns nothing.
     /// </returns> 
-    System::Void set_FeatureClassName(System::String* value);
-    
     /// <summary>
     /// Gets the name of the FeatureClass to get all supported styles.
     /// </summary>
     /// <returns>
     /// Returns the FeatureClass name.
     /// </returns> 
-    System::String* get_FeatureClassName();
-
-public private:
+    virtual property String^ FeatureClassName
+    {
+        String^ get();
+        System::Void set(String^ value);
+    }
+internal:
 	GetFeatureClassStylesCommand(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoWmsIGetFeatureClassStyles* GetImpObj();

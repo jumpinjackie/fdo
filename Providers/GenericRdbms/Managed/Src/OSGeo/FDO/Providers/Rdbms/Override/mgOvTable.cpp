@@ -34,21 +34,21 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvTable::OvTable(IntPtr unmanaged,
 
 }
 
-System::String * NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvTable::get_PKeyName()
+System::String^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvTable::PKeyName::get()
 {
-	FdoString * unobj;
+	FdoString* unobj;
 
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetPKeyName())
 
-	return unobj;
+	return CHECK_STRING(unobj);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvTable::set_PKeyName(System::String *keyName)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvTable::PKeyName::set(System::String^ keyName)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetPKeyName(StringToUni(keyName)))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvTable::set_Parent(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping* value)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvTable::Parent::set(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetParent(static_cast<FdoPhysicalElementMapping*>(value->UnmanagedObject.ToPointer())))
 }

@@ -25,7 +25,7 @@
 			IntermediateDirectory="..\Obj\MgFdoSQLServerSpatialOverrides\Debug"
 			ConfigurationType="2"
 			CharacterSet="0"
-			ManagedExtensions="4"
+			ManagedExtensions="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -108,7 +108,7 @@
 			IntermediateDirectory="..\Obj\MgFdoSQLServerSpatialOverrides\Debug64"
 			ConfigurationType="2"
 			CharacterSet="0"
-			ManagedExtensions="4"
+			ManagedExtensions="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -194,7 +194,7 @@
 			IntermediateDirectory="..\Obj\MgFdoSQLServerSpatialOverrides\Release"
 			ConfigurationType="2"
 			CharacterSet="0"
-			ManagedExtensions="4"
+			ManagedExtensions="1"
 			WholeProgramOptimization="0"
 			>
 			<Tool
@@ -277,7 +277,7 @@
 			IntermediateDirectory="..\Obj\MgFdoSQLServerSpatialOverrides\Release64"
 			ConfigurationType="2"
 			CharacterSet="0"
-			ManagedExtensions="4"
+			ManagedExtensions="1"
 			WholeProgramOptimization="0"
 			>
 			<Tool

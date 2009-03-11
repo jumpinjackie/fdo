@@ -38,7 +38,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE
 /// base class table name. The exception is when the base class table name is adjusted. In this case, the
 /// Base Table option allows the class properties to be stored in the base class table without the application
 /// having to guess how this table name will be adjusted. </param>
-public __value enum OvTableMappingType
+public enum class OvTableMappingType
 {
     OvTableMappingType_Default = FdoSmOvTableMappingType_Default,
     OvTableMappingType_ClassTable = FdoSmOvTableMappingType_ClassTable,

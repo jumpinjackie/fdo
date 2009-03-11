@@ -22,10 +22,10 @@
 class FdoSqlServerOvDataPropertyDefinition;
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL
-public __gc class OvColumn;
+ref class OvColumn;
 
 ///<summary>Concrete class defining physical schema overrides for a data property definition.</summary>
-public __gc class OvDataPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvDataPropertyDefinition, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::IOvPropertyDefinition
+public ref class OvDataPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvDataPropertyDefinition, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::IOvPropertyDefinition
 {
 public:
     ///<summary>Constructs a default of an FdoSqlServerOvDataPropertyDefinition</summary>
@@ -33,17 +33,19 @@ public:
 
     ///<summary>Constructs an instance of an FdoSqlServerOvDataPropertyDefinition using the specified arguments</summary>
     /// <param name="name">Input name</param>
-	OvDataPropertyDefinition(System::String* name);
+	OvDataPropertyDefinition(System::String^ name);
 
     ///<summary>Gets the SqlServer column</summary>
     /// <returns>Returns the SqlServer column</returns>
-	__property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvColumn* get_Column();
-
     ///<summary>Sets the SqlServer column</summary>
     /// <returns>Returns nothing</returns>
-	__property System::Void set_Column(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvColumn* column);
+    property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvColumn^ Column
+    {
+        NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvColumn^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvColumn^ column);
+    }
 
-public private:
+internal:
 	OvDataPropertyDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoSqlServerOvDataPropertyDefinition* GetImpObj();

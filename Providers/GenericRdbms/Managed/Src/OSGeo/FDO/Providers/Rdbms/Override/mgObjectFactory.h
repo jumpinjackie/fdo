@@ -19,45 +19,45 @@
 #pragma once
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE
-public __gc class OvPropertyDefinition;
-public __gc class OvReadOnlyPropertyDefinitionCollection;
-public __gc class OvColumn;
-public __gc class OvGeometricColumn;
-public __gc class OvClassDefinition;
-public __gc class OvTable;
-public __gc class OvReadOnlyClassCollection;
-public __gc class OvSchemaAutoGeneration;
-public __gc class OvPropertyMappingDefinition;
-public __gc class OvPropertyMappingSingle;
-public __gc class OvPropertyMappingClass;
-public __gc class OvPropertyMappingConcrete;
+ref class OvPropertyDefinition;
+ref class OvReadOnlyPropertyDefinitionCollection;
+ref class OvColumn;
+ref class OvGeometricColumn;
+ref class OvClassDefinition;
+ref class OvTable;
+ref class OvReadOnlyClassCollection;
+ref class OvSchemaAutoGeneration;
+ref class OvPropertyMappingDefinition;
+ref class OvPropertyMappingSingle;
+ref class OvPropertyMappingClass;
+ref class OvPropertyMappingConcrete;
 
-public __gc __sealed class ObjectFactory
+public ref class ObjectFactory sealed
 {
 public:
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvColumn* CreateOvColumn(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvColumn^ CreateOvColumn(System::IntPtr ptr, System::Boolean autoDispose);
 
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvTable* CreateOvTable(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvTable^ CreateOvTable(System::IntPtr ptr, System::Boolean autoDispose);
 
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvGeometricColumn* CreateOvGeometricColumn(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvGeometricColumn^ CreateOvGeometricColumn(System::IntPtr ptr, System::Boolean autoDispose);
 	
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvClassDefinition* CreateOvClassDefinition(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvClassDefinition^ CreateOvClassDefinition(System::IntPtr ptr, System::Boolean autoDispose);
 
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection* CreateOvReadOnlyClassCollection(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyClassCollection^ CreateOvReadOnlyClassCollection(System::IntPtr ptr, System::Boolean autoDispose);
 
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyDefinition* CreateOvPropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyDefinition^ CreateOvPropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose);
 
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyPropertyDefinitionCollection* CreateOvReadOnlyPropertyDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyPropertyDefinitionCollection^ CreateOvReadOnlyPropertyDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose);
 
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvSchemaAutoGeneration* CreateOvSchemaAutoGeneration(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvSchemaAutoGeneration^ CreateOvSchemaAutoGeneration(System::IntPtr ptr, System::Boolean autoDispose);
 
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingDefinition* CreateOvPropertyMappingDefinition(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingDefinition^ CreateOvPropertyMappingDefinition(System::IntPtr ptr, System::Boolean autoDispose);
 
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingSingle* CreateOvPropertyMappingSingle(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingSingle^ CreateOvPropertyMappingSingle(System::IntPtr ptr, System::Boolean autoDispose);
 
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingClass* CreateOvPropertyMappingClass(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingClass^ CreateOvPropertyMappingClass(System::IntPtr ptr, System::Boolean autoDispose);
 
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingConcrete* CreateOvPropertyMappingConcrete(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingConcrete^ CreateOvPropertyMappingConcrete(System::IntPtr ptr, System::Boolean autoDispose);
 
 private:
 	ObjectFactory(){}

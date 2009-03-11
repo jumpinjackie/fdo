@@ -22,7 +22,7 @@ class FdoSqlServerOvGeometricColumn;
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL
 
 ///<summary>Concrete class defining physical schema overrides for a column.</summary>
-public __gc class OvGeometricColumn : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvGeometricColumn
+public ref class OvGeometricColumn : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvGeometricColumn
 {
 public:
     ///<summary>Constructs a default of an FdoSqlServerOvGeometricColumn</summary>
@@ -30,9 +30,9 @@ public:
 
     ///<summary>Constructs an instance of an FdoSqlServerOvGeometricColumn using the specified arguments</summary>
     /// <param name="name">Input name</param>
-	OvGeometricColumn(System::String* name);
+	OvGeometricColumn(System::String^ name);
 
-public private:
+internal:
 	OvGeometricColumn(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoSqlServerOvGeometricColumn* GetImpObj();

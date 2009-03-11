@@ -21,15 +21,15 @@
 class FdoRdbmsOvTable;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
-public __gc class PhysicalElementMapping;
+ref class PhysicalElementMapping;
 END_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE
 
 ///<summary>Abstract class defining physical schema overrides for a table.</summary>
-public __gc class OvTable : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping
+public ref class OvTable : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping
 {
-public private:
+internal:
 	FdoRdbmsOvTable* GetImpObj();
 	
 public protected:
@@ -38,15 +38,20 @@ public protected:
 public:
     ///<summary>Gets the primary key nane</summary>
     ///<returns>Returns the primary key name</returns>
-	__property System::String * get_PKeyName();
-
     ///<summary>Sets the primary key name</summary>
     /// <param name="keyName">Input the primary key name</param>
     ///<returns>Returns nothing</returns>
-	__property System::Void set_PKeyName(System::String *keyName);
-    
+    property System::String^ PKeyName
+    {
+        System::String^ get();
+        System::Void set(System::String^ keyName);
+    }
+
     // Makes SetParent function public.
-	__property System::Void set_Parent(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping* value);
+    property NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping^ Parent
+    {
+        System::Void set(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping^ value);
+    }
 };
 
 END_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE

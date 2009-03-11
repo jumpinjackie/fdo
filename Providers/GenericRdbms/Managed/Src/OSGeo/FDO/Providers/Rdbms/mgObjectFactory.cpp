@@ -31,11 +31,11 @@
 /*
     Autodesk::Gis::Fdo::Rdbms
 */
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ISpatialIndexReader* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ObjectFactory::CreateISpatialIndexReader(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ISpatialIndexReader^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ObjectFactory::CreateISpatialIndexReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
     if (ptr == IntPtr::Zero)
-        return NULL;
+        return nullptr;
 
-	return new NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ISpatialIndexReaderImp(ptr, autoDispose);	
+	return gcnew NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ISpatialIndexReaderImp(ptr, autoDispose);	
 }
 

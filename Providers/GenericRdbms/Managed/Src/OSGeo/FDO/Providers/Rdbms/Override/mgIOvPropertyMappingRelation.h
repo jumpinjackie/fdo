@@ -20,21 +20,24 @@
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE
 
-public __gc class OvClassDefinition;
+ref class OvClassDefinition;
 
 ///<summary>
 ///Abstract class defining the physical schema overrides for relation type 
 ///object property table mappings.
 ///</summary>
-public __gc __interface IOvPropertyMappingRelation : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::IOvPropertyMappingDefinition
+public interface class IOvPropertyMappingRelation : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::IOvPropertyMappingDefinition
 {	
 public:
     ///<summary>Gets the internal class</summary>
     /// <returns>Returns the internal class</returns>
-	__property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvClassDefinition* get_InternalClass();
+    property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvClassDefinition^ InternalClass
+    {
+        NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvClassDefinition^ get();
+    }
 
 	// Creates and optionally attaches an internal class override object.
-	NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvClassDefinition* CreateInternalClass(System::Boolean attach);
+	NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvClassDefinition^ CreateInternalClass(System::Boolean attach);
 
 };
 

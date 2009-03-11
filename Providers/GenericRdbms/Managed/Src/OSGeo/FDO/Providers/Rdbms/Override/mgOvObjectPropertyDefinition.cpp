@@ -46,44 +46,44 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvObjectPropertyDefinition::OvObje
 	
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingDefinition* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvObjectPropertyDefinition::get_MappingDefinition()
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingDefinition^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvObjectPropertyDefinition::MappingDefinition::get()
 {
-	FdoRdbmsOvPropertyMappingDefinition * unobj;
+	FdoRdbmsOvPropertyMappingDefinition* result;
 
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetMappingDefinition())
+	EXCEPTION_HANDLER(result = GetImpObj()->GetMappingDefinition())
 
-	return ObjectFactory::CreateOvPropertyMappingDefinition(unobj, true);
+	return ObjectFactory::CreateOvPropertyMappingDefinition(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvObjectPropertyDefinition::InitFromXml(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection* attributes, System::String* mappingType, NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection* mappingAttributes)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvObjectPropertyDefinition::InitFromXml(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ context, NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection^ attributes, System::String^ mappingType, NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection^ mappingAttributes)
 {
 	EXCEPTION_HANDLER(GetImpObj()->InitFromXml(static_cast<FdoXmlSaxContext*>(context->UnmanagedObject.ToPointer()), static_cast<FdoXmlAttributeCollection*>(attributes->UnmanagedObject.ToPointer()), StringToUni(mappingType), static_cast<FdoXmlAttributeCollection*>(mappingAttributes->UnmanagedObject.ToPointer())))
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingSingle* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvObjectPropertyDefinition::CreateSingleMapping(System::Boolean attach)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingSingle^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvObjectPropertyDefinition::CreateSingleMapping(System::Boolean attach)
 {
-	FdoRdbmsOvPropertyMappingSingle * unobj;
+	FdoRdbmsOvPropertyMappingSingle* result;
 
-	EXCEPTION_HANDLER(unobj = GetImpObj()->CreateSingleMapping(attach))
+	EXCEPTION_HANDLER(result = GetImpObj()->CreateSingleMapping(attach))
 
-	return ObjectFactory::CreateOvPropertyMappingSingle(unobj, true);
+	return ObjectFactory::CreateOvPropertyMappingSingle(IntPtr(result), true);
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingClass* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvObjectPropertyDefinition::CreateClassMapping(System::Boolean attach)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingClass^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvObjectPropertyDefinition::CreateClassMapping(System::Boolean attach)
 {
-	FdoRdbmsOvPropertyMappingClass * unobj;
+	FdoRdbmsOvPropertyMappingClass* result;
 
-	EXCEPTION_HANDLER(unobj = GetImpObj()->CreateClassMapping(attach))
+	EXCEPTION_HANDLER(result = GetImpObj()->CreateClassMapping(attach))
 
-	return ObjectFactory::CreateOvPropertyMappingClass(unobj, true);
+	return ObjectFactory::CreateOvPropertyMappingClass(IntPtr(result), true);
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingConcrete* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvObjectPropertyDefinition::CreateConcreteMapping(System::Boolean attach)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingConcrete^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvObjectPropertyDefinition::CreateConcreteMapping(System::Boolean attach)
 {
-	FdoRdbmsOvPropertyMappingConcrete * unobj;
+	FdoRdbmsOvPropertyMappingConcrete* result;
 
-	EXCEPTION_HANDLER(unobj = GetImpObj()->CreateConcreteMapping(attach))
+	EXCEPTION_HANDLER(result = GetImpObj()->CreateConcreteMapping(attach))
 
-	return ObjectFactory::CreateOvPropertyMappingConcrete(unobj, true);
+	return ObjectFactory::CreateOvPropertyMappingConcrete(IntPtr(result), true);
 }
 

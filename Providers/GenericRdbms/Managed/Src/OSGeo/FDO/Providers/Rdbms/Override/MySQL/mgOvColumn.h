@@ -24,9 +24,9 @@ class FdoMySQLOvColumn;
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL
 
 ///<summary>Concrete class defining physical schema overrides for a column.</summary>
-public __gc class OvColumn : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvColumn
+public ref class OvColumn : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvColumn
 {
-public private:
+internal:
 	FdoMySQLOvColumn* GetImpObj();
 	
 	OvColumn(System::IntPtr unmanaged, System::Boolean autoDelete);
@@ -39,7 +39,7 @@ public:
     ///<summary>Constructs an instance of an OvColumn using the specified arguments</summary>
     /// <param name="name">Input name</param>
     /// <returns>Returns OvColumn</returns>
-	OvColumn(System::String* name);
+	OvColumn(System::String^ name);
 };
 
 END_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL

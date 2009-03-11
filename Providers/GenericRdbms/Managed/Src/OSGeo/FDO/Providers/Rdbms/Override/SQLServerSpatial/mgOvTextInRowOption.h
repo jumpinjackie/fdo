@@ -23,7 +23,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL
 /// <param name="OvTextInRowOption_InRow">Text, ntext and image data are stored within the row's 8K page.</param>
 /// <param name="OvTextInRowOption_NotInRow">Text, ntext and image data are not stored within the row's 8K page.</param>
 /// <param name="OvTextInRowOption_Default">The text-in-row override is inherited from somewhere else.</param>
-public __value enum OvTextInRowOption 
+public enum class OvTextInRowOption 
 {
 	OvTextInRowOption_InRow = SqlServerOvTextInRowOption_InRow,
     OvTextInRowOption_NotInRow = SqlServerOvTextInRowOption_NotInRow,

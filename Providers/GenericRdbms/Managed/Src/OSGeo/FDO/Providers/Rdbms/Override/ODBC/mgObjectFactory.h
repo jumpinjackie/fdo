@@ -19,22 +19,22 @@
 #pragma once
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC
-public __gc class OvPropertyDefinitionCollection;
-public __gc class OvColumn;
-public __gc class OvTable;
-public __gc class OvClassDefinition;
-public __gc class OvClassCollection;
-public __gc __interface IOvPropertyDefinition;
+ref class OvPropertyDefinitionCollection;
+ref class OvColumn;
+ref class OvTable;
+ref class OvClassDefinition;
+ref class OvClassCollection;
+interface class IOvPropertyDefinition;
 
-public __gc __sealed class ObjectFactory
+public ref class ObjectFactory sealed 
 {
 public:
-    static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvPropertyDefinitionCollection* CreateOvPropertyDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose);
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::IOvPropertyDefinition* CreateIOvPropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose);
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvColumn* CreateOvColumn(System::IntPtr ptr, System::Boolean autoDispose);
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvTable* CreateOvTable(System::IntPtr ptr, System::Boolean autoDispose);
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvClassDefinition* CreateOvClassDefinition(System::IntPtr ptr, System::Boolean autoDispose);
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvClassCollection* CreateOvClassCollection(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvPropertyDefinitionCollection^ CreateOvPropertyDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::IOvPropertyDefinition^ CreateIOvPropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvColumn^ CreateOvColumn(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvTable^ CreateOvTable(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvClassDefinition^ CreateOvClassDefinition(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvClassCollection^ CreateOvClassCollection(System::IntPtr ptr, System::Boolean autoDispose);
 
 private:
 	ObjectFactory(){}

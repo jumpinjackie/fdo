@@ -24,9 +24,9 @@ class FdoSqlServerOvPropertyDefinition;
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL
 
 ///<summary>Abstract class defining physical schema overrides for a column.</summary>
-public __gc class OvPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyDefinition, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::IOvPropertyDefinition
+public ref class OvPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyDefinition, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::IOvPropertyDefinition
 {
-public private:
+internal:
 	OvPropertyDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoSqlServerOvPropertyDefinition* GetImpObj();

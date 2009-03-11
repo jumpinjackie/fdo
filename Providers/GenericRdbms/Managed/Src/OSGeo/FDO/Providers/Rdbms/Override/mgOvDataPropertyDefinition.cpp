@@ -37,11 +37,11 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvDataPropertyDefinition::OvDataPr
 	
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvColumn* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvDataPropertyDefinition::get_Column()
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvColumn^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvDataPropertyDefinition::Column::get()
 {
-	FdoRdbmsOvColumn* unobj;
+	FdoRdbmsOvColumn* result;
 
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetColumn())
+	EXCEPTION_HANDLER(result = GetImpObj()->GetColumn())
 
-	return NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::ObjectFactory::CreateOvColumn(unobj, true);
+	return NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::ObjectFactory::CreateOvColumn(IntPtr(result), true);
 }

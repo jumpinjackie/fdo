@@ -26,13 +26,13 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE
 /// <summary> 
 /// The FdoWmsOvStyleDefinition class defines a WMS style that will be used to stylize a WMS layer.
 /// </summary>
-public __gc class OvStyleDefinition : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping
+public ref class OvStyleDefinition : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping
 {
 public:
 	/// <summary>Constructs a new empty style definition.</summary>
 	OvStyleDefinition();
 
-public private:
+internal:
 	OvStyleDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoWmsOvStyleDefinition* GetImpObj();

@@ -40,25 +40,25 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ISpatialIndexReaderImp::ISpatialIndexReader
 }
 
 
-System::String* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ISpatialIndexReaderImp::get_Name()
+System::String^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ISpatialIndexReaderImp::Name::get()
 {
-	const wchar_t* unobj;
+	FdoString* unobj;
 
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetName())
 
-	return unobj;
+	return CHECK_STRING(unobj);
 }
 
-System::String* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ISpatialIndexReaderImp::get_SpatialContextName()
+System::String^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ISpatialIndexReaderImp::SpatialContextName::get()
 {
-	const wchar_t* unobj;
+	FdoString* unobj;
 
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetSpatialContextName())
 
-		return unobj;
+	return CHECK_STRING(unobj);
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::RdbmsSpatialIndexType NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ISpatialIndexReaderImp::get_RdbmsSpatialIndexType()
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::RdbmsSpatialIndexType NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ISpatialIndexReaderImp::RdbmsSpatialIndexType::get()
 {
 	SpatialIndexType unobj;
 
@@ -67,32 +67,32 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::RdbmsSpatialIndexType NAMESPACE_OSGEO_FDO_P
 	return static_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::RdbmsSpatialIndexType>(unobj);
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::RdbmsSpatialIndexDimensionType NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ISpatialIndexReaderImp::get_NumDimensions()
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::RdbmsSpatialIndexDimensionType NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ISpatialIndexReaderImp::NumDimensions::get()
 {
 	SpatialIndexDimensionType unobj;
 
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetNumDimensions())
 
-		return static_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::RdbmsSpatialIndexDimensionType>(unobj);
+	return static_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::RdbmsSpatialIndexDimensionType>(unobj);
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ISpatialIndexReaderImp::ReadNext()
 {
-	bool exist;
+	System::Boolean exist;
 
 	EXCEPTION_HANDLER(exist = !!GetImpObj()->ReadNext())
 
 	return exist;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ISpatialIndexReaderImp::Dispose()
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ISpatialIndexReaderImp::DisposeReader()
 {
 	EXCEPTION_HANDLER(GetImpObj()->Dispose())
 }
 
 System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ISpatialIndexReaderImp::ReleaseUnmanagedObject()
 {
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
+    if (GetImpObj() != nullptr)
+        this->DisposeReader();
+    __super::ReleaseUnmanagedObject();
 }

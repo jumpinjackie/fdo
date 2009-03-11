@@ -49,102 +49,102 @@
 #include "FDO\Providers\Rdbms\Override\MySQL\mgObjectFactory.h"
 
 template <class fdoclas, class clas> 
-inline NAMESPACE_OSGEO_RUNTIME::Disposable* CHECK(FdoIDisposable* p, FdoBoolean autoDispose)
+inline NAMESPACE_OSGEO_RUNTIME::Disposable^ CHECK(FdoIDisposable* p, FdoBoolean autoDispose)
 {
-    return (dynamic_cast<fdoclas*>(p) ?  new clas(p, autoDispose) : NULL);
+    return (dynamic_cast<fdoclas*>(p) ?  gcnew clas(IntPtr(p), autoDispose) : nullptr);
 }
 
 /*
     Autodesk::Gis::Fdo::Rdbms::Override::MySQL
 */
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyDefinition* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::ObjectFactory::CreateIOvPropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyDefinition^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::ObjectFactory::CreateIOvPropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
 	FdoMySQLOvPropertyDefinition* p = (FdoMySQLOvPropertyDefinition*)ptr.ToPointer();
 
-	NAMESPACE_OSGEO_RUNTIME::Disposable* wrap;
+	NAMESPACE_OSGEO_RUNTIME::Disposable^ wrap;
 
-	if (wrap = CHECK<FdoMySQLOvDataPropertyDefinition, NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvDataPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvDataPropertyDefinition*>(wrap);
-	if (wrap = CHECK<FdoMySQLOvAssociationPropertyDefinition, NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvAssociationPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvAssociationPropertyDefinition*>(wrap);
-	if (wrap = CHECK<FdoMySQLOvGeometricPropertyDefinition, NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvGeometricPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvGeometricPropertyDefinition*>(wrap);
-	if (wrap = CHECK<FdoMySQLOvObjectPropertyDefinition, NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvObjectPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvObjectPropertyDefinition*>(wrap);
+	if (wrap = CHECK<FdoMySQLOvDataPropertyDefinition, NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvDataPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvDataPropertyDefinition^>(wrap);
+	if (wrap = CHECK<FdoMySQLOvAssociationPropertyDefinition, NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvAssociationPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvAssociationPropertyDefinition^>(wrap);
+	if (wrap = CHECK<FdoMySQLOvGeometricPropertyDefinition, NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvGeometricPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvGeometricPropertyDefinition^>(wrap);
+	if (wrap = CHECK<FdoMySQLOvObjectPropertyDefinition, NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvObjectPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvObjectPropertyDefinition^>(wrap);
 	
-	if (wrap = CHECK<FdoMySQLOvPropertyDefinition, NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyDefinition*>(wrap);
+	if (wrap = CHECK<FdoMySQLOvPropertyDefinition, NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyDefinition^>(wrap);
 	
-	return NULL;
+	return nullptr;
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvClassDefinition* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::ObjectFactory::CreateOvClassDefinition(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvClassDefinition^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::ObjectFactory::CreateOvClassDefinition(System::IntPtr ptr, System::Boolean autoDispose)
 {
     if (ptr == IntPtr::Zero)
-        return NULL;
+        return nullptr;
 
-	return new NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvClassDefinition(ptr, autoDispose);
+	return gcnew NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvClassDefinition(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyDefinitionCollection* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::ObjectFactory::CreateOvPropertyDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyDefinitionCollection^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::ObjectFactory::CreateOvPropertyDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
     if (ptr == IntPtr::Zero)
-        return NULL;
+        return nullptr;
 
-	return new NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyDefinitionCollection(ptr, autoDispose);
+	return gcnew NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyDefinitionCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::ObjectFactory::CreateOvTable(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::ObjectFactory::CreateOvTable(System::IntPtr ptr, System::Boolean autoDispose)
 { 
     if (ptr == IntPtr::Zero)
-        return NULL;
+        return nullptr;
 
-	return new NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable(ptr, autoDispose);
+	return gcnew NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvGeometricColumn* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::ObjectFactory::CreateOvGeometricColumn(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvGeometricColumn^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::ObjectFactory::CreateOvGeometricColumn(System::IntPtr ptr, System::Boolean autoDispose)
 {
     if (ptr == IntPtr::Zero)
-        return NULL;
+        return nullptr;
 
-	return new NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvGeometricColumn(ptr, autoDispose);
+	return gcnew NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvGeometricColumn(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvColumn* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::ObjectFactory::CreateOvColumn(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvColumn^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::ObjectFactory::CreateOvColumn(System::IntPtr ptr, System::Boolean autoDispose)
 {
     if (ptr == IntPtr::Zero)
-        return NULL;
+        return nullptr;
 
-	return new NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvColumn(ptr, autoDispose);
+	return gcnew NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvColumn(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvDataPropertyDefinition* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::ObjectFactory::CreateOvDataPropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvDataPropertyDefinition^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::ObjectFactory::CreateOvDataPropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose)
 {
     if (ptr == IntPtr::Zero)
-        return NULL;
+        return nullptr;
 
-	return new NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvDataPropertyDefinition(ptr, autoDispose);
+	return gcnew NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvDataPropertyDefinition(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyMappingDefinition* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::ObjectFactory::CreateIOvPropertyMappingDefinition(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyMappingDefinition^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::ObjectFactory::CreateIOvPropertyMappingDefinition(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
 	FdoMySQLOvPropertyMappingDefinition* p = (FdoMySQLOvPropertyMappingDefinition*)ptr.ToPointer();
 
-	NAMESPACE_OSGEO_RUNTIME::Disposable* wrap;
+	NAMESPACE_OSGEO_RUNTIME::Disposable^ wrap;
 
-	if (wrap = CHECK<FdoMySQLOvPropertyMappingSingle, NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyMappingSingle>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyMappingSingle*>(wrap);
+	if (wrap = CHECK<FdoMySQLOvPropertyMappingSingle, NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyMappingSingle>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyMappingSingle^>(wrap);
 	
-	if (wrap = CHECK<FdoMySQLOvPropertyMappingDefinition, NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyMappingDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyMappingDefinition*>(wrap);
+	if (wrap = CHECK<FdoMySQLOvPropertyMappingDefinition, NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyMappingDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyMappingDefinition^>(wrap);
 	
-	return NULL;
+	return nullptr;
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvClassCollection* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::ObjectFactory::CreateOvClassCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvClassCollection^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::ObjectFactory::CreateOvClassCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
     if (ptr == IntPtr::Zero)
-        return NULL;
+        return nullptr;
 
-	return new NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvClassCollection(ptr, autoDispose);
+	return gcnew NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvClassCollection(ptr, autoDispose);
 }
 

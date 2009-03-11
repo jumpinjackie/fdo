@@ -34,7 +34,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL
 /// <param name="OvStorageEngineType_NDBClustered">Clustered, fault-tolerant, memory-based tables</param>
 /// <param name="OvStorageEngineType_Unknown">The storage engine is unknown</param>
 /// <param name="OvStorageEngineType_Default">The storage engine override is inherited from somewhere else.</param>
-public __value enum OvStorageEngineType
+public enum class OvStorageEngineType
 {
     OvStorageEngineType_MyISAM = MySQLOvStorageEngineType_MyISAM,
     OvStorageEngineType_ISAM = MySQLOvStorageEngineType_ISAM,

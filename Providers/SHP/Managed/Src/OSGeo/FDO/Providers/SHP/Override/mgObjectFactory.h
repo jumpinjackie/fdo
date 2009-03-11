@@ -19,20 +19,20 @@
 #pragma once
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE
-public __gc class ColumnDefinition;
-public __gc class PropertyDefinition;
-public __gc class PropertyDefinitionCollection;
-public __gc class ClassDefinition;
-public __gc class ClassCollection;
+ref class ColumnDefinition;
+ref class PropertyDefinition;
+ref class PropertyDefinitionCollection;
+ref class ClassDefinition;
+ref class ClassCollection;
 
-public __gc __sealed class ObjectFactory
+public ref class ObjectFactory sealed
 {
 public:
-    static NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ColumnDefinition* CreateColumnDefinition(System::IntPtr ptr, System::Boolean autoDispose);
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PropertyDefinition* CreatePropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose);
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PropertyDefinitionCollection* CreatePropertyDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose);
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassDefinition* CreateClassDefinition(System::IntPtr ptr, System::Boolean autoDispose);
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassCollection* CreateClassCollection(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ColumnDefinition^ CreateColumnDefinition(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PropertyDefinition^ CreatePropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PropertyDefinitionCollection^ CreatePropertyDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassDefinition^ CreateClassDefinition(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassCollection^ CreateClassCollection(System::IntPtr ptr, System::Boolean autoDispose);
 
 private:
 	ObjectFactory(){}

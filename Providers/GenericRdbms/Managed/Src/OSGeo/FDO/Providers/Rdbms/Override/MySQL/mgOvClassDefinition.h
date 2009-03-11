@@ -22,19 +22,19 @@
 class FdoMySQLOvClassDefinition;
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE
-public __gc class OvClassDefinition;
+ref class OvClassDefinition;
 END_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL
 
-public __gc class OvPropertyDefinitionCollection;
-public __gc class OvTable;
-public __gc class OvGeometricColumn;
+ref class OvPropertyDefinitionCollection;
+ref class OvTable;
+ref class OvGeometricColumn;
 
 ///<summary>Concrete class defining physical schema overrides for a class definition.</summary>
-public __gc class OvClassDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvClassDefinition
+public ref class OvClassDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvClassDefinition
 {
-public private:
+internal:
 	FdoMySQLOvClassDefinition* GetImpObj();
 	
 	OvClassDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
@@ -47,20 +47,25 @@ public:
     ///<summary>Constructs an instance of an OvClassDefinition using the specified arguments</summary>
     /// <param name="name">Input name</param>
     /// <returns>Returns OvClassDefinition</returns>
-	OvClassDefinition(System::String* name);
+	OvClassDefinition(System::String^ name);
 
     ///<summary>Gets a collection of MySQL property overrides</summary>
     /// <returns>Returns the collection of MySQL property overrides</returns>
-	__property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyDefinitionCollection* get_Properties();
+    property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyDefinitionCollection^ Properties
+    {
+        NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyDefinitionCollection^ get();
+    }
 
     ///<summary>Gets the MySQL table override for this class override</summary>
     /// <returns>Returns OvTable</returns>
-	__property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable* get_Table();
-
     ///<summary>Sets the MySQL table override for this class override</summary>
     /// <param name="name">Input MySQL table override</param>
     /// <returns>Returns nothing</returns>
-	__property System::Void set_Table(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable* table);
+    property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable^ Table
+    {
+        NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable^ table);
+    }
    
     ///<summary>Which FDO property maps to an MySQL auto-increment column, if any.</summary>
     /// <remarks>An empty string indicates
@@ -74,12 +79,14 @@ public:
     /// </remarks>
     /// <param name="name"></param>
     /// <returns>Returns nothing</returns>
-	__property System::Void set_AutoIncrementPropertyName(System::String* autoIncrementPropertyName);
-
     ///<summary>Gets which FDO property corresponds to the single MySQL auto-increment column</summary>
     /// <returns>Returns the FDO property corresponding to the single MySQL auto-increment column,
     /// or an empty string if there is no such property</returns>
-	__property System::String* get_AutoIncrementPropertyName();
+    property System::String^ AutoIncrementPropertyName
+    {
+        System::String^ get();
+        System::Void set(System::String^ autoIncrementPropertyName);
+    }
 
     ///<summary>The initial value to use for the first row in the auto-increment column, if any.</summary>
     /// <remarks>This override is only valid if the AutoIncrementProperty override is set to a non-empty string.
@@ -88,12 +95,13 @@ public:
     /// a foreign database.
     /// </remarks>
     /// <returns>Returns the initial value to use for the first row in the auto-increment column</returns>
-	__property System::Int64 get_AutoIncrementSeed();
-
     ///<summary>Sets the initial value to use for the first row in the auto-increment column, if any</summary>
     /// <returns>Returns nothing</returns>
-	__property System::Void set_AutoIncrementSeed(System::Int64 autoIncrementSeed);
-
+    property System::Int64 AutoIncrementSeed
+    {
+        System::Int64 get();
+        System::Void set(System::Int64 autoIncrementSeed);
+    }
 };
 
 END_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL
