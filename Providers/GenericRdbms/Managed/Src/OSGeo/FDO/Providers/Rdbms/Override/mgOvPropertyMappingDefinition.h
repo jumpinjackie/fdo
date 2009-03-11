@@ -23,7 +23,7 @@
 class FdoRdbmsOvPropertyMappingDefinition;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
-public __gc class PhysicalElementMapping;
+ref class PhysicalElementMapping;
 END_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE
@@ -32,9 +32,9 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE
 ///Abstract class defining the physical schema overrides for object 
 ///property table mappings.
 ///</summary>
-public __gc class OvPropertyMappingDefinition : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::IOvPropertyMappingDefinition
+public ref class OvPropertyMappingDefinition : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::IOvPropertyMappingDefinition
 {
-public private:
+internal:
 	FdoRdbmsOvPropertyMappingDefinition* GetImpObj();
 	
 public protected:
@@ -42,8 +42,10 @@ public protected:
 
 public:
     // Sets the parent of this object.
-	__property System::Void set_Parent(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping* value);
-
+    virtual property NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping^ Parent
+    {
+        System::Void set(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping^ value);
+    }
 };
 
 END_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE

@@ -23,7 +23,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_WMS
 /// <summary>
 /// This command gets all the image formats supported by a specified WMS service.
 /// </summary>
-public __gc __interface IGetImageFormats : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
+public interface class IGetImageFormats : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
 {
 public:
     /// <summary>
@@ -32,7 +32,7 @@ public:
     /// <returns>
     /// Returns a list of image formats supportted by WMS service.
     /// </returns>
-    NAMESPACE_OSGEO_COMMON::StringCollection* Execute();
+    NAMESPACE_OSGEO_COMMON::StringCollection^ Execute();
 };
 
 END_NAMESPACE_OSGEO_FDO_PROVIDERS_WMS

@@ -22,10 +22,10 @@
 class FdoSqlServerOvGeometricPropertyDefinition;
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL
-public __gc class OvGeometricColumn;
+ref class OvGeometricColumn;
 
 ///<summary>Concrete class defining physical schema overrides for a data property definition.</summary>
-public __gc class OvGeometricPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvGeometricPropertyDefinition, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::IOvPropertyDefinition
+public ref class OvGeometricPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvGeometricPropertyDefinition, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::IOvPropertyDefinition
 {
 public:
     ///<summary>Constructs a default of an FdoSqlServerOvGeometricPropertyDefinition</summary>
@@ -33,17 +33,19 @@ public:
 
     ///<summary>Constructs an instance of an FdoSqlServerOvGeometricPropertyDefinition using the specified arguments</summary>
     /// <param name="name">Input name</param>
-	OvGeometricPropertyDefinition(System::String* name);
+	OvGeometricPropertyDefinition(System::String^ name);
 
     ///<summary>Gets the SqlServer column</summary>
     /// <returns>Returns the SqlServer column</returns>
-	__property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvGeometricColumn* get_Column();
-
     ///<summary>Sets the SqlServer column</summary>
     /// <returns>Returns nothing</returns>
-	__property System::Void set_Column(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvGeometricColumn* geometricColumn);
+    property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvGeometricColumn^ Column
+    {
+        NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvGeometricColumn^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvGeometricColumn^ geometricColumn);
+    }
 
-public private:
+internal:
 	OvGeometricPropertyDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoSqlServerOvGeometricPropertyDefinition* GetImpObj();

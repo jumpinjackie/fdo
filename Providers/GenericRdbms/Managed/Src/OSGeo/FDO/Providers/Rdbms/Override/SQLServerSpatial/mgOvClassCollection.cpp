@@ -23,17 +23,17 @@
 #include "FDO\Providers\Rdbms\Override\SQLServerSpatial\mgObjectFactory.h"
 #include "FDO\Providers\Rdbms\Override\SQLServerSpatial\mgOvClassDefinition.h"
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::OvClassCollection() : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::OvClassCollection() : NAMESPACE_OSGEO_COMMON::CollectionBase(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoSqlServerOvClassCollection::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoSqlServerOvClassCollection::Create()), true))
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::OvClassCollection(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvClassCollection* baseCollection) : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::OvClassCollection(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvClassCollection^ baseCollection) : NAMESPACE_OSGEO_COMMON::CollectionBase(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoSqlServerOvClassCollection::Create((NULL == baseCollection ? NULL : static_cast<FdoRdbmsOvClassCollection*>(baseCollection->UnmanagedObject.ToPointer()))), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoSqlServerOvClassCollection::Create((nullptr == baseCollection ? nullptr : static_cast<FdoRdbmsOvClassCollection*>(baseCollection->UnmanagedObject.ToPointer())))), true))
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::OvClassCollection(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::OvClassCollection(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_COMMON::CollectionBase(unmanaged, autoDelete)
 {
 
 }
@@ -43,111 +43,52 @@ FdoSqlServerOvClassCollection* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLS
 	return static_cast<FdoSqlServerOvClassCollection*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::ICollection::CopyTo(System::Array* array, System::Int32 index) 
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::CopyTo(array<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition^>^ pArray, System::Int32 index)
 {
-	if (NULL == array) 
-	{
-		throw new System::ArgumentNullException();
-	}
-
+	if (nullptr == pArray)
+		throw gcnew System::ArgumentNullException();
 	if (index < 0)
-	{
-		throw new System::ArgumentOutOfRangeException();
-	}
+		throw gcnew System::ArgumentOutOfRangeException();
+	if (pArray->Rank != 1 || index >= pArray->Length || this->Count + index > pArray->Length)
+		throw gcnew System::ArgumentException();
 
-	if (array->Rank != 1 || index >= array->Length || get_Count() + index > array->Length)
-	{
-		throw new System::ArgumentException();
-	}
-
-	for (System::Int32 i=0;i<this->Count;i++)
-	{
-		array->set_Item(index + i, get_Item(i));
-	}
+	for (System::Int32 i = 0; i < this->Count; i++)
+        pArray[index+i] = this->Item[i];
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::CopyTo(OvClassDefinition* array[], System::Int32 index)
+System::Object^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::IndexInternal::get(System::Int32 index)
 {
-	if (NULL == array)
-	{
-		throw new System::ArgumentNullException();
-	}
-
-	if (index < 0)
-	{
-		throw new System::ArgumentOutOfRangeException();
-	}
-	if (array->Rank != 1 || index >= array->Length || get_Count() + index > array->Length)
-	{
-		throw new System::ArgumentException();
-	}
-
-	for (System::Int32 i=0;i<this->Count;i++)
-	{
-		array[index+i] = __try_cast<OvClassDefinition*>(get_Item(i));
-	}
+	return this->Item[index];
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::ReleaseUnmanagedObject()
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::IndexInternal::set(System::Int32 index, System::Object^ value)
 {
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
+	this->Item[index] = dynamic_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition^>(value);
 }
 
-System::Object* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::ICollection::get_SyncRoot()
+System::Int32 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::Add(System::Object^ value)
 {
-	return NULL;
+	return Add(dynamic_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition^>(value));
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::ICollection::get_IsSynchronized()
+System::Boolean NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::Contains(System::Object^ value)
 {
-	return false;
+	return Contains(dynamic_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition^>(value));
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::IList::get_IsFixedSize() 
-{ 
-	return false;
-}
-
-System::Boolean NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::IList::get_IsReadOnly() 
-{ 
-	return false;
-}
-
-System::Object* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::IList::get_Item(System::Int32 index)
+System::Int32 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::IndexOf(System::Object^ value)
 {
-	return get_RealTypeItem( index );
+	return IndexOf(dynamic_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition^>(value));
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::IList::set_Item(System::Int32 index, System::Object* value)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::Insert(System::Int32 index, System::Object^ value)
 {
-	set_RealTypeItem(index,  __try_cast<OvClassDefinition*>(value) );
+	Insert(index, dynamic_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition^>(value));
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::IList::Add(System::Object* value)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::Remove(System::Object^ value)
 {
-	return Add(__try_cast<OvClassDefinition*>(value));
-}
-
-System::Boolean NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::IList::Contains(System::Object* value)
-{
-	return Contains(__try_cast<OvClassDefinition*>(value));
-}
-
-System::Int32 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::IList::IndexOf(System::Object* value)
-{
-	return IndexOf(__try_cast<OvClassDefinition*>(value));
-}
-
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::IList::Insert(System::Int32 index, System::Object* value)
-{
-	Insert(index,__try_cast<OvClassDefinition*>(value));
-}
-
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::IList::Remove(System::Object* value)
-{
-	return Remove(__try_cast<OvClassDefinition*>(value));
+	return Remove(dynamic_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition^>(value));
 }
 
 System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::RemoveAt(System::Int32 index)
@@ -155,53 +96,48 @@ System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvCl
 	EXCEPTION_HANDLER(GetImpObj()->RemoveAt(index))
 }
 
-System::Collections::IEnumerator* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::GetEnumerator()
+System::Int32 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::Count::get(System::Void)
 {
-	return new Enumerator(this);
-}
-
-System::Int32 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::get_Count(System::Void)
-{
-	FdoInt32 length;
+	System::Int32 length;
 
 	EXCEPTION_HANDLER(length = GetImpObj()->GetCount())
 
 	return length;
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::Add(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition* value)
+System::Int32 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::Add(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition^ value)
 {
-	FdoInt32 index;
+	System::Int32 index;
 
-	EXCEPTION_HANDLER(index = GetImpObj()->Add((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(index = GetImpObj()->Add((value == nullptr ? nullptr : value->GetImpObj())))
 
 	return index;
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::IndexOf(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition* value)
+System::Int32 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::IndexOf(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition^ value)
 {
-	FdoInt32 index;
+	System::Int32 index;
 
-	EXCEPTION_HANDLER(index = GetImpObj()->IndexOf((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(index = GetImpObj()->IndexOf((value == nullptr ? nullptr : value->GetImpObj())))
 
 	return index;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::Insert(System::Int32 index, NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition* value)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::Insert(System::Int32 index, NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Insert(index, (value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->Insert(index, (value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::Remove(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition* value)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::Remove(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Remove((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->Remove((value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::Contains(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition* value)
+System::Boolean NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::Contains(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition^ value)
 {
-	FdoBoolean exist;
+	System::Boolean exist;
 
-	EXCEPTION_HANDLER(exist = (!!GetImpObj()->Contains((value == NULL ? NULL : value->GetImpObj()))))
+	EXCEPTION_HANDLER(exist = (!!GetImpObj()->Contains((value == nullptr ? nullptr : value->GetImpObj()))))
 
 	return exist;
 }
@@ -211,63 +147,25 @@ System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvCl
 	EXCEPTION_HANDLER(GetImpObj()->Clear())
 }
 
-/*
-Implementation for OvClassCollection::Enumerator
-*/ 
-System::Object* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::Enumerator::get_Current()
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::Item::get(System::Int32 index)
 {
-	if (m_nIdx < 0 || m_nIdx >= m_pCol->Count)
-	{
-		throw new InvalidOperationException();
-	}
+	FdoSqlServerOvClassDefinition* result;
 
-	FdoSqlServerOvClassDefinition* upElement;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetItem(index))
 
-	EXCEPTION_HANDLER(upElement = m_pCol->GetImpObj()->GetItem(m_nIdx))
-
-	return NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::ObjectFactory::CreateOvClassDefinition(upElement, true);
+	return NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::ObjectFactory::CreateOvClassDefinition(IntPtr(result), true);
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::Enumerator::MoveNext()
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::Item::get(System::String^ index)
 {
-	++m_nIdx;
-	return m_nIdx < m_pCol->Count;
+	FdoSqlServerOvClassDefinition* result;
+
+	EXCEPTION_HANDLER(result = GetImpObj()->GetItem(StringToUni(index)))
+
+	return NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::ObjectFactory::CreateOvClassDefinition(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::Enumerator::Reset()
+System::Void  NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::Item::set(System::Int32 index, NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition^ value)
 {
-	m_nIdx = -1;
-}
-
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::get_RealTypeItem(System::Int32 index)
-{
-	FdoSqlServerOvClassDefinition* upElement;
-
-	EXCEPTION_HANDLER(upElement = GetImpObj()->GetItem(index))
-
-	return NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::ObjectFactory::CreateOvClassDefinition(upElement, true);
-}
-
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::get_RealTypeItem(System::String* index)
-{
-	FdoSqlServerOvClassDefinition* upElement;
-
-	EXCEPTION_HANDLER(upElement = GetImpObj()->GetItem(StringToUni(index)))
-
-	return NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::ObjectFactory::CreateOvClassDefinition(upElement, true);
-}
-
-System::Void  NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::set_RealTypeItem(System::Int32 index, NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition* value)
-{
-	EXCEPTION_HANDLER(GetImpObj()->SetItem(index, (value == NULL ? NULL : value->GetImpObj())))
-}
-
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::get_Item(System::Int32 index)
-{
-	return get_RealTypeItem(index);
-}
-
-System::Void  NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection::set_Item(System::Int32 index, NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition* value)
-{
-	set_RealTypeItem(index, value);
+	EXCEPTION_HANDLER(GetImpObj()->SetItem(index, (value == nullptr ? nullptr : value->GetImpObj())))
 }

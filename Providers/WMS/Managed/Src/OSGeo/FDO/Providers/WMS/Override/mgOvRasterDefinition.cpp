@@ -27,7 +27,7 @@
 
 NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::OvRasterDefinition() : NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoWmsOvRasterDefinition::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoWmsOvRasterDefinition::Create()), true))
 }
 
 NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::OvRasterDefinition(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping(unmanaged, autoDelete)
@@ -40,107 +40,107 @@ FdoWmsOvRasterDefinition* NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDe
 	return static_cast<FdoWmsOvRasterDefinition*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::String* NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::get_ImageFormat()
+System::String^ NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::ImageFormat::get()
 {
     FdoString* result; 
     EXCEPTION_HANDLER(result = GetImpObj()->GetImageFormat())
-    return new System::String(result);
+    return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::set_ImageFormat(System::String*  value)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::ImageFormat::set(System::String^  value)
 {
     EXCEPTION_HANDLER(GetImpObj()->SetImageFormat(StringToUni(value)))
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::get_Transparent()
+System::Boolean NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::Transparent::get()
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = !!GetImpObj()->GetTransparent())
 	
 	return result;
 }
     
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::set_Transparent(System::Boolean value)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::Transparent::set(System::Boolean value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetTransparent(value))
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::get_UseTileCache()
+System::Boolean NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::UseTileCache::get()
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = !!GetImpObj()->GetUseTileCache())
 	
 	return result;
 }
     
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::set_UseTileCache(System::Boolean value)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::UseTileCache::set(System::Boolean value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetUseTileCache(value))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::get_BackgroundColor()
+System::String^ NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::BackgroundColor::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetBackgroundColor())
 	
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::set_BackgroundColor(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::BackgroundColor::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetBackgroundColor(StringToUni(value)))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::get_TimeDimension()
+System::String^ NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::TimeDimension::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetTimeDimension())
 	
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::set_TimeDimension(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::TimeDimension::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetTimeDimension(StringToUni(value)))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::get_ElevationDimension()
+System::String^ NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::ElevationDimension::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetElevationDimension())
 	
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::set_ElevationDimension(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::ElevationDimension::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetElevationDimension(StringToUni(value)))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::get_SpatialContextName()
+System::String^ NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::SpatialContextName::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetSpatialContextName())
 	
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::set_SpatialContextName(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::SpatialContextName::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetSpatialContextName(StringToUni(value)))
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvLayerCollection* NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::get_Layers()
+NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvLayerCollection^ NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::OvRasterDefinition::Layers::get()
 {
 	FdoWmsOvLayerCollection* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetLayers())
 
-	return NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::ObjectFactory::CreateOvLayerCollection(result, true);
+	return NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE::ObjectFactory::CreateOvLayerCollection(IntPtr(result), true);
 }

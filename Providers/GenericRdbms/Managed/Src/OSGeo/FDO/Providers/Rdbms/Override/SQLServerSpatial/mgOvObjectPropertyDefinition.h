@@ -22,10 +22,10 @@
 class FdoSqlServerOvObjectPropertyDefinition;
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL
-public __gc __interface IOvPropertyMappingDefinition;
+interface class IOvPropertyMappingDefinition;
 
 ///<summary>Concrete class defining physical schema overrides for an object property definition.</summary>
-public __gc class OvObjectPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvObjectPropertyDefinition, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::IOvPropertyDefinition
+public ref class OvObjectPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvObjectPropertyDefinition, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::IOvPropertyDefinition
 {
 public:
     ///<summary>Constructs a default of an FdoSqlServerOvObjectPropertyDefinition</summary>
@@ -33,17 +33,19 @@ public:
 
     ///<summary>Constructs an instance of an FdoSqlServerOvObjectPropertyDefinition using the specified arguments</summary>
     /// <param name="name">Input name</param>
-	OvObjectPropertyDefinition(System::String* name);
+	OvObjectPropertyDefinition(System::String^ name);
 
 	///<summary>Gets the mapping definition</summary>
     /// <returns>Returns the mapping definition</returns>
-	__property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::IOvPropertyMappingDefinition* get_MappingDefinition();
-
     ///<summary>Sets the mapping definition</summary>
     /// <returns>Returns nothing</returns>
-	__property System::Void set_MappingDefinition(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::IOvPropertyMappingDefinition* propertyMappingDefinition);
+    property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::IOvPropertyMappingDefinition^ MappingDefinition
+    {
+        NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::IOvPropertyMappingDefinition^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::IOvPropertyMappingDefinition^ propertyMappingDefinition);
+    }
 
-public private:
+internal:
 	OvObjectPropertyDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoSqlServerOvObjectPropertyDefinition* GetImpObj();

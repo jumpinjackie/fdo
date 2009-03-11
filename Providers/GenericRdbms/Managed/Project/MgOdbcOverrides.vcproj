@@ -25,7 +25,7 @@
 			IntermediateDirectory="..\Obj\MgFdoOdbcOverrides\Debug"
 			ConfigurationType="2"
 			CharacterSet="1"
-			ManagedExtensions="4"
+			ManagedExtensions="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -108,7 +108,7 @@
 			IntermediateDirectory="..\Obj\MgFdoOdbcOverrides\Debug64"
 			ConfigurationType="2"
 			CharacterSet="1"
-			ManagedExtensions="4"
+			ManagedExtensions="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -194,7 +194,7 @@
 			IntermediateDirectory="..\Obj\MgFdoODBCOverrides\Release"
 			ConfigurationType="2"
 			CharacterSet="1"
-			ManagedExtensions="4"
+			ManagedExtensions="1"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -278,7 +278,7 @@
 			IntermediateDirectory="..\Obj\MgFdoODBCOverrides\Release64"
 			ConfigurationType="2"
 			CharacterSet="1"
-			ManagedExtensions="4"
+			ManagedExtensions="1"
 			WholeProgramOptimization="1"
 			>
 			<Tool

@@ -38,20 +38,20 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvAssociationPropertyDefinit
 
 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvAssociationPropertyDefinition::OvAssociationPropertyDefinition() : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvAssociationPropertyDefinition(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach((FdoIDisposable*)FdoMySQLOvAssociationPropertyDefinition::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr((FdoIDisposable*)FdoMySQLOvAssociationPropertyDefinition::Create()), true))
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvAssociationPropertyDefinition::OvAssociationPropertyDefinition(System::String* name) : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvAssociationPropertyDefinition(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvAssociationPropertyDefinition::OvAssociationPropertyDefinition(System::String^ name) : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvAssociationPropertyDefinition(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach((FdoIDisposable*)FdoMySQLOvAssociationPropertyDefinition::Create(StringToUni(name)), true))
+	EXCEPTION_HANDLER(Attach(IntPtr((FdoIDisposable*)FdoMySQLOvAssociationPropertyDefinition::Create(StringToUni(name))), true))
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyDefinitionCollection * NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvAssociationPropertyDefinition::get_IdentityProperties()
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyDefinitionCollection ^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvAssociationPropertyDefinition::IdentityProperties::get()
 {
-	FdoMySQLOvPropertyDefinitionCollection * unobj;
+	FdoMySQLOvPropertyDefinitionCollection * result;
 
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetIdentityProperties())
+	EXCEPTION_HANDLER(result = GetImpObj()->GetIdentityProperties())
 
-	return ObjectFactory::CreateOvPropertyDefinitionCollection(unobj, true);
+	return ObjectFactory::CreateOvPropertyDefinitionCollection(IntPtr(result), true);
 }
 

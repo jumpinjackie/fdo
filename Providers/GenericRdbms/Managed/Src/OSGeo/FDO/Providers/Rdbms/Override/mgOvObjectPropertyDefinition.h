@@ -21,21 +21,21 @@
 class FdoRdbmsOvObjectPropertyDefinition;
 
 BEGIN_NAMESPACE_OSGEO_COMMON_XML
-public __gc class XmlSaxContext;
-public __gc class XmlAttributeCollection;
+ref class XmlSaxContext;
+ref class XmlAttributeCollection;
 END_NAMESPACE_OSGEO_COMMON_XML
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE
 
-public __gc class OvPropertyMappingDefinition;
-public __gc class OvPropertyMappingSingle;
-public __gc class OvPropertyMappingConcrete;
+ref class OvPropertyMappingDefinition;
+ref class OvPropertyMappingSingle;
+ref class OvPropertyMappingConcrete;
 
 ///<summary>Abstract class defining physical schema overrides for an object property
 ///definition.</summary>
-public __gc class OvObjectPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyDefinition
+public ref class OvObjectPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyDefinition
 {
-public private:
+internal:
 	inline FdoRdbmsOvObjectPropertyDefinition* GetImpObj();
 
 public protected:
@@ -44,19 +44,22 @@ public protected:
 public:
     ///<summary>Gets the object property mapping definition</summary>
     /// <returns>Returns OvPropertyMappingDefinition</returns>
-	__property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingDefinition* get_MappingDefinition();
+    property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingDefinition^ MappingDefinition
+    {
+        NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingDefinition^ get();
+    }
 
    // Initialize this element from its XML attributes
-	System::Void InitFromXml(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection* attributes, System::String* mappingType, NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection* mappingAttributes);
+	System::Void InitFromXml(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ context, NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection^ attributes, System::String^ mappingType, NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection^ mappingAttributes);
 
     // Create and optionally attach a Single table property mapping.
-	NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingSingle* CreateSingleMapping(System::Boolean attach);
+	NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingSingle^ CreateSingleMapping(System::Boolean attach);
 
     // Create and optionally attach a Class table property mapping.
-	NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingClass* CreateClassMapping(System::Boolean attach);
+	NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingClass^ CreateClassMapping(System::Boolean attach);
 
     // Create and optionally attach a Concrete table property mapping.
-	NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingConcrete* CreateConcreteMapping(System::Boolean attach);
+	NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingConcrete^ CreateConcreteMapping(System::Boolean attach);
 };
 
 END_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE

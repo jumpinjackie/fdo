@@ -24,9 +24,9 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE
 
 ///<summary>Abstract class defining the physical schema overrides for the Class
 ///type object property mapping.</summary>
-public __gc class OvPropertyMappingClass : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingRelation
+public ref class OvPropertyMappingClass : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingRelation
 {
-public private:
+internal:
 	FdoRdbmsOvPropertyMappingClass* GetImpObj();
 	
 public protected:

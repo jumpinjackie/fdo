@@ -22,7 +22,7 @@ class FdoSqlServerOvColumn;
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL
 
 ///<summary>Concrete class defining physical schema overrides for a column.</summary>
-public __gc class OvColumn : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvColumn
+public ref class OvColumn : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvColumn
 {
 public:
     ///<summary>Constructs a default of an FdoSqlServerOvColumn</summary>
@@ -30,21 +30,23 @@ public:
 
     ///<summary>Constructs an instance of an FdoSqlServerOvColumn using the specified arguments</summary>
     /// <param name="name">Input name</param>
-	OvColumn(System::String* name);
+	OvColumn(System::String^ name);
 
     ///<summary>Gets the SQL Server formula for this column</summary>
     /// <remarks>An empty string denotes that there is no formula for this column;
     /// otherwise, the column's value is computed based on the formula.</remarks>
     /// <returns>Returns the SQL Server formula</returns>
-	__property System::String* get_Formula();
-
     ///<summary>Sets the SQL Server formula for this column</summary>
     /// <remarks>An empty string denotes that there is no formula for this column;
     /// otherwise, the column's value is computed based on the formula.</remarks>
     /// <returns>Returns nothing</returns>
-	__property System::Void set_Formula(System::String* formula);
+    property System::String^ Formula
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
-public private:
+internal:
 	OvColumn(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoSqlServerOvColumn* GetImpObj();

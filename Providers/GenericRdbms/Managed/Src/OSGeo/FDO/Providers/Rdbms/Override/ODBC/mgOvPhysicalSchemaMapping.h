@@ -21,11 +21,11 @@
 class FdoOdbcOvPhysicalSchemaMapping;
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC
-public __gc class OvClassCollection;
+ref class OvClassCollection;
 
 ///<summary>Concrete class offering schema overrides for
 ///the Odbc Provider.</summary>
-public __gc class OvPhysicalSchemaMapping : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPhysicalSchemaMapping
+public ref class OvPhysicalSchemaMapping : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPhysicalSchemaMapping
 {
 public:
     ///<summary>Constructs a default of an FdoOdbcOvPhysicalSchemaMapping</summary>
@@ -44,23 +44,28 @@ public:
     /// correspond to the provider name of the expected FDO Provider, and InvalidArgumentException
     /// will be thrown.
     /// </summary>
-    OvPhysicalSchemaMapping(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping* schemaMapping, System::Boolean autoDelete);
+    OvPhysicalSchemaMapping(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping^ schemaMapping, System::Boolean autoDelete);
 
     ///<summary>Constructs an instance of an FdoOdbcOvPhysicalSchemaMapping using the specified arguments</summary>
     /// <param name="name">Input name</param>
     /// <returns>Returns FdoOdbcOvPhysicalSchemaMapping</returns>
-    OvPhysicalSchemaMapping(System::String* name);
+    OvPhysicalSchemaMapping(System::String^ name);
 
     ///<summary>Gets the classes</summary>
     /// <returns>Returns the classes</returns>
-    __property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvClassCollection* get_Classes();
+    property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvClassCollection^ Classes
+    {
+        NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvClassCollection^ get();
+    }
 
     ///<summary>Gets the provider name</summary>
     /// <returns>Returns the provider name</returns>
-    __property System::String* get_Provider();
+    property System::String^ Provider
+    {
+        System::String^ get();
+    }
 
-
-public private:
+internal:
     OvPhysicalSchemaMapping(System::IntPtr unmanaged, System::Boolean autoDelete);
 
     inline FdoOdbcOvPhysicalSchemaMapping* GetImpObj();

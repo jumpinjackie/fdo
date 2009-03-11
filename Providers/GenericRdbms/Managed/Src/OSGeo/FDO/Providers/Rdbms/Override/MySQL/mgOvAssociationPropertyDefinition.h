@@ -23,13 +23,13 @@ class FdoMySQLOvAssociationPropertyDefinition;
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL
 
-public __gc class OvPropertyDefinitionCollection;
+ref class OvPropertyDefinitionCollection;
 
 ///<summary>Concrete class defining physical schema overrides for an association property
 ///definition.</summary>
-public __gc class OvAssociationPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyDefinition, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvAssociationPropertyDefinition
+public ref class OvAssociationPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyDefinition, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvAssociationPropertyDefinition
 {
-public private:
+internal:
 	FdoMySQLOvAssociationPropertyDefinition* GetImpObj();
 	
 	OvAssociationPropertyDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
@@ -42,12 +42,14 @@ public:
     ///<summary>Constructs an instance of an OvAssociationPropertyDefinition using the specified arguments</summary>
     /// <param name="name">Input name</param>
     /// <returns>Returns OvAssociationPropertyDefinition</returns>
-	OvAssociationPropertyDefinition(System::String* name);
+	OvAssociationPropertyDefinition(System::String^ name);
 
     ///<summary>Gets a collection of property definitions</summary>
     /// <returns>Returns a collection of property definitions</returns>
-	__property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyDefinitionCollection* get_IdentityProperties();
-
+    property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyDefinitionCollection^ IdentityProperties
+    {
+        NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyDefinitionCollection^ get();
+    }
 };
 
 END_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL

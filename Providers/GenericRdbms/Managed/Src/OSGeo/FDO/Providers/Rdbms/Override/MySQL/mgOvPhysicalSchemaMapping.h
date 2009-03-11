@@ -24,9 +24,9 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL
 
 ///<summary>Concrete class offering schema overrides for
 ///the MySQL Provider.</summary>
-public __gc class OvPhysicalSchemaMapping : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPhysicalSchemaMapping
+public ref class OvPhysicalSchemaMapping : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPhysicalSchemaMapping
 {
-public private:
+internal:
     inline FdoMySQLOvPhysicalSchemaMapping* GetImpObj();
 
     OvPhysicalSchemaMapping(System::IntPtr unmanaged, System::Boolean autoDelete);
@@ -48,53 +48,66 @@ public:
     /// correspond to the provider name of the expected FDO Provider, and InvalidArgumentException
     /// will be thrown.
     /// </summary>
-    OvPhysicalSchemaMapping(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping* schemaMapping, System::Boolean autoDelete);
+    OvPhysicalSchemaMapping(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping^ schemaMapping, System::Boolean autoDelete);
 
     ///<summary>Constructs an instance of an OvPhysicalSchemaMapping using the specified arguments</summary>
     /// <param name="name">Input name</param>
     /// <returns>Returns OvPhysicalSchemaMapping</returns>
-    OvPhysicalSchemaMapping(System::String* name);
+    OvPhysicalSchemaMapping(System::String^ name);
 
     ///<summary>Gets the classes</summary>
     /// <returns>Returns the classes</returns>
-    __property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvClassCollection* get_Classes();
+    property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvClassCollection^ Classes
+    {
+        NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvClassCollection^ get();
+    }
 
     ///<summary>Gets the directory where table data is stored</summary>
     /// <returns>Returns the directory where table data is stored</returns>
-    __property System::String* get_DataDirectory();
-
     ///<summary>Sets the directory where table data is stored</summary>
     /// <returns>Returns nothing</returns>
-    __property System::Void set_DataDirectory(System::String* dataDirectory);
+    property System::String^ DataDirectory
+    {
+        System::String^ get();
+        System::Void set(System::String^ dataDirectory);
+    }
 
     ///<summary>Gets the directory where indexes are stored</summary>
     /// <returns>Returns the directory where indexes are stored</returns>
-    __property System::String* get_IndexDirectory();
-
     ///<summary>Sets the directory where indexes are stored</summary>
     /// <returns>Returns nothing</returns>
-    __property System::Void set_IndexDirectory(System::String* indexDirectory);
+    property System::String^ IndexDirectory
+    {
+        System::String^ get();
+        System::Void set(System::String^ indexDirectory);
+    }
 
     ///<summary>Gets the storage engine type</summary>
     /// <returns>Returns the storage engine type</returns>
-    __property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvStorageEngineType get_StorageEngine();
-
     ///<summary>Sets the storage engine type</summary>
     /// <returns>Returns nothing</returns>
-    __property System::Void set_StorageEngine(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvStorageEngineType storageEngine);
+    property NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvStorageEngineType StorageEngine
+    {
+        NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvStorageEngineType get();
+        System::Void set(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvStorageEngineType storageEngine);
+    }
 
     ///<summary>Gets the database</summary>
     /// <returns>Returns the database</returns>
-    __property System::String* get_Database();
-
     ///<summary>Sets the database</summary>
     /// <returns>Returns nothing</returns>
-    __property System::Void set_Database(System::String* database);
+    property System::String^ Database
+    {
+        System::String^ get();
+        System::Void set(System::String^ database);
+    }
 
     ///<summary>Gets the provider name</summary>
     /// <returns>Returns the provider name</returns>
-    __property System::String* get_Provider();
-
+    property System::String^ Provider
+    {
+        System::String^ get();
+    }
 };
 
 END_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL

@@ -22,17 +22,17 @@
 class FdoSqlServerOvPropertyMappingSingle;
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL
-public __gc class OvClassDefinition;
+ref class OvClassDefinition;
 
 ///<summary>Abstract class defining the physical schema overrides for relation type object property
 ///table mappings.</summary>
-public __gc class OvPropertyMappingSingle : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingSingle, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::IOvPropertyMappingDefinition
+public ref class OvPropertyMappingSingle : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingSingle, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::IOvPropertyMappingDefinition
 {
 public:
 	///<summary>Constructs a default of an FdoSqlServerOvPropertyMappingSingle</summary>
 	OvPropertyMappingSingle();
 
-public private:
+internal:
 	OvPropertyMappingSingle(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoSqlServerOvPropertyMappingSingle* GetImpObj();

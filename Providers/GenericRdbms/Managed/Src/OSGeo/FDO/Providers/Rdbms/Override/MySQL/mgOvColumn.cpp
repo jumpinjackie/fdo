@@ -36,11 +36,11 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvColumn::OvColumn(System::I
 
 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvColumn::OvColumn() : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvColumn(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoMySQLOvColumn::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoMySQLOvColumn::Create()), true))
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvColumn::OvColumn(System::String* name) : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvColumn(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvColumn::OvColumn(System::String^ name) : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvColumn(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoMySQLOvColumn::Create(StringToUni(name)), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoMySQLOvColumn::Create(StringToUni(name))), true))
 }
 

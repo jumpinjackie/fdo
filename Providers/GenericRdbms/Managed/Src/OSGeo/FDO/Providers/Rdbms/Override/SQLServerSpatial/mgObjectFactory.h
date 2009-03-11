@@ -18,29 +18,29 @@
 #pragma once
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL
-public __gc class OvPropertyDefinitionCollection;
-public __gc class OvGeometricColumn;
-public __gc class OvColumn;
-public __gc class OvTable;
-public __gc class OvClassDefinition;
-public __gc class OvClassCollection;
-public __gc class OvDataPropertyDefinition;
+ref class OvPropertyDefinitionCollection;
+ref class OvGeometricColumn;
+ref class OvColumn;
+ref class OvTable;
+ref class OvClassDefinition;
+ref class OvClassCollection;
+ref class OvDataPropertyDefinition;
 
-public __gc __interface IOvPropertyMappingDefinition;
-public __gc __interface IOvPropertyDefinition;
+interface class IOvPropertyMappingDefinition;
+interface class IOvPropertyDefinition;
 
-public __gc __sealed class ObjectFactory
+public ref class ObjectFactory sealed
 {
 public:
-    static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPropertyDefinitionCollection* CreateOvPropertyDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose);
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::IOvPropertyMappingDefinition* CreateIOvPropertyMappingDefinition(System::IntPtr ptr, System::Boolean autoDispose);
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvGeometricColumn* CreateOvGeometricColumn(System::IntPtr ptr, System::Boolean autoDispose);
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::IOvPropertyDefinition* CreateIOvPropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose);
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvColumn* CreateOvColumn(System::IntPtr ptr, System::Boolean autoDispose);
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvTable* CreateOvTable(System::IntPtr ptr, System::Boolean autoDispose);
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition* CreateOvClassDefinition(System::IntPtr ptr, System::Boolean autoDispose);
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection* CreateOvClassCollection(System::IntPtr ptr, System::Boolean autoDispose);
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvDataPropertyDefinition* CreateOvDataPropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose);
+    static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPropertyDefinitionCollection^ CreateOvPropertyDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::IOvPropertyMappingDefinition^ CreateIOvPropertyMappingDefinition(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvGeometricColumn^ CreateOvGeometricColumn(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::IOvPropertyDefinition^ CreateIOvPropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvColumn^ CreateOvColumn(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvTable^ CreateOvTable(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassDefinition^ CreateOvClassDefinition(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection^ CreateOvClassCollection(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvDataPropertyDefinition^ CreateOvDataPropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose);
 
 private:
 	ObjectFactory(){}

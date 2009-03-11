@@ -34,16 +34,16 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingSingle::OvPropert
 {
 }
 
-System::String* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingSingle::get_Prefix()
+System::String^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingSingle::Prefix::get()
 {
 	FdoString * unobj;
 
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetPrefix())
 
-	return unobj;
+	return CHECK_STRING(unobj);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingSingle::set_Prefix(System::String* prefix)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingSingle::Prefix::set(System::String^ prefix)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetPrefix(StringToUni(prefix)))
 }

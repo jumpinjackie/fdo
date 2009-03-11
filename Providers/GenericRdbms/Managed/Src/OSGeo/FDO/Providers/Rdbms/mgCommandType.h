@@ -25,7 +25,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS
 /// <param name="CommandType_DestroySpatialIndex">Represents the DestroySpatialIndex command.</param>
 /// <param name="CommandType_GetSpatialIndexes">Represents the GetSpatialIndices command.</param>
 
-public __value enum CommandType
+public enum class CommandType
 {
     // Represents the CreateSpatialIndex command.
     CommandType_CreateSpatialIndex =  FdoRdbmsCommandType_CreateSpatialIndex,

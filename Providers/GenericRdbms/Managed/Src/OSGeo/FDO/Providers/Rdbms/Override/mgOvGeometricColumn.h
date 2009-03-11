@@ -21,7 +21,7 @@
 class FdoRdbmsOvGeometricColumn;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
-public __gc class PhysicalElementMapping;
+ref class PhysicalElementMapping;
 END_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE
@@ -29,9 +29,9 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE
 ///<summary>Abstract base class for defining physical schema overrides for a 
 ///geometric column.
 ///</summary>
-public __gc class OvGeometricColumn : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping
+public ref class OvGeometricColumn : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping
 {
-public private:
+internal:
 	inline FdoRdbmsOvGeometricColumn* GetImpObj();
 
 public protected:
@@ -39,7 +39,10 @@ public protected:
 
 public:
     // Sets the parent of this object. Not part of the API.
-	__property System::Void set_Parent(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping* value);
+    property NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping^ Parent
+    {
+        System::Void set(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping^ value);
+    }
 };
 
 END_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE

@@ -21,18 +21,20 @@
 class FdoShpOvPropertyDefinition;
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE
-public __gc class ColumnDefinition;
+ref class ColumnDefinition;
 
-public __gc class PropertyDefinition : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalPropertyMapping
+public ref class PropertyDefinition : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalPropertyMapping
 {
 public:
 	PropertyDefinition();
 
-	__property NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ColumnDefinition* get_Column();
+    property NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ColumnDefinition^ Column
+    {
+        NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ColumnDefinition^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ColumnDefinition^ value);
+    }
 
-	__property System::Void set_Column(NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ColumnDefinition* definition);
-
-public private:
+internal:
 	PropertyDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoShpOvPropertyDefinition* GetImpObj();

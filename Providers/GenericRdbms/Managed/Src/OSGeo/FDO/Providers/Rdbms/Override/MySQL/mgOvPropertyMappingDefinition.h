@@ -26,9 +26,9 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL
 
 ///<summary>Abstract class defining the physical schema overrides for object property table
 ///mappings.</summary>
-public __gc class OvPropertyMappingDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingDefinition, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyMappingDefinition
+public ref class OvPropertyMappingDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingDefinition, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyMappingDefinition
 {
-public private:
+internal:
 	inline FdoMySQLOvPropertyMappingDefinition* GetImpObj();
 
 	OvPropertyMappingDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);

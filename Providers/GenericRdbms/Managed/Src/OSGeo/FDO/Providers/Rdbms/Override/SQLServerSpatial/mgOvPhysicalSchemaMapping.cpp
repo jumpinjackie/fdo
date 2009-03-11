@@ -26,37 +26,36 @@
 
 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::OvPhysicalSchemaMapping() : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPhysicalSchemaMapping(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoSqlServerOvPhysicalSchemaMapping::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoSqlServerOvPhysicalSchemaMapping::Create()), true))
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::OvPhysicalSchemaMapping(System::String* name) : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPhysicalSchemaMapping(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::OvPhysicalSchemaMapping(System::String^ name) : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPhysicalSchemaMapping(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoSqlServerOvPhysicalSchemaMapping::Create(StringToUni(name)), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoSqlServerOvPhysicalSchemaMapping::Create(StringToUni(name))), true))
 }
 
 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::OvPhysicalSchemaMapping(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPhysicalSchemaMapping(unmanaged, autoDelete)
 {
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::OvPhysicalSchemaMapping(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping* schemaMapping, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPhysicalSchemaMapping(schemaMapping, autoDelete)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::OvPhysicalSchemaMapping(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping^ schemaMapping, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPhysicalSchemaMapping(schemaMapping, autoDelete)
 {
     // Validate IN Parameter
-    if (NULL == schemaMapping) {
+    if (nullptr == schemaMapping)
         return;
-    }
 
     // Retrieve the provider name for the FdoSqlServerOvPhysicalSchemaMapping class
     FdoPtr<FdoSqlServerOvPhysicalSchemaMapping> sqlServerSchemaMapping = FdoSqlServerOvPhysicalSchemaMapping::Create();
     FdoStringP sqlServerProviderName = sqlServerSchemaMapping->GetProvider();
 
     // Retrieve the provider name of the schema mapping object passed into the constructor
-    System::String* sProviderName = schemaMapping->Provider;
+    System::String^ sProviderName = schemaMapping->Provider;
 
     // If the provider named do not match throw an Invalid Argument exception
     if (sqlServerProviderName != StringToUni(sProviderName)) {
 
 		//Wait for changing again
-        throw new System::ArgumentException();
+        throw gcnew System::ArgumentException();
     }
 }
 
@@ -65,58 +64,58 @@ FdoSqlServerOvPhysicalSchemaMapping* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRID
 	return static_cast<FdoSqlServerOvPhysicalSchemaMapping*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::get_Classes()
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvClassCollection^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::Classes::get()
 {
 	FdoSqlServerOvClassCollection* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetClasses())
 
-	return NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::ObjectFactory::CreateOvClassCollection(result, true);
+	return NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::ObjectFactory::CreateOvClassCollection(IntPtr(result), true);
 }
 
-System::String* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::get_TableFilegroup()
+System::String^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::TableFilegroup::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetTableFilegroup())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::set_TableFilegroup(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::TableFilegroup::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetTableFilegroup(StringToUni(value)))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::get_TextFilegroup()
+System::String^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::TextFilegroup::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetTextFilegroup())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::set_TextFilegroup(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::TextFilegroup::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetTextFilegroup(StringToUni(value)))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::get_IndexFilegroup()
+System::String^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::IndexFilegroup::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetIndexFilegroup())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::set_IndexFilegroup(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::IndexFilegroup::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetIndexFilegroup(StringToUni(value)))
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvTextInRowOption NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::get_TextInRow()
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvTextInRowOption NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::TextInRow::get()
 {
 	SqlServerOvTextInRowOption result;
 
@@ -125,35 +124,35 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvTextInRowOption
 	return static_cast<NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvTextInRowOption>(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::set_TextInRow(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvTextInRowOption value)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::TextInRow::set(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvTextInRowOption value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetTextInRow(static_cast<SqlServerOvTextInRowOption>(value)))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::get_Database()
+System::String^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::Database::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetDatabase())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::set_Database(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::Database::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetDatabase(StringToUni(value)))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::get_Owner()
+System::String^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::Owner::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetOwner())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::set_Owner(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvPhysicalSchemaMapping::Owner::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetOwner(StringToUni(value)))
 }

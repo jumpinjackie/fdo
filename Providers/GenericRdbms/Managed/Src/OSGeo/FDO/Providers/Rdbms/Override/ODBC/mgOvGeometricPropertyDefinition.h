@@ -25,7 +25,7 @@ class FdoOdbcOvGeometricPropertyDefinition;
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC
 
 ///<summary>Concrete class defining physical schema overrides for a geometric property definition.</summary>
-public __gc class OvGeometricPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvGeometricPropertyDefinition, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::IOvPropertyDefinition
+public ref class OvGeometricPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvGeometricPropertyDefinition, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::IOvPropertyDefinition
 {
 public:
     ///<summary>Constructs a default of an FdoOdbcOvGeometricPropertyDefinition</summary>
@@ -35,10 +35,10 @@ public:
     ///<summary>Constructs an instance of an FdoOdbcOvGeometricPropertyDefinition using the specified arguments</summary>
     /// <param name="name">Input name</param>
     /// <returns>Returns FdoOdbcOvGeometricPropertyDefinition</returns>
-	OvGeometricPropertyDefinition(System::String* name);
+	OvGeometricPropertyDefinition(System::String^ name);
 
 
-public private:
+internal:
 	OvGeometricPropertyDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoOdbcOvGeometricPropertyDefinition* GetImpObj();

@@ -29,27 +29,26 @@
 
 NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PhysicalSchemaMapping::PhysicalSchemaMapping() : NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoShpOvPhysicalSchemaMapping::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoShpOvPhysicalSchemaMapping::Create()), true))
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PhysicalSchemaMapping::PhysicalSchemaMapping(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping* schemaMapping, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping(schemaMapping, autoDelete)
+NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PhysicalSchemaMapping::PhysicalSchemaMapping(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping^ schemaMapping, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping(schemaMapping, autoDelete)
 {
     // Validate IN Parameter
-    if (NULL == schemaMapping) {
+    if (nullptr == schemaMapping)
         return;
-    }
 
     // Retrieve the provider name for the FdoShpOvPhysicalSchemaMapping class
     FdoShpOvPhysicalSchemaMappingP shpSchemamapping = FdoShpOvPhysicalSchemaMapping::Create();
     FdoStringP shpProviderName = shpSchemamapping->GetProvider();
 
     // Retrieve the provider name of the schema mapping object passed into the constructor
-    System::String* sProviderName = schemaMapping->Provider;
+    System::String^ sProviderName = schemaMapping->Provider;
 
     // If the provider named do not match throw an Invalid Argument exception
     if (shpProviderName != StringToUni(sProviderName)) {
         //Wait for changing again
-		throw new System::ArgumentException();
+		throw gcnew System::ArgumentException();
     }
 }
 
@@ -62,30 +61,30 @@ FdoShpOvPhysicalSchemaMapping* NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::Physi
 	return static_cast<FdoShpOvPhysicalSchemaMapping*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassCollection* NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PhysicalSchemaMapping::get_Classes()
+NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassCollection^ NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PhysicalSchemaMapping::Classes::get()
 {
 	FdoShpOvClassCollection* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetClasses())
 
-	return NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ObjectFactory::CreateClassCollection(result, true);
+	return NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ObjectFactory::CreateClassCollection(IntPtr(result), true);
 }
 
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassDefinition* NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PhysicalSchemaMapping::FindByShapefile(System::String* value)
+NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassDefinition^ NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PhysicalSchemaMapping::FindByShapefile(System::String^ value)
 {
 	FdoShpOvClassDefinition* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->FindByShapefile(StringToUni(value)))
 
-	return NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ObjectFactory::CreateClassDefinition(result, true);
+	return NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ObjectFactory::CreateClassDefinition(IntPtr(result), true);
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassDefinition* NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PhysicalSchemaMapping::FindByClassName(System::String* value)
+NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassDefinition^ NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PhysicalSchemaMapping::FindByClassName(System::String^ value)
 {
 	FdoShpOvClassDefinition* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->FindByClassName(StringToUni(value)))
 
-	return NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ObjectFactory::CreateClassDefinition(result, true);
+	return NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ObjectFactory::CreateClassDefinition(IntPtr(result), true);
 }

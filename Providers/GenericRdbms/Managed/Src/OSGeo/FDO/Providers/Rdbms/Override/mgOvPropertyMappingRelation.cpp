@@ -38,20 +38,20 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingRelation::OvPrope
 {
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvClassDefinition* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingRelation::get_InternalClass()
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvClassDefinition^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingRelation::InternalClass::get()
 {
-	FdoRdbmsOvClassDefinition * unobj;
+	FdoRdbmsOvClassDefinition* result;
 
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetInternalClass())
+	EXCEPTION_HANDLER(result = GetImpObj()->GetInternalClass())
 
-	return NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::ObjectFactory::CreateOvClassDefinition(unobj, true);
+	return NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::ObjectFactory::CreateOvClassDefinition(IntPtr(result), true);
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvClassDefinition* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingRelation::CreateInternalClass(System::Boolean attach)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvClassDefinition^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingRelation::CreateInternalClass(System::Boolean attach)
 {
-	FdoRdbmsOvClassDefinition * unobj;
+	FdoRdbmsOvClassDefinition* result;
 
-	EXCEPTION_HANDLER(unobj = GetImpObj()->CreateInternalClass(attach))
+	EXCEPTION_HANDLER(result = GetImpObj()->CreateInternalClass(attach))
 
-	return NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::ObjectFactory::CreateOvClassDefinition(unobj, true);
+	return NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::ObjectFactory::CreateOvClassDefinition(IntPtr(result), true);
 }

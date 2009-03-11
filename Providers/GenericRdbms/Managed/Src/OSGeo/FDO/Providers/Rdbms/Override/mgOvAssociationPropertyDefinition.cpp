@@ -35,11 +35,11 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvAssociationPropertyDefinition::O
 
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyPropertyDefinitionCollection* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvAssociationPropertyDefinition::get_Properties()
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvReadOnlyPropertyDefinitionCollection^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvAssociationPropertyDefinition::Properties::get()
 {
-	FdoRdbmsOvReadOnlyPropertyDefinitionCollection * unobj;
+	FdoRdbmsOvReadOnlyPropertyDefinitionCollection * result;
 
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetProperties())
+	EXCEPTION_HANDLER(result = GetImpObj()->GetProperties())
 
-	return NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::ObjectFactory::CreateOvReadOnlyPropertyDefinitionCollection(unobj, true);
+	return NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::ObjectFactory::CreateOvReadOnlyPropertyDefinitionCollection(IntPtr(result), true);
 }

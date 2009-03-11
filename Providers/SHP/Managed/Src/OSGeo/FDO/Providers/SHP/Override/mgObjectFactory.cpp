@@ -26,32 +26,32 @@
 #include "FDO\Providers\SHP\Override\mgClassCollection.h"
 
 template <class fdoclas, class clas> 
-inline NAMESPACE_OSGEO_RUNTIME::Disposable* CHECK(FdoIDisposable* p, FdoBoolean autoDispose)
+inline NAMESPACE_OSGEO_RUNTIME::Disposable^ CHECK(FdoIDisposable* p, FdoBoolean autoDispose)
 {
-    return (dynamic_cast<fdoclas *>(p) ?  new clas(p, autoDispose) : NULL);
+    return (dynamic_cast<fdoclas *>(p) ?  gcnew clas(IntPtr(p), autoDispose) : nullptr);
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ColumnDefinition* NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ObjectFactory::CreateColumnDefinition(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ColumnDefinition^ NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ObjectFactory::CreateColumnDefinition(System::IntPtr ptr, System::Boolean autoDispose)
 {
-    return new NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ColumnDefinition(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ColumnDefinition(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PropertyDefinition* NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ObjectFactory::CreatePropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PropertyDefinition^ NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ObjectFactory::CreatePropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose)
 {
-    return new NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PropertyDefinition(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PropertyDefinition(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PropertyDefinitionCollection* NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ObjectFactory::CreatePropertyDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PropertyDefinitionCollection^ NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ObjectFactory::CreatePropertyDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
-    return new NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PropertyDefinitionCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PropertyDefinitionCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassDefinition* NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ObjectFactory::CreateClassDefinition(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassDefinition^ NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ObjectFactory::CreateClassDefinition(System::IntPtr ptr, System::Boolean autoDispose)
 {
-    return new NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassDefinition(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassDefinition(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassCollection* NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ObjectFactory::CreateClassCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassCollection^ NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ObjectFactory::CreateClassCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
-    return new NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ClassCollection(ptr, autoDispose);
 }

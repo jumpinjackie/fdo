@@ -27,12 +27,12 @@
 
 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvDataPropertyDefinition::OvDataPropertyDefinition() : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvDataPropertyDefinition(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach((FdoIDisposable*)FdoOdbcOvDataPropertyDefinition::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr((FdoIDisposable*)FdoOdbcOvDataPropertyDefinition::Create()), true))
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvDataPropertyDefinition::OvDataPropertyDefinition(System::String* name) : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvDataPropertyDefinition(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvDataPropertyDefinition::OvDataPropertyDefinition(System::String^ name) : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvDataPropertyDefinition(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach((FdoIDisposable*)FdoOdbcOvDataPropertyDefinition::Create(StringToUni(name)), true))
+	EXCEPTION_HANDLER(Attach(IntPtr((FdoIDisposable*)FdoOdbcOvDataPropertyDefinition::Create(StringToUni(name))), true))
 }
 
 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvDataPropertyDefinition::OvDataPropertyDefinition(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvDataPropertyDefinition(unmanaged, autoDelete)
@@ -45,16 +45,16 @@ FdoOdbcOvDataPropertyDefinition* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_OD
 	return dynamic_cast<FdoOdbcOvDataPropertyDefinition*>((FdoIDisposable*)__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvColumn* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvDataPropertyDefinition::get_Column()
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvColumn^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvDataPropertyDefinition::Column::get()
 {
 	FdoOdbcOvColumn* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetColumn())
 
-	return NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::ObjectFactory::CreateOvColumn(result, true);
+	return NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::ObjectFactory::CreateOvColumn(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvDataPropertyDefinition::set_Column(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvColumn* value)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvDataPropertyDefinition::Column::set(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvColumn^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetColumn((NULL == value ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->SetColumn((nullptr == value ? nullptr : value->GetImpObj())))
 }

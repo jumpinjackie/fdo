@@ -28,36 +28,34 @@
 
 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvPhysicalSchemaMapping::OvPhysicalSchemaMapping() : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPhysicalSchemaMapping(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoOdbcOvPhysicalSchemaMapping::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoOdbcOvPhysicalSchemaMapping::Create()), true))
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvPhysicalSchemaMapping::OvPhysicalSchemaMapping(System::String* name) : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPhysicalSchemaMapping(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvPhysicalSchemaMapping::OvPhysicalSchemaMapping(System::String^ name) : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPhysicalSchemaMapping(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoOdbcOvPhysicalSchemaMapping::Create(StringToUni(name)), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoOdbcOvPhysicalSchemaMapping::Create(StringToUni(name))), true))
 }
 
 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvPhysicalSchemaMapping::OvPhysicalSchemaMapping(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPhysicalSchemaMapping(unmanaged, autoDelete)
 {
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvPhysicalSchemaMapping::OvPhysicalSchemaMapping(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping* schemaMapping, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPhysicalSchemaMapping(schemaMapping, autoDelete)
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvPhysicalSchemaMapping::OvPhysicalSchemaMapping(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping^ schemaMapping, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPhysicalSchemaMapping(schemaMapping, autoDelete)
 {
     // Validate IN Parameter
-    if (NULL == schemaMapping) {
-        throw new System::ArgumentNullException();
-    }
+    if (nullptr == schemaMapping)
+        throw gcnew System::ArgumentNullException();
 
     // Retrieve the provider name for the FdoOdbcOvPhysicalSchemaMapping class
     FdoPtr<FdoOdbcOvPhysicalSchemaMapping> odbcSchemaMapping = FdoOdbcOvPhysicalSchemaMapping::Create();
     FdoStringP odbcProviderName = odbcSchemaMapping->GetProvider();
 
     // Retrieve the provider name of the schema mapping object passed into the constructor
-    System::String* sProviderName = schemaMapping->Provider;
+    System::String^ sProviderName = schemaMapping->Provider;
 
     // If the provider named do not match throw an Invalid Argument exception
-    if (odbcProviderName != StringToUni(sProviderName)) {
-        throw new System::ArgumentException();
-    }
+    if (odbcProviderName != StringToUni(sProviderName))
+        throw gcnew System::ArgumentException();
 }
 
 FdoOdbcOvPhysicalSchemaMapping* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvPhysicalSchemaMapping::GetImpObj()
@@ -65,21 +63,21 @@ FdoOdbcOvPhysicalSchemaMapping* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODB
 	return static_cast<FdoOdbcOvPhysicalSchemaMapping*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvClassCollection* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvPhysicalSchemaMapping::get_Classes()
+NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvClassCollection^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvPhysicalSchemaMapping::Classes::get()
 {
 	FdoOdbcOvClassCollection* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetClasses())
 
-	return NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::ObjectFactory::CreateOvClassCollection(result, true);
+	return NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::ObjectFactory::CreateOvClassCollection(IntPtr(result), true);
 }
 
-System::String* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvPhysicalSchemaMapping::get_Provider()
+System::String^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvPhysicalSchemaMapping::Provider::get()
 {
 	FdoString* unobj;
 
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetProvider())
 
-	return unobj;
+	return CHECK_STRING(unobj);
 }
 

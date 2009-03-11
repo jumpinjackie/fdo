@@ -21,29 +21,34 @@
 class FdoShpOvClassDefinition;
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE
-public __gc class PropertyDefinition;
-public __gc class PropertyDefinitionCollection;
+ref class PropertyDefinition;
+ref class PropertyDefinitionCollection;
 
 /// <summary> 
 /// The FdoShpOvClassDefinition class defines a raster image which contains a name 
 /// and the extents of the raster image.
 /// </summary>
-public __gc class ClassDefinition : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalClassMapping
+public ref class ClassDefinition : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalClassMapping
 {
 public:
 	/// <summary>Constructs a new empty class definition.</summary>
 	ClassDefinition();
 
-	__property NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PropertyDefinitionCollection* get_Properties();
+    property NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PropertyDefinitionCollection^ Properties
+    {
+        NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PropertyDefinitionCollection^ get();
+    }    
     
-    __property System::String* get_ShapeFile();
-
-    __property System::Void set_ShapeFile(System::String* location);
+    property System::String^ ShapeFile
+    {
+        System::String^ get();
+        System::Void set(System::String^ location);
+    }
 
     // Helper method to find a property mapping by its column name:
-    NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PropertyDefinition* FindByColumnName(System::String* columnName);
+    NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::PropertyDefinition^ FindByColumnName(System::String^ columnName);
 
-public private:
+internal:
 	ClassDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoShpOvClassDefinition* GetImpObj();

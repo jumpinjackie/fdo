@@ -35,56 +35,56 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvSchemaAutoGeneration::OvSchemaAu
 
 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvSchemaAutoGeneration::OvSchemaAutoGeneration() : NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoRdbmsOvSchemaAutoGeneration::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoRdbmsOvSchemaAutoGeneration::Create()), true))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvSchemaAutoGeneration::get_GenTablePrefix()
+System::String^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvSchemaAutoGeneration::GenTablePrefix::get()
 {
-	FdoString * unobj;
+	FdoString* unobj;
 
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetGenTablePrefix())
 
-	return unobj;
+	return CHECK_STRING(unobj);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvSchemaAutoGeneration::set_GenTablePrefix(System::String* tablePrefix)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvSchemaAutoGeneration::GenTablePrefix::set(System::String^ tablePrefix)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetGenTablePrefix(StringToUni(tablePrefix)))
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvSchemaAutoGeneration::get_RemoveTablePrefix()
+System::Boolean NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvSchemaAutoGeneration::RemoveTablePrefix::get()
 {
-	FdoBoolean unobj;
+	System::Boolean unobj;
 
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetRemoveTablePrefix())
 
 	return unobj;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvSchemaAutoGeneration::set_RemoveTablePrefix(System::Boolean removeTablePrefix)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvSchemaAutoGeneration::RemoveTablePrefix::set(System::Boolean removeTablePrefix)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetRemoveTablePrefix(removeTablePrefix))
 }
 
-NAMESPACE_OSGEO_COMMON::StringCollection* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvSchemaAutoGeneration::get_GenTableList()
+NAMESPACE_OSGEO_COMMON::StringCollection^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvSchemaAutoGeneration::GenTableList::get()
 {
-	FdoStringCollection* unobj;
+	FdoStringCollection* result;
 
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetGenTableList())
+	EXCEPTION_HANDLER(result = GetImpObj()->GetGenTableList())
 
-	return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateStringCollection(unobj, true);
+	return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateStringCollection(IntPtr(result), true);
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvSchemaAutoGeneration::get_MaxSampleRows()
+System::Int32 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvSchemaAutoGeneration::MaxSampleRows::get()
 {
-	FdoInt32 unobj;
+	System::Int32 unobj;
 
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetMaxSampleRows())
 
 	return unobj;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvSchemaAutoGeneration::set_MaxSampleRows(System::Int32 maxRows)
+System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvSchemaAutoGeneration::MaxSampleRows::set(System::Int32 maxRows)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetMaxSampleRows(maxRows))
 }

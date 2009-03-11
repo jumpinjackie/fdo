@@ -21,7 +21,7 @@
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL
 
 ///<summary>Concrete class defining physical schema overrides for a property definition.</summary>
-public __gc __interface IOvPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::IOvPropertyDefinition
+public interface class IOvPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::IOvPropertyDefinition
 {
 
 };

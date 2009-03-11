@@ -37,7 +37,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE
 /// </param>
 /// <param name="OvGeometricContentType_Ordinates"> Ordinate columns (default names "X", "Y" and optionally "Z") ?column type must be OvGeometryColumnType_Double
 /// </param>
-public __value enum OvGeometricContentType
+public enum class OvGeometricContentType
 {
     OvGeometricContentType_Default = FdoSmOvGeometricContentType_Default,
     OvGeometricContentType_BuiltIn = FdoSmOvGeometricContentType_BuiltIn,

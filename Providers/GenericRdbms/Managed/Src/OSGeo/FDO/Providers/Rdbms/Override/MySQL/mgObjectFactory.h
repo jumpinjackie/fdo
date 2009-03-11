@@ -19,38 +19,38 @@
 #pragma once
 
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL
-public __gc class OvPropertyDefinition;
-public __gc class OvClassDefinition;
-public __gc class OvPropertyDefinitionCollection;
-public __gc class OvTable;
-public __gc class OvGeometricColumn;
-public __gc class OvColumn;
-public __gc class OvDataPropertyDefinition;
-public __gc class OvPropertyMappingDefinition;
-public __gc class OvClassCollection;
-public __gc __interface IOvPropertyDefinition; 
-public __gc __interface IOvPropertyMappingDefinition;
+ref class OvPropertyDefinition;
+ref class OvClassDefinition;
+ref class OvPropertyDefinitionCollection;
+ref class OvTable;
+ref class OvGeometricColumn;
+ref class OvColumn;
+ref class OvDataPropertyDefinition;
+ref class OvPropertyMappingDefinition;
+ref class OvClassCollection;
+interface class IOvPropertyDefinition; 
+interface class IOvPropertyMappingDefinition;
 
-public __gc __sealed class ObjectFactory
+public ref class ObjectFactory sealed
 {
 public:
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyDefinition* CreateIOvPropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyDefinition^ CreateIOvPropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose);
 
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvClassDefinition* CreateOvClassDefinition(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvClassDefinition^ CreateOvClassDefinition(System::IntPtr ptr, System::Boolean autoDispose);
 
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyDefinitionCollection* CreateOvPropertyDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyDefinitionCollection^ CreateOvPropertyDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose);
 
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable* CreateOvTable(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvTable^ CreateOvTable(System::IntPtr ptr, System::Boolean autoDispose);
 
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvGeometricColumn* CreateOvGeometricColumn(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvGeometricColumn^ CreateOvGeometricColumn(System::IntPtr ptr, System::Boolean autoDispose);
 
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvColumn* CreateOvColumn(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvColumn^ CreateOvColumn(System::IntPtr ptr, System::Boolean autoDispose);
 
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvDataPropertyDefinition* CreateOvDataPropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvDataPropertyDefinition^ CreateOvDataPropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose);
 
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyMappingDefinition* CreateIOvPropertyMappingDefinition(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyMappingDefinition^ CreateIOvPropertyMappingDefinition(System::IntPtr ptr, System::Boolean autoDispose);
 
-	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvClassCollection* CreateOvClassCollection(System::IntPtr ptr, System::Boolean autoDispose);
+	static NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvClassCollection^ CreateOvClassCollection(System::IntPtr ptr, System::Boolean autoDispose);
 
 private:
 	ObjectFactory(){}
