@@ -18,7 +18,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sqlite", "sqlite-3.6.2\sqli
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SpatialIndex", "SpatialIndex\SpatialIndex.vcproj", "{826398ED-29B3-4504-9683-ABC431AC5D21}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "..\..\Utilities\Common\FdoCommon.vcproj", "{9037A345-04EB-418C-98D0-3D5B19FC9D55}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "..\..\..\Utilities\Common\FdoCommon.vcproj", "{9037A345-04EB-418C-98D0-3D5B19FC9D55}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

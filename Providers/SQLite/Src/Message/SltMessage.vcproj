@@ -20,8 +20,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="..\Bin\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="..\Obj\Message\$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="..\..\Bin\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="..\..\Obj\Message\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -100,13 +100,13 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Creating Library and Versioning SQLiteMessage.dll"
-				CommandLine="..\..\..\Thirdparty\util\stampver\StampVer.exe -v&quot;..\..\SubDoc\Providers.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SQLiteMessage.dll"
+				CommandLine="..\..\..\..\Thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SQLiteMessage.dll"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="..\Bin\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="..\Obj\Message\$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="..\..\Bin\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="..\..\Obj\Message\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -186,14 +186,14 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Creating Library and Versioning SQLiteMessage.dll"
-				CommandLine="..\..\..\Thirdparty\util\stampver\StampVer.exe -v&quot;..\..\SubDoc\Providers.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SQLiteMessage.dll"
+				CommandLine="..\..\..\..\Thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SQLiteMessage.dll"
 				ExcludedFromBuild="true"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\Bin\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="..\Obj\Message\$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="..\..\Bin\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="..\..\Obj\Message\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -274,13 +274,13 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Creating Library and Versioning SQLiteMessage.dll"
-				CommandLine="..\..\..\Thirdparty\util\stampver\StampVer.exe -v&quot;..\..\SubDoc\Providers.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SQLiteMessage.dll"
+				CommandLine="..\..\..\..\Thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SQLiteMessage.dll"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="..\Bin\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="..\Obj\Message\$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="..\..\Bin\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="..\..\Obj\Message\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -362,7 +362,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Creating Library and Versioning SQLiteMessage.dll"
-				CommandLine="..\..\..\Thirdparty\util\stampver\StampVer.exe -v&quot;..\..\SubDoc\Providers.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SQLiteMessage.dll"
+				CommandLine="..\..\..\..\Thirdparty\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SQLiteMessage.dll"
 				ExcludedFromBuild="true"
 			/>
 		</Configuration>
