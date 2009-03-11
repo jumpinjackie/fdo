@@ -1428,6 +1428,7 @@ void FdoExpressionEngineImp::ProcessFunction (FdoFunction& expr)
 				FdoDataValue* dv = (FdoDataValue*)m_retvals.back ();
 				m_retvals.pop_back ();
 				functionParameters->Insert(0, dv);
+                FDO_SAFE_RELEASE(dv);
 			}
 			FdoExpressionEngineIAggregateFunction *func = m_AggregateFunctions.at(m_CurrentIndex);
 			func->Process(functionParameters);
