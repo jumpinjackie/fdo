@@ -151,6 +151,13 @@ public:
         FdoStringsP keywords
     );
 
+    // Executes a SQL statement
+    virtual void ExecuteSQL( 
+        FdoStringP sqlStmt, // the SQL statement
+        bool isDDL = true                 // true if the statement must be executed
+                                          // as a DDL statement. 
+    );
+
     // Checks for general reserved works. Each provider can override
     // this function to check for extra RDBMS vendor-specific words.
     // See FdoSmPhMqlMgr or FdoSmPhOraMgr for example.

@@ -25,7 +25,6 @@
 #include "DbObject.h"
 #include "../../../SchemaMgr/Ph/Table.h"
 #include "Fkey.h"
-#include "Index.h"
 
 // Odbc Provider implementation of a Table.
 // Represents an Odbc schema (user)
@@ -55,27 +54,12 @@ public:
     virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader() const;
     virtual FdoPtr<FdoSmPhRdFkeyReader> CreateFkeyReader() const;
     virtual FdoPtr<FdoSmPhRdConstraintReader> CreateConstraintReader( FdoString* type ) const;
-    virtual FdoPtr<FdoSmPhRdIndexReader> CreateIndexReader() const;
 
 
 private:
     virtual bool Add();
     virtual bool Modify();
     virtual bool Delete();
-
-    // Index creator implementation
-    virtual FdoSmPhIndexP NewIndex(
-        FdoStringP name,
-        bool isUnique,
-        FdoSchemaElementState elementState = FdoSchemaElementState_Added
-    );
-
-    // Spatial Index creator implementation
-    virtual FdoSmPhIndexP NewSpatialIndex(
-        FdoStringP name,
-        bool isUnique,
-        FdoSchemaElementState elementState = FdoSchemaElementState_Added
-    );
 
     // Foreign Key creator implementation
     virtual FdoSmPhFkeyP NewFkey(
