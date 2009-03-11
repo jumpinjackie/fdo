@@ -21,7 +21,7 @@
 class FdoXmlFeatureContext;
 
 BEGIN_NAMESPACE_OSGEO_FDO_XML
-public __gc class XmlFeaturePropertyReader;
+ref class XmlFeaturePropertyReader;
 
 /// \ingroup (OSGeoFDOXml)
 /// \brief
@@ -30,7 +30,7 @@ public __gc class XmlFeaturePropertyReader;
 /// provides very rudimentary functionality such as error reporting and access to the 
 /// XmlFeaturePropertyReader doing the parse. Applications can pass extra information
 /// by sub-classing from this class.
-public __gc class XmlFeatureContext : public NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext
+public ref class XmlFeatureContext : public NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext
 {
 public:
     /// \brief
@@ -39,7 +39,7 @@ public:
     /// \param value 
     /// Input the XmlFeaturePropertyReader that is parsing the XML document.
     /// 
-	XmlFeatureContext(NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyReader* value);
+	XmlFeatureContext(NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyReader^ value);
 
     /// \brief
     /// Gets the XmlFeaturePropertyReader that is parsing the XML document.
@@ -47,9 +47,9 @@ public:
     /// \return
     /// Returns XmlFeaturePropertyReader
     /// 
-	NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyReader* GetFeaturePropertyReader();
+	NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyReader^ GetFeaturePropertyReader();
 
-public private:
+internal:
 	XmlFeatureContext(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext(unmanaged, autoDelete)
 	{
 		

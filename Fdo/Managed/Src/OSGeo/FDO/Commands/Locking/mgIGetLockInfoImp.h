@@ -24,7 +24,7 @@
 class FdoIGetLockInfo;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
-public __gc __interface ILockedObjectReader;
+interface class ILockedObjectReader;
 
 /// \ingroup (OSGeoFDOCommandsLocking)
 /// \brief
@@ -32,7 +32,7 @@ public __gc __interface ILockedObjectReader;
 /// The IGetLockInfo interface defines the GetLockInfo command, which gets a
 /// lock information for the feature instances of a given class that match the
 /// specified filter. If the filter is empty, all feature instances of the given class are selected.
-private __gc class IGetLockInfoImp : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp, 
+private ref class IGetLockInfoImp : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp, 
                                      public NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IGetLockInfo
 {
 public:
@@ -42,7 +42,7 @@ public:
     /// \return
     /// Returns a locked object reader.
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReader* Execute();
+	virtual NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReader^ Execute();
 
 public:
     /// \brief

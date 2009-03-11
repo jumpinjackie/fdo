@@ -19,7 +19,7 @@
 #pragma once
 
 BEGIN_NAMESPACE_OSGEO_COMMON_XML
-public __gc class XmlReader;
+ref class XmlReader;
 END_NAMESPACE_OSGEO_COMMON_XML
 
 BEGIN_NAMESPACE_OSGEO_COMMON_GML212
@@ -28,7 +28,7 @@ BEGIN_NAMESPACE_OSGEO_COMMON_GML212
 /// \brief
 /// Schema is a utility class for handling the GML 2.1.2 
 /// version of the GML Sschema.
-public __gc __sealed class Schema
+public ref class Schema sealed
 {
 public:
     /// \brief
@@ -38,7 +38,7 @@ public:
     /// \return
     /// Returns a new XmlReader
     /// 
-	static NAMESPACE_OSGEO_COMMON_XML::XmlReader* CreateReader();
+	static NAMESPACE_OSGEO_COMMON_XML::XmlReader^ CreateReader();
 
 /// \cond DOXYGEN-IGNORE
 private:

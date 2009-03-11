@@ -21,13 +21,13 @@
 class FdoXmlContext;
 
 BEGIN_NAMESPACE_OSGEO_FDO_XML
-public __gc class XmlFlags;
+ref class XmlFlags;
 
 /// \ingroup (OSGeoFDOXml)
 /// \brief
 /// Default context for deserializing from XML documents via
 /// XmlDeserializable.
-public __gc class XmlContext : public NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext
+public ref class XmlContext : public NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext
 {
 public:
     /// \brief
@@ -39,7 +39,7 @@ public:
     /// \param xmlReader 
     /// Input the XML reader.
     /// 
-	XmlContext(NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags, NAMESPACE_OSGEO_COMMON_XML::XmlReader* xmlReader);
+	XmlContext(NAMESPACE_OSGEO_FDO_XML::XmlFlags^ flags, NAMESPACE_OSGEO_COMMON_XML::XmlReader^ xmlReader);
 
     /// \brief
     /// Decodes any element name that was encoded to be XML-compatible.
@@ -47,7 +47,7 @@ public:
     /// \param name 
     /// Input the name to Decode.
     /// 
-	System::String* DecodeName (System::String* name);
+	System::String^ DecodeName (System::String^ name);
 
     /// \brief
     /// Retrieves the current XML flags.
@@ -55,9 +55,9 @@ public:
     /// \return
     /// Returns the XML flags associated to the Context
     /// 
-	NAMESPACE_OSGEO_FDO_XML::XmlFlags* GetFlags();
+	NAMESPACE_OSGEO_FDO_XML::XmlFlags^ GetFlags();
 
-public private:
+internal:
 	XmlContext(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext(unmanaged, autoDelete)
 	{
 		

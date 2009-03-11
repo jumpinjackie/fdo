@@ -24,7 +24,7 @@
 class FdoILockConflictReader;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
-public __gc class PropertyValueCollection;
+ref class PropertyValueCollection;
 END_NAMESPACE_OSGEO_FDO_COMMANDS
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
@@ -41,7 +41,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 /// IAcquireLock, ISelect, IReleaseLock, IUpdate, and IDelete commands. The
 /// initial position of the ILockConflictReader is prior to the first item,
 /// thus you must call ReadNext to begin accessing any data.
-private __gc class ILockConflictReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
+private ref class ILockConflictReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
                                             public NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader
 {
 public:
@@ -57,7 +57,7 @@ public:
     /// \return
     /// Returns the class name.
     /// 
-	System::String* GetFeatureClassName();
+	virtual System::String^ GetFeatureClassName();
 
     /// \brief
     /// Returns an PropertyValueCollection containing the property values
@@ -66,7 +66,7 @@ public:
     /// \return
     /// Returns the property collection identifying the feature.
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection* GetIdentity();
+	virtual NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection^ GetIdentity();
 
     /// \brief
     /// Gets the name of the owner who holds a lock on the feature 
@@ -75,7 +75,7 @@ public:
     /// \return
     /// Returns the name of the owner
     /// 
-	System::String* GetLockOwner();
+	virtual System::String^ GetLockOwner();
 
     /// \brief
     /// Gets the name of the long transaction in which the feature 
@@ -85,7 +85,7 @@ public:
     /// Returns the name of the long transaction in which the feature
     /// currently being read is locked.
     /// 
-	System::String* GetLongTransaction();
+	virtual System::String^ GetLongTransaction();
 
     /// \brief
     /// Gets the conflict type for the conflict currently being read.
@@ -93,7 +93,7 @@ public:
     /// \return
     /// Returns the conflict type for the conflict currently being read.
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ConflictType GetConflictType();
+	virtual NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ConflictType GetConflictType();
 
     /// \brief
     /// Advances the reader to the next item. The default position of the 
@@ -103,7 +103,7 @@ public:
     /// \return
     /// Returns true if there is a next item.
     /// 
-	System::Boolean ReadNext();
+	virtual System::Boolean ReadNext();
 
     /// \brief
     /// Closes the ILockConflictReader object, freeing any resources it may
@@ -112,14 +112,9 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Close();
+	virtual System::Void Close();
 
-/// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-/// \endcond
-
-public private:
+internal:
 	ILockConflictReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)
 	{
 

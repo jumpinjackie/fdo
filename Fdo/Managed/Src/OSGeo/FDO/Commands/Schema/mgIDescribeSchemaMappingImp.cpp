@@ -30,39 +30,39 @@ FdoIDescribeSchemaMapping* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaM
     return static_cast<FdoIDescribeSchemaMapping*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::String* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaMappingImp::get_SchemaName()
+System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaMappingImp::SchemaName::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetSchemaName())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaMappingImp::set_SchemaName(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaMappingImp::SchemaName::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetSchemaName(StringToUni(value)))
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaMappingImp::get_IncludeDefaults()
+System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaMappingImp::IncludeDefaults::get()
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = !!GetImpObj()->GetIncludeDefaults())
 
 	return result;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaMappingImp::set_IncludeDefaults(System::Boolean includeDefaults )
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaMappingImp::IncludeDefaults::set(System::Boolean includeDefaults )
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetIncludeDefaults(includeDefaults))
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMappingCollection* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaMappingImp::Execute()
+NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMappingCollection^ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaMappingImp::Execute()
 {
 	FdoPhysicalSchemaMappingCollection* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->Execute())
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePhysicalSchemaMappingCollection(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePhysicalSchemaMappingCollection(IntPtr(result), true);
 }

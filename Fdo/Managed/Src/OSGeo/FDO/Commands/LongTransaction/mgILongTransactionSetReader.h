@@ -29,7 +29,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 /// GetLongTransactionsInSet command. The initial position of the
 /// ILongTransactionSetReader is prior to the first item. Thus, you must
 /// call ReadNext to begin accessing any data.
-public __gc __interface ILongTransactionSetReader : public System::IDisposable
+public interface class ILongTransactionSetReader : public System::IDisposable
 {
 public:
     /// \brief
@@ -39,7 +39,7 @@ public:
     /// \return
     /// Returns the long transaction name
     /// 
-	System::String* GetLongTransactionName();
+	System::String^ GetLongTransactionName();
 
     /// \brief
     /// Gets the owner of the long transaction in the selection set currently
@@ -48,7 +48,7 @@ public:
     /// \return
     /// Returns the owner of the long transaction
     /// 
-	System::String* GetOwner();
+	System::String^ GetOwner();
 
     /// \brief
     /// Advances the reader to the next item. The default position of the

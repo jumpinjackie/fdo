@@ -24,7 +24,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 /// \brief
 /// The BinaryOperations enumeration lists the binary expression operations available.
 [System::FlagsAttribute]
-public  __value enum BinaryOperations
+public enum class BinaryOperations
 {
     /// Add the two expressions or concatenate two string expressions
 	BinaryOperations_Add = FdoBinaryOperations_Add,

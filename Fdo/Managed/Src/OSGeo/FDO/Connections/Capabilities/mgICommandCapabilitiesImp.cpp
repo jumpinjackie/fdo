@@ -32,71 +32,65 @@ FdoICommandCapabilities* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandC
     return static_cast<FdoICommandCapabilities*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandCapabilitiesImp::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}
-
-System::Int32 NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandCapabilitiesImp::get_Commands() []
+array<System::Int32>^ NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandCapabilitiesImp::Commands::get()
 {
 	FdoInt32 unsize;
 	FdoInt32* unbuffer;
 	EXCEPTION_HANDLER(unbuffer = GetImpObj()->GetCommands(unsize))
-	System::Int32 buffer [] = new System::Int32[unsize];
-	for(FdoInt32 i = 0; i < unsize; i ++)
-	{
-		buffer[i] = *(unbuffer + i);
-	}
-	return buffer;
+	array<System::Int32>^ mgBuffer = gcnew array<System::Int32>(unsize);
+    if (unsize != 0)
+    {
+        pin_ptr<FdoInt32> umgBuffer = &mgBuffer[0];
+        memcpy(umgBuffer, unbuffer, unsize * sizeof(FdoInt32));
+    }
+	return mgBuffer;
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandCapabilitiesImp::SupportsParameters()
 {
-	FdoBoolean rv;
+	System::Boolean rv;
 	EXCEPTION_HANDLER(rv = !!GetImpObj()->SupportsParameters())
 	return rv;
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandCapabilitiesImp::SupportsTimeout()
 {
-	FdoBoolean rv;
+	System::Boolean rv;
 	EXCEPTION_HANDLER(rv = !!GetImpObj()->SupportsTimeout())
 	return rv;
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandCapabilitiesImp::SupportsSelectExpressions()
 {
-	FdoBoolean rv;
+	System::Boolean rv;
 	EXCEPTION_HANDLER(rv = !!GetImpObj()->SupportsSelectExpressions())
 	return rv;
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandCapabilitiesImp::SupportsSelectFunctions()
 {
-	FdoBoolean rv;
+	System::Boolean rv;
 	EXCEPTION_HANDLER(rv = !!GetImpObj()->SupportsSelectFunctions())
 	return rv;
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandCapabilitiesImp::SupportsSelectDistinct()
 {
-	FdoBoolean rv;
+	System::Boolean rv;
 	EXCEPTION_HANDLER(rv = !!GetImpObj()->SupportsSelectDistinct())
 	return rv;
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandCapabilitiesImp::SupportsSelectOrdering()
 {
-	FdoBoolean rv;
+	System::Boolean rv;
 	EXCEPTION_HANDLER(rv = !!GetImpObj()->SupportsSelectOrdering())
 	return rv;
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandCapabilitiesImp::SupportsSelectGrouping()
 {
-	FdoBoolean rv;
+	System::Boolean rv;
 	EXCEPTION_HANDLER(rv = !!GetImpObj()->SupportsSelectGrouping())
 	return rv;
 }

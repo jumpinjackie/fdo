@@ -29,150 +29,147 @@
 #include "FDO\Expression\mgLOBValue.h"
 #include "FDO\Raster\mgIRasterImp.h"
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}
-
 FdoIReader* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetImpObj()
 {
     return static_cast<FdoIReader*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetBoolean(System::String* name)
+System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetBoolean(System::String^ name)
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = !!GetImpObj()->GetBoolean(StringToUni(name)))
 
 	return result;
 }
 
-System::Byte NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetByte(System::String* name)
+System::Byte NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetByte(System::String^ name)
 {
-	FdoByte result;
+	System::Byte result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetByte(StringToUni(name)))
 
-		return result;
+	return result;
 }
 
-System::DateTime NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetDateTime(System::String* name)
+System::DateTime NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetDateTime(System::String^ name)
 {
 	FdoDateTime result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetDateTime(StringToUni(name)))
 
-		return FdoDateTimeToDateTime(result);
+	return FdoDateTimeToDateTime(result);
 }
 
-System::Double NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetDouble(System::String* name)
+System::Double NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetDouble(System::String^ name)
 {
-	FdoDouble result;
+	System::Double result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetDouble(StringToUni(name)))
 
-		return result;
+	return result;
 }
 
-System::Int16 NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetInt16(System::String* name)
+System::Int16 NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetInt16(System::String^ name)
 {
-	FdoInt16 result;
+	System::Int16 result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetInt16(StringToUni(name)))
 
-		return result;
+	return result;
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetInt32(System::String* name)
+System::Int32 NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetInt32(System::String^ name)
 {
-	FdoInt32 result;
+	System::Int32 result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetInt32(StringToUni(name)))
 
-		return result;
+	return result;
 }
 
-System::Int64 NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetInt64(System::String* name)
+System::Int64 NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetInt64(System::String^ name)
 {
-	FdoInt64 result;
+	System::Int64 result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetInt64(StringToUni(name)))
 
-		return result;
+	return result;
 }
 
-System::Single NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetSingle(System::String* name)
+System::Single NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetSingle(System::String^ name)
 {
-	FdoFloat result;
+	System::Single result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetSingle(StringToUni(name)))
 
-		return result;
+	return result;
 }
 
-System::String* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetString(System::String* name)
+System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetString(System::String^ name)
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetString(StringToUni(name)))
 
-		return result;
+	return CHECK_STRING(result);
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetLOB(System::String* name)
+NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetLOB(System::String^ name)
 {
 	FdoLOBValue* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetLOB(StringToUni(name)))
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateLOBValue(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateLOBValue(IntPtr(result), true);
 }
 
-NAMESPACE_OSGEO_COMMON::IStreamReader* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetLOBStreamReader(System::String* name)
+NAMESPACE_OSGEO_COMMON::IStreamReader^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetLOBStreamReader(System::String^ name)
 {
 	FdoIStreamReader* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetLOBStreamReader(StringToUni(name)))
 
-    return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateIStreamReader(result, true);
+    return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateIStreamReader(IntPtr(result), true);
 }
 
-NAMESPACE_OSGEO_FDO_RASTER::IRaster* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetRaster(System::String* name)
+NAMESPACE_OSGEO_FDO_RASTER::IRaster^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetRaster(System::String^ name)
 {
 	FdoIRaster* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetRaster(StringToUni(name)))
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIRaster(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIRaster(IntPtr(result), true);
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::IsNull(System::String* name)
+System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::IsNull(System::String^ name)
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = !!GetImpObj()->IsNull(StringToUni(name)))
 
 	return result;
 }
 
-System::Byte NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetGeometry(System::String* name) []
+array<System::Byte>^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetGeometry(System::String^ name)
 {
-	// NEED_TEST
-	FdoByteArray* result;
-
-	EXCEPTION_HANDLER(result = GetImpObj()->GetGeometry(StringToUni(name)))
-
-	System::Byte mgBuffer __gc[] = FdoByteArrayToByteArray(result->GetData(), result->GetCount());
-	result->Release();
-	return mgBuffer;
+    array<System::Byte>^ result;
+	FdoByteArray* arr;
+    try
+    {
+	    EXCEPTION_HANDLER(arr = GetImpObj()->GetGeometry(StringToUni(name)))
+    	result = FdoByteArrayToByteArray(arr->GetData(), arr->GetCount());
+    }
+    finally
+    {
+	    arr->Release();
+    }
+	return result;
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::ReadNext()
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = !!GetImpObj()->ReadNext())
 

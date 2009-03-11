@@ -37,24 +37,17 @@ FdoProviderRegistry* NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderRegistry::GetIm
 	return static_cast<FdoProviderRegistry*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Void NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderRegistry::ReleaseUnmanagedObject()
+NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection^ NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderRegistry::GetProviders()
 {
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateProviderCollection(IntPtr(const_cast<FdoProviderCollection*>(GetImpObj()->GetProviders())), true);
 }
 
-NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection* NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderRegistry::GetProviders()
-{
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateProviderCollection(const_cast<FdoProviderCollection *>(GetImpObj()->GetProviders()), true);
-}
-
-System::Void NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderRegistry::RegisterProvider(String * name, 
-													String * displayName, 
-													String * description, 
-													String * version, 
-													String * fdoVersion, 
-													String * libraryPath,
+System::Void NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderRegistry::RegisterProvider(System::String^ name, 
+													System::String^ displayName, 
+													System::String^ description, 
+													System::String^ version, 
+													System::String^ fdoVersion, 
+													System::String^ libraryPath,
 													System::Boolean isManaged)
 {
 	EXCEPTION_HANDLER(GetImpObj()->RegisterProvider(StringToUni(name),
@@ -66,7 +59,7 @@ System::Void NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderRegistry::RegisterProvi
 		isManaged))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderRegistry::UnregisterProvider(String * name)
+System::Void NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderRegistry::UnregisterProvider(System::String^ name)
 {
 	EXCEPTION_HANDLER(GetImpObj()->UnregisterProvider(StringToUni(name)))
 }

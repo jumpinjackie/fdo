@@ -24,14 +24,14 @@
 class FdoBinaryLogicalOperator;
 
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
-public __gc class Filter;
-public __gc __interface IFilterProcessor;
+ref class Filter;
+interface class IFilterProcessor;
 
 /// \ingroup (OSGeoFDOFilter)
 /// \brief
 /// The BinaryLogicalOperator class derives from LogicalOperator and allows two
 /// filters to be combined via a logical "and" or a logical "or".
-public __gc class BinaryLogicalOperator : public NAMESPACE_OSGEO_FDO_FILTER::LogicalOperator
+public ref class BinaryLogicalOperator : public NAMESPACE_OSGEO_FDO_FILTER::LogicalOperator
 {
 public:
     /// \brief
@@ -55,7 +55,7 @@ public:
     /// \return
     /// Returns BinaryLogicalOperator
     /// 
-	BinaryLogicalOperator(NAMESPACE_OSGEO_FDO_FILTER::Filter* leftOperand, NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations operation, NAMESPACE_OSGEO_FDO_FILTER::Filter* rightOperand);
+	BinaryLogicalOperator(NAMESPACE_OSGEO_FDO_FILTER::Filter^ leftOperand, NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations operation, NAMESPACE_OSGEO_FDO_FILTER::Filter^ rightOperand);
 
     /// \brief
     /// Gets the operation to be performed between the two operands.
@@ -63,8 +63,6 @@ public:
     /// \return
     /// Returns the operation to be performed
     /// 
-	__property NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations get_Operation();
-
     /// \brief
     /// Sets the operation to be performed between the two operands.
     /// 
@@ -74,7 +72,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Operation(NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations value);
+    property NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations Operation
+    {
+        NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations get();
+        System::Void set(NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations value);
+    }
 
     /// \brief
     /// Gets the filter that defines the left operand.
@@ -82,8 +84,6 @@ public:
     /// \return
     /// Returns the filter that defines the left operand
     /// 
-	__property NAMESPACE_OSGEO_FDO_FILTER::Filter* get_LeftOperand();
-
     /// \brief
     /// Sets the filter that defines the left operand.
     /// 
@@ -93,7 +93,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_LeftOperand(NAMESPACE_OSGEO_FDO_FILTER::Filter* value);
+    property NAMESPACE_OSGEO_FDO_FILTER::Filter^ LeftOperand
+    {
+        NAMESPACE_OSGEO_FDO_FILTER::Filter^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_FILTER::Filter^ value);
+    }
 
     /// \brief
     /// Gets the filter that defines the right operand.
@@ -101,8 +105,6 @@ public:
     /// \return
     /// Returns the filter that defines the right operand
     /// 
-	__property NAMESPACE_OSGEO_FDO_FILTER::Filter* get_RightOperand();
-
     /// \brief
     /// Sets the filter that defines the right operand.
     /// 
@@ -112,7 +114,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_RightOperand(NAMESPACE_OSGEO_FDO_FILTER::Filter* value);
+    property NAMESPACE_OSGEO_FDO_FILTER::Filter^ RightOperand
+    {
+        NAMESPACE_OSGEO_FDO_FILTER::Filter^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_FILTER::Filter^ value);
+    }
 
     /// \brief
     /// Overrides Filter.Process to pass BinaryLogicalOperator to the
@@ -124,7 +130,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Process(NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessor* processor);
+	System::Void Process(NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessor^ processor);
 
     /// \brief
     /// Constructs a BinaryLogicalOperator object based on an unmanaged instance of the object
@@ -138,7 +144,7 @@ public:
     /// 
 	BinaryLogicalOperator(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
+internal:
 	inline FdoBinaryLogicalOperator* GetImpObj();
 };
 

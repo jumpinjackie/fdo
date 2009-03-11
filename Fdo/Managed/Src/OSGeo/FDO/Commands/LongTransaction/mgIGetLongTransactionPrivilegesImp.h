@@ -24,7 +24,7 @@
 class FdoIGetLongTransactionPrivileges;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
-public __gc __interface ILongTransactionPrivilegeReader;
+interface class ILongTransactionPrivilegeReader;
 
 /// \ingroup (OSGeoFDOCommandsLongTransaction)
 /// \brief
@@ -35,7 +35,7 @@ public __gc __interface ILongTransactionPrivilegeReader;
 /// privileges of a long transaction established for each user. The ability to 
 /// successfully execute the command might be restricted by the datastore security 
 /// if the long transaction doesn’t belong to the user executing the command.
-private __gc class IGetLongTransactionPrivilegesImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+private ref class IGetLongTransactionPrivilegesImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
                                                       public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IGetLongTransactionPrivileges
 {
 public:
@@ -46,8 +46,6 @@ public:
     /// \return
     /// Returns the long transaction name
     /// 
-	__property System::String* get_LongTransactionName();
-
     /// \brief
     /// Sets the name of the long transaction for which privileges should be
     /// enumerated.
@@ -58,7 +56,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_LongTransactionName(System::String* value);
+    virtual property System::String^ LongTransactionName
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Executes the GetLongTransactionPrivileges command, returning a reference
@@ -67,9 +69,9 @@ public:
     /// \return
     /// Returns the long transaction privilege reader.
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionPrivilegeReader* Execute();
+	virtual NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionPrivilegeReader^ Execute();
 
-public private:
+internal:
 	IGetLongTransactionPrivilegesImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)
 	{
 

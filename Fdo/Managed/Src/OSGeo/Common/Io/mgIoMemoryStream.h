@@ -27,7 +27,7 @@ BEGIN_NAMESPACE_OSGEO_COMMON_IO
 /// \ingroup (OSGeoFDOCommonIo)
 /// \brief
 ///     IoMemoryStream provides streamed I/O to and from memory.
-public __sealed __gc class IoMemoryStream : public NAMESPACE_OSGEO_COMMON_IO::IoStream
+public ref class IoMemoryStream sealed : public NAMESPACE_OSGEO_COMMON_IO::IoStream
 {
 public:
     /// \brief
@@ -57,7 +57,7 @@ public:
 	IoMemoryStream(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 /// \cond DOXYGEN-IGNORE
-public private:
+internal:
 	inline FdoIoMemoryStream* GetImpObj();
 /// \endcond
 };

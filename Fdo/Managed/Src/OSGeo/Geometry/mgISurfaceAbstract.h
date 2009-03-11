@@ -27,7 +27,7 @@ BEGIN_NAMESPACE_OSGEO_GEOMETRY
 /// \interface OSGeo::FDO::Geometry::ISurfaceAbstract
 /// \brief
 /// The ISurfaceAbstract class is a surface (abstract) Geometry type.
-public __gc __interface ISurfaceAbstract : public NAMESPACE_OSGEO_GEOMETRY::IGeometry
+public interface class ISurfaceAbstract : public NAMESPACE_OSGEO_GEOMETRY::IGeometry
 {
 public:
 };

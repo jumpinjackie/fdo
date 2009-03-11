@@ -21,7 +21,7 @@
 #include "mgIGeometricAggregateAbstract.h"
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
-public __gc __interface IPolygon;
+interface class IPolygon;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
@@ -30,7 +30,7 @@ BEGIN_NAMESPACE_OSGEO_GEOMETRY
 /// \interface OSGeo::FDO::Geometry::IMultiPolygon
 /// \brief
 /// The IMultiPolygon class is a multi-polygon aggregate Geometry type.
-public __gc __interface IMultiPolygon : public NAMESPACE_OSGEO_GEOMETRY::IGeometricAggregateAbstract
+public interface class IMultiPolygon : public NAMESPACE_OSGEO_GEOMETRY::IGeometricAggregateAbstract
 {
 public:
 
@@ -43,7 +43,10 @@ public:
     /// \return
     /// Returns a polygon
     /// 
-	__property NAMESPACE_OSGEO_GEOMETRY::IPolygon* get_Item(System::Int32 index);
+    property NAMESPACE_OSGEO_GEOMETRY::IPolygon^ default[System::Int32]
+    {
+        NAMESPACE_OSGEO_GEOMETRY::IPolygon^ get(System::Int32 index);
+    }
 };
 
 END_NAMESPACE_OSGEO_GEOMETRY

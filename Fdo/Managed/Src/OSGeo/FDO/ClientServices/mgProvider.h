@@ -26,7 +26,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_CLIENTSERVICES
 /// \brief
 /// The Provides class provides information about a feature provider, including name, 
 /// description, library, and version information.
-public __sealed __gc class Provider : public NAMESPACE_OSGEO_RUNTIME::Disposable
+public ref class Provider sealed : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
     /// \brief
@@ -37,7 +37,10 @@ public:
     /// Returns the name of the Provider.
     /// Throws an instance of Exception if an error occurs.
     /// 
-	__property System::String* get_Name();
+    property System::String^ Name
+    {
+        System::String^ get();
+    }
 
     /// \brief
     /// Gets a user friendly display name of the feature provider.
@@ -46,7 +49,10 @@ public:
     /// Returns the display name of the Provider.
     /// Throws an instance of Exception if an error occurs.
     /// 
-	__property System::String* get_DisplayName();
+    property System::String^ DisplayName
+    {
+        System::String^ get();
+    }
     
     /// \brief
     /// Gets a brief description of the feature provider.
@@ -55,7 +61,10 @@ public:
     /// Returns the description of the Provider.
     /// Throws an instance of Exception if an error occurs.
     /// 
-	__property System::String* get_Description();
+    property System::String^ Description
+    {
+        System::String^ get();
+    }
     
     /// \brief
     /// Gets the version of the feature provider. The version number string has the form 
@@ -65,7 +74,10 @@ public:
     /// Returns the version of the Provider.
     /// Throws an instance of Exception if an error occurs.
     /// 
-	__property System::String* get_Version();
+    property System::String^ Version
+    {
+        System::String^ get();
+    }
 
     /// \brief
     /// Gets the version of the feature data objects specification the feature provider conforms to. 
@@ -75,7 +87,10 @@ public:
     /// Returns the Feature Data Objects version of the Provider.
     /// Throws an instance of Exception if an error occurs.
     /// 
-	__property System::String* get_FeatureDataObjectsVersion();
+    property System::String^ FeatureDataObjectsVersion
+    {
+        System::String^ get();
+    }
 
     /// \brief
     /// Gets the FULL library path + library name of the provider. 
@@ -84,7 +99,10 @@ public:
     /// Returns the library path of the Provider.
     /// Throws an instance of Exception if an error occurs.
     /// 
-	__property System::String* get_LibraryPath();
+    property System::String^ LibraryPath
+    {
+        System::String^ get();
+    }
 
     /// \brief
     /// Gets a boolean flag indicating if the provider is a managed or unmanaged provider. 
@@ -93,19 +111,17 @@ public:
     /// Returns the managed state flag as a bool.
     /// Throws an instance of Exception if an error occurs.
     /// 
-	__property System::Boolean get_IsManaged();
+    property System::Boolean IsManaged
+    {
+        System::Boolean get();
+    }
 
-public private:
+internal:
 	Provider(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)
 	{
 	}
 
 	inline FdoProvider* GetImpObj();
-
-/// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_CLIENTSERVICES

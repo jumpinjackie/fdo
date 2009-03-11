@@ -27,7 +27,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 /// The LongTransactionFreezeOperations enumeration defines the 
 /// list of available operations that can be performed by the FreezeLongTransaction command.
 [System::FlagsAttribute]
-public __value enum LongTransactionFreezeOperations
+public enum class LongTransactionFreezeOperations
 {
     /// Freeze the long transaction for exclusive update.
 	LongTransactionFreezeOperations_Freeze = FdoLongTransactionFreezeOperations_Freeze,

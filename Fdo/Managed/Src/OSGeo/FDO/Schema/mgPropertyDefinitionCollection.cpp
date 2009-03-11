@@ -28,127 +28,69 @@
 #include "FDO\Schema\mgPropertyDefinition.h"
 #include "FDO\Schema\mgSchemaElement.h"
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}
-
 FdoPropertyDefinitionCollection* NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::GetImpObj()
 {
 	return static_cast<FdoPropertyDefinitionCollection*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::PropertyDefinitionCollection(NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement* parent) : Disposable(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::PropertyDefinitionCollection(NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement^ parent) : NAMESPACE_OSGEO_COMMON::CollectionBase(System::IntPtr::Zero, false)
 {
-	if(parent == NULL)
+	if(parent == nullptr)
 	{
-		EXCEPTION_HANDLER(Attach(FdoPropertyDefinitionCollection::Create(NULL), true))
+		EXCEPTION_HANDLER(Attach(IntPtr(FdoPropertyDefinitionCollection::Create(nullptr)), true))
 	}
 	else
 	{
-		EXCEPTION_HANDLER(Attach(FdoPropertyDefinitionCollection::Create(parent->GetImpObj()), true))
+		EXCEPTION_HANDLER(Attach(IntPtr(FdoPropertyDefinitionCollection::Create(parent->GetImpObj())), true))
 	}
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::ICollection::CopyTo(System::Array* array, System::Int32 index) 
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::CopyTo(array<PropertyDefinition^>^ pArray, System::Int32 index)
 {
-	if (NULL == array)
-	{
-		throw new System::ArgumentNullException();
-	}
-
+	if (nullptr == pArray)
+		throw gcnew System::ArgumentNullException();
 	if (index < 0)
-	{
-		throw new System::ArgumentOutOfRangeException();
-	}
-	if (array->Rank != 1 || index >= array->Length || get_Count() + index > array->Length)
-	{
-		throw new System::ArgumentException();
-	}
+		throw gcnew System::ArgumentOutOfRangeException();
+	if (pArray->Rank != 1 || index >= pArray->Length || this->Count + index > pArray->Length)
+		throw gcnew System::ArgumentException();
 
-	for (System::Int32 i=0;i<this->Count;i++)
-	{
-		array->set_Item(index + i, get_Item(i));
-	}
+	for (System::Int32 i = 0; i < this->Count; i++)
+        pArray[index+i] = this->Item[i];
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::CopyTo(PropertyDefinition* array[], System::Int32 index)
+System::Object^ NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::IndexInternal::get(System::Int32 index)
 {
-	if (NULL == array)
-	{
-		throw new System::ArgumentNullException();
-	}
-
-	if (index < 0)
-	{
-		throw new System::ArgumentOutOfRangeException();
-	}
-	if (array->Rank != 1 || index >= array->Length || get_Count() + index > array->Length)
-	{
-		throw new System::ArgumentException();
-	}
-
-	for (System::Int32 i=0;i<this->Count;i++)
-	{
-		array[index+i] = __try_cast<PropertyDefinition*>(get_Item(i));
-	}
+	return this->Item[index];
 }
 
-System::Object* NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::ICollection::get_SyncRoot()
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::IndexInternal::set(System::Int32 index, System::Object^ value)
 {
-	return NULL;
+	this->Item[index] = dynamic_cast<PropertyDefinition^>(value);
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::ICollection::get_IsSynchronized()
+System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::Add(System::Object^ value)
 {
-	return false;
+	return Add(dynamic_cast<PropertyDefinition^>(value));
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::IList::get_IsFixedSize() 
-{ 
-	return false;
-}
-
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::IList::get_IsReadOnly() 
-{ 
-	return false;
-}
-
-System::Object* NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::IList::get_Item(System::Int32 index)
+System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::Contains(System::Object^ value)
 {
-	return get_RealTypeItem( index );
+	return Contains(dynamic_cast<PropertyDefinition^>(value));
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::IList::set_Item(System::Int32 index, System::Object* value)
+System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::IndexOf(System::Object^ value)
 {
-	set_RealTypeItem(index,  __try_cast<PropertyDefinition*>(value) );
+	return IndexOf(dynamic_cast<PropertyDefinition^>(value));
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::IList::Add(System::Object* value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::Insert(System::Int32 index, System::Object^ value)
 {
-	return Add(__try_cast<PropertyDefinition*>(value));
+	Insert(index, dynamic_cast<PropertyDefinition^>(value));
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::IList::Contains(System::Object* value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::Remove(System::Object^ value)
 {
-	return Contains(__try_cast<PropertyDefinition*>(value));
-}
-
-System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::IList::IndexOf(System::Object* value)
-{
-	return IndexOf(__try_cast<PropertyDefinition*>(value));
-}
-
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::IList::Insert(System::Int32 index, System::Object* value)
-{
-	Insert(index,__try_cast<PropertyDefinition*>(value));
-}
-
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::IList::Remove(System::Object* value)
-{
-	return Remove(__try_cast<PropertyDefinition*>(value));
+	return Remove(dynamic_cast<PropertyDefinition^>(value));
 }
 
 System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::RemoveAt(System::Int32 index)
@@ -156,69 +98,64 @@ System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::RemoveAt(
 	EXCEPTION_HANDLER(GetImpObj()->RemoveAt(index))
 }
 
-System::Collections::IEnumerator* NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::GetEnumerator()
+System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::Count::get(System::Void)
 {
-	return new Enumerator(this);
-}
-
-System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::get_Count(System::Void)
-{
-	FdoInt32 length;
+	System::Int32 length;
 
 	EXCEPTION_HANDLER(length = GetImpObj()->GetCount())
 
 	return length;
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::Add(PropertyDefinition* value)
+System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::Add(PropertyDefinition^ value)
 {
-	FdoInt32 index;
+	System::Int32 index;
 
-	EXCEPTION_HANDLER(index = GetImpObj()->Add((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(index = GetImpObj()->Add((value == nullptr ? nullptr : value->GetImpObj())))
 
 	return index;
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::IndexOf(PropertyDefinition* value)
+System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::IndexOf(PropertyDefinition^ value)
 {
-	FdoInt32 index;
+	System::Int32 index;
 
-	EXCEPTION_HANDLER(index = GetImpObj()->IndexOf((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(index = GetImpObj()->IndexOf((value == nullptr ? nullptr : value->GetImpObj())))
 
-		return index;
+	return index;
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::IndexOf(String* name)
+System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::IndexOf(String^ name)
 {
-	FdoInt32 index;
+	System::Int32 index;
 
 	EXCEPTION_HANDLER(index = GetImpObj()->IndexOf(StringToUni(name)))
 
-		return index;
+	return index;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::Insert(System::Int32 index, PropertyDefinition* value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::Insert(System::Int32 index, PropertyDefinition^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Insert(index, (value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->Insert(index, (value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::Remove(PropertyDefinition* value)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::Remove(PropertyDefinition^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Remove((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->Remove((value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::Contains(PropertyDefinition* value)
+System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::Contains(PropertyDefinition^ value)
 {
 	FdoBoolean exist;
 
-	EXCEPTION_HANDLER(exist = !!GetImpObj()->Contains(value == NULL ? NULL : value->GetImpObj()))
+	EXCEPTION_HANDLER(exist = !!GetImpObj()->Contains(value == nullptr ? nullptr : value->GetImpObj()))
 
 	return exist;
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::Contains(String* name)
+System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::Contains(String^ name)
 {
-	FdoBoolean exist;
+	System::Boolean exist;
 	
 	EXCEPTION_HANDLER(exist = !!GetImpObj()->Contains(StringToUni(name)))
 
@@ -230,63 +167,25 @@ System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::Clear()
 	EXCEPTION_HANDLER(GetImpObj()->Clear())
 }
 
-/*
-Implementation for PropertyDefinitionCollection::Enumerator
-*/ 
-System::Object* NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::Enumerator::get_Current()
+NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition^ NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::Item::get(System::String^ index)
 {
-	if (m_nIdx < 0 || m_nIdx >= m_pCol->Count)
-	{
-		throw new InvalidOperationException();
-	}
+	FdoPropertyDefinition* result;
 
-	FdoPropertyDefinition* upElement;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetItem(StringToUni(index)))
 
-	EXCEPTION_HANDLER(upElement = m_pCol->GetImpObj()->GetItem(m_nIdx))
-
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePropertyDefinition(upElement, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePropertyDefinition(IntPtr(result), true);
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::Enumerator::MoveNext()
+NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition^ NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::Item::get(System::Int32 index)
 {
-	++m_nIdx;
-	return m_nIdx < m_pCol->Count;
+	FdoPropertyDefinition* result;
+
+	EXCEPTION_HANDLER(result = GetImpObj()->GetItem(index))
+
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePropertyDefinition(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::Enumerator::Reset()
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::Item::set(System::Int32 index, NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition^ value)
 {
-	m_nIdx = -1;
-}
-
-NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition* NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::get_RealTypeItem(System::Int32 index)
-{
-	FdoPropertyDefinition* upElement;
-
-	EXCEPTION_HANDLER(upElement = GetImpObj()->GetItem(index))
-
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePropertyDefinition(upElement, true);
-}
-
-NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition* NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::get_RealTypeItem(System::String* index)
-{
-	FdoPropertyDefinition* upElement;
-
-	EXCEPTION_HANDLER(upElement = GetImpObj()->GetItem(StringToUni(index)))
-
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePropertyDefinition(upElement, true);
-}
-
-System::Void  NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::set_RealTypeItem(System::Int32 index, PropertyDefinition* value)
-{
-	EXCEPTION_HANDLER(GetImpObj()->SetItem(index, (value == NULL ? NULL : value->GetImpObj())))
-}
-
-NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition* NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::get_Item(System::Int32 index)
-{
-	return get_RealTypeItem(index);
-}
-
-System::Void  NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection::set_Item(System::Int32 index, PropertyDefinition* value)
-{
-	set_RealTypeItem(index, value);
+	EXCEPTION_HANDLER(GetImpObj()->SetItem(index, (value == nullptr ? nullptr : value->GetImpObj())))
 }

@@ -26,30 +26,30 @@ FdoIRollbackLongTransactionCheckpoint* NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACT
     return static_cast<FdoIRollbackLongTransactionCheckpoint*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::String* NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionCheckpointImp::get_LongTransactionName()
+System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionCheckpointImp::LongTransactionName::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetLongTransactionName())
 
-		return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionCheckpointImp::set_LongTransactionName(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionCheckpointImp::LongTransactionName::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetLongTransactionName(StringToUni(value)))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionCheckpointImp::get_CheckpointName()
+System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionCheckpointImp::CheckpointName::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetCheckpointName())
 
-		return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionCheckpointImp::set_CheckpointName(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionCheckpointImp::CheckpointName::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetCheckpointName(StringToUni(value)))
 }

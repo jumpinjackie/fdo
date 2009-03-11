@@ -25,7 +25,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 /// \brief
 /// The SchemaElementNameType enumeration lists all of the concrete schema name
 /// types defined to address schema limitation information.
-public __value enum SchemaElementNameType
+public enum class SchemaElementNameType
 {
     /// Represents the identifier to address a data store name.
     SchemaElementNameType_Datastore = FdoSchemaElementNameType_Datastore,

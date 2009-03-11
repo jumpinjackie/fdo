@@ -37,9 +37,9 @@ BEGIN_NAMESPACE_OSGEO_FDO_CLIENTSERVICES
 /// windows libraries supporting FDO providers will be expected to support the following well-known 
 /// unmanaged entry point function, which will create and return an unitialized connection object:
 ///
-///     FdoIConnection * CreateConnection();
+///     FdoIConnection^ CreateConnection();
 ///
-public __sealed __gc class ConnectionManager : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO::IConnectionManager
+public ref class ConnectionManager sealed : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO::IConnectionManager
 {
 public:
     /// \brief
@@ -52,7 +52,7 @@ public:
     /// \return
     /// Returns an instance of an IConnection object. Throws an instance of Exception if an error occurs.
     /// 
-	NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* CreateConnection(String* providerName);
+	virtual NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection^ CreateConnection(String^ providerName);
 
     /// \brief
     /// Frees a connection library reference given the provider name.
@@ -64,17 +64,12 @@ public:
     /// \return
     /// Returns nothing. Throws an instance of Exception if an error occurs.
     /// 
-	System::Void FreeLibrary(String* providerName);
+	virtual System::Void FreeLibrary(String^ providerName);
 
-public private:
+internal:
 	ConnectionManager(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoConnectionManager* GetImpObj();
-
-/// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_CLIENTSERVICES

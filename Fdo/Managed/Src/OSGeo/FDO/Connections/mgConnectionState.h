@@ -25,7 +25,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
 /// \ingroup (OSGeoFDOConnections)
 /// \brief
 /// The ConnectionState enumeration indicates the current state of the connection
-public __value enum ConnectionState
+public enum class ConnectionState
 {
     /// The connection is busy executing one or more commands. Executing another
     /// command while the connection is busy will result in an exception.

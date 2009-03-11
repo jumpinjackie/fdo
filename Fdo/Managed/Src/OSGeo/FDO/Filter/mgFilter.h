@@ -23,7 +23,7 @@
 class FdoFilter;
 
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
-public __gc __interface IFilterProcessor;;
+interface class IFilterProcessor;;
 
 /// \ingroup (OSGeoFDOFilter)
 /// \brief
@@ -31,7 +31,7 @@ public __gc __interface IFilterProcessor;;
 /// that can occur in a filter expression tree. The Filter class contains
 /// operations for converting between the text and expression tree representation
 /// of a filter.
-public __gc class Filter : public NAMESPACE_OSGEO_RUNTIME::Disposable
+public ref class Filter : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
     /// \brief
@@ -44,7 +44,7 @@ public:
     /// \return
     /// Returns root node of parse tree
     /// 
-	 static NAMESPACE_OSGEO_FDO_FILTER::Filter* Parse(System::String* filterText);
+	 static NAMESPACE_OSGEO_FDO_FILTER::Filter^ Parse(System::String^ filterText);
 
     /// \brief
     /// Abstract operation that takes an IFilterProcessor as an argument.
@@ -57,7 +57,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Process(NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessor* processor);
+	System::Void Process(NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessor^ processor);
 
     /// \brief
     /// Converts the filter expression to its well
@@ -66,7 +66,7 @@ public:
     /// \return
     /// Returns well defined text string
     /// 
-	System::String* ToString();
+	virtual System::String^ ToString() override;
 	
     /// \brief
     /// Static operation that combines two filters using the specified binary
@@ -82,7 +82,7 @@ public:
     /// \return
     /// Returns new filter node
     /// 
-	NAMESPACE_OSGEO_FDO_FILTER::Filter* Combine( NAMESPACE_OSGEO_FDO_FILTER::Filter* leftFilter, NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations operation, NAMESPACE_OSGEO_FDO_FILTER::Filter* rightFilter);
+	NAMESPACE_OSGEO_FDO_FILTER::Filter^ Combine( NAMESPACE_OSGEO_FDO_FILTER::Filter^ leftFilter, NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations operation, NAMESPACE_OSGEO_FDO_FILTER::Filter^ rightFilter);
 
     /// \brief
     /// Static operation that combines two filters using the specified binary
@@ -98,7 +98,7 @@ public:
     /// \return
     /// Returns new filter node
     /// 
-	NAMESPACE_OSGEO_FDO_FILTER::Filter* Combine(System::String* leftFilter, NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations operation, NAMESPACE_OSGEO_FDO_FILTER::Filter* rightFilter);
+	NAMESPACE_OSGEO_FDO_FILTER::Filter^ Combine(System::String^ leftFilter, NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations operation, NAMESPACE_OSGEO_FDO_FILTER::Filter^ rightFilter);
 
     /// \brief
     /// Static operation that combines two filters using the specified binary
@@ -114,7 +114,7 @@ public:
     /// \return
     /// Returns new filter node
     /// 
-	NAMESPACE_OSGEO_FDO_FILTER::Filter* Combine(NAMESPACE_OSGEO_FDO_FILTER::Filter* leftFilter, NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations operation, System::String* rightFilter);
+	NAMESPACE_OSGEO_FDO_FILTER::Filter^ Combine(NAMESPACE_OSGEO_FDO_FILTER::Filter^ leftFilter, NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations operation, System::String^ rightFilter);
 
     /// \brief
     /// Static operation that combines two filters using the specified binary
@@ -130,7 +130,7 @@ public:
     /// \return
     /// Returns new filter node
     /// 
-	NAMESPACE_OSGEO_FDO_FILTER::Filter* Combine(System::String* leftFilter, NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations operation, System::String* rightFilter);
+	NAMESPACE_OSGEO_FDO_FILTER::Filter^ Combine(System::String^ leftFilter, NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations operation, System::String^ rightFilter);
 
     /// \brief
     /// Constructs a Filter object based on an unmanaged instance of the object
@@ -144,13 +144,8 @@ public:
     /// 
 	Filter(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
+internal:
 	inline FdoFilter* GetImpObj();
-
-/// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_FILTER

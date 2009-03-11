@@ -25,15 +25,15 @@ class FdoICurveSegmentAbstract;
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
 
-public __gc __interface IEnvelope;
-public __gc __interface IDirectPosition;
+interface class IEnvelope;
+interface class IDirectPosition;
 
 /// \ingroup (OSGeoFDOGeometry)
 /// \brief
 /// The ICurveSegmentAbstractImp class is a concrete geometric Curve Segment object.  
 /// This class is used strictly as a component of curves and, thus, does not inherit from IGeometry.
-public __gc class ICurveSegmentAbstractImp
-	: public NAMESPACE_OSGEO_GEOMETRY::ICurveSegmentAbstract, public NAMESPACE_OSGEO_RUNTIME::Disposable
+public ref class ICurveSegmentAbstractImp :
+    public NAMESPACE_OSGEO_GEOMETRY::ICurveSegmentAbstract, public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
     /// \brief
@@ -48,11 +48,6 @@ public:
     /// 
 	ICurveSegmentAbstractImp(IntPtr unmanaged, Boolean autoDelete);
 	
-/// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-/// \endcond
-
 public:
     /// \brief
     /// Gets the envelope for the curve segment.
@@ -60,7 +55,10 @@ public:
     /// \return
     /// Returns the envelope
     /// 
-	__property NAMESPACE_OSGEO_GEOMETRY::IEnvelope *get_Envelope();
+    virtual property NAMESPACE_OSGEO_GEOMETRY::IEnvelope^ Envelope
+    {
+        NAMESPACE_OSGEO_GEOMETRY::IEnvelope^ get();
+    }
 	
     /// \brief
     /// Gets the starting position of this curve segment.
@@ -68,7 +66,10 @@ public:
     /// \return
     /// Returns the starting position
     /// 
-	__property NAMESPACE_OSGEO_GEOMETRY::IDirectPosition *get_StartPosition();
+    virtual property NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ StartPosition
+    {
+        NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ get();
+    }
 
     /// \brief
     /// Gets the ending position of this curve segment.
@@ -76,7 +77,10 @@ public:
     /// \return
     /// Returns the ending position
     /// 
-	__property NAMESPACE_OSGEO_GEOMETRY::IDirectPosition *get_EndPosition();
+    virtual property NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ EndPosition
+    {
+        NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ get();
+    }
 	
     /// \brief
     /// Gets the closure state for the curve segment.
@@ -96,7 +100,10 @@ public:
     /// \return
     /// Returns 'true' if the curve is closed, and false otherwise
     /// 
-	__property System::Boolean get_IsClosed();
+    virtual property System::Boolean IsClosed
+    {
+        System::Boolean get();
+    }
 	
     /// \brief
     /// Gets the type of the most-derived interface 
@@ -105,7 +112,10 @@ public:
     /// \return
     /// Returns the derived type
     /// 
-	__property NAMESPACE_OSGEO_COMMON::GeometryComponentType get_DerivedType();
+    virtual property NAMESPACE_OSGEO_COMMON::GeometryComponentType DerivedType
+    {
+        NAMESPACE_OSGEO_COMMON::GeometryComponentType get();
+    }
 
     /// \brief
     /// Gets the dimensionality of ordinates in this object.
@@ -117,9 +127,12 @@ public:
     /// \return
     /// Returns the ordinate dimensionality
     /// 
-	__property System::Int32 get_Dimensionality();
+    virtual property System::Int32 Dimensionality
+    {
+        System::Int32 get();
+    }
 
-public private:
+internal:
 	FdoICurveSegmentAbstract *GetImpObj();
 };
 

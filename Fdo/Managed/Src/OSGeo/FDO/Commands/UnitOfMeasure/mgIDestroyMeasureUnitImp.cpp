@@ -27,16 +27,16 @@ FdoIDestroyMeasureUnit* NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IDestroyMeas
     return static_cast<FdoIDestroyMeasureUnit*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::String* NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IDestroyMeasureUnitImp::get_Abbreviation()
+System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IDestroyMeasureUnitImp::Abbreviation::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetAbbreviation())
 
-		return result;
+		return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IDestroyMeasureUnitImp::set_Abbreviation(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IDestroyMeasureUnitImp::Abbreviation::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetAbbreviation(StringToUni(value)))
 }

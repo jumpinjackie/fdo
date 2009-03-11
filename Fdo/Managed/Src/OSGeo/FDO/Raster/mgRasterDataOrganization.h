@@ -34,7 +34,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_RASTER
 /// followed by the same number of green bytes, followed by the same
 /// number of blue bytes. This organization dependant storage should be
 /// considered when 'skipping' to the middle of an image.
-public __value enum RasterDataOrganization
+public enum class RasterDataOrganization
 {
     /// Data is interleaved by pixel, with all data for a pixel contiguous in memory.
 	RasterDataOrganization_Pixel = FdoRasterDataOrganization_Pixel,

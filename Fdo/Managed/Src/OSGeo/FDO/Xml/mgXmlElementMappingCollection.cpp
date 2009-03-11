@@ -26,16 +26,9 @@
 #include "FDO\Xml\mgXmlElementMapping.h"
 #include "FDO\Commands\Schema\mgPhysicalElementMapping.h"
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::ReleaseUnmanagedObject()
+NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::XmlElementMappingCollection(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping^ parent) : NAMESPACE_OSGEO_COMMON::CollectionBase(System::IntPtr::Zero, false)
 {
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}
-
-NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::XmlElementMappingCollection(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping* parent) : Disposable(System::IntPtr::Zero, false)
-{
-	EXCEPTION_HANDLER(Attach(FdoXmlElementMappingCollection::Create(parent->GetImpObj()), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoXmlElementMappingCollection::Create(parent->GetImpObj())), true))
 }
 
 FdoXmlElementMappingCollection* NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::GetImpObj()
@@ -43,103 +36,52 @@ FdoXmlElementMappingCollection* NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollec
     return static_cast<FdoXmlElementMappingCollection*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::ICollection::CopyTo(System::Array* array, System::Int32 index) 
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::CopyTo(array<NAMESPACE_OSGEO_FDO_XML::XmlElementMapping^>^ pArray, System::Int32 index)
 {
-	if (NULL == array)
-	{
-		throw new System::ArgumentNullException();
-	}
-
+	if (nullptr == pArray)
+		throw gcnew System::ArgumentNullException();
 	if (index < 0)
-	{
-		throw new System::ArgumentOutOfRangeException();
-	}
-	if (array->Rank != 1 || index >= array->Length || get_Count() + index > array->Length)
-	{
-		throw new System::ArgumentException();
-	}
+		throw gcnew System::ArgumentOutOfRangeException();
+	if (pArray->Rank != 1 || index >= pArray->Length || this->Count + index > pArray->Length)
+		throw gcnew System::ArgumentException();
 
-	for (System::Int32 i=0;i<this->Count;i++)
-	{
-		array->set_Item(index + i, get_Item(i));
-	}
+	for (System::Int32 i = 0; i < this->Count; i++)
+        pArray[index+i] = this->Item[i];
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::CopyTo(NAMESPACE_OSGEO_FDO_XML::XmlElementMapping* array[], System::Int32 index)
+System::Object^ NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::IndexInternal::get(System::Int32 index)
 {
-	if (NULL == array)
-	{
-		throw new System::ArgumentNullException();
-	}
-
-	if (index < 0)
-	{
-		throw new System::ArgumentOutOfRangeException();
-	}
-	if (array->Rank != 1 || index >= array->Length || get_Count() + index > array->Length)
-	{
-		throw new System::ArgumentException();
-	}
-
-	for (System::Int32 i=0;i<this->Count;i++)
-	{
-		array[index+i] = __try_cast<NAMESPACE_OSGEO_FDO_XML::XmlElementMapping*>(get_Item(i));
-	}
+	return this->Item[index];
 }
 
-System::Object* NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::ICollection::get_SyncRoot()
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::IndexInternal::set(System::Int32 index, System::Object^ value)
 {
-	return NULL;
+	this->Item[index] = dynamic_cast<NAMESPACE_OSGEO_FDO_XML::XmlElementMapping^>(value);
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::ICollection::get_IsSynchronized()
+System::Int32 NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::Add(System::Object^ value)
 {
-	return false;
+	return Add(dynamic_cast<NAMESPACE_OSGEO_FDO_XML::XmlElementMapping^>(value));
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::IList::get_IsFixedSize() 
-{ 
-	return false;
-}
-
-System::Boolean NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::IList::get_IsReadOnly() 
-{ 
-	return false;
-}
-
-System::Object* NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::IList::get_Item(System::Int32 index)
+System::Boolean NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::Contains(System::Object^ value)
 {
-	return get_RealTypeItem( index );
+	return Contains(dynamic_cast<NAMESPACE_OSGEO_FDO_XML::XmlElementMapping^>(value));
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::IList::set_Item(System::Int32 index, System::Object* value)
+System::Int32 NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::IndexOf(System::Object^ value)
 {
-	set_RealTypeItem(index,  __try_cast<NAMESPACE_OSGEO_FDO_XML::XmlElementMapping*>(value) );
+	return IndexOf(dynamic_cast<NAMESPACE_OSGEO_FDO_XML::XmlElementMapping^>(value));
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::IList::Add(System::Object* value)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::Insert(System::Int32 index, System::Object^ value)
 {
-	return Add(__try_cast<NAMESPACE_OSGEO_FDO_XML::XmlElementMapping*>(value));
+	Insert(index, dynamic_cast<NAMESPACE_OSGEO_FDO_XML::XmlElementMapping^>(value));
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::IList::Contains(System::Object* value)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::Remove(System::Object^ value)
 {
-	return Contains(__try_cast<NAMESPACE_OSGEO_FDO_XML::XmlElementMapping*>(value));
-}
-
-System::Int32 NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::IList::IndexOf(System::Object* value)
-{
-	return IndexOf(__try_cast<NAMESPACE_OSGEO_FDO_XML::XmlElementMapping*>(value));
-}
-
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::IList::Insert(System::Int32 index, System::Object* value)
-{
-	Insert(index,__try_cast<NAMESPACE_OSGEO_FDO_XML::XmlElementMapping*>(value));
-}
-
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::IList::Remove(System::Object* value)
-{
-	return Remove(__try_cast<NAMESPACE_OSGEO_FDO_XML::XmlElementMapping*>(value));
+	return Remove(dynamic_cast<NAMESPACE_OSGEO_FDO_XML::XmlElementMapping^>(value));
 }
 
 System::Void NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::RemoveAt(System::Int32 index)
@@ -147,53 +89,48 @@ System::Void NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::RemoveAt(Syst
 	EXCEPTION_HANDLER(GetImpObj()->RemoveAt(index))
 }
 
-System::Collections::IEnumerator* NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::GetEnumerator()
+System::Int32 NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::Count::get(System::Void)
 {
-	return new Enumerator(this);
-}
-
-System::Int32 NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::get_Count(System::Void)
-{
-	FdoInt32 length;
+	System::Int32 length;
 
 	EXCEPTION_HANDLER(length = GetImpObj()->GetCount())
 
-		return length;
+	return length;
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::Add(NAMESPACE_OSGEO_FDO_XML::XmlElementMapping* value)
+System::Int32 NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::Add(NAMESPACE_OSGEO_FDO_XML::XmlElementMapping^ value)
 {
-	FdoInt32 index;
+	System::Int32 index;
 
-	EXCEPTION_HANDLER(index = GetImpObj()->Add((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(index = GetImpObj()->Add((value == nullptr ? nullptr : value->GetImpObj())))
 
-		return index;
+	return index;
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::IndexOf(NAMESPACE_OSGEO_FDO_XML::XmlElementMapping* value)
+System::Int32 NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::IndexOf(NAMESPACE_OSGEO_FDO_XML::XmlElementMapping^ value)
 {
-	FdoInt32 index;
+	System::Int32 index;
 
-	EXCEPTION_HANDLER(index = GetImpObj()->IndexOf((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(index = GetImpObj()->IndexOf((value == nullptr ? nullptr : value->GetImpObj())))
 
-		return index;
+	return index;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::Insert(System::Int32 index, NAMESPACE_OSGEO_FDO_XML::XmlElementMapping* value)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::Insert(System::Int32 index, NAMESPACE_OSGEO_FDO_XML::XmlElementMapping^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Insert(index, (value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->Insert(index, (value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::Remove(NAMESPACE_OSGEO_FDO_XML::XmlElementMapping* value)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::Remove(NAMESPACE_OSGEO_FDO_XML::XmlElementMapping^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Remove((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->Remove((value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::Contains(NAMESPACE_OSGEO_FDO_XML::XmlElementMapping* value)
+System::Boolean NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::Contains(NAMESPACE_OSGEO_FDO_XML::XmlElementMapping^ value)
 {
-	FdoBoolean exist;
+	System::Boolean exist;
 
-	EXCEPTION_HANDLER(exist = !!GetImpObj()->Contains(value == NULL ? NULL : value->GetImpObj()))
+	EXCEPTION_HANDLER(exist = !!GetImpObj()->Contains(value == nullptr ? nullptr : value->GetImpObj()))
 
 	return exist;
 }
@@ -203,63 +140,25 @@ System::Void NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::Clear()
 	EXCEPTION_HANDLER(GetImpObj()->Clear())
 }
 
-/*
-Implementation for XmlElementMappingCollection::Enumerator
-*/ 
-System::Object* NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::Enumerator::get_Current()
+NAMESPACE_OSGEO_FDO_XML::XmlElementMapping^ NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::Item::get(System::String^ index)
 {
-	if (m_nIdx < 0 || m_nIdx >= m_pCol->Count)
-	{
-		throw new InvalidOperationException();
-	}
+	FdoXmlElementMapping* result;
 
-	FdoXmlElementMapping* upElement;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetItem(StringToUni(index)))
 
-	EXCEPTION_HANDLER(upElement = m_pCol->GetImpObj()->GetItem(m_nIdx))
-
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlElementMapping(upElement, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlElementMapping(IntPtr(result), true);
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::Enumerator::MoveNext()
+NAMESPACE_OSGEO_FDO_XML::XmlElementMapping^ NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::Item::get(System::Int32 index)
 {
-	++m_nIdx;
-	return m_nIdx < m_pCol->Count;
+	FdoXmlElementMapping* result;
+
+	EXCEPTION_HANDLER(result = GetImpObj()->GetItem(index))
+
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlElementMapping(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::Enumerator::Reset()
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::Item::set(System::Int32 index, NAMESPACE_OSGEO_FDO_XML::XmlElementMapping^ value)
 {
-	m_nIdx = -1;
-}
-
-NAMESPACE_OSGEO_FDO_XML::XmlElementMapping* NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::get_RealTypeItem(System::Int32 index)
-{
-	FdoXmlElementMapping* upElement;
-
-	EXCEPTION_HANDLER(upElement = GetImpObj()->GetItem(index))
-
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlElementMapping(upElement, true);
-}
-
-NAMESPACE_OSGEO_FDO_XML::XmlElementMapping* NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::get_RealTypeItem(System::String* index)
-{
-	FdoXmlElementMapping* upElement;
-
-	EXCEPTION_HANDLER(upElement = GetImpObj()->GetItem(StringToUni(index)))
-
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlElementMapping(upElement, true);
-}
-
-System::Void  NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::set_RealTypeItem(System::Int32 index, NAMESPACE_OSGEO_FDO_XML::XmlElementMapping* value)
-{
-	EXCEPTION_HANDLER(GetImpObj()->SetItem(index, (value == NULL ? NULL : value->GetImpObj())))
-}
-
-NAMESPACE_OSGEO_FDO_XML::XmlElementMapping* NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::get_Item(System::Int32 index)
-{
-	return get_RealTypeItem(index);
-}
-
-System::Void  NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::set_Item(System::Int32 index, NAMESPACE_OSGEO_FDO_XML::XmlElementMapping* value)
-{
-	set_RealTypeItem(index, value);
+	EXCEPTION_HANDLER(GetImpObj()->SetItem(index, (value == nullptr ? nullptr : value->GetImpObj())))
 }

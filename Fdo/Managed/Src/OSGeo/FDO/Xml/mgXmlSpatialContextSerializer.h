@@ -19,19 +19,19 @@
 #pragma  once
 
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
-public __gc __interface IConnection;
+interface class IConnection;
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS
 
 BEGIN_NAMESPACE_OSGEO_FDO_XML
-public __gc class XmlSpatialContextReader;
-public __gc class XmlSpatialContextWriter;
-public __gc class XmlSpatialContextFlags;
+ref class XmlSpatialContextReader;
+ref class XmlSpatialContextWriter;
+ref class XmlSpatialContextFlags;
 
 /// \ingroup (OSGeoFDOXml)
 /// \brief
 /// This static class provides the ability to serialize and deserialize spatial contexts
 /// to and from GML.
-public __gc __sealed class XmlSpatialContextSerializer
+public ref class XmlSpatialContextSerializer sealed
 {
 public:
     /// \brief
@@ -42,7 +42,7 @@ public:
     /// \param reader 
     /// Input XML document reader.
     /// 
-	static System::Void XmlDeserialize(NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* connection, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextReader* reader);
+	static System::Void XmlDeserialize(NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection^ connection, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextReader^ reader);
 
     /// \brief
     /// Reads all Spatial Contexts from an XML document to an FDO connection.
@@ -53,10 +53,10 @@ public:
     /// Input XML document reader.
     /// \param flags 
     /// Input options for controlling the 
-    /// deserializing of the Spatial Contexts. If NULL then the 
+    /// deserializing of the Spatial Contexts. If nullptr then the 
     /// default flags are used.
     /// 
-	static System::Void XmlDeserialize(NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* connection, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextReader* reader, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags* flags);
+	static System::Void XmlDeserialize(NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection^ connection, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextReader^ reader, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags^ flags);
 
     /// \brief
     /// writes all Spatial Contexts from the FDO connection to an XML document.
@@ -66,7 +66,7 @@ public:
     /// \param writer 
     /// Input XML document writer.
     /// 
-	static System::Void XmlSerialize(NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* connection, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter* writer);
+	static System::Void XmlSerialize(NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection^ connection, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter^ writer);
 
     /// \brief
     /// writes all Spatial Contexts from the FDO connection to an XML document.
@@ -77,10 +77,10 @@ public:
     /// Input XML document writer.
     /// \param flags 
     /// Input options for controlling the 
-    /// serializing of the Spatial Contexts. If NULL then the 
+    /// serializing of the Spatial Contexts. If nullptr then the 
     /// default flags are used.
     /// 
-	static System::Void XmlSerialize(NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* connection, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter* writer, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags* flags);
+	static System::Void XmlSerialize(NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection^ connection, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextWriter^ writer, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags^ flags);
 
 private:
 	XmlSpatialContextSerializer(){}

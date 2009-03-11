@@ -27,16 +27,16 @@ FdoIActivateSpatialContext* NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IActiva
     return static_cast<FdoIActivateSpatialContext*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::String* NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IActivateSpatialContextImp::get_Name()
+System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IActivateSpatialContextImp::Name::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetName())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IActivateSpatialContextImp::set_Name(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IActivateSpatialContextImp::Name::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetName(StringToUni(value)))
 }

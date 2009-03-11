@@ -25,14 +25,14 @@
 #include "Common\Xml\mgXmlCopyHandler.h"
 #include "Common\Xml\mgXmlAttributeCollection.h"
 
-NAMESPACE_OSGEO_COMMON_XML::XmlCopyHandler::XmlCopyHandler( XmlWriter* writer ) : XmlSaxHandler(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_COMMON_XML::XmlCopyHandler::XmlCopyHandler( XmlWriter^ writer ) : XmlSaxHandler(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoXmlCopyHandler::Create(writer->GetImpObj()), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoXmlCopyHandler::Create(writer->GetImpObj())), true))
 }
 
-NAMESPACE_OSGEO_COMMON_XML::XmlCopyHandler::XmlCopyHandler(XmlWriter* writer, String* resourceLocation, String* name,  String* qualifiedName,  XmlAttributeCollection* attributes, DictionaryElementCollection* namespaces) : XmlSaxHandler(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_COMMON_XML::XmlCopyHandler::XmlCopyHandler(XmlWriter^ writer, String^ resourceLocation, String^ name,  String^ qualifiedName,  XmlAttributeCollection^ attributes, DictionaryElementCollection^ namespaces) : XmlSaxHandler(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoXmlCopyHandler::Create(writer->GetImpObj(), StringToUni(resourceLocation), StringToUni(name), StringToUni(qualifiedName), attributes->GetImpObj(), namespaces->GetImpObj()), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoXmlCopyHandler::Create(writer->GetImpObj(), StringToUni(resourceLocation), StringToUni(name), StringToUni(qualifiedName), attributes->GetImpObj(), namespaces->GetImpObj())), true))
 }
 
 NAMESPACE_OSGEO_COMMON_XML::XmlCopyHandler::XmlCopyHandler(IntPtr unmanaged, Boolean autoDelete) : XmlSaxHandler(unmanaged, autoDelete)
@@ -42,5 +42,5 @@ NAMESPACE_OSGEO_COMMON_XML::XmlCopyHandler::XmlCopyHandler(IntPtr unmanaged, Boo
 
 FdoXmlCopyHandler* NAMESPACE_OSGEO_COMMON_XML::XmlCopyHandler::GetImpObj()
 {
-	return static_cast<FdoXmlCopyHandler*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoXmlCopyHandler*>(UnmanagedObject.ToPointer());
 }

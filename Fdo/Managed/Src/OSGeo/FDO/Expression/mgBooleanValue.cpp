@@ -34,12 +34,12 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue::BooleanValue(System::IntPtr unmana
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue::BooleanValue() : DataValue(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoBooleanValue::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoBooleanValue::Create()), true))
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue::BooleanValue(System::Boolean value) : DataValue(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoBooleanValue::Create(value), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoBooleanValue::Create(value)), true))
 }
 
 FdoBooleanValue* NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue::GetImpObj()
@@ -47,38 +47,38 @@ FdoBooleanValue* NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue::GetImpObj()
 	return static_cast<FdoBooleanValue*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue::op_Explicit( NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue* value )
+NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue::operator System::Boolean ( NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue^ value )
 {
 	return (value->GetImpObj())->operator FdoBoolean();
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::DataType NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue::get_DataType()
+NAMESPACE_OSGEO_FDO_SCHEMA::DataType NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue::DataType::get()
 {
 	FdoDataType unobj;
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetDataType())
 	return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::DataType>(unobj);
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue::get_Boolean()
+System::Boolean NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue::Boolean::get()
 {
-	FdoBoolean b;
+	System::Boolean b;
 	EXCEPTION_HANDLER(b = !!GetImpObj()->GetBoolean())
 	return b;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue::set_Boolean(System::Boolean value)
+System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue::Boolean::set(System::Boolean value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetBoolean(value))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue::Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor* processor)
+System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue::Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor^ processor)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Process((static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessorImp*>(processor))->GetImpObj()))
+	EXCEPTION_HANDLER(GetImpObj()->Process((static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessorImp^>(processor))->GetImpObj()))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue::ToString()
+System::String^ NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue::ToString()
 {
 	FdoString* unstr;
 	EXCEPTION_HANDLER(unstr = GetImpObj()->ToString())
-	return unstr;
+	return CHECK_STRING(unstr);
 }

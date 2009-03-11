@@ -38,7 +38,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_RASTER
 /// allocated to each band, so for example RGBT data with eight bits for red,
 /// would also have eight bits for each of the three other bands totaling
 /// thirty-two bits (BitsPerPixel=32).
-public __value enum RasterDataModelType
+public enum class RasterDataModelType
 {
     /// Data is organized in an unknown or provider specific manner.
 	RasterDataModelType_Unknown = FdoRasterDataModelType_Unknown,

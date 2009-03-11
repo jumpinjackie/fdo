@@ -29,7 +29,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 /// the GetLongTransactionPrivileges command. The initial position of
 /// the ILongTransactionPrivilegeReader is prior to the first item.
 /// Thus, you must call ReadNext to begin accessing any data.
-public __gc __interface ILongTransactionPrivilegeReader : public System::IDisposable
+public interface class ILongTransactionPrivilegeReader : public System::IDisposable
 {
 public:
     /// \brief
@@ -38,7 +38,7 @@ public:
     /// \return
     /// Returns the user name
     /// 
-	System::String* GetUsername();
+	System::String^ GetUsername();
 
     /// \brief
     /// Gets the privileges granted to the user currently being read. The

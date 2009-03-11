@@ -30,7 +30,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 /// The DataPropertyDefinition class derives PropertyDefinition and represents simple
 /// values or collections of simple values. DataPropertyDefinitions can take on
 /// any of the data types listed in DataType enumeration.
-public __gc class DataPropertyDefinition : public NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition
+public ref class DataPropertyDefinition : public NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition
 {
 public:
     /// \brief
@@ -46,7 +46,7 @@ public:
     /// \param description 
     /// Input description
     /// 
-	DataPropertyDefinition(System::String* name, System::String* description);
+	DataPropertyDefinition(System::String^ name, System::String^ description);
 
     /// \brief
     /// Constructs an instance of an DataPropertyDefinition using the specified arguments
@@ -58,13 +58,16 @@ public:
     /// \param system 
     /// Input true if this is a system generated property, otherwise falseds.
     /// 
-	DataPropertyDefinition(System::String* name, System::String* description, System::Boolean system);
+	DataPropertyDefinition(System::String^ name, System::String^ description, System::Boolean system);
 
     /// \brief
     /// Gets the concrete property type.
     /// \return
     /// Returns the concrete property type.
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType get_PropertyType();
+    property NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType PropertyType
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType get();
+    }
 
     /// \brief
     /// Gets the DataType of this property.
@@ -72,8 +75,6 @@ public:
     /// \return
     /// Returns the DataType of this property
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
-
     /// \brief
     /// Sets the DataType of this property.
     /// 
@@ -83,7 +84,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_DataType(NAMESPACE_OSGEO_FDO_SCHEMA::DataType value);
+    property NAMESPACE_OSGEO_FDO_SCHEMA::DataType DataType
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::DataType get();
+        System::Void set(NAMESPACE_OSGEO_FDO_SCHEMA::DataType value);
+    }
 
     /// \brief
     /// Returns a Boolean value that indicates if this property is read-only.
@@ -91,8 +96,6 @@ public:
     /// \return
     /// Returns a Boolean value
     /// 
-	__property System::Boolean get_ReadOnly();
-
     /// \brief
     /// Sets a Boolean value that indicates if this property is read-only.
     /// 
@@ -102,7 +105,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_ReadOnly(System::Boolean value);
+    property System::Boolean ReadOnly
+    {
+        System::Boolean get();
+        System::Void set(System::Boolean value);
+    }
 
     /// \brief
     /// Gets the length of a String, BLOB, or CLOB data property. This value
@@ -111,8 +118,6 @@ public:
     /// \return
     /// Returns the length of a String, BLOB, or CLOB data property
     /// 
-	__property System::Int32 get_Length();
-
     /// \brief
     /// Sets the length of a String, BLOB, or CLOB data property. This value is
     /// ignored for all other DataType values.
@@ -123,7 +128,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Length(System::Int32 value);
+    property System::Int32 Length
+    {
+        System::Int32 get();
+        System::Void set(System::Int32 value);
+    }
 
     /// \brief
     /// Gets the precision (total number of digits) of a decimal data property.
@@ -132,8 +141,6 @@ public:
     /// \return
     /// Returns the precision
     /// 
-	__property System::Int32 get_Precision();
-
     /// \brief
     /// Sets the precision (total number of digits) of a decimal data property.
     /// This value is ignored for all other DataType values.
@@ -144,7 +151,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Precision(System::Int32 value);
+    property System::Int32 Precision
+    {
+        System::Int32 get();
+        System::Void set(System::Int32 value);
+    }
 
     /// \brief
     /// Gets the scale (number of digits to the right of the decimal point) of a
@@ -153,8 +164,6 @@ public:
     /// \return
     /// Returns the scale
     /// 
-	__property System::Int32 get_Scale();
-
     /// \brief
     /// Sets the scale (number of digits to the right of the decimal point) of a
     /// decimal data property. This value is ignored for all other DataType values.
@@ -165,7 +174,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Scale(System::Int32 value);
+    property System::Int32 Scale
+    {
+        System::Int32 get();
+        System::Void set(System::Int32 value);
+    }
 
     /// \brief
     /// Returns a Boolean value that indicates if this property's value can be
@@ -174,8 +187,6 @@ public:
     /// \return
     /// Returns a Boolean value
     /// 
-	__property System::Boolean get_Nullable();
-
     /// \brief
     /// Sets a Boolean value that indicates if this property's value can be
     /// null.
@@ -187,7 +198,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Nullable(System::Boolean value);
+    property System::Boolean Nullable
+    {
+        System::Boolean get();
+        System::Void set(System::Boolean value);
+    }
 
     /// \brief
     /// Gets the default value for this property. The default value is used when
@@ -197,8 +212,6 @@ public:
     /// \return
     /// Returns the default value
     /// 
-	__property System::String* get_DefaultValue();
-
     /// \brief
     /// Sets the default value for this property. The default value is used when
     /// an instance of the containing class is created without specifying a value
@@ -215,7 +228,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_DefaultValue(System::String* value);
+    property System::String^ DefaultValue
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Sets a Boolean value that indicates if this is an autogenerated property.
@@ -232,24 +249,24 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_IsAutoGenerated(System::Boolean value);
-
     /// \brief
     /// Returns a Boolean value that indicates if this is an autogenerated property.
     /// 
     /// \return
     /// Returns a Boolean value.
     /// 
-	__property System::Boolean get_IsAutoGenerated();
+    property System::Boolean IsAutoGenerated
+    {
+        System::Boolean get();
+        System::Void set(System::Boolean value);
+    }
 
     /// \brief
     /// Returns the value constraint of this data property.
     /// 
     /// \return
-    /// Returns PropertyValueConstraint or NULL if not set.
+    /// Returns PropertyValueConstraint or nullptr if not set.
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraint* get_ValueConstraint();
-
     /// \brief
     /// Sets the value constraint of this data property.
     /// 
@@ -259,7 +276,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_ValueConstraint(NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraint* value );
+    property NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraint^ ValueConstraint
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraint^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraint^ value);
+    }
 
     /// \brief
     /// Constructs a DataPropertyDefinition object based on an unmanaged instance of the object
@@ -276,7 +297,7 @@ public:
 
 	}
 
-public private:
+internal:
 	inline FdoDataPropertyDefinition* GetImpObj();
 };
 

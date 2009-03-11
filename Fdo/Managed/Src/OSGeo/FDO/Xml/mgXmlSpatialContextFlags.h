@@ -27,7 +27,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_XML
 /// \ingroup (OSGeoFDOXml)
 /// \brief
 /// FdoXmlSpatialContextFlags extends FdoXmlFlags to specify flags specific to Spatial Contexts.
-public __gc class XmlSpatialContextFlags : public NAMESPACE_OSGEO_FDO_XML::XmlFlags
+public ref class XmlSpatialContextFlags : public NAMESPACE_OSGEO_FDO_XML::XmlFlags
 {
 public:
     /// \brief
@@ -45,7 +45,7 @@ public:
     /// Just add new spatial contexts. 
     /// Silently skip spatial contexts already in the DataStore.
     /// 
-	__value enum ConflictOption 
+	enum class ConflictOption 
 	{
 		ConflictOption_Add = FdoXmlSpatialContextFlags::ConflictOption_Add,
 		ConflictOption_Update = FdoXmlSpatialContextFlags::ConflictOption_Update,
@@ -64,7 +64,7 @@ public:
     /// Base URL for generating well-known references to 
     /// GML coordinate systems and transformations
     /// 
-	XmlSpatialContextFlags(System::String* location);
+	XmlSpatialContextFlags(System::String^ location);
 
     /// \brief
     /// Constructs an XmlSpatialContextFlags object.
@@ -76,7 +76,7 @@ public:
     /// Input The error level for reading spatial contexts. Controls how 
     /// strict the error reporting is.
     /// 
-	XmlSpatialContextFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel);
+	XmlSpatialContextFlags(System::String^ location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel);
 
     /// \brief
     /// Constructs an XmlSpatialContextFlags object.
@@ -91,7 +91,7 @@ public:
     /// Input true: apply name adjustment to all elements. 
     /// false: apply name adjustment only to elements with fdo:nameAdjust="true"
     /// 
-	XmlSpatialContextFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust);
+	XmlSpatialContextFlags(System::String^ location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust);
 
     /// \brief
     /// Constructs an XmlSpatialContextFlags object.
@@ -109,7 +109,7 @@ public:
     /// Input option for Deserializing Spatial Contexts. 
     /// Specified how Spatial Contexts, already in  connection, are handled.
     /// 
-	XmlSpatialContextFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::ConflictOption conflictOption);
+	XmlSpatialContextFlags(System::String^ location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::ConflictOption conflictOption);
 
     /// \brief
     /// Constructs an XmlSpatialContextFlags object.
@@ -131,7 +131,7 @@ public:
     /// all contexts including the default.
     /// false: skip the default Spatial Context.
     /// 
-	XmlSpatialContextFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::ConflictOption conflictOption, System::Boolean includeDefault);
+	XmlSpatialContextFlags(System::String^ location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::ConflictOption conflictOption, System::Boolean includeDefault);
 
     /// \brief
     /// Sets the current option for handling Spatial Contexts
@@ -160,15 +160,17 @@ public:
     /// all contexts including the default.
     /// false: skip the default Spatial Context.
     /// 
-	__property System::Void set_IncludeDefault(System::Boolean includeDefault);
-
     /// \brief
     /// Gets the default Spatial Context inclusion flag.
     /// 
     /// \return
     /// Returns the default Spatial Context inclusion flag.
     /// 
-	__property System::Boolean get_IncludeDefault();
+    property System::Boolean IncludeDefault
+    {
+        System::Boolean get();
+        System::Void set(System::Boolean value);
+    }
 
     /// \brief
     /// Constructs a XmlSpatialContextFlags object based on an unmanaged instance of the object
@@ -186,6 +188,7 @@ public:
 	}
 
 /// \cond DOXYGEN-IGNORE
+internal:
 	inline FdoXmlSpatialContextFlags* GetImpObj()
 	{
 		return static_cast<FdoXmlSpatialContextFlags*>(__super::UnmanagedObject.ToPointer());

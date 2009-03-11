@@ -21,7 +21,7 @@
 #include "FDO\Commands\mgICommand.h"
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
-public __gc class PhysicalSchemaMappingCollection;
+ref class PhysicalSchemaMappingCollection;
 
 /// \ingroup (OSGeoFDOCommandsSchema)
 /// \interface OSGeo::FDO::Commands::Schema::IDescribeSchemaMapping
@@ -32,7 +32,7 @@ public __gc class PhysicalSchemaMappingCollection;
 /// command can describe the mappings for a single schema or all schemas available from
 /// the connection. The Execute operation returns an PhysicalSchemaMappingCollection
 /// object.
-public __gc __interface IDescribeSchemaMapping : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
+public interface class IDescribeSchemaMapping : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
 {
 public:
     /// \brief
@@ -42,8 +42,6 @@ public:
     /// \return
     /// Returns the schema name
     /// 
-	__property System::String* get_SchemaName();
-
     /// \brief
     /// Sets the name of the schema to describe. This function is optional; if not
     /// specified, execution of the command will describe the mappings for
@@ -55,7 +53,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_SchemaName(System::String* value);
+    property System::String^ SchemaName
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Gets the current "include default mappings" setting.
@@ -63,8 +65,6 @@ public:
     /// \return
     /// Returns True if Execute() will include default mappings.
     /// 
-	__property System::Boolean get_IncludeDefaults();
-
     /// \brief
     /// Sets the "include default mappings" setting.
     /// 
@@ -78,7 +78,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_IncludeDefaults(System::Boolean includeDefaults );
+    property System::Boolean IncludeDefaults
+    {
+        System::Boolean get();
+        System::Void set(System::Boolean includeDefaults);
+    }
 
     /// \brief
     /// Executes the DescribeSchemaMapping command and returns a 
@@ -88,7 +92,7 @@ public:
     /// \return
     /// Returns the schema mapping collection for the requested feature schemas.
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMappingCollection* Execute();
+	NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMappingCollection^ Execute();
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA

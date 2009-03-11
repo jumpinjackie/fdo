@@ -20,19 +20,19 @@
 #include "stdafx.h"
 #include "Common\mgException.h"
 
-NAMESPACE_OSGEO_COMMON::Exception* NAMESPACE_OSGEO_COMMON::Exception::Create(System::IntPtr ex)
+NAMESPACE_OSGEO_COMMON::Exception^ NAMESPACE_OSGEO_COMMON::Exception::Create(System::IntPtr ex)
 {
 	//TODO: maybe some type-check code need adding here.
 
-	if (NULL != ex)
+    if (IntPtr::Zero == ex)
 	{
 		FdoException* e = (FdoException*) ex.ToPointer();
-		NAMESPACE_OSGEO_COMMON::Exception* mg = Create(e->GetCause());
-		if (NULL != mg)
-			return new NAMESPACE_OSGEO_COMMON::Exception(e->GetExceptionMessage(), mg);
+		NAMESPACE_OSGEO_COMMON::Exception^ mg = Create(IntPtr(e->GetCause()));
+		if (nullptr != mg)
+            return gcnew NAMESPACE_OSGEO_COMMON::Exception(gcnew String(e->GetExceptionMessage()), mg);
 		else
-			return new NAMESPACE_OSGEO_COMMON::Exception(e->GetExceptionMessage());
+			return gcnew NAMESPACE_OSGEO_COMMON::Exception(gcnew String(e->GetExceptionMessage()));
 	}
 
-	return NULL;
+	return nullptr;
 }

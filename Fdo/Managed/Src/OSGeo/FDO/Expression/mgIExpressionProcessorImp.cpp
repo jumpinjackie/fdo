@@ -31,10 +31,3 @@ FdoIExpressionProcessor* NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessorImp
 {
 	return static_cast<FdoIExpressionProcessor*>(__super::UnmanagedObject.ToPointer());
 }
-
-Void NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessorImp::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}

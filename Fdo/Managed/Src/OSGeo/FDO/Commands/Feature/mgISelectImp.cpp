@@ -35,7 +35,7 @@ FdoISelect* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::GetImpObj()
     return static_cast<FdoISelect*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::get_LockType()
+NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::LockType::get()
 {
 	FdoLockType result;
 
@@ -44,12 +44,12 @@ NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType NAMESPACE_OSGEO_FDO_COMMANDS_FEAT
 	return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType>(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::set_LockType(NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::LockType::set(NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetLockType(static_cast<FdoLockType>(value)))
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockStrategy NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::get_LockStrategy()
+NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockStrategy NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::LockStrategy::get()
 {
 	FdoLockStrategy result;
 
@@ -58,34 +58,34 @@ NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockStrategy NAMESPACE_OSGEO_FDO_COMMANDS_
 	return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockStrategy>(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::set_LockStrategy(NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockStrategy value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::LockStrategy::set(NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockStrategy value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetLockStrategy(static_cast<FdoLockStrategy>(value)))
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::Execute()
+NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::Execute()
 {
 	FdoIFeatureReader* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->Execute())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIFeatureReader(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIFeatureReader(IntPtr(result), true);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::ExecuteWithLock()
+NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::ExecuteWithLock()
 {
 	FdoIFeatureReader* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->ExecuteWithLock())
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIFeatureReader(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIFeatureReader(IntPtr(result), true);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::get_LockConflicts()
+NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::LockConflicts::get()
 {
 	FdoILockConflictReader* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetLockConflicts())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILockConflictReader(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILockConflictReader(IntPtr(result), true);
 }

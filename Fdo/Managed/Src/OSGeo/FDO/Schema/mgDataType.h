@@ -25,7 +25,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 /// \ingroup (OSGeoFDOSchema)
 /// \brief
 /// The DataType enumeration lists all of the base data types supported by FDO.
-public __value enum DataType
+public enum class DataType
 {
     /// Represents a Boolean value of true or false.
 	DataType_Boolean = FdoDataType_Boolean,

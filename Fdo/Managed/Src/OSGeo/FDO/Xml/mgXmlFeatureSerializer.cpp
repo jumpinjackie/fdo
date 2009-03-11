@@ -28,12 +28,12 @@
 #include "FDO\Commands\Feature\mgIFeatureReaderImp.h"
 #include "FDO\Schema\mgFeatureSchemaCollection.h"
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeatureSerializer::XmlSerialize(NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader* reader, NAMESPACE_OSGEO_FDO_XML::XmlFeatureWriter* writer)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeatureSerializer::XmlSerialize(NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader^ reader, NAMESPACE_OSGEO_FDO_XML::XmlFeatureWriter^ writer)
 {
-	EXCEPTION_HANDLER(FdoXmlFeatureSerializer::XmlSerialize(static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReaderImp*>(reader)->GetImpObj(), writer->GetImpObj()))
+	EXCEPTION_HANDLER(FdoXmlFeatureSerializer::XmlSerialize(static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReaderImp^>(reader)->GetImpObj(), writer->GetImpObj()))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeatureSerializer::XmlSerialize(NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader* reader, NAMESPACE_OSGEO_FDO_XML::XmlFeatureWriter* writer, NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags* flags)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeatureSerializer::XmlSerialize(NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader^ reader, NAMESPACE_OSGEO_FDO_XML::XmlFeatureWriter^ writer, NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags^ flags)
 {
-	EXCEPTION_HANDLER(FdoXmlFeatureSerializer::XmlSerialize(static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReaderImp*>(reader)->GetImpObj(), writer->GetImpObj(), flags->GetImpObj()))
+	EXCEPTION_HANDLER(FdoXmlFeatureSerializer::XmlSerialize(static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReaderImp^>(reader)->GetImpObj(), writer->GetImpObj(), flags->GetImpObj()))
 }

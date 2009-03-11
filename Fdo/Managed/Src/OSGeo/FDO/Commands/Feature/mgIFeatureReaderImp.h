@@ -24,7 +24,7 @@
 class FdoIFeatureReader;
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
-public __gc class ClassDefinition;
+ref class ClassDefinition;
 END_NAMESPACE_OSGEO_FDO_SCHEMA
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
@@ -37,7 +37,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 /// from the Select and SelectAndLock commands. Because the initial position of the
 /// IFeatureReader is prior to the first item, you must call
 /// ReadNext to begin accessing any data.
-private __gc class IFeatureReaderImp : public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp, 
+private ref class IFeatureReaderImp : public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp, 
                                        public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader
 {
 public:
@@ -50,7 +50,7 @@ public:
     /// \return
     /// Returns the class definition object.
     /// 
-	NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* GetClassDefinition();
+	virtual NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition^ GetClassDefinition();
 
     /// \brief
     /// Gets a value indicating the depth of nesting for the current reader.
@@ -60,7 +60,7 @@ public:
     /// \return
     /// Returns the feature reader depth
     /// 
-	System::Int32 GetDepth();
+	virtual System::Int32 GetDepth();
 
     /// \brief
     /// Gets the geometry value of the specified property as a byte array in 
@@ -78,7 +78,7 @@ public:
     /// \return
     /// Returns a pointer to the byte array in FGF format.
     /// 
-	System::Byte GetGeometry(System::String* propertyName) [];
+	virtual array<System::Byte>^ GetGeometry(System::String^ propertyName) override;
 
     /// \brief
     /// Gets a reference to an IFeatureReader to read the data contained in
@@ -91,9 +91,9 @@ public:
     /// \return
     /// Returns the nested feature reader
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader* GetFeatureObject(System::String* propertyName);
+	virtual NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader^ GetFeatureObject(System::String^ propertyName);
 
-public private:
+internal:
 	IFeatureReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp(unmanaged, autoDelete)
 	{
 

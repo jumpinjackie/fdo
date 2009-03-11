@@ -26,25 +26,19 @@
 #include "FDO\Expression\mgIdentifier.h"
 #include "FDO\Expression\mgValueExpression.h"
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}
-
 NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::PropertyValue() : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoPropertyValue::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoPropertyValue::Create()), true))
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::PropertyValue(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* name, NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression* value) : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::PropertyValue(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ name, NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression^ value) : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoPropertyValue::Create(name->GetImpObj(), (value == NULL ? NULL : value->GetImpObj())), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoPropertyValue::Create(name->GetImpObj(), (value == nullptr ? nullptr : value->GetImpObj()))), true))
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::PropertyValue(System::String* name, NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression* value) : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::PropertyValue(System::String^ name, NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression^ value) : NAMESPACE_OSGEO_RUNTIME::Disposable(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoPropertyValue::Create(StringToUni(name), (value == NULL ? NULL : value->GetImpObj())), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoPropertyValue::Create(StringToUni(name), (value == nullptr ? nullptr : value->GetImpObj()))), true))
 }
 
 FdoPropertyValue* NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::GetImpObj()
@@ -52,54 +46,54 @@ FdoPropertyValue* NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::GetImpObj()
     return static_cast<FdoPropertyValue*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::get_Name()
+NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::Name::get()
 {
 	FdoIdentifier* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetName())
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIdentifier(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIdentifier(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::set_Name(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::Name::set(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetName((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->SetName((value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::SetName(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::SetName(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetName(StringToUni(value)))
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression* NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::get_Value()
+NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression^ NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::Value::get()
 {
 	FdoValueExpression* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetValue())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateValueExpression(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateValueExpression(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::set_Value(NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::Value::set(NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetValue((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->SetValue((value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::SetValue(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::SetValue(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetValue(StringToUni(value)))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::set_StreamReader(NAMESPACE_OSGEO_COMMON::IStreamReader* stream)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::StreamReader::set(NAMESPACE_OSGEO_COMMON::IStreamReader^ stream)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetStreamReader(static_cast<FdoIStreamReader*>(static_cast<NAMESPACE_OSGEO_COMMON::IStreamReaderImp*>(stream)->UnmanagedObject.ToPointer())))
+	EXCEPTION_HANDLER(GetImpObj()->SetStreamReader(static_cast<FdoIStreamReader*>(static_cast<NAMESPACE_OSGEO_COMMON::IStreamReaderImp^>(stream)->UnmanagedObject.ToPointer())))
 }
 
-NAMESPACE_OSGEO_COMMON::IStreamReader* NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::get_StreamReader()
+NAMESPACE_OSGEO_COMMON::IStreamReader^ NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::StreamReader::get()
 {
 	FdoIStreamReader* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetStreamReader())
 
-    return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateIStreamReader(result, true);
+    return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateIStreamReader(IntPtr(result), true);
 }

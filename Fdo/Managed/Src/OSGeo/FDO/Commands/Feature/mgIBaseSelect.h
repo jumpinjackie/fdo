@@ -22,7 +22,7 @@
 #include "FDO\Commands\mgOrderingOption.h"
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
-public __gc class IdentifierCollection;
+ref class IdentifierCollection;
 END_NAMESPACE_OSGEO_FDO_COMMANDS
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
@@ -42,7 +42,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 /// supports locking, then the select command can optionally lock all of the
 /// features selected, via the ExecuteWithLock method (see "Locking
 /// Commands" for more information on locking features).
-public __gc __interface IBaseSelect : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommand
+public interface class IBaseSelect : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommand
 {
 public:
     /// \brief
@@ -53,7 +53,10 @@ public:
     /// \return
     /// Returns the list of property names.
     /// 
-	__property NAMESPACE_OSGEO_FDO_COMMANDS::IdentifierCollection* get_PropertyNames();
+    property NAMESPACE_OSGEO_FDO_COMMANDS::IdentifierCollection^ PropertyNames
+    {
+        NAMESPACE_OSGEO_FDO_COMMANDS::IdentifierCollection^ get();
+    }
 
     /// \brief
     /// Gets the IdentifierCollection that holds the list of order by property names. If empty no ordering is used. This list is initially
@@ -62,7 +65,10 @@ public:
     /// \return
     /// Returns the list of group by property names.
     /// 
-	__property NAMESPACE_OSGEO_FDO_COMMANDS::IdentifierCollection* get_Ordering();
+    property NAMESPACE_OSGEO_FDO_COMMANDS::IdentifierCollection^ Ordering
+    {
+        NAMESPACE_OSGEO_FDO_COMMANDS::IdentifierCollection^ get();
+    }
 
     /// \brief
     /// Set the ordering option of the selection. This is only used if the ordering collection is not empty.
@@ -74,15 +80,17 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_OrderingOption(NAMESPACE_OSGEO_FDO_COMMANDS::OrderingOption option);
-
     /// \brief
     /// Gets the ordering option.
     /// 
     /// \return
     /// Returns the ordering option.
     /// 
-	__property NAMESPACE_OSGEO_FDO_COMMANDS::OrderingOption get_OrderingOption();
+    property NAMESPACE_OSGEO_FDO_COMMANDS::OrderingOption OrderingOption
+    {
+        NAMESPACE_OSGEO_FDO_COMMANDS::OrderingOption get();
+        System::Void set(NAMESPACE_OSGEO_FDO_COMMANDS::OrderingOption option);
+    }
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE

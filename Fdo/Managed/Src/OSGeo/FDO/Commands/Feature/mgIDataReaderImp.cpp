@@ -40,16 +40,16 @@ System::Int32 NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDataReaderImp::GetPropertyC
 	return result;
 }
 
-System::String* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDataReaderImp::GetPropertyName(System::Int32 index)
+System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDataReaderImp::GetPropertyName(System::Int32 index)
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetPropertyName(index))
 
-	return result;
+	return CHECK_STRING(result);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::DataType NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDataReaderImp::GetDataType(System::String* name)
+NAMESPACE_OSGEO_FDO_SCHEMA::DataType NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDataReaderImp::GetDataType(System::String^ name)
 {
 	FdoDataType result;
 
@@ -58,7 +58,7 @@ NAMESPACE_OSGEO_FDO_SCHEMA::DataType NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IData
 	return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::DataType>(result);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDataReaderImp::GetPropertyType(System::String* name)
+NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDataReaderImp::GetPropertyType(System::String^ name)
 {
 	FdoPropertyType result;
 

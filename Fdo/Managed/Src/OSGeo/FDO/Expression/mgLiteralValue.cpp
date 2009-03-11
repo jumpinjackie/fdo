@@ -31,7 +31,7 @@ FdoLiteralValue* NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue::GetImpObj()
 	return static_cast<FdoLiteralValue*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValueType NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue::get_LiteralValueType()
+NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValueType NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue::LiteralValueType::get()
 {
 	FdoLiteralValueType result;
     

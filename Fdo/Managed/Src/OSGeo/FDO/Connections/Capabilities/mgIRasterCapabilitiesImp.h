@@ -27,7 +27,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 /// \ingroup (OSGeoFDOConnectionsCapabilities)
 /// \brief
 /// The IRasterCapabilities class delineates available support for raster processing from a provider.
-private __gc class IRasterCapabilitiesImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
+private ref class IRasterCapabilitiesImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
                                             public NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IRasterCapabilities
 {
 public:
@@ -39,7 +39,7 @@ public:
     /// \return
     /// Returns true if raster images are supported, false otherwise.
     /// 
-	System::Boolean SupportsRaster ();
+	virtual System::Boolean SupportsRaster ();
 
     /// \brief
     /// Returns true if the provider has the capability to stitch images from a
@@ -53,7 +53,7 @@ public:
     /// is specified in the select command, then a single image that is a combination
     /// of the selected images is returned.
     /// 
-	System::Boolean SupportsStitching ();
+	virtual System::Boolean SupportsStitching ();
 
     /// \brief
     /// Returns true if the provider can reduce the resolution of an image.
@@ -66,7 +66,7 @@ public:
     /// the image size of an IRaster object returned by a IFeatureReader will
     /// throw an Exception.
     /// 
-	System::Boolean SupportsSubsampling ();
+	virtual System::Boolean SupportsSubsampling ();
 
     /// \brief
     /// Returns true if the provider can handle the provided data model.
@@ -81,14 +81,9 @@ public:
     /// IRaster object will dynamically transform an image to the specified data model.
     /// Returns false if the specified data model is not supported.
     /// 
-	System::Boolean SupportsDataModel (NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel* model);
+	virtual System::Boolean SupportsDataModel (NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel^ model);
 
-/// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-/// \endcond
-
-public private:
+internal:
 	IRasterCapabilitiesImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoIRasterCapabilities* GetImpObj();

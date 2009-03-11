@@ -24,19 +24,19 @@
 class FdoComparisonCondition;
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
-public __gc class Expression;
+ref class Expression;
 END_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 using namespace NAMESPACE_OSGEO_FDO_EXPRESSION;
 
 BEGIN_NAMESPACE_OSGEO_FDO_FILTER
-public __gc __interface IFilterProcessor;
+interface class IFilterProcessor;
 
 /// \ingroup (OSGeoFDOFilter)
 /// \brief
 /// The ComparisonCondition class derives SearchCondition and can be used
 /// to test the equality of two expressions.
-public __gc class ComparisonCondition : public NAMESPACE_OSGEO_FDO_FILTER::SearchCondition
+public ref class ComparisonCondition : public NAMESPACE_OSGEO_FDO_FILTER::SearchCondition
 {
 public:
 
@@ -61,7 +61,7 @@ public:
     /// \return
     /// Returns ComparisonCondition
     /// 
-	ComparisonCondition( NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* leftExpression, NAMESPACE_OSGEO_FDO_FILTER::ComparisonOperations operation, NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* rightExpression);
+	ComparisonCondition( NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ leftExpression, NAMESPACE_OSGEO_FDO_FILTER::ComparisonOperations operation, NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ rightExpression);
 
     /// \brief
     /// Gets the operation to be used to compare the two expressions.
@@ -69,8 +69,6 @@ public:
     /// \return
     /// Returns the operation to be used to compare the two expressions
     /// 
-	__property NAMESPACE_OSGEO_FDO_FILTER::ComparisonOperations get_Operation();
-
     /// \brief
     /// Sets the operation to be used to compare the two expressions.
     /// 
@@ -80,7 +78,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Operation(NAMESPACE_OSGEO_FDO_FILTER::ComparisonOperations operation);
+    property NAMESPACE_OSGEO_FDO_FILTER::ComparisonOperations Operation
+    {
+        NAMESPACE_OSGEO_FDO_FILTER::ComparisonOperations get();
+        System::Void set(NAMESPACE_OSGEO_FDO_FILTER::ComparisonOperations operation);
+    }
 
     /// \brief
     /// Gets the expression that defines the left side of the comparison.
@@ -88,8 +90,6 @@ public:
     /// \return
     /// Returns the expression that defines the left side of the comparison
     /// 
-	__property NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* get_LeftExpression();
-
     /// \brief
     /// Sets the expression that defines the left side of the comparison.
     /// 
@@ -99,7 +99,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_LeftExpression(NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* value);
+    property NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ LeftExpression
+    {
+        NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ value);
+    }
 
     /// \brief
     /// Gets the expression that defines the right side of the comparison.
@@ -107,8 +111,6 @@ public:
     /// \return
     /// Returns the expression that defines the right side of the comparison
     /// 
-	__property NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* get_RightExpression();
-
     /// \brief
     /// Sets the expression that defines the right side of the comparison.
     /// 
@@ -118,7 +120,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_RightExpression( NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* value);
+    property NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ RightExpression
+    {
+        NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ value);
+    }
 
     /// \brief
     /// Overrides Filter.Process to pass ComparisonCondition to the
@@ -130,7 +136,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Process(NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessor* processor);
+	System::Void Process(NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessor^ processor);
 
     /// \brief
     /// Constructs a ComparisonCondition object based on an unmanaged instance of the object
@@ -144,7 +150,7 @@ public:
     /// 
 	ComparisonCondition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
+internal:
 	inline FdoComparisonCondition* GetImpObj();
 };
 

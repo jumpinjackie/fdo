@@ -33,7 +33,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE
 /// IMeasureUnitReader interface is returned from the GetMeasureUnits command.
 /// The initial position of the IMeasureUnitReader is prior to the
 /// first item. Thus, you must call ReadNext to begin accessing any data.
-private __gc class IMeasureUnitReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
+private ref class IMeasureUnitReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
                                            public NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IMeasureUnitReader
 {
 public:
@@ -43,7 +43,7 @@ public:
     /// \return
     /// Returns the abbreviation of the measure unit
     /// 
-	System::String* GetAbbreviation();
+	virtual System::String^ GetAbbreviation();
 
     /// \brief
     /// Gets the name of the measure unit currently being read.
@@ -51,7 +51,7 @@ public:
     /// \return
     /// Returns the name of the measure unit
     /// 
-	System::String* GetName();
+	virtual System::String^ GetName();
 
     /// \brief
     /// Gets the description of the measure unit currently being read.
@@ -59,7 +59,7 @@ public:
     /// \return
     /// Returns the description of the measure unit
     /// 
-	System::String* GetDescription();
+	virtual System::String^ GetDescription();
 
     /// \brief
     /// Gets the base unit of the measure unit currently being read.
@@ -67,7 +67,7 @@ public:
     /// \return
     /// Returns the base unit
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::BaseUnit GetBaseUnit();
+	virtual NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::BaseUnit GetBaseUnit();
 
     /// \brief
     /// Gets the scale factor of the measure unit currently being read.
@@ -75,7 +75,7 @@ public:
     /// \return
     /// Returns the scale factor of the measure unit
     /// 
-	System::Double GetScaleFactor();
+	virtual System::Double GetScaleFactor();
 
     /// \brief
     /// Advances the reader to the next item. The default position of the
@@ -85,7 +85,7 @@ public:
     /// \return
     /// Returns true if there is a next item
     /// 
-	System::Boolean ReadNext();
+	virtual System::Boolean ReadNext();
 
     /// \brief
     /// Closes the IMeasureUnitReader object, freeing any resources it may be holding.
@@ -93,14 +93,9 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Close();
+	virtual System::Void Close();
 
-/// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-/// \endcond
-
-public private:
+internal:
 	IMeasureUnitReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)
 	{
 

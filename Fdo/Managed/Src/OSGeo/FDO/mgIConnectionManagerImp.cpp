@@ -32,26 +32,19 @@ NAMESPACE_OSGEO_FDO::IConnectionManagerImp::IConnectionManagerImp(System::IntPtr
 
 ::IConnectionManager* NAMESPACE_OSGEO_FDO::IConnectionManagerImp::GetImpObj()
 {
-	return static_cast<::IConnectionManager*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<::IConnectionManager*>(UnmanagedObject.ToPointer());
 }
 
-System::Void NAMESPACE_OSGEO_FDO::IConnectionManagerImp::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}
-
-NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* NAMESPACE_OSGEO_FDO::IConnectionManagerImp::CreateConnection(String* providerName)
+NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection^ NAMESPACE_OSGEO_FDO::IConnectionManagerImp::CreateConnection(System::String^ providerName)
 {
 	FdoIConnection* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->CreateConnection(StringToUni(providerName)))
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIConnection(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIConnection(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO::IConnectionManagerImp::FreeLibrary(String* providerName)
+System::Void NAMESPACE_OSGEO_FDO::IConnectionManagerImp::FreeLibrary(System::String^ providerName)
 {
 	EXCEPTION_HANDLER(GetImpObj()->FreeLibrary(StringToUni(providerName)))
 }

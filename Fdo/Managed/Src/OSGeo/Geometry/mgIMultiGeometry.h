@@ -24,7 +24,7 @@
 class FdoIMultiGeometry;
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
-public __gc __interface IGeometry;
+interface class IGeometry;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
@@ -35,7 +35,7 @@ BEGIN_NAMESPACE_OSGEO_GEOMETRY
 /// The IMultiGeometry class is a heterogeneous MultiGeometry type.
 /// One MultiGeometry containing another MultiGeometry
 /// is not supported.
-public __gc __interface IMultiGeometry : public IGeometricAggregateAbstract
+public interface class IMultiGeometry : public IGeometricAggregateAbstract
 {
 public:
     /// \brief
@@ -47,7 +47,10 @@ public:
     /// \return
     /// Returns a Geometry
     /// 
-	__property NAMESPACE_OSGEO_GEOMETRY::IGeometry *get_Item(System::Int32 index);
+    property NAMESPACE_OSGEO_GEOMETRY::IGeometry^ default[System::Int32]
+    {
+        NAMESPACE_OSGEO_GEOMETRY::IGeometry^ get(System::Int32 index);
+    }
 };
 
 END_NAMESPACE_OSGEO_GEOMETRY

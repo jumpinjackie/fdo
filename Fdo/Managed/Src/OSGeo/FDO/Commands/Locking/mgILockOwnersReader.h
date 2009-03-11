@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 /// ILockOwnersReader interface is returned from the GetLockOwners command. The initial
 /// position of the ILockOwnersReader interface is prior to the first item. Thus, you
 /// must call ReadNext to begin accessing any data.
-public __gc __interface ILockOwnersReader : public System::IDisposable
+public interface class ILockOwnersReader : public System::IDisposable
 {
 public:
     /// \brief
@@ -40,7 +40,7 @@ public:
     /// \return
     /// Returns the name of a user
     /// 
-	System::String* GetLockOwner();
+	System::String^ GetLockOwner();
 
     /// \brief
     /// Advances the reader to the next item. The default position of the 

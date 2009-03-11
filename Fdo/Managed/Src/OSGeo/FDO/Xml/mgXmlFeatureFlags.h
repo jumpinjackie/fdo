@@ -55,7 +55,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_XML
 /// Document B. For example, supposed that FDO can write a Schema A conformant 
 /// Document B only when supplied the GML version of Schema A. FDO will still generate 
 /// errors and fail to read Document A under ErrorLevel_Low.
-public __gc class XmlFeatureFlags : public NAMESPACE_OSGEO_FDO_XML::XmlFlags
+public ref class XmlFeatureFlags : public NAMESPACE_OSGEO_FDO_XML::XmlFlags
 {
 public:
     /// \brief
@@ -72,7 +72,7 @@ public:
     /// \param ConflictOption_Skip 
     /// just add new features. Silently skip features already in the DataStore.
     /// 
-	__value enum ConflictOption 
+	enum class ConflictOption 
 	{
 		ConflictOption_Add = FdoXmlFeatureFlags::ConflictOption_Add,
 		ConflictOption_Update = FdoXmlFeatureFlags::ConflictOption_Update,
@@ -90,7 +90,7 @@ public:
     /// \param location 
     /// See XmlFlags::Create()
     /// 
-	XmlFeatureFlags(System::String* location);
+	XmlFeatureFlags(System::String^ location);
 
     /// \brief
     /// Constructs an XmlFeatureFlags object.
@@ -100,7 +100,7 @@ public:
     /// \param errorLevel 
     /// See XmlFlags::Create()
     /// 
-	XmlFeatureFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel);
+	XmlFeatureFlags(System::String^ location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel);
 
     /// \brief
     /// Constructs an XmlFeatureFlags object.
@@ -112,7 +112,7 @@ public:
     /// \param nameAdjust 
     /// See XmlFlags::Create()
     /// 
-	XmlFeatureFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust);
+	XmlFeatureFlags(System::String^ location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust);
 
     /// \brief
     /// Constructs an XmlFeatureFlags object.
@@ -127,7 +127,7 @@ public:
     /// Conflict option to apply to pre-existing features, when deserializing features
     /// into an FDO datastore.
     /// 
-	XmlFeatureFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust, NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags::ConflictOption conflictOption);
+	XmlFeatureFlags(System::String^ location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust, NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags::ConflictOption conflictOption);
 
     /// \brief
     /// Sets the current option for handling features already in the connection 
@@ -136,14 +136,16 @@ public:
     /// \param conflictOption 
     /// Specifies how feaures, already in the datastore, are handled.
     /// 
-	__property System::Void set_Conflictoption(NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags::ConflictOption conflictOption);
-
     /// \brief
     /// Get the current option for handling feature already in the connection datastore.
     ///
     /// \return
     /// Returns the current conflict option.
-	__property NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags::ConflictOption get_Conflictoption();
+    property NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags::ConflictOption Conflictoption
+    {
+        NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags::ConflictOption get();
+        System::Void set(NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags::ConflictOption conflictOption);
+    }
 
     /// \brief
     /// Sets the write feature collection flag. This flag is initially set to true.
@@ -153,15 +155,17 @@ public:
     /// true: The serialized features are wrapped in a GML FeatureCollection element.
     /// false: features are serialize without a wrapping collection element.
     /// 
-	__property System::Void set_WriteCollection(System::Boolean writeMember);
-
     /// \brief
     /// Gets the write feature collection flag.
     /// 
     /// \return
     /// Returns the write feature collection flag.
     /// 
-	__property System::Boolean get_WriteCollection();
+    property System::Boolean WriteCollection
+    {
+        System::Boolean get();
+        System::Void set(System::Boolean writeCollection);
+    }
 
     /// \brief
     /// Sets the write feature member flag. This flag is initially set to true.
@@ -173,87 +177,97 @@ public:
     /// writeMember would only be set to false when writing values to a collection
     /// object property.
     /// 
-	__property System::Void set_WriteMember( System::Boolean writeMember );
-
     /// \brief
     /// Gets the write feature member flag.
     /// 
     /// \return
     /// Returns the write feature member flag.
     /// 
-	__property System::Boolean get_WriteMember();
+    property System::Boolean WriteMember
+    {
+        System::Boolean get();
+        System::Void set(System::Boolean writeMember);
+    }
 
     /// \brief
     /// Sets the URI for the feature collection element to wrap around serialized 
     /// features. The initial value is 'http://www.opengis.net/gml'
     /// 
     /// \param uri 
-    /// Input the URI. If NULL or blank, the URI reverts back to the initial value.
+    /// Input the URI. If nullptr or blank, the URI reverts back to the initial value.
     /// 
-	__property System::Void set_CollectionUri(System::String* uri);
-
     /// \brief
     /// Gets the feature collection element URI.
     /// 
     /// \return
     /// Returns the URI.
     /// 
-	__property System::String* get_CollectionUri();
+    property System::String^ CollectionUri
+    {
+        System::String^ get();
+        System::Void set(System::String^ uri);
+    }
 
     /// \brief
     /// Sets the name for the feature collection element to wrap around serialized 
     /// features. The initial value is 'FeatureCollection'
     /// 
     /// \param name 
-    /// Input the name. If NULL or blank, the name reverts back to the initial value.
+    /// Input the name. If nullptr or blank, the name reverts back to the initial value.
     /// 
-	__property System::Void set_CollectionName(System::String* name);
-
     /// \brief
     /// Gets the feature collection element name.
     /// 
     /// \return
-    /// Returns System::String*.
+    /// Returns System::String^.
     /// 
-	__property System::String* get_CollectionName();
+    property System::String^ CollectionName
+    {
+        System::String^ get();
+        System::Void set(System::String^ name);
+    }
 
     /// \brief
     /// Sets the URI for the feature member element to wrap around each serialized 
     /// feature. The initial value is 'http://www.opengis.net/gml'
     /// 
     /// \param uri 
-    /// Input the URI. If NULL or blank, the URI defaults to the URI of the feature 
+    /// Input the URI. If nullptr or blank, the URI defaults to the URI of the feature 
     /// collection element's sub-element. If this sub-element cannot be determined 
     /// then the URI defaults to the initial value
     /// 
-	__property System::Void set_MemberUri(System::String* uri);
-
     /// \brief
     /// Gets the feature member element URI.
     /// 
     /// \return
-    /// Returns System::String*
+    /// Returns System::String^
     /// 
-	__property System::String* get_MemberUri();
+    property System::String^ MemberUri
+    {
+        System::String^ get();
+        System::Void set(System::String^ name);
+    }
 
     /// \brief
     /// Sets the name for the feature member element to wrap around each serialized 
     /// feature. The initial value is 'featureMember'
     /// 
     /// \param name 
-    /// Input the name. If NULL or blank, the URI defaults to the name of the feature 
+    /// Input the name. If nullptr or blank, the URI defaults to the name of the feature 
     /// collection element's sub-element. If this sub-element cannot be determined then
     /// the name defaults to the initial value
     /// 
-	__property System::Void set_MemberName(System::String* name);
-
     /// \brief
     /// Gets the feature member element name.
     /// 
     /// \return
-    /// Returns System::String*.
+    /// Returns System::String^.
     /// 
-	__property System::String* get_MemberName();
+    property System::String^ MemberName
+    {
+        System::String^ get();
+        System::Void set(System::String^ name);
+    }
 
     /// \brief
     /// Sets the GML ID prefix for writing features. This prefix is prepended to the 
@@ -265,15 +279,17 @@ public:
     /// \param prefix 
     /// Input the GML ID Prefix
     /// 
-	__property System::Void set_GmlIdPrefix(System::String* prefix);
-
     /// \brief
     /// Gets the current GML ID prefix.
     /// 
     /// \return
     /// Returns System::String
     /// 
-	__property System::String* get_GmlIdPrefix();
+    property System::String^ GmlIdPrefix
+    {
+        System::String^ get();
+        System::Void set(System::String^ prefix);
+    }
 
     /// \brief
     /// Sets the schema locations for writing features. The output GML must have schema
@@ -290,8 +306,6 @@ public:
     /// Standard URL indicating the schema location, like "http://schemas.opengeospatial.net/wfs/1.0.0/WFS-basic.xsd"
     /// for wfs namespace.
     /// 
-	__property System::Void set_SchemaLocation(System::String* schemaNamespace, System::String* schemaLocation);
-
     /// \brief
     /// Gets the schema location for the specified namespace.
     /// 
@@ -301,7 +315,11 @@ public:
     /// \return
     /// Returns the URL indicating the schema location. 
     /// 
-	__property System::String* get_SchemaLocation(System::String* schemaNamespace);
+    property System::String^ SchemaLocation[System::String^]
+    {
+        System::String^ get(System::String^ schemaNamespace);
+        System::Void set(System::String^ schemaNamespace, System::String^ schemaLocation);
+    }
 
     /// \brief
     /// Gets all namespaces that have been set for schemaLocation by SetSchemaLocation().
@@ -309,7 +327,10 @@ public:
     /// \return
     /// Returns all namespaces that have been set for schemaLocation.
     /// 
-	__property NAMESPACE_OSGEO_COMMON::StringCollection* get_Namespaces();
+    property NAMESPACE_OSGEO_COMMON::StringCollection^ Namespaces
+    {
+        NAMESPACE_OSGEO_COMMON::StringCollection^ get();
+    }
 
     /// \brief
     /// Sets the default namespace which defines all feature/object types found in the input
@@ -319,28 +340,25 @@ public:
     /// \param defaultNamespace 
     /// Default namespace.
     /// 
-	__property System::Void set_DefaultNamespace(System::String* defaultNamespace);
-
     /// \brief
     /// Gets the default namespace.
     /// 
     /// \return
     /// Returns the default namespace.
     /// 
-	__property System::String* get_DefaultNamespace();
+    property System::String^ DefaultNamespace
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
-public private:
+internal:
 	XmlFeatureFlags(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_XML::XmlFlags(unmanaged, autoDelete)
 	{
 		
 	}
 
 	inline FdoXmlFeatureFlags* GetImpObj();
-	
-/// \cond DOXYGEN-IGNORE
-protected:
-    virtual System::Void ReleaseUnmanagedObject();
-/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_XML

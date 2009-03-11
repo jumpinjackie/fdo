@@ -29,7 +29,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_FILTER
 /// The SearchCondition is an abstract base class. SpatialCondition,
 /// ComparisonCondition, LikeCondition, InCondition, and NullCondition derive
 /// from the SearchCondition class.
-public __gc class SearchCondition : public NAMESPACE_OSGEO_FDO_FILTER::Filter
+public ref class SearchCondition : public NAMESPACE_OSGEO_FDO_FILTER::Filter
 {
 public:
     /// \brief
@@ -44,7 +44,7 @@ public:
     /// 
 	SearchCondition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
+internal:
 	inline FdoSearchCondition* GetImpObj();
 };
 

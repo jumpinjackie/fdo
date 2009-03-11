@@ -35,32 +35,25 @@ FdoExpression* NAMESPACE_OSGEO_FDO_EXPRESSION::Expression::GetImpObj()
 	return static_cast<FdoExpression*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_FDO_EXPRESSION::Expression::ReleaseUnmanagedObject()
+NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ NAMESPACE_OSGEO_FDO_EXPRESSION::Expression::Parse(System::String^ expressionText)
 {
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
+	FdoExpression* result;
+
+	EXCEPTION_HANDLER(result = FdoExpression::Parse(StringToUni(expressionText)))
+
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateExpression(IntPtr(result), true);
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* NAMESPACE_OSGEO_FDO_EXPRESSION::Expression::Parse(System::String* expressionText)
+System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::Expression::Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor^ processor)
 {
-	FdoExpression* unexp;
-
-	EXCEPTION_HANDLER(unexp = FdoExpression::Parse(StringToUni(expressionText)))
-
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateExpression(unexp, true);
+	EXCEPTION_HANDLER(GetImpObj()->Process((static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessorImp^>(processor))->GetImpObj()))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::Expression::Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor* processor)
-{
-	EXCEPTION_HANDLER(GetImpObj()->Process((static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessorImp*>(processor))->GetImpObj()))
-}
-
-System::String* NAMESPACE_OSGEO_FDO_EXPRESSION::Expression::ToString()
+System::String^ NAMESPACE_OSGEO_FDO_EXPRESSION::Expression::ToString()
 {
 	FdoString* unstr;
 
 	EXCEPTION_HANDLER(unstr = GetImpObj()->ToString())
 
-	return unstr;
+	return CHECK_STRING(unstr);
 }

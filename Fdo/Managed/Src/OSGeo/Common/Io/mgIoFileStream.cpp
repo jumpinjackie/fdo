@@ -21,9 +21,9 @@
 #include "Common\mgException.h"
 #include "Common\Io\mgIoFileStream.h"
 
-NAMESPACE_OSGEO_COMMON_IO::IoFileStream::IoFileStream(System::String* fileName, System::String* accessModes) : NAMESPACE_OSGEO_COMMON_IO::IoStream(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_COMMON_IO::IoFileStream::IoFileStream(System::String^ fileName, System::String^ accessModes) : NAMESPACE_OSGEO_COMMON_IO::IoStream(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoIoFileStream::Create(StringToUni(fileName), StringToUni(accessModes)), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoIoFileStream::Create(StringToUni(fileName), StringToUni(accessModes))), true))
 }
 
 NAMESPACE_OSGEO_COMMON_IO::IoFileStream::IoFileStream(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_COMMON_IO::IoStream(unmanaged, autoDelete)
@@ -33,5 +33,5 @@ NAMESPACE_OSGEO_COMMON_IO::IoFileStream::IoFileStream(System::IntPtr unmanaged, 
 
 FdoIoFileStream* NAMESPACE_OSGEO_COMMON_IO::IoFileStream::GetImpObj()
 {
-	return static_cast<FdoIoFileStream*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoIoFileStream*>(UnmanagedObject.ToPointer());
 }

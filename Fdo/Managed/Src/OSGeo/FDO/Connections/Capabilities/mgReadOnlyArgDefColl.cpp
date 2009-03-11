@@ -26,12 +26,12 @@
 #include "FDO\Connections\Capabilities\mgReadOnlyArgDefColl.h"
 #include "FDO\Connections\Capabilities\mgArgumentDefinition.h"
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::ReadOnlyArgumentDefinitionCollection() : Disposable(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::ReadOnlyArgumentDefinitionCollection() : NAMESPACE_OSGEO_COMMON::CollectionReadOnlyBase(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoArgumentDefinitionCollection::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoArgumentDefinitionCollection::Create()), true))
 }
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::ReadOnlyArgumentDefinitionCollection(System::IntPtr unmanaged, System::Boolean autoDelete) : Disposable(unmanaged, autoDelete)
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::ReadOnlyArgumentDefinitionCollection(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_COMMON::CollectionReadOnlyBase(unmanaged, autoDelete)
 {
 
 }
@@ -41,142 +41,65 @@ FdoReadOnlyArgumentDefinitionCollection* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABIL
     return static_cast<FdoReadOnlyArgumentDefinitionCollection*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::ReleaseUnmanagedObject()
+System::Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::CopyTo(array<NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinition^>^ pArray, System::Int32 index)
 {
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}
-
-System::Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::ICollection::CopyTo(System::Array* array, System::Int32 index) 
-{
-	if (NULL == array)
-	{
-		throw new System::ArgumentNullException();
-	}
-
+	if (nullptr == pArray)
+		throw gcnew System::ArgumentNullException();
 	if (index < 0)
-	{
-		throw new System::ArgumentOutOfRangeException();
-	}
-	if (array->Rank != 1 || index >= array->Length || get_Count() + index > array->Length)
-	{
-		throw new System::ArgumentException();
-	}
+		throw gcnew System::ArgumentOutOfRangeException();
+	if (pArray->Rank != 1 || index >= pArray->Length || this->Count + index > pArray->Length)
+		throw gcnew System::ArgumentException();
 
-	for (System::Int32 i=0;i<this->Count;i++)
-	{
-		array->set_Item(index + i, get_RealTypeItem(i));
-	}
+	for (System::Int32 i = 0; i < this->Count; i++)
+        pArray[index+i] = this->Item[i];
 }
 
-System::Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::CopyTo(NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinition* array[], System::Int32 index)
+System::Int32 NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::Count::get(System::Void)
 {
-	if (NULL == array)
-	{
-		throw new System::ArgumentNullException();
-	}
-
-	if (index < 0)
-	{
-		throw new System::ArgumentOutOfRangeException();
-	}
-	if (array->Rank != 1 || index >= array->Length || get_Count() + index > array->Length)
-	{
-		throw new System::ArgumentException();
-	}
-
-	for (System::Int32 i=0;i<this->Count;i++)
-	{
-		array[index+i] = __try_cast<NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinition*>(get_RealTypeItem(i));
-	}
-}
-
-System::Object* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::ICollection::get_SyncRoot()
-{
-	return NULL;
-}
-
-System::Boolean NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::ICollection::get_IsSynchronized()
-{
-	return false;
-}
-
-
-System::Collections::IEnumerator* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::GetEnumerator()
-{
-	return new Enumerator(this);
-}
-
-System::Int32 NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::get_Count(System::Void)
-{
-	FdoInt32 length;
+	System::Int32 length;
 
 	EXCEPTION_HANDLER(length = GetImpObj()->GetCount())
 
 	return length;
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::IndexOf(ArgumentDefinition* value)
+System::Int32 NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::IndexOf(ArgumentDefinition^ value)
 {
-	FdoInt32 index;
+	System::Int32 index;
 
-	EXCEPTION_HANDLER(index = GetImpObj()->IndexOf((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(index = GetImpObj()->IndexOf((value == nullptr ? nullptr : value->GetImpObj())))
 
 	return index;
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::Contains(ArgumentDefinition* value)
+System::Boolean NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::Contains(ArgumentDefinition^ value)
 {
-	FdoBoolean exist;
+	System::Boolean exist;
 
-	EXCEPTION_HANDLER(exist = (!!GetImpObj()->Contains(value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(exist = (!!GetImpObj()->Contains(value == nullptr ? nullptr : value->GetImpObj())))
 
 	return exist;
 }
 
-/*
-Implementation for ArgumentDefinitionCollection::Enumerator
-*/ 
-System::Object* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::Enumerator::get_Current()
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinition^ NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::Item::get(System::String^ name)
 {
-	if (m_nIdx < 0 || m_nIdx >= m_pCol->Count)
-	{
-		throw new InvalidOperationException();
-	}
+	FdoArgumentDefinition* result;
 
-	FdoArgumentDefinition* upElement;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetItem(StringToUni(name)))
 
-	EXCEPTION_HANDLER(upElement = m_pCol->GetImpObj()->GetItem(m_nIdx))
-
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateArgumentDefinition(upElement, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateArgumentDefinition(IntPtr(result), true);
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::Enumerator::MoveNext()
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinition^ NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::Item::get(System::Int32 index)
 {
-	++m_nIdx;
-	return m_nIdx < m_pCol->Count;
+	FdoArgumentDefinition* result;
+
+	EXCEPTION_HANDLER(result = GetImpObj()->GetItem(index))
+
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateArgumentDefinition(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::Enumerator::Reset()
+System::Object^ NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::IndexInternal::get(System::Int32 index)
 {
-	m_nIdx = -1;
-}
-
-NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinition* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::get_RealTypeItem(System::Int32 index)
-{
-	FdoArgumentDefinition* upElement;
-
-	EXCEPTION_HANDLER(upElement = GetImpObj()->GetItem(index))
-
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateArgumentDefinition(upElement, true);
-}
-
-NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinition* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection::get_RealTypeItem(System::String* name)
-{
-	FdoArgumentDefinition* upElement;
-
-	EXCEPTION_HANDLER(upElement = GetImpObj()->GetItem(StringToUni(name)))
-
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateArgumentDefinition(upElement, true);
+	return this->Item[index];
 }

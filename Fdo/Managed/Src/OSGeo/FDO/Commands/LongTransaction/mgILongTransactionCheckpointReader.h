@@ -29,7 +29,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 /// the GetLongTransactionCheckpoints command. The initial position of
 /// the ILongTransactionCheckpointReader is prior to the first item.
 /// Thus, you must call ReadNext to begin accessing any data.
-public __gc __interface ILongTransactionCheckpointReader : public System::IDisposable
+public interface class ILongTransactionCheckpointReader : public System::IDisposable
 {
 public:
     /// \brief
@@ -38,7 +38,7 @@ public:
     /// \return
     /// Returns the checkpoint name
     /// 
-	System::String* GetCheckpointName();
+	System::String^ GetCheckpointName();
 
     /// \brief
     /// Gets the description of the checkpoint currently being read.
@@ -46,7 +46,7 @@ public:
     /// \return
     /// Returns the checkpoint description
     /// 
-	System::String* GetCheckpointDescription();
+	System::String^ GetCheckpointDescription();
 
     /// \brief
     /// Gets the creation date of the checkpoint currently being read.

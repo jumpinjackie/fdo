@@ -25,9 +25,9 @@
 #include "FDO\mgObjectFactory.h"
 #include "FDO\Xml\mgXmlFeaturePropertyReader.h"
 
-NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext::XmlFeatureContext(NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyReader* value) : NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext::XmlFeatureContext(NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyReader^ value) : NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoXmlFeatureContext::Create((value == NULL ? NULL : value->GetImpObj())), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoXmlFeatureContext::Create((value == nullptr ? nullptr : value->GetImpObj()))), true))
 }
 
 FdoXmlFeatureContext* NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext::GetImpObj()
@@ -35,11 +35,11 @@ FdoXmlFeatureContext* NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext::GetImpObj()
     return static_cast<FdoXmlFeatureContext*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyReader* NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext::GetFeaturePropertyReader()
+NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyReader^ NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext::GetFeaturePropertyReader()
 {
 	FdoXmlFeaturePropertyReader* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetFeaturePropertyReader())
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlFeaturePropertyReader(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlFeaturePropertyReader(IntPtr(result), true);
 }

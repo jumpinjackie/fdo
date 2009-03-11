@@ -24,12 +24,12 @@
 
 NAMESPACE_OSGEO_FDO_SCHEMA::Class::Class() : NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoClass::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoClass::Create()), true))
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::Class::Class(System::String* name, System::String* description) : NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_SCHEMA::Class::Class(System::String^ name, System::String^ description) : NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoClass::Create(StringToUni(name), StringToUni(description)), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoClass::Create(StringToUni(name), StringToUni(description))), true))
 }
 
 FdoClass* NAMESPACE_OSGEO_FDO_SCHEMA::Class::GetImpObj()
@@ -37,7 +37,7 @@ FdoClass* NAMESPACE_OSGEO_FDO_SCHEMA::Class::GetImpObj()
 	return static_cast<FdoClass*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::ClassType NAMESPACE_OSGEO_FDO_SCHEMA::Class::get_ClassType()
+NAMESPACE_OSGEO_FDO_SCHEMA::ClassType NAMESPACE_OSGEO_FDO_SCHEMA::Class::ClassType::get()
 {
 	FdoClassType result;
 

@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
 /// The IActivateSpatialContext interface defines the ActivateSpatialContext
 /// command, which activates a specified spatial context. Input to the command
 /// is the name of the context to activate.
-private __gc class IActivateSpatialContextImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+private ref class IActivateSpatialContextImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
                                                 public NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IActivateSpatialContext
 {
 public:
@@ -41,8 +41,6 @@ public:
     /// \return
     /// Returns the name of the spatial context
     /// 
-	__property System::String* get_Name();
-
     /// \brief
     /// Sets the name of the context to activate as a string.
     /// 
@@ -52,7 +50,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Name(System::String* value);
+    virtual property System::String^ Name
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Executes the ActivateSpatialContext command. An exception is thrown
@@ -61,9 +63,9 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Execute();
+	virtual System::Void Execute();
 
-public private:
+internal:
 	IActivateSpatialContextImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)
 	{
 

@@ -34,17 +34,17 @@ NAMESPACE_OSGEO_FDO_FILTER::NullCondition::NullCondition(System::IntPtr unmanage
 
 NAMESPACE_OSGEO_FDO_FILTER::NullCondition::NullCondition() : SearchCondition(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoNullCondition::Create(), true)) 
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoNullCondition::Create()), true)) 
 }
 
-NAMESPACE_OSGEO_FDO_FILTER::NullCondition::NullCondition(System::String* propertyName) : SearchCondition(IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_FILTER::NullCondition::NullCondition(System::String^ propertyName) : SearchCondition(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoNullCondition::Create(StringToUni(propertyName)), true)) 
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoNullCondition::Create(StringToUni(propertyName))), true)) 
 }
 
-NAMESPACE_OSGEO_FDO_FILTER::NullCondition::NullCondition(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* propertyName) : SearchCondition(IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_FILTER::NullCondition::NullCondition(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ propertyName) : SearchCondition(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoNullCondition::Create(propertyName->GetImpObj()), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoNullCondition::Create(propertyName->GetImpObj())), true))
 }
 
 FdoNullCondition* NAMESPACE_OSGEO_FDO_FILTER::NullCondition::GetImpObj()
@@ -52,19 +52,19 @@ FdoNullCondition* NAMESPACE_OSGEO_FDO_FILTER::NullCondition::GetImpObj()
 	return static_cast<FdoNullCondition*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* NAMESPACE_OSGEO_FDO_FILTER::NullCondition::get_PropertyName()
+NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ NAMESPACE_OSGEO_FDO_FILTER::NullCondition::PropertyName::get()
 {
-	FdoIdentifier* unobj;
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetPropertyName())
-	return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier*>(ObjectFactory::CreateExpression(unobj, true));
+	FdoIdentifier* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetPropertyName())
+	return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^>(ObjectFactory::CreateExpression(IntPtr(result), true));
 }
 
-System::Void NAMESPACE_OSGEO_FDO_FILTER::NullCondition::set_PropertyName(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* value)
+System::Void NAMESPACE_OSGEO_FDO_FILTER::NullCondition::PropertyName::set(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetPropertyName((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->SetPropertyName((value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_FILTER::NullCondition::Process(NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessor* processor)
+System::Void NAMESPACE_OSGEO_FDO_FILTER::NullCondition::Process(NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessor^ processor)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Process((static_cast<NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessorImp*>(processor))->GetImpObj()))
+	EXCEPTION_HANDLER(GetImpObj()->Process((static_cast<NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessorImp^>(processor))->GetImpObj()))
 }

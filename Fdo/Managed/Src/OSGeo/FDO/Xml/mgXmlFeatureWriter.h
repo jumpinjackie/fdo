@@ -21,20 +21,20 @@
 class FdoXmlFeatureWriter;
 
 BEGIN_NAMESPACE_OSGEO_COMMON_XML
-public __gc class XmlWriter;
+ref class XmlWriter;
 END_NAMESPACE_OSGEO_COMMON_XML
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
-public __gc class ClassDefinition;
+ref class ClassDefinition;
 END_NAMESPACE_OSGEO_FDO_SCHEMA
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
-public __gc class PropertyValue;
+ref class PropertyValue;
 END_NAMESPACE_OSGEO_FDO_COMMANDS
 
 BEGIN_NAMESPACE_OSGEO_FDO_XML
-public __gc class XmlFeaturePropertyWriter;
-public __gc class XmlFeatureFlags;
+ref class XmlFeaturePropertyWriter;
+ref class XmlFeatureFlags;
 
 /// \ingroup (OSGeoFDOXml)
 /// \brief
@@ -52,7 +52,7 @@ public __gc class XmlFeatureFlags;
 /// may have slight performance implications since this writer has to accumulate the 
 /// property values before writing them. If performance is a concern then 
 /// XmlFeaturePropertyWriter should be used instead.
-public __gc class XmlFeatureWriter : public NAMESPACE_OSGEO_RUNTIME::Disposable
+public ref class XmlFeatureWriter : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
     /// \brief
@@ -62,14 +62,14 @@ public:
     /// Input Feature Property  Writer. Specifies the XML
     /// document that the features will be written to.
     /// \param flags 
-    /// Input options for controlling the writing of the features. If NULL then the 
+    /// Input options for controlling the writing of the features. If nullptr then the 
     /// flags passed to the document writer are used.
     /// 
     /// \return
     /// Returns XmlFeatureWriter
     /// 
-	XmlFeatureWriter(NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter* writer, NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags* flags);
-	XmlFeatureWriter(NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter* writer);
+	XmlFeatureWriter(NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter^ writer, NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags^ flags);
+	XmlFeatureWriter(NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter^ writer);
 
     /// \brief
     /// Creates a Feature Writer for writing FDO features to XML.
@@ -80,14 +80,14 @@ public:
     /// around this writer. This Feature Property Writer can be retrieved by calling 
     /// GetFeaturePropertyWriter().
     /// \param flags 
-    /// Input options for controlling the writing of the features. If NULL then the 
+    /// Input options for controlling the writing of the features. If nullptr then the 
     /// flags passed to the document writer are used.
     /// 
     /// \return
     /// Returns XmlFeatureWriter
     /// 
-	XmlFeatureWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* writer, NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags* flags);
-	XmlFeatureWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* writer);
+	XmlFeatureWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter^ writer, NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags^ flags);
+	XmlFeatureWriter(NAMESPACE_OSGEO_COMMON_XML::XmlWriter^ writer);
 
     /// \brief
     /// Gets the feature property writer that was passed to this object.
@@ -95,7 +95,10 @@ public:
     /// \return
     /// Returns XmlFeaturePropertyWriter
     /// 
-	__property NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter* get_FeaturePropertyWriter();
+    property NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter^ FeaturePropertyWriter
+    {
+        NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter^ get();
+    }
 
     /// \brief
     /// Gets the class definition for the current feature being written.
@@ -103,8 +106,6 @@ public:
     /// \return
     /// Returns ClassDefinition
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* get_ClassDefinition();
-
     /// \brief
     /// Sets the class definition for the current feature being written.
     /// 
@@ -114,7 +115,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_ClassDefinition(NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* classDefinition);
+    property NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition^ ClassDefinition
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition^ value);
+    }
 
     /// \brief
     /// Sets a feature property.
@@ -125,7 +130,10 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Property(NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue* propertyValue);
+    property NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue^ Property
+    {
+        System::Void set(NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue^ propertyValue);
+    }
 
     /// \brief
     /// Gets a reference to an XmlFeatureWriter to write the data contained
@@ -138,7 +146,10 @@ public:
     /// \return
     /// Returns the nested XML feature writer
     /// 
-	__property NAMESPACE_OSGEO_FDO_XML::XmlFeatureWriter* get_ObjectWriter(System::String* propertyName);
+    property NAMESPACE_OSGEO_FDO_XML::XmlFeatureWriter^ ObjectWriter[System::String^]
+    {
+        NAMESPACE_OSGEO_FDO_XML::XmlFeatureWriter^ get(System::String^ propertyName);
+    }
 
     /// \brief
     /// Gets a reference to an XmlFeatureWriter to write the data contained
@@ -151,7 +162,10 @@ public:
     /// \return
     /// Returns the nested XML feature writer
     /// 
-	__property NAMESPACE_OSGEO_FDO_XML::XmlFeatureWriter* get_AssociationWriter(System::String* propertyName);
+    property NAMESPACE_OSGEO_FDO_XML::XmlFeatureWriter^ AssociationWriter[System::String^]
+    {
+        NAMESPACE_OSGEO_FDO_XML::XmlFeatureWriter^ get(System::String^ propertyName);
+    }
     
     /// \brief
     /// Writes the current feature to the XML document.
@@ -167,18 +181,13 @@ public:
     /// The tag for the output feature/object. If elementTag is null, the class name
     /// will be used as the element tag.
     /// 
-	System::Void WriteFeature(System::String* elementTag);
+	System::Void WriteFeature(System::String^ elementTag);
 	System::Void WriteFeature();
 
-public private:
+internal:
 	XmlFeatureWriter(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoXmlFeatureWriter* GetImpObj();
-
-/// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_XML

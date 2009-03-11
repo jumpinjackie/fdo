@@ -28,18 +28,18 @@ FdoIDataStorePropertyDictionary* NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataSt
     return static_cast<FdoIDataStorePropertyDictionary*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionaryImp::IsPropertyFileName(System::String* name)
+System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionaryImp::IsPropertyFileName(System::String^ name)
 {
-	FdoBoolean exist;
+	System::Boolean exist;
 
 	EXCEPTION_HANDLER(exist = !!GetImpObj()->IsPropertyFileName(StringToUni(name)))
 
 	return exist;
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionaryImp::IsPropertyFilePath(System::String* name)
+System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionaryImp::IsPropertyFilePath(System::String^ name)
 {
-	FdoBoolean exist;
+	System::Boolean exist;
 
 	EXCEPTION_HANDLER(exist = !!GetImpObj()->IsPropertyFilePath(StringToUni(name)))
 

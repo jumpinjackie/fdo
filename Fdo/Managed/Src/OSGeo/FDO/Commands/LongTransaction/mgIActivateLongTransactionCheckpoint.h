@@ -32,7 +32,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 /// it is not already the active long transaction. The user requires the access
 /// privilege on the long transaction for which the attempt is made to activate a
 /// checkpoint.
-public __gc __interface IActivateLongTransactionCheckpoint : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
+public interface class IActivateLongTransactionCheckpoint : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
 {
 public:
     /// \brief
@@ -43,8 +43,6 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::String* get_CheckpointName();
-
     /// \brief
     /// Sets the name of the checkpoint to be activated for the named long
     /// transaction. If the property's value is empty the system will
@@ -56,7 +54,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_CheckpointName(System::String* value);
+    property System::String^ CheckpointName
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Executes the ActivateLongTransactionCheckpoint command.

@@ -29,7 +29,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
 /// The IConnection interface enables a feature provider to implement a
 /// connection class, which represents a unique session with a data
 /// store.
-public __gc class IConnectionImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection
+public ref class IConnectionImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection
 {
 public:
     /// \brief
@@ -39,7 +39,10 @@ public:
     /// \return
     /// Returns the connection capabilities
     /// 
-	__property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabilities* get_ConnectionCapabilities();
+    virtual property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabilities^ ConnectionCapabilities
+    {
+        NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabilities^ get();
+    }
 
     /// \brief
     /// Gets an ISchemaCapabilities interface describing the provider's support for the feature schema.
@@ -47,7 +50,10 @@ public:
     /// \return
     /// Returns schema capabilities
     /// 
-	__property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ISchemaCapabilities* get_SchemaCapabilities();
+    virtual property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ISchemaCapabilities^ SchemaCapabilities
+    {
+        NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ISchemaCapabilities^ get();
+    }
 
     /// \brief
     /// Gets an ICommandCapabilities interface describing the commands a provider supports.
@@ -55,7 +61,10 @@ public:
     /// \return
     /// Returns the command capabilities
     /// 
-	__property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandCapabilities* get_CommandCapabilities();
+    virtual property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandCapabilities^ CommandCapabilities
+    {
+        NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandCapabilities^ get();
+    }
 
     /// \brief
     /// Gets an IFilterCapabilities interface describing the provider's support for filters.
@@ -63,7 +72,10 @@ public:
     /// \return
     /// Returns the filter capabilities
     /// 
-	__property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IFilterCapabilities* get_FilterCapabilities();
+	virtual property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IFilterCapabilities^ FilterCapabilities
+    {
+        NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IFilterCapabilities^ get();
+    }
 
     /// \brief
     /// Gets an IExpressionCapabilities interface describing the provider's support for expressions.
@@ -71,7 +83,10 @@ public:
     /// \return
     /// Returns the expression capabilities
     /// 
-	__property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IExpressionCapabilities* get_ExpressionCapabilities();
+    virtual property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IExpressionCapabilities^ ExpressionCapabilities
+    {
+        NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IExpressionCapabilities^ get();
+    }
 
     /// \brief
     /// Gets an IRasterCapabilities interface describing the provider's support for raster images.
@@ -79,7 +94,10 @@ public:
     /// \return
     /// Returns the raster capabilities
     /// 
-	__property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IRasterCapabilities* get_RasterCapabilities();
+    virtual property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IRasterCapabilities^ RasterCapabilities
+    {
+        NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IRasterCapabilities^ get();
+    }
 
     /// \brief
     /// Gets an ITopologyCapabilities interface describing the provider's support for topology.
@@ -87,7 +105,10 @@ public:
     /// \return
     /// Returns the topology capabilities
     /// 
-	__property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ITopologyCapabilities* get_TopologyCapabilities();
+    virtual property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ITopologyCapabilities^ TopologyCapabilities
+    {
+        NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ITopologyCapabilities^ get();
+    }
 
     /// \brief
     /// Gets an IGeometryCapabilities interface describing the provider's support for geometry.
@@ -95,7 +116,10 @@ public:
     /// \return
     /// Returns the geometry capabilities
     /// 
-	__property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IGeometryCapabilities* get_GeometryCapabilities();
+    virtual property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IGeometryCapabilities^ GeometryCapabilities
+    {
+        NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IGeometryCapabilities^ get();
+    }
 
     /// \brief
     /// Gets the connection string used to open a DataStore.
@@ -103,8 +127,6 @@ public:
     /// \return
     /// Returns the connection string
     /// 
-	__property System::String* get_ConnectionString();
-
     /// \brief
     /// Sets the connection string used to open a DataStore. SetConnectionString can only be set while the
     /// connection is closed.
@@ -115,7 +137,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_ConnectionString( System::String* value);
+    virtual property System::String^ ConnectionString
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Gets an IConnectionInfo interface that can be used to interrogate and set connection properties.
@@ -123,7 +149,10 @@ public:
     /// \return
     /// Returns the connection info
     /// 
-	__property NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfo* get_ConnectionInfo();
+    virtual property NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfo^ ConnectionInfo
+    {
+        NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfo^ get();
+    }
 
     /// \brief
     /// Gets the current state of the connection.
@@ -131,7 +160,10 @@ public:
     /// \return
     /// Returns the current state of the connection
     /// 
-	__property NAMESPACE_OSGEO_FDO_CONNECTIONS::ConnectionState get_ConnectionState();
+    virtual property NAMESPACE_OSGEO_FDO_CONNECTIONS::ConnectionState ConnectionState
+    {
+        NAMESPACE_OSGEO_FDO_CONNECTIONS::ConnectionState get();
+    }
 
     /// \brief
     /// Gets the number of milliseconds to wait while trying to establish a
@@ -141,8 +173,6 @@ public:
     /// \return
     /// Returns the time to wait (in milliseconds)
     /// 
-	__property System::Int32 get_ConnectionTimeout();
-
     /// \brief
     /// Sets the number of milliseconds to wait while trying to establish a
     /// connection before terminating the attempt and generating an error. If
@@ -155,7 +185,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_ConnectionTimeout(System::Int32 value);
+    virtual property System::Int32 ConnectionTimeout
+    {
+        System::Int32 get();
+        System::Void set(System::Int32 value);
+    }
 
     /// \brief
     /// Opens a feature connection with the settings specified by the
@@ -165,7 +199,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	NAMESPACE_OSGEO_FDO_CONNECTIONS::ConnectionState Open();
+	virtual NAMESPACE_OSGEO_FDO_CONNECTIONS::ConnectionState Open();
 
     /// \brief
     /// Closes the connection to the DataStore
@@ -173,7 +207,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Close();
+	virtual System::Void Close();
 
     /// \brief
     /// Begins a transaction and returns an object that realizes
@@ -182,7 +216,7 @@ public:
     /// \return
     /// Returns the transaction
     /// 
-	NAMESPACE_OSGEO_FDO_CONNECTIONS::ITransaction* BeginTransaction();
+	virtual NAMESPACE_OSGEO_FDO_CONNECTIONS::ITransaction^ BeginTransaction();
 
     /// \brief
     /// Creates and returns the specified type of command object associated with
@@ -194,7 +228,7 @@ public:
     /// \return
     /// Returns the command
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS::ICommand* CreateCommand(NAMESPACE_OSGEO_FDO_COMMANDS::CommandType commandType);
+	virtual NAMESPACE_OSGEO_FDO_COMMANDS::ICommand^ CreateCommand(NAMESPACE_OSGEO_FDO_COMMANDS::CommandType commandType);
 
     /// \brief
     /// Factory function that creates an empty Schema Override set specific
@@ -203,7 +237,7 @@ public:
     /// \return
     /// Returns PhysicalSchemaMapping
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping* CreateSchemaMapping();
+	virtual NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping^ CreateSchemaMapping();
 
     /// \brief
     /// Sets the XML configuration stream used to configure the Data Store. 
@@ -215,7 +249,10 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Configuration( NAMESPACE_OSGEO_COMMON_IO::IoStream* configStream);
+    virtual property NAMESPACE_OSGEO_COMMON_IO::IoStream^ Configuration
+    {
+        System::Void set(NAMESPACE_OSGEO_COMMON_IO::IoStream^ configStream);
+    }
 
     /// \brief
     /// Forces the writes of any cached data to the targed datastore.
@@ -223,17 +260,12 @@ public:
     /// \return
     /// Returns nothing
     /// 
-    System::Void Flush();
+    virtual System::Void Flush();
 
-public private:
+internal:
 	IConnectionImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoIConnection* GetImpObj();
-
-/// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-/// \endcond
 };
 
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS

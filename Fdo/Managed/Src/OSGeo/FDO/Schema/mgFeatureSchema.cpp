@@ -31,12 +31,12 @@
 
 NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::FeatureSchema() : NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoFeatureSchema::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoFeatureSchema::Create()), true))
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::FeatureSchema(System::String* name, System::String* description) : NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::FeatureSchema(System::String^ name, System::String^ description) : NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoFeatureSchema::Create(StringToUni(name), StringToUni(description)), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoFeatureSchema::Create(StringToUni(name), StringToUni(description))), true))
 }
 
 FdoFeatureSchema* NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::GetImpObj()
@@ -44,18 +44,18 @@ FdoFeatureSchema* NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::GetImpObj()
 	return static_cast<FdoFeatureSchema*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::ClassCollection* NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::get_Classes()
+NAMESPACE_OSGEO_FDO_SCHEMA::ClassCollection^ NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::Classes::get()
 {
 	FdoClassCollection* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetClasses())
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateClassCollection(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateClassCollection(IntPtr(result), true);
 }
 
 // TODO: I can't find the delcaration and definition files of class FdoRelationCollection in
 //       in unmanaged FDO API.
-//FDO_API FdoRelationCollection* GetRelations();
+//FDO_API FdoRelationCollection^ GetRelations();
 
 System::Void NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::AcceptChanges()
 {
@@ -71,51 +71,51 @@ System::Void NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::RejectChanges()
 	Implementation of XmlSerializable
 */
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::WriteXml(String* fileName)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::WriteXml(String^ fileName)
 {
 	EXCEPTION_HANDLER(GetImpObj()->WriteXml(StringToUni(fileName)))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::WriteXml(String* fileName, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::WriteXml(String^ fileName, NAMESPACE_OSGEO_FDO_XML::XmlFlags^ flags)
 {
 	EXCEPTION_HANDLER(GetImpObj()->WriteXml(StringToUni(fileName), flags->GetImpObj()))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::WriteXml(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* xmlWriter)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::WriteXml(NAMESPACE_OSGEO_COMMON_XML::XmlWriter^ xmlWriter)
 {
 	EXCEPTION_HANDLER(GetImpObj()->WriteXml(static_cast<FdoXmlWriter*>(xmlWriter->UnmanagedObject.ToPointer())))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::WriteXml(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* xmlWriter, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::WriteXml(NAMESPACE_OSGEO_COMMON_XML::XmlWriter^ xmlWriter, NAMESPACE_OSGEO_FDO_XML::XmlFlags^ flags)
 {
 	EXCEPTION_HANDLER(GetImpObj()->WriteXml(static_cast<FdoXmlWriter*>(xmlWriter->UnmanagedObject.ToPointer()), flags->GetImpObj()))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::WriteXml(NAMESPACE_OSGEO_COMMON_IO::IoTextWriter* textWriter)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::WriteXml(NAMESPACE_OSGEO_COMMON_IO::IoTextWriter^ textWriter)
 {
 	EXCEPTION_HANDLER(GetImpObj()->WriteXml(static_cast<FdoIoTextWriter*>(textWriter->UnmanagedObject.ToPointer())))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::WriteXml(NAMESPACE_OSGEO_COMMON_IO::IoTextWriter* textWriter, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::WriteXml(NAMESPACE_OSGEO_COMMON_IO::IoTextWriter^ textWriter, NAMESPACE_OSGEO_FDO_XML::XmlFlags^ flags)
 {
 	EXCEPTION_HANDLER(GetImpObj()->WriteXml(static_cast<FdoIoTextWriter*>(textWriter->UnmanagedObject.ToPointer()), flags->GetImpObj()))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::WriteXml(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::WriteXml(NAMESPACE_OSGEO_COMMON_IO::IoStream^ stream)
 {
 	EXCEPTION_HANDLER(GetImpObj()->WriteXml(static_cast<FdoIoStream*>(stream->UnmanagedObject.ToPointer())))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::WriteXml(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::WriteXml(NAMESPACE_OSGEO_COMMON_IO::IoStream^ stream, NAMESPACE_OSGEO_FDO_XML::XmlFlags^ flags)
 {
 	EXCEPTION_HANDLER(GetImpObj()->WriteXml(static_cast<FdoIoStream*>(stream->UnmanagedObject.ToPointer()), flags->GetImpObj()))
 }
 
-NAMESPACE_OSGEO_COMMON_XML::XmlReader* NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::GetFromInternalStylesheet()
+NAMESPACE_OSGEO_COMMON_XML::XmlReader^ NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::GetFromInternalStylesheet()
 {
 	FdoXmlReader* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetFromInternalStylesheet())
 
-	return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateXmlReader(result, true);
+	return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateXmlReader(IntPtr(result), true);
 }

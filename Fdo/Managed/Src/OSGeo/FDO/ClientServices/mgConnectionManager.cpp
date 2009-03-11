@@ -35,23 +35,16 @@ FdoConnectionManager* NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ConnectionManager::Get
 	return static_cast<FdoConnectionManager*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Void NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ConnectionManager::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}
-
-NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ConnectionManager::CreateConnection(String* providerName)
+NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection^ NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ConnectionManager::CreateConnection(String^ providerName)
 {
 	FdoIConnection* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->CreateConnection(StringToUni(providerName)))
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIConnection(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIConnection(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ConnectionManager::FreeLibrary(String* providerName)
+System::Void NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ConnectionManager::FreeLibrary(String^ providerName)
 {
 	EXCEPTION_HANDLER(GetImpObj()->FreeLibrary(StringToUni(providerName)))
 }

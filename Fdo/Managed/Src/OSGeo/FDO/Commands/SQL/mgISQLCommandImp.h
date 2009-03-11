@@ -24,7 +24,7 @@
 class FdoISQLCommand;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SQL
-public __gc __interface ISQLDataReader;
+interface class ISQLDataReader;
 
 /// \ingroup (OSGeoFDOCommandsSQL)
 /// \brief
@@ -33,7 +33,7 @@ public __gc __interface ISQLDataReader;
 /// execution of a SQL statement against an underlying RDBMS. Two execute
 /// methods are provided to distinguish between statements that return table data
 /// versus those that execute non query type operations.
-private __gc class ISQLCommandImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+private ref class ISQLCommandImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
                                     public NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLCommand
 {
 public:
@@ -43,8 +43,6 @@ public:
     /// \return
     /// Returns the SQL statement.
     /// 
-	__property System::String* get_SQLStatement();
-
     /// \brief
     /// Sets the SQL statement to be executed as a string.
     /// 
@@ -54,7 +52,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_SQLStatement(System::String* value);
+    virtual property System::String^ SQLStatement
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Executes the SQL statement against the connection object and returns
@@ -63,7 +65,7 @@ public:
     /// \return
     /// Returns the number of rows affected.
     /// 
-	System::Int32 ExecuteNonQuery();
+	virtual System::Int32 ExecuteNonQuery();
 
     /// \brief
     /// Executes the SQL statement against the connection object and returns
@@ -72,9 +74,9 @@ public:
     /// \return
     /// Returns the data reader.
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReader* ExecuteReader();
+	virtual NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReader^ ExecuteReader();
 
-public private:
+internal:
 	ISQLCommandImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)
 	{
 

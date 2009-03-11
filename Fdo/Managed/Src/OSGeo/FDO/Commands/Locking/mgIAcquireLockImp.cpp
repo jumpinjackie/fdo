@@ -30,7 +30,7 @@ FdoIAcquireLock* NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IAcquireLockImp::GetImpOb
     return static_cast<FdoIAcquireLock*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IAcquireLockImp::get_LockType()
+NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IAcquireLockImp::LockType::get()
 {
 	FdoLockType result;
 
@@ -39,12 +39,12 @@ NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType NAMESPACE_OSGEO_FDO_COMMANDS_LOCK
 	return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType>(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IAcquireLockImp::set_LockType(NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IAcquireLockImp::LockType::set(NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetLockType(static_cast<FdoLockType>(value)))
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockStrategy NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IAcquireLockImp::get_LockStrategy()
+NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockStrategy NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IAcquireLockImp::LockStrategy::get()
 {
 	FdoLockStrategy result;
 
@@ -53,16 +53,16 @@ NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockStrategy NAMESPACE_OSGEO_FDO_COMMANDS_
 	return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockStrategy>(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IAcquireLockImp::set_LockStrategy(NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockStrategy value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IAcquireLockImp::LockStrategy::set(NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockStrategy value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetLockStrategy(static_cast<FdoLockStrategy>(value)))
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader* NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IAcquireLockImp::Execute()
+NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader^ NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IAcquireLockImp::Execute()
 {
 	FdoILockConflictReader* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->Execute())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILockConflictReader(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILockConflictReader(IntPtr(result), true);
 }

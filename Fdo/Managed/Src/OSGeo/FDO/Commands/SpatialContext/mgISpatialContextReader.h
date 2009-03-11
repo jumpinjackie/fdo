@@ -30,7 +30,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
 /// ISpatialContextReader is returned from the GetSpatialContexts command.
 /// The initial position of the ISpatialContextReader interface is prior to the
 /// first item. Thus, you must call ReadNext to begin accessing any data.
-public __gc __interface ISpatialContextReader : public System::IDisposable
+public interface class ISpatialContextReader : public System::IDisposable
 {
 public:
     /// \brief
@@ -39,7 +39,7 @@ public:
     /// \return
     /// Returns the name of the spatial context.
     /// 
-	System::String* GetName();
+	System::String^ GetName();
 
     /// \brief
     /// Gets the description of the spatial context currently being read.
@@ -47,7 +47,7 @@ public:
     /// \return
     /// Returns the description of the spatial context.
     /// 
-	System::String* GetDescription();
+	System::String^ GetDescription();
 
     /// \brief
     /// Gets the name of the coordinate system of the spatial context currently
@@ -57,7 +57,7 @@ public:
     /// \return
     /// Returns the coordinate system name of the spatial context.
     /// 
-	System::String* GetCoordinateSystem();
+	System::String^ GetCoordinateSystem();
 
     /// \brief
     /// Gets the name of the coordinate system in OpenGIS SRS WKT format of the spatial context currently
@@ -67,7 +67,7 @@ public:
     /// \return
     /// Returns the coordinate system description in WKT of of the spatial context.
     /// 
-	System::String* GetCoordinateSystemWkt();
+	System::String^ GetCoordinateSystemWkt();
 
     /// \brief
     /// Gets the extent type of the spatial context currently being read.
@@ -84,7 +84,7 @@ public:
     /// \return
     /// Returns the extent as a byte array in FGF format.
     /// 
-	System::Byte GetExtent() [];
+	array<System::Byte>^ GetExtent();
 
     /// \brief
     /// Gets the tolerance value for XY ordinates of the spatial context

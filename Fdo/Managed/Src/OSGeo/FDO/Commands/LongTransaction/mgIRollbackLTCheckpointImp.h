@@ -34,7 +34,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 /// changes to a named checkpoint for the given long transaction. The user
 /// requires the access privilege on the long transaction for which the user tries
 /// to perform the operation.
-private __gc class IRollbackLongTransactionCheckpointImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
+private ref class IRollbackLongTransactionCheckpointImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, 
                                                            public NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionCheckpoint
 {
 public:
@@ -45,8 +45,6 @@ public:
     /// \return
     /// Returns the list of long transaction names.
     /// 
-	__property System::String* get_LongTransactionName();
-
     /// \brief
     /// Sets the name of the long transaction for which a checkpoint should
     /// be rolled back.
@@ -57,7 +55,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_LongTransactionName(System::String* value);
+    virtual property System::String^ LongTransactionName
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Gets the name of the checkpoint to which the rollback operation
@@ -66,8 +68,6 @@ public:
     /// \return
     /// Returns the name of the checkpoint.
     /// 
-	__property System::String* get_CheckpointName();
-
     /// \brief
     /// Sets the name of the checkpoint to which the rollback operation
     /// should be executed.
@@ -78,7 +78,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_CheckpointName(System::String* value);
+    virtual property System::String^ CheckpointName
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Executes the RollbackLongTransactionCheckpoint command.
@@ -86,9 +90,9 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Execute();
+	virtual System::Void Execute();
 
-public private:
+internal:
 	IRollbackLongTransactionCheckpointImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)
 	{
 

@@ -249,289 +249,289 @@
 #include "FDO\Schema\mgGeometricType.h"
 
 template <class fdoclas, class clas> 
-inline NAMESPACE_OSGEO_RUNTIME::Disposable* CHECK(FdoIDisposable* p, FdoBoolean autoDispose)
+inline NAMESPACE_OSGEO_RUNTIME::Disposable^ CHECK(FdoIDisposable* p, FdoBoolean autoDispose)
 {
-    return (dynamic_cast<fdoclas*>(p) ?  new clas(p, autoDispose) : NULL);
+    return (dynamic_cast<fdoclas*>(p) ?  gcnew clas(IntPtr(p), autoDispose) : nullptr);
 }
 
-NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIXmlSaxHandler(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIXmlSaxHandler(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
 	FdoIDisposable* p = (FdoIDisposable*)ptr.ToPointer();
 
-	NAMESPACE_OSGEO_RUNTIME::Disposable* wrap;
+	NAMESPACE_OSGEO_RUNTIME::Disposable^ wrap;
 
 	// Note:
 	// Here we need keep dynamic_cast to decide the real type of "ptr"
 
-	if (wrap = CHECK<FdoNetworkLinkFeatureClass, NAMESPACE_OSGEO_FDO_SCHEMA::NetworkLinkFeatureClass>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoNetworkNodeFeatureClass, NAMESPACE_OSGEO_FDO_SCHEMA::NetworkNodeFeatureClass>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
+	if (wrap = CHECK<FdoNetworkLinkFeatureClass, NAMESPACE_OSGEO_FDO_SCHEMA::NetworkLinkFeatureClass>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoNetworkNodeFeatureClass, NAMESPACE_OSGEO_FDO_SCHEMA::NetworkNodeFeatureClass>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
 
-	if (wrap = CHECK<FdoNetworkFeatureClass, NAMESPACE_OSGEO_FDO_SCHEMA::NetworkFeatureClass>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoTopoGeometryPropertyDefinition, NAMESPACE_OSGEO_FDO_SCHEMA::TopoGeometryPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
+	if (wrap = CHECK<FdoNetworkFeatureClass, NAMESPACE_OSGEO_FDO_SCHEMA::NetworkFeatureClass>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoTopoGeometryPropertyDefinition, NAMESPACE_OSGEO_FDO_SCHEMA::TopoGeometryPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
 
-	if (wrap = CHECK<FdoXmlClassMapping, NAMESPACE_OSGEO_FDO_XML::XmlClassMapping>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoXmlSchemaMapping, NAMESPACE_OSGEO_FDO_XML::XmlSchemaMapping>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoXmlClassMapping, NAMESPACE_OSGEO_FDO_XML::XmlClassMapping>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoClass, NAMESPACE_OSGEO_FDO_SCHEMA::Class>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoAssociationPropertyDefinition, NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoDataPropertyDefinition, NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoFeatureClass, NAMESPACE_OSGEO_FDO_SCHEMA::FeatureClass>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoGeometricPropertyDefinition, NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoNetworkClass, NAMESPACE_OSGEO_FDO_SCHEMA::NetworkClass>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoNetworkLayerClass, NAMESPACE_OSGEO_FDO_SCHEMA::NetworkLayerClass>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoObjectPropertyDefinition, NAMESPACE_OSGEO_FDO_SCHEMA::ObjectPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoRasterPropertyDefinition, NAMESPACE_OSGEO_FDO_SCHEMA::RasterPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoTopoFeaturePropertyDefinition, NAMESPACE_OSGEO_FDO_SCHEMA::TopoFeaturePropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoTopology, NAMESPACE_OSGEO_FDO_SCHEMA::Topology>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
+	if (wrap = CHECK<FdoXmlClassMapping, NAMESPACE_OSGEO_FDO_XML::XmlClassMapping>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoXmlSchemaMapping, NAMESPACE_OSGEO_FDO_XML::XmlSchemaMapping>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoXmlClassMapping, NAMESPACE_OSGEO_FDO_XML::XmlClassMapping>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoClass, NAMESPACE_OSGEO_FDO_SCHEMA::Class>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoAssociationPropertyDefinition, NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoDataPropertyDefinition, NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoFeatureClass, NAMESPACE_OSGEO_FDO_SCHEMA::FeatureClass>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoGeometricPropertyDefinition, NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoNetworkClass, NAMESPACE_OSGEO_FDO_SCHEMA::NetworkClass>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoNetworkLayerClass, NAMESPACE_OSGEO_FDO_SCHEMA::NetworkLayerClass>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoObjectPropertyDefinition, NAMESPACE_OSGEO_FDO_SCHEMA::ObjectPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoRasterPropertyDefinition, NAMESPACE_OSGEO_FDO_SCHEMA::RasterPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoTopoFeaturePropertyDefinition, NAMESPACE_OSGEO_FDO_SCHEMA::TopoFeaturePropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoTopology, NAMESPACE_OSGEO_FDO_SCHEMA::Topology>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
 	
-	if (wrap = CHECK<FdoXmlElementMapping, NAMESPACE_OSGEO_FDO_XML::XmlElementMapping>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoPhysicalSchemaMapping, NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoPhysicalPropertyMapping, NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalPropertyMapping>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoPhysicalClassMapping, NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalClassMapping>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoClassDefinition, NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoPropertyDefinition, NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoFeatureSchema, NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);	
+	if (wrap = CHECK<FdoXmlElementMapping, NAMESPACE_OSGEO_FDO_XML::XmlElementMapping>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoPhysicalSchemaMapping, NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoPhysicalPropertyMapping, NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalPropertyMapping>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoPhysicalClassMapping, NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalClassMapping>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoClassDefinition, NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoPropertyDefinition, NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoFeatureSchema, NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);	
 	
-	if (wrap = CHECK<FdoFeatureSchemaCollection, NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchemaCollection>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler*>(static_cast<System::IDisposable*>(wrap));	
-	if (wrap = CHECK<FdoPhysicalSchemaMappingCollection, NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMappingCollection>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler*>(static_cast<System::IDisposable*>(wrap));
+	if (wrap = CHECK<FdoFeatureSchemaCollection, NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchemaCollection>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler^>(static_cast<System::IDisposable^>(wrap));	
+	if (wrap = CHECK<FdoPhysicalSchemaMappingCollection, NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMappingCollection>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler^>(static_cast<System::IDisposable^>(wrap));
 
-	if (wrap = CHECK<FdoXmlFeaturePropertyReader, NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyReader>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoPhysicalElementMapping, NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoXmlDeserializable, NAMESPACE_OSGEO_FDO_XML::XmlDeserializable>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoXmlNameCollectionHandler, NAMESPACE_OSGEO_FDO_XML::XmlNameCollectionHandler>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoXmlSpatialContextReader, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextReader>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoSchemaElement, NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
-	if (wrap = CHECK<FdoSchemaAttributeDictionary, NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler*>(wrap);
+	if (wrap = CHECK<FdoXmlFeaturePropertyReader, NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyReader>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoPhysicalElementMapping, NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoXmlDeserializable, NAMESPACE_OSGEO_FDO_XML::XmlDeserializable>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoXmlNameCollectionHandler, NAMESPACE_OSGEO_FDO_XML::XmlNameCollectionHandler>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoXmlSpatialContextReader, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextReader>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoSchemaElement, NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
+	if (wrap = CHECK<FdoSchemaAttributeDictionary, NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler^>(wrap);
 
 	return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateIXmlSaxHandler(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlSaxContext(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlSaxContext(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
 	FdoIDisposable* p = (FdoIDisposable*)ptr.ToPointer();
 
-	NAMESPACE_OSGEO_RUNTIME::Disposable* wrap;
+	NAMESPACE_OSGEO_RUNTIME::Disposable^ wrap;
 
 	// Note:
 	// Here we need keep dynamic_cast to decide the real type of "ptr"
 
-	if (wrap = CHECK<FdoXmlContext, NAMESPACE_OSGEO_FDO_XML::XmlContext>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext*>(wrap);
-	if (wrap = CHECK<FdoXmlFeatureContext, NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext*>(wrap);
+	if (wrap = CHECK<FdoXmlContext, NAMESPACE_OSGEO_FDO_XML::XmlContext>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^>(wrap);
+	if (wrap = CHECK<FdoXmlFeatureContext, NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^>(wrap);
 
 	return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateXmlSaxContext(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO::IConnectionManager* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIConnectionManager(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO::IConnectionManager^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIConnectionManager(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-	return new NAMESPACE_OSGEO_FDO::IConnectionManagerImp(ptr, autoDispose);
+	return gcnew NAMESPACE_OSGEO_FDO::IConnectionManagerImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO::IProviderRegistry* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIProviderRegistry(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO::IProviderRegistry^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIProviderRegistry(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO::IProviderRegistryImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO::IProviderRegistryImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO::IDisposableCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIDisposableCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO::IDisposableCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIDisposableCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO::IDisposableCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO::IDisposableCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_XML::XmlFlags* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlFlags(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_XML::XmlFlags^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlFlags(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
 	FdoIDisposable* p = (FdoIDisposable*)ptr.ToPointer();
 
-	NAMESPACE_OSGEO_RUNTIME::Disposable* wrap;
+	NAMESPACE_OSGEO_RUNTIME::Disposable^ wrap;
 
 	// Note:
 	// Here we need keep dynamic_cast to decide the real type of "ptr"
 
-	if (wrap = CHECK<FdoXmlFeatureFlags, NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_XML::XmlFlags*>(wrap);
-	if (wrap = CHECK<FdoXmlSpatialContextFlags, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_XML::XmlFlags*>(wrap);
+	if (wrap = CHECK<FdoXmlFeatureFlags, NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_XML::XmlFlags^>(wrap);
+	if (wrap = CHECK<FdoXmlSpatialContextFlags, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_XML::XmlFlags^>(wrap);
 
-	return new NAMESPACE_OSGEO_FDO_XML::XmlFlags(ptr, autoDispose);
+	return gcnew NAMESPACE_OSGEO_FDO_XML::XmlFlags(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_XML::XmlClassMapping* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlClassMapping(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_XML::XmlClassMapping^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlClassMapping(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_XML::XmlClassMapping(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_XML::XmlClassMapping(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_XML::XmlClassMappingCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlClassMappingCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_XML::XmlClassMappingCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlClassMappingCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_XML::XmlClassMappingCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_XML::XmlClassMappingCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_XML::XmlElementMapping* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlElementMapping(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_XML::XmlElementMapping^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlElementMapping(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_XML::XmlElementMapping(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_XML::XmlElementMapping(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlElementMappingCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlElementMappingCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlFeatureHandler(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlFeatureHandler(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
 	FdoIDisposable* p = (FdoIDisposable*)ptr.ToPointer();
 
-	NAMESPACE_OSGEO_RUNTIME::Disposable* wrap;
+	NAMESPACE_OSGEO_RUNTIME::Disposable^ wrap;
 
 	// Note:
 	// Here we need keep dynamic_cast to decide the real type of "ptr"
 	
-	if (wrap = CHECK<FdoXmlFeatureReader, NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler*>(wrap);	
+	if (wrap = CHECK<FdoXmlFeatureReader, NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler^>(wrap);	
 
-	return new NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler(ptr, autoDispose);
+	return gcnew NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlFeatureReader(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlFeatureReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_XML::XmlFeatureWriter* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlFeatureWriter(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_XML::XmlFeatureWriter^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlFeatureWriter(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-	return new NAMESPACE_OSGEO_FDO_XML::XmlFeatureWriter(ptr, autoDispose);
+	return gcnew NAMESPACE_OSGEO_FDO_XML::XmlFeatureWriter(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyReader* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlFeaturePropertyReader(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyReader^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlFeaturePropertyReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyReader(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyReader(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlFeaturePropertyWriter(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlFeaturePropertyWriter(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-	return new NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter(ptr, autoDispose);
+	return gcnew NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_CLIENTSERVICES::Provider* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateProvider(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_CLIENTSERVICES::Provider^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateProvider(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_CLIENTSERVICES::Provider(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_CLIENTSERVICES::Provider(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateProviderCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateProviderCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraint* NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePropertyValueConstraint(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraint^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePropertyValueConstraint(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
 	FdoIDisposable* p = (FdoIDisposable*)ptr.ToPointer();
 
-	NAMESPACE_OSGEO_RUNTIME::Disposable* wrap;
+	NAMESPACE_OSGEO_RUNTIME::Disposable^ wrap;
 
 	// Note:
 	// Here we need keep dynamic_cast to decide the real type of "ptr"
 
-	if (wrap = CHECK<FdoPropertyValueConstraintRange, NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange*>(wrap);
-	if (wrap = CHECK<FdoPropertyValueConstraintList, NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList*>(wrap);
+	if (wrap = CHECK<FdoPropertyValueConstraintRange, NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange^>(wrap);
+	if (wrap = CHECK<FdoPropertyValueConstraintList, NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList^>(wrap);
 
-	return new NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraint(ptr, autoDispose);
+	return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraint(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraint* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateUniqueConstraint(System::IntPtr ptr, bool autoDispose)
+NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraint^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateUniqueConstraint(System::IntPtr ptr, bool autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-	return new NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraint(ptr, autoDispose);
+	return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraint(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateUniqueConstraintCollection(System::IntPtr ptr, bool autoDispose)
+NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateUniqueConstraintCollection(System::IntPtr ptr, bool autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-	return new NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection(ptr, autoDispose);
+	return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateAssociationPropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateAssociationPropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::ClassCapabilities* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateClassCapabilities(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_SCHEMA::ClassCapabilities^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateClassCapabilities(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_SCHEMA::ClassCapabilities(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::ClassCapabilities(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::ClassCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateClassCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_SCHEMA::ClassCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateClassCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_SCHEMA::ClassCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::ClassCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateClassDefinition(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateClassDefinition(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
 	FdoClassDefinition* p = static_cast<FdoClassDefinition*>(ptr.ToPointer());
 	
-	NAMESPACE_OSGEO_RUNTIME::Disposable* wrap;
+	NAMESPACE_OSGEO_RUNTIME::Disposable^ wrap;
 
 	switch(p->GetClassType())
 	{
@@ -540,64 +540,64 @@ NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition* NAMESPACE_OSGEO_FDO::ObjectFactory:
 			// Note:
 			// Here we need keep dynamic_cast to decide the real type of "ptr" because these two classes will return the same class type.
 
-			if (wrap = CHECK<FdoTopology, NAMESPACE_OSGEO_FDO_SCHEMA::Topology>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition*>(wrap);
+			if (wrap = CHECK<FdoTopology, NAMESPACE_OSGEO_FDO_SCHEMA::Topology>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition^>(wrap);
 
-			return new NAMESPACE_OSGEO_FDO_SCHEMA::Class(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::Class(IntPtr(p), autoDispose);
 		}
 		case FdoClassType_FeatureClass:
 		{
 			// Note:
 			// Here we need keep dynamic_cast to decide the real type of "ptr" because these two classes will return the same class type.
 
-			if (wrap = CHECK<FdoNetworkFeatureClass, NAMESPACE_OSGEO_FDO_SCHEMA::NetworkFeatureClass>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition*>(wrap);
+			if (wrap = CHECK<FdoNetworkFeatureClass, NAMESPACE_OSGEO_FDO_SCHEMA::NetworkFeatureClass>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition^>(wrap);
 			
-			return new NAMESPACE_OSGEO_FDO_SCHEMA::FeatureClass(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::FeatureClass(IntPtr(p), autoDispose);
 		}
 		case FdoClassType_NetworkClass:
 		{
-			return new NAMESPACE_OSGEO_FDO_SCHEMA::NetworkClass(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::NetworkClass(IntPtr(p), autoDispose);
 		}
 		case FdoClassType_NetworkLayerClass:
 		{
-			return new NAMESPACE_OSGEO_FDO_SCHEMA::NetworkLayerClass(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::NetworkLayerClass(IntPtr(p), autoDispose);
 		}
 		case FdoClassType_NetworkNodeClass:
 		{
-			return new NAMESPACE_OSGEO_FDO_SCHEMA::NetworkNodeFeatureClass(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::NetworkNodeFeatureClass(IntPtr(p), autoDispose);
 		}
 		case FdoClassType_NetworkLinkClass:
 		{
-			return new NAMESPACE_OSGEO_FDO_SCHEMA::NetworkLinkFeatureClass(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::NetworkLinkFeatureClass(IntPtr(p), autoDispose);
 		}
 		default:
-			return NULL;
+			return nullptr;
 	}
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinitionCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataPropertyDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinitionCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataPropertyDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinitionCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinitionCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinition* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataPropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinition^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataPropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinition(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinition(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::FeatureClass* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateFeatureClass(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_SCHEMA::FeatureClass^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateFeatureClass(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
 	FdoFeatureClass* p = static_cast<FdoFeatureClass*>(ptr.ToPointer());
 	
-	NAMESPACE_OSGEO_RUNTIME::Disposable* wrap;
+	NAMESPACE_OSGEO_RUNTIME::Disposable^ wrap;
 
 	switch(p->GetClassType())
 	{
@@ -606,191 +606,191 @@ NAMESPACE_OSGEO_FDO_SCHEMA::FeatureClass* NAMESPACE_OSGEO_FDO::ObjectFactory::Cr
 			// Note:
 			// Here we need keep dynamic_cast to decide the real type of "ptr" because these two classes will return the same class type.
 
-			if (wrap = CHECK<FdoNetworkFeatureClass, NAMESPACE_OSGEO_FDO_SCHEMA::NetworkFeatureClass>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::FeatureClass*>(wrap);
+			if (wrap = CHECK<FdoNetworkFeatureClass, NAMESPACE_OSGEO_FDO_SCHEMA::NetworkFeatureClass>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::FeatureClass^>(wrap);
 			
-			return new NAMESPACE_OSGEO_FDO_SCHEMA::FeatureClass(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::FeatureClass(IntPtr(p), autoDispose);
 		}
 		case FdoClassType_NetworkNodeClass:
 		{
-			return new NAMESPACE_OSGEO_FDO_SCHEMA::NetworkNodeFeatureClass(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::NetworkNodeFeatureClass(IntPtr(p), autoDispose);
 		}
 		case FdoClassType_NetworkLinkClass:
 		{
-			return new NAMESPACE_OSGEO_FDO_SCHEMA::NetworkLinkFeatureClass(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::NetworkLinkFeatureClass(IntPtr(p), autoDispose);
 		}
 		default:
-			return NULL;
+			return nullptr;
 	}
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateFeatureSchema(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateFeatureSchema(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchemaCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateFeatureSchemaCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchemaCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateFeatureSchemaCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchemaCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchemaCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateGeometricPropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateGeometricPropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose)
 {
     if (ptr == IntPtr::Zero)
-	    return NULL;
+	    return nullptr;
 
 	FdoIDisposable* p = (FdoIDisposable*)ptr.ToPointer();
 
-	NAMESPACE_OSGEO_RUNTIME::Disposable* wrap;
+	NAMESPACE_OSGEO_RUNTIME::Disposable^ wrap;
 
 	// Note:
 	// Here we need keep dynamic_cast to decide the real type of "ptr" because these two classes will return the same property type.
 	// So we can not use switch-case clause to avoid dynamic_cast.
 
-	if (wrap = CHECK<FdoTopoGeometryPropertyDefinition, NAMESPACE_OSGEO_FDO_SCHEMA::TopoGeometryPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition*>(wrap);
+	if (wrap = CHECK<FdoTopoGeometryPropertyDefinition, NAMESPACE_OSGEO_FDO_SCHEMA::TopoGeometryPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition^>(wrap);
 
-    return new NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::NetworkLayerClass* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateNetworkLayerClass(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_SCHEMA::NetworkLayerClass^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateNetworkLayerClass(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_SCHEMA::NetworkLayerClass(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::NetworkLayerClass(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition* NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePropertyDefinition(System::IntPtr ptr, System::Boolean autoDispose)
 {
     if (ptr == IntPtr::Zero)
-	    return NULL;
+	    return nullptr;
 
 	FdoPropertyDefinition* p = static_cast<FdoPropertyDefinition*>(ptr.ToPointer());
 
-	NAMESPACE_OSGEO_RUNTIME::Disposable* wrap;
+	NAMESPACE_OSGEO_RUNTIME::Disposable^ wrap;
 
 	switch(p->GetPropertyType())
 	{
 		case FdoPropertyType_DataProperty:
 		{
-			return new NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinition(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinition(IntPtr(p), autoDispose);
 		}
 		case FdoPropertyType_ObjectProperty:
 		{	
-			return new NAMESPACE_OSGEO_FDO_SCHEMA::ObjectPropertyDefinition(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::ObjectPropertyDefinition(IntPtr(p), autoDispose);
 		}
 		case FdoPropertyType_GeometricProperty:
 		{
-			if (wrap = CHECK<FdoTopoGeometryPropertyDefinition, NAMESPACE_OSGEO_FDO_SCHEMA::TopoGeometryPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition*>(wrap);
+			if (wrap = CHECK<FdoTopoGeometryPropertyDefinition, NAMESPACE_OSGEO_FDO_SCHEMA::TopoGeometryPropertyDefinition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinition^>(wrap);
 
-			return new NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition(IntPtr(p), autoDispose);
 		}
 		case FdoPropertyType_AssociationProperty:
 		{
-			return new NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition(IntPtr(p), autoDispose);
 		}
 		case FdoPropertyType_RasterProperty:
 		{
-			return new NAMESPACE_OSGEO_FDO_SCHEMA::RasterPropertyDefinition(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::RasterPropertyDefinition(IntPtr(p), autoDispose);
 		}
 		default:
-			return NULL;
+			return nullptr;
 	}
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePropertyDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePropertyDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::PropertyDefinitionCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateReadOnlyDataPropertyDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateReadOnlyDataPropertyDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyDataPropertyDefinitionCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyPropertyDefinitionCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateReadOnlyPropertyDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyPropertyDefinitionCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateReadOnlyPropertyDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyPropertyDefinitionCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyPropertyDefinitionCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateSchemaAttributeDictionary(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateSchemaAttributeDictionary(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateSchemaElement(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateSchemaElement(System::IntPtr ptr, System::Boolean autoDispose)
 {
     if (ptr == IntPtr::Zero)
-	    return NULL;
+	    return nullptr;
 
 	FdoIDisposable* p = (FdoIDisposable*)ptr.ToPointer();
 
-	NAMESPACE_OSGEO_RUNTIME::Disposable* wrap;
+	NAMESPACE_OSGEO_RUNTIME::Disposable^ wrap;
 
 	// Note:
 	// Here we need keep dynamic_cast to decide the real type of "ptr" because there is more than one possibility.
 
-	if (dynamic_cast<FdoPropertyDefinition*>(p))	return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement*>(CreatePropertyDefinition(p, autoDispose));
-	if (dynamic_cast<FdoClassDefinition*>(p))	return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement*>(CreateClassDefinition(p, autoDispose));
+	if (dynamic_cast<FdoPropertyDefinition*>(p))	return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement^>(CreatePropertyDefinition(IntPtr(p), autoDispose));
+	if (dynamic_cast<FdoClassDefinition*>(p))	return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement^>(CreateClassDefinition(IntPtr(p), autoDispose));
 
-    if (wrap = CHECK<FdoFeatureSchema, NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement*>(wrap);
+    if (wrap = CHECK<FdoFeatureSchema, NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement^>(wrap);
 
-    return new NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_RASTER::DataValueCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataValueCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_RASTER::DataValueCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataValueCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_RASTER::DataValueCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_RASTER::DataValueCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_RASTER::IRaster* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIRaster(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_RASTER::IRaster^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIRaster(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_RASTER::IRasterImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_RASTER::IRasterImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionary* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIRasterPropertyDictionary(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionary^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIRasterPropertyDictionary(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionaryImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionaryImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateRasterDataModel(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateRasterDataModel(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataValue(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataValue(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
 	FdoDataValue* p = static_cast<FdoDataValue*>(ptr.ToPointer());
 
@@ -798,131 +798,131 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* NAMESPACE_OSGEO_FDO::ObjectFactory::C
 	{
 		case FdoDataType_Boolean:
 		{
-			return new NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue(IntPtr(p), autoDispose);
 		}
 		case FdoDataType_Byte:
 		{	
-			return new NAMESPACE_OSGEO_FDO_EXPRESSION::ByteValue(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::ByteValue(IntPtr(p), autoDispose);
 		}
 		case FdoDataType_DateTime:
 		{
-			return new NAMESPACE_OSGEO_FDO_EXPRESSION::DateTimeValue(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::DateTimeValue(IntPtr(p), autoDispose);
 		}
 		case FdoDataType_Decimal:
 		{
-			return new NAMESPACE_OSGEO_FDO_EXPRESSION::DecimalValue(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::DecimalValue(IntPtr(p), autoDispose);
 		}
 		case FdoDataType_Double:
 		{
-			return new NAMESPACE_OSGEO_FDO_EXPRESSION::DoubleValue(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::DoubleValue(IntPtr(p), autoDispose);
 		}
 		case FdoDataType_Int16:
 		{
-			return new NAMESPACE_OSGEO_FDO_EXPRESSION::Int16Value(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::Int16Value(IntPtr(p), autoDispose);
 		}
 		case FdoDataType_Int32:
 		{
-			return new NAMESPACE_OSGEO_FDO_EXPRESSION::Int32Value(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::Int32Value(IntPtr(p), autoDispose);
 		}
 		case FdoDataType_Int64:
 		{
-			return new NAMESPACE_OSGEO_FDO_EXPRESSION::Int64Value(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::Int64Value(IntPtr(p), autoDispose);
 		}
 		case FdoDataType_Single:
 		{
-			return new NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue(IntPtr(p), autoDispose);
 		}
 		case FdoDataType_String:
 		{
-			return new NAMESPACE_OSGEO_FDO_EXPRESSION::StringValue(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::StringValue(IntPtr(p), autoDispose);
 		}
 		case FdoDataType_BLOB:
 		{
-			return new NAMESPACE_OSGEO_FDO_EXPRESSION::BLOBValue(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::BLOBValue(IntPtr(p), autoDispose);
 		}
 		case FdoDataType_CLOB:
 		{
-			return new NAMESPACE_OSGEO_FDO_EXPRESSION::CLOBValue(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::CLOBValue(IntPtr(p), autoDispose);
 		}
 		default:
-			return NULL;
+			return nullptr;
 	}
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateExpression(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateExpression(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
 	FdoIDisposable* p = (FdoIDisposable*)ptr.ToPointer();
 
-	NAMESPACE_OSGEO_RUNTIME::Disposable* wrap;
+	NAMESPACE_OSGEO_RUNTIME::Disposable^ wrap;
 
 	// Note:
 	// Here we need keep dynamic_cast to decide the real type of "ptr" because there is more than one possibility.
 
-	if (wrap = CHECK<FdoGeometryValue, NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Expression*>(wrap);
-	if (dynamic_cast<FdoDataValue*>(p))	return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Expression*>(CreateDataValue(p, autoDispose));
-	if (wrap = CHECK<FdoParameter, NAMESPACE_OSGEO_FDO_EXPRESSION::Parameter>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Expression*>(wrap);
-	if (wrap = CHECK<FdoLiteralValue, NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Expression*>(wrap);
-	if (wrap = CHECK<FdoComputedIdentifier, NAMESPACE_OSGEO_FDO_EXPRESSION::ComputedIdentifier>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Expression*>(wrap);
+	if (wrap = CHECK<FdoGeometryValue, NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^>(wrap);
+	if (dynamic_cast<FdoDataValue*>(p))	return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^>(CreateDataValue(IntPtr(p), autoDispose));
+	if (wrap = CHECK<FdoParameter, NAMESPACE_OSGEO_FDO_EXPRESSION::Parameter>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^>(wrap);
+	if (wrap = CHECK<FdoLiteralValue, NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^>(wrap);
+	if (wrap = CHECK<FdoComputedIdentifier, NAMESPACE_OSGEO_FDO_EXPRESSION::ComputedIdentifier>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^>(wrap);
 
-	if (wrap = CHECK<FdoUnaryExpression, NAMESPACE_OSGEO_FDO_EXPRESSION::UnaryExpression>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Expression*>(wrap);
-	if (wrap = CHECK<FdoValueExpression, NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Expression*>(wrap);
-	if (wrap = CHECK<FdoBinaryExpression, NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Expression*>(wrap);
-	if (wrap = CHECK<FdoIdentifier, NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Expression*>(wrap);
-	if (wrap = CHECK<FdoFunction, NAMESPACE_OSGEO_FDO_EXPRESSION::Function>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Expression*>(wrap);
+	if (wrap = CHECK<FdoUnaryExpression, NAMESPACE_OSGEO_FDO_EXPRESSION::UnaryExpression>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^>(wrap);
+	if (wrap = CHECK<FdoValueExpression, NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^>(wrap);
+	if (wrap = CHECK<FdoBinaryExpression, NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^>(wrap);
+	if (wrap = CHECK<FdoIdentifier, NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^>(wrap);
+	if (wrap = CHECK<FdoFunction, NAMESPACE_OSGEO_FDO_EXPRESSION::Function>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^>(wrap);
 
-    return new NAMESPACE_OSGEO_FDO_EXPRESSION::Expression(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::Expression(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::ExpressionCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateExpressionCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_EXPRESSION::ExpressionCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateExpressionCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_EXPRESSION::ExpressionCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::ExpressionCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIdentifier(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIdentifier(System::IntPtr ptr, System::Boolean autoDispose)
 {
     if (ptr == IntPtr::Zero)
-	    return NULL;
+	    return nullptr;
 
 	FdoIDisposable* p = (FdoIDisposable*)ptr.ToPointer();
 
-	NAMESPACE_OSGEO_RUNTIME::Disposable* wrap;
+	NAMESPACE_OSGEO_RUNTIME::Disposable^ wrap;
 
 	// Note:
 	// Here we need keep dynamic_cast to decide the real type of "ptr" because there is more than one possibility.
 
-    if (wrap = CHECK<FdoComputedIdentifier, NAMESPACE_OSGEO_FDO_EXPRESSION::ComputedIdentifier>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier*>(wrap);
+    if (wrap = CHECK<FdoComputedIdentifier, NAMESPACE_OSGEO_FDO_EXPRESSION::ComputedIdentifier>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^>(wrap);
 
-    return new NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateLiteralValue(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateLiteralValue(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
 	FdoIDisposable* p = (FdoIDisposable*)ptr.ToPointer();
 
-	NAMESPACE_OSGEO_RUNTIME::Disposable* wrap;
+	NAMESPACE_OSGEO_RUNTIME::Disposable^ wrap;
 
 	// Note:
 	// Here we need keep dynamic_cast to decide the real type of "ptr" because there is more than one possibility.
 
-	if (wrap = CHECK<FdoGeometryValue, NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue*>(wrap);
-    if (dynamic_cast<FdoDataValue*>(p))	return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue*>(CreateDataValue(p, autoDispose));
+	if (wrap = CHECK<FdoGeometryValue, NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue^>(wrap);
+    if (dynamic_cast<FdoDataValue*>(p))	return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue^>(CreateDataValue(IntPtr(p), autoDispose));
 
-    return new NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateLOBValue(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateLOBValue(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
 	FdoLOBValue* p = static_cast<FdoLOBValue*>(ptr.ToPointer());
 
@@ -930,659 +930,659 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue* NAMESPACE_OSGEO_FDO::ObjectFactory::Cr
 	{
 		case FdoDataType_BLOB:
 		{
-			return new NAMESPACE_OSGEO_FDO_EXPRESSION::BLOBValue(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::BLOBValue(IntPtr(p), autoDispose);
 		}
 		case FdoDataType_CLOB:
 		{
-			return new NAMESPACE_OSGEO_FDO_EXPRESSION::CLOBValue(p, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::CLOBValue(IntPtr(p), autoDispose);
 		}
 		default:
-			return new NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue(ptr, autoDispose);
+			return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue(ptr, autoDispose);
 	}
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateValueExpression(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateValueExpression(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
 	FdoIDisposable* p = (FdoIDisposable*)ptr.ToPointer();
 
-	NAMESPACE_OSGEO_RUNTIME::Disposable* wrap;
+	NAMESPACE_OSGEO_RUNTIME::Disposable^ wrap;
 
 	// Note:
 	// Here we need keep dynamic_cast to decide the real type of "ptr" because there is more than one possibility.
 
-    if (wrap = CHECK<FdoParameter, NAMESPACE_OSGEO_FDO_EXPRESSION::Parameter>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression*>(wrap);
-	if (wrap = CreateLiteralValue(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression*>(wrap);
+    if (wrap = CHECK<FdoParameter, NAMESPACE_OSGEO_FDO_EXPRESSION::Parameter>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression^>(wrap);
+	if (wrap = CreateLiteralValue(IntPtr(p), autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression^>(wrap);
 
-    return new NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::DataValueCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateEDataValueCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_EXPRESSION::DataValueCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateEDataValueCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_EXPRESSION::DataValueCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::DataValueCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_FILTER::Filter* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateFilter(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_FILTER::Filter^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateFilter(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
 	FdoIDisposable* p = (FdoIDisposable*)ptr.ToPointer();
 
-	NAMESPACE_OSGEO_RUNTIME::Disposable* wrap;
+	NAMESPACE_OSGEO_RUNTIME::Disposable^ wrap;
 
 	// Note:
 	// Here we need keep dynamic_cast to decide the real type of "ptr" because there is more than one possibility.
 
-	if (wrap = CHECK<FdoDistanceCondition, NAMESPACE_OSGEO_FDO_FILTER::DistanceCondition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter*>(wrap);
-	if (wrap = CHECK<FdoSpatialCondition, NAMESPACE_OSGEO_FDO_FILTER::SpatialCondition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter*>(wrap);
+	if (wrap = CHECK<FdoDistanceCondition, NAMESPACE_OSGEO_FDO_FILTER::DistanceCondition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter^>(wrap);
+	if (wrap = CHECK<FdoSpatialCondition, NAMESPACE_OSGEO_FDO_FILTER::SpatialCondition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter^>(wrap);
 	
-	if (wrap = CHECK<FdoBinaryLogicalOperator, NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperator>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter*>(wrap);
-	if (wrap = CHECK<FdoComparisonCondition, NAMESPACE_OSGEO_FDO_FILTER::ComparisonCondition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter*>(wrap);
-	if (wrap = CHECK<FdoGeometricCondition, NAMESPACE_OSGEO_FDO_FILTER::GeometricCondition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter*>(wrap);
-	if (wrap = CHECK<FdoInCondition, NAMESPACE_OSGEO_FDO_FILTER::InCondition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter*>(wrap);
-	if (wrap = CHECK<FdoNullCondition, NAMESPACE_OSGEO_FDO_FILTER::NullCondition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter*>(wrap);
-	if (wrap = CHECK<FdoUnaryLogicalOperator, NAMESPACE_OSGEO_FDO_FILTER::UnaryLogicalOperator>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter*>(wrap);
+	if (wrap = CHECK<FdoBinaryLogicalOperator, NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperator>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter^>(wrap);
+	if (wrap = CHECK<FdoComparisonCondition, NAMESPACE_OSGEO_FDO_FILTER::ComparisonCondition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter^>(wrap);
+	if (wrap = CHECK<FdoGeometricCondition, NAMESPACE_OSGEO_FDO_FILTER::GeometricCondition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter^>(wrap);
+	if (wrap = CHECK<FdoInCondition, NAMESPACE_OSGEO_FDO_FILTER::InCondition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter^>(wrap);
+	if (wrap = CHECK<FdoNullCondition, NAMESPACE_OSGEO_FDO_FILTER::NullCondition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter^>(wrap);
+	if (wrap = CHECK<FdoUnaryLogicalOperator, NAMESPACE_OSGEO_FDO_FILTER::UnaryLogicalOperator>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter^>(wrap);
 
-	if (wrap = CHECK<FdoSearchCondition, NAMESPACE_OSGEO_FDO_FILTER::SearchCondition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter*>(wrap);
-	if (wrap = CHECK<FdoLogicalOperator, NAMESPACE_OSGEO_FDO_FILTER::LogicalOperator>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter*>(wrap);
+	if (wrap = CHECK<FdoSearchCondition, NAMESPACE_OSGEO_FDO_FILTER::SearchCondition>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter^>(wrap);
+	if (wrap = CHECK<FdoLogicalOperator, NAMESPACE_OSGEO_FDO_FILTER::LogicalOperator>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter^>(wrap);
 
-    return new NAMESPACE_OSGEO_FDO_FILTER::Filter(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_FILTER::Filter(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_FILTER::ValueExpressionCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateValueExpressionCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_FILTER::ValueExpressionCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateValueExpressionCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_FILTER::ValueExpressionCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_FILTER::ValueExpressionCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIConnection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIConnection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfo* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIConnectionInfo(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfo^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIConnectionInfo(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfoImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionInfoImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionPropertyDictionary* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIConnectionPropertyDictionary(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionPropertyDictionary^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIConnectionPropertyDictionary(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionPropertyDictionaryImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionPropertyDictionaryImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS::ITransaction* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateITransaction(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_CONNECTIONS::ITransaction^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateITransaction(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_CONNECTIONS::ITransactionImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_CONNECTIONS::ITransactionImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinition* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateArgumentDefinition(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinition^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateArgumentDefinition(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinition(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinition(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateFunctionDefinition(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateFunctionDefinition(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinition(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinitionCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateFunctionDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinitionCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateFunctionDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinitionCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinitionCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandCapabilities* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateICommandCapabilities(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandCapabilities^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateICommandCapabilities(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandCapabilitiesImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ICommandCapabilitiesImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabilities* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIConnectionCapabilities(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabilities^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIConnectionCapabilities(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabilitiesImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabilitiesImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IExpressionCapabilities* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIExpressionCapabilities(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IExpressionCapabilities^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIExpressionCapabilities(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IExpressionCapabilitiesImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IExpressionCapabilitiesImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IFilterCapabilities* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIFilterCapabilities(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IFilterCapabilities^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIFilterCapabilities(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IFilterCapabilitiesImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IFilterCapabilitiesImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IGeometryCapabilities* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIGeometryCapabilities(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IGeometryCapabilities^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIGeometryCapabilities(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IGeometryCapabilitiesImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IGeometryCapabilitiesImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IRasterCapabilities* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIRasterCapabilities(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IRasterCapabilities^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIRasterCapabilities(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IRasterCapabilitiesImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IRasterCapabilitiesImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ISchemaCapabilities* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateISchemaCapabilities(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ISchemaCapabilities^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateISchemaCapabilities(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ISchemaCapabilitiesImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ISchemaCapabilitiesImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ITopologyCapabilities* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateITopologyCapabilities(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ITopologyCapabilities^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateITopologyCapabilities(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ITopologyCapabilitiesImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ITopologyCapabilitiesImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateReadOnlyArgumentDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateReadOnlyArgumentDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinition* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateSignatureDefinition(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinition^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateSignatureDefinition(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinition(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinition(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinitionCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateSignatureDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinitionCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateSignatureDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinitionCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinitionCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlySignatureDefinitionCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateReadOnlySignatureDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlySignatureDefinitionCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateReadOnlySignatureDefinitionCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlySignatureDefinitionCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlySignatureDefinitionCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS::ICommand* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateICommand(System::IntPtr ptr, System::Boolean autoDispose, NAMESPACE_OSGEO_FDO_COMMANDS::CommandType type)
+NAMESPACE_OSGEO_FDO_COMMANDS::ICommand^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateICommand(System::IntPtr ptr, System::Boolean autoDispose, NAMESPACE_OSGEO_FDO_COMMANDS::CommandType type)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
     switch(type)
     {
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_Select:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_Select:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_Insert:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_Insert:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IInsertImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IInsertImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_Delete:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_Delete:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDeleteImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDeleteImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_Update:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_Update:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IUpdateImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IUpdateImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_DescribeSchema:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_DescribeSchema:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_DescribeSchemaMapping:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_DescribeSchemaMapping:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaMappingImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaMappingImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_ApplySchema:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_ApplySchema:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IApplySchemaImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IApplySchemaImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_DestroySchema:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_DestroySchema:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDestroySchemaImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDestroySchemaImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_ActivateSpatialContext:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_ActivateSpatialContext:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IActivateSpatialContextImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IActivateSpatialContextImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_CreateSpatialContext:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_CreateSpatialContext:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::ICreateSpatialContextImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::ICreateSpatialContextImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_DestroySpatialContext:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_DestroySpatialContext:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IDestroySpatialContextImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IDestroySpatialContextImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_GetSpatialContexts:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_GetSpatialContexts:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IGetSpatialContextsImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IGetSpatialContextsImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_CreateMeasureUnit:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_CreateMeasureUnit:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::ICreateMeasureUnitImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_DestroyMeasureUnit:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_DestroyMeasureUnit:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IDestroyMeasureUnitImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IDestroyMeasureUnitImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_GetMeasureUnits:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_GetMeasureUnits:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IGetMeasureUnitsImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IGetMeasureUnitsImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_SQLCommand:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_SQLCommand:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLCommandImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLCommandImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_AcquireLock:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_AcquireLock:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IAcquireLockImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IAcquireLockImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_GetLockInfo:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_GetLockInfo:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IGetLockInfoImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IGetLockInfoImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_GetLockedObjects:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_GetLockedObjects:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IGetLockedObjectsImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IGetLockedObjectsImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_GetLockOwners:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_GetLockOwners:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IGetLockOwnersImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IGetLockOwnersImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_ReleaseLock:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_ReleaseLock:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IReleaseLockImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IReleaseLockImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_ActivateLongTransaction:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_ActivateLongTransaction:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IActivateLongTransactionImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IActivateLongTransactionImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_DeactivateLongTransaction:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_DeactivateLongTransaction:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IDeactivateLongTransactionImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IDeactivateLongTransactionImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_CommitLongTransaction:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_CommitLongTransaction:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICommitLongTransactionImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICommitLongTransactionImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_CreateLongTransaction:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_CreateLongTransaction:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICreateLongTransactionImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICreateLongTransactionImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_GetLongTransactions:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_GetLongTransactions:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IGetLongTransactionsImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IGetLongTransactionsImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_FreezeLongTransaction:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_FreezeLongTransaction:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IFreezeLongTransactionImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IFreezeLongTransactionImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_RollbackLongTransaction:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_RollbackLongTransaction:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_ActivateLongTransactionCheckpoint:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_ActivateLongTransactionCheckpoint:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IActivateLongTransactionCheckpointImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IActivateLongTransactionCheckpointImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_CreateLongTransactionCheckpoint:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_CreateLongTransactionCheckpoint:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICreateLongTransactionCheckpointImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICreateLongTransactionCheckpointImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_GetLongTransactionCheckpoints:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_GetLongTransactionCheckpoints:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IGetLongTransactionCheckpointsImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IGetLongTransactionCheckpointsImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_RollbackLongTransactionCheckpoint:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_RollbackLongTransactionCheckpoint:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionCheckpointImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionCheckpointImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_ChangeLongTransactionPrivileges:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_ChangeLongTransactionPrivileges:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IChangeLongTransactionPrivilegesImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IChangeLongTransactionPrivilegesImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_GetLongTransactionPrivileges:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_GetLongTransactionPrivileges:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IGetLongTransactionPrivilegesImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IGetLongTransactionPrivilegesImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_ChangeLongTransactionSet:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_ChangeLongTransactionSet:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IChangeLongTransactionSetImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IChangeLongTransactionSetImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_GetLongTransactionsInSet:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_GetLongTransactionsInSet:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IGetLongTransactionsInSetImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IGetLongTransactionsInSetImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_SelectAggregates:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_SelectAggregates:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectAggregatesImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectAggregatesImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_FirstProviderCommand:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_FirstProviderCommand:
         {
             // No such command 
-            return NULL;
+            return nullptr;
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_CreateDataStore:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_CreateDataStore:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::ICreateDataStoreImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::ICreateDataStoreImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_DestroyDataStore:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_DestroyDataStore:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDestroyDataStoreImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDestroyDataStoreImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_ListDataStores:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_ListDataStores:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IListDataStoresImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IListDataStoresImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_GetClassNames:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_GetClassNames:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IGetClassNamesImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IGetClassNamesImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_GetSchemaNames:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_GetSchemaNames:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IGetSchemaNamesImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IGetSchemaNamesImp(ptr, autoDispose);
         }
-        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType_ExtendedSelect:
+        case NAMESPACE_OSGEO_FDO_COMMANDS::CommandType::CommandType_ExtendedSelect:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IExtendedSelectImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IExtendedSelectImp(ptr, autoDispose);
         }
         default:
         {
-            return new NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(ptr, autoDispose);
+            return gcnew NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(ptr, autoDispose);
         }
     }
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS::BatchParameterValueCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateBatchParameterValueCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS::BatchParameterValueCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateBatchParameterValueCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_COMMANDS::BatchParameterValueCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_COMMANDS::BatchParameterValueCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS::IdentifierCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIdentifierCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS::IdentifierCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIdentifierCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_COMMANDS::IdentifierCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_COMMANDS::IdentifierCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateParameterValue(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateParameterValue(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValueCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateParameterValueCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValueCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateParameterValueCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValueCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValueCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue* NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePropertyValue(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePropertyValue(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePropertyValueCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePropertyValueCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReader* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateISQLDataReader(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReader^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateISQLDataReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDataReader* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIDataReader(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDataReader^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIDataReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDataReaderImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDataReaderImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIFeatureReader(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIFeatureReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
 	FdoIDisposable* p = (FdoIDisposable*)ptr.ToPointer();
 
-	NAMESPACE_OSGEO_RUNTIME::Disposable* wrap;
+	NAMESPACE_OSGEO_RUNTIME::Disposable^ wrap;
 
 	// Note:
 	// Here we need keep dynamic_cast to decide the real type of "ptr" because there is more than one possibility.
 
-	if (wrap = CHECK<FdoXmlFeatureReader, NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReaderImp*>(wrap);
+	if (wrap = CHECK<FdoXmlFeatureReader, NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReaderImp^>(wrap);
 
-    return new NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReaderImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReaderImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IScrollableFeatureReader* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIScrollableFeatureReader(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IScrollableFeatureReader^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIScrollableFeatureReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
 	FdoIDisposable* p = (FdoIDisposable*)ptr.ToPointer();
 
-	NAMESPACE_OSGEO_RUNTIME::Disposable* wrap;
+	NAMESPACE_OSGEO_RUNTIME::Disposable^ wrap;
 
 	// Note:
 	// Here we need keep dynamic_cast to decide the real type of "ptr" because there is more than one possibility.
 
-	if (wrap = CHECK<FdoXmlFeatureReader, NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IScrollableFeatureReaderImp*>(wrap);
+	if (wrap = CHECK<FdoXmlFeatureReader, NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IScrollableFeatureReaderImp^>(wrap);
 
-    return new NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IScrollableFeatureReaderImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IScrollableFeatureReaderImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMappingCollection* NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePhysicalSchemaMappingCollection(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMappingCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePhysicalSchemaMappingCollection(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMappingCollection(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMappingCollection(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping* NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePhysicalSchemaMapping(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePhysicalSchemaMapping(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
 	FdoIDisposable* p = (FdoIDisposable*)ptr.ToPointer();
 
-	NAMESPACE_OSGEO_RUNTIME::Disposable* wrap;
+	NAMESPACE_OSGEO_RUNTIME::Disposable^ wrap;
 
 	// Note:
 	// Here we need keep dynamic_cast to decide the real type of "ptr" because there is more than one possibility.
 
-	if (wrap = CHECK<FdoXmlSchemaMapping, NAMESPACE_OSGEO_FDO_XML::XmlSchemaMapping>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping*>(wrap);
+	if (wrap = CHECK<FdoXmlSchemaMapping, NAMESPACE_OSGEO_FDO_XML::XmlSchemaMapping>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping^>(wrap);
 
-    return new NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping* NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePhysicalElementMapping(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePhysicalElementMapping(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
 	FdoIDisposable* p = (FdoIDisposable*)ptr.ToPointer();
 
-	NAMESPACE_OSGEO_RUNTIME::Disposable* wrap;
+	NAMESPACE_OSGEO_RUNTIME::Disposable^ wrap;
 
 	// Note:
 	// Here we need keep dynamic_cast to decide the real type of "ptr" because there is more than one possibility.
     
-	if (wrap = CreateXmlClassMapping(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping*>(wrap);
+	if (wrap = CreateXmlClassMapping(IntPtr(p), autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping^>(wrap);
 	
-    if (wrap = CHECK<FdoPhysicalClassMapping, NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalClassMapping>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping*>(wrap);
-    if (wrap = CHECK<FdoPhysicalPropertyMapping, NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalPropertyMapping>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping*>(wrap);
-    if (wrap = CreatePhysicalSchemaMapping(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping*>(wrap);
-    if (wrap = CreateXmlElementMapping(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping*>(wrap);
+    if (wrap = CHECK<FdoPhysicalClassMapping, NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalClassMapping>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping^>(wrap);
+    if (wrap = CHECK<FdoPhysicalPropertyMapping, NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalPropertyMapping>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping^>(wrap);
+    if (wrap = CreatePhysicalSchemaMapping(IntPtr(p), autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping^>(wrap);
+    if (wrap = CreateXmlElementMapping(IntPtr(p), autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping^>(wrap);
 
-    return new NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IMeasureUnitReader* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIMeasureUnitReader(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IMeasureUnitReader^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIMeasureUnitReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IMeasureUnitReaderImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IMeasureUnitReaderImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILockConflictReader(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILockConflictReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReaderImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReaderImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReader* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILockedObjectReader(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReader^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILockedObjectReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReaderImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReaderImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockOwnersReader* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILockOwnersReader(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockOwnersReader^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILockOwnersReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockOwnersReaderImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockOwnersReaderImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::ISpatialContextReader* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateISpatialContextReader(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::ISpatialContextReader^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateISpatialContextReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::ISpatialContextReaderImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::ISpatialContextReaderImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionCheckpointReader* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILongTransactionCheckpointReader(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionCheckpointReader^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILongTransactionCheckpointReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionCheckpointReaderImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionCheckpointReaderImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionReader* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILongTransactionReader(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionReader^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILongTransactionReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionReaderImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionReaderImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionSetReader* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILongTransactionSetReader(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionSetReader^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILongTransactionSetReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionSetReaderImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionSetReaderImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionPrivilegeReader* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILongTransactionPrivilegeReader(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionPrivilegeReader^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILongTransactionPrivilegeReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionPrivilegeReaderImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionPrivilegeReaderImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionConflictDirectiveEnumerator* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILongTransactionConflictDirectiveEnumerator(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionConflictDirectiveEnumerator^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILongTransactionConflictDirectiveEnumerator(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-	return new NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionConflictDirectiveEnumeratorImp(ptr, autoDispose);
+	return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionConflictDirectiveEnumeratorImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionary* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIDataStorePropertyDictionary(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionary^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIDataStorePropertyDictionary(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionaryImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionaryImp(ptr, autoDispose);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReader* NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIDataStoreReader(System::IntPtr ptr, System::Boolean autoDispose)
+NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReader^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIDataStoreReader(System::IntPtr ptr, System::Boolean autoDispose)
 {
 	if (ptr == IntPtr::Zero)
-		return NULL;
+		return nullptr;
 
-    return new NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReaderImp(ptr, autoDispose);
+    return gcnew NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReaderImp(ptr, autoDispose);
 }

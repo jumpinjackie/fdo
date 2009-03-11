@@ -23,17 +23,17 @@
 class FdoDateTimeValue;
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
-public __value enum DataType;
+enum class DataType;
 END_NAMESPACE_OSGEO_FDO_SCHEMA
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
-public __gc __interface IExpressionProcessor;
+interface class IExpressionProcessor;
 
 /// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The DateTimeValue class derives from DataValue and represents a date or time.
-public __gc class DateTimeValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue
+public ref class DateTimeValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue
 {
 public:
     /// \brief
@@ -42,7 +42,7 @@ public:
     /// \return
     /// Returns a DateTime
     /// 
-	static System::DateTime op_Explicit(NAMESPACE_OSGEO_FDO_EXPRESSION::DateTimeValue* value);
+	static operator System::DateTime (NAMESPACE_OSGEO_FDO_EXPRESSION::DateTimeValue^ value);
 
     /// \brief
     /// Constructs a default instance of an DateTimeValue with a value of null.
@@ -69,7 +69,10 @@ public:
     /// \return
     /// Returns an DataType
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
+    property NAMESPACE_OSGEO_FDO_SCHEMA::DataType DataType
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::DataType get();
+    }
 
     /// \brief
     /// Gets the date time value.
@@ -77,8 +80,6 @@ public:
     /// \return
     /// Returns a DateTime
     /// 
-	__property System::DateTime get_DateTime();
-
     /// \brief
     /// Sets the date time value.
     /// 
@@ -88,7 +89,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_DateTime(System::DateTime value);
+    property System::DateTime DateTime
+    {
+        System::DateTime get();
+        System::Void set(System::DateTime value);
+    }
 
     /// \brief
     /// Overrides Expression.Process to pass the DateTimeValue to the appropriate
@@ -100,7 +105,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor* processor);
+	virtual System::Void Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor^ processor) override;
 
     /// \brief
     /// Returns the well defined text representation of this expression.
@@ -108,7 +113,7 @@ public:
     /// \return
     /// Returns a character string
     /// 
-	System::String* ToString();
+	virtual System::String^ ToString() override;
 
     /// \brief
     /// Constructs a DateTimeValue object based on an unmanaged instance of the object
@@ -122,7 +127,7 @@ public:
     /// 
 	DateTimeValue(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
+internal:
 	inline FdoDateTimeValue* GetImpObj();
 };
 END_NAMESPACE_OSGEO_FDO_EXPRESSION

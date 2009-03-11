@@ -23,14 +23,14 @@
 class FdoXmlDeserializable;
 
 BEGIN_NAMESPACE_OSGEO_FDO_XML
-public __gc class XmlFlags;
+ref class XmlFlags;
 
 /// \ingroup (OSGeoFDOXml)
 /// \brief
 /// XmlDeserializable provides the ability to deserialize an FDO object 
 /// from an XML Document. Deserialization support can be added to any class by basing
 /// it on XmlDeserializable and implementing the XmlSaxHander callbacks.
-public __gc class XmlDeserializable : public NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler, public NAMESPACE_OSGEO_FDO_XML::IXmlDeserializable
+public ref class XmlDeserializable : public NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler, public NAMESPACE_OSGEO_FDO_XML::IXmlDeserializable
 {
 public:
     /// \brief
@@ -39,7 +39,7 @@ public:
     /// \param fileName 
     /// Input the file name. Must consist of an XML document.
     /// 
-	System::Void ReadXml(System::String* fileName);
+	virtual System::Void ReadXml(System::String^ fileName);
 
     /// \brief
     /// Reads from an XML document in a file.
@@ -48,9 +48,9 @@ public:
     /// Input the file name. Must consist of an XML document.
     /// \param flags 
     /// Input controls the reading of the elements from the document.
-    /// If NULL then the default flags are used (see NAMESPACE_OSGEO_FDO_XML::XmlFlags::Create())
+    /// If nullptr then the default flags are used (see NAMESPACE_OSGEO_FDO_XML::XmlFlags::Create())
     /// 
-	System::Void ReadXml(System::String* fileName, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags);
+	virtual System::Void ReadXml(System::String^ fileName, NAMESPACE_OSGEO_FDO_XML::XmlFlags^ flags);
 
     /// \brief
     /// Reads an XML document from an XML reader.
@@ -58,7 +58,7 @@ public:
     /// \param xmlReader 
     /// Input the XML reader.
     /// 
-	System::Void ReadXml(NAMESPACE_OSGEO_COMMON_XML::XmlReader* xmlReader);
+	virtual System::Void ReadXml(NAMESPACE_OSGEO_COMMON_XML::XmlReader^ xmlReader);
 
     /// \brief
     /// Reads an XML document from an XML reader.
@@ -67,9 +67,9 @@ public:
     /// Input the XML reader.
     /// \param flags 
     /// Input controls the reading of the elements from the document. 
-    /// If NULL then the default flags are used (see NAMESPACE_OSGEO_FDO_XML::XmlFlags::Create())
+    /// If nullptr then the default flags are used (see NAMESPACE_OSGEO_FDO_XML::XmlFlags::Create())
     /// 
-	System::Void ReadXml(NAMESPACE_OSGEO_COMMON_XML::XmlReader* xmlReader, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags);
+	virtual System::Void ReadXml(NAMESPACE_OSGEO_COMMON_XML::XmlReader^ xmlReader, NAMESPACE_OSGEO_FDO_XML::XmlFlags^ flags);
 
     /// \brief
     /// Reads an XML document from a text reader.
@@ -78,7 +78,7 @@ public:
     /// Input the text reader. Must be positioned at the
     /// start of an XML document.
     /// 
-	System::Void ReadXml(NAMESPACE_OSGEO_COMMON_IO::IoTextReader* textReader);
+	virtual System::Void ReadXml(NAMESPACE_OSGEO_COMMON_IO::IoTextReader^ textReader);
 
     /// \brief
     /// Reads an XML document from a text reader.
@@ -88,9 +88,9 @@ public:
     /// start of an XML document.
     /// \param flags 
     /// Input controls the reading of the elements from the document. 
-    /// If NULL then the default flags are used (see NAMESPACE_OSGEO_FDO_XML::XmlFlags::Create())
+    /// If nullptr then the default flags are used (see NAMESPACE_OSGEO_FDO_XML::XmlFlags::Create())
     /// 
-	System::Void ReadXml(NAMESPACE_OSGEO_COMMON_IO::IoTextReader* textReader, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags);
+	virtual System::Void ReadXml(NAMESPACE_OSGEO_COMMON_IO::IoTextReader^ textReader, NAMESPACE_OSGEO_FDO_XML::XmlFlags^ flags);
 
     /// \brief
     /// Reads an XML document from a stream.
@@ -99,7 +99,7 @@ public:
     /// Input the stream. Must be positioned at the
     /// start of an XML document.
     /// 
-	System::Void ReadXml(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream);
+	virtual System::Void ReadXml(NAMESPACE_OSGEO_COMMON_IO::IoStream^ stream);
 
     /// \brief
     /// Reads an XML document from a stream.
@@ -109,10 +109,10 @@ public:
     /// start of an XML document.
     /// \param flags 
     /// Input controls the reading of the elements from the document. 
-    /// If NULL then the default flags are used (see NAMESPACE_OSGEO_FDO_XML::XmlFlags::Create())
+    /// If nullptr then the default flags are used (see NAMESPACE_OSGEO_FDO_XML::XmlFlags::Create())
     /// 
     /// 
-	System::Void ReadXml(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags);
+	virtual System::Void ReadXml(NAMESPACE_OSGEO_COMMON_IO::IoStream^ stream, NAMESPACE_OSGEO_FDO_XML::XmlFlags^ flags);
 
     /// \brief
     /// Gets the XML Flags that were passed to the ReadXml() 
@@ -122,7 +122,7 @@ public:
     /// \return
     /// Returns the XML Flags
     /// 
-	NAMESPACE_OSGEO_FDO_XML::XmlFlags* GetDeserializationFlags();
+	virtual NAMESPACE_OSGEO_FDO_XML::XmlFlags^ GetDeserializationFlags();
 
     /// \brief
     /// Gets the current XML Reader. This function would 
@@ -133,7 +133,7 @@ public:
     /// \return
     /// Returns the XML reader
     /// 
-	NAMESPACE_OSGEO_COMMON_XML::XmlReader* GetXmlReader();
+	virtual NAMESPACE_OSGEO_COMMON_XML::XmlReader^ GetXmlReader();
 
     /// \brief
     /// Gets the stylesheet for converting the XML document from 
@@ -142,9 +142,9 @@ public:
     /// stylesheet that does the conversion.
     /// 
     /// \return
-    /// Returns NULL by default (no internal format defined)
+    /// Returns nullptr by default (no internal format defined)
     /// 
-	NAMESPACE_OSGEO_COMMON_XML::XmlReader* GetFromExternalStylesheet();
+	virtual NAMESPACE_OSGEO_COMMON_XML::XmlReader^ GetFromExternalStylesheet();
 
     /// \brief
     /// Gets the SAX context to pass to the XmlSaxHandler callbacks.
@@ -152,12 +152,12 @@ public:
     /// specify a SAX context with class-specific information.
     /// 
     /// \return
-    /// Returns NULL by default, the default NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext is used.
+    /// Returns nullptr by default, the default NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext is used.
     /// The default provides basic error handling functionality.
     /// 
-	NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* GetSaxContext();
+	virtual NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ GetSaxContext();
 
-public private:
+internal:
 	XmlDeserializable(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoXmlDeserializable* GetImpObj();

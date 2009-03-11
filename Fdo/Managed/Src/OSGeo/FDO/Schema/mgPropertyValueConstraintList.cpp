@@ -39,7 +39,7 @@ NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList::PropertyValueConstraint
 
 NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList::PropertyValueConstraintList() : NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraint(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoPropertyValueConstraintList::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoPropertyValueConstraintList::Create()), true))
 }
 
 FdoPropertyValueConstraintList* NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList::GetImpObj()
@@ -47,11 +47,11 @@ FdoPropertyValueConstraintList* NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstra
     return static_cast<FdoPropertyValueConstraintList*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::DataValueCollection* NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList::get_ConstraintList()
+NAMESPACE_OSGEO_FDO_EXPRESSION::DataValueCollection^ NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList::ConstraintList::get()
 {
 	FdoDataValueCollection* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetConstraintList())
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateEDataValueCollection(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateEDataValueCollection(IntPtr(result), true);
 }

@@ -24,7 +24,7 @@
 class FdoILockedObjectReader;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
-public __gc class PropertyValueCollection;
+ref class PropertyValueCollection;
 END_NAMESPACE_OSGEO_FDO_COMMANDS
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
@@ -39,7 +39,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 /// and GetLockInfo commands. The initial position of the ILockInfoReader is
 /// prior to the first item. Thus, you must call ReadNext to begin accessing
 /// any data.
-private __gc class ILockedObjectReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
+private ref class ILockedObjectReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
                                             public NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReader
 {
 public:
@@ -54,7 +54,7 @@ public:
     /// \return
     /// Returns the name of the class.
     /// 
-	System::String* GetFeatureClassName();
+	virtual System::String^ GetFeatureClassName();
 
     /// \brief
     /// Gets an PropertyValueCollection containing the property values
@@ -63,7 +63,7 @@ public:
     /// \return
     /// Returns the property collection identifying the feature.
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection* GetIdentity();
+	virtual NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection^ GetIdentity();
 
     /// \brief
     /// Gets the name of user who holds the lock on the feature currently being
@@ -72,7 +72,7 @@ public:
     /// \return
     /// Returns the lock owner
     /// 
-	System::String* GetLockOwner();
+	virtual System::String^ GetLockOwner();
 
     /// \brief
     /// Gets the type of the lock held on the feature currently being read.
@@ -80,7 +80,7 @@ public:
     /// \return
     /// Returns the lock type
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType GetLockType();
+	virtual NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType GetLockType();
 
     /// \brief
     /// Gets the name of the long transaction in which the feature 
@@ -90,7 +90,7 @@ public:
     /// Returns the name of the long transaction in which the feature
     /// currently being read is locked.
     /// 
-	System::String* GetLongTransaction();
+	virtual System::String^ GetLongTransaction();
 
     /// \brief
     /// Advances the reader to the next item. The default position of the 
@@ -100,7 +100,7 @@ public:
     /// \return
     /// Returns true if there is a next item.
     /// 
-	System::Boolean ReadNext();
+	virtual System::Boolean ReadNext();
 
     /// \brief
     /// Closes the ILockInfoReader object, freeing any resources it may
@@ -109,14 +109,9 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Close();
+	virtual System::Void Close();
 
-/// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-/// \endcond
-
-public private:
+internal:
 	ILockedObjectReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)
 	{
 

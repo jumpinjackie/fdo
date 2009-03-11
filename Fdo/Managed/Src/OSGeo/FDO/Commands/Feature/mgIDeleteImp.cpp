@@ -32,18 +32,18 @@ FdoIDelete* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDeleteImp::GetImpObj()
 
 System::Int32 NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDeleteImp::Execute()
 {
-	FdoInt32 result;
+	System::Int32 result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->Execute())
 
 	return result;
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDeleteImp::get_LockConflicts()
+NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDeleteImp::LockConflicts::get()
 {
 	FdoILockConflictReader* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetLockConflicts())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILockConflictReader(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILockConflictReader(IntPtr(result), true);
 }

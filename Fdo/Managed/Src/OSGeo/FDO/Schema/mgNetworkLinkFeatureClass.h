@@ -24,7 +24,7 @@
 class FdoNetworkLinkFeatureClass;
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
-public __gc class AssociationPropertyDefinition;
+ref class AssociationPropertyDefinition;
 
 /// \ingroup (OSGeoFDOSchema)
 /// \brief
@@ -33,7 +33,7 @@ public __gc class AssociationPropertyDefinition;
 /// <p><b>Note:</b> <span class="red_text">This Help topic is provided for informational use only. There is
 /// no interface or support provided. OSGeo reserves the right to change
 /// the software related to the content herein.</span>
-public __gc class NetworkLinkFeatureClass : public NAMESPACE_OSGEO_FDO_SCHEMA::NetworkFeatureClass
+public ref class NetworkLinkFeatureClass : public NAMESPACE_OSGEO_FDO_SCHEMA::NetworkFeatureClass
 {
 public:
     /// \brief
@@ -49,7 +49,7 @@ public:
     /// \param description 
     /// Input description
     /// 
-	NetworkLinkFeatureClass(System::String* name, System::String* description);
+	NetworkLinkFeatureClass(System::String^ name, System::String^ description);
 
     /// \brief
     /// Gets the concrete class type.
@@ -57,7 +57,10 @@ public:
     /// \return
     /// Returns class type
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::ClassType get_ClassType();
+    property NAMESPACE_OSGEO_FDO_SCHEMA::ClassType ClassType
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::ClassType get();
+    }
 
     /// \brief
     /// Gets a reference to the start node property.
@@ -65,8 +68,6 @@ public:
     /// \return
     /// Returns an association property definition
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition* get_StartNodeProperty();
-
     /// \brief
     /// Sets a reference to the start node property.
     /// 
@@ -76,7 +77,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_StartNodeProperty(NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition* value);
+    property NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition^ StartNodeProperty
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition^ value);
+    }
 
     /// \brief
     /// Gets a reference to the end node property.
@@ -84,8 +89,6 @@ public:
     /// \return
     /// Returns an association property definition
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition* get_EndNodeProperty();
-
     /// \brief
     /// Sets a reference to the end node property.
     /// 
@@ -95,7 +98,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_EndNodeProperty(NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition* value);
+    property NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition^ EndNodeProperty
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_SCHEMA::AssociationPropertyDefinition^ value);
+    }
 
     /// \brief
     /// Constructs a NetworkLinkFeatureClass object based on an unmanaged instance of the object
@@ -112,7 +119,7 @@ public:
 
 	}
 
-public private:
+internal:
 	inline FdoNetworkLinkFeatureClass* GetImpObj();
 };
 

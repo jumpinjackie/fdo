@@ -27,16 +27,16 @@ FdoIDestroySchema* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDestroySchemaImp::GetIm
     return static_cast<FdoIDestroySchema*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::String* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDestroySchemaImp::get_SchemaName()
+System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDestroySchemaImp::SchemaName::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetSchemaName())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDestroySchemaImp::set_SchemaName(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDestroySchemaImp::SchemaName::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetSchemaName(StringToUni(value)))
 }

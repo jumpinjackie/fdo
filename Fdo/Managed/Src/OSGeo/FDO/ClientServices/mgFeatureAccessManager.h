@@ -20,8 +20,8 @@
 
 
 BEGIN_NAMESPACE_OSGEO_FDO
-public __gc __interface IConnectionManager;
-public __gc __interface IProviderRegistry;
+interface class IConnectionManager;
+interface class IProviderRegistry;
 END_NAMESPACE_OSGEO_FDO
 
 BEGIN_NAMESPACE_OSGEO_FDO_CLIENTSERVICES
@@ -30,7 +30,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_CLIENTSERVICES
 /// \brief
 /// The FeatureAccessManager class manages the set of feature providers stored in the FDO provider registry
 /// and provides support for dynamic discovery and binding to registered feature providers
-public __sealed __gc class FeatureAccessManager 
+public ref class FeatureAccessManager sealed
 {
 public:
     /// \brief
@@ -40,7 +40,7 @@ public:
     /// Returns a static instance of an IConnectionManager object. 
     /// Throws an instance of Exception if an error occurs.
     /// 
-	static NAMESPACE_OSGEO_FDO::IConnectionManager* GetConnectionManager();
+	static NAMESPACE_OSGEO_FDO::IConnectionManager^ GetConnectionManager();
 
     /// \brief
     /// Static method that gets an object that implements IProviderRegistry
@@ -49,7 +49,7 @@ public:
     /// Returns a static instance of an IProviderRegistry object. 
     /// Throws an instance of Exception if an error occurs.
     /// 
-	static NAMESPACE_OSGEO_FDO::IProviderRegistry* GetProviderRegistry();
+	static NAMESPACE_OSGEO_FDO::IProviderRegistry^ GetProviderRegistry();
 
 private:
 	FeatureAccessManager(){}

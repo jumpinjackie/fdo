@@ -21,7 +21,7 @@
 #include "FDO\Commands\mgICommand.h"
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
-public __gc __interface ILongTransactionPrivilegeReader;
+interface class ILongTransactionPrivilegeReader;
 
 /// \ingroup (OSGeoFDOCommandsLongTransaction)
 /// \interface OSGeo::FDO::Commands::LongTransaction::IGetLongTransactionPrivileges
@@ -31,7 +31,7 @@ public __gc __interface ILongTransactionPrivilegeReader;
 /// privileges of a long transaction established for each user. The ability to 
 /// successfully execute the command might be restricted by the datastore security 
 /// if the long transaction doesn’t belong to the user executing the command.
-public __gc __interface IGetLongTransactionPrivileges : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
+public interface class IGetLongTransactionPrivileges : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
 {
 public:
     /// \brief
@@ -41,8 +41,6 @@ public:
     /// \return
     /// Returns the long transaction name
     /// 
-	__property System::String* get_LongTransactionName();
-
     /// \brief
     /// Sets the name of the long transaction for which privileges should be
     /// enumerated.
@@ -53,7 +51,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_LongTransactionName(System::String* value);
+    property System::String^ LongTransactionName
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Executes the GetLongTransactionPrivileges command, returning a reference
@@ -62,7 +64,7 @@ public:
     /// \return
     /// Returns the long transaction privilege reader.
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionPrivilegeReader* Execute();
+	NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionPrivilegeReader^ Execute();
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION

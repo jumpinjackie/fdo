@@ -24,7 +24,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 /// \interface OSGeo::FDO::Connections::Capabilities::IGeometryCapabilities
 /// \brief
 /// The IGeometryCapabilities class delineates available support for raster processing from a provider.
-public __gc __interface IGeometryCapabilities : public System::IDisposable
+public interface class IGeometryCapabilities : public System::IDisposable
 {
 public:
     /// \brief
@@ -34,7 +34,10 @@ public:
     /// \return
     /// Returns the list of geometry types
     /// 
-	__property NAMESPACE_OSGEO_COMMON::GeometryType get_GeometryTypes() [];
+    property array<NAMESPACE_OSGEO_COMMON::GeometryType>^ GeometryTypes
+    {
+        array<NAMESPACE_OSGEO_COMMON::GeometryType>^ get();
+    }
 
     /// \brief
     /// Return the list of supported component types. For example, if a client wanted to know if circular arcs were supported 
@@ -43,7 +46,10 @@ public:
     /// \return
     /// Returns the list of component types
     /// 
-	__property NAMESPACE_OSGEO_COMMON::GeometryComponentType get_GeometryComponentTypes() [];
+    property array<NAMESPACE_OSGEO_COMMON::GeometryComponentType>^ GeometryComponentTypes
+    {
+        array<NAMESPACE_OSGEO_COMMON::GeometryComponentType>^ get();
+    }
 
     /// \brief
     /// Returns the supported dimensionalities which are based on the bit masks defined in the Dimensionality enum. 
@@ -52,8 +58,10 @@ public:
     /// \return
     /// Returns the dimensionalities
     /// 
-	__property System::Int32 get_Dimensionalities();
-
+    property System::Int32 Dimensionalities
+    {
+        System::Int32 get();
+    }
 };
 
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES

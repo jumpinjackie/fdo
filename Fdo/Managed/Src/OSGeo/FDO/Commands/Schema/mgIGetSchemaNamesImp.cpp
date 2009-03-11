@@ -30,11 +30,11 @@ FdoIGetSchemaNames* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IGetSchemaNamesImp::Get
     return static_cast<FdoIGetSchemaNames*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_COMMON::StringCollection* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IGetSchemaNamesImp::Execute()
+NAMESPACE_OSGEO_COMMON::StringCollection^ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IGetSchemaNamesImp::Execute()
 {
 	FdoStringCollection* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->Execute())
 
-        return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateStringCollection(result, true);
+    return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateStringCollection(IntPtr(result), true);
 }

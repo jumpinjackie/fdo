@@ -23,96 +23,87 @@
 
 /// \cond DOXYGEN-IGNORE
 
-class StringToUni
+ref class StringToUni : System::IDisposable
 {
 private:
 	void* m_ptr;
 
 public:
-	StringToUni(System::Object * str)
-	{
-		m_ptr = System::Runtime::InteropServices::Marshal::StringToHGlobalUni(__try_cast<System::String*>(str)).ToPointer();
-	}
-	StringToUni(System::String * str)
+	StringToUni(System::String^ str)
 	{
 		m_ptr = System::Runtime::InteropServices::Marshal::StringToHGlobalUni(str).ToPointer();
 	}
-	~StringToUni()
+	!StringToUni()
 	{
 		System::Runtime::InteropServices::Marshal::FreeHGlobal(System::IntPtr(m_ptr));
 	}
+    ~StringToUni()
+    {
+        this->!StringToUni();
+    }
 	operator const FdoString*()
 	{
-		return (const FdoString*)m_ptr;
+		return (FdoString*)m_ptr;
 	}
 }; 
 
-class StringToAnsi
+ref class StringToAnsi : System::IDisposable
 {
 private:
 	void* m_ptr;
 
 public:
-	StringToAnsi(System::Object * str)
-	{
-		m_ptr = System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(__try_cast<System::String*>(str)).ToPointer();
-	}
-	StringToAnsi(System::String * str)
+	StringToAnsi(System::String^ str)
 	{
 		m_ptr = System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(str).ToPointer();
 	}
-	~StringToAnsi()
+	!StringToAnsi()
 	{
 		System::Runtime::InteropServices::Marshal::FreeHGlobal(System::IntPtr(m_ptr));
 	}
+    ~StringToAnsi()
+    {
+        this->!StringToAnsi();
+    }
 	operator const char*()
 	{
 		return (const char*)m_ptr;
 	}
 };   
 
-inline System::Byte FdoByteArrayToByteArray(const FdoByte* umBuffer, FdoInt32 len) []
+inline array<System::Byte>^ FdoByteArrayToByteArray(const FdoByte* umBuffer, FdoInt32 len)
 {
-	System::Byte mgBuffer __gc[] = new System::Byte[len];
-	for (FdoInt32 i = 0; i < len; i++)
-	{
-		mgBuffer[i] = umBuffer[i];
-	}
+	array<System::Byte>^ mgBuffer = gcnew array<System::Byte>(len);
+    pin_ptr<FdoByte> umgBuffer = &mgBuffer[0];
+    memcpy(umgBuffer, umBuffer, len);
 	return mgBuffer;
 }
 
 /// \brief
 /// Convert a managed ByteArray buffer to a new unmanaged ByteArray buffer.
 /// This new buffer should be released when it isn't used.
-inline FdoByteArray* ByteArrayToFdoByteArray(System::Byte mgBuffer __gc[])
+inline FdoByteArray* ByteArrayToFdoByteArray(array<System::Byte>^ mgBuffer)
 {
-    if (mgBuffer == NULL || mgBuffer->Length == 0)
-        return NULL;
-	FdoByte* umBuffer = new FdoByte[mgBuffer->Length];
-	for (FdoInt32 i = 0; i < mgBuffer->Length; i++)
-	{
-		umBuffer[i] = mgBuffer[i];
-	}
-
-    FdoByteArray* ba = FdoByteArray::Create(umBuffer, mgBuffer->Length);
+    if (mgBuffer ==nullptr || mgBuffer->Length == 0)
+        return nullptr;
     
-    if (umBuffer) 
-        delete umBuffer;
-	
+    pin_ptr<FdoByte> umgBuffer = &mgBuffer[0];
+    FdoByteArray* ba = FdoByteArray::Create(umgBuffer, mgBuffer->Length);
+    
     return ba;
 }
 
-inline System::String* FdoStringArrayToStringArray(const FdoString** umArray, FdoInt32 len) []
+inline array<System::String^>^ FdoStringArrayToStringArray(const FdoString** umArray, FdoInt32 len)
 {
-	System::String* mgArray __gc[] = __gc new System::String*[len];
+	array<System::String^>^ mgArray = gcnew array<System::String^>(len);
 	for (FdoInt32 i = 0; i < len; i++)
 	{
-		mgArray[i] = new System::String(umArray[i]);
+		mgArray[i] = CHECK_STRING(umArray[i]);
 	}
 	return mgArray;
 }
 
-inline FdoString** UnwrapStringArray(System::String* mgArray[])
+inline FdoString** UnwrapStringArray(array<System::String^>^ mgArray)
 {
 	FdoString** umArray = new FdoString*[mgArray->Length];
 
@@ -137,16 +128,6 @@ inline System::DateTime FdoDateTimeToDateTime(FdoDateTime& date)
 inline FdoDateTime SystemDateToFdoDateTime(System::DateTime date)
 {
 	return FdoDateTime(date.Year, date.Month, date.Day, date.Hour, date.Minute, FdoFloat(date.Second));
-}
-
-inline System::Boolean* FdoBoolToBoolean(FdoBoolean* b)
-{
-}
-
-inline static FdoBoolean* BooleanToFdoBool(System::Boolean* b)
-{	
-	System::Boolean __pin* bb = b;
-	return bb;
 }
 
 /// \endcond

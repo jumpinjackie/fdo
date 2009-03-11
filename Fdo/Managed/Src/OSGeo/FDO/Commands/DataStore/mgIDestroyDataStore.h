@@ -21,7 +21,7 @@
 #include "FDO\Commands\mgICommand.h"
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE
-public __gc __interface IDataStorePropertyDictionary;
+interface class IDataStorePropertyDictionary;
 
 /// \ingroup (OSGeoFDOCommandsDataStore)
 /// \interface OSGeo::FDO::Commands::DataStore::IDestroyDataStore
@@ -29,7 +29,7 @@ public __gc __interface IDataStorePropertyDictionary;
 /// The IDestroyDataStore interface defines the destroy datastore command,
 /// which can be used to create new provider specific datastores. The input is provided
 /// through a dictionary of name value pairs that is provider dependant. 
-public __gc __interface IDestroyDataStore : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
+public interface class IDestroyDataStore : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
 {
 public:
     /// \brief
@@ -40,7 +40,10 @@ public:
     /// \return
     /// Returns the property dictionary
     /// 
-    __property NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionary* get_DataStoreProperties();
+    property NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionary^ DataStoreProperties
+    {
+        NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionary^ get();
+    }
 
     /// \brief
     /// Executes the IDestroyDataStore command.

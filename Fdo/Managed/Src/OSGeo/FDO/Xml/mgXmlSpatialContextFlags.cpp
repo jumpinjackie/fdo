@@ -24,32 +24,32 @@
 
 NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::XmlSpatialContextFlags() : NAMESPACE_OSGEO_FDO_XML::XmlFlags(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoXmlSpatialContextFlags::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoXmlSpatialContextFlags::Create()), true))
 }
 
-NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::XmlSpatialContextFlags(System::String* location) : NAMESPACE_OSGEO_FDO_XML::XmlFlags(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::XmlSpatialContextFlags(System::String^ location) : NAMESPACE_OSGEO_FDO_XML::XmlFlags(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoXmlSpatialContextFlags::Create(StringToUni(location)), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoXmlSpatialContextFlags::Create(StringToUni(location))), true))
 }
 
-NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::XmlSpatialContextFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel) : NAMESPACE_OSGEO_FDO_XML::XmlFlags(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::XmlSpatialContextFlags(System::String^ location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel) : NAMESPACE_OSGEO_FDO_XML::XmlFlags(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoXmlSpatialContextFlags::Create(StringToUni(location), static_cast<FdoXmlFlags::ErrorLevel>(errorLevel)), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoXmlSpatialContextFlags::Create(StringToUni(location), static_cast<FdoXmlFlags::ErrorLevel>(errorLevel))), true))
 }
 
-NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::XmlSpatialContextFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust) : NAMESPACE_OSGEO_FDO_XML::XmlFlags(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::XmlSpatialContextFlags(System::String^ location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust) : NAMESPACE_OSGEO_FDO_XML::XmlFlags(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoXmlSpatialContextFlags::Create(StringToUni(location), static_cast<FdoXmlFlags::ErrorLevel>(errorLevel), nameAdjust), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoXmlSpatialContextFlags::Create(StringToUni(location), static_cast<FdoXmlFlags::ErrorLevel>(errorLevel), nameAdjust)), true))
 }
 
-NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::XmlSpatialContextFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::ConflictOption conflictOption) : NAMESPACE_OSGEO_FDO_XML::XmlFlags(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::XmlSpatialContextFlags(System::String^ location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::ConflictOption conflictOption) : NAMESPACE_OSGEO_FDO_XML::XmlFlags(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoXmlSpatialContextFlags::Create(StringToUni(location), static_cast<FdoXmlFlags::ErrorLevel>(errorLevel), nameAdjust, static_cast<FdoXmlSpatialContextFlags::ConflictOption>(conflictOption)), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoXmlSpatialContextFlags::Create(StringToUni(location), static_cast<FdoXmlFlags::ErrorLevel>(errorLevel), nameAdjust, static_cast<FdoXmlSpatialContextFlags::ConflictOption>(conflictOption))), true))
 }
 
-NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::XmlSpatialContextFlags(System::String* location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::ConflictOption conflictOption, System::Boolean includeDefault) : NAMESPACE_OSGEO_FDO_XML::XmlFlags(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::XmlSpatialContextFlags(System::String^ location, NAMESPACE_OSGEO_FDO_XML::XmlFlags::ErrorLevel errorLevel, System::Boolean nameAdjust, NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::ConflictOption conflictOption, System::Boolean includeDefault) : NAMESPACE_OSGEO_FDO_XML::XmlFlags(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoXmlSpatialContextFlags::Create(StringToUni(location), static_cast<FdoXmlFlags::ErrorLevel>(errorLevel), nameAdjust, static_cast<FdoXmlSpatialContextFlags::ConflictOption>(conflictOption), includeDefault), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoXmlSpatialContextFlags::Create(StringToUni(location), static_cast<FdoXmlFlags::ErrorLevel>(errorLevel), nameAdjust, static_cast<FdoXmlSpatialContextFlags::ConflictOption>(conflictOption), includeDefault)), true))
 }
 
 System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::SetConflictOption(NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::ConflictOption conflictOption)
@@ -66,14 +66,14 @@ NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::ConflictOption NAMESPACE_OSGEO_
 	return static_cast<NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::ConflictOption>(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::set_IncludeDefault(System::Boolean includeDefault)
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::IncludeDefault::set(System::Boolean includeDefault)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetIncludeDefault(includeDefault))
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::get_IncludeDefault()
+System::Boolean NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::IncludeDefault::get()
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = !!GetImpObj()->GetIncludeDefault())
 

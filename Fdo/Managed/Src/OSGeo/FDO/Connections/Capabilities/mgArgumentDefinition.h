@@ -32,7 +32,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 /// \ingroup (OSGeoFDOConnectionsCapabilities)
 /// \brief
 /// The ArgumentDefinition class contains metadata that describes an argument to a function.
-public __gc class ArgumentDefinition : public NAMESPACE_OSGEO_RUNTIME::Disposable
+public ref class ArgumentDefinition : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 
 public:
@@ -50,7 +50,7 @@ public:
     /// \return
     /// Returns ArgumentDefinition
     /// 
-	ArgumentDefinition(System::String* name, System::String* description, NAMESPACE_OSGEO_FDO_SCHEMA::DataType dataType);
+	ArgumentDefinition(System::String^ name, System::String^ description, NAMESPACE_OSGEO_FDO_SCHEMA::DataType dataType);
 
     /// \brief
     /// Constructs an instance of an ArgumentDefinition using the specified arguments.
@@ -67,7 +67,7 @@ public:
     /// \return
     /// Returns ArgumentDefinition
     /// 
-	ArgumentDefinition(System::String* name, System::String* description, NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType propertyType, NAMESPACE_OSGEO_FDO_SCHEMA::DataType dataType);
+	ArgumentDefinition(System::String^ name, System::String^ description, NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType propertyType, NAMESPACE_OSGEO_FDO_SCHEMA::DataType dataType);
 
 
     /// \brief
@@ -76,7 +76,10 @@ public:
     /// \return
     /// Returns the argument name
     /// 
-	__property System::String* get_Name();
+    property System::String^ Name
+    {
+        System::String^ get();
+    }
 
     /// \brief
     /// Gets a brief description of the argument.
@@ -84,7 +87,10 @@ public:
     /// \return
     /// Returns the argument description
     /// 
-	__property System::String* get_Description();
+    property System::String^ Description
+    {
+        System::String^ get();
+    }
 
     /// \brief
     /// Gets the PropertyType of the argument.
@@ -92,7 +98,10 @@ public:
     /// \return
     /// Returns the property type of the argument
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType get_PropertyType();
+    property NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType PropertyType
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType get();
+    }
 
     /// \brief
     /// Gets the DataType of the argument.
@@ -100,28 +109,25 @@ public:
     /// \return
     /// Returns the data type of the argument
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
+    property NAMESPACE_OSGEO_FDO_SCHEMA::DataType DataType
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::DataType get();
+    }
 
     /// \brief
     /// Returns the argument value list for the current argument
     /// 
     /// \return
     /// Returns the argument value list for the current argument
-    __property NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList *get_ArgumentValueList ();
-
     /// \brief
     /// Sets the argument value list for the current argument
-    __property System::Void set_ArgumentValueList (NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList *argumentValueList);
+    property NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList^ ArgumentValueList
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList^ argumentValueList);
+    }
 
-/// \cond DOXYGEN-IGNORE
-
-protected:
-
-	System::Void ReleaseUnmanagedObject();
-
-/// \endcond
-
-public private:
+internal:
 
 	ArgumentDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
 

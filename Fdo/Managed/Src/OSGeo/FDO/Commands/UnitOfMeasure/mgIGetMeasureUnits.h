@@ -21,14 +21,14 @@
 #include "FDO\Commands\mgICommand.h"
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE
-public __gc __interface IMeasureUnitReader;
+interface class IMeasureUnitReader;
 
 /// \ingroup (OSGeoFDOCommandsUnitOfMeasure)
 /// \interface OSGeo::FDO::Commands::UnitOfMeasure::IGetMeasureUnits
 /// \brief
 /// The IGetMeasureUnits interface defines the GetMeasureUnits command, which
 /// enumerates the existing measurement units.
-public __gc __interface IGetMeasureUnits : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
+public interface class IGetMeasureUnits : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
 {
 public:
     /// \brief
@@ -37,7 +37,7 @@ public:
     /// \return
     /// Returns the measure unit reader
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IMeasureUnitReader* Execute();
+	NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE::IMeasureUnitReader^ Execute();
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE

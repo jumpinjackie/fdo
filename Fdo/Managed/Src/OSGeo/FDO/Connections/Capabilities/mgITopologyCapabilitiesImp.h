@@ -31,39 +31,34 @@ BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 /// <p><b>Note:</b> <span class="red_text">This Help topic is provided for informational use only. There is
 /// no interface or support provided. OSGeo reserves the right to change
 /// the software related to the content herein.</span>
-private __gc class ITopologyCapabilitiesImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
+private ref class ITopologyCapabilitiesImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
                                               public NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ITopologyCapabilities
 {
 public:
     /// True if the provider supports topology; if this is false, attempts to
     /// create topology-specific schema will fail.
-	System::Boolean SupportsTopology();
+	virtual System::Boolean SupportsTopology();
 
     /// True if the provider supports TopoGeometry properties that depend on
     /// each other in a hierarchy; if this is false, attempting to set a
-    /// non-NULL for TopoGeometryPropertyDefinition's "DependsOnTopoGeometry"
+    /// non-nullptr for TopoGeometryPropertyDefinition's "DependsOnTopoGeometry"
     /// property will fail.
-	System::Boolean SupportsTopologicalHierarchy();
+	virtual System::Boolean SupportsTopologicalHierarchy();
 
     /// True if the provider automatically (as a result of geometry assignment)
     /// breaks curves and inserts nodes wherever curves cross or touch, or where
     /// a node touches a curve.
-	System::Boolean BreaksCurveCrossingsAutomatically();
+	virtual System::Boolean BreaksCurveCrossingsAutomatically();
 
     /// True if the provider supports the activation of a topology using an area
     /// (surface) restriction; this may involve the use of pessimistic locking.
-	System::Boolean ActivatesTopologyByArea();
+	virtual System::Boolean ActivatesTopologyByArea();
 
     /// True if the provider constrains edits of TopoGeometry properties (by
     /// geometry value) to those that do not change topological relationships.
-	System::Boolean ConstrainsFeatureMovements();
+	virtual System::Boolean ConstrainsFeatureMovements();
 
-/// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-/// \endcond
-
-public private:
+internal:
 	ITopologyCapabilitiesImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoITopologyCapabilities* GetImpObj();

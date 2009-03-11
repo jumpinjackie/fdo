@@ -23,18 +23,18 @@
 class FdoBLOBValue;
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
-public __value enum DataType;
+ enum class DataType;
 END_NAMESPACE_OSGEO_FDO_SCHEMA 
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
-public __gc __interface IExpressionProcessor;
+interface class IExpressionProcessor;
 
 /// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The BLOBValue class derives from LOBValue and represents a literal
 /// BLOB value.
-public __gc class BLOBValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue 
+public ref class BLOBValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue 
 {
 public:
     /// \brief
@@ -54,7 +54,7 @@ public:
     /// \return
     /// Returns the created BLOBValue
     /// 
-	BLOBValue(System::Byte value []);
+	BLOBValue(array<System::Byte>^ value);
 
     /// \brief
     /// Gets the FDO DataType of the BLOB
@@ -62,7 +62,10 @@ public:
     /// \return
     /// Returns the FDO DataType
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::DataType get_DataType();
+	property NAMESPACE_OSGEO_FDO_SCHEMA::DataType DataType
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::DataType get();
+    }
 
     /// \brief
     /// Gets the data associated to the blob as an Byte Array
@@ -70,20 +73,22 @@ public:
     /// \return
     /// Returns the Byte Array containing the BLOB data
     /// 
-	__property System::Byte get_Data() [];
-
     /// \brief
     /// Sets the data associated to the BLOB using an FDO ByteArray
     /// 
     /// \param value
     /// Input the FDO Byte Array
     /// 
-	__property System::Void set_Data(System::Byte value []);
+    property array<System::Byte>^ Data
+    {
+        array<System::Byte>^ get();
+        System::Void set(array<System::Byte>^ value);
+    }
 
     /// \brief
-    /// Sets the value of the BLOB to NULL.
+    /// Sets the value of the BLOB to nullptr.
     /// 
-	System::Void SetNull();
+	virtual System::Void SetNull() override;
 
     /// \brief
     /// Overrides FdoIExpression::Process to pass the DataValue to the appropriate
@@ -92,7 +97,7 @@ public:
     /// \param processor
     /// Input the pointer to the FDO expression processor
     /// 
-	System::Void Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor* processor);
+	virtual System::Void Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor^ processor) override;
 
     /// \brief
     /// Gets the value of the BLOB as a string.
@@ -100,7 +105,7 @@ public:
     /// \return
     /// Returns the well defined text representation of the BLOB
     /// 
-	System::String* ToString();
+	virtual System::String^ ToString() override;
 
     /// \brief
     /// Constructs a BLOBValue object based on an unmanaged instance of the object
@@ -114,7 +119,7 @@ public:
     /// 
 	BLOBValue(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
+internal:
 	inline FdoBLOBValue* GetImpObj();
 };
 END_NAMESPACE_OSGEO_FDO_EXPRESSION

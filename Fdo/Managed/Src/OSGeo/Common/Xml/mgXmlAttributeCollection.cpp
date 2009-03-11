@@ -23,125 +23,67 @@
 #include "Common\Xml\mgXmlAttribute.h"
 #include "Common\Xml\mgXmlAttributeCollection.h"
 
-NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::XmlAttributeCollection() : Disposable(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::XmlAttributeCollection() : NAMESPACE_OSGEO_COMMON::CollectionBase(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoXmlAttributeCollection::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoXmlAttributeCollection::Create()), true))
 }
 
-NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::XmlAttributeCollection(System::IntPtr unmanaged, System::Boolean autoDelete) : Disposable(unmanaged, autoDelete)
+NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::XmlAttributeCollection(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_COMMON::CollectionBase(unmanaged, autoDelete)
 {
 
 }
 
 FdoXmlAttributeCollection* NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::GetImpObj()
 {
-	return static_cast<FdoXmlAttributeCollection*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoXmlAttributeCollection*>(UnmanagedObject.ToPointer());
 }
 
-System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::ICollection::CopyTo(System::Array* array, System::Int32 index) 
+System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::CopyTo(array<NAMESPACE_OSGEO_COMMON_XML::XmlAttribute^>^ pArray, System::Int32 index)
 {
-	if (NULL == array)
-	{
-		throw new System::ArgumentNullException();
-	}
-
+	if (nullptr == pArray)
+		throw gcnew System::ArgumentNullException();
 	if (index < 0)
-	{
-		throw new System::ArgumentOutOfRangeException();
-	}
-	if (array->Rank != 1 || index >= array->Length || get_Count() + index > array->Length)
-	{
-		throw new System::ArgumentException();
-	}
+		throw gcnew System::ArgumentOutOfRangeException();
+    if (pArray->Rank != 1 || index >= pArray->Length || this->Count + index > pArray->Length)
+		throw gcnew System::ArgumentException();
 
-	for (System::Int32 i=0;i<this->Count;i++)
-	{
-		array->set_Item(index + i, get_Item(i));
-	}
+	for (System::Int32 i = 0; i < this->Count; i++)
+		pArray[index+i] = this->Item[i];
 }
 
-System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::CopyTo(XmlAttribute* array[], System::Int32 index)
+System::Object^ NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::IndexInternal::get(System::Int32 index)
 {
-	if (NULL == array)
-	{
-		throw new System::ArgumentNullException();
-	}
-
-	if (index < 0)
-	{
-		throw new System::ArgumentOutOfRangeException();
-	}
-	if (array->Rank != 1 || index >= array->Length || get_Count() + index > array->Length)
-	{
-		throw new System::ArgumentException();
-	}
-
-	for (System::Int32 i=0;i<this->Count;i++)
-	{
-		array[index+i] = __try_cast<XmlAttribute*>(get_Item(i));
-	}
+	return this->Item[index];
 }
 
-System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::ReleaseUnmanagedObject()
+System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::IndexInternal::set(System::Int32 index, System::Object^ value)
 {
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
+	this->Item[index] = dynamic_cast<NAMESPACE_OSGEO_COMMON_XML::XmlAttribute^>(value);
 }
 
-System::Object* NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::ICollection::get_SyncRoot()
+System::Int32 NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::Add(System::Object^ value)
 {
-	return NULL;
+	return Add(dynamic_cast<NAMESPACE_OSGEO_COMMON_XML::XmlAttribute^>(value));
 }
 
-System::Boolean NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::ICollection::get_IsSynchronized()
+System::Boolean NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::Contains(System::Object^ value)
 {
-	return false;
+	return Contains(dynamic_cast<NAMESPACE_OSGEO_COMMON_XML::XmlAttribute^>(value));
 }
 
-System::Boolean NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::IList::get_IsFixedSize() 
-{ 
-	return false;
-}
-
-System::Boolean NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::IList::get_IsReadOnly() 
-{ 
-	return false;
-}
-
-System::Object* NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::IList::get_Item(System::Int32 index)
+System::Int32 NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::IndexOf(System::Object^ value)
 {
-	return get_RealTypeItem( index );
+	return IndexOf(dynamic_cast<NAMESPACE_OSGEO_COMMON_XML::XmlAttribute^>(value));
 }
 
-System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::IList::set_Item(System::Int32 index, System::Object* value)
+System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::Insert(System::Int32 index, System::Object^ value)
 {
-	set_RealTypeItem(index,  __try_cast<XmlAttribute*>(value) );
+	Insert(index, dynamic_cast<NAMESPACE_OSGEO_COMMON_XML::XmlAttribute^>(value));
 }
 
-System::Int32 NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::IList::Add(System::Object* value)
+System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::Remove(System::Object^ value)
 {
-	return Add(__try_cast<XmlAttribute*>(value));
-}
-
-System::Boolean NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::IList::Contains(System::Object* value)
-{
-	return Contains(__try_cast<XmlAttribute*>(value));
-}
-
-System::Int32 NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::IList::IndexOf(System::Object* value)
-{
-	return IndexOf(__try_cast<XmlAttribute*>(value));
-}
-
-System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::IList::Insert(System::Int32 index, System::Object* value)
-{
-	Insert(index,__try_cast<XmlAttribute*>(value));
-}
-
-System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::IList::Remove(System::Object* value)
-{
-	return Remove(__try_cast<XmlAttribute*>(value));
+	return Remove(dynamic_cast<NAMESPACE_OSGEO_COMMON_XML::XmlAttribute^>(value));
 }
 
 System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::RemoveAt(System::Int32 index)
@@ -149,12 +91,7 @@ System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::RemoveAt(System
 	EXCEPTION_HANDLER(GetImpObj()->RemoveAt(index))
 }
 
-System::Collections::IEnumerator* NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::GetEnumerator()
-{
-	return new Enumerator(this);
-}
-
-System::Int32 NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::get_Count(System::Void)
+System::Int32 NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::Count::get(System::Void)
 {
 	FdoInt32 length;
 
@@ -163,25 +100,25 @@ System::Int32 NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::get_Count(Syst
 	return length;
 }
 
-System::Int32 NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::Add(XmlAttribute* value)
+System::Int32 NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::Add(NAMESPACE_OSGEO_COMMON_XML::XmlAttribute^ value)
 {
 	FdoInt32 index;
 
-	EXCEPTION_HANDLER(index = GetImpObj()->Add((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(index = GetImpObj()->Add((value == nullptr ? nullptr : value->GetImpObj())))
 
 	return index;
 }
 
-System::Int32 NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::IndexOf(XmlAttribute* value)
+System::Int32 NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::IndexOf(NAMESPACE_OSGEO_COMMON_XML::XmlAttribute^ value)
 {
 	FdoInt32 index;
 
-	EXCEPTION_HANDLER(index = GetImpObj()->IndexOf((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(index = GetImpObj()->IndexOf((value == nullptr ? nullptr : value->GetImpObj())))
 
 	return index;
 }
 
-System::Int32 NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::IndexOf(String* name)
+System::Int32 NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::IndexOf(String^ name)
 {
 	FdoInt32 index;
 
@@ -190,26 +127,26 @@ System::Int32 NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::IndexOf(String
 	return index;
 }
 
-System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::Insert(System::Int32 index, XmlAttribute* value)
+System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::Insert(System::Int32 index, NAMESPACE_OSGEO_COMMON_XML::XmlAttribute^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Insert(index, (value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->Insert(index, (value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::Remove(XmlAttribute* value)
+System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::Remove(NAMESPACE_OSGEO_COMMON_XML::XmlAttribute^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Remove((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->Remove((value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-System::Boolean NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::Contains(XmlAttribute* value)
+System::Boolean NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::Contains(NAMESPACE_OSGEO_COMMON_XML::XmlAttribute^ value)
 {
 	FdoBoolean exist;
 
-	EXCEPTION_HANDLER(exist = !!GetImpObj()->Contains(value == NULL ? NULL : value->GetImpObj()))
+	EXCEPTION_HANDLER(exist = !!GetImpObj()->Contains(value == nullptr ? nullptr : value->GetImpObj()))
 
 	return exist;
 }
 
-System::Boolean NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::Contains(String* name)
+System::Boolean NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::Contains(String^ name)
 {
 	FdoBoolean exist;
 
@@ -223,54 +160,16 @@ System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::Clear()
 	EXCEPTION_HANDLER(GetImpObj()->Clear())
 }
 
-/*
-Implementation for XmlAttributeCollection::Enumerator
-*/ 
-System::Object* NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::Enumerator::get_Current()
-{
-	if (m_nIdx < 0 || m_nIdx >= m_pCol->Count)
-	{
-		throw new InvalidOperationException();
-	}
-
-	FdoXmlAttribute* upElement;
-
-	EXCEPTION_HANDLER(upElement = m_pCol->GetImpObj()->GetItem(m_nIdx))
-
-	return ObjectFactory::CreateXmlAttribute(upElement, true);
-}
-
-System::Boolean NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::Enumerator::MoveNext()
-{
-	++m_nIdx;
-	return m_nIdx < m_pCol->Count;
-}
-
-System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::Enumerator::Reset()
-{
-	m_nIdx = -1;
-}
-
-NAMESPACE_OSGEO_COMMON_XML::XmlAttribute* NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::get_RealTypeItem(System::Int32 index)
+NAMESPACE_OSGEO_COMMON_XML::XmlAttribute^ NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::Item::get(System::Int32 index)
 {
 	FdoXmlAttribute* upElement;
 
 	EXCEPTION_HANDLER(upElement = GetImpObj()->GetItem(index))
 
-	return ObjectFactory::CreateXmlAttribute(upElement, true);
+	return ObjectFactory::CreateXmlAttribute(IntPtr(upElement), true);
 }
 
-System::Void  NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::set_RealTypeItem(System::Int32 index, XmlAttribute* value)
+System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::Item::set(System::Int32 index, NAMESPACE_OSGEO_COMMON_XML::XmlAttribute^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetItem(index, (value == NULL ? NULL : value->GetImpObj())))
-}
-
-NAMESPACE_OSGEO_COMMON_XML::XmlAttribute* NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::get_Item(System::Int32 index)
-{
-	return get_RealTypeItem(index);
-}
-
-System::Void  NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::set_Item(System::Int32 index, XmlAttribute* value)
-{
-	set_RealTypeItem(index, value);
+	EXCEPTION_HANDLER(GetImpObj()->SetItem(index, (value == nullptr ? nullptr : value->GetImpObj())))
 }

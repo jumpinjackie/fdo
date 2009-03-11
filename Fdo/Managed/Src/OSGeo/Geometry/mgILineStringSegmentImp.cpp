@@ -24,9 +24,9 @@
 #include "mgIDirectPositionImp.h"
 #include "mgObjectFactory.h"
 
-FdoILineStringSegment * NAMESPACE_OSGEO_GEOMETRY::ILineStringSegmentImp::GetImpObj()
+FdoILineStringSegment* NAMESPACE_OSGEO_GEOMETRY::ILineStringSegmentImp::GetImpObj()
 {
-	return static_cast<FdoILineStringSegment *>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoILineStringSegment*>(UnmanagedObject.ToPointer());
 }
 
 NAMESPACE_OSGEO_GEOMETRY::ILineStringSegmentImp::ILineStringSegmentImp(System::IntPtr unmanaged, System::Boolean autoDelete)
@@ -34,23 +34,23 @@ NAMESPACE_OSGEO_GEOMETRY::ILineStringSegmentImp::ILineStringSegmentImp(System::I
 {
 }
 
-System::Int32 NAMESPACE_OSGEO_GEOMETRY::ILineStringSegmentImp::get_Count()
+System::Int32 NAMESPACE_OSGEO_GEOMETRY::ILineStringSegmentImp::Count::get()
 {
 	System::Int32 ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetCount())
 	return ret;
 }
 
-NAMESPACE_OSGEO_GEOMETRY::IDirectPosition *NAMESPACE_OSGEO_GEOMETRY::ILineStringSegmentImp::get_Item(System::Int32 index)
+NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ NAMESPACE_OSGEO_GEOMETRY::ILineStringSegmentImp::default::get(System::Int32 index)
 {
-	FdoIDirectPosition *ret;
+	FdoIDirectPosition* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetItem(index))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIDirectPosition(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIDirectPosition(IntPtr(ret), true);
 }
 
-NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection *NAMESPACE_OSGEO_GEOMETRY::ILineStringSegmentImp::get_Positions()
+NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection^ NAMESPACE_OSGEO_GEOMETRY::ILineStringSegmentImp::Positions::get()
 {
-	FdoDirectPositionCollection *ret;
+	FdoDirectPositionCollection* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetPositions())
-	return new DirectPositionCollection(ret, true);
+        return gcnew DirectPositionCollection(IntPtr(ret), true);
 }

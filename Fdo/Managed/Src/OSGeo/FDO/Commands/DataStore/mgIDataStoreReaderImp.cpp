@@ -36,52 +36,45 @@ FdoIDataStoreReader* NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReaderImp
     return static_cast<FdoIDataStoreReader*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReaderImp::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}
-
-System::String* NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReaderImp::GetName()
+System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReaderImp::GetName()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetName())
 
-	return result;
+    return CHECK_STRING(result);
 }
 
-System::String* NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReaderImp::GetDescription()
+System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReaderImp::GetDescription()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetDescription())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReaderImp::GetIsFdoEnabled()
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetIsFdoEnabled())
 
 	return result;
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionary* NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReaderImp::GetDataStoreProperties()
+NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionary^ NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReaderImp::GetDataStoreProperties()
 {
 	FdoIDataStorePropertyDictionary* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetDataStoreProperties())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIDataStorePropertyDictionary(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIDataStorePropertyDictionary(IntPtr(result), true);
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReaderImp::ReadNext()
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->ReadNext())
 

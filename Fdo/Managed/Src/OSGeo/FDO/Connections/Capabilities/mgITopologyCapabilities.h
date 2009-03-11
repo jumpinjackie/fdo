@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 /// <p><b>Note:</b> <span class="red_text">This Help topic is provided for informational use only. There is
 /// no interface or support provided. OSGeo reserves the right to change
 /// the software related to the content herein.</span>
-public __gc __interface ITopologyCapabilities : public System::IDisposable
+public interface class ITopologyCapabilities : public System::IDisposable
 {
 public:
     /// True if the provider supports topology; if this is false, attempts to
@@ -40,7 +40,7 @@ public:
 
     /// True if the provider supports TopoGeometry properties that depend on
     /// each other in a hierarchy; if this is false, attempting to set a
-    /// non-NULL for TopoGeometryPropertyDefinition's "DependsOnTopoGeometry"
+    /// non-nullptr for TopoGeometryPropertyDefinition's "DependsOnTopoGeometry"
     /// property will fail.
 	System::Boolean SupportsTopologicalHierarchy();
 

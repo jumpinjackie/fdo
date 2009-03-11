@@ -34,7 +34,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT
 /// ISpatialContextReader is returned from the GetSpatialContexts command.
 /// The initial position of the ISpatialContextReader interface is prior to the
 /// first item. Thus, you must call ReadNext to begin accessing any data.
-private __gc class ISpatialContextReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
+private ref class ISpatialContextReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
                                               public NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::ISpatialContextReader
 {
 public:
@@ -44,7 +44,7 @@ public:
     /// \return
     /// Returns the name of the spatial context.
     /// 
-	System::String* GetName();
+	virtual System::String^ GetName();
 
     /// \brief
     /// Gets the description of the spatial context currently being read.
@@ -52,7 +52,7 @@ public:
     /// \return
     /// Returns the description of the spatial context.
     /// 
-	System::String* GetDescription();
+	virtual System::String^ GetDescription();
 
     /// \brief
     /// Gets the name of the coordinate system of the spatial context currently
@@ -62,7 +62,7 @@ public:
     /// \return
     /// Returns the coordinate system name of the spatial context.
     /// 
-	System::String* GetCoordinateSystem();
+	virtual System::String^ GetCoordinateSystem();
 
     /// \brief
     /// Gets the name of the coordinate system in OpenGIS SRS WKT format of the spatial context currently
@@ -72,7 +72,7 @@ public:
     /// \return
     /// Returns the coordinate system description in WKT of of the spatial context.
     /// 
-	System::String* GetCoordinateSystemWkt();
+	virtual System::String^ GetCoordinateSystemWkt();
 
     /// \brief
     /// Gets the extent type of the spatial context currently being read.
@@ -80,7 +80,7 @@ public:
     /// \return
     /// Returns the extent type.
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::SpatialContextExtentType GetExtentType();
+	virtual NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::SpatialContextExtentType GetExtentType();
 
     /// \brief
     /// Gets the extent of the spatial context currently being read as a byte
@@ -89,7 +89,7 @@ public:
     /// \return
     /// Returns the extent as a byte array in FGF format.
     /// 
-	System::Byte GetExtent() [];
+	virtual array<System::Byte>^ GetExtent();
 
     /// \brief
     /// Gets the tolerance value for XY ordinates of the spatial context
@@ -102,7 +102,7 @@ public:
     /// \return
     /// Returns the tolerance
     /// 
-	System::Double GetXYTolerance();
+	virtual System::Double GetXYTolerance();
 
     /// \brief
     /// Gets the tolerance value for Z ordinates of the spatial context
@@ -115,7 +115,7 @@ public:
     /// \return
     /// Returns the tolerance
     /// 
-	System::Double GetZTolerance();
+	virtual System::Double GetZTolerance();
 
     /// \brief
     /// Returns true if the spatial context currently being read is the active
@@ -124,7 +124,7 @@ public:
     /// \return
     /// Returns true if the current spatial context is the active one.
     /// 
-	System::Boolean IsActive();
+	virtual System::Boolean IsActive();
 
     /// \brief
     /// Advances the reader to the next item. The default position of the reader
@@ -134,14 +134,9 @@ public:
     /// \return
     /// Returns true if there is a next item.
     /// 
-	System::Boolean ReadNext();
+	virtual System::Boolean ReadNext();
 
-/// \cond DOXYGEN-IGNORE
-protected:
-	__sealed System::Void ReleaseUnmanagedObject();
-/// \endcond
-
-public private:
+internal:
 	ISpatialContextReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)
 	{
 

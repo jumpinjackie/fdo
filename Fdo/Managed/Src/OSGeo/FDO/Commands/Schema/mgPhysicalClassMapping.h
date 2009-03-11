@@ -24,13 +24,13 @@
 class FdoPhysicalClassMapping;
 
 BEGIN_NAMESPACE_OSGEO_COMMON_XML
-public __gc class XmlSaxContext;
-public __gc class XmlAttributeCollection;
-public __gc class XmlWriter;
+ref class XmlSaxContext;
+ref class XmlAttributeCollection;
+ref class XmlWriter;
 END_NAMESPACE_OSGEO_COMMON_XML
 
 BEGIN_NAMESPACE_OSGEO_FDO_XML
-public __gc class XmlFlags;
+ref class XmlFlags;
 END_NAMESPACE_OSGEO_FDO_XML
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
@@ -39,7 +39,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 /// \brief
 /// PhysicalClassMapping is an abstract class that acts as a base class for all 
 /// Physical Schema Mapping class overrides.
-public __gc class PhysicalClassMapping : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping
+public ref class PhysicalClassMapping : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping
 {
 public:
     /// \brief
@@ -57,7 +57,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void InitFromXml(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection* attributes);
+	virtual System::Void InitFromXml(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ context, NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection^ attributes) override;
 
     /// \brief
     /// Writes this class to XML. Called when
@@ -77,15 +77,14 @@ public:
     /// Returns nothing
     /// 
     /// Write this element to XML.
-	System::Void WriteXml(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* xmlWriter, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags);
+	virtual System::Void WriteXml(NAMESPACE_OSGEO_COMMON_XML::XmlWriter^ xmlWriter, NAMESPACE_OSGEO_FDO_XML::XmlFlags^ flags) override;
 
 /// \cond DOXYGEN-IGNORE
 public protected:
 	PhysicalClassMapping(System::IntPtr unmanaged, System::Boolean autoDelete);
+	
+    inline FdoPhysicalClassMapping* GetImpObj();
 /// \endcond
-
-public private:
-	inline FdoPhysicalClassMapping* GetImpObj();
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA

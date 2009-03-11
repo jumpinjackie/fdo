@@ -23,7 +23,7 @@
 class FdoPropertyValueConstraintList;
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
-public __gc class DataValueCollection;
+ref class DataValueCollection;
 END_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
@@ -46,9 +46,9 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 /// of the values in the list.
 /// If both a valid values list constraint and a unique constraint on the same property are included, then the side effect is that 
 /// there will be an upper limit of the number of objects of that class that have non-null values for the property.
-public __gc class PropertyValueConstraintList : public NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraint
+public ref class PropertyValueConstraintList : public NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraint
 {
-public private:
+internal:
 	PropertyValueConstraintList(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoPropertyValueConstraintList* GetImpObj();
@@ -68,8 +68,10 @@ public:
     /// \return
     /// Returns an instance of DataValueCollection.
     /// 
-	__property NAMESPACE_OSGEO_FDO_EXPRESSION::DataValueCollection* get_ConstraintList();
-	
+    property NAMESPACE_OSGEO_FDO_EXPRESSION::DataValueCollection^ ConstraintList
+    {
+        NAMESPACE_OSGEO_FDO_EXPRESSION::DataValueCollection^ get();
+    }	
 };
 
 END_NAMESPACE_OSGEO_FDO_SCHEMA

@@ -23,9 +23,9 @@
 #include "mgIEnvelope.h"
 #include "mgObjectFactory.h"
 
-FdoIRingAbstract * NAMESPACE_OSGEO_GEOMETRY::IRingAbstractImp::GetImpObj()
+FdoIRingAbstract* NAMESPACE_OSGEO_GEOMETRY::IRingAbstractImp::GetImpObj()
 {
-	return static_cast<FdoIRingAbstract *>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoIRingAbstract*>(UnmanagedObject.ToPointer());
 }
 
 NAMESPACE_OSGEO_GEOMETRY::IRingAbstractImp::IRingAbstractImp(System::IntPtr unmanaged, System::Boolean autoDelete)
@@ -33,22 +33,16 @@ NAMESPACE_OSGEO_GEOMETRY::IRingAbstractImp::IRingAbstractImp(System::IntPtr unma
 {
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::IRingAbstractImp::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release());
-}
-
-NAMESPACE_OSGEO_GEOMETRY::IEnvelope *NAMESPACE_OSGEO_GEOMETRY::IRingAbstractImp::get_Envelope()
+NAMESPACE_OSGEO_GEOMETRY::IEnvelope^ NAMESPACE_OSGEO_GEOMETRY::IRingAbstractImp::Envelope::get()
 {
 	FdoIEnvelope *ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetEnvelope())
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIEnvelope(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIEnvelope(IntPtr(ret), true);
 }
 
-System::Int32 NAMESPACE_OSGEO_GEOMETRY::IRingAbstractImp::get_Dimensionality()
+System::Int32 NAMESPACE_OSGEO_GEOMETRY::IRingAbstractImp::Dimensionality::get()
 {
-	FdoInt32 ret;
+	System::Int32 ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetDimensionality())
 	return ret;
 }

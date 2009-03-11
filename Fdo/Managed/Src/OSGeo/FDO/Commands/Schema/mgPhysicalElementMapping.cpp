@@ -39,105 +39,98 @@ FdoPhysicalElementMapping* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementM
     return static_cast<FdoPhysicalElementMapping*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IPhysicalElementMapping* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::get_Parent()
+NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IPhysicalElementMapping^ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::Parent::get()
 {
-	FdoPhysicalElementMapping* parent;
+	FdoPhysicalElementMapping* result;
 
-	EXCEPTION_HANDLER(parent = GetImpObj()->GetParent())
+	EXCEPTION_HANDLER(result = GetImpObj()->GetParent())
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePhysicalSchemaMapping(parent, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePhysicalSchemaMapping(IntPtr(result), true);
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::get_SchemaMapping()
+NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping^ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::SchemaMapping::get()
 {
-	FdoPhysicalSchemaMapping* schema;
+	FdoPhysicalSchemaMapping* result;
 
-	EXCEPTION_HANDLER(schema = GetImpObj()->GetSchemaMapping())
+	EXCEPTION_HANDLER(result = GetImpObj()->GetSchemaMapping())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePhysicalSchemaMapping(schema, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePhysicalSchemaMapping(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::set_Name(System::String* name)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::Name::set(System::String^ name)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetName(StringToUni(name)))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::get_Name()
+System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::Name::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetName())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::String* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::get_QualifiedName()
+System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::QualifiedName::get()
 {
 	FdoStringP result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetQualifiedName())
 
-	return (FdoString*)result;
+	return CHECK_STRING((FdoString*)result);
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::get_CanSetName()
+System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::CanSetName::get()
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = !!GetImpObj()->CanSetName())
 
 	return result;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::InitFromXml(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection* attributes)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::InitFromXml(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ context, NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection^ attributes)
 {
 	EXCEPTION_HANDLER(GetImpObj()->InitFromXml(static_cast<FdoXmlSaxContext*>(context->UnmanagedObject.ToPointer()), static_cast<FdoXmlAttributeCollection*>(attributes->UnmanagedObject.ToPointer())))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::WriteXml(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* xmlWriter, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::WriteXml(NAMESPACE_OSGEO_COMMON_XML::XmlWriter^ xmlWriter, NAMESPACE_OSGEO_FDO_XML::XmlFlags^ flags)
 {
 	EXCEPTION_HANDLER(GetImpObj()->_writeXml(static_cast<FdoXmlWriter*>(xmlWriter->UnmanagedObject.ToPointer()), flags->GetImpObj()))
 }
 
-NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::SubElementError(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, System::String* parentElement, System::String* subElement)
+NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler^ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::SubElementError(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ context, System::String^ parentElement, System::String^ subElement)
 {
-	FdoXmlSaxHandler* handler;
+	FdoXmlSaxHandler* result;
 	
-	EXCEPTION_HANDLER(handler = GetImpObj()->SubElementError(static_cast<FdoXmlSaxContext*>(context->UnmanagedObject.ToPointer()), StringToUni(parentElement), StringToUni(subElement)))
+	EXCEPTION_HANDLER(result = GetImpObj()->SubElementError(static_cast<FdoXmlSaxContext*>(context->UnmanagedObject.ToPointer()), StringToUni(parentElement), StringToUni(subElement)))
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIXmlSaxHandler(handler, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIXmlSaxHandler(IntPtr(result), true);
 }
 
-NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::MultiSubElementError(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, System::String* parentElement, System::String* subElement)
+NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler^ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::MultiSubElementError(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ context, System::String^ parentElement, System::String^ subElement)
 {
-	FdoXmlSaxHandler* handler;
+	FdoXmlSaxHandler* result;
 
-	EXCEPTION_HANDLER(handler = GetImpObj()->MultiSubElementError(static_cast<FdoXmlSaxContext*>(context->UnmanagedObject.ToPointer()), StringToUni(parentElement), StringToUni(subElement)))
+	EXCEPTION_HANDLER(result = GetImpObj()->MultiSubElementError(static_cast<FdoXmlSaxContext*>(context->UnmanagedObject.ToPointer()), StringToUni(parentElement), StringToUni(subElement)))
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIXmlSaxHandler(handler, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIXmlSaxHandler(IntPtr(result), true);
 }
 
-NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::ChoiceSubElementError(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, System::String* parentElement, NAMESPACE_OSGEO_COMMON::StringCollection* subElements)
+NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler^ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::ChoiceSubElementError(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ context, System::String^ parentElement, NAMESPACE_OSGEO_COMMON::StringCollection^ subElements)
 {
-	FdoXmlSaxHandler* handler;
+	FdoXmlSaxHandler* result;
 
-	EXCEPTION_HANDLER(handler = GetImpObj()->ChoiceSubElementError(static_cast<FdoXmlSaxContext*>(context->UnmanagedObject.ToPointer()), StringToUni(parentElement), FdoStringsP(static_cast<FdoStringCollection*>(subElements->UnmanagedObject.ToPointer()))))
+	EXCEPTION_HANDLER(result = GetImpObj()->ChoiceSubElementError(static_cast<FdoXmlSaxContext*>(context->UnmanagedObject.ToPointer()), StringToUni(parentElement), FdoStringsP(static_cast<FdoStringCollection*>(subElements->UnmanagedObject.ToPointer()))))
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIXmlSaxHandler(handler, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIXmlSaxHandler(IntPtr(result), true);
 }
 
-NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::DuplicateSubElementError(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, System::String* parentElement, System::String* subElement, System::String* subElementName)
+NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler^ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::DuplicateSubElementError(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ context, System::String^ parentElement, System::String^ subElement, System::String^ subElementName)
 {
-	FdoXmlSaxHandler* handler;
+	FdoXmlSaxHandler* result;
 
-	EXCEPTION_HANDLER(handler = GetImpObj()->DuplicateSubElementError(static_cast<FdoXmlSaxContext*>(context->UnmanagedObject.ToPointer()), StringToUni(parentElement), StringToUni(subElement), StringToUni(subElementName)))
+	EXCEPTION_HANDLER(result = GetImpObj()->DuplicateSubElementError(static_cast<FdoXmlSaxContext*>(context->UnmanagedObject.ToPointer()), StringToUni(parentElement), StringToUni(subElement), StringToUni(subElementName)))
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIXmlSaxHandler(handler, true);
-}
-
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIXmlSaxHandler(IntPtr(result), true);
 }

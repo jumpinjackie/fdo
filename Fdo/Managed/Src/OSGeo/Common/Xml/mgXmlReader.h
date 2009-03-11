@@ -23,20 +23,20 @@
 class FdoXmlReader; 
 
 BEGIN_NAMESPACE_OSGEO_COMMON_IO
-public __gc class IoStream;
-public __gc class IoTextReader;
+ref class IoStream;
+ref class IoTextReader;
 END_NAMESPACE_OSGEO_COMMON_IO
 
 BEGIN_NAMESPACE_OSGEO_COMMON
-public __gc class DictionaryElementCollection;
+ref class DictionaryElementCollection;
 END_NAMESPACE_OSGEO_COMMON
 
 using namespace NAMESPACE_OSGEO_COMMON_IO;
 using namespace NAMESPACE_OSGEO_COMMON;
 
 BEGIN_NAMESPACE_OSGEO_COMMON_XML
-public __gc __interface IXmlSaxHandler;
-public __gc class XmlSaxContext;
+interface class IXmlSaxHandler;
+ref class XmlSaxContext;
 
 /// \ingroup (OSGeoFDOCommonXml)
 /// \brief
@@ -48,7 +48,7 @@ public __gc class XmlSaxContext;
 /// SAXHandler callbacks also provide a means to push other handlers onto the stack.
 /// For example, a SAX Handler for a particular XML element might push another handler
 /// to read a particular sub-element.
-public __gc class XmlReader : public NAMESPACE_OSGEO_RUNTIME::Disposable
+public ref class XmlReader : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
     /// \brief
@@ -60,7 +60,7 @@ public:
     /// \return
     /// Returns XmlReader
     /// 
-	XmlReader( System::String* fileName );
+	XmlReader( System::String^ fileName );
 
     /// \brief
     /// Constructs an XML reader on a stream
@@ -71,7 +71,7 @@ public:
     /// \return
     /// Returns XmlReader
     /// 
-	XmlReader(NAMESPACE_OSGEO_COMMON_IO::IoStream* stream);
+	XmlReader(NAMESPACE_OSGEO_COMMON_IO::IoStream^ stream);
 
     /// \brief
     /// Constructs an XML reader on a text reader
@@ -82,7 +82,7 @@ public:
     /// \return
     /// Returns XmlReader
     /// 
-	XmlReader( NAMESPACE_OSGEO_COMMON_IO::IoTextReader* reader );
+	XmlReader( NAMESPACE_OSGEO_COMMON_IO::IoTextReader^ reader );
 
     /// \brief
     /// Gets the underlying text reader. If a text reader was passed to this object
@@ -93,7 +93,10 @@ public:
     /// \return
     /// Returns the underlying text reader
     /// 
-	__property NAMESPACE_OSGEO_COMMON_IO::IoTextReader* get_TextReader();
+    property NAMESPACE_OSGEO_COMMON_IO::IoTextReader^ TextReader
+    {
+        NAMESPACE_OSGEO_COMMON_IO::IoTextReader^ get();
+    }
 
     /// \brief
     /// Gets the underlying stream. If a text reader was passed to this object
@@ -105,7 +108,10 @@ public:
     /// \return
     /// Returns the underlying stream
     /// 
-	__property NAMESPACE_OSGEO_COMMON_IO::IoStream* get_Stream();
+    property NAMESPACE_OSGEO_COMMON_IO::IoStream^ Stream
+    {
+        NAMESPACE_OSGEO_COMMON_IO::IoStream^ get();
+    }
 
     /// \brief
     /// Parses the XML document.
@@ -129,7 +135,7 @@ public:
     /// \return
     /// Returns true if the end of the document has not yet been reached
     /// 
-    System::Boolean Parse(NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* saxHandler);
+    System::Boolean Parse(NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler^ saxHandler);
 
     /// \brief
     /// Parses the XML document.
@@ -148,7 +154,7 @@ public:
     /// \return
     /// Returns true if the end of the document has not yet been reached
     /// 
-    System::Boolean Parse(NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* saxHandler, NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* saxContext);
+    System::Boolean Parse(NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler^ saxHandler, NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ saxContext);
 
     /// \brief
     /// Parses the XML document.
@@ -178,7 +184,7 @@ public:
     /// \return
     /// Returns true if the end of the document has not yet been reached
     /// 
-    System::Boolean Parse(NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* saxHandler, NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* saxContext, System::Boolean incremental);
+    System::Boolean Parse(NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler^ saxHandler, NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ saxContext, System::Boolean incremental);
 
     /// \brief
     /// Utility function that is typically called for element names or 
@@ -192,7 +198,7 @@ public:
     /// \return
     /// Returns the decoded name.
     /// 
-    System::String* DecodeName(System::String* name);
+    System::String^ DecodeName(System::String^ name);
 
     /// \brief
     /// Indicates whether the end of the XML document has been reached.
@@ -200,7 +206,10 @@ public:
     /// \return
     /// Returns true if this reader is at the end of the document, false otherwise
     /// 
-	__property System::Boolean get_EOD();
+    property System::Boolean EOD
+    {
+        System::Boolean get();
+    }
 
     /// \brief
     /// Returns all of the XML namespace declarations that are currently
@@ -211,7 +220,10 @@ public:
     /// entry per namespace declaration. DictionaryElement->GetName() returns
     /// the namespace prefix. DictionaryElement->GetValue() returns the URI.
     /// 
- 	__property DictionaryElementCollection* get_Namespaces();
+    property DictionaryElementCollection^ Namespaces
+    {
+        DictionaryElementCollection^ get();
+    }
 
     /// \brief
     /// Gets the URI for a namespace prefix.
@@ -223,13 +235,10 @@ public:
     /// Returns the URI; L"" if the prefix is not in-scope at the
     /// current position in the XML document.
     /// 
-	System::String* PrefixToUri( System::String* prefix );	
+	System::String^ PrefixToUri( System::String^ prefix );	
 
 /// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-
-public private:
+internal:
     XmlReader(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoXmlReader* GetImpObj();

@@ -39,7 +39,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 /// by the class name. Instances at a nested scope (i.e., instances within an
 /// object collection property) are referred to by the containing class name,
 /// followed by a '.', followed by the object collection property name.
-private __gc class IUpdateImp : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp, 
+private ref class IUpdateImp : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp, 
                                 public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IUpdate
 {
 public:
@@ -50,7 +50,10 @@ public:
     /// \return
     /// Returns the list of properties and their values.
     /// 
-	__property NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection* get_PropertyValues();
+    property NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection^ PropertyValues
+    {
+        virtual NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection^ get();
+    }
 
     /// \brief
     /// Executes the update command and returns the number of modified 
@@ -59,7 +62,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Int32 Execute();
+	virtual System::Int32 Execute();
 
     /// \brief
     ///  Updating objects might result in lock conflicts if objects
@@ -73,9 +76,12 @@ public:
     /// \return
     /// Returns a lock conflict reader.
     /// 
-	__property NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader* get_LockConflicts();
+    property NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader^ LockConflicts
+    {
+        virtual NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader^ get();
+    }
 
-public private:
+internal:
 	IUpdateImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp(unmanaged, autoDelete)
 	{
 

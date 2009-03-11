@@ -19,8 +19,8 @@
 #pragma once
 
 BEGIN_NAMESPACE_OSGEO_COMMON_XML
-public __gc class XmlAttributeCollection;
-public __gc class XmlSaxContext;
+ref class XmlAttributeCollection;
+ref class XmlSaxContext;
 
 /// \ingroup (OSGeoFDOCommonXml)
 /// \interface OSGeo::FDO::Common::Xml::IXmlSaxHandler
@@ -29,7 +29,7 @@ public __gc class XmlSaxContext;
 /// It is not an interface in the strict sense, since each function has a 
 /// default implementation that does nothing. Implementors can override these
 /// callbacks to customize the handling of XML fragments parsed by XmlReader.
-public __gc __interface IXmlSaxHandler : public System::IDisposable
+public interface class IXmlSaxHandler : public System::IDisposable
 {
 public:
     /// \brief
@@ -43,7 +43,7 @@ public:
     /// Returns the SAX Handler for the document's root element. If NULL then 
     /// this SAX handler will handle the root element
     /// 
-	NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* XmlStartDocument(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context);
+	NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler^ XmlStartDocument(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ context);
 
     /// \brief
     /// Default Sax callback that is called when the XmlReader 
@@ -52,7 +52,7 @@ public:
     /// \param context 
     /// Input caller specified contextual information
     /// 
-	System::Void XmlEndDocument(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context);
+	System::Void XmlEndDocument(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ context);
 
     /// \brief
     /// Default Sax callback that is called when the XmlReader 
@@ -73,7 +73,7 @@ public:
     /// Returns the SAX Handler for the element's sub-elements. If NULL then 
     /// this SAX handler will handle the sub-elements
     /// 
-	NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* XmlStartElement(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, System::String* resourceLocation, System::String* name, System::String* qualifiedName, NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection* attributes);
+	NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler^ XmlStartElement(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ context, System::String^ resourceLocation, System::String^ name, System::String^ qualifiedName, NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection^ attributes);
 
     /// \brief
     /// Default Sax callback that is called when the XmlReader 
@@ -93,7 +93,7 @@ public:
     /// cause the parse to continue. Return value is ignored if the current parse
     /// is not an incremental parse ( see XmlReader::Parse())
     /// 
-	System::Boolean XmlEndElement(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, System::String* resourceLocation, System::String* name, System::String* qualifiedName);
+	System::Boolean XmlEndElement(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ context, System::String^ resourceLocation, System::String^ name, System::String^ qualifiedName);
 
     /// \brief
     /// Default Sax callback that is called when the XmlReader 
@@ -107,7 +107,7 @@ public:
     /// \param characters 
     /// Input the next chunk of simple content
     /// 
-	System::Void XmlCharacters(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, System::String* characters);
+	System::Void XmlCharacters(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ context, System::String^ characters);
 };
 END_NAMESPACE_OSGEO_COMMON_XML
 

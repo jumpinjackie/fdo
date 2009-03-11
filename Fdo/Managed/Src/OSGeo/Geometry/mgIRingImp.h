@@ -25,8 +25,8 @@
 class FdoIRing;
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
-public __gc __interface ICurveSegmentAbstract;
-public __gc class CurveSegmentCollection;
+interface class ICurveSegmentAbstract;
+ref class CurveSegmentCollection;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
@@ -35,7 +35,7 @@ BEGIN_NAMESPACE_OSGEO_GEOMETRY
 /// \brief
 /// The IRingImp class is ring Geometry helper type.  This is the most general non-abstract ring type.  
 /// FdoIRing is defined by an ordered collection of contiguous curve segments.
-private __gc class IRingImp :
+private ref class IRingImp :
 	public NAMESPACE_OSGEO_GEOMETRY::IRingAbstractImp, public NAMESPACE_OSGEO_GEOMETRY::IRing
 {
 public:
@@ -51,8 +51,8 @@ public:
     /// 
 	IRingImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
-	FdoIRing *GetImpObj();
+internal:
+	FdoIRing* GetImpObj();
 
 public:
     /// \brief
@@ -61,7 +61,10 @@ public:
     /// \return
     /// Returns the number of curve segments
     /// 
-	__property System::Int32 get_Count();
+    property System::Int32 Count
+    {
+        virtual System::Int32 get();
+    }
 
     /// \brief
     /// Gets the curve segment at the given zero-based index.
@@ -72,7 +75,10 @@ public:
     /// \return
     /// Returns the requested curve segment
     /// 
-	__property NAMESPACE_OSGEO_GEOMETRY::ICurveSegmentAbstract *get_Item(System::Int32 index);
+    property NAMESPACE_OSGEO_GEOMETRY::ICurveSegmentAbstract^ default[System::Int32]
+    {
+        virtual NAMESPACE_OSGEO_GEOMETRY::ICurveSegmentAbstract^ get(System::Int32 index);
+    }
 	
     /// \brief
     /// Gets all the curve segments.
@@ -80,7 +86,10 @@ public:
     /// \return
     /// Returns a collection of all the curve segments
     /// 
-	__property NAMESPACE_OSGEO_GEOMETRY::CurveSegmentCollection *get_CurveSegments();
+    property NAMESPACE_OSGEO_GEOMETRY::CurveSegmentCollection^ CurveSegments
+    {
+        virtual NAMESPACE_OSGEO_GEOMETRY::CurveSegmentCollection^ get();
+    }
 };
 
 END_NAMESPACE_OSGEO_GEOMETRY

@@ -25,21 +25,14 @@
 #include "FDO\Xml\mgXmlNameCollectionHandler.h"
 #include "FDO\mgObjectFactory.h"
 
-System::Void NAMESPACE_OSGEO_FDO_XML::XmlNameCollectionHandler::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}
-
 NAMESPACE_OSGEO_FDO_XML::XmlNameCollectionHandler::XmlNameCollectionHandler() : NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoXmlNameCollectionHandler::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoXmlNameCollectionHandler::Create()), true))
 }
 
-NAMESPACE_OSGEO_FDO_XML::XmlNameCollectionHandler::XmlNameCollectionHandler(NAMESPACE_OSGEO_COMMON::StringCollection* names) : NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler(System::IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_XML::XmlNameCollectionHandler::XmlNameCollectionHandler(NAMESPACE_OSGEO_COMMON::StringCollection^ names) : NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoXmlNameCollectionHandler::Create(static_cast<FdoStringCollection*>(names->UnmanagedObject.ToPointer())), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoXmlNameCollectionHandler::Create(static_cast<FdoStringCollection*>(names->UnmanagedObject.ToPointer()))), true))
 }
 
 FdoXmlNameCollectionHandler* NAMESPACE_OSGEO_FDO_XML::XmlNameCollectionHandler::GetImpObj()
@@ -47,11 +40,11 @@ FdoXmlNameCollectionHandler* NAMESPACE_OSGEO_FDO_XML::XmlNameCollectionHandler::
     return static_cast<FdoXmlNameCollectionHandler*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_COMMON::StringCollection* NAMESPACE_OSGEO_FDO_XML::XmlNameCollectionHandler::GetNames()
+NAMESPACE_OSGEO_COMMON::StringCollection^ NAMESPACE_OSGEO_FDO_XML::XmlNameCollectionHandler::GetNames()
 {
 	FdoStringCollection* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetNames())
 
-	return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateStringCollection(result, true);
+	return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateStringCollection(IntPtr(result), true);
 }

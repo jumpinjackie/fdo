@@ -24,7 +24,7 @@
 class FdoIDelete;
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
-public __gc __interface ILockConflictReader;
+interface class ILockConflictReader;
 END_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
@@ -42,7 +42,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 /// to simply by the class name. Instances at a nested scope (i.e. instances
 /// within a object collection property) are referred to by the containing class
 /// name, followed by a '.', followed by the object collection property name.
-private __gc class IDeleteImp : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp, 
+private ref class IDeleteImp : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp, 
                                 public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDelete
 {
 public:
@@ -53,7 +53,7 @@ public:
     /// \return
     /// Returns the number of instances deleted.
     /// 
-	System::Int32 Execute();
+	virtual System::Int32 Execute();
 
     /// \brief
     /// Deleting objects might result in lock conflicts if objects
@@ -66,9 +66,12 @@ public:
     /// \return
     /// Returns a lock conflict reader.
     /// 
-	__property NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader* get_LockConflicts();
+    property NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader^ LockConflicts
+    {
+        virtual NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader^ get();
+    }
 
-public private:
+internal:
 	IDeleteImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp(unmanaged, autoDelete)
 	{
 

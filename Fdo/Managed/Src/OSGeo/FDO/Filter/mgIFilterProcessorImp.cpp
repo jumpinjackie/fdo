@@ -31,10 +31,3 @@ FdoIFilterProcessor* NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessorImp::GetImpObj(
 {
 	return static_cast<FdoIFilterProcessor*>(__super::UnmanagedObject.ToPointer());
 }
-
-Void NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessorImp::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}

@@ -30,23 +30,9 @@ BEGIN_NAMESPACE_OSGEO_GEOMETRY
 /// The DirectPositionImpl class is a default implementation of IDirectPosition.
 /// DirectPositionImpl implements accessors from IDirectPosition, matching mutators, and simple data members.
 /// Assignment and exact equality operators are also provided.
-public __gc class DirectPositionImpl : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_GEOMETRY::IDirectPosition
+public ref class DirectPositionImpl : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_GEOMETRY::IDirectPosition
 {
 public:
-    /// \brief
-    /// InEquality function for DirectPositionImpl.
-    /// 
-    /// \param right 
-    /// Input envelope for comparison (right-hand-side of equation)
-    /// 
-    /// \param left 
-    /// Input envelope for comparison (left-hand-side of equation)
-    /// 
-    /// \return
-    /// Returns true if all ordinates and dimensionality are not exactly equal.
-    /// 
-	static System::Boolean op_Inequality(DirectPositionImpl *left, DirectPositionImpl *right);
-
     /// \brief
     /// Constructs a default instance of a DirectPositionImpl object.
     /// 
@@ -109,7 +95,7 @@ public:
     /// \param position 
     /// Input position to copy
     /// 
-	DirectPositionImpl(DirectPositionImpl *position);
+	DirectPositionImpl(DirectPositionImpl^ position);
 
     /// \brief
     /// Constructs a copy of a DirectPositionImpl
@@ -121,18 +107,7 @@ public:
     /// \param position 
     /// Input position to copy
     /// 
-	DirectPositionImpl(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition *position);
-
-    /// \brief
-    /// Assignment function for DirectPositionImpl.
-    /// 
-    /// \param left 
-    /// Input Source position to copy
-    /// 
-    /// \param right 
-    /// Input Destination position
-    /// 
-	static System::Void op_Assign(DirectPositionImpl *left, DirectPositionImpl *right);
+	DirectPositionImpl(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ position);
 
     /// \brief
     /// Assignment function for DirectPositionImpl from a IDirectPosition, using public methods.
@@ -143,7 +118,7 @@ public:
     /// \param right 
     /// Input Destination position
     /// 
-	static System::Void op_Assign(DirectPositionImpl *left, IDirectPosition *right);
+	DirectPositionImpl^ operator=(IDirectPosition^ right);
 
     /// \brief
     /// Equality function for FdoDirectPositionImpl.
@@ -154,25 +129,11 @@ public:
     /// \return
     /// Returns true if all ordinates and dimensionality are exactly equal.
     /// 
-	System::Boolean Equals(System::Object* obj);
+	virtual System::Boolean Equals(System::Object^ obj) override;
 
 /// \cond DOXYGEN-IGNORE
-	System::Int32 GetHashCode();
+	virtual System::Int32 GetHashCode() override;
 /// \endcond
-
-    /// \brief
-    /// Equality function for DirectPositionImpl.
-    /// 
-    /// \param left 
-    /// Input position for comparison (left-hand-side of equation)
-    /// 
-    /// \param right 
-    /// Input position for comparison (right-hand-side of equation)
-    /// 
-    /// \return
-    /// Returns true if all ordinates and dimensionality are exactly equal.
-    /// 
-	static System::Boolean op_Equality(DirectPositionImpl *left, DirectPositionImpl *right);
 
     /// \brief
     /// Gets the X ordinate.
@@ -180,8 +141,6 @@ public:
     /// \return
     /// Returns the X ordinate; default is numeric_limits::quiet_NaN()
     /// 
-	__property System::Double get_X();
-
     /// \brief
     /// Sets the X ordinate.
     /// 
@@ -191,7 +150,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_X(System::Double value);
+    property System::Double X
+    {
+        virtual System::Double get();
+        System::Void set(System::Double value);
+    }
 
     /// \brief
     /// Gets the Y ordinate.
@@ -199,8 +162,6 @@ public:
     /// \return
     /// Returns the Y ordinate; default is numeric_limits::quiet_NaN()
     /// 
-	__property System::Double get_Y();
-
     /// \brief
     /// Sets the Y ordinate.
     /// 
@@ -210,7 +171,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Y(System::Double value);
+    property System::Double Y
+    {
+        virtual System::Double get();
+        System::Void set(System::Double value);
+    }
 
     /// \brief
     /// Gets the Z ordinate.
@@ -218,8 +183,6 @@ public:
     /// \return
     /// Returns the Z ordinate; default is numeric_limits::quiet_NaN()
     /// 
-	__property System::Double get_Z();
-
     /// \brief
     /// Sets the Z ordinate.
     /// 
@@ -229,7 +192,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Z(System::Double value);
+    property System::Double Z
+    {
+        virtual System::Double get();
+        System::Void set(System::Double value);
+    }
 
     /// \brief
     /// Gets the M ordinate.
@@ -237,8 +204,6 @@ public:
     /// \return
     /// Returns the M ordinate; default is numeric_limits::quiet_NaN()
     /// 
-	__property System::Double get_M();
-
     /// \brief
     /// Sets the M ordinate.
     /// 
@@ -248,7 +213,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_M(System::Double value);
+    property System::Double M
+    {
+        virtual System::Double get();
+        System::Void set(System::Double value);
+    }
 
     /// \brief
     /// Gets the dimensionality of ordinates in this position.
@@ -260,8 +229,6 @@ public:
     /// \return
     /// Returns the ordinate dimensionality
     /// 
-	__property System::Int32 get_Dimensionality();
-
     /// \brief
     /// Sets the dimensionality.
     /// 
@@ -274,7 +241,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Dimensionality(System::Int32 value);
+    property System::Int32 Dimensionality
+    {
+        virtual System::Int32 get();
+        System::Void set(System::Int32 value);
+    }
 
 public:
     /// \brief
@@ -290,11 +261,8 @@ public:
 	DirectPositionImpl(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 /// \cond DOXYGEN-IGNORE
-protected:
-    System::Void ReleaseUnmanagedObject();
-
-public private:
-	FdoDirectPositionImpl *GetImpObj();
+internal:
+	FdoDirectPositionImpl* GetImpObj();
 /// \endcond
 };
 END_NAMESPACE_OSGEO_GEOMETRY

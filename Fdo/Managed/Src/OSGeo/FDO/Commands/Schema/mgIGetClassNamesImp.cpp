@@ -30,25 +30,25 @@ FdoIGetClassNames* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IGetClassNamesImp::GetIm
     return static_cast<FdoIGetClassNames*>(__super::UnmanagedObject.ToPointer());
 }
 
-System::String* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IGetClassNamesImp::get_SchemaName()
+System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IGetClassNamesImp::SchemaName::get()
 {
 	FdoString* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetSchemaName())
 
-	return result;
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IGetClassNamesImp::set_SchemaName(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IGetClassNamesImp::SchemaName::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetSchemaName(StringToUni(value)))
 }
 
-NAMESPACE_OSGEO_COMMON::StringCollection* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IGetClassNamesImp::Execute()
+NAMESPACE_OSGEO_COMMON::StringCollection^ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IGetClassNamesImp::Execute()
 {
 	FdoStringCollection* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->Execute())
 
-	return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateStringCollection(result, true);
+	return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateStringCollection(IntPtr(result), true);
 }

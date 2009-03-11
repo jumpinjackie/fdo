@@ -33,7 +33,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 /// class. This sub-class must implement the overrides that are specific to the 
 /// provider. The Provider can also add support, for serializing to an XML document, 
 /// by overriding the functions inherited from XmlSerializable.
-public __gc class PhysicalSchemaMapping : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping
+public ref class PhysicalSchemaMapping : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping
 {
 public:
     /// \brief
@@ -44,17 +44,20 @@ public:
     /// applies. The provider name must conform to the format:
     /// "[Company].[Provider].[Version]".
     /// 
-    __property System::String* get_Provider();
+    property System::String^ Provider
+    {
+        System::String^ get();
+    }
 
 public protected:
     PhysicalSchemaMapping(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 /// \cond DOXYGEN-IGNORE
 protected:
-    PhysicalSchemaMapping(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping* schemaMapping, System::Boolean autoDelete);
+    PhysicalSchemaMapping(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping^ schemaMapping, System::Boolean autoDelete);
 /// \endcond
 
-public private:
+internal:
     inline FdoPhysicalSchemaMapping* GetImpObj();
 };
 

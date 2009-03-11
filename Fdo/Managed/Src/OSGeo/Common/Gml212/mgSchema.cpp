@@ -23,11 +23,11 @@
 #include "Common\Gml212\mgSchema.h"
 #include "Common\Xml\mgXmlReader.h"
 
-NAMESPACE_OSGEO_COMMON_XML::XmlReader* NAMESPACE_OSGEO_COMMON_GML212::Schema::CreateReader()
+NAMESPACE_OSGEO_COMMON_XML::XmlReader^ NAMESPACE_OSGEO_COMMON_GML212::Schema::CreateReader()
 {
 	FdoXmlReader* result;
 
 	EXCEPTION_HANDLER(result = ::FdoGml212Schema::CreateReader())
 
-	return ObjectFactory::CreateXmlReader(result, true);
+        return ObjectFactory::CreateXmlReader(System::IntPtr(result), true);
 }

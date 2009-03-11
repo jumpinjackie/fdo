@@ -23,13 +23,13 @@
 class FdoXmlElementMapping;
 
 BEGIN_NAMESPACE_OSGEO_FDO_XML
-public __gc class XmlClassMapping;
+ref class XmlClassMapping;
 
 /// \ingroup (OSGeoFDOXml)
 /// \brief
 /// XmlElementMapping describes GML to FDO mappings for a particular GML Schema
 /// element. Only mappings that cannot be represented in FDO are described.
-public __gc class XmlElementMapping : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping
+public ref class XmlElementMapping : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping
 {
 public:
     /// \brief
@@ -38,7 +38,7 @@ public:
     /// \param name 
     /// Input element name
     /// 
-	XmlElementMapping(System::String* name);
+	XmlElementMapping(System::String^ name);
 
     /// \brief
     /// Sets the class mapping for this element. The class mapping provides
@@ -47,8 +47,6 @@ public:
     /// \param classMapping 
     /// Input the class mapping
     /// 
-	__property System::Void set_ClassMapping(NAMESPACE_OSGEO_FDO_XML::XmlClassMapping* classMapping);
-
     /// \brief
     /// Gets the class mapping for this element. The class mapping provides
     /// information about the FDO Class for this element's type.
@@ -56,8 +54,11 @@ public:
     /// \return
     /// Returns NAMESPACE_OSGEO_FDO_XML::XmlClassMapping.
     /// 
-	__property NAMESPACE_OSGEO_FDO_XML::XmlClassMapping* get_ClassMapping();
-
+    property NAMESPACE_OSGEO_FDO_XML::XmlClassMapping^ ClassMapping
+    {
+        NAMESPACE_OSGEO_FDO_XML::XmlClassMapping^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_XML::XmlClassMapping^ classMapping);
+    }
     /// \brief
     /// Sets the element class name to a dangling reference. This function can be
     /// used to reference a class that has no NAMESPACE_OSGEO_FDO_XML::XmlClassMapping object.
@@ -66,15 +67,17 @@ public:
     /// Input name of the FDO class corresponding to the 
     /// element's type.
     /// 
-	__property System::Void set_ClassName(System::String* className);
-
     /// \brief
     /// Gets the FDO Class name.
     /// 
     /// \return
     /// Returns System::String.
     /// 
-	__property System::String* get_ClassName();
+    property System::String^ ClassName
+    {
+        System::String^ get();
+        System::Void set(System::String^ className);
+    }
 
     /// \brief
     /// Sets the schema name for a dangling reference to an element's class. 
@@ -83,16 +86,17 @@ public:
     /// Input name of the Feature Schema containing the FDO class. If
     /// L"" then it defaults to the schema containing this element.
     /// 
-	__property System::Void set_SchemaName(System::String* schemaName);
-
     /// \brief
     /// Gets the Schema Name for the FDO Class.
     /// 
     /// \return
     /// Returns System::String.
     /// 
-	__property System::String* get_SchemaName();
-
+    property System::String^ SchemaName
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
     /// \brief
     /// Sets the namespace URI for this element. 
     /// 
@@ -100,15 +104,17 @@ public:
     /// Input a URI. Defaults to the targetNamespace
     /// for the schema containing this element.
     /// 
-	__property System::Void set_GmlUri(System::String* value);
-
     /// \brief
     /// Gets the URI for the referenced element. 
     /// 
     /// \return
     /// Returns System::String.
     /// 
-	__property System::String* get_GmlUri();
+    property System::String^ GmlUri
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Sets the local name for this element. 
@@ -117,8 +123,6 @@ public:
     /// Input the local name (unprefixed name) of this
     /// element. Defaults to the element name.
     /// 
-	__property System::Void set_GmlLocalName(System::String* value);
-
     /// \brief
     /// Gets the URI for the referenced element. 
     /// 
@@ -126,9 +130,13 @@ public:
     /// Returns System::String. L"" if this element does not reference
     /// another element.
     /// 
-	__property System::String* get_GmlLocalName();
+    property System::String^ GmlLocalName
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
-public private:
+internal:
 	XmlElementMapping(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping(unmanaged, autoDelete)
 	{
 		

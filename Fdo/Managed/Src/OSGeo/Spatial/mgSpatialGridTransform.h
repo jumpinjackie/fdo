@@ -26,7 +26,7 @@ BEGIN_NAMESPACE_OSGEO_SPATIAL
 /// \brief
 /// Class to handle transformations of ordinates between double precision
 /// and integers.  The integer format models a fine grid.
-public __gc class SpatialGridTransform: public NAMESPACE_OSGEO_RUNTIME::Disposable
+public ref class SpatialGridTransform: public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 public:
     /// \brief
@@ -42,7 +42,7 @@ public:
     /// \param tolerance 
     /// Tolerance of ordinate values.
     /// 
-	SpatialGridTransform(NAMESPACE_OSGEO_GEOMETRY::IEnvelope* extents, System::Double tolerance);
+	SpatialGridTransform(NAMESPACE_OSGEO_GEOMETRY::IEnvelope^ extents, System::Double tolerance);
 
     /// \brief
     /// Transform floating-point ordinates to integer ordinates on the grid.
@@ -56,7 +56,7 @@ public:
     /// \param gridY 
     /// Output Integer Y ordinate.
     /// 
-	System::Void TransformToGrid(System::Double coordinateX, System::Double coordinateY, System::Int64* gridX, System::Int64* gridY);
+	System::Void TransformToGrid(System::Double coordinateX, System::Double coordinateY, System::Int64% gridX, System::Int64% gridY);
 
     /// \brief
     /// Transform integer ordinates on the grid to floating-point ordinates.
@@ -70,12 +70,7 @@ public:
     /// \param coordinateY 
     /// Output Floating-point Y ordinate.
     /// 
-	System::Void TransformFromGrid(System::Int64 gridX, System::Int64 gridY, System::Double* coordinateX, System::Double* coordinateY);
-
-/// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-/// \endcond
+	System::Void TransformFromGrid(System::Int64 gridX, System::Int64 gridY, System::Double% coordinateX, System::Double% coordinateY);
 
 public:
     /// \brief
@@ -90,7 +85,7 @@ public:
     /// 
 	SpatialGridTransform(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
+internal:
 	inline FdoSpatialGridTransform* GetImpObj();
 };
 

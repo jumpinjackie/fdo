@@ -24,17 +24,16 @@
 class FdoUnaryExpression;
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
-public __gc class Expression;
-public __gc __interface IExpressionProcessor;
+ref class Expression;
+interface class IExpressionProcessor;
 
 /// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The UnaryExpression class derives from Expression and allows negation of
 /// arithmetic expressions.
-public __gc class UnaryExpression : public NAMESPACE_OSGEO_FDO_EXPRESSION::Expression
+public ref class UnaryExpression : public NAMESPACE_OSGEO_FDO_EXPRESSION::Expression
 {
 public:
-
     /// \brief
     /// Constructs a default instance of an UnaryExpression.
     /// 
@@ -54,7 +53,7 @@ public:
     /// \return
     /// Returns UnaryExpression
     /// 
-	UnaryExpression(NAMESPACE_OSGEO_FDO_EXPRESSION::UnaryOperations operation, NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* expression);
+	UnaryExpression(NAMESPACE_OSGEO_FDO_EXPRESSION::UnaryOperations operation, NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ expression);
 
     /// \brief
     ///  Gets the unary operation to be evaluated by this expression.
@@ -62,8 +61,6 @@ public:
     /// \return
     /// Returns the unary operation
     /// 
-	__property NAMESPACE_OSGEO_FDO_EXPRESSION::UnaryOperations get_Operation();
-
     /// \brief
     /// Sets the unary operation to be evaluated by this expression.
     /// 
@@ -73,7 +70,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Operation(NAMESPACE_OSGEO_FDO_EXPRESSION::UnaryOperations value);
+    property NAMESPACE_OSGEO_FDO_EXPRESSION::UnaryOperations Operation
+    {
+        NAMESPACE_OSGEO_FDO_EXPRESSION::UnaryOperations get();
+        System::Void set(NAMESPACE_OSGEO_FDO_EXPRESSION::UnaryOperations value);
+    }
 
     /// \brief
     /// Gets the expression to be operated on.
@@ -81,8 +82,6 @@ public:
     /// \return
     /// Returns the expression
     /// 
-	__property NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* get_Expressions();
-
     /// \brief
     /// Sets the expression to be operated on.
     /// 
@@ -92,7 +91,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void  set_Expressions(NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* value);
+    property NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ Expressions
+    {
+        NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ value);
+    }
 
     /// \brief
     /// Overrides Expression.Process to pass the UnaryExpression to the
@@ -104,7 +107,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor* processor);
+	virtual System::Void Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor^ processor) override;
 
     /// \brief
     /// Returns the well defined text representation of this expression.
@@ -112,7 +115,7 @@ public:
     /// \return
     /// Returns the well defined text representation of this expression
     /// 
-	System::String* ToString();
+	virtual System::String^ ToString() override;
 
     /// \brief
     /// Constructs a UnaryExpression object based on an unmanaged instance of the object
@@ -126,7 +129,7 @@ public:
     /// 
 	UnaryExpression(System::IntPtr unmanaged, System::Boolean autoDelete);
 
-public private:
+internal:
 	inline FdoUnaryExpression* GetImpObj();
 };
 

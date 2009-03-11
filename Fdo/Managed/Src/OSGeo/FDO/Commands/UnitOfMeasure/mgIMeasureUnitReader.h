@@ -30,7 +30,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_UNITOFMEASURE
 /// IMeasureUnitReader interface is returned from the GetMeasureUnits command.
 /// The initial position of the IMeasureUnitReader is prior to the
 /// first item. Thus, you must call ReadNext to begin accessing any data.
-public __gc __interface IMeasureUnitReader : public System::IDisposable
+public interface class IMeasureUnitReader : public System::IDisposable
 {
 public:
     /// \brief
@@ -39,7 +39,7 @@ public:
     /// \return
     /// Returns the abbreviation of the measure unit
     /// 
-	System::String* GetAbbreviation();
+	System::String^ GetAbbreviation();
 
     /// \brief
     /// Gets the name of the measure unit currently being read.
@@ -47,7 +47,7 @@ public:
     /// \return
     /// Returns the name of the measure unit
     /// 
-	System::String* GetName();
+	System::String^ GetName();
 
     /// \brief
     /// Gets the description of the measure unit currently being read.
@@ -55,7 +55,7 @@ public:
     /// \return
     /// Returns the description of the measure unit
     /// 
-	System::String* GetDescription();
+	System::String^ GetDescription();
 
     /// \brief
     /// Gets the base unit of the measure unit currently being read.

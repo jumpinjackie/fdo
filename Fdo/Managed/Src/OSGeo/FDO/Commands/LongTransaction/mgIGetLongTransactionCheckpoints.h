@@ -21,7 +21,7 @@
 #include "FDO\Commands\mgICommand.h"
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
-public __gc __interface ILongTransactionCheckpointReader;
+interface class ILongTransactionCheckpointReader;
 
 /// \ingroup (OSGeoFDOCommandsLongTransaction)
 /// \interface OSGeo::FDO::Commands::LongTransaction::IGetLongTransactionCheckpoints
@@ -30,7 +30,7 @@ public __gc __interface ILongTransactionCheckpointReader;
 /// GetLongTransactionCheckpoints command, which allows the user to enumerate
 /// the checkpoints for a given long transaction. To execute the operation, the
 /// user must have access privilege to the long transaction.
-public __gc __interface IGetLongTransactionCheckpoints : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
+public interface class IGetLongTransactionCheckpoints : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
 {
 public:
     /// \brief
@@ -39,8 +39,6 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::String* get_LongTransactionName();
-
     /// \brief
     /// Sets the name of the long transaction for which to get the checkpoints.
     /// 
@@ -50,7 +48,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_LongTransactionName(System::String* value);
+    property System::String^ LongTransactionName
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Executes the get long transaction checkpoints command, returning a
@@ -59,7 +61,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionCheckpointReader* Execute();
+	NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionCheckpointReader^ Execute();
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION

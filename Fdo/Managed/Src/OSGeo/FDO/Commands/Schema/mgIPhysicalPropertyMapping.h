@@ -21,13 +21,13 @@
 #include "FDO\Commands\Schema\mgIPhysicalElementMapping.h"
 
 BEGIN_NAMESPACE_OSGEO_COMMON_XML
-public __gc class XmlSaxContext;
-public __gc class XmlAttributeCollection;
-public __gc class XmlWriter;
+ref class XmlSaxContext;
+ref class XmlAttributeCollection;
+ref class XmlWriter;
 END_NAMESPACE_OSGEO_COMMON_XML
 
 BEGIN_NAMESPACE_OSGEO_FDO_XML
-public __gc class XmlFlags;
+ref class XmlFlags;
 END_NAMESPACE_OSGEO_FDO_XML
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
@@ -37,7 +37,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 /// \brief
 /// IPhysicalPropertyMapping is an abstract interface that acts as a base interface for all 
 /// Physical Schema Mapping property overrides.
-public __gc __interface IPhysicalPropertyMapping : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IPhysicalElementMapping
+public interface class IPhysicalPropertyMapping : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IPhysicalElementMapping
 {
 public:
     /// \brief
@@ -54,7 +54,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void InitFromXml(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* context, NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection* attributes);
+	System::Void InitFromXml(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ context, NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection^ attributes);
 
     /// \brief
     /// Writes this Physical Property Mapping to XML. Called when
@@ -72,7 +72,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void WriteXml(NAMESPACE_OSGEO_COMMON_XML::XmlWriter* xmlWriter, NAMESPACE_OSGEO_FDO_XML::XmlFlags* flags);
+	System::Void WriteXml(NAMESPACE_OSGEO_COMMON_XML::XmlWriter^ xmlWriter, NAMESPACE_OSGEO_FDO_XML::XmlFlags^ flags);
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA

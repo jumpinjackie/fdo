@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 /// <p><b>Note:</b> <span class="red_text">This Help topic is provided for informational use only. There is
 /// no interface or support provided. OSGeo reserves the right to change
 /// the software related to the content herein.</span>
-public __gc class NetworkLayerClass : public NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition
+public ref class NetworkLayerClass : public NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition
 {
 public:
     /// \brief
@@ -47,7 +47,7 @@ public:
     /// \param description 
     /// Input description
     /// 
-	NetworkLayerClass(System::String* name, System::String* description);
+	NetworkLayerClass(System::String^ name, System::String^ description);
 
     /// \brief
     /// Gets the concrete class type.
@@ -55,7 +55,10 @@ public:
     /// \return
     /// Returns class type
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::ClassType get_ClassType();
+    property NAMESPACE_OSGEO_FDO_SCHEMA::ClassType ClassType
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::ClassType get();
+    }
 
     /// \brief
     /// Constructs a NetworkLayerClass object based on an unmanaged instance of the object
@@ -72,7 +75,7 @@ public:
 
 	}
 
-public private:
+internal:
 	inline FdoNetworkLayerClass* GetImpObj();
 };
 

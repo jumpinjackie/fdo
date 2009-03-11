@@ -22,14 +22,14 @@
 #include <FdoGeometry.h>
 #include "mgObjectFactory.h"
 
-FdoIDirectPosition *NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp::GetImpObj()
+FdoIDirectPosition* NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp::GetImpObj()
 {
-	return static_cast<FdoIDirectPosition *>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoIDirectPosition*>(UnmanagedObject.ToPointer());
 }
 
-FdoDirectPositionCollection * NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::GetImpObj()
+FdoDirectPositionCollection* NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::GetImpObj()
 {
-	return static_cast<FdoDirectPositionCollection *>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoDirectPositionCollection*>(UnmanagedObject.ToPointer());
 }
 
 NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp::IDirectPositionImp(System::IntPtr unmanaged, System::Boolean autoDelete)
@@ -37,41 +37,35 @@ NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp::IDirectPositionImp(System::IntPtr 
 {
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp::ReleaseUnmanagedObject()
+System::Double NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp::X::get()
 {
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release());
-}
-
-System::Double NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp::get_X()
-{
-	FdoDouble ret;
+	System::Double ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetX())
 	return ret;
 }
 
-System::Double NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp::get_Y()
+System::Double NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp::Y::get()
 {
-	FdoDouble ret;
+	System::Double ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetY())
 	return ret;
 }
 
-System::Double NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp::get_Z()
+System::Double NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp::Z::get()
 {
-	FdoDouble ret;
+	System::Double ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetZ())
 	return ret;
 }
 
-System::Double NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp::get_M()
+System::Double NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp::M::get()
 {
-	FdoDouble ret;
+	System::Double ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetM())
 	return ret;
 }
 
-System::Int32 NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp::get_Dimensionality()
+System::Int32 NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp::Dimensionality::get()
 {
 	System::Int32 ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetDimensionality())
@@ -82,131 +76,99 @@ System::Int32 NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp::get_Dimensionality()
 // DirectPositionCollection
 //-----------------------------------------------------------------------
 NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::DirectPositionCollection(System::IntPtr unmanaged, System::Boolean autoDelete)
-	: NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)
+	: NAMESPACE_OSGEO_COMMON::CollectionBase(unmanaged, autoDelete)
 {
 }
 
 NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::DirectPositionCollection()
-	: NAMESPACE_OSGEO_RUNTIME::Disposable(FdoDirectPositionCollection::Create(), true)
+	: NAMESPACE_OSGEO_COMMON::CollectionBase(IntPtr(FdoDirectPositionCollection::Create()), true)
 {
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::ReleaseUnmanagedObject()
+System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::CopyTo(array<NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^>^ pArray, System::Int32 index)
 {
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
+	if (nullptr == pArray)
+		throw gcnew System::ArgumentNullException();
+	if (index < 0)
+		throw gcnew System::ArgumentOutOfRangeException();
+	if (pArray->Rank != 1 || index >= pArray->Length || this->Count + index > pArray->Length)
+		throw gcnew System::ArgumentException();
+
+    for (System::Int32 i = 0; i < this->Count; i++)
+        pArray[index+i] = this->Item[i];
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::ICollection::CopyTo(System::Array *array, System::Int32 index)
+System::Object^ NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::IndexInternal::get(System::Int32 index)
 {
-    if (NULL == array)
-        throw new System::ArgumentNullException();
-    if (index < 0)
-        throw new System::ArgumentOutOfRangeException();
-    if ( array->Rank != 1 || index >= array->Length || get_Count() + index > array->Length)
-        throw new System::ArgumentException();
-	for (System::Int32 i=0;i<this->Count;i++)
-        array->set_Item(index+i,get_Item(i));
+	return this->Item[index];
 }
 
-System::Object* NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::ICollection::get_SyncRoot()
+System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::IndexInternal::set(System::Int32 index, System::Object^ value)
 {
-    return NULL;
+	this->Item[index] = dynamic_cast<NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^>(value);
 }
 
-System::Boolean NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::ICollection::get_IsSynchronized()
+System::Int32 NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::Add(System::Object^ value)
 {
-    return false;
+	return Add(dynamic_cast<NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^>(value));
 }
 
-System::Boolean NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::IList::get_IsFixedSize() 
-{ 
-    return false;
-}
-
-System::Boolean NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::IList::get_IsReadOnly() 
-{ 
-    return false;
-}
-
-System::Int32 NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::IList::Add(System::Object *value)
+System::Boolean NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::Contains(System::Object^ value)
 {
-    return Add(__try_cast<IDirectPosition *>(value));
+	return Contains(dynamic_cast<NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^>(value));
 }
 
-System::Boolean NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::IList::Contains(System::Object *value)
+System::Int32 NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::IndexOf(System::Object^ value)
 {
-	return Contains(__try_cast<IDirectPosition *>(value));
+	return IndexOf(dynamic_cast<NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^>(value));
 }
 
-System::Int32 NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::IList::IndexOf(System::Object *value)
+System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::Insert(System::Int32 index, System::Object^ value)
 {
-    return IndexOf(__try_cast<IDirectPosition *>(value));
+	Insert(index, dynamic_cast<NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^>(value));
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::IList::Insert(System::Int32 Index, System::Object *value)
+System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::Remove(System::Object^ value)
 {
-    Insert(Index, __try_cast<IDirectPosition *>(value));
+	return Remove(dynamic_cast<NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^>(value));
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::IList::Remove(System::Object *value)
-{
-    Remove(__try_cast<IDirectPosition *>(value));
-}
-
-System::Object* NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::IList::get_Item(System::Int32 index)
-{
-    return get_RealTypeItem( index );
-}
-
-System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::IList::set_Item(System::Int32 index, System::Object *value)
-{
-    set_RealTypeItem( index, __try_cast<IDirectPosition *>(value));
-}
-
-
-System::Int32 NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::Add(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition *value)
+System::Int32 NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::Add(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ value)
 {
 	System::Int32 ret;
-	EXCEPTION_HANDLER(ret = GetImpObj()->Add((value == NULL ? NULL : static_cast<NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp *>(value)->GetImpObj())))
+	EXCEPTION_HANDLER(ret = GetImpObj()->Add((value == nullptr ? nullptr : static_cast<NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp^>(value)->GetImpObj())))
 	return ret;
 }
 
-System::Int32 NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::IndexOf(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition *value)
+System::Int32 NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::IndexOf(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ value)
 {
 	System::Int32 ret;
-	EXCEPTION_HANDLER(ret = GetImpObj()->IndexOf((value == NULL ? NULL : static_cast<NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp *>(value)->GetImpObj())))
+	EXCEPTION_HANDLER(ret = GetImpObj()->IndexOf((value == nullptr ? nullptr : static_cast<NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp^>(value)->GetImpObj())))
 	return ret;
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::Insert(System::Int32 index, NAMESPACE_OSGEO_GEOMETRY::IDirectPosition *value)
+System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::Insert(System::Int32 index, NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Insert(index, (value == NULL ? NULL : static_cast<NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp *>(value)->GetImpObj())));
+	EXCEPTION_HANDLER(GetImpObj()->Insert(index, (value == nullptr ? nullptr : static_cast<NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp^>(value)->GetImpObj())));
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::Remove(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition *value)
+System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::Remove(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Remove((value == NULL ? NULL : static_cast<NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp *>(value)->GetImpObj())));
+	EXCEPTION_HANDLER(GetImpObj()->Remove((value == nullptr ? nullptr : static_cast<NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp^>(value)->GetImpObj())));
 }
 
-System::Boolean NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::Contains(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition *value)
+System::Boolean NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::Contains(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ value)
 {
-	FdoBoolean ret;
-	EXCEPTION_HANDLER(ret = !!GetImpObj()->Contains((value == NULL ? NULL : static_cast<NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp *>(value)->GetImpObj())))
+    System::Boolean ret;
+	EXCEPTION_HANDLER(ret = !!GetImpObj()->Contains((value == nullptr ? nullptr : static_cast<NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp^>(value)->GetImpObj())))
 	return ret;
 }
 
-System::Int32 NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::get_Count()
+System::Int32 NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::Count::get()
 {
 	System::Int32 ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetCount())
 	return ret;
-}
-
-System::Collections::IEnumerator* NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::GetEnumerator(System::Void)
-{
-	return new Enumerator(this);
 }
 
 System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::RemoveAt(System::Int32 index)
@@ -219,58 +181,14 @@ System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::Clear()
 	EXCEPTION_HANDLER(GetImpObj()->Clear());
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::CopyTo(NAMESPACE_OSGEO_GEOMETRY::IDirectPosition *array[], System::Int32 index)
+NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::Item::get(System::Int32 index)
 {
-	if (NULL == array)
-        throw new System::ArgumentNullException();
-    if (index < 0)
-        throw new System::ArgumentOutOfRangeException();
-    if ( array->Rank != 1 || index >= array->Length || get_Count() + index > array->Length)
-        throw new System::ArgumentException();
-    for (System::Int32 i=0;i<this->Count;i++)
-        array[index+i] = get_RealTypeItem(i);
-}
-
-NAMESPACE_OSGEO_GEOMETRY::IDirectPosition * NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::get_RealTypeItem(System::Int32 index)
-{
-	FdoIDirectPosition *ret;
+	FdoIDirectPosition* ret;
 	EXCEPTION_HANDLER(ret = GetImpObj()->GetItem(index))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIDirectPosition(ret, true);
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIDirectPosition(IntPtr(ret), true);
 }
 
-System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::set_RealTypeItem(System::Int32 index, NAMESPACE_OSGEO_GEOMETRY::IDirectPosition * value)
+System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::Item::set(System::Int32 index, NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetItem(index, static_cast<NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp *>(value)->GetImpObj()));
+	EXCEPTION_HANDLER(GetImpObj()->SetItem(index, dynamic_cast<NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp^>(value)->GetImpObj()));
 }
-
-NAMESPACE_OSGEO_GEOMETRY::IDirectPosition * NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::get_Item(System::Int32 index)
-{
-	return get_RealTypeItem(index);
-}
-
-System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::set_Item(System::Int32 index, NAMESPACE_OSGEO_GEOMETRY::IDirectPosition * value)
-{
-	set_RealTypeItem(index, value);
-}
-
-System::Object *NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::Enumerator::get_Current()
-{
-	if (m_nIdx < 0 || m_nIdx >= m_pCol->Count)
-		throw new InvalidOperationException();
-
-	FdoIDirectPosition *ret;
-	EXCEPTION_HANDLER(ret = m_pCol->GetImpObj()->GetItem(m_nIdx))
-	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIDirectPosition(ret, true);
-}
-
-System::Boolean NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::Enumerator::MoveNext()
-{
-	++m_nIdx;
-	return m_nIdx < m_pCol->Count;
-}
-
-System::Void NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::Enumerator::Reset()
-{
-	m_nIdx = -1;
-}
-

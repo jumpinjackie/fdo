@@ -27,7 +27,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 /// \ingroup (OSGeoFDOConnectionsCapabilities)
 /// \brief
 /// The IGeometryCapabilities class delineates available support for raster processing from a provider.
-private __gc class IGeometryCapabilitiesImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
+private ref class IGeometryCapabilitiesImp : public NAMESPACE_OSGEO_RUNTIME::Disposable, 
                                               public NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IGeometryCapabilities
 {
 public:
@@ -38,7 +38,10 @@ public:
     /// \return
     /// Returns the list of geometry types
     /// 
-	__property NAMESPACE_OSGEO_COMMON::GeometryType get_GeometryTypes() [];
+    virtual property array<NAMESPACE_OSGEO_COMMON::GeometryType>^ GeometryTypes
+    {
+        array<NAMESPACE_OSGEO_COMMON::GeometryType>^ get();
+    }
 
     /// \brief
     /// Return the list of supported component types. For example, if a client wanted to know if circular arcs were supported 
@@ -47,7 +50,10 @@ public:
     /// \return
     /// Returns the list of component types
     /// 
-	__property NAMESPACE_OSGEO_COMMON::GeometryComponentType get_GeometryComponentTypes() [];
+    virtual property array<NAMESPACE_OSGEO_COMMON::GeometryComponentType>^ GeometryComponentTypes
+    {
+        array<NAMESPACE_OSGEO_COMMON::GeometryComponentType>^ get();
+    }
 
     /// \brief
     /// Returns the supported dimensionalities which are based on the bit masks defined in the Dimensionality enum. 
@@ -56,14 +62,12 @@ public:
     /// \return
     /// Returns the dimensionalities
     /// 
-	__property System::Int32 get_Dimensionalities();
+    virtual property System::Int32 Dimensionalities
+    {
+        System::Int32 get();
+    }
 
-/// \cond DOXYGEN-IGNORE
-protected:
-	System::Void ReleaseUnmanagedObject();
-/// \endcond
-
-public private:
+internal:
 	IGeometryCapabilitiesImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoIGeometryCapabilities* GetImpObj();

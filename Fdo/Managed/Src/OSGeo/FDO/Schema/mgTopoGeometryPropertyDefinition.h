@@ -43,7 +43,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 /// This Help topic is provided for informational use only. There is
 /// no interface or support provided. OSGeo reserves the right to change
 /// the software related to the content herein.
-public __gc class TopoGeometryPropertyDefinition : public NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition
+public ref class TopoGeometryPropertyDefinition : public NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition
 {
 public:
     /// \brief
@@ -61,7 +61,7 @@ public:
 
 	}
 
-public private:
+internal:
 	inline FdoTopoGeometryPropertyDefinition* GetImpObj();
 };
 

@@ -24,12 +24,12 @@ class FdoGeometryValue;
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
-public __gc __interface IExpressionProcessor;
+interface class IExpressionProcessor;
 
 /// \ingroup (OSGeoFDOExpression)
 /// \brief
 /// The GeometryValue class derives from LiteralValue and represents a geometric value.
-public __gc class GeometryValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue
+public ref class GeometryValue : public NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue
 {
 public:
 
@@ -50,7 +50,7 @@ public:
     /// \return
     /// Returns GeometryValue
     /// 
-	GeometryValue(System::Byte geometry []);
+	GeometryValue(array<System::Byte>^ geometry);
 
     /// \brief
     /// Returns true if the GeometryValue represents a null value.
@@ -67,8 +67,6 @@ public:
     /// \return
     /// Returns geometry in FGF format
     /// 
-	__property System::Byte get_Geometry() [];
-
     /// \brief
     /// Sets the geometry as a byte array. The geometry is expected to be
     /// encoded in Autodesk Well-Known Binary format.
@@ -79,7 +77,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Geometry(System::Byte value []);
+    property array<System::Byte>^ Geometry
+    {
+        array<System::Byte>^ get();
+        System::Void set(array<System::Byte>^ value);
+    }
 
     /// \brief
     /// Sets the GeometryValue to a null value.
@@ -99,7 +101,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	System::Void Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor* processor);
+	virtual System::Void Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor^ processor) override;
 
     /// \brief
     /// Returns the well defined text representation of this expression.
@@ -107,7 +109,7 @@ public:
     /// \return
     /// Returns the well defined text string
     /// 
-	System::String* ToString();
+	virtual System::String^ ToString() override;
 
     /// \brief
     /// Constructs a GeometryValue object based on an unmanaged instance of the object
@@ -127,9 +129,12 @@ public:
     /// \return
     /// Returns an LiteralValueType
     /// 
-     __property NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValueType get_LiteralValueType ();
+	property NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValueType LiteralValueType
+    {
+        NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValueType get();
+    }
 
-public private:
+internal:
 	inline FdoGeometryValue* GetImpObj();
 };
 

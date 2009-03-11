@@ -25,7 +25,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 /// \brief
 /// The ICommandCapabilities interface declares the feature provider's level
 /// of support for Commands.
-public __gc __interface ICommandCapabilities : public System::IDisposable
+public interface class ICommandCapabilities : public System::IDisposable
 {
 public:
     /// \brief
@@ -34,7 +34,10 @@ public:
     /// \return
     /// Returns the list of commands
     /// 
-	__property System::Int32 get_Commands() [];
+    property array<System::Int32>^ Commands
+    {
+        array<System::Int32>^ get();
+    }
 
     /// \brief
     /// Determines if commands support parameterization.

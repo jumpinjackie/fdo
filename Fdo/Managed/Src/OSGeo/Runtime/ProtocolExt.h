@@ -22,7 +22,7 @@ template <typename WrapperType, typename Base>
 class VirtualObject : public Base
 {
 private:
-	gcroot<WrapperType*> wrapper;
+	gcroot<WrapperType^> wrapper;
 
 public:
 	VirtualObject() 
@@ -34,12 +34,12 @@ public:
 		wrapper = NULL;
 	}
 
-	WrapperType* GetWrapper() const 
+	WrapperType^ GetWrapper() const 
 	{ 
 		return wrapper;
 	}
 	
-	System::Void SetWrapper(WrapperType* wrapper)
+	System::Void SetWrapper(WrapperType^ wrapper)
 	{
 		this->wrapper = wrapper;
 	}

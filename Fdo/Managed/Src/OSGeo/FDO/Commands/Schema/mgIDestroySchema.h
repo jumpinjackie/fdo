@@ -30,7 +30,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 /// definitions, and instance data within it. If elements in other schemas refer
 /// to the schema to be destroyed command, execution will fail. Input to the
 /// delete schema command is the name of the schema to be destroyed.
-public __gc __interface IDestroySchema : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
+public interface class IDestroySchema : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommand
 {
 public:
     /// \brief
@@ -39,8 +39,6 @@ public:
     /// \return
     /// Returns the name of the schema to destroy
     /// 
-	__property System::String* get_SchemaName();
-
     /// \brief
     /// Sets the name of the schema to destroy as a string.
     /// 
@@ -50,7 +48,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_SchemaName(System::String* value);
+    property System::String^ SchemaName
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Executes the destroy schema command, which removes the schema, class

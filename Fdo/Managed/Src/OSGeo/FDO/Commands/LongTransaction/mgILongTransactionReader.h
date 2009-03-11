@@ -29,7 +29,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 /// command. The initial position of the ILongTransactionReader is prior
 /// to the first item. Thus, you must call ReadNext to begin accessing any
 /// data.
-public __gc __interface ILongTransactionReader : public System::IDisposable
+public interface class ILongTransactionReader : public System::IDisposable
 {
 public:
     /// \brief
@@ -39,7 +39,7 @@ public:
     /// \return
     /// Returns the name of the long transaction.
     /// 
-	System::String* GetName();
+	System::String^ GetName();
 
     /// \brief
     /// Retrieves the description of the long transaction currently
@@ -48,7 +48,7 @@ public:
     /// \return
     /// Returns the description of the long transaction.
     /// 
-	System::String* GetDescription();
+	System::String^ GetDescription();
 
     /// \brief
     /// Provides access to the direct descendent long transactions 
@@ -61,7 +61,7 @@ public:
     /// Returns a long transaction reader with the direct descendents
     /// for the long transaction currently being read.
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionReader* GetChildren();
+	NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionReader^ GetChildren();
 
     /// \brief
     /// Provides access to the direct ascendant long transactions for
@@ -74,7 +74,7 @@ public:
     /// Returns a long transaction reader with the direct ascendants 
     /// for the long transaction currently being read.
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionReader* GetParents();
+	NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionReader^ GetParents();
 
     /// \brief
     /// Retrieves the owner of the long transaction currently being
@@ -83,7 +83,7 @@ public:
     /// \return
     /// Returns the owner name.
     /// 
-	System::String* GetOwner();
+	System::String^ GetOwner();
 
     /// \brief
     /// Retrieves the creation date of the long transaction currently

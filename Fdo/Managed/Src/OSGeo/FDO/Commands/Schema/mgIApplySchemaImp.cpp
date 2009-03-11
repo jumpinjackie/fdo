@@ -31,44 +31,44 @@ FdoIApplySchema* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IApplySchemaImp::GetImpObj
     return static_cast<FdoIApplySchema*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IApplySchemaImp::get_FeatureSchema()
+NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema^ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IApplySchemaImp::FeatureSchema::get()
 {
 	FdoFeatureSchema* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetFeatureSchema())
 
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateFeatureSchema(result, true);
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateFeatureSchema(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IApplySchemaImp::set_FeatureSchema(NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IApplySchemaImp::FeatureSchema::set(NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetFeatureSchema((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->SetFeatureSchema((value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IApplySchemaImp::get_PhysicalMapping()
+NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping^ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IApplySchemaImp::PhysicalMapping::get()
 {
 	FdoPhysicalSchemaMapping* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetPhysicalMapping())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePhysicalSchemaMapping(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreatePhysicalSchemaMapping(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IApplySchemaImp::set_PhysicalMapping(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping* value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IApplySchemaImp::PhysicalMapping::set(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetPhysicalMapping((value == NULL ? NULL : value->GetImpObj())))
+	EXCEPTION_HANDLER(GetImpObj()->SetPhysicalMapping((value == nullptr ? nullptr : value->GetImpObj())))
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IApplySchemaImp::get_IgnoreStates()
+System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IApplySchemaImp::IgnoreStates::get()
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = !!GetImpObj()->GetIgnoreStates())
 
 	return result;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IApplySchemaImp::set_IgnoreStates(System::Boolean ignoreStates )
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IApplySchemaImp::IgnoreStates::set(System::Boolean ignoreStates )
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetIgnoreStates(ignoreStates))
 }

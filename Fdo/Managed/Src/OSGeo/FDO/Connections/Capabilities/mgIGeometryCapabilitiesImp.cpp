@@ -32,40 +32,33 @@ FdoIGeometryCapabilities* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IGeometr
     return static_cast<FdoIGeometryCapabilities*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IGeometryCapabilitiesImp::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}
-
-NAMESPACE_OSGEO_COMMON::GeometryType NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IGeometryCapabilitiesImp::get_GeometryTypes() []
+array<NAMESPACE_OSGEO_COMMON::GeometryType>^ NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IGeometryCapabilitiesImp::GeometryTypes::get()
 {
 	FdoGeometryType* unobj;
 	FdoInt32 length;
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetGeometryTypes(length))
-	NAMESPACE_OSGEO_COMMON::GeometryType obj [] = new NAMESPACE_OSGEO_COMMON::GeometryType[length];
+
+	array<NAMESPACE_OSGEO_COMMON::GeometryType>^ result = gcnew array<NAMESPACE_OSGEO_COMMON::GeometryType>(length);
 	for(FdoInt32 i = 0; i < length; i ++)
-	{
-		obj[i] = static_cast<NAMESPACE_OSGEO_COMMON::GeometryType>(*(unobj + i));
-	}
-	return obj;
+		result[i] = static_cast<NAMESPACE_OSGEO_COMMON::GeometryType>(*(unobj + i));
+
+    return result;
 }
 
-NAMESPACE_OSGEO_COMMON::GeometryComponentType NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IGeometryCapabilitiesImp::get_GeometryComponentTypes() []
+array<NAMESPACE_OSGEO_COMMON::GeometryComponentType>^ NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IGeometryCapabilitiesImp::GeometryComponentTypes::get()
 {
 	FdoGeometryComponentType* unobj;
 	FdoInt32 length;
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetGeometryComponentTypes(length))
-    NAMESPACE_OSGEO_COMMON::GeometryComponentType obj [] = new NAMESPACE_OSGEO_COMMON::GeometryComponentType[length];
+
+	array<NAMESPACE_OSGEO_COMMON::GeometryComponentType>^ result = gcnew array<NAMESPACE_OSGEO_COMMON::GeometryComponentType>(length);
 	for(FdoInt32 i = 0; i < length; i ++)
-	{
-		obj[i] = static_cast<NAMESPACE_OSGEO_COMMON::GeometryComponentType>(*(unobj + i));
-	}
-	return obj;
+		result[i] = static_cast<NAMESPACE_OSGEO_COMMON::GeometryComponentType>(*(unobj + i));
+
+    return result;
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IGeometryCapabilitiesImp::get_Dimensionalities()
+System::Int32 NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IGeometryCapabilitiesImp::Dimensionalities::get()
 {
 	FdoInt32 rv;
 	EXCEPTION_HANDLER(rv = GetImpObj()->GetDimensionalities())

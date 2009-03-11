@@ -33,7 +33,7 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::Function::Function(IntPtr unmanaged, Boolean aut
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::Function::Function() : Expression(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoFunction::Create(), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoFunction::Create()), true))
 }
 
 FdoFunction* NAMESPACE_OSGEO_FDO_EXPRESSION::Function::GetImpObj()
@@ -41,50 +41,57 @@ FdoFunction* NAMESPACE_OSGEO_FDO_EXPRESSION::Function::GetImpObj()
 	return static_cast<FdoFunction*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::Function::Function(System::String* name, NAMESPACE_OSGEO_FDO_EXPRESSION::Expression* arguments []) : Expression(IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_EXPRESSION::Function::Function(System::String^ name, array<NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^>^ arguments) : Expression(IntPtr::Zero, false)
 {
-	// NEED_TEST
 	FdoInt32 unlength = arguments->Length;
     FdoExpression** unargs = new FdoExpression* [unlength];
-	for(FdoInt32 i = 0; i < unlength; i ++)
-	{
-		*(unargs + i) = arguments[i]->GetImpObj();
-	}
-	EXCEPTION_HANDLER(Attach(FdoFunction::Create(StringToUni(name), unargs, unlength), true))
+    try
+    {
+	    for(FdoInt32 i = 0; i < unlength; i ++)
+	    {
+		    *(unargs + i) = arguments[i]->GetImpObj();
+	    }
+	    EXCEPTION_HANDLER(Attach(IntPtr(FdoFunction::Create(StringToUni(name), unargs, unlength)), true))
+    }
+    finally
+    {
+        if (unargs != nullptr)
+            delete[] unargs;
+    }
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::Function::Function(System::String* name, NAMESPACE_OSGEO_FDO_EXPRESSION::ExpressionCollection* arguments) : Expression(IntPtr::Zero, false)
+NAMESPACE_OSGEO_FDO_EXPRESSION::Function::Function(System::String^ name, NAMESPACE_OSGEO_FDO_EXPRESSION::ExpressionCollection^ arguments) : Expression(IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoFunction::Create(StringToUni(name), arguments->GetImpObj()), true))
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoFunction::Create(StringToUni(name), arguments->GetImpObj())), true))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_EXPRESSION::Function::get_Name()
+System::String^ NAMESPACE_OSGEO_FDO_EXPRESSION::Function::Name::get()
 {
 	FdoString* unstr;
 	EXCEPTION_HANDLER(unstr = GetImpObj()->GetName())
-	return unstr;
+    return CHECK_STRING(unstr);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::Function::set_Name(System::String* value)
+System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::Function::Name::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetName(StringToUni(value)))
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::ExpressionCollection* NAMESPACE_OSGEO_FDO_EXPRESSION::Function::get_Arguments()
+NAMESPACE_OSGEO_FDO_EXPRESSION::ExpressionCollection^ NAMESPACE_OSGEO_FDO_EXPRESSION::Function::Arguments::get()
 {
-	FdoExpressionCollection* unobj;
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetArguments())
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateExpressionCollection(unobj, true);
+	FdoExpressionCollection* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetArguments())
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateExpressionCollection(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::Function::Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor* processor)
+System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::Function::Process(NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessor^ processor)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Process((static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessorImp*>(processor))->GetImpObj()))
+	EXCEPTION_HANDLER(GetImpObj()->Process((static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessorImp^>(processor))->GetImpObj()))
 }
 
-System::String* NAMESPACE_OSGEO_FDO_EXPRESSION::Function::ToString()
+System::String^ NAMESPACE_OSGEO_FDO_EXPRESSION::Function::ToString()
 {
 	FdoString* unstr;
 	EXCEPTION_HANDLER(unstr = GetImpObj()->ToString())
-	return unstr;
+	return CHECK_STRING(unstr);
 }

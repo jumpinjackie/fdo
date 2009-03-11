@@ -26,7 +26,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 /// \brief
 /// The ObjectType enumeration defines whether an object property is a single 
 /// value, a collection, or an ordered collection.
-public __value enum ObjectType
+public enum class ObjectType
 {
     /// Represents a simple value property.
 	ObjectType_Value = FdoObjectType_Value,

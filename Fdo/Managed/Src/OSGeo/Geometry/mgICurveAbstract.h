@@ -21,7 +21,7 @@
 #include "mgIGeometry.h"
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
-public __gc __interface IDirectPosition;
+interface class IDirectPosition;
 END_NAMESPACE_OSGEO_GEOMETRY
 
 BEGIN_NAMESPACE_OSGEO_GEOMETRY
@@ -30,7 +30,7 @@ BEGIN_NAMESPACE_OSGEO_GEOMETRY
 /// \interface OSGeo::FDO::Geometry::ICurveAbstract
 /// \brief
 /// The ICurveAbstract class is a curve Geometry type (abstract). ICurveAbstract is the most general curve type.  
-public __gc __interface ICurveAbstract : public NAMESPACE_OSGEO_GEOMETRY::IGeometry
+public interface class ICurveAbstract : public NAMESPACE_OSGEO_GEOMETRY::IGeometry
 {
 public:
     /// \brief
@@ -44,8 +44,11 @@ public:
     /// \return
     /// Returns the starting position
     /// 
-	__property NAMESPACE_OSGEO_GEOMETRY::IDirectPosition *get_StartPosition();
-	
+    property NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ StartPosition
+    {
+        NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ get();
+    }
+
     /// \brief
     /// Gets the ending position of this Curve.
     /// 
@@ -57,7 +60,10 @@ public:
     /// \return
     /// Returns the ending position
     /// 
-	__property NAMESPACE_OSGEO_GEOMETRY::IDirectPosition *get_EndPosition();
+    property NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ EndPosition
+    {
+        NAMESPACE_OSGEO_GEOMETRY::IDirectPosition^ get();
+    }
 	
     /// \brief
     /// Gets the closure state for the curve.
@@ -77,7 +83,10 @@ public:
     /// \return
     /// Returns 'true' if the curve is closed, and false otherwise
     /// 
-	__property System::Boolean get_IsClosed();
+    property System::Boolean IsClosed
+    {
+        System::Boolean get();
+    }
 };
 END_NAMESPACE_OSGEO_GEOMETRY
 

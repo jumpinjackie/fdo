@@ -30,7 +30,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_SCHEMA
 /// PropertyDefinition is an abstract class that derives from SchemaElement.
 /// PropertyDefinition is the base class of DataPropertyDefinition, 
 /// GeometricPropertyDefinition, and ObjectPropertyDefinition.
-public __gc class PropertyDefinition : public NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement
+public ref class PropertyDefinition : public NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement
 {
 public:
     /// \brief
@@ -39,7 +39,10 @@ public:
     /// \return
     /// Returns the property type
     /// 
-	__property NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType get_PropertyType();
+    property NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType PropertyType
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType get();
+    }
 
     /// \brief
     /// Gets the fully qualified name of this property
@@ -47,7 +50,10 @@ public:
     /// \return
     /// Returns {schema_name}:{class_name}.{property_name}
     /// 
-	__property System::String* get_QualifiedName();
+    property System::String^ QualifiedName
+    {
+        System::String^ get();
+    }
 
     /// \brief
     /// Returns a Boolean value that indicates if this is a system generated property.
@@ -58,8 +64,6 @@ public:
     /// \remarks
     /// System properties are not written out to the XML schema file, which remains provider-portable.
     ///
-	__property System::Boolean get_IsSystem();
-
     /// \brief
     /// Sets whether this is a system property.
     /// This function must only be called by an FDO Provider. Typically, it would be 
@@ -68,7 +72,11 @@ public:
     /// \param value 
     /// Input true if this is a system property.
     /// 
-	__property System::Void set_IsSystem(System::Boolean value);
+    property System::Boolean IsSystem
+    {
+        System::Boolean get();
+        System::Void set(System::Boolean value);
+    }
 
     /// \brief
     /// Constructs a PropertyDefinition object based on an unmanaged instance of the object
@@ -85,7 +93,7 @@ public:
 		
 	}
 
-public private:
+internal:
 	inline FdoPropertyDefinition* GetImpObj();
 };
 

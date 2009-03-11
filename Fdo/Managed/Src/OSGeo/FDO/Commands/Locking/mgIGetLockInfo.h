@@ -21,7 +21,7 @@
 #include "FDO\Commands\mgIFeatureCommand.h"
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
-public __gc __interface ILockedObjectReader;
+interface class ILockedObjectReader;
 
 /// \ingroup (OSGeoFDOCommandsLocking)
 /// \interface OSGeo::FDO::Commands::Locking::IGetLockInfo
@@ -29,7 +29,7 @@ public __gc __interface ILockedObjectReader;
 /// The IGetLockInfo interface defines the GetLockInfo command, which gets a
 /// lock information for the feature instances of a given class that match the
 /// specified filter. If the filter is empty, all feature instances of the given class are selected.
-public __gc __interface IGetLockInfo : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommand
+public interface class IGetLockInfo : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommand
 {
 public:
     /// \brief
@@ -38,7 +38,7 @@ public:
     /// \return
     /// Returns a locked object reader.
     /// 
-	NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReader* Execute();
+	NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReader^ Execute();
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING

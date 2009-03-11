@@ -37,56 +37,49 @@ FdoFilter* NAMESPACE_OSGEO_FDO_FILTER::Filter::GetImpObj()
 	return static_cast<FdoFilter*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_FDO_FILTER::Filter::ReleaseUnmanagedObject()
+NAMESPACE_OSGEO_FDO_FILTER::Filter^ NAMESPACE_OSGEO_FDO_FILTER::Filter::Parse(System::String^ filterText)
 {
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
+	FdoFilter* result;
+	EXCEPTION_HANDLER(result = FdoFilter::Parse(StringToUni(filterText)))
+	return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter^>(ObjectFactory::CreateFilter(IntPtr(result), true));
 }
 
-NAMESPACE_OSGEO_FDO_FILTER::Filter* NAMESPACE_OSGEO_FDO_FILTER::Filter::Parse(System::String* filterText)
+System::Void NAMESPACE_OSGEO_FDO_FILTER::Filter::Process(NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessor^ processor)
 {
-	FdoFilter* unobj;
-	EXCEPTION_HANDLER(unobj = FdoFilter::Parse(StringToUni(filterText)))
-	return static_cast<Filter*>(ObjectFactory::CreateFilter(unobj, true));
+	EXCEPTION_HANDLER(GetImpObj()->Process((static_cast<NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessorImp^>(processor))->GetImpObj()))
 }
 
-System::Void NAMESPACE_OSGEO_FDO_FILTER::Filter::Process(NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessor* processor)
-{
-	EXCEPTION_HANDLER(GetImpObj()->Process((static_cast<NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessorImp*>(processor))->GetImpObj()))
-}
-
-System::String* NAMESPACE_OSGEO_FDO_FILTER::Filter::ToString()
+System::String^ NAMESPACE_OSGEO_FDO_FILTER::Filter::ToString()
 {
 	FdoString* unstr;
 	EXCEPTION_HANDLER(unstr = GetImpObj()->ToString())
-	return unstr;
+    return CHECK_STRING(unstr);
 }
 
-NAMESPACE_OSGEO_FDO_FILTER::Filter* NAMESPACE_OSGEO_FDO_FILTER::Filter::Combine( NAMESPACE_OSGEO_FDO_FILTER::Filter* leftFilter, NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations operation, NAMESPACE_OSGEO_FDO_FILTER::Filter* rightFilter)
+NAMESPACE_OSGEO_FDO_FILTER::Filter^ NAMESPACE_OSGEO_FDO_FILTER::Filter::Combine( NAMESPACE_OSGEO_FDO_FILTER::Filter^ leftFilter, NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations operation, NAMESPACE_OSGEO_FDO_FILTER::Filter^ rightFilter)
 {
-	FdoFilter* unobj;
-	EXCEPTION_HANDLER(unobj = GetImpObj()->Combine(leftFilter->GetImpObj(), static_cast<FdoBinaryLogicalOperations>(operation), rightFilter->GetImpObj()))
-	return static_cast<Filter*>(ObjectFactory::CreateFilter(unobj, true));
+	FdoFilter* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->Combine(leftFilter->GetImpObj(), static_cast<FdoBinaryLogicalOperations>(operation), rightFilter->GetImpObj()))
+	return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter^>(ObjectFactory::CreateFilter(IntPtr(result), true));
 }
 
-NAMESPACE_OSGEO_FDO_FILTER::Filter* NAMESPACE_OSGEO_FDO_FILTER::Filter::Combine(System::String* leftFilter, NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations operation, NAMESPACE_OSGEO_FDO_FILTER::Filter* rightFilter)
+NAMESPACE_OSGEO_FDO_FILTER::Filter^ NAMESPACE_OSGEO_FDO_FILTER::Filter::Combine(System::String^ leftFilter, NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations operation, NAMESPACE_OSGEO_FDO_FILTER::Filter^ rightFilter)
 {
-	FdoFilter* unobj;
-	EXCEPTION_HANDLER(unobj = GetImpObj()->Combine(StringToUni(leftFilter), static_cast<FdoBinaryLogicalOperations>(operation), rightFilter->GetImpObj()))
-	return static_cast<Filter*>(ObjectFactory::CreateFilter(unobj, true));
+	FdoFilter* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->Combine(StringToUni(leftFilter), static_cast<FdoBinaryLogicalOperations>(operation), rightFilter->GetImpObj()))
+	return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter^>(ObjectFactory::CreateFilter(IntPtr(result), true));
 }
 
-NAMESPACE_OSGEO_FDO_FILTER::Filter* NAMESPACE_OSGEO_FDO_FILTER::Filter::Combine(NAMESPACE_OSGEO_FDO_FILTER::Filter* leftFilter, NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations operation, System::String* rightFilter)
+NAMESPACE_OSGEO_FDO_FILTER::Filter^ NAMESPACE_OSGEO_FDO_FILTER::Filter::Combine(NAMESPACE_OSGEO_FDO_FILTER::Filter^ leftFilter, NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations operation, System::String^ rightFilter)
 {
-	FdoFilter* unobj;
-	EXCEPTION_HANDLER(unobj = GetImpObj()->Combine(leftFilter->GetImpObj(),  static_cast<FdoBinaryLogicalOperations>(operation), StringToUni(rightFilter)))
-	return static_cast<Filter*>(ObjectFactory::CreateFilter(unobj, true));
+	FdoFilter* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->Combine(leftFilter->GetImpObj(),  static_cast<FdoBinaryLogicalOperations>(operation), StringToUni(rightFilter)))
+	return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter^>(ObjectFactory::CreateFilter(IntPtr(result), true));
 }
 
-NAMESPACE_OSGEO_FDO_FILTER::Filter* NAMESPACE_OSGEO_FDO_FILTER::Filter::Combine(System::String* leftFilter, NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations operation, System::String* rightFilter)
+NAMESPACE_OSGEO_FDO_FILTER::Filter^ NAMESPACE_OSGEO_FDO_FILTER::Filter::Combine(System::String^ leftFilter, NAMESPACE_OSGEO_FDO_FILTER::BinaryLogicalOperations operation, System::String^ rightFilter)
 {
-	FdoFilter* unobj;
-	EXCEPTION_HANDLER(unobj = GetImpObj()->Combine(StringToUni(leftFilter),  static_cast<FdoBinaryLogicalOperations>(operation), StringToUni(rightFilter)))
-	return static_cast<Filter*>(ObjectFactory::CreateFilter(unobj, true));
+	FdoFilter* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->Combine(StringToUni(leftFilter),  static_cast<FdoBinaryLogicalOperations>(operation), StringToUni(rightFilter)))
+	return static_cast<NAMESPACE_OSGEO_FDO_FILTER::Filter^>(ObjectFactory::CreateFilter(IntPtr(result), true));
 }

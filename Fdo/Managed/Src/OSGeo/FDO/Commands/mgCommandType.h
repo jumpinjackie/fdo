@@ -25,7 +25,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
 /// \ingroup (OSGeoFDOCommands)
 /// \brief
 /// The CommandType enumeration defines the list of abstract commands a feature provider can support.
-public __value enum CommandType {
+public enum class CommandType {
     /// Represents the Select command
 	CommandType_Select = FdoCommandType_Select,
 

@@ -26,7 +26,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES
 /// \brief
 /// The FdoFunctionCategoryType enumeration lists all types an function may
 /// be classified to.
-public __value enum FunctionCategoryType
+public enum class FunctionCategoryType
 {
 
     /// Represents the identifier used to categorize aggregate functions.

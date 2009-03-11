@@ -21,7 +21,7 @@
 #include "FDO\Commands\Feature\mgISelect.h"
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
-public __gc __interface IScrollableFeatureReader;
+interface class IScrollableFeatureReader;
 
 /// \ingroup (OSGeoFDOCommandsFeature)
 /// \interface OSGeo::FDO::Commands::Feature::IExtendedSelect
@@ -30,7 +30,7 @@ public __gc __interface IScrollableFeatureReader;
 /// capabilities. It provides the same functionality as ISelect, plus the
 /// ability to create a scrollable reader that allows forward, reverse or 
 /// random access to the results set. 
-public __gc __interface IExtendedSelect : public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelect
+public interface class IExtendedSelect : public NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelect
 {
 public:
 	/// \brief
@@ -46,7 +46,7 @@ public:
     /// \param option
 	/// Is the ordering option and should be set to one of FdoOrderingOption_Ascending or FdoOrderingOption_Descending.
     /// FdoOrderingOption_Ascending is the default value.
-	void SetOrderingOption( System::String* propertyName, NAMESPACE_OSGEO_FDO_COMMANDS::OrderingOption  option );
+	void SetOrderingOption( System::String^ propertyName, NAMESPACE_OSGEO_FDO_COMMANDS::OrderingOption  option );
 
     /// \brief
 	/// Gets the ordering option for a given property.
@@ -57,7 +57,7 @@ public:
 	///
     /// \return
 	/// Returns the ordering option.
-    NAMESPACE_OSGEO_FDO_COMMANDS::OrderingOption GetOrderingOption( System::String* propertyName );
+    NAMESPACE_OSGEO_FDO_COMMANDS::OrderingOption GetOrderingOption( System::String^ propertyName );
 
 	/// \brief
 	/// Clears the internal list of property/ordering option list and re-sets the ordering option for all 
@@ -73,7 +73,7 @@ public:
 	/// the ordering collection. This method performs sorting and allocates an integer value for each row.
     /// \return
 	/// Returns a FdoIScrollableFeatureReader object
-	NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IScrollableFeatureReader* ExecuteScrollable();
+	NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IScrollableFeatureReader^ ExecuteScrollable();
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE

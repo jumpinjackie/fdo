@@ -25,7 +25,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
 /// \brief
 /// The ProviderDatastoreType enumeration lists all of the concrete provider
 /// types supported by FDO.
-public __value enum ProviderDatastoreType
+public enum class ProviderDatastoreType
 {
 
     /// Indicates that the provider is a database-based provider.

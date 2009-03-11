@@ -41,16 +41,9 @@ FdoIRaster* NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::GetImpObj()
 	return static_cast<FdoIRaster*>(__super::UnmanagedObject.ToPointer());
 }
 
-Void NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::ReleaseUnmanagedObject()
-{
-	if (get_AutoDelete()) 
-        EXCEPTION_HANDLER(GetImpObj()->Release())
-	Detach();
-}
-
 System::Boolean NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::IsNull ()
 {
-	FdoBoolean unobj;
+	System::Boolean unobj;
 	EXCEPTION_HANDLER(unobj = !!GetImpObj()->IsNull())
 	return unobj;
 }
@@ -60,123 +53,134 @@ System::Void NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::SetNull ()
 	EXCEPTION_HANDLER(GetImpObj()->SetNull())
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::get_NumberOfBands()
+System::Int32 NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::NumberOfBands::get()
 {
-	FdoInt32 unobj;
+	System::Int32 unobj;
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetNumberOfBands())
 	return unobj;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::set_NumberOfBands (System::Int32 value)
+System::Void NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::NumberOfBands::set(System::Int32 value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetNumberOfBands(value))
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::get_CurrentBand ()
+System::Int32 NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::CurrentBand::get()
 {
-	FdoInt32 unobj;
+	System::Int32 unobj;
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetCurrentBand())
 	return unobj;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::set_CurrentBand (System::Int32 value)
+System::Void NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::CurrentBand::set(System::Int32 value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetCurrentBand(value))
 }
 
-System::Byte NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::get_Bounds () []
+array<System::Byte>^ NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::Bounds::get()
 {
-	FdoByteArray* result;
+	FdoByteArray* arr = nullptr;
+    array<System::Byte>^ result;
+    try
+    {
+	    EXCEPTION_HANDLER(arr = GetImpObj()->GetBounds())
 
-	EXCEPTION_HANDLER(result = GetImpObj()->GetBounds())
-
-	System::Byte mgBuffer __gc[] = FdoByteArrayToByteArray(result->GetData(), result->GetCount());
-	result->Release();
-
-	return mgBuffer;
+	    result = FdoByteArrayToByteArray(arr->GetData(), arr->GetCount());
+    }
+    finally
+    {
+        if (arr != nullptr)
+	        arr->Release();
+    }
+	return result;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::set_Bounds(System::Byte bounds[])
+System::Void NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::Bounds::set(array<System::Byte>^ bounds)
 {
 	FdoByteArray* byteArray = ByteArrayToFdoByteArray(bounds);
-
-	EXCEPTION_HANDLER(GetImpObj()->SetBounds(byteArray))
-
-	byteArray->Release();
+    try
+    {
+	    EXCEPTION_HANDLER(GetImpObj()->SetBounds(byteArray))
+    }
+    finally
+    {
+        if (byteArray != nullptr)
+	        byteArray->Release();
+    }
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::get_ImageXSize ()
+System::Int32 NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::ImageXSize::get()
 {
-	FdoInt32 unobj;
+	System::Int32 unobj;
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetImageXSize())
 	return unobj;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::set_ImageXSize (System::Int32 size)
+System::Void NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::ImageXSize::set(System::Int32 size)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetImageXSize(size))
 }
 
-System::Int32 NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::get_ImageYSize ()
+System::Int32 NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::ImageYSize::get()
 {
-	FdoInt32 unobj;
+	System::Int32 unobj;
 	EXCEPTION_HANDLER(unobj = GetImpObj()->GetImageYSize())
 	return unobj;
 }
 
-System ::Void NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::set_ImageYSize (System ::Int32 size)
+System ::Void NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::ImageYSize::set(System ::Int32 size)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetImageYSize(size))
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue* NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::get_NullPixelValue()
+NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::NullPixelValue::get()
 {
-	FdoDataValue* unobj;
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetNullPixelValue())
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataValue(unobj, true);
+	FdoDataValue* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetNullPixelValue())
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateDataValue(IntPtr(result), true);
 }
 
-System ::Void NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::set_StreamReader (NAMESPACE_OSGEO_COMMON::IStreamReaderImp* reader)
+System ::Void NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::StreamReader::set(NAMESPACE_OSGEO_COMMON::IStreamReaderImp^ reader)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetStreamReader(static_cast<FdoIStreamReader*>(reader->UnmanagedObject.ToPointer())))
 }
 
-NAMESPACE_OSGEO_COMMON::IStreamReaderImp* NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::get_StreamReader ()
+NAMESPACE_OSGEO_COMMON::IStreamReaderImp^ NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::StreamReader::get()
 {
-	FdoIStreamReader* unobj;
+	FdoIStreamReader* result;
 
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetStreamReader())
+	EXCEPTION_HANDLER(result = GetImpObj()->GetStreamReader())
 
-    return static_cast<NAMESPACE_OSGEO_COMMON::IStreamReaderImp*>(NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateIStreamReader(unobj, true));
+    return static_cast<NAMESPACE_OSGEO_COMMON::IStreamReaderImp^>(NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateIStreamReader(IntPtr(result), true));
 }
 
-NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel* NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::get_DataModel ()
+NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel^ NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::DataModel::get()
 {
-	FdoRasterDataModel* unobj;
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetDataModel())
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateRasterDataModel(unobj, true);
+	FdoRasterDataModel* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetDataModel())
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateRasterDataModel(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::set_DataModel(NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel* dataModel)
+System::Void NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::DataModel::set(NAMESPACE_OSGEO_FDO_RASTER::RasterDataModel^ dataModel)
 {	
 	EXCEPTION_HANDLER(GetImpObj()->SetDataModel(dataModel->GetImpObj()))
 }
 
-NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionary* NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::GetAuxiliaryProperties()
+NAMESPACE_OSGEO_FDO_RASTER::IRasterPropertyDictionary^ NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::GetAuxiliaryProperties()
 {	
-	FdoIRasterPropertyDictionary* unobj;
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetAuxiliaryProperties())
-	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIRasterPropertyDictionary(unobj, true);
+	FdoIRasterPropertyDictionary* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetAuxiliaryProperties())
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIRasterPropertyDictionary(IntPtr(result), true);
 }
 
-System::String* NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::get_VerticalUnits ()
+System::String^ NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::VerticalUnits::get()
 {
-	FdoString* unobj;
-	EXCEPTION_HANDLER(unobj = GetImpObj()->GetVerticalUnits())
-	return unobj;
+	FdoString* result;
+	EXCEPTION_HANDLER(result = GetImpObj()->GetVerticalUnits())
+	return CHECK_STRING(result);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::set_VerticalUnits (System::String* units)
+System::Void NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::VerticalUnits::set(System::String^ units)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetVerticalUnits(StringToUni(units)))
 }

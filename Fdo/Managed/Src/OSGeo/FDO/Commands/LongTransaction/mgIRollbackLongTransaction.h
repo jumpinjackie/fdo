@@ -39,7 +39,7 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION
 /// of a full rollback, the user also requires the remove privilege for the
 /// long transaction) and the access privilege for all the descendent
 /// versions.
-public __gc __interface IRollbackLongTransaction : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommand
+public interface class IRollbackLongTransaction : public NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommand
 {
 public:
     /// \brief
@@ -48,8 +48,6 @@ public:
     /// \return
     /// Returns the name of the long transaction.
     /// 
-	__property System::String* get_Name();
-
     /// \brief
     /// Sets the name of the long transaction to roll back as a string.
     /// 
@@ -59,7 +57,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	__property System::Void set_Name(System::String* value);
+    property System::String^ Name
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
 
     /// \brief
     /// Executes the RollbackLongTransaction command.

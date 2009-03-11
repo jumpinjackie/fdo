@@ -30,12 +30,12 @@ FdoIExtendedSelect* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IExtendedSelectImp::Ge
     return static_cast<FdoIExtendedSelect*>(__super::UnmanagedObject.ToPointer());
 }
 
-void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IExtendedSelectImp::SetOrderingOption( System::String* propertyName, NAMESPACE_OSGEO_FDO_COMMANDS::OrderingOption  option )
+void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IExtendedSelectImp::SetOrderingOption( System::String^ propertyName, NAMESPACE_OSGEO_FDO_COMMANDS::OrderingOption  option )
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetOrderingOption(StringToUni(propertyName), static_cast<FdoOrderingOption>(option)))
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS::OrderingOption NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IExtendedSelectImp::GetOrderingOption( System::String* propertyName )
+NAMESPACE_OSGEO_FDO_COMMANDS::OrderingOption NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IExtendedSelectImp::GetOrderingOption( System::String^ propertyName )
 {
 	FdoOrderingOption result;
 
@@ -49,12 +49,12 @@ void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IExtendedSelectImp::ClearOrderingOpti
 	EXCEPTION_HANDLER(GetImpObj()->ClearOrderingOptions());
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IScrollableFeatureReader* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IExtendedSelectImp::ExecuteScrollable()
+NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IScrollableFeatureReader^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IExtendedSelectImp::ExecuteScrollable()
 {
 	FdoIScrollableFeatureReader* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->ExecuteScrollable())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIScrollableFeatureReader(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIScrollableFeatureReader(IntPtr(result), true);
 }
 

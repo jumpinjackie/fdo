@@ -32,21 +32,21 @@ FdoISelectAggregates* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectAggregatesImp
     return static_cast<FdoISelectAggregates*>(__super::UnmanagedObject.ToPointer());
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDataReader* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectAggregatesImp::Execute()
+NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDataReader^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectAggregatesImp::Execute()
 {
 	FdoIDataReader* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->Execute())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIDataReader(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIDataReader(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectAggregatesImp::set_Distinct(System::Boolean value)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectAggregatesImp::Distinct::set(System::Boolean value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetDistinct(value))
 }
 
-System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectAggregatesImp::get_Distinct()
+System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectAggregatesImp::Distinct::get()
 {
 	FdoBoolean result;
 
@@ -55,25 +55,25 @@ System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectAggregatesImp::get_
 	return result;
 }
 
-NAMESPACE_OSGEO_FDO_COMMANDS::IdentifierCollection* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectAggregatesImp::get_Grouping()
+NAMESPACE_OSGEO_FDO_COMMANDS::IdentifierCollection^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectAggregatesImp::Grouping::get()
 {
 	FdoIdentifierCollection* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetGrouping())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIdentifierCollection(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIdentifierCollection(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectAggregatesImp::set_GroupingFilter(NAMESPACE_OSGEO_FDO_FILTER::Filter* filter)
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectAggregatesImp::GroupingFilter::set(NAMESPACE_OSGEO_FDO_FILTER::Filter^ filter)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetGroupingFilter(filter->GetImpObj()))
 }
  
-NAMESPACE_OSGEO_FDO_FILTER::Filter* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectAggregatesImp::get_GroupingFilter()
+NAMESPACE_OSGEO_FDO_FILTER::Filter^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectAggregatesImp::GroupingFilter::get()
 {
 	FdoFilter* result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetGroupingFilter())
 
-    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateFilter(result, true);
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateFilter(IntPtr(result), true);
 }
