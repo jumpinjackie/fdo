@@ -253,6 +253,7 @@
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary="Lib/Win32/Debug/FDOMessage.lib"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"

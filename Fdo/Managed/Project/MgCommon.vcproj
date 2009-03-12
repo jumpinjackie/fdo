@@ -82,6 +82,7 @@
 				ProgramDatabaseFile="$(TargetDir)\OSGeo.FDO.Common.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				TargetMachine="1"
 				CLRImageType="0"
 			/>
 			<Tool
@@ -256,6 +257,7 @@
 				ProgramDatabaseFile="$(TargetDir)\OSGeo.FDO.Common.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
