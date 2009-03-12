@@ -4,6 +4,7 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Provider", "Provider\SQLiteProvider.vcproj", "{8F5CFBEE-539A-4054-8A76-1BF85DD1A716}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D94D9A17-A6AE-45DA-A1F9-443BD3A76FC6} = {D94D9A17-A6AE-45DA-A1F9-443BD3A76FC6}
+		{9037A345-04EB-418C-98D0-3D5B19FC9D55} = {9037A345-04EB-418C-98D0-3D5B19FC9D55}
 		{826398ED-29B3-4504-9683-ABC431AC5D21} = {826398ED-29B3-4504-9683-ABC431AC5D21}
 	EndProjectSection
 EndProject
@@ -16,6 +17,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SQLite", "sqlite-3.6.2\sqlite.vcproj", "{D94D9A17-A6AE-45DA-A1F9-443BD3A76FC6}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SpatialIndex", "SpatialIndex\SpatialIndex.vcproj", "{826398ED-29B3-4504-9683-ABC431AC5D21}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "..\..\..\Utilities\Common\FdoCommon.vcproj", "{9037A345-04EB-418C-98D0-3D5B19FC9D55}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +58,14 @@ Global
 		{826398ED-29B3-4504-9683-ABC431AC5D21}.Release|Win32.Build.0 = Release|Win32
 		{826398ED-29B3-4504-9683-ABC431AC5D21}.Release|x64.ActiveCfg = Release|x64
 		{826398ED-29B3-4504-9683-ABC431AC5D21}.Release|x64.Build.0 = Release|x64
+		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Debug|Win32.Build.0 = Debug|Win32
+		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Debug|x64.ActiveCfg = Debug|x64
+		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Debug|x64.Build.0 = Debug|x64
+		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Release|Win32.ActiveCfg = Release|Win32
+		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Release|Win32.Build.0 = Release|Win32
+		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Release|x64.ActiveCfg = Release|x64
+		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
