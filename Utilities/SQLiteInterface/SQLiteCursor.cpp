@@ -181,6 +181,10 @@ int SQLiteCursor::get(SQLiteData* key, SQLiteData *data, unsigned int flags)
     return SQLITE_ERROR;
 }
 
+#pragma warning(push)
+#pragma warning(disable: 4018)  // '<' : signed/unsigned mismatch
+#pragma warning(disable: 4244)  // conversion from 'i64' to 'size_t', possible loss of data
+
 /*
 **
 ** Return the key for the entry at which the cursor is pointing.
@@ -269,6 +273,8 @@ int SQLiteCursor::get_data(
   *size = n;
   return SQLITE_OK;
 }
+
+#pragma warning(pop) // '<' : signed/unsigned mismatch
 
 int SQLiteCursor::get_fast_data(
   int      *size,
