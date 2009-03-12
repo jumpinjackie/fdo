@@ -249,7 +249,9 @@ int local_rdbi_sql(
     if (cursor->status == RDBI_SUCCESS)
         cursor->sql_parsed =    TRUE;
 
+#ifdef _DEBUG
 the_exit:
+#endif
     context->rdbi_last_status = cursor->status;
 
     debug_return(NULL, cursor->status);
