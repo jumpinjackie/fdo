@@ -216,6 +216,9 @@ const wchar_t* BinaryReader::ReadString()
     return ReadRawString(mbstrlen);
 }
 
+#pragma warning(push)
+#pragma warning(disable: 4018)  // '<' : signed/unsigned mismatch
+
 const wchar_t* BinaryReader::ReadRawString( unsigned mbstrlen, int index )
 {
     if( mbstrlen <= 1 )
@@ -249,6 +252,8 @@ const wchar_t* BinaryReader::ReadRawString( unsigned mbstrlen, int index )
 	wcsCacheLastIndex = index;
     return m_wcsStringCache[index].wcsString;
 }
+
+#pragma warning(pop) // '<' : signed/unsigned mismatch
 
 //
 // Should only be called from internal code that does not require the returned 
