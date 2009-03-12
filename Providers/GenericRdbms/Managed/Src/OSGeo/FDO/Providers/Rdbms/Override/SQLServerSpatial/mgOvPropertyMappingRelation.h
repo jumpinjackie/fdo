@@ -16,6 +16,7 @@
 //
 
 #pragma once
+#pragma warning (disable:4490)
 
 #include "FDO\Providers\Rdbms\Override\SQLServerSpatial\mgIOvPropertyMappingRelation.h"
 
