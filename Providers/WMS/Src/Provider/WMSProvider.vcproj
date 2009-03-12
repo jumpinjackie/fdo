@@ -75,6 +75,7 @@
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary="..\..\Lib\Win32\Debug\WMSProvider.lib"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -241,6 +242,7 @@
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary="..\..\Lib\Win32\Release\WMSProvider.lib"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
