@@ -171,8 +171,6 @@ void FdoRfpClassData::_buildUpGeoRastersFromCatalogue(FdoRfpConnection *conn,
         if (bandCount == 0) // invalid feature for having no bands.
             continue;
 
-        double insX, insY, resX, resY, rotX, rotY;
-        int width, height, frameNumber;
         FdoRfpGeoRasterP geoRaster = FdoRfpGeoRaster::Create();
 
         for (j = 0; j < bandCount; j++)

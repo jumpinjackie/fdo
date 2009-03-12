@@ -113,10 +113,10 @@ FdoDataValue* FdoRfpRasterPropertyDictionay::GetProperty (FdoString* name)
             GDALColorEntry sEntry;
 
             GDALGetColorEntryAsRGB( hCT, iEntry, &sEntry );
-            palette[iEntry*4 + 0] = sEntry.c1;
-            palette[iEntry*4 + 1] = sEntry.c2;
-            palette[iEntry*4 + 2] = sEntry.c3;
-            palette[iEntry*4 + 3] = sEntry.c4;
+            palette[iEntry*4 + 0] = (FdoByte)sEntry.c1;
+            palette[iEntry*4 + 1] = (FdoByte)sEntry.c2;
+            palette[iEntry*4 + 2] = (FdoByte)sEntry.c3;
+            palette[iEntry*4 + 3] = (FdoByte)sEntry.c4;
         }
         rv = FdoDataValue::Create((FdoByte*)palette, 4 * numOfEntries, FdoDataType_BLOB);
         delete[] palette;
