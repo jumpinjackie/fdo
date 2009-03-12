@@ -76,6 +76,7 @@
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary="..\..\Lib\Win32\Debug\GRFPOverrides.lib"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -166,6 +167,7 @@
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary="..\..\Lib\Win32\Release\GRFPOverrides.lib"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
