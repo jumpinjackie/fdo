@@ -3420,7 +3420,7 @@ void TestCommonConstraints::DateTimeConstraints( Context& context )
         pApplyCmd->SetFeatureSchema(pSchema2);
 
         FdoPtr<FdoIInsert> insertCmd;
-        FdoDateTime dateTime = FdoDateTime( 2005, 12, 30, 23, 59, 58.99999 );
+        FdoDateTime dateTime = FdoDateTime( 2005, 12, 30, 23, 59, (float)58.99999 );
         TestCommonMiscUtil::InsertObject(
             context.connection,
             insertCmd,

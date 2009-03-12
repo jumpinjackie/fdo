@@ -143,7 +143,7 @@ FdoLiteralValue *FdoFunctionCurrentDate::Evaluate (
     dt.day     = local_time.tm_mday;
     dt.hour    = local_time.tm_hour;
     dt.minute  = local_time.tm_min;
-    dt.seconds = local_time.tm_sec;
+    dt.seconds = (float)local_time.tm_sec;
 
     // Return the requested information.
 

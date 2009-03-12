@@ -152,7 +152,7 @@ FdoPtr<FdoLiteralValue> TestCommonMiscUtil::ArgsToLiteral( va_list& arguments )
 
     switch ( dataType ) {
     case FdoDataType_Boolean:
-        boolArg = (FdoBoolean) va_arg(arguments,int);
+		boolArg = va_arg(arguments,int) == 1 ? true : false;
         literalValue = FdoDataValue::Create(boolArg);
         break;
     case FdoDataType_Byte:
