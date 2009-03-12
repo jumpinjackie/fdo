@@ -81,6 +81,7 @@
 				ProgramDatabaseFile="$(TargetDir)\OSGeo.FDO.Spatial.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -253,6 +254,7 @@
 				ProgramDatabaseFile="$(TargetDir)\OSGeo.FDO.Spatial.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
