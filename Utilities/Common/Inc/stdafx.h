@@ -31,6 +31,7 @@
 
 #endif
 
+#include <cstring>
 
 #ifdef _DEBUG
     #ifdef _WIN32

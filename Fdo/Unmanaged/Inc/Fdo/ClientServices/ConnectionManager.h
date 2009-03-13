@@ -25,6 +25,7 @@
 #pragma once
 #endif
 
+#include <string>
 #include <map>
 #include <Fdo/IConnectionManager.h>
 
