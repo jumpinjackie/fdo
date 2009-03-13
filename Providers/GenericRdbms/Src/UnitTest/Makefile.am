@@ -153,6 +153,7 @@ UnitTestOdbc_LDADD =  \
   -lxerces-c \
   -lz \
   -lodbc \
+  -lodbcinst \
   ./Common/libCommonUnitTests.la \
   ./Odbc/libOdbcUnitTests.la  \
   ../ODBC/libFdoRdbmsODBC.la  \
@@ -188,6 +189,7 @@ UnitTestOdbc_LDADD =  \
   ../Rdbi/librdbi.la \
   ../Util/libutil.la \
   -lodbc \
+  -lodbcinst \
   -lz
 
 UnitTestOdbc_LDFLAGS = \

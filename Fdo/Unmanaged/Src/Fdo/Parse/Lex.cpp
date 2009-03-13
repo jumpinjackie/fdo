@@ -15,11 +15,12 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  
+#include <cmath>	// for pow()
+#include <climits>	// LONG_MAX and LONG_MIN
+#include <ctime>
+#include <cwctype>
+#include <cstring>
 #include "Parse.h"
-#include <math.h>	// for pow()
-#include <limits.h>	// LONG_MAX and LONG_MIN
-#include <time.h>
-#include <wctype.h>
 #include "StringUtility.h"
 
 #define CHR_NULL	'\0'
