@@ -18,6 +18,9 @@
 #include <windows.h>
 #endif
 
+#include <cstring>
+#include <cstdlib> 
+
 #include <Fdo.h>
 
 // NOTE: Define __CPPUNIT_MFC_APP in order to have the CPPUNIT UI appear... 
