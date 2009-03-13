@@ -212,7 +212,7 @@ FdoLiteralValue *FdoFunctionAddMonths::Evaluate (
       if ((curr_month + num_of_months) < 0) {
 
           num_of_years--;
-          dt.month = 12 - (curr_month + num_of_months);
+          dt.month = 12 + (curr_month + num_of_months);
 
       }  //  if ((curr_month + num_of_months) > 12) ...
       else
