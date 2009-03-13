@@ -1426,10 +1426,15 @@ void FdoExpressionEngineImp::ProcessFunction (FdoFunction& expr)
             for (int i=0; i<args->GetCount(); i++)
             {
 				FdoDataValue* dv = (FdoDataValue*)m_retvals.back ();
+                
 				m_retvals.pop_back ();
 				functionParameters->Insert(0, dv);
-                FDO_SAFE_RELEASE(dv);
+
+                // The geometries are not pooled so release them here.
+                if (dv->GetLiteralValueType() == FdoLiteralValueType_Geometry)
+                    FDO_SAFE_RELEASE(dv);
 			}
+
 			FdoExpressionEngineIAggregateFunction *func = m_AggregateFunctions.at(m_CurrentIndex);
 			func->Process(functionParameters);
 			for (int i=0; i<functionParameters->GetCount(); i++)
