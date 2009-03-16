@@ -3091,3 +3091,8 @@ SymbolicName=FUNCTION_M
 Language=English
 Determines the M ordinate of a given point geometry
 .
+MessageId=9189
+SymbolicName=FDO_185_READ_FILE_ERROR
+Language=English
+Error occured reading file '%1$ls'.
+.
