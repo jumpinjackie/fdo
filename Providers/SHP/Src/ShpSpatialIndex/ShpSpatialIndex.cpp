@@ -144,7 +144,7 @@ ShpSpatialIndex::ShpSpatialIndex (const wchar_t* idx, const wchar_t* tmp, eShape
                 }
             }
             else
-                throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::ShpSpatialIndex(GetTempFile)");
+                throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::ShpSpatialIndex(GetTempFile)", idx);
         }
         else
             throw FdoException::Create (NlsMsgGet(SHP_SI_UNABLE_TO_OPEN, "The file '%1$ls' cannot be opened.", idx));
@@ -182,7 +182,7 @@ ShpSpatialIndex::ShpSpatialIndex (const wchar_t* idx, const wchar_t* tmp, eShape
             m_eliminatedNodes[i] = NULL;
     }
     else
-        throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::ShpSpatialIndex(GetFileSize)");
+        throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::ShpSpatialIndex(GetFileSize)", idx);
 } // end: Constructor
 
 
@@ -276,7 +276,7 @@ void ShpSpatialIndex::Reopen(OpenFlags openFlags)
 					}
 				}
 				else
-					throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::ShpSpatialIndex(GetTempFile)");
+                    throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::ShpSpatialIndex(GetTempFile)");
 			}
 		}
 	}
@@ -1274,7 +1274,7 @@ void ShpSpatialIndex::DeleteObject(const BoundingBoxEx *objExtent,
         FlushNodeCache(FALSE);
         m_ssiLength = sizeof(ShpSpatialIndexHeader);
         if (!SetFileSize (sizeof(ShpSpatialIndexHeader)))
-            throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::DeleteObject(SetFileSize)");
+            throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::DeleteObject(SetFileSize)");
     }
 } // end: DeleteObject()
 
@@ -2303,12 +2303,12 @@ unsigned long ShpSpatialIndex::TraverseFreeList(unsigned long ssiOffset)
         // seek the the free node and read the offset of the next free node
 
         if (!SetFilePointer64((FdoInt64)ssiOffset, FILE_POS_BEGIN))
-            throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::TraverseFreeList(SetFilePointer64)");
+            throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::TraverseFreeList(SetFilePointer64)");
 
         unsigned char nextFreeNode[sizeof(unsigned long)];
 
         if (!ReadFile(nextFreeNode, 4))
-            throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::TraverseFreeList(ReadFreeNode)");
+            throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::TraverseFreeList(ReadFreeNode)");
 
         ssiOffset = DecodeUI(nextFreeNode, 32);
 
@@ -2373,7 +2373,7 @@ int ShpSpatialIndex::Defragment(ShpSpatialIndexFileCallback *callbackObj,
     // this file and if the defragmentation process is successful, the old
     // SSI is removed and replaced by the temporary file
     if (!GetTempFile (&tempFile, mTempDir))
-        throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::Defragment(GetTempFile)");
+        throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::Defragment(GetTempFile)");
 
     // save the temporary file name and delete the allocated memory
     thatFile = (wchar_t*)alloca (sizeof(wchar_t) * (wcslen (tempFile) + 1));
@@ -2428,16 +2428,16 @@ int ShpSpatialIndex::Defragment(ShpSpatialIndexFileCallback *callbackObj,
 
             // replace the old SSI with the temporary file
             if (!defragFile.CloseFile())
-                throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::Defragment(CloseTempFile)");
+                throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::Defragment(CloseTempFile)");
             else
             {
                 if (!CloseFile())
-                    throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::Defragment(CloseThisFile)");
+                    throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::Defragment(CloseThisFile)");
 
                 if (!Move (thatFile, thisFile))
                 {
                     if (tempFileName == NULL)
-                        throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::Defragment(Move)");
+                        throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::Defragment(Move)");
                     else
                         ::wcscpy (tempFileName, thatFile);
                     ret = SHP_ERROR_SI_CANT_REPLACE_SSI;
@@ -2450,7 +2450,7 @@ int ShpSpatialIndex::Defragment(ShpSpatialIndexFileCallback *callbackObj,
    					FdoInt64 ssiLength64;
      
 					if (!GetFileSize64(ssiLength64))
-                        throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::Defragment(GetFileSize)");
+                        throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::Defragment(GetFileSize)");
 					else
 						m_ssiLength = (ULONG)ssiLength64;
                 }
@@ -2513,9 +2513,9 @@ int ShpSpatialIndex::Defragment(ShpSpatialIndex* defragFile, unsigned long &ssiO
     // seek to the end of the file, and assign the new SSI offset of the node
 
     if (!defragFile->SetFilePointer64((FdoInt64)0, FILE_POS_END))
-        throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::Defragment(SetFilePointer64)");
+        throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::Defragment(SetFilePointer64)");
     if (!defragFile->GetFilePointer64(ssiOffset64))
-        throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::Defragment(GetFilePointer64)");
+        throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::Defragment(GetFilePointer64)");
 	else
 		ssiOffset = (ULONG)ssiOffset64;
 
@@ -2527,7 +2527,7 @@ int ShpSpatialIndex::Defragment(ShpSpatialIndex* defragFile, unsigned long &ssiO
         nullBytes = (unsigned char*)alloca (nBytes);
         ::memset(nullBytes, 0, nBytes);
         if (!defragFile->WriteFile(&nullBytes, nBytes))
-            throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::Defragment(WriteBytes)");
+            throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::Defragment(WriteBytes)");
 
         // rescursively descend into each child node
         childLevel = node->m_nodeLevel - 1;
@@ -2581,14 +2581,14 @@ void ShpSpatialIndex::ReadSSIHeader()
     // seek to beginning of the SSI
 
     if (!SetFilePointer64((FdoInt64)0, FILE_POS_BEGIN))
-        throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::ReadSSIHeader(SetFilePointer64)");
+        throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::ReadSSIHeader(SetFilePointer64)");
 
     // read in the header section of the SSI
 
     unsigned char buffer[sizeof(ShpSpatialIndexHeader)];
 
     if (!ReadFile(buffer, sizeof(ShpSpatialIndexHeader)))
-        throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::ReadSSIHeader(ReadHeader)");
+        throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::ReadSSIHeader(ReadHeader)");
 
     // check if the file is an SSI
 
@@ -2684,7 +2684,7 @@ void ShpSpatialIndex::WriteSSIHeader()
 
     // seek to beginning of the SSI
     if (!SetFilePointer64((FdoInt64)0, FILE_POS_BEGIN))
-        throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::WriteSSIHeader(SetFilePointer64)");
+        throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::WriteSSIHeader(SetFilePointer64)");
 
     // zero initialize the buffer the header will be encoded into
 
@@ -2754,7 +2754,7 @@ void ShpSpatialIndex::WriteSSIHeader()
     EncodeString(m_ssiHeader->m_description, &buffer[bufferPos]);
 
     if (!WriteFile(buffer, sizeof(ShpSpatialIndexHeader))) 
-        throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::WriteSSIHeader(WriteBuffer)");
+        throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::WriteSSIHeader(WriteBuffer)");
 }
 
 
@@ -3322,12 +3322,12 @@ void ShpSpatialIndex::AllocateNode(unsigned nodeLevel, unsigned long &ssiOffset)
         // singly linked lists)
 
         if (!SetFilePointer64((FdoInt64)ssiOffset, FILE_POS_BEGIN))
-            throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::AllocateNode(SetFilePointer1)");
+            throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::AllocateNode(SetFilePointer1)");
 
         unsigned char nextFreeNode[sizeof(unsigned long)];
 
         if (!ReadFile(nextFreeNode, 4))
-            throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::AllocateNode(ReadNextFreeNode)");
+            throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::AllocateNode(ReadNextFreeNode)");
 
         if (leafNode) 
             m_ssiHeader->m_freeLeafNode = DecodeUI(nextFreeNode, 32);
@@ -3340,12 +3340,12 @@ void ShpSpatialIndex::AllocateNode(unsigned nodeLevel, unsigned long &ssiOffset)
     else {
         // seek to the end of the file
         if (!SetFilePointer64((FdoInt64)0, FILE_POS_END))
-            throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::AllocateNode(SetFilePointer2)");
+            throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::AllocateNode(SetFilePointer2)");
 
 		FdoInt64	ssiOffset64;
 
         if (!GetFilePointer64(ssiOffset64))
-            throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::AllocateNode(GetFilePointer2)");
+            throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::AllocateNode(GetFilePointer2)");
 		else
 			ssiOffset = (ULONG)ssiOffset64;
 
@@ -3365,7 +3365,7 @@ void ShpSpatialIndex::AllocateNode(unsigned nodeLevel, unsigned long &ssiOffset)
         if (WriteFile(buffer, nodeSize))
             m_ssiLength += nodeSize;
         else
-            throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::AllocateNode(WriteBuffer)");
+            throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::AllocateNode(WriteBuffer)");
     }
 
 } // end: AllocateNode()
@@ -3397,7 +3397,7 @@ void ShpSpatialIndex::AddNodeToFreeList(ShpSpatialIndexNode *node)
     // link the node into the appropriate free list
 
     if (!SetFilePointer64((FdoInt64)node->m_ssiOffset, FILE_POS_BEGIN))
-        throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::AddNodeToFreeList(SetFilePointer64)");
+        throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::AddNodeToFreeList(SetFilePointer64)");
 
     unsigned char nextFreeNode[sizeof(unsigned long)];
 
@@ -3407,7 +3407,7 @@ void ShpSpatialIndex::AddNodeToFreeList(ShpSpatialIndexNode *node)
         EncodeUI(m_ssiHeader->m_freeInternalNode, 32, nextFreeNode);
 
     if (!WriteFile(nextFreeNode, 4))
-        throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::AddNodeToFreeList(WriteFreeNode)");
+        throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::AddNodeToFreeList(WriteFreeNode)");
 
     if (AtLeafLevel(node->m_nodeLevel))
         m_ssiHeader->m_freeLeafNode = node->m_ssiOffset;
@@ -3455,7 +3455,7 @@ void ShpSpatialIndex::ReadNode(unsigned long ssiOffset, unsigned nodeLevel,
     // seek to the file position where the node is located
 
     if (!SetFilePointer64((FdoInt64)ssiOffset, FILE_POS_BEGIN))
-        throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::ReadNode(SetFilePointer64)");
+        throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::ReadNode(SetFilePointer64)");
 
     // read the node into an internal buffer
 
@@ -3467,7 +3467,7 @@ void ShpSpatialIndex::ReadNode(unsigned long ssiOffset, unsigned nodeLevel,
         nodeSize = m_ssiHeader->m_internalNodeSize;
 
     if (!ReadFile(buffer, nodeSize))
-        throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::ReadNode(ReadBuffer)");
+        throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::ReadNode(ReadBuffer)");
 
     // now, decode the contents of the buffer
 
@@ -3555,7 +3555,7 @@ void ShpSpatialIndex::WriteNode(const ShpSpatialIndexNode *node)
     // seek to the file position where the node is located
 
     if (!SetFilePointer64(node->m_ssiOffset, FILE_POS_BEGIN))
-        throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::WriteNode(SetFilePointer64)");
+        throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::WriteNode(SetFilePointer64)");
 
     // write the node into an internal buffer
 
@@ -3649,7 +3649,7 @@ void ShpSpatialIndex::WriteNode(const ShpSpatialIndexNode *node)
         nodeSize = m_ssiHeader->m_internalNodeSize;
 
     if (!WriteFile(buffer, nodeSize))
-        throw FdoCommonFile::LastErrorToException (L"ShpSpatialIndex::WriteNode(WriteBuffer)");
+        throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::WriteNode(WriteBuffer)");
 } // end: WriteNode()
 
 bool ShpSpatialIndex::ShapeHasZ (eShapeTypes type)

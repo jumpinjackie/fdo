@@ -405,7 +405,7 @@ public:
     /// Returns an exception with an appropriate error message,
     /// or NULL if the last operation completeted successfully.
     /// 
-    virtual FdoException* LastErrorToException (wchar_t* context);
+    virtual FdoException* LastErrorToException (const wchar_t* context, const wchar_t* fileName = NULL);
 
     /// file manipulation methods
 

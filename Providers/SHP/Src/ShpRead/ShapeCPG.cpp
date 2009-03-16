@@ -51,7 +51,7 @@ ShapeCPG::ShapeCPG (const wchar_t* name, int& status)
             char*   buffer = new char[size + 1];
 
             if ( !FdoCommonFile::ReadFile( buffer, size ) )
-                throw FdoCommonFile::LastErrorToException (L"ShapeCPG::ShapeCPG");
+                throw FdoCommonFile::LastErrorToException (L"ShapeCPG::ShapeCPG", name);
             else
             {
                 buffer[size] = '\0'; // EOF
@@ -60,7 +60,7 @@ ShapeCPG::ShapeCPG (const wchar_t* name, int& status)
             delete [] buffer;
         }
         else
-            throw FdoCommonFile::LastErrorToException (L"ShapeCPG::ShapeCPG");
+            throw FdoCommonFile::LastErrorToException (L"ShapeCPG::ShapeCPG", name);
     }
     else
         throw FdoCommonFile::ErrorCodeToException (code, name, IDF_OPEN_READ);
@@ -79,7 +79,7 @@ ShapeCPG::ShapeCPG (const WCHAR* name, char *locale)
             SetCodePageESRIFromLocale( locale );
 
             if (!WriteFile ((void *)(const char*)mCodePageESRI, (long)mCodePageESRI.GetLength()))
-                throw FdoCommonFile::LastErrorToException (L"ShapeCPG::ShapeCPG()");
+                throw FdoCommonFile::LastErrorToException (L"ShapeCPG::ShapeCPG()", name);
             CloseFile ();
         }
         else
