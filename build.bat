@@ -388,51 +388,47 @@ echo                                  install,
 echo                                  clean
 echo BuildDocs:             -d[ocs]=skip(default), build
 echo BuildPythonWrappers:   -py[thon]=skip(default), build
-SET MROVBYPROVP=
-SET MPROVECAPABP=WithModule:            -w[ith]=all(default), fdo
+echo WithModule:            -w[ith]=all(default),
+echo                                fdo,
 :shp_check
 if not exist Providers\SHP\build.bat goto sdf_check
-	SET MROVBYPROVP=%MROVBYPROVP%, shp
+echo                                shp,
 :sdf_check
 if not exist Providers\SDF\build.bat goto wfs_check
-	SET MROVBYPROVP=%MROVBYPROVP%, sdf
+echo                                sdf,
 :wfs_check
 if not exist Providers\WFS\build.bat goto wms_check
-	SET MROVBYPROVP=%MROVBYPROVP%, wfs
+echo                                wfs,
 :wms_check
 if not exist Providers\WMS\build.bat goto arc_check
-	SET MROVBYPROVP=%MROVBYPROVP%, wms
+echo                                wms,
 :arc_check
 if not exist Providers\ArcSDE\build.bat goto odbc_check
-	SET MROVBYPROVP=%MROVBYPROVP%, arcsde
+echo                                arcsde,
 :odbc_check
 if not exist Providers\GenericRdbms\Src\ODBC\build.bat goto mysql_check
-	SET MROVBYPROVP=%MROVBYPROVP%, odbc
+echo                                odbc,
 :mysql_check
 if not exist Providers\GenericRdbms\Src\MySQL\build.bat goto gdal_check
-	SET MROVBYPROVP=%MROVBYPROVP%, mysql
+echo                                mysql,
 :gdal_check
 if not exist Providers\GDAL\build.bat goto ogr_check
-	SET MROVBYPROVP=%MROVBYPROVP%, gdal
+echo                                gdal,
 :ogr_check
 if not exist Providers\OGR\build.bat goto postgis_check
-	SET MROVBYPROVP=%MROVBYPROVP%, ogr
+echo                                ogr,
 :postgis_check
 if not exist Providers\PostGIS\build.bat goto kingoracle_check
-	SET MROVBYPROVP=%MROVBYPROVP%, postgis
+echo                                postgis,
 :kingoracle_check
 if not exist Providers\KingOracle\build.bat goto sqlspatial_check
-	SET MROVBYPROVP=%MROVBYPROVP%, kingoracle
+echo                                kingoracle,
 :sqlspatial_check
 if not exist Providers\GenericRdbms\Src\SQLServerSpatial\build.bat goto sqlite_check
-	SET MROVBYPROVP=%MROVBYPROVP%, sqlspatial
+echo                                sqlspatial,
 :sqlite_check
-if not exist Providers\SQLite\build.bat goto providers_show
-	SET MROVBYPROVP=%MROVBYPROVP%, sqlspatial
-:providers_show
-if ("%MROVBYPROVP%")==("") goto show_capabilities
-	SET MPROVECAPABP=%MPROVECAPABP%, providers%MROVBYPROVP%
-:show_capabilities
-echo %MPROVECAPABP%
+if not exist Providers\SQLite\build.bat goto end_show_capabilities
+echo                                sqlite
+:end_show_capabilities
 echo ************************************************************************
 exit /B 0
