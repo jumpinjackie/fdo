@@ -54,8 +54,6 @@
 #endif
 #endif
 
-
-
 //defines that helps us use hash_map (and similar STL classes) in the same way 
 //under Linux and Windows.
 #ifdef WIN32
@@ -68,8 +66,6 @@ namespace stdext = ::__gnu_cxx;
 using namespace std;
 #endif
 
-
-
 #include <FdoStd.h>
 #include <Fdo.h>
 
@@ -79,22 +75,5 @@ using namespace std;
 #define fdofdo_cat "FDOMessage.dll"
 #endif
 
-inline FdoString* NlsMsgGetFdo(int msg_num, char* default_msg, ...)
-{
-    va_list varargs;
-    va_start(varargs, default_msg);
-    FdoString* ret = FdoException::NLSGetMessage (msg_num, default_msg, fdofdo_cat, varargs);
-    va_end(varargs);
-
-    return ret;
-}
-
-inline FdoString* NlsMsgGetFdo(int msg_num, char* default_msg, char* file, int line, ...)
-{
-    va_list varargs;
-    va_start(varargs, line);
-    FdoString* ret = FdoException::NLSGetMessage (msg_num, default_msg, file, line, fdofdo_cat, varargs);
-    va_end(varargs);
-
-    return ret;
-}
+FdoString* NlsMsgGetFdo(int msg_num, char* default_msg, ...);
+FdoString* NlsMsgGetFdo(int msg_num, char* default_msg, char* file, int line, ...);
