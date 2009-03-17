@@ -98,35 +98,35 @@ extern "C" {
 
 #if defined(VISION_NUTC)
 extern char * nls_msg_getv      PROTO ((char *msg_string,
-                                        char *cat_name,
+                                        const char *cat_name,
                                         int  set_num,
                                         int  msg_num,
-                                        char *default_msg,
+                                        const char *default_msg,
                                          va_list argv));
 #endif
 extern int      nls_locale_set  PROTO ((void));
 #if defined(MS_WINDOWS)
 extern void     nls_msg_issue   PROTO ((char severity,
-                                        char *cat_name,
+                                        const char *cat_name,
                                         int  set_num,
                                         DWORD msg_num,
-                                        char *default_msg,
+                                        const char *default_msg,
                                         ...));
 extern char *   nls_msg_get_A       PROTO ((char *msg_string,
-                                        char *cat_name,
+                                        const char *cat_name,
                                         int  set_num,
                                         DWORD msg_num,
-                                        char *default_msg,
+                                        const char *default_msg,
                                         ...));
 extern wchar_t *    nls_msg_get_W2       PROTO ((wchar_t *msg_string,
-                                        char *cat_name,
+                                        const char *cat_name,
                                         int  set_num,
                                         DWORD msg_num,
-                                        char *default_msg,
+                                        const char *default_msg,
                                         va_list arguments));
-extern char *   nls_ftoa     	PROTO ((double number,
+extern char *   nls_ftoa         PROTO ((double number,
                                         int width,
-					int precision));
+                    int precision));
 #if defined(_UNICODE) || defined(UNICODE)
 #define nls_msg_get nls_msg_get_W2
 #else
@@ -136,28 +136,28 @@ extern char *   nls_ftoa     	PROTO ((double number,
 #else
 
 extern void     nls_msg_issue   PROTO ((char severity,
-                                        char *cat_name,
+                                        const char *cat_name,
                                         int  set_num,
                                         int  msg_num,
-                                        char *default_msg,
+                                        const char *default_msg,
                                         ...));
 extern char *   nls_msg_get     PROTO ((char *msg_string,
-                                        char *cat_name,
+                                        const char *cat_name,
                                         int  set_num,
                                         int  msg_num,
-                                        char *default_msg,
+                                        const char *default_msg,
                                         ...));
 
 extern wchar_t *    nls_msg_get_W2      PROTO ((wchar_t *msg_string,
-                                        char *cat_name,
+                                        const char *cat_name,
                                         int  set_num,
                                         int msg_num,
-                                        char *default_msg,
+                                        const char *default_msg,
                                         va_list arguments));
 
-extern char *   nls_ftoa     	PROTO ((double number,
+extern char *   nls_ftoa         PROTO ((double number,
                                         int width,
-					int precision));
+                    int precision));
 
 #endif
 
