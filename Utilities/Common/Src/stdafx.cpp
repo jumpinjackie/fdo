@@ -25,3 +25,22 @@
 // NOTE: reference any additional headers you need in STDAFX.H
 // and not in this file
 
+FdoString* NlsMsgGetFdo(int msg_num, char* default_msg, ...)
+{
+    va_list varargs;
+    va_start(varargs, default_msg);
+    FdoString* ret = FdoException::NLSGetMessage (msg_num, default_msg, fdofdo_cat, varargs);
+    va_end(varargs);
+
+    return ret;
+}
+
+FdoString* NlsMsgGetFdo(int msg_num, char* default_msg, char* file, int line, ...)
+{
+    va_list varargs;
+    va_start(varargs, line);
+    FdoString* ret = FdoException::NLSGetMessage (msg_num, default_msg, file, line, fdofdo_cat, varargs);
+    va_end(varargs);
+
+    return ret;
+}
