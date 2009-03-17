@@ -235,7 +235,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FdoGeneric.lib libmySQL.lib Rdbi.lib gdbi.lib schemamgrnew.lib MySQLDriver.lib mysqloverrides.lib mysqlschemamgr.lib ProvidersCommon.lib rdbmsoverrides.lib mysql.lib schemamgr_lpnew.lib schemamgr_phnew.lib SchemaMgr_OVNew.lib grdschemamgr.lib util.lib Advapi32.lib TestCommon.lib"
 				AdditionalLibraryDirectories="..\..\Lib\Win32\Release;$(FDO)\Unmanaged\Lib\Win32\Release;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;$(FDOTHIRDPARTY)\cppunit\lib\Win32;$(FDOMYSQL)\lib\opt;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Release;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win32\Release&quot;"
-				IgnoreDefaultLibraryNames="libc.lib LIBCMT"
+				IgnoreDefaultLibraryNames="LIBC;LIBCMT"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 			/>
