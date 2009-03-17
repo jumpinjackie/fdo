@@ -160,7 +160,7 @@ public:
     /// \return
     /// Returns the localized message text
     /// 
-    FDO_API_COMMON static FdoString* NLSGetMessage(FdoInt32 msgNum, char* defMsg, char* file, int line, ...);
+    FDO_API_COMMON static FdoString* NLSGetMessage(FdoInt32 msgNum, const char* defMsg, const char* file, int line, ...);
 
     /// \brief
     /// Gets the exception message. For internal use by FdoException class in getting a localized message.
@@ -181,7 +181,7 @@ public:
     /// \return
     /// Returns the localized message text
     /// 
-    FDO_API_COMMON static FdoString* NLSGetMessage(FdoInt32 msgNum, char* defMsg, char* file, int line, char* catalog, va_list arguments);
+    FDO_API_COMMON static FdoString* NLSGetMessage(FdoInt32 msgNum, const char* defMsg, const char* file, int line, const char* catalog, va_list arguments);
 
     /// \brief
     /// Gets the exception message. For internal use by template classes in getting a localized message.
@@ -198,7 +198,7 @@ public:
     /// \return
     /// Returns the localized message text
     /// 
-    FDO_API_COMMON static FdoString* NLSGetMessage(FdoInt32 msgNum, char* defMsg, ...);
+    FDO_API_COMMON static FdoString* NLSGetMessage(FdoInt32 msgNum, const char* defMsg, ...);
 
     /// \brief
     /// Gets the exception message. For internal use by FdoException class in getting a localized message.
@@ -215,7 +215,7 @@ public:
     /// \return
     /// Returns the localized message text
     /// 
-    FDO_API_COMMON static FdoString* NLSGetMessage(FdoInt32 msgNum, char* defMsg, char* catalog, va_list arguments);
+    FDO_API_COMMON static FdoString* NLSGetMessage(FdoInt32 msgNum, const char* defMsg, const char* catalog, va_list arguments);
 
 /// \cond DOXYGEN-IGNORE
 protected:

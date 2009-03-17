@@ -40,16 +40,16 @@ extern char *nls_cat;
 extern pthread_mutex_t NlsMsgGetCriticalSection;
 
 wchar_t* nls_msg_get_W2(wchar_t *msg_string,
-            char *cat_name,
-            int  set_num,
-            int  msg_num,
-            char *default_msg,
-            va_list argp)
+                        const char *cat_name,
+                        int  set_num,
+                        int  msg_num,
+                        const char *default_msg,
+                        va_list argp)
 {
-    char			*fmt_str = NULL;
-    unsigned		msg_size;
-    wchar_t        *msg_bufp;
-	wchar_t        *Wtext;
+    char            *fmt_str = NULL;
+    unsigned        msg_size;
+    wchar_t         *msg_bufp;
+    wchar_t         *Wtext;
 
     pthread_mutex_lock(&NlsMsgGetCriticalSection);
 
@@ -76,10 +76,10 @@ wchar_t* nls_msg_get_W2(wchar_t *msg_string,
     /*
      *  Allocate next message buffer.
      */
-	Wtext = msg_bufW[msg_buf_index % MSG_BUFFERS];
-	Wtext[0] = 0;
+    Wtext = msg_bufW[msg_buf_index % MSG_BUFFERS];
+    Wtext[0] = 0;
     msg_bufp = msg_buf[msg_buf_index++ % MSG_BUFFERS];
-	mbstowcs ( msg_bufp, fmt_str, NLS_BUFFSZ);
+    mbstowcs ( msg_bufp, fmt_str, NLS_BUFFSZ);
 
     /*
      *  Format variadic arguments.
@@ -96,7 +96,7 @@ wchar_t* nls_msg_get_W2(wchar_t *msg_string,
     }
 the_exit:
     pthread_mutex_unlock(&NlsMsgGetCriticalSection);
-	return Wtext;
+    return Wtext;
 }
 
 #else
@@ -117,7 +117,7 @@ extern CRITICAL_SECTION CacheCriticalSection;
 extern CRITICAL_SECTION NlsMsgGetCriticalSection;
 
 // prepend the catalog onto the reference chain
-static int Prepend (HINSTANCE handle, char* catalog)
+static int Prepend (HINSTANCE handle, const char* catalog)
 {
     size_t size;
     size_t remainder;
@@ -207,7 +207,7 @@ static int Prepend (HINSTANCE handle, char* catalog)
 }
 
 // get the message from the catalog
-static int LoadMessage (char* catalog, DWORD number, wchar_t* message, size_t size)
+static int LoadMessage (const char* catalog, DWORD number, wchar_t* message, size_t size)
 {
     Reference* rover;
     HINSTANCE handle;
@@ -247,7 +247,7 @@ static int LoadMessage (char* catalog, DWORD number, wchar_t* message, size_t si
         if (0 != FormatMessageW (
                     FORMAT_MESSAGE_FROM_HMODULE |
                     FORMAT_MESSAGE_MAX_WIDTH_MASK |
-			        FORMAT_MESSAGE_IGNORE_INSERTS |
+                    FORMAT_MESSAGE_IGNORE_INSERTS |
                     FORMAT_MESSAGE_ALLOCATE_BUFFER,
                     handle,
                     number,
@@ -273,18 +273,18 @@ static int LoadMessage (char* catalog, DWORD number, wchar_t* message, size_t si
 }
 
 wchar_t * nls_msg_get_W2(wchar_t *msg_string,
-             char *cat_name,
+             const char *cat_name,
              int  set_num,
              DWORD  msg_num,
-             char *default_msg,
+             const char *default_msg,
              va_list arguments)
 {
-	static wchar_t     tmp_buf[NLS_BUFFSZ +1];
-    static wchar_t     buffer[NLS_BUFFSZ +1];
-    wchar_t            *ptr_src = NULL;
-    wchar_t            *ptr_dst= buffer;
-    wchar_t			   *Wtext;
-    int				   length;
+    static wchar_t      tmp_buf[NLS_BUFFSZ +1];
+    static wchar_t      buffer[NLS_BUFFSZ +1];
+    wchar_t             *ptr_src = NULL;
+    wchar_t             *ptr_dst= buffer;
+    wchar_t             *Wtext;
+    int                 length;
 
     EnterCriticalSection (&NlsMsgGetCriticalSection);
 
@@ -295,16 +295,16 @@ wchar_t * nls_msg_get_W2(wchar_t *msg_string,
 
     if (LoadMessage (cat_name, msg_num, tmp_buf, NLS_BUFFSZ ))
         ptr_src = tmp_buf;
-	else
-	{
-		length = MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, default_msg,
+    else
+    {
+        length = MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, default_msg,
                                 (int)strlen(default_msg), &tmp_buf[0], NLS_BUFFSZ);
-		if( length )    
-		{
-			tmp_buf[length] = 0;
-			ptr_src = tmp_buf;
-		}
-	}
+        if( length )    
+        {
+            tmp_buf[length] = 0;
+            ptr_src = tmp_buf;
+        }
+    }
     // else use the default message
 
     /* The following will search for strings of the form "%a$b"
