@@ -25,6 +25,9 @@ class FdoSqlServerOvPropertyMappingRelation;
 BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL
 ref class OvClassDefinition;
 
+#pragma warning(push)
+#pragma warning(disable: 4490)  //  warning C4490: 'new' : incorrect use of override specifier;
+
 ///<summary>Abstract class defining the physical schema overrides for relation type object property
 ///table mappings.</summary>
 public ref class OvPropertyMappingRelation : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingRelation, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::IOvPropertyMappingRelation
@@ -53,5 +56,7 @@ internal:
 
 	inline FdoSqlServerOvPropertyMappingRelation* GetImpObj();
 };
+
+#pragma warning(pop)  //  warning C4490: 'new' : incorrect use of override specifier;
 
 END_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL

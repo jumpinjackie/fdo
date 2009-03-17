@@ -260,6 +260,7 @@
 				OutputFile="$(OutDir)/MySQLProvider.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Lib\Win32\Release;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOMYSQL)\lib\opt&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Release&quot;"
+				IgnoreDefaultLibraryNames="LIBCMT"
 				DelayLoadDLLs="LIBMYSQL.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MySqlProvider.pdb"

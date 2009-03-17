@@ -525,7 +525,9 @@ void ArcSDEDescribeSchemaCommand::addTable (
     CHAR owner[SE_MAX_OWNER_LEN+1];
     CHAR table_name[SE_MAX_TABLE_LEN];
     CHAR database_name[SE_MAX_DATABASE_LEN+1];
+#ifdef _DEBUG
     CHAR metadata_qual_table[SE_MAX_OBJECT_NAME_LEN];
+#endif
     wchar_t* wdatabase_name = NULL;
     wchar_t* wowner = NULL;
     wchar_t* wtable = NULL;

@@ -765,6 +765,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						ExceptionHandling="2"
+						DisableSpecificWarnings="4652"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -773,6 +774,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						ExceptionHandling="2"
+						DisableSpecificWarnings="4652"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -781,6 +783,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						ExceptionHandling="2"
+						DisableSpecificWarnings="4652"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -789,6 +792,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						ExceptionHandling="2"
+						DisableSpecificWarnings="4652"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -797,6 +801,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						ExceptionHandling="2"
+						DisableSpecificWarnings="4652"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -805,6 +810,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						ExceptionHandling="2"
+						DisableSpecificWarnings="4652"
 					/>
 				</FileConfiguration>
 			</File>

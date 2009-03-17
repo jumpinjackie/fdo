@@ -75,7 +75,7 @@
 				ProgramDatabaseFile="$(OutDir)\OSGeo.FDO.Providers.WMS.Overrides.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				TargetMachine="0"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
