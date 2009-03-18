@@ -759,12 +759,15 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
         if (sqlite3_step(stmt) != SQLITE_DONE)
         {
             sqlite3_finalize(stmt);
-            throw FdoCommandException::Create(L"Update failed.");
+            //TODO: this is likely a transient failure that we can ignore,
+            //especially in bulk insert cases
+            //throw FdoCommandException::Create(L"Update failed.");
         }
     }
     else
     {
-        throw FdoCommandException::Create(L"Failed to parse update statement.");
+        std::wstring err = L"Failed to parse: " + A2W_SLOW(sql.c_str());
+        throw FdoCommandException::Create(err.c_str());
     }
 
     sqlite3_finalize(stmt);

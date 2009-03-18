@@ -20,6 +20,10 @@
 #include "SltReader.h"
 #include "SltConversionUtils.h"
 
+//When performing bulk inserts or updates, we commit the transaction 
+//once every so many features
+const int BULK_OP_SIZE = 10000;
+
 ///Now featuring lasagna comments!
 
 ///\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
@@ -269,14 +273,19 @@ class SltUpdate : public SltFeatureCommand<FdoIUpdate>
 {
     public:
         SltUpdate(SltConnection* connection) 
-            : SltFeatureCommand<FdoIUpdate>(connection)
+            : SltFeatureCommand<FdoIUpdate>(connection),
+              m_updateCount(0)
         {
             m_properties = FdoPropertyValueCollection::Create();
+            m_db = m_connection->GetDbWrite();
         }
 
     protected:
         virtual ~SltUpdate()
         {
+            char* err = NULL;
+            int rc = sqlite3_exec(m_db, "COMMIT;", NULL, NULL, &err);
+
             FDO_SAFE_RELEASE(m_properties);
         }
 
@@ -288,6 +297,25 @@ class SltUpdate : public SltFeatureCommand<FdoIUpdate>
         virtual FdoPropertyValueCollection* GetPropertyValues() { return FDO_SAFE_ADDREF(m_properties); }
         virtual FdoInt32 Execute()
         {
+            char* err = NULL;
+
+            //Commit a bulk update if we reached the limit
+            if (m_updateCount == BULK_OP_SIZE)
+            {
+                int rc = sqlite3_exec(m_db, "COMMIT;", NULL, NULL, &err);
+                m_updateCount = 0;
+            }
+
+            //Begin a bulk update transaction
+            if (m_updateCount == 0)
+            {
+                int rc2 = sqlite3_exec(m_db, "BEGIN;", NULL, NULL, &err);
+                if (rc2 != SQLITE_OK)
+                    throw FdoCommandException::Create(L"SQLite begin transaction failed!");
+            }
+
+            m_updateCount++;
+
             return m_connection->Update(m_className, 
                                         m_filter, 
                                         m_properties);
@@ -296,6 +324,8 @@ class SltUpdate : public SltFeatureCommand<FdoIUpdate>
 
     private:
         FdoPropertyValueCollection* m_properties;
+        sqlite3*                    m_db;
+        int                         m_updateCount;
 };
 
 
@@ -447,7 +477,7 @@ class SltInsert : public SltCommand<FdoIInsert>
                 throw FdoCommandException::Create(L"SQLite insert failed!");
             }
 
-            if (++m_execCount == 10000)
+            if (++m_execCount == BULK_OP_SIZE)
             {
                 char* err = NULL;
                
