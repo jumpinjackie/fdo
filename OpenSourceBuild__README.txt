@@ -16,7 +16,7 @@ Linux Instructions
    - Running the FDO Unit Tests
 
 -----------------------------
-Windows Instructions 
+Windows Instructions
 -----------------------------
 
 I. Build Instructions
