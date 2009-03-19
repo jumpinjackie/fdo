@@ -26,7 +26,6 @@
 
 #else // _WIN32
 
-#define _FDO_3_2
 #define FDOKGORA_API
 #include <stdlib.h>
 #include <stdarg.h>
@@ -70,16 +69,16 @@ DWORD dwHighDateTime;
 #endif // _WIN32
 
 // number of elements in an array
-#define ELEMENTS(x) (sizeof(x)/sizeof(x[0]))
+#define ELEMENTS(x) (sizeof(x)/sizeof(x[0]))FdoTypes.hfdotypes
 
 
-#include "FDO_31_Types.h"
+//#include "FdoTypes.h"
 
 // Base FDO headers
 #include <Fdo.h>
-#include <Geometry/EnvelopeImpl.h>
+#include <geometry/EnvelopeImpl.h>
 
-#include <Fdo/Xml/SpatialContextReader.h>
+#include <fdo/Xml/SpatialContextReader.h>
 
 // FdoCommon headers
 #include <FdoCommonConnPropDictionary.h>
@@ -87,24 +86,17 @@ DWORD dwHighDateTime;
 #include <FdoCommonSchemaUtil.h>
 #include <FdoCommonOSUtil.h>
 #include <FdoCommonStringUtil.h>
-#include <FdoCommonThreadMutex.h>
 
 
 //#include <FdoCommonSelectAggregatesCommand.h>
 
-#include <KingOracle/FdoKgOraOverrides.h>
+
 
 // Provider specific headers
+#include <KingOracle/FdoKgOraOverrides.h>
 #include "KgOraProvider.h"
-
-#ifdef _WIN32
 #include "../Message/inc/KgOraMessage.h"
-#else
-#include "../Message/KgOraMessageStatic.h"
-#include "../../inc/KgOraMessage.h"
-#endif
 
-#include "c_LogAPI.h"
 
 #include <c_KgOraSridDesc.h>
 #include <c_KgOraConnectionCapabilities.h>
@@ -121,12 +113,14 @@ DWORD dwHighDateTime;
 #include <c_KgOraSchemaDesc.h>
 #include <c_KgOraDescribeSchemaCommand.h>
 
+
 #include <c_KgOraReader.h>
 
 #include <c_KgOraFeatureReader.h>
 #include <c_KgOraFeatureReaderInsert.h>
 #include <c_KgOraSQLDataReader.h>
 #include <c_KgOraSelectCommand.h>
+#include <c_KgOraSelectAggregates.h>
 
 #include <c_KgOraSQLCommand.h>
 #include <c_KgOraInsert.h>
@@ -139,6 +133,9 @@ DWORD dwHighDateTime;
 #include <c_KgOraCreateSpatialContext.h>
 
 #include <c_KgOraExpressionProcessor.h>
+
+#include "c_LogAPI.h"
+
 
 #endif
 

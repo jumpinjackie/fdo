@@ -23,7 +23,7 @@
 c_KgOraDescribeSchemaCommand::c_KgOraDescribeSchemaCommand (c_KgOraConnection* Connection) 
     
 {
-  m_ClassNames = NULL;
+  m_ClassNames=NULL;
   m_KgOraConnection = FDO_SAFE_ADDREF( Connection);
 }
 
@@ -40,6 +40,39 @@ c_KgOraDescribeSchemaCommand::~c_KgOraDescribeSchemaCommand (void)
 //
 //---------------------------------------------------------------------------
 
+
+
+	/// <summary>Gets the names of the classes to retrieve. This is optional, 
+	/// if not specified execution of the command will describe all classes. 
+	/// If the class name is not qualified, and the schema name is not specified, 
+	/// the requested class from all schemas will be described. 
+	/// The class names specified serve only as a hint.  Use of the hint 
+	/// during command execution is provider dependent.  Providers that  
+	/// will not use the hint will describe the schema for all classes.</summary> 
+	/// <returns>Returns the collection of class names</returns> 
+	FdoStringCollection* c_KgOraDescribeSchemaCommand::GetClassNames() 
+	{ 
+  return m_ClassNames; 
+} 
+	 
+	/// <summary>Sets the name of the classes to retrieve. This is optional, if not 
+	/// specified execution of the command will describe all classes. 
+	/// If the class name is not qualified, and the schema name is not specified, 
+	/// the requested class from all schemas will be described. 
+	/// The class names specified serve only as a hint.  Use of the hint 
+	/// during command execution is provider dependent.  Providers that  
+	/// will not use the hint will describe the schema for all classes.</summary> 
+	/// <param name="value">Input the collection of class names</parm> 
+	/// <returns>Returns nothing</returns> 
+	void c_KgOraDescribeSchemaCommand::SetClassNames(FdoStringCollection* value) 
+	{ 
+  	    // Do nothing. 
+    	    // This method is not implemented.  DescribeSchema command 
+    	    // will describe all classes. 
+    	} 
+    
+    
+    
 /// <summary>Gets the name of the schema to describe. This function is optional;
 /// if not specified, execution of the command will describe all schemas.</summary>
 /// <returns>Returns the schema name</returns> 
@@ -59,35 +92,6 @@ void c_KgOraDescribeSchemaCommand::SetSchemaName (const wchar_t* SchemaName)
 }
 
 
-/// <summary>Gets the names of the classes to retrieve. This is optional,
-/// if not specified execution of the command will describe all classes.
-/// If the class name is not qualified, and the schema name is not specified,
-/// the requested class from all schemas will be described.
-/// The class names specified serve only as a hint.  Use of the hint
-/// during command execution is provider dependent.  Providers that 
-/// will not use the hint will describe the schema for all classes.</summary>
-/// <returns>Returns the collection of class names</returns>
-FdoStringCollection* c_KgOraDescribeSchemaCommand::GetClassNames()
-{
-    return m_ClassNames;
-}
-
-/// <summary>Sets the name of the classes to retrieve. This is optional, if not
-/// specified execution of the command will describe all classes.
-/// If the class name is not qualified, and the schema name is not specified,
-/// the requested class from all schemas will be described.
-/// The class names specified serve only as a hint.  Use of the hint
-/// during command execution is provider dependent.  Providers that 
-/// will not use the hint will describe the schema for all classes.</summary>
-/// <param name="value">Input the collection of class names</parm>
-/// <returns>Returns nothing</returns>
-void c_KgOraDescribeSchemaCommand::SetClassNames(FdoStringCollection* value)
-{
-    // Do nothing.
-    // This method is not implemented.  DescribeSchema command
-    // will describe all classes.
-}
-
 /// <summary>Executes the DescribeSchema command and returns a 
 /// FdoFeatureSchemaCollection. If a schema name is given that has 
 /// references to another schema, the dependent schemas will 
@@ -101,21 +105,26 @@ FdoFeatureSchemaCollection* c_KgOraDescribeSchemaCommand::Execute ()
     #endif
     
     
-    
     FdoPtr<c_KgOraSchemaDesc> schemadesc = m_KgOraConnection->GetSchemaDesc();
     
     FdoPtr<FdoFeatureSchemaCollection> ret = schemadesc->GetFeatureSchema();
     
-    //FdoCommonSchemaUtil::DeepCopyFdoFeatureSchemas
+  #ifdef _KGORA_EXTENDED_LOG
+    D_KGORA_ELOG_WRITE_FUNC_TIME("DescribeSchemaCommand")
+  #endif
+
+    // need to create a copy to return beacuse of issue in MapGuide 
+    // ( when decribe scchema command is running than MG serialize and temporary removes (and returns back ) 
+    // class from this schema.
+    // and if multisession's (multhi threading) application is running and if they share this same schema
+    // then it got's exception.
+    // If I create a copy and for every request return copy than it is OK.
+    // and some other callers (FME) may change it and that is nt ok for us then
+    
     FdoFeatureSchemaCollection* ret2 = FdoCommonSchemaUtil::DeepCopyFdoFeatureSchemas(ret);
+    return ret2;  
     
-    //FdoFeatureSchemaCollection* ret = m_KgOraConnection->DescribeSchema();
-    
-    #ifdef _KGORA_EXTENDED_LOG
-      D_KGORA_ELOG_WRITE_FUNC_TIME("DescribeSchemaCommand")
-    #endif
-    
-    return ret2;
+    //return FDO_SAFE_ADDREF(ret.p);
 }
 
 
