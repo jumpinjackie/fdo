@@ -596,13 +596,16 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
             for (int j  = classes->GetCount() - 1; j >= 0; j--)
             {
                 FdoPtr<FdoClassDefinition> classDef = classes->GetItem(j);
+                FdoStringP className = classDef->GetName();
+                if (className.Contains(FdoWfsGlobals::Dot))
+                    className = className.Replace(FdoWfsGlobals::Dot, L".");
                 // Prepare for implementation of #4
-                FdoPtr<FdoWfsFeatureType> pFeat = pFeatColl->FindItem(classDef->GetName());
+                FdoPtr<FdoWfsFeatureType> pFeat = pFeatColl->FindItem(className);
                 if (pFeat == NULL)
                 {
                     FdoStringP NameFeat = schema->GetName();
                     NameFeat += L":";
-                    NameFeat += classDef->GetName();
+                    NameFeat += className;
                     pFeat = pFeatColl->FindItem(NameFeat);
                 }
                 if (pFeat != NULL)
