@@ -21,6 +21,7 @@
 #pragma once
 #endif //_WIN32
 
+class c_SDO_GEOMETRY;
 #include <KingOracle/Override/FdoKgOraPropertyDefinitionCollection.h>
 
 class FdoKgOraClassDefinition : public FdoPhysicalClassMapping
@@ -40,7 +41,7 @@ public:
     FDOKGORA_API FdoString* GetUseSequenceForIdentity() const { return m_UseSequenceForIdentity; }
     
     FDOKGORA_API void SetOraTableAliasNum(int AliasNum) { char tbuff[16]; sprintf(tbuff,"a%d",AliasNum);  m_OraTableAlias=tbuff; };
-    FDOKGORA_API const char* GetOraTableAlias() { return  m_OraTableAlias; };
+    FDOKGORA_API const wchar_t* GetOraTableAlias() { return  m_OraTableAlias; };
 	
 
     FDOKGORA_API void SetPointGeometry(FdoString *GeomPropertyName, FdoString *X_OraColumn, FdoString *Y_OraColumn, FdoString *Z_OraColumn )
@@ -61,6 +62,8 @@ public:
     FDOKGORA_API FdoString* GetPointYOraColumn() { return m_PoinGeometry_Y_OraColumn; };
     FDOKGORA_API FdoString* GetPointZOraColumn() { return m_PoinGeometry_Z_OraColumn; };
     
+    FDOKGORA_API const wchar_t* GetSdoRootMBR() { return m_Sdo_Root_MBR; };
+    FDOKGORA_API void SetSdoRootMBR(const wchar_t* Mbr);;
     	
 
     FDOKGORA_API virtual void InitFromXml(FdoXmlSaxContext* Context, FdoXmlAttributeCollection* Attrs);
@@ -88,6 +91,9 @@ private:
 	  FdoStringP m_PoinGeometry_X_OraColumn;  // name of oracle column (number) which is used for X coordinate of point
 	  FdoStringP m_PoinGeometry_Y_OraColumn;  // name of oracle column (number) which is used for Y coordinate of point
 	  FdoStringP m_PoinGeometry_Z_OraColumn;  // name of oracle column (number) which is used for Z coordinate of point - can be empty for 2D points
+	  
+	  
+	  FdoStringP m_Sdo_Root_MBR; // root mbr from spatial index metadata; written as oracle geometry
 	  
     FdoKgOraPropertyDefinitionCollectionP m_Properties;
 };

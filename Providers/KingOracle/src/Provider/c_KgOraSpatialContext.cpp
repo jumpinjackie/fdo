@@ -18,7 +18,9 @@
 
 #include <stdafx.h>
 
-
+#include "KgOraProvider.h"
+#include "c_KgOraSridDesc.h"
+#include "c_KgOraSpatialContext.h"
 
 c_KgOraSpatialContext::c_KgOraSpatialContext () :
     m_Name (D_SPATIALCONTEXT_DEFAULT_NAME),

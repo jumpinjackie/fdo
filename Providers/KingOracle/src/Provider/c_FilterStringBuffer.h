@@ -26,16 +26,16 @@ public:
   ~c_FilterStringBuffer(void);
   
 protected:
-    char* m_SqlFilterText;  // Buffer used to encode the filter SQL conversion
+    wchar_t* m_SqlFilterText;  // Buffer used to encode the filter SQL conversion
     size_t m_SqlBuffSize;    // The size of the SQL buffer
     size_t m_FirstBuffIndex;  // The index of the start of the sql string
     size_t m_NextBuffIndex;   // The index of the next empty string    
     
 public:
-    const char* GetString();  
-    void AppendString(const char *Str);
+    const wchar_t* GetString();  
+    void AppendString(const wchar_t *Str);
 
-    void PrependString(const char *Str);    
+    void PrependString(const wchar_t *Str);    
     
     void ClearBuffer(void);
       

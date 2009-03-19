@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2006  SL-King d.o.o
+* Copyright (C) 2009  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -16,10 +16,11 @@
 */
 #include "stdafx.h"
 #include "c_KgOraApplySchema.h"
-#include "c_FdoOra_API.h"
-#include "c_Ora_API.h"
+#include "c_FdoOra_API2.h"
+#include "c_Ora_API2.h"
 
-c_KgOraApplySchema::c_KgOraApplySchema(c_KgOraConnection *Conn) : c_KgOraFdoCommand<FdoIApplySchema>(Conn)
+c_KgOraApplySchema::c_KgOraApplySchema(c_KgOraConnection *Conn)
+  : c_KgOraFdoCommand(Conn)
 {
   m_IngoreStates = true;
 }
@@ -133,18 +134,23 @@ void c_KgOraApplySchema::SetIgnoreStates( FdoBoolean IgnoreStates )
 /// 
 void c_KgOraApplySchema::Execute()
 {
+  
+  // Clear Schema Cache
+  //c_KgOraSchemaPool::ClearCache(m_Connection);
+  m_Connection->ClearCachedSchemaDesc();
+  
   if( !m_IngoreStates ) 
     throw FdoException::Create(L"c_KgOraApplySchema::Execute Supports only IgnoreStates='true'");
     
   if( !m_FeatureSchema.p ) return;
  
-oracle::occi::Statement* occi_stm=NULL;
+c_Oci_Statement* occi_stm=NULL;
 //oracle::occi::ResultSet* occi_rset=NULL;    
 
 //    
 try
 {  
-  occi_stm = m_Connection->OCCI_CreateStatement();
+  occi_stm = m_Connection->OCI_CreateStatement();
   
   FdoPtr<FdoClassCollection> classes = m_FeatureSchema->GetClasses();
   int classcount = classes->GetCount();
@@ -155,7 +161,7 @@ try
     FdoPtr<FdoClassDefinition> classdef = classes->GetItem(classind);
  
   // for the class properties need to convert to oracle types
-    sql_cols = "";
+    sql_cols = L"";
     FdoPtr<FdoPropertyDefinitionCollection> props = classdef->GetProperties();
     if( props.p && props->GetCount() )
     {
@@ -167,27 +173,28 @@ try
       {
         FdoPtr<FdoPropertyDefinition> propdef = props->GetItem(propind);
         
-        proporatype = "";
-        if( !c_FdoOra_API::FdoPropertyToOraDataType(propdef.p,proporatype) )
+        proporatype = L"";
+        if( !c_FdoOra_API2::FdoPropertyToOraDataType(propdef.p,proporatype) )
         {
-          if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);
+          if( occi_stm ) m_Connection->OCI_TerminateStatement(occi_stm);
           throw FdoCommandException::Create( L"c_KgOraApplySchema::Execute: Unkown Property Definition ");  
         }
         
-        sql_cols = sql_cols + sep + propdef->GetName() + " " + proporatype;
+        sql_cols = sql_cols + sep + propdef->GetName() + L" " + proporatype;
         
-        sep = ",";
+        sep = L",";
       }
     // create sql for creating the table  
       FdoStringP tablename = classdef->GetName();
       
       
-      sql_create = sql_create + "CREATE TABLE " + tablename + " ( " + sql_cols + " ) ";
+      sql_create = sql_create + L"CREATE TABLE " + tablename + L" ( " + sql_cols + L" ) ";
       
-      string sqlstr = (const char*)sql_create;
-      const char*dbg = sqlstr.c_str();
+      std::wstring sqlstr = sql_create;
+      
       //occi_stm->setSQL( sqlstr );
-      occi_stm->executeUpdate(sqlstr);
+      occi_stm->Prepare(sqlstr.c_str());
+      occi_stm->ExecuteNonQuery();
       
     // Now we need to apply spatial context data
     // Should insert user_sdo_geom_metada, as well as create spatial index
@@ -204,8 +211,9 @@ try
             InsertSdoGeomMetadata(tablename,geomprop);
           }
         }
-        catch(oracle::occi::SQLException& ea) // ignore this error, suspect many time will metada left and doesn't want to bother user
+        catch(c_Oci_Exception* ea) // ignore this error, suspect many time will metada left and doesn't want to bother user
         {        
+          delete ea;
         }
         catch(FdoCommandException* ex)
         {
@@ -220,8 +228,9 @@ try
             CreateIndex(tablename,geomprop);
           }
         }
-        catch(oracle::occi::SQLException& ea) // ignore this error, suspect many time will metada left and doesn't want to bother user
+        catch(c_Oci_Exception* ea) // ignore this error, suspect many time will metada left and doesn't want to bother user
         {        
+          delete ea;
         }
         catch(FdoCommandException* ex)
         {
@@ -252,8 +261,9 @@ try
                 {
                   CreateTableSequence(tablename);
                 }
-                catch(oracle::occi::SQLException& ea) // ignore this error, suspect many time will metada left and doesn't want to bother user
+                catch(c_Oci_Exception* ea) // ignore this error, suspect many time will metada left and doesn't want to bother user
                 {        
+                  delete ea;
                 }
                 catch(FdoCommandException* ex)
                 {
@@ -264,8 +274,9 @@ try
           }
         }
       }
-      catch(oracle::occi::SQLException& ea) // ignore this error, suspect many time will metada left and doesn't want to bother user
+      catch(c_Oci_Exception* ea) // ignore this error, suspect many time will metada left and doesn't want to bother user
       {        
+        delete ea;
       }
       catch(FdoCommandException* ex)
       {
@@ -274,13 +285,14 @@ try
     }
   }
   
-  m_Connection->OCCI_TerminateStatement(occi_stm);
+  m_Connection->OCI_TerminateStatement(occi_stm);
 }
-catch(oracle::occi::SQLException& ea)
+catch(c_Oci_Exception* ea)
 {
-  if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);
+  if( occi_stm ) m_Connection->OCI_TerminateStatement(occi_stm);
   
-  FdoStringP gstr = ea.what();
+  FdoStringP gstr = ea->what();
+  delete ea;
   throw FdoCommandException::Create( gstr );    
 }  
     
@@ -321,7 +333,7 @@ void c_KgOraApplySchema::InsertSdoGeomMetadata(FdoString* TableName,FdoGeometric
     
     FdoStringP wkt = spcontext->GetCoordinateSystemWkt();
     
-    if( c_Ora_API::IsGeodeticCoordSystem(wkt) )
+    if( c_Ora_API2::IsGeodeticCoordSystem(wkt) )
     {
       xlow = -180.0;
       xup = 180.0;
@@ -411,16 +423,16 @@ void c_KgOraApplySchema::InsertSdoGeomMetadata(FdoString* TableName,FdoGeometric
   oracle::occi::Statement* occi_stm=NULL;
 try
 {
-  occi_stm = m_Connection->OCCI_CreateStatement();
+  occi_stm = m_Connection->OCI_CreateStatement();
   
   string sstr = sqlstr;
   occi_stm->executeUpdate(sstr);
   
-  m_Connection->OCCI_TerminateStatement(occi_stm);
+  m_Connection->OCI_TerminateStatement(occi_stm);
 }
 catch(oracle::occi::SQLException& ea)
 {
-  if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);
+  if( occi_stm ) m_Connection->OCI_TerminateStatement(occi_stm);
   
   FdoStringP gstr = ea.what();
   throw FdoCommandException::Create( gstr );    
@@ -466,7 +478,7 @@ void c_KgOraApplySchema::InsertSdoGeomMetadata(FdoString* TableName,FdoGeometric
     
     FdoStringP wkt = spcontext->GetCoordinateSystemWkt();
     
-    if( c_Ora_API::IsGeodeticCoordSystem(wkt) )
+    if( c_Ora_API2::IsGeodeticCoordSystem(wkt) )
     {
       xlow = -180.0;
       xup = 180.0;
@@ -495,20 +507,20 @@ void c_KgOraApplySchema::InsertSdoGeomMetadata(FdoString* TableName,FdoGeometric
   
   FdoStringP tabname = TableName;
   
-  sqlstr = "INSERT INTO USER_SDO_GEOM_METADATA VALUES ( '";
-  sqlstr = sqlstr + tabname.Upper() + "' , '" + geomname.Upper() + "'";
-  sqlstr = sqlstr + ",MDSYS.SDO_DIM_ARRAY(";
+  sqlstr = L"INSERT INTO USER_SDO_GEOM_METADATA VALUES ( '";
+  sqlstr = sqlstr + tabname.Upper() + L"' , '" + geomname.Upper() + L"'";
+  sqlstr = sqlstr + L",MDSYS.SDO_DIM_ARRAY(";
   
   //wchar_t tempbuff[1024];
   
-  SDO_DIM_ELEMENT *xdim_sdoelem = new SDO_DIM_ELEMENT;
+  c_SDO_DIM_ELEMENT *xdim_sdoelem = c_SDO_DIM_ELEMENT::Create(m_Connection->GetOciConnection());    //new SDO_DIM_ELEMENT;
   if( isgeogcs )
-    xdim_sdoelem->setSdo_dimname("LAT");
+    xdim_sdoelem->SetDimName(L"LAT");
   else
-    xdim_sdoelem->setSdo_dimname("X");
-  xdim_sdoelem->setSdo_lb(xlow);
-  xdim_sdoelem->setSdo_ub(xup);
-  xdim_sdoelem->setSdo_tolerance(xytol);
+  xdim_sdoelem->SetDimName(L"X");
+  xdim_sdoelem->SetLB(xlow);
+  xdim_sdoelem->SetUB(xup);
+  xdim_sdoelem->SetTolerance(xytol);
   
   /*
   if( isgeogcs )
@@ -529,14 +541,14 @@ void c_KgOraApplySchema::InsertSdoGeomMetadata(FdoString* TableName,FdoGeometric
     
   sqlstr = sqlstr + xdim;
     
-  SDO_DIM_ELEMENT *ydim_sdoelem = new SDO_DIM_ELEMENT;
+  c_SDO_DIM_ELEMENT *ydim_sdoelem = c_SDO_DIM_ELEMENT::Create(m_Connection->GetOciConnection());
   if( isgeogcs )
-    ydim_sdoelem->setSdo_dimname("LON");
+    ydim_sdoelem->SetDimName(L"LON");
   else
-    ydim_sdoelem->setSdo_dimname("Y");
-  ydim_sdoelem->setSdo_lb(xlow);
-  ydim_sdoelem->setSdo_ub(xup);
-  ydim_sdoelem->setSdo_tolerance(xytol);
+    ydim_sdoelem->SetDimName(L"Y");
+  ydim_sdoelem->SetLB(xlow);
+  ydim_sdoelem->SetUB(xup);
+  ydim_sdoelem->SetTolerance(xytol);
   /*  
   if( isgeogcs )
   {
@@ -554,83 +566,84 @@ void c_KgOraApplySchema::InsertSdoGeomMetadata(FdoString* TableName,FdoGeometric
     
   sqlstr = sqlstr + "," + ydim;    
   
-  SDO_DIM_ELEMENT *zdim_sdoelem=NULL;
+  c_SDO_DIM_ELEMENT *zdim_sdoelem = NULL;
   if( GeomProp->GetHasElevation() )
   {
     /*
     swprintf(tempbuff,1000,L"MDSYS.SDO_DIM_ELEMENT('Z', %lf, %lf, %lf)",zlow,zup,ztol);
     zdim = tempbuff;
     */
-    zdim_sdoelem = new SDO_DIM_ELEMENT;
-    zdim_sdoelem->setSdo_dimname("Z");
-    zdim_sdoelem->setSdo_lb(zlow);
-    zdim_sdoelem->setSdo_ub(zup);
-    zdim_sdoelem->setSdo_tolerance(ztol);
+    zdim_sdoelem = c_SDO_DIM_ELEMENT::Create(m_Connection->GetOciConnection());
+    zdim_sdoelem->SetDimName(L"Z");
+    zdim_sdoelem->SetLB(zlow);
+    zdim_sdoelem->SetUB(zup);
+    zdim_sdoelem->SetTolerance(ztol);
     
     sqlstr = sqlstr + "," + ":3";    
   }
   
-  SDO_DIM_ELEMENT *mdim_sdoelem=NULL;
+  c_SDO_DIM_ELEMENT *mdim_sdoelem=NULL;
   if( GeomProp->GetHasMeasure() )
   {
     //swprintf(tempbuff,1000,L"MDSYS.SDO_DIM_ELEMENT('M', %lf, %lf, %lf)",mlow,mup,mtol);
     //mdim = tempbuff;
     
-    mdim_sdoelem = new SDO_DIM_ELEMENT;
-    mdim_sdoelem->setSdo_dimname("M");
-    mdim_sdoelem->setSdo_lb(mlow);
-    mdim_sdoelem->setSdo_ub(mup);
-    mdim_sdoelem->setSdo_tolerance(mtol);
+    mdim_sdoelem = c_SDO_DIM_ELEMENT::Create(m_Connection->GetOciConnection());
+    mdim_sdoelem->SetDimName(L"M");
+    mdim_sdoelem->SetLB(mlow);
+    mdim_sdoelem->SetUB(mup);
+    mdim_sdoelem->SetTolerance(mtol);
     
     if( zdim_sdoelem )
-      sqlstr = sqlstr + "," + ":4";    
+      sqlstr = sqlstr + L"," + L":4";    
     else
-      sqlstr = sqlstr + "," + ":3";    
+      sqlstr = sqlstr + L"," + L":3";    
     
   }
-  sqlstr = sqlstr + ")";
+  sqlstr = sqlstr + L")";
   
   FdoStringP sridstr;
   if( orasrid.m_OraSrid > 0 )
-    sridstr = FdoStringP::Format(L"%ld",orasrid.m_OraSrid);
+    sridstr = FdoStringP::Format(L"%ld",orasrid);
   else
-    sridstr = "NULL";
+    sridstr = L"NULL";
     
-  sqlstr = sqlstr + "," + sridstr + ")";
+  sqlstr = sqlstr + L"," + sridstr + L")";
   
-  oracle::occi::Statement* occi_stm=NULL;
+  c_Oci_Statement* occi_stm=NULL;
 try
 {
-  occi_stm = m_Connection->OCCI_CreateStatement();
-  string sstr = (const char*)sqlstr;
-  occi_stm->setSQL(sstr);
-  occi_stm->setObject(1,xdim_sdoelem);
-  occi_stm->setObject(2,ydim_sdoelem);
+  occi_stm = m_Connection->OCI_CreateStatement();
+  std::wstring sstr = sqlstr;
+  occi_stm->Prepare(sstr.c_str());
+  occi_stm->BindSdoDimElement(1,xdim_sdoelem);
+  occi_stm->BindSdoDimElement(2,ydim_sdoelem);
   if( zdim_sdoelem && mdim_sdoelem )
   {
-    occi_stm->setObject(3,zdim_sdoelem);
-    occi_stm->setObject(4,mdim_sdoelem);
+    occi_stm->BindSdoDimElement(3,zdim_sdoelem);
+    occi_stm->BindSdoDimElement(4,mdim_sdoelem);
   }
   else
   {
-    if( zdim_sdoelem ) occi_stm->setObject(3,zdim_sdoelem);
-    if( mdim_sdoelem ) occi_stm->setObject(3,zdim_sdoelem);    
+    if( zdim_sdoelem ) occi_stm->BindSdoDimElement(3,zdim_sdoelem);
+    if( mdim_sdoelem ) occi_stm->BindSdoDimElement(3,zdim_sdoelem);    
   }
   
-  occi_stm->executeUpdate();
+  occi_stm->ExecuteNonQuery();
   
   if( xdim_sdoelem ) delete xdim_sdoelem;
   if( ydim_sdoelem ) delete ydim_sdoelem;
   if( zdim_sdoelem ) delete zdim_sdoelem;
   if( mdim_sdoelem ) delete mdim_sdoelem;
   
-  m_Connection->OCCI_TerminateStatement(occi_stm);
+  m_Connection->OCI_TerminateStatement(occi_stm);
 }
-catch(oracle::occi::SQLException& ea)
+catch(c_Oci_Exception* ea)
 {
-  if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);
+  if( occi_stm ) m_Connection->OCI_TerminateStatement(occi_stm);
   
-  FdoStringP gstr = ea.what();
+  FdoStringP gstr = ea->what();
+  delete ea;
   throw FdoCommandException::Create( gstr );    
 }    
 
@@ -649,24 +662,24 @@ void c_KgOraApplySchema::CreateIndex(FdoString* TableName,FdoGeometricPropertyDe
   FdoStringP tabname = TableName;
   FdoStringP geomname= GeomProp->GetName();
   sqlstr = L"CREATE INDEX ";
-  sqlstr = sqlstr + tabname.Upper() + "_sind ON "  + tabname.Upper() + " (\"" + geomname.Upper() + "\") INDEXTYPE IS ";
-  sqlstr = sqlstr + "\"MDSYS\".\"SPATIAL_INDEX\" ";
+  sqlstr = sqlstr + tabname.Upper() + L"_sind ON "  + tabname.Upper() + L" (\"" + geomname.Upper() + L"\") INDEXTYPE IS ";
+  sqlstr = sqlstr + L"\"MDSYS\".\"SPATIAL_INDEX\" ";
   
   FdoStringP sqlstr_layer_gtype;
   FdoInt32 types = GeomProp->GetGeometryTypes();
   switch( types )
   {
     case FdoGeometricType_Point:
-      sqlstr_layer_gtype = "MULTIPOINT";
+      sqlstr_layer_gtype = L"MULTIPOINT";
     break;
     case FdoGeometricType_Curve:
-      sqlstr_layer_gtype = "MULTILINE";
+      sqlstr_layer_gtype = L"MULTILINE";
     break;
     case FdoGeometricType_Surface:
-      sqlstr_layer_gtype = "MULTIPOLYGON";
+      sqlstr_layer_gtype = L"MULTIPOLYGON";
     break;
     default:
-      sqlstr_layer_gtype = "";
+      sqlstr_layer_gtype = L"";
     break;
   }
   FdoStringP sqlstr_params;
@@ -681,23 +694,25 @@ void c_KgOraApplySchema::CreateIndex(FdoString* TableName,FdoGeometricPropertyDe
   }
   sqlstr = sqlstr + sqlstr_params;
   
-  oracle::occi::Statement* occi_stm=NULL;
+  c_Oci_Statement* occi_stm=NULL;
   
 try
 {
-  occi_stm = m_Connection->OCCI_CreateStatement();
+  occi_stm = m_Connection->OCI_CreateStatement();
   
-  string sstr=(const char*)sqlstr;
+  std::wstring sstr=sqlstr;
   
-  occi_stm->executeUpdate(sstr);
+  occi_stm->Prepare(sstr.c_str());
+  occi_stm->ExecuteNonQuery();
   
-  m_Connection->OCCI_TerminateStatement(occi_stm);
+  m_Connection->OCI_TerminateStatement(occi_stm);
 }
-catch(oracle::occi::SQLException& ea)
+catch(c_Oci_Exception* ea)
 {
-  if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);
+  if( occi_stm ) m_Connection->OCI_TerminateStatement(occi_stm);
   
-  FdoStringP gstr = ea.what();
+  FdoStringP gstr = ea->what();
+  delete ea;
   throw FdoCommandException::Create( gstr );    
 }    
 
@@ -732,23 +747,25 @@ void c_KgOraApplySchema::CreatePrimaryKey(FdoString* TableName,FdoDataPropertyDe
   
  
   
-  oracle::occi::Statement* occi_stm=NULL;
+  c_Oci_Statement* occi_stm=NULL;
   
 try
 {
-  occi_stm = m_Connection->OCCI_CreateStatement();
+  occi_stm = m_Connection->OCI_CreateStatement();
   
-  string sstr=(const char*)sqlstr;
+  std::wstring sstr=sqlstr;
   
-  occi_stm->executeUpdate(sstr);
+  occi_stm->Prepare(sstr.c_str());
+  occi_stm->ExecuteNonQuery();
   
-  m_Connection->OCCI_TerminateStatement(occi_stm);
+  m_Connection->OCI_TerminateStatement(occi_stm);
 }
-catch(oracle::occi::SQLException& ea)
+catch(c_Oci_Exception* ea)
 {
-  if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);
+  if( occi_stm ) m_Connection->OCI_TerminateStatement(occi_stm);
   
-  FdoStringP gstr = ea.what();
+  FdoStringP gstr = ea->what();
+  delete ea;
   throw FdoCommandException::Create( gstr );    
 }    
 
@@ -765,23 +782,25 @@ void c_KgOraApplySchema::CreateTableSequence(FdoString* TableName)
   
  
   
-  oracle::occi::Statement* occi_stm=NULL;
+  c_Oci_Statement* occi_stm=NULL;
   
 try
 {
-  occi_stm = m_Connection->OCCI_CreateStatement();
+  occi_stm = m_Connection->OCI_CreateStatement();
   
-  string sstr=(const char*)sqlstr;
+  std::wstring sstr=sqlstr;
   
-  occi_stm->executeUpdate(sstr);
+  occi_stm->Prepare(sstr.c_str());
+  occi_stm->ExecuteNonQuery();
   
-  m_Connection->OCCI_TerminateStatement(occi_stm);
+  m_Connection->OCI_TerminateStatement(occi_stm);
 }
-catch(oracle::occi::SQLException& ea)
+catch(c_Oci_Exception* ea)
 {
-  if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);
+  if( occi_stm ) m_Connection->OCI_TerminateStatement(occi_stm);
   
-  FdoStringP gstr = ea.what();
+  FdoStringP gstr = ea->what();
+  delete ea;
   throw FdoCommandException::Create( gstr );    
 }    
 

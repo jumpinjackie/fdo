@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2006  SL-King d.o.o
+* Copyright (C) 2008  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -17,15 +17,114 @@
 
 #ifndef _c_KgOraReader_h
 #define _c_KgOraReader_h
-#include "c_LogAPI.h"
-#include "c_SdoGeomToAGF.h"
+#include "c_logApi.h"
+#include "c_SdoGeomToAGF2.h"
 #include <time.h>
+
+
+#define D_USE_MAP_FOR_COLUMN_SEARCH
+
+
+class c_StringToIndex
+{
+public:
+  c_StringToIndex(FdoStringCollection* SqlColumns)
+  {
+    //m_SqlColumns  = SqlColumns;
+    //FDO_SAFE_ADDREF(m_SqlColumns.p);
+    if( SqlColumns )
+    {
+      m_CountNames = SqlColumns->GetCount();
+      m_SqlColumns = new const wchar_t*[m_CountNames];
+      m_ArrayIndLookup = new int[m_CountNames];        
+      for(int ind=0;ind<m_CountNames;ind++)
+      {
+        m_ArrayIndLookup[ind] = ind;
+        m_SqlColumns[ind] = SqlColumns->GetString(ind);
+      }
+    }
+    else
+    {
+      m_CountNames = 0;
+      m_SqlColumns = NULL;
+      m_ArrayIndLookup = NULL;
+    }
+    m_CurrIndLookup=0;
+  }
+  ~c_StringToIndex()
+  {
+    if( m_ArrayIndLookup ) delete []m_ArrayIndLookup;
+    if( m_SqlColumns ) delete []m_SqlColumns;
+  }
+  
+  int GetIndex(FdoString* Name)
+  {
+    int ind3=0;
+        // check on next lookup ind
+    ind3 = m_ArrayIndLookup[m_CurrIndLookup];
+    //method2_count_strcmp++;
+    //if( wcscmp(m_SqlColumns->GetString(ind3),Name) == 0 )
+    if( wcsicmp(m_SqlColumns[ind3],Name) == 0 )
+    {
+      m_CurrIndLookup++;
+      if( m_CurrIndLookup >= m_CountNames ) m_CurrIndLookup=0;
+            
+    }
+    else
+    {
+      int next_ind_lookup = m_CurrIndLookup + 1;
+      if( next_ind_lookup>= m_CountNames ) next_ind_lookup = 0;
+      
+      bool found=false;
+      while( next_ind_lookup!=m_CurrIndLookup)
+      {
+        ind3 = m_ArrayIndLookup[next_ind_lookup];
+        //method2_count_strcmp++;
+        //if( wcscmp(m_SqlColumns->GetString(ind3),Name) == 0 )
+        if( wcsicmp(m_SqlColumns[ind3],Name) == 0 )
+        {
+          int temp = m_ArrayIndLookup[m_CurrIndLookup];
+          m_ArrayIndLookup[m_CurrIndLookup] = m_ArrayIndLookup[next_ind_lookup];
+          m_ArrayIndLookup[next_ind_lookup] = temp;
+        
+          m_CurrIndLookup++;
+          if( m_CurrIndLookup >= m_CountNames ) m_CurrIndLookup=0;
+          found = true;
+          break;
+        }
+        
+        next_ind_lookup++;
+        if( next_ind_lookup>= m_CountNames ) next_ind_lookup = 0;
+      }
+      
+      if( !found ) 
+      {
+        throw FdoCommandException::Create(L"Unknown Property Name!");
+      }
+    }
+    
+    return ind3;
+  }
+  
+protected:
+  int m_CountNames;
+  int *m_ArrayIndLookup;  
+  
+  int m_CurrIndLookup;
+  
+  //FdoPtr<FdoStringCollection> m_SqlColumns;
+  const wchar_t** m_SqlColumns;
+  
+};
 
 template <class FDO_READER> class c_KgOraReader : public FDO_READER
 {
     public:
+    
+        friend class c_KgOraDataReader;
+        
         c_KgOraReader(c_KgOraConnection * Connection
-                            ,oracle::occi::Statement* OcciStatement ,oracle::occi::ResultSet* OcciResultSet
+                            ,c_Oci_Statement* OcciStatement 
                             ,int GeomPropSqlIndex,FdoStringCollection* SqlColumns);
 
     protected:
@@ -46,6 +145,9 @@ template <class FDO_READER> class c_KgOraReader : public FDO_READER
     //-------------------------------------------------------
     // FdoIReader implementation
     //-------------------------------------------------------   
+        virtual int PropNameToColumnNumber(FdoString* propertyName); 
+        virtual int PropNameToColumnNumber_IsNull(FdoString* propertyName); 
+        
         virtual bool GetBoolean(FdoString* propertyName);
         virtual FdoByte GetByte(FdoString* propertyName);
         virtual FdoDateTime GetDateTime(FdoString* propertyName);
@@ -103,61 +205,65 @@ template <class FDO_READER> class c_KgOraReader : public FDO_READER
    
 
     private:
-        #ifdef _DEBUG
-        bool m_FirstRead;
-        FdoPtr<FdoByteArray> m_Barray;
+        #ifdef _KGORA_EXTENDED_LOG
+        
+        long m_CountRows;
+        //FdoPtr<FdoByteArray> m_Barray;
         //FdoCommonThreadMutex m_Mutex;
         #endif
         
         
-        oracle::occi::Statement* m_OcciStatement;
-        oracle::occi::ResultSet* m_OcciResultSet;
+        c_Oci_Statement* m_OciStatement;
         
         c_KgOraConnection * m_Connection;
         
        
+        c_StringToIndex m_PropNameToIndex;
+        c_StringToIndex m_PropNameToIndex_IsNull;
         
         int m_GeomPropSqlIndex; // Index of Geometry Column in sql result set ( for fast access to geometry column - no need to transfer propertyname to column index)
-        FdoPtr<FdoStringCollection> m_SqlColumnColl;
-        std::map<std::wstring,int> m_SqlColumnsMap;
+        FdoPtr<FdoStringCollection> m_SqlColumnCollStr;
+        //std::map<std::wstring,int> m_SqlColumnsMap;
         
         
-        c_SdoGeomToAGF m_SdoAgfConv;
+        c_SdoGeomToAGF2 m_SdoAgfConv;
         FdoStringP m_CachedString; // buffer to save last retrived string with GetString
        
         
-        
+        FdoPtr<FdoByteArray> m_Barray;
         
         
 };
 
 
 template <class FDO_READER> c_KgOraReader<FDO_READER>::c_KgOraReader(c_KgOraConnection * Connection
-                                      ,oracle::occi::Statement* OcciStatement ,oracle::occi::ResultSet* OcciResultSet 
+                                      ,c_Oci_Statement* OciStatement 
                                         ,int GeomPropSqlIndex, FdoStringCollection* SqlColumns
                                         )
  
+  : m_PropNameToIndex(SqlColumns),m_PropNameToIndex_IsNull(SqlColumns)
 {
-#ifdef _DEBUG
-  m_FirstRead = true;
+#ifdef _KGORA_EXTENDED_LOG
+  m_CountRows = 0;
 #endif  
   m_Connection = Connection;
   FDO_SAFE_ADDREF(m_Connection);
   
   
   m_GeomPropSqlIndex = GeomPropSqlIndex;
-  m_SqlColumnColl = SqlColumns;
-  FDO_SAFE_ADDREF(m_SqlColumnColl.p);
+  m_SqlColumnCollStr = SqlColumns;
+  FDO_SAFE_ADDREF(m_SqlColumnCollStr.p);
   
   //std::map
+  /*
   long count=m_SqlColumnColl->GetCount();
   for(long ind = 0; ind<count;ind++ )
   {
     m_SqlColumnsMap[m_SqlColumnColl->GetString(ind)] = ind+1;
   }
+  */
+  m_OciStatement = OciStatement;
   
-  m_OcciStatement = OcciStatement;
-  m_OcciResultSet = OcciResultSet;
   
 
   
@@ -178,26 +284,71 @@ template <class FDO_READER> void c_KgOraReader<FDO_READER>::Dispose()
 }
 
 
+template <class FDO_READER> int c_KgOraReader<FDO_READER>::PropNameToColumnNumber(FdoString* propertyName)
+{
+  return m_PropNameToIndex.GetIndex(propertyName) + 1;
+/*  
+  int oraind=0;
+  #ifdef D_USE_MAP_FOR_COLUMN_SEARCH
+    std::map<std::wstring,int>::iterator iter = m_SqlColumnsMap.find(propertyName);
+    if( iter == m_SqlColumnsMap.end() )
+    {
+      throw FdoCommandException::Create(L"Unknown Property Name!");
+    }
+    oraind = iter->second;
+  #else 
+    oraind = m_SqlColumnColl->IndexOf(propertyName)+1;
+  #endif
+  
+  return oraind;
+  */
+};
+template <class FDO_READER> int c_KgOraReader<FDO_READER>::PropNameToColumnNumber_IsNull(FdoString* propertyName)
+{
+  return m_PropNameToIndex_IsNull.GetIndex(propertyName) + 1;
+  
+  /*
+  int oraind=0;
+  #ifdef D_USE_MAP_FOR_COLUMN_SEARCH
+    std::map<std::wstring,int>::iterator iter = m_SqlColumnsMap.find(propertyName);
+    if( iter == m_SqlColumnsMap.end() )
+    {
+      throw FdoCommandException::Create(L"Unknown Property Name!");
+    }
+    oraind = iter->second;
+  #else 
+    oraind = m_SqlColumnColl->IndexOf(propertyName)+1;
+  #endif
+  
+  return oraind;
+  */
+};
+
+template <class FDO_READER> bool c_KgOraReader<FDO_READER>::IsNull(FdoString* propertyName)
+{
+  int oraind = PropNameToColumnNumber_IsNull(propertyName); 
+  
+  
+  if( m_OciStatement && (oraind >= 1) )
+  {
+    return m_OciStatement->IsColumnNull(oraind);         
+  } 
+  return true;
+}
 
 
 template <class FDO_READER> bool c_KgOraReader<FDO_READER>::GetBoolean(FdoString* propertyName)
 {
-  //int oraind = m_SqlColumnsColl->IndexOf(propertyName) + 1;
   
-  std::map<std::wstring,int>::iterator iter = m_SqlColumnsMap.find(propertyName);
-  if( iter == m_SqlColumnsMap.end() )
-  {
-    throw FdoCommandException::Create(L"Unknown Property Name!");
-  }
-  int oraind = iter->second;
+  int oraind = PropNameToColumnNumber(propertyName); 
   
-  if( m_OcciResultSet && (oraind >= 1) )
+  if( m_OciStatement && (oraind >= 1) )
   {
-    string str = m_OcciResultSet->getString(oraind);    
+    std::wstring str = m_OciStatement->GetString(oraind);    
     
-    if( str.compare("1") == 0 ) return true;
-    if( str.compare("TRUE") == 0 ) return true;
-    if( str.compare("true") == 0 ) return true;
+    if( str.compare(L"1") == 0 ) return true;
+    if( str.compare(L"TRUE") == 0 ) return true;
+    if( str.compare(L"true") == 0 ) return true;
     
     return false;
   }
@@ -206,51 +357,39 @@ template <class FDO_READER> bool c_KgOraReader<FDO_READER>::GetBoolean(FdoString
 
 template <class FDO_READER> FdoByte  c_KgOraReader<FDO_READER>::GetByte(FdoString* propertyName)
 {
-  //int oraind = m_SqlColumnsColl->IndexOf(propertyName) + 1;
+  int oraind = PropNameToColumnNumber(propertyName); 
   
-  std::map<std::wstring,int>::iterator iter = m_SqlColumnsMap.find(propertyName);
-  if( iter == m_SqlColumnsMap.end() )
+  if( m_OciStatement && (oraind >= 1) )
   {
-    throw FdoCommandException::Create(L"Unknown Property Name!");
-  }
-  int oraind = iter->second;
-  
-  if( m_OcciResultSet && (oraind >= 1) )
-  {
-    string str = m_OcciResultSet->getString(oraind);    
-    const char* cp = str.c_str();
-    if( cp ) return *cp;
-    
-    return 0;
+    std::wstring str = m_OciStatement->GetString(oraind);    
+    return *((char*)str.c_str());
+    //const char* cp = str.c_str();
+    //if( cp ) return *cp;    
+    //return 0;
   }
   throw FdoCommandException::Create(L"Feature Reader: Unknown Property Name");
 }//end of template <class FDO_READER> c_KgOraReader<FDO_READER>::GetByte
 
 template <class FDO_READER> FdoDateTime c_KgOraReader<FDO_READER>::GetDateTime(FdoString* propertyName)
 {
-  std::map<std::wstring,int>::iterator iter = m_SqlColumnsMap.find(propertyName);
-  if( iter == m_SqlColumnsMap.end() )
-  {
-    throw FdoCommandException::Create(L"Unknown Property Name!");
-  }
-  int oraind = iter->second;
+  int oraind = PropNameToColumnNumber(propertyName); 
   
   if( oraind >= 1 )
   {
-    oracle::occi::Date oradt = m_OcciResultSet->getDate(oraind);    
+    OCIDate* oradt = m_OciStatement->GetOciDate(oraind);    
     FdoDateTime fdodate;
-    if( !oradt.isNull() )
+    if( !oradt )
     {
-      int year;
-      unsigned int month,day,hour,min,sec;
-      oradt.getDate(year,month,day,hour,min,sec);
+      //unsigned int month,day,hour,min,sec;
+      //oradt.getDate(year,month,day,hour,min,sec);
       
-      fdodate.year = year;
-      fdodate.month = month;
-      fdodate.day = day;
-      fdodate.hour = hour;
-      fdodate.minute = min;
-      fdodate.seconds = (float)sec;
+      fdodate.year = oradt->OCIDateYYYY;
+      fdodate.month = oradt->OCIDateMM;
+      fdodate.day = oradt->OCIDateDD;
+      fdodate.hour = oradt->OCIDateTime.OCITimeHH;
+     
+      fdodate.minute = oradt->OCIDateTime.OCITimeMI;
+      fdodate.seconds = oradt->OCIDateTime.OCITimeSS;
       
     }
     return fdodate;
@@ -261,17 +400,11 @@ template <class FDO_READER> FdoDateTime c_KgOraReader<FDO_READER>::GetDateTime(F
 template <class FDO_READER> double c_KgOraReader<FDO_READER>::GetDouble(FdoString* propertyName)
 {
 
-  //int oraind = m_SqlColumns->IndexOf(propertyName) + 1;
-  std::map<std::wstring,int>::iterator iter = m_SqlColumnsMap.find(propertyName);
-  if( iter == m_SqlColumnsMap.end() )
-  {
-    throw FdoCommandException::Create(L"Unknown Property Name!");
-  }
-  int oraind = iter->second;
+  int oraind = PropNameToColumnNumber(propertyName); 
   
-  if( m_OcciResultSet && (oraind >= 1) )
+  if( m_OciStatement && (oraind >= 1) )
   {
-    double val = m_OcciResultSet->getDouble(oraind);    
+    double val = m_OciStatement->GetDouble(oraind);    
     return val;
   }
     
@@ -283,16 +416,11 @@ template <class FDO_READER> double c_KgOraReader<FDO_READER>::GetDouble(FdoStrin
 
 template <class FDO_READER> FdoInt16 c_KgOraReader<FDO_READER>::GetInt16(FdoString* propertyName)
 {
-  //int oraind = m_SqlColumns->IndexOf(propertyName)+1;
-  std::map<std::wstring,int>::iterator iter = m_SqlColumnsMap.find(propertyName);
-  if( iter == m_SqlColumnsMap.end() )
+  int oraind = PropNameToColumnNumber(propertyName); 
+  
+  if( m_OciStatement && (oraind >= 1) )
   {
-    throw FdoCommandException::Create(L"Unknown Property Name!");
-  }
-  int oraind = iter->second;
-  if( m_OcciResultSet && (oraind >= 1) )
-  {
-    int val = m_OcciResultSet->getInt(oraind);    
+    int val = m_OciStatement->GetInteger(oraind);    
     return val;
   }
   
@@ -303,22 +431,18 @@ template <class FDO_READER> FdoInt16 c_KgOraReader<FDO_READER>::GetInt16(FdoStri
 template <class FDO_READER> FdoInt32 c_KgOraReader<FDO_READER>::GetInt32(FdoString* propertyName)
 {
  
-  //int oraind = m_SqlColumns->IndexOf(propertyName)+1;
-  std::map<std::wstring,int>::iterator iter = m_SqlColumnsMap.find(propertyName);
-  if( iter == m_SqlColumnsMap.end() )
-  {
-    throw FdoCommandException::Create(L"Unknown Property Name!");
-  }
-  int oraind = iter->second;
-  if( m_OcciResultSet && (oraind >= 1) )
+  int oraind = PropNameToColumnNumber(propertyName); 
+  
+  if( m_OciStatement && (oraind >= 1) )
   { 
-    oracle::occi::Number num;
+    long val;
     try
     {
-      num = m_OcciResultSet->getNumber(oraind);    
+      val = m_OciStatement->GetInteger(oraind);    
     }
-    catch(oracle::occi::SQLException& ea)
+    catch(c_Oci_Exception* ea)
     {
+      delete ea;
       printf("\n----------------------c_KgOraReader::GetInt32: occi::SQLException Exception ---------------------- ");
       
       return 0;
@@ -329,7 +453,7 @@ template <class FDO_READER> FdoInt32 c_KgOraReader<FDO_READER>::GetInt32(FdoStri
      
       return 0;
     }
-    long val = (long)num; //m_OcciResultSet->getInt(oraind);    
+    
     return val;
   }
     
@@ -340,18 +464,12 @@ template <class FDO_READER> FdoInt32 c_KgOraReader<FDO_READER>::GetInt32(FdoStri
 
 template <class FDO_READER> FdoInt64 c_KgOraReader<FDO_READER>::GetInt64(FdoString* propertyName)
 {
-  //int oraind = m_SqlColumns->IndexOf(propertyName)+1;
-  std::map<std::wstring,int>::iterator iter = m_SqlColumnsMap.find(propertyName);
-  if( iter == m_SqlColumnsMap.end() )
+  int oraind = PropNameToColumnNumber(propertyName); 
+  
+  if( m_OciStatement && (oraind >= 1) )
   {
-    throw FdoCommandException::Create(L"Unknown Property Name!");
-  }
-  int oraind = iter->second;
-  if( m_OcciResultSet && (oraind >= 1) )
-  {
-    //long val = m_OcciResultSet->getInt(oraind);    
-    oracle::occi::Number num = m_OcciResultSet->getNumber(oraind);    
-    long val = (long)num; //m_OcciResultSet->getInt(oraind);    
+    //long val = m_OciStatement->getInt(oraind);    
+    long val = m_OciStatement->GetLong(oraind);    
     return val;
   }
   
@@ -360,18 +478,12 @@ template <class FDO_READER> FdoInt64 c_KgOraReader<FDO_READER>::GetInt64(FdoStri
 
 template <class FDO_READER> float c_KgOraReader<FDO_READER>::GetSingle(FdoString* propertyName)
 {
-  //int oraind = m_SqlColumns->IndexOf(propertyName)+1;
-  std::map<std::wstring,int>::iterator iter = m_SqlColumnsMap.find(propertyName);
-  if( iter == m_SqlColumnsMap.end() )
-  {
-    throw FdoCommandException::Create(L"Unknown Property Name!");
-  }
-  int oraind = iter->second;
+  int oraind = PropNameToColumnNumber(propertyName); 
   
-  if( m_OcciResultSet && (oraind >= 1) )
+  if( m_OciStatement && (oraind >= 1) )
   {
-    double val = m_OcciResultSet->getDouble(oraind);    
-    return val;
+    double val = m_OciStatement->GetDouble(oraind);    
+    return (float)val;
   }
     
     
@@ -382,23 +494,15 @@ template <class FDO_READER> float c_KgOraReader<FDO_READER>::GetSingle(FdoString
 template <class FDO_READER> FdoString* c_KgOraReader<FDO_READER>::GetString(FdoString* propertyName)
 {
  
-    //return L"";
-    
-  //int oraind = m_SqlColumns->IndexOf(propertyName)+1;
-  std::map<std::wstring,int>::iterator iter = m_SqlColumnsMap.find(propertyName);
-  if( iter == m_SqlColumnsMap.end() )
-  {
-    throw FdoCommandException::Create(L"Unknown Property Name!");
-  }
-  int oraind = iter->second;
+  int oraind = PropNameToColumnNumber(propertyName); 
   
-  if( m_OcciResultSet && (oraind >= 1) )
+  if( m_OciStatement && (oraind >= 1) )
   {
-    string str = m_OcciResultSet->getString(oraind); 
+    return m_OciStatement->GetString(oraind); 
     
-    m_CachedString = str.c_str();
+    //m_CachedString = str.c_str();
     
-    return m_CachedString;
+    //return m_CachedString;
   }
     
     
@@ -416,21 +520,6 @@ template <class FDO_READER> FdoIStreamReader* c_KgOraReader<FDO_READER>::GetLOBS
     return NULL;
 }
 
-template <class FDO_READER> bool c_KgOraReader<FDO_READER>::IsNull(FdoString* propertyName)
-{
-  //int ind = m_SqlColumns->IndexOf(propertyName)+1;
-  std::map<std::wstring,int>::iterator iter = m_SqlColumnsMap.find(propertyName);
-  if( iter == m_SqlColumnsMap.end() )
-  {
-    throw FdoCommandException::Create(L"Unknown Property Name!");
-  }
-  int oraind = iter->second;
-  if( m_OcciResultSet && (oraind >= 1) )
-  {
-    return m_OcciResultSet->isNull(oraind);         
-  } 
-  return true;
-}
 
 template <class FDO_READER> FdoByteArray* c_KgOraReader<FDO_READER>::GetGeometry(FdoString* propertyName)
 {
@@ -449,16 +538,25 @@ template <class FDO_READER> FdoByteArray* c_KgOraReader<FDO_READER>::GetGeometry
 template <class FDO_READER> const FdoByte* c_KgOraReader<FDO_READER>::GetGeometry(FdoString* propertyName, FdoInt32* len)
 {
 
-  if( m_OcciResultSet )
+ 
+
+  if( m_OciStatement )
   {
-    SDO_GEOMETRY *geom=NULL;
+    c_SDO_GEOMETRY *geom=NULL;
+    SDO_GEOMETRY_TYPE *s_geom=NULL;
+    SDO_GEOMETRY_ind* s_geom_ind=NULL;
+    
     try
     {
-      if( !m_OcciResultSet->isNull(m_GeomPropSqlIndex+1) )
-        geom = (SDO_GEOMETRY*)m_OcciResultSet->getObject(m_GeomPropSqlIndex+1); // oracle is 1 based - our index is 0 based
+      int oraind = PropNameToColumnNumber(propertyName); 
+      if( !m_OciStatement->IsColumnNull(oraind) )
+      {
+        geom = m_OciStatement->GetSdoGeom(oraind); // oracle is 1 based - our index is 0 based        
+      }
     }
-    catch(oracle::occi::SQLException& ea)
+    catch(c_Oci_Exception* ea)
     {
+      delete ea;
       //printf("\n----------------------c_KgOraReader::GetGeometry: occi::SQLException Exception ---------------------- ");
       *len=0;
       
@@ -471,6 +569,23 @@ template <class FDO_READER> const FdoByte* c_KgOraReader<FDO_READER>::GetGeometr
       throw FdoException::Create(L"c_KgOraReader::GetGeometry Uknown Exception !");
     }
   
+    /*
+    delete geom;
+    
+    // Geometry property
+    FdoPtr<FdoFgfGeometryFactory> fgf = FdoFgfGeometryFactory::GetInstance();
+
+    double ordinates[10] = { 2,2 ,20,2 ,20,20 ,2,20 ,2,2 }; 
+
+    FdoPtr<FdoILinearRing> ring = fgf->CreateLinearRing(0,10,ordinates);
+    FdoPtr<FdoIPolygon> polygon = fgf->CreatePolygon(ring,NULL);
+
+    FdoPtr<FdoByteArray> m_Barray = fgf->GetFgf(polygon);
+
+    *len = m_Barray->GetCount();
+    return m_Barray->GetData();
+    */
+    
     *len=0;
     if( geom )
     {
@@ -496,15 +611,15 @@ template <class FDO_READER> const FdoByte* c_KgOraReader<FDO_READER>::GetGeometr
 template <class FDO_READER> const FdoByte* c_KgOraReader<FDO_READER>::GetGeometry(FdoString* propertyName, FdoInt32* len)
 {
   *len=0;
-  if( m_OcciResultSet )
+  if( m_OciStatement )
   {
  
     
     //m_Mutex.Enter();
     SDO_GEOMETRY *geom;
-    if( !m_OcciResultSet->isNull(m_GeomPropSqlIndex+1) )
+    if( !m_OciStatement->isNull(m_GeomPropSqlIndex+1) )
     {
-      geom = (SDO_GEOMETRY*)m_OcciResultSet->getObject(m_GeomPropSqlIndex+1); // oracle is 1 based - our index is 0 based
+      geom = (SDO_GEOMETRY*)m_OciStatement->getObject(m_GeomPropSqlIndex+1); // oracle is 1 based - our index is 0 based
       if( geom ) delete geom;
     }
     //m_Mutex.Leave();
@@ -544,41 +659,33 @@ template <class FDO_READER> FdoIRaster* c_KgOraReader<FDO_READER>::GetRaster(Fdo
 template <class FDO_READER> bool c_KgOraReader<FDO_READER>::ReadNext()
 {    
   
-    
-    #ifdef _DEBUG
-      if( m_FirstRead )
-      {
-        char buff[1024]; 
-        sprintf(buff,"\nReader ReadNext=%p OcciresultSet=%p Statement=%p c_KgOraConnection=%p OcciConnection=%p",(void*)this,(void*)m_OcciResultSet,(void*)m_OcciStatement,(void*)m_Connection),(void*)m_Connection->GetOcciConnection();
-        D_KGORA_ELOG_WRITE(buff);                
-        printf("\nReader ReadNext START=%p OcciresultSet=%p Statement=%p c_KgOraConnection=%p OcciConnection=%p",(void*)this,(void*)m_OcciResultSet,(void*)m_OcciStatement,(void*)m_Connection),(void*)m_Connection->GetOcciConnection();
-        printf("\n****************************************************");
-        m_FirstRead=false;
-      }
-    #endif
+
     
     try
     {
-    if( m_OcciResultSet->next() == oracle::occi::ResultSet::END_OF_FETCH )
+    if( !m_OciStatement->ReadNext() )
     {
      
-      #ifdef _DEBUG
+      #ifdef _KGORA_EXTENDED_LOG
       
       {
         char buff[1024]; 
-        sprintf(buff,"\nReader ReadNext END=%p OcciresultSet=%p Statement=%p c_KgOraConnection=%p OcciConnection=%p",(void*)this,(void*)m_OcciResultSet,(void*)m_OcciStatement,(void*)m_Connection),(void*)m_Connection->GetOcciConnection();
+        sprintf(buff,"c_KgOraReader.ReadNext : Reader reached end. Rows count=%ld ",(long)m_CountRows);        
         D_KGORA_ELOG_WRITE(buff);                
-        printf("\nReader ReadNext END=%p OcciresultSet=%p Statement=%p c_KgOraConnection=%p OcciConnection=%p",(void*)this,(void*)m_OcciResultSet,(void*)m_OcciStatement,(void*)m_Connection),(void*)m_Connection->GetOcciConnection();
-        printf("\n****************************************************");
-        m_FirstRead=false;
+        #ifdef _DEBUG
+          printf("\n");
+          printf(buff);
+        #endif
+        
       }
     #endif
       return false;
     }
     
     }
-    catch(oracle::occi::SQLException& ea)
+    catch(c_Oci_Exception* ea)
     {
+      delete ea;
       printf("\n----------------------c_KgOraReader::ReadNext: occi::SQLException Exception ---------------------- ");
       return false;
     }
@@ -588,6 +695,9 @@ template <class FDO_READER> bool c_KgOraReader<FDO_READER>::ReadNext()
       return false;
     }
     
+    #ifdef _KGORA_EXTENDED_LOG
+    m_CountRows++;
+    #endif
     return true;
   
 }//end of template <class FDO_READER> c_KgOraReader<FDO_READER>::ReadNext
@@ -597,28 +707,23 @@ template <class FDO_READER> void c_KgOraReader<FDO_READER>::Close()
 try
 {
   D_KGORA_ELOG_WRITE("\nc_KgOraReader<FDO_READER>::Close()");
-  if (m_OcciStatement && m_OcciResultSet)
-  {
-    D_KGORA_ELOG_WRITE("\nc_KgOraReader<FDO_READER>::Close closeResultSet");
-    m_OcciStatement->closeResultSet(m_OcciResultSet);        
-    m_OcciResultSet = NULL;
-  }
   
-  if (m_OcciStatement)
+  if (m_OciStatement)
   {
-    D_KGORA_ELOG_WRITE("\nc_KgOraReader<FDO_READER>::Close OCCI_TerminateStatement");
-    m_Connection->OCCI_TerminateStatement(m_OcciStatement);
-    m_OcciStatement=NULL;
+    D_KGORA_ELOG_WRITE("\nc_KgOraReader<FDO_READER>::Close OCI_TerminateStatement");
+    m_Connection->OCI_TerminateStatement(m_OciStatement);
+    m_OciStatement=NULL;
   }
   D_KGORA_ELOG_WRITE("\nc_KgOraReader<FDO_READER>::Close().. OK");
 }
-catch(oracle::occi::SQLException& ea)
+catch(c_Oci_Exception* ea)
 {
   D_KGORA_ELOG_WRITE("\nc_KgOraReader<FDO_READER>::Close()... ERROR!");
   printf("\n----------------------c_KgOraReader::Close: occi::SQLException Exception ---------------------- ");
-  m_OcciResultSet = NULL;
-  m_OcciStatement=NULL;
-  FdoStringP gstr = ea.getMessage().c_str();
+  m_OciStatement = NULL;
+  
+  FdoStringP gstr = ea->GetErrorText();
+  delete ea;
   throw FdoConnectionException::Create( gstr );  
 }
 catch(...)
