@@ -35,6 +35,7 @@
 #endif
 #endif
 
+#include <cstring>
 #include <malloc.h>
 #include <stdlib.h>
 #include <math.h>

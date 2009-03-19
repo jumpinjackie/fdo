@@ -18,7 +18,6 @@
 #include "FdoMultiThreadTest.h"
 #include "UnitTestUtil.h"
 #include "FdoCommonOSUtil.h"
-#include <stdio.h>
 
 #ifndef _WIN32
 #include <dlfcn.h>

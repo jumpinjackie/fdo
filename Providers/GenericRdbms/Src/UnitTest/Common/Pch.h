@@ -54,11 +54,12 @@
 #include <unistd.h>
 #endif // _WIN32
 
-#include <stdio.h>
+#include <cstring>
+#include <cstdio>
 #include <malloc.h>
-#include <stdlib.h>
-#include <math.h>
-#include <time.h>
+#include <cstdlib>
+#include <cmath>
+#include <ctime>
 
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
