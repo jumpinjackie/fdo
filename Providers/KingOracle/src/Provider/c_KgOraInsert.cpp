@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2006  SL-King d.o.o
+* Copyright (C) 2009  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -16,12 +16,12 @@
 */
 #include "stdafx.h"
 #include "c_KgOraInsert.h"
-#include "c_FdoOra_API.h"
-#include "c_Ora_API.h"
+#include "c_FdoOra_API2.h"
+#include "c_Ora_API2.h"
 #include "c_FgfToSdoGeom.h"
 
 c_KgOraInsert::c_KgOraInsert(c_KgOraConnection *Conn)
-  : c_KgOraFdoCommand<FdoIInsert>(Conn)
+  : c_KgOraFdoCommand(Conn)
 {
 }
 
@@ -253,41 +253,41 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
     }
     
     c_FilterStringBuffer sqlstr;
-    sqlstr.AppendString("INSERT INTO ");
+    sqlstr.AppendString(L"INSERT INTO ");
     sqlstr.AppendString(fultablename);
-    sqlstr.AppendString(" ( ");
+    sqlstr.AppendString(L" ( ");
     sqlstr.AppendString(colnames);
-    sqlstr.AppendString(" ) ");
-    sqlstr.AppendString(" VALUES ( ");
+    sqlstr.AppendString(L" ) ");
+    sqlstr.AppendString(L" VALUES ( ");
     sqlstr.AppendString(colvalues);
-    sqlstr.AppendString(" ) ");
+    sqlstr.AppendString(L" ) ");
     
-    oracle::occi::Statement* occi_stm=NULL;
+    c_Oci_Statement* oci_stm=NULL;
     
     try
     {
-      occi_stm = m_Connection->OCCI_CreateStatement();
+      oci_stm = m_Connection->OCI_CreateStatement();
       
       D_KGORA_ELOG_WRITE1("Execute Insert: '%s",sqlstr.GetString());
       
       #ifdef _DEBUG
       #endif
-      occi_stm->setSQL(sqlstr.GetString());
+      oci_stm->Prepare(sqlstr.GetString());
       
-      long count = m_BatchParameterValues->GetCount();
+      unsigned long count = m_BatchParameterValues->GetCount();
       for( long browind=0;browind<count;browind++)
       {
         // do aply of literal values
         // this apply witll skip parameter values
-        expproc.ApplySqlParameters(m_Connection->GetOcciEnvironment(),occi_stm);
+        expproc.ApplySqlParameters(oci_stm,orasrid.m_IsGeodetic,orasrid.m_OraSrid);
         
         // now i need to aply batch values
         int ora_batch_parameter = 1; // number of parameter in oracle sql statament 
         if( added_new_batch_parameter_for_sequence_identity )
         {
-          long seqval = c_Ora_API::GetSequenceNextVal(m_Connection->GetOcciConnection(),seqname);
+          long seqval = c_Ora_API2::GetSequenceNextVal(m_Connection->GetOciConnection(),seqname);
           FdoPtr<FdoDataValue> dataval = FdoDataValue::Create((FdoInt32)seqval);
-          c_FdoOra_API::SetOracleStatementData(m_Connection->GetOcciEnvironment(), occi_stm,ora_batch_parameter,dataval);
+          c_FdoOra_API2::SetOracleStatementData( oci_stm,ora_batch_parameter,dataval);
           ora_batch_parameter++;
         }
         
@@ -297,7 +297,7 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
             (added_new_batch_parameter_for_sequence_identity && ( (bparamcol->GetCount()+1) == num_batch_columns) )
           )
         {
-          long bcount = bparamcol->GetCount();
+          unsigned long bcount = bparamcol->GetCount();
           for(long bind=0;bind<bcount;bind++)
           {
             FdoPtr<FdoParameterValue> paramval = bparamcol->GetItem(bind);
@@ -312,18 +312,18 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
               {
                 if( dataval->IsNull() )
                 {                
-                  long seqval = c_Ora_API::GetSequenceNextVal(m_Connection->GetOcciConnection(),seqname);
+                  long seqval = c_Ora_API2::GetSequenceNextVal(m_Connection->GetOciConnection(),seqname);
                   FdoPtr<FdoDataValue> dataval = FdoDataValue::Create((FdoInt32)seqval);
-                  c_FdoOra_API::SetOracleStatementData(m_Connection->GetOcciEnvironment(),occi_stm,ora_batch_parameter,dataval);
+                  c_FdoOra_API2::SetOracleStatementData(oci_stm,ora_batch_parameter,dataval);
                 }
                 else
                 {
-                  c_FdoOra_API::SetOracleStatementData(m_Connection->GetOcciEnvironment(),occi_stm,ora_batch_parameter,dataval);
+                  c_FdoOra_API2::SetOracleStatementData(oci_stm,ora_batch_parameter,dataval);
                 }
               }
               else
               {
-                c_FdoOra_API::SetOracleStatementData(m_Connection->GetOcciEnvironment(),occi_stm,ora_batch_parameter,dataval);
+                c_FdoOra_API2::SetOracleStatementData(oci_stm,ora_batch_parameter,dataval);
               }
             }
             else
@@ -332,25 +332,24 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
               if( geomval )
               {
                 FdoPtr<FdoByteArray> fgf = geomval->GetGeometry();    
-                SDO_GEOMETRY * sdogeom = new SDO_GEOMETRY;
+                c_SDO_GEOMETRY * sdogeom = c_SDO_GEOMETRY::Create(oci_stm->m_OciConn);
                 
                 c_FgfToSdoGeom fgftosdo;
                 
                 if( fgftosdo.ToSdoGeom((int*)fgf->GetData(),orasrid.m_OraSrid,sdogeom) == c_FgfToSdoGeom::e_Ok )
                 {
-                  occi_stm->setObject(ora_batch_parameter,sdogeom);
+                  oci_stm->BindSdoGeomValue(ora_batch_parameter,sdogeom);
                 }
                 else
                 {
-                  geomval->ToString();
                   throw FdoCommandException::Create( L"Unknown Geometry Type. Unable to convert FGF to SDO geometry!" );    
                 }
                 
-                delete sdogeom;
+                
               }
               else
               {
-                if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);
+                if( oci_stm ) m_Connection->OCI_TerminateStatement(oci_stm);
                 throw FdoCommandException::Create( L"Unknown parameter batch value type. No data value no geometry value." );    
               }
             }
@@ -358,25 +357,26 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
             ora_batch_parameter++;  
           }
           
-          int update_num = occi_stm->executeUpdate();
+          int update_num = oci_stm->ExecuteNonQuery();
         }
       }
-      m_Connection->OCCI_TerminateStatement(occi_stm);
-      m_Connection->OCCI_Commit();
+      m_Connection->OCI_TerminateStatement(oci_stm);
+      
       
       // after batch insert reset table sequence if nesseseary
       if( use_seq_for_identity )
       {
         FdoStringP fdostr = ident_for_seq->GetName();
-        c_Ora_API::ResetSequence(m_Connection->GetOcciConnection(),seqname,fultablename,fdostr);
+        c_Ora_API2::ResetSequence(m_Connection->GetOciConnection(),seqname,fultablename,fdostr);
       }
       
       
     }
-    catch(oracle::occi::SQLException& ea)
+    catch(c_Oci_Exception* ea)
     {
-      if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);
-      FdoStringP gstr = ea.getMessage().c_str();
+      if( oci_stm ) m_Connection->OCI_TerminateStatement(oci_stm);
+      FdoStringP gstr = ea->what();
+      delete ea;
       throw FdoCommandException::Create( gstr );    
     }
     
@@ -388,7 +388,7 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
     if( m_PropertyValues.p )
     {
       c_FilterStringBuffer strbuff;
-      c_KgOraExpressionProcessor expproc(&strbuff,schemadesc,m_ClassId,orasrid);
+      c_KgOraExpressionProcessor expproc(&strbuff,schemadesc,m_ClassId,orasrid,0);
         
       FdoStringP colnames;
       FdoStringP colvalues;
@@ -413,7 +413,7 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
           FdoPtr<FdoIdentifier> propid = propval->GetName();
           if( wcscmp(propid->GetName(),ident_for_seq->GetName()) == 0 )
           {
-            long seqval = c_Ora_API::GetSequenceNextVal(m_Connection->GetOcciConnection(),seqname);
+            long seqval = c_Ora_API2::GetSequenceNextVal(m_Connection->GetOciConnection(),seqname);
             FdoPtr<FdoDataValue> newval = FdoDataValue::Create((FdoInt32)seqval);
             propval->SetValue(newval);
             found_identity = true;
@@ -424,7 +424,7 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
         if( !found_identity )
         {
           
-          long seqval = c_Ora_API::GetSequenceNextVal(m_Connection->GetOcciConnection(),seqname);
+          long seqval = c_Ora_API2::GetSequenceNextVal(m_Connection->GetOciConnection(),seqname);
           FdoPtr<FdoDataValue> newval = FdoDataValue::Create((FdoInt32)seqval);
           
           FdoPtr<FdoPropertyValue> propval = FdoPropertyValue::Create(ident_for_seq->GetName(),newval);
@@ -482,38 +482,45 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
       }
       
       c_FilterStringBuffer sqlstr;
-      sqlstr.AppendString("INSERT INTO ");
+      sqlstr.AppendString(L"INSERT INTO ");
       sqlstr.AppendString(fultablename);
-      sqlstr.AppendString(" ( ");
+      sqlstr.AppendString(L" ( ");
       sqlstr.AppendString(colnames);
-      sqlstr.AppendString(" ) ");
-      sqlstr.AppendString(" VALUES ( ");
+      sqlstr.AppendString(L" ) ");
+      sqlstr.AppendString(L" VALUES ( ");
       sqlstr.AppendString(colvalues);
-      sqlstr.AppendString(" ) ");
+      sqlstr.AppendString(L" ) ");
       
-      oracle::occi::Statement* occi_stm=NULL;
+      c_Oci_Statement* oci_stm=NULL;
       
       try
       {
-        occi_stm = m_Connection->OCCI_CreateStatement();
+        oci_stm = m_Connection->OCI_CreateStatement();
         
-        D_KGORA_ELOG_WRITE1("Execute Insert: '%s",sqlstr.GetString());
+        #ifdef _KGORA_EXTENDED_LOG
+          FdoStringP s1 = sqlstr.GetString();
+          D_KGORA_ELOG_WRITE1("Execute Insert: '%s'",(const char*)s1);
+        #endif
         
-        occi_stm->setSQL(sqlstr.GetString());
+        oci_stm->Prepare(sqlstr.GetString());
         
-        expproc.ApplySqlParameters(m_Connection->GetOcciEnvironment(),occi_stm);
+        expproc.ApplySqlParameters(oci_stm,orasrid.m_IsGeodetic,orasrid.m_OraSrid);
         
 
-        int update_num = occi_stm->executeUpdate();
+        int update_num = oci_stm->ExecuteNonQuery();
         
-        m_Connection->OCCI_Commit();
-        if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);
+        
+        if( oci_stm ) m_Connection->OCI_TerminateStatement(oci_stm);
         
       }
-      catch(oracle::occi::SQLException& ea)
+      catch(c_Oci_Exception* ea)
       {
-        if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);
-        FdoStringP gstr = ea.getMessage().c_str();
+        if( oci_stm ) m_Connection->OCI_TerminateStatement(oci_stm);
+        FdoStringP gstr = ea->what();
+        
+        D_KGORA_ELOG_WRITE2("c_KgOraInsert::Execute%d Exception '%s'",m_Connection->m_ConnNo,(const char*)gstr);
+        
+        delete ea;
         throw FdoCommandException::Create( gstr );    
       }
 

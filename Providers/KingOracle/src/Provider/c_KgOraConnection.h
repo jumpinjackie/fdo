@@ -29,7 +29,12 @@
 
 #include <FdoCommonThreadMutex.h>
 
-#include "occi.h"
+#ifndef OCI_ORACLE
+#include <oci.h>
+#include <oci1.h>
+#endif"
+
+#include "c_Oci_API.h"
 
 using namespace std;
 
@@ -38,6 +43,7 @@ class c_KgOraSchemaDesc;
 class c_KgOraConnection : public FdoIConnection
 {
     friend class c_KgOraSelectCommand;
+    friend class c_KgOraSelectAggregates;
     friend class KgOraGetSpatialContextsCommand;
     friend class c_KgOraFeatureReader;
 
@@ -62,25 +68,26 @@ protected:
      */
     FdoPtr<FdoIConnectionInfo> m_ConnectionInfo;
 
-    oracle::occi::Connection * m_OcciConnection;
-    oracle::occi::Environment *m_OcciEnvironment;
+    c_Oci_Connection * m_OciConnection;
+    
 public:    
-    string m_OraConnectionUserName; // username used to open connection to oracle
-    string m_OraConnectionPassword; // passwor
-    string m_OraConnectionDbLink; // db link
-    string m_OraSchemaName; // if not empty than provider will display classes just from this oracle schema
+    std::wstring m_OraConnectionUserName; // username used to open connection to oracle
+    std::wstring m_OraConnectionPassword; // passwor
+    std::wstring m_OraConnectionDbLink; // db link
+    std::wstring m_OraSchemaName; // if not empty than provider will display classes just from this oracle schema
                               // if empty that will display classes from all schemas
                               
-    string m_FdoViewsTable;
+    std::wstring m_FdoViewsTable;
                                   
     int m_OracleMainVersion;
 	  int m_OracleSubVersion;
 	  
 	  
-	  
+	  int m_ConnNo;
+	    
 protected:   
 
-  int m_ConnNo;
+  
 	FdoPtr<c_KgOraSchemaDesc> m_SchemaDesc;
 	//FdoPtr<FdoFeatureSchemaCollection> m_FdoSchemas;
 	//FdoPtr<FdoKgOraPhysicalSchemaMapping> m_PhSchemaMapping;
@@ -223,12 +230,17 @@ public:
 ////////////////////////////////////////////////////////////////////////
     
     c_KgOraSchemaDesc* GetSchemaDesc();
+    FDOKGORA_API void ClearCachedSchemaDesc();
 	  c_KgOraSpatialContextCollection* GetSpatialContexts(bool bDynamic = false);
-	  oracle::occi::Statement* OCCI_CreateStatement();
-	  void c_KgOraConnection::OCCI_Commit();
-	  void OCCI_TerminateStatement(oracle::occi::Statement* Statement);
-    oracle::occi::Connection * GetOcciConnection() { return m_OcciConnection; }  ;	
-    oracle::occi::Environment * GetOcciEnvironment() { return m_OcciEnvironment; }  ;	
+	  c_Oci_Statement* OCI_CreateStatement();
+    
+
+	  //void OCCI_Commit();
+	  //void OCCI_Rollback();
+	  
+	  void OCI_TerminateStatement(c_Oci_Statement* Statement);
+    c_Oci_Connection * GetOciConnection() { return m_OciConnection; }  ;	
+    
     
     bool GetOracleSridDesc(FdoGeometricPropertyDefinition* GeomProp,c_KgOraSridDesc& OraSridDesc);
     bool GetOracleSridDesc(FdoClassDefinition* ClassDef,c_KgOraSridDesc& OraSrid);
@@ -245,6 +257,8 @@ public:
 	
 	#ifdef _DEBUG
 	  void TestArrayFetch(FdoIdentifier* ClassId, FdoFilter* Filter, FdoIdentifierCollection* Props);
+    
+
 	#endif
 
 
