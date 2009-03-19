@@ -22,6 +22,8 @@
 #include <stddef.h>
 #endif
 
+#include <cstring>
+
 UnitTestUtil::UnitTestUtil(void)
 {
 }

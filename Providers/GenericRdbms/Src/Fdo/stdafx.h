@@ -30,12 +30,11 @@
 #undef GetMessage
 #endif
 
+// System includes
+#include <cstring>
+
 // Base FDO headers
 #include <Fdo.h>
-
-// Common macros and functions
-//#include <Inc/ut.h>
-
 
 // FdoRdbms common headers
 #include "FdoRdbms.h"

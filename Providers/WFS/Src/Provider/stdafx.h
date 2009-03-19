@@ -32,6 +32,7 @@
 #define GetClassNameA  GetClassName
 #endif // !UNICODE
 
+#include <cstring>
 
 // The following ifdef block is the standard way of creating macros which make exporting 
 // from a DLL simpler. All files within this DLL are compiled with the WFS_EXPORTS
