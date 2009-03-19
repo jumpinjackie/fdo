@@ -29,10 +29,13 @@ FdoKgOraClassDefinition::FdoKgOraClassDefinition(void)
 {
   m_Properties = FdoKgOraPropertyDefinitionCollection::Create(this);
   m_IsPointGeometry = false;
+  
+  
 }
 
 FdoKgOraClassDefinition::~FdoKgOraClassDefinition(void)
 {
+  
 }
 
 void FdoKgOraClassDefinition::Dispose(void)
@@ -137,4 +140,9 @@ FdoKgOraPropertyDefinition* FdoKgOraClassDefinition::FindByColumnName(FdoString*
   return NULL;
   
 }//end of FdoKgOraClassDefinition::FindByColumnName
+
+FDOKGORA_API void FdoKgOraClassDefinition::SetSdoRootMBR( const wchar_t* Mbr )
+{
+  m_Sdo_Root_MBR = Mbr ? Mbr : L"";
+}
 

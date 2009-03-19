@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2006  SL-King d.o.o
+* Copyright (C) 2008  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -16,13 +16,13 @@
 */
 
 
-#ifndef _c_KgOraSelectCommand_h
-#define _c_KgOraSelectCommand_h
+#ifndef _c_KgOraSelectAggregates_
+#define _c_KgOraSelectAggregates_
 
 #include "c_KgOraFilterProcessor.h"
 
-class c_KgOraSelectCommand :
-    public c_KgOraFdoFeatureCommand<FdoISelect>
+class c_KgOraSelectAggregates :
+    public c_KgOraFdoFeatureCommand<FdoISelectAggregates>
 {
     friend class c_KgOraConnection;
 
@@ -30,9 +30,15 @@ protected:
     FdoPtr<FdoIdentifierCollection> m_PropertyNames;
     FdoOrderingOption m_OrderingOption;
     FdoPtr<FdoIdentifierCollection> m_OrderingIdentifiers;
+    
+    FdoPtr<FdoIdentifierCollection> m_Grouping;
+    FdoPtr<FdoFilter> m_GroupingFilter;
+    
+    bool m_Distinct;
+    
 protected:
-    c_KgOraSelectCommand (c_KgOraConnection* Connection);
-    virtual ~c_KgOraSelectCommand (void);
+    c_KgOraSelectAggregates (c_KgOraConnection* Connection);
+    virtual ~c_KgOraSelectAggregates (void);
 
 public:
     //
@@ -48,40 +54,11 @@ public:
     /// <returns>Returns the list of property names.</returns> 
     virtual FdoIdentifierCollection* GetPropertyNames ();
 
-    /// <summary>Gets the FdoLockType value (see "Locking Commands").</summary>
-    /// <returns>Returns the lock type.</returns> 
-    virtual FdoLockType GetLockType ();
-
-    /// <summary>Sets the FdoLockType value (see "Locking Commands").</summary>
-    /// <param name="value">Input the lock type.</param> 
-    /// <returns>Returns nothing</returns> 
-    virtual void SetLockType (FdoLockType value);
-
-    /// <summary>Gets the FdoLockStrategy value (see "Locking Commands").</summary>
-    /// <returns>Returns the lock strategy.</returns> 
-    virtual FdoLockStrategy GetLockStrategy ();
-
-    /// <summary>Sets the FdoLockStrategy value (see "Locking Commands").</summary>
-    /// <param name="value">Input the lock strategy.</param> 
-    /// <returns>Returns nothing</returns> 
-    virtual void SetLockStrategy (FdoLockStrategy value);
+    
 
     /// <summary>Executes the select command and returns a reference to an FdoIFeatureReader.</summary>
     /// <returns>Returns the feature reader.</returns> 
-    virtual FdoIFeatureReader* Execute ();
-
-    /// <summary>Executes the select command and returns a reference to an
-    /// IFeatureReader.</summary> 
-    /// <returns>Returns the feature reader.</returns> 
-    virtual FdoIFeatureReader* ExecuteWithLock ();
-
-    /// <summary> When executing the operation ExecuteWithLock lock 
-    /// conflicts may occur. Those lock conflicts are reported. The 
-    /// function GetLockConflicts returns a lock conflict reader 
-    /// providing access to the list of lock conflicts that occurred 
-    /// during the execution of the operation.</summary>
-    /// <returns>Returns a lock conflict reader.</returns> 
-    virtual FdoILockConflictReader* GetLockConflicts ();
+    virtual FdoIDataReader* Execute ();
 
     /// <summary>Gets the FdoIdentifierCollection that holds the list of order by property names. If empty no ordering is used. This list is initially
     /// empty and the caller need to add the property that the command should use as a order by criteria.</summary>
@@ -98,11 +75,63 @@ public:
     /// <returns>Returns the ordering option.</returns> 
     virtual FdoOrderingOption GetOrderingOption( );
     
+     /// \brief
+    /// Set the distinct option of the selection. 
+    /// Non-simple properties such as object properties, geometry properties, raster properties, association properties, etc. will not be supported with Distinct.
+    /// 
+    /// \param value 
+    /// true or false; when set to true, only distinct values are returned. Otherwise all values are returned
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+    /// \note
+	/// Grouping criteria is not supported with Distinct. 
+    virtual void SetDistinct( bool value );
+
+    /// \brief
+    /// Get the distinct option.
+    /// 
+    /// \return
+    /// Returns true if distinct is set, false otherwise.
+    /// 
+    virtual bool GetDistinct( );
+
+    /// \brief
+    /// Gets the FdoIdentifierCollection that holds the list of group by property names. If empty no grouping is used. This list is initially
+    /// empty and the caller need to add the property that the command should use as a group by criteria. No LOB or Geometry type properties
+    /// can be used for ordering.
+    /// 
+    /// \return
+    /// Returns the list of group by property names.
+    /// 
+    virtual FdoIdentifierCollection* GetGrouping();
+
+    /// \brief
+    /// Set the grouping by filter. Use the grouping filter to restrict the groups of returned properties to those groups for 
+    /// which the specified filter is TRUE. For example "order by city" and  "min(lanes) = 2". The FdoFilter have to evalute to a 
+    /// binary value(true or false).
+    /// 
+    /// \param filter 
+    /// The grouping filter.
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+    virtual void SetGroupingFilter( FdoFilter* filter );
+
+    /// \brief
+    /// Gets the grouping by filter.
+    /// 
+    /// \return
+    /// Returns the grouping filter.
+    /// 
+    virtual FdoFilter* GetGroupingFilter( );
+    
 protected:
   std::wstring CreateSqlString(c_KgOraFilterProcessor& FilterProc,int& GeomSqlColumnIndex,FdoStringCollection* SqlColumns);
   void CreateFilterSqlString(FdoFilter* Filter,string& WhereBuff);
   FdoStringP ToSqlString(FdoIdentifierCollection* Idents);
-
 };
 
 #endif 

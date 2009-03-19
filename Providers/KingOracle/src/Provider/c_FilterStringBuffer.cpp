@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2006  SL-King d.o.o
+* Copyright (C) 2009  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -45,7 +45,7 @@ void c_FilterStringBuffer::ClearBuffer(void)
   m_NextBuffIndex = 0;          
 }
 
-const char* c_FilterStringBuffer::GetString() 
+const wchar_t* c_FilterStringBuffer::GetString() 
 { 
   if( !m_SqlFilterText ) return NULL;
   
@@ -69,19 +69,19 @@ void c_FilterStringBuffer::ReallocBuffer( size_t  Size, bool AtEnd )
     if( m_SqlFilterText == NULL )
     {
         m_SqlBuffSize = ( extraSize < D_FILTER_MEM_BLOCK_ALLOC_SIZE )?D_FILTER_MEM_BLOCK_ALLOC_SIZE:extraSize;
-        m_SqlFilterText = new char[m_SqlBuffSize];
-        if( m_SqlFilterText == NULL )  throw FdoFilterException::Create(NlsMsgGetKgOra(M_KGORA_OUT_OF_MEMORY_ERROR, "Memory error"));
+        m_SqlFilterText = new wchar_t[m_SqlBuffSize];
+        if( m_SqlFilterText == NULL )  throw FdoFilterException::Create(NlsMsgGet(M_KGORA_OUT_OF_MEMORY_ERROR, "Memory error"));
         m_FirstBuffIndex = m_NextBuffIndex = m_SqlBuffSize/2;
         m_SqlFilterText[m_NextBuffIndex] = '\0';
     }
     else
     {
         m_SqlBuffSize += (( extraSize < D_FILTER_MEM_BLOCK_ALLOC_SIZE )?D_FILTER_MEM_BLOCK_ALLOC_SIZE:extraSize);
-        char  *tmp = new char[m_SqlBuffSize];
+        wchar_t  *tmp = new wchar_t[m_SqlBuffSize];
         if( tmp == NULL )
-            throw FdoFilterException::Create(NlsMsgGetKgOra(M_KGORA_OUT_OF_MEMORY_ERROR, "Memory error"));
-        size_t currentSize = strlen( &m_SqlFilterText[m_FirstBuffIndex] );
-        strncpy( &tmp[(m_SqlBuffSize-currentSize)/2], &m_SqlFilterText[m_FirstBuffIndex], currentSize );
+            throw FdoFilterException::Create(NlsMsgGet(M_KGORA_OUT_OF_MEMORY_ERROR, "Memory error"));
+        size_t currentSize = wcslen( &m_SqlFilterText[m_FirstBuffIndex] );
+        wcsncpy( &tmp[(m_SqlBuffSize-currentSize)/2], &m_SqlFilterText[m_FirstBuffIndex], currentSize );
         m_FirstBuffIndex = (m_SqlBuffSize-currentSize)/2;
         m_NextBuffIndex = m_FirstBuffIndex + currentSize;
         tmp[m_NextBuffIndex] = '\0';
@@ -94,20 +94,20 @@ void c_FilterStringBuffer::ReallocBuffer( size_t  Size, bool AtEnd )
 
 //
 // Add a string to the end of the buffer
-void c_FilterStringBuffer::AppendString(const char *Str)
+void c_FilterStringBuffer::AppendString(const wchar_t *Str)
 {
-  size_t slen = strlen( Str ); 
+  size_t slen = wcslen( Str ); 
   ReallocBuffer( slen + 1, true );
-  strcpy( &m_SqlFilterText[m_NextBuffIndex], Str );
+  wcscpy( &m_SqlFilterText[m_NextBuffIndex], Str );
   m_NextBuffIndex += slen;
 }
 
 //
 // Add a string to the biginning of the buffer
-void c_FilterStringBuffer::PrependString(const char *Str)
+void c_FilterStringBuffer::PrependString(const wchar_t *Str)
 {
-  size_t slen = strlen( Str ); 
+  size_t slen = wcslen( Str ); 
   ReallocBuffer( slen + 1, false );
   m_FirstBuffIndex -= slen;
-  strncpy(&m_SqlFilterText[m_FirstBuffIndex], Str, slen );    
+  wcsncpy(&m_SqlFilterText[m_FirstBuffIndex], Str, slen );    
 }

@@ -15,23 +15,28 @@
 * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#ifdef KGORA_MESSAGE_DEFINE
+
 #ifdef _WIN32
-#define g_KgOraMsgCat "KingOracleMessage.dll"
+char *g_KgOraMsgCat = "KingOracleMessage.dll";
 #else
-#define g_KgOraMsgCat "KingOracleMessage.cat"
+char *g_KgOraMsgCat = "KingOracleMessage.cat";
 #endif
-
-inline FdoString* NlsMsgGetKgOra(int msg_num, char* default_msg, ...)
+FdoString* NlsMsgGet(int msg_num, char* default_msg, ...)
 {
-    va_list varargs;
-    va_start(varargs, default_msg);
-    #ifdef _FDO_3_1
-    FdoString* ret = GisException::NLSGetMessage(msg_num, default_msg, g_KgOraMsgCat, varargs);
-    #else
-    FdoString* ret = FdoException::NLSGetMessage(msg_num, default_msg, g_KgOraMsgCat, varargs);
-    #endif
-    va_end(varargs);
+  va_list varargs;
+  va_start(varargs, default_msg);
+#ifdef _FDO_3_1
+  FdoString* ret = GisException::NLSGetMessage(msg_num, default_msg, g_KgOraMsgCat, varargs);
+#else
+  FdoString* ret = FdoException::NLSGetMessage(msg_num, default_msg, g_KgOraMsgCat, varargs);
+#endif
+  va_end(varargs);
 
-    return ret;
+  return ret;
 }
+#else // KGORA_MESSAGE_DEFINE
+extern char *g_KgOraMsgCat;
+extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
+#endif // KGORA_MESSAGE_DEFINE
 

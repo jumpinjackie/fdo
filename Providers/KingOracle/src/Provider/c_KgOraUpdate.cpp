@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2006  SL-King d.o.o
+* Copyright (C) 2009  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -18,7 +18,7 @@
 #include "c_KgOraFilterProcessor.h"
 
 c_KgOraUpdate::c_KgOraUpdate(c_KgOraConnection *Conn)
-  : c_KgOraFdoFeatureCommand<FdoIUpdate>(Conn)
+  : c_KgOraFdoFeatureCommand(Conn)
 {
 }
 
@@ -95,23 +95,24 @@ FdoInt32 c_KgOraUpdate::Execute()
       strbuff.ClearBuffer();
       expr->Process( &expproc );
       
-      colupdates += sep + propid->GetName() + " = " + strbuff.GetString();      
+      colupdates += sep + propid->GetName() + L" = " + strbuff.GetString();      
       
-      sep = ",";
+      sep = L",";
     }
     
     c_FilterStringBuffer sqlstr;
-    sqlstr.AppendString("UPDATE ");
+    sqlstr.AppendString( L"UPDATE ");
     sqlstr.AppendString(fultablename);
-    sqlstr.AppendString(" ");
+    sqlstr.AppendString( L" ");
     sqlstr.AppendString(table_alias);
-    sqlstr.AppendString(" SET ");
+    sqlstr.AppendString( L" SET ");
     sqlstr.AppendString(colupdates);
-    sqlstr.AppendString(" ");
+    sqlstr.AppendString( L" ");
     
     // process filter
-    const char* filtertext=NULL;
-    c_KgOraFilterProcessor fproc(schemadesc,classid,orasrid);
+    const wchar_t* filtertext=NULL;
+    c_KgOraFilterProcessor fproc(m_Connection->GetOracleMainVersion(),schemadesc,classid,orasrid);
+    fproc.GetExpressionProcessor().SetParamNumberOffset(expproc.GetSqlParametersCount());
     if( m_Filter )
     {      
       m_Filter->Process( &fproc );
@@ -122,40 +123,47 @@ FdoInt32 c_KgOraUpdate::Execute()
     
     if( filtertext && *filtertext )
     {
-      sqlstr.AppendString(" WHERE ");
+      sqlstr.AppendString( L" WHERE ");
       sqlstr.AppendString(filtertext);
     }
     
     int update_num=0;
-    oracle::occi::Statement* occi_stm=NULL;
+    c_Oci_Statement* oci_stm=NULL;
     
     try
     {
-      occi_stm = m_Connection->OCCI_CreateStatement();
+      oci_stm = m_Connection->OCI_CreateStatement();
       
-      occi_stm->setSQL(sqlstr.GetString());
+      oci_stm->Prepare(sqlstr.GetString());
       
-      D_KGORA_ELOG_WRITE1("Execute Update: '%s",sqlstr.GetString());
+      #ifdef _KGORA_EXTENDED_LOG
+        FdoStringP s1 = sqlstr.GetString();
+        D_KGORA_ELOG_WRITE1("Execute Update: '%s'",(const char*)s1);
+      #endif
       
       // fist apply binds from update values
-      expproc.ApplySqlParameters(m_Connection->GetOcciEnvironment(),occi_stm);
+      expproc.ApplySqlParameters(oci_stm,orasrid.m_IsGeodetic,orasrid.m_OraSrid);
       // then apply sql binds from filter expresion
-      fproc.GetExpressionProcessor().ApplySqlParameters(m_Connection->GetOcciEnvironment(),occi_stm,expproc.GetSqlParametersCount());
+      fproc.GetExpressionProcessor().ApplySqlParameters(oci_stm,orasrid.m_IsGeodetic,orasrid.m_OraSrid,expproc.GetSqlParametersCount());
       
       
-      update_num = occi_stm->executeUpdate();
+      update_num = oci_stm->ExecuteNonQuery();
       
-      m_Connection->OCCI_Commit();
       
-      if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);
+      
+      if( oci_stm ) m_Connection->OCI_TerminateStatement(oci_stm);
       
       
     }
-    catch(oracle::occi::SQLException& ea)
+    catch(c_Oci_Exception* ea)
     {
       
-      if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);
-      FdoStringP gstr = ea.what();
+      if( oci_stm ) m_Connection->OCI_TerminateStatement(oci_stm);
+      FdoStringP gstr = ea->what();
+      
+      D_KGORA_ELOG_WRITE2("c_KgOraUpdate::Execute%d Exception '%s'",m_Connection->m_ConnNo,(const char*)gstr);
+      
+      delete ea;
       throw FdoCommandException::Create( gstr );    
     }
 
