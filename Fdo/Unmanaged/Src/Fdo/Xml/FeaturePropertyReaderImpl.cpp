@@ -180,6 +180,9 @@ FdoXmlSaxHandler* FdoXmlFeaturePropertyReaderImpl::XmlStartElement(
     FdoString* qname, 
     FdoXmlAttributeCollection* atts)
 {
+    FdoStringP validName = name;
+    if (validName.Contains(L"."))
+        validName = validName.Replace(L".", L"-dot-");
 	ParsingState curState = m_parsingStateStack.back();
     // first we must check if there is any pending element that was not handled
     if (curState == ParsingState_ElementPending) {
@@ -204,8 +207,8 @@ FdoXmlSaxHandler* FdoXmlFeaturePropertyReaderImpl::XmlStartElement(
 	FdoXmlFeatureHandler* curFeatureHandler = m_featureHandlerStack.back();
 	FdoXmlSaxHandler* nextSaxHandler = NULL;
 	FdoXmlFeatureHandler* nextFeatureHandler = NULL;
-
-	GmlBaseType baseType = getGmlBaseType(name, uri);
+	
+    GmlBaseType baseType = getGmlBaseType(validName, uri);
 
 	switch(baseType){
 		//feature collection
@@ -231,8 +234,8 @@ FdoXmlSaxHandler* FdoXmlFeaturePropertyReaderImpl::XmlStartElement(
 		case GmlBaseType_Feature:
             {
 
-                // find out current complex type's class definition
-                FdoPtr<FdoXmlLpClassDefinition> classDef = getClassDef(name, uri);
+                // find out current complex type's class definition               
+                FdoPtr<FdoXmlLpClassDefinition> classDef = getClassDef(validName, uri);
                 if (classDef != NULL)
                     m_lpClassStack.push_back(classDef.p);
 
@@ -286,8 +289,8 @@ FdoXmlSaxHandler* FdoXmlFeaturePropertyReaderImpl::XmlStartElement(
 		//generic complex type
 		case GmlBaseType_GenericComplexType:
             {
-                // find out current complex type's class definition
-                FdoPtr<FdoXmlLpClassDefinition> classDef = getClassDef(name, uri);
+                // find out current complex type's class definition                
+                FdoPtr<FdoXmlLpClassDefinition> classDef = getClassDef(validName, uri);
                 if (classDef != NULL)
                     m_lpClassStack.push_back(classDef.p);
     			
