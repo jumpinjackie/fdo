@@ -86,15 +86,15 @@ public:
 
     /// Check if column has default value.
     /// \return True if column has default value, false otherwise.
-    bool PgTableColumnsReader::IsDefault() const;
+    bool IsDefault() const;
 
     /// Get column default value.
     /// \return Default value of column.
-    FdoStringP PgTableColumnsReader::GetDefault() const;
+    FdoStringP GetDefault() const;
 
     /// Check if column has a corresponding sequence.
     /// \return True if property is associated with sequence, false otherwise.
-    bool PgTableColumnsReader::IsSequence() const;
+    bool IsSequence() const;
 
     ///
     bool IsPrimaryKey() const;

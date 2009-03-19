@@ -16,9 +16,8 @@
  *
  */
 
-//#include "stdafx.h"
+#include <string.h>
 #include "Geometry.h"
-
 #include <Fdo.h>
 #include <Geometry/Fgf/Factory.h>
 
