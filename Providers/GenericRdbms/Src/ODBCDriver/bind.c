@@ -216,7 +216,7 @@ int odbcdr_bind(
 						SQL_PARAM_INPUT,
 						(SQLSMALLINT) SQL_C_BINARY, 
 						SQL_LONGVARBINARY,
-						(SQLUINTEGER) address,  
+						(SQLULEN) address,  
 						(SQLSMALLINT) 0,
 						(SQLPOINTER) bindnum,
 						(SQLINTEGER) 0, 

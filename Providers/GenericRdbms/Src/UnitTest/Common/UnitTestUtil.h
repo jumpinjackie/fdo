@@ -164,7 +164,7 @@ public:
     );
 
 	static FdoIConnection* GetConnection(FdoString *suffix = L"", bool bCreate = false, bool bRecreateData = false, StringConnTypeRequest pTypeReq = Connection_WithDatastore, int lt_method = 0, bool lt_method_fixed = false );
-    static FdoPtr<FdoIConnection> UnitTestUtil::GetDirectConnection (FdoIConnection *currentConnection);
+    static FdoPtr<FdoIConnection> GetDirectConnection (FdoIConnection *currentConnection);
     static StaticConnection* NewStaticConnection();
     static SchemaOverrideUtilP NewSchemaOverrideUtil();
 
