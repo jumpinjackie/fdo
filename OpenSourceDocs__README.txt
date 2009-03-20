@@ -12,18 +12,18 @@ either gunzip/tar or Winzip.
 
        On Linux or Windows, use the gunzip and tar utilities as follows:
 
-            gunzip fdo-3.2.0_docs.tar.gz
-            tar -xvf fdo-3.2.0_docs.tar
+            gunzip fdodocs-3.4.0.tar.gz
+            tar -xvf fdodocs-3.4.0.tar
 
        - or -
 
        On Windows, use the Winzip utility as follows:
 
-            WINZIP32.EXE fdo-3.2.0_docs.tar.gz
+            WINZIP32.EXE fdodocs-3.4.0.tar.gz
 
 For example, once the documentation is extracted, it is located here:
 
-C:\Program Files\MyFDO\OpenSource_FDO\Fdo\Docs\
+C:\OpenSource_FDO\Fdo\Docs\
 
 The following API Reference Help is provided with this release:
 
