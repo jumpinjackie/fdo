@@ -38,39 +38,18 @@ II. Build Notes
   In preparation for building the Windows Open Source FDO Binaries:
 
   1. The FDO open source build process supports the usage of either the Visual 
-     Studio Express, Standard or Professional editions. 
+     Studio 2008 Express, Standard or Professional editions. 
 
-     The Visual Studio Express software can be download and installed for 
+     The Visual Studio 2008 Express software can be download and installed for 
      free from the following sites.
 
-     Visual Studio C# Express Edition:
-         
-        http://msdn.microsoft.com/vstudio/express/visualcsharp/download/
-     
-     Visual Studio C++ Express Edition: 
+     Visual Studio 2008 C# Express Edition:
+
+        http://www.microsoft.com/express/download/
+
+     Visual Studio 2008 C++ Express Edition: 
  
-        http://msdn.microsoft.com/vstudio/express/visualc/download/
-
-     In order to build the FDO Components using Visual Studio Express, you are also
-     required to download and install the Windows® Server 2003 R2 Platform SDK.
-
-     Download the Windows® Server 2003 R2 Platform SDK from: 
-
-        http://www.microsoft.com/downloads/details.aspx?FamilyId=0BAF2B35-C656-4969-ACE8-E4C0C0716ADB&displaylang=en
-
-     NOTE: The Windows® Server 2003 R2 Platform SDK is composed of many components. 
-     The only components required for building FDO are:
-
-        - Microsoft Windows Core SDK
-        - Microsoft Data Access Services (MDAC) SDK
-        - Microsoft Web Workshop (IE) SDK
-        
-     You can limit you installation to these components only. 
-
-     The easiest procedure to use the PSDK with VC2005 Express is:
-
-        a) Create a directory "PlatformSDK" under "%ProgramFiles%\Microsoft Visual Studio 8\VC"
-        b) Copy the "bin", "include" and "lib" directory from the PSDK-installation into this directory. 
+        http://www.microsoft.com/express/download/
 
   2. Install ActiveState Perl, available from:
      
@@ -132,8 +111,8 @@ II. Build Notes
         http://www.oracle.com/technology/software/tech/oci/instantclient/htdocs/winsoft.html
 
      The name of the installation file is 'instantclient-sdk-win32-10.2.0.3-20061115.zip'
-	 
-	 Following the installation, set the following FDO Windows environment variable:
+     
+     Following the installation, set the following FDO Windows environment variable:
 
         set FDOORACLE=[Oracle instant client path] 
 
@@ -195,7 +174,7 @@ II. Build Notes
      To install Doxygen, refer to: http://www.stack.nl/~dimitri/doxygen/
      
      The FDO Doxygen documentation generation process will also use the "dot" tool  
-     from graphviz 1.5 to generate more advanced diagrams and graphs. Graphviz is an 
+     from graphviz to generate more advanced diagrams and graphs. Graphviz is an 
      "open-sourced", cross-platform graph drawing toolkit from AT&T and Lucent 
      Bell Labs.
      
@@ -239,28 +218,40 @@ II. Build Notes
         
      ** NOTE: These variables are maintained in the setenvironment.bat script. 
 
- 11.Use the [FDO OpenSource]\setenvironment.bat script to assist in setting and
-    maintaing the correct environment settings for the FDO build process. 
-    This script can be modifed and used to set the correct environment variables 
-    and PATH settings.
+ 11. Use the [FDO OpenSource]\setenvironment.bat script to assist in setting and
+     maintaing the correct environment settings for the FDO build process. 
+     This script can be modifed and used to set the correct environment variables 
+     and PATH settings.
 
  12. The build_thirdparty.bat file is used to build the FDO Thirdparty binaries. The following 
      is a general guideline on how to use the build_thirdparty.bat build script.
   
-           **************************************************************************
-           build_thirdparty.bat [-h] 
-                                [-o=OutFolder] 
-                                [-c=BuildType] 
-                                [-a=Action] 
-                                [-w=WithModule]
-
-           Help:           -h[elp]
-           OutFolder:      -o[utpath]=destination folder for binaries
-           BuildType:      -c[onfig]=release(default), debug
-           Action:         -a[ction]=build(default), buildinstall, install, clean
-           WithModule:     -w[ith]=all(default), fdo, providers, sdf, wfs, wms
-           **************************************************************************            
-
+            **************************************************************************
+            build_thirdparty.bat [-h]
+                                 [-o=OutFolder]
+                                 [-c=BuildType]
+                                 [-p=PlatformType]
+                                 [-a=Action]
+                                 [-w=WithModule]
+            
+            Help:           -h[elp]
+            OutFolder:      -o[utpath]=destination folder for binaries
+            BuildType:      -c[onfig]=release(default), debug
+            PlatformType:   -p[latform]=Win32(default), x64
+            Action:         -a[ction]=build(default), 
+                                      buildinstall, 
+                                      install, 
+                                      clean
+            WithModule:     -w[ith]=all(default), 
+                                    fdo, 
+                                    providers, 
+                                    sdf, 
+                                    wfs, 
+                                    wms, 
+                                    postgis, 
+                                    ogr
+            **************************************************************************
+            
             e.g.
 
             **** Display help for build.bat
@@ -281,41 +272,42 @@ II. Build Notes
  13. The build.bat file is used to build the FDO binaries. The following 
      is a general guideline on how to use the build.bat build script.
   
-           **************************************************************************
-           build.bat [-h]
-                     [-o=OutFolder]
-                     [-c=BuildType]
-                     [-p=PlatformType]
-                     [-a=Action]
-                     [-w=WithModule]
-                     [-d=BuildDocs]
-                     [-py=BuildPythonWrappers]
-           
-           Help:                  -h[elp]
-           OutFolder:             -o[utpath]=destination folder for binaries
-           BuildType:             -c[onfig]=release(default), debug
-		   PlatformType:          -p[latform]=Win32(default), x64
-           Action:                -a[ction]=build(default), 
-                                            buildinstall, 
-                                            install, 
-                                            clean
-           WithModule:            -w[ith]=all(default), 
-                                          fdo, 
-                                          providers, 
-                                          shp, 
-                                          sdf, 
-                                          wfs, 
-                                          wms, 
-                                          arcsde, 
-                                          odbc, 
-                                          mysql,
-                                          gdal,
-                                          ogr
-                                          postgis
-                                          kingoracle
-           BuildDocs:             -d[ocs]=skip(default), build
-           BuildPythonWrappers:   -py[thon]=skip(default), build
-           **************************************************************************
+            ************************************************************************
+            build.bat [-h]
+                      [-o=OutFolder]
+                      [-c=BuildType]
+                      [-p=PlatformType]
+                      [-a=Action]
+                      [-w=WithModule]
+                      [-d=BuildDocs]
+                      [-py=BuildPythonWrappers]
+            
+            Help:                  -h[elp]
+            OutFolder:             -o[utpath]=destination folder for binaries
+            BuildType:             -c[onfig]=release(default), debug
+            PlatformType:          -p[latform]=Win32(default), x64
+            Action:                -a[ction]=build(default),
+                                             buildinstall,
+                                             install,
+                                             clean
+            BuildDocs:             -d[ocs]=skip(default), build
+            BuildPythonWrappers:   -py[thon]=skip(default), build
+            WithModule:            -w[ith]=all(default),
+                                           fdo,
+                                           shp,
+                                           sdf,
+                                           wfs,
+                                           wms,
+                                           arcsde,
+                                           odbc,
+                                           mysql,
+                                           gdal,
+                                           ogr,
+                                           postgis,
+                                           kingoracle,
+                                           sqlspatial,
+                                           sqlite
+            ************************************************************************       
             
             e.g.
 
@@ -609,7 +601,7 @@ II. Build Notes
      To install Doxygen, refer to: http://www.stack.nl/~dimitri/doxygen/
      
      The FDO Doxygen documentation generation process will also use the "dot" 
-     tool from graphviz 1.5 to generate more advanced diagrams and graphs. 
+     tool from graphviz to generate more advanced diagrams and graphs. 
      Graphviz is an "open-sourced", cross-platform graph drawing toolkit from 
      AT&T and Lucent Bell Labs.
      
@@ -665,15 +657,16 @@ II. Build Notes
      The following is a general guideline on how to use the 
      build_thirdparty.sh build script.
 
-            *******************************************************
+            *******************************************************************"
             build_thirdparty.sh [--h]
                                 [--a Action]
                                 [--w WithModule]
                                 [--m ConfigMakefiles]
-                 
+                                [--p Prefix]
+
             Help:            --h[elp]
             Action:          --a[ction] buildinstall(default),
-                                        build, 
+                                        build,
                                         install,
                                         uninstall,
                                         clean
@@ -683,10 +676,10 @@ II. Build Notes
                                       wms,
                                       wfs,
                                       gdal
-            ConfigMakefiles: --m[akefile] configure(default), 
-                                          noconfigure
-            *******************************************************
-
+                                      ogr
+            ConfigMakefiles: --m[akefile] configure(default), noconfigure
+            Prefix:          --p[refix] <fdo install location>
+            *******************************************************************"     
      
             e.g.
 
@@ -713,13 +706,14 @@ II. Build Notes
      libraries. The following is a general guideline on how to use 
      build_linux.sh
 
-           **************************************************************
+     **************************************************************
            build_linux.sh [--h] 
                           [--c BuildType] 
                           [--a Action] 
                           [--w WithModule] 
                           [--d BuildDocs] 
                           [--m ConfigMakefiles]
+                          [--p Prefix]
 
            Help:            --h[elp]
            BuildType:       --c[onfig] release(default), debug
@@ -730,6 +724,7 @@ II. Build Notes
                                        clean
            BuildDocs:       --d[ocs] skip(default), build
            ConfigMakefiles: --m[akefile] configure(default), noconfigure
+           Prefix:          --p[refix] <fdo install location>
            WithModule:      --w[ith] all(default), 
                                      fdocore, 
                                      fdo, 
