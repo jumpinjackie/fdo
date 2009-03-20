@@ -22,10 +22,11 @@ EXTRA_DIST = KingOracleProvider.vcproj KgOraProvider.rc resource.h
 noinst_LTLIBRARIES = libKingOracleProviderSrc.la
 
 libKingOracleProviderSrc_la_SOURCES = \
-c_FdoOra_API.cpp \
+c_FdoOra_API2.cpp \
 c_KgOraRasterCapabilities.cpp \
 c_FgfToSdoGeom.cpp \
 c_KgOraReader.cpp \
+c_KgOraDataReader.cpp \
 c_FilterStringBuffer.cpp \
 c_KgOraSchemaCapabilities.cpp \
 c_KgOraApplySchema.cpp \
@@ -53,16 +54,19 @@ c_KgOraUpdate.cpp \
 c_KgOraFeatureReader.cpp \
 c_LogAPI.cpp \
 c_KgOraFeatureReaderInsert.cpp \
-c_OCCI_API.cpp \
+c_OCI_API.cpp \
+c_Oci_ColumnData.cpp \
+c_Oci_Statement.cpp \
+c_KgOraSelectAggregates.cpp \
 c_KgOraFilterCapabilities.cpp \
-c_Ora_API.cpp \
+c_Ora_API2.cpp \
 c_KgOraFilterProcessor.cpp \
-c_SdoGeomToAGF.cpp \
+c_SdoGeomToAGF2.cpp \
 c_KgOraGeometryCapabilities.cpp \
 c_KgOraInsert.cpp \
 c_KgOraGetSpatialContextsCommand.cpp\
-RegisterMappings.cpp \
-SDO_GEOMETRY.cpp
+c_SDO_DIM_ELEMENT.cpp \
+c_SDO_GEOMETRY.cpp
 
 
 noinst_HEADERS = $(libKingOracleProviderSrc_la_SOURCES) \
@@ -109,8 +113,8 @@ c_KgOraInsert.h \
 c_KgOraRasterCapabilities.h \
 FDO_31_Types.h \
 KgOraProvider.h \
-RegisterMappings.h \
-SDO_GEOMETRY.h \
+c_SDO_DIM_ELEMENT.h \
+c_SDO_GEOMETRY.h \
 stdafx.h
 
 libKingOracleProviderSrc_la_LDFLAGS = 
