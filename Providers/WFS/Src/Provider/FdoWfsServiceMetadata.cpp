@@ -261,7 +261,7 @@ FdoWfsFeatureType* FdoWfsServiceMetadata::GetFeatureType(FdoIdentifier* classNam
         featureType = featTypes->FindItem (className->GetText());
         if (featureType == NULL)
         {
-            std::wstring lhs = featureClassName;
+            std::wstring lhs = (FdoString*)featureClassName;
 	        for (int i = 0; i < featTypes->GetCount(); i++)
             {
 		        FdoPtr<FdoWfsFeatureType> fType = featTypes->GetItem(i);
