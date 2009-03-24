@@ -33,6 +33,11 @@ FdoIStreamReaderTmpl<FdoCharacter>* NAMESPACE_OSGEO_COMMON_IO::IoCharStreamReade
 	return static_cast<FdoIStreamReaderTmpl<FdoCharacter>*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_COMMON_IO::IoCharStreamReader::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 System::Void NAMESPACE_OSGEO_COMMON_IO::IoCharStreamReader::Skip(System::Int32 offest)
 {
 	EXCEPTION_HANDLER(GetImpObj()->Skip(offest))

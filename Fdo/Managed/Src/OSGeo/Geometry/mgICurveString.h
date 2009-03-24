@@ -96,6 +96,8 @@ public:
 /// \cond DOXYGEN-IGNORE
 internal:
 	FdoCurveStringCollection* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 private:
     virtual property System::Object^ IndexInternal[System::Int32]

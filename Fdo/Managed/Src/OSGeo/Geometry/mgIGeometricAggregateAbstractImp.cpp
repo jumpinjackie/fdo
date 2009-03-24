@@ -27,6 +27,11 @@ FdoIGeometricAggregateAbstract* NAMESPACE_OSGEO_GEOMETRY::IGeometricAggregateAbs
 	return static_cast<FdoIGeometricAggregateAbstract*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::IGeometricAggregateAbstractImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_GEOMETRY::IGeometricAggregateAbstractImp::IGeometricAggregateAbstractImp(System::IntPtr unmanaged, System::Boolean autoDelete)
 	: NAMESPACE_OSGEO_GEOMETRY::IGeometryImp(unmanaged, autoDelete)
 {

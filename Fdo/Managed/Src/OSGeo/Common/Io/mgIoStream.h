@@ -208,6 +208,8 @@ protected:
 
 internal:
 	inline FdoIoStream* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 /// \endcond
 };
 

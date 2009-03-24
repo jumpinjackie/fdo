@@ -146,6 +146,8 @@ public protected:
 
 internal:
 	inline FdoICommand* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS

@@ -29,5 +29,10 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessorImp::IExpressionProcessorImp
 
 FdoIExpressionProcessor* NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessorImp::GetImpObj()
 {
-	return static_cast<FdoIExpressionProcessor*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoIExpressionProcessor*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_EXPRESSION::IExpressionProcessorImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }

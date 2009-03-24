@@ -43,7 +43,12 @@ NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::PropertyValue(System::String^ name,
 
 FdoPropertyValue* NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::GetImpObj()
 {
-    return static_cast<FdoPropertyValue*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoPropertyValue*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue::Name::get()

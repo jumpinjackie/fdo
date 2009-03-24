@@ -38,6 +38,11 @@ FdoXmlSaxContext* NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext::GetImpObj()
 	return static_cast<FdoXmlSaxContext*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_COMMON_XML::XmlReader^ NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext::Reader::get()
 { 
     NAMESPACE_OSGEO_COMMON_XML::XmlReader^ reader;

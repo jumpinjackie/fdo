@@ -28,6 +28,16 @@
 #include "FDO\mgObjectFactory.h"
 #include "FDO\Expression\mgLOBValue.h"
 
+inline FdoISQLDataReader* NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp::GetImpObj()
+{
+	return static_cast<FdoISQLDataReader*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 System::Int32 NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp::GetColumnCount()
 {
 	FdoInt32 result;

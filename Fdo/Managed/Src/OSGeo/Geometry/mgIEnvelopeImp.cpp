@@ -27,6 +27,12 @@ FdoIEnvelope* NAMESPACE_OSGEO_GEOMETRY::IEnvelopeImp::GetImpObj()
 	return static_cast<FdoIEnvelope*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::IEnvelopeImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
+
 NAMESPACE_OSGEO_GEOMETRY::IEnvelopeImp::IEnvelopeImp(System::IntPtr unmanaged, System::Boolean autoDelete)
 	: NAMESPACE_OSGEO_RUNTIME::Disposable(unmanaged, autoDelete)
 {

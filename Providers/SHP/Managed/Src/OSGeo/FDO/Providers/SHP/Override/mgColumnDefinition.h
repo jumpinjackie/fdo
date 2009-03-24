@@ -36,6 +36,8 @@ internal:
 	ColumnDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoShpOvColumnDefinition* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 END_NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE

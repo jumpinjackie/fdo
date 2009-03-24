@@ -31,7 +31,12 @@ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalPropertyMapping::PhysicalPropertyMa
 
 FdoPhysicalPropertyMapping* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalPropertyMapping::GetImpObj()
 {
-    return static_cast<FdoPhysicalPropertyMapping*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoPhysicalPropertyMapping*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalPropertyMapping::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalPropertyMapping::InitFromXml(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ context, NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection^ attributes)

@@ -42,7 +42,12 @@ NAMESPACE_OSGEO_FDO_SCHEMA::RasterPropertyDefinition::RasterPropertyDefinition(S
 
 FdoRasterPropertyDefinition* NAMESPACE_OSGEO_FDO_SCHEMA::RasterPropertyDefinition::GetImpObj()
 {
-	return static_cast<FdoRasterPropertyDefinition*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoRasterPropertyDefinition*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_SCHEMA::RasterPropertyDefinition::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::RasterPropertyDefinition::ReadOnly::get()

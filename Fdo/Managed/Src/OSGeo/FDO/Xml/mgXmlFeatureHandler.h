@@ -522,6 +522,8 @@ internal:
 	XmlFeatureHandler(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoXmlFeatureHandler* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 END_NAMESPACE_OSGEO_FDO_XML

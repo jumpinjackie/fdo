@@ -69,9 +69,9 @@ NAMESPACE_OSGEO_RUNTIME::Disposable::~Disposable()
 
 System::Void NAMESPACE_OSGEO_RUNTIME::Disposable::ReleaseUnmanagedObject()
 {
-	if (m_bAutoDelete)
-	    EXCEPTION_HANDLER(GetImpObj()->Release())
-
+	if (m_bAutoDelete && m_imp != IntPtr::Zero)
+    	EXCEPTION_HANDLER(GetImpObj()->Release())
+    
     m_bAutoDelete = false;
     m_imp = IntPtr::Zero;
 }
@@ -124,14 +124,19 @@ System::Int32 NAMESPACE_OSGEO_RUNTIME::Disposable::GetHashCode()
 	return m_imp.ToInt32();
 }
 
+IntPtr NAMESPACE_OSGEO_RUNTIME::Disposable::GetDisposableObject()
+{
+	return m_imp;
+}
+
 FdoIDisposable* NAMESPACE_OSGEO_RUNTIME::Disposable::GetImpObj()
 {
-	return static_cast<FdoIDisposable*>(m_imp.ToPointer());
+    return static_cast<FdoIDisposable*>(GetDisposableObject().ToPointer());
 }
 
 System::Int32 NAMESPACE_OSGEO_RUNTIME::Disposable::RefCount::get()
 {
-	FdoInt32 result;
+	System::Int32 result;
 
 	EXCEPTION_HANDLER(result = GetImpObj()->GetRefCount())
 

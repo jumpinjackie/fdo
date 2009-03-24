@@ -113,6 +113,8 @@ internal:
 	}
 
 	inline FdoXmlClassMapping* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 END_NAMESPACE_OSGEO_FDO_XML

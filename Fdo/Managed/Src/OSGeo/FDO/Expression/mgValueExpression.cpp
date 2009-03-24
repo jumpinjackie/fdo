@@ -27,5 +27,10 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression::ValueExpression(IntPtr unmanage
 
 FdoValueExpression* NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression::GetImpObj()
 {
-	return static_cast<FdoValueExpression*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoValueExpression*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_EXPRESSION::ValueExpression::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(UnmanagedObject.ToPointer()));
 }

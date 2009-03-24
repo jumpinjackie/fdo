@@ -30,5 +30,10 @@ NAMESPACE_OSGEO_FDO_FILTER::LogicalOperator::LogicalOperator(IntPtr unmanaged, B
 
 FdoLogicalOperator* NAMESPACE_OSGEO_FDO_FILTER::LogicalOperator::GetImpObj()
 {
-	return static_cast<FdoLogicalOperator*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoLogicalOperator*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_FILTER::LogicalOperator::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }

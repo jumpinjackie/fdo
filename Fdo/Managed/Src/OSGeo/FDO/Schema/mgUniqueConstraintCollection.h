@@ -33,6 +33,8 @@ public ref class UniqueConstraintCollection sealed : public NAMESPACE_OSGEO_COMM
 /// \cond DOXYGEN-IGNORE
 internal:
 	inline FdoUniqueConstraintCollection* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 private:
     virtual property System::Object^ IndexInternal[System::Int32]

@@ -45,7 +45,12 @@ NAMESPACE_OSGEO_FDO_FILTER::ComparisonCondition::ComparisonCondition( NAMESPACE_
 
 FdoComparisonCondition* NAMESPACE_OSGEO_FDO_FILTER::ComparisonCondition::GetImpObj()
 {
-	return static_cast<FdoComparisonCondition*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoComparisonCondition*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_FILTER::ComparisonCondition::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_FILTER::ComparisonOperations NAMESPACE_OSGEO_FDO_FILTER::ComparisonCondition::Operation::get()

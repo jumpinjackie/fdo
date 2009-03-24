@@ -30,9 +30,10 @@ ref class OvGeometricColumn;
 public ref class OvGeometricPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvGeometricPropertyDefinition, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyDefinition
 {
 internal:
-	FdoMySQLOvGeometricPropertyDefinition* GetImpObj();
-	
 	OvGeometricPropertyDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
+	FdoMySQLOvGeometricPropertyDefinition* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:
     ///<summary>Constructs a default of an OvGeometricPropertyDefinition</summary>

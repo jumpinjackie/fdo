@@ -27,7 +27,12 @@
 
 FdoILockedObjectReader* NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReaderImp::GetImpObj()
 {
-    return static_cast<FdoILockedObjectReader*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoILockedObjectReader*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReaderImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockedObjectReaderImp::GetFeatureClassName()

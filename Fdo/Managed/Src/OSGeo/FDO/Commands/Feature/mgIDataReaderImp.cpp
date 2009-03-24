@@ -28,7 +28,12 @@
 
 FdoIDataReader* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDataReaderImp::GetImpObj()
 {
-    return static_cast<FdoIDataReader*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoIDataReader*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDataReaderImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Int32 NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDataReaderImp::GetPropertyCount()

@@ -26,12 +26,22 @@
 
 FdoCurvePolygonCollection* NAMESPACE_OSGEO_GEOMETRY::CurvePolygonCollection::GetImpObj()
 {
-	return static_cast<FdoCurvePolygonCollection*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoCurvePolygonCollection*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_GEOMETRY::CurvePolygonCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 FdoICurvePolygon* NAMESPACE_OSGEO_GEOMETRY::ICurvePolygonImp::GetImpObj()
 {
-	return static_cast<FdoICurvePolygon*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoICurvePolygon*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_GEOMETRY::ICurvePolygonImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_GEOMETRY::ICurvePolygonImp::ICurvePolygonImp(System::IntPtr unmanaged, System::Boolean autoDelete) 

@@ -50,7 +50,12 @@ NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags::XmlFeatureFlags(System::String^ locati
 
 FdoXmlFeatureFlags* NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags::GetImpObj()
 {
-    return static_cast<FdoXmlFeatureFlags*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoXmlFeatureFlags*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Void NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags::Conflictoption::set(NAMESPACE_OSGEO_FDO_XML::XmlFeatureFlags::ConflictOption value)

@@ -49,7 +49,12 @@ NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::XmlFeaturePropertyWriter(NAME
 
 FdoXmlFeaturePropertyWriter* NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::GetImpObj()
 {
-    return static_cast<FdoXmlFeaturePropertyWriter*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoXmlFeaturePropertyWriter*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_COMMON_XML::XmlWriter^ NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyWriter::GetXmlWriter()

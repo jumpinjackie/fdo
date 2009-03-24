@@ -40,3 +40,8 @@ FdoIoMemoryStream* NAMESPACE_OSGEO_COMMON_IO::IoMemoryStream::GetImpObj()
 {
 	return static_cast<FdoIoMemoryStream*>(UnmanagedObject.ToPointer());
 }
+
+IntPtr NAMESPACE_OSGEO_COMMON_IO::IoMemoryStream::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}

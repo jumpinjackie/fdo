@@ -94,6 +94,11 @@ FdoXmlWriter* NAMESPACE_OSGEO_COMMON_XML::XmlWriter::GetImpObj()
 	return static_cast<FdoXmlWriter*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_COMMON_XML::XmlWriter::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_COMMON_IO::IoTextWriter^ NAMESPACE_OSGEO_COMMON_XML::XmlWriter::TextWriter::get()
 {
 	NAMESPACE_OSGEO_COMMON_IO::IoTextWriter^ writer;

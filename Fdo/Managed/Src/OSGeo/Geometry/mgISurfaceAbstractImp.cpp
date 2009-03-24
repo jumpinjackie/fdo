@@ -28,6 +28,11 @@ FdoISurfaceAbstract* NAMESPACE_OSGEO_GEOMETRY::ISurfaceAbstractImp::GetImpObj()
 	return static_cast<FdoISurfaceAbstract*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::ISurfaceAbstractImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_GEOMETRY::ISurfaceAbstractImp::ISurfaceAbstractImp(System::IntPtr unmanaged, System::Boolean autoDelete)
 	: NAMESPACE_OSGEO_GEOMETRY::IGeometryImp(unmanaged, autoDelete)
 {

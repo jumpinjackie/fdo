@@ -48,6 +48,8 @@ public:
 	
 internal:
 	FdoIMultiPolygon* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:
 

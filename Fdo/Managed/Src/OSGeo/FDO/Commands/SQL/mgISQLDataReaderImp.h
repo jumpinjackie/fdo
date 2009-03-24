@@ -282,10 +282,9 @@ internal:
 
 	}
 
-	inline FdoISQLDataReader* GetImpObj()
-	{
-		return static_cast<FdoISQLDataReader*>(__super::UnmanagedObject.ToPointer());
-	}
+	inline FdoISQLDataReader* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS_SQL

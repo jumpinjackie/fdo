@@ -51,6 +51,8 @@ public:
 
 internal:
 	FdoIMultiGeometry* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:
     /// \brief

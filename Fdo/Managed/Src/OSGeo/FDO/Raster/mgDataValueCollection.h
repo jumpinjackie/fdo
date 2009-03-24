@@ -37,6 +37,8 @@ public ref class DataValueCollection sealed : public NAMESPACE_OSGEO_COMMON::Col
 /// \cond DOXYGEN-IGNORE
 internal:
 	inline FdoDataValueCollection* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 private:
     virtual property System::Object^ IndexInternal[System::Int32]

@@ -43,6 +43,11 @@ FdoIoTextWriter* NAMESPACE_OSGEO_COMMON_IO::IoTextWriter::GetImpObj()
 	return static_cast<FdoIoTextWriter*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_COMMON_IO::IoTextWriter::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_COMMON_IO::IoStream^ NAMESPACE_OSGEO_COMMON_IO::IoTextWriter::Stream::get()
 {
 	FdoIoStream* stream;

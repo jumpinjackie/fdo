@@ -23,7 +23,12 @@
 
 FdoICreateLongTransactionCheckpoint* NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICreateLongTransactionCheckpointImp::GetImpObj()
 {
-    return static_cast<FdoICreateLongTransactionCheckpoint*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoICreateLongTransactionCheckpoint*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICreateLongTransactionCheckpointImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICreateLongTransactionCheckpointImp::LongTransactionName::get()

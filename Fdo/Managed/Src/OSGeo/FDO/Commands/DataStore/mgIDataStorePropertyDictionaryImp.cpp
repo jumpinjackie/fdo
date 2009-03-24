@@ -25,7 +25,12 @@
 
 FdoIDataStorePropertyDictionary* NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionaryImp::GetImpObj()
 {
-    return static_cast<FdoIDataStorePropertyDictionary*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoIDataStorePropertyDictionary*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionaryImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionaryImp::IsPropertyFileName(System::String^ name)

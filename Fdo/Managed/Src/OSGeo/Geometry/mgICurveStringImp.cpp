@@ -29,9 +29,19 @@ FdoCurveStringCollection*  NAMESPACE_OSGEO_GEOMETRY::CurveStringCollection::GetI
 	return static_cast<FdoCurveStringCollection*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::CurveStringCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 FdoICurveString* NAMESPACE_OSGEO_GEOMETRY::ICurveStringImp::GetImpObj()
 {
 	return static_cast<FdoICurveString*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_GEOMETRY::ICurveStringImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_GEOMETRY::ICurveStringImp::ICurveStringImp(System::IntPtr unmanaged, System::Boolean autoDelete)

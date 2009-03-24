@@ -32,7 +32,12 @@ NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValueCollection::ParameterValueCollection
 
 FdoParameterValueCollection* NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValueCollection::GetImpObj()
 {
-    return static_cast<FdoParameterValueCollection*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoParameterValueCollection*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValueCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Void NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValueCollection::CopyTo(array<NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue^>^ pArray, System::Int32 index)

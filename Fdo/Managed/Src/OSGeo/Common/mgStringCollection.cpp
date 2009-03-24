@@ -54,6 +54,11 @@ FdoStringCollection* NAMESPACE_OSGEO_COMMON::StringCollection::GetImpObj()
 	return static_cast<FdoStringCollection*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_COMMON::StringCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 System::Void NAMESPACE_OSGEO_COMMON::StringCollection::Append(StringCollection^ col)
 {
 	EXCEPTION_HANDLER(GetImpObj()->Append(*col->GetImpObj()))

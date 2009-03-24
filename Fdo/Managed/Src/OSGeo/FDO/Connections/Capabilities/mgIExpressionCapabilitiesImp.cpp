@@ -31,7 +31,12 @@ NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IExpressionCapabilitiesImp::IExpre
 
 FdoIExpressionCapabilities* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IExpressionCapabilitiesImp::GetImpObj()
 {
-    return static_cast<FdoIExpressionCapabilities*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoIExpressionCapabilities*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IExpressionCapabilitiesImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 array<NAMESPACE_OSGEO_FDO_EXPRESSION::ExpressionType>^ NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IExpressionCapabilitiesImp::ExpressionTypes::get()

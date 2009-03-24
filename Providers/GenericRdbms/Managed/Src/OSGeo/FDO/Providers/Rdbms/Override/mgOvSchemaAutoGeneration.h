@@ -34,9 +34,10 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE
 public ref class OvSchemaAutoGeneration: public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping
 {	
 internal:
-	FdoRdbmsOvSchemaAutoGeneration* GetImpObj();
-	
 	OvSchemaAutoGeneration(System::IntPtr unmanaged, System::Boolean autoDelete);
+    FdoRdbmsOvSchemaAutoGeneration* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:
     ///<summary>Creates a set of schema autogeneration settings.

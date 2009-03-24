@@ -27,7 +27,12 @@
 
 FdoIDescribeSchemaMapping* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaMappingImp::GetImpObj()
 {
-    return static_cast<FdoIDescribeSchemaMapping*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoIDescribeSchemaMapping*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaMappingImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDescribeSchemaMappingImp::SchemaName::get()

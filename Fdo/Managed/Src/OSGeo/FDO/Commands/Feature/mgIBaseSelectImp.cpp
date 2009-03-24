@@ -29,7 +29,12 @@
 
 FdoIBaseSelect* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IBaseSelectImp::GetImpObj()
 {
-    return static_cast<FdoIBaseSelect*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoIBaseSelect*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IBaseSelectImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_COMMANDS::IdentifierCollection^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IBaseSelectImp::PropertyNames::get()

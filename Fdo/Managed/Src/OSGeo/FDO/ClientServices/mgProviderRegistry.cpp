@@ -37,6 +37,11 @@ FdoProviderRegistry* NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderRegistry::GetIm
 	return static_cast<FdoProviderRegistry*>(__super::UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderRegistry::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection^ NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderRegistry::GetProviders()
 {
 	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateProviderCollection(IntPtr(const_cast<FdoProviderCollection*>(GetImpObj()->GetProviders())), true);

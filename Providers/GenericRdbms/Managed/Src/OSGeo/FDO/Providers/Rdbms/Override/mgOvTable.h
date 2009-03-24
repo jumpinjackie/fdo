@@ -31,6 +31,8 @@ public ref class OvTable : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalE
 {
 internal:
 	FdoRdbmsOvTable* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 	
 public protected:
 	OvTable(System::IntPtr unmanaged, System::Boolean autoDelete);

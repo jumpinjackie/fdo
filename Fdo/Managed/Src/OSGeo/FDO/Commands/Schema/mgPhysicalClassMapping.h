@@ -84,6 +84,8 @@ public protected:
 	PhysicalClassMapping(System::IntPtr unmanaged, System::Boolean autoDelete);
 	
     inline FdoPhysicalClassMapping* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 /// \endcond
 };
 

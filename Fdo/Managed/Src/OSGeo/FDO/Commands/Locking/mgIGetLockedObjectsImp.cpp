@@ -30,6 +30,11 @@ FdoIGetLockedObjects* NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IGetLockedObjectsImp
     return static_cast<FdoIGetLockedObjects*>(__super::UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IGetLockedObjectsImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::IGetLockedObjectsImp::LockOwner::get()
 {
 	FdoString* result;

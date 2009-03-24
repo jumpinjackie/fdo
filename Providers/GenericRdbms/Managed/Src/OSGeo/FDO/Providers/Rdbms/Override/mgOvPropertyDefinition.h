@@ -33,6 +33,8 @@ public ref class OvPropertyDefinition : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHE
 {	
 internal:
 	FdoRdbmsOvPropertyDefinition* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 	
 public protected:
 	OvPropertyDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);

@@ -32,7 +32,12 @@ NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection::PropertyValueCollection()
 
 FdoPropertyValueCollection* NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection::GetImpObj()
 {
-    return static_cast<FdoPropertyValueCollection*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoPropertyValueCollection*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Void NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValueCollection::CopyTo(array<NAMESPACE_OSGEO_FDO_COMMANDS::PropertyValue^>^ pArray, System::Int32 index)

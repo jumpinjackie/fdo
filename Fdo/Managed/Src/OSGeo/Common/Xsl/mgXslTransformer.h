@@ -211,6 +211,8 @@ public:
 /// \cond DOXYGEN-IGNORE
 internal:
 	inline FdoXslTransformer* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 /// \endcond
 };
 

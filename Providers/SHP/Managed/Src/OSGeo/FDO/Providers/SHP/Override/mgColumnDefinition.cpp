@@ -36,5 +36,10 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ColumnDefinition::ColumnDefinition(S
 
 FdoShpOvColumnDefinition* NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ColumnDefinition::GetImpObj()
 {
-	return static_cast<FdoShpOvColumnDefinition*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoShpOvColumnDefinition*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE::ColumnDefinition::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }

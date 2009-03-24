@@ -38,7 +38,12 @@ NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinitionCollection::Func
 
 FdoFunctionDefinitionCollection* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinitionCollection::GetImpObj()
 {
-    return static_cast<FdoFunctionDefinitionCollection*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoFunctionDefinitionCollection*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinitionCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionDefinitionCollection::CopyTo(array<FunctionDefinition^>^ pArray, System::Int32 index)

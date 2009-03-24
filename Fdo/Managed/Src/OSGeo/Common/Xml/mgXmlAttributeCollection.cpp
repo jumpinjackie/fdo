@@ -38,6 +38,11 @@ FdoXmlAttributeCollection* NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::G
 	return static_cast<FdoXmlAttributeCollection*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 System::Void NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection::CopyTo(array<NAMESPACE_OSGEO_COMMON_XML::XmlAttribute^>^ pArray, System::Int32 index)
 {
 	if (nullptr == pArray)

@@ -77,6 +77,8 @@ public:
 
 internal:
 	inline FdoNetworkLayerClass* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 END_NAMESPACE_OSGEO_FDO_SCHEMA

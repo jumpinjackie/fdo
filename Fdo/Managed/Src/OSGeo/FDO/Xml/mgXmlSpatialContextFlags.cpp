@@ -52,6 +52,16 @@ NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::XmlSpatialContextFlags(System::
 	EXCEPTION_HANDLER(Attach(IntPtr(FdoXmlSpatialContextFlags::Create(StringToUni(location), static_cast<FdoXmlFlags::ErrorLevel>(errorLevel), nameAdjust, static_cast<FdoXmlSpatialContextFlags::ConflictOption>(conflictOption), includeDefault)), true))
 }
 
+inline FdoXmlSpatialContextFlags* NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::GetImpObj()
+{
+	return static_cast<FdoXmlSpatialContextFlags*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 System::Void NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::SetConflictOption(NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextFlags::ConflictOption conflictOption)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetConflictOption(static_cast<FdoXmlSpatialContextFlags::ConflictOption>(conflictOption)))

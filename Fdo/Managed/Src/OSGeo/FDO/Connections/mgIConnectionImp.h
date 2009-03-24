@@ -266,6 +266,8 @@ internal:
 	IConnectionImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoIConnection* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS

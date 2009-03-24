@@ -127,6 +127,8 @@ internal:
 	ClassCapabilities(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoClassCapabilities* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 private:
 	typedef FdoArray<FdoLockType> FdoLockTypeArray;

@@ -37,7 +37,12 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::DataValueCollection::DataValueCollection(System:
 
 FdoDataValueCollection* NAMESPACE_OSGEO_FDO_EXPRESSION::DataValueCollection::GetImpObj()
 {
-	return static_cast<FdoDataValueCollection*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoDataValueCollection*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_EXPRESSION::DataValueCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::DataValueCollection::CopyTo(array<NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^>^ pArray, System::Int32 index)

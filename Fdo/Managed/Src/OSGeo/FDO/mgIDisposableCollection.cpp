@@ -28,7 +28,12 @@
 
 FdoIDisposableCollection* NAMESPACE_OSGEO_FDO::IDisposableCollection::GetImpObj()
 {
-	return static_cast<FdoIDisposableCollection*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoIDisposableCollection*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO::IDisposableCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO::IDisposableCollection::IDisposableCollection() : NAMESPACE_OSGEO_COMMON::CollectionBase(System::IntPtr::Zero, false)
@@ -102,7 +107,7 @@ System::Int32 NAMESPACE_OSGEO_FDO::IDisposableCollection::Add(NAMESPACE_OSGEO_RU
 {
 	System::Int32 index;
 
-	EXCEPTION_HANDLER(index = GetImpObj()->Add(static_cast<FdoDisposable*>(value->UnmanagedObject.ToPointer())))
+	EXCEPTION_HANDLER(index = GetImpObj()->Add(static_cast<FdoIDisposable*>(value->GetDisposableObject().ToPointer())))
 
 	return index;
 }
@@ -111,26 +116,26 @@ System::Int32 NAMESPACE_OSGEO_FDO::IDisposableCollection::IndexOf(NAMESPACE_OSGE
 {
 	System::Int32 index;
 
-	EXCEPTION_HANDLER(index = GetImpObj()->IndexOf(static_cast<FdoDisposable*>(value->UnmanagedObject.ToPointer())))
+	EXCEPTION_HANDLER(index = GetImpObj()->IndexOf(static_cast<FdoIDisposable*>(value->GetDisposableObject().ToPointer())))
 
 	return index;
 }
 
 System::Void NAMESPACE_OSGEO_FDO::IDisposableCollection::Insert(System::Int32 index, NAMESPACE_OSGEO_RUNTIME::Disposable^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Insert(index, static_cast<FdoDisposable*>(value->UnmanagedObject.ToPointer())))
+	EXCEPTION_HANDLER(GetImpObj()->Insert(index, static_cast<FdoIDisposable*>(value->GetDisposableObject().ToPointer())))
 }
 
 System::Void NAMESPACE_OSGEO_FDO::IDisposableCollection::Remove(NAMESPACE_OSGEO_RUNTIME::Disposable^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Remove(static_cast<FdoDisposable*>(value->UnmanagedObject.ToPointer())))
+	EXCEPTION_HANDLER(GetImpObj()->Remove(static_cast<FdoIDisposable*>(value->GetDisposableObject().ToPointer())))
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO::IDisposableCollection::Contains(NAMESPACE_OSGEO_RUNTIME::Disposable^ value)
 {
 	System::Boolean exist;
 
-	EXCEPTION_HANDLER(exist = !!GetImpObj()->Contains(value == nullptr ? nullptr : static_cast<FdoDisposable*>(value->UnmanagedObject.ToPointer())))
+	EXCEPTION_HANDLER(exist = !!GetImpObj()->Contains(value == nullptr ? nullptr : static_cast<FdoIDisposable*>(value->GetDisposableObject().ToPointer())))
 
 	return exist;
 }
@@ -151,5 +156,5 @@ NAMESPACE_OSGEO_RUNTIME::Disposable^ NAMESPACE_OSGEO_FDO::IDisposableCollection:
 
 System::Void NAMESPACE_OSGEO_FDO::IDisposableCollection::Item::set(System::Int32 index, NAMESPACE_OSGEO_RUNTIME::Disposable^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetItem(index, static_cast<FdoDisposable*>(value->UnmanagedObject.ToPointer())))
+	EXCEPTION_HANDLER(GetImpObj()->SetItem(index, static_cast<FdoIDisposable*>(value->GetDisposableObject().ToPointer())))
 }

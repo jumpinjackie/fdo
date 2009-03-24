@@ -87,6 +87,8 @@ public:
 
 internal:
 	inline FdoSpatialGridTransform* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 END_NAMESPACE_OSGEO_SPATIAL

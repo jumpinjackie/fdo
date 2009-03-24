@@ -29,7 +29,12 @@
 
 FdoISelectAggregates* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectAggregatesImp::GetImpObj()
 {
-    return static_cast<FdoISelectAggregates*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoISelectAggregates*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectAggregatesImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDataReader^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectAggregatesImp::Execute()

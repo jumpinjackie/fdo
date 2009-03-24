@@ -24,7 +24,12 @@
 
 FdoIDestroySchema* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDestroySchemaImp::GetImpObj()
 {
-    return static_cast<FdoIDestroySchema*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoIDestroySchema*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDestroySchemaImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IDestroySchemaImp::SchemaName::get()

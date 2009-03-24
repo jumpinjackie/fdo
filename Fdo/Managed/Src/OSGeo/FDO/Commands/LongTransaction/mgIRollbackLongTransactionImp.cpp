@@ -25,7 +25,12 @@
 
 FdoIRollbackLongTransaction* NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionImp::GetImpObj()
 {
-    return static_cast<FdoIRollbackLongTransaction*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoIRollbackLongTransaction*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionImp::Name::get()

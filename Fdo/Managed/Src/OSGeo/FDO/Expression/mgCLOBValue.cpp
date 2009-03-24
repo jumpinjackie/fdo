@@ -53,7 +53,12 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::CLOBValue::CLOBValue(array<System::Byte>^ value)
 
 FdoCLOBValue* NAMESPACE_OSGEO_FDO_EXPRESSION::CLOBValue::GetImpObj()
 {
-	return static_cast<FdoCLOBValue*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoCLOBValue*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_EXPRESSION::CLOBValue::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_SCHEMA::DataType NAMESPACE_OSGEO_FDO_EXPRESSION::CLOBValue::DataType::get()

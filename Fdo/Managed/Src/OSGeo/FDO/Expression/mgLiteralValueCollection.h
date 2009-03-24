@@ -32,6 +32,8 @@ public ref class LiteralValueCollection sealed : public NAMESPACE_OSGEO_COMMON::
 /// \cond DOXYGEN-IGNORE
 internal:
 	inline FdoLiteralValueCollection* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 private:
     virtual property System::Object^ IndexInternal[System::Int32]

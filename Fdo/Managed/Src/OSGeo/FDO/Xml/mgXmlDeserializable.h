@@ -161,6 +161,8 @@ internal:
 	XmlDeserializable(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoXmlDeserializable* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 END_NAMESPACE_OSGEO_FDO_XML

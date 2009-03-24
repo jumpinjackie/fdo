@@ -44,6 +44,8 @@ public ref class OvClassDefinition: public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::
 {
 internal:
 	FdoRdbmsOvClassDefinition* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 	
 public protected:
 	OvClassDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);

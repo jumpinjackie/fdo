@@ -30,5 +30,10 @@ NAMESPACE_OSGEO_FDO_FILTER::SearchCondition::SearchCondition(IntPtr unmanaged, B
 
 FdoSearchCondition* NAMESPACE_OSGEO_FDO_FILTER::SearchCondition::GetImpObj()
 {
-	return static_cast<FdoSearchCondition*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoSearchCondition*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_FILTER::SearchCondition::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }

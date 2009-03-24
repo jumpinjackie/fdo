@@ -69,8 +69,10 @@ public:
     virtual System::Boolean Equals(System::Object^ obj) override;
     virtual System::Int32 GetHashCode() override;
 
+public:
+    virtual IntPtr GetDisposableObject();
 internal:
-	inline FdoIDisposable* GetImpObj();
+    inline FdoIDisposable* GetImpObj();
 };
 
 END_NAMESPACE_OSGEO_RUNTIME

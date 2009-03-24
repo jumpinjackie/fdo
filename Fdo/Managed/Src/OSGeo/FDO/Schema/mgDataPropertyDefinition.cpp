@@ -46,7 +46,12 @@ NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinition::DataPropertyDefinition(Syste
 
 FdoDataPropertyDefinition* NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinition::GetImpObj()
 {
-	return static_cast<FdoDataPropertyDefinition*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoDataPropertyDefinition*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinition::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinition::PropertyType::get()

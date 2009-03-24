@@ -27,7 +27,12 @@
 
 FdoIDelete* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDeleteImp::GetImpObj()
 {
-    return static_cast<FdoIDelete*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoIDelete*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDeleteImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Int32 NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IDeleteImp::Execute()

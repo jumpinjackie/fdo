@@ -53,6 +53,11 @@ FdoGeometryFactoryAbstract* NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::G
 	return static_cast<FdoGeometryFactoryAbstract*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract::GeometryFactoryAbstract(System::IntPtr unmanaged, System::Boolean autoDelete)
 	: Disposable(unmanaged, autoDelete)
 {

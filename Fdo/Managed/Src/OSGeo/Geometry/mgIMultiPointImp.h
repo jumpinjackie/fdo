@@ -48,6 +48,8 @@ public:
 
 internal:
 	FdoIMultiPoint* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:
     /// \brief

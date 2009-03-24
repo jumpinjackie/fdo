@@ -30,7 +30,12 @@ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalClassMapping::PhysicalClassMapping(
 
 FdoPhysicalClassMapping* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalClassMapping::GetImpObj()
 {
-    return static_cast<FdoPhysicalClassMapping*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoPhysicalClassMapping*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalClassMapping::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalClassMapping::InitFromXml(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ pContext, NAMESPACE_OSGEO_COMMON_XML::XmlAttributeCollection^ attrs)

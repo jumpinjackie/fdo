@@ -51,7 +51,12 @@ NAMESPACE_OSGEO_FDO_FILTER::SpatialCondition::SpatialCondition(NAMESPACE_OSGEO_F
 
 FdoSpatialCondition* NAMESPACE_OSGEO_FDO_FILTER::SpatialCondition::GetImpObj()
 {
-	return static_cast<FdoSpatialCondition*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoSpatialCondition*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_FILTER::SpatialCondition::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_FILTER::SpatialOperations NAMESPACE_OSGEO_FDO_FILTER::SpatialCondition::Operation::get()

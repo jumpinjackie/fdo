@@ -42,7 +42,12 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::ByteValue::ByteValue(System::Byte value) : DataV
 
 FdoByteValue* NAMESPACE_OSGEO_FDO_EXPRESSION::ByteValue::GetImpObj()
 {
-	return static_cast<FdoByteValue*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoByteValue*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_EXPRESSION::ByteValue::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::ByteValue::operator System::Byte( NAMESPACE_OSGEO_FDO_EXPRESSION::ByteValue^ value )

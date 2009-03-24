@@ -33,7 +33,12 @@ NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::XmlElementMappingCollectio
 
 FdoXmlElementMappingCollection* NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::GetImpObj()
 {
-    return static_cast<FdoXmlElementMappingCollection*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoXmlElementMappingCollection*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Void NAMESPACE_OSGEO_FDO_XML::XmlElementMappingCollection::CopyTo(array<NAMESPACE_OSGEO_FDO_XML::XmlElementMapping^>^ pArray, System::Int32 index)

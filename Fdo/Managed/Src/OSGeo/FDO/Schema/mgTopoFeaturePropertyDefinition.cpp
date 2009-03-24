@@ -34,5 +34,10 @@ NAMESPACE_OSGEO_FDO_SCHEMA::TopoFeaturePropertyDefinition::TopoFeaturePropertyDe
 
 FdoTopoFeaturePropertyDefinition* NAMESPACE_OSGEO_FDO_SCHEMA::TopoFeaturePropertyDefinition::GetImpObj()
 {
-	return static_cast<FdoTopoFeaturePropertyDefinition*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoTopoFeaturePropertyDefinition*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_SCHEMA::TopoFeaturePropertyDefinition::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }

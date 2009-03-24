@@ -263,6 +263,8 @@ public:
 /// \cond DOXYGEN-IGNORE
 internal:
 	FdoDirectPositionImpl* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 /// \endcond
 };
 END_NAMESPACE_OSGEO_GEOMETRY

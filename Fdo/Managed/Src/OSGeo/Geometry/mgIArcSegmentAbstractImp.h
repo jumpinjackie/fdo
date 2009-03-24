@@ -50,6 +50,8 @@ public:
 
 internal:
 	FdoIArcSegmentAbstract *GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:
 	

@@ -41,7 +41,12 @@ NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::FeatureSchema(System::String^ name, S
 
 FdoFeatureSchema* NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::GetImpObj()
 {
-	return static_cast<FdoFeatureSchema*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoFeatureSchema*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_SCHEMA::ClassCollection^ NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema::Classes::get()

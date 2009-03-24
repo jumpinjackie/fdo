@@ -54,6 +54,11 @@ FdoXmlReader* NAMESPACE_OSGEO_COMMON_XML::XmlReader::GetImpObj()
 	return static_cast<FdoXmlReader*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_COMMON_XML::XmlReader::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 IoTextReader^ NAMESPACE_OSGEO_COMMON_XML::XmlReader::TextReader::get()
 {
 	IoTextReader^ reader;

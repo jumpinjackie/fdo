@@ -81,6 +81,8 @@ public protected:
 	PhysicalPropertyMapping(System::IntPtr unmanaged, System::Boolean autoDelete);
     
     inline FdoPhysicalPropertyMapping* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 /// \endcond
 };
 

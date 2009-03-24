@@ -35,6 +35,8 @@ public ref class StringCollection sealed  : public NAMESPACE_OSGEO_COMMON::Colle
 /// \cond DOXYGEN-IGNORE
 internal:
 	inline FdoStringCollection* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 private:
     virtual property System::Object^ IndexInternal[System::Int32]

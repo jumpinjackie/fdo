@@ -32,9 +32,19 @@ FdoICurveSegmentAbstract* NAMESPACE_OSGEO_GEOMETRY::ICurveSegmentAbstractImp::Ge
 	return static_cast<FdoICurveSegmentAbstract*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::ICurveSegmentAbstractImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 FdoCurveSegmentCollection* NAMESPACE_OSGEO_GEOMETRY::CurveSegmentCollection::GetImpObj()
 {
 	return static_cast<FdoCurveSegmentCollection*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_GEOMETRY::CurveSegmentCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_GEOMETRY::ICurveSegmentAbstractImp::ICurveSegmentAbstractImp(System::IntPtr unmanaged, System::Boolean autoDelete)

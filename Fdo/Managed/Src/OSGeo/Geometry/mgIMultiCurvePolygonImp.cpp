@@ -29,6 +29,11 @@ FdoIMultiCurvePolygon* NAMESPACE_OSGEO_GEOMETRY::IMultiCurvePolygonImp::GetImpOb
 	return static_cast<FdoIMultiCurvePolygon*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::IMultiCurvePolygonImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_GEOMETRY::IMultiCurvePolygonImp::IMultiCurvePolygonImp(System::IntPtr unmanaged, System::Boolean autoDelete)
 	: NAMESPACE_OSGEO_GEOMETRY::IGeometricAggregateAbstractImp(unmanaged, autoDelete)
 {

@@ -42,7 +42,12 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::DecimalValue::DecimalValue(System::Double value)
 
 FdoDecimalValue* NAMESPACE_OSGEO_FDO_EXPRESSION::DecimalValue::GetImpObj()
 {
-	return static_cast<FdoDecimalValue*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoDecimalValue*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_EXPRESSION::DecimalValue::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::DecimalValue::operator System::Double( NAMESPACE_OSGEO_FDO_EXPRESSION::DecimalValue^ value )

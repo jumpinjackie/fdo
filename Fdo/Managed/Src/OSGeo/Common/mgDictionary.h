@@ -35,6 +35,8 @@ public ref class DictionaryElementCollection : public NAMESPACE_OSGEO_COMMON::Co
 /// \cond DOXYGEN-IGNORE
 internal:
 	inline FdoDictionary* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 private:
     virtual property System::Object^ IndexInternal[System::Int32]

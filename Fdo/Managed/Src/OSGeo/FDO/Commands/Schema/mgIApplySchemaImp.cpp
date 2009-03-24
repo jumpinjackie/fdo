@@ -28,7 +28,12 @@
 
 FdoIApplySchema* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IApplySchemaImp::GetImpObj()
 {
-    return static_cast<FdoIApplySchema*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoIApplySchema*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IApplySchemaImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchema^ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IApplySchemaImp::FeatureSchema::get()

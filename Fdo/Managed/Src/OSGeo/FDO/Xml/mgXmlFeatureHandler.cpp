@@ -32,7 +32,12 @@
 
 FdoXmlFeatureHandler* NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler::GetImpObj()
 {
-    return static_cast<FdoXmlFeatureHandler*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoXmlFeatureHandler*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(UnmanagedObject.ToPointer()));
 }
 
 NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler^ NAMESPACE_OSGEO_FDO_XML::XmlFeatureHandler::FeatureDocumentStart(NAMESPACE_OSGEO_FDO_XML::XmlFeatureContext^ context)

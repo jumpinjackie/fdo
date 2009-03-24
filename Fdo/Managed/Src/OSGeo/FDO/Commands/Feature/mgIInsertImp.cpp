@@ -30,7 +30,12 @@
 
 FdoIInsert* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IInsertImp::GetImpObj()
 {
-    return static_cast<FdoIInsert*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoIInsert*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IInsertImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IInsertImp::FeatureClassName::get()

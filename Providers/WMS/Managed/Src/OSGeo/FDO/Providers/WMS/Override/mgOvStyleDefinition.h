@@ -36,6 +36,8 @@ internal:
 	OvStyleDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoWmsOvStyleDefinition* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 END_NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE

@@ -27,7 +27,12 @@
 
 FdoIGetSpatialContexts* NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IGetSpatialContextsImp::GetImpObj()
 {
-    return static_cast<FdoIGetSpatialContexts*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoIGetSpatialContexts*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IGetSpatialContextsImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_SPATIALCONTEXT::IGetSpatialContextsImp::ActiveOnly::get()

@@ -29,9 +29,19 @@ FdoIGeometry* NAMESPACE_OSGEO_GEOMETRY::IGeometryImp::GetImpObj()
 	return static_cast<FdoIGeometry*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::IGeometryImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 FdoGeometryCollection* NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::GetImpObj()
 {
 	return static_cast<FdoGeometryCollection*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_GEOMETRY::GeometryCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_GEOMETRY::IGeometryImp::IGeometryImp(System::IntPtr unmanaged, System::Boolean autoDelete)

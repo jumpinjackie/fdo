@@ -36,6 +36,8 @@ public ref class XmlAttributeCollection sealed : public NAMESPACE_OSGEO_COMMON::
 /// \cond DOXYGEN-IGNORE
 internal:
 	inline FdoXmlAttributeCollection* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 private:
     virtual property System::Object^ IndexInternal[System::Int32]

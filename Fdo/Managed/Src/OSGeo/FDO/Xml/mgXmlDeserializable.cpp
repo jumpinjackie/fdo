@@ -32,7 +32,12 @@ NAMESPACE_OSGEO_FDO_XML::XmlDeserializable::XmlDeserializable(System::IntPtr unm
 
 FdoXmlDeserializable* NAMESPACE_OSGEO_FDO_XML::XmlDeserializable::GetImpObj()
 {
-    return static_cast<FdoXmlDeserializable*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoXmlDeserializable*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_XML::XmlDeserializable::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(UnmanagedObject.ToPointer()));
 }
 
 System::Void NAMESPACE_OSGEO_FDO_XML::XmlDeserializable::ReadXml(System::String^ fileName)

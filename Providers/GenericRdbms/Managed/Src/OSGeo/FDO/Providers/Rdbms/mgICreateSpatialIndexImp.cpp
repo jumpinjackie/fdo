@@ -30,7 +30,12 @@
 
 FdoICreateSpatialIndex* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ICreateSpatialIndexImp::GetImpObj()
 {
-	return static_cast<FdoICreateSpatialIndex*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoICreateSpatialIndex*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ICreateSpatialIndexImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ICreateSpatialIndexImp::ICreateSpatialIndexImp(IntPtr unmanaged, Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)

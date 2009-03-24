@@ -176,6 +176,8 @@ public:
 /// \cond DOXYGEN-IGNORE
 internal:
 	inline FdoXmlAttribute* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 private:
 	System::Void InitConstruct(String^ name, String^ value, String^ localName, String^ uri, String^ prefix, String^ valueUri, String^ localValue, String^ valuePrefix);

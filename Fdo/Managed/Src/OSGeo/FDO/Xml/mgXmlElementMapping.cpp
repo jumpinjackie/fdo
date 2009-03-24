@@ -34,7 +34,12 @@ NAMESPACE_OSGEO_FDO_XML::XmlElementMapping::XmlElementMapping(System::String^ na
 
 FdoXmlElementMapping* NAMESPACE_OSGEO_FDO_XML::XmlElementMapping::GetImpObj()
 {
-    return static_cast<FdoXmlElementMapping*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoXmlElementMapping*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_XML::XmlElementMapping::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Void NAMESPACE_OSGEO_FDO_XML::XmlElementMapping::ClassMapping::set(NAMESPACE_OSGEO_FDO_XML::XmlClassMapping^ value)

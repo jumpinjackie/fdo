@@ -444,6 +444,8 @@ internal:
     XmlWriter(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoXmlWriter* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 /// \endcond
 };
 END_NAMESPACE_OSGEO_COMMON_XML

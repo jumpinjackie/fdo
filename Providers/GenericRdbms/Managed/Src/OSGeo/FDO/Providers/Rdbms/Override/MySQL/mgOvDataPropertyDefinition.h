@@ -31,9 +31,10 @@ ref class OvColumn;
 public ref class OvDataPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvDataPropertyDefinition, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyDefinition
 {
 internal:
-	FdoMySQLOvDataPropertyDefinition* GetImpObj();
-	
 	OvDataPropertyDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
+	FdoMySQLOvDataPropertyDefinition* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:
     ///<summary>Constructs a default of an OvDataPropertyDefinition</summary>

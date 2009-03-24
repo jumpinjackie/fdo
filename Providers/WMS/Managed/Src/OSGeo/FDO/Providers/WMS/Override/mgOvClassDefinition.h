@@ -51,6 +51,8 @@ internal:
 	OvClassDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoWmsOvClassDefinition* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 END_NAMESPACE_OSGEO_FDO_PROVIDERS_WMS_OVERRIDE

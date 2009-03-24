@@ -30,6 +30,11 @@ FdoProviderCollection* NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::G
 	return static_cast<FdoProviderCollection*>(__super::UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 System::Void NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderCollection::ReleaseUnmanagedObject()
 {
     // Since the lifecycle of this unmanged object is in the charge of FdoProviderRegistry,

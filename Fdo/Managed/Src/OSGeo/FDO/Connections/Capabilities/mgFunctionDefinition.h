@@ -285,9 +285,9 @@ public:
     }
 
 internal:
-
 	inline FdoFunctionDefinition* GetImpObj();
-
+public:
+    virtual IntPtr GetDisposableObject() override;
 };  //  FunctionDefinition
 
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES

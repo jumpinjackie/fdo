@@ -27,6 +27,11 @@ FdoDirectPositionImpl* NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::GetImpObj()
 	return static_cast<FdoDirectPositionImpl*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_GEOMETRY::DirectPositionImpl::DirectPositionImpl() 
 	: NAMESPACE_OSGEO_RUNTIME::Disposable(IntPtr::Zero, false)
 {

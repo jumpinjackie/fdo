@@ -42,7 +42,12 @@ NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraint::UniqueConstraint() : NAMESPACE_OSG
 
 FdoUniqueConstraint* NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraint::GetImpObj()
 {
-    return static_cast<FdoUniqueConstraint*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoUniqueConstraint*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraint::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinitionCollection^ NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraint::Properties::get()

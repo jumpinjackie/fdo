@@ -647,7 +647,7 @@ FdoXmlSaxHandler* FdoDataPropertyDefinition::XmlStartElement(
 			attr = atts->FindItem( L"value" );
 			if ( attr != NULL )
 			{
-				((FdoPropertyValueConstraintRange*) m_propertyValueConstraint)->SetMaxValue( FdoDataValue::Create( attr->GetValue(), GetDataType() ));
+				((FdoPropertyValueConstraintRange*) m_propertyValueConstraint)->SetMaxValue( FdoPtr<FdoDataValue>(FdoDataValue::Create( attr->GetValue(), GetDataType() )));
 			}
         }
 
@@ -662,7 +662,7 @@ FdoXmlSaxHandler* FdoDataPropertyDefinition::XmlStartElement(
 			attr = atts->FindItem( L"value" );
 			if ( attr != NULL )
 			{
-				((FdoPropertyValueConstraintRange*) m_propertyValueConstraint)->SetMinValue( FdoDataValue::Create( attr->GetValue(), GetDataType() ));
+				((FdoPropertyValueConstraintRange*) m_propertyValueConstraint)->SetMinValue( FdoPtr<FdoDataValue>(FdoDataValue::Create( attr->GetValue(), GetDataType() )));
 			}
 
         }

@@ -30,9 +30,11 @@ ref class OvPropertyDefinitionCollection;
 public ref class OvAssociationPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyDefinition, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvAssociationPropertyDefinition
 {
 internal:
-	FdoMySQLOvAssociationPropertyDefinition* GetImpObj();
-	
 	OvAssociationPropertyDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
+
+    FdoMySQLOvAssociationPropertyDefinition* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:
     ///<summary>Constructs a default of an OvAssociationPropertyDefinition</summary>

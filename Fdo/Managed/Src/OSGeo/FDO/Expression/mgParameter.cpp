@@ -40,7 +40,12 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::Parameter::Parameter(System::String^ name) : Val
 
 FdoParameter* NAMESPACE_OSGEO_FDO_EXPRESSION::Parameter::GetImpObj()
 {
-	return static_cast<FdoParameter*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoParameter*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_EXPRESSION::Parameter::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::String^ NAMESPACE_OSGEO_FDO_EXPRESSION::Parameter::Name::get()

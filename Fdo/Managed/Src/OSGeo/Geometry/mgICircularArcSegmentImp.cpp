@@ -27,6 +27,11 @@ FdoICircularArcSegment* NAMESPACE_OSGEO_GEOMETRY::ICircularArcSegmentImp::GetImp
 	return static_cast<FdoICircularArcSegment*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::ICircularArcSegmentImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_GEOMETRY::ICircularArcSegmentImp::ICircularArcSegmentImp(System::IntPtr unmanaged, System::Boolean autoDelete)
 	: NAMESPACE_OSGEO_GEOMETRY::IArcSegmentAbstractImp(unmanaged, autoDelete)
 {

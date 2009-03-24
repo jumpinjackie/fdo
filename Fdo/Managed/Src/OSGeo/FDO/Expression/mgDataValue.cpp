@@ -81,12 +81,16 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue::DataValue(System::String^ value) : Li
 
 FdoDataValue* NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue::GetImpObj()
 {
-	return static_cast<FdoDataValue*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoDataValue*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue::DataValue(array<System::Byte>^ value, NAMESPACE_OSGEO_FDO_SCHEMA::DataType dataType) : LiteralValue(IntPtr::Zero, false)
 {
-	// NEED_TEST
 	pin_ptr<FdoByte> unbuffer = &value[0];
 	EXCEPTION_HANDLER(Attach(IntPtr(FdoDataValue::Create(unbuffer, value->Length, static_cast<FdoDataType>(dataType))), true))
 }

@@ -138,6 +138,8 @@ internal:
 	}
 
 	inline FdoIApplySchema* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA

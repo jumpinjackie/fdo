@@ -26,9 +26,10 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL
 public ref class OvGeometricColumn : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvGeometricColumn
 {	
 internal:
-	FdoMySQLOvGeometricColumn* GetImpObj();
-	
 	OvGeometricColumn(System::IntPtr unmanaged, System::Boolean autoDelete);
+	FdoMySQLOvGeometricColumn* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:
     ///<summary>Constructs a default of an OvGeometricColumn</summary>

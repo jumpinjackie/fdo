@@ -29,6 +29,11 @@ FdoIMultiGeometry* NAMESPACE_OSGEO_GEOMETRY::IMultiGeometryImp::GetImpObj()
 	return static_cast<FdoIMultiGeometry*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::IMultiGeometryImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_GEOMETRY::IMultiGeometryImp::IMultiGeometryImp(System::IntPtr unmanaged, System::Boolean autoDelete)
 	: NAMESPACE_OSGEO_GEOMETRY::IGeometricAggregateAbstractImp(unmanaged, autoDelete)
 {

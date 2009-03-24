@@ -28,7 +28,12 @@
 
 FdoICreateDataStore* NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::ICreateDataStoreImp::GetImpObj()
 {
-    return static_cast<FdoICreateDataStore*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoICreateDataStore*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::ICreateDataStoreImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStorePropertyDictionary^ NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::ICreateDataStoreImp::DataStoreProperties::get()

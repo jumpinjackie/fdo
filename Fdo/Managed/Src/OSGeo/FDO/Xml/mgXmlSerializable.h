@@ -30,7 +30,7 @@ ref class XmlFlags;
 /// XmlSerializable provides the ability to serialize an FDO object 
 /// to an XML Document. Serialization support can be added to any class by basing
 /// it on XmlSerializable and implementing the _writeXml callback.
-public ref class XmlSerializable : public NAMESPACE_OSGEO_RUNTIME:: Disposable, public NAMESPACE_OSGEO_FDO_XML::IXmlSerializable
+public ref class XmlSerializable : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_FDO_XML::IXmlSerializable
 {
 public:
     /// \brief
@@ -140,6 +140,8 @@ internal:
     XmlSerializable(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoXmlSerializable* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 END_NAMESPACE_OSGEO_FDO_XML

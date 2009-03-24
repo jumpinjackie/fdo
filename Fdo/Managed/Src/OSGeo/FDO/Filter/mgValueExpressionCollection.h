@@ -37,6 +37,8 @@ public ref class ValueExpressionCollection sealed : public NAMESPACE_OSGEO_COMMO
 /// \cond DOXYGEN-IGNORE
 internal:
 	inline FdoValueExpressionCollection* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 private:
     virtual property System::Object^ IndexInternal[System::Int32]

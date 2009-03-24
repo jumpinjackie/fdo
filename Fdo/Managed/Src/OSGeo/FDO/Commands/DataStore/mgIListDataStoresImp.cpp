@@ -33,7 +33,12 @@ NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IListDataStoresImp::IListDataStoresImp(S
 
 FdoIListDataStores* NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IListDataStoresImp::GetImpObj()
 {
-    return static_cast<FdoIListDataStores*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoIListDataStores*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IListDataStoresImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IListDataStoresImp::IncludeNonFdoEnabledDatastores::get()

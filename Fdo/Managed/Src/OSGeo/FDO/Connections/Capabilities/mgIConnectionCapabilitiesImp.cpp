@@ -30,7 +30,12 @@ NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabilitiesImp::IConne
 
 FdoIConnectionCapabilities* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabilitiesImp::GetImpObj()
 {
-    return static_cast<FdoIConnectionCapabilities*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoIConnectionCapabilities*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabilitiesImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ThreadCapability NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabilitiesImp::ThreadCapability::get()

@@ -47,7 +47,12 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::DoubleValue::operator System::Double( NAMESPACE_
 
 FdoDoubleValue* NAMESPACE_OSGEO_FDO_EXPRESSION::DoubleValue::GetImpObj()
 {
-	return static_cast<FdoDoubleValue*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoDoubleValue*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_EXPRESSION::DoubleValue::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_SCHEMA::DataType NAMESPACE_OSGEO_FDO_EXPRESSION::DoubleValue::DataType::get()

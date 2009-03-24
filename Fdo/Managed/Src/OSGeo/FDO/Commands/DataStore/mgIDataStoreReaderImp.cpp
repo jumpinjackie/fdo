@@ -33,7 +33,12 @@ NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReaderImp::IDataStoreReaderImp
 
 FdoIDataStoreReader* NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReaderImp::GetImpObj()
 {
-    return static_cast<FdoIDataStoreReader*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoIDataStoreReader*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReaderImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE::IDataStoreReaderImp::GetName()

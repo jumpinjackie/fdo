@@ -42,7 +42,12 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier::Identifier(System::String^ text) : E
 
 FdoIdentifier* NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier::GetImpObj()
 {
-	return static_cast<FdoIdentifier*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoIdentifier*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::String^ NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier::Text::get()

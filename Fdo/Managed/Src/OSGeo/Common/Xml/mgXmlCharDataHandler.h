@@ -66,6 +66,8 @@ public:
 /// \cond DOXYGEN-IGNORE
 internal:
 	inline FdoXmlCharDataHandler* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 /// \endcond
 };
 END_NAMESPACE_OSGEO_COMMON_XML

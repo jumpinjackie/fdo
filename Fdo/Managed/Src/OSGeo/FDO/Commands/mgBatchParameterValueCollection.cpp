@@ -27,7 +27,12 @@
 
 FdoBatchParameterValueCollection* NAMESPACE_OSGEO_FDO_COMMANDS::BatchParameterValueCollection::GetImpObj()
 {
-    return static_cast<FdoBatchParameterValueCollection*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoBatchParameterValueCollection*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS::BatchParameterValueCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_COMMANDS::BatchParameterValueCollection::BatchParameterValueCollection() : NAMESPACE_OSGEO_COMMON::CollectionBase(System::IntPtr::Zero, false)

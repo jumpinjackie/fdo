@@ -29,6 +29,11 @@ FdoICurveAbstract* NAMESPACE_OSGEO_GEOMETRY::ICurveAbstractImp::GetImpObj()
 	return static_cast<FdoICurveAbstract*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::ICurveAbstractImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_GEOMETRY::ICurveAbstractImp::ICurveAbstractImp(System::IntPtr unmanaged, System::Boolean autoDelete)
 	: NAMESPACE_OSGEO_GEOMETRY::IGeometryImp(unmanaged, autoDelete)
 {

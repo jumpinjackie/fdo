@@ -32,7 +32,12 @@
 
 FdoIScrollableFeatureReader* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IScrollableFeatureReaderImp::GetImpObj()
 {
-    return static_cast<FdoIScrollableFeatureReader*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoIScrollableFeatureReader*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IScrollableFeatureReaderImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Int32 NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IScrollableFeatureReaderImp::Count()

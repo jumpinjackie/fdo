@@ -35,3 +35,8 @@ FdoXmlSkipElementHandler* NAMESPACE_OSGEO_COMMON_XML::XmlSkipElementHandler::Get
 {
 	return static_cast<FdoXmlSkipElementHandler*>(UnmanagedObject.ToPointer());
 }
+
+IntPtr NAMESPACE_OSGEO_COMMON_XML::XmlSkipElementHandler::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}

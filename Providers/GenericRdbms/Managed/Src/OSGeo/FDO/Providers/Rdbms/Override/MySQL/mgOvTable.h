@@ -26,9 +26,10 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL
 public ref class OvTable : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvTable
 {
 internal:
-	FdoMySQLOvTable* GetImpObj();
-	
 	OvTable(System::IntPtr unmanaged, System::Boolean autoDelete);
+	FdoMySQLOvTable* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:
     ///<summary>Constructs a default of an OvTable</summary>

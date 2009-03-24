@@ -52,6 +52,8 @@ internal:
 	ClassDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoShpOvClassDefinition* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 END_NAMESPACE_OSGEO_FDO_PROVIDERS_SHP_OVERRIDE

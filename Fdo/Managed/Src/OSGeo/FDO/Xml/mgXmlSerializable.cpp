@@ -29,7 +29,12 @@ NAMESPACE_OSGEO_FDO_XML::XmlSerializable::XmlSerializable(IntPtr unmanaged, Bool
 
 FdoXmlSerializable* NAMESPACE_OSGEO_FDO_XML::XmlSerializable::GetImpObj()
 {
-	return static_cast<FdoXmlSerializable*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoXmlSerializable*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_XML::XmlSerializable::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(UnmanagedObject.ToPointer()));
 }
 
 System::Void NAMESPACE_OSGEO_FDO_XML::XmlSerializable::WriteXml(String^ fileName)

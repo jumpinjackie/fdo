@@ -71,3 +71,7 @@ FdoXmlAttribute* NAMESPACE_OSGEO_COMMON_XML::XmlAttribute::GetImpObj()
 	return static_cast<FdoXmlAttribute*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_COMMON_XML::XmlAttribute::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}

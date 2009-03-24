@@ -35,6 +35,11 @@ FdoISelect* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::GetImpObj()
     return static_cast<FdoISelect*>(__super::UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::LockType NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::LockType::get()
 {
 	FdoLockType result;
