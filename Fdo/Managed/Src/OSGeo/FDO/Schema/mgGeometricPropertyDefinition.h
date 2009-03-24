@@ -109,10 +109,6 @@ public:
     /// property. The returned value is a list of geometry types that are
     /// supported, with length being the number of types returned.
     /// 
-    /// \param length 
-    /// The parameter is used to return the number of geometry types being
-    /// returned by the function.
-    /// 
     /// \return
     /// Returns a list of geometry types that are supported.
     /// 
@@ -126,14 +122,10 @@ public:
     /// The specific set of geometry types that can be stored in this
     /// geometric property.
     ///
-    /// \param length 
-    /// Indicates the number of geometry types being stored in the provided
-    /// set of geometry types.
-    /// 
-    property array<NAMESPACE_OSGEO_COMMON::GeometryType>^ SpecificGeometryTypes[System::Int32%]
+    property array<NAMESPACE_OSGEO_COMMON::GeometryType>^ SpecificGeometryTypes
     {
-        array<NAMESPACE_OSGEO_COMMON::GeometryType>^ get(System::Int32% length);
-        System::Void set(System::Int32% length, array<NAMESPACE_OSGEO_COMMON::GeometryType>^ types);
+        array<NAMESPACE_OSGEO_COMMON::GeometryType>^ get();
+        System::Void set(array<NAMESPACE_OSGEO_COMMON::GeometryType>^ types);
     }
 
     /// \brief

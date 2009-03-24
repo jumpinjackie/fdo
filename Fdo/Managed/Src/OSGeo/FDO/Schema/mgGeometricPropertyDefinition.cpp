@@ -128,7 +128,7 @@ System::String ^ NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::Spatia
 	return CHECK_STRING(result);
 }
 
-array<NAMESPACE_OSGEO_COMMON::GeometryType>^ NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::SpecificGeometryTypes::get(System::Int32% length)
+array<NAMESPACE_OSGEO_COMMON::GeometryType>^ NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::SpecificGeometryTypes::get()
 {
 	FdoGeometryType* unobj;
 	FdoInt32 unlength;
@@ -140,12 +140,11 @@ array<NAMESPACE_OSGEO_COMMON::GeometryType>^ NAMESPACE_OSGEO_FDO_SCHEMA::Geometr
     return mtype;
 }
 
-System::Void NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::SpecificGeometryTypes::set(System::Int32% length, array<NAMESPACE_OSGEO_COMMON::GeometryType>^ types)
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::SpecificGeometryTypes::set(array<NAMESPACE_OSGEO_COMMON::GeometryType>^ types)
 {
-	FdoGeometryType *unobj = new FdoGeometryType[length+1];
-	for(FdoInt32 i = 0; i < length; i++)
-	{
+    int lengthInputArray = (types == nullptr) ? 0 : types->Length;
+    FdoGeometryType *unobj = (lengthInputArray == 0) ? nullptr : new FdoGeometryType[lengthInputArray];
+    for(FdoInt32 i = 0; i < lengthInputArray; i++)
         unobj[i] = static_cast<FdoGeometryType>(types[i]);
-	}
-    EXCEPTION_HANDLER(GetImpObj()->SetSpecificGeometryTypes(unobj, length));
+    EXCEPTION_HANDLER(GetImpObj()->SetSpecificGeometryTypes(unobj, lengthInputArray));
 }
