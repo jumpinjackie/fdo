@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2009  SL-King d.o.o
+* Copyright (C) 2006  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -15,7 +15,7 @@
 * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#include "stdafx.h"
+#include "StdAfx.h"
 
 
 
@@ -496,8 +496,8 @@ int c_Oci_ColumnData::GetDataDefineSize()
     break;
     case e_OciDateTime:
     {
-      //return sizeof(OCIDate);      
-      return m_ColSize;      
+      return sizeof(OCIDate);      
+      //return m_ColSize;      
     }
     break;
     case e_OciSdoGeometry:
