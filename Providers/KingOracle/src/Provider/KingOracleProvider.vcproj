@@ -1452,7 +1452,15 @@
 			>
 		</File>
 		<File
+			RelativePath=".\c_SDO_DIM_ELEMENT.h"
+			>
+		</File>
+		<File
 			RelativePath=".\c_SDO_GEOMETRY.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\c_SDO_GEOMETRY.h"
 			>
 		</File>
 		<File
