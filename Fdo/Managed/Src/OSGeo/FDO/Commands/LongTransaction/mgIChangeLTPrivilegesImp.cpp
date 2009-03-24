@@ -23,7 +23,12 @@
 
 FdoIChangeLongTransactionPrivileges* NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IChangeLongTransactionPrivilegesImp::GetImpObj()
 {
-    return static_cast<FdoIChangeLongTransactionPrivileges*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoIChangeLongTransactionPrivileges*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IChangeLongTransactionPrivilegesImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IChangeLongTransactionPrivilegesImp::LongTransactionName::get()

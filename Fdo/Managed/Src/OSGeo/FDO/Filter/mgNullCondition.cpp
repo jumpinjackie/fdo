@@ -49,7 +49,12 @@ NAMESPACE_OSGEO_FDO_FILTER::NullCondition::NullCondition(NAMESPACE_OSGEO_FDO_EXP
 
 FdoNullCondition* NAMESPACE_OSGEO_FDO_FILTER::NullCondition::GetImpObj()
 {
-	return static_cast<FdoNullCondition*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoNullCondition*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_FILTER::NullCondition::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ NAMESPACE_OSGEO_FDO_FILTER::NullCondition::PropertyName::get()

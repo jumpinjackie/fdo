@@ -60,7 +60,12 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvPhysicalSchemaMapping::OvPh
 
 FdoOdbcOvPhysicalSchemaMapping* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvPhysicalSchemaMapping::GetImpObj()
 {
-	return static_cast<FdoOdbcOvPhysicalSchemaMapping*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoOdbcOvPhysicalSchemaMapping*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvPhysicalSchemaMapping::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvClassCollection^ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvPhysicalSchemaMapping::Classes::get()

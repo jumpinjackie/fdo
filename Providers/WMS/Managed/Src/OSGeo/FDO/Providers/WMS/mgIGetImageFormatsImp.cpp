@@ -32,7 +32,12 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::GetImageFormatsCommand::GetImageFormatsComman
 
 FdoWmsIGetImagefromats* NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::GetImageFormatsCommand::GetImpObj()
 {
-    return static_cast<FdoWmsIGetImagefromats*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoWmsIGetImagefromats*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::GetImageFormatsCommand::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_COMMON::StringCollection^ NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::GetImageFormatsCommand::Execute()

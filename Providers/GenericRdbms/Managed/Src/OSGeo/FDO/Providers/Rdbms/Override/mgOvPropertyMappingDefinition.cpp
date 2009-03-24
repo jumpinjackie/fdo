@@ -27,7 +27,12 @@
 
 FdoRdbmsOvPropertyMappingDefinition* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingDefinition::GetImpObj()
 {
-	return static_cast<FdoRdbmsOvPropertyMappingDefinition*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoRdbmsOvPropertyMappingDefinition*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingDefinition::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingDefinition::OvPropertyMappingDefinition(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalElementMapping(unmanaged, autoDelete)

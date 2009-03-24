@@ -29,6 +29,11 @@ FdoIMultiCurveString* NAMESPACE_OSGEO_GEOMETRY::IMultiCurveStringImp::GetImpObj(
 	return static_cast<FdoIMultiCurveString*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::IMultiCurveStringImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_GEOMETRY::IMultiCurveStringImp::IMultiCurveStringImp(System::IntPtr unmanaged, System::Boolean autoDelete)
 	: NAMESPACE_OSGEO_GEOMETRY::IGeometricAggregateAbstractImp(unmanaged, autoDelete)
 {

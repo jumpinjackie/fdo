@@ -52,6 +52,8 @@ internal:
 	PropertyValueConstraintList(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoPropertyValueConstraintList* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:    
     /// \brief

@@ -49,6 +49,8 @@ public:
 
 internal:
 	FdoIGeometricAggregateAbstract* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:
 

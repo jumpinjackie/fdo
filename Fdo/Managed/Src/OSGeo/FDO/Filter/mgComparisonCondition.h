@@ -152,6 +152,8 @@ public:
 
 internal:
 	inline FdoComparisonCondition* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 END_NAMESPACE_OSGEO_FDO_FILTER

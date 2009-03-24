@@ -32,7 +32,12 @@
 
 FdoFeatureSchemaCollection* NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchemaCollection::GetImpObj()
 {
-	return static_cast<FdoFeatureSchemaCollection*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoFeatureSchemaCollection*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchemaCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_SCHEMA::FeatureSchemaCollection::FeatureSchemaCollection(NAMESPACE_OSGEO_FDO_SCHEMA::SchemaElement^ parent) : NAMESPACE_OSGEO_COMMON::CollectionBase(System::IntPtr::Zero, false)

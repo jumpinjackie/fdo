@@ -40,6 +40,11 @@ FdoXmlNameCollectionHandler* NAMESPACE_OSGEO_FDO_XML::XmlNameCollectionHandler::
     return static_cast<FdoXmlNameCollectionHandler*>(__super::UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_FDO_XML::XmlNameCollectionHandler::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_COMMON::StringCollection^ NAMESPACE_OSGEO_FDO_XML::XmlNameCollectionHandler::GetNames()
 {
 	FdoStringCollection* result;

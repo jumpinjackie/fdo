@@ -29,10 +29,10 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL
 public ref class OvPropertyMappingDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingDefinition, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyMappingDefinition
 {
 internal:
-	inline FdoMySQLOvPropertyMappingDefinition* GetImpObj();
-
 	OvPropertyMappingDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
-
+	inline FdoMySQLOvPropertyMappingDefinition* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 END_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL

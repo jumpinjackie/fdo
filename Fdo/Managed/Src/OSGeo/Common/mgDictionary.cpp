@@ -38,6 +38,11 @@ FdoDictionary* NAMESPACE_OSGEO_COMMON::DictionaryElementCollection::GetImpObj()
 	return static_cast<FdoDictionary*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_COMMON::DictionaryElementCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 System::Void NAMESPACE_OSGEO_COMMON::DictionaryElementCollection::CopyTo(array<DictionaryElement^>^ pArray, System::Int32 index)
 {
 	if (nullptr == pArray)

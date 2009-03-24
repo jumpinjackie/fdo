@@ -44,3 +44,8 @@ FdoXmlCopyHandler* NAMESPACE_OSGEO_COMMON_XML::XmlCopyHandler::GetImpObj()
 {
 	return static_cast<FdoXmlCopyHandler*>(UnmanagedObject.ToPointer());
 }
+
+IntPtr NAMESPACE_OSGEO_COMMON_XML::XmlCopyHandler::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}

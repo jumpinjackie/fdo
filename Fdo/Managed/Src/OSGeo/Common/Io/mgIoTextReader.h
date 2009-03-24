@@ -78,6 +78,8 @@ public:
 
 internal:
 	inline FdoIoTextReader* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 /// \endcond
 };
 

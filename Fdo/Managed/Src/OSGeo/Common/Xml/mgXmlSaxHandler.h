@@ -37,7 +37,6 @@ ref class XmlSaxContext;
 public ref class XmlSaxHandler : public NAMESPACE_OSGEO_RUNTIME::Disposable, public NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler
 {
 public:
-	XmlSaxHandler();
     /// \brief
     /// Default Sax callback that is called when the XmlReader 
     /// starts reading an XML document. Does nothing.
@@ -130,7 +129,8 @@ public:
 /// \cond DOXYGEN-IGNORE
 internal:
 	inline FdoXmlSaxHandler* GetImpObj();	
-
+public:
+    virtual IntPtr GetDisposableObject() override;
 /// \endcond
 };
 END_NAMESPACE_OSGEO_COMMON_XML

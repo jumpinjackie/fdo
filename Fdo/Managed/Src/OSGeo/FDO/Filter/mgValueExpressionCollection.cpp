@@ -39,7 +39,12 @@ NAMESPACE_OSGEO_FDO_FILTER::ValueExpressionCollection::ValueExpressionCollection
 
 FdoValueExpressionCollection* NAMESPACE_OSGEO_FDO_FILTER::ValueExpressionCollection::GetImpObj()
 {
-	return static_cast<FdoValueExpressionCollection*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoValueExpressionCollection*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_FILTER::ValueExpressionCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Void NAMESPACE_OSGEO_FDO_FILTER::ValueExpressionCollection::CopyTo(array<ValueExpression^>^ pArray, System::Int32 index)

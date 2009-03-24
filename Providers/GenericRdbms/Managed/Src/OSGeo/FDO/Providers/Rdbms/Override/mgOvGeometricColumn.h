@@ -33,6 +33,8 @@ public ref class OvGeometricColumn : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA:
 {
 internal:
 	inline FdoRdbmsOvGeometricColumn* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public protected:
 	OvGeometricColumn(System::IntPtr unmanaged, System::Boolean autoDelete);

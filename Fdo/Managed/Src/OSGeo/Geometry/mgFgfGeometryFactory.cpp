@@ -53,6 +53,11 @@ FdoFgfGeometryFactory* NAMESPACE_OSGEO_GEOMETRY::FgfGeometryFactory::GetImpObj()
 	return static_cast<FdoFgfGeometryFactory*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::FgfGeometryFactory::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_GEOMETRY::FgfGeometryFactory::FgfGeometryFactory(System::IntPtr unmanaged, System::Boolean autoDelete)
 	: NAMESPACE_OSGEO_GEOMETRY::GeometryFactoryAbstract(unmanaged, autoDelete)
 {

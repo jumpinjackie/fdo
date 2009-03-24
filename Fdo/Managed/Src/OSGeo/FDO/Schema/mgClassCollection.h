@@ -33,6 +33,8 @@ public ref class ClassCollection sealed : public NAMESPACE_OSGEO_COMMON::Collect
 /// \cond DOXYGEN-IGNORE
 internal:
 	inline FdoClassCollection* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 private:
     virtual property System::Object^ IndexInternal[int]

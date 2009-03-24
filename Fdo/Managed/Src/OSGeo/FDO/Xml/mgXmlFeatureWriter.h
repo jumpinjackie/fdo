@@ -188,6 +188,8 @@ internal:
 	XmlFeatureWriter(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoXmlFeatureWriter* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 END_NAMESPACE_OSGEO_FDO_XML

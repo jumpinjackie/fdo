@@ -26,7 +26,12 @@
 
 FdoIDestroySpatialIndex* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::IDestroySpatialIndexImp::GetImpObj()
 {
-	return static_cast<FdoIDestroySpatialIndex*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoIDestroySpatialIndex*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::IDestroySpatialIndexImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::IDestroySpatialIndexImp::IDestroySpatialIndexImp(IntPtr unmanaged, Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)

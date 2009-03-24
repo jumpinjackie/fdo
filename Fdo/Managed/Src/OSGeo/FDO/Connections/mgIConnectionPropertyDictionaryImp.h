@@ -170,6 +170,8 @@ internal:
     IConnectionPropertyDictionaryImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
     inline FdoIConnectionPropertyDictionary* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS

@@ -34,7 +34,12 @@ NAMESPACE_OSGEO_FDO_FILTER::Filter::Filter(IntPtr unmanaged, Boolean autoDelete)
 
 FdoFilter* NAMESPACE_OSGEO_FDO_FILTER::Filter::GetImpObj()
 {
-	return static_cast<FdoFilter*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoFilter*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_FILTER::Filter::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_FILTER::Filter^ NAMESPACE_OSGEO_FDO_FILTER::Filter::Parse(System::String^ filterText)

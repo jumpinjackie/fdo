@@ -29,7 +29,12 @@
 
 FdoPhysicalSchemaMappingCollection* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMappingCollection::GetImpObj()
 {
-    return static_cast<FdoPhysicalSchemaMappingCollection*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoPhysicalSchemaMappingCollection*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMappingCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMappingCollection::PhysicalSchemaMappingCollection() : NAMESPACE_OSGEO_COMMON::CollectionBase(System::IntPtr::Zero, false)

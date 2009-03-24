@@ -73,6 +73,8 @@ internal:
 	SignatureDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoSignatureDefinition* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 // -----------------------------------------------------------------------------------------------------
@@ -90,6 +92,8 @@ internal:
 	SignatureDefinitionCollection(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoSignatureDefinitionCollection *GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 private:
     virtual property System::Object^ IndexInternal[System::Int32]
@@ -235,6 +239,8 @@ internal:
 	ReadOnlySignatureDefinitionCollection(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoReadOnlySignatureDefinitionCollection *GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 private:
     virtual property System::Object^ IndexInternal[System::Int32]

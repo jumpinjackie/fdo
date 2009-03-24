@@ -34,7 +34,12 @@ NAMESPACE_OSGEO_COMMON_IO::IoStream::IoStream(System::IntPtr unmanaged, System::
 
 FdoIoStream* NAMESPACE_OSGEO_COMMON_IO::IoStream::GetImpObj()
 {
-	return static_cast<FdoIoStream*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoIoStream*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_COMMON_IO::IoStream::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::UInt32 NAMESPACE_OSGEO_COMMON_IO::IoStream::Read(array<System::Byte>^ buffer, System::UInt32 count)
@@ -72,7 +77,7 @@ System::Void NAMESPACE_OSGEO_COMMON_IO::IoStream::Length::set(System::Int64 leng
 
 System::Int64 NAMESPACE_OSGEO_COMMON_IO::IoStream::Length::get()
 {
-	FdoInt64 len;
+	System::Int64 len;
 
 	EXCEPTION_HANDLER(len = GetImpObj()->GetLength())
 
@@ -86,7 +91,7 @@ System::Void NAMESPACE_OSGEO_COMMON_IO::IoStream::Skip(System::Int64 count)
 
 System::Boolean NAMESPACE_OSGEO_COMMON_IO::IoStream::CanRead::get()
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = !!GetImpObj()->CanRead())
 
@@ -95,7 +100,7 @@ System::Boolean NAMESPACE_OSGEO_COMMON_IO::IoStream::CanRead::get()
 
 System::Boolean NAMESPACE_OSGEO_COMMON_IO::IoStream::CanWrite::get()
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = !!GetImpObj()->CanWrite())
 
@@ -104,7 +109,7 @@ System::Boolean NAMESPACE_OSGEO_COMMON_IO::IoStream::CanWrite::get()
 
 System::Boolean NAMESPACE_OSGEO_COMMON_IO::IoStream::HasContext::get()
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = !!GetImpObj()->HasContext())
 
@@ -113,7 +118,7 @@ System::Boolean NAMESPACE_OSGEO_COMMON_IO::IoStream::HasContext::get()
 
 System::Int64 NAMESPACE_OSGEO_COMMON_IO::IoStream::Index::get()
 {
-	FdoInt64 index;
+	System::Int64 index;
 
 	EXCEPTION_HANDLER(index = GetImpObj()->GetIndex())
 

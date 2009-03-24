@@ -28,6 +28,11 @@ FdoIRingAbstract* NAMESPACE_OSGEO_GEOMETRY::IRingAbstractImp::GetImpObj()
 	return static_cast<FdoIRingAbstract*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::IRingAbstractImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_GEOMETRY::IRingAbstractImp::IRingAbstractImp(System::IntPtr unmanaged, System::Boolean autoDelete)
 	: Disposable(unmanaged, autoDelete)
 {

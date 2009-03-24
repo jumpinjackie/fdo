@@ -129,6 +129,8 @@ public:
 
 internal:
 	inline FdoInt16Value* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 END_NAMESPACE_OSGEO_FDO_EXPRESSION

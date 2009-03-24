@@ -29,6 +29,11 @@ FdoILineStringSegment* NAMESPACE_OSGEO_GEOMETRY::ILineStringSegmentImp::GetImpOb
 	return static_cast<FdoILineStringSegment*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::ILineStringSegmentImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_GEOMETRY::ILineStringSegmentImp::ILineStringSegmentImp(System::IntPtr unmanaged, System::Boolean autoDelete)
 	: NAMESPACE_OSGEO_GEOMETRY::ICurveSegmentAbstractImp(unmanaged, autoDelete)
 {

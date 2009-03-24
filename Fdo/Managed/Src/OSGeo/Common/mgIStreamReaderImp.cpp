@@ -31,6 +31,11 @@ FdoIStreamReader* NAMESPACE_OSGEO_COMMON::IStreamReaderImp::GetImpObj()
 	return static_cast<FdoIStreamReader*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_COMMON::IStreamReaderImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_COMMON::StreamReaderType NAMESPACE_OSGEO_COMMON::IStreamReaderImp::Type::get()
 {
 	FdoStreamReaderType type;

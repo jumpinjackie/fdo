@@ -35,7 +35,12 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue::GeometryValue() : LiteralValue(In
 
 FdoGeometryValue* NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue::GetImpObj()
 {
-	return static_cast<FdoGeometryValue*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoGeometryValue*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::GeometryValue::GeometryValue(array<System::Byte>^ geometry) : LiteralValue(IntPtr::Zero, false)

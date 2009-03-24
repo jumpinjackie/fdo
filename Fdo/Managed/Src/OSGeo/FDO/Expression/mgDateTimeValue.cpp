@@ -42,7 +42,12 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::DateTimeValue::DateTimeValue(System::DateTime va
 
 FdoDateTimeValue* NAMESPACE_OSGEO_FDO_EXPRESSION::DateTimeValue::GetImpObj()
 {
-	return static_cast<FdoDateTimeValue*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoDateTimeValue*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_EXPRESSION::DateTimeValue::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::DateTimeValue::operator System::DateTime( NAMESPACE_OSGEO_FDO_EXPRESSION::DateTimeValue^ value )

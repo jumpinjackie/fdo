@@ -42,7 +42,12 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::Int16Value::Int16Value(System::Int16 value) : Da
 
 FdoInt16Value* NAMESPACE_OSGEO_FDO_EXPRESSION::Int16Value::GetImpObj()
 {
-	return static_cast<FdoInt16Value*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoInt16Value*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_EXPRESSION::Int16Value::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::Int16Value::operator System::Int16( NAMESPACE_OSGEO_FDO_EXPRESSION::Int16Value^ value )

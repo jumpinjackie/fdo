@@ -32,7 +32,12 @@ NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinition::SignatureDefi
 
 FdoSignatureDefinition* NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinition::GetImpObj()
 {
-    return static_cast<FdoSignatureDefinition*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoSignatureDefinition*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinition::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinition::SignatureDefinition(
@@ -78,7 +83,12 @@ NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlyArgumentDefinitionCollecti
 
 FdoSignatureDefinitionCollection *NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinitionCollection::GetImpObj()
 {
-    return static_cast<FdoSignatureDefinitionCollection*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoSignatureDefinitionCollection*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinitionCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinitionCollection::SignatureDefinitionCollection() : NAMESPACE_OSGEO_COMMON::CollectionBase(System::IntPtr::Zero, false)
@@ -224,7 +234,12 @@ NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlySignatureDefinitionCollect
 
 FdoReadOnlySignatureDefinitionCollection *NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlySignatureDefinitionCollection::GetImpObj()
 {
-    return static_cast<FdoReadOnlySignatureDefinitionCollection*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoReadOnlySignatureDefinitionCollection*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlySignatureDefinitionCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Void NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ReadOnlySignatureDefinitionCollection::CopyTo(array<NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinition^>^ pArray, System::Int32 index)

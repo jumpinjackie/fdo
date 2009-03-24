@@ -41,7 +41,12 @@ NAMESPACE_OSGEO_FDO_FILTER::InCondition::InCondition() : SearchCondition(IntPtr:
 
 FdoInCondition* NAMESPACE_OSGEO_FDO_FILTER::InCondition::GetImpObj()
 {
-	return static_cast<FdoInCondition*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoInCondition*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_FILTER::InCondition::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_FILTER::InCondition::InCondition(System::String^ propertyName, array<System::String^>^ values) : SearchCondition(IntPtr::Zero, false)

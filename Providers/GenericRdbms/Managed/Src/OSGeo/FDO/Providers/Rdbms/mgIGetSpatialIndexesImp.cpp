@@ -34,7 +34,12 @@
 
 FdoIGetSpatialIndexes* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::IGetSpatialIndexesImp::GetImpObj()
 {
-	return static_cast<FdoIGetSpatialIndexes*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoIGetSpatialIndexes*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::IGetSpatialIndexesImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::IGetSpatialIndexesImp::IGetSpatialIndexesImp(IntPtr unmanaged, Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp(unmanaged, autoDelete)

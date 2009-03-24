@@ -74,6 +74,8 @@ internal:
 	IConnectionManagerImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	::IConnectionManager* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 END_NAMESPACE_OSGEO_FDO

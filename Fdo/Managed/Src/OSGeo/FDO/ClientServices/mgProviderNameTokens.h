@@ -33,6 +33,8 @@ public ref class ProviderNameTokens : public NAMESPACE_OSGEO_RUNTIME::Disposable
 {
 internal:
 	inline FdoProviderNameTokens* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:
     /// \brief

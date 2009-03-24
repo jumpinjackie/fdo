@@ -33,6 +33,8 @@ public ref class PropertyDefinitionCollection sealed : public NAMESPACE_OSGEO_CO
 /// \cond DOXYGEN-IGNORE
 internal:
 	inline FdoPropertyDefinitionCollection* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 private:
     virtual property System::Object^ IndexInternal[System::Int32]

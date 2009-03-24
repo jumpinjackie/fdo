@@ -35,6 +35,8 @@ internal:
 	FunctionDefinitionCollection(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoFunctionDefinitionCollection* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 private:
     virtual property System::Object^ IndexInternal[System::Int32]

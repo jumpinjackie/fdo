@@ -123,10 +123,15 @@ if "%TYPEACTIONWMS%"=="build" goto generate_docs
 :install_files_wms
 echo copy %TYPEBUILDWMS% WMS provider output files
 copy /y "%FDOUTILITIES%\OWS\Bin\Win32\%TYPEBUILDWMS%\OWS.dll" "%FDOBINPATHWMS%"
+copy /y "%FDOUTILITIES%\OWS\Bin\Win32\%TYPEBUILDWMS%\OWS.pdb" "%FDOBINPATHWMS%"
 copy /y "Bin\Win32\%TYPEBUILDWMS%\WmsMessage.dll" "%FDOBINPATHWMS%"
+copy /y "Bin\Win32\%TYPEBUILDWMS%\WmsMessage.pdb" "%FDOBINPATHWMS%"
 copy /y "Bin\Win32\%TYPEBUILDWMS%\WmsOverrides.dll" "%FDOBINPATHWMS%"
+copy /y "Bin\Win32\%TYPEBUILDWMS%\WmsOverrides.pdb" "%FDOBINPATHWMS%"
 copy /y "Bin\Win32\%TYPEBUILDWMS%\WmsProvider.dll" "%FDOBINPATHWMS%"
+copy /y "Bin\Win32\%TYPEBUILDWMS%\WmsProvider.pdb" "%FDOBINPATHWMS%"
 copy /y "Managed\Bin\%TYPEBUILDWMS%\OSGeo.FDO.Providers.WMS.Overrides.dll" "%FDOBINPATHWMS%"
+copy /y "Managed\Bin\%TYPEBUILDWMS%\OSGeo.FDO.Providers.WMS.Overrides.pdb" "%FDOBINPATHWMS%"
 copy /y "Lib\Win32\%TYPEBUILDWMS%\WMSOverrides.lib" "%FDOLIBPATHWMS%"
 
 echo copy header files

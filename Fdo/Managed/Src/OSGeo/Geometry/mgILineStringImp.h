@@ -53,6 +53,8 @@ public:
 
 internal:
 	FdoILineString* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:
     /// \brief

@@ -51,7 +51,12 @@ NAMESPACE_OSGEO_FDO_FILTER::DistanceCondition::DistanceCondition(NAMESPACE_OSGEO
 
 FdoDistanceCondition* NAMESPACE_OSGEO_FDO_FILTER::DistanceCondition::GetImpObj()
 {
-	return static_cast<FdoDistanceCondition*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoDistanceCondition*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_FILTER::DistanceCondition::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_FILTER::DistanceOperations NAMESPACE_OSGEO_FDO_FILTER::DistanceCondition::Operation::get()

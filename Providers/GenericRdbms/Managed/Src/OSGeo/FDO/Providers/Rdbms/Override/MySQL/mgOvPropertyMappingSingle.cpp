@@ -28,7 +28,12 @@
 
 FdoMySQLOvPropertyMappingSingle* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyMappingSingle::GetImpObj()
 {
-	return dynamic_cast<FdoMySQLOvPropertyMappingSingle*>((FdoIDisposable*)__super::UnmanagedObject.ToPointer());
+	return dynamic_cast<FdoMySQLOvPropertyMappingSingle*>((FdoIDisposable*)UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyMappingSingle::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvPropertyMappingSingle::OvPropertyMappingSingle(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvPropertyMappingSingle(unmanaged, autoDelete)

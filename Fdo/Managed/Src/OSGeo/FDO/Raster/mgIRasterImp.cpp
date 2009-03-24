@@ -38,7 +38,12 @@ NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::IRasterImp(IntPtr unmanaged, Boolean aut
 
 FdoIRaster* NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::GetImpObj()
 {
-	return static_cast<FdoIRaster*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoIRaster*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_RASTER::IRasterImp::IsNull ()

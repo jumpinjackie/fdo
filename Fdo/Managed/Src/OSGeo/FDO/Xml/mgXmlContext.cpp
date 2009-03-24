@@ -32,7 +32,12 @@ NAMESPACE_OSGEO_FDO_XML::XmlContext::XmlContext(NAMESPACE_OSGEO_FDO_XML::XmlFlag
 
 FdoXmlContext* NAMESPACE_OSGEO_FDO_XML::XmlContext::GetImpObj()
 {
-    return static_cast<FdoXmlContext*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoXmlContext*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_XML::XmlContext::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::String^ NAMESPACE_OSGEO_FDO_XML::XmlContext::DecodeName (System::String^ name)

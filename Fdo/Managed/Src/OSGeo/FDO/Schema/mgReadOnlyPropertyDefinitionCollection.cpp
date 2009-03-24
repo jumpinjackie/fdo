@@ -35,7 +35,12 @@ NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyPropertyDefinitionCollection::ReadOnlyProper
 
 FdoReadOnlyPropertyDefinitionCollection* NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyPropertyDefinitionCollection::GetImpObj()
 {
-	return static_cast<FdoReadOnlyPropertyDefinitionCollection*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoReadOnlyPropertyDefinitionCollection*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyPropertyDefinitionCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Void NAMESPACE_OSGEO_FDO_SCHEMA::ReadOnlyPropertyDefinitionCollection::CopyTo(array<PropertyDefinition^>^ pArray, System::Int32 index)

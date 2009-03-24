@@ -46,7 +46,12 @@ NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionImp::IConnectionImp(IntPtr unmanaged
 
 FdoIConnection* NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionImp::GetImpObj()
 {
-    return static_cast<FdoIConnection*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoIConnection*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabilities^ NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnectionImp::ConnectionCapabilities::get()

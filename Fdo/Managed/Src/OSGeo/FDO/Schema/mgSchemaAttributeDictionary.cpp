@@ -24,7 +24,12 @@
 
 FdoSchemaAttributeDictionary* NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary::GetImpObj()
 {
-	return static_cast<FdoSchemaAttributeDictionary*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoSchemaAttributeDictionary*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Int32 NAMESPACE_OSGEO_FDO_SCHEMA::SchemaAttributeDictionary::Count::get()

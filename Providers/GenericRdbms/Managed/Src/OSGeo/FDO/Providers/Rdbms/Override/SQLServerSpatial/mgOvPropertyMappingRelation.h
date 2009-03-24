@@ -55,6 +55,8 @@ internal:
 	OvPropertyMappingRelation(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoSqlServerOvPropertyMappingRelation* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 #pragma warning(pop)  //  warning C4490: 'new' : incorrect use of override specifier;

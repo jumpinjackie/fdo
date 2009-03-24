@@ -32,7 +32,12 @@
 
 FdoISQLCommand* NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLCommandImp::GetImpObj()
 {
-    return static_cast<FdoISQLCommand*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoISQLCommand*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLCommandImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLCommandImp::SQLStatement::get()

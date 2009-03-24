@@ -31,6 +31,8 @@ public ref class IDisposableCollection sealed : public NAMESPACE_OSGEO_COMMON::C
 /// \cond DOXYGEN-IGNORE
 internal:
 	inline FdoIDisposableCollection* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 private:
     virtual property System::Object^ IndexInternal[System::Int32]

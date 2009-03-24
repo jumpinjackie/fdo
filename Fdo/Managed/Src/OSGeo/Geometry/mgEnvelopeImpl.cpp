@@ -29,6 +29,11 @@ FdoEnvelopeImpl* NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::GetImpObj()
 	return static_cast<FdoEnvelopeImpl*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_GEOMETRY::EnvelopeImpl::EnvelopeImpl() 
 	: NAMESPACE_OSGEO_RUNTIME::Disposable(IntPtr::Zero, false)
 {

@@ -138,6 +138,8 @@ public:
 /// \cond DOXYGEN-IGNORE
 internal:
 	inline FdoIStreamReaderTmpl<FdoCharacter>* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 /// \endcond
 };
 

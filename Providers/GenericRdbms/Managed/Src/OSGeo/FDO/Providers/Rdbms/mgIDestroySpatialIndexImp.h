@@ -30,9 +30,12 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS
 private ref class IDestroySpatialIndexImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::IDestroySpatialIndex
 {
 internal:
+	IDestroySpatialIndexImp(System::IntPtr unmanaged, System::Boolean autoDelete);   
+
 	FdoIDestroySpatialIndex* GetImpObj();
 	
-	IDestroySpatialIndexImp(System::IntPtr unmanaged, System::Boolean autoDelete);   
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:
     /// <summary>Gets the name of the spatial index to destroy as a String.</summary>

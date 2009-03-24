@@ -28,6 +28,11 @@ FdoIMultiLineString* NAMESPACE_OSGEO_GEOMETRY::IMultiLineStringImp::GetImpObj()
 	return static_cast<FdoIMultiLineString*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::IMultiLineStringImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_GEOMETRY::IMultiLineStringImp::IMultiLineStringImp(System::IntPtr unmanaged, System::Boolean autoDelete)
 	: NAMESPACE_OSGEO_GEOMETRY::IGeometricAggregateAbstractImp(unmanaged, autoDelete)
 {

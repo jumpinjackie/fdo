@@ -96,6 +96,8 @@ public:
 /// \cond DOXYGEN-IGNORE
 internal:
 	inline FdoXmlCopyHandler* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 /// \endcond
 };
 

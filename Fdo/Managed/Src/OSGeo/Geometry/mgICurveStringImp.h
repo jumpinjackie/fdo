@@ -52,6 +52,8 @@ public:
 
 internal:
 	FdoICurveString* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:
     /// \brief

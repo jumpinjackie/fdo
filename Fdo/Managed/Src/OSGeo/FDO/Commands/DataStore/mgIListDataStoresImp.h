@@ -69,6 +69,8 @@ internal:
 	IListDataStoresImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoIListDataStores* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS_DATASTORE

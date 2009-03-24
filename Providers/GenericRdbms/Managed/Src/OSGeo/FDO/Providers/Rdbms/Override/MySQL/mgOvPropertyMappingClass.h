@@ -37,9 +37,10 @@ private:
         }
     }
 internal:
-	FdoMySQLOvPropertyMappingClass* GetImpObj();
-	
 	OvPropertyMappingClass(System::IntPtr unmanaged, System::Boolean autoDelete);
+	FdoMySQLOvPropertyMappingClass* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:
     ///<summary>Constructs a default of an OvPropertyMappingClass</summary>

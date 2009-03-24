@@ -242,6 +242,8 @@ internal:
     XmlReader(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoXmlReader* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 /// \endcond
 };
 

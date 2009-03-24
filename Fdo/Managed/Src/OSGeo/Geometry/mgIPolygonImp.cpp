@@ -28,9 +28,19 @@ FdoPolygonCollection* NAMESPACE_OSGEO_GEOMETRY::PolygonCollection::GetImpObj()
 	return static_cast<FdoPolygonCollection*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::PolygonCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 FdoIPolygon* NAMESPACE_OSGEO_GEOMETRY::IPolygonImp::GetImpObj()
 {
 	return static_cast<FdoIPolygon*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_GEOMETRY::IPolygonImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_GEOMETRY::IPolygonImp::IPolygonImp(System::IntPtr unmanaged, System::Boolean autoDelete)

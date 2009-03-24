@@ -55,6 +55,11 @@ FdoXslTransformer* NAMESPACE_OSGEO_COMMON_XSL::XslTransformer::GetImpObj()
 	return static_cast<FdoXslTransformer*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_COMMON_XSL::XslTransformer::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_COMMON_XML::XmlReader^ NAMESPACE_OSGEO_COMMON_XSL::XslTransformer::InDoc::get()
 {
 	FdoXmlReader* result;

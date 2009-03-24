@@ -28,6 +28,11 @@ FdoIMultiPoint* NAMESPACE_OSGEO_GEOMETRY::IMultiPointImp::GetImpObj()
 	return static_cast<FdoIMultiPoint*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::IMultiPointImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_GEOMETRY::IMultiPointImp::IMultiPointImp(System::IntPtr unmanaged, System::Boolean autoDelete)
 	: NAMESPACE_OSGEO_GEOMETRY::IGeometricAggregateAbstractImp(unmanaged, autoDelete)
 {

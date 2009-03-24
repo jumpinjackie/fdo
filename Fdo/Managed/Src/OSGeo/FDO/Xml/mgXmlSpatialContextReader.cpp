@@ -37,7 +37,12 @@ NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextReader::XmlSpatialContextReader(NAMESP
 
 FdoXmlSpatialContextReader* NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextReader::GetImpObj()
 {
-    return static_cast<FdoXmlSpatialContextReader*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoXmlSpatialContextReader*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextReader::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_COMMON_XML::XmlReader^ NAMESPACE_OSGEO_FDO_XML::XmlSpatialContextReader::GetXmlReader()

@@ -44,7 +44,12 @@ NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList::PropertyValueConstraint
 
 FdoPropertyValueConstraintList* NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList::GetImpObj()
 {
-    return static_cast<FdoPropertyValueConstraintList*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoPropertyValueConstraintList*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::DataValueCollection^ NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintList::ConstraintList::get()

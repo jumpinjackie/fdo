@@ -40,6 +40,10 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvTable::OvTable(System::IntP
 
 FdoOdbcOvTable* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvTable::GetImpObj()
 {
-	return static_cast<FdoOdbcOvTable*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoOdbcOvTable*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvTable::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}

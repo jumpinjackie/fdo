@@ -28,6 +28,8 @@ public ref class OvAssociationPropertyDefinition : public NAMESPACE_OSGEO_FDO_PR
 {
 internal:
 	inline FdoRdbmsOvAssociationPropertyDefinition* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public protected:
 	OvAssociationPropertyDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);

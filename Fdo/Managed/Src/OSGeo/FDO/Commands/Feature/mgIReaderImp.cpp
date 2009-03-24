@@ -31,7 +31,12 @@
 
 FdoIReader* NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetImpObj()
 {
-    return static_cast<FdoIReader*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoIReader*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp::GetBoolean(System::String^ name)

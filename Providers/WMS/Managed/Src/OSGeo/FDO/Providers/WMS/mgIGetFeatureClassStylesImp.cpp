@@ -32,7 +32,12 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::GetFeatureClassStylesCommand::GetFeatureClass
 
 FdoWmsIGetFeatureClassStyles* NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::GetFeatureClassStylesCommand::GetImpObj()
 {
-    return static_cast<FdoWmsIGetFeatureClassStyles*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoWmsIGetFeatureClassStyles*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::GetFeatureClassStylesCommand::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::GetFeatureClassStylesCommand::FeatureClassName::set(System::String^ value)

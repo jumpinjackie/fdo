@@ -42,7 +42,12 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::StringValue::StringValue(System::String^ value) 
 
 FdoStringValue* NAMESPACE_OSGEO_FDO_EXPRESSION::StringValue::GetImpObj()
 {
-	return static_cast<FdoStringValue*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoStringValue*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_EXPRESSION::StringValue::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::StringValue::operator System::String^( NAMESPACE_OSGEO_FDO_EXPRESSION::StringValue^ value )

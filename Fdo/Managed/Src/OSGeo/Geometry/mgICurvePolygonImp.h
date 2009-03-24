@@ -52,6 +52,8 @@ public:
 
 internal:
 	FdoICurvePolygon *GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:
     /// \brief

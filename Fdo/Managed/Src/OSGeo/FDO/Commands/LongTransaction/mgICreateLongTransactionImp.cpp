@@ -24,7 +24,12 @@
 
 FdoICreateLongTransaction* NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICreateLongTransactionImp::GetImpObj()
 {
-    return static_cast<FdoICreateLongTransaction*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoICreateLongTransaction*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICreateLongTransactionImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICreateLongTransactionImp::Name::get()

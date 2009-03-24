@@ -60,6 +60,8 @@ public:
 
 internal:
 	inline  FdoIStreamReader* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 /// \endcond
 };
 

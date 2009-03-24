@@ -72,7 +72,12 @@ NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::XmlFeatureReader(NAMESPACE_OSGEO_COMM
 
 FdoXmlFeatureReader* NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::GetImpObj()
 {
-    return static_cast<FdoXmlFeatureReader*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoXmlFeatureReader*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_XML::XmlFeaturePropertyReader^ NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::GetFeaturePropertyReader()

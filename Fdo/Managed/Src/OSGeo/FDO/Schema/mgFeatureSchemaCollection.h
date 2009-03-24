@@ -48,6 +48,8 @@ public ref class FeatureSchemaCollection sealed : public NAMESPACE_OSGEO_COMMON:
 /// \cond DOXYGEN-IGNORE
 internal:
 	inline FdoFeatureSchemaCollection* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 private:
     virtual property System::Object^ IndexInternal[System::Int32]

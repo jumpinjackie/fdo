@@ -39,9 +39,10 @@ private:
     }
 
 internal:
-	FdoMySQLOvPropertyMappingRelation* GetImpObj();
-	
 	OvPropertyMappingRelation(System::IntPtr unmanaged, System::Boolean autoDelete);
+	FdoMySQLOvPropertyMappingRelation* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:
     ///<summary>Gets the internal class</summary>

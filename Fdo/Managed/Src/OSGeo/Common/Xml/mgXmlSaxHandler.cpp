@@ -30,14 +30,14 @@ NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler::XmlSaxHandler(System::IntPtr unmanage
 
 }
 
-NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler::XmlSaxHandler() : Disposable(IntPtr(new VirtualSaxHandler()), true)
-{
-	static_cast<VirtualSaxHandler*>(GetImpObj())->SetWrapper(this);
-}
-
 FdoXmlSaxHandler* NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler::GetImpObj()
 {
 	return static_cast<FdoXmlSaxHandler*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(UnmanagedObject.ToPointer()));
 }
 
 NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler^ NAMESPACE_OSGEO_COMMON_XML::XmlSaxHandler::XmlStartDocument(NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext^ context)

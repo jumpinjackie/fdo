@@ -44,7 +44,12 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue::BooleanValue(System::Boolean value
 
 FdoBooleanValue* NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue::GetImpObj()
 {
-	return static_cast<FdoBooleanValue*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoBooleanValue*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue::operator System::Boolean ( NAMESPACE_OSGEO_FDO_EXPRESSION::BooleanValue^ value )

@@ -31,9 +31,10 @@ interface class IOvPropertyMappingDefinition;
 public ref class OvObjectPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE::OvObjectPropertyDefinition, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyDefinition
 {
 internal:
-	FdoMySQLOvObjectPropertyDefinition* GetImpObj();
-	
 	OvObjectPropertyDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);
+	FdoMySQLOvObjectPropertyDefinition* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:
     ///<summary>Constructs a default of an OvObjectPropertyDefinition</summary>

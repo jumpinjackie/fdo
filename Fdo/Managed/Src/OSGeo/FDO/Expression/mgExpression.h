@@ -83,6 +83,8 @@ public:
 
 internal:
 	inline FdoExpression* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 END_NAMESPACE_OSGEO_FDO_EXPRESSION

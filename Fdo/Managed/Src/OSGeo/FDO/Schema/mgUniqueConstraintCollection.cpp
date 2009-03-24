@@ -31,7 +31,12 @@
 
 FdoUniqueConstraintCollection* NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::GetImpObj()
 {
-	return static_cast<FdoUniqueConstraintCollection*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoUniqueConstraintCollection*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Void NAMESPACE_OSGEO_FDO_SCHEMA::UniqueConstraintCollection::CopyTo(array<UniqueConstraint^>^ pArray, System::Int32 index)

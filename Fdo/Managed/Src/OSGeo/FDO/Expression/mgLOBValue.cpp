@@ -32,7 +32,12 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue::LOBValue(IntPtr unmanaged, Boolean aut
 
 FdoLOBValue* NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue::GetImpObj()
 {
-	return static_cast<FdoLOBValue*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoLOBValue*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue::operator array<System::Byte>^( NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue^ value )

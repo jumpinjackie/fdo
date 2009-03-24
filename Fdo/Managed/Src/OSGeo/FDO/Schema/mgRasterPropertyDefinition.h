@@ -225,6 +225,8 @@ public:
 
 internal:
 	inline FdoRasterPropertyDefinition* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 END_NAMESPACE_OSGEO_FDO_SCHEMA

@@ -29,6 +29,11 @@ FdoIArcSegmentAbstract* NAMESPACE_OSGEO_GEOMETRY::IArcSegmentAbstractImp::GetImp
 	return static_cast<FdoIArcSegmentAbstract*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::IArcSegmentAbstractImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_GEOMETRY::IArcSegmentAbstractImp::IArcSegmentAbstractImp(System::IntPtr unmanaged, System::Boolean autoDelete)
 	: NAMESPACE_OSGEO_GEOMETRY::ICurveSegmentAbstractImp(unmanaged, autoDelete)
 {

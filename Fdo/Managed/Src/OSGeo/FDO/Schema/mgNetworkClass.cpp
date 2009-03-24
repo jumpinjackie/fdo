@@ -37,7 +37,12 @@ NAMESPACE_OSGEO_FDO_SCHEMA::NetworkClass::NetworkClass(System::String^ name, Sys
 
 FdoNetworkClass* NAMESPACE_OSGEO_FDO_SCHEMA::NetworkClass::GetImpObj()
 {
-	return static_cast<FdoNetworkClass*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoNetworkClass*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_SCHEMA::NetworkClass::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_SCHEMA::ClassType NAMESPACE_OSGEO_FDO_SCHEMA::NetworkClass::ClassType::get()

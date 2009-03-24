@@ -44,6 +44,8 @@ internal:
 	PropertyValueConstraintRange(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoPropertyValueConstraintRange* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:    
     /// \brief

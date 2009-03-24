@@ -23,7 +23,12 @@
 
 FdoProviderNameTokens* NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderNameTokens::GetImpObj()
 {
-	return static_cast<FdoProviderNameTokens*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoProviderNameTokens*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderNameTokens::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_CLIENTSERVICES::ProviderNameTokens::ProviderNameTokens(System::String^ name)

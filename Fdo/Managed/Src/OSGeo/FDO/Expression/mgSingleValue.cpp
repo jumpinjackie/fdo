@@ -42,7 +42,12 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue::SingleValue(System::Single value) :
 
 FdoSingleValue* NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue::GetImpObj()
 {
-	return static_cast<FdoSingleValue*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoSingleValue*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue::operator System::Single( NAMESPACE_OSGEO_FDO_EXPRESSION::SingleValue^ value )

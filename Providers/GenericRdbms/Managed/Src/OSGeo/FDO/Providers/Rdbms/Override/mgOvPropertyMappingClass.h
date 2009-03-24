@@ -28,6 +28,8 @@ public ref class OvPropertyMappingClass : public NAMESPACE_OSGEO_FDO_PROVIDERS_R
 {
 internal:
 	FdoRdbmsOvPropertyMappingClass* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 	
 public protected:
 	OvPropertyMappingClass(System::IntPtr unmanaged, System::Boolean autoDelete);   

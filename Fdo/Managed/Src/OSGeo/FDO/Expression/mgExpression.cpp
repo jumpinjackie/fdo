@@ -32,7 +32,12 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::Expression::Expression(IntPtr unmanaged, Boolean
 
 FdoExpression* NAMESPACE_OSGEO_FDO_EXPRESSION::Expression::GetImpObj()
 {
-	return static_cast<FdoExpression*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoExpression*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_EXPRESSION::Expression::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::Expression^ NAMESPACE_OSGEO_FDO_EXPRESSION::Expression::Parse(System::String^ expressionText)

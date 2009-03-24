@@ -34,7 +34,12 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::GetFeatureClassCRSNamesCommand::GetFeatureCla
 
 FdoWmsIGetFeatureClassCRSNames* NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::GetFeatureClassCRSNamesCommand::GetImpObj()
 {
-    return static_cast<FdoWmsIGetFeatureClassCRSNames*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoWmsIGetFeatureClassCRSNames*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::GetFeatureClassCRSNamesCommand::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_WMS::GetFeatureClassCRSNamesCommand::FeatureClassName::set(System::String^ value)

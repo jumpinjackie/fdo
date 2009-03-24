@@ -37,7 +37,12 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ NAMESPACE_OSGEO_FDO_COMMANDS::IFeatu
 
 FdoIFeatureCommand* NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp::GetImpObj()
 {
-    return static_cast<FdoIFeatureCommand*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoIFeatureCommand*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Void NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp::FeatureClassName::set(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ value)

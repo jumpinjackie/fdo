@@ -36,6 +36,11 @@ FdoStringElement* NAMESPACE_OSGEO_COMMON::StringElement::GetImpObj()
 	return static_cast<FdoStringElement*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_COMMON::StringElement::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 System::String^ NAMESPACE_OSGEO_COMMON::StringElement::String::get()
 {
 	FdoString *str = NULL;

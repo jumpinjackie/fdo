@@ -37,6 +37,8 @@ internal:
 	UniqueConstraint(System::IntPtr unmanaged, System::Boolean autoDelete);
 
 	inline FdoUniqueConstraint* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:    
     /// \brief

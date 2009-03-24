@@ -33,7 +33,12 @@ NAMESPACE_OSGEO_COMMON::DictionaryElement::DictionaryElement(System::IntPtr unma
 
 FdoDictionaryElement* NAMESPACE_OSGEO_COMMON::DictionaryElement::GetImpObj()
 {
-	return static_cast<FdoDictionaryElement*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoDictionaryElement*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_COMMON::DictionaryElement::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::String^ NAMESPACE_OSGEO_COMMON::DictionaryElement::Name::get()
@@ -47,7 +52,7 @@ System::String^ NAMESPACE_OSGEO_COMMON::DictionaryElement::Name::get()
 
 System::Boolean NAMESPACE_OSGEO_COMMON::DictionaryElement::CanSetName::get()
 {
-	FdoBoolean result;
+	System::Boolean result;
 
 	EXCEPTION_HANDLER(result = !!GetImpObj()->CanSetName())
 

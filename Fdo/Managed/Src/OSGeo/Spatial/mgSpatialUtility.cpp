@@ -77,7 +77,7 @@ NAMESPACE_OSGEO_SPATIAL::SpatialGeometryValidity NAMESPACE_OSGEO_SPATIAL::Spatia
 
 System::Boolean NAMESPACE_OSGEO_SPATIAL::SpatialUtility::Evaluate(NAMESPACE_OSGEO_GEOMETRY::IGeometry^ g1, NAMESPACE_OSGEO_FDO_FILTER::SpatialOperations op, NAMESPACE_OSGEO_GEOMETRY::IGeometry^ g2)
 {
-	FdoBoolean unobj;
+	System::Boolean unobj;
 	EXCEPTION_HANDLER(unobj = FdoSpatialUtility::Evaluate((static_cast<FdoIGeometry*>(static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp^>(g1)->UnmanagedObject.ToPointer())), static_cast<FdoSpatialOperations>(op), (static_cast<FdoIGeometry*>(static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp^>(g2)->UnmanagedObject.ToPointer()))))
 	return unobj;
 }

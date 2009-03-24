@@ -53,6 +53,8 @@ public:
 
 internal:
 	FdoIRing* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:
     /// \brief

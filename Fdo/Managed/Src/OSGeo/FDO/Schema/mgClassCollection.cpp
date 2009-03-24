@@ -36,7 +36,12 @@ NAMESPACE_OSGEO_FDO_SCHEMA::ClassCollection::ClassCollection(NAMESPACE_OSGEO_FDO
 
 FdoClassCollection* NAMESPACE_OSGEO_FDO_SCHEMA::ClassCollection::GetImpObj()
 {
-	return static_cast<FdoClassCollection*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoClassCollection*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_SCHEMA::ClassCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Void NAMESPACE_OSGEO_FDO_SCHEMA::ClassCollection::CopyTo(array<ClassDefinition^>^ pArray, System::Int32 index)

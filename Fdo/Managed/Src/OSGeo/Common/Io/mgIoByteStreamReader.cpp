@@ -37,6 +37,11 @@ FdoIoByteStreamReader* NAMESPACE_OSGEO_COMMON_IO::IoByteStreamReader::GetImpObj(
 	return static_cast<FdoIoByteStreamReader*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_COMMON_IO::IoByteStreamReader::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 System::Void NAMESPACE_OSGEO_COMMON_IO::IoByteStreamReader::Skip(System::Int32 offest)
 {
 	EXCEPTION_HANDLER(GetImpObj()->Skip(offest))

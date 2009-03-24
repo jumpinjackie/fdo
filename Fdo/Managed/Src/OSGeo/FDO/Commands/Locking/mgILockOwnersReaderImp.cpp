@@ -24,7 +24,12 @@
 
 FdoILockOwnersReader* NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockOwnersReaderImp::GetImpObj()
 {
-    return static_cast<FdoILockOwnersReader*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoILockOwnersReader*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockOwnersReaderImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockOwnersReaderImp::GetLockOwner()

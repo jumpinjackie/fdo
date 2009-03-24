@@ -35,7 +35,12 @@ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping::PhysicalSchemaMappin
 
 FdoPhysicalSchemaMapping* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping::GetImpObj()
 {
-    return static_cast<FdoPhysicalSchemaMapping*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoPhysicalSchemaMapping*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMapping::Provider::get()

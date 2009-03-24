@@ -28,6 +28,11 @@ FdoIMultiPolygon* NAMESPACE_OSGEO_GEOMETRY::IMultiPolygonImp::GetImpObj()
 	return static_cast<FdoIMultiPolygon*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::IMultiPolygonImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_GEOMETRY::IMultiPolygonImp::IMultiPolygonImp(System::IntPtr unmanaged, System::Boolean autoDelete)
 	: NAMESPACE_OSGEO_GEOMETRY::IGeometricAggregateAbstractImp(unmanaged, autoDelete)
 {

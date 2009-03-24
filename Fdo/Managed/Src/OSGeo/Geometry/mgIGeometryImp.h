@@ -111,6 +111,8 @@ public:
 
 internal:
 	FdoIGeometry* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 };
 
 END_NAMESPACE_OSGEO_GEOMETRY

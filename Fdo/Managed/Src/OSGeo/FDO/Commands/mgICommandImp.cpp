@@ -44,7 +44,12 @@ NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp::ICommandImp(NAMESPACE_OSGEO_FDO_COMMA
 
 FdoICommand* NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp::GetImpObj()
 {
-    return static_cast<FdoICommand*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoICommand*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection^ NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp::Connection::get()

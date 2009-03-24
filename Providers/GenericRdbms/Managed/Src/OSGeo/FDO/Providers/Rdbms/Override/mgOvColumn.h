@@ -31,6 +31,8 @@ public ref class OvColumn : public NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::Physical
 {
 internal:
 	inline FdoRdbmsOvColumn* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public protected:
 	OvColumn(System::IntPtr unmanaged, System::Boolean autoDelete);

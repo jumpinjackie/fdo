@@ -189,10 +189,9 @@ public:
 
 /// \cond DOXYGEN-IGNORE
 internal:
-	inline FdoXmlSpatialContextFlags* GetImpObj()
-	{
-		return static_cast<FdoXmlSpatialContextFlags*>(__super::UnmanagedObject.ToPointer());
-	}
+	inline FdoXmlSpatialContextFlags* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 /// \endcond
 };
 

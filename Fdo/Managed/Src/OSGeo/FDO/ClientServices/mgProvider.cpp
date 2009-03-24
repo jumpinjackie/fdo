@@ -23,7 +23,12 @@
 
 FdoProvider* NAMESPACE_OSGEO_FDO_CLIENTSERVICES::Provider::GetImpObj()
 {
-	return static_cast<FdoProvider*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoProvider*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_CLIENTSERVICES::Provider::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::String^ NAMESPACE_OSGEO_FDO_CLIENTSERVICES::Provider::Name::get()

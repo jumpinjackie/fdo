@@ -31,9 +31,11 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS
 private ref class ICreateSpatialIndexImp : public NAMESPACE_OSGEO_FDO_COMMANDS::ICommandImp, public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ICreateSpatialIndex
 {
 internal:
-	FdoICreateSpatialIndex* GetImpObj();
-	
 	ICreateSpatialIndexImp(System::IntPtr unmanaged, System::Boolean autoDelete);   
+
+    FdoICreateSpatialIndex* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:
     /// <summary>Gets the name of the Spatial index as a String.</summary>

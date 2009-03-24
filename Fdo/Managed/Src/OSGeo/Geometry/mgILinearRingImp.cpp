@@ -29,9 +29,19 @@ FdoILinearRing* NAMESPACE_OSGEO_GEOMETRY::ILinearRingImp::GetImpObj()
 	return static_cast<FdoILinearRing*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::ILinearRingImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 FdoLinearRingCollection* NAMESPACE_OSGEO_GEOMETRY::LinearRingCollection::GetImpObj()
 {
 	return static_cast<FdoLinearRingCollection*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_GEOMETRY::LinearRingCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_GEOMETRY::ILinearRingImp::ILinearRingImp(System::IntPtr unmanaged, System::Boolean autoDelete)

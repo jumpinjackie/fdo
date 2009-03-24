@@ -68,6 +68,8 @@ public:
 /// \cond DOXYGEN-IGNORE
 internal:
 	inline FdoStringElement* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 /// \endcond
 };
 

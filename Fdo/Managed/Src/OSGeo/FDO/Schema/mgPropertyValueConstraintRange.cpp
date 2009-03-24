@@ -49,7 +49,12 @@ NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::PropertyValueConstrain
 
 FdoPropertyValueConstraintRange* NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::GetImpObj()
 {
-    return static_cast<FdoPropertyValueConstraintRange*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoPropertyValueConstraintRange*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue^ NAMESPACE_OSGEO_FDO_SCHEMA::PropertyValueConstraintRange::MinValue::get()

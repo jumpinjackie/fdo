@@ -33,7 +33,12 @@
 
 FdoNetworkFeatureClass* NAMESPACE_OSGEO_FDO_SCHEMA::NetworkFeatureClass::GetImpObj()
 {
-	return static_cast<FdoNetworkFeatureClass*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoNetworkFeatureClass*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_SCHEMA::NetworkFeatureClass::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_SCHEMA::DataPropertyDefinition^ NAMESPACE_OSGEO_FDO_SCHEMA::NetworkFeatureClass::CostProperty::get()

@@ -106,6 +106,8 @@ public:
 /// \cond DOXYGEN-IGNORE
 internal:
 	inline FdoIoTextWriter* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 /// \endcond
 };
 

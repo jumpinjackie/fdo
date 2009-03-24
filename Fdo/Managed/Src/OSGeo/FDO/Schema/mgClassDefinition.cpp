@@ -38,7 +38,12 @@
 
 FdoClassDefinition* NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition::GetImpObj()
 {
-	return static_cast<FdoClassDefinition*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoClassDefinition*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_SCHEMA::ClassType NAMESPACE_OSGEO_FDO_SCHEMA::ClassDefinition::ClassType::get()

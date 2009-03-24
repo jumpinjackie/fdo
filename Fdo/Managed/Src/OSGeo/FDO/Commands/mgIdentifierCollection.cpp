@@ -28,7 +28,12 @@
 
 FdoIdentifierCollection* NAMESPACE_OSGEO_FDO_COMMANDS::IdentifierCollection::GetImpObj()
 {
-    return static_cast<FdoIdentifierCollection*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoIdentifierCollection*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS::IdentifierCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_COMMANDS::IdentifierCollection::IdentifierCollection() : NAMESPACE_OSGEO_COMMON::CollectionBase(System::IntPtr::Zero, false)

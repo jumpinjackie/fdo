@@ -44,7 +44,12 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::BinaryExpression(NAMESPACE_OSG
 
 FdoBinaryExpression* NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::GetImpObj()
 {
-	return static_cast<FdoBinaryExpression*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoBinaryExpression*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryOperations NAMESPACE_OSGEO_FDO_EXPRESSION::BinaryExpression::Operation::get()

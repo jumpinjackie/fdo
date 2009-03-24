@@ -32,9 +32,12 @@ BEGIN_NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS
 private ref class ISpatialIndexReaderImp : public NAMESPACE_OSGEO_RUNTIME::Disposable,  public NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS::ISpatialIndexReader
 {
 internal:
+	ISpatialIndexReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete);   
+
 	FdoISpatialIndexReader* GetImpObj();
 	
-	ISpatialIndexReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete);   
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:
     /// <summary>Gets the name of the spatial index currently being read.</summary>

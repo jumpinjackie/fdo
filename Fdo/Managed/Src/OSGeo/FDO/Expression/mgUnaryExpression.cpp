@@ -44,7 +44,12 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::UnaryExpression::UnaryExpression(NAMESPACE_OSGEO
 
 FdoUnaryExpression* NAMESPACE_OSGEO_FDO_EXPRESSION::UnaryExpression::GetImpObj()
 {
-	return static_cast<FdoUnaryExpression*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoUnaryExpression*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_EXPRESSION::UnaryExpression::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::UnaryOperations NAMESPACE_OSGEO_FDO_EXPRESSION::UnaryExpression::Operation::get()

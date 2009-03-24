@@ -23,7 +23,12 @@
 
 FdoIRollbackLongTransactionCheckpoint* NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionCheckpointImp::GetImpObj()
 {
-    return static_cast<FdoIRollbackLongTransactionCheckpoint*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoIRollbackLongTransactionCheckpoint*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionCheckpointImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionCheckpointImp::LongTransactionName::get()

@@ -28,9 +28,19 @@ FdoPointCollection* NAMESPACE_OSGEO_GEOMETRY::PointCollection::GetImpObj()
 	return static_cast<FdoPointCollection*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::PointCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 FdoIPoint* NAMESPACE_OSGEO_GEOMETRY::IPointImp::GetImpObj()
 {
 	return static_cast<FdoIPoint*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_GEOMETRY::IPointImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_GEOMETRY::IPointImp::IPointImp(System::IntPtr unmanaged, System::Boolean autoDelete)

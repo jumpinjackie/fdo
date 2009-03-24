@@ -24,7 +24,12 @@
 
 FdoILongTransactionSetReader* NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionSetReaderImp::GetImpObj()
 {
-    return static_cast<FdoILongTransactionSetReader*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoILongTransactionSetReader*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionSetReaderImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionSetReaderImp::GetLongTransactionName()

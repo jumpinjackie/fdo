@@ -27,9 +27,19 @@ FdoIDirectPosition* NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp::GetImpObj()
 	return static_cast<FdoIDirectPosition*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 FdoDirectPositionCollection* NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::GetImpObj()
 {
 	return static_cast<FdoDirectPositionCollection*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_GEOMETRY::DirectPositionCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_GEOMETRY::IDirectPositionImp::IDirectPositionImp(System::IntPtr unmanaged, System::Boolean autoDelete)

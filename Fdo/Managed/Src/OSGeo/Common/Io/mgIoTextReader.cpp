@@ -43,6 +43,11 @@ FdoIoTextReader* NAMESPACE_OSGEO_COMMON_IO::IoTextReader::GetImpObj()
 	return static_cast<FdoIoTextReader*>(UnmanagedObject.ToPointer());
 }
 
+IntPtr NAMESPACE_OSGEO_COMMON_IO::IoTextReader::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
+}
+
 NAMESPACE_OSGEO_COMMON_IO::IoStream^ NAMESPACE_OSGEO_COMMON_IO::IoTextReader::Stream::get()
 {
 	FdoIoStream* stream;

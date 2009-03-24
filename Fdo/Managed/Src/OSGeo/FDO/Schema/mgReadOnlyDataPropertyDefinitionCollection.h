@@ -33,6 +33,8 @@ public ref class ReadOnlyDataPropertyDefinitionCollection sealed : public NAMESP
 /// \cond DOXYGEN-IGNORE
 internal:
 	inline FdoReadOnlyDataPropertyDefinitionCollection* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 private:
     virtual property System::Object^ IndexInternal[System::Int32]

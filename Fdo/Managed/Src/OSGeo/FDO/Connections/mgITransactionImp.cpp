@@ -31,7 +31,12 @@ NAMESPACE_OSGEO_FDO_CONNECTIONS::ITransactionImp::ITransactionImp(IntPtr unmanag
 
 FdoITransaction* NAMESPACE_OSGEO_FDO_CONNECTIONS::ITransactionImp::GetImpObj()
 {
-    return static_cast<FdoITransaction*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoITransaction*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_CONNECTIONS::ITransactionImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_CONNECTIONS::IConnection^ NAMESPACE_OSGEO_FDO_CONNECTIONS::ITransactionImp::Connection::get()

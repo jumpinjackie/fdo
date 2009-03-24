@@ -78,6 +78,8 @@ public:
 /// \cond DOXYGEN-IGNORE
 internal:
 	FdoFgfGeometryFactory* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 /// \endcond
 
 public:

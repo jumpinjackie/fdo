@@ -28,7 +28,12 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue::LiteralValue(IntPtr unmanaged, Boo
 
 FdoLiteralValue* NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue::GetImpObj()
 {
-	return static_cast<FdoLiteralValue*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoLiteralValue*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValueType NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue::LiteralValueType::get()

@@ -37,7 +37,12 @@ NAMESPACE_OSGEO_FDO_RASTER::DataValueCollection::DataValueCollection(System::Int
 
 FdoDataValueCollection* NAMESPACE_OSGEO_FDO_RASTER::DataValueCollection::GetImpObj()
 {
-	return static_cast<FdoDataValueCollection*>(__super::UnmanagedObject.ToPointer());
+	return static_cast<FdoDataValueCollection*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_RASTER::DataValueCollection::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 System::Void NAMESPACE_OSGEO_FDO_RASTER::DataValueCollection::CopyTo(array<DataValue^>^ pArray, System::Int32 index)

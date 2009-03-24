@@ -27,7 +27,12 @@
 
 FdoIGetSchemaNames* NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IGetSchemaNamesImp::GetImpObj()
 {
-    return static_cast<FdoIGetSchemaNames*>(__super::UnmanagedObject.ToPointer());
+    return static_cast<FdoIGetSchemaNames*>(UnmanagedObject.ToPointer());
+}
+
+IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IGetSchemaNamesImp::GetDisposableObject()
+{
+    return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
 NAMESPACE_OSGEO_COMMON::StringCollection^ NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::IGetSchemaNamesImp::Execute()

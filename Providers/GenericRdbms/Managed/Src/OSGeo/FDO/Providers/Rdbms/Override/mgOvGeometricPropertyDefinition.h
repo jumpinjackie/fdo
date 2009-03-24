@@ -30,6 +30,8 @@ public ref class OvGeometricPropertyDefinition : public NAMESPACE_OSGEO_FDO_PROV
 {
 internal:
     inline FdoRdbmsOvGeometricPropertyDefinition* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public protected:
     OvGeometricPropertyDefinition(System::IntPtr unmanaged, System::Boolean autoDelete);

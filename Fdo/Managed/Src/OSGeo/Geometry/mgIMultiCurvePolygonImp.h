@@ -49,6 +49,8 @@ public:
 
 internal:
 	FdoIMultiCurvePolygon* GetImpObj();
+public:
+    virtual IntPtr GetDisposableObject() override;
 
 public:
     /// \brief
