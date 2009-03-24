@@ -378,7 +378,7 @@ template <class FDO_READER> FdoDateTime c_KgOraReader<FDO_READER>::GetDateTime(F
   {
     OCIDate* oradt = m_OciStatement->GetOciDate(oraind);    
     FdoDateTime fdodate;
-    if( !oradt )
+    if( oradt )
     {
       //unsigned int month,day,hour,min,sec;
       //oradt.getDate(year,month,day,hour,min,sec);
