@@ -194,6 +194,33 @@ bool FdoSmPhGrdMgr::IsRdbUnicode()
     return GetGdbiConnection()->GetCommands()->SupportsUnicode();
 }
 
+bool FdoSmPhGrdMgr::ConfigIncludeNativeSCs()
+{
+    FdoBoolean includeNative = false;
+    if ( mConfigMappings ) {
+        FdoInt32 idx;
+
+        for ( idx = 0; idx < mConfigMappings->GetCount(); idx++ ) {
+            FdoRdbmsOvSchemaMappingP configMapping = (FdoRdbmsOvPhysicalSchemaMapping*) mConfigMappings->GetItem(idx);
+            FdoRdbmsOvSchemaAutoGenerationP autoGen = configMapping ? configMapping->GetAutoGeneration() : NULL;
+
+            if ( autoGen ) {
+                // At least one Schema Mapping set has an autogeneration element, so some classes may be reverse
+                // engineered, rather than specified directly in the config document. This means that geometric 
+                // properties in these classes can reference spatial contexts not in the config doc, and we need
+                // to merge sc's from the datastore into those from the config doc when determining all sc's for
+                // the current connection.
+                includeNative = true;
+                break;
+            }
+        }
+    }
+
+    return includeNative;
+}
+
+
+
 FdoSmPhSchemaWriterP FdoSmPhGrdMgr::NewSchemaWriter()
 {
     return new FdoSmPhSchemaWriter( FDO_SAFE_ADDREF(this) );

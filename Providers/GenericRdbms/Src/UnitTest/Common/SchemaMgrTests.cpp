@@ -971,14 +971,71 @@ void SchemaMgrTests::testGenConfig1 ()
         fdoConn->Open();
  
         FdoIoMemoryStreamP stream3 = FdoIoMemoryStream::Create();
-        UnitTestUtil::ExportDb( fdoConn, stream3 );
+        FdoXmlSpatialContextFlagsP flags = 
+            FdoXmlSpatialContextFlags::Create(  
+            L"fdo.osgeo.org/schemas/feature",
+            FdoXmlSpatialContextFlags::ErrorLevel_Normal,
+            true,
+            FdoXmlSpatialContextFlags::ConflictOption_Add,
+            true
+        );
+        UnitTestUtil::ExportDb( fdoConn, stream3, flags );
         FdoIoStreamP stream4 = OverrideBend( stream3, datastorePrefix, L"(user)" );
         UnitTestUtil::Stream2File( stream4, UnitTestUtil::GetOutputFileName( L"schemaGenConfig1.xml" ) );
 
+        printf( "Reopening connection ...\n" );
+
+        fdoConn->Close();
+
+        stream1 = FdoIoFileStream::Create( L"config1b_in.xml", L"rt" );
+        stream2 = OverrideBend( stream1, L"(user)", datastorePrefix );
+
+        fdoConn->SetConfiguration(CvtConf(stream2));
+        fdoConn->Open();
+ 
+        printf( "Testing config without autogen ...\n" );
+
+        FdoPtr<FdoIGetSpatialContexts> scCmd = (FdoIGetSpatialContexts*) fdoConn->CreateCommand( FdoCommandType_GetSpatialContexts );
+        FdoPtr<FdoISpatialContextReader> scReader = scCmd->Execute();
+
+        int count = 0;
+        while ( scReader->ReadNext() ) {
+            count++;
+#ifdef RDBI_DEF_ORA
+            if ( wcscmp(scReader->GetName(), L"Default") == 0 )
+                CPPUNIT_ASSERT( wcscmp(scReader->GetCoordinateSystem(),L"Quebec MTM Zone 4 (NAD 83)") == 0 );
+            else if ( wcscmp(scReader->GetName(), L"sc_1") == 0 )
+                CPPUNIT_ASSERT( wcscmp(scReader->GetCoordinateSystem(),L"Longitude / Latitude (NAD 83) Datum 33") == 0 );
+            else
+                CPPUNIT_FAIL( (const char*) FdoStringP::Format(L"Unexpected spatial context '%ls'", scReader->GetName()) );
+#endif
+        }
+        scReader = NULL;
+
+        CPPUNIT_ASSERT( count == 2 );
+
+        printf( "Reopening connection ...\n" );
+
+        fdoConn->Close();
+
+        stream1 = FdoIoFileStream::Create( L"config1c_in.xml", L"rt" );
+        stream2 = OverrideBend( stream1, L"(user)", datastorePrefix );
+
+        fdoConn->SetConfiguration(CvtConf(stream2));
+        fdoConn->Open();
+ 
+        printf( "Testing config with sc_2 spatial context ...\n" );
+
+        stream3 = FdoIoMemoryStream::Create();
+        UnitTestUtil::ExportDb( fdoConn, stream3, flags );
+        stream4 = OverrideBend( stream3, datastorePrefix, L"(user)" );
+        UnitTestUtil::Stream2File( stream4, UnitTestUtil::GetOutputFileName( L"schemaGenConfig1c.xml" ) );
+        
         UnitTestUtil::CloseConnection( fdoConn, false, L"_schema_mgr" );
 
 #ifdef RDBI_DEF_ORA
 	    UnitTestUtil::CheckOutput( "schemaGenConfig1_master.txt", UnitTestUtil::GetOutputFileName( L"schemaGenConfig1.xml" ) );
+	    UnitTestUtil::CheckOutput( "schemaGenConfig1c_master.txt", UnitTestUtil::GetOutputFileName( L"schemaGenConfig1c.xml" ) );
 #endif
         printf( "Done\n" );
     }
@@ -2156,12 +2213,27 @@ void SchemaMgrTests::CreateTableGroup( FdoSmPhOwnerP owner, FdoStringP prefix, F
     int i;
 
     for ( i = 1; i <= count; i++ ) {
+        int sridIndex = 3;
+        switch (i) {
+            case 1:
+            case 4:
+                sridIndex = 0;
+                break;
+            case 5:
+                sridIndex = 1;
+                break;
+            case 2:
+                sridIndex = 2;
+                break;
+        }
+
+        FdoSmPhScInfoP scinfo = CreateSc( GetSrid(sridIndex), 0, 0, 1, 1, 0.0333, 0.0111 );
         FdoStringP tablename = FdoStringP::Format( L"%lsTABLE%d", (FdoString*) prefix, i );
         FdoSmPhTableP table = owner->CreateTable( tablename );
         SetLtLck(table, lt_mode);
         FdoSmPhColumnP column = table->CreateColumnInt32( L"ID", false );
         table->AddPkeyCol( column->GetName() );
-        column = table->CreateColumnGeom( L"GEOM_COLUMN", (FdoSmPhScInfo*) NULL );
+        column = table->CreateColumnGeom( L"GEOM_COLUMN", scinfo );
         column = table->CreateColumnInt32( L"FOREIGN_COLUMN", false );
         column = table->CreateColumnDouble( L"DOUBLE_COLUMN", true );
 
