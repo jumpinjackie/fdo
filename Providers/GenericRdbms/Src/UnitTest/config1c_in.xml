@@ -12,7 +12,7 @@
 		<gml:validArea>
 			<gml:boundingBox>
 				<gml:pos>0.000000 0.000000</gml:pos>
-				<gml:pos>1.000000 1.000000</gml:pos>
+				<gml:pos>1000.000000 1000.000000</gml:pos>
 			</gml:boundingBox>
 		</gml:validArea>
 		<gml:baseCRS>
@@ -25,7 +25,7 @@
 		<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType>
 		<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
 	</gml:DerivedCRS>
-	<gml:DerivedCRS gml:id="sc_1">
+	<gml:DerivedCRS gml:id="sc_2">
 		<gml:metaDataProperty>
 			<gml:GenericMetaData>
 				<fdo:XYTolerance>0.033300</fdo:XYTolerance>
@@ -33,7 +33,7 @@
 			</gml:GenericMetaData>
 		</gml:metaDataProperty>
 		<gml:remarks>Spatial context from Oracle metadata</gml:remarks>
-		<gml:srsName>sc_1</gml:srsName>
+		<gml:srsName>sc_2</gml:srsName>
 		<gml:validArea>
 			<gml:boundingBox>
 				<gml:pos>0.000000 0.000000</gml:pos>
@@ -68,7 +68,7 @@
 				<xs:extension base="gml:AbstractFeatureType">
 					<xs:sequence>
 						<xs:element name="ID" type="fdo:int32"/>
-						<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:srsName="sc_1" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface ">
+						<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:srsName="sc_2" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface ">
 							<xs:annotation>
 								<xs:documentation/>
 							</xs:annotation>

@@ -126,10 +126,9 @@ void FdoSmLpGeometricPropertyDefinition::FixSpatialContextAssociation()
 
 	FdoSmLpSpatialContextMgrP	scMgr = pLpSchemas->GetSpatialContextMgr();
 
-	bool	fromConfigDoc = ( FdoIoStreamP(pPhysical->GetConfigDoc()) != NULL );
 	bool	found = false;
 
-    if ( (GetElementState() != FdoSchemaElementState_Added) && !fromConfigDoc && mAssociatedSCName.GetLength() <= 0 && mAssociatedScId < 0 )
+    if ( (GetElementState() != FdoSchemaElementState_Added) && mAssociatedSCName.GetLength() <= 0 && mAssociatedScId < 0 )
 	{
 		// Look up in the collection of SC geometries associations loaded along the Spatial contexts
     	FdoStringP tableName = GetContainingDbObjectName();

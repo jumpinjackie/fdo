@@ -67,8 +67,20 @@ public:
     // Returns NULL if spatial context not found.
     FdoSmLpSpatialContextP FindItemById( FdoInt64 scid );
 
+    // Given a Physical Spatial Context, finds an equivalent LogicalPhysical spatial context,
+    // where all attributes except name and description match.
+    //
+    // Returns the index of the matched spatial context in this collection.
+    // Returns -1 if this collection has no matching spatial context.
+	FdoInt32 FindExistingSC( FdoSmPhSpatialContextP sc );
+
     // Overridden to update spatial context id to name map.
     virtual FdoInt32 Add( FdoSmLpSpatialContext* value);
+
+    // Generates a name for the next spatial context
+    // to add to this collection. Ensures that the name is 
+    // not already used by an item in this collection.
+    FdoStringP AutoGenName();
 
     /// Post outstanding modifications to the datastore.
 	virtual void Commit();
@@ -114,6 +126,7 @@ protected:
         FdoSmPhMgrP physicalSchema);
 
     virtual FdoSmLpSpatialContextP AddFromPhysical( FdoSmPhSpatialContextP phSc );
+    virtual FdoSmLpSpatialContextP AddFromPhysical( FdoSmPhSpatialContextP phSc, FdoStringP scName, FdoInt64 scId );
 
 private:
     // Functions for maintaining the lookup by id map.
@@ -127,6 +140,9 @@ private:
 
     // MAP for fast lookup of spatial contexts by id.
     FdoDictionaryP mIdMap;
+
+    // Unique ID for the next spatial context to add to this collection.
+    FdoInt64 mNextAutoNum;
 };
 
 typedef FdoPtr<FdoSmLpSpatialContextCollection> FdoSmLpSpatialContextsP;

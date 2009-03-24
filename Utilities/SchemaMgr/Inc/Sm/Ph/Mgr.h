@@ -370,6 +370,14 @@ public:
     /// Get the config document schema overrides
     FdoSchemaMappingsP GetConfigMappings();
 
+    // Applicable only when a config document has been specified to the current connection.
+    //
+    // Returns true if the list of spatial contexts for this connection must be build by merging
+    // the sc's from the config document with those from the physical datastore.
+    //
+    // Returns false if only the sc's from the config document must be used.
+    virtual bool ConfigIncludeNativeSCs();
+
     /// Get the corresponding qualified class name for the given database object.
     /// Returns L"" if the database object has not yet been classified
     FdoStringP GetDbObjectClassification( FdoStringP dbObjectName );
