@@ -24,7 +24,7 @@
 #include "c_FdoOra_API2.h"
 #include "c_Ora_API2.h"
 #include "KgOraProvider.h"
-
+#include <geometry/EnvelopeImpl.h>
 
 c_FdoOra_API2::c_FdoOra_API2(void)
 {
@@ -884,8 +884,7 @@ if( KingFdoViews && *KingFdoViews )
             L" ,k.fdo_class_name, k.fdo_srid, k.fdo_diminfo, k.fdo_cs_name, k.fdo_wktext, k.fdo_layer_gtype, k.fdo_sequence_name, k.fdo_identity, k.fdo_sdo_root_mbr "
             L" ,k.fdo_point_x_column ,k.fdo_point_y_column ,k.fdo_point_z_column ";
         
-        wchar_t sqlfrom[1024];
-        wsprintf(sqlfrom,L" FROM %s k ", KingFdoViews );
+        FdoStringP sqlfrom = FdoStringP::Format(L" FROM %s k ", KingFdoViews);
         
         sqljoin = L" LEFT JOIN all_sdo_geom_metadata a ON  UPPER(k.FDO_SPATIALTABLE_OWNER) = a.owner and UPPER(k.FDO_SPATIALTABLE_NAME) = a.table_name and UPPER(k.FDO_SPATIALTABLE_GEOMCOLUMN) = a.column_name "
             L" LEFT JOIN MDSYS.CS_SRS b ON  a.srid = b.srid "
@@ -894,7 +893,7 @@ if( KingFdoViews && *KingFdoViews )
             L" LEFT JOIN all_sequences s on s.sequence_name = CONCAT(a.table_name,'_FDOSEQ') "
             L" order by k.fdo_ora_owner, k.fdo_ora_name ";
         
-        sqlstr = sqlstr + sqlfrom + sqljoin;
+        sqlstr = sqlstr + (FdoString*)sqlfrom + sqljoin;
         
        
        
@@ -908,8 +907,7 @@ if( KingFdoViews && *KingFdoViews )
               L" ,k.fdo_class_name, k.fdo_srid, k.fdo_diminfo, k.fdo_cs_name, k.fdo_wktext, k.fdo_layer_gtype, k.fdo_sequence_name, k.fdo_identity, k.fdo_sdo_root_mbr "
               L" ,k.fdo_point_x_column ,k.fdo_point_y_column ,k.fdo_point_z_column ";
         
-        wchar_t sqlfrom[1024];
-        wsprintf(sqlfrom,L" FROM %s k ", KingFdoViews );
+        FdoStringP sqlfrom = FdoStringP::Format(L" FROM %s k ", KingFdoViews);
         
         sqljoin =  L" LEFT JOIN all_sdo_geom_metadata a ON  UPPER(k.FDO_SPATIALTABLE_OWNER) = a.owner and UPPER(k.FDO_SPATIALTABLE_NAME) = a.table_name and UPPER(k.FDO_SPATIALTABLE_GEOMCOLUMN) = a.column_name "
             L" LEFT JOIN MDSYS.CS_SRS b ON  a.srid = b.srid "
@@ -918,7 +916,7 @@ if( KingFdoViews && *KingFdoViews )
             L" LEFT JOIN all_sequences s on s.sequence_name = CONCAT(a.table_name,'_FDOSEQ') "
             L" order by k.fdo_ora_owner, k.fdo_ora_name ";
         
-        sqlstr = sqlstr + sqlfrom + sqljoin;
+        sqlstr = sqlstr + (FdoString*)sqlfrom + sqljoin;
         
       
       
