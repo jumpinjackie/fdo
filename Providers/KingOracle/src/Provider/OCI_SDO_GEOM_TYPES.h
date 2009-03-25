@@ -36,10 +36,4 @@ PUBLIC TYPES AND CONSTANTS
 #define D_OCI_SDO_DIM_ARRAY            L"MDSYS.SDO_DIM_ARRAY"
 #define D_OCI_SDO_DIM_ELEMENT            L"MDSYS.SDO_DIM_ELEMENT"
 
-
-
-
-
-
-
 #endif
