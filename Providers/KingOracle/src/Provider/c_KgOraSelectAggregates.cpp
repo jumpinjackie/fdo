@@ -318,7 +318,7 @@ std::wstring c_KgOraSelectAggregates::CreateSqlString(c_KgOraFilterProcessor& Fi
             
             GeomSqlColumnIndex=ind;
             
-            if( phys_class->GetIsPointGeometry() && (_wcsicmp(propname,phys_class->GetPoinGeometryPropertyName())==0) )
+            if( phys_class->GetIsPointGeometry() && (FdoCommonOSUtil::wcsicmp(propname,phys_class->GetPoinGeometryPropertyName())==0) )
             {
             // this is geometry created as point from numeric columns
               

@@ -58,7 +58,7 @@ c_KgOraSQLDataReader::c_KgOraSQLDataReader(c_KgOraConnection * Connection
     }
     else
     {
-      if( wcsicmp(oratype,L"SDO_GEOMETRY") == 0 )
+      if( FdoCommonOSUtil::wcsicmp(oratype,L"SDO_GEOMETRY") == 0 )
       {
         m_SqlColumns->Add(cname);
         m_SqlColIndex.push_back(ind); 
@@ -169,7 +169,7 @@ FdoPropertyType c_KgOraSQLDataReader::GetPropertyType(FdoString* ColumnName)
   wchar_t* oratype = m_OciStatement->GetColumnTypeName(ind+1);
   //string oratype = m_MetaData[ind].getString(oracle::occi::MetaData::ATTR_TYPE_NAME);
   
-  if( oratype && wcsicmp(oratype,L"SDO_GEOMETRY") == 0 )
+  if( oratype && FdoCommonOSUtil::wcsicmp(oratype,L"SDO_GEOMETRY") == 0 )
   {
     return FdoPropertyType_GeometricProperty;
   }
@@ -189,7 +189,7 @@ FdoPropertyType c_KgOraSQLDataReader::GetPropertyType(FdoString* ColumnName)
     if( str )
     {
       if( wcscmp(str,L"1") == 0 ) return true;
-      if( wcsicmp(str,L"1") == 0 ) return true;
+      if( FdoCommonOSUtil::wcsicmp(str,L"1") == 0 ) return true;
       
     }
     
@@ -206,7 +206,7 @@ FdoByte  c_KgOraSQLDataReader::GetByte(FdoString* ColumnName)
     //string str = m_OcciResultSet->getString(ind+1);    
     const wchar_t* str = m_OciStatement->GetString(ind+1);
     
-    if( str ) return *str;
+    if( str ) return (FdoByte)*str;
     
     return 0;
   }
@@ -300,7 +300,7 @@ FdoByte  c_KgOraSQLDataReader::GetByte(FdoString* ColumnName)
   if( ind >= 0) 
   {
     //float val = m_OcciResultSet->getFloat(ind+1);    
-    return m_OciStatement->GetDouble(ind+1);
+    return (float)m_OciStatement->GetDouble(ind+1);
   }
   throw FdoCommandException::Create(L"Float32");
 }

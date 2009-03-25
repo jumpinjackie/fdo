@@ -96,7 +96,7 @@ FdoDataType c_KgOraDataReader::GetDataType( FdoString* PropertyName )
   wchar_t* oratype = m_OciStatement->GetColumnTypeName(ind);
   //string oratype = m_MetaData[ind].getString(oracle::occi::MetaData::ATTR_TYPE_NAME);
   
-  if( oratype && wcsicmp(oratype,L"SDO_GEOMETRY") == 0 )
+  if( oratype && FdoCommonOSUtil::wcsicmp(oratype,L"SDO_GEOMETRY") == 0 )
   {
     return FdoPropertyType_GeometricProperty;
   }

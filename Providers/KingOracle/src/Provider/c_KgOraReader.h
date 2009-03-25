@@ -64,7 +64,7 @@ public:
     ind3 = m_ArrayIndLookup[m_CurrIndLookup];
     //method2_count_strcmp++;
     //if( wcscmp(m_SqlColumns->GetString(ind3),Name) == 0 )
-    if( wcsicmp(m_SqlColumns[ind3],Name) == 0 )
+    if( FdoCommonOSUtil::wcsicmp(m_SqlColumns[ind3],Name) == 0 )
     {
       m_CurrIndLookup++;
       if( m_CurrIndLookup >= m_CountNames ) m_CurrIndLookup=0;
@@ -81,7 +81,7 @@ public:
         ind3 = m_ArrayIndLookup[next_ind_lookup];
         //method2_count_strcmp++;
         //if( wcscmp(m_SqlColumns->GetString(ind3),Name) == 0 )
-        if( wcsicmp(m_SqlColumns[ind3],Name) == 0 )
+        if( FdoCommonOSUtil::wcsicmp(m_SqlColumns[ind3],Name) == 0 )
         {
           int temp = m_ArrayIndLookup[m_CurrIndLookup];
           m_ArrayIndLookup[m_CurrIndLookup] = m_ArrayIndLookup[next_ind_lookup];

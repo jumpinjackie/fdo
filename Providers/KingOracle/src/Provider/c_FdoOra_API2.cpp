@@ -235,7 +235,7 @@ bool c_FdoOra_API2::SetOracleStatementData(c_Oci_Statement*  Statement,int SqlPa
         val.OCIDateDD = date.day;
         val.OCIDateTime.OCITimeHH = date.hour;
         val.OCIDateTime.OCITimeMI = date.minute;
-        val.OCIDateTime.OCITimeSS = date.seconds;
+        val.OCIDateTime.OCITimeSS = (ub1)date.seconds;
         
         Statement->BindDateValue(SqlParamNum,val);
       }
@@ -433,7 +433,6 @@ bool c_FdoOra_API2::OraTypeToFdoDataType(const char* OraType,int Scale,int Lengt
 */
 bool c_FdoOra_API2::DescribeTableProperties(c_Oci_Connection * OciConn,const wchar_t*Schema,const wchar_t*TableName,FdoPropertyDefinitionCollection* PropCollection)
 {
-  int errstatus;
   OCIParam *parmh = (OCIParam *) 0;         /* parameter handle */
   OCIParam *collsthd = (OCIParam *) 0;      /* handle to list of columns */
   OCIParam *colhd = (OCIParam *) 0;         /* column handle */

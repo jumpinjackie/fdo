@@ -275,7 +275,7 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
       oci_stm->Prepare(sqlstr.GetString());
       
       unsigned long count = m_BatchParameterValues->GetCount();
-      for( long browind=0;browind<count;browind++)
+      for( unsigned long browind=0;browind<count;browind++)
       {
         // do aply of literal values
         // this apply witll skip parameter values
@@ -298,7 +298,7 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
           )
         {
           unsigned long bcount = bparamcol->GetCount();
-          for(long bind=0;bind<bcount;bind++)
+          for(unsigned long bind=0;bind<bcount;bind++)
           {
             FdoPtr<FdoParameterValue> paramval = bparamcol->GetItem(bind);
             FdoPtr<FdoLiteralValue> lval = paramval->GetValue();
