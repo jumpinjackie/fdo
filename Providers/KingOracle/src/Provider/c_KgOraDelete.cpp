@@ -20,7 +20,7 @@
 
 
 c_KgOraDelete::c_KgOraDelete(c_KgOraConnection *Conn)
-  : c_KgOraFdoFeatureCommand(Conn)
+  : c_KgOraFdoFeatureCommand<FdoIDelete>(Conn)
 {
 }
 
