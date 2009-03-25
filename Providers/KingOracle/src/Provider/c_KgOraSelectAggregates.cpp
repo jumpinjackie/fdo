@@ -363,11 +363,10 @@ std::wstring c_KgOraSelectAggregates::CreateSqlString(c_KgOraFilterProcessor& Fi
 
     
     
-    wchar_t* sbuff = new wchar_t[1024];
-    wsprintf(sbuff, L"SELECT %s FROM %s %s",(const wchar_t*)sql_select_columns_part,(const wchar_t*)fultablename,(const wchar_t*)table_alias);
+    FdoStringP sbuff = FdoStringP::Format(L"SELECT %s FROM %s %s",(const wchar_t*)sql_select_columns_part,(const wchar_t*)fultablename,(const wchar_t*)table_alias);
     
     
-    sqlstr = sbuff;
+    sqlstr = (FdoString*)sbuff;
     if( filtertext && *filtertext )
     {
       sqlstr += L" WHERE ";
@@ -419,9 +418,7 @@ std::wstring c_KgOraSelectAggregates::CreateSqlString(c_KgOraFilterProcessor& Fi
       }
       
     }
-    
-    delete [] sbuff;
-    
+       
     FdoPtr<FdoIdentifierCollection> order_ident_col = GetOrdering();
     long order_count = order_ident_col->GetCount();
     if( order_count > 0 )

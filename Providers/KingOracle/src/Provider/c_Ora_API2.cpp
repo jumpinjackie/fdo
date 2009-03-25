@@ -405,9 +405,8 @@ try
           // now calculate increment
           if( (long)inc > 0 )
           {
-            wchar_t buff[64];
-            wsprintf(buff,L"%ld",inc);
-            std::wstring incstr = buff;
+            FdoStringP buff = FdoStringP::Format(L"%ld",inc);
+            std::wstring incstr = (FdoString*)buff;
            
             sql = L"ALTER SEQUENCE " + strseq + L" INCREMENT BY " + incstr + L" MINVALUE 0";  
             oci_stm->Prepare(sql.c_str()); 
