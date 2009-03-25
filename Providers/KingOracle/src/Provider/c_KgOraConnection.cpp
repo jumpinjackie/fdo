@@ -731,7 +731,7 @@ c_KgOraSchemaDesc* c_KgOraConnection::GetSchemaDesc()
     }
   
   #else
-    m_SchemaDesc = c_FdoOra_API2::DescribeSchema(this->GetOciConnection(),m_OraSchemaName.c_str(),m_FdoViewsTable.c_str());
+    m_SchemaDesc = c_FdoOra_API2::DescribeSchema(this->GetOciConnection(),m_OraConnectionUserName.c_str(),m_OraSchemaName.c_str(),m_FdoViewsTable.c_str());
   #endif
   }
   return FDO_SAFE_ADDREF(m_SchemaDesc.p);
