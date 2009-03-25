@@ -221,12 +221,12 @@ void c_KgOraExpressionProcessor::ProcessIdentifier( FdoIdentifier& Expr)
 
 void c_KgOraExpressionProcessor::ProcessParameter( FdoParameter& expr )
 {
-  long size = m_ParamList.size() + m_ParamNumberOffset;
-  size++;
-  wchar_t chbuff[16];
-  wsprintf(chbuff,L"%ld",size);
+    long size = m_ParamList.size() + m_ParamNumberOffset;
+    size++;
+  
+    FdoStringP chbuff = FdoStringP::Format(L"%ld",size);
     AppendString( L":" );
-    AppendString( chbuff );
+    AppendString( (FdoString*)chbuff );
     
     
     m_ParamList.push_back( new c_KgOraSqlParamDesc(expr.GetName()) );
@@ -238,9 +238,8 @@ void c_KgOraExpressionProcessor::AddAsParameter(FdoDataValue& Value)
 {
   long size = m_ParamList.size() + m_ParamNumberOffset;
   size++;
-  wchar_t chbuff[16];
-  wsprintf(chbuff,L":%ld",size);
-  AppendString( chbuff );
+  FdoStringP chbuff = FdoStringP::Format(L":%ld",size);
+  AppendString( (FdoString*)chbuff );
     
     
  m_ParamList.push_back( new c_KgOraSqlParamDesc(&Value) );
@@ -314,8 +313,7 @@ void c_KgOraExpressionProcessor::ProcessDateTimeValue(FdoDateTimeValue& expr)
     {
       
       AppendString( L"TO_DATE(" );
-      wchar_t    tmpValue[124];
-      wsprintf( tmpValue,L"'%d-%d-%d %d:%d:%d'",dt.month,dt.day,dt.year,dt.hour,dt.minute,dt.seconds);
+      FdoStringP tmpValue = FdoStringP::Format(L"'%d-%d-%d %d:%d:%d'",dt.month,dt.day,dt.year,dt.hour,dt.minute,dt.seconds);
       
       AppendString( L",'MM-DD-YYYY HH24:MI:SS')" );
       
@@ -325,8 +323,7 @@ void c_KgOraExpressionProcessor::ProcessDateTimeValue(FdoDateTimeValue& expr)
     if( dt.IsDate() )
     {
       AppendString( L"TO_DATE(" );
-      wchar_t    tmpValue[124];
-      wsprintf( tmpValue,L"'%d-%d-%d'",dt.month,dt.day,dt.year);
+      FdoStringP tmpValue = FdoStringP::Format(L"'%d-%d-%d'",dt.month,dt.day,dt.year);
       
       AppendString( L",'MM-DD-YYYY')" );
       
@@ -337,8 +334,7 @@ void c_KgOraExpressionProcessor::ProcessDateTimeValue(FdoDateTimeValue& expr)
     {
       
       AppendString( L"TO_DATE(" );
-      wchar_t    tmpValue[124];
-      wsprintf( tmpValue,L"'%d:%d:%d'",dt.hour,dt.minute,dt.seconds);
+      FdoStringP  tmpValue = FdoStringP::Format(L"'%d:%d:%d'",dt.hour,dt.minute,dt.seconds);
       
       AppendString( L",'HH24:MI:SS')" );
       
@@ -362,9 +358,8 @@ void c_KgOraExpressionProcessor::ProcessDoubleValue(FdoDoubleValue& expr)
     }
     else
     {
-      wchar_t    tmpValue[124];
-      wsprintf(tmpValue,L"%.16g",expr.GetDouble());
-      AppendString( tmpValue );
+      FdoStringP tmpValue = FdoStringP::Format(L"%.16g",expr.GetDouble());
+      AppendString( (FdoString*)tmpValue );
     }
   }
 }
@@ -383,9 +378,8 @@ void c_KgOraExpressionProcessor::ProcessDecimalValue(FdoDecimalValue& expr)
     }
     else
     {
-      wchar_t    tmpValue[124];
-      wsprintf(tmpValue,L"%.8f",expr.GetDecimal());
-      AppendString( tmpValue );
+      FdoStringP tmpValue = FdoStringP::Format(L"%.8f",expr.GetDecimal());
+      AppendString( (FdoString*)tmpValue );
     }
   }
 }
@@ -404,9 +398,8 @@ void c_KgOraExpressionProcessor::ProcessInt16Value(FdoInt16Value& expr)
     }
     else
     {
-      wchar_t    tmpValue[124];
-      wsprintf(tmpValue,L"%d",(int)expr.GetInt16());
-      AppendString( tmpValue );
+      FdoStringP tmpValue = FdoStringP::Format(L"%d",(int)expr.GetInt16());
+      AppendString( (FdoString*)tmpValue );
     }
   }
 }
@@ -425,9 +418,8 @@ void c_KgOraExpressionProcessor::ProcessInt32Value(FdoInt32Value& expr)
     }
     else
     {
-      wchar_t    tmpValue[124];
-      wsprintf(tmpValue,L"%ld",(long)expr.GetInt32());
-      AppendString( tmpValue );
+      FdoStringP tmpValue = FdoStringP::Format(L"%ld",(long)expr.GetInt32());
+      AppendString( (FdoString*)tmpValue );
     }
   }
 }
@@ -446,16 +438,9 @@ void c_KgOraExpressionProcessor::ProcessInt64Value(FdoInt64Value& expr)
       return; 
     }
     
-      wchar_t    tmpValue[124];
+      FdoStringP tmpValue = FdoStringP::Format(L"%lld", (FdoInt64)(dynamic_cast<FdoInt64Value&>(expr)).GetInt64());
 
-  #ifdef _WIN32
-	  wcsncpy( tmpValue, _i64tow( (FdoInt64)(dynamic_cast<FdoInt64Value&>(expr)).GetInt64(),tmpValue, 10 ), 123 );
-	  tmpValue[123]='\0';
-  #else
-
-	  wsprintf(tmpValue, L"%lld", (FdoInt64)(dynamic_cast<FdoInt64Value&>(expr)).GetInt64());
-  #endif
-      AppendString(tmpValue);
+      AppendString((FdoString*)tmpValue);
     }
 
 }
@@ -475,9 +460,8 @@ void c_KgOraExpressionProcessor::ProcessSingleValue(FdoSingleValue& expr)
     }
     else
     {
-      wchar_t    tmpValue[124];
-      wsprintf(tmpValue,L"%.8f",expr.GetSingle());
-      AppendString( tmpValue );
+      FdoStringP tmpValue = FdoStringP::Format(L"%.8f",expr.GetSingle());
+      AppendString( (FdoString*)tmpValue );
     }
   }
 }
@@ -552,10 +536,9 @@ void c_KgOraExpressionProcessor::ProcessGeometryValue(FdoGeometryValue& Expr)
   
     long size = m_ParamList.size() + m_ParamNumberOffset;
     size++;
-    wchar_t chbuff[16];
-    wsprintf(chbuff,L"%ld",size);
+    FdoStringP chbuff = FdoStringP::Format(L"%ld",size);
     AppendString( L":" );
-    AppendString( chbuff );
+    AppendString( (FdoString*)chbuff );
       
       
     m_ParamList.push_back( new c_KgOraSqlParamDesc(fgf) );  
@@ -616,10 +599,9 @@ void c_KgOraExpressionProcessor::ProcessGeometryValueRect(FdoGeometryValue& Expr
          
     long size = m_ParamList.size() + m_ParamNumberOffset;
     size++;
-    wchar_t chbuff[16];
-    wsprintf(chbuff,L"%ld",size);
+    FdoStringP chbuff = FdoStringP::Format(L"%ld",size);
     AppendString( L":" );
-    AppendString( chbuff );
+    AppendString( (FdoString*)chbuff );
       
       
    m_ParamList.push_back( new c_KgOraSqlParamDesc(m_OraSridDesc.m_OraSrid,minx,miny,maxx,maxy) );  

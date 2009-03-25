@@ -274,35 +274,35 @@ switch( Filter.GetOperation() )
         double maxx = envelope->GetMaxX();
         double maxy = envelope->GetMaxY();
 
-        wchar_t buff[512];
+        FdoStringP buff;
         
         AppendString(D_FILTER_OPEN_PARENTH);
         
         AppendString(str_xcol);
         AppendString(L">=");       
-        wsprintf(buff,L"%.8lf",minx);
-        AppendString(buff);
+        FdoStringP::Format(L"%.8lf",minx);
+        AppendString((FdoString*)buff);
         
         AppendString(L" and ");
         
         AppendString(str_xcol);
         AppendString(L"<=");        
-        wsprintf(buff,L"%.8lf",maxx);
-        AppendString(buff);
+        FdoStringP::Format(L"%.8lf",maxx);
+        AppendString((FdoString*)buff);
         
         AppendString(L" and ");
         
         AppendString(str_ycol);
         AppendString(L">=");        
-        wsprintf(buff,L"%.8lf",miny);
-        AppendString(buff);
+        FdoStringP::Format(L"%.8lf",miny);
+        AppendString((FdoString*)buff);
         
         AppendString(L" and ");
         
         AppendString(str_ycol);
         AppendString(L"<=");        
-        wsprintf(buff,L"%.8lf",maxy);
-        AppendString(buff);
+        FdoStringP::Format(L"%.8lf",maxy);
+        AppendString((FdoString*)buff);
         
         AppendString(D_FILTER_CLOSE_PARENTH);        
       }      
@@ -425,35 +425,35 @@ switch( Filter.GetOperation() )
         double maxx = envelope->GetMaxX();
         double maxy = envelope->GetMaxY();    
 
-        wchar_t buff[512];
+        FdoStringP buff;
         
         AppendString(D_FILTER_OPEN_PARENTH);
         
         AppendString(str_xcol);
         AppendString(L">=");       
-        wsprintf(buff,L"%.8lf",minx);
-        AppendString(buff);
+        FdoStringP::Format(L"%.8lf",minx);
+        AppendString((FdoString*)buff);
         
         AppendString(L" and ");
         
         AppendString(str_xcol);
         AppendString(L"<=");        
-        wsprintf(buff,L"%.8lf",maxx);
-        AppendString(buff);
+        FdoStringP::Format(L"%.8lf",maxx);
+        AppendString((FdoString*)buff);
         
         AppendString(L" and ");
         
         AppendString(str_ycol);
         AppendString(L">=");        
-        wsprintf(buff,L"%.8lf",miny);
-        AppendString(buff);
+        FdoStringP::Format(L"%.8lf",miny);
+        AppendString((FdoString*)buff);
         
         AppendString(L" and ");
         
         AppendString(str_ycol);
         AppendString(L"<=");        
-        wsprintf(buff,L"%.8lf",maxy);
-        AppendString(buff);
+        FdoStringP::Format(L"%.8lf",maxy);
+        AppendString((FdoString*)buff);
         
         AppendString(D_FILTER_CLOSE_PARENTH);        
       }
@@ -672,9 +672,8 @@ switch( Filter.GetOperation() )
     ProcessExpresion( geomprop );
     AppendString(L",");
     ProcessExpresion( geomval );
-    wchar_t tmpbuff[64];
-    wsprintf(tmpbuff,L",'distance=%.6lf'",dist);
-    AppendString(tmpbuff);
+    FdoStringP tmpbuff = FdoStringP::Format(L",'distance=%.6lf'",dist);
+    AppendString((FdoString*)tmpbuff);
     AppendString(L")='TRUE'");
     AppendString(D_FILTER_CLOSE_PARENTH);
   }
@@ -686,9 +685,8 @@ switch( Filter.GetOperation() )
     ProcessExpresion( geomprop );
     AppendString(L",");
     ProcessExpresion( geomval );
-    wchar_t tmpbuff[64];
-    wsprintf(tmpbuff,L",'distance=%.6lf'",dist);
-    AppendString(tmpbuff);
+    FdoStringP tmpbuff = FdoStringP::Format(L",'distance=%.6lf'",dist);
+    AppendString((FdoString*)tmpbuff);
     AppendString(L")='FALSE'");
     AppendString(D_FILTER_CLOSE_PARENTH);
   }
