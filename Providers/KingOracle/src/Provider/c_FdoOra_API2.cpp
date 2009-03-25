@@ -1360,7 +1360,7 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
       if( spatial_context.p && isminmax )
       {
         FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-        FdoPtr<FdoEnvelopeImpl> env = FdoEnvelopeImpl::Create(minx,miny,maxx,maxy);
+        FdoPtr<FdoIEnvelope> env = gf->CreateEnvelopeXY(minx, miny, maxx, maxy);
         
         spatial_context->ExpandExtent( env );
       }
