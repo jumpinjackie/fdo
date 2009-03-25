@@ -472,7 +472,7 @@ void MySqlFdoInsertTest::charSetVldValue( FdoString* className, FdoString* expec
         printf( "%ls\n", (FdoString*) msg );
  
         printf( "   selValue %d: ", wcslen(val) );
-        for ( int j = 0; j < wcslen(val); j++ ) 
+        for ( unsigned int j = 0; j < wcslen(val); j++ ) 
             printf( "%x ", val[j] );
 
         printf( "\n" );
