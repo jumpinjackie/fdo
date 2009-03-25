@@ -393,7 +393,7 @@ void UnitTestUtil::CreateData( bool create, FdoIConnection  *inConn, int featCou
 
 	FdoPtr<FdoPropertyValue> pvNumb = FdoPropertyValue::Create(L"Numb", svNumb);
 
-	FdoDateTime dt(2006,4,21,19,40,10.0001);
+	FdoDateTime dt(2006,4,21,19,40,(float)10.0001);
 	FdoPtr<FdoDateTimeValue> dtv = FdoDateTimeValue::Create(dt);
 	FdoPtr<FdoPropertyValue> pvDateTime = FdoPropertyValue::Create(L"datetime", dtv);
 
