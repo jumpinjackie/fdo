@@ -85,6 +85,8 @@ void TestCommonFeatureCommands::duplicateComputedIdTest (FdoIConnection* conn, F
     }
 }
 
+#pragma warning(push)
+#pragma warning( disable : 4189 )
 
 void TestCommonFeatureCommands::secondComputedIdTest (FdoIConnection* conn, FdoString* className, FdoString* numericPropName)
 {
@@ -141,3 +143,5 @@ void TestCommonFeatureCommands::secondComputedIdTest (FdoIConnection* conn, FdoS
         }
     }
 }
+
+#pragma warning(pop)
