@@ -45,7 +45,7 @@ public:
   c_BindValueBuffer(OCINumber Val) { m_String=NULL;m_SdoGeom=NULL; m_OciNumber=Val; }
   c_BindValueBuffer(long Val) { m_String=NULL;m_SdoGeom=NULL; m_Long=Val; }
   c_BindValueBuffer(int Val) { m_String=NULL;m_SdoGeom=NULL; m_Int=Val; }
-  c_BindValueBuffer(const wchar_t*Val) { m_String=NULL;m_SdoGeom=NULL; m_String=_wcsdup(Val); }
+  c_BindValueBuffer(const wchar_t*Val) { m_String=NULL;m_SdoGeom=NULL; m_String=FdoCommonOSUtil::wcsdup((wchar_t*)Val); }
   c_BindValueBuffer(c_SDO_GEOMETRY*Val) { m_String=NULL;m_SdoGeom=NULL; m_SdoGeom=Val; }
   
   ~c_BindValueBuffer() { if( m_SdoGeom ) delete m_SdoGeom; if( m_String ) free(m_String); };
