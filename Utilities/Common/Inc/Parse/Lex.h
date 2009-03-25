@@ -80,7 +80,7 @@ private:
     const wchar_t	if_getch		(FdoCommonParse *);        // Read next character
     const wchar_t	find_nonblank	(FdoCommonParse *pParse);        // Get next not blank symbol
 
-    void			getword			(FdoCommonParse *, wchar_t*, FdoInt32);   // Get keyword or identifier from input
+    void			getword			(FdoCommonParse *, wchar_t*);   // Get keyword or identifier from input
 
     wchar_t*		getdigits		(FdoCommonParse *pParse, wchar_t*);  	// Get digits 
     FdoUInt32		get_unsigned	(FdoCommonParse *pParse);			// Get unsigned integer number

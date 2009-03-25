@@ -46,7 +46,7 @@ void InsertTests2::CreateConnection( Context& context, FdoBoolean recreateDb )
     if (FdoCommonFile::FileExists (dirName)) {
         std::vector<std::wstring> files;
         FdoCommonFile::GetAllFiles (dirName, files );
-        for ( int i = 0; i < files.size(); i++ ) 
+        for ( size_t i = 0; i < files.size(); i++ ) 
             FdoCommonFile::Delete( 
                 dirName + 
 #ifdef _WIN32

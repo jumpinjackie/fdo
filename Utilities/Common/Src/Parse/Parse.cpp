@@ -104,6 +104,11 @@ FdoComputedIdentifier* FdoCommonParse::FindComputedIdentifier( FdoString* name )
     return NULL;
 }
 
+#ifndef DEBUG_TRACETREE
+#pragma warning(push)
+#pragma warning( disable : 4100 )
+#endif
+
 //	provide debug trace of action type
 FdoIDisposable* FdoCommonParse::Add(FdoString* pDebug, FdoIDisposable *pThis)
 {
@@ -125,6 +130,10 @@ void FdoCommonParse::Trace(FdoString* pDebug)
 	printf("Tree(%S)\n", pDebug);
 #endif
 }
+
+#ifndef DEBUG_TRACETREE
+#pragma warning(pop)
+#endif
 
 // release all the allocated nodes and then Clean
 void FdoCommonParse::Abort(void)

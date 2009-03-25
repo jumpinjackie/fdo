@@ -2185,7 +2185,7 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
       func_call   = L"(ToFloat(dcl_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderSgl(data_reader, true, 9, exp_dcl_val);
+      CheckReaderSgl(data_reader, true, 9, (FdoFloat)exp_dcl_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -2222,7 +2222,7 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
       func_call   = L"(ToFloat(i32_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderSgl(data_reader, true, 9, exp_i32_val);
+      CheckReaderSgl(data_reader, true, 9, (FdoFloat)exp_i32_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -2259,7 +2259,7 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
       func_call   = L"(ToFloat(str_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderSgl(data_reader, true, 9, exp_str_val);
+      CheckReaderSgl(data_reader, true, 9, (FdoFloat)exp_str_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -2298,7 +2298,7 @@ void FdoExpressionFunctionTest::TestToFloatFunction ()
       func_call   = L"(ToFlOaT(dcl_val) as cmp_id)";
       data_reader =
                 ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderSgl(data_reader, true, 9, exp_dcl_val);
+      CheckReaderSgl(data_reader, true, 9, (FdoFloat)exp_dcl_val);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...

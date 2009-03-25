@@ -411,7 +411,7 @@ start:;
         if (iswalpha(m_ch)) 
 		{
 		    // Get keyword or identifier
-            getword(pParse, wordOnStack, sizeof(wordOnStack)/sizeof(wchar_t));
+            getword(pParse, wordOnStack);
 
             // Is it a set function?
             FdoInt32   tktmp;             // Token temporary
@@ -539,7 +539,7 @@ start:;
 					{
 						// Get identifier (can't be keyword)
   						wchar_t	nextword[maxCharLength];
-  						getword(pParse, nextword, sizeof(nextword)/sizeof(wchar_t));
+  						getword(pParse, nextword);
   						FdoStringUtility::StringConcatenate(wordOnStack, nextword);
 					}
 				}
@@ -646,7 +646,7 @@ start:;
             if (iswalpha(m_ch)) 
 			{
 				// Get parameter name
-	            getword(pParse, wordOnStack, sizeof(wordOnStack)/sizeof(wchar_t));
+	            getword(pParse, wordOnStack);
 				FDO_SAFE_RELEASE(m_data);
 				m_data = FdoStringValue::Create(wordOnStack);
 				m_token = FdoToken_PARAMETER;
@@ -756,7 +756,7 @@ const wchar_t FdoLex::if_getch(FdoCommonParse *pParse)
 }
 
 //  Get Word from input stream
-void FdoLex::getword(FdoCommonParse *pParse, wchar_t* pstr, FdoInt32 maxCharacters)
+void FdoLex::getword(FdoCommonParse *pParse, wchar_t* pstr)
 {
     // TODO: check maximum length
 	while (iswalnum(m_ch) || m_ch == '_') 
