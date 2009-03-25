@@ -208,9 +208,8 @@ c_Oci_ColumnData::~c_Oci_ColumnData(  )
     break;
     case e_OciString:
     {
-      wchar_t *wstr;
-      
       /*
+      wchar_t *wstr;
       for(int ind=0;ind<m_DataArraySize;ind++)
       {
         wstr = m_DataStringPtrArray[ind];

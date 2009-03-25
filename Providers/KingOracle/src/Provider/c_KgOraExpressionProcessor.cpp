@@ -133,7 +133,7 @@ void c_KgOraExpressionProcessor::ProcessFunction(FdoFunction& expr)
   FdoStringP fname = expr.GetName();
   
   
-  if( wcsicmp(fname,FDO_FUNCTION_SPATIALEXTENTS) == 0)
+  if( FdoCommonOSUtil::wcsicmp(fname,FDO_FUNCTION_SPATIALEXTENTS) == 0)
   {
     if( m_ConstantSpatialExtent.GetLength() > 0 )
     {
@@ -156,7 +156,7 @@ void c_KgOraExpressionProcessor::ProcessFunction(FdoFunction& expr)
   
   FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
   
-  if( wcsicmp(fname,FDO_FUNCTION_COUNT) == 0)
+  if( FdoCommonOSUtil::wcsicmp(fname,FDO_FUNCTION_COUNT) == 0)
   {
     if( exprCol->GetCount() == 0 )
     {
