@@ -98,9 +98,9 @@ void c_Oci_ColumnData::Set( c_Oci_Connection*OciConn,int ColumnNumber,int OciDat
           FdoStringP buff;
           
           if( TypeName )
-            FdoStringP::Format(L"c_Oci_ColumnData::Set : Unsupported Named Type '%s'!",TypeName);
+            buff = FdoStringP::Format(L"c_Oci_ColumnData::Set : Unsupported Named Type '%s'!",TypeName);
           else
-            FdoStringP::Format(L"c_Oci_ColumnData::Set : Unsupported Named Type 'NULL'!");
+            buff = FdoStringP::Format(L"c_Oci_ColumnData::Set : Unsupported Named Type 'NULL'!");
 
           throw new c_Oci_Exception (0,0,(FdoString*)buff);
         }

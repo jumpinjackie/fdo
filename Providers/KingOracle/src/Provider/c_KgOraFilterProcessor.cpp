@@ -280,28 +280,28 @@ switch( Filter.GetOperation() )
         
         AppendString(str_xcol);
         AppendString(L">=");       
-        FdoStringP::Format(L"%.8lf",minx);
+        buff = FdoStringP::Format(L"%.8lf",minx);
         AppendString((FdoString*)buff);
         
         AppendString(L" and ");
         
         AppendString(str_xcol);
         AppendString(L"<=");        
-        FdoStringP::Format(L"%.8lf",maxx);
+        buff = FdoStringP::Format(L"%.8lf",maxx);
         AppendString((FdoString*)buff);
         
         AppendString(L" and ");
         
         AppendString(str_ycol);
         AppendString(L">=");        
-        FdoStringP::Format(L"%.8lf",miny);
+        buff = FdoStringP::Format(L"%.8lf",miny);
         AppendString((FdoString*)buff);
         
         AppendString(L" and ");
         
         AppendString(str_ycol);
         AppendString(L"<=");        
-        FdoStringP::Format(L"%.8lf",maxy);
+        buff = FdoStringP::Format(L"%.8lf",maxy);
         AppendString((FdoString*)buff);
         
         AppendString(D_FILTER_CLOSE_PARENTH);        
@@ -431,28 +431,28 @@ switch( Filter.GetOperation() )
         
         AppendString(str_xcol);
         AppendString(L">=");       
-        FdoStringP::Format(L"%.8lf",minx);
+        buff = FdoStringP::Format(L"%.8lf",minx);
         AppendString((FdoString*)buff);
         
         AppendString(L" and ");
         
         AppendString(str_xcol);
         AppendString(L"<=");        
-        FdoStringP::Format(L"%.8lf",maxx);
+        buff = FdoStringP::Format(L"%.8lf",maxx);
         AppendString((FdoString*)buff);
         
         AppendString(L" and ");
         
         AppendString(str_ycol);
         AppendString(L">=");        
-        FdoStringP::Format(L"%.8lf",miny);
+        buff = FdoStringP::Format(L"%.8lf",miny);
         AppendString((FdoString*)buff);
         
         AppendString(L" and ");
         
         AppendString(str_ycol);
         AppendString(L"<=");        
-        FdoStringP::Format(L"%.8lf",maxy);
+        buff = FdoStringP::Format(L"%.8lf",maxy);
         AppendString((FdoString*)buff);
         
         AppendString(D_FILTER_CLOSE_PARENTH);        
