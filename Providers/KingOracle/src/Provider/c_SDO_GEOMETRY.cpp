@@ -236,8 +236,6 @@ double c_SDO_GEOMETRY::GetSdoPointZ()
 
 void c_SDO_GEOMETRY::SetSdoGtype( int Gtype )
 {
-  OCINumber oci_number;
-
   c_OCI_API::OciCheckError(m_OciErr, OCINumberFromInt(m_OciErr, 
     (const dvoid *)&Gtype, 
     (uword)sizeof(Gtype),
@@ -265,7 +263,6 @@ void c_SDO_GEOMETRY::SetNull_SdoSrid(  )
 
 void c_SDO_GEOMETRY::AppendElemInfoArray( int Val )
 {
-  int i;
   OCINumber oci_number;
 
   c_OCI_API::OciCheckError(m_OciErr, 
@@ -283,7 +280,6 @@ void c_SDO_GEOMETRY::AppendElemInfoArray( int Val )
 
 void c_SDO_GEOMETRY::AppendSdoOrdinates( double Val )
 {
-  int i;
   OCINumber oci_number;
 
   c_OCI_API::OciCheckError(m_OciErr, 

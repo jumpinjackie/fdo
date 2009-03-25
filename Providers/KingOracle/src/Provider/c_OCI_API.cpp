@@ -58,9 +58,6 @@ c_OCI_API::~c_OCI_API(void)
 *******************************************************************************/
 void c_OCI_API::OciCheckError(OCIError *errhp, sword status)
 {
-  text errbuf[512];
-  sb4 errcode = 0;
-
   switch (status)
   {
     case OCI_SUCCESS:
@@ -297,13 +294,6 @@ c_Oci_Connection::~c_Oci_Connection(  )
 
 void c_Oci_Connection::LogOn( const wchar_t* UserName,const wchar_t* Password,const wchar_t* DbLink )
 {
- 
-    int maxsz = 50 ;  /* 50% increase ? */
-    int optsz = 2048000 ;  /* 2000 K bytes */
-    int curmaxsz, curoptsz;
-
-    
-    
     /*
     sword lstat;
     // Logon in Connection Pool mode 
@@ -317,11 +307,9 @@ void c_Oci_Connection::LogOn( const wchar_t* UserName,const wchar_t* Password,co
       exit(1);
     }
     */
+
     c_OCI_API::OciCheckError(m_OciHpError, OCILogon2(m_OciHpEnvironment,m_OciHpError,&m_OciHpServiceContext,(CONST OraText *)UserName, (ub4)wcslen(UserName)*sizeof(wchar_t),
       (CONST OraText *)Password, (ub4)wcslen(Password)*sizeof(wchar_t),(CONST OraText *)DbLink, (ub4)wcslen(DbLink)*sizeof(wchar_t),OCI_DEFAULT));
-
-     
-
 
     // describe spatial object types 
     c_OCI_API::OciCheckError(m_OciHpError, OCIHandleAlloc(m_OciHpEnvironment, (dvoid **)&m_OciHpDescribe, 

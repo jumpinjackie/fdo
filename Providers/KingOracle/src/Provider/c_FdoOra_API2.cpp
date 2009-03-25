@@ -24,7 +24,7 @@
 #include "c_FdoOra_API2.h"
 #include "c_Ora_API2.h"
 #include "KgOraProvider.h"
-
+#include <geometry/EnvelopeImpl.h>
 
 c_FdoOra_API2::c_FdoOra_API2(void)
 {
@@ -235,7 +235,7 @@ bool c_FdoOra_API2::SetOracleStatementData(c_Oci_Statement*  Statement,int SqlPa
         val.OCIDateDD = date.day;
         val.OCIDateTime.OCITimeHH = date.hour;
         val.OCIDateTime.OCITimeMI = date.minute;
-        val.OCIDateTime.OCITimeSS = date.seconds;
+        val.OCIDateTime.OCITimeSS = (ub1)date.seconds;
         
         Statement->BindDateValue(SqlParamNum,val);
       }
@@ -433,7 +433,6 @@ bool c_FdoOra_API2::OraTypeToFdoDataType(const char* OraType,int Scale,int Lengt
 */
 bool c_FdoOra_API2::DescribeTableProperties(c_Oci_Connection * OciConn,const wchar_t*Schema,const wchar_t*TableName,FdoPropertyDefinitionCollection* PropCollection)
 {
-  int errstatus;
   OCIParam *parmh = (OCIParam *) 0;         /* parameter handle */
   OCIParam *collsthd = (OCIParam *) 0;      /* handle to list of columns */
   OCIParam *colhd = (OCIParam *) 0;         /* column handle */
@@ -884,8 +883,7 @@ if( KingFdoViews && *KingFdoViews )
             L" ,k.fdo_class_name, k.fdo_srid, k.fdo_diminfo, k.fdo_cs_name, k.fdo_wktext, k.fdo_layer_gtype, k.fdo_sequence_name, k.fdo_identity, k.fdo_sdo_root_mbr "
             L" ,k.fdo_point_x_column ,k.fdo_point_y_column ,k.fdo_point_z_column ";
         
-        wchar_t sqlfrom[1024];
-        wsprintf(sqlfrom,L" FROM %s k ", KingFdoViews );
+        FdoStringP sqlfrom = FdoStringP::Format(L" FROM %s k ", KingFdoViews);
         
         sqljoin = L" LEFT JOIN all_sdo_geom_metadata a ON  UPPER(k.FDO_SPATIALTABLE_OWNER) = a.owner and UPPER(k.FDO_SPATIALTABLE_NAME) = a.table_name and UPPER(k.FDO_SPATIALTABLE_GEOMCOLUMN) = a.column_name "
             L" LEFT JOIN MDSYS.CS_SRS b ON  a.srid = b.srid "
@@ -894,7 +892,7 @@ if( KingFdoViews && *KingFdoViews )
             L" LEFT JOIN all_sequences s on s.sequence_name = CONCAT(a.table_name,'_FDOSEQ') "
             L" order by k.fdo_ora_owner, k.fdo_ora_name ";
         
-        sqlstr = sqlstr + sqlfrom + sqljoin;
+        sqlstr = sqlstr + (FdoString*)sqlfrom + sqljoin;
         
        
        
@@ -908,8 +906,7 @@ if( KingFdoViews && *KingFdoViews )
               L" ,k.fdo_class_name, k.fdo_srid, k.fdo_diminfo, k.fdo_cs_name, k.fdo_wktext, k.fdo_layer_gtype, k.fdo_sequence_name, k.fdo_identity, k.fdo_sdo_root_mbr "
               L" ,k.fdo_point_x_column ,k.fdo_point_y_column ,k.fdo_point_z_column ";
         
-        wchar_t sqlfrom[1024];
-        wsprintf(sqlfrom,L" FROM %s k ", KingFdoViews );
+        FdoStringP sqlfrom = FdoStringP::Format(L" FROM %s k ", KingFdoViews);
         
         sqljoin =  L" LEFT JOIN all_sdo_geom_metadata a ON  UPPER(k.FDO_SPATIALTABLE_OWNER) = a.owner and UPPER(k.FDO_SPATIALTABLE_NAME) = a.table_name and UPPER(k.FDO_SPATIALTABLE_GEOMCOLUMN) = a.column_name "
             L" LEFT JOIN MDSYS.CS_SRS b ON  a.srid = b.srid "
@@ -918,7 +915,7 @@ if( KingFdoViews && *KingFdoViews )
             L" LEFT JOIN all_sequences s on s.sequence_name = CONCAT(a.table_name,'_FDOSEQ') "
             L" order by k.fdo_ora_owner, k.fdo_ora_name ";
         
-        sqlstr = sqlstr + sqlfrom + sqljoin;
+        sqlstr = sqlstr + (FdoString*)sqlfrom + sqljoin;
         
       
       
@@ -1362,7 +1359,7 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
       if( spatial_context.p && isminmax )
       {
         FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-        FdoPtr<FdoEnvelopeImpl> env = FdoEnvelopeImpl::Create(minx,miny,maxx,maxy);
+        FdoPtr<FdoIEnvelope> env = gf->CreateEnvelopeXY(minx, miny, maxx, maxy);
         
         spatial_context->ExpandExtent( env );
       }

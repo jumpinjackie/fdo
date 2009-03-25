@@ -69,7 +69,7 @@ DWORD dwHighDateTime;
 #endif // _WIN32
 
 // number of elements in an array
-#define ELEMENTS(x) (sizeof(x)/sizeof(x[0]))FdoTypes.hfdotypes
+// #define ELEMENTS(x) (sizeof(x)/sizeof(x[0]))FdoTypes.hfdotypes
 
 
 //#include "FdoTypes.h"

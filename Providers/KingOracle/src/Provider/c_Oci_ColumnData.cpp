@@ -15,7 +15,7 @@
 * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#include "stdafx.h"
+#include "StdAfx.h"
 
 
 
@@ -208,9 +208,8 @@ c_Oci_ColumnData::~c_Oci_ColumnData(  )
     break;
     case e_OciString:
     {
-      wchar_t *wstr;
-      
       /*
+      wchar_t *wstr;
       for(int ind=0;ind<m_DataArraySize;ind++)
       {
         wstr = m_DataStringPtrArray[ind];
@@ -496,8 +495,8 @@ int c_Oci_ColumnData::GetDataDefineSize()
     break;
     case e_OciDateTime:
     {
-      //return sizeof(OCIDate);      
-      return m_ColSize;      
+      return sizeof(OCIDate);      
+      //return m_ColSize;      
     }
     break;
     case e_OciSdoGeometry:
