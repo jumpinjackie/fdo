@@ -32,9 +32,9 @@
 #ifndef OCI_ORACLE
 #include <oci.h>
 #include <oci1.h>
-#endif"
+#endif
 
-#include "c_Oci_API.h"
+#include "c_OCI_API.h"
 
 using namespace std;
 
