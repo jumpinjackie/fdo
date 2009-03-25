@@ -20,7 +20,7 @@
 #include "c_Ora_API2.h"
 
 c_KgOraCreateSpatialContext::c_KgOraCreateSpatialContext(c_KgOraConnection *Conn)
-  : c_KgOraFdoCommand(Conn)
+  : c_KgOraFdoCommand<FdoICreateSpatialContext>(Conn)
 {
     m_Name = D_SPATIALCONTEXT_DEFAULT_NAME;    
     m_Description = "";    
