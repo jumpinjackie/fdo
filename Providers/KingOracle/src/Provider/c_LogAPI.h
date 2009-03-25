@@ -19,7 +19,7 @@
 #ifndef _c_LogAPI_h
 #define _c_LogAPI_h
 
-#define _KGORA_EXTENDED_LOG
+//#define _KGORA_EXTENDED_LOG
 
 #ifdef _DEBUG
   #define _KGORA_EXTENDED_LOG

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="KingOracleProvider"
 	ProjectGUID="{A8CAD4E4-5C05-4D3F-B8CC-96D862110278}"
 	RootNamespace="KingOracleProvider"
@@ -822,7 +822,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".\;..\..\inc;..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;..\..\..\..\Fdo\Unmanaged\inc\fdo\Expression;&quot;$(FDOORACLE)\include&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_CRT_NON_CONFORMING_SWPRINTFS"
 				GeneratePreprocessedFile="0"
 				MinimalRebuild="true"
 				RuntimeLibrary="3"
@@ -903,7 +903,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=".\;..\..\inc;..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;..\..\..\..\Fdo\Unmanaged\inc\fdo\Expression;&quot;$(FDOORACLE)\include&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_CRT_NON_CONFORMING_SWPRINTFS"
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="true"
 				RuntimeTypeInfo="true"
@@ -1452,7 +1452,15 @@
 			>
 		</File>
 		<File
+			RelativePath=".\c_SDO_DIM_ELEMENT.h"
+			>
+		</File>
+		<File
 			RelativePath=".\c_SDO_GEOMETRY.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\c_SDO_GEOMETRY.h"
 			>
 		</File>
 		<File
