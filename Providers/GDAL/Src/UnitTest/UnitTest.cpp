@@ -176,7 +176,7 @@ void UnitTestMainProc()
     LPSTR cmd_line = GetCommandLine ();
     char *tmp = (char*)_alloca (strlen (cmd_line) + 1);
     strcpy (tmp, cmd_line);
-    strupr (tmp);
+    _strupr (tmp);
     bool wait = (NULL == strstr (tmp, "-NOWAIT"));
 
 	runner.run("", wait); 
