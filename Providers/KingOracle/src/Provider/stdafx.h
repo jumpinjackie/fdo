@@ -76,9 +76,8 @@ DWORD dwHighDateTime;
 
 // Base FDO headers
 #include <Fdo.h>
-#include <geometry/EnvelopeImpl.h>
-
-#include <fdo/Xml/SpatialContextReader.h>
+#include <FdoGeometry.h>
+#include <Geometry/EnvelopeImpl.h>
 
 // FdoCommon headers
 #include <FdoCommonConnPropDictionary.h>
