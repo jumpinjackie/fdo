@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2009  SL-King d.o.o
+* Copyright (C) 2006  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -15,7 +15,7 @@
 * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#include "StdAfx.h"
+#include "stdafx.h"
 
 
 
@@ -95,13 +95,14 @@ void c_Oci_ColumnData::Set( c_Oci_Connection*OciConn,int ColumnNumber,int OciDat
         }
         else
         {
-          wchar_t buff[256];
+          FdoStringP buff;
           
           if( TypeName )
-            wsprintf(buff,L"c_Oci_ColumnData::Set : Unsupported Named Type '%s'!",TypeName);
+            buff = FdoStringP::Format(L"c_Oci_ColumnData::Set : Unsupported Named Type '%s'!",TypeName);
           else
-            wsprintf(buff,L"c_Oci_ColumnData::Set : Unsupported Named Type 'NULL'!");
-          throw new c_Oci_Exception (0,0,buff);
+            buff = FdoStringP::Format(L"c_Oci_ColumnData::Set : Unsupported Named Type 'NULL'!");
+
+          throw new c_Oci_Exception (0,0,(FdoString*)buff);
         }
       }
     }
@@ -109,9 +110,8 @@ void c_Oci_ColumnData::Set( c_Oci_Connection*OciConn,int ColumnNumber,int OciDat
     
     default:
     {
-      wchar_t buff[256];
-      wsprintf(buff,L"c_Oci_ColumnData::Set : Unsupported Data type %d",OciDataType);
-      throw new c_Oci_Exception (0,0,buff);
+      FdoStringP buff = FdoStringP::Format(L"c_Oci_ColumnData::Set : Unsupported Data type %d",OciDataType);
+      throw new c_Oci_Exception (0,0,(FdoString*)buff);
     }
     break;
   }

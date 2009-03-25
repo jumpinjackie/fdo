@@ -83,7 +83,7 @@ FdoByte c_KgOraFeatureReaderInsert::GetByte( const wchar_t *PropName )
 
 FdoDateTime c_KgOraFeatureReaderInsert::GetDateTime( const wchar_t *PropName )
 {
-     FdoPtr<FdoPropertyValue> propvalue = NULL;
+     FdoPtr<FdoPropertyValue> propvalue;
 
   if( m_IsFirstReadNext || m_FeatureValues == NULL )
       throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetDateTime End of recordset!" );
@@ -115,7 +115,7 @@ FdoDateTime c_KgOraFeatureReaderInsert::GetDateTime( const wchar_t *PropName )
 
 double c_KgOraFeatureReaderInsert::GetDouble( const wchar_t *PropName )
 {
-   FdoPtr<FdoPropertyValue> propvalue = NULL;
+   FdoPtr<FdoPropertyValue> propvalue;
 
   if( m_IsFirstReadNext || m_FeatureValues == NULL )
       throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetDouble End of recordset!" );
@@ -146,7 +146,7 @@ double c_KgOraFeatureReaderInsert::GetDouble( const wchar_t *PropName )
 
 const wchar_t* c_KgOraFeatureReaderInsert::GetString( const wchar_t * PropName)
 {
-     FdoPtr<FdoPropertyValue> propvalue = NULL;
+     FdoPtr<FdoPropertyValue> propvalue;
 
   if( m_IsFirstReadNext || m_FeatureValues == NULL )
       throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetString End of recordset!" );
@@ -177,7 +177,7 @@ const wchar_t* c_KgOraFeatureReaderInsert::GetString( const wchar_t * PropName)
 
 short c_KgOraFeatureReaderInsert::GetInt16( const wchar_t *PropName )
 {
-     FdoPtr<FdoPropertyValue> propvalue = NULL;
+     FdoPtr<FdoPropertyValue> propvalue;
 
   if( m_IsFirstReadNext || m_FeatureValues == NULL )
       throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetInt16 End of recordset!" );
@@ -208,7 +208,7 @@ short c_KgOraFeatureReaderInsert::GetInt16( const wchar_t *PropName )
 
 int c_KgOraFeatureReaderInsert::GetInt32( const wchar_t *PropName )
 {
-    FdoPtr<FdoPropertyValue> propvalue = NULL;
+    FdoPtr<FdoPropertyValue> propvalue;
 
   if( m_IsFirstReadNext || m_FeatureValues == NULL )
       throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetInt32 End of recordset!" );
@@ -239,7 +239,7 @@ int c_KgOraFeatureReaderInsert::GetInt32( const wchar_t *PropName )
 
 FdoInt64 c_KgOraFeatureReaderInsert::GetInt64( const wchar_t *PropName )
 {
-  FdoPtr<FdoPropertyValue> propvalue = NULL;
+  FdoPtr<FdoPropertyValue> propvalue;
 
   if( m_IsFirstReadNext || m_FeatureValues == NULL )
       throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::GetInt64 End of recordset!" );

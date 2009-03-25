@@ -20,7 +20,7 @@
 #include "c_Ora_API2.h"
 
 c_KgOraCreateSpatialContext::c_KgOraCreateSpatialContext(c_KgOraConnection *Conn)
-  : c_KgOraFdoCommand(Conn)
+  : c_KgOraFdoCommand<FdoICreateSpatialContext>(Conn)
 {
     m_Name = D_SPATIALCONTEXT_DEFAULT_NAME;    
     m_Description = "";    
@@ -385,8 +385,8 @@ void c_KgOraCreateSpatialContext::Execute()
       tempname = GetCoordinateSystemWkt();      
       try
       {
-        std::wstring csname = tempname;
-        std::wstring wkt = tempname;
+        std::wstring csname = (FdoString*)tempname;
+        std::wstring wkt = (FdoString*)tempname;
         orasrid.m_OraSrid = c_Ora_API2::GetSrid(m_Connection->GetOciConnection(),csname.c_str());
         orasrid.m_IsGeodetic = c_Ora_API2::IsGeodeticCoordSystem(wkt.c_str());
       }

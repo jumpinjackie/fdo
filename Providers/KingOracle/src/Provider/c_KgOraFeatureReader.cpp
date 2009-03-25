@@ -33,11 +33,11 @@
 //---------------------------------------------------------------------
 
 c_KgOraFeatureReader::c_KgOraFeatureReader(c_KgOraConnection * Connection
-                                      ,c_Oci_Statement* OcciStatement  
-                                        ,FdoClassDefinition* ClassDef
-                                        ,int GeomPropSqlIndex, FdoStringCollection* SqlColumns
-                                        ,FdoIdentifierCollection* Props)
- : c_KgOraReader(Connection,OcciStatement ,GeomPropSqlIndex, SqlColumns)
+                                          ,c_Oci_Statement* OcciStatement  
+                                          ,FdoClassDefinition* ClassDef
+                                          ,int GeomPropSqlIndex, FdoStringCollection* SqlColumns
+                                          ,FdoIdentifierCollection* Props)
+ : c_KgOraReader<FdoIFeatureReader>(Connection,OcciStatement ,GeomPropSqlIndex, SqlColumns)
 {
 
   m_ClassDef = ClassDef;

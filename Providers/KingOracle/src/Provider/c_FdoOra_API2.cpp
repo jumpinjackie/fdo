@@ -24,7 +24,6 @@
 #include "c_FdoOra_API2.h"
 #include "c_Ora_API2.h"
 #include "KgOraProvider.h"
-#include <geometry/EnvelopeImpl.h>
 
 c_FdoOra_API2::c_FdoOra_API2(void)
 {
@@ -582,7 +581,7 @@ where a.srid = b.srid (+) and a.owner = :1 ;
 c_KgOraSchemaDesc* c_FdoOra_API2::DescribeSchema(c_Oci_Connection* OciConn,const wchar_t* ConnectionOraSchema,const wchar_t* UseOraSchema,const wchar_t* KingFdoViews)
 {
       
-        FdoPtr<FdoFeatureSchemaCollection> fschema=NULL;
+        FdoPtr<FdoFeatureSchemaCollection> fschema;
         FdoPtr<FdoKgOraPhysicalSchemaMapping> phschema;
         int alias_num=0;
       
