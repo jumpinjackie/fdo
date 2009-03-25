@@ -47,7 +47,7 @@ wchar_t* c_Ora_API2::SdoGeomToStringW(c_SDO_GEOMETRY *SdoGeom)
   }
   else
   {
-    swprintf(bufnum,L"%ld",(long)SdoGeom->GetSdoGtype());
+    FdoCommonOSUtil::swprintf(bufnum,128,L"%ld",(long)SdoGeom->GetSdoGtype());
     wcscat(Buff,bufnum);
   }
   
@@ -59,7 +59,7 @@ wchar_t* c_Ora_API2::SdoGeomToStringW(c_SDO_GEOMETRY *SdoGeom)
   }
   else
   {
-    swprintf(bufnum,L"%ld",(long)SdoGeom->GetSdoSrid());
+    FdoCommonOSUtil::swprintf(bufnum,128,L"%ld",(long)SdoGeom->GetSdoSrid());
     wcscat(Buff,bufnum);
   }
   
@@ -73,7 +73,7 @@ wchar_t* c_Ora_API2::SdoGeomToStringW(c_SDO_GEOMETRY *SdoGeom)
   else
   {
     
-    swprintf(bufnum,L"MDSYS.SDO_POINT_TYPE(%.8lf,%.8lf,%.8lf)",(double)SdoGeom->GetSdoPointX(),(double)SdoGeom->GetSdoPointY(),(double)SdoGeom->GetSdoPointZ());
+    FdoCommonOSUtil::swprintf(bufnum,128,L"MDSYS.SDO_POINT_TYPE(%.8lf,%.8lf,%.8lf)",(double)SdoGeom->GetSdoPointX(),(double)SdoGeom->GetSdoPointY(),(double)SdoGeom->GetSdoPointZ());
     wcscat(Buff,bufnum);
   }
   
@@ -85,12 +85,12 @@ wchar_t* c_Ora_API2::SdoGeomToStringW(c_SDO_GEOMETRY *SdoGeom)
   
   if( size > 0 )
   {
-    swprintf(bufnum,L"%ld",(long)SdoGeom->GetSdoElemInfo(0));    
+    FdoCommonOSUtil::swprintf(bufnum,128,L"%ld",(long)SdoGeom->GetSdoElemInfo(0));    
     wcscat(Buff,bufnum);    
     for(long ind=1;ind<size;ind++)
     {
       wcscat(Buff,L",");
-      swprintf(bufnum,L"%ld",(long)SdoGeom->GetSdoElemInfo(ind));    
+      FdoCommonOSUtil::swprintf(bufnum,128,L"%ld",(long)SdoGeom->GetSdoElemInfo(ind));    
       wcscat(Buff,bufnum);    
     }
   }
@@ -103,13 +103,13 @@ wchar_t* c_Ora_API2::SdoGeomToStringW(c_SDO_GEOMETRY *SdoGeom)
   long sizeord = (long)SdoGeom->GetSdoOrdinatesSize();
   if( sizeord > 0 )
   {
-    swprintf(bufnum,L"%.8lf",(double)SdoGeom->GetSdoOrdinate(0));    
+    FdoCommonOSUtil::swprintf(bufnum,128,L"%.8lf",(double)SdoGeom->GetSdoOrdinate(0));    
     wcscat(Buff,bufnum);    
       
     for(long ind=1;ind<sizeord;ind++)
     {
       wcscat(Buff,L",");
-      swprintf(bufnum,L"%.8lf",(double)SdoGeom->GetSdoOrdinate(ind));    
+      FdoCommonOSUtil::swprintf(bufnum,128,L"%.8lf",(double)SdoGeom->GetSdoOrdinate(ind));    
       wcscat(Buff,bufnum);    
     }
   }
