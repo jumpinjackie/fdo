@@ -640,15 +640,15 @@ void FdoWfsConnection::_setClassDescription (FdoClassDefinition* clsdef)
     FdoPtr<FdoWfsFeatureType> featType = featTypes->FindItem (clsName);
     if (featType != NULL)
     {
-        FdoStringP abstraction = featType->GetAbstract ();
-        if (abstraction.GetLength () != 0)
+        FdoStringP title = featType->GetTitle ();
+        if(title.GetLength () != 0)
         {
-            clsdef->SetDescription (abstraction);
+            clsdef->SetDescription (title);
         }
         else
         {
-            FdoStringP title = featType->GetTitle ();
-            clsdef->SetDescription (title);
+            FdoStringP abstraction = featType->GetAbstract ();
+            clsdef->SetDescription (abstraction);
         }
     }
 }
