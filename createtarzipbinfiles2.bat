@@ -209,7 +209,7 @@ if "%FDOCOREENABLE%"=="no" goto start_zip_shp
    copy "%FDOROOT%\Bin\Xalan-C_1_7_0.dll" %FDOZIPTEMP%\Bin\
    copy "%FDOROOT%\Bin\boost_date_time-vc90-mt-1_34_1.dll" %FDOZIPTEMP%\Bin\
    copy "%FDOROOT%\Bin\boost_thread-vc90-mt-1_34_1.dll" %FDOZIPTEMP%\Bin\
-   copy "%FDOROOT%\Bin\gdal14.dll" %FDOZIPTEMP%\Bin\
+   copy "%FDOROOT%\Bin\gdal16.dll" %FDOZIPTEMP%\Bin\
    copy "%FDOROOT%\Bin\FDOMessage.dll" %FDOZIPTEMP%\Bin\
    copy "%FDOROOT%\Bin\FDOCommon.dll" %FDOZIPTEMP%\Bin\
    copy "%FDOROOT%\Bin\FDOGeometry.dll" %FDOZIPTEMP%\Bin\
