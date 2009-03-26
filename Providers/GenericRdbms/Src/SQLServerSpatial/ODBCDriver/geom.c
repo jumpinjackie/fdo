@@ -585,6 +585,7 @@ geom_convert_S(
 
                     IGeometry_Release(visionGeom[j]);
                     visionGeom[j] = NULL;
+                    l_visionGeom[j] = NULL;
 
                     // Check the status of this geometry.
                     int geomValid = geom_checkFetchStatusRow_S( cursor, i, j );
@@ -970,6 +971,7 @@ geom_convertFromSqlServer_S(
         if ( cursor->odbcdr_geomNI[offset] == SQL_NULL_DATA)
         {
             *visionGeom_O = NULL;
+            *l_visionGeom_0 = NULL;
             debug0( "Geometry is NULL." );
             rdbi_status = RDBI_SUCCESS;
             goto the_exit;
@@ -1000,6 +1002,7 @@ geom_convertFromSqlServer_S(
         if ( count <= 0 ) 
         {
             *visionGeom_O = NULL;
+            *l_visionGeom_0 = NULL;
             debug0( "Geometry is NULL." );
             rdbi_status = RDBI_SUCCESS;
             goto the_exit;
