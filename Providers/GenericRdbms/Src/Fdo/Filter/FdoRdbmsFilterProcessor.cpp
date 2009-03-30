@@ -2218,6 +2218,19 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter     *filter,
 					const FdoSmPhColumn* column = geomPropertyDef->RefColumn();
 					all->Add(GetGeometryString(column->GetDbName(), true));
 				}
+                else
+                {
+                    if ( geomPropertyDef->GetGeometricColumnType() == FdoSmOvGeometricColumnType_Double &&
+                         geomPropertyDef->GetGeometricContentType() == FdoSmOvGeometricContentType_Ordinates )  
+                    {
+                        if ( geomPropertyDef->RefColumnX() )
+					        all->Add( geomPropertyDef->GetColumnNameX() );
+                        if ( geomPropertyDef->RefColumnY() )
+					        all->Add( geomPropertyDef->GetColumnNameY() );
+                        if ( geomPropertyDef->RefColumnZ() )
+					        all->Add( geomPropertyDef->GetColumnNameZ() );
+                    }
+                }
 			}
 		}
     }
