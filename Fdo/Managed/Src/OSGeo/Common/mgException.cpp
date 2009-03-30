@@ -22,17 +22,27 @@
 
 NAMESPACE_OSGEO_COMMON::Exception^ NAMESPACE_OSGEO_COMMON::Exception::Create(System::IntPtr ex)
 {
-	//TODO: maybe some type-check code need adding here.
-
-    if (IntPtr::Zero == ex)
+    NAMESPACE_OSGEO_COMMON::Exception^ ret = nullptr;
+    if (IntPtr::Zero != ex)
 	{
-		FdoException* e = (FdoException*) ex.ToPointer();
-		NAMESPACE_OSGEO_COMMON::Exception^ mg = Create(IntPtr(e->GetCause()));
-		if (nullptr != mg)
-            return gcnew NAMESPACE_OSGEO_COMMON::Exception(gcnew String(e->GetExceptionMessage()), mg);
-		else
-			return gcnew NAMESPACE_OSGEO_COMMON::Exception(gcnew String(e->GetExceptionMessage()));
+		try
+        {
+            FdoException* fdoEx = static_cast<FdoException*>(ex.ToPointer());
+            FdoPtr<FdoException> fdoCauseEx = fdoEx->GetCause();
+	        if (fdoCauseEx)
+            {
+                NAMESPACE_OSGEO_COMMON::Exception^ mgCause = Create(System::IntPtr(fdoCauseEx));
+                ret = gcnew NAMESPACE_OSGEO_COMMON::Exception(gcnew String(fdoEx->GetExceptionMessage()), mgCause);
+            }
+	        else
+            {
+		        ret = gcnew NAMESPACE_OSGEO_COMMON::Exception(gcnew String(fdoEx->GetExceptionMessage()));
+            }
+        }
+        catch (...)
+        {
+        }
 	}
 
-	return nullptr;
+	return ret;
 }
