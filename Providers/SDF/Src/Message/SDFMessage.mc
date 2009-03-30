@@ -501,3 +501,48 @@ SymbolicName=SDFPROVIDER_99_PROP_NAME_MAXCACHESIZE
 Language=English
 MaxCacheSize
 .
+MessageId=100
+SymbolicName=SDFPROVIDER_100_READ_DOUBLE_ERROR
+Language=English
+Error Reading double value from SDF record
+.
+MessageId=101
+SymbolicName=SDFPROVIDER_101_READ_SINGLE_ERROR
+Language=English
+Error Reading single value from SDF record
+.
+MessageId=102
+SymbolicName=SDFPROVIDER_102_READ_INT32_ERROR
+Language=English
+Error Reading INT32 value from SDF record
+.
+MessageId=103
+SymbolicName=SDFPROVIDER_103_READ_UINT32_ERROR
+Language=English
+Error Reading UINT32 value from SDF record
+.
+MessageId=104
+SymbolicName=SDFPROVIDER_104_READ_INT16_ERROR
+Language=English
+Error Reading INT16 value from SDF record
+.
+MessageId=105
+SymbolicName=SDFPROVIDER_105_READ_UINT16_ERROR
+Language=English
+Error Reading UINT16 value from SDF record
+.
+MessageId=106
+SymbolicName=SDFPROVIDER_106_READ_INT64_ERROR
+Language=English
+Error Reading INT64 value from SDF record
+.
+MessageId=107
+SymbolicName=SDFPROVIDER_107_READ_BYTE_ERROR
+Language=English
+Error Reading byte value from SDF record
+.
+MessageId=108
+SymbolicName=SDFPROVIDER_108_READ_CHAR_ERROR
+Language=English
+Error Reading char value from SDF record
+.

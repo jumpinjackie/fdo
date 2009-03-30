@@ -117,7 +117,11 @@ unsigned BinaryReader::GetDataLen()
 
 double BinaryReader::ReadDouble()
 {
-    _ASSERT(m_pos <= m_len - (int)sizeof(double));
+    if (m_pos > (m_len - (int)sizeof(double)))
+    {
+        _ASSERT(false);
+        throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_100_READ_DOUBLE_ERROR)));
+    }
 
     //TODO: endian
     double ret = *(double*)(m_data + m_pos);
@@ -127,7 +131,11 @@ double BinaryReader::ReadDouble()
 
 float BinaryReader::ReadSingle()
 {
-    _ASSERT(m_pos <= m_len - (int)sizeof(float));
+    if (m_pos > (m_len - (int)sizeof(float)))
+    {
+        _ASSERT(false);
+        throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_101_READ_SINGLE_ERROR)));
+    }
 
     //TODO: endian
     float ret = *(float*)(m_data + m_pos);
@@ -137,7 +145,11 @@ float BinaryReader::ReadSingle()
 
 int BinaryReader::ReadInt32()
 {
-    _ASSERT(m_pos <= m_len - (int)sizeof(int));
+    if (m_pos > (m_len - (int)sizeof(int)))
+    {
+        _ASSERT(false);
+        throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_102_READ_INT32_ERROR)));
+    }
 
     //TODO: endian
     int ret = *(int*)(m_data + m_pos);
@@ -147,7 +159,11 @@ int BinaryReader::ReadInt32()
 
 unsigned BinaryReader::ReadUInt32()
 {
-    _ASSERT(m_pos <= m_len - (int)sizeof(int));
+    if (m_pos > (m_len - (int)sizeof(int)))
+    {
+        _ASSERT(false);
+        throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_103_READ_UINT32_ERROR)));
+    }
 
     //TODO: endian
     unsigned ret = *(unsigned*)(m_data + m_pos);
@@ -157,7 +173,11 @@ unsigned BinaryReader::ReadUInt32()
 
 short BinaryReader::ReadInt16()
 {
-    _ASSERT(m_pos <= m_len - (int)sizeof(short));
+    if (m_pos > (m_len - (int)sizeof(short)))
+    {
+        _ASSERT(false);
+        throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_104_READ_INT16_ERROR)));
+    }
 
     //TODO: endian
     short ret = *(short*)(m_data + m_pos);
@@ -167,7 +187,11 @@ short BinaryReader::ReadInt16()
 
 unsigned short BinaryReader::ReadUInt16()
 {
-    _ASSERT(m_pos <= m_len - (int)sizeof(unsigned short));
+    if (m_pos > (m_len - (int)sizeof(unsigned short)))
+    {
+        _ASSERT(false);
+        throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_105_READ_UINT16_ERROR)));
+    }
 
     //TODO: endian
     unsigned short ret = *(unsigned short*)(m_data + m_pos);
@@ -177,7 +201,11 @@ unsigned short BinaryReader::ReadUInt16()
 
 FdoInt64 BinaryReader::ReadInt64()
 {
-    _ASSERT(m_pos <= m_len - (int)sizeof(FdoInt64));
+    if (m_pos > (m_len - (int)sizeof(FdoInt64)))
+    {
+        _ASSERT(false);
+        throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_106_READ_INT64_ERROR)));
+    }
 
     //TODO: endian
     FdoInt64 ret = *(FdoInt64*)(m_data + m_pos);
@@ -188,7 +216,11 @@ FdoInt64 BinaryReader::ReadInt64()
 
 unsigned char BinaryReader::ReadByte()
 {
-    _ASSERT(m_pos <= m_len - (int)sizeof(unsigned char));
+    if (m_pos > (m_len - (int)sizeof(unsigned char)))
+    {
+        _ASSERT(false);
+        throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_107_READ_BYTE_ERROR)));
+    }
 
     //TODO: endian
     unsigned char ret = *(m_data + m_pos);
@@ -198,7 +230,11 @@ unsigned char BinaryReader::ReadByte()
 
 char BinaryReader::ReadChar()
 {
-    _ASSERT(m_pos <= m_len - (int)sizeof(char));
+    if (m_pos > (m_len - (int)sizeof(char)))
+    {
+        _ASSERT(false);
+        throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_108_READ_CHAR_ERROR)));
+    }
 
     //TODO: endian
     char ret = *(m_data + m_pos);
