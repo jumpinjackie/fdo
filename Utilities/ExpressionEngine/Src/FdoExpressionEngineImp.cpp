@@ -1216,8 +1216,13 @@ void FdoExpressionEngineImp::ProcessNullCondition (FdoNullCondition& filter)
 
 void FdoExpressionEngineImp::ProcessSpatialCondition (FdoSpatialCondition& filter)
 {
-    FdoPtr<FdoByteArray> fgf = m_reader->GetGeometry (
-        FdoPtr<FdoIdentifier>(filter.GetPropertyName ())->GetName ());
+    FdoPtr<FdoIdentifier> idName = filter.GetPropertyName ();
+    if( m_reader->IsNull(idName->GetName ()))
+    {
+        m_retvals.push_back (ObtainBooleanValue (false, false));
+        return;
+    }
+    FdoPtr<FdoByteArray> fgf = m_reader->GetGeometry (idName->GetName ());
 
     //no geometry? trivially false.
     if (fgf->GetCount () == 0)
