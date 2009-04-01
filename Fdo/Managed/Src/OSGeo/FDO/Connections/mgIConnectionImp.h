@@ -263,11 +263,11 @@ public:
     virtual System::Void Flush();
 
 internal:
-	IConnectionImp(System::IntPtr unmanaged, System::Boolean autoDelete);
-
 	inline FdoIConnection* GetImpObj();
+
 public:
     virtual IntPtr GetDisposableObject() override;
+	IConnectionImp(System::IntPtr unmanaged, System::Boolean autoDelete);
 };
 
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS
