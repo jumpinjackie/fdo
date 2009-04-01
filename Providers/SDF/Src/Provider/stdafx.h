@@ -29,6 +29,7 @@
 #define SDF_API
 #define _ASSERT(x)
 
+#include <cstring>
 #include <string.h>
 #define _wcsnicmp wcsncasecmp
 

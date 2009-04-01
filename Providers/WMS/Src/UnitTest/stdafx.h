@@ -20,10 +20,11 @@
 // are changed infrequently
 //
 
+#ifdef _WIN32
 #pragma once
-
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
+#endif // _WIN32
+
+#include <cstring>
 #include <stdio.h>
 #include <tchar.h>
-
-// TODO: reference additional headers your program requires here

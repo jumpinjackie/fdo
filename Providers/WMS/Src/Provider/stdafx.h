@@ -47,6 +47,8 @@
 
 #endif // _WIN32
 
+#include <cstring>
+
 // Base FDO headers
 #include <Fdo.h>
 

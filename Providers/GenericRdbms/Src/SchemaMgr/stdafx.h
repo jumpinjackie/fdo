@@ -21,14 +21,13 @@
 // are changed infrequently
 //
 
-#include <cstring>
-
 #ifdef _WIN32
 #pragma once
 #define WIN32_LEAN_AND_MEAN     // Exclude rarely-used stuff from Windows headers
 #include <windows.h>
 #endif
 
+#include <cstring>
 #include <stdio.h>
 #include <Fdo.h>
 #include <Sm/Lp/SchemaCollection.h>
