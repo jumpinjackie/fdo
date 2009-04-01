@@ -31,10 +31,9 @@ using namespace std;
 #endif
 
 #ifdef _WIN32
-#pragma once
 
+#pragma once
 #define WIN32_LEAN_AND_MEAN        // Exclude rarely-used stuff from Windows headers
-// Windows Header Files:
 #include <windows.h>
 
 #else // _WIN32
@@ -78,9 +77,9 @@ DWORD dwHighDateTime;
 #define LOBYTE(w)           ((BYTE)((DWORD_PTR)(w) & 0xff))
 #define HIBYTE(w)           ((BYTE)((DWORD_PTR)(w) >> 8))
 
-
 #endif // _WIN32
 
+#include <cstring>
 
 // Base FDO headers
 #include <Fdo.h>

@@ -52,6 +52,8 @@
 #include <windows.h>
 #endif
 
+#include <cstring>
+
 // FDO PostGIS Logger
 #include "Logger.h"
 

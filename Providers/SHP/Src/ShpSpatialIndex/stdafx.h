@@ -81,6 +81,7 @@ typedef time_t FILETIME;
 
 #endif
 
+#include <cstring>
 #include <Fdo.h>
 #include <FdoCommonStringUtil.h>
 #include <../Message/Inc/ShpMessage.h>

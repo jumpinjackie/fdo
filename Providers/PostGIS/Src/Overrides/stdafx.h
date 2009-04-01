@@ -47,6 +47,8 @@
 #include <windows.h>
 #endif
 
+#include <cstring>
+
 // FDO
 #include <Fdo.h>
 

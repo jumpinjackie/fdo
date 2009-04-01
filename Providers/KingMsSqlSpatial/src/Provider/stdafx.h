@@ -21,7 +21,6 @@
 #ifdef _WIN32
 
 #define WIN32_LEAN_AND_MEAN        // Exclude rarely-used stuff from Windows headers
-// Windows Header Files:
 #include <windows.h>
 
 #else // _WIN32
@@ -71,13 +70,12 @@ DWORD dwHighDateTime;
 // number of elements in an array
 #define ELEMENTS(x) (sizeof(x)/sizeof(x[0]))
 
-
 #include "FDO_31_Types.h"
 
 // Base FDO headers
+#include <cstring>
 #include <Fdo.h>
 #include <geometry/EnvelopeImpl.h>
-
 #include <fdo/Xml/SpatialContextReader.h>
 
 // FdoCommon headers
@@ -87,24 +85,17 @@ DWORD dwHighDateTime;
 #include <FdoCommonOSUtil.h>
 #include <FdoCommonStringUtil.h>
 
-//#include <FdoCommonSelectAggregatesCommand.h>
+// Provider specific headers
 
 #include "FdoKgMssProvider.h"
 
-//#include <KingOracle/FdoKgOraProvider.h>
 #include <c_KgMssOverColumnDefinition.h>
 #include <c_KgMssOverPropertyDefinition.h>
 #include <c_KgMssOverPropertyDefinitionCollection.h>
 #include <c_KgMssOverClassDefinition.h>
 #include <c_KgMssOverClassCollection.h>
 #include <c_KgMssOverPhysicalSchemaMapping.h>
-#include "c_KgMssOverXmlGlobals.h"
-
-// Provider specific headers
-
-//#include "../Message/inc/KgOraMessage.h"
-
-
+#include <c_KgMssOverXmlGlobals.h>
 #include <c_KgMssSridDesc.h>
 #include <c_KgMssConnectionCapabilities.h>
 #include <c_KgMssCommandCapabilities.h>
@@ -119,25 +110,19 @@ DWORD dwHighDateTime;
 #include <c_KgMssFdoFeatureCommand.h>
 #include <c_KgMssSchemaDesc.h>
 #include <c_KgMssDescribeSchemaCommand.h>
-
-
 #include <c_KgMssReader.h>
-
 #include <c_KgMssFeatureReader.h>
 #include <c_KgMssFeatureReaderInsert.h>
 #include <c_KgMssSQLDataReader.h>
 #include <c_KgMssSelectCommand.h>
-
 #include <c_KgMssSQLCommand.h>
 #include <c_KgMssInsert.h>
 #include <c_KgMssDelete.h>
 #include <c_KgMssUpdate.h>
 #include <c_KgMssApplySchema.h>
 #include <c_KgMssCreateDataStore.h>
-
 #include <c_KgMssGetSpatialContextsCommand.h>
 #include <c_KgMssCreateSpatialContext.h>
-
 #include <c_KgMssExpressionProcessor.h>
 
 #include "c_FdoMss_API.h"

@@ -28,6 +28,7 @@
 #endif
 
 // Base FDO headers
+#include <cstring>
 #include <Fdo.h>
 #include "FdoRdbmsConnection.h"
 #include <Rdbms/Override/RdbmsOv.h>
