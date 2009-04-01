@@ -60,8 +60,7 @@ namespace stdext = ::__gnu_cxx;
 using namespace std;
 #endif
 
-
-
+#include <cstring>
 #include <FdoStd.h>
 #include <Fdo.h>
 
