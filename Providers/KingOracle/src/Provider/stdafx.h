@@ -21,12 +21,13 @@
 #ifdef _WIN32
 
 #define WIN32_LEAN_AND_MEAN        // Exclude rarely-used stuff from Windows headers
-// Windows Header Files:
 #include <windows.h>
 
 #else // _WIN32
 
 #define FDOKGORA_API
+
+#include <cstring>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
@@ -71,9 +72,6 @@ DWORD dwHighDateTime;
 // number of elements in an array
 // #define ELEMENTS(x) (sizeof(x)/sizeof(x[0]))FdoTypes.hfdotypes
 
-
-//#include "FdoTypes.h"
-
 // Base FDO headers
 #include <Fdo.h>
 #include <FdoGeometry.h>
@@ -86,16 +84,10 @@ DWORD dwHighDateTime;
 #include <FdoCommonOSUtil.h>
 #include <FdoCommonStringUtil.h>
 
-
-//#include <FdoCommonSelectAggregatesCommand.h>
-
-
-
 // Provider specific headers
 #include <KingOracle/FdoKgOraOverrides.h>
 #include "KgOraProvider.h"
 #include "../Message/inc/KgOraMessage.h"
-
 
 #include <c_KgOraSridDesc.h>
 #include <c_KgOraConnectionCapabilities.h>
@@ -111,26 +103,20 @@ DWORD dwHighDateTime;
 #include <c_KgOraFdoFeatureCommand.h>
 #include <c_KgOraSchemaDesc.h>
 #include <c_KgOraDescribeSchemaCommand.h>
-
-
 #include <c_KgOraReader.h>
-
 #include <c_KgOraFeatureReader.h>
 #include <c_KgOraFeatureReaderInsert.h>
 #include <c_KgOraSQLDataReader.h>
 #include <c_KgOraSelectCommand.h>
 #include <c_KgOraSelectAggregates.h>
-
 #include <c_KgOraSQLCommand.h>
 #include <c_KgOraInsert.h>
 #include <c_KgOraDelete.h>
 #include <c_KgOraUpdate.h>
 #include <c_KgOraApplySchema.h>
 #include <c_KgOraCreateDataStore.h>
-
 #include <c_KgOraGetSpatialContextsCommand.h>
 #include <c_KgOraCreateSpatialContext.h>
-
 #include <c_KgOraExpressionProcessor.h>
 
 #include "c_LogAPI.h"

@@ -15,6 +15,7 @@
 
 #ifndef _GENERICRDBMSFDOSTDAFX_H_
 #define _GENERICRDBMSFDOSTDAFX_H_
+
 // stdafx.h : include file for standard system include files,
 // or project specific include files that are used frequently, but
 // are changed infrequently
@@ -22,13 +23,10 @@
 
 #ifdef _WIN32
 #pragma once
-
-
-// Windows Header Files:
 #define WIN32_LEAN_AND_MEAN     // Exclude rarely-used stuff from Windows headers
 #include <windows.h>
 #undef GetMessage
-#endif
+#endif // _WIN32
 
 // System includes
 #include <cstring>
@@ -41,9 +39,8 @@
 #include "FdoRdbmsConnection.h"
 #include "DbiConnection.h"
 #include <Sm/SchemaManager.h>
-
 #include <Rdbms/Override/RdbmsOv.h>
-#endif
+
 
 #ifdef _WIN32
 #include <hash_map>
@@ -53,5 +50,7 @@
 #include <ext/functional>
 namespace stdext = ::__gnu_cxx;
 using namespace std;
-#endif
+#endif // _WIN32
 
+
+#endif // _GENERICRDBMSFDOSTDAFX_H_
