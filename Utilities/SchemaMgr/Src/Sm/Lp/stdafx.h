@@ -26,6 +26,7 @@
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
 #endif
 
+#include <cstring>
 #include <stdio.h>
 #include <Fdo.h>
 #include <Sm/SmMessage.h>
