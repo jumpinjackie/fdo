@@ -79,6 +79,7 @@ using namespace std;
 #include <sys/time.h>
 #endif
 
+#include <cstring>
 #include <math.h>
 
 #include <FdoStd.h>

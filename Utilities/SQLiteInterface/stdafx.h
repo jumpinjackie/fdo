@@ -22,21 +22,18 @@
 //
 
 #ifdef _WIN32
-
 #pragma once
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
-// Windows Header Files:
 #include <windows.h>
 #include <tchar.h>
 #include <crtdbg.h>
-
 #else //_WIN32 not defined
 #define _ASSERT(x)
 #endif
 
+#include <cstring>
 #include "sqliteInt.h"
 #include "pager.h"
-
 #include "btree.h"
 
 #endif

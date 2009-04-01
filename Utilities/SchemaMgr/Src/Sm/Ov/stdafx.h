@@ -23,17 +23,14 @@
 
 #ifdef _WIN32
 #pragma once
-
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
-// Windows Header Files:
 #include <windows.h>
 #else
 #include <ctype.h>
 #include <wctype.h>
 #endif
 
-// TODO: reference additional headers your program requires here
-
+#include <cstring>
 #include <stdio.h>
 #include <Fdo.h>
 #include <Sm/SmMessage.h>
