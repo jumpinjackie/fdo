@@ -41,9 +41,8 @@
 
 #endif // __CPPUNITMFCAPP
 
-#pragma warning( disable : 4786 )
+#include <cstring>
 
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Developer Studio will insert additional declarations immediately before the previous line.
+#pragma warning( disable : 4786 )
 
 #endif // FDOPOSTGIS_UNIT_TEST_STDAFX_H_INCLUDED

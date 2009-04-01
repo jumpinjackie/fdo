@@ -27,6 +27,8 @@
 #include <windows.h>
 #endif
 
+#include <cstring>
+
 // Base FDO headers
 #include <Fdo.h>
 

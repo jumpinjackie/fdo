@@ -19,12 +19,9 @@
 //
 
 #ifdef WIN32
-
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
-// Windows Header Files:
 #include <windows.h>
 #include <crtdbg.h>
-
 #else
 
 #define _ASSERT(x)
@@ -39,6 +36,8 @@
 #endif
 
 #endif
+
+#include <cstring>
 #include <Fdo.h>
 
 // the default message catalog filename

@@ -30,6 +30,7 @@
 #include <Inc/Rdbi/proto.h>
 #endif
 
+#include <cstring>
 #include "GdbiException.h"
 
 #define WIN32_LEAN_AND_MEAN     // Exclude rarely-used stuff from Windows headers

@@ -26,6 +26,7 @@
 #include <tchar.h>
 #endif
 
+#include <cstring>
 #include <malloc.h>
 #include <math.h>
 #include <time.h>

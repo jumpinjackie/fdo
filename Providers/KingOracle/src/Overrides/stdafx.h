@@ -20,20 +20,17 @@
 
 #ifdef _WIN32
 #pragma once
-
 #define WIN32_LEAN_AND_MEAN        // Exclude rarely-used stuff from Windows headers
-
 #include <windows.h>
 #pragma warning(disable: 4100)  // Disable warning C4100: 'xxxx' : unreferenced formal parameter
 #endif
+
+#include <cstring>
 #include <Fdo.h>
 #include "../Provider/FDO_31_Types.h"
 #include <KingOracle/fdokgoraprovider.h>
-//#include <FdoCommonMiscUtil.h>
 #include "FdoKgOraXmlGlobals.h"
 #include "FdoCommonOSUtil.h"
-
-
 
 #endif 
 

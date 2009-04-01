@@ -37,8 +37,8 @@
 #include <windows.h>
 #endif
 
+#include <cstring>
 #include <Inc/rdbi.h>
-
 #include <stdio.h>
 #include <string.h>
 

@@ -20,13 +20,11 @@
 
 #ifdef _WIN32
 #pragma once
-
 #define WIN32_LEAN_AND_MEAN     // Exclude rarely-used stuff from Windows headers
-
-// TODO: reference additional headers your program requires here
-
 #include <windows.h>
 #endif
+
+#include <cstring>
 #include <stdio.h>
 #include <FdoCommon.h>
 #include <Fdo.h>
