@@ -35,7 +35,6 @@
 //#include "SpatialIndex.h"
 #include "DiskSpatialIndex.h"
 
-using namespace std;
 
 //FDO entry point
 extern "C"
@@ -59,7 +58,7 @@ static bool IsMetadataTable(const char* table)
     return false;
 }
 
-std::map<int, string> g_fdo2sql_map;
+std::map<int, std::string> g_fdo2sql_map;
 
 
 SltConnection::SltConnection() : m_refCount(1)
@@ -175,7 +174,7 @@ void SltConnection::CreateDatabase()
 
     const wchar_t* dsw = GetProperty(PROP_NAME_FILENAME);
     
-    string file = W2A_SLOW(dsw);
+    std::string file = W2A_SLOW(dsw);
 
     sqlite3* tmpdb = NULL;
 
@@ -184,7 +183,7 @@ void SltConnection::CreateDatabase()
     //case it will open it.
     if( sqlite3_open(file.c_str(), &tmpdb) != SQLITE_OK )
     {
-        std::wstring err = wstring(L"Failed to open or create: ") + dsw;
+        std::wstring err = std::wstring(L"Failed to open or create: ") + dsw;
         throw FdoCommandException::Create(err.c_str());
     }
 
@@ -196,13 +195,13 @@ void SltConnection::CreateDatabase()
     //Note the sr_name field is not in the spec, we are adding it in order to 
     //match fdo feature class geometry properties to rows in the spatial_ref_sys table.
     //This is because geometry properties use a string spatial context association.
-    string srs_sql = "CREATE TABLE spatial_ref_sys"
-                     "(srid INTEGER PRIMARY KEY,"
-                      "sr_name TEXT, "
-                      "auth_name TEXT,"
-                      "auth_srid INTEGER,"
-                      "srtext TEXT "
-                      ");";
+    std::string srs_sql = "CREATE TABLE spatial_ref_sys"
+                          "(srid INTEGER PRIMARY KEY,"
+                          "sr_name TEXT, "
+                          "auth_name TEXT,"
+                          "auth_srid INTEGER,"
+                          "srtext TEXT "
+                          ");";
 
     char* zerr = NULL;
     rc = sqlite3_exec(tmpdb, srs_sql.c_str(), NULL, NULL, &zerr);
@@ -214,13 +213,13 @@ void SltConnection::CreateDatabase()
     }
 
     //create the geometry_columns table
-    string gc_sql = "CREATE TABLE geometry_columns "
-                    "(f_table_name TEXT,"
-                    "f_geometry_column TEXT,"
-                    "geometry_type INTEGER,"
-                    "coord_dimension INTEGER,"
-                    "srid INTEGER,"
-                    "geometry_format TEXT);";  
+    std::string gc_sql = "CREATE TABLE geometry_columns "
+                         "(f_table_name TEXT,"
+                         "f_geometry_column TEXT,"
+                         "geometry_type INTEGER,"
+                         "coord_dimension INTEGER,"
+                         "srid INTEGER,"
+                         "geometry_format TEXT);";  
 
     int rc2 = sqlite3_exec(tmpdb, gc_sql.c_str(), NULL, NULL, &zerr);
 
@@ -244,7 +243,7 @@ FdoConnectionState SltConnection::Open()
 {
     const wchar_t* dsw = GetProperty(PROP_NAME_FILENAME);
     
-    string file = W2A_SLOW(dsw);
+    std::string file = W2A_SLOW(dsw);
 
     if (_access(file.c_str(), 0) == -1)
         throw FdoConnectionException::Create(L"File does not exist!");
@@ -264,7 +263,7 @@ FdoConnectionState SltConnection::Open()
     if( sqlite3_open(file.c_str(), &m_dbRead) != SQLITE_OK )
     {
         m_dbRead = NULL;
-        std::wstring err = wstring(L"Failed to open ") + dsw;
+        std::wstring err = std::wstring(L"Failed to open ") + dsw;
         throw FdoConnectionException::Create(err.c_str());
     }
 
@@ -275,7 +274,7 @@ FdoConnectionState SltConnection::Open()
     {
         sqlite3_close(m_dbRead);
         m_dbRead = m_dbWrite = NULL;
-        std::wstring err = wstring(L"Failed to open ") + dsw;
+        std::wstring err = std::wstring(L"Failed to open ") + dsw;
         throw FdoConnectionException::Create(err.c_str());
     }
 
@@ -455,9 +454,9 @@ FdoFeatureSchemaCollection* SltConnection::DescribeSchema()
     FdoPtr<FdoClassCollection> classes = schema->GetClasses();
     
     //first, make a list of all tables that can be FDO feature classes
-    vector<string> tables;
+    std::vector<std::string> tables;
 
-    string tables_sql = "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;";
+    std::string tables_sql = "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;";
     sqlite3_stmt* pstmt = NULL;
     const char* pzTail = NULL;
     if (sqlite3_prepare_v2(m_dbRead, tables_sql.c_str(), -1, &pstmt, &pzTail) == SQLITE_OK)
@@ -467,7 +466,7 @@ FdoFeatureSchemaCollection* SltConnection::DescribeSchema()
     }
     else
     {
-        wstring err = A2W_SLOW(pzTail);
+        std::wstring err = A2W_SLOW(pzTail);
         throw FdoException::Create(err.c_str());
     }
 
@@ -513,11 +512,11 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
         throw FdoCommandException::Create(L"Scrollable reader cannot yet be created with filters! TODO.");
     }
 
-    string mbfc = W2A_SLOW(fcname->GetName());
+    std::string mbfc = W2A_SLOW(fcname->GetName());
 
     DBounds bbox;
     std::vector<__int64>* rowids = NULL;
-    string where;
+    std::string where;
     bool canFastStep = true;
 
     //Translate the filter from FDO to SQLite where clause.
@@ -682,7 +681,7 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
                                                 FdoIdentifierCollection*    grouping)
 {
     FdoString* fc = fcname->GetName();
-    string mbfc = W2A_SLOW(fc);
+    std::string mbfc = W2A_SLOW(fc);
 
     std::string sql;
 
@@ -691,7 +690,7 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
         //make SQL for distict values 
         
         FdoPtr<FdoIdentifier> id = properties->GetItem(0);
-        string mbname = W2A_SLOW(id->GetName());
+        std::string mbname = W2A_SLOW(id->GetName());
         
         sql = "SELECT DISTINCT " + mbname + " FROM \"" + mbfc + "\"";
     }
@@ -714,7 +713,7 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
         FdoComputedIdentifier* ci = dynamic_cast<FdoComputedIdentifier*>(id.p);
 
         FdoString* exprs = ci->ToString();
-        string mbexprs = W2A_SLOW(exprs);
+        std::string mbexprs = W2A_SLOW(exprs);
 
         sql = "SELECT " + mbexprs + " FROM \"" + mbfc + "\"";
     }
@@ -725,9 +724,9 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
 
 FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoPropertyValueCollection* propvals)
 {
-    string mbfc = W2A_SLOW(fcname->GetName());
+    std::string mbfc = W2A_SLOW(fcname->GetName());
 
-    string sql="UPDATE \"" + mbfc + "\" SET ";
+    std::string sql="UPDATE \"" + mbfc + "\" SET ";
 
     //TODO: currently ignores spatial filter in delete
     //TODO: filter needs to be passed through the SltQueryTranslator.
@@ -777,15 +776,15 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
 
 FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
 {
-    string mbfc = W2A_SLOW(fcname->GetName());
+    std::string mbfc = W2A_SLOW(fcname->GetName());
     
     //TODO: currently ignores spatial filter in delete
-    string sql = "DELETE FROM " + mbfc;
+    std::string sql = "DELETE FROM " + mbfc;
 
     if (filter)
     {
         sql += " WHERE ";
-        string where = W2A_SLOW(filter->ToString());
+        std::string where = W2A_SLOW(filter->ToString());
         sql += where;
     }
 
@@ -814,7 +813,7 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
 
 FdoInt32 SltConnection::ExecuteNonQuery(FdoString* sql)
 {
-    string mbsql = W2A_SLOW(sql);
+    std::string mbsql = W2A_SLOW(sql);
 
     sqlite3_stmt* pStmt = GetCachedParsedStatement(mbsql);
 
@@ -833,7 +832,7 @@ FdoInt32 SltConnection::ExecuteNonQuery(FdoString* sql)
 
 FdoISQLDataReader* SltConnection::ExecuteReader(FdoString* sql)
 {
-    string mbsql = W2A_SLOW(sql);
+    std::string mbsql = W2A_SLOW(sql);
     return new SltReader(this, mbsql.c_str());
 }
 
@@ -930,8 +929,8 @@ SpatialIndex* SltConnection::GetSpatialIndex(const char* table)
 void SltConnection::AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_t* fcname)
 {
     //add this geometry property to the geometry_columns table
-    string gpname = W2A_SLOW(gpd->GetName());
-    string gci_sql = "INSERT INTO geometry_columns\
+    std::string gpname = W2A_SLOW(gpd->GetName());
+    std::string gci_sql = "INSERT INTO geometry_columns\
         (f_table_name,\
         f_geometry_column,\
         geometry_format,\
@@ -977,7 +976,7 @@ void SltConnection::AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_
     //of geometry
     sprintf(sdim, "%d", gtype);
 
-    gci_sql += sdim + string(",");
+    gci_sql += sdim + std::string(",");
 
     int dim = 2;
     if (gpd->GetHasElevation()) dim++;
@@ -1053,7 +1052,7 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema)
         if (myclasses->Contains(fc->GetName()))
             continue; //Warning! -- class already exists... Skip it.
 
-        string sql = "CREATE TABLE \"" + W2A_SLOW(fc->GetName()) + "\" (";
+        std::string sql = "CREATE TABLE \"" + W2A_SLOW(fc->GetName()) + "\" (";
 
         CollectBaseClassProperties(myclasses, fc, sql, 1);
         CollectBaseClassProperties(myclasses, fc, sql, 2);
@@ -1074,7 +1073,7 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema)
     FDO_SAFE_RELEASE(m_pSchema);
 }
 
-void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, FdoClassDefinition* fc, string& sql, int mode)
+void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, FdoClassDefinition* fc, std::string& sql, int mode)
 {
     FdoPtr<FdoClassDefinition> baseFc = fc->GetBaseClass();
     if (NULL != baseFc)
@@ -1129,7 +1128,7 @@ void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, Fd
         //beginning of the list for better performance when reading
         if (gpd.p)
         {
-            string gpname = W2A_SLOW(gpd->GetName());
+            std::string gpname = W2A_SLOW(gpd->GetName());
             sql +=  "\"" + gpname + "\" BLOB";
             sql += ", ";
 
