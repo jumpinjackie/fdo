@@ -34,6 +34,7 @@
 
 #include <string>
 #include <wchar.h>
+#include <sstream>
 
 //FDO headers
 #include "Fdo.h"

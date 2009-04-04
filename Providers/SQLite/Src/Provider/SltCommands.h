@@ -37,7 +37,7 @@ class SltDescribeSchema : public SltCommand<FdoIDescribeSchema>
 {
     public:
         SltDescribeSchema(SltConnection* connection) 
-            : SltCommand<FdoIDescribeSchema>(connection) 
+            : SltCommand<FdoIDescribeSchema>(connection), m_classNames(NULL) 
                                                                 { }
 
     protected:
@@ -50,13 +50,21 @@ class SltDescribeSchema : public SltCommand<FdoIDescribeSchema>
     public:
         virtual FdoString*              GetSchemaName()                             { return L"Default"; }
         virtual void                    SetSchemaName(FdoString* value)             { }
-        virtual FdoStringCollection*    GetClassNames()                             { return NULL; }
-        virtual void                    SetClassNames(FdoStringCollection* value)   { }
+        virtual FdoStringCollection*    GetClassNames()                             { return FDO_SAFE_ADDREF(m_classNames); }
+        virtual void                    SetClassNames(FdoStringCollection* value)   
+        { 
+            FDO_SAFE_RELEASE(m_classNames); 
+            m_classNames = FDO_SAFE_ADDREF(value); 
+        }
 
         virtual FdoFeatureSchemaCollection* Execute()   
         { 
-            return m_connection->DescribeSchema(); 
+            return m_connection->DescribeSchema(m_classNames); 
         }
+
+    private:
+
+        FdoStringCollection* m_classNames;
 };
 
 ///\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
@@ -434,7 +442,7 @@ class SltInsert : public SltCommand<FdoIInsert>
             }
             else
             {
-                int count = m_properties->GetCount();
+                size_t count = (size_t)m_properties->GetCount();
 
                 //detect changes to the property value collection that may have been
                 //done between calls to Execute(). Not recommended to do that, but it happens...

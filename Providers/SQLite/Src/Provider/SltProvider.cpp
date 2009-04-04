@@ -35,7 +35,6 @@
 //#include "SpatialIndex.h"
 #include "DiskSpatialIndex.h"
 
-
 //FDO entry point
 extern "C"
 SLT_API FdoIConnection* CreateConnection()
@@ -53,6 +52,9 @@ static bool IsMetadataTable(const char* table)
         return true;
 
     if (sqlite3StrICmp(table, "spatial_ref_sys") == 0)
+        return true;
+
+    if (sqlite3StrICmp(table, "fdo_columns") == 0)
         return true;
 
     return false;
@@ -86,6 +88,9 @@ SltConnection::SltConnection() : m_refCount(1)
     m_connState = FdoConnectionState_Closed;
 
     m_caps = new SltCapabilities();
+
+    m_bUseFdoMetadata = false;
+    m_bHasFdoMetadata = false;
 }
 
 SltConnection::~SltConnection()
@@ -195,7 +200,7 @@ void SltConnection::CreateDatabase()
     //Note the sr_name field is not in the spec, we are adding it in order to 
     //match fdo feature class geometry properties to rows in the spatial_ref_sys table.
     //This is because geometry properties use a string spatial context association.
-    std::string srs_sql = "CREATE TABLE spatial_ref_sys"
+    const char* srs_sql = "CREATE TABLE spatial_ref_sys"
                           "(srid INTEGER PRIMARY KEY,"
                           "sr_name TEXT, "
                           "auth_name TEXT,"
@@ -204,16 +209,10 @@ void SltConnection::CreateDatabase()
                           ");";
 
     char* zerr = NULL;
-    rc = sqlite3_exec(tmpdb, srs_sql.c_str(), NULL, NULL, &zerr);
-
-    if (rc)
-    {
-        printf ("SQL statement failed to execute.\n");
-        printf ("%s\n", zerr);
-    }
+    rc = sqlite3_exec(tmpdb, srs_sql, NULL, NULL, &zerr);
 
     //create the geometry_columns table
-    std::string gc_sql = "CREATE TABLE geometry_columns "
+    const char* gc_sql = "CREATE TABLE geometry_columns "
                          "(f_table_name TEXT,"
                          "f_geometry_column TEXT,"
                          "geometry_type INTEGER,"
@@ -221,19 +220,27 @@ void SltConnection::CreateDatabase()
                          "srid INTEGER,"
                          "geometry_format TEXT);";  
 
-    int rc2 = sqlite3_exec(tmpdb, gc_sql.c_str(), NULL, NULL, &zerr);
+    int rc2 = sqlite3_exec(tmpdb, gc_sql, NULL, NULL, &zerr);
 
-    if (rc2)
+    //Check if we should create the FDO metadata table as well
+    dsw = GetProperty(PROP_NAME_FDOMETADATA);
+    int rc3 = 0;
+
+    if (dsw && _wcsicmp(dsw, L"true") == 0)
     {
-        printf ("SQL statement failed to execute.\n");
-        printf ("%s\n", zerr);
+        const char* fc_sql = "CREATE TABLE fdo_columns "
+                             "(f_table_name TEXT,"
+                             "f_column_name TEXT,"
+                             "fdo_data_type INTEGER);";  
+
+        rc3 = sqlite3_exec(tmpdb, fc_sql, NULL, NULL, &zerr);
     }
 
     //close the database -- CreateDataStore itself does not 
     //open the FDO connection, subsequent call to Open() does.
     sqlite3_close(tmpdb);
 
-    if (rc || rc2)
+    if (rc || rc2 || rc3)
     {
         throw FdoCommandException::Create(L"Failed to create SQLite database.");
     }
@@ -247,6 +254,11 @@ FdoConnectionState SltConnection::Open()
 
     if (_access(file.c_str(), 0) == -1)
         throw FdoConnectionException::Create(L"File does not exist!");
+
+    const wchar_t* sUseMeta = GetProperty(PROP_NAME_FDOMETADATA);
+
+    if (_wcsicmp(sUseMeta, L"true") == 0)
+        m_bUseFdoMetadata = true;
 
     //We will use two connections to the database -- one for reading and one for writing.
     //This will help us with concurrent reads and writes (to different tables).
@@ -281,6 +293,25 @@ FdoConnectionState SltConnection::Open()
     //Register the extra SQL functions we would like to support
     RegisterExtensions(m_dbRead);
     RegisterExtensions(m_dbWrite);
+
+    //check if an FDO metadata table existsm, in case the caller asked
+    //for us to use it.
+    if (m_bUseFdoMetadata)
+    {
+        const char* tables_sql = "SELECT name FROM sqlite_master WHERE type='table' AND name='fdo_columns';";
+        sqlite3_stmt* pstmt = NULL;
+        const char* pzTail = NULL;
+        if (sqlite3_prepare_v2(m_dbRead, tables_sql, -1, &pstmt, &pzTail) == SQLITE_OK)
+        {
+            while (sqlite3_step(pstmt) == SQLITE_ROW)
+            {
+                m_bHasFdoMetadata = true;
+                break;
+            }
+        }
+
+        sqlite3_finalize(pstmt);
+    }
     
     m_connState = FdoConnectionState_Open;
     return m_connState;
@@ -349,6 +380,7 @@ FdoICommand* SltConnection::CreateCommand(FdoInt32 commandType)
 
 FdoString** SltConnection::GetPropertyNames(FdoInt32& count)
 {
+    //NOTE: We do not advertise the FDO metadata flag -- it's a private property
     static const wchar_t* PROP_NAMES[] = {PROP_NAME_FILENAME};
     count = 1;
     return (const wchar_t**)PROP_NAMES;
@@ -356,7 +388,12 @@ FdoString** SltConnection::GetPropertyNames(FdoInt32& count)
 
 FdoString* SltConnection::GetProperty(FdoString* name)
 {
-    return (*m_mProps)[name].c_str();
+    std::map<std::wstring, std::wstring>::iterator val = m_mProps->find(name);
+
+    if (val == m_mProps->end())
+        return NULL;
+
+    return val->second.c_str();
 }
 
 void SltConnection::SetProperty(FdoString* name, FdoString* value)
@@ -435,8 +472,11 @@ FdoString* SltConnection::GetLocalizedName(FdoString* name)
 
 
 //Maps sqlite table descriptions to an FDO schema
-FdoFeatureSchemaCollection* SltConnection::DescribeSchema()
+FdoFeatureSchemaCollection* SltConnection::DescribeSchema(FdoStringCollection* classNames)
 {
+    //TODO: Take into account the classNames collection -- not required, but
+    //can potentially speed things up in some use cases
+
     if (m_pSchema)
     {
         //We need to clone the schema, because the caller may modify it and mess us up.
@@ -456,10 +496,10 @@ FdoFeatureSchemaCollection* SltConnection::DescribeSchema()
     //first, make a list of all tables that can be FDO feature classes
     std::vector<std::string> tables;
 
-    std::string tables_sql = "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;";
+    const char* tables_sql = "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;";
     sqlite3_stmt* pstmt = NULL;
     const char* pzTail = NULL;
-    if (sqlite3_prepare_v2(m_dbRead, tables_sql.c_str(), -1, &pstmt, &pzTail) == SQLITE_OK)
+    if (sqlite3_prepare_v2(m_dbRead, tables_sql, -1, &pstmt, &pzTail) == SQLITE_OK)
     {
         while (sqlite3_step(pstmt) == SQLITE_ROW)
             tables.push_back((const char*)sqlite3_column_text(pstmt, 0));
@@ -507,11 +547,6 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
     if (m_connState != FdoConnectionState_Open)
         throw FdoCommandException::Create(L"Connection must be open in order to Select.");
 
-    if (filter && scrollable)
-    {
-        throw FdoCommandException::Create(L"Scrollable reader cannot yet be created with filters! TODO.");
-    }
-
     std::string mbfc = W2A_SLOW(fcname->GetName());
 
     DBounds bbox;
@@ -532,6 +567,11 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
         qt.GetBBOX(bbox);
         rowids = qt.DetachIDList();
         canFastStep = qt.CanUseFastStepping();
+    }
+
+    if (!where.empty() && scrollable)
+    {
+        throw FdoCommandException::Create(L"Scrollable reader cannot yet be created with attribute filters! TODO.");
     }
 
     SpatialIterator* siter = NULL;
@@ -855,7 +895,7 @@ SltMetadata* SltConnection::GetMetadata(const char* table)
             ret = REALLY_BAD_POINTER;
         else
         {
-            ret = new SltMetadata(this, table);
+            ret = new SltMetadata(this, table, m_bUseFdoMetadata && m_bHasFdoMetadata);
 
             if (ret->Failed())
             {
@@ -930,7 +970,8 @@ void SltConnection::AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_
 {
     //add this geometry property to the geometry_columns table
     std::string gpname = W2A_SLOW(gpd->GetName());
-    std::string gci_sql = "INSERT INTO geometry_columns\
+    std::ostringstream gci_sql;
+    gci_sql << "INSERT INTO geometry_columns\
         (f_table_name,\
         f_geometry_column,\
         geometry_format,\
@@ -939,12 +980,10 @@ void SltConnection::AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_
         srid)\
         VALUES(";
     
-    gci_sql += "'" + W2A_SLOW(fcname) + "'"; //f_table_name
-    gci_sql += ",";
-    gci_sql += "'" + gpname + "'"; //f_geometry_column
-    gci_sql += ",'FGF',"; //f_geometry_format
-
-    char sdim[16];
+    gci_sql << "'" << W2A_SLOW(fcname) << "'"; //f_table_name
+    gci_sql << ",";
+    gci_sql << "'" << gpname << "'"; //f_geometry_column
+    gci_sql << ",'FGF',"; //f_geometry_format
 
     int len = 0;
     int gtype = 0;
@@ -974,30 +1013,43 @@ void SltConnection::AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_
 
     //if gtype remains 0 at this points, it will be treated as "All" types
     //of geometry
-    sprintf(sdim, "%d", gtype);
-
-    gci_sql += sdim + std::string(",");
+    gci_sql << gtype << ",";
 
     int dim = 2;
     if (gpd->GetHasElevation()) dim++;
     if (gpd->GetHasMeasure()) dim++;
-    sprintf(sdim, "%d", dim);
-    gci_sql += sdim; //coord_dimension
-    gci_sql += ",";
+    
+    gci_sql << dim; //coord_dimension
+    gci_sql << ",";
     
     //find a record in spatial_ref_sys whose sr_name matches
     //the name of the spatial context association.
     //Then, assign that record's SRID as the SRID for this
     //geometry table. This way we remove the FDO-idiosyncratic
     //spatial context name from the picture.
-    int srid = FindSpatialContext(gpd->GetSpatialContextAssociation());
-    sprintf(sdim, "%d", srid);
-    gci_sql += sdim;//srid
+    gci_sql << FindSpatialContext(gpd->GetSpatialContextAssociation());
+    gci_sql << ");";
 
-    gci_sql += ");";
-
-    int rc = sqlite3_exec(m_dbWrite, gci_sql.c_str(), NULL, NULL, NULL);
+    int rc = sqlite3_exec(m_dbWrite, gci_sql.str().c_str(), NULL, NULL, NULL);
 }
+
+
+//Adds an entry for the given property definition to the FDO metadata table.
+//Only done if the connection was opened with the "Use FDO metadata" flag set.
+void SltConnection::AddDataCol(FdoDataPropertyDefinition* dpd, const wchar_t* fcname)
+{
+    if (!m_bUseFdoMetadata || !m_bHasFdoMetadata)
+        return;
+
+    std::ostringstream os;
+    os << "INSERT INTO fdo_columns (f_table_name, f_column_name, fdo_data_type) VALUES(";
+    os << "'" << W2A_SLOW(fcname) << "','";
+    os << W2A_SLOW(dpd->GetName()) << "',";
+    os << dpd->GetDataType() << ");";
+
+    int rc = sqlite3_exec(m_dbWrite, os.str().c_str(), NULL, NULL, NULL);
+}
+
 
 //Returns the SRID of an entry in the spatial_ref_sys table,
 //whose sr_name column matches the input.
@@ -1037,7 +1089,7 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema)
 {
     //TODO:
     //for now, only implement addition of feature classes
-    FdoPtr<FdoFeatureSchemaCollection> myschemac = DescribeSchema();
+    FdoPtr<FdoFeatureSchemaCollection> myschemac = DescribeSchema(NULL);
     FdoPtr<FdoFeatureSchema> myschema = myschemac->GetItem(0);
     FdoPtr<FdoClassCollection> myclasses = myschema->GetClasses();
 
@@ -1119,6 +1171,9 @@ void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, Fd
                     sql += " UNIQUE";
                 }
                 sql += ", ";
+
+                //Add to the metadata table, if necessary
+                AddDataCol(idp, fc->GetName());
             }
         }
     }
@@ -1158,6 +1213,8 @@ void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, Fd
                 sql += g_fdo2sql_map[dpd->GetDataType()];
                 sql += ", ";
 
+                //Add an entry to the metadata type table, if needed
+                AddDataCol(dpd, fc->GetName());
             }
             else if (ptype == FdoPropertyType_GeometricProperty)
             {

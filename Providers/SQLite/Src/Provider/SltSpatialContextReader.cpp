@@ -114,7 +114,7 @@ FdoByteArray* SltSpatialContextReader::GetExtent()
     //going via the spatial index for the 
     //feature class that owns the geometry property
     //corresponding to this spatial context.
-    FdoPtr<FdoFeatureSchemaCollection> fsc = m_connection->DescribeSchema();
+    FdoPtr<FdoFeatureSchemaCollection> fsc = m_connection->DescribeSchema(NULL);
     FdoPtr<FdoFeatureSchema> schema = fsc->GetItem(0);
     FdoPtr<FdoClassCollection> cc = schema->GetClasses();
 
