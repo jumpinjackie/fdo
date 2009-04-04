@@ -49,9 +49,82 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
+				BufferSecurityCheck="false"
+				EnableEnhancedInstructionSet="2"
+				FloatingPointModel="2"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="4"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				ModuleDefinitionFile=""
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="..\..\Lib\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="..\..\Obj\SpatialIndex\$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="4"
+			CharacterSet="1"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="true"
+				AdditionalIncludeDirectories="..\..\..\..\Fdo\Unmanaged\Inc;..\..\..\..\Utilities\Common\Inc"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
+				RuntimeLibrary="2"
+				BufferSecurityCheck="false"
+				EnableFunctionLevelLinking="false"
+				EnableEnhancedInstructionSet="2"
+				FloatingPointModel="2"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -128,75 +201,6 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="..\..\Lib\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="..\..\Obj\SpatialIndex\$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="4"
-			CharacterSet="1"
-			WholeProgramOptimization="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="true"
-				FavorSizeOrSpeed="1"
-				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\..\..\Fdo\Unmanaged\Inc;..\..\..\..\Utilities\Common\Inc"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
-				RuntimeLibrary="2"
-				BufferSecurityCheck="false"
-				EnableFunctionLevelLinking="false"
-				FloatingPointModel="2"
-				UsePrecompiledHeader="2"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				ModuleDefinitionFile=""
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -327,7 +331,7 @@
 				/>
 			</FileConfiguration>
 			<FileConfiguration
-				Name="Debug|x64"
+				Name="Release|Win32"
 				ExcludedFromBuild="true"
 				>
 				<Tool
@@ -335,7 +339,7 @@
 				/>
 			</FileConfiguration>
 			<FileConfiguration
-				Name="Release|Win32"
+				Name="Debug|x64"
 				ExcludedFromBuild="true"
 				>
 				<Tool
@@ -363,7 +367,7 @@
 				/>
 			</FileConfiguration>
 			<FileConfiguration
-				Name="Debug|x64"
+				Name="Release|Win32"
 				ExcludedFromBuild="true"
 				>
 				<Tool
@@ -371,7 +375,7 @@
 				/>
 			</FileConfiguration>
 			<FileConfiguration
-				Name="Release|Win32"
+				Name="Debug|x64"
 				ExcludedFromBuild="true"
 				>
 				<Tool
@@ -399,7 +403,7 @@
 				/>
 			</FileConfiguration>
 			<FileConfiguration
-				Name="Debug|x64"
+				Name="Release|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -407,7 +411,7 @@
 				/>
 			</FileConfiguration>
 			<FileConfiguration
-				Name="Release|Win32"
+				Name="Debug|x64"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
