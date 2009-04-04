@@ -17,6 +17,7 @@
 //  
 
 #define PROP_NAME_FILENAME L"File"
+#define PROP_NAME_FDOMETADATA L"UseFdoMetadata"
 
 #include "SltCapabilities.h"
 
@@ -135,7 +136,7 @@ public:
 //--------------------------------------------------------
 
     FdoFeatureSchemaCollection* 
-                        DescribeSchema          ();
+                        DescribeSchema          (FdoStringCollection* classNames);
     
     FdoISpatialContextReader* 
                         GetSpatialContexts      ();
@@ -169,9 +170,6 @@ public:
 
     void                ApplySchema            (FdoFeatureSchema* schema);
 
-    void                AddGeomCol             (FdoGeometricPropertyDefinition* gpd, 
-                                                const wchar_t*                  fcname);
-
     sqlite3*        GetDbRead() { return m_dbRead; }
     sqlite3*        GetDbWrite() { return m_dbWrite; }
     SpatialIndex*   GetSpatialIndex(const char* table);
@@ -185,6 +183,10 @@ public:
     void            ClearQueryCache();
     
 private :
+
+    void AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_t* fcname);
+    void AddDataCol(FdoDataPropertyDefinition* dpd, const wchar_t* fcname);
+
 
     int FindSpatialContext(const wchar_t* name);
 
@@ -202,5 +204,8 @@ private :
     std::map<std::string, SpatialIndex*>    m_mNameToSpatialIndex;
     std::map<std::string, sqlite3_stmt*>    m_mCachedQueries;
 
-    SltCapabilities*                         m_caps;
+    SltCapabilities*                        m_caps;
+
+    bool                                    m_bUseFdoMetadata;
+    bool                                    m_bHasFdoMetadata;
 };

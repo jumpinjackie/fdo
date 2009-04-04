@@ -41,9 +41,9 @@ class SltCapabilities  : public FdoIConnectionCapabilities,
     virtual bool SupportsLongTransactions()                         { return false; }
     virtual bool SupportsSQL()                                      { return true;  }
     virtual bool SupportsConfiguration()                            { return false; }
-    virtual bool SupportsMultipleSpatialContexts()                  { return false; }
+    virtual bool SupportsMultipleSpatialContexts()                  { return true; }
     virtual bool SupportsCSysWKTFromCSysName()                      { return false; }
-    virtual bool SupportsWrite()                                    { return false; }
+    virtual bool SupportsWrite()                                    { return true; }
     virtual bool SupportsMultiUserWrite()                           { return false; }
     virtual FdoSpatialContextExtentType* GetSpatialContextTypes(FdoInt32& length)
     {
@@ -227,7 +227,7 @@ class SltCapabilities  : public FdoIConnectionCapabilities,
     virtual bool SupportsSelectExpressions()                        { return true;  }
     virtual bool SupportsSelectFunctions()                          { return true;  }
     virtual bool SupportsSelectDistinct()                           { return true;  }
-    virtual bool SupportsSelectOrdering()                           { return false; }
+    virtual bool SupportsSelectOrdering()                           { return true; }
     virtual bool SupportsSelectGrouping()                           { return false; }
 
 
@@ -331,8 +331,7 @@ class SltCapabilities  : public FdoIConnectionCapabilities,
         wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_SPATIALEXTENTS);
         ret->Add(wellKnownFunction);
 
-        //TODO: we also support the following, which we need to add to
-        //the list we return here
+        //TODO: we also support the following, which are not listed here, but can be used in queries:
         //abs, sin, cos, tan, asin, acos, atan, atan2, exp, ln, log10
         //modulo, round, floor, ceil, sign, trunc
         //stdev, variance, median

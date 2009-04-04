@@ -30,7 +30,7 @@ class SltMetadata
 {
 public:
 
-    SltMetadata(SltConnection* connection, const char* name);
+    SltMetadata(SltConnection* connection, const char* name, bool bUseFdoMetadata);
     ~SltMetadata();
 
     FdoClassDefinition*     ToClass(); 
@@ -49,5 +49,6 @@ private:
     Table*              m_mdtable;
     int                 m_iGeom;
     int                 m_geomFormat;
+    bool                m_bUseFdoMetadata;
 };
 

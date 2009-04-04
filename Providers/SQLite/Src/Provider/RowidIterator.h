@@ -53,7 +53,7 @@ public:
 
     __int64 LastRowid() 
     { 
-        return m_list ? m_list->at(m_count-1) : m_count; 
+        return m_list ? m_list->at((size_t)m_count-1) : m_count; 
     }
 
     __int64 CurrentRowid()
@@ -63,9 +63,9 @@ public:
             if (m_current < 1)
                 return m_list->at(0) - 1;
             else if (m_current > m_count)
-                return m_list->at(m_count - 1) + 1;
+                return m_list->at((size_t)m_count - 1) + 1;
             else
-                return m_list->at(m_current-1);
+                return m_list->at((size_t)m_current-1);
         }
         else
         {
