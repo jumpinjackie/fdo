@@ -547,7 +547,12 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
     if (m_connState != FdoConnectionState_Open)
         throw FdoCommandException::Create(L"Connection must be open in order to Select.");
 
-    std::string mbfc = W2A_SLOW(fcname->GetName());
+
+    const wchar_t* wfc = fcname->GetName();
+    size_t wlen = wcslen(wfc);
+    size_t clen = 4 * wlen+1;
+    char* mbfc = (char*)alloca(4*wlen+1);
+    W2A_FAST(mbfc, clen, wfc, wlen);
 
     DBounds bbox;
     std::vector<__int64>* rowids = NULL;
@@ -559,7 +564,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
     //by using the spatial index.
     if (filter)
     {
-        FdoPtr<FdoClassDefinition> fc = GetMetadata(mbfc.c_str())->ToClass();
+        FdoPtr<FdoClassDefinition> fc = GetMetadata(mbfc)->ToClass();
         SltQueryTranslator qt(fc);
         filter->Process(&qt);
 
@@ -586,7 +591,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
     else if (!bbox.IsEmpty())
     {
         //if we have a BBOX filter, we need to get the spatial index
-        SpatialIndex* si = GetSpatialIndex(mbfc.c_str());
+        SpatialIndex* si = GetSpatialIndex(mbfc);
 
         DBounds total_ext;
         si->GetTotalExtent(total_ext);
@@ -607,30 +612,31 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
 
     if (!ordering.empty())
     {
-        std::string sql = "SELECT ROWID FROM \"" + mbfc + "\" ORDER BY ";
+        std::ostringstream sql;
+        sql << "SELECT ROWID FROM \"" << mbfc << "\" ORDER BY ";
 
         for (size_t i=0; i<ordering.size(); i++)
         {
             if (i)
-                sql += ",";
+                sql << ",";
 
             //NOTE: We are using ToString() here in order to convert
             //any computed identifiers/expression that may have been specified for sorting by.
-            sql += W2A_SLOW(ordering[i].name->ToString());
+            sql << W2A_SLOW(ordering[i].name->ToString());
            
             if (ordering[i].option == FdoOrderingOption_Ascending)
-                sql += " ASC";
+                sql << " ASC";
             else
-                sql += " DESC";
+                sql << " DESC";
         }
 
-        sql += ";";
+        sql << ";";
 
         sqlite3_stmt* stmt = NULL;
         const char* tail = NULL;
         std::vector<__int64>* rows = new std::vector<__int64>(); //accumulate ordered row ids here
 
-        int rc = sqlite3_prepare_v2(m_dbRead, sql.c_str(), -1, &stmt, &tail);
+        int rc = sqlite3_prepare_v2(m_dbRead, sql.str().c_str(), -1, &stmt, &tail);
 
         while ((rc = sqlite3_step(stmt)) == SQLITE_ROW)
             rows->push_back(sqlite3_column_int64(stmt, 0));
@@ -705,11 +711,11 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
         }
         else if (!ri)
         {
-            ri = new RowidIterator(GetFeatureCount(mbfc.c_str()), NULL);
+            ri = new RowidIterator(GetFeatureCount(mbfc), NULL);
         }
     }
    
-    return new SltReader(this, props, mbfc.c_str(), where.c_str(), siter, canFastStep, ri);
+    return new SltReader(this, props, mbfc, where.c_str(), siter, canFastStep, ri);
 }
 
 FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcname, 
@@ -855,14 +861,14 @@ FdoInt32 SltConnection::ExecuteNonQuery(FdoString* sql)
 {
     std::string mbsql = W2A_SLOW(sql);
 
-    sqlite3_stmt* pStmt = GetCachedParsedStatement(mbsql);
+    sqlite3_stmt* pStmt = GetCachedParsedStatement(mbsql.c_str());
 
     int count = 0;
     int rc;
 
     while ((rc = sqlite3_step(pStmt)) == SQLITE_ROW) count++;
 
-    ReleaseParsedStatement(mbsql, pStmt);
+    ReleaseParsedStatement(mbsql.c_str(), pStmt);
 
     if (rc == SQLITE_DONE)
         return count;
@@ -1388,7 +1394,7 @@ int SltConnection::GetFeatureCount(const char* table)
     return count;
 }
 
-sqlite3_stmt* SltConnection::GetCachedParsedStatement(const std::string& sql)
+sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql)
 {
     //Don't let too many queries get cached.
     //There are legitimate cases where lots of different
@@ -1398,35 +1404,44 @@ sqlite3_stmt* SltConnection::GetCachedParsedStatement(const std::string& sql)
         ClearQueryCache();
     }
 
-    sqlite3_stmt* ret = m_mCachedQueries[sql];
+    sqlite3_stmt* ret = NULL;
 
-    if (!ret)
+    QueryCache::iterator iter = m_mCachedQueries.find((char*)sql);
+    
+    if (iter != m_mCachedQueries.end())
     {
+        //found a cached statement -- take it from the cache
+        //and return it
+        ret = iter->second;
+        iter->second = NULL;
+    }
+    else
+    {
+        //statement is not cached -- make one, and also add an entry for it
+        //into the cache table
         const char* tail = NULL;
-        int rc = sqlite3_prepare_v2(m_dbRead, sql.c_str(), -1, &ret, &tail);
+        int rc = sqlite3_prepare_v2(m_dbRead, sql, -1, &ret, &tail);
 
         if (rc != SQLITE_OK)
         {
             throw FdoException::Create(L"Failed to parse SQL statement");
         }
-    }
-    else
-    {
-        m_mCachedQueries[sql] = NULL;
+
+        m_mCachedQueries[strdup(sql)] = NULL;
     }
 
     return ret;
 }
 
 
-void SltConnection::ReleaseParsedStatement(const std::string& sql, sqlite3_stmt* stmt)
+void SltConnection::ReleaseParsedStatement(const char* sql, sqlite3_stmt* stmt)
 {
-    sqlite3_stmt* exists = m_mCachedQueries[sql];
+    QueryCache::iterator iter = m_mCachedQueries.find((char*)sql);
 
-    if (!exists)
+    if (iter != m_mCachedQueries.end())
     {
         sqlite3_reset(stmt);
-        m_mCachedQueries[sql] = stmt;
+        iter->second = stmt;
     }
     else
     {
@@ -1434,16 +1449,17 @@ void SltConnection::ReleaseParsedStatement(const std::string& sql, sqlite3_stmt*
     }
 }
 
-
 void SltConnection::ClearQueryCache()
 {
-    for (std::map<std::string, sqlite3_stmt*>::iterator iter = m_mCachedQueries.begin(); 
+    for (QueryCache::iterator iter = m_mCachedQueries.begin(); 
         iter != m_mCachedQueries.end(); iter++)
+    {
         sqlite3_finalize(iter->second);
+        free(iter->first);
+    }
 
     m_mCachedQueries.clear();
 }
-
 
 void SltConnection::GetExtents(const wchar_t* fcname, double ext[4])
 {

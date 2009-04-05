@@ -484,6 +484,10 @@
 			RelativePath=".\stdafx.h"
 			>
 		</File>
+		<File
+			RelativePath=".\StringUtil.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
