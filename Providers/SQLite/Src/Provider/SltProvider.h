@@ -21,6 +21,16 @@
 
 #include "SltCapabilities.h"
 
+struct string_less
+{	// functor for operator<
+bool operator()(const char* _Left, const char* _Right) const
+	{	// apply operator< to operands
+	    return strcmp(_Left, _Right) < 0;
+	}
+};
+typedef std::map<char*, sqlite3_stmt*, string_less> QueryCache;
+
+
 class SltMetadata;
 class SpatialIndex;
 class SltReader;
@@ -178,8 +188,8 @@ public:
     SltReader*      CheckForSpatialExtents(FdoIdentifierCollection* props, FdoFeatureClass* fc);
     int             GetFeatureCount(const char* table);
     
-    sqlite3_stmt*   GetCachedParsedStatement(const std::string& sql);
-    void            ReleaseParsedStatement(const std::string& sql, sqlite3_stmt* stmt);
+    sqlite3_stmt*   GetCachedParsedStatement(const char* sql);
+    void            ReleaseParsedStatement(const char* sql, sqlite3_stmt* stmt);
     void            ClearQueryCache();
     
 private :
@@ -202,7 +212,7 @@ private :
 
     std::map<std::string, SltMetadata*>     m_mNameToMetadata;
     std::map<std::string, SpatialIndex*>    m_mNameToSpatialIndex;
-    std::map<std::string, sqlite3_stmt*>    m_mCachedQueries;
+    QueryCache                              m_mCachedQueries;
 
     SltCapabilities*                        m_caps;
 

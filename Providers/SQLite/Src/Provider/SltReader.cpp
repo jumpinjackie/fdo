@@ -76,11 +76,12 @@ m_closeDB(false),
 m_bUseTransaction(true),
 m_useFastStepping(false),
 m_ri(NULL),
-m_aPropNames(NULL)
+m_aPropNames(NULL),
+m_fromwhere()
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
 
-    m_pStmt = m_connection->GetCachedParsedStatement(m_sql);
+    m_pStmt = m_connection->GetCachedParsedStatement(m_sql.Data());
 
     //start the transaction we'll use for this reader
     int rc = sqlite3_exec(sqlite3_db_handle(m_pStmt), "BEGIN;", NULL, NULL, NULL);
@@ -107,7 +108,8 @@ m_closeDB(true),
 m_bUseTransaction(true),
 m_useFastStepping(false),
 m_ri(NULL),
-m_aPropNames(NULL)
+m_aPropNames(NULL),
+m_fromwhere()
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
 
@@ -136,10 +138,11 @@ m_eGeomFormat(eFGF),
 m_wkbBuffer(NULL),
 m_wkbBufferLen(0),
 m_closeDB(false),
-m_bUseTransaction(true),
+m_bUseTransaction(false),
 m_useFastStepping(useFastStepping),
 m_ri(ri),
-m_aPropNames(NULL)
+m_aPropNames(NULL),
+m_fromwhere()
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
     DelayedInit(props, fcname, where);
@@ -165,7 +168,8 @@ m_wkbBufferLen(0),
 m_closeDB(false),
 m_bUseTransaction(false),
 m_useFastStepping(true),
-m_aPropNames(NULL)
+m_aPropNames(NULL),
+m_fromwhere()
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
 }
@@ -193,15 +197,21 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
 	if (props && props->GetCount())
 	{
 		int nProps = props->GetCount();
+        m_reissueProps.Reserve(nProps);
 		for (int i=0; i<nProps; i++)
 		{
 			FdoPtr<FdoIdentifier> id = props->GetItem(i);
-            std::string mbnm = W2A_SLOW(id->GetName());
-			m_reissueProps.push_back(mbnm);
+			m_reissueProps.Add(id->GetName());
 		}
 	}
+    else
+    {
+        m_reissueProps.Reserve(4);
+    }
     
-    char* tmpstr = (char*)alloca(strlen(fcname) + strlen(where) + 42);
+
+    m_fromwhere.Append(" FROM ", 6);
+    m_fromwhere.Append(fcname);
 
     //construct the where clause and 
     //if necessary add FeatId filter -- in case we know which features we want
@@ -209,20 +219,20 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
     if (*where==0)
     {
         if (m_si || m_ri)
-            sprintf(tmpstr, " FROM \"%s\" WHERE ROWID=?;", fcname);
+            m_fromwhere.Append(" WHERE ROWID=?;", 15);
         else
-            sprintf(tmpstr, " FROM \"%s\";", fcname);
-
+            m_fromwhere.Append(";", 1);
     }
     else
     {
-        if (m_si || m_ri)
-            sprintf(tmpstr, " FROM \"%s\" WHERE (%s) AND ROWID=?;", fcname, where);
-        else
-            sprintf(tmpstr, " FROM \"%s\" WHERE (%s);", fcname, where);
-    }
+        m_fromwhere.Append(" WHERE ", 7);
+        m_fromwhere.Append(where);
 
-    m_fromwhere = tmpstr;
+        if (m_si || m_ri)
+            m_fromwhere.Append(" AND ROWID=?;", 13);
+        else
+            m_fromwhere.Append(";", 1);
+    }
 
     //remember the geometry encoding format
     SltMetadata* md = m_connection->GetMetadata(fcname);
@@ -256,15 +266,13 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
     //add the id
     FdoPtr<FdoDataPropertyDefinitionCollection> idpdc = m_class->GetIdentityProperties();
     FdoPtr<FdoDataPropertyDefinition> idp = idpdc->GetItem(0);
-    std::string idname = W2A_SLOW(idp->GetName());
-    m_reissueProps.push_back(idname);
+    m_reissueProps.Add(idp->GetName());
 
     if (m_class->GetClassType() == FdoClassType_FeatureClass)
     {
         //add the geom by doing a requery
         FdoPtr<FdoGeometricPropertyDefinition> gpd = ((FdoFeatureClass*)m_class)->GetGeometryProperty();
-        std::string gpname = W2A_SLOW(gpd->GetName());
-        m_reissueProps.push_back(gpname);
+        m_reissueProps.Add(gpd->GetName());
     }
 
     //redo the query with the id and geom props only
@@ -340,8 +348,7 @@ int SltReader::AddColumnToQuery(const wchar_t* name)
 
     if (pd.p)
     {
-        std::string mbname = W2A_SLOW(pd->GetName());
-        m_reissueProps.push_back(mbname);
+        m_reissueProps.Add(pd->GetName());
 
         Requery2();
         InitPropIndex(m_pStmt);
@@ -352,7 +359,7 @@ int SltReader::AddColumnToQuery(const wchar_t* name)
             ReadNext();
 
         //return the index of the new property
-        return (int)m_reissueProps.size() - 1;
+        return (int)m_reissueProps.Count() - 1;
     }
     else
     {
@@ -365,24 +372,25 @@ int SltReader::AddColumnToQuery(const wchar_t* name)
 void SltReader::Requery2()
 {
     if (m_pStmt) 
-        m_connection->ReleaseParsedStatement(m_sql, m_pStmt);
+        m_connection->ReleaseParsedStatement(m_sql.Data(), m_pStmt);
 
-    m_sql = "SELECT ";
+    m_sql.Reset();
+    m_sql.Append("SELECT ", 7);
 
-    if (m_reissueProps.empty())
+    if (m_reissueProps.Count() == 0)
     {
-        m_sql += "*";
+        m_sql.Append("*", 1);
     }
     else
     {
-        for (size_t i=0; i<m_reissueProps.size(); i++)
+        for (size_t i=0; i<m_reissueProps.Count(); i++)
         {
-		    if (i) m_sql += ",";
-		    m_sql += m_reissueProps[i];
+		    if (i) m_sql.Append(",", 1);
+		    m_sql.Append(m_reissueProps.Get(i));
         }
     }
 
-    m_sql += m_fromwhere;
+    m_sql.Append(m_fromwhere.Data(), m_fromwhere.Length());
 
     m_curfid = 0; //position prior to first record 
     m_closeOpcode = -1;
@@ -405,7 +413,7 @@ void SltReader::Requery2()
         m_ri->MoveToIndex(0);
     }
 
-    m_pStmt = m_connection->GetCachedParsedStatement(m_sql);
+    m_pStmt = m_connection->GetCachedParsedStatement(m_sql.Data());
 
     //If the reader was constructed for a Select that is known
     //to be safe for fast SQLite reading (no null termination
@@ -520,12 +528,13 @@ FdoString* SltReader::GetString(FdoString* propertyName)
 
 FdoLOBValue* SltReader::GetLOB(FdoString* propertyName)
 {
-	throw FdoException::Create(L"Call GetGeometry() to get BLOB values.");
+    //TODO: do something similar to GetGeometry
+	throw FdoException::Create(L"Not Implemented.");
 }
 
 FdoIStreamReader* SltReader::GetLOBStreamReader(FdoString* propertyName )
 {
-	throw FdoException::Create(L"Call GetGeometry() to get BLOB values.");
+	throw FdoException::Create(L"Not Implemented.");
 }
 
 bool SltReader::IsNull(FdoString* propertyName)
@@ -559,11 +568,8 @@ bool SltReader::ReadNext()
             //are we at the end of the current spatial iterator batch?
             if (m_si)
             {
-                if (m_curfid < m_siEnd)
-                {
-                    m_curfid ++;
-                }
-                else
+                m_curfid ++;
+                if (m_curfid >= m_siEnd)
                 {
                     int start;
                     bool ret = m_si->NextRange(start, m_siEnd);
@@ -658,9 +664,8 @@ void SltReader::Close()
     //This puts VDBE back into a sane state after us having messed with
     //its bytecode in ReadNext().
     //NOTE: If Close() does not get called and the reader is left
-    //dangling in this state, it spells CERTAIN DOOM for anybody trying to 
-    //use the database connection thereafter!
-    //So for the love of Pete, Close() your readers people!
+    //dangling in this state, it spells ***CERTAIN DOOM*** for anybody trying to 
+    //use the database connection thereafter! Consider yourself warned.
     if (m_closeOpcode != -1)
     {
         Vdbe* v = (Vdbe*)m_pStmt;
@@ -685,7 +690,7 @@ void SltReader::Close()
         sqlite3_finalize(m_pStmt);
     }
     else //otherwise just release the cached statement we were using
-        m_connection->ReleaseParsedStatement(m_sql, m_pStmt);
+        m_connection->ReleaseParsedStatement(m_sql.Data(), m_pStmt);
 
     int rc;
     if (m_bUseTransaction)
