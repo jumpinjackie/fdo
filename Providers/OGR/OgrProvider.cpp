@@ -70,6 +70,7 @@ StaticInit si;
 
 OgrConnection::OgrConnection()
 {
+    m_refCount = 1;
     m_poDS = NULL;
     m_pSchema = NULL;
     m_mProps = new std::map<std::wstring, std::wstring>();
