@@ -750,8 +750,8 @@ c_KgOraSchemaDesc* c_FdoOra_API2::DescribeSchema(c_Oci_Connection* OciConn,const
           L" LEFT JOIN MDSYS.CS_SRS b ON  a.srid = b.srid "
           L" LEFT JOIN ALL_SDO_INDEX_INFO c ON  a.owner = c.table_owner and a.table_name = c.table_name and a.COLUMN_NAME = c.COLUMN_NAME  "
           L" LEFT JOIN ALL_SDO_INDEX_METADATA d ON c.sdo_index_owner = d.sdo_index_owner and c.index_name = d.sdo_index_name "
-          L" LEFT JOIN all_sequences s on s.sequence_name = CONCAT(a.table_name,'_FDOSEQ') order by a.owner, a.table_name"
-          L" where a.owner = :1 ";
+          L" LEFT JOIN all_sequences s on s.sequence_name = CONCAT(a.table_name,'_FDOSEQ') "
+          L" where a.owner = :1 order by a.owner, a.table_name";
           
           bind_owner = true;
         }
@@ -807,8 +807,8 @@ c_KgOraSchemaDesc* c_FdoOra_API2::DescribeSchema(c_Oci_Connection* OciConn,const
           L" LEFT JOIN MDSYS.CS_SRS b ON  a.srid = b.srid "
           L" LEFT JOIN ALL_SDO_INDEX_INFO c ON a.table_name = c.table_name and a.COLUMN_NAME = c.COLUMN_NAME  "
           L" LEFT JOIN ALL_SDO_INDEX_METADATA d ON c.sdo_index_owner = d.sdo_index_owner and c.index_name = d.sdo_index_name "
-          L" LEFT JOIN all_sequences s on s.sequence_name = CONCAT(a.table_name,'_FDOSEQ') order by  a.owner, a.table_name"
-          L" where a.owner = :1 ";
+          L" LEFT JOIN all_sequences s on s.sequence_name = CONCAT(a.table_name,'_FDOSEQ') "
+          L" where a.owner = :1 order by a.owner, a.table_name";
           
           bind_owner = true;
         }
