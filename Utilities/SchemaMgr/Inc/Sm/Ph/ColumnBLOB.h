@@ -32,7 +32,7 @@ public:
     /// Creates a new BLOB Column Definition.
     FdoSmPhColumnBLOB() {}
 
-    virtual FdoSmPhColType GetType()
+    virtual FdoSmPhColType GetType() const
     {
         return FdoSmPhColType_BLOB;
     }

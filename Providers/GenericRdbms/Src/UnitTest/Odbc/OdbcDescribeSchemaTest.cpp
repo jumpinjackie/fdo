@@ -161,7 +161,7 @@ void OdbcSqlServerDescribeSchemaTest::getClassNames()
             CPPUNIT_FAIL("FAILED - GetClassNames returned NULL collection\n");
 
         FdoInt32 numClasses = classNames->GetCount();
-        CPPUNIT_ASSERT(numClasses == 4);
+        CPPUNIT_ASSERT(numClasses == 7);
         for (int i=0; i<numClasses; i++)
         {
             FdoStringP className = classNames->GetItem(i)->GetString();
@@ -171,7 +171,10 @@ void OdbcSqlServerDescribeSchemaTest::getClassNames()
         CPPUNIT_ASSERT(classNames->GetItem(0)->GetString() == L"dbo:acdb3dpolyline");
         CPPUNIT_ASSERT(classNames->GetItem(1)->GetString() == L"dbo:cities");
         CPPUNIT_ASSERT(classNames->GetItem(2)->GetString() == L"dbo:table1");
-        CPPUNIT_ASSERT(classNames->GetItem(3)->GetString() == L"dbo:view1");
+        CPPUNIT_ASSERT(classNames->GetItem(3)->GetString() == L"dbo:table6");
+        CPPUNIT_ASSERT(classNames->GetItem(4)->GetString() == L"dbo:table7");
+        CPPUNIT_ASSERT(classNames->GetItem(5)->GetString() == L"dbo:table8");
+        CPPUNIT_ASSERT(classNames->GetItem(6)->GetString() == L"dbo:view1");
     }
     catch (FdoException *ex)
     {
@@ -407,7 +410,7 @@ void OdbcAccessDescribeSchemaTest::getClassNames()
             CPPUNIT_FAIL("FAILED - GetClassNames returned NULL collection\n");
 
         FdoInt32 numClasses = classNames->GetCount();
-        CPPUNIT_ASSERT(numClasses == 12);
+        CPPUNIT_ASSERT(numClasses == 15);
         for (int i=0; i<numClasses; i++)
         {
             FdoStringP className = classNames->GetItem(i)->GetString();
@@ -415,7 +418,7 @@ void OdbcAccessDescribeSchemaTest::getClassNames()
 			wprintf(L"Current class name '%ls'\n", className);
         }
         CPPUNIT_ASSERT(classNames->GetItem(0)->GetString() == L"Fdo:Cities");
-        CPPUNIT_ASSERT(classNames->GetItem(11)->GetString() == L"Fdo:VIEW2");
+        CPPUNIT_ASSERT(classNames->GetItem(14)->GetString() == L"Fdo:VIEW2");
     }
     catch (FdoException *ex)
     {

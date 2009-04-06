@@ -641,7 +641,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
 										i++;
 										values[index].len = 64;
 										values[index].value.strvalue = new char[values[index].len];
-										sprintf((char*)values[index].value.strvalue, "%.16g", x);
+                                        SetGeomOrdinateBindValue((char*)values[index].value.strvalue, x, columnX); 
 										values[index].type = FdoDataType_String;
 										values[index].valueNeedsFree = true;
                                         mConnection->GetGdbiCommands()->set_nnull(values[index].null_ind, 0,0);
@@ -653,7 +653,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
 										i++;
 										values[index].len = 64;
 										values[index].value.strvalue = new char[values[index].len];
-										sprintf((char*)values[index].value.strvalue, "%.16g", y);
+                                        SetGeomOrdinateBindValue((char*)values[index].value.strvalue, y, columnY); 
 										values[index].type = FdoDataType_String;
 										values[index].valueNeedsFree = true;
                                         mConnection->GetGdbiCommands()->set_nnull(values[index].null_ind, 0,0);
@@ -665,7 +665,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
 										i++;
 										values[index].len = 64;
 										values[index].value.strvalue = new char[values[index].len];
-										sprintf((char*)values[index].value.strvalue, "%.16g", z);
+                                        SetGeomOrdinateBindValue((char*)values[index].value.strvalue, z, columnZ); 
 										values[index].type = FdoDataType_String;
 										values[index].valueNeedsFree = true;
                                         mConnection->GetGdbiCommands()->set_nnull(values[index].null_ind, 0,0);

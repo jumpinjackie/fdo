@@ -839,22 +839,33 @@ void FdoRdbmsPvcInsertHandler::SetBindValues(const FdoSmLpClassDefinition *class
                             const FdoSmPhColumn *columnX = geomPropDef->RefColumnX();
                             const FdoSmPhColumn *columnY = geomPropDef->RefColumnY();
                             const FdoSmPhColumn *columnZ = geomPropDef->RefColumnZ();
+                            const FdoSmPhColumn *column  = NULL;
                             double x, y, z, m;
                             FdoInt32 dimensionality;
                             double doubleValue = 0.0;
-
+ 
                             pointValue->GetPositionByMembers(&x, &y, &z, &m, &dimensionality);
 
                             if (NULL != columnX && wcscmp(columnX->GetName(), bind[j].name)==0)
+                            {
                                 doubleValue = x;
+                                column      = columnX;
+                            }
                             else if (NULL != columnY && wcscmp(columnY->GetName(), bind[j].name)==0)
+                            {
                                 doubleValue = y;
+                                column      = columnY;
+                            }
                             else if (NULL != columnZ && wcscmp(columnZ->GetName(), bind[j].name)==0)
+                            {
                                 doubleValue = z;
+                                column      = columnZ;
+                            }
                             else
                                 continue;
 
-                            sprintf((char*)bind[j].value.strvalue, "%.16g", doubleValue);
+                            SetGeomOrdinateBindValue( (char*)bind[j].value.strvalue, doubleValue, column );
+
                         }
                     }
                     foundColumn = true;

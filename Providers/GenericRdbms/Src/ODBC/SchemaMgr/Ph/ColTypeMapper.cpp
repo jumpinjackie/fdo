@@ -46,7 +46,7 @@ static FdoSmPhOdbcColTypeMapEntry typeMap_S[] =
     { FdoSmPhColType_Decimal,   L"decimal",      -1, -1 },
     { FdoSmPhColType_Decimal,   L"numeric",      -1, -1 },
     { FdoSmPhColType_Single,    L"real",         -1, -1 },
-    { FdoSmPhColType_Single,    L"float",        -1, -1 },
+    { FdoSmPhColType_Double,    L"float",        -1, -1 },
     { FdoSmPhColType_Double,    L"double",       -1, -1 },
     { FdoSmPhColType_String,    L"unknown",       0,  0 },
     { FdoSmPhColType_Date,      L"timestamp",    -1, -1 },

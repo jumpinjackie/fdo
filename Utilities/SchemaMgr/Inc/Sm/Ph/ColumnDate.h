@@ -34,7 +34,7 @@ public:
 
 	~FdoSmPhColumnDate(void) {}
 
-    virtual FdoSmPhColType GetType()
+    virtual FdoSmPhColType GetType() const
     {
         return FdoSmPhColType_Date;
     }

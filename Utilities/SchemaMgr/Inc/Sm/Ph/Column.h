@@ -116,7 +116,7 @@ public:
 
     void SetDimensionality(int value);
 
-    virtual FdoSmPhColType GetType() = 0;
+    virtual FdoSmPhColType GetType() const = 0;
 
     virtual FdoStringP GetBestFdoType()
     {

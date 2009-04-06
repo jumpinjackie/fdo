@@ -71,7 +71,7 @@ public:
 
 	virtual ~FdoSmPhColumnGeom(void);
 
-    virtual FdoSmPhColType GetType()
+    virtual FdoSmPhColType GetType() const
     {
         return FdoSmPhColType_Geom;
     }

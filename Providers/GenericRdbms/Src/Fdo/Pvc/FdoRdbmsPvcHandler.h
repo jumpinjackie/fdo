@@ -44,7 +44,7 @@ typedef struct {
 } FdoRdbmsPvcBindDef;
 
 //
-// Defines an abstract interface for the Property Value Collection handlers
+// Defines an abstract class for the Property Value Collection handlers
 class FdoRdbmsPvcHandler
 {
 
@@ -52,6 +52,15 @@ public:
     /// <summary>Given a PVC operation, execute the handler.</summary>
     /// <returns>Returns the number of affected objects</returns> 
     virtual long Execute( const FdoSmLpClassDefinition *classDefinition, FdoPropertyValueCollection  *propValCollection, bool revisionNumberUpdate, bool handleForeignAutoincrementedId) = 0;
+
+protected:
+
+    /// <summary>Formats a geometry ordinate value to the precision for its column. Inserts and 
+    /// Updates failed for some RDBMS's (e.g. SQL Server) if too much precision is supplied.</summary>
+    /// <param>buffer (output) - the formatted value</param> 
+    /// <param>doubleValue (input) - the ordinate value</param> 
+    /// <param>columnDefinition (input) - provides column precision</param> 
+    void SetGeomOrdinateBindValue( char* buffer, double doubleValue, const FdoSmPhColumn* columnDefinition );
 };
 
 #endif

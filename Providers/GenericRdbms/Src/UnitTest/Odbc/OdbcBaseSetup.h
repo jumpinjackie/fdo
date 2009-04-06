@@ -73,6 +73,9 @@ public:
 	FdoString * GetPropertyNameCitiesDate()     { return LikesUC() ? L"CDATE"   : L"cdate"; }
 
     FdoString * GetClassNameTable1()            { return LikesUC() ? L"TABLE1"  : L"table1"; }
+    FdoString * GetClassNameTable6()            { return LikesUC() ? L"TABLE6"  : L"table6"; }
+    FdoString * GetClassNameTable7()            { return LikesUC() ? L"TABLE7"  : L"table7"; }
+    FdoString * GetClassNameTable8()            { return LikesUC() ? L"TABLE8"  : L"table8"; }
     FdoString * GetPropertyNameTable1FeatId()   { return LikesUC() ? L"FEATID1" : L"featid1"; }
     FdoString * GetPropertyNameTable1Name()     { return LikesUC() ? L"NAME"    : L"name"; }
 
