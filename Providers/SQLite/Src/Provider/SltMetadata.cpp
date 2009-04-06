@@ -20,8 +20,7 @@
 #include "SltMetadata.h"
 #include "SltConversionUtils.h"
 #include "SltProvider.h"
-
-using namespace std;
+#include "StringUtil.h"
 
 static FdoDataType ConvertDataType(const char* type)
 {
@@ -112,24 +111,25 @@ FdoClassDefinition* SltMetadata::ToClass()
     sqlite3* db = m_connection->GetDbRead();
 
     //find geometry properties by querying the geometry_columns table
-    string gsql = "SELECT f_geometry_column,coord_dimension,srid,geometry_format,geometry_type FROM geometry_columns WHERE f_table_name='";
-    gsql += m_table->zName;
-    gsql += "';";
+    StringBuffer sb;
+    sb.Append("SELECT f_geometry_column,coord_dimension,srid,geometry_format,geometry_type FROM geometry_columns WHERE f_table_name=");
+    sb.AppendSQuoted(m_table->zName);
+    sb.Append(";");
 
-    vector<string> gnames;
-    vector<int> gdims;
-    vector<int> srids;
-    vector<string> gformats;
-    vector<int> gtypes;
+    std::vector<std::string> gnames;
+    std::vector<int> gdims;
+    std::vector<int> srids;
+    std::vector<std::string> gformats;
+    std::vector<int> gtypes;
 
     sqlite3_stmt* pstmt = NULL;
     const char* pzTail = NULL;
-    if (sqlite3_prepare_v2(db, gsql.c_str(), -1, &pstmt, &pzTail) == SQLITE_OK)
+    if (sqlite3_prepare_v2(db, sb.Data(), -1, &pstmt, &pzTail) == SQLITE_OK)
     {
         while (sqlite3_step(pstmt) == SQLITE_ROW)
         {
             const char* gname = (const char*)sqlite3_column_text(pstmt, 0);
-            gnames.push_back(string(gname));
+            gnames.push_back(std::string(gname));
             
             int dim = sqlite3_column_int(pstmt, 1);
             gdims.push_back(dim);
@@ -146,13 +146,13 @@ FdoClassDefinition* SltMetadata::ToClass()
     }
     else
     {
-        wstring err = A2W_SLOW(pzTail);
+        std::wstring err = A2W_SLOW(pzTail);
         throw FdoException::Create(err.c_str());
     }
 
     sqlite3_finalize(pstmt);
 
-    wstring fname = A2W_SLOW(m_table->zName);
+    std::wstring fname = A2W_SLOW(m_table->zName);
 
     if (gnames.size() > 0)
     {       
@@ -249,16 +249,17 @@ FdoClassDefinition* SltMetadata::ToClass()
 
             if (m_bUseFdoMetadata)
             {
-                //If there is FDO metadata table, look up the data typy hint for this property
-                std::ostringstream os;
-                os << "SELECT fdo_data_type FROM fdo_columns WHERE f_table_name='";
-                os << m_table->zName;
-                os << "' AND f_column_name='";
-                os << pname << "';";
+                //If there is FDO metadata table, look up the data type hint for this property
+                StringBuffer sb;
+                sb.Append("SELECT fdo_data_type FROM fdo_columns WHERE f_table_name=");
+                sb.AppendSQuoted(m_table->zName);
+                sb.Append(" AND f_column_name=");
+                sb.AppendSQuoted(pname);
+                sb.Append(";");
                 
                 sqlite3_stmt* pstmt = NULL;
                 const char* pzTail = NULL;
-                if (sqlite3_prepare_v2(db, os.str().c_str(), -1, &pstmt, &pzTail) == SQLITE_OK)
+                if (sqlite3_prepare_v2(db, sb.Data(), -1, &pstmt, &pzTail) == SQLITE_OK)
                 {
                     while (sqlite3_step(pstmt) == SQLITE_ROW)
                         dt = (FdoDataType)sqlite3_column_int(pstmt, 0);
@@ -300,7 +301,7 @@ void SltMetadata::FindSpatialContextName(int srid, std::wstring& ret)
 {
     ret.clear();
 
-    std::string sql = "SELECT sr_name FROM spatial_ref_sys WHERE srid=?";
+    char* sql = "SELECT sr_name FROM spatial_ref_sys WHERE srid=?";
 
     int rc;
     sqlite3_stmt* stmt = NULL;
@@ -308,7 +309,7 @@ void SltMetadata::FindSpatialContextName(int srid, std::wstring& ret)
    
     //NOTE: This should fail around here if the column sr_name
     //does not exist -- we'll deal with that 
-    if ((rc = sqlite3_prepare_v2(m_connection->GetDbRead(), sql.c_str(), -1, &stmt, &tail)) == SQLITE_OK)
+    if ((rc = sqlite3_prepare_v2(m_connection->GetDbRead(), sql, -1, &stmt, &tail)) == SQLITE_OK)
     {
         rc = sqlite3_bind_int(stmt, 1, srid);
         if ((rc = sqlite3_step(stmt)) == SQLITE_ROW )
