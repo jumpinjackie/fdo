@@ -39,7 +39,7 @@ public:
 	{
 	}
 
-    virtual FdoSmPhColType GetType()
+    virtual FdoSmPhColType GetType() const
     {
         return FdoSmPhColType_Unknown;
     }

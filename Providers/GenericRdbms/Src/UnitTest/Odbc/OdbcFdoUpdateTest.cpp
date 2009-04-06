@@ -246,6 +246,156 @@ void OdbcBaseFdoUpdateTest::updateTable1()
 #endif
 }
 
+void OdbcBaseFdoUpdateTest::updateNonDblGeom()
+{
+    if (mConnection != NULL) try
+    {
+        UnitTestUtil::Sql2Db(L"delete from table6", static_cast<FdoIConnection *>(mConnection.p));
+        UnitTestUtil::Sql2Db(L"delete from table7", static_cast<FdoIConnection *>(mConnection.p));
+        UnitTestUtil::Sql2Db(L"delete from table8", static_cast<FdoIConnection *>(mConnection.p));
+
+        insertNonDblGeomRow( mSetup.GetClassNameTable6(), 1, 123.456789123456, 123.456789123456, 123.456789123456 );
+        insertNonDblGeomRow( mSetup.GetClassNameTable7(), 1, 123.456789123456, 123.456789123456, 123.456789123456 );
+        insertNonDblGeomRow( mSetup.GetClassNameTable7(), 2, 18.9, -100.8, -11111.5 );
+        insertNonDblGeomRow( mSetup.GetClassNameTable8(), 1, 123.456789123456, 123.456789123456, 123.456789123456 );
+
+        // MySQL seems to round single precision numbers less precision that other RDBMS's. 
+        // getTable6X accounts for different expected values for MySQL. 
+        vldNonDblGeomRow( mSetup.GetClassNameTable6(), 1, getTable6X(true), 123.457, 123.456789123456 );
+        vldNonDblGeomRow( mSetup.GetClassNameTable7(), 1, 123, 123, 123 );
+        vldNonDblGeomRow( mSetup.GetClassNameTable7(), 2, 19, -101, -11112 );
+        vldNonDblGeomRow( mSetup.GetClassNameTable8(), 1, 123, 123.456789123456, 123.456789 );
+
+        updateNonDblGeomRow( mSetup.GetClassNameTable6(), 1, 1.12121212121212, 0.123456, 1e10 );
+        updateNonDblGeomRow( mSetup.GetClassNameTable7(), 1, 4.8, 3.9, 2.99 );
+        updateNonDblGeomRow( mSetup.GetClassNameTable8(), 1, 1e12, 1e-100, 0.987654321 );
+
+        vldNonDblGeomRow( mSetup.GetClassNameTable6(), 1, getTable6X(false), 0.123, 1e10);
+        vldNonDblGeomRow( mSetup.GetClassNameTable7(), 1, 5, 4, 3 );
+        vldNonDblGeomRow( mSetup.GetClassNameTable7(), 2, 19, -101, -11112 );
+        vldNonDblGeomRow( mSetup.GetClassNameTable8(), 1, 1e12, 1e-100, 0.987654 );
+    }
+    catch (FdoException *ex)
+    {
+        TestCommonFail (ex);
+    }
+}
+
+
+void OdbcBaseFdoUpdateTest::insertNonDblGeomRow( FdoString* className, int FeatId, double x, double y, double z )
+{
+    FdoPtr<FdoIInsert> insertCommand =
+        (FdoIInsert *) mConnection->CreateCommand(FdoCommandType_Insert);
+    insertCommand->SetFeatureClassName(className);
+    FdoPtr<FdoPropertyValueCollection> propertyValues =
+        insertCommand->GetPropertyValues();
+
+    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+
+    FdoPtr<FdoDataValue> dataValue;
+    FdoPtr<FdoPropertyValue> propertyValue;
+
+    dataValue = FdoDataValue::Create((FdoInt32) FeatId);
+    propertyValue = AddNewProperty( propertyValues, mSetup.GetPropertyNameTable1FeatId());
+    propertyValue->SetValue(dataValue);
+
+    propertyValue = AddNewProperty( propertyValues, L"Geometry" );
+    FdoPtr<FdoIDirectPosition> pos = gf->CreatePositionXYZ(x, y, z);
+    FdoPtr<FdoIPoint> pt = gf->CreatePoint(pos);
+    FdoPtr<FdoByteArray> byteArray = gf->GetFgf(pt);
+    FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
+    propertyValue->SetValue(geometryValue);
+
+    FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
+}
+
+
+void OdbcBaseFdoUpdateTest::updateNonDblGeomRow( FdoString* className, int FeatId, double x, double y, double z )
+{
+    FdoPtr<FdoIUpdate> updateCommand = 
+        (FdoIUpdate*)mConnection->CreateCommand(FdoCommandType_Update); 
+    updateCommand->SetFeatureClassName(className);
+
+    FdoPtr<FdoFilter> filter = FdoFilter::Parse( 
+        FdoStringP::Format( 
+            L"%ls = %d",
+            mSetup.GetPropertyNameTable1FeatId(),
+            FeatId
+        )
+    );
+
+    updateCommand->SetFilter( filter );
+
+    FdoPtr<FdoPropertyValueCollection> propertyValues =
+        updateCommand->GetPropertyValues();
+
+    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+
+    FdoPtr<FdoDataValue> dataValue;
+    FdoPtr<FdoPropertyValue> propertyValue;
+
+    propertyValue = AddNewProperty( propertyValues, L"Geometry" );
+    FdoPtr<FdoIDirectPosition> pos = gf->CreatePositionXYZ(x, y, z);
+    FdoPtr<FdoIPoint> pt = gf->CreatePoint(pos);
+    FdoPtr<FdoByteArray> byteArray = gf->GetFgf(pt);
+    FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
+    propertyValue->SetValue(geometryValue);
+
+    updateCommand->Execute();
+}
+
+
+void OdbcBaseFdoUpdateTest::vldNonDblGeomRow( FdoString* className, int FeatId, double x, double y, double z )
+{
+    FdoPtr<FdoISelect> selectCommand = 
+        (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select); 
+    selectCommand->SetFeatureClassName(className);
+
+    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+
+    FdoPtr<FdoFilter> filter = FdoFilter::Parse( 
+        FdoStringP::Format( 
+            L"%ls = %d",
+            mSetup.GetPropertyNameTable1FeatId(),
+            FeatId
+        )
+    );
+
+    selectCommand->SetFilter( filter );
+
+	FdoPtr<FdoIFeatureReader> rdr = selectCommand->Execute();
+
+    CPPUNIT_ASSERT(rdr->ReadNext());
+    CPPUNIT_ASSERT(!rdr->IsNull(L"Geometry"));
+
+    FdoPtr<FdoByteArray> byteArray = rdr->GetGeometry(L"Geometry");
+    FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(byteArray);
+    FdoGeometryType geomType = geom->GetDerivedType();
+    CPPUNIT_ASSERT(geomType == FdoGeometryType_Point);
+
+    FdoIPoint* point = static_cast<FdoIPoint*>(geom.p);
+
+    FdoPtr<FdoIDirectPosition> posn = point->GetPosition();
+
+
+    CPPUNIT_ASSERT( compareDbl(posn->GetX(), x) == 0 );
+    CPPUNIT_ASSERT( compareDbl(posn->GetY(), y) == 0 );
+    CPPUNIT_ASSERT( compareDbl(posn->GetZ(), z) == 0 );
+}
+
+int OdbcBaseFdoUpdateTest::compareDbl( double num1, double num2 )
+{
+    char string1[50];
+    char string2[50];
+
+    // Different RDBMS's store slightly different values for double precision numbers.
+    // Rounding to 15 digits eliminates these very slight differences. 
+    sprintf( string1, "%.15g", num1 );
+    sprintf( string2, "%.15g", num2 );
+
+    return strcmp( string1, string2 );
+}
+
 #ifdef _WIN32
 
 void OdbcAccessFdoUpdateTest::updateCities()
@@ -455,4 +605,5 @@ void OdbcExcelFdoUpdateTest::updateTable1()
         TestCommonFail (ex);
     }
 }
+
 #endif

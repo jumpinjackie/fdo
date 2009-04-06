@@ -649,6 +649,10 @@
 				Name="Pvc"
 				>
 				<File
+					RelativePath=".\Pvc\FdoRdbmsPvcHandler.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Pvc\FdoRdbmsPvcInsertHandler.cpp"
 					>
 				</File>
