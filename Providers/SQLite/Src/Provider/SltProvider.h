@@ -27,6 +27,7 @@ class SpatialIndex;
 class SltReader;
 class SltExtendedSelect;
 struct NameOrderingPair;
+class StringBuffer;
 
 
 struct string_less
@@ -204,7 +205,7 @@ private :
 
     int FindSpatialContext(const wchar_t* name);
 
-    void CollectBaseClassProperties(FdoClassCollection* myclasses, FdoClassDefinition* fc, std::string& sql, int mode);
+    void CollectBaseClassProperties(FdoClassCollection* myclasses, FdoClassDefinition* fc, StringBuffer& sb, int mode);
 
     sqlite3*                                m_dbRead;
     sqlite3*                                m_dbWrite;

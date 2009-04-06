@@ -158,13 +158,50 @@ public:
         Append(mbs, mbslen);
     }
 
+    //Appends the strin representation of the given integer
+    //to the buffer
+    void Append(int value)
+    {
+        char tmp[32];
+        _snprintf(tmp, 32, "%d", value);
+        Append(tmp);
+    }
+
     //append a string of unknown length
     inline void Append(const char* str)
     {
         Append(str, strlen(str));
     }
 
-    inline const char* Data()
+    void AppendSQuoted(const char* str)
+    {
+        Append("'");
+        Append(str);
+        Append("'");
+    }
+
+    void AppendSQuoted(const wchar_t* str)
+    {
+        Append("'");
+        Append(str);
+        Append("'");
+    }
+
+    void AppendDQuoted(const char* str)
+    {
+        Append("\"");
+        Append(str);
+        Append("\"");
+    }
+
+    void AppendDQuoted(const wchar_t* str)
+    {
+        Append("\"");
+        Append(str);
+        Append("\"");
+    }
+
+    inline char* Data()
     {
         return _buf ? _buf : "";
     }

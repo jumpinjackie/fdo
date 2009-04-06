@@ -621,31 +621,33 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
 
     if (!ordering.empty())
     {
-        std::ostringstream sql;
-        sql << "SELECT ROWID FROM \"" << mbfc << "\" ORDER BY ";
+        StringBuffer sb;
+        sb.Append("SELECT ROWID FROM ");
+        sb.AppendDQuoted(mbfc);
+        sb.Append(" ORDER BY ");
 
         for (size_t i=0; i<ordering.size(); i++)
         {
             if (i)
-                sql << ",";
+                sb.Append(",");
 
             //NOTE: We are using ToString() here in order to convert
             //any computed identifiers/expression that may have been specified for sorting by.
-            sql << W2A_SLOW(ordering[i].name->ToString());
+            sb.Append(ordering[i].name->ToString());
            
             if (ordering[i].option == FdoOrderingOption_Ascending)
-                sql << " ASC";
+                sb.Append(" ASC");
             else
-                sql << " DESC";
+                sb.Append(" DESC");
         }
 
-        sql << ";";
+        sb.Append(";");
 
         sqlite3_stmt* stmt = NULL;
         const char* tail = NULL;
         std::vector<__int64>* rows = new std::vector<__int64>(); //accumulate ordered row ids here
 
-        int rc = sqlite3_prepare_v2(m_dbRead, sql.str().c_str(), -1, &stmt, &tail);
+        int rc = sqlite3_prepare_v2(m_dbRead, sb.Data(), -1, &stmt, &tail);
 
         while ((rc = sqlite3_step(stmt)) == SQLITE_ROW)
             rows->push_back(sqlite3_column_int64(stmt, 0));
@@ -735,23 +737,28 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
                                                 FdoFilter*                  filter,
                                                 FdoIdentifierCollection*    grouping)
 {
-    FdoString* fc = fcname->GetName();
-    std::string mbfc = W2A_SLOW(fc);
-
-    std::string sql;
-
+    const wchar_t* wfc = fcname->GetName();
+    size_t wlen = wcslen(wfc);
+    size_t clen = 4 * wlen+1;
+    char* mbfc = (char*)alloca(4*wlen+1);
+    W2A_FAST(mbfc, clen, wfc, wlen);
+    
+    StringBuffer sb;
+    
     if (bDistinct)
     {
         //make SQL for distict values 
         
         FdoPtr<FdoIdentifier> id = properties->GetItem(0);
-        std::string mbname = W2A_SLOW(id->GetName());
         
-        sql = "SELECT DISTINCT " + mbname + " FROM \"" + mbfc + "\"";
+        sb.Append("SELECT DISTINCT ");
+        sb.Append(id->GetName());
+        sb.Append(" FROM ");
+        sb.AppendDQuoted(mbfc);
     }
     else
     {
-        SltMetadata* md = GetMetadata(mbfc.c_str());
+        SltMetadata* md = GetMetadata(mbfc);
 
         FdoPtr<FdoClassDefinition> fc = md->ToClass();
 
@@ -766,14 +773,17 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
         //select aggregate -- only one computed identifier expected!
         FdoPtr<FdoIdentifier> id = properties->GetItem(0);
         FdoComputedIdentifier* ci = dynamic_cast<FdoComputedIdentifier*>(id.p);
-
         FdoString* exprs = ci->ToString();
-        std::string mbexprs = W2A_SLOW(exprs);
 
-        sql = "SELECT " + mbexprs + " FROM \"" + mbfc + "\"";
+        sb.Append("SELECT ");
+        sb.Append(exprs);
+        sb.Append(" FROM ");
+        sb.AppendDQuoted(mbfc);
     }
 
-    return new SltReader(this, sql.c_str());
+    sb.Append(";");
+
+    return new SltReader(this, sb.Data());
 }
 
 
@@ -781,9 +791,9 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
 {
     StringBuffer sb;
 
-    sb.Append("UPDATE \"", 8);
-    sb.Append(fcname->GetName());
-    sb.Append("\" SET ", 6);
+    sb.Append("UPDATE ", 7);
+    sb.AppendDQuoted(fcname->GetName());
+    sb.Append(" SET ", 5);
 
     //TODO: currently ignores spatial filter in delete
     //TODO: filter needs to be passed through the SltQueryTranslator.
@@ -835,7 +845,6 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
 
 FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
 {
-    //std::string mbfc = W2A_SLOW(fcname->GetName());
     StringBuffer sb;
 
     sb.Append("DELETE FROM ", 12);
@@ -988,22 +997,23 @@ SpatialIndex* SltConnection::GetSpatialIndex(const char* table)
 
 void SltConnection::AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_t* fcname)
 {
+    StringBuffer sb;
+
     //add this geometry property to the geometry_columns table
-    std::string gpname = W2A_SLOW(gpd->GetName());
-    std::ostringstream gci_sql;
-    gci_sql << "INSERT INTO geometry_columns\
+    
+    sb.Append(  "INSERT INTO geometry_columns\
         (f_table_name,\
         f_geometry_column,\
         geometry_format,\
         geometry_type,\
         coord_dimension,\
         srid)\
-        VALUES(";
+        VALUES("  );
     
-    gci_sql << "'" << W2A_SLOW(fcname) << "'"; //f_table_name
-    gci_sql << ",";
-    gci_sql << "'" << gpname << "'"; //f_geometry_column
-    gci_sql << ",'FGF',"; //f_geometry_format
+    sb.AppendSQuoted(fcname);//f_table_name
+    sb.Append(","); 
+    sb.AppendSQuoted(gpd->GetName());//f_geometry_column
+    sb.Append(",'FGF',"); 
 
     int len = 0;
     int gtype = 0;
@@ -1033,24 +1043,25 @@ void SltConnection::AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_
 
     //if gtype remains 0 at this points, it will be treated as "All" types
     //of geometry
-    gci_sql << gtype << ",";
+    sb.Append((int)gtype);
+    sb.Append(",");
 
     int dim = 2;
     if (gpd->GetHasElevation()) dim++;
     if (gpd->GetHasMeasure()) dim++;
     
-    gci_sql << dim; //coord_dimension
-    gci_sql << ",";
+    sb.Append((int) dim); //coord_dimension
+    sb.Append(",");
     
     //find a record in spatial_ref_sys whose sr_name matches
     //the name of the spatial context association.
     //Then, assign that record's SRID as the SRID for this
     //geometry table. This way we remove the FDO-idiosyncratic
     //spatial context name from the picture.
-    gci_sql << FindSpatialContext(gpd->GetSpatialContextAssociation());
-    gci_sql << ");";
+    sb.Append((int) FindSpatialContext(gpd->GetSpatialContextAssociation()));
+    sb.Append(");");
 
-    int rc = sqlite3_exec(m_dbWrite, gci_sql.str().c_str(), NULL, NULL, NULL);
+    int rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL);
 }
 
 
@@ -1061,13 +1072,16 @@ void SltConnection::AddDataCol(FdoDataPropertyDefinition* dpd, const wchar_t* fc
     if (!m_bUseFdoMetadata || !m_bHasFdoMetadata)
         return;
 
-    std::ostringstream os;
-    os << "INSERT INTO fdo_columns (f_table_name, f_column_name, fdo_data_type) VALUES(";
-    os << "'" << W2A_SLOW(fcname) << "','";
-    os << W2A_SLOW(dpd->GetName()) << "',";
-    os << dpd->GetDataType() << ");";
+    StringBuffer sb;
+    sb.Append(  "INSERT INTO fdo_columns (f_table_name, f_column_name, fdo_data_type) VALUES("  );
+    sb.AppendSQuoted(fcname);
+    sb.Append(",");
+    sb.AppendSQuoted(dpd->GetName());
+    sb.Append(",");
+    sb.Append((int)dpd->GetDataType());
+    sb.Append(");");
 
-    int rc = sqlite3_exec(m_dbWrite, os.str().c_str(), NULL, NULL, NULL);
+    int rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL);
 }
 
 
@@ -1124,19 +1138,24 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema)
         if (myclasses->Contains(fc->GetName()))
             continue; //Warning! -- class already exists... Skip it.
 
-        std::string sql = "CREATE TABLE \"" + W2A_SLOW(fc->GetName()) + "\" (";
+        StringBuffer sb;
+        sb.Append("CREATE TABLE \"");
+        sb.Append(fc->GetName());
+        sb.Append("\" (");
 
-        CollectBaseClassProperties(myclasses, fc, sql, 1);
-        CollectBaseClassProperties(myclasses, fc, sql, 2);
-        CollectBaseClassProperties(myclasses, fc, sql, 3);
+        CollectBaseClassProperties(myclasses, fc, sb, 1);
+        CollectBaseClassProperties(myclasses, fc, sb, 2);
+        CollectBaseClassProperties(myclasses, fc, sb, 3);
 
-        sql.resize(sql.size() - 2);
-        sql += ");"; //close the create table command
+        //HACK -- remove a trailing comma and space added by CollectBaseClassProps
+        //and replace by a closing of the SQL command
+        sb.Data()[sb.Length()-2] = ')';
+        sb.Data()[sb.Length()-1] = ';';
 
         //printf ("SQLite Feature class: %s\n", sql.c_str());
 
         //create the database table for this feature class
-        int rc = sqlite3_exec(m_dbWrite, sql.c_str(), NULL, NULL, NULL);
+        int rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL);
     }
 
     rc = sqlite3_exec(m_dbWrite, "COMMIT;", NULL, NULL, NULL);
@@ -1145,12 +1164,12 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema)
     FDO_SAFE_RELEASE(m_pSchema);
 }
 
-void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, FdoClassDefinition* fc, std::string& sql, int mode)
+void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, FdoClassDefinition* fc, StringBuffer& sb, int mode)
 {
     FdoPtr<FdoClassDefinition> baseFc = fc->GetBaseClass();
     if (NULL != baseFc)
     {
-        CollectBaseClassProperties(myclasses, baseFc, sql, mode);
+        CollectBaseClassProperties(myclasses, baseFc, sb, mode);
     }
 
     FdoPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
@@ -1173,24 +1192,25 @@ void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, Fd
             }
             else
             {
-                std::string name = W2A_SLOW(idp->GetName());
-                
                 FdoDataType dt = idp->GetDataType();
                 if (idp->GetIsAutoGenerated() 
                     || dt == FdoDataType_Int32 
                     || dt == FdoDataType_Int64)
                 {
                     //autogenerated ID -- we will have SQLite generate a new one for us
-                    sql += "\"" + name + "\" INTEGER PRIMARY KEY";
+                    sb.Append("\"");
+                    sb.Append(idp->GetName());
+                    sb.Append("\" INTEGER PRIMARY KEY");
                 }
                 else
                 {
-                    sql += "\"" + name;
-                    sql += "\" ";
-                    sql += g_fdo2sql_map[idp->GetDataType()];
-                    sql += " UNIQUE";
+                    sb.Append("\"");
+                    sb.Append(idp->GetName());
+                    sb.Append("\" ");
+                    sb.Append(g_fdo2sql_map[idp->GetDataType()].c_str());
+                    sb.Append(" UNIQUE");
                 }
-                sql += ", ";
+                sb.Append(", ");
 
                 //Add to the metadata table, if necessary
                 AddDataCol(idp, fc->GetName());
@@ -1203,9 +1223,10 @@ void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, Fd
         //beginning of the list for better performance when reading
         if (gpd.p)
         {
-            std::string gpname = W2A_SLOW(gpd->GetName());
-            sql +=  "\"" + gpname + "\" BLOB";
-            sql += ", ";
+            sb.Append("\"");
+            sb.Append(gpd->GetName());
+            sb.Append("\" BLOB");
+            sb.Append(", ");
 
             //also add to the geometry_columns table
             AddGeomCol(gpd.p, fc->GetName());
@@ -1228,10 +1249,11 @@ void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, Fd
                 if (idpdc->Contains(dpd->GetName()))
                     continue;
 
-                sql += "\"" + W2A_SLOW(dpd->GetName());
-                sql += "\" ";
-                sql += g_fdo2sql_map[dpd->GetDataType()];
-                sql += ", ";
+                sb.Append("\"");
+                sb.Append(dpd->GetName());
+                sb.Append("\" ");
+                sb.Append(g_fdo2sql_map[dpd->GetDataType()].c_str());
+                sb.Append(", ");
 
                 //Add an entry to the metadata type table, if needed
                 AddDataCol(dpd, fc->GetName());
@@ -1242,8 +1264,10 @@ void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, Fd
                 if (gpd != NULL && wcscmp(gpd->GetName(), pd->GetName()) == 0)
                     continue;
 
-                sql += "\"" + W2A_SLOW(pd->GetName()) + "\" BLOB";
-                sql += ", ";
+                sb.Append("\"");
+                sb.Append(pd->GetName());
+                sb.Append("\" BLOB");
+                sb.Append(", ");
 
                 AddGeomCol((FdoGeometricPropertyDefinition*)pd.p, fc->GetName());
             }
@@ -1332,11 +1356,9 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
             sqlite3_free(err);
 
         //insert into the temporary table
-        sql = "INSERT INTO SpatialExtentsResult VALUES(?);";
-
         //TODO: some day we should check the error codes...
         //but really, failure is not an option here.
-        rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, &tail);
+        rc = sqlite3_prepare_v2(db, "INSERT INTO SpatialExtentsResult VALUES(?);", -1, &stmt, &tail);
         rc = sqlite3_bind_int(stmt, 1, count);
         rc = sqlite3_step(stmt);
         rc = sqlite3_finalize(stmt);
@@ -1368,22 +1390,18 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
             sqlite3_free(err);
 
         //insert into the temporary table
-        sql = "INSERT INTO SpatialExtentsResult VALUES(?,?);";
-
         //TODO: some day we should check the error codes...
         //but really, failure is not an option here.
-        rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, &tail);
+        rc = sqlite3_prepare_v2(db, "INSERT INTO SpatialExtentsResult VALUES(?,?);", -1, &stmt, &tail);
         rc = sqlite3_bind_blob(stmt, 1, &poly, sizeof(FgfPolygon), SQLITE_TRANSIENT);
         rc = sqlite3_bind_int(stmt, 2, count);
         rc = sqlite3_step(stmt);
         rc = sqlite3_finalize(stmt);
     }
 
-    sql = "SELECT * FROM SpatialExtentsResult;";
-
     stmt = NULL;
     tail = NULL;
-    rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, &tail);
+    rc = sqlite3_prepare_v2(db, "SELECT * FROM SpatialExtentsResult;", -1, &stmt, &tail);
 
     if (rc == SQLITE_OK)
         return new SltReader(this, stmt);        
@@ -1400,8 +1418,12 @@ int SltConnection::GetFeatureCount(const char* table)
     sqlite3_stmt* stmt;
     const char* tail = NULL;
 
-    std::string sql = std::string("SELECT MAX(ROWID) FROM \"") + table + "\";";
-    int rc = sqlite3_prepare_v2(m_dbRead, sql.c_str(), -1, &stmt, &tail);
+    StringBuffer sb;
+    sb.Append("SELECT MAX(ROWID) FROM \"");
+    sb.Append(table);
+    sb.Append("\";");
+
+    int rc = sqlite3_prepare_v2(m_dbRead, sb.Data(), -1, &stmt, &tail);
     rc = sqlite3_step(stmt);
     int count = sqlite3_column_int(stmt, 0);
     sqlite3_finalize(stmt);
@@ -1426,6 +1448,11 @@ sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql)
     {
         //found a cached statement -- take it from the cache
         //and return it
+
+        //TODO: fix this
+        if (!iter->second)
+            throw FdoException::Create(L"Bug! Attempt to get a pre-compiled query that is already in use.");
+
         ret = iter->second;
         iter->second = NULL;
     }

@@ -548,9 +548,9 @@ class SltInsert : public SltCommand<FdoIInsert>
         void PrepareSQL()
         {
             StringBuffer sb;
-            sb.Append("INSERT INTO \"");
-            sb.Append(m_fcname.c_str());
-            sb.Append("\" (");
+            sb.Append("INSERT INTO ");
+            sb.AppendDQuoted(m_fcname.c_str());
+            sb.Append(" (");
 
             for (int i=0; i<m_properties->GetCount(); i++)
             {
@@ -561,9 +561,7 @@ class SltInsert : public SltCommand<FdoIInsert>
                 FdoPtr<FdoIdentifier> id = pv->GetName();
 
                 m_propNames.push_back(id->GetName()); //build up a list of the property names (see Execute() for why this is needed)
-                sb.Append("\"");
-                sb.Append(id->GetName());
-                sb.Append("\"");
+                sb.AppendDQuoted(id->GetName());
             }
 
             //set up parametrized insert values
@@ -719,24 +717,32 @@ public:
     virtual void            SetUpdateExisting(const bool value)     { m_updateExisting = value; }
     virtual void            Execute()
     {
-        std::string tmp;
+        StringBuffer sb;
+        sb.Append("INSERT INTO spatial_ref_sys (sr_name,auth_name,srtext) VALUES(");
 
-        std::string sc_sql = "INSERT INTO spatial_ref_sys (sr_name,auth_name,srtext) VALUES(";
+        if (m_scName.empty())
+            sb.Append("NULL");
+        else
+            sb.AppendSQuoted(m_scName.c_str());
 
-        tmp = W2A_SLOW(m_scName.c_str());
-        sc_sql += tmp.empty() ? "NULL": "'" + tmp + "'";
-        sc_sql += ",";
+        sb.Append(",");
 
-        tmp = W2A_SLOW(m_coordSysName.c_str());
-        sc_sql += tmp.empty() ? "NULL": "'" + tmp + "'";
-        sc_sql += ",";
+        if (m_coordSysName.empty())
+            sb.Append("NULL");
+        else
+            sb.AppendSQuoted(m_coordSysName.c_str());
 
-        tmp = W2A_SLOW(m_coordSysWkt.c_str());
-        sc_sql += tmp.empty() ? "NULL" : "'" + tmp + "'";
-        sc_sql += ");";
+        sb.Append(",");
+
+        if (m_coordSysWkt.empty())
+            sb.Append("NULL");
+        else
+            sb.AppendSQuoted(m_coordSysWkt.c_str());
+
+        sb.Append(");");
 
         char* zerr = NULL;
-        int rc = sqlite3_exec(m_connection->GetDbWrite(), sc_sql.c_str(), NULL, NULL, &zerr);
+        int rc = sqlite3_exec(m_connection->GetDbWrite(), sb.Data(), NULL, NULL, &zerr);
 
         if (rc)
         {
