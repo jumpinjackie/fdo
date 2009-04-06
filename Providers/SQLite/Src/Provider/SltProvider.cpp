@@ -29,6 +29,7 @@
 #include "SltGeomUtils.h"
 #include "SltQueryTranslator.h"
 #include "RowidIterator.h"
+#include "StringUtil.h"
 
 #include "FdoCommonSchemaUtil.h"
 
@@ -320,16 +321,22 @@ FdoConnectionState SltConnection::Open()
 void SltConnection::Close()
 {
     //free the spatial indexes
-    for (std::map<std::string, SpatialIndex*>::iterator iter = m_mNameToSpatialIndex.begin();
+    for (SpatialIndexCache::iterator iter = m_mNameToSpatialIndex.begin();
          iter != m_mNameToSpatialIndex.end(); iter++)
+    {
          delete iter->second;
+         free(iter->first); //was allocated using strdup
+    }
 
     m_mNameToSpatialIndex.clear();
 
     //clear the cached schema metadata
-    for (std::map<std::string, SltMetadata*>::iterator iter = m_mNameToMetadata.begin();
+    for (MetadataCache::iterator iter = m_mNameToMetadata.begin();
          iter != m_mNameToMetadata.end(); iter++)
+    {
          delete iter->second;
+         free(iter->first); //it was created via strdup, must use free()
+    }
 
     m_mNameToMetadata.clear();
 
@@ -556,7 +563,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
 
     DBounds bbox;
     std::vector<__int64>* rowids = NULL;
-    std::string where;
+    StringBuffer where((size_t)0);
     bool canFastStep = true;
 
     //Translate the filter from FDO to SQLite where clause.
@@ -568,13 +575,15 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
         SltQueryTranslator qt(fc);
         filter->Process(&qt);
 
-        where = W2A_SLOW(qt.GetFilter());
+        const wchar_t* wfilter = qt.GetFilter();
+        if (*wfilter) 
+            where.Append(qt.GetFilter());
         qt.GetBBOX(bbox);
         rowids = qt.DetachIDList();
         canFastStep = qt.CanUseFastStepping();
     }
 
-    if (!where.empty() && scrollable)
+    if (where.Length()>0 && scrollable)
     {
         throw FdoCommandException::Create(L"Scrollable reader cannot yet be created with attribute filters! TODO.");
     }
@@ -715,7 +724,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
         }
     }
    
-    return new SltReader(this, props, mbfc, where.c_str(), siter, canFastStep, ri);
+    return new SltReader(this, props, mbfc, where.Data(), siter, canFastStep, ri);
 }
 
 FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcname, 
@@ -770,34 +779,38 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
 
 FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoPropertyValueCollection* propvals)
 {
-    std::string mbfc = W2A_SLOW(fcname->GetName());
+    StringBuffer sb;
 
-    std::string sql="UPDATE \"" + mbfc + "\" SET ";
+    sb.Append("UPDATE \"", 8);
+    sb.Append(fcname->GetName());
+    sb.Append("\" SET ", 6);
 
     //TODO: currently ignores spatial filter in delete
     //TODO: filter needs to be passed through the SltQueryTranslator.
 
     for (int i=0; i<propvals->GetCount(); i++)
     {
-        if (i) sql += ",";
+        if (i) sb.Append(",", 1); 
 
         FdoPtr<FdoPropertyValue> pv = propvals->GetItem(i);
         FdoPtr<FdoIdentifier> id = pv->GetName();
 
-        sql += W2A_SLOW(id->GetName()) + "=?";
+        sb.Append(id->GetName());
+        sb.Append("=?", 2);
     }
 
     if (filter)
     {
-        sql += " WHERE " + W2A_SLOW(filter->ToString());
+        sb.Append(" WHERE ", 7);
+        sb.Append(filter->ToString());
     }
 
-    sql += ";";
+    sb.Append(";", 1);
 
     const char* tail = NULL;
     sqlite3_stmt* stmt = NULL;
     
-    if (sqlite3_prepare_v2(m_dbWrite, sql.c_str(), -1, &stmt, &tail) == SQLITE_OK)
+    if (sqlite3_prepare_v2(m_dbWrite, sb.Data(), -1, &stmt, &tail) == SQLITE_OK)
     {
         BindPropVals(propvals, stmt);
         
@@ -811,7 +824,7 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
     }
     else
     {
-        std::wstring err = L"Failed to parse: " + A2W_SLOW(sql.c_str());
+        std::wstring err = L"Failed to parse: " + A2W_SLOW(sb.Data());
         throw FdoCommandException::Create(err.c_str());
     }
 
@@ -822,24 +835,24 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
 
 FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
 {
-    std::string mbfc = W2A_SLOW(fcname->GetName());
-    
-    //TODO: currently ignores spatial filter in delete
-    std::string sql = "DELETE FROM " + mbfc;
+    //std::string mbfc = W2A_SLOW(fcname->GetName());
+    StringBuffer sb;
+
+    sb.Append("DELETE FROM ", 12);
+    sb.Append(fcname->GetName());
 
     if (filter)
     {
-        sql += " WHERE ";
-        std::string where = W2A_SLOW(filter->ToString());
-        sql += where;
+        sb.Append(" WHERE ", 7);
+        sb.Append(filter->ToString());
     }
 
-    sql += ";";
+    sb.Append(";", 1);
 
     sqlite3_stmt* stmt = NULL;
     const char* tail = NULL;
 
-    if (sqlite3_prepare_v2(m_dbWrite, sql.c_str(), -1, &stmt, &tail) == SQLITE_OK)
+    if (sqlite3_prepare_v2(m_dbWrite, sb.Data(), -1, &stmt, &tail) == SQLITE_OK)
     {
         if (sqlite3_step(stmt) != SQLITE_DONE)
         {
@@ -859,16 +872,17 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
 
 FdoInt32 SltConnection::ExecuteNonQuery(FdoString* sql)
 {
-    std::string mbsql = W2A_SLOW(sql);
+    StringBuffer sb(wcslen(sql)+1);
+    sb.Append(sql);
 
-    sqlite3_stmt* pStmt = GetCachedParsedStatement(mbsql.c_str());
+    sqlite3_stmt* pStmt = GetCachedParsedStatement(sb.Data());
 
     int count = 0;
     int rc;
 
     while ((rc = sqlite3_step(pStmt)) == SQLITE_ROW) count++;
 
-    ReleaseParsedStatement(mbsql.c_str(), pStmt);
+    ReleaseParsedStatement(sb.Data(), pStmt);
 
     if (rc == SQLITE_DONE)
         return count;
@@ -887,15 +901,11 @@ SltMetadata* SltConnection::GetMetadata(const char* table)
 {
     SltMetadata* const REALLY_BAD_POINTER = (SltMetadata*)1;
 
-    std::string stable(table);
+    SltMetadata* ret = NULL;
 
-    SltMetadata* ret = m_mNameToMetadata[stable];
-
-    //check if we already know that no such table exists
-    if (ret == REALLY_BAD_POINTER)
-        return NULL;
-
-    if (!ret)
+    MetadataCache::iterator iter = m_mNameToMetadata.find((char*)table);
+    
+    if (iter == m_mNameToMetadata.end())
     {
         if (IsMetadataTable(table))
             ret = REALLY_BAD_POINTER;
@@ -912,30 +922,33 @@ SltMetadata* SltConnection::GetMetadata(const char* table)
                 ret->ToClass()->Release();
         }
 
-        m_mNameToMetadata[stable] = ret;
+        m_mNameToMetadata[_strdup(table)] = ret; //Note the memory allocation here
     }
+    else if (iter->second != REALLY_BAD_POINTER) //check if we already know that no such table exists
+        ret = iter->second;
 
     return ret;
 }
 
 SpatialIndex* SltConnection::GetSpatialIndex(const char* table)
 {
-    SpatialIndex* si = m_mNameToSpatialIndex[table];
+    SpatialIndexCache::iterator iter = m_mNameToSpatialIndex.find((char*)table);
+
+    if (iter != m_mNameToSpatialIndex.end())
+        return iter->second;
 
     //build the spatial index, if this is the first time it
     //is needed
-    if (!si)
-    {
 #if 0
     clock_t t0 = clock();
     for (int i=0; i<1000; i++)
     {
     delete si;
 #endif
-    si = new SpatialIndex(GetProperty(PROP_NAME_FILENAME));
+    SpatialIndex* si = new SpatialIndex(GetProperty(PROP_NAME_FILENAME));
 
     SltReader* rdr = new SltReader(this, NULL, table, "", NULL, true, false);
-    m_mNameToSpatialIndex[table] = si;
+
     DBounds ext;
 
     while (rdr->ReadNext())
@@ -966,8 +979,9 @@ SpatialIndex* SltConnection::GetSpatialIndex(const char* table)
     clock_t t1 = clock();
     printf("Spatial index build time: %d\n", t1 - t0);
 #endif
-    }
 
+    m_mNameToSpatialIndex[_strdup(table)] = si; //Note the memory allocation
+    
     return si;
 }
 
@@ -1427,7 +1441,7 @@ sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql)
             throw FdoException::Create(L"Failed to parse SQL statement");
         }
 
-        m_mCachedQueries[strdup(sql)] = NULL;
+        m_mCachedQueries[_strdup(sql)] = NULL;
     }
 
     return ret;
@@ -1455,7 +1469,7 @@ void SltConnection::ClearQueryCache()
         iter != m_mCachedQueries.end(); iter++)
     {
         sqlite3_finalize(iter->second);
-        free(iter->first);
+        free(iter->first); //it was created via strdup, must use free()
     }
 
     m_mCachedQueries.clear();

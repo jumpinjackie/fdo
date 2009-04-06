@@ -383,7 +383,7 @@ void SltReader::Requery2()
     }
     else
     {
-        for (size_t i=0; i<m_reissueProps.Count(); i++)
+        for (int i=0; i<m_reissueProps.Count(); i++)
         {
 		    if (i) m_sql.Append(",", 1);
 		    m_sql.Append(m_reissueProps.Get(i));
@@ -983,7 +983,8 @@ bool SltReader::PositionScrollable(__int64 index)
 
 int SltReader::Count()
 {
-    return m_ri->Count();
+    //BUG //TODO: We are forced to return an int, since the FDO API is wrong here
+    return (int)m_ri->Count();
 }
 
 bool SltReader::ReadFirst()
@@ -1070,7 +1071,7 @@ unsigned int SltReader::IndexOf(FdoPropertyValueCollection* key)
         if (index < 1)
             return 0;
 
-        return index;
+        return (unsigned int)index;
     }
     
     //TODO: also return 0 if record is empty -- need to move the reader to 

@@ -21,6 +21,14 @@
 
 #include "SltCapabilities.h"
 
+
+class SltMetadata;
+class SpatialIndex;
+class SltReader;
+class SltExtendedSelect;
+struct NameOrderingPair;
+
+
 struct string_less
 {	// functor for operator<
 bool operator()(const char* _Left, const char* _Right) const
@@ -29,13 +37,9 @@ bool operator()(const char* _Left, const char* _Right) const
 	}
 };
 typedef std::map<char*, sqlite3_stmt*, string_less> QueryCache;
+typedef std::map<char*, SltMetadata*, string_less> MetadataCache;
+typedef std::map<char*, SpatialIndex*, string_less> SpatialIndexCache;
 
-
-class SltMetadata;
-class SpatialIndex;
-class SltReader;
-class SltExtendedSelect;
-struct NameOrderingPair;
 
 class SltConnection : public FdoIConnection, 
                       public FdoIConnectionInfo,
@@ -210,8 +214,8 @@ private :
     FdoConnectionState                      m_connState;
     FdoFeatureSchemaCollection*             m_pSchema;
 
-    std::map<std::string, SltMetadata*>     m_mNameToMetadata;
-    std::map<std::string, SpatialIndex*>    m_mNameToSpatialIndex;
+    MetadataCache                           m_mNameToMetadata;
+    SpatialIndexCache                       m_mNameToSpatialIndex;
     QueryCache                              m_mCachedQueries;
 
     SltCapabilities*                        m_caps;

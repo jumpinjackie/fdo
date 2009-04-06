@@ -90,7 +90,7 @@ FdoIConnection* GetFdoCon(const wchar_t* srcfile, bool open)
     else if (_wcsicmp(ext.c_str(), L".sdx") == 0 || wcscmp(ext.c_str(), L".db") == 0)
     {
         provider = L"SQLiteProvider";
-        connstr = std::wstring(L"File=") + srcfile + std::wstring(L";");
+        connstr = std::wstring(L"File=") + srcfile + std::wstring(L";UseFdoMetadata=true;");
     }
     else
     {
@@ -657,6 +657,7 @@ void TestPerformance(const wchar_t* filename)
             if (ptype == FdoPropertyType_DataProperty)
             {
                 FdoDataPropertyDefinition* dpd = (FdoDataPropertyDefinition*)pd.p;
+                printf ("\t\tData Type %d\n", dpd->GetDataType());
             }
             else if (ptype == FdoPropertyType_GeometricProperty)
             {
@@ -791,7 +792,7 @@ void TestPerformance(const wchar_t* filename)
 
     double min[2];
     double max[2];
-    double factor = 0.49;
+    double factor = 0.495;
     min[0] = minx + (maxx - minx)*factor;
     min[1] = miny + (maxy - miny)*factor;
     max[0] = maxx - (maxx - minx)*factor;
@@ -801,7 +802,7 @@ void TestPerformance(const wchar_t* filename)
     select->SetFeatureClassName(fcname.c_str());
 
     FdoPtr<FdoFilter> bbox0 = CreateBoundingBoxFilter(geomname.c_str(), min[0], min[1],max[0], max[1]);
-    //select->SetFilter(bbox0);
+    select->SetFilter(bbox0);
 
     //FdoPtr<FdoFilter> somefilter = FdoFilter::Parse(L"GENUS=CONCAT('hello', 7)");
     //FdoPtr<FdoBinaryLogicalOperator> op = FdoBinaryLogicalOperator::Create(
@@ -843,36 +844,36 @@ void TestPerformance(const wchar_t* filename)
     fcount = 0;
     t0 = clock();
 
-    for (int i=0; i<1; i++)
+    for (int i=0; i<10000000; i++)
     {
         FdoPtr<FdoIFeatureReader> rdr = (FdoIFeatureReader*)(select->Execute());
         
-        while (rdr.p->ReadNext())
-        {
-            int count = 0;
-            const unsigned char* geom = rdr.p->GetGeometry(geomname.c_str(), &count);
-
-          // printf ("%d,", rdr->GetInt32(L"FeatId"));
-/*
-			if (!rdr->IsNull(L"GENUS")) sp[0] = rdr->GetString(L"GENUS");
-			if (!rdr->IsNull(L"SCI_NM")) sp[1] = rdr->GetString(L"SCI_NM");
-			if (!rdr->IsNull(L"TREE_ID")) sp[3] = rdr->GetString(L"TREE_ID");
-			if (!rdr->IsNull(L"MAINT")) sp[4] = rdr->GetString(L"MAINT");
-
-            rp[0] += rdr->GetDouble(L"DEADWOOD");
-            rp[1] += rdr->GetDouble(L"CROWN_AREA");
-            rp[2] += rdr->GetDouble(L"CROWN_VOL");
-            rp[3] += rdr->GetDouble(L"CRN_RAD");
-*/
-            blab += count;
-            fcount++;
-        }
+//        while (rdr.p->ReadNext())
+//        {
+//            int count = 0;
+//            const unsigned char* geom = rdr.p->GetGeometry(geomname.c_str(), &count);
+//
+//            //printf ("%d,", rdr->GetInt32(L"FeatId"));
+///*			if (!rdr->IsNull(L"GENUS")) sp[0] = rdr->GetString(L"GENUS");
+//			if (!rdr->IsNull(L"SCI_NM")) sp[1] = rdr->GetString(L"SCI_NM");
+//			if (!rdr->IsNull(L"TREE_ID")) sp[3] = rdr->GetString(L"TREE_ID");
+//			if (!rdr->IsNull(L"MAINT")) sp[4] = rdr->GetString(L"MAINT");
+//
+//            rp[0] += rdr->GetDouble(L"DEADWOOD");
+//            rp[1] += rdr->GetDouble(L"CROWN_AREA");
+//            rp[2] += rdr->GetDouble(L"CROWN_VOL");
+//            rp[3] += rdr->GetDouble(L"CRN_RAD");
+//*/
+//            blab += count;
+//            fcount++;
+//        }
 
         rdr->Close();
     }
 
     t1 = clock();
 
+    printf("\n");
     printf ("blab is %d, fcount is %d,  in %d\n", blab, fcount, t1 - t0);
 }
 

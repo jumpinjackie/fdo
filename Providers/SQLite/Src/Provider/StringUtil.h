@@ -16,8 +16,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  
 
-#ifndef STRINGLIST_H
-#define STRINGLIST_H
+#ifndef SLTSTRINGUTIL_H
+#define SLTSTRINGUTIL_H
 
 #include "SltConversionUtils.h"
 
@@ -102,8 +102,14 @@ public:
     StringBuffer(size_t len = 256)
     {
         _len = len;
-        _buf = new char[len];
-        *_buf = 0; //initalize to empty string
+        if (len)
+        {
+            _buf = new char[len];
+            *_buf = 0; //initalize to empty string
+        }
+        else
+            _buf = NULL;
+
         _pos = 0;
     }
 
@@ -138,23 +144,29 @@ public:
     void Append(const char* str, size_t len)
     {
         size_t len0 = len + 1; //length inluding zero terminator
-        
         MakeRoom(len0);
-
         memcpy(&_buf[_pos], str, len0);
-
         _pos += len;
     }
 
+    void Append(const wchar_t* ws)
+    {
+        size_t wlen = wcslen(ws);
+        size_t clen = 4*wlen+1;
+        char* mbs = (char*)alloca(clen);
+        size_t mbslen = W2A_FAST(mbs, clen, ws, wlen);
+        Append(mbs, mbslen);
+    }
+
     //append a string of unknown length
-    void Append(const char* str)
+    inline void Append(const char* str)
     {
         Append(str, strlen(str));
     }
 
     inline const char* Data()
     {
-        return _buf;
+        return _buf ? _buf : "";
     }
 
 private:
@@ -165,7 +177,8 @@ private:
         {
             size_t nlen = std::max<size_t>(_len*2, _pos + len);
             char* nbuf = new char[nlen];
-            memcpy(nbuf, _buf, _pos+1);
+            if (_buf) 
+                memcpy(nbuf, _buf, _pos+1);
             delete[] _buf;
             _buf = nbuf;
             _len = nlen;

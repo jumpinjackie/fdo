@@ -19,6 +19,7 @@
 #include "SltCommandTemplates.h"
 #include "SltReader.h"
 #include "SltConversionUtils.h"
+#include "StringUtil.h"
 
 //When performing bulk inserts or updates, we commit the transaction 
 //once every so many features
@@ -452,7 +453,7 @@ class SltInsert : public SltCommand<FdoIInsert>
                     return Execute();
                 }
 
-                for (int i=0; i<count; i++)
+                for (size_t i=0; i<count; i++)
                 {
                     FdoPtr<FdoPropertyValue> pv = m_properties->GetItem(i);
                     FdoPtr<FdoIdentifier> id = pv->GetName();
@@ -546,30 +547,31 @@ class SltInsert : public SltCommand<FdoIInsert>
 
         void PrepareSQL()
         {
-            std::string sql;
-            sql.reserve(256);
-            sql += "INSERT INTO \"";
-            sql += m_fcname;
-            sql += "\" (";
+            StringBuffer sb;
+            sb.Append("INSERT INTO \"");
+            sb.Append(m_fcname.c_str());
+            sb.Append("\" (");
 
             for (int i=0; i<m_properties->GetCount(); i++)
             {
                 if (i)
-                    sql += ",";
+                    sb.Append(",");
                 
                 FdoPtr<FdoPropertyValue> pv = m_properties->GetItem(i);
                 FdoPtr<FdoIdentifier> id = pv->GetName();
 
                 m_propNames.push_back(id->GetName()); //build up a list of the property names (see Execute() for why this is needed)
-                sql += "\"" + W2A_SLOW(id->GetName()) + "\"";
+                sb.Append("\"");
+                sb.Append(id->GetName());
+                sb.Append("\"");
             }
 
             //set up parametrized insert values
-            sql += ") VALUES(";
+            sb.Append(") VALUES(");
             for (int i=0; i<m_properties->GetCount(); i++)
-                (i) ? sql += ",?" : sql += "?";
+                (i) ? sb.Append(",?") : sb.Append("?");
 
-            sql += ");";
+            sb.Append(");");
 
             //begin the insert transaction
             char* err = NULL;
@@ -577,7 +579,7 @@ class SltInsert : public SltCommand<FdoIInsert>
 
             //parse the SQL statement
             const char* tail = NULL;
-            int rc = sqlite3_prepare_v2(m_db, sql.c_str(), -1, &m_pCompiledSQL, &tail);
+            int rc = sqlite3_prepare_v2(m_db, sb.Data(), -1, &m_pCompiledSQL, &tail);
 
             if (rc != SQLITE_OK)
                 throw FdoCommandException::Create(L"Failed to parse insert sql.");
