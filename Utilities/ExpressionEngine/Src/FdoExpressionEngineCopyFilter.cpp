@@ -104,12 +104,24 @@ void FdoExpressionEngineCopyFilter::ProcessStringValue(FdoStringValue& expr)
 
 void FdoExpressionEngineCopyFilter::ProcessBLOBValue(FdoBLOBValue& expr)
 {   
-	m_pExpression = FdoCLOBValue::Create( expr.GetData() );
+    if(!expr.IsNull())
+    {
+        FdoPtr<FdoByteArray> buffData = expr.GetData();
+        m_pExpression = FdoBLOBValue::Create(buffData);
+    }
+    else
+        m_pExpression = FdoBLOBValue::Create();
 }
 
 void FdoExpressionEngineCopyFilter::ProcessCLOBValue(FdoCLOBValue& expr)
 {  
-	m_pExpression = FdoCLOBValue::Create( expr.GetData() );
+    if(!expr.IsNull())
+    {
+        FdoPtr<FdoByteArray> buffData = expr.GetData();
+        m_pExpression = FdoCLOBValue::Create(buffData);
+    }
+    else
+        m_pExpression = FdoCLOBValue::Create();
 }
 void FdoExpressionEngineCopyFilter::ProcessFunction(FdoFunction& expr)
 {
@@ -162,7 +174,7 @@ void FdoExpressionEngineCopyFilter::ProcessDistanceCondition(FdoDistanceConditio
 {  
 	FdoExpressionEngineCopyFilter  helper(m_pIdentifierCollection);
 	FdoPtr<FdoExpression>(filter.GetGeometry())->Process( &helper );
-	m_pFilter = FdoDistanceCondition::Create( filter.GetPropertyName(), filter.GetOperation(), 
+    m_pFilter = FdoDistanceCondition::Create( FdoPtr<FdoIdentifier>(filter.GetPropertyName()), filter.GetOperation(), 
 											FdoPtr<FdoExpression>(helper.GetExpression()), filter.GetDistance() );
 }
 
@@ -176,7 +188,7 @@ void FdoExpressionEngineCopyFilter::ProcessInCondition(FdoInCondition& filter)
 		FdoPtr<FdoValueExpression>(values->GetItem( i ) )->Process( &helper );
 		newValues->Add( FdoPtr<FdoValueExpression>(static_cast<FdoValueExpression*>( helper.GetExpression() ) ) );
 	}
-	m_pFilter = FdoInCondition::Create(filter.GetPropertyName(), newValues );
+	m_pFilter = FdoInCondition::Create(FdoPtr<FdoIdentifier>(filter.GetPropertyName()), newValues );
 }
 void FdoExpressionEngineCopyFilter::ProcessNullCondition(FdoNullCondition& filter)
 {
@@ -189,7 +201,7 @@ void FdoExpressionEngineCopyFilter::ProcessSpatialCondition(FdoSpatialCondition&
 {
 	FdoExpressionEngineCopyFilter  helper(m_pIdentifierCollection);
 	FdoPtr<FdoExpression>(filter.GetGeometry())->Process( &helper );
-	m_pFilter = FdoSpatialCondition::Create(filter.GetPropertyName(), filter.GetOperation(), FdoPtr<FdoExpression>(helper.GetExpression() ) );
+	m_pFilter = FdoSpatialCondition::Create(FdoPtr<FdoIdentifier>(filter.GetPropertyName()), filter.GetOperation(), FdoPtr<FdoExpression>(helper.GetExpression() ) );
 }
 
 void FdoExpressionEngineCopyFilter::ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& filter)
