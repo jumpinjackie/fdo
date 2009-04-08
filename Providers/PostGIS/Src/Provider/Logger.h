@@ -46,8 +46,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-//  Comment the line below if you don't want logging
-#ifdef _WIN32
+//  Logging is only enabled in Debug mode in a Windows environment.
+#if defined (_WIN32) && defined (_DEBUG)
 #define FDOLOG_DEBUG 1
 #endif
 
