@@ -1473,6 +1473,9 @@ bool c_SdoGeomToAGF2::AGF_Get_GType3_PolygonOrCurvePolygon(int& ElemInfo_Index,b
             
     }
     break;
+    default:
+		  return false;
+	  break;
     
   }
   
