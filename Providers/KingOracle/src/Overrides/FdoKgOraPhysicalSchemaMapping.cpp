@@ -60,29 +60,27 @@ FdoXmlSaxHandler* FdoKgOraPhysicalSchemaMapping::XmlStartElement(FdoXmlSaxContex
 {
     FdoXmlSaxHandler* ret = NULL;
 
-  try 
-  {
- 
-		
-		ret = BaseType::XmlStartElement(Context, Uri, Name, QName, Attrs);
-		if( ret == NULL ) 
-		{
-      if( FdoCommonOSUtil::wcsicmp(Name, FdoKgOraXmlGlobals::g_KgOraClassDefinitionElement) == 0 ) 
-      {
-				FdoKgOraClassDefinitionP newclass = FdoKgOraClassDefinition::Create();
-				newclass->InitFromXml(Context, Attrs);
-				m_Classes->Add(newclass);
-				ret = newclass;
-			}
-		}
-	}
-  catch (FdoException* e) 
-  {
-      Context->AddError(e);
-      e->Release();
-  }
+    try 
+    {
+        ret = BaseType::XmlStartElement(Context, Uri, Name, QName, Attrs);
+        if( ret == NULL ) 
+        {
+            if( FdoCommonOSUtil::wcsicmp(Name, FdoKgOraXmlGlobals::g_KgOraClassDefinitionElement) == 0 ) 
+            {
+                FdoKgOraClassDefinitionP newclass = FdoKgOraClassDefinition::Create();
+                newclass->InitFromXml(Context, Attrs);
+                m_Classes->Add(newclass);
+                ret = newclass;
+            }
+        }
+    }
+    catch (FdoException* e) 
+    {
+        Context->AddError(e);
+        e->Release();
+    }
 
-  return ret;
+    return ret;
   
 }//end of FdoKgOraPhysicalSchemaMapping::XmlStartElement
 
@@ -98,7 +96,7 @@ void FdoKgOraPhysicalSchemaMapping::_writeXml( FdoXmlWriter* Writer, const FdoXm
 
 	BaseType::_writeXml(Writer, Flags);	
 
-  Writer->WriteAttribute(FdoXml::mXmlnsPref, FdoKgOraXmlGlobals::g_KgOraXmlnsValue); 
+    Writer->WriteAttribute(FdoXml::mXmlnsPref, FdoKgOraXmlGlobals::g_KgOraXmlnsValue); 
 
 	for (FdoInt32 i = 0; i <  m_Classes->GetCount(); i++)	
 	{

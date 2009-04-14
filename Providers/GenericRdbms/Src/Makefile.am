@@ -86,6 +86,7 @@ libFdoODBC_la_LIBADD =  \
   -lxalan-c -lxalanMsg \
   -lxerces-c \
   -lodbc \
+  -lodbcinst \
   ODBC/libFdoRdbmsODBC.la  \
   Fdo/libFdoRdbms.la   \
   Rdbi/librdbi.la  \

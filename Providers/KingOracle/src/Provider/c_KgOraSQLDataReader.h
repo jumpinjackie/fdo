@@ -21,7 +21,7 @@ class c_KgOraSQLDataReader : public FdoISQLDataReader
 {
 public:
   c_KgOraSQLDataReader(c_KgOraConnection * Connection
-                        ,oracle::occi::Statement* OcciStatement ,oracle::occi::ResultSet* OcciResultSet);
+                        ,c_Oci_Statement *OciStm);
   
 public:
   ~c_KgOraSQLDataReader(void);
@@ -30,17 +30,20 @@ public:
   
 protected:
   c_KgOraConnection * m_Connection;  
-  oracle::occi::Statement* m_OcciStatement;
-  oracle::occi::ResultSet* m_OcciResultSet;
-
+  c_Oci_Statement* m_OciStatement;
   
-  vector<oracle::occi::MetaData> m_MetaData;
+  
+  //vector<oracle::occi::MetaData> m_MetaData;
+  
   FdoPtr<FdoStringCollection> m_SqlColumns;
   vector<int> m_SqlColIndex; // represents index of coumn in resultset. array corespond to m_SqlColumns
                              // I need this one beacuse some column would not go into 
                              // m_SqlColumns - because of not recognised type
   
-  c_SdoGeomToAGF m_SdoAgfConv;
+  c_StringToIndex *m_PropNameToIndex;
+  c_StringToIndex *m_PropNameToIndex_IsNull;
+        
+  c_SdoGeomToAGF2 m_SdoAgfConv;
   FdoStringP m_CachedString; // buffer to save last retrived string with GetString
   
   
@@ -281,6 +284,7 @@ public:
   
 protected:
   int ColumnNameToColumnIndex(FdoString* ColumnName);
+  int ColumnNameToColumnIndex_IsNull(FdoString* ColumnName);
 };
 
 #endif

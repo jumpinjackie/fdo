@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2006  SL-King d.o.o
+* Copyright (C) 2009  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -16,8 +16,8 @@
 */
 #include "stdafx.h"
 
-#include "c_FdoOra_API.h"
-#include "c_Ora_API.h"
+#include "c_FdoOra_API2.h"
+#include "c_Ora_API2.h"
 
 c_KgOraCreateSpatialContext::c_KgOraCreateSpatialContext(c_KgOraConnection *Conn)
   : c_KgOraFdoCommand<FdoICreateSpatialContext>(Conn)
@@ -343,14 +343,14 @@ void c_KgOraCreateSpatialContext::Execute()
     FdoStringP temp = name.Mid(10,name.GetLength()-10);
     orasrid.m_OraSrid = temp.ToLong();
     
-    string wkt;
-    if( c_Ora_API::GetCoordinateSystemWkt(m_Connection->GetOcciConnection(),orasrid.m_OraSrid,wkt) )
+    std::wstring wkt;
+    if( c_Ora_API2::GetCoordinateSystemWkt(m_Connection->GetOciConnection(),orasrid.m_OraSrid,wkt) )
     {
       orig_wkt = wkt.c_str();
     }
     
         
-    orasrid.m_IsGeodetic = c_Ora_API::IsGeodeticCoordSystem(orig_wkt);
+    orasrid.m_IsGeodetic = c_Ora_API2::IsGeodeticCoordSystem(orig_wkt);
   }
   else
   {  
@@ -365,16 +365,17 @@ void c_KgOraCreateSpatialContext::Execute()
       orasrid.m_IsGeodetic = false;
       try
       {
-        string wkt;
-        if( c_Ora_API::GetCoordinateSystemWkt(m_Connection->GetOcciConnection(),orasrid.m_OraSrid,wkt) )
+        std::wstring wkt;
+        if( c_Ora_API2::GetCoordinateSystemWkt(m_Connection->GetOciConnection(),orasrid.m_OraSrid,wkt) )
         {
           orig_wkt = wkt.c_str();
         }
-        orasrid.m_IsGeodetic = c_Ora_API::IsGeodeticCoordSystem(wkt.c_str());
+        orasrid.m_IsGeodetic = c_Ora_API2::IsGeodeticCoordSystem(wkt.c_str());
       }
-      catch(oracle::occi::SQLException& ea)
+      catch(c_Oci_Exception* ea)
       {
-        FdoStringP gstr = ea.what();
+        FdoStringP gstr = ea->what();
+        delete ea;
         //throw FdoCommandException::Create( gstr );    
       }    
     }
@@ -384,14 +385,15 @@ void c_KgOraCreateSpatialContext::Execute()
       tempname = GetCoordinateSystemWkt();      
       try
       {
-        string csname = (const char*)tempname;
-        string wkt = (const char*)tempname;
-        orasrid.m_OraSrid = c_Ora_API::GetSrid(m_Connection->GetOcciConnection(),csname.c_str());
-        orasrid.m_IsGeodetic = c_Ora_API::IsGeodeticCoordSystem(wkt.c_str());
+        std::wstring csname = (FdoString*)tempname;
+        std::wstring wkt = (FdoString*)tempname;
+        orasrid.m_OraSrid = c_Ora_API2::GetSrid(m_Connection->GetOciConnection(),csname.c_str());
+        orasrid.m_IsGeodetic = c_Ora_API2::IsGeodeticCoordSystem(wkt.c_str());
       }
-      catch(oracle::occi::SQLException& ea)
+      catch(c_Oci_Exception* ea)
       {
-        FdoStringP gstr = ea.what();
+        FdoStringP gstr = ea->what();
+        delete ea;
         throw FdoCommandException::Create( gstr );    
       }
       

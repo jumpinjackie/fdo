@@ -17,16 +17,20 @@
 
 #include "stdafx.h"
 
-#include "occi.h"
 
-#include "c_OCCI_API.h"
-#include "c_Ora_API.h"
-#include "c_FdoOra_API.h"
+
+#include "c_OCI_API.h"
+#include "c_Ora_API2.h"
+#include "c_FdoOra_API2.h"
 #include "c_KgOraSchemaDesc.h"
 #include "c_KgOraSchemaPool.h"
 #include "c_LogAPI.h"
+#include "c_KgOraTransaction.h"
 
 #include <time.h>
+
+#define KGORA_MESSAGE_DEFINE
+#include <../Message/inc/KgOraMessage.h>
 
 #ifdef _WIN32
 
@@ -34,6 +38,7 @@ static wchar_t g_AppFileName[MAX_PATH];
 static wchar_t g_HomeDir[MAX_PATH];
 wchar_t g_LogFileName[MAX_PATH];
 
+#define D_ENABLE_SCHEMA_POOL 1
 
 //wchar_t g_WcharBuff1024[1024+1];
 
@@ -48,6 +53,8 @@ BOOL APIENTRY DllMain (HANDLE Module, DWORD Reason, LPVOID lpReserved)
     //
     //int debugFlags = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
     //_CrtSetDbgFlag(debugFlags | _CRTDBG_ALLOC_MEM_DF | _CRTDBG_CHECK_ALWAYS_DF);
+    
+    
 
     ret = TRUE;
     if ( Reason == DLL_PROCESS_ATTACH )
@@ -75,11 +82,6 @@ BOOL APIENTRY DllMain (HANDLE Module, DWORD Reason, LPVOID lpReserved)
 
     return (ret);
 }
-
-#else
-
-wchar_t g_LogFileName[PATH_MAX];
-
 #endif // _WIN32
 
 
@@ -101,7 +103,7 @@ c_KgOraConnection::c_KgOraConnection (void) :
     m_ConnectionState(FdoConnectionState_Closed)
     
 {
-  m_OcciConnection=NULL;
+  m_OciConnection=NULL;
   m_SchemaDesc = NULL;
 	// Create the default SC
 	
@@ -125,7 +127,7 @@ c_KgOraConnection::~c_KgOraConnection (void)
   #ifdef _DEBUG
   printf("\nFDO c_KgOraConnection::Destructor... %p",this);
   #endif
-  D_KGORA_ELOG_WRITE2("c_KgOraConnection%d::Delete %d ",m_ConnNo,m_ConnNo);
+  D_KGORA_ELOG_WRITE1("c_KgOraConnection(%d).Destructor ",m_ConnNo);
   Close ();
 
 	//g_Mutex.Enter();
@@ -235,7 +237,7 @@ void c_KgOraConnection::SetConnectionString (FdoString* value)
         connDict->UpdateFromConnectionString(m_ConnectionString);
     }
     else
-        throw FdoException::Create (NlsMsgGetKgOra(M_KGORA_CONNECTION_ALREADY_OPEN, "The connection is already open."));
+        throw FdoException::Create (NlsMsgGet(M_KGORA_CONNECTION_ALREADY_OPEN, "The connection is already open."));
 }
 
 /// <summary>Gets an FdoIConnectionInfo interface that can be used to interrogate and set connection properties.</summary>
@@ -277,7 +279,7 @@ FdoInt32 c_KgOraConnection::GetConnectionTimeout ()
 void c_KgOraConnection::SetConnectionTimeout (FdoInt32 value)
 {
   D_KGORA_ELOG_WRITE("c_KgOraConnection::SetConnectionTimeout ");
-    throw FdoException::Create (NlsMsgGetKgOra(M_KGORA_CONNECTION_TIMEOUT_UNSUPPORTED, "Connection timeout is not supported."));
+    throw FdoException::Create (NlsMsgGet(M_KGORA_CONNECTION_TIMEOUT_UNSUPPORTED, "Connection timeout is not supported."));
 }
 
 
@@ -306,13 +308,13 @@ g_Mutex.Enter();
         #endif
     }
 
-  if( !c_OCCI_API::IsInit() )
+  if( !c_OCI_API::IsInit() )
   {
     #ifdef _DEBUG
       printf("\nOpen...OcciInit...");
     #endif
     D_KGORA_ELOG_WRITE("c_KgOraConnection::Open c_OCCI_API::OcciInit");
-    c_OCCI_API::OcciInit();
+    c_OCI_API::OciInit();
   }
 
 	try
@@ -333,7 +335,7 @@ g_Mutex.Enter();
 		
 		D_KGORA_ELOG_WRITE5("c_KgOraConnection%d::Open %d '%s' '%s' '%s'",m_ConnNo,m_ConnNo,(const char*)username,(const char*)password,(const char*)service);
 		
-	  c_OCCI_API::CreateConnection((const char*)username, (const char*)password, (const char*)service,m_OcciConnection,m_OcciEnvironment);
+	  m_OciConnection = c_OCI_API::CreateConnection((const wchar_t*)username, (const wchar_t*)password, (const wchar_t*)service);
 	  
 	  
 	  
@@ -344,7 +346,7 @@ g_Mutex.Enter();
 	  m_FdoViewsTable = fdoviewstable.Upper();
 	  
 	  
-	  if( !c_Ora_API::GetOracleVersion(m_OcciConnection,m_OracleMainVersion,m_OracleSubVersion) )
+	  if( !c_Ora_API2::GetOracleVersion(m_OciConnection,m_OracleMainVersion,m_OracleSubVersion) )
 	  {
 	    m_OracleMainVersion = D_ORACLE_DEFAULT_MAIN_VER;
 	    m_OracleSubVersion = D_ORACLE_DEFAULT_SUB_VER;
@@ -364,22 +366,20 @@ g_Mutex.Enter();
     
     return (GetConnectionState ());
 	}
-	catch(oracle::occi::SQLException& ea)
+	catch(c_Oci_Exception* ea)
   {
-    const char* what = ea.what();
+    FdoStringP gstr = ea->GetErrorText();
+    delete ea;
     
     #ifdef _DEBUG
       printf(" <Open SQL Exception> ");
     #endif
     
-    D_KGORA_ELOG_WRITE2("c_KgOraConnection%d::Open Exception '%s'",m_ConnNo,what);
+    D_KGORA_ELOG_WRITE2("c_KgOraConnection%d::Open Exception '%s'",m_ConnNo,(const char*)gstr);
     
     g_Mutex.Leave();
     
-    //wchar_t *cstr = ustr.;
-    FdoStringP gstr = what;
-    throw FdoConnectionException::Create( gstr );
-    //throw FdoConnectionException::Create(L"Connect failed");
+    throw FdoConnectionException::Create( gstr );    
   }
 
   catch(...)
@@ -417,26 +417,26 @@ void c_KgOraConnection::Close ()
 g_Mutex.Enter();
   try
   {
-    if( m_OcciConnection )
+    if( m_OciConnection )
     {
-      c_OCCI_API::CloseConnection(m_OcciConnection,m_OcciEnvironment);    
+      c_OCI_API::CloseConnection(m_OciConnection);    
       
-      m_OcciConnection=NULL;    
+      m_OciConnection=NULL;    
     }
     g_Mutex.Leave();  
   }
-  catch(oracle::occi::SQLException& ea)
+  catch(c_Oci_Exception* ea)
   {
     g_Mutex.Leave();  
-    const char* what = ea.what();
+    FdoStringP gstr = ea->GetErrorText();
+    delete ea;
     
     #ifdef _DEBUG
       printf(" <Close Exception> ");
     #endif
     
-    D_KGORA_ELOG_WRITE2("c_KgOraConnection%d::Open Exception '%s'",m_ConnNo,what);
+    D_KGORA_ELOG_WRITE2("c_KgOraConnection%d::Open Exception '%s'",m_ConnNo,(const char*) gstr);
     
-    FdoStringP gstr = ea.getMessage().c_str();
     throw FdoException::Create( gstr );
   }
   catch(...)
@@ -462,8 +462,28 @@ g_Mutex.Enter();
 /// <returns>Returns the transaction</returns> 
 FdoITransaction* c_KgOraConnection::BeginTransaction ()
 {
+  //simon 8.5.2008
+  //odkomentiral spodaj in zakomentiral oracle::occi::Statement* occi_stm=NULL naprej
+
   D_KGORA_ELOG_WRITE("c_KgOraConnection::BeginTransaction ");
-    throw FdoException::Create(NlsMsgGetKgOra(M_KGORA_CONNECTION_TRANSACTIONS_NOT_SUPPORTED, "King.Oracle Provider does not support transactions."));
+  throw FdoException::Create(NlsMsgGet(M_KGORA_CONNECTION_TRANSACTIONS_NOT_SUPPORTED, "King.Oracle Provider does not support transactions."));
+  
+  
+  /*oracle::occi::Statement* occi_stm=NULL;
+  try
+  {  
+    occi_stm = OCI_CreateStatement();
+    occi_stm->setSQL( "BEGIN");  
+    occi_stm->execute();
+  }
+  catch(oracle::occi::SQLException& ea)
+  { 
+    if( occi_stm ) OCI_TerminateStatement(occi_stm);
+    FdoStringP gstr = ea.what();
+    throw FdoCommandException::Create( gstr );    
+  }
+  
+  return new c_KgOraTransaction(this);*/
 }
 
 /// <summary>Creates and returns the specified type of command object associated with
@@ -477,7 +497,7 @@ FdoICommand* c_KgOraConnection::CreateCommand (FdoInt32 CommandId)
   D_KGORA_ELOG_WRITE2("c_KgOraConnection::CreateCommand %ld '%s'",(long)CommandId,(const char*)FdoCommonMiscUtil::FdoCommandTypeToString (CommandId));
   
     if ((GetConnectionState() == FdoConnectionState_Closed) || (GetConnectionState() == FdoConnectionState_Pending))
-        throw FdoException::Create(NlsMsgGetKgOra(M_KGORA_CONNECTION_INVALID, "Connection is invalid."));
+        throw FdoException::Create(NlsMsgGet(M_KGORA_CONNECTION_INVALID, "Connection is invalid."));
     switch (CommandId)
     {
         case FdoCommandType_Select:
@@ -514,11 +534,12 @@ FdoICommand* c_KgOraConnection::CreateCommand (FdoInt32 CommandId)
         break;
         
         
-        /*
+        
         case FdoCommandType_SelectAggregates:
-          ret = new KgOraSelectAggregates (this);
+          ret = new c_KgOraSelectAggregates (this);
         break;
         
+        /*
         case FdoCommandType_DescribeSchemaMapping:
             ret = new KgOraDescribeSchemaMappingCommand (this);
             break;
@@ -639,7 +660,7 @@ bool c_KgOraConnection::GetOracleSridDesc(FdoClassDefinition* ClassDef,c_KgOraSr
       
          
       FdoStringP wkt =  sc->GetCoordinateSystemWkt();        
-      OraSrid.m_IsGeodetic = c_Ora_API::IsGeodeticCoordSystem(wkt); // TODO: it should return real value
+      OraSrid.m_IsGeodetic = c_Ora_API2::IsGeodeticCoordSystem(wkt); // TODO: it should return real value
     }
     else
     {
@@ -651,7 +672,7 @@ bool c_KgOraConnection::GetOracleSridDesc(FdoClassDefinition* ClassDef,c_KgOraSr
         OraSrid.m_OraSrid = temp.ToLong();
            
         FdoStringP wkt =  sc->GetCoordinateSystemWkt();                   
-        OraSrid.m_IsGeodetic = c_Ora_API::IsGeodeticCoordSystem(wkt); // TODO: it should return real value
+        OraSrid.m_IsGeodetic = c_Ora_API2::IsGeodeticCoordSystem(wkt); // TODO: it should return real value
       }
       else
       {
@@ -665,22 +686,32 @@ bool c_KgOraConnection::GetOracleSridDesc(FdoClassDefinition* ClassDef,c_KgOraSr
   
 }//end of c_KgOraConnection::GetOracleSrid
 
-oracle::occi::Statement* c_KgOraConnection::OCCI_CreateStatement()
+c_Oci_Statement* c_KgOraConnection::OCI_CreateStatement()
 {
-  return m_OcciConnection->createStatement();  
-}//end of c_KgOraConnection::OCCI_CreateStatement
+  c_Oci_Statement* stm = m_OciConnection->CreateStatement();  
+  //stm->setAutoCommit(true);
+  
+  return stm;
+}//end of c_KgOraConnection::OCI_CreateStatement
 
-void c_KgOraConnection::OCCI_Commit()
+/*
+void c_KgOraConnection::OCI_Commit()
 {
-  return m_OcciConnection->commit();  
-}//end of c_KgOraConnection::OCCI_CreateStatement
+  return m_OciConnection->commit();  
+}//end of c_KgOraConnection::OCI_CreateStatement
 
-void c_KgOraConnection::OCCI_TerminateStatement(oracle::occi::Statement* Statement)
+void c_KgOraConnection::OCI_Rollback()
+{
+  return m_OciConnection->rollback();  
+}//end of c_KgOraConnection::OCI_CreateStatement
+*/
+
+void c_KgOraConnection::OCI_TerminateStatement(c_Oci_Statement* Statement)
 {
   
-  if( m_OcciConnection && Statement ) m_OcciConnection->terminateStatement (Statement);
+  if( m_OciConnection && Statement ) m_OciConnection->TerminateStatement (Statement);
   
-}//end of c_KgOraConnection::OCCI_CreateStatement
+}//end of c_KgOraConnection::OCI_CreateStatement
 
 
 c_KgOraSchemaDesc* c_KgOraConnection::GetSchemaDesc()
@@ -692,7 +723,7 @@ c_KgOraSchemaDesc* c_KgOraConnection::GetSchemaDesc()
     m_SchemaDesc = c_KgOraSchemaPool::GetSchemaData(this);
     if( !m_SchemaDesc.p )
     {
-      m_SchemaDesc = c_FdoOra_API::DescribeSchema(this,m_OraSchemaName.c_str(),m_FdoViewsTable.c_str());
+      m_SchemaDesc = c_FdoOra_API2::DescribeSchema(this->GetOciConnection(),m_OraConnectionUserName.c_str(),m_OraSchemaName.c_str(),m_FdoViewsTable.c_str());
       if( m_SchemaDesc.p )
       {
         c_KgOraSchemaPool::AddSchemaData(this,m_SchemaDesc.p);
@@ -700,10 +731,20 @@ c_KgOraSchemaDesc* c_KgOraConnection::GetSchemaDesc()
     }
   
   #else
-    m_SchemaDesc = c_FdoOra_API::DescribeSchema(this,m_OraSchemaName.c_str(),m_FdoViewsTable.c_str());
+    m_SchemaDesc = c_FdoOra_API2::DescribeSchema(this->GetOciConnection(),m_OraConnectionUserName.c_str(),m_OraSchemaName.c_str(),m_FdoViewsTable.c_str());
   #endif
   }
   return FDO_SAFE_ADDREF(m_SchemaDesc.p);
+}//end of c_KgOraConnection::GetSchemaDesc
+
+void c_KgOraConnection::ClearCachedSchemaDesc()
+{
+// Now check into schema pool
+#ifdef D_ENABLE_SCHEMA_POOL
+  c_KgOraSchemaPool::ClearCache(this);  
+#endif
+  m_SchemaDesc = NULL;
+  
 }//end of c_KgOraConnection::GetSchemaDesc
 
 
@@ -880,14 +921,14 @@ void c_KgOraConnection::TestArrayFetch(FdoIdentifier* ClassId, FdoFilter* Filter
       sqlstr += wherestr;
     }
     
-    delete sbuff;
+    delete [] sbuff;
 
     
       oracle::occi::Statement* occi_statement = NULL;
       oracle::occi::ResultSet* occi_resultset = NULL;
       try
       {
-        occi_statement = OCCI_CreateStatement();
+        occi_statement = OCI_CreateStatement();
         occi_statement->setPrefetchRowCount(40);
 
         //m_OcciStatement->setSQL("SELECT GEOMETRY FROM polyline_parcele where rownum < 10 order by rowid");
@@ -910,7 +951,7 @@ void c_KgOraConnection::TestArrayFetch(FdoIdentifier* ClassId, FdoFilter* Filter
         int numlines = 0;
         long numordinates=0;
         int uknownagf=0;
-        c_SdoGeomToAGF sdoagfconv;
+        c_SdoGeomToAGF2 sdoagfconv;
         int buffagf[64*1024];
         
         while( occi_resultset->next() != oracle::occi::ResultSet::END_OF_FETCH )
@@ -957,7 +998,7 @@ void c_KgOraConnection::TestArrayFetch(FdoIdentifier* ClassId, FdoFilter* Filter
         
         if (occi_statement)
         {
-          OCCI_TerminateStatement(occi_statement);
+          OCI_TerminateStatement(occi_statement);
           
         }
       }
@@ -967,7 +1008,7 @@ void c_KgOraConnection::TestArrayFetch(FdoIdentifier* ClassId, FdoFilter* Filter
         FdoStringP gstr = ea.getMessage().c_str();
         printf("\nTest occi exception: %s",(const char*)gstr);
         //throw FdoConnectionException::Create( gstr );
-        //throw FdoException::Create (NlsMsgGetKgOra(KGORA_CONNECTION_ALREADY_OPEN, "The connection is already open."));
+        //throw FdoException::Create (NlsMsgGet(KGORA_CONNECTION_ALREADY_OPEN, "The connection is already open."));
         //throw c_KgDbException(ea.getErrorCode(),ea.getMessage().data(),"c_KgDbBsAPI::Init");
       }
     
@@ -977,7 +1018,7 @@ void c_KgOraConnection::TestArrayFetch(FdoIdentifier* ClassId, FdoFilter* Filter
         FdoStringP gstr = ea->getMessage().c_str();
         printf("\nTest occi exception: %s",(const char*)gstr);
         //throw FdoConnectionException::Create( gstr );
-        //throw FdoException::Create (NlsMsgGetKgOra(KGORA_CONNECTION_ALREADY_OPEN, "The connection is already open."));
+        //throw FdoException::Create (NlsMsgGet(KGORA_CONNECTION_ALREADY_OPEN, "The connection is already open."));
         //throw c_KgDbException(ea.getErrorCode(),ea.getMessage().data(),"c_KgDbBsAPI::Init");
       }
       catch (exception& )                                                      

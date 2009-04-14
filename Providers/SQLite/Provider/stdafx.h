@@ -32,6 +32,7 @@
 //disable STL bounds checking
 #define _SECURE_SCL 0
 
+#include <cstring>
 #include <string>
 #include <wchar.h>
 

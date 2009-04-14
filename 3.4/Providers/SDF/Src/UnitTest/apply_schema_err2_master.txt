@@ -1,1 +1,0 @@
- Cannot delete schema definition 'Acad'; it has objects 

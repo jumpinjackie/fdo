@@ -30,6 +30,7 @@
     using namespace std;
 #endif
 
+#include <cstring>
 #include <OWS/FdoOWS.h>
 #include <FdoStd.h>
 #include <Fdo.h>

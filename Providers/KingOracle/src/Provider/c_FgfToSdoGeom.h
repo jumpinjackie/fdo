@@ -18,7 +18,7 @@
 #ifndef _c_FgfToSdoGeom_h
 #define _c_FgfToSdoGeom_h
 
-#include "SDO_GEOMETRY.h"
+
 
 class c_FgfToSdoGeom
 {
@@ -42,13 +42,13 @@ public:
     
 public:
 
-  void SetGeometry(SDO_GEOMETRY* Geom)
+  void SetGeometry(c_SDO_GEOMETRY* Geom)
   {
     m_SdoGeom = Geom;  
   };
   
   // Convert to Autodesk variant of format very similar to WKB well known binary
-  e_TransformResult ToSdoGeom(const int* FGFbuff,long OraSrid,SDO_GEOMETRY*,bool UseOptimizedRect=false);
+  e_TransformResult ToSdoGeom(const int* FGFbuff,long OraSrid,c_SDO_GEOMETRY*,bool UseOptimizedRect=false);
   
 protected:  
   void OraDim(int FGF_CoordDim);
@@ -58,7 +58,7 @@ protected:
   
  
   
-  SDO_GEOMETRY* m_SdoGeom;  
+  c_SDO_GEOMETRY* m_SdoGeom;  
   int m_PointSize;  // count of numbers for one point in sdo_ordinates list
   int m_Ora_Gtype_l;  // coordinate of M  or 0 if no M
   

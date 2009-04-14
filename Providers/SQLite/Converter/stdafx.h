@@ -22,6 +22,7 @@
 #include <dlfcn.h>
 #endif
 
+#include <cstring>
 #include <time.h>
 #include <float.h>
 #include <stdio.h>

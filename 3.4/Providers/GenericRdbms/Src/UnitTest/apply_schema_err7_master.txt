@@ -1,2 +1,0 @@
- Schema Electric'l has errors; cannot apply it 
- Cannot set geometry for class Electric'l:Conductor; geometry already defined on base class ElectricDevice 

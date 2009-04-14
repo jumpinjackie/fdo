@@ -17,7 +17,7 @@
 
 #include "stdafx.h"
 #include "c_FgfToSdoGeom.h"
-#include "c_Ora_API.h"
+#include "c_Ora_API2.h"
 
 
 c_FgfToSdoGeom::c_FgfToSdoGeom()
@@ -72,23 +72,23 @@ void c_FgfToSdoGeom::PushPoint(const int *& FgfBuff)
   {
     case 3:
       
-        m_SdoGeom->getSdo_ordinates().push_back(*ords++ );
-        m_SdoGeom->getSdo_ordinates().push_back(*ords++ );
-        m_SdoGeom->getSdo_ordinates().push_back(*ords++ );
+        m_SdoGeom->AppendSdoOrdinates(*ords++ );
+        m_SdoGeom->AppendSdoOrdinates(*ords++ );
+        m_SdoGeom->AppendSdoOrdinates(*ords++ );
       
       numord = 3;
     break;
     case 4:
-        m_SdoGeom->getSdo_ordinates().push_back(*ords++ );
-        m_SdoGeom->getSdo_ordinates().push_back(*ords++ );
-        m_SdoGeom->getSdo_ordinates().push_back(*ords++ );
-        m_SdoGeom->getSdo_ordinates().push_back(*ords++ );
+        m_SdoGeom->AppendSdoOrdinates(*ords++ );
+        m_SdoGeom->AppendSdoOrdinates(*ords++ );
+        m_SdoGeom->AppendSdoOrdinates(*ords++ );
+        m_SdoGeom->AppendSdoOrdinates(*ords++ );
       
       numord = 4;
     break;
     default:
-        m_SdoGeom->getSdo_ordinates().push_back(*ords++ );
-        m_SdoGeom->getSdo_ordinates().push_back(*ords++ );
+        m_SdoGeom->AppendSdoOrdinates(*ords++ );
+        m_SdoGeom->AppendSdoOrdinates(*ords++ );
       
       numord = 2;
     break;
@@ -102,9 +102,9 @@ void c_FgfToSdoGeom::PushPoint(const int *& FgfBuff)
 
 void c_FgfToSdoGeom::AddElemInfo(int Offset,int Etype,int Interp)
 {
-  m_SdoGeom->getSdo_elem_info().push_back(Offset );
-  m_SdoGeom->getSdo_elem_info().push_back(Etype );
-  m_SdoGeom->getSdo_elem_info().push_back(Interp );
+  m_SdoGeom->AppendElemInfoArray(Offset );
+  m_SdoGeom->AppendElemInfoArray(Etype );
+  m_SdoGeom->AppendElemInfoArray(Interp );
   
 }
 
@@ -118,27 +118,27 @@ void c_FgfToSdoGeom::AddOrdinates(const int *& FgfBuff,size_t NumPoints,int Etyp
     case 3:
       for( size_t ind=0;ind<NumPoints;ind++)
       {
-        m_SdoGeom->getSdo_ordinates().push_back(*ords++ );
-        m_SdoGeom->getSdo_ordinates().push_back(*ords++ );
-        m_SdoGeom->getSdo_ordinates().push_back(*ords++ );
+        m_SdoGeom->AppendSdoOrdinates(*ords++ );
+        m_SdoGeom->AppendSdoOrdinates(*ords++ );
+        m_SdoGeom->AppendSdoOrdinates(*ords++ );
       }
       numord = 3 * NumPoints;
     break;
     case 4:
       for( size_t ind=0;ind<NumPoints;ind++)
       {
-        m_SdoGeom->getSdo_ordinates().push_back(*ords++ );
-        m_SdoGeom->getSdo_ordinates().push_back(*ords++ );
-        m_SdoGeom->getSdo_ordinates().push_back(*ords++ );
-        m_SdoGeom->getSdo_ordinates().push_back(*ords++ );
+        m_SdoGeom->AppendSdoOrdinates(*ords++ );
+        m_SdoGeom->AppendSdoOrdinates(*ords++ );
+        m_SdoGeom->AppendSdoOrdinates(*ords++ );
+        m_SdoGeom->AppendSdoOrdinates(*ords++ );
       }
       numord = 4 * NumPoints;
     break;
     default:
       for( size_t ind=0;ind<NumPoints;ind++)
       {
-        m_SdoGeom->getSdo_ordinates().push_back(*ords++ );
-        m_SdoGeom->getSdo_ordinates().push_back(*ords++ );
+        m_SdoGeom->AppendSdoOrdinates(*ords++ );
+        m_SdoGeom->AppendSdoOrdinates(*ords++ );
       }
       numord = 2 * NumPoints;
     break;
@@ -154,7 +154,7 @@ void c_FgfToSdoGeom::AddOrdinates(const int *& FgfBuff,size_t NumPoints,int Etyp
   FgfBuff = (const int *)ords;
 }
 
-c_FgfToSdoGeom::e_TransformResult c_FgfToSdoGeom::ToSdoGeom(const int* FGFbuff,long OraSrid,SDO_GEOMETRY* SdoGeom,bool UseOptimizedRect)
+c_FgfToSdoGeom::e_TransformResult c_FgfToSdoGeom::ToSdoGeom(const int* FGFbuff,long OraSrid,c_SDO_GEOMETRY* SdoGeom,bool UseOptimizedRect)
 {
   
   m_SdoGeom = SdoGeom;
@@ -323,22 +323,26 @@ c_FgfToSdoGeom::e_TransformResult c_FgfToSdoGeom::ToSdoGeom(const int* FGFbuff,l
     case FdoGeometryType_MultiPoint:
     {
       ora_gtype_tt = 5;
-      
+      m_PointSize = 2;
       // number of line strings
       int numpoints = *fbuff++; 
-      
       if( numpoints > 0 )
       {
-      // add first point which will addd eleminfo with correct number of points
+      // add first point which will add eleminfo with correct number of points
+        *fbuff++;
+        *fbuff++;
+        
         AddOrdinates(fbuff,1,1,numpoints); // one point, Etype==1, Interp==numpoints
+        //AddOrdinates(fbuff,1,1,1); // one point, Etype==1, Interp==numpoints
+        numpoints--;      
         while(numpoints--)
         {
+      
           // Geometry type - it has to be point
-          *fbuff++; // skip it
-           
-          *fbuff++;  // skip it OraDim(fgf_coorddim);   
-          
-          PushPoint(fbuff); // just add point ot ordiantes list
+         *fbuff++; // skip it    
+         *fbuff++;  // skip it OraDim(fgf_coorddim);   
+         //AddOrdinates(fbuff,1,1,1); 
+         PushPoint(fbuff); // just add point ot ordiantes list
         }
       }
     }
@@ -522,27 +526,32 @@ c_FgfToSdoGeom::e_TransformResult c_FgfToSdoGeom::ToSdoGeom(const int* FGFbuff,l
   
   int ora_gtype = m_PointSize * 1000 + m_Ora_Gtype_l*100 + ora_gtype_tt;
   
-  SdoGeom->setSdo_gtype(ora_gtype);
+  SdoGeom->SetSdoGtype(ora_gtype);
   
-  oracle::occi::Number orasr;
+  
   if( OraSrid > 0 )
   {
-    orasr = OraSrid;
+    
+    SdoGeom->SetSdoSrid(OraSrid);
   }
   else
   {
-    orasr.setNull();
+    SdoGeom->SetNull_SdoSrid();
   }
-  SdoGeom->setSdo_srid(orasr);
+  
  
  #ifdef _DEBUG 
-  char* tempbuff = c_Ora_API::SdoGeomToString(SdoGeom);
+  char* tempbuff = c_Ora_API2::SdoGeomToString(SdoGeom);
   if( tempbuff )
   {
-    delete tempbuff;
+    delete [] tempbuff;
   }
   #endif
     
   return e_Ok;
 }//end of c_FgfToSdoGeom::ToSdoGeom
+
+
+
+
 

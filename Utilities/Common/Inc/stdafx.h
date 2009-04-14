@@ -21,16 +21,14 @@
 //
 
 #ifdef _WIN32
-
 #pragma once
-
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
 #include <windows.h>
 #include <float.h>
 #include <crtdbg.h>
-
 #endif
 
+#include <cstring>
 
 #ifdef _DEBUG
     #ifdef _WIN32
@@ -53,8 +51,6 @@
 #endif
 #endif
 
-
-
 //defines that helps us use hash_map (and similar STL classes) in the same way 
 //under Linux and Windows.
 #ifdef WIN32
@@ -66,8 +62,6 @@
 namespace stdext = ::__gnu_cxx;
 using namespace std;
 #endif
-
-
 
 #include <FdoStd.h>
 #include <Fdo.h>

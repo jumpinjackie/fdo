@@ -15,6 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  
+#include <cstring>
 #include <FdoCommon.h>
 #include <Common/Xsl/TransformerXalan.h>
 #include <Common/Xml/UtilXrcs.h>
@@ -383,6 +384,16 @@ void FdoXslTransformerXalan::problem(
 
 FdoStringP FdoXslTransformerXalan::XalanDomStringToUnicode(const XALAN_CPP_NAMESPACE::XalanDOMString &xalanDomString)
 {
+#if XALAN_VERSION_MAJOR == 1 && XALAN_VERSION_MINOR >= 10
+    XALAN_CPP_NAMESPACE::CharVectorType charData;
+    xalanDomString.transcode( charData );
+    std::string buffer;
+    XALAN_CPP_NAMESPACE::CharVectorType::iterator it;
+    for( it = charData.begin(); it != charData.end(); it++ )
+         buffer += *it;
+
+    return FdoStringP(buffer.c_str());
+#else
     XALAN_CPP_NAMESPACE::CharVectorType vector = xalanDomString.transcode();
     char buffer[5001];
     wchar_t wbuffer[5001];
@@ -396,6 +407,7 @@ FdoStringP FdoXslTransformerXalan::XalanDomStringToUnicode(const XALAN_CPP_NAMES
     i = mbstowcs (wbuffer, buffer, 5000);
 
     return FdoStringP(wbuffer);
+#endif
 }
 
 FdoStringP FdoXslTransformerXalan::XalanNodeToUnicode(const XALAN_CPP_NAMESPACE::XalanNode* inNode)

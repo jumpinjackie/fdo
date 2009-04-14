@@ -18,16 +18,16 @@
 #ifndef _c_KGORAFEATUREREADER_H
 #define _c_KGORAFEATUREREADER_H
 
-#include "c_SdoGeomToAGF.h"
+#include "c_SdoGeomToAGF2.h"
 #include <time.h>
 
 
 
-class c_KgOraFeatureReader : public c_KgOraReader<FdoIFeatureReader>
+class c_KgOraFeatureReader : public c_KgOraReader< FdoIFeatureReader>
 {
     public:
         c_KgOraFeatureReader(c_KgOraConnection * Connection
-                            ,oracle::occi::Statement* OcciStatement ,oracle::occi::ResultSet* OcciResultSet
+                            ,c_Oci_Statement* OciStatement 
                             ,FdoClassDefinition* ClassDef
                             ,int GeomPropSqlIndex,FdoStringCollection* SqlColumns
                             , FdoIdentifierCollection* Props);

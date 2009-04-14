@@ -32,7 +32,6 @@
 #define GetClassNameA  GetClassName
 #endif // !UNICODE
 
-
 // The following ifdef block is the standard way of creating macros which make exporting 
 // from a DLL simpler. All files within this DLL are compiled with the WFS_EXPORTS
 // symbol defined.  The WFS_EXPORTS symbol should not be defined on any project
@@ -53,6 +52,9 @@
 
 // number of elements in an array
 #define ELEMENTS(x) (sizeof(x)/sizeof(x[0]))
+
+// System Headers
+#include <cstring>
 
 // Base FDO headers
 #include <Fdo.h>

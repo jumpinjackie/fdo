@@ -33,7 +33,7 @@
 class c_KgOraExpressionProcessor : public virtual FdoIExpressionProcessor
 {
 public:
-  c_KgOraExpressionProcessor(c_FilterStringBuffer* StringBuff,c_KgOraSchemaDesc *KgOraSchemaDesc,FdoIdentifier* ClassDef,const c_KgOraSridDesc& OraSrid);
+  c_KgOraExpressionProcessor(c_FilterStringBuffer* StringBuff,c_KgOraSchemaDesc *KgOraSchemaDesc,FdoIdentifier* ClassDef,const c_KgOraSridDesc& OraSrid,int ParamNumberOffset=0);
 public:
   ~c_KgOraExpressionProcessor(void);
   virtual void Dispose() { delete this; }
@@ -44,6 +44,9 @@ protected:
   c_FilterStringBuffer* m_StringBuff; // pointer to buffer set in constructor; so it can share buffer with expresion processor
   c_KgOraSridDesc m_OraSridDesc; // when converting geomerty need to have this one
   
+  FdoStringP m_ConstantSpatialExtent;
+  
+  int m_ParamNumberOffset;
   bool m_DoAsParameters;
   
   int m_ParamCount; 
@@ -265,18 +268,18 @@ protected:
   
 public:
   //const std::vector<c_KgOraSqlParamDesc*> GetParamList() const { return m_ParamList; }
+  void SetConstantSpatialExtent(const wchar_t* ConstantSpatialExtent);
     
-  
-  void ApplySqlParameters(oracle::occi::Environment*Env,oracle::occi::Statement* OraStm,int ParamOffest=0);
+  void SetParamNumberOffset(int ParamNumOffset) { m_ParamNumberOffset=ParamNumOffset; }
+  void ApplySqlParameters(c_Oci_Statement* OciStm,bool IsGeodeticCS,long OraSrid,int ParamOffest=0);
   int GetSqlParametersCount();
   
 protected:
   
   void AddAsParameter(FdoDataValue& Value);
   void ProcessExpresion( FdoExpression* Expr);
-  void AppendString(const char *Str);
-
-  void PrependString(const char *Str);
+  void AppendString(const wchar_t *Str);
+  void PrependString(const wchar_t *Str);
 };
 
 #endif

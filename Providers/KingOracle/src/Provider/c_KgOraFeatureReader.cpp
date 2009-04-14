@@ -20,7 +20,7 @@
 #include <time.h>
 
 
-#include "c_SdoGeomToAGF.h"
+#include "c_SdoGeomToAGF2.h"
 #include "c_LogAPI.h"
 
 
@@ -33,11 +33,11 @@
 //---------------------------------------------------------------------
 
 c_KgOraFeatureReader::c_KgOraFeatureReader(c_KgOraConnection * Connection
-                                      ,oracle::occi::Statement* OcciStatement ,oracle::occi::ResultSet* OcciResultSet 
-                                        ,FdoClassDefinition* ClassDef
-                                        ,int GeomPropSqlIndex, FdoStringCollection* SqlColumns
-                                        ,FdoIdentifierCollection* Props)
- : c_KgOraReader<FdoIFeatureReader>(Connection,OcciStatement ,OcciResultSet,GeomPropSqlIndex, SqlColumns)
+                                          ,c_Oci_Statement* OcciStatement  
+                                          ,FdoClassDefinition* ClassDef
+                                          ,int GeomPropSqlIndex, FdoStringCollection* SqlColumns
+                                          ,FdoIdentifierCollection* Props)
+ : c_KgOraReader<FdoIFeatureReader>(Connection,OcciStatement ,GeomPropSqlIndex, SqlColumns)
 {
 
   m_ClassDef = ClassDef;
@@ -67,7 +67,45 @@ FdoClassDefinition* c_KgOraFeatureReader::GetClassDefinition()
 {     
     if( m_ClassDef )
     {
-      return FDO_SAFE_ADDREF(m_ClassDef.p);
+      if( m_Props && (m_Props->GetCount() > 0 ) )
+      {
+        FdoClassDefinition* newclass = FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(m_ClassDef);
+        if( newclass )
+        {
+          FdoPtr<FdoPropertyDefinitionCollection> ids = newclass->GetProperties();
+          long count = ids->GetCount();
+          long ind =0;
+          while(ind<count)
+          {
+            FdoPtr<FdoPropertyDefinition> classprop = ids->GetItem(ind);
+            bool found=false;
+            for(long ind2 =0;ind2<m_Props->GetCount();ind2++)
+            {
+              FdoPtr<FdoIdentifier> prop2 = m_Props->GetItem(ind2);
+              if( wcscmp(classprop->GetName(),prop2->GetName()) == 0 )
+              {
+                found=true;
+                break;
+              }
+            }
+            if( !found )
+            {
+              ids->RemoveAt(ind);
+              count = ids->GetCount();
+            }
+            else
+            {
+              ind++;
+            }                          
+          }
+        }
+        
+        return newclass;
+      }
+      else
+      {
+        return FDO_SAFE_ADDREF(m_ClassDef.p);
+      }
     }
     
     return NULL;
@@ -78,8 +116,15 @@ FdoInt32 c_KgOraFeatureReader::GetDepth()
     return 0;
 }
 
+
+
 FdoIFeatureReader* c_KgOraFeatureReader::GetFeatureObject(FdoString* propertyName)
 {
     return NULL;
 }
+
+
+
+
+
 

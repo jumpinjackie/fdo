@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2006  SL-King d.o.o
+* Copyright (C) 2009  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -16,7 +16,7 @@
 */
 #include "stdafx.h"
 #include "c_KgOraSQLCommand.h"
-#include "c_FdoOra_API.h"
+#include "c_FdoOra_API2.h"
 
 
 c_KgOraSQLCommand::c_KgOraSQLCommand(c_KgOraConnection* Connection) : c_KgOraFdoCommand<FdoISQLCommand>(Connection)
@@ -63,13 +63,16 @@ void c_KgOraSQLCommand::SetSQLStatement(FdoString* SqlStr)
 FdoInt32 c_KgOraSQLCommand::ExecuteNonQuery()
 {
   unsigned int ret;
-  oracle::occi::Statement* occi_stm=NULL;
-  oracle::occi::ResultSet* occi_rset=NULL;
+  c_Oci_Statement* oci_stm=NULL;
   try
   {
-    occi_stm = m_Connection->OCCI_CreateStatement();
+    oci_stm = m_Connection->OCI_CreateStatement();
     
-    occi_stm->setSQL( (const char*)m_SqlStr);
+    #ifdef _KGORA_EXTENDED_LOG 
+      
+      D_KGORA_ELOG_WRITE1("c_KgOraSQLCommand.ExecuteNonQuery SQL: '%s'",(const char*)m_SqlStr);        
+    #endif
+    oci_stm->Prepare( m_SqlStr);
  
 // set parameters
     FdoPtr<FdoParameterValueCollection> params = GetParameterValues();
@@ -84,20 +87,24 @@ FdoInt32 c_KgOraSQLCommand::ExecuteNonQuery()
         FdoDataValue* dataval = dynamic_cast<FdoDataValue*>(lval.p);
         if( dataval )
         {    
-          c_FdoOra_API::SetOracleStatementData(m_Connection->GetOcciEnvironment(),occi_stm,ind+1, dataval);
+          c_FdoOra_API2::SetOracleStatementData(oci_stm,ind+1, dataval);
         }
       }
     }
     
-    ret = occi_stm->executeUpdate();
-    m_Connection->OCCI_Commit();
+    ret = oci_stm->ExecuteNonQuery();
     
-    if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);
+    
+    if( oci_stm ) m_Connection->OCI_TerminateStatement(oci_stm);
   }
-  catch(oracle::occi::SQLException& ea)
+  catch(c_Oci_Exception* ea)
   { 
-    if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);
-    FdoStringP gstr = ea.what();
+    if( oci_stm ) m_Connection->OCI_TerminateStatement(oci_stm);
+    FdoStringP gstr = ea->what();
+    
+    D_KGORA_ELOG_WRITE2("(Conn %d) c_KgOraDelete.Execute Exception '%s'",m_Connection->m_ConnNo,(const char*)gstr);
+    
+    delete ea;
     throw FdoCommandException::Create( gstr );    
   }
   
@@ -113,14 +120,14 @@ FdoInt32 c_KgOraSQLCommand::ExecuteNonQuery()
 /// 
 FdoISQLDataReader* c_KgOraSQLCommand::ExecuteReader()
 {
-  oracle::occi::Statement* occi_stm=NULL;
-  oracle::occi::ResultSet* occi_rset=NULL;
+  c_Oci_Statement* oci_stm=NULL;
+  
   try
   {
-    occi_stm = m_Connection->OCCI_CreateStatement();
+    oci_stm = m_Connection->OCI_CreateStatement();
     
-    occi_stm->setSQL( (const char*)m_SqlStr);
-    occi_stm->setPrefetchRowCount(50);
+    oci_stm->Prepare( m_SqlStr);
+    //oci_stm->setPrefetchRowCount(50);
 
 // set parameters
     FdoPtr<FdoParameterValueCollection> params = GetParameterValues();
@@ -135,30 +142,30 @@ FdoISQLDataReader* c_KgOraSQLCommand::ExecuteReader()
         FdoDataValue* dataval = dynamic_cast<FdoDataValue*>(lval.p);
         if( dataval )
         {    
-          c_FdoOra_API::SetOracleStatementData(m_Connection->GetOcciEnvironment(),occi_stm,ind+1, dataval);
+          c_FdoOra_API2::SetOracleStatementData(oci_stm,ind+1, dataval);
         }
       }
     }
 
 
-    occi_rset = occi_stm->executeQuery();
+    oci_stm->ExecuteSelectAndDefine();
   }
-  catch(oracle::occi::SQLException& ea)
+  catch(c_Oci_Exception* ea)
   {
     
-    if( occi_stm ) 
+    if( oci_stm ) 
     {
-      if( occi_rset ) occi_stm->closeResultSet(occi_rset);
-      occi_rset=NULL;
-      m_Connection->OCCI_TerminateStatement(occi_stm);
-      occi_stm=NULL;
+      
+      m_Connection->OCI_TerminateStatement(oci_stm);
+      oci_stm=NULL;
     }
     
-    FdoStringP gstr = ea.what();
+    FdoStringP gstr = ea->what();
+    delete ea;
     throw FdoCommandException::Create( gstr );    
   }
 
   
-  return new c_KgOraSQLDataReader(m_Connection,occi_stm, occi_rset);
+  return new c_KgOraSQLDataReader(m_Connection,oci_stm );
   
 }

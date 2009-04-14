@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2006  SL-King d.o.o
+* Copyright (C) 2009  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -57,15 +57,15 @@ FdoInt32 c_KgOraDelete::Execute()
   
   
   c_FilterStringBuffer sqlstr;
-  sqlstr.AppendString("DELETE ");
+  sqlstr.AppendString(L"DELETE ");
   sqlstr.AppendString(fultablename);
-  sqlstr.AppendString(" ");
+  sqlstr.AppendString(L" ");
   sqlstr.AppendString(table_alias);
   
   
   // process filter
-  const char* filtertext=NULL;
-  c_KgOraFilterProcessor fproc(schemadesc,classid,orasrid);
+  const wchar_t* filtertext=NULL;
+  c_KgOraFilterProcessor fproc(m_Connection->GetOracleMainVersion(),schemadesc,classid,orasrid);
   if( m_Filter )
   {      
     m_Filter->Process( &fproc );
@@ -76,33 +76,41 @@ FdoInt32 c_KgOraDelete::Execute()
   
   if( filtertext && *filtertext )
   {
-    sqlstr.AppendString(" WHERE ");
+    sqlstr.AppendString(L" WHERE ");
     sqlstr.AppendString(filtertext);
   }
   
   int delete_num=0;
-  oracle::occi::Statement* occi_stm=NULL;
+  c_Oci_Statement* oci_stm=NULL;
   
   try
   {
-    occi_stm = m_Connection->OCCI_CreateStatement();
+    oci_stm = m_Connection->OCI_CreateStatement();
     
-    D_KGORA_ELOG_WRITE1("Execute Dslete: '%s",sqlstr.GetString());
+    #ifdef _KGORA_EXTENDED_LOG
+      FdoStringP s1 = sqlstr.GetString();
+      D_KGORA_ELOG_WRITE1("Execute Delete: '%s'",(const char*)s1);
+    #endif
     
-    occi_stm->setSQL(sqlstr.GetString());
     
-    fproc.GetExpressionProcessor().ApplySqlParameters(m_Connection->GetOcciEnvironment(),occi_stm);
+    oci_stm->Prepare(sqlstr.GetString());
+    
+    fproc.GetExpressionProcessor().ApplySqlParameters(oci_stm,orasrid.m_IsGeodetic,orasrid.m_OraSrid);
     
 
-    delete_num = occi_stm->executeUpdate();
+    delete_num = oci_stm->ExecuteNonQuery();
     
-    m_Connection->OCCI_Commit();
-    if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);
+    
+    if( oci_stm ) m_Connection->OCI_TerminateStatement(oci_stm);
   }
-  catch(oracle::occi::SQLException& ea)
+  catch(c_Oci_Exception* ea)
   {
-    if( occi_stm ) m_Connection->OCCI_TerminateStatement(occi_stm);  
-    FdoStringP gstr = ea.what();
+    if( oci_stm ) m_Connection->OCI_TerminateStatement(oci_stm);  
+    FdoStringP gstr = ea->what();
+    
+    D_KGORA_ELOG_WRITE2("c_KgOraDelete::Execute%d Exception '%s'",m_Connection->m_ConnNo,(const char*)gstr);
+    
+    delete ea;
     throw FdoCommandException::Create( gstr );    
   }
 

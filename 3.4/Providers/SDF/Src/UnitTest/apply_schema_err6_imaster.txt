@@ -1,5 +1,0 @@
- Cannot delete a property 'Acad:Conductor.underground'; its class has objects 
- Cannot add not-nullable property 'Acad:Conductor.Conductivity'; its class has objects 
- Unsupported Schema modification; Cannot change identity properties for class 'Acad:Customer' from (First Name, Last Name) to (Last Name) 
- Unsupported Schema modification; Cannot change property 'Acad:Customer.Credit Rating' to be writable 
- Cannot change class type of class 'Acad:'Address'.  

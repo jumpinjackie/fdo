@@ -33,7 +33,7 @@
 class c_KgOraFilterProcessor : public virtual FdoIFilterProcessor 
 {
 public:
-  c_KgOraFilterProcessor(c_KgOraSchemaDesc *KgOraSchemaDesc,FdoIdentifier* ClassId,const c_KgOraSridDesc& OraSrid);
+  c_KgOraFilterProcessor(int OracleMainVersion,c_KgOraSchemaDesc *KgOraSchemaDesc,FdoIdentifier* ClassId,const c_KgOraSridDesc& OraSrid);
 public:
   ~c_KgOraFilterProcessor(void);
   virtual void Dispose() { delete this; }  
@@ -44,6 +44,9 @@ protected:
   
   FdoPtr<FdoKgOraClassDefinition> m_ClassDef;  
   c_KgOraSridDesc m_OraSridDesc;
+  
+  int m_OracleMainVersion;
+  
 public:
     /// \brief
     /// Processes the FdoBinaryLogicalOperator passed in as an argument.
@@ -124,9 +127,11 @@ public:
     
     
 public:
-  const char* GetFilterText() { return m_StringBuff.GetString(); };   
+  const wchar_t* GetFilterText() { return m_StringBuff.GetString(); };   
+  void ClearFilterText() { m_StringBuff.ClearBuffer(); };   
   
   c_KgOraExpressionProcessor& GetExpressionProcessor() { return m_ExpressionProcessor; };   
+  c_KgOraExpressionProcessor* GetExpressionProcessorPtr() { return &m_ExpressionProcessor; };   
     
 protected:
     c_KgOraExpressionProcessor m_ExpressionProcessor;
@@ -135,9 +140,9 @@ protected:
     void ProcessFilter(FdoFilter* Filter); 
     void ProcessExpresion( FdoExpression* Expr,bool IsSpatialCondition=false,bool IsEnvelopeIntersect=false);
     
-    void AppendString(const char *Str);
+    void AppendString(const wchar_t *Str);
 
-    void PrependString(const char *Str);
+    void PrependString(const wchar_t *Str);
 	  
 };
 

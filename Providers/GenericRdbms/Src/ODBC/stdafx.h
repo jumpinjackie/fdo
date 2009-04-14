@@ -19,15 +19,16 @@
 // are changed infrequently
 //
 
+#include <cstring>
+
 #ifdef _WIN32
 #pragma once
-
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
-// Windows Header Files:
 #include <windows.h>
 #endif
 
 // Base FDO headers
+#include <cstring>
 #include <Fdo.h>
 #include "FdoRdbmsConnection.h"
 #include <Rdbms/Override/RdbmsOv.h>

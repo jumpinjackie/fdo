@@ -19,6 +19,10 @@
 #define _c_KgOraSqlParamDesc_h
 
 
+typedef struct t_OptimizedRect
+{
+  double m_MinX,m_MinY,m_MaxX,m_MaxY;
+}t_OptimizedRect;
 
 class c_KgOraSqlParamDesc
 {
@@ -28,13 +32,15 @@ public:
     e_Uknown,
     e_Geometry,
     e_DataValue,
-    e_UserParam
+    e_UserParam,
+    e_OptimizedRect
   };
 public:
   c_KgOraSqlParamDesc();
   c_KgOraSqlParamDesc(FdoString* UserName);
-  c_KgOraSqlParamDesc(SDO_GEOMETRY* Geom);
+  c_KgOraSqlParamDesc(FdoByteArray* Geom);
   c_KgOraSqlParamDesc(FdoDataValue* DataValue) ;
+  c_KgOraSqlParamDesc(long Srid,double MinX,double MinY,double MaxX,double MaxY);
   
   ~c_KgOraSqlParamDesc();
 
@@ -43,20 +49,26 @@ protected:
     
     
     FdoStringP m_UserParamName;
-    SDO_GEOMETRY* m_ParamGeometry;
+    //c_SDO_GEOMETRY* m_ParamGeometry;
+    FdoByteArray* m_ParamGeometry;
     FdoDataValue *m_ParamDataValue;
+    t_OptimizedRect m_OptimizedRect;
     
 public:   
   e_ParamType GetParamType() const;
-  SDO_GEOMETRY* GetGeometry() const;
-  void SetGeometry(SDO_GEOMETRY* Geom);
+  
+  //c_SDO_GEOMETRY* GetGeometry() const;
+  //void SetGeometry(c_SDO_GEOMETRY* Geom);
+  FdoByteArray* GetGeometry() const;
+  void SetGeometry(FdoByteArray* Geom);
+  
   void SetDataValue(FdoDataValue* DataValue);
   
   FdoString* GetUserParamName() const;
   void SetUserParamName(FdoString* Name);
    
-  void ApplySqlParameter(oracle::occi::Environment*Env,oracle::occi::Statement* OraStm,int SqlParamNum);
-  
+  void ApplySqlParameter(c_Oci_Statement* OraStm,bool IsGeodeticCS,long OraSrid,int SqlParamNum);
+
 protected:
   void SetNull();  
     

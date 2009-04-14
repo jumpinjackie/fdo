@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2006  SL-King d.o.o
+* Copyright (C) 2009  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -18,35 +18,36 @@
 #include "stdafx.h"
 #include "c_KgOraFilterProcessor.h"
 #include "c_FgfToSdoGeom.h"
-#include "c_Ora_API.h"
+#include "c_Ora_API2.h"
 
 
-#define D_FILTER_OPEN_PARENTH " ( "
-#define D_FILTER_CLOSE_PARENTH " ) "
+#define D_FILTER_OPEN_PARENTH L" ( "
+#define D_FILTER_CLOSE_PARENTH L" ) "
 
-#define D_FILTER_COMMA " ( "
-#define D_FILTER_LOGICAL_AND " AND "
-#define D_FILTER_LOGICAL_OR " OR "
-#define D_FILTER_LOGICAL_NOT " NOT "
-#define D_FILTER_IN " IN "
-#define D_FILTER_IS_NULL " IS NULL "
+#define D_FILTER_COMMA L" , "
+#define D_FILTER_LOGICAL_AND L" AND "
+#define D_FILTER_LOGICAL_OR L" OR "
+#define D_FILTER_LOGICAL_NOT L" NOT "
+#define D_FILTER_IN L" IN "
+#define D_FILTER_IS_NULL L" IS NULL "
 
 // For comparison operation
-#define D_FILTER_EQUAL_OP               " = "
-#define D_FILTER_NOT_EQUAL_OP           " <> "
-#define D_FILTER_GREATER_THAN_OP        " > "
-#define D_FILTER_GREATER_OR_EQUAL_OP    " >= "
-#define D_FILTER_LESS_THAN_OP           " < "
-#define D_FILTER_LESS_OR_EQUAL_OP       " <= "
-#define D_FILTER_LIKE_OP                " LIKE "
+#define D_FILTER_EQUAL_OP               L" = "
+#define D_FILTER_NOT_EQUAL_OP           L" <> "
+#define D_FILTER_GREATER_THAN_OP        L" > "
+#define D_FILTER_GREATER_OR_EQUAL_OP    L" >= "
+#define D_FILTER_LESS_THAN_OP           L" < "
+#define D_FILTER_LESS_OR_EQUAL_OP       L" <= "
+#define D_FILTER_LIKE_OP                L" LIKE "
 
 
 
 
 
-c_KgOraFilterProcessor::c_KgOraFilterProcessor(c_KgOraSchemaDesc *KgOraSchemaDesc,FdoIdentifier* ClassId,const c_KgOraSridDesc& OraSridDesc)
+c_KgOraFilterProcessor::c_KgOraFilterProcessor(int OracleMainVersion,c_KgOraSchemaDesc *KgOraSchemaDesc,FdoIdentifier* ClassId,const c_KgOraSridDesc& OraSridDesc)
   : m_ExpressionProcessor( &m_StringBuff,KgOraSchemaDesc,ClassId,OraSridDesc ) // they will share same string buffer
 {
+  m_OracleMainVersion = OracleMainVersion;
   m_KgOraSchemaDesc = KgOraSchemaDesc;
   FDO_SAFE_ADDREF(m_KgOraSchemaDesc.p);
   
@@ -90,14 +91,14 @@ void c_KgOraFilterProcessor::ProcessExpresion( FdoExpression* Expr,bool IsSpatia
 
 //
 // Add a string to the end of the buffer
-void c_KgOraFilterProcessor::AppendString(const char *Str)
+void c_KgOraFilterProcessor::AppendString(const wchar_t *Str)
 {
   m_StringBuff.AppendString(Str);
 }
 
 //
 // Add a string to the biginning of the buffer
-void c_KgOraFilterProcessor::PrependString(const char *Str)
+void c_KgOraFilterProcessor::PrependString(const wchar_t *Str)
 {
   m_StringBuff.PrependString(Str);
 }
@@ -273,35 +274,35 @@ switch( Filter.GetOperation() )
         double maxx = envelope->GetMaxX();
         double maxy = envelope->GetMaxY();
 
-        char buff[512];
+        FdoStringP buff;
         
         AppendString(D_FILTER_OPEN_PARENTH);
         
         AppendString(str_xcol);
-        AppendString(">=");       
-        sprintf(buff,"%.8lf",minx);
-        AppendString(buff);
+        AppendString(L">=");       
+        buff = FdoStringP::Format(L"%.8lf",minx);
+        AppendString((FdoString*)buff);
         
-        AppendString(" and ");
+        AppendString(L" and ");
         
         AppendString(str_xcol);
-        AppendString("<=");        
-        sprintf(buff,"%.8lf",maxx);
-        AppendString(buff);
+        AppendString(L"<=");        
+        buff = FdoStringP::Format(L"%.8lf",maxx);
+        AppendString((FdoString*)buff);
         
-        AppendString(" and ");
-        
-        AppendString(str_ycol);
-        AppendString(">=");        
-        sprintf(buff,"%.8lf",miny);
-        AppendString(buff);
-        
-        AppendString(" and ");
+        AppendString(L" and ");
         
         AppendString(str_ycol);
-        AppendString("<=");        
-        sprintf(buff,"%.8lf",maxy);
-        AppendString(buff);
+        AppendString(L">=");        
+        buff = FdoStringP::Format(L"%.8lf",miny);
+        AppendString((FdoString*)buff);
+        
+        AppendString(L" and ");
+        
+        AppendString(str_ycol);
+        AppendString(L"<=");        
+        buff = FdoStringP::Format(L"%.8lf",maxy);
+        AppendString((FdoString*)buff);
         
         AppendString(D_FILTER_CLOSE_PARENTH);        
       }      
@@ -310,9 +311,9 @@ switch( Filter.GetOperation() )
     {
      
       AppendString(D_FILTER_OPEN_PARENTH);
-      AppendString("SDO_FILTER(");
+      AppendString(L"SDO_FILTER(");
       ProcessExpresion( geomprop );
-      AppendString(",");
+      AppendString(L",");
       
       FdoGeometryValue* geomval = dynamic_cast<FdoGeometryValue*>(geomexp.p);
       if (geomval)
@@ -324,16 +325,22 @@ switch( Filter.GetOperation() )
         ProcessExpresion( geomexp,true );
       }
          
-      
-      AppendString(")='TRUE'");
+      if( m_OracleMainVersion < 10 )
+      {
+        AppendString(L",'querytype = WINDOW')='TRUE'");
+      }
+      else
+      {
+        AppendString(L")='TRUE'");
+      }
       AppendString(D_FILTER_CLOSE_PARENTH);
     
     
     /*
       AppendString(D_FILTER_OPEN_PARENTH);
-      AppendString("SDO_FILTER(");
+      AppendString(L"SDO_FILTER(");
       ProcessExpresion( geomprop );
-      AppendString(",");
+      AppendString(L",");
       
       // Here I need spatial case of processing becase i want to create
       // optimezed rect (not polygons) for  this query - needed for geodetic data 
@@ -373,13 +380,13 @@ switch( Filter.GetOperation() )
         }
 
       // create optimize rect
-        SDO_GEOMETRY *sdorect = c_Ora_API::CreateOptimizedRect(m_OraSridDesc.m_OraSrid,minx,miny,maxx,maxy);
-        char * buff = c_Ora_API::SdoGeomToString(sdorect);
+        SDO_GEOMETRY *sdorect = c_Ora_API2::CreateOptimizedRect(m_OraSridDesc.m_OraSrid,minx,miny,maxx,maxy);
+        char * buff = c_Ora_API2::SdoGeomToString(sdorect);
       
         if( buff )
         {
           AppendString( buff );
-          delete buff;
+          delete [] buff;
         }
         
         delete sdorect;
@@ -390,7 +397,7 @@ switch( Filter.GetOperation() )
       }
       
       
-      AppendString(")='TRUE'");
+      AppendString(L")='TRUE'");
       AppendString(D_FILTER_CLOSE_PARENTH);
     
     */
@@ -418,35 +425,35 @@ switch( Filter.GetOperation() )
         double maxx = envelope->GetMaxX();
         double maxy = envelope->GetMaxY();    
 
-        char buff[512];
+        FdoStringP buff;
         
         AppendString(D_FILTER_OPEN_PARENTH);
         
         AppendString(str_xcol);
-        AppendString(">=");       
-        sprintf(buff,"%.8lf",minx);
-        AppendString(buff);
+        AppendString(L">=");       
+        buff = FdoStringP::Format(L"%.8lf",minx);
+        AppendString((FdoString*)buff);
         
-        AppendString(" and ");
+        AppendString(L" and ");
         
         AppendString(str_xcol);
-        AppendString("<=");        
-        sprintf(buff,"%.8lf",maxx);
-        AppendString(buff);
+        AppendString(L"<=");        
+        buff = FdoStringP::Format(L"%.8lf",maxx);
+        AppendString((FdoString*)buff);
         
-        AppendString(" and ");
-        
-        AppendString(str_ycol);
-        AppendString(">=");        
-        sprintf(buff,"%.8lf",miny);
-        AppendString(buff);
-        
-        AppendString(" and ");
+        AppendString(L" and ");
         
         AppendString(str_ycol);
-        AppendString("<=");        
-        sprintf(buff,"%.8lf",maxy);
-        AppendString(buff);
+        AppendString(L">=");        
+        buff = FdoStringP::Format(L"%.8lf",miny);
+        AppendString((FdoString*)buff);
+        
+        AppendString(L" and ");
+        
+        AppendString(str_ycol);
+        AppendString(L"<=");        
+        buff = FdoStringP::Format(L"%.8lf",maxy);
+        AppendString((FdoString*)buff);
         
         AppendString(D_FILTER_CLOSE_PARENTH);        
       }
@@ -454,9 +461,9 @@ switch( Filter.GetOperation() )
     else
     {    
       AppendString(D_FILTER_OPEN_PARENTH);
-      AppendString("SDO_ANYINTERACT(");
+      AppendString(L"SDO_ANYINTERACT(");
       ProcessExpresion( geomprop );
-      AppendString(",");
+      AppendString(L",");
       
       ProcessExpresion( geomexp,true );
       /*
@@ -490,13 +497,13 @@ switch( Filter.GetOperation() )
         }
 
       // create optimize rect
-        SDO_GEOMETRY *sdorect = c_Ora_API::CreateOptimizedRect(m_OraSridDesc.m_OraSrid,minx,miny,maxx,maxy);
-        char * buff = c_Ora_API::SdoGeomToString(sdorect);
+        SDO_GEOMETRY *sdorect = c_Ora_API2::CreateOptimizedRect(m_OraSridDesc.m_OraSrid,minx,miny,maxx,maxy);
+        char * buff = c_Ora_API2::SdoGeomToString(sdorect);
       
         if( buff )
         {
           AppendString( buff );
-          delete buff;
+          delete [] buff;
         }
         
         delete sdorect;
@@ -509,7 +516,7 @@ switch( Filter.GetOperation() )
       */
       
       
-      AppendString(")='TRUE'");
+      AppendString(L")='TRUE'");
       AppendString(D_FILTER_CLOSE_PARENTH);
     }
   }
@@ -521,11 +528,11 @@ switch( Filter.GetOperation() )
   case FdoSpatialOperations_Contains:
   {
     AppendString(D_FILTER_OPEN_PARENTH);
-    AppendString("SDO_RELATE(");
+    AppendString(L"SDO_RELATE(");
     ProcessExpresion( geomprop );
-    AppendString(",");
+    AppendString(L",");
     ProcessExpresion( geomexp,true );
-    AppendString(",'mask=CONTAINS')='TRUE'");
+    AppendString(L",'mask=CONTAINS')='TRUE'");
     AppendString(D_FILTER_CLOSE_PARENTH);
   }
   break;
@@ -535,11 +542,11 @@ switch( Filter.GetOperation() )
   case FdoSpatialOperations_Crosses:
   {
     AppendString(D_FILTER_OPEN_PARENTH);
-    AppendString("SDO_RELATE(");
+    AppendString(L"SDO_RELATE(");
     ProcessExpresion( geomprop );
-    AppendString(",");
+    AppendString(L",");
     ProcessExpresion( geomexp,true );
-    AppendString(",'mask=OVERLAPBDYDISJOINT')='TRUE'");
+    AppendString(L",'mask=OVERLAPBDYDISJOINT')='TRUE'");
     AppendString(D_FILTER_CLOSE_PARENTH);
   }
   break;
@@ -547,11 +554,11 @@ switch( Filter.GetOperation() )
   case FdoSpatialOperations_Disjoint:
   {
     AppendString(D_FILTER_OPEN_PARENTH);
-    AppendString("SDO_RELATE(");
+    AppendString(L"SDO_RELATE(");
     ProcessExpresion( geomprop );
-    AppendString(",");
+    AppendString(L",");
     ProcessExpresion( geomexp,true );
-    AppendString(",'mask=DISJOINT')='TRUE'");
+    AppendString(L",'mask=DISJOINT')='TRUE'");
     AppendString(D_FILTER_CLOSE_PARENTH);
   }
   break;
@@ -560,11 +567,11 @@ switch( Filter.GetOperation() )
   case FdoSpatialOperations_Overlaps:
     {
     AppendString(D_FILTER_OPEN_PARENTH);
-    AppendString("SDO_RELATE(");
+    AppendString(L"SDO_RELATE(");
     ProcessExpresion( geomprop );
-    AppendString(",");
+    AppendString(L",");
     ProcessExpresion( geomexp,true );
-    AppendString(",'mask=OVERLAPBDYINTERSECT')='TRUE'");
+    AppendString(L",'mask=OVERLAPBDYINTERSECT')='TRUE'");
     AppendString(D_FILTER_CLOSE_PARENTH);
   }
   break;
@@ -574,11 +581,11 @@ switch( Filter.GetOperation() )
   case FdoSpatialOperations_Touches:
   {
     AppendString(D_FILTER_OPEN_PARENTH);
-    AppendString("SDO_RELATE(");
+    AppendString(L"SDO_RELATE(");
     ProcessExpresion( geomprop );
-    AppendString(",");
+    AppendString(L",");
     ProcessExpresion( geomexp,true );
-    AppendString(",'mask=TOUCH')='TRUE'");
+    AppendString(L",'mask=TOUCH')='TRUE'");
     AppendString(D_FILTER_CLOSE_PARENTH);
   }
   break;
@@ -588,11 +595,11 @@ switch( Filter.GetOperation() )
   case FdoSpatialOperations_Within:
   {
     AppendString(D_FILTER_OPEN_PARENTH);
-    AppendString("SDO_RELATE(");
+    AppendString(L"SDO_RELATE(");
     ProcessExpresion( geomprop );
-    AppendString(",");
+    AppendString(L",");
     ProcessExpresion( geomexp,true );
-    AppendString(",'mask=COVERS')='TRUE'");
+    AppendString(L",'mask=COVERS')='TRUE'");
     AppendString(D_FILTER_CLOSE_PARENTH);
   }
   break;
@@ -602,11 +609,11 @@ switch( Filter.GetOperation() )
   case FdoSpatialOperations_CoveredBy:
   {
     AppendString(D_FILTER_OPEN_PARENTH);
-    AppendString("SDO_RELATE(");
+    AppendString(L"SDO_RELATE(");
     ProcessExpresion( geomprop );
-    AppendString(",");
+    AppendString(L",");
     ProcessExpresion( geomexp,true );
-    AppendString(",'mask=COVERDBY')='TRUE'");
+    AppendString(L",'mask=COVERDBY')='TRUE'");
     AppendString(D_FILTER_CLOSE_PARENTH);
   }
   break;
@@ -616,11 +623,11 @@ switch( Filter.GetOperation() )
   case FdoSpatialOperations_Inside:
   {
       AppendString(D_FILTER_OPEN_PARENTH);
-      AppendString("SDO_RELATE(");
+      AppendString(L"SDO_RELATE(");
       ProcessExpresion( geomprop );
-      AppendString(",");
+      AppendString(L",");
       ProcessExpresion( geomexp,true );
-      AppendString(",'mask=INSIDE')='TRUE'");
+      AppendString(L",'mask=INSIDE')='TRUE'");
       AppendString(D_FILTER_CLOSE_PARENTH);
     }
   break;
@@ -632,11 +639,11 @@ switch( Filter.GetOperation() )
     case FdoSpatialOperations_Equals:
     {
       AppendString(D_FILTER_OPEN_PARENTH);
-      AppendString("SDO_RELATE(");
+      AppendString(L"SDO_RELATE(");
       ProcessExpresion( geomprop );
-      AppendString(",");
+      AppendString(L",");
       ProcessExpresion( geomexp,true );
-      AppendString(",'mask=EQUAL')='TRUE'");
+      AppendString(L",'mask=EQUAL')='TRUE'");
       AppendString(D_FILTER_CLOSE_PARENTH);
     }
     break;
@@ -661,28 +668,26 @@ switch( Filter.GetOperation() )
     // sprintf(sbuff,"SDO_ANYINTERACT(a.%s,%s)='TRUE'",(const char*)gcolname,sbuff2);
     
     AppendString(D_FILTER_OPEN_PARENTH);
-    AppendString("SDO_WITHIN_DISTANCE(");
+    AppendString(L"SDO_WITHIN_DISTANCE(");
     ProcessExpresion( geomprop );
-    AppendString(",");
+    AppendString(L",");
     ProcessExpresion( geomval );
-    char tmpbuff[64];
-    sprintf(tmpbuff,",'distance=%.6lf'",dist);
-    AppendString(tmpbuff);
-    AppendString(")='TRUE'");
+    FdoStringP tmpbuff = FdoStringP::Format(L",'distance=%.6lf'",dist);
+    AppendString((FdoString*)tmpbuff);
+    AppendString(L")='TRUE'");
     AppendString(D_FILTER_CLOSE_PARENTH);
   }
   break;
   case FdoDistanceOperations_Beyond:
   {
     AppendString(D_FILTER_OPEN_PARENTH);
-    AppendString("SDO_WITHIN_DISTANCE(");
+    AppendString(L"SDO_WITHIN_DISTANCE(");
     ProcessExpresion( geomprop );
-    AppendString(",");
+    AppendString(L",");
     ProcessExpresion( geomval );
-    char tmpbuff[64];
-    sprintf(tmpbuff,",'distance=%.6lf'",dist);
-    AppendString(tmpbuff);
-    AppendString(")='FALSE'");
+    FdoStringP tmpbuff = FdoStringP::Format(L",'distance=%.6lf'",dist);
+    AppendString((FdoString*)tmpbuff);
+    AppendString(L")='FALSE'");
     AppendString(D_FILTER_CLOSE_PARENTH);
   }
   break;

@@ -99,9 +99,10 @@ public:
     virtual FdoOrderingOption GetOrderingOption( );
     
 protected:
-  string c_KgOraSelectCommand::CreateSqlString(c_KgOraFilterProcessor& FilterProc,int& GeomSqlColumnIndex,FdoStringCollection* SqlColumns);
+  std::wstring CreateSqlString(c_KgOraFilterProcessor& FilterProc,int& GeomSqlColumnIndex,FdoStringCollection* SqlColumns);
   void CreateFilterSqlString(FdoFilter* Filter,string& WhereBuff);
-      
+  FdoStringP ToSqlString(FdoIdentifierCollection* Idents);
+
 };
 
 #endif 

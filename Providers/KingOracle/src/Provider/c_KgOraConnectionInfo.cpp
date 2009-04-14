@@ -51,7 +51,7 @@ FdoString* c_KgOraConnectionInfo::GetProviderName ()
 FdoString* c_KgOraConnectionInfo::GetProviderDisplayName()
 {
     
-    return NlsMsgGetKgOra(M_KGORA_PROVIDER_DISPLAY_NAME, D_KGORA_PROVIDER_DEFAULT_DISPLAY_NAME);
+    return NlsMsgGet(M_KGORA_PROVIDER_DISPLAY_NAME, D_KGORA_PROVIDER_DEFAULT_DISPLAY_NAME);
 }
 
 /// <summary>Gets the description of the feature provider.</summary>
@@ -59,7 +59,7 @@ FdoString* c_KgOraConnectionInfo::GetProviderDisplayName()
 FdoString* c_KgOraConnectionInfo::GetProviderDescription ()
 {
     
-    return NlsMsgGetKgOra(M_KGORA_PROVIDER_DESCRIPTION, D_KGORA_PROVIDER_DEFAULT_DESCRIPTION);
+    return NlsMsgGet(M_KGORA_PROVIDER_DESCRIPTION, D_KGORA_PROVIDER_DEFAULT_DESCRIPTION);
 }
 
 /// <summary>Gets the version of the feature provider.</summary>
@@ -96,30 +96,30 @@ FdoIConnectionPropertyDictionary* c_KgOraConnectionInfo::GetConnectionProperties
         
 		wide_to_multibyte (propname, D_CONN_PROPERTY_USERNAME);
     FdoPtr<ConnectionProperty>  newproperty = new ConnectionProperty (D_CONN_PROPERTY_USERNAME
-                                                                    ,NlsMsgGetKgOra(M_KGORA_CONNECTION_PROPERTY_USERNAME, propname)
+                                                                    ,NlsMsgGet(M_KGORA_CONNECTION_PROPERTY_USERNAME, propname)
                                                                     ,L"", false, false, false, false, false, false, 0, NULL);
     m_PropertyDictionary->AddProperty(newproperty);
         
     wide_to_multibyte (propname, D_CONN_PROPERTY_PASSWORD);
-    newproperty = new ConnectionProperty (D_CONN_PROPERTY_PASSWORD,NlsMsgGetKgOra(M_KGORA_CONNECTION_PROPERTY_PASSWORD, propname),
+    newproperty = new ConnectionProperty (D_CONN_PROPERTY_PASSWORD,NlsMsgGet(M_KGORA_CONNECTION_PROPERTY_PASSWORD, propname),
                 L"", false, false, false, false, false, false, 0, NULL);
     m_PropertyDictionary->AddProperty(newproperty);
                 
 		wide_to_multibyte (propname, D_CONN_PROPERTY_SERVICE_NAME);
     newproperty = new ConnectionProperty (D_CONN_PROPERTY_SERVICE_NAME,
-                                            NlsMsgGetKgOra(M_KGORA_CONNECTION_PROPERTY_SERVICE_NAME, propname),
+                                            NlsMsgGet(M_KGORA_CONNECTION_PROPERTY_SERVICE_NAME, propname),
                                             L"", false, false, false, false, false, false, 0, NULL);
     m_PropertyDictionary->AddProperty(newproperty);
     
     wide_to_multibyte (propname, D_CONN_PROPERTY_ORACLE_SCHEMA);
     newproperty = new ConnectionProperty (D_CONN_PROPERTY_ORACLE_SCHEMA,
-                                            NlsMsgGetKgOra(M_KGORA_CONNECTION_PROPERTY_ORACLE_SCHEMA, propname),
+                                            NlsMsgGet(M_KGORA_CONNECTION_PROPERTY_ORACLE_SCHEMA, propname),
                                             L"", false, false, false, false, false, false, 0, NULL);
     m_PropertyDictionary->AddProperty(newproperty);
     
     wide_to_multibyte (propname, D_CONN_PROPERTY_KING_FDO_CLASS);
     newproperty = new ConnectionProperty (D_CONN_PROPERTY_KING_FDO_CLASS,
-                                            NlsMsgGetKgOra(M_KGORA_CONNECTION_PROPERTY_FDO_VIEWS_TABLE, propname),
+                                            NlsMsgGet(M_KGORA_CONNECTION_PROPERTY_FDO_VIEWS_TABLE, propname),
                                             L"", false, false, false, false, false, false, 0, NULL);
     m_PropertyDictionary->AddProperty(newproperty);
   }
@@ -149,30 +149,30 @@ FdoIConnectionPropertyDictionary* c_KgOraConnectionInfo::GetConnectionProperties
         
 		wide_to_multibyte (propname, D_CONN_PROPERTY_USERNAME);
     FdoPtr<ConnectionProperty>  newproperty = new ConnectionProperty (D_CONN_PROPERTY_USERNAME
-                                                                    ,NlsMsgGetKgOra(M_KGORA_CONNECTION_PROPERTY_USERNAME, propname)
+                                                                    ,NlsMsgGet(M_KGORA_CONNECTION_PROPERTY_USERNAME, propname)
                                                                     ,L"", false, false, false, false, false, false,false, 0, NULL);
     m_PropertyDictionary->AddProperty(newproperty);
         
     wide_to_multibyte (propname, D_CONN_PROPERTY_PASSWORD);
-    newproperty = new ConnectionProperty (D_CONN_PROPERTY_PASSWORD,NlsMsgGetKgOra(M_KGORA_CONNECTION_PROPERTY_PASSWORD, propname),
+    newproperty = new ConnectionProperty (D_CONN_PROPERTY_PASSWORD,NlsMsgGet(M_KGORA_CONNECTION_PROPERTY_PASSWORD, propname),
                 L"", false, false, false, false, false, false,false, 0, NULL);
     m_PropertyDictionary->AddProperty(newproperty);
                 
 		wide_to_multibyte (propname, D_CONN_PROPERTY_SERVICE_NAME);
     newproperty = new ConnectionProperty (D_CONN_PROPERTY_SERVICE_NAME,
-                                            NlsMsgGetKgOra(M_KGORA_CONNECTION_PROPERTY_SERVICE_NAME, propname),
+                                            NlsMsgGet(M_KGORA_CONNECTION_PROPERTY_SERVICE_NAME, propname),
                                             L"", false, false, false, false, false, false,false, 0, NULL);
     m_PropertyDictionary->AddProperty(newproperty);
     
     wide_to_multibyte (propname, D_CONN_PROPERTY_ORACLE_SCHEMA);
     newproperty = new ConnectionProperty (D_CONN_PROPERTY_ORACLE_SCHEMA,
-                                            NlsMsgGetKgOra(M_KGORA_CONNECTION_PROPERTY_ORACLE_SCHEMA, propname),
+                                            NlsMsgGet(M_KGORA_CONNECTION_PROPERTY_ORACLE_SCHEMA, propname),
                                             L"", false, false, false, false, false, false,false, 0, NULL);
     m_PropertyDictionary->AddProperty(newproperty);
     
     wide_to_multibyte (propname, D_CONN_PROPERTY_KING_FDO_CLASS);
     newproperty = new ConnectionProperty (D_CONN_PROPERTY_KING_FDO_CLASS,
-                                            NlsMsgGetKgOra(M_KGORA_CONNECTION_PROPERTY_FDO_VIEWS_TABLE, propname),
+                                            NlsMsgGet(M_KGORA_CONNECTION_PROPERTY_FDO_VIEWS_TABLE, propname),
                                             L"", false, false, false, false, false, false,false, 0, NULL);
     m_PropertyDictionary->AddProperty(newproperty);
   }

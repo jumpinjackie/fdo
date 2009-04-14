@@ -60,7 +60,7 @@ FdoIdentifierCollection* c_KgOraSelectCommand::GetPropertyNames ()
 /// <returns>Returns the lock type.</returns> 
 FdoLockType c_KgOraSelectCommand::GetLockType ()
 {
-    throw FdoCommandException::Create (NlsMsgGetKgOra (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"GetLockType"));
+    throw FdoCommandException::Create (NlsMsgGet (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"GetLockType"));
 }
 
 /// <summary>Sets the FdoLockType value (see "Locking Commands").</summary>
@@ -68,14 +68,14 @@ FdoLockType c_KgOraSelectCommand::GetLockType ()
 /// <returns>Returns nothing</returns> 
 void c_KgOraSelectCommand::SetLockType (FdoLockType value)
 {
-    throw FdoCommandException::Create (NlsMsgGetKgOra (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"SetLockType"));
+    throw FdoCommandException::Create (NlsMsgGet (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"SetLockType"));
 }
 
 /// <summary>Gets the FdoLockStrategy value (see "Locking Commands").</summary>
 /// <returns>Returns the lock strategy.</returns> 
 FdoLockStrategy c_KgOraSelectCommand::GetLockStrategy ()
 {
-    throw FdoCommandException::Create (NlsMsgGetKgOra (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"GetLockStrategy"));
+    throw FdoCommandException::Create (NlsMsgGet (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"GetLockStrategy"));
 }
 
 /// <summary>Sets the FdoLockStrategy value (see "Locking Commands").</summary>
@@ -83,35 +83,88 @@ FdoLockStrategy c_KgOraSelectCommand::GetLockStrategy ()
 /// <returns>Returns nothing</returns> 
 void c_KgOraSelectCommand::SetLockStrategy (FdoLockStrategy value)
 {
-    throw FdoCommandException::Create (NlsMsgGetKgOra (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"SetLockStrategy"));
+    throw FdoCommandException::Create (NlsMsgGet (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"SetLockStrategy"));
+}
+
+FdoStringP c_KgOraSelectCommand::ToSqlString(FdoIdentifierCollection* Idents)
+{
+  if( !Idents ) return L"<NULL>";
+  int count = Idents->GetCount();
+  
+  FdoStringP retstr;
+  
+  for(int ind=0;ind<count;ind++)
+  {
+    FdoPtr<FdoIdentifier> ident = Idents->GetItem(ind);
+    
+  
+    FdoStringP s1 = ident->ToString();
+    
+    if( ind > 0 ) retstr = retstr + L",";
+    retstr = retstr + s1;
+  }
+  
+  return retstr;
 }
 
 /// <summary>Executes the select command and returns a reference to an FdoIFeatureReader.</summary>
 /// <returns>Returns the feature reader.</returns> 
 FdoIFeatureReader* c_KgOraSelectCommand::Execute ()
 {
- 
- int propcount = -1; 
- if( m_PropertyNames.p )
-   propcount = m_PropertyNames->GetCount();
+  #ifdef _KGORA_EXTENDED_LOG
   
+  D_KGORA_ELOG_WRITE("c_KgOraSelectCommand.Execute: Command Parameters")
+  FdoStringP props = m_PropertyNames.p ? ToSqlString(m_PropertyNames.p) : L"";
+  D_KGORA_ELOG_WRITE1("c_KgOraSelectCommand.Execute Select List: '%s'",(const char*)props);
+  FdoStringP filter = m_Filter.p ? m_Filter->ToString() : L"";
+  D_KGORA_ELOG_WRITE1("c_KgOraSelectCommand.Execute Filter: '%s'",(const char*)filter);
+#endif
+ 
+ 
+
     FdoPtr<FdoIdentifier> classid = GetFeatureClassName ();
+    if( !classid.p )
+    {
+      D_KGORA_ELOG_WRITE("c_KgOraSelectCommand.Execute : Eror class identifer is null");
+      return NULL;
+    }
     FdoString* class_name = classid->GetText ();
     
     FdoPtr<c_KgOraSchemaDesc> schemadesc = m_Connection->GetSchemaDesc();
+    if( !schemadesc.p )
+    {
+      D_KGORA_ELOG_WRITE("c_KgOraSelectCommand.Execute : ERROR: GetSchemaDesc() return NULL ");
+      return NULL;
+    }
     
-    D_KGORA_ELOG_WRITE2("c_KgOraSelectCommand%d::Execute class_name = '%s'",m_Connection->m_ConnNo,(const char*)FdoStringP(class_name));
     
     FdoPtr<FdoFeatureSchemaCollection> fschemas = schemadesc->GetFeatureSchema();
+    if( !fschemas.p )
+    {
+      D_KGORA_ELOG_WRITE("c_KgOraSelectCommand.Execute : ERROR: GetFeatureSchema() return NULL ");
+      return NULL;
+    }
+    
     FdoPtr<FdoKgOraPhysicalSchemaMapping> phschemamapping = schemadesc->GetPhysicalSchemaMapping();
+    if( !phschemamapping.p )
+    {
+      D_KGORA_ELOG_WRITE("c_KgOraSelectCommand.Execute : ERROR: GetFeatureSchema() return NULL ");
+      return NULL;
+    }
     
     FdoPtr<FdoClassDefinition> classdef = schemadesc->FindClassDefinition(classid);
-    if( !classdef.p ) return NULL;
+    if( !classdef.p ) 
+    {
+      D_KGORA_ELOG_WRITE("c_KgOraSelectCommand.Execute : ERROR: FindClassDefinition() return NULL ");
+      return NULL;
+    }
     
     int geom_sqlcol_index;
     FdoPtr<FdoStringCollection> sqlcols = FdoStringCollection::Create();
     
+        
     c_KgOraSridDesc orasrid;
+    if( !m_PropertyNames.p || (m_PropertyNames->GetCount()==0) )
     {
       FdoPtr<FdoPropertyDefinition> propdef;        
       FdoPtr<FdoPropertyDefinitionCollection> propcol = classdef->GetProperties();
@@ -132,62 +185,78 @@ FdoIFeatureReader* c_KgOraSelectCommand::Execute ()
       }
     }
     
-    D_KGORA_ELOG_WRITE2("c_KgOraSelectCommand%d::Execute class_name = '%s' Step 2",m_Connection->m_ConnNo,(const char*)FdoStringP(class_name));
+    /*
+    else
+    {
+      int propcount = -1; 
+      if( m_PropertyNames.p )
+        propcount = m_PropertyNames->GetCount();
+        
+      FdoPtr<FdoIdentifier> ident = m_PropertyNames->GetItem(0);
+      //ident->
+      FdoComputedIdentifier *compident = dynamic_cast<FdoComputedIdentifier*>(ident.p);
+      if( compident )
+      {
+        FdoString * pstr = compident->ToString();
+        FdoString * pstr2 = compident->ToString();
+      }
+    }
+    */
     
-    c_KgOraFilterProcessor fproc(schemadesc,classid,orasrid);
-    string sqlstr = CreateSqlString(fproc,geom_sqlcol_index,sqlcols);
     
-    D_KGORA_ELOG_WRITE2("c_KgOraSelectCommand%d::Execute class_name = '%s' Step 3",m_Connection->m_ConnNo,(const char*)FdoStringP(class_name));
     
-    oracle::occi::Statement* occi_stm=NULL;
-    oracle::occi::ResultSet* occi_rset=NULL;
+    c_KgOraFilterProcessor fproc(m_Connection->GetOracleMainVersion(),schemadesc,classid,orasrid);
+    std::wstring sqlstr = CreateSqlString(fproc,geom_sqlcol_index,sqlcols);
+    
+    D_KGORA_ELOG_WRITE2("c_KgOraSelectCommand%d::Execute class_name = '%s'",m_Connection->m_ConnNo,(const char*)FdoStringP(class_name));
+    
+    c_Oci_Statement* oci_stm=NULL;
     try
     {
       
-      #ifdef _DEBUG
-        const char* c1 = sqlstr.c_str();
+      
+      //D_KGORA_ELOG_WRITE1("Execute select: '%s",sqlstr.c_str());
+      
+      oci_stm = m_Connection->OCI_CreateStatement();
+      
+      #ifdef _KGORA_EXTENDED_LOG 
+        FdoStringP props = sqlstr.c_str();
+        D_KGORA_ELOG_WRITE1("c_KgOraSelectCommand.Execute SQL: '%s'",(const char*)props);        
       #endif
-      D_KGORA_ELOG_WRITE1("Execute select: '%s",sqlstr.c_str());
       
-      occi_stm = m_Connection->OCCI_CreateStatement();
+      oci_stm->Prepare(sqlstr.c_str(),0);
+      //occi_stm->setPrefetchRowCount(400);
+      //occi_stm->setPrefetchMemorySize(64*1024);
       
-      occi_stm->setSQL(sqlstr);
-      occi_stm->setPrefetchRowCount(400);
-      occi_stm->setPrefetchMemorySize(64*1024);
+      fproc.GetExpressionProcessor().ApplySqlParameters(oci_stm,orasrid.m_IsGeodetic,orasrid.m_OraSrid);
       
-      fproc.GetExpressionProcessor().ApplySqlParameters(m_Connection->GetOcciEnvironment(), occi_stm);
-      
-      occi_rset = occi_stm->executeQuery();
-      //m_Connection->OCCI_TerminateStatement(occi_stm);
+      oci_stm->ExecuteSelectAndDefine(256);
+      //m_Connection->OCI_TerminateStatement(occi_stm);
     }
-    catch(oracle::occi::SQLException& ea)
+    catch(c_Oci_Exception* ea)
     {
-       const char* what = ea.what();
+      FdoStringP gstr = ea->what();
+      delete ea;
     
-        #ifdef _DEBUG
-          printf(" <c_KgOraSelectCommand::Execute Exception> ");
-        #endif
-        
-        D_KGORA_ELOG_WRITE2("c_KgOraSelectCommand::Execute%d Exception '%s'",m_Connection->m_ConnNo,what);
+      #ifdef _DEBUG
+        printf(" <c_KgOraSelectCommand::Execute Exception> ");
+      #endif
+       
+      D_KGORA_ELOG_WRITE2("c_KgOraSelectCommand::Execute%d Exception '%s'",m_Connection->m_ConnNo,(const char*)gstr);
     
-      if (occi_stm && occi_rset)
+      
+      if (oci_stm)
       {
-        occi_stm->closeResultSet(occi_rset);        
-        occi_rset = NULL;
+        m_Connection->OCI_TerminateStatement(oci_stm);
+        oci_stm=NULL;
       }
-
-      if (occi_stm)
-      {
-        m_Connection->OCCI_TerminateStatement(occi_stm);
-        occi_stm=NULL;
-      }
-      occi_rset = NULL;
-      FdoStringP gstr = ea.what();
+      
+      
       throw FdoCommandException::Create( gstr );    
     }
 
     
-    return new c_KgOraFeatureReader(m_Connection,occi_stm, occi_rset,classdef,geom_sqlcol_index,sqlcols, m_PropertyNames);
+    return new c_KgOraFeatureReader(m_Connection,oci_stm, classdef,geom_sqlcol_index,sqlcols, m_PropertyNames);
     
 }//end of c_KgOraSelectCommand::Execute 
 
@@ -196,7 +265,7 @@ FdoIFeatureReader* c_KgOraSelectCommand::Execute ()
 /// <returns>Returns the feature reader.</returns> 
 FdoIFeatureReader* c_KgOraSelectCommand::ExecuteWithLock ()
 {
-  throw FdoCommandException::Create (NlsMsgGetKgOra (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"ExecuteWithLock"));
+  throw FdoCommandException::Create (NlsMsgGet (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"ExecuteWithLock"));
 }
 
 /// <summary> When executing the operation ExecuteWithLock lock 
@@ -207,12 +276,17 @@ FdoIFeatureReader* c_KgOraSelectCommand::ExecuteWithLock ()
 /// <returns>Returns a lock conflict reader.</returns> 
 FdoILockConflictReader* c_KgOraSelectCommand::GetLockConflicts ()
 {
-    throw FdoCommandException::Create (NlsMsgGetKgOra (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"GetLockConflicts"));
+    throw FdoCommandException::Create (NlsMsgGet (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"GetLockConflicts"));
 }
 
 
-string c_KgOraSelectCommand::CreateSqlString(c_KgOraFilterProcessor& FilterProc,int& GeomSqlColumnIndex,FdoStringCollection* SqlColumns)
+std::wstring c_KgOraSelectCommand::CreateSqlString(c_KgOraFilterProcessor& FilterProc,int& GeomSqlColumnIndex,FdoStringCollection* SqlColumns)
 {
+  #ifdef _KGORA_EXTENDED_LOG
+  
+  D_KGORA_ELOG_WRITE("c_KgOraSelectCommand::CreateSqlString: Start creating SQL string..");  
+#endif
+
     FdoPtr<FdoIdentifier> classid = GetFeatureClassName ();
     FdoString* class_name = classid->GetText ();
     
@@ -232,11 +306,11 @@ string c_KgOraSelectCommand::CreateSqlString(c_KgOraFilterProcessor& FilterProc,
       classdef = (FdoClassDefinition*)classes->GetItem( 0 );
       
       
-      if( !classdef.p ) return "";
+      if( !classdef.p ) return L"";
           
     }
 
-    string sqlstr;
+    std::wstring sqlstr;
     
     FdoPtr<FdoKgOraClassDefinition> phys_class = schemadesc->FindClassMapping(classid);
     FdoStringP fultablename = phys_class->GetOracleFullTableName();
@@ -257,40 +331,48 @@ string c_KgOraSelectCommand::CreateSqlString(c_KgOraFilterProcessor& FilterProc,
       propdef = propcol->GetItem(ind);
       FdoString* propname = propdef->GetName();
       
-      
-      SqlColumns->Add(propname);
-      if( propdef->GetPropertyType() == FdoPropertyType_GeometricProperty )
+      bool isin=true;
+      if( m_PropertyNames && (m_PropertyNames->GetCount() > 0))
       {
-        FdoGeometricPropertyDefinition* geomprop = (FdoGeometricPropertyDefinition*)propdef.p;
-        
-        m_Connection->GetOracleSridDesc(geomprop,orasrid);
-        
-        GeomSqlColumnIndex=ind;
-        
-        if( phys_class->GetIsPointGeometry() && (FdoCommonOSUtil::wcsicmp(propname,phys_class->GetPoinGeometryPropertyName())==0) )
+        isin = m_PropertyNames->Contains(propname);
+      }
+      
+      if( isin )
+      {
+        SqlColumns->Add(propname);
+        if( propdef->GetPropertyType() == FdoPropertyType_GeometricProperty )
         {
-        // this is geometry created as point from numeric columns
+          FdoGeometricPropertyDefinition* geomprop = (FdoGeometricPropertyDefinition*)propdef.p;
           
-          FdoStringP pointstr;
-          if( phys_class->GetPointZOraColumn() && (wcslen(phys_class->GetPointZOraColumn()) > 0) )
-            pointstr = pointstr.Format(L" SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(%s,%s,%s),NULL,NULL) as %s ",phys_class->GetPointXOraColumn(),phys_class->GetPointYOraColumn(),phys_class->GetPointZOraColumn(),propname);
+          m_Connection->GetOracleSridDesc(geomprop,orasrid);
+          
+          GeomSqlColumnIndex=ind;
+          
+          if( phys_class->GetIsPointGeometry() && (FdoCommonOSUtil::wcsicmp(propname,phys_class->GetPoinGeometryPropertyName())==0) )
+          {
+          // this is geometry created as point from numeric columns
+            
+            FdoStringP pointstr;
+            if( phys_class->GetPointZOraColumn() && (wcslen(phys_class->GetPointZOraColumn()) > 0) )
+              pointstr = pointstr.Format(L" SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(%s,%s,%s),NULL,NULL) as %s ",phys_class->GetPointXOraColumn(),phys_class->GetPointYOraColumn(),phys_class->GetPointZOraColumn(),propname);
+            else
+              pointstr = pointstr.Format(L" SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(%s,%s,NULL),NULL,NULL) as %s ",phys_class->GetPointXOraColumn(),phys_class->GetPointYOraColumn(),propname);
+                      
+            sql_select_columns_part += sep + pointstr;  // this is for just column -> sql_select_columns_part += sep + table_alias + "." + propname;  
+            sep = ",";
+          }
           else
-            pointstr = pointstr.Format(L" SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(%s,%s,NULL),NULL,NULL) as %s ",phys_class->GetPointXOraColumn(),phys_class->GetPointYOraColumn(),propname);
-                    
-          sql_select_columns_part += sep + pointstr;  // this is for just column -> sql_select_columns_part += sep + table_alias + "." + propname;  
-          sep = ",";
+          {
+          // this is normal geomerty property - oracle column
+          // add just property name in select
+            sql_select_columns_part += sep + table_alias + "." + propname;  sep = ",";
+          }
         }
         else
         {
-        // this is normal geomerty property - oracle column
-        // add just property name in select
+        // add property name in select
           sql_select_columns_part += sep + table_alias + "." + propname;  sep = ",";
         }
-      }
-      else
-      {
-      // add property name in select
-        sql_select_columns_part += sep + table_alias + "." + propname;  sep = ",";
       }
 
     }
@@ -298,7 +380,7 @@ string c_KgOraSelectCommand::CreateSqlString(c_KgOraFilterProcessor& FilterProc,
     //string wherestr;
     //CreateFilterSqlString(m_Filter,wherestr);
     
-    const char* filtertext=NULL;
+    const wchar_t* filtertext=NULL;
     
     if( m_Filter )
     {      
@@ -309,41 +391,40 @@ string c_KgOraSelectCommand::CreateSqlString(c_KgOraFilterProcessor& FilterProc,
     else filtertext = NULL;
 
     
+    {
+    FdoStringP sbuff = FdoStringP::Format(L"SELECT %s FROM %s %s",(const wchar_t*)sql_select_columns_part,(const wchar_t*)fultablename,(const wchar_t*)table_alias);
     
-    char* sbuff = new char[1024];
-    sprintf(sbuff, "SELECT %s FROM %s %s",(const char*)sql_select_columns_part,(const char*)fultablename,(const char*)table_alias);
     
-    
-    sqlstr = sbuff;
+    sqlstr = (FdoString*)sbuff;
     if( filtertext && *filtertext )
     {
-      sqlstr += " WHERE ";
+      sqlstr += L" WHERE ";
       //sqlstr += wherestr;
       sqlstr += filtertext;
     }
-    
-    delete sbuff;
+
+    }
     
     FdoPtr<FdoIdentifierCollection> order_ident_col = GetOrdering();
     long order_count = order_ident_col->GetCount();
     if( order_count > 0 )
     {
-      string sep;
-      sqlstr += " ORDER BY ";
+      std::wstring sep;
+      sqlstr += L" ORDER BY ";
       for(long ind=0; ind<order_count; ind++)
       {
         FdoPtr<FdoIdentifier> order_ident = order_ident_col->GetItem(ind);
         FdoStringP fdostr = order_ident->GetName();
-        sqlstr += sep + (const char*)fdostr;
+        sqlstr += sep + (const wchar_t*)fdostr;
         if( GetOrderingOption() == FdoOrderingOption_Ascending )
         {
-          sqlstr += " ASC ";
+          sqlstr += L" ASC ";
         }
         else
         {
-          sqlstr += " DESC ";
+          sqlstr += L" DESC ";
         }
-        sep = ",";
+        sep = L",";
       }
     }
     
@@ -403,8 +484,8 @@ void c_KgOraSelectCommand::CreateFilterSqlString(FdoFilter* Filter,string& Where
             
             WhereBuff.assign(sbuff);
             
-            delete sbuff;
-            delete sbuff2;
+            delete [] sbuff;
+            delete [] sbuff2;
 
         }
     }
@@ -434,8 +515,8 @@ void c_KgOraSelectCommand::CreateFilterSqlString(FdoFilter* Filter,string& Where
             
             WhereBuff.assign(sbuff);
             
-            delete sbuff;
-            delete sbuff2;
+            delete [] sbuff;
+            delete [] sbuff2;
         }
     }
     

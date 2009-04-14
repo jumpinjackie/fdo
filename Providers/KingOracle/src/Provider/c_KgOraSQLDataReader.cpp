@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2006  SL-King d.o.o
+* Copyright (C) 2009  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -16,60 +16,77 @@
 */
 #include "stdafx.h"
 #include "c_KgOraSQLDataReader.h"
-#include "c_FdoOra_API.h"
+#include "c_FdoOra_API2.h"
 
 c_KgOraSQLDataReader::c_KgOraSQLDataReader(c_KgOraConnection * Connection
-                        ,oracle::occi::Statement* OcciStatement ,oracle::occi::ResultSet* OcciResultSet)
+                        ,c_Oci_Statement* OciStatement )
+  
+  
 {
+  m_PropNameToIndex = NULL;
+  m_PropNameToIndex_IsNull = NULL;
+  
   m_Connection = Connection;
   FDO_SAFE_ADDREF(m_Connection);
   
   m_SqlColumns = FdoStringCollection::Create();
   
-  m_OcciStatement = OcciStatement;
-  m_OcciResultSet = OcciResultSet;
+  m_OciStatement = OciStatement;
   
-  m_MetaData = m_OcciResultSet->getColumnListMetaData();
   
-  string cname;
-  size_t count = m_MetaData.size();
+  //m_MetaData = m_OcciResultSet->getColumnListMetaData();
+  
+  wchar_t* cname;
+  size_t count = OciStatement->GetColumnsSize();
   for(size_t ind=0;ind<count;ind++)
   {
-    cname = m_MetaData[ind].getString(oracle::occi::MetaData::ATTR_NAME);    
+    //cname = m_MetaData[ind].getString(oracle::occi::MetaData::ATTR_NAME);    
+    cname = OciStatement->GetColumnName(ind+1);
     
     // test if recognize column type
     // if not then keep column
-    string oratype = m_MetaData[ind].getString(oracle::occi::MetaData::ATTR_TYPE_NAME);
-    int dtype = m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_DATA_TYPE);
-    int length = m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_DATA_SIZE);
-    int orascale = m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_SCALE);
+    wchar_t* oratype = OciStatement->GetColumnTypeName(ind+1); // = m_MetaData[ind].getString(oracle::occi::MetaData::ATTR_TYPE_NAME);
+    int dtype = OciStatement->GetColumnOciType(ind+1);//m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_DATA_TYPE);
+    int length = OciStatement->GetColumnWidth(ind+1);//m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_DATA_SIZE);
+    int orascale = OciStatement->GetColumnScale(ind+1); //m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_SCALE);
 
     FdoDataType fdotype;
-    if( c_FdoOra_API::OraTypeToFdoDataType((oracle::occi::Type)dtype,orascale,length,fdotype) )
+    if( c_FdoOra_API2::OraTypeToFdoDataType(dtype,orascale,length,fdotype) )
     {  
-      m_SqlColumns->Add(cname.c_str());
+      m_SqlColumns->Add(cname);
       m_SqlColIndex.push_back(ind);
     }
     else
     {
-      if( FdoCommonOSUtil::stricmp(oratype.c_str(),"SDO_GEOMETRY") == 0 )
+      if( FdoCommonOSUtil::wcsicmp(oratype,L"SDO_GEOMETRY") == 0 )
       {
-        m_SqlColumns->Add(cname.c_str());
+        m_SqlColumns->Add(cname);
         m_SqlColIndex.push_back(ind); 
       }
     }
   }
   
+  m_PropNameToIndex = new c_StringToIndex(m_SqlColumns);
+  m_PropNameToIndex_IsNull = new c_StringToIndex(m_SqlColumns);
 }
 
 int c_KgOraSQLDataReader::ColumnNameToColumnIndex(FdoString* ColumnName)
 {
-  int sind = m_SqlColumns->IndexOf(ColumnName);
+  //int sind = m_SqlColumns->IndexOf(ColumnName);
+  int sind = m_PropNameToIndex->GetIndex(ColumnName);
+  return m_SqlColIndex[sind];
+}
+int c_KgOraSQLDataReader::ColumnNameToColumnIndex_IsNull(FdoString* ColumnName)
+{
+  //int sind = m_SqlColumns->IndexOf(ColumnName);
+  int sind = m_PropNameToIndex_IsNull->GetIndex(ColumnName);
   return m_SqlColIndex[sind];
 }
 
 c_KgOraSQLDataReader::~c_KgOraSQLDataReader(void)
 {
+  if( m_PropNameToIndex ) delete m_PropNameToIndex;
+  if( m_PropNameToIndex_IsNull) delete m_PropNameToIndex_IsNull;
   Close();
   FDO_SAFE_RELEASE(m_Connection);
 }
@@ -87,7 +104,7 @@ void c_KgOraSQLDataReader::Dispose()
 /// 
 FdoInt32 c_KgOraSQLDataReader::GetColumnCount()
 {
-  return m_MetaData.size();
+  return m_OciStatement->GetColumnsSize(); //m_MetaData.size();
 }
 
 /// \brief
@@ -101,12 +118,14 @@ FdoInt32 c_KgOraSQLDataReader::GetColumnCount()
 /// 
 FdoString* c_KgOraSQLDataReader::GetColumnName(FdoInt32 Index)
 {
+  return m_OciStatement->GetColumnName(Index+1);
+  /*
   string cname = m_MetaData[Index].getString(oracle::occi::MetaData::ATTR_NAME);    
   
   m_ColName = cname.c_str();
   
   return m_ColName;
-
+  */
 }
 
 /// \brief
@@ -123,12 +142,12 @@ FdoDataType c_KgOraSQLDataReader::GetColumnType(FdoString* ColumnName)
   int ind = ColumnNameToColumnIndex(ColumnName);
   
     
-  int dtype = m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_DATA_TYPE);
-  int length = m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_DATA_SIZE);
-  int orascale = m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_SCALE);
+  int dtype = m_OciStatement->GetColumnOciType(ind+1); //m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_DATA_TYPE);
+  int length = m_OciStatement->GetColumnWidth(ind+1); // m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_DATA_SIZE);
+  int orascale = m_OciStatement->GetColumnScale(ind+1); // m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_SCALE);
 
   FdoDataType fdotype;
-  c_FdoOra_API::OraTypeToFdoDataType((oracle::occi::Type)dtype,orascale,length,fdotype);
+  c_FdoOra_API2::OraTypeToFdoDataType(dtype,orascale,length,fdotype);
   
   return fdotype;
   
@@ -147,10 +166,10 @@ FdoPropertyType c_KgOraSQLDataReader::GetPropertyType(FdoString* ColumnName)
 {
   int ind = ColumnNameToColumnIndex(ColumnName);
   
+  wchar_t* oratype = m_OciStatement->GetColumnTypeName(ind+1);
+  //string oratype = m_MetaData[ind].getString(oracle::occi::MetaData::ATTR_TYPE_NAME);
   
-  string oratype = m_MetaData[ind].getString(oracle::occi::MetaData::ATTR_TYPE_NAME);
-  
-  if( FdoCommonOSUtil::stricmp(oratype.c_str(),"SDO_GEOMETRY") == 0 )
+  if( oratype && FdoCommonOSUtil::wcsicmp(oratype,L"SDO_GEOMETRY") == 0 )
   {
     return FdoPropertyType_GeometricProperty;
   }
@@ -162,27 +181,32 @@ FdoPropertyType c_KgOraSQLDataReader::GetPropertyType(FdoString* ColumnName)
  bool c_KgOraSQLDataReader::GetBoolean(FdoString* ColumnName)
 {
   int ind = ColumnNameToColumnIndex(ColumnName);
-  if( m_OcciResultSet && (ind >= 0) )
+  if( ind >= 0 )
   {
-    string str = m_OcciResultSet->getString(ind+1);    
+    //string str = m_OcciResultSet->getString(ind+1);    
+    const wchar_t* str = m_OciStatement->GetString(ind+1);
     
-    if( str.compare("1") == 0 ) return true;
-    if( str.compare("TRUE") == 0 ) return true;
-    if( str.compare("true") == 0 ) return true;
+    if( str )
+    {
+      if( wcscmp(str,L"1") == 0 ) return true;
+      if( FdoCommonOSUtil::wcsicmp(str,L"1") == 0 ) return true;
+      
+    }
     
     return false;
   }
   throw FdoCommandException::Create(L"Boolean");
 }
 
- FdoByte  c_KgOraSQLDataReader::GetByte(FdoString* ColumnName)
+FdoByte  c_KgOraSQLDataReader::GetByte(FdoString* ColumnName)
 {
   int ind = ColumnNameToColumnIndex(ColumnName);
-  if( m_OcciResultSet && (ind >= 0) )
+  if( ind >= 0) 
   {
-    string str = m_OcciResultSet->getString(ind+1);    
-    const char* cp = str.c_str();
-    if( cp ) return *cp;
+    //string str = m_OcciResultSet->getString(ind+1);    
+    const wchar_t* str = m_OciStatement->GetString(ind+1);
+    
+    if( str ) return (FdoByte)*str;
     
     return 0;
   }
@@ -192,22 +216,19 @@ FdoPropertyType c_KgOraSQLDataReader::GetPropertyType(FdoString* ColumnName)
  FdoDateTime c_KgOraSQLDataReader::GetDateTime(FdoString* ColumnName)
 {
   int ind = ColumnNameToColumnIndex(ColumnName);
-  if( m_OcciResultSet && (ind >= 0) )
+  if( ind >= 0) 
   {
-    oracle::occi::Date oradt = m_OcciResultSet->getDate(ind+1);    
+    //oracle::occi::Date oradt = m_OcciResultSet->getDate(ind+1);    
+    OCIDate* oradt = m_OciStatement->GetOciDate(ind+1);
     FdoDateTime fdodate;
-    if( !oradt.isNull() )
+    if( oradt )
     {
-      int year;
-      unsigned int month,day,hour,min,sec;
-      oradt.getDate(year,month,day,hour,min,sec);
-      
-      fdodate.year = year;
-      fdodate.month = month;
-      fdodate.day = day;
-      fdodate.hour = hour;
-      fdodate.minute = min;
-      fdodate.seconds = sec;
+      fdodate.year = oradt->OCIDateYYYY;
+      fdodate.month = oradt->OCIDateMM;
+      fdodate.day = oradt->OCIDateDD;
+      fdodate.hour = oradt->OCIDateTime.OCITimeHH;
+      fdodate.minute = oradt->OCIDateTime.OCITimeMI;
+      fdodate.seconds = oradt->OCIDateTime.OCITimeSS;
       
     }
     return fdodate;
@@ -221,10 +242,10 @@ FdoPropertyType c_KgOraSQLDataReader::GetPropertyType(FdoString* ColumnName)
 {
 
   int ind = ColumnNameToColumnIndex(ColumnName);
-  if( m_OcciResultSet && (ind >= 0) )
+  if( ind >= 0) 
   {
-    double val = m_OcciResultSet->getDouble(ind+1);    
-    return val;
+    return m_OciStatement->GetDouble(ind+1); // m_OcciResultSet->getDouble(ind+1);    
+    
   }
     
     
@@ -236,10 +257,10 @@ FdoPropertyType c_KgOraSQLDataReader::GetPropertyType(FdoString* ColumnName)
  FdoInt16 c_KgOraSQLDataReader::GetInt16(FdoString* ColumnName)
 {
   int ind = ColumnNameToColumnIndex(ColumnName);
-  if( m_OcciResultSet && (ind >= 0) )
+  if( ind >= 0) 
   {
-    int val = m_OcciResultSet->getInt(ind+1);    
-    return val;
+    //int val = m_OcciResultSet->getInt(ind+1);    
+    return m_OciStatement->GetInteger(ind+1);
   }
   
   throw FdoCommandException::Create(L"Int16");
@@ -250,10 +271,10 @@ FdoPropertyType c_KgOraSQLDataReader::GetPropertyType(FdoString* ColumnName)
 {
  
   int ind = ColumnNameToColumnIndex(ColumnName);
-  if( m_OcciResultSet && (ind >= 0) )
+  if( ind >= 0) 
   {
-    int val = m_OcciResultSet->getInt(ind+1);    
-    return val;
+    //int val = m_OcciResultSet->getInt(ind+1);    
+    return m_OciStatement->GetInteger(ind+1);
   }
     
     //return 5;
@@ -264,10 +285,10 @@ FdoPropertyType c_KgOraSQLDataReader::GetPropertyType(FdoString* ColumnName)
  FdoInt64 c_KgOraSQLDataReader::GetInt64(FdoString* ColumnName)
 {
   int ind = ColumnNameToColumnIndex(ColumnName);
-  if( m_OcciResultSet && (ind >= 0) )
+  if( ind >= 0 )
   {
-    long val = m_OcciResultSet->getInt(ind+1);    
-    return val;
+    //long val = m_OcciResultSet->getInt(ind+1);    
+    return m_OciStatement->GetLong(ind+1);
   }
   
     throw FdoCommandException::Create(L"Int64");
@@ -276,10 +297,10 @@ FdoPropertyType c_KgOraSQLDataReader::GetPropertyType(FdoString* ColumnName)
  float c_KgOraSQLDataReader::GetSingle(FdoString* ColumnName)
 {
   int ind = ColumnNameToColumnIndex(ColumnName);
-  if( m_OcciResultSet && (ind >= 0) )
+  if( ind >= 0) 
   {
-    float val = m_OcciResultSet->getFloat(ind+1);    
-    return val;
+    //float val = m_OcciResultSet->getFloat(ind+1);    
+    return (float)m_OciStatement->GetDouble(ind+1);
   }
   throw FdoCommandException::Create(L"Float32");
 }
@@ -289,11 +310,12 @@ FdoPropertyType c_KgOraSQLDataReader::GetPropertyType(FdoString* ColumnName)
  
     
   int ind = ColumnNameToColumnIndex(ColumnName);
-  if( m_OcciResultSet && (ind >= 0) )
+  if( ind >= 0) 
   {
-    string str = m_OcciResultSet->getString(ind+1); 
+    //string str = m_OcciResultSet->getString(ind+1); 
+    const wchar_t* str = m_OciStatement->GetString(ind+1);
     
-    m_CachedString = str.c_str();
+    m_CachedString = str;
     
     return m_CachedString;
   }
@@ -315,10 +337,12 @@ FdoPropertyType c_KgOraSQLDataReader::GetPropertyType(FdoString* ColumnName)
 
  bool c_KgOraSQLDataReader::IsNull(FdoString* ColumnName)
 {
-  int ind = m_SqlColumns->IndexOf(ColumnName);
-  if( m_OcciResultSet && (ind >= 0) )
+  //int ind = m_SqlColumns->IndexOf(ColumnName);
+  int ind = ColumnNameToColumnIndex_IsNull(ColumnName);
+  if( ind >= 0) 
   {
-    return m_OcciResultSet->isNull(ind+1);         
+    //return m_OcciResultSet->isNull(ind+1);         
+    return m_OciStatement->IsColumnNull(ind+1);
   } 
   return false;
 }
@@ -336,11 +360,12 @@ FdoPropertyType c_KgOraSQLDataReader::GetPropertyType(FdoString* ColumnName)
  const FdoByte* c_KgOraSQLDataReader::GetGeometry(FdoString* ColumnName, FdoInt32* len)
 {
   int ind = ColumnNameToColumnIndex(ColumnName);
-  if( m_OcciResultSet )
+  if( m_OciStatement)
   {
 
     
-    SDO_GEOMETRY *geom = (SDO_GEOMETRY*)m_OcciResultSet->getObject(ind+1); // oracle is 1 based - our index is 0 based
+    //SDO_GEOMETRY *geom = (SDO_GEOMETRY*)m_OcciResultSet->getObject(ind+1); // oracle is 1 based - our index is 0 based
+    c_SDO_GEOMETRY *geom = m_OciStatement->GetSdoGeom(ind+1);
     *len=0;
     if( geom )
     {
@@ -361,7 +386,7 @@ FdoPropertyType c_KgOraSQLDataReader::GetPropertyType(FdoString* ColumnName)
 
  bool c_KgOraSQLDataReader::ReadNext()
 {    
-    if( m_OcciResultSet->next() == oracle::occi::ResultSet::END_OF_FETCH )
+    if( !m_OciStatement->ReadNext() )
     {
     
       
@@ -376,22 +401,17 @@ FdoPropertyType c_KgOraSQLDataReader::GetPropertyType(FdoString* ColumnName)
 {
 try
 {
-  if (m_OcciStatement && m_OcciResultSet)
+  if (m_OciStatement)
   {
-    m_OcciStatement->closeResultSet(m_OcciResultSet);        
-    m_OcciResultSet = NULL;
-  }
-  
-  if (m_OcciStatement)
-  {
-    m_Connection->OCCI_TerminateStatement(m_OcciStatement);
-    m_OcciStatement=NULL;
+    m_Connection->OCI_TerminateStatement(m_OciStatement);
+    m_OciStatement=NULL;
   }
 }
-catch(oracle::occi::SQLException& ea)
+catch(c_Oci_Exception* ea)
 {
-  m_OcciResultSet = NULL;
-  FdoStringP gstr = ea.getMessage().c_str();
+  
+  FdoStringP gstr = ea->what();
+  delete ea;
   throw FdoConnectionException::Create( gstr );  
 }
 

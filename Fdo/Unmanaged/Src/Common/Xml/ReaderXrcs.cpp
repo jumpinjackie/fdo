@@ -19,8 +19,14 @@
 #include "ReaderXrcs.h"
 #include <Common/Xml/UtilXrcs.h>
 #include <Common/Semaphore.h>
+
 #include <xercesc/sax2/XMLReaderFactory.hpp>
 #include <xercesc/sax/SAXParseException.hpp>
+
+#if _XERCES_VERSION >= 20800
+#include <xercesc/sax2/Attributes.hpp>
+#endif
+
 #include <stdio.h>
 #include "../CommonInternal.h"
 

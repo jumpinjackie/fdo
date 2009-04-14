@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2006  SL-King d.o.o
+* Copyright (C) 2009  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -20,8 +20,8 @@
 #include <time.h>
 
 
-#include "c_SdoGeomToAGF.h"
-#include "c_LogAPI.h"
+#include "c_SdoGeomToAGF2.h"
+#include "c_LogAPI.h" 
 
 
     

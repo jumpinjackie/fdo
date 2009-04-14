@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="KingOracleProvider"
 	ProjectGUID="{A8CAD4E4-5C05-4D3F-B8CC-96D862110278}"
 	RootNamespace="KingOracleProvider"
@@ -822,7 +822,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".\;..\..\inc;..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;..\..\..\..\Fdo\Unmanaged\inc\fdo\Expression;&quot;$(FDOORACLE)\include&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_CRT_NON_CONFORMING_SWPRINTFS"
 				GeneratePreprocessedFile="0"
 				MinimalRebuild="true"
 				RuntimeLibrary="3"
@@ -903,7 +903,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=".\;..\..\inc;..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;..\..\..\..\Fdo\Unmanaged\inc\fdo\Expression;&quot;$(FDOORACLE)\include&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_CRT_NON_CONFORMING_SWPRINTFS"
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="true"
 				RuntimeTypeInfo="true"
@@ -922,7 +922,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkLibraryDependencies="false"
-				AdditionalDependencies="oraocci10.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONls.lib ProvidersCommon.lib KingOracleOverrides.lib"
+				AdditionalDependencies="oci.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONls.lib ProvidersCommon.lib KingOracleOverrides.lib"
 				AdditionalLibraryDirectories="&quot;$(FDOORACLE)\lib\msvc&quot;;..\..\..\..\Fdo\Unmanaged\Lib\Win32\Release\;..\..\..\..\Utilities\Common\Lib\Win32\Release\;..\..\lib\Win32\Release"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
@@ -1163,6 +1163,14 @@
 			Name="CommandsFeature"
 			>
 			<File
+				RelativePath=".\c_KgOraDataReader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\c_KgOraDataReader.h"
+				>
+			</File>
+			<File
 				RelativePath=".\c_KgOraFeatureReader.cpp"
 				>
 			</File>
@@ -1232,31 +1240,39 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="OCCI"
+			Name="OCI"
 			>
 			<File
-				RelativePath=".\RegisterMappings.cpp"
+				RelativePath=".\c_OCI_API.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\RegisterMappings.h"
+				RelativePath=".\c_OCI_API.h"
 				>
 			</File>
 			<File
-				RelativePath=".\SDO_GEOMETRY.cpp"
+				RelativePath=".\c_Oci_ColumnData.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\SDO_GEOMETRY.h"
+				RelativePath=".\c_Oci_ColumnData.h"
+				>
+			</File>
+			<File
+				RelativePath=".\c_Oci_Statement.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\c_Oci_Statement.h"
 				>
 			</File>
 		</Filter>
 		<File
-			RelativePath=".\c_FdoOra_API.cpp"
+			RelativePath=".\c_FdoOra_API2.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\c_FdoOra_API.h"
+			RelativePath=".\c_FdoOra_API2.h"
 			>
 		</File>
 		<File
@@ -1372,6 +1388,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\c_KgOraSelectAggregates.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\c_KgOraSQLCommand.cpp"
 			>
 		</File>
@@ -1420,27 +1440,35 @@
 			>
 		</File>
 		<File
-			RelativePath=".\c_OCCI_API.cpp"
+			RelativePath=".\c_Ora_API2.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\c_OCCI_API.h"
+			RelativePath=".\c_Ora_API2.h"
 			>
 		</File>
 		<File
-			RelativePath=".\c_Ora_API.cpp"
+			RelativePath=".\c_SDO_DIM_ELEMENT.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\c_Ora_API.h"
+			RelativePath=".\c_SDO_DIM_ELEMENT.h"
 			>
 		</File>
 		<File
-			RelativePath=".\c_SdoGeomToAGF.cpp"
+			RelativePath=".\c_SDO_GEOMETRY.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\c_SdoGeomToAGF.h"
+			RelativePath=".\c_SDO_GEOMETRY.h"
+			>
+		</File>
+		<File
+			RelativePath=".\c_SdoGeomToAGF2.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\c_SdoGeomToAGF2.h"
 			>
 		</File>
 		<File

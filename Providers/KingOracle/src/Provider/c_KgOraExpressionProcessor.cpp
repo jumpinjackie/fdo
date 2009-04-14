@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2006  SL-King d.o.o
+* Copyright (C) 2009  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -19,19 +19,19 @@
 #include "c_KgOraExpressionProcessor.h"
 #include "c_FilterStringBuffer.h"
 #include "c_FgfToSdoGeom.h"
-#include "c_Ora_API.h"
+#include "c_Ora_API2.h"
 
-#define D_FILTER_OPEN_PARENTH " ( "
-#define D_FILTER_CLOSE_PARENTH " ) "
+#define D_FILTER_OPEN_PARENTH L" ( "
+#define D_FILTER_CLOSE_PARENTH L" ) "
 
 // For arthmetic operation
-#define D_FILTER_ARITHMETIC_PLUS    " + "
-#define D_FILTER_ARITHMETIC_MINUS   " - "
-#define D_FILTER_ARITHMETIC_MULT    " * "
-#define D_FILTER_ARITHMETIC_DIV     " / "
+#define D_FILTER_ARITHMETIC_PLUS    L" + "
+#define D_FILTER_ARITHMETIC_MINUS   L" - "
+#define D_FILTER_ARITHMETIC_MULT    L" * "
+#define D_FILTER_ARITHMETIC_DIV     L" / "
 
 
-c_KgOraExpressionProcessor::c_KgOraExpressionProcessor(c_FilterStringBuffer* StrBuff,c_KgOraSchemaDesc *KgOraSchemaDesc,FdoIdentifier* ClassId,const c_KgOraSridDesc& OraSridDesc)
+c_KgOraExpressionProcessor::c_KgOraExpressionProcessor(c_FilterStringBuffer* StrBuff,c_KgOraSchemaDesc *KgOraSchemaDesc,FdoIdentifier* ClassId,const c_KgOraSridDesc& OraSridDesc,int ParamNumberOffset)
 {
   m_StringBuff = StrBuff;
   
@@ -45,12 +45,16 @@ c_KgOraExpressionProcessor::c_KgOraExpressionProcessor(c_FilterStringBuffer* Str
   
   m_DoAsParameters = true;
   
+  m_ParamNumberOffset = ParamNumberOffset;
+  
+  
+  
 }
 
 c_KgOraExpressionProcessor::~c_KgOraExpressionProcessor(void)
 {
-  size_t size = m_ParamList.size();
-  for(size_t ind=0;ind<size;ind++)
+  long size = m_ParamList.size();
+  for(long ind=0;ind<size;ind++)
   {
     delete m_ParamList[ind];
   }
@@ -66,14 +70,14 @@ void c_KgOraExpressionProcessor::ProcessExpresion( FdoExpression* Expr)
 
 //
 // Add a string to the end of the buffer
-void c_KgOraExpressionProcessor::AppendString(const char *Str)
+void c_KgOraExpressionProcessor::AppendString(const wchar_t *Str)
 {
   m_StringBuff->AppendString(Str);
 }
 
 //
 // Add a string to the biginning of the buffer
-void c_KgOraExpressionProcessor::PrependString(const char *Str)
+void c_KgOraExpressionProcessor::PrependString(const wchar_t *Str)
 {
   m_StringBuff->PrependString(Str);
 }
@@ -116,9 +120,9 @@ void c_KgOraExpressionProcessor::ProcessUnaryExpression(FdoUnaryExpression& expr
 
     if( expr.GetOperation() == FdoUnaryOperations_Negate )
     {
-        AppendString( " ( - ( " );
+        AppendString( L" ( - ( " );
         ProcessExpresion( uniExpr );
-        AppendString( " ) ) ");
+        AppendString( L" ) ) ");
     }
     else
         throw FdoFilterException::Create(L"FdoUnaryExpression supports only the negate operation" );
@@ -127,16 +131,47 @@ void c_KgOraExpressionProcessor::ProcessUnaryExpression(FdoUnaryExpression& expr
 void c_KgOraExpressionProcessor::ProcessFunction(FdoFunction& expr)
 {
   FdoStringP fname = expr.GetName();
-  AppendString( fname );
   
   
+  if( FdoCommonOSUtil::wcsicmp(fname,FDO_FUNCTION_SPATIALEXTENTS) == 0)
+  {
+    if( m_ConstantSpatialExtent.GetLength() > 0 )
+    {
+      
+      AppendString( m_ConstantSpatialExtent );
+      
+      return;
+    }
+    else
+    {
+      AppendString( L"SDO_AGGR_MBR" );
+    }
+  }
+  else
+  {
+    AppendString( fname );
+  }
+  
+  
+  
+  FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+  
+  if( FdoCommonOSUtil::wcsicmp(fname,FDO_FUNCTION_COUNT) == 0)
+  {
+    if( exprCol->GetCount() == 0 )
+    {
+      AppendString(L"(*) "); 
+      return;
+    }
+  }
     //AppendString( D_FILTER_OPEN_PARENTH ); // MySql tripped on the leading space 
-	AppendString("( "); 
-    FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+	AppendString(L"( "); 
+    
+    
     for(int i=0; i<exprCol->GetCount(); i++ )
     {
         if( i!= 0 )
-            AppendString( ", " );
+            AppendString( L", " );
 
         FdoPtr<FdoExpression>exp = exprCol->GetItem( i );
         ProcessExpresion( exp );
@@ -146,15 +181,18 @@ void c_KgOraExpressionProcessor::ProcessFunction(FdoFunction& expr)
 
 
 
-void c_KgOraExpressionProcessor::ProcessComputedIdentifier(FdoComputedIdentifier& expr)
+void c_KgOraExpressionProcessor::ProcessComputedIdentifier(FdoComputedIdentifier& Expr)
 {
-    FdoPtr<FdoExpression>pExpr = expr.GetExpression();
+    FdoPtr<FdoExpression>pExpr = Expr.GetExpression();
     if( pExpr == NULL )
         throw FdoFilterException::Create(L"FdoComputedIdentifier is missing the expression");
 
     AppendString( D_FILTER_OPEN_PARENTH );
     ProcessExpresion( pExpr );
     AppendString( D_FILTER_CLOSE_PARENTH );
+    
+    AppendString( L" AS " );
+    AppendString( FdoStringP(Expr.GetName()) );
 }
 
 
@@ -170,7 +208,7 @@ void c_KgOraExpressionProcessor::ProcessIdentifier( FdoIdentifier& Expr)
     if( phys_class && !phys_class->GetIsPointGeometry() )
     {      
       AppendString( phys_class->GetOraTableAlias() );
-      AppendString( "." );
+      AppendString( L"." );
     }
   }
   
@@ -183,12 +221,12 @@ void c_KgOraExpressionProcessor::ProcessIdentifier( FdoIdentifier& Expr)
 
 void c_KgOraExpressionProcessor::ProcessParameter( FdoParameter& expr )
 {
-  size_t size = m_ParamList.size();
-  size++;
-  char chbuff[16];
-  sprintf(chbuff,"%ld",size);
-    AppendString( ":" );
-    AppendString( chbuff );
+    long size = m_ParamList.size() + m_ParamNumberOffset;
+    size++;
+  
+    FdoStringP chbuff = FdoStringP::Format(L"%ld",size);
+    AppendString( L":" );
+    AppendString( (FdoString*)chbuff );
     
     
     m_ParamList.push_back( new c_KgOraSqlParamDesc(expr.GetName()) );
@@ -198,11 +236,10 @@ void c_KgOraExpressionProcessor::ProcessParameter( FdoParameter& expr )
 
 void c_KgOraExpressionProcessor::AddAsParameter(FdoDataValue& Value)
 {
-  size_t size = m_ParamList.size();
+  long size = m_ParamList.size() + m_ParamNumberOffset;
   size++;
-  char chbuff[16];
-  sprintf(chbuff,":%ld",size);
-  AppendString( chbuff );
+  FdoStringP chbuff = FdoStringP::Format(L":%ld",size);
+  AppendString( (FdoString*)chbuff );
     
     
  m_ParamList.push_back( new c_KgOraSqlParamDesc(&Value) );
@@ -219,15 +256,15 @@ void c_KgOraExpressionProcessor::ProcessBooleanValue(FdoBooleanValue& expr)
   {
     if( expr.IsNull() )
     {  
-      AppendString( "NULL" );
+      AppendString( L"NULL" );
      
     }
     else
     {
       if( expr.GetBoolean() )
-          AppendString( "1" );  // Database bool true
+          AppendString( L"1" );  // Database bool true
       else
-          AppendString( "0" );  // Database bool false
+          AppendString( L"0" );  // Database bool false
     }
   }
 }
@@ -242,17 +279,17 @@ void c_KgOraExpressionProcessor::ProcessByteValue(FdoByteValue& expr)
   {
     if( expr.IsNull() )
     {  
-      AppendString( "NULL" );
+      AppendString( L"NULL" );
      
     }
     else
     {
-      char   val[2];
+      wchar_t   val[2];
       val[0] = expr.GetByte();
       val[1] = '\0';
-      AppendString( "'" );
+      AppendString( L"'" );
       AppendString( val );
-      AppendString( "'" );
+      AppendString( L"'" );
     }
   }
 }
@@ -267,7 +304,7 @@ void c_KgOraExpressionProcessor::ProcessDateTimeValue(FdoDateTimeValue& expr)
   {  
     if( expr.IsNull() )
     {  
-      AppendString( "NULL" );
+      AppendString( L"NULL" );
       return;
     }
     FdoDateTime dt = expr.GetDateTime();
@@ -275,22 +312,20 @@ void c_KgOraExpressionProcessor::ProcessDateTimeValue(FdoDateTimeValue& expr)
     if( dt.IsDateTime() )
     {
       
-      AppendString( "TO_DATE(" );
-      char    tmpValue[124];
-      sprintf( tmpValue,"'%d-%d-%d %d:%d:%d'",dt.month,dt.day,dt.year,dt.hour,dt.minute,dt.seconds);
+      AppendString( L"TO_DATE(" );
+      FdoStringP tmpValue = FdoStringP::Format(L"'%d-%d-%d %d:%d:%d'",dt.month,dt.day,dt.year,dt.hour,dt.minute,dt.seconds);
       
-      AppendString( ",'MM-DD-YYYY HH24:MI:SS')" );
+      AppendString( L",'MM-DD-YYYY HH24:MI:SS')" );
       
       return;
     }
     
     if( dt.IsDate() )
     {
-      AppendString( "TO_DATE(" );
-      char    tmpValue[124];
-      sprintf( tmpValue,"'%d-%d-%d'",dt.month,dt.day,dt.year);
+      AppendString( L"TO_DATE(" );
+      FdoStringP tmpValue = FdoStringP::Format(L"'%d-%d-%d'",dt.month,dt.day,dt.year);
       
-      AppendString( ",'MM-DD-YYYY')" );
+      AppendString( L",'MM-DD-YYYY')" );
       
       return;
     }
@@ -298,11 +333,10 @@ void c_KgOraExpressionProcessor::ProcessDateTimeValue(FdoDateTimeValue& expr)
     if( dt.IsTime() )
     {
       
-      AppendString( "TO_DATE(" );
-      char    tmpValue[124];
-      sprintf( tmpValue,"'%d:%d:%d'",dt.hour,dt.minute,dt.seconds);
+      AppendString( L"TO_DATE(" );
+      FdoStringP  tmpValue = FdoStringP::Format(L"'%d:%d:%d'",dt.hour,dt.minute,dt.seconds);
       
-      AppendString( ",'HH24:MI:SS')" );
+      AppendString( L",'HH24:MI:SS')" );
       
       return;
     }
@@ -320,13 +354,12 @@ void c_KgOraExpressionProcessor::ProcessDoubleValue(FdoDoubleValue& expr)
   {
     if( expr.IsNull() )
     {
-      AppendString( "NULL" );
+      AppendString( L"NULL" );
     }
     else
     {
-      char    tmpValue[124];
-      sprintf(tmpValue,"%.16g",expr.GetDouble());
-      AppendString( tmpValue );
+      FdoStringP tmpValue = FdoStringP::Format(L"%.16g",expr.GetDouble());
+      AppendString( (FdoString*)tmpValue );
     }
   }
 }
@@ -341,13 +374,12 @@ void c_KgOraExpressionProcessor::ProcessDecimalValue(FdoDecimalValue& expr)
   {
     if( expr.IsNull() )
     {
-      AppendString( "NULL" );
+      AppendString( L"NULL" );
     }
     else
     {
-      char    tmpValue[124];
-      sprintf(tmpValue,"%.8f",expr.GetDecimal());
-      AppendString( tmpValue );
+      FdoStringP tmpValue = FdoStringP::Format(L"%.8f",expr.GetDecimal());
+      AppendString( (FdoString*)tmpValue );
     }
   }
 }
@@ -362,13 +394,12 @@ void c_KgOraExpressionProcessor::ProcessInt16Value(FdoInt16Value& expr)
   {
     if( expr.IsNull() )
     {
-      AppendString( "NULL" );
+      AppendString( L"NULL" );
     }
     else
     {
-      char    tmpValue[124];
-      sprintf(tmpValue,"%d",(int)expr.GetInt16());
-      AppendString( tmpValue );
+      FdoStringP tmpValue = FdoStringP::Format(L"%d",(int)expr.GetInt16());
+      AppendString( (FdoString*)tmpValue );
     }
   }
 }
@@ -383,13 +414,12 @@ void c_KgOraExpressionProcessor::ProcessInt32Value(FdoInt32Value& expr)
   {
     if( expr.IsNull() )
     {
-      AppendString( "NULL" );
+      AppendString( L"NULL" );
     }
     else
     {
-      char    tmpValue[124];
-      sprintf(tmpValue,"%ld",(long)expr.GetInt32());
-      AppendString( tmpValue );
+      FdoStringP tmpValue = FdoStringP::Format(L"%ld",(long)expr.GetInt32());
+      AppendString( (FdoString*)tmpValue );
     }
   }
 }
@@ -404,20 +434,13 @@ void c_KgOraExpressionProcessor::ProcessInt64Value(FdoInt64Value& expr)
   {
     if( expr.IsNull() )
     {  
-      AppendString( "NULL" );
+      AppendString( L"NULL" );
       return; 
     }
     
-      char    tmpValue[124];
+      FdoStringP tmpValue = FdoStringP::Format(L"%lld", (FdoInt64)(dynamic_cast<FdoInt64Value&>(expr)).GetInt64());
 
-  #ifdef _WIN32
-	  strncpy( tmpValue, _i64toa( (FdoInt64)(dynamic_cast<FdoInt64Value&>(expr)).GetInt64(),tmpValue, 10 ), 123 );
-	  tmpValue[123]='\0';
-  #else
-
-	  sprintf(tmpValue, "%lld", (FdoInt64)(dynamic_cast<FdoInt64Value&>(expr)).GetInt64());
-  #endif
-      AppendString(tmpValue);
+      AppendString((FdoString*)tmpValue);
     }
 
 }
@@ -432,14 +455,13 @@ void c_KgOraExpressionProcessor::ProcessSingleValue(FdoSingleValue& expr)
   {
     if( expr.IsNull() )
     {  
-      AppendString( "NULL" );
+      AppendString( L"NULL" );
      
     }
     else
     {
-      char    tmpValue[124];
-      sprintf(tmpValue,"%.8f",expr.GetSingle());
-      AppendString( tmpValue );
+      FdoStringP tmpValue = FdoStringP::Format(L"%.8f",expr.GetSingle());
+      AppendString( (FdoString*)tmpValue );
     }
   }
 }
@@ -454,7 +476,7 @@ void c_KgOraExpressionProcessor::ProcessStringValue(FdoStringValue& expr)
   {
     if( expr.IsNull() )
     {  
-      AppendString( "NULL" );
+      AppendString( L"NULL" );
      
     }
     else
@@ -475,7 +497,7 @@ void c_KgOraExpressionProcessor::ProcessBLOBValue(FdoBLOBValue& Expr)
   {
     if( Expr.IsNull() )
     {  
-      AppendString( "NULL" );
+      AppendString( L"NULL" );
       return; 
     }
     throw FdoFilterException::Create(L"Unsupported FDO type in expression");
@@ -492,7 +514,7 @@ void c_KgOraExpressionProcessor::ProcessCLOBValue(FdoCLOBValue& Expr)
   {
     if( Expr.IsNull() )
     {  
-      AppendString( "NULL" );
+      AppendString( L"NULL" );
       return; 
     }
     throw FdoFilterException::Create(L"Unsupported FDO type in expression");
@@ -511,29 +533,16 @@ void c_KgOraExpressionProcessor::ProcessGeometryValue(FdoGeometryValue& Expr)
   }
  
   FdoPtr<FdoByteArray> fgf = Expr.GetGeometry();    
-  SDO_GEOMETRY * sdogeom = new SDO_GEOMETRY;
   
-  c_FgfToSdoGeom fgftosdo;
-  
-  if( fgftosdo.ToSdoGeom((int*)fgf->GetData(),m_OraSridDesc.m_OraSrid,sdogeom) == c_FgfToSdoGeom::e_Ok )
-  {
-    size_t size = m_ParamList.size();
+    long size = m_ParamList.size() + m_ParamNumberOffset;
     size++;
-    char chbuff[16];
-    sprintf(chbuff,"%ld",size);
-    AppendString( ":" );
-    AppendString( chbuff );
+    FdoStringP chbuff = FdoStringP::Format(L"%ld",size);
+    AppendString( L":" );
+    AppendString( (FdoString*)chbuff );
       
       
-   m_ParamList.push_back( new c_KgOraSqlParamDesc(sdogeom) );  
-  }
-  else
-  {
-    delete sdogeom;
-    c_KgOraSqlParamDesc* pdesc = new c_KgOraSqlParamDesc();
-    pdesc->SetGeometry(NULL);
-    m_ParamList.push_back( pdesc );  
-  }
+    m_ParamList.push_back( new c_KgOraSqlParamDesc(fgf) );  
+  
   
   
 }//end of c_KgOraExpressionProcessor::ProcessGeometryValue
@@ -585,37 +594,41 @@ void c_KgOraExpressionProcessor::ProcessGeometryValueRect(FdoGeometryValue& Expr
   }
 
   // create optimize rect
-  SDO_GEOMETRY *sdorect = c_Ora_API::CreateOptimizedRect(m_OraSridDesc.m_OraSrid,minx,miny,maxx,maxy);
+  //SDO_GEOMETRY *sdorect = c_Ora_API2::CreateOptimizedRect(m_OraSridDesc.m_OraSrid,minx,miny,maxx,maxy);
         
          
-    size_t size = m_ParamList.size();
+    long size = m_ParamList.size() + m_ParamNumberOffset;
     size++;
-    char chbuff[16];
-    sprintf(chbuff,"%ld",size);
-    AppendString( ":" );
-    AppendString( chbuff );
+    FdoStringP chbuff = FdoStringP::Format(L"%ld",size);
+    AppendString( L":" );
+    AppendString( (FdoString*)chbuff );
       
       
-   m_ParamList.push_back( new c_KgOraSqlParamDesc(sdorect) );  
+   m_ParamList.push_back( new c_KgOraSqlParamDesc(m_OraSridDesc.m_OraSrid,minx,miny,maxx,maxy) );  
   
   
 }//end of c_KgOraExpressionProcessor::ProcessGeometryValueRect
 
 int c_KgOraExpressionProcessor::GetSqlParametersCount()
 {
-  return (int)m_ParamList.size();
+  return m_ParamList.size();
       
 }//end of c_KgOraExpressionProcessor::GetSqlParametersCount
 
-void c_KgOraExpressionProcessor::ApplySqlParameters(oracle::occi::Environment*Env,oracle::occi::Statement* OraStm,int ParamOffest/*=0*/)
+void c_KgOraExpressionProcessor::ApplySqlParameters(c_Oci_Statement* OciStm,bool IsGeodeticCS,long OraSrid,int ParamOffest/*=0*/)
 {
   if( m_ParamList.size() > 0 )
   {
-    size_t psize = m_ParamList.size();
-    for(size_t pind=0;pind<psize;pind++)
+    long psize = m_ParamList.size();
+    for(long pind=0;pind<psize;pind++)
     {
-      m_ParamList[pind]->ApplySqlParameter(Env,OraStm,(int)(pind+1+ParamOffest));      
+      m_ParamList[pind]->ApplySqlParameter(OciStm,IsGeodeticCS,OraSrid,pind+1+ParamOffest);      
     }
   }
       
 }//end of c_KgOraExpressionProcessor::ApplySqlParameters
+
+void c_KgOraExpressionProcessor::SetConstantSpatialExtent( const wchar_t* ConstantSpatialExtent )
+{
+  m_ConstantSpatialExtent=ConstantSpatialExtent ? ConstantSpatialExtent : L"";
+}

@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2006  SL-King d.o.o
+* Copyright (C) 2006-2009  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -19,6 +19,7 @@
 #ifndef _c_KgOraSpatialContext_h
 #define _c_KgOraSpatialContext_h
 
+#include "c_KgOraSridDesc.h"
 
 class c_KgOraSpatialContext : public FdoDisposable
 {

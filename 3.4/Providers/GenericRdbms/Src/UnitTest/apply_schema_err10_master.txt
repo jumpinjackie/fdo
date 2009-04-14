@@ -1,2 +1,0 @@
- Schema {USER_DS}_apply_schema has errors; cannot apply it 
- Cannot add schema {USER_DS}_apply_schema to database; it has the same name as the system schema 
