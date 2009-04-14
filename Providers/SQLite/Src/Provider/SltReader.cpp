@@ -201,7 +201,18 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
 		for (int i=0; i<nProps; i++)
 		{
 			FdoPtr<FdoIdentifier> id = props->GetItem(i);
-			m_reissueProps.Add(id->GetName());
+            FdoComputedIdentifier* compId = dynamic_cast<FdoComputedIdentifier*>(id.p);
+            if (compId != NULL)
+            {
+                StringBuffer sb;
+                FdoPtr<FdoExpression> exp = compId->GetExpression();
+                sb.Append(exp->ToString());
+                sb.Append(" AS ", 4);
+                sb.AppendDQuoted(compId->GetName());
+                m_reissueProps.Add(sb.Data(), sb.Length());
+            }
+            else
+			    m_reissueProps.Add(id->GetName());
 		}
 	}
     else
