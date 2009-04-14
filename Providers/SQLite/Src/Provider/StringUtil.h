@@ -145,7 +145,8 @@ public:
     {
         size_t len0 = len + 1; //length inluding zero terminator
         MakeRoom(len0);
-        memcpy(&_buf[_pos], str, len0);
+        memcpy(&_buf[_pos], str, len);
+        *(&_buf[_pos] + len) = '\0';
         _pos += len;
     }
 
@@ -178,6 +179,20 @@ public:
         Append("'");
         Append(str);
         Append("'");
+    }
+
+    void AppendSQuotedHandleNull(const wchar_t* str)
+    {
+        if (str != NULL)
+        {
+            Append("'");
+            Append(str);
+            Append("'");
+        }
+        else
+        {
+            Append("null");
+        }
     }
 
     void AppendSQuoted(const wchar_t* str)

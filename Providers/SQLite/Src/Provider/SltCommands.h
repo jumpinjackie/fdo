@@ -748,6 +748,8 @@ public:
         {
             FdoCommandException::Create(L"Failed to create spatial context.");
         }
+
+        m_connection->UpdateClassesWithInvalidSC();
     }
 
     //-------------------------------------------------------

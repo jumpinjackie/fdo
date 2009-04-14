@@ -482,7 +482,7 @@ void ConvertFDOToSDFX(const wchar_t* src, const wchar_t* dst, bool optimize)
 
             select->SetFilter(fidfilter);
 
-            for (int i=0; i<recs->size(); i++)
+            for (size_t i=0; i<recs->size(); i++)
             {
                 FeatRec& fr = (*recs)[i];
                 idval->SetInt32(fr.id);
@@ -834,8 +834,8 @@ void TestPerformance(const wchar_t* filename)
 */
     int blab = 0;
     int fcount = 0;
-    const wchar_t* sp[30];
-    double rp[30];
+    //const wchar_t* sp[30];
+    //double rp[30];
     clock_t t0;
     clock_t t1;
 

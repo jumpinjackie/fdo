@@ -197,15 +197,21 @@ public:
     void            ReleaseParsedStatement(const char* sql, sqlite3_stmt* stmt);
     void            ClearQueryCache();
     
+    void UpdateClassesWithInvalidSC();
+
 private :
 
     void AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_t* fcname);
     void AddDataCol(FdoDataPropertyDefinition* dpd, const wchar_t* fcname);
-
+    bool IsClassEqual(FdoClassDefinition* fc1, FdoClassDefinition* fc2);
+    bool IsPropertyEqual(FdoPropertyDefinition* prop1, FdoPropertyDefinition* prop2);
+    bool IsTableEmpty(FdoString* name);
 
     int FindSpatialContext(const wchar_t* name);
+    int GetDefaultSpatialContext();
 
-    void CollectBaseClassProperties(FdoClassCollection* myclasses, FdoClassDefinition* fc, StringBuffer& sb, int mode);
+    void CollectBaseClassProperties(FdoClassCollection* myclasses, FdoClassDefinition* fc, FdoClassDefinition* mainfc, StringBuffer& sb, int mode);
+    void AddPropertyConstraintDefaultValue(FdoDataPropertyDefinition* prop, StringBuffer& sb);
 
     sqlite3*                                m_dbRead;
     sqlite3*                                m_dbWrite;

@@ -72,14 +72,14 @@ class SltCapabilities  : public FdoIConnectionCapabilities,
     virtual bool SupportsAutoIdGeneration()                         { return true;  }
     virtual bool SupportsDataStoreScopeUniqueIdGeneration()         { return false; }
     virtual bool SupportsSchemaModification()                       { return true;  }
-    virtual bool SupportsInclusiveValueRangeConstraints()           { return false; }
-    virtual bool SupportsExclusiveValueRangeConstraints()           { return false; }
-    virtual bool SupportsValueConstraintsList()                     { return false; }
+    virtual bool SupportsInclusiveValueRangeConstraints()           { return true; }
+    virtual bool SupportsExclusiveValueRangeConstraints()           { return true; }
+    virtual bool SupportsValueConstraintsList()                     { return true; }
     virtual bool SupportsNullValueConstraints()                     { return true;  }
     virtual bool SupportsUniqueValueConstraints()                   { return true;  }
     virtual bool SupportsCompositeUniqueValueConstraints()          { return false; }
     virtual bool SupportsCompositeId()                              { return false; }
-    virtual bool SupportsDefaultValue()                             { return false; }
+    virtual bool SupportsDefaultValue()                             { return true; }
 
 
     virtual FdoInt64 GetMaximumDataValueLength(FdoDataType dataType){ return -1; }
