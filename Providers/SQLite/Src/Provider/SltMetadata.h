@@ -39,9 +39,26 @@ public:
 
     GeomFormat              GetGeomFormat() { return (GeomFormat)m_geomFormat; }
 
+    static FdoDataValue* GenerateConstraintValue(FdoDataType type, FdoString* value);
+
 private:
+    class SQLiteExpression
+    {
+    public:
+        unsigned char op;
+        std::wstring name;
+        std::vector<std::wstring> values;
+    public:
+        SQLiteExpression(unsigned char pOp)
+        {
+            op = pOp;
+        }
+    };
+    bool ExtractConstraints(Expr* node, std::vector<SQLiteExpression>& result);
+    void GenerateConstraint(FdoDataPropertyDefinition* prop, SQLiteExpression& operation);
 
     void FindSpatialContextName(int srid, std::wstring& ret);
+
 
     SltConnection*      m_connection;
     FdoClassDefinition* m_fc;

@@ -21,6 +21,7 @@
 #include "SltConversionUtils.h"
 #include "SltProvider.h"
 #include "StringUtil.h"
+#include "FdoCommonOSUtil.h"
 
 static FdoDataType ConvertDataType(const char* type)
 {
@@ -173,6 +174,10 @@ FdoClassDefinition* SltMetadata::ToClass()
     FdoPtr<FdoPropertyDefinitionCollection> pdc = m_fc->GetProperties();
     FdoPtr<FdoDataPropertyDefinitionCollection> idpdc = m_fc->GetIdentityProperties();
 
+    std::vector<SQLiteExpression> tableConstraints;
+    if (m_table->pCheck != NULL && !ExtractConstraints(m_table->pCheck, tableConstraints))
+        tableConstraints.clear();
+
     for (int i=0; i<m_table->nCol; i++)
     {
         const char* pname = m_table->aCol[i].zName;
@@ -249,9 +254,11 @@ FdoClassDefinition* SltMetadata::ToClass()
 
             if (m_bUseFdoMetadata)
             {
-                //If there is FDO metadata table, look up the data type hint for this property
-                StringBuffer sb;
-                sb.Append("SELECT fdo_data_type FROM fdo_columns WHERE f_table_name=");
+                // TODO column by column is slow, select by table name and process properties is faster...
+                // If there is FDO metadata table, look up the data type hint for this property
+                sb.Reset();
+                sb.Append("SELECT f_column_desc, fdo_data_type, fdo_data_details, fdo_data_length, "
+                    "fdo_data_precision, fdo_data_scale FROM fdo_columns WHERE f_table_name=");
                 sb.AppendSQuoted(m_table->zName);
                 sb.Append(" AND f_column_name=");
                 sb.AppendSQuoted(pname);
@@ -262,7 +269,20 @@ FdoClassDefinition* SltMetadata::ToClass()
                 if (sqlite3_prepare_v2(db, sb.Data(), -1, &pstmt, &pzTail) == SQLITE_OK)
                 {
                     while (sqlite3_step(pstmt) == SQLITE_ROW)
-                        dt = (FdoDataType)sqlite3_column_int(pstmt, 0);
+                    {
+                        dt = (FdoDataType)sqlite3_column_int(pstmt, 1);
+
+                        const char* txt = (const char*)sqlite3_column_text(pstmt, 0);
+                        if (txt != NULL)
+                            dpd->SetDescription(A2W_SLOW(txt).c_str());
+                        
+                        int detail = (int)sqlite3_column_int(pstmt, 2);
+                        dpd->SetIsSystem((detail & 0x01) != 0);
+                        dpd->SetNullable((detail & 0x02) != 0);
+                        dpd->SetLength((int)sqlite3_column_int(pstmt, 3));
+                        dpd->SetPrecision((int)sqlite3_column_int(pstmt, 4));
+                        dpd->SetScale((int)sqlite3_column_int(pstmt, 5));
+                    }
                 }
 
                 sqlite3_finalize(pstmt);
@@ -277,14 +297,25 @@ FdoClassDefinition* SltMetadata::ToClass()
             if (dt != -1)
             {
                 //successfully mapped the data type -- add it to the FDO class
-
                 dpd->SetDataType(dt);
-
-                //TODO: default value is available, but we need to figure out how to eval a sqlite Expr* to a string
-                //dpd->SetDefaultValue(pTab->aCol[i].pDflt);
+                
+                Expr* defValExp = m_table->aCol[i].pDflt;
+                // we support only simple default values
+                if(defValExp != NULL && defValExp->token.n != 0)
+                {
+                    sb.Reset();
+                    sb.Append((const char*)defValExp->token.z, defValExp->token.n);
+                    dpd->SetDefaultValue(A2W_SLOW(sb.Data()).c_str());
+                }
+                // since on a class we usually don't have too many constraints we can use normal search
+                for(size_t idx = 0; idx < tableConstraints.size(); idx ++)
+                {
+                    SQLiteExpression& operation = tableConstraints.at(idx);
+                    if (operation.name == wpname)
+                        GenerateConstraint(dpd, operation);
+                }
 
                 pdc->Add(dpd);
-
                 if (m_table->aCol[i].isPrimKey)
                     idpdc->Add(dpd);
             }
@@ -294,6 +325,210 @@ FdoClassDefinition* SltMetadata::ToClass()
     return FDO_SAFE_ADDREF(m_fc);
 }
 
+FdoDataValue* SltMetadata::GenerateConstraintValue(FdoDataType type, FdoString* value)
+{
+    FdoPtr<FdoDataValue> retVal;
+    switch(type)
+    {
+    case FdoDataType_Byte:
+        retVal = FdoByteValue::Create((FdoByte)FdoCommonOSUtil::wtoi(value));
+        break;
+    case FdoDataType_Int16:
+        retVal = FdoInt16Value::Create((FdoInt16)FdoCommonOSUtil::wtoi(value));
+        break;
+    case FdoDataType_Int32:
+        retVal = FdoInt32Value::Create((FdoInt32)FdoCommonOSUtil::wtoi(value));
+        break;
+    case FdoDataType_Int64:
+        retVal = FdoInt64Value::Create(
+        #ifdef _WIN32
+                _wtoi64( value )
+        #else
+               atoll ( W2A_SLOW(value).c_str() )
+        #endif
+        );
+        break;
+    case FdoDataType_Decimal:
+        retVal = FdoDecimalValue::Create(FdoCommonOSUtil::wtof(value));
+        break;
+    case FdoDataType_Double:
+        retVal = FdoDoubleValue::Create(FdoCommonOSUtil::wtof(value));
+        break;
+    case FdoDataType_Single:
+        retVal = FdoSingleValue::Create((FdoFloat)FdoCommonOSUtil::wtof(value));
+        break;
+    case FdoDataType_String:
+        retVal = FdoStringValue::Create(value);
+        break;
+    case FdoDataType_DateTime:
+        // TODO
+        break;
+    }
+    return FDO_SAFE_ADDREF(retVal.p);
+}
+
+void SltMetadata::GenerateConstraint(FdoDataPropertyDefinition* prop, SQLiteExpression& operation)
+{
+    FdoPtr<FdoPropertyValueConstraint> constr = prop->GetValueConstraint();
+    FdoDataType dt = prop->GetDataType();
+    switch(operation.op)
+    {
+    case TK_BETWEEN:
+        if (operation.values.size() == 2)
+        {
+            if (constr == NULL || constr->GetConstraintType() != FdoPropertyValueConstraintType_Range)
+                constr = FdoPropertyValueConstraintRange::Create();
+            FdoPropertyValueConstraintRange* rangeConstr = static_cast<FdoPropertyValueConstraintRange*>(constr.p);
+            FdoPtr<FdoDataValue> valueMin = SltMetadata::GenerateConstraintValue(dt, operation.values.at(0).c_str());
+            FdoPtr<FdoDataValue> valueMax = SltMetadata::GenerateConstraintValue(dt, operation.values.at(1).c_str());
+            if (valueMin != NULL)
+            {
+                rangeConstr->SetMinValue(valueMin);
+                rangeConstr->SetMinInclusive(true);
+            }
+            if (valueMax != NULL)
+            {
+                rangeConstr->SetMaxValue(valueMax);
+                rangeConstr->SetMaxInclusive(true);
+            }
+        }
+        break;
+    case TK_IN:
+        if (operation.values.size() != 0)
+        {
+            if (constr == NULL || constr->GetConstraintType() != FdoPropertyValueConstraintType_List)
+                constr = FdoPropertyValueConstraintList::Create();
+            FdoPropertyValueConstraintList* listConstr = static_cast<FdoPropertyValueConstraintList*>(constr.p);
+            FdoPtr<FdoDataValueCollection> valColl = listConstr->GetConstraintList();
+            for (size_t idx = 0; idx < operation.values.size(); idx++)
+            {
+                FdoPtr<FdoDataValue> value = SltMetadata::GenerateConstraintValue(dt, operation.values.at(idx).c_str());
+                if (value != NULL)
+                    valColl->Add(value);
+            }
+            // in case we failed to have a list ignore the constraint
+            if (valColl->GetCount() == 0)
+                constr = NULL;
+        }
+        break;
+    case TK_EQ: // =
+        if (operation.values.size() == 1)
+        {
+            if (constr == NULL || constr->GetConstraintType() != FdoPropertyValueConstraintType_Range)
+                constr = FdoPropertyValueConstraintRange::Create();
+            FdoPropertyValueConstraintRange* rangeConstr = static_cast<FdoPropertyValueConstraintRange*>(constr.p);
+            FdoPtr<FdoDataValue> value = SltMetadata::GenerateConstraintValue(dt, operation.values.at(0).c_str());
+            if (value != NULL)
+            {
+                // we simulate "=" as an operation ">= & <="
+                rangeConstr->SetMaxValue(value);
+                rangeConstr->SetMaxInclusive(true);
+                rangeConstr->SetMinValue(value);
+                rangeConstr->SetMinInclusive(true);
+            }
+        }
+        break;
+    case TK_GE: // >=
+    case TK_GT: // >
+        if (operation.values.size() == 1)
+        {
+            if (constr == NULL || constr->GetConstraintType() != FdoPropertyValueConstraintType_Range)
+                constr = FdoPropertyValueConstraintRange::Create();
+            FdoPropertyValueConstraintRange* rangeConstr = static_cast<FdoPropertyValueConstraintRange*>(constr.p);
+            FdoPtr<FdoDataValue> value = SltMetadata::GenerateConstraintValue(dt, operation.values.at(0).c_str());
+            if (value != NULL)
+            {
+                rangeConstr->SetMinValue(value);
+                rangeConstr->SetMinInclusive(operation.op == TK_GE);
+            }
+        }
+        break;
+    case TK_LE: // <=
+    case TK_LT: // <
+        if (operation.values.size() == 1)
+        {
+            if (constr == NULL || constr->GetConstraintType() != FdoPropertyValueConstraintType_Range)
+                constr = FdoPropertyValueConstraintRange::Create();
+            FdoPropertyValueConstraintRange* rangeConstr = static_cast<FdoPropertyValueConstraintRange*>(constr.p);
+            FdoPtr<FdoDataValue> value = SltMetadata::GenerateConstraintValue(dt, operation.values.at(0).c_str());
+            if (value != NULL)
+            {
+                rangeConstr->SetMaxValue(value);
+                rangeConstr->SetMaxInclusive(operation.op == TK_LE);
+            }
+        }
+        break;
+    }
+    if (constr != NULL)
+        prop->SetValueConstraint(constr);
+}
+
+// we can support only some kind of operators in Constraints
+bool SltMetadata::ExtractConstraints(Expr* node, std::vector<SQLiteExpression>& result)
+{
+    bool valid = true;
+    switch(node->op)
+    {
+    case TK_AND:
+        if(node->pLeft != NULL)
+            valid = ExtractConstraints(node->pLeft, result);
+        if(valid && node->pRight != NULL)
+            valid = ExtractConstraints(node->pRight, result);
+        break;
+    case TK_BETWEEN:
+    case TK_IN:
+        result.push_back(SQLiteExpression(node->op));
+        if (node->pList != 0 && node->pList->nExpr != 0)
+        {
+            for(int idx = 0; idx < node->pList->nExpr && valid; idx++)
+            {
+                valid = ExtractConstraints(node->pList->a[idx].pExpr, result);
+            }
+        }
+        if(node->pLeft != NULL)
+            valid = ExtractConstraints(node->pLeft, result);
+        if(valid && node->pRight != NULL)
+            valid = ExtractConstraints(node->pRight, result);
+        break;
+    case TK_EQ: // =
+    case TK_GT: // >
+    case TK_LE: // <=
+    case TK_LT: // <
+    case TK_GE: // >=
+        result.push_back(SQLiteExpression(node->op));
+        if(node->pLeft != NULL)
+            valid = ExtractConstraints(node->pLeft, result);
+        if(valid && node->pRight != NULL)
+            valid = ExtractConstraints(node->pRight, result);
+        break;
+    case TK_STRING:
+    case TK_INTEGER:
+    case TK_FLOAT:
+        if(node->token.n != 0)
+        {
+            StringBuffer sb;
+            sb.Append((const char*)node->token.z, node->token.n);
+            result.back().values.push_back(A2W_SLOW(sb.Data()));
+        }
+        break;
+    case TK_COLUMN:
+        if(node->token.n != 0)
+        {
+            StringBuffer sb;
+            const char* pName = (const char*)node->token.z;
+            if (*pName == '\"')
+                sb.Append(pName + 1, node->token.n - 2);
+            else
+                sb.Append(pName, node->token.n);
+            result.back().name = A2W_SLOW(sb.Data());
+        }
+        break;
+    default:
+        valid = false;
+        break;
+    }
+    return valid;
+}
 
 //Given an SRID of a spatial_ref_sys record, returns
 //its sr_name (if it exists) or a string representation of the SRID.
