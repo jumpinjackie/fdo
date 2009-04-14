@@ -502,6 +502,17 @@ bool SltMetadata::ExtractConstraints(Expr* node, std::vector<SQLiteExpression>& 
             valid = ExtractConstraints(node->pRight, result);
         break;
     case TK_STRING:
+        if(node->token.n != 0)
+        {
+            StringBuffer sb;
+            const char* pValue = (const char*)node->token.z;
+            if (*pValue == '\'' && *(pValue + node->token.n - 1) == '\'')
+                sb.Append(pValue + 1, node->token.n - 2);
+            else
+                sb.Append(pValue, node->token.n);
+            result.back().values.push_back(A2W_SLOW(sb.Data()));
+        }
+        break;
     case TK_INTEGER:
     case TK_FLOAT:
         if(node->token.n != 0)
