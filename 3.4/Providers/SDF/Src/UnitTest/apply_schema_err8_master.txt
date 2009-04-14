@@ -1,0 +1,1 @@
+ Cannot delete a property 'Acad:Conductor.Conductivity'; its class has objects 

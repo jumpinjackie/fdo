@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<SchemaMapping provider="OSGeo.Gdal.3.4" name="photos" xmlns="http://fdogrfp.osgeo.org/schemas">
+	<complexType name="PhotoType">
+		<RasterDefinition name="photos">
+			<Location name="../../TestData/area1">
+				<Feature name="photo1_1">
+					<Band name="RGB" number="1">
+						<Image name="photo1_1.JPG" frame="1">
+							<Georeference>
+								<InsertionPointX>200000.000000</InsertionPointX>
+								<InsertionPointY>1000000.000000</InsertionPointY>
+								<ResolutionX>1.000000</ResolutionX>
+								<ResolutionY>1.000000</ResolutionY>
+								<RotationX>0.000000</RotationX>
+								<RotationY>0.000000</RotationY>
+							</Georeference>
+						</Image>
+					</Band>
+				</Feature>
+				<Feature name="photo1_2">
+					<Band name="RGB" number="1">
+						<Image name="photo1_2.JPG" frame="1">
+							<Georeference>
+								<InsertionPointX>200000.000000</InsertionPointX>
+								<InsertionPointY>1000600.000000</InsertionPointY>
+								<ResolutionX>1.000000</ResolutionX>
+								<ResolutionY>1.000000</ResolutionY>
+								<RotationX>0.000000</RotationX>
+								<RotationY>0.000000</RotationY>
+							</Georeference>
+						</Image>
+					</Band>
+				</Feature>
+			</Location>
+			<Location name="d:/photos/area2"/>
+		</RasterDefinition>
+	</complexType>
+</SchemaMapping>
+

@@ -1,0 +1,197 @@
+@echo off
+
+rem 
+rem Copyright (C) 2004-2006  Autodesk, Inc.
+rem 
+rem This library is free software; you can redistribute it and/or
+rem modify it under the terms of version 2.1 of the GNU Lesser
+rem General Public License as published by the Free Software Foundation.
+rem 
+rem This library is distributed in the hope that it will be useful,
+rem but WITHOUT ANY WARRANTY; without even the implied warranty of
+rem MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+rem Lesser General Public License for more details.
+rem 
+rem You should have received a copy of the GNU Lesser General Public
+rem License along with this library; if not, write to the Free Software
+rem Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+rem 
+
+SET TYPEACTIONWMS=build
+SET MSACTIONWMS=Build
+SET TYPEBUILDWMS=release
+SET TYPEBUILDWMSPATH=rel
+SET FDOORGPATHWMS=%cd%
+SET FDOINSPATHWMS=%cd%\Fdo
+SET FDOBINPATHWMS=%cd%\Fdo\Bin
+SET FDOINCPATHWMS=%cd%\Fdo\Inc
+SET FDOLIBPATHWMS=%cd%\Fdo\Lib
+SET FDODOCPATHWMS=%cd%\Fdo\Docs
+SET DOCENABLEWMS=skip
+SET FDOERROR=0
+
+:study_params
+if (%1)==() goto start_build
+
+if "%1"=="-help"    goto help_show
+if "%1"=="-h"       goto help_show
+
+if "%1"=="-o"       goto get_path
+if "%1"=="-outpath" goto get_path
+
+if "%1"=="-c"       goto get_conf
+if "%1"=="-config"  goto get_conf
+
+if "%1"=="-a"       goto get_action
+if "%1"=="-action"  goto get_action
+
+if "%1"=="-d"       goto get_docs
+if "%1"=="-docs"    goto get_docs
+
+goto custom_error
+
+:get_docs
+SET DOCENABLEWMS=%2
+if "%2"=="build" goto next_param
+if "%2"=="skip" goto next_param
+goto custom_error
+
+:get_conf 
+SET TYPEBUILDWMS=%2
+if "%2"=="release" goto next_param
+if "%2"=="debug" SET TYPEBUILDWMSPATH=dbg
+if "%2"=="debug" goto next_param
+goto custom_error
+
+:get_action
+SET TYPEACTIONWMS=%2
+if "%2"=="install" goto next_param
+if "%2"=="build" goto next_param
+if "%2"=="buildinstall" goto next_param
+if "%2"=="clean" goto next_param
+goto custom_error 
+
+:get_path
+if (%2)==() goto custom_error
+SET FDOORGPATHWMS=%~2
+SET FDOINSPATHWMS=%~2\Fdo
+SET FDOBINPATHWMS=%~2\Fdo\Bin
+SET FDOINCPATHWMS=%~2\Fdo\Inc
+SET FDOLIBPATHWMS=%~2\Fdo\Lib
+SET FDODOCPATHWMS=%~2\Fdo\Docs
+
+:next_param
+shift
+shift
+goto study_params
+
+:start_build
+SET FDOACTENVSTUDY="FDO"
+if ("%FDO%")==("") goto env_error
+if not exist "%FDO%" goto env_path_error
+SET FDOACTENVSTUDY="FDOTHIRDPARTY"
+if ("%FDOTHIRDPARTY%")==("") goto env_error
+if not exist "%FDOTHIRDPARTY%" goto env_path_error
+SET FDOACTENVSTUDY="FDOUTILITIES"
+if ("%FDOUTILITIES%")==("") goto env_error
+if not exist "%FDOUTILITIES%" goto env_path_error
+
+if "%TYPEACTIONWMS%"=="build" goto start_exbuild
+if "%TYPEACTIONWMS%"=="clean" goto start_exbuild
+if not exist "%FDOINSPATHWMS%" mkdir "%FDOINSPATHWMS%"
+if not exist "%FDOBINPATHWMS%" mkdir "%FDOBINPATHWMS%"
+if not exist "%FDOINCPATHWMS%" mkdir "%FDOINCPATHWMS%"
+if not exist "%FDOLIBPATHWMS%" mkdir "%FDOLIBPATHWMS%"
+if not exist "%FDODOCPATHWMS%" mkdir "%FDODOCPATHWMS%"
+
+:start_exbuild
+if "%TYPEACTIONWMS%"=="clean" SET MSACTIONWMS=Clean
+if "%TYPEACTIONWMS%"=="install" goto install_files_wms
+
+echo %MSACTIONWMS% %TYPEBUILDWMS% WMS provider dlls
+SET FDOACTIVEBUILD=%cd%\Src\WMSOS
+cscript //Nologo //job:prepare preparebuilds.wsf
+pushd Src
+msbuild WMSOS_temp.sln /t:%MSACTIONWMS% /p:Configuration=%TYPEBUILDWMS% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+SET FDOERROR=%errorlevel%
+if exist WMSOS_temp.sln del /Q /F WMSOS_temp.sln
+popd
+if "%FDOERROR%"=="1" goto error
+if "%TYPEACTIONWMS%"=="clean" goto end
+if "%TYPEACTIONWMS%"=="build" goto generate_docs
+
+:install_files_wms
+echo copy %TYPEBUILDWMS% WMS provider output files
+copy /y "%FDOUTILITIES%\OWS\Bin\Win32\%TYPEBUILDWMS%\OWS.dll" "%FDOBINPATHWMS%"
+copy /y "Bin\Win32\%TYPEBUILDWMS%\WmsMessage.dll" "%FDOBINPATHWMS%"
+copy /y "Bin\Win32\%TYPEBUILDWMS%\WmsOverrides.dll" "%FDOBINPATHWMS%"
+copy /y "Bin\Win32\%TYPEBUILDWMS%\WmsProvider.dll" "%FDOBINPATHWMS%"
+copy /y "Managed\Bin\%TYPEBUILDWMS%\OSGeo.FDO.Providers.WMS.Overrides.dll" "%FDOBINPATHWMS%"
+copy /y "Lib\Win32\%TYPEBUILDWMS%\WMSOverrides.lib" "%FDOLIBPATHWMS%"
+
+echo copy header files
+xcopy /S /C /Q /R /Y Inc\WMS\*.h "%FDOINCPATHWMS%\WMS\"
+
+:generate_docs
+if "%DOCENABLEWMS%"=="skip" goto install_docs
+echo Creating WMS provider html and chm documentation
+if exist "Docs\HTML\WMS" rmdir /S /Q "Docs\HTML\WMS"
+if not exist "Docs\HTML\WMS" mkdir "Docs\HTML\WMS"
+copy ..\..\DocResources\geospatial.js Docs\HTML\WMS
+copy ..\..\DocResources\osgeo.css Docs\HTML\WMS
+if exist "Docs\HTML\WMS_managed" rmdir /S /Q "Docs\HTML\WMS_managed"
+if not exist "Docs\HTML\WMS_managed" mkdir "Docs\HTML\WMS_managed"
+copy ..\..\DocResources\geospatial.js Docs\HTML\WMS_managed
+copy ..\..\DocResources\osgeo.css Docs\HTML\WMS_managed
+if exist Docs\WMS_Provider_API.chm attrib -r Docs\WMS_Provider_API.chm
+pushd Docs\doc_src
+doxygen Doxyfile_WMS_managed
+doxygen Doxyfile_WMS
+popd
+
+:install_docs
+if "%TYPEACTIONWMS%"=="build" goto end
+if exist "%FDODOCPATHWMS%\HTML\Providers\WMS" rmdir /S /Q "%FDODOCPATHWMS%\HTML\Providers\WMS"
+if exist Docs\HTML\WMS xcopy/CQEYI Docs\HTML\WMS\* "%FDODOCPATHWMS%\HTML\Providers\WMS"
+if exist "Docs\WMS_Provider_API.chm" copy /y "Docs\WMS_Provider_API.chm" "%FDODOCPATHWMS%"
+if exist "%FDODOCPATHWMS%\HTML\Providers\WMS_managed" rmdir /S /Q "%FDODOCPATHWMS%\HTML\Providers\WMS_managed"
+if exist Docs\HTML\WMS_managed xcopy/CQEYI Docs\HTML\WMS_managed\* "%FDODOCPATHWMS%\HTML\Providers\WMS_managed"
+if exist "Docs\WMS_Provider_API_managed.chm" copy /y "Docs\WMS_Provider_API_managed.chm" "%FDODOCPATHWMS%"
+
+:end
+echo End WMS %MSACTIONWMS%
+exit /B 0
+
+:env_error
+echo Environment variable undefined: %FDOACTENVSTUDY%
+SET FDOERROR=1
+exit /B 1
+
+:env_path_error
+echo Invalid path contained in FDO environment variable: %FDOACTENVSTUDY%
+SET FDOERROR=1
+exit /B 1
+
+:env_path_error_ex
+echo Unable to find location of %FDOACTENVSTUDY% in the Windows System PATH
+SET FDOERROR=1
+exit /B 1
+
+:error
+echo There was a build error executing action: %MSACTIONWMS%
+exit /B 1
+
+:custom_error
+echo The command is not recognized.
+echo Please use the format:
+:help_show
+echo **************************************************************************
+echo build.bat [-h] [-o=OutFolder] [-c=BuildType] [-a=Action] [-d=BuildDocs]
+echo *
+echo Help:           -h[elp]
+echo OutFolder:      -o[utpath]=destination folder for binaries
+echo BuildType:      -c[onfig]=release(default), debug
+echo Action:         -a[ction]=build(default), buildinstall, install, clean
+echo BuildDocs:      -d[ocs]=skip(default), build
+echo **************************************************************************
+exit /B 0

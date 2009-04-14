@@ -1,0 +1,1 @@
+provider=SQLServerSpatial;service=otworestxp;password=test;clean=false;
