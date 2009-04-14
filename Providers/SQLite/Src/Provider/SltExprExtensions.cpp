@@ -109,6 +109,28 @@ static void numFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
         break;
     case 5: val = val > 0 ? 1 : (val < 0 ? -1 : 0); //sign function
         break;
+    case 6: 
+        {
+            resIsDouble = true;
+            if (val != 0.0)
+            {
+                double divisor = 0.0;
+                if (argc == 2)
+                    divisor = sqlite3_value_double(argv[1]);
+                if (divisor == 0.0)
+                {
+                    // should we throw an exception!?
+                    sqlite3_result_null(context);
+                    return;
+                }
+                FdoInt64 int_val = (FdoInt64)(fabs(val) / fabs(divisor));
+                if (val < 0.0)
+                    val = -1.0 * (fabs(val) - (fabs(divisor) * int_val));
+                else
+                    val = (fabs(val) - (fabs(divisor) * int_val));
+            }
+        }
+        break;
     }
 
     if (resIsDouble)
@@ -559,7 +581,7 @@ void RegisterExtensions (sqlite3* db)
         { "ln",                 1,  8, SQLITE_UTF8,    0, mathFunc },
         { "log",                1,  9, SQLITE_UTF8,    0, mathFunc },
         { "exp",                1, 10, SQLITE_UTF8,    0, mathFunc },
-        { "pow",                2, 11, SQLITE_UTF8,    0, mathFunc },
+        { "power",              2, 11, SQLITE_UTF8,    0, mathFunc },
         { "atan2",              2, 12, SQLITE_UTF8,    0, mathFunc },
 
         { "mod",                2, 1,  SQLITE_UTF8,    0, numFunc },
@@ -568,6 +590,7 @@ void RegisterExtensions (sqlite3* db)
         { "trunc",              1, 4,  SQLITE_UTF8,    0, numFunc },
         { "trunc",              2, 4,  SQLITE_UTF8,    0, numFunc },
         { "sign",               2, 5,  SQLITE_UTF8,    0, numFunc },
+        { "remainder",          2, 6,  SQLITE_UTF8,    0, numFunc },
 
         { "concat",             2, 1,  SQLITE_UTF8,    0, strFunc },
 
@@ -609,7 +632,7 @@ void RegisterExtensions (sqlite3* db)
     } aAggs[] = 
     {
         { "variance",    1, 0, 0, varStep,      varFinalize    },
-        { "stdev",       1, 0, 0, varStep,      stdevFinalize  },
+        { "stddev",      1, 0, 0, varStep,      stdevFinalize  },
         { "median",      1, 0, 0, medStep,      medFinalize    },
     };
     
