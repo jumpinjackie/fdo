@@ -67,10 +67,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib FdoSpatial.lib ProvidersCommon.lib"
+				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib FdoSpatial.lib ProvidersCommon.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\SQLiteProvider.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\..\Fdo\Unmanaged\Lib\win32\debug;..\..\..\..\Utilities\Common\lib\win32\debug"
+				AdditionalLibraryDirectories="..\..\..\..\Fdo\Unmanaged\Lib\win32\debug;..\..\..\..\Utilities\Common\lib\win32\debug;..\..\..\..\Utilities\ExpressionEngine\lib\win32\debug"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
@@ -146,10 +146,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib FdoSpatial.lib ProvidersCommon.lib"
+				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib FdoSpatial.lib ProvidersCommon.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\SQLiteProvider.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\..\Fdo\Unmanaged\Lib\win32\debug;..\..\..\..\Utilities\Common\lib\win32\debug"
+				AdditionalLibraryDirectories="..\..\..\..\Fdo\Unmanaged\Lib\x64\debug;..\..\..\..\Utilities\Common\lib\x64\debug;..\..\..\..\Utilities\ExpressionEngine\lib\x64\debug"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
@@ -230,10 +230,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib FdoSpatial.lib ProvidersCommon.lib"
+				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib FdoSpatial.lib ProvidersCommon.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\SQLiteProvider.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\..\Fdo\Unmanaged\lib\win32\release;..\..\..\..\Utilities\Common\lib\win32\release"
+				AdditionalLibraryDirectories="..\..\..\..\Fdo\Unmanaged\lib\win32\release;..\..\..\..\Utilities\Common\lib\win32\release;..\..\..\..\Utilities\ExpressionEngine\lib\win32\release"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -317,10 +317,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib FdoSpatial.lib ProvidersCommon.lib"
+				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib FdoSpatial.lib ProvidersCommon.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\SQLiteProvider.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\..\Fdo\Unmanaged\lib\win32\release;..\..\..\..\Utilities\Common\lib\win32\release"
+				AdditionalLibraryDirectories="..\..\..\..\Fdo\Unmanaged\lib\x64\release;..\..\..\..\Utilities\Common\lib\x64\release;..\..\..\..\Utilities\ExpressionEngine\lib\x64\release"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
