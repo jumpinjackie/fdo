@@ -1247,26 +1247,6 @@ bool SltConnection::IsClassEqual(FdoClassDefinition* fc1, FdoClassDefinition* fc
     }
     return true;
 }
-bool SltConnection::IsTableEmpty(FdoString* name)
-{
-
-    StringBuffer sb;
-    sb.Append("SELECT COUNT(*) FROM ");
-    sb.AppendDQuoted(name);
-    sb.Append(";", 1);
-
-    sqlite3_stmt* pstmt = NULL;
-    const char* pzTail = NULL;
-    if (sqlite3_prepare_v2(m_dbRead, sb.Data(), -1, &pstmt, &pzTail) == SQLITE_OK)
-    {
-        if (sqlite3_step(pstmt) == SQLITE_ROW)
-        {
-            return ((FdoInt64)sqlite3_column_int64(pstmt, 0) == 0);
-        }
-    }
-    // in case failed avoid providing false information
-    return false;
-}
 
 void SltConnection::ApplySchema(FdoFeatureSchema* schema)
 {
@@ -1285,26 +1265,30 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema)
     {
         FdoPtr<FdoClassDefinition> fc = inclasses->GetItem(i);
         FdoPtr<FdoClassDefinition> myfc = myclasses->FindItem(fc->GetName());
+
+        std::string fcname = W2A_SLOW(fc->GetName());
+
         if (myfc != NULL)
         {
             if (IsClassEqual(myfc, fc))
                 continue; //class unchanged ... Skip it.
 
-            if (IsTableEmpty(fc->GetName()))
+            if (GetFeatureCount(fcname.c_str()) == 0) //Is table empty?
             {
                 sb.Reset();
-                sb.Append("DROP TABLE \"");
-                sb.Append(fc->GetName());
-                sb.Append("\";");
+                sb.Append("DROP TABLE ");
+                sb.AppendDQuoted(fcname.c_str());
+                sb.Append(";");
                 rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL);
             }
             else // TODO we sould use ALTER TABLE, however for short time we can live with this
                 continue;
         }
+
         sb.Reset();
-        sb.Append("CREATE TABLE \"");
-        sb.Append(fc->GetName());
-        sb.Append("\" (");
+        sb.Append("CREATE TABLE ");
+        sb.AppendDQuoted(fcname.c_str());
+        sb.Append(" (");
 
         CollectBaseClassProperties(myclasses, fc, fc, sb, 1);
         CollectBaseClassProperties(myclasses, fc, fc, sb, 2);
@@ -1709,11 +1693,15 @@ int SltConnection::GetFeatureCount(const char* table)
     sb.Append(table);
     sb.Append("\";");
 
-    int rc = sqlite3_prepare_v2(m_dbRead, sb.Data(), -1, &stmt, &tail);
-    rc = sqlite3_step(stmt);
-    int count = sqlite3_column_int(stmt, 0);
-    sqlite3_finalize(stmt);
-    return count;
+    if (sqlite3_prepare_v2(m_dbRead, sb.Data(), -1, &stmt, &tail) == SQLITE_OK)
+    {
+        int rc = sqlite3_step(stmt);
+        int count = sqlite3_column_int(stmt, 0);
+        sqlite3_finalize(stmt);
+        return count;
+    }
+
+    return -1;
 }
 
 sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql)

@@ -205,7 +205,6 @@ private :
     void AddDataCol(FdoDataPropertyDefinition* dpd, const wchar_t* fcname);
     bool IsClassEqual(FdoClassDefinition* fc1, FdoClassDefinition* fc2);
     bool IsPropertyEqual(FdoPropertyDefinition* prop1, FdoPropertyDefinition* prop2);
-    bool IsTableEmpty(FdoString* name);
 
     int FindSpatialContext(const wchar_t* name);
     int GetDefaultSpatialContext();
