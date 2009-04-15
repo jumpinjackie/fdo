@@ -201,6 +201,9 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
 		for (int i=0; i<nProps; i++)
 		{
 			FdoPtr<FdoIdentifier> id = props->GetItem(i);
+            //TODO: dynamic_cast is generally slow -- it's possible to optimize this by using an FdoIExpressionProcessor
+            //implementing ProcessIdentifier and ProcessComputedIdentifier to determine what type of identifier we 
+            //are working with.
             FdoComputedIdentifier* compId = dynamic_cast<FdoComputedIdentifier*>(id.p);
             if (compId != NULL)
             {
