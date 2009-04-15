@@ -354,37 +354,81 @@ FdoWmsBandRasterGdalCollection* FdoWmsRasterGdal::_getRasterBands(void)
 	    bool hasRGBA = false;
 	    FdoPtr<FdoWmsImage> rgbaImage;
 	    std::vector<GDALRasterBand*> rgbaBands;
-	    for (i=0; i<_getDataset()->GetRasterCount(); i++)
-	    {
-		    GDALRasterBand* rasterBand = _getDataset()->GetRasterBand(i+1);
-		    switch (rasterBand->GetColorInterpretation())
-		    {
-		    case GCI_RedBand:
-		    case GCI_GreenBand:
-		    case GCI_BlueBand:
-		    case GCI_AlphaBand:
-			    {
-				    if (rasterBand->GetRasterDataType() != GDT_Byte)
-					    throw FdoCommandException::Create(NlsMsgGet(FDOWMS_11002_DATAMODEL_NOT_SUPPORTED, "Raster data model not supported."));
+        int bandCount = _getDataset()->GetRasterCount();
+        bool isGrayAlpha = false;
+        if(bandCount == 2)
+        {
+            GDALRasterBand* rasterBand1 = _getDataset()->GetRasterBand(1);
+            GDALColorInterp colorInterp1 = rasterBand1->GetColorInterpretation();
+            GDALRasterBand* rasterBand2 = _getDataset()->GetRasterBand(2);
+            GDALColorInterp colorInterp2 = rasterBand2->GetColorInterpretation();
+            GDALRasterBand* alphaBand;
+            GDALRasterBand* grayBand;
+            if(colorInterp1 == GCI_GrayIndex && colorInterp2 == GCI_AlphaBand)
+            {
+                isGrayAlpha = true;
+                grayBand = rasterBand1;
+                alphaBand = rasterBand2;
+            }
+            else if(colorInterp1 == GCI_AlphaBand && colorInterp2 == GCI_GrayIndex)
+            {
+                isGrayAlpha = true;
+                alphaBand = rasterBand1;
+                grayBand = rasterBand2;
+            }
+            if(isGrayAlpha)
+            {
+                if (alphaBand->GetRasterDataType() != GDT_Byte)
+                    throw FdoCommandException::Create(NlsMsgGet(FDOWMS_11002_DATAMODEL_NOT_SUPPORTED, "Raster data model not supported."));
 
-				    if (hasRGBA == false) // first time to meet a R G B or A band, create the FdoWmsImage
-					    hasRGBA = true;
-    				
-				    rgbaBands.push_back(rasterBand);
-			    }
-			    break;
-		    case GCI_Undefined:
-		    case GCI_PaletteIndex:
-		    case GCI_GrayIndex:	
-			    {
-				    std::vector<GDALRasterBand*> bands;
-				    bands.push_back(rasterBand);
-				    FdoPtr<FdoWmsImage> bandImage = FdoWmsImage::Create(bands);
-				    images->Add(bandImage);
-			    }
-			    break;
-		    }
-	    }
+                if (grayBand->GetRasterDataType() != GDT_Byte)
+                    throw FdoCommandException::Create(NlsMsgGet(FDOWMS_11002_DATAMODEL_NOT_SUPPORTED, "Raster data model not supported."));
+                
+                hasRGBA = true;                
+
+                //Make GrayIndex band as Red, Green and Blue band, then this fake RGBA raster can be recognized.
+                for(int i = 0; i < 3; i ++)
+                {
+                    rgbaBands.push_back(grayBand);
+                }
+
+                rgbaBands.push_back(alphaBand);
+            }
+        }
+        if(!isGrayAlpha)
+        {
+            for (i=0; i<_getDataset()->GetRasterCount(); i++)
+            {
+                GDALRasterBand* rasterBand = _getDataset()->GetRasterBand(i+1);
+                switch (rasterBand->GetColorInterpretation())
+                {
+                case GCI_RedBand:
+                case GCI_GreenBand:
+                case GCI_BlueBand:
+                case GCI_AlphaBand:
+                    {
+                        if (rasterBand->GetRasterDataType() != GDT_Byte)
+                            throw FdoCommandException::Create(NlsMsgGet(FDOWMS_11002_DATAMODEL_NOT_SUPPORTED, "Raster data model not supported."));
+
+                        if (hasRGBA == false) // first time to meet a R G B or A band, create the FdoWmsImage
+                            hasRGBA = true;
+
+                        rgbaBands.push_back(rasterBand);
+                    }
+                    break;
+                case GCI_Undefined:
+                case GCI_PaletteIndex:
+                case GCI_GrayIndex:	
+                    {
+                        std::vector<GDALRasterBand*> bands;
+                        bands.push_back(rasterBand);
+                        FdoPtr<FdoWmsImage> bandImage = FdoWmsImage::Create(bands);
+                        images->Add(bandImage);
+                    }
+                    break;
+                }
+            }
+        }
 
 	    if (hasRGBA) // first time to meet a R G B or A band, create the FdoWmsImage
 	    {
