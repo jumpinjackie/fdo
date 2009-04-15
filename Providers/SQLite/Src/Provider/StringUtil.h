@@ -22,7 +22,7 @@
 #include "SltConversionUtils.h"
 
 //Maintains a list of strings, using minimal number of memory allocations.
-//Used to build up list of column names for SQL queries
+//Used to build up SQL query strings.
 class StringList
 {
 public:
@@ -159,7 +159,7 @@ public:
         Append(mbs, mbslen);
     }
 
-    //Appends the strin representation of the given integer
+    //Appends the string representation of the given integer
     //to the buffer
     void Append(int value)
     {
@@ -176,44 +176,38 @@ public:
 
     void AppendSQuoted(const char* str)
     {
-        Append("'");
+        Append("'", 1);
         Append(str);
-        Append("'");
+        Append("'", 1);
     }
 
     void AppendSQuotedHandleNull(const wchar_t* str)
     {
-        if (str != NULL)
-        {
-            Append("'");
-            Append(str);
-            Append("'");
-        }
+        if (str)
+            AppendSQuoted(str);
         else
-        {
             Append("null");
-        }
     }
 
     void AppendSQuoted(const wchar_t* str)
     {
-        Append("'");
+        Append("'", 1);
         Append(str);
-        Append("'");
+        Append("'", 1);
     }
 
     void AppendDQuoted(const char* str)
     {
-        Append("\"");
+        Append("\"", 1);
         Append(str);
-        Append("\"");
+        Append("\"", 1);
     }
 
     void AppendDQuoted(const wchar_t* str)
     {
-        Append("\"");
+        Append("\"", 1);
         Append(str);
-        Append("\"");
+        Append("\"", 1);
     }
 
     inline char* Data()
