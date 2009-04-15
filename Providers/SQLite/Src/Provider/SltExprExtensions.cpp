@@ -114,20 +114,8 @@ static void numFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
             resIsDouble = true;
             if (val != 0.0)
             {
-                double divisor = 0.0;
-                if (argc == 2)
-                    divisor = sqlite3_value_double(argv[1]);
-                if (divisor == 0.0)
-                {
-                    // should we throw an exception!?
-                    sqlite3_result_null(context);
-                    return;
-                }
-                FdoInt64 int_val = (FdoInt64)(fabs(val) / fabs(divisor));
-                if (val < 0.0)
-                    val = -1.0 * (fabs(val) - (fabs(divisor) * int_val));
-                else
-                    val = (fabs(val) - (fabs(divisor) * int_val));
+                double divisor = (argc != 2) ? 0.0 : sqlite3_value_double(argv[1]);
+                val = fmod(val, divisor);
             }
         }
         break;
