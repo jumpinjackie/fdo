@@ -232,6 +232,106 @@ int odbcdr_execute(						/* execute an SQL statement		  */
 		if (num_cols > 0) { // if the statement was a select
 			*rows_processed	= 0;
 		}
+        else {
+            if ( c->is_insert ) 
+            {
+                // for inserts, odbcdr_sql tacks on a statement to select the
+                // autoincremented value, which is generated if any column
+                // is autoincremented. For SQL Server there is a maximum of 1
+                // autoincremented column per table. 
+                for ( int i = 0; i < 2; i++ ) 
+                {
+                    // Close the insert statement's result set and move on to
+                    // the select's result set. TODO: find how why this sometimes
+                    // has to be done twice. 
+                    rc = SQLMoreResults( c->hStmt );
+
+                    // SQL_NO_DATA means there are no more results. This happens
+                    // when the insertion table has no autoincrement column.
+                    if ( (rc == SQL_NO_DATA) ) 
+                        break;
+
+                    if ( (rc != SQL_SUCCESS) && (rc != SQL_SUCCESS_WITH_INFO) ) {
+		                rdbi_status = rc;
+		                goto the_exit;
+	                }
+
+                    // Check if the current results set has the column holding
+                    // the autoincremented value. If it does then move on to 
+                    // fetching it.
+                    SQLSMALLINT         cbColumnName = 0;
+
+            		SQLNumResultCols(c->hStmt, (SQLSMALLINT*) &num_cols);
+                    if ( num_cols == 1 ) 
+                    {
+                        if (context->odbcdr_UseUnicode)
+                        {
+                            wchar_t ident_col_name[ODBCDR_MAX_BUFF_SIZE + 1];
+                            ident_col_name[0] = '\0';
+                            ODBCDR_ODBC_ERR( SQLColAttributeW(
+                                c->hStmt,
+                                (SQLUSMALLINT) 1,
+                                (SQLUSMALLINT) SQL_DESC_NAME, 
+                                ident_col_name,
+                                ODBCDR_MAX_BUFF_SIZE,
+                                &cbColumnName, 
+                                NULL  ),
+                                SQL_HANDLE_STMT, c->hStmt, "SQLColAttribute", "Getting column name" );
+                       
+                            if ( wcscmp(ident_col_name,L"fdo_ident24356") == 0 )
+                                break;
+                        }
+                        else
+                        {
+                            char ident_col_name[ODBCDR_MAX_BUFF_SIZE + 1];
+                            ident_col_name[0] = '\0';
+                            ODBCDR_ODBC_ERR( SQLColAttribute(
+                                c->hStmt,
+                                (SQLUSMALLINT) 1,
+                                (SQLUSMALLINT) SQL_DESC_NAME, 
+                                ident_col_name,
+                                ODBCDR_MAX_BUFF_SIZE,
+                                &cbColumnName, 
+                                NULL  ),
+                                SQL_HANDLE_STMT, c->hStmt, "SQLColAttribute", "Getting column name" );
+
+                            if ( strcmp(ident_col_name,"fdo_ident24356") == 0 )
+                                break;
+                        }
+                    }
+                }
+
+                if ( rc == SQL_NO_DATA ) 
+                {
+                    // no autoincremented value
+                    context->odbcdr_last_autoincrement = 0;
+                }
+                else
+                {
+                    // Fetch the autoincremented value.
+                    ODBCDR_ODBC_ERR( SQLFetch(c->hStmt),
+                               SQL_HANDLE_STMT, c->hStmt,
+                                "SQLFetch", "fetch");
+
+                    SQLINTEGER null_ind;
+                    ODBCDR_ODBC_ERR( SQLGetData( c->hStmt, 1, SQL_C_LONG, (SQLPOINTER) &(context->odbcdr_last_autoincrement), 0, &null_ind),
+                               SQL_HANDLE_STMT, c->hStmt,
+                                "SQLGetData", "getData");
+
+                    if ( null_ind == SQL_NULL_DATA ) 
+                        // convert null value to 0.
+                        context->odbcdr_last_autoincrement = 0;
+
+                    // Finish this results set. Works around a problem where
+                    // an infinite loop occurs when this statement is next executed.
+                    rc = SQLMoreResults( c->hStmt );
+                    if ( (rc != SQL_SUCCESS) && (rc != SQL_SUCCESS_WITH_INFO) && (rc != SQL_NO_DATA) ) {
+	                    rdbi_status = rc;
+	                    goto the_exit;
+                    }
+                }
+            }
+        }
 	}
 
 	if (offset > 0) {
