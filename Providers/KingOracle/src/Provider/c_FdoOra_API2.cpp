@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2009  SL-King d.o.o
+* Copyright (C) 2006  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -14,7 +14,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "c_OCI_API.h"
 //#include "c_Ora_API2.h"
 #include "KingOracle/FdoKgOraOverrides.h"
@@ -24,6 +24,7 @@
 #include "c_FdoOra_API2.h"
 #include "c_Ora_API2.h"
 #include "KgOraProvider.h"
+
 
 c_FdoOra_API2::c_FdoOra_API2(void)
 {
@@ -234,7 +235,7 @@ bool c_FdoOra_API2::SetOracleStatementData(c_Oci_Statement*  Statement,int SqlPa
         val.OCIDateDD = date.day;
         val.OCIDateTime.OCITimeHH = date.hour;
         val.OCIDateTime.OCITimeMI = date.minute;
-        val.OCIDateTime.OCITimeSS = (ub1)date.seconds;
+        val.OCIDateTime.OCITimeSS = date.seconds;
         
         Statement->BindDateValue(SqlParamNum,val);
       }
@@ -378,39 +379,39 @@ bool c_FdoOra_API2::OraTypeToFdoDataType(const char* OraType,int Scale,int Lengt
   
   bool isfdotype=false;
   
-  if( FdoCommonOSUtil::stricmp(OraType,"VARCHAR2") == 0 )
+  if( strcmpi(OraType,"VARCHAR2") == 0 )
   {
     FdoType = FdoDataType_String;      
     isfdotype=true;
   } else
-  if( FdoCommonOSUtil::stricmp(OraType,"VARCHAR") == 0 )
+  if( strcmpi(OraType,"VARCHAR") == 0 )
   {
     FdoType = FdoDataType_String;      
     isfdotype=true;
   } else
-  if( FdoCommonOSUtil::stricmp(OraType,"NUMBER") == 0 )
+  if( strcmpi(OraType,"NUMBER") == 0 )
   {            
     if( Scale == 0 ) FdoType = FdoDataType_Int32;
     else FdoType = FdoDataType_Decimal;
     isfdotype=true;
   } else
-  if( FdoCommonOSUtil::stricmp(OraType,"CHAR") == 0 )
+  if( strcmpi(OraType,"CHAR") == 0 )
   {            
     if( Length==1 ) FdoType = FdoDataType_Byte;
     else FdoType = FdoDataType_String;
     isfdotype=true;
   } else
-  if( FdoCommonOSUtil::stricmp(OraType,"BINARY_FLOAT") == 0 )
+  if( strcmpi(OraType,"BINARY_FLOAT") == 0 )
   {            
     FdoType = FdoDataType_Single;    
     isfdotype=true;
   } else
-  if( FdoCommonOSUtil::stricmp(OraType,"BINARY_DOUBLE") == 0 )
+  if( strcmpi(OraType,"BINARY_DOUBLE") == 0 )
   {            
     FdoType = FdoDataType_Double;    
     isfdotype=true;
   } else
-  if( FdoCommonOSUtil::stricmp(OraType,"DATE") == 0 )
+  if( strcmpi(OraType,"DATE") == 0 )
   {            
     FdoType = FdoDataType_DateTime;    
     isfdotype=true;
@@ -432,6 +433,7 @@ bool c_FdoOra_API2::OraTypeToFdoDataType(const char* OraType,int Scale,int Lengt
 */
 bool c_FdoOra_API2::DescribeTableProperties(c_Oci_Connection * OciConn,const wchar_t*Schema,const wchar_t*TableName,FdoPropertyDefinitionCollection* PropCollection)
 {
+  int errstatus;
   OCIParam *parmh = (OCIParam *) 0;         /* parameter handle */
   OCIParam *collsthd = (OCIParam *) 0;      /* handle to list of columns */
   OCIParam *colhd = (OCIParam *) 0;         /* column handle */
@@ -581,7 +583,7 @@ where a.srid = b.srid (+) and a.owner = :1 ;
 c_KgOraSchemaDesc* c_FdoOra_API2::DescribeSchema(c_Oci_Connection* OciConn,const wchar_t* ConnectionOraSchema,const wchar_t* UseOraSchema,const wchar_t* KingFdoViews)
 {
       
-        FdoPtr<FdoFeatureSchemaCollection> fschema;
+        FdoPtr<FdoFeatureSchemaCollection> fschema=NULL;
         FdoPtr<FdoKgOraPhysicalSchemaMapping> phschema;
         int alias_num=0;
       
@@ -808,7 +810,7 @@ c_KgOraSchemaDesc* c_FdoOra_API2::DescribeSchema(c_Oci_Connection* OciConn,const
           L" LEFT JOIN ALL_SDO_INDEX_INFO c ON a.table_name = c.table_name and a.COLUMN_NAME = c.COLUMN_NAME  "
           L" LEFT JOIN ALL_SDO_INDEX_METADATA d ON c.sdo_index_owner = d.sdo_index_owner and c.index_name = d.sdo_index_name "
           L" LEFT JOIN all_sequences s on s.sequence_name = CONCAT(a.table_name,'_FDOSEQ') "
-          L" where a.owner = :1 order by a.owner, a.table_name";
+          L" where a.owner = :1 order by  a.owner, a.table_name";
           
           bind_owner = true;
         }
@@ -882,7 +884,8 @@ if( KingFdoViews && *KingFdoViews )
             L" ,k.fdo_class_name, k.fdo_srid, k.fdo_diminfo, k.fdo_cs_name, k.fdo_wktext, k.fdo_layer_gtype, k.fdo_sequence_name, k.fdo_identity, k.fdo_sdo_root_mbr "
             L" ,k.fdo_point_x_column ,k.fdo_point_y_column ,k.fdo_point_z_column ";
         
-        FdoStringP sqlfrom = FdoStringP::Format(L" FROM %s k ", KingFdoViews);
+        wchar_t sqlfrom[1024];
+        wsprintf(sqlfrom,L" FROM %s k ", KingFdoViews );
         
         sqljoin = L" LEFT JOIN all_sdo_geom_metadata a ON  UPPER(k.FDO_SPATIALTABLE_OWNER) = a.owner and UPPER(k.FDO_SPATIALTABLE_NAME) = a.table_name and UPPER(k.FDO_SPATIALTABLE_GEOMCOLUMN) = a.column_name "
             L" LEFT JOIN MDSYS.CS_SRS b ON  a.srid = b.srid "
@@ -891,7 +894,7 @@ if( KingFdoViews && *KingFdoViews )
             L" LEFT JOIN all_sequences s on s.sequence_name = CONCAT(a.table_name,'_FDOSEQ') "
             L" order by k.fdo_ora_owner, k.fdo_ora_name ";
         
-        sqlstr = sqlstr + (FdoString*)sqlfrom + sqljoin;
+        sqlstr = sqlstr + sqlfrom + sqljoin;
         
        
        
@@ -905,7 +908,8 @@ if( KingFdoViews && *KingFdoViews )
               L" ,k.fdo_class_name, k.fdo_srid, k.fdo_diminfo, k.fdo_cs_name, k.fdo_wktext, k.fdo_layer_gtype, k.fdo_sequence_name, k.fdo_identity, k.fdo_sdo_root_mbr "
               L" ,k.fdo_point_x_column ,k.fdo_point_y_column ,k.fdo_point_z_column ";
         
-        FdoStringP sqlfrom = FdoStringP::Format(L" FROM %s k ", KingFdoViews);
+        wchar_t sqlfrom[1024];
+        wsprintf(sqlfrom,L" FROM %s k ", KingFdoViews );
         
         sqljoin =  L" LEFT JOIN all_sdo_geom_metadata a ON  UPPER(k.FDO_SPATIALTABLE_OWNER) = a.owner and UPPER(k.FDO_SPATIALTABLE_NAME) = a.table_name and UPPER(k.FDO_SPATIALTABLE_GEOMCOLUMN) = a.column_name "
             L" LEFT JOIN MDSYS.CS_SRS b ON  a.srid = b.srid "
@@ -914,7 +918,7 @@ if( KingFdoViews && *KingFdoViews )
             L" LEFT JOIN all_sequences s on s.sequence_name = CONCAT(a.table_name,'_FDOSEQ') "
             L" order by k.fdo_ora_owner, k.fdo_ora_name ";
         
-        sqlstr = sqlstr + (FdoString*)sqlfrom + sqljoin;
+        sqlstr = sqlstr + sqlfrom + sqljoin;
         
       
       
@@ -1276,7 +1280,11 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
           {
             c_SDO_DIM_ELEMENT dimelem = ora_dimlist.GetDimElement(ind);
             
-            std::wstring dimname = dimelem.GetDimName();
+            std::wstring dimname;
+            if( !dimelem.IsNullDimName() )
+              dimname = dimelem.GetDimName();
+            else
+              dimname = L"";
             double tol = dimelem.GetTolerance();
             double lb = (double)dimelem.GetLB();
             double ub = (double)dimelem.GetUB();
@@ -1358,7 +1366,7 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
       if( spatial_context.p && isminmax )
       {
         FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-        FdoPtr<FdoIEnvelope> env = gf->CreateEnvelopeXY(minx, miny, maxx, maxy);
+        FdoPtr<FdoEnvelopeImpl> env = FdoEnvelopeImpl::Create(minx,miny,maxx,maxy);
         
         spatial_context->ExpandExtent( env );
       }
