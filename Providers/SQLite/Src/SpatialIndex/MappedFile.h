@@ -50,7 +50,7 @@ public:
     MappedFile(size_t szData, size_t szPage, int numPages);
     ~MappedFile();
 
-    HANDLE create(const wchar_t* name);
+    HANDLE create(const wchar_t* name, bool deleteOnExit = false);
     HANDLE open(const wchar_t* name, bool readOnly = false);
     HANDLE close();
 
@@ -117,6 +117,7 @@ private:
 
 	std::wstring m_strFileName;
 	bool _bPagesLocked;
+    bool _bDeleteOnExit;
 
 public:
     size_t _cache_callcount;
