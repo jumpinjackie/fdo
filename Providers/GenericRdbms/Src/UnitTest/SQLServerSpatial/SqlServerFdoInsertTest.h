@@ -27,12 +27,8 @@ class SqlServerFdoInsertTest : public FdoInsertTest
     CPPUNIT_TEST(testDefect1206136);
     CPPUNIT_TEST_SUITE_END ();
 
-    void testDefect1206136();
-    
     void  set_provider();
     void insertDate ();
-
-    static FdoString* mDefect1206136Suffix;
 };
 
 

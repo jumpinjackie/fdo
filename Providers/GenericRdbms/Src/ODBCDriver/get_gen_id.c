@@ -81,35 +81,45 @@ int local_odbcdr_get_gen_id(
 
 	/* establish cursor. Reuse the existing one */
 	if ( global_identity ) {
+
+        if ( ODBCDriverType_SQLServer == connData->driver_type ) 
+        {
 		
-		c = connData->identity;
+		    /* When database is SQL Server, set output value to one set by most recent insert statement execution */
+		    *id_O = context->odbcdr_last_autoincrement;
+        }
+        else
+        {
+            /* Otherwise, select the last autincremented value from the database */
+		    c = connData->identity;
 
-		if ( c == (odbcdr_cursor_def *)NULL ) {
 
-			ODBCDR_RDBI_ERR( odbcdr_est_cursor(context, (char **)&c) );
+		    if ( c == (odbcdr_cursor_def *)NULL ) {
 
-            if (context->odbcdr_UseUnicode)
-                odbcdr_swprintf(sqlval.wString, 100, L"select @@IDENTITY" );
-            else
-                sprintf(sqlval.cString, "select @@IDENTITY" );
+			    ODBCDR_RDBI_ERR( odbcdr_est_cursor(context, (char **)&c) );
 
-			ODBCDR_RDBI_ERR( local_odbcdr_sql( context, (char *)c, &sqlval, FALSE, (char *)NULL,
-									(void *)NULL, (char *) NULL) );
+                if (context->odbcdr_UseUnicode)
+                    odbcdr_swprintf(sqlval.wString, 100, L"select @@IDENTITY" );
+                else
+                    sprintf(sqlval.cString, "select @@IDENTITY" );
 
-			/* define output locations */
-			ODBCDR_RDBI_ERR( odbcdr_define( context, (char *)c, "1", RDBI_LONG, sizeof(long),
-										(char *) &connData->identity_id, (SQLLEN *)&connData->identity_ni) );
-		}
+			    ODBCDR_RDBI_ERR( local_odbcdr_sql( context, (char *)c, &sqlval, FALSE, (char *)NULL,
+									    (void *)NULL, (char *) NULL) );
 
-		/* execute the SQL statement */
-		ODBCDR_RDBI_ERR( odbcdr_execute( context, (char *)c, 1, 0, &rows) );
+			    /* define output locations */
+			    ODBCDR_RDBI_ERR( odbcdr_define( context, (char *)c, "1", RDBI_LONG, sizeof(long),
+										    (char *) &connData->identity_id, (SQLLEN *)&connData->identity_ni) );
+		    }
 
-		/* execute the SQL statement & fetch row */
-		ODBCDR_RDBI_ERR( odbcdr_fetch( context, (char *)c, 1, &rows) );
+		    /* execute the SQL statement */
+		    ODBCDR_RDBI_ERR( odbcdr_execute( context, (char *)c, 1, 0, &rows) );
 
-		/* set output value */
-		*id_O = connData->identity_id;
+		    /* execute the SQL statement & fetch row */
+		    ODBCDR_RDBI_ERR( odbcdr_fetch( context, (char *)c, 1, &rows) );
 
+		    /* set output value */
+		    *id_O = connData->identity_id;
+        }
 	} else {
 
 		ODBCDR_RDBI_ERR( odbcdr_est_cursor(context, (char **)&c) );

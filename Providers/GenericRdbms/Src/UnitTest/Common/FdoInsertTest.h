@@ -66,6 +66,8 @@ public:
 	virtual void insertLongString();
     virtual void featureReaderTest();
     virtual void insertNonExistProp();
+    virtual void testDefect1206136();
+    
 
 	static FdoPropertyValue* AddNewProperty( FdoPropertyValueCollection* propertyValues, const wchar_t *name );
 
@@ -119,6 +121,8 @@ protected:
     virtual bool DefaultsTime();
 
     wchar_t  mSuffix[12];
+    static FdoString* mDefect1206136Suffix;
+    
     bool m_DisableFailures;
 };
 

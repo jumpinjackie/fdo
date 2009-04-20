@@ -91,17 +91,17 @@ typedef struct bindname_map_def {
 
 
 typedef struct cursor_def {					/* Statement linked list		*/
-#ifdef _DEBUG
     union
     {
 	    char				*sqlstring;			/* The raw sql string.			*/
 	    wchar_t				*sqlstringW;			/* The raw sql string.			*/
     };
-#endif
+
 	odbcdr_cursor_handle_def	hStmt;		/* ODBC statement handle		*/
 	struct cursor_def	*next;				/* Next statement				*/
 	long				cumul_rows_fetched;	/* Cumulative # rows fetched	*/
 	int					is_rollback;		/* Flags a rollback statement */
+	int					is_sqlserver_insert;/* Flags an insert statement for a SQL Server database*/
 
 	// SqlServer doesn't have native geometry types, so we use BLOB (image) data to store geometries.
     odbcdr_geom_col_list_def *bound_geometries;   /* odbcdr -->SqlServer buffer  */
@@ -170,6 +170,12 @@ typedef struct connData_def {			/* Logon Data Area Definition	*/
         wcscpy(pStr1##W, pStr2##W); \
     else \
         strcpy(pStr1, pStr2);
+
+#define ODBCDRV_STRING_CONCAT_CST(pStr1, pStr2)  \
+    if (context->odbcdr_UseUnicode) \
+    wcscat(pStr1##W, pStr2##W); \
+    else \
+        strcat(pStr1, pStr2);
 
 #define ODBCDRV_STRING_EMPTY(pStr1) (NULL == (pStr1)->cwString || (context->odbcdr_UseUnicode ? *(pStr1)->cwString == L'\0' : *(pStr1)->ccString == '\0'))
 

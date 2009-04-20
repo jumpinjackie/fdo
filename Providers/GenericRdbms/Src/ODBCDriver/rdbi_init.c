@@ -236,6 +236,8 @@ static void context_init( odbcdr_context_def *context)
 
     strcpy(context->odbcdr_automatic_logon_user, INIT_SLASH );	/* For default logon	*/
 
+    context->odbcdr_last_autoincrement = INIT_ZERO;
+
     context->odbcdr_last_rc = INIT_ZERO;
 
 	context->odbcdr_last_err_msg[0] = '\0';
