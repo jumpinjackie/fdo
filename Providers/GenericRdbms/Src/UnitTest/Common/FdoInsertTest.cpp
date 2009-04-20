@@ -19,6 +19,8 @@
 #include "Pch.h"
 #include "FdoInsertTest.h"
 #include "UnitTestUtil.h"
+#include "ConnectionUtil.h"
+#include "../SchemaMgr/Ph/Owner.h"
 
 #ifdef _DEBUG
 #define  DBG(X)    X
@@ -32,6 +34,8 @@
 #ifndef LLONG_MIN
 #   define LLONG_MIN    (-LLONG_MAX - 1LL)
 #endif
+
+FdoString* FdoInsertTest::mDefect1206136Suffix = L"_defect1206136";
 
 FdoInsertTest::FdoInsertTest(void)
 {
@@ -1955,6 +1959,193 @@ void FdoInsertTest::insertNonExistProp()
 
     CPPUNIT_ASSERT_MESSAGE("insert should have failed", !succeeded);
 }
+
+// Tests the following scenario for SQL Server datastores
+//  - datastore has Table A and Table B, each with an autoincremented column
+//  - Table A has an insertion trigger that inserts a row in Table B
+//  - An FdoIInsert is done to insert a feature in Table A
+//
+//  The test verifies that:
+//  - an infinite loop does not occur when multiple features are inserted
+//  - the FdoIFeatureReader from FdoIInsert retrieves the autoincremented column
+//    value for the new row in Table A, rather than Table B
+void FdoInsertTest::testDefect1206136()
+{
+	FdoPtr<FdoIConnection> connection;
+    StaticConnection* staticConn = UnitTestUtil::NewStaticConnection();
+
+    try {
+        printf( "\nCreating Datastore ...\n" );
+
+        staticConn->connect();
+        FdoSchemaManagerP mgr = staticConn->CreateSchemaManager();
+
+        UnitTestUtil::CreateDBNoMeta( 
+            mgr,
+            UnitTestUtil::GetEnviron("datastore", mDefect1206136Suffix)
+        );
+
+        FdoStringP datastore = UnitTestUtil::GetEnviron("datastore", mDefect1206136Suffix);
+
+        printf( "\nAdding Schema ...\n" );
+
+        FdoSmPhMgrP phMgr = mgr->GetPhysicalSchema();
+
+        FdoSmPhOwnerP owner = phMgr->FindOwner( datastore, L"", false );
+        FdoSmPhGrdOwnerP grdOwner = owner->SmartCast<FdoSmPhGrdOwner>();
+
+        grdOwner->ActivateAndExecute(
+            L"CREATE TABLE [dbo].[S_LOT](\
+           	[FeatID] [bigint] IDENTITY(1,1) NOT NULL,\
+	        [obj_id] [decimal](18, 0) NULL,\
+        	[name] [nvarchar](128) NULL,\
+        	[FeatureSource] [nvarchar](50) NULL,\
+             CONSTRAINT [pk_dbo_s_lot] PRIMARY KEY CLUSTERED \
+            (\
+            	[FeatID] ASC\
+            )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]\
+            ) ON [PRIMARY]"
+        );
+
+        grdOwner->ActivateAndExecute(
+            L"CREATE TABLE [dbo].[LOG_S_LOT](\
+        	[AuditID] [int] IDENTITY(1000,1) NOT NULL,\
+        	[OperationTypeID] [int] NOT NULL,\
+        	[obj_id] [decimal](18, 0) NULL,\
+        	[featid] [bigint] NULL,\
+        	[name] [varchar](128) NULL,\
+        	[FeatureSource] [varchar](50) NULL,\
+            CONSTRAINT [PK__LOG_S_LO__A17F23B85D6C935F] PRIMARY KEY CLUSTERED \
+            (\
+        	    [AuditID] ASC\
+            )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]\
+            ) ON [PRIMARY]"
+        );
+
+        grdOwner->ActivateAndExecute(
+            L"CREATE TRIGGER [dbo].[TR_LOG_S_LOT_INSERT] ON [dbo].[S_LOT]\
+            FOR INSERT\
+            AS\
+            BEGIN\
+	            DECLARE @operationID int \
+	            SET @operationID=1\
+	            DECLARE   @obj_id decimal, @featid bigint, @name varchar(128), @FeatureSource varchar(50)\
+	            SELECT  @obj_id=obj_id, @featid=FeatID, @name=name, @FeatureSource=FeatureSource\
+	            FROM INSERTED\
+                \
+	            INSERT INTO LOG_S_LOT(OperationTypeID, obj_id, featid, name, FeatureSource)	\
+	            VALUES(1, 1.0, 1, 'N1', 'A')\
+            END"
+        );
+
+        owner->Commit();
+
+        grdOwner = NULL;
+        owner = NULL;
+        phMgr = NULL;
+        mgr = NULL;
+        staticConn->disconnect();
+        delete staticConn;
+        staticConn = NULL;
+
+        printf( "\nInserting Features ...\n" );
+        connection = UnitTestUtil::CreateConnection(
+            false,
+            false,
+            mDefect1206136Suffix
+        );
+
+        FdoPtr<FdoITransaction> trans = connection->BeginTransaction();
+        FdoPtr<FdoIInsert> insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
+        insertCommand->SetFeatureClassName(L"dbo:S_LOT");
+
+        int i;
+        int idList[5];
+
+        for (i = 0; i < 5; i++)
+        {
+            FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
+            FdoPtr<FdoDataValue> dataValue;
+            FdoPtr<FdoPropertyValue> propertyValue;
+
+            dataValue = FdoDataValue::Create( FdoStringP::Format(L"Item%d", i));
+            propertyValue = AddNewProperty( propertyValues, L"name");
+            propertyValue->SetValue(dataValue);
+
+            FdoPtr<FdoIFeatureReader> rdr = insertCommand->Execute();
+            rdr->ReadNext();
+
+            idList[i] = (int) rdr->GetInt64(L"FeatID");
+        }
+
+        trans->Commit();
+
+        FdoPtr<FdoISelect> select = (FdoISelect*)connection->CreateCommand(FdoCommandType_Select); 
+
+        select->SetFeatureClassName(L"dbo:S_LOT");
+
+        FdoPtr<FdoIFeatureReader> rdr2 = select->Execute();
+
+        int count = 0;
+        while (rdr2->ReadNext())
+        {
+            int id = (int)rdr2->GetInt64(L"FeatID");
+
+            bool found = false;
+
+            for ( i = 0; i < 5; i++ ) 
+            {
+                if ( id == idList[i] ) 
+                {
+                    found = true;
+                    break;
+                }
+            }
+
+            CPPUNIT_ASSERT( found );
+            count++;
+        }
+
+        CPPUNIT_ASSERT( count == 5 );
+
+        connection->Close();
+
+        printf( "\nDone\n" );
+    }
+    catch (FdoException *ex)
+    {
+        try {
+            if( connection )
+                connection->Close ();
+            if (staticConn != NULL)
+            {
+                staticConn->disconnect();
+                delete staticConn;
+            }
+        }
+        catch ( ... )
+        {
+        }
+        UnitTestUtil::FailOnException(ex);
+    }
+    catch (...)
+    {
+        try {
+            if( connection )
+                connection->Close ();
+            if (staticConn != NULL)
+            {
+                staticConn->disconnect();
+                delete staticConn;
+            }
+        }
+        catch ( ... )
+        {
+        }
+        throw;
+    }
+}
+
 
 FdoIFeatureReader *FdoInsertTest::AddFeature (FdoIConnection *connection, FdoString *className, bool isSpatial, int idScenario)
 {

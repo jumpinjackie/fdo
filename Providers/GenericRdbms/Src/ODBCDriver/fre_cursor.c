@@ -104,7 +104,6 @@ int odbcdr_fre_cursor(
 
 	c->cumul_rows_fetched = 0;
 
-#ifdef _DEBUG
 	/*
 	** Deallocate the string memory
 	*/
@@ -112,7 +111,7 @@ int odbcdr_fre_cursor(
 		ut_vm_free( _db_function, c->sqlstring );
 		c->sqlstring = NULL;
 	}
-#endif
+
     // Free the working buffer
     if ( c->odbcdr_geom != NULL )
         ut_vm_free( _db_function, c->odbcdr_geom );
