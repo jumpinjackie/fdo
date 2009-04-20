@@ -109,7 +109,7 @@ void SpatialIndex::Insert(unsigned fid, DBounds& ext)
             wchar_t tmp[16];
             swprintf(tmp, sizeof(tmp), L"%d", i);
             std::wstring name = _seedName + tmp;
-            mf->create(name.c_str());
+            mf->create(name.c_str(), true);
 
             for (unsigned int j=0; j<counts[i]; j++)
             {

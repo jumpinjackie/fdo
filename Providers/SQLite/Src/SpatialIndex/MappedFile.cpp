@@ -46,7 +46,8 @@ MappedFile::MappedFile(size_t szData, size_t szPage, int numPages)
   _cache_misses_L2(0),
   _cache_callcount(0),
   _szFile(0),
- _bPagesLocked(false)
+ _bPagesLocked(false),
+ _bDeleteOnExit(false)
 {
     //page size must be a power of 2
     if (!szPage || (szPage & (szPage - 1)))
@@ -107,12 +108,14 @@ MappedFile::~MappedFile()
     delete [] _pages;
     _pages = 0;
 
-	DeleteFile(m_strFileName.c_str());
+    if (_bDeleteOnExit)
+        DeleteFile(m_strFileName.c_str());
 }
 
 
-HANDLE MappedFile::create(const wchar_t* name)
+HANDLE MappedFile::create(const wchar_t* name, bool deleteOnExit)
 {
+    _bDeleteOnExit = deleteOnExit;
     _canwrite = 1;
     return openInternal( name, false);
 }
