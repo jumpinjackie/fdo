@@ -965,13 +965,14 @@ SpatialIndex* SltConnection::GetSpatialIndex(const char* table)
 
     //build the spatial index, if this is the first time it
     //is needed
+    SpatialIndex* si = NULL;
 #if 0
     clock_t t0 = clock();
     for (int i=0; i<1000; i++)
     {
     delete si;
 #endif
-    SpatialIndex* si = new SpatialIndex(GetProperty(PROP_NAME_FILENAME));
+    si = new SpatialIndex(GetProperty(PROP_NAME_FILENAME));
 
     SltReader* rdr = new SltReader(this, NULL, table, "", NULL, true, false);
 
