@@ -87,6 +87,36 @@ public:
     FDO_API static FdoDateTimeValue* Create(FdoDateTime value);
 
     /// \brief
+    /// Constructs an instance of an FdoDateTimeValue from another FdoDataValue.
+    /// 
+    /// \param src 
+    /// Input the other FdoDataValue. Must be of one of the following types:
+    ///     FdoDataType_DateTime
+    ///     FdoDataType_String
+    ///         - value must follow an FDO DateTime format
+    ///           (e.g. "TIMESTAMP 'YYYY-MM-DD HH24:MI:SS'"
+    ///
+    /// In all other cases, the src type is considered incompatible with this type.
+    /// \param nullIfIncompatible 
+    /// Input will determine what to do if the source value cannot be converted to 
+    /// this type:
+    ///     true - return NULL.
+    ///     false - throw an exception
+    /// 
+    /// \param shift 
+    /// Input for future use.
+    /// \param truncate 
+    /// Input for future use.
+    /// \return
+    /// Returns an FdoDateTimeValue, whose value is converted from the src value. 
+    FDO_API static FdoDateTimeValue* Create(
+        FdoDataValue* src, 
+        FdoBoolean nullIfIncompatible = false,
+        FdoBoolean shift = true, 
+        FdoBoolean truncate = false 
+    );
+
+    /// \brief
     /// Gets the data type of the FdoDateTimeValue.
     /// 
     /// \return
@@ -146,37 +176,6 @@ public:
 
 /// \cond DOXYGEN-IGNORE
 protected:
-    /// \brief
-    /// Constructs an instance of an FdoDateTimeValue from another FdoDataValue.
-    /// 
-    /// \param src 
-    /// Input the other FdoDataValue. Must be of one of the following types:
-    ///     FdoDataType_DateTime
-    ///     FdoDataType_Double
-    ///     FdoDataType_String
-    ///         - value must follow an FDO DateTime format
-    ///           (e.g. "TIMESTAMP 'YYYY-MM-DD HH24:MI:SS'"
-    ///
-    /// In all other cases, the src type is considered incompatible with this type.
-    /// \param nullIfIncompatible 
-    /// Input will determine what to do if the source value cannot be converted to 
-    /// this type:
-    ///     true - return NULL.
-    ///     false - throw an exception
-    /// 
-    /// \param shift 
-    /// Input for future use.
-    /// \param truncate 
-    /// Input for future use.
-    /// \return
-    /// Returns an FdoDateTimeValue, whose value is converted from the src value. 
-    static FdoDateTimeValue* Create(
-        FdoDataValue* src, 
-        FdoBoolean nullIfIncompatible = false,
-        FdoBoolean shift = true, 
-        FdoBoolean truncate = false 
-    );
-
     // See FdoDataValue::DoCompare()
     virtual FdoCompareType DoCompare( FdoDataValue* other );
 
@@ -184,5 +183,6 @@ protected:
 /// \endcond
 };
 #endif
+
 
 

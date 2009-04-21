@@ -18,6 +18,7 @@
 #include <Fdo/Expression/CLOBValue.h>
 #include <Fdo/Expression/ExpressionException.h>
 #include <Fdo/Expression/IExpressionProcessor.h>
+#include "../Schema/DataTypeMapper.h"
 #include "StringUtility.h"
 
 #include <time.h>
@@ -34,6 +35,50 @@ FdoCLOBValue* FdoCLOBValue::Create()
 FdoCLOBValue* FdoCLOBValue::Create(FdoByteArray* value)
 {
 	return new FdoCLOBValue(value);
+}
+
+FdoCLOBValue* FdoCLOBValue::Create(
+    FdoDataValue* src, 
+    FdoBoolean nullIfIncompatible,
+    FdoBoolean shift, 
+    FdoBoolean truncate
+)
+{
+    FdoCLOBValue* ret = NULL;
+
+    if ( !src->IsNull() ) 
+    {
+        switch ( src->GetDataType() ) 
+        {
+        case FdoDataType_CLOB:
+            // Same types, simple copy.
+            {
+                FdoPtr<FdoByteArray> val = static_cast<FdoCLOBValue*>(src)->GetData();
+                ret = FdoCLOBValue::Create( val );
+            }
+             break;
+
+        default:
+            // src and dest types incompatible
+            if ( !nullIfIncompatible )
+                throw FdoExpressionException::Create(
+                    FdoException::NLSGetMessage(
+                        FDO_NLSID(EXPRESSION_22_INCOMPATIBLEDATATYPES),
+                        src->ToString(),
+                        (FdoString*) FdoDataTypeMapper::Type2String(src->GetDataType()),
+                        (FdoString*) FdoDataTypeMapper::Type2String(FdoDataType_CLOB)
+                    )
+                );
+            // else return null value 
+            break;
+        }
+   }
+
+    if ( !ret ) 
+        // return null data value instead of NULL pointer.
+        ret = FdoCLOBValue::Create();
+
+    return ret;
 }
 
 // Constructs a default instance of a DataValue with data type string and a
@@ -122,4 +167,5 @@ FdoString* FdoCLOBValue::ToString()
     m_toString = FdoStringUtility::MakeString(L"{UNDEFINED}");
     return m_toString;
 }
+
 

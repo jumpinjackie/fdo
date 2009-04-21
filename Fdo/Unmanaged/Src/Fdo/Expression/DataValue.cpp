@@ -170,12 +170,20 @@ FdoDataValue* FdoDataValue::Create(
     {
         switch ( dataType ) 
         {
+        case FdoDataType_BLOB:
+            ret = FdoBLOBValue::Create( src, nullIfIncompatible, shift, truncate );
+            break;
+
         case FdoDataType_Boolean:
             ret = FdoBooleanValue::Create( src, nullIfIncompatible, shift, truncate );
             break;
 
         case FdoDataType_Byte:
             ret = FdoByteValue::Create( src, nullIfIncompatible, shift, truncate );
+            break;
+
+        case FdoDataType_CLOB:
+            ret = FdoCLOBValue::Create( src, nullIfIncompatible, shift, truncate );
             break;
 
         case FdoDataType_DateTime:
