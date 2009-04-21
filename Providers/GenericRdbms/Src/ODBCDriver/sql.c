@@ -144,8 +144,8 @@ int local_odbcdr_sql(
     // only way I could find to do this was to batch both the insert and select
     // statements on the same cursor. 
 
-    char* autogen_str = c->is_sqlserver_insert ? "; select SCOPE_IDENTITY() as fdo_ident24356" : "";
-    wchar_t* autogen_strW = c->is_sqlserver_insert ? L"; select SCOPE_IDENTITY() as fdo_ident24356" : L"";
+    const char* autogen_str = c->is_sqlserver_insert ? "; select SCOPE_IDENTITY() as fdo_ident24356" : "";
+    const wchar_t* autogen_strW = c->is_sqlserver_insert ? L"; select SCOPE_IDENTITY() as fdo_ident24356" : L"";
 
     const char* ccString = sql->ccString;
     const wchar_t* cwString = sql->cwString;
