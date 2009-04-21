@@ -86,6 +86,51 @@ public:
     FDO_API static FdoStringValue* Create(FdoString* value);
 
     /// \brief
+    /// Constructs an instance of an FdoStringValue from another FdoDataValue.
+    /// 
+    /// \param src 
+    /// Input the other FdoDataValue. Must be of one of the following types:
+    ///     FdoDataType_Boolean
+    ///     FdoDataType_Byte
+    ///     FdoDataType_Decimal
+    ///     FdoDataType_Double
+    ///     FdoDataType_Int16
+    ///     FdoDataType_Int32
+    ///     FdoDataType_Int64
+    ///     FdoDataType_Single
+    ///     FdoDataType_String
+    ///
+    /// In all other cases, the src type is considered incompatible with this type.
+    /// \param nullIfIncompatible 
+    /// Input will determine what to do if the source value cannot be converted to 
+    /// this type:
+    ///     true - return NULL.
+    ///     false - throw an exception
+    /// 
+    /// \param shift 
+    /// Input determines whether FdoFloat or FdoDouble values are allowed to shift 
+    /// when conversion to strings causes loss of precision.
+    ///     true - convert values allowing them to shift.
+    ///     false - behaviour depends on nullIfIncompatible:
+    ///         true - return NULL.
+    ///         false - throw an exception
+    /// \param truncate 
+    /// Input for future use. There are currently no possible out of range
+    /// src values.
+    /// \return
+    /// Returns an FdoStringValue, whose value is converted from the src value. 
+    /// If src is an FdoStringValue then its value is simply copied to the 
+    /// returned FdoStringValue. Otherwise, the value is converted by calling
+    /// src->ToString().
+    ///
+    FDO_API static FdoStringValue* Create(
+        FdoDataValue* src, 
+        FdoBoolean nullIfIncompatible = false,
+        FdoBoolean shift = true, 
+        FdoBoolean truncate = false 
+    );
+
+    /// \brief
     /// Gets the data type of the FdoStringValue.
     /// 
     /// \return
@@ -152,51 +197,6 @@ public:
     }
 
 protected:
-    /// \brief
-    /// Constructs an instance of an FdoStringValue from another FdoDataValue.
-    /// 
-    /// \param src 
-    /// Input the other FdoDataValue. Must be of one of the following types:
-    ///     FdoDataType_Boolean
-    ///     FdoDataType_Byte
-    ///     FdoDataType_Decimal
-    ///     FdoDataType_Double
-    ///     FdoDataType_Int16
-    ///     FdoDataType_Int32
-    ///     FdoDataType_Int64
-    ///     FdoDataType_Single
-    ///     FdoDataType_String
-    ///
-    /// In all other cases, the src type is considered incompatible with this type.
-    /// \param nullIfIncompatible 
-    /// Input will determine what to do if the source value cannot be converted to 
-    /// this type:
-    ///     true - return NULL.
-    ///     false - throw an exception
-    /// 
-    /// \param shift 
-    /// Input determines whether FdoFloat or FdoDouble values are allowed to shift 
-    /// when conversion to strings causes loss of precision.
-    ///     true - convert values allowing them to shift.
-    ///     false - behaviour depends on nullIfIncompatible:
-    ///         true - return NULL.
-    ///         false - throw an exception
-    /// \param truncate 
-    /// Input for future use. There are currently no possible out of range
-    /// src values.
-    /// \return
-    /// Returns an FdoStringValue, whose value is converted from the src value. 
-    /// If src is an FdoStringValue then its value is simply copied to the 
-    /// returned FdoStringValue. Otherwise, the value is converted by calling
-    /// src->ToString().
-    ///
-    static FdoStringValue* Create(
-        FdoDataValue* src, 
-        FdoBoolean nullIfIncompatible = false,
-        FdoBoolean shift = true, 
-        FdoBoolean truncate = false 
-    );
-
     template <class C> C* ConvertFrom( bool nullIfIncompatible, bool shift, bool truncate, FdoString* sTO )
     {
         C*   ret = NULL;
@@ -231,5 +231,6 @@ protected:
     size_t      m_allocatedSize;
 };
 #endif
+
 
 

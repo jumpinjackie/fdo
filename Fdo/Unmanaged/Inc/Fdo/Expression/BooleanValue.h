@@ -89,6 +89,50 @@ public:
     FDO_API static FdoBooleanValue* Create(bool value);
 
     /// \brief
+    /// Constructs an instance of an FdoBooleanValue from another FdoDataValue.
+    /// 
+    /// \param src 
+    /// Input the other FdoDataValue. Must be of one of the following types:
+    ///     FdoDataType_Boolean
+    ///     FdoDataType_Byte
+    ///     FdoDataType_Decimal
+    ///     FdoDataType_Double
+    ///     FdoDataType_Int16
+    ///     FdoDataType_Int32
+    ///     FdoDataType_Int64
+    ///     FdoDataType_Single
+    ///     FdoDataType_String
+    ///         - value must be "TRUE", "FALSE", or numeric.
+    ///
+    /// In all other cases, the src type is considered incompatible with this type.
+    /// \param nullIfIncompatible 
+    /// Input will determine what to do if the source value cannot be converted to 
+    /// this type:
+    ///     true - return NULL.
+    ///     false - throw an exception
+    /// 
+    /// \param shift 
+    /// Input for future use.
+    /// \param truncate 
+    /// Input in the future will determine what to do if source value is numeric but
+    /// not 0 or 1:
+    ///     true - set the FdoBooleanValue to true.
+    ///     false - behaviour depends on nullIfIncompatible:
+    ///         true - return NULL.
+    ///         false - throw an exception
+    /// \return
+    /// Returns an FdoBooleanValue, whose value is converted from the src value. 
+    /// If src value is numeric then:
+    ///     0 is converted to false
+    ///     1 is converted to true
+    FDO_API static FdoBooleanValue* Create(
+        FdoDataValue* src, 
+        FdoBoolean nullIfIncompatible = false,
+        FdoBoolean shift = true, 
+        FdoBoolean truncate = false 
+    );
+
+    /// \brief
     /// Gets the data type of the FdoBooleanValue.
     /// 
     /// \return
@@ -148,50 +192,6 @@ public:
 
 protected:
     /// \brief
-    /// Constructs an instance of an FdoBooleanValue from another FdoDataValue.
-    /// 
-    /// \param src 
-    /// Input the other FdoDataValue. Must be of one of the following types:
-    ///     FdoDataType_Boolean
-    ///     FdoDataType_Byte
-    ///     FdoDataType_Decimal
-    ///     FdoDataType_Double
-    ///     FdoDataType_Int16
-    ///     FdoDataType_Int32
-    ///     FdoDataType_Int64
-    ///     FdoDataType_Single
-    ///     FdoDataType_String
-    ///         - value must be "TRUE", "FALSE", or numeric.
-    ///
-    /// In all other cases, the src type is considered incompatible with this type.
-    /// \param nullIfIncompatible 
-    /// Input will determine what to do if the source value cannot be converted to 
-    /// this type:
-    ///     true - return NULL.
-    ///     false - throw an exception
-    /// 
-    /// \param shift 
-    /// Input for future use.
-    /// \param truncate 
-    /// Input in the future will determine what to do if source value is numeric but
-    /// not 0 or 1:
-    ///     true - set the FdoBooleanValue to true.
-    ///     false - behaviour depends on nullIfIncompatible:
-    ///         true - return NULL.
-    ///         false - throw an exception
-    /// \return
-    /// Returns an FdoBooleanValue, whose value is converted from the src value. 
-    /// If src value is numeric then:
-    ///     0 is converted to false
-    ///     1 is converted to true
-    static FdoBooleanValue* Create(
-        FdoDataValue* src, 
-        FdoBoolean nullIfIncompatible = false,
-        FdoBoolean shift = true, 
-        FdoBoolean truncate = false 
-    );
-
-    /// \brief
     /// Helper template for constructing FdoBooleanValue's from scalar values
     /// of various types.
     /// 
@@ -231,5 +231,6 @@ protected:
     bool        m_data;
 };
 #endif
+
 
 

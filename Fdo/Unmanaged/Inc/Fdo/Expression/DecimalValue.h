@@ -90,6 +90,55 @@ public:
     FDO_API static FdoDecimalValue* Create(double value);
 
     /// \brief
+    /// Constructs an instance of an FdoDecimalValue from another FdoDataValue.
+    /// 
+    /// \param src 
+    /// Input the other FdoDataValue. Must be of one of the following types:
+    ///     FdoDataType_Boolean
+    ///     FdoDataType_Byte
+    ///     FdoDataType_Decimal
+    ///     FdoDataType_Double
+    ///     FdoDataType_Int16
+    ///     FdoDataType_Int32
+    ///     FdoDataType_Int64
+    ///     FdoDataType_Single
+    ///     FdoDataType_String
+    ///         - value must be numeric.
+    ///
+    /// In all other cases, the src type is considered incompatible with this type.
+    /// \param nullIfIncompatible 
+    /// Input will determine what to do if the source value cannot be converted to 
+    /// this type:
+    ///     true - return NULL.
+    ///     false - throw an exception
+    /// 
+    /// \param shift 
+    /// Input determines whether FdoInt64 values are allowed to shift when they have 
+    //  more precision that can be handled by a double.
+    ///     true - convert values allowing them to shift.
+    ///     false - behaviour depends on nullIfIncompatible:
+    ///         true - return NULL.
+    ///         false - throw an exception
+    /// \param truncate 
+    /// Input determines what to do if source value is outside the FdoDouble range
+    ///  ( -1.7e308, 1.7e308 ):
+    ///     true - convert values less than -1.7e308 to -1.7e308, convert values greater than 1.7e308 to 1.7e308
+    ///     false - behaviour depends on nullIfIncompatible:
+    ///         true - return NULL.
+    ///         false - throw an exception
+    /// \return
+    /// Returns an FdoDecimalValue, whose value is converted from the src value. 
+    /// If src is an FdoBooleanValue:
+    ///     false is converted to 0
+    ///     true is converted to 1
+    FDO_API static FdoDecimalValue* Create(
+        FdoDataValue* src, 
+        FdoBoolean nullIfIncompatible = false,
+        FdoBoolean shift = true, 
+        FdoBoolean truncate = false 
+    );
+
+    /// \brief
     /// Gets the data type of the FdoDecimalValue.
     /// 
     /// \return
@@ -149,55 +198,6 @@ public:
 
 /// \cond DOXYGEN-IGNORE
 protected:
-    /// \brief
-    /// Constructs an instance of an FdoDecimalValue from another FdoDataValue.
-    /// 
-    /// \param src 
-    /// Input the other FdoDataValue. Must be of one of the following types:
-    ///     FdoDataType_Boolean
-    ///     FdoDataType_Byte
-    ///     FdoDataType_Decimal
-    ///     FdoDataType_Double
-    ///     FdoDataType_Int16
-    ///     FdoDataType_Int32
-    ///     FdoDataType_Int64
-    ///     FdoDataType_Single
-    ///     FdoDataType_String
-    ///         - value must be numeric.
-    ///
-    /// In all other cases, the src type is considered incompatible with this type.
-    /// \param nullIfIncompatible 
-    /// Input will determine what to do if the source value cannot be converted to 
-    /// this type:
-    ///     true - return NULL.
-    ///     false - throw an exception
-    /// 
-    /// \param shift 
-    /// Input determines whether FdoInt64 values are allowed to shift when they have 
-    //  more precision that can be handled by a double.
-    ///     true - convert values allowing them to shift.
-    ///     false - behaviour depends on nullIfIncompatible:
-    ///         true - return NULL.
-    ///         false - throw an exception
-    /// \param truncate 
-    /// Input determines what to do if source value is outside the FdoDouble range
-    ///  ( -1.7e308, 1.7e308 ):
-    ///     true - convert values less than -1.7e308 to -1.7e308, convert values greater than 1.7e308 to 1.7e308
-    ///     false - behaviour depends on nullIfIncompatible:
-    ///         true - return NULL.
-    ///         false - throw an exception
-    /// \return
-    /// Returns an FdoDecimalValue, whose value is converted from the src value. 
-    /// If src is an FdoBooleanValue:
-    ///     false is converted to 0
-    ///     true is converted to 1
-    static FdoDecimalValue* Create(
-        FdoDataValue* src, 
-        FdoBoolean nullIfIncompatible = false,
-        FdoBoolean shift = true, 
-        FdoBoolean truncate = false 
-    );
-
     // See FdoDataValue::DoCompare()
     virtual FdoCompareType DoCompare( FdoDataValue* other );
 
@@ -205,5 +205,6 @@ protected:
 /// \endcond
 };
 #endif
+
 
 

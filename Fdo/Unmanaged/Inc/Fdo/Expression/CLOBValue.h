@@ -85,6 +85,33 @@ public:
     FDO_API static FdoCLOBValue* Create(FdoByteArray* value);
 
     /// \brief
+    /// Constructs an instance of an FdoCLOBValue from another FdoDataValue.
+    /// 
+    /// \param src 
+    /// Input the other FdoDataValue. Must be of one of the following types:
+    ///     FdoDataType_CLOB
+    ///
+    /// In all other cases, the src type is considered incompatible with this type.
+    /// \param nullIfIncompatible 
+    /// Input will determine what to do if the source value cannot be converted to 
+    /// this type:
+    ///     true - return NULL.
+    ///     false - throw an exception
+    /// 
+    /// \param shift 
+    /// Input for future use.
+    /// \param truncate 
+    /// Input for future use.
+    /// \return
+    /// Returns an FdoCLOBValue, whose value is converted from the src value. 
+    FDO_API static FdoCLOBValue* Create(
+        FdoDataValue* src, 
+        FdoBoolean nullIfIncompatible = false,
+        FdoBoolean shift = true, 
+        FdoBoolean truncate = false 
+    );
+
+    /// \brief
     /// Gets the data type of the FdoCLOBValue.
     /// 
     /// \return
@@ -141,5 +168,6 @@ public:
 
 };
 #endif
+
 
 
