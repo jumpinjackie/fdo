@@ -3086,6 +3086,33 @@ void SchemaTest::testXmlSchemaMappings()
     }
 }
 
+void SchemaTest::testGml212()
+{
+    FdoFeatureSchemasP schemas = FdoFeatureSchemaCollection::Create(NULL);
+    FdoFeatureSchemasP schemas2 = FdoFeatureSchemaCollection::Create(NULL);
+
+    try {
+
+        FdoXmlFlagsP flags = FdoXmlFlags::Create(
+            L"",
+            FdoXmlFlags::ErrorLevel_VeryLow
+        );
+
+        schemas = FdoFeatureSchemaCollection::Create(NULL);
+        FdoXmlReaderP gmlReader = FdoGml212Schema::CreateReader();
+        schemas->ReadXml( gmlReader, flags );
+
+        // Write the schema back to an XML document.
+        schemas->WriteXml( L"schema_gml212a.xml", flags );
+
+        schemas2 = FdoFeatureSchemaCollection::Create(NULL);
+        schemas2->ReadXml( L"schema_gml212a.xml", flags );
+    }
+    catch ( FdoException* e ) {
+		UnitTestUtil::FailOnException( e );
+    }
+}
+
 void SchemaTest::eachUnsupported( FdoXmlFlags::ErrorLevel level, char* masterFile, char* outFile)
 {
     FdoFeatureSchemasP schemas = FdoFeatureSchemaCollection::Create(NULL);
