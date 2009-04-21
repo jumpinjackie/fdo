@@ -2068,7 +2068,7 @@ void FdoInsertTest::testDefect1206136()
             FdoPtr<FdoDataValue> dataValue;
             FdoPtr<FdoPropertyValue> propertyValue;
 
-            dataValue = FdoDataValue::Create( FdoStringP::Format(L"Item%d", i));
+            dataValue = FdoDataValue::Create( (FdoString*) FdoStringP::Format(L"Item%d", i));
             propertyValue = AddNewProperty( propertyValues, L"name");
             propertyValue->SetValue(dataValue);
 
