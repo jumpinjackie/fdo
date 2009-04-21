@@ -227,6 +227,23 @@
 				</xs:restriction>
 			</xs:complexContent>
 		</xs:complexType>
+		<xs:element name="AbstractFeature" type="AbstractFeatureType"/>
+		<xs:complexType name="AbstractFeatureType" abstract="false">
+			<xs:complexContent>
+				<xs:extension base="gml:AbstractFeatureType">
+					<xs:sequence>
+						<xs:element name="IntProp" type="fdo:int32"/>
+						<xs:element name="StringProp">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:maxLength value="100"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
 		<xs:simpleType name="DollarType">
 			<xs:restriction base="xs:decimal">
 				<xs:totalDigits value="15"/>
@@ -244,7 +261,7 @@
 			<complexContent>
 				<extension base="ext:TestObj1Type">
 					<sequence>
-						<element name="prop1"  type="double"/>
+						<element name="prop1" type="double"/>
 					</sequence>
 				</extension>
 			</complexContent>

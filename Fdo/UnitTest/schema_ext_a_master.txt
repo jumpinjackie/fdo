@@ -327,6 +327,26 @@ seq</xs:documentation>
 </xs:element>
 </xs:sequence>
 </xs:complexType>
+<xs:complexType name="AbstractFeatureType" abstract="false" fdo:hasGeometry="false">
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="IntProp">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
+</xs:simpleType>
+</xs:element>
+<xs:element name="StringProp">
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="100"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
 </xs:schema>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.autodesk.com/www.ctn.com/Unique" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:Unique="http://www.autodesk.com/www.ctn.com/Unique" xmlns:External="http://www.autodesk.com/External" elementFormDefault="qualified" attributeFormDefault="unqualified">
 <xs:complexType name="TestFeat1Type" abstract="false">

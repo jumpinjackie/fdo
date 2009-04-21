@@ -137,6 +137,32 @@
   <xsl:element name="xs:complexType">
     <xsl:call-template name="feature_class_attributes" />
     <xsl:call-template name="element_subelements" />
+    
+    <xsl:choose>
+	<xsl:when test="@name='AbstractFeature'">
+		<xsl:variable name="myUri" >
+		    <xsl:call-template name="schema_to_uri">
+		        <xsl:with-param name="schema" select="../@name"/>
+		    </xsl:call-template>
+		</xsl:variable>
+		<xsl:choose>
+			<xsl:when test="$myUri='http://www.opengis.net/gml'">
+			  <!-- This is gml:AbstractFeature so don't extend from itself -->
+			  <xsl:call-template name="FeatureClassNotExtended"/>
+			</xsl:when>
+			<xsl:otherwise>
+			  <xsl:call-template name="FeatureClassExtended"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:call-template name="FeatureClassExtended"/>
+	</xsl:otherwise>
+    </xsl:choose>
+  </xsl:element>
+</xsl:template>
+
+<xsl:template name="FeatureClassExtended">
     <xsl:element name="xs:complexContent">
       <xsl:element name="xs:extension">
         <xsl:attribute name="base" >
@@ -155,7 +181,11 @@
         <xsl:call-template name="class_properties" />
       </xsl:element>
     </xsl:element>
-  </xsl:element>
+</xsl:template>
+
+<xsl:template name="FeatureClassNotExtended">
+   <!-- Write the properties as sub-elements -->
+   <xsl:call-template name="class_properties" />
 </xsl:template>
 
 <!-- Converts a non-feature class to GML -->
