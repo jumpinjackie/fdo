@@ -896,22 +896,23 @@ static void trimFunc(
   }else{
     const unsigned char *z;
 #ifdef SQLITE_EXTENDED_TRIM
+    static const unsigned char *azOne[] = { (u8*)" " };
     nChar = sqlite3_value_bytes(argv[1]);
     if (flags == 3 && nChar >= 4 && nChar <= 8) // only in case we have trim
     {
       if (sqlite3StrICmp(zCharSet, "LEADING") == 0)
       {
-        zCharSet = " ";
+        zCharSet = *azOne;
         flags = 1;
       }
       else if (sqlite3StrICmp(zCharSet, "TRAILING") == 0)
       {
-        zCharSet = " ";
+        zCharSet = *azOne;
         flags = 2;
       }
       else if (sqlite3StrICmp(zCharSet, "BOTH") == 0)
       {
-        zCharSet = " ";
+        zCharSet = *azOne;
         flags = 3;
       }
     }
