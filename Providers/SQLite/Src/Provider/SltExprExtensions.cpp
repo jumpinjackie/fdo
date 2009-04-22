@@ -1,9 +1,21 @@
 
 #include "stdafx.h"
 #include "SltExprExtensions.h"
+#include "SltConversionUtils.h"
 #include "SltGeomUtils.h"
+#include "FdoCommonOSUtil.h"
 #include <math.h>
 #include <algorithm>
+
+#define SQLITE_INFO_STRING(/*IN*/str, /*OUT*/len, /*OUT*/lenInChars, /*IN-OUT*/charsToStudy) {  \
+  len = lenInChars = 0;                                                                         \
+  const char* z2 = NULL;                                                                        \
+  for(z2 = str; *z2 && charsToStudy; charsToStudy--) {                                          \
+      lenInChars++;                                                                             \
+      SQLITE_SKIP_UTF8(z2);                                                                     \
+  }                                                                                             \
+  len = (z2 - str);                                                                             \
+}                                                                                               \
 
 //===============================================================================
 //  Basic math functions
@@ -43,19 +55,263 @@ static void mathFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
     case 6: rVal = asin(rVal); break;
     case 7: rVal = sqrt(rVal); break;
     case 8: rVal = log(rVal); break;
-    case 9: rVal = log10(rVal); break;
-    case 10: rVal = exp(rVal); break;
-    case 11: rVal = pow(rVal, rVal2); break;
-    case 12: rVal = atan2(rVal, rVal2); break;
+    case 9: rVal = exp(rVal); break;
+    case 10: rVal = log10(rVal); break;
+    case 11: rVal = log(rVal2)/log(rVal); break;
+    case 12: rVal = pow(rVal, rVal2); break;
+    case 13: rVal = atan2(rVal, rVal2); break;
     }
 
     sqlite3_result_double(context, rVal);
 }
 
 //===============================================================================
+//  date operations
+//===============================================================================
+static void currDateFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
+{
+    assert( argc==0 );
+    FdoDateTime dt;
+    struct tm local_time;
+    FdoCommonOSUtil::getsystime(&local_time);
+    dt.year    = local_time.tm_year + 1900;
+    dt.month   = local_time.tm_mon + 1;
+    dt.day     = local_time.tm_mday;
+    dt.hour    = local_time.tm_hour;
+    dt.minute  = local_time.tm_min;
+    dt.seconds = (float)local_time.tm_sec;
+    char* res = (char*)alloca(31); // more than datetime needs
+    *res = '\0';
+    DateToString(&dt, res, 31);
+    sqlite3_result_text(context, res, -1, SQLITE_TRANSIENT);
+}
+
+static void dateFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
+{
+    assert( argc==2 );
+    //if an argument is null, return null
+    for (int i=0; i<argc; i++)
+    {
+        if (sqlite3_value_type(argv[i]) == SQLITE_NULL)
+        {
+            sqlite3_result_null(context);
+            return;
+        }
+    }
+    long funcId = (long)sqlite3_user_data(context);
+    switch(funcId)
+    {
+        case 1:
+        {
+            const char* dateStr = (const char*)sqlite3_value_text(argv[0]);
+            if (sqlite3_value_bytes(argv[0]) == 0)
+            {
+                sqlite3_result_null(context);
+                return;
+            }
+            FdoInt64 months_to_add = sqlite3_value_int64(argv[1]);
+            if (months_to_add == 0)
+            {
+                sqlite3_result_text(context, dateStr, sqlite3_value_bytes(argv[0]), SQLITE_TRANSIENT);
+                return;
+            }
+            FdoDateTime dt = DateFromString(dateStr);
+            FdoInt16 num_of_years  = (FdoInt16) (months_to_add / 12);
+            FdoInt8  num_of_months = (FdoInt8)  (months_to_add % 12);
+            FdoInt16 curr_year  = (dt.year  == -1) ? 0 : dt.year;
+            FdoInt8  curr_month = (dt.month == -1) ? 1 : dt.month;
+            
+            if (months_to_add > 0)
+            {
+                if ((curr_month + num_of_months) > 12)
+                {
+                    num_of_years++;
+                    dt.month = (curr_month + num_of_months) - 12;
+                }
+                else
+                    dt.month = (curr_month + num_of_months);
+            }
+            else
+            {
+                if ((curr_month + num_of_months) < 0)
+                {
+                    num_of_years--;
+                    dt.month = 12 + (curr_month + num_of_months);
+                }
+                else
+                    dt.month = (curr_month + num_of_months);
+            }
+            dt.year = curr_year + num_of_years;
+            
+            char* res = (char*)alloca(31); // more than datetime needs
+            *res = '\0';
+            DateToString(&dt, res, 31);
+            sqlite3_result_text(context, res, -1, SQLITE_TRANSIENT);
+        }
+            break;
+        case 2:
+        case 3:
+        case 4:
+        {
+            int operation = -1;
+            if (sqlite3_value_type(argv[0]) == SQLITE_TEXT && sqlite3_value_bytes(argv[0]) != 0)
+            {
+                const char* pOption = (const char*)sqlite3_value_text(argv[0]);
+                if (sqlite3StrICmp(pOption, "YEAR") == 0)
+                    operation = 0;
+                else if (sqlite3StrICmp(pOption, "MONTH") == 0)
+                    operation = 1;
+                else if (sqlite3StrICmp(pOption, "DAY") == 0)
+                    operation = 2;
+                else if (sqlite3StrICmp(pOption, "HOUR") == 0)
+                    operation = 3;
+                else if (sqlite3StrICmp(pOption, "MINUTE") == 0)
+                    operation = 4;
+                else if (sqlite3StrICmp(pOption, "SECOND") == 0)
+                    operation = 5;
+            }
+            if (operation != -1 && sqlite3_value_bytes(argv[1]) != 0)
+            {
+                const char* dateStr = (const char*)sqlite3_value_text(argv[1]);
+                FdoDateTime dt = DateFromString(dateStr);
+                FdoDateTime dtRet;
+                double valRet;
+                switch(operation)
+                {
+                case 0:
+                    valRet = dtRet.year = dt.year;
+                    break;
+                case 1:
+                    valRet = dtRet.month = dt.month;
+                    break;
+                case 2:
+                    valRet = dtRet.day = dt.day;
+                    break;
+                case 3:
+                    valRet = dtRet.hour = dt.hour;
+                    break;
+                case 4:
+                    valRet = dtRet.minute = dt.minute;
+                    break;
+                case 5:
+                    valRet = dtRet.seconds = dt.seconds;
+                    break;
+                }
+                if (funcId == 2)
+                {
+                    char* res = (char*)alloca(31); // more than datetime needs
+                    *res = '\0';
+                    DateToString(&dtRet, res, 31);
+                    sqlite3_result_text(context, res, -1, SQLITE_TRANSIENT);
+                }
+                else if (funcId == 3)
+                    sqlite3_result_double(context, valRet);
+                else // (funcId == 4)
+                    sqlite3_result_int(context, (FdoInt16)((FdoInt32)((valRet - floor(valRet)) < 0.5) ? floor(valRet) : ceil(valRet)));
+            }
+            else            
+                sqlite3_result_null(context);
+        }
+            break;
+        case 5:
+        {
+            const char* dateStr1 = (const char*)sqlite3_value_text(argv[0]);
+            const char* dateStr2 = (const char*)sqlite3_value_text(argv[1]);
+            if (sqlite3_value_bytes(argv[0]) != 0 && sqlite3_value_bytes(argv[1]) != 0)
+            {
+                FdoDateTime start = DateFromString(dateStr1);
+                FdoDateTime end = DateFromString(dateStr2);
+                if ((start.year == -1) || (start.month == -1) || (end.year == -1) || (end.month == -1))
+                    sqlite3_result_null(context);
+                else
+                    sqlite3_result_double(context, (end.year - start.year) * 12 + end.month - start.month);
+            }
+            else            
+                sqlite3_result_null(context);
+        }
+            break;
+        default:
+            sqlite3_result_null(context);
+            break;
+    }
+}
+
+static bool TruncateDate(FdoDateTime& dt, int opDate)
+{
+    bool truncation_done = false;
+    FdoInt16   year = -1;
+    FdoInt8    month = -1, day = -1, hour = -1, minute = -1;
+    switch(opDate)
+    {
+      case 0: // Year
+        if ((dt.year  != -1) && (dt.month != -1) && (dt.day   != -1))
+        {
+            year = dt.year;
+            month = 1;
+            day = 1;
+            if (dt.IsDateTime())
+                hour = minute = 0;
+            truncation_done = true;
+        }
+        break;
+      case 1: // Month
+        if ((dt.year  != -1) && (dt.month != -1) && (dt.day   != -1))
+        {
+            year = dt.year;
+            month = dt.month;
+            day = 1;
+            if (dt.IsDateTime())
+                hour = minute = 0;
+            truncation_done = true;
+        }
+        break;
+      case 2: // Day
+        break;
+      case 3: // Hour
+        if ((dt.hour != -1  ) && (dt.minute != -1))
+        {
+            hour = dt.hour;
+            minute = 0;
+            truncation_done = true;
+            if ((dt.year  != -1) && (dt.month != -1) && (dt.day   != -1))
+            {
+                year = dt.year;
+                month = dt.month;
+                day = dt.day;
+            }
+        }
+        break;
+      case 4: // Minute
+        if ((dt.hour != -1  ) && (dt.minute != -1))
+        {
+            hour = dt.hour;
+            minute = dt.hour;
+            truncation_done = true;
+            if ((dt.year  != -1) && (dt.month != -1) && (dt.day   != -1))
+            {
+                year = dt.year;
+                month = dt.month;
+                day = dt.day;
+            }
+        }
+        break;
+    }
+    if (truncation_done)
+    {
+        dt.year = year;
+        dt.month = month;
+        dt.day = day;
+        dt.hour = hour;
+        dt.minute = minute;
+        dt.seconds = 0.0f;
+    }
+    return truncation_done;
+}
+
+
+//===============================================================================
 //  Numeric operations
 //===============================================================================
-
 static void numFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
 {
     //if an argument is null, return null
@@ -92,19 +348,52 @@ static void numFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
         {
             if (argc == 2)
             {
-                //if there is a second argument, it indicates
-                //how many digits after the decimal we want in 
-                //the result
-                resIsDouble = true;
-                int digits = sqlite3_value_int(argv[1]);
-                double multiplier = 1;
-                for (int j=0; j<digits; j++) multiplier *= 10.0;
-                val *= multiplier;
-                val = (i64)val;
-                val /= multiplier;
+                int operation = -1;
+                if (sqlite3_value_type(argv[1]) == SQLITE_TEXT)
+                {
+                    const char* pOption = (const char*)sqlite3_value_text(argv[1]);
+                    if (sqlite3StrICmp(pOption, "YEAR") == 0)
+                        operation = 0;
+                    else if (sqlite3StrICmp(pOption, "MONTH") == 0)
+                        operation = 1;
+                    else if (sqlite3StrICmp(pOption, "DAY") == 0)
+                        operation = 2;
+                    else if (sqlite3StrICmp(pOption, "HOUR") == 0)
+                        operation = 3;
+                    else if (sqlite3StrICmp(pOption, "MINUTE") == 0)
+                        operation = 4;
+                }
+                if (operation != -1)
+                {
+                    const char* dateStr = (const char*)sqlite3_value_text(argv[0]);
+                    FdoDateTime dt = DateFromString(dateStr);
+                    if(TruncateDate(dt, operation))
+                    {
+                        char* res = (char*)alloca(31); // more than datetime needs
+                        *res = '\0';
+                        DateToString(&dt, res, 31);
+                        sqlite3_result_text(context, res, -1, SQLITE_TRANSIENT);
+                    }
+                    else
+                        sqlite3_result_null(context);
+                    return;
+                }
+                else
+                {
+                    //if there is a second argument, it indicates
+                    //how many digits after the decimal we want in 
+                    //the result
+                    resIsDouble = true;
+                    int digits = sqlite3_value_int(argv[1]);
+                    double multiplier = 1;
+                    for (int j=0; j<digits; j++) multiplier *= 10.0;
+                    val *= multiplier;
+                    val = (double)((i64)val);
+                    val /= multiplier;
+                }
             }
             else
-                val = (i64)val; 
+                val = (double)((i64)val);
         }
         break;
     case 5: val = val > 0 ? 1 : (val < 0 ? -1 : 0); //sign function
@@ -132,25 +421,213 @@ static void numFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
 //===============================================================================
 static void strFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
 {
-    assert(argc == 2);
+    assert(argc >= 2);
 
     const char* a1 = (const char*)sqlite3_value_text(argv[0]);
     const char* a2 = (const char*)sqlite3_value_text(argv[1]);
     
+    bool isNullargv0 = (sqlite3_value_type(argv[0]) == SQLITE_NULL) || (a1 == NULL);
+    bool isNullargv1 = (sqlite3_value_type(argv[1]) == SQLITE_NULL) || (a2 == NULL);
+    
     long funcId = (long)sqlite3_user_data(context);
 
-    if (funcId == 1)
+    switch(funcId)
     {
-        size_t len1 = strlen(a1);
-        size_t len2 = strlen(a2);
-        char* res = (char*)alloca(len1 + len2 + 1);
-        *res = 0;
-        if (a1) strcat(res, a1);
-        if (a2) strcat(res, a2);
-        sqlite3_result_text(context, res, -1, SQLITE_TRANSIENT);
+        case 1: // concat
+        {
+            assert(argc == 2);
+            if (isNullargv0 && isNullargv1)
+                sqlite3_result_null(context);
+            else if((isNullargv0 && !isNullargv1) || (!isNullargv0 && isNullargv1))
+                sqlite3_result_text(context, (a1 != NULL) ? a1 : a2, -1, SQLITE_TRANSIENT);
+            else
+            {
+                char* res = (char*)alloca(sqlite3_value_bytes(argv[0]) + sqlite3_value_bytes(argv[1]) + 1);
+                *res = '\0';
+                strcat(res, a1);
+                strcat(res, a2);
+                sqlite3_result_text(context, res, -1, SQLITE_TRANSIENT);
+            }
+        }
+            break;
+        case 2: // instr
+        {
+            assert(argc == 2);
+            if (!isNullargv0 && !isNullargv1)
+            {
+                i64 pos = 0;
+                const char* strPos = strstr(a1, a2);
+                if (strPos != NULL)
+                    pos = strPos - a1 + 1;
+                sqlite3_result_int64(context, pos);
+            }
+            else
+                sqlite3_result_null(context);
+        }
+            break;
+        case 3: // translate
+        {
+            assert(argc == 3);
+            const char* a3 = (const char*)sqlite3_value_text(argv[2]);
+            bool isNullargv2 = (sqlite3_value_type(argv[1]) == SQLITE_NULL) || (a3 == NULL);
+            size_t src_len = sqlite3_value_bytes(argv[0]);
+            size_t from_len = sqlite3_value_bytes(argv[1]);
+            size_t to_len = sqlite3_value_bytes(argv[2]);
+            if (isNullargv0 || isNullargv1|| isNullargv2 || src_len == 0 || from_len == 0 || to_len == 0)
+            {
+                sqlite3_result_null(context);
+                return;
+            }
+            // we may replace normal chars with UTF-8 characters
+            char* res = (char*)alloca(6*src_len + 1);
+            *res = '\0';
+            char curr_char[7];
+            const char* z2 = NULL;
+            size_t main_idx = 0; 
+            for(z2 = a1; *z2;)
+            {
+                size_t sub_idx = 0; 
+                curr_char[sub_idx++] = *z2;
+                // SQLITE_SKIP_UTF8 with copy character into curr_char
+                if( (*(z2++))>=0xc0 )
+                {
+                    while((*z2 & 0xc0) == 0x80)
+                    {
+                        curr_char[sub_idx++] = *z2;
+                        z2++;
+                    }
+                }
+                curr_char[sub_idx] = '\0';
+                const char* posInStr = strstr(a2, curr_char);
+                if (posInStr != NULL)
+                {
+                    size_t pos = posInStr-a2;
+                    if (pos <= to_len)
+                    {
+                        const char* z3 = a3+pos;
+                        *(res + main_idx++) = *z3;
+                        // SQLITE_SKIP_UTF8 with copy character into res
+                        if( (*(z3++))>=0xc0 )
+                        {
+                            while((*z3 & 0xc0) == 0x80)
+                            {
+                                *(res + main_idx++) = *z3;
+                                z3++;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    memcpy(res + main_idx, curr_char, sub_idx);
+                    main_idx += sub_idx;
+                }
+            }
+            *(res + main_idx) = '\0';
+            sqlite3_result_text(context, res, main_idx, SQLITE_TRANSIENT);
+        }
+            break;
+        default:
+            sqlite3_result_null(context);
+        break;
     }
-    else
+}
+
+static void padFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
+{
+    assert( argc==3 || argc==2 );
+
+    long funcId = (long)sqlite3_user_data(context);
+    const char* a1 = (const char*)sqlite3_value_text(argv[0]);
+    bool isNullargv0 = (sqlite3_value_type(argv[0]) == SQLITE_NULL) || (a1 == NULL);
+    bool isNullargv1 = (sqlite3_value_type(argv[1]) == SQLITE_NULL);
+    bool isNullargv2 = true;
+    const char* a2 = NULL;
+    i64 cnt = 0;
+    
+    if(argc==3)
+    {
+        a2 = (const char*)sqlite3_value_text(argv[2]);
+        isNullargv2 = (sqlite3_value_type(argv[2]) == SQLITE_NULL) || (a2 == NULL);
+    }
+    
+    if (isNullargv0 || isNullargv1 || (cnt = sqlite3_value_int64(argv[1])) <= 0)
+    {
         sqlite3_result_null(context);
+        return;
+    }
+
+    i64 limit = sqlite3_context_db_handle(context)->aLimit[SQLITE_LIMIT_LENGTH];
+    if (cnt >= limit)
+        cnt = limit;
+
+    if (isNullargv2)
+        a2 = " ";
+    isNullargv2 = false;
+
+    switch(funcId)
+    {
+        case 1: // lpad
+        case 2: // rpad
+        {
+            i64 charsToGet = cnt;
+            i64 len1 = 0;
+            i64 charsInChars1 = 0;
+            SQLITE_INFO_STRING(a1, len1, charsInChars1, charsToGet);
+            if (charsToGet == 0) // we have less characters to get
+                sqlite3_result_text(context, a1, (size_t)len1, SQLITE_TRANSIENT);
+            else
+            {
+                i64 charsToGet2 = charsToGet;
+                i64 len2 = 0;
+                i64 charsInChars2 = 0;
+                SQLITE_INFO_STRING(a2, len2, charsInChars2, charsToGet2);
+                // how many times a2 must be copied
+                size_t cntStrToInsert = (size_t)(charsToGet/charsInChars2);
+                i64 cntRemainToInsert = charsToGet%charsInChars2;
+
+                i64 lenR2 = 0;
+                i64 charsInCharsR2 = 0;
+                // how many chars can we copy from a2 in case we cannot fit the entire string
+                if (cntRemainToInsert != 0)
+                {
+                    SQLITE_INFO_STRING(a2, lenR2, charsInCharsR2, cntRemainToInsert);
+                }
+                i64 pos = 0;
+                char* res = (char*)alloca((size_t)(len1 + cntStrToInsert*len2 + lenR2 + 1));
+                if (funcId == 2)
+                {
+                    // add original string
+                    memcpy(res+pos, a1, (size_t)len1);
+                    pos += len1;
+                }
+                // add all full pad strings
+                for (size_t i = 0; i < cntStrToInsert; i++)
+                {
+                    memcpy(res+pos, a2, (size_t)len2);
+                    pos += len2;
+                }
+                // add all partial pad string
+                if (lenR2 != 0)
+                {
+                    memcpy(res+pos, a2, (size_t)lenR2);
+                    pos += lenR2;
+                }
+                if (funcId == 1)
+                {
+                    // add original string
+                    memcpy(res+pos, a1, (size_t)len1);
+                    pos += len1;
+                }
+                *(res+pos) = '\0';
+                sqlite3_result_text(context, res, (size_t)pos, SQLITE_TRANSIENT);
+            }
+        }
+            break;
+        default:
+            sqlite3_result_null(context);
+        break;
+    }
 }
 
 //===============================================================================
@@ -319,6 +796,7 @@ static void xyzmFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
     FdoPtr<FdoIGeometry> fg;
     FdoPtr<FdoFgfGeometryFactory> gf;
     bool valid = false;
+    memset(&pt, 0x00, sizeof(pt));
 
     //data type of argument -- must be BLOB (FGF) or text.
     int type = sqlite3_value_type(argv[0]);
@@ -567,20 +1045,37 @@ void RegisterExtensions (sqlite3* db)
         { "asin",               1,  6, SQLITE_UTF8,    0, mathFunc },
         { "sqrt",               1,  7, SQLITE_UTF8,    0, mathFunc },
         { "ln",                 1,  8, SQLITE_UTF8,    0, mathFunc },
-        { "log",                1,  9, SQLITE_UTF8,    0, mathFunc },
-        { "exp",                1, 10, SQLITE_UTF8,    0, mathFunc },
-        { "power",              2, 11, SQLITE_UTF8,    0, mathFunc },
-        { "atan2",              2, 12, SQLITE_UTF8,    0, mathFunc },
+        { "exp",                1,  9, SQLITE_UTF8,    0, mathFunc },
+        { "log10",              1, 10, SQLITE_UTF8,    0, mathFunc },
+        { "log",                2, 11, SQLITE_UTF8,    0, mathFunc },
+        { "power",              2, 12, SQLITE_UTF8,    0, mathFunc },
+        { "atan2",              2, 13, SQLITE_UTF8,    0, mathFunc },
 
         { "mod",                2, 1,  SQLITE_UTF8,    0, numFunc },
         { "floor",              1, 2,  SQLITE_UTF8,    0, numFunc },
         { "ceil",               1, 3,  SQLITE_UTF8,    0, numFunc },
         { "trunc",              1, 4,  SQLITE_UTF8,    0, numFunc },
         { "trunc",              2, 4,  SQLITE_UTF8,    0, numFunc },
-        { "sign",               2, 5,  SQLITE_UTF8,    0, numFunc },
+        { "sign",               1, 5,  SQLITE_UTF8,    0, numFunc },
         { "remainder",          2, 6,  SQLITE_UTF8,    0, numFunc },
 
         { "concat",             2, 1,  SQLITE_UTF8,    0, strFunc },
+        { "instr",              2, 2,  SQLITE_UTF8,    0, strFunc },
+        { "translate",          3, 3,  SQLITE_UTF8,    0, strFunc },
+
+        { "lpad",               2, 1,  SQLITE_UTF8,    0, padFunc },
+        { "lpad",               3, 1,  SQLITE_UTF8,    0, padFunc },
+        { "rpad",               2, 2,  SQLITE_UTF8,    0, padFunc },
+        { "rpad",               3, 2,  SQLITE_UTF8,    0, padFunc },
+
+        { "currentdate",        0, 1,  SQLITE_UTF8,    0, currDateFunc },
+        { "addmonths",          2, 1,  SQLITE_UTF8,    0, dateFunc },
+        { "extract",            2, 2,  SQLITE_UTF8,    0, dateFunc },
+        { "extracttodouble",    2, 3,  SQLITE_UTF8,    0, dateFunc },
+        { "extracttoint",       2, 4,  SQLITE_UTF8,    0, dateFunc },
+        { "monthsbetween",      2, 5,  SQLITE_UTF8,    0, dateFunc },
+        
+        
 
         { g_spatial_op_map[FdoSpatialOperations_Contains],  2, FdoSpatialOperations_Contains,   SQLITE_UTF8,    0, spatialOpFunc },
         { g_spatial_op_map[FdoSpatialOperations_Crosses],   2, FdoSpatialOperations_Crosses,    SQLITE_UTF8,    0, spatialOpFunc },

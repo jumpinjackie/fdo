@@ -37,7 +37,8 @@ bool operator()(const char* _Left, const char* _Right) const
 	    return strcmp(_Left, _Right) < 0;
 	}
 };
-typedef std::map<char*, sqlite3_stmt*, string_less> QueryCache;
+typedef std::vector<std::pair<sqlite3_stmt*, bool>> ListQueryCache;
+typedef std::map<char*, ListQueryCache, string_less> QueryCache;
 typedef std::map<char*, SltMetadata*, string_less> MetadataCache;
 typedef std::map<char*, SpatialIndex*, string_less> SpatialIndexCache;
 

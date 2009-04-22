@@ -292,6 +292,18 @@ FdoClassDefinition* SltMetadata::ToClass()
             {
                 //Easy case -- no FDO metadata, just report the SQLite native type
                 dt = ConvertDataType(m_table->aCol[i].zType);
+                switch(dt)
+                {
+                case FdoDataType_DateTime:
+                case FdoDataType_String:
+                case FdoDataType_BLOB:
+                case FdoDataType_CLOB:
+                    dpd->SetLength(sqlite3_limit(m_connection->GetDbRead(), SQLITE_LIMIT_LENGTH, -1));
+                    break;
+                default: // set len = 8 for all other cases
+                    dpd->SetLength(8);
+                    break;
+                }
             }
 
             if (dt != -1)

@@ -1698,6 +1698,17 @@ int SltConnection::GetFeatureCount(const char* table)
     return -1;
 }
 
+// Do not use it in other functions than GetCachedParsedStatement
+// Statement is not cached -- make one, and also add an entry for it
+// into the cache table
+#define SQL_PREPARE_CACHEPARSEDSTM {                                       \
+    const char* tail = NULL;                                            \
+    int rc = sqlite3_prepare_v2(m_dbRead, sql, -1, &ret, &tail);        \
+    if (rc != SQLITE_OK || ret == NULL)                                 \
+        throw FdoException::Create(L"Failed to parse SQL statement");   \
+}                                                                       \
+
+
 sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql)
 {
     //Don't let too many queries get cached.
@@ -1712,32 +1723,40 @@ sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql)
 
     QueryCache::iterator iter = m_mCachedQueries.find((char*)sql);
     
+    bool stmtFound = false;
+
     if (iter != m_mCachedQueries.end())
     {
         //found a cached statement -- take it from the cache
         //and return it
 
-        //TODO: fix this
-        if (!iter->second)
-            throw FdoException::Create(L"Bug! Attempt to get a pre-compiled query that is already in use.");
-
-        ret = iter->second;
-        iter->second = NULL;
+        ListQueryCache& lst = iter->second;
+        for(ListQueryCache::iterator it = lst.begin(); it < lst.end(); it++)
+        {
+            if (!it->second) // pre-compiled query not in use
+            {
+                stmtFound = true;
+                it->second = true;
+                ret = it->first;
+            }
+        }
+        if (ret == NULL)
+        {
+            // to avoid a m_mCachedQueries.find() we will clone this small part
+            SQL_PREPARE_CACHEPARSEDSTM;
+            lst.push_back(std::make_pair(ret, true));
+        }
     }
     else
     {
-        //statement is not cached -- make one, and also add an entry for it
-        //into the cache table
-        const char* tail = NULL;
-        int rc = sqlite3_prepare_v2(m_dbRead, sql, -1, &ret, &tail);
-
-        if (rc != SQLITE_OK)
-        {
-            throw FdoException::Create(L"Failed to parse SQL statement");
-        }
-
-        m_mCachedQueries[_strdup(sql)] = NULL;
+        // to avoid a m_mCachedQueries.find() we will clone this small part
+        ListQueryCache lst;
+        SQL_PREPARE_CACHEPARSEDSTM;
+        lst.push_back(std::make_pair(ret, true));
+        m_mCachedQueries.insert(std::make_pair(_strdup(sql), lst));
     }
+    if (ret == NULL)
+        throw FdoException::Create(L"Failed to create SQL statement");
 
     return ret;
 }
@@ -1749,13 +1768,18 @@ void SltConnection::ReleaseParsedStatement(const char* sql, sqlite3_stmt* stmt)
 
     if (iter != m_mCachedQueries.end())
     {
-        sqlite3_reset(stmt);
-        iter->second = stmt;
+        ListQueryCache& lst = iter->second;
+        for(ListQueryCache::iterator it = lst.begin(); it < lst.end(); it++)
+        {
+            if (it->first == stmt)
+            {
+                sqlite3_reset(stmt);
+                it->second = false;
+                return;
+            }
+        }
     }
-    else
-    {
-        sqlite3_finalize(stmt);
-    }
+    sqlite3_finalize(stmt);
 }
 
 void SltConnection::ClearQueryCache()
@@ -1763,7 +1787,11 @@ void SltConnection::ClearQueryCache()
     for (QueryCache::iterator iter = m_mCachedQueries.begin(); 
         iter != m_mCachedQueries.end(); iter++)
     {
-        sqlite3_finalize(iter->second);
+        ListQueryCache& lst = iter->second;
+        for(ListQueryCache::iterator it = lst.begin(); it < lst.end(); it++)
+        {
+            sqlite3_finalize(it->first);
+        }
         free(iter->first); //it was created via strdup, must use free()
     }
 

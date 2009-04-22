@@ -52,16 +52,41 @@ int W2A_FAST(char* dst, int clen, const wchar_t* src, int wlen)
 
 FdoDateTime DateFromString(const wchar_t* val)
 {
-    FdoDateTime ret;
+    // to avoid stack corruption declare following variables
+    // since swscanf expects "Type of argument" = "Pointer to int"
+    int year = -1;
+    int month = -1;
+    int day = -1;
+    int hour = -1;
+    int minute = -1;
+    float seconds = 0.0f;
 
-    int res = swscanf(val, L"%d-%d-%dT%d:%d:%f", &ret.year, &ret.month, &ret.day, &ret.hour, &ret.minute, &ret.seconds);
+    int res = swscanf(val, L"%d-%d-%dT%d:%d:%f", &year, &month, &day, &hour, &minute, &seconds);
 
-    if (res != 3 && res != 6)
+    if (res != 3 && res != 5 && res != 6)
         throw FdoException::Create(L"Failed to parse DateTime.");
     
-    return ret;
+    return FdoDateTime((FdoInt16)year, (FdoInt8)month, (FdoInt8)day, (FdoInt8)hour, (FdoInt8)minute, seconds);
 }
 
+FdoDateTime DateFromString(const char* val)
+{
+    // to avoid stack corruption declare following variables
+    // since swscanf expects "Type of argument" = "Pointer to int"
+    int year = -1;
+    int month = -1;
+    int day = -1;
+    int hour = -1;
+    int minute = -1;
+    float seconds = 0.0f;
+
+    int res = sscanf(val, "%d-%d-%dT%d:%d:%f", &year, &month, &day, &hour, &minute, &seconds);
+
+    if (res != 3 && res != 5 && res != 6)
+        throw FdoException::Create(L"Failed to parse DateTime.");
+    
+    return FdoDateTime((FdoInt16)year, (FdoInt8)month, (FdoInt8)day, (FdoInt8)hour, (FdoInt8)minute, seconds);
+}
 
 void DateToString(FdoDateTime* dt, char* s, int nBytes)
 {
@@ -71,18 +96,11 @@ void DateToString(FdoDateTime* dt, char* s, int nBytes)
     }
     else if (dt->IsTime())
     {
-        //TODO: does this format the seconds part correctly?
-        int sec = (int)dt->seconds;
-        float fsec = dt->seconds - sec;
-        int ifsec = (int)(fsec * 1e6f);
-        _snprintf(s, nBytes, "%02d:%02d:%02d.%03d", dt->hour, dt->minute, sec, ifsec);
+        _snprintf(s, nBytes, "%02d:%02d:%0.3f", dt->hour, dt->minute, dt->seconds);
     }
     else
     {
-        int sec = (int)dt->seconds;
-        float fsec = dt->seconds - sec;
-        int ifsec = (int)(fsec * 1e6f);
-        _snprintf(s, nBytes, "%04d-%02d-%02dT%02d:%02d:%02d.%03d", dt->year, dt->month, dt->day, dt->hour, dt->minute, sec, ifsec);
+        _snprintf(s, nBytes, "%04d-%02d-%02dT%02d:%02d:%0.3f", dt->year, dt->month, dt->day, dt->hour, dt->minute, dt->seconds);
     }
 }
 

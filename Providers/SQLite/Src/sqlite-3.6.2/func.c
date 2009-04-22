@@ -858,6 +858,7 @@ static void replaceFunc(
 ** Implementation of the TRIM(), LTRIM(), and RTRIM() functions.
 ** The userdata is 0x1 for left trim, 0x2 for right trim, 0x3 for both.
 */
+#define SQLITE_EXTENDED_TRIM
 static void trimFunc(
   sqlite3_context *context,
   int argc,
@@ -875,6 +876,10 @@ static void trimFunc(
   if( sqlite3_value_type(argv[0])==SQLITE_NULL ){
     return;
   }
+  
+#ifdef SQLITE_EXTENDED_TRIM
+  flags = SQLITE_PTR_TO_INT(sqlite3_user_data(context));
+#endif
   zIn = sqlite3_value_text(argv[0]);
   if( zIn==0 ) return;
   nIn = sqlite3_value_bytes(argv[0]);
@@ -890,6 +895,27 @@ static void trimFunc(
     return;
   }else{
     const unsigned char *z;
+#ifdef SQLITE_EXTENDED_TRIM
+    nChar = sqlite3_value_bytes(argv[1]);
+    if (flags == 3 && nChar >= 4 && nChar <= 8) // only in case we have trim
+    {
+      if (sqlite3StrICmp(zCharSet, "LEADING") == 0)
+      {
+        zCharSet = " ";
+        flags = 1;
+      }
+      else if (sqlite3StrICmp(zCharSet, "TRAILING") == 0)
+      {
+        zCharSet = " ";
+        flags = 2;
+      }
+      else if (sqlite3StrICmp(zCharSet, "BOTH") == 0)
+      {
+        zCharSet = " ";
+        flags = 3;
+      }
+    }
+#endif
     for(z=zCharSet, nChar=0; *z; nChar++){
       SQLITE_SKIP_UTF8(z);
     }
@@ -907,7 +933,9 @@ static void trimFunc(
     }
   }
   if( nChar>0 ){
+#ifndef SQLITE_EXTENDED_TRIM
     flags = SQLITE_PTR_TO_INT(sqlite3_user_data(context));
+#endif
     if( flags & 1 ){
       while( nIn>0 ){
         int len;
