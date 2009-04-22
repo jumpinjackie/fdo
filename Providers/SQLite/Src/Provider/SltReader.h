@@ -158,6 +158,7 @@ protected:
 
     private:
 
+        std::wstring ExtractExpression(const wchar_t* exp, const wchar_t* propName);
 		void InitPropIndex(sqlite3_stmt* pStmt);
         int AddColumnToQuery(const wchar_t* name);
         void Requery2();

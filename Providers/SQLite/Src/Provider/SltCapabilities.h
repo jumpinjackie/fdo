@@ -19,6 +19,7 @@
 #ifndef SLCAPABILITIES_H
 #define SLCAPABILITIES_H
 #define  FDO_FUNCTION_VARIANCE  L"Variance"  // Returns the measure of the dispersion around their mean value.
+#define  FDO_FUNCTION_LOG10     L"Log10"     // Returns the base-10 logarithm of the value.
 
 #include <FdoExpressionEngine.h>
 #include <Functions/Geometry/FdoFunctionX.h>
@@ -374,6 +375,24 @@ class SltCapabilities  : public FdoIConnectionCapabilities,
         ret->Add(wellKnownFunction);
         wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_LN);
         ret->Add(wellKnownFunction);
+
+        // Is safe to copy the signatures since we don't alter them and functions get the same parameters
+        // this will save us memory allocation and time...
+        signatures = FdoSignatureDefinitionCollection::Create();
+        rdSignatures = wellKnownFunction->GetSignatures();
+        if (rdSignatures != NULL && rdSignatures->GetCount())
+        {
+            for (int idx = 0; idx < rdSignatures->GetCount(); idx++)
+            {
+                FdoPtr<FdoSignatureDefinition> item = rdSignatures->GetItem(idx);
+                signatures->Add(item);
+            }
+        }
+        // TODO localize this
+        desc = L"Represents the base-10 logarithm of the value.";
+        wellKnownFunction = FdoFunctionDefinition::Create(FDO_FUNCTION_LOG10, desc, true, signatures, FdoFunctionCategoryType_Math);
+        ret->Add(wellKnownFunction);
+
         wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_LOG);
         ret->Add(wellKnownFunction);
         wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_MOD);
@@ -401,21 +420,42 @@ class SltCapabilities  : public FdoIConnectionCapabilities,
         
         wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_CONCAT);
         ret->Add(wellKnownFunction);
-        wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_LOWER);
-        ret->Add(wellKnownFunction);
-        wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_UPPER);
-        ret->Add(wellKnownFunction);
-        wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_SUBSTR);
+        wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_INSTR);
         ret->Add(wellKnownFunction);
         wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_LENGTH);
         ret->Add(wellKnownFunction);
-        wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_TRIM);
+        wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_LOWER);
+        ret->Add(wellKnownFunction);
+        wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_LPAD);
         ret->Add(wellKnownFunction);
         wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_LTRIM);
+        ret->Add(wellKnownFunction);
+        wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_RPAD);
         ret->Add(wellKnownFunction);
         wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_RTRIM);
         ret->Add(wellKnownFunction);
         wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_SOUNDEX);
+        ret->Add(wellKnownFunction);
+        wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_SUBSTR);
+        ret->Add(wellKnownFunction);
+        wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_TRANSLATE);
+        ret->Add(wellKnownFunction);
+        wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_TRIM);
+        ret->Add(wellKnownFunction);
+        wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_UPPER);
+        ret->Add(wellKnownFunction);
+
+        wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_ADDMONTHS);
+        ret->Add(wellKnownFunction);
+        wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_CURRENTDATE);
+        ret->Add(wellKnownFunction);
+        wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_EXTRACT);
+        ret->Add(wellKnownFunction);
+        wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_EXTRACTTODOUBLE);
+        ret->Add(wellKnownFunction);
+        wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_EXTRACTTOINT);
+        ret->Add(wellKnownFunction);
+        wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_MONTHSBETWEEN);
         ret->Add(wellKnownFunction);
 
         // Add function X to the list of supported function

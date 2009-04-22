@@ -25,7 +25,7 @@
 #include "DiskSpatialIndex.h"
 #include "SltConversionUtils.h"
 #include "RowidIterator.h"
-
+#include "FdoCommonMiscUtil.h"
 #include "vdbeInt.h"
 
 
@@ -726,10 +726,13 @@ FdoClassDefinition* SltReader::GetClassDefinition()
 {
 	if (!m_class)
 	{
+        std::vector<int> unknownPropsIdx;
 		//decide on a name for the class -- just pick the table name
 		//for the first column :)
-		const char* table = sqlite3_column_table_name(m_pStmt, 0);
-		std::wstring wtable = A2W_SLOW(table);
+		const char* tableName = sqlite3_column_table_name(m_pStmt, 0);
+		std::wstring wtable = A2W_SLOW(tableName);
+		//find source feature class metadata
+        SltMetadata* mainMd = m_connection->GetMetadata(tableName);
 
 		m_class = FdoFeatureClass::Create(wtable.c_str(), NULL);
 		FdoPtr<FdoPropertyDefinitionCollection> dstpdc = m_class->GetProperties();
@@ -740,12 +743,13 @@ FdoClassDefinition* SltReader::GetClassDefinition()
 		//cache information about the returned columns
 		for (int i=0; i<nProps; i++)
 		{
+			bool propFound = false;
 			//get name of table that is the source for this column
 			const char* table = sqlite3_column_table_name(m_pStmt, i);
 
 			//find source feature class metadata
-			SltMetadata* md = m_connection->GetMetadata(table);
-			
+            SltMetadata* md = (table == NULL)? NULL : m_connection->GetMetadata(table);
+
 			if (md)
 			{
 				FdoPtr<FdoClassDefinition> origfc = md->ToClass();
@@ -762,7 +766,7 @@ FdoClassDefinition* SltReader::GetClassDefinition()
                     continue; //TODO: really in this case we need to jump to the else statement that handles generic columns
 
                 FdoPtr<FdoPropertyDefinition> clonedprop = FdoCommonSchemaUtil::DeepCopyFdoPropertyDefinition(srcprop);
-                
+                propFound = true;
     			dstpdc->Add(clonedprop);
 
 				if (idpdc->Contains(pname))
@@ -771,44 +775,155 @@ FdoClassDefinition* SltReader::GetClassDefinition()
 				if (wcscmp(pname, geompd->GetName()) == 0)
 					((FdoFeatureClass*)m_class)->SetGeometryProperty((FdoGeometricPropertyDefinition*)clonedprop.p);
 			}
-			else
+            // in case property was not found let's look at the sqlite column
+			if (!propFound)
 			{
 				//case where the reader is a result of arbitrary sql and the
 				//resulting columns do not come from any existing table (is this case possible?)
-				FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(m_propNames[i], NULL);
+				FdoPtr<FdoDataPropertyDefinition> dpd;
 
 				//NOTE: Unfortunately, the result of calling this function
 				//may vary when called on different rows of the result.
 				int type = sqlite3_column_type(m_pStmt, i);
-				FdoDataType fdoType = (FdoDataType)-1;
-
 				switch (type)
 				{
 				case SQLITE_INTEGER: 
-					fdoType = FdoDataType_Int64;
+                    dpd = FdoDataPropertyDefinition::Create(m_propNames[i], NULL);
+    				dpd->SetDataType(FdoDataType_Int64);
 					break;
 				case SQLITE_TEXT:
-					fdoType = FdoDataType_String;
+                    dpd = FdoDataPropertyDefinition::Create(m_propNames[i], NULL);
+    				dpd->SetDataType(FdoDataType_String);
 					break;
 				case SQLITE_FLOAT:
-					fdoType = FdoDataType_Double;
+                    dpd = FdoDataPropertyDefinition::Create(m_propNames[i], NULL);
+    				dpd->SetDataType(FdoDataType_Double);
 					break;
 				case SQLITE_BLOB:
-					fdoType = FdoDataType_BLOB;
+                    dpd = FdoDataPropertyDefinition::Create(m_propNames[i], NULL);
+    				dpd->SetDataType(FdoDataType_BLOB);
 					break;
 				case SQLITE_NULL:
-					fdoType = FdoDataType_String; //TODO: what to do here?
+                    // we will process them later at the end...
+                    unknownPropsIdx.push_back(i);
 					break;
 				}
-
-				dpd->SetDataType(fdoType);
-
-				dstpdc->Add(dpd);
+                if (dpd != NULL)
+				    dstpdc->Add(dpd);
 			}
 		}
+        // do we have unknown calculations !?
+        if (unknownPropsIdx.size() != 0)
+        {
+			FdoPtr<FdoClassDefinition> origfc = mainMd->ToClass();
+            // use the original class in case we have one otherwise use the generated class
+            FdoClassDefinition* origClass = (origfc == NULL) ? m_class : origfc;
+            // the expression may be based on provider functions
+            FdoPtr<FdoIExpressionCapabilities> expCap = m_connection->GetExpressionCapabilities();
+            FdoPtr<FdoFunctionDefinitionCollection> functionDefinitions = expCap->GetFunctions();
+            for(size_t idx = 0; idx < unknownPropsIdx.size(); idx++)
+            {
+                FdoPtr<FdoPropertyDefinition> pdToAdd;
+                try
+                {
+                    FdoPropertyType retPropType;
+                    FdoDataType retDataType;
+                    const char* propDef = m_reissueProps.Get(unknownPropsIdx.at(idx));
+                    std::wstring expUni = A2W_SLOW(propDef);
+                    std::wstring expression = ExtractExpression(expUni.c_str(), m_propNames[unknownPropsIdx.at(idx)]);
+                    FdoPtr<FdoExpression> expr = FdoExpression::Parse(expression.c_str());
+                    FdoCommonMiscUtil::GetExpressionType(functionDefinitions, origClass, expr, retPropType, retDataType);
+                    switch(retPropType)
+                    {
+                        case FdoPropertyType_DataProperty:
+                        {
+                            FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(m_propNames[unknownPropsIdx.at(idx)], NULL);
+				            dpd->SetDataType(retDataType);
+                            pdToAdd = dpd;
+                        }
+                            break;
+                        case FdoPropertyType_GeometricProperty:
+                            pdToAdd = FdoGeometricPropertyDefinition::Create(m_propNames[unknownPropsIdx.at(idx)], NULL);
+                            break;
+                        default:
+                        {
+                            // we cannot do much about this case
+                            FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(m_propNames[unknownPropsIdx.at(idx)], NULL);
+				            dpd->SetDataType(FdoDataType_String);
+                            pdToAdd = dpd;
+                        }
+                            break;
+                    }
+                }
+                catch(FdoException* exc)
+                {
+                    // we failed to detect the type use the default type
+                    exc->Release();
+                    FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(m_propNames[unknownPropsIdx.at(idx)], NULL);
+				    dpd->SetDataType(FdoDataType_String);
+                    pdToAdd = dpd;
+                }
+                if (pdToAdd != NULL)
+				    dstpdc->Add(pdToAdd);
+            }
+        }
 	}
 
 	return FDO_SAFE_ADDREF(m_class);
+}
+
+// function supports following formats (note a+b is just a sample - it can be any expression)
+//  a + b aS name
+//  a + b name
+//  a + b AS "na me"
+//  a + b "na me"
+std::wstring SltReader::ExtractExpression(const wchar_t* exp, const wchar_t* propName)
+{
+    std::wstring retVal;
+    wchar_t asValue[3];
+    size_t szExp = wcslen(exp);
+    size_t szName = wcslen(propName);
+    int posEnd = szExp - szName;
+    if (*(exp + szExp - 1) == '\"' && *propName != '\"')
+        posEnd -= 2; // eliminate "" in case we have them
+
+    int posAs = posEnd;
+    int posEndExp = posEnd;
+    if (posEnd > 0)
+    {
+        for(int idx = posEnd-1; idx > 0; idx--)
+        {
+            if (*(exp+idx) != ' ')
+            {
+                posAs = 0;
+                int idx2 = 0;
+                for(idx2 = idx; idx2 > 0; idx2--)
+                {
+                    if (*(exp+idx2) == ' ' || *(exp+idx2) == '\"')
+                    {
+                        posAs = idx2 + 1;
+                        break;
+                    }
+                }
+                posEndExp = posEnd; // assume could not find 'AS' take it as an exprerssion
+                if ((posEnd - posAs) == 2)
+                {
+                    memcpy(asValue, posAs + exp, (posEnd - posAs)*sizeof(wchar_t));
+                    asValue[2] = '\0';
+                    if(_wcsicmp(asValue, L"AS") == 0)
+                        posEndExp = posAs; // we found 'AS'
+                }
+                break;
+            }
+            else
+                posEnd--;
+        }
+    }
+    if (posEndExp > 0)
+        retVal = std::wstring(exp, posEndExp);
+    else
+        retVal = exp;
+    return retVal;
 }
 
 FdoInt32 SltReader::GetDepth()
