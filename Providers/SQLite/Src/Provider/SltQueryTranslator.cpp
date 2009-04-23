@@ -320,7 +320,8 @@ void SltQueryTranslator::ProcessInCondition(FdoInCondition& filter)
 void SltQueryTranslator::ProcessNullCondition(FdoNullCondition& filter)
 {
     TCtx ret;
-    ret.expr = filter.ToString();
+    FdoPtr<FdoIdentifier> idf = filter.GetPropertyName();
+    ret.expr = L"\"" + std::wstring(idf->GetName()) + L"\" IS NULL";
     m_evalStack.push_back(ret);
 }
 
