@@ -184,7 +184,7 @@ SltReader::~SltReader()
 	m_connection->Release();
 	delete[] m_sprops;
     delete[] m_wkbBuffer;
-    delete m_aPropNames;
+    delete[] m_aPropNames;
 }
 
 
@@ -312,7 +312,7 @@ void SltReader::InitPropIndex(sqlite3_stmt* pStmt)
     //We will store all the property names converted to wide char
     //into a single string buffer (to save on allocations) and
     //use pointers into that buffer 
-    delete m_aPropNames;
+    delete[] m_aPropNames;
     size_t buflen = 0;
 
 	//find out how big a buffer we need

@@ -347,17 +347,11 @@ void SltConnection::Close()
 
     ClearQueryCache();
 
-    if (m_dbRead)
-    {
-        int rc = sqlite3_close(m_dbRead);
+    if (m_dbRead && sqlite3_close(m_dbRead) != SQLITE_BUSY)
         m_dbRead = NULL;
-    }
 
-    if (m_dbWrite)
-    {
-        int rc = sqlite3_close(m_dbWrite);
+    if (m_dbWrite && sqlite3_close(m_dbWrite) != SQLITE_BUSY)
         m_dbWrite = NULL;
-    }
     
     FDO_SAFE_RELEASE(m_pSchema);
 
