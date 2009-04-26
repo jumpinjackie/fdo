@@ -99,7 +99,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Creating Library and Versioning $(ProjectName).dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\SubDoc\Providers.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot;  $(OutDir)\$(ProjectName).dll&#x0D;&#x0A;"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot;  $(OutDir)\$(ProjectName).dll&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -185,7 +185,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Creating Library and Versioning $(ProjectName).dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\SubDoc\Providers.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot;  $(OutDir)\$(ProjectName).dll&#x0D;&#x0A;"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot;  $(OutDir)\$(ProjectName).dll&#x0D;&#x0A;"
 				ExcludedFromBuild="true"
 			/>
 		</Configuration>
@@ -272,7 +272,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Creating Library and Versioning $(ProjectName).dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\SubDoc\Providers.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll&#x0D;&#x0A;"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -360,7 +360,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Creating Library and Versioning $(ProjectName).dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\SubDoc\Providers.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll&#x0D;&#x0A;"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll&#x0D;&#x0A;"
 				ExcludedFromBuild="true"
 			/>
 		</Configuration>
