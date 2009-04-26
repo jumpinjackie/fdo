@@ -110,7 +110,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning $(ProjectName).dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.4.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\$(ProjectName).dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.5.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\$(ProjectName).dll"
 			/>
 		</Configuration>
 		<Configuration
@@ -206,7 +206,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning $(ProjectName).dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.4.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\$(ProjectName).dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.5.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\$(ProjectName).dll"
 				ExcludedFromBuild="true"
 			/>
 		</Configuration>
@@ -305,7 +305,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning $(ProjectName).dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.4.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\$(ProjectName).dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.5.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\$(ProjectName).dll"
 			/>
 		</Configuration>
 		<Configuration
@@ -404,7 +404,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning $(ProjectName).dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.4.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\$(ProjectName).dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.5.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\$(ProjectName).dll"
 				ExcludedFromBuild="true"
 			/>
 		</Configuration>

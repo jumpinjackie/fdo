@@ -105,7 +105,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning FDOGeometry.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.4.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\FDOGeometry.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.5.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\FDOGeometry.dll"
 			/>
 		</Configuration>
 		<Configuration
@@ -195,7 +195,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning FDOGeometry.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.4.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\FDOGeometry.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.5.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\FDOGeometry.dll"
 				ExcludedFromBuild="true"
 			/>
 		</Configuration>
@@ -284,7 +284,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning FDOGeometry.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.4.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\FDOGeometry.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.5.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\FDOGeometry.dll"
 			/>
 		</Configuration>
 		<Configuration
@@ -373,7 +373,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning FDOGeometry.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.4.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\FDOGeometry.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.5.0.0%FDO_VERSION%&quot; -v&quot;..\SubDoc\Fdo.version&quot; $(OutDir)\FDOGeometry.dll"
 				ExcludedFromBuild="true"
 			/>
 		</Configuration>
