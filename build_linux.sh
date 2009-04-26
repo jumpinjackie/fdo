@@ -21,7 +21,7 @@ TYPEACTION=buildinstall
 TYPEBUILD=release
 TYPECONFIGURE=configure
 BUILDDOCS=skip
-PREFIXVAL=/usr/local/fdo-3.4.0
+PREFIXVAL=/usr/local/fdo-3.5.0
 
 DEFMODIFY=no
 FDOCOREENABLE=yes
