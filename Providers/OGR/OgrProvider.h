@@ -511,9 +511,9 @@ public:
     OGR_API virtual FdoString* GetProviderDescription()
         { return L"FDO Access to OGR Data Sources"; }
     OGR_API virtual FdoString* GetProviderVersion()
-        { return L"3.4.0.0"; }
+        { return L"3.5.0.0"; }
     OGR_API virtual FdoString* GetFeatureDataObjectsVersion()
-        { return L"3.4.0.0"; }
+        { return L"3.5.0.0"; }
     OGR_API virtual FdoIConnectionPropertyDictionary* GetConnectionProperties()
         { return FDO_SAFE_ADDREF(this); }
 
