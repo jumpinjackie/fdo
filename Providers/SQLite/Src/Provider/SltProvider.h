@@ -114,8 +114,8 @@ public:
     virtual FdoString* GetProviderName()                { return L"OSGeo.SQLite.3.4"; }
     virtual FdoString* GetProviderDisplayName()         { return L"OSGeo FDO Provider for SQLite (Spatial)"; }
     virtual FdoString* GetProviderDescription()         { return L"FDO Access to SQLite Data Sources"; }
-    virtual FdoString* GetProviderVersion()             { return L"3.4.0.0"; }
-    virtual FdoString* GetFeatureDataObjectsVersion()   { return L"3.4.0.0"; }
+    virtual FdoString* GetProviderVersion()             { return L"3.5.0.0"; }
+    virtual FdoString* GetFeatureDataObjectsVersion()   { return L"3.5.0.0"; }
     
     virtual FdoIConnectionPropertyDictionary*   GetConnectionProperties()
                                                         { return FDO_SAFE_ADDREF(this); }
