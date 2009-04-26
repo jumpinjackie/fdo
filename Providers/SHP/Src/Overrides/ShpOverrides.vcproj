@@ -102,7 +102,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning SHPOverrides.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SHPOverrides.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SHPOverrides.dll"
 			/>
 		</Configuration>
 		<Configuration
@@ -189,7 +189,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning SHPOverrides.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SHPOverrides.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SHPOverrides.dll"
 				ExcludedFromBuild="true"
 			/>
 		</Configuration>
@@ -280,7 +280,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning SHPOverrides.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SHPOverrides.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SHPOverrides.dll"
 			/>
 		</Configuration>
 		<Configuration
@@ -371,7 +371,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning SHPOverrides.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SHPOverrides.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SHPOverrides.dll"
 				ExcludedFromBuild="true"
 			/>
 		</Configuration>
