@@ -5,8 +5,8 @@
     <DisplayName>OSGeo FDO Provider for SHP</DisplayName>
     <Description>OSGeo FDO Provider for SHP</Description>
     <IsManaged>False</IsManaged>
-    <Version>3.4.0.0</Version>
-    <FeatureDataObjectsVersion>3.4.0.0</FeatureDataObjectsVersion>
+    <Version>3.5.0.0</Version>
+    <FeatureDataObjectsVersion>3.5.0.0</FeatureDataObjectsVersion>
     <LibraryPath>.\ShpProvider.dll</LibraryPath>
   </FeatureProvider>
 </FeatureProviderRegistry>
