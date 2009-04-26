@@ -5,8 +5,8 @@
     <DisplayName>Oracle FDO Provider</DisplayName>
     <Description>FDO Provider for Oracle RDBMS</Description>
     <IsManaged>False</IsManaged>
-    <Version>3.4.0.0</Version>
-    <FeatureDataObjectsVersion>3.4.0.0</FeatureDataObjectsVersion>
+    <Version>3.5.0.0</Version>
+    <FeatureDataObjectsVersion>3.5.0.0</FeatureDataObjectsVersion>
     <LibraryPath>.\OracleProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
@@ -14,8 +14,8 @@
     <DisplayName>OSGeo FDO Provider for MySQL</DisplayName>
     <Description>FDO Provider for MySql</Description>
     <IsManaged>False</IsManaged>
-    <Version>3.4.0.0</Version>
-    <FeatureDataObjectsVersion>3.4.0.0</FeatureDataObjectsVersion>
+    <Version>3.5.0.0</Version>
+    <FeatureDataObjectsVersion>3.5.0.0</FeatureDataObjectsVersion>
     <LibraryPath>.\MySQLProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
@@ -23,8 +23,8 @@
     <DisplayName>SQL Server FDO Provider</DisplayName>
     <Description>FDO Provider for SQL Server</Description>
     <IsManaged>False</IsManaged>
-    <Version>3.4.0.0</Version>
-    <FeatureDataObjectsVersion>3.4.0.0</FeatureDataObjectsVersion>
+    <Version>3.5.0.0</Version>
+    <FeatureDataObjectsVersion>3.5.0.0</FeatureDataObjectsVersion>
     <LibraryPath>.\SqlServerProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
@@ -32,8 +32,8 @@
     <DisplayName>OSGeo FDO Provider for ODBC</DisplayName>
     <Description>Autodesk FDO Provider for ODBC</Description>
     <IsManaged>False</IsManaged>
-    <Version>3.4.0.0</Version>
-    <FeatureDataObjectsVersion>3.4.0.0</FeatureDataObjectsVersion>
+    <Version>3.5.0.0</Version>
+    <FeatureDataObjectsVersion>3.5.0.0</FeatureDataObjectsVersion>
     <LibraryPath>.\OdbcProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
@@ -41,8 +41,8 @@
     <DisplayName>OSGeo FDO Provider for SQL Server Spatial</DisplayName>
     <Description>Read/Write access to feature data in a MS SQL Server spatially enabled data store. Supports geospatial and non-geospatial data and schema.</Description>
     <IsManaged>False</IsManaged>
-    <Version>3.4.0.0</Version>
-    <FeatureDataObjectsVersion>3.4.0.0</FeatureDataObjectsVersion>
+    <Version>3.5.0.0</Version>
+    <FeatureDataObjectsVersion>3.5.0.0</FeatureDataObjectsVersion>
     <LibraryPath>.\SQLServerSpatialProvider.dll</LibraryPath>
   </FeatureProvider>
 </FeatureProviderRegistry>
