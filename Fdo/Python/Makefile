@@ -25,14 +25,14 @@
 #              - Python 2.4
 #
 #              Once the build is completed, the generated files (_FDO.so and FDO.py)
-#              are copied to /usr/local/fdo-3.4.0/lib.
+#              are copied to /usr/local/fdo-3.5.0/lib.
 #
 # Parameters:  clean
 #              Optional input.  Deletes all object files and output files
 #              install
-#              Optional input.  Copies output files to /usr/local/fdo-3.4.0/lib
+#              Optional input.  Copies output files to /usr/local/fdo-3.5.0/lib
 #              uninstall
-#              Optional input.  Deletes output files from /usr/local/fdo-3.4.0/lib
+#              Optional input.  Deletes output files from /usr/local/fdo-3.5.0/lib
 #
 # ------------------------------------------------------------------------------
 # ATTENTION: Edit the following variables to match your environment.
@@ -42,7 +42,7 @@
 CC=g++
 
 # Target directory where the final shared library will be placed
-TARGET_DIR=/usr/local/fdo-3.4.0/lib
+TARGET_DIR=/usr/local/fdo-3.5.0/lib
 
 # Location of the FDO header files.
 FDO_INCLUDE_PATH=$(FDO)/Unmanaged/Inc
