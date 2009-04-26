@@ -19,7 +19,7 @@ rem
 
 SET FDOTARZIPFOLDERRTB=OpenSource_FDO
 SET FDOTARGETFOLDER=OpenSource
-SET FDOBUILDNUMBERRTB=GXXX
+SET FDOBUILDNUMBERRTB=D00X
 SET FDOSOURCEZIP=%cd%
 SET FDOERRORMESSAGE=
 
@@ -90,47 +90,47 @@ goto study_params
 	for /F %%f in (%FDOSOURCEZIP%\release.txt) do SET FDOBUILDNUMBERRTB=%%f
 	
 :start_copy
-   copy /Y "%FDOSOURCEZIP%\fdo-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
-   copy /Y "%FDOSOURCEZIP%\fdoshp-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
-   copy /Y "%FDOSOURCEZIP%\fdosdf-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
-   copy /Y "%FDOSOURCEZIP%\fdowfs-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
-   copy /Y "%FDOSOURCEZIP%\fdowms-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
-   copy /Y "%FDOSOURCEZIP%\fdoarcsde-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
-   copy /Y "%FDOSOURCEZIP%\fdordbms-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
-   copy /Y "%FDOSOURCEZIP%\fdogdal-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
-   copy /Y "%FDOSOURCEZIP%\fdoogr-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
-   copy /Y "%FDOSOURCEZIP%\fdopostgis-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
-   copy /Y "%FDOSOURCEZIP%\fdokingoracle-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
-   copy /Y "%FDOSOURCEZIP%\fdosqlite-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdo-3.5.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdoshp-3.5.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdosdf-3.5.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdowfs-3.5.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdowms-3.5.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdoarcsde-3.5.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdordbms-3.5.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdogdal-3.5.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdoogr-3.5.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdopostgis-3.5.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdokingoracle-3.5.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdosqlite-3.5.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
    
 :start_unzip
    echo *start unzip files
    pushd "%FDOTARGETFOLDER%"
-   7z x -ry "fdo-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
-   7z x -ry "fdoshp-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
-   7z x -ry "fdosdf-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
-   7z x -ry "fdowfs-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
-   7z x -ry "fdowms-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
-   7z x -ry "fdoarcsde-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
-   7z x -ry "fdordbms-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
-   7z x -ry "fdogdal-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
-   7z x -ry "fdoogr-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
-   7z x -ry "fdopostgis-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
-   7z x -ry "fdokingoracle-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
-   7z x -ry "fdosqlite-3.4.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdo-3.5.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdoshp-3.5.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdosdf-3.5.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdowfs-3.5.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdowms-3.5.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdoarcsde-3.5.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdordbms-3.5.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdogdal-3.5.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdoogr-3.5.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdopostgis-3.5.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdokingoracle-3.5.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdosqlite-3.5.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
    
-   7z x -ry "fdo-3.4.0_%FDOBUILDNUMBERRTB%.tar" >>nul
-   7z x -ry "fdoshp-3.4.0_%FDOBUILDNUMBERRTB%.tar" >>nul
-   7z x -ry "fdosdf-3.4.0_%FDOBUILDNUMBERRTB%.tar" >>nul
-   7z x -ry "fdowfs-3.4.0_%FDOBUILDNUMBERRTB%.tar" >>nul
-   7z x -ry "fdowms-3.4.0_%FDOBUILDNUMBERRTB%.tar" >>nul
-   7z x -ry "fdoarcsde-3.4.0_%FDOBUILDNUMBERRTB%.tar" >>nul
-   7z x -ry "fdordbms-3.4.0_%FDOBUILDNUMBERRTB%.tar" >>nul
-   7z x -ry "fdogdal-3.4.0_%FDOBUILDNUMBERRTB%.tar" >>nul
-   7z x -ry "fdoogr-3.4.0_%FDOBUILDNUMBERRTB%.tar" >>nul
-   7z x -ry "fdopostgis-3.4.0_%FDOBUILDNUMBERRTB%.tar" >>nul
-   7z x -ry "fdokingoracle-3.4.0_%FDOBUILDNUMBERRTB%.tar" >>nul
-   7z x -ry "fdosqlite-3.4.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdo-3.5.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdoshp-3.5.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdosdf-3.5.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdowfs-3.5.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdowms-3.5.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdoarcsde-3.5.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdordbms-3.5.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdogdal-3.5.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdoogr-3.5.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdopostgis-3.5.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdokingoracle-3.5.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdosqlite-3.5.0_%FDOBUILDNUMBERRTB%.tar" >>nul
    
    del /Q /F "*.tar"
    echo unzip files done...
