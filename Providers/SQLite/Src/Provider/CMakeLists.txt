@@ -23,6 +23,6 @@ SltSpatialContextReader.cpp
 target_link_libraries (SQLiteProvider SpatialIndex sqlite-fdo ProvidersCommon FDO ) 
 
 INSTALL (TARGETS SQLiteProvider
-         RUNTIME DESTINATION /usr/local/fdo-3.4.0/lib
-         LIBRARY DESTINATION /usr/local/fdo-3.4.0/lib
+         RUNTIME DESTINATION /usr/local/fdo-3.5.0/lib
+         LIBRARY DESTINATION /usr/local/fdo-3.5.0/lib
          )
