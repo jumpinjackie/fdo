@@ -16,7 +16,7 @@
 #ifndef STDPLUS_PROVIDER_H
 #define STDPLUS_PROVIDER_H
 
-#define SDF_PROVIDER_NAME					L"OSGeo.SDF.3.4"
+#define SDF_PROVIDER_NAME					L"OSGeo.SDF.3.5"
 #define SDF_PROVIDER_DEFAULT_DISPLAY_NAME	"OSGeo FDO Provider for SDF"
 #define SDF_PROVIDER_DEFAULT_DESCRIPTION	"Read/write access to Autodesk's spatial database format, a file-based personal geodatabase that supports multiple features/attributes, spatial indexing, and file-locking."
 #define SDF_PROVIDER_VERSION				L"3.5.0.0"

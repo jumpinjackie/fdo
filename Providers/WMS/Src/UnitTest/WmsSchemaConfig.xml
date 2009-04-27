@@ -46,7 +46,7 @@
    			</xs:complexContent>
 		</xs:complexType>
 	</xs:schema>
-    <SchemaMapping provider="OSGeo.WMS.3.4" name="WorldMap" xmlns="http://fdowms.osgeo.org/schemas">
+    <SchemaMapping provider="OSGeo.WMS.3.5" name="WorldMap" xmlns="http://fdowms.osgeo.org/schemas">
 	    <complexType name="WorldWindsType">
 		    <RasterDefinition name="Image">
 			    <Format>PNG</Format>

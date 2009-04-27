@@ -19,7 +19,7 @@
 #define ARCSDEPROVIDER_H
 
 // General descriptive items of ArcSDE Provier:
-#define ARCSDE_PROVIDER_NAME						L"OSGeo.ArcSDE.3.4"
+#define ARCSDE_PROVIDER_NAME						L"OSGeo.ArcSDE.3.5"
 #define ARCSDE_PROVIDER_DEFAULT_DISPLAY_NAME	"OSGeo FDO Provider for ArcSDE"
 #define ARCSDE_PROVIDER_DEFAULT_DESCRIPTION		"Read/write access to an ESRI ArcSDE-based data store, using Oracle and SQL Server."
 #define ARCSDE_PROVIDER_VERSION					L"3.5.0.0"

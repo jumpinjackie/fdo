@@ -505,7 +505,7 @@ public:
     //-------------------------------------------------------
 
     OGR_API virtual FdoString* GetProviderName()
-        { return L"OSGeo.OGR.3.4"; }
+        { return L"OSGeo.OGR.3.5"; }
     OGR_API virtual FdoString* GetProviderDisplayName()
         { return L"OSGeo FDO Provider for OGR"; }
     OGR_API virtual FdoString* GetProviderDescription()

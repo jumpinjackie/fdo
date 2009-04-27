@@ -111,7 +111,7 @@ public:
     // FdoIConnectionInfo implementation
     //-------------------------------------------------------
 
-    virtual FdoString* GetProviderName()                { return L"OSGeo.SQLite.3.4"; }
+    virtual FdoString* GetProviderName()                { return L"OSGeo.SQLite.3.5"; }
     virtual FdoString* GetProviderDisplayName()         { return L"OSGeo FDO Provider for SQLite (Spatial)"; }
     virtual FdoString* GetProviderDescription()         { return L"FDO Access to SQLite Data Sources"; }
     virtual FdoString* GetProviderVersion()             { return L"3.5.0.0"; }

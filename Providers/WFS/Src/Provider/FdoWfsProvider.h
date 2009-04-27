@@ -20,7 +20,7 @@
 #define FDOWFSPROVIDER_H
 
 // General descriptive items of WFS Provier:
-#define WFS_PROVIDER_NAME					L"OSGeo.WFS.3.4"
+#define WFS_PROVIDER_NAME					L"OSGeo.WFS.3.5"
 #define WFS_PROVIDER_DEFAULT_DISPLAY_NAME	"OSGeo FDO Provider for WFS"
 #define WFS_PROVIDER_DEFAULT_DESCRIPTION	"Read access to OGC WFS-based data store."
 #define WFS_PROVIDER_VERSION				L"3.5.0.0"
