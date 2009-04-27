@@ -60,7 +60,7 @@ class ClientServicesTest(unittest.TestCase):
 			self.assert_( provider.__class__.__name__ == 'FdoProvider')
 			
 			# Unable to load the SDF provider for some reason.
-			if name == "OSGeo.SDF.3.4":
+			if name == "OSGeo.SDF.3.5":
 				connection = manager.CreateConnection(name)
 				self.assert_(connection.__class__.__name__ == 'FdoIConnection')
 				self.assert_(connection.Release() == 0)
