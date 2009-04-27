@@ -102,6 +102,7 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
 	// that is recognized by WFS servers.
 	FdoString* schemaFeatureName = NULL;
 	FdoString* featureTypeName = NULL;
+    FdoStringP featureTypeNameCheck; 
 	FdoString* targetNamespace = L"";
 	FdoPtr<FdoFeatureSchemaCollection> schemas = mConnection->GetSchemas();
 	FdoPtr<FdoPhysicalSchemaMappingCollection> mappings = schemas->GetXmlSchemaMappings();
@@ -132,7 +133,15 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
 			    }
 		    }
             if (featureTypeName != NULL)
+            {                
+                featureTypeNameCheck = featureTypeName;
+                if (featureTypeNameCheck.Contains(FdoWfsGlobals::Dot)) 
+                {
+                    featureTypeNameCheck = featureTypeNameCheck.Replace(FdoWfsGlobals::Dot, L".");                     
+                    featureTypeName = featureTypeNameCheck;
+                }
                 break;
+            }
         }
 	}
 
