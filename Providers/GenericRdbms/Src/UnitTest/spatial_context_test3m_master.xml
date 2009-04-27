@@ -598,7 +598,7 @@ geographic</gml:derivedCRSType>
 </xs:complexContent>
 </xs:complexType>
 </xs:schema>
-<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/SQLServerSpatialProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" textInRow="NotInRow" provider="OSGeo.SQLServerSpatial.3.4" name="ScTest">
+<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/SQLServerSpatialProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" textInRow="NotInRow" provider="OSGeo.SQLServerSpatial.3.5" name="ScTest">
 <complexType name="ClassB1Type" identityIsGloballyUnique="false" identitySeed="1" identityIncrement="1" identityPropertyName="Prop1">
 <Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_classb1" name="dbo.classb1"/>
 </complexType>

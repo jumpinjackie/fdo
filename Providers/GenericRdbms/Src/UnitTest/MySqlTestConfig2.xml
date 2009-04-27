@@ -75,7 +75,7 @@
 	</xs:schema>
 
 	<!-- Schema Overrides for Acdb Feature Schema -->
-	<SchemaMapping name="Acdb" provider="OSGeo.ODBC.3.4"
+	<SchemaMapping name="Acdb" provider="OSGeo.ODBC.3.5"
 	 xmlns="http://fdoodbc.osgeo.org/schemas"
 	>
 		<!-- Schema Overrides for Polyline Feature Class -->
