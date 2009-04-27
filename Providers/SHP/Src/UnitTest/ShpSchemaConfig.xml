@@ -78,7 +78,7 @@
 	</xs:schema>
 
 	<!-- Schema Overrides for Hydrographic Feature Schema -->
-    <SchemaMapping provider="OSGeo.SHP.3.4" name="hydro" xmlns="http://fdoshp.osgeo.org/schemas">
+    <SchemaMapping provider="OSGeo.SHP.3.5" name="hydro" xmlns="http://fdoshp.osgeo.org/schemas">
 	    <complexType name="SoundingType" shapeFile="d:/hydrographic/soundings.shp">
 		    <element name="SoundingDate">
 			    <Column name="SNDG_DATE"/>

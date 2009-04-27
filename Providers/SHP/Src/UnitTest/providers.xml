@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <FeatureProviderRegistry>
   <FeatureProvider>
-    <Name>OSGeo.SHP.3.4</Name>
+    <Name>OSGeo.SHP.3.5</Name>
     <DisplayName>OSGeo FDO Provider for SHP</DisplayName>
     <Description>OSGeo FDO Provider for SHP</Description>
     <IsManaged>False</IsManaged>
