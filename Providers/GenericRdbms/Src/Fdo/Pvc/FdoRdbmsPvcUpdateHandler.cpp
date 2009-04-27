@@ -766,7 +766,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                             {
                                 // Avoid copying the value by using directly the address of data
                                 FdoBLOBValue * blob = static_cast<FdoBLOBValue*>(dataValue);
-                                FdoByteArray * byteArr = blob->GetData();
+                                FdoPtr<FdoByteArray> byteArr = blob->GetData();
                                 values[index].value.strvalue = (char*) byteArr->GetData();
 
                                 statement->Bind(bindIndex++, RDBI_BLOB, byteArr->GetCount(),
