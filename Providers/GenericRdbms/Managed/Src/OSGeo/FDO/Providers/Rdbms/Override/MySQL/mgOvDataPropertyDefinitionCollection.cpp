@@ -145,9 +145,9 @@ System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvDataPropertyD
 
 System::Boolean NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvDataPropertyDefinitionCollection::Contains(OvDataPropertyDefinition^ value)
 {
-	FdoBoolean exist;
+	System::Boolean exist;
 
-	EXCEPTION_HANDLER(exist = (!!(value == nullptr ? nullptr : value->GetImpObj())))
+	EXCEPTION_HANDLER(exist = (!!GetImpObj()->Contains((value == nullptr ? nullptr : value->GetImpObj()))))
 
 	return exist;
 }
