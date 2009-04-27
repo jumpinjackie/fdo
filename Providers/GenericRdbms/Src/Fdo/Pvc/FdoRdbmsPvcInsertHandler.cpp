@@ -1011,7 +1011,7 @@ void FdoRdbmsPvcInsertHandler::SetBindValues(const FdoSmLpClassDefinition *class
                                     // Avoid copying the value by using directly the address of data
                                     FdoBLOBValue * blob = static_cast<FdoBLOBValue*>(dataValue);
 
-                                    FdoByteArray * byteArr = blob->GetData();
+                                    FdoPtr<FdoByteArray> byteArr = blob->GetData();
                                     bind[j].value.strvalue = (char*) byteArr->GetData();
                                     bind[j].len = byteArr->GetCount();
 
