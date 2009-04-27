@@ -34,7 +34,7 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( MessageTest, "OdbcOracleTests");
 
 static OdbcConnectionUtil pOdbcConnectionUtil;
 ConnectionUtil* UnitTestUtil::InfoUtilConnection = &pOdbcConnectionUtil;
-FdoString *UnitTestUtil::ActiveProviderName = L"OSGeo.ODBC.3.4";
+FdoString *UnitTestUtil::ActiveProviderName = L"OSGeo.ODBC.3.5";
 
 void ForceLinuxLink()
 {
