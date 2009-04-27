@@ -283,7 +283,8 @@ class SltUpdate : public SltFeatureCommand<FdoIUpdate>
     public:
         SltUpdate(SltConnection* connection) 
             : SltFeatureCommand<FdoIUpdate>(connection),
-              m_updateCount(0)
+              m_updateCount(0),
+              m_bInTransaction(false)
         {
             m_properties = FdoPropertyValueCollection::Create();
             m_db = m_connection->GetDbWrite();
@@ -293,7 +294,9 @@ class SltUpdate : public SltFeatureCommand<FdoIUpdate>
         virtual ~SltUpdate()
         {
             char* err = NULL;
-            int rc = sqlite3_exec(m_db, "COMMIT;", NULL, NULL, &err);
+
+            if (m_bInTransaction)
+                int rc = sqlite3_exec(m_db, "COMMIT;", NULL, NULL, &err);
 
             FDO_SAFE_RELEASE(m_properties);
         }
@@ -311,7 +314,12 @@ class SltUpdate : public SltFeatureCommand<FdoIUpdate>
             //Commit a bulk update if we reached the limit
             if (m_updateCount == BULK_OP_SIZE)
             {
-                int rc = sqlite3_exec(m_db, "COMMIT;", NULL, NULL, &err);
+                if (m_bInTransaction)
+                {
+                    int rc = sqlite3_exec(m_db, "COMMIT;", NULL, NULL, &err);
+                    m_bInTransaction = false;
+                }
+
                 m_updateCount = 0;
             }
 
@@ -319,8 +327,8 @@ class SltUpdate : public SltFeatureCommand<FdoIUpdate>
             if (m_updateCount == 0)
             {
                 int rc2 = sqlite3_exec(m_db, "BEGIN;", NULL, NULL, &err);
-                if (rc2 != SQLITE_OK)
-                    throw FdoCommandException::Create(L"SQLite begin transaction failed!");
+                if (rc2 == SQLITE_OK)
+                    m_bInTransaction = true;                    
             }
 
             m_updateCount++;
@@ -335,6 +343,7 @@ class SltUpdate : public SltFeatureCommand<FdoIUpdate>
         FdoPropertyValueCollection* m_properties;
         sqlite3*                    m_db;
         int                         m_updateCount;
+        bool                        m_bInTransaction;
 };
 
 
