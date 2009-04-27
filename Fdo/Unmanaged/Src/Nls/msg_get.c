@@ -39,6 +39,10 @@ extern char *nls_cat;
 
 extern pthread_mutex_t NlsMsgGetCriticalSection;
 
+void nls_msg_close_handles()
+{
+}
+
 wchar_t* nls_msg_get_W2(wchar_t *msg_string,
                         const char *cat_name,
                         int  set_num,
@@ -270,6 +274,20 @@ static int LoadMessage (const char* catalog, DWORD number, wchar_t* message, siz
     LeaveCriticalSection (&CacheCriticalSection);
 
     return (ret);
+}
+
+void nls_msg_close_handles()
+{
+    Reference* rover = (Reference*)Cache;
+    while (NULL != rover)
+    {
+        if (rover->hLib != NULL)
+        {
+            FreeLibrary (rover->hLib);
+            rover->hLib = NULL;
+        }
+        rover = rover->pNext;
+    }
 }
 
 wchar_t * nls_msg_get_W2(wchar_t *msg_string,
