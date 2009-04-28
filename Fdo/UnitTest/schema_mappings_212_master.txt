@@ -912,6 +912,8 @@
           className="TestFeat3PropertyType"/>
       <element name="LineProperty" classSchema="ext"
           className="LinePropertyType"/>
+      <element name="AbstractFeature" classSchema="ext"
+          className="AbstractFeatureType"/>
       <complexType name="TestFeat1Type"
           gmlName="TestFeat1Type" wkSchema="gml"
           wkClass="AbstractFeatureType">
@@ -1144,6 +1146,14 @@
       <complexType name="LinePropertyType"
           gmlName="LinePropertyType" wkSchema="gml"
           wkClass="CurvePropertyType"/>
+      <complexType name="AbstractFeatureType"
+          gmlName="AbstractFeatureType" wkSchema="gml"
+          wkClass="AbstractFeatureType">
+         <element name="IntProp" classSchema="fdo"
+             className="int32Type" gmlLocalName="IntProp"/>
+         <element name="StringProp" classSchema="xs"
+             className="stringType" gmlLocalName="StringProp"/>
+      </complexType>
    </SchemaMapping>
    <SchemaMapping
        xmlns="http://fdo.osgeo.org/schemas/gml/mappings"
