@@ -188,12 +188,16 @@ FdoPtr<FdoLiteralValue> TestCommonMiscUtil::ArgsToLiteral( va_list& arguments )
         dateTimeArg = va_arg(arguments,FdoDateTime *);
         literalValue = FdoDataValue::Create(*dateTimeArg);
         break;
-    //case -1:
-    //    literalValue = va_arg(arguments,FdoGeometryValue *);
-    //    FDO_SAFE_ADDREF(literalValue.p);
-    //    break;
     default:
-        throw FdoException::Create( L"TestCommonMiscUtil::InsertObject dataType not yet implemented; please implement" );
+        if ( (int) dataType == -1 ) 
+        {
+            literalValue = va_arg(arguments,FdoGeometryValue *);
+            FDO_SAFE_ADDREF(literalValue.p);
+        }
+        else
+        {
+            throw FdoException::Create( L"TestCommonMiscUtil::InsertObject dataType not yet implemented; please implement" );
+        }
         break;
     }
 
