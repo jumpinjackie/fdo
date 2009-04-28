@@ -181,8 +181,6 @@ FdoXmlSaxHandler* FdoXmlFeaturePropertyReaderImpl::XmlStartElement(
     FdoXmlAttributeCollection* atts)
 {
     FdoStringP validName = name;
-    if (validName.Contains(L"."))
-        validName = validName.Replace(L".", L"-dot-");
 	ParsingState curState = m_parsingStateStack.back();
     // first we must check if there is any pending element that was not handled
     if (curState == ParsingState_ElementPending) {
@@ -569,7 +567,7 @@ bool FdoXmlFeaturePropertyReaderImpl::isTypeOf(FdoString* elementName, FdoString
 
 //The hard-coded implementation here will be replaced by 
 //schema support in the future
-FdoXmlFeaturePropertyReaderImpl::GmlBaseType FdoXmlFeaturePropertyReaderImpl::getGmlBaseType(FdoString* elementName, FdoString* elementUri)
+FdoXmlFeaturePropertyReaderImpl::GmlBaseType FdoXmlFeaturePropertyReaderImpl::getGmlBaseType(FdoStringP& elementName, FdoString* elementUri)
 {
 	ParsingState curState = m_parsingStateStack.back();
     GmlBaseType rv = GmlBaseType_Unknown;
@@ -599,6 +597,9 @@ FdoXmlFeaturePropertyReaderImpl::GmlBaseType FdoXmlFeaturePropertyReaderImpl::ge
             }
         case ParsingState_FeatureAssociation:
             {
+                // class name cannot contain "."
+                if (elementName.Contains(L"."))
+                    elementName = elementName.Replace(L".", L"-dot-");
                 // similar as above except that there is no predefined feature element
                 if (isTypeOf(elementName, elementUri, FdoGml212::mAbstractFeature))
                     rv = GmlBaseType_Feature;
@@ -779,7 +780,12 @@ FdoXmlFeaturePropertyReaderImpl::GmlBaseType FdoXmlFeaturePropertyReaderImpl::ge
                                 else if (wcscmp(wkBaseName, FdoGml212::mFeatureAssociation) == 0) // feature association
                                     rv = GmlBaseType_FeatureAssociation;
                                 else // object property
+                                {
                                     rv = GmlBaseType_GenericComplexType;
+                                    // class name cannot contain "."
+                                    if (elementName.Contains(L"."))
+                                        elementName = elementName.Replace(L".", L"-dot-");
+                                }
                             } else { // it is data property
                                 // find out whether it is a LOB property
                                 FdoString* className = element->GetClassName();

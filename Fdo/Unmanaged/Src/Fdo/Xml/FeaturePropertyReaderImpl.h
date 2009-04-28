@@ -140,7 +140,7 @@ private:
 // helpers
 //
 private:
-	GmlBaseType getGmlBaseType(FdoString* elementName, FdoString* elementUri);
+	GmlBaseType getGmlBaseType(FdoStringP& elementName, FdoString* elementUri);
     bool isTypeOf(FdoString* elementName, FdoString* elementUri, FdoString* type, bool bCaseSens = true );
     FdoXmlLpClassDefinition* getClassDef(FdoString* name, FdoString* uri);
     int m_activeGmlGeometryType;
