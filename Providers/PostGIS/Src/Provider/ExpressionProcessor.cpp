@@ -153,13 +153,188 @@ void ExpressionProcessor::ProcessFunction(FdoFunction& expr)
     FDOLOG_MARKER("ExpressionProcessor::+ProcessFunction");
 
     FdoStringP name(expr.GetName());
+    FdoPtr<FdoExpressionCollection> args(expr.GetArguments());
+    FdoInt32 nbArgs = args->GetCount();
     std::string sep;
     std::string argSep;
+    std::string argCast;
+    bool processArgs = true;
 
     if (0 == name.ICompare(FDO_FUNCTION_CONCAT))
     {
         argSep = " || ";
     }
+    else if (0 == name.ICompare(FDO_FUNCTION_SPATIALEXTENTS))
+    {
+        processArgs = false;
+        mBuffer.append("GeomFromEwkb(AsEwkb(Extent(");
+        FdoPtr<FdoExpression> geomExpr(args->GetItem(0));
+        geomExpr->Process(this);
+        mBuffer.append(")))");
+    }
+    else if (0 == name.ICompare(FDO_FUNCTION_AREA2D))
+    {
+        mBuffer.append("Area");
+        argSep = sepComma;
+    }
+    else if (0 == name.ICompare(FDO_FUNCTION_NULLVALUE))
+    {
+        mBuffer.append("Coalesce");
+        argSep = sepComma;
+    }
+    else if (0 == name.ICompare(FDO_FUNCTION_INSTR))
+    {
+        mBuffer.append("Strpos");
+        argSep = sepComma;
+    }
+    else if (0 == name.ICompare(FDO_FUNCTION_REMAINDER))
+    {
+        //Remainder(34.5,3) = 34.5 - Round(34.5/3) * 3
+        processArgs = false;
+        FdoPtr<FdoExpression> arg1Expr(args->GetItem(0));
+        FdoStringP strArg1(arg1Expr->ToString());
+        FdoPtr<FdoExpression> arg2Expr(args->GetItem(1));
+        FdoStringP strArg2(arg2Expr->ToString());
+
+        mBuffer.append(sepLeftTerm);
+        mBuffer.append(static_cast<char const*>(strArg1));
+        mBuffer.append(" - Round(");
+        mBuffer.append(static_cast<char const*>(strArg1));
+        mBuffer.append(" / ");
+        mBuffer.append(static_cast<char const*>(strArg2));
+        mBuffer.append(") * ");
+        mBuffer.append(static_cast<char const*>(strArg2));
+        mBuffer.append(sepRightTerm);
+    }
+    else if (0 == name.ICompare(FDO_FUNCTION_TODATE))
+    {
+        if(nbArgs == 1)
+        {
+          mBuffer.append("Cast");
+          argCast = " as timestamp ";
+        }
+        else
+        {
+          mBuffer.append("to_date");
+          argSep = sepComma;
+        }
+    }
+    else if (0 == name.ICompare(FDO_FUNCTION_TOSTRING))
+    {
+        if(nbArgs == 1)
+        {
+          mBuffer.append("Cast");
+          argCast = " as text ";
+        }
+        else
+        {
+          mBuffer.append("to_char");
+          argSep = sepComma;
+        }
+    }
+    else if (0 == name.ICompare(FDO_FUNCTION_TODOUBLE))
+    {
+        mBuffer.append("Cast");
+        argCast = " as float8 ";
+    }
+    else if (0 == name.ICompare(FDO_FUNCTION_TOFLOAT))
+    {
+        mBuffer.append("Cast");
+        argCast = " as float4 ";
+    }
+    else if (0 == name.ICompare(FDO_FUNCTION_TOINT32))
+    {
+        mBuffer.append("Cast");
+        argCast = " as int4 ";
+    }
+    else if (0 == name.ICompare(FDO_FUNCTION_TOINT64))
+    {
+        mBuffer.append("Cast");
+        argCast = " as int8 ";
+    }
+    else if (0 == name.ICompare(FDO_FUNCTION_CURRENTDATE))
+    {
+        mBuffer.append("now");
+        argSep = sepComma;
+    }
+    else if (0 == name.ICompare(FDO_FUNCTION_EXTRACTTODOUBLE))
+    {
+        mBuffer.append("Date_part");
+        argSep = sepComma;
+    }
+    else if (0 == name.ICompare(FDO_FUNCTION_EXTRACTTOINT))
+    {
+        processArgs = false;
+        mBuffer.append("Cast(Date_part(");
+        FdoPtr<FdoExpression> dateExpr1(args->GetItem(0));
+        dateExpr1->Process(this);
+        mBuffer.append(",");
+        FdoPtr<FdoExpression> dateExpr2(args->GetItem(1));
+        dateExpr2->Process(this);
+        mBuffer.append(") as int4)");
+    }
+
+    else if (0 == name.ICompare(FDO_FUNCTION_ADDMONTHS))
+    {
+        //AddMonth(date,3) = date + interval '3 month'
+        processArgs = false;
+        mBuffer.append(sepLeftTerm);
+        FdoPtr<FdoExpression> dateExpr(args->GetItem(0));
+        dateExpr->Process(this);
+        mBuffer.append(" + ");
+        FdoPtr<FdoExpression> numExpr(args->GetItem(1));
+        FdoStringP numMonth(numExpr->ToString());
+        mBuffer.append("interval '");
+        mBuffer.append(static_cast<char const*>(numMonth));
+        mBuffer.append(" month'");
+        mBuffer.append(sepRightTerm);
+    }
+    else if (0 == name.ICompare(FDO_FUNCTION_MONTHSBETWEEN))
+    {
+        //MonthBetween(date1,date2) = date_part('Month',age(date1,date2)) + date_part('Year',age(date1,date2)) * 12
+        processArgs = false;
+        FdoPtr<FdoExpression> date1Expr(args->GetItem(0));
+        FdoPtr<FdoExpression> date2Expr(args->GetItem(1));
+
+        mBuffer.append("date_part('Month',age(");
+        date1Expr->Process(this);
+        mBuffer.append(sepComma);
+        date2Expr->Process(this);
+        mBuffer.append(sepRightTerm);
+        mBuffer.append(sepRightTerm);
+
+        mBuffer.append(" + ");
+
+        mBuffer.append("date_part('Year',age(");
+        date1Expr->Process(this);
+        mBuffer.append(sepComma);
+        date2Expr->Process(this);
+        mBuffer.append(sepRightTerm);
+        mBuffer.append(sepRightTerm);
+        mBuffer.append(" * 12 ");
+    }
+    //Math function with 2 args that only accept numeric 
+    else if ((nbArgs == 2) &&
+             (0 == name.ICompare(FDO_FUNCTION_LOG) ||
+              0 == name.ICompare(FDO_FUNCTION_MOD) ||
+              0 == name.ICompare(FDO_FUNCTION_ROUND) ||
+              0 == name.ICompare(FDO_FUNCTION_TRUNC)))
+            
+    {
+        //Round(double,1) -> Round(cast(double as numeric) , 1)
+        processArgs = false;
+        mBuffer.append(static_cast<char const*>(name));
+        mBuffer.append(sepLeftTerm);
+        mBuffer.append("Cast(");
+        FdoPtr<FdoExpression> numExpr1(args->GetItem(0));
+        numExpr1->Process(this);
+        mBuffer.append(" as numeric)");
+        mBuffer.append(sepComma);
+        FdoPtr<FdoExpression> numExpr2(args->GetItem(1));
+        numExpr2->Process(this);
+        mBuffer.append(sepRightTerm);
+    }
+    
     else
     {
         mBuffer.append(static_cast<char const*>(name));
@@ -167,17 +342,23 @@ void ExpressionProcessor::ProcessFunction(FdoFunction& expr)
     }
 
 
-    mBuffer.append(sepLeftTerm);
-
-    FdoPtr<FdoExpressionCollection> args(expr.GetArguments());
-    for (FdoInt32 i = 0; i < args->GetCount(); i++)
+    if(processArgs)
     {
-        mBuffer.append(sep);
-        FdoPtr<FdoExpression> subExpr(args->GetItem(i));
-        subExpr->Process(this);
-        sep = argSep;
+      mBuffer.append(sepLeftTerm);
+
+      for (FdoInt32 i = 0; i < args->GetCount(); i++)
+      {
+          mBuffer.append(sep);
+          FdoPtr<FdoExpression> subExpr(args->GetItem(i));
+          subExpr->Process(this);
+          if(argCast != "")
+          {
+            mBuffer.append(argCast);
+          }
+          sep = argSep;
+      }
+      mBuffer.append(sepRightTerm);
     }
-    mBuffer.append(sepRightTerm);
 
     FDOLOG_WRITE("Expression text: %s", mBuffer.c_str());
 }
@@ -290,7 +471,7 @@ void ExpressionProcessor::ProcessDateTimeValue(FdoDateTimeValue& expr)
         }
         else if (dt.IsDateTime())
         {
-            value = str(boost::format("'%d-%d-%d %d:%d:%d'") % (int)dt.month % (int)dt.day % (int)dt.year % (int)dt.month % (int)dt.day % (int)dt.year);
+            value = str(boost::format("'%d-%d-%d %d:%d:%d'") % (int)dt.month % (int)dt.day % (int)dt.year % (int)dt.hour % (int)dt.minute % (int)dt.seconds);
             format = "'MM-DD-YYYY HH24:MI:SS'";
         }
         else
