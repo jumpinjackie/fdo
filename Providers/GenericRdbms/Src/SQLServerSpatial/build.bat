@@ -125,7 +125,6 @@ copy /y "..\..\Bin\Win32\%TYPEBUILDSQLSPATIAL%\SQLServerSpatialOverrides.pdb" "%
 copy /y "..\..\Bin\Win32\%TYPEBUILDSQLSPATIAL%\RdbmsOverrides.dll" "%FDOBINPATHSQLSPATIAL%"
 copy /y "..\..\Bin\Win32\%TYPEBUILDSQLSPATIAL%\RdbmsOverrides.pdb" "%FDOBINPATHSQLSPATIAL%"
 copy /y "%FDOUTILITIES%\SchemaMgr\Bin\Win32\%TYPEBUILDSQLSPATIAL%\SmMessage.dll" "%FDOBINPATHSQLSPATIAL%"
-copy /y "%FDOUTILITIES%\SchemaMgr\Bin\Win32\%TYPEBUILDSQLSPATIAL%\SmMessage.pdb" "%FDOBINPATHSQLSPATIAL%"
 copy /y "%FDOUTILITIES%\ExpressionEngine\bin\win32\%TYPEBUILDSQLSPATIAL%\ExpressionEngine.dll" "%FDOBINPATHSQLSPATIAL%"
 copy /y "%FDOUTILITIES%\ExpressionEngine\bin\win32\%TYPEBUILDSQLSPATIAL%\ExpressionEngine.pdb" "%FDOBINPATHSQLSPATIAL%"
 copy /y "%FDOUTILITIES%\ExpressionEngine\lib\win32\%TYPEBUILDSQLSPATIAL%\ExpressionEngine.lib" "%FDOLIBPATHSQLSPATIAL%"
