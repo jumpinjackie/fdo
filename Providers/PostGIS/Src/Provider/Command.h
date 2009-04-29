@@ -379,7 +379,7 @@ FdoInt32 Command<T>::GetSRID(FdoPropertyDefinitionCollection *propsDef)
    FdoInt32 currentSrid = -1;
    FdoPropertyDefinition* propDef = NULL;
 
-    for (FdoInt32 i = 0; !currentSrid && i < propsDef->GetCount(); i++)
+    for (FdoInt32 i = 0; ((currentSrid == -1) && i < propsDef->GetCount()); i++) 
     {
         if ((propDef = propsDef->GetItem(i)))
         {
