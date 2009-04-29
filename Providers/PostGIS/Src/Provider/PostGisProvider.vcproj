@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1250"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="PostGisProvider"
 	ProjectGUID="{81A1E411-2952-42B5-8430-B588A89D9BE2}"
 	RootNamespace="Provider"
@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="C:\Program Files\AutoCAD Map 3D 2010\FDO\bin"
-			IntermediateDirectory="..\..\Obj\Win32\Debug\Provider"
+			OutputDirectory="..\..\Bin\Win32\Debug"
+			IntermediateDirectory="..\..\Obj\Provider\Win32\Debug"
 			ConfigurationType="2"
 			InheritedPropertySheets="..\PostGis.vsprops"
 			CharacterSet="1"
@@ -63,10 +63,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONLS.lib ProvidersCommon.lib libpq.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONLS.lib ProvidersCommon.lib libpq.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\PostGISProvider.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;&quot;$(FDOTHIRDPARTY)\boost\stage\win32\debug\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;&quot;$(FDOTHIRDPARTY)\boost\stage\win32\debug\lib&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Debug&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="0"
 				RandomizedBaseAddress="1"
@@ -101,7 +101,7 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="..\..\Bin\Win32\Release"
-			IntermediateDirectory="..\..\Obj\Win32\Release\Provider"
+			IntermediateDirectory="..\..\Obj\Provider\Win32\Release"
 			ConfigurationType="2"
 			InheritedPropertySheets="..\PostGis.vsprops"
 			CharacterSet="1"
@@ -142,10 +142,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONLS.lib ProvidersCommon.lib libpq.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONLS.lib ProvidersCommon.lib libpq.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\PostGISProvider.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;&quot;$(FDOTHIRDPARTY)\boost\stage\win32\release\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;&quot;$(FDOTHIRDPARTY)\boost\stage\win32\release\lib&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Release&quot;"
 				GenerateDebugInformation="false"
 				SubSystem="2"
 				OptimizeReferences="2"
