@@ -127,6 +127,10 @@ FdoInt32 UpdateCommand::Execute()
                         FDOLOG_WRITE(L"convert Date:", dateValuePtr->ToString());
                         value = static_cast<char const*>(FdoStringP(dateValuePtr->ToString()));
                     }
+                    else
+                    {
+                      value = "null";
+                    }
                     expProc->ReleaseBuffer();
                 }
                 else
