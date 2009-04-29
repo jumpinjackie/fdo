@@ -89,7 +89,7 @@ FdoDataType FdoTypeFromPgTypeName(std::string const& typeName)
     }
     else if (iequals(typeName, "abstime") || iequals(typeName, "reltime")
         || iequals(typeName, "date") || iequals(typeName, "time")
-        || iequals(typeName, "timestamp") || iequals(typeName, "timestampz") 
+        || iequals(typeName, "timestamp") || iequals(typeName, "timestamptz") 
         || iequals(typeName, "timetz"))
     {
         fdoType = FdoDataType_DateTime;
