@@ -670,11 +670,12 @@ fdo::postgis::PgCursor* Connection::PgCreateCursor(char const* name)
     time(&rtime);
     timeinfo = localtime(&rtime);
     strftime(buf, 255, "%Y-%m-%d %H:%M:%S", timeinfo);
+    int randomValue=rand();
 
-    std::string ptstr = str(boost::format("%04d%02d%02dT%02f%02d%02d.%04d") 
+    std::string ptstr = str(boost::format("%04d%02d%02dT%02f%02d%02d.%04d.%05d") 
         % (int)(1900+timeinfo->tm_year) %(int)(1+timeinfo->tm_mon) %(int)timeinfo->tm_mday 
         % (int)timeinfo->tm_hour %(int)timeinfo->tm_min %(int)timeinfo->tm_sec
-        % (int)cl);
+        % (int)cl % (int)randomValue);
 
     fdo::postgis::md5 md5sum(ptstr.c_str());
     std::string suffix(md5sum.digest().hex_str_value());
