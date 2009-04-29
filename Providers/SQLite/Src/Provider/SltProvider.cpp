@@ -454,8 +454,8 @@ bool SltConnection::IsPropertyDatastoreName(FdoString* name)
 
 bool SltConnection::IsPropertyEnumerable(FdoString* name)
 {
-    if (wcscmp(name, PROP_NAME_FDOMETADATA) == 0)
-        return true;
+    //if (wcscmp(name, PROP_NAME_FDOMETADATA) == 0)
+    //    return true;
     return false;
 }
 
@@ -1724,30 +1724,29 @@ sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql)
         //found a cached statement -- take it from the cache
         //and return it
 
-        ListQueryCache& lst = iter->second;
-        for(ListQueryCache::iterator it = lst.begin(); it < lst.end(); it++)
+        QueryCacheRecList& lst = iter->second;
+        for(size_t i=0; i<lst.size(); i++)
         {
-            if (!it->second) // pre-compiled query not in use
+            QueryCacheRec& rec = lst[i];
+            if (!rec.inUse)
             {
                 stmtFound = true;
-                it->second = true;
-                ret = it->first;
+                rec.inUse = true;
+                ret = rec.stmt;
             }
         }
         if (ret == NULL)
         {
             // to avoid a m_mCachedQueries.find() we will clone this small part
             SQL_PREPARE_CACHEPARSEDSTM;
-            lst.push_back(std::make_pair(ret, true));
+            lst.push_back(QueryCacheRec(ret));
         }
     }
     else
     {
         // to avoid a m_mCachedQueries.find() we will clone this small part
-        ListQueryCache lst;
         SQL_PREPARE_CACHEPARSEDSTM;
-        lst.push_back(std::make_pair(ret, true));
-        m_mCachedQueries.insert(std::make_pair(_strdup(sql), lst));
+        m_mCachedQueries[_strdup(sql)].push_back(QueryCacheRec(ret));
     }
     if (ret == NULL)
         throw FdoException::Create(L"Failed to create SQL statement");
@@ -1762,13 +1761,15 @@ void SltConnection::ReleaseParsedStatement(const char* sql, sqlite3_stmt* stmt)
 
     if (iter != m_mCachedQueries.end())
     {
-        ListQueryCache& lst = iter->second;
-        for(ListQueryCache::iterator it = lst.begin(); it < lst.end(); it++)
+        QueryCacheRecList& lst = iter->second;
+        for(size_t i=0; i<lst.size(); i++)
         {
-            if (it->first == stmt)
+            QueryCacheRec& rec = lst[i];
+
+            if (rec.stmt == stmt)
             {
                 sqlite3_reset(stmt);
-                it->second = false;
+                rec.inUse = false;
                 return;
             }
         }
@@ -1778,18 +1779,34 @@ void SltConnection::ReleaseParsedStatement(const char* sql, sqlite3_stmt* stmt)
 
 void SltConnection::ClearQueryCache()
 {
+    //We have to keep all cached statements that are still in use, 
+    //we can only free the ones that are not in use
+    QueryCache newCache;
+
     for (QueryCache::iterator iter = m_mCachedQueries.begin(); 
         iter != m_mCachedQueries.end(); iter++)
     {
-        ListQueryCache& lst = iter->second;
-        for(ListQueryCache::iterator it = lst.begin(); it < lst.end(); it++)
+        QueryCacheRecList& lst = iter->second;
+
+        for (size_t i=0; i<lst.size(); i++)
         {
-            sqlite3_finalize(it->first);
+            QueryCacheRec& rec = lst[i];
+
+            //If the query is in use, carry it over to the new cache map
+            if (rec.inUse)
+            {
+                newCache[iter->first].push_back(rec);
+            }
+            else
+            {
+                //otherwise free the query and the query string
+                sqlite3_finalize(rec.stmt);
+                free(iter->first); //it was created via strdup, must use free()
+            }
         }
-        free(iter->first); //it was created via strdup, must use free()
     }
 
-    m_mCachedQueries.clear();
+    m_mCachedQueries = newCache;
 }
 
 void SltConnection::GetExtents(const wchar_t* fcname, double ext[4])
