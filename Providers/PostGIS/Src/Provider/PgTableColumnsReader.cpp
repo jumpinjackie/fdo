@@ -243,6 +243,7 @@ void PgTableColumnsReader::Open()
         " WHERE a.attnum > 0 AND a.attrelid = c.oid"
         " AND a.atttypid = t.oid AND c.relnamespace = n.oid"
         " AND t.typname !~ '^geom'"
+        " AND i.indisprimary = 't'"
         " AND c.relname = '" + table + "' AND n.nspname = '" + schema + "' ORDER BY a.attnum;");
 
     try
