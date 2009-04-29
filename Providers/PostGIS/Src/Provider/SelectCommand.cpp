@@ -230,48 +230,90 @@ FdoIFeatureReader* SelectCommand::Execute()
         //
         // Read properties definition to SQL columns
         //
-        FdoInt32 currentSrid = 0;
         std::string sep;
         std::string sqlColumns("");
         FdoPtr<FdoPropertyDefinitionCollection> props = classDef->GetProperties();
+        FdoInt32 currentSrid = GetSRID(props);
         
-        FDOLOG_WRITE("Number of properties: %d", props->GetCount());
-
-        FdoInt32 const propsCount = props->GetCount();
-        for (FdoInt32 propIdx = 0; propIdx < propsCount; propIdx++)
+        //FdoInt32 const propsCount = mProperties->GetCount();
+        //if no properties process all properties (select * from...)
+        //to be implemented in may 2009
+        //if(propsCount == 0)
         {
-            FdoPtr<FdoPropertyDefinition> propDef(props->GetItem(propIdx));
+          FDOLOG_WRITE("Number of properties: %d", props->GetCount());
 
-            assert(FdoPropertyType_DataProperty == propDef->GetPropertyType()
-                || FdoPropertyType_GeometricProperty == propDef->GetPropertyType());
+          FdoInt32 const propsCount = props->GetCount();
+          for (FdoInt32 propIdx = 0; propIdx < propsCount; propIdx++)
+          {
+              FdoPtr<FdoPropertyDefinition> propDef(props->GetItem(propIdx));
 
-            // Find SRID of geometric property
-            if (FdoPropertyType_GeometricProperty == propDef->GetPropertyType())
-            {
-                // TODO: It won't work with multiple-geometric properties
-                FdoGeometricPropertyDefinition* geom = NULL;
-                geom = static_cast<FdoGeometricPropertyDefinition*>(propDef.p);
+              assert(FdoPropertyType_DataProperty == propDef->GetPropertyType()
+                  || FdoPropertyType_GeometricProperty == propDef->GetPropertyType());
 
-                FdoString* csName = geom->GetSpatialContextAssociation();
-                SpatialContextCollection::Ptr spContexts(mConn->GetSpatialContexts());
-                SpatialContext::Ptr spc(spContexts->FindItem(csName));
-                if (NULL != spc)
-                {
-                    currentSrid = spc->GetSRID();
-                }
+              // Add property to columns list
+              FdoStringP propName(propDef->GetName());
 
-                FDOLOG_WRITE(L"\t+ %s (SRID=%d)", propDef->GetName(), currentSrid);
-            }
+              sqlColumns.append(sep + tablePath + '.' + static_cast<char const*>(propName));
 
-            // Add property to columns list
-            FdoStringP propName(propDef->GetName());
-
-            sqlColumns.append(sep + tablePath + '.' + static_cast<char const*>(propName));
-
-            FDOLOG_WRITE("\t- %s", static_cast<char const*>(propName));
-    
-            sep = ",";
+              FDOLOG_WRITE("\t- %s", static_cast<char const*>(propName));
+      
+              sep = ",";
+          }
         }
+        //properties as been specified, process only these one (select prop1,prop2...)
+        //to be implemented in may 2009
+        /*
+        else
+        {
+          FDOLOG_WRITE("Number of properties: %d", mProperties->GetCount());
+
+          ExpressionProcessor::Ptr exprProc(new ExpressionProcessor());
+          // TODO: What should we do if mProperties is NULL?
+          FdoInt32 const propsSize = mProperties->GetCount();
+
+          for (FdoInt32 propIdx = 0; propIdx < propsSize; propIdx++)
+          {
+              FdoPtr<FdoIdentifier> id(mProperties->GetItem(propIdx));
+
+              if (NULL != dynamic_cast<FdoComputedIdentifier*>(id.p))
+              {
+                  // Parse complex computed expression and identifier
+
+                  FdoComputedIdentifier* compId = NULL;
+                  compId = dynamic_cast<FdoComputedIdentifier*>(id.p);
+
+                  FdoStringP name(compId->GetName());
+
+                  FdoPtr<FdoExpression> expr(compId->GetExpression());
+                  if (NULL != dynamic_cast<FdoFunction*>(expr.p))
+                  {
+                      // Parse function: FOO( argument ) AS alias
+
+                      FdoFunction* func = dynamic_cast<FdoFunction*>(expr.p);               
+                      func->Process(exprProc);
+                      sqlColumns.append(sep + exprProc->ReleaseBuffer() + " AS ");
+                      sqlColumns.append(static_cast<char const*>(name));
+                  }
+                  else
+                  {
+                      // Parse other types like arithmetic expressions, etc.
+
+                      expr->Process(exprProc);
+                      sqlColumns.append(sep + exprProc->ReleaseBuffer() + " AS ");
+                      sqlColumns.append(static_cast<char const*>(name));
+                  }
+              }
+              else
+              {
+                  // Parse simple name identifier
+
+                  FdoStringP name(id->GetName());
+                  sqlColumns.append(sep + static_cast<char const*>(name));
+              }
+
+              sep = ",";
+          }
+        }*/
 
         //
         // Process filter conditions
