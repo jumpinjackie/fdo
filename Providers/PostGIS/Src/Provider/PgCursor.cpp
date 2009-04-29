@@ -331,25 +331,33 @@ void PgCursor::Close()
 {
     if (!mIsClosed)
     {
-        // TODO: Throwing from here seems to be like walking on a thin line!
-        // ValidateDeclaredState();
-        assert(FdoConnectionState_Closed != mConn->GetConnectionState());
+        try
+        {
+          // TODO: Throwing from here seems to be like walking on a thin line!
+          // ValidateDeclaredState();
+          assert(FdoConnectionState_Closed != mConn->GetConnectionState());
 
-        ClearDescribeResult();
-        ClearFetchResult();
+          ClearDescribeResult();
+          ClearFetchResult();
 
-        // Close cursor
-        std::string sql("CLOSE ");
-        sql += static_cast<char const*>(mName);
+          // Close cursor
+          std::string sql("CLOSE ");
+          sql += static_cast<char const*>(mName);
 
-        mConn->PgExecuteCommand(sql.c_str());
-        
-        // End transaction
-        mConn->PgCommitSoftTransaction();
-        
-        // Mark cursor as released
-        mIsClosed = true;
-        mName = FdoStringP();
+          mConn->PgExecuteCommand(sql.c_str());
+          
+          // End transaction
+          mConn->PgCommitSoftTransaction();
+          
+          // Mark cursor as released
+          mIsClosed = true;
+          mName = FdoStringP();
+        }
+        catch (FdoException* e)
+        {
+          // TODO: re-throw with specific message/code
+          e->Release();
+        }
     }
 }
 
