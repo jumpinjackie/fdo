@@ -258,13 +258,16 @@ void PgTablesReader::Open()
 
     assert(!mCurrentSchema.empty());
 
-    std::string sql("SELECT schemaname, tablename FROM pg_tables"
-				            " WHERE  schemaname='" + mCurrentSchema + "'"
-                    " AND (tablename NOT LIKE 'pg_%')"
-				            " AND (tablename NOT LIKE 'spatial_ref_sys%')"
-				            " AND (tablename NOT LIKE 'sql_%')"
-				            " AND (tablename NOT LIKE 'geom%')"
-				            " ORDER BY tablename");
+    std::string sql("SELECT n.nspname AS schemaname,c.relname AS tablename"
+                    " FROM pg_class c, pg_namespace n"
+                    " WHERE c.relnamespace = n.oid"
+                    " AND c.relkind IN ('r','v')"
+                    " AND (c.relname NOT LIKE 'pg_%')"
+				            " AND (c.relname NOT LIKE 'spatial_ref_sys%')"
+				            " AND (c.relname NOT LIKE 'sql_%')"
+				            " AND (c.relname NOT LIKE 'geom%')"
+                    " AND n.nspname = '" + mCurrentSchema + "'"
+				            " ORDER BY c.relname");
     
     // Query spatial tables and attach results to the SQL data reader
     mCmd = static_cast<FdoISQLCommand*>(mConn->CreateCommand(FdoCommandType_SQLCommand));
@@ -341,11 +344,12 @@ FdoPtr<FdoEnvelopeImpl> PgTablesReader::EstimateColumnExtent(
     // NOTE: The PgExecuteQuery throws on error, but if no exception occurs,
     //       valid query result is assumed.
 
-    boost::shared_ptr<PGresult> pgRes(mConn->PgExecuteQuery(sql.c_str()), PQclear);
-    assert(PGRES_TUPLES_OK == PQresultStatus(pgRes.get()));
-    assert(1 == PQntuples(pgRes.get()));
     try
     {
+        boost::shared_ptr<PGresult> pgRes(mConn->PgExecuteQuery(sql.c_str()), PQclear);
+        assert(PGRES_TUPLES_OK == PQresultStatus(pgRes.get()));
+        assert(1 == PQntuples(pgRes.get()));
+
         bool    nullVal = false;
         char const* cval = NULL;
         
@@ -382,6 +386,12 @@ FdoPtr<FdoEnvelopeImpl> PgTablesReader::EstimateColumnExtent(
 
         FDO_SAFE_ADDREF(extent.p);
         return extent.p;
+    }
+    catch (FdoException* e)
+    {
+      FDOLOG_WRITE(L"Error occured while reading coordinate of estimated extent");
+      throw FdoException::Create(L"Error occured while reading coordinate of estimated extent");
+      e->Release();
     }
     catch (boost::bad_lexical_cast& e)
     {
