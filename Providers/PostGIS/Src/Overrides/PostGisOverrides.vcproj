@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1250"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="PostGisOverrides"
 	ProjectGUID="{A250F14F-E1A9-4F17-9E35-2D2CA8013AA4}"
 	RootNamespace="PostGisOverrides"
@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="C:\Program Files\AutoCAD Map 3D 2010\FDO\bin"
-			IntermediateDirectory="..\..\Obj\Win32\Debug\Overrides"
+			OutputDirectory="..\..\Bin\Win32\Debug"
+			IntermediateDirectory="..\..\Obj\Overrides\Win32\Debug"
 			ConfigurationType="2"
 			InheritedPropertySheets="..\PostGis.vsprops"
 			CharacterSet="1"
@@ -102,7 +102,7 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="..\..\Bin\Win32\Release"
-			IntermediateDirectory="..\..\Obj\Win32\Release\Overrides"
+			IntermediateDirectory="..\..\Obj\Overrides\Win32\Release"
 			ConfigurationType="2"
 			InheritedPropertySheets="..\PostGis.vsprops"
 			CharacterSet="1"
