@@ -60,18 +60,21 @@ SET NLSDIR=%FDOTHIRDPARTY%\apache\xml-xalan\c\Src\xalanc\NLS
 
 if not exist "%SDEHOME%" SET SDEHOME=%FDOTHIRDPARTY%\ESRI\ArcSDEClient91\Windows
 if not exist "%SDEHOME%" echo OPTIONAL FDO environment variable SDEHOME is not set
-
+if not exist "%SDEHOME%" SET SDEHOME=
 if exist "%SDEHOME%\bin\sde.dll" SET SDEVER_ARCUNITTEST=92
 if exist "%SDEHOME%\bin\sde91.dll" SET SDEVER_ARCUNITTEST=91
 
 if not exist "%FDOMYSQL%" SET FDOMYSQL=C:\Program Files\MySQL\MySQL Server 5.0
 if not exist "%FDOMYSQL%" echo OPTIONAL FDO environment variable FDOMYSQL is not set
+if not exist "%FDOMYSQL%" SET FDOMYSQL=
 
 if not exist "%FDOORACLE%" SET FDOORACLE=%FDOTHIRDPARTY%\oracle\instant_client\10.2\sdk
 if not exist "%FDOORACLE%" echo OPTIONAL FDO environment variable FDOORACLE is not set
+if not exist "%FDOORACLE%" SET FDOORACLE=
 
 if not exist "%FDOGDAL%" SET FDOGDAL=%FDOTHIRDPARTY%\gdal
 if not exist "%FDOGDAL%" echo OPTIONAL FDO environment variable FDOGDAL is not set
+if not exist "%FDOGDAL%" SET FDOORACLE=
 
 SET ACTIVENAMECHECK="7-Zip"
 SET ACTIVEPATHCHECK="C:\Program Files\7-Zip"
