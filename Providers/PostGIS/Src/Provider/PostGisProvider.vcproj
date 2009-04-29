@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1250"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="PostGisProvider"
 	ProjectGUID="{81A1E411-2952-42B5-8430-B588A89D9BE2}"
 	RootNamespace="Provider"
@@ -18,7 +18,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\..\Bin\Win32\Debug"
+			OutputDirectory="C:\Program Files\AutoCAD Map 3D 2010\FDO\bin"
 			IntermediateDirectory="..\..\Obj\Win32\Debug\Provider"
 			ConfigurationType="2"
 			InheritedPropertySheets="..\PostGis.vsprops"
@@ -95,7 +95,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning PostGISProvider.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\PostGISProvider.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot; &quot;$(OutDir)\PostGISProvider.dll&quot;"
 			/>
 		</Configuration>
 		<Configuration
@@ -176,7 +176,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning PostGISProvider.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\PostGISProvider.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.4.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\PostGISProvider.dll"
 			/>
 		</Configuration>
 	</Configurations>
