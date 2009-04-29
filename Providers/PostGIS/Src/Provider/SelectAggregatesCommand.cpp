@@ -319,7 +319,15 @@ FdoIDataReader* SelectAggregatesCommand::Execute()
         //
         assert(!sqlSelect.empty());
 
-        std::string sql("SELECT " + sqlSelect);
+        std::string sql("SELECT ");
+
+        if(mDistinct)
+        {
+          sql.append(" DISTINCT ");
+        }
+
+        sql.append(sqlSelect);
+
         sql.append(" FROM " + tablePath);
 
         if (!sqlWhere.empty())
