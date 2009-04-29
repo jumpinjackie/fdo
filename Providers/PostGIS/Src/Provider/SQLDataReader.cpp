@@ -414,25 +414,32 @@ bool SQLDataReader::ReadNext()
 {
     bool eof = true;
 
-    if ((mCurrentTuple + 1 )>= mCursor->GetTuplesCount())
+    try
     {
-        PgCursor::ResultPtr pgRes = mCursor->Fetch(mCoursorPageSize);
-        if (PGRES_TUPLES_OK == PQresultStatus(pgRes))
-        {
-            mCurrentTuple = 0;
+      if ((mCurrentTuple + 1 )>= mCursor->GetTuplesCount())
+      {
+          PgCursor::ResultPtr pgRes = mCursor->Fetch(mCoursorPageSize);
+          if (PGRES_TUPLES_OK == PQresultStatus(pgRes))
+          {
+              mCurrentTuple = 0;
 
-            if (0 != PQntuples(pgRes))
-            {
-                eof = false;
-            }
-        }
+              if (0 != PQntuples(pgRes))
+              {
+                  eof = false;
+              }
+          }
+      }
+      else
+      {
+          eof = false;
+          mCurrentTuple++;
+      }
     }
-    else
+    catch (FdoException* e)
     {
-        eof = false;
-        mCurrentTuple++;
+       FDOLOG_WRITE("ERROR: SQLDataReader::ReadNext");
+       e->Release();
     }
-
     return (!eof);
 }
 
