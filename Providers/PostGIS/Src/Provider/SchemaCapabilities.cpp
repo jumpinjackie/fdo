@@ -307,7 +307,7 @@ bool SchemaCapabilities::SupportsSchemaModification()
 
 bool SchemaCapabilities::SupportsSchemaOverrides()
 {
-    return true;
+    return false;
 }
 
 bool SchemaCapabilities::SupportsUniqueValueConstraints()
