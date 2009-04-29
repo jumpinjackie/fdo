@@ -129,7 +129,6 @@ copy /y "..\..\Bin\Win32\%TYPEBUILDMYSQL%\MySQLOverrides.pdb" "%FDOBINPATHMYSQL%
 copy /y "..\..\Bin\Win32\%TYPEBUILDMYSQL%\RdbmsOverrides.dll" "%FDOBINPATHMYSQL%"
 copy /y "..\..\Bin\Win32\%TYPEBUILDMYSQL%\RdbmsOverrides.pdb" "%FDOBINPATHMYSQL%"
 copy /y "%FDOUTILITIES%\SchemaMgr\Bin\Win32\%TYPEBUILDMYSQL%\SmMessage.dll" "%FDOBINPATHMYSQL%"
-copy /y "%FDOUTILITIES%\SchemaMgr\Bin\Win32\%TYPEBUILDMYSQL%\SmMessage.pdb" "%FDOBINPATHMYSQL%"
 copy /y "%FDOUTILITIES%\ExpressionEngine\bin\win32\%TYPEBUILDMYSQL%\ExpressionEngine.dll" "%FDOBINPATHMYSQL%"
 copy /y "%FDOUTILITIES%\ExpressionEngine\bin\win32\%TYPEBUILDMYSQL%\ExpressionEngine.pdb" "%FDOBINPATHMYSQL%"
 copy /y "%FDOUTILITIES%\ExpressionEngine\lib\win32\%TYPEBUILDMYSQL%\ExpressionEngine.lib" "%FDOLIBPATHMYSQL%"
