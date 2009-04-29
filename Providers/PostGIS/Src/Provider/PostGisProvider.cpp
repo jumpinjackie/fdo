@@ -49,12 +49,12 @@ namespace fdo { namespace postgis {
 //
 // General descriptive information about PostGIS Provier
 //
-FdoString* ProviderName = L"OSGeo.PostGIS.3.3";
-FdoString* ProviderVersion = L"3.3.0.0";
+FdoString* ProviderName = L"OSGeo.PostGIS.3.4";
+FdoString* ProviderVersion = L"3.4.0.0";
 
 // TODO: This value depends on actual FDO version used to build the provider:
 // 3.2.0, 3.2.x, etc.
-FdoString* FdoVersion = L"3.3.0.0";
+FdoString* FdoVersion = L"3.4.0.0";
 
 char const* ProviderDisplayName = "OSGeo FDO Provider for PostGIS";
 char const* ProviderDescription = "Read/write access to spatial and attribute data in an PostGIS.";
