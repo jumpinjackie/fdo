@@ -406,13 +406,6 @@ void WmsTestSelect::testServer2 ()
 	    CPPUNIT_ASSERT (featReader->ReadNext ());
 	    raster = featReader->GetRaster (L"Raster");
 	    CPPUNIT_ASSERT (!featReader->ReadNext ());
-    	
-	    // Layer "BSC_WMS" (non-queryable)
-	    cmd->SetFeatureClassName (L"BSC_WMS");
-	    featReader = cmd->Execute ();
-	    CPPUNIT_ASSERT (featReader->ReadNext ());
-	    raster = featReader->GetRaster (L"Raster");
-	    CPPUNIT_ASSERT (!featReader->ReadNext ());
     }
     catch (FdoException* e)
     {
@@ -526,7 +519,7 @@ void WmsTestSelect::testDefaultHeight()
 
 	    FdoICommand* cmd = conn->CreateCommand(FdoCommandType_Select);
 	    FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*>(cmd);
-	    cmdSelect->SetFeatureClassName(L"BSC_WMS");
+        cmdSelect->SetFeatureClassName(L"IBA");
 
 
 	    FdoPtr<FdoIFeatureReader> featureReader = cmdSelect->Execute();
@@ -616,7 +609,7 @@ void WmsTestSelect::testNASAServerDefaultOverrides ()
             
             FdoWmsOvClassesP ovClasses = ovMapping->GetClasses();
             FdoInt32 numClasses = ovClasses->GetCount();
-            CPPUNIT_ASSERT (numClasses == 19);
+            CPPUNIT_ASSERT (numClasses == 20);
 
             FdoWmsOvClassDefinitionP ovClass = ovClasses->GetItem(0);
             CPPUNIT_ASSERT (FdoStringP(ovClass->GetName()) == L"global_mosaic");
