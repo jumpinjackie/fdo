@@ -454,8 +454,8 @@ bool SltConnection::IsPropertyDatastoreName(FdoString* name)
 
 bool SltConnection::IsPropertyEnumerable(FdoString* name)
 {
-    //if (wcscmp(name, PROP_NAME_FDOMETADATA) == 0)
-    //    return true;
+    if (wcscmp(name, PROP_NAME_FDOMETADATA) == 0)
+        return true;
     return false;
 }
 
