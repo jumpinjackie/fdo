@@ -121,9 +121,13 @@ if "%TYPEACTIONRFP%"=="build" goto generate_docs
 :install_files_rfp
 echo Copy %TYPEBUILDRFP% GdalFile Provider Output Files
 copy /y "Bin\Win32\%TYPEBUILDRFP%\GRFPMessage.dll" "%FDOBINPATHRFP%"
+copy /y "Bin\Win32\%TYPEBUILDRFP%\GRFPMessage.pdb" "%FDOBINPATHRFP%"
 copy /y "Bin\Win32\%TYPEBUILDRFP%\GRFPOverrides.dll" "%FDOBINPATHRFP%"
-copy /y "Lib\Win32\%TYPEBUILDRFP%\GRFPOverrides.lib" "%FDOLIBPATHRFP%"
+copy /y "Bin\Win32\%TYPEBUILDRFP%\GRFPOverrides.pdb" "%FDOBINPATHRFP%"
 copy /y "Bin\Win32\%TYPEBUILDRFP%\GRFPProvider.dll" "%FDOBINPATHRFP%"
+copy /y "Bin\Win32\%TYPEBUILDRFP%\GRFPProvider.pdb" "%FDOBINPATHRFP%"
+
+copy /y "Lib\Win32\%TYPEBUILDRFP%\GRFPOverrides.lib" "%FDOLIBPATHRFP%"
 
 echo Copy GdalFile SDK Header Files
 xcopy /S /C /Q /R /Y Inc\GdalFile\*.h "%FDOINCPATHRFP%\GdalFile\"

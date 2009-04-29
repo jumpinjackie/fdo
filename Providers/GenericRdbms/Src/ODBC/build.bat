@@ -117,17 +117,26 @@ if "%TYPEACTIONODBC%"=="build" goto generate_docs
 :install_files_ODBC
 echo copy %TYPEBUILDODBC% ODBC provider output files
 copy /y "..\..\Bin\Win32\%TYPEBUILDODBC%\RdbmsMsg.dll" "%FDOBINPATHODBC%"
+copy /y "..\..\Bin\Win32\%TYPEBUILDODBC%\RdbmsMsg.pdb" "%FDOBINPATHODBC%"
 copy /y "..\..\Bin\Win32\%TYPEBUILDODBC%\ODBCProvider.dll" "%FDOBINPATHODBC%"
+copy /y "..\..\Bin\Win32\%TYPEBUILDODBC%\ODBCProvider.pdb" "%FDOBINPATHODBC%"
 copy /y "..\..\Bin\Win32\%TYPEBUILDODBC%\ODBCOverrides.dll" "%FDOBINPATHODBC%"
+copy /y "..\..\Bin\Win32\%TYPEBUILDODBC%\ODBCOverrides.pdb" "%FDOBINPATHODBC%"
 copy /y "..\..\Bin\Win32\%TYPEBUILDODBC%\RdbmsOverrides.dll" "%FDOBINPATHODBC%"
+copy /y "..\..\Bin\Win32\%TYPEBUILDODBC%\RdbmsOverrides.pdb" "%FDOBINPATHODBC%"
 copy /y "%FDOUTILITIES%\SchemaMgr\Bin\Win32\%TYPEBUILDODBC%\SmMessage.dll" "%FDOBINPATHODBC%"
+copy /y "%FDOUTILITIES%\SchemaMgr\Bin\Win32\%TYPEBUILDODBC%\SmMessage.pdb" "%FDOBINPATHODBC%"
 copy /y "%FDOUTILITIES%\ExpressionEngine\bin\win32\%TYPEBUILDODBC%\ExpressionEngine.dll" "%FDOBINPATHODBC%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\bin\win32\%TYPEBUILDODBC%\ExpressionEngine.pdb" "%FDOBINPATHODBC%"
 copy /y "%FDOUTILITIES%\ExpressionEngine\lib\win32\%TYPEBUILDODBC%\ExpressionEngine.lib" "%FDOLIBPATHODBC%"
 copy /y "..\..\Lib\Win32\%TYPEBUILDODBC%\RdbmsOverrides.lib" "%FDOLIBPATHODBC%"
 copy /y "..\..\Lib\Win32\%TYPEBUILDODBC%\ODBCOverrides.lib" "%FDOLIBPATHODBC%"
 copy /y "..\..\Managed\bin\%TYPEBUILDODBC%\OSGeo.FDO.Providers.ODBC.Overrides.dll" "%FDOBINPATHODBC%"
+copy /y "..\..\Managed\bin\%TYPEBUILDODBC%\OSGeo.FDO.Providers.ODBC.Overrides.pdb" "%FDOBINPATHODBC%"
 copy /y "..\..\Managed\bin\%TYPEBUILDODBC%\OSGeo.FDO.Providers.Rdbms.dll" "%FDOBINPATHODBC%"
+copy /y "..\..\Managed\bin\%TYPEBUILDODBC%\OSGeo.FDO.Providers.Rdbms.pdb" "%FDOBINPATHODBC%"
 copy /y "..\..\Managed\bin\%TYPEBUILDODBC%\OSGeo.FDO.Providers.Rdbms.Overrides.dll" "%FDOBINPATHODBC%"
+copy /y "..\..\Managed\bin\%TYPEBUILDODBC%\OSGeo.FDO.Providers.Rdbms.Overrides.pdb" "%FDOBINPATHODBC%"
 
 
 echo copy header files

@@ -131,11 +131,16 @@ if "%TYPEACTIONSHP%"=="build" goto generate_docs
 :install_files_shp
 echo copy %TYPEBUILDSHP% SHP provider output files
 copy /y "Managed\bin\%TYPEBUILDSHP%\OSGeo.FDO.Providers.SHP.Overrides.dll" "%FDOBINPATHSHP%"
+copy /y "Managed\bin\%TYPEBUILDSHP%\OSGeo.FDO.Providers.SHP.Overrides.pdb" "%FDOBINPATHSHP%"
 copy /y "Bin\Win32\%TYPEBUILDSHP%\SHPProvider.dll" "%FDOBINPATHSHP%"
+copy /y "Bin\Win32\%TYPEBUILDSHP%\SHPProvider.pdb" "%FDOBINPATHSHP%"
 copy /y "Bin\Win32\%TYPEBUILDSHP%\SHPOverrides.dll" "%FDOBINPATHSHP%"
+copy /y "Bin\Win32\%TYPEBUILDSHP%\SHPOverrides.pdb" "%FDOBINPATHSHP%"
 copy /y "Bin\Win32\%TYPEBUILDSHP%\SHPMessage.dll" "%FDOBINPATHSHP%"
+copy /y "Bin\Win32\%TYPEBUILDSHP%\SHPMessage.pdb" "%FDOBINPATHSHP%"
 copy /y "Lib\Win32\%TYPEBUILDSHP%\SHPOverrides.lib" "%FDOLIBPATHSHP%"
 copy /y "%FDOUTILITIES%\ExpressionEngine\bin\win32\%TYPEBUILDSHP%\ExpressionEngine.dll" "%FDOBINPATHSHP%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\bin\win32\%TYPEBUILDSHP%\ExpressionEngine.pdb" "%FDOBINPATHSHP%"
 copy /y "%FDOUTILITIES%\ExpressionEngine\lib\win32\%TYPEBUILDSHP%\ExpressionEngine.lib" "%FDOLIBPATHSHP%"
 
 echo copy header files
