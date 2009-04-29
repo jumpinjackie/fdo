@@ -72,7 +72,7 @@ FdoInt32* CommandCapabilities::GetCommands(FdoInt32& size)
 
 bool CommandCapabilities::SupportsParameters()
 {
-    return true;
+    return false;
 }
 
 bool CommandCapabilities::SupportsTimeout()
