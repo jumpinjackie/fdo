@@ -1322,8 +1322,8 @@ void FdoSmPhOwner::LoadIndexRootTableCands()
                 
                 // Loading indexes into this owner so skip any base objects in 
                 // other owners.
-                if ( GetQName() == rootObject->GetParent()->GetQName() ) {
-                    if ( rootObject && (dbObject->GetQName() != rootObject->GetQName()) ) {
+                if ( rootObject && (GetQName() == rootObject->GetParent()->GetQName()) ) {
+                    if ( dbObject->GetQName() != rootObject->GetQName() ) {
                         // Object has no primary key but has a root object. We might 
                         // use root object's indexes to generate object's identity.
                         FdoSmPhTableP table = rootObject->SmartCast<FdoSmPhTable>();
