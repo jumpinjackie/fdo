@@ -37,8 +37,18 @@ bool operator()(const char* _Left, const char* _Right) const
 	    return strcmp(_Left, _Right) < 0;
 	}
 };
-typedef std::vector<std::pair<sqlite3_stmt*, bool>> ListQueryCache;
-typedef std::map<char*, ListQueryCache, string_less> QueryCache;
+
+struct QueryCacheRec
+{
+    QueryCacheRec() : stmt(NULL), inUse(false) {}
+    QueryCacheRec(sqlite3_stmt* s) : stmt(s), inUse(true) {}
+
+    sqlite3_stmt* stmt;
+    bool inUse;
+};
+typedef std::vector<QueryCacheRec> QueryCacheRecList;
+typedef std::map<char*, QueryCacheRecList, string_less> QueryCache;
+
 typedef std::map<char*, SltMetadata*, string_less> MetadataCache;
 typedef std::map<char*, SpatialIndex*, string_less> SpatialIndexCache;
 
