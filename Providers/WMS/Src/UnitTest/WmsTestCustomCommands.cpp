@@ -48,7 +48,7 @@ void WmsTestCustomCommands::testGetImageFormats ()
         //test for formats command
         FdoPtr<FdoWmsIGetImagefromats> cmdGIF = static_cast<FdoWmsIGetImagefromats *> (connection->CreateCommand(FdoWmsCommandType_GetImageFormats));
         FdoStringsP formats = cmdGIF->Execute ();
-        CPPUNIT_ASSERT(formats->GetCount() == 6);
+        CPPUNIT_ASSERT(formats->GetCount() == 7);
 #ifdef _DEBUG
 		for (int i = 0; i < formats->GetCount(); ++i)
 		{
