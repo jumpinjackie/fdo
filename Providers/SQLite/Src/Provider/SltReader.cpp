@@ -1032,9 +1032,8 @@ FdoString* SltReader::GetPropertyName(FdoInt32 index)
 
 FdoDataType SltReader::GetDataType(FdoString* propertyName)
 {
-	FdoPtr<FdoFeatureClass> fc = (FdoFeatureClass*)GetClassDefinition(); //guaranteed to be FeatureClass, see the implementation
+	FdoPtr<FdoClassDefinition> fc = GetClassDefinition(); 
 	FdoPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
-
 	FdoPtr<FdoPropertyDefinition> pd = pdc->FindItem(propertyName);
 
 	return ((FdoDataPropertyDefinition*)pd.p)->GetDataType();
@@ -1042,14 +1041,11 @@ FdoDataType SltReader::GetDataType(FdoString* propertyName)
 
 FdoPropertyType SltReader::GetPropertyType(FdoString* propertyName)
 {
-	FdoPtr<FdoFeatureClass> fc = (FdoFeatureClass*)GetClassDefinition(); //guaranteed to be FeatureClass, see the implementation
-	
-	FdoPtr<FdoGeometricPropertyDefinition> gpd = fc->GetGeometryProperty();
-		
-	if (gpd && wcscmp(propertyName, gpd->GetName()) == 0)
-		return FdoPropertyType_GeometricProperty;
-	else
-		return FdoPropertyType_DataProperty;
+	FdoPtr<FdoClassDefinition> fc = GetClassDefinition(); 
+	FdoPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
+	FdoPtr<FdoPropertyDefinition> pd = pdc->FindItem(propertyName);
+    
+    return pd->GetPropertyType();
 }
 
 
