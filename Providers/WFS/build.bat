@@ -121,8 +121,11 @@ if "%TYPEACTIONWFS%"=="build" goto generate_docs
 :install_files_wfs
 echo copy %TYPEBUILDWFS% WFS provider output files
 copy /y "%FDOUTILITIES%\OWS\Bin\Win32\%TYPEBUILDWFS%\OWS.dll" "%FDOBINPATHWFS%"
+copy /y "%FDOUTILITIES%\OWS\Bin\Win32\%TYPEBUILDWFS%\OWS.pdb" "%FDOBINPATHWFS%"
 copy /y "Bin\Win32\%TYPEBUILDWFS%\WFSProvider.dll" "%FDOBINPATHWFS%"
+copy /y "Bin\Win32\%TYPEBUILDWFS%\WFSProvider.pdb" "%FDOBINPATHWFS%"
 copy /y "Bin\Win32\%TYPEBUILDWFS%\WFSMessage.dll" "%FDOBINPATHWFS%"
+copy /y "Bin\Win32\%TYPEBUILDWFS%\WFSMessage.pdb" "%FDOBINPATHWFS%"
 
 echo copy header files
 rem none

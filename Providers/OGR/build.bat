@@ -87,6 +87,7 @@ if "%TYPEACTIONOGR%"=="build" goto end
 :install_files_ogr
 echo Copy %TYPEBUILDOGR% OGR Provider Output Files
 copy /y "%TYPEBUILDOGR%\OGRProvider.dll" "%FDOBINPATHOGR%"
+copy /y "%TYPEBUILDOGR%\OGRProvider.pdb" "%FDOBINPATHOGR%"
 
 :end
 echo End OGR %MSACTIONOGR%

@@ -94,9 +94,11 @@ if not exist "%FDOINCPATHKORA%" mkdir "%FDOINCPATHKORA%"
 if not exist "%FDOLIBPATHKORA%" mkdir "%FDOLIBPATHKORA%"
 echo Copy %TYPEBUILDKORA% KingOracle Provider Output Files
 copy /y "Bin\Win32\%TYPEBUILDKORA%\KingOracleMessage.dll" "%FDOBINPATHKORA%"
+copy /y "Bin\Win32\%TYPEBUILDKORA%\KingOracleMessage.pdb" "%FDOBINPATHKORA%"
 copy /y "Bin\Win32\%TYPEBUILDKORA%\KingOracleProvider.dll" "%FDOBINPATHKORA%"
+copy /y "Bin\Win32\%TYPEBUILDKORA%\KingOracleProvider.pdb" "%FDOBINPATHKORA%"
 copy /y "Bin\Win32\%TYPEBUILDKORA%\KingOracleOverrides.dll" "%FDOBINPATHKORA%"
-copy /y "Bin\Win32\%TYPEBUILDKORA%\KingOracleOverrides.dll" "%FDOBINPATHKORA%"
+copy /y "Bin\Win32\%TYPEBUILDKORA%\KingOracleOverrides.pdb" "%FDOBINPATHKORA%"
 echo Copy %TYPEBUILDKORA% KingOracle Library Files
 copy /y "Lib\Win32\%TYPEBUILDKORA%\KingOracleOverrides.lib" "%FDOLIBPATHKORA%"
 echo Copy KingOracle Header Files

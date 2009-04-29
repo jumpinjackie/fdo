@@ -93,6 +93,7 @@ if not exist "%FDOINCPATHKMSS%" mkdir "%FDOINCPATHKMSS%"
 if not exist "%FDOLIBPATHKMSS%" mkdir "%FDOLIBPATHKMSS%"
 echo Copy %TYPEBUILDKMSS% KingOracle Provider Output Files
 copy /y "Bin\Win32\%TYPEBUILDKMSS%\KingMssProvider.dll" "%FDOBINPATHKMSS%"
+copy /y "Bin\Win32\%TYPEBUILDKMSS%\KingMssProvider.pdb" "%FDOBINPATHKMSS%"
 
 :end
 echo End KingOracle %MSACTIONKMSS%

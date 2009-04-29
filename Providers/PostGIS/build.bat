@@ -93,9 +93,11 @@ if not exist "%FDOINCPATHPGIS%" mkdir "%FDOINCPATHPGIS%"
 if not exist "%FDOLIBPATHPGIS%" mkdir "%FDOLIBPATHPGIS%"
 echo Copy %TYPEBUILDPGIS% PostGIS Provider Output Files
 copy /y "Bin\Win32\%TYPEBUILDPGIS%\PostGISMessage.dll" "%FDOBINPATHPGIS%"
+copy /y "Bin\Win32\%TYPEBUILDPGIS%\PostGISMessage.pdb" "%FDOBINPATHPGIS%"
 copy /y "Bin\Win32\%TYPEBUILDPGIS%\PostGISProvider.dll" "%FDOBINPATHPGIS%"
+copy /y "Bin\Win32\%TYPEBUILDPGIS%\PostGISProvider.pdb" "%FDOBINPATHPGIS%"
 copy /y "Bin\Win32\%TYPEBUILDPGIS%\PostGISOverrides.dll" "%FDOBINPATHPGIS%"
-copy /y "Bin\Win32\%TYPEBUILDPGIS%\PostGISOverrides.dll" "%FDOBINPATHPGIS%"
+copy /y "Bin\Win32\%TYPEBUILDPGIS%\PostGISOverrides.pdb" "%FDOBINPATHPGIS%"
 echo Copy %TYPEBUILDPGIS% PostGIS Library Files
 copy /y "Lib\Win32\%TYPEBUILDPGIS%\PostGISOverrides.lib" "%FDOLIBPATHPGIS%"
 echo Copy PostGIS Header Files

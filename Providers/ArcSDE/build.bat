@@ -136,11 +136,16 @@ if "%TYPEACTIONARCSDE%"=="build" goto generate_docs
 :install_files_ArcSDE
 echo copy %TYPEBUILDARCSDE% ArcSDE provider output files
 copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEMessage.dll" "%FDOBINPATHARCSDE%"
+copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEMessage.pdb" "%FDOBINPATHARCSDE%"
 copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider.dll" "%FDOBINPATHARCSDE%"
+copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider.pdb" "%FDOBINPATHARCSDE%"
 copy /y "%FDOUTILITIES%\ExpressionEngine\bin\win32\%TYPEBUILDARCSDE%\ExpressionEngine.dll" "%FDOBINPATHARCSDE%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\bin\win32\%TYPEBUILDARCSDE%\ExpressionEngine.pdb" "%FDOBINPATHARCSDE%"
 copy /y "%FDOUTILITIES%\ExpressionEngine\lib\win32\%TYPEBUILDARCSDE%\ExpressionEngine.lib" "%FDOLIBPATHARCSDE%"
 if exist "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider91.dll" copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider91.dll" "%FDOBINPATHARCSDE%"
+if exist "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider91.pdb" copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider91.pdb" "%FDOBINPATHARCSDE%"
 if exist "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider92.dll" copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider92.dll" "%FDOBINPATHARCSDE%"
+if exist "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider92.pdb" copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider92.pdb" "%FDOBINPATHARCSDE%"
 
 echo copy header files
 xcopy /C /Q /R /Y /I "%FDOUTILITIES%\ExpressionEngine\Inc\*.h" "%FDOINCPATHARCSDE%\ExpressionEngine"

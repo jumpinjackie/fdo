@@ -150,19 +150,28 @@ if "%TYPEACTIONFDO%"=="builddocsonly" goto generate_docs
 :install_files
 echo copy FDO %TYPEBUILDFDO% output files
 copy /y "Unmanaged\Bin\Win32\%TYPEBUILDFDO%\FDO.dll" "%FDOBINPATHFDO%"
+copy /y "Unmanaged\Bin\Win32\%TYPEBUILDFDO%\FDO.pdb" "%FDOBINPATHFDO%"
 copy /y "Unmanaged\Bin\Win32\%TYPEBUILDFDO%\FDOMessage.dll" "%FDOBINPATHFDO%"
+copy /y "Unmanaged\Bin\Win32\%TYPEBUILDFDO%\FDOMessage.pdb" "%FDOBINPATHFDO%"
 copy /y "Unmanaged\Bin\Win32\%TYPEBUILDFDO%\FDOCommon.dll" "%FDOBINPATHFDO%"
+copy /y "Unmanaged\Bin\Win32\%TYPEBUILDFDO%\FDOCommon.pdb" "%FDOBINPATHFDO%"
 copy /y "Unmanaged\Bin\Win32\%TYPEBUILDFDO%\FDOGeometry.dll" "%FDOBINPATHFDO%"
+copy /y "Unmanaged\Bin\Win32\%TYPEBUILDFDO%\FDOGeometry.pdb" "%FDOBINPATHFDO%"
 copy /y "Unmanaged\Bin\Win32\%TYPEBUILDFDO%\FDOSpatial.dll" "%FDOBINPATHFDO%"
+copy /y "Unmanaged\Bin\Win32\%TYPEBUILDFDO%\FDOSpatial.pdb" "%FDOBINPATHFDO%"
 copy /y "Managed\Bin\Win32\%TYPEBUILDFDO%\OSGeo.FDO.dll" "%FDOBINPATHFDO%"
+copy /y "Managed\Bin\Win32\%TYPEBUILDFDO%\OSGeo.FDO.pdb" "%FDOBINPATHFDO%"
 copy /y "Managed\Bin\Win32\%TYPEBUILDFDO%\OSGeo.FDO.Common.dll" "%FDOBINPATHFDO%"
+copy /y "Managed\Bin\Win32\%TYPEBUILDFDO%\OSGeo.FDO.Common.pdb" "%FDOBINPATHFDO%"
 copy /y "Managed\Bin\Win32\%TYPEBUILDFDO%\OSGeo.FDO.Geometry.dll" "%FDOBINPATHFDO%"
+copy /y "Managed\Bin\Win32\%TYPEBUILDFDO%\OSGeo.FDO.Geometry.pdb" "%FDOBINPATHFDO%"
 copy /y "Managed\Bin\Win32\%TYPEBUILDFDO%\OSGeo.FDO.Spatial.dll" "%FDOBINPATHFDO%"
+copy /y "Managed\Bin\Win32\%TYPEBUILDFDO%\OSGeo.FDO.Spatial.pdb" "%FDOBINPATHFDO%"
 copy /y "Unmanaged\Lib\Win32\%TYPEBUILDFDO%\FDO.lib" "%FDOLIBPATHFDO%"
 copy /y "Unmanaged\Lib\Win32\%TYPEBUILDFDO%\FDOCommon.lib" "%FDOLIBPATHFDO%"
 copy /y "Unmanaged\Lib\Win32\%TYPEBUILDFDO%\FDOGeometry.lib" "%FDOLIBPATHFDO%"
 copy /y "Unmanaged\Lib\Win32\%TYPEBUILDFDO%\FDOSpatial.lib" "%FDOLIBPATHFDO%"
-copy /y "Python\Lib\Win32\FDO.py" "%FDOLIBPATHFDO%"
+if exist "Python\Lib\Win32\FDO.py" copy /y "Python\Lib\Win32\FDO.py" "%FDOLIBPATHFDO%"
 cscript //Nologo //job:install ../preparebuilds.wsf
 
 echo copy FDO header files

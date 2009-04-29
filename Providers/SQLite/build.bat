@@ -122,6 +122,7 @@ if "%TYPEACTIONSLITE%"=="build" goto end
 :install_files_SQLite
 echo copy %TYPEBUILDSLITE% SQLite provider output files
 copy /y "Win32\%TYPEBUILDSLITE%\SQLiteProvider.dll" "%FDOBINPATHSLITE%"
+copy /y "Win32\%TYPEBUILDSLITE%\SQLiteProvider.pdb" "%FDOBINPATHSLITE%"
 
 :end
 echo End SLITE %MSACTIONSLITE%
