@@ -69,8 +69,8 @@ FdoSpatialOperations* FilterCapabilities::GetSpatialOperations(FdoInt32& size)
         FdoSpatialOperations_Overlaps,
         FdoSpatialOperations_Touches,
         FdoSpatialOperations_Within,
-        FdoSpatialOperations_CoveredBy,
-        FdoSpatialOperations_Inside,
+        //FdoSpatialOperations_CoveredBy,
+        //FdoSpatialOperations_Inside,
         FdoSpatialOperations_EnvelopeIntersects
     };
 
@@ -82,7 +82,7 @@ FdoDistanceOperations* FilterCapabilities::GetDistanceOperations(FdoInt32& size)
 {
     static FdoDistanceOperations operations[] =
     {
-        FdoDistanceOperations_Beyond,
+        //FdoDistanceOperations_Beyond,
         FdoDistanceOperations_Within
     };
 
