@@ -17,6 +17,11 @@
 #include "stdafx.h"
 #include "PostGisProvider.h"
 #include "ExpressionCapabilities.h"
+#include <FdoExpressionEngine.h>
+#include <Functions/Geometry/FdoFunctionX.h>
+#include <Functions/Geometry/FdoFunctionY.h>
+#include <Functions/Geometry/FdoFunctionZ.h>
+#include <Functions/Geometry/FdoFunctionM.h>
 
 namespace fdo { namespace postgis {
 
@@ -58,30 +63,35 @@ FdoExpressionType* ExpressionCapabilities::GetExpressionTypes(FdoInt32& size)
 
 FdoFunctionDefinitionCollection* ExpressionCapabilities::GetFunctions()
 {    
-    FdoPtr<FdoFunctionDefinitionCollection> supported;
-    supported = FdoFunctionDefinitionCollection::Create();
+   FdoPtr<FdoFunctionDefinitionCollection> supportedFunctions;
+	 supportedFunctions = FdoExpressionEngine::GetStandardFunctions();
 
-    // Collect supported functions from the Well-Known-Functions collection
-    FdoPtr<FdoFunctionDefinitionCollection> wkfuncs;
-    wkfuncs = GetWellKnownFunctions();
-    
-    FdoPtr<FdoFunctionDefinition> wkf;
-    
-    wkf = wkfuncs->GetItem(FDO_FUNCTION_COUNT);
-    supported->Add(wkf);
-    wkf = wkfuncs->GetItem(FDO_FUNCTION_MIN);
-    supported->Add(wkf);
-    wkf = wkfuncs->GetItem(FDO_FUNCTION_MAX);
-    supported->Add(wkf);
-    wkf = wkfuncs->GetItem(FDO_FUNCTION_AVG);
-    supported->Add(wkf);
-    wkf = wkfuncs->GetItem(FDO_FUNCTION_SUM);
-    supported->Add(wkf);
-    wkf = wkfuncs->GetItem(FDO_FUNCTION_CONCAT);
-    supported->Add(wkf);
+   //Removing the Extract function that return Dates
+   //User will use ExtractToDouble or ExtractToInt
+   FdoInt32 index = supportedFunctions->IndexOf(FDO_FUNCTION_EXTRACT);
+   if(index >=0)
+   {
+     supportedFunctions->RemoveAt(index);
+   }
 
-    FDO_SAFE_ADDREF(supported.p);
-    return supported.p;
+   // Add function X to the list of supported function
+   FdoPtr<FdoExpressionEngineIFunction> funcX = FdoFunctionX::Create();
+   supportedFunctions->Add(FdoPtr<FdoFunctionDefinition>(funcX->GetFunctionDefinition()));
+
+   // Add function Y to the list of supported function
+   FdoPtr<FdoExpressionEngineIFunction> funcY = FdoFunctionY::Create();
+   supportedFunctions->Add(FdoPtr<FdoFunctionDefinition>(funcY->GetFunctionDefinition()));
+
+   // Add function Z to the list of supported function
+   FdoPtr<FdoExpressionEngineIFunction> funcZ = FdoFunctionZ::Create();
+   supportedFunctions->Add(FdoPtr<FdoFunctionDefinition>(funcZ->GetFunctionDefinition()));
+
+   // Add function M to the list of supported function
+   FdoPtr<FdoExpressionEngineIFunction> funcM = FdoFunctionM::Create();
+   supportedFunctions->Add(FdoPtr<FdoFunctionDefinition>(funcM->GetFunctionDefinition()));
+
+   return (FDO_SAFE_ADDREF (supportedFunctions.p));
+
 }
 
 }} // namespace fdo::postgis
