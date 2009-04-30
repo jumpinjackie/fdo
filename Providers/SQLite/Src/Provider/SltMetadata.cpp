@@ -56,7 +56,6 @@ SltMetadata::SltMetadata(SltConnection* connection, const char* name, bool bUseF
   m_mdtable(NULL),
   m_fc(NULL),
   m_connection(connection), //No addref -- it owns us, and we are private to it
-  m_iGeom(-1),
   m_bUseFdoMetadata(bUseFdoMetadata)
 {
     sqlite3* db = m_connection->GetDbRead();
@@ -178,6 +177,7 @@ FdoClassDefinition* SltMetadata::ToClass()
     if (m_table->pCheck != NULL && !ExtractConstraints(m_table->pCheck, tableConstraints))
         tableConstraints.clear();
 
+    int iGeom = -1;
     for (int i=0; i<m_table->nCol; i++)
     {
         const char* pname = m_table->aCol[i].zName;
@@ -193,7 +193,7 @@ FdoClassDefinition* SltMetadata::ToClass()
             }
         }
 
-        bool theGeom = (gi != -1 && m_iGeom == -1);
+        bool theGeom = (gi != -1 && iGeom == -1);
 
         std::wstring wpname = A2W_SLOW(pname);
 
@@ -208,7 +208,7 @@ FdoClassDefinition* SltMetadata::ToClass()
             if (theGeom)
             {
                 ((FdoFeatureClass*)m_fc)->SetGeometryProperty(gpd);
-                m_iGeom = gi;
+                iGeom = gi;
                 const char* gf = gformats[gi].c_str();
                 if (strcmp(gf, "WKB") == 0)
                     m_geomFormat = eWKB;
@@ -223,15 +223,31 @@ FdoClassDefinition* SltMetadata::ToClass()
             FindSpatialContextName(srid, scname);            
             gpd->SetSpatialContextAssociation(scname.c_str());
 
-            if (gdims[gi] > 2)
+            if ((gdims[gi] & 0x01) != 0)
                 gpd->SetHasElevation(true);
-            if (gdims[gi] > 3)
+            if ((gdims[gi] & 0x02) != 0)
                 gpd->SetHasMeasure(true);
 
-            int fgtype = (FdoGeometryType)gtypes[gi];
+            int fgtype = gtypes[gi];
 
             if (fgtype > 0)
-                gpd->SetSpecificGeometryTypes((FdoGeometryType*)&fgtype, 1);
+            {
+                int maxGeomVal = FdoGeometryType_MultiCurvePolygon;
+                int* types = (int*)alloca(sizeof(int)*maxGeomVal);
+                int idx = 0;
+                int type = 0;
+                do
+                {
+                    int geomType = (0x01 << type);
+                    if ((fgtype & geomType) != 0)
+                    {
+                        types[idx++] = type + 1;
+                        fgtype &= ~geomType;
+                    }
+                    type++;
+                }while(fgtype != 0 && type < maxGeomVal);
+                gpd->SetSpecificGeometryTypes((FdoGeometryType*)types, idx);
+            }
             else
                 gpd->SetGeometryTypes(FdoGeometricType_All); //unsure... set all.
 

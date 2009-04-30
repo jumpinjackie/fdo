@@ -4,6 +4,7 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Provider", "Provider\SQLiteProvider.vcproj", "{8F5CFBEE-539A-4054-8A76-1BF85DD1A716}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D94D9A17-A6AE-45DA-A1F9-443BD3A76FC6} = {D94D9A17-A6AE-45DA-A1F9-443BD3A76FC6}
+		{34FF1437-0853-44D4-B786-48ACB3AACBB5} = {34FF1437-0853-44D4-B786-48ACB3AACBB5}
 		{9037A345-04EB-418C-98D0-3D5B19FC9D55} = {9037A345-04EB-418C-98D0-3D5B19FC9D55}
 		{826398ED-29B3-4504-9683-ABC431AC5D21} = {826398ED-29B3-4504-9683-ABC431AC5D21}
 	EndProjectSection
@@ -19,6 +20,13 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SpatialIndex", "SpatialIndex\SpatialIndex.vcproj", "{826398ED-29B3-4504-9683-ABC431AC5D21}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "..\..\..\Utilities\Common\FdoCommon.vcproj", "{9037A345-04EB-418C-98D0-3D5B19FC9D55}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "UnitTest\UnitTest.vcproj", "{5C2E3117-B005-4FFE-8B59-2AD734BAF536}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8F5CFBEE-539A-4054-8A76-1BF85DD1A716} = {8F5CFBEE-539A-4054-8A76-1BF85DD1A716}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExpressionEngine", "..\..\..\Utilities\ExpressionEngine\ExpressionEngine.vcproj", "{34FF1437-0853-44D4-B786-48ACB3AACBB5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,6 +74,22 @@ Global
 		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Release|Win32.Build.0 = Release|Win32
 		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Release|x64.ActiveCfg = Release|x64
 		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Release|x64.Build.0 = Release|x64
+		{5C2E3117-B005-4FFE-8B59-2AD734BAF536}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5C2E3117-B005-4FFE-8B59-2AD734BAF536}.Debug|Win32.Build.0 = Debug|Win32
+		{5C2E3117-B005-4FFE-8B59-2AD734BAF536}.Debug|x64.ActiveCfg = Debug|x64
+		{5C2E3117-B005-4FFE-8B59-2AD734BAF536}.Debug|x64.Build.0 = Debug|x64
+		{5C2E3117-B005-4FFE-8B59-2AD734BAF536}.Release|Win32.ActiveCfg = Release|Win32
+		{5C2E3117-B005-4FFE-8B59-2AD734BAF536}.Release|Win32.Build.0 = Release|Win32
+		{5C2E3117-B005-4FFE-8B59-2AD734BAF536}.Release|x64.ActiveCfg = Release|x64
+		{5C2E3117-B005-4FFE-8B59-2AD734BAF536}.Release|x64.Build.0 = Release|x64
+		{34FF1437-0853-44D4-B786-48ACB3AACBB5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{34FF1437-0853-44D4-B786-48ACB3AACBB5}.Debug|Win32.Build.0 = Debug|Win32
+		{34FF1437-0853-44D4-B786-48ACB3AACBB5}.Debug|x64.ActiveCfg = Debug|x64
+		{34FF1437-0853-44D4-B786-48ACB3AACBB5}.Debug|x64.Build.0 = Debug|x64
+		{34FF1437-0853-44D4-B786-48ACB3AACBB5}.Release|Win32.ActiveCfg = Release|Win32
+		{34FF1437-0853-44D4-B786-48ACB3AACBB5}.Release|Win32.Build.0 = Release|Win32
+		{34FF1437-0853-44D4-B786-48ACB3AACBB5}.Release|x64.ActiveCfg = Release|x64
+		{34FF1437-0853-44D4-B786-48ACB3AACBB5}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
