@@ -123,6 +123,7 @@ INCLUDES = \
   -I../Message/Inc \
   -I../../../../Fdo/Unmanaged/Inc \
   -I../../../../Utilities/Common/Inc \
+  -I../../../../Utilities/ExpressionEngine/Inc \
   -I../../../../Thirdparty/pgsql/include \
   -I../../../../Thirdparty/boost
 
