@@ -357,59 +357,65 @@ int Fgf2Wkb(const unsigned char* fgf, unsigned char* wkb)
     return dst.GetLength();
 }
 
-bool GetFgfExtents(const unsigned char* fgf, int len, double ext[4])
-{ 
-    //Converts FdoDimensionality value to # of coordinates per point
-    static int dim_lookup[] = { 2, 3, 3, 4 };
+//Converts FdoDimensionality value to # of coordinates per point
+#define FDODIM2NCOORDS(x) (x + 2 - x/2)
 
+void GetFgfExtents(const unsigned char* fgf, int len, double ext[4])
+{ 
     int* ireader = (int*)fgf;
 
     // the geometry type
-    int geom_type = (FdoGeometryType) *ireader;
+    int geom_type = (FdoGeometryType) ireader[0];
 
     switch (geom_type)
     {
     case FdoGeometryType_Point :
         {
             FgfPoint* pt = (FgfPoint*)fgf;
-            ext[0] = ext[2] = pt->coords[0];
-            ext[1] = ext[3] = pt->coords[1];
+            AssignBounds(ext, pt->coords);
         }
         break;
     case FdoGeometryType_LineString :
         {
             FgfPolyline* pl = (FgfPolyline*)fgf;
-            int dim = dim_lookup[pl->dim];
+            unsigned int tmp = pl->dim;
+            unsigned int dim = FDODIM2NCOORDS(tmp);
 
-            ext[0] =  DBL_MAX;
-            ext[1] =  DBL_MAX;
-            ext[2] = -DBL_MAX;
-            ext[3] = -DBL_MAX;
-            AddToExtent(pl->np, dim, pl->p, ext);
+            //Add the points to the bounds
+            AddToEmptyExtent(pl->np, dim, pl->p, ext);
         }
         break;
     case FdoGeometryType_Polygon :
         {
-            ireader++;
-            ext[0] =  DBL_MAX;
-            ext[1] =  DBL_MAX;
-            ext[2] = -DBL_MAX;
-            ext[3] = -DBL_MAX;
-
             //read cordinate type
-            int tmp = (FdoDimensionality) *ireader++;
-            int dim = dim_lookup[tmp];
+            unsigned int tmp = (unsigned int)(FdoDimensionality) ireader[1];
+            unsigned int dim = FDODIM2NCOORDS(tmp);
 
             // the number of contours in current polygon/linestring
-            int contour_count = *ireader++;
+            int contour_count = ireader[2];
 
-            for (int i=0; i<contour_count; i++)
+            //common case of a single contour
+            if (contour_count == 1)
             {
-                int point_count = *ireader++;
-                
-                double* dreader = (double*) ireader;
-                AddToExtent(point_count, dim, dreader, ext);
-                ireader = (int*)(dreader + point_count * dim);
+                int point_count = ireader[3];
+                double* dreader = (double*)&ireader[4];
+
+                AddToEmptyExtent(point_count, dim, dreader, ext);
+            }
+            else
+            {
+                ireader += 3; //skip past geom_type, dimensionality, and contour count
+
+                ext[0] = ext[1] = DBL_MAX;
+                ext[2] = ext[3] = -DBL_MAX;
+
+                for (int i=0; i<contour_count; i++)
+                {
+                    int point_count = *ireader++;
+                    double* dreader = (double*) ireader;
+                    AddToExtent(point_count, dim, dreader, ext);
+                    ireader = (int*)(dreader + point_count * dim);
+                }
             }
         }
         break;
@@ -418,10 +424,8 @@ bool GetFgfExtents(const unsigned char* fgf, int len, double ext[4])
     case FdoGeometryType_MultiPoint :
         {
             ireader++;
-            ext[0] =  DBL_MAX;
-            ext[1] =  DBL_MAX;
-            ext[2] = -DBL_MAX;
-            ext[3] = -DBL_MAX;
+            ext[0] = ext[1] = DBL_MAX;
+            ext[2] = ext[3] = -DBL_MAX;
 
             bool is_multi = true; /*(geom_type == FdoGeometryType_MultiLineString)
                 || (geom_type == FdoGeometryType_MultiPolygon
@@ -443,8 +447,8 @@ bool GetFgfExtents(const unsigned char* fgf, int len, double ext[4])
                 if (is_multi) ireader++;
 
                 //read cordinate type
-                int tmp = (FdoDimensionality) *ireader++;
-                int dim = dim_lookup[tmp];
+                unsigned int tmp = (FdoDimensionality) *ireader++;
+                unsigned int dim = FDODIM2NCOORDS(tmp);
 
                 // the number of contours in current polygon/linestring
                 contour_count = 1; //for linestrings
@@ -482,13 +486,8 @@ bool GetFgfExtents(const unsigned char* fgf, int len, double ext[4])
 #ifdef SLT_USE_FDO_SPATIAL        
         FdoPtr<FdoByteArray> ba = FdoByteArray::Create(fgf, len);
         FdoSpatialUtility::GetExtents(ba, ext[0], ext[1], ext[2], ext[3]);
-        break;
-#else
-        return false;
 #endif
-        
+        break;
     }
-
-    return true;
 }
 
