@@ -270,6 +270,7 @@ static __forceinline void FillMem(Bounds* __restrict dst, const Bounds* __restri
 
 //finds the bounding box of a given array of points
 //and stores minx, miny, maxx and maxy in ext
+//Does not clobber input ext, just adds to it.
 static __forceinline void AddToExtent(int npts, int dim, double* __restrict pts, double* __restrict ext)
 {
 #if ENABLE_SSE
@@ -307,6 +308,51 @@ static __forceinline void AddToExtent(int npts, int dim, double* __restrict pts,
 #endif
 }
 
+//finds the bounding box of a given array of points
+//and stores minx, miny, maxx and maxy in ext
+//This version of the function assumes that the contents
+//of the input ext can be clobbered.
+static __forceinline void AddToEmptyExtent(int npts, int dim, double* __restrict pts, double* __restrict ext)
+{
+#if ENABLE_SSE
+    //unfortunately here we have to use unaligned access
+    //since things inside the FGF stream are not aligned
+    __m128d PT = _mm_loadu_pd((double*)pts);
+    __m128d MIN = PT;
+    __m128d MAX = PT;
+
+    pts += dim;
+
+    while (--npts > 0)
+    {
+        PT = _mm_loadu_pd((double*)pts);
+        MIN = _mm_min_pd(MIN, PT);
+        MAX = _mm_max_pd(MAX, PT);
+        pts += dim;
+    } 
+
+    _mm_storeu_pd((double*)ext, MIN);
+    _mm_storeu_pd((double*)(ext+2), MAX);
+#else
+    memcpy(ext, pts, sizeof(double)*2);
+    memcpy(ext+2, pts, sizeof(double)*2);
+   
+    int end = npts * dim;
+    for (int i=dim; i<end; i+=dim)
+    {
+        if (pts[i] < ext[0])
+            ext[0] = pts[i];
+        if (pts[i] > ext[2])
+            ext[2] = pts[i];
+        if (pts[i+1] < ext[1])
+            ext[1] = pts[i+1];
+        if (pts[i+1] > ext[3])
+            ext[3] = pts[i+1];
+    }
+#endif
+}
+
+
 //Translates given bounds by given offset, converts to float
 //and stores in destination Bounds structure
 static __forceinline void TranslateBounds(const DBounds* __restrict src, const double* __restrict offset, Bounds* __restrict dst)
@@ -327,6 +373,18 @@ static __forceinline void TranslateBounds(const DBounds* __restrict src, const d
         b.min[i] = (Real)(ext.min[i] - offset[i]);
         b.max[i] = (Real)(ext.max[i] - offset[i]);
     }
+#endif
+}
+
+static __forceinline void AssignBounds(double* __restrict ext, const double* __restrict pt)
+{
+#if ENABLE_SSE
+    __m128d PT = _mm_loadu_pd(pt);
+    _mm_storeu_pd((double*)ext, PT);
+    _mm_storeu_pd((double*)(ext+2), PT);
+#else
+    memcpy(ext, pt, sizeof(double)*2);
+    memcpy(ext+2, pt, sizeof(double)*2);
 #endif
 }
 
@@ -361,7 +419,7 @@ struct FgfPolygon
 
 //FGF utility routines
 
-bool GetFgfExtents(const unsigned char* fgf, int len, double ext[4]);
+void GetFgfExtents(const unsigned char* fgf, int len, double ext[4]);
 
 int Fgf2Wkb(const unsigned char* fgf, unsigned char* wkb);
 
