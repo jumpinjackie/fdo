@@ -489,6 +489,9 @@ class SltCapabilities  : public FdoIConnectionCapabilities,
         wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_TOSTRING);
         ret->Add(wellKnownFunction);
 
+        wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_NULLVALUE);
+        ret->Add(wellKnownFunction);
+        
         return ret;
     }
 

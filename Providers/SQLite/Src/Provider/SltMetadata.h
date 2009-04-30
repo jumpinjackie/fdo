@@ -64,7 +64,6 @@ private:
     FdoClassDefinition* m_fc;
     Table*              m_table;
     Table*              m_mdtable;
-    int                 m_iGeom;
     int                 m_geomFormat;
     bool                m_bUseFdoMetadata;
 };

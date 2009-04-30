@@ -684,6 +684,35 @@ static void convFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
     }
 }
 
+static void nullvalueFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
+{
+    assert(argc == 2);
+    sqlite3_value* val = (sqlite3_value_type(argv[0]) == SQLITE_NULL || 
+        sqlite3_value_bytes(argv[0]) == 0) ? argv[1] : argv[0];
+
+    switch(sqlite3_value_type(val))
+    {
+        case SQLITE_INTEGER:
+            sqlite3_result_int64(context, sqlite3_value_int64(val));
+            break;
+        case SQLITE_FLOAT:
+            sqlite3_result_double(context, sqlite3_value_double(val));
+            break;
+        case SQLITE_BLOB:
+            sqlite3_result_blob(context, sqlite3_value_blob(val), sqlite3_value_bytes(val), SQLITE_TRANSIENT);
+            break;
+        case SQLITE_NULL:
+            sqlite3_result_null(context);
+            break;
+        case SQLITE_TEXT:
+            sqlite3_result_text(context, (const char*)sqlite3_value_text(val), -1, SQLITE_TRANSIENT);
+            break;
+        default:
+            sqlite3_result_null(context);
+            break;
+    }
+}
+
 //===============================================================================
 //  Geometric operations
 //===============================================================================
@@ -1075,7 +1104,6 @@ void RegisterExtensions (sqlite3* db)
         { "extracttoint",       2, 4,  SQLITE_UTF8,    0, dateFunc },
         { "monthsbetween",      2, 5,  SQLITE_UTF8,    0, dateFunc },
         
-        
 
         { g_spatial_op_map[FdoSpatialOperations_Contains],  2, FdoSpatialOperations_Contains,   SQLITE_UTF8,    0, spatialOpFunc },
         { g_spatial_op_map[FdoSpatialOperations_Crosses],   2, FdoSpatialOperations_Crosses,    SQLITE_UTF8,    0, spatialOpFunc },
@@ -1101,7 +1129,8 @@ void RegisterExtensions (sqlite3* db)
         { "tofloat",            1, 3,  SQLITE_UTF8,    0, convFunc },
         { "toint32",            1, 4,  SQLITE_UTF8,    0, convFunc },
         { "toint64",            1, 5,  SQLITE_UTF8,    0, convFunc },
-        { "tostring",           1, 6,  SQLITE_UTF8,    0, convFunc }
+        { "tostring",           1, 6,  SQLITE_UTF8,    0, convFunc },
+        { "nullvalue",          2, 1,  SQLITE_UTF8,    0, nullvalueFunc }
 
     };
    

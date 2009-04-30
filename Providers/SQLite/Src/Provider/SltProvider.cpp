@@ -834,7 +834,6 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
     if (sqlite3_prepare_v2(m_dbWrite, sb.Data(), -1, &stmt, &tail) == SQLITE_OK)
     {
         BindPropVals(propvals, stmt);
-        
         if (sqlite3_step(stmt) != SQLITE_DONE)
         {
             sqlite3_finalize(stmt);
@@ -848,7 +847,6 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
         std::wstring err = L"Failed to parse: " + A2W_SLOW(sb.Data());
         throw FdoCommandException::Create(err.c_str());
     }
-
     sqlite3_finalize(stmt);
 
     return sqlite3_changes(m_dbWrite);
@@ -922,7 +920,6 @@ SltMetadata* SltConnection::GetMetadata(const char* table)
     SltMetadata* const REALLY_BAD_POINTER = (SltMetadata*)1;
 
     SltMetadata* ret = NULL;
-
     MetadataCache::iterator iter = m_mNameToMetadata.find((char*)table);
     
     if (iter == m_mNameToMetadata.end())
@@ -946,7 +943,6 @@ SltMetadata* SltConnection::GetMetadata(const char* table)
     }
     else if (iter->second != REALLY_BAD_POINTER) //check if we already know that no such table exists
         ret = iter->second;
-
     return ret;
 }
 
@@ -1030,39 +1026,25 @@ void SltConnection::AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_
     int len = 0;
     int gtype = 0;
     FdoGeometryType* gtypes = gpd->GetSpecificGeometryTypes(len);
-    if (len == 1)
+    for (int idx = 0; idx < len; idx++)
     {
-        gtype = *gtypes;
-    }
-    else
-    {
-        //Try to get less specific geometric type indicator.
-        //Here, the returned value is a mask of FdoGeometricTypes, 
-        //which also do not distinguish between regular and multi- geometries
-        //i.e. FdoGeometricType_Point is for both Points and MultiPoints.
-        FdoGeometricType gictype = (FdoGeometricType)gpd->GetGeometryTypes();
-
-        //Attempt some reasonable mapping to actual geometry type
-        //-- simply picks the non-multi geometry type that corresponds
-        //to the geometry type. Confusing, huh?
-        switch (gictype)
-        {
-        case FdoGeometricType_Point: gtype = FdoGeometryType_Point; break;
-        case FdoGeometricType_Curve: gtype = FdoGeometryType_LineString; break;
-        case FdoGeometricType_Surface: gtype = FdoGeometryType_Polygon; break;
-        }
+        if (*(gtypes + idx) == FdoGeometryType_None)
+            continue;
+        gtype |= (0x01 << ((*(gtypes + idx)) - 1));
     }
 
     //if gtype remains 0 at this points, it will be treated as "All" types
     //of geometry
-    sb.Append((int)gtype);
+    sb.Append(gtype);
     sb.Append(",");
 
-    int dim = 2;
-    if (gpd->GetHasElevation()) dim++;
-    if (gpd->GetHasMeasure()) dim++;
+    int dim = 0x00;
+    if (gpd->GetHasElevation())
+        dim = 0x01;
+    if (gpd->GetHasMeasure())
+        dim |= 0x02;
     
-    sb.Append((int) dim); //coord_dimension
+    sb.Append(dim); //coord_dimension
     sb.Append(",");
     
     //find a record in spatial_ref_sys whose sr_name matches
