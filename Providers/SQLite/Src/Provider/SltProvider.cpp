@@ -92,6 +92,7 @@ SltConnection::SltConnection() : m_refCount(1)
 
     m_bUseFdoMetadata = false;
     m_bHasFdoMetadata = false;
+    m_cSupportsDetGeomType = -1;
 }
 
 SltConnection::~SltConnection()
@@ -217,6 +218,7 @@ void SltConnection::CreateDatabase()
                          "(f_table_name TEXT,"
                          "f_geometry_column TEXT,"
                          "geometry_type INTEGER,"
+                         "geometry_dettype INTEGER,"
                          "coord_dimension INTEGER,"
                          "srid INTEGER,"
                          "geometry_format TEXT);";  
@@ -1009,34 +1011,40 @@ void SltConnection::AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_
 
     //add this geometry property to the geometry_columns table
     
-    sb.Append(  "INSERT INTO geometry_columns\
-        (f_table_name,\
-        f_geometry_column,\
-        geometry_format,\
-        geometry_type,\
-        coord_dimension,\
-        srid)\
-        VALUES("  );
+    bool supDetGeom = SupportsDetailedGeomType();
+    if(supDetGeom)
+        sb.Append("INSERT INTO geometry_columns(f_table_name,f_geometry_column,geometry_format,\
+            geometry_type,geometry_dettype,coord_dimension,srid)VALUES(");
+    else
+        sb.Append("INSERT INTO geometry_columns(f_table_name,f_geometry_column,geometry_format,\
+            geometry_type,coord_dimension,srid)VALUES(");
     
     sb.AppendSQuoted(fcname);//f_table_name
     sb.Append(","); 
     sb.AppendSQuoted(gpd->GetName());//f_geometry_column
     sb.Append(",'FGF',"); 
 
-    int len = 0;
-    int gtype = 0;
-    FdoGeometryType* gtypes = gpd->GetSpecificGeometryTypes(len);
-    for (int idx = 0; idx < len; idx++)
-    {
-        if (*(gtypes + idx) == FdoGeometryType_None)
-            continue;
-        gtype |= (0x01 << ((*(gtypes + idx)) - 1));
-    }
-
-    //if gtype remains 0 at this points, it will be treated as "All" types
+    int gtype = gpd->GetGeometryTypes();
+    //if gdettype remains 0 at this points, it will be treated as "All" types
     //of geometry
     sb.Append(gtype);
     sb.Append(",");
+
+    int len = 0;
+    int gdettype = 0;
+
+    if (supDetGeom)
+    {
+        FdoGeometryType* gtypes = gpd->GetSpecificGeometryTypes(len);
+        for (int idx = 0; idx < len; idx++)
+        {
+            if (*(gtypes + idx) == FdoGeometryType_None)
+                continue;
+            gdettype |= (0x01 << ((*(gtypes + idx)) - 1));
+        }
+        sb.Append(gdettype);
+        sb.Append(",");
+    }
 
     int dim = 0x00;
     if (gpd->GetHasElevation())
@@ -1807,4 +1815,27 @@ void SltConnection::GetExtents(const wchar_t* fcname, double ext[4])
         ext[2] = dext.max[0];
         ext[3] = dext.max[1];
     }
+}
+
+// function added to handle old files already created 
+// without support for geometry_dettype
+bool SltConnection::SupportsDetailedGeomType()
+{
+    if (m_cSupportsDetGeomType == -1)
+    {
+        m_cSupportsDetGeomType = 0;
+        Table* table = sqlite3FindTable(m_dbRead, "geometry_columns", 0);
+        if( table )
+        {
+            for(int idx = 0; idx < table->nCol; idx++)
+            {
+                if (sqlite3StrICmp((table->aCol+idx)->zName, "geometry_dettype") == 0)
+                {
+                    m_cSupportsDetGeomType = 1;
+                    break;
+                }
+            }
+        }
+    }
+    return (m_cSupportsDetGeomType != 0);
 }

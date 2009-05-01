@@ -209,6 +209,7 @@ public:
     void            ClearQueryCache();
     
     void UpdateClassesWithInvalidSC();
+    bool SupportsDetailedGeomType();
 
 private :
 
@@ -239,4 +240,5 @@ private :
 
     bool                                    m_bUseFdoMetadata;
     bool                                    m_bHasFdoMetadata;
+    char                                    m_cSupportsDetGeomType;
 };
