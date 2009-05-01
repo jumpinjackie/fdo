@@ -110,9 +110,15 @@ FdoClassDefinition* SltMetadata::ToClass()
 
     sqlite3* db = m_connection->GetDbRead();
 
+    bool supDetGeom = m_connection->SupportsDetailedGeomType();
     //find geometry properties by querying the geometry_columns table
     StringBuffer sb;
-    sb.Append("SELECT f_geometry_column,coord_dimension,srid,geometry_format,geometry_type FROM geometry_columns WHERE f_table_name=");
+    if (supDetGeom)
+        sb.Append("SELECT f_geometry_column,coord_dimension,srid,geometry_format,\
+                  geometry_type,geometry_dettype FROM geometry_columns WHERE f_table_name=");
+    else
+        sb.Append("SELECT f_geometry_column,coord_dimension,srid,geometry_format,\
+                  geometry_type FROM geometry_columns WHERE f_table_name=");
     sb.AppendSQuoted(m_table->zName);
     sb.Append(";");
 
@@ -142,6 +148,9 @@ FdoClassDefinition* SltMetadata::ToClass()
             
             int gtype = sqlite3_column_int(pstmt, 4);
             gtypes.push_back(gtype);
+            
+            int gdettype = supDetGeom ? sqlite3_column_int(pstmt, 5) : 0;
+            gtypes.push_back(gdettype);
         }
     }
     else
@@ -231,7 +240,14 @@ FdoClassDefinition* SltMetadata::ToClass()
             int fgtype = gtypes[gi];
 
             if (fgtype > 0)
+                gpd->SetGeometryTypes(fgtype); //unsure... set what we get.
+            else
+                gpd->SetGeometryTypes(FdoGeometricType_All); //unsure... set all.
+
+            int fgdettype = gtypes[gi + 1];
+            if (fgdettype > 0)
             {
+                // update geometry subtypes in case we have them defined
                 int maxGeomVal = FdoGeometryType_MultiCurvePolygon;
                 int* types = (int*)alloca(sizeof(int)*maxGeomVal);
                 int idx = 0;
@@ -239,17 +255,15 @@ FdoClassDefinition* SltMetadata::ToClass()
                 do
                 {
                     int geomType = (0x01 << type);
-                    if ((fgtype & geomType) != 0)
+                    if ((fgdettype & geomType) != 0)
                     {
                         types[idx++] = type + 1;
-                        fgtype &= ~geomType;
+                        fgdettype &= ~geomType;
                     }
                     type++;
-                }while(fgtype != 0 && type < maxGeomVal);
+                }while(fgdettype != 0 && type < maxGeomVal);
                 gpd->SetSpecificGeometryTypes((FdoGeometryType*)types, idx);
             }
-            else
-                gpd->SetGeometryTypes(FdoGeometricType_All); //unsure... set all.
 
             pdc->Add(gpd);
         }
