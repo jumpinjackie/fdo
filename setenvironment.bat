@@ -74,7 +74,7 @@ if not exist "%FDOORACLE%" SET FDOORACLE=
 
 if not exist "%FDOGDAL%" SET FDOGDAL=%FDOTHIRDPARTY%\gdal
 if not exist "%FDOGDAL%" echo OPTIONAL FDO environment variable FDOGDAL is not set
-if not exist "%FDOGDAL%" SET FDOORACLE=
+if not exist "%FDOGDAL%" SET FDOGDAL=
 
 SET ACTIVENAMECHECK="7-Zip"
 SET ACTIVEPATHCHECK="C:\Program Files\7-Zip"
