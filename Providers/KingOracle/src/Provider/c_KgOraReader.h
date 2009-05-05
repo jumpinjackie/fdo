@@ -17,7 +17,7 @@
 
 #ifndef _c_KgOraReader_h
 #define _c_KgOraReader_h
-#include "c_LogAPI.h"
+#include "c_logApi.h"
 #include "c_SdoGeomToAGF2.h"
 #include <time.h>
 
@@ -64,7 +64,7 @@ public:
     ind3 = m_ArrayIndLookup[m_CurrIndLookup];
     //method2_count_strcmp++;
     //if( wcscmp(m_SqlColumns->GetString(ind3),Name) == 0 )
-    if( FdoCommonOSUtil::wcsicmp(m_SqlColumns[ind3],Name) == 0 )
+    if( wcsicmp(m_SqlColumns[ind3],Name) == 0 )
     {
       m_CurrIndLookup++;
       if( m_CurrIndLookup >= m_CountNames ) m_CurrIndLookup=0;
@@ -81,7 +81,7 @@ public:
         ind3 = m_ArrayIndLookup[next_ind_lookup];
         //method2_count_strcmp++;
         //if( wcscmp(m_SqlColumns->GetString(ind3),Name) == 0 )
-        if( FdoCommonOSUtil::wcsicmp(m_SqlColumns[ind3],Name) == 0 )
+        if( wcsicmp(m_SqlColumns[ind3],Name) == 0 )
         {
           int temp = m_ArrayIndLookup[m_CurrIndLookup];
           m_ArrayIndLookup[m_CurrIndLookup] = m_ArrayIndLookup[next_ind_lookup];
@@ -442,15 +442,17 @@ template <class FDO_READER> FdoInt32 c_KgOraReader<FDO_READER>::GetInt32(FdoStri
     }
     catch(c_Oci_Exception* ea)
     {
-      delete ea;
       printf("\n----------------------c_KgOraReader::GetInt32: occi::SQLException Exception ---------------------- ");
+      FdoStringP gstr = ea->what();
+      delete ea;
+      throw FdoCommandException::Create( gstr );
       
       return 0;
     }
     catch(...)
     {
       printf("\n----------------------c_KgOraReader::GetInt32: Uknown Exception ---------------------- ");
-     
+      throw FdoCommandException::Create( L"c_KgOraReader::GetInt32: Uknown Exception " );
       return 0;
     }
     
@@ -685,13 +687,22 @@ template <class FDO_READER> bool c_KgOraReader<FDO_READER>::ReadNext()
     }
     catch(c_Oci_Exception* ea)
     {
+      FdoStringP gstr;
+      gstr = ea->what();
+      
+      printf("\n----------------------c_KgOraReader::ReadNext: occi::SQLException  %s",(const char*)gstr);
+      
+      
       delete ea;
-      printf("\n----------------------c_KgOraReader::ReadNext: occi::SQLException Exception ---------------------- ");
+      throw FdoCommandException::Create(gstr);
+      
+      
       return false;
     }
     catch(...)
     {
-      printf("\n----------------------c_KgOraReader::ReadNext: Uknown Exception ---------------------- ");
+      printf("\n----------------------c_KgOraReader::ReadNext: Unknown Exception ---------------------- ");
+      throw FdoCommandException::Create(L"c_KgOraReader::ReadNext: Unknown Exception");
       return false;
     }
     
