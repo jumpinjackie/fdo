@@ -202,8 +202,6 @@ FdoClassDefinition* SltMetadata::ToClass()
             }
         }
 
-        bool theGeom = (gi != -1 && iGeom == -1);
-
         std::wstring wpname = A2W_SLOW(pname);
 
         //is it a geometry property
@@ -214,7 +212,8 @@ FdoClassDefinition* SltMetadata::ToClass()
 
             //if it is the first geometry property, make it THE geometry
             //for the feature class
-            if (theGeom)
+            // pick first from the table but enforce first from f_geometry_column
+            if (iGeom == -1 || gi == 0)
             {
                 ((FdoFeatureClass*)m_fc)->SetGeometryProperty(gpd);
                 iGeom = gi;
