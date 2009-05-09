@@ -919,23 +919,20 @@ FdoISQLDataReader* SltConnection::ExecuteReader(FdoString* sql)
 
 SltMetadata* SltConnection::GetMetadata(const char* table)
 {
-    SltMetadata* const REALLY_BAD_POINTER = (SltMetadata*)1;
-
     SltMetadata* ret = NULL;
+
     MetadataCache::iterator iter = m_mNameToMetadata.find((char*)table);
     
     if (iter == m_mNameToMetadata.end())
     {
-        if (IsMetadataTable(table))
-            ret = REALLY_BAD_POINTER;
-        else
+        if (!IsMetadataTable(table))
         {
             ret = new SltMetadata(this, table, m_bUseFdoMetadata && m_bHasFdoMetadata);
 
             if (ret->Failed())
             {
                 delete ret;
-                ret = REALLY_BAD_POINTER;
+                ret = NULL;
             }
             else //if we got a table, also create the cached FDO feature class corresponding to it
                 ret->ToClass()->Release();
@@ -943,8 +940,11 @@ SltMetadata* SltConnection::GetMetadata(const char* table)
 
         m_mNameToMetadata[_strdup(table)] = ret; //Note the memory allocation here
     }
-    else if (iter->second != REALLY_BAD_POINTER) //check if we already know that no such table exists
+    else 
+    {
         ret = iter->second;
+    }
+
     return ret;
 }
 
