@@ -479,9 +479,107 @@ void GetFgfExtents(const unsigned char* fgf, int len, double ext[4])
 
         break;
 
+    case FdoGeometryType_CurvePolygon: //all the *Curve* types
+    case FdoGeometryType_CurveString:
+    case FdoGeometryType_MultiCurveString:
+    case FdoGeometryType_MultiCurvePolygon:
+        {
+            ireader++;
+            ext[0] =  DBL_MAX;
+            ext[1] =  DBL_MAX;
+            ext[2] = -DBL_MAX;
+            ext[3] = -DBL_MAX;
+
+            bool is_multi = (geom_type == FdoGeometryType_MultiCurveString)
+                || (geom_type == FdoGeometryType_MultiCurvePolygon);
+
+            //temp variables used inside the loop
+            int num_geoms = 1;
+            int part_count;
+            int contour_count;
+
+            //in case of multipolygon or multilinestring or multipoint, 
+            //read poly or linestring count
+            if (is_multi) num_geoms = *ireader++;
+
+            for (int q=0; q<num_geoms; q++)
+            {
+                //skip past geometry type of subgeometry
+                //we know it is CurveString or CurvePolygon or Point respectively
+                if (is_multi) ireader++;
+
+                //read cordinate type
+                int tmp = (FdoDimensionality) *ireader++;
+                int dim = FDODIM2NCOORDS(tmp);
+
+                // the number of contours in current curvepolygon/curvestring
+                contour_count = 1; //for curvestrings
+
+                switch (geom_type)
+                {
+                case FdoGeometryType_CurvePolygon:
+                case FdoGeometryType_MultiCurvePolygon:
+                    contour_count = *ireader++;
+                default: break;
+                }
+
+                for (int i=0; i<contour_count; i++)
+                {
+                    //read the startpoint of the curve geometry, it's stored
+                    //separately, before the other points
+                    double* startpt = (double*)ireader;
+                    AddToExtent(1, dim, startpt, ext);
+                    ireader = (int*)(startpt + dim);
+
+                    //this block not needed for curves since there is no CurvePoint :)
+                    //point geoms do not have a point count, since 
+                    //each piece is just one point each
+                    //point_count = 1;
+                    //if (geom_type != FdoGeometryType_MultiPoint)
+                        part_count = *ireader++;
+
+                    for (int j=0; j<part_count; j++)
+                    {
+                        int point_type = *ireader++;
+
+                        switch (point_type)
+                        {
+                        case FdoGeometryComponentType_CircularArcSegment:
+                            {
+                                //circular arc segment contains two points
+                                //mid, and end, start point is the last point
+                                //of the previous segment.
+                                double* pts = (double*)ireader;
+                                AddToExtent(2, dim, pts, ext);
+                                ireader = (int*)(pts + 2 * dim);
+                            }
+                            break;
+
+                        case FdoGeometryComponentType_LineStringSegment:
+                            {
+                                int num_pts = *ireader++;
+                                double* pts = (double*)ireader;
+                                AddToExtent(num_pts, dim, pts, ext);
+                                ireader = (int*)(pts + num_pts * dim);
+                            }
+                            break;
+                    
+                        default: //Hmmm, huh?
+                            throw FdoException::Create(L"Invalid FGF stream!");
+                            break;
+
+                        }
+                    }
+                }
+            }
+        }
+
+        break;
+
     default:
    
-        //all other geometry types -- punt it to the Fdo Spatial utility
+        //all other geometry types (at this point, only MultiGeometry)
+        //-- punt it to the Fdo Spatial utility
         //return false;
 #ifdef SLT_USE_FDO_SPATIAL        
         FdoPtr<FdoByteArray> ba = FdoByteArray::Create(fgf, len);
