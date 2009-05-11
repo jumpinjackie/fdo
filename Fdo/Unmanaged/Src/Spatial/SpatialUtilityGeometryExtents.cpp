@@ -383,6 +383,14 @@ void FdoSpatialUtilityGeometryExtents::getArcExtents(double x1, double y1, doubl
                                                    double& minX, double& minY, double& minZ,
                                                    double& maxX, double& maxY, double& maxZ)
 {
+    // Special value used to represent null z's is large negative number, which can make the arc 
+    // excessively large. This is fixed by interpolating the null z's based on the non-null z's.
+    FdoMathUtility::Interpolate3dArcWithNullZ(
+        x1, y1, z1,
+        x2, y2, z2,
+        x3, y3, z3,
+        z1, z2, z3);
+
     double xc, yc, zc;
     bool isArcValid;
     calculateArcCenter(x1, y1, z1, x2, y2, z2, x3, y3, z3, xc, yc, zc, isArcValid);
@@ -874,4 +882,5 @@ void FdoSpatialUtilityGeometryExtents::GetExtents(FdoByteArray* fgfArray, double
         break;
     }
 }
+
 

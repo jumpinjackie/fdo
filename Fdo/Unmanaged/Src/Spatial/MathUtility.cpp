@@ -22,15 +22,33 @@
 
 using namespace std;
 
+// Special constant for representing a null ordinate in FDO geometries.
+// This value can appear in z or m ordinates in geometries from some providers.
+const double FdoMathUtility::m_nullOrd = -1.25e126;
+
 
 double FdoMathUtility::GetPi()
 {
     return M_PI;
 }
 
+double FdoMathUtility::GetNullOrdinateValue()
+{
+    return m_nullOrd;
+}
+
 double FdoMathUtility::GetQuietNan()
 {
     return numeric_limits<double>::quiet_NaN();
+}
+
+bool FdoMathUtility::IsOrdinateNull(const double ordinate)
+{
+    // Oracle geometries can have positions with null z or m.
+    // Some providers define a special value (see m_nullOrd) to represent a null ordinate.
+    // Also consider quiet_nan values to be null since we may want to switch the special value to
+    // quiet_nan in the future.
+    return FdoMathUtility::IsNan(ordinate) || (m_nullOrd == ordinate);
 }
 
 bool FdoMathUtility::IsNan(double n)
@@ -191,5 +209,74 @@ double FdoMathUtility::LinearInterpolate(double start, double end, double propor
     }
 
     return interpolated;
+}
+
+double FdoMathUtility::Interpolate3dArcWithNullZ (
+    double /*xStart*/, double /*yStart*/, double zStart, 
+    double /*xMid*/, double /*yMid*/, double zMid, 
+    double /*xEnd*/, double /*yEnd*/, double zEnd, 
+    double& zStartPrime, double& zMidPrime, double& zEndPrime
+)
+{
+    // Use rudimentary interpolation for now. 
+    return Interpolate3OrdinatesWithNullZ(
+        zStart, zMid, zEnd,
+        zStartPrime, zMidPrime, zEndPrime
+    );
+}
+
+double FdoMathUtility::Interpolate3OrdinatesWithNullZ (
+    double z1, double z2, double z3, 
+    double& z1Prime, double& z2Prime, double& z3Prime
+)
+{
+    int i;
+    double nullZ = 0.0;
+
+    z1Prime = z1;
+    z2Prime = z2;
+    z3Prime = z3;
+
+    // Nothing to do if none of the z's are null.
+    if ( IsOrdinateNull(z1) || IsOrdinateNull(z2) || IsOrdinateNull(z3) )
+    {
+        // Very rudimentary "interpolation" algorithm. Each null z is set to the latest previous z that is not null.
+        // If all previous z's are null then it is set to the next not null z. If all z's are null then they are
+        // all set to 0.
+
+        double* pZ[3];
+        pZ[0] = &z1Prime;
+        pZ[1] = &z2Prime;
+        pZ[2] = &z3Prime;
+
+        double lastZ = 0.0;
+        // Find the first not-null z. Use it as the initial interpolated value.
+        for ( i = 0; i < 3; i++ ) 
+        {
+            if ( !IsOrdinateNull(*(pZ[i])) )
+            {
+                lastZ = *(pZ[i]);
+                break;
+            }
+        }
+
+        // Interpolate the z for each point.
+        for ( int i = 0; i < 3; i++ ) 
+        {
+            if ( IsOrdinateNull(*(pZ[i])) )
+            {
+                nullZ = *(pZ[i]);
+                // Current z is null, set it to the current interpolated value.
+                *(pZ[i]) = lastZ;
+            }
+            else
+            {
+                // Current z not null; it's value becomes the current interpolated value.
+                lastZ = *(pZ[i]);
+            }
+        }
+    }
+
+    return nullZ;
 }
 

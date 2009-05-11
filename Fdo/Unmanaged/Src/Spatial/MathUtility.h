@@ -45,11 +45,17 @@ public:
     // this method will use whatever the local compiler offers.
     static double GetPi();
 
+    // Gets the special value for representing a null ordinate value.
+    static double GetNullOrdinateValue();
+
     // Gets a NaN (not-a-number) value that doesn't cause exceptions in
     // normal assignments and comparisons.
     // This is numeric_limits<double>::quiet_NaN(), just without the
     // sometimes bothersome header file requirements.
     static double GetQuietNan();
+
+    // Returns true if the ordinate is considered to be null (Nan or special value).
+    static bool IsOrdinateNull(const double ordinate);
 
     // Returns true if the value is not-a-number.
     static bool IsNan(double n);
@@ -100,7 +106,32 @@ public:
     // It is allowable to pass NaN for any parameter, in which case the return
     // value is also a (quiet) NaN.
     static double LinearInterpolate(double start, double end, double proportion);
+
+    // Given a 3D arc defined by 3 points (start, mid, end), interpolate a z value for each point
+    // with null z.
+    // Returns 0.0 if none of the points had null z.
+    // Returns the special value representing null if any points had null z.
+    // Therefore, return value tells whether and z's were interpolated.
+    static double Interpolate3dArcWithNullZ (
+        double xStart, double yStart, double zStart, 
+        double xMid, double yMid, double zMid, 
+        double xEnd, double yEnd, double zEnd, 
+        double& zStartPrime, double& zMidPrime, double& zEndPrime);
+
+    // Given 3 z-values, interpolate a z value for each null z.
+    // Returns 0.0 if none of the points had null z.
+    // Returns the special value representing null if any points had null z.
+    // Therefore, return value tells whether and z's were interpolated.
+    static double Interpolate3OrdinatesWithNullZ (
+        double z1, double z2, double z3,
+        double& z1Prime, double& z2Prime, double& z3rime);
+
+
+private:
+    // Special constant for representing a null ordinate in FDO geometries
+    static const double m_nullOrd;
 };
 
 #endif // FdoMathUtility___H
+
 
