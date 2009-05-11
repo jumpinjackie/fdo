@@ -2270,8 +2270,23 @@ void SpatialUtilityTest::testGetExtents()
     FdoPtr<FdoIGeometry> cpg =  gf->CreateGeometry(L"CURVEPOLYGON ((200 200 (CIRCULARARCSEGMENT (200 201, 201 202), LINESTRINGSEGMENT (200 200))), (300 300 (CIRCULARARCSEGMENT (300 301, 301 302), LINESTRINGSEGMENT (300 300))), (400 400 (CIRCULARARCSEGMENT (400 401, 401 402), LINESTRINGSEGMENT (400 400))))");
     FdoPtr<FdoIGeometry> mcs =  gf->CreateGeometry(L"MULTICURVESTRING ((100 100 (CIRCULARARCSEGMENT (100 101, 101 102), LINESTRINGSEGMENT (103 100, 103 102))), (200 200 (CIRCULARARCSEGMENT (200 201, 201 202), LINESTRINGSEGMENT (203 200, 203 202))), (300 300 (CIRCULARARCSEGMENT (300 301, 301 302), LINESTRINGSEGMENT (303 300, 303 302))))");
     FdoPtr<FdoIGeometry> mcpg = gf->CreateGeometry(L"MULTICURVEPOLYGON (((200 200 (CIRCULARARCSEGMENT (200 201, 201 202), LINESTRINGSEGMENT (200 200))), (300 300 (CIRCULARARCSEGMENT (300 301, 301 302), LINESTRINGSEGMENT (300 300))), (400 400 (CIRCULARARCSEGMENT (400 401, 401 402), LINESTRINGSEGMENT (400 400)))), ((201 201 (CIRCULARARCSEGMENT (201 202, 202 203), LINESTRINGSEGMENT (201 201))), (301 301 (CIRCULARARCSEGMENT (301 302, 302 303), LINESTRINGSEGMENT (301 301))), (401 401 (CIRCULARARCSEGMENT (401 402, 402 403), LINESTRINGSEGMENT (401 401)))), ((202 202 (CIRCULARARCSEGMENT (202 203, 203 204), LINESTRINGSEGMENT (202 202))), (302 302 (CIRCULARARCSEGMENT (302 303, 303 304), LINESTRINGSEGMENT (302 302))), (402 402 (CIRCULARARCSEGMENT (402 403, 403 404), LINESTRINGSEGMENT (402 402)))))");
+    FdoPtr<FdoIGeometry> nnullZ1 =   gf->CreateGeometry(L"CURVESTRING XYZ (0 0 10.2 (CIRCULARARCSEGMENT (0 1 10.2, 1 2 10.5)))");
+    FdoPtr<FdoIGeometry> nullZ1 =    gf->CreateGeometry(L"CURVESTRING XYZ (0 0 -1.25e126 (CIRCULARARCSEGMENT (0 1 10.2, 1 2 10.5)))");
+    FdoPtr<FdoIGeometry> nnullZ2 =   gf->CreateGeometry(L"CURVESTRING XYZ (0 0  10 (CIRCULARARCSEGMENT (0 1 10, 1 2 10.5)))");
+    FdoPtr<FdoIGeometry> nullZ2 =    gf->CreateGeometry(L"CURVESTRING XYZ (0 0  10 (CIRCULARARCSEGMENT (0 1 -1.25e126, 1 2 10.5)))");
+    FdoPtr<FdoIGeometry> nnullZ3 =   gf->CreateGeometry(L"CURVESTRING XYZ (0 0  10 (CIRCULARARCSEGMENT (0 1 10.2, 1 2 10.2)))");
+    FdoPtr<FdoIGeometry> nullZ3 =    gf->CreateGeometry(L"CURVESTRING XYZ (0 0  10 (CIRCULARARCSEGMENT (0 1 10.2, 1 2 -1.25e126)))");
+    FdoPtr<FdoIGeometry> nnullZ12 =  gf->CreateGeometry(L"CURVESTRING XYZ (0 0  10.5 (CIRCULARARCSEGMENT (0 1 10.5, 1 2 10.5)))");
+    FdoPtr<FdoIGeometry> nullZ12 =   gf->CreateGeometry(L"CURVESTRING XYZ (0 0 -1.25e126 (CIRCULARARCSEGMENT (0 1 -1.25e126, 1 2 10.5)))");
+    FdoPtr<FdoIGeometry> nnullZ13 =  gf->CreateGeometry(L"CURVESTRING XYZ (0 0 10.2 (CIRCULARARCSEGMENT (0 1 10.2, 1 2 10.2)))");
+    FdoPtr<FdoIGeometry> nullZ13 =   gf->CreateGeometry(L"CURVESTRING XYZ (0 0 -1.25e126 (CIRCULARARCSEGMENT (0 1 10.2, 1 2 -1.25e126)))");
+    FdoPtr<FdoIGeometry> nnullZ23 =  gf->CreateGeometry(L"CURVESTRING XYZ (0 0  10 (CIRCULARARCSEGMENT (0 1 10, 1 2 10)))");
+    FdoPtr<FdoIGeometry> nullZ23 =   gf->CreateGeometry(L"CURVESTRING XYZ (0 0  10 (CIRCULARARCSEGMENT (0 1 -1.25e126, 1 2 -1.25e126)))");
+    FdoPtr<FdoIGeometry> nnullZ123 = gf->CreateGeometry(L"CURVESTRING XYZ (0 0 0 (CIRCULARARCSEGMENT (0 1 0, 1 2 0)))");
+    FdoPtr<FdoIGeometry> nullZ123 =  gf->CreateGeometry(L"CURVESTRING XYZ (0 0 -1.25e126 (CIRCULARARCSEGMENT (0 1 -1.25e126, 1 2 -1.25e126)))");
 
     double minX=0.0, minY=0.0, maxX=0.0, maxY=0.0, minZ=0.0, maxZ=0.0;
+    double expMinX=0.0, expMinY=0.0, expMaxX=0.0, expMaxY=0.0;
     FdoInt32 numExceptions = 0;
 
     // Note:  It is invalid for a client to use Z at all for a geometry that lacks it.
@@ -2468,6 +2483,71 @@ void SpatialUtilityTest::testGetExtents()
 	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(minY, 200.0));
 	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxX, 403.0));
 	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxY, 404.0));
+
+    // Test Arcs with null elevation(s)
+    ba = gf->GetFgf(nnullZ1);
+    FdoSpatialUtility::GetExtents(ba, expMinX, expMinY, expMaxX, expMaxY);
+    ba = gf->GetFgf(nullZ1);
+    FdoSpatialUtility::GetExtents(ba, minX, minY, maxX, maxY);
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(minX, expMinX));
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(minY, expMinY));
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxX, expMaxX));
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxY, expMaxY));
+
+    ba = gf->GetFgf(nnullZ2);
+    FdoSpatialUtility::GetExtents(ba, expMinX, expMinY, expMaxX, expMaxY);
+    ba = gf->GetFgf(nullZ2);
+    FdoSpatialUtility::GetExtents(ba, minX, minY, maxX, maxY);
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(minX, expMinX));
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(minY, expMinY));
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxX, expMaxX));
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxY, expMaxY));
+
+    ba = gf->GetFgf(nnullZ3);
+    FdoSpatialUtility::GetExtents(ba, expMinX, expMinY, expMaxX, expMaxY);
+    ba = gf->GetFgf(nullZ3);
+    FdoSpatialUtility::GetExtents(ba, minX, minY, maxX, maxY);
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(minX, expMinX));
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(minY, expMinY));
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxX, expMaxX));
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxY, expMaxY));
+
+    ba = gf->GetFgf(nnullZ12);
+    FdoSpatialUtility::GetExtents(ba, expMinX, expMinY, expMaxX, expMaxY);
+    ba = gf->GetFgf(nullZ12);
+    FdoSpatialUtility::GetExtents(ba, minX, minY, maxX, maxY);
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(minX, expMinX));
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(minY, expMinY));
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxX, expMaxX));
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxY, expMaxY));
+
+    ba = gf->GetFgf(nnullZ13);
+    FdoSpatialUtility::GetExtents(ba, expMinX, expMinY, expMaxX, expMaxY);
+    ba = gf->GetFgf(nullZ13);
+    FdoSpatialUtility::GetExtents(ba, minX, minY, maxX, maxY);
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(minX, expMinX));
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(minY, expMinY));
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxX, expMaxX));
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxY, expMaxY));
+
+    ba = gf->GetFgf(nnullZ23);
+    FdoSpatialUtility::GetExtents(ba, expMinX, expMinY, expMaxX, expMaxY);
+    ba = gf->GetFgf(nullZ23);
+    FdoSpatialUtility::GetExtents(ba, minX, minY, maxX, maxY);
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(minX, expMinX));
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(minY, expMinY));
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxX, expMaxX));
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxY, expMaxY));
+
+    ba = gf->GetFgf(nnullZ123);
+    FdoSpatialUtility::GetExtents(ba, expMinX, expMinY, expMaxX, expMaxY);
+    ba = gf->GetFgf(nullZ123);
+    FdoSpatialUtility::GetExtents(ba, minX, minY, maxX, maxY);
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(minX, expMinX));
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(minY, expMinY));
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxX, expMaxX));
+	CPPUNIT_ASSERT_MESSAGE("Extent value mismatch", FUZZY_EQUALS(maxY, expMaxY));
+
 }
 
 FdoInt32 SpatialUtilityTest::testGetExtentsMalformedSubsets(FdoByteArray * ba)
