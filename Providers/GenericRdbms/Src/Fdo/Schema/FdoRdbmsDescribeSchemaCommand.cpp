@@ -87,7 +87,7 @@ FdoFeatureSchemaCollection* FdoRdbmsDescribeSchemaCommand::Execute()
     }
 
     FdoSchemaManagerP     pschemaManager = mRdbmsConnection->GetSchemaUtil()->GetSchemaManager();
-    FdoFeatureSchemasP pfscResult = pschemaManager->GetFdoSchemasEx(GetSchemaName(), GetClassNames());
+    FdoFeatureSchemasP pfscResult = pschemaManager->GetFdoSchemasEx(GetSchemaName(), FdoStringsP(GetClassNames()));
 
     return FDO_SAFE_ADDREF((FdoFeatureSchemaCollection*) pfscResult);
 }

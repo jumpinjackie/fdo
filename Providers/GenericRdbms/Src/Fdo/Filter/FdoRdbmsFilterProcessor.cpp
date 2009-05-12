@@ -1184,8 +1184,9 @@ void FdoRdbmsFilterProcessor::AnalyzeFilter (FdoFilter *filter)
             }
 
             // Parse the left operand of the binary logical operation.
-            if (filter.GetLeftOperand() != NULL)
-                filter.GetLeftOperand()->Process(this);
+            FdoPtr<FdoFilter> leftOperand = filter.GetLeftOperand();
+            if (leftOperand != NULL)
+                leftOperand->Process(this);
 
             // If this is the top level binary logical operator node, check
             // if there was a single binary logical operator used in the left
@@ -1214,8 +1215,9 @@ void FdoRdbmsFilterProcessor::AnalyzeFilter (FdoFilter *filter)
             }
 
             // Process the right tree of the node.
-            if (filter.GetRightOperand() != NULL)
-                filter.GetRightOperand()->Process(this);
+            FdoPtr<FdoFilter> rightOperand = filter.GetRightOperand();
+            if (rightOperand != NULL)
+                rightOperand->Process(this);
 
             // If this is the top level binary logical operator node, check
             // if there was a single binary logical operator used in the right
@@ -1259,8 +1261,9 @@ void FdoRdbmsFilterProcessor::AnalyzeFilter (FdoFilter *filter)
                                             FdoUnaryLogicalOperator& filter)
         {
             containsUnaryLogicalOperatorNot = true;
-            if (filter.GetOperand() != NULL)
-                filter.GetOperand()->Process(this);
+            FdoPtr<FdoFilter> operand = filter.GetOperand();
+            if (operand != NULL)
+                operand->Process(this);
         }
     };
 
