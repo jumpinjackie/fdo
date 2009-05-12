@@ -249,7 +249,7 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
         throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_46, "No geometry value"));
 
     // Geometry factory
-    FdoFgfGeometryFactory   *gf = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoFgfGeometryFactory>   gf = FdoFgfGeometryFactory::GetInstance();
 
     geometryObj = gf->CreateGeometryFromFgf(geomfgf);
 
