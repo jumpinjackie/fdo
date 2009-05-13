@@ -47,6 +47,10 @@ public:
 
 	bool NeedsAFlush(bool partial=false) { return m_db->needs_a_flush(partial); }
 
+    bool RtreeNeedsRegen() { return m_rtreeNeedsRegen; }
+
+    void Regened() { m_rtreeNeedsRegen = false; }
+
 	void Flush();
 
     void Drop();
@@ -97,6 +101,8 @@ private:
 
     bool m_bReadOnly;
     REC_NO m_oldRootRecno;
+
+    bool m_rtreeNeedsRegen;
 };
 
 
