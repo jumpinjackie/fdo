@@ -546,3 +546,8 @@ SymbolicName=SDFPROVIDER_108_READ_CHAR_ERROR
 Language=English
 Error Reading char value from SDF record
 .
+MessageId=109
+SymbolicName=SDFPROVIDER_109_REBUILD_RTREE_ERROR
+Language=English
+Error Rebuilding the corrupted sptial index. File is possibly read-only
+.

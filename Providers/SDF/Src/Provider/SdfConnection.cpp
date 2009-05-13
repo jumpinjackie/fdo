@@ -68,6 +68,8 @@
 
 #include "PropertyIndex.h"
 
+#include <FdoSpatial.h>
+
 
 #include <FdoExpressionEngine.h>
 #include <FdoExpressionEngineFunctionCollection.h>
@@ -741,7 +743,19 @@ void SdfConnection::InitDatabases()
             if (baseFeatureClass != clas)
                 m_hRTrees[clas.p] = m_hRTrees[baseClass];
             else
-                m_hRTrees[clas.p] = new SdfRTree(m_env, m_mbsFullPath, classname, m_bReadOnly);
+            {
+                SdfRTree * rtree = new SdfRTree(m_env, m_mbsFullPath, classname, m_bReadOnly);
+                if (rtree->RtreeNeedsRegen() == true)
+                {
+                    //regen the corrupted r-tree
+                    RegenRtree(clas,rtree,GetDataDb(clas));
+                    rtree->Regened();
+                }
+                m_hRTrees[clas.p] = rtree;
+                
+            }
+
+            
         }
     }
 }
@@ -846,6 +860,89 @@ void SdfConnection::ReSyncData(FdoClassDefinition *clas)
 
     if( rt )
         rt->UpdateRootNode();
+}
+
+void SdfConnection::RegenRtree(FdoClassDefinition *clas, SdfRTree* rtree, DataDb  *dataDb )
+{
+    int ret = SQLiteDB_ERROR;
+    PropertyIndex* propIndex = GetPropertyIndex(clas);
+
+
+    SQLiteData* currentKey = new SQLiteData();
+    SQLiteData* currentData = new SQLiteData();
+
+    if( dataDb->GetFirstFeature( currentKey, currentData ) != SQLiteDB_OK )
+    {
+        if( currentKey )
+            delete currentKey;
+        if( currentData )
+            delete currentData;
+
+        return;
+    }
+
+    BinaryReader *dataReader = new BinaryReader(NULL, 0);
+
+    //get the geometry property and the value of the geometry
+    FdoPtr<FdoGeometricPropertyDefinition> gpd = PropertyIndex::FindGeomProp(clas);
+
+    if (gpd.p == NULL)
+        return;
+    PropertyStub* ps = propIndex->GetPropInfo(gpd->GetName());
+    if( ps == NULL ) // source reader does not have this property
+        return;
+
+    do
+    {
+        _ASSERT( currentKey->get_size() == 4 ); // This is the record number which is a UInt32
+        REC_NO recno = *(REC_NO*)(currentKey->get_data());
+
+        dataReader->Reset((unsigned char*)currentData->get_data(), currentData->get_size());
+
+        if (rtree)
+        {
+            dataReader->SetPosition(sizeof(FCID_STORAGE) + ps->m_recordIndex * sizeof(int));
+
+            int offset = dataReader->ReadInt32();
+            int endoffset = 0;
+            if (ps->m_recordIndex < propIndex->GetNumProps() - 1)
+                endoffset = dataReader->ReadInt32();
+            else
+                endoffset = dataReader->GetDataLen();
+
+            //skip to the beginning of the data value
+            dataReader->SetPosition(offset);
+
+            int len = endoffset - offset;
+
+            unsigned char* ptr = dataReader->GetDataAtCurrentPosition();
+
+            FdoPtr<FdoByteArray> fgf = FdoByteArray::Create((unsigned char*)ptr, len);
+
+            if (fgf)
+            {
+                Bounds bounds;
+
+                FdoSpatialUtility::GetExtents(fgf, bounds.minx, bounds.miny, bounds.maxx, bounds.maxy);
+
+                _ASSERT(bounds.maxx >= bounds.minx);
+                _ASSERT(bounds.maxy >= bounds.miny);
+
+                SQLiteData rtkey(&recno, sizeof(REC_NO));
+
+                rtree->Insert(bounds, 0, rtkey);
+            }
+        }
+    } while ( dataDb->GetNextFeature( currentKey, currentData ) == SQLiteDB_OK );
+
+    if( currentKey )
+        delete currentKey;
+    if( currentData )
+        delete currentData;
+
+    if( dataReader)
+        delete dataReader;
+
 }
 
 
