@@ -84,6 +84,35 @@ char *sqlite3_temp_directory = 0;
 **    *  Recursive calls to this routine from thread X return immediately
 **       without blocking.
 */
+#ifdef SQLITE_ENABLE_ISOLATE_CONNECTIONS
+
+void sqlite3_initialize_conn(sqlite3* db
+  SQLITE_ISOLATE_DEF_MPARAM_SMM
+){
+  int rc;                           /* Result code */
+
+#ifndef SQLITE_OMIT_SHARED_CACHE
+  if( smm ){
+    db->pSmm = smm;
+  }else{
+#endif
+    db->pSmm = malloc(sizeof(sqlite3_smm));
+    if( db->pSmm ) memset(db->pSmm, 0, sizeof(sqlite3_smm));
+#ifndef SQLITE_OMIT_SHARED_CACHE
+    db->pSmm->pMainDb = db;
+  }
+  db->pSmm->sqlite3SharedCacheEnabled = 1;
+  db->pSmm->nRef++;
+#endif
+  rc = sqlite3MallocInit(db);
+  if( rc==SQLITE_OK ){
+    rc = sqlite3PcacheInitialize(db);
+    sqlite3PCacheBufferSetup(db->pSmm->sqlite3Config.pPage, db->pSmm->sqlite3Config.szPage, 
+        db->pSmm->sqlite3Config.nPage, db);
+  }
+}
+#endif
+
 int sqlite3_initialize(void){
   static int inProgress = 0;        /* Prevent recursion */
   sqlite3_mutex *pMaster;           /* The main static mutex */
@@ -116,7 +145,11 @@ int sqlite3_initialize(void){
   pMaster = sqlite3MutexAlloc(SQLITE_MUTEX_STATIC_MASTER);
   sqlite3_mutex_enter(pMaster);
   if( !sqlite3Config.isMallocInit ){
+#ifdef SQLITE_ENABLE_ISOLATE_CONNECTIONS
+    rc = sqlite3CoreMallocInit();
+#else
     rc = sqlite3MallocInit();
+#endif
   }
   if( rc==SQLITE_OK ){
     sqlite3Config.isMallocInit = 1;
@@ -150,11 +183,13 @@ int sqlite3_initialize(void){
     memset(&sqlite3GlobalFunctions, 0, sizeof(sqlite3GlobalFunctions));
     sqlite3RegisterGlobalFunctions();
     rc = sqlite3_os_init();
+#ifndef SQLITE_ENABLE_ISOLATE_CONNECTIONS
     if( rc==SQLITE_OK ){
       rc = sqlite3PcacheInitialize();
       sqlite3PCacheBufferSetup(sqlite3Config.pPage, sqlite3Config.szPage, 
           sqlite3Config.nPage);
     }
+#endif
     inProgress = 0;
     sqlite3Config.isInit = (rc==SQLITE_OK ? 1 : 0);
   }
@@ -200,12 +235,18 @@ int sqlite3_initialize(void){
 */
 int sqlite3_shutdown(void){
   sqlite3Config.isMallocInit = 0;
+#ifndef SQLITE_ENABLE_ISOLATE_CONNECTIONS
   sqlite3PcacheShutdown();
+#endif
   if( sqlite3Config.isInit ){
     sqlite3_os_end();
   }
   if( sqlite3Config.m.xShutdown ){
+#ifdef SQLITE_ENABLE_ISOLATE_CONNECTIONS
+    sqlite3CoreMallocEnd();
+#else
     sqlite3MallocEnd();
+#endif
   }
   if( sqlite3Config.mutex.xMutexEnd ){
     sqlite3MutexEnd();
@@ -278,6 +319,7 @@ int sqlite3_config(int op, ...){
       sqlite3Config.bMemstat = va_arg(ap, int);
       break;
     }
+#ifndef SQLITE_ENABLE_ISOLATE_CONNECTIONS
     case SQLITE_CONFIG_SCRATCH: {
       /* Designate a buffer for scratch memory space */
       sqlite3Config.pScratch = va_arg(ap, void*);
@@ -292,6 +334,7 @@ int sqlite3_config(int op, ...){
       sqlite3Config.nPage = va_arg(ap, int);
       break;
     }
+#endif
 
 #if defined(SQLITE_ENABLE_MEMSYS3) || defined(SQLITE_ENABLE_MEMSYS5)
     case SQLITE_CONFIG_HEAP: {
@@ -368,14 +411,16 @@ static int setupLookaside(sqlite3 *db, void *pBuf, int sz, int cnt){
   if( pBuf==0 ){
     sz = (sz + 7)&~7;
     sqlite3BeginBenignMalloc();
-    pStart = sqlite3Malloc( sz*cnt );
+    pStart = sqlite3Malloc( sz*cnt
+      SQLITE_ISOLATE_PASS_MPARAM(db));
     sqlite3EndBenignMalloc();
   }else{
     sz = sz&~7;
     pStart = pBuf;
   }
   if( db->lookaside.bMalloced ){
-    sqlite3_free(db->lookaside.pStart);
+    sqlite3_free(db->lookaside.pStart
+      SQLITE_ISOLATE_PASS_MPARAM(db));
   }
   db->lookaside.pStart = pStart;
   db->lookaside.pFree = 0;
@@ -620,9 +665,37 @@ int sqlite3_close(sqlite3 *db){
   db->magic = SQLITE_MAGIC_CLOSED;
   sqlite3_mutex_free(db->mutex);
   if( db->lookaside.bMalloced ){
-    sqlite3_free(db->lookaside.pStart);
+    sqlite3_free(db->lookaside.pStart
+      SQLITE_ISOLATE_PASS_MPARAM(db));
   }
+#ifdef SQLITE_ENABLE_ISOLATE_CONNECTIONS
+#ifndef SQLITE_OMIT_SHARED_CACHE
+  db->pSmm->nRef--;
+  if (db->pSmm->nRef == 0)
+  {
+    /* In case we had shared memory delete the main db and actual db and the smm
+    ** in case pMainDb == db we did not have shared btree
+    */
+      if (db->pSmm->pMainDb != db)
+          free(db->pSmm->pMainDb);
+      free(db->pSmm);
+      free(db);
+  }
+  else
+  {
+    /* nRef is one after a decrement so we have shared memory
+    ** we have shared memory keep the db thill the other db will be destroyed
+    ** do not destroy smm and db just keep the twin db for later
+    */
+      db->pSmm->pMainDb = db;
+  }
+#else
+  free(db->pSmm);
+  free(db);
+#endif
+#else
   sqlite3_free(db);
+#endif
   return SQLITE_OK;
 }
 
@@ -1415,6 +1488,7 @@ static int openDatabase(
   sqlite3 **ppDb,        /* OUT: Returned database handle */
   unsigned flags,        /* Operational flags */
   const char *zVfs       /* Name of the VFS to use */
+  SQLITE_ISOLATE_DEF_MPARAM_SMM
 ){
   sqlite3 *db;
   int rc;
@@ -1443,16 +1517,29 @@ static int openDatabase(
              );
 
   /* Allocate the sqlite data structure */
+#ifdef SQLITE_ENABLE_ISOLATE_CONNECTIONS
+  db = malloc(sizeof(sqlite3));
+  if( db ) memset(db, 0, sizeof(sqlite3));
+#else
   db = sqlite3MallocZero( sizeof(sqlite3) );
+#endif
   if( db==0 ) goto opendb_out;
   if( sqlite3Config.bFullMutex && isThreadsafe ){
     db->mutex = sqlite3MutexAlloc(SQLITE_MUTEX_RECURSIVE);
     if( db->mutex==0 ){
+#ifdef SQLITE_ENABLE_ISOLATE_CONNECTIONS
+      free(db);
+#else
       sqlite3_free(db);
+#endif
       db = 0;
       goto opendb_out;
     }
   }
+#ifdef SQLITE_ENABLE_ISOLATE_CONNECTIONS
+  sqlite3_initialize_conn(db
+    SQLITE_ISOLATE_PASS_MPARAM_SMM(smm));
+#endif
   sqlite3_mutex_enter(db->mutex);
   db->errMask = 0xff;
   db->priorNewRowid = 0;
@@ -1473,9 +1560,11 @@ static int openDatabase(
                  | SQLITE_LoadExtension
 #endif
       ;
-  sqlite3HashInit(&db->aCollSeq, SQLITE_HASH_STRING, 0);
+  sqlite3HashInit(&db->aCollSeq, SQLITE_HASH_STRING, 0
+    SQLITE_ISOLATE_PASS_MPARAM(db));
 #ifndef SQLITE_OMIT_VIRTUALTABLE
-  sqlite3HashInit(&db->aModule, SQLITE_HASH_STRING, 0);
+  sqlite3HashInit(&db->aModule, SQLITE_HASH_STRING, 0
+    SQLITE_ISOLATE_PASS_MPARAM(db));
 #endif
 
   db->pVfs = sqlite3_vfs_find(zVfs);
@@ -1621,18 +1710,22 @@ opendb_out:
 */
 int sqlite3_open(
   const char *zFilename, 
-  sqlite3 **ppDb 
+  sqlite3 **ppDb
+  SQLITE_ISOLATE_DEF_MPARAM_SMM
 ){
   return openDatabase(zFilename, ppDb,
-                      SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, 0);
+                      SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, 0
+                      SQLITE_ISOLATE_PASS_MPARAM_SMM(smm));
 }
 int sqlite3_open_v2(
   const char *filename,   /* Database filename (UTF-8) */
   sqlite3 **ppDb,         /* OUT: SQLite db handle */
   int flags,              /* Flags */
   const char *zVfs        /* Name of VFS module to use */
+  SQLITE_ISOLATE_DEF_MPARAM_SMM
 ){
-  return openDatabase(filename, ppDb, flags, zVfs);
+  return openDatabase(filename, ppDb, flags, zVfs
+     SQLITE_ISOLATE_PASS_MPARAM_SMM(smm));
 }
 
 #ifndef SQLITE_OMIT_UTF16
@@ -2030,6 +2123,7 @@ int sqlite3_test_control(int op, ...){
       break;
     }
 
+#ifndef SQLITE_ENABLE_ISOLATE_CONNECTIONS
     /*
     **  sqlite3_test_control(BITVEC_TEST, size, program)
     **
@@ -2044,7 +2138,7 @@ int sqlite3_test_control(int op, ...){
       rc = sqlite3BitvecBuiltinTest(sz, aProg);
       break;
     }
-
+#endif
     /*
     **  sqlite3_test_control(BENIGN_MALLOC_HOOKS, xBegin, xEnd)
     **

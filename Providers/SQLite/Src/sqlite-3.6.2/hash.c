@@ -29,7 +29,8 @@
 ** sense for SQLITE_HASH_STRING and SQLITE_HASH_BINARY and is ignored
 ** for other key classes.
 */
-void sqlite3HashInit(Hash *pNew, int keyClass, int copyKey){
+void sqlite3HashInit(Hash *pNew, int keyClass, int copyKey
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   assert( pNew!=0 );
   assert( keyClass>=SQLITE_HASH_STRING && keyClass<=SQLITE_HASH_BINARY );
   pNew->keyClass = keyClass;
@@ -41,6 +42,9 @@ void sqlite3HashInit(Hash *pNew, int keyClass, int copyKey){
   pNew->count = 0;
   pNew->htsize = 0;
   pNew->ht = 0;
+#ifdef SQLITE_ENABLE_ISOLATE_CONNECTIONS
+  pNew->db = SQLITE_ISOLATE_PASS_SPARAM(db);
+#endif
 }
 
 /* Remove all entries from a hash table.  Reclaim all memory.
@@ -53,15 +57,18 @@ void sqlite3HashClear(Hash *pH){
   assert( pH!=0 );
   elem = pH->first;
   pH->first = 0;
-  sqlite3_free(pH->ht);
+  sqlite3_free(pH->ht
+    SQLITE_ISOLATE_PASS_MPARAM(pH->db));
   pH->ht = 0;
   pH->htsize = 0;
   while( elem ){
     HashElem *next_elem = elem->next;
     if( pH->copyKey && elem->pKey ){
-      sqlite3_free(elem->pKey);
+      sqlite3_free(elem->pKey
+        SQLITE_ISOLATE_PASS_MPARAM(pH->db));
     }
-    sqlite3_free(elem);
+    sqlite3_free(elem
+      SQLITE_ISOLATE_PASS_MPARAM(pH->db));
     elem = next_elem;
   }
   pH->count = 0;
@@ -234,11 +241,13 @@ static void rehash(Hash *pH, int new_size){
   ** hit only, not a fatal error).
   */
   if( pH->htsize>0 ) sqlite3BeginBenignMalloc();
-  new_ht = (struct _ht *)sqlite3MallocZero( new_size*sizeof(struct _ht) );
+  new_ht = (struct _ht *)sqlite3MallocZero( new_size*sizeof(struct _ht)
+      SQLITE_ISOLATE_PASS_MPARAM(pH->db));
   if( pH->htsize>0 ) sqlite3EndBenignMalloc();
 
   if( new_ht==0 ) return;
-  sqlite3_free(pH->ht);
+  sqlite3_free(pH->ht
+    SQLITE_ISOLATE_PASS_MPARAM(pH->db));
   pH->ht = new_ht;
   pH->htsize = new_size;
   xHash = hashFunction(pH->keyClass);
@@ -304,9 +313,11 @@ static void removeElementGivenHash(
     pEntry->chain = 0;
   }
   if( pH->copyKey ){
-    sqlite3_free(elem->pKey);
+    sqlite3_free(elem->pKey
+      SQLITE_ISOLATE_PASS_MPARAM(pH->db));
   }
-  sqlite3_free( elem );
+  sqlite3_free( elem
+    SQLITE_ISOLATE_PASS_MPARAM(pH->db));
   pH->count--;
   if( pH->count<=0 ){
     assert( pH->first==0 );
@@ -387,12 +398,15 @@ void *sqlite3HashInsert(Hash *pH, const void *pKey, int nKey, void *data){
     }
   }
   if( data==0 ) return 0;
-  new_elem = (HashElem*)sqlite3Malloc( sizeof(HashElem) );
+  new_elem = (HashElem*)sqlite3Malloc( sizeof(HashElem)
+      SQLITE_ISOLATE_PASS_MPARAM(pH->db));
   if( new_elem==0 ) return data;
   if( pH->copyKey && pKey!=0 ){
-    new_elem->pKey = sqlite3Malloc( nKey );
+    new_elem->pKey = sqlite3Malloc( nKey
+      SQLITE_ISOLATE_PASS_MPARAM(pH->db));
     if( new_elem->pKey==0 ){
-      sqlite3_free(new_elem);
+      sqlite3_free(new_elem
+        SQLITE_ISOLATE_PASS_MPARAM(pH->db));
       return data;
     }
     memcpy((void*)new_elem->pKey, pKey, nKey);
@@ -406,9 +420,11 @@ void *sqlite3HashInsert(Hash *pH, const void *pKey, int nKey, void *data){
     if( pH->htsize==0 ){
       pH->count = 0;
       if( pH->copyKey ){
-        sqlite3_free(new_elem->pKey);
+        sqlite3_free(new_elem->pKey
+          SQLITE_ISOLATE_PASS_MPARAM(pH->db));
       }
-      sqlite3_free(new_elem);
+      sqlite3_free(new_elem
+        SQLITE_ISOLATE_PASS_MPARAM(pH->db));
       return data;
     }
   }

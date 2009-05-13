@@ -680,7 +680,8 @@ void sqlite3Pragma(
       ){
         invalidateTempStorage(pParse);
       }
-      sqlite3_free(sqlite3_temp_directory);
+      sqlite3_free(sqlite3_temp_directory
+        SQLITE_ISOLATE_PASS_MPARAM(db));
       if( zRight[0] ){
         sqlite3_temp_directory = sqlite3DbStrDup(0, zRight);
       }else{

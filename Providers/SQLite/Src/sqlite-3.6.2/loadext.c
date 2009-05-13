@@ -348,7 +348,8 @@ static int sqlite3LoadExtension(
   */
   if( (db->flags & SQLITE_LoadExtension)==0 ){
     if( pzErrMsg ){
-      *pzErrMsg = sqlite3_mprintf("not authorized");
+      *pzErrMsg = sqlite3_mprintf(SQLITE_ISOLATE_PASS_MAPARAM(db)
+          "not authorized");
     }
     return SQLITE_ERROR;
   }
@@ -384,9 +385,11 @@ static int sqlite3LoadExtension(
     return SQLITE_ERROR;
   }else if( xInit(db, &zErrmsg, &sqlite3Apis) ){
     if( pzErrMsg ){
-      *pzErrMsg = sqlite3_mprintf("error during initialization: %s", zErrmsg);
+      *pzErrMsg = sqlite3_mprintf(SQLITE_ISOLATE_PASS_MAPARAM(db)
+        "error during initialization: %s", zErrmsg);
     }
-    sqlite3_free(zErrmsg);
+    sqlite3_free(zErrmsg
+      SQLITE_ISOLATE_PASS_MPARAM(db));
     sqlite3OsDlClose(pVfs, handle);
     return SQLITE_ERROR;
   }
@@ -466,17 +469,21 @@ static const sqlite3_api_routines sqlite3Apis = { 0 };
 ** This list is shared across threads.  The SQLITE_MUTEX_STATIC_MASTER
 ** mutex must be held while accessing this list.
 */
+#ifndef SQLITE_ENABLE_ISOLATE_CONNECTIONS
 static struct {
   int nExt;        /* Number of entries in aExt[] */          
   void **aExt;     /* Pointers to the extension init functions */
 } autoext = { 0, 0 };
-
+#else
+  #define autoext db->pSmm->autoext
+#endif
 
 /*
 ** Register a statically linked extension that is automatically
 ** loaded by every new database connection.
 */
-int sqlite3_auto_extension(void *xInit){
+int sqlite3_auto_extension(void *xInit
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   int rc = SQLITE_OK;
 #ifndef SQLITE_OMIT_AUTOINIT
   rc = sqlite3_initialize();
@@ -496,7 +503,8 @@ int sqlite3_auto_extension(void *xInit){
     if( i==autoext.nExt ){
       int nByte = (autoext.nExt+1)*sizeof(autoext.aExt[0]);
       void **aNew;
-      aNew = sqlite3_realloc(autoext.aExt, nByte);
+      aNew = sqlite3_realloc(autoext.aExt, nByte
+        SQLITE_ISOLATE_PASS_MPARAM(db));
       if( aNew==0 ){
         rc = SQLITE_NOMEM;
       }else{
@@ -514,7 +522,8 @@ int sqlite3_auto_extension(void *xInit){
 /*
 ** Reset the automatic extension loading mechanism.
 */
-void sqlite3_reset_auto_extension(void){
+void sqlite3_reset_auto_extension(
+SQLITE_ISOLATE_DEF_SPARAM_DB){
 #ifndef SQLITE_OMIT_AUTOINIT
   if( sqlite3_initialize()==SQLITE_OK )
 #endif
@@ -523,7 +532,8 @@ void sqlite3_reset_auto_extension(void){
     sqlite3_mutex *mutex = sqlite3MutexAlloc(SQLITE_MUTEX_STATIC_MASTER);
 #endif
     sqlite3_mutex_enter(mutex);
-    sqlite3_free(autoext.aExt);
+    sqlite3_free(autoext.aExt
+      SQLITE_ISOLATE_PASS_MPARAM(db));
     autoext.aExt = 0;
     autoext.nExt = 0;
     sqlite3_mutex_leave(mutex);
@@ -562,7 +572,8 @@ int sqlite3AutoLoadExtensions(sqlite3 *db){
             "automatic extension loading failed: %s", zErrmsg);
       go = 0;
       rc = SQLITE_ERROR;
-      sqlite3_free(zErrmsg);
+      sqlite3_free(zErrmsg
+        SQLITE_ISOLATE_PASS_MPARAM(db));
     }
   }
   return rc;

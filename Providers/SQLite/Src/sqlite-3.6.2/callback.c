@@ -159,6 +159,9 @@ static CollSeq *findCollSeqEntry(
 ){
   CollSeq *pColl;
   if( nName<0 ) nName = sqlite3Strlen(db, zName);
+#ifdef SQLITE_ENABLE_ISOLATE_CONNECTIONS
+  db->aCollSeq.db = db;
+#endif
   pColl = sqlite3HashFind(&db->aCollSeq, zName, nName);
 
   if( 0==pColl && create ){
@@ -396,7 +399,8 @@ FuncDef *sqlite3FindFunction(
 **
 ** The Schema.cache_size variable is not cleared.
 */
-void sqlite3SchemaFree(void *p){
+void sqlite3SchemaFree(void *p
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   Hash temp1;
   Hash temp2;
   HashElem *pElem;
@@ -404,14 +408,16 @@ void sqlite3SchemaFree(void *p){
 
   temp1 = pSchema->tblHash;
   temp2 = pSchema->trigHash;
-  sqlite3HashInit(&pSchema->trigHash, SQLITE_HASH_STRING, 0);
+  sqlite3HashInit(&pSchema->trigHash, SQLITE_HASH_STRING, 0
+      SQLITE_ISOLATE_PASS_MPARAM(db));
   sqlite3HashClear(&pSchema->aFKey);
   sqlite3HashClear(&pSchema->idxHash);
   for(pElem=sqliteHashFirst(&temp2); pElem; pElem=sqliteHashNext(pElem)){
     sqlite3DeleteTrigger(0, (Trigger*)sqliteHashData(pElem));
   }
   sqlite3HashClear(&temp2);
-  sqlite3HashInit(&pSchema->tblHash, SQLITE_HASH_STRING, 0);
+  sqlite3HashInit(&pSchema->tblHash, SQLITE_HASH_STRING, 0
+    SQLITE_ISOLATE_PASS_MPARAM(db));
   for(pElem=sqliteHashFirst(&temp1); pElem; pElem=sqliteHashNext(pElem)){
     Table *pTab = sqliteHashData(pElem);
     sqlite3DeleteTable(pTab);
@@ -430,15 +436,20 @@ Schema *sqlite3SchemaGet(sqlite3 *db, Btree *pBt){
   if( pBt ){
     p = (Schema *)sqlite3BtreeSchema(pBt, sizeof(Schema), sqlite3SchemaFree);
   }else{
-    p = (Schema *)sqlite3MallocZero(sizeof(Schema));
+    p = (Schema *)sqlite3MallocZero(sizeof(Schema)
+      SQLITE_ISOLATE_PASS_MPARAM(db));
   }
   if( !p ){
     db->mallocFailed = 1;
   }else if ( 0==p->file_format ){
-    sqlite3HashInit(&p->tblHash, SQLITE_HASH_STRING, 0);
-    sqlite3HashInit(&p->idxHash, SQLITE_HASH_STRING, 0);
-    sqlite3HashInit(&p->trigHash, SQLITE_HASH_STRING, 0);
-    sqlite3HashInit(&p->aFKey, SQLITE_HASH_STRING, 1);
+    sqlite3HashInit(&p->tblHash, SQLITE_HASH_STRING, 0
+      SQLITE_ISOLATE_PASS_MPARAM(db));
+    sqlite3HashInit(&p->idxHash, SQLITE_HASH_STRING, 0
+      SQLITE_ISOLATE_PASS_MPARAM(db));
+    sqlite3HashInit(&p->trigHash, SQLITE_HASH_STRING, 0
+      SQLITE_ISOLATE_PASS_MPARAM(db));
+    sqlite3HashInit(&p->aFKey, SQLITE_HASH_STRING, 1
+      SQLITE_ISOLATE_PASS_MPARAM(db));
     p->enc = SQLITE_UTF8;
   }
   return p;

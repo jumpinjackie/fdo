@@ -100,7 +100,8 @@ int sqlite3VdbeMemGrow(Mem *pMem, int n, int preserve){
     memcpy(pMem->zMalloc, pMem->z, pMem->n);
   }
   if( pMem->flags&MEM_Dyn && pMem->xDel ){
-    pMem->xDel((void *)(pMem->z));
+    pMem->xDel((void*)(pMem->z)
+      SQLITE_ISOLATE_PASS_MPARAM(pMem->db));
   }
 
   pMem->z = pMem->zMalloc;
@@ -266,7 +267,8 @@ void sqlite3VdbeMemReleaseExternal(Mem *p){
     assert( (p->flags & MEM_Agg)==0 );
     sqlite3VdbeMemRelease(p);
   }else if( p->flags&MEM_Dyn && p->xDel ){
-    p->xDel((void *)p->z);
+    p->xDel((void *)p->z
+      SQLITE_ISOLATE_PASS_MPARAM(p->db));
     p->xDel = 0;
   }
 }
@@ -577,7 +579,7 @@ int sqlite3VdbeMemSetStr(
   const char *z,      /* String pointer */
   int n,              /* Bytes in string, or negative */
   u8 enc,             /* Encoding of z.  0 for BLOBs */
-  void (*xDel)(void*) /* Destructor function */
+  void (*xDel)(void* SQLITE_ISOLATE_DEF_MFPARAM_DB) /* Destructor function */
 ){
   int nByte = n;      /* New value for pMem->n */
   int iLimit;         /* Maximum allowed string or blob size */
@@ -1012,7 +1014,7 @@ void sqlite3ValueSetStr(
   int n,                /* Length of string z */
   const void *z,        /* Text of the new string */
   u8 enc,               /* Encoding to use */
-  void (*xDel)(void*)   /* Destructor for the string */
+  void (*xDel)(void* SQLITE_ISOLATE_DEF_MFPARAM_DB)   /* Destructor for the string */
 ){
   if( v ) sqlite3VdbeMemSetStr((Mem *)v, z, n, enc, xDel);
 }

@@ -1412,7 +1412,8 @@ static double bestVirtualIndex(
   }
   memset(pUsage, 0, sizeof(pUsage[0])*pIdxInfo->nConstraint);
   if( pIdxInfo->needToFreeIdxStr ){
-    sqlite3_free(pIdxInfo->idxStr);
+    sqlite3_free(pIdxInfo->idxStr
+        SQLITE_ISOLATE_PASS_MPARAM(pParse->db));
   }
   pIdxInfo->idxStr = 0;
   pIdxInfo->idxNum = 0;

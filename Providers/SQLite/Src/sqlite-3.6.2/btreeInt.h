@@ -385,7 +385,7 @@ struct BtShared {
   u8 inTransaction;     /* Transaction state */
   int nTransaction;     /* Number of open transactions (read + write) */
   void *pSchema;        /* Pointer to space allocated by sqlite3BtreeSchema() */
-  void (*xFreeSchema)(void*);  /* Destructor for BtShared.pSchema */
+  void (*xFreeSchema)(void* SQLITE_ISOLATE_DEF_MFPARAM_DB);  /* Destructor for BtShared.pSchema */
   sqlite3_mutex *mutex; /* Non-recursive mutex required to access this struct */
   BusyHandler busyHdr;  /* The busy handler for this btree */
 #ifndef SQLITE_OMIT_SHARED_CACHE

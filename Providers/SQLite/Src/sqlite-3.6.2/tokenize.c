@@ -397,7 +397,8 @@ int sqlite3RunParser(Parse *pParse, const char *zSql, char **pzErrMsg){
   pParse->zTail = pParse->zSql = zSql;
   i = 0;
   assert( pzErrMsg!=0 );
-  pEngine = sqlite3ParserAlloc((void*(*)(size_t))sqlite3Malloc);
+  pEngine = sqlite3ParserAlloc((void*(*)(size_t SQLITE_ISOLATE_DEF_MFPARAM_DB))sqlite3Malloc
+    SQLITE_ISOLATE_PASS_MPARAM(pParse->db));
   if( pEngine==0 ){
     db->mallocFailed = 1;
     return SQLITE_NOMEM;
@@ -462,7 +463,8 @@ abort_parse:
       sqlite3ParserStackPeak(pEngine)
   );
 #endif /* YYDEBUG */
-  sqlite3ParserFree(pEngine, sqlite3_free);
+  sqlite3ParserFree(pEngine, sqlite3_free
+    SQLITE_ISOLATE_PASS_MPARAM(db));
   if( db->mallocFailed ){
     pParse->rc = SQLITE_NOMEM;
   }

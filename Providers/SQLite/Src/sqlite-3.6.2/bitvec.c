@@ -85,10 +85,12 @@ struct Bitvec {
 ** inclusive.  Return a pointer to the new object.  Return NULL if 
 ** malloc fails.
 */
-Bitvec *sqlite3BitvecCreate(u32 iSize){
+Bitvec *sqlite3BitvecCreate(u32 iSize
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   Bitvec *p;
   assert( sizeof(*p)==BITVEC_SZ );
-  p = sqlite3MallocZero( sizeof(*p) );
+  p = sqlite3MallocZero( sizeof(*p)
+      SQLITE_ISOLATE_PASS_MPARAM(db));
   if( p ){
     p->iSize = iSize;
   }
@@ -126,7 +128,8 @@ int sqlite3BitvecTest(Bitvec *p, u32 i){
 ** Set the i-th bit.  Return 0 on success and an error code if
 ** anything goes wrong.
 */
-int sqlite3BitvecSet(Bitvec *p, u32 i){
+int sqlite3BitvecSet(Bitvec *p, u32 i
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   u32 h;
   assert( p!=0 );
   assert( i>0 );
@@ -141,11 +144,13 @@ int sqlite3BitvecSet(Bitvec *p, u32 i){
     i = (i-1)%p->iDivisor + 1;
     if( p->u.apSub[bin]==0 ){
       sqlite3BeginBenignMalloc();
-      p->u.apSub[bin] = sqlite3BitvecCreate( p->iDivisor );
+      p->u.apSub[bin] = sqlite3BitvecCreate( p->iDivisor
+        SQLITE_ISOLATE_PASS_MPARAM(db));
       sqlite3EndBenignMalloc();
       if( p->u.apSub[bin]==0 ) return SQLITE_NOMEM;
     }
-    return sqlite3BitvecSet(p->u.apSub[bin], i);
+    return sqlite3BitvecSet(p->u.apSub[bin], i
+      SQLITE_ISOLATE_PASS_MPARAM(db));
   }
   h = BITVEC_HASH(i);
   while( p->u.aHash[h] ){
@@ -160,9 +165,11 @@ int sqlite3BitvecSet(Bitvec *p, u32 i){
     memcpy(aiValues, p->u.aHash, sizeof(aiValues));
     memset(p->u.apSub, 0, sizeof(p->u.apSub[0])*BITVEC_NPTR);
     p->iDivisor = (p->iSize + BITVEC_NPTR - 1)/BITVEC_NPTR;
-    rc = sqlite3BitvecSet(p, i);
+    rc = sqlite3BitvecSet(p, i
+      SQLITE_ISOLATE_PASS_MPARAM(db));
     for(j=0; j<BITVEC_NINT; j++){
-      if( aiValues[j] ) rc |= sqlite3BitvecSet(p, aiValues[j]);
+      if( aiValues[j] ) rc |= sqlite3BitvecSet(p, aiValues[j]
+        SQLITE_ISOLATE_PASS_MPARAM(db));
     }
     return rc;
   }
@@ -174,7 +181,8 @@ int sqlite3BitvecSet(Bitvec *p, u32 i){
 ** Clear the i-th bit.  Return 0 on success and an error code if
 ** anything goes wrong.
 */
-void sqlite3BitvecClear(Bitvec *p, u32 i){
+void sqlite3BitvecClear(Bitvec *p, u32 i
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   assert( p!=0 );
   assert( i>0 );
   if( p->iSize<=BITVEC_NBIT ){
@@ -184,7 +192,8 @@ void sqlite3BitvecClear(Bitvec *p, u32 i){
     u32 bin = (i-1)/p->iDivisor;
     i = (i-1)%p->iDivisor + 1;
     if( p->u.apSub[bin] ){
-      sqlite3BitvecClear(p->u.apSub[bin], i);
+      sqlite3BitvecClear(p->u.apSub[bin], i
+        SQLITE_ISOLATE_PASS_MPARAM(db));
     }
   }else{
     int j;
@@ -194,7 +203,8 @@ void sqlite3BitvecClear(Bitvec *p, u32 i){
     p->nSet = 0;
     for(j=0; j<BITVEC_NINT; j++){
       if( aiValues[j] && aiValues[j]!=i ){
-        sqlite3BitvecSet(p, aiValues[j]);
+        sqlite3BitvecSet(p, aiValues[j]
+          SQLITE_ISOLATE_PASS_MPARAM(db));
       }
     }
   }
@@ -203,15 +213,18 @@ void sqlite3BitvecClear(Bitvec *p, u32 i){
 /*
 ** Destroy a bitmap object.  Reclaim all memory used.
 */
-void sqlite3BitvecDestroy(Bitvec *p){
+void sqlite3BitvecDestroy(Bitvec *p
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   if( p==0 ) return;
   if( p->iDivisor ){
     int i;
     for(i=0; i<BITVEC_NPTR; i++){
-      sqlite3BitvecDestroy(p->u.apSub[i]);
+      sqlite3BitvecDestroy(p->u.apSub[i]
+        SQLITE_ISOLATE_PASS_MPARAM(db));
     }
   }
-  sqlite3_free(p);
+  sqlite3_free(p
+    SQLITE_ISOLATE_PASS_MPARAM(db));
 }
 
 #ifndef SQLITE_OMIT_BUILTIN_TEST
@@ -225,6 +238,7 @@ void sqlite3BitvecDestroy(Bitvec *p){
 #define CLEARBIT(V,I)    V[I>>3] &= ~(1<<(I&7))
 #define TESTBIT(V,I)     (V[I>>3]&(1<<(I&7)))!=0
 
+#ifndef SQLITE_ENABLE_ISOLATE_CONNECTIONS
 /*
 ** This routine runs an extensive test of the Bitvec code.
 **
@@ -322,4 +336,5 @@ bitvec_end:
   sqlite3BitvecDestroy(pBitvec);
   return rc;
 }
+#endif /* SQLITE_ENABLE_ISOLATE_CONNECTIONS */
 #endif /* SQLITE_OMIT_BUILTIN_TEST */

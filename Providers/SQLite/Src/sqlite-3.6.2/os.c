@@ -165,25 +165,30 @@ int sqlite3OsOpenMalloc(
   sqlite3_file **ppFile, 
   int flags,
   int *pOutFlags
+  SQLITE_ISOLATE_DEF_MPARAM_DB
 ){
   int rc = SQLITE_NOMEM;
   sqlite3_file *pFile;
-  pFile = (sqlite3_file *)sqlite3Malloc(pVfs->szOsFile);
+  pFile = (sqlite3_file *)sqlite3Malloc(pVfs->szOsFile
+    SQLITE_ISOLATE_PASS_MPARAM(db));
   if( pFile ){
     rc = sqlite3OsOpen(pVfs, zFile, pFile, flags, pOutFlags);
     if( rc!=SQLITE_OK ){
-      sqlite3_free(pFile);
+      sqlite3_free(pFile
+        SQLITE_ISOLATE_PASS_MPARAM(db));
     }else{
       *ppFile = pFile;
     }
   }
   return rc;
 }
-int sqlite3OsCloseFree(sqlite3_file *pFile){
+int sqlite3OsCloseFree(sqlite3_file *pFile
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   int rc = SQLITE_OK;
   assert( pFile );
   rc = sqlite3OsClose(pFile);
-  sqlite3_free(pFile);
+  sqlite3_free(pFile
+    SQLITE_ISOLATE_PASS_MPARAM(db));
   return rc;
 }
 

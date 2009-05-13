@@ -1243,9 +1243,11 @@ static void yyGrowStack(yyParser *p){
 ** A pointer to a parser.  This pointer is used in subsequent calls
 ** to sqlite3Parser and sqlite3ParserFree.
 */
-void *sqlite3ParserAlloc(void *(*mallocProc)(size_t)){
+void *sqlite3ParserAlloc(void *(*mallocProc)(size_t SQLITE_ISOLATE_DEF_MFPARAM_DB)
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   yyParser *pParser;
-  pParser = (yyParser*)(*mallocProc)( (size_t)sizeof(yyParser) );
+  pParser = (yyParser*)(*mallocProc)( (size_t)sizeof(yyParser)
+    SQLITE_ISOLATE_PASS_MPARAM(db));
   if( pParser ){
     pParser->yyidx = -1;
 #ifdef YYTRACKMAXSTACKDEPTH
@@ -1402,7 +1404,8 @@ static int yy_pop_parser_stack(yyParser *pParser){
 */
 void sqlite3ParserFree(
   void *p,                    /* The parser to be deleted */
-  void (*freeProc)(void*)     /* Function used to reclaim memory */
+  void (*freeProc)(void* SQLITE_ISOLATE_DEF_MFPARAM_DB)     /* Function used to reclaim memory */
+  SQLITE_ISOLATE_DEF_MPARAM_DB
 ){
   yyParser *pParser = (yyParser*)p;
   if( pParser==0 ) return;
@@ -1410,7 +1413,8 @@ void sqlite3ParserFree(
 #if YYSTACKDEPTH<=0
   free(pParser->yystack);
 #endif
-  (*freeProc)((void*)pParser);
+  (*freeProc)((void*)pParser
+    SQLITE_ISOLATE_PASS_MPARAM(db));
 }
 
 /*

@@ -19,6 +19,7 @@
 
 typedef struct PgHdr PgHdr;
 typedef struct PCache PCache;
+typedef struct PCacheGlobal PCacheGlobal;
 
 /*
 ** Every page in the cache is controlled by an instance of the following
@@ -62,13 +63,16 @@ struct PgHdr {
 #define PGHDR_DONT_WRITE        0x100  /* Do not write content to disk */
 
 /* Initialize and shutdown the page cache subsystem */
-int sqlite3PcacheInitialize(void);
-void sqlite3PcacheShutdown(void);
+int sqlite3PcacheInitialize(
+SQLITE_ISOLATE_DEF_SPARAM_DB);
+void sqlite3PcacheShutdown(
+SQLITE_ISOLATE_DEF_SPARAM_DB);
 
 /* Page cache buffer management:
 ** These routines implement SQLITE_CONFIG_PAGECACHE.
 */
-void sqlite3PCacheBufferSetup(void *, int sz, int n);
+void sqlite3PCacheBufferSetup(void *, int sz, int n
+SQLITE_ISOLATE_DEF_MPARAM_DB);
 void *sqlite3PCacheMalloc(int sz);
 void sqlite3PCacheFree(void*);
 
@@ -84,7 +88,7 @@ void sqlite3PcacheOpen(
   int (*xStress)(void*, PgHdr*), /* Call to try to make pages clean */
   void *pStress,                 /* Argument to xStress */
   PCache *pToInit                /* Preallocated space for the PCache */
-);
+  SQLITE_ISOLATE_DEF_MPARAM_DB);
 
 /* Modify the page-size after the cache has been created. */
 void sqlite3PcacheSetPageSize(PCache *, int);
@@ -97,30 +101,41 @@ int sqlite3PcacheSize(void);
 /* One release per successful fetch.  Page is pinned until released.
 ** Reference counted. 
 */
-int sqlite3PcacheFetch(PCache*, Pgno, int createFlag, PgHdr**);
-void sqlite3PcacheRelease(PgHdr*);
+int sqlite3PcacheFetch(PCache*, Pgno, int createFlag, PgHdr**
+  SQLITE_ISOLATE_DEF_MPARAM_DB);
+void sqlite3PcacheRelease(PgHdr*
+  SQLITE_ISOLATE_DEF_MPARAM_DB);
 
-void sqlite3PcacheDrop(PgHdr*);         /* Remove page from cache */
+void sqlite3PcacheDrop(PgHdr*
+  SQLITE_ISOLATE_DEF_MPARAM_DB);         /* Remove page from cache */
 void sqlite3PcacheMakeDirty(PgHdr*);    /* Make sure page is marked dirty */
-void sqlite3PcacheMakeClean(PgHdr*);    /* Mark a single page as clean */
-void sqlite3PcacheCleanAll(PCache*);    /* Mark all dirty list pages as clean */
+void sqlite3PcacheMakeClean(PgHdr*
+  SQLITE_ISOLATE_DEF_MPARAM_DB);    /* Mark a single page as clean */
+void sqlite3PcacheCleanAll(PCache*
+  SQLITE_ISOLATE_DEF_MPARAM_DB);    /* Mark all dirty list pages as clean */
 
 /* Change a page number.  Used by incr-vacuum. */
-void sqlite3PcacheMove(PgHdr*, Pgno);
+void sqlite3PcacheMove(PgHdr*, Pgno
+  SQLITE_ISOLATE_DEF_MPARAM_DB);
 
 /* Remove all pages with pgno>x.  Reset the cache if x==0 */
-void sqlite3PcacheTruncate(PCache*, Pgno x);
+void sqlite3PcacheTruncate(PCache*, Pgno x
+  SQLITE_ISOLATE_DEF_MPARAM_DB);
 
 /* Routines used to implement transactions on memory-only databases. */
-int sqlite3PcachePreserve(PgHdr*, int);    /* Preserve current page content */
-void sqlite3PcacheCommit(PCache*, int);    /* Drop preserved copy */
-void sqlite3PcacheRollback(PCache*, int);  /* Rollback to preserved copy */
+int sqlite3PcachePreserve(PgHdr*, int
+SQLITE_ISOLATE_DEF_MPARAM_DB);    /* Preserve current page content */
+void sqlite3PcacheCommit(PCache*, int
+SQLITE_ISOLATE_DEF_MPARAM_DB);    /* Drop preserved copy */
+void sqlite3PcacheRollback(PCache*, int
+SQLITE_ISOLATE_DEF_MPARAM_DB);  /* Rollback to preserved copy */
 
 /* Get a list of all dirty pages in the cache, sorted by page number */
 PgHdr *sqlite3PcacheDirtyList(PCache*);
 
 /* Reset and close the cache object */
-void sqlite3PcacheClose(PCache*);
+void sqlite3PcacheClose(PCache*
+SQLITE_ISOLATE_DEF_MPARAM_DB);
 
 /* Set flags on all pages in the page cache */
 void sqlite3PcacheSetFlags(PCache*, int andMask, int orMask);
@@ -132,7 +147,8 @@ void sqlite3PcacheAssertFlags(PCache*, int trueMask, int falseMask);
 int sqlite3PcacheZeroOrOneDirtyPages(PCache*);
 
 /* Discard the contents of the cache */
-int sqlite3PcacheClear(PCache*);
+int sqlite3PcacheClear(PCache*
+SQLITE_ISOLATE_DEF_MPARAM_DB);
 
 /* Return the total number of outstanding page references */
 int sqlite3PcacheRefCount(PCache*);
@@ -156,10 +172,12 @@ void sqlite3PcacheIterate(PCache *pCache, void (*xIter)(PgHdr *));
 ** of the suggested cache-sizes.
 */
 int sqlite3PcacheGetCachesize(PCache *);
-void sqlite3PcacheSetCachesize(PCache *, int);
+void sqlite3PcacheSetCachesize(PCache *, int
+SQLITE_ISOLATE_DEF_MPARAM_DB);
 
 /* Try to return memory used by the pcache module to the main memory heap */
-int sqlite3PcacheReleaseMemory(int);
+int sqlite3PcacheReleaseMemory(int
+SQLITE_ISOLATE_DEF_MPARAM_DB);
 
 void sqlite3PcacheStats(int*,int*,int*,int*);
 

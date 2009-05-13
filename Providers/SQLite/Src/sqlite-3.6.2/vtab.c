@@ -828,7 +828,8 @@ void sqlite3VtabMakeWritable(Parse *pParse, Table *pTab){
     if( pTab==pParse->apVtabLock[i] ) return;
   }
   n = (pParse->nVtabLock+1)*sizeof(pParse->apVtabLock[0]);
-  pParse->apVtabLock = sqlite3_realloc(pParse->apVtabLock, n);
+  pParse->apVtabLock = sqlite3_realloc(pParse->apVtabLock, n
+    SQLITE_ISOLATE_PASS_MPARAM(pParse->db));
   if( pParse->apVtabLock ){
     pParse->apVtabLock[pParse->nVtabLock++] = pTab;
   }else{

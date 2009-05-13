@@ -248,6 +248,33 @@ typedef sqlite_uint64 sqlite3_uint64;
 # define double sqlite3_int64
 #endif
 
+#ifdef SQLITE_ENABLE_ISOLATE_CONNECTIONS
+  #define SQLITE_ISOLATE_DEF_MPARAM_DB , sqlite3* db
+  #define SQLITE_ISOLATE_DEF_MAPARAM_DB sqlite3* db,
+  #define SQLITE_ISOLATE_DEF_SPARAM_DB sqlite3* db
+  #define SQLITE_ISOLATE_DEF_MFPARAM_DB ,sqlite3*
+  #define SQLITE_ISOLATE_DEF_SFPARAM_DB sqlite3*
+  #define SQLITE_ISOLATE_PASS_SPARAM(db) db
+  #define SQLITE_ISOLATE_PASS_MPARAM(db) , db
+  #define SQLITE_ISOLATE_PASS_MAPARAM(db) db,
+#ifndef SQLITE_OMIT_SHARED_CACHE
+  #define SQLITE_ISOLATE_DEF_MPARAM_SMM , sqlite3_smm* smm
+  #define SQLITE_ISOLATE_PASS_MPARAM_SMM(smm) , smm
+#endif
+#else
+  #define SQLITE_ISOLATE_DEF_MPARAM_DB
+  #define SQLITE_ISOLATE_DEF_MAPARAM_DB
+  #define SQLITE_ISOLATE_DEF_SPARAM_DB
+  #define SQLITE_ISOLATE_DEF_MFPARAM_DB
+  #define SQLITE_ISOLATE_DEF_SFPARAM_DB
+  #define SQLITE_ISOLATE_PASS_SPARAM(db)
+  #define SQLITE_ISOLATE_PASS_MPARAM(db)
+  #define SQLITE_ISOLATE_PASS_MAPARAM(db)
+#ifndef SQLITE_OMIT_SHARED_CACHE
+  #define SQLITE_ISOLATE_DEF_MPARAM_SMM
+  #define SQLITE_ISOLATE_PASS_MPARAM_SMM(smm)
+#endif
+#endif
 /*
 ** CAPI3REF: Closing A Database Connection {H12010} <S30100><S40200>
 **
@@ -882,6 +909,122 @@ struct sqlite3_vfs {
   /* New fields may be appended in figure versions.  The iVersion
   ** value will increment whenever this happens. */
 };
+
+#ifdef SQLITE_ENABLE_ISOLATE_CONNECTIONS
+typedef struct PgHdr PgHdr;
+typedef struct PgFreeslot PgFreeslot;
+typedef struct BtShared BtShared;
+typedef struct sqlite3_smm sqlite3_smm;
+
+struct sqlite3_smm {
+  /*
+  ** Variables in which to record status information.
+  */
+  struct {
+    int nowValue[9];         /* Current value */
+    int mxValue[9];          /* Maximum value */
+  } sqlite3Stat;
+  /*
+  ** Global data for the page cache.
+  */
+  struct PCacheGlobal {
+    int isInit;                         /* True when initialized */
+    sqlite3_mutex *mutex;               /* static mutex MUTEX_STATIC_LRU */
+
+    int nMaxPage;                       /* Sum of nMaxPage for purgeable caches */
+    int nMinPage;                       /* Sum of nMinPage for purgeable caches */
+    int nCurrentPage;                   /* Number of purgeable pages allocated */
+    PgHdr *pLruHead, *pLruTail;         /* LRU list of unused clean pgs */
+
+    /* Variables related to SQLITE_CONFIG_PAGECACHE settings. */
+    int szSlot;                         /* Size of each free slot */
+    void *pStart, *pEnd;                /* Bounds of pagecache malloc range */
+    PgFreeslot *pFree;                  /* Free page blocks */
+  } pcache;
+
+  /*
+  ** State information local to the memory allocation subsystem.
+  */
+  struct {
+    sqlite3_mutex *mutex;         /* Mutex to serialize access */
+
+    /*
+    ** The alarm callback and its arguments.  The mem0.mutex lock will
+    ** be held while the callback is running.  Recursive calls into
+    ** the memory subsystem are allowed, but no new callbacks will be
+    ** issued.  The alarmBusy variable is set to prevent recursive
+    ** callbacks.
+    */
+    sqlite3_int64 alarmThreshold;
+    void (*alarmCallback)(void*, sqlite3_int64,int);
+    void *alarmArg;
+    int alarmBusy;
+
+    /*
+    ** Pointers to the end of sqlite3Config.pScratch and
+    ** sqlite3Config.pPage to a block of memory that records
+    ** which pages are available.
+    */
+#ifndef UINT32_TYPE
+# ifdef HAVE_UINT32_T
+    uint32_t *aScratchFree;
+    uint32_t *aPageFree;
+    /* Number of free pages for scratch and page-cache memory */
+    uint32_t nScratchFree;
+    uint32_t nPageFree;
+# else
+    unsigned int *aScratchFree;
+    unsigned int *aPageFree;
+    /* Number of free pages for scratch and page-cache memory */
+    unsigned int nScratchFree;
+    unsigned int nPageFree;
+# endif
+#endif
+  } mem0;
+
+  /*
+  ** The following object holds the list of automatically loaded
+  ** extensions.
+  **
+  ** This list is shared across threads.  The SQLITE_MUTEX_STATIC_MASTER
+  ** mutex must be held while accessing this list.
+  */
+  struct {
+    int nExt;        /* Number of entries in aExt[] */          
+    void **aExt;     /* Pointers to the extension init functions */
+  } autoext;
+  /*
+  ** Structure containing global configuration data for the SQLite library.
+  **
+  ** This structure also contains some state information.
+  */
+  struct Sqlite3ConfigEx {
+    void *pScratch;                   /* Scratch memory */
+    int szScratch;                    /* Size of each scratch buffer */
+    int nScratch;                     /* Number of scratch buffers */
+    void *pPage;                      /* Page cache memory */
+    int szPage;                       /* Size of each page in pPage[] */
+    int nPage;                        /* Number of pages in pPage[] */
+    int isInit;                       /* True after initialization has finished */
+  }sqlite3Config;
+  #ifndef SQLITE_OMIT_SHARED_CACHE
+  /*
+  ** A flag to indicate whether or not shared cache is enabled.  Also,
+  ** a list of BtShared objects that are eligible for participation
+  ** in shared cache.  The variables have file scope during normal builds,
+  ** but the test harness needs to access these variables so we make them
+  ** global for test builds.
+  */
+  BtShared *sqlite3SharedCacheList; /* shared list of btrees */
+  int sqlite3SharedCacheEnabled;    /* shared list of btrees enabled */
+  int nRef;                         /* Number of references to shared sqlite3SharedCacheList max=2*/
+  sqlite3* pMainDb;                 /* In case the btree is shared we need to keep for short time 
+                                    both databases to be able to delete shared btree since those 
+                                    two data bases share the same meorty this value will be not null
+                                    only in case nRef == 2.*/
+  #endif /* SQLITE_OMIT_SHARED_CACHE */
+};
+#endif
 
 /*
 ** CAPI3REF: Flags for the xAccess VFS method {H11190} <H11140>
@@ -1749,7 +1892,8 @@ int sqlite3_get_table(
   int *pnColumn,        /* Number of result columns written here */
   char **pzErrmsg       /* Error msg written here */
 );
-void sqlite3_free_table(char **result);
+void sqlite3_free_table(char **result
+ SQLITE_ISOLATE_DEF_MPARAM_DB);
 
 /*
 ** CAPI3REF: Formatted String Printing Functions {H17400} <S70000><S20000>
@@ -1860,8 +2004,10 @@ void sqlite3_free_table(char **result);
 **           regardless of the length of the string
 **           requested by the format specification.
 */
-char *sqlite3_mprintf(const char*,...);
-char *sqlite3_vmprintf(const char*, va_list);
+char *sqlite3_mprintf(SQLITE_ISOLATE_DEF_MAPARAM_DB
+  const char*,...);
+char *sqlite3_vmprintf(SQLITE_ISOLATE_DEF_MAPARAM_DB
+  const char*, va_list);
 char *sqlite3_snprintf(int,char*,const char*, ...);
 
 /*
@@ -1984,9 +2130,12 @@ char *sqlite3_snprintf(int,char*,const char*, ...);
 **           a block of memory after it has been released using
 **           [sqlite3_free()] or [sqlite3_realloc()].
 */
-void *sqlite3_malloc(int);
-void *sqlite3_realloc(void*, int);
-void sqlite3_free(void*);
+void *sqlite3_malloc(int
+SQLITE_ISOLATE_DEF_MPARAM_DB);
+void *sqlite3_realloc(void*, int
+SQLITE_ISOLATE_DEF_MPARAM_DB);
+void sqlite3_free(void*
+SQLITE_ISOLATE_DEF_MPARAM_DB);
 
 /*
 ** CAPI3REF: Memory Allocator Statistics {H17370} <S30210>
@@ -2016,8 +2165,9 @@ void sqlite3_free(void*);
 **          by [sqlite3_memory_highwater(1)] is the high-water mark
 **          prior to the reset.
 */
-sqlite3_int64 sqlite3_memory_used(void);
-sqlite3_int64 sqlite3_memory_highwater(int resetFlag);
+sqlite3_int64 sqlite3_memory_used(SQLITE_ISOLATE_DEF_SPARAM_DB);
+sqlite3_int64 sqlite3_memory_highwater(int resetFlag
+  SQLITE_ISOLATE_DEF_MPARAM_DB);
 
 /*
 ** CAPI3REF: Pseudo-Random Number Generator {H17390} <S20000>
@@ -2514,6 +2664,7 @@ void sqlite3_progress_handler(sqlite3*, int, int(*)(void*), void*);
 int sqlite3_open(
   const char *filename,   /* Database filename (UTF-8) */
   sqlite3 **ppDb          /* OUT: SQLite db handle */
+  SQLITE_ISOLATE_DEF_MPARAM_SMM
 );
 int sqlite3_open16(
   const void *filename,   /* Database filename (UTF-16) */
@@ -2524,6 +2675,7 @@ int sqlite3_open_v2(
   sqlite3 **ppDb,         /* OUT: SQLite db handle */
   int flags,              /* Flags */
   const char *zVfs        /* Name of VFS module to use */
+  SQLITE_ISOLATE_DEF_MPARAM_SMM
 );
 
 /*
@@ -3069,12 +3221,12 @@ typedef struct sqlite3_context sqlite3_context;
 **          be either a [protected sqlite3_value] object or an
 **          [unprotected sqlite3_value] object.
 */
-int sqlite3_bind_blob(sqlite3_stmt*, int, const void*, int n, void(*)(void*));
+int sqlite3_bind_blob(sqlite3_stmt*, int, const void*, int n, void(*)(void* SQLITE_ISOLATE_DEF_MFPARAM_DB));
 int sqlite3_bind_double(sqlite3_stmt*, int, double);
 int sqlite3_bind_int(sqlite3_stmt*, int, int);
 int sqlite3_bind_int64(sqlite3_stmt*, int, sqlite3_int64);
 int sqlite3_bind_null(sqlite3_stmt*, int);
-int sqlite3_bind_text(sqlite3_stmt*, int, const char*, int n, void(*)(void*));
+int sqlite3_bind_text(sqlite3_stmt*, int, const char*, int n, void(*)(void* SQLITE_ISOLATE_DEF_MFPARAM_DB));
 int sqlite3_bind_text16(sqlite3_stmt*, int, const void*, int, void(*)(void*));
 int sqlite3_bind_value(sqlite3_stmt*, int, const sqlite3_value*);
 int sqlite3_bind_zeroblob(sqlite3_stmt*, int, int n);
@@ -3985,7 +4137,8 @@ SQLITE_DEPRECATED int sqlite3_expired(sqlite3_stmt*);
 SQLITE_DEPRECATED int sqlite3_transfer_bindings(sqlite3_stmt*, sqlite3_stmt*);
 SQLITE_DEPRECATED int sqlite3_global_recover(void);
 SQLITE_DEPRECATED void sqlite3_thread_cleanup(void);
-SQLITE_DEPRECATED int sqlite3_memory_alarm(void(*)(void*,sqlite3_int64,int),void*,sqlite3_int64);
+SQLITE_DEPRECATED int sqlite3_memory_alarm(void(*)(void*,sqlite3_int64,int),void*,sqlite3_int64
+  SQLITE_ISOLATE_DEF_MFPARAM_DB);
 
 /*
 ** CAPI3REF: Obtaining SQL Function Parameter Values {H15100} <S20200>
@@ -4277,7 +4430,7 @@ void sqlite3_set_auxdata(sqlite3_context*, int N, void*, void (*)(void*));
 ** The typedef is necessary to work around problems in certain
 ** C++ compilers.  See ticket #2191.
 */
-typedef void (*sqlite3_destructor_type)(void*);
+typedef void (*sqlite3_destructor_type)(void* SQLITE_ISOLATE_DEF_MFPARAM_DB);
 #define SQLITE_STATIC      ((sqlite3_destructor_type)0)
 #define SQLITE_TRANSIENT   ((sqlite3_destructor_type)-1)
 
@@ -4481,7 +4634,7 @@ typedef void (*sqlite3_destructor_type)(void*);
 **          SQLite will invoke the destructor D with V as its only argument
 **          when it has finished with the V value.
 */
-void sqlite3_result_blob(sqlite3_context*, const void*, int, void(*)(void*));
+void sqlite3_result_blob(sqlite3_context*, const void*, int, void(*)(void* SQLITE_ISOLATE_DEF_MFPARAM_DB));
 void sqlite3_result_double(sqlite3_context*, double);
 void sqlite3_result_error(sqlite3_context*, const char*, int);
 void sqlite3_result_error16(sqlite3_context*, const void*, int);
@@ -4491,10 +4644,12 @@ void sqlite3_result_error_code(sqlite3_context*, int);
 void sqlite3_result_int(sqlite3_context*, int);
 void sqlite3_result_int64(sqlite3_context*, sqlite3_int64);
 void sqlite3_result_null(sqlite3_context*);
-void sqlite3_result_text(sqlite3_context*, const char*, int, void(*)(void*));
+void sqlite3_result_text(sqlite3_context*, const char*, int, void(*)(void* SQLITE_ISOLATE_DEF_MFPARAM_DB));
+#ifndef SQLITE_OMIT_UTF16
 void sqlite3_result_text16(sqlite3_context*, const void*, int, void(*)(void*));
 void sqlite3_result_text16le(sqlite3_context*, const void*, int,void(*)(void*));
 void sqlite3_result_text16be(sqlite3_context*, const void*, int,void(*)(void*));
+#endif
 void sqlite3_result_value(sqlite3_context*, sqlite3_value*);
 void sqlite3_result_zeroblob(sqlite3_context*, int n);
 
@@ -5003,7 +5158,12 @@ void *sqlite3_update_hook(
 **
 ** {H10339} Shared cache is disabled by default.
 */
+#if defined(SQLITE_ENABLE_ISOLATE_CONNECTIONS) && !defined(SQLITE_OMIT_SHARED_CACHE)
+sqlite3_smm* sqlite3_enable_shared_cache(int
+  SQLITE_ISOLATE_DEF_MFPARAM_DB);
+#else
 int sqlite3_enable_shared_cache(int);
+#endif
 
 /*
 ** CAPI3REF: Attempt To Free Heap Memory {H17340} <S30220>
@@ -5085,7 +5245,8 @@ int sqlite3_release_memory(int);
 ** {H16358} Each call to [sqlite3_soft_heap_limit(N)] overrides the
 **          values set by all prior calls.
 */
-void sqlite3_soft_heap_limit(int);
+void sqlite3_soft_heap_limit(int
+  SQLITE_ISOLATE_DEF_MPARAM_DB);
 
 /*
 ** CAPI3REF: Extract Metadata About A Column Of A Table {H12850} <S60300>
@@ -5237,7 +5398,8 @@ int sqlite3_enable_load_extension(sqlite3 *db, int onoff);
 **
 ** {H12644} Automatic extensions apply across all threads.
 */
-int sqlite3_auto_extension(void *xEntryPoint);
+int sqlite3_auto_extension(void *xEntryPoint
+  SQLITE_ISOLATE_DEF_MPARAM_DB);
 
 /*
 ** CAPI3REF: Reset Automatic Extension Loading {H12660} <S20500>
@@ -5251,7 +5413,8 @@ int sqlite3_auto_extension(void *xEntryPoint);
 **
 ** {H12662} This function disables automatic extensions in all threads.
 */
-void sqlite3_reset_auto_extension(void);
+void sqlite3_reset_auto_extension(
+  SQLITE_ISOLATE_DEF_SPARAM_DB);
 
 /*
 ****** EXPERIMENTAL - subject to change without notice **************
@@ -5295,7 +5458,8 @@ struct sqlite3_module {
   int (*xBestIndex)(sqlite3_vtab *pVTab, sqlite3_index_info*);
   int (*xDisconnect)(sqlite3_vtab *pVTab);
   int (*xDestroy)(sqlite3_vtab *pVTab);
-  int (*xOpen)(sqlite3_vtab *pVTab, sqlite3_vtab_cursor **ppCursor);
+  int (*xOpen)(sqlite3_vtab *pVTab, sqlite3_vtab_cursor **ppCursor
+    SQLITE_ISOLATE_DEF_MPARAM_DB);
   int (*xClose)(sqlite3_vtab_cursor*);
   int (*xFilter)(sqlite3_vtab_cursor*, int idxNum, const char *idxStr,
                 int argc, sqlite3_value **argv);
@@ -6175,7 +6339,8 @@ int sqlite3_test_control(int op, ...);
 **
 ** See also: [sqlite3_db_status()]
 */
-SQLITE_EXPERIMENTAL int sqlite3_status(int op, int *pCurrent, int *pHighwater, int resetFlag);
+SQLITE_EXPERIMENTAL int sqlite3_status(int op, int *pCurrent, int *pHighwater, int resetFlag
+  SQLITE_ISOLATE_DEF_MPARAM_DB);
 
 /*
 ** CAPI3REF: Database Connection Status {H17201} <S60200>

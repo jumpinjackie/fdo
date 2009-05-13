@@ -132,7 +132,8 @@ exec_out:
   rc = sqlite3ApiExit(db, rc);
   if( rc!=SQLITE_OK && rc==sqlite3_errcode(db) && pzErrMsg ){
     int nErrMsg = 1 + strlen(sqlite3_errmsg(db));
-    *pzErrMsg = sqlite3Malloc(nErrMsg);
+    *pzErrMsg = sqlite3Malloc(nErrMsg
+      SQLITE_ISOLATE_PASS_MPARAM(db));
     if( *pzErrMsg ){
       memcpy(*pzErrMsg, sqlite3_errmsg(db), nErrMsg);
     }

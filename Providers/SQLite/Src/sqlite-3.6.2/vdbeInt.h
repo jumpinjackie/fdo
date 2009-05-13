@@ -126,7 +126,7 @@ struct Mem {
   u16 flags;          /* Some combination of MEM_Null, MEM_Str, MEM_Dyn, etc. */
   u8  type;           /* One of SQLITE_NULL, SQLITE_TEXT, SQLITE_INTEGER, etc */
   u8  enc;            /* SQLITE_UTF8, SQLITE_UTF16BE, SQLITE_UTF16LE */
-  void (*xDel)(void *);  /* If not null, call this function to delete Mem.z */
+  void (*xDel)(void* SQLITE_ISOLATE_DEF_MFPARAM_DB);  /* If not null, call this function to delete Mem.z */
   char *zMalloc;      /* Dynamic buffer allocated by sqlite3_malloc() */
 };
 
@@ -379,7 +379,7 @@ int sqlite3VdbeMemCopy(Mem*, const Mem*);
 void sqlite3VdbeMemShallowCopy(Mem*, const Mem*, int);
 void sqlite3VdbeMemMove(Mem*, Mem*);
 int sqlite3VdbeMemNulTerminate(Mem*);
-int sqlite3VdbeMemSetStr(Mem*, const char*, int, u8, void(*)(void*));
+int sqlite3VdbeMemSetStr(Mem*, const char*, int, u8, void(*)(void* SQLITE_ISOLATE_DEF_MFPARAM_DB));
 void sqlite3VdbeMemSetInt64(Mem*, i64);
 void sqlite3VdbeMemSetDouble(Mem*, double);
 void sqlite3VdbeMemSetNull(Mem*);

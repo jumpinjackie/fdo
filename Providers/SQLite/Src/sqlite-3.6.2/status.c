@@ -20,16 +20,20 @@
 /*
 ** Variables in which to record status information.
 */
+#ifndef SQLITE_ENABLE_ISOLATE_CONNECTIONS
 static struct {
   int nowValue[9];         /* Current value */
   int mxValue[9];          /* Maximum value */
 } sqlite3Stat;
-
+#else
+#define sqlite3Stat db->pSmm->sqlite3Stat
+#endif
 
 /*
 ** Return the current value of a status parameter.
 */
-int sqlite3StatusValue(int op){
+int sqlite3StatusValue(int op
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   assert( op>=0 && op<ArraySize(sqlite3Stat.nowValue) );
   return sqlite3Stat.nowValue[op];
 }
@@ -38,7 +42,8 @@ int sqlite3StatusValue(int op){
 ** Add N to the value of a status record.  It is assumed that the
 ** caller holds appropriate locks.
 */
-void sqlite3StatusAdd(int op, int N){
+void sqlite3StatusAdd(int op, int N
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   assert( op>=0 && op<ArraySize(sqlite3Stat.nowValue) );
   sqlite3Stat.nowValue[op] += N;
   if( sqlite3Stat.nowValue[op]>sqlite3Stat.mxValue[op] ){
@@ -49,7 +54,8 @@ void sqlite3StatusAdd(int op, int N){
 /*
 ** Set the value of a status to X.
 */
-void sqlite3StatusSet(int op, int X){
+void sqlite3StatusSet(int op, int X
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   assert( op>=0 && op<ArraySize(sqlite3Stat.nowValue) );
   sqlite3Stat.nowValue[op] = X;
   if( sqlite3Stat.nowValue[op]>sqlite3Stat.mxValue[op] ){
@@ -64,7 +70,8 @@ void sqlite3StatusSet(int op, int X){
 ** 32-bit integer is an atomic operation.  If that assumption is not true,
 ** then this routine is not threadsafe.
 */
-int sqlite3_status(int op, int *pCurrent, int *pHighwater, int resetFlag){
+int sqlite3_status(int op, int *pCurrent, int *pHighwater, int resetFlag
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   if( op<0 || op>=ArraySize(sqlite3Stat.nowValue) ){
     return SQLITE_MISUSE;
   }

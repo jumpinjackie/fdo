@@ -25,11 +25,11 @@
 
 
 
-#define   NUMBER_OF_THREADS     10
+#define   NUMBER_OF_THREADS     30
 static    bool   use_threads = true;
-static    bool   supports_multiple_writers = false;
-static    int    select_loop_count = 10;
-static    int    insert_loop_count = 20;
+static    bool   supports_multiple_readers = false;
+static    int    select_loop_count = 30;
+static    int    insert_loop_count = 200;
 
 CPPUNIT_TEST_SUITE_REGISTRATION( FdoMultiThreadTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( FdoMultiThreadTest, "FdoMultiThreadTest");
@@ -61,8 +61,9 @@ void* StartQuery( void *lpParameter)
 
 		select->SetFeatureClassName(L"Parcel");
 
-		//FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"Key LIKE 'DI%'");
-
+        // after we will fix spatial index at update time this code will be re-enabled
+        // for now use a normal filter
+#if 0
 		FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
 		double coords[] = { 7.2068, 43.7556, 
 							7.2088, 43.7556, 
@@ -74,7 +75,9 @@ void* StartQuery( void *lpParameter)
 		FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
 		FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
 		FdoPtr<FdoSpatialCondition> filter = FdoSpatialCondition::Create(L"Data", FdoSpatialOperations_EnvelopeIntersects, gv);
-
+#else
+        FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"ID >= 10000");
+#endif
 		select->SetFilter(filter);
 	    int count2 = 0;
 		for( int i=0; i<select_loop_count; i++ )
@@ -82,12 +85,13 @@ void* StartQuery( void *lpParameter)
 			FdoPtr<FdoIFeatureReader> rdr = select->Execute();
 			while (rdr->ReadNext())
 			{
+                int id = rdr->GetInt32(L"ID");
 				const wchar_t* something = rdr->GetString(L"Name");
 				count2++;
 			}
 			counts[i] = count2;
 			rdr->Close();
-			wait_a_bit(100);
+			wait_a_bit(10);
 		}
 		char tmp[12];
 		buffer[0]=0;
@@ -145,7 +149,7 @@ FdoMultiThreadTest::~FdoMultiThreadTest(void)
 
 void FdoMultiThreadTest::setUp ()
 {
-	UnitTestUtil::CreateData( true, NULL ,10000);
+	UnitTestUtil::CreateData( true, NULL, 10000);
 }
 
 void FdoMultiThreadTest::OpenConnection(FdoIConnection* conn, const wchar_t* path )
@@ -197,9 +201,7 @@ void FdoMultiThreadTest::StartTest ( FunctionInfo *funInfo )
         return;
 	}
 
-    bool  toggle = true;
-	
-	if( ! supports_multiple_writers && use_threads )
+	if( use_threads )
 	{
 #ifdef _WIN32
 		phThreads[0] = CreateThread(NULL, 0, funInfo->Function2, &info[0], 0, &dwThreadId);
@@ -208,20 +210,17 @@ void FdoMultiThreadTest::StartTest ( FunctionInfo *funInfo )
 #endif
 	}
 
-	i = ( supports_multiple_writers )?0:1;
+	i = (supports_multiple_readers)? 0 : 1;
     for ( ; i < NUMBER_OF_THREADS; i++)
 	{
         if( use_threads )
 #ifdef _WIN32
-            phThreads[i] = CreateThread(NULL, 0, (toggle)?funInfo->Function1:funInfo->Function2, &info[i], 0, &dwThreadId);
+            phThreads[i] = CreateThread(NULL, 0, funInfo->Function1, &info[i], 0, &dwThreadId);
 #else
-            pthread_create( &phThreads[i], NULL, (toggle)?funInfo->Function1:funInfo->Function2, (void*) &info[i]);
+            pthread_create( &phThreads[i], NULL, funInfo->Function1, (void*) &info[i]);
 #endif
         else
             StartQuery( &info[i] );
-
-		if( supports_multiple_writers )
-			toggle = !toggle;
 	} 
 
 	
