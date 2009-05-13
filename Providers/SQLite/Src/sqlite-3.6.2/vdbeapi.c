@@ -313,7 +313,7 @@ void sqlite3_result_blob(
   sqlite3_context *pCtx, 
   const void *z, 
   int n, 
-  void (*xDel)(void *)
+  void (*xDel)(void* SQLITE_ISOLATE_DEF_MFPARAM_DB)
 ){
   assert( n>=0 );
   assert( sqlite3_mutex_held(pCtx->s.db->mutex) );
@@ -351,7 +351,7 @@ void sqlite3_result_text(
   sqlite3_context *pCtx, 
   const char *z, 
   int n,
-  void (*xDel)(void *)
+  void (*xDel)(void* SQLITE_ISOLATE_DEF_MFPARAM_DB)
 ){
   assert( sqlite3_mutex_held(pCtx->s.db->mutex) );
   sqlite3VdbeMemSetStr(&pCtx->s, z, n, SQLITE_UTF8, xDel);
@@ -606,7 +606,8 @@ void sqlite3InvalidFunction(
   zErr = sqlite3MPrintf(0,
       "unable to use function %s in the requested context", zName);
   sqlite3_result_error(context, zErr, -1);
-  sqlite3_free(zErr);
+  sqlite3_free(zErr
+    SQLITE_ISOLATE_PASS_MPARAM(context->s.db));
 }
 
 /*
@@ -1034,7 +1035,7 @@ static int bindText(
   int i,                 /* Index of the parameter to bind */
   const void *zData,     /* Pointer to the data to be bound */
   int nData,             /* Number of bytes of data to be bound */
-  void (*xDel)(void*),   /* Destructor for the data */
+  void (*xDel)(void* SQLITE_ISOLATE_DEF_MFPARAM_DB),   /* Destructor for the data */
   int encoding           /* Encoding for the data */
 ){
   Vdbe *p = (Vdbe *)pStmt;
@@ -1068,7 +1069,7 @@ int sqlite3_bind_blob(
   int i, 
   const void *zData, 
   int nData, 
-  void (*xDel)(void*)
+  void (*xDel)(void* SQLITE_ISOLATE_DEF_MFPARAM_DB)
 ){
   return bindText(pStmt, i, zData, nData, xDel, 0);
 }
@@ -1110,7 +1111,7 @@ int sqlite3_bind_text(
   int i, 
   const char *zData, 
   int nData, 
-  void (*xDel)(void*)
+  void (*xDel)(void* SQLITE_ISOLATE_DEF_MFPARAM_DB)
 ){
   return bindText(pStmt, i, zData, nData, xDel, SQLITE_UTF8);
 }

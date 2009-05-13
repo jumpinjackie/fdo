@@ -549,7 +549,8 @@ void sqlite3VdbeChangeP4(Vdbe *p, int addr, const char *zP4, int n){
 
     nField = ((KeyInfo*)zP4)->nField;
     nByte = sizeof(*pKeyInfo) + (nField-1)*sizeof(pKeyInfo->aColl[0]) + nField;
-    pKeyInfo = sqlite3Malloc( nByte );
+    pKeyInfo = sqlite3Malloc( nByte
+        SQLITE_ISOLATE_PASS_MPARAM(db));
     pOp->p4.pKeyInfo = pKeyInfo;
     if( pKeyInfo ){
       u8 *aSortOrder;
@@ -1316,7 +1317,7 @@ static int vdbeCommit(sqlite3 *db, Vdbe *p){
       rc = sqlite3OsOpenMalloc(pVfs, zMaster, &pMaster, 
           SQLITE_OPEN_READWRITE|SQLITE_OPEN_CREATE|
           SQLITE_OPEN_EXCLUSIVE|SQLITE_OPEN_MASTER_JOURNAL, 0
-      );
+          SQLITE_ISOLATE_PASS_MPARAM(db));
     }
     if( rc!=SQLITE_OK ){
       sqlite3DbFree(db, zMaster);
@@ -1341,7 +1342,8 @@ static int vdbeCommit(sqlite3 *db, Vdbe *p){
         rc = sqlite3OsWrite(pMaster, zFile, strlen(zFile)+1, offset);
         offset += strlen(zFile)+1;
         if( rc!=SQLITE_OK ){
-          sqlite3OsCloseFree(pMaster);
+          sqlite3OsCloseFree(pMaster
+            SQLITE_ISOLATE_PASS_MPARAM(db));
           sqlite3OsDelete(pVfs, zMaster, 0);
           sqlite3DbFree(db, zMaster);
           return rc;
@@ -1356,7 +1358,8 @@ static int vdbeCommit(sqlite3 *db, Vdbe *p){
     if( (needSync 
      && (0==(sqlite3OsDeviceCharacteristics(pMaster)&SQLITE_IOCAP_SEQUENTIAL))
      && (rc=sqlite3OsSync(pMaster, SQLITE_SYNC_NORMAL))!=SQLITE_OK) ){
-      sqlite3OsCloseFree(pMaster);
+      sqlite3OsCloseFree(pMaster
+        SQLITE_ISOLATE_PASS_MPARAM(db));
       sqlite3OsDelete(pVfs, zMaster, 0);
       sqlite3DbFree(db, zMaster);
       return rc;
@@ -1378,7 +1381,8 @@ static int vdbeCommit(sqlite3 *db, Vdbe *p){
         rc = sqlite3BtreeCommitPhaseOne(pBt, zMaster);
       }
     }
-    sqlite3OsCloseFree(pMaster);
+    sqlite3OsCloseFree(pMaster
+      SQLITE_ISOLATE_PASS_MPARAM(db));
     if( rc!=SQLITE_OK ){
       sqlite3DbFree(db, zMaster);
       return rc;

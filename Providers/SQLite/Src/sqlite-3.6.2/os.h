@@ -269,7 +269,9 @@ int sqlite3OsCurrentTime(sqlite3_vfs *, double*);
 ** Convenience functions for opening and closing files using 
 ** sqlite3_malloc() to obtain space for the file-handle structure.
 */
-int sqlite3OsOpenMalloc(sqlite3_vfs *, const char *, sqlite3_file **, int,int*);
-int sqlite3OsCloseFree(sqlite3_file *);
+int sqlite3OsOpenMalloc(sqlite3_vfs *, const char *, sqlite3_file **, int,int*
+  SQLITE_ISOLATE_DEF_MFPARAM_DB);
+int sqlite3OsCloseFree(sqlite3_file *
+  SQLITE_ISOLATE_DEF_MFPARAM_DB);
 
 #endif /* _SQLITE_OS_H_ */

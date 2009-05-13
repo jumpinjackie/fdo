@@ -808,12 +808,13 @@ static int dump_callback(void *pArg, int nArg, char **azArg, char **azCol){
       fprintf(p->out, "PRAGMA writable_schema=ON;\n");
       p->writableSchema = 1;
     }
-    zIns = sqlite3_mprintf(
+    zIns = sqlite3_mprintf(SQLITE_ISOLATE_PASS_MAPARAM(db)
        "INSERT INTO sqlite_master(type,name,tbl_name,rootpage,sql)"
        "VALUES('table','%q','%q',0,'%q');",
        zTable, zTable, zSql);
     fprintf(p->out, "%s\n", zIns);
-    sqlite3_free(zIns);
+    sqlite3_free(zIns
+      SQLITE_ISOLATE_PASS_MPARAM(p->db));
     return 0;
   }else{
     fprintf(p->out, "%s;\n", zSql);
@@ -888,7 +889,8 @@ static int run_schema_dump_query(
   if( rc==SQLITE_CORRUPT ){
     char *zQ2;
     int len = strlen(zQuery);
-    if( pzErrMsg ) sqlite3_free(*pzErrMsg);
+    if( pzErrMsg ) sqlite3_free(*pzErrMsg
+      SQLITE_ISOLATE_PASS_MPARAM(p->db));
     zQ2 = malloc( len+100 );
     if( zQ2==0 ) return rc;
     sqlite3_snprintf(sizeof(zQ2), zQ2, "%s ORDER BY rowid DESC", zQuery);
@@ -953,7 +955,8 @@ static int process_input(struct callback_data *p, FILE *in);
 */
 static void open_db(struct callback_data *p){
   if( p->db==0 ){
-    sqlite3_open(p->zDbFilename, &p->db);
+    sqlite3_open(p->zDbFilename, &p->db
+      SQLITE_ISOLATE_PASS_MPARAM_SMM(0));
     db = p->db;
     if( db && sqlite3_errcode(db)==SQLITE_OK ){
       sqlite3_create_function(db, "shellstatic", 0, SQLITE_UTF8, 0,
@@ -1081,7 +1084,8 @@ static int do_meta_command(char *zLine, struct callback_data *p){
     sqlite3_exec(p->db, "PRAGMA database_list; ", callback, &data, &zErrMsg);
     if( zErrMsg ){
       fprintf(stderr,"Error: %s\n", zErrMsg);
-      sqlite3_free(zErrMsg);
+      sqlite3_free(zErrMsg
+        SQLITE_ISOLATE_PASS_MPARAM(p->db));
     }
   }else
 
@@ -1124,7 +1128,8 @@ static int do_meta_command(char *zLine, struct callback_data *p){
     sqlite3_exec(p->db, "PRAGMA writable_schema=OFF", 0, 0, 0);
     if( zErrMsg ){
       fprintf(stderr,"Error: %s\n", zErrMsg);
-      sqlite3_free(zErrMsg);
+      sqlite3_free(zErrMsg
+        SQLITE_ISOLATE_PASS_MPARAM(p->db));
     }else{
       fprintf(p->out, "COMMIT;\n");
     }
@@ -1204,11 +1209,13 @@ static int do_meta_command(char *zLine, struct callback_data *p){
       fprintf(stderr, "non-null separator required for import\n");
       return 0;
     }
-    zSql = sqlite3_mprintf("SELECT * FROM '%q'", zTable);
+    zSql = sqlite3_mprintf(SQLITE_ISOLATE_PASS_MAPARAM(db)
+      "SELECT * FROM '%q'", zTable);
     if( zSql==0 ) return 0;
     nByte = strlen(zSql);
     rc = sqlite3_prepare(p->db, zSql, -1, &pStmt, 0);
-    sqlite3_free(zSql);
+    sqlite3_free(zSql
+      SQLITE_ISOLATE_PASS_MPARAM(p->db));
     if( rc ){
       fprintf(stderr,"Error: %s\n", sqlite3_errmsg(db));
       nCol = 0;
@@ -1309,7 +1316,8 @@ static int do_meta_command(char *zLine, struct callback_data *p){
     zShellStatic = 0;
     if( zErrMsg ){
       fprintf(stderr,"Error: %s\n", zErrMsg);
-      sqlite3_free(zErrMsg);
+      sqlite3_free(zErrMsg
+        SQLITE_ISOLATE_PASS_MPARAM(p->db));
     }
   }else
 
@@ -1346,7 +1354,8 @@ static int do_meta_command(char *zLine, struct callback_data *p){
     rc = sqlite3_load_extension(p->db, zFile, zProc, &zErrMsg);
     if( rc!=SQLITE_OK ){
       fprintf(stderr, "%s\n", zErrMsg);
-      sqlite3_free(zErrMsg);
+      sqlite3_free(zErrMsg
+        SQLITE_ISOLATE_PASS_MPARAM(p->db));
       rc = 1;
     }
   }else
@@ -1492,7 +1501,8 @@ static int do_meta_command(char *zLine, struct callback_data *p){
     }
     if( zErrMsg ){
       fprintf(stderr,"Error: %s\n", zErrMsg);
-      sqlite3_free(zErrMsg);
+      sqlite3_free(zErrMsg
+        SQLITE_ISOLATE_PASS_MPARAM(p->db));
     }
   }else
 
@@ -1552,7 +1562,8 @@ static int do_meta_command(char *zLine, struct callback_data *p){
     }
     if( zErrMsg ){
       fprintf(stderr,"Error: %s\n", zErrMsg);
-      sqlite3_free(zErrMsg);
+      sqlite3_free(zErrMsg
+        SQLITE_ISOLATE_PASS_MPARAM(p->db));
     }
     if( rc==SQLITE_OK ){
       int len, maxlen = 0;
@@ -1576,7 +1587,8 @@ static int do_meta_command(char *zLine, struct callback_data *p){
     }else{
       rc = 1;
     }
-    sqlite3_free_table(azResult);
+    sqlite3_free_table(azResult
+      SQLITE_ISOLATE_PASS_MPARAM(p->db));
   }else
 
   if( c=='t' && n>4 && strncmp(azArg[0], "timeout", n)==0 && nArg>=2 ){
@@ -1744,7 +1756,8 @@ static int process_input(struct callback_data *p, FILE *in){
         }
         if( zErrMsg!=0 ){
           printf("%s %s\n", zPrefix, zErrMsg);
-          sqlite3_free(zErrMsg);
+          sqlite3_free(zErrMsg
+            SQLITE_ISOLATE_PASS_MPARAM(p->db));
           zErrMsg = 0;
         }else{
           printf("%s %s\n", zPrefix, sqlite3_errmsg(p->db));

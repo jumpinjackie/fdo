@@ -70,7 +70,8 @@ typedef struct PgHdr DbPage;
 ** See source code comments for a detailed description of the following
 ** routines:
 */
-int sqlite3PagerOpen(sqlite3_vfs *, Pager **ppPager, const char*, void(*)(DbPage*), int,int,int);
+int sqlite3PagerOpen(sqlite3_vfs *, Pager **ppPager, const char*, void(*)(DbPage*), int,int,int
+  SQLITE_ISOLATE_DEF_MPARAM_DB);
 void sqlite3PagerSetBusyhandler(Pager*, BusyHandler *pBusyHandler);
 void sqlite3PagerSetReiniter(Pager*, void(*)(DbPage*,int));
 int sqlite3PagerSetPagesize(Pager*, u16*);

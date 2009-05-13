@@ -39,6 +39,9 @@ struct Hash {
     int count;               /* Number of entries with this hash */
     HashElem *chain;         /* Pointer to first entry with this hash */
   } *ht;
+#ifdef SQLITE_ENABLE_ISOLATE_CONNECTIONS
+  sqlite3 *db;         /* "Owner" connection. */
+#endif
 };
 
 /* Each element in the hash table is an instance of the following 
@@ -78,7 +81,8 @@ struct HashElem {
 /*
 ** Access routines.  To delete, insert a NULL pointer.
 */
-void sqlite3HashInit(Hash*, int keytype, int copyKey);
+void sqlite3HashInit(Hash*, int keytype, int copyKey
+SQLITE_ISOLATE_DEF_MPARAM_DB);
 void *sqlite3HashInsert(Hash*, const void *pKey, int nKey, void *pData);
 void *sqlite3HashFind(const Hash*, const void *pKey, int nKey);
 HashElem *sqlite3HashFindElem(const Hash*, const void *pKey, int nKey);

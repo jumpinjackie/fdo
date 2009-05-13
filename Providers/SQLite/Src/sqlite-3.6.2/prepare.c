@@ -215,7 +215,8 @@ static int sqlite3InitOne(sqlite3 *db, int iDb, char **pzErrMsg){
     }
     return SQLITE_OK;
   }
-  curMain = sqlite3MallocZero(sqlite3BtreeCursorSize());
+  curMain = sqlite3MallocZero(sqlite3BtreeCursorSize()
+    SQLITE_ISOLATE_PASS_MPARAM(db));
   if( !curMain ){
     rc = SQLITE_NOMEM;
     goto error_out;
@@ -370,7 +371,8 @@ static int sqlite3InitOne(sqlite3 *db, int iDb, char **pzErrMsg){
   */
 initone_error_out:
   sqlite3BtreeCloseCursor(curMain);
-  sqlite3_free(curMain);
+  sqlite3_free(curMain
+    SQLITE_ISOLATE_PASS_MPARAM(db));
   sqlite3BtreeLeave(pDb->pBt);
 
 error_out:
@@ -457,7 +459,8 @@ static int schemaIsValid(sqlite3 *db){
   int cookie;
   int allOk = 1;
 
-  curTemp = (BtCursor *)sqlite3Malloc(sqlite3BtreeCursorSize());
+  curTemp = (BtCursor *)sqlite3Malloc(sqlite3BtreeCursorSize()
+    SQLITE_ISOLATE_PASS_MPARAM(db));
   if( curTemp ){
     assert( sqlite3_mutex_held(db->mutex) );
     for(iDb=0; allOk && iDb<db->nDb; iDb++){
@@ -477,7 +480,8 @@ static int schemaIsValid(sqlite3 *db){
         db->mallocFailed = 1;
       }
     }
-    sqlite3_free(curTemp);
+    sqlite3_free(curTemp
+      SQLITE_ISOLATE_PASS_MPARAM(db));
   }else{
     allOk = 0;
     db->mallocFailed = 1;

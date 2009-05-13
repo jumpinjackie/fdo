@@ -707,6 +707,9 @@ struct sqlite3 {
 #ifdef SQLITE_SSE
   sqlite3_stmt *pFetch;         /* Used by SSE to fetch stored statements */
 #endif
+#ifdef SQLITE_ENABLE_ISOLATE_CONNECTIONS
+  sqlite3_smm *pSmm;            /* Used by sqlite to keep state values and memory management data */
+#endif
 };
 
 /*
@@ -1916,12 +1919,14 @@ struct Sqlite3Config {
   void *pHeap;                      /* Heap storage space */
   int nHeap;                        /* Size of pHeap[] */
   int mnReq, mxReq;                 /* Min and max heap requests sizes */
+#ifndef SQLITE_ENABLE_ISOLATE_CONNECTIONS
   void *pScratch;                   /* Scratch memory */
   int szScratch;                    /* Size of each scratch buffer */
   int nScratch;                     /* Number of scratch buffers */
   void *pPage;                      /* Page cache memory */
   int szPage;                       /* Size of each page in pPage[] */
   int nPage;                        /* Number of pages in pPage[] */
+#endif
   int isInit;                       /* True after initialization has finished */
   int isMallocInit;                 /* True after malloc is initialized */
   sqlite3_mutex *pInitMutex;        /* Mutex used by sqlite3_initialize() */
@@ -1989,24 +1994,35 @@ int sqlite3StrNICmp(const char *, const char *, int);
 int sqlite3IsNumber(const char*, int*, u8);
 int sqlite3Strlen(sqlite3*, const char*);
 
-int sqlite3MallocInit(void);
-void sqlite3MallocEnd(void);
-void *sqlite3Malloc(int);
-void *sqlite3MallocZero(int);
+#ifdef SQLITE_ENABLE_ISOLATE_CONNECTIONS
+int sqlite3CoreMallocInit();
+void sqlite3CoreMallocEnd();
+#endif
+int sqlite3MallocInit(SQLITE_ISOLATE_DEF_SPARAM_DB);
+void sqlite3MallocEnd(SQLITE_ISOLATE_DEF_SPARAM_DB);
+void *sqlite3Malloc(int
+ SQLITE_ISOLATE_DEF_MPARAM_DB);
+void *sqlite3MallocZero(int
+ SQLITE_ISOLATE_DEF_MPARAM_DB);
 void *sqlite3DbMallocZero(sqlite3*, int);
 void *sqlite3DbMallocRaw(sqlite3*, int);
 char *sqlite3DbStrDup(sqlite3*,const char*);
 char *sqlite3DbStrNDup(sqlite3*,const char*, int);
-void *sqlite3Realloc(void*, int);
+void *sqlite3Realloc(void*, int
+  SQLITE_ISOLATE_DEF_MPARAM_DB);
 void *sqlite3DbReallocOrFree(sqlite3 *, void *, int);
 void *sqlite3DbRealloc(sqlite3 *, void *, int);
 void sqlite3DbFree(sqlite3*, void*);
 int sqlite3MallocSize(void*);
 int sqlite3DbMallocSize(sqlite3*, void*);
-void *sqlite3ScratchMalloc(int);
-void sqlite3ScratchFree(void*);
-void *sqlite3PageMalloc(int);
-void sqlite3PageFree(void*);
+void *sqlite3ScratchMalloc(int
+  SQLITE_ISOLATE_DEF_MPARAM_DB);
+void sqlite3ScratchFree(void*
+  SQLITE_ISOLATE_DEF_MPARAM_DB);
+void *sqlite3PageMalloc(int
+  SQLITE_ISOLATE_DEF_MPARAM_DB);
+void sqlite3PageFree(void*
+  SQLITE_ISOLATE_DEF_MPARAM_DB);
 void sqlite3MemSetDefault(void);
 const sqlite3_mem_methods *sqlite3MemGetDefault(void);
 const sqlite3_mem_methods *sqlite3MemGetMemsys5(void);
@@ -2021,9 +2037,12 @@ void sqlite3BenignMallocHooks(void (*)(void), void (*)(void));
   int sqlite3MutexEnd(void);
 #endif
 
-int sqlite3StatusValue(int);
-void sqlite3StatusAdd(int, int);
-void sqlite3StatusSet(int, int);
+int sqlite3StatusValue(int
+  SQLITE_ISOLATE_DEF_MPARAM_DB);
+void sqlite3StatusAdd(int, int
+  SQLITE_ISOLATE_DEF_MPARAM_DB);
+void sqlite3StatusSet(int, int
+  SQLITE_ISOLATE_DEF_MPARAM_DB);
 
 int sqlite3IsNaN(double);
 
@@ -2077,13 +2096,18 @@ void sqlite3AddDefaultValue(Parse*,Expr*);
 void sqlite3AddCollateType(Parse*, Token*);
 void sqlite3EndTable(Parse*,Token*,Token*,Select*);
 
-Bitvec *sqlite3BitvecCreate(u32);
+Bitvec *sqlite3BitvecCreate(u32
+  SQLITE_ISOLATE_DEF_MPARAM_DB);
 int sqlite3BitvecTest(Bitvec*, u32);
-int sqlite3BitvecSet(Bitvec*, u32);
-void sqlite3BitvecClear(Bitvec*, u32);
-void sqlite3BitvecDestroy(Bitvec*);
+int sqlite3BitvecSet(Bitvec*, u32
+  SQLITE_ISOLATE_DEF_MPARAM_DB);
+void sqlite3BitvecClear(Bitvec*, u32
+  SQLITE_ISOLATE_DEF_MPARAM_DB);
+void sqlite3BitvecDestroy(Bitvec*
+ SQLITE_ISOLATE_DEF_MPARAM_DB);
+#ifndef SQLITE_ENABLE_ISOLATE_CONNECTIONS
 int sqlite3BitvecBuiltinTest(int,int*);
-
+#endif
 void sqlite3CreateView(Parse*,Token*,Token*,Token*,Select*,int,int);
 
 #if !defined(SQLITE_OMIT_VIEW) || !defined(SQLITE_OMIT_VIRTUALTABLE)
@@ -2307,7 +2331,7 @@ void sqlite3VdbeSetChanges(sqlite3 *, int);
 const void *sqlite3ValueText(sqlite3_value*, u8);
 int sqlite3ValueBytes(sqlite3_value*, u8);
 void sqlite3ValueSetStr(sqlite3_value*, int, const void *,u8, 
-                        void(*)(void*));
+                        void(*)(void* SQLITE_ISOLATE_DEF_MFPARAM_DB));
 void sqlite3ValueFree(sqlite3_value*);
 sqlite3_value *sqlite3ValueNew(sqlite3 *);
 char *sqlite3Utf16to8(sqlite3 *, const void*, int);
@@ -2344,7 +2368,8 @@ void sqlite3RegisterLikeFunctions(sqlite3*, int);
 int sqlite3IsLikeFunction(sqlite3*,Expr*,int*,char*);
 void sqlite3AttachFunctions(sqlite3 *);
 void sqlite3MinimumFileFormat(Parse*, int, int);
-void sqlite3SchemaFree(void *);
+void sqlite3SchemaFree(void *
+  SQLITE_ISOLATE_DEF_MPARAM_DB);
 Schema *sqlite3SchemaGet(sqlite3 *, Btree *);
 int sqlite3SchemaToIndex(sqlite3 *db, Schema *);
 KeyInfo *sqlite3IndexKeyinfo(Parse *, Index *);
@@ -2363,8 +2388,10 @@ void sqlite3SelectDestInit(SelectDest*,int,int);
 /*
 ** The interface to the LEMON-generated parser
 */
-void *sqlite3ParserAlloc(void*(*)(size_t));
-void sqlite3ParserFree(void*, void(*)(void*));
+void *sqlite3ParserAlloc(void*(*)(size_t SQLITE_ISOLATE_DEF_MFPARAM_DB)
+  SQLITE_ISOLATE_DEF_MPARAM_DB);
+void sqlite3ParserFree(void*, void(*)(void* SQLITE_ISOLATE_DEF_MFPARAM_DB)
+  SQLITE_ISOLATE_DEF_MPARAM_DB);
 void sqlite3Parser(void*, int, Token, Parse*);
 #ifdef YYTRACKMAXSTACKDEPTH
   int sqlite3ParserStackPeak(void*);

@@ -37,6 +37,9 @@ typedef struct TabResult {
   int nColumn;
   int nData;
   int rc;
+#ifdef SQLITE_ENABLE_ISOLATE_CONNECTIONS
+  sqlite3* db;
+#endif
 } TabResult;
 
 /*
@@ -61,7 +64,8 @@ static int sqlite3_get_table_cb(void *pArg, int nCol, char **argv, char **colv){
   if( p->nData + need >= p->nAlloc ){
     char **azNew;
     p->nAlloc = p->nAlloc*2 + need + 1;
-    azNew = sqlite3_realloc( p->azResult, sizeof(char*)*p->nAlloc );
+    azNew = sqlite3_realloc( p->azResult, sizeof(char*)*p->nAlloc 
+      SQLITE_ISOLATE_PASS_MPARAM(p->db));
     if( azNew==0 ) goto malloc_failed;
     p->azResult = azNew;
   }
@@ -72,13 +76,15 @@ static int sqlite3_get_table_cb(void *pArg, int nCol, char **argv, char **colv){
   if( p->nRow==0 ){
     p->nColumn = nCol;
     for(i=0; i<nCol; i++){
-      z = sqlite3_mprintf("%s", colv[i]);
+      z = sqlite3_mprintf(SQLITE_ISOLATE_PASS_MAPARAM(p->db)
+          "%s", colv[i]);
       if( z==0 ) goto malloc_failed;
       p->azResult[p->nData++] = z;
     }
   }else if( p->nColumn!=nCol ){
-    sqlite3_free(p->zErrMsg);
-    p->zErrMsg = sqlite3_mprintf(
+    sqlite3_free(p->zErrMsg
+      SQLITE_ISOLATE_PASS_MPARAM(p->db));
+    p->zErrMsg = sqlite3_mprintf(SQLITE_ISOLATE_PASS_MAPARAM(p->db)
        "sqlite3_get_table() called with two or more incompatible queries"
     );
     p->rc = SQLITE_ERROR;
@@ -93,7 +99,8 @@ static int sqlite3_get_table_cb(void *pArg, int nCol, char **argv, char **colv){
         z = 0;
       }else{
         int n = strlen(argv[i])+1;
-        z = sqlite3_malloc( n );
+        z = sqlite3_malloc( n
+          SQLITE_ISOLATE_PASS_MPARAM(p->db));
         if( z==0 ) goto malloc_failed;
         memcpy(z, argv[i], n);
       }
@@ -139,7 +146,11 @@ int sqlite3_get_table(
   res.nData = 1;
   res.nAlloc = 20;
   res.rc = SQLITE_OK;
-  res.azResult = sqlite3_malloc(sizeof(char*)*res.nAlloc );
+#ifdef SQLITE_ENABLE_ISOLATE_CONNECTIONS
+  res.db = db;
+#endif
+  res.azResult = sqlite3_malloc(sizeof(char*)*res.nAlloc
+    SQLITE_ISOLATE_PASS_MPARAM(db));
   if( res.azResult==0 ){
      db->errCode = SQLITE_NOMEM;
      return SQLITE_NOMEM;
@@ -149,27 +160,35 @@ int sqlite3_get_table(
   assert( sizeof(res.azResult[0])>= sizeof(res.nData) );
   res.azResult[0] = SQLITE_INT_TO_PTR(res.nData);
   if( (rc&0xff)==SQLITE_ABORT ){
-    sqlite3_free_table(&res.azResult[1]);
+    sqlite3_free_table(&res.azResult[1]
+      SQLITE_ISOLATE_PASS_MPARAM(db));
     if( res.zErrMsg ){
       if( pzErrMsg ){
-        sqlite3_free(*pzErrMsg);
-        *pzErrMsg = sqlite3_mprintf("%s",res.zErrMsg);
+        sqlite3_free(*pzErrMsg
+          SQLITE_ISOLATE_PASS_MPARAM(db));
+        *pzErrMsg = sqlite3_mprintf(SQLITE_ISOLATE_PASS_MAPARAM(db)
+            "%s",res.zErrMsg);
       }
-      sqlite3_free(res.zErrMsg);
+      sqlite3_free(res.zErrMsg
+        SQLITE_ISOLATE_PASS_MPARAM(db));
     }
     db->errCode = res.rc;  /* Assume 32-bit assignment is atomic */
     return res.rc;
   }
-  sqlite3_free(res.zErrMsg);
+  sqlite3_free(res.zErrMsg
+    SQLITE_ISOLATE_PASS_MPARAM(db));
   if( rc!=SQLITE_OK ){
-    sqlite3_free_table(&res.azResult[1]);
+    sqlite3_free_table(&res.azResult[1]
+      SQLITE_ISOLATE_PASS_MPARAM(db));
     return rc;
   }
   if( res.nAlloc>res.nData ){
     char **azNew;
-    azNew = sqlite3_realloc( res.azResult, sizeof(char*)*(res.nData+1) );
+    azNew = sqlite3_realloc( res.azResult, sizeof(char*)*(res.nData+1) 
+      SQLITE_ISOLATE_PASS_MPARAM(db));
     if( azNew==0 ){
-      sqlite3_free_table(&res.azResult[1]);
+      sqlite3_free_table(&res.azResult[1]
+        SQLITE_ISOLATE_PASS_MPARAM(db));
       db->errCode = SQLITE_NOMEM;
       return SQLITE_NOMEM;
     }
@@ -187,14 +206,17 @@ int sqlite3_get_table(
 */
 void sqlite3_free_table(
   char **azResult            /* Result returned from from sqlite3_get_table() */
+  SQLITE_ISOLATE_DEF_MPARAM_DB
 ){
   if( azResult ){
     int i, n;
     azResult--;
     assert( azResult!=0 );
     n = SQLITE_PTR_TO_INT(azResult[0]);
-    for(i=1; i<n; i++){ if( azResult[i] ) sqlite3_free(azResult[i]); }
-    sqlite3_free(azResult);
+    for(i=1; i<n; i++){ if( azResult[i] ) sqlite3_free(azResult[i]
+      SQLITE_ISOLATE_PASS_MPARAM(db)); }
+    sqlite3_free(azResult
+      SQLITE_ISOLATE_PASS_MPARAM(db));
   }
 }
 

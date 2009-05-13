@@ -248,7 +248,8 @@ static void *contextMalloc(sqlite3_context *context, i64 nByte){
     sqlite3_result_error_toobig(context);
     z = 0;
   }else{
-    z = sqlite3Malloc(nByte);
+    z = sqlite3Malloc(nByte
+      SQLITE_ISOLATE_PASS_MPARAM(context->s.db));
     if( !z && nByte>0 ){
       sqlite3_result_error_nomem(context);
     }
@@ -705,7 +706,8 @@ static void quoteFunc(sqlite3_context *context, int argc, sqlite3_value **argv){
         zText[0] = 'X';
         zText[1] = '\'';
         sqlite3_result_text(context, zText, -1, SQLITE_TRANSIENT);
-        sqlite3_free(zText);
+        sqlite3_free(zText
+          SQLITE_ISOLATE_PASS_MPARAM(context->s.db));
       }
       break;
     }
@@ -835,7 +837,8 @@ static void replaceFunc(
         return;
       }
       zOld = zOut;
-      zOut = sqlite3_realloc(zOut, (int)nOut);
+      zOut = sqlite3_realloc(zOut, (int)nOut
+          SQLITE_ISOLATE_PASS_MPARAM(context->s.db));
       if( zOut==0 ){
         sqlite3_result_error_nomem(context);
         sqlite3DbFree(db, zOld);
@@ -961,7 +964,8 @@ static void trimFunc(
       }
     }
     if( zCharSet ){
-      sqlite3_free(azChar);
+      sqlite3_free(azChar
+        SQLITE_ISOLATE_PASS_MPARAM(context->s.db));
     }
   }
   sqlite3_result_text(context, (char*)zIn, nIn, SQLITE_TRANSIENT);
@@ -1035,7 +1039,8 @@ static void loadExt(sqlite3_context *context, int argc, sqlite3_value **argv){
   }
   if( zFile && sqlite3_load_extension(db, zFile, zProc, &zErrMsg) ){
     sqlite3_result_error(context, zErrMsg, -1);
-    sqlite3_free(zErrMsg);
+    sqlite3_free(zErrMsg
+      SQLITE_ISOLATE_PASS_MPARAM(context->s.db));
   }
 }
 #endif

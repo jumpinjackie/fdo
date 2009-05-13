@@ -75,7 +75,7 @@ void SpatialContextTest::TestFdo309 ()
         // Iterate ...
         while ( reader->ReadNext() )
         {
-			reader->GetExtent();
+			FdoPtr<FdoByteArray> ext = reader->GetExtent();
 		}
 
     }

@@ -68,6 +68,7 @@ struct PgFreeslot {
 /*
 ** Global data for the page cache.
 */
+#ifndef SQLITE_ENABLE_ISOLATE_CONNECTIONS
 static struct PCacheGlobal {
   int isInit;                         /* True when initialized */
   sqlite3_mutex *mutex;               /* static mutex MUTEX_STATIC_LRU */
@@ -82,7 +83,9 @@ static struct PCacheGlobal {
   void *pStart, *pEnd;                /* Bounds of pagecache malloc range */
   PgFreeslot *pFree;                  /* Free page blocks */
 } pcache = {0};
-
+#else
+#define pcache db->pSmm->pcache
+#endif
 /*
 ** All global variables used by this module (all of which are grouped 
 ** together in global structure "pcache" above) are protected by the static 
@@ -221,7 +224,8 @@ static void pcacheAddToHash(PgHdr *pPage){
 ** Attempt to increase the size the hash table to contain
 ** at least nHash buckets.
 */
-static int pcacheResizeHash(PCache *pCache, int nHash){
+static int pcacheResizeHash(PCache *pCache, int nHash
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   PgHdr *p;
   PgHdr **pNew;
   assert( pcacheMutexHeld() );
@@ -231,13 +235,15 @@ static int pcacheResizeHash(PCache *pCache, int nHash){
   }
 #endif
   pcacheExitMutex();
-  pNew = (PgHdr **)sqlite3Malloc(sizeof(PgHdr*)*nHash);
+  pNew = (PgHdr **)sqlite3Malloc(sizeof(PgHdr*)*nHash
+    SQLITE_ISOLATE_PASS_MPARAM(db));
   pcacheEnterMutex();
   if( !pNew ){
     return SQLITE_NOMEM;
   }
   memset(pNew, 0, sizeof(PgHdr *)*nHash);
-  sqlite3_free(pCache->apHash);
+  sqlite3_free(pCache->apHash
+    SQLITE_ISOLATE_PASS_MPARAM(db));
   pCache->apHash = pNew;
   pCache->nHash = nHash;
   pCache->nPage = 0;
@@ -316,7 +322,8 @@ static void pcacheAddToList(PgHdr **ppHead, PgHdr *pPage){
 /*
 ** Remove a page from the global LRU list
 */
-static void pcacheRemoveFromLruList(PgHdr *pPage){
+static void pcacheRemoveFromLruList(PgHdr *pPage
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   assert( sqlite3_mutex_held(pcache.mutex) );
   assert( (pPage->flags&PGHDR_DIRTY)==0 );
   if( pPage->pCache->bPurgeable==0 ) return;
@@ -342,7 +349,8 @@ static void pcacheRemoveFromLruList(PgHdr *pPage){
 ** However, if the PGHDR_REUSE_UNLIKELY bit is set, the page is added
 ** to the end of the LRU list so that it will be the next to be recycled.
 */
-static void pcacheAddToLruList(PgHdr *pPage){
+static void pcacheAddToLruList(PgHdr *pPage
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   assert( sqlite3_mutex_held(pcache.mutex) );
   assert( (pPage->flags&PGHDR_DIRTY)==0 );
   if( pPage->pCache->bPurgeable==0 ) return;
@@ -379,7 +387,8 @@ static void pcacheAddToLruList(PgHdr *pPage){
 ** This must be called at start-time when no page cache lines are
 ** checked out. This function is not threadsafe.
 */
-void sqlite3PCacheBufferSetup(void *pBuf, int sz, int n){
+void sqlite3PCacheBufferSetup(void *pBuf, int sz, int n
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   PgFreeslot *p;
   sz &= ~7;
   pcache.szSlot = sz;
@@ -399,13 +408,16 @@ void sqlite3PCacheBufferSetup(void *pBuf, int sz, int n){
 ** and use an element from it first if available.  If nothing is available
 ** in the page cache memory pool, go to the general purpose memory allocator.
 */
-void *pcacheMalloc(int sz, PCache *pCache){
+void *pcacheMalloc(int sz, PCache *pCache
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   assert( sqlite3_mutex_held(pcache.mutex) );
   if( sz<=pcache.szSlot && pcache.pFree ){
     PgFreeslot *p = pcache.pFree;
     pcache.pFree = p->pNext;
-    sqlite3StatusSet(SQLITE_STATUS_PAGECACHE_SIZE, sz);
-    sqlite3StatusAdd(SQLITE_STATUS_PAGECACHE_USED, 1);
+    sqlite3StatusSet(SQLITE_STATUS_PAGECACHE_SIZE, sz
+      SQLITE_ISOLATE_PASS_MPARAM(db));
+    sqlite3StatusAdd(SQLITE_STATUS_PAGECACHE_USED, 1
+      SQLITE_ISOLATE_PASS_MPARAM(db));
     return (void*)p;
   }else{
     void *p;
@@ -417,20 +429,24 @@ void *pcacheMalloc(int sz, PCache *pCache){
     ** reclaim memory from this pager-cache.
     */
     pcacheExitMutex();
-    p = sqlite3Malloc(sz);
+    p = sqlite3Malloc(sz
+      SQLITE_ISOLATE_PASS_MPARAM(db));
     pcacheEnterMutex();
 
     if( p ){
       sz = sqlite3MallocSize(p);
-      sqlite3StatusAdd(SQLITE_STATUS_PAGECACHE_OVERFLOW, sz);
+      sqlite3StatusAdd(SQLITE_STATUS_PAGECACHE_OVERFLOW, sz
+        SQLITE_ISOLATE_PASS_MPARAM(db));
     }
     return p;
   }
 }
-void *sqlite3PageMalloc(sz){
+void *sqlite3PageMalloc(int sz
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   void *p;
   pcacheEnterMutex();
-  p = pcacheMalloc(sz, 0);
+  p = pcacheMalloc(sz, 0
+    SQLITE_ISOLATE_PASS_MPARAM(db));
   pcacheExitMutex();
   return p;
 }
@@ -438,35 +454,43 @@ void *sqlite3PageMalloc(sz){
 /*
 ** Release a pager memory allocation
 */
-void pcacheFree(void *p){
+void pcacheFree(void *p
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   assert( sqlite3_mutex_held(pcache.mutex) );
   if( p==0 ) return;
   if( p>=pcache.pStart && p<pcache.pEnd ){
     PgFreeslot *pSlot;
-    sqlite3StatusAdd(SQLITE_STATUS_PAGECACHE_USED, -1);
+    sqlite3StatusAdd(SQLITE_STATUS_PAGECACHE_USED, -1
+      SQLITE_ISOLATE_PASS_MPARAM(db));
     pSlot = (PgFreeslot*)p;
     pSlot->pNext = pcache.pFree;
     pcache.pFree = pSlot;
   }else{
     int iSize = sqlite3MallocSize(p);
-    sqlite3StatusAdd(SQLITE_STATUS_PAGECACHE_OVERFLOW, -iSize);
-    sqlite3_free(p);
+    sqlite3StatusAdd(SQLITE_STATUS_PAGECACHE_OVERFLOW, -iSize
+      SQLITE_ISOLATE_PASS_MPARAM(db));
+    sqlite3_free(p
+      SQLITE_ISOLATE_PASS_MPARAM(db));
   }
 }
-void sqlite3PageFree(void *p){
+void sqlite3PageFree(void *p
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   pcacheEnterMutex();
-  pcacheFree(p);
+  pcacheFree(p
+    SQLITE_ISOLATE_PASS_MPARAM(db));
   pcacheExitMutex();
 }
 
 /*
 ** Allocate a new page.
 */
-static PgHdr *pcachePageAlloc(PCache *pCache){
+static PgHdr *pcachePageAlloc(PCache *pCache
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   PgHdr *p;
   int sz = sizeof(*p) + pCache->szPage + pCache->szExtra;
   assert( sqlite3_mutex_held(pcache.mutex) );
-  p = pcacheMalloc(sz, pCache);
+  p = pcacheMalloc(sz, pCache
+    SQLITE_ISOLATE_PASS_MPARAM(db));
   if( p==0 ) return 0;
   memset(p, 0, sizeof(PgHdr));
   p->pData = (void*)&p[1];
@@ -480,14 +504,18 @@ static PgHdr *pcachePageAlloc(PCache *pCache){
 /*
 ** Deallocate a page
 */
-static void pcachePageFree(PgHdr *p){
+static void pcachePageFree(PgHdr *p
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   assert( sqlite3_mutex_held(pcache.mutex) );
   if( p->pCache->bPurgeable ){
     pcache.nCurrentPage--;
   }
-  pcacheFree(p->apSave[0]);
-  pcacheFree(p->apSave[1]);
-  pcacheFree(p);
+  pcacheFree(p->apSave[0]
+    SQLITE_ISOLATE_PASS_MPARAM(db));
+  pcacheFree(p->apSave[1]
+    SQLITE_ISOLATE_PASS_MPARAM(db));
+  pcacheFree(p
+    SQLITE_ISOLATE_PASS_MPARAM(db));
 }
 
 #ifdef SQLITE_ENABLE_MEMORY_MANAGEMENT
@@ -516,13 +544,15 @@ static int pcachePageSize(PgHdr *p){
 ** A pointer to the recycled page is returned, or NULL if no page is
 ** eligible for recycling.
 */
-static PgHdr *pcacheRecyclePage(){
+static PgHdr *pcacheRecyclePage(
+SQLITE_ISOLATE_DEF_SPARAM_DB){
   PgHdr *p = 0;
   assert( sqlite3_mutex_held(pcache.mutex) );
 
   if( (p=pcache.pLruTail) ){
     assert( (p->flags&PGHDR_DIRTY)==0 );
-    pcacheRemoveFromLruList(p);
+    pcacheRemoveFromLruList(p
+      SQLITE_ISOLATE_PASS_MPARAM(db));
     pcacheRemoveFromHash(p);
     pcacheRemoveFromList(&p->pCache->pClean, p);
   }
@@ -537,7 +567,8 @@ static PgHdr *pcacheRecyclePage(){
 **
 ** Return a pointer to the new page, or NULL if an OOM condition occurs.
 */
-static int pcacheRecycleOrAlloc(PCache *pCache, PgHdr **ppPage){
+static int pcacheRecycleOrAlloc(PCache *pCache, PgHdr **ppPage
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   PgHdr *p = 0;
 
   int szPage = pCache->szPage;
@@ -581,17 +612,19 @@ static int pcacheRecycleOrAlloc(PCache *pCache, PgHdr **ppPage){
 
   /* If the global page limit has been reached, try to recycle a page. */
   if( pCache->bPurgeable && pcache.nCurrentPage>=pcache.nMaxPage ){
-    p = pcacheRecyclePage();
+    p = pcacheRecyclePage(SQLITE_ISOLATE_PASS_SPARAM(db));
   }
 
   /* If a page has been recycled but it is the wrong size, free it. */
   if( p && (p->pCache->szPage!=szPage || p->pCache->szPage!=szExtra) ){
-    pcachePageFree(p);
+    pcachePageFree(p
+      SQLITE_ISOLATE_PASS_MPARAM(db));
     p = 0;
   }
 
   if( !p ){
-    p = pcachePageAlloc(pCache);
+    p = pcachePageAlloc(pCache
+      SQLITE_ISOLATE_PASS_MPARAM(db));
   }
 
   *ppPage = p;
@@ -603,7 +636,8 @@ static int pcacheRecycleOrAlloc(PCache *pCache, PgHdr **ppPage){
 ** Initialize and shutdown the page cache subsystem. Neither of these 
 ** functions are threadsafe.
 */
-int sqlite3PcacheInitialize(void){
+int sqlite3PcacheInitialize(
+SQLITE_ISOLATE_DEF_SPARAM_DB){
   assert( pcache.isInit==0 );
   memset(&pcache, 0, sizeof(pcache));
   if( sqlite3Config.bCoreMutex ){
@@ -615,7 +649,8 @@ int sqlite3PcacheInitialize(void){
   pcache.isInit = 1;
   return SQLITE_OK;
 }
-void sqlite3PcacheShutdown(void){
+void sqlite3PcacheShutdown(
+SQLITE_ISOLATE_DEF_SPARAM_DB){
   memset(&pcache, 0, sizeof(pcache));
 }
 
@@ -636,7 +671,7 @@ void sqlite3PcacheOpen(
   int (*xStress)(void*,PgHdr*),/* Call to try to make pages clean */
   void *pStress,               /* Argument to xStress */
   PCache *p                    /* Preallocated space for the PCache */
-){
+  SQLITE_ISOLATE_DEF_MPARAM_DB){
   assert( pcache.isInit );
   memset(p, 0, sizeof(PCache));
   p->szPage = szPage;
@@ -674,7 +709,7 @@ int sqlite3PcacheFetch(
   Pgno pgno,            /* Page number to obtain */
   int createFlag,       /* If true, create page if it does not exist already */
   PgHdr **ppPage        /* Write the page here */
-){
+  SQLITE_ISOLATE_DEF_MPARAM_DB){
   int rc = SQLITE_OK;
   PgHdr *pPage = 0;
 
@@ -692,7 +727,8 @@ int sqlite3PcacheFetch(
       if( pPage->pgno==pgno ){
         if( pPage->nRef==0 ){
           if( 0==(pPage->flags&PGHDR_DIRTY) ){
-            pcacheRemoveFromLruList(pPage);
+            pcacheRemoveFromLruList(pPage
+              SQLITE_ISOLATE_PASS_MPARAM(db));
             pCache->nPinned++;
           }
           pCache->nRef++;
@@ -705,10 +741,12 @@ int sqlite3PcacheFetch(
 
   if( !pPage && createFlag ){
     if( pCache->nHash<=pCache->nPage ){
-      rc = pcacheResizeHash(pCache, pCache->nHash<256 ? 256 : pCache->nHash*2);
+      rc = pcacheResizeHash(pCache, pCache->nHash<256 ? 256 : pCache->nHash*2
+        SQLITE_ISOLATE_PASS_MPARAM(db));
     }
     if( rc==SQLITE_OK ){
-      rc = pcacheRecycleOrAlloc(pCache, &pPage);
+      rc = pcacheRecycleOrAlloc(pCache, &pPage
+        SQLITE_ISOLATE_PASS_MPARAM(db));
     }
     if( rc==SQLITE_OK ){
       pPage->pPager = 0;
@@ -736,7 +774,8 @@ int sqlite3PcacheFetch(
 ** Dereference a page.  When the reference count reaches zero,
 ** move the page to the LRU list if it is clean.
 */
-void sqlite3PcacheRelease(PgHdr *p){
+void sqlite3PcacheRelease(PgHdr *p
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   assert( p->nRef>0 );
   p->nRef--;
   if( p->nRef==0 ){
@@ -751,9 +790,11 @@ void sqlite3PcacheRelease(PgHdr *p){
       if( pcache.nCurrentPage>pcache.nMaxPage ){
         pcacheRemoveFromList(&pCache->pClean, p);
         pcacheRemoveFromHash(p);
-        pcachePageFree(p);
+        pcachePageFree(p
+          SQLITE_ISOLATE_PASS_MPARAM(db));
       }else{
-        pcacheAddToLruList(p);
+        pcacheAddToLruList(p
+          SQLITE_ISOLATE_PASS_MPARAM(db));
       }
       pcacheExitMutex();
     }else{
@@ -774,7 +815,8 @@ void sqlite3PcacheRef(PgHdr *p){
 ** page. This function deletes that reference, so after it returns the
 ** page pointed to by p is invalid.
 */
-void sqlite3PcacheDrop(PgHdr *p){
+void sqlite3PcacheDrop(PgHdr *p
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   PCache *pCache;
   assert( p->nRef==1 );
   assert( 0==(p->flags&PGHDR_DIRTY) );
@@ -784,7 +826,8 @@ void sqlite3PcacheDrop(PgHdr *p){
   pcacheEnterMutex();
   pcacheRemoveFromList(&pCache->pClean, p);
   pcacheRemoveFromHash(p);
-  pcachePageFree(p);
+  pcachePageFree(p
+      SQLITE_ISOLATE_PASS_MPARAM(db));
   pcacheExitMutex();
 }
 
@@ -806,7 +849,8 @@ void sqlite3PcacheMakeDirty(PgHdr *p){
   p->flags |= PGHDR_DIRTY;
 }
 
-void pcacheMakeClean(PgHdr *p){
+void pcacheMakeClean(PgHdr *p
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   PCache *pCache = p->pCache;
   assert( p->apSave[0]==0 && p->apSave[1]==0 );
   assert( p->flags & PGHDR_DIRTY );
@@ -814,7 +858,8 @@ void pcacheMakeClean(PgHdr *p){
   pcacheAddToList(&pCache->pClean, p);
   p->flags &= ~PGHDR_DIRTY;
   if( p->nRef==0 ){
-    pcacheAddToLruList(p);
+    pcacheAddToLruList(p
+      SQLITE_ISOLATE_PASS_MPARAM(db));
     pCache->nPinned--;
   }
   expensive_assert( pCache->nPinned==pcachePinnedCount(pCache) );
@@ -824,10 +869,12 @@ void pcacheMakeClean(PgHdr *p){
 ** Make sure the page is marked as clean.  If it isn't clean already,
 ** make it so.
 */
-void sqlite3PcacheMakeClean(PgHdr *p){
+void sqlite3PcacheMakeClean(PgHdr *p
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   if( (p->flags & PGHDR_DIRTY) ){
     pcacheEnterMutex();
-    pcacheMakeClean(p);
+    pcacheMakeClean(p
+      SQLITE_ISOLATE_PASS_MPARAM(db));
     pcacheExitMutex();
   }
 }
@@ -835,7 +882,8 @@ void sqlite3PcacheMakeClean(PgHdr *p){
 /*
 ** Make every page in the cache clean.
 */
-void sqlite3PcacheCleanAll(PCache *pCache){
+void sqlite3PcacheCleanAll(PCache *pCache
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   PgHdr *p;
   pcacheEnterMutex();
   while( (p = pCache->pDirty)!=0 ){
@@ -844,7 +892,8 @@ void sqlite3PcacheCleanAll(PCache *pCache){
     p->flags &= ~PGHDR_DIRTY;
     pcacheAddToList(&pCache->pClean, p);
     if( p->nRef==0 ){
-      pcacheAddToLruList(p);
+      pcacheAddToLruList(p
+        SQLITE_ISOLATE_PASS_MPARAM(db));
       pCache->nPinned--;
     }
   }
@@ -858,19 +907,23 @@ void sqlite3PcacheCleanAll(PCache *pCache){
 ** page object is added to the clean-list and the PGHDR_REUSE_UNLIKELY 
 ** flag set.
 */
-void sqlite3PcacheMove(PgHdr *p, Pgno newPgno){
+void sqlite3PcacheMove(PgHdr *p, Pgno newPgno
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   assert( p->nRef>0 );
   pcacheEnterMutex();
   pcacheRemoveFromHash(p);
   p->pgno = newPgno;
   if( newPgno==0 ){
     p->flags |= PGHDR_REUSE_UNLIKELY;
-    pcacheFree(p->apSave[0]);
-    pcacheFree(p->apSave[1]);
+    pcacheFree(p->apSave[0]
+      SQLITE_ISOLATE_PASS_MPARAM(db));
+    pcacheFree(p->apSave[1]
+      SQLITE_ISOLATE_PASS_MPARAM(db));
     p->apSave[0] = 0;
     p->apSave[1] = 0;
     if( (p->flags & PGHDR_DIRTY) ){
-      pcacheMakeClean(p);
+      pcacheMakeClean(p
+        SQLITE_ISOLATE_PASS_MPARAM(db));
     }
   }
   pcacheAddToHash(p);
@@ -880,17 +933,21 @@ void sqlite3PcacheMove(PgHdr *p, Pgno newPgno){
 /*
 ** Remove all content from a page cache
 */
-void pcacheClear(PCache *pCache){
+void pcacheClear(PCache *pCache
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   PgHdr *p, *pNext;
   assert( sqlite3_mutex_held(pcache.mutex) );
   for(p=pCache->pClean; p; p=pNext){
     pNext = p->pNext;
-    pcacheRemoveFromLruList(p);
-    pcachePageFree(p);
+    pcacheRemoveFromLruList(p
+      SQLITE_ISOLATE_PASS_MPARAM(db));
+    pcachePageFree(p
+        SQLITE_ISOLATE_PASS_MPARAM(db));
   }
   for(p=pCache->pDirty; p; p=pNext){
     pNext = p->pNext;
-    pcachePageFree(p);
+    pcachePageFree(p
+        SQLITE_ISOLATE_PASS_MPARAM(db));
   }
   pCache->pClean = 0;
   pCache->pDirty = 0;
@@ -904,7 +961,8 @@ void pcacheClear(PCache *pCache){
 /*
 ** Drop every cache entry whose page number is greater than "pgno".
 */
-void sqlite3PcacheTruncate(PCache *pCache, Pgno pgno){
+void sqlite3PcacheTruncate(PCache *pCache, Pgno pgno
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   PgHdr *p, *pNext;
   PgHdr *pDirty = pCache->pDirty;
   pcacheEnterMutex();
@@ -922,9 +980,11 @@ void sqlite3PcacheTruncate(PCache *pCache, Pgno pgno){
           pCache->nPinned--;
         }else{
           pcacheRemoveFromList(&pCache->pClean, p);
-          pcacheRemoveFromLruList(p);
+          pcacheRemoveFromLruList(p
+            SQLITE_ISOLATE_PASS_MPARAM(db));
         }
-        pcachePageFree(p);
+        pcachePageFree(p
+            SQLITE_ISOLATE_PASS_MPARAM(db));
       }else{
         /* If there are references to the page, it cannot be freed. In this
         ** case, zero the page content instead.
@@ -940,28 +1000,33 @@ void sqlite3PcacheTruncate(PCache *pCache, Pgno pgno){
 ** If there are currently more than pcache.nMaxPage pages allocated, try
 ** to recycle pages to reduce the number allocated to pcache.nMaxPage.
 */
-static void pcacheEnforceMaxPage(){
+static void pcacheEnforceMaxPage(
+SQLITE_ISOLATE_DEF_SPARAM_DB){
   PgHdr *p;
   assert( sqlite3_mutex_held(pcache.mutex) );
-  while( pcache.nCurrentPage>pcache.nMaxPage && (p = pcacheRecyclePage()) ){
-    pcachePageFree(p);
+  while( pcache.nCurrentPage>pcache.nMaxPage && (p = pcacheRecyclePage(SQLITE_ISOLATE_PASS_SPARAM(db))) ){
+    pcachePageFree(p
+        SQLITE_ISOLATE_PASS_MPARAM(db));
   }
 }
 
 /*
 ** Close a cache.
 */
-void sqlite3PcacheClose(PCache *pCache){
+void sqlite3PcacheClose(PCache *pCache
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   pcacheEnterMutex();
 
   /* Free all the pages used by this pager and remove them from the LRU list. */
-  pcacheClear(pCache);
+  pcacheClear(pCache
+    SQLITE_ISOLATE_PASS_MPARAM(db));
   if( pCache->bPurgeable ){
     pcache.nMaxPage -= pCache->nMax;
     pcache.nMinPage -= pCache->nMin;
-    pcacheEnforceMaxPage();
+    pcacheEnforceMaxPage(SQLITE_ISOLATE_PASS_SPARAM(db));
   }
-  sqlite3_free(pCache->apHash);
+  sqlite3_free(pCache->apHash
+    SQLITE_ISOLATE_PASS_MPARAM(db));
   pcacheExitMutex();
 }
 
@@ -976,13 +1041,15 @@ void sqlite3PcacheClose(PCache *pCache){
 **
 ** Return SQLITE_OK or SQLITE_NOMEM if a memory allocation fails.
 */
-int sqlite3PcachePreserve(PgHdr *p, int idJournal){
+int sqlite3PcachePreserve(PgHdr *p, int idJournal
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   void *x;
   int sz;
   assert( p->pCache->bPurgeable==0 );
   assert( p->apSave[idJournal]==0 );
   sz = p->pCache->szPage;
-  p->apSave[idJournal] = x = sqlite3PageMalloc( sz );
+  p->apSave[idJournal] = x = sqlite3PageMalloc( sz 
+    SQLITE_ISOLATE_PASS_MPARAM(db));
   if( x==0 ) return SQLITE_NOMEM;
   memcpy(x, p->pData, sz);
   return SQLITE_OK;
@@ -991,12 +1058,14 @@ int sqlite3PcachePreserve(PgHdr *p, int idJournal){
 /*
 ** Commit a change previously preserved.
 */
-void sqlite3PcacheCommit(PCache *pCache, int idJournal){
+void sqlite3PcacheCommit(PCache *pCache, int idJournal
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   PgHdr *p;
   pcacheEnterMutex();     /* Mutex is required to call pcacheFree() */
   for(p=pCache->pDirty; p; p=p->pNext){
     if( p->apSave[idJournal] ){
-      pcacheFree(p->apSave[idJournal]);
+      pcacheFree(p->apSave[idJournal]
+        SQLITE_ISOLATE_PASS_MPARAM(db));
       p->apSave[idJournal] = 0;
     }
   }
@@ -1006,7 +1075,8 @@ void sqlite3PcacheCommit(PCache *pCache, int idJournal){
 /*
 ** Rollback a change previously preserved.
 */
-void sqlite3PcacheRollback(PCache *pCache, int idJournal){
+void sqlite3PcacheRollback(PCache *pCache, int idJournal
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   PgHdr *p;
   int sz;
   pcacheEnterMutex();     /* Mutex is required to call pcacheFree() */
@@ -1014,7 +1084,8 @@ void sqlite3PcacheRollback(PCache *pCache, int idJournal){
   for(p=pCache->pDirty; p; p=p->pNext){
     if( p->apSave[idJournal] ){
       memcpy(p->pData, p->apSave[idJournal], sz);
-      pcacheFree(p->apSave[idJournal]);
+      pcacheFree(p->apSave[idJournal]
+        SQLITE_ISOLATE_PASS_MPARAM(db));
       p->apSave[idJournal] = 0;
     }
   }
@@ -1039,10 +1110,12 @@ void sqlite3PcacheAssertFlags(PCache *pCache, int trueMask, int falseMask){
 /* 
 ** Discard the contents of the cache.
 */
-int sqlite3PcacheClear(PCache *pCache){
+int sqlite3PcacheClear(PCache *pCache
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   assert(pCache->nRef==0);
   pcacheEnterMutex();
-  pcacheClear(pCache);
+  pcacheClear(pCache
+    SQLITE_ISOLATE_PASS_MPARAM(db));
   pcacheExitMutex();
   return SQLITE_OK;
 }
@@ -1202,7 +1275,8 @@ int sqlite3PcacheGetCachesize(PCache *pCache){
 /*
 ** Set the suggested cache-size value.
 */
-void sqlite3PcacheSetCachesize(PCache *pCache, int mxPage){
+void sqlite3PcacheSetCachesize(PCache *pCache, int mxPage
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   if( mxPage<10 ){
     mxPage = 10;
   }
@@ -1210,7 +1284,7 @@ void sqlite3PcacheSetCachesize(PCache *pCache, int mxPage){
     pcacheEnterMutex();
     pcache.nMaxPage -= pCache->nMax;
     pcache.nMaxPage += mxPage;
-    pcacheEnforceMaxPage();
+    pcacheEnforceMaxPage(SQLITE_ISOLATE_PASS_SPARAM(db));
     pcacheExitMutex();
   }
   pCache->nMax = mxPage;
@@ -1226,14 +1300,16 @@ void sqlite3PcacheSetCachesize(PCache *pCache, int mxPage){
 ** been released, the function returns. The return value is the total number 
 ** of bytes of memory released.
 */
-int sqlite3PcacheReleaseMemory(int nReq){
+int sqlite3PcacheReleaseMemory(int nReq
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   int nFree = 0;
   if( pcache.pStart==0 ){
     PgHdr *p;
     pcacheEnterMutex();
-    while( (nReq<0 || nFree<nReq) && (p=pcacheRecyclePage()) ){
+    while( (nReq<0 || nFree<nReq) && (p=pcacheRecyclePage(SQLITE_ISOLATE_PASS_MPARAM(db))) ){
       nFree += pcachePageSize(p);
-      pcachePageFree(p);
+      pcachePageFree(p
+          SQLITE_ISOLATE_PASS_MPARAM(db));
     }
     pcacheExitMutex();
   }

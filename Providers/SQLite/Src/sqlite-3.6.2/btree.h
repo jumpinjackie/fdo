@@ -98,7 +98,7 @@ int sqlite3BtreeCreateTable(Btree*, int*, int flags);
 int sqlite3BtreeIsInTrans(Btree*);
 int sqlite3BtreeIsInStmt(Btree*);
 int sqlite3BtreeIsInReadTrans(Btree*);
-void *sqlite3BtreeSchema(Btree *, int, void(*)(void *));
+void *sqlite3BtreeSchema(Btree *, int, void(*)(void* SQLITE_ISOLATE_DEF_MFPARAM_DB));
 int sqlite3BtreeSchemaLocked(Btree *);
 int sqlite3BtreeLockTable(Btree *, int, u8);
 

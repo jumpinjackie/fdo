@@ -645,7 +645,8 @@ void sqlite3VXPrintf(
         needQuote = !isnull && xtype==etSQLESCAPE2;
         n += i + 1 + needQuote*2;
         if( n>etBUFSIZE ){
-          bufpt = zExtra = sqlite3Malloc( n );
+          bufpt = zExtra = sqlite3Malloc( n
+              SQLITE_ISOLATE_PASS_MPARAM(pAccum->db));
           if( bufpt==0 ) return;
         }else{
           bufpt = buf;
@@ -708,7 +709,8 @@ void sqlite3VXPrintf(
       }
     }
     if( zExtra ){
-      sqlite3_free(zExtra);
+      sqlite3_free(zExtra
+        SQLITE_ISOLATE_PASS_MPARAM(pAccum->db));
     }
   }/* End for loop over the format string */
 } /* End of function */
@@ -858,7 +860,8 @@ char *sqlite3MAppendf(sqlite3 *db, char *zStr, const char *zFormat, ...){
 ** Print into memory obtained from sqlite3_malloc().  Omit the internal
 ** %-conversion extensions.
 */
-char *sqlite3_vmprintf(const char *zFormat, va_list ap){
+char *sqlite3_vmprintf(SQLITE_ISOLATE_DEF_MAPARAM_DB
+  const char *zFormat, va_list ap){
   char *z;
   char zBase[SQLITE_PRINT_BUF_SIZE];
   StrAccum acc;
@@ -866,6 +869,9 @@ char *sqlite3_vmprintf(const char *zFormat, va_list ap){
   if( sqlite3_initialize() ) return 0;
 #endif
   sqlite3StrAccumInit(&acc, zBase, sizeof(zBase), SQLITE_MAX_LENGTH);
+#ifdef SQLITE_ENABLE_ISOLATE_CONNECTIONS
+  acc.db = SQLITE_ISOLATE_PASS_SPARAM(db);
+#endif
   sqlite3VXPrintf(&acc, 0, zFormat, ap);
   z = sqlite3StrAccumFinish(&acc);
   return z;
@@ -875,14 +881,16 @@ char *sqlite3_vmprintf(const char *zFormat, va_list ap){
 ** Print into memory obtained from sqlite3_malloc()().  Omit the internal
 ** %-conversion extensions.
 */
-char *sqlite3_mprintf(const char *zFormat, ...){
+char *sqlite3_mprintf(SQLITE_ISOLATE_DEF_MAPARAM_DB
+      const char *zFormat, ...){
   va_list ap;
   char *z;
 #ifndef SQLITE_OMIT_AUTOINIT
   if( sqlite3_initialize() ) return 0;
 #endif
   va_start(ap, zFormat);
-  z = sqlite3_vmprintf(zFormat, ap);
+  z = sqlite3_vmprintf(SQLITE_ISOLATE_PASS_MAPARAM(db)
+    zFormat, ap);
   va_end(ap);
   return z;
 }

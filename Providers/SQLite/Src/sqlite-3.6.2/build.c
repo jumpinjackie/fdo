@@ -424,7 +424,8 @@ void sqlite3ResetInternalSchema(sqlite3 *db, int iDb){
     Db *pDb = &db->aDb[i];
     if( pDb->pSchema ){
       assert(i==1 || (pDb->pBt && sqlite3BtreeHoldsMutex(pDb->pBt)));
-      sqlite3SchemaFree(pDb->pSchema);
+      sqlite3SchemaFree(pDb->pSchema
+        SQLITE_ISOLATE_PASS_MPARAM(db));
     }
     if( iDb>0 ) return;
   }
@@ -1375,7 +1376,8 @@ static char *createTableStmt(sqlite3 *db, Table *p, int isTemp){
     zEnd = "\n)";
   }
   n += 35 + 6*p->nCol;
-  zStmt = sqlite3Malloc( n );
+  zStmt = sqlite3Malloc( n
+    SQLITE_ISOLATE_PASS_MPARAM(db));
   if( zStmt==0 ){
     db->mallocFailed = 1;
     return 0;

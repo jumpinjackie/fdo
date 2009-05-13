@@ -3537,7 +3537,8 @@ case OP_Insert: {
         pData->zMalloc = 0;
       }
     }else{
-      pC->pData = sqlite3Malloc( pC->nData+2 );
+      pC->pData = sqlite3Malloc( pC->nData+2
+          SQLITE_ISOLATE_PASS_MPARAM(db));
       if( !pC->pData ) goto no_mem;
       memcpy(pC->pData, pData->z, pC->nData);
       pC->pData[pC->nData] = 0;
@@ -4696,7 +4697,8 @@ case OP_VOpen: {
 
   assert(pVtab && pModule);
   if( sqlite3SafetyOff(db) ) goto abort_due_to_misuse;
-  rc = pModule->xOpen(pVtab, &pVtabCursor);
+  rc = pModule->xOpen(pVtab, &pVtabCursor
+    SQLITE_ISOLATE_PASS_MPARAM(db));
   sqlite3DbFree(db, p->zErrMsg);
   p->zErrMsg = pVtab->zErrMsg;
   pVtab->zErrMsg = 0;

@@ -60,7 +60,8 @@
   #include "sqlite3ext.h"
   SQLITE_EXTENSION_INIT1
 #else
-  #include "sqlite3.h"
+  #include "sqliteInt.h"
+  #include "vdbeInt.h"
 #endif
 
 #include <string.h>
@@ -366,7 +367,8 @@ static void nodeHashDelete(Rtree *pRtree, RtreeNode *pNode){
 */
 static RtreeNode *nodeNew(Rtree *pRtree, RtreeNode *pParent, int zero){
   RtreeNode *pNode;
-  pNode = (RtreeNode *)sqlite3_malloc(sizeof(RtreeNode) + pRtree->iNodeSize);
+  pNode = (RtreeNode *)sqlite3_malloc(sizeof(RtreeNode) + pRtree->iNodeSize
+    SQLITE_ISOLATE_PASS_MPARAM(pRtree->db));
   if( pNode ){
     memset(pNode, 0, sizeof(RtreeNode) + (zero?pRtree->iNodeSize:0));
     pNode->zData = (u8 *)&pNode[1];
@@ -404,7 +406,8 @@ nodeAcquire(
     return SQLITE_OK;
   }
 
-  pNode = (RtreeNode *)sqlite3_malloc(sizeof(RtreeNode) + pRtree->iNodeSize);
+  pNode = (RtreeNode *)sqlite3_malloc(sizeof(RtreeNode) + pRtree->iNodeSize
+    SQLITE_ISOLATE_PASS_MPARAM(pRtree->db));
   if( !pNode ){
     *ppNode = 0;
     return SQLITE_NOMEM;
@@ -423,7 +426,8 @@ nodeAcquire(
     memcpy(pNode->zData, zBlob, pRtree->iNodeSize);
     nodeReference(pParent);
   }else{
-    sqlite3_free(pNode);
+    sqlite3_free(pNode
+      SQLITE_ISOLATE_PASS_MPARAM(pRtree->db));
     pNode = 0;
   }
 
@@ -545,7 +549,8 @@ nodeRelease(Rtree *pRtree, RtreeNode *pNode){
         rc = nodeWrite(pRtree, pNode);
       }
       nodeHashDelete(pRtree, pNode);
-      sqlite3_free(pNode);
+      sqlite3_free(pNode
+        SQLITE_ISOLATE_PASS_MPARAM(pRtree->db));
     }
   }
   return rc;
@@ -652,7 +657,8 @@ static void rtreeRelease(Rtree *pRtree){
     sqlite3_finalize(pRtree->pReadParent);
     sqlite3_finalize(pRtree->pWriteParent);
     sqlite3_finalize(pRtree->pDeleteParent);
-    sqlite3_free(pRtree);
+    sqlite3_free(pRtree
+      SQLITE_ISOLATE_PASS_MPARAM(pRtree->db));
   }
 }
 
@@ -670,7 +676,7 @@ static int rtreeDisconnect(sqlite3_vtab *pVtab){
 static int rtreeDestroy(sqlite3_vtab *pVtab){
   Rtree *pRtree = (Rtree *)pVtab;
   int rc;
-  char *zCreate = sqlite3_mprintf(
+  char *zCreate = sqlite3_mprintf(SQLITE_ISOLATE_PASS_MAPARAM(pRtree->db)
     "DROP TABLE '%q'.'%q_node';"
     "DROP TABLE '%q'.'%q_rowid';"
     "DROP TABLE '%q'.'%q_parent';",
@@ -682,7 +688,8 @@ static int rtreeDestroy(sqlite3_vtab *pVtab){
     rc = SQLITE_NOMEM;
   }else{
     rc = sqlite3_exec(pRtree->db, zCreate, 0, 0, 0);
-    sqlite3_free(zCreate);
+    sqlite3_free(zCreate
+      SQLITE_ISOLATE_PASS_MPARAM(pRtree->db));
   }
   if( rc==SQLITE_OK ){
     rtreeRelease(pRtree);
@@ -694,11 +701,13 @@ static int rtreeDestroy(sqlite3_vtab *pVtab){
 /* 
 ** Rtree virtual table module xOpen method.
 */
-static int rtreeOpen(sqlite3_vtab *pVTab, sqlite3_vtab_cursor **ppCursor){
+static int rtreeOpen(sqlite3_vtab *pVTab, sqlite3_vtab_cursor **ppCursor
+SQLITE_ISOLATE_DEF_MPARAM_DB){
   int rc = SQLITE_NOMEM;
   RtreeCursor *pCsr;
 
-  pCsr = (RtreeCursor *)sqlite3_malloc(sizeof(RtreeCursor));
+  pCsr = (RtreeCursor *)sqlite3_malloc(sizeof(RtreeCursor)
+    SQLITE_ISOLATE_PASS_MPARAM(db));
   if( pCsr ){
     memset(pCsr, 0, sizeof(RtreeCursor));
     pCsr->base.pVtab = pVTab;
@@ -716,9 +725,11 @@ static int rtreeClose(sqlite3_vtab_cursor *cur){
   Rtree *pRtree = (Rtree *)(cur->pVtab);
   int rc;
   RtreeCursor *pCsr = (RtreeCursor *)cur;
-  sqlite3_free(pCsr->aConstraint);
+  sqlite3_free(pCsr->aConstraint
+    SQLITE_ISOLATE_PASS_MPARAM(pRtree->db));
   rc = nodeRelease(pRtree, pCsr->pNode);
-  sqlite3_free(pCsr);
+  sqlite3_free(pCsr
+    SQLITE_ISOLATE_PASS_MPARAM(pRtree->db));
   return rc;
 }
 
@@ -999,7 +1010,8 @@ static int rtreeFilter(
 
   rtreeReference(pRtree);
 
-  sqlite3_free(pCsr->aConstraint);
+  sqlite3_free(pCsr->aConstraint
+    SQLITE_ISOLATE_PASS_MPARAM(pRtree->db));
   pCsr->aConstraint = 0;
   pCsr->iStrategy = idxNum;
 
@@ -1017,7 +1029,8 @@ static int rtreeFilter(
     ** with the configured constraints. 
     */
     if( argc>0 ){
-      pCsr->aConstraint = sqlite3_malloc(sizeof(RtreeConstraint)*argc);
+      pCsr->aConstraint = sqlite3_malloc(sizeof(RtreeConstraint)*argc
+        SQLITE_ISOLATE_PASS_MPARAM(pRtree->db));
       pCsr->nConstraint = argc;
       if( !pCsr->aConstraint ){
         rc = SQLITE_NOMEM;
@@ -1097,6 +1110,7 @@ static int rtreeFilter(
 static int rtreeBestIndex(sqlite3_vtab *tab, sqlite3_index_info *pIdxInfo){
   int rc = SQLITE_OK;
   int ii, cCol;
+  Rtree *pRtree = (Rtree *)tab;
 
   int iIdx = 0;
   char zIdxStr[RTREE_MAX_DIMENSIONS*8+1];
@@ -1166,7 +1180,8 @@ static int rtreeBestIndex(sqlite3_vtab *tab, sqlite3_index_info *pIdxInfo){
 
   pIdxInfo->idxNum = 2;
   pIdxInfo->needToFreeIdxStr = 1;
-  if( iIdx>0 && 0==(pIdxInfo->idxStr = sqlite3_mprintf("%s", zIdxStr)) ){
+  if( iIdx>0 && 0==(pIdxInfo->idxStr = sqlite3_mprintf(SQLITE_ISOLATE_PASS_MAPARAM(pRtree->db)
+    "%s", zIdxStr)) ){
     return SQLITE_NOMEM;
   }
   return rc;
@@ -1354,7 +1369,8 @@ static int ChooseLeaf(
       }
     }
 
-    sqlite3_free(aCell);
+    sqlite3_free(aCell
+      SQLITE_ISOLATE_PASS_MPARAM(pRtree->db));
     rc = nodeAcquire(pRtree, iBest, pNode, &pChild);
     nodeRelease(pRtree, pNode);
     pNode = pChild;
@@ -1724,7 +1740,8 @@ static int splitNodeStartree(
 
   int nByte = (pRtree->nDim+1)*(sizeof(int*)+nCell*sizeof(int));
 
-  aaSorted = (int **)sqlite3_malloc(nByte);
+  aaSorted = (int **)sqlite3_malloc(nByte
+    SQLITE_ISOLATE_PASS_MPARAM(pRtree->db));
   if( !aaSorted ){
     return SQLITE_NOMEM;
   }
@@ -1798,7 +1815,8 @@ static int splitNodeStartree(
     cellUnion(pRtree, pBbox, pCell);
   }
 
-  sqlite3_free(aaSorted);
+  sqlite3_free(aaSorted
+    SQLITE_ISOLATE_PASS_MPARAM(pRtree->db));
   return SQLITE_OK;
 }
 #endif
@@ -1898,7 +1916,8 @@ static int SplitNode(
   /* Allocate an array and populate it with a copy of pCell and 
   ** all cells from node pLeft. Then zero the original node.
   */
-  aCell = sqlite3_malloc((sizeof(RtreeCell)+sizeof(int))*(nCell+1));
+  aCell = sqlite3_malloc((sizeof(RtreeCell)+sizeof(int))*(nCell+1)
+    SQLITE_ISOLATE_PASS_MPARAM(pRtree->db));
   if( !aCell ){
     rc = SQLITE_NOMEM;
     goto splitnode_out;
@@ -1996,7 +2015,8 @@ static int SplitNode(
 splitnode_out:
   nodeRelease(pRtree, pRight);
   nodeRelease(pRtree, pLeft);
-  sqlite3_free(aCell);
+  sqlite3_free(aCell
+    SQLITE_ISOLATE_PASS_MPARAM(pRtree->db));
   return rc;
 }
 
@@ -2145,7 +2165,7 @@ static int Reinsert(
     sizeof(int)       +         /* aOrder array */
     sizeof(int)       +         /* aSpare array */
     sizeof(float)               /* aDistance array */
-  ));
+  )SQLITE_ISOLATE_PASS_MPARAM(pRtree->db));
   if( !aCell ){
     return SQLITE_NOMEM;
   }
@@ -2212,7 +2232,8 @@ static int Reinsert(
     }
   }
 
-  sqlite3_free(aCell);
+  sqlite3_free(aCell
+    SQLITE_ISOLATE_PASS_MPARAM(pRtree->db));
   return rc;
 }
 
@@ -2392,7 +2413,8 @@ int rtreeUpdate(
         rc = reinsertNodeContent(pRtree, pLeaf);
       }
       pRtree->pDeleted = pLeaf->pNext;
-      sqlite3_free(pLeaf);
+      sqlite3_free(pLeaf
+        SQLITE_ISOLATE_PASS_MPARAM(pRtree->db));
     }
 
     /* Release the reference to the root node. */
@@ -2474,7 +2496,7 @@ constraint:
 static int rtreeRename(sqlite3_vtab *pVtab, const char *zNewName){
   Rtree *pRtree = (Rtree *)pVtab;
   int rc = SQLITE_NOMEM;
-  char *zSql = sqlite3_mprintf(
+  char *zSql = sqlite3_mprintf(SQLITE_ISOLATE_PASS_MAPARAM(pRtree->db)
     "ALTER TABLE %Q.'%q_node'   RENAME TO \"%w_node\";"
     "ALTER TABLE %Q.'%q_parent' RENAME TO \"%w_parent\";"
     "ALTER TABLE %Q.'%q_rowid'  RENAME TO \"%w_rowid\";"
@@ -2484,7 +2506,8 @@ static int rtreeRename(sqlite3_vtab *pVtab, const char *zNewName){
   );
   if( zSql ){
     rc = sqlite3_exec(pRtree->db, zSql, 0, 0, 0);
-    sqlite3_free(zSql);
+    sqlite3_free(zSql
+      SQLITE_ISOLATE_PASS_MPARAM(pRtree->db));
   }
   return rc;
 }
@@ -2544,7 +2567,7 @@ static int rtreeSqlInit(
   pRtree->db = db;
 
   if( isCreate ){
-    char *zCreate = sqlite3_mprintf(
+    char *zCreate = sqlite3_mprintf(SQLITE_ISOLATE_PASS_MAPARAM(db)
 "CREATE TABLE \"%w\".\"%w_node\"(nodeno INTEGER PRIMARY KEY, data BLOB);"
 "CREATE TABLE \"%w\".\"%w_rowid\"(rowid INTEGER PRIMARY KEY, nodeno INTEGER);"
 "CREATE TABLE \"%w\".\"%w_parent\"(nodeno INTEGER PRIMARY KEY, parentnode INTEGER);"
@@ -2555,7 +2578,8 @@ static int rtreeSqlInit(
       return SQLITE_NOMEM;
     }
     rc = sqlite3_exec(db, zCreate, 0, 0, 0);
-    sqlite3_free(zCreate);
+    sqlite3_free(zCreate
+      SQLITE_ISOLATE_PASS_MPARAM(pRtree->db));
     if( rc!=SQLITE_OK ){
       return rc;
     }
@@ -2572,13 +2596,15 @@ static int rtreeSqlInit(
   appStmt[8] = &pRtree->pDeleteParent;
 
   for(i=0; i<N_STATEMENT && rc==SQLITE_OK; i++){
-    char *zSql = sqlite3_mprintf(azSql[i], zDb, zPrefix);
+    char *zSql = sqlite3_mprintf(SQLITE_ISOLATE_PASS_MAPARAM(pRtree->db)
+      azSql[i], zDb, zPrefix);
     if( zSql ){
       rc = sqlite3_prepare_v2(db, zSql, -1, appStmt[i], 0); 
     }else{
       rc = SQLITE_NOMEM;
     }
-    sqlite3_free(zSql);
+    sqlite3_free(zSql
+      SQLITE_ISOLATE_PASS_MPARAM(pRtree->db));
   }
 
   return rc;
@@ -2595,13 +2621,15 @@ static int getPageSize(sqlite3 *db, const char *zDb, int *piPageSize){
   char *zSql;
   sqlite3_stmt *pStmt = 0;
 
-  zSql = sqlite3_mprintf("PRAGMA %Q.page_size", zDb);
+  zSql = sqlite3_mprintf(SQLITE_ISOLATE_PASS_MAPARAM(db)
+    "PRAGMA %Q.page_size", zDb);
   if( !zSql ){
     return SQLITE_NOMEM;
   }
 
   rc = sqlite3_prepare_v2(db, zSql, -1, &pStmt, 0);
-  sqlite3_free(zSql);
+  sqlite3_free(zSql
+    SQLITE_ISOLATE_PASS_MPARAM(db));
   if( rc!=SQLITE_OK ){
     return rc;
   }
@@ -2645,7 +2673,8 @@ static int rtreeInit(
 
   int iErr = (argc<6) ? 2 : argc>(RTREE_MAX_DIMENSIONS*2+4) ? 3 : argc%2;
   if( aErrMsg[iErr] ){
-    *pzErr = sqlite3_mprintf("%s", aErrMsg[iErr]);
+    *pzErr = sqlite3_mprintf(SQLITE_ISOLATE_PASS_MAPARAM(db)
+      "%s", aErrMsg[iErr]);
     return SQLITE_ERROR;
   }
 
@@ -2657,7 +2686,8 @@ static int rtreeInit(
   /* Allocate the sqlite3_vtab structure */
   nDb = strlen(argv[1]);
   nName = strlen(argv[2]);
-  pRtree = (Rtree *)sqlite3_malloc(sizeof(Rtree)+nDb+nName+2);
+  pRtree = (Rtree *)sqlite3_malloc(sizeof(Rtree)+nDb+nName+2
+    SQLITE_ISOLATE_PASS_MPARAM(db));
   if( !pRtree ){
     return SQLITE_NOMEM;
   }
@@ -2689,25 +2719,32 @@ static int rtreeInit(
   ** the r-tree table schema.
   */
   if( (rc = rtreeSqlInit(pRtree, db, argv[1], argv[2], isCreate)) ){
-    *pzErr = sqlite3_mprintf("%s", sqlite3_errmsg(db));
+    *pzErr = sqlite3_mprintf(SQLITE_ISOLATE_PASS_MAPARAM(db)
+      "%s", sqlite3_errmsg(db));
   }else{
-    char *zSql = sqlite3_mprintf("CREATE TABLE x(%s", argv[3]);
+    char *zSql = sqlite3_mprintf(SQLITE_ISOLATE_PASS_MAPARAM(db)
+      "CREATE TABLE x(%s", argv[3]);
     char *zTmp;
     int ii;
     for(ii=4; zSql && ii<argc; ii++){
       zTmp = zSql;
-      zSql = sqlite3_mprintf("%s, %s", zTmp, argv[ii]);
-      sqlite3_free(zTmp);
+      zSql = sqlite3_mprintf(SQLITE_ISOLATE_PASS_MAPARAM(db)
+        "%s, %s", zTmp, argv[ii]);
+      sqlite3_free(zTmp
+        SQLITE_ISOLATE_PASS_MPARAM(db));
     }
     if( zSql ){
       zTmp = zSql;
-      zSql = sqlite3_mprintf("%s);", zTmp);
-      sqlite3_free(zTmp);
+      zSql = sqlite3_mprintf(SQLITE_ISOLATE_PASS_MAPARAM(db)
+        "%s);", zTmp);
+      sqlite3_free(zTmp
+        SQLITE_ISOLATE_PASS_MPARAM(db));
     }
     if( !zSql || sqlite3_declare_vtab(db, zSql) ){
       rc = SQLITE_NOMEM;
     }
-    sqlite3_free(zSql);
+    sqlite3_free(zSql
+      SQLITE_ISOLATE_PASS_MPARAM(db));
   }
 
   if( rc==SQLITE_OK ){
@@ -2762,11 +2799,14 @@ static void rtreenode(sqlite3_context *ctx, int nArg, sqlite3_value **apArg){
     }
 
     if( zText ){
-      char *zTextNew = sqlite3_mprintf("%s {%s}", zText, zCell);
-      sqlite3_free(zText);
+      char *zTextNew = sqlite3_mprintf(SQLITE_ISOLATE_PASS_MAPARAM(ctx->s.db)
+        "%s {%s}", zText, zCell);
+      sqlite3_free(zText
+        SQLITE_ISOLATE_PASS_MPARAM(ctx->s.db));
       zText = zTextNew;
     }else{
-      zText = sqlite3_mprintf("{%s}", zCell);
+      zText = sqlite3_mprintf(SQLITE_ISOLATE_PASS_MAPARAM(ctx->s.db)
+        "{%s}", zCell);
     }
   }
   
