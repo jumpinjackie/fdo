@@ -37,13 +37,34 @@ SdfRTree::SdfRTree(SQLiteDataBase* env, const char* filename, FdoString* databas
 
     int res;
 
+    // fix DID 1173929, for corrupted Rtree table.
+    m_rtreeNeedsRegen = false;
+
     m_bReadOnly = true;  // Assume it's readonly untill a save happens
     int readOnlyFlag = bReadOnly ? SQLiteDB_RDONLY : 0;
 
+    
+    REC_NO bootRecno = 1;
+    SQLiteData keyboot(&bootRecno, sizeof(REC_NO));
+    SQLiteData databoot;
+
     //open or create database in the given file with record # access type
 	// Note that the nested PhysName call is necessary to reproduce the behavior of the previous versions of the SDF provider.
-    if (res = db->open(0, filename, (const char*)PhysName("RTREE:", (const char*)PhysName(L"", database, false), false), (const char*) m_dbname,  readOnlyFlag, 0) != 0)
+    res = db->open(0, filename, (const char*)PhysName("RTREE:", (const char*)PhysName(L"", database, false), false), (const char*) m_dbname,  readOnlyFlag, 0);
+    if (res !=0
+        || (res ==0 && (db->get(0, &keyboot, &databoot, 0))!=0 )) // check whether if the table is corrupted or not, if yes, then go on recreate the table. 
     {
+        if (res ==0) 
+        {    
+            //coming here means the orginal r-tree table is corrupted
+            m_rtreeNeedsRegen = true; 
+
+            //check whether the file is read only before going to rebuid the r-tree.
+            if (bReadOnly)
+                throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_10_ERROR_ACCESSING_SDFDB )));
+                //Note: use the error msg SDFPROVIDER_10_ERROR_ACCESSING_SDFDB in update due to resouce modify restriction
+                
+        }
         //must close even if open failed
         db->close(0);
         delete db;
@@ -84,13 +105,9 @@ SdfRTree::SdfRTree(SQLiteDataBase* env, const char* filename, FdoString* databas
     m_db = db;
    
     //get the record number for the root node by reading the boot node
-    REC_NO bootRecno = 1;
-    SQLiteData keyboot(&bootRecno, sizeof(REC_NO));
-    SQLiteData databoot;
-
     if (res = db->get(0, &keyboot, &databoot, 0) != 0)
         throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_19_SPATIAL_INDEX_ERROR)));
-
+   
     _ASSERT(databoot.get_size() == sizeof(REC_NO));
     //TODO: endian
     m_rootRecno = *(REC_NO*)databoot.get_data();

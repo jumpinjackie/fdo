@@ -197,6 +197,7 @@ private:
     void DestroyDatabases();
 
     void RegenIndex( FdoClassDefinition *clas, KeyDb* keys, DataDb  *dataDb );
+    void RegenRtree(FdoClassDefinition *clas, SdfRTree* rtree, DataDb  *dataDb );
 
     SQLiteDataBase* m_env;
     
