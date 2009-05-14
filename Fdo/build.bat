@@ -17,18 +17,18 @@ rem License along with this library; if not, write to the Free Software
 rem Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 rem 
 
-SET TYPEACTIONFDO=build
-SET MSACTIONFDO=Build
-SET TYPEBUILDFDO=release
-SET TYPEPLATFORMFDO=Win32
-
-SET FDOORGPATHFDO=%cd%
-SET FDOINSPATHFDO=%cd%\Fdo
-SET FDOBINPATHFDO=%cd%\Fdo\Bin
-SET FDOINCPATHFDO=%cd%\Fdo\Inc
-SET FDOLIBPATHFDO=%cd%\Fdo\Lib
-SET FDODOCPATHFDO=%cd%\Fdo\Docs
-SET DOCENABLEFDO=skip
+SET TYPEACTION=build
+SET MSACTION=Build
+SET TYPEBUILD=release
+SET TYPEPLATFORM=Win32
+SET INTERMEDIATEDIR=Win32
+SET FDOORGPATH=%cd%
+SET FDOINSPATH=%cd%\Fdo
+SET FDOBINPATH=%cd%\Fdo\Bin
+SET FDOINCPATH=%cd%\Fdo\Inc
+SET FDOLIBPATH=%cd%\Fdo\Lib
+SET FDODOCPATH=%cd%\Fdo\Docs
+SET DOCENABLE=skip
 SET PYTHONENABLE=skip
 SET FDOERROR=0
 
@@ -59,7 +59,7 @@ if "%1"=="-python"   goto get_python
 goto custom_error
 
 :get_docs
-SET DOCENABLEFDO=%2
+SET DOCENABLE=%2
 if "%2"=="build" goto next_param
 if "%2"=="skip" goto next_param
 goto custom_error
@@ -71,19 +71,19 @@ if "%2"=="skip" goto next_param
 goto custom_error
 
 :get_conf
-SET TYPEBUILDFDO=%2
+SET TYPEBUILD=%2
 if "%2"=="release" goto next_param
 if "%2"=="debug" goto next_param
 goto custom_error
 
 :get_platform
-SET TYPEPLATFORMFDO=%2
+SET TYPEPLATFORM=%2
 if "%2"=="Win32" goto next_param
 if "%2"=="x64" goto next_param
 goto custom_error
 
 :get_action
-SET TYPEACTIONFDO=%2
+SET TYPEACTION=%2
 if "%2"=="install" goto next_param
 if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
@@ -93,12 +93,12 @@ goto custom_error
 
 :get_path
 if (%2)==() goto custom_error
-SET FDOORGPATHFDO=%~2
-SET FDOINSPATHFDO=%~2\Fdo
-SET FDOBINPATHFDO=%~2\Fdo\Bin
-SET FDOINCPATHFDO=%~2\Fdo\Inc
-SET FDOLIBPATHFDO=%~2\Fdo\Lib
-SET FDODOCPATHFDO=%~2\Fdo\Docs
+SET FDOORGPATH=%~2
+SET FDOINSPATH=%~2\Fdo
+SET FDOBINPATH=%~2\Fdo\Bin
+SET FDOINCPATH=%~2\Fdo\Inc
+SET FDOLIBPATH=%~2\Fdo\Lib
+SET FDODOCPATH=%~2\Fdo\Docs
 
 :next_param
 shift
@@ -109,33 +109,38 @@ goto study_params
 SET FDOACTENVSTUDY="FDO"
 if ("%FDO%")==("") goto env_error
 if not exist "%FDO%" goto env_path_error
+
 SET FDOACTENVSTUDY="FDOTHIRDPARTY"
 if ("%FDOTHIRDPARTY%")==("") goto env_error
 if not exist "%FDOTHIRDPARTY%" goto env_path_error
 
-if "%TYPEACTIONFDO%"=="build" goto start_exbuild
-if "%TYPEACTIONFDO%"=="clean" goto start_exbuild
-if "%TYPEACTIONFDO%"=="builddocsonly" goto start_exbuild
-if not exist "%FDOINSPATHFDO%" mkdir "%FDOINSPATHFDO%"
-if not exist "%FDOBINPATHFDO%" mkdir "%FDOBINPATHFDO%"
-if not exist "%FDOINCPATHFDO%" mkdir "%FDOINCPATHFDO%"
-if not exist "%FDOLIBPATHFDO%" mkdir "%FDOLIBPATHFDO%"
-if not exist "%FDODOCPATHFDO%" mkdir "%FDODOCPATHFDO%"
+if "%TYPEBUILD%"=="Win32" SET INTERMEDIATEDIR="Win32"
+if "%TYPEBUILD%"=="x64" SET INTERMEDIATEDIR="Win64"
+
+if "%TYPEACTION%"=="build" goto start_exbuild
+if "%TYPEACTION%"=="clean" goto start_exbuild
+if "%TYPEACTION%"=="builddocsonly" goto start_exbuild
+
+if not exist "%FDOINSPATH%" mkdir "%FDOINSPATH%"
+if not exist "%FDOBINPATH%" mkdir "%FDOBINPATH%"
+if not exist "%FDOINCPATH%" mkdir "%FDOINCPATH%"
+if not exist "%FDOLIBPATH%" mkdir "%FDOLIBPATH%"
+if not exist "%FDODOCPATH%" mkdir "%FDODOCPATH%"
 
 :start_exbuild
-if "%TYPEACTIONFDO%"=="clean" SET MSACTIONFDO=Clean
-if "%TYPEACTIONFDO%"=="builddocsonly" goto generate_docs
-if "%TYPEACTIONFDO%"=="install" goto install_files
+if "%TYPEACTION%"=="clean" SET MSACTION=Clean
+if "%TYPEACTION%"=="builddocsonly" goto generate_docs
+if "%TYPEACTION%"=="install" goto install_files
 
-echo %MSACTIONFDO% %TYPEBUILDFDO% Fdo dlls
-msbuild FDO.sln /t:%MSACTIONFDO% /p:Configuration=%TYPEBUILDFDO% /p:Platform=%TYPEPLATFORMFDO% /nologo /consoleloggerparameters:NoSummary
+echo %MSACTION% %TYPEBUILD% Fdo dlls
+msbuild FDO.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 
 :rebuild_python
 if "%PYTHONENABLE%"=="skip" goto finish_build
-if "%TYPEACTIONFDO%"=="clean" goto finish_build
-if "%TYPEBUILDFDO%"=="debug" goto finish_build
+if "%TYPEACTION%"=="clean" goto finish_build
+if "%TYPEBUILD%"=="debug" goto finish_build
 if not exist Python\build.cmd goto end
 pushd Python
 call build.cmd
@@ -143,42 +148,42 @@ popd
 if "%FDOERROR%"=="1" goto error
 
 :finish_build
-if "%TYPEACTIONFDO%"=="build" goto generate_docs
-if "%TYPEACTIONFDO%"=="clean" goto end
-if "%TYPEACTIONFDO%"=="builddocsonly" goto generate_docs
+if "%TYPEACTION%"=="build" goto generate_docs
+if "%TYPEACTION%"=="clean" goto end
+if "%TYPEACTION%"=="builddocsonly" goto generate_docs
 
 :install_files
-echo copy FDO %TYPEBUILDFDO% output files
-copy /y "Unmanaged\Bin\Win32\%TYPEBUILDFDO%\FDO.dll" "%FDOBINPATHFDO%"
-copy /y "Unmanaged\Bin\Win32\%TYPEBUILDFDO%\FDO.pdb" "%FDOBINPATHFDO%"
-copy /y "Unmanaged\Bin\Win32\%TYPEBUILDFDO%\FDOMessage.dll" "%FDOBINPATHFDO%"
-copy /y "Unmanaged\Bin\Win32\%TYPEBUILDFDO%\FDOMessage.pdb" "%FDOBINPATHFDO%"
-copy /y "Unmanaged\Bin\Win32\%TYPEBUILDFDO%\FDOCommon.dll" "%FDOBINPATHFDO%"
-copy /y "Unmanaged\Bin\Win32\%TYPEBUILDFDO%\FDOCommon.pdb" "%FDOBINPATHFDO%"
-copy /y "Unmanaged\Bin\Win32\%TYPEBUILDFDO%\FDOGeometry.dll" "%FDOBINPATHFDO%"
-copy /y "Unmanaged\Bin\Win32\%TYPEBUILDFDO%\FDOGeometry.pdb" "%FDOBINPATHFDO%"
-copy /y "Unmanaged\Bin\Win32\%TYPEBUILDFDO%\FDOSpatial.dll" "%FDOBINPATHFDO%"
-copy /y "Unmanaged\Bin\Win32\%TYPEBUILDFDO%\FDOSpatial.pdb" "%FDOBINPATHFDO%"
-copy /y "Managed\Bin\Win32\%TYPEBUILDFDO%\OSGeo.FDO.dll" "%FDOBINPATHFDO%"
-copy /y "Managed\Bin\Win32\%TYPEBUILDFDO%\OSGeo.FDO.pdb" "%FDOBINPATHFDO%"
-copy /y "Managed\Bin\Win32\%TYPEBUILDFDO%\OSGeo.FDO.Common.dll" "%FDOBINPATHFDO%"
-copy /y "Managed\Bin\Win32\%TYPEBUILDFDO%\OSGeo.FDO.Common.pdb" "%FDOBINPATHFDO%"
-copy /y "Managed\Bin\Win32\%TYPEBUILDFDO%\OSGeo.FDO.Geometry.dll" "%FDOBINPATHFDO%"
-copy /y "Managed\Bin\Win32\%TYPEBUILDFDO%\OSGeo.FDO.Geometry.pdb" "%FDOBINPATHFDO%"
-copy /y "Managed\Bin\Win32\%TYPEBUILDFDO%\OSGeo.FDO.Spatial.dll" "%FDOBINPATHFDO%"
-copy /y "Managed\Bin\Win32\%TYPEBUILDFDO%\OSGeo.FDO.Spatial.pdb" "%FDOBINPATHFDO%"
-copy /y "Unmanaged\Lib\Win32\%TYPEBUILDFDO%\FDO.lib" "%FDOLIBPATHFDO%"
-copy /y "Unmanaged\Lib\Win32\%TYPEBUILDFDO%\FDOCommon.lib" "%FDOLIBPATHFDO%"
-copy /y "Unmanaged\Lib\Win32\%TYPEBUILDFDO%\FDOGeometry.lib" "%FDOLIBPATHFDO%"
-copy /y "Unmanaged\Lib\Win32\%TYPEBUILDFDO%\FDOSpatial.lib" "%FDOLIBPATHFDO%"
-if exist "Python\Lib\Win32\FDO.py" copy /y "Python\Lib\Win32\FDO.py" "%FDOLIBPATHFDO%"
+echo copy FDO %TYPEBUILD% output files
+copy /y "Unmanaged\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\FDO.dll" "%FDOBINPATH%"
+copy /y "Unmanaged\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\FDO.pdb" "%FDOBINPATH%"
+copy /y "Unmanaged\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\FDOMessage.dll" "%FDOBINPATH%"
+copy /y "Unmanaged\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\FDOMessage.pdb" "%FDOBINPATH%"
+copy /y "Unmanaged\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\FDOCommon.dll" "%FDOBINPATH%"
+copy /y "Unmanaged\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\FDOCommon.pdb" "%FDOBINPATH%"
+copy /y "Unmanaged\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\FDOGeometry.dll" "%FDOBINPATH%"
+copy /y "Unmanaged\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\FDOGeometry.pdb" "%FDOBINPATH%"
+copy /y "Unmanaged\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\FDOSpatial.dll" "%FDOBINPATH%"
+copy /y "Unmanaged\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\FDOSpatial.pdb" "%FDOBINPATH%"
+copy /y "Managed\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\OSGeo.FDO.dll" "%FDOBINPATH%"
+copy /y "Managed\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\OSGeo.FDO.pdb" "%FDOBINPATH%"
+copy /y "Managed\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\OSGeo.FDO.Common.dll" "%FDOBINPATH%"
+copy /y "Managed\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\OSGeo.FDO.Common.pdb" "%FDOBINPATH%"
+copy /y "Managed\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\OSGeo.FDO.Geometry.dll" "%FDOBINPATH%"
+copy /y "Managed\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\OSGeo.FDO.Geometry.pdb" "%FDOBINPATH%"
+copy /y "Managed\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\OSGeo.FDO.Spatial.dll" "%FDOBINPATH%"
+copy /y "Managed\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\OSGeo.FDO.Spatial.pdb" "%FDOBINPATH%"
+copy /y "Unmanaged\Lib\%INTERMEDIATEDIR%\%TYPEBUILD%\FDO.lib" "%FDOLIBPATH%"
+copy /y "Unmanaged\Lib\%INTERMEDIATEDIR%\%TYPEBUILD%\FDOCommon.lib" "%FDOLIBPATH%"
+copy /y "Unmanaged\Lib\%INTERMEDIATEDIR%\%TYPEBUILD%\FDOGeometry.lib" "%FDOLIBPATH%"
+copy /y "Unmanaged\Lib\%INTERMEDIATEDIR%\%TYPEBUILD%\FDOSpatial.lib" "%FDOLIBPATH%"
+if exist "Python\Lib\%INTERMEDIATEDIR%\FDO.py" copy /y "Python\Lib\%INTERMEDIATEDIR%\FDO.py" "%FDOLIBPATH%"
 cscript //Nologo //job:install ../preparebuilds.wsf
 
 echo copy FDO header files
-xcopy /S /C /Q /R /Y Unmanaged\Inc\*.h "%FDOINCPATHFDO%\"
+xcopy /S /C /Q /R /Y Unmanaged\Inc\*.h "%FDOINCPATH%\"
 
 :generate_docs
-if not "%DOCENABLEFDO%"=="build" goto install_docs
+if not "%DOCENABLE%"=="build" goto install_docs
 echo Creating FDO Unmanaged and Managed html and chm API documentation
 if exist "Docs\HTML\FDO_API" rmdir /S /Q "Docs\HTML\FDO_API"
 if exist "Docs\HTML\FDO_API_managed" rmdir /S /Q "Docs\HTML\FDO_API_managed"
@@ -198,26 +203,26 @@ doxygen Doxyfile_FDOmanaged
 popd
 
 :install_docs
-if "%TYPEACTIONFDO%"=="build" goto end
-if "%TYPEACTIONFDO%"=="clean" goto end
-if "%TYPEACTIONFDO%"=="builddocsonly" goto end
+if "%TYPEACTION%"=="build" goto end
+if "%TYPEACTION%"=="clean" goto end
+if "%TYPEACTION%"=="builddocsonly" goto end
 
 pushd Docs\doc_src
-if exist "%FDODOCPATHFDO%\HTML\FDO_API" rmdir /S /Q "%FDODOCPATHFDO%\HTML\FDO_API"
-if exist "%FDODOCPATHFDO%\HTML\FDO_API_managed" rmdir /S /Q "%FDODOCPATHFDO%\HTML\FDO_API_managed"
-if not exist "%FDODOCPATHFDO%\HTML\FDO_API" mkdir "%FDODOCPATHFDO%\HTML\FDO_API"
-if not exist "%FDODOCPATHFDO%\HTML\FDO_API_managed" mkdir "%FDODOCPATHFDO%\HTML\FDO_API_managed"
+if exist "%FDODOCPATH%\HTML\FDO_API" rmdir /S /Q "%FDODOCPATH%\HTML\FDO_API"
+if exist "%FDODOCPATH%\HTML\FDO_API_managed" rmdir /S /Q "%FDODOCPATH%\HTML\FDO_API_managed"
+if not exist "%FDODOCPATH%\HTML\FDO_API" mkdir "%FDODOCPATH%\HTML\FDO_API"
+if not exist "%FDODOCPATH%\HTML\FDO_API_managed" mkdir "%FDODOCPATH%\HTML\FDO_API_managed"
 
-if exist "..\HTML\FDO_API\" xcopy/CQEYI "..\HTML\FDO_API\*" "%FDODOCPATHFDO%\HTML\FDO_API"
-if exist "..\HTML\FDO_API_managed\" xcopy/CQEYI "..\HTML\FDO_API_managed\*" "%FDODOCPATHFDO%\HTML\FDO_API_managed"
-if exist "..\FDO_API_managed.chm" copy /y "..\FDO_API_managed.chm" "%FDODOCPATHFDO%"
-if exist "..\FDO_API.chm" copy /y "..\FDO_API.chm" "%FDODOCPATHFDO%"
-if exist "..\FDG_FDODevGuide.pdf" copy /y "..\FDG_FDODevGuide.pdf" "%FDODOCPATHFDO%"
-if exist "..\FET_TheEssentialFDO.pdf" copy /y "..\FET_TheEssentialFDO.pdf" "%FDODOCPATHFDO%"
+if exist "..\HTML\FDO_API\" xcopy/CQEYI "..\HTML\FDO_API\*" "%FDODOCPATH%\HTML\FDO_API"
+if exist "..\HTML\FDO_API_managed\" xcopy/CQEYI "..\HTML\FDO_API_managed\*" "%FDODOCPATH%\HTML\FDO_API_managed"
+if exist "..\FDO_API_managed.chm" copy /y "..\FDO_API_managed.chm" "%FDODOCPATH%"
+if exist "..\FDO_API.chm" copy /y "..\FDO_API.chm" "%FDODOCPATH%"
+if exist "..\FDG_FDODevGuide.pdf" copy /y "..\FDG_FDODevGuide.pdf" "%FDODOCPATH%"
+if exist "..\FET_TheEssentialFDO.pdf" copy /y "..\FET_TheEssentialFDO.pdf" "%FDODOCPATH%"
 popd
 
 :end
-echo End FDO %MSACTIONFDO%
+echo End FDO %MSACTION%
 exit /B 0
 
 :env_error
@@ -236,7 +241,7 @@ SET FDOERROR=1
 exit /B 1
 
 :error
-echo There was a build error executing action: %MSACTIONFDO%
+echo There was a build error executing action: %MSACTION%
 exit /B 1
 
 :custom_error
