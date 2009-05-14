@@ -17,17 +17,18 @@ rem License along with this library; if not, write to the Free Software
 rem Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 rem 
 
-SET TYPEACTIONSLITE=build
-SET MSACTIONSLITE=Build
-SET TYPEBUILDSLITE=release
-SET TYPEPLATFORMSLITE=Win32
-SET FDOORGPATHSLITE=%cd%
-SET FDOINSPATHSLITE=%cd%\Fdo
-SET FDOBINPATHSLITE=%cd%\Fdo\Bin
-SET FDOINCPATHSLITE=%cd%\Fdo\Inc
-SET FDOLIBPATHSLITE=%cd%\Fdo\Lib
-SET FDODOCPATHSLITE=%cd%\Fdo\Docs
-SET DOCENABLESLITE=skip
+SET TYPEACTION=build
+SET MSACTION=Build
+SET TYPEBUILD=release
+SET TYPEPLATFORM=Win32
+SET INTERMEDIATEDIR=Win32
+SET FDOORGPATH=%cd%
+SET FDOINSPATH=%cd%\Fdo
+SET FDOBINPATH=%cd%\Fdo\Bin
+SET FDOINCPATH=%cd%\Fdo\Inc
+SET FDOLIBPATH=%cd%\Fdo\Lib
+SET FDODOCPATH=%cd%\Fdo\Docs
+SET DOCENABLE=skip
 SET FDOERROR=0
 
 :study_params
@@ -54,19 +55,19 @@ if "%1"=="-docs"    goto get_docs
 goto custom_error
 
 :get_docs
-SET DOCENABLESLITE=%2
+SET DOCENABLE=%2
 if "%2"=="build" goto next_param
 if "%2"=="skip" goto next_param
 goto custom_error
 
 :get_conf 
-SET TYPEBUILDSLITE=%2
+SET TYPEBUILD=%2
 if "%2"=="release" goto next_param
 if "%2"=="debug" goto next_param
 goto custom_error
 
 :get_action
-SET TYPEACTIONSLITE=%2
+SET TYPEACTION=%2
 if "%2"=="install" goto next_param
 if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
@@ -74,19 +75,19 @@ if "%2"=="clean" goto next_param
 goto custom_error 
 
 :get_platform
-SET TYPEPLATFORMSLITE=%2
+SET TYPEPLATFORM=%2
 if "%2"=="Win32" goto next_param
 if "%2"=="x64" goto next_param
 goto custom_error
 
 :get_path
 if (%2)==() goto custom_error
-SET FDOORGPATHSLITE=%~2
-SET FDOINSPATHSLITE=%~2\Fdo
-SET FDOBINPATHSLITE=%~2\Fdo\Bin
-SET FDOINCPATHSLITE=%~2\Fdo\Inc
-SET FDOLIBPATHSLITE=%~2\Fdo\Lib
-SET FDODOCPATHSLITE=%~2\Fdo\Docs
+SET FDOORGPATH=%~2
+SET FDOINSPATH=%~2\Fdo
+SET FDOBINPATH=%~2\Fdo\Bin
+SET FDOINCPATH=%~2\Fdo\Inc
+SET FDOLIBPATH=%~2\Fdo\Lib
+SET FDODOCPATH=%~2\Fdo\Docs
 
 :next_param
 shift
@@ -98,34 +99,38 @@ SET FDOACTENVSTUDY="FDO"
 if ("%FDO%")==("") goto env_error
 if not exist "%FDO%" goto env_path_error
 
-if "%TYPEACTIONSLITE%"=="build" goto start_exbuild
-if "%TYPEACTIONSLITE%"=="clean" goto start_exbuild
-if not exist "%FDOINSPATHSLITE%" mkdir "%FDOINSPATHSLITE%"
-if not exist "%FDOBINPATHSLITE%" mkdir "%FDOBINPATHSLITE%"
+if "%TYPEBUILD%"=="Win32" SET INTERMEDIATEDIR="Win32"
+if "%TYPEBUILD%"=="x64" SET INTERMEDIATEDIR="Win64"
+
+if "%TYPEACTION%"=="build" goto start_exbuild
+if "%TYPEACTION%"=="clean" goto start_exbuild
+
+if not exist "%FDOINSPATH%" mkdir "%FDOINSPATH%"
+if not exist "%FDOBINPATH%" mkdir "%FDOBINPATH%"
 
 :start_exbuild
-if "%TYPEACTIONSLITE%"=="clean" SET MSACTIONSLITE=Clean
-if "%TYPEACTIONSLITE%"=="install" goto install_files_SQLite
+if "%TYPEACTION%"=="clean" SET MSACTION=Clean
+if "%TYPEACTION%"=="install" goto install_files_SQLite
 
-echo %MSACTIONSLITE% %TYPEBUILDSLITE% SQLite provider dlls
+echo %MSACTION% %TYPEBUILD% SQLite provider dlls
 SET FDOACTIVEBUILD=%cd%\Src\SQLiteProvider
 cscript //Nologo //job:prepare preparebuilds.wsf
 pushd Src
-msbuild SQLiteProvider_temp.sln /t:%MSACTIONSLITE% /p:Configuration=%TYPEBUILDSLITE% /p:Platform=%TYPEPLATFORMSLITE% /nologo /consoleloggerparameters:NoSummary
+msbuild SQLiteProvider_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if exist SQLiteProvider_temp.sln del /Q /F SQLiteProvider_temp.sln
 popd
 if "%FDOERROR%"=="1" goto error
-if "%TYPEACTIONSLITE%"=="clean" goto end
-if "%TYPEACTIONSLITE%"=="build" goto end
+if "%TYPEACTION%"=="clean" goto end
+if "%TYPEACTION%"=="build" goto end
 
 :install_files_SQLite
-echo copy %TYPEBUILDSLITE% SQLite provider output files
-copy /y "Bin\Win32\%TYPEBUILDSLITE%\SQLiteProvider.dll" "%FDOBINPATHSLITE%"
-copy /y "Bin\Win32\%TYPEBUILDSLITE%\SQLiteProvider.pdb" "%FDOBINPATHSLITE%"
+echo copy %TYPEBUILD% SQLite provider output files
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\SQLiteProvider.dll" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\SQLiteProvider.pdb" "%FDOBINPATH%"
 
 :end
-echo End SLITE %MSACTIONSLITE%
+echo End SLITE %MSACTION%
 exit /B 0
 
 :env_error
@@ -144,7 +149,7 @@ SET FDOERROR=1
 exit /B 1
 
 :error
-echo There was a build error executing action: %MSACTIONSLITE%
+echo There was a build error executing action: %MSACTION%
 exit /B 1
 
 :custom_error
