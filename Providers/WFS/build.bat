@@ -17,16 +17,18 @@ rem License along with this library; if not, write to the Free Software
 rem Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 rem 
 
-SET TYPEACTIONWFS=build
-SET MSACTIONWFS=Build
-SET TYPEBUILDWFS=release
-SET FDOORGPATHWFS=%cd%
-SET FDOINSPATHWFS=%cd%\Fdo
-SET FDOBINPATHWFS=%cd%\Fdo\Bin
-SET FDOINCPATHWFS=%cd%\Fdo\Inc
-SET FDOLIBPATHWFS=%cd%\Fdo\Lib
-SET FDODOCPATHWFS=%cd%\Fdo\Docs
-SET DOCENABLEWFS=skip
+SET TYPEACTION=build
+SET MSACTION=Build
+SET TYPEBUILD=release
+SET TYPEPLATFORM=Win32
+SET INTERMEDIATEDIR=Win32
+SET FDOORGPATH=%cd%
+SET FDOINSPATH=%cd%\Fdo
+SET FDOBINPATH=%cd%\Fdo\Bin
+SET FDOINCPATH=%cd%\Fdo\Inc
+SET FDOLIBPATH=%cd%\Fdo\Lib
+SET FDODOCPATH=%cd%\Fdo\Docs
+SET DOCENABLE=skip
 SET FDOERROR=0
 
 :study_params
@@ -41,6 +43,9 @@ if "%1"=="-outpath" goto get_path
 if "%1"=="-c"       goto get_conf
 if "%1"=="-config"  goto get_conf
 
+if "%1"=="-p"           goto get_platform
+if "%1"=="-platform"    goto get_platform
+
 if "%1"=="-a"       goto get_action
 if "%1"=="-action"  goto get_action
 
@@ -50,33 +55,39 @@ if "%1"=="-docs"    goto get_docs
 goto custom_error
 
 :get_docs
-SET DOCENABLEWFS=%2
+SET DOCENABLE=%2
 if "%2"=="build" goto next_param
 if "%2"=="skip" goto next_param
 goto custom_error
 
 :get_conf 
-SET TYPEBUILDWFS=%2
+SET TYPEBUILD=%2
 if "%2"=="release" goto next_param
 if "%2"=="debug" goto next_param
 goto custom_error
 
 :get_action
-SET TYPEACTIONWFS=%2
+SET TYPEACTION=%2
 if "%2"=="install" goto next_param
 if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
 if "%2"=="clean" goto next_param
 goto custom_error 
 
+:get_platform
+SET TYPEPLATFORM=%2
+if "%2"=="Win32" goto next_param
+if "%2"=="x64" goto next_param
+goto custom_error
+
 :get_path
 if (%2)==() goto custom_error
-SET FDOORGPATHWFS=%~2
-SET FDOINSPATHWFS=%~2\Fdo
-SET FDOBINPATHWFS=%~2\Fdo\Bin
-SET FDOINCPATHWFS=%~2\Fdo\Inc
-SET FDOLIBPATHWFS=%~2\Fdo\Lib
-SET FDODOCPATHWFS=%~2\Fdo\Docs
+SET FDOORGPATH=%~2
+SET FDOINSPATH=%~2\Fdo
+SET FDOBINPATH=%~2\Fdo\Bin
+SET FDOINCPATH=%~2\Fdo\Inc
+SET FDOLIBPATH=%~2\Fdo\Lib
+SET FDODOCPATH=%~2\Fdo\Docs
 
 :next_param
 shift
@@ -87,51 +98,56 @@ goto study_params
 SET FDOACTENVSTUDY="FDO"
 if ("%FDO%")==("") goto env_error
 if not exist "%FDO%" goto env_path_error
+
 SET FDOACTENVSTUDY="FDOTHIRDPARTY"
 if ("%FDOTHIRDPARTY%")==("") goto env_error
 if not exist "%FDOTHIRDPARTY%" goto env_path_error
+
 SET FDOACTENVSTUDY="FDOUTILITIES"
 if ("%FDOUTILITIES%")==("") goto env_error
 if not exist "%FDOUTILITIES%" goto env_path_error
 
-if "%TYPEACTIONWFS%"=="build" goto start_exbuild
-if "%TYPEACTIONWFS%"=="clean" goto start_exbuild
+if "%TYPEBUILD%"=="Win32" SET INTERMEDIATEDIR="Win32"
+if "%TYPEBUILD%"=="x64" SET INTERMEDIATEDIR="Win64"
+
+if "%TYPEACTION%"=="build" goto start_exbuild
+if "%TYPEACTION%"=="clean" goto start_exbuild
+
 if not exist "%FDOINSPATHWFS%" mkdir "%FDOINSPATHWFS%"
-if not exist "%FDOBINPATHWFS%" mkdir "%FDOBINPATHWFS%"
-if not exist "%FDOINCPATHWFS%" mkdir "%FDOINCPATHWFS%"
-if not exist "%FDOLIBPATHWFS%" mkdir "%FDOLIBPATHWFS%"
-if not exist "%FDODOCPATHWFS%" mkdir "%FDODOCPATHWFS%"
+if not exist "%FDOBINPATH%" mkdir "%FDOBINPATH%"
+if not exist "%FDOINCPATH%" mkdir "%FDOINCPATH%"
+if not exist "%FDOLIBPATH%" mkdir "%FDOLIBPATH%"
+if not exist "%FDODOCPATH%" mkdir "%FDODOCPATH%"
 
 :start_exbuild
-if "%TYPEACTIONWFS%"=="clean" SET MSACTIONWFS=Clean
-if "%TYPEACTIONWFS%"=="install" goto install_files_wfs
+if "%TYPEACTION%"=="clean" SET MSACTION=Clean
+if "%TYPEACTION%"=="install" goto install_files_wfs
 
-echo %MSACTIONWFS% %TYPEBUILDWFS% WFS provider dlls
+echo %MSACTION% %TYPEBUILD% WFS provider dlls
 SET FDOACTIVEBUILD=%cd%\Src\WFSOS
 cscript //Nologo //job:prepare preparebuilds.wsf
 pushd Src
-msbuild WFSOS_temp.sln /t:%MSACTIONWFS% /p:Configuration=%TYPEBUILDWFS% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+msbuild WFSOS_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if exist WFSOS_temp.sln del /Q /F WFSOS_temp.sln
 popd
 if "%FDOERROR%"=="1" goto error
-if "%TYPEACTIONWFS%"=="clean" goto end
-if "%TYPEACTIONWFS%"=="build" goto generate_docs
+if "%TYPEACTION%"=="clean" goto end
+if "%TYPEACTION%"=="build" goto generate_docs
 
 :install_files_wfs
-echo copy %TYPEBUILDWFS% WFS provider output files
-copy /y "%FDOUTILITIES%\OWS\Bin\Win32\%TYPEBUILDWFS%\OWS.dll" "%FDOBINPATHWFS%"
-copy /y "%FDOUTILITIES%\OWS\Bin\Win32\%TYPEBUILDWFS%\OWS.pdb" "%FDOBINPATHWFS%"
-copy /y "Bin\Win32\%TYPEBUILDWFS%\WFSProvider.dll" "%FDOBINPATHWFS%"
-copy /y "Bin\Win32\%TYPEBUILDWFS%\WFSProvider.pdb" "%FDOBINPATHWFS%"
-copy /y "Bin\Win32\%TYPEBUILDWFS%\WFSMessage.dll" "%FDOBINPATHWFS%"
-copy /y "Bin\Win32\%TYPEBUILDWFS%\WFSMessage.pdb" "%FDOBINPATHWFS%"
+echo copy %TYPEBUILD% WFS provider output files
+copy /y "%FDOUTILITIES%\OWS\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\OWS.dll" "%FDOBINPATH%"
+copy /y "%FDOUTILITIES%\OWS\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\OWS.pdb" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\WFSProvider.dll" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\WFSProvider.pdb" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\WFSMessage.dll" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\WFSMessage.pdb" "%FDOBINPATH%"
 
 echo copy header files
-rem none
 
 :generate_docs
-if "%DOCENABLEWFS%"=="skip" goto install_docs
+if "%DOCENABLE%"=="skip" goto install_docs
 echo Creating WFS provider html and chm documentation
 if exist "Docs\HTML\WFS" rmdir /S /Q "Docs\HTML\WFS"
 if not exist "Docs\HTML\WFS" mkdir "Docs\HTML\WFS"
@@ -143,13 +159,13 @@ doxygen Doxyfile_WFS
 popd
 
 :install_docs
-if "%TYPEACTIONWFS%"=="build" goto end
-if exist "%FDODOCPATHWFS%\HTML\Providers\WFS" rmdir /S /Q "%FDODOCPATHWFS%\HTML\Providers\WFS"
-if exist Docs\HTML\WFS xcopy/CQEYI Docs\HTML\WFS\* "%FDODOCPATHWFS%\HTML\Providers\WFS"
-if exist "Docs\WFS_Provider_API.chm" copy /y "Docs\WFS_Provider_API.chm" "%FDODOCPATHWFS%"
+if "%TYPEACTION%"=="build" goto end
+if exist "%FDODOCPATH%\HTML\Providers\WFS" rmdir /S /Q "%FDODOCPATH%\HTML\Providers\WFS"
+if exist Docs\HTML\WFS xcopy/CQEYI Docs\HTML\WFS\* "%FDODOCPATH%\HTML\Providers\WFS"
+if exist "Docs\WFS_Provider_API.chm" copy /y "Docs\WFS_Provider_API.chm" "%FDODOCPATH%"
 
 :end
-echo End WFS %MSACTIONWFS%
+echo End WFS %MSACTION%
 exit /B 0
 
 :env_error
@@ -168,7 +184,7 @@ SET FDOERROR=1
 exit /B 1
 
 :error
-echo There was a build error executing action: %MSACTIONWFS%
+echo There was a build error executing action: %MSACTION%
 exit /B 1
 
 :custom_error
@@ -176,11 +192,17 @@ echo The command is not recognized.
 echo Please use the format:
 :help_show
 echo **************************************************************************
-echo build.bat [-h] [-o=OutFolder] [-c=BuildType] [-a=Action] [-d=BuildDocs]
+echo build.bat [-h] 
+echo           [-o=OutFolder] 
+echo           [-c=BuildType]
+echo           [-a=Action] 
+echo           [-p=PlatformType]
+echo           [-d=BuildDocs]
 echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
+echo PlatformType:   -p[latform]=Win32(default), x64
 echo Action:         -a[ction]=build(default), buildinstall, install, clean
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************

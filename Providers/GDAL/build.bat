@@ -17,16 +17,16 @@ rem License along with this library; if not, write to the Free Software
 rem Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 rem 
 
-SET TYPEACTIONRFP=build
-SET MSACTIONRFP=Build
-SET TYPEBUILDRFP=release
-SET FDOORGPATHRFP=%cd%
-SET FDOINSPATHRFP=%cd%\Fdo
-SET FDOBINPATHRFP=%cd%\Fdo\Bin
-SET FDOINCPATHRFP=%cd%\Fdo\Inc
-SET FDOLIBPATHRFP=%cd%\Fdo\Lib
-SET FDODOCPATHRFP=%cd%\Fdo\Docs
-SET DOCENABLERFP=skip
+SET TYPEACTION=build
+SET MSACTION=Build
+SET TYPEBUILD=release
+SET FDOORGPATH=%cd%
+SET FDOINSPATH=%cd%\Fdo
+SET FDOBINPATH=%cd%\Fdo\Bin
+SET FDOINCPATH=%cd%\Fdo\Inc
+SET FDOLIBPATH=%cd%\Fdo\Lib
+SET FDODOCPATH=%cd%\Fdo\Docs
+SET DOCENABLE=skip
 SET FDOERROR=0
 
 :study_params
@@ -50,13 +50,13 @@ if "%1"=="-docs"    goto get_docs
 goto custom_error
 
 :get_docs
-SET DOCENABLERFP=%2
+SET DOCENABLE=%2
 if "%2"=="build" goto next_param
 if "%2"=="skip" goto next_param
 goto custom_error
 
 :get_action
-SET TYPEACTIONRFP=%2
+SET TYPEACTION=%2
 if "%2"=="install" goto next_param
 if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
@@ -64,19 +64,19 @@ if "%2"=="clean" goto next_param
 goto custom_error
 
 :get_conf
-SET TYPEBUILDRFP=%2
+SET TYPEBUILD=%2
 if "%2"=="release" goto next_param
 if "%2"=="debug" goto next_param
 goto custom_error
 
 :get_path
 if (%2)==() goto custom_error
-SET FDOORGPATHRFP=%~2
-SET FDOINSPATHRFP=%~2\Fdo
-SET FDOBINPATHRFP=%~2\Fdo\Bin
-SET FDOINCPATHRFP=%~2\Fdo\Inc
-SET FDOLIBPATHRFP=%~2\Fdo\Lib
-SET FDODOCPATHRFP=%~2\Fdo\Docs
+SET FDOORGPATH=%~2
+SET FDOINSPATH=%~2\Fdo
+SET FDOBINPATH=%~2\Fdo\Bin
+SET FDOINCPATH=%~2\Fdo\Inc
+SET FDOLIBPATH=%~2\Fdo\Lib
+SET FDODOCPATH=%~2\Fdo\Docs
 
 :next_param
 shift
@@ -94,46 +94,46 @@ SET FDOACTENVSTUDY="FDOUTILITIES"
 if ("%FDOUTILITIES%")==("") goto env_error
 if not exist "%FDOUTILITIES%" goto env_path_error
 
-if "%TYPEACTIONRFP%"=="build" goto start_exbuild
-if "%TYPEACTIONRFP%"=="clean" goto start_exbuild
-if not exist "%FDOINSPATHRFP%" mkdir "%FDOINSPATHRFP%"
-if not exist "%FDOBINPATHRFP%" mkdir "%FDOBINPATHRFP%"
-if not exist "%FDOINCPATHRFP%" mkdir "%FDOINCPATHRFP%"
-if not exist "%FDOLIBPATHRFP%" mkdir "%FDOLIBPATHRFP%"
-if not exist "%FDODOCPATHRFP%" mkdir "%FDODOCPATHRFP%"
+if "%TYPEACTION%"=="build" goto start_exbuild
+if "%TYPEACTION%"=="clean" goto start_exbuild
+if not exist "%FDOINSPATH%" mkdir "%FDOINSPATH%"
+if not exist "%FDOBINPATH%" mkdir "%FDOBINPATH%"
+if not exist "%FDOINCPATH%" mkdir "%FDOINCPATH%"
+if not exist "%FDOLIBPATH%" mkdir "%FDOLIBPATH%"
+if not exist "%FDODOCPATH%" mkdir "%FDODOCPATH%"
 
 :start_exbuild
-if "%TYPEACTIONRFP%"=="clean" SET MSACTIONRFP=Clean
-if "%TYPEACTIONRFP%"=="install" goto install_files_rfp
+if "%TYPEACTION%"=="clean" SET MSACTION=Clean
+if "%TYPEACTION%"=="install" goto install_files_rfp
 
-echo %MSACTIONRFP% %TYPEBUILDRFP% GdalFile provider dlls
+echo %MSACTION% %TYPEBUILD% GdalFile provider dlls
 pushd Src
 SET FDOACTIVEBUILD=%cd%\RFP
 cscript //job:prepare ../../../preparebuilds.wsf
-msbuild RFP_temp.sln /t:%MSACTIONRFP% /p:Configuration=%TYPEBUILDRFP% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+msbuild RFP_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if exist RFP_temp.sln del /Q /F RFP_temp.sln
 popd
 if "%FDOERROR%"=="1" goto error
-if "%TYPEACTIONRFP%"=="clean" goto end
-if "%TYPEACTIONRFP%"=="build" goto generate_docs
+if "%TYPEACTION%"=="clean" goto end
+if "%TYPEACTION%"=="build" goto generate_docs
 
 :install_files_rfp
-echo Copy %TYPEBUILDRFP% GdalFile Provider Output Files
-copy /y "Bin\Win32\%TYPEBUILDRFP%\GRFPMessage.dll" "%FDOBINPATHRFP%"
-copy /y "Bin\Win32\%TYPEBUILDRFP%\GRFPMessage.pdb" "%FDOBINPATHRFP%"
-copy /y "Bin\Win32\%TYPEBUILDRFP%\GRFPOverrides.dll" "%FDOBINPATHRFP%"
-copy /y "Bin\Win32\%TYPEBUILDRFP%\GRFPOverrides.pdb" "%FDOBINPATHRFP%"
-copy /y "Bin\Win32\%TYPEBUILDRFP%\GRFPProvider.dll" "%FDOBINPATHRFP%"
-copy /y "Bin\Win32\%TYPEBUILDRFP%\GRFPProvider.pdb" "%FDOBINPATHRFP%"
+echo Copy %TYPEBUILD% GdalFile Provider Output Files
+copy /y "Bin\Win32\%TYPEBUILD%\GRFPMessage.dll" "%FDOBINPATH%"
+copy /y "Bin\Win32\%TYPEBUILD%\GRFPMessage.pdb" "%FDOBINPATH%"
+copy /y "Bin\Win32\%TYPEBUILD%\GRFPOverrides.dll" "%FDOBINPATH%"
+copy /y "Bin\Win32\%TYPEBUILD%\GRFPOverrides.pdb" "%FDOBINPATH%"
+copy /y "Bin\Win32\%TYPEBUILD%\GRFPProvider.dll" "%FDOBINPATH%"
+copy /y "Bin\Win32\%TYPEBUILD%\GRFPProvider.pdb" "%FDOBINPATH%"
 
-copy /y "Lib\Win32\%TYPEBUILDRFP%\GRFPOverrides.lib" "%FDOLIBPATHRFP%"
+copy /y "Lib\Win32\%TYPEBUILD%\GRFPOverrides.lib" "%FDOLIBPATH%"
 
 echo Copy GdalFile SDK Header Files
-xcopy /S /C /Q /R /Y Inc\GdalFile\*.h "%FDOINCPATHRFP%\GdalFile\"
+xcopy /S /C /Q /R /Y Inc\GdalFile\*.h "%FDOINCPATH%\GdalFile\"
 
 :generate_docs
-if "%DOCENABLERFP%"=="skip" goto install_docs
+if "%DOCENABLE%"=="skip" goto install_docs
 echo Creating GDAL provider html and chm documentation
 if exist "Docs\HTML\GDAL" rmdir /S /Q "Docs\HTML\GDAL"
 if not exist "Docs\HTMLGDAL" mkdir "Docs\HTML\GDAL"
@@ -145,13 +145,13 @@ doxygen Doxyfile_GDAL
 popd
 
 :install_docs
-if "%TYPEACTIONRFP%"=="build" goto end
-if exist "%FDODOCPATHRFP%\HTML\Providers\GDAL" rmdir /S /Q "%FDODOCPATHRFP%\HTML\Providers\GDAL"
-if exist Docs\HTML\GDAL xcopy/CQEYI Docs\HTML\GDAL\* "%FDODOCPATHRFP%\HTML\Providers\GDAL"
-if exist "Docs\GDAL_Provider_API.chm" copy /y "Docs\GDAL_Provider_API.chm" "%FDODOCPATHRFP%"
+if "%TYPEACTION%"=="build" goto end
+if exist "%FDODOCPATH%\HTML\Providers\GDAL" rmdir /S /Q "%FDODOCPATH%\HTML\Providers\GDAL"
+if exist Docs\HTML\GDAL xcopy/CQEYI Docs\HTML\GDAL\* "%FDODOCPATH%\HTML\Providers\GDAL"
+if exist "Docs\GDAL_Provider_API.chm" copy /y "Docs\GDAL_Provider_API.chm" "%FDODOCPATH%"
 
 :end
-echo End RFP %MSACTIONRFP%
+echo End RFP %MSACTION%
 exit /B 0
 
 :env_error
@@ -170,7 +170,7 @@ SET FDOERROR=1
 exit /B 1
 
 :error
-echo There was a build error executing action: %MSACTIONRFP%
+echo There was a build error executing action: %MSACTION%
 exit /B 1
 
 :custom_error

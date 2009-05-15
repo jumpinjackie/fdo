@@ -17,14 +17,16 @@ rem License along with this library; if not, write to the Free Software
 rem Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 rem 
 
-SET TYPEACTIONPGIS=build
-SET MSACTIONPGIS=Build
-SET TYPEBUILDPGIS=release
-SET FDOPATHPGIS=%cd%
-SET FDOINSPATHPGIS=%cd%\Fdo
-SET FDOBINPATHPGIS=%cd%\Fdo\Bin
-SET FDOINCPATHPGIS=%cd%\Fdo\Inc
-SET FDOLIBPATHPGIS=%cd%\Fdo\Lib
+SET TYPEACTION=build
+SET MSACTION=Build
+SET TYPEBUILD=release
+SET TYPEPLATFORM=Win32
+SET INTERMEDIATEDIR=Win32
+SET FDOPATH=%cd%
+SET FDOINSPATH=%cd%\Fdo
+SET FDOBINPATH=%cd%\Fdo\Bin
+SET FDOINCPATH=%cd%\Fdo\Inc
+SET FDOLIBPATH=%cd%\Fdo\Lib
 SET FDOERROR=0
 
 :study_params
@@ -39,32 +41,41 @@ if "%1"=="-outpath" goto get_path
 if "%1"=="-c"       goto get_conf
 if "%1"=="-config"  goto get_conf
 
+if "%1"=="-p"           goto get_platform
+if "%1"=="-platform"    goto get_platform
+
 if "%1"=="-a"       goto get_action
 if "%1"=="-action"  goto get_action
 
 goto next_param
 
 :get_action
-SET TYPEACTIONPGIS=%2
+SET TYPEACTION=%2
 if "%2"=="install" goto next_param
 if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
 if "%2"=="clean" goto next_param
 goto next_param
 
+:get_platform
+SET TYPEPLATFORM=%2
+if "%2"=="Win32" goto next_param
+if "%2"=="x64" goto next_param
+goto custom_error
+
 :get_conf
-SET TYPEBUILDPGIS=%2
+SET TYPEBUILD=%2
 if "%2"=="release" goto next_param
 if "%2"=="debug" goto next_param
 goto custom_error
 
 :get_path
 if (%2)==() goto next_param
-SET FDOPATHPGIS=%~2
-SET FDOINSPATHPGIS=%~2\Fdo
-SET FDOBINPATHPGIS=%~2\Fdo\Bin
-SET FDOINCPATHPGIS=%~2\Fdo\Inc
-SET FDOLIBPATHPGIS=%~2\Fdo\Lib
+SET FDOPATH=%~2
+SET FDOINSPATH=%~2\Fdo
+SET FDOBINPATH=%~2\Fdo\Bin
+SET FDOINCPATH=%~2\Fdo\Inc
+SET FDOLIBPATH=%~2\Fdo\Lib
 
 :next_param
 shift
@@ -72,43 +83,46 @@ shift
 goto study_params
 
 :start_build
-if "%TYPEACTIONPGIS%"=="build" goto start_exbuild
-if "%TYPEACTIONPGIS%"=="clean" goto start_exbuild
+if "%TYPEBUILD%"=="Win32" SET INTERMEDIATEDIR="Win32"
+if "%TYPEBUILD%"=="x64" SET INTERMEDIATEDIR="Win64"
+
+if "%TYPEACTION%"=="build" goto start_exbuild
+if "%TYPEACTION%"=="clean" goto start_exbuild
 
 :start_exbuild
-if "%TYPEACTIONPGIS%"=="clean" SET MSACTIONPGIS=Clean
-if "%TYPEACTIONPGIS%"=="install" goto install_files_pgis
+if "%TYPEACTION%"=="clean" SET MSACTION=Clean
+if "%TYPEACTION%"=="install" goto install_files_pgis
 
-echo %MSACTIONPGIS% %TYPEBUILDPGIS% PGIS Provider Dlls
-msbuild Src/PostGis.sln /t:%MSACTIONPGIS% /p:Configuration=%TYPEBUILDPGIS% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+echo %MSACTION% %TYPEBUILD% PGIS Provider Dlls
+msbuild Src/PostGis.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
-if "%TYPEACTIONPGIS%"=="clean" goto end
-if "%TYPEACTIONPGIS%"=="build" goto end
+if "%TYPEACTION%"=="clean" goto end
+if "%TYPEACTION%"=="build" goto end
 
 :install_files_pgis
-if not exist "%FDOINSPATHPGIS%" mkdir "%FDOINSPATHPGIS%"
-if not exist "%FDOBINPATHPGIS%" mkdir "%FDOBINPATHPGIS%"
-if not exist "%FDOINCPATHPGIS%" mkdir "%FDOINCPATHPGIS%"
-if not exist "%FDOLIBPATHPGIS%" mkdir "%FDOLIBPATHPGIS%"
-echo Copy %TYPEBUILDPGIS% PostGIS Provider Output Files
-copy /y "Bin\Win32\%TYPEBUILDPGIS%\PostGISMessage.dll" "%FDOBINPATHPGIS%"
-copy /y "Bin\Win32\%TYPEBUILDPGIS%\PostGISMessage.pdb" "%FDOBINPATHPGIS%"
-copy /y "Bin\Win32\%TYPEBUILDPGIS%\PostGISProvider.dll" "%FDOBINPATHPGIS%"
-copy /y "Bin\Win32\%TYPEBUILDPGIS%\PostGISProvider.pdb" "%FDOBINPATHPGIS%"
-copy /y "Bin\Win32\%TYPEBUILDPGIS%\PostGISOverrides.dll" "%FDOBINPATHPGIS%"
-copy /y "Bin\Win32\%TYPEBUILDPGIS%\PostGISOverrides.pdb" "%FDOBINPATHPGIS%"
-echo Copy %TYPEBUILDPGIS% PostGIS Library Files
-copy /y "Lib\Win32\%TYPEBUILDPGIS%\PostGISOverrides.lib" "%FDOLIBPATHPGIS%"
+if not exist "%FDOINSPATH%" mkdir "%FDOINSPATH%"
+if not exist "%FDOBINPATH%" mkdir "%FDOBINPATH%"
+if not exist "%FDOINCPATH%" mkdir "%FDOINCPATH%"
+if not exist "%FDOLIBPATH%" mkdir "%FDOLIBPATH%"
+echo Copy %TYPEBUILD% PostGIS Provider Output Files
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\PostGISMessage.dll" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\PostGISMessage.pdb" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\PostGISProvider.dll" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\PostGISProvider.pdb" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\PostGISOverrides.dll" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\PostGISOverrides.pdb" "%FDOBINPATH%"
+echo Copy %TYPEBUILD% PostGIS Library Files
+copy /y "Lib\%INTERMEDIATEDIR%\%TYPEBUILD%\PostGISOverrides.lib" "%FDOLIBPATH%"
 echo Copy PostGIS Header Files
-xcopy /S /C /Q /R /Y Inc\PostGIS\*.h "%FDOINCPATHPGIS%\PostGIS\"
+xcopy /S /C /Q /R /Y Inc\PostGIS\*.h "%FDOINCPATH%\PostGIS\"
 
 :end
-echo End PostGIS %MSACTIONPGIS%
+echo End PostGIS %MSACTION%
 exit /B 0
 
 :error
-echo There was a build error executing action: %MSACTIONPGIS%
+echo There was a build error executing action: %MSACTION%
 exit /B 1
 
 :custom_error
@@ -117,11 +131,16 @@ echo Please use the format:
 
 :help_show
 echo **************************************************************************
-echo build.bat [-h] [-o=OutFolder] [-c=BuildType] [-a=Action]
+echo build.bat [-h] 
+echo           [-o=OutFolder] 
+echo           [-c=BuildType]
+echo           [-a=Action] 
+echo           [-p=PlatformType]
 echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
+echo PlatformType:   -p[latform]=Win32(default), x64
 echo Action:         -a[ction]=build(default), buildinstall, install, clean
 echo **************************************************************************
 exit /B 0

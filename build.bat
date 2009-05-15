@@ -239,7 +239,7 @@ if not exist "%FDOORGPATH%" mkdir "%FDOORGPATH%"
 
 :start_exbuild
 SET PROVCALLCMDEXFDO=-o="%FDOORGPATH%" -c=%TYPEBUILD% -p=%TYPEPLATFORM% -a=%TYPEACTION% -d=%DOCENABLE% -py=%PYTHONENABLE%
-SET PROVCALLCMDEXSDF=-o="%FDOORGPATH%" -c=%TYPEBUILD% -p=%TYPEPLATFORM% -a=%TYPEACTION% -d=%DOCENABLE%
+SET PROVCALLCMDEXPLTFRM=-o="%FDOORGPATH%" -c=%TYPEBUILD% -p=%TYPEPLATFORM% -a=%TYPEACTION% -d=%DOCENABLE%
 SET PROVCALLCMDEX=-o="%FDOORGPATH%" -c=%TYPEBUILD% -a=%TYPEACTION% -d=%DOCENABLE%
 
 :rebuild_fdo
@@ -253,7 +253,7 @@ if "%FDOERROR%"=="1" goto error
 if "%SHPENABLE%"=="no" goto rebuild_sdf
 if not exist Providers\SHP\build.bat goto rebuild_sdf
 pushd Providers\SHP
-call build.bat %PROVCALLCMDEX%
+call build.bat %PROVCALLCMDEXPLTFRM%
 popd
 if "%FDOERROR%"=="1" goto error
 
@@ -261,7 +261,7 @@ if "%FDOERROR%"=="1" goto error
 if "%SDFENABLE%"=="no" goto rebuild_wfs
 if not exist Providers\SDF\build.bat goto rebuild_wfs
 pushd Providers\SDF
-call build.bat %PROVCALLCMDEXSDF%
+call build.bat %PROVCALLCMDEXPLTFRM%
 popd
 if "%FDOERROR%"=="1" goto error
 
@@ -269,7 +269,7 @@ if "%FDOERROR%"=="1" goto error
 if "%WFSENABLE%"=="no" goto rebuild_wms
 if not exist Providers\WFS\build.bat goto rebuild_wms
 pushd Providers\WFS
-call build.bat %PROVCALLCMDEX%
+call build.bat %PROVCALLCMDEXPLTFRM%
 popd
 if "%FDOERROR%"=="1" goto error
 
@@ -277,7 +277,7 @@ if "%FDOERROR%"=="1" goto error
 if "%WMSENABLE%"=="no" goto rebuild_arc
 if not exist Providers\WMS\build.bat goto rebuild_arc
 pushd Providers\WMS
-call build.bat %PROVCALLCMDEX%
+call build.bat %PROVCALLCMDEXPLTFRM%
 popd
 if "%FDOERROR%"=="1" goto error
 
@@ -294,7 +294,7 @@ if "%FDOERROR%"=="1" goto error
 if "%ODBCENABLE%"=="no" goto rebuild_mysql
 if not exist Providers\GenericRdbms\Src\ODBC\build.bat goto rebuild_mysql
 pushd Providers\GenericRdbms\Src\ODBC
-call build.bat %PROVCALLCMDEX%
+call build.bat %PROVCALLCMDEXPLTFRM%
 popd
 if "%FDOERROR%"=="1" goto error
 
@@ -303,7 +303,7 @@ if "%MYSQLENABLE%"=="no" goto rebuild_gdal
 if not exist "%FDOMYSQL%" goto rebuild_gdal
 if not exist Providers\GenericRdbms\Src\MySQL\build.bat goto rebuild_gdal
 pushd Providers\GenericRdbms\Src\MySQL
-call build.bat %PROVCALLCMDEX%
+call build.bat %PROVCALLCMDEXPLTFRM%
 popd
 if "%FDOERROR%"=="1" goto error
 
@@ -327,7 +327,7 @@ if "%FDOERROR%"=="1" goto error
 if "%POSTGISENABLE%"=="no" goto rebuild_kingoracle
 if not exist Providers\PostGIS\build.bat goto rebuild_kingoracle
 pushd Providers\PostGIS
-call build.bat %PROVCALLCMDEX%
+call build.bat %PROVCALLCMDEXPLTFRM%
 popd
 if "%FDOERROR%"=="1" goto error
 
@@ -344,7 +344,7 @@ if "%FDOERROR%"=="1" goto error
 if "%SQLSPATIALENABLE%"=="no" goto rebuild_sqlite
 if not exist Providers\GenericRdbms\Src\SQLServerSpatial\build.bat goto rebuild_sqlite
 pushd Providers\GenericRdbms\Src\SQLServerSpatial
-call build.bat %PROVCALLCMDEX%
+call build.bat %PROVCALLCMDEXPLTFRM%
 popd
 if "%FDOERROR%"=="1" goto error
 
@@ -352,7 +352,7 @@ if "%FDOERROR%"=="1" goto error
 if "%SQLITEENABLE%"=="no" goto end
 if not exist Providers\SQLite\build.bat goto end
 pushd Providers\SQLite
-call build.bat %PROVCALLCMDEXSDF%
+call build.bat %PROVCALLCMDEXPLTFRM%
 popd
 if "%FDOERROR%"=="1" goto error
 
