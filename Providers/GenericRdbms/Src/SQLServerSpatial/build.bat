@@ -17,14 +17,16 @@ rem License along with this library; if not, write to the Free Software
 rem Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 rem 
 
-SET TYPEACTIONSQLSPATIAL=build
-SET MSACTIONSQLSPATIAL=Build
-SET TYPEBUILDSQLSPATIAL=release
-SET FDOINSPATHSQLSPATIAL=\Fdo
-SET FDOBINPATHSQLSPATIAL=\Fdo\Bin
-SET FDOINCPATHSQLSPATIAL=\Fdo\Inc
-SET FDOLIBPATHSQLSPATIAL=\Fdo\Lib
-SET DOCENABLESQLSPATIAL=skip
+SET TYPEACTION=build
+SET MSACTION=Build
+SET TYPEBUILD=release
+SET TYPEPLATFORM=Win32
+SET INTERMEDIATEDIR=Win32
+SET FDOINSPATH=\Fdo
+SET FDOBINPATH=\Fdo\Bin
+SET FDOINCPATH=\Fdo\Inc
+SET FDOLIBPATH=\Fdo\Lib
+SET DOCENABLE=skip
 SET FDOERROR=0
 
 :study_params
@@ -39,6 +41,9 @@ if "%1"=="-outpath" goto get_path
 if "%1"=="-c"       goto get_conf
 if "%1"=="-config"  goto get_conf
 
+if "%1"=="-p"           goto get_platform
+if "%1"=="-platform"    goto get_platform
+
 if "%1"=="-a"       goto get_action
 if "%1"=="-action"  goto get_action
 
@@ -48,31 +53,37 @@ if "%1"=="-docs"    goto get_docs
 goto custom_error
 
 :get_docs
-SET DOCENABLESQLSPATIAL=%2
+SET DOCENABLE=%2
 if "%2"=="build" goto next_param
 if "%2"=="skip" goto next_param
 goto custom_error
 
 :get_conf 
-SET TYPEBUILDSQLSPATIAL=%2
+SET TYPEBUILD=%2
 if "%2"=="release" goto next_param
 if "%2"=="debug" goto next_param
 goto custom_error
 
 :get_action
-SET TYPEACTIONSQLSPATIAL=%2
+SET TYPEACTION=%2
 if "%2"=="install" goto next_param
 if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
 if "%2"=="clean" goto next_param
 goto custom_error 
 
+:get_platform
+SET TYPEPLATFORM=%2
+if "%2"=="Win32" goto next_param
+if "%2"=="x64" goto next_param
+goto custom_error
+
 :get_path
 if (%2)==() goto custom_error
-SET FDOINSPATHSQLSPATIAL=%~2\Fdo
-SET FDOBINPATHSQLSPATIAL=%~2\Fdo\Bin
-SET FDOINCPATHSQLSPATIAL=%~2\Fdo\Inc
-SET FDOLIBPATHSQLSPATIAL=%~2\Fdo\Lib
+SET FDOINSPATH=%~2\Fdo
+SET FDOBINPATH=%~2\Fdo\Bin
+SET FDOINCPATH=%~2\Fdo\Inc
+SET FDOLIBPATH=%~2\Fdo\Lib
 SET FDODOCPATHSQLSPATIAL=%~2\Fdo\Docs
 
 :next_param
@@ -84,73 +95,79 @@ goto study_params
 SET FDOACTENVSTUDY="FDO"
 if ("%FDO%")==("") goto env_error
 if not exist "%FDO%" goto env_path_error
+
 SET FDOACTENVSTUDY="FDOTHIRDPARTY"
 if ("%FDOTHIRDPARTY%")==("") goto env_error
 if not exist "%FDOTHIRDPARTY%" goto env_path_error
+
 SET FDOACTENVSTUDY="FDOUTILITIES"
 if ("%FDOUTILITIES%")==("") goto env_error
 if not exist "%FDOUTILITIES%" goto env_path_error
 
-if "%TYPEACTIONSQLSPATIAL%"=="build" goto start_exbuild
-if "%TYPEACTIONSQLSPATIAL%"=="clean" goto start_exbuild
-if not exist "%FDOINSPATHSQLSPATIAL%" mkdir "%FDOINSPATHSQLSPATIAL%"
-if not exist "%FDOBINPATHSQLSPATIAL%" mkdir "%FDOBINPATHSQLSPATIAL%"
-if not exist "%FDOINCPATHSQLSPATIAL%" mkdir "%FDOINCPATHSQLSPATIAL%"
-if not exist "%FDOLIBPATHSQLSPATIAL%" mkdir "%FDOLIBPATHSQLSPATIAL%"
+if "%TYPEBUILD%"=="Win32" SET INTERMEDIATEDIR="Win32"
+if "%TYPEBUILD%"=="x64" SET INTERMEDIATEDIR="Win64"
+
+if "%TYPEACTION%"=="build" goto start_exbuild
+if "%TYPEACTION%"=="clean" goto start_exbuild
+
+if not exist "%FDOINSPATH%" mkdir "%FDOINSPATH%"
+if not exist "%FDOBINPATH%" mkdir "%FDOBINPATH%"
+if not exist "%FDOINCPATH%" mkdir "%FDOINCPATH%"
+if not exist "%FDOLIBPATH%" mkdir "%FDOLIBPATH%"
 if not exist "%FDODOCPATHSQLSPATIAL%" mkdir "%FDODOCPATHSQLSPATIAL%"
-if not exist "%FDOBINPATHSQLSPATIAL%\com" mkdir "%FDOBINPATHSQLSPATIAL%\com"
+if not exist "%FDOBINPATH%\com" mkdir "%FDOBINPATH%\com"
 
 :start_exbuild
-if "%TYPEACTIONSQLSPATIAL%"=="clean" SET MSACTIONSQLSPATIAL=Clean
-if "%TYPEACTIONSQLSPATIAL%"=="install" goto install_files_sqlspatial
+if "%TYPEACTION%"=="clean" SET MSACTION=Clean
+if "%TYPEACTION%"=="install" goto install_files_sqlspatial
 
-echo %MSACTIONSQLSPATIAL% %TYPEBUILDSQLSPATIAL% SQLServer Spatial Provider DLLs
+echo %MSACTION% %TYPEBUILD% SQLServer Spatial Provider DLLs
 SET FDOACTIVEBUILD=%cd%\SQLServerSpatial
 cscript //Nologo //job:prepare ../../preparebuilds.wsf
-msbuild SQLServerSpatial_temp.sln /t:%MSACTIONSQLSPATIAL% /p:Configuration=%TYPEBUILDSQLSPATIAL% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+msbuild SQLServerSpatial_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if exist SQLServerSpatial_temp.sln del /Q /F SQLServerSpatial_temp.sln
 if "%FDOERROR%"=="1" goto error
-if "%TYPEACTIONSQLSPATIAL%"=="clean" goto end
-if "%TYPEACTIONSQLSPATIAL%"=="build" goto generate_docs
+if "%TYPEACTION%"=="clean" goto end
+if "%TYPEACTION%"=="build" goto generate_docs
 
 :install_files_sqlspatial
-echo copy %TYPEBUILDSQLSPATIAL% SQLServer Spatial Provider Output Files
-copy /y "..\..\Bin\Win32\%TYPEBUILDSQLSPATIAL%\RdbmsMsg.dll" "%FDOBINPATHSQLSPATIAL%"
-copy /y "..\..\Bin\Win32\%TYPEBUILDSQLSPATIAL%\RdbmsMsg.pdb" "%FDOBINPATHSQLSPATIAL%"
-copy /y "..\..\Bin\Win32\%TYPEBUILDSQLSPATIAL%\SQLServerSpatialProvider.dll" "%FDOBINPATHSQLSPATIAL%"
-copy /y "..\..\Bin\Win32\%TYPEBUILDSQLSPATIAL%\SQLServerSpatialProvider.pdb" "%FDOBINPATHSQLSPATIAL%"
-copy /y "..\..\Bin\Win32\%TYPEBUILDSQLSPATIAL%\SQLServerSpatialOverrides.dll" "%FDOBINPATHSQLSPATIAL%"
-copy /y "..\..\Bin\Win32\%TYPEBUILDSQLSPATIAL%\SQLServerSpatialOverrides.pdb" "%FDOBINPATHSQLSPATIAL%"
-copy /y "..\..\Bin\Win32\%TYPEBUILDSQLSPATIAL%\RdbmsOverrides.dll" "%FDOBINPATHSQLSPATIAL%"
-copy /y "..\..\Bin\Win32\%TYPEBUILDSQLSPATIAL%\RdbmsOverrides.pdb" "%FDOBINPATHSQLSPATIAL%"
-copy /y "%FDOUTILITIES%\SchemaMgr\Bin\Win32\%TYPEBUILDSQLSPATIAL%\SmMessage.dll" "%FDOBINPATHSQLSPATIAL%"
-copy /y "%FDOUTILITIES%\ExpressionEngine\bin\win32\%TYPEBUILDSQLSPATIAL%\ExpressionEngine.dll" "%FDOBINPATHSQLSPATIAL%"
-copy /y "%FDOUTILITIES%\ExpressionEngine\bin\win32\%TYPEBUILDSQLSPATIAL%\ExpressionEngine.pdb" "%FDOBINPATHSQLSPATIAL%"
-copy /y "%FDOUTILITIES%\ExpressionEngine\lib\win32\%TYPEBUILDSQLSPATIAL%\ExpressionEngine.lib" "%FDOLIBPATHSQLSPATIAL%"
-copy /y "..\..\Lib\Win32\%TYPEBUILDSQLSPATIAL%\RdbmsOverrides.lib" "%FDOLIBPATHSQLSPATIAL%"
-copy /y "..\..\Lib\Win32\%TYPEBUILDSQLSPATIAL%\SQLServerSpatialOverrides.lib" "%FDOLIBPATHSQLSPATIAL%"
-copy /y "..\..\com\fdosys_sys.sql" "%FDOBINPATHSQLSPATIAL%\com"
-copy /y "..\..\com\fdo_sys_idx.sql" "%FDOBINPATHSQLSPATIAL%\com"
-copy /y "..\..\com\fdo_sys.sql" "%FDOBINPATHSQLSPATIAL%\com"
-copy /y "..\..\Managed\bin\%TYPEBUILDSQLSPATIAL%\OSGeo.FDO.Providers.SQLServerSpatial.Overrides.dll" "%FDOBINPATHSQLSPATIAL%"
-copy /y "..\..\Managed\bin\%TYPEBUILDSQLSPATIAL%\OSGeo.FDO.Providers.SQLServerSpatial.Overrides.pdb" "%FDOBINPATHSQLSPATIAL%"
-copy /y "..\..\Managed\bin\%TYPEBUILDSQLSPATIAL%\OSGeo.FDO.Providers.Rdbms.dll" "%FDOBINPATHSQLSPATIAL%"
-copy /y "..\..\Managed\bin\%TYPEBUILDSQLSPATIAL%\OSGeo.FDO.Providers.Rdbms.pdb" "%FDOBINPATHSQLSPATIAL%"
-copy /y "..\..\Managed\bin\%TYPEBUILDSQLSPATIAL%\OSGeo.FDO.Providers.Rdbms.Overrides.dll" "%FDOBINPATHSQLSPATIAL%"
-copy /y "..\..\Managed\bin\%TYPEBUILDSQLSPATIAL%\OSGeo.FDO.Providers.Rdbms.Overrides.pdb" "%FDOBINPATHSQLSPATIAL%"
+echo copy %TYPEBUILD% SQLServer Spatial Provider Output Files
+copy /y "..\..\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\RdbmsMsg.dll" "%FDOBINPATH%"
+copy /y "..\..\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\RdbmsMsg.pdb" "%FDOBINPATH%"
+copy /y "..\..\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\SQLServerSpatialProvider.dll" "%FDOBINPATH%"
+copy /y "..\..\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\SQLServerSpatialProvider.pdb" "%FDOBINPATH%"
+copy /y "..\..\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\SQLServerSpatialOverrides.dll" "%FDOBINPATH%"
+copy /y "..\..\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\SQLServerSpatialOverrides.pdb" "%FDOBINPATH%"
+copy /y "..\..\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\RdbmsOverrides.dll" "%FDOBINPATH%"
+copy /y "..\..\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\RdbmsOverrides.pdb" "%FDOBINPATH%"
+copy /y "%FDOUTILITIES%\SchemaMgr\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\SmMessage.dll" "%FDOBINPATH%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.dll" "%FDOBINPATH%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.pdb" "%FDOBINPATH%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\lib\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.lib" "%FDOLIBPATH%"
+copy /y "..\..\Lib\%INTERMEDIATEDIR%\%TYPEBUILD%\RdbmsOverrides.lib" "%FDOLIBPATH%"
+copy /y "..\..\Lib\%INTERMEDIATEDIR%\%TYPEBUILD%\SQLServerSpatialOverrides.lib" "%FDOLIBPATH%"
+copy /y "..\..\com\fdosys_sys.sql" "%FDOBINPATH%\com"
+copy /y "..\..\com\fdo_sys_idx.sql" "%FDOBINPATH%\com"
+copy /y "..\..\com\fdo_sys.sql" "%FDOBINPATH%\com"
+copy /y "..\..\Managed\bin\%TYPEBUILD%\OSGeo.FDO.Providers.SQLServerSpatial.Overrides.dll" "%FDOBINPATH%"
+copy /y "..\..\Managed\bin\%TYPEBUILD%\OSGeo.FDO.Providers.SQLServerSpatial.Overrides.pdb" "%FDOBINPATH%"
+copy /y "..\..\Managed\bin\%TYPEBUILD%\OSGeo.FDO.Providers.Rdbms.dll" "%FDOBINPATH%"
+copy /y "..\..\Managed\bin\%TYPEBUILD%\OSGeo.FDO.Providers.Rdbms.pdb" "%FDOBINPATH%"
+copy /y "..\..\Managed\bin\%TYPEBUILD%\OSGeo.FDO.Providers.Rdbms.Overrides.dll" "%FDOBINPATH%"
+copy /y "..\..\Managed\bin\%TYPEBUILD%\OSGeo.FDO.Providers.Rdbms.Overrides.pdb" "%FDOBINPATH%"
 
 echo copy header files
-xcopy /S /C /Q /R /Y "..\..\inc\Rdbms\*.h" "%FDOINCPATHSQLSPATIAL%\Rdbms\"
-copy /y "..\..\Inc\Rdbms.h" "%FDOINCPATHSQLSPATIAL%\Rdbms\"
-if exist "%FDOINCPATHSQLSPATIAL%\Rdbms\Override\PostGis" rmdir /S /Q "%FDOINCPATHSQLSPATIAL%\Rdbms\Override\PostGis"
-if exist "%FDOINCPATHSQLSPATIAL%\Rdbms\Override\Oracle" rmdir /S /Q "%FDOINCPATHSQLSPATIAL%\Rdbms\Override\Oracle"
-if exist "%FDOINCPATHSQLSPATIAL%\Rdbms\Override\SqlServer" rmdir /S /Q "%FDOINCPATHSQLSPATIAL%\Rdbms\Override\SqlServer"
-if exist "%FDOINCPATHSQLSPATIAL%\Rdbms\FdoSqlServer.h" del /Q /F "%FDOINCPATHSQLSPATIAL%\Rdbms\FdoSqlServer.h"
-if exist "%FDOINCPATHSQLSPATIAL%\Rdbms\FdoOracle.h" del /Q /F "%FDOINCPATHSQLSPATIAL%\Rdbms\FdoOracle.h"
+xcopy /S /C /Q /R /Y "..\..\inc\Rdbms\*.h" "%FDOINCPATH%\Rdbms\"
+copy /y "..\..\Inc\Rdbms.h" "%FDOINCPATH%\Rdbms\"
+if exist "%FDOINCPATH%\Rdbms\Override\PostGis" rmdir /S /Q "%FDOINCPATH%\Rdbms\Override\PostGis"
+if exist "%FDOINCPATH%\Rdbms\Override\Oracle" rmdir /S /Q "%FDOINCPATH%\Rdbms\Override\Oracle"
+if exist "%FDOINCPATH%\Rdbms\Override\SqlServer" rmdir /S /Q "%FDOINCPATH%\Rdbms\Override\SqlServer"
+if exist "%FDOINCPATH%\Rdbms\FdoSqlServer.h" del /Q /F "%FDOINCPATH%\Rdbms\FdoSqlServer.h"
+if exist "%FDOINCPATH%\Rdbms\FdoOracle.h" del /Q /F "%FDOINCPATH%\Rdbms\FdoOracle.h"
 
 :generate_docs
-if "%DOCENABLESQLSPATIAL%"=="skip" goto install_docs
+if "%DOCENABLE%"=="skip" goto install_docs
 pushd ..\..\
 echo Creating SQLServer Spatial provider html and chm documentation
 if exist "Docs\HTML\SQLServerSpatial" rmdir /S /Q "Docs\HTML\SQLServerSpatial"
@@ -170,7 +187,7 @@ popd
 popd
 
 :install_docs
-if "%TYPEACTIONSQLSPATIAL%"=="build" goto end
+if "%TYPEACTION%"=="build" goto end
 pushd ..\..\
 if exist "%FDODOCPATHSQLSPATIAL%\HTML\Providers\SQLServerSpatial" rmdir /S /Q "%FDODOCPATHSQLSPATIAL%\HTML\Providers\SQLServerSpatial"
 if exist Docs\HTML\SQLServerSpatial xcopy/CQEYI Docs\HTML\SQLServerSpatial\* "%FDODOCPATHSQLSPATIAL%\HTML\Providers\SQLServerSpatial"
@@ -181,7 +198,7 @@ if exist "Docs\SQLServerSpatial_Provider_API_managed.chm" copy /y "Docs\SQLServe
 popd
 
 :end
-echo End SQLServer Spatial %MSACTIONSQLSPATIAL%
+echo End SQLServer Spatial %MSACTION%
 exit /B 0
 
 :env_error
@@ -200,7 +217,7 @@ SET FDOERROR=1
 exit /B 1
 
 :error
-echo There was a build error executing action: %MSACTIONSQLSPATIAL%
+echo There was a build error executing action: %MSACTION%
 exit /B 1
 
 :custom_error

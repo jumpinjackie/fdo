@@ -17,15 +17,15 @@ rem License along with this library; if not, write to the Free Software
 rem Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 rem 
 
-SET TYPEACTIONARCSDE=build
-SET MSACTIONARCSDE=Build
-SET TYPEBUILDARCSDE=release
-SET FDOINSPATHARCSDE=\Fdo
-SET FDOBINPATHARCSDE=\Fdo\Bin
-SET FDOINCPATHARCSDE=\Fdo\Inc
-SET FDOLIBPATHARCSDE=\Fdo\Lib
-SET FDODOCPATHARCSDE=\Fdo\Docs
-SET DOCENABLEARCSDE=skip
+SET TYPEACTION=build
+SET MSACTION=Build
+SET TYPEBUILD=release
+SET FDOINSPATH=\Fdo
+SET FDOBINPATH=\Fdo\Bin
+SET FDOINCPATH=\Fdo\Inc
+SET FDOLIBPATH=\Fdo\Lib
+SET FDODOCPATH=\Fdo\Docs
+SET DOCENABLE=skip
 SET FDOERROR=0
 SET ARCSDEVERSIONACTIVE=9
 
@@ -50,19 +50,19 @@ if "%1"=="-docs"    goto get_docs
 goto custom_error
 
 :get_docs
-SET DOCENABLEARCSDE=%2
+SET DOCENABLE=%2
 if "%2"=="build" goto next_param
 if "%2"=="skip" goto next_param
 goto custom_error
 
 :get_conf 
-SET TYPEBUILDARCSDE=%2
+SET TYPEBUILD=%2
 if "%2"=="release" goto next_param
 if "%2"=="debug" goto next_param
 goto custom_error
 
 :get_action
-SET TYPEACTIONARCSDE=%2
+SET TYPEACTION=%2
 if "%2"=="install" goto next_param
 if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
@@ -71,11 +71,11 @@ goto custom_error
 
 :get_path
 if (%2)==() goto custom_error
-SET FDOINSPATHARCSDE=%~2\Fdo
-SET FDOBINPATHARCSDE=%~2\Fdo\Bin
-SET FDOINCPATHARCSDE=%~2\Fdo\Inc
-SET FDOLIBPATHARCSDE=%~2\Fdo\Lib
-SET FDODOCPATHARCSDE=%~2\Fdo\Docs
+SET FDOINSPATH=%~2\Fdo
+SET FDOBINPATH=%~2\Fdo\Bin
+SET FDOINCPATH=%~2\Fdo\Inc
+SET FDOLIBPATH=%~2\Fdo\Lib
+SET FDODOCPATH=%~2\Fdo\Docs
 
 :next_param
 shift
@@ -96,14 +96,14 @@ SET FDOACTENVSTUDY="SDEHOME"
 if ("%SDEHOME%")==("") goto env_error
 if not exist "%SDEHOME%" goto env_path_error
 
-if "%TYPEACTIONARCSDE%"=="build" goto start_setbuild
-if "%TYPEACTIONARCSDE%"=="clean" goto start_setbuild
-if not exist "%FDOINSPATHARCSDE%" mkdir "%FDOINSPATHARCSDE%"
-if not exist "%FDOBINPATHARCSDE%" mkdir "%FDOBINPATHARCSDE%"
-if not exist "%FDOLIBPATHARCSDE%" mkdir "%FDOLIBPATHARCSDE%"
-if not exist "%FDOINCPATHARCSDE%" mkdir "%FDOINCPATHARCSDE%"
-if not exist "%FDOLIBPATHARCSDE%" mkdir "%FDOLIBPATHARCSDE%"
-if not exist "%FDODOCPATHARCSDE%" mkdir "%FDODOCPATHARCSDE%"
+if "%TYPEACTION%"=="build" goto start_setbuild
+if "%TYPEACTION%"=="clean" goto start_setbuild
+if not exist "%FDOINSPATH%" mkdir "%FDOINSPATH%"
+if not exist "%FDOBINPATH%" mkdir "%FDOBINPATH%"
+if not exist "%FDOLIBPATH%" mkdir "%FDOLIBPATH%"
+if not exist "%FDOINCPATH%" mkdir "%FDOINCPATH%"
+if not exist "%FDOLIBPATH%" mkdir "%FDOLIBPATH%"
+if not exist "%FDODOCPATH%" mkdir "%FDODOCPATH%"
 
 :start_setbuild
 if exist "%SDEHOME%\bin\sde.dll" SET SDEVER_ARCUNITTEST=92
@@ -111,49 +111,49 @@ if exist "%SDEHOME%\bin\sde91.dll" SET SDEVER_ARCUNITTEST=91
 
 if exist "%FDOTHIRDPARTY%\ESRI\ArcSDEClient91\Windows\bin\sde91.dll" SET ARCSDEVERSIONACTIVE=%ARCSDEVERSIONACTIVE%1
 if exist "%FDOTHIRDPARTY%\ESRI\ArcSDEClient92\Windows\bin\sde.dll" SET ARCSDEVERSIONACTIVE=%ARCSDEVERSIONACTIVE%2
-if "%ARCSDEVERSIONACTIVE%"=="9" SET ARCSDEVERSIONACTIVE=%TYPEBUILDARCSDE%%SDEVER_ARCUNITTEST%Only
-if "%ARCSDEVERSIONACTIVE%"=="912" SET ARCSDEVERSIONACTIVE=%TYPEBUILDARCSDE%
-if "%ARCSDEVERSIONACTIVE%"=="91" SET ARCSDEVERSIONACTIVE=%TYPEBUILDARCSDE%91Only
-if "%ARCSDEVERSIONACTIVE%"=="92" SET ARCSDEVERSIONACTIVE=%TYPEBUILDARCSDE%92Only
+if "%ARCSDEVERSIONACTIVE%"=="9" SET ARCSDEVERSIONACTIVE=%TYPEBUILD%%SDEVER_ARCUNITTEST%Only
+if "%ARCSDEVERSIONACTIVE%"=="912" SET ARCSDEVERSIONACTIVE=%TYPEBUILD%
+if "%ARCSDEVERSIONACTIVE%"=="91" SET ARCSDEVERSIONACTIVE=%TYPEBUILD%91Only
+if "%ARCSDEVERSIONACTIVE%"=="92" SET ARCSDEVERSIONACTIVE=%TYPEBUILD%92Only
 
-if "%TYPEACTIONARCSDE%"=="clean" SET MSACTIONARCSDE=Clean
-if "%TYPEACTIONARCSDE%"=="install" goto install_files_ArcSDE
+if "%TYPEACTION%"=="clean" SET MSACTION=Clean
+if "%TYPEACTION%"=="install" goto install_files_ArcSDE
 
-echo %MSACTIONARCSDE% %TYPEBUILDARCSDE% ArcSDE provider dlls
+echo %MSACTION% %TYPEBUILD% ArcSDE provider dlls
 SET FDOACTIVEBUILD=%cd%\Src\ArcSDE
 cscript //Nologo //job:prepare preparebuilds.wsf
 pushd Src
 
-msbuild ArcSDE_temp.sln /t:%MSACTIONARCSDE% /p:Configuration=%ARCSDEVERSIONACTIVE% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+msbuild ArcSDE_temp.sln /t:%MSACTION% /p:Configuration=%ARCSDEVERSIONACTIVE% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
 
 SET FDOERROR=%errorlevel%
 if exist ArcSDE_temp.sln del /Q /F ArcSDE_temp.sln
 popd
 if "%FDOERROR%"=="1" goto error
-if "%TYPEACTIONARCSDE%"=="clean" goto end
-if "%TYPEACTIONARCSDE%"=="build" goto generate_docs
+if "%TYPEACTION%"=="clean" goto end
+if "%TYPEACTION%"=="build" goto generate_docs
 
 :install_files_ArcSDE
-echo copy %TYPEBUILDARCSDE% ArcSDE provider output files
-copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEMessage.dll" "%FDOBINPATHARCSDE%"
-copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEMessage.pdb" "%FDOBINPATHARCSDE%"
-copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider.dll" "%FDOBINPATHARCSDE%"
-copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider.pdb" "%FDOBINPATHARCSDE%"
-copy /y "%FDOUTILITIES%\ExpressionEngine\bin\win32\%TYPEBUILDARCSDE%\ExpressionEngine.dll" "%FDOBINPATHARCSDE%"
-copy /y "%FDOUTILITIES%\ExpressionEngine\bin\win32\%TYPEBUILDARCSDE%\ExpressionEngine.pdb" "%FDOBINPATHARCSDE%"
-copy /y "%FDOUTILITIES%\ExpressionEngine\lib\win32\%TYPEBUILDARCSDE%\ExpressionEngine.lib" "%FDOLIBPATHARCSDE%"
-if exist "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider91.dll" copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider91.dll" "%FDOBINPATHARCSDE%"
-if exist "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider91.pdb" copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider91.pdb" "%FDOBINPATHARCSDE%"
-if exist "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider92.dll" copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider92.dll" "%FDOBINPATHARCSDE%"
-if exist "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider92.pdb" copy /y "Bin\Win32\%TYPEBUILDARCSDE%\ArcSDEProvider92.pdb" "%FDOBINPATHARCSDE%"
+echo copy %TYPEBUILD% ArcSDE provider output files
+copy /y "Bin\Win32\%TYPEBUILD%\ArcSDEMessage.dll" "%FDOBINPATH%"
+copy /y "Bin\Win32\%TYPEBUILD%\ArcSDEMessage.pdb" "%FDOBINPATH%"
+copy /y "Bin\Win32\%TYPEBUILD%\ArcSDEProvider.dll" "%FDOBINPATH%"
+copy /y "Bin\Win32\%TYPEBUILD%\ArcSDEProvider.pdb" "%FDOBINPATH%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\bin\win32\%TYPEBUILD%\ExpressionEngine.dll" "%FDOBINPATH%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\bin\win32\%TYPEBUILD%\ExpressionEngine.pdb" "%FDOBINPATH%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\lib\win32\%TYPEBUILD%\ExpressionEngine.lib" "%FDOLIBPATH%"
+if exist "Bin\Win32\%TYPEBUILD%\ArcSDEProvider91.dll" copy /y "Bin\Win32\%TYPEBUILD%\ArcSDEProvider91.dll" "%FDOBINPATH%"
+if exist "Bin\Win32\%TYPEBUILD%\ArcSDEProvider91.pdb" copy /y "Bin\Win32\%TYPEBUILD%\ArcSDEProvider91.pdb" "%FDOBINPATH%"
+if exist "Bin\Win32\%TYPEBUILD%\ArcSDEProvider92.dll" copy /y "Bin\Win32\%TYPEBUILD%\ArcSDEProvider92.dll" "%FDOBINPATH%"
+if exist "Bin\Win32\%TYPEBUILD%\ArcSDEProvider92.pdb" copy /y "Bin\Win32\%TYPEBUILD%\ArcSDEProvider92.pdb" "%FDOBINPATH%"
 
 echo copy header files
-xcopy /C /Q /R /Y /I "%FDOUTILITIES%\ExpressionEngine\Inc\*.h" "%FDOINCPATHARCSDE%\ExpressionEngine"
-del /Q/F "%FDOINCPATHARCSDE%\ExpressionEngine\FdoExpressionEngineImp.h"
-xcopy /C /Q /R /Y /I "%FDOUTILITIES%\ExpressionEngine\Inc\Util\*.h" "%FDOINCPATHARCSDE%\ExpressionEngine\Util"
+xcopy /C /Q /R /Y /I "%FDOUTILITIES%\ExpressionEngine\Inc\*.h" "%FDOINCPATH%\ExpressionEngine"
+del /Q/F "%FDOINCPATH%\ExpressionEngine\FdoExpressionEngineImp.h"
+xcopy /C /Q /R /Y /I "%FDOUTILITIES%\ExpressionEngine\Inc\Util\*.h" "%FDOINCPATH%\ExpressionEngine\Util"
 
 :generate_docs
-if "%DOCENABLEARCSDE%"=="skip" goto install_docs
+if "%DOCENABLE%"=="skip" goto install_docs
 echo Creating ArcSDE provider html and chm documentation
 if exist "Docs\HTML\ArcSDE" rmdir /S /Q "Docs\HTML\ArcSDE"
 if not exist "Docs\HTML\ArcSDE" mkdir "Docs\HTML\ArcSDE"
@@ -165,13 +165,13 @@ doxygen Doxyfile_ArcSDE
 popd
 
 :install_docs
-if "%TYPEACTIONARCSDE%"=="build" goto end
-if exist "%FDODOCPATHARCSDE%\HTML\Providers\ArcSDE" rmdir /S /Q "%FDODOCPATHARCSDE%\HTML\Providers\ArcSDE"
-if exist Docs\HTML\ArcSDE xcopy/CQEYI Docs\HTML\ArcSDE\* "%FDODOCPATHARCSDE%\HTML\Providers\ArcSDE"
-if exist "Docs\ArcSDE_Provider_API.chm" copy /y "Docs\ArcSDE_Provider_API.chm" "%FDODOCPATHARCSDE%"
+if "%TYPEACTION%"=="build" goto end
+if exist "%FDODOCPATH%\HTML\Providers\ArcSDE" rmdir /S /Q "%FDODOCPATH%\HTML\Providers\ArcSDE"
+if exist Docs\HTML\ArcSDE xcopy/CQEYI Docs\HTML\ArcSDE\* "%FDODOCPATH%\HTML\Providers\ArcSDE"
+if exist "Docs\ArcSDE_Provider_API.chm" copy /y "Docs\ArcSDE_Provider_API.chm" "%FDODOCPATH%"
 
 :end
-echo End ArcSDE %MSACTIONARCSDE%
+echo End ArcSDE %MSACTION%
 exit /B 0
 
 :env_error
@@ -190,7 +190,7 @@ SET FDOERROR=1
 exit /B 1
 
 :error
-echo There was a build error executing action: %MSACTIONARCSDE%
+echo There was a build error executing action: %MSACTION%
 exit /B 1
 
 :custom_error
