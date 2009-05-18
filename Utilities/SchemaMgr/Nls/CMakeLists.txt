@@ -8,7 +8,7 @@ get_target_property( MKCATDEFS_EXE mkcatdefs LOCATION )
 
 add_custom_command(
                 OUTPUT "${messagefile}"
-				COMMAND ${MCTOMSF_EXE} ARGS ${CMAKE_CURRENT_SOURCE_DIR}/SmMessage.mc ${CMAKE_CURRENT_BINARY_DIR}/SmMessage.msf \"*\" FDO
+				COMMAND ${MCTOMSF_EXE} ARGS ${CMAKE_CURRENT_SOURCE_DIR}/SmMessage.mc ${CMAKE_CURRENT_BINARY_DIR}/SmMessage.msf \"*\" SmMessage
 				COMMAND ${MKCATDEFS_EXE} ARGS SmMessage SmMessage.msf > SmMessage.tmp
 				COMMAND gencat ARGS  ${CMAKE_CURRENT_BINARY_DIR}/../../nls/linux/en_US/SmMessage.cat SmMessage.tmp
 				COMMAND sed ARGS -i "\"/#include/d\""  SmMessage_msg.h

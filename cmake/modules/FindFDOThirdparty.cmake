@@ -1,4 +1,4 @@
-# This file is strictly to check and enable syetm or internal Thridparty
+# This file is strictly to check and enable system or internal Thirdparty
 # libraries
 
 # Check GDAL or add ThirdParty

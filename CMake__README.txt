@@ -52,14 +52,28 @@ II. Usage
 III. Using internal provided Thirdparty libraries
 	Since fdo main source has a Thirdparty internal  dependencies source provided, if you desire
 	compile and use internal dependencies, add the follow definitions in the cmake command line call:
-	- -DINTERNAL_<DEPENDENCY>=TRUE
+	-DINTERNAL_<DEPENDENCY>=TRUE
 	Where DEPENDENCY can be one of this ( case sensitive ):
 	- OPENSSL - openssl library
 	- GDAL - gdal library
 	- CPPUNIT - Olf cppunit version
 	- CURL - curl library
 	- SQLITE - Sqlite 3
-	- BOOST - Boos libraries
+	- BOOST - Boost libraries
+	- POSTGRESQL - postgresql ( for PostGis provider )
+
+IV. Compiling Providers
+	Providers can be called directly from cmake commandline, no need to compile separated anymore if you
+	are doing in source build
+	
+	If you desire compile some provider(s), add the follow definitions in the cmake command line call:
+	-DWITH_PROVIDERS="<provider1>;<provider2>"
+	Where <provider> is the name of provider you want to compile ( case sensitive matching subdirectory name ).
+	The comma and ; are required. Currently PostGIS provider is ported, to compile line would be:
+	-DWITH_PROVIDERS="PostGIS"
+
+	With more providers:
+	-DWITH_PROVIDERS="PostGIS;GDAL;OGR"
 
 
 Help and reports to Helio Castro <helio@kde.org>
