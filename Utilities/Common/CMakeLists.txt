@@ -7,7 +7,7 @@ if( LINUX )
 	add_definitions( -DLINUX_IA32 -pthread -DHAVE_GEOM_INFO_TYPE )
 endif( LINUX )
 
-set( ProvidersCommon_STAT_SRCS
+set( ProvidersCommon_SRCS
    Src/FdoCommonNlsUtil.cpp
    Src/FdoCommonOSUtil.cpp
    Src/FdoCommonSchemaUtil.cpp
@@ -28,6 +28,11 @@ set( ProvidersCommon_STAT_SRCS
    Src/Parse/yyConstraint.cpp
 )
 
-add_library( ProvidersCommon STATIC ${ProvidersCommon_STAT_SRCS} )
-add_dependencies( ProvidersCommon FDOMessage )
-#set_target_properties( ProvidersCommon PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
+add_library( ProvidersCommon SHARED ${ProvidersCommon_SRCS} )
+add_dependencies( ProvidersCommon FDO FDOMessage )
+target_link_libraries( ProvidersCommon
+	FDO
+	)
+
+set_target_properties( ProvidersCommon PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
+install( TARGETS ProvidersCommon DESTINATION ${LIB_INSTALL_DIR} )

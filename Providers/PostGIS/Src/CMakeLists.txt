@@ -13,6 +13,7 @@ include_directories(
 	)
 
 add_subdirectory( Message )
+add_subdirectory( Overrides )
 
 #----------- Overrides
 
@@ -32,6 +33,7 @@ add_dependencies( PostGISOverrides PostGisMessage )
 
 target_link_libraries( PostGISOverrides
 	ProvidersCommon
+	ExpressionEngine
 	FDO
  )
 
