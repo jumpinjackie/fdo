@@ -16,10 +16,7 @@ link_directories( ${Boost_LIBRARY_DIRS} )
 add_library( FdoOws SHARED ${FdoOws_LIB_SRCS} )
 
 target_link_libraries( FdoOws
-	FdoOwsSrc
 	FDO
-	FDOGeometry
-	FDOCommon
 	ProvidersCommon
 	boost_thread-mt
 	${CURL_LIBRARIES}
@@ -29,5 +26,5 @@ target_link_libraries( FdoOws
  )
 
 set_target_properties( FdoOws PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
-# install( TARGETS FdoOws DESTINATION ${LIB_INSTALL_DIR} )
+install( TARGETS FdoOws DESTINATION ${LIB_INSTALL_DIR} )
 

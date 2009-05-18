@@ -92,4 +92,4 @@ target_link_libraries( ExpressionEngine
  )
 
 set_target_properties( ExpressionEngine PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
-#install( TARGETS ExpressionEngine DESTINATION ${LIB_INSTALL_DIR} )
+install( TARGETS ExpressionEngine DESTINATION ${LIB_INSTALL_DIR} )
