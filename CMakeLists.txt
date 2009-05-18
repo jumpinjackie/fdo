@@ -8,7 +8,6 @@ cmake_policy( SET CMP0005 OLD )
 # Look first in internal modules
 set(CMAKE_MODULE_PATH 
 	${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
-	${CMAKE_CURRENT_BINARY_DIR}/cmake/modules
 	)
 
 # Make CPack available to easy generate binary packages
@@ -29,7 +28,6 @@ set( FDO ${CMAKE_CURRENT_SOURCE_DIR}/Fdo )
 set( FDOTHIRDPARTY ${CMAKE_CURRENT_SOURCE_DIR}/Thirdparty )
 set( FDOUTILITIES ${CMAKE_CURRENT_SOURCE_DIR}/Utilities )
 
-# Global definitions ( used by all sources )
 if( UNIX )
 	add_definitions( -DFULLPROTO -D__USE_GNU -DLINUX -fPIC )
 endif( UNIX )
@@ -44,6 +42,14 @@ add_subdirectory( Thirdparty )
 add_subdirectory( Fdo )
 add_subdirectory( Utilities )
 
+# Providers compiled internally are optional and is not added if
+# Providers directory not exists
+# Correct syntax is: -DWITH_PROVIDERS="<provider1>;<provider2>;.." ( comma required )
+# Ex. -DWITH_PROVIDERS="PostGIS;GDAL"
+macro_optional_add_subdirectory( Providers )
+
+
 install(FILES providers.xml DESTINATION ${LIB_INSTALL_DIR} )
 configure_file( cmake/modules/FindFDO.cmake.tmpl ${CMAKE_CURRENT_BINARY_DIR}/cmake/modules/FindFDO.cmake @ONLY )
+# Install the global template, not the internal one used for whole source build
 install( FILES ${CMAKE_CURRENT_BINARY_DIR}/cmake/modules/FindFDO.cmake DESTINATION ${CMAKE_ROOT}/Modules )

@@ -1,3 +1,11 @@
+# extra macros 
+include(MacroOptionalAddSubdirectory)
+
+# Set a core build flag to enable Providers know that building are 
+# done inside main core source, and not standalone
+set( FDO_CORE_BUILD TRUE )
+
+# Global definitions ( used by all sources )
 # Check if is a 64 bits install and use user defined LIB_SUFFIX
 if( UNIX )
 	set( LIB_SUFFIX "" CACHE STRING "Define suffix of directory name (32/64)" )
