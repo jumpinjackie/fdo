@@ -20,6 +20,7 @@
 #include "stdafx.h"
 
 #include <math.h>
+#include <stdio.h>
 
 #ifdef _WIN32
 #include "mbstring.h" // for multibyte functions
