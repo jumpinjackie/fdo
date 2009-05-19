@@ -241,6 +241,6 @@ void doLine( FILE* outFp, char* buffer )
 
     outBuffer[j++] = 0;
 
-    fprintf( outFp, outBuffer );
+    fprintf( outFp, "%s", outBuffer );
 }
 
