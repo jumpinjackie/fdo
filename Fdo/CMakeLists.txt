@@ -6,4 +6,6 @@ include_directories(
 add_subdirectory( Unmanaged ) 
 add_subdirectory( Install ) 
 add_subdirectory( Docs )
-add_subdirectory( UnitTest )
+if( CPPUNIT_FOUND )
+	add_subdirectory( UnitTest )
+endif( CPPUNIT_FOUND )

@@ -25,10 +25,12 @@ endif( NOT INTERNAL_APACHE )
 
 # Check for cppunit or ThirdParty
 if( NOT INTERNAL_CPPUNIT )
+	find_package( CppUnit )
 else( NOT INTERNAL_CPPUNIT )
 	set( LOCAL_CPPUNIT TRUE )
 	set( CPPUNIT_LIBRARY_DIR  ${FDOTHIRDPARTY}/linux/cppunit/lib )
 	set( CPPUNIT_INCLUDE_DIR  ${FDOTHIRDPARTY}/linux/cppunit/include )
+	set( CPPUNIT_FOUND TRUE )
 	mark_as_advanced( CPPUNIT_LIBRARY_DIR CPPUNIT_INCLUDE_DIR )
 endif( NOT INTERNAL_CPPUNIT )
 
