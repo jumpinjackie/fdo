@@ -17,6 +17,10 @@
  */
 
 #include "stdafx.h"
+#include <Sm/Ph/Mgr.h>
+#include <Sm/Ph/DbObject.h>
+#include <Sm/Ph/Owner.h>
+#include <Sm/Ph/ColumnCollection.h>
 #include <Sm/Ph/Mt/ClassTableJoin.h>
 
 FdoSmPhMtClassTableJoin::FdoSmPhMtClassTableJoin(
