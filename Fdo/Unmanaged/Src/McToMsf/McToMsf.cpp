@@ -144,19 +144,19 @@ bool doPass( char* inFileName, FILE* outFile, char* prefix, char* catalogue, cha
                 if ( passNum == 1 && (setError == NULL || msgNum > 0) ) {
                     // Write the message id (no \n since message
                     // text is on same line).
-                    fprintf( outFile, buffer2 );
+                    fprintf( outFile, "%s", buffer2 );
                     state = 1;
                 }
                 else if ( passNum == 2 && setError && msgNum == 0 ) {
                     // Handle all "9 error" messages in pass 2.
                     if ( !errHdgWritten ) {
-                        fprintf( outFile, "\n$set 9 Error Handler Messages\n" );
+                        fprintf( outFile, "%s", "\n$set 9 Error Handler Messages\n" );
                         errHdgWritten = true;
                     }
 
                     // Write the message id (no \n since message
                     // text is on same line).
-                    fprintf( outFile, buffer2 );
+                    fprintf( outFile, "%s", buffer2 );
                     state = 1;
                 }
             }
