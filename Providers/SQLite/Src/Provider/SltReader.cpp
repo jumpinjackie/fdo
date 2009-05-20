@@ -622,7 +622,7 @@ bool SltReader::ReadNext()
                 //to skip the initialization as well (it would lock the table again without
                 //it being freed, since we are not going to finish the previous step
                 //which would have freed the previous lock.
-                v->pc = 5;
+                v->pc = 4;
             }
             else
             {

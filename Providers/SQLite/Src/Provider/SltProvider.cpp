@@ -188,8 +188,7 @@ void SltConnection::CreateDatabase()
     //create the database
     //TODO: this will also work if the database exists -- in which 
     //case it will open it.
-    if( sqlite3_open(file.c_str(), &tmpdb
-        SQLITE_ISOLATE_PASS_MPARAM_SMM(0)) != SQLITE_OK )
+    if( sqlite3_open(file.c_str(), &tmpdb) != SQLITE_OK )
     {
         std::wstring err = std::wstring(L"Failed to open or create: ") + dsw;
         throw FdoCommandException::Create(err.c_str());
@@ -275,17 +274,12 @@ FdoConnectionState SltConnection::Open()
     //due to interleaved reads and writes.
 
     //Allow sharing of memory caches between the reading and writing connections
-#if !defined(SQLITE_ENABLE_ISOLATE_CONNECTIONS) && !defined(SQLITE_OMIT_SHARED_CACHE)
     int rc = sqlite3_enable_shared_cache(1);
 
     if (rc != SQLITE_OK)
         fprintf(stderr, "Failed to enable shared cache.\n");
-#else
-    int rc = SQLITE_OK;
-#endif    
     //Open the Read connection
-    if( sqlite3_open(file.c_str(), &m_dbRead
-        SQLITE_ISOLATE_PASS_MPARAM_SMM(0)) != SQLITE_OK )
+    if( sqlite3_open(file.c_str(), &m_dbRead) != SQLITE_OK )
     {
         m_dbRead = NULL;
         std::wstring err = std::wstring(L"Failed to open ") + dsw;
@@ -293,16 +287,9 @@ FdoConnectionState SltConnection::Open()
     }
 
     rc = sqlite3_exec(m_dbRead, "PRAGMA read_uncommitted=1;", NULL, NULL, NULL);
-#ifdef SQLITE_ENABLE_ISOLATE_CONNECTIONS
-#ifndef SQLITE_OMIT_SHARED_CACHE
-    sqlite3_smm* smm = sqlite3_enable_shared_cache(1, m_dbRead);
-#else
-    sqlite3_smm* smm = NULL;
-#endif
-#endif
+    
     //Open the Write connection
-    if( sqlite3_open(file.c_str(), &m_dbWrite
-        SQLITE_ISOLATE_PASS_MPARAM_SMM(smm)) != SQLITE_OK )
+    if( sqlite3_open(file.c_str(), &m_dbWrite) != SQLITE_OK )
     {
         sqlite3_close(m_dbRead);
         m_dbRead = m_dbWrite = NULL;
@@ -1593,8 +1580,7 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
 
     //create a temporary table to hold return result
     sqlite3* db = NULL;
-    int rc = sqlite3_open(":memory:", &db
-      SQLITE_ISOLATE_PASS_MPARAM_SMM(0));
+    int rc = sqlite3_open(":memory:", &db);
 
     sqlite3_stmt* stmt;
     const char* tail = NULL;
@@ -1613,8 +1599,7 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
         rc = sqlite3_exec(db, sql.c_str(), NULL, NULL, &err);
 
         if (rc)
-            sqlite3_free(err
-              SQLITE_ISOLATE_PASS_MPARAM(db));
+            sqlite3_free(err);
 
         //insert into the temporary table
         //TODO: some day we should check the error codes...
@@ -1648,8 +1633,7 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
         rc = sqlite3_exec(db, sql.c_str(), NULL, NULL, &err);
 
         if (rc)
-            sqlite3_free(err
-              SQLITE_ISOLATE_PASS_MPARAM(db));
+            sqlite3_free(err);
 
         //insert into the temporary table
         //TODO: some day we should check the error codes...
