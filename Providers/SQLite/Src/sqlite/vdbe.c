@@ -1116,7 +1116,8 @@ case OP_ResultRow: {
   */
   pMem = p->pResultSet = &p->aMem[pOp->p1];
   for(i=0; i<pOp->p2; i++){
-    sqlite3VdbeMemNulTerminate(&pMem[i]);
+    if (!p->fdo)
+      sqlite3VdbeMemNulTerminate(&pMem[i]);
     storeTypeInfo(&pMem[i], encoding);
     REGISTER_TRACE(pOp->p1+i, &pMem[i]);
   }
@@ -2072,6 +2073,7 @@ case OP_Column: {
     int offset;      /* Offset into the data */
     int szHdrSz;     /* Size of the header size field at start of record */
     int avail = 0;   /* Number of bytes of available data */
+    int lastField;   /* Up to which field should we compute the row offsets */
 
     assert(aType);
     pC->aOffset = aOffset = &aType[nField];
@@ -2081,6 +2083,8 @@ case OP_Column: {
     /* Figure out how many bytes are in the header */
     if( zRec ){
       zData = zRec;
+      lastField = p2; /* If the row does not span pages, we will compute offsets only up
+                         to the row that is currently needed, deferring any subsequent ones */
     }else{
       if( pC->isIndex ){
         zData = (char*)sqlite3BtreeKeyFetch(pCrsr, &avail);
@@ -2095,8 +2099,12 @@ case OP_Column: {
       if( avail>=payloadSize ){
         zRec = zData;
         pC->aRow = (u8*)zData;
+        lastField = p2; /* If the row does not span pages, we will compute offsets only up
+                           to the row that is currently needed, deferring any subsequent ones */
       }else{
         pC->aRow = 0;
+        lastField = nField-1; /* If the header spans multiple pages, we will compute all row offsets
+                               in one go, in order to save fetching the header again */
       }
     }
     /* The following assert is true in all cases accept when
@@ -2127,7 +2135,7 @@ case OP_Column: {
     ** column and aOffset[i] will contain the offset from the beginning
     ** of the record to the start of the data for the i-th column
     */
-    for(i=0; i<nField; i++){
+    for(i=0; i<=lastField; i++){
       if( zIdx<zEndHdr ){
         aOffset[i] = offset;
         zIdx += getVarint32(zIdx, aType[i]);
@@ -2142,6 +2150,13 @@ case OP_Column: {
         aOffset[i] = 0;
       }
     }
+    
+    /* Remember where we left off with column decoding
+       so that we can pick up from there if another column is needed later */
+    pC->lastcolIdx = lastField;
+    pC->lastzIdx = zIdx;
+    pC->lastOffset = offset;
+    
     sqlite3VdbeMemRelease(&sMem);
     sMem.flags = MEM_Null;
 
@@ -2157,6 +2172,42 @@ case OP_Column: {
       goto op_column_out;
     }
   }
+
+  /* FDO Provider specific -- continue column decoding if we did
+     not decode up to the last column above*/
+  if (pC->lastcolIdx < p2) {
+
+  u32 offset;
+  int szHdrSz;
+  u8 *zEndHdr;
+  u8 *zIdx; 
+
+  zData = zRec; 
+  szHdrSz = getVarint32((u8*)zData, offset);
+  zEndHdr = (u8 *)&zData[offset];
+  zIdx = pC->lastzIdx; 
+  offset = pC->lastOffset;
+
+  for(i=pC->lastcolIdx+1; i<=p2; i++){
+    if( zIdx<zEndHdr ){
+      aOffset[i] = offset;
+      zIdx += getVarint32(zIdx, aType[i]);
+      offset += sqlite3VdbeSerialTypeLen(aType[i]);
+    }else{
+      /* If i is less that nField, then there are less fields in this
+      ** record than SetNumColumns indicated there are columns in the
+      ** table. Set the offset for any extra columns not present in
+      ** the record to 0. This tells code below to push a NULL onto the
+      ** stack instead of deserializing a value from the record.
+      */
+      aOffset[i] = 0;
+    }
+  }
+
+  pC->lastOffset = offset;
+  pC->lastcolIdx = p2;
+  pC->lastzIdx = zIdx;
+}
 
   /* Get the column information. If aOffset[p2] is non-zero, then 
   ** deserialize the value from the record. If aOffset[p2] is zero,
@@ -2203,7 +2254,19 @@ case OP_Column: {
     pDest->zMalloc = sMem.zMalloc;
   }
 
-  rc = sqlite3VdbeMemMakeWriteable(pDest);
+    /* If the data does not span page boundary, and we are calling from FDO
+       we can skip allocating memory and copying the data, which is normally
+       a huge overhead.
+       I am not really sure what the consequences of this are in corner cases and such,
+       so the only way to find out for sure is to do it empirically with lots of test data.
+       */
+  if( p->fdo && zRec )
+  {
+    /*pDest->flags &= ~MEM_Ephem;*/
+    rc = SQLITE_OK;
+  }
+  else
+    rc = sqlite3VdbeMemMakeWriteable(pDest);
 
 op_column_out:
   UPDATE_MAX_BLOBSIZE(pDest);

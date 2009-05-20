@@ -93,6 +93,9 @@ struct VdbeCursor {
   int payloadSize;      /* Total number of bytes in the record */
   u32 *aType;           /* Type values for all entries in the record */
   u32 *aOffset;         /* Cached offsets to the start of each columns data */
+  int lastcolIdx;       /* The last column for which we have computed an offset */
+  u8 *lastzIdx;         /* The last column for which we have computed an offset */
+  int lastOffset;       /* The last column for which we have computed an offset */
   u8 *aRow;             /* Data for the current row, if all on one page */
 };
 typedef struct VdbeCursor VdbeCursor;
@@ -319,6 +322,7 @@ struct Vdbe {
   Vdbe *pLruPrev;
   Vdbe *pLruNext;
 #endif
+  int fdo; /* true if used from inside an FDO feature reader */
 };
 
 /*
