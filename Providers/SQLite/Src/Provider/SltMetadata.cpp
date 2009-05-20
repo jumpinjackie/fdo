@@ -525,11 +525,11 @@ bool SltMetadata::ExtractConstraints(Expr* node, std::vector<SQLiteExpression>& 
     case TK_BETWEEN:
     case TK_IN:
         result.push_back(SQLiteExpression(node->op));
-        if (node->pList != 0 && node->pList->nExpr != 0)
+        if (node->x.pList != 0 && node->x.pList->nExpr != 0)
         {
-            for(int idx = 0; idx < node->pList->nExpr && valid; idx++)
+            for(int idx = 0; idx < node->x.pList->nExpr && valid; idx++)
             {
-                valid = ExtractConstraints(node->pList->a[idx].pExpr, result);
+                valid = ExtractConstraints(node->x.pList->a[idx].pExpr, result);
             }
         }
         if(node->pLeft != NULL)

@@ -120,7 +120,7 @@ sqlite-fdo: cmake_check_build_system
 
 # fast build rule for target.
 sqlite-fdo/fast:
-	$(MAKE) -f sqlite-3.6.2/CMakeFiles/sqlite-fdo.dir/build.make sqlite-3.6.2/CMakeFiles/sqlite-fdo.dir/build
+	$(MAKE) -f sqlite/CMakeFiles/sqlite-fdo.dir/build.make sqlite/CMakeFiles/sqlite-fdo.dir/build
 
 #=============================================================================
 # Target rules for targets named SpatialIndex
