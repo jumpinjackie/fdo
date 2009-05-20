@@ -66,8 +66,7 @@ SltMetadata::SltMetadata(SltConnection* connection, const char* name, bool bUseF
         return;
     }
 
-    //we compile SQLite without thread safety...
-    //sqlite3_mutex_enter(db->mutex);
+    sqlite3_mutex_enter(db->mutex);
 
     char* zErrMsg = NULL;
     int rc = sqlite3Init(db, &zErrMsg);
@@ -89,8 +88,7 @@ error_out:
         rc = SQLITE_MISUSE;
     }
 
-    //we compile SQLite without thread safety...
-    //sqlite3_mutex_leave(db->mutex);
+    sqlite3_mutex_leave(db->mutex);
 }
 
 
