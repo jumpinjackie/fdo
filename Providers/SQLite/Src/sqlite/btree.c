@@ -3988,6 +3988,7 @@ int sqlite3BtreeMovetoUnpacked(
   int *pRes                /* Write search results here */
 ){
   int rc;
+  int needMoveToRoot = 1;
 
   assert( cursorHoldsMutex(pCur) );
   assert( sqlite3_mutex_held(pCur->pBtree->db->mutex) );
@@ -3995,7 +3996,7 @@ int sqlite3BtreeMovetoUnpacked(
   /* If the cursor is already positioned at the point we are trying
   ** to move to, then just return without doing any work */
   if( pCur->eState==CURSOR_VALID && pCur->validNKey 
-   && pCur->apPage[0]->intKey 
+   && pCur->apPage[pCur->iPage]->intKey 
   ){
     if( pCur->info.nKey==intKey ){
       *pRes = 0;
@@ -4005,12 +4006,54 @@ int sqlite3BtreeMovetoUnpacked(
       *pRes = -1;
       return SQLITE_OK;
     }
+
+    /* Check if the key we are looking for is by chance on the 
+       current page -- we can skip moving to the root page
+       if that is the case, and begin the binary search
+       on the current page, thus saving tree traversals.
+       Helps in cases of quasi-linear read through the table.
+       */
+    if (pCur->info.nKey > intKey)
+    {
+        u8* pCell;
+        MemPage* pPage = pCur->apPage[pCur->iPage];
+        i64 nCellKey;
+
+        pCell = findCell(pPage, 0) + pPage->childPtrSize;
+        if( pPage->hasData ){
+          u32 dummy;
+          pCell += getVarint32(pCell, dummy);
+        }
+        getVarint(pCell, (u64*)&nCellKey);
+
+        if (nCellKey <= intKey)
+            needMoveToRoot = 0;
+    }
+    else
+    {
+        u8* pCell;
+        MemPage* pPage = pCur->apPage[pCur->iPage];
+        i64 nCellKey;
+
+        pCell = findCell(pPage, pPage->nCell - 1) + pPage->childPtrSize;
+        if( pPage->hasData ){
+          u32 dummy;
+          pCell += getVarint32(pCell, dummy);
+        }
+        getVarint(pCell, (u64*)&nCellKey);
+
+        if (nCellKey >= intKey)
+            needMoveToRoot = 0;
+    }
   }
 
-  rc = moveToRoot(pCur);
-  if( rc ){
-    return rc;
+  if (needMoveToRoot) {
+    rc = moveToRoot(pCur);
+    if( rc ){
+      return rc;
+    }
   }
+
   assert( pCur->apPage[pCur->iPage] );
   assert( pCur->apPage[pCur->iPage]->isInit );
   if( pCur->eState==CURSOR_INVALID ){
