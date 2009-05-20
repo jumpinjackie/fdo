@@ -622,6 +622,33 @@ bool SltReader::ReadNext()
                 //to skip the initialization as well (it would lock the table again without
                 //it being freed, since we are not going to finish the previous step
                 //which would have freed the previous lock.
+                //Here is sample bytecode generated for the type of select statement we use
+                //for spatial queries:
+                /*
+                sqlite> explain select rowid,geometry from Legal_Parcel where rowid=?;
+                addr  opcode         p1    p2    p3    p4             p5  comment
+                ----  -------------  ----  ----  ----  -------------  --  -------------
+                0     Trace          0     0     0                    00
+                1     Variable       1     1     1                    00
+                2     Goto           0     11    0                    00
+                3     OpenRead       0     61    0     2              00
+                4     MustBeInt      1     9     0                    00
+                5     NotExists      0     9     1                    00
+                6     Rowid          0     3     0                    00
+                7     Column         0     1     4                    00
+                8     ResultRow      3     2     0                    00
+                9     Close          0     0     0                    00
+                10    Halt           0     0     0                    00
+                11    Transaction    0     0     0                    00
+                12    VerifyCookie   0     9     0                    00
+                13    TableLock      0     61    0     Legal_Parcel   00
+                14    Goto           0     3     0                    00
+                */
+                //Note that we compile without Trace, so the instruction addresses in our case
+                //are less by 1 each. We want to set the bytecode execution to repeat itself for 
+                //each next ID starting at operation NotExists, up to operation ResultRow.
+                //Hence we need to set the instruction pointer back to 5, or in our case 4, since
+                //we omit the initial trace instruction.
                 v->pc = 4;
             }
             else
