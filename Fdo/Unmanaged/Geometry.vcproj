@@ -253,7 +253,7 @@
 				OutputFile="$(OutDir)/FDOGeometry.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="Lib/Win32/Debug"
-				IgnoreDefaultLibraryNames="MSVCRT"
+				IgnoreDefaultLibraryNames=""
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/FDOGeometry.pdb"
@@ -342,7 +342,7 @@
 				OutputFile="$(OutDir)/FDOGeometry.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="Lib/Win64/Debug"
-				IgnoreDefaultLibraryNames="MSVCRT"
+				IgnoreDefaultLibraryNames=""
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/FDOGeometry.pdb"
@@ -434,11 +434,11 @@
 				>
 			</File>
 			<File
-				RelativePath="Src\Geometry\Fgf\GeometryImpl.h"
+				RelativePath="Src\Geometry\GeometryImpl.h"
 				>
 			</File>
 			<File
-				RelativePath="Src\Geometry\GeometryImpl.h"
+				RelativePath="Src\Geometry\Fgf\GeometryImpl.h"
 				>
 			</File>
 			<File
