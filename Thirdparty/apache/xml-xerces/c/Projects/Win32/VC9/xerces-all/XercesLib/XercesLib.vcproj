@@ -86,6 +86,7 @@
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary="$(OutDir)\xerces-c_2.lib"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -266,6 +267,7 @@
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary="$(OutDir)\xerces-c_2D.lib"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -348,12 +350,12 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(OutDir)"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)\xerces-c_2_5_0.pdb"
+				ProgramDatabaseFile="$(OutDir)\xerces-c_2_5_0D.pdb"
 				SubSystem="2"
 				BaseAddress="0x12000000"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="$(OutDir)\xerces-c_2.lib"
+				ImportLibrary="$(OutDir)\xerces-c_2D.lib"
 				TargetMachine="17"
 			/>
 			<Tool
