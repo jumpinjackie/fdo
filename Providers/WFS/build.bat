@@ -113,7 +113,7 @@ if "%TYPEBUILD%"=="x64" SET INTERMEDIATEDIR="Win64"
 if "%TYPEACTION%"=="build" goto start_exbuild
 if "%TYPEACTION%"=="clean" goto start_exbuild
 
-if not exist "%FDOINSPATHWFS%" mkdir "%FDOINSPATHWFS%"
+if not exist "%FDOINSPATH%" mkdir "%FDOINSPATH%"
 if not exist "%FDOBINPATH%" mkdir "%FDOBINPATH%"
 if not exist "%FDOINCPATH%" mkdir "%FDOINCPATH%"
 if not exist "%FDOLIBPATH%" mkdir "%FDOLIBPATH%"

@@ -344,7 +344,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib"
-				OutputFile="$(OutDir)\xerces-c_2_5_0.dll"
+				OutputFile="$(OutDir)\xerces-c_2_5_0D.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(OutDir)"
 				GenerateDebugInformation="true"

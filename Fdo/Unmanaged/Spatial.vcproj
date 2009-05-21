@@ -342,7 +342,7 @@
 				OutputFile="$(OutDir)/FDOSpatial.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="Lib/Win64/Debug"
-				IgnoreDefaultLibraryNames="MSVCRT"
+				IgnoreDefaultLibraryNames=""
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/FDOSpatial.pdb"

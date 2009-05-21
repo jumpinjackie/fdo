@@ -135,7 +135,7 @@ goto custom_error
 SET TYPEBUILDTHR=%2
 if "%2"=="release" goto next_param
 SET TYPEBUILDTHRPATH=-gd
-rem SET TYPEBUILDTHREX=D
+SET TYPEBUILDTHREX=D
 if "%2"=="debug" goto next_param
 goto custom_error
 
@@ -209,9 +209,9 @@ if "%TYPEACTIONTHR%"=="clean" goto rebuild_fdo
 rem # Install all Thirdparty Files
 :install_all_files
 echo copy %TYPEBUILDTHR% Thirdparty files
-copy /y "apache\xml-xalan\c\Build\%PLATFORMTHR%\vc9\Release\Xalan-C_1_7_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
-copy /y "apache\xml-xalan\c\Build\%PLATFORMTHR%\vc9\Release\XalanMessages_1_7_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
-copy /y "apache\xml-xerces\c\Build\%PLATFORMTHR%\vc9\Release\xerces-c_2_5_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
+copy /y "apache\xml-xalan\c\Build\%PLATFORMTHR%\vc9\%TYPEBUILDTHR%\Xalan-C_1_7_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
+copy /y "apache\xml-xalan\c\Build\%PLATFORMTHR%\vc9\%TYPEBUILDTHR%\XalanMessages_1_7_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
+copy /y "apache\xml-xerces\c\Build\%PLATFORMTHR%\vc9\%TYPEBUILDTHR%\xerces-c_2_5_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
 
 rem # Not all components are x64 enabled
 if not "%PLATFORMTHR%"=="Win32" goto rebuild_fdo
