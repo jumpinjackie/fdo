@@ -24,6 +24,7 @@
  *
  */
 
+#include <stdio.h>
 #include "stdafx.h"
 #include <FdoSpatial.h>
 #include "TestCommonGeomUtil.h"

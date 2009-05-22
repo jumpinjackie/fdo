@@ -17,6 +17,7 @@
 * 
  */
 
+#include <stdio.h>
 #include <stdafx.h>
 #include <FdoExpressionEngineImp.h>
 #include <FdoCommonOSUtil.h>
