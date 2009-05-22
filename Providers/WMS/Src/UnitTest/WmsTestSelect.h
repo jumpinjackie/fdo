@@ -43,14 +43,16 @@ class WmsTestSelect : public WmsTests
     CPPUNIT_TEST (testDefaultHeight);
     CPPUNIT_TEST (testNASAServer);
     CPPUNIT_TEST (testNASAServer2);
-    CPPUNIT_TEST (testIntegraphWorld);
+    // disabled because the server cannot connect
+    //CPPUNIT_TEST (testIntegraphWorld);
     CPPUNIT_TEST (testCubeServer);
     CPPUNIT_TEST (testMultiLayers);
     CPPUNIT_TEST (testTerraService);
     CPPUNIT_TEST (testDefect786029);
-    CPPUNIT_TEST (testEusoils);
-    CPPUNIT_TEST (testEusoilsPesera);
-    CPPUNIT_TEST (testEusoilsMeusis);
+    // disabled because the server cannot connect
+    //CPPUNIT_TEST (testEusoils);
+    //CPPUNIT_TEST (testEusoilsPesera);
+    //CPPUNIT_TEST (testEusoilsMeusis);
     CPPUNIT_TEST (testSelectSpatialExtents);
     CPPUNIT_TEST (testTerraServiceThumbnail);
     CPPUNIT_TEST (testNS_TOPO_1000);
@@ -61,7 +63,8 @@ class WmsTestSelect : public WmsTests
     CPPUNIT_TEST (testCeoware2);
     CPPUNIT_TEST (testLioib);
     CPPUNIT_TEST (testKortPlandk);
-    CPPUNIT_TEST (testLibcwms);
+    // disabled because the server cannot connect
+    //CPPUNIT_TEST (testLibcwms);
     CPPUNIT_TEST (testStoboWms);
     CPPUNIT_TEST (testLinuxgurrl);
     CPPUNIT_TEST (testOpenmaps);
