@@ -80,6 +80,7 @@ using namespace std;
 #endif
 
 #include <cstring>
+#include <cstdio>
 #include <math.h>
 
 #include <FdoStd.h>
