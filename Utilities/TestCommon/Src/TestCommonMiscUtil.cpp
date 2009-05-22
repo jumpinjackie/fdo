@@ -24,6 +24,7 @@
  *
  */
 
+#include <stdio.h>
 #include "stdafx.h"
 #include "TestCommonMiscUtil.h"
 
