@@ -6,6 +6,7 @@ include_directories(
 	${FDOTHIRDPARTY}/linux/cppunit/include
 	${FDOUTILITIES}/Common/Inc
 	${FDO}/Unmanaged/Src/Common
+	${UNMANAGED_INCLUDE_DIRS}
 	)
 
 if( UNIX )
