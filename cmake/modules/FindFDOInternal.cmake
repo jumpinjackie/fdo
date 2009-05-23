@@ -29,7 +29,7 @@ endif( UNIX )
 # Make global include directories, even binary build dir 
 # to match build generated files
 set( UNMANAGED_INCLUDE_DIRS 
-	${FDO}/Fdo/Unmanaged/Inc 
+	${FDO}/Unmanaged/Inc 
 	${FDO}/Unmanaged/Src/Common
 	# Needed for Messages
 	${CMAKE_CURRENT_BINARY_DIR}/Fdo/Unmanaged/Inc 
