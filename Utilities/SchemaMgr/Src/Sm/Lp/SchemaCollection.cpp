@@ -1186,7 +1186,8 @@ FdoFeatureSchemasP FdoSmLpSchemaCollection::GetFdoSchemasEx(FdoStringP schemaNam
     {
         for (int iClassName = 0; iClassName < featureClassNames->GetCount(); iClassName++)
         {
-            FdoStringP className = featureClassNames->GetItem(iClassName)->GetString();
+            FdoPtr<FdoStringElement> elem = featureClassNames->GetItem(iClassName);
+            FdoStringP className = elem->GetString();
 
             FdoStringP delimiter = L":";
             FdoStringP parsedSchemaName = className.Left(delimiter);
@@ -1244,7 +1245,8 @@ FdoFeatureSchemasP FdoSmLpSchemaCollection::GetFdoSchemasEx(FdoStringP schemaNam
         {
             for (int iClassNames = 0; iClassNames < featureClassNames->GetCount(); iClassNames++)
             {
-                FdoStringP className = featureClassNames->GetItem(iClassNames)->GetString();
+                FdoPtr<FdoStringElement> elem = featureClassNames->GetItem(iClassNames);
+                FdoStringP className = elem->GetString();
                 FdoStringP delimiter = L":";
                 FdoStringP tempName = className.Right(delimiter);
 
@@ -1400,7 +1402,8 @@ FdoFeatureSchemasP FdoSmLpSchemaCollection::GetFdoSchemasEx(FdoStringP schemaNam
         // Compare the collection of found names with the requested classnames.
         for (classIndex = 0; classIndex < featureClassNames->GetCount(); classIndex++)
         {
-            FdoStringP requestedClassName = featureClassNames->GetItem(classIndex)->GetString();
+            FdoPtr<FdoStringElement> elem = featureClassNames->GetItem(classIndex);
+            FdoStringP requestedClassName = elem->GetString();
             if (foundQClassNames->IndexOf(requestedClassName) == -1 &&
                 foundClassNames->IndexOf(requestedClassName) == -1)
             {
