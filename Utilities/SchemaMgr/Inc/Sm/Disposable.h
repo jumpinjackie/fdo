@@ -28,7 +28,7 @@ class FdoSmDisposable : public FdoIDisposable
 {
 public:
 	FdoSmDisposable(void);
-	~FdoSmDisposable(void);
+	virtual ~FdoSmDisposable(void);
 
     /// Convenience function for casting between smart pointers. 
     /// Typically called from a FdoPtr referencing this. 
