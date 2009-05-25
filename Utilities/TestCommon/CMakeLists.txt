@@ -1,12 +1,9 @@
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
-	${FDO}/Unmanaged/Inc
 	${CMAKE_CURRENT_SOURCE_DIR}/Inc
-	${FDOTHIRDPARTY}/linux/cppunit/include
 	${FDOUTILITIES}/Common/Inc
-	${FDO}/Unmanaged/Src/Common
 	${UNMANAGED_INCLUDE_DIRS}
+	${CPPUNIT_INCLUDE_DIRS}
 	)
 
 if( UNIX )
@@ -24,4 +21,13 @@ set( TestCommon_STAT_SRCS
    Src/stdafx.cpp
 )
 
-add_library( TestCommon STATIC ${TestCommon_STAT_SRCS} )
+add_library( TestCommon SHARED ${TestCommon_STAT_SRCS} )
+
+set_target_properties( TestCommon PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
+install( TARGETS TestCommon DESTINATION ${LIB_INSTALL_DIR} )
+target_link_libraries( TestCommon 
+	FDO
+	ProvidersCommon
+	${CPPUNIT_LIBRARIES}
+	)
+
