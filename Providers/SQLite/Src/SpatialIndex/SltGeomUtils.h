@@ -425,4 +425,7 @@ int Fgf2Wkb(const unsigned char* fgf, unsigned char* wkb);
 
 int Wkb2Fgf(const unsigned char* wkb, unsigned char* fgf);
 
+double ComputeGeometryLength(const unsigned char* fgf, bool computeGeodetic = false);
+double ComputeGeometryArea(const unsigned char* fgf, bool computeGeodetic = false);
+
 #endif

@@ -474,6 +474,11 @@ class SltCapabilities  : public FdoIConnectionCapabilities,
         FdoPtr<FdoExpressionEngineIFunction> funcM = FdoFunctionM::Create();
         ret->Add(FdoPtr<FdoFunctionDefinition>(funcM->GetFunctionDefinition()));
 
+        wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_AREA2D);
+        ret->Add(wellKnownFunction);
+        wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_LENGTH2D);
+        ret->Add(wellKnownFunction);
+
         // TODO process extra parameter
         wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_TODATE);
         ret->Add(wellKnownFunction);
