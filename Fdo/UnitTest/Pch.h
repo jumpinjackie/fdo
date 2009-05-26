@@ -44,7 +44,11 @@
                                  (#condition),             \
                                  CPPUNIT_SOURCELINE() )
 
-
+/*
+// GB: Reverted the following change...
+// Revision: 4707
+// Author: helio
+// Date: 9:47:57 AM, Friday, May 22, 2009
 #ifdef CPPUNIT_API // Newer API
 
 // This works with the next macro to wrap each unit test so that any 
@@ -74,6 +78,7 @@
               context.makeFixture() ) ) )
 
 #else //CPPUNIT_API
+*/
 
 // This works with the next macro to wrap each unit test so that any 
 // uncaught FdoExceptions are caught and reported.
@@ -99,7 +104,14 @@
         &__ThisTestFixtureType::UNITTEST_##testMethod,\
         (__ThisTestFixtureType*)factory->makeFixture() ) 
 
+
+/*
+// GB: Reverted the following change...
+// Revision: 4707
+// Author: helio
+// Date: 9:47:57 AM, Friday, May 22, 2009
 #endif // CPPUNIT_API
+*/
 
 // This should work on other compilers/platforms. It works 
 // because IDisposable is always the base class and its first data
