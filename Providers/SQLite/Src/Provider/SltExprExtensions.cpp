@@ -892,6 +892,89 @@ static void xyzmFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
     sqlite3_result_double(context, ret);
 }
 
+//Implementation of the Lenght(), Area() functions for geometries
+static void geomFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
+{
+    assert(argc == 1);
+
+    //extract operation type 1 = len, 2 = area
+    long optype = (long)sqlite3_user_data(context);
+
+    FdoPtr<FdoFgfGeometryFactory> gf;
+    FdoPtr<FdoIGeometry> fg;
+
+    const unsigned char* geom = NULL;
+    long lenGeom = 0;
+
+    //data type of argument -- must be BLOB (FGF) or text.
+    int type = sqlite3_value_type(argv[0]);
+
+    if (type == SQLITE_BLOB)
+    {
+        const unsigned char* g1 = (const unsigned char*)sqlite3_value_blob(argv[0]);
+        int len = sqlite3_value_bytes(argv[0]);
+
+        if (g1 != NULL && len != 0)
+        {
+            if (len % 2) //this check is enough to detect WKB in case of simple geometries, but may fail on multi ones
+                          //also see the long explanation in spatialOpFunc.
+            {
+                //case of WKB, not FGF
+                gf = FdoFgfGeometryFactory::GetInstance();
+                FdoPtr<FdoByteArray> ba = FdoByteArray::Create(g1, len);
+                fg = gf->CreateGeometryFromWkb(ba);
+                ba = gf->GetFgf(fg);
+                geom = (const unsigned char*)ba->GetData();
+                lenGeom = ba->GetCount();
+            }
+            else
+            {
+                //case of FGF, we can directly use the byte array
+                geom = g1;
+                lenGeom = len;
+            }
+        }
+    }
+    else if (type == SQLITE_TEXT)
+    {
+        const char* wkt = (const char*)sqlite3_value_text(argv[0]);
+        int len = sqlite3_value_bytes(argv[0]);
+        if (wkt != NULL && len != 0)
+        {
+            wchar_t* wwkt = (wchar_t*)alloca(sizeof(wchar_t) * (len+1));
+            mbstowcs(wwkt, wkt, len+1);
+
+            gf = FdoFgfGeometryFactory::GetInstance();
+            fg = gf->CreateGeometry(wwkt);        
+            FdoPtr<FdoByteArray> ba = gf->GetFgf(fg);
+            geom = (const unsigned char*)ba->GetData();
+            lenGeom = ba->GetCount();
+        }
+    }
+
+    if (geom == NULL) // enforce a null return
+        optype = 0;
+
+    // TODO: we need to find a way to 'detect' if geometry is geodetic
+    // somehow from class definition-geometric property we need to look at 
+    // spatial context WKT if contains/starts with 'GEOGCS'
+    // the problem is not to detect if is geodetic, it is to 
+    // propagate it till here from select command
+    bool computeGeodetic = false; // for now keep it to false
+    switch(optype)
+    {
+    case 1:
+        sqlite3_result_double(context, ComputeGeometryLength(geom, computeGeodetic));
+        break;
+    case 2:
+        sqlite3_result_double(context, ComputeGeometryArea(geom, computeGeodetic));
+        break;
+    default:
+        sqlite3_result_null(context);
+        break;
+    }
+}
+
 static void GeomFromText(sqlite3_context *context, int argc, sqlite3_value **argv)
 {
     assert(argc == 1);
@@ -1121,6 +1204,9 @@ void RegisterExtensions (sqlite3* db)
         { "Y",                  1, 2, SQLITE_UTF8,     0, xyzmFunc },
         { "Z",                  1, 3, SQLITE_UTF8,     0, xyzmFunc },
         { "M",                  1, 4, SQLITE_UTF8,     0, xyzmFunc },
+
+        { "Length2D",           1, 1, SQLITE_UTF8,     0, geomFunc },
+        { "Area2D",             1, 2, SQLITE_UTF8,     0, geomFunc },
 
         { "GeomFromText",       1, 0, SQLITE_UTF8, 0, GeomFromText },
 
