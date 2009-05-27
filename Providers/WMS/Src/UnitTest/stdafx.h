@@ -28,3 +28,14 @@
 #include <cstring>
 #include <stdio.h>
 #include <tchar.h>
+
+// NOTE: Define __CPPUNIT_MFC_APP in order to have the CPPUNIT UI appear...   
+#ifdef __CPPUNIT_MFC_APP  
+    #ifdef WIN32  
+            #ifdef _DEBUG  
+                    #pragma comment(lib, "testrunnerd.lib")  
+            #else  
+                    #pragma comment(lib, "testrunner.lib")  
+            #endif  
+    #endif
+#endif
