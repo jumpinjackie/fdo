@@ -296,7 +296,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="$(FDOTHIRDPARTY)\cppunit\include;..\Unmanaged\Inc;"
-				PreprocessorDefinitions="NDEBUG;WIN32;_WIN64;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;__CPPUNIT_MFC_APP"
+				PreprocessorDefinitions="NDEBUG;WIN32;_WIN64;_CONSOLE;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="Pch.h"
