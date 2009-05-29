@@ -23,6 +23,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "..\..\..\Utilitie
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "UnitTest\UnitTest.vcproj", "{5C2E3117-B005-4FFE-8B59-2AD734BAF536}"
 	ProjectSection(ProjectDependencies) = postProject
+		{31607A09-F8CA-43B3-9195-C1D5FB18E0D7} = {31607A09-F8CA-43B3-9195-C1D5FB18E0D7}
 		{9037A345-04EB-418C-98D0-3D5B19FC9D55} = {9037A345-04EB-418C-98D0-3D5B19FC9D55}
 		{8F5CFBEE-539A-4054-8A76-1BF85DD1A716} = {8F5CFBEE-539A-4054-8A76-1BF85DD1A716}
 	EndProjectSection
@@ -31,6 +32,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExpressionEngine", "..\..\.
 	ProjectSection(ProjectDependencies) = postProject
 		{9037A345-04EB-418C-98D0-3D5B19FC9D55} = {9037A345-04EB-418C-98D0-3D5B19FC9D55}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestCommon", "..\..\..\Utilities\TestCommon\TestCommon.vcproj", "{31607A09-F8CA-43B3-9195-C1D5FB18E0D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -94,6 +97,14 @@ Global
 		{34FF1437-0853-44D4-B786-48ACB3AACBB5}.Release|Win32.Build.0 = Release|Win32
 		{34FF1437-0853-44D4-B786-48ACB3AACBB5}.Release|x64.ActiveCfg = Release|x64
 		{34FF1437-0853-44D4-B786-48ACB3AACBB5}.Release|x64.Build.0 = Release|x64
+		{31607A09-F8CA-43B3-9195-C1D5FB18E0D7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{31607A09-F8CA-43B3-9195-C1D5FB18E0D7}.Debug|Win32.Build.0 = Debug|Win32
+		{31607A09-F8CA-43B3-9195-C1D5FB18E0D7}.Debug|x64.ActiveCfg = Debug|x64
+		{31607A09-F8CA-43B3-9195-C1D5FB18E0D7}.Debug|x64.Build.0 = Debug|x64
+		{31607A09-F8CA-43B3-9195-C1D5FB18E0D7}.Release|Win32.ActiveCfg = Release|Win32
+		{31607A09-F8CA-43B3-9195-C1D5FB18E0D7}.Release|Win32.Build.0 = Release|Win32
+		{31607A09-F8CA-43B3-9195-C1D5FB18E0D7}.Release|x64.ActiveCfg = Release|x64
+		{31607A09-F8CA-43B3-9195-C1D5FB18E0D7}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
