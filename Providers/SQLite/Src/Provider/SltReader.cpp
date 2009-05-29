@@ -27,7 +27,7 @@
 #include "RowidIterator.h"
 #include "FdoCommonMiscUtil.h"
 #include "vdbeInt.h"
-
+#include "SltQueryTranslator.h"
 
 /*
 ** Check to see if column iCol of the given statement is valid.  If
@@ -196,26 +196,16 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
 	//so that he sees the properties he asked for. 
 	if (props && props->GetCount())
 	{
+        SltExpressionTranslator exTrans;
 		int nProps = props->GetCount();
         m_reissueProps.Reserve(nProps);
 		for (int i=0; i<nProps; i++)
 		{
 			FdoPtr<FdoIdentifier> id = props->GetItem(i);
-            //TODO: dynamic_cast is generally slow -- it's possible to optimize this by using an FdoIExpressionProcessor
-            //implementing ProcessIdentifier and ProcessComputedIdentifier to determine what type of identifier we 
-            //are working with.
-            FdoComputedIdentifier* compId = dynamic_cast<FdoComputedIdentifier*>(id.p);
-            if (compId != NULL)
-            {
-                StringBuffer sb;
-                FdoPtr<FdoExpression> exp = compId->GetExpression();
-                sb.Append(exp->ToString());
-                sb.Append(" AS ", 4);
-                sb.AppendDQuoted(compId->GetName());
-                m_reissueProps.Add(sb.Data(), sb.Length());
-            }
-            else
-			    m_reissueProps.Add(id->GetName());
+            exTrans.Reset();
+            id->Process(&exTrans);
+            StringBuffer* exp = exTrans.GetExpression();
+            m_reissueProps.Add(exp->Data(), exp->Length());
 		}
 	}
     else
