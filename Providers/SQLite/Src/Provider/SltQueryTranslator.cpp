@@ -23,7 +23,6 @@
 
 #include <algorithm>
 
-
 recno_list* recno_list_union(recno_list* left, recno_list* right)
 {
     //if one of the lists is null it means it iterates over all features...
@@ -553,4 +552,212 @@ bool SltQueryTranslator::CanUseFastStepping()
         return true;
 
     return m_evalStack[0].expr.empty() || m_evalStack[0].canOmit;
+}
+
+
+void SltExpressionTranslator::ProcessBinaryExpression(FdoBinaryExpression& expr)
+{
+    FdoPtr<FdoExpression> param = expr.GetLeftExpression();
+    m_expr.Append("(", 1);
+    HandleExpr(param);
+    switch(expr.GetOperation())
+    {
+    case FdoBinaryOperations_Add:
+        m_expr.Append("+", 1);
+        break;
+    case FdoBinaryOperations_Divide:
+        m_expr.Append("-", 1);
+        break;
+    case FdoBinaryOperations_Multiply:
+        m_expr.Append("*", 1);
+        break;
+    case FdoBinaryOperations_Subtract:
+        m_expr.Append("/", 1);
+        break;
+    }
+    param = expr.GetRightExpression();
+    HandleExpr(param);
+    m_expr.Append(")", 1);
+}
+
+void SltExpressionTranslator::ProcessUnaryExpression(FdoUnaryExpression& expr)
+{
+    if (expr.GetOperation() == FdoUnaryOperations_Negate)
+    {
+        m_expr.Append(" (-(", 4);
+        FdoPtr<FdoExpression> param = expr.GetExpression();
+        HandleExpr(param);
+        m_expr.Append("))", 2);
+    }
+}
+
+void SltExpressionTranslator::ProcessFunction(FdoFunction& expr)
+{
+    FdoPtr<FdoExpressionCollection> argColl = expr.GetArguments();
+    FdoString* name = expr.GetName();
+    if (argColl->GetCount() == 2)
+    {
+        // avoid comparing for each function kind
+        // for now we are interested only for functions with two parametres
+        if(_wcsicmp(name, FDO_FUNCTION_COUNT) == 0 || _wcsicmp(name, FDO_FUNCTION_AVG) == 0  ||
+            _wcsicmp(name, FDO_FUNCTION_MAX) == 0 || _wcsicmp(name, FDO_FUNCTION_MIN) == 0 ||
+            _wcsicmp(name, FDO_FUNCTION_SUM) == 0 || _wcsicmp(name, FDO_FUNCTION_STDDEV) == 0)
+        {
+            FdoPtr<FdoExpression> leftParam = argColl->GetItem(0);
+            FdoPtr<FdoExpression> rightParam = argColl->GetItem(1);
+            m_expr.Append(name);
+            if (_wcsicmp(leftParam->ToString(), L"\'distinct\'") == 0)
+                m_expr.Append("( DISTINCT ", 11);
+            else
+                m_expr.Append("(", 1);
+            HandleExpr(rightParam);
+            m_expr.Append(")", 1);
+            return;
+        }
+    }
+    m_expr.Append(name);
+    m_expr.Append("(", 1);
+    int cnt = argColl->GetCount();
+    if (cnt > 0)
+    {
+        FdoPtr<FdoExpression> param;
+        for(int i = 0; i < cnt-1; i++)
+        {
+            param = argColl->GetItem(i);
+            HandleExpr(param);
+            m_expr.Append(",", 1);
+        }
+        param = argColl->GetItem(cnt-1);
+        HandleExpr(param);
+    }
+    m_expr.Append(")", 1);
+}
+
+void SltExpressionTranslator::ProcessIdentifier(FdoIdentifier& expr)
+{
+    m_expr.Append(expr.ToString());
+}
+
+void SltExpressionTranslator::ProcessComputedIdentifier(FdoComputedIdentifier& expr)
+{
+    FdoPtr<FdoExpression> param = expr.GetExpression();
+    HandleExpr(param);
+    m_expr.Append(" AS ", 4);
+    m_expr.Append(expr.GetName());
+}
+
+void SltExpressionTranslator::ProcessParameter(FdoParameter& expr)
+{
+    throw FdoException::Create(L"Unsupported FDO type in expression");
+}
+void SltExpressionTranslator::ProcessBooleanValue(FdoBooleanValue& expr)
+{
+    m_expr.Append(expr.ToString());
+}
+void SltExpressionTranslator::ProcessByteValue(FdoByteValue& expr)
+{
+    m_expr.Append(expr.ToString());
+}
+
+void SltExpressionTranslator::ProcessDateTimeValue(FdoDateTimeValue& expr)
+{
+    m_expr.Append(expr.ToString());
+}
+
+void SltExpressionTranslator::ProcessDecimalValue(FdoDecimalValue& expr)
+{
+    m_expr.Append(expr.ToString());
+}
+
+void SltExpressionTranslator::ProcessDoubleValue(FdoDoubleValue& expr)
+{
+    m_expr.Append(expr.ToString());
+}
+
+void SltExpressionTranslator::ProcessInt16Value(FdoInt16Value& expr)
+{
+    m_expr.Append(expr.ToString());
+}
+
+void SltExpressionTranslator::ProcessInt32Value(FdoInt32Value& expr)
+{
+    m_expr.Append(expr.ToString());
+}
+
+void SltExpressionTranslator::ProcessInt64Value(FdoInt64Value& expr)
+{
+    m_expr.Append(expr.ToString());
+}
+
+void SltExpressionTranslator::ProcessSingleValue(FdoSingleValue& expr)
+{
+    m_expr.Append(expr.ToString());
+}
+
+void SltExpressionTranslator::ProcessStringValue(FdoStringValue& expr)
+{
+    m_expr.Append(expr.ToString());
+}
+
+void SltExpressionTranslator::ProcessBLOBValue(FdoBLOBValue& expr)
+{
+    throw FdoException::Create(L"Unsupported FDO type in expression");
+}
+
+void SltExpressionTranslator::ProcessCLOBValue(FdoCLOBValue& expr)
+{
+    throw FdoException::Create(L"Unsupported FDO type in expression");
+}
+
+void SltExpressionTranslator::ProcessGeometryValue(FdoGeometryValue& expr)
+{
+    throw FdoException::Create(L"Unsupported FDO type in expression");
+}
+void SltScCHelperTranslator::ProcessFunction(FdoFunction& expr)
+{
+    FdoPtr<FdoExpressionCollection> argColl = expr.GetArguments();
+    FdoString* name = expr.GetName();
+    if(_wcsicmp(name, FDO_FUNCTION_SPATIALEXTENTS) == 0)
+    {
+        if (argColl->GetCount() == 1)
+        {
+            FdoPtr<FdoExpression> arg = argColl->GetItem(0);
+            size_t sz = m_stackNames.size();
+            HandleExpr(arg);
+            if ((sz+1) == m_stackNames.size())
+            {
+                FdoString* geomName = m_stackNames.back();
+                if (m_fc)
+                {
+                    FdoPtr<FdoGeometricPropertyDefinition> geomProp = m_fc->GetGeometryProperty();
+                    if (geomProp && 0==wcscmp(geomName, geomProp->GetName()))
+                    {
+                        m_extname = geomName;
+                        return;
+                    }
+                }
+            }
+        }
+    }
+    else if(_wcsicmp(name, FDO_FUNCTION_COUNT) == 0)
+    {
+        m_countname = m_stackNames.back();
+        return;
+    }
+    m_error = true;
+}
+
+void SltScCHelperTranslator::ProcessIdentifier(FdoIdentifier& expr)
+{
+    if (m_stackNames.size() != 0)
+        m_stackNames.push_back(expr.GetName());
+    else
+        m_error = true;
+}
+
+void SltScCHelperTranslator::ProcessComputedIdentifier(FdoComputedIdentifier& expr)
+{
+    m_stackNames.push_back(expr.GetName());
+    FdoPtr<FdoExpression> param = expr.GetExpression();
+    HandleExpr(param);
 }

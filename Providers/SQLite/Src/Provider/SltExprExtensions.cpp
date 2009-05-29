@@ -32,7 +32,7 @@ static void mathFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
     long funcId = (long)sqlite3_user_data(context);
 
     double rVal = sqlite3_value_double(argv[0]);
-    double rVal2;
+    double rVal2 = 0.0;
 
     if (argc == 2)
     {
@@ -74,11 +74,11 @@ static void currDateFunc(sqlite3_context *context, int argc, sqlite3_value **arg
     FdoDateTime dt;
     struct tm local_time;
     FdoCommonOSUtil::getsystime(&local_time);
-    dt.year    = local_time.tm_year + 1900;
-    dt.month   = local_time.tm_mon + 1;
-    dt.day     = local_time.tm_mday;
-    dt.hour    = local_time.tm_hour;
-    dt.minute  = local_time.tm_min;
+    dt.year    = (FdoInt16)(local_time.tm_year + 1900);
+    dt.month   = (FdoInt8)(local_time.tm_mon + 1);
+    dt.day     = (FdoInt8)(local_time.tm_mday);
+    dt.hour    = (FdoInt8)(local_time.tm_hour);
+    dt.minute  = (FdoInt8)(local_time.tm_min);
     dt.seconds = (float)local_time.tm_sec;
     char* res = (char*)alloca(31); // more than datetime needs
     *res = '\0';
@@ -175,7 +175,7 @@ static void dateFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
                 const char* dateStr = (const char*)sqlite3_value_text(argv[1]);
                 FdoDateTime dt = DateFromString(dateStr);
                 FdoDateTime dtRet;
-                double valRet;
+                double valRet = 0.0;
                 switch(operation)
                 {
                 case 0:
@@ -1085,7 +1085,7 @@ static void medFinalize(sqlite3_context *context)
     {
         size_t nvals = p->vals->size();
 
-        double dRes;
+        double dRes = 0.0;
 
         if (nvals == 0)
         {
@@ -1097,8 +1097,6 @@ static void medFinalize(sqlite3_context *context)
         }
         else
         {
-            double dRes;
-            
             //nth_element is using Hoare's algorithm for expected O(n)
             //running time. It's the best we can do for median theoretically.
             std::nth_element(p->vals->begin(), p->vals->begin() + nvals/2, p->vals->end());

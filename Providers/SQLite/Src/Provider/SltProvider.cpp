@@ -30,7 +30,7 @@
 #include "SltQueryTranslator.h"
 #include "RowidIterator.h"
 #include "StringUtil.h"
-
+#include "SltQueryTranslator.h"
 #include "FdoCommonSchemaUtil.h"
 
 //#include "SpatialIndex.h"
@@ -661,11 +661,6 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
 
         int rc = sqlite3_prepare_v2(m_dbRead, sb.Data(), -1, &stmt, &tail);
 
-        while ((rc = sqlite3_step(stmt)) == SQLITE_ROW)
-            rows->push_back(sqlite3_column_int64(stmt, 0));
-
-        rc = sqlite3_finalize(stmt);
-
         //If there is also a spatial filter, we need to compute the intersection
         //of the ordering with the spatial filter -- the SltReader cannot handle both
         //a row id iterator and a spatial iterator, so we have to precompute this
@@ -688,25 +683,26 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
             //it exists in the spatial query results, and add it to a new list 
             //if it does
 
-            std::vector<__int64>* nrows = new std::vector<__int64>;
-
-            for (size_t i=0; i<rows->size(); i++)
+            // we need to get all rows
+            while ((rc = sqlite3_step(stmt)) == SQLITE_ROW)
             {
-                __int64 id = rows->at(i);
-
+                __int64 id = sqlite3_column_int64(stmt, 0);
                 //TODO: resolve rowid type issue (__int64 vs. int)
                 if (std::binary_search(srows.begin(), srows.end(), (int)id))
-                    nrows->push_back(id);
+                    rows->push_back(id);
             }
-
-            //switch over to the new spatially filtered row list
-            delete rows;
-            rows = nrows;
 
             //get rid of the spatial iterator -- we are done with it here
             delete siter;
             siter = NULL;
         }
+        else
+        {
+            // we need to get all rows
+            while ((rc = sqlite3_step(stmt)) == SQLITE_ROW)
+                rows->push_back(sqlite3_column_int64(stmt, 0));
+        }
+        rc = sqlite3_finalize(stmt);
 
         ri = new RowidIterator(-1, rows);
     }
@@ -756,6 +752,7 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
     W2A_FAST(mbfc, clen, wfc, wlen);
     
     StringBuffer sb;
+    SltExpressionTranslator exTrans;
     
     if (bDistinct)
     {
@@ -764,7 +761,9 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
         FdoPtr<FdoIdentifier> id = properties->GetItem(0);
         
         sb.Append("SELECT DISTINCT ");
-        sb.Append(id->GetName());
+        id->Process(&exTrans);
+        StringBuffer* exp = exTrans.GetExpression();
+        sb.Append(exp->Data(), exp->Length());
         sb.Append(" FROM ");
         sb.AppendDQuoted(mbfc);
     }
@@ -784,11 +783,11 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
 
         //select aggregate -- only one computed identifier expected!
         FdoPtr<FdoIdentifier> id = properties->GetItem(0);
-        FdoComputedIdentifier* ci = dynamic_cast<FdoComputedIdentifier*>(id.p);
-        FdoString* exprs = ci->ToString();
+        id->Process(&exTrans);
 
         sb.Append("SELECT ");
-        sb.Append(exprs);
+        StringBuffer* exp = exTrans.GetExpression();
+        sb.Append(exp->Data(), exp->Length());
         sb.Append(" FROM ");
         sb.AppendDQuoted(mbfc);
     }
@@ -1531,47 +1530,19 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
     std::string countname = "TheCount";
 
     int propsCount = props->GetCount();
-    if (propsCount == 1 || propsCount == 2)
-    {
-        for (int i=0; i<propsCount; i++)
-        {
-            FdoPtr<FdoIdentifier> identifier = props->GetItem(i);
-            FdoComputedIdentifier* computedIdentifier = dynamic_cast<FdoComputedIdentifier*>(identifier.p);
-        
-            if (computedIdentifier) 
-            {
-                FdoPtr<FdoExpression> expr = computedIdentifier->GetExpression();
-                FdoFunction* func = dynamic_cast<FdoFunction*>(expr.p);
-                if (func && (_wcsicmp(func->GetName(), FDO_FUNCTION_SPATIALEXTENTS) == 0))
-                {
-                    FdoPtr<FdoExpressionCollection> args = func->GetArguments();
-                    FdoPtr<FdoExpression> arg = args->GetItem(0);
-                    FdoIdentifier* argId = dynamic_cast<FdoIdentifier*>(arg.p);
-                    if (fc)
-                    {
-                        FdoPtr<FdoGeometricPropertyDefinition> geomProp = fc->GetGeometryProperty();
-                        if (geomProp && argId && 0==wcscmp(argId->GetName(), geomProp->GetName()))
-                            extname = W2A_SLOW(computedIdentifier->GetName());
-                    }
-                }
-                else if (func && (_wcsicmp(func->GetName(), FDO_FUNCTION_COUNT) == 0))
-                {
-                    countname = W2A_SLOW(computedIdentifier->GetName());
-                }
-                else
-                {
-                    return NULL;
-                }
-            }
-            else
-            {
-                return NULL;
-            }
-        }
-    }
-    else
-    {
+    if (propsCount != 1 && propsCount != 2)
         return NULL;
+    
+    SltScCHelperTranslator expTrans(fc);
+    for (int i=0; i<propsCount; i++)
+    {
+        FdoPtr<FdoIdentifier> identifier = props->GetItem(i);
+        expTrans.Reset();
+        identifier->Process(&expTrans);
+        if (expTrans.IsError())
+            return NULL;
+        countname = W2A_SLOW(expTrans.GetCountName());
+        extname = W2A_SLOW(expTrans.GetSContextName());
     }
 
     //ok this is a spatial extents or count computed property.
