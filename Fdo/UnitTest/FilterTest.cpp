@@ -63,7 +63,7 @@ void FilterTest::testFilterTree()
 #ifdef _WIN32
     _putws(pIn->ToString());
 #else
-    printf("%ld\n", pIn->ToString());
+    printf("%ls\n", pIn->ToString());
 #endif
 
     FdoNullCondition*       pNull = FdoNullCondition::Create(pIdent);
