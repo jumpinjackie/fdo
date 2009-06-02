@@ -10,6 +10,11 @@ set( MKCATDEFS_SRCS
 	main.c 
 	)
 
+if (CMAKE_SYSTEM_NAME MATCHES Linux)
+	# For Linux based new gcc/glib we need set posix as standard or we don't have L_cuserid available
+	add_definitions( -posix )
+endif (CMAKE_SYSTEM_NAME MATCHES Linux)
+
 add_executable( mkcatdefs ${MKCATDEFS_SRCS} )
 
 #install(TARGETS mkcatdefs RUNTIME DESTINATION bin )
