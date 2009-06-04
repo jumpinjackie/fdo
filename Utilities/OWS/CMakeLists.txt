@@ -1,8 +1,8 @@
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/Inc
-	${UNMANAGED_INCLUDE_DIRS}
-        ${FDOUTILITIES}/Common/Inc
+	${UNMANAGED_INCLUDE_DIR}
+	${UTILITIES_COMMON_INCLUDE_DIR}
 	)
 
 if( LOCAL_BOOST )
@@ -12,10 +12,6 @@ endif( LOCAL_BOOST )
 if( LOCAL_CURL )
 	include_directories( ${FDOTHIRDPARTY}/libcurl/include )
 endif( LOCAL_CURL )
-
-if( UNIX )
-	add_definitions( -DLINUX_IA32 -pthread )
-endif( UNIX )
 
 set( FdoOwsSrc_SRCS
     Src/FdoOwsCapabilities.cpp

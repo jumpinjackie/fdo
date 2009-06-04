@@ -1,9 +1,9 @@
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/Ov
-	${FDO}/Unmanaged/Inc
+	${UNMANAGED_INCLUDE_DIR}
 	${FDO}/Unmanaged
-	${FDOUTILITIES}/Common/Inc
+	${UTILITIES_COMMON_INCLUDE_DIR}
 	)
 
 add_subdirectory( Ov )

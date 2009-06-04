@@ -1,14 +1,10 @@
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
-	${FDOUTILITIES}/ExpressionEngine/Inc
-        ${UNMANAGED_INCLUDE_DIRS}
-	${FDOUTILITIES}/Common/Inc
+	${UTILITIES_EXPRESSION_INCLUDE_DIR}
+    ${UNMANAGED_INCLUDE_DIR}
+	${UNMANAGED_COMMON_INCLUDE_DIR}
+	${UTILITIES_COMMON_INCLUDE_DIR}
 	)
-
-if( UNIX )
-	add_definitions( -DLINUX_IA32 )
-endif( UNIX )
 
 set( ExpressionEngine_LIB_SRCS
    Functions/Aggregate/CacheValue.cpp

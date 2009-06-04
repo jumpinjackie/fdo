@@ -1,13 +1,13 @@
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/Inc
-	${FDOUTILITIES}/Common/Inc
-	${UNMANAGED_INCLUDE_DIRS}
+	${UTILITIES_COMMON_INCLUDE_DIR}
+	${UNMANAGED_INCLUDE_DIR}
 	${CPPUNIT_INCLUDE_DIRS}
 	)
 
 if( UNIX )
-	add_definitions( -DLINUX_IA32 -pthread -DHAVE_GEOM_INFO_TYPE )
+	add_definitions( -DHAVE_GEOM_INFO_TYPE )
 endif( UNIX )
 
 set( TestCommon_STAT_SRCS
