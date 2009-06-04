@@ -26,7 +26,9 @@
 #include "RfpNoConfigTest.h"
 #include "RfpTestExample1.h"
 #include "RfpOverridesSerializeTest.h"
-#include "RfpTestLogOutputter.h"
+#ifndef CPPUNIT_MODERN_API
+	#include "RfpTestLogOutputter.h"
+#endif
 #include "RfpTestGetRaster.h"
 #include "RfpTestThorough.h"
 #include "RfpTestMosaic.h"
