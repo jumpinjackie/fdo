@@ -1,11 +1,12 @@
 include_directories(
-	${UNMANAGED_INCLUDE_DIRS}
 	${CMAKE_CURRENT_SOURCE_DIR}/Inc
+	${UNMANAGED_INCLUDE_DIR}
+	${UNMANAGED_COMMON_INCLUDE_DIR}
 	)
 
-if( LINUX )
-	add_definitions( -DLINUX_IA32 -pthread -DHAVE_GEOM_INFO_TYPE )
-endif( LINUX )
+if( UNIX )
+	add_definitions( -DHAVE_GEOM_INFO_TYPE )
+endif( UNIX )
 
 set( ProvidersCommon_SRCS
    Src/FdoCommonNlsUtil.cpp
@@ -30,9 +31,7 @@ set( ProvidersCommon_SRCS
 
 add_library( ProvidersCommon SHARED ${ProvidersCommon_SRCS} )
 add_dependencies( ProvidersCommon FDO FDOMessage )
-target_link_libraries( ProvidersCommon
-	FDO
-	)
+target_link_libraries( ProvidersCommon FDO )
 
 set_target_properties( ProvidersCommon PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
 install( TARGETS ProvidersCommon DESTINATION ${LIB_INSTALL_DIR} )

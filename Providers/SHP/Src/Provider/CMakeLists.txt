@@ -3,10 +3,10 @@ include_directories(
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../ShpRead
 	${CMAKE_CURRENT_SOURCE_DIR}/../ShpSpatialIndex
-  	${FDO}/Unmanaged/Inc/ 
-	${FDOUTILITIES}/Common/Inc
-  	${FDO}/Unmanaged/Inc/Fdo/Expression 
-	${FDOUTILITIES}/ExpressionEngine/Inc
+	${UNMANAGED_INCLUDE_DIR}
+	${UNMANAGED_INCLUDE_DIR}/Fdo/Expression
+	${UTILITIES_COMMON_INCLUDE_DIR}
+	${UTILITIES_EXPRESSION_INCLUDE_DIR}
 	)
 
 set( SHPProvider_SRCS

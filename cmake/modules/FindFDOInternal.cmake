@@ -28,10 +28,22 @@ endif( UNIX )
 
 # Make global include directories, even binary build dir 
 # to match build generated files
-set( UNMANAGED_INCLUDE_DIRS 
-	${FDO}/Unmanaged/Inc 
-	${FDO}/Unmanaged/Src/Common
-	# Needed for Messages
-	${CMAKE_CURRENT_BINARY_DIR}/Fdo/Unmanaged/Inc 
-)
-mark_as_advanced( UNMANAGED_INCLUDE_DIRS )
+set( UNMANAGED_INCLUDE_DIR ${FDO}/Unmanaged/Inc )
+set( UNMANAGED_COMMON_INCLUDE_DIR ${FDO}/Unmanaged/Src/Common )
+set( UTILITIES_COMMON_INCLUDE_DIR ${FDOUTILITIES}/Common/Inc )
+set( UTILITIES_TESTCOMMON_INCLUDE_DIR ${FDOUTILITIES}/TestCommon/Inc )
+set( UTILITIES_OWS_INCLUDE_DIR ${FDOUTILITIES}/OWS/Inc )
+set( UTILITIES_EXPRESSION_INCLUDE_DIR ${FDOUTILITIES}/ExpressionEngine/Inc )
+
+# Messages are generated on binary dir, so make it include global
+include_directories( ${CMAKE_CURRENT_BINARY_DIR}/Fdo/Unmanaged/Inc )
+
+mark_as_advanced( 
+	UNMANAGED_INCLUDE_DIR
+	UNMANAGED_COMMON_INCLUDE_DIR
+	UTILITIES_COMMON_INCLUDE_DIR
+	UTILITIES_TESTCOMMON_INCLUDE_DIR
+	UTILITIES_OWS_INCLUDE_DIR
+	UTILITIES_EXPRESSION_INCLUDE_DIR
+	)
+

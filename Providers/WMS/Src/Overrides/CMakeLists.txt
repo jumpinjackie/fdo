@@ -1,8 +1,7 @@
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
-	${FDOUTILITIES}/Common/Inc
-	${FDOUTILITIES}/OWS/Inc
-	${GDAL_INCLUDE_DIR}
+	${UNMANAGED_INCLUDE_DIR}
+	${UTILITIES_COMMON_INCLUDE_DIR}
 	)
 
 set( WMSOverrides_SRCS
@@ -15,7 +14,6 @@ set( WMSOverrides_SRCS
    FdoWmsOvRasterDefinition.cpp
    FdoWmsOverrides.cpp
 )
-
 
 add_library( WMSOverrides SHARED ${WMSOverrides_SRCS} )
 

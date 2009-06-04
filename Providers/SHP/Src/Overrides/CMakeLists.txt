@@ -1,7 +1,7 @@
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
-	${FDO}/Unmanaged/Inc
-	${FDOUTILITIES}/Common/Inc
+	${UNMANAGED_INCLUDE_DIR}
+	${UTILITIES_COMMON_INCLUDE_DIR}
 	)
 
 set( SHPOverrides_SRCS
