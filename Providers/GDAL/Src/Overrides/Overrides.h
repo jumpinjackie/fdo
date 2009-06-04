@@ -38,6 +38,6 @@
 #include <GRFPMessage.h>
 #include <GdalFile/FdoGrfpProvider.h>
 #include <FdoRfpDefines.h>
-
+#include <cstdio>
 
 #endif

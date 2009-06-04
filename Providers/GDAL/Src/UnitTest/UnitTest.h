@@ -42,6 +42,37 @@
 
 // This works with the next macro to wrap each unit test so that any 
 // uncaught FdoExceptions are caught and reported.
+
+#ifdef CPPUNIT_MODERN_API // Newer API
+
+#define FDO_CPPUNIT_DEFINE( testMethod )\
+    void UNITTEST_##testMethod()\
+    {\
+        try\
+        {\
+            TestFixtureType::testMethod();\
+        }\
+        catch (FdoException* exception)\
+        {\
+            char szError[5000]; \
+            sprintf( szError, "Unhandled FdoException in " #testMethod ":\n  %ls\n", exception->GetExceptionMessage() ); \
+            PrintException(exception);\
+            exception->Release();\
+            CPPUNIT_ASSERT_MESSAGE(szError, false);\
+        }\
+    }\
+
+// This is a modification of CPPUNIT_TEST
+#undef  CPPUNIT_TEST
+#define CPPUNIT_TEST( testMethod )\
+    CPPUNIT_TEST_SUITE_ADD_TEST(\
+        ( new CPPUNIT_NS::TestCaller<TestFixtureType>( \
+              context.getTestNameFor( #testMethod ),\
+              &TestFixtureType::UNITTEST_##testMethod,\
+              context.makeFixture() ) ) )
+
+#else //CPPUNIT_MODERN_API
+
 #define FDO_CPPUNIT_DEFINE( testMethod )\
     void UNITTEST_##testMethod()\
     {\
@@ -66,6 +97,7 @@
         &__ThisTestFixtureType::UNITTEST_##testMethod,\
         (__ThisTestFixtureType*)factory->makeFixture() ) 
 
+#endif // CPPUNIT_MODERN_API
 
 // This should work on other compilers/platforms. It works 
 // because IDisposable is always the base class and its first data
