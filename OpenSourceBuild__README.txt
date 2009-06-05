@@ -50,7 +50,12 @@ II. Build Notes
      Visual Studio 2008 C++ Express Edition: 
  
         http://www.microsoft.com/express/download/
-
+        
+     You will need to download and install Windows .NET Framework 3.5 Service Pack 1.
+     You can download it from the following location:
+     
+        http://msdn.microsoft.com/en-us/netframework/default.aspx
+     
   2. Install ActiveState Perl, available from:
      
         http://www.activestate.com/ActivePerl
