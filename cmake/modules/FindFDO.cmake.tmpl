@@ -3,7 +3,7 @@
 # CMake base requires and policy tweaks
 cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 # CMP0005: keep escaping behaviour for definitions added via add_definitions()
-cmake_policy( set CMP0005 OLD )
+cmake_policy( SET CMP0005 OLD )
 
 set( FDO_DIR @CMAKE_INSTALL_PREFIX@ )
 set( FDO_VERSION @FDO_VERSION@ )
