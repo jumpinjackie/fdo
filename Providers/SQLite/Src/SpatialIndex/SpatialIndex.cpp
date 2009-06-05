@@ -19,6 +19,7 @@
 #include "stdafx.h"
 #include "SltGeomUtils.h"
 #include "SpatialIndex.h"
+#include <cstring>
 
 #ifndef _MSC_VER
 

@@ -1,6 +1,9 @@
 # Local tools
 add_subdirectory( linux/mkcatdefs )
 
+# Thirdparty required internal libs
+add_subdirectory( Sqlite3.3.13 )
+
 # Build local CPPUNIT
 if( INTERNAL_CPPUNIT )
 	if( UNIX )
@@ -44,19 +47,6 @@ if( INTERNAL_GDAL )
 			WORKING_DIRECTORY ${FDOTHIRDPARTY}/gdal )
 	endif( UNIX )
 endif( INTERNAL_GDAL )
-
-# Build local Sqlite
-if( INTERNAL_SQLITE )
-	if( UNIX )
-		message( STATUS "Internal Sqlite will be compiled and used." )
-		add_custom_target( Internal_Sqlite
-			DEPENDS ${FDOTHIRDPARTY}/Sqlite3.3.13/linux/lib/sqlite3.a )
-		add_custom_command(
-			OUTPUT ${FDOTHIRDPARTY}/Sqlite3.3.13/linux/lib/sqlite3.a
-			COMMAND make
-			WORKING_DIRECTORY ${FDOTHIRDPARTY}/Sqlite3.3.13/Src )
-	endif( UNIX )
-endif( INTERNAL_SQLITE )
 
 # Build local Curl
 if( INTERNAL_CURL )

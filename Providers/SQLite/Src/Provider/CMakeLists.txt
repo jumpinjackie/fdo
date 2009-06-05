@@ -1,28 +1,30 @@
+include_directories (
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${UNMANAGED_INCLUDE_DIR}
+	${UTILITIES_COMMON_INCLUDE_DIR}
+	${UTILITIES_EXPRESSION_INCLUDE_DIR}
+	) 
 
-include_directories (${SQLiteProvider_SOURCE_DIR}/sqlite-3.6.2 
-                     ${SQLiteProvider_SOURCE_DIR}/SpatialIndex
-                     ${SQLiteProvider_SOURCE_DIR}/../../Fdo/Unmanaged/Inc
-                     ${SQLiteProvider_SOURCE_DIR}/../../Utilities/Common/Inc
-                     ) 
-link_directories (${SQLiteProvider_BINARY_DIR}/sqlite-3.6.2 
-                  ${SQLiteProvider_SOURCE_DIR}/../../Fdo/Unmanaged/Src/.libs
-                  ${SQLiteProvider_SOURCE_DIR}/../../Utilities/Common/.libs
-                 ) 
+set( SQLiteProvider_SRCS
+	SltConversionUtils.cpp
+	slt.cpp
+	SltExprExtensions.cpp
+	SltMetadata.cpp
+	SltProvider.cpp
+	SltQueryTranslator.cpp
+	SltReader.cpp
+	SltSpatialContextReader.cpp
+	) 
 
-add_library (SQLiteProvider SHARED
-SltConversionUtils.cpp
-slt.cpp
-SltExprExtensions.cpp
-SltMetadata.cpp
-SltProvider.cpp
-SltQueryTranslator.cpp
-SltReader.cpp
-SltSpatialContextReader.cpp
-) 
+add_library (SQLiteProvider SHARED ${SQLiteProvider_SRCS} )
 
-target_link_libraries (SQLiteProvider SpatialIndex sqlite-fdo ProvidersCommon FDO ) 
+target_link_libraries ( SQLiteProvider 
+	SQLiteSpatialIndex 
+	sqlitefdo3
+	ProvidersCommon 
+	FDO 
+	) 
 
-INSTALL (TARGETS SQLiteProvider
-         RUNTIME DESTINATION /usr/local/fdo-3.5.0/lib
-         LIBRARY DESTINATION /usr/local/fdo-3.5.0/lib
-         )
+set_target_properties( SQLiteProvider PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
+
+install( TARGETS SQLiteProvider DESTINATION ${LIB_INSTALL_DIR} )

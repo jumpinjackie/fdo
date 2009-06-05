@@ -34,14 +34,10 @@ else( NOT INTERNAL_CPPUNIT )
 	mark_as_advanced( CPPUNIT_LIBRARY_DIR CPPUNIT_INCLUDE_DIR )
 endif( NOT INTERNAL_CPPUNIT )
 
-# Check for SqLite or ThirdParty
-if( NOT INTERNAL_SQLITE )
-	find_package( Sqlite REQUIRED )
-else( NOT INTERNAL_SQLITE )
-	set( LOCAL_SQLITE TRUE )
-	set( SQLITE_INCLUDE_DIR ${FDOTHIRDPARTY}/Sqlite3.3.13/Src )
-	mark_as_advanced( SQLITE_INCLUDE_DIR )
-endif( NOT INTERNAL_SQLITE )
+# SqLite ThirdParty
+set( SQLITE_INCLUDE_DIR ${FDOTHIRDPARTY}/Sqlite3.3.13/Src )
+set( SQLITE_DIR ${FDOTHIRDPARTY}/Sqlite3.3.13/Src )
+mark_as_advanced( SQLITE_INCLUDE_DIR SQLITE_DIR )
 
 # Check for Boost or ThirdParty
 if( NOT INTERNAL_BOOST )
