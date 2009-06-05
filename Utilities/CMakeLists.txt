@@ -1,4 +1,4 @@
-find_package( ZLIB )
+find_package( ZLIB REQUIRED )
 
 # Make global include directories, even binary build dir 
 # to match build generated files
@@ -11,9 +11,6 @@ include_directories(
 add_subdirectory( Common )
 add_subdirectory( TestCommon )
 add_subdirectory( ExpressionEngine )
-if( ZLIB_FOUND )
-	add_subdirectory( OWS )
-endif( ZLIB_FOUND )
+add_subdirectory( OWS )
 add_subdirectory( SchemaMgr )
-# Disabled until find a better code that not use internal headers
-#add_subdirectory( SQLiteInterface )
+add_subdirectory( SQLiteInterface )

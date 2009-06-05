@@ -212,7 +212,7 @@ public:
 
     inline char* Data()
     {
-        return _buf ? _buf : "";
+        return _buf ? _buf : (char*)"";
     }
 
 private:

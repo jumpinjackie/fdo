@@ -20,6 +20,11 @@
 #include "SltGeomUtils.h"
 #include <math.h>
 
+#ifdef LINUX
+	#include <algorithm>
+	using namespace std;
+#endif // LINUX
+
 //For reference, duplicated from ogr_geometry.h
 ///**
 // * List of well known binary geometry types.  These are used within the BLOBs
