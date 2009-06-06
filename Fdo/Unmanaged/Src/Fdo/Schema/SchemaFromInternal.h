@@ -1,7 +1,7 @@
 #ifndef schemaFromInternal_H
 #define schemaFromInternal_H
 
-static char* schemaFromInternal[] = {
+static const char* schemaFromInternal[] = {
 "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>",
 "<!--",
 " ",

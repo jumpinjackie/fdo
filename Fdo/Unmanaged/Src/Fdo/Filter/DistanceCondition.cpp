@@ -138,7 +138,7 @@ FdoString* FdoDistanceCondition::ToStringInternal( FdoIdentifierCollection *pIdC
     wchar_t szDist[32];
     FdoStringUtility::FormatDouble(GetDistance(), szDist, sizeof(szDist) / sizeof(szDist[0]));
 
-    wchar_t*    szOp;
+    const wchar_t*    szOp;
     switch (GetOperation())
     {
     default:

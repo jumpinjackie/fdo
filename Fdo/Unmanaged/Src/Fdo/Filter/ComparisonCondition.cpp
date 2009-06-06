@@ -120,7 +120,7 @@ FdoString* FdoComparisonCondition::ToStringInternal( FdoIdentifierCollection *pI
         throw pExcept;
     }
 
-    wchar_t*    szOp;
+    const wchar_t*    szOp;
     switch (GetOperation())
     {
     default:
