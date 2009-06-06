@@ -11,6 +11,7 @@ set( SQLiteSpatialIndex_SRCS
 
 if( UNIX )
 	set( SQLiteSpatialIndex_Platform_SRCS SpatialIndex.cpp )
+	add_definitions(-msse -msse2 -mmmx)
 else( UNIX )
 	set( SQLiteSpatialIndex_Platform_SRCS DiskSpatialIndex.cpp MappedFile.cpp )
 endif( UNIX )
