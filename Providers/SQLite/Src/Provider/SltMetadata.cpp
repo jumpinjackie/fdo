@@ -592,7 +592,7 @@ void SltMetadata::FindSpatialContextName(int srid, std::wstring& ret)
 {
     ret.clear();
 
-    char* sql = "SELECT sr_name FROM spatial_ref_sys WHERE srid=?";
+    const char* sql = "SELECT sr_name FROM spatial_ref_sys WHERE srid=?";
 
     int rc;
     sqlite3_stmt* stmt = NULL;
