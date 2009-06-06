@@ -525,7 +525,7 @@ class SltInsert : public SltCommand<FdoIInsert>
             //get the ID of the last inserted feature
             sqlite3_int64 id = sqlite3_last_insert_rowid(m_db);
             char sid[64];
-            sprintf(sid, "rowid=%d", id);
+            sprintf(sid, "rowid=%lld", id);
 
             //return the new feature
             //IMPORTANT: use a transaction-less reader so that
