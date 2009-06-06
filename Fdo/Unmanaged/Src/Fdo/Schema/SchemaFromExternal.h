@@ -1,7 +1,7 @@
 #ifndef schemaFromExternal_H
 #define schemaFromExternal_H
 
-static char* schemaFromExternal[] = {
+static const char* schemaFromExternal[] = {
 "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>",
 "<!-- ",
 " ",

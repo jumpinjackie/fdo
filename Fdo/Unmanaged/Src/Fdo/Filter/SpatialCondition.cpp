@@ -122,7 +122,7 @@ FdoString* FdoSpatialCondition::ToStringInternal( FdoIdentifierCollection *pIdCo
         throw pExcept;
     }
 
-    wchar_t*    szOp;
+    const wchar_t*    szOp;
     switch (GetOperation())
     {
     default:

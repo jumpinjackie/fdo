@@ -1,7 +1,7 @@
 #ifndef feature_H
 #define feature_H
 
-static char* feature[] = {
+static const char* feature[] = {
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
 "<schema targetNamespace=\"http://www.opengis.net/gml\" xmlns=\"http://www.w3.org/2001/XMLSchema\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" elementFormDefault=\"qualified\" version=\"2.1.2\">",
 "  <annotation>",

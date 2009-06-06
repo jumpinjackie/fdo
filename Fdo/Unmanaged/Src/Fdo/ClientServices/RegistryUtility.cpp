@@ -789,7 +789,7 @@ wchar_t *FdoRegistryUtility::GetFileName()
             const char *me;
             char *home;
             char *last;
-            char *install = "/usr/local/fdo-3.5.0";
+            const char *install = "/usr/local/fdo-3.5.0";
 
             // Determine the user-specified FDO install location
             char *fdo_home = getenv( "FDOHOME" );
@@ -808,7 +808,7 @@ wchar_t *FdoRegistryUtility::GetFileName()
                 *last = '\0';
             }
             else
-                home = "./";
+                home = (char*)"./";
             
             sprintf (_fileName, "%s%s", home, "providers.xml");
             if ((0 != stat (_fileName, &my_stat)) || !S_ISREG(my_stat.st_mode))

@@ -1,7 +1,7 @@
 #ifndef geometry_H
 #define geometry_H
 
-static char* geometry[] = {
+static const char* geometry[] = {
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
 "<schema targetNamespace=\"http://www.opengis.net/gml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns=\"http://www.w3.org/2001/XMLSchema\" elementFormDefault=\"qualified\" version=\"2.1.2\">",
 "  <annotation>",
