@@ -47,7 +47,7 @@ static Mem *columnMem(sqlite3_stmt *pStmt, int i){
     vals = sqlite3_data_count(pStmt);
     pOut = &pVm->pResultSet[i];
   }else{
-    static const Mem nullMem = {{0}, 0.0, 0, "", 0, MEM_Null, SQLITE_NULL, 0, 0, 0 };
+    static const Mem nullMem = {{0}, 0.0, 0, (char*)"", 0, MEM_Null, SQLITE_NULL, 0, 0, 0 };
     if( pVm->db ){
         //We compile without thread safety anyway...
       //sqlite3_mutex_enter(pVm->db->mutex);
@@ -832,9 +832,9 @@ FdoClassDefinition* SltReader::GetClassDefinition()
         // do we have unknown calculations !?
         if (unknownPropsIdx.size() != 0)
         {
-			FdoPtr<FdoClassDefinition> origfc = mainMd->ToClass();
+            FdoPtr<FdoClassDefinition> origfc = mainMd->ToClass();
             // use the original class in case we have one otherwise use the generated class
-            FdoClassDefinition* origClass = (origfc == NULL) ? m_class : origfc;
+            FdoClassDefinition* origClass = (origfc == NULL) ? m_class : origfc.p;
             // the expression may be based on provider functions
             FdoPtr<FdoIExpressionCapabilities> expCap = m_connection->GetExpressionCapabilities();
             FdoPtr<FdoFunctionDefinitionCollection> functionDefinitions = expCap->GetFunctions();
