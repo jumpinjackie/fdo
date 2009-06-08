@@ -25,7 +25,7 @@ add_library (SQLiteProvider SHARED ${SQLiteProvider_SRCS} )
 
 target_link_libraries ( SQLiteProvider 
 	SQLiteSpatialIndex 
-	sqlitefdo3
+	sqlitefdoprovider3
 	ProvidersCommon 
 	ExpressionEngine
 	FDO 
