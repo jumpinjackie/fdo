@@ -34,9 +34,14 @@ void c_KgOraConnectionCapabilities::Dispose()
 /// <returns>Returns the connection thread capability.</returns> 
 FdoThreadCapability c_KgOraConnectionCapabilities::GetThreadCapability ()
 {
-    //return (FdoThreadCapability_PerConnectionThreaded);
+  // I have disabled an schema pool because of bug in MapGuide.
+  // Bug is demonstrated when several concurrent request are send to access data. 
+  // Bug is in MgServerGetFeatures::SerializeToXml(FdoClassDefinition* classDef) which will remove class from schema 
+  // and move class to temporary schema to be serialized.
+  // Problem also could happen when provider enables multiple commands per connection or when schemas are shared across connections (schema pooling).
+    return (FdoThreadCapability_PerConnectionThreaded);
     
-    return  FdoThreadCapability_PerCommandThreaded;
+    //return  FdoThreadCapability_PerCommandThreaded;
     
     //return  FdoThreadCapability_MultiThreaded;
 }
