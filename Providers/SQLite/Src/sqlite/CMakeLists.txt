@@ -1,4 +1,4 @@
-set( sqlitefdo3_SRCS 
+set( sqlitefdoprovider3_SRCS 
 	alter.c
 	analyze.c
 	attach.c
@@ -87,11 +87,11 @@ add_definitions(
 	-DSQLITE_CORE
 	)
 
-add_library ( sqlitefdo3 SHARED  ${sqlitefdo3_SRCS} )
+add_library ( sqlitefdoprovider3 STATIC  ${sqlitefdoprovider3_SRCS} )
 
-set_target_properties( sqlitefdo3 PROPERTIES VERSION 3 SOVERSION 6 )
+#set_target_properties( sqlitefdoprovider3 PROPERTIES VERSION 3 SOVERSION 6 )
 
-target_link_libraries( sqlitefdo3
+target_link_libraries( sqlitefdoprovider3
 	pthread
 	dl
 	)
