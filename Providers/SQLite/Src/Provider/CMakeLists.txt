@@ -27,6 +27,7 @@ target_link_libraries ( SQLiteProvider
 	SQLiteSpatialIndex 
 	sqlitefdo3
 	ProvidersCommon 
+	ExpressionEngine
 	FDO 
 	) 
 
