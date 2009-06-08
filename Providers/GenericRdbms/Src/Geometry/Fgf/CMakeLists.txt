@@ -1,0 +1,56 @@
+include_directories(
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/../../..
+	${CMAKE_CURRENT_SOURCE_DIR}/$(FDO)/Unmanaged/Inc
+	)
+
+add_definitions( -DFULLPROTO -D__USE_GNU -DLINUX )
+
+set( geometry_fgf_STAT_SRCS
+   AllGeometry_c.cpp
+)
+
+add_library( geometry_fgf STATIC ${geometry_fgf_STAT_SRCS} )
+
+
+
+
+#original Makefile.am contents follow:
+
+###
+### Copyright (C) 2004-2006  Autodesk, Inc.
+### 
+### This library is free software; you can redistribute it and/or
+### modify it under the terms of version 2.1 of the GNU Lesser
+### General Public License as published by the Free Software Foundation.
+### 
+### This library is distributed in the hope that it will be useful,
+### but WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+### Lesser General Public License for more details.
+### 
+### You should have received a copy of the GNU Lesser General Public
+### License along with this library; if not, write to the Free Software
+### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+###
+#
+#AUTOMAKE_OPTIONS = foreign
+#
+#EXTRA_DIST = geometry_fgf.vcproj
+#
+#noinst_LTLIBRARIES = libgeometry_fgf.la
+#
+#libgeometry_fgf_la_SOURCES = \
+#  AllGeometry_c.cpp
+#
+#noinst_HEADERS = $(libgeometry_fgf_la_SOURCES)
+#
+#INCLUDES = \
+#  -I../../.. \
+#  -I$(FDO)/Unmanaged/Inc
+#
+#libgeometry_fgf_la_LDFLAGS =
+#
+#CXXFLAGS = @CXXFLAGS@ -DFULLPROTO -D__USE_GNU -DLINUX
+#
