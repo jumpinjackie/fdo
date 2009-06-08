@@ -14,7 +14,6 @@ if( UNIX )
 	if( VOID_SIZE EQUAL 8 )
 		message( STATUS "Compiling in 64 bits machine" )
 		set( LIB_SUFFIX "64" )
-		add_definitions( -DUNIX_VOID64 )
 	endif( VOID_SIZE EQUAL 8 )
 	set( LIB_INSTALL_DIR "lib${LIB_SUFFIX}" )
 endif( UNIX )
@@ -30,6 +29,7 @@ endif( UNIX )
 
 # Make global include directories, even binary build dir 
 # to match build generated files
+set( UNMANAGED_DIR ${FDO}/Unmanaged )
 set( UNMANAGED_INCLUDE_DIR ${FDO}/Unmanaged/Inc )
 set( UNMANAGED_COMMON_INCLUDE_DIR ${FDO}/Unmanaged/Src/Common )
 set( UNMANAGED_NLS_INCLUDE_DIR ${FDO}/Unmanaged/Src/Nls )
@@ -38,11 +38,13 @@ set( UTILITIES_TESTCOMMON_INCLUDE_DIR ${FDOUTILITIES}/TestCommon/Inc )
 set( UTILITIES_OWS_INCLUDE_DIR ${FDOUTILITIES}/OWS/Inc )
 set( UTILITIES_EXPRESSION_INCLUDE_DIR ${FDOUTILITIES}/ExpressionEngine/Inc )
 set( UTILITIES_SQLITEINTERFACE_INCLUDE_DIR ${FDOUTILITIES}/SQLiteInterface )
+set( UTILITIES_SCHEMAMGR_INCLUDE_DIR ${FDOUTILITIES}/SchemaMgr/Inc )
 
 # Messages are generated on binary dir, so make it include global
 include_directories( ${CMAKE_CURRENT_BINARY_DIR}/Fdo/Unmanaged/Inc )
 
 mark_as_advanced( 
+	UNMANAGED_DIR
 	UNMANAGED_INCLUDE_DIR
 	UNMANAGED_COMMON_INCLUDE_DIR
 	UNMANAGED_NLS_INCLUDE_DIR
@@ -51,5 +53,6 @@ mark_as_advanced(
 	UTILITIES_OWS_INCLUDE_DIR
 	UTILITIES_EXPRESSION_INCLUDE_DIR
 	UTILITIES_SQLITEINTERFACE_INCLUDE_DIR
+	UTILITIES_SCHEMAMGR_INCLUDE_DIR
 	)
 
