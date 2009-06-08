@@ -719,7 +719,12 @@ c_KgOraSchemaDesc* c_KgOraConnection::GetSchemaDesc()
   if( m_SchemaDesc.p == NULL )
   {
   // Now check into schema pool
-  #ifdef D_ENABLE_SCHEMA_POOL
+  // I have disabled an schema pool because of bug in MapGuide.
+  // Bug is demonstrated when several concurrent request are send to access data. 
+  // Bug is in MgServerGetFeatures::SerializeToXml(FdoClassDefinition* classDef) which will remove class from schema 
+  // and move class to temporary schema to be serialized.
+  // Problem also could happen when provider enables multiple commands per connection or when schemas are shared across connections (schema pooling).
+  #ifdef false // D_ENABLE_SCHEMA_POOL
     m_SchemaDesc = c_KgOraSchemaPool::GetSchemaData(this);
     if( !m_SchemaDesc.p )
     {
