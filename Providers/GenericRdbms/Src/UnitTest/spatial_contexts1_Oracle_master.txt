@@ -589,4 +589,87 @@ PROJCS["Quebec MTM Zone 4 (NAD 83)", GEOGCS ["NAD 83 (Continental US)", DATUM ["
 </xs:complexContent>
 </xs:complexType>
 </xs:schema>
+<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" provider="Autodesk.Oracle.3.5" name="AutoGen">
+<complexType name="TABLE1Type">
+<Table pkeyName="PK_TABLE1" name="TABLE1"/>
+<element name="ID">
+<Column name="ID"/>
+</element>
+<element name="GEOM_COLUMN1">
+<GeometricColumn name="GEOM_COLUMN1"/>
+</element>
+<element name="GEOM_COLUMN2">
+<GeometricColumn name="GEOM_COLUMN2"/>
+</element>
+<element name="GEOM_COLUMN3">
+<GeometricColumn name="GEOM_COLUMN3"/>
+</element>
+<element name="GEOM_COLUMN4">
+<GeometricColumn name="GEOM_COLUMN4"/>
+</element>
+<element name="GEOM_COLUMN5">
+<GeometricColumn name="GEOM_COLUMN5"/>
+</element>
+<element name="GEOM_COLUMN6">
+<GeometricColumn name="GEOM_COLUMN6"/>
+</element>
+<element name="GEOM_COLUMN7">
+<GeometricColumn name="GEOM_COLUMN7"/>
+</element>
+<element name="GEOM_COLUMN8">
+<GeometricColumn name="GEOM_COLUMN8"/>
+</element>
+</complexType>
+<complexType name="TABLE2Type">
+<Table pkeyName="PK_TABLE2" name="TABLE2"/>
+<element name="ID">
+<Column name="ID"/>
+</element>
+<element name="GEOM_COLUMN1">
+<GeometricColumn name="GEOM_COLUMN1"/>
+</element>
+<element name="GEOM_COLUMN2">
+<GeometricColumn name="GEOM_COLUMN2"/>
+</element>
+<element name="GEOM_COLUMN3">
+<GeometricColumn name="GEOM_COLUMN3"/>
+</element>
+</complexType>
+<complexType name="TABLE3Type">
+<Table pkeyName="PK_TABLE3" name="TABLE3"/>
+<element name="ID">
+<Column name="ID"/>
+</element>
+<element name="GEOM_COLUMN1">
+<GeometricColumn name="GEOM_COLUMN1"/>
+</element>
+<element name="GEOM_COLUMN2">
+<GeometricColumn name="GEOM_COLUMN2"/>
+</element>
+</complexType>
+<complexType name="TABLE4Type">
+<Table pkeyName="PK_TABLE4" name="TABLE4"/>
+<element name="ID">
+<Column name="ID"/>
+</element>
+<element name="GEOM_COLUMN1">
+<GeometricColumn name="GEOM_COLUMN1"/>
+</element>
+<element name="GEOM_COLUMN2">
+<GeometricColumn name="GEOM_COLUMN2"/>
+</element>
+</complexType>
+<complexType name="TABLE5Type">
+<Table pkeyName="PK_TABLE5" name="TABLE5"/>
+<element name="ID">
+<Column name="ID"/>
+</element>
+<element name="GEOM_COLUMN1">
+<GeometricColumn name="GEOM_COLUMN1"/>
+</element>
+<element name="GEOM_COLUMN2">
+<GeometricColumn name="GEOM_COLUMN2"/>
+</element>
+</complexType>
+</SchemaMapping>
 </fdo:DataStore>
