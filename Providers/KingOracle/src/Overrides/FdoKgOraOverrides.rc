@@ -46,6 +46,18 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (Canada) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENC)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_CAN
+#pragma code_page(1252)
+#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -53,8 +65,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,1,1,0
- PRODUCTVERSION 0,1,1,0
+ FILEVERSION 0,8,10,0
+ PRODUCTVERSION 0,8,10,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -67,25 +79,26 @@ VS_VERSION_INFO VERSIONINFO
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
-        BLOCK "040904b0"
+        BLOCK "100904b0"
         BEGIN
+            VALUE "Comments", "King FDO Provider for Oracle Spatial"
             VALUE "CompanyName", "SL-King"
-            VALUE "FileDescription", "FDO King.Oracle Overrides"
+            VALUE "FileDescription", "King FDO Provider for Oracle Spatial Component"
             VALUE "FileVersion", "3.1.0.R000"
-            VALUE "InternalName", "KingOracleOverrides"
-            VALUE "LegalCopyright", "Copyright © 2006"
-            VALUE "OriginalFilename", "KingOracleOverrides.dll"
+            VALUE "InternalName", "KingOracleprovider"
+            VALUE "LegalCopyright", "Copyright SL-King© 2009"
+            VALUE "OriginalFilename", "KingOracleProvider.dll"
             VALUE "ProductName", "Feature Data Objects"
-            VALUE "ProductVersion", "0.1.1.0"
+            VALUE "ProductVersion", "0.8.10.0"
         END
     END
     BLOCK "VarFileInfo"
     BEGIN
-        VALUE "Translation", 0x409, 1200
+        VALUE "Translation", 0x1009, 1200
     END
 END
 
-#endif    // English (U.S.) resources
+#endif    // English (Canada) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
