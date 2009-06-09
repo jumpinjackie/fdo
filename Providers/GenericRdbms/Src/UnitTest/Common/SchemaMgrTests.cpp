@@ -30,6 +30,63 @@ FdoString* SchemaMgrTests::DB_NAME_COPY_SUFFIX =      L"_schema_mgr_copy";
 FdoString* SchemaMgrTests::DB_NAME_FOREIGN_SUFFIX =   L"_schema_mgr_f";
 FdoString* SchemaMgrTests::DB_NAME_CONFIGERR_SUFFIX =   L"_schema_mgr_configerr";
 
+// The following stylesheet handles cases when the order of the reverse-engineered
+// spatial contexts, in an output XML, is not in a consistent order. It pastes
+// the spatial context info onto referencing geometries. Empty spatial contexts
+// are still written out so that we can check that the right number of spatial
+// contexts were generated.
+
+static char* pSortScConfigSheet = 
+"<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\
+<stylesheet version=\"1.0\" \
+xmlns=\"http://www.w3.org/1999/XSL/Transform\" \
+xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" \
+xmlns:gml=\"http://www.opengis.net/gml\" \
+xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" \
+xmlns:fdo=\"http://fdo.osgeo.org/schemas\" \
+xmlns:ora=\"http://www.autodesk.com/isd/fdo/OracleProvider\" \
+xmlns:mql=\"http://fdomysql.osgeo.org/schemas\" \
+xmlns:sqs=\"http://www.autodesk.com/isd/fdo/SQLServerProvider\">\
+<xsl:template match=\"fdo:DataStore\">\
+    <xsl:copy>\
+        <xsl:apply-templates select=\"@*\"/>\
+        <xsl:apply-templates select=\"gml:DerivedCRS\"/>\
+        <xsl:apply-templates select=\"xs:schema\"/>\
+        <xsl:apply-templates select=\"ora:SchemaMapping\"/>\
+    </xsl:copy>\
+</xsl:template>\
+<xsl:template match=\"gml:DerivedCRS\">\
+    <xsl:copy/>\
+</xsl:template>\
+<xsl:template match=\"xs:schema\">\
+    <xsl:copy>\
+        <xsl:apply-templates select=\"@*\"/>\
+        <xsl:apply-templates select=\"xs:annotation\"/>\
+        <xsl:apply-templates select=\"xs:element\"/>\
+        <xsl:apply-templates select=\"xs:complexType\"/>\
+    </xsl:copy>\
+</xsl:template>\
+<xsl:template match=\"xs:element[@fdo:srsName]\">\
+    <xsl:copy>\
+        <xsl:apply-templates select=\"@*\"/>\
+        <xsl:variable name=\"sc\" select=\"@fdo:srsName\"/>\
+        <xsl:for-each select=\"//fdo:DataStore/gml:DerivedCRS[@gml:id = $sc]\">\
+            <xsl:apply-templates select=\"gml:metaDataProperty\"/>\
+            <xsl:apply-templates select=\"gml:validArea\"/>\
+            <xsl:apply-templates select=\"gml:baseCRS\"/>\
+        </xsl:for-each>\
+    </xsl:copy>\
+</xsl:template>\
+<xsl:template match=\"@fdo:srsName\">\
+</xsl:template>\
+<xsl:template match=\"@*|node()\">\
+  <xsl:copy>\
+    <xsl:apply-templates select=\"@*|node()\"/>\
+  </xsl:copy>\
+  </xsl:template>\
+</stylesheet>";
+
+
 SchemaMgrTests::SchemaMgrTests (void)
 {
 }
@@ -981,7 +1038,7 @@ void SchemaMgrTests::testGenConfig1 ()
         );
         UnitTestUtil::ExportDb( fdoConn, stream3, flags );
         FdoIoStreamP stream4 = OverrideBend( stream3, datastorePrefix, L"(user)" );
-        UnitTestUtil::Stream2File( stream4, UnitTestUtil::GetOutputFileName( L"schemaGenConfig1.xml" ) );
+   		UnitTestUtil::Config2SortedFile( stream4, UnitTestUtil::GetOutputFileName( L"schemaGenConfig1.xml" ), pSortScConfigSheet );
 
         printf( "Reopening connection ...\n" );
 
@@ -1029,8 +1086,21 @@ void SchemaMgrTests::testGenConfig1 ()
         stream3 = FdoIoMemoryStream::Create();
         UnitTestUtil::ExportDb( fdoConn, stream3, flags );
         stream4 = OverrideBend( stream3, datastorePrefix, L"(user)" );
-        UnitTestUtil::Stream2File( stream4, UnitTestUtil::GetOutputFileName( L"schemaGenConfig1c.xml" ) );
+   		UnitTestUtil::Config2SortedFile( stream4, UnitTestUtil::GetOutputFileName( L"schemaGenConfig1c.xml" ), pSortScConfigSheet );
         
+        scCmd = (FdoIGetSpatialContexts*) fdoConn->CreateCommand( FdoCommandType_GetSpatialContexts );
+        scReader = scCmd->Execute();
+
+        while ( scReader->ReadNext() ) {
+#ifdef RDBI_DEF_ORA
+            if ( wcscmp(scReader->GetName(), L"Default") == 0 )
+                CPPUNIT_ASSERT( wcscmp(scReader->GetCoordinateSystem(),L"Quebec MTM Zone 4 (NAD 83)") == 0 );
+            else if ( wcscmp(scReader->GetName(), L"sc_2") == 0 )
+                CPPUNIT_ASSERT( wcscmp(scReader->GetCoordinateSystem(),L"Longitude / Latitude (NAD 83) Datum 33") == 0 );
+#endif
+        }
+        scReader = NULL;
+
         UnitTestUtil::CloseConnection( fdoConn, false, L"_schema_mgr" );
 
 #ifdef RDBI_DEF_ORA
@@ -1852,12 +1922,20 @@ void SchemaMgrTests::testConfigError ()
     catch (FdoException* e ) 
     {
 #ifdef _WIN32
+#ifdef _DEBUG
             FdoStringP expectedMessage = FdoStringP::Format(
                 L" Cannot use configuration document with current connection, datastore '%ls' has MetaSchema. ",
                 (FdoString*) datastoreName
             );
             FdoString* pMessage = wcschr( e->GetExceptionMessage(), ')' );
             if (pMessage) pMessage++;
+#else
+            FdoStringP expectedMessage = FdoStringP::Format(
+                L"Cannot use configuration document with current connection, datastore '%ls' has MetaSchema. ",
+                (FdoString*) datastoreName
+            );
+                FdoString* pMessage = e->GetExceptionMessage();
+#endif
             CPPUNIT_ASSERT( pMessage && expectedMessage.ICompare(pMessage) == 0 );
 #endif
     }
@@ -1875,61 +1953,6 @@ void SchemaMgrTests::testGenConfigGeom()
 {
     //TODO: add tests for autogenerating geometric property attributes.
 }
-
-// The following stylesheet handles cases when the order of the reverse-engineered
-// spatial contexts, in an output XML, is not in a consistent order. It pastes
-// the spatial context info onto referencing geometries. Empty spatial contexts
-// are still written out so that we can check that the right number of spatial
-// contexts were generated.
-
-static char* pSortScConfigSheet = 
-"<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\
-<stylesheet version=\"1.0\" \
-xmlns=\"http://www.w3.org/1999/XSL/Transform\" \
-xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" \
-xmlns:gml=\"http://www.opengis.net/gml\" \
-xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" \
-xmlns:fdo=\"http://fdo.osgeo.org/schemas\" \
-xmlns:ora=\"http://www.autodesk.com/isd/fdo/OracleProvider\" \
-xmlns:mql=\"http://fdomysql.osgeo.org/schemas\" \
-xmlns:sqs=\"http://www.autodesk.com/isd/fdo/SQLServerProvider\">\
-<xsl:template match=\"fdo:DataStore\">\
-    <xsl:copy>\
-        <xsl:apply-templates select=\"@*\"/>\
-        <xsl:apply-templates select=\"gml:DerivedCRS\"/>\
-        <xsl:apply-templates select=\"xs:schema\"/>\
-    </xsl:copy>\
-</xsl:template>\
-<xsl:template match=\"gml:DerivedCRS\">\
-    <xsl:copy/>\
-</xsl:template>\
-<xsl:template match=\"xs:schema\">\
-    <xsl:copy>\
-        <xsl:apply-templates select=\"@*\"/>\
-        <xsl:apply-templates select=\"xs:annotation\"/>\
-        <xsl:apply-templates select=\"xs:element\"/>\
-        <xsl:apply-templates select=\"xs:complexType\"/>\
-    </xsl:copy>\
-</xsl:template>\
-<xsl:template match=\"xs:element[@fdo:srsName]\">\
-    <xsl:copy>\
-        <xsl:apply-templates select=\"@*\"/>\
-        <xsl:variable name=\"sc\" select=\"@fdo:srsName\"/>\
-        <xsl:for-each select=\"//fdo:DataStore/gml:DerivedCRS[@gml:id = $sc]\">\
-            <xsl:apply-templates select=\"gml:metaDataProperty\"/>\
-            <xsl:apply-templates select=\"gml:validArea\"/>\
-            <xsl:apply-templates select=\"gml:baseCRS\"/>\
-        </xsl:for-each>\
-    </xsl:copy>\
-</xsl:template>\
-<xsl:template match=\"@fdo:srsName\">\
-</xsl:template>\
-<xsl:template match=\"@*|node()\">\
-  <xsl:copy>\
-    <xsl:apply-templates select=\"@*|node()\"/>\
-  </xsl:copy>\
-  </xsl:template>\
-</stylesheet>";
 
 void SchemaMgrTests::testSpatialContexts()
 {
