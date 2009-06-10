@@ -29,11 +29,11 @@ set( FDOTHIRDPARTY ${CMAKE_CURRENT_SOURCE_DIR}/Thirdparty )
 set( FDOUTILITIES ${CMAKE_CURRENT_SOURCE_DIR}/Utilities )
 
 if( UNIX )
-	add_definitions( -DFULLPROTO -fPIC )
+	add_definitions( -DFULLPROTO -fPIC -DPIC )
 endif( UNIX )
 
 if (CMAKE_SYSTEM_NAME MATCHES Linux)
-	add_definitions( -D__USE_GNU -DLINUX -DLINUX_IA32 -pthread )
+	add_definitions( -DLINUX -DLINUX_IA32 -pthread )
 endif (CMAKE_SYSTEM_NAME MATCHES Linux)
 
 find_package( FDOThirdparty REQUIRED )
