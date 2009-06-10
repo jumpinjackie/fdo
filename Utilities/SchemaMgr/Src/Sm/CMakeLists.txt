@@ -21,14 +21,33 @@ set( SchemaMgr_SRCS
 add_library( SchemaMgr SHARED ${SchemaMgr_SRCS} )
 set_target_properties( SchemaMgr PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
 target_link_libraries( SchemaMgr
-	SmOverrides
-	SmLogicalPhysical
-	SmPhysical
-	SmPhCfg
-	SmPhMt
-	SmPhRb
-	SmPhRd
 	ProvidersCommon
 	FDO )
+
+if( CMAKE_COMPILER_IS_GNUCXX )
+	target_link_libraries( SchemaMgr
+		-Wl,-whole-archive
+		SmOverrides
+		SmLogicalPhysical
+		SmPhysical
+		SmPhCfg
+		SmPhMt
+		SmPhRb
+		SmPhRd
+		-Wl,-no-whole-archive
+		)
+else( CMAKE_COMPILER_IS_GNUCXX )
+	target_link_libraries( SchemaMgr
+		SmOverrides
+		SmLogicalPhysical
+		SmPhysical
+		SmPhCfg
+		SmPhMt
+		SmPhRb
+		SmPhRd
+		)
+endif( CMAKE_COMPILER_IS_GNUCXX )
+
+
 
 install( TARGETS SchemaMgr DESTINATION ${LIB_INSTALL_DIR} )
