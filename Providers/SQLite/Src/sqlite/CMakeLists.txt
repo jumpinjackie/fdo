@@ -74,7 +74,7 @@ set( sqlitefdoprovider3_SRCS
 	where.c
 ) 
 
-add_definitions( 
+add_definitions(
 	-DSQLITE_ENABLE_COLUMN_METADATA 
 	-DSQLITE_OMIT_TRACE 
 	-DSQLITE_OMIT_EXPLAIN 
@@ -85,15 +85,8 @@ add_definitions(
 	-DSQLITE_THREADSAFE=2 
 	-DSQLITE_ENABLE_RTREE 
 	-DSQLITE_CORE
+	-DPIC
+	-fPIC
 	)
 
 add_library ( sqlitefdoprovider3 STATIC  ${sqlitefdoprovider3_SRCS} )
-
-#set_target_properties( sqlitefdoprovider3 PROPERTIES VERSION 3 SOVERSION 6 )
-
-target_link_libraries( sqlitefdoprovider3
-	pthread
-	dl
-	)
-
-

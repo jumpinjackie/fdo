@@ -18,18 +18,29 @@ set( SQLiteProvider_SRCS
 
 if( UNIX )
 	add_definitions(-msse -msse2 -mmmx)
-else( UNIX )
 endif( UNIX )
 
 add_library (SQLiteProvider SHARED ${SQLiteProvider_SRCS} )
 
 target_link_libraries ( SQLiteProvider 
-	SQLiteSpatialIndex 
-	sqlitefdoprovider3
 	ProvidersCommon 
 	ExpressionEngine
 	FDO 
 	) 
+
+if( CMAKE_COMPILER_IS_GNUCXX )
+	target_link_libraries( SQLiteProvider
+		-Wl,-whole-archive
+		SQLiteSpatialIndex 
+		sqlitefdoprovider3
+		-Wl,-no-whole-archive
+		)
+else( CMAKE_COMPILER_IS_GNUCXX )
+	target_link_libraries( SQLiteProvider
+		SQLiteSpatialIndex 
+		sqlitefdoprovider3
+		)
+endif( CMAKE_COMPILER_IS_GNUCXX )
 
 set_target_properties( SQLiteProvider PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
 
