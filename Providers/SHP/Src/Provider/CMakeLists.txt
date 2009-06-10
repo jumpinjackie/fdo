@@ -54,14 +54,27 @@ set( SHPProvider_SRCS
 add_library( SHPProvider SHARED ${SHPProvider_SRCS} )
 
 target_link_libraries( SHPProvider
-	SHPRead
-	SHPSpatialIndex
 	SHPOverrides
 	FDO
 	ProvidersCommon
 	ExpressionEngine
  )
 
+if( CMAKE_COMPILER_IS_GNUCXX )
+	target_link_libraries( SHPProvider
+		-Wl,-whole-archive
+		SHPRead
+		SHPSpatialIndex
+		-Wl,-no-whole-archive
+		)
+else( CMAKE_COMPILER_IS_GNUCXX )
+	target_link_libraries( SHPProvider
+		SHPRead
+		SHPSpatialIndex
+		)
+endif( CMAKE_COMPILER_IS_GNUCXX )
+
+	
 add_dependencies( SHPProvider SHPMessage )
 
 set_target_properties( SHPProvider PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
