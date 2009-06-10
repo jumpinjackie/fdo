@@ -462,7 +462,7 @@ void UnitTestUtil::CreateData( bool create, FdoIConnection  *inConn, int featCou
         {
             for(unsigned int i=0;i<strlen(tmp);i++)putchar(8);
             sprintf(tmp,"Count = %d",count);
-            printf(tmp);
+            printf( "%s", tmp);
 
             rdr->ReadNext();
             int id = rdr->GetInt32(L"ID");
@@ -483,7 +483,7 @@ void UnitTestUtil::CreateData( bool create, FdoIConnection  *inConn, int featCou
 	{
 		for(unsigned int i=0;i<strlen(tmp);i++)putchar(8);
 		sprintf(tmp,"Count = %d",count);
-		printf(tmp);
+		printf( "%s", tmp);
 		finish = clock ();
 		printf ("  time: %2.3f seconds\n", (double)(finish - start) / CLOCKS_PER_SEC);
 	}
