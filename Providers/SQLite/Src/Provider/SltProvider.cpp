@@ -1527,7 +1527,7 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
     std::string fcname = W2A_SLOW(fc->GetName());
     std::string gname;
     std::string extname = ""; //if this remains empty, we know extents is not needed
-    std::string countname = "TheCount";
+    std::string countname = "";
 
     int propsCount = props->GetCount();
     if (propsCount != 1 && propsCount != 2)
@@ -1537,13 +1537,14 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
     for (int i=0; i<propsCount; i++)
     {
         FdoPtr<FdoIdentifier> identifier = props->GetItem(i);
-        expTrans.Reset();
         identifier->Process(&expTrans);
         if (expTrans.IsError())
             return NULL;
-        countname = W2A_SLOW(expTrans.GetCountName());
-        extname = W2A_SLOW(expTrans.GetSContextName());
     }
+    extname = W2A_SLOW(expTrans.GetSContextName());
+    countname = W2A_SLOW(expTrans.GetCountName());
+    if (countname.size() == 0)
+        countname = "TheCount";
 
     //ok this is a spatial extents or count computed property.
     //Look up the extents and count and return a reader with them.

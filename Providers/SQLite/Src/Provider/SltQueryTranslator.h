@@ -168,6 +168,8 @@ public:
 
     SltScCHelperTranslator(FdoFeatureClass* fc)
     {
+        m_extname = L"";
+        m_countname = L"TheCount";
         m_fc = fc;
         Reset();
     }
@@ -211,8 +213,6 @@ public:
 public:
     void Reset() 
     {
-        m_extname = L"";
-        m_countname = L"TheCount";
         m_error = false;
     }
     bool IsError(){return m_error;}

@@ -732,7 +732,7 @@ void SltScCHelperTranslator::ProcessFunction(FdoFunction& expr)
                     FdoPtr<FdoGeometricPropertyDefinition> geomProp = m_fc->GetGeometryProperty();
                     if (geomProp && 0==wcscmp(geomName, geomProp->GetName()))
                     {
-                        m_extname = geomName;
+                        m_extname = m_stackNames.at(sz-1);
                         return;
                     }
                 }
