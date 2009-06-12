@@ -117,7 +117,7 @@ FdoIConnection* UnitTestUtil::CreateConnection()
     return (manager->CreateConnection (L"OSGeo.SQLite"));
 }
 
-FdoIConnection* UnitTestUtil::OpenConnection( FdoString* fileName, bool re_create, FdoIConnection *inConn )
+FdoIConnection* UnitTestUtil::OpenConnection( FdoString* fileName, bool re_create, bool add_spc, FdoIConnection *inConn )
 {
 #ifdef _WIN32
 	wchar_t fullpath[1024];
@@ -155,20 +155,22 @@ FdoIConnection* UnitTestUtil::OpenConnection( FdoString* fileName, bool re_creat
 		FdoPtr<FdoIConnectionPropertyDictionary> prop = info->GetConnectionProperties();
 		conn->Open();
 
-		// Create spatial context
-		FdoPtr<FdoICreateSpatialContext> pCreateCreateSpatialContext = (FdoICreateSpatialContext*) conn->CreateCommand(FdoCommandType_CreateSpatialContext);
-		pCreateCreateSpatialContext->SetCoordinateSystemWkt(L"LL84");
-		pCreateCreateSpatialContext->SetDescription(L"World Coordinate System, Degrees, what else do you need to know?" );
-		pCreateCreateSpatialContext->SetName( L"LL84" );
-		pCreateCreateSpatialContext->SetXYTolerance( 17.0 );
-		pCreateCreateSpatialContext->SetZTolerance(3.14159);
-		pCreateCreateSpatialContext->Execute();
-
+        if (add_spc)
+        {
+		    // Create spatial context
+		    FdoPtr<FdoICreateSpatialContext> pCreateCreateSpatialContext = (FdoICreateSpatialContext*) conn->CreateCommand(FdoCommandType_CreateSpatialContext);
+		    pCreateCreateSpatialContext->SetCoordinateSystemWkt(L"LL84");
+		    pCreateCreateSpatialContext->SetDescription(L"World Coordinate System, Degrees, what else do you need to know?" );
+		    pCreateCreateSpatialContext->SetName( L"LL84" );
+		    pCreateCreateSpatialContext->SetXYTolerance( 17.0 );
+		    pCreateCreateSpatialContext->SetZTolerance(3.14159);
+		    pCreateCreateSpatialContext->Execute();
+        }
 		return conn;
 	}
 
 	// Just open the connection
-    std::wstring connStr = std::wstring(L"File=") + std::wstring(fullpath);
+    std::wstring connStr = std::wstring(L"File=") + std::wstring(fullpath) + L";UseFdoMetadata=TRUE;";
     conn->SetConnectionString(connStr.c_str());
     FdoPtr<FdoIConnectionInfo>info = conn->GetConnectionInfo();
     FdoPtr<FdoIConnectionPropertyDictionary> prop = info->GetConnectionProperties();
@@ -323,7 +325,7 @@ void UnitTestUtil::CreateData( bool create, FdoIConnection  *inConn, int featCou
 			if( conn == NULL )
 				conn = UnitTestUtil::CreateConnection();
 
-			UnitTestUtil::OpenConnection( DESTINATION_FILE, true, conn );
+			UnitTestUtil::OpenConnection( DESTINATION_FILE, true, true, conn );
 			 //apply schema
 			FdoPtr<FdoIApplySchema> applyschema = (FdoIApplySchema*)conn->CreateCommand(FdoCommandType_ApplySchema);
 			FdoPtr<FdoFeatureSchema> schema = CreateSLTSchema();
@@ -407,7 +409,7 @@ void UnitTestUtil::CreateData( bool create, FdoIConnection  *inConn, int featCou
 	if( threadId == -1 )
 		start = clock ();
 
-	FdoPtr<FdoIConnection> shpConn = UnitTestUtil::OpenConnection( SOURCE_FILE, false, NULL );
+	FdoPtr<FdoIConnection> shpConn = UnitTestUtil::OpenConnection( SOURCE_FILE, false);
 	FdoPtr<FdoISelect> select = (FdoISelect*)shpConn->CreateCommand (FdoCommandType_Select);
     select->SetFeatureClassName (L"DaKlass");
 	FdoPtr<FdoIFeatureReader> shpReader = select->Execute();

@@ -99,6 +99,10 @@ SET FDOACTENVSTUDY="FDO"
 if ("%FDO%")==("") goto env_error
 if not exist "%FDO%" goto env_path_error
 
+SET FDOACTENVSTUDY="FDOUTILITIES"
+if ("%FDOUTILITIES%")==("") goto env_error
+if not exist "%FDOUTILITIES%" goto env_path_error
+
 if "%TYPEBUILD%"=="Win32" SET INTERMEDIATEDIR="Win32"
 if "%TYPEBUILD%"=="x64" SET INTERMEDIATEDIR="Win64"
 
@@ -107,6 +111,7 @@ if "%TYPEACTION%"=="clean" goto start_exbuild
 
 if not exist "%FDOINSPATH%" mkdir "%FDOINSPATH%"
 if not exist "%FDOBINPATH%" mkdir "%FDOBINPATH%"
+if not exist "%FDODOCPATH%" mkdir "%FDODOCPATH%"
 
 :start_exbuild
 if "%TYPEACTION%"=="clean" SET MSACTION=Clean
@@ -122,12 +127,30 @@ if exist SQLiteProvider_temp.sln del /Q /F SQLiteProvider_temp.sln
 popd
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTION%"=="clean" goto end
-if "%TYPEACTION%"=="build" goto end
+if "%TYPEACTION%"=="build" goto generate_docs
 
 :install_files_SQLite
 echo copy %TYPEBUILD% SQLite provider output files
 copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\SQLiteProvider.dll" "%FDOBINPATH%"
 copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\SQLiteProvider.pdb" "%FDOBINPATH%"
+
+:generate_docs
+if "%DOCENABLE%"=="skip" goto install_docs
+echo Creating SQLite provider html and chm documentation
+if exist "Docs\HTML\SQLite" rmdir /S /Q "Docs\HTML\SQLite"
+if not exist "Docs\HTML\SQLite" mkdir "Docs\HTML\SQLite"
+copy ..\..\DocResources\geospatial.js Docs\HTML\SQLite
+copy ..\..\DocResources\osgeo.css Docs\HTML\SQLite
+if exist Docs\SQLite_Provider_API.chm attrib -r Docs\SQLite_Provider_API.chm
+pushd Docs\doc_src
+doxygen Doxyfile_SQLite
+popd
+
+:install_docs
+if "%TYPEACTION%"=="build" goto end
+if exist "%FDODOCPATH%\HTML\Providers\SQLite" rmdir /S /Q "%FDODOCPATH%\HTML\Providers\SQLite"
+if exist Docs\HTML\SQLite xcopy/CQEYI Docs\HTML\SQLite\* "%FDODOCPATH%\HTML\Providers\SQLite"
+if exist "Docs\SQLite_Provider_API.chm" copy /y "Docs\SQLite_Provider_API.chm" "%FDODOCPATH%"
 
 :end
 echo End SLITE %MSACTION%

@@ -477,6 +477,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\SQLiteProvider.h"
+			>
+		</File>
+		<File
 			RelativePath=".\SQLiteProvider.rc"
 			>
 		</File>
