@@ -39,13 +39,6 @@
 #include "DiskSpatialIndex.h"
 #endif
 
-// the default message catalog filename
-#ifndef _WIN32
-char *fdosqlite_cat = "SQLiteMessage.cat";
-#else
-char *fdosqlite_cat = "SQLiteMessage.dll";
-#endif
-
 //FDO entry point
 extern "C"
 SLT_API FdoIConnection* CreateConnection()
