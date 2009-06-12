@@ -17,9 +17,9 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = Message SpatialIndex sqlite Provider UnitTest
+SUBDIRS = SpatialIndex sqlite Provider UnitTest
 
-DIST_SUBDIRS = Message SpatialIndex sqlite Provider UnitTest
+DIST_SUBDIRS = SpatialIndex sqlite Provider UnitTest
 
 EXTRA_DIST = SQLiteProvider.sln
 
