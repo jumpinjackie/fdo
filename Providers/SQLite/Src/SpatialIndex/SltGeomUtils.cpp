@@ -602,8 +602,7 @@ void GetFgfExtents(const unsigned char* fgf, int len, double ext[4])
         }
 
         break;
-
-    default:
+    case FdoGeometryType_MultiGeometry:
         {
             ireader++;
             int num_geom = *ireader++;
@@ -619,6 +618,10 @@ void GetFgfExtents(const unsigned char* fgf, int len, double ext[4])
                 AddToExtent(2, 2, ext_geom, ext);
             }
         }   
+        break;
+    default:
+            ext[0] = ext[1] =  DBL_MAX;
+            ext[2] = ext[3] = -DBL_MAX;
         break;
     }
 }
