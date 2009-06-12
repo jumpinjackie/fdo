@@ -119,8 +119,8 @@ public:
     //-------------------------------------------------------
 
     virtual FdoString* GetProviderName()                { return SQLITE_PROVIDER_NAME; }
-    virtual FdoString* GetProviderDisplayName()         { return NlsMsgGetMain(SQLITE_PROVIDER_DISPLAY_NAME, SQLITE_PROVIDER_DEFAULT_DISPLAY_NAME); }
-    virtual FdoString* GetProviderDescription()         { return NlsMsgGetMain(SQLITE_PROVIDER_DESCRIPTION, SQLITE_PROVIDER_DEFAULT_DESCRIPTION); }
+    virtual FdoString* GetProviderDisplayName()         { return SQLITE_PROVIDER_DISPLAY_NAME; }
+    virtual FdoString* GetProviderDescription()         { return SQLITE_PROVIDER_DESCRIPTION; }
     virtual FdoString* GetProviderVersion()             { return SQLITE_PROVIDER_VERSION; }
     virtual FdoString* GetFeatureDataObjectsVersion()   { return SQLITE_FDO_VERSION; }
     

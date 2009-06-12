@@ -16,9 +16,9 @@
 #ifndef SQLITEPLUS_PROVIDER_H
 #define SQLITEPLUS_PROVIDER_H
 
-#define SQLITE_PROVIDER_NAME					L"OSGeo.SQLite.3.5"
-#define SQLITE_PROVIDER_DEFAULT_DISPLAY_NAME	"OSGeo FDO Provider for SQLite (Spatial)"
-#define SQLITE_PROVIDER_DEFAULT_DESCRIPTION     "FDO Access to SQLite Data Sources."
+#define SQLITE_PROVIDER_NAME				L"OSGeo.SQLite.3.5"
+#define SQLITE_PROVIDER_DISPLAY_NAME	    L"OSGeo FDO Provider for SQLite (Spatial)"
+#define SQLITE_PROVIDER_DESCRIPTION         L"FDO Access to SQLite Data Sources."
 #define SQLITE_PROVIDER_VERSION				L"3.5.0.0"
 #define SQLITE_FDO_VERSION					L"3.5.0.0"
 
