@@ -16,11 +16,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  
 
-#define PROP_NAME_FILENAME L"File"
-#define PROP_NAME_FDOMETADATA L"UseFdoMetadata"
-
 #include "SltCapabilities.h"
-
+#include "SQLiteProvider.h"
 
 class SltMetadata;
 class SpatialIndex;
@@ -121,11 +118,11 @@ public:
     // FdoIConnectionInfo implementation
     //-------------------------------------------------------
 
-    virtual FdoString* GetProviderName()                { return L"OSGeo.SQLite.3.5"; }
-    virtual FdoString* GetProviderDisplayName()         { return L"OSGeo FDO Provider for SQLite (Spatial)"; }
-    virtual FdoString* GetProviderDescription()         { return L"FDO Access to SQLite Data Sources"; }
-    virtual FdoString* GetProviderVersion()             { return L"3.5.0.0"; }
-    virtual FdoString* GetFeatureDataObjectsVersion()   { return L"3.5.0.0"; }
+    virtual FdoString* GetProviderName()                { return SQLITE_PROVIDER_NAME; }
+    virtual FdoString* GetProviderDisplayName()         { return NlsMsgGetMain(SQLITE_PROVIDER_DISPLAY_NAME, SQLITE_PROVIDER_DEFAULT_DISPLAY_NAME); }
+    virtual FdoString* GetProviderDescription()         { return NlsMsgGetMain(SQLITE_PROVIDER_DESCRIPTION, SQLITE_PROVIDER_DEFAULT_DESCRIPTION); }
+    virtual FdoString* GetProviderVersion()             { return SQLITE_PROVIDER_VERSION; }
+    virtual FdoString* GetFeatureDataObjectsVersion()   { return SQLITE_FDO_VERSION; }
     
     virtual FdoIConnectionPropertyDictionary*   GetConnectionProperties()
                                                         { return FDO_SAFE_ADDREF(this); }

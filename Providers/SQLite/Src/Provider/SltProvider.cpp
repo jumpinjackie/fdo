@@ -33,8 +33,18 @@
 #include "SltQueryTranslator.h"
 #include "FdoCommonSchemaUtil.h"
 
-//#include "SpatialIndex.h"
+#ifndef _MSC_VER
+#include "SpatialIndex.h"
+#else
 #include "DiskSpatialIndex.h"
+#endif
+
+// the default message catalog filename
+#ifndef _WIN32
+char *fdosqlite_cat = "SQLiteMessage.cat";
+#else
+char *fdosqlite_cat = "SQLiteMessage.dll";
+#endif
 
 //FDO entry point
 extern "C"
@@ -418,7 +428,7 @@ void SltConnection::SetProperty(FdoString* name, FdoString* value)
 FdoString* SltConnection::GetPropertyDefault(FdoString* name)
 {
     if (wcscmp(name, PROP_NAME_FDOMETADATA) == 0)
-        return L"FALSE";
+        return VAL_FALSE;
     return L"";
 }
 
@@ -462,7 +472,7 @@ bool SltConnection::IsPropertyEnumerable(FdoString* name)
 
 FdoString** SltConnection::EnumeratePropertyValues(FdoString* name, FdoInt32& count)
 {
-    static const wchar_t* PROP_VALUES[] = {L"TRUE", L"FALSE"};
+    static const wchar_t* PROP_VALUES[] = {VAL_TRUE, VAL_FALSE};
     if (wcscmp(name, PROP_NAME_FDOMETADATA) == 0)
     {
         count = 2;
@@ -474,7 +484,7 @@ FdoString** SltConnection::EnumeratePropertyValues(FdoString* name, FdoInt32& co
 FdoString* SltConnection::GetLocalizedName(FdoString* name)
 {
     if (wcscmp(name, PROP_NAME_FILENAME) == 0)
-        return L"File";
+        return PROP_NAME_FILENAME;
 
     if (wcscmp(name, PROP_NAME_FDOMETADATA) == 0)
         return L"Fdo Enabled";
