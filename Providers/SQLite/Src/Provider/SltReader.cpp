@@ -242,7 +242,7 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
     SltMetadata* md = m_connection->GetMetadata(fcname);
 
     if (!md)
-        FdoCommandException::Create(L"Requested feature class does not exist in the database.");
+        throw FdoCommandException::Create(L"Requested feature class does not exist in the database.");
 
     m_eGeomFormat = md->GetGeomFormat();
 
