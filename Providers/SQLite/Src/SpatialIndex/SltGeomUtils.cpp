@@ -986,7 +986,7 @@ double ComputeGeodeticTrapezoidArea2D(double lat1, double lon1, double lat2, dou
 	// Compute the distances to the Ecuator
 	double dist1 = ComputeGeodeticDistance2D( lat1, lon1, minLat, lon1 );
 	double dist2 = ComputeGeodeticDistance2D( lat2, lon2, minLat, lon2 );
-	double minDist = min(dist1, dist2);
+	double minDist = std::min<double>(dist1, dist2);
 
 	// Compute the distance between points at the same latitude. Take the average
 	double distLat1 = ComputeGeodeticDistance2D( lat1, lon1, lat1, lon2 );

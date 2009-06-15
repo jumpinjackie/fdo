@@ -73,6 +73,7 @@ extern "C"
 * Your agreement to this contract is implied by use of the restrict keyword. 
 */
 #ifndef _MSC_VER
+#include<unistd.h>
   #define __restrict __restrict__
   #define __forceinline __inline__
   #define __fastcall 

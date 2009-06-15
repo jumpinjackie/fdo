@@ -57,12 +57,12 @@ libSQLiteProviderSrc_la_LDFLAGS =
 INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDO)/Unmanaged/Src/Nls \
-  -I/usr/include \
+  -I$(FDOUTILITIES)/Common/Inc \
   -I../Message/Inc \
   -I../sqlite \
   -I../SpatialIndex \
-  -I$(FDOUTILITIES)/Common/Inc \
-  -I$(FDOUTILITIES)/ExpressionEngine/Inc
+  -I$(FDOUTILITIES)/ExpressionEngine/Inc \
+  -I/usr/include
 
 CXXFLAGS = @CXXFLAGS_SQLITE@
 
