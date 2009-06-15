@@ -61,7 +61,7 @@ int MySqlDataTypeTests::do_rdbi_connect (const char* dataStoreName, const char* 
 {
     return (rdbi_connect (
         mRdbiContext,
-        NULL,  //TODO:             UnitTestUtil::GetEnviron("service") ?
+        UnitTestUtil::GetEnviron("service"),
         UnitTestUtil::GetEnviron("username"),
         UnitTestUtil::GetEnviron("password"),
         &mId));
