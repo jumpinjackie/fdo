@@ -7,6 +7,5 @@ include_directories(
 # Provider uses a special modified version of sqlite
 add_subdirectory( sqlite )
 add_subdirectory( SpatialIndex )
-add_subdirectory( Message )
 add_subdirectory( Provider )
 
