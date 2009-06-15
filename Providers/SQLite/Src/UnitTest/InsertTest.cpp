@@ -54,7 +54,7 @@ void InsertTest::TestInsInvalidGeomTypes ()
 	{
         FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateConnection();
 
-		UnitTestUtil::OpenConnection( SC_TEST_FILE, true, conn );
+		UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true, conn );
 		 //apply schema
 		FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
         FdoPtr<FdoFeatureSchema> schema = UnitTestUtil::CreateSLTSchema(FdoGeometryType_Point);
