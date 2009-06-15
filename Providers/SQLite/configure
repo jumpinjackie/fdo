@@ -19331,7 +19331,7 @@ fi
           ac_config_files="$ac_config_files Makefile"
 
 
-                                                            ac_config_files="$ac_config_files Src/Makefile Src/Message/Makefile Src/SpatialIndex/Makefile Src/sqlite/Makefile Src/Provider/Makefile Src/UnitTest/Makefile"
+                                                            ac_config_files="$ac_config_files Src/Makefile Src/SpatialIndex/Makefile Src/sqlite/Makefile Src/Provider/Makefile Src/UnitTest/Makefile"
 
 
                                         ac_config_files="$ac_config_files Docs/Makefile Docs/doc_src/Makefile Docs/doc_src/group_and_page_definitions/Makefile Docs/doc_src/headers_and_footers/Makefile"
@@ -19921,7 +19921,6 @@ do
   # Handling of arguments.
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "Src/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/Makefile" ;;
-  "Src/Message/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/Message/Makefile" ;;
   "Src/SpatialIndex/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/Utils/Makefile" ;;
   "Src/sqlite/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/Utils/Makefile" ;;
   "Src/Provider/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/Provider/Makefile" ;;
