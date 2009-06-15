@@ -30,11 +30,21 @@
 //the spatial index and also significantly speeds up
 //spatial index searches, especially when data is not
 //spatially coherent and the index is therefore inefficient.
+#ifdef _MSC_VER
 #define ENABLE_SSE 1
+#endif
 
 #if ENABLE_SSE
+#ifndef _MSC_VER
+#if defined(__ICC)
+#include <emmintrin.h>
+#else
+#include <xmmintrin.h>
+#endif
+#else
 #include <xmmintrin.h>
 #include <emmintrin.h>
+#endif
 #endif
 
 #ifdef _MSC_VER
@@ -370,8 +380,8 @@ static __forceinline void TranslateBounds(const DBounds* __restrict src, const d
 #else
     for (int i=0; i<SI_DIM; i++)
     {
-        b.min[i] = (Real)(ext.min[i] - offset[i]);
-        b.max[i] = (Real)(ext.max[i] - offset[i]);
+        dst->min[i] = (Real)(src->min[i] - offset[i]);
+        dst->max[i] = (Real)(src->max[i] - offset[i]);
     }
 #endif
 }

@@ -37,8 +37,9 @@ noinst_HEADERS = $(libSpatialIndex_la_SOURCES) \
 libSpatialIndex_la_LDFLAGS = 
 
 INCLUDES = \
+  -I$(FDO)/Unmanaged/Inc \
   -I./   \
   -I/usr/include 
 
-CXXFLAGS = @CXXFLAGS_SQLITE@
+CXXFLAGS = @CXXFLAGS_SQLITE@ -msse
 
