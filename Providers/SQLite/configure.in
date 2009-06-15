@@ -135,7 +135,6 @@ fi
 AC_CONFIG_FILES(Makefile)
 
 AC_CONFIG_FILES([Src/Makefile \
-                 Src/Message/Makefile \
                  Src/SpatialIndex/Makefile \
                  Src/sqlite/Makefile \
                  Src/Provider/Makefile \
