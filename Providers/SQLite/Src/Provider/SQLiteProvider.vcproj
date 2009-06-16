@@ -21,8 +21,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\..\Bin\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="..\..\Obj\Provider\$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="..\..\Bin\Win32\Debug"
+			IntermediateDirectory="..\..\Obj\Provider\Win32\Debug"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -53,6 +53,7 @@
 				EnableEnhancedInstructionSet="2"
 				FloatingPointModel="2"
 				UsePrecompiledHeader="2"
+				ProgramDataBaseFileName="$(IntDir)/SQLiteProvider.pdb"
 				WarningLevel="3"
 				DebugInformationFormat="4"
 			/>
@@ -64,6 +65,7 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
+				CommandLine="if not exist ..\..\Lib\Win32\Debug mkdir ..\..\Lib\Win32\Debug"
 			/>
 			<Tool
 				Name="VCLinkerTool"
@@ -72,9 +74,11 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Debug&quot;"
 				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/SQLiteProvider.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				ImportLibrary="..\..\Lib\Win32\Debug\SQLiteProvider.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -97,13 +101,14 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Versioning SQLiteProvider.dll"
 				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SQLiteProvider.dll"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="..\..\Bin\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="..\..\Obj\Provider\$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="..\..\Bin\Win64\Debug"
+			IntermediateDirectory="..\..\Obj\Provider\Win64\Debug"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -127,11 +132,12 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;..\sqlite;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\SpatialIndex;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SLT_EXPORTS;_CRT_SECURE_NO_WARNINGS"
+				PreprocessorDefinitions="WIN32;_WIN64;_DEBUG;_WINDOWS;_USRDLL;SLT_EXPORTS;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
+				ProgramDataBaseFileName="$(IntDir)/SQLiteProvider.pdb"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -143,6 +149,7 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
+				CommandLine="if not exist ..\..\Lib\Win64\Debug mkdir ..\..\Lib\Win64\Debug"
 			/>
 			<Tool
 				Name="VCLinkerTool"
@@ -151,9 +158,11 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win64\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Debug&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win64\Debug&quot;"
 				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/SQLiteProvider.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				ImportLibrary="..\..\Lib\Win64\Debug\SQLiteProvider.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -176,13 +185,14 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Versioning SQLiteProvider.dll"
 				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SQLiteProvider.dll"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="..\..\Bin\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="..\..\Obj\Provider\$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="..\..\Bin\Win32\Release"
+			IntermediateDirectory="..\..\Obj\Provider\Win32\Release"
 			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -216,6 +226,7 @@
 				EnableEnhancedInstructionSet="2"
 				FloatingPointModel="2"
 				UsePrecompiledHeader="2"
+				ProgramDataBaseFileName="$(IntDir)/SQLiteProvider.pdb"
 				WarningLevel="4"
 				DebugInformationFormat="3"
 			/>
@@ -227,6 +238,7 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
+				CommandLine="if not exist ..\..\Lib\Win32\Release mkdir ..\..\Lib\Win32\Release"
 			/>
 			<Tool
 				Name="VCLinkerTool"
@@ -235,11 +247,13 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Release&quot;"
 				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/SQLiteProvider.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				ImportLibrary="..\..\Lib\Win32\Release\SQLiteProvider.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -262,13 +276,14 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Versioning SQLiteProvider.dll"
 				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SQLiteProvider.dll"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="..\..\Bin\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="..\..\Obj\Provider\$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="..\..\Bin\Win64\Release"
+			IntermediateDirectory="..\..\Obj\Provider\Win64\Release"
 			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -297,12 +312,13 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;..\sqlite;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\SpatialIndex;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SLT_EXPORTS;_CRT_SECURE_NO_WARNINGS"
+				PreprocessorDefinitions="WIN32;_WIN64;NDEBUG;_WINDOWS;_USRDLL;SLT_EXPORTS;_CRT_SECURE_NO_WARNINGS"
 				RuntimeLibrary="2"
 				BufferSecurityCheck="false"
 				EnableEnhancedInstructionSet="0"
 				FloatingPointModel="2"
 				UsePrecompiledHeader="2"
+				ProgramDataBaseFileName="$(IntDir)/SQLiteProvider.pdb"
 				WarningLevel="4"
 				DebugInformationFormat="3"
 			/>
@@ -314,6 +330,7 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
+				CommandLine="if not exist ..\..\Lib\Win64\Release mkdir ..\..\Lib\Win64\Release"
 			/>
 			<Tool
 				Name="VCLinkerTool"
@@ -322,11 +339,13 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win64\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Release&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win64\Release&quot;"
 				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/SQLiteProvider.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				ImportLibrary="..\..\Lib\Win64\Release\SQLiteProvider.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -349,6 +368,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Versioning SQLiteProvider.dll"
 				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\SQLiteProvider.dll"
 			/>
 		</Configuration>
