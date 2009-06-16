@@ -39,7 +39,7 @@ public:
     /// 	dataType: the enum facet
     /// 	dataTypeString: the corresponding string.
 
-	FdoSmLpDataTypeMapEntry(FdoDataType dataType, wchar_t* dataTypeString);
+	FdoSmLpDataTypeMapEntry(FdoDataType dataType, const wchar_t* dataTypeString);
 	~FdoSmLpDataTypeMapEntry(void);
 
     /// Get the Map entry in string form

@@ -50,7 +50,7 @@ FdoSmLpDataTypeMapEntry* FdoSmLpDataTypeMapper::mMap[] = {
 };
 
 
-FdoSmLpDataTypeMapEntry::FdoSmLpDataTypeMapEntry(FdoDataType dataType, wchar_t* dataTypeString)
+FdoSmLpDataTypeMapEntry::FdoSmLpDataTypeMapEntry(FdoDataType dataType, const wchar_t* dataTypeString)
 {
 	mDataType = dataType;
 	mDataTypeString = FdoStringP(dataTypeString, false);
