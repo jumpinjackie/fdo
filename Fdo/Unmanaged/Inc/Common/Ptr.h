@@ -1,7 +1,3 @@
-#ifndef _FDOPTR_H_
-#define _FDOPTR_H_
-// 
-
 //
 // Copyright (C) 2004-2006  Autodesk, Inc.
 // 
@@ -19,9 +15,8 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifdef _WIN32
-#pragma once
-#endif
+#ifndef _FDOPTR_H_
+#define _FDOPTR_H_
 
 /// \brief
 /// This class ensures T implements AddRef() and Release() and also ensures
@@ -69,31 +64,8 @@ public:
     /// \return
     /// Returns a FdoPtr
     /// 
-    FdoPtr()  throw()
+    FdoPtr() throw()
     {
-        p = NULL;
-    }
-
-    /// \brief
-    /// Constructs a FdoPtr that initially points to NULL.
-    /// 
-    /// \param nNull 
-    /// Input always 0
-    /// 
-    /// \return
-    /// Returns a FdoPtr
-    /// 
-#ifdef _WIN32
-    FdoPtr(FdoInt32 nNull) throw(...)
-#else
-    FdoPtr(FdoInt32 nNull) throw( FdoException *)
-#endif
-    {
-        if (nNull != 0)
-            throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
-                                                                   L"FdoPtr",
-                                                                   L"nNull"));
-
         p = NULL;
     }
 
@@ -134,6 +106,26 @@ public:
     }
 
     /// \brief
+    /// FdoPtr copy constructor. Wraps a new FdoPtr around the object
+    /// referenced by lp. Type U must be convertible to type T.     
+    /// 
+    /// \param lp 
+    /// Input the FdoPtr to copy from.
+    /// 
+    /// \return
+    /// Returns a FdoPtr
+    /// 
+    /// \note
+    /// This operator adds a reference on the object.
+    template <class U>                                              
+    FdoPtr(const FdoPtr<U>& lp) throw()                             
+    {
+        p = lp.p;
+        if (p != NULL)
+            p->AddRef();
+    }
+
+    /// \brief
     /// FdoPtr destructor. If this FdoPtr points to an object
     /// then the object is released.
     /// 
@@ -160,16 +152,8 @@ public:
     /// \return
     /// Returns the object referenced by this FdoPtr.
     /// 
-#ifdef _WIN32
-    T& operator*() const throw(...)
-#else
-    T& operator*() const throw(FdoException *)
-#endif
+    T& operator*() const throw()
     {
-        if (p==NULL)
-	        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
-                                                                   L"FdoPtr::operator*",
-                                                                   L"p"));
         return *p;
     }
 
@@ -179,25 +163,13 @@ public:
     /// \return
     /// Returns a double pointer to the object referenced by this FdoPtr.
     /// 
-#ifdef _WIN32
-    T** operator&() throw(...)
-#else
-    T** operator&() throw(FdoException *)
-#endif
+    T** operator&() throw()
     {
         return &p;
     }
     
-#ifdef _WIN32
-    _NoAddRefReleaseOnFdoPtr<T>* operator->() const throw(...)
-#else
-    _NoAddRefReleaseOnFdoPtr<T>* operator->() const throw(FdoException *)
-#endif
+    _NoAddRefReleaseOnFdoPtr<T>* operator->() const throw()
     {
-        if (p==NULL)
-	        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
-                                                                   L"FdoPtr::operator->",
-                                                                   L"p"));
         return (_NoAddRefReleaseOnFdoPtr<T>*)p;
     }
     
