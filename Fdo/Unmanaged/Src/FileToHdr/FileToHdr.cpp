@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
     fprintf( outFile, "#define %s_H\n\n", argv[3] );
 
     // Declare the variable as an array of string pointers 
-    fprintf( outFile, "static char* %s[] = {\n", argv[3] );
+    fprintf( outFile, "static const char* %s[] = {\n", argv[3] );
 
     // Make each line from the input file an element in the array
     while( fgets(buffer, 4999, inFile) ) {
