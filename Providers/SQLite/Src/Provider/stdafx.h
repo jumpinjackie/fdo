@@ -41,11 +41,6 @@
 #include "FdoCommonStringUtil.h"
 #include "FdoSpatial.h"
 
-//Redefine the FDO smart pointer so that we use our own 
-//which skips some null checks on the operator overloads
-#define FdoPtr SltFdoPtr
-#include "SltFdoPtr.h"
-
 //SQLite headers
 extern "C"
 {
