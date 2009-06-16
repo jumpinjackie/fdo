@@ -102,7 +102,7 @@ public:
     /// \return
     /// Returns the localized message text
     /// 
-    static FdoString* NLSGetMessage(FdoInt32 msgNum, char* defMsg, char* file, int line, ...);
+    static FdoString* NLSGetMessage(FdoInt32 msgNum, const char* defMsg, const char* file, int line, ...);
 
     /// \brief
     /// Gets the exception message from the Schema Manager message catalogue.
@@ -119,7 +119,7 @@ public:
     /// \return
     /// Returns the localized message text
     /// 
-    static FdoString* NLSGetMessage(FdoInt32 msgNum, char* defMsg, ...);
+    static FdoString* NLSGetMessage(FdoInt32 msgNum, const char* defMsg, ...);
 
 protected:
     /// unused constructor needed only to build Linux

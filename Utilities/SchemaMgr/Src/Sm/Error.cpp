@@ -71,7 +71,7 @@ void FdoSmError::XMLSerialize( FILE* xmlFp, int ref  ) const
 	fprintf( xmlFp, "</error>\n" );
 }
 
-FdoString* FdoSmError::NLSGetMessage(FdoInt32 msgNum, char* defMsg, char* file, int line, ...)
+FdoString* FdoSmError::NLSGetMessage(FdoInt32 msgNum, const char* defMsg, const char* file, int line, ...)
 {
     va_list arguments;
 
@@ -85,7 +85,7 @@ FdoString* FdoSmError::NLSGetMessage(FdoInt32 msgNum, char* defMsg, char* file, 
     return result;
 }
 
-FdoString* FdoSmError::NLSGetMessage(FdoInt32 msgNum, char* defMsg,  ...)
+FdoString* FdoSmError::NLSGetMessage(FdoInt32 msgNum, const char* defMsg,  ...)
 {
     va_list arguments;
 
