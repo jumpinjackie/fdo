@@ -751,7 +751,9 @@ FdoClassDefinition* SltReader::GetClassDefinition()
 		//decide on a name for the class -- just pick the table name
 		//for the first column :)
 		const char* tableName = sqlite3_column_table_name(m_pStmt, 0);
-		std::wstring wtable = A2W_SLOW(tableName);
+        if (NULL == tableName)
+            tableName = "GeneratedClass";
+        std::wstring wtable = A2W_SLOW(tableName);
 		//find source feature class metadata
         SltMetadata* mainMd = m_connection->GetMetadata(tableName);
 
@@ -793,7 +795,7 @@ FdoClassDefinition* SltReader::GetClassDefinition()
 				if (idpdc->Contains(pname))
 					dstidpdc->Add((FdoDataPropertyDefinition*)clonedprop.p);
 
-				if (wcscmp(pname, geompd->GetName()) == 0)
+				if (NULL != geompd && wcscmp(pname, geompd->GetName()) == 0)
 					((FdoFeatureClass*)m_class)->SetGeometryProperty((FdoGeometricPropertyDefinition*)clonedprop.p);
 			}
             // in case property was not found let's look at the sqlite column
@@ -834,9 +836,9 @@ FdoClassDefinition* SltReader::GetClassDefinition()
 			}
 		}
         // do we have unknown calculations !?
-        if (unknownPropsIdx.size() != 0)
+        if (unknownPropsIdx.size() != 0 && m_reissueProps.Count() != 0)
         {
-            FdoPtr<FdoClassDefinition> origfc = mainMd->ToClass();
+            FdoPtr<FdoClassDefinition> origfc = (NULL == mainMd) ? NULL : mainMd->ToClass();
             // use the original class in case we have one otherwise use the generated class
             FdoClassDefinition* origClass = (origfc == NULL) ? m_class : origfc.p;
             // the expression may be based on provider functions
@@ -886,6 +888,20 @@ FdoClassDefinition* SltReader::GetClassDefinition()
                 }
                 if (pdToAdd != NULL)
 				    dstpdc->Add(pdToAdd);
+            }
+        }
+        else
+        {
+            // we have unknown columns and no calculations
+            // this can be a result of a query like "pragma table_info('ClassName');"
+            // for now let's expose them as text (since BLOB is not nice supported)
+
+            // TODO when SQL pass-thru will be implemented study to see if we can do more here
+            for(size_t idx = 0; idx < unknownPropsIdx.size(); idx++)
+            {
+                FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(m_propNames[unknownPropsIdx.at(idx)], NULL);
+			    dpd->SetDataType(FdoDataType_String);
+                dstpdc->Add(dpd);
             }
         }
 	}

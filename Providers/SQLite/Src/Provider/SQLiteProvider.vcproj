@@ -501,6 +501,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\SQLiteSchemaMergeContext.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\SQLiteSchemaMergeContext.h"
+			>
+		</File>
+		<File
 			RelativePath=".\stdafx.h"
 			>
 		</File>
