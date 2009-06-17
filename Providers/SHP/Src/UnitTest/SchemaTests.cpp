@@ -2006,7 +2006,7 @@ void SchemaTests::apply_schema()
 
 		//Generating default schema
 		FdoPtr<FdoFeatureSchema> schema1=FdoFeatureSchema::Create(L"Schema1",L"Default schema");
-		FdoClassesP(schema1->GetClasses()->Add(featureclass1));
+		FdoClassesP(schema1->GetClasses())->Add(featureclass1);
 
 		//FdoPtr<FdoFeatureSchema> schema = schema1->GetItem(0);
 		FdoPtr<FdoClassCollection> coll = schema1->GetClasses();
@@ -2104,7 +2104,7 @@ void SchemaTests::test_create_PRJ()
 
 		//Generating default schema
 		FdoPtr<FdoFeatureSchema> schema1=FdoFeatureSchema::Create(NEW_SCHEMA_NAME, L"Default schema");
-		FdoClassesP(schema1->GetClasses()->Add(featureclass1));
+		FdoClassesP(schema1->GetClasses())->Add(featureclass1);
 
 		//FdoPtr<FdoFeatureSchema> schema = schema1->GetItem(0);
 		FdoPtr<FdoClassCollection> coll = schema1->GetClasses();
