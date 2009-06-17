@@ -159,7 +159,7 @@ public:
 //--------------------------------------------------------
 
     FdoFeatureSchemaCollection* 
-                        DescribeSchema          (FdoStringCollection* classNames);
+                        DescribeSchema          (FdoStringCollection* classNames, bool makeACopy = true);
     
     FdoISpatialContextReader* 
                         GetSpatialContexts      ();
@@ -191,7 +191,7 @@ public:
                                                 FdoFilter*                  filter);
 
 
-    void                ApplySchema            (FdoFeatureSchema* schema);
+    void                ApplySchema            (FdoFeatureSchema* schema, bool ignoreStates);
 
     sqlite3*        GetDbRead() { return m_dbRead; }
     sqlite3*        GetDbWrite() { return m_dbWrite; }
@@ -212,8 +212,9 @@ private :
 
     void AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_t* fcname);
     void AddDataCol(FdoDataPropertyDefinition* dpd, const wchar_t* fcname);
-    bool IsClassEqual(FdoClassDefinition* fc1, FdoClassDefinition* fc2);
-    bool IsPropertyEqual(FdoPropertyDefinition* prop1, FdoPropertyDefinition* prop2);
+    void AddClassToSchema(FdoClassCollection* classes, FdoClassDefinition* fc);
+    void DeleteClassFromSchema(FdoClassDefinition* fc);
+    void UpdateClassFromSchema(FdoClassDefinition* fc, FdoClassDefinition* mainfc);
 
     int FindSpatialContext(const wchar_t* name);
     int GetDefaultSpatialContext();

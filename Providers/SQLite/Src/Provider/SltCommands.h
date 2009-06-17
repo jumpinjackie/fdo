@@ -826,8 +826,8 @@ class SltApplySchema : public SltCommand<FdoIApplySchema>
 public:
     SltApplySchema(SltConnection* connection)
         : SltCommand<FdoIApplySchema>(connection),
-          m_schema(NULL)
-                                                                            { }
+          m_schema(NULL),
+          m_ignoreStates(false)                                             { }
 
     virtual ~SltApplySchema()                                               { FDO_SAFE_RELEASE(m_schema); }
    
@@ -847,18 +847,18 @@ public:
     virtual void                        SetPhysicalMapping(FdoPhysicalSchemaMapping* value) 
                                                                             { }
     
-    virtual FdoBoolean                  GetIgnoreStates()                   { return true; } 
+    virtual FdoBoolean                  GetIgnoreStates()                   { return m_ignoreStates; } 
     
     virtual void                        SetIgnoreStates( FdoBoolean ignoreStates ) 
-                                                                            { }
+                                                                            { m_ignoreStates = ignoreStates;}
     
     virtual void Execute()
     {
-        m_connection->ApplySchema(m_schema);
+        m_connection->ApplySchema(m_schema, m_ignoreStates);
     }
 
 private:
-
     FdoFeatureSchema* m_schema;
+    bool m_ignoreStates;
 };
 
