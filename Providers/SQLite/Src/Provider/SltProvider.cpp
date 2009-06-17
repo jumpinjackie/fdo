@@ -1680,8 +1680,6 @@ sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql)
 
     QueryCache::iterator iter = m_mCachedQueries.find((char*)sql);
     
-    bool stmtFound = false;
-
     if (iter != m_mCachedQueries.end())
     {
         //found a cached statement -- take it from the cache
@@ -1693,9 +1691,9 @@ sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql)
             QueryCacheRec& rec = lst[i];
             if (!rec.inUse)
             {
-                stmtFound = true;
                 rec.inUse = true;
                 ret = rec.stmt;
+                break;
             }
         }
         if (ret == NULL)
@@ -1751,22 +1749,29 @@ void SltConnection::ClearQueryCache()
     {
         QueryCacheRecList& lst = iter->second;
 
+        bool stringInUse = false;
+
         for (size_t i=0; i<lst.size(); i++)
         {
             QueryCacheRec& rec = lst[i];
-
-            //If the query is in use, carry it over to the new cache map
+            
             if (rec.inUse)
             {
+                //If the query is in use, carry it over to the new cache map
+
+                stringInUse = true;
                 newCache[iter->first].push_back(rec);
             }
             else
             {
                 //otherwise free the query and the query string
+
                 sqlite3_finalize(rec.stmt);
-                free(iter->first); //it was created via strdup, must use free()
             }
         }
+
+        if (!stringInUse)
+            free(iter->first); //it was created via strdup, must use free()
     }
 
     m_mCachedQueries = newCache;
