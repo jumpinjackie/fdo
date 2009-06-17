@@ -1179,7 +1179,7 @@ void SltConnection::DeleteClassFromSchema(FdoClassDefinition* fc)
     std::string table = W2A_SLOW(fc->GetName());
 
     StringBuffer sb;
-    sb.Append("DROP TABLE ");
+    sb.Append("DROP TABLE IF EXISTS ");
     sb.AppendDQuoted(table.c_str());
     sb.Append(";");
     int rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL);
@@ -1332,31 +1332,54 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema, bool ignoreStates)
         {
             bool changeMade = false;
             FdoPtr<FdoClassDefinition> fc = classes->GetItem(i);
-            switch (fc->GetElementState())
+            std::string table;
+            if (!ignoreStates)
             {
-            case FdoSchemaElementState_Added:
-                AddClassToSchema(classes, fc);
-                changeMade = true;
-                break;
-            case FdoSchemaElementState_Deleted:
-                DeleteClassFromSchema(fc);
-                changeMade = true;
-                break;
-            case FdoSchemaElementState_Modified:
-                if ((NULL == context) || !context->TableHasObjects(fc->GetName()))
+                switch (fc->GetElementState())
                 {
-                    DeleteClassFromSchema(fc);
+                case FdoSchemaElementState_Added:
                     AddClassToSchema(classes, fc);
+                    changeMade = true;
+                    break;
+                case FdoSchemaElementState_Deleted:
+                    DeleteClassFromSchema(fc);
+                    changeMade = true;
+                    break;
+                case FdoSchemaElementState_Modified:
+                    if ((NULL == context) || !context->TableHasObjects(fc->GetName()))
+                    {
+                        DeleteClassFromSchema(fc);
+                        AddClassToSchema(classes, fc);
+                    }
+                    else
+                        UpdateClassFromSchema(fc, fc);
+                    changeMade = true;
+                    break;
                 }
+            }
+            else
+            {
+                FdoPtr<FdoClassDefinition> oldfc = oldclasses->FindItem(fc->GetName());
+                if (oldfc == NULL)
+                    AddClassToSchema(classes, fc);
                 else
-                    UpdateClassFromSchema(fc, fc);
+                {
+                    table = W2A_SLOW(fc->GetName());
+                    if (GetFeatureCount(table.c_str()) > 0)
+                    {
+                        DeleteClassFromSchema(fc);
+                        AddClassToSchema(classes, fc);
+                    }
+                    else
+                        UpdateClassFromSchema(fc, fc);
+                }
                 changeMade = true;
-                break;
             }
             if (changeMade)
             {
                 // we need to erase the metadata to force a refresh
-                std::string table = W2A_SLOW(fc->GetName());
+                if (table.size() == 0)
+                    table = W2A_SLOW(fc->GetName());
                 MetadataCache::iterator iter = m_mNameToMetadata.find((char*)table.c_str());
                 if (iter != m_mNameToMetadata.end())
                 {
