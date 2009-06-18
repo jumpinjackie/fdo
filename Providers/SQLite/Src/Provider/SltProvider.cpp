@@ -1364,8 +1364,10 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema, bool ignoreStates)
                     AddClassToSchema(classes, fc);
                 else
                 {
+                    if (fc->GetElementState() == FdoSchemaElementState_Unchanged)
+                        continue;
                     table = W2A_SLOW(fc->GetName());
-                    if (GetFeatureCount(table.c_str()) > 0)
+                    if (GetFeatureCount(table.c_str()) <= 0)
                     {
                         DeleteClassFromSchema(fc);
                         AddClassToSchema(classes, fc);
