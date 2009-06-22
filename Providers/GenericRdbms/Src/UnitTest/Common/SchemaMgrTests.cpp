@@ -146,15 +146,15 @@ void SchemaMgrTests::testGenDefault ()
         SetLtLck(table, lt_mode);
         FdoSmPhColumnP column = table->CreateColumnInt32( L"ID", false );
         table->AddPkeyCol( column->GetName() );
-        FdoSmPhColumnP fkeyColumn = table->CreateColumnInt32( L"TABLE1_ID", false );
+        FdoSmPhColumnP fkeyColumn = table->CreateColumnInt32( L"TABLE1_ID012345678901234567890", false );
         column = table->CreateColumnChar( L"STRING_COLUMN", false, 50 );
 
         FdoSmPhFkeyP fkey = table->CreateFkey( "FK_RTABLE1_TABLE1", phMgr->GetDcDbObjectName("TABLE1") );
-        fkey->AddFkeyColumn( fkeyColumn, L"ID" );
+        fkey->AddFkeyColumn( fkeyColumn, L"ID3456789012345678901234567890" );
 
         table = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE1" ));
         SetLtLck(table, lt_mode);
-        column = table->CreateColumnInt32( L"ID", false );
+        column = table->CreateColumnInt32( L"ID3456789012345678901234567890", false );
         table->AddPkeyCol( column->GetName() );
         column = table->CreateColumnBLOB( L"BLOB_COLUMN", true );
         column = table->CreateColumnChar( L"STRING_COLUMN", false, 50 );
@@ -164,13 +164,13 @@ void SchemaMgrTests::testGenDefault ()
         column = table->CreateColumnDecimal( L"DECIMAL_COLUMN", true, 10, 5 );
         column = table->CreateColumnBool( L"BOOL_COLUMN", true );
         column = table->CreateColumnByte( L"BYTE_COLUMN", true );
-        column = table->CreateColumnInt16( L"INT16_COLUMN", true );
+        column = table->CreateColumnInt16( L"INT16_COLUMN345678901234567890", true );
         column = table->CreateColumnInt32( L"INT32_COLUMN", true );
         column = table->CreateColumnInt64( L"INT64_COLUMN", true );
         column = table->CreateColumnDbObject( L"OBJECT_NAME", true );
         column = table->CreateColumnGeom( L"GEOM_COLUMN", (FdoSmPhScInfo*) NULL, true, false );
         AddProviderColumns( table );
-        FdoSmPhCheckConstraintP constraint = new FdoSmPhCheckConstraint( L"int16_check", L"INT16_COLUMN", L"INT16_COLUMN < 20000" );
+        FdoSmPhCheckConstraintP constraint = new FdoSmPhCheckConstraint( L"int16_check", L"INT16_COLUMN345678901234567890", L"INT16_COLUMN345678901234567890 < 20000" );
         table->AddCkeyCol( constraint );
 		constraint = new FdoSmPhCheckConstraint( L"decimal_check", L"DECIMAL_COLUMN", L"DECIMAL_COLUMN > BYTE_COLUMN" );
 		table->AddCkeyCol( constraint );
@@ -188,9 +188,9 @@ void SchemaMgrTests::testGenDefault ()
         column = table2->CreateColumnGeom( L"GEOM_COLUMN", (FdoSmPhScInfo*) NULL );
 
         FdoSmPhViewP view1 = owner->CreateView( phMgr->GetDcDbObjectName(L"VIEW1"), L"", owner->GetName(), phMgr->GetDcDbObjectName(L"TABLE1" ));
-        column = view1->CreateColumnInt32( L"ID", false, false, L"ID" );
+        column = view1->CreateColumnInt32( L"ID3456789012345678901234567890", false, false, L"ID3456789012345678901234567890" );
         if ( SupportsViewPkey() ) 
-            view1->AddPkeyCol( L"ID" );
+            view1->AddPkeyCol( L"ID3456789012345678901234567890" );
         column = view1->CreateColumnDecimal( L"DEC_COL_RENAME", true, 10, 5, L"DECIMAL_COLUMN" );
         column = view1->CreateColumnByte( L"BYTE_COLUMN", true, L"BYTE_COLUMN" );
 
@@ -224,7 +224,7 @@ void SchemaMgrTests::testGenDefault ()
         FdoSmPhColumnP fkeyColumn3 = table->CreateColumnChar( L"TABLE3_KEY2", false, 10 );
 
         fkey = table->CreateFkey( "FK_RTABLE2_TABLE1", phMgr->GetDcDbObjectName("TABLE1" ));
-        fkey->AddFkeyColumn( fkeyColumn1, L"ID" );
+        fkey->AddFkeyColumn( fkeyColumn1, L"ID3456789012345678901234567890" );
 
         fkey = table->CreateFkey( "FK_RTABLE2_TABLE3", phMgr->GetDcDbObjectName("TABLE3" ));
         fkey->AddFkeyColumn( fkeyColumn2, L"KEY1" );
@@ -287,14 +287,14 @@ void SchemaMgrTests::testGenDefault ()
         table = owner->CreateTable( phMgr->GetDcDbObjectName(L"RTABLE7" ));
         column = table->CreateColumnInt64( L"ID", false);
         table->AddPkeyCol( column->GetName() );
-        FdoSmPhColumnP fkeyColumn7 = table->CreateColumnInt64( L"TABLE7_ID", false, true);
+        FdoSmPhColumnP fkeyColumn7 = table->CreateColumnInt64( L"TABLE7_ID12345678901234567890", false, true);
         column = table->CreateColumnChar( L"STRING_COLUMN", false, 50 );
 
         fkey = table->CreateFkey( "FK_RTABLE7_TABLE7", phMgr->GetDcDbObjectName("TABLE7" ));
         fkey->AddFkeyColumn( fkeyColumn7, L"ID" );
 
         table->CreateUkey();
-    	table->AddUkeyCol( table->GetUkeyColumns()->GetCount() - 1, L"TABLE7_ID" );
+    	table->AddUkeyCol( table->GetUkeyColumns()->GetCount() - 1, L"TABLE7_ID12345678901234567890" );
 
         database->Commit();
         
@@ -330,7 +330,7 @@ void SchemaMgrTests::testGenDefault ()
         view1 = phMgr->FindDbObject( phMgr->GetDcDbObjectName(L"VIEW1"), datastore, L"", false ).p->SmartCast<FdoSmPhView>();
         CPPUNIT_ASSERT( view1 != NULL );
         CPPUNIT_ASSERT( view1->GetColumns()->GetCount() == 3 );
-        CPPUNIT_ASSERT( wcscmp(FdoSmPhColumnP(view1->GetColumns()->GetItem(0))->GetName(),L"ID") == 0 );
+        CPPUNIT_ASSERT( wcscmp(FdoSmPhColumnP(view1->GetColumns()->GetItem(0))->GetName(),L"ID3456789012345678901234567890") == 0 );
         CPPUNIT_ASSERT( wcscmp(FdoSmPhColumnP(view1->GetColumns()->GetItem(1))->GetName(),L"DEC_COL_RENAME") == 0 );
         CPPUNIT_ASSERT( wcscmp(FdoSmPhColumnP(view1->GetColumns()->GetItem(2))->GetName(),L"BYTE_COLUMN") == 0 );
 
