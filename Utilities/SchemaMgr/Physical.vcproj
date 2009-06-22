@@ -432,6 +432,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Src\Sm\Ph\IndexLoader.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Src\Sm\Ph\LockTypes.cpp"
 				>
 			</File>
@@ -1671,6 +1675,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Inc\Sm\Ph\DbObjectComponentLoader.h"
+				>
+			</File>
+			<File
 				RelativePath="Inc\Sm\Ph\DbObjType.h"
 				>
 			</File>
@@ -1716,6 +1724,10 @@
 			</File>
 			<File
 				RelativePath="Inc\Sm\Ph\IndexCollection.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\Sm\Ph\IndexLoader.h"
 				>
 			</File>
 			<File
@@ -2011,42 +2023,6 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Meta"
-				>
-				<File
-					RelativePath="Inc\Sm\Ph\Mt\AssociationReader.h"
-					>
-				</File>
-				<File
-					RelativePath="Inc\Sm\Ph\Mt\ClassReader.h"
-					>
-				</File>
-				<File
-					RelativePath=".\inc\Sm\Ph\Mt\ClassTableJoin.h"
-					>
-				</File>
-				<File
-					RelativePath="Inc\Sm\Ph\Mt\PropertyReader.h"
-					>
-				</File>
-				<File
-					RelativePath="Inc\Sm\Ph\Mt\SchemaReader.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Inc\Sm\Ph\Mt\SpatialContextGeomReader.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Inc\Sm\Ph\Mt\SpatialContextGroupReader.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Inc\Sm\Ph\Mt\SpatialContextReader.h"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="Rb"
 				>
 				<File
@@ -2069,6 +2045,42 @@
 					RelativePath=".\Inc\Sm\Ph\Rb\TableCollection.h"
 					>
 				</File>
+				<Filter
+					Name="Meta"
+					>
+					<File
+						RelativePath="Inc\Sm\Ph\Mt\AssociationReader.h"
+						>
+					</File>
+					<File
+						RelativePath="Inc\Sm\Ph\Mt\ClassReader.h"
+						>
+					</File>
+					<File
+						RelativePath=".\inc\Sm\Ph\Mt\ClassTableJoin.h"
+						>
+					</File>
+					<File
+						RelativePath="Inc\Sm\Ph\Mt\PropertyReader.h"
+						>
+					</File>
+					<File
+						RelativePath="Inc\Sm\Ph\Mt\SchemaReader.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Sm\Ph\Mt\SpatialContextGeomReader.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Sm\Ph\Mt\SpatialContextGroupReader.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Inc\Sm\Ph\Mt\SpatialContextReader.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="SchemaOptions"

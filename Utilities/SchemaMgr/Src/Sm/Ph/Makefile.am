@@ -55,6 +55,7 @@ libSmPhysical_la_SOURCES = \
   Fkey.cpp \
   GroupReader.cpp \
   Index.cpp \
+  IndexLoader.cpp \
   LockTypes.cpp \
   MergeReader.cpp \
   Mgr.cpp \

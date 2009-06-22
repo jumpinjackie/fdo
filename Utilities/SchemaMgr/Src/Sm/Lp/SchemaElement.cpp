@@ -119,9 +119,9 @@ FdoSmLpSADP FdoSmLpSchemaElement::GetSAD()
 
 void FdoSmLpSchemaElement::LoadSAD( FdoSmPhISADReader* pSADReader )
 {
-	FdoSmLpSADP pSAD = GetSAD();
-
 	while ( pSADReader->ReadNext() ) {
+    	FdoSmLpSADP pSAD = GetSAD();
+
 		FdoSmLpSADElementP pElement = new FdoSmLpSADElement( pSADReader->GetName(), pSADReader->GetValue() );
 		pSAD->Add( pElement );
 	}

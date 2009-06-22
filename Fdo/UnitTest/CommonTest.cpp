@@ -308,11 +308,24 @@ void CommonTest::testString()
 	CPPUNIT_ASSERT( s1 == NULL );
 	CPPUNIT_ASSERT( s1.Contains(NULL) );
 
-    FdoStringP s3( L"static string", true );
-    s1 = s3;
-    s3 = L"non static string";
+    s1 = (wchar_t*) NULL;
+	CPPUNIT_ASSERT( s1 == NULL );
+	CPPUNIT_ASSERT( s1.Contains(NULL) );
 
-	CPPUNIT_ASSERT( s3 == L"non static string" );
+    FdoStringP s3;
+    FdoStringP s4(L"");
+    FdoStringP s5((wchar_t*)NULL);
+	CPPUNIT_ASSERT( s3 == L"" && s4 == L"" && s5 == L"" );
+    s4 = "was empty";
+	CPPUNIT_ASSERT( s4 == L"was empty" );
+    s4 = L"";
+	CPPUNIT_ASSERT( s4 == L"" );
+
+    FdoStringP s6( L"static string", true );
+    s1 = s6;
+    s6 = L"non static string";
+
+	CPPUNIT_ASSERT( s6 == L"non static string" );
 
 	CPPUNIT_ASSERT( s1 == L"static string" );
 

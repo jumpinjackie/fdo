@@ -67,7 +67,7 @@ FdoStringP::FdoStringP( FdoString* wValue, FdoBoolean bAttach ) :
 	msString(NULL),
 	mBuffer(NULL)
 {
-	SetString(wValue, bAttach);
+    SetString(wValue, bAttach);
 }
 
 FdoStringP::FdoStringP( const char* sValue) :
@@ -624,7 +624,14 @@ void FdoStringP::SetString(FdoString* wValue, FdoBoolean bAttach)
 	// Make NULL and empty strings equivalent
 	FdoString* workString = wValue ? wValue : L"";
 
-    if ( bAttach ) {
+    if ( workString[0] == '\0' ) {
+        // when new string is empty string, save memory by just attaching to 
+        // static constant.
+        Release();
+
+        mwString = (wchar_t*) mEmptyString;
+    }
+    else if ( bAttach ) {
 	    // release the current buffer.
 	    Release();
 
