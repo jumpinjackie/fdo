@@ -240,7 +240,7 @@ int odbcdr_execute(						/* execute an SQL statement		  */
                 // autoincremented value, which is generated if any column
                 // is autoincremented. For SQL Server there is a maximum of 1
                 // autoincremented column per table. 
-                for ( int i = 0; i < 2; i++ ) 
+                for ( i = 0; i < 2; i++ ) 
                 {
                     // Close the insert statement's result set and move on to
                     // the select's result set. TODO: find how why this sometimes

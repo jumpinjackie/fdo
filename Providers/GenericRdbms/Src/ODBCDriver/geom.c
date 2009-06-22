@@ -802,6 +802,7 @@ col_list_free_S(
     )
 {
     long                     i;
+	int                      j;
     bool                     status = true;
     int                      rdbi_status = RDBI_GENERIC_ERROR;
 
@@ -821,7 +822,7 @@ col_list_free_S(
                 column->geom_list.size );
 
         if ( release_geoms ) {
-			for ( int j = 0; j < column->geom_list.size; j++ ) {
+			for ( j = 0; j < column->geom_list.size; j++ ) {
    				IGeometry_Release( column->l_address[j] );	
 			}
         }
