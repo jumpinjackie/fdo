@@ -43,6 +43,8 @@ class FdoSmPhRdTableJoin;
 class FdoSmPhRdSpatialContextReader;
 class FdoSmPhRdCoordSysReader;
 
+class FdoSmPhIndexLoader;
+
 // This class represents an Owner (Physical Schema). The exact meaning
 // of Owner depends on the Provider. For example, in the Oracle Provider
 // it represents an Oracle schema (user).
@@ -197,6 +199,9 @@ public:
     // Default implementation returns NULL (not supported).
     virtual FdoPtr<FdoSmPhRdFkeyReader> CreateFkeyReader() const;
 
+    /// Create a reader to get foreign keys for this owner and object name list.
+    virtual FdoPtr<FdoSmPhRdFkeyReader> CreateFkeyReader(  FdoStringsP objectNames ) const;
+
     // Create a reader to get all indexes (ordered by table) for this owner
     // Default implementation returns NULL (not supported).
     virtual FdoPtr<FdoSmPhRdIndexReader> CreateIndexReader() const;
@@ -207,6 +212,9 @@ public:
     // Create a reader to get all primary keys (ordered by table) for this owner
     // Default implementation returns NULL (not supported).
     virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader() const;
+
+    /// Create a reader to get primary keys for this owner and object name list.
+    virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader(  FdoStringsP objectNames ) const;
 
     // Create a reader to get all primary keys for this join.
     // Default implementation returns NULL (not supported).
@@ -231,6 +239,12 @@ public:
     virtual FdoPtr<FdoSmPhRdBaseObjectReader> CreateBaseObjectReader() const;
 
     virtual FdoPtr<FdoSmPhRdBaseObjectReader> CreateBaseObjectReader( FdoStringsP objectNames ) const;
+
+    // Create a lazy bulk loader for indexes
+    virtual FdoPtr<FdoSmPhIndexLoader> CreateIndexLoader(
+        FdoSmPhDbObjectsP dbObjects      // candidate dbObject list. Index will be loaded for requested
+                                         // DbObject plus some of these candidates. 
+    );
 
     /// Create a new table. Table is not posted to the datastore until its Commit() function
     /// is called.
@@ -305,11 +319,20 @@ public:
     // Cache the indexes for the given dbObject along with up to 50 other candidates.
     void CacheCandIndexes( FdoStringP objectName );
 
-    // Gets whether to primary keys are being bulk loaded
+    // Gets whether primary keys are being bulk loaded
     bool GetBulkLoadPkeys();
 
     // Sets whether to bulk primary keys
     void SetBulkLoadPkeys( bool bulkLoad );
+
+    // Gets whether foreign keys are being bulk loaded
+    bool GetBulkLoadFkeys();
+
+    // Sets whether to bulk primary keys
+    void SetBulkLoadFkeys( bool bulkLoad );
+
+    // Returns true if all DbObjects for this owner have been cached.
+    bool GetAreAllDbObjectsCached();
 
 protected:
     //Unused constructor needed only to build on Linux
@@ -381,11 +404,6 @@ protected:
     virtual FdoInt32 GetCandFetchSize();
 
 protected:
-    // Looks at the index reader to determine the table for the current index.
-    // Caches all indexes for that table from the index reader.
-    // When done, the index reader is positioned at the next table.
-    virtual bool CacheObjectIndexes( FdoPtr<FdoSmPhRdIndexReader> indexReader );
-
     // Checks each DbObject in this owner and adds its base object (if any) to 
     // the Candidates list for the base object's owner.
     // This helps base object retrieval performance when the current owner contains
@@ -439,14 +457,13 @@ private:
                                         // found. Use to prevent repeated attempts to fetch these objects.
 	FdoStringsP mReservedDbObjectNames;
     FdoDictionaryP mCandDbObjects;      // List of candidate objects for fetching from RDBMS. 
-    FdoDictionaryP mCandIndexes;      // List of candidate objects for fetching indexes from RDBMS. 
 
-    // Current indexes for next dbObject to check for index and base object bulk fetching.
+    // Current indexes for next dbObject to check for base object bulk fetching.
     // Any dbobjects with lower index in the cache have already been checked.
-    int mNextIndexTableCandIdx;
-    int mNextIndexRootTableCandIdx;
     int mNextBaseCandIdx;
 
+    // Lazy bulk loader for indexes.
+    FdoSmPhIndexLoader* mIndexLoader;
 
     // Cache of spatial contexts
     FdoSmPhSpatialContextsP mSpatialContexts;
@@ -472,6 +489,7 @@ private:
     bool mLtLckLoaded;
 
     bool mBulkLoadPkeys;
+    bool mBulkLoadFkeys;
 };
 
 typedef FdoPtr<FdoSmPhOwner> FdoSmPhOwnerP;

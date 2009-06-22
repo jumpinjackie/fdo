@@ -29,7 +29,6 @@ FdoSmSchemaElement::FdoSmSchemaElement(FdoString* name, FdoString* description, 
 	mElementState(FdoSchemaElementState_Unchanged),
 	mObjectState(FdoSmObjectState_Initial)
 {
-	mErrors = new FdoSmErrorCollection();
 }
 
 FdoSmSchemaElement::FdoSmSchemaElement()
@@ -128,7 +127,7 @@ FdoSchemaExceptionP FdoSmSchemaElement::Errors2Exception(FdoSchemaException* pFi
 
 void FdoSmSchemaElement::XMLSerialize( FILE* xmlFp, int ref  ) const
 {
-	if ( ref == 0 ) {
+	if ( (ref == 0) && (mErrors) ) {
 		for ( int i = 0; i < mErrors->GetCount(); i++ )
             FdoSmErrorP(mErrors->GetItem(i))->XMLSerialize( xmlFp, ref );
 	}
@@ -137,7 +136,7 @@ void FdoSmSchemaElement::XMLSerialize( FILE* xmlFp, int ref  ) const
 void FdoSmSchemaElement::AddFinalizeLoopError( void )
 {
 
-    mErrors->Add( FdoSmErrorType_ClassLoop, 
+    GetErrors()->Add( FdoSmErrorType_ClassLoop, 
         FdoSchemaException::Create(
             FdoSmError::NLSGetMessage(
                 FDO_NLSID(FDOSM_129), 
@@ -146,6 +145,4 @@ void FdoSmSchemaElement::AddFinalizeLoopError( void )
         )
     );    
 }
-
-
 

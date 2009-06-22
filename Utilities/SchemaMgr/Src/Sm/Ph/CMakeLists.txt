@@ -44,6 +44,7 @@ set( SmPhysical_SRCS
 	Fkey.cpp
 	GroupReader.cpp
 	Index.cpp
+	IndexLoader.cpp
 	LockTypes.cpp
 	MergeReader.cpp
 	Mgr.cpp

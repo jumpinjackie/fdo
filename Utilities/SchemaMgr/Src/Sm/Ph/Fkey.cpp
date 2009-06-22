@@ -120,6 +120,17 @@ FdoStringP FdoSmPhFkey::GetAddSql()
     return fkeySql;
 }
 
+void FdoSmPhFkey::LoadRefCand()
+{
+    FdoSmPhOwnerP refOwner = GetManager()->FindOwner( mPkeyTableOwner, GetParent()->GetParent()->GetParent()->GetName() );
+
+    if ( refOwner ) {
+        refOwner->AddCandDbObject( mPkeyTableName );
+        // Bulk load foreign keys for candidates.
+        refOwner->SetBulkLoadFkeys(true);
+    }
+}
+
 void FdoSmPhFkey::LoadPkeyTable()
 {
     FdoInt32 i;
@@ -129,11 +140,12 @@ void FdoSmPhFkey::LoadPkeyTable()
         mPkeyColumns = new FdoSmPhColumnCollection();
 
         const FdoSmPhTable*  pFkTable = dynamic_cast<const FdoSmPhTable*>(GetParent());
-
+        FdoSmPhOwner* owner = static_cast<FdoSmPhOwner*>((FdoSmPhSchemaElement*)(pFkTable->GetParent()));
+        FdoStringP database = owner->GetParent()->GetName();
+ 
         // Find the referenced primary table,
         // it is always in the same database as the foreign key
-        FdoStringP database = pFkTable->GetParent()->GetParent()->GetName();
-        FdoSmPhDbObjectP dbObject = GetManager()->FindDbObject( mPkeyTableName, mPkeyTableOwner, database );
+        FdoSmPhDbObjectP dbObject = owner->FindReferencedDbObject( mPkeyTableName, mPkeyTableOwner, database );
         mPkeyTable = dbObject.p->SmartCast<FdoSmPhTable>();
 
         if ( mPkeyTable ) {

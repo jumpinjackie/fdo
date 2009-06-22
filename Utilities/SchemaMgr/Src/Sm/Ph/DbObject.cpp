@@ -1016,6 +1016,18 @@ void FdoSmPhDbObject::ForceDelete()
     }
 }
 
+void FdoSmPhDbObject::LoadFkeyRefCands()
+{
+    int idx;
+
+    if ( mFkeysUp ) {
+        for ( idx = 0; idx < mFkeysUp->GetCount(); idx++ ) {
+            FdoSmPhFkeyP fkey = mFkeysUp->GetItem(idx);
+            fkey->LoadRefCand();
+        }
+    }
+}
+
 FdoSchemaExceptionP FdoSmPhDbObject::Errors2Exception(FdoSchemaException* pFirstException ) const
 {
 
@@ -1143,6 +1155,17 @@ FdoStringsP FdoSmPhDbObject::_getRefColsSql( FdoSmPhColumnCollection* columns )
     return colClauses;
 }
 
+FdoSmPhBaseObjectsP FdoSmPhDbObject::Get_BaseObjects()
+{
+    return mBaseObjects;
+}
+
+void FdoSmPhDbObject::DiscardBaseObjects()
+{
+    mBaseObjects = NULL;
+}
+
+
 void FdoSmPhDbObject::SetLtMode( FdoLtLockModeType mode )
 {
     mLtMode = mode;
@@ -1155,7 +1178,10 @@ void FdoSmPhDbObject::SetLockingMode( FdoLtLockModeType mode )
 
 void FdoSmPhDbObject::SetRootObject( FdoSmPhDbObjectP rootObject )
 {
-    mBaseObjects->Clear();
+    if ( mBaseObjects ) 
+        mBaseObjects->Clear();
+    else 
+        mBaseObjects = new FdoSmPhBaseObjectCollection( this );
 
     if ( rootObject ) {
         FdoSmPhBaseObjectP baseObject = NewBaseObject( rootObject );
@@ -1274,18 +1300,20 @@ void FdoSmPhDbObject::LoadPkeys( FdoSmPhReaderP pkeyRdr, bool isSkipAdd )
     }
 }
 
-void FdoSmPhDbObject::LoadIndexes(void)
+bool FdoSmPhDbObject::LoadIndexes(void)
 {
+    bool ret = false; 
+
     // Do nothing if already loaded
 
     // If not loaded, try bulk fetch of indexes for this table plus some other
     // candidates.
-    if ( !mIndexes && (GetElementState() != FdoSchemaElementState_Added) ) {
+    if ( !IndexesLoaded() && (GetElementState() != FdoSchemaElementState_Added) ) {
         FdoSmPhOwner* pOwner = (FdoSmPhOwner*) GetParent();
         pOwner->CacheCandIndexes( GetName() );
     }
 
-	if ( !mIndexes ) {
+	if ( !IndexesLoaded() ) {
         // Not loaded by bulk fetch, just load indexes for this table.
         mIndexes = new FdoSmPhIndexCollection();
 
@@ -1293,25 +1321,32 @@ void FdoSmPhDbObject::LoadIndexes(void)
         if ( GetElementState() != FdoSchemaElementState_Added ) {
             FdoPtr<FdoSmPhRdIndexReader> indexRdr = CreateIndexReader();
 
-            LoadIndexes( NewTableIndexReader(indexRdr), false );
+            ret = LoadIndexes( NewTableIndexReader(indexRdr), false );
         }
     }
+
+    if ( !mIndexes ) 
+        mIndexes = new FdoSmPhIndexCollection();
+
+    return ret;
 }
 
-void FdoSmPhDbObject::LoadIndexes( FdoSmPhTableIndexReaderP indexRdr, bool isSkipAdd )
+bool FdoSmPhDbObject::LoadIndexes( FdoSmPhTableIndexReaderP indexRdr, bool isSkipAdd )
 {
     FdoStringP            nextIndex;
     FdoSmPhIndexP         index;
+    bool                  ret = false;
 
     // Read each index and column
     while ( indexRdr->ReadNext() ) {
+        ret = true;
         nextIndex = indexRdr->GetString(L"",L"index_name");
 
         if ( !index || (nextIndex != index->GetName()) ) {
             // hit the next index. Create an object for it
             index = CreateIndex( indexRdr ); 
                         
-            if ( index && ! isSkipAdd ) 
+            if ( index && ! isSkipAdd )
                 mIndexes->Add(index);
         }
 
@@ -1328,18 +1363,24 @@ void FdoSmPhDbObject::LoadIndexes( FdoSmPhTableIndexReaderP indexRdr, bool isSki
 		        AddIndexColumnError( columnName );
         }
     }
+
+    return ret;
 }
 
-void FdoSmPhDbObject::CacheIndexes( FdoSmPhRdIndexReaderP rdr )
+bool FdoSmPhDbObject::CacheIndexes( FdoSmPhRdIndexReaderP rdr )
 {
+    bool ret = false;
+
     // Do nothing if indexes already loaded
 	if ( !mIndexes ) {
         mIndexes = new FdoSmPhIndexCollection();
 
-        LoadIndexes( NewTableIndexReader(rdr), false );
+        ret = LoadIndexes( NewTableIndexReader(rdr), false );
     }
     else
-        LoadIndexes( NewTableIndexReader(rdr), true );
+        ret = LoadIndexes( NewTableIndexReader(rdr), true );
+
+    return ret;
 }
 
 bool FdoSmPhDbObject::IndexesLoaded()
