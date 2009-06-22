@@ -113,6 +113,7 @@ int odbcdr_define(
 	int 				rdbi_status = RDBI_GENERIC_ERROR;
 	SQLRETURN			rc = ODBCDR_SUCCESS;
 	int					is_numeric = TRUE;	/* no alphabetic name support */
+	int                 i = 0; // To avoid force compile with C99
 
 	debug_on5("odbcdr_define","c:%#x name: %s type: %d address: 0x%lx size: %d",
 							cursor, name, datatype, (long) address, size);
@@ -155,7 +156,7 @@ int odbcdr_define(
         }
 
         // Do binds (the previous bound columns will be rebound because of reallocation)
-        for ( int i = 0; i < numGeomCols; i++ )
+        for ( i = 0; i < numGeomCols; i++ )
         {
             odbcdr_geom_col_def *column = (odbcdr_geom_col_def *) ut_da_get( c->defined_geometries, i );
 
